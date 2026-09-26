@@ -1,0 +1,333 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: primer-odes
+lede: The laws of physics rarely tell you where things are. They tell you how things change. Turning "how it changes" into "what happens" is the job of differential equations, and of the small, careful steps a computer takes to solve them.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  y: ['The unknown quantity y', 'Whatever is evolving: a number of nuclei, a speed, a temperature, or a whole list of positions and velocities.'],
+  yp: ['Its rate of change y′', 'How fast y is changing. The differential equation supplies this from the current state.'],
+  t: ['Time t (the independent variable)', 'What we step along. In stellar structure the role of "time" is played by radius instead.'],
+  frhs: ['The right-hand side f(t, y)', 'The law itself: a recipe that turns the current state into the current rate of change. Every integrator is a way of sampling it cleverly.'],
+  hstep: ['Step size h', 'How far each step jumps. Smaller steps are more accurate and cost more; too large a step can make a method unstable, not just inaccurate.'],
+  yn: ['State after n steps', 'The numerical approximation to y at time tₙ = t₀ + n h. The integrator\'s job is to get from yₙ to yₙ₊₁.'],
+  ynext: ['The next state', 'What the step produces. Explicit methods compute it directly; implicit methods must solve an equation for it.'],
+  lam: ['Rate constant λ', 'Sets how fast the solution relaxes (timescale 1/λ). A huge λ means a very fast decay: that is what makes an equation stiff.'],
+  tau: ['Timescale τ', 'The e-folding time: after τ the quantity has dropped to 1/e ≈ 37% of its starting value.'],
+  y0: ['Initial value', 'Where the solution starts. A first-order equation plus one starting value pins down a unique solution.'],
+  x: ['Position x', 'Displacement of the oscillator from equilibrium.'],
+  v: ['Velocity v', 'Rate of change of position. Promoting it to its own variable turns a second-order equation into two first-order ones.'],
+  omega: ['Angular frequency ω', 'How fast the oscillator swings, in radians per unit time. The period is 2π/ω.'],
+  acc: ['Acceleration a(x)', 'Force per unit mass, which depends only on position here. Leapfrog evaluates it once per step.'],
+  k1: ['Slope at the start', 'RK4\'s first probe: the ordinary Euler slope.'],
+  k2: ['Slope at the midpoint (first try)', 'Take half an Euler step with k₁ and sample the slope there.'],
+  k3: ['Slope at the midpoint (second try)', 'Take half a step using k₂ instead, and sample again: a better estimate of the midpoint slope.'],
+  k4: ['Slope at the end', 'Take a full step with k₃ and sample the slope there. The weighted average 1-2-2-1 cancels errors up to fourth order.'],
+  err: ['Global error', 'How far the numerical answer is from the true one after integrating to a fixed time.'],
+  p: ['Order p', 'The exponent in error ∝ hᵖ. Halve the step and the error falls by 2ᵖ: by 2 for Euler, 4 for leapfrog, 16 for RK4.'],
+  amp: ['Growth factor per step g', 'Each step multiplies the error by this. If its size exceeds 1, errors grow exponentially and the method is unstable.'],
+  xn: ['Current guess xₙ', 'Newton\'s method refines this guess at each iteration.'],
+  gfun: ['The function whose root we want', 'We seek the x at which it equals zero.'],
+  gprime: ['Its slope', 'Newton follows the tangent line down to zero. A tiny slope throws the next guess far away, which is Newton\'s main failure mode.'],
+  Ean: ['Eccentric anomaly E', 'An angle that locates a planet on its ellipse. It is what we must solve for.'],
+  Man: ['Mean anomaly M', 'Grows uniformly with time: M = 2π t / P. It is the "clock" we know.'],
+  ecc: ['Eccentricity e', 'Shape of the orbit: 0 for a circle, near 1 for a long thin ellipse. Large e makes Kepler\'s equation harder to solve.'],
+}} />
+
+## Laws that describe change
+
+Newton did not write "the Moon is here at this time". He wrote that its acceleration is proportional to the pull of the Earth, which depends on where the Moon is now. The Moon's future is contained in that one local rule, but it has to be *unrolled*. An equation that relates a quantity to its own rate of change is a **differential equation** (DE, or ODE for "ordinary" when there is a single independent variable). Almost every law in this course is one:
+
+- An orbit: acceleration = gravity at the current position ([Chapter 2](/ch/orbits/)).
+- A star: the pressure gradient balances the weight of the layers above ([Chapter 11](/ch/stellar-structure/)).
+- Radioactive decay: the decay rate is proportional to what is left, as with free neutrons in the first minutes ([Chapter 26](/ch/big-bang/)).
+- The universe: the Friedmann equation sets the expansion rate from the current density ([Chapter 25](/ch/expansion/)).
+- A binary losing energy to gravitational waves: the orbit shrinks at a rate that depends on its current size ([Chapter 20](/ch/gravitational-waves/)).
+
+This primer shows how to read such equations, how to solve the easy ones by hand, and how computers solve the rest. Along the way it gives you the three ideas you need to understand every simulation in the course: **order of accuracy**, **stability** and **stiffness**. You will need derivatives: if they are rusty, start with [Appendix A4](/ch/primer-calculus/).
+
+<Tiers>
+<Fragment slot="l1">
+A differential equation is a rule of the form "if things are like *this* right now, they are changing like *that*". It is a set of local instructions, like a satnav that only ever says "from here, head north-east at 30 km/h". You cannot read off the destination directly, but you can take a small step in the direction it says, ask again, take another step, and trace out the whole journey. Every simulation in this course works this way.
+
+Picture the instructions as a field of tiny arrows on a graph, one at every point, each showing which way the quantity is heading from there. A solution is any path that follows the arrows everywhere. Where you start decides which path you get.
+</Fragment>
+<Fragment slot="l2">
+A first-order differential equation gives the rate of change of $y$ in terms of the current time and the current value of $y$:
+
+<KeyEq title="A first-order ODE">
+$$
+\term{yp}{y'} = \frac{d\term{y}{y}}{d\term{t}{t}} = \term{frhs}{f}(\term{t}{t}, \term{y}{y}), \qquad \term{y}{y}(0) = \term{y0}{y_0}
+$$
+<Fragment slot="where">The function <span data-term="frhs">f</span> is the physical law; the starting value <span data-term="y0">y₀</span> picks which of the many possible histories we are on. At every point on a graph of y against t, the equation tells you the slope a solution must have there.</Fragment>
+</KeyEq>
+
+Drawing a short line segment with that slope at every point gives a **slope field**. Solutions are the curves that run along the segments everywhere.
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="Initial value problem">
+$$
+\frac{d\term{y}{\vec y}}{d\term{t}{t}} = \term{frhs}{\vec f}(\term{t}{t}, \term{y}{\vec y}), \qquad \term{y}{\vec y}(t_0) = \term{y0}{\vec y_0}
+$$
+<Fragment slot="where">The state <span data-term="y">y</span> is a vector: for N gravitating bodies it has 6N components. If <span data-term="frhs">f</span> is smooth (Lipschitz) the solution exists and is unique (Picard–Lindelöf), so trajectories in state space never cross.</Fragment>
+</KeyEq>
+
+Any higher-order equation can be rewritten in this form by promoting derivatives to new variables. Newton's $\ddot x = a(x)$ becomes the pair $\dot x = v$, $\dot v = a(x)$, and the state is $(x, v)$: a point in **phase space**. Stellar structure is the same kind of problem with radius in place of time, but with a twist. Some conditions are known at the centre and others at the surface, which makes it a **boundary value problem**. [Chapter 11](/ch/stellar-structure/) solves it by *shooting*: guess the missing central values, integrate outwards, and adjust the guess with a root finder (see the last section).
+</Fragment>
+</Tiers>
+
+<Sim name="primer-odes-slopefield" minHeight={440}>
+**A slope field.** Each grey segment shows the slope the equation demands at that point. Click anywhere to start a solution there; drag to move it. The <span style="color:var(--series-2)">blue</span> curve is the accurate solution (earlier curves stay in purple); <span style="color:var(--accent)">orange</span> is **Euler's method**, which follows the arrow at the start of each step for a distance h. Shrink h and Euler hugs the true curve; grow it and Euler overshoots. In "Fall with drag" every solution heads for the terminal speed v = 1. In "Blow-up" the solution reaches infinity in finite time, and no step size can follow it there.
+</Sim>
+
+### Solving the easy ones by hand
+
+<Tiers>
+<Fragment slot="l1">
+A few equations can be solved with pencil and paper, and they are worth knowing because they turn up everywhere. The most important says "the rate of loss is proportional to how much is left". Its solution is **exponential decay**: the same fraction disappears in each equal interval of time. Half of any sample of free neutrons decays in about ten minutes, then half of the remainder in the next ten, and so on. Flip the sign and you get exponential growth, like compound interest or a runaway nuclear reaction.
+</Fragment>
+<Fragment slot="l2">
+The single most important differential equation says that the rate of change is proportional to the amount present:
+
+<KeyEq title="Exponential decay">
+$$
+\frac{d\term{y}{y}}{d\term{t}{t}} = -\frac{\term{y}{y}}{\term{tau}{\tau}} \quad\Longrightarrow\quad \term{y}{y}(\term{t}{t}) = \term{y0}{y_0}\,e^{-\term{t}{t}/\term{tau}{\tau}}
+$$
+<Fragment slot="where">Check it with the exponential rule from [Appendix A4](/ch/primer-calculus/): the derivative of $e^{-t/\tau}$ is $-\tfrac{1}{\tau}e^{-t/\tau}$. The half-life is $\tau\ln 2 \approx 0.69\,\tau$. For free neutrons $\tau \approx 879$ s.</Fragment>
+</KeyEq>
+
+The recipe "guess an exponential and check" also solves oscillators. Try $x = \cos(\omega t)$ in $x'' = -\omega^2 x$: differentiating twice gives $-\omega^2\cos(\omega t)$, so it works. Anything that is pulled back towards equilibrium in proportion to its displacement oscillates like this, with period $2\pi/\omega$.
+</Fragment>
+<Fragment slot="l3">
+Three families cover most closed-form solutions you will see:
+
+1. **Linear, constant coefficients.** Guess $y = e^{st}$. Then $\dot y = -\lambda y$ gives $y = y_0e^{-\lambda t}$, and $\ddot x = -\omega^2x$ gives $s = \pm i\omega$, which is sines and cosines. Every stable equilibrium, expanded to second order (Taylor, [A4](/ch/primer-calculus/)), is a harmonic oscillator of this kind.
+2. **Separable.** $dy/dt = g(t)h(y)$ integrates as $\int dy/h(y) = \int g(t)\,dt$. Falling with quadratic drag, $\dot v = g - kv^2$, gives $v = v_\infty\tanh(t\sqrt{gk})$ with terminal speed $v_\infty = \sqrt{g/k}$. The gravitational-wave inspiral $\dot a \propto -a^{-3}$ gives $a^4 \propto (t_c - t)$, the "chirp" of [Chapter 20](/ch/gravitational-waves/).
+3. **Linear first-order with forcing.** $\dot y + \lambda y = q(t)$ is solved with an integrating factor $e^{\lambda t}$. The solution is a decaying transient plus a part that follows the forcing, a structure that matters when we get to stiffness.
+
+Most interesting systems (the three-body problem, a reaction network, the Lane–Emden equation for most $n$) have no closed form. Then we step.
+</Fragment>
+</Tiers>
+
+## Stepping forward: Euler's method
+
+The simplest idea is the one in the figure: stand at the current point, read off the slope, walk in that direction for a short time $h$, and repeat.
+
+<Tiers>
+<Fragment slot="l1">
+That is **Euler's method**. It is simple and intuitive, and it is always slightly wrong in the same direction. On a curve that bends, the arrow at the start of a step points off the curve, so each step overshoots a little. Smaller steps mean smaller overshoots but more of them. Halve the step and you do twice as much work to get an answer only twice as accurate. Better methods exist, and the rest of this primer is about them.
+</Fragment>
+<Fragment slot="l2">
+<KeyEq title="Euler's method">
+$$
+\term{ynext}{y_{n+1}} = \term{yn}{y_n} + \term{hstep}{h}\,\term{frhs}{f}(t_n, \term{yn}{y_n})
+$$
+<Fragment slot="where">Take the slope at the current point, multiply by the step <span data-term="hstep">h</span>, and add. It uses one evaluation of the law <span data-term="frhs">f</span> per step.</Fragment>
+</KeyEq>
+
+Each step makes an error because the slope changes during the step. For a smooth curve that error is about $h^2$ per step (it comes from the curve's bending). To reach a fixed time $T$ takes $T/h$ steps, so the errors add up to roughly $(T/h)\times h^2 \propto h$. Euler is **first order**: halving the step halves the final error.
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="Euler's method and its error">
+$$
+\term{ynext}{y_{n+1}} = \term{yn}{y_n} + \term{hstep}{h}\,\term{frhs}{f}(t_n, \term{yn}{y_n}), \qquad \term{err}{\varepsilon_\text{global}} = O(\term{hstep}{h}^{\term{p}{p}}),\; \term{p}{p} = 1
+$$
+<Fragment slot="where">Taylor-expand the true solution: $y(t+h) = y + h\dot y + \tfrac12h^2\ddot y + O(h^3)$. Euler keeps the first two terms, so its **local truncation error** is $\tfrac12h^2\ddot y$. Over $T/h$ steps these accumulate (and propagate, amplified or damped by the dynamics) to a **global error** $O(h)$. In general a method with local error $O(h^{p+1})$ has global error $O(h^p)$ and is called *order p*.</Fragment>
+</KeyEq>
+</Fragment>
+</Tiers>
+
+## Better steps: Runge–Kutta and leapfrog
+
+There are two ways to do better than Euler. One is to sample the slope at several points inside the step and average them cleverly: the **Runge–Kutta** family. The other is to design the step to respect the structure of the physics, and for orbits the best-known example is **leapfrog**.
+
+<Tiers>
+<Fragment slot="l1">
+**RK4**, the classic Runge–Kutta method, is like a careful hiker who probes the terrain before committing. She looks at the slope where she stands, takes a half-step to peek at the slope midway (twice, to double-check), peeks at the slope at the far end, and then sets off along a weighted average of all four. Each step costs four looks instead of one, but the answer is so much better that she can take far longer strides.
+
+**Leapfrog** is built for orbits and oscillators. It updates position and velocity alternately, half a step out of sync, like two frogs jumping over each other. That staggering makes it *time-reversible*: run it backwards and it retraces its steps exactly. As a result its energy errors cannot pile up. They wobble but never drift, so a planet integrated with leapfrog stays on its orbit for billions of steps.
+</Fragment>
+<Fragment slot="l2">
+**RK4** evaluates the slope four times per step: at the start, twice at the midpoint, and at the end. It combines them with weights 1, 2, 2, 1 (like Simpson's rule for integrals). Its error falls as $h^4$: halve the step and the error drops sixteenfold.
+
+**Leapfrog** (also called velocity Verlet) is designed for motion under a force that depends on position, such as gravity. It gives the velocity half a kick, lets the position drift for a full step, then gives the second half kick with the new force:
+
+<KeyEq title="Leapfrog (kick–drift–kick)">
+$$
+\begin{aligned}
+\term{v}{v}_{n+\frac12} &= \term{v}{v}_n + \tfrac{\term{hstep}{h}}{2}\,\term{acc}{a}(\term{x}{x}_n) \\
+\term{x}{x}_{n+1} &= \term{x}{x}_n + \term{hstep}{h}\,\term{v}{v}_{n+\frac12} \\
+\term{v}{v}_{n+1} &= \term{v}{v}_{n+\frac12} + \tfrac{\term{hstep}{h}}{2}\,\term{acc}{a}(\term{x}{x}_{n+1})
+\end{aligned}
+$$
+<Fragment slot="where">It is second order (error ∝ h²) and needs one force evaluation per step, because the last kick's force is reused as the next step's first. It is the workhorse of N-body codes, from planets ([Chapter 2](/ch/orbits/)) to galaxy mergers ([Chapter 22](/ch/galactic-dynamics/)) and the cosmic web ([Chapter 28](/ch/structure/)).</Fragment>
+</KeyEq>
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="Classical fourth-order Runge–Kutta (RK4)">
+$$
+\begin{aligned}
+\term{k1}{k_1} &= \term{frhs}{f}(t_n,\ \term{yn}{y_n}), &
+\term{k2}{k_2} &= \term{frhs}{f}(t_n + \tfrac{\term{hstep}{h}}{2},\ \term{yn}{y_n} + \tfrac{\term{hstep}{h}}{2}\term{k1}{k_1}), \\
+\term{k3}{k_3} &= \term{frhs}{f}(t_n + \tfrac{\term{hstep}{h}}{2},\ \term{yn}{y_n} + \tfrac{\term{hstep}{h}}{2}\term{k2}{k_2}), &
+\term{k4}{k_4} &= \term{frhs}{f}(t_n + \term{hstep}{h},\ \term{yn}{y_n} + \term{hstep}{h}\,\term{k3}{k_3}), \\
+\term{ynext}{y_{n+1}} &= \term{yn}{y_n} + \tfrac{\term{hstep}{h}}{6}\left(\term{k1}{k_1} + 2\term{k2}{k_2} + 2\term{k3}{k_3} + \term{k4}{k_4}\right)
+\end{aligned}
+$$
+<Fragment slot="where">The weights are chosen so that the Taylor expansion of $y_{n+1}$ matches the true solution through $h^4$: local error $O(h^5)$, global error $O(h^4)$. For $f$ independent of $y$ it reduces to Simpson's rule. Four evaluations of <span data-term="frhs">f</span> per step.</Fragment>
+</KeyEq>
+
+**Leapfrog** (Störmer–Verlet), for $\dot x = v$, $\dot v = a(x)$: half kick $v \mathrel{+}= \tfrac h2 a(x)$, drift $x \mathrel{+}= hv$, half kick $v \mathrel{+}= \tfrac h2 a(x)$. It is second order, one force evaluation per step, time-reversible and **symplectic**: each step is an exact canonical transformation, so it preserves phase-space area and exactly conserves a "shadow" energy $\tilde H = H + O(h^2)$. Energy errors therefore stay bounded for exponentially long times instead of drifting. For the harmonic oscillator you can see this directly. Euler's step matrix has determinant $1 + h^2\omega^2 > 1$, so it inflates phase-space area and spirals outwards. Leapfrog's has determinant exactly 1.
+</Fragment>
+</Tiers>
+
+<Predict question="You halve the step size of an RK4 integration. How much smaller does the error at the end become?" choices={['2 times', '4 times', '16 times']} answer={2}>
+RK4 is fourth order: the global error scales as h⁴, so halving h divides it by 2⁴ = 16. That is why RK4 dominated scientific computing for decades: a modest increase in work buys a huge gain in accuracy. In the right-hand panel below, each method's error falls along a straight line whose slope is its order: 1, 2 and 4. At very small steps the RK4 line stops falling and turns into a noisy floor. That floor is round-off: with 16-digit arithmetic, millions of tiny steps each add a rounding error of about 10⁻¹⁶.
+</Predict>
+
+<Sim name="primer-odes-integrators" minHeight={440}>
+**Three integrators on the harmonic oscillator** $\ddot x = -x$ (period 2π). Left: the trajectory in phase space. The exact solution is the dashed circle; the white dot is where the true solution is now. <span style="color:var(--series-3)">Euler</span> spirals outwards (it adds energy every step), <span style="color:var(--series-2)">RK4</span> sits on the circle, and <span style="color:var(--series-1)">leapfrog</span> traces a very slightly squashed ellipse that never grows. Right: global error at t = 20 against step size, with dashed guides of slope 1, 2 and 4. Push **Step h** up to about 1: leapfrog still goes round (its "shadow" orbit is an ellipse squashed along the velocity axis), while Euler flies off. Push it past 2 and even leapfrog explodes: it is stable only while hω &lt; 2.
+</Sim>
+
+<Level min={3} title="Order in practice: measuring it, and the round-off floor">
+To check a code's order, halve $h$ repeatedly and look at the ratio of successive errors, $\log_2(\varepsilon_h/\varepsilon_{h/2}) \to p$. If you don't know the exact answer, use three step sizes (Richardson extrapolation): $p \approx \log_2\left[(y_h - y_{h/2})/(y_{h/2} - y_{h/4})\right]$. Two practical lessons follow from the figure. First, high order pays off only while truncation error dominates. Below some $h$, the accumulated round-off, roughly $\epsilon_\text{mach}\sqrt{N}$ for $N$ steps in the best case, wins, and smaller steps make things *worse*. Second, the error *constant* matters as much as the order. RK4 costs four force evaluations per step against leapfrog's one, so compare methods at equal work, not equal $h$. Production codes add **adaptive step control**: embedded pairs such as Dormand–Prince RK5(4) estimate the local error from two solutions of different order and adjust $h$ automatically. That is how the photon-geodesic integrator in [Chapter 19](/ch/black-holes/) takes tiny steps near the photon sphere and large ones far away.
+</Level>
+
+<Hood title="the three steppers in the oscillator figure">
+All three methods act on a state `s = [x, v]` stored in a `Float64Array`, with acceleration $a(x) = -x$. Leapfrog is only three lines, and needs no temporary storage:
+
+```ts
+leapfrog(s, h) {
+  s[1] -= 0.5 * h * s[0]; // half kick
+  s[0] += h * s[1];       // drift
+  s[1] -= 0.5 * h * s[0]; // half kick
+},
+```
+
+The error-versus-step panel is computed once when the figure loads. For 60 step sizes between 2.5 and 10⁻⁴, each method integrates exactly to t = 20 (the step is nudged so that an integer number of steps lands there), and the plot shows the phase-space distance from the exact $(\cos t, -\sin t)$. That is about four million steps in total, which takes a few tens of milliseconds in double precision. In single precision (the f32 of the GPU sims), the round-off floor would sit near 10⁻⁷ instead of 10⁻¹⁵, which is one reason the GPU N-body codes in [Chapter 22](/ch/galactic-dynamics/) and [Chapter 28](/ch/structure/) choose units that keep numbers of order one.
+</Hood>
+
+<History title="Euler, Runge, Kutta and the frog that jumped for three centuries" year="1768">
+<Portrait src="/img/people/euler.jpg" name="Leonhard Euler" years="1707–1783" credit="Jakob Emanuel Handmann, 1753" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Leonhard_Euler_-_Jakob_Emanuel_Handmann_(Kunstmuseum_Basel).jpg" />
+
+Leonhard Euler described his step-by-step method in his *Institutionum calculi integralis* (1768). Euler was the most prolific mathematician in history, and he produced nearly half of his work after losing most of his sight. He offered the method as a practical approximation; half a century later Augustin-Louis Cauchy turned the same "Euler polygons" into a proof that solutions exist at all. Higher-accuracy methods took more than a century to arrive. In 1895 Carl Runge, in Hannover, showed that sampling the slope at extra points inside a step gives far higher accuracy, and in 1901 Martin Wilhelm Kutta, in Munich, worked out the general theory and the fourth-order scheme now called RK4. For the whole twentieth century, human "computers" and then electronic ones used it to calculate ballistics, orbits and stellar models.
+
+Leapfrog has a stranger history. The Norwegian mathematician Carl Størmer used it in 1907 to trace the paths of charged particles spiralling into the Earth's magnetic field. He and his assistants computed some 4,500 hours of trajectories by hand to explain the shape of the aurora. Loup Verlet rediscovered it in 1967 for molecular dynamics simulations of liquid argon, and his name stuck. Newton, it turns out, got there first. The geometric construction in Book I, Proposition 1 of the *Principia*, where he proves Kepler's equal-area law from a series of impulsive kicks towards the Sun, is exactly a leapfrog step. The method that runs today's galaxy simulations is as old as the law of gravity itself.
+</History>
+
+## Stability and stiffness
+
+So far, error meant slow accumulation. There is a second, more violent failure. Some methods, given too large a step, don't just drift: they **explode**. Understanding when this happens is the difference between a simulation that runs and one that fills your screen with `NaN`.
+
+<Tiers>
+<Fragment slot="l1">
+Imagine a cup of coffee cooling towards room temperature. The temperature gap shrinks by a set fraction every minute. Now simulate it with Euler steps of 10 minutes. If the coffee is supposed to lose half its excess heat per 10 minutes, fine. But if the equation says the gap should vanish in 1 minute, a 10-minute Euler step does not just remove the gap: it overshoots and makes the coffee *colder* than the room by nine times the original gap. The next step overshoots the other way, even further. The numbers swing back and forth and grow without limit.
+
+A problem is **stiff** when something in it happens very fast (a quick relaxation) while the part you care about changes slowly. Simple methods are then forced to take tiny steps just to stay stable, even long after the fast part has died out. The cure is an **implicit** method, which asks "what state at the end of the step would be consistent with the law?" rather than "where does the slope at the start point?". Such methods cannot overshoot like this, so they can take large steps safely.
+</Fragment>
+<Fragment slot="l2">
+Test Euler on the simplest decay, $y' = -\lambda y$. One step gives $y_{n+1} = y_n - h\lambda y_n = (1 - h\lambda)\,y_n$. Each step multiplies $y$ by the factor $1 - h\lambda$. The true solution decays, so we need that factor to be smaller than 1 in size. If $h\lambda > 2$, the factor is below −1: the numerical solution flips sign every step and grows exponentially, even though the true solution quietly decays to zero.
+
+The fix is to evaluate the slope at the *end* of the step instead of the start. That is **implicit** (or backward) Euler: $y_{n+1} = y_n - h\lambda y_{n+1}$, which solves to $y_{n+1} = y_n/(1 + h\lambda)$. That factor is below 1 for *any* positive step, however large.
+
+<KeyEq title="Stability of explicit and implicit Euler">
+$$
+\text{explicit: } \term{ynext}{y_{n+1}} = (1 - \term{hstep}{h}\term{lam}{\lambda})\,\term{yn}{y_n}, \qquad \text{implicit: } \term{ynext}{y_{n+1}} = \frac{\term{yn}{y_n}}{1 + \term{hstep}{h}\term{lam}{\lambda}}
+$$
+<Fragment slot="where">Explicit Euler is stable only when $h\lambda < 2$, that is when the step is shorter than about twice the fastest timescale $1/\lambda$ in the problem. Implicit Euler is stable for every step size.</Fragment>
+</KeyEq>
+</Fragment>
+<Fragment slot="l3">
+Linearise any system about its current state: $\dot{\vec y} \approx J\,\vec y$ with $J = \partial\vec f/\partial\vec y$ the Jacobian ([A4](/ch/primer-calculus/)). In the eigenbasis of $J$, each mode obeys the **Dahlquist test equation** $\dot y = \mu y$ with $\mu$ an eigenvalue. Applied to it, any one-step method gives $y_{n+1} = g(z)\,y_n$ with $z = h\mu$. The **region of absolute stability** is where $|g(z)| \le 1$:
+
+<KeyEq title="Amplification factors (z = hμ, decay means Re z < 0)">
+$$
+\term{amp}{g}_\text{Euler} = 1 + z, \qquad \term{amp}{g}_\text{RK4} = 1 + z + \tfrac{z^2}{2} + \tfrac{z^3}{6} + \tfrac{z^4}{24}, \qquad \term{amp}{g}_\text{implicit Euler} = \frac{1}{1 - z}
+$$
+<Fragment slot="where">Explicit methods have polynomial <span data-term="amp">g</span>, so their stability regions are bounded: for real negative $z$, Euler needs $|z| < 2$ and RK4 $|z| < 2.79$. Implicit Euler's region is everything outside a disc in the right half-plane, which includes the entire left half-plane. That property is called **A-stability**, and it means decaying modes are never amplified whatever $h$ is. For the pure oscillator ($\mu = \pm i\omega$), Euler's $|1 + i h\omega| > 1$ explains the outward spiral, and leapfrog is stable for $h\omega < 2$.</Fragment>
+</KeyEq>
+
+A system is **stiff** when the eigenvalues of $J$ span many orders of magnitude, $|\mu_\text{max}|/|\mu_\text{min}| \gg 1$. An explicit method's step is capped by the *fastest* mode ($h \lesssim 2/|\mu_\text{max}|$), even after that mode has decayed and contributes nothing, while the interesting evolution happens on the *slowest* timescale. The number of steps needed is of order the stiffness ratio: $10^{10}$ or more in a nuclear network. Implicit methods remove the cap, at the price of solving a (generally nonlinear) system $\vec y_{n+1} - h\vec f(\vec y_{n+1}) = \vec y_n$ at every step, usually with Newton's method and the Jacobian $J$. Production stiff solvers (BDF methods as in CVODE, or implicit Runge–Kutta methods such as Radau IIA) are high-order versions of the same idea.
+</Fragment>
+</Tiers>
+
+<Predict question="The equation y′ = −λ(y − cos t) with λ = 1000 has a transient that dies within a few milliseconds, after which y ≈ cos t, a slow wave. With explicit Euler and a step h = 0.01, you get…" choices={['a slightly wobbly cos t', 'an explosion to astronomically large numbers', 'a solution lagging a little behind cos t']} answer={1}>
+hλ = 10, far above the stability limit of 2. Each step multiplies any deviation from the slow solution by (1 − 10) = −9, so round-off-sized errors grow ninefold per step and pass 10⁶ after a handful of steps. Nothing about the slow solution needs small steps; only stability does. Implicit Euler with the same step follows cos t without trouble. Set λ = 1000 and h = 0.01 in the figure to see both.
+</Predict>
+
+<Sim name="primer-odes-stiff" minHeight={420}>
+**A stiff equation.** y′ = −λ (y − cos t) starting from y = 0: a fast jump (timescale 1/λ) onto the slow curve y ≈ cos t (dotted). <span style="color:var(--series-3)">Explicit Euler</span> is fine while hλ &lt; 2 and oscillates, then explodes, once hλ passes 2. <span style="color:var(--series-1)">Implicit Euler</span> stays stable at any step (it only smears the fast jump, which is usually fine). The right panel shows each method's growth factor per step against hλ; stability means staying below the line at 1. Raise **Stiffness λ** to 1000 and see how small the explicit step must become. Tick **Show RK4**: its stability limit (hλ ≈ 2.79) is barely better than Euler's.
+</Sim>
+
+Where the course meets stiffness:
+
+- **Big Bang nucleosynthesis** ([Chapter 26](/ch/big-bang/)). Deuterium is created and photo-destroyed millions of times per second while the network as a whole evolves over minutes. The chapter's solver uses implicit Euler with Newton iterations and a numerical Jacobian.
+- **Stellar evolution** ([Chapter 15](/ch/giants/)). Codes like MESA integrate nuclear networks and structure equations implicitly, because reaction timescales range from microseconds to billions of years.
+- **Interstellar gas** ([Chapter 6](/ch/ism/)). Cooling and chemistry rates in dense gas are far faster than dynamical times.
+- **Diffusion** ([Chapter 13](/ch/energy-transport/)). Discretising the heat or diffusion equation $\partial_t u = D\,\partial_x^2 u$ on a grid of spacing $\Delta x$ gives a stiff system whose fastest mode has rate about $4D/\Delta x^2$. Explicit time steps must therefore satisfy $\Delta t \le \Delta x^2/2D$: halve the grid spacing and you need four times as many steps. The photon random walk in that chapter is the particle picture of this same equation.
+
+<Aside>**Explicit or implicit?** Use explicit methods when the fastest timescale in the problem is one you actually need to resolve (orbits, waves, shocks). Use implicit methods when the fastest timescales are ones you would happily average over (chemistry, nuclear burning, diffusion). Many codes split the problem and do both.</Aside>
+
+## Finding roots: Newton's method
+
+Implicit steps, shooting methods, equilibrium abundances and orbits all end in the same sub-problem: find the $x$ that makes some function zero. The fastest general tool is **Newton's method** (also called Newton–Raphson), which is the tangent line from [Appendix A4](/ch/primer-calculus/) put to work.
+
+<Tiers>
+<Fragment slot="l1">
+Guess an answer. At that guess, pretend the curve is a straight line (its tangent) and slide down the line to where it crosses zero. That crossing is your new guess. Repeat. Near the answer, the curve really is almost straight, so each round lands much closer. In fact the number of correct digits roughly *doubles* each time: 1 digit, 2, 4, 8, 16, and you are done in five or six steps. The catch is that you need a sensible first guess. Start somewhere flat and the tangent can fling you far away.
+</Fragment>
+<Fragment slot="l2">
+<KeyEq title="Newton's method">
+$$
+\term{xn}{x_{n+1}} = \term{xn}{x_n} - \frac{\term{gfun}{g}(\term{xn}{x_n})}{\term{gprime}{g'}(\term{xn}{x_n})}
+$$
+<Fragment slot="where">Follow the tangent at the current guess down to zero. Near a simple root the error is roughly squared at every step (**quadratic convergence**), so the number of correct digits doubles.</Fragment>
+</KeyEq>
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="Newton's method (vector form)">
+$$
+\term{xn}{\vec x_{n+1}} = \term{xn}{\vec x_n} - \big[\term{gprime}{J}(\term{xn}{\vec x_n})\big]^{-1}\,\term{gfun}{\vec g}(\term{xn}{\vec x_n}), \qquad J_{ij} = \frac{\partial g_i}{\partial x_j}
+$$
+<Fragment slot="where">Linearise <span data-term="gfun">g</span> about the current guess (first-order Taylor) and solve the linear system exactly. Near a simple root, $\varepsilon_{n+1} \approx \frac{g''}{2g'}\varepsilon_n^2$. Newton can diverge or cycle from a poor start, so robust codes pair it with a *bracketing* method: bisection, which halves an interval known to contain the root (one bit per step, guaranteed), or Brent's method, which combines the two. In practice you solve $J\,\Delta\vec x = -\vec g$ with an LU factorisation rather than forming $J^{-1}$.</Fragment>
+</KeyEq>
+</Fragment>
+</Tiers>
+
+The textbook astrophysical example is **Kepler's equation**, which you have to solve to know where a planet is on its elliptical orbit at a given time ([Chapter 2](/ch/orbits/)):
+
+$$
+\term{Man}{M} = \term{Ean}{E} - \term{ecc}{e}\sin \term{Ean}{E}
+$$
+
+There is no formula for $E$ in terms of $M$, but Newton's method finds it in a few steps. Take an orbit of eccentricity <Var name="kepE" value={0.6} min={0} max={0.99} digits={2} /> at mean anomaly <Var name="kepM" value={40} min={1} max={359} digits={3} />°. Starting from $E_0 = M$, the Newton iterates are <Out name="kepNewton" />. For comparison, the naive iteration $E \leftarrow M + e\sin E$, which Kepler himself used, needs <Out name="kepFixed" /> rounds to reach the same precision. Push $e$ towards 0.99 and watch it slow to a crawl while Newton barely notices.
+
+<Aside>**Other roots in the course.** Chapter 11 shoots for the surface of the Lane–Emden solution; the Saha equation for ionisation ([Chapter 5](/ch/spectra/)) and recombination ([Chapter 26](/ch/big-bang/)) is a root-finding problem for the free-electron density; the Lagrange points ([Chapter 3](/ch/three-body/)) are roots of the effective-force equation.</Aside>
+
+## Beyond ODEs: a word on partial differential equations
+
+When a quantity depends on space *and* time, such as temperature through a star or density across the universe, the equation involves partial derivatives ([A4](/ch/primer-calculus/)) and becomes a **partial differential equation** (PDE). The standard trick, the *method of lines*, puts space on a grid and replaces spatial derivatives with finite differences. That leaves one big ODE system for the grid values, which is then stepped with everything in this primer, including the stiffness caveat for diffusion above. Wave-like PDEs have their own explicit limit, the **Courant condition**: in one step, information must not travel further than one grid cell, so $c\,\Delta t \le \Delta x$. Every hydrodynamics code that follows a supernova blast wave ([Chapter 6](/ch/ism/)) or a sound wave in the early universe ([Chapter 27](/ch/cmb/)) lives under it. Poisson's equation for gravity, $\nabla^2\Phi = 4\pi G\rho$, has no time at all and is solved in one shot with fast Fourier transforms in [Chapter 28](/ch/structure/) (see [Appendix A8](/ch/primer-waves/)).
+
+## The toolbox
+
+| Problem | Method | Watch out for | In the course |
+|---|---|---|---|
+| Smooth, non-stiff ODE, high accuracy | RK4, adaptive RK45 | Energy drift over long runs | Lane–Emden ([Ch. 11](/ch/stellar-structure/)), photon orbits ([Ch. 19](/ch/black-holes/)) |
+| Orbits, N-body, long times | Leapfrog / Verlet (symplectic) | Adaptive steps break symplecticity | [Ch. 2](/ch/orbits/), [Ch. 3](/ch/three-body/), [Ch. 22](/ch/galactic-dynamics/), [Ch. 28](/ch/structure/) |
+| Stiff ODE (networks, cooling) | Implicit Euler, BDF, Radau | Needs a Jacobian and a linear solve | BBN ([Ch. 26](/ch/big-bang/)), stellar evolution ([Ch. 15](/ch/giants/)) |
+| Diffusion PDE | Implicit or explicit with Δt ≤ Δx²/2D | Step limit shrinks as Δx² | [Ch. 13](/ch/energy-transport/) |
+| f(x) = 0 | Newton, with a bisection safety net | Bad first guesses, flat slopes | Kepler's equation, Saha, shooting |
+
+Every simulation in this course is one of these methods, applied with care to a law of physics. For the physics that goes *into* the right-hand sides, forces, energies and potentials, continue to [Appendix A6: Classical Mechanics](/ch/primer-mechanics/). To see the integrators at work on a real problem, the natural next stop is the orbit simulation of [Chapter 2](/ch/orbits/).

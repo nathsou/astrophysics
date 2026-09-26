@@ -39,6 +39,17 @@ const FNS: Fn[] = [
   },
 ];
 
+/** Translucent backdrop so legend text stays readable over curves. */
+function backdrop(ctx: CanvasRenderingContext2D, bg: string, x: number, y: number, lines: string[], lh: number, extra = 0) {
+  ctx.save();
+  ctx.font = '11px Inter, system-ui, sans-serif';
+  const w = Math.max(...lines.map((s) => ctx.measureText(s).width)) + extra;
+  ctx.globalAlpha = 0.82;
+  ctx.fillStyle = bg;
+  ctx.fillRect(x - 6, y - lh / 2 - 5, w + 12, lines.length * lh + 6);
+  ctx.restore();
+}
+
 export default defineSim({
   mount({ host, params }) {
     let pal = palette();
@@ -105,6 +116,7 @@ export default defineSim({
         Y += 17;
       };
       const u = fn.slopeUnit ? ` ${fn.slopeUnit}` : '';
+      backdrop(ctx, pal.bg, L, Y, [`secant slope Δy/Δx = ${fmt(sec, 5)}${u}`, `tangent slope f′(x₀) = ${fmt(tan, 5)}${u}`], 17, 24);
       row(pal.accent, false, `secant slope Δy/Δx = ${fmt(sec, 5)}${u}`);
       row(pal.series[1], true, `tangent slope f′(x₀) = ${fmt(tan, 5)}${u}`);
       if (zoom > 1.05) plot.text(`zoom ×${fmt(zoom, 3)}`, plot.m.l + plot.pw - 8, plot.m.t + 14, { align: 'right', color: pal.muted });

@@ -20,14 +20,14 @@ const HC_EV_NM = 1239.84193;
 const NLEV = 40; // levels included in the statistics
 
 export default defineSim({
-  mount({ host }) {
+  mount({ host, params }) {
     let pal = palette();
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
     const stage = createStage(host, { aspect: 16 / 9 });
     const ctx = stage.canvas.getContext('2d')!;
 
-    let mode: Mode = 'states';
+    let mode: Mode = params.mode === 'fill' || params.mode === 'super' ? params.mode : 'states';
     let L = 1; // nm
     let nSel = 1;
     let Npart = 6;
@@ -96,8 +96,7 @@ export default defineSim({
           const sel = n === nSel;
           ctx.strokeStyle = sel ? pal.accent : pal.faint; ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
           ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x1, y); ctx.stroke(); ctx.setLineDash([]);
-          const gap = n === 1 ? Y(0) - Y(En(1)) : Y(En(n - 1)) - Y(En(n));
-          const A = Math.min(gap * 0.42, 40);
+          const A = Math.min(40, (yb - yt) * 0.065); // same drawn amplitude for every level
           if (sel) {
             // |ψ|² shaded
             ctx.beginPath(); ctx.moveTo(x0, y);

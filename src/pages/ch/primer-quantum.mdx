@@ -1,0 +1,366 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: primer-quantum
+lede: Light arrives in lumps, electrons behave like waves, and matter refuses to be squeezed. A handful of quantum ideas explain why stars shine, why atoms have spectra, and why dead stars do not collapse.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  Eph: ['Photon energy', 'The energy of one quantum of light. Set entirely by its frequency: brightness means more photons, not bigger ones.'],
+  f: ['Frequency of the light', 'Oscillations per second. Doubling it doubles the energy of every photon.'],
+  lambda: ['Wavelength', 'In the denominator: shorter wavelength, more energetic photon. X-ray photons carry about a thousand times the energy of visible ones.'],
+  p: ['Momentum', 'Mass times velocity for a slow particle; for a photon, E/c. Large momentum means a short wavelength.'],
+  lamdb: ['de Broglie wavelength', 'The wavelength associated with a moving particle. Quantum effects matter when it is comparable to the size of the region the particle is confined to.'],
+  Dx: ['Uncertainty in position', 'The spread of places the particle could be found. Squeezing it forces the momentum spread up.'],
+  Dp: ['Uncertainty in momentum', 'The spread of momenta. It is inversely related to Δx: the product can never fall below ħ/2.'],
+  m: ['Particle mass', 'In the denominator of the energy levels: heavy particles have closely spaced levels and behave more classically.'],
+  L: ['Width of the box', 'Squared in the denominator: halve the box and every energy level goes up four times.'],
+  n: ['Quantum number', 'A whole number labelling the state: 1 for the ground state, 2 for the first excited state, and so on. Energies grow as n² in a box and approach zero as −1/n² in hydrogen.'],
+  En: ['Energy of level n', 'One of the only energies the confined particle is allowed to have.'],
+  psi: ['Wavefunction', 'A complex-valued wave spread through space. Its squared magnitude |ψ|² is the probability density for finding the particle there.'],
+  V: ['Potential energy', 'The energy landscape the particle moves in: a box, the electric pull of a nucleus, a barrier.'],
+  E: ['Total energy', 'Kinetic plus potential. Where E is less than V, a classical particle could never go; a quantum one can, briefly.'],
+  x: ['Position', 'Where in space the wavefunction is evaluated.'],
+  t: ['Time', 'The Schrödinger equation says how ψ changes from one moment to the next.'],
+  Ry: ['Rydberg energy', 'The binding energy of hydrogen in its ground state. Every hydrogen line comes from differences of 13.6 eV × (1/n₁² − 1/n₂²).', '13.606 eV'],
+  kappa: ['Decay constant inside the barrier', 'How fast ψ dies away inside a forbidden region. It grows with the square root of both the mass and the energy deficit V − E.'],
+  a: ['Barrier width', 'Sits in the exponent together with κ: doubling it squares the (already small) transmission.'],
+  Tr: ['Transmission probability', 'Chance that a particle arriving at the barrier ends up on the other side.'],
+  nocc: ['Mean occupation number', 'Average number of particles in one quantum state of energy E. Fermions: between 0 and 1. Bosons: any number.'],
+  mu: ['Chemical potential', 'The energy at which states are half filled for fermions. It is fixed by the total number of particles; at zero temperature it is the Fermi energy.'],
+  Temp: ['Temperature', 'Sets the width of the fuzzy edge between filled and empty states, about k_BT.'],
+  EF: ['Fermi energy', 'Energy of the highest filled state at zero temperature. It depends only on the density: squeeze fermions together and it rises.'],
+  ne: ['Number density', 'Particles per cubic metre. The Fermi energy grows as its 2/3 power.'],
+}} />
+
+## Light comes in lumps
+
+[Appendix A8](/ch/primer-waves/) described light as a wave of electric and magnetic fields, and it is one: it diffracts, interferes and Doppler shifts. But when light is emitted or absorbed, it behaves as if it came in discrete packets of energy, **photons**. A dim beam is not a weak continuous wave. It is a sparse rain of full-sized photons.
+
+<History title="An act of desperation" year="1900">
+<Portrait src="/img/people/planck.jpg" name="Max Planck" years="1858–1947" credit="Unknown author, 1933" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Max_Planck_1933.jpg" />
+
+By 1900 the best physics of the day predicted that a hot cavity should glow with infinite energy at short wavelengths, the "ultraviolet catastrophe" ([Chapter 4](/ch/light/)). Max Planck, a careful and conservative Berlin professor, did not set out to overthrow physics. In October 1900 his colleagues Heinrich Rubens and Ferdinand Kurlbaum showed him new infrared measurements, and Planck guessed a formula that fitted them perfectly the same evening.
+
+Justifying it took him eight weeks of what he later called the hardest work of his life. The only derivation he could find required a trick he disliked: the walls of the cavity could exchange energy with light only in whole-number multiples of a small unit $\varepsilon = hf$. He presented it on 14 December 1900. Thirty years later he described the step as "an act of desperation", done because a theoretical explanation had to be found "at any price". Planck himself thought the lumps were an accounting device, not a property of light. Albert Einstein, in 1905, was the first to take them literally. Planck did not accept Einstein's photons for years, and Robert Millikan spent a decade trying to disprove Einstein's photoelectric equation, only to confirm it. Einstein's Nobel Prize (1921) was for that equation, not for relativity.
+</History>
+
+<Tiers>
+<Fragment slot="l1">
+Each photon carries a fixed amount of energy that depends only on its colour. Blue photons carry more than red ones, ultraviolet more than blue, and X-rays about a thousand times more than visible light. A brighter lamp of the same colour sends *more* photons, not bigger ones.
+
+This explains the **photoelectric effect**, which puzzled physicists around 1900. Shine red light on a metal, however bright, and no electrons come out. Shine even a faint ultraviolet light and they do. One photon kicks out one electron, and only a photon with enough energy can break the electron free. It also explains why sunburn comes from ultraviolet light: one UV photon has enough energy to break a molecule in your skin, and no number of red photons can do that one at a time.
+</Fragment>
+<Fragment slot="l2">
+<KeyEq title="Photon energy">
+$$
+\term{Eph}{E} = \term{h}{h}\,\term{f}{f} = \frac{\term{h}{h}\,\term{c}{c}}{\term{lambda}{\lambda}}
+$$
+<Fragment slot="where"><span data-term="h">h</span> is Planck's constant <C k="h" />. <span data-term="f">f</span> is the frequency and <span data-term="lambda">λ</span> the wavelength. A handy form: $E = 1240\ \text{eV}/(\lambda\ \text{in nm})$, where 1 eV $= 1.602\times10^{-19}$ J is the energy an electron gains falling through 1 volt.</Fragment>
+</KeyEq>
+
+A green photon (550 nm) carries 2.25 eV. Chemical bonds are a few eV, which is why visible and ultraviolet light drive chemistry (and vision, and photosynthesis) while radio waves, at a millionth of an eV per photon, do not. A photon also carries momentum $p = E/c = h/\lambda$. Starlight pushes on dust grains, and in the most massive stars that radiation pressure competes with gravity.
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="Photon energy and momentum">
+$$
+\term{Eph}{E} = \term{h}{h}\term{f}{f} = \term{hbar}{\hbar}\,\omega, \qquad \term{p}{p} = \frac{\term{h}{h}}{\term{lambda}{\lambda}} = \term{hbar}{\hbar}\,k
+$$
+<Fragment slot="where"><span data-term="hbar">ħ</span> $= h/2\pi$ pairs naturally with the angular frequency $\omega$ and the wavenumber $k$. A photon is massless, so $E = pc$ exactly, consistent with $E^2 = p^2c^2 + m^2c^4$ ([Chapter 17](/ch/relativity/)).</Fragment>
+</KeyEq>
+
+Quantising each mode of the electromagnetic field as a harmonic oscillator with energies $(n + \tfrac12)\hbar\omega$ and applying Bose–Einstein statistics (below) gives Planck's law directly. The photon number density of a blackbody is $n_\gamma \approx 2.03\times10^{7}\,T^3$ m⁻³ (T in K), so the 2.725 K microwave background holds 411 photons per cm³ ([Chapter 27](/ch/cmb/)).
+</Fragment>
+</Tiers>
+
+Light of wavelength <Var name="lamnm" value={550} min={0.001} max={1e9} log /> nm is made of photons of <Out name="Ephot" /> each. Try 0.1 nm (a medical X-ray), 121.6 nm (hydrogen's Lyman-α line) and 2.1×10⁸ nm (the 21 cm radio line of hydrogen).
+
+<Sim name="primer-quantum-photon" minHeight={440}>
+**One photon, across the whole spectrum.** Energy per photon against wavelength, both on logarithmic scales, is a straight line: ten times the wavelength, one tenth of the energy. Drag across the plot to choose a wavelength. The horizontal lines mark useful energy scales: the thermal energy $k_BT$ at room temperature, a chemical bond, the energy to ionise hydrogen, and the rest energy of an electron. Notice how many photons a 1 W source must emit each second: about $3\times10^{18}$ for visible light, and $10^{24}$ for a radio transmitter.
+</Sim>
+
+## Particles are waves too
+
+In 1924 Louis de Broglie turned the photon idea around in his PhD thesis. If waves can behave like particles, perhaps particles behave like waves, with a wavelength set by their momentum. Three years later, electrons fired at a nickel crystal (Davisson and Germer, 1927) produced exactly the diffraction pattern that waves of de Broglie's wavelength would.
+
+<Aside>**Wave or particle?** Both descriptions are models of one thing. Fire electrons one at a time through two slits and each lands as a single dot. After thousands of them, the dots build up an interference pattern. The wave says where the particle is likely to land; the particle is what gets detected.</Aside>
+
+<Tiers>
+<Fragment slot="l1">
+Every moving particle has a wavelength, and the faster and heavier it is, the shorter the wavelength. For a thrown ball the wavelength is absurdly tiny, far smaller than an atomic nucleus, so its wave nature never shows. For an electron in an atom the wavelength is about the size of the atom itself, and the wave nature is everything.
+
+A consequence is the **uncertainty principle**. A wave squeezed into a small region must be a jumble of many wavelengths, as the Fourier section of [Appendix A8](/ch/primer-waves/) showed. So a particle confined to a small space must have a wide spread of momenta, and on average a lot of motion. The tighter you squeeze something, the more it jiggles. That jiggling is what keeps atoms from collapsing, and what holds up white dwarfs and neutron stars.
+</Fragment>
+<Fragment slot="l2">
+<KeyEq title="The de Broglie wavelength">
+$$
+\term{lamdb}{\lambda} = \frac{\term{h}{h}}{\term{p}{p}}
+$$
+<Fragment slot="where"><span data-term="p">p</span> $= mv$ is the momentum. For an electron with kinetic energy $K$, $\lambda = 1.23\ \text{nm}/\sqrt{K\ \text{in eV}}$. A 1000 kg car at 30 m/s has $\lambda \approx 2\times10^{-38}$ m.</Fragment>
+</KeyEq>
+
+An electron with <Var name="Ke" value={10} min={0.01} max={100000} log /> eV of kinetic energy has a wavelength of <Out name="ldb" />. Electron microscopes use electrons of tens of keV, whose wavelengths are thousands of times shorter than those of visible light.
+
+The **uncertainty principle** follows from the wave picture: $\Delta x\,\Delta p \ge \hbar/2$, where $\hbar = h/2\pi$. It is not a statement about clumsy measurement. A wave packet of width $\Delta x$ simply *contains* a spread of wavelengths, and so a spread of momenta, of at least $\hbar/2\Delta x$.
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="Heisenberg uncertainty">
+$$
+\term{Dx}{\Delta x}\,\term{Dp}{\Delta p} \ge \frac{\term{hbar}{\hbar}}{2}
+$$
+<Fragment slot="where">With $p = \hbar k$, this is exactly the Fourier bandwidth theorem $\Delta x\,\Delta k \ge 1/2$ for rms widths, saturated by a Gaussian wave packet. The energy–time version $\Delta E\,\Delta t \gtrsim \hbar/2$ is the statement that a state lasting $\Delta t$ has a frequency spread $\Delta f \gtrsim 1/4\pi\Delta t$: short-lived excited states have broadened spectral lines ([Chapter 5](/ch/spectra/)).</Fragment>
+</KeyEq>
+
+An electron with kinetic energy <Var name="Ke" value={10} min={0.01} max={100000} log /> eV has a de Broglie wavelength $h/\sqrt{2m_eK}$ of <Out name="ldb" />. In statistical mechanics the *thermal* de Broglie wavelength $\lambda_\text{th} = h/\sqrt{2\pi m k_BT}$ sets when quantum effects matter in a gas: when $n\lambda_\text{th}^3 \gtrsim 1$ the wave packets overlap, and the gas becomes degenerate ([Chapter 16](/ch/stellar-death/)).
+</Fragment>
+</Tiers>
+
+<Fermi title="The size of a hydrogen atom, from uncertainty alone">
+Confine an electron within a radius $r$ of a proton. Uncertainty gives it momentum $p \sim \hbar/r$ and kinetic energy $\hbar^2/2m_e r^2$, which *rises* as $r$ shrinks. Its electric potential energy, $-e^2/4\pi\varepsilon_0 r$, *falls*. The total energy is lowest where the two balance:
+
+$$
+r = \frac{4\pi\varepsilon_0\hbar^2}{m_e e^2} = 5.3\times10^{-11}\ \text{m}, \qquad E = -\frac{m_e e^4}{2(4\pi\varepsilon_0)^2\hbar^2} = -13.6\ \text{eV}.
+$$
+
+This is exactly the Bohr radius and hydrogen's true ground-state energy (the precise agreement is partly luck, but the estimate is always the right size). Classically the electron would spiral in and radiate its energy away in about $10^{-11}$ s. Quantum mechanics forbids it: squeezing the electron closer costs more kinetic energy than it gains. The same argument, applied to $10^{57}$ electrons, gives the size of a white dwarf ([Chapter 16](/ch/stellar-death/)).
+</Fermi>
+
+## Energy levels: why atoms have spectra
+
+A wave confined to a region can only take certain shapes. A guitar string pinned at both ends vibrates at its fundamental and at whole-number multiples of it, and nothing in between. The same happens to a confined electron. Its wave must fit its container, so only certain wavelengths, and therefore only certain energies, are allowed. **Quantised energy levels are standing waves.**
+
+### The particle in a box
+
+The simplest case is a particle trapped between two impenetrable walls a distance $L$ apart.
+
+<Tiers>
+<Fragment slot="l1">
+The electron's wave must be zero at both walls, like a guitar string. So a whole number of half-wavelengths must fit across the box: one half-wavelength for the lowest state, two for the next, three for the next. A shorter wavelength means more momentum and more energy, so the energy climbs quickly: the second level has four times the energy of the first, the third nine times.
+
+Two surprises follow. The particle can **never be at rest**: even the lowest state has some energy, the price of being confined. And a **smaller box means higher energies**. An electron in a box the size of a molecule has energies of about an electronvolt, the energy of visible light. A proton in a box the size of an atomic nucleus has energies a million times larger, which is why nuclear reactions release millions of times more energy than chemical ones.
+</Fragment>
+<Fragment slot="l2">
+Fitting $n$ half-wavelengths into the box gives $\lambda_n = 2L/n$. With $p = h/\lambda$ and kinetic energy $p^2/2m$:
+
+<KeyEq title="Particle in a box">
+$$
+\term{En}{E_n} = \frac{\term{n}{n}^2\,\term{h}{h}^2}{8\,\term{m}{m}\,\term{L}{L}^2}, \qquad n = 1, 2, 3, \dots
+$$
+<Fragment slot="where"><span data-term="n">n</span> counts the half-wavelengths across the box. <span data-term="m">m</span> is the particle's mass and <span data-term="L">L</span> the width of the box. For an electron in a 1 nm box, $E_1 = 0.376$ eV. For a proton in a 5 fm box, the size of a nucleus, $E_1 \approx 8$ MeV.</Fragment>
+</KeyEq>
+
+When the particle drops from level $n$ to a lower level, it emits a photon carrying the energy difference, $hf = E_n - E_{n-1}$. Because the levels are discrete, so are the photon energies: a **line spectrum**.
+</Fragment>
+<Fragment slot="l3">
+The wave nature is made precise by the **Schrödinger equation**. For a particle of mass $m$ in a potential $V(x)$:
+
+<KeyEq title="The Schrödinger equation">
+$$
+i\term{hbar}{\hbar}\,\frac{\partial \term{psi}{\psi}}{\partial \term{t}{t}} = -\frac{\term{hbar}{\hbar}^2}{2\term{m}{m}}\frac{\partial^2 \term{psi}{\psi}}{\partial \term{x}{x}^2} + \term{V}{V}(\term{x}{x})\,\term{psi}{\psi}
+$$
+<Fragment slot="where"><span data-term="psi">ψ(x, t)</span> is the complex wavefunction; $|\psi|^2\,dx$ is the probability of finding the particle between $x$ and $x + dx$. The first term on the right is kinetic energy, $p^2/2m$ with $p \to -i\hbar\,\partial_x$. The equation is linear, so superpositions of solutions are solutions.</Fragment>
+</KeyEq>
+
+States of definite energy separate as $\psi = \phi(x)e^{-iEt/\hbar}$, with $-\tfrac{\hbar^2}{2m}\phi'' + V\phi = E\phi$. In a box ($V = 0$ inside, $\infty$ outside) with $\phi(0) = \phi(L) = 0$, the solutions are $\phi_n = \sqrt{2/L}\,\sin(n\pi x/L)$ with $E_n = n^2\pi^2\hbar^2/2mL^2 = n^2h^2/8mL^2$. The $n$-th state has $n - 1$ nodes. A stationary state's $|\psi|^2$ does not change in time. Only superpositions of different energies move, oscillating at the difference frequencies $(E_j - E_k)/h$, which are exactly the frequencies of the light the system can emit or absorb.
+</Fragment>
+</Tiers>
+
+<Predict question="An electron is trapped in a box. You halve the box's width. What happens to the energy of its lowest state?" choices={['It halves', 'It doubles', 'It quadruples']} answer={2}>
+It **quadruples**. Half the width means half the wavelength, twice the momentum, and four times the kinetic energy: $E_1 \propto 1/L^2$. Confinement is expensive, and the price rises steeply as the space shrinks. This scaling is the heart of degeneracy pressure. Compress a white dwarf and the energy of its electrons rises, so they push back ([Chapter 16](/ch/stellar-death/)).
+</Predict>
+
+<Sim name="primer-quantum-box" minHeight={440}>
+**Standing waves in a box.** Each wavefunction is drawn at the height of its energy. The shaded curve for the selected level is $|\psi|^2$, the probability of finding the particle at each place. Level $n$ has $n - 1$ nodes, places where the particle is *never* found. Shrink the box and watch the energies shoot up as $1/L^2$. Then switch to *Superposition*: a single energy state never moves, but a mixture of two sloshes back and forth at a rate set by the energy difference. That is what an atom emitting light looks like.
+</Sim>
+
+### Hydrogen
+
+A real atom is a box with soft walls: the electric attraction of the nucleus. Solving the Schrödinger equation for hydrogen gives levels that crowd together as they approach zero energy, the point at which the electron escapes.
+
+<Tiers>
+<Fragment slot="l1">
+Hydrogen's energy levels are like a ladder with rungs that get closer together near the top. When an electron jumps down between two rungs it emits a photon with exactly the energy of the gap. Each gap gives one colour, so hydrogen glows at a set of exact wavelengths, the same in a laboratory as in a galaxy 10 billion light-years away. The brightest visible one, from the third rung down to the second, is the red **Hα** line at 656 nm that colours glowing nebulae pink.
+</Fragment>
+<Fragment slot="l2">
+<KeyEq title="Hydrogen energy levels">
+$$
+\term{En}{E_n} = -\frac{\term{Ry}{13.6\ \text{eV}}}{\term{n}{n}^2}
+$$
+<Fragment slot="where">The energy is negative because the electron is bound: 13.6 eV must be supplied to free it from the ground state ($n=1$). A photon emitted in a jump from $n_2$ to $n_1$ has energy $13.6\ \text{eV}\,(1/n_1^2 - 1/n_2^2)$. For $3 \to 2$ that is 1.89 eV, or 656 nm: Hα.</Fragment>
+</KeyEq>
+
+Jumps down to $n = 1$ give the ultraviolet *Lyman* series (Lyman-α at 121.6 nm), jumps to $n = 2$ give the visible *Balmer* series, and jumps to $n = 3$ give the infrared *Paschen* series. [Chapter 5](/ch/spectra/) shows how temperature decides which of these lines a star's spectrum shows.
+</Fragment>
+<Fragment slot="l3">
+In three dimensions, with $V = -e^2/4\pi\varepsilon_0 r$, the equation separates in spherical coordinates. The states are labelled by three quantum numbers: $n = 1, 2, \ldots$ (energy), $\ell = 0, \ldots, n-1$ (orbital angular momentum, $L^2 = \ell(\ell+1)\hbar^2$) and $m_\ell = -\ell, \ldots, \ell$ (its $z$-component). The energies depend only on $n$:
+
+$$
+\term{En}{E_n} = -\frac{m_e e^4}{2(4\pi\varepsilon_0)^2\hbar^2}\,\frac{1}{\term{n}{n}^2} = -\frac{\term{Ry}{13.6\ \text{eV}}}{\term{n}{n}^2},
+$$
+
+so level $n$ holds $n^2$ orbital states, or $2n^2$ counting spin. This degeneracy $g_n = 2n^2$ is the statistical weight in the Boltzmann and Saha equations ([Chapter 5](/ch/spectra/)). Small corrections (fine structure from relativity and spin–orbit coupling, and the hyperfine interaction of electron and proton spins) split the levels slightly. The hyperfine splitting of the ground state, $5.9\ \mu$eV, gives the 21 cm line that maps neutral hydrogen across the Galaxy ([Chapter 21](/ch/milky-way/)).
+</Fragment>
+</Tiers>
+
+<Aside>**Spin was a surprise.** In 1922 Otto Stern and Walther Gerlach sent silver atoms through a non-uniform magnet and saw the beam split cleanly in two, not smeared out. In 1925 two Leiden students, George Uhlenbeck and Samuel Goudsmit, proposed that the electron itself spins. Months earlier, Pauli had talked Ralph Kronig out of publishing the same idea.</Aside>
+
+## Spin and the Pauli exclusion principle
+
+Electrons have one more property with no classical counterpart: **spin**, an intrinsic angular momentum as if each electron were a tiny spinning magnet. Measured along any axis, an electron's spin comes out either "up" or "down", $\pm\hbar/2$, and nothing in between.
+
+Every particle is one of two kinds. **Fermions** (electrons, protons, neutrons, neutrinos: spin ½, 3/2, …) obey the **Pauli exclusion principle**: no two identical fermions can occupy the same quantum state. **Bosons** (photons, helium-4 atoms, the Higgs: spin 0, 1, 2, …) do the opposite and are happy, even eager, to pile into the same state.
+
+<Tiers>
+<Fragment slot="l1">
+Pauli exclusion is why chemistry exists. Each energy level of an atom can hold only two electrons, one spin up and one spin down. So an atom with many electrons must stack them up the ladder, and the arrangement of the outermost ones decides how the element behaves. Without exclusion, every electron would drop to the lowest level and all elements would be chemically alike.
+
+It is also why dense matter is stiff. Squeeze a lot of electrons into a small space and the low levels fill up. Every extra electron must go into a higher and higher level, so the gas pushes back, even at zero temperature. This **degeneracy pressure** holds up white dwarfs against gravity. For neutrons it holds up neutron stars.
+</Fragment>
+<Fragment slot="l2">
+Fill a box with $N$ electrons at low temperature. Each level holds at most two, so they occupy the lowest $N/2$ levels. The energy of the highest filled level is the **Fermi energy** $E_F$. With the box energies $E_n \propto n^2/L^2$, the top level sits at $n = N/2$, so $E_F \propto N^2/L^2 = (N/L)^2$ in one dimension. It depends on the *density* of electrons. In three dimensions,
+
+<KeyEq title="Fermi energy of an electron gas">
+$$
+\term{EF}{E_F} = \frac{\term{hbar}{\hbar}^2}{2\term{me}{m_e}}\left(3\pi^2\,\term{ne}{n_e}\right)^{2/3}
+$$
+<Fragment slot="where"><span data-term="ne">nₑ</span> is the number of electrons per cubic metre. In copper, with $n_e = 8.5\times10^{28}$ m⁻³, $E_F = 7$ eV, equivalent to a temperature of 80,000 K. That is why the conduction electrons in a metal are "degenerate" even at room temperature. In a white dwarf, $n_e \sim 10^{36}$ m⁻³ gives $E_F$ of a few tenths of an MeV, the equivalent of billions of kelvin, while the core is only about $10^7$ K.</Fragment>
+</KeyEq>
+</Fragment>
+<Fragment slot="l3">
+For identical particles the wavefunction must be symmetric (bosons) or antisymmetric (fermions) under exchange: $\psi(x_2, x_1) = \pm\psi(x_1, x_2)$. For fermions, putting both in the same single-particle state gives $\psi = \phi(x_1)\phi(x_2) - \phi(x_2)\phi(x_1) = 0$. That is Pauli exclusion. The spin–statistics theorem of relativistic quantum field theory ties the sign to the spin: half-integer spins are fermions, integer spins bosons.
+
+Counting states in a cube of side $L$ with periodic boundaries, each state occupies $(2\pi/L)^3$ of $k$-space, and each holds two electrons. Filling a sphere of radius $k_F$ with $N$ electrons gives $N = 2\cdot\tfrac{4}{3}\pi k_F^3 \cdot L^3/(2\pi)^3$, so $k_F = (3\pi^2 n_e)^{1/3}$ and
+
+$$
+\term{EF}{E_F} = \frac{\term{hbar}{\hbar}^2}{2\term{me}{m_e}}\left(3\pi^2\,\term{ne}{n_e}\right)^{2/3}.
+$$
+
+The pressure of this zero-temperature gas is $P = \tfrac25 n_e E_F \propto n_e^{5/3}$: the non-relativistic degeneracy equation of state. When $p_F \gtrsim m_ec$ the electrons become relativistic, $P \propto n_e^{4/3}$, and the pressure no longer stiffens fast enough to resist gravity. That is the origin of the Chandrasekhar limit ([Chapter 16](/ch/stellar-death/)).
+</Fragment>
+</Tiers>
+
+### Fermi–Dirac and Bose–Einstein statistics
+
+At a temperature above zero, particles are shaken out of the lowest states. [Appendix A7](/ch/primer-thermo/) showed that for classical particles the chance of a state of energy $E$ being occupied falls off as the Boltzmann factor $e^{-E/k_BT}$. Quantum particles follow a modified rule.
+
+<Tiers>
+<Fragment slot="l1">
+For fermions, the low states are completely full, the high states completely empty, and a narrow fuzzy band in between is partly filled. Heat widens the band. For bosons, particles crowd into the lowest state, and at low enough temperature a large fraction of them can sit in exactly the same state. This is a **Bose–Einstein condensate**, the state of matter behind superfluid helium. At high temperatures and low densities the two kinds behave the same, as ordinary classical gases.
+</Fragment>
+<Fragment slot="l2">
+<KeyEq title="Quantum occupation numbers">
+$$
+\term{nocc}{\bar n}(\term{E}{E}) = \frac{1}{e^{(\term{E}{E} - \term{mu}{\mu})/\term{kB}{k_B}\term{Temp}{T}} \pm 1}
+$$
+<Fragment slot="where">The **+** sign is for fermions (Fermi–Dirac) and the **−** sign for bosons (Bose–Einstein). <span data-term="nocc">n̄</span> is the average number of particles in one state of energy <span data-term="E">E</span>. <span data-term="mu">μ</span> is the chemical potential, fixed by how many particles there are. When $E - \mu \gg k_BT$ the ±1 hardly matters and both reduce to the Boltzmann factor $e^{-(E-\mu)/k_BT}$.</Fragment>
+</KeyEq>
+
+For fermions $\bar n$ can never exceed 1: that is Pauli exclusion. At $T = 0$ it is a sharp step, 1 below $\mu = E_F$ and 0 above. Photons are bosons whose number is not conserved, so for them $\mu = 0$. Multiply $\bar n = 1/(e^{hf/k_BT} - 1)$ by the number of light modes per unit frequency and you get the Planck spectrum of [Chapter 4](/ch/light/).
+</Fragment>
+<Fragment slot="l3">
+The same occupation law follows from the grand canonical ensemble. A single quantum state that can hold $N$ particles has grand partition function $\mathcal Z = \sum_N e^{-N(E-\mu)/k_BT}$, summed over $N \in \{0, 1\}$ for fermions and $N \in \{0, 1, 2, \ldots\}$ for bosons. Then $\bar n = k_BT\,\partial_\mu \ln\mathcal Z$:
+
+$$
+\term{nocc}{\bar n}(\term{E}{E}) = \frac{1}{e^{(\term{E}{E} - \term{mu}{\mu})/\term{kB}{k_B}\term{Temp}{T}} \pm 1}.
+$$
+
+Integrating over the density of states $g(E)\,dE$ gives number density, energy density and pressure. For bosons, μ must stay below the lowest energy, or $\bar n$ would be negative. When the density exceeds what the excited states can hold at that temperature, the surplus condenses into the ground state (Bose–Einstein condensation, first made in a dilute gas in 1995). In the early universe, both statistics matter: relativistic fermions contribute $\tfrac78$ as much energy density per degree of freedom as bosons, a factor that runs through [Chapter 26](/ch/big-bang/).
+</Fragment>
+</Tiers>
+
+<Sim name="primer-quantum-box" minHeight={440} params={{ mode: 'fill' }}>
+**Filling a Fermi sea.** The same box, now filled with particles. As fermions, each level takes one spin-up and one spin-down electron, so adding particles forces them ever higher: the Fermi level climbs. Raise the temperature and the sharp edge blurs into the Fermi–Dirac shape, with a few electrons promoted above the Fermi level and holes left below. Switch to *bosons* and they all pile into the ground state at low temperature. Compare the total energies: the gap between the two is the energy that exclusion forces the fermions to carry. Squeeze the box to see the Fermi energy rise as $1/L^2$.
+</Sim>
+
+## Tunnelling through walls
+
+A ball rolling towards a hill too high to climb bounces back, every time. A quantum particle usually does too, but not always. Its wavefunction does not stop dead at the wall. It leaks in, dying away exponentially, and if the wall is thin enough some of it emerges on the other side. The particle has a small but real chance of turning up beyond a barrier it could never cross classically.
+
+<Aside>**Tunnelling in your pocket.** Flash memory stores bits by tunnelling electrons through an insulating layer a few nanometres thick onto a floating gate. The same exponential sensitivity that governs fusion in the Sun governs the lifetime of the data on a USB stick.</Aside>
+
+<Tiers>
+<Fragment slot="l1">
+The chance of getting through depends *enormously* on how thick and how high the barrier is. Make the wall a little thicker and the chance falls not by a little but by a large factor. Double the thickness and a one-in-a-thousand chance becomes one in a million. Heavier particles tunnel far less than light ones.
+
+This is not an exotic curiosity. Nuclear fusion in the Sun depends on it. Protons in the core repel each other electrically, and at 15 million degrees a typical pair has about a thousandth of the energy needed to get close enough to fuse. They get through by tunnelling, rarely enough that the Sun burns steadily for 10 billion years instead of exploding ([Chapter 12](/ch/fusion/)). Radioactive alpha decay is tunnelling in the other direction: an alpha particle escaping from a nucleus.
+</Fragment>
+<Fragment slot="l2">
+Inside a barrier of height $V_0$ greater than the particle's energy $E$, the wavefunction decays as $e^{-\kappa x}$, with $\kappa = \sqrt{2m(V_0 - E)}/\hbar$. The probability goes as $|\psi|^2$, so it decays twice as fast. Through a barrier of width $a$:
+
+<KeyEq title="Tunnelling probability (thick barrier)">
+$$
+\term{Tr}{T} \approx 16\,\frac{\term{E}{E}}{\term{V}{V_0}}\left(1 - \frac{\term{E}{E}}{\term{V}{V_0}}\right) e^{-2\term{kappa}{\kappa}\term{a}{a}}, \qquad \term{kappa}{\kappa} = \frac{\sqrt{2\term{m}{m}(\term{V}{V_0} - \term{E}{E})}}{\term{hbar}{\hbar}}
+$$
+<Fragment slot="where"><span data-term="a">a</span> and <span data-term="kappa">κ</span> sit together in the exponent, so the transmission is exquisitely sensitive to both. An electron 2 eV short of the top of a barrier has $1/\kappa = 0.14$ nm. A proton, 1836 times heavier, has $1/\kappa$ 43 times shorter. The formula holds when $\kappa a \gg 1$.</Fragment>
+</KeyEq>
+
+The **scanning tunnelling microscope** exploits this sensitivity. A sharp tip hovers a fraction of a nanometre above a surface, and the tunnelling current drops about tenfold for every 0.1 nm of extra gap, enough to map individual atoms.
+</Fragment>
+<Fragment slot="l3">
+Solve the time-independent equation piecewise. Outside the barrier, $\psi = Ae^{ikx} + Be^{-ikx}$ with $k = \sqrt{2mE}/\hbar$. Inside, where $V_0 > E$, $\psi = Ce^{-\kappa x} + De^{\kappa x}$. Matching $\psi$ and $\psi'$ at both edges gives the exact result
+
+<KeyEq title="Rectangular barrier transmission">
+$$
+\term{Tr}{T} = \left[1 + \frac{\term{V}{V_0}^2\,\sinh^2(\term{kappa}{\kappa}\term{a}{a})}{4\term{E}{E}(\term{V}{V_0} - \term{E}{E})}\right]^{-1} \;\xrightarrow{\ \kappa a \gg 1\ }\; 16\frac{\term{E}{E}}{\term{V}{V_0}}\Big(1 - \frac{\term{E}{E}}{\term{V}{V_0}}\Big)e^{-2\term{kappa}{\kappa}\term{a}{a}}
+$$
+<Fragment slot="where">For $E > V_0$, replace $\sinh(\kappa a)$ by $\sin(qa)$ with $q = \sqrt{2m(E - V_0)}/\hbar$, and the reflection shows resonances: $T = 1$ exactly when a whole number of half-wavelengths fits inside the barrier.</Fragment>
+</KeyEq>
+
+For a barrier of any smooth shape, the WKB approximation gives $T \approx \exp\!\left(-2\int \kappa(x)\,dx\right)$ over the classically forbidden region. Applied to the Coulomb barrier between two nuclei, the integral gives the Gamow factor $e^{-\sqrt{E_G/E}}$, which with the Boltzmann tail creates the Gamow peak ([Chapter 12](/ch/fusion/)). George Gamow first used it in 1928 to explain alpha decay: half-lives ranging from $10^{-7}$ s to $10^{10}$ years come from alpha energies differing by only a factor of two.
+</Fragment>
+</Tiers>
+
+<Predict question="An electron has a 1 in 1000 chance of tunnelling through a thin barrier. You double the barrier's thickness. What is the chance now?" choices={['About 1 in 2000', 'About 1 in 4000', 'About 1 in a million']} answer={2}>
+About **one in a million**. The transmission goes as $e^{-2\kappa a}$, so doubling $a$ *squares* the exponential factor: $(10^{-3})^2 = 10^{-6}$ (up to the modest prefactor). Tunnelling is exponentially sensitive to width, height and mass, which is why fusion rates in stars depend so steeply on temperature, and why the scanning tunnelling microscope can see atoms. Check it with the slider below: the bottom plot is a straight line on a log scale.
+</Predict>
+
+<Sim name="primer-quantum-tunnel" minHeight={480}>
+**A wave meets a wall.** Top: the barrier (grey), the particle's energy (dashed), $|\psi|$ in orange and the oscillating real part of $\psi$ in blue. The incoming wave interferes with its reflection on the left, decays exponentially inside the barrier, and emerges on the right as a smaller travelling wave with constant $|\psi|$. Bottom: the exact transmission probability against barrier width (solid), with the thick-barrier approximation (dashed), which is a straight line on this log scale. Switch to a *proton* and watch the transmission collapse. Raise $E$ above $V_0$: the particle mostly passes, but some of it still reflects, which a classical ball never does.
+</Sim>
+
+<Hood title="solving the barrier exactly">
+The figure solves the time-independent Schrödinger equation exactly, with no grid and no time-stepping. In each region of constant potential, $\psi = Ce^{ikx} + De^{-ikx}$ with a complex wavenumber $k = \sqrt{2m(E - V)}/\hbar$, which is purely imaginary, $k = i\kappa$, inside the barrier. The code starts on the far right with a pure outgoing wave ($C = 1$, $D = 0$) and walks leftwards, matching $\psi$ and $\psi'$ at each interface:
+
+```ts
+function matchLeft(x0: number, kL: Cx, kR: Cx, C: Cx, D: Cx): [Cx, Cx] {
+  const eR = cexp(cmul(I, cmul(kR, [x0, 0]))), eRm = cdiv([1, 0], eR);
+  const psi = cadd(cmul(C, eR), cmul(D, eRm));
+  const dpsi = cmul(cmul(I, kR), csub(cmul(C, eR), cmul(D, eRm)));
+  const q = cdiv(dpsi, cmul(I, kL)); // ψ'/(i k_L)
+  const eL = cexp(cmul(I, cmul(kL, [x0, 0]))), eLm = cdiv([1, 0], eL);
+  const CL = cmul(cmul(cadd(psi, q), [0.5, 0]), eLm);
+  const DL = cmul(cmul(csub(psi, q), [0.5, 0]), eL);
+  return [CL, DL];
+}
+```
+
+Dividing everything by the incident amplitude found on the left gives the transmitted amplitude $t$, and $T = |t|^2$. This is the **transfer-matrix method**. For any piecewise-constant potential it is one $2\times2$ complex matrix per interface, so an arbitrary smooth barrier can be approximated by many thin slabs.
+
+The weak point is precision. Walking *into* a thick barrier from the transmitted side, the coefficients grow as $e^{\kappa a}$. A proton facing a 3 nm barrier has $\kappa a \approx 900$, and $e^{900}$ overflows double precision (maximum about $10^{308}$). The sim therefore takes $T$ from the closed-form expression, which underflows gracefully to zero, and cuts the displayed wavefunction off where $\kappa x = 200$, far beyond where it is visibly zero. Production codes avoid the problem with scattering matrices or by propagating ratios such as $\psi'/\psi$ instead of raw amplitudes.
+</Hood>
+
+## Where these ideas come back
+
+Quantum mechanics sounds remote from astronomy, but almost every observable in the course passes through it:
+
+- **[Chapter 4](/ch/light/)**: Planck's quantised oscillators and Bose–Einstein photons give the blackbody spectrum.
+- **[Chapter 5](/ch/spectra/)**: discrete energy levels make spectral lines, and the level degeneracies $2n^2$ enter the Boltzmann and Saha equations.
+- **[Chapter 12](/ch/fusion/)**: tunnelling through the Coulomb barrier lets stars fuse hydrogen at "only" 15 million K.
+- **[Chapter 16](/ch/stellar-death/)**: Pauli exclusion gives degeneracy pressure, white dwarfs and the Chandrasekhar limit.
+- **[Chapter 18](/ch/neutron-stars/)**: when electrons are squeezed onto protons, neutron degeneracy (and the strong force) holds up a star about 25 km across.
+- **[Chapter 26](/ch/big-bang/)**: Fermi–Dirac and Bose–Einstein statistics describe the particle soup of the early universe.
+
+The quantum ideas here are the minimum needed to read those chapters. Behind them lies a much stranger and richer theory, but the essentials are a short list: light comes in photons, matter behaves as waves, confined waves have discrete energies, identical fermions exclude each other, and walls are never quite solid.

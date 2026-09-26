@@ -1,0 +1,385 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: primer-waves
+lede: Almost everything astronomers know arrives as a wave. This primer covers what waves are, how they add up, how motion shifts their pitch, and how Fourier's trick turns any signal into a spectrum.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  A: ['Amplitude', 'The height of a crest above the undisturbed level. The energy a wave carries grows as the amplitude squared.'],
+  lambda: ['Wavelength', 'Distance from one crest to the next. For light it sets the colour; for sound, the pitch.'],
+  f: ['Frequency', 'Crests passing a fixed point per second, in hertz (Hz). It is set by the source and does not change when the wave enters a new medium.'],
+  vw: ['Wave speed', 'How fast a crest travels. Fixed by the medium (air, water, a string), not by the source: about 343 m/s for sound in air, c for light in vacuum.'],
+  Tp: ['Period', 'Time between two crests passing a point: the reciprocal of the frequency.'],
+  k: ['Wavenumber', 'Radians of phase per metre, 2π/λ. The spatial twin of ω.'],
+  omega: ['Angular frequency', 'Radians of phase per second, 2πf. The temporal twin of k.'],
+  y: ['Displacement', 'How far the medium is pushed from rest at position x and time t: the height of the water, the pressure excess of the air, or the electric field of light.'],
+  x: ['Position', 'Where along the wave we look.'],
+  t: ['Time', 'When we look.'],
+  phi: ['Phase offset', 'Where in its cycle the wave starts. Two waves with the same f but different φ can reinforce or cancel.'],
+  d: ['Source separation', 'Distance between two coherent sources (slits, antennas, mirrors). The bigger d is compared with λ, the finer the fringes.'],
+  theta: ['Angle from straight ahead', 'Direction from the pair of sources to the point on the screen.'],
+  m: ['Fringe order', 'An integer: the path difference is exactly m whole wavelengths, so crests meet crests.'],
+  vs: ['Source speed', 'How fast the emitter moves through the medium (for sound) or relative to the observer (for light). Positive means moving away.'],
+  lamobs: ['Observed wavelength', 'What the receiver measures after the motion has stretched or squeezed the waves.'],
+  lamem: ['Emitted wavelength', 'What the source emits in its own rest frame, e.g. 656.28 nm for hydrogen Hα.'],
+  z: ['Redshift', 'Fractional stretch of the wavelength, Δλ/λ. Positive: receding (redder). Negative: approaching (bluer).'],
+  beta: ['Speed as a fraction of c', 'v/c. For stars in the Galaxy it is about 10⁻⁴; for jets from black holes it can exceed 0.99.'],
+  Evec: ['Electric field', 'Force per unit charge. In a light wave it oscillates at right angles to the direction of travel.'],
+  Bvec: ['Magnetic field', 'Oscillates in step with E, at right angles to both E and the direction of travel. In vacuum B = E/c.'],
+  mu0: ['Vacuum permeability', 'Sets the strength of magnetic forces between currents. Together with ε₀ it fixes the speed of light.', 'μ₀ ≈ 1.2566 × 10⁻⁶ N A⁻²'],
+  xt: ['Signal in time', 'The thing you record: a voltage, a brightness, a strain, sampled at a sequence of times.'],
+  Xf: ['Fourier transform', 'How much of each frequency the signal contains, with its phase. A complex number for every f.'],
+  Pf: ['Power spectrum', 'The squared magnitude of the Fourier transform. It throws away phase and keeps how much variance sits at each frequency.'],
+  an: ['Fourier coefficient', 'Amplitude of the n-th harmonic in a periodic signal.'],
+  n: ['Harmonic number', 'The n-th harmonic oscillates n times per period of the fundamental.'],
+  f0: ['Fundamental frequency', 'The repetition rate of a periodic signal; every other component is a whole-number multiple of it.'],
+  fs: ['Sampling rate', 'Samples recorded per second. Everything above half of it is lost or disguised.'],
+  fN: ['Nyquist frequency', 'Half the sampling rate: the highest frequency a sampled record can represent without ambiguity.'],
+  N: ['Number of samples', 'Length of the record. The FFT costs about N log₂N operations instead of N².'],
+  Dt: ['Duration of the signal', 'How long the wave train lasts. A short burst cannot have a sharp frequency.'],
+  Df: ['Spread in frequency', 'Width of the spectrum. Its product with the duration can never be smaller than about 1.'],
+}} />
+
+## What a wave is
+
+Drop a pebble in a pond. The water does not travel outward; each bit of it just bobs up and down. What travels is the *pattern*, and with it energy. That is the whole idea of a wave: **a disturbance that moves while the medium stays put**. Sound is a travelling pattern of pressure in air. A seismic wave is a pattern of strain in rock. Light is a travelling pattern of electric and magnetic fields, and it needs no medium at all. Gravitational waves ([Chapter 20](/ch/gravitational-waves/)) are a travelling pattern in the geometry of space itself.
+
+Nearly all astronomy is the study of waves that have crossed space to reach us. This primer collects the wave ideas used across the course: what sets a wave's speed and colour, how waves add, how motion shifts them, and how any signal can be pulled apart into pure tones. Readers who want the photon side of light should also read [Appendix A9](/ch/primer-quantum/).
+
+### Wavelength, frequency and speed
+
+<Tiers>
+<Fragment slot="l1">
+A steady wave has three numbers. The **wavelength** is the distance from one crest to the next. The **frequency** is how many crests pass you each second. The **speed** is how fast a crest moves. They are tied together by a simple rule: in one second, *frequency* crests go by, each one wavelength apart, so the pattern has moved *frequency × wavelength*. That is the speed.
+
+For sound in air the speed is fixed at about 343 m/s, so a high note (high frequency) has a short wavelength. For light in vacuum the speed is always the same, 300,000 km/s, so blue light (short wavelength) has a higher frequency than red.
+
+The **amplitude** is the height of the crests. It sets how loud or how bright the wave is: double the height and the wave carries four times the energy.
+</Fragment>
+<Fragment slot="l2">
+A steady wave is described by its <span data-term="A">amplitude</span> $A$, <span data-term="lambda">wavelength</span> $\lambda$ and <span data-term="f">frequency</span> $f$. The <span data-term="Tp">period</span> is $T = 1/f$. In one period a crest moves one wavelength, which gives the most-used wave formula in the course:
+
+<KeyEq title="The wave relation">
+$$
+\term{vw}{v} = \term{f}{f}\,\term{lambda}{\lambda}
+$$
+<Fragment slot="where"><span data-term="vw">v</span> is the wave speed, set by the medium. <span data-term="f">f</span> is the frequency in hertz (1 Hz = 1 per second) and <span data-term="lambda">λ</span> the wavelength. For light in vacuum $v = c$ <C k="c" />, so green light at $\lambda = 550$ nm has $f = c/\lambda = 5.45\times10^{14}$ Hz.</Fragment>
+</KeyEq>
+
+A snapshot of a sine wave moving to the right is
+
+$$
+\term{y}{y} = \term{A}{A}\sin\!\left(2\pi\left(\frac{\term{x}{x}}{\term{lambda}{\lambda}} - \frac{\term{t}{t}}{\term{Tp}{T}}\right)\right).
+$$
+
+Every $\lambda$ in space or every $T$ in time the sine goes through one full cycle (see [Appendix A2](/ch/primer-functions/) for sines and radians). The energy a wave carries goes as $A^2$: double the amplitude and you carry four times the energy.
+</Fragment>
+<Fragment slot="l3">
+Write the wave with the <span data-term="k">wavenumber</span> $k = 2\pi/\lambda$ and the <span data-term="omega">angular frequency</span> $\omega = 2\pi f$:
+
+$$
+\term{y}{y}(\term{x}{x},\term{t}{t}) = \term{A}{A}\cos(\term{k}{k}\term{x}{x} - \term{omega}{\omega}\term{t}{t} + \term{phi}{\phi}).
+$$
+
+A crest (constant phase $kx - \omega t$) moves at the *phase velocity* $v = \omega/k = f\lambda$. The relation $\omega(k)$ is the **dispersion relation**. If it is linear, every wavelength travels at the same speed and a pulse keeps its shape. If not (radio waves in the ionised interstellar medium, water waves, sound in stellar interiors), a pulse spreads out, and energy travels at the *group velocity* $d\omega/dk$. Pulsar astronomers exploit exactly this: low radio frequencies arrive later than high ones, and the delay measures the column of free electrons along the line of sight ([Chapter 18](/ch/neutron-stars/)).
+
+<KeyEq title="The wave equation">
+$$
+\frac{\partial^2 \term{y}{y}}{\partial \term{t}{t}^2} = \term{vw}{v}^2\,\nabla^2 \term{y}{y}
+$$
+<Fragment slot="where">Any disturbance obeying this equation travels at speed <span data-term="vw">v</span> without changing shape. In one dimension the general solution is $y = F(x - vt) + G(x + vt)$ for *any* functions $F$ and $G$: one pattern moving right, one moving left. The sine waves above are just the simplest choice.</Fragment>
+</KeyEq>
+
+It turns up everywhere because it is what you get whenever a restoring force is proportional to a displacement (a stretched string, compressed gas, coupled fields) and there is no friction. Being **linear** in $y$ is its most important property: if $y_1$ and $y_2$ are solutions, so is $y_1 + y_2$. That is superposition, the subject of the next section.
+</Fragment>
+</Tiers>
+
+<Aside>**Why "wavenumber"?** Spectroscopists often quote $1/\lambda$ in cm⁻¹ and call it the wavenumber: the number of waves per centimetre. Physicists usually mean $2\pi/\lambda$. Watch the factor of $2\pi$ when reading papers.</Aside>
+
+## Superposition and interference
+
+When two waves meet in a linear medium, the disturbances simply **add**. Crest plus crest gives a bigger crest. Crest plus trough gives nothing. Afterwards each wave carries on as if the other had never been there. This is called *superposition*, and it is behind interference fringes, beats, standing waves, the resolving power of telescopes and every interferometer ever built.
+
+<Tiers>
+<Fragment slot="l1">
+Put two sources side by side, emitting in step. At some places the crests from both always arrive together and the water heaves up and down twice as hard. At other places a crest from one always meets a trough from the other, and the water stays almost flat. These quiet lines fan out from the sources like the spokes of a wheel. Their spacing depends on only one thing: how far apart the sources are, *measured in wavelengths*.
+</Fragment>
+<Fragment slot="l2">
+The waves reach a given point by different routes. If the difference in path length is a whole number of wavelengths, crest meets crest (constructive interference). If it is a whole number plus a half, crest meets trough (destructive interference). Far from two sources a distance $d$ apart, the path difference in direction $\theta$ is $d\sin\theta$, so the bright directions are
+
+<KeyEq title="Two-source interference">
+$$
+\term{d}{d}\,\sin\term{theta}{\theta} = \term{m}{m}\,\term{lambda}{\lambda}, \qquad m = 0, \pm1, \pm2, \dots
+$$
+<Fragment slot="where"><span data-term="d">d</span> is the separation of the two sources and <span data-term="theta">θ</span> the direction measured from straight ahead. <span data-term="m">m</span> counts whole wavelengths of path difference. Bigger $d/\lambda$ gives more, finer fringes. This is the same geometry that sets the angular resolution of a telescope of diameter $D$: about $\lambda/D$ radians.</Fragment>
+</KeyEq>
+</Fragment>
+<Fragment slot="l3">
+Represent each wave as the real part of a complex *phasor*, $y_j = \mathrm{Re}\,[A_j e^{i(k r_j - \omega t + \phi_j)}]$. Adding phasors is adding arrows in the complex plane. The time-averaged intensity (the energy flux, proportional to $\langle y^2\rangle$) of two waves of equal frequency is
+
+$$
+I = I_1 + I_2 + 2\sqrt{I_1 I_2}\,\cos\Delta, \qquad \Delta = k(r_1 - r_2) + \phi_1 - \phi_2 .
+$$
+
+The cross term is the interference. It averages to zero if the phase difference wanders randomly (*incoherent* sources, like two light bulbs), and survives only when the sources are *coherent*. With equal intensities, $I$ swings between $0$ and $4I_1$: interference redistributes energy in space but never creates or destroys it. Far away ($r \gg d$), $r_1 - r_2 \approx d\sin\theta$, giving bright fringes at $d\sin\theta = m\lambda$.
+
+For two waves of slightly different frequencies at one place, the same algebra gives **beats**: $\cos\omega_1 t + \cos\omega_2 t = 2\cos\!\big(\tfrac{\omega_1-\omega_2}{2}t\big)\cos\!\big(\tfrac{\omega_1+\omega_2}{2}t\big)$, a fast oscillation whose loudness pulses at the difference frequency $|f_1 - f_2|$.
+</Fragment>
+</Tiers>
+
+<Predict question="Two sources emit in step, 6 cm apart, with 2.5 cm waves. You slowly shift the second source's phase by half a cycle (180°). What happens to the fringe pattern?" choices={['Nothing: the geometry has not changed', 'The fringes slide sideways; the centre line becomes dark', 'The fringes vanish completely']} answer={1}>
+The positions of bright and dark lines depend on the *total* phase difference: path difference plus the sources' own offset. Shifting one source by 180° turns every bright line into a dark one and vice versa, so the straight-ahead direction, where the paths are equal, becomes a quiet line. Radio astronomers use exactly this trick. By adding controlled delays to each antenna's signal, a phased array "steers" its bright fringe across the sky without moving any metal.
+</Predict>
+
+<Sim name="primer-waves-interference" minHeight={420}>
+**A ripple tank with two sources.** Orange is a crest and blue a trough. The strip on the right is the brightness on a distant screen. Switch to *time-averaged intensity* to see the still, fan-shaped quiet lines where crest always meets trough. Increase the separation, or shorten the wavelength, and the fringes crowd together. Turn off the second source and the fringes vanish: interference needs two paths.
+</Sim>
+
+<Aside>**Interferometers everywhere.** LIGO measures the interference of two laser beams to detect length changes of 10⁻¹⁹ m ([Chapter 20](/ch/gravitational-waves/)). The Event Horizon Telescope interferes radio signals recorded on different continents, with Earth-sized "separations", to resolve a black hole's shadow ([Chapter 19](/ch/black-holes/)).</Aside>
+
+## Light is an electromagnetic wave
+
+In the 1860s James Clerk Maxwell wrote down four equations summarising everything known about electricity and magnetism. Playing with them, he found that they predicted waves of electric and magnetic field, and calculated their speed from two numbers measured on laboratory benches with capacitors and coils. The answer came out at the measured speed of light. "We can scarcely avoid the inference," he wrote, that light *is* such a wave.
+
+<Tiers>
+<Fragment slot="l1">
+A light wave is a ripple in the electric and magnetic fields: the invisible fields that push on charges and on compass needles. A changing electric field creates a magnetic field, and a changing magnetic field creates an electric field. So the two keep regenerating each other and the ripple travels on through empty space, at the speed of light, with no water or air to carry it.
+
+Radio waves, microwaves, infrared, visible light, ultraviolet, X-rays and gamma rays are all the same thing, differing only in wavelength: from kilometres for radio to less than the size of an atomic nucleus for gamma rays. Our eyes see a tiny slice, from about 380 to 750 nanometres.
+</Fragment>
+<Fragment slot="l2">
+A light wave consists of an electric field $E$ and a magnetic field $B$, oscillating at right angles to each other and to the direction of travel. In vacuum every electromagnetic wave travels at the same speed,
+
+$$
+c = \frac{1}{\sqrt{\mu_0\,\varepsilon_0}} = 2.998\times10^{8}\ \text{m/s},
+$$
+
+where $\mu_0$ and $\varepsilon_0$ measure the strength of magnetic and electric forces. So $c = f\lambda$ holds across the whole *electromagnetic spectrum*: radio (λ from mm to km), infrared (1 mm to 750 nm), visible (750 to 380 nm), ultraviolet, X-rays and gamma rays (below about 0.01 nm).
+
+The intensity (power per square metre) grows with the square of the field amplitude. For sunlight at Earth's distance, $1361$ W/m², the peak electric field is about $1000$ V/m.
+</Fragment>
+<Fragment slot="l3">
+In vacuum, with no charges or currents, Maxwell's equations are $\nabla\cdot\vec E = 0$, $\nabla\cdot\vec B = 0$, $\nabla\times\vec E = -\partial_t\vec B$ and $\nabla\times\vec B = \mu_0\varepsilon_0\,\partial_t\vec E$. Take the curl of the third equation, use $\nabla\times(\nabla\times\vec E) = \nabla(\nabla\cdot\vec E) - \nabla^2\vec E = -\nabla^2\vec E$ and substitute the fourth:
+
+<KeyEq title="Electromagnetic waves from Maxwell">
+$$
+\nabla^2 \term{Evec}{\vec E} = \term{mu0}{\mu_0}\,\term{eps0}{\varepsilon_0}\,\frac{\partial^2 \term{Evec}{\vec E}}{\partial \term{t}{t}^2}, \qquad \term{c}{c} = \frac{1}{\sqrt{\term{mu0}{\mu_0}\term{eps0}{\varepsilon_0}}}
+$$
+<Fragment slot="where">This is the wave equation for every component of <span data-term="Evec">E</span> (and likewise <span data-term="Bvec">B</span>), with speed $1/\sqrt{\mu_0\varepsilon_0}$. The divergence equations force the fields to be *transverse*: for a plane wave $\vec E \perp \vec B \perp \hat k$, with $|\vec B| = |\vec E|/c$.</Fragment>
+</KeyEq>
+
+The energy flux is the Poynting vector $\vec S = \vec E\times\vec B/\mu_0$, with time average $\langle S\rangle = \tfrac12 c\,\varepsilon_0 E_0^2$. The direction in which $\vec E$ oscillates is the **polarisation**, which carries information about scattering and magnetic fields: CMB polarisation is a major topic in [Chapter 27](/ch/cmb/). The same equations in matter give a refractive index $n = c/v$ and, in an ionised gas, the plasma dispersion used for pulsars.
+</Fragment>
+</Tiers>
+
+Light is also a stream of particles, **photons**, each carrying energy $E = hf$. How the wave and particle pictures fit together is the subject of [Appendix A9](/ch/primer-quantum/). The spectrum of light emitted by hot objects, which forced physicists to invent the photon, is the subject of [Chapter 4](/ch/light/).
+
+## The Doppler effect
+
+An ambulance siren sounds higher as it approaches and lower as it recedes. The siren has not changed. The *spacing* of the waves reaching you has.
+
+<Tiers>
+<Fragment slot="l1">
+Picture the source sending out one crest every tick of a clock. Between ticks it moves forward, so each new crest starts a little closer to the crest ahead of it. In front of the source the crests are bunched up: shorter wavelength, higher pitch, bluer light. Behind it they are spread out: longer wavelength, lower pitch, redder light. That shift is called a **blueshift** or **redshift**.
+
+For light, the size of the shift tells you the speed along your line of sight. A star moving away from us at 30 km/s, one ten-thousandth of the speed of light, has all its spectral lines stretched by one part in ten thousand. That is small, but modern spectrographs measure shifts a million times smaller.
+</Fragment>
+<Fragment slot="l2">
+Suppose a source moves at speed $v_s$ directly away from you through a medium in which waves travel at speed $v$. During one period $T$ it moves $v_s T$, so the crests behind it are spaced $\lambda_\text{obs} = (v + v_s)T$ rather than $vT$. For light, and for speeds well below $c$, the fractional stretch is
+
+<KeyEq title="Doppler shift (slow speeds)">
+$$
+\term{z}{z} \equiv \frac{\term{lamobs}{\lambda_\text{obs}} - \term{lamem}{\lambda_\text{em}}}{\term{lamem}{\lambda_\text{em}}} \approx \frac{\term{vs}{v_r}}{\term{c}{c}}
+$$
+<Fragment slot="where"><span data-term="z">z</span> is the redshift and $v_r$ the *radial* velocity, the component along the line of sight (positive when receding). Motion across the sky produces no first-order shift. For exact results at high speed use the relativistic formula in the next tier.</Fragment>
+</KeyEq>
+
+For sound the formula for a moving source is $f_\text{obs} = f/(1 - v_s/v)$ when approaching. At half the speed of sound the pitch ahead is *doubled*, and behind it drops only to two thirds. At the speed of sound the crests ahead pile into a single shock: a sonic boom.
+</Fragment>
+<Fragment slot="l3">
+For light there is no medium, and only the relative velocity matters. Two effects combine: the geometric bunching of crests, and time dilation of the source's clock by $\gamma = (1-\beta^2)^{-1/2}$ ([Chapter 17](/ch/relativity/)). For an observer seeing the source move at angle $\theta$ to the line of sight,
+
+<KeyEq title="Relativistic Doppler shift">
+$$
+1 + \term{z}{z} = \frac{\term{lamobs}{\lambda_\text{obs}}}{\term{lamem}{\lambda_\text{em}}} = \gamma\,(1 - \term{beta}{\beta}\cos\theta) \;\xrightarrow{\ \text{radial}\ }\; \sqrt{\frac{1+\term{beta}{\beta}}{1-\term{beta}{\beta}}}
+$$
+<Fragment slot="where"><span data-term="beta">β</span> $= v/c$ and $\theta$ is the angle between the velocity and the direction to the observer (so $\theta = \pi$ for a receding source). Even for purely transverse motion ($\cos\theta = 0$) there is a redshift $1+z = \gamma$: the *transverse Doppler effect*, which is pure time dilation. To first order in $\beta$ everything reduces to $z \approx v_r/c$.</Fragment>
+</KeyEq>
+
+In the frequency domain this is a *time-dependent* phase: a line of frequency $f_0$ on a source with radial velocity $v_r(t)$ arrives as $f_0(1 - v_r(t)/c)$. An orbiting star produces a periodic Doppler signal, and finding it is a Fourier problem ([Chapter 10](/ch/exoplanets/)).
+</Fragment>
+</Tiers>
+
+<Predict question="A car horn moves towards you at half the speed of sound. By what factor is the pitch you hear raised?" choices={['1.5 times (up by half)', '2 times (an octave)', '1.33 times']} answer={1}>
+The crests ahead of the source are squeezed to half their normal spacing, so the frequency *doubles*: $f/(1 - 0.5) = 2f$, a full octave. Behind the car the spacing is 1.5 times normal, so the pitch drops to $f/1.5$, only two thirds. The effect is lopsided because the source is moving through the air, and the air sets the frame. For light there is no air, and the relativistic formula is symmetric in a different way: $\sqrt{3} = 1.73$ ahead, $1/\sqrt 3$ behind, for $v = c/2$.
+</Predict>
+
+<Sim name="primer-waves-doppler" minHeight={420}>
+**Crests from a moving source.** Each circle is one crest, centred where the source was when it emitted it. Push the speed up and watch the circles bunch up ahead and spread out behind. For sound, go past 1.0 to see the circles overtaken by the source and piled into a *Mach cone*. Switch to light: the three observers are coloured by the wavelength they receive when the source emits green light. Notice the observer at the side sees red light at high speed. That is time dilation, not geometry.
+</Sim>
+
+In astronomy the radial velocity is read off from spectral lines, whose laboratory wavelengths are known exactly ([Chapter 5](/ch/spectra/)). A galaxy's hydrogen Hα line (656.28 nm) seen from a source receding at <Var name="vr" value={200} min={-3000} max={30000} step={10} /> km/s is shifted by <Out name="dlam" />, a redshift of $z$ = <Out name="zdop" />.
+
+<Aside>**Not all redshift is Doppler.** The redshift of distant galaxies is mostly the *expansion of space* stretching light on its way to us ([Chapter 25](/ch/expansion/)), and light climbing out of a gravitational well is redshifted too ([Chapter 19](/ch/black-holes/)). All three shift every line by the same factor $1+z$, so spectra alone cannot always tell them apart.</Aside>
+
+<Fermi title="How precisely must we measure a wavelength to find an Earth?">
+The Earth pulls the Sun around their common centre of mass at about 9 cm/s. A distant astronomer watching our Sun would see its lines shift by
+
+$$z \approx \frac{v}{c} = \frac{0.09\ \text{m/s}}{3\times10^{8}\ \text{m/s}} = 3\times10^{-10}.$$
+
+For a line at 500 nm, that is $1.5\times10^{-7}$ nm, about a millionth of the width of a silicon atom, and about 1/10,000 of a detector pixel (each pixel spans roughly 0.001 nm of spectrum). It can only be done by averaging thousands of lines, with calibration stable for years. The best spectrographs in 2026 (ESPRESSO, EXPRES, NEID) reach 10 to 30 cm/s, and stellar surface "noise" is now the main obstacle ([Chapter 10](/ch/exoplanets/)).
+</Fermi>
+
+## Fourier: every signal is a sum of sine waves
+
+A prism spreads white light into a rainbow. Your inner ear splits a chord into its separate notes. Both are performing, with physical hardware, the most useful mathematical operation in all of signal processing: the **Fourier decomposition**. It says that any reasonable signal, however jagged, can be built by adding up pure sine waves of different frequencies, amplitudes and phases. And there is exactly one recipe for each signal.
+
+<History title="Heat, Napoleon and a scandalous series" year="1807">
+<Portrait src="/img/people/fourier.jpg" name="Joseph Fourier" years="1768–1830" credit="A. F. B. Geille after J.-L. Boilly, c. 1823" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Joseph_Fourier.jpg" />
+
+Joseph Fourier was the orphaned son of a tailor from Auxerre. He was nearly guillotined during the Terror, sailed to Egypt with Napoleon as a scientific adviser, and then became prefect of the Isère department in Grenoble. There, in his spare time, he worked on how heat flows through a solid. To solve his heat equation he expanded the initial temperature, *any* initial temperature, as a sum of sines and cosines.
+
+He presented the work to the Paris Institute in 1807. Lagrange objected fiercely: surely a sum of smooth sine waves could not add up to a function with corners or jumps. The memoir went unpublished. A revised version won the Institute's prize in 1812, but the judges (Lagrange, Laplace and Legendre among them) still complained about its lack of rigour. Fourier finally published his *Théorie analytique de la chaleur* in 1822. Lagrange had a point: making the idea rigorous took most of the nineteenth century, and led Dirichlet, Riemann and Cantor to rethink what a "function" and an "integral" even are. Fourier also, in 1824, first described what we now call the greenhouse effect.
+</History>
+
+<Tiers>
+<Fragment slot="l1">
+Take a square wave: a signal that jumps between "on" and "off". It looks nothing like a smooth sine wave. But start with one sine wave at the same repetition rate. Add a smaller one at three times the frequency, then a smaller one still at five times, and so on. Each addition makes the sides steeper and the tops flatter. With enough of them you get the square wave.
+
+The list of "how much of each frequency" is the signal's **spectrum**. It contains the same information as the signal, just arranged differently. Often it is much easier to read. A faint repeating pattern hidden in noise, like a planet's tug on its star, stands out in the spectrum as one sharp spike.
+</Fragment>
+<Fragment slot="l2">
+A signal that repeats with period $T$ (fundamental frequency $f_0 = 1/T$) can be written as a **Fourier series**, a sum of sines and cosines at whole-number multiples of $f_0$, the *harmonics*. For a square wave that switches between +1 and −1,
+
+<KeyEq title="The square wave as a Fourier series">
+$$
+\term{xt}{x(t)} = \frac{4}{\pi}\left(\sin 2\pi \term{f0}{f_0} t + \frac{1}{3}\sin 2\pi\,(3f_0) t + \frac{1}{5}\sin 2\pi\,(5f_0) t + \cdots\right)
+$$
+<Fragment slot="where">Only odd harmonics appear, because the square wave is symmetric between its halves, and the amplitude of the $n$-th falls as $1/n$. A smoother signal needs fewer harmonics. A triangle wave's fall off as $1/n^2$. Sharp features, such as jumps and spikes, need many high frequencies.</Fragment>
+</KeyEq>
+
+The **power spectrum** plots the square of each amplitude against frequency. It shows where the signal's energy (strictly, its variance) is, and ignores the phases. Astronomers love power spectra because random processes are often completely described by them: the CMB anisotropies ([Chapter 27](/ch/cmb/)) and the galaxy distribution ([Chapter 28](/ch/structure/)) are summarised to high accuracy by one curve each.
+</Fragment>
+<Fragment slot="l3">
+For a non-periodic signal the harmonics merge into a continuum and the series becomes the **Fourier transform** (see [Appendix A4](/ch/primer-calculus/) for integrals):
+
+<KeyEq title="The Fourier transform pair">
+$$
+\term{Xf}{X(f)} = \int_{-\infty}^{\infty} \term{xt}{x(t)}\,e^{-2\pi i f t}\,dt, \qquad \term{xt}{x(t)} = \int_{-\infty}^{\infty} \term{Xf}{X(f)}\,e^{2\pi i f t}\,df
+$$
+<Fragment slot="where"><span data-term="Xf">X(f)</span> is complex: its magnitude is how much of frequency $f$ the signal contains, and its argument is the phase. For real signals $X(-f) = X(f)^*$, so only $f \ge 0$ carries information. The <span data-term="Pf">power spectrum</span> is $P(f) = |X(f)|^2$.</Fragment>
+</KeyEq>
+
+Four properties do most of the work in practice:
+
+1. **Parseval:** $\int |x|^2\,dt = \int |X|^2\,df$. Total power is the same in both domains, so $P(f)\,df$ really is "the power between $f$ and $f + df$".
+2. **Convolution theorem:** smoothing, blurring and filtering in time are *multiplication* in frequency. A telescope's blurred image is the true sky convolved with the point-spread function, and in Fourier space it is a simple product. Windowing a finite record multiplies the signal by a box, which convolves the spectrum with a $\sin(\pi f D)/(\pi f D)$ pattern of side lobes. A smooth *Hann window* tames them.
+3. **Uncertainty:** a signal lasting $\Delta t$ has a spectrum at least $\Delta f \gtrsim 1/\Delta t$ wide. Strictly, with rms widths, $\Delta t\,\Delta f \ge 1/4\pi$. Multiply by $h$ and you have the energy–time uncertainty relation of [Appendix A9](/ch/primer-quantum/).
+4. **Correlation:** the power spectrum is the Fourier transform of the autocorrelation function (the Wiener–Khinchin theorem). Cosmologists move between $\xi(r)$ and $P(k)$ constantly ([Chapter 28](/ch/structure/)), and the CMB's $C_\ell$ are the same idea on a sphere, with spherical harmonics in place of sines ([Chapter 27](/ch/cmb/)).
+
+In three dimensions, $e^{-2\pi i f t}$ becomes $e^{-i\vec k\cdot\vec x}$ and the transform turns a density field into a set of plane waves labelled by wavevector $\vec k$. The *matched filter* used by LIGO ([Chapter 20](/ch/gravitational-waves/)) is a noise-weighted inner product in the frequency domain, $\langle d, h\rangle = 4\,\mathrm{Re}\int \tilde d(f)\tilde h^*(f)/S_n(f)\,df$, where $S_n(f)$ is the detector's noise power spectrum.
+</Fragment>
+</Tiers>
+
+<Predict question="You build a square wave from more and more sine harmonics. Near each jump the sum overshoots the target. With 1000 harmonics, how big is the overshoot?" choices={['It disappears: about 0%', 'About 9% of the jump, just squeezed narrower', 'It grows without limit']} answer={1}>
+This is the **Gibbs phenomenon**. Adding harmonics makes the overshoot *narrower*, pushed ever closer to the jump, but its height stays at about 9% of the jump size (the limit is $0.0895\ldots$ of the jump). The series still converges at every point, but never uniformly near a discontinuity. In practice it shows up as "ringing" around sharp edges in filtered signals and in images from interferometers. Press *Build it up* below and watch the overshoot refuse to shrink.
+</Predict>
+
+<Sim name="primer-waves-fourier" size="wide" minHeight={560}>
+**Build a signal from sines, then take it apart.** The top panel is the signal and the bottom is its power spectrum, on a logarithmic scale and computed live by a fast Fourier transform. For the square, sawtooth and triangle waves, slide *Harmonics* or press *Build it up*: each new spike in the spectrum is one more sine wave. Try the *chirp* (a rising pitch, like the gravitational-wave signal from two merging black holes): its power is smeared across all the frequencies it sweeps through. Add noise to the *two close tones*: the time series looks like a mess, but the spikes stand out in the spectrum, and a Hann window separates them more cleanly from the leaked power. Finally, push the *single tone* past 128 Hz and watch it alias.
+</Sim>
+
+### Sampling and the Nyquist frequency
+
+Real data is not a continuous curve. It is a list of numbers, recorded at regular intervals: a CCD read every 2 minutes for TESS, a strain sample every 1/16384 s for LIGO. How often must you sample to capture a signal?
+
+<Tiers>
+<Fragment slot="l1">
+You need at least **two samples per cycle** of the fastest wiggle you care about. Sample more slowly and the fast wiggle does not simply disappear. It *disguises* itself as a slow one. This is why wagon wheels in old films seem to turn backwards: the camera samples 24 times a second, too slowly for the spokes.
+</Fragment>
+<Fragment slot="l2">
+If you sample at a rate $f_s$, the highest frequency you can represent is the **Nyquist frequency**, $f_N = f_s/2$: two samples per cycle. A tone above $f_N$ produces exactly the same samples as a tone at a lower frequency, $|f - f_s|$ (or more generally its distance to the nearest multiple of $f_s$). It is **aliased**.
+
+The other limit is set by the *length* of the record, $D$: you cannot tell apart two frequencies closer than about $1/D$. Some of the Sun's 5-minute oscillation modes are split by less than a microhertz, and separating frequencies 1 μHz apart needs $1/(10^{-6}\ \text{Hz}) \approx 12$ days of continuous data. Helioseismologists use records lasting years.
+</Fragment>
+<Fragment slot="l3">
+Sampling at interval $\Delta t = 1/f_s$ multiplies $x(t)$ by a comb of delta functions. By the convolution theorem, the spectrum becomes $X(f)$ convolved with a comb of spacing $f_s$: copies of the spectrum repeated every $f_s$. If $X(f) = 0$ for $|f| > f_N = f_s/2$, the copies do not overlap and $x(t)$ can be reconstructed exactly by sinc interpolation. That is the **Nyquist–Shannon sampling theorem**. If they do overlap, power from above $f_N$ folds back into the band and cannot be separated afterwards. Hence the analogue *anti-aliasing filter* in front of every digitiser.
+
+A record of $N$ samples yields the **discrete Fourier transform** $X_k = \sum_{n=0}^{N-1} x_n e^{-2\pi i kn/N}$ at frequencies $f_k = k f_s/N$, so the resolution is $\Delta f = f_s/N = 1/D$. Unevenly sampled astronomical data (a star observed only at night, only in clear weather) breaks the comb structure. Its aliases become a forest of spurious peaks, one reason the Lomb–Scargle periodogram exists ([Chapter 10](/ch/exoplanets/)).
+</Fragment>
+</Tiers>
+
+A record sampled at <Var name="fs" value={44100} min={10} max={200000} log step={1} /> samples per second can represent frequencies up to <Out name="nyq" />. CD audio samples at 44.1 kHz because human hearing stops around 20 kHz.
+
+<Aside>**Aliases in the sky.** A telescope that observes once per night samples at 1 cycle/day. A planet with a 0.5-day period then looks identical to one with a 1-day or 2-day period (the ±1 cycle/day aliases). Several published exoplanet periods have turned out to be aliases of the true one.</Aside>
+
+### The fast Fourier transform
+
+Computing the DFT directly takes $N$ multiplications for each of $N$ frequencies: $N^2$ operations. For a million-point LIGO segment that is $10^{12}$, far too slow to run on every stretch of data. In 1965 James Cooley and John Tukey published the **fast Fourier transform** (FFT), which does the same job in about $N\log_2 N$ operations: $2\times10^7$ for a million points, 50,000 times faster. Gauss had found the same trick in 1805, while computing asteroid orbits, but left it in an unpublished notebook written in Latin.
+
+<Tiers>
+<Fragment slot="l1">
+The trick is divide and conquer. Split the samples into the even-numbered and the odd-numbered ones. Take the spectrum of each half separately, which is a smaller problem, and then combine the two halves with a little extra work. Then split each half again, and so on down to single samples. Each level of splitting costs about $N$ operations, and there are only $\log_2 N$ levels: 20 for a million points.
+</Fragment>
+<Fragment slot="l3">
+Write $w = e^{-2\pi i/N}$. Splitting $X_k = \sum_n x_n w^{nk}$ into even and odd $n$ gives
+
+$$
+X_k = E_k + w^k O_k, \qquad X_{k+N/2} = E_k - w^k O_k,
+$$
+
+where $E$ and $O$ are the $N/2$-point DFTs of the even and odd samples. One *butterfly* produces two outputs from two inputs with one complex multiplication. Recursing gives $T(N) = 2T(N/2) + O(N)$, so $T = O(N\log N)$. The FFT is exact, not an approximation: it performs the same sum, reorganised. Its round-off error grows only as $O(\log N)$, better than naive summation.
+</Fragment>
+</Tiers>
+
+<Hood title="the FFT in the figure above">
+The Fourier explorer uses a textbook iterative radix-2 Cooley–Tukey FFT in double precision on the CPU. First it reorders the samples by *bit-reversed* index (sample 1 = 001 goes to slot 100 = 4, and so on), which is the order the recursive splitting would leave them in. Then it runs $\log_2 N$ passes of butterflies, each combining pairs of half-size transforms:
+
+```ts
+for (let len = 2; len <= n; len <<= 1) {
+  const ang = (-2 * Math.PI) / len;
+  const wr = Math.cos(ang), wi = Math.sin(ang);
+  for (let i = 0; i < n; i += len) {
+    let cr = 1, ci = 0; // twiddle factor e^{-2πik/len}
+    for (let k = 0; k < len / 2; k++) {
+      const a = i + k, b = a + len / 2;
+      const tr = re[b] * cr - im[b] * ci, ti = re[b] * ci + im[b] * cr;
+      re[b] = re[a] - tr; im[b] = im[a] - ti;
+      re[a] += tr; im[a] += ti;
+      [cr, ci] = [cr * wr - ci * wi, cr * wi + ci * wr];
+    }
+  }
+}
+```
+
+With $N = 512$ samples the whole transform takes a few microseconds, so the figure simply recomputes it every frame. The twiddle factor is updated by repeated complex multiplication, which accumulates round-off of order $10^{-16}\times len$: harmless here, but production libraries (FFTW, cuFFT, pocketfft) use precomputed tables. They also handle any $N$ (not just powers of two), exploit real-valued input for a factor of two, and tune memory access for cache. On a GPU, each pass becomes one compute dispatch over $N/2$ butterflies, which is how the particle-mesh simulation in [Chapter 28](/ch/structure/) solves Poisson's equation on a 3D grid.
+
+The spectrum is normalised so that a unit-amplitude sine wave centred on a frequency bin gives power 1. A sine wave that falls *between* bins spreads its power into neighbours, called *spectral leakage*, with side lobes falling only as $1/f^2$ in power. The Hann window $w_n = \tfrac12(1 - \cos 2\pi n/N)$ tapers the ends of the record to zero, trading a slightly wider central peak for side lobes that fall much faster.
+</Hood>
+
+## Where these ideas come back
+
+Waves and spectra run through the whole course:
+
+- **[Chapter 4](/ch/light/)**: the blackbody spectrum is a distribution over frequency, and $c = f\lambda$ converts between the per-wavelength and per-frequency forms.
+- **[Chapter 5](/ch/spectra/)** and **[Chapter 10](/ch/exoplanets/)**: Doppler shifts of spectral lines measure stellar motions and weigh planets; periodograms hunt for periodic signals in unevenly sampled data.
+- **[Chapter 17](/ch/relativity/)**: the relativistic Doppler factor drives beaming and superluminal illusions.
+- **[Chapter 20](/ch/gravitational-waves/)**: an inspiral is a chirp, found by matched filtering against a bank of templates in the frequency domain.
+- **[Chapter 27](/ch/cmb/)**: the CMB's angular power spectrum is a Fourier analysis on the sky, and its peaks are the harmonics of sound waves in the early universe.
+- **[Chapter 28](/ch/structure/)**: the matter power spectrum $P(k)$ describes the cosmic web, and FFTs make large simulations possible.
+
+The one idea this primer left out is that light also arrives in lumps. That is the start of quantum mechanics, and the subject of [Appendix A9](/ch/primer-quantum/).

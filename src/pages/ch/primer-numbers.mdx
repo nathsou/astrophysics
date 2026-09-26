@@ -1,0 +1,301 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: primer-numbers
+lede: The universe runs from protons to the cosmic horizon, sixty-odd factors of ten. Three habits make those numbers manageable — count the powers of ten, know how well you know each number, and keep track of units.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  coef: ['Coefficient', 'A number from 1 up to (but not including) 10 that carries the significant digits. How many digits you write says how precisely you know the value.'],
+  expo: ['Exponent (order of magnitude)', 'Counts the factors of ten. Change it by one and the number grows or shrinks tenfold, whatever the coefficient is.'],
+  base: ['Base of the logarithm', 'The number being multiplied: 10 for common logs, e = 2.718… for natural logs. Changing base only rescales every log by the same constant.'],
+  lx: ['A positive number', 'The number whose logarithm we take. Logs exist only for positive numbers: there is no power of 10 that gives zero or a negative value.'],
+  ly: ['A second positive number', 'Used in the product rule: multiplying two numbers adds their logs.'],
+  lk: ['A power', 'Any real number, including fractions and negatives. A power becomes a multiplier outside the log, which is why logs turn power laws into straight lines.'],
+  logval: ['The logarithm', 'The exponent you must put on the base to get x. For base 10 it is roughly "the number of digits minus one".'],
+  f: ['Derived quantity', 'The thing you compute from the measurements, such as a mass, luminosity or radius.'],
+  sigf: ['Uncertainty of the result', 'One standard deviation: roughly, the true value lies within ±σ about two times in three.'],
+  x: ['First measured input', 'A measured quantity, such as a radius or a period.'],
+  sigx: ['Uncertainty of x', 'Enters as a fraction of x: what matters is the relative error σ/x, not its size in metres or seconds.'],
+  y: ['Second measured input', 'Another measured quantity, assumed independent of x.'],
+  sigy: ['Uncertainty of y', 'Also enters as a relative error, multiplied by its power q.'],
+  p: ['Power of x', 'The exponent of x in the formula. A high power amplifies that input\'s relative error: T⁴ turns a 1% temperature error into 4% in luminosity.'],
+  q: ['Power of y', 'The exponent of y. Negative powers (dividing by y) amplify errors just as much as positive ones; only the size matters.'],
+  xi: ['The i-th input', 'Any measured quantity the result depends on.'],
+  sigi: ['Uncertainty of the i-th input', 'Each input contributes its uncertainty times the sensitivity of f to it, and the contributions add in quadrature.'],
+  mag: ['Apparent magnitude', 'Brightness as a logarithm, running backwards: smaller numbers are brighter.'],
+  flux: ['Flux', 'Energy received per second per square metre. Ratios of fluxes become differences of magnitudes.'],
+  dimM: ['Dimension of mass', 'One of the three base dimensions of mechanics (with length and time). Any mechanical quantity is some product of powers of M, L and T.'],
+  dimL: ['Dimension of length', 'Metres, parsecs and ångströms all have dimension L; they differ only by a conversion factor.'],
+  dimT: ['Dimension of time', 'Seconds, years and gigayears all have dimension T.'],
+}} />
+
+## Why this primer exists
+
+Astrophysics has a reputation for enormous numbers, and it deserves it. The Sun has a mass of $2\times10^{30}$ kg. The Galaxy holds a few hundred billion stars. A photon from the edge of the observable universe has travelled for 13.8 billion years. None of this is hard, but it is unfamiliar. The numbers are too large or too small to picture, and they arrive with a zoo of units: parsecs, solar masses, ergs, magnitudes.
+
+This primer gathers the three habits that tame them. **Powers of ten** let you write and multiply huge numbers without counting zeros. **Logarithms** turn "how many times bigger" into "how many steps along", which is the only sensible way to lay the universe out on a page. **Uncertainties and units** tell you how far to trust a number and whether a formula can even be right. If you came here from a chapter, each section links back to where the idea is used; skim the ones you know.
+
+<Aside>**Where to go next.** Powers and exponentials as *functions*, and how to read log–log plots, are in [Appendix A2](/ch/primer-functions/). The estimating spirit of this primer is put to full use in [Chapter 1](/ch/scales/).</Aside>
+
+## Powers of ten
+
+<Tiers>
+<Fragment slot="l1">
+Writing $2\times10^{30}$ is shorthand for "2 followed by thirty zeros". The little number up top, the **exponent**, counts the zeros. It is the part that really matters: $2\times10^{30}$ and $5\times10^{30}$ are close cousins, while $2\times10^{30}$ and $2\times10^{31}$ differ by a factor of ten. Negative exponents count the other way. $10^{-3}$ is a thousandth, and a proton, about $10^{-15}$ metres across, is a millionth of a billionth of a metre.
+
+The trick that makes this notation so useful: **to multiply, add the exponents; to divide, subtract them.** A thousand times a million is $10^3\times10^6 = 10^9$, a billion. You never need to count zeros again.
+</Fragment>
+<Fragment slot="l2">
+<KeyEq title="Scientific notation">
+$$
+\text{number} = \term{coef}{a}\times10^{\term{expo}{n}}, \qquad 1 \le \term{coef}{a} < 10
+$$
+<Fragment slot="where"><span data-term="coef">$a$</span> is the coefficient and carries the significant digits. <span data-term="expo">$n$</span> is an integer, the order of magnitude. Multiplying numbers multiplies the coefficients and **adds** the exponents; dividing **subtracts** them; raising to a power **multiplies** the exponent: $(10^{n})^k = 10^{nk}$.</Fragment>
+</KeyEq>
+
+A worked example. How many Earths would fit inside the Sun? The Sun's radius is 109 times the Earth's, and volume goes as radius cubed:
+
+$$
+109^3 = (1.09\times10^2)^3 = 1.09^3\times10^{6} \approx 1.3\times10^{6}.
+$$
+
+About a million Earths. Notice the method: split each number into coefficient and power of ten, handle the powers of ten exactly (here $3\times2 = 6$), and do rough arithmetic only on the small coefficients.
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="Scientific notation">
+$$
+\text{number} = \term{coef}{a}\times10^{\term{expo}{n}}, \qquad 1 \le \term{coef}{a} < 10,\ \ \term{expo}{n}\in\mathbb Z
+$$
+<Fragment slot="where">Products add exponents, quotients subtract them, powers multiply them. For estimates, keep the exponents exact and round the coefficients: $109^3 = 1.09^3\times10^6 \approx 1.3\times10^6$ Earth volumes per Sun.</Fragment>
+</KeyEq>
+
+This is exactly how your computer stores a `double`: $\pm\, m \times 2^{e}$ with a 53-bit mantissa $m$ and an 11-bit exponent $e$. That gives about 16 significant decimal digits over a range from $10^{-308}$ to $10^{308}$. The range is generous even for cosmology; the *precision* is the constraint. Subtract two nearly equal numbers and the leading digits cancel, leaving noise. That is why the orbit integrators of [Chapter 2](/ch/orbits/) work in units where $GM = 4\pi^2$, and why GPU codes running in 32-bit floats (about 7 digits, range $10^{\pm38}$) pick natural units carefully.
+</Fragment>
+</Tiers>
+
+Astronomers also stretch "order of magnitude" into a unit of measurement. Two numbers that differ by a factor of about ten differ by "an order of magnitude". Because astrophysical quantities span so many decades, getting the exponent right is often most of the battle, and a result "good to a factor of two" can be genuinely useful.
+
+<Fermi title="Seconds in a year">
+A year is $365.25 \times 24 \times 3600$ seconds. Round each factor: $365 \times 24 \approx 9000$, and $9000 \times 3600 \approx 3.2\times10^{7}$. The exact value is $3.156\times10^{7}$ s, which happens to be within 0.5% of $\pi\times10^{7}$. Every astronomer knows this coincidence, and you will see it quietly used throughout the course. It is how [Chapter 2](/ch/orbits/) turns Kepler's third law into the mass of the Sun with pencil and paper.
+</Fermi>
+
+## Logarithms: counting the factors
+
+A logarithm answers a simple question: **how many times do I multiply by 10 (or by some other base) to get this number?** The log of 1000 is 3. The log of $2\times10^{30}$ is 30.3. The log of 0.001 is −3.
+
+<Tiers>
+<Fragment slot="l1">
+Think of a logarithm as a digit counter. A number in the thousands has a log of three-point-something; a number in the millions, six-point-something. The log throws away almost all the detail and keeps the one thing that matters most for cosmic numbers: their *scale*.
+
+Logarithms have one magic property. **Multiplying numbers corresponds to adding their logs.** Multiply by 10 and the log goes up by 1; multiply by 100 and it goes up by 2; halve something and its log drops by 0.3. So a "factor" becomes a "step", and huge ratios become small, friendly differences. That is why the star-brightness scale astronomers use (the *magnitude* scale) and the loudness scale (decibels) are both logarithmic: equal steps feel like equal changes.
+</Fragment>
+<Fragment slot="l2">
+<KeyEq title="Logarithms and their three rules">
+$$
+\log_{\term{base}{b}} \term{lx}{x} = \term{logval}{y}\ \iff\ \term{base}{b}^{\term{logval}{y}} = \term{lx}{x}
+$$
+
+$$
+\log(\term{lx}{x}\,\term{ly}{y}) = \log \term{lx}{x} + \log \term{ly}{y},\qquad
+\log\frac{\term{lx}{x}}{\term{ly}{y}} = \log \term{lx}{x} - \log \term{ly}{y},\qquad
+\log \term{lx}{x}^{\term{lk}{k}} = \term{lk}{k}\log \term{lx}{x}
+$$
+<Fragment slot="where"><span data-term="base">$b$</span> is the base. Astronomers use two: $\log_{10}$ (written "log") for anything on a scale or an axis, and the **natural log** $\ln = \log_e$ with $e = 2.718\ldots$ for anything involving growth or decay (see [Appendix A2](/ch/primer-functions/)). They differ by a constant: $\ln x = 2.303\,\log_{10} x$. Useful values: $\log_{10} 2 = 0.301$, $\log_{10} 3 = 0.477$, $\log_{10} 5 = 0.699$.</Fragment>
+</KeyEq>
+
+The rules follow directly from adding exponents: $10^a\times10^b = 10^{a+b}$. The third rule is the one that makes logs indispensable. It turns a *power* into a *multiplier*, so $\log(r^2) = 2\log r$. In [Appendix A2](/ch/primer-functions/) this is what makes every power law a straight line on a log–log plot.
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="Logarithms and their three rules">
+$$
+\log_{\term{base}{b}} \term{lx}{x} = \term{logval}{y}\ \iff\ \term{base}{b}^{\term{logval}{y}} = \term{lx}{x},\qquad
+\log(\term{lx}{x}\,\term{ly}{y}) = \log \term{lx}{x} + \log \term{ly}{y},\qquad
+\log \term{lx}{x}^{\term{lk}{k}} = \term{lk}{k}\log \term{lx}{x}
+$$
+<Fragment slot="where">Change of base: $\log_b x = \ln x / \ln b$, so $\ln x = 2.303\log_{10}x$. The logarithm is the group isomorphism from $(\mathbb R_{>0}, \times)$ to $(\mathbb R, +)$, which is precisely why it turns multiplicative physics into additive bookkeeping.</Fragment>
+</KeyEq>
+
+The natural log earns its name from calculus: $\ln x = \int_1^x dt/t$, so
+
+$$
+d(\ln x) = \frac{dx}{x}.
+$$
+
+A small change in $\ln x$ *is* a relative change in $x$. That one line powers a lot of astrophysics. For a power law $f \propto x^p$, $d\ln f = p\, d\ln x$: the exponent is the ratio of percentage changes, $p = d\ln f/d\ln x$. Physicists call this the *logarithmic derivative*, and it is how [Chapter 12](/ch/fusion/) expresses the temperature sensitivity of fusion ($\varepsilon \propto T^{\nu}$ with $\nu = d\ln\varepsilon/d\ln T \approx 4$ for the pp-chain and about 18 for CNO). It also makes the error-propagation rule later in this primer a one-line derivation.
+</Fragment>
+</Tiers>
+
+<History title="Doubling the life of the astronomer" year="1614">
+<Portrait src="/img/people/napier.jpg" name="John Napier" years="1550–1617" credit="Unknown artist, 1616" license="Public domain" href="https://commons.wikimedia.org/wiki/File:John_Napier.jpg" />
+
+John Napier, a Scottish landowner who also wrote on theology and sketched designs for war machines, spent about twenty years building a table that would turn multiplication into addition. His *Mirifici Logarithmorum Canonis Descriptio* ("Description of the Wonderful Canon of Logarithms") appeared in 1614. Napier's logarithms were not quite ours: they were built from a sequence shrinking by a factor $1 - 10^{-7}$ at each step, and are related to what we now call base $1/e$.
+
+Henry Briggs, a London professor of geometry, was so struck that in 1615 he rode to Edinburgh to meet Napier. The two agreed that base 10 would be far more convenient, and Briggs spent the next decade computing base-10 logarithms to fourteen digits. The Swiss clockmaker Jost Bürgi had invented a similar scheme independently but published it only in 1620.
+
+The astronomers were the first customers. Johannes Kepler read Napier's book around 1617, computed his own tables, and used logarithms for the laborious calculations behind the *Rudolphine Tables* of planetary positions (1627), the most accurate ephemerides of their age. Nearly two centuries later Laplace remarked that logarithms, by cutting months of arithmetic to days, had effectively doubled an astronomer's working life. Slide rules, which are logarithms carved into wood, were still on NASA engineers' desks during Apollo.
+</History>
+
+### Magnitudes: a log scale you will meet everywhere
+
+The brightness of stars is measured in **magnitudes**, and they are logarithms in disguise. Five magnitudes is defined as a factor of exactly 100 in flux, so each magnitude is a factor of $100^{1/5} = 2.512$, and the scale runs backwards: brighter objects have *smaller* magnitudes.
+
+$$
+\term{mag}{m_1} - \term{mag}{m_2} = -2.5\,\log_{10}\frac{\term{flux}{F_1}}{\term{flux}{F_2}}
+$$
+
+Two stars that differ by <Var name="dmag" value={5} min={0} max={60} step={0.1} digits={3} /> magnitudes differ in brightness by a factor of <Out name="fratio" />. Try 57.7: that is the gap between the Sun ($m = -26.7$) and the faintest galaxies in JWST's deepest images ($m \approx 31$), a flux ratio of about $10^{23}$ that the log scale folds into a two-digit number. [Chapter 1](/ch/scales/) develops magnitudes fully, including the absolute magnitude and the distance modulus.
+
+<Aside>**Dex.** Astronomers often quote logarithmic differences in "dex": 1 dex is a factor of 10, 0.3 dex a factor of 2. "The scatter is 0.2 dex" means values typically stray by a factor $10^{0.2} \approx 1.6$.</Aside>
+
+### Log scales
+
+Plotting runs into the same problem as writing. On an ordinary **linear** axis, equal distances mean equal *differences*: the gap from 0 to 10 is as wide as the gap from 90 to 100. On a **logarithmic** axis, equal distances mean equal *ratios*: the gap from 1 to 10 is as wide as the gap from 10 to 100, or from $10^{29}$ to $10^{30}$. Each factor of ten is called a **decade**.
+
+<Predict question="On a logarithmic axis running from 1 to 100, which number sits exactly halfway?" choices={['50', '10', '25', '√50 ≈ 7']} answer={1}>
+**10.** Halfway on a log axis means halfway in the *exponent*: $10^0 = 1$ at the left, $10^2 = 100$ at the right, and $10^1 = 10$ in the middle. On a log axis, 50 sits 85% of the way along, because $\log_{10} 50 = 1.7$. Mathematically, the midpoint on a log axis is the **geometric mean** $\sqrt{1\times100}$, not the arithmetic mean.
+</Predict>
+
+<Sim name="primer-numbers-logscale" size="wide" minHeight={300}>
+**Linear versus logarithmic.** The same objects on both kinds of axis. Slide from *log* to *linear* and watch almost everything crash into the left edge: on a linear axis wide enough to hold the observable universe, the whole Milky Way occupies a fraction $10^{-6}$ of the width, less than a pixel. The readout counts how many objects share the very first pixel. Hover a dot for its value. Switch to masses and times: the story is the same.
+</Sim>
+
+The lesson is not that linear axes are bad. They are right when the data span less than a factor of ten or so, or when zero is meaningful and differences matter. But whenever data cover several decades, or when you care about *ratios* (twice as bright, ten times as massive), a log axis is the honest choice. Most plots in this course use one, and [Appendix A2](/ch/primer-functions/) shows the other superpower of log axes: on log–log plots, power laws become straight lines.
+
+## How well do you know it?
+
+Every measured number comes with an uncertainty, whether or not anyone writes it down. Knowing how big it is, and how it spreads into anything you compute, is the difference between a discovery and a statistical fluke.
+
+<Tiers>
+<Fragment slot="l1">
+A measurement is really a *range*: "the star is 5,800 K, give or take 50". The size of the range compared with the value, the **relative error** (here about 1%), is usually what matters.
+
+When you combine measurements, their errors combine too, and three rules of thumb cover most cases:
+
+1. **Multiplying or dividing:** relative errors combine, and the biggest one usually dominates.
+2. **Powers amplify:** if a formula uses the *fourth* power of temperature, a 1% error in temperature becomes a 4% error in the answer.
+3. **Independent errors partly cancel:** two 10% errors combine into about 14%, not 20%, because they rarely both push the same way at once.
+
+The digits you write should also be honest. Quoting a distance as "4.2465 light-years" claims you know it to one part in 40,000. If you only know it to 1%, write 4.25.
+</Fragment>
+<Fragment slot="l2">
+**Significant figures** are the digits you actually trust. $6.674\times10^{-11}$ has four; $2\times10^{30}$ has one. When you multiply or divide, the result has about as many significant figures as the *least* precise input. Better still is to state the uncertainty explicitly, as $x \pm \sigma_x$, where $\sigma_x$ is one standard deviation. For errors that follow a bell curve, the true value lies within $\pm1\sigma$ about 68% of the time and within $\pm2\sigma$ about 95% of the time.
+
+Almost every formula in astrophysics is a product of powers, and for those there is one rule to remember:
+
+<KeyEq title="Error propagation for products of powers">
+$$
+\frac{\term{sigf}{\sigma_f}}{\term{f}{f}} = \sqrt{\left(\term{p}{p}\,\frac{\term{sigx}{\sigma_x}}{\term{x}{x}}\right)^2 + \left(\term{q}{q}\,\frac{\term{sigy}{\sigma_y}}{\term{y}{y}}\right)^2}
+\qquad \text{for}\quad \term{f}{f} \propto \term{x}{x}^{\term{p}{p}}\,\term{y}{y}^{\term{q}{q}}
+$$
+<Fragment slot="where"><span data-term="sigx">$\sigma_x/x$</span> and <span data-term="sigy">$\sigma_y/y$</span> are the relative errors of two **independent** measurements. Each is multiplied by the size of its power (<span data-term="p">$p$</span> and <span data-term="q">$q$</span>; the sign does not matter), and the two contributions are added *in quadrature*: square, add, take the square root. More inputs just add more terms under the root.</Fragment>
+</KeyEq>
+
+Take the mass of a star from an orbiting planet, $M \propto a^3/P^2$ ([Chapter 2](/ch/orbits/)). If the orbit size $a$ is known to 5% and the period $P$ to 1%, then $\sigma_M/M = \sqrt{(3\times5\%)^2 + (2\times1\%)^2} = \sqrt{225 + 4}\,\% \approx 15\%$. The period barely matters; nearly all the uncertainty comes from $a$, amplified by its cube. The lesson generalises: **find the input with the largest (power × relative error) and improve that one.**
+</Fragment>
+<Fragment slot="l3">
+For a result $f(x_1, \ldots, x_N)$ of independent inputs with small uncertainties, linearise $f$ about the measured values and add the variances:
+
+<KeyEq title="First-order error propagation">
+$$
+\term{sigf}{\sigma_f}^2 = \sum_i \left(\frac{\partial \term{f}{f}}{\partial \term{xi}{x_i}}\right)^2 \term{sigi}{\sigma_i}^2
+\qquad\Longrightarrow\qquad
+\frac{\term{sigf}{\sigma_f}}{\term{f}{f}} = \sqrt{\left(\term{p}{p}\,\frac{\term{sigx}{\sigma_x}}{\term{x}{x}}\right)^2 + \left(\term{q}{q}\,\frac{\term{sigy}{\sigma_y}}{\term{y}{y}}\right)^2}\ \ \text{for}\ \term{f}{f}\propto \term{x}{x}^{\term{p}{p}}\term{y}{y}^{\term{q}{q}}
+$$
+<Fragment slot="where">The power-law form follows in one line from $d\ln f = p\,d\ln x + q\,d\ln y$. Correlated inputs add cross terms $2\,\partial_i f\,\partial_j f\,\mathrm{Cov}(x_i,x_j)$; in matrix form $\sigma_f^2 = J\,\Sigma\,J^\top$ with $J$ the gradient row vector and $\Sigma$ the covariance matrix.</Fragment>
+</KeyEq>
+
+The linearisation is only valid while the relative errors are small, typically below 10–20%. Beyond that, the result's distribution becomes skewed, and its mean is biased. The classic astronomical example is **parallax**. Distance is $d = 1/p$, and a parallax measured at, say, $1.0 \pm 0.3$ milliarcseconds has a real chance of being near zero, where $1/p$ explodes; it can even come out negative. Naively inverting noisy Gaia parallaxes gives wrong distances, which is why distance catalogues built on Gaia DR3 infer $d$ with a full probabilistic model and a prior instead of simply computing $1/p$. Choose "parallax" in the figure below and push its error up to see the lopsided distribution for yourself.
+</Fragment>
+</Tiers>
+
+<Predict question="You measure a star's radius to 10% and its surface temperature to 10%, independently. Its luminosity goes as L ∝ R²T⁴. How uncertain is L?" choices={['10%', '20%', 'about 45%', '60%']} answer={2}>
+**About 45%.** The radius enters squared (2 × 10% = 20%), the temperature to the fourth power (4 × 10% = 40%). Added in quadrature: $\sqrt{20^2 + 40^2} \approx 45\%$. Simply adding the two gives 60%, which assumes both errors push the same way. The temperature term dominates, which is why stellar astrophysicists work so hard to measure effective temperatures to 1% ([Chapters 4](/ch/light/) and [14](/ch/main-sequence/)).
+</Predict>
+
+<Sim name="primer-numbers-errors" minHeight={380}>
+**Error propagation, tested.** The orange curve is the prediction of the propagation rule. The blue histogram shows 40,000 simulated measurements, each with random Gaussian errors in the inputs, pushed through the real formula (a *Monte Carlo* calculation). The bar at the top shows which input dominates the error budget. With small errors, the two agree beautifully. Crank any error above about 20% and the histogram skews away from the curve; try "distance from parallax" with a 30–40% error to see why dividing by a noisy number is dangerous.
+</Sim>
+
+**Why this matters: the Hubble tension.** Measurements from the cosmic microwave background ([Chapter 27](/ch/cmb/)) give the expansion rate of the universe as $H_0 = 67.4 \pm 0.5$ km s⁻¹ Mpc⁻¹. The distance ladder of Cepheids and supernovae gives $73.0 \pm 1.0$. The difference is $5.6$, and its uncertainty, combining the two in quadrature, is $\sqrt{0.5^2 + 1.0^2} \approx 1.1$. So the two disagree by about five standard deviations, far too many to be chance *if* the quoted errors are complete. Either one of the methods has an unrecognised systematic error, or the standard cosmological model is missing something. As of 2026 the question is still open ([Chapter 25](/ch/expansion/)).
+
+<Aside>**Precision is uneven.** Astronomers know $GM_\odot = 1.32712440\times10^{20}$ m³ s⁻² to about ten digits, from spacecraft tracking. But $G$ itself is known only to about five ($6.6743\times10^{-11}$), so the Sun's mass in *kilograms* is only as good as $G$. That is one reason solar masses are the natural unit.</Aside>
+
+## Units and dimensions
+
+A number without a unit is meaningless in physics. "The Sun is 1.5 away" says nothing until you add "hundred million kilometres", and the same distance is also "1 AU" or "8.3 light-minutes": changing the unit changes the number, never the distance. Units are not decoration. They are part of the quantity, and they obey algebra just as numbers do.
+
+<Tiers>
+<Fragment slot="l1">
+The safest way to convert units is to multiply by a fraction that equals one. There are 1000 metres in a kilometre, so "1000 m / 1 km" is just a fancy way of writing 1. Multiplying by it changes the number and the unit together, never the quantity itself.
+
+Units also provide a free check on any formula. Every quantity in mechanics is built from just three ingredients: **mass**, **length** and **time**. A speed is a length divided by a time; a force is a mass times a length divided by a time squared. If you compute something that is meant to be a time and it comes out in metres, the formula is wrong, no matter how clever it looked. Physicists use this constantly to guess how things must scale before doing any hard maths. It is the main trick of [Chapter 1](/ch/scales/).
+</Fragment>
+<Fragment slot="l2">
+**Conversion by multiplying by one.** Suppose you want the Earth's orbital speed, 1 AU per year, in km/s:
+
+$$
+1\ \frac{\text{AU}}{\text{yr}} \times \frac{1.496\times10^{8}\ \text{km}}{1\ \text{AU}} \times \frac{1\ \text{yr}}{3.156\times10^{7}\ \text{s}} = 4.74\ \text{km/s}.
+$$
+
+The units cancel like algebraic symbols, leaving km/s. (The Earth's actual speed is $2\pi$ AU/yr, or 29.8 km/s.) That odd number 4.74 appears all over astronomy: a star at distance $d$ parsecs with proper motion $\mu$ arcseconds per year moves across the sky at $v_t = 4.74\,\mu\, d$ km/s.
+
+**Dimensions.** Write $[\,Q\,]$ for "the dimensions of $Q$", in terms of mass $\mathsf M$, length $\mathsf L$ and time $\mathsf T$. A velocity has $[v] = \mathsf L\,\mathsf T^{-1}$, an energy $[E] = \mathsf M\,\mathsf L^{2}\,\mathsf T^{-2}$. Newton's constant follows from $F = GMm/r^2$:
+
+$$
+[\term{G}{G}] = \frac{[F][r]^2}{[M]^2} = \term{dimM}{\mathsf M}^{-1}\,\term{dimL}{\mathsf L}^{3}\,\term{dimT}{\mathsf T}^{-2}.
+$$
+
+Two rules follow. **You can only add or compare quantities with the same dimensions.** And **the arguments of exponentials, logs and trig functions must be dimensionless**: $e^{-E/kT}$ is fine because $E/kT$ is a pure number; $\log(M)$ secretly means $\log(M/M_0)$ for some reference $M_0$.
+</Fragment>
+<Fragment slot="l3">
+Conversion is multiplication by unity, e.g. $1\ \text{AU/yr} = 4.74$ km/s, the constant in the tangential-velocity formula $v_t = 4.74\,\mu[''/\text{yr}]\,d[\text{pc}]$ km/s.
+
+Dimensions form a vector space: map each quantity to its exponent vector $(\alpha, \beta, \gamma)$ in $\mathsf M^\alpha\mathsf L^\beta\mathsf T^\gamma$, e.g.
+
+$$
+[\term{G}{G}] = \term{dimM}{\mathsf M}^{-1}\,\term{dimL}{\mathsf L}^{3}\,\term{dimT}{\mathsf T}^{-2} \ \mapsto\ (-1,\,3,\,-2).
+$$
+
+A product of powers $\prod Q_j^{k_j}$ has dimension vector $\sum_j k_j \vec d_j$, so "find the combination with the dimensions of a time" is a small linear system for the $k_j$. With $n$ quantities and $r$ = rank of the dimension matrix, there are $n - r$ independent dimensionless groups (the **Buckingham π theorem**), and any physical law can be written as a relation among them. Arguments of transcendental functions must be dimensionless, which is why $\ln M$ always hides a reference scale.
+</Fragment>
+</Tiers>
+
+Here is a unit conversion you can play with. A star <Var name="dpc" value={10} min={1.3} max={4e9} log digits={3} /> parsecs away is <Out name="dly" /> away, or <Out name="dau" />, or <Out name="dm" />. The light you see from it left <Out name="dage" /> ago. Drag the distance to 1.3 pc (Proxima Centauri), 8,200 pc (the centre of the Galaxy), 780,000 pc (Andromeda) or a few billion (the most distant quasars).
+
+<Predict question="G has dimensions M⁻¹ L³ T⁻². Which combination of G, a mass M and a distance a could be an orbital period?" choices={['√(GM/a³)', '√(a³/GM)', 'a³/GM', 'GM/a']} answer={1}>
+**$\sqrt{a^3/GM}$.** $GM$ has dimensions $\mathsf L^3\,\mathsf T^{-2}$, so $a^3/GM$ is a time squared, and its square root is a time. The first option is its inverse, a frequency. The last one, $GM/a$, is a speed squared. Dimensional analysis has just derived **Kepler's third law**, $P \propto \sqrt{a^3/GM}$, up to a factor it cannot see (the exact answer has $2\pi$ in front). See [Chapter 2](/ch/orbits/).
+</Predict>
+
+<Sim name="primer-numbers-dimensions" size="text" minHeight={380}>
+**A dimensional-analysis workbench.** Choose a target, then raise $G$, $M$, $R$, $c$ and $\rho$ to powers until the dimensions match. The panel tells you which of mass, length and time is off. When you succeed, it evaluates your combination for the Sun and says which chapter uses it. Try to build a length *without* using $R$: you will have found the size of a black hole.
+</Sim>
+
+Dimensional analysis cannot give you pure numbers like $2\pi$ or $\tfrac{3}{5}$, and it cannot tell apart two quantities with the same dimensions (torque and energy are both $\mathsf M\,\mathsf L^2\,\mathsf T^{-2}$). But it gets the *exponents* right, and in astrophysics the exponents usually carry the physics. The free-fall time $\sim 1/\sqrt{G\rho}$ of [Chapter 7](/ch/star-formation/), the Schwarzschild radius $\sim GM/c^2$ of [Chapter 19](/ch/black-holes/) and the gravitational-wave luminosity scale $c^5/G$ of [Chapter 20](/ch/gravitational-waves/) all come out of the workbench above in seconds.
+
+<Level min={3} title="Units that set constants to one">
+Theorists often pick units in which some constants equal 1. In **geometrised units** $G = c = 1$, so mass is measured in length: $M_\odot \to GM_\odot/c^2 = 1.48$ km. In **natural units** $\hbar = c = k_B = 1$, and mass, energy, temperature and inverse length become interchangeable ($1\ \text{eV} \leftrightarrow 1.16\times10^4$ K). Simulations do the same thing for numerical reasons: the orbit code of [Chapter 2](/ch/orbits/) uses AU, years and solar masses so that $GM_\odot = 4\pi^2$ and every number stays of order one. Restoring SI units at the end is itself an exercise in dimensional analysis: there is exactly one way to put the $G$s and $c$s back.
+</Level>
+
+## Where these tools are used
+
+You now have the three habits that the rest of the course leans on:
+
+- **Powers of ten** for every estimate, starting with the Fermi problems of [Chapter 1](/ch/scales/) and weighing the Sun in [Chapter 2](/ch/orbits/).
+- **Logarithms and log scales** for magnitudes ([Chapter 1](/ch/scales/)), the Hertzsprung–Russell diagram ([Chapter 14](/ch/main-sequence/)), spectra spanning many decades of wavelength ([Chapter 4](/ch/light/)) and the energy-error plots of every simulation.
+- **Uncertainties** wherever a measurement meets a model: exoplanet masses and radii ([Chapter 10](/ch/exoplanets/)), the Hubble constant ([Chapter 25](/ch/expansion/)), the cosmological parameters from the CMB ([Chapter 27](/ch/cmb/)).
+- **Dimensional analysis** as the first step of nearly every derivation in the book.
+
+The next primer, [Appendix A2](/ch/primer-functions/), turns from numbers to *relationships* between numbers: power laws, exponentials and the trigonometry of angles on the sky.

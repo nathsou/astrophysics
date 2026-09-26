@@ -68,6 +68,17 @@ const FNS: Fn[] = [
   },
 ];
 
+/** Translucent backdrop so legend text stays readable over curves. */
+function backdrop(ctx: CanvasRenderingContext2D, bg: string, x: number, y: number, lines: string[], lh: number, extra = 0) {
+  ctx.save();
+  ctx.font = '11px Inter, system-ui, sans-serif';
+  const w = Math.max(...lines.map((s) => ctx.measureText(s).width)) + extra;
+  ctx.globalAlpha = 0.82;
+  ctx.fillStyle = bg;
+  ctx.fillRect(x - 6, y - lh / 2 - 5, w + 12, lines.length * lh + 6);
+  ctx.restore();
+}
+
 export default defineSim({
   mount({ host, params }) {
     let pal = palette();
@@ -117,6 +128,7 @@ export default defineSim({
         plot.fn((x) => poly(x, order), { color: pal.accent, width: 2.2, samples: 600 });
         plot.point(a, fn.f(a), { r: 5, color: pal.accent, stroke: pal.fg, label: `a = ${fmt(a, 3)}` });
       });
+      backdrop(plot.ctx, pal.bg, plot.m.l + 10, plot.m.t + 14, [`— ${fn.label}`, `— Taylor polynomial of order ${order}`, 'shaded: within 1%'], 17);
       plot.text(`— ${fn.label}`, plot.m.l + 10, plot.m.t + 14, { color: pal.fg });
       plot.text(`— Taylor polynomial of order ${order}`, plot.m.l + 10, plot.m.t + 31, { color: pal.accent });
       plot.text(`shaded: within 1%`, plot.m.l + 10, plot.m.t + 48, { color: pal.good });

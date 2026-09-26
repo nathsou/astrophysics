@@ -51,7 +51,7 @@ export default defineSim({
     const hs = new Float64Array(NH);
     const errs = METHODS.map(() => new Float64Array(NH));
     for (let k = 0; k < NH; k++) {
-      const n = Math.max(1, Math.round(T_END / (1.2 * Math.pow(1e-4 / 1.2, k / (NH - 1)))));
+      const n = Math.max(1, Math.round(T_END / (2.5 * Math.pow(1e-4 / 2.5, k / (NH - 1)))));
       const hk = T_END / n;
       hs[k] = hk;
       METHODS.forEach((m, i) => {
@@ -85,7 +85,7 @@ export default defineSim({
     left.el.style.borderRight = '1px solid var(--rule)';
     const phase = new Plot(left.canvas, { x: { min: -2.2, max: 2.2, label: 'position x' }, y: { min: -2.2, max: 2.2, label: 'velocity v' }, title: 'Phase space', margin: { l: 44, r: 10, t: 28, b: 40 } });
     const conv = new Plot(right.canvas, {
-      x: { min: 1e-4, max: 1.2, log: true, label: 'step size h (period = 2π ≈ 6.3)' },
+      x: { min: 1e-4, max: 3, log: true, label: 'step size h (period = 2π ≈ 6.3)' },
       y: { min: 1e-16, max: 10, log: true, label: 'error at t = 20' },
       title: 'Global error vs step size',
       margin: { l: 50, r: 10, t: 28, b: 42 },
@@ -99,6 +99,7 @@ export default defineSim({
         t += h;
         METHODS.forEach((m, i) => {
           const s = states[i];
+          if (Math.hypot(s[0], s[1]) > 20) return; // far off the plot: stop advancing this one
           STEP[m.id](s, h);
           const tr = trails[i];
           if (tr.n < TRAIL) { tr.x[tr.n] = s[0]; tr.v[tr.n] = s[1]; tr.n++; }
@@ -134,7 +135,7 @@ export default defineSim({
           conv.fn((x) => e0 * Math.pow(x / h0, m.order), { color: pal.faint, dash: [3, 4], width: 1 });
         });
         METHODS.forEach((m, i) => conv.line(hs, errs[i], { color: pal.series[m.color], width: 2 }));
-        conv.vline(h, { color: pal.accent, label: `h = ${fmt(h, 2)}` });
+        conv.vline(h, { color: pal.fg, label: `h = ${fmt(h, 2)}` });
       });
       METHODS.forEach((m, i) => {
         conv.text(`${m.label} ∝ h${m.order === 1 ? '¹' : m.order === 2 ? '²' : '⁴'}`, conv.m.l + conv.pw - 6, conv.m.t + conv.ph - 10 - 16 * (2 - i), { color: pal.series[m.color], align: 'right' });
@@ -150,7 +151,7 @@ export default defineSim({
     const panel = new Panel(host);
     panel.playPause(() => loop.paused, (p) => (loop.paused = p));
     panel.button('Reset', () => { reset(); loop.invalidate(); });
-    panel.slider('Step h', { min: 0.01, max: 1.2, value: h, log: true }, (v) => { h = v; reset(); loop.invalidate(); });
+    panel.slider('Step h', { min: 0.01, max: 2.5, value: h, log: true }, (v) => { h = v; reset(); loop.invalidate(); });
     const energy = panel.readout('E / E₀:');
 
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };

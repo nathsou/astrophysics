@@ -14,11 +14,22 @@ function exact(t: number, lam: number) {
   return (lam * lam * Math.cos(t) + lam * Math.sin(t)) / d - ((lam * lam) / d) * Math.exp(-lam * t);
 }
 
+/** Translucent backdrop so legend text stays readable over curves. */
+function backdrop(ctx: CanvasRenderingContext2D, bg: string, x: number, y: number, lines: string[], lh: number, extra = 0) {
+  ctx.save();
+  ctx.font = '11px Inter, system-ui, sans-serif';
+  const w = Math.max(...lines.map((s) => ctx.measureText(s).width)) + extra;
+  ctx.globalAlpha = 0.82;
+  ctx.fillStyle = bg;
+  ctx.fillRect(x - 6, y - lh / 2 - 5, w + 12, lines.length * lh + 6);
+  ctx.restore();
+}
+
 export default defineSim({
   mount({ host }) {
     let pal = palette();
     let lam = 50;
-    let h = 0.05;
+    let h = 0.03;
     let showRK4 = false;
 
     const wrap = document.createElement('div');
@@ -39,7 +50,7 @@ export default defineSim({
     function run(kind: 'explicit' | 'implicit' | 'rk4') {
       const n = Math.ceil(T_END / h);
       const ts = new Float64Array(n + 1), ys = new Float64Array(n + 1);
-      let y = 0, t = 0, blew = -1;
+      let y = 0, t = 0, blew = -1, gone = false;
       const f = (tt: number, yy: number) => -lam * (yy - Math.cos(tt));
       for (let i = 1; i <= n; i++) {
         if (kind === 'explicit') y = y + h * f(t, y);
@@ -49,7 +60,10 @@ export default defineSim({
           y += (h / 6) * (k1 + 2 * k2 + 2 * k3 + k4);
         }
         t += h;
-        ts[i] = t; ys[i] = Number.isFinite(y) ? Math.max(-50, Math.min(50, y)) : NaN;
+        ts[i] = t;
+        // once a run has clearly left the plot, stop drawing it (keeps the figure readable)
+        ys[i] = gone ? NaN : Math.max(-50, Math.min(50, y));
+        if (!(Math.abs(y) < 5)) gone = true;
         if (blew < 0 && !(Math.abs(y) < 1e6)) blew = t;
       }
       return { ts, ys, blew, final: y };
@@ -71,12 +85,14 @@ export default defineSim({
           for (let i = 0; i < I.ts.length; i++) main.point(I.ts[i], I.ys[i], { r: 2.5, color: pal.series[0] });
         }
       });
-      let Y = main.m.t + 14;
-      const lab = (txt: string, col: string) => { main.text(txt, main.m.l + 10, Y, { color: col }); Y += 16; };
-      lab('— exact', pal.fg);
-      lab(`— explicit Euler${E.blew >= 0 ? `  (exploded by t = ${fmt(E.blew, 2)})` : Math.abs(1 - z) > 1 ? '  (growing!)' : ''}`, pal.series[2]);
-      lab('— implicit Euler', pal.series[0]);
-      if (R) lab(`— RK4${R.blew >= 0 ? `  (exploded by t = ${fmt(R.blew, 2)})` : ''}`, pal.series[1]);
+      const labels: [string, string][] = [
+        ['— exact', pal.fg],
+        [`— explicit Euler${E.blew >= 0 ? `  (exploded by t = ${fmt(E.blew, 2)})` : Math.abs(1 - z) > 1 ? '  (growing!)' : ''}`, pal.series[2]],
+        ['— implicit Euler', pal.series[0]],
+      ];
+      if (R) labels.push([`— RK4${R.blew >= 0 ? `  (exploded by t = ${fmt(R.blew, 2)})` : ''}`, pal.series[1]]);
+      backdrop(main.ctx, pal.bg, main.m.l + 10, main.m.t + 14, labels.map((l) => l[0]), 16);
+      labels.forEach(([txt, col], i) => main.text(txt, main.m.l + 10, main.m.t + 14 + 16 * i, { color: col }));
 
       amp.draw(() => {
         amp.hline(1, { color: pal.muted, label: 'stable below' });
@@ -84,7 +100,7 @@ export default defineSim({
         amp.fn((x) => 1 / (1 + x), { color: pal.series[0], width: 2 });
         if (showRK4) amp.fn((x) => Math.abs(1 - x + (x * x) / 2 - (x * x * x) / 6 + (x * x * x * x) / 24), { color: pal.series[1], width: 1.5, samples: 600 });
         amp.vline(2, { color: pal.series[2], label: 'hλ = 2' });
-        amp.vline(z, { color: pal.accent, dash: [], width: 1.5 });
+        amp.vline(z, { color: pal.fg, dash: [], width: 1 });
         amp.point(z, Math.max(1e-3, Math.abs(1 - z)), { r: 4.5, color: pal.series[2], stroke: pal.fg });
         amp.point(z, 1 / (1 + z), { r: 4.5, color: pal.series[0], stroke: pal.fg });
       });

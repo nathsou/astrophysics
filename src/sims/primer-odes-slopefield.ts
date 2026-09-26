@@ -17,6 +17,17 @@ const EQS: Eq[] = [
   { id: 'blowup', label: 'Blow-up: y′ = y²', f: (_t, y) => y * y, t: [0, 3], y: [-2, 4], ic: [0, 0.5], yLabel: 'y' },
 ];
 
+/** Translucent backdrop so legend text stays readable over curves. */
+function backdrop(ctx: CanvasRenderingContext2D, bg: string, x: number, y: number, lines: string[], lh: number, extra = 0) {
+  ctx.save();
+  ctx.font = '11px Inter, system-ui, sans-serif';
+  const w = Math.max(...lines.map((s) => ctx.measureText(s).width)) + extra;
+  ctx.globalAlpha = 0.82;
+  ctx.fillStyle = bg;
+  ctx.fillRect(x - 6, y - lh / 2 - 5, w + 12, lines.length * lh + 6);
+  ctx.restore();
+}
+
 export default defineSim({
   mount({ host }) {
     let pal = palette();
@@ -75,7 +86,7 @@ export default defineSim({
         ics.forEach(([t0, y0], k) => {
           const last = k === ics.length - 1;
           const [tf, yf] = trace(t0, y0, hTrace), [tb, yb] = trace(t0, y0, -hTrace);
-          const col = last ? pal.series[0] : pal.series[4];
+          const col = last ? pal.series[1] : pal.series[4];
           plot.line(tf, yf, { color: col, width: last ? 2.4 : 1.6, alpha: last ? 1 : 0.7 });
           plot.line(tb, yb, { color: col, width: last ? 2.4 : 1.6, alpha: last ? 1 : 0.7 });
           plot.point(t0, y0, { r: last ? 5.5 : 3.5, color: col, stroke: last ? pal.fg : undefined });
@@ -94,7 +105,8 @@ export default defineSim({
           for (let i = 0; i < ts.length && i < 200; i++) plot.point(ts[i], ys[i], { r: 3, color: pal.accent });
         }
       });
-      plot.text('— exact (RK4, tiny steps)', plot.m.l + 10, plot.m.t + 14, { color: pal.series[0] });
+      backdrop(plot.ctx, pal.bg, plot.m.l + 10, plot.m.t + 14, showEuler ? ['— exact (RK4, tiny steps)', `— Euler, h = ${fmt(hEuler, 2)}`] : ['— exact (RK4, tiny steps)'], 17);
+      plot.text('— exact (RK4, tiny steps)', plot.m.l + 10, plot.m.t + 14, { color: pal.series[1] });
       if (showEuler) plot.text(`— Euler, h = ${fmt(hEuler, 2)}`, plot.m.l + 10, plot.m.t + 31, { color: pal.accent });
       const [t0, y0] = ics[ics.length - 1];
       icRead.set(`t = ${fmt(t0, 3)}, y = ${fmt(y0, 3)}, slope = ${fmt(eq.f(t0, y0), 3)}`);

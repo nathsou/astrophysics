@@ -147,11 +147,17 @@ export default defineSim({
     panel.slider('Phase of source 2', { min: 0, max: 360, value: 0, step: 1, unit: '°' }, (v) => { phase = (v * Math.PI) / 180; update(); });
     panel.toggle('Second source', true, (v) => { twoSources = v; update(); });
     const ro = panel.readout('d/λ');
-    const rf = panel.readout('First dark fringe at');
+    const rf = panel.readout('Nearest dark line at');
     function update() {
       ro.set(twoSources ? fmt(sep / lambda, 3) : '—');
-      const s = lambda / (2 * sep);
-      rf.set(!twoSources ? 'none (one source)' : s >= 1 ? 'none (d < λ/2)' : `θ = ${fmt((Math.asin(s) * 180) / Math.PI, 3)}°`);
+      // dark where k·d·sinθ − φ = (2m+1)π; report the dark direction closest to straight ahead
+      const kd = ((2 * Math.PI) / lambda) * sep;
+      let best = Infinity;
+      for (let m = -40; m <= 40; m++) {
+        const sn = ((2 * m + 1) * Math.PI + phase) / kd;
+        if (Math.abs(sn) <= 1 && Math.abs(sn) < Math.abs(best)) best = sn;
+      }
+      rf.set(!twoSources ? 'none (one source)' : !Number.isFinite(best) ? 'none (d too small)' : `θ = ${fmt((Math.asin(Math.abs(best)) * 180) / Math.PI, 3)}°`);
       loop.invalidate();
     }
     update();

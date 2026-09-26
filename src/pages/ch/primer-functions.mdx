@@ -1,0 +1,253 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: primer-functions
+lede: Most of astrophysics is written in three kinds of function. Power laws say how things scale, exponentials say how things grow and fade, and sines and cosines turn angles on the sky into sizes and distances.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Predict from '../../components/Predict.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+
+<Terms defs={{
+  yv: ['Output', 'The quantity that depends on x, such as a luminosity, a period or a flux.'],
+  xv: ['Input', 'The quantity you vary, such as a mass, a distance or an orbit size.'],
+  A: ['Prefactor', 'Sets the overall level: the value of y when x = 1. It carries the units and the "details" (constants, 4π\'s), and it cancels in any ratio.'],
+  n: ['Exponent (power)', 'Says how steeply y responds: multiply x by a factor k and y is multiplied by kⁿ. Negative n means y falls as x grows.'],
+  Lstar: ['Luminosity of a main-sequence star', 'Total power output. Rises steeply with mass: a star twice as massive is roughly ten times as bright.'],
+  Mstar: ['Mass of the star', 'The one number that, more than any other, fixes how a star lives. Measured in solar masses here.'],
+  tms: ['Main-sequence lifetime', 'Fuel divided by burn rate: fuel ∝ M, burn rate ∝ L ∝ M³·⁵, so t ∝ M⁻²·⁵.'],
+  Nt: ['Amount remaining at time t', 'The number of atoms, photons or anything else that decays at a steady fractional rate.'],
+  N0: ['Starting amount', 'The value at t = 0. It multiplies everything: the shape of the curve does not depend on it.'],
+  tt: ['Time', 'Elapsed time. It appears in the exponent, measured in units of τ: only the ratio t/τ matters.'],
+  tau: ['e-folding time', 'The time for the quantity to fall by a factor e = 2.718. After 1τ, 37% is left; after 5τ, less than 1%.'],
+  thalf: ['Half-life', 'The time to fall by a factor of 2. Always 0.693 τ, because ln 2 = 0.693.'],
+  euler: ['Euler\'s number e', 'e = 2.71828…, the base for which the growth rate of eˣ equals eˣ itself. It is the natural base for anything that changes at a rate proportional to its size.'],
+  theta: ['Angle', 'Measured in radians: arc length divided by radius. The small-angle formulas only work in radians.'],
+  size: ['Physical size', 'The true width of the object (or the baseline, for parallax), in the same length units as d.'],
+  dist: ['Distance', 'How far away the object is. At fixed physical size, the angle shrinks as 1/d.'],
+  cx: ['Horizontal coordinate on the unit circle', 'The cosine of the angle: how far the point lies along the starting direction.'],
+  cy: ['Vertical coordinate on the unit circle', 'The sine of the angle: how far the point has turned away from the starting direction.'],
+}} />
+
+## Three shapes that run the universe
+
+If you open any chapter of this course and look at its key equations, most of them are one of three kinds. **Power laws** ($y \propto x^n$) describe how one quantity scales with another: the flux from a star with distance, its luminosity with its mass, an orbit's period with its size. **Exponentials** ($y \propto e^{x}$) describe things that change by a fixed *fraction* in each step: radioactive decay, light fading through dust, the thinning of an atmosphere with height. **Trigonometric functions** (sin, cos, tan) turn angles, which is all a telescope ever measures, into positions, sizes and velocities.
+
+This primer takes each in turn, with astrophysical examples and links to the chapters that use them. It assumes the powers of ten and logarithms of [Appendix A1](/ch/primer-numbers/).
+
+## Power laws: how things scale
+
+<Tiers>
+<Fragment slot="l1">
+A **scaling law** answers the question "if I double this, what happens to that?". Double your distance from a lamp, and it looks four times fainter: the brightness scales as one over the distance *squared*. Double the size of a planet's orbit, and its year gets 2.8 times longer: the period scales as the orbit size to the power one and a half. Double a star's mass, and it shines about eleven times brighter.
+
+Astronomers write these as "proportional to", with the symbol $\propto$. The beauty of the idea is that you don't need to know any constants. If you know how the Sun behaves and how the law scales, you can work out any other star by ratios alone.
+</Fragment>
+<Fragment slot="l2">
+<KeyEq title="Power law, and the ratio trick">
+$$
+\term{yv}{y} = \term{A}{A}\,\term{xv}{x}^{\term{n}{n}}
+\qquad\Longrightarrow\qquad
+\frac{\term{yv}{y_2}}{\term{yv}{y_1}} = \left(\frac{\term{xv}{x_2}}{\term{xv}{x_1}}\right)^{\term{n}{n}}
+$$
+<Fragment slot="where"><span data-term="A">$A$</span> is the prefactor and <span data-term="n">$n$</span> the exponent. Dividing one case by another cancels $A$, along with every constant and unit hidden inside it. That is why astronomers compare everything to the Sun: write a law in "solar units" and the prefactor becomes 1.</Fragment>
+</KeyEq>
+
+Some power laws you will meet: the **inverse-square law** of flux, $F = L/4\pi d^2$ ($n = -2$, [Chapter 4](/ch/light/)); the **Stefan–Boltzmann law** $L = 4\pi R^2\sigma T^4$ ($n = 4$ in temperature, [Chapter 4](/ch/light/)); **Kepler's third law** $P \propto a^{3/2}$ ([Chapter 2](/ch/orbits/)); and the main-sequence **mass–luminosity relation** $L \propto M^{3.5}$ ([Chapter 14](/ch/main-sequence/)).
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="Power law, and the ratio trick">
+$$
+\term{yv}{y} = \term{A}{A}\,\term{xv}{x}^{\term{n}{n}}
+\qquad\Longrightarrow\qquad
+\frac{\term{yv}{y_2}}{\term{yv}{y_1}} = \left(\frac{\term{xv}{x_2}}{\term{xv}{x_1}}\right)^{\term{n}{n}},
+\qquad
+\term{n}{n} = \frac{d\ln \term{yv}{y}}{d\ln \term{xv}{x}}
+$$
+<Fragment slot="where">A power law is the unique (continuous) *scale-free* function: $f(\lambda x) = \lambda^n f(x)$ for all $\lambda$, so no value of $x$ is special. Exponentials, by contrast, carry a scale ($\tau$ in $e^{-t/\tau}$). Seeing a power law in data is therefore a hint that no characteristic scale is at work over that range, and a break in the power law marks where one appears.</Fragment>
+</KeyEq>
+
+Canonical examples: $F = L/4\pi d^2$ ($n=-2$), $L = 4\pi R^2\sigma T^4$, $P^2 \propto a^3/M$, $L\propto M^{3.5}$ on the upper main sequence, and the initial mass function $dN/dM \propto M^{-2.35}$ ([Chapter 7](/ch/star-formation/)).
+</Fragment>
+</Tiers>
+
+Power laws also **combine** simply: multiply them and the exponents add. A star's main-sequence lifetime is its fuel (proportional to its mass) divided by the rate it burns it (its luminosity):
+
+$$
+\term{tms}{t} \propto \frac{\term{Mstar}{M}}{\term{Lstar}{L}} \propto \frac{\term{Mstar}{M}}{\term{Mstar}{M}^{3.5}} = \term{Mstar}{M}^{-2.5}.
+$$
+
+The Sun lasts about 10 billion years. A star of <Var name="msM" value={2} min={0.5} max={20} log digits={3} /> M☉ shines at about <Out name="msL" /> and lasts about <Out name="msT" />. Drag the mass up: at 20 M☉ the star burns out in about 6 million years, which is why massive stars are rare and young wherever you find them ([Chapter 14](/ch/main-sequence/)). These exponents are approximate: the real relation curves, as the next figure shows.
+
+<Aside>**Why 3.5?** The exponent comes from how easily radiation leaks out of a star, which [Chapter 13](/ch/energy-transport/) derives. It is not a law of nature so much as a good fit over a range of masses.</Aside>
+
+## Log–log plots: the slope is the exponent
+
+Take the logarithm of both sides of $y = A x^n$ and the power law becomes a straight line:
+
+<KeyEq title="A power law on log–log axes">
+$$
+\log \term{yv}{y} = \log \term{A}{A} + \term{n}{n}\,\log \term{xv}{x}
+$$
+<Fragment slot="where">Plot $\log y$ against $\log x$ (or plot $y$ against $x$ on two logarithmic axes, which is the same thing) and a power law is a line. Its **slope is the exponent** <span data-term="n">$n$</span>, and its height is set by the prefactor <span data-term="A">$A$</span>. It uses the rules for logs of products and powers from [Appendix A1](/ch/primer-numbers/).</Fragment>
+</KeyEq>
+
+<Tiers>
+<Fragment slot="l1">
+This is the most useful trick for reading astronomical plots. When both axes go up in factors of ten, any power law turns into a straight line, and **how steep the line is tells you the power**. A line that rises one decade for every decade across has a power of 1; two decades up per decade across means a power of 2; a line going *down* means a negative power, like the fading of light with distance.
+</Fragment>
+<Fragment slot="l2">
+To read an exponent off a log–log plot, pick two points on the line and divide the number of decades it rises by the number of decades it runs: $n = \Delta\log y/\Delta\log x$. For the planets, going from Earth ($a = 1$ AU, $P = 1$ yr) to Neptune ($a = 30.1$, $P = 164.8$) climbs $\log 164.8 = 2.22$ decades in period over $\log 30.1 = 1.48$ decades in size: $n = 2.22/1.48 = 1.50$. That is Kepler's third law read straight off the data.
+</Fragment>
+<Fragment slot="l3">
+The local slope $d\ln y/d\ln x$ is defined for any positive function, not just power laws. When it changes along the curve, the data follow a *curved* or *broken* power law, and the kinks usually mark new physics (a change of opacity source, the onset of convection, a transition from one regime to another). Fitting a straight line to $(\log x, \log y)$ by least squares minimises the *fractional* residuals, which is the right thing when the scatter is multiplicative; it is not the same as least squares in linear space, which would be dominated by the largest values.
+</Fragment>
+</Tiers>
+
+<Predict question="Plot the orbital period of the eight planets against their orbit size on log–log axes. What slope will the line have?" choices={['1', '1.5', '2', '3']} answer={1}>
+**1.5.** Kepler's third law says $P^2 \propto a^3$, so $P \propto a^{3/2}$ and the slope on log–log axes is 3/2. Many people guess 3 or 2, reading the exponents in $P^2 \propto a^3$ directly. Try it in the figure below: tick "log–log axes" and drag the slope until the line goes through the planets.
+</Predict>
+
+<Sim name="primer-functions-loglog" minHeight={420}>
+**Find the power law.** Real data on ordinary axes: the planets cluster in a corner, and the curve is hard to judge. Tick **log–log axes** and they fall on a straight line. Adjust the slope and prefactor to match, then press *Best fit* to compare with a least-squares fit in log space. "Planets + Jupiter's moons" adds Io, Europa, Ganymede and Callisto: same slope, but a line about 32 times higher in period, because Jupiter is about 1,000 times less massive than the Sun and $P \propto a^{3/2}/\sqrt{M}$. The main-sequence stars are *not* quite a straight line: see how the slope changes from low to high mass.
+</Sim>
+
+The two parallel lines of planets and moons are worth a second look. The **slope** tells you the physics (gravity follows an inverse-square law, so $P \propto a^{3/2}$), while the **offset** between the lines tells you a parameter (the central mass). Separating "the shape of the law" from "the value of its constants" is what log–log plots do best, and astronomers use this to weigh everything from planets to galaxy clusters ([Chapter 2](/ch/orbits/)).
+
+The stellar mass–luminosity data, meanwhile, bend. The best single exponent over the whole range is about 3.4, but the local slope is closer to 2.3 for the smallest red dwarfs, about 4 around the Sun, and falls below 3 for the most massive stars, where radiation pressure starts to matter. A single power law is a *model*, valid over a range, and [Chapter 14](/ch/main-sequence/) explains where each bend comes from.
+
+## Exponentials: growth and decay by a constant factor
+
+A power law multiplies $x$ by itself a fixed number of times. An exponential does the reverse: it multiplies a fixed number by itself $x$ times. That small swap changes everything.
+
+<Tiers>
+<Fragment slot="l1">
+Something grows or shrinks **exponentially** when it changes by the same *fraction* in every equal step of time (or distance). Half of a radioactive sample decays in one **half-life**, half of what is left in the next, and so on: after ten half-lives, about one atom in a thousand remains. Light passing through a dusty cloud loses the same fraction for every metre it travels. An atmosphere halves in density every few kilometres you climb.
+
+The pattern is always the same. Exponentials start slowly and then run away (or dwindle away) faster than anything else. And each exponential has a built-in *timescale*, like the half-life, that sets its pace.
+</Fragment>
+<Fragment slot="l2">
+<KeyEq title="Exponential decay">
+$$
+\term{Nt}{N(t)} = \term{N0}{N_0}\,\term{euler}{e}^{-\term{tt}{t}/\term{tau}{\tau}} = \term{N0}{N_0}\,2^{-\term{tt}{t}/\term{thalf}{t_{1/2}}},
+\qquad
+\term{thalf}{t_{1/2}} = \term{tau}{\tau}\,\ln 2 \approx 0.693\,\term{tau}{\tau}
+$$
+<Fragment slot="where"><span data-term="tau">$\tau$</span> is the **e-folding time**: after one $\tau$ the amount has fallen to $1/e = 37\%$. <span data-term="thalf">$t_{1/2}$</span> is the **half-life**. The two forms are the same function with different bases. For growth, drop the minus sign.</Fragment>
+</KeyEq>
+
+Why $e = 2.718\ldots$ rather than 2 or 10? Because $e^{t/\tau}$ is the function whose rate of growth at every moment equals the function itself divided by $\tau$. Whenever the rate of change of something is proportional to how much of it there is (more atoms, more decays per second), the answer is $e^{\pm t/\tau}$, with no conversion factors.
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="Exponential decay">
+$$
+\frac{d\term{Nt}{N}}{d\term{tt}{t}} = -\frac{\term{Nt}{N}}{\term{tau}{\tau}}
+\quad\Longrightarrow\quad
+\term{Nt}{N(t)} = \term{N0}{N_0}\,\term{euler}{e}^{-\term{tt}{t}/\term{tau}{\tau}},\qquad \term{thalf}{t_{1/2}} = \term{tau}{\tau}\ln 2
+$$
+<Fragment slot="where">The exponential is the eigenfunction of $d/dt$: $\tfrac{d}{dt}e^{\lambda t} = \lambda e^{\lambda t}$. That is why every linear ODE with constant coefficients is solved by exponentials, why linear perturbations grow or decay exponentially (the Jeans instability, [Chapter 7](/ch/star-formation/)), and why complex $\lambda$ gives oscillations. The series $e^x = \sum x^k/k!$ converges for all $x$; see [Appendix A4](/ch/primer-calculus/) for Taylor series.</Fragment>
+</KeyEq>
+</Fragment>
+</Tiers>
+
+Exponentials run all over the sky:
+
+- **Supernova light.** A Type Ia supernova makes about half a solar mass of radioactive nickel-56, whose decay (half-life 6.1 days) and then that of its daughter cobalt-56 (77 days) power the glow for months ([Chapter 16](/ch/stellar-death/)). After <Var name="halfT" value={20} min={0} max={100} step={1} digits={3} /> days, <Out name="halfLeft" /> of the nickel is left. The late light curve fades as a straight line in *magnitudes*: a log of an exponential is linear.
+- **Extinction.** Starlight through a dust cloud is dimmed as $I = I_0 e^{-\tau_\lambda}$, where the *optical depth* $\tau_\lambda$ grows with the column of dust ([Chapter 6](/ch/ism/)). Ten optical depths let through only 0.005% of the light, which is why the centre of our Galaxy is invisible in visible light but clear in the infrared.
+- **Atmospheres.** In an isothermal atmosphere, density falls as $e^{-h/H}$, with a scale height $H = kT/mg$ of about 8.5 km on Earth. The same law sets the thickness of a star's photosphere and of the gas disk around a young star ([Chapter 8](/ch/planet-formation/)).
+- **The Boltzmann factor.** The fraction of atoms with an energy $E$ above the ground state goes as $e^{-E/kT}$ ([Chapter 5](/ch/spectra/)). With the energy in the exponent, a modest rise in temperature changes populations enormously, which is why the Balmer lines peak in A stars and why fusion is so temperature sensitive ([Chapter 12](/ch/fusion/)).
+
+<Predict question="Race y = x¹⁰ against y = 2ˣ. Both start small; 2ˣ is ahead at x = 1. After which x does 2ˣ overtake x¹⁰ for good?" choices={['x ≈ 10', 'x ≈ 20', 'x ≈ 60', 'Never: x¹⁰ wins']} answer={2}>
+**Around x ≈ 59.** The power law takes the lead almost immediately (at $x \approx 1.08$) and keeps it for a surprisingly long time: at $x = 30$, $x^{10}$ is half a million times larger. But every doubling of $x$ only multiplies $x^{10}$ by $2^{10} = 1024$, while adding 10 to $x$ does the same for $2^x$. Beyond $x \approx 58.8$ the exponential wins, and the gap then grows without limit. **Any exponential eventually beats any power law**, but "eventually" can be later than you think.
+</Predict>
+
+<Sim name="primer-functions-race" minHeight={380}>
+**Power law versus exponential.** Press *Race*. On linear axes the plot rescales to keep the leader in view, so the loser looks flat. Tick **log y-axis**: now the exponential is a *straight line* (a log of $b^x$ is $x\log b$) while the power law bends over, and the crossover points are easy to see. Raise the power $n$ and the exponential needs longer to win; lower the base $b$ towards 1 and it may not win until far off the plot.
+</Sim>
+
+On a plot with a logarithmic *y*-axis and a linear *x*-axis (a **semi-log** plot), exponentials are straight lines, just as power laws are straight on log–log plots. That gives a quick diagnostic for any curve: if it straightens on semi-log axes, it's an exponential; if it straightens only on log–log axes, it's a power law.
+
+<Aside>**Compound interest.** Jacob Bernoulli found $e$ in 1683 while asking how much money you would have if interest were compounded ever more often: $(1 + 1/n)^n \to 2.718\ldots$ as $n\to\infty$. Euler named it $e$ and showed its central role in calculus.</Aside>
+
+## Angles and trigonometry
+
+Telescopes measure directions. The position of a star, the size of a galaxy, the parallax that gives a distance, the shadow of a black hole: all are **angles**. Trigonometry is the toolkit for turning them into lengths.
+
+<Tiers>
+<Fragment slot="l1">
+The key idea is the **small-angle rule**: for anything small and far away, its width equals its distance times the angle it covers, as long as you measure the angle in a unit called the **radian**. One radian is the angle for which the arc length equals the radius: about 57 degrees. So a coin 2 cm wide seen from 2 km away covers one hundred-thousandth of a radian.
+
+A lovely example: the Sun is about 400 times wider than the Moon, but also about 400 times farther away. So both cover almost the same angle in our sky, half a degree. That coincidence is why the Moon can just cover the Sun in a total eclipse, and why eclipses were the first way to see the Sun's corona.
+
+For larger angles the rule needs help from the **sine**, **cosine** and **tangent**. They describe how far a point has moved sideways and forwards as it turns around a circle. You will meet them whenever something rotates, orbits or oscillates, or whenever we see something tilted.
+</Fragment>
+<Fragment slot="l2">
+**Radians.** An angle $\theta$ in radians is arc length divided by radius. A full circle is $2\pi$ rad = 360°, so 1 rad = 57.30°. Astronomers subdivide degrees into 60 arcminutes (′) and each arcminute into 60 arcseconds (″), which makes **1 rad = 206,265″**, the number that turns up in the definition of the parsec ([Chapter 1](/ch/scales/)).
+
+**Sine, cosine, tangent.** Put a point on a circle of radius 1 at angle $\theta$ from the horizontal. Its coordinates are
+
+$$
+\term{cx}{x} = \cos\term{theta}{\theta},\qquad \term{cy}{y} = \sin\term{theta}{\theta},\qquad \tan\term{theta}{\theta} = \frac{\sin\term{theta}{\theta}}{\cos\term{theta}{\theta}},
+$$
+
+and in a right-angled triangle they are the familiar ratios: opposite over hypotenuse, adjacent over hypotenuse, opposite over adjacent. Pythagoras gives $\sin^2\theta + \cos^2\theta = 1$.
+
+<KeyEq title="The small-angle approximation">
+$$
+\sin\term{theta}{\theta} \approx \tan\term{theta}{\theta} \approx \term{theta}{\theta}
+\qquad\Longrightarrow\qquad
+\term{size}{s} \approx \term{dist}{d}\,\term{theta}{\theta}\quad(\term{theta}{\theta}\ \text{in radians})
+$$
+<Fragment slot="where">An object of size <span data-term="size">$s$</span> at distance <span data-term="dist">$d$</span> subtends an angle <span data-term="theta">$\theta$</span> ≈ $s/d$. The approximation is better than 1% below about 14°, and almost every angle in astronomy is far smaller than that.</Fragment>
+</KeyEq>
+
+Worked example: the Sun covers 0.533° = $9.30\times10^{-3}$ rad at a distance of 1 AU = $1.496\times10^{8}$ km, so its diameter is $9.30\times10^{-3}\times1.496\times10^8 \approx 1.39\times10^{6}$ km. The Event Horizon Telescope's ring around the black hole M87* is 42 microarcseconds across ($2.0\times10^{-10}$ rad) at a distance of 16.8 Mpc, so it is about $10^{14}$ m wide, or 700 AU: about five times the black hole's Schwarzschild radius, just as general relativity predicts ([Chapter 19](/ch/black-holes/)).
+</Fragment>
+<Fragment slot="l3">
+Radians are arc length over radius, 1 rad = 206,265″. On the unit circle $(x, y) = (\cos\theta, \sin\theta)$ and $\tan\theta = \sin\theta/\cos\theta$.
+
+<KeyEq title="The small-angle approximation">
+$$
+\sin\term{theta}{\theta} = \term{theta}{\theta} - \frac{\term{theta}{\theta}^3}{6} + \ldots,\qquad
+\tan\term{theta}{\theta} = \term{theta}{\theta} + \frac{\term{theta}{\theta}^3}{3} + \ldots,\qquad
+\cos\term{theta}{\theta} = 1 - \frac{\term{theta}{\theta}^2}{2} + \ldots
+\qquad\Longrightarrow\qquad \term{size}{s} \approx \term{dist}{d}\,\term{theta}{\theta}
+$$
+<Fragment slot="where">The relative errors of $\sin\theta\approx\theta$ and $\tan\theta\approx\theta$ are $\theta^2/6$ and $\theta^2/3$: 1% at about 14° and 10°. These Taylor series, and the neat derivative $\tfrac{d}{d\theta}\sin\theta = \cos\theta$, hold only in radians, which is the real reason radians are "natural". Euler's formula $e^{i\theta} = \cos\theta + i\sin\theta$ ties this section to the previous one: sines and cosines are exponentials with imaginary rate, which is why oscillations and waves ([Appendix A8](/ch/primer-waves/)) are solved with $e^{i\omega t}$.</Fragment>
+</KeyEq>
+
+Examples: the Sun's 0.533° at 1 AU gives $1.39\times10^6$ km; the EHT ring of M87*, 42 μas at 16.8 Mpc, is about $10^{14}$ m $\approx 5.5\,r_s$ for $M = 6.5\times10^9\,M_\odot$ ([Chapter 19](/ch/black-holes/)); a lens with Einstein radius $\theta_E\sim1''$ at a gigaparsec traces a ring about 10 kpc across ([Chapter 24](/ch/lensing/)).
+</Fragment>
+</Tiers>
+
+<Predict question="At what angle does the small-angle approximation sin θ ≈ θ become 1% wrong?" choices={['About 1°', 'About 14°', 'About 30°', 'About 45°']} answer={1}>
+**About 14°.** The error of $\sin\theta \approx \theta$ grows as $\theta^2/6$, so it reaches 1% when $\theta^2 = 0.06$, $\theta \approx 0.245$ rad = 14°. For tan it is $\theta^2/3$, reaching 1% at 10°. For the angles astronomers usually handle, from arcseconds down to microarcseconds, the error is below $10^{-10}$ and completely irrelevant. Try the presets in the figure.
+</Predict>
+
+<Sim name="primer-functions-trig" minHeight={380}>
+**The unit circle and small angles.** Drag the orange dot around the circle. Its horizontal distance from the centre is $\cos\theta$ (blue), its height is $\sin\theta$ (green), and the pink segment on the vertical tangent line is $\tan\theta$. The thick orange arc has length $\theta$ in radians. On the right, the three curves coincide at small angles and peel apart as $\theta$ grows; the readouts give the relative error of the approximation. The presets include the full Moon, the parallax of the nearest star and the ring of the M87* black hole.
+</Sim>
+
+Trigonometry also appears whenever we see something **tilted**. A planet on an orbit inclined at angle $i$ to the sky makes its star wobble towards and away from us by only $\sin i$ of the full amount, which is why radial-velocity surveys measure $m \sin i$ rather than the planet's mass ([Chapter 10](/ch/exoplanets/)). And anything that goes round in a circle, seen edge-on, moves back and forth as a sine wave: the radial-velocity curve of a star with a planet, the light of a pulsating Cepheid, the oscillation of a pendulum. The vector version of these ideas, with dot products doing the projecting, is the subject of [Appendix A3](/ch/primer-vectors/).
+
+<History title="Trigonometry was invented for astronomy" year="c. 140 BCE – 1150 CE">
+Trigonometry was not born in geometry classrooms but in observatories. Around 140 BCE the Greek astronomer **Hipparchus** of Nicaea, wanting to predict the positions of the Sun and Moon, compiled what may be the first table of *chords*: the length of the straight line cutting across a circle for a given angle. Three centuries later Ptolemy's *Almagest* gave a chord table in half-degree steps, and astronomers used it for over a thousand years.
+
+The sine itself came from India. In the *Āryabhaṭīya* (499 CE), **Āryabhaṭa** tabulated the *half*-chord, which is far more convenient for astronomy, calling it *ardha-jyā* ("half bowstring"), usually shortened to *jyā* or *jīvā*. Arab astronomers such as al-Battānī (c. 900 CE), who also used tangents drawn from the lengths of shadows, adopted it and transliterated the word as *jība*. Arabic is written without short vowels, and when the texts were translated into Latin in 12th-century Spain, the translator read the consonants *j-b* as *jayb*, "a fold" or "a pocket", and rendered it in Latin as *sinus*. The mistranslation stuck: every time you write "sin", you are writing a medieval misreading of the Sanskrit word for a bowstring.
+</History>
+
+## Where these tools are used
+
+You now have the three function families that carry most of the course:
+
+- **Power laws**: Kepler's third law ([Chapter 2](/ch/orbits/)), blackbody luminosities ([Chapter 4](/ch/light/)), stellar scaling relations ([Chapters 11](/ch/stellar-structure/) and [14](/ch/main-sequence/)), the initial mass function ([Chapter 7](/ch/star-formation/)), and a log–log plot in nearly every chapter.
+- **Exponentials**: the Boltzmann factor ([Chapter 5](/ch/spectra/)), extinction and optical depth ([Chapter 6](/ch/ism/)), fusion rates ([Chapter 12](/ch/fusion/)), supernova light curves ([Chapter 16](/ch/stellar-death/)), and the accelerating expansion of the universe, which grows as $e^{Ht}$ once dark energy dominates ([Chapter 25](/ch/expansion/)).
+- **Trigonometry**: parallax and angular sizes ([Chapter 1](/ch/scales/)), orbits in polar coordinates ([Chapter 2](/ch/orbits/)), inclinations ([Chapter 10](/ch/exoplanets/)), and gravitational lensing ([Chapter 24](/ch/lensing/)).
+
+Next, [Appendix A3](/ch/primer-vectors/) upgrades the numbers and angles of this primer to arrows in space: vectors, their products and the coordinate systems that describe the sky.

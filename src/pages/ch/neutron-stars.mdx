@@ -1,0 +1,256 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: neutron-stars
+lede: Squeeze one and a half Suns into a sphere the size of a city, spin it up to hundreds of times a second, wrap it in a magnetic field a trillion times Earth's, and you get the most extreme clock in the universe.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Photo from '../../components/Photo.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  M: ['Mass', 'For a neutron star, roughly 1.1–2.3 M☉ packed into a city-sized sphere.'],
+  R: ['Radius', 'About 11–13 km for a typical 1.4 M☉ neutron star — set by the nuclear equation of state, and the main thing NICER measures.'],
+  rho: ['Density', 'Mass per volume. Neutron-star interiors reach several times the density of an atomic nucleus.'],
+  g: ['Surface gravity', "Acceleration felt standing on the surface: GM/R². For a neutron star, about 10¹¹ times Earth's."],
+  Comp: ['Compactness', 'GM/(Rc²), a dimensionless measure of how close an object is to being a black hole. 0 for ordinary matter, 0.5 at a black hole horizon.'],
+  I: ['Moment of inertia', 'Resistance to spin-up/spin-down, roughly (2/5)MR² for a uniform sphere; about 10⁴⁵ g cm² for a typical neutron star.'],
+  Omega: ['Angular spin frequency', '2π/P. Appears to the fourth power in the spin-down luminosity, so it dominates everything.'],
+  P: ['Spin period', 'Time for one rotation: 1.4 ms to about 12 s for known pulsars.'],
+  Pdot: ['Period derivative', 'Rate at which the spin period lengthens, almost always positive: pulsars spin down.'],
+  Bp: ['Polar magnetic field strength', 'Field strength at the magnetic pole. Sets how hard the star radiates as it spins.'],
+  alpha: ['Magnetic inclination', 'Angle between the spin axis and the magnetic dipole axis.'],
+  zeta: ['Viewing angle', 'Angle between the spin axis and the line of sight to Earth. A pulse is seen only if the swinging beam crosses this angle.'],
+  Edot: ['Spin-down luminosity', 'Rate of loss of rotational kinetic energy, radiated as electromagnetic and particle energy.'],
+  tauc: ['Characteristic age', 'P/(2Ṗ): the spin-down age assuming pure magnetic-dipole braking from birth at P≈0.'],
+  DM: ['Dispersion measure', 'Column density of free electrons along the line of sight, in pc cm⁻³. Delays low frequencies more than high ones.'],
+  degen: ['Degeneracy pressure', 'Pressure from the Pauli exclusion principle alone, present even at zero temperature — what first halts collapse.'],
+}} />
+
+## From core collapse to nuclear density
+
+<Photo src="/img/neutron-stars/crab-nebula-heart.jpg" alt="Close-up Hubble image of the centre of the Crab Nebula: glowing red filaments of gas surround a ghostly blue synchrotron glow, with two bright stars near the centre, the rightmost being the pulsar" credit="NASA and ESA, Acknowledgment: J. Hester (ASU) and M. Weisskopf (NASA/MSFC)" license="Public domain" href="https://www.nasa.gov/image-article/nasas-hubble-captures-beating-heart-of-crab-nebula/" size="wide" aspect="3 / 2">
+**The beating heart of the Crab Nebula.** The right-hand of the two bright stars near the centre is the Crab pulsar: a neutron star 20 km across, spinning 30 times a second, embedded in the wreckage of the supernova that Chinese astronomers recorded in 1054 CE. The ghostly blue light is synchrotron radiation from electrons spiralling in the pulsar's magnetic field at close to the speed of light.
+</Photo>
+
+[Chapter 16](/ch/stellar-death/) followed a massive star's core to the end: iron builds up, photodisintegration and electron capture rob it of pressure support, and it collapses in under a second. If the core's mass is below about 2–2.5 M☉ once the dust settles, the collapse has a floor. That floor is a **neutron star**.
+
+<Tiers>
+<Fragment slot="l1">
+As the core collapses, protons and electrons are squeezed together so hard that they turn into neutrons (releasing a burst of neutrinos — the vast majority of a supernova's energy leaves this way, invisibly). Neutrons packed this tightly resist being squeezed further, for a reason with no everyday counterpart: quantum mechanics forbids two identical fermions (particles like neutrons, protons and electrons) from occupying the same state. Cram enough neutrons into a small volume and most of them are forced into high-momentum states purely to stay "different" from their neighbours — not because they are hot. This is <span data-term="degen">degeneracy pressure</span>, and by itself it can hold up anything from a white dwarf up to about 1.4 M☉ (new to exponentials and this kind of scaling? see [Appendix A2](/ch/primer-functions/)). Beyond that, adding the repulsive core of the strong nuclear force between neutrons buys a bit more, pushing the limit up to roughly 2–2.5 M☉.
+</Fragment>
+<Fragment slot="l2">
+Collapse converts protons and electrons to neutrons via inverse beta decay, $p + e^- \to n + \nu_e$, releasing a flood of neutrinos that carries off ~99% of the supernova's energy. What stops the collapse is **neutron degeneracy pressure**: the Pauli exclusion principle forbids two neutrons from sharing a quantum state, so squeezing them together forces most into high-momentum states regardless of temperature. Degeneracy pressure alone supports objects up to the Chandrasekhar-like limit near 1.4–1.5 M☉; above that, the repulsive part of the strong nuclear force between neutrons (they are not point particles) stiffens the equation of state further, raising the true maximum to roughly 2–2.5 M☉ ([Chapter 19](/ch/black-holes/) derives why *some* maximum must exist even in principle).
+</Fragment>
+<Fragment slot="l3">
+Collapse proceeds through electron capture, $p + e^- \to n + \nu_e$, which both removes electron degeneracy pressure and converts the core to a neutron-rich fluid. Neutrinos, produced in huge numbers, initially trapped by their own scattering, diffuse out over seconds and carry off roughly $3\times10^{46}$ J — about 99% of the total energy released, seen directly from SN 1987A. The collapse halts when the equation of state stiffens enough at supra-nuclear density: first from neutron (and proton) Fermi degeneracy, $P \propto n^{5/3}$ non-relativistically, then increasingly from the repulsive short-range part of the nucleon–nucleon strong interaction, whose contribution is poorly constrained but essential above $\sim2\rho_\text{nuc}$.
+</Fragment>
+</Tiers>
+
+<History title="Predicting neutron stars before anyone had seen one" year="1934">
+<Portrait src="/img/people/zwicky.jpg" name="Fritz Zwicky" years="1898–1974" credit="Comet Photo AG (Zürich)" license="CC BY-SA 4.0" href="https://commons.wikimedia.org/wiki/File:Fritz_Zwicky_in_1960.jpg" />
+
+Two years after Chadwick discovered the neutron, Walter Baade and Fritz Zwicky put two and two together at a 1933 meeting of the American Physical Society, publishing the idea in 1934: supernovae might be the transformation of ordinary stars into "neutron stars", ultra-dense remnants held up by neutron degeneracy. It was a spectacular leap — general relativity, nuclear physics and stellar collapse, decades before any of it could be tested. Zwicky was notoriously combative and often dismissed by colleagues (he called them "spherical bastards" — the same from any angle), but he and Baade were right about neutron stars, and Zwicky was also decades ahead on dark matter ([Chapter 21](/ch/milky-way/)) from his 1933 study of the Coma cluster. It took until 1967 for anyone to actually find one.
+</History>
+
+The result is startling. Compress the core of a star down to roughly <span data-term="R">R</span> ≈ 12 km for <span data-term="M">M</span> ≈ 1.4 M☉ — comparable to a city — and you reach densities far past anything in a laboratory.
+
+<Fermi title="How much does a teaspoon of neutron star weigh?">
+Deep in a neutron star's core, densities reach several times the nuclear saturation density $\rho_\text{nuc}\approx2.3\times10^{17}\,\text{kg/m}^3$ (the density inside an ordinary atomic nucleus, where nucleons already touch). Take a representative core density of $4\times10^{17}\,\text{kg/m}^3$:
+
+A teaspoon (<Var name="vol_tsp" value={5} min={1} max={50} /> mL) of this stuff has a mass of <Out name="tsp_mass" />.
+
+That is roughly a billion tonnes — the mass of a small mountain, in a volume you could stir your tea with. Nothing in daily experience prepares you for a number like that; it is a direct consequence of neutrons touching neutrons with no empty space between them, the way protons and neutrons already do inside an ordinary atomic nucleus.
+</Fermi>
+
+<Aside>**Scale check.** If you scaled a neutron star up to the size of Earth while keeping its density, its mass would be about 300 million Earth masses — roughly the mass of the Milky Way's stellar disk, in a single object.</Aside>
+
+## How much can a neutron star weigh?
+
+Newtonian hydrostatic equilibrium (the same balance of pressure against gravity used for ordinary stars, [Chapter 11](/ch/stellar-structure/)) is not quite right here: general relativity matters at these compactnesses, and its correction makes collapse *easier* to trigger, not harder.
+
+<Level min={3} title="The Tolman–Oppenheimer–Volkoff equation">
+Replacing Newtonian hydrostatic equilibrium with its general-relativistic version for a static, spherically symmetric fluid gives the TOV equation:
+
+$$
+\frac{dP}{dr} = -\frac{G\big(\rho + P/c^2\big)\big(m(r) + 4\pi r^3 P/c^2\big)}{r^2\left(1 - \dfrac{2Gm(r)}{rc^2}\right)}, \qquad \frac{dm}{dr} = 4\pi r^2 \rho.
+$$
+
+Every term in parentheses is a *relativistic correction that adds to the effective gravitating source*: pressure itself gravitates (the $P/c^2$ terms), and the denominator — the same factor as in the Schwarzschild metric ([Chapter 19](/ch/black-holes/)) — blows up as $2Gm/rc^2 \to 1$. Given an equation of state $P(\rho)$, integrating these two coupled ODEs outward from the centre (see [Appendix A5](/ch/primer-odes/) for the numerical methods) until $P\to0$ gives the star's radius and total mass. Repeat for a family of central densities and you get the mass–radius curve — the whole point of solving TOV at all.
+</Level>
+
+<Tiers>
+<Fragment slot="l1">
+Because pressure itself adds weight in general relativity, there is a point of no return: past a certain mass, adding pressure to fight gravity only makes gravity stronger, and no equation of state, however stiff, can win. Buchdahl proved in 1959 that this happens before a star could even reach a black hole's size. The maximum mass a neutron star's degeneracy and nuclear forces can support works out to roughly **2.0–2.3 M☉** — nobody knows the number more precisely than that, because it depends on nuclear physics at densities no lab can reach.
+</Fragment>
+<Fragment slot="l2">
+Solving TOV for stiffer and stiffer equations of state (ones where pressure rises faster with density) pushes the maximum mass up, but relativity puts a firm ceiling on how far that can go: even the stiffest physically allowed equation of state (one where the sound speed equals $c$) gives a maximum around 2.0–2.3 M☉. Heavier than that, and hydrostatic equilibrium has no solution — the core must collapse further, to a black hole.
+</Fragment>
+</Tiers>
+
+The heaviest precisely measured neutron star is **PSR J0740+6620**, a millisecond pulsar in a binary whose companion's Shapiro delay (a general-relativistic timing signature — see [Chapter 20](/ch/gravitational-waves/) for the same effect near merging black holes) pins its mass at 2.08 ± 0.07 M☉. That is close enough to the theoretical ceiling to rule out many "soft" equations of state outright.
+
+<KeyEq title="Compactness and surface gravity">
+$$
+\htmlData{term=Comp}{\Xi} = \frac{G\htmlData{term=M}{M}}{\htmlData{term=R}{R}c^2} \approx 0.2, \qquad \htmlData{term=g}{g} = \frac{GM}{R^2} \approx 10^{11}\,g_\oplus
+$$
+<Fragment slot="where"><span data-term="Comp">Ξ</span> is the compactness (0.5 marks a black hole horizon; the Sun's is $2\times10^{-6}$). <span data-term="g">g</span> is the surface gravity, here for $M=1.4\,M_\odot$, $R=12$ km, compared with Earth's $g_\oplus = 9.8\,\text{m/s}^2$.</Fragment>
+</KeyEq>
+
+A neutron star's surface gravity is strong enough that a "mountain" a few millimetres tall is already at the structural limit of nuclear matter, and escape velocity is around half the speed of light — high enough that photon paths visibly bend over the visible disk, letting us see a *bit* of the far hemisphere (this is exactly the light-bending of [Chapter 19](/ch/black-holes/), just not yet strong enough to trap light entirely).
+
+## Inside a neutron star
+
+<Tiers>
+<Fragment slot="l1">
+A neutron star is not one kind of stuff all the way through. Near the surface, matter is squeezed into an ordinary (if bizarrely dense) solid crust of atomic nuclei. Deeper down, the nuclei merge into strange shapes nicknamed "nuclear pasta" before dissolving entirely into a fluid of neutrons, protons and electrons. In the very centre, densities are high enough that nobody is sure what the matter looks like — it might even be free quarks rather than neutrons.
+</Fragment>
+<Fragment slot="l2">
+Working inward: a thin (~1 km) solid **outer crust** of a lattice of increasingly neutron-rich atomic nuclei plus a degenerate electron gas, much like a white dwarf's interior. Past "neutron drip" (~$4\times10^{14}$ kg/m³), the **inner crust** adds a fluid of free neutrons alongside the nuclei, which itself becomes a superfluid. As density climbs further, nuclei deform and merge into competing shapes — sheets, tubes, and other exotic geometries collectively called **nuclear pasta**, a genuine frontier of nuclear structure theory. Below roughly $\rho_\text{nuc}$ the nuclei dissolve entirely into a uniform fluid: the **outer core**, mostly superfluid neutrons with a smaller admixture of superconducting protons and electrons. What happens in the **inner core**, at several times $\rho_\text{nuc}$, is genuinely unknown: hyperons (baryons containing strange quarks), a Bose–Einstein condensate of pions or kaons, or a phase transition to free quark matter have all been proposed, and different choices predict different maximum masses and mass–radius curves.
+</Fragment>
+</Tiers>
+
+<Aside>**Superfluidity you can see.** Neutron-star cores are thought to be superfluid — frictionless — and the crust superconducting. The evidence is indirect but striking: sudden **glitches**, where a pulsar's spin briefly speeds up, are best explained as the superfluid interior suddenly transferring angular momentum to the crust it had decoupled from. The Vela pulsar glitches roughly once every three years.</Aside>
+
+Because the true equation of state above $\rho_\text{nuc}$ is not known from first principles, astronomers constrain it observationally, by measuring $(M, R)$ pairs and seeing which theoretical curves survive. NASA's **NICER** telescope, mounted on the ISS, times X-ray hotspots on rotating pulsars to measure their radii via relativistic light-bending — a beautiful, independent use of the same physics as the [black-hole shadow](/ch/black-holes/). The 2017 detection of gravitational waves from a neutron-star merger, **GW170817** ([Chapter 20](/ch/gravitational-waves/)), added a completely different constraint: how much the stars distorted each other tidally before merging (their *tidal deformability*) depends sensitively on how compressible they are, and the measurement disfavours the stiffest, largest-radius equations of state.
+
+<Predict question="A soft EOS and a stiff EOS both give a 1.4 M☉ neutron star. Which has the larger radius?" choices={['The soft one', 'The stiff one', 'They must be equal']} answer={1}>
+Counter-intuitively, "stiff" here means pressure rises *faster* with density, so a stiff-EOS star needs to compress less to support the same mass — it ends up **larger**, not smaller. "Soft" equations of state give smaller, more compact stars for the same mass. This is why GW170817's upper limit on tidal deformability (large, easily-distorted stars are ruled out) directly excludes the stiffest, largest-radius curves.
+</Predict>
+
+<Sim name="neutron-stars-massradius" minHeight={420}>
+**Mass–radius curves for three illustrative equations of state.** These are schematic curves shaped like real TOV solutions, not the real thing — drag along the highlighted curve (or use the mass slider) to see how radius and mean density change, and how the star compares to Manhattan at the same scale. The green error bars are NICER's measurements for PSR J0030+0451 and the 2.08 M☉ PSR J0740+6620; the red band marks GW170817's upper limit on the radius at 1.4 M☉.
+</Sim>
+
+## Spin, magnetism, and the lighthouse in the sky
+
+Stars rotate, if only slowly, and carry a weak magnetic field. Collapse conserves both angular momentum and magnetic flux (to good approximation, the field lines are frozen into the highly conducting plasma), and both are concentrated into a much smaller area.
+
+<Tiers>
+<Fragment slot="l1">
+Think of a figure skater pulling in their arms: they spin faster because angular momentum (mass × spin speed × size, roughly) is conserved. A collapsing stellar core does the same thing, but the "arms" shrink by a factor of a thousand, not two — so a core rotating once every few days can end up spinning many times *per second*. The magnetic field lines, frozen into the collapsing plasma, get squeezed into a much smaller area the same way, so the field strength shoots up too.
+</Fragment>
+<Fragment slot="l3">
+Conservation of angular momentum, $I\Omega = \text{const}$, with $I \propto MR^2$ for fixed mass gives $\Omega \propto R^{-2}$, i.e. $P \propto R^2$. Flux freezing, $\Phi = BR^2 = \text{const}$ (ideal MHD, infinite conductivity — a fair approximation for stellar plasma on collapse timescales), gives $B \propto R^{-2}$. Both scale the same way with the *square* of the radius ratio, which is why an unremarkable stellar core becomes both a fast rotator and a strong magnet.
+</Fragment>
+</Tiers>
+
+<Fermi title="Flux freezing and the spin-up from collapse">
+A progenitor core of radius <Var name="R_star" value={30000} min={2000} max={100000} log /> km, rotating once every <Var name="P_star" value={1} min={0.05} max={30} log /> day(s), with a surface field of <Var name="B_star" value={100} min={1} max={10000} log /> G, collapses to a neutron star of radius 12 km. Conserving angular momentum ($P \propto R^2$) and magnetic flux ($B \propto R^{-2}$):
+
+Final spin period: <Out name="P_ns" />. Final surface field: <Out name="B_ns" />.
+
+A slowly-spinning, weakly-magnetized star becomes a rapidly-spinning, strongly-magnetized neutron star for free, just from shrinking. Drag the numbers: a smaller or more slowly rotating progenitor core gives an even faster-spinning remnant.
+</Fermi>
+
+### The lighthouse model
+
+<History title="Little Green Men" year="1967">
+In 1967, Jocelyn Bell Burnell, a PhD student at Cambridge, was combing through paper chart recordings from a radio telescope she had helped build, looking for scintillating quasars. She noticed a strange, impossibly regular "bit of scruff" — pulses precisely 1.337 seconds apart, too fast and too clock-like for anything then known. She and her supervisor Antony Hewish half-jokingly labelled the source LGM-1, for "Little Green Men," before ruling out an artificial or terrestrial origin and finding three more such sources elsewhere in the sky, which killed the interstellar-beacon idea and confirmed a natural explanation: rotating, magnetized neutron stars, exactly as Baade and Zwicky's stellar corpses had predicted 33 years earlier. Hewish shared the 1974 Nobel Prize in Physics for the discovery; Bell Burnell, whose sharp-eyed data analysis actually found the signal, was left off it, a decision still debated as one of the Nobel committee's most conspicuous oversights. She has since received numerous other honours, including the 2018 Special Breakthrough Prize in Fundamental Physics, whose $3 million she donated to fund women, minority and refugee students in physics.
+</History>
+
+A pulsar's radio (and often X-ray and gamma-ray) emission is thought to come from charged particles accelerated along open magnetic field lines near the poles, beamed into a narrow cone by relativistic motion — like a lighthouse, not a strobe. We see a pulse only when that beam sweeps across our line of sight once per rotation.
+
+<Predict question="Which loses rotational energy faster: the Crab pulsar (P = 33 ms, B ≈ 4×10¹² G) or a typical young magnetar (P ≈ 7 s, B ≈ 10¹⁵ G)?" choices={['The Crab pulsar', 'The magnetar', 'About the same']} answer={0}>
+The Crab pulsar wins by a factor of tens of thousands, even with a magnetic field 250 times weaker. Spin-down luminosity scales as $\dot E \propto B^2\Omega^4$ — the *fourth power of spin frequency* dominates over the *square* of the field strength. The Crab's $\Omega$ is about 200 times larger than the magnetar's, and $200^4 \approx 1.6\times10^9$ outweighs the factor-of-60,000 disadvantage in $B^2$. Magnetars are ferociously magnetic, but slow; their outbursts are usually powered by the decay of that huge field, not by rotation.
+</Predict>
+
+<KeyEq title="Magnetic dipole spin-down">
+$$
+\htmlData{term=Edot}{\dot E} = -\frac{\htmlData{term=Bp}{B}^2 \htmlData{term=R}{R}^6 \htmlData{term=Omega}{\Omega}^4 \sin^2\htmlData{term=alpha}{\alpha}}{6c^3}
+$$
+<Fragment slot="where">The luminosity radiated by a rotating magnetic dipole in vacuum (Gaussian units). <span data-term="Bp">B</span> is the polar field, <span data-term="R">R</span> the stellar radius, <span data-term="Omega">Ω</span> = 2π/P the spin angular frequency, and <span data-term="alpha">α</span> the angle between spin and magnetic axes. In practice this energy comes out of the star's rotation, $\dot E = -I\Omega\dot\Omega$, which is how $P$ and $\dot P$ let us solve for B.</Fragment>
+</KeyEq>
+
+<Level min={3} title="From Ė to B: the standard formula">
+Equating the magnetic-dipole loss above to the rotational energy loss $\dot E_\text{rot} = -I\Omega\dot\Omega = 4\pi^2 I\dot P/P^3$, and assuming the canonical $\alpha=90°$, $R=10$ km, $I = 10^{45}\,\text{g cm}^2$, gives the field strength purely from timing:
+
+$$
+B \approx 3.2\times10^{19}\sqrt{P\dot P}\ \ \text{G}.
+$$
+
+Integrating $P\dot P = \text{const}$ (constant-$B$ spin-down) from birth at $P\approx0$ gives the **characteristic age**, $\tau_c = P/(2\dot P)$ — a model-dependent age estimate, good when the true age and birth spin are unknown, but it can be badly wrong for anomalously braked or recycled pulsars.
+</Level>
+
+A pulsar with period <Var name="P_sd" value={0.0331} min={0.0014} max={10} log digits={4} /> s and period derivative <Var name="Pdot_sd" value={4.2e-13} min={1e-21} max={1e-10} log digits={3} /> has an inferred surface field of <Out name="sd_B" />, a characteristic age of <Out name="sd_age" />, and a spin-down luminosity of <Out name="sd_edot" /> — try the Crab's numbers, then a millisecond pulsar's.
+
+<Sim name="neutron-stars-pulsar" size="wide" minHeight={480}>
+**A rotating, magnetized neutron star.** The magenta curves are analytic dipole field lines, tilted by inclination α and spinning with the star; the dashed ring is the light cylinder (shown schematically, not to scale — the real ratio is in the caption text). The translucent cones are the polar emission beams; the green dashed line is a fixed observer's line of sight. Watch the pulse-profile strip light up each time a beam sweeps across it, switch to the dispersion waterfall to see low frequencies arrive late, or turn on "Listen" to hear clicks at the star's true spin rate — try J1748−2446ad for its literally audible 716 Hz spin tone.
+</Sim>
+
+<Hood title="the rotating-vector model, field lines and the audio scheduler">
+The scene uses the textbook **rotating vector model**. The spin axis is fixed at world $+z$; the magnetic axis is tilted by $\alpha$ and precesses with spin phase $\phi(t)=2\pi t/P$:
+
+$$
+\hat m(t) = R_z(\phi)\,R_y(\alpha)\,\hat z = (\sin\alpha\cos\phi,\ \sin\alpha\sin\phi,\ \cos\alpha).
+$$
+
+A fixed line of sight at colatitude $\zeta$, $\hat n = (\sin\zeta, 0, \cos\zeta)$, gives the impact angle via $\cos\psi = \cos\alpha\cos\zeta + \sin\alpha\sin\zeta\cos\phi$ — one dot product drives the beam sweep, the pulse profile *and* the dispersion waterfall. Field lines are drawn from the analytic dipole shape $r(\theta) = L\sin^2\theta$ in the magnetic frame, then rotated into the world frame by the same $R_z(\phi)R_y(\alpha)$ every frame:
+
+```ts
+function rotAxis(x: number, y: number, z: number, alpha: number, phase: number) {
+  const ca = Math.cos(alpha), sa = Math.sin(alpha);
+  const x1 = x * ca + z * sa, y1 = y, z1 = -x * sa + z * ca;   // tilt by α (about y)
+  const cp = Math.cos(phase), sp = Math.sin(phase);
+  return [x1 * cp - y1 * sp, x1 * sp + y1 * cp, z1];            // spin by φ (about z)
+}
+```
+
+Everything renders with a hand-rolled perspective projection (`OrbitCamera.viewProj`) on Canvas2D rather than WebGPU: the scene is a few hundred line segments, well under budget, and 2D compositing (`globalCompositeOperation = 'lighter'`) gives the beam cones an additive glow cheaply. The beam half-width uses the empirical polar-cap formula $\rho(\text{deg}) \approx 5.4/\sqrt{P(\text{s})}$, so millisecond pulsars get a visibly narrower beam than magnetars.
+
+The **waterfall** view needs no history buffer: because the impact angle is an exact function of $\phi(t)$, the intensity at an earlier, dispersion-delayed time is just $I(\phi(t) - \Omega\cdot\text{delay})$, evaluated analytically per frequency channel — much simpler (and exact) compared with storing and interpolating a real time series.
+
+The **audio** click deliberately runs on a second, independent phase accumulator driven by the *true* spin rate (not the display's slowed-down time scale), so a 1.4 ms pulsar produces an audible ~716 Hz tone rather than an inaudibly-fast flicker — this is genuinely how radio astronomers "listen" to pulsars.
+</Hood>
+
+## Pulsars as clocks, magnetars, and fast radio bursts
+
+<Photo src="/img/neutron-stars/hand-of-god-b1509.jpg" alt="An X-ray image resembling a glowing cosmic hand, with the pulsar wind nebula around PSR B1509-58 forming finger-like structures in orange and blue" credit="NASA/JPL-Caltech/McGill" license="Public domain" href="https://www.jpl.nasa.gov/images/pia17566-high-energy-x-ray-view-of-hand-of-god" size="wide" aspect="1 / 1">
+**The "Hand of God."** NuSTAR's X-ray view of the pulsar wind nebula around PSR B1509−58, a young, energetic pulsar whose particle wind and magnetic field sculpt the surrounding gas into finger-like structures. The Crab Nebula (this chapter's opening image) is the same phenomenon: a pulsar's spin-down luminosity, not the original supernova, lights up the surrounding nebula for millennia after the explosion itself has faded.
+</Photo>
+
+The Crab pulsar's spin-down luminosity, $\dot E \approx 4.6\times10^{38}$ W (worked out above), is what actually powers the Crab Nebula's glow today, nearly a thousand years after the supernova. Its light output is *not* fading embers from the explosion; it is a fresh injection of relativistic particles from the pulsar's magnetosphere, continuously reheating the nebula.
+
+### Recycling to millisecond speeds
+
+Isolated pulsars only spin down. But a neutron star in a binary can be spun *back up* by accreting matter (and its angular momentum) from a companion star as it evolves and overflows its Roche lobe — an **X-ray binary** phase, visible as a bright X-ray source while the accretion lasts. This "recycles" an old, nearly-dead pulsar into a **millisecond pulsar (MSP)**, with a low magnetic field (the field decayed during the long, quiet phase before accretion) and a blindingly fast spin. The record holder, **PSR J1748−2446ad**, in the globular cluster Terzan 5, spins at 716 Hz — 716 times per second, close to the point where centrifugal force at the equator would exceed the star's self-gravity and tear it apart.
+
+<Aside>**Why MSPs make the best clocks.** With no substantial magnetic braking left, millisecond pulsars are exquisitely stable clocks — some rival the best atomic clocks over years. This is what makes **pulsar timing arrays** (PTAs) possible: comparing the arrival times of pulses from dozens of MSPs across the sky, precise enough to detect the stretching and squeezing of spacetime itself from the gravitational-wave background of merging supermassive black holes ([Chapter 20](/ch/gravitational-waves/)), a signal announced by several PTA collaborations in 2023.</Aside>
+
+Pulsar timing is precise enough to be a laboratory for gravity itself. The **Hulse–Taylor binary pulsar** (PSR B1913+16, discovered 1974) let Russell Hulse and Joseph Taylor time a pulsar orbiting another neutron star and watch the orbit slowly shrink, exactly as general relativity predicts from the emission of gravitational waves ([Chapter 20](/ch/gravitational-waves/)) — the first indirect evidence for gravitational waves, decades before LIGO detected them directly, and a 1993 Nobel Prize. The **double pulsar**, PSR J0737−3039A/B, is rarer still: *both* neutron stars are detectable pulsars, giving two independent clocks in the same relativistic system and even sharper tests of strong-field gravity, including measuring the Shapiro delay from both sides at once.
+
+<Level max={1} title="What is a glitch, again?">
+Sometimes a pulsar's clock skips forward instead of drifting back: it suddenly spins slightly faster, then slowly relaxes. This is a **glitch**, and it's a clue that the neutron star's interior is not one solid piece: an inner superfluid, decoupled from the crust we actually see spinning, occasionally dumps a bit of its stored spin onto the crust all at once.
+</Level>
+
+### Magnetars and fast radio bursts
+
+At the extreme end of the field-strength scale sit **magnetars**: neutron stars with $B \sim 10^{14}$–$10^{15}$ G, roughly a thousand times a typical pulsar's field. Their X-ray and gamma-ray outbursts are powered not by rotation (as the Predict box above showed, their rotational luminosity is modest) but by the decay and rearrangement of that enormous field, which can crack the solid crust in sudden "starquakes." In 2020, the magnetar **SGR 1935+2154**, in our own galaxy, was caught emitting a millisecond-duration radio burst bright enough that, at extragalactic distances, it would look just like a **fast radio burst (FRB)** — the first strong evidence that at least some FRBs, a class of millisecond radio flashes first found coming from other galaxies in 2007, are giant magnetar flares. Most FRBs are still one-off events from unidentified sources billions of light-years away, and their extreme, brief energy release remains an active area of research as of 2026.
+
+<KeyEq title="Dispersion delay">
+$$
+\Delta t \approx 4.15\times10^{3}\ \text{ms}\ \times \htmlData{term=DM}{\text{DM}}\left(\frac{1}{\nu_\text{lo}^2} - \frac{1}{\nu_\text{hi}^2}\right)
+$$
+<Fragment slot="where"><span data-term="DM">DM</span> is the dispersion measure in pc cm⁻³ (electron column density along the line of sight). $\nu_\text{lo}, \nu_\text{hi}$ are observing frequencies in MHz. Free electrons in the interstellar medium ([Chapter 6](/ch/ism/)) make the ionized gas dispersive, so lower frequencies arrive measurably later — the effect used to build the "waterfall" in this chapter's flagship sim.</Fragment>
+</KeyEq>
+
+Dispersion measure is also a distance proxy: given a model of the free-electron density along the line of sight, DM converts fairly directly into a distance, which is how FRBs — with no other distance indicator — get located to specific galaxies and redshifts at all.
+
+<Sim name="neutron-stars-ppdot" minHeight={440}>
+**The P–Ṗ diagram**, the pulsar equivalent of the Hertzsprung–Russell diagram. Normal pulsars occupy a broad band; millisecond pulsars sit at short P and tiny Ṗ (low field, recycled); magnetars sit at long P and huge Ṗ (enormous field). Diagonal lines mark constant magnetic field and constant characteristic age; pulsars below the "death line" are thought to have too weak a field, for their spin rate, to sustain pair production and radio emission. Click anywhere to drop a pulsar and press **Evolve at constant B** to watch it age along its spin-down track.
+</Sim>
+
+## Where we go from here
+
+A neutron star is what is left when degeneracy pressure and the strong nuclear force win their fight with gravity — barely, and only up to about 2.2 M☉. Push harder, past the Tolman–Oppenheimer–Volkoff limit, and nothing is known to stop the collapse: the subject of [Chapter 19](/ch/black-holes/). Two neutron stars spiralling together, as the Hulse–Taylor pulsar previewed by radio timing, are exactly the kind of source that produces the gravitational-wave chirps of [Chapter 20](/ch/gravitational-waves/) — and, as GW170817 showed, an optical and gamma-ray display as well, forging heavy elements in the aftermath. The lighthouse beams, magnetic dipoles and precise clocks in this chapter are not a curiosity: they are some of the sharpest tools astronomers have for testing gravity itself.

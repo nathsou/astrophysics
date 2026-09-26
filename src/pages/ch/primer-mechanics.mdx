@@ -1,0 +1,388 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: primer-mechanics
+lede: Three laws of motion, three conserved quantities, and one potential-energy landscape. That is most of the mechanics astrophysics runs on, from a thrown ball to a spinning neutron star.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  F: ['Net force', 'The sum of every push and pull on the body. Only the total matters: balanced forces produce no acceleration at all.'],
+  m: ['Mass', 'Inertia: how hard the body is to speed up. In gravity it also sets the pull, which is why it cancels from the acceleration.'],
+  a: ['Acceleration', 'Rate of change of velocity. Force produces acceleration, not velocity: a body with no force on it keeps moving.'],
+  v: ['Velocity', 'Speed with a direction. It appears squared in kinetic energy, so doubling it quadruples the energy.'],
+  p: ['Momentum', 'Mass times velocity. Force is its rate of change, and a closed system never gains or loses any in total.'],
+  t: ['Time', 'The clock against which changes are measured.'],
+  K: ['Kinetic energy', 'Energy of motion, ½mv². Never negative; it is what a moving body can do to whatever it hits.'],
+  U: ['Potential energy', 'Energy stored in position. Only differences matter, so the zero point is a free choice: for gravity we put it at infinity, which makes bound energies negative.'],
+  g: ['Gravitational acceleration at the surface', 'About 9.81 m/s² on Earth, 1.62 m/s² on the Moon. It is GM/R² for the planet you are standing on.'],
+  h: ['Height', 'Distance above the chosen zero of potential energy. Valid for mgh only when h is much smaller than the planet\'s radius.'],
+  E: ['Total mechanical energy', 'K + U. Constant when the only forces come from a potential; friction turns some of it into heat.'],
+  x: ['Position (1D)', 'Where the body is along a line. The slope of U(x) there sets the force.'],
+  r: ['Distance from the axis or centre', 'Lever arm for rotation, separation for gravity. It enters angular momentum and moment of inertia, squared in the latter.'],
+  vperp: ['Sideways velocity', 'The part of the velocity perpendicular to the line from the centre. Only this part carries angular momentum; motion straight in or out carries none.'],
+  L: ['Angular momentum', 'Amount of rotation, m r v⊥. Changed only by a torque, so a body pulled by a central force keeps it forever.'],
+  I: ['Moment of inertia', 'Rotational inertia: mass weighted by distance² from the axis. Pull mass inward and it drops fast.'],
+  omega: ['Angular velocity', 'Rotation rate in radians per second (2π per turn). For fixed L it is inversely proportional to I.'],
+  tau: ['Torque', 'A twist: force times lever arm. The only thing that can change angular momentum.'],
+  Omega: ['Rotation rate of the frame', 'How fast the rotating coordinate system turns. Fictitious forces grow with it: the centrifugal term as Ω², Coriolis as Ω.'],
+  M: ['Mass of the attracting body', 'The planet, star or galaxy doing the pulling.'],
+  R: ['Radius of the attracting body', 'Where you start from when escaping. A smaller R at the same M means a deeper potential well.'],
+  vesc: ['Escape speed', 'The launch speed that makes the total energy exactly zero. It does not depend on the direction of launch or on the mass being launched.'],
+  Ktot: ['Total kinetic energy of a system', 'Summed over every star, gas particle or galaxy: bulk motion and random thermal motion both count.'],
+  Utot: ['Total gravitational potential energy of a system', 'Negative for anything bound. Roughly −GM²/R: bigger and more negative for more massive, more compact systems.'],
+  Lag: ['Lagrangian', 'Kinetic minus potential energy, 𝓛 = K − U. Its time integral, the action, is stationary along the path nature actually takes.'],
+  q: ['Generalised coordinate', 'Any variable that locates the system: a position, an angle, a radius. Choosing good ones is half the battle.'],
+  qdot: ['Generalised velocity', 'Rate of change of q. For an angle it is an angular velocity.'],
+  pq: ['Conjugate momentum', '∂𝓛/∂q̇. For a position it is ordinary momentum; for an angle it is angular momentum.'],
+  Ham: ['Hamiltonian', 'The energy written as a function of coordinates and momenta. Its slopes give the equations of motion, and it is conserved when it has no explicit time dependence.'],
+}} />
+
+## Why a mechanics primer?
+
+Almost every chapter in this course eventually asks the same few questions of some object, whether it is a planet, a gas cloud, a star or a galaxy. What forces act on it? What does it keep, whatever else changes? Where are its hills and valleys of energy? This primer collects the answers from classical mechanics in one place, at whatever depth you prefer. If a chapter sent you here, read the section you need and follow the link back.
+
+Nothing here is specific to astronomy. The same laws describe a football and a binary pulsar, and that is exactly why they are so useful.
+
+## Newton's laws: force changes motion
+
+<Tiers>
+<Fragment slot="l1">
+Before Newton, the natural assumption (Aristotle's) was that moving things need something pushing them, and stop when the pushing stops. Newton turned this around.
+
+1. **A body left alone keeps doing what it was doing.** At rest, it stays at rest. Moving, it keeps moving in a straight line at the same speed. A hockey puck on perfect ice would slide forever. This is *inertia*.
+2. **A force changes the motion.** It speeds the body up, slows it down or bends its path, and the same force changes a heavy body's motion less than a light one's.
+3. **Forces come in pairs.** When you push a wall, the wall pushes back on you just as hard. When the Earth pulls the Moon, the Moon pulls the Earth equally hard (the Earth just barely notices, because it is 81 times heavier).
+
+The third law has a big consequence. In any isolated group of bodies, the pushes and pulls between them cancel in pairs, so the group's total "quantity of motion", its **momentum**, can never change. A rocket moves forward because it throws exhaust backward. A star and its planet circle their shared balance point, the *centre of mass*.
+</Fragment>
+<Fragment slot="l2">
+Newton's first law says a body with no net force on it moves in a straight line at constant speed. The second law says how a force changes that:
+
+<KeyEq title="Newton's second law">
+$$
+\term{F}{F} = \term{m}{m}\,\term{a}{a}
+$$
+<Fragment slot="where"><span data-term="F">F</span> is the net force (in newtons), <span data-term="m">m</span> the mass (kg) and <span data-term="a">a</span> the acceleration (m/s²). A 1 N force gives 1 kg an acceleration of 1 m/s². Force causes *acceleration*, not motion.</Fragment>
+</KeyEq>
+
+The third law says forces come in equal and opposite pairs. Combined with the second law, it means the total **momentum** $p = mv$ of an isolated system never changes: every bit of momentum one body gains, another loses. A rocket throws exhaust backward and moves forward. A star and its planet both orbit their common centre of mass. That tiny stellar wobble is how the radial-velocity method finds exoplanets ([Chapter 10](/ch/exoplanets/)).
+</Fragment>
+<Fragment slot="l3">
+The general form of the second law works with momentum $\vec p = m\vec v$ and covers bodies whose mass changes, like rockets:
+
+<KeyEq title="Newton's second law">
+$$
+\term{F}{\vec F} = \frac{d\term{p}{\vec p}}{d\term{t}{t}}, \qquad \term{p}{\vec p} = \term{m}{m}\,\term{v}{\vec v}
+$$
+<Fragment slot="where"><span data-term="F">F</span> is the net external force. For constant <span data-term="m">m</span> this reduces to $\vec F = m\vec a$. The first law is the special case $\vec F = 0$: momentum is constant.</Fragment>
+</KeyEq>
+
+Sum the second law over a system of particles. By the third law the internal forces cancel in pairs, leaving $d\vec P_\text{tot}/dt = \vec F_\text{ext}$. With no external force, the total momentum is conserved and the centre of mass $\vec R = \sum m_i \vec r_i / \sum m_i$ moves in a straight line. That is why the two-body problem reduces to one body ([Chapter 2](/ch/orbits/)), and why a planet makes its star wobble ([Chapter 10](/ch/exoplanets/)). New to vectors or derivatives? See [Appendix A3](/ch/primer-vectors/) and [Appendix A4](/ch/primer-calculus/).
+</Fragment>
+</Tiers>
+
+<Aside>**Weight is not mass.** Mass is how much stuff resists acceleration: 70 kg everywhere. Weight is the gravitational force on that mass: about 690 N on Earth and 110 N on the Moon. Astronauts in orbit still have all their mass. They feel weightless because they are falling freely along with their spacecraft.</Aside>
+
+Newton's law of gravity supplies the most important force in this course. Near a planet's surface it gives every body the same downward acceleration, $g = GM/R^2$, which is 9.81 m/s² on Earth. The mass cancels because the same $m$ appears in the force and in the inertia. Galileo's balls dropped from a tower, and Apollo 15's hammer and feather dropped on the Moon, land together for exactly this reason. The full inverse-square law and its orbits are the subject of [Chapter 2](/ch/orbits/).
+
+## Energy: the great bookkeeper
+
+Forces tell you how things move moment by moment. Energy lets you skip the moment-by-moment details and jump straight to the answer.
+
+<Tiers>
+<Fragment slot="l1">
+A moving body carries **kinetic energy**, energy of motion. A body raised up in a gravitational field stores **potential energy**, which it gets back as speed when it falls. As a ball flies through the air it constantly trades one for the other: slow and high at the top, fast and low at the bottom. The total stays the same. Nothing is created or destroyed, only exchanged.
+
+Friction and air drag don't break that rule. They move energy out of the motion and into heat, the jiggling of atoms. Count the heat too and the books still balance, exactly. (Heat is the subject of [Appendix A7](/ch/primer-thermo/).)
+</Fragment>
+<Fragment slot="l2">
+Kinetic energy depends on speed, and near a planet's surface potential energy depends on height:
+
+<KeyEq title="Mechanical energy near a surface">
+$$
+\term{E}{E} = \underbrace{\tfrac12\,\term{m}{m}\,\term{v}{v}^2}_{\term{K}{K}} + \underbrace{\term{m}{m}\,\term{g}{g}\,\term{h}{h}}_{\term{U}{U}} = \text{constant}
+$$
+<Fragment slot="where"><span data-term="K">K</span> is the kinetic energy, <span data-term="U">U</span> the potential energy, <span data-term="g">g</span> the surface gravity and <span data-term="h">h</span> the height. Energies are in joules (1 J = 1 kg m²/s²). A 1 kg ball dropped 1 m arrives with 9.8 J of kinetic energy, moving at 4.4 m/s.</Fragment>
+</KeyEq>
+
+A force that pushes a body through a distance does **work** on it, $W = F\,d$, and that work becomes kinetic energy. Gravity does positive work as a ball falls and negative work as it rises. Friction and drag always do negative work: they turn mechanical energy into heat. Count the heat and total energy is always conserved.
+</Fragment>
+<Fragment slot="l3">
+Dot the second law with $\vec v$: $m\vec v\cdot\dot{\vec v} = \vec F\cdot\vec v$, so $\tfrac{d}{dt}(\tfrac12 m v^2) = \vec F\cdot\vec v$. This is the **work–energy theorem**: the rate of change of kinetic energy is the power delivered by the force. If the force is conservative, $\vec F = -\nabla U$, then $\vec F\cdot\vec v = -dU/dt$ along the path, and
+
+<KeyEq title="Energy conservation">
+$$
+\term{E}{E} = \tfrac12\,\term{m}{m}\,|\term{v}{\vec v}|^2 + \term{U}{U}(\vec r) = \text{constant}
+$$
+<Fragment slot="where"><span data-term="U">U</span> is any potential energy: $mgh$ near a surface, $-GMm/r$ for a point mass, or $\tfrac12 k x^2$ for a spring. Forces that depend on velocity, like drag, have no potential. They drain $E$ into heat, $dE/dt = \vec F_\text{drag}\cdot\vec v < 0$.</Fragment>
+</KeyEq>
+</Fragment>
+</Tiers>
+
+<Predict question="From the top of a cliff, you throw one ball straight up and another horizontally, both at the same speed. Ignoring air, which one is moving faster when it hits the ground below?" choices={['The one thrown up', 'The one thrown horizontally', 'Both hit at the same speed']} answer={2}>
+They hit at exactly the same speed. Both start with the same kinetic energy and the same height, and both end at the same height, so energy conservation fixes the final speed: $v_f^2 = v_0^2 + 2gh$. The direction of the throw changes the path and the flight time, not the final speed. Try it below: change the angle and watch the KE bar when the ball lands.
+</Predict>
+
+<Sim name="primer-mechanics-projectile" minHeight={380}>
+**A throw, as an energy budget.** The bars show <span style="color:var(--series-1)">kinetic</span> and <span style="color:var(--series-2)">potential</span> energy as the ball flies, and the stacked bar shows their sum: it stays pinned to the dashed line. Drag on the field to aim. Switch on **air drag** and a <span style="color:var(--series-3)">heat</span> bar appears: the ball falls short of the dashed drag-free parabola, and the lost mechanical energy is exactly what went into warming the air. Try the Moon, where the same throw goes six times farther.
+</Sim>
+
+### Escape: energy with the real potential
+
+For a height comparable to the planet's size, $mgh$ is no longer good enough and we need the full gravitational potential energy, $U = -GMm/r$. It is negative, because we put its zero at infinite distance, and it gets deeper the closer you are to the centre. A body whose total energy is negative is **bound**: it can never reach infinity. Zero or positive total energy means it can escape.
+
+<Fermi title="How fast must you throw a rock to leave the Earth for good?">
+Set the total energy to zero at the surface: $\tfrac12 m v^2 - GMm/R = 0$. The rock's mass cancels:
+
+$$
+\term{vesc}{v_\text{esc}} = \sqrt{\frac{2\,\term{G}{G}\,\term{M}{M}}{\term{R}{R}}} = \sqrt{\frac{2\,(6.67\times10^{-11})(6.0\times10^{24})}{6.4\times10^{6}}} \approx 1.1\times10^4\ \text{m/s}.
+$$
+
+That is 11.2 km/s, or about 40,000 km/h, in any direction that doesn't hit the ground. It is 2.4 km/s on the Moon and 618 km/s from the Sun's surface. Make $R$ small enough at fixed $M$ and $v_\text{esc}$ reaches the speed of light. That is the Newtonian version of a black hole ([Chapter 19](/ch/black-holes/)).
+</Fermi>
+
+## Landscapes: forces from potentials
+
+Here is the most useful picture in all of mechanics. Draw the potential energy as a landscape, and the body moves like a ball rolling on it.
+
+<Tiers>
+<Fragment slot="l1">
+The force always points downhill, and the steeper the slope, the stronger the force. Draw the ball's total energy as a horizontal line across the landscape. The ball can only be where the ground is *below* that line. The gap between line and ground is its kinetic energy, so it moves fastest at the bottom of a valley. Where the line meets the ground, the ball stops for an instant and turns back: a *turning point*.
+
+A ball trapped between two turning points swings back and forth forever. That is a bound orbit, an oscillating star, a swinging pendulum. A ball with enough energy to clear every hill leaves and never comes back.
+</Fragment>
+<Fragment slot="l2">
+The force is minus the slope of the potential energy:
+
+$$
+\term{F}{F} = -\frac{\Delta \term{U}{U}}{\Delta \term{x}{x}}.
+$$
+
+The minus sign makes the force point downhill. A valley in $U(x)$ is a place of stable equilibrium: nudge the ball and the force pushes it back. A hilltop is unstable. With total energy $E$, the body can only be where $U(x) \le E$, because kinetic energy $K = E - U$ can't be negative. The points where $U(x) = E$ are the **turning points**, where the body stops and reverses.
+</Fragment>
+<Fragment slot="l3">
+In one dimension $F = -dU/dx$; in three, $\vec F = -\nabla U$. Energy conservation gives the speed at every point directly, $\dot x = \pm\sqrt{2(E - U(x))/m}$, so a 1D problem can always be solved by a single integral:
+
+$$
+\term{t}{t}(\term{x}{x}) = \int \frac{dx}{\sqrt{2(E - U(x))/m}}.
+$$
+
+Near a minimum $x_0$, Taylor-expand: $U \approx U(x_0) + \tfrac12 U''(x_0)(x-x_0)^2$. *Every* smooth valley looks like a spring for small oscillations, with angular frequency $\omega = \sqrt{U''(x_0)/m}$. This is why simple harmonic motion is everywhere, from stellar pulsations ([Chapter 15](/ch/giants/)) to epicycles of stars in the Galaxy ([Chapter 22](/ch/galactic-dynamics/)).
+</Fragment>
+</Tiers>
+
+This picture works even for orbits. In [Chapter 2](/ch/orbits/), the distance between a planet and its star behaves exactly like a ball in a one-dimensional valley, the **effective potential**. In [Chapter 19](/ch/black-holes/), general relativity reshapes that valley near a black hole and the innermost stable orbit appears.
+
+### Phase space: the whole state in one picture
+
+A position alone doesn't tell you what happens next. You also need the velocity, or better, the momentum. Plot position on one axis and momentum on the other, and the complete state of the system is a single point. As time runs, the point traces a curve through this **phase space**. For a ball in a valley, the curve is a closed loop: out to one turning point with zero momentum, back through the bottom at top speed, and on to the other turning point.
+
+<Predict question="A pendulum released from nearly upside-down, compared with the same pendulum swinging gently: how long does one full swing take?" choices={['About the same time', 'Much less time', 'Much more time']} answer={2}>
+Much more time. Near the top, the pendulum has almost no speed and almost no force pushing it away, so it lingers there. Released from exactly upside down, it would take forever. In phase space its loop runs close to the dashed **separatrix**, the special curve that divides swinging from going over the top. Select "Pendulum" below and drag the ball close to the top to see it.
+</Predict>
+
+<Sim name="primer-mechanics-well" minHeight={420} params={{ well: 'double' }}>
+**One motion, two pictures.** Left: the <span style="color:var(--accent)">ball</span> rolls in the potential-energy landscape, and the dashed line is its total energy. The vertical stick is the kinetic energy, the gap between that line and the ground. Right: the same motion in phase space, over faint contours of constant energy. Drag the ball in the landscape to release it from rest anywhere, or drag in phase space to give it a push. In the double well, compare energies just below and just above the central hump (the dashed separatrix). Then add **friction**: the loops become spirals, and the ball ends up in one valley or the other depending sensitively on where it started.
+</Sim>
+
+<Hood title="the rolling ball">
+The ball is integrated with the kick–drift–kick leapfrog from [Chapter 2](/ch/orbits/), in dimensionless units with $m = 1$, eight substeps per 1/120 s tick:
+
+```ts
+p -= 0.5 * hh * W.dV(x);   // half kick: p ← p − ½h U'(x)
+x += hh * p;               // drift
+p -= 0.5 * hh * W.dV(x);   // half kick
+if (damping > 0) p *= Math.exp(-damping * hh);
+```
+
+Leapfrog is symplectic: it preserves areas in phase space. Without friction, you can leave the loop running for hours and it will not spiral in or out; the energy readout wobbles in the fourth decimal and never drifts. The friction step multiplies $p$ by a number less than one, which shrinks phase-space areas. That is the signature of a dissipative, non-Hamiltonian system, and it is why the loops collapse onto a point. The contours are drawn directly from $p = \pm\sqrt{2(E - U(x))}$ on a grid of 240 points each.
+</Hood>
+
+## Rotation: torque and angular momentum
+
+Spinning things have their own versions of force, inertia and momentum, and they matter enormously in astronomy: almost everything out there rotates.
+
+<Tiers>
+<Fragment slot="l1">
+A spinning object keeps spinning unless something *twists* it. That twist is called **torque**, and the amount of spin it protects is **angular momentum**. Angular momentum depends on how fast the object turns and on how far its mass sits from the axis.
+
+This gives a surprising rule. If a spinning object pulls its mass inward, with no outside twist, it must spin *faster* to keep the same angular momentum. A figure skater pulling in her arms whirls up. A collapsing cloud of gas speeds up until it flattens into a disc, and a dying star's core can spin up from once a month to hundreds of times a second.
+</Fragment>
+<Fragment slot="l2">
+For a body of mass $m$ at distance $r$ from an axis, moving with sideways speed $v_\perp$, the angular momentum is
+
+<KeyEq title="Angular momentum">
+$$
+\term{L}{L} = \term{m}{m}\,\term{r}{r}\,\term{vperp}{v_\perp} = \term{I}{I}\,\term{omega}{\omega}
+$$
+<Fragment slot="where"><span data-term="vperp">v⊥</span> is the part of the velocity perpendicular to the line to the axis. For a rigid spinning object, add up $m r^2$ over all its parts to get the moment of inertia <span data-term="I">I</span>, and multiply by the angular velocity <span data-term="omega">ω</span> in radians per second.</Fragment>
+</KeyEq>
+
+A **torque** $\tau = F\,r_\perp$ (force times lever arm) changes angular momentum, just as a force changes momentum. With no torque, $L$ is conserved. So if $I$ goes down, $\omega$ must go up. Gravity pulling straight towards a star exerts no torque on a planet, which is why $L$ is conserved in orbits and why Kepler's second law holds ([Chapter 2](/ch/orbits/)).
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="Angular momentum and torque">
+$$
+\term{L}{\vec L} = \vec r \times \term{p}{\vec p}, \qquad \frac{d\term{L}{\vec L}}{d\term{t}{t}} = \vec r \times \term{F}{\vec F} = \term{tau}{\vec\tau}
+$$
+<Fragment slot="where">Differentiate $\vec L$ and the term $\dot{\vec r}\times\vec p = \vec v \times m\vec v$ vanishes, leaving the <span data-term="tau">torque</span>. A central force ($\vec F \parallel \vec r$) has zero torque, so $\vec L$ is constant and the motion stays in a plane. For a rigid body spinning about a symmetry axis, $L = I\omega$ with $I = \int r_\perp^2\,dm$.</Fragment>
+</KeyEq>
+
+For a system of particles the internal torques cancel (for central internal forces), so total $\vec L$ is conserved without external torques. Rotational kinetic energy is $K = \tfrac12 I\omega^2 = L^2/2I$. At fixed $L$, reducing $I$ *raises* $K$, and the energy comes from the work done pulling mass inward against the centrifugal tendency.
+</Fragment>
+</Tiers>
+
+<Predict question="A skater spinning with arms out pulls them in and spins faster. Her angular momentum stays the same. What happens to her rotational kinetic energy?" choices={['It stays the same', 'It increases', 'It decreases']} answer={1}>
+It increases, by a factor equal to the ratio of the moments of inertia. Kinetic energy is $L^2/2I$, so at fixed $L$ it grows as $I$ shrinks. The extra energy comes from her muscles: pulling the arms inward against their tendency to fly outward takes work. Let her extend her arms again and the energy goes back. Watch the KE readout below.
+</Predict>
+
+<Sim name="primer-mechanics-skater" minHeight={400}>
+**A skater from above.** Slide **arm reach** in and out. Her <span style="color:var(--accent-2)">angular momentum</span> (the ⊙ symbol, pointing out of the screen) stays flat on the plot while her <span style="color:var(--series-1)">spin rate</span> jumps. The KE readout shows how much work her arms did. **Hold to push** applies an outside torque: only then does $L$ change. Pick up hand weights mid-spin and she slows down, since the same $L$ is now shared with more mass far from the axis. Turn on ice friction for a slow, torque-driven decline.
+</Sim>
+
+The same law runs the sky. A contracting gas cloud spins up until the centrifugal effect stops the collapse perpendicular to its axis, so it flattens into a disc. That is why stars form with discs and planets orbit in a plane ([Chapter 7](/ch/star-formation/), [Chapter 8](/ch/planet-formation/)). Squeeze the Sun, which rotates once every 25 days, down to a radius of <Var name="Rcollapse" value={10} min={5} max={700000} log /> km at fixed angular momentum, and it would spin once every <Out name="spinP" />, with its equator moving at <Out name="spinV" />.
+
+<Aside>**The neutron-star shortcut.** The fastest known pulsar spins 716 times a second. Collapsing stellar cores really do spin up this way ([Chapter 18](/ch/neutron-stars/)), although real stars shed much of their angular momentum through magnetic fields and winds along the way. This is the *angular momentum problem* of star formation in reverse.</Aside>
+
+### Rotating frames and fictitious forces
+
+Sometimes it is easiest to do physics from a rotating point of view: a merry-go-round, the Earth, or the frame that turns with two orbiting stars. The price is that fictitious forces appear.
+
+<Tiers>
+<Fragment slot="l1">
+On a spinning merry-go-round you feel flung outward, although nothing is actually pushing you: your body is simply trying to go straight while the floor turns under you. Physicists call this the **centrifugal force**. If you try to roll a ball across the merry-go-round, its path curves sideways, as if pushed by another invisible force, the **Coriolis force**. These "forces" are artefacts of the spinning viewpoint, but they are extremely useful. In [Chapter 3](/ch/three-body/) we sit in the frame that rotates with the Earth and Sun, and the Lagrange points appear as places where gravity and the centrifugal force balance.
+</Fragment>
+<Fragment slot="l2">
+In a frame rotating at angular velocity $\Omega$, a body at distance $r$ from the axis feels an outward **centrifugal force** $F = m\,\Omega^2 r$, and a moving body feels a sideways **Coriolis force** of size $2m\Omega v$, perpendicular to its velocity. Neither is caused by any physical object. Both come from describing motion in a frame that turns. They make the three-body problem tractable: in the frame that rotates with the Earth and Sun, the five Lagrange points are places where gravity and centrifugal force balance ([Chapter 3](/ch/three-body/)). They also shape hurricanes on Earth and the tidal tails of galaxies.
+</Fragment>
+<Fragment slot="l3">
+For a frame rotating at constant $\vec\Omega$, the time derivative of any vector transforms as $(d\vec A/dt)_\text{in} = (d\vec A/dt)_\text{rot} + \vec\Omega\times\vec A$. Applying it twice to $\vec r$ gives
+
+$$
+m\,\ddot{\vec r}_\text{rot} = \term{F}{\vec F} - 2m\,\term{Omega}{\vec\Omega}\times\dot{\vec r}_\text{rot} - m\,\term{Omega}{\vec\Omega}\times(\term{Omega}{\vec\Omega}\times\vec r).
+$$
+
+The middle term is the Coriolis force, which does no work because it is perpendicular to the velocity. The last is the centrifugal force, which derives from a potential $-\tfrac12\Omega^2 r_\perp^2$ and can be added to gravity to form an effective potential. Because Coriolis does no work, the energy in the rotating frame including the centrifugal potential is conserved: that is the **Jacobi constant** of the restricted three-body problem ([Chapter 3](/ch/three-body/)).
+</Fragment>
+</Tiers>
+
+## Many bodies: the virial theorem
+
+A star contains about $10^{57}$ particles and a galaxy about $10^{11}$ stars. No one tracks them individually. Mechanics still gives a powerful statement about the whole system, as long as it is bound and has settled down.
+
+<Tiers>
+<Fragment slot="l1">
+In any self-gravitating system that has settled into a steady state, whether a star, a star cluster or a cluster of galaxies, there is a fixed relationship between how fast its parts move and how tightly gravity binds them. The deeper the gravitational well, the faster things must move to avoid falling in. Measure the speeds, measure the size, and you can weigh the whole system. That is how Fritz Zwicky found the first evidence for dark matter in 1933 ([Chapter 21](/ch/milky-way/)).
+
+The same rule tells you the temperature of a star's core ([Chapter 11](/ch/stellar-structure/)), and it has a strange twist: when a star loses energy, it contracts and gets *hotter*.
+</Fragment>
+<Fragment slot="l2">
+<KeyEq title="The virial theorem">
+$$
+2\,\term{Ktot}{K} + \term{Utot}{U} = 0
+$$
+<Fragment slot="where"><span data-term="Ktot">K</span> is the total kinetic energy of all the parts (thermal motion counts), and <span data-term="Utot">U</span> the total gravitational potential energy, which is negative, roughly $-GM^2/R$. It holds on average for a bound, self-gravitating system in a steady state.</Fragment>
+</KeyEq>
+
+Two consequences recur across the course. First, if the parts move with typical speed $v$, then $Mv^2 \approx GM^2/R$, so $M \approx v^2 R/G$: a scale for weighing clusters and galaxies. Second, the total energy is $E = K + U = -K$. A star that radiates energy (makes $E$ more negative) *increases* its kinetic energy: it contracts and heats up. Stars have negative heat capacity ([Chapter 11](/ch/stellar-structure/)).
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="The virial theorem">
+$$
+\tfrac12\frac{d^2 I_\text{sys}}{d\term{t}{t}^2} = 2\,\term{Ktot}{K} + \term{Utot}{U} \quad\Rightarrow\quad 2\langle \term{Ktot}{K}\rangle + \langle \term{Utot}{U}\rangle = 0
+$$
+<Fragment slot="where">$I_\text{sys} = \sum m_i r_i^2$ is the system's moment of inertia about its centre of mass. In a steady state it does not grow or shrink on average, so the time-averaged left side vanishes.</Fragment>
+</KeyEq>
+
+<Level min={3} title="Where the virial theorem comes from">
+Differentiate $G_v = \sum_i \vec p_i\cdot\vec r_i = \tfrac12 \dot I_\text{sys}$. Then $\dot G_v = \sum m_i v_i^2 + \sum \vec F_i\cdot\vec r_i = 2K + \sum_i \vec F_i \cdot \vec r_i$. For forces derived from a potential that is homogeneous of degree $k$ in the coordinates, Euler's theorem gives $\sum \vec F_i\cdot\vec r_i = -kU$. Gravity has $k = -1$, so $\dot G_v = 2K + U$. For a bound system, $G_v$ stays bounded, so its long-time average derivative is zero. The same argument applied to a fluid, with pressure replacing random velocities, gives $3\int P\,dV + U = 0$; [Chapter 11](/ch/stellar-structure/) derives it from hydrostatic equilibrium.
+</Level>
+</Fragment>
+</Tiers>
+
+Hydrostatic equilibrium, the other workhorse of stellar structure, is also just Newton's second law. Take a thin slab of gas inside a star. Gravity pulls it down. The pressure below it is a little higher than the pressure above it, and that difference pushes it up. If the slab isn't accelerating, the two forces balance, so the pressure must fall with height at exactly the rate needed to support the weight of the overlying gas: $\Delta P/\Delta r = -\rho g$ ([Chapter 11](/ch/stellar-structure/)).
+
+## The elegant reformulation: Lagrange, Hamilton and Noether
+
+Newton's laws are about forces and vectors. In the 18th and 19th centuries, Euler, Lagrange and Hamilton rebuilt mechanics around energy instead. The physics is the same, but the new formulation makes hard problems easier, leads directly to quantum mechanics and statistical physics, and explains *why* energy, momentum and angular momentum are conserved.
+
+<Tiers>
+<Fragment slot="l1">
+The big idea: instead of tracking forces moment by moment, you can say that nature picks the whole path, from start to finish, that makes a certain quantity (the *action*, built from the kinetic and potential energy) as small as possible. It is like light choosing the quickest route through a lens. From that single principle, all of Newton's laws follow.
+
+A second, deeper idea came from Emmy Noether in 1918. **Every symmetry gives a conservation law.** The laws of physics are the same today as tomorrow, and that is *why* energy is conserved. They are the same here as over there, which is why momentum is conserved. They don't care which direction you face, and that is why angular momentum is conserved. The three conservation laws in this primer aren't three lucky accidents; they are three symmetries of space and time.
+</Fragment>
+<Fragment slot="l2">
+The reformulation starts from one number built out of energies, the **Lagrangian**, kinetic minus potential energy: $\mathcal L = K - U$. Add it up along a possible path from a starting point to an end point to get the *action*. Of all the paths the system could take, the real one is the one where the action is stationary: small changes to the path don't change it, to first order. Newton's laws follow from this rule.
+
+The payoff is **Noether's theorem** (1918): every continuous symmetry of the Lagrangian gives a conserved quantity.
+
+| If the physics doesn't change when you… | …then this is conserved |
+|---|---|
+| wait (shift in time) | energy |
+| move (shift in space) | momentum |
+| turn (rotate) | angular momentum |
+
+Around a spherical star, the physics looks the same in every direction, so angular momentum is conserved. In a galaxy's bar, which rotates, energy is not conserved but the Jacobi combination is ([Chapter 3](/ch/three-body/), [Chapter 22](/ch/galactic-dynamics/)).
+</Fragment>
+<Fragment slot="l3">
+Describe the system by generalised coordinates $q_i$ (positions, angles, radii) and define the **Lagrangian** $\mathcal L(q,\dot q, t) = K - U$. Hamilton's principle says the path makes the action $S = \int \mathcal L\,dt$ stationary. The calculus of variations turns this into one equation per coordinate:
+
+<KeyEq title="Euler–Lagrange equations">
+$$
+\frac{d}{d\term{t}{t}}\frac{\partial \term{Lag}{\mathcal L}}{\partial \term{qdot}{\dot q_i}} - \frac{\partial \term{Lag}{\mathcal L}}{\partial \term{q}{q_i}} = 0
+$$
+<Fragment slot="where">For $\mathcal L = \tfrac12 m\dot x^2 - U(x)$ this gives $m\ddot x = -U'(x)$, which is Newton's second law. The advantage is that $q$ can be anything: in polar coordinates you get the centrifugal term of the effective potential automatically, with no vector gymnastics.</Fragment>
+</KeyEq>
+
+Define the conjugate momentum $p_i = \partial\mathcal L/\partial\dot q_i$ and Legendre-transform to the **Hamiltonian**, $H(q,p) = \sum p_i\dot q_i - \mathcal L$, which for ordinary systems is just $K + U$ written in terms of momenta. The equations of motion become first order and beautifully symmetric:
+
+<KeyEq title="Hamilton's equations">
+$$
+\dot{\term{q}{q}}_i = \frac{\partial \term{Ham}{H}}{\partial \term{pq}{p_i}}, \qquad \dot{\term{pq}{p}}_i = -\frac{\partial \term{Ham}{H}}{\partial \term{q}{q_i}}
+$$
+<Fragment slot="where">The state is a point $(q, p)$ in $2n$-dimensional **phase space**, and $H$ generates its flow. Because $dH/dt = \partial H/\partial t$, energy is conserved whenever $H$ does not depend explicitly on time.</Fragment>
+</KeyEq>
+
+Three consequences run through the course:
+
+- **Liouville's theorem.** The Hamiltonian flow is divergence-free in phase space ($\partial\dot q/\partial q + \partial\dot p/\partial p = 0$), so it preserves phase-space volume. A cloud of initial conditions can stretch into filaments but never compresses. This underlies the collisionless dynamics of galaxies ([Chapter 22](/ch/galactic-dynamics/)), statistical mechanics ([Appendix A7](/ch/primer-thermo/)) and symplectic integrators ([Chapter 2](/ch/orbits/)).
+- **Cyclic coordinates.** If $\mathcal L$ doesn't depend on some $q_k$, the Euler–Lagrange equation says $\dot p_k = 0$. In a central potential, $\mathcal L$ doesn't depend on the angle $\theta$, so $p_\theta = mr^2\dot\theta = L$ is conserved.
+- **Noether's theorem.** More generally, if $\mathcal L$ is unchanged by a continuous transformation $q_i \to q_i + \epsilon\,\delta q_i$, then $Q = \sum_i p_i\,\delta q_i$ is conserved. Time-translation invariance gives $H$; translation gives $\vec p$; rotation gives $\vec L$. In general relativity and in an expanding universe, time-translation symmetry is lost, and energy conservation becomes subtle: that is why photons can lose energy to cosmological redshift ([Chapter 25](/ch/expansion/)).
+</Fragment>
+</Tiers>
+
+<History title="Symmetry, conservation, and a lecturer without a salary" year="1918">
+<Portrait src="/img/people/noether.jpg" name="Emmy Noether" years="1882–1935" credit="Unknown photographer, c. 1900" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Noether.jpg" />
+
+In 1915, David Hilbert and Felix Klein invited Emmy Noether to Göttingen, then the world centre of mathematics. They had a problem: Einstein's new general relativity seemed to lack a proper law of energy conservation, and they wanted an expert in the theory of invariants to find out why. Noether, the daughter of a mathematics professor in Erlangen, had first attended lectures there as an unofficial auditor, because women could not yet enrol, and had earned her doctorate in 1907 once the rules changed.
+
+The faculty refused to let a woman qualify as a lecturer. Hilbert's reported protest, that the faculty senate was not a bathhouse, did not move them, and for years Noether taught courses advertised under Hilbert's name, without pay. In 1918 she solved the problem anyway. Her paper *Invariante Variationsprobleme* proved that every continuous symmetry of an action gives a conserved quantity, and explained why energy in general relativity behaves differently: its symmetry group is much larger. Klein presented the paper to the Göttingen scientific society because she was not a member.
+
+She was finally allowed to lecture in 1919 and went on to reshape abstract algebra. In 1933 the Nazi government dismissed her because she was Jewish. She moved to Bryn Mawr College in Pennsylvania and died there in 1935 after surgery. Einstein's letter to the *New York Times* called her the most significant creative mathematical genius produced since the higher education of women began. Physicists now use her theorem every day, often without knowing her name.
+</History>
+
+## Where this shows up
+
+Everything in this primer returns later in the course, usually without an introduction:
+
+- **Energy and angular momentum conservation** make orbits ellipses and give Kepler's second law ([Chapter 2](/ch/orbits/)). The effective potential is the landscape picture above.
+- **Rotating frames** give the Lagrange points and the Jacobi constant ([Chapter 3](/ch/three-body/)), and help explain tides ([Chapter 9](/ch/tides/)).
+- **Angular momentum conservation** forces collapsing clouds into discs ([Chapter 7](/ch/star-formation/)) and spins neutron stars up to milliseconds ([Chapter 18](/ch/neutron-stars/)).
+- **The virial theorem and hydrostatic equilibrium** set the temperatures of stars ([Chapter 11](/ch/stellar-structure/)) and weigh galaxies and clusters, revealing dark matter ([Chapter 21](/ch/milky-way/)).
+- **Phase space and Liouville's theorem** underlie collisionless stellar dynamics ([Chapter 22](/ch/galactic-dynamics/)) and statistical mechanics.
+
+Mechanics tells you what one body, or a few, will do. With $10^{57}$ particles you need statistics instead: temperature, pressure and the Boltzmann factor. That is the next primer, [Appendix A7](/ch/primer-thermo/).

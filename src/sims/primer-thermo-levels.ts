@@ -126,7 +126,7 @@ export default defineSim({
         ctx.strokeStyle = pal.accent; ctx.lineWidth = 2;
         ctx.strokeRect(bx0, y - bh, Math.max(0.5, len(p[i])), bh);
         ctx.fillStyle = pal.fg;
-        const lab = p[i] < 1e-3 ? p[i].toExponential(1).replace('e-', '×10⁻').replace(/⁻(\d+)/, (_, d: string) => '⁻' + [...d].map((c) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+c]).join('')) : `${fmt(100 * p[i], 3)}%`;
+        const lab = p[i] < 1e-3 ? fmt(p[i], 2) : `${fmt(100 * p[i], 3)}%`;
         ctx.fillText(lab, Math.min(bx0 + len(p[i]) + 5, W - 46), y - 3);
       }
       ctx.fillStyle = pal.muted;

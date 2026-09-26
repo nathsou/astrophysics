@@ -1,0 +1,363 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: primer-calculus
+lede: Two questions sit under almost every formula in this course. How fast is something changing right now? And how much does it all add up to? Calculus answers both, and the two answers turn out to be each other's inverse.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Predict from '../../components/Predict.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  f: ['The function', 'Any rule that turns an input into an output: height as a function of time, density as a function of radius, brightness as a function of wavelength.'],
+  fp: ['The derivative f′', 'The slope of f at each point: how much the output changes per unit change of input, right there.'],
+  x: ['The input variable', 'Where on the curve we are. The derivative and the integral are both statements about how f behaves as x moves.'],
+  dx: ['A small step Δx', 'A little nudge to the input. The derivative is what the ratio Δy/Δx settles down to as this nudge shrinks towards zero.'],
+  dy: ['The change in output Δy', 'How much f moved when the input moved by Δx. Rise, in "rise over run".'],
+  lim: ['The limit', 'Not "set Δx = 0" (that gives 0/0) but "watch what the ratio approaches as Δx gets ever smaller".'],
+  n: ['A power (exponent)', 'In the power rule the exponent comes down in front and drops by one: x³ becomes 3x².'],
+  k: ['A rate constant', 'In eᵏˣ it sets how fast the exponential grows (k > 0) or decays (k < 0). It comes down in front when you differentiate.'],
+  a: ['Lower limit / expansion point', 'Where the integral starts, or the point around which a Taylor series is built.'],
+  b: ['Upper limit', 'Where the integral stops. Swap a and b and the integral changes sign.'],
+  F: ['Antiderivative F', 'A function whose slope is f. The integral from a to b is just F(b) − F(a): the whole area from two numbers.'],
+  N: ['Number of strips', 'How finely the area is chopped. More strips, smaller error; how much smaller depends on the rule.'],
+  xi: ['Sample point in strip i', 'Where each rectangle takes its height: its left edge, its middle, or (for the trapezoid) both ends averaged.'],
+  fk: ['k-th derivative at a', 'The slope of the slope of the slope… at the expansion point. Each one fixes one more coefficient of the polynomial.'],
+  kfact: ['k factorial, k!', '1 × 2 × … × k. It grows so fast that it eventually tames almost any power of (x − a), which is why Taylor series usually converge.'],
+  Phi: ['Potential Φ', 'Potential energy per unit mass: a landscape whose downhill direction is the direction of the gravitational pull.'],
+  grad: ['Gradient ∇', 'The vector of all the partial derivatives. It points straight uphill, and its length is the steepness.'],
+  gvec: ['Gravitational acceleration g', 'The acceleration a test mass feels. The minus sign makes it point downhill in Φ.'],
+  rvec: ['Position vector r', 'Where we are in space, with components (x, y, z).'],
+  dV: ['Volume element dV', 'A tiny box of space. In spherical coordinates it is a thin curved brick of volume r² sin θ dr dθ dφ.'],
+  rho: ['Density ρ', 'Mass per unit volume. Integrate it over a volume and you get the mass inside.'],
+  r: ['Radius r', 'Distance from the centre. In a sphere the shells get bigger as r grows, hence the r² in the volume element.'],
+  theta: ['Polar angle θ', 'Angle from the north pole, 0 to π. The sin θ shrinks the boxes near the poles, where lines of longitude bunch up.'],
+  phi: ['Azimuth φ', 'Angle around the equator, 0 to 2π, like longitude.'],
+  J: ['Jacobian determinant', 'The factor by which a change of variables stretches tiny areas or volumes. In lensing its inverse is the magnification.'],
+  M: ['Mass', 'The mass enclosed, obtained by adding up density over volume.'],
+  gfn: ['A second function g', 'In the chain rule, the inner function: f is applied to the output of g, so a change in x ripples through g first.'],
+  tvar: ['Time t', 'The parameter along the path. The chain rule adds up every route by which a change in t reaches f.'],
+  rdot: ['Velocity along the path', 'The rate at which the position changes. Its dot product with the gradient picks out how fast f changes along the motion.'],
+}} />
+
+## Why calculus?
+
+Almost nothing in astrophysics stands still. A planet's position changes, a star's core temperature climbs as it contracts, the universe's scale factor grows, neutrons decay while the first nuclei are forged. To write down physics for things that change, you need a language for **rates** ("how fast, right now?") and for **accumulation** ("how much, in total?"). That language is calculus, and it has exactly two big ideas: the **derivative** and the **integral**.
+
+This primer is a working tour rather than a course. It aims to give you the intuition, the handful of rules that do 90% of the work, and a feel for how computers do the same thing numerically. If you came here from a chapter that suddenly said "differentiating, we find…", read the sections at your depth and head back. The companion [Appendix A5](/ch/primer-odes/) takes the next step: equations *made of* derivatives, and how simulations solve them.
+
+<Aside>**How to read this primer.** At depth 1 you get pictures and words. At depth 2 you get the rules, with polynomial and exponential examples. At depth 3 you get the chain rule, partial derivatives, gradients, Taylor series and Jacobians. Switch depth in the header at any time.</Aside>
+
+## Derivatives: the slope of a curve
+
+<Tiers>
+<Fragment slot="l1">
+Throw a ball straight up. Its height rises quickly at first, slows, stops for an instant at the top, and then falls faster and faster. At every moment the ball has a definite **speed**, the rate at which its height is changing *right then*. On a graph of height against time, that speed is the **steepness of the curve** at that point.
+
+Measuring steepness at a single point sounds impossible, because steepness needs two points: rise divided by run. The trick is to take two points *very close together*. Draw a straight line through them (a **secant**). Now slide the second point towards the first. The line swings round and settles on one particular line that just grazes the curve: the **tangent**. Its steepness is the **derivative**. It is the answer to the question "how fast is this changing, right here?"
+</Fragment>
+<Fragment slot="l2">
+The average rate of change of a function $f$ between $x$ and $x + \Delta x$ is rise over run, $\Delta y / \Delta x$. It is the slope of the straight line (the *secant*) through those two points on the curve. The **derivative** $f'(x)$ is what that slope becomes as the run $\Delta x$ is made smaller and smaller, so that the two points merge. Geometrically, it is the slope of the *tangent* line that just grazes the curve.
+
+<KeyEq title="The derivative">
+$$
+\term{fp}{f'}(\term{x}{x}) \;\approx\; \frac{\term{dy}{\Delta y}}{\term{dx}{\Delta x}} = \frac{\term{f}{f}(\term{x}{x}+\term{dx}{\Delta x}) - \term{f}{f}(\term{x}{x})}{\term{dx}{\Delta x}}
+$$
+<Fragment slot="where">The approximation gets better and better as the step <span data-term="dx">Δx</span> shrinks. <span data-term="fp">f′(x)</span> is the rate of change of <span data-term="f">f</span> at <span data-term="x">x</span>. For height against time it is the velocity; for velocity against time, the acceleration.</Fragment>
+</KeyEq>
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="The derivative">
+$$
+\term{fp}{f'}(\term{x}{x}) \;=\; \frac{df}{dx} \;=\; \term{lim}{\lim_{\Delta x\to 0}}\; \frac{\term{f}{f}(\term{x}{x}+\term{dx}{\Delta x}) - \term{f}{f}(\term{x}{x})}{\term{dx}{\Delta x}}
+$$
+<Fragment slot="where">The limit exists for "smooth" functions, which is nearly everything in physics. Equivalently, near $x$ the function is a straight line plus something that vanishes faster than $\Delta x$: $f(x+\Delta x) = f(x) + f'(x)\,\Delta x + o(\Delta x)$. That second form, "locally linear", generalises to many variables and is the seed of Taylor series.</Fragment>
+</KeyEq>
+</Fragment>
+</Tiers>
+
+The figure lets you do this by hand. Drag along the curve to move the point P, shrink the step, and zoom in on P.
+
+<Predict question="You halve the step Δx between P and Q. By how much does the gap between the secant slope and the true derivative shrink?" choices={['It halves', 'It falls to a quarter', 'It barely changes']} answer={0}>
+For a smooth curve the gap is roughly proportional to Δx: halve the step, halve the error. For the thrown ball it is *exactly* 4.9 × Δx, because the curve is a parabola. This "first-order" behaviour is the same thing that makes Euler's method for simulations first-order ([Appendix A5](/ch/primer-odes/)).
+</Predict>
+
+<Sim name="primer-calculus-tangent" minHeight={420}>
+**From secant to tangent.** Drag across the plot to move <span style="color:var(--series-2)">P</span>. The orange secant runs through P and Q, a step Δx further on. Press **Shrink Δx → 0** and watch the secant swing onto the dashed tangent while the readout of their difference falls towards zero. Then drag **Zoom on P** up to ×1000: every smooth curve, zoomed in far enough, looks like a straight line. That straight line is the derivative.
+</Sim>
+
+For the thrown ball, $y = 20t - 4.9t^2$ (metres, seconds, launch speed 20 m/s), the slope is $20 - 9.8t$ m/s. It is the ball's velocity: 20 m/s at launch, zero at $t \approx 2.04$ s when the ball hangs at the top, and negative afterwards as it falls. The slope of *that* line, −9.8 m/s², is the acceleration due to gravity. Taking a derivative twice gives a rate of change of a rate of change, and physics is full of them.
+
+<Aside>**Notations.** $f'(x)$ (Lagrange), $\frac{df}{dx}$ (Leibniz) and $\dot x$ (Newton, for time derivatives only) all mean the same thing. Physicists use all three, sometimes in one line: $\ddot x$ is an acceleration.</Aside>
+
+### The rules
+
+<Tiers>
+<Fragment slot="l1">
+You rarely need to work out a slope from scratch, because a handful of patterns cover nearly everything. In words:
+
+- **Powers:** the steepness of $x^2$ grows in proportion to $x$; the steepness of $x^3$ grows like $x^2$. A power's slope is a slightly smaller power.
+- **Exponentials:** the special exponential $e^x$ (with $e \approx 2.718$) has a slope *equal to its own height* everywhere. Anything that grows or decays in proportion to how much of it there is (bacteria, compound interest, radioactive nuclei, a hot star's cooling) is an exponential for exactly this reason.
+- **Waves:** the slope of a sine wave is a cosine wave, the same wave shifted by a quarter cycle. That is why a swinging pendulum is fastest at the bottom, where its displacement is zero.
+</Fragment>
+<Fragment slot="l2">
+A few rules let you differentiate almost anything you meet in this course. With constants $k$ and $n$:
+
+$$
+\frac{d}{dx}\,\term{x}{x}^{\term{n}{n}} = \term{n}{n}\,\term{x}{x}^{\term{n}{n}-1},
+\qquad
+\frac{d}{dx}\,e^{\term{k}{k}\term{x}{x}} = \term{k}{k}\,e^{\term{k}{k}\term{x}{x}},
+\qquad
+\frac{d}{dx}\ln \term{x}{x} = \frac{1}{\term{x}{x}},
+$$
+
+$$
+\frac{d}{dx}\sin \term{x}{x} = \cos \term{x}{x},
+\qquad
+\frac{d}{dx}\cos \term{x}{x} = -\sin \term{x}{x}.
+$$
+
+Derivatives are also **linear**: the derivative of a sum is the sum of derivatives, and constants just come along for the ride. So
+
+- $\dfrac{d}{dt}\left(20t - 4.9t^2\right) = 20 - 9.8t$ (the ball's velocity);
+- $\dfrac{d}{dr}\left(\dfrac{1}{r}\right) = \dfrac{d}{dr}\,r^{-1} = -\dfrac{1}{r^2}$: the power rule works for negative powers, and this one is how the $1/r$ gravitational potential produces the $1/r^2$ force ([Chapter 2](/ch/orbits/));
+- $\dfrac{d}{dt}\,N_0 e^{-t/\tau} = -\dfrac{1}{\tau}\,N_0 e^{-t/\tau}$: a radioactive sample decays at a rate proportional to what is left. That self-similarity is why free neutrons in the early universe ([Chapter 26](/ch/big-bang/)) and ²⁶Al in the early Solar System both follow exponential clocks.
+
+Angles must be in **radians** for the sine and cosine rules to hold. In degrees an ugly factor π/180 appears.
+</Fragment>
+<Fragment slot="l3">
+Beyond the basic table ($x^n \to nx^{n-1}$, $e^{kx} \to ke^{kx}$, $\ln x \to 1/x$, $\sin \to \cos$, $\cos \to -\sin$) you need three structural rules:
+
+$$
+(\term{f}{f}\term{gfn}{g})' = \term{f}{f}'\term{gfn}{g} + \term{f}{f}\term{gfn}{g}', \qquad \left(\frac{\term{f}{f}}{\term{gfn}{g}}\right)' = \frac{\term{f}{f}'\term{gfn}{g} - \term{f}{f}\term{gfn}{g}'}{\term{gfn}{g}^2}, \qquad \frac{d}{d\term{x}{x}}\,\term{f}{f}\big(\term{gfn}{g}(\term{x}{x})\big) = \term{f}{f}'\big(\term{gfn}{g}(\term{x}{x})\big)\,\term{gfn}{g}'(\term{x}{x}).
+$$
+
+The last is the **chain rule**, and it is the one that does the heavy lifting: the rate of change of a composition is the product of the rates of each link. In Leibniz notation it looks like fraction cancellation, $\frac{df}{dx} = \frac{df}{dg}\frac{dg}{dx}$, which is why that notation won. Examples:
+
+- $\frac{d}{dt}\sqrt{1 - v^2/c^2} = \frac{1}{2}(1-v^2/c^2)^{-1/2}\cdot\left(-\frac{2v\dot v}{c^2}\right)$: the Lorentz factor of an accelerating particle ([Chapter 17](/ch/relativity/)).
+- **Logarithmic derivatives.** For a power law $y = Ax^n$, $\frac{d\ln y}{d\ln x} = n$. Astronomers use this constantly: the slope on a log–log plot *is* the exponent, whether it is $L \propto M^{3.5}$ on the main sequence ([Chapter 14](/ch/main-sequence/)) or a spectral index. See [Appendix A2](/ch/primer-functions/).
+- **Maxima and minima** are where $f' = 0$. Setting the derivative of the Gamow exponent to zero finds the energy at which fusion actually happens ([Chapter 12](/ch/fusion/)); setting the derivative of the Planck curve to zero gives Wien's law ([Chapter 4](/ch/light/)).
+</Fragment>
+</Tiers>
+
+### Derivatives on a computer
+
+A computer cannot take a limit, so it uses a small but finite step. The **forward difference** $[f(x+h) - f(x)]/h$ is exactly the secant slope from the figure, with an error proportional to $h$. The **central difference** $[f(x+h) - f(x-h)]/2h$ is symmetric, so the leading errors cancel and what remains is proportional to $h^2$: much better, at no extra cost.
+
+So why not make $h$ absurdly small? Because computers store about 16 significant digits. Subtracting two nearly equal numbers throws away most of them. Try it for the slope of $\sin x$ at $x = 1$. With a step of <Var name="fdh" value={0.1} min={1e-14} max={0.5} log digits={2} />, the forward difference is off by <Out name="fdFwd" /> and the central difference by <Out name="fdCen" />. Drag the step down: both errors shrink, bottom out (near $10^{-8}$ and $10^{-5}$ respectively), and then *grow* again as round-off takes over.
+
+<Aside>**Where this bites.** The lensing sims in [Chapter 24](/ch/lensing/) compute a Jacobian by finite differences in 32-bit floats, and the BBN solver in [Chapter 26](/ch/big-bang/) builds one numerically for Newton's method. Both have to choose the step with care.</Aside>
+
+## Integrals: adding up tiny pieces
+
+<Tiers>
+<Fragment slot="l1">
+The other big question is "how much, in total?" If a car drives at a steady 50 km/h for two hours, it covers 100 km: speed times time, which is the *area of a rectangle* on a graph of speed against time. If the speed changes, chop the trip into short intervals, treat the speed as steady within each one, and add up the thin rectangles. The thinner the slices, the better the answer. In the limit of infinitely thin slices you get the **integral**: the exact area under the curve.
+
+Astrophysics does this everywhere. The mass of a star is the sum of the masses of its thin shells ([Chapter 11](/ch/stellar-structure/)). The energy a star radiates is its brightness added up over all wavelengths ([Chapter 4](/ch/light/)). The work needed to escape a planet is the pull added up over every metre of the climb.
+</Fragment>
+<Fragment slot="l2">
+The **integral** of $f$ from $a$ to $b$ is the area under the curve between those two points (counting area below the axis as negative). Chop the interval into $N$ strips of width $\Delta x = (b-a)/N$, approximate each strip by a rectangle, and add them up. That is a **Riemann sum**, and it approaches the integral as $N$ grows:
+
+<KeyEq title="The integral as a sum of strips">
+$$
+\int_{\term{a}{a}}^{\term{b}{b}} \term{f}{f}(\term{x}{x})\,dx \;\approx\; \sum_{i=1}^{\term{N}{N}} \term{f}{f}(\term{xi}{x_i})\,\term{dx}{\Delta x}
+$$
+<Fragment slot="where">The long S is a stretched "sum" (Leibniz's notation), and $dx$ is the infinitely thin version of the strip width <span data-term="dx">Δx</span>. Each strip contributes height × width.</Fragment>
+</KeyEq>
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="The Riemann integral">
+$$
+\int_{\term{a}{a}}^{\term{b}{b}} \term{f}{f}(\term{x}{x})\,dx \;=\; \term{lim}{\lim_{N\to\infty}}\; \sum_{i=1}^{\term{N}{N}} \term{f}{f}(\term{xi}{x_i})\,\term{dx}{\Delta x}, \qquad \term{dx}{\Delta x} = \frac{\term{b}{b}-\term{a}{a}}{\term{N}{N}}
+$$
+<Fragment slot="where">For continuous <span data-term="f">f</span> the limit does not depend on where in each strip the sample point <span data-term="xi">xᵢ</span> sits. For a finite <span data-term="N">N</span> it very much does, as the figure shows: that choice is the difference between a first- and a second-order quadrature rule.</Fragment>
+</KeyEq>
+</Fragment>
+</Tiers>
+
+<Predict question="With the midpoint rule, you double the number of strips N. What happens to the error?" choices={['It halves', 'It falls to a quarter', 'It falls to an eighth']} answer={1}>
+The midpoint rule's error scales as 1/N², so doubling N cuts it by four. The left-endpoint rule only manages 1/N: each rectangle misses a little triangle of area whose size is proportional to the strip width, and those misses all lean the same way. Taking the height at the middle makes the over- and under-shoots within each strip cancel to leading order. On the right-hand log–log panel, the order of each rule is the slope of its line.
+</Predict>
+
+<Sim name="primer-calculus-riemann" minHeight={440}>
+**Riemann sums converging.** Slide **Strips N** and watch the shaded area close in on the true integral. The right panel plots the error against N on log–log axes for all three rules at once (the selected one is bold). The left rule falls along the ∝ 1/N guide; the midpoint and trapezoid rules fall along ∝ 1/N². Try the Planck integrand, the function behind the Stefan–Boltzmann law, whose area over all x is π⁴/15 ≈ 6.494. Then try sin x on [0, π]: the left rule suddenly becomes second order too, because the function vanishes at both ends and the left and trapezoid sums coincide.
+</Sim>
+
+### The fundamental theorem
+
+Summing strips works, but it is slow by hand. The shortcut, and the reason derivatives and integrals belong together, is the **fundamental theorem of calculus**: integration undoes differentiation.
+
+<Tiers>
+<Fragment slot="l1">
+Suppose you know a car's speed at every moment and want the distance covered. One way is to add up speed × time, strip by strip. The other is to find a "position" function whose rate of change is the speed, and read it at the start and end. Distance equals final position minus initial position. Every integral works like this: find a function whose slope is the thing you are adding up, and subtract its values at the two ends.
+</Fragment>
+<Fragment slot="l2">
+<KeyEq title="Fundamental theorem of calculus">
+$$
+\int_{\term{a}{a}}^{\term{b}{b}} \term{f}{f}(\term{x}{x})\,dx = \term{F}{F}(\term{b}{b}) - \term{F}{F}(\term{a}{a}), \qquad \text{where } \term{F}{F}' = \term{f}{f}
+$$
+<Fragment slot="where"><span data-term="F">F</span> is an *antiderivative* of <span data-term="f">f</span>: any function whose slope is f. Read the derivative table backwards: $x^n$ integrates to $x^{n+1}/(n+1)$ (for $n \neq -1$), $1/x$ to $\ln x$, $e^{kx}$ to $e^{kx}/k$, $\cos x$ to $\sin x$.</Fragment>
+</KeyEq>
+
+Two examples you will meet:
+
+- **Work against gravity.** Lifting mass $m$ from radius $R$ to $r_2$ against a force $GMm/r^2$ takes work $\int_R^{r_2} GMm\,r^{-2}\,dr = GMm\left(\frac{1}{R} - \frac{1}{r_2}\right)$. Send $r_2 \to \infty$ and you need $GMm/R$: set that equal to $\tfrac12 mv^2$ and out comes the **escape speed** $\sqrt{2GM/R}$ ([Chapter 2](/ch/orbits/), [Appendix A6](/ch/primer-mechanics/)). The "1/r² on [1, 5]" option in the figure is this integral, and its value $1 - 1/5 = 0.8$ is the fundamental theorem at work.
+- **Exponential decay.** The number of neutrons decaying between $t = 0$ and $t$ is $\int_0^t (N_0/\tau)\,e^{-t'/\tau}\,dt' = N_0\,(1 - e^{-t/\tau})$.
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="Fundamental theorem of calculus">
+$$
+\frac{d}{dx}\int_{\term{a}{a}}^{\term{x}{x}} \term{f}{f}(s)\,ds = \term{f}{f}(\term{x}{x}), \qquad \int_{\term{a}{a}}^{\term{b}{b}} \term{f}{f}(\term{x}{x})\,dx = \term{F}{F}(\term{b}{b}) - \term{F}{F}(\term{a}{a}) \;\text{ for any } \term{F}{F}' = \term{f}{f}
+$$
+<Fragment slot="where">The first form says the accumulated area grows at a rate equal to the height of the curve at its moving edge, which is obvious from the picture. The second is how you evaluate integrals in practice.</Fragment>
+</KeyEq>
+
+Two techniques cover most of what the chapters do. **Substitution** is the chain rule in reverse: change variables so that the integrand simplifies, remembering to transform $dx$. The classic astrophysical example is the Stefan–Boltzmann law. The energy radiated per unit area is $\int_0^\infty B_\nu(T)\,d\nu$, with $B_\nu \propto \nu^3/(e^{h\nu/k_BT}-1)$. Substitute $x = h\nu/k_BT$, so $\nu = (k_BT/h)x$ and $d\nu = (k_BT/h)\,dx$. Every factor of $T$ comes out in front and the remaining integral is the pure number $\int_0^\infty x^3/(e^x-1)\,dx = \pi^4/15$. That is why the flux goes as $T^4$ ([Chapter 4](/ch/light/)), and you do not even need to evaluate the integral to see it. **Integration by parts** is the product rule in reverse, $\int u\,dv = uv - \int v\,du$. It turns up in the virial theorem ([Chapter 11](/ch/stellar-structure/)), where it trades the pressure gradient for the pressure itself.
+</Fragment>
+</Tiers>
+
+<Aside>**When there is no formula.** Many integrals have no closed form: the Fermi–Dirac integrals of degenerate matter, most cosmological distances ([Chapter 25](/ch/expansion/)). Then you compute them numerically with midpoint, trapezoid, Simpson or Gaussian quadrature. These are the same strip sums, with cleverer placement of the sample points.</Aside>
+
+## Taylor series: every smooth function is locally a polynomial
+
+The zoom slider in the first figure showed that a smooth curve looks like a straight line up close. The straight line is a first approximation. Add a parabola to follow the curve's bending and you do better; add a cubic and better still. That sequence is the **Taylor series**, and it is quietly the most used tool in theoretical physics: almost every "approximately" in this course is a Taylor series cut off after one or two terms.
+
+<Tiers>
+<Fragment slot="l1">
+Near any point, a smooth curve can be copied by a simple polynomial: first match its height, then its slope, then how it bends, then how the bending changes, and so on. Each extra ingredient makes the copy good over a wider range. A handful of terms is often enough, and physicists stop as soon as the next term is too small to matter. When an astronomer says "for speeds much less than light, relativity reduces to Newton", they mean: keep the first term of a series and throw the rest away.
+</Fragment>
+<Fragment slot="l2">
+Near $x = 0$, a few approximations do an enormous amount of work when $x$ is small ($|x| \ll 1$):
+
+$$
+e^{\term{x}{x}} \approx 1 + \term{x}{x} + \frac{\term{x}{x}^2}{2}, \qquad
+\sin \term{x}{x} \approx \term{x}{x} - \frac{\term{x}{x}^3}{6}, \qquad
+\cos \term{x}{x} \approx 1 - \frac{\term{x}{x}^2}{2},
+$$
+
+$$
+(1+\term{x}{x})^{\term{n}{n}} \approx 1 + \term{n}{n}\term{x}{x}, \qquad
+\ln(1+\term{x}{x}) \approx \term{x}{x}.
+$$
+
+The last-but-one, the **binomial approximation**, works for any power, including negative and fractional ones. For example $\sqrt{1.02} = (1 + 0.02)^{1/2} \approx 1.01$ (the true value is 1.00995), and $1/(1.01)^2 \approx 1 - 0.02$. Each approximation is the start of an infinite polynomial. Every extra term is built from one more derivative of the function at 0.
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="Taylor series">
+$$
+\term{f}{f}(\term{x}{x}) = \sum_{k=0}^{\infty} \frac{\term{fk}{f^{(k)}(a)}}{\term{kfact}{k!}}\,(\term{x}{x}-\term{a}{a})^k = f(a) + f'(a)(x-a) + \tfrac12 f''(a)(x-a)^2 + \dots
+$$
+<Fragment slot="where">Each coefficient is fixed by matching one more derivative at the expansion point <span data-term="a">a</span>. Cutting the sum at order $n$ leaves an error of order $(x-a)^{n+1}$. More precisely, Taylor's theorem gives the remainder as $f^{(n+1)}(\xi)(x-a)^{n+1}/(n+1)!$ for some $\xi$ between $a$ and $x$.</Fragment>
+</KeyEq>
+
+The series converges to $f$ inside a **radius of convergence**: the distance from $a$ to the nearest singularity of $f$ *in the complex plane*. For $e^x$, $\sin x$ and $\cos x$ it is infinite. For $\ln(1+x)$ it is the distance to $x = -1$. The Lorentz factor $\gamma = (1-\beta^2)^{-1/2}$ blows up at $\beta = \pm 1$, so its expansion about $\beta = 0$ works only for $|\beta| < 1$, which is physically fine. Curiously, $1/(1+x^2)$, which is perfectly smooth on the real line, has radius 1 about $x = 0$ because of its poles at $x = \pm i$.
+</Fragment>
+</Tiers>
+
+<Predict question="Keep adding terms to the Taylor series of ln(1 + x) built at x = 0. At x = 2, the polynomial will…" choices={['converge, slowly', 'converge quickly', 'get worse and worse']} answer={2}>
+It diverges. The function blows up at x = −1, one unit from the centre, so the series can only work within one unit either side: for |x| &lt; 1. At x = 2 the terms $(-1)^{k+1}x^k/k$ grow without limit. Select ln(1 + x) in the figure and push the order up: the shaded "good" region grows towards x = 1 and then stops, while the polynomial swings ever more wildly beyond it. Move the centre a to the right and the window widens, because the singularity is further away.
+</Predict>
+
+<Sim name="primer-calculus-taylor" minHeight={420}>
+**Taylor polynomials of adjustable order.** The <span style="color:var(--accent)">orange</span> polynomial matches the function's height, slope, curvature… at the centre a (drag on the plot to move it). The shaded band is where it agrees to within 1%. For sin x and eˣ the band grows without limit as the order rises. For ln(1+x) and the Lorentz factor γ(β), it stalls at the red singularities; the red bar along the bottom marks the interval of convergence. γ ≈ 1 + β²/2 (order 2) is the step from relativistic energy to Newtonian kinetic energy.
+</Sim>
+
+Here is where the course leans on Taylor series:
+
+- **Tides** ([Chapter 9](/ch/tides/)). The Moon pulls harder on the near side of the Earth than on the far side. Expanding $1/(r \pm R)^2$ to first order in $R/r$ gives the tidal acceleration $2GMR/r^3$, and explains why tides fall off as the *cube* of distance.
+- **Special relativity** ([Chapter 17](/ch/relativity/)). $E = \gamma mc^2 \approx mc^2 + \tfrac12 mv^2 + \dots$: rest energy plus Newtonian kinetic energy, plus corrections of order $v^2/c^2$.
+- **Fusion** ([Chapter 12](/ch/fusion/)). Expanding the logarithm of the Gamow integrand to second order about its peak turns it into a Gaussian, which can be integrated exactly.
+- **Stability.** Near the bottom of any potential well, $\Phi(x) \approx \Phi_0 + \tfrac12 \Phi''(x_0)(x-x_0)^2$: every small oscillation is a harmonic oscillator. This is behind epicycles in galaxies ([Chapter 22](/ch/galactic-dynamics/)) and the stability of Lagrange points ([Chapter 3](/ch/three-body/)).
+- **Numerical methods.** Every statement of the kind "this integrator is fourth order" is a Taylor-series comparison ([Appendix A5](/ch/primer-odes/)).
+
+<Fermi title="How much stronger is the Moon's pull on the near side?">
+The Moon is $r \approx 60$ Earth radii away. The near side is closer by one Earth radius $R$, so the pull there is larger by a factor $(1 - R/r)^{-2} \approx 1 + 2R/r = 1 + 2/60 \approx 1.033$. That is about 3% more than at the centre, and the far side feels about 3% less. The Moon's pull at the Earth's centre is $GM_\text{Moon}/r^2 \approx 3.3\times10^{-5}$ m/s², so the tidal difference is about $10^{-6}$ m/s², roughly a ten-millionth of $g$. The binomial approximation turns a subtraction of two nearly equal numbers into a single clean term, and that term raises the oceans.
+</Fermi>
+
+## Several variables: partial derivatives, gradients and Jacobians
+
+Real quantities depend on more than one thing. Temperature in a star depends on radius *and* time; the gravitational potential of a galaxy depends on all three coordinates. The ideas above carry over with a little more bookkeeping.
+
+### Partial derivatives and the gradient
+
+<Tiers>
+<Fragment slot="l1">
+Picture a hilly landscape, with height depending on how far east and how far north you are. Standing at one spot, you can ask how steep it is heading east, or heading north. The direction of **steepest climb** is a definite arrow, the **gradient**, and it always points straight across the contour lines of a map. Gravity works like this. The *potential* is a landscape, deep near a mass and shallow far away, and the gravitational pull on anything points straight downhill, perpendicular to the contours, with a strength set by the steepness.
+</Fragment>
+<Fragment slot="l3">
+A **partial derivative** differentiates with respect to one variable while holding the others fixed: $\partial f/\partial x$ is the slope of $f(x,y,z)$ if you walk in the $x$ direction. Collect all of them into a vector and you have the **gradient**:
+
+<KeyEq title="Gradient, and gravity from a potential">
+$$
+\term{grad}{\nabla} \term{f}{f} = \left(\frac{\partial f}{\partial x},\, \frac{\partial f}{\partial y},\, \frac{\partial f}{\partial z}\right), \qquad \term{gvec}{\vec g} = -\term{grad}{\nabla}\term{Phi}{\Phi}(\term{rvec}{\vec r})
+$$
+<Fragment slot="where">The gradient points in the direction of steepest increase, and its length is the rate of increase in that direction. The rate of change in any unit direction $\hat n$ is the dot product $\hat n\cdot\nabla f$, so moving *along* a contour ($\hat n \perp \nabla f$) changes nothing. Gravity is minus the gradient of the potential <span data-term="Phi">Φ</span>: it points downhill.</Fragment>
+</KeyEq>
+
+For a point mass, $\Phi = -GM/r$ with $r = \sqrt{x^2+y^2+z^2}$, and the chain rule gives $\partial r/\partial x = x/r$, so $\nabla\Phi = (GM/r^2)(\vec r/r)$ and $\vec g = -GM\hat r/r^2$: Newton's law from one line of calculus. Working with a scalar potential rather than three force components is simpler. It is also why the Lagrange points ([Chapter 3](/ch/three-body/)) can be found as the flat spots, $\nabla\Phi_\text{eff} = 0$, of a single landscape, and why a lensing deflection ([Chapter 24](/ch/lensing/)) is the gradient of a lensing potential. Second derivatives go into the **Hessian** matrix $\partial^2 \Phi/\partial x_i\partial x_j$, which is the tidal tensor of [Chapter 9](/ch/tides/). Its trace, the **Laplacian** $\nabla^2\Phi = 4\pi G\rho$, is Poisson's equation, which the particle-mesh code of [Chapter 28](/ch/structure/) solves on a grid.
+</Fragment>
+</Tiers>
+
+### The chain rule, in full
+
+<Level min={3} title="The multivariable chain rule">
+When a function of several variables is evaluated along a path, $f(x(t), y(t), z(t))$, its rate of change is the sum over each route by which $t$ reaches $f$:
+
+$$
+\frac{d\term{f}{f}}{d\term{tvar}{t}} = \frac{\partial \term{f}{f}}{\partial x}\frac{dx}{d\term{tvar}{t}} + \frac{\partial \term{f}{f}}{\partial y}\frac{dy}{d\term{tvar}{t}} + \frac{\partial \term{f}{f}}{\partial z}\frac{dz}{d\term{tvar}{t}} = \term{grad}{\nabla} \term{f}{f} \cdot \term{rdot}{\dot{\vec r}}.
+$$
+
+Apply it to the energy of an orbiting body, $E = \tfrac12 m|\dot{\vec r}|^2 + m\Phi(\vec r)$. Then $dE/dt = m\,\dot{\vec r}\cdot\ddot{\vec r} + m\,\nabla\Phi\cdot\dot{\vec r} = m\,\dot{\vec r}\cdot(\ddot{\vec r} + \nabla\Phi) = 0$ by Newton's second law. That is energy conservation in one line ([Appendix A6](/ch/primer-mechanics/)). In fluid dynamics the same rule produces the "convective derivative" $D/Dt = \partial/\partial t + \vec v\cdot\nabla$, the rate of change seen by a moving parcel of gas, which is central to convection ([Chapter 13](/ch/energy-transport/)).
+</Level>
+
+### Multiple integrals and Jacobians
+
+<Tiers>
+<Fragment slot="l1">
+To add up something spread over an area or a volume, such as the mass of a star or the light from a galaxy, chop the region into tiny boxes and add up the contents of each. For a round star the natural boxes are thin **shells**, like the layers of an onion. A shell of radius $r$ and thickness $dr$ has volume (surface area × thickness) $4\pi r^2\,dr$, so outer shells hold far more volume than inner ones. That is why most of the Sun's *volume* is in its tenuous outer layers while most of its *mass* is in the dense core.
+</Fragment>
+<Fragment slot="l3">
+A double or triple integral sums over a region: $\int_V \rho\,dV$ is the mass in volume $V$. The awkward part is the shape of the "tiny box" $dV$ when you use coordinates that fit the problem. In spherical coordinates the box is a curved brick of sides $dr$, $r\,d\theta$ and $r\sin\theta\,d\phi$:
+
+<KeyEq title="Mass of a sphere, and the Jacobian">
+$$
+\term{M}{M} = \int \term{rho}{\rho}\,\term{dV}{dV} = \int_0^{R}\!\!\int_0^{\pi}\!\!\int_0^{2\pi} \term{rho}{\rho}(\term{r}{r})\,\term{r}{r}^2 \sin\term{theta}{\theta}\;d\term{phi}{\phi}\,d\term{theta}{\theta}\,d\term{r}{r} = \int_0^R 4\pi \term{r}{r}^2 \term{rho}{\rho}(\term{r}{r})\,d\term{r}{r}
+$$
+<Fragment slot="where">The factor $r^2\sin\theta$ is the **Jacobian determinant** <span data-term="J">J</span> of the change from $(x,y,z)$ to $(r,\theta,\phi)$: $dx\,dy\,dz = |J|\,dr\,d\theta\,d\phi$ with $J = \det\left[\partial(x,y,z)/\partial(r,\theta,\phi)\right]$. For a spherically symmetric density the angles integrate to $4\pi$, which is how $dm/dr = 4\pi r^2\rho$ enters [Chapter 11](/ch/stellar-structure/).</Fragment>
+</KeyEq>
+
+In general, for any smooth map $\vec u \mapsto \vec x(\vec u)$, the **Jacobian matrix** $\partial x_i/\partial u_j$ is the best linear approximation to the map near a point: it is the derivative, promoted to many dimensions. Its determinant is the local factor by which the map stretches area or volume. Two chapters depend on this. In gravitational lensing ([Chapter 24](/ch/lensing/)) the map from image to source plane has a Jacobian whose inverse determinant is the **magnification**, and the places where it vanishes are the caustics where images brighten enormously. And any change of variables in a probability distribution or phase-space integral picks up $|J|$. This is how, for example, a distribution over photon energies becomes one over wavelengths ([Appendix A7](/ch/primer-thermo/)).
+</Fragment>
+</Tiers>
+
+<History title="Newton, Leibniz and the priority war" year="1684">
+<Portrait src="/img/people/leibniz.jpg" name="Gottfried Wilhelm Leibniz" years="1646–1716" credit="Christoph Bernhard Francke, c. 1695" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Christoph_Bernhard_Francke_-_Bildnis_des_Philosophen_Leibniz_(ca._1695).jpg" />
+
+Isaac Newton worked out his "method of fluxions" in 1665–66, during the plague years when Cambridge was closed, but he circulated it only in manuscript and hardly published it. Gottfried Wilhelm Leibniz, a German diplomat, philosopher and polymath, developed calculus independently around 1675 and published first, in 1684 and 1686, in the journal *Acta Eruditorum*. His notation, $dx$, $dy/dx$ and the elongated-S integral sign, was so well designed that it did half the thinking for you, and continental mathematicians such as the Bernoullis and later Euler ran with it.
+
+Then came the fight. In 1712 the Royal Society set up a committee to decide who had invented calculus first. It found for Newton and accused Leibniz of plagiarism. The report was anonymous, but its author was the Society's president: Isaac Newton. Historians now agree that the two men discovered calculus independently. The feud cost British mathematics dearly: loyal to Newton's clumsy dot notation, it fell behind the continent for most of the eighteenth century. Every $dx$ in this course is Leibniz's.
+</History>
+
+## Where calculus shows up in this course
+
+A quick map, so you can jump to the tool you need:
+
+| Tool | What it answers | Where it is used |
+|---|---|---|
+| Derivative | How fast, right now? Where is the peak? | Velocity and acceleration ([Ch. 2](/ch/orbits/)); Wien's law ([Ch. 4](/ch/light/)); the Gamow peak ([Ch. 12](/ch/fusion/)) |
+| Log-derivative | What power law is this? | Mass–luminosity slope ([Ch. 14](/ch/main-sequence/)); spectral indices; [Appendix A2](/ch/primer-functions/) |
+| Integral | How much in total? | Enclosed mass ([Ch. 11](/ch/stellar-structure/)); Stefan–Boltzmann ([Ch. 4](/ch/light/)); cosmic distances ([Ch. 25](/ch/expansion/)) |
+| Taylor series | What happens when something is small? | Tides ([Ch. 9](/ch/tides/)); relativity's Newtonian limit ([Ch. 17](/ch/relativity/)); integrator error orders ([A5](/ch/primer-odes/)) |
+| Gradient | Which way is downhill, and how steeply? | Gravity from a potential ([Ch. 2](/ch/orbits/), [Ch. 3](/ch/three-body/)); pressure gradients ([Ch. 11](/ch/stellar-structure/)) |
+| Jacobian | How does a map stretch space? | Lensing magnification ([Ch. 24](/ch/lensing/)); changes of variables ([A7](/ch/primer-thermo/)) |
+
+The natural next step is to use derivatives to write down *laws*: equations that say how a thing changes, and leave you to work out what it does. Those are differential equations, and nearly every simulation in this course is a machine for solving one. Continue to [Appendix A5: Differential Equations & Numerics](/ch/primer-odes/), or brush up on forces, energy and potentials in [Appendix A6](/ch/primer-mechanics/).

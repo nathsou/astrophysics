@@ -1,0 +1,384 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: expansion
+lede: The sky is dark at night, galaxies recede in every direction, and there is no centre to any of it. One equation — really, an energy budget for the universe itself — explains why.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Photo from '../../components/Photo.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  a: ['Scale factor', 'The universal ruler: all comoving distances scale with it. a = 1 today by convention, a → 0 at the Big Bang.'],
+  z: ['Redshift', 'How much a photon\'s wavelength has stretched: 1+z = 1/a. It is the direct observable behind everything in this chapter.'],
+  H: ['Hubble parameter', 'The fractional expansion rate ȧ/a. It has units of inverse time, and 1/H is a rough age/size scale for the universe at that moment.'],
+  d: ['Proper distance', 'Physical separation between us and a galaxy today, measured along a constant-time slice.'],
+  v: ['Recession velocity', 'Rate of change of proper distance to a galaxy. At low z it is ≈ cz; it is not a velocity through local spacetime, so it can exceed c.'],
+  p: ['Pressure', 'Sourced gravity too, in general relativity, unlike in Newtonian gravity — see the +3p term below.'],
+  H0: ['Hubble constant', 'H(a=1), the expansion rate today. Sets both the age (∼1/H0) and size (∼c/H0) scale of the observable universe.'],
+  rho: ['Energy density', 'What sources gravity in the Friedmann equations, through Einstein\'s equations. Different components dilute differently as a grows.'],
+  Om: ['Matter density parameter', 'Ωm = ρm,0/ρcrit,0. Matter dilutes as a⁻³ (fixed particle count, growing volume).'],
+  Or: ['Radiation density parameter', 'Ωr = ρr,0/ρcrit,0. Radiation dilutes as a⁻⁴: volume dilution plus the redshifting of each photon\'s energy.'],
+  OL: ['Dark-energy density parameter', 'ΩΛ = ρΛ/ρcrit,0. Constant in a in the simplest (cosmological-constant) model — it does not dilute at all.'],
+  Ok: ['Curvature density parameter', 'Ωk = 1−Ωm−Or−ΩΛ, the "leftover" needed to balance the energy budget. Positive Ωk means open (negatively curved) space.'],
+  k: ['Curvature constant', 'The sign of spatial curvature in the FLRW metric: k=+1 closed, 0 flat, −1 open.'],
+  w: ['Equation-of-state parameter', 'Pressure over density, p = wρ. It controls how a component dilutes: ρ ∝ a^{-3(1+w)}.'],
+  q: ['Deceleration parameter', 'q = −ä a / ȧ². Positive q means the expansion is slowing down; negative q means it is speeding up.'],
+  Lambda: ['Cosmological constant', 'A constant term in Einstein\'s equations, equivalent to a fluid with w=−1 and unchanging density — the simplest model for dark energy.'],
+  DL: ['Luminosity distance', 'The distance inferred from how faint a standard candle looks: d_L = (1+z) d_C. It is what supernova cosmology measures.'],
+  DA: ['Angular-diameter distance', 'The distance inferred from how big a standard ruler looks on the sky: d_A = d_C/(1+z). Counterintuitively, it eventually shrinks with z.'],
+}} />
+
+## Why the sky is dark at night
+
+<Photo src="/img/expansion/hubble-deep-field.jpg" alt="The Hubble Deep Field: a patch of apparently empty sky revealing several thousand faint, distant galaxies of many shapes and colours" credit="NASA / STScI (R. Williams and the HDF Team)" license="Public domain" href="https://images.nasa.gov/details/PIA12110" size="wide" aspect="3 / 2">
+**The Hubble Deep Field, 1995.** Ten days of exposure on a patch of "empty" sky the width of a grain of sand held at arm's length turned up about 3,000 galaxies. Point a good telescope almost anywhere, for long enough, and the sky fills in. So why isn't the night sky ablaze?
+</Photo>
+
+<Tiers>
+<Fragment slot="l1">
+If the universe were infinite, unchanging, and evenly sprinkled with stars forever in every direction, then any line of sight you drew would eventually hit a star's surface. The whole sky should glow like the surface of the Sun. It obviously doesn't. This puzzle is **Olbers' paradox**, named for the astronomer who popularised it in 1823 (though Kepler and others raised versions of it two centuries earlier).
+
+The resolution is not that far stars are too dim — geometry exactly compensates for that, because a shell of stars at distance $r$ is dimmer per star but has more stars, in a ratio that cancels perfectly for an infinite static universe. The real resolution is that the universe is not infinitely old and unchanging. Light from very distant, very old regions hasn't reached us yet, or has been redshifted into invisibility, or was emitted before there were stars to shine at all. Nearly everything you can conclude about the universe as a whole follows a similar logic: **look far enough away and you are also looking far enough back in time**, at a universe that looked different.
+</Fragment>
+<Fragment slot="l2">
+Olbers' paradox, stated carefully: in an infinite, static, uniformly star-filled universe, the sky should be uniformly bright, roughly as bright as a stellar surface. A shell of thickness $dr$ at distance $r$ contains $\propto r^2\,dr$ stars; each contributes flux $\propto 1/r^2$; the products cancel, so every shell contributes *equally* to the sky brightness, and summing infinitely many equal contributions diverges.
+
+Three separate facts save us, and each one rules out a piece of the "infinite, static, unchanging" assumption:
+
+1. **The universe has a finite age** (this chapter): light from beyond a *horizon* distance ~ $c \times \text{age}$ has not had time to arrive.
+2. **The universe is expanding**: redshift dims and reddens distant light, and the earliest light (Chapter 26 and 27) is stretched all the way into the microwave band.
+3. **Stars have finite lifetimes** and the universe had a stellar-free dark age before the first ones formed.
+
+Expansion and a finite age turn out to be the same underlying fact, described by one function of time: the scale factor $a(t)$.
+</Fragment>
+</Tiers>
+
+## No centre, no edge: the cosmological principle
+
+<Tiers>
+<Fragment slot="l1">
+On the largest scales — averaging over hundreds of millions of light-years — the universe looks the same in every direction (**isotropy**) and the same from every location (**homogeneity**). Galaxy surveys such as SDSS and DESI confirm this once you smooth over the "cosmic web" of filaments and voids. This is the **cosmological principle**, and it is the single biggest simplifying assumption in this chapter: it says the universe has no special centre and no special edge, so it can be described by *one* function of time, not a different story for every location.
+</Fragment>
+<Fragment slot="l2">
+Formally, the cosmological principle asserts that space, on large scales, admits a foliation into homogeneous, isotropic 3D slices of constant cosmic time $t$. That is an enormous constraint: a homogeneous, isotropic 3-geometry can only be flat, spherical or hyperbolic, with a single overall size parameter — the **scale factor** $a(t)$ — controlling how that geometry stretches or shrinks. Comoving coordinates $\vec\chi$ are defined so that galaxies with no *peculiar* motion of their own sit at fixed $\vec\chi$; physical (proper) separation is $\vec r(t) = a(t)\,\vec\chi$.
+</Fragment>
+</Tiers>
+
+<Aside>**A common misconception.** Expansion is not an explosion of matter flying out from a point into pre-existing empty space. There is no centre and no edge. Every observer, on every galaxy, sees every other galaxy receding, and the same equations apply verbatim if you relocate yourself to Andromeda. Space itself is stretching, carrying comoving points apart.</Aside>
+
+### Redshift is stretching, not (only) Doppler
+
+<Tiers>
+<Fragment slot="l1">
+A photon's wavelength stretches along with space itself while it travels. If the universe doubles in size during the trip, the wavelength doubles too. Define <span data-term="z">redshift</span> $z$ by how much longer the wavelength got: a wave that left at scale factor $a$ and arrives today (scale factor 1) satisfies $1+z = 1/a$. This is *not* fundamentally the same effect as the Doppler shift of a receding ambulance, though for nearby galaxies the two give almost the same number; it becomes a genuinely different (and larger) effect for objects seen when the universe was much smaller.
+</Fragment>
+<Fragment slot="l2">
+<KeyEq title="Cosmological redshift">
+$$
+1 + \term{z}{z} = \frac{1}{\term{a}{a}}
+$$
+<Fragment slot="where">$z$ is the redshift measured today of light emitted when the scale factor was $a$ (with $a=1$ today by convention). This follows from the wave crests of light being carried along by the expanding comoving grid: a wavelength $\lambda \propto a$.</Fragment>
+</KeyEq>
+
+At low $z$, expanding $1+z \approx 1 + Hd/c$ recovers the familiar Doppler-like $v = cz \approx H_0 d$ relation from the next section. At high $z$ (say $z=10$, meaning $a=1/11$), there is no single inertial frame in which "the Doppler shift" is even well defined over cosmological distances — you must integrate the stretching along the whole path. Treat "recession velocity" $v = cz$ at high $z$ as a convenient fiction, not a real speed measured by anyone.
+</Fragment>
+</Tiers>
+
+## The Hubble–Lemaître law
+
+<History title="Spectra, a wrong constant, and a forgotten paper" year="1912–1931">
+<Portrait src="/img/people/hubble-edwin.jpg" name="Edwin Hubble" years="1889–1953" credit="Wikimedia Commons" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Edwin_Hubble.jpg" />
+
+The observational story has more names than the textbook shorthand suggests. Starting in 1912, **Vesto Slipher** at Lowell Observatory painstakingly measured the spectra of "spiral nebulae" (we now know these are other galaxies) and found nearly all of them redshifted — a strange, systematic recession that puzzled everyone, including Slipher, who never connected it to a global expansion.
+
+In 1927, the Belgian priest-physicist **Georges Lemaître** combined Slipher's redshifts with distance estimates and *derived* a linear velocity–distance relation from Einstein's equations, in a paper published in a relatively obscure Belgian journal. It went almost unnoticed.
+
+**Edwin Hubble**, using Henrietta Leavitt's period–luminosity relation (below) to measure galaxy distances at Mount Wilson, published essentially the same linear relation in 1929 with better data and much wider visibility. For decades the relation carried only his name; in 2018 the International Astronomical Union formally recommended "Hubble–Lemaître law", and this book follows that convention. Hubble's own value for the constant, about 500 km/s/Mpc, was almost eight times too high — his distance ladder had a systematic error (confusing two different types of variable star) that took over two decades to fully correct.
+</History>
+
+<Tiers>
+<Fragment slot="l1">
+Galaxies recede from us at a speed proportional to their distance: twice as far, twice as fast. Crucially, this holds in *every* direction and would hold the same way if measured from any other galaxy — it is a signature of uniform expansion, not of us sitting at a special point.
+</Fragment>
+<Fragment slot="l2">
+<KeyEq title="Hubble–Lemaître law">
+$$
+\term{v}{v} = \term{H0}{H_0}\,\term{d}{d}
+$$
+<Fragment slot="where">$v$ is the recession velocity (for nearby galaxies, $v \approx cz$). $d$ is the proper distance. $H_0$ is the <span data-term="H0">Hubble constant</span>, the present-day expansion rate, currently pinned down to roughly 67–73 km/s/Mpc (more on that gap below).</Fragment>
+</KeyEq>
+
+A galaxy at <Var name="hubbled" value={100} min={1} max={5000} log /> Mpc, with $H_0 =$ <Var name="hubbleH0" value={70} min={50} max={90} /> km/s/Mpc, recedes at <Out name="hubblev" />.
+</Fragment>
+<Fragment slot="l3">
+More generally, $v=H_0 d$ is the $z\to 0$ limit of $H(t) = \dot a/a$ evaluated today. Differentiating $r = a(t)\chi$ at fixed comoving $\chi$ gives $\dot r = \dot a \chi = (\dot a/a) r = H(t) r$ — expansion is a *local, instantaneous* statement about the rate of stretching, valid everywhere at once, not a signal propagating outward from a centre.
+</Fragment>
+</Tiers>
+
+<Fermi title="Weighing the Hubble time in your head">
+$1/H_0$ has units of time — a rough age for the universe if the expansion rate had always been what it is today. Converting units: $1\,\text{Mpc} = 3.09\times10^{19}\,\text{km}$, so
+
+$$
+\frac{1}{H_0} = \frac{3.09\times10^{19}\,\text{km/Mpc}}{70\,\text{km/s/Mpc}} \approx 4.4\times10^{17}\,\text{s} \approx 14\,\text{Gyr}.
+$$
+
+That is suspiciously close to the actual age of 13.8 Gyr from the full Friedmann integration below — matter and dark energy happen to make the two nearly coincide for our particular universe, a coincidence explored later in this chapter. The handy shortcut $t_H[\text{Gyr}] \approx 978/H_0[\text{km/s/Mpc}]$ is worth memorising.
+</Fermi>
+
+<Aside>**Superluminal recession is fine.** For $d > c/H_0$ (about 4,300 Mpc today), the naive $v=H_0 d$ exceeds $c$. This does not violate relativity: $v$ here is the rate of change of *proper distance* between comoving points, not the velocity of anything moving through local space. Special relativity's speed limit applies locally, not to the expansion of space itself. (New to this distinction? See [Appendix A3](/ch/primer-vectors/) on coordinates and frames, and Chapter 17 on why $c$ is only a *local* speed limit.)</Aside>
+
+## The Friedmann equations
+
+<Predict question="A closed universe with no dark energy is bound to eventually recollapse — true or false?" choices={['True', 'False, curvature alone never guarantees recollapse', 'False, only if it also contains radiation']} answer={1}>
+True, for ordinary matter and radiation (which always have $\rho + 3p>0$): with $\Lambda=0$, a positively curved (closed) universe *always* turns around and recollapses, no matter how close to flat it is, because gravity is purely attractive and eventually wins against the fixed positive-curvature "energy" term. Add a positive cosmological constant, though, and a closed universe can expand forever, or even have no Big Bang at all — Λ can outrun both matter's dilution and curvature. Play with the flagship simulation below and watch the Ωm–ΩΛ plane: the "closed but eternal" region really exists.
+</Predict>
+
+### Deriving it the easy way: a Newtonian shortcut
+
+<Level min={2} title="An energy argument for the first Friedmann equation">
+<Tiers>
+<Fragment slot="l1">
+Picture a large sphere of uniform matter, centred on you, of comoving radius $\chi$ and physical radius $r=a\chi$. By a classical result (Newton's "iron sphere" theorem — the same one used for gravity inside the Earth in [Appendix A6](/ch/primer-mechanics/)), the gravitational pull on a test galaxy at the sphere's edge depends only on the mass *inside* that radius, not on anything outside it. That turns "the whole universe's gravity" into an ordinary one-body problem: a test particle held back by the mass enclosed within its own comoving sphere. Energy conservation for that one particle, worked through, reproduces the real general-relativistic Friedmann equation almost exactly (with $kc^2$ standing in for a genuine spatial-curvature term GR adds).
+</Fragment>
+<Fragment slot="l2">
+Take a test mass $m$ at physical radius $r=a\chi$ from the centre of a uniform sphere of density $\rho(t)$. The enclosed mass is $M = \tfrac43\pi r^3\rho$, fixed in comoving terms ($\propto \chi^3$) as the sphere expands. Newtonian energy conservation for the test mass:
+
+$$
+E = \tfrac12 m\dot r^2 - \frac{GMm}{r} = \tfrac12 m a^2\dot\chi^2\cdot\frac{1}{\chi^2}\cdot\chi^2\Big|_{\dot\chi=0} \;\Rightarrow\; \tfrac12\dot a^2\chi^2 - \frac{4}{3}\pi G\rho a^2\chi^2 = \frac{E}{m}.
+$$
+
+Divide by $\tfrac12 a^2\chi^2$ and absorb constants into a curvature parameter $k$:
+
+$$
+\left(\frac{\dot a}{a}\right)^2 = \frac{8\pi G}{3}\rho - \frac{kc^2}{a^2}.
+$$
+
+This *is* the first Friedmann equation. The Newtonian derivation gets the matter and curvature terms right (a genuine coincidence of the mathematics, not a proof that gravity is Newtonian on these scales) but says nothing about pressure sourcing gravity, and cannot produce a cosmological-constant term from first principles — for those you need general relativity.
+</Fragment>
+</Tiers>
+</Level>
+
+### The real thing
+
+<Tiers>
+<Fragment slot="l2">
+<KeyEq title="Friedmann equation (first)">
+$$
+\term{H}{H}^2 \equiv \left(\frac{\dot a}{a}\right)^2 = \frac{8\pi \term{G}{G}}{3}\term{rho}{\rho} - \frac{\term{k}{k}c^2}{a^2} + \frac{\Lambda c^2}{3}
+$$
+<Fragment slot="where">$\rho$ is the total energy density (matter + radiation). $k \in \{-1,0,+1\}$ is the curvature sign. $\Lambda$ is the <span data-term="Lambda">cosmological constant</span>, an alternative bookkeeping for dark energy folded into $\rho$ below.</Fragment>
+</KeyEq>
+</Fragment>
+<Fragment slot="l3">
+This is the time–time component of Einstein's field equations for the FLRW metric,
+
+$$
+ds^2 = -c^2dt^2 + a(t)^2\left[\frac{d\chi^2}{1-k\chi^2} + \chi^2(d\theta^2+\sin^2\theta\,d\phi^2)\right],
+$$
+
+sourced by a perfect-fluid stress-energy tensor $T^{\mu\nu} = (\rho+p)u^\mu u^\nu + p g^{\mu\nu}$. The space–space component gives the *second* Friedmann (acceleration) equation:
+
+<KeyEq title="Friedmann equation (second / acceleration)">
+$$
+\frac{\ddot a}{a} = -\frac{4\pi G}{3}\left(\term{rho}{\rho} + \frac{3\term{p}{p}}{c^2}\right) + \frac{\Lambda c^2}{3}
+$$
+<Fragment slot="where">$p$ is pressure. Note the $+3p$: unlike Newtonian gravity, *pressure itself gravitates* in general relativity. A fluid with large positive pressure decelerates the expansion more than its energy density alone would suggest — and a fluid with $p<-\rho/3$ can accelerate it. (New to $\ddot a$, an acceleration from a second time-derivative? See [Appendix A4](/ch/primer-calculus/).)</Fragment>
+</KeyEq>
+</Fragment>
+</Tiers>
+
+<Level min={3} title="The continuity equation and w">
+Energy conservation in an expanding volume ($d(\rho c^2 a^3) = -p\,d(a^3)$, the first law of thermodynamics for an adiabatically expanding fluid) gives
+
+$$
+\dot\rho + 3\frac{\dot a}{a}(\rho + p/c^2) = 0.
+$$
+
+For a fluid with a constant equation of state $\term{w}{w}=p/(\rho c^2)$, this integrates to $\rho \propto a^{-3(1+w)}$:
+
+| Component | $w$ | $\rho(a)$ | Why |
+|---|---|---|---|
+| Matter | 0 | $a^{-3}$ | Fixed particle count, volume $\propto a^3$ |
+| Radiation | 1/3 | $a^{-4}$ | Volume dilution, plus each photon redshifts $\propto 1/a$ |
+| Curvature (bookkeeping) | −1/3 | $a^{-2}$ | Not a real fluid, but obeys the same algebra |
+| Cosmological constant | −1 | $a^0$ | Vacuum energy, unchanged by expansion |
+
+A general "dark energy" fluid can have any $w$, even one that evolves with time — see DESI's recent hints below.
+</Level>
+
+### Dimensionless bookkeeping: the density parameters
+
+<Tiers>
+<Fragment slot="l2">
+Divide the first Friedmann equation by $H_0^2$ and define $\Omega_i = \rho_{i,0}/\rho_{\text{crit},0}$ for each component, with $\rho_{\text{crit},0} = 3H_0^2/8\pi G$ the density that would make the universe exactly flat. Then at any scale factor,
+
+<KeyEq title="The E(z) function">
+$$
+E(a)^2 \equiv \left(\frac{H(a)}{H_0}\right)^2 = \term{Or}{\Omega_r}\,a^{-4} + \term{Om}{\Omega_m}\,a^{-3} + \term{Ok}{\Omega_k}\,a^{-2} + \term{OL}{\Omega_\Lambda}
+$$
+<Fragment slot="where">Each $\Omega_i \ge 0$ except $\Omega_k$, which can have either sign and is fixed by requiring $\Omega_m+\Omega_r+\Omega_k+\Omega_\Lambda=1$ at $a=1$. Current best-fit (Planck 2018 / DESI 2024, flat ΛCDM): $\Omega_m\approx0.315$, $\Omega_\Lambda\approx0.685$, $\Omega_r\approx9\times10^{-5}$, $\Omega_k\approx0$ to within about 0.001.</Fragment>
+</KeyEq>
+
+Every quantity in this chapter — age, distances, fate — is built from integrals of $1/E(a)$ or $1/[(1+z)E(z)]$. Get $E$ right and everything else is quadrature.
+</Fragment>
+</Tiers>
+
+<Sim name="expansion-densities" size="wide" minHeight={420}>
+**How each component dilutes.** Radiation (∝ a⁻⁴) always wins at small $a$; matter (∝ a⁻³) takes over next; the cosmological constant (flat) wins last and forever. Drag Ωm and Ωr and watch the crossover points — matter–radiation equality near $a\sim10^{-4}$, matter–Λ equality just before "today" — slide.
+</Sim>
+
+## Distances that mean different things
+
+<Photo src="/img/expansion/jwst-smacs0723.jpg" alt="A field of thousands of galaxies of many colours and shapes, dominated by a foreground cluster of yellow-white galaxies whose gravity bends and smears the light of much more distant background galaxies into arcs" credit="NASA, ESA, CSA, and STScI" license="Public domain" href="https://images.nasa.gov/details/webb_first_deep_field" size="wide" aspect="4 / 3">
+**SMACS 0723, JWST's first deep field, July 2022.** The bright foreground galaxies are relatively close; most of the faint, warped, red-tinged smears are gravitationally lensed galaxies seen at high redshift — some further back in cosmic time than any object known before Webb. "Distance" for an object like this is not one number: how far away it is *now*, how far its light travelled, and how big it looks are three different distances (below), and they can differ by a large factor.
+</Photo>
+
+<Tiers>
+<Fragment slot="l1">
+In an expanding universe, "how far away is it?" has several honest but different answers, because the universe changed size while the light was travelling. The distance to a galaxy *right now* is bigger than the distance the light actually crossed. And a galaxy's apparent size on the sky stops shrinking with distance past a certain redshift and starts growing again — an object can look *bigger* the further away (and further back in time) it is.
+</Fragment>
+<Fragment slot="l2">
+<KeyEq title="Comoving, luminosity and angular-diameter distance">
+$$
+d_C = \int_0^z \frac{c\,dz'}{H(z')}, \qquad \term{DL}{d_L} = (1+z)\,d_C, \qquad \term{DA}{d_A} = \frac{d_C}{1+z}
+$$
+<Fragment slot="where">$d_C$ (comoving distance) is what you'd measure with a tape strung along a constant-time slice today. $d_L$ is what a standard candle's flux implies via $F=L/4\pi d_L^2$. $d_A$ is what a standard ruler's angular size implies via $\theta=\ell/d_A$. All three coincide only for $z\ll1$.</Fragment>
+</KeyEq>
+
+The $d_A$ turnover happens because at high $z$ you are looking at light emitted when the universe — and the object's true comoving distance divided among a proportionally smaller sky — was much more compact; the extra $(1+z)^{-1}$ shrinks faster than $d_C$ grows past $z\sim1.5$.
+</Fragment>
+<Fragment slot="l3">
+For nonzero curvature, replace $d_C$ with the transverse comoving distance $d_M = (c/H_0)\,\text{sinh or sin}\big(\sqrt{|\Omega_k|}\,H_0 d_C/c\big)/\sqrt{|\Omega_k|}$ (sinh for open, sin for closed, $\to d_C$ as $\Omega_k\to0$), then $d_L=(1+z)d_M$, $d_A=d_M/(1+z)$. **Lookback time** is a genuinely different quantity from any distance: $t_{\text{lookback}}(z) = \int_0^z \frac{dz'}{(1+z')H(z')}$, the proper time elapsed for *us*, not a light-travel distance.
+</Fragment>
+</Tiers>
+
+<Sim name="expansion-distances" size="wide" minHeight={440}>
+**Three distances, one redshift.** Drag the vertical marker (or the slider) across redshift. Comoving and luminosity distance climb without bound; angular-diameter distance turns over near $z\approx1.6$ and *shrinks* beyond that — the same galaxy would look bigger on the sky at $z=10$ than at $z=3$.
+</Sim>
+
+### Horizons
+
+<Tiers>
+<Fragment slot="l1">
+Because light travels at a finite speed and the universe has a finite age, there is a farthest distance from which light could possibly have reached us — the **particle horizon**, roughly $c\times\text{age}$ (a bit more, because space has stretched during the trip). There is also, if dark energy keeps accelerating the expansion, an **event horizon**: a farthest distance from which a signal sent *right now* could ever reach us in the infinite future, because the space in between will keep stretching faster than the signal can cross it.
+</Fragment>
+<Fragment slot="l2">
+The particle horizon (comoving) is $\chi_p = \int_0^{t_0}\frac{c\,dt}{a(t)} = \int_0^{a_0}\frac{c\,da}{a^2 H(a)}$; converting to proper distance today, $d_p = a_0\chi_p \approx 46$ Gly for our universe, versus a light-travel distance of only 13.8 Gly — the difference is entirely due to the stretching that happened *after* the light was emitted. The **Hubble sphere**, radius $c/H(t)$, is neither of these: it is where the *current* recession velocity equals $c$, and unlike the horizons it can grow or shrink and objects can cross it in either direction.
+</Fragment>
+</Tiers>
+
+<Aside>**"Superluminal" is routine.** Essentially every galaxy with $z\gtrsim1.4$ is currently receding faster than $c$ in this sense, and was even receding faster than $c$ when it emitted the light we now see. None of this is paradoxical once you accept that recession velocity is a statement about the rate of change of distance between comoving points, not a velocity through local spacetime. See Chapter 24 for a related "no true motion" subtlety in gravitational lensing.</Aside>
+
+## Building a universe
+
+<Sim name="expansion-friedmann" size="wide" minHeight={560}>
+**The flagship: pick your universe.** Sliders set Ωm, ΩΛ, Ωr and H₀ (Ωk is whatever is left over). The left panel integrates $a(t)$ through today and into the past and future, marking "now" and the fate (crunch, eternal expansion, acceleration onset, a rebound with no Big Bang, or a slow "loitering" phase). The top-right panel is the Ωm–ΩΛ plane: drag the point, and watch it cross the shaded flat/open/closed and accelerating/decelerating/recollapsing boundaries, with rough SN/CMB/BAO contours (illustrative only) shown for scale. The bottom-right panel animates a comoving grid of galaxies — fixed dots on an expanding grid — with a photon crossing it and reddening as $a$ grows. Try the preset buttons, especially "No Big Bang".
+</Sim>
+
+<Hood title="integrating the Friedmann equation without hitting the singularity">
+Stepping $a(t)$ forward in time with an ODE solver is the natural first instinct, but it is a bad one near $a=0$: $\dot a = aH(a)$ and, for a matter- or radiation-dominated start, $H(a)\to\infty$ as $a\to0$, which makes fixed-step time integration stiff exactly where you need it to be accurate. Instead, this sim integrates the *inverse* relationship,
+
+$$
+t(a) - t(a_0) = \int_{a_0}^{a} \frac{da'}{a' H(a')},
+$$
+
+as a **quadrature over $a$**, which turns out to be numerically gentle: near $a=0$ with any radiation present, the integrand itself $\to 0$ smoothly (no divergence at all), and near a genuine turning point (a Big Crunch or a "no Big Bang" bounce, where $E(a)=0$), the integrand has only an *integrable* $1/\sqrt{a-a_\text{turn}}$ singularity. A change of variable that makes the substitution's Jacobian vanish at the singular endpoint — $a = a_0 + (a_1-a_0)u^2$ clusters quadrature nodes there and cancels the divergence exactly — combined with a midpoint rule that never evaluates the literal endpoint, handles it cleanly with no special-casing:
+
+```ts
+// src/sims/expansion/cosmology.ts — midpoint quadrature with an endpoint substitution that
+// cancels an inverse-sqrt singularity at a turning point (E(a) = 0).
+function quad(f: (a: number) => number, a0: number, a1: number,
+              singularStart: boolean, singularEnd: boolean, N: number): number {
+  const shape  = (u: number) => singularStart ? u * u : singularEnd ? 2 * u - u * u : u;
+  const dshape = (u: number) => singularStart ? 2 * u : singularEnd ? 2 - 2 * u   : 1;
+  let sum = 0;
+  const du = 1 / N;
+  for (let i = 0; i < N; i++) {
+    const u = (i + 0.5) * du;                 // midpoint rule: never touches u = 0 or 1
+    const a = a0 + (a1 - a0) * shape(u);
+    sum += f(a) * (a1 - a0) * dshape(u) * du; // dshape → 0 exactly cancels f → ∞
+  }
+  return sum;
+}
+```
+
+For a **closed, recollapsing** universe, the boundary scan finds the turnaround scale factor $a_\text{turn}$ by bisection on $E(a)^2=0$, integrates up to (not through) it with the substitution above, and mirrors the trajectory in time — valid because $\ddot a$ in the second Friedmann equation doesn't depend on the sign of $\dot a$, so $a(t)$ is exactly symmetric about the turnaround. The classification of a universe's fate (crunch / eternal, accelerating or coasting / bounce / loitering) then falls out of where — if anywhere — $E(a)^2$ crosses zero, found by the same bisection. Complexity is $O(N)$ per quadrature segment with small constant $N\sim250$; double precision (`Float64Array`) is used throughout since the age of the universe and the size of a bounce point can differ by many orders of magnitude. (New to root-finding by bisection or to this kind of substitution trick? See [Appendix A5](/ch/primer-odes/).)
+</Hood>
+
+## Weighing the tension in $H_0$
+
+<Tiers>
+<Fragment slot="l1">
+Two independent ways of measuring today's expansion rate disagree by more than their stated uncertainties allow. One method (the "distance ladder": nearby stars, then Cepheid variable stars, then supernovae) gives about 73 km/s/Mpc. The other (fitting the pattern of the cosmic microwave background, assuming standard cosmology) gives about 67 km/s/Mpc. Either there's a subtle, still-unidentified measurement error in one of the two methods, or the standard cosmological model itself is missing something. This is the **Hubble tension**, one of the liveliest open problems in cosmology as of the mid-2020s.
+</Fragment>
+<Fragment slot="l2">
+The tension is currently about $4$–$6\sigma$ depending on exactly which datasets are combined: SH0ES-calibrated Cepheid + Type Ia supernova distance ladders give $H_0 \approx 73.0 \pm 1.0$ km/s/Mpc; Planck CMB analysis (assuming flat ΛCDM) gives $H_0 \approx 67.4 \pm 0.5$ km/s/Mpc; DESI baryon acoustic oscillation data land close to the Planck value when combined with a CMB prior. JWST-era re-measurements of the Cepheid rungs (2023–2025) have, if anything, *reinforced* the higher local value rather than resolving the discrepancy by finding a calibration error, though the debate is very much live.
+</Fragment>
+</Tiers>
+
+### The distance ladder, rung by rung
+
+<History title="A variable star, a servant's job, and a Nobel Prize she never got" year="1908–1912">
+<Portrait src="/img/people/leavitt.jpg" name="Henrietta Swan Leavitt" years="1868–1921" credit="Wikimedia Commons" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Henrietta_Swan_Leavitt.jpg" />
+
+Henrietta Swan Leavitt worked as a "computer" at the Harvard College Observatory, one of many women hired at low wages to measure and catalogue photographic plates because the work was considered unsuitable for men to do by hand. Cataloguing thousands of variable stars in the Magellanic Clouds, she noticed in 1908 (and firmly established in 1912) that brighter Cepheid variables pulsate more slowly — a tight period–luminosity relation. Because all the Clouds' stars are at essentially the same distance, this meant *period alone* reveals true luminosity, and comparing true to apparent brightness gives distance. Leavitt's law became the first rung stable enough to reach other galaxies; Hubble used it directly to show that the "spiral nebulae" were external galaxies, and later to build the redshift–distance relation above. The Swedish Academy considered nominating her for a Nobel Prize in 1924, only to learn she had died of cancer three years earlier — the prize cannot be awarded posthumously.
+</History>
+
+<Tiers>
+<Fragment slot="l1">
+No single technique measures cosmological distances directly; astronomers build a ladder, each rung calibrated by the one below it. **Parallax** (the geometric wobble of nearby stars against the background sky as Earth orbits the Sun) gives distances directly, but only within a few thousand light-years even for Gaia's exquisite precision. Those nearby distances calibrate **Cepheid variables**' period–luminosity relation (Leavitt's law), which reaches to about 100 million light-years — far enough to catch a few galaxies with both Cepheids and their own Type Ia supernovae. That overlap calibrates supernovae as standard candles reaching billions of light-years, since a Type Ia's peak luminosity is famously uniform (it comes from an exploding white dwarf near the same critical mass every time).
+</Fragment>
+<Fragment slot="l2">
+Every rung's calibration error propagates to every rung above it — which is exactly why Hubble's 500 km/s/Mpc was so wrong (he had unknowingly mixed two distinct types of Cepheid-like variable with different period–luminosity relations) and why today's $H_0$ tension is taken so seriously: SH0ES and independent teams have driven the local-ladder uncertainty down to about 1–2%, so the disagreement with the CMB-inferred value is no longer plausibly just sloppy calibration.
+</Fragment>
+</Tiers>
+
+## 1998: catching the acceleration
+
+<Photo src="/img/expansion/cosmos-weak-lensing.jpg" alt="A reconstructed map of dark matter distribution overlaid on a wide star field, showing clumpy, filamentary structure in false colour" credit="NASA, ESA, R. Massey (Caltech)" license="Public domain" href="https://images.nasa.gov/details/GSFC_20171208_Archive_e002077" size="wide" aspect="4 / 3">
+**Independent confirmation via weak lensing, 2010.** This reconstructed mass map of the COSMOS field (from gravitational lensing distortions of background galaxy shapes — the same physics as Chapter 24) traces how structure has grown over cosmic time. Combined with distance and growth-rate measurements, weak lensing gives an independent line of evidence for accelerating expansion, entirely separate from the supernova method described below.
+</Photo>
+
+<Tiers>
+<Fragment slot="l1">
+By the mid-1990s, two competing teams (the Supernova Cosmology Project and the High-Z Supernova Search Team) were using Type Ia supernovae as standard candles to measure how the expansion rate had changed over billions of years, expecting to pin down how quickly the expansion was *slowing* under gravity's pull. In 1998, both teams found the opposite: distant supernovae were dimmer — meaning farther away — than a decelerating universe predicted. The expansion is speeding up. The 2011 Nobel Prize in Physics went to Saul Perlmutter, Brian Schmidt and Adam Riess for the discovery.
+</Fragment>
+<Fragment slot="l2">
+Concretely, a supernova's distance modulus $\mu = 5\log_{10}(d_L/\text{10 pc})$ measured at a given redshift came out systematically larger (fainter, farther) than the matter-only, $\Omega_\Lambda=0$ prediction — by a few tenths of a magnitude at $z\sim0.5$, exactly the sense and rough size expected if $\Omega_\Lambda\approx0.7$. The sim below regenerates that argument with synthetic (noisy) data: turn up the sample size and the systematic gap between the two model curves becomes impossible to explain away as noise.
+</Fragment>
+</Tiers>
+
+<Sim name="expansion-hubblediagram" size="wide" minHeight={480}>
+**Recreating the 1998 result.** Simulated Type Ia supernovae (grey points, drawn from a flat-ΛCDM universe with realistic scatter) plotted as distance modulus vs redshift, against a matter-only model (dashed, no Λ) and flat ΛCDM (solid). The residual panel below subtracts the no-Λ prediction: real SNe Ia at $z\gtrsim0.3$ sit systematically *above* zero, fainter than a decelerating universe allows. Increase the sample size to see the systematic trend win over the scatter.
+</Sim>
+
+## Dark energy: what we actually know
+
+<Tiers>
+<Fragment slot="l1">
+"Dark energy" is the placeholder name for whatever causes the acceleration — most simply, Einstein's cosmological constant $\Lambda$, a fixed energy density built into empty space itself. It behaves like a fluid with negative pressure ($w=-1$): unlike everything else in the universe, its density does *not* dilute as space expands, so eventually (Chapter 26 aside) it dominates everything else, which is already happening now.
+</Fragment>
+<Fragment slot="l2">
+The honest state of the evidence in 2026: flat ΛCDM with $w=-1$ fits essentially all data (CMB, BAO, SNe Ia, weak lensing) very well. But DESI's 2024–2025 baryon acoustic oscillation results show a mild ($2$–$4\sigma$, depending on the combination of datasets) preference for dark energy that has *evolved* — typically parametrised as $w(a) = w_0 + w_a(1-a)$ — over a strictly constant $\Lambda$. This is intriguing and worth watching, but it is **not yet a confirmed departure** from the simplest model: systematic effects in the BAO analysis and tension with some independent SN compilations remain live concerns. Treat "evolving dark energy" as a promising anomaly under active investigation, not (yet) an established fact.
+</Fragment>
+</Tiers>
+
+<Aside>**In the real universe…** the current best-fit deceleration parameter is $q_0 \approx -0.53$ (accelerating), and the transition from deceleration to acceleration happened at $z\approx0.6$, about 6–7 Gyr ago — matter and Λ happened to be comparable then, which is also, not entirely coincidentally, when structure formation (Chapter 28) began visibly slowing down.</Aside>
+
+## Where we go from here
+
+The scale factor $a(t)$ and the density parameters $\Omega_i$ built in this chapter are the coordinate system for the rest of cosmology. [Chapter 26](/ch/big-bang/) runs the tape backward through the hot early universe — nucleosynthesis, the neutrino background, and recombination, the event that set the redshift of the *surface of last scattering*. [Chapter 27](/ch/cmb/) reads the tiny temperature ripples left on that surface, which pin down $\Omega_m$, $\Omega_\Lambda$ and $\Omega_k$ far more precisely than any local measurement. [Chapter 28](/ch/structure/) uses the $\rho(a)$ eras from this chapter to explain how the density fluctuations imprinted at the Big Bang grew, under gravity, into the cosmic web of galaxies you can see forming in the JWST deep field above.
+
+The recurring theme, worth carrying forward: a handful of numbers — a few $\Omega_i$, $H_0$, and (maybe) an evolving $w$ — are enough to describe the geometry, age, fate and entire observable history of everything there is. That compression is either the deepest triumph of 20th-century physics or a sign of how much we still don't understand about dark energy and dark matter, depending on your mood on a given day.

@@ -1,0 +1,407 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: primer-thermo
+lede: A star holds about 10⁵⁷ particles. Nobody can follow them one at a time, and nobody needs to. Temperature, pressure, entropy and one exponential factor tell you nearly everything worth knowing.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  T: ['Temperature', 'A measure of the average random energy per particle, in kelvin. Absolute zero is 0 K; every formula here needs kelvin, never °C.'],
+  kB: ['Boltzmann constant', 'The exchange rate between temperature and energy: k_B T is the typical thermal energy per particle. About 1/40 eV at room temperature and 1 eV at 11,600 K.'],
+  m: ['Particle mass', 'Heavier particles move more slowly at the same temperature: speed goes as 1/√m.'],
+  v: ['Particle speed', 'Each particle has its own; temperature only fixes the distribution of speeds, not any single one.'],
+  Kavg: ['Average kinetic energy per particle', 'Set by temperature alone, whatever the particle: a hydrogen atom and a uranium atom in the same gas carry the same average energy.'],
+  P: ['Pressure', 'Force per unit area, from particles bouncing off a surface (or off each other). In pascals, N/m².'],
+  V: ['Volume', 'The space the gas fills. Squeeze it at fixed temperature and the pressure rises in proportion.'],
+  N: ['Number of particles', 'Count every free particle: an ionised hydrogen atom contributes two, a proton and an electron.'],
+  n: ['Number density', 'Particles per unit volume, N/V. Air has about 2.5×10²⁵ per m³; interstellar space about 10⁶.'],
+  rho: ['Mass density', 'Mass per unit volume, in kg/m³.'],
+  mu: ['Mean molecular weight', 'Average particle mass in units of the proton mass. Ionised hydrogen has μ ≈ 0.5, since each proton brings a free electron; the Sun\'s ionised mix has μ ≈ 0.62.'],
+  S: ['Entropy', 'The logarithm of the number of microscopic arrangements consistent with what you see, times k_B. It never decreases in an isolated system.'],
+  Omega: ['Multiplicity', 'The number of microstates (exact arrangements of every particle) that look the same macroscopically. Absurdly large: numbers like 10^(10²³) are normal.'],
+  Ei: ['Energy of state i', 'Measured from any convenient zero; only differences between states appear in ratios of populations.'],
+  dE: ['Energy gap', 'How far above the lower state the upper state lies. It is divided by kT inside an exponential, so small changes matter enormously.'],
+  g: ['Degeneracy (statistical weight)', 'How many distinct quantum states share the same energy. More states at a level means more ways to be there, so a proportionally larger population.'],
+  Nlev: ['Population of a level', 'How many particles (atoms, ions, molecules) are in that energy level at any instant.'],
+  Z: ['Partition function', 'The sum of Boltzmann factors over all states. It normalises the probabilities, and its logarithm encodes the whole thermodynamics.'],
+  fv: ['Speed distribution', 'The fraction of particles with speeds in a small interval around v, per unit speed. Its area is 1.'],
+  vp: ['Most probable speed', 'Where the distribution peaks, √(2kT/m) in 3D. The average and rms speeds are a little higher, pulled up by the fast tail.'],
+  ell: ['Step length (mean free path)', 'Distance travelled between collisions, which is also the size of one random-walk step. It is 1/(nσ) for particles of cross-section σ.'],
+  Nsteps: ['Number of steps', 'Collisions or scatterings so far. Net distance grows only as its square root.'],
+  dist: ['Net distance travelled', 'Straight-line distance from start after N random steps, root-mean-square over many walkers.'],
+  t: ['Time', 'How long the particles have been diffusing. The spread grows as its square root, not in proportion.'],
+  D: ['Diffusion coefficient', 'How fast a spreading cloud grows in area: m²/s. Roughly step length times speed, divided by 3.'],
+  lamth: ['Thermal de Broglie wavelength', 'The quantum "size" of a particle at temperature T. When it is comparable to the spacing between particles, classical statistics fail and degeneracy takes over.'],
+}} />
+
+## Why statistics?
+
+Mechanics ([Appendix A6](/ch/primer-mechanics/)) tells you exactly what a few bodies will do. But the Sun contains about $10^{57}$ particles, and a single cubic centimetre of air about $2.5\times10^{19}$ molecules, each colliding several billion times a second. Nobody can follow that. What rescues us is that, with this many particles, averages become very reliable. The pressure of a gas fluctuates by about one part in $\sqrt N$, which is one part in $10^{10}$ for a cubic centimetre of air. A few statistical quantities describe the whole system almost perfectly.
+
+This primer builds those quantities: temperature, pressure, entropy, the Boltzmann factor and the Maxwell–Boltzmann distribution. It ends with random walks and a pointer to where classical statistics break down. Each idea has a job to do later in the course, and the links say where.
+
+## Temperature is jiggling
+
+<Tiers>
+<Fragment slot="l1">
+Every gas, liquid and solid is made of particles in constant, random motion. **Temperature measures how vigorous that motion is.** In a hot gas, atoms fly around fast; in a cold gas, they drift. Absolute zero, 0 kelvin (−273.15 °C), is where the random motion would stop entirely.
+
+Two important points. First, temperature sets the *average* energy of a particle, whatever kind of particle it is: at the same temperature, a heavy atom moves more slowly than a light one, but carries the same energy on average. Second, **heat** is energy moving from a hotter thing to a colder thing, because fast particles bumping into slow ones tend to share their energy. Heat always flows downhill in temperature, never the other way on its own.
+</Fragment>
+<Fragment slot="l2">
+Temperature measures the average random kinetic energy of the particles. For a gas of point-like particles:
+
+<KeyEq title="Temperature and kinetic energy">
+$$
+\term{Kavg}{\langle K\rangle} = \tfrac12\,\term{m}{m}\,\langle \term{v}{v}^2\rangle = \tfrac32\,\term{kB}{k_B}\,\term{T}{T}
+$$
+<Fragment slot="where"><span data-term="kB">k_B</span> is the Boltzmann constant <C k="kB" />, which converts temperature into energy. <span data-term="T">T</span> must be in kelvin. The average energy doesn't depend on the particle's mass <span data-term="m">m</span>, so heavier particles move more slowly at the same temperature, with $v \propto 1/\sqrt m$.</Fragment>
+</KeyEq>
+
+The product $k_BT$ is the natural unit of thermal energy. It is 0.025 eV (about 1/40 eV) at room temperature, 0.5 eV at the Sun's surface, and 1.3 keV in the Sun's core. Whenever you compare some energy (a chemical bond, an atomic level, a nuclear barrier) with $k_BT$, you learn whether heat can break or excite it.
+
+Heat and work are the two ways to change a system's internal energy $U$: $\Delta U = Q - W$, where $Q$ is heat added and $W$ is work done by the system. That is the **first law of thermodynamics**, which is just energy conservation with heat included.
+</Fragment>
+<Fragment slot="l3">
+The general statement is **equipartition**: in thermal equilibrium, every degree of freedom that enters the energy quadratically (a velocity component, a rotation, a spring's stretch) holds an average of $\tfrac12 k_BT$. A monatomic gas has three translational degrees, so
+
+<KeyEq title="Equipartition for a monatomic gas">
+$$
+\term{Kavg}{\langle K\rangle} = \tfrac12\,\term{m}{m}\,\langle \term{v}{v}^2\rangle = \tfrac32\,\term{kB}{k_B}\,\term{T}{T}
+$$
+<Fragment slot="where">Each of $v_x, v_y, v_z$ contributes $\tfrac12 k_BT$. Diatomic molecules add two rotational degrees at room temperature ($\tfrac52 k_BT$), and vibrations only switch on when $k_BT$ approaches the vibrational quantum. That "freezing out" of degrees of freedom was one of the first cracks in classical physics.</Fragment>
+</KeyEq>
+
+The first law, $dU = \delta Q - P\,dV$, relates the internal energy to heat and work. For an ideal monatomic gas $U = \tfrac32 Nk_BT$, so the heat capacity at constant volume is $C_V = \tfrac32 Nk_B$ and at constant pressure $C_P = \tfrac52 Nk_B$. Their ratio $\gamma = 5/3$ sets the adiabatic law $PV^\gamma = \text{const}$, the sound speed, and whether convection starts ([Chapter 13](/ch/energy-transport/)).
+</Fragment>
+</Tiers>
+
+How fast is that jiggling? A particle of mass <Var name="Agas" value={1} min={1} max={240} log /> atomic mass units at <Var name="Tgas" value={5800} min={3} max={1e8} log /> K has an rms speed of <Out name="vth" />. Hydrogen at the Sun's surface (1 u, 5800 K) moves at about 12 km/s. That's why hydrogen and helium escaped from small, hot planets but stayed on Jupiter.
+
+<Aside>**Handy conversion.** $k_BT = 1$ eV at $T \approx 11{,}600$ K. So a 10,000 K star has $k_BT \approx 0.86$ eV, and the 10⁹ K early universe had $k_BT \approx 86$ keV. That is far below deuterium's 2.2 MeV binding energy, yet photons in the tail of the distribution were numerous enough to keep breaking deuterium apart ([Chapter 26](/ch/big-bang/)).</Aside>
+
+## The ideal gas
+
+Pressure is what you get when many particles bounce off a wall. Each bounce delivers a small push; add up billions of them per second and you have a steady force per unit area.
+
+<Tiers>
+<Fragment slot="l1">
+The rules are intuitive. Pack more particles into the same space and more of them hit the wall, so the pressure goes up. Heat them and they hit harder and more often, so the pressure goes up again. The pressure is simply proportional to how many particles there are per unit volume, times the temperature. This "ideal gas" rule holds astonishingly well even in the Sun's core, where the gas is denser than lead: the particles are bare nuclei and electrons, far smaller than the spaces between them.
+</Fragment>
+<Fragment slot="l2">
+<KeyEq title="The ideal gas law">
+$$
+\term{P}{P}\,\term{V}{V} = \term{N}{N}\,\term{kB}{k_B}\,\term{T}{T} \qquad\Longleftrightarrow\qquad \term{P}{P} = \term{n}{n}\,\term{kB}{k_B}\,\term{T}{T} = \frac{\term{rho}{\rho}\,\term{kB}{k_B}\,\term{T}{T}}{\term{mu}{\mu}\,\term{mp}{m_p}}
+$$
+<Fragment slot="where"><span data-term="n">n</span> = N/V is the number of particles per cubic metre. Astronomers usually know the mass density <span data-term="rho">ρ</span> instead, and convert with the mean molecular weight <span data-term="mu">μ</span>: the average particle mass in units of the proton mass <span data-term="mp">m_p</span>. For fully ionised gas of solar composition, μ ≈ 0.62.</Fragment>
+</KeyEq>
+
+The law holds when the particles barely interact except by brief collisions, which is true in stars, in interstellar gas and in most of the universe. The simulation further down measures the pressure on its walls and compares it with this law.
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="The ideal gas law">
+$$
+\term{P}{P} = \term{n}{n}\,\term{kB}{k_B}\,\term{T}{T} = \frac{\term{rho}{\rho}\,\term{kB}{k_B}\,\term{T}{T}}{\term{mu}{\mu}\,\term{mp}{m_p}}
+$$
+<Fragment slot="where"><span data-term="mu">μ</span> is the mean molecular weight, $1/\mu \approx 2X + \tfrac34 Y + \tfrac12 Z$ for a fully ionised mixture with mass fractions $X$ (hydrogen), $Y$ (helium) and $Z$ (metals).</Fragment>
+</KeyEq>
+
+<Level min={3} title="Pressure from kinetic theory">
+Pressure is momentum flux. Particles with velocity component $v_x > 0$ hit a wall of area $A$ at a rate $n\,v_x A$ per unit velocity class, each delivering momentum $2mv_x$. Integrating over the half of the distribution heading towards the wall,
+
+$$
+P = \int_{v_x>0} 2 m v_x^2\, n\, f(v_x)\,dv_x = n m\langle v_x^2\rangle = \tfrac13 n m \langle v^2 \rangle = n k_B T,
+$$
+
+using isotropy $\langle v_x^2\rangle = \langle v^2\rangle/3$ and equipartition. The same momentum-flux argument for photons, with $|v| = c$ and momentum $E/c$, gives radiation pressure $P = u/3$.
+</Level>
+</Fragment>
+</Tiers>
+
+<Fermi title="What is the pressure at the centre of the Sun?">
+Standard solar models give $\rho_c \approx 1.5\times10^5$ kg/m³ (about 13 times the density of lead), $T_c \approx 1.57\times10^7$ K and $\mu \approx 0.62$ (hydrogen partly burned to helium makes it higher than the surface value). The ideal gas law gives
+
+$$
+P_c = \frac{\rho k_BT}{\mu m_p} = \frac{(1.5\times10^5)(1.38\times10^{-23})(1.57\times10^{7})}{0.62\times1.67\times10^{-27}} \approx 3\times10^{16}\ \text{Pa}.
+$$
+
+That is about 300 billion atmospheres, close to the full solar-model value of $2.5\times10^{16}$ Pa. The ideal gas law works because at 15 million kelvin the atoms are completely ionised, and bare nuclei are 100,000 times smaller than atoms. [Chapter 11](/ch/stellar-structure/) gets the same order of magnitude from hydrostatic equilibrium alone.
+</Fermi>
+
+### Equations of state
+
+An **equation of state** relates pressure to density and temperature. The ideal gas law is the most important one, but not the only one in astrophysics:
+
+<Tiers>
+<Fragment slot="l1">
+- **Ordinary gas:** pressure grows with both density and temperature. Stars like the Sun are held up this way.
+- **Light itself:** photons push too, and their pressure grows extremely steeply with temperature. It matters in the hottest, most massive stars.
+- **Degenerate matter:** squeeze electrons tightly enough and quantum mechanics forbids them to be packed any closer. They push back even at zero temperature. This holds up white dwarfs ([Chapter 16](/ch/stellar-death/)).
+</Fragment>
+<Fragment slot="l3">
+| Matter | Pressure | Where it matters |
+|---|---|---|
+| Ideal gas | $P = \rho k_BT/\mu m_p$ | Main-sequence stars, ISM ([Ch. 11](/ch/stellar-structure/), [Ch. 6](/ch/ism/)) |
+| Radiation | $P = \tfrac13 aT^4$ | Massive stars, the early universe ([Ch. 13](/ch/energy-transport/), [Ch. 26](/ch/big-bang/)) |
+| Non-relativistic degenerate electrons | $P \propto \rho^{5/3}$, independent of $T$ | White dwarfs ([Ch. 16](/ch/stellar-death/)) |
+| Relativistic degenerate electrons | $P \propto \rho^{4/3}$ | The Chandrasekhar limit ([Ch. 16](/ch/stellar-death/)) |
+| Adiabatic gas | $P \propto \rho^{\gamma}$, $\gamma = 5/3$ | Sound waves, convection ([Ch. 13](/ch/energy-transport/)) |
+
+A power law $P = K\rho^{1+1/n}$ is a **polytrope** of index $n$, which turns hydrostatic equilibrium into the Lane–Emden equation ([Chapter 11](/ch/stellar-structure/)). The degenerate cases are derived in [Chapter 16](/ch/stellar-death/); their origin in Fermi–Dirac statistics is sketched at the end of this primer.
+</Fragment>
+</Tiers>
+
+## Entropy: counting the ways
+
+Why does heat flow from hot to cold and never back? Why does a gas fill its container instead of huddling in a corner? Not because of any force, but because of counting.
+
+<Tiers>
+<Fragment slot="l1">
+Think of 100 coins. There is exactly one way to get 100 heads, but about $10^{29}$ ways to get 50 heads and 50 tails. Shake the coins at random and you will always see something close to 50–50, not because anything pushes them there, but because that outcome can happen in overwhelmingly more ways.
+
+Gases are the same with astronomically larger numbers. There are vastly more ways to spread gas molecules through a room than to crowd them into one corner, and vastly more ways to share energy evenly between a hot and a cold object than to keep it all in the hot one. **Entropy** is a measure of how many ways a situation can happen. Systems drift towards the situations with more ways, simply because they are more likely, and at these numbers "more likely" means "certain". That is the **second law of thermodynamics**.
+</Fragment>
+<Fragment slot="l2">
+A **microstate** is an exact specification of every particle. A **macrostate** is what we can actually measure: temperature, pressure, volume. Many microstates correspond to one macrostate, and the number of them is the *multiplicity* $\Omega$. Boltzmann's definition of entropy is
+
+<KeyEq title="Boltzmann's entropy">
+$$
+\term{S}{S} = \term{kB}{k_B}\,\ln \term{Omega}{\Omega}
+$$
+<Fragment slot="where"><span data-term="Omega">Ω</span> is the number of microstates consistent with the macrostate. Because it enters through a logarithm, entropies of independent systems add while their multiplicities multiply.</Fragment>
+</KeyEq>
+
+The **second law** says that an isolated system's entropy never decreases. This is not a new force: it is the statement that systems wander into macrostates with overwhelmingly more microstates. Double the volume of a gas of $N$ particles and each particle has twice as many places to be, so $\Omega$ grows by $2^N$ and $S$ by $Nk_B\ln 2$. With $N \sim 10^{23}$, the reverse is never going to happen.
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="Entropy and temperature">
+$$
+\term{S}{S} = \term{kB}{k_B}\,\ln \term{Omega}{\Omega}, \qquad \frac{1}{\term{T}{T}} = \left(\frac{\partial \term{S}{S}}{\partial E}\right)_{V,N}
+$$
+<Fragment slot="where">This is the fundamental definition of temperature: how much a system's entropy rises per unit energy added. Two systems in contact exchange energy until $\partial S/\partial E$ is equal, because that maximises the total $\Omega_1\Omega_2$.</Fragment>
+</KeyEq>
+
+Why is this the right definition? Put systems 1 and 2 in thermal contact with a fixed total energy $E = E_1 + E_2$. The number of joint microstates is $\Omega_1(E_1)\,\Omega_2(E - E_1)$, which for macroscopic systems has an absurdly sharp maximum. At the maximum, $\partial\ln\Omega_1/\partial E_1 = \partial\ln\Omega_2/\partial E_2$. The quantity that equalises is $1/k_BT$. Heat flows from the system with the smaller $\partial S/\partial E$ (hotter) to the one with the larger (colder), because that raises the total entropy.
+
+Self-gravitating systems break the usual intuition: their heat capacity is negative (they heat up as they lose energy, by the virial theorem, [Chapter 11](/ch/stellar-structure/)), so they have no stable maximum-entropy state. That is why stars evolve and why galaxies do not settle into a uniform gas.
+</Fragment>
+</Tiers>
+
+## The Boltzmann factor
+
+Here is the single most useful formula in this primer. It answers the question: in a system at temperature $T$, how likely is a particle (or an atom, or a molecule) to be in a state of energy $E$?
+
+<Tiers>
+<Fragment slot="l1">
+States that cost more energy are rarer, and not by a little: **every extra $k_BT$ of energy makes a state about 2.7 times rarer** (the number *e*). A state 10 $k_BT$ up is rarer by a factor of about 22,000; 20 $k_BT$ up, by 500 million. So as a star gets hotter, atoms go from almost never being excited to being excited quite often, over a surprisingly narrow range of temperature. That is why each kind of spectral line is strong only in stars within a certain temperature range ([Chapter 5](/ch/spectra/)).
+
+If several different states share the same energy, count each one. A level with three states is three times as likely to be occupied as a single state of the same energy.
+</Fragment>
+<Fragment slot="l2">
+<KeyEq title="The Boltzmann factor">
+$$
+\frac{\term{Nlev}{N_2}}{\term{Nlev}{N_1}} = \frac{\term{g}{g_2}}{\term{g}{g_1}}\;e^{-\term{dE}{\Delta E}/\term{kB}{k_B}\term{T}{T}}
+$$
+<Fragment slot="where"><span data-term="Nlev">N₂/N₁</span> is the ratio of populations of an upper and a lower level, separated by energy <span data-term="dE">ΔE</span>. The <span data-term="g">g</span> factors count how many quantum states each level contains. For hydrogen's level $n$, $g = 2n^2$.</Fragment>
+</KeyEq>
+
+The exponential makes the result extremely sensitive to temperature: raise $T$ a little and a rare state can become common.
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="The Boltzmann distribution">
+$$
+p_i = \frac{\term{g}{g_i}\,e^{-\term{Ei}{E_i}/\term{kB}{k_B}\term{T}{T}}}{\term{Z}{Z}}, \qquad \term{Z}{Z} = \sum_j \term{g}{g_j}\,e^{-\term{Ei}{E_j}/\term{kB}{k_B}\term{T}{T}}
+$$
+<Fragment slot="where">$p_i$ is the probability that a system in contact with a heat bath at temperature <span data-term="T">T</span> is found in level $i$. The **partition function** <span data-term="Z">Z</span> normalises the probabilities, and it does much more: $\langle E\rangle = k_BT^2\,\partial\ln Z/\partial T$, and the free energy is $F = -k_BT\ln Z$.</Fragment>
+</KeyEq>
+
+<Level min={3} title="Deriving the Boltzmann factor from entropy">
+Take a small system in contact with a huge reservoir, with fixed total energy $E_\text{tot}$. The probability of finding the small system in one particular microstate of energy $E$ is proportional to the number of ways the reservoir can hold the rest, $\Omega_R(E_\text{tot} - E)$. Because $E \ll E_\text{tot}$, expand the reservoir's entropy:
+
+$$
+\ln\Omega_R(E_\text{tot} - E) \approx \ln\Omega_R(E_\text{tot}) - E\,\frac{\partial \ln\Omega_R}{\partial E} = \text{const} - \frac{E}{k_BT}.
+$$
+
+So $P(\text{state}) \propto e^{-E/k_BT}$. The exponential comes entirely from the reservoir: giving energy $E$ to the small system costs the reservoir a factor $e^{-E/k_BT}$ in multiplicity. Summing over the $g$ states of a level gives the $g$ factor.
+</Level>
+</Fragment>
+</Tiers>
+
+Try it. A level <Var name="gapE" value={10.2} min={0.01} max={20} log /> eV above the ground state, in gas at <Var name="Tlev" value={10000} min={100} max={100000} log /> K (where $k_BT$ = <Out name="kTeV" />), has a Boltzmann factor of <Out name="bfac" />. The default, 10.2 eV, is hydrogen's $n = 2$ level, the lower level of the Balmer lines.
+
+<Predict question="A hydrogen gas at 10,000 K has k_BT ≈ 0.86 eV. The n = 2 level (8 states) is 10.2 eV above the ground level (2 states). About what fraction of atoms are in n = 2?" choices={['About 10%', 'About 1%', 'About 1 in 35,000']} answer={2}>
+About 1 in 35,000. The gap is almost 12 $k_BT$, so the Boltzmann factor is $e^{-11.8} \approx 7\times10^{-6}$, and the degeneracy ratio $8/2 = 4$ brings it to $3\times10^{-5}$. Yet the Balmer lines, which need atoms in $n = 2$, are strongest in stars at around 10,000 K. The reason is the competition with ionisation (the Saha equation, [Chapter 5](/ch/spectra/)): heat the gas further and the $n = 2$ fraction grows, but the neutral hydrogen disappears. Select "Hydrogen" below and slide the temperature to see how steep the exponential is.
+</Predict>
+
+<Sim name="primer-thermo-levels" minHeight={380}>
+**The Boltzmann factor, built from random hops.** Each dot is an atom. Every step, atoms try to hop one level up or down: downward hops always succeed, and upward hops succeed with probability $e^{-\Delta E/kT}$ (times the degeneracy ratio). Nothing else is programmed in, yet the <span style="color:var(--series-1)">sampled populations</span> settle onto the <span style="color:var(--accent)">Boltzmann prediction</span>. Press **All to ground state** and watch it re-equilibrate. Raise $kT$ and the populations flatten; lower it and everything collapses into the ground state. Turn on **degeneracy** and the upper levels, which have more states, fill up faster than the energy alone would suggest.
+</Sim>
+
+The same factor runs the thermal history of the universe. As the early universe cooled, neutrons and protons stayed in equilibrium through weak reactions, with $n/p = e^{-\Delta m c^2/k_BT}$ and $\Delta mc^2 = 1.29$ MeV. At $k_BT \approx 0.8$ MeV the reactions became too slow to keep up with the expansion and the ratio **froze out** near 1/6. That frozen ratio decides how much helium the universe contains ([Chapter 26](/ch/big-bang/)). Nuclear fusion in stars depends on the high-energy tail of the Boltzmann distribution too ([Chapter 12](/ch/fusion/)).
+
+## The Maxwell–Boltzmann distribution
+
+Temperature fixes the *average* energy, but individual particles have all sorts of speeds. The Boltzmann factor tells us exactly how they are spread out.
+
+<Tiers>
+<Fragment slot="l1">
+In a gas at a given temperature, a few particles are nearly at rest, most move at a typical speed, and a long tail of particles moves much faster than average. The shape of this spread is always the same; only its width changes with temperature and particle mass. The fast tail matters a lot: it is how light gases leak off planets, how some protons in the Sun get enough speed to fuse, and why evaporation cools your skin (the fastest molecules leave first).
+</Fragment>
+<Fragment slot="l2">
+The distribution of speeds in a gas at temperature $T$ rises from zero, peaks and then falls off steeply. The most probable, mean and rms speeds are
+
+$$
+\term{vp}{v_p} = \sqrt{\frac{2\,\term{kB}{k_B}\,\term{T}{T}}{\term{m}{m}}}, \qquad \langle v\rangle = \sqrt{\frac{8\,k_BT}{\pi m}}, \qquad v_\text{rms} = \sqrt{\frac{3\,k_BT}{m}},
+$$
+
+in the ratio 1 : 1.13 : 1.22. The tail falls off as $e^{-mv^2/2k_BT}$: particles at 3 times the most probable speed are rarer than those at the peak by a factor of about 300, and at 5 times by about $10^{9}$.
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="The Maxwell–Boltzmann speed distribution">
+$$
+\term{fv}{f(v)} = 4\pi\left(\frac{\term{m}{m}}{2\pi \term{kB}{k_B} \term{T}{T}}\right)^{3/2} \term{v}{v}^2\, e^{-\term{m}{m} \term{v}{v}^2/2\term{kB}{k_B}\term{T}{T}}
+$$
+<Fragment slot="where">The fraction of particles with speeds between $v$ and $v + dv$ is $f(v)\,dv$. The $v^2$ comes from counting velocity vectors (the area of a spherical shell in velocity space). The exponential is the Boltzmann factor for the kinetic energy.</Fragment>
+</KeyEq>
+
+<Level min={3} title="Deriving Maxwell–Boltzmann from the Boltzmann factor">
+Each particle's translational energy is $\tfrac12 m(v_x^2 + v_y^2 + v_z^2)$. The Boltzmann factor gives the probability density in velocity space,
+
+$$
+f(\vec v)\,d^3v \propto e^{-m(v_x^2+v_y^2+v_z^2)/2k_BT}\,dv_x\,dv_y\,dv_z,
+$$
+
+which is a product of three independent Gaussians, each with variance $k_BT/m$. That is Maxwell's 1860 result. He obtained it by assuming exactly this independence and isotropy. To get the distribution of speeds, integrate over directions: the volume of the shell between $v$ and $v + dv$ is $4\pi v^2 dv$. Normalising with $\int_0^\infty v^2 e^{-av^2}dv = \tfrac14\sqrt{\pi/a^3}$ gives the prefactor. In $d$ dimensions the shell factor is $v^{d-1}$, so the 2D gas in the simulation below has $f(v) = (mv/k_BT)\,e^{-mv^2/2k_BT}$ with peak at $\sqrt{k_BT/m}$.
+</Level>
+</Fragment>
+</Tiers>
+
+James Clerk Maxwell derived the distribution in 1860 from a symmetry argument, before anyone could measure molecular speeds. Six years later, he and his wife Katherine tested one of its odd predictions in the attic of their London house: the viscosity of a gas should not depend on its pressure. It didn't.
+
+<Portrait src="/img/people/maxwell.jpg" name="James Clerk Maxwell" years="1831–1879" credit="G. J. Stodart, engraving after a photograph by Fergus of Greenock" license="Public domain" href="https://commons.wikimedia.org/wiki/File:James_Clerk_Maxwell_big.jpg" />
+
+<Predict question="In the simulation below, every particle starts with exactly the same speed, in a random direction. Collisions are perfectly elastic and conserve total energy. After many collisions, what does the speed histogram look like?" choices={['Still one spike: elastic collisions just swap equal speeds', 'A symmetric bell centred on the starting speed', 'A lopsided hump with some particles almost stopped and a long fast tail']} answer={2}>
+A lopsided hump. A collision between equal speeds at an angle generally gives one particle more speed and the other less. Once energy is shuffled randomly, the most likely distribution is the one with the most microstates, which is Maxwell–Boltzmann. Total energy stays exactly the same, so the rms speed doesn't change, but the spread appears within a few collisions per particle.
+</Predict>
+
+<Sim name="primer-thermo-gas" minHeight={440}>
+**A box of hard spheres, finding equilibrium.** A few hundred atoms start with identical speeds. Within a second or two, the <span style="color:var(--series-1)">histogram of speeds</span> relaxes onto the <span style="color:var(--accent)">Maxwell–Boltzmann curve</span> for the temperature you set. (The box is two-dimensional, so the curve rises as $v$ rather than $v^2$ at low speed.) Particles are coloured slow, typical and <span style="color:var(--accent)">fast</span>, and one <span style="color:var(--accent-2)">tracer</span> leaves a zigzag trail: that is the random walk of the next section. Change the gas at fixed temperature: helium moves $\sqrt{10}$ times faster than argon. The pressure readout compares wall impacts with $PA = NkT$. It comes out several per cent high, and more so with more particles, because the discs take up room: that is the first correction in the van der Waals equation.
+</Sim>
+
+<Hood title="the hard-sphere gas">
+The gas is time-stepped rather than event-driven: move every particle a small step, then find overlapping pairs and bounce them. Finding pairs naively costs $O(N^2)$. Instead, each substep sorts particles into a uniform grid of cells one diameter wide (a counting sort, $O(N)$), and each particle checks only its own and the 8 neighbouring cells:
+
+```ts
+const dvx = vx[j] - vx[i], dvy = vy[j] - vy[i];
+const dot = dvx * dx + dvy * dy;
+if (dot >= 0) continue;          // already separating
+// equal masses, elastic: swap the velocity components along the line of centres
+const s = dot / r2;
+vx[i] += s * dx; vy[i] += s * dy;
+vx[j] -= s * dx; vy[j] -= s * dy;
+```
+
+This collision rule conserves momentum and kinetic energy exactly, up to round-off. The number of substeps adapts so that the fastest particle moves at most 0.6 radii per substep, which keeps missed collisions rare. The temperature slider rescales every velocity by $\sqrt{T_\text{new}/T_\text{old}}$, the crudest possible thermostat. Nothing in the code mentions Maxwell or Boltzmann: the distribution emerges from the collisions alone. The histogram is averaged with an exponential memory of about 30 frames, which is why it gets smoother the longer you wait.
+</Hood>
+
+<History title="Counting atoms before anyone believed in them" year="1877">
+<Portrait src="/img/people/boltzmann.jpg" name="Ludwig Boltzmann" years="1844–1906" credit="Unknown photographer, 1902" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Boltzmann2.jpg" />
+
+Ludwig Boltzmann, working in Graz and Vienna, took Maxwell's distribution and asked why gases reach it. In 1872 he showed, with his *H-theorem*, that collisions drive any initial distribution towards Maxwell's, which gave the first mechanical explanation of the second law. Critics pointed out that Newton's laws are reversible, so how could they produce a one-way arrow of time? In 1877 Boltzmann answered with counting: equilibrium is not inevitable, just overwhelmingly probable, because it has overwhelmingly more microscopic arrangements. The formula $S = k\log W$ is engraved on his tombstone in Vienna. It was Max Planck who wrote it in that form, and who introduced the constant $k$ that now carries Boltzmann's name.
+
+In Boltzmann's lifetime, many leading scientists, including Ernst Mach and Wilhelm Ostwald, doubted that atoms were real at all and considered his statistics a speculative fiction. He defended them for decades, increasingly exhausted and depressed. He took his own life in 1906, while on holiday at Duino, near Trieste. Within three years, Jean Perrin's measurements of Brownian motion, interpreted with Einstein's 1905 random-walk theory, convinced almost everyone that atoms exist. Ostwald himself conceded in 1909.
+</History>
+
+## Random walks and diffusion
+
+A particle in a gas doesn't travel in a straight line for long. It hits something, changes direction at random, hits something else. How far does it get?
+
+<Tiers>
+<Fragment slot="l1">
+Not very far. After a hundred random steps, a walker is typically only about ten steps from where it started, because the random turns cancel out most of the progress. After a million steps, about a thousand steps away. The distance grows only as the **square root** of the number of steps.
+
+This slow spreading is called **diffusion**. It is how a drop of ink spreads in still water, and how energy made in the Sun's core leaks outward: a photon is absorbed and re-emitted in a random direction over and over, and needs tens of thousands of years to cross a distance light would cover in 2.3 seconds ([Chapter 13](/ch/energy-transport/)).
+</Fragment>
+<Fragment slot="l2">
+<KeyEq title="The random walk">
+$$
+\term{dist}{d} \approx \term{ell}{\ell}\,\sqrt{\term{Nsteps}{N}}
+$$
+<Fragment slot="where">After <span data-term="Nsteps">N</span> steps of length <span data-term="ell">ℓ</span> in random directions, the root-mean-square distance from the start is <span data-term="dist">d</span>. Turned around, crossing a distance $R$ takes $N \approx (R/\ell)^2$ steps, which is far more than the $R/\ell$ of a straight line.</Fragment>
+</KeyEq>
+
+The step length is the **mean free path**, the typical distance between collisions: $\ell = 1/(n\sigma)$ for particles at number density $n$ with a collision cross-section $\sigma$. In air it is about 70 nanometres. In the Sun's interior photons travel roughly a millimetre to a centimetre between interactions, which is why sunlight takes so long to get out ([Chapter 13](/ch/energy-transport/)).
+</Fragment>
+<Fragment slot="l3">
+Let the steps $\vec s_k$ be independent with $\langle\vec s_k\rangle = 0$ and $\langle|\vec s_k|^2\rangle = \ell^2$. Then
+
+$$
+\langle|\vec R_N|^2\rangle = \Big\langle\Big|\sum_k \vec s_k\Big|^2\Big\rangle = \sum_k\langle|\vec s_k|^2\rangle + \sum_{j\ne k}\langle\vec s_j\cdot\vec s_k\rangle = N\ell^2,
+$$
+
+because the cross terms average to zero. Variances add, not displacements. By the central limit theorem the positions approach a Gaussian, and in the continuum limit the density obeys the **diffusion equation**:
+
+<KeyEq title="The diffusion equation">
+$$
+\frac{\partial n}{\partial \term{t}{t}} = \term{D}{D}\,\nabla^2 n, \qquad \langle r^2\rangle = 2\,d\,\term{D}{D}\,t
+$$
+<Fragment slot="where">$d$ is the number of dimensions. For steps of length <span data-term="ell">ℓ</span> taken at speed $v$, $D = \ell v/3$ in three dimensions. The photon diffusion of [Chapter 13](/ch/energy-transport/) has $v = c$, and the radiative flux becomes $F = -\tfrac{c}{3\kappa\rho}\nabla(aT^4)$.</Fragment>
+</KeyEq>
+</Fragment>
+</Tiers>
+
+<Sim name="primer-thermo-walk" minHeight={420}>
+**Two thousand drunkards.** Every walker takes unit steps in random directions. One is highlighted with its whole path. The <span style="color:var(--accent-2)">dashed circle</span> is the rms distance of the cloud, and the right panel plots it (thick line) on log–log axes against $N$. It hugs the <span style="color:var(--accent-2)">√N line</span>, a slope of ½, while the straight-line distance $N\ell$ pulls further away every decade. The <span style="color:var(--accent)">single walker</span> is much noisier: $\sqrt N$ describes the average, not any one path. Speed it up and watch the cloud become a smooth Gaussian blob, the solution of the diffusion equation.
+</Sim>
+
+## When classical statistics fail: degeneracy
+
+Everything above assumes particles are like tiny billiard balls: you could, in principle, tell them apart, and any number can share the same state. Quantum mechanics says otherwise ([Appendix A9](/ch/primer-quantum/)), and in the densest places in the universe the difference matters.
+
+<Tiers>
+<Fragment slot="l1">
+Electrons, protons and neutrons obey a strict rule: no two can be in exactly the same quantum state (the **Pauli exclusion principle**). In ordinary gas this rarely matters, because there are far more available states than particles. But squeeze matter hard enough, as in the collapsed core of a dead star, and the low-energy states fill up. Extra electrons are forced into high-energy states even if the matter is cold, and they push back hard. That **degeneracy pressure** holds up white dwarfs and, with neutrons, neutron stars ([Chapter 16](/ch/stellar-death/), [Chapter 18](/ch/neutron-stars/)).
+
+Photons follow the opposite rule: they like to crowd into the same state. Their statistics produce the blackbody spectrum of [Chapter 4](/ch/light/).
+</Fragment>
+<Fragment slot="l2">
+Quantum effects take over when particles are packed so closely that their quantum "sizes", the thermal de Broglie wavelength $\lambda_\text{th} = h/\sqrt{2\pi m k_B T}$, start to overlap: roughly when $n\lambda_\text{th}^3 \gtrsim 1$. Electrons, being 1836 times lighter than protons, have much larger wavelengths, so they become degenerate first. In the Sun's core $n\lambda_\text{th}^3 \approx 0.5$ for electrons, so there are modest corrections. In a white dwarf, thousands of times denser, it runs into the thousands, and the electrons are fully degenerate. Their pressure then depends on density alone, not on temperature, and that decides the fate of stars ([Chapter 16](/ch/stellar-death/)).
+</Fragment>
+<Fragment slot="l3">
+For indistinguishable quantum particles, the mean number of particles in a single-particle state of energy $E$ is
+
+$$
+\bar n(E) = \frac{1}{e^{(E-\mu_c)/k_BT} \pm 1},
+$$
+
+with $+$ for fermions (Fermi–Dirac) and $-$ for bosons (Bose–Einstein). Here $\mu_c$ is the chemical potential. When $e^{(E-\mu_c)/k_BT} \gg 1$, which happens when $n\,\term{lamth}{\lambda_\text{th}}^3 \ll 1$ with $\lambda_\text{th} = h/\sqrt{2\pi mk_BT}$, both reduce to the Boltzmann factor, and everything in this primer applies. In the opposite limit:
+
+- **Fermions at $T \to 0$** fill every state up to the Fermi momentum $p_F = \hbar(3\pi^2 n)^{1/3}$. The pressure is $P \propto n^{5/3}$ (non-relativistic) or $n^{4/3}$ (relativistic), which leads to white dwarfs and the Chandrasekhar mass ([Chapter 16](/ch/stellar-death/)).
+- **Bosons with $\mu_c = 0$**, such as photons, give the Planck spectrum ([Chapter 4](/ch/light/)) and the CMB ([Chapter 27](/ch/cmb/)).
+- **The Saha equation** is the Boltzmann factor applied between bound and free states, with the free electron's phase-space volume $\propto \lambda_\text{th}^{-3}/n_e$ acting as a huge effective degeneracy ([Chapter 5](/ch/spectra/)). That is why hydrogen ionises at $k_BT \approx 1$ eV rather than 13.6 eV, and why the universe recombined at 3000 K ([Chapter 26](/ch/big-bang/)).
+</Fragment>
+</Tiers>
+
+## Where this shows up
+
+- **Temperature and the ideal gas law** hold stars up and set their core temperatures ([Chapter 11](/ch/stellar-structure/)), and describe the phases of interstellar gas ([Chapter 6](/ch/ism/)).
+- **The Boltzmann factor and Saha equation** explain which spectral lines appear at which temperatures, and so the OBAFGKM sequence ([Chapter 5](/ch/spectra/)).
+- **The Maxwell–Boltzmann tail** lets protons in the Sun fuse despite the Coulomb barrier ([Chapter 12](/ch/fusion/)), and lets planets lose their atmospheres.
+- **Random walks and diffusion** carry energy out of stars ([Chapter 13](/ch/energy-transport/)).
+- **Degeneracy** holds up white dwarfs and neutron stars and sets the Chandrasekhar limit ([Chapter 16](/ch/stellar-death/)).
+- **Boltzmann suppression and freeze-out** fix the neutron-to-proton ratio, the helium abundance and the moment of recombination ([Chapter 26](/ch/big-bang/)).
+
+Statistics describe matter. The other half of astrophysics is light, which is waves and, at the smallest scales, quanta. Those are the subjects of [Appendix A8](/ch/primer-waves/) and [Appendix A9](/ch/primer-quantum/).

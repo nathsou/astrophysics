@@ -1,0 +1,276 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: primer-vectors
+lede: Velocities, forces and positions on the sky all have a direction as well as a size. Vectors are the bookkeeping that keeps track of both, and two ways of multiplying them explain everything from Doppler shifts to Kepler's second law.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Predict from '../../components/Predict.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  va: ['Vector a', 'An arrow: a length and a direction, or equivalently a list of components along the axes.'],
+  vb: ['Vector b', 'A second arrow. Sums, dot products and cross products all combine two vectors.'],
+  ax: ['x-component of a', 'How far the arrow reaches along the x-axis: its "shadow" on that axis.'],
+  ay: ['y-component of a', 'How far the arrow reaches along the y-axis.'],
+  az: ['z-component of a', 'How far the arrow reaches along the z-axis.'],
+  bx: ['x-component of b', 'Multiplied by the matching component of a in the dot product.'],
+  by: ['y-component of b', 'In the cross product it pairs with the *other* component of a: aₓb_y − a_yb_x.'],
+  bz: ['z-component of b', 'The third component, for vectors in 3D.'],
+  maga: ['Length of a', 'The magnitude |a|, from Pythagoras. Always positive.'],
+  magb: ['Length of b', 'The magnitude |b|.'],
+  ang: ['Angle between a and b', 'cos θ = 1 when they are parallel, 0 when perpendicular, −1 when opposite; sin θ does the reverse.'],
+  vr: ['Radial velocity', 'The part of the velocity along the line of sight: the only part a spectrograph can measure through the Doppler shift.'],
+  vel: ['Velocity of the star', 'A 3D vector. Only its projection onto the line of sight shows up in the spectrum.'],
+  nhat: ['Unit vector along the line of sight', 'Length 1, pointing from us to the star. Dotting with it extracts the component in that direction.'],
+  Lvec: ['Angular momentum', 'Perpendicular to the orbital plane. Conserved under any central force, which pins the orbit to one plane.'],
+  rvec: ['Position vector', 'From the centre of force to the body.'],
+  pvec: ['Momentum', 'Mass times velocity. Only its sideways part (perpendicular to r) contributes to L.'],
+  Fvec: ['Force', 'For a magnetic field it is always perpendicular to both v and B, so it bends the path without changing the speed.'],
+  qch: ['Electric charge', 'Sign matters: electrons and protons spiral in opposite senses around the same field.'],
+  Bvec: ['Magnetic field', 'A vector field. Charges slide freely along it but are forced to circle around it.'],
+  rr: ['Radial distance', 'Distance from the origin. On the celestial sphere we set r = 1 and keep only the direction.'],
+  th: ['Polar angle', 'Measured down from the +z axis (the north pole): 0° at the pole, 90° at the equator. Declination is 90° − θ.'],
+  ph: ['Azimuth', 'Measured around the z-axis from +x, in the xy-plane. Right ascension is this angle, counted in hours (360° = 24 h).'],
+  px: ['Cartesian x', 'Distance along the x-axis. Towards RA = 0h on the celestial equator for sky coordinates.'],
+  py: ['Cartesian y', 'Distance along the y-axis. Towards RA = 6h on the equator.'],
+  pz: ['Cartesian z', 'Height above the equatorial plane; the north celestial pole is +z.'],
+  sep: ['Angular separation', 'The angle between two directions on the sky, measured along the great circle joining them.'],
+  dec: ['Declination', 'Latitude on the sky: +90° at the north celestial pole, 0 on the celestial equator, −90° at the south pole.'],
+  ra: ['Right ascension', 'Longitude on the sky, measured eastward along the celestial equator in hours (1 h = 15°).'],
+}} />
+
+## Arrows with a size and a direction
+
+Some quantities are just numbers: a mass, a temperature, a time. Others need a direction too. "The star moves at 30 km/s" is incomplete: towards us, away from us, or across the sky? These quantities are **vectors**, and they include positions, velocities, accelerations, forces, angular momenta and magnetic fields. Much of physics is the careful handling of their directions.
+
+<Tiers>
+<Fragment slot="l1">
+Think of a vector as an **arrow**: its length says *how much*, its direction says *which way*. To add two arrows, place the tail of the second on the tip of the first; the sum runs from the start to the finish. If you walk 3 km east and then 4 km north, you end up 5 km from where you started, not 7, heading roughly north-east.
+
+Adding motions works the same way. The Earth circles the Sun at 30 km/s, while the Sun and its planets swing around the centre of the Galaxy at about 230 km/s. Depending on the time of year the two arrows point partly together or partly apart, so our speed through the Galaxy varies over the year, and astronomers must add or subtract that yearly wobble from every measurement of a star's motion.
+</Fragment>
+<Fragment slot="l2">
+In a flat plane, a vector $\vec a$ is described by two **components**, how far it reaches along $x$ and along $y$. Its length follows from Pythagoras, and if you know its length $|\vec a|$ and its angle $\varphi$ to the $x$-axis, the components come from trigonometry ([Appendix A2](/ch/primer-functions/)).
+
+<KeyEq title="Components and length">
+$$
+\term{va}{\vec a} = (\term{ax}{a_x},\ \term{ay}{a_y}),\qquad
+\term{maga}{|\vec a|} = \sqrt{\term{ax}{a_x}^2 + \term{ay}{a_y}^2},\qquad
+\term{ax}{a_x} = \term{maga}{|\vec a|}\cos\varphi,\quad \term{ay}{a_y} = \term{maga}{|\vec a|}\sin\varphi
+$$
+<Fragment slot="where">To add vectors, add their components: $\vec a + \vec b = (a_x + b_x,\ a_y + b_y)$. To scale a vector, multiply every component. In 3D there is a third component $a_z$ and $|\vec a| = \sqrt{a_x^2 + a_y^2 + a_z^2}$.</Fragment>
+</KeyEq>
+
+Walking 3 km east and 4 km north is $(3, 0) + (0, 4) = (3, 4)$, whose length is $\sqrt{9 + 16} = 5$ km. Motions add the same way: a star's velocity *relative to us* is its velocity minus ours, $\vec v_\star - \vec v_\text{us}$, component by component.
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="Components and length">
+$$
+\term{va}{\vec a} = \term{ax}{a_x}\,\hat x + \term{ay}{a_y}\,\hat y + \term{az}{a_z}\,\hat z = \sum_i a_i\,\hat e_i,\qquad
+\term{maga}{|\vec a|} = \sqrt{\term{ax}{a_x}^2 + \term{ay}{a_y}^2 + \term{az}{a_z}^2}
+$$
+<Fragment slot="where">Vectors live in a vector space with an orthonormal basis $\hat e_i$; addition and scaling act component-wise. The components depend on the basis you choose, but the arrow does not, and every physical law must be written so that it holds in any basis. That requirement is what makes dot and cross products (and, in relativity, tensors) so central.</Fragment>
+</KeyEq>
+
+Relative velocities subtract: $\vec v_\text{rel} = \vec v_\star - \vec v_\text{obs}$. Our own velocity is a sum of nested motions: Earth's rotation (0.46 km/s at the equator), its orbit (29.8 km/s), the Sun's orbit around the Galaxy (≈ 230 km/s), and the Galaxy's motion through the Local Group. Their total relative to the cosmic microwave background, $369.8 \pm 0.1$ km/s, is measured from the CMB dipole ([Chapter 27](/ch/cmb/)).
+</Fragment>
+</Tiers>
+
+<Sim name="primer-vectors-arrows" minHeight={420}>
+**Vector arithmetic you can touch.** Drag the tips of <span style="color:var(--series-1)">$\vec a$</span> and <span style="color:var(--series-2)">$\vec b$</span>. In *Sum* mode, the two dashed paths (a then b, or b then a) meet at the same point: addition does not care about order. Switch to *Dot product* to see the shadow of $\vec b$ on $\vec a$, and to *Cross product* to see the parallelogram whose area the cross product measures. Try making the vectors perpendicular, then parallel, and watch each product.
+</Sim>
+
+## The dot product: how much lies along a direction
+
+The first way to multiply two vectors gives a plain number. It measures how much the two arrows point the same way.
+
+<Tiers>
+<Fragment slot="l1">
+Shine a light straight down onto an arrow, and look at its shadow on another line. The length of that shadow is the part of the arrow that points along the line. That is the idea behind the **dot product**. Two arrows pointing the same way have a big dot product; two at right angles have zero; two pointing in opposite directions have a negative one.
+
+The most important astronomical example: a star's motion has a part *towards or away from us* and a part *across the sky*. A spectrograph can only see the first part, through the Doppler shift. A star moving at <Var name="vs" value={50} min={1} max={500} log digits={3} /> km/s at <Var name="vang" value={60} min={0} max={180} step={1} digits={3} />° to our line of sight shows a **radial velocity** of <Out name="vrad" /> in its spectrum, while <Out name="vtan" /> of its motion is across the sky, visible only as a slow drift over years. At 90°, the spectrum sees nothing at all.
+</Fragment>
+<Fragment slot="l2">
+<KeyEq title="The dot product">
+$$
+\term{va}{\vec a}\cdot\term{vb}{\vec b} = \term{ax}{a_x}\term{bx}{b_x} + \term{ay}{a_y}\term{by}{b_y} + \term{az}{a_z}\term{bz}{b_z} = \term{maga}{|\vec a|}\,\term{magb}{|\vec b|}\cos\term{ang}{\theta}
+$$
+<Fragment slot="where">Multiply matching components and add: the result is a number, not a vector. It equals the product of the lengths times the cosine of the angle <span data-term="ang">$\theta$</span> between them. It is zero for perpendicular vectors, and $\vec a\cdot\vec a = |\vec a|^2$.</Fragment>
+</KeyEq>
+
+If one of the vectors has length 1 (a **unit vector**, written with a hat, $\hat n$), the dot product is simply the *component* of the other vector along that direction. That is how the **radial velocity** of a star is defined:
+
+$$
+\term{vr}{v_r} = \term{vel}{\vec v}\cdot\term{nhat}{\hat n} = |\vec v|\cos\theta.
+$$
+
+A star moving at <Var name="vs" value={50} min={1} max={500} log digits={3} /> km/s at <Var name="vang" value={60} min={0} max={180} step={1} digits={3} />° to our line of sight has $v_r$ = <Out name="vrad" />; the remaining <Out name="vtan" /> ($|\vec v|\sin\theta$) is **tangential**, across the sky.
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="The dot product">
+$$
+\term{va}{\vec a}\cdot\term{vb}{\vec b} = \sum_i a_i b_i = \term{ax}{a_x}\term{bx}{b_x} + \term{ay}{a_y}\term{by}{b_y} + \term{az}{a_z}\term{bz}{b_z} = \term{maga}{|\vec a|}\,\term{magb}{|\vec b|}\cos\term{ang}{\theta}
+$$
+<Fragment slot="where">The two forms agree by the law of cosines applied to $|\vec a - \vec b|^2$. The component form is basis-dependent; the geometric form shows that the result is invariant under rotations, which is why it is a *scalar*. With a metric it generalises to $g_{\mu\nu}a^\mu b^\nu$, the invariant interval of [Chapter 17](/ch/relativity/).</Fragment>
+</KeyEq>
+
+Projection onto a unit vector extracts a component: the radial velocity is $\term{vr}{v_r} = \term{vel}{\vec v}\cdot\term{nhat}{\hat n}$. A star moving at <Var name="vs" value={50} min={1} max={500} log digits={3} /> km/s at <Var name="vang" value={60} min={0} max={180} step={1} digits={3} />° to the line of sight has $v_r$ = <Out name="vrad" /> and tangential speed <Out name="vtan" /> $= |\hat n\times\vec v|$.
+</Fragment>
+</Tiers>
+
+Dot products appear throughout the course. The **flux on a tilted surface** goes as $\cos\theta$ of the angle between the light and the surface normal, which is why winter sunlight is weak and why the brightness across a star's disk falls towards its edge ([Chapter 4](/ch/light/)). The **angular separation** of two stars on the sky is the angle between their direction vectors, so $\cos(\text{separation}) = \hat a\cdot\hat b$, as the coordinates figure below shows. And the work done by a force is $\vec F\cdot\vec d$: only the part of the force along the motion counts.
+
+<Predict question="Two identical planetary systems: one has its orbit edge-on to us, the other face-on. Which one makes the star's spectral lines wobble more?" choices={['Edge-on', 'Face-on', 'Both the same']} answer={0}>
+**Edge-on.** The star's velocity lies in the orbital plane. Edge-on, it points straight towards and away from us twice per orbit, so $v_r = \vec v\cdot\hat n$ swings through its full range. Face-on, the velocity is always *perpendicular* to our line of sight, $\vec v\cdot\hat n = 0$, and the spectrum shows no wobble at all. In between, only a fraction $\sin i$ survives, where $i$ is the orbital inclination. That is why the radial-velocity method measures $m\sin i$, a lower limit on the planet's mass ([Chapter 10](/ch/exoplanets/)).
+</Predict>
+
+## The cross product: area and turning
+
+The second way to multiply two vectors gives another vector, perpendicular to both. It measures how much the two arrows point *across* each other, and it is the natural language of anything that turns.
+
+<Tiers>
+<Fragment slot="l1">
+Push a door near its hinge and it barely moves; push at the handle, *sideways* to the door, and it swings easily. What matters for turning is the sideways part of the push times the distance from the hinge. The **cross product** captures exactly this: it is biggest when two arrows are at right angles and zero when they line up.
+
+Its answer is itself an arrow, pointing along the axis of the turning. Curl the fingers of your right hand in the direction of the turn, and your thumb points along the cross product. For a planet going round a star, that arrow is the **angular momentum**, and it points straight out of the orbital plane. Because gravity pulls straight towards the star and never sideways, it cannot change this arrow. That is why orbits stay in one plane and why the planet sweeps out equal areas in equal times: **Kepler's second law** ([Chapter 2](/ch/orbits/)).
+</Fragment>
+<Fragment slot="l2">
+In a plane, the cross product of $\vec a$ and $\vec b$ is a single number (the component pointing out of the plane):
+
+<KeyEq title="The cross product in a plane">
+$$
+(\term{va}{\vec a}\times\term{vb}{\vec b})_z = \term{ax}{a_x}\,\term{by}{b_y} - \term{ay}{a_y}\,\term{bx}{b_x} = \term{maga}{|\vec a|}\,\term{magb}{|\vec b|}\sin\term{ang}{\theta}
+$$
+<Fragment slot="where">Its size is the **area of the parallelogram** spanned by $\vec a$ and $\vec b$. Its sign says which way the turn goes: positive if $\vec b$ is anticlockwise from $\vec a$ (the result points out of the page), negative if clockwise. Order matters: $\vec b\times\vec a = -\vec a\times\vec b$. Parallel vectors give zero.</Fragment>
+</KeyEq>
+
+**Angular momentum** is the cross product of position and momentum, $\vec L = \vec r\times m\vec v$, with size $L = m\,r\,v_\perp$: only the sideways part of the velocity counts. In one short time $\Delta t$ a planet's position vector sweeps a thin triangle of area $\tfrac12|\vec r\times\vec v|\,\Delta t = \tfrac{L}{2m}\Delta t$. Gravity is central, so $L$ never changes, and equal times sweep equal areas.
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="The cross product">
+$$
+\term{va}{\vec a}\times\term{vb}{\vec b} =
+\begin{vmatrix} \hat x & \hat y & \hat z\\ \term{ax}{a_x} & \term{ay}{a_y} & \term{az}{a_z}\\ \term{bx}{b_x} & \term{by}{b_y} & \term{bz}{b_z}\end{vmatrix}
+= (a_y b_z - a_z b_y,\ a_z b_x - a_x b_z,\ a_x b_y - a_y b_x),\qquad |\vec a\times\vec b| = \term{maga}{|\vec a|}\,\term{magb}{|\vec b|}\sin\term{ang}{\theta}
+$$
+<Fragment slot="where">Antisymmetric and perpendicular to both factors, with orientation fixed by the right-hand rule; in index form $(\vec a\times\vec b)_i = \epsilon_{ijk}a_j b_k$. Strictly it is a *pseudovector*: it does not flip under a mirror reflection, which is why angular momenta and magnetic fields behave oddly in mirrors.</Fragment>
+</KeyEq>
+
+Three astrophysical cross products: angular momentum $\term{Lvec}{\vec L} = \term{rvec}{\vec r}\times\term{pvec}{\vec p}$, conserved under central forces ([Chapter 2](/ch/orbits/)); torque $\vec\tau = \vec r\times\vec F = d\vec L/dt$, which drives precession and tidal spin-down ([Chapter 9](/ch/tides/)); and the magnetic part of the Lorentz force,
+
+$$
+\term{Fvec}{\vec F} = \term{qch}{q}\,\term{vel}{\vec v}\times\term{Bvec}{\vec B},
+$$
+
+which does no work ($\vec F\cdot\vec v = 0$) and so bends charged particles into helices around field lines. That gyration powers the synchrotron radiation of pulsar wind nebulae and radio jets ([Chapter 18](/ch/neutron-stars/)).
+</Fragment>
+</Tiers>
+
+<Predict question="A proton moves exactly along a magnetic field line. What force does the field exert on it?" choices={['A force along the field line', 'A sideways force, so it circles', 'No force at all']} answer={2}>
+**No force at all.** The magnetic force is $q\,\vec v\times\vec B$, and the cross product of two parallel vectors is zero: $\sin 0° = 0$. Charged particles slide freely along field lines and are forced to circle only by the part of their velocity *across* the field. That is why the solar wind's particles are funnelled down towards the Earth's magnetic poles, where they make aurorae, and why cosmic rays spiral along the Galaxy's magnetic field.
+</Predict>
+
+## Coordinates: many ways to say where
+
+A vector is an arrow, but to compute with it we need numbers, and those depend on the **coordinate system**. Choosing coordinates that match the symmetry of a problem is half the art of physics.
+
+<Tiers>
+<Fragment slot="l1">
+On Earth, we give a position by **latitude** (how far north or south of the equator) and **longitude** (how far east or west around the globe), plus, if needed, a height. That is a pair of angles and a distance rather than three distances along fixed axes, and it is the natural way to describe positions on anything round.
+
+Astronomers do exactly the same with the sky. Imagine the sky as a giant globe seen from the inside. **Declination** is latitude on this celestial sphere, measured from the celestial equator; **right ascension** is its longitude, counted in hours from 0 to 24 as the sky turns. The distance to the star is a separate third number, and usually the hardest one to measure.
+
+For something going round in a circle, like a planet, the easiest description is also a distance and an angle: how far from the star, and how far around. Those are called **polar coordinates**, and they turn Kepler's ellipse into a one-line formula.
+</Fragment>
+<Fragment slot="l2">
+**Polar coordinates** describe a point in a plane by its distance $r$ from the origin and its angle $\theta$ from the $x$-axis: $x = r\cos\theta$, $y = r\sin\theta$, and back again $r = \sqrt{x^2 + y^2}$, $\theta = \operatorname{atan2}(y, x)$. They are the natural coordinates for orbits: an ellipse with the star at a focus is simply $r(\theta) = a(1-e^2)/(1 + e\cos\theta)$ ([Chapter 2](/ch/orbits/)).
+
+**Spherical coordinates** add a second angle for 3D. The polar angle $\theta$ is measured down from the $+z$ axis and the azimuth $\varphi$ around it from the $+x$ axis:
+
+<KeyEq title="Spherical to Cartesian">
+$$
+\term{px}{x} = \term{rr}{r}\sin\term{th}{\theta}\cos\term{ph}{\varphi},\qquad
+\term{py}{y} = \term{rr}{r}\sin\term{th}{\theta}\sin\term{ph}{\varphi},\qquad
+\term{pz}{z} = \term{rr}{r}\cos\term{th}{\theta}
+$$
+<Fragment slot="where">On the sky, set $r = 1$ and use **declination** $\delta = 90° - \theta$ (latitude) and **right ascension** $\alpha = \varphi$ (longitude, in hours: 1 h = 15°). The $z$-axis points to the north celestial pole and the $x$-axis to RA = 0h on the celestial equator.</Fragment>
+</KeyEq>
+
+Turning two stars' coordinates into unit vectors and taking their dot product gives their **angular separation** $d$ on the sky:
+
+$$
+\cos \term{sep}{d} = \sin\term{dec}{\delta_1}\sin\term{dec}{\delta_2} + \cos\term{dec}{\delta_1}\cos\term{dec}{\delta_2}\cos(\term{ra}{\alpha_1} - \term{ra}{\alpha_2}).
+$$
+</Fragment>
+<Fragment slot="l3">
+Polar coordinates $(r, \theta)$: $x = r\cos\theta$, $y = r\sin\theta$. Their basis vectors $\hat r$, $\hat\theta$ rotate with the point ($d\hat r/dt = \dot\theta\,\hat\theta$, $d\hat\theta/dt = -\dot\theta\,\hat r$), so velocity and acceleration pick up extra terms:
+
+$$
+\vec v = \dot r\,\hat r + r\dot\theta\,\hat\theta,\qquad
+\vec a = (\ddot r - r\dot\theta^2)\,\hat r + (r\ddot\theta + 2\dot r\dot\theta)\,\hat\theta.
+$$
+
+The $-r\dot\theta^2$ term is the centripetal acceleration, and it becomes the centrifugal barrier of the effective potential in [Chapter 2](/ch/orbits/). The $\hat\theta$ component equals $\tfrac1r\tfrac{d}{dt}(r^2\dot\theta)$, which vanishes for a central force: conservation of angular momentum again.
+
+<KeyEq title="Spherical to Cartesian">
+$$
+\term{px}{x} = \term{rr}{r}\sin\term{th}{\theta}\cos\term{ph}{\varphi},\qquad
+\term{py}{y} = \term{rr}{r}\sin\term{th}{\theta}\sin\term{ph}{\varphi},\qquad
+\term{pz}{z} = \term{rr}{r}\cos\term{th}{\theta},\qquad dV = r^2\sin\theta\,dr\,d\theta\,d\varphi
+$$
+<Fragment slot="where">Sky coordinates use $\delta = 90° - \theta$, $\alpha = \varphi$. The volume element (and the solid angle $d\Omega = \sin\theta\,d\theta\,d\varphi$, $4\pi$ sr over the sphere) is needed whenever you integrate over a star or the sky, e.g. the spherical harmonics of the CMB ([Chapter 27](/ch/cmb/)).</Fragment>
+</KeyEq>
+
+The angular separation follows from $\cos \term{sep}{d} = \hat a\cdot\hat b = \sin\term{dec}{\delta_1}\sin\term{dec}{\delta_2} + \cos\term{dec}{\delta_1}\cos\term{dec}{\delta_2}\cos(\term{ra}{\alpha_1}-\term{ra}{\alpha_2})$. Numerically, $\arccos$ is ill-conditioned near 0 (a separation of 1″ changes $\cos d$ only in the 12th digit), so astrometric code uses $d = \operatorname{atan2}(|\hat a\times\hat b|,\ \hat a\cdot\hat b)$ or the haversine formula instead.
+</Fragment>
+</Tiers>
+
+<Sim name="primer-vectors-coords" minHeight={440}>
+**Spherical coordinates and the sky.** Drag to rotate the view. In *Spherical* mode, the sliders set $r$, the polar angle $\theta$ (blue arc, from the $+z$ axis) and the azimuth $\varphi$ (pink arc, in the $xy$-plane); the coloured segments are the Cartesian components. In *Sky* mode, place two stars by right ascension and declination, or pick a famous pair: the orange great-circle arc is their separation, computed from the dot product of their unit vectors. The two "Pointer" stars of the Big Dipper are 5.4° apart; Betelgeuse and Rigel, 18.6°. The last preset checks that the Galactic Centre lies 90° from the north galactic pole.
+</Sim>
+
+<Aside>**Why hours?** The sky turns once a day, so right ascension in hours tells you *when* a star crosses your meridian: a star at RA 6h culminates six hours after one at 0h. Declination sets how high it gets.</Aside>
+
+## Frames of reference
+
+Every position and velocity is measured *relative to something*. Changing the "something" is a change of **reference frame**, and at everyday speeds it is just vector subtraction: a star's velocity relative to the Sun equals its velocity relative to the Earth plus the Earth's velocity relative to the Sun. (Near the speed of light this simple rule fails, and [Chapter 17](/ch/relativity/) replaces it with the Lorentz transformation.)
+
+Astronomers juggle a nested set of frames: *topocentric* (your telescope, turning with the Earth), *geocentric*, *heliocentric*, *barycentric* (the centre of mass of the Solar System, which the giant planets pull up to about two solar radii from the Sun's centre), *galactocentric* ([Chapter 21](/ch/milky-way/)), and finally the rest frame of the cosmic microwave background. Switching between the equatorial RA/Dec grid and galactic coordinates is a fixed **rotation** of axes: the vectors stay the same, only their components change.
+
+<Level min={3} title="Rotations as matrices">
+A rotation is a linear map $\vec a' = R\,\vec a$ with $R^\top R = I$ and $\det R = 1$: it preserves every length and every dot product. Equatorial-to-galactic is one such constant $3\times3$ matrix (built from the direction of the galactic pole and centre); precession of the equinoxes adds a slowly time-dependent one. In a *rotating* frame, such as the Earth's surface or the co-rotating frame of the three-body problem ([Chapter 3](/ch/three-body/)), Newton's law picks up two fictitious terms, the centrifugal $-\vec\Omega\times(\vec\Omega\times\vec r)$ and the Coriolis $-2\,\vec\Omega\times\vec v$, both cross products.
+</Level>
+
+<Fermi title="How precisely must we know our own velocity?">
+The Earth orbits the Sun at 29.8 km/s. For a star in the plane of the Earth's orbit, the radial component of that motion swings between about $+30$ and $-30$ km/s over a year; the Earth's rotation adds up to $\pm0.46$ km/s more over a day. The planet 51 Pegasi b makes its star wobble by just 56 m/s, and an Earth twin around a Sun-like star by 0.09 m/s ([Chapter 10](/ch/exoplanets/)). To find it, the *barycentric correction*, which is the dot product of our velocity with the direction to the star, must be computed to about 1 cm/s: a few parts in $10^7$ of the Earth's orbital speed. Modern ephemerides of the Earth's motion are good enough, but only just, and the correction must be evaluated at the photon-weighted midpoint of each exposure.
+</Fermi>
+
+<History title="The vector wars" year="1843–1901">
+<Portrait src="/img/people/gibbs.jpg" name="Josiah Willard Gibbs" years="1839–1903" credit="Unknown photographer, before 1903" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Josiah_Willard_Gibbs_-from_MMS-.jpg" />
+
+On 16 October 1843, walking along Dublin's Royal Canal, William Rowan Hamilton realised how to multiply directions in space and scratched the rule $i^2 = j^2 = k^2 = ijk = -1$ into the stone of Brougham Bridge. His **quaternions** had four components, a scalar part and a vector part, and for forty years their champions, led by the Scottish physicist Peter Guthrie Tait, treated them as *the* language of physics. James Clerk Maxwell had first published his theory of electromagnetism (1865) as some twenty equations written out component by component; his 1873 *Treatise* added a summary in quaternion notation.
+
+Two men independently decided that quaternions were more than physics needed. At Yale, **Josiah Willard Gibbs**, the founder of chemical thermodynamics, printed a short pamphlet, *Elements of Vector Analysis* (1881–84), for his students. In England the self-taught telegraph engineer **Oliver Heaviside** developed almost the same system in a stream of articles in *The Electrician*, and used it to compress Maxwell's equations into the four we write today. Both split the quaternion product into two pieces: the **dot product** and the **cross product**.
+
+Tait was outraged, and through the 1890s the journal *Nature* hosted a bad-tempered "quaternion war", with Tait dismissing the new system as an ugly hybrid and Gibbs and Heaviside defending it with wit. The engineers and physicists voted with their pens. Edwin Bidwell Wilson's 1901 textbook *Vector Analysis*, based on Gibbs's lectures, spread the notation used in this primer. Quaternions did not die, though: they are how spacecraft attitude systems, flight simulators and 3D graphics engines represent rotations today, because they avoid the "gimbal lock" of angle-based descriptions.
+</History>
+
+## Where these tools are used
+
+Vectors are the working language of physics, and this primer's ideas return constantly:
+
+- **Vector sums and relative velocities**: the barycentric corrections of exoplanet searches ([Chapter 10](/ch/exoplanets/)), the Sun's motion around the Galaxy ([Chapter 21](/ch/milky-way/)), the CMB dipole ([Chapter 27](/ch/cmb/)).
+- **Dot products**: radial velocities and Doppler shifts ([Chapters 5](/ch/spectra/) and [10](/ch/exoplanets/)), inclinations, flux on tilted surfaces, angles between stars.
+- **Cross products**: angular momentum and Kepler's second law ([Chapter 2](/ch/orbits/)), Coriolis forces in the rotating frame of the three-body problem ([Chapter 3](/ch/three-body/)), charged particles in magnetic fields ([Chapter 18](/ch/neutron-stars/)).
+- **Coordinates**: polar coordinates for orbits, spherical coordinates for stars and the sky, and the rotating and moving frames that link them.
+
+Vectors that change with time need derivatives, and fields that change across space need gradients. Both are the subject of [Appendix A4](/ch/primer-calculus/).

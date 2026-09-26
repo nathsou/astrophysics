@@ -41,6 +41,17 @@ const RULES: { value: Rule; label: string }[] = [
   { value: 'trap', label: 'Trapezoid' },
 ];
 
+/** Translucent backdrop so legend text stays readable over curves. */
+function backdrop(ctx: CanvasRenderingContext2D, bg: string, x: number, y: number, lines: string[], lh: number, extra = 0) {
+  ctx.save();
+  ctx.font = '11px Inter, system-ui, sans-serif';
+  const w = Math.max(...lines.map((s) => ctx.measureText(s).width)) + extra;
+  ctx.globalAlpha = 0.82;
+  ctx.fillStyle = bg;
+  ctx.fillRect(x - 6, y - lh / 2 - 5, w + 12, lines.length * lh + 6);
+  ctx.restore();
+}
+
 export default defineSim({
   mount({ host }) {
     let pal = palette();
@@ -107,6 +118,7 @@ export default defineSim({
         }
         main.fn(fn.f, { color: pal.fg, width: 2 });
       });
+      backdrop(main.ctx, pal.bg, main.m.l + 10, main.m.t + 14, [`sum = ${S.toFixed(6)}`, `integral = ${exact.toFixed(6)}  (${fn.note})`], 17);
       main.text(`sum = ${S.toFixed(6)}`, main.m.l + 10, main.m.t + 14, { color: pal.accent });
       main.text(`integral = ${exact.toFixed(6)}  (${fn.note})`, main.m.l + 10, main.m.t + 31, { color: pal.fg });
 

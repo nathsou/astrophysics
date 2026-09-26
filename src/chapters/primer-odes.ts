@@ -31,7 +31,7 @@ function fixedPoint(M: number, e: number) {
 compute('kepNewton', ['kepE', 'kepM'], ({ kepE, kepM }) => {
   const seq = newton(kepM * DEG, kepE);
   const Ef = seq[seq.length - 1];
-  const shown = seq.slice(0, 6).map((E) => (E / DEG).toFixed(10).replace(/0+$/, '').replace(/\.$/, '') + '°');
+  const shown = seq.slice(0, 6).map((E) => fmt(E / DEG, 10) + '°');
   return shown.join(' → ') + (seq.length > 6 ? ' → …' : '') + `  (E = ${fmt(Ef / DEG, 8)}° after ${seq.length - 1} steps)`;
 });
 compute('kepFixed', ['kepE', 'kepM'], ({ kepE, kepM }) => {
