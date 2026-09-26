@@ -32,7 +32,6 @@ function traceCurve(Gamma: number, Z: number, nPts = 240): { n: Float64Array; T:
 export default defineSim({
   mount({ host }) {
     let pal = palette();
-    onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
     const stage = createStage(host, { aspect: 16 / 9 });
     const plot = new Plot(stage.canvas, {
@@ -40,7 +39,6 @@ export default defineSim({
       y: { min: 1e2, max: 1e5, log: true, label: 'P / k_B = nT (K cm⁻³)' },
       title: 'Thermal equilibrium pressure curve',
     });
-    stage.onResize((w, h, d) => { plot.resize(w, h, d); loop.invalidate(); });
 
     let logGamma = Math.log10(2.2e-26), Z = 1;
     let curve = traceCurve(10 ** logGamma, Z);
@@ -73,6 +71,8 @@ export default defineSim({
     }
 
     const loop = new Loop(null, render, 1 / 30);
+    onThemeChange(() => { pal = palette(); loop.invalidate(); });
+    stage.onResize((w, h, d) => { plot.resize(w, h, d); loop.invalidate(); });
     stage.canvas.style.touchAction = 'none';
     let dragging = false;
     const toN = (clientX: number) => {

@@ -24,8 +24,8 @@ export default defineSim({
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
     const wrap = document.createElement('div');
-    const stage = createStage(wrap, { aspect: 16 / 10 });
     host.append(wrap);
+    const stage = createStage(wrap, { aspect: 16 / 10 });
     const plot = new Plot(stage.canvas, {
       x: { min: 3e-3, max: 3e7, log: true, label: 'burning-stage duration' },
       y: { min: -0.7, max: STAGES.length - 0.3 },

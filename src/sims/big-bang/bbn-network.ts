@@ -24,8 +24,8 @@ const SIGV_DD_P = 1.8e-17; // D + D -> T + p
 const SIGV_DT = 1.0e-16; // D + T -> He4 + n
 const SIGV_DHE3 = 1.0e-16; // D + He3 -> He4 + p
 const SIGV_HE3N = 4.0e-18; // He3 + n -> T + p (charge exchange)
-const SIGV_THE4 = 1.0e-20; // T + He4 -> Li7 + gamma
-const SIGV_HE3HE4 = 1.0e-20; // He3 + He4 -> Li7 + p (lumped Be7 + n -> Li7 + p pathway, approximate)
+const SIGV_THE4 = 2.0e-26; // T + He4 -> Li7 + gamma (slow radiative capture, heavily suppressed)
+const SIGV_HE3HE4 = 2.0e-26; // He3 + He4 -> Li7 + p (lumped Be7 + n -> Li7 + p pathway, approximate)
 
 /** Saha equilibrium ratio S_D(T) = (Y_D / (Y_n Y_p))_eq, dimensionless (Y_i = n_i/n_b). */
 function saha_D(T: number, eta: number): number {
@@ -37,10 +37,13 @@ function saha_D(T: number, eta: number): number {
 }
 
 function weakRates(T: number) {
-  // Gamow-Teller-like scaling Γ ∝ T^5, normalised so Γ_weak(0.8 MeV) = H(0.8 MeV): that is
-  // precisely the definition of the freeze-out temperature, so this fit reproduces it by construction.
+  // Gamow-Teller-like scaling Γ ∝ T^5, normalised so Γ_weak crosses H near 0.8 MeV — the
+  // conventional freeze-out temperature. The CAL factor compensates for the ODE's gradual
+  // (rather than instantaneous) departure from equilibrium through the crossing region, so the
+  // *frozen* n/p ratio — not just the instantaneous crossing point — lands near the standard 1/5–1/6.
   const Tf = 0.8;
-  const Gamma0 = hubble(Tf);
+  const CAL = 2.2;
+  const Gamma0 = hubble(Tf) * CAL;
   const Gw = Gamma0 * (T / Tf) ** 5;
   const x = DELTA_M / T;
   const Gnp = Gw / (1 + Math.exp(-x)); // n -> p
@@ -92,45 +95,56 @@ export function rhs(Y: Float64Array, T: number, p: NetworkParams, out: Float64Ar
 }
 
 /** One implicit (backward Euler + Newton) step from t to t+h, in place. Returns the updated Y. */
-function backwardEulerStep(Y: Float64Array, t: number, h: number, p: NetworkParams): Float64Array {
-  const T = tempAtTime(t + h, p.Neff);
-  const Y0 = Y.slice();
-  const Ynew = Y.slice();
+function newtonSolve(Y0: Float64Array, T: number, h: number, p: NetworkParams): { Y: Float64Array; ok: boolean } {
+  const Ynew = Y0.slice();
   const f = new Float64Array(NS);
   const fPlus = new Float64Array(NS);
   const F = new Float64Array(NS); // residual
   const J = new Array(NS).fill(0).map(() => new Float64Array(NS));
-  const EPS = 1e-9;
+  // Finite-difference step: floored in absolute terms so it stays well above float noise
+  // even when a species' current abundance is exactly zero (common early on).
+  const ABS_FLOOR = 1e-9;
+  const REL = 1e-6;
+  let ok = false;
 
-  for (let iter = 0; iter < 25; iter++) {
+  for (let iter = 0; iter < 40; iter++) {
     rhs(Ynew, T, p, f);
     let maxRes = 0;
     for (let i = 0; i < NS; i++) {
       F[i] = Ynew[i] - Y0[i] - h * f[i];
       maxRes = Math.max(maxRes, Math.abs(F[i]));
     }
-    if (maxRes < 1e-16) break;
-    // numerical Jacobian of F wrt Ynew
+    if (maxRes < 1e-14) { ok = true; break; }
     for (let j = 0; j < NS; j++) {
       const save = Ynew[j];
-      const dj = Math.max(Math.abs(save) * EPS, 1e-30);
+      const dj = Math.max(Math.abs(save) * REL, ABS_FLOOR);
       Ynew[j] = save + dj;
       rhs(Ynew, T, p, fPlus);
       for (let i = 0; i < NS; i++) J[i][j] = ((Ynew[i] - Y0[i] - h * fPlus[i]) - F[i]) / dj;
       Ynew[j] = save;
     }
-    // fix up the diagonal term for the perturbed variable itself (Ynew[j] changes F[j] directly too)
-    for (let j = 0; j < NS; j++) J[j][j] += 1e-30; // guard
     const delta = solveLinear(J, F);
+    if (!delta.every(Number.isFinite)) { ok = false; break; }
     let step = 1;
     for (let i = 0; i < NS; i++) {
-      // damp to keep abundances non-negative and bounded
-      if (delta[i] > 0 && Ynew[i] - step * delta[i] < -1e-3) step = Math.min(step, (Ynew[i] + 1e-3) / delta[i]);
+      // damp to keep abundances non-negative and bounded (Y_i can never exceed ~1)
+      if (delta[i] > 0 && Ynew[i] - step * delta[i] < -1e-4) step = Math.min(step, (Ynew[i] + 1e-4) / delta[i]);
+      if (delta[i] < 0 && Ynew[i] - step * delta[i] > 1.5) step = Math.min(step, (Ynew[i] - 1.5) / delta[i]);
     }
+    if (!Number.isFinite(step) || step <= 0) { ok = false; break; }
     for (let i = 0; i < NS; i++) Ynew[i] -= step * delta[i];
-    for (let i = 0; i < NS; i++) if (Ynew[i] < 0) Ynew[i] = 0;
+    for (let i = 0; i < NS; i++) Ynew[i] = Math.min(1.5, Math.max(0, Ynew[i]));
   }
-  return Ynew;
+  return { Y: Ynew, ok };
+}
+
+/** Backward Euler with Newton iteration; if it fails to converge, halve the step (bounded recursion). */
+function backwardEulerStep(Y: Float64Array, t: number, h: number, p: NetworkParams, depth = 0): Float64Array {
+  const T = tempAtTime(t + h, p.Neff);
+  const { Y: Ynew, ok } = newtonSolve(Y, T, h, p);
+  if (ok || depth > 6) return Ynew;
+  const half = backwardEulerStep(Y, t, h / 2, p, depth + 1);
+  return backwardEulerStep(half, t + h / 2, h / 2, p, depth + 1);
 }
 
 function solveLinear(A: Float64Array[], b: Float64Array): Float64Array {

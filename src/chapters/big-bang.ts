@@ -4,6 +4,6 @@
 import { compute } from '../lib/runtime/vars';
 import { fmt } from '../lib/ui/controls';
 
-compute('Yp', ['eta10'], ({ eta10 }) => fmt(0.2449 + 0.0096 * Math.log(eta10 / 6.1), 4));
-compute('DH', ['eta10'], ({ eta10 }) => `${fmt(2.6e-5 * (eta10 / 6.1) ** -1.6, 3)}`);
-compute('Li7H', ['eta10'], ({ eta10 }) => `${fmt(1.6e-10 * (eta10 / 6.1) ** 2, 3)}`);
+compute('Yp', ['eta10'], ({ eta10 }) => fmt(0.239 + 0.011 * Math.log(eta10 / 6.1), 4));
+compute('DH', ['eta10'], ({ eta10 }) => `${fmt(2.3e-5 * (eta10 / 6.1) ** -1.6, 3)}`);
+compute('Li7H', ['eta10'], ({ eta10 }) => `${fmt(3.2e-10 * (eta10 / 6.1) ** 0.5, 3)}`);
