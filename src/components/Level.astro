@@ -1,0 +1,37 @@
+---
+// Depth-of-explanation gating. The reader picks a depth (1 Intuitive · 2 High school · 3 Engineering)
+// with the depth control; content is shown/hidden accordingly (see styles + scripts/page.ts).
+//
+//   <Level min={3}> derivation with calculus </Level>   → shown at depth ≥ 3; at lower depths
+//                                                          collapses to a one-line "show" pill.
+//   <Level max={1}> plain-words version </Level>         → shown only at depth ≤ 1 (hidden above).
+//   <Level only={2}> … </Level>                           → shown only at depth 2.
+//   inline: use inside a paragraph (renders a <span>, no pill).
+//   title: label for the collapsed pill (e.g. "Deriving the vis-viva equation").
+interface Props { min?: 1 | 2 | 3; max?: 1 | 2 | 3; only?: 1 | 2 | 3; inline?: boolean; title?: string }
+const { only, inline = false, title } = Astro.props;
+const min = only ?? Astro.props.min ?? 1;
+const max = only ?? Astro.props.max ?? 3;
+const names = { 1: 'Intuitive', 2: 'High-school math', 3: 'Engineering math' } as const;
+const pill = min > 1 && !inline;
+---
+{inline ? (
+  <span class="lvl lvl-inline" data-min={min} data-max={max}><slot /></span>
+) : (
+  <div class="lvl" data-min={min} data-max={max}>
+    {pill && (
+      <button class="lvl-pill" type="button" data-level={min}>
+        <span class="lvl-badge">{min === 3 ? '∫' : 'x²'}</span>
+        <span class="lvl-pill-text">{title ?? `${names[min]} version`}</span>
+        <span class="lvl-pill-action">Show</span>
+      </button>
+    )}
+    {pill && (
+      <div class="lvl-tag" data-level={min}>
+        <span class="lvl-badge">{min === 3 ? '∫' : 'x²'}</span>{names[min]}{title && <> · {title}</>}
+        <button class="lvl-hide" type="button" aria-label="Collapse">Hide</button>
+      </div>
+    )}
+    <div class="lvl-body"><slot /></div>
+  </div>
+)}

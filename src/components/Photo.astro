@@ -1,0 +1,22 @@
+---
+// A real astronomical image with mandatory attribution.
+//   <Photo src="/img/black-holes/m87-eht.jpg" alt="…" credit="EHT Collaboration" license="CC BY 4.0"
+//          href="https://www.eso.org/public/images/eso1907a/" size="wide">Caption…</Photo>
+// `src` is a path under /public (images are vendored locally — see CONTRIBUTING.md).
+interface Props {
+  src: string; alt: string; credit: string; license?: string; href: string;
+  size?: 'text' | 'wide' | 'full'; aspect?: string;
+}
+const { src, alt, credit, license, href, size = 'text', aspect } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const url = src.startsWith('/') ? base + src : src;
+---
+<figure class:list={['photo', size !== 'text' && size]}>
+  <a href={url} target="_blank" rel="noopener" class="photo-frame" style={aspect ? `aspect-ratio:${aspect}` : undefined}>
+    <img src={url} alt={alt} loading="lazy" decoding="async" />
+  </a>
+  <figcaption>
+    {Astro.slots.has('default') && <span class="photo-caption"><slot /></span>}
+    <span class="photo-credit">Image: <a href={href} target="_blank" rel="noopener">{credit}</a>{license && <> · {license}</>}</span>
+  </figcaption>
+</figure>

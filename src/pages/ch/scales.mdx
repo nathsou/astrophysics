@@ -1,0 +1,287 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: scales
+lede: The universe spans sixty-one powers of ten in size, and nearly all of it is empty space. To find your way around it you need two tools, logarithms and dimensional analysis. With them, a scrap of paper is enough to work out how big a star can be.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+
+## Welcome to the cosmos, computed
+
+This is a course in astrophysics for people who write software. You already know calculus, vectors and a bit of linear algebra, and you know that the best way to understand an algorithm is to run it. The course takes the same approach to the universe. Every chapter builds the physics from first principles, derives the key results (roughly, and with the tedious algebra waved through out loud), and then puts the result in a live simulation you can poke at.
+
+Start with the figure below. It is the rest of this chapter, and in a sense the rest of the course, in one picture. Scroll or pinch on it to zoom, drag to rotate, or press **Tour**.
+
+<Sim name="scales-zoom" size="wide" minHeight={420}>
+**Twenty powers of ten in one zoom.** Start above the Earth, at 10⁷ m, and zoom out. You pass the Moon's orbit, the planets, the Kuiper belt, the Oort cloud, the nearest stars (at their real positions and with their real colours), the Milky Way, the Local Group, the cosmic web, and finally the cosmic microwave background, the edge of what we can ever see. Watch the light-crossing time in the top right: it goes from a tenth of a second to tens of billions of years. The scale bar changes units as you go (km, AU, ly, pc, Mpc), because no single unit is comfortable for more than a few decades. Everything runs in 32-bit floats on the GPU; the box *Rendering 60 orders of magnitude* below explains how. The continents, galaxies and cosmic web are procedural stand-ins. The stars, planets, Local Group galaxies and cluster positions are real.
+</Sim>
+
+### How the course works
+
+A few kinds of box recur throughout. You have just met a **simulation**. Each chapter has a large flagship simulation and a few smaller interactive figures. They load when you scroll to them and pause when you scroll away. The heavy ones use WebGPU, so a recent Chrome, Edge or Safari works best.
+
+**Numbers in orange can be dragged.** A star with absolute magnitude <Var name="Mabs" value={4.8} min={-10} max={16} step={0.1} digits={3} /> (that is the Sun) seen from <Var name="dpc" value={10} min={0.00001} max={1000000000} log digits={2} /> parsecs has apparent magnitude <Out name="mapp" />, which makes it <Out name="mvis" />. Drag the distance up to a million parsecs, and then to a billion. What these numbers mean is the subject of the section on magnitudes below.
+
+<Aside>**Margin notes** like this one hold history, caveats and "in the real universe…" asides. You can skip them on a first read. On a narrow screen they appear inline.</Aside>
+
+Sometimes the course asks you to commit to a guess before it shows the answer. Research on learning is consistent here: a wrong prediction you have committed to teaches more than a right answer you only read. Try this one.
+
+<Predict question="On a logarithmic scale from the Planck length (10⁻³⁵ m) to the observable universe (10²⁷ m), where does a human (≈ 1.7 m) sit?" choices={['Near the small end', 'Roughly in the middle', 'Near the large end']} answer={2}>
+Near the large end. $\log_{10}(1.7) \approx 0.2$, so we sit about 35 decades above the Planck length and 27 below the size of the universe: 56% of the way up. That puts us nearer the large end than the middle. The *geometric* midpoint of the Planck length and the universe is about 10⁻⁴ m, the width of a hair. Physics below the proton (10⁻¹⁵ m) is sparsely populated: it is the domain of particle physics, and the gap from 10⁻¹⁸ m down to the Planck length is almost entirely unexplored.
+</Predict>
+
+Two more boxes. A **key equation** box holds a result worth remembering, with a legend for its symbols. **Back-of-the-envelope** boxes (marked ≈) do a Fermi estimate: an answer good to a factor of a few, reached in a few lines. And each flagship simulation comes with an **under-the-hood** box that explains its algorithm and numerics with real code, because these simulations are part of the lesson. Constants such as <C k="G" /> and <C k="pc" /> show their value, unit and a note when you hover them.
+
+## Sixty orders of magnitude
+
+The smallest length we can talk about with any confidence is the **Planck length**, $\ell_P = \sqrt{\hbar G/c^3} = 1.6\times10^{-35}$ m. At that scale quantum mechanics and gravity are both important at once, and we have no working theory. The largest length we can observe is the diameter of the **observable universe**: about $8.8\times10^{26}$ m, or 93 billion light-years, measured in today's (comoving) distance. The ratio is
+
+$$
+\frac{8.8\times10^{26}\ \text{m}}{1.6\times10^{-35}\ \text{m}} \approx 5\times10^{61}.
+$$
+
+Masses cover an even wider range, from the electron ($9.1\times10^{-31}$ kg) to the ordinary matter in the observable universe (about $1.5\times10^{53}$ kg, or roughly $10^{80}$ protons): 83 orders of magnitude. Times run from the Planck time ($5.4\times10^{-44}$ s) through the $10^{-23}$ s it takes light to cross a proton, up to the age of the universe, $4.35\times10^{17}$ s = 13.8 Gyr. That is another 61 orders.
+
+On a linear axis almost none of this fits. If the Sun were a grapefruit in New York, the Earth would be a grain of salt 15 m away, and the nearest star another grapefruit in Hawaii. The only honest way to plot the universe is on a **logarithmic** axis, where every step is a *factor* of ten.
+
+<Sim name="scales-ruler" size="wide" minHeight={300}>
+**The universe on a log ruler.** Every gridline is a factor of 10. Hover a tick for the details, drag to pan, and scroll or pinch to zoom into a few decades. Switch between sizes, masses and times. Notice the clumps: atoms and nuclei, planets and stars, galaxies and clusters. Between them lie long empty stretches of the ruler, and much of physics explains why the clumps sit where they do.
+</Sim>
+
+### Thinking logarithmically
+
+Working astrophysicists think in logarithms without noticing. "The Sun is a 10³⁰ kg star" is a statement about an exponent. "A factor of two" is *close*. "An order of magnitude" means a factor of ten, and two numbers that agree to within one are often said to agree. That is less sloppy than it sounds. When the quantities of interest span sixty decades, a formula that gets the exponent right has already done 99% of the work.
+
+Logarithms also turn the power laws that pervade astrophysics into straight lines. If $L \propto M^{3.5}$ (the main-sequence mass–luminosity relation of Chapter 14), then $\log L = 3.5\log M + \text{const}$, and a log–log plot of stars is a line with slope 3.5. Whenever you see a straight line on a log–log plot, read the slope as an exponent and ask what physics produced it. This course is full of such plots.
+
+<Aside>**Engineers do this too.** Decibels are logarithms (10 dB per factor of ten in power). So are pH, the Richter scale and big-O notation: "$O(n\log n)$ versus $O(n^2)$" is a comparison of exponents that ignores the prefactor.</Aside>
+
+## Units: SI, cgs and the astronomer's toolkit
+
+The course uses **SI** units: metres, kilograms, seconds, kelvin. Much of the research literature, especially older papers, uses **cgs** (centimetres, grams, seconds, erg = 10⁻⁷ J, gauss = 10⁻⁴ T). Converting between them is mechanical, except in electromagnetism, where cgs absorbs the constant $4\pi\varepsilon_0$ into the definition of charge, so Coulomb's law reads $F = q_1q_2/r^2$. When you read a paper that contains $e^2/r$, mentally replace $e^2$ with $e^2/4\pi\varepsilon_0$.
+
+Neither system is convenient for the sky. Astronomers mostly use units matched to the objects they study:
+
+- **The astronomical unit**, <C k="AU" />, the mean Earth–Sun distance. Since 2012 it is defined as exactly 149,597,870,700 m.
+- **The solar mass, radius and luminosity**: <C k="Msun" />, <C k="Rsun" /> and <C k="Lsun" />. A "2 M☉ star" is twice the mass of the Sun, and nobody needs the kilograms.
+- **The year**, <C k="yr" />. It is a coincidence, and a very useful one, that 1 yr ≈ π × 10⁷ s, good to 0.5%.
+- **The light-year**, <C k="ly" />, the distance light travels in a year. It appears in popular writing and press releases, and hardly ever in research.
+- **The parsec**, <C k="pc" />, which is what researchers actually use, along with kpc (the size of galaxies) and Mpc (the distances between them). The name hides a definition.
+
+### The parsec and parallax
+
+Hold a finger at arm's length and blink one eye and then the other: the finger jumps against the background. The Earth does the same thing with nearby stars. Its orbit gives us a baseline of 2 AU, and over a year a nearby star traces a small ellipse against much more distant objects. The **parallax** $p$ is the semi-major axis of that ellipse, which is the angle the radius of the Earth's orbit subtends at the star. For small angles $p = 1\,\text{AU}/d$ in radians. The parsec is the distance at which $p$ is one arcsecond ("**par**allax **sec**ond"):
+
+<KeyEq title="Parallax and the parsec">
+$$
+d = \frac{1}{p}\ \text{pc}\quad(p\ \text{in arcseconds}),\qquad 1\ \text{pc} = \frac{1\ \text{AU}}{1''} = 206{,}265\ \text{AU} = 3.086\times10^{16}\ \text{m} = 3.26\ \text{ly}
+$$
+<Fragment slot="where">$p$ is the annual parallax (the angle subtended by 1 AU at the star) and $d$ is the distance. The number 206,265 is the number of arcseconds in a radian. No star is as close as 1 pc: Proxima Centauri, the nearest, has $p = 0.768''$, so it is at 1.30 pc.</Fragment>
+</KeyEq>
+
+<Sim name="scales-parallax" size="wide" minHeight={420}>
+**Parallax.** Left: the Earth circles the Sun, and the sight line to a nearby star swings back and forth (the distance is drawn hugely compressed). Right: the same star in the sky, tracing an ellipse of semi-major axis $p$ against background galaxies that do not move. Drag the distance up and watch $p$ shrink as $1/d$. The readout compares $p$ with the precision of the Gaia satellite: at a few kpc the ellipse becomes lost in the measurement error.
+</Sim>
+
+Parallax is the only *direct* way to measure distances to stars: pure geometry, with no astrophysics involved. It was first measured in 1838, when Friedrich Bessel found $0.314''$ for 61 Cygni (the modern value is $0.286''$). The ESA **Gaia** mission (2013–2025) measured parallaxes for about 1.5 billion stars. For bright stars its precision is about 20 micro-arcseconds, the angle subtended by a coin on the Moon. Gaia DR3 (2022) is the current catalogue, and DR4, based on 5.5 years of data, is due in December 2026. Every distance in astronomy that is not measured by parallax is ultimately calibrated against one that is.
+
+<Aside>**Why angles?** The sky is a sphere of directions. Everything a telescope measures is an angle, a flux or a spectrum. A distance is always an *inference*, which is why astronomers are so fussy about how each one was obtained.</Aside>
+
+### Magnitudes: a logarithm from antiquity
+
+Around 130 BCE Hipparchus sorted the naked-eye stars into six classes, from first magnitude (the brightest) to sixth (the faintest he could see). The human eye responds roughly logarithmically, so the classes are roughly equal *ratios* of brightness. In 1856 Norman Pogson made this precise: a difference of 5 magnitudes is defined as a factor of exactly 100 in flux, so 1 magnitude is a factor of $100^{1/5} = 2.512$. Then
+
+<KeyEq title="Apparent magnitude and distance modulus">
+$$
+m_1 - m_2 = -2.5\log_{10}\frac{F_1}{F_2}, \qquad m - M = 5\log_{10}\frac{d}{10\ \text{pc}}
+$$
+<Fragment slot="where">$m$ is the apparent magnitude, $F$ the flux (W m⁻²) received in some filter band. $M$ is the **absolute magnitude**, the apparent magnitude the object would have at 10 pc. $m - M$ is the **distance modulus**. The second equation follows from the first, because flux falls off as $1/d^2$. The zero point is conventional; in the Vega system, Vega has $m \approx 0$ in every band.</Fragment>
+</KeyEq>
+
+The minus sign means that brighter objects have *smaller* magnitudes. The scale runs backwards and is logarithmic, and it predates the telescope. Every astronomer has grumbled about it, and every astronomer uses it, because it is extremely convenient: a flux ratio of $10^{10}$ is just 25 magnitudes, and multiplying fluxes becomes adding magnitudes. The Sun is at $m = -26.7$, Sirius at $-1.46$, Polaris at $+1.98$. The faintest galaxies in the deepest JWST images are near $m \approx 31$. The Sun's absolute magnitude is $M_\odot = 4.83$: at 10 pc it would be an unremarkable naked-eye star.
+
+<Sim name="scales-magnitudes" size="wide" minHeight={300}>
+**The magnitude scale.** Pick two stars and read off how much brighter one is than the other: $10^{0.4\,\Delta m}$. How much brighter is Sirius than Polaris? Now compare their *absolute* magnitudes, which reverses the verdict: Polaris is a supergiant about 20 times as luminous as Sirius, and 50 times farther away. Use "Move A to" to carry a star to another distance and watch the distance modulus change.
+</Sim>
+
+### Natural units and code units
+
+Theorists often go further and set constants to one. In **natural units**, $\hbar = c = k_B = 1$: a mass is an energy is an inverse length is an inverse time, and the proton "weighs" 938 MeV. General relativity adds $G = 1$, which measures a black hole's mass in kilometres ($GM_\odot/c^2 = 1.48$ km). Cosmologists quote distances in $h^{-1}$ Mpc, where $h = H_0/(100\ \text{km s}^{-1}\,\text{Mpc}^{-1})$, so that their results survive whatever value of the Hubble constant finally wins.
+
+Simulations do the same thing for a different reason. Chapter 2's orbit integrator uses AU, years and solar masses, so that $GM_\odot = 4\pi^2$ and every number is of order one. N-body codes routinely set $G = M = R = 1$ (so-called Hénon units). This is not just laziness.
+
+<Aside>**The f32 budget.** A 32-bit float has a 24-bit significand, which gives about 7.2 significant decimal digits. Its *range* ($10^{-38}$ to $10^{38}$) would comfortably hold the whole universe in metres. Its *precision* would not: 7 digits of 2.5 × 10²⁰ m (the Sun's distance from the galactic centre) resolves steps of 3 × 10¹³ m, or 200 AU. Every planet in the Solar System would snap to the same point.</Aside>
+
+GPUs are fast at 32-bit floating point and slow, or unable, at 64-bit. A 32-bit float carries about seven significant digits, so any quantity stored as a float should be $O(1)$, and any *difference* of two stored quantities must be large compared with $10^{-7}$ of their size. If you have ever debugged "jittery" vertices far from the origin in a game engine, you have met this problem. The usual fix is *camera-relative rendering*, and the zoom at the top of this chapter uses it at an extreme. Choosing units is really choosing where to spend a fixed budget of digits.
+
+<Hood title="Rendering 60 orders of magnitude in f32">
+The zoom figure renders objects from $6\times10^{6}$ m (the Earth's radius) to $4\times10^{26}$ m (the last-scattering surface) in one frame budget, with only 32-bit floats on the GPU. Four ideas make that work.
+
+**1. Per-regime local coordinates.** The scene is split into layers, each stored in its own natural unit and around its own origin: Earth and Moon in Earth radii, the planets in AU, nearby stars in pc, the Milky Way in kpc around the galactic centre, and the Local Group and cosmic web in Mpc. Inside a layer every coordinate is between about $10^{-3}$ and $10^{4}$, so f32 represents it to a fraction of a pixel.
+
+**2. Floating origin (camera-relative rendering).** The camera orbits a *focus* point at distance $D = 10^z$ m. The focus slides from the Earth to the Sun, then to the galactic centre and the Local Group, as you zoom out. Each frame, the CPU computes in double precision, for every layer,
+$\text{offset} = (\text{origin} - \text{focus})/\text{unit}$ and $\text{scale} = \text{unit}/D$.
+The GPU sees only these two numbers and adds the offset *before* scaling, while values are still in layer units:
+
+```wgsl
+fn toView(p: vec3f) -> vec4f {
+  // Camera-relative: subtract the focus *before* scaling, while numbers are still in layer units.
+  let rel = (L.rot * p + L.offset) * L.scale;
+  return F.view * vec4f(rel, 1.0);
+}
+```
+
+After that, everything is in units of $D$: the eye sits at distance 1 from the focus, and whatever is on screen has coordinates of order one. When the focus is the Earth, the Earth layer's offset is *exactly* zero, because it was computed in f64, so the planet is rock-steady even at $10^{7}$ m.
+
+**3. A logarithmic depth buffer.** A standard perspective depth buffer spends its precision near the near plane. With a near/far ratio of $10^{20}$ it would put the Moon, the Sun and Vega at the same depth. Instead, each vertex writes
+
+```wgsl
+fn logDepth(w: f32, logK: f32) -> f32 {
+  return clamp(log2(1.0 + max(w, 0.0)) * logK, 0.0, 1.0);   // logK = 1 / log2(1 + far)
+}
+```
+
+(multiplied by `clip.w`, so that the hardware divide undoes it). That gives constant *relative* depth resolution from $10^{-5}D$ to $10^{15}D$. The sphere impostors write the same function to `frag_depth` at the ray–sphere hit point, so the Earth correctly hides the stars behind it.
+
+**4. Robust impostors and flux-conserving sprites.** The Earth, Moon, Sun and CMB are not meshes. Each is a single screen-aligned quad whose fragment shader ray-traces the sphere analytically. The textbook test, $|c|^2 - r^2$, cancels catastrophically in f32 when a sphere is $10^{-6}$ of its distance across. The shader uses the perpendicular offset $p = c - (c\cdot\hat d)\hat d$ instead, whose error scales with $r$ rather than $|c|$. Points are instanced quads with at least 1–2 px radius, so unresolved stars stay visible. When a particle's physical size exceeds that, its intensity is scaled by $(r_0/r)^2$, which keeps the total flux fixed. That is why the Milky Way looks like a smooth band when you are inside it and like a speckled disc from outside.
+
+Everything is added into an `rgba16float` target (dust lanes use a multiplicative "absorber" blend) and tonemapped with $1 - e^{-x}$. The cost is $O(N)$ in the particles of the visible layers only. Layers whose crossfade weight is zero are skipped, so a frame draws at most about 400k sprites, even with the "High" setting's 524k-particle galaxy loaded. Particle positions are generated once on the CPU: logarithmic spiral arms with exponential discs for the galaxies, and Poisson "clusters" joined to their nearest neighbours by filaments for the cosmic web, in three nested shells so that there is structure at every zoom level.
+</Hood>
+
+## Dimensional analysis: the astrophysicist's superpower
+
+Every physical quantity has **dimensions**, built from mass $\mathsf M$, length $\mathsf L$ and time $\mathsf T$ (plus temperature and charge when you need them). A correct equation must have the same dimensions on both sides. This sounds like bookkeeping. In practice it is the most powerful tool in theoretical astrophysics. If you can list the physical quantities a result could depend on, there is often only one way to combine them into a quantity with the right dimensions, and the laws of physics have no choice but to use it.
+
+The method is simple. Write the answer as a product of powers of the relevant quantities, match the exponents of $\mathsf M$, $\mathsf L$ and $\mathsf T$ on both sides, and solve the resulting linear system. (Engineers will recognise the Buckingham π theorem: with $n$ quantities and $k$ independent dimensions, there are $n-k$ independent dimensionless combinations.) The prefactor is out of reach, but in astrophysics it is usually between 0.1 and 10, and the exponents are what matter.
+
+### Orbits, collapse and escape
+
+**The orbital period.** A planet orbits a star of mass $M$ at distance $a$. The period can depend only on $G$ ($\mathsf{M^{-1}L^3T^{-2}}$), $M$ and $a$. Try $P = G^\alpha M^\beta a^\gamma$:
+
+$$
+\mathsf T:\ -2\alpha = 1,\qquad \mathsf M:\ -\alpha + \beta = 0,\qquad \mathsf L:\ 3\alpha + \gamma = 0
+\ \Longrightarrow\ P \sim \sqrt{\frac{a^3}{GM}}.
+$$
+
+That is Kepler's third law, with no mechanics at all. The full calculation in [Chapter 2](/ch/orbits/) supplies the missing $2\pi$. The planet's own mass could enter only through the ratio $m/M$, which is dimensionless, so dimensional analysis cannot rule it out. It does enter, but only as $M + m$.
+
+**The free-fall time.** A uniform cloud of density $\rho$ with no pressure collapses under its own gravity. The only quantities available are $G$ and $\rho$, and $G\rho$ has dimensions $\mathsf T^{-2}$. So
+
+<KeyEq title="The dynamical (free-fall) time">
+$$
+t_\text{ff} \sim \frac{1}{\sqrt{G\rho}}, \qquad \text{exactly: } t_\text{ff} = \sqrt{\frac{3\pi}{32\,G\rho}}
+$$
+<Fragment slot="where">$\rho$ is the mean density and $G$ the gravitational constant. The result does not depend on the size or the mass, only on the density. The same timescale sets how fast a star responds to a disturbance, how long a molecular cloud takes to collapse into stars (Chapter 7), and even how a star pulsates. For the Sun ($\bar\rho = 1.41$ g cm⁻³) it is about 30 minutes. For a molecular cloud core ($10^{-19}$ kg m⁻³) it is about $10^5$ years.</Fragment>
+</KeyEq>
+
+**The escape speed.** The speed needed to escape a body of mass $M$ and radius $R$ can depend on $G$, $M$ and $R$, so it must be $v \sim \sqrt{GM/R}$. Energy conservation fixes the prefactor at $\sqrt 2$. A body of <Var name="vM" value={1} min={0.000003} max={100} log digits={2} /> M☉ and radius <Var name="vR" value={1} min={0.000001} max={1000} log digits={2} /> R☉ has escape speed <Out name="vesc" />. Put in the Earth ($3\times10^{-6}$ M☉ and 0.0092 R☉) to get 11 km/s. Then crush the Sun to the size of the Earth (a white dwarf, 0.009 R☉) and then to 14 km ($2\times10^{-5}$ R☉, a neutron star). Where does the escape speed reach $c$? At $R = 2GM/c^2$, the Schwarzschild radius, which we meet again in [Chapter 19](/ch/black-holes/).
+
+<Sim name="scales-dimensions" size="text" minHeight={240}>
+**A dimensional-analysis workbench.** Raise each constant to a power with + and −, and the figure tracks the dimensions and the value in SI and in a sensible astronomical unit. Choose a preset to see a famous combination. Then try to build a length out of $\hbar$, $G$ and $c$ alone, or a mass out of $\hbar$, $c$, $G$ and $m_p$.
+</Sim>
+
+### The size of atoms
+
+Why is an atom $10^{-10}$ m across? An electron bound to a proton has three relevant quantities: its mass $m_e$, the strength of the electrostatic attraction $e^2/4\pi\varepsilon_0$ (dimensions $\mathsf{ML^3T^{-2}}$), and, because the problem is quantum mechanical, $\hbar$. There is exactly one length you can make from them:
+
+$$
+a_0 = \frac{\hbar^2}{m_e\,(e^2/4\pi\varepsilon_0)} = 5.29\times10^{-11}\ \text{m}.
+$$
+
+This is the **Bohr radius**, and the dimensional estimate happens to be exact. The physics behind it is a balance. Confining the electron to a region of size $r$ gives it momentum $\sim\hbar/r$ (the uncertainty principle), so kinetic energy $\hbar^2/2m_er^2$, while the electrostatic energy is $-e^2/4\pi\varepsilon_0 r$. The sum is minimised at $r = a_0$. Almost all of chemistry, and the sizes of everything on the human scale, follow from this one number. The binding energy at that radius is 13.6 eV, and "a few eV per atom" sets the energy scale of chemistry, the strength of rock, and the temperature of stellar surfaces. You will use this estimate again in [Chapter 5](/ch/spectra/).
+
+### Why mountains, asteroids and planets have the sizes they do
+
+The same trick explains why cosmic objects come in the sizes they do. Victor Weisskopf made a famous pass at this in 1975, estimating the heights of mountains from the size of atoms.
+
+<Fermi title="How tall can a mountain be, and how big can a potato be?">
+A mountain of height $h$ presses on its base with pressure $\rho g h$. Rock yields (flows plastically, or melts at the base) at a stress of $\sigma_y \sim 2\times10^8$ Pa. Ultimately that number comes from bond energies of a few eV per atom and atomic spacings of a few $a_0$. So
+
+$$h_\text{max} \sim \frac{\sigma_y}{\rho g} \approx \frac{2\times10^8}{2700\times 9.8} \approx 8\ \text{km}.$$
+
+Everest is 8.8 km. On a planet with surface gravity <Var name="gfac" value={1} min={0.05} max={5} log digits={2} /> times the Earth's, mountains top out near <Out name="hmax" />. Mars, at $g = 0.38\,g_\oplus$, has Olympus Mons at 22 km, close to the prediction.
+
+Now turn the argument around. A small body stays lumpy (potato-shaped) as long as the pressure at its centre, $\sim G\rho^2R^2$, is less than $\sigma_y$. Setting them equal gives the size above which gravity wins and the body pulls itself round:
+
+$$R \sim \frac{1}{\rho}\sqrt{\frac{\sigma_y}{G}} \approx \frac{1}{3000}\sqrt{\frac{2\times10^8}{6.7\times10^{-11}}} \approx 600\ \text{km}.$$
+
+The asteroid Vesta (radius 263 km) is still lumpy. Ceres (470 km) is round and counts as a dwarf planet. Icy moons, which are weaker, go round at around 200 km.
+</Fermi>
+
+What about the *largest* planet? Add mass to a cold ball of hydrogen and at first it grows, $R \propto M^{1/3}$, because atoms are incompressible at a size $\sim a_0$. Eventually gravity squeezes the atoms together until the electrons form a degenerate gas, and from then on adding mass makes the body *smaller*: $R \propto M^{-1/3}$, the white-dwarf law of Chapter 16. The turnover comes when the gravitational energy per proton, $GMm_p/R$, matches the atomic energy scale $e^2/4\pi\varepsilon_0 a_0$. Writing the result in terms of the two dimensionless coupling constants, $\alpha = e^2/4\pi\varepsilon_0\hbar c \approx 1/137$ for electromagnetism and $\alpha_G = Gm_p^2/\hbar c \approx 5.9\times10^{-39}$ for gravity:
+
+$$
+M_\text{max planet} \sim \left(\frac{\alpha}{\alpha_G}\right)^{3/2} m_p \approx 2\times10^{27}\ \text{kg} \approx M_\text{Jupiter}.
+$$
+
+This is why Jupiter, Saturn, hot Jupiters and brown dwarfs all have about the same radius, $\approx 1\,R_J$, even though their masses span a factor of 250. Nature does not build cold objects much bigger than Jupiter.
+
+### A stellar mass from pure constants
+
+Now let the ball get hot, and ask what the heaviest object is that degenerate electrons can hold up. The electrons become relativistic, so the relevant constants are $\hbar$, $c$, $G$ and the mass per electron, which is about $2m_p$. Electromagnetism drops out. Try to form a mass:
+
+<KeyEq title="The Chandrasekhar mass, dimensionally">
+$$
+M_\text{Ch} \sim \left(\frac{\hbar c}{G}\right)^{3/2}\frac{1}{m_p^{2}} = \alpha_G^{-3/2}\,m_p \approx 3.7\times10^{30}\ \text{kg} \approx 1.8\,M_\odot
+$$
+<Fragment slot="where">$\hbar c/G$ is the square of the Planck mass ($2.2\times10^{-8}$ kg), and $\alpha_G^{-3/2} \approx 2\times10^{57}$ is roughly the number of protons in a star. The careful calculation of Chapter 16 gives $1.44\,M_\odot$ for a carbon–oxygen white dwarf.</Fragment>
+</KeyEq>
+
+This is one of the most remarkable results in physics. A combination of fundamental constants that knows nothing about astronomy predicts the mass of stars to within a factor of two. Stars are $10^{57}$ protons because $\alpha_G$ is $10^{-38}$. The number that makes gravity so weak between two particles also sets how many particles it takes for gravity to win. [Chapter 16](/ch/stellar-death/) turns this estimate into the Chandrasekhar limit, and Chapter 18 does the same for neutron stars.
+
+<Aside>**Chandrasekhar's voyage.** Subrahmanyan Chandrasekhar derived the limit in 1930, aged 19, on the ship taking him from India to Cambridge. Arthur Eddington publicly ridiculed the idea that a star could collapse without limit. Chandrasekhar won the Nobel Prize for it in 1983.</Aside>
+
+## Estimating like an astrophysicist
+
+Dimensional analysis tells you which combination of quantities to use. **Order-of-magnitude estimation** tells you what numbers to put in. Together they form a method that professionals use constantly:
+
+1. **Identify the physics.** What balances what? Gravity against pressure, heating against cooling, kinetic energy against potential energy.
+2. **Write each side as a scaling.** Replace derivatives by ratios ($dP/dr \to P/R$) and integrals by products ($\int\rho\,dV \to \rho R^3$).
+3. **Put in round numbers**, in convenient units, and keep only the powers of ten and one significant figure.
+4. **Sanity-check** against a known case, then ask what you have neglected.
+
+For example, hydrostatic equilibrium, $dP/dr = -G m\rho/r^2$, becomes $P/R \sim GM\rho/R^2$, and with $P \sim (\rho/m_p)k_BT$ the central temperature of the Sun comes out as $T \sim GMm_p/k_BR \approx 2\times10^7$ K. The detailed models of Chapter 11 give $1.57\times10^7$ K. A two-line estimate gets within a factor of 1.5 of a result that took decades of stellar modelling. Estimates like this should be your first step on any problem, and they are the best check on any simulation. If the code disagrees with the envelope by a factor of 100, suspect the code.
+
+<Fermi title="How long would the light of the Sun take to get out?">
+A photon in the Sun's core travels only about 1 cm (its mean free path $\ell$) before it is absorbed or scattered in a random direction. A random walk of $N$ steps covers a distance $\sqrt N\,\ell$, so escaping from radius $R$ takes $N = (R/\ell)^2$ steps and a time
+
+$$t \sim \frac{N\ell}{c} = \frac{R^2}{\ell c} \approx \frac{(7\times10^8)^2}{10^{-2}\times 3\times10^8} \approx 2\times10^{11}\ \text{s} \approx 5000\ \text{yr}.$$
+
+Careful models, with a mean free path that grows steeply outward, give $10^4$–$10^5$ yr. The sunlight on your face left the core as gamma rays before the invention of writing. Chapter 13 simulates this random walk.
+</Fermi>
+
+## The cosmic distance ladder
+
+Distances are the hardest measurements in astronomy, and nearly everything else depends on them: luminosities, masses, sizes and ages. No single method works everywhere, so astronomers build a **ladder**. Each rung is calibrated on the rung below and reaches farther.
+
+- **Radar and spacecraft (Solar System).** Radar echoes from Venus (first in 1961) and from asteroids, plus spacecraft tracking, measure distances within the Solar System to metres. That fixes the AU, the baseline for everything above it.
+- **Parallax (up to a few kpc).** Pure geometry, as above. Gaia measured 1.5 billion stars, and radio interferometry (VLBI) measures masers across the galaxy to about 10% precision.
+- **Standard candles (up to about 40 Mpc).** If you know an object's luminosity, its flux gives its distance through the distance modulus. In 1912 Henrietta Leavitt discovered that **Cepheid variable stars** pulsate with a period that tracks their luminosity. Parallaxes calibrate the Cepheid period–luminosity relation in the Milky Way. Cepheids, and the *tip of the red giant branch* (the maximum brightness of red giants, Chapter 15), then reach galaxies out to tens of Mpc with Hubble and JWST.
+- **Type Ia supernovae (up to several Gpc).** Exploding white dwarfs near the Chandrasekhar mass: that 1.4 M☉ again. After a correction for how fast they fade, they are standard candles bright enough to see across the universe. Calibrated with Cepheids in their host galaxies, they revealed in 1998 that the expansion of the universe is accelerating.
+- **The Hubble law.** On the largest scales, recession velocity grows in proportion to distance, $v = H_0 d$, so a measured redshift gives a distance directly, once $H_0$ is known.
+
+<Aside>**The Hubble tension.** The ladder gives $H_0 = 73.0 \pm 1.0$ km s⁻¹ Mpc⁻¹ (SH0ES). The early universe, meaning the CMB as seen by Planck together with the baryon acoustic oscillations mapped by DESI, predicts $67.4 \pm 0.5$. JWST has confirmed the Cepheid photometry, while some tip-of-the-red-giant-branch analyses land near 70. As of 2026 no one knows whether the ladder has a hidden systematic error or cosmology needs new physics.</Aside>
+
+The ladder has a subtlety that becomes central in cosmology: at cosmological distances "the distance" is no longer a single number. Light from a galaxy 10 billion light-years away left it when the universe was smaller, and the galaxy has since receded. Luminosity distance, angular-diameter distance and comoving distance all differ. [Chapter 25](/ch/expansion/) sorts them out with the Friedmann equations. The 46-billion-light-year radius of the observable universe in the zoom is a comoving distance, larger than 13.8 billion light-years because space expanded while the light was on its way.
+
+## A map of the course
+
+With scales, units and estimation in hand, here is the route ahead. It follows matter from the gravity that shapes it to the largest structures in the universe.
+
+- **Part I, Foundations.** [Gravity and orbits](/ch/orbits/), [three bodies and chaos](/ch/three-body/), [blackbodies](/ch/light/) and [spectra](/ch/spectra/): the tools for reading the sky.
+- **Part II, Birth of stars and planets.** The [interstellar medium](/ch/ism/), [star formation](/ch/star-formation/) (the free-fall time at work), [planet formation](/ch/planet-formation/), [tides](/ch/tides/) and [exoplanets](/ch/exoplanets/).
+- **Part III, The life of stars.** [Stellar structure](/ch/stellar-structure/), [fusion](/ch/fusion/), [energy transport](/ch/energy-transport/), [the main sequence](/ch/main-sequence/), [giants](/ch/giants/) and [stellar death](/ch/stellar-death/), where the Chandrasekhar mass returns.
+- **Part IV, Relativity and compact objects.** [Special relativity](/ch/relativity/), [neutron stars](/ch/neutron-stars/), [black holes](/ch/black-holes/) and [gravitational waves](/ch/gravitational-waves/).
+- **Part V, Galaxies.** [The Milky Way and dark matter](/ch/milky-way/), [galactic dynamics](/ch/galactic-dynamics/), [galaxy formation](/ch/galaxy-formation/) and [gravitational lensing](/ch/lensing/).
+- **Part VI, Cosmology.** [The expanding universe](/ch/expansion/), [the hot Big Bang](/ch/big-bang/), [the CMB](/ch/cmb/) and [cosmic structure](/ch/structure/), where the cosmic web you zoomed through is grown from scratch by a particle-mesh simulation.
+
+## Where we go from here
+
+This chapter has been about *how big*: sixty orders of magnitude, the units that tame them, and the dimensional reasoning that predicts where nature puts its clumps. The rest of the course is about *why*, and the first "why" is the force that governs every scale above a few hundred kilometres. The next chapter takes Newton's inverse-square law seriously. We will derive orbits, weigh the Sun with a calendar, and find out why integrating even the simplest orbit on a computer needs more care than you might expect.

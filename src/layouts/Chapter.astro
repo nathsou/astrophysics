@@ -1,5 +1,6 @@
 ---
 import Base from './Base.astro';
+import DepthControl from '../components/DepthControl.astro';
 import { chapters, chapterBySlug } from '../course';
 
 const { frontmatter } = Astro.props;
@@ -19,6 +20,7 @@ const next = chapters.slice(i + 1).find((c) => published.has(c.slug));
       <div class="kicker">Part {meta.part.roman} · {meta.part.title} — Chapter {meta.n}</div>
       <h1>{meta.title}</h1>
       <p class="lede">{frontmatter.lede ?? meta.blurb}</p>
+      <DepthControl />
     </header>
     <slot />
     <nav class="chapter-nav">

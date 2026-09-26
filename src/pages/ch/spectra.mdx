@@ -1,0 +1,222 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: spectra
+lede: Every atom leaves a fingerprint of exact wavelengths. Reading those fingerprints across 40 octaves of temperature is how we know what starlight is made of, and how fast it is moving away.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+
+## Three laws of light
+
+In 1859, Gustav Kirchhoff and Robert Bunsen pointed a prism at a gas-discharge lamp and at the Sun, and noticed that the pattern of bright lines from a heated element lined up exactly with the pattern of *dark* lines missing from sunlight at the same wavelengths. That coincidence — codified as **Kirchhoff's three laws of spectroscopy** — is still the operating manual for every spectrograph pointed at the sky:
+
+1. **A hot, dense object emits a continuous spectrum.** A blackbody (Chapter 4) radiates at every wavelength, set only by its temperature.
+2. **A hot, low-density gas emits bright lines at wavelengths specific to its atoms.** Electrons cascade down from excited states, each transition emitting a photon of one exact energy.
+3. **A cool, low-density gas in front of a hotter continuum source absorbs at those same wavelengths**, carving dark lines into the continuum.
+
+<Aside>**Fraunhofer lines.** Joseph von Fraunhofer catalogued hundreds of dark lines in sunlight in 1814, decades before anyone knew what caused them. He labelled the strongest ones with letters — the Ca II H & K lines and Na D lines in this chapter's flagship figure still carry his labels today.</Aside>
+
+The lamp strips below show law 2 directly: each element's characteristic set of bright lines, the same lines that would appear dark if you put that gas in front of a hotter source (law 3). No two elements share a pattern — that is precisely why line spectra work as fingerprints.
+
+<Sim name="spectra-emission" size="wide" minHeight={340}>
+**Emission spectra of gas-discharge lamps.** Hover a line for its wavelength. Every element's pattern is unique and reproducible: this is literally how spectroscopy identifies elements, in a lab or 10,000 light-years away.
+</Sim>
+
+Why does a star, which is mostly hot gas, give an *absorption* spectrum rather than a pure emission spectrum? Because a star is both things at once, stacked in radius. Deep in the photosphere the gas is dense enough to emit a smooth, near-blackbody continuum (law 1). The outer photosphere is cooler and thinner. Photons on their way out pass through it and get preferentially absorbed at each atom's characteristic wavelengths (law 3) before escaping — so what reaches your telescope is a continuum with dark lines punched into it. If you could somehow view *only* the cooler outer gas against a dark background, you would see the same wavelengths in emission. The direction of the temperature gradient, not anything special about "absorption" as a process, is what makes stellar spectra look the way they do.
+
+## The Bohr atom and hydrogen's ladder
+
+Kirchhoff's laws describe *what* happens; explaining the *exact* wavelengths took until 1913, when Niels Bohr proposed that an electron orbiting a nucleus is only allowed at certain radii — those where its angular momentum is an integer multiple of $\hbar$: $L = n\hbar$, $n = 1, 2, 3, \dots$.
+
+For hydrogen (one proton, one electron), balancing the Coulomb attraction against the centripetal requirement of a circular orbit, and substituting the quantised angular momentum, gives quantised radii $r_n = n^2 a_0$ (with the Bohr radius $a_0 = \hbar^2/(m_e k e^2) \approx 0.529\,\text{Å}$) and quantised energies:
+
+<KeyEq title="Bohr energy levels">
+$$
+E_n = -\frac{13.6\,\text{eV}}{n^2}
+$$
+<Fragment slot="where">$n$ is the principal quantum number. $E_n$ is measured relative to the ionised state ($n\to\infty$, $E=0$); all bound states have $E_n < 0$. The $-13.6\,\text{eV}$ ground-state energy is the **Rydberg energy**, $E_1 = -m_e e^4/(8\varepsilon_0^2 h^2)$ — the binding energy of hydrogen in its lowest state.</Fragment>
+</KeyEq>
+
+This is quantitatively right for hydrogen (Bohr's model gets the energies exactly correct, though its picture of literal circular orbits is wrong — the real story needs the Schrödinger equation, which reproduces the same $E_n$). A photon absorbed or emitted in a transition between levels $n_1 < n_2$ has energy $\Delta E = 13.6\,\text{eV}\left(1/n_1^2 - 1/n_2^2\right)$, giving the **Rydberg formula** for the wavelength:
+
+<KeyEq title="Rydberg formula">
+$$
+\frac{1}{\lambda} = R_\infty \left(\frac{1}{n_1^2} - \frac{1}{n_2^2}\right)
+$$
+<Fragment slot="where">$R_\infty = 1.097\times 10^7\,\text{m}^{-1}$ is the Rydberg constant. Transitions sharing the same lower level $n_1$ form a **series**: Lyman ($n_1=1$, ultraviolet), Balmer ($n_1=2$, visible), Paschen ($n_1=3$, infrared), Brackett ($n_1=4$, infrared).</Fragment>
+</KeyEq>
+
+The Balmer series is the one you can see with your eyes (or a backyard telescope), which is a happy accident of $n_1=2$ landing photon energies in the visible. Its first line, **Hα** at 656.3 nm, is the red glow of every emission nebula and every hydrogen-alpha solar filtergram.
+
+A transition from $n=$ <Var name="nHi" value={3} min={2} max={9} step={1} /> down to $n=$ <Var name="nLo" value={2} min={1} max={8} step={1} /> emits a photon of <Out name="bohrLambda" />.
+
+<Predict question="Which Rydberg series has all of its lines in the visible range (380-750 nm)?" choices={['Lyman (n₁=1)', 'Balmer (n₁=2)', 'Paschen (n₁=3)']} answer={1}>
+Lyman-series photons (down to n=1) have $\Delta E \ge 13.6\times(1-1/4) = 10.2\,\text{eV}$, or $\lambda \le 121.6\,\text{nm}$ — deep ultraviolet, absorbed by Earth's atmosphere and by interstellar hydrogen itself. Paschen-series photons (down to n=3) are all infrared. Only Balmer, by chance of arithmetic, straddles the visible window: Hα at 656 nm down to the series limit at 364.6 nm.
+</Predict>
+
+<Sim name="spectra-bohr" size="wide" minHeight={420}>
+**Click any two energy levels** (or a series button) to see the transition's wavelength, colour, and series. Levels crowd together near $E=0$ — that crowding is why series limits (photon energy at $n_2\to\infty$) exist and are finite.
+</Sim>
+
+<Aside>**Beyond one electron.** Multi-electron atoms don't have a clean $1/n^2$ ladder: electron-electron repulsion and different orbital shapes ($s,p,d,f\dots$) split each $n$ into sub-levels with slightly different energies (fine structure splits them further via spin-orbit coupling). The result is thousands of possible lines per element instead of one series — which is exactly why iron alone contributes tens of thousands of lines to the Sun's spectrum, and why real spectral synthesis needs huge atomic-line databases rather than a formula.</Aside>
+
+## Beyond hydrogen: forbidden lines and radio whispers
+
+Heavier atoms and ions produce far richer spectra, but two special cases are worth knowing by name because they show up constantly in astronomy.
+
+**Forbidden lines.** Quantum mechanics' selection rules say most transitions must change angular momentum by exactly one unit and involve an electric-dipole-allowed jump; transitions that violate these rules are not literally impossible, just enormously less probable (lifetimes of seconds to hours instead of nanoseconds). In the dense lab or a stellar photosphere, collisions de-excite an atom in a forbidden state long before it can radiate. But in the exceedingly thin gas of a planetary or supernova-remnant nebula — densities of 10²–10⁶ cm⁻³, collision times of days — there's nothing to stop it, and forbidden lines dominate the spectrum. The green light of many nebulae is **[O III] 500.7 nm** (and its partner 495.9 nm), a transition inside doubly-ionised oxygen so improbable it was originally attributed to a hypothetical element, "nebulium," before quantum mechanics explained it in 1927.
+
+<Aside>**Notation.** Square brackets, as in [O III], mark a forbidden line. The roman numeral is the ionisation stage: O I is neutral oxygen, O II is O⁺, O III is O²⁺. The same convention appears for every element in this chapter (Ca II, Fe I, He II, …).</Aside>
+
+**The 21-cm line.** Neutral hydrogen's ground state has two nearly degenerate sub-levels, split by the tiny magnetic interaction between the electron's and proton's spins (hyperfine structure). Flipping between them releases just $5.9\times10^{-6}\,\text{eV}$ — a photon at 1420.4 MHz, or 21.1 cm, deep in the radio. The transition is so forbidden (spontaneous lifetime ≈ 11 million years) that it only matters at all because interstellar space has so much hydrogen and so much time. It is one of the most important tools in astronomy: it maps neutral gas throughout the Milky Way and other galaxies even where dust blocks visible light entirely, and it traces galaxy rotation curves out to radii where no stars remain to serve as tracers (Chapter 21 and Chapter 6 build on it directly).
+
+## Line widths: broadening and the curve of growth
+
+Real spectral lines are never mathematically thin. Three effects set their shape and width:
+
+**Natural broadening.** The Heisenberg energy-time uncertainty relation, $\Delta E\, \Delta t \gtrsim \hbar$, means a level with a finite lifetime $\tau$ has an energy spread $\Delta E \sim \hbar/\tau$, giving every line an intrinsic **Lorentzian** profile. It is almost always the narrowest contribution and often negligible next to the other two.
+
+**Thermal Doppler broadening.** Atoms in a gas at temperature $T$ have a Maxwell-Boltzmann velocity distribution along the line of sight, and each atom's line is Doppler-shifted by its own velocity. Averaging over the distribution gives a **Gaussian** profile:
+
+<KeyEq title="Doppler width">
+$$
+\frac{\Delta\lambda}{\lambda} = \sqrt{\frac{2 k_B T}{m c^2}}
+$$
+<Fragment slot="where">$m$ is the absorbing atom's mass. Lighter atoms and hotter gas both broaden lines. This is the *same* physics as the redshift/blueshift of bulk motion (below) — here the "motion" is thermal, and it broadens rather than shifts.</Fragment>
+</KeyEq>
+
+A hydrogen atom at <Var name="Tdop" value={5800} min={1000} max={40000} log /> K (mass <Var name="massDop" value={1} min={1} max={56} log /> u) gives Hα a Doppler width of <Out name="dopplerWidth" />.
+
+**Pressure (collisional) broadening.** Collisions with neighbouring particles interrupt the emitting/absorbing atom's phase, which — by the same uncertainty argument as natural broadening, but with the collision rate standing in for $1/\tau$ — adds another **Lorentzian** contribution that grows with density (and hence usually with depth in a stellar atmosphere, where deeper is denser).
+
+<Fermi title="How wide is the Sun's Hα line from temperature alone?">
+The Sun's photosphere is around 5,800 K. Hydrogen's mass is $1.66\times10^{-27}\,\text{kg}$. Plugging into the Doppler formula:
+
+$$\frac{\Delta\lambda}{\lambda} = \sqrt{\frac{2(1.38\times10^{-23})(5800)}{(1.66\times10^{-27})(3\times10^8)^2}} \approx 1.5\times10^{-5}$$
+
+At $\lambda = 656\,\text{nm}$ that's $\Delta\lambda \approx 10\,\text{pm}$, or about 5 km/s in Doppler-velocity units. The Sun's *observed* Hα width is several times larger, because pressure broadening and unresolved convective motions ("microturbulence") both add in. Width alone, without a model, only ever gives a lower bound on temperature.
+</Fermi>
+
+Since a Gaussian core and Lorentzian wings both contribute, the true line shape is their convolution, the **Voigt profile** — Doppler-dominated near line centre, with Lorentzian power-law wings that dominate far out. Real codes evaluate it via the Faddeeva function (a scaled complex error function); this chapter's sims use the standard **pseudo-Voigt** approximation, a weighted sum of a Gaussian and a Lorentzian of matched width, accurate to a fraction of a percent and far cheaper to evaluate per pixel per line.
+
+<Sim name="spectra-broadening" size="wide" minHeight={380}>
+**Natural + Doppler + pressure broadening → Voigt.** Raise the temperature to widen the Gaussian core; raise the electron density to widen the Lorentzian wings. Switch atoms: heavier atoms have narrower thermal cores at fixed $T$.
+</Sim>
+
+One more piece completes the picture of a real line: as you add more absorbers, the line first deepens (optically thin), then the core saturates and it mainly grows in the Doppler core (flat part of the **curve of growth**, equivalent width vs. column density), and only once the far Lorentzian wings become optically thick does the equivalent width grow again, slowly, as $\sqrt{N}$. Curve-of-growth analysis is how classical spectroscopists measured chemical abundances before computers could fit whole spectra at once; this chapter's synthetic-spectrum model sidesteps it with a simpler saturating formula (see the flagship's "under the hood" section below).
+
+## Boltzmann, Saha, and the peak of the Balmer lines
+
+To predict how strong a given line should be, you need to know what *fraction* of a given element's atoms are sitting in the right lower energy level of the right ionisation stage to absorb that photon. Two equations, both from statistical mechanics, answer that.
+
+**Excitation: the Boltzmann equation.** Within one ionisation stage, level populations in thermal equilibrium follow
+
+<KeyEq title="Boltzmann excitation equation">
+$$
+\frac{N_b}{N_a} = \frac{g_b}{g_a}\, e^{-\Delta E_{ab}/k_B T}
+$$
+<Fragment slot="where">$N_a, N_b$ are the number of atoms in levels $a$ (lower) and $b$ (upper); $g_a, g_b$ are their statistical weights (degeneracies, $g_n = 2n^2$ for hydrogen); $\Delta E_{ab} = E_b - E_a > 0$.</Fragment>
+</KeyEq>
+
+For Hα and Hβ, the relevant lower level is $n=2$, at $\Delta E = 10.2\,\text{eV}$ above the ground state. Even at a scorching 10,000 K, $k_BT \approx 0.86\,\text{eV}$ — thirty times smaller than $\Delta E$ — so only a tiny Boltzmann-suppressed fraction of neutral hydrogen ever sits in $n=2$. That fraction rises steeply with $T$, which is why Balmer lines strengthen as you go from cool to hot stars.
+
+**Ionisation: the Saha equation.** But it also depends on how much of the hydrogen is neutral in the first place. Treat ionisation as a chemical reaction, H $\rightleftharpoons$ H$^+$ + e$^-$, and statistical mechanics (a partition-function ratio, with the free electron's translational states contributing a factor from the ideal-gas partition function) gives:
+
+<KeyEq title="Saha ionisation equation">
+$$
+\frac{N_{r+1}\,n_e}{N_r} = \frac{2\,U_{r+1}}{U_r}\left(\frac{2\pi m_e k_B T}{h^2}\right)^{3/2} e^{-\chi_r/k_B T}
+$$
+<Fragment slot="where">$N_r, N_{r+1}$ are populations in successive ionisation stages; $n_e$ is the electron density; $\chi_r$ is the energy needed to ionise stage $r$; $U_r$ are partition functions (sums over all bound levels' Boltzmann factors — this chapter's sims approximate $U_r$ by the ground-state degeneracy alone, an honest simplification, see the flagship's <Hood>). The factor of 2 counts the electron's two spin states.</Fragment>
+</KeyEq>
+
+<Aside>**Why $n_e$ appears.** Saha's equation has electron density, not just temperature, on the ionisation side. More free electrons around make recombination (the reverse reaction) more likely, pushing the balance back toward the neutral stage — exactly like adding a product shifts a chemical equilibrium. Stellar atmospheres are dense enough, and cool stars' free electrons scarce enough, that this matters: a red giant's puffed-up, low-density outer layers are *more* ionised at fixed $T$ than a dwarf's compact photosphere.</Aside>
+
+As $T$ climbs past a few times $\chi_r/k_B$, hydrogen ionises almost completely — and once it is H$^+$, there is no bound $n=2$ level left to populate at all. So Balmer-line strength is a *product* of two competing effects: a Boltzmann factor rising with $T$, and a Saha "neutral fraction" falling with $T$. Multiply them and the strength rises, peaks, and falls. At <Var name="Texc" value={9800} min={4000} max={20000} log /> K, the neutral-hydrogen population fraction in $n=2$ (the excited-*times*-still-neutral product above) is <Out name="n2frac" /> — drag the temperature and watch it rise, peak, then fall, tracking the observed Balmer-strength maximum near 9,500–10,000 K.
+
+<Predict question="As you raise a star's temperature from 4,000 K to 30,000 K, does Hα absorption strength increase the whole way?" choices={['Yes, monotonically', 'No — it peaks near 9,500-10,000 K and then weakens', 'No — it is constant']} answer={1}>
+It peaks and falls. Below ~9,500 K, hydrogen is almost entirely neutral, but the Boltzmann factor keeps $n=2$ nearly empty, so Balmer lines are weak (this is why the Sun's Balmer lines are only moderate — it's on the cool side of the peak). Above ~10,000 K, hydrogen is rapidly ionising, and an ionised atom has no electron left to excite, so the lines weaken again despite the higher temperature. A-type stars (~7,500-10,000 K), not the hottest O stars, have the strongest hydrogen lines in the whole spectral sequence.
+</Predict>
+
+<Sim name="spectra-saha" size="wide" minHeight={380}>
+**Boltzmann × Saha for hydrogen n=2.** The dashed curves show the two competing factors (Boltzmann excitation, rising; Saha neutral fraction, falling); the solid curve is their product. Drag the electron-density slider — higher density (deeper, denser photospheres) shifts the ionisation "cliff" to higher $T$, moving the peak.
+</Sim>
+
+## Reading a star from its spectrum
+
+Put the two equations to work over a whole photosphere, add a curated line list, and you can compute a synthetic stellar spectrum. This is the chapter's centrepiece.
+
+<Predict question="Which of these will most obviously change if you slide the temperature up: the wavelength of Hα, or its depth?" choices={['Its wavelength', 'Its depth', 'Neither changes with temperature']} answer={1}>
+Hα's *wavelength* is fixed by quantum mechanics (656.3 nm in the star's rest frame) — only bulk motion (Doppler shift) moves it. Temperature instead changes populations, and therefore *depth*: watch it rise from nothing in a cool star, peak in an A star, and fade again as hydrogen ionises in the hottest stars.
+</Predict>
+
+<Sim name="spectra-stellar" size="wide" minHeight={620}>
+**A synthetic stellar spectrum.** Drag temperature across the full O–M range and watch the continuum's colour (Planck's law, Chapter 4) and the absorption-line pattern change together — Balmer lines peaking in the A stars, Ca II H&K strengthening through G and K, molecular TiO bands swallowing the blue in M stars. The strip below the plot renders the same spectrum as a spectrograph would show it: a continuous rainbow with dark lines cut into it. Try the star presets, then add a radial velocity or redshift and watch every line slide together while keeping its shape.
+</Sim>
+
+<Hood title="the synthetic-spectrum model">
+The flagship computes, for a given $T$ and a fixed total particle density, an electron density $n_e$ by iterating the Saha equation for H and He to a fixed point (metals contribute a small constant electron floor, since easily-ionised species like Na and Ca supply free electrons even when H is still neutral):
+
+```ts
+export function solveElectronDensity(T: number, nTot: number, heFrac = 0.1): number {
+  const nH = nTot * (1 - heFrac), nHe = nTot * heFrac;
+  const metalFloor = 3e-5 * nTot;
+  let ne = 0.5 * nTot;
+  for (let it = 0; it < 24; it++) {
+    const fH = stageFractions([13.598], [2, 1], T, ne);
+    const fHe = stageFractions([24.587, 54.418], [1, 2, 1], T, ne);
+    const neNew = nH * fH[1] + nHe * (fHe[1] + 2 * fHe[2]) + metalFloor;
+    ne = 0.5 * ne + 0.5 * Math.max(neNew, 1e6);   // damped fixed-point iteration
+  }
+  return ne;
+}
+```
+
+For each curated line, the model multiplies a Saha ionisation-stage fraction by a two-level Boltzmann excitation fraction to get a **line strength**, then maps strength to line **depth** with a hand-tuned saturating power law (`maxDepth * strength^gamma`) rather than a real curve-of-growth integral. Depths are then rendered with the pseudo-Voigt profile from the broadening figure, combining thermal-Doppler and pressure widths, and the whole line list is Doppler-shifted by the velocity slider before compositing onto the Planck continuum.
+
+**What's real:** the Planck continuum, the Rydberg/Bohr level structure, the Boltzmann and Saha equations themselves, and the pseudo-Voigt line shape are all the genuine physics. **What's simplified, and why:** partition functions are truncated to ground-state degeneracies (full $U(T)$ sums would need tabulated energy levels for every ion); TiO and CH molecular-band strengths are empirical logistic fits to temperature rather than a molecular-equilibrium (Saha-like, but for molecules) solve; and line depth uses a saturating power law rather than integrating the equation of radiative transfer through a model atmosphere. Real spectral-synthesis codes — MOOG, Turbospectrum, SME, or full model-atmosphere codes like PHOENIX — solve the transfer equation layer by layer through a 1D (or 3D, for the state of the art) atmosphere model, with millions of tabulated atomic and molecular transitions and non-LTE corrections where collisions are too rare to keep level populations thermal. This sim is tuned to get the qualitative *and* rough quantitative story right — which lines appear when, and roughly how strong — in a form cheap enough to recompute at 60 fps.
+</Hood>
+
+## The spectral sequence: OBAFGKM(LTY)
+
+Stack spectra like the flagship's across the full temperature range and a natural ordering falls out: **O B A F G K M**, running hot to cool, historically remembered by generations of astronomy students as "Oh Be A Fine Girl/Guy, Kiss Me" — and now extended to the brown dwarfs with **L, T, Y** below the hydrogen-fusion limit (Chapter 14).
+
+| Class | $T_\text{eff}$ (K) | Colour | Defining lines | Example |
+|---|---|---|---|---|
+| O | > 30,000 | blue | He II, weak H | Rigel's hotter cousins |
+| B | 10,000–30,000 | blue-white | He I, strong H | Rigel (12,100 K) |
+| A | 7,500–10,000 | white | Strongest H (Balmer peak) | Vega (9,600 K) |
+| F | 6,000–7,500 | yellow-white | H weakening, metals rising | Procyon |
+| G | 5,200–6,000 | yellow | Ca II H&K strong, many metals | the Sun (5,772 K) |
+| K | 3,700–5,200 | orange | Metal lines, molecular bands start | Arcturus |
+| M | 2,400–3,700 | red | TiO bands dominate | Betelgeuse, Proxima |
+
+This looks alphabetically scrambled because it *is*: the sequence was first ordered A through (roughly) P purely by the strength of hydrogen lines, before anyone knew what set that strength. Once astronomers understood that hydrogen-line strength is not monotonic in temperature (the peak you found in the figure above), that ordering had to be scrambled and re-sorted by temperature — and O, B, A, F, G, K, M is what survived the reshuffling.
+
+<Aside>**Cecilia Payne-Gaposchkin, 1925.** Applying the still-new Saha equation to stellar spectra in her Harvard PhD thesis, Payne showed that the enormous strength of hydrogen and helium lines across the spectral sequence implied that stars are made almost entirely of hydrogen and helium — a result so at odds with the accepted view (that stars had roughly Earth-like composition) that her thesis advisor persuaded her to call it merely "spectroscopically indicated" rather than physically real. Henry Norris Russell, who had held the conventional view, confirmed her result independently four years later and is sometimes wrongly credited with it. Payne's thesis is now considered one of the most consequential in the history of astronomy: stars — and hence the ordinary matter of the universe — are mostly hydrogen, not rock.</Aside>
+
+Within a class, decimal sub-types (G2 for the Sun, M1 for Betelgeuse, M5.5 for Proxima Centauri) interpolate temperature further; luminosity classes (Ia, Ib, II…V) added by the Morgan-Keenan system separate giants and supergiants from main-sequence dwarfs of the same temperature by subtle differences in line *widths and ratios* — lower-density giant atmospheres show narrower pressure-broadened lines and different Saha balances at fixed $T$, exactly the density-dependence the Saha equation predicts.
+
+## Spectroscopy across the universe
+
+Everything so far has been about *which* wavelengths appear. Their *exact* wavelengths carry one more piece of information: motion.
+
+**Radial velocities.** Bulk motion toward or away from the observer Doppler-shifts every line by $\Delta\lambda/\lambda = v_r/c$ (non-relativistic; Chapter 17 gives the relativistic version). A star's whole line spectrum sliding back and forth in lockstep, with a period of days, is the signature of an orbiting planet tugging on it — the radial-velocity method, one of the two workhorse exoplanet-detection techniques (Chapter 10).
+
+**Cosmological redshift.** On the largest scales, the systematic recession of distant galaxies stretches every line by the same factor $1+z$, not because galaxies are "moving through" space in the ordinary sense but because space itself is expanding while the light is in transit (Chapter 25). The same Balmer and Ca II H&K lines this chapter builds appear in every galaxy's integrated spectrum, redshifted by anywhere from a percent (nearby galaxies) to a factor of several (the most distant galaxies DESI and JWST have found) — spectroscopy is how essentially every cosmological redshift in this book was actually measured.
+
+**Exoplanet atmospheres.** During a transit, starlight grazes an exoplanet's upper atmosphere on its way to us, picking up narrow absorption features from whatever gases are there. JWST's transmission spectra of exoplanets have detected water, carbon dioxide, methane, and sulfur dioxide this way — Kirchhoff's third law, applied to a planet's atmosphere instead of a stellar photosphere, at a distance of hundreds of light-years.
+
+**Molecular bands.** Below about 4,000 K, individual atomic lines share the spectrum with broad **molecular bands** — thousands of unresolved rotational-vibrational lines from molecules like TiO and VO, whose band heads pile up sharply at particular wavelengths (visible as the ramps in this chapter's flagship once you push the temperature slider down into the M-star range). The **G-band**, a CH molecular feature near 430.5 nm prominent in G and early K stars, gave that whole spectral class its letter long before anyone knew it was a carbon compound rather than an atomic line.
+
+Galaxy spectra go further still: they are the sum of billions of individual stellar spectra, so their absorption-line strengths (particularly the Ca II H&K and G-band region) encode the *average* stellar population's age and metal content, the basis of stellar-population synthesis used throughout extragalactic astronomy (Chapters 22 and 23).
+
+## Where we go from here
+
+One curated line list and two 1913-vintage equations get you remarkably far: the right colours, the right line strengths, the right ordering of the spectral sequence, and the right physical story for why it is ordered that way. The next chapter turns from stars to the gas between them — where the same Boltzmann and Saha machinery, run at far lower densities and temperatures, explains why the interstellar medium exists in sharply distinct thermal phases, and where the 21-cm line from this chapter becomes the primary tool for mapping it.

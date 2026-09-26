@@ -1,0 +1,263 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: star-formation
+lede: Stars are born when cold gas loses an argument with its own gravity. The argument takes a few million years, it is settled on scales from parsecs down to a few solar radii, and it nearly always ends with more small stars than large ones.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+
+## Where stars are born
+
+In [Chapter 6](/ch/ism/) we met the interstellar medium as a set of phases in rough pressure balance: hot ionised bubbles at a million kelvin, warm neutral gas at 8,000 K, cold neutral clouds at 80 K. Stars form in none of these. They form in the coldest, densest phase of all, **molecular clouds**, where hydrogen has paired up into H₂, dust shields the interior from starlight, and the temperature drops to 10–20 K.
+
+A typical *giant molecular cloud* (GMC) in the Milky Way has a mass of $10^4$–$10^6$ M☉, a size of 10–100 pc and a mean density of about 100 H₂ molecules per cm³. That sounds dense only by interstellar standards. It is a better vacuum than any laboratory on Earth, about $10^{-20}$ g cm⁻³. The Sun's mean density is $1.4$ g cm⁻³. So forming a star means compressing gas by a factor of roughly $10^{20}$. This chapter is about how gravity does that, what fights back, and why it happens in some places and not others.
+
+<Aside>**Seeing the invisible.** Cold H₂ has no permanent dipole and barely radiates at 10 K. Astronomers trace it with carbon monoxide instead: the CO $J = 1\to0$ line at 2.6 mm, calibrated with an "X-factor" of about $2\times10^{20}$ H₂ per unit CO intensity. Dust thermal emission in the far-infrared and dust extinction of background stars give independent mass estimates.</Aside>
+
+Inside clouds, the gas is far from uniform. Maps from *Herschel* showed that nearly every cloud is threaded with **filaments**, a remarkably uniform ~0.1 pc wide, and that the dense **cores** where individual stars form (0.05–0.1 pc, $10^4$–$10^5$ cm⁻³, about 1 M☉) sit like beads along those filaments. Cores are the immediate parents of stars. Our job is to understand the chain: cloud → filament → core → protostar → star.
+
+### The virial theorem for a cloud
+
+The first question for any self-gravitating blob is whether it can hold itself up. The virial theorem (derived for stars in [Chapter 11](/ch/stellar-structure/)) answers it on average. For a cloud in a steady state,
+
+$$
+2K + U + \mathcal{M} = 0,
+$$
+
+where $K$ is the kinetic energy (thermal plus bulk motions), $U$ the gravitational potential energy and $\mathcal{M}$ the magnetic energy. For a uniform sphere of mass $M$ and radius $R$, $U = -\tfrac35 GM^2/R$. Astronomers package this into the **virial parameter**
+
+$$
+\alpha_\text{vir} = \frac{2K}{|U|} \approx \frac{5\sigma^2 R}{GM},
+$$
+
+with $\sigma$ the one-dimensional velocity dispersion. $\alpha_\text{vir} \approx 1$ means balance, $\alpha_\text{vir} \ll 1$ means collapse and $\alpha_\text{vir} \gg 1$ means the cloud flies apart (or is held in by outside pressure). Real GMCs cluster around $\alpha_\text{vir}\sim 1$–$2$, which is itself a puzzle we will return to: clouds seem to live near the edge.
+
+## The Jeans criterion
+
+### Pressure against gravity
+
+Take a uniform, isothermal gas of density $\rho$ and temperature $T$ and imagine squeezing a sphere of radius $R$ inside it. Two energies compete. The thermal energy is $K \approx \tfrac32 N k_BT = \tfrac32 M c_s^2$, where $c_s = \sqrt{k_BT/\mu m_H}$ is the isothermal sound speed and $\mu \approx 2.33$ is the mean mass per particle in molecular gas (in units of the hydrogen mass). The gravitational energy is $|U| = \tfrac35 GM^2/R$. Collapse wins if $2K < |U|$:
+
+$$
+3 M c_s^2 < \frac35\frac{GM^2}{R} \quad\Longrightarrow\quad M > \frac{5 c_s^2 R}{G}.
+$$
+
+Now substitute $M = \tfrac43\pi R^3\rho$. Gravity grows as $R^5$ while thermal energy grows only as $R^3$, so there is a critical size above which gravity always wins. Solving for $R$ gives a length of order $c_s/\sqrt{G\rho}$.
+
+James Jeans got the same answer in 1902 from a more careful calculation: perturb a uniform medium with a sound wave $\propto e^{i(kx-\omega t)}$, linearise the fluid equations plus Poisson's equation, and you get the dispersion relation $\omega^2 = c_s^2 k^2 - 4\pi G\rho$. Short waves ($k$ large) oscillate as ordinary sound. Long waves have $\omega^2 < 0$: the "sound wave" grows exponentially instead of oscillating. The dividing line is $k_J^2 = 4\pi G\rho/c_s^2$.
+
+<Aside>**The Jeans swindle.** A static, infinite, uniform medium cannot actually be in equilibrium under gravity: Poisson's equation says $\nabla^2\Phi = 4\pi G\rho \ne 0$. Jeans simply ignored the background potential. The swindle works (it can be justified in an expanding universe, and for finite clouds the order of magnitude is right), which is why everyone still uses it.</Aside>
+
+<KeyEq title="Jeans length and Jeans mass">
+$$
+\htmlData{term=lj}{\lambda_J} = \htmlData{term=cs}{c_s}\sqrt{\frac{\pi}{G\htmlData{term=rho}{\rho}}}, \qquad
+\htmlData{term=mj}{M_J} = \frac{4\pi}{3}\rho\left(\frac{\lambda_J}{2}\right)^3 = \frac{\pi^{5/2}}{6}\frac{c_s^3}{G^{3/2}\rho^{1/2}} \;\propto\; \frac{T^{3/2}}{\rho^{1/2}}
+$$
+<Fragment slot="where"><span data-term="lj">$\lambda_J$</span> is the wavelength above which perturbations grow; <span data-term="mj">$M_J$</span> is the mass inside a sphere of diameter $\lambda_J$. <span data-term="cs">$c_s=\sqrt{k_BT/\mu m_H}$</span> is the isothermal sound speed and <span data-term="rho">$\rho$</span> the mass density. Hot gas resists collapse; dense gas succumbs. Numerical prefactors differ between textbooks by factors of ~2 depending on whether one uses radius or diameter.</Fragment>
+</KeyEq>
+
+Try it. Gas at a number density of <Var name="jn" value={10000} min={0.01} max={1e12} log /> cm⁻³ and a temperature of <Var name="jT" value={10} min={3} max={30000} log /> K has a sound speed of <Out name="jCs" />, a Jeans length of <Out name="jLam" />, a Jeans mass of <Out name="jMJ" /> and a free-fall time of <Out name="jTff" />.
+
+The defaults describe a dense core, and the Jeans mass comes out at a couple of solar masses: the characteristic mass of stars is already hiding in the numbers for 10 K gas at $10^4$ cm⁻³. Now drag the density down to 1 cm⁻³ and the temperature up to 8,000 K, the warm neutral medium. The Jeans mass climbs to tens of millions of solar masses, more than any cloud. Warm gas simply cannot form stars. It has to cool first, which is why the cooling physics of [Chapter 6](/ch/ism/) matters so much.
+
+<Sim name="star-formation-jeans" size="wide" minHeight={420}>
+**The Jeans mass across the ISM.** Faint lines are contours of constant $M_J$ (one per decade); they are straight in log–log because $M_J\propto T^{3/2}n^{-1/2}$. The orange line and shading show where a clump of the chosen mass is Jeans-unstable. **Drag the marker** (it is linked to the numbers in the text) and move the clump-mass slider: a 10⁵ M☉ GMC is unstable almost everywhere cold, while a 0.01 M☉ fragment needs densities beyond $10^{10}$ cm⁻³.
+</Sim>
+
+### Free fall
+
+If pressure loses entirely, how long does collapse take? Consider a uniform, pressureless sphere at rest. Each shell falls as if all the mass inside it were a point mass, so it follows a degenerate Kepler orbit (eccentricity 1) with semi-major axis $R/2$. The time to reach the centre is half that orbit's period, $\tfrac12 \cdot 2\pi\sqrt{(R/2)^3/GM}$. Substituting $M = \tfrac43\pi R^3\rho$, the $R$ cancels:
+
+<KeyEq title="Free-fall time">
+$$
+t_\text{ff} = \sqrt{\frac{3\pi}{32\,G\,\rho}}
+$$
+<Fragment slot="where">$\rho$ is the initial mean density. The free-fall time depends *only* on density, so every shell of a uniform sphere arrives at the centre at the same instant ("homologous collapse"). For $n = 100$ cm⁻³ it is about 3.4 Myr; for a dense core at $10^4$ cm⁻³, about 0.34 Myr.</Fragment>
+</KeyEq>
+
+Real clouds are centrally concentrated, so the inner parts, being denser, collapse first: collapse proceeds **inside-out**. In the singular isothermal sphere model of Frank Shu (1977), a collapse wave moves outward at the sound speed and the protostar accretes at a constant rate $\dot M \approx c_s^3/G \approx 2\times10^{-6}$ M☉ yr⁻¹ at 10 K. That makes a Sun-mass star in half a million years, in line with the observed statistics of protostars.
+
+<Fermi title="The star-formation rate if gravity always won">
+The Milky Way holds about $10^9$ M☉ of molecular gas. At a typical GMC density of 100 cm⁻³, $t_\text{ff}\approx 3$ Myr. If every cloud collapsed in one free-fall time, the Galaxy would form stars at
+$$
+\dot M_\star \sim \frac{10^9\ \text{M}_\odot}{3\times10^6\ \text{yr}} \approx 300\ \text{M}_\odot\ \text{yr}^{-1}.
+$$
+The measured rate is about **1–2 M☉ yr⁻¹**. Star formation is roughly a hundred times slower than free fall. Only ~1% of a cloud's mass turns into stars per free-fall time. Something holds clouds up, or destroys them before they finish: the next two sections are about what.
+</Fermi>
+
+## What holds clouds up?
+
+Thermal pressure alone cannot: a $10^5$ M☉ cloud at 10 K contains thousands of Jeans masses. Two other agents do most of the work.
+
+### Turbulence
+
+Molecular line widths in GMCs are several km/s, ten times the 0.2 km/s thermal sound speed. The motions are **supersonic turbulence**. Larson (1981) found that line width grows with cloud size, $\sigma \approx 0.7\ \text{km s}^{-1}\,(L/1\ \text{pc})^{0.5}$: the scaling expected for supersonic, shock-dominated (Burgers) turbulence, whose velocity power spectrum falls as $P(k)\propto k^{-4}$. On large scales turbulence acts like an extra pressure that raises the effective Jeans mass. On small scales it does the opposite: supersonic flows collide in shocks and compress gas into sheets and filaments, *creating* the dense seeds that then collapse. Turbulence both supports and triggers.
+
+Unsupported turbulence decays in about one crossing time, which is comparable to $t_\text{ff}$. It must be driven: by supernovae and expanding HII regions, by spiral-arm shocks and by the collapse itself, which feeds kinetic energy back into the gas.
+
+<Aside>**The sonic scale.** Because $\sigma \propto L^{1/2}$, there is a scale, ~0.05–0.1 pc, where turbulent motions drop to the sound speed. Below it, cores are quiescent and thermally supported. It is probably no coincidence that this is the size of observed cores and the width of Herschel's filaments.</Aside>
+
+### Magnetic fields and the mass-to-flux ratio
+
+Clouds are threaded by magnetic fields of 10–100 μG, measured through the Zeeman splitting of OH and CN lines and the polarisation of dust emission. Because the gas is slightly ionised, the field is frozen into it: squeezing the cloud squeezes the field lines too, and magnetic pressure $B^2/2\mu_0$ pushes back. Magnetic energy scales like $B^2R^3$, and with the flux $\Phi = \pi R^2 B$ conserved that is $\propto \Phi^2/R$, *exactly the same* $R$-dependence as gravity. So magnetic support does not care how compressed the cloud is. Either the field can hold the cloud or it can't, and the deciding quantity is the **mass-to-flux ratio**:
+
+$$
+\left(\frac{M}{\Phi}\right)_\text{crit} = \frac{1}{2\pi\sqrt{G}} \quad(\text{in Gaussian units}).
+$$
+
+Clouds with $M/\Phi$ below the critical value are *subcritical* and can never collapse as long as flux is frozen. Observations (Crutcher 2012) find most cores are mildly *supercritical*, by a factor of ~2.
+
+### Ambipolar diffusion
+
+Only about one particle in $10^7$ is charged in a dense core, ionised by cosmic rays. The field acts on ions; ions drag on neutrals through collisions. Under gravity, neutrals slowly drift through the ions and the field, a process called **ambipolar diffusion**. The core's mass-to-flux ratio slowly rises until it becomes supercritical and collapses. The diffusion timescale is about ten free-fall times in typical cores. In the 1980s this was the leading explanation for slow star formation; today most researchers think turbulence and feedback matter more, but ambipolar diffusion remains essential for letting mass decouple from flux at small scales, and for the "magnetic braking catastrophe" in disks.
+
+## Fragmentation and the smallest stars
+
+### Hierarchical fragmentation
+
+As a cloud collapses isothermally, its density rises while $T$ stays at ~10 K, because dust and molecular lines radiate compressional heat away faster than it builds up. Since $M_J\propto\rho^{-1/2}$, the Jeans mass *falls* during collapse. A cloud that started with 100 Jeans masses might hold 1,000 of them after its density has grown a hundredfold. Hoyle (1953) pointed out that this lets sub-regions become unstable on their own: the cloud **fragments hierarchically**, clumps into cores, cores into stars.
+
+### The opacity limit
+
+Fragmentation stops when the gas can no longer cool. At densities around $10^{-13}$ g cm⁻³ ($\sim 3\times10^{10}$ cm⁻³) the collapsing fragment becomes opaque to its own infrared radiation. Heat is trapped, the gas turns adiabatic, $T$ rises as $\rho^{\gamma-1}$ with $\gamma\approx 5/3$, and $M_J \propto T^{3/2}\rho^{-1/2}\propto\rho^{1/2}$ starts to *grow*. The minimum fragment mass is set where these two regimes meet. Low (1976) and Rees (1976) estimated it by balancing the compressional heating rate $\sim GM^2/(R t_\text{ff})$ against the maximum rate a blackbody can radiate, $4\pi R^2\sigma T^4$. The result is remarkably insensitive to conditions: **about 0.007–0.01 M☉**, roughly 10 Jupiter masses. It is the floor of the stellar (and brown-dwarf) mass function, and it predicts that "free-floating planetary-mass objects" should exist, which JWST now finds by the dozen in young clusters.
+
+<Aside>**JuMBOs.** In 2023 JWST reported "Jupiter-mass binary objects" in the Orion Nebula Cluster, pairs of ~1 M_Jup objects with no star. If confirmed (follow-up has questioned many of them as background sources), they sit awkwardly below the opacity limit and may have been ejected from disks instead.</Aside>
+
+### The flagship simulation
+
+The simulation below follows all of this with **smoothed-particle hydrodynamics** (SPH): the gas is represented by thousands of particles that carry mass, feel pressure from their neighbours and gravity from everything. The cloud has 100 M☉ in a 0.5 pc radius sphere (mean $n\approx 3\times10^3$ cm⁻³, $t_\text{ff}\approx 0.59$ Myr), seeded with a random supersonic velocity field. The gas is isothermal up to a threshold density, then stiffens as $P\propto\rho^{5/3}$: a stand-in for the opacity limit, placed at far lower density than in nature so that the simulation can resolve it. When gas becomes dense enough, collapsing and a local density peak, it is replaced by a **sink particle**, a point mass that stands for a protostar and swallows gas that falls within its accretion radius.
+
+<Predict question="If you raise the cloud temperature from 10 K to 30 K (same turbulence), how many stars will form?" choices={['About the same', 'More, because hotter gas moves faster', 'Far fewer']} answer={2}>
+The Jeans mass scales as $T^{3/2}$, so tripling $T$ multiplies it by $3^{1.5}\approx5$. A cloud with ~20 Jeans masses at 10 K has only ~4 at 30 K. Thermal pressure smooths out the small turbulent overdensities before they can collapse, so you get a handful of more massive objects instead of a swarm. Temperature is one reason why star formation in the warmer, metal-poor early universe is thought to have produced heavier stars.
+</Predict>
+
+<Sim name="star-formation-collapse" size="wide" minHeight={520}>
+**A turbulent cloud collapses into a small cluster.** Gas brightness traces column density; colour runs from blue (diffuse) through magenta (filaments) to gold (dense cores). Bright points are sink particles (protostars) coloured by mass. Within about one free-fall time, turbulence has swept the gas into **filaments**; these fragment into cores, and sinks switch on along them and then keep accreting, falling towards each other into a cluster. **Try:** drag to rotate, scroll to zoom; set the temperature to 5 K and then 30 K; raise the turbulence to 2 (the cloud is unbound: few stars) or set it to 0 (smooth, global collapse to the centre); add rotation to make a flattened, spinning system. The run is reset whenever you change turbulence, rotation or the particle count. 32k particles give finer filaments but cost four times as much gravity.
+</Sim>
+
+Two things are worth noticing. First, the stars do not form everywhere at once: the densest filaments go first, and the time between the first and last sink is comparable to $t_\text{ff}$. Second, only a modest fraction of the gas (typically 20–40% after 1.5 $t_\text{ff}$ in this simulation, which has no feedback) ends up in stars; the rest is still in the envelope or was flung out by the turbulence. Real clouds do even worse, because stars fight back (see below).
+
+<Hood title="SPH on the GPU">
+Everything runs in WebGPU compute shaders; the CPU only builds the initial conditions and, every eighth frame, reads back a few hundred bytes for the readouts. Each timestep is fourteen dispatches in one compute pass. Units are $G = M_\text{cloud} = R_\text{cloud} = 1$, so positions, velocities (a sound speed of 0.2) and densities (ρ₀ ≈ 0.24, sinks at ~6) are all O(1) numbers and **f32** is comfortable. The one place that needs care is summing many tiny contributions into sink particles, which is done in fixed point (below).
+
+**1. Neighbour search: spatial hashing + counting sort.** SPH needs, for each particle, every particle within $2h$ (the kernel support). A uniform grid with cell size $2h_\text{min}$ is hashed into $T = 65{,}536$ buckets, which handles a cloud whose extent changes by orders of magnitude without a bounding box. Each particle atomically increments its bucket's counter; a three-pass parallel **prefix sum** (scan 1,024 buckets per workgroup, scan the 64 block totals, add back) turns counts into start offsets; a scatter pass copies particles into bucket order, so neighbours are contiguous in memory:
+
+```wgsl
+fn hashCell(c: vec3i) -> u32 {
+  let u = bitcast<vec3u>(c);
+  return ((u.x * 73856093u) ^ (u.y * 19349663u) ^ (u.z * 83492791u)) % (P.T - 1u);
+}
+// count: the atomic's return value is the particle's rank inside its bucket
+let rank = atomicAdd(&grid[hsh], 1u);
+// scan (Hillis–Steele in workgroup memory), then scatter:
+let dst = atomicLoad(&grid[hsh]) + rank;
+```
+
+Because different cells can collide in the hash table, the neighbour loop checks that each candidate really lives in the queried cell (otherwise a bucket visited twice would be counted twice).
+
+**2. Density and pressure.** With the $M_4$ cubic-spline kernel $W(r,h)$ (support $2h$), $\rho_i = \sum_j m\,W(|\mathbf r_i-\mathbf r_j|, h_i)$ and the smoothing length adapts as $h_i = 1.13\,(m/\rho_i)^{1/3}$, which keeps about 48 neighbours. $h$ is clamped to $[h_\text{min}, 3h_\text{min}]$, which bounds the number of cells each particle visits and fixes the resolution limit, the analogue of the Truelove criterion that a simulation must resolve the local Jeans length. The equation of state is barotropic:
+
+```wgsl
+fn pressure(rho: f32) -> f32 { return rho * P.cs2 * (1.0 + pow(rho / P.rhoCrit, 2.0 / 3.0)); }
+```
+
+**3. Forces.** The symmetric SPH momentum equation with Monaghan artificial viscosity (α = 1, β = 2) to capture shocks: $\dot{\mathbf v}_i = -\sum_j m\,(P_i/\rho_i^2 + P_j/\rho_j^2 + \Pi_{ij})\,\nabla W_{ij}$. Gravity is a **tiled direct sum**: each workgroup loads 256 bodies into workgroup memory and every thread accumulates their Plummer-softened pull. That is $O(N^2)$, about $2.7\times10^8$ interactions per step for 16k particles, and together with the neighbour search a full step costs about 3.5 ms at 16k particles on an Apple-silicon laptop GPU (we take two steps per frame by default). Direct summation is simpler and exact compared with a tree or particle-mesh solver, but the reason the particle count stops at 32k.
+
+**4. Timestep.** A single global step, chosen on the GPU with no CPU round trip. Every particle proposes $\Delta t_i = 0.3\,\min\left(h_i/v_{\text{sig},i},\ \sqrt{\epsilon/|\mathbf a_i|}\right)$ (a Courant condition with the viscous signal speed, and an acceleration condition), and the minimum is found with `atomicMin` on the float's bit pattern, which works because positive IEEE floats sort like unsigned integers. A one-thread pass clamps it and advances the clock; the integrator (kick then drift) reads it from the same buffer.
+
+**5. Sinks.** A particle becomes a sink candidate if $\rho > \rho_\text{sink}$, it is the densest among its neighbours, the flow is converging ($\nabla\cdot\mathbf v < 0$), and no sink is nearby. Candidates are appended with an atomic counter and a *single-thread* pass accepts them in turn, which avoids two sinks forming on the same clump in the same step. Gas within the accretion radius that is bound to a sink is absorbed; since WGSL has no float atomics, mass, momentum and mass-weighted position are added as 32-bit **fixed-point integers** (scaled by $2^{30}$ and $2^{27}$, and measured relative to the sink so the numbers stay small), then folded into the sink's centre of mass.
+
+**Limitations.** Global timesteps waste work in the diffuse gas; production codes (GADGET-4, PHANTOM, GIZMO) use hierarchical individual steps, trees for gravity, and radiative transfer and magnetic fields. Our sinks never merge and emit no feedback. And with ~16k particles, each particle is 0.006 M☉, so a sink can only resolve masses above ~0.3 M☉: the simulated "stars" are really small groups and should not be read as an IMF.
+</Hood>
+
+## The initial mass function
+
+When a cloud has finished fragmenting, what masses do its stars have? Remarkably, the answer seems to be nearly the same everywhere we look, from the solar neighbourhood to young clusters to the Galactic centre: the **initial mass function** (IMF), $\xi(M) = dN/dM$.
+
+Edwin Salpeter (1955) found that above about 1 M☉ it is a power law,
+
+$$
+\xi(M) \propto M^{-2.35}.
+$$
+
+With $\alpha = 2.35$ there are about 200 times fewer 10 M☉ stars than 1 M☉ stars. Below ~0.5 M☉ the IMF flattens. **Kroupa** (2001) described it as a broken power law ($\alpha = 1.3$ from 0.08 to 0.5 M☉, $\alpha = 2.3$ above), and **Chabrier** (2003) as a lognormal peaking near 0.2 M☉ joined to a Salpeter tail. The two agree within their uncertainties. Plotted per logarithmic mass interval, the IMF is a broad hump peaking at a few tenths of a solar mass: the typical star is a red dwarf.
+
+<Sim name="star-formation-imf" size="wide" minHeight={400}>
+**Drawing a cluster from the IMF.** Each bar counts sampled stars per dex of mass; lines are the analytic Kroupa, Salpeter and Chabrier forms. **Try:** draw 1,000 stars several times and watch the most massive one jump around (with only a few O stars expected, stochastic sampling matters hugely for small clusters). Then tick **Weight by mass**: the peak moves up, showing where the mass sits. Stars below 1 M☉ are over 90% of the objects but only about half of the mass; stars above 8 M☉, a quarter of a percent by number, hold ~15% of it and do nearly all the feedback.
+</Sim>
+
+Why this shape? The honest answer is that nobody knows for sure. The peak near 0.2–0.5 M☉ plausibly reflects the thermal Jeans mass in dense cores (as we found above), perhaps modified by the heating from the first protostars that raises the local temperature. The power-law tail may reflect the scale-free statistics of turbulent density fluctuations (Padoan–Nordlund, Hennebelle–Chabrier theories), or competitive accretion, in which protostars at the bottom of a cluster's potential well grab more gas (Bonnell and Bate). The striking fact is that the **core mass function** measured by Herschel and ALMA has a similar shape to the IMF, shifted up by a factor of ~3: as if each core turns about a third of its mass into a star.
+
+<Aside>**Is the IMF universal?** Mostly, but maybe not at the extremes. Massive elliptical galaxies show hints of a "bottom-heavy" IMF from spectral features of dwarf stars, and the high-redshift galaxies found by JWST may be easier to explain with a "top-heavy" one. The first (Population III) stars, formed from gas with no metals to cool it, were almost certainly much heavier on average.</Aside>
+
+### Brown dwarfs
+
+Objects below about **0.075 M☉** (≈ 80 Jupiter masses) never get hot enough in their cores to sustain hydrogen fusion: electron degeneracy pressure (see [Chapter 16](/ch/stellar-death/)) halts their contraction first. These **brown dwarfs** burn deuterium briefly (above ~13 M_Jup) and then simply cool for ever, drifting through spectral types M, L, T and Y. They form like stars, from collapsing fragments down to the opacity limit, and are common: surveys of young clusters find roughly one brown dwarf for every two to five stars (the Kroupa form extrapolated down to 0.01 M☉, as in the figure, gives about one object in three), yet they hold only a few percent of the mass.
+
+## From core to star
+
+### The first and second collapse
+
+A collapsing core follows a well-defined sequence first computed by Richard Larson in 1969:
+
+1. **Isothermal collapse.** From $10^4$ to about $10^{10}$ cm⁻³ the gas stays at ~10 K and falls in on the free-fall time, inside-out.
+2. **The first hydrostatic core.** Once the centre becomes opaque, it heats adiabatically and pressure halts the collapse, forming an object of a few AU and ~0.01–0.05 M☉ (the opacity limit again) at a few hundred K. It lives only ~1,000 years while it accretes.
+3. **Second collapse.** At about 2,000 K, molecular hydrogen starts to dissociate. Each H₂ molecule absorbs 4.5 eV to break apart, a huge energy sink, so the effective $\gamma$ drops below 4/3, pressure can no longer keep up with gravity, and the core collapses again, dynamically.
+4. **The second (stellar) core.** Once the hydrogen is dissociated and ionised, collapse stops at stellar densities: a protostar of a few $R_\odot$ and $\sim10^{-3}$ M☉ is born, buried in the envelope it will grow from.
+
+<Aside>**Why the second collapse must happen.** Dissociating all the hydrogen in 1 M☉ costs about $4.5\text{ eV}\times N_{H_2}\approx 4\times10^{39}$ J. Equating this to the gravitational energy $GM^2/R$ gives $R\approx 100\ R_\odot$: the protostar has to shrink until its binding energy pays for the chemistry.</Aside>
+
+### Accretion, disks and jets
+
+The protostar grows from its envelope for ~$10^5$ years. Because the core rotated slightly, and angular momentum is conserved, most infalling gas lands on a **disk** rather than directly on the star. Material spirals through the disk and onto the star, while a fraction is flung outwards along the rotation axis by magneto-centrifugal forces in **bipolar jets** moving at 100–500 km/s. Jets remove angular momentum; without them (and without magnetic braking) the star would spin itself apart. Where the jets slam into the surrounding cloud, they light up shocked knots called **Herbig–Haro objects**, and they sweep up slower, wider molecular outflows seen in CO.
+
+Observers classify young stellar objects by their infrared spectra: **Class 0** (deeply embedded, envelope mass exceeds star), **Class I** (envelope + disk), **Class II** (optically visible star with disk: the classical **T Tauri stars**, variable, with strong emission lines and infrared excess), and **Class III** (disk mostly gone). The ratios of their numbers give lifetimes: roughly 0.1–0.2 Myr for Class 0/I, ~2 Myr for Class II.
+
+<Aside>**Pictures.** ALMA's 2014 image of **HL Tau** showed a disk around a ~1 Myr old star already carved into concentric rings and gaps, likely by forming planets, the story of [Chapter 8](/ch/planet-formation/). JWST's images of HH 211 and HH 212 resolve jets down to individual shock knots, and the 2022 NIRCam view of the **Pillars of Creation** in M16 shows red, jet-launching protostars emerging from the pillar tips.</Aside>
+
+### Pre-main-sequence contraction
+
+Once accretion ends, the young star is still larger than its main-sequence self and shines by **contraction**, releasing gravitational energy. The virial theorem says half of the released energy is radiated and half heats the interior. The timescale is the **Kelvin–Helmholtz time**
+
+$$
+t_\text{KH} \approx \frac{GM^2}{RL}.
+$$
+
+A star of <Var name="khM" value={1} min={0.1} max={30} log /> M☉, radius <Var name="khR" value={2} min={0.2} max={50} log /> R☉ and luminosity <Var name="khL" value={2} min={0.001} max={100000} log /> L☉ has $t_\text{KH}\approx$ <Out name="tKH" />. For the Sun today it would be ~30 Myr, the number that in the 19th century contradicted geologists and Darwin until nuclear energy was discovered ([Chapter 12](/ch/fusion/)).
+
+The path a contracting star takes on the Hertzsprung–Russell diagram depends on how it transports energy ([Chapter 13](/ch/energy-transport/)). A young, cool, opaque star is **fully convective**. Hayashi (1961) showed that fully convective stars cannot be cooler than a limiting temperature of about 3,000–4,500 K, set by the steep temperature-sensitivity of H⁻ opacity in their photospheres. So they contract at nearly *constant temperature*: $L = 4\pi R^2\sigma T^4$ falls as $R^2$, and they move almost vertically down the **Hayashi track**. As the interior heats, opacity drops, a radiative core grows, and stars above ~0.5 M☉ turn left along the **Henyey track**: nearly constant luminosity, rising temperature. Contraction stops when the core reaches ~10⁷ K and hydrogen fusion takes over: the star arrives on the **zero-age main sequence** (ZAMS, [Chapter 14](/ch/main-sequence/)).
+
+<Sim name="star-formation-pms" size="wide" minHeight={440}>
+**Growing up on the HR diagram.** Coloured lines are approximate pre-main-sequence tracks for six masses, from the birthline (dashed, where stars first become visible) to the ZAMS (thick line). Ages come from a Kelvin–Helmholtz integration along each track, so they are good only to a factor of a few (real models give ~40 Myr for 1 M☉). **Press Play** and watch the isochrone (dotted): massive stars sprint to the main sequence in well under a million years (often while still accreting), while a 0.1 M☉ star is still contracting after hundreds of millions. That is why young clusters show a main sequence at the top and a "pre-main sequence" of red, overluminous stars at the bottom.
+</Sim>
+
+## Efficiency, feedback and the galactic view
+
+### Why star formation is inefficient
+
+The Fermi estimate showed star formation runs at ~1% per free-fall time; integrated over a cloud's life, only 1–10% of a GMC's mass ends up in stars (the **star-formation efficiency**). Dense cluster-forming clumps reach 10–30%. The prime suspect is **feedback**: once massive stars form, their ultraviolet light ionises and heats the surrounding gas to 10⁴ K (raising the Jeans mass a million-fold), their radiation pressure and winds blow bubbles, protostellar jets stir the gas, and after 3–10 Myr the first supernovae go off. Clouds are dispersed within a few free-fall times, as observed: in nearby galaxies, PHANGS surveys with ALMA, HST and JWST find that young clusters clear out their parent clouds in only 1–5 Myr.
+
+### The Kennicutt–Schmidt law
+
+Averaged over galaxies, the star-formation rate per unit area tracks gas surface density:
+
+$$
+\Sigma_\text{SFR} \propto \Sigma_\text{gas}^{1.4}.
+$$
+
+Kennicutt (1998) measured this over five orders of magnitude, from spiral disks to starbursts. The exponent 1.4 has a natural reading: if stars form at a fixed efficiency per free-fall time, then $\dot\rho_\star \propto \rho/t_\text{ff}\propto\rho^{3/2}$. Resolved studies find that star formation tracks *molecular* gas almost linearly, with a depletion time $\Sigma_{H_2}/\Sigma_\text{SFR}\approx 2$ Gyr in normal spirals. This relation is the bridge from this chapter to galaxy formation in [Chapter 23](/ch/galaxy-formation/), where subgrid recipes like it stand in for everything we simulated above.
+
+### What we see
+
+The **Orion Nebula**, 400 pc away, is the nearest site of massive star formation: the Trapezium's O stars have blown a blister in the Orion A cloud, and HST and JWST reveal hundreds of protoplanetary disks ("proplyds") being photo-evaporated by them. The **Taurus** cloud, by contrast, forms low-mass stars in isolation, with no O stars at all, and is where most T Tauri stars were first studied. JWST's infrared vision cuts through dust to show the embedded protostars in the Pillars of Creation, in the Cosmic Cliffs of NGC 3324 and in the ρ Ophiuchi cloud, while ALMA's millimetre resolution maps the disks and the infalling, rotating envelopes around Class 0 protostars down to a few AU.
+
+## Where we go from here
+
+We followed gas from a cold cloud to a young star: gravity against pressure (the Jeans mass), the pace of collapse (the free-fall time), the supports that slow it (turbulence and magnetic fields), the cascade of fragmentation down to the opacity limit, the statistical outcome (the IMF), and the long contraction to the main sequence. Two threads continue. The disk left around every young star is where planets form, the subject of the next chapter, [Planet Formation](/ch/planet-formation/). And the star itself, once hydrogen ignites, becomes the self-regulating fusion reactor of Part III, beginning with [Chapter 11](/ch/stellar-structure/).

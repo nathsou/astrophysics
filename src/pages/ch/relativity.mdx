@@ -1,0 +1,355 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: relativity
+lede: Two innocent postulates break absolute time, turn mass into energy, and make the sky of a fast traveller collapse into a single blue-white star. The universe is full of things that move at nearly the speed of light, and we cannot read their light without this chapter.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+
+## Two postulates
+
+Until now, speeds in this course have been small. Planets orbit at tens of km/s. Gas in a stellar interior moves at hundreds. That is $10^{-4}$ of the speed of light, and Newton's mechanics is fine to one part in $10^{8}$. From here on, that changes. The remnants of dead stars in [Chapter 16](/ch/stellar-death/) power jets and winds that move at $0.9c$ and beyond. Particles in pulsar winds reach Lorentz factors of $10^{6}$. The fireballs of gamma-ray bursts expand at $0.99995c$. To interpret any of that light, we need **special relativity** (SR).
+
+Einstein built it in 1905 on two postulates:
+
+1. **The principle of relativity.** The laws of physics are the same in every *inertial frame*, meaning every frame that moves at constant velocity with no rotation. No experiment done inside a sealed, smoothly moving laboratory can tell you how fast it is moving.
+2. **The constancy of the speed of light.** Light in vacuum travels at $c = 299\,792\,458$ m/s in every inertial frame, whatever the motion of its source.
+
+The first postulate was already true of Newtonian mechanics (Galileo's ship). The second is the one that hurts. If I fly past you at $0.5c$ and switch on a torch, Galilean common sense says you measure its light at $1.5c$. Experiment says $c$. Maxwell's equations say $c$. Binary stars say $c$ too. In 1913 Willem de Sitter pointed out that if light from an approaching star moved faster than light from a receding one, the light from eclipsing binaries would pile up, and their orbits would look scrambled. They don't. Modern versions with X-ray binaries limit any dependence of light speed on source speed to less than about 2 parts in $10^9$.
+
+<Aside>**Why the metre is exact.** Since 1983 the metre has been *defined* as the distance light travels in 1/299 792 458 s. The speed of light is not measured any more. It fixes the relationship between our units of length and time. Relativity says those are two directions in one geometry, so a fixed conversion factor makes sense. We will often set $c = 1$ and measure distance in light-years and time in years.</Aside>
+
+If both postulates hold, something else has to give. That something is the idea that time is the same for everyone.
+
+### The light clock
+
+Here is the fastest route to the core result. Build a clock from two mirrors a distance $L$ apart, with a pulse of light bouncing between them. In the clock's own frame, one tick takes $\Delta\tau = 2L/c$.
+
+Now watch the same clock fly past at speed $v$, with the mirrors perpendicular to the motion. In your frame the light travels on a zig-zag. During half a tick, which lasts $\Delta t/2$, the mirror moves sideways by $v\Delta t/2$ while the light covers the hypotenuse. By postulate 2 the light still moves at $c$, so
+
+$$
+\left(\frac{c\,\Delta t}{2}\right)^2 = L^2 + \left(\frac{v\,\Delta t}{2}\right)^2
+\quad\Longrightarrow\quad
+\Delta t = \frac{2L/c}{\sqrt{1 - v^2/c^2}} = \gamma\,\Delta\tau .
+$$
+
+The factor
+
+$$
+\gamma = \frac{1}{\sqrt{1-\beta^2}}, \qquad \beta = \frac{v}{c},
+$$
+
+is the **Lorentz factor**, and it runs through the whole chapter. Moving clocks tick slowly: $\Delta t = \gamma\,\Delta\tau$. This is not an illusion of signal delays, and it is not a quirk of light clocks. By postulate 1, *every* clock must agree with the light clock riding next to it, including atomic clocks, radioactive decay and heartbeats. Otherwise you could tell you were moving.
+
+At everyday speeds, $\gamma \approx 1 + \beta^2/2$. For a jet airliner that is $1 + 4\times10^{-13}$. In 1971 Hafele and Keating flew caesium clocks around the world and measured exactly this, along with a larger gravitational effect we will meet in [Chapter 19](/ch/black-holes/). Your phone's GPS corrects for both every second.
+
+## The Lorentz transformation
+
+Time dilation is one consequence. To get them all, we want the rule that converts the coordinates $(t, x, y, z)$ of an event in frame $S$ into the coordinates $(t', x', y', z')$ in a frame $S'$ moving at speed $v$ along $+x$. The origins coincide at $t = t' = 0$.
+
+### Deriving it
+
+We need three ingredients.
+
+**Linearity.** A free particle moves in a straight line at constant speed in every inertial frame, so the map must send straight lines to straight lines. It must be linear. Motion along $x$ cannot affect $y$ and $z$ (a symmetry argument: otherwise, which way would a perpendicular metre stick shrink?), so $y' = y$ and $z' = z$. That leaves
+
+$$
+x' = A\,x + B\,t, \qquad t' = C\,x + D\,t.
+$$
+
+**The origin of $S'$ moves at $v$.** The point $x' = 0$ is at $x = vt$, so $B = -Av$ and $x' = A(x - vt)$.
+
+**Light is light in both frames.** A pulse leaving the origin at $t = 0$ satisfies $x = ct$, and it must also satisfy $x' = ct'$. The same holds for $x = -ct$. Substituting both gives two equations for $C$ and $D$, with the solution $D = A$ and $C = -Av/c^2$.
+
+**Relativity fixes $A$.** By postulate 1, the inverse transformation (from $S'$ back to $S$) must look the same with $v \to -v$. Composing the two must give the identity. This forces $A^2(1 - v^2/c^2) = 1$, so $A = \gamma$.
+
+<KeyEq title="The Lorentz transformation (boost along x)">
+$$
+\begin{aligned}
+\htmlData{term=tp}{t'} &= \htmlData{term=gam}{\gamma}\left(t - \frac{v\,x}{c^2}\right) \\
+x' &= \htmlData{term=gam}{\gamma}\,(x - v\,t) \\
+y' &= y, \qquad z' = z
+\end{aligned}
+$$
+<Fragment slot="where">$(t, x, y, z)$ are an event's coordinates in $S$. <span data-term="tp">$(t', x', y', z')$</span> are its coordinates in $S'$, which moves at speed $v$ along $+x$ relative to $S$. <span data-term="gam">$\gamma = 1/\sqrt{1 - v^2/c^2}$</span>. For $v \ll c$ this reduces to the Galilean rule $x' = x - vt$, $t' = t$.</Fragment>
+</KeyEq>
+
+The newcomer is the $-vx/c^2$ term in $t'$. It says that the time you assign to an event depends on *where* it is, as well as when.
+
+### Three consequences
+
+**Relativity of simultaneity.** Two events at $t = 0$ in $S$, separated by $\Delta x$, are simultaneous in $S$. In $S'$ they are separated by $\Delta t' = -\gamma v\,\Delta x/c^2$. There is no universal "now". For events light-years apart, this is not a small effect: at $v = 0.5c$, events one light-year apart that are simultaneous in $S$ differ by 0.58 years in $S'$.
+
+**Time dilation.** A clock at rest in $S'$ (fixed $x'$) ticks $\Delta t'$ between events that are $\Delta t = \gamma\,\Delta t'$ apart in $S$. This is the light-clock result again.
+
+**Length contraction.** A rod at rest in $S'$ has length $L_0$. To measure its length in $S$, you must mark both ends *at the same $t$*. The transformation then gives $L = L_0/\gamma$. Moving objects are shortened along their motion. As we will see, that does *not* mean they *look* shortened.
+
+<Aside>**Lorentz before Einstein.** Lorentz and FitzGerald proposed the contraction in the 1890s to explain the null result of the Michelson–Morley experiment. They treated it as a physical squashing of matter moving through the ether. Poincaré had the full transformation group by 1905. Einstein's contribution was to show that it follows from two postulates about *measurement*, with no ether needed.</Aside>
+
+## The geometry of spacetime
+
+Hermann Minkowski, Einstein's former maths teacher, saw in 1908 that all of this is geometry. Draw events on a diagram with $x$ across and $ct$ up. Light rays are the lines at 45°. The worldline of anything slower than light is steeper than 45°.
+
+### The invariant interval
+
+Rotations in ordinary space change $x$ and $y$ but preserve $x^2 + y^2$. Lorentz boosts change $t$ and $x$ but preserve a different combination. You can check with two lines of algebra that
+
+<KeyEq title="The spacetime interval">
+$$
+\Delta s^2 = c^2\Delta t^2 - \Delta x^2 - \Delta y^2 - \Delta z^2 = c^2\,\Delta\tau^2
+$$
+<Fragment slot="where">$\Delta s^2$ is the same in every inertial frame. If $\Delta s^2 > 0$ the separation is **timelike**: some observer can be present at both events, and $\Delta\tau = \Delta s/c$ is the time their clock records between them (the **proper time**). If $\Delta s^2 = 0$ the events can be joined by a light ray (**lightlike**). If $\Delta s^2 < 0$ they are **spacelike**: no signal can connect them, and different observers disagree about their order.</Fragment>
+</KeyEq>
+
+The minus sign changes everything. The set of points at fixed "distance" from the origin is a hyperbola, not a circle. A boost slides events along these hyperbolae, just as a rotation slides points around a circle. It tilts the $ct'$ axis *toward* the light line and the $x'$ axis toward it too, like a pair of scissors closing.
+
+The **light cone** of an event divides spacetime into three regions. Its future cone holds everything the event can influence. Its past cone holds everything that can influence it. Outside the cone is "elsewhere", the spacelike region where the time order depends on the observer. Causality survives because nothing crosses the cone. If a signal could travel faster than light, some observer would see it arrive before it was sent.
+
+<Sim name="relativity-spacetime" size="text" minHeight={520}>
+**A Minkowski diagram you can boost.** The <span style="color:var(--series-1)">blue grid</span> belongs to frame S and the <span style="color:var(--series-2)">second grid</span> to S′. Drag the ring on the ct′ axis (or use the slider) to change β. Watch the axes close like scissors around the dashed light line, which never moves. Drag the event E and see its coordinates in both frames. Put it in the spacelike region and find a β that reverses its time order. The dotted hyperbolae are curves of constant interval; tick "Draw in frame S′" and every event slides along them. Switch to **Twin paradox** to see the proper time on each worldline.
+</Sim>
+
+### Proper time and the twin paradox
+
+The proper time along any worldline is the sum of its intervals:
+
+$$
+\tau = \int \sqrt{1 - \frac{v(t)^2}{c^2}}\;dt = \int \frac{dt}{\gamma(t)} .
+$$
+
+In Euclidean geometry the straight line between two points is the *shortest* path. In Minkowski geometry the minus sign flips this: **the straight (inertial) worldline between two events has the *longest* proper time.** Any detour ages you less.
+
+This is the whole resolution of the twin paradox. One twin stays on Earth. The other flies to a star 3 light-years away at $0.6c$ ($\gamma = 1.25$) and comes back. Earth's clock records 10 years. The traveller's bent worldline records $10/1.25 = 8$ years. The situation is not symmetric: the traveller changes inertial frame at the turnaround, and the stay-at-home twin does not.
+
+The diagram shows *where* the missing time goes. Just before turnaround, the traveller's line of simultaneity reaches Earth at $t = 3.2$ yr. Just after, in the new frame, it reaches Earth at $t = 6.8$ yr. At the turnaround, the traveller's notion of "what Earth is doing now" jumps by 3.6 years. Add the $2\times 3.2 = 6.4$ years that Earth's slow clock accumulates during the two legs, as judged by the traveller, and you recover Earth's 10. Nothing physical happens on Earth. The jump is in the traveller's choice of coordinates. The ages at reunion are unambiguous, and every observer agrees on them.
+
+<Aside>**It has been measured.** In 1977 muons in the CERN storage ring circulated at $\gamma = 29.3$ and lived 29.3 times longer than muons at rest, to 0.1%. These muons feel accelerations of $10^{18}\,g$, which shows that the clock rate depends on speed, not on acceleration.</Aside>
+
+### Muons from the sky
+
+Cosmic-ray protons hit the upper atmosphere at 15 km or so and make showers of pions. The pions decay to muons, which have a mean lifetime of only $\tau = 2.197\,\mu$s, so $c\tau = 659$ m. Naively almost none should reach the ground. Yet about one muon per square centimetre per minute passes through you as you read this.
+
+A muon with energy <Var name="Emu" value={4} min={0.2} max={100} log /> GeV has $\gamma =$ <Out name="muGamma" />. Starting at <Var name="hmu" value={15} min={1} max={30} /> km, a fraction <Out name="muSurv" /> of them survive to sea level. Without time dilation the answer would be <Out name="muNaive" />.
+
+In the muon's own frame, its clock is fine and the *atmosphere* is contracted by $\gamma$. The two descriptions agree on the survival fraction, as they must. The muon flux at sea level was one of the first tests of time dilation (Rossi and Hall, 1941).
+
+## Four-vectors and $E = mc^2$
+
+The interval is a kind of length, so it is natural to package quantities into four-component vectors whose "length" is invariant. The **four-position** is $x^\mu = (ct, \vec x)$. Divide its change by the invariant $d\tau$ and you get the **four-velocity** $u^\mu = \gamma(c, \vec v)$. Multiply by the mass and you get the **four-momentum**:
+
+$$
+p^\mu = m\,u^\mu = \left(\frac{E}{c},\ \vec p\right), \qquad E = \gamma m c^2, \quad \vec p = \gamma m \vec v .
+$$
+
+Why call $\gamma mc^2$ the energy? Expand it for small $v$: $\gamma mc^2 \approx mc^2 + \tfrac12 mv^2 + \tfrac38 mv^4/c^2 + \ldots$. The second term is Newton's kinetic energy. Conservation of $\vec p$ in every frame requires conservation of this whole package, and the constant first term comes along with it. The invariant length of $p^\mu$ gives the most useful equation in high-energy astrophysics:
+
+<KeyEq title="The energy–momentum relation">
+$$
+E^2 = (\htmlData{term=pc}{p c})^2 + (\htmlData{term=mc2}{m c^2})^2
+$$
+<Fragment slot="where">$E$ is the total energy, $p$ the magnitude of the momentum and $m$ the (invariant) rest mass. For a particle at rest, <span data-term="mc2">$E = mc^2$</span>, the rest energy. For a photon, $m = 0$ and <span data-term="pc">$E = pc$</span>. For an ultra-relativistic particle ($E \gg mc^2$), $E \approx pc$ and $\gamma = E/mc^2$. A 10 TeV proton has $\gamma \approx 10^4$.</Fragment>
+</KeyEq>
+
+Photons carry momentum $E/c$, so light exerts pressure. That radiation pressure sets the Eddington limit on the luminosity of accreting objects ([Chapter 19](/ch/black-holes/)) and holds up massive stars. The equation also tells you the threshold for making new particles. For two photons to make an electron–positron pair, their combined invariant mass must exceed $2m_ec^2 = 1.022$ MeV. This process makes GRB fireballs opaque unless they move very fast, as we will see.
+
+### Mass is energy
+
+The rest energy is not bookkeeping. Bind nucleons together and the bound system weighs *less* than its parts. The difference, the **mass defect**, leaves as radiation and neutrinos. In the pp-chain ([Chapter 12](/ch/fusion/)), four protons become one helium-4 nucleus, and 0.7% of the mass disappears:
+
+$$
+4m_p c^2 - m_{\text{He}}c^2 \approx 26.7\ \text{MeV}.
+$$
+
+<Fermi title="How fast is the Sun losing weight?">
+The Sun radiates $L_\odot = 3.8\times10^{26}$ W. Mass-energy leaves at a rate
+
+$$\dot M = \frac{L_\odot}{c^2} = \frac{3.8\times10^{26}}{(3\times10^8)^2} \approx 4\times10^{9}\ \text{kg/s},$$
+
+about four million tonnes per second, which is a Great Pyramid every second. It sounds dramatic. But over 10 billion years it adds up to $1.3\times10^{27}$ kg, less than 0.1% of the Sun's mass. The 0.7% conversion efficiency of hydrogen burning, applied to the 10% of the Sun hot enough to burn, sets the Sun's lifetime of about 10 Gyr. Accretion onto a black hole can convert 6–40% of rest mass to radiation ([Chapter 19](/ch/black-holes/)). That is why quasars outshine galaxies.
+</Fermi>
+
+### Rapidity: velocities that add
+
+Add two speeds of $0.9c$ Galilean-style and you get $1.8c$. The Lorentz transformation gives something else. Compose two boosts, and the velocities combine as
+
+$$
+\beta_{\text{tot}} = \frac{\beta_1 + \beta_2}{1 + \beta_1\beta_2},
+$$
+
+which gives $0.994c$, never more than 1. The formula looks messy until you notice that it is the addition law for the hyperbolic tangent. Define the **rapidity** $\varphi$ by $\beta = \tanh\varphi$. Then $\gamma = \cosh\varphi$, $\gamma\beta = \sinh\varphi$, and
+
+$$
+\varphi_{\text{tot}} = \varphi_1 + \varphi_2 .
+$$
+
+Rapidities simply add. A boost is a hyperbolic rotation by angle $\varphi$, exactly as the diagram suggested. A rocket with constant proper acceleration $a$ gains rapidity at a steady rate, $\varphi = a\tau/c$. At 1 $g$ you would reach $\gamma = 1000$ ($\varphi = 7.6$) in 7.4 years of ship time. Rapidity is also the right variable for computers, as we will see in the flight simulator: near $\beta = 1$, $\beta$ itself runs out of digits, but $\varphi$ does not.
+
+## What a fast observer sees
+
+So far we have asked what is *measured* in a frame: the coordinates of events, assigned with rulers and synchronised clocks. What you *see* is different. What you see is the set of photons that reach your eye at one instant. Those photons left their sources at different times, and they arrive from directions and with frequencies that depend on your motion. Astronomers only ever see. So this section is the part of relativity that telescopes care about.
+
+### Aberration
+
+Rain falling straight down seems to slant toward you when you run. Light does the same. Transform a photon's four-momentum $(E/c)(1, -\hat n)$ from the rest frame of the stars into the frame of an observer moving at $\beta$. Let $\theta$ be the angle between the direction of motion and a star in the stars' frame, and $\theta'$ the angle the observer measures. Then
+
+$$
+\cos\theta' = \frac{\cos\theta + \beta}{1 + \beta\cos\theta}, \qquad
+\sin\theta' = \frac{\sin\theta}{\gamma\,(1 + \beta\cos\theta)} .
+$$
+
+Everything crowds toward the direction of motion. A star at $\theta = 90°$ appears at $\cos\theta' = \beta$, so the whole front hemisphere of the sky is squeezed into a cone of half-angle $\sin\theta' = 1/\gamma$. At $\gamma = 10$, half the sky fits within 5.7° of the point you are heading for.
+
+<Aside>**Bradley, 1727.** James Bradley discovered aberration while trying to measure stellar parallax. Stars trace small ellipses with semi-major axis $\beta_\oplus = v_\oplus/c = 10^{-4}$ rad, or 20.5″, as Earth orbits the Sun. It was the first direct evidence that Earth moves, and the first good measurement of $c$. Gaia corrects for relativistic aberration, including the $\beta^2$ term, to microarcsecond precision.</Aside>
+
+### The relativistic Doppler effect
+
+The time component of the same transformation gives the photon's energy. The observed frequency is $\nu_{\text{obs}} = \delta\,\nu_{\text{emit}}$, with the **Doppler factor** $\delta$:
+
+<KeyEq title="Doppler factor and aberration">
+$$
+\htmlData{term=delta}{\delta} = \frac{1}{\gamma\,(1 - \beta\cos\htmlData{term=thobs}{\theta'})} = \gamma\,(1 + \beta\cos\theta),
+\qquad
+\cos\htmlData{term=thobs}{\theta'} = \frac{\cos\theta + \beta}{1 + \beta\cos\theta}
+$$
+<Fragment slot="where"><span data-term="delta">$\delta$</span> is the ratio of observed to emitted frequency, $\beta = v/c$ is the relative speed and $\gamma$ its Lorentz factor. <span data-term="thobs">$\theta'$</span> is the angle between the relative velocity and the line of sight, measured in the observer's frame, and $\theta$ is the same angle in the source's frame. Head-on, $\delta = \sqrt{(1+\beta)/(1-\beta)} \approx 2\gamma$. Straight behind, $\delta = 1/(2\gamma)$ approximately. The same formula applies whether you move or the source does; only the relative velocity matters.</Fragment>
+</KeyEq>
+
+Two features have no Newtonian counterpart. First, the Doppler effect is asymmetric: at $\gamma = 10$, sources ahead are blueshifted by a factor of 20, while sources behind are redshifted by a factor of 20 as well, since the two factors are reciprocals. Second, there is a **transverse Doppler effect**. A source moving perpendicular to your line of sight ($\theta' = 90°$) has $\delta = 1/\gamma$. That is a pure redshift from time dilation, with no Newtonian analogue. The binary system SS 433 shows it: its two jets at $0.26c$ precess, and the average of their redshifts is a steady $z = 0.036$, which is exactly $\gamma - 1$.
+
+<Aside>**Watch the angle.** In the observer's frame the source at $\theta' = 90°$ is redshifted by $1/\gamma$. In the *source's* frame, photons emitted at $\theta = 90°$ arrive *blueshifted* by $\gamma$. These are different photons, because aberration moves them. Many textbook contradictions come from mixing up the two angles.</Aside>
+
+### Beaming and the invariance of $I_\nu/\nu^3$
+
+How bright does a moving source look? The cleanest route uses one of the deep facts of radiative transfer: the specific intensity divided by $\nu^3$ is a Lorentz invariant,
+
+$$
+\frac{I_\nu}{\nu^3} = \text{invariant}.
+$$
+
+It is (up to constants) the photon occupation number in phase space, and phase-space density is the same in every frame. Integrate over frequency and the bolometric intensity scales as $I \propto \delta^4$. Apply it to a blackbody, $I_\nu = B_\nu(T)$, and you find that a Doppler-shifted blackbody is *exactly* another blackbody, at temperature $\delta T$. That is how we know the CMB dipole is our motion: in the direction of Leo we see the 2.7255 K background hotter by 3.36 mK, a Doppler factor of $1 + 0.00123$, or 370 km/s.
+
+The flux from an unresolved source depends on what is moving and how you count. For a steady point source seen by a moving observer, intensity goes as $\delta^4$ but the source's solid angle shrinks by $\delta^{-2}$, so the flux scales as $\delta^{2}$ in bolometric terms. For a blob of plasma moving toward you, there is an extra factor $\delta$ from the compression of arrival times, and the flux density at a fixed observed frequency picks up a factor $\delta^{\alpha}$ from the spectrum ($F_\nu \propto \nu^{-\alpha}$). The standard results are
+
+$$
+S_\nu \propto \delta^{3+\alpha}\ (\text{discrete blob}) \quad\text{or}\quad \delta^{2+\alpha}\ (\text{steady jet}),
+$$
+
+with an extra power when the radiating region is counted per unit length. Either way, the forward lobe is devastating. At $\delta = 20$, $\delta^{3.7} \approx 6\times10^4$. A counter-jet at $\delta = 1/20$ is dimmed by the same factor.
+
+<Sim name="relativity-beaming" minHeight={460}>
+**Aberration and beaming for a moving source.** On the left, the source emits one ray every 15° in its own frame; the rays are drawn at the angles they have in the lab. <span style="color:var(--series-1)">Forward</span> rays pile into a cone of half-angle about 1/γ, and even the <span style="color:var(--series-3)">backward-emitted</span> ones swing forward. The shaded lobe is the relative brightness $\delta^p$. On the right, $\delta(\theta)$ and $\delta^p$ on a log scale. Note the transverse point at 90°, where the source is *redshifted* by 1/γ, and the angle where δ = 1. Slide γ from 1 to 300 and change the boost exponent.
+</Sim>
+
+### Penrose–Terrell rotation: you cannot see the contraction
+
+If a cube flies past at $0.9c$, is it *seen* squashed to 44% of its length? In 1959 James Terrell and Roger Penrose independently showed that it is not. Light from the far side of the cube left earlier than light from the near side, when the cube was at a different place. That time-of-flight effect stretches the image by just the amount the contraction shrinks it. For a small object, the net result is that a moving sphere still looks like a sphere, with a circular outline, and a moving cube looks *rotated*, as if you were seeing a bit of its back face. In the language of this section, the object's appearance is just the aberration map applied to its rest-frame appearance, and aberration is a conformal map of the sky: it preserves small angles and shapes. It moves and magnifies things, but it does not squash them. Contraction is real, but it is a statement about simultaneous measurements, and a photograph is not a simultaneous measurement.
+
+## A flight through the stars
+
+Now combine aberration, Doppler shift and beaming into one image. The next figure places you in a ship moving along $+x$ through a static field of stars. Each star is a blackbody with a spectral type from M to O. What you see is the result of three transformations applied to every star:
+
+- **Aberration** moves it to its observed direction $\theta'$.
+- **Doppler** shifts its temperature to $\delta T$, which changes its colour, and moves some of its light out of the visible band.
+- **Beaming** changes its bolometric flux by $\delta^2$.
+
+The background is the cosmic microwave background at 2.7255 K, treated the same way: its temperature ahead is $2\gamma$ times larger.
+
+<Predict question="You fly at γ = 1000. Looking straight ahead, in visible light, what dominates the view?" choices={['The stars, piled up and boosted into a blue-white point', 'The cosmic microwave background, boosted into a small dazzling disc', 'Nothing: everything is shifted into X-rays']} answer={1}>
+Ahead, $\delta \approx 2000$. A 5000 K star becomes a 10-million-kelvin blackbody that radiates almost entirely in X-rays. In the visible, we sit far on its Rayleigh–Jeans tail, where the band flux grows only as $\delta T$, while the fraction of bolometric flux in the visible band falls as $(\delta T)^{-3}$. The net visible flux per star falls roughly as $1/\delta$ despite the $\delta^2$ beaming. Meanwhile the CMB ahead is at $2.7\,\text{K}\times2000 \approx 5500$ K: a patch of sky about 0.2° across now glows with the surface brightness of the Sun. Unlike the stars, the CMB fills the sky, so its surface brightness grows as $\delta^4$ with nothing to dilute it. At moderate speeds ($\gamma \sim 3$–$10$) the first answer is right. Try both in the simulator; the γ = 1000 preset zooms in to a 1° field so you can see the disc.
+</Predict>
+
+<Sim name="relativity-flight" size="full" minHeight={560}>
+**Relativistic flight.** Drag to look around. Slide the rapidity φ (β = tanh φ): by β ≈ 0.9 the stars have crowded ahead into a bluish, brightened patch, and the sky behind has grown sparse, dim and red. Use the toggles to switch off aberration, Doppler colour or beaming one at a time and see which one does what. "Look sideways" at high γ shows almost nothing: the side of the sky has emptied into the patch ahead. The γ = 1000 preset zooms to a 1° field, where the cosmic microwave background has become a dazzling disc and the stars have faded into the ultraviolet. Turn on the lamp-post lattice to see straight beams curve under aberration. The small rings mark the directions straight ahead and straight behind. If the picture is too dark or too bright, change the exposure.
+</Sim>
+
+A few things to notice as you fly:
+
+- At $\beta = 0.5$ the effect is already obvious: $\delta$ ahead is 1.73. The sky ahead is a little denser, bluer and brighter.
+- At $\gamma = 10$ the whole forward hemisphere is inside 5.7°. The rest of the sky is lit by what used to be *behind* you, heavily redshifted. Many cool stars there drop out of the visible band completely.
+- With **Doppler colour** switched off, the stars ahead get brighter but keep their colours. With **beaming** switched off, they get bluer and, ahead, *dimmer*, because the light has moved into the ultraviolet. With **aberration** switched off, the stars stay where they are but their colours and brightness are still anisotropic. (A 1970s poster popularised a "starbow", a rainbow ring around the direction of flight. The full calculation, which this simulator does, gives no ring: just one bright patch whose colour changes smoothly outward.)
+
+<Hood title="rendering the relativistic sky on the GPU">
+**Per-source work in the vertex shader.** Each star is one instance of a 4-vertex triangle strip. The vertex shader reads the star's rest-frame direction, temperature and bolometric flux from a storage buffer, applies aberration and Doppler, projects the observed direction onto the screen, and emits a Gaussian sprite whose integral equals the star's flux. The sprites are added into a half-float (`rgba16float`) HDR target. There is no per-frame CPU work proportional to the number of stars, so 524k stars cost one draw call. Stars live at infinity, so only their direction matters. Lattice lamps have a finite position, which is wrapped periodically around the observer.
+
+**Per-pixel work for the background.** The CMB is a diffuse field, so it is computed per pixel in the composite pass. That pass runs the transformation backwards: from the pixel's *observed* direction it computes $\delta = 1/\gamma(1-\beta\cos\theta')$, then the observed temperature $2.7255\,\text{K}\times\delta$ and the surface brightness. A diffuse blackbody field stays a blackbody under a boost, so this is exact, not an approximation.
+
+**Colour as temperature.** A Doppler-shifted blackbody is a blackbody at $\delta T$, so colour needs only a lookup. On the CPU we tabulate, for $\log_{10} T$ from 0 to 9, the CIE-weighted visible spectrum *per unit bolometric flux*, converted to linear sRGB (512 entries). The shader multiplies that by the bolometric flux times $\delta^2$. The table falls off steeply at both ends, so a star shifted into the X-rays or into the far infrared fades from the image on its own. No special-casing is needed for "out of the visible band".
+
+**Intensity and tone mapping.** Brightness varies over more than ten orders of magnitude: $\delta^2$ alone reaches $4\times10^6$ at $\gamma = 1000$. The accumulation happens in linear HDR. Each sprite's peak is clamped at 64 so that a half-float (max 65 504) cannot overflow when 50 000 boosted stars pile onto the same pixels. The composite pass applies exposure, the tone curve $1 - e^{-x}$ and the sRGB transfer function by hand. Sprite size grows only logarithmically with brightness. This prevents the fragment cost from exploding when every star crowds into the forward patch.
+
+**f32 and the $\beta \to 1$ problem.** In single precision, $\beta = 0.9999995$ is stored as $0.99999952$ with a relative spacing of $6\times10^{-8}$, so $1-\beta = 5\times10^{-7}$ carries only about three significant bits, and $1 - \beta\cos\theta$ is worse. The fix is never to form a small difference on the GPU. The CPU holds the rapidity $\varphi$ in f64 and uploads $\gamma = \cosh\varphi$ and $1 - \beta = 2/(e^{2\varphi}+1)$ as separate numbers. The shader then rewrites every cancelling expression in terms of quantities that are computed accurately:
+
+```wgsl
+// Rest-frame direction n → observed direction n′ (xyz) and Doppler factor δ (w).
+fn aberrate(n: vec3f) -> vec4f {
+  let v = u.vel.xyz;
+  let beta = u.vel.w;
+  let gamma = u.kin.x;
+  let mu = dot(n, v);
+  let w = n + v;
+  let a = u.kin.y + beta * 0.5 * dot(w, w);   // 1 + βμ = (1−β) + β(1+μ), with 1+μ = |n+v̂|²/2
+  let perp = n - mu * v;                      // component ⟂ to the motion (exact)
+  let np = ((mu + beta) / a) * v + perp / (gamma * a);
+  return vec4f(normalize(np), gamma * a);     // δ = γ(1 + βμ)
+}
+```
+
+Two tricks do the work. $1 + \mu$ for stars behind you (where $\mu \to -1$) is computed as $|\hat n + \hat v|^2/2$, which has no cancellation. And the observed direction is built from its *perpendicular* component $\vec n_\perp/\gamma(1+\beta\mu)$, which is exactly what the perspective projection divides. The parallel component $\cos\theta'$ is then within an ulp of 1 for the whole forward patch, but that does not matter. For the same reason the slider moves in rapidity rather than in $\beta$: equal slider steps are equal "boosts", and the top of the range ($\gamma = 1000$) is as easy to reach as $\beta = 0.5$.
+
+**Cost.** The work is $O(N)$ vertex invocations plus fill proportional to the sprite area. At 131k stars this is well under 2 ms on an M1-class GPU. The composite pass is one fragment per pixel.
+</Hood>
+
+## Relativity in the sky
+
+Special relativity is not an exotic correction in high-energy astrophysics. It is the first thing you apply.
+
+### Gamma-ray bursts: Γ in the hundreds
+
+A long gamma-ray burst releases around $10^{44}$ J of gamma rays in tens of seconds. Its light curve flickers on timescales $\delta t \sim 10$ ms. Causality says the emitting region can be no bigger than $c\,\delta t \approx 3000$ km. Pack that much energy into so small a region, and photon pairs above the 1.022 MeV threshold would make electron–positron pairs so copiously that the fireball would be opaque. We would see a thermal flash, not the observed non-thermal spectrum stretching to GeV energies. This was called the **compactness problem**.
+
+Relativity resolves it in two ways. A shell moving toward us at Lorentz factor $\Gamma$ chases its own light. Light emitted when the shell was at radius $R_1$ and at $R_2$ arrives separated by only $\Delta t_{\text{obs}} \approx (R_2 - R_1)/(2\Gamma^2 c)$. So the size of the region is $R \sim 2\Gamma^2 c\,\delta t$, not $c\,\delta t$. And in the shell's frame, the photons are softer by a factor $\Gamma$, so fewer of them can make pairs.
+
+A jet with <Var name="Gam" value={300} min={2} max={1000} log /> has an emission cone of half-angle $1/\Gamma =$ <Out name="grbCone" />, and compresses arrival times by $2\Gamma^2 =$ <Out name="grbComp" />. A variability time of <Var name="dtv" value={10} min={0.1} max={1000} log /> ms then implies an emitting radius of about <Out name="grbR" />.
+
+Fitting the observed spectra requires $\Gamma \gtrsim 100$ and, in Fermi-LAT bursts, $\Gamma$ of several hundred to 1000. Beaming has another consequence. We see only bursts whose jets point within about $1/\Gamma$ of us, so most GRBs are invisible to us, and the true rate is tens to hundreds of times higher than the observed rate. The energetics shrink by the same factor. GW170817, the neutron-star merger seen by LIGO–Virgo in 2017, gave a spectacular test: its jet was seen about 20° off-axis, and its afterglow rose slowly as the jet decelerated and its beaming cone widened to include us.
+
+### Blazars and Doppler boosting
+
+An active galactic nucleus ([Chapter 23](/ch/galaxy-formation/)) can launch a pair of jets at $\Gamma \sim 10$–$30$. If one points nearly at us, we see a **blazar**: a source whose flux is dominated by the jet, variable on timescales of minutes, and bright from radio to TeV gamma rays. For a blob with Doppler factor <Var name="dop" value={15} min={1} max={50} log /> and spectral index <Var name="alpha" value={0.7} min={0} max={1.5} />, the flux is boosted by $\delta^{3+\alpha} =$ <Out name="boost" /> compared with the same blob at rest.
+
+The same factor, in reverse, hides the counter-jet. The ratio of approaching to receding jet brightness is $[(1+\beta\cos\theta)/(1-\beta\cos\theta)]^{2+\alpha}$, which easily exceeds 1000. Most powerful radio sources look one-sided for this reason, not because they have only one jet.
+
+<Aside>**Minutes, not years.** The blazar PKS 2155−304 has doubled its TeV brightness in about 3 minutes. Light-crossing arguments would limit the source to smaller than the black hole's event horizon, unless $\delta \gtrsim 50$. Doppler factors that large are still debated.</Aside>
+
+### Synchrotron radiation
+
+Relativistic electrons spiralling in magnetic fields make **synchrotron radiation**, the dominant non-thermal emission of the universe: radio galaxies, supernova remnants, pulsar wind nebulae, GRB afterglows. Relativity shapes its spectrum. A non-relativistic electron gyrating at frequency $\nu_g = eB/2\pi m_e$ ($2.8$ MHz per gauss) radiates at $\nu_g$, like a dipole antenna. A relativistic electron beams its radiation into a cone of width $1/\gamma$ that sweeps past us once per orbit. We receive a brief pulse, shortened by another factor of $\gamma^2$ by the same arrival-time compression as the GRB shell. The spectrum peaks near
+
+$$
+\nu_c \approx \tfrac32\,\gamma^2\,\nu_g \sin\alpha .
+$$
+
+An electron with $\gamma =$ <Var name="gsync" value={10000} min={10} max={1e8} log /> in a <Var name="Bsync" value={10} min={0.1} max={1e9} log /> μG field radiates near <Out name="nuSync" />. With the interstellar field of a few μG, GeV electrons make radio waves. To make the Crab Nebula's X-rays in its field of a few hundred μG you need $\gamma \sim 10^{7}$–$10^{8}$, electrons of 5–50 TeV. A power-law distribution of electron energies gives the power-law radio spectra, $F_\nu \propto \nu^{-\alpha}$ with $\alpha \approx 0.7$, that appeared in the blazar formula above.
+
+### Superluminal motion
+
+Radio interferometers watching the blobs in quasar jets find them moving across the sky at up to $50c$ in apparent speed. This is not a violation of relativity. It is another time-of-flight effect. A blob moving at $\beta$ at angle $\theta$ to the line of sight has an apparent transverse speed
+
+$$
+\beta_{\text{app}} = \frac{\beta\sin\theta}{1 - \beta\cos\theta},
+$$
+
+which has a maximum of $\gamma\beta$ at $\cos\theta = \beta$. Observing $\beta_{\text{app}} = 10$ tells you that $\gamma \ge 10$. [Chapter 23](/ch/galaxy-formation/) takes this up with the jets themselves.
+
+## From here to gravity
+
+Special relativity handles every inertial frame and every speed. It fails in one place: gravity. Newton's gravity acts instantly at a distance, which is inconsistent with a light cone. Einstein's route out started with a thought he called the happiest of his life. A person falling freely from a roof does not feel their own weight. In a freely falling laboratory, everything floats. Locally, gravity is indistinguishable from acceleration: this is the **equivalence principle**. It holds to 1 part in $10^{15}$ (the MICROSCOPE satellite, 2022).
+
+If freely falling frames are the local inertial frames, then special relativity holds in each small freely falling laboratory. But the laboratories at different places fall in different directions, and they cannot be stitched into one global inertial frame. Gravity becomes the *curvature* of spacetime, and the invariant interval of this chapter becomes a position-dependent metric, $ds^2 = g_{\mu\nu}\,dx^\mu dx^\nu$. Clocks deeper in a potential run slow, light bends and the proper time along worldlines is still what clocks measure. The straight worldlines of maximum proper time become **geodesics**. In [Chapter 18](/ch/neutron-stars/) the tools of this chapter meet matter so dense that $GM/Rc^2 \approx 0.2$. In [Chapter 19](/ch/black-holes/) we will use the Schwarzschild metric to follow geodesics down to the photon sphere and the event horizon, and fly a camera past a black hole, with the same aberration and Doppler machinery you have just seen, plus curved light rays.

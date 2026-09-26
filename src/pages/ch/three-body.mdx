@@ -1,0 +1,233 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: three-body
+lede: Add one more body to Kepler's tidy two-body clockwork and the exact solutions vanish. What is left is chaos, five special parking spots, and free rides across the solar system.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+
+## No more clockwork
+
+[Chapter 2](/ch/orbits/) solved the two-body problem completely: any two masses orbiting under gravity trace a conic section, forever, exactly. Add a third body and that certainty disappears. There is no formula — no finite combination of algebraic functions, trig functions and integrals — that gives the positions of three mutually gravitating bodies as a function of time, except in a few special configurations we'll meet below.
+
+This is not a failure of cleverness. Henri Poincaré proved it in the 1890s, while chasing a prize offered by King Oscar II of Sweden for solving the *n*-body problem and settling whether the solar system is stable. Poincaré showed that the three-body problem is **non-integrable**: it does not have enough independent conserved quantities to reduce it to quadratures the way the two-body problem reduces to energy and angular momentum. Concretely, when he looked at the Poincaré section of the restricted three-body problem (a slice through phase space, sampled once per period), he found that trajectories don't sit on smooth curves. They wander over regions with an intricate, tangled structure — homoclinic tangles — that repeats at every scale. He had discovered deterministic chaos 70 years before the word existed, and it cost him the tidy formula he was looking for. His memoir on the subject is often cited as the founding document of chaos theory.
+
+<Aside>**A prize essay with an erratum.** Poincaré's original 1889 prize memoir claimed the solar system's stability could be proven. A referee, Edvard Phragmén, asked for clarification of one step; while preparing it, Poincaré found the step was wrong and the conclusion false. He had to buy back and destroy the printed copies of the first version at his own expense — a costly but historic correction.</Aside>
+
+Two conserved quantities survive intact from the two-body case: total energy and total angular momentum of the three-body system (ten integrals in general, from the ten symmetries of space and time — but that is still short of what's needed for full integrability with 18 phase-space dimensions). What replaces an exact solution is: special exactly-solvable configurations (a handful of periodic orbits, covered below), an enormous body of perturbation theory for near-Keplerian cases like planets and moons, and — filling in everywhere else — numerical integration and the mathematics of chaos: sensitive dependence, Lyapunov exponents and KAM theory. This chapter builds all three.
+
+## The circular restricted three-body problem
+
+The cleanest way into three-body dynamics keeps two bodies ("primaries") on a circular orbit around each other and asks how a third, massless test particle — a spacecraft, an asteroid, a grain of dust — moves in their combined field. This is the **circular restricted three-body problem** (CR3BP): restricted because the third body is a test particle that doesn't perturb the primaries back, circular because the primaries' mutual orbit is a circle. It captures most of the phenomena people mean by "three-body dynamics" — Lagrange points, Trojans, transfer orbits — while staying tractable enough to draw.
+
+### Choosing units, choosing a frame
+
+Normalise so the total mass is 1, the primaries' separation is 1, and Newton's constant is such that their orbital angular velocity is $\omega = 1$ (so their period is $2\pi$). Call the mass ratio $\mu = m_2/(m_1+m_2)$, with $0 < \mu \le 1/2$. In these units the heavier primary (mass $1-\mu$) sits at $(-\mu, 0)$ and the lighter one (mass $\mu$) at $(1-\mu, 0)$ — that placement puts the origin at the centre of mass.
+
+The trick that makes this problem drawable is to **work in the frame that rotates with the primaries**, at angular velocity $\omega=1$, so both primaries sit still. The price is two fictitious forces: centrifugal and Coriolis. The benefit is enormous — the primaries stop moving, and the remaining physics has a *time-independent* structure.
+
+<Aside>**Why the rotating frame helps.** In the inertial frame nothing is static: primaries orbit, the potential changes every instant, and there is no conserved "energy" for the test particle (the primaries do work on it as they move). In the rotating frame the geometry is frozen, which is exactly what makes an effective potential and a conserved Jacobi constant possible — the same move as substituting to centre-of-mass coordinates in Chapter 2, one level up.</Aside>
+
+### The effective potential
+
+In the rotating frame, Newton's second law for the test particle at $(x,y)$ picks up centrifugal and Coriolis terms:
+
+$$
+\ddot x - 2\dot y = \Omega_x, \qquad \ddot y + 2\dot x = \Omega_y,
+$$
+
+where subscripts denote partial derivatives and $\Omega$ is the **effective potential**: ordinary gravity from both primaries, plus the centrifugal potential $\tfrac12(x^2+y^2)$ that accounts for working in a spinning frame.
+
+<KeyEq title="Effective (centrifugal) potential, CR3BP">
+$$
+\Omega(x,y) = \frac{1}{2}\left(x^2+y^2\right) + \frac{1-\mu}{r_1} + \frac{\mu}{r_2}
+$$
+<Fragment slot="where">$r_1 = \sqrt{(x+\mu)^2+y^2}$ and $r_2 = \sqrt{(x-1+\mu)^2+y^2}$ are distances to the two primaries. The $\tfrac12(x^2+y^2)$ term is not real gravity — it is the centrifugal "hill" that appears because the frame is rotating, and it grows outward without bound, unlike any real potential.</Fragment>
+</KeyEq>
+
+The Coriolis force $-2\vec\omega\times\vec v$ (the $\mp 2\dot y, \mp2\dot x$ terms) does no work — it's always perpendicular to the velocity — so it doesn't appear in the potential, but it still shapes every trajectory that isn't purely radial: it's the reason orbits in this frame curl and loop rather than falling straight down potential gradients.
+
+### The Jacobi constant and Hill regions
+
+Dot the equations of motion with velocity and integrate. The centrifugal and gravity terms combine into a conserved quantity, the **Jacobi constant**, and the Coriolis term drops out (it's perpendicular to $\vec v$, hence does no work):
+
+<KeyEq title="Jacobi constant">
+$$
+C_J = 2\,\Omega(x,y) - \left(\dot x^2+\dot y^2\right)
+$$
+<Fragment slot="where">$C_J$ is conserved along any trajectory of the CR3BP — it is the closest thing to an "energy" this problem has (it is, in fact $-2E$ in the rotating frame). Because $\dot x^2+\dot y^2 \ge 0$, a particle can only reach points where $2\Omega(x,y) \le C_J$.</Fragment>
+</KeyEq>
+
+Set $\dot x=\dot y=0$ and you get the **zero-velocity curve** $2\Omega(x,y)=C_J$: the boundary of where a particle with that $C_J$ can possibly go. Regions enclosed by these curves are called **Hill regions**. For very negative $C_J$ (i.e. very large $\Omega$, meaning the particle is fast or, equivalently, allowed everywhere), the whole plane is accessible. For large $C_J$, the accessible region splits into an island hugging each primary plus an outer region beyond both — and the neck connecting them pinches shut exactly at the five equilibrium points of $\Omega$, which is where we're headed next. This is precisely the escape/no-escape distinction Hill used in 1878 to bound how far the Moon's orbit could be perturbed by the Sun — the same reasoning underlies the Hill sphere below.
+
+## The five Lagrange points
+
+The equilibria of $\Omega$ — points where $\Omega_x=\Omega_y=0$, so a particle placed there at rest (in the rotating frame) stays there — are the five **Lagrange points**, found by Joseph-Louis Lagrange in 1772 for the general three-body problem, well before the restricted problem was formalised.
+
+### The collinear points: L1, L2, L3
+
+Three of the five sit on the line joining the primaries ($y=0$), where the condition $\Omega_x=0$ reduces to a quintic equation with no closed form. But when $\mu$ is small (a planet or moon much lighter than its primary), there's a beautiful approximate closed form. Balance the secondary's gravity against the *differential* pull of the primary and the centrifugal term over a small offset $r$ from the secondary, and the leading balance gives:
+
+<KeyEq title="Hill-radius scaling of L1 / L2">
+$$
+r_H \approx a\left(\frac{\mu}{3}\right)^{1/3}, \qquad L_1 \approx a - r_H,\ \ L_2 \approx a + r_H
+$$
+<Fragment slot="where">$a$ is the primaries' separation, $\mu$ the (small) mass ratio, and $r_H$ the **Hill radius** — measured from the *secondary*, not the barycentre. $L_1$ sits just inside the secondary (sunward), $L_2$ just outside (anti-sunward). Both scale as $\mu^{1/3}$: the secondary's gravity only has to fight the tidal stretching of the primary over a *small* patch to win, so the patch shrinks slowly, as a cube root, not linearly with $\mu$.</Fragment>
+</KeyEq>
+
+For the Earth ($\mu_\oplus = 3.0\times10^{-6}$ relative to the Sun), $r_H \approx 0.01$ AU $\approx 1.5$ million km. A mass ratio of <Var name="muL2" value={0.000003003} min={0.0000005} max={0.01} log digits={4} /> puts the Sun–Earth L2 point <Out name="l2dist" /> beyond Earth, on the night side — which is exactly why [JWST](https://webb.nasa.gov) parks there: a small station-keeping budget, a permanently sunward-facing sunshield, and an unobstructed view of the sky away from the Sun. Drag the number and watch the distance follow the cube root.
+
+$L_3$ sits on the far side of the primary, at $x \approx -a(1 + 5\mu/12)$ — almost a mirror image of the secondary's orbit, offset slightly outward because the secondary's own mass shifts the effective centre of gravity.
+
+<Sim name="three-body-lagrange-scale" minHeight={220}>
+**L1 and L2 versus mass ratio.** The shaded band is the Hill sphere, $\pm r_H$ around the secondary. Switch between real systems — Sun–Earth (where the readout matches JWST's actual halo-orbit distance), Earth–Moon, Sun–Jupiter — or drag the mass-ratio slider continuously and watch $L_1$ and $L_2$ scale as $\mu^{1/3}$.
+</Sim>
+
+All three collinear points are **saddle points** of $\Omega$ (a maximum along the line, a minimum perpendicular to it), and saddle points of an effective potential are never linearly stable in a system with Coriolis forces either — a small push grows exponentially, on a timescale of days to weeks for the Sun–Earth points. Real missions at L1/L2 (SOHO, Gaia, JWST) fly small, actively corrected **halo orbits** — three-dimensional loops around the point, invisible from the potential picture alone because they rely on the point's genuinely unstable, saddle-like dynamics rather than sitting still.
+
+### The equilateral points: L4 and L5
+
+The other two Lagrange points are not near either primary at all. Because the centrifugal and gravitational accelerations both scale in a way that exactly balances at the third vertex of an *equilateral* triangle with the two primaries — a fact special to the inverse-square law — $L_4$ and $L_5$ sit at
+
+$$
+L_4 = \left(\tfrac12-\mu,\ \tfrac{\sqrt3}{2}\right), \qquad L_5 = \left(\tfrac12-\mu,\ -\tfrac{\sqrt3}{2}\right),
+$$
+
+exactly $60°$ ahead of and behind the secondary on its orbit, at the *same* distance $a$ from both primaries — independent of $\mu$. Unlike the collinear points, these are local **maxima** of $\Omega$ (a hilltop, not a saddle) — and yet, remarkably, they can be stable, because the Coriolis force turns a small displacement into a bounded, elliptical loop around the peak rather than letting it slide away.
+
+<KeyEq title="Routh's stability criterion">
+$$
+\mu < \mu_c = \frac{1}{2}\left(1-\sqrt{\frac{23}{27}}\right) \approx 0.0385
+$$
+<Fragment slot="where">Edward Routh derived this in 1875. Below $\mu_c$, linearised motion near $L_4$/$L_5$ is a superposition of two bounded oscillations (periods of order the orbital period and a much longer, slow libration). Above $\mu_c$, one mode grows exponentially and the point is unstable.</Fragment>
+</KeyEq>
+
+Every planet-star system in the solar system has $\mu \ll \mu_c$ — even Jupiter, the heaviest planet, gives $\mu_{\text{Sun-Jup}} = 9.5\times10^{-4}$ — so $L_4$/$L_5$ are stable throughout. A mass ratio of <Var name="muStab" value={0.02} min={0.0001} max={0.5} log digits={4} /> makes $L_4$/$L_5$ <Out name="l45stable" />: drag past $\mu\approx0.0385$ and stability switches off. The Pluto–Charon system, with $\mu\approx0.12$, is comfortably past that threshold — its equilateral points, if anything sat there, would not stay.
+
+<Fermi title="How far are Jupiter's Trojans from the Sun–Jupiter L4 point, exactly?">
+They aren't exactly *at* L4 — real Trojans librate in tadpole-shaped loops around it, tens of degrees wide and covering a good fraction of an AU, precisely because $L_4$ is a stable equilibrium rather than a point they're glued to. NASA's *Lucy* mission (launched 2021) is threading a single spacecraft trajectory through several of them — the L4 swarm (ahead of Jupiter) and the smaller L5 swarm (behind) — because they're spread over such a wide region that one flyby sequence can visit many.
+</Fermi>
+
+## The flagship: a CR3BP sandbox
+
+<Predict question="A test particle starts exactly at rest on the L1 point between the Earth and Moon. What happens?" choices={['It stays there forever', 'It drifts off very slowly, in a spiral that takes centuries', 'It moves away within days, accelerating exponentially at first', 'It falls straight into the Moon']} answer={2}>
+L1 is a saddle point of the effective potential, and Coriolis forces don't change that fact — they only turn the *unstable* direction into a spiral rather than a straight line. Any perturbation (and there is always a perturbation — numerical roundoff will do) grows exponentially, with an e-folding time of days for the Earth–Moon system. This is why real halo orbits at L1/L2 need station-keeping: no natural trajectory sits there for free.
+</Predict>
+
+<Sim name="three-body-cr3bp" size="wide" minHeight={520}>
+**The rotating-frame effective potential**, contoured, with the three zero-velocity curves through L1/L2/L3 emphasised. **Drag anywhere** to launch a test particle: the drag vector sets its rotating-frame velocity. Try the preset buttons — a **tadpole** orbit librating around L4, a **horseshoe** that swings past L3 to avoid ever catching the secondary, an **L1 transfer**, and a genuinely **chaotic** trajectory that hops between the primary's and secondary's Hill regions through the L1 neck. The mass-ratio slider retunes the whole geometry; the frame toggle shows the same orbit as seen from outside, in the non-rotating inertial frame, where "stationary" Lagrange points become points sweeping around at $\omega=1$.
+</Sim>
+
+## Tadpoles, horseshoes and halo orbits
+
+### Trojans: riding the stable hilltops
+
+A body librating around $L_4$ or $L_5$ traces a closed, kidney/tadpole-shaped loop in the rotating frame — a **tadpole orbit**. Jupiter's Trojan asteroids (over 10,000 known, comparable in total number to the main-belt asteroids) occupy exactly this configuration, discovered starting in 1906 with 588 Achilles. Neptune, Mars and even Earth have their own, smaller Trojan populations. NASA's *Lucy* spacecraft, in flight since 2021, is the first mission dedicated to them, and will have visited members of both the L4 and L5 swarms plus a main-belt asteroid by the end of its tour in the early 2030s.
+
+### Horseshoes: when the tadpole wraps all the way around
+
+Increase the libration amplitude enough (or start with the right combination of position and velocity, as in the "Horseshoe" preset above) and the tadpole around $L_4$ merges with the one around $L_5$, wrapping through $L_3$ on the far side into a single horseshoe-shaped path that encircles the secondary's orbit while never approaching the secondary itself. Saturn's small moons Janus and Epimetheus are the textbook example: they share almost the same orbit (radii differing by only 50 km) and swap places every four years via a horseshoe dance, gently repelled by their own mutual gravity each time they get close, never actually colliding. Several near-Earth asteroids — most famously 2010 SO16, and Earth's occasional "quasi-satellites" like (469219) Kamoʻoalewa — trace horseshoe or quasi-satellite orbits relative to Earth around the Sun, co-orbital companions that are gravitationally bound to Earth's orbital phase without ever being bound to Earth itself.
+
+<Aside>**Not a moon, not free.** A quasi-satellite orbits the Sun on an orbit with the same period as Earth's, but eccentric enough that, viewed from Earth's rotating frame, it appears to loop around Earth once a year without ever being inside Earth's Hill sphere. It's gravitationally influenced by Earth (that's what locks the period) but not gravitationally bound to it.</Aside>
+
+### Halo orbits: living at an unstable point anyway
+
+Because the collinear points are unstable, no mission sits *at* L1 or L2 — instead, spacecraft fly **halo orbits**, three-dimensional periodic paths that circle the point at a manageable distance (hundreds of thousands of km for Sun–Earth) while requiring only small, occasional station-keeping burns (a few m/s per year) to counteract the point's instability. JWST, at Sun–Earth L2, uses a halo orbit large enough that it and the Earth are never lined up with the Sun, which keeps its huge sunshield permanently between the telescope and all three heat sources. Gaia and the retired Planck and Herschel missions used the same trick.
+
+## Hill spheres, Roche lobes, and the limits of "belonging" to a body
+
+The neck in the zero-velocity curve that passes through $L_1$ answers a question that recurs throughout this course: how far does a body's gravity "own" the space around it before a third body (or tide) takes over? The **Hill sphere**, radius $r_H = a(m/3M)^{1/3}$ from the discussion above, is the largest region in which a satellite can stay bound to a smaller body $m$ orbiting a larger one $M$ at separation $a$ — it is, in essence, the CR3BP's L1 neck turned into a solid-angle-averaged sphere. The Moon sits at about a third of Earth's Hill radius (1.5 million km); geosynchronous satellites, at $4.2\times10^4$ km, are safely inside it. The related **Roche lobe** — the same neck, but for an extended, potentially deformable body rather than a test particle — sets the size at which mass transfer begins in a close binary star, and reappears in [Chapter 9](/ch/tides/) on tides and in the analysis of Roche-lobe overflow in interacting binaries and X-ray sources.
+
+## Chaos: when nearby trajectories are the same, then aren't
+
+### Sensitive dependence
+
+Two CR3BP trajectories that start a millimetre apart, in a chaotic region of phase space (near the L1/L2 necks, say, or anywhere Poincaré's tangled homoclinic structure shows up), separate *exponentially*:
+
+<KeyEq title="Lyapunov exponent">
+$$
+\delta(t) \approx \delta_0\, e^{\lambda t}
+$$
+<Fragment slot="where">$\delta_0$ is the initial separation in phase space, $\delta(t)$ the separation after time $t$, and $\lambda$ the (largest) **Lyapunov exponent**. $\lambda>0$ signals chaos; $1/\lambda$, the **Lyapunov time**, is the horizon beyond which any finite uncertainty in the initial state has grown to swallow the whole accessible phase space, and prediction becomes meaningless regardless of how precisely you knew the start.</Fragment>
+</KeyEq>
+
+This is not about the *integrator* being wrong — it is a property of the physics. Run the same equations on a perfect analytical computer with two starts that differ by one part in $10^{300}$, and they still diverge exponentially; you just buy $300/\log_{10}e^\lambda$ more time before the divergence matters.
+
+<Sim name="three-body-general" size="wide" minHeight={480}>
+**The general three-body problem** (no restriction, no test-particle approximation): three point masses, mutual gravity. The **figure-eight** preset is the famous Chenciner–Montgomery solution (2000) — three equal masses chasing each other around a single lemniscate, forever, exactly periodic — proof that *some* three-body configurations are perfectly tame. The **Pythagorean** preset (masses 3-4-5, released from rest at the vertices of a 3-4-5 triangle — Burrau's 1913 problem) is the opposite: a violent sequence of close encounters ending in the ejection of the lightest body. Toggle the **shadow copy**, a second trajectory nudged by one part in a billion at $t=0$: watch the log-separation plot turn into a straight line, whose slope the panel measures live as the Lyapunov exponent.
+</Sim>
+
+### The solar system's own Lyapunov time
+
+The full solar system — eight planets, the Sun, mutual perturbations — is chaotic too, with a measured Lyapunov time of about **5 million years**. That sounds alarming next to the solar system's 4.6-billion-year age (roughly 1,000 Lyapunov times have passed), but chaos doesn't automatically mean *instability* — planetary orbits stay qualitatively similar (bounded, roughly circular, non-crossing) for billions of years even while their exact phases become unpredictable after a few tens of millions. Jacques Laskar's numerical integrations (1989 onward) show that Mercury's eccentricity can be pumped up by resonant interactions with Jupiter over a few billion years, with a small but non-zero chance ($\sim1\%$ per current estimates) of a Mercury–Venus collision or Mercury falling into the Sun before the Sun itself becomes a red giant. Chaos here means we cannot say *when*, or even confidently whether, only that the door is not fully closed.
+
+### KAM theory: how order survives inside chaos
+
+Not every trajectory near a stable point is chaotic. The **Kolmogorov–Arnold–Moser (KAM) theorem** (1954–1963) says that if you perturb an integrable system (like two decoupled Kepler orbits) weakly enough, *most* of the regular, quasi-periodic orbits survive as slightly deformed tori in phase space — they don't instantly dissolve into chaos just because a small perturbation (a third body, say) was switched on. What breaks first are the orbits at rational frequency ratios (resonances), which get replaced by thin chaotic layers, while the "sufficiently irrational" orbits between them persist. This is precisely why tadpole and halo orbits above can be stable and long-lived even though the underlying three-body problem is formally chaotic: they live on KAM tori that survive the perturbation, at least for astronomically relevant amounts of time, near enough to fully integrable limits ($\mu\to0$, or amplitude $\to0$).
+
+### Special exact solutions
+
+Against this chaotic backdrop, a small zoo of exact periodic solutions stands out precisely because they're rare:
+
+- **Lagrange's equilateral solution** (1772): three arbitrary masses at the vertices of an equilateral triangle, rotating rigidly — the $L_4$/$L_5$ configuration generalised to three comparable masses, with no restriction to a test particle.
+- **Euler's collinear solution** (1767, predating Lagrange's): three masses in a fixed ratio along a rotating line — the general-mass analogue of $L_1$/$L_2$/$L_3$.
+- **The figure-eight** (conjectured numerically by Cristopher Moore in 1993, proven to exist by Alain Chenciner and Richard Montgomery in 2000): three equal masses on a single co-planar curve shaped like the digit 8, each spending equal time in each "lobe." It belongs to a larger, actively studied family of *choreographies* — solutions where equal masses take turns following the same closed curve.
+
+These are measure-zero exceptions in the vast chaotic sea of initial conditions — beautiful, but not what a typical three-body system does, which is precisely why they're worth naming individually.
+
+## Gravitational assists and three-body ejections
+
+### The slingshot, seen in two frames
+
+A spacecraft flying past a planet gains no energy in the *planet's* frame — that frame is (nearly) inertial and gravity there conserves the spacecraft's speed exactly, only turning its direction by some angle $\delta$ set by the impact parameter $b$ and the planet's $GM$:
+
+<KeyEq title="Hyperbolic flyby turning angle">
+$$
+\sin\frac{\delta}{2} = \frac{1}{e}, \qquad e = \sqrt{1+\left(\frac{b\,v_\infty^2}{GM_{\text{planet}}}\right)^2}
+$$
+<Fragment slot="where">$v_\infty$ is the speed relative to the planet far from the encounter, $b$ the impact parameter, and $e$ the eccentricity of the hyperbolic flyby orbit. Large $b$ or fast $v_\infty$: gentle deflection. Small $b$ or slow $v_\infty$: the trajectory can bend by nearly $180°$.</Fragment>
+</KeyEq>
+
+But the planet is *itself* orbiting the Sun, and the heliocentric frame is where the mission actually cares about energy. Add the planet's orbital velocity vector to the spacecraft's incoming and outgoing relative velocities, and because the flyby has rotated the relative-velocity direction, the *heliocentric* speed before and after are, in general, different — even though the planet-frame speed never changed. Passing behind a planet (in the direction of its motion) can add heliocentric speed (a boost, as used by every outer-solar-system mission since *Pioneer 10*); passing in front subtracts it (a brake, used to shed speed instead — this is how *MESSENGER* tamed itself into Mercury orbit, and how *Juno* trimmed its approach to Jupiter).
+
+<Sim name="three-body-assist" size="wide" minHeight={420}>
+**Drag the tip of the incoming relative-velocity arrow** (planet frame) to change the approach direction and speed; the **impact parameter slider** sets how sharply the flyby turns it. Compare the thin grey heliocentric arrow (before) to the bold orange one (after): same rotation, different resulting speed, because the planet's own velocity (grey, fixed) adds differently to the "in" and "out" legs. The readout shows the turning angle and the net energy gained or lost per unit spacecraft mass.
+</Sim>
+
+### Ejections: the same mechanism, turned violent
+
+Nothing about this energy exchange requires a "spacecraft" and a "planet" — it's a general three-body result: in any close encounter between three bodies, the lightest one typically leaves with most of the kinetic energy while the remaining two bind more tightly together, because that's the direction that increases the system's total (negative) binding energy budget the most for a given amount of energy exchanged. This is precisely the fate of Burrau's Pythagorean problem above, and it is the dominant late-time outcome of dense stellar systems: in a globular cluster or the dense core of a young star cluster, three-body (or higher) close encounters between stars and binaries systematically eject the lightest member — often a low-mass star or a substellar object — at speeds of kilometres to tens of kilometres per second, while hardening the surviving binary. Repeated over a cluster's lifetime, this same slingshot mechanism is a leading source of the free-floating, unbound "rogue" planets found by microlensing surveys (see [Chapter 24](/ch/lensing/)), and of the hypervelocity stars seen leaving the Milky Way's core, where the third body doing the flinging is a supermassive black hole rather than a planet.
+
+<Fermi title="How much energy does an ejected star carry away?">
+A binary star with components of a few $M_\odot$, separation $\sim 1$ AU, has a binding energy of order $GM^2/2a \sim 10^{41}$ J. A single strong three-body encounter can convert an order-one fraction of that into the kinetic energy of the lightest, ejected member — enough to send a stellar-mass object off at tens of km/s, comparable to a cluster's own escape speed. Repeat this a few times over a cluster's lifetime and you naturally get a population of stars that have escaped it entirely.
+</Fermi>
+
+<Hood title="integrating a system with no shadow Hamiltonian to lean on">
+The CR3BP is Hamiltonian, but not in the simple, separable "kinetic plus potential" form Chapter 2's leapfrog exploits — the Coriolis terms couple position and velocity, so naive velocity Verlet doesn't directly apply, and building a genuinely symplectic integrator for it means working in the correct canonical momenta (which include the Coriolis contribution) rather than raw velocities. The flagship sim instead uses plain RK4, fourth order and non-symplectic, with one production-grade compromise: **distance-adaptive substepping**. Instead of a fixed step, each tick shrinks $h$ near either primary, where the field curves fastest and a fixed step would blow past a close approach:
+
+```ts
+function advance(p: Particle, dtChunk: number) {
+  let remaining = dtChunk;
+  while (remaining > 1e-9) {
+    const r1 = Math.hypot(p.s[0] + mu, p.s[1]);
+    const r2 = Math.hypot(p.s[0] - 1 + mu, p.s[1]);
+    const h = Math.min(remaining, Math.max(0.0004, 0.012 * Math.min(1, Math.min(r1, r2))));
+    rk4Step(p.s, mu, h);      // fourth-order Runge–Kutta, non-symplectic
+    remaining -= h;
+  }
+}
+```
+
+Because there's no shadow Hamiltonian being conserved exactly, energy-like drift has to be *watched*, not trusted — the panel reports the Jacobi constant's fractional drift for the most recently launched particle, and it grows (slowly, for a well-resolved orbit) rather than oscillating the way Chapter 2's Verlet energy error did. This is also why "the trajectory shown is the trajectory" stops being quite true once a particle wanders into a chaotic region: **the shadowing lemma** offers the actual guarantee — for a hyperbolic (locally chaotic) system, a numerically computed, slightly-wrong trajectory still lies *close to* some *exact* trajectory of the true equations, just not the one starting from your intended initial condition. So a chaotic orbit plotted here is real physics, honestly representative of what *some* nearby initial condition does — but treating it as a precise forecast for *your* initial condition, beyond a Lyapunov time or so, is not justified, no matter how many digits your integrator carries. Production tools facing this problem (JPL's Horizons, the widely used REBOUND N-body code) reach for **regularisation** — coordinate transformations like the Kustaanheimo–Stiefel transform mentioned in Chapter 2, which turn a close approach's singular $1/r^2$ force into a smooth harmonic-oscillator-like problem — precisely so that a close encounter doesn't force the step size to collapse the way it does here.
+</Hood>
+
+## Where we go from here
+
+Three bodies already broke the exact-solution habit two centuries of celestial mechanics had built up around Kepler's ellipses — and yet order survives in patches: stable Trojans, KAM tori, a figure-eight that closes on itself forever. That same tension between chaos and structure resurfaces at every scale this course visits: in the resonances and Roche lobes of [Chapter 9](/ch/tides/), in the chaotic scattering that shapes young planetary systems in [Chapter 8](/ch/planet-formation/), in the collisionless but still structured dynamics of star clusters and galaxies in [Chapter 22](/ch/galactic-dynamics/), and ultimately in the N-body simulations of cosmic structure formation in [Chapter 28](/ch/structure/) — all of them three-body problems' unruly, many-body descendants, tamed only by symplectic integrators, adaptive steps, and a healthy respect for the Lyapunov time.

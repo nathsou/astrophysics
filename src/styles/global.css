@@ -266,3 +266,85 @@ input[type='range']::-moz-range-thumb { width: 11px; height: 11px; border-radius
   .chapter-head { padding-top: 4rem; }
   .article { grid-template-columns: [full-start] 16px [text-start margin-start] minmax(0, 1fr) [text-end margin-end] 16px [full-end]; }
 }
+
+/* ---------- Depth of explanation ---------- */
+/* <Level>: wrappers are `display: contents` so children stay grid items of .article
+   (margin notes, wide sims keep working inside a Level). */
+.lvl, .lvl-body { display: contents; }
+.lvl-pill, .lvl-tag { display: none; }
+
+/* Too advanced for the current depth → collapsed to a pill (unless opened). */
+:root[data-depth='1'] .lvl:not(.lvl-inline)[data-min='2']:not(.open),
+:root[data-depth='1'] .lvl:not(.lvl-inline)[data-min='3']:not(.open),
+:root[data-depth='2'] .lvl:not(.lvl-inline)[data-min='3']:not(.open) { & > .lvl-body { display: none; } & > .lvl-pill { display: flex; } }
+:root[data-depth='1'] .lvl-inline[data-min='2'],
+:root[data-depth='1'] .lvl-inline[data-min='3'],
+:root[data-depth='2'] .lvl-inline[data-min='3'] { display: none; }
+/* Opened manually → show a small tag with a Hide button. */
+.lvl.open > .lvl-tag { display: flex; }
+/* Simpler than the current depth → hidden entirely. */
+:root[data-depth='2'] .lvl[data-max='1'] > *,
+:root[data-depth='3'] .lvl[data-max='1'] > *,
+:root[data-depth='3'] .lvl[data-max='2'] > * { display: none; }
+
+.lvl-pill {
+  align-items: center; gap: 0.7rem; width: 100%; margin: 0.9rem 0; padding: 0.55rem 0.9rem;
+  background: transparent; border: 1px dashed var(--rule); border-radius: 8px; cursor: pointer;
+  font-family: var(--font-ui); font-size: 0.78rem; color: var(--fg-muted); text-align: left;
+}
+.lvl-pill:hover { border-color: var(--accent-2); color: var(--fg); }
+.lvl-pill-text { flex: 1; }
+.lvl-pill-action { color: var(--accent-2); }
+.lvl-badge {
+  display: inline-grid; place-items: center; min-width: 1.6rem; height: 1.3rem; padding: 0 0.3rem; border-radius: 4px;
+  background: var(--bg-elev); border: 1px solid var(--rule); color: var(--accent-2); font-family: var(--font-body); font-style: italic; font-size: 0.85rem;
+}
+.lvl-tag {
+  align-items: center; gap: 0.6rem; margin: 1.2rem 0 0.2rem; font-family: var(--font-ui); font-size: 0.7rem;
+  text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-2);
+}
+.lvl-tag .lvl-hide { margin-left: auto; font: inherit; text-transform: none; letter-spacing: 0; color: var(--fg-faint); background: none; border: 0; cursor: pointer; }
+.lvl-tag .lvl-hide:hover { color: var(--fg); }
+
+.depth { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.9rem; font-family: var(--font-ui); font-size: 0.75rem; color: var(--fg-muted); margin-top: 1.6rem; }
+.depth-label { text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.68rem; }
+.depth-seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; padding: 3px; background: var(--bg-elev); }
+.depth-seg button {
+  display: flex; align-items: center; gap: 0.45rem; border: 0; background: transparent; color: var(--fg-muted);
+  font: inherit; padding: 0.35rem 0.85rem; border-radius: 999px; cursor: pointer; transition: background 0.15s, color 0.15s;
+}
+.depth-seg button:hover { color: var(--fg); }
+.depth-seg button[aria-checked='true'] { background: var(--accent); color: var(--bg); }
+.depth-dots { font-size: 0.5rem; letter-spacing: 1px; }
+.depth-hint { font-style: italic; }
+.depth.compact { margin-top: 0; }
+.depth.compact .depth-seg { width: 100%; }
+.depth.compact .depth-seg button { flex: 1; justify-content: center; padding: 0.35rem 0.3rem; flex-direction: column; gap: 0.1rem; font-size: 0.68rem; }
+
+/* ---------- Photos ---------- */
+figure.photo { margin: 2.2rem 0; }
+figure.photo .photo-frame { display: block; border-radius: var(--radius); overflow: hidden; background: #000; border: 1px solid var(--rule); }
+figure.photo img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+figure.photo .photo-frame:hover img { transform: scale(1.015); }
+figure.photo figcaption { display: flex; flex-direction: column; gap: 0.3rem; font-family: var(--font-ui); font-size: 0.78rem; color: var(--fg-muted); margin-top: 0.7rem; line-height: 1.5; }
+figure.photo figcaption b { color: var(--fg); font-weight: 600; }
+figure.photo .photo-credit { font-size: 0.7rem; color: var(--fg-faint); }
+figure.photo .photo-credit a { color: inherit; }
+:root[data-depth='2'] .lvl-inline[data-max='1'],
+:root[data-depth='3'] .lvl-inline[data-max='1'],
+:root[data-depth='3'] .lvl-inline[data-max='2'] { display: none; }
+
+/* <Tiers>: JS (scripts/page.ts) marks the visible tier(s) with .shown and the next one via the pill. */
+.tiers, .tier { display: contents; }
+.tier:not(.shown) { display: none; }
+.tier-tag { display: none; }
+.tier.shown.extra > .tier-tag { display: flex; }
+.tiers > .tier-more { display: none; }
+.tiers.has-more > .tier-more { display: flex; }
+
+/* Children of display:contents wrappers (<Level>, <Tiers>) are grid items of .article too. */
+.article :is(.lvl, .lvl-body, .tiers, .tier) > * { grid-column: text; }
+.article :is(.lvl, .lvl-body, .tiers, .tier) > .wide { grid-column: text-start / margin-end; }
+.article :is(.lvl, .lvl-body, .tiers, .tier) > .full { grid-column: full; }
+.article :is(.lvl, .lvl-body, .tiers, .tier) > .aside { grid-column: margin; grid-row-end: span 2; }
+@media (max-width: 1100px) { .article :is(.lvl, .lvl-body, .tiers, .tier) > .aside { grid-row-end: auto; margin: 0.6rem 0 0.4rem; } }

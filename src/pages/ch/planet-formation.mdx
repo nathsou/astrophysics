@@ -1,0 +1,362 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: planet-formation
+lede: Every planet began as dust in a flattened disk of gas around a newborn star. Getting from micron-sized grains to Jupiter in a few million years means crossing thirteen orders of magnitude in size, and several of the steps look impossible on paper.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+
+## Why disks?
+
+In [Chapter 7](/ch/star-formation/) a molecular cloud core collapsed under its own gravity. We treated the collapse as spherical, but real cores rotate slightly. A typical core of radius $0.1$ pc spins with an angular velocity of roughly $10^{-14}\,\text{s}^{-1}$, about one turn per ten million years. That is tiny, but angular momentum is conserved, and the specific angular momentum $j = r^2\Omega$ of each gas parcel stays fixed as it falls in. (As in [Chapter 2](/ch/orbits/), a central force exerts no torque.)
+
+Gravity can pull gas inward along the rotation axis without any resistance. Perpendicular to the axis, though, a parcel with specific angular momentum $j$ can only fall until it reaches the radius where its orbit is circular:
+
+$$
+r_\text{c} = \frac{j^2}{GM}.
+$$
+
+Plug in $j \approx \Omega_0 r_0^2$ with $r_0 = 0.05$ pc and $\Omega_0 = 10^{-14}\,\text{s}^{-1}$, and you get $r_\text{c}$ of order a hundred AU. Nothing collapses to a point. Material from the poles piles onto the equatorial plane, collisions between gas streams dissipate the vertical motion, and the end state is a thin, rotating **protoplanetary disk**, fed by the envelope for its first $10^5$ years and draining onto the star for the next few million. Every star forms with one. Planets are what happen to a small fraction of the disk's solids before it disappears.
+
+<Aside>**Kant and Laplace.** The "nebular hypothesis", that the planets formed from a flattened rotating cloud, dates to Kant (1755) and Laplace (1796). It explained why all the planets orbit in nearly the same plane and the same direction. The angular-momentum problem (the Sun holds 99.9% of the mass but only 2% of the angular momentum) took two more centuries to resolve.</Aside>
+
+The disk has a few percent of the star's mass, and about 1% of that is solid: silicate and carbon dust, plus ices where it is cold enough. So a solar-mass star's disk might hold $0.01$–$0.1$ M☉ of gas and something like $30$–$300$ Earth masses of dust. The whole of this chapter is about how some of that dust ends up as planets before the gas vanishes.
+
+### The minimum-mass solar nebula
+
+What did *our* disk look like? One way to estimate it: take the planets, grind them up, add enough hydrogen and helium to restore solar composition, and smear the result out over annuli around each orbit. Weidenschilling (1977) and Hayashi (1981) did this and found a surface density that falls as a power law. This **minimum-mass solar nebula** (MMSN) is the standard reference disk:
+
+<KeyEq title="Minimum-mass solar nebula (Hayashi 1981)">
+$$
+\htmlData{term=sigma}{\Sigma}_\text{gas}(r) \approx 1700\ \text{g cm}^{-2}\left(\frac{\htmlData{term=r}{r}}{1\ \text{AU}}\right)^{-3/2},
+\qquad
+\htmlData{term=T}{T}(r) \approx 280\ \text{K}\left(\frac{\htmlData{term=r}{r}}{1\ \text{AU}}\right)^{-1/2}
+$$
+<Fragment slot="where"><span data-term="sigma">Σ</span> is the mass per unit area of the disk, integrated through its thickness. <span data-term="r">r</span> is the distance from the star. The solids are about 1/240 of the gas inside the snow line (Σ_solid ≈ 7 g cm⁻² at 1 AU), rising by a factor of about 4 beyond it, where water freezes out. <span data-term="T">T</span> is the temperature of a blackbody grain lit by the Sun. Integrated out to 36 AU, the MMSN holds about 0.013 M☉.</Fragment>
+</KeyEq>
+
+It is called "minimum" because it assumes every atom of rock ended up in a planet, which certainly overstates the efficiency. Real disks, measured with ALMA, span two orders of magnitude around it. The temperature law comes from a simple balance: a grain at distance $r$ absorbs $L_\odot/(4\pi r^2)$ per unit area over its cross-section and radiates over four times that area, so $T^4 \propto L/r^2$, or $T \propto L^{1/4} r^{-1/2}$.
+
+### Vertical structure and flaring
+
+Now look at the disk edge-on. Gas at height $z$ above the midplane feels the vertical component of the star's gravity, $g_z = -GMz/(r^2+z^2)^{3/2} \approx -\Omega^2 z$ for $z \ll r$, where $\Omega = \sqrt{GM/r^3}$ is the Keplerian angular frequency. Balance that against the pressure gradient $dP/dz = -\rho\,\Omega^2 z$ with an isothermal gas, $P = \rho c_s^2$, and the solution is a Gaussian:
+
+$$
+\rho(z) = \rho_0\, e^{-z^2/2H^2}, \qquad H = \frac{c_s}{\Omega}.
+$$
+
+<KeyEq title="Disk scale height">
+$$
+\frac{\htmlData{term=H}{H}}{r} = \frac{\htmlData{term=cs}{c_s}}{v_K}
+$$
+<Fragment slot="where"><span data-term="H">H</span> is the vertical scale height, <span data-term="cs">c_s</span> = √(k_BT/μm_H) the isothermal sound speed (μ ≈ 2.34 for molecular gas), and v_K = Ωr the Keplerian orbital speed. A disk is thin because its gas is cold: sound speed ≪ orbital speed.</Fragment>
+</KeyEq>
+
+At 1 AU in the MMSN, $c_s \approx 1$ km/s and $v_K \approx 30$ km/s, so $H/r \approx 0.033$. The disk is as thin, proportionally, as a vinyl record. Because $c_s \propto T^{1/2} \propto r^{-1/4}$ and $v_K \propto r^{-1/2}$, the aspect ratio *grows* outward: $H/r \propto r^{1/4}$. The disk **flares** like a shallow bowl. That matters because a flared surface intercepts starlight at a steeper angle at large radii, which keeps the outer disk warmer than a flat one would be, and is why scattered-light images of disks show bright upper surfaces.
+
+At <Var name="rH" value={1} min={0.1} max={100} log /> AU the MMSN has <Out name="hOut" />.
+
+### How a disk accretes: α-viscosity
+
+The disk cannot stay as it is. Gas at each radius orbits at a slightly different angular speed, and any friction between neighbouring annuli transfers angular momentum outward. The inner gas, having lost angular momentum, spirals in; a small amount of outer gas carries the angular momentum away. The disk spreads, and most of its mass ends up on the star.
+
+Molecular viscosity is hopelessly weak: the viscous time $r^2/\nu$ for gas at 1 AU would exceed the age of the universe. Shakura and Sunyaev (1973) sidestepped the unknown physics by writing the effective viscosity as
+
+$$
+\nu = \alpha\, c_s H,
+$$
+
+where $\alpha \lesssim 1$ packages all the turbulence (the magnetorotational instability, disk winds, hydrodynamic instabilities) into one dimensionless number. The viscous timescale is then
+
+$$
+t_\nu = \frac{r^2}{\nu} = \frac{1}{\alpha}\left(\frac{H}{r}\right)^{-2}\frac{1}{\Omega}.
+$$
+
+At <Var name="rVisc" value={10} min={0.3} max={100} log /> AU with $\alpha =$ <Var name="aVisc" value={0.001} min={0.00001} max={0.1} log />, the MMSN evolves on <Out name="tvisc" />.
+
+Observed accretion rates onto young stars, $\dot M \sim 10^{-8}$ M☉/yr, and disk lifetimes of a few million years suggest $\alpha \sim 10^{-3}$–$10^{-2}$ in the outer disk. ALMA measurements of the turbulent line broadening in several disks (HD 163296, TW Hya) find surprisingly *low* turbulence, $\alpha \lesssim 10^{-3}$, which has shifted opinion toward magnetised winds that remove angular momentum vertically instead of radially. Either way, the gas does not last: the planets have to form before it is gone.
+
+<Aside>**Why "α"?** Shakura and Sunyaev's paper was about accretion disks around black holes (see [Chapter 19](/ch/black-holes/)). The same parameterisation now describes everything from white-dwarf binaries to protoplanetary disks, despite the physics behind α being different in each.</Aside>
+
+## The snow line
+
+The single most important temperature in the disk is the one at which water freezes. At the low pressures of a disk midplane ($\sim 10^{-9}$–$10^{-6}$ bar), water ice sublimates at about **150–170 K**, not at 273 K. With $T = 280\,\text{K}\,(r/\text{AU})^{-1/2}$, the midplane reaches 170 K at
+
+$$
+r_\text{snow} = \left(\frac{280}{170}\right)^2 \text{AU} \approx 2.7\ \text{AU}\ \sqrt{L/L_\odot}.
+$$
+
+That is today's asteroid belt, and it is no coincidence that the belt shows a transition from dry S-type asteroids on its inner edge to water-bearing C-types on its outer side. A star of <Var name="Lsnow" value={1} min={0.01} max={100} log /> L☉ has its snow line at about <Out name="snowOut" />.
+
+Beyond the snow line, oxygen, the third most abundant element, can lock up as ice. That roughly doubles to quadruples the surface density of solids. Everything about building planets goes faster with more solid material, which is why the standard story puts the giant planets' cores just outside the snow line.
+
+The real disk is more complicated. Early on, when the accretion rate is $\dot M \sim 10^{-7}$ M☉/yr, viscous dissipation heats the midplane far more than starlight does, because the dusty gas is optically thick and traps the heat. The snow line starts out at 5–10 AU and sweeps inward as the accretion rate drops. In a passive, starlight-heated disk, the midplane is shaded by the flared surface and colder than the blackbody estimate, which pushes the snow line *inward* of 2.7 AU. By the time the disk dissipates it may sit at 1 AU, uncomfortably close to where Earth was assembling.
+
+<Sim name="planet-formation-snowline" size="text" minHeight={380}>
+**The snow line moves.** The solid curve is the midplane temperature including viscous heating, $T^4 = T_\text{irr}^4 + (3\tau/8 + 1/2)T_\text{eff}^4$, with the dashed curve the pure starlight value. Press the presets: a young, rapidly accreting disk has its water snow line far out, and it retreats inward as accretion fades. Then raise the luminosity to see where the snow line of an A star sits.
+</Sim>
+
+<Aside>**Why was Earth dry?** Earth has about 0.1% of its mass in water, far less than a body formed beyond the snow line (tens of percent). Where Earth's water came from, whether from local hydrated minerals, from late-arriving C-type asteroids, or both, is still debated. Its deuterium-to-hydrogen ratio matches carbonaceous chondrites better than most comets.</Aside>
+
+The CO₂ and CO snow lines, at roughly 70 K and 25 K, lie at tens of AU. ALMA has imaged the CO snow line directly in TW Hya (at about 20 AU) using N₂H⁺, a molecule destroyed by gaseous CO and so only abundant where CO is frozen out. JWST has gone further: its MIRI and NIRSpec spectra reveal the ices themselves (H₂O, CO₂, CO, CH₃OH) absorbing starlight in edge-on disks and cold cloud cores, and show water vapour streaming inward across the snow line in the inner disks of young stars.
+
+## From dust to pebbles: the metre-size barrier
+
+Planets are built from the bottom up. Dust grains start at about a micron. They collide, gently, driven by Brownian motion and turbulence, and stick together through van der Waals forces into fluffy aggregates. Up to millimetres this works well. Beyond that, problems pile up fast, and they all come from one fact: **the gas and the solids orbit at different speeds.**
+
+### Gas is slower than Kepler
+
+The gas is partly supported by its own pressure, which falls outward. That outward push reduces the effective gravity, so the gas orbits a little slower than the Keplerian speed:
+
+$$
+v_\text{gas} = v_K(1 - \eta), \qquad \eta = -\frac{1}{2}\left(\frac{H}{r}\right)^2\frac{d\ln P}{d\ln r} \approx 2\times10^{-3}.
+$$
+
+The difference $\eta v_K$ is only about 50 m/s at 1 AU, a gentle breeze in a disk orbiting at 30 km/s. But a solid body is not pressure-supported. It *wants* to orbit at $v_K$, so from its point of view there is a constant 50 m/s headwind.
+
+### Epstein drag and the Stokes number
+
+How strongly a grain couples to the gas depends on its **stopping time** $t_s$, the time drag takes to erase its velocity relative to the gas. For grains smaller than the mean free path of gas molecules (about a centimetre at 1 AU in the MMSN, metres further out), molecules bounce off the grain independently. This is the **Epstein regime**, and the drag force is roughly (momentum per collision) × (collision rate), $F \approx \rho_g v_\text{th} s^2 \Delta v$, giving
+
+$$
+t_s = \frac{\rho_s\, s}{\rho_g\, v_\text{th}},
+$$
+
+with $s$ the grain radius, $\rho_s$ its material density and $v_\text{th} = \sqrt{8/\pi}\,c_s$ the mean thermal speed. Bigger bodies, larger than the mean free path, are in the fluid (Stokes) regime, where $t_s$ grows as $s^2$. The number that matters is the stopping time compared with the orbital time:
+
+<KeyEq title="Stokes number and radial drift">
+$$
+\text{St} = \Omega\, t_s, \qquad
+v_r = -\frac{2\,\eta\, v_K}{\text{St} + \text{St}^{-1}}
+$$
+<Fragment slot="where">St ≪ 1: the grain is glued to the gas and drifts only slowly. St ≫ 1: the body barely feels the gas and keeps its Keplerian orbit. At St = 1, drag removes angular momentum on exactly one orbital timescale and the inward drift reaches its maximum, v_r = ηv_K. Derived by Weidenschilling (1977) from the steady-state solution of the drag and Coriolis equations.</Fragment>
+</KeyEq>
+
+The derivation is a short exercise: write the equations of motion in a frame rotating with the Keplerian flow, include the drag $-(\vec v - \vec v_\text{gas})/t_s$, and look for the steady solution. The headwind torque removes angular momentum at a rate $\propto \eta v_K/t_s$, but only if the body actually feels the drag within an orbit; at small St it does, but then it also simply follows the gas. The product of the two effects peaks at St = 1.
+
+<Predict question="A particle at 1 AU with Stokes number 1 drifts inward at about ηv_K ≈ 50 m/s. How long does it take to reach the star?" choices={['About 100 years', 'About 100,000 years', 'About 10 million years']} answer={0}>
+One AU is $1.5\times10^{11}$ m, and $1.5\times10^{11}/50 \approx 3\times10^9$ s, which is **about a century**. The disk lives for millions of years. Any solid that grows to St ≈ 1 and stays there is lost into the star almost immediately. At 1 AU in the MMSN, that happens for bodies of order a metre, hence the name.
+</Predict>
+
+<Sim name="planet-formation-drift" size="text" minHeight={400}>
+**The metre-size barrier.** The inward drift speed of a solid body as a function of its size, for the MMSN at the chosen radius. Small grains ride with the gas, large boulders ignore it, and in between the drift peaks sharply at St = 1. Move the radius outward: the barrier shifts to smaller sizes (millimetres to centimetres at tens of AU), because the gas is thinner. Raise the turbulence α and watch the fragmentation limit move to smaller sizes as well: collisions become too violent for grains to stick.
+</Sim>
+
+### Three barriers
+
+The drift barrier is not the only one. Laboratory experiments (dropping aggregates in vacuum towers and on sounding rockets) have mapped out how dust collisions go:
+
+- **Bouncing barrier.** Compact millimetre-to-centimetre aggregates tend to bounce off each other rather than stick, stalling growth at about a millimetre inside the snow line.
+- **Fragmentation barrier.** Turbulence gives colliding particles relative speeds $\Delta v \approx \sqrt{3\alpha\,\text{St}}\,c_s$. Silicate aggregates shatter above about 1 m/s, which caps them at $\text{St}_\text{frag} \approx v_\text{frag}^2/(3\alpha c_s^2)$. Icy aggregates are stickier, surviving perhaps 10 m/s, which is one more reason the snow line matters.
+- **Drift barrier.** Anything that does reach St ≈ 0.1–1 drifts inward faster than it can grow.
+
+Growth by simple sticking therefore stalls at **pebbles**: millimetre-to-centimetre bodies with St ~ 0.01–0.1. ALMA sees exactly this population, emitting at millimetre wavelengths in rings around young stars. The question is how pebbles become kilometre-sized **planetesimals**, which are big enough to hold themselves together by gravity and to ignore the gas.
+
+<Fermi title="How much dust does a disk lose to drift?">
+Take a pebble with St ≈ 0.1 at 30 AU. There $v_K \approx 5.4$ km/s and $\eta \approx 5\times10^{-3}$ (the disk is thicker), so $v_r \approx 2\eta v_K \cdot \text{St} \approx 2\times 5\times10^{-3}\times 5400\times 0.1 \approx 5$ m/s. Crossing 30 AU $= 4.5\times10^{12}$ m takes $\sim 10^{12}$ s, about **30,000 years**.
+
+A disk that lives 3 Myr would then empty its outer regions of pebbles a hundred times over. Yet ALMA sees mm-sized dust out to 100 AU in million-year-old disks. Something must be stopping the drift. The prime suspect is **pressure bumps**: places where the gas pressure has a local maximum, so $\eta$ changes sign and pebbles pile up instead of draining away. The rings in the next section are almost certainly those traps.
+</Fermi>
+
+### The streaming instability
+
+The breakthrough idea, developed by Youdin and Goodman (2005) and Johansen and collaborators, is that the drift itself becomes unstable. Pebbles drifting through gas push back on the gas (the back-reaction), accelerating it toward Keplerian speed. Where pebbles happen to be slightly concentrated, the local headwind drops, so those pebbles drift more slowly, and pebbles from further out catch up with them. It is the same reason cyclists draft behind each other in a peloton. The clump grows, its headwind drops further, and the process runs away.
+
+Simulations show the **streaming instability** can concentrate pebbles by factors of a thousand in filaments. Once the local solid density exceeds the Roche density ($\rho \gtrsim 9M_\star/4\pi r^3$), the clump collapses under its own gravity directly into planetesimals of 10–100 km, skipping the metre-size barrier entirely. It needs a solid-to-gas ratio somewhat above the cosmic 1% (so some prior pile-up helps) and pebbles with St ~ 0.01–1.
+
+<Aside>**Arrokoth.** The New Horizons flyby of the Kuiper-belt object Arrokoth in 2019 found a 36 km contact binary: two flattened lobes that touched at walking pace, with no signs of violent collisions. That is exactly what gentle gravitational collapse of a pebble cloud predicts. The high fraction of binaries among cold classical Kuiper-belt objects, with prograde, aligned orbits, points the same way.</Aside>
+
+## From planetesimals to embryos
+
+Once bodies reach kilometres, gas drag hardly matters and gravity takes over. The disk is now a swarm of perhaps $10^{9}$–$10^{12}$ planetesimals on nearly circular orbits, colliding and sticking. How fast does an individual body grow?
+
+### Gravitational focusing
+
+A body of radius $R$ moving through a swarm of density $\rho_\text{sw}$ at relative speed $v$ would, ignoring gravity, sweep out mass at the rate $\rho_\text{sw}\,\pi R^2\, v$. But gravity bends the incoming trajectories toward it. A planetesimal passing at impact parameter $b$ just grazes the surface if energy and angular momentum conservation allow closest approach at $R$:
+
+$$
+b v = R\, v_\text{max}, \qquad \tfrac12 v^2 = \tfrac12 v_\text{max}^2 - \frac{GM}{R}.
+$$
+
+Eliminate $v_\text{max}$ and you get the critical impact parameter, and hence the cross-section:
+
+<KeyEq title="Gravitational focusing">
+$$
+\htmlData{term=sig}{\sigma} = \pi \htmlData{term=R}{R}^2\left(1 + \frac{v_\text{esc}^2}{\htmlData{term=v}{v}^2}\right)
+$$
+<Fragment slot="where"><span data-term="sig">σ</span> is the effective collision cross-section, <span data-term="R">R</span> the body's physical radius, v_esc = √(2GM/R) its surface escape speed and <span data-term="v">v</span> the approach speed at large distance. The second term is the Safronov focusing factor Θ; it can exceed 1000 when the swarm is dynamically cold.</Fragment>
+</KeyEq>
+
+Focusing is what makes planet formation fast. Earth's escape speed is 11 km/s. If the planetesimals around it moved at 1 km/s relative to it, the focusing factor would be about 120.
+
+<Sim name="planet-formation-focusing" minHeight={420}>
+**Gravitational focusing and runaway growth.** Left: planetesimals approach an embryo from the left. The ones that hit are highlighted, and the dashed circle is the focused cross-section. Lower the approach speed and gravity pulls in paths that would have missed by several radii. Right: two embryos, one 50% heavier, grow in the same swarm. When focusing dominates (slow approach), the growth rate scales as $M^{4/3}$ and the heavier one pulls away (runaway growth). Raise the speed above the escape speed and growth becomes orderly: the mass ratio shrinks back toward 1.
+</Sim>
+
+### Runaway, then oligarchic growth
+
+Here is why the sign of that trend matters. With $\sigma \propto R^2 (1 + v_\text{esc}^2/v^2)$, $v_\text{esc}^2 \propto M/R \propto R^2$ and $M \propto R^3$:
+
+- If $v \gg v_\text{esc}$ (no focusing), $dM/dt \propto R^2 \propto M^{2/3}$. Then $d(M_1/M_2)/dt$ drives the ratio toward 1: small bodies catch up. **Orderly growth.**
+- If $v \ll v_\text{esc}$ (strong focusing), $dM/dt \propto R^4 \propto M^{4/3}$. Now the fractional growth rate $\dot M/M \propto M^{1/3}$ *increases* with mass: the biggest body grows fastest, and a few bodies race ahead of the rest. **Runaway growth.**
+
+The swarm stays cold enough for runaway because of **dynamical friction**: encounters share energy between bodies, driving them toward equipartition, so the massive bodies end up on the most circular orbits while the small ones get stirred. But runaway sows the seeds of its own end. Once the big bodies (**embryos**) are massive enough, they stir the planetesimals near them, raising $v$ and cutting the focusing factor. Growth slows and switches to **oligarchic growth** (Kokubo and Ida, 1998): a set of similar-mass embryos, spaced about 10 mutual Hill radii apart, each dominating its own annulus.
+
+An oligarch stops growing when it has eaten its feeding zone, an annulus of half-width about $b \approx 10$ Hill radii $R_H = r(M/3M_\star)^{1/3}$. Setting its mass equal to the solids in the zone, $M = 2\pi r \cdot 2 b R_H \cdot \Sigma_\text{solid}/2$, and solving for $M$ gives the **isolation mass**:
+
+$$
+M_\text{iso} = \frac{(2\pi b\, r^2 \Sigma_\text{solid})^{3/2}}{(3M_\star)^{1/2}}.
+$$
+
+At <Var name="rIso" value={1} min={0.3} max={40} log /> AU in a disk with <Var name="sIso" value={1} min={0.1} max={10} log />× the MMSN, the isolation mass is <Out name="isoOut" />. At 1 AU in the MMSN it is about $0.07$ M⊕ (roughly Mars), reached in about $10^5$ years. Beyond the snow line, with the extra ice and larger feeding zones, it reaches a few Earth masses, but orbits are slower and growth takes millions of years. That timescale problem for giant-planet cores is one reason pebble accretion is popular.
+
+### Pebble accretion
+
+An embryo embedded in a stream of drifting pebbles can capture far more than one sweeping up planetesimals. Pebbles with St ~ 0.01–1 that pass within the embryo's Hill sphere are slowed by gas drag *during* the encounter, lose their relative energy and spiral in. The effective capture radius becomes a large fraction of the Hill radius, not the physical radius. For a Mars-mass embryo at 5 AU, that is a cross-section thousands of times bigger than its physical size. Ormel and Klahr (2010) and Lambrechts and Johansen (2012) showed that pebble accretion can build a 10 M⊕ core in well under a million years, even at 5–10 AU.
+
+It shuts itself off, too. When the core reaches roughly 10–20 M⊕ (the **pebble isolation mass**), its gravity perturbs the gas enough to create a pressure bump just outside its orbit, and pebbles stop arriving. That also neatly separates the solar system: Jupiter's early core would have blocked the flow of icy pebbles into the inner system, explaining the "isotopic dichotomy" between carbonaceous (outer) and non-carbonaceous (inner) meteorites, which formed from reservoirs isolated from each other within about a million years.
+
+## The disk in motion
+
+The flagship simulation below puts these pieces together on the GPU. The star sits at the centre. 200 **embryos** (Moon-to-Mars mass, more massive beyond the snow line) pull on each other and on everything else, merge when they collide, and sweep up up to half a million **planetesimal tracers**. Each tracer is coloured by where it formed: orange for rock inside the snow line, blue for ice-rich material outside. Gas drag from a sub-Keplerian disk damps eccentricities and slowly drags planetesimals inward. You can drop in Jupiter and Saturn at any time.
+
+<Predict question="Drop Jupiter into the disk at 5.2 AU. Where will the planetesimals feel it most, apart from right next to Jupiter's orbit?" choices={['Uniformly everywhere inside Jupiter’s orbit', 'At specific radii where orbital periods are simple fractions of Jupiter’s', 'Nowhere: Jupiter is only 0.1% of the Sun’s mass']} answer={1}>
+Jupiter's pull on a planetesimal at, say, 2.5 AU mostly averages out over many orbits. But at the **mean-motion resonances**, where the planetesimal completes exactly 3 orbits for each of Jupiter's (at 2.50 AU) or 2 (at 3.28 AU), the kicks repeat at the same orbital phase and add up. Eccentricities grow, orbits cross, and those zones are cleared over time. These are the **Kirkwood gaps** of the asteroid belt. Switch the colour mode to eccentricity and watch the resonant bands light up.
+</Predict>
+
+<Sim name="planet-formation-disk" size="full" minHeight={600}>
+**A planetary system assembling.** Rocky planetesimals (orange) and icy ones (blue) orbit the young Sun; the dashed blue ring marks the snow line at 2.7 AU. Bright points are embryos, sized by mass; the labels follow the three largest. Watch the inner embryos grow first (orbits there are fastest) and the readout of mergers climb. Add Jupiter: within a couple of hundred years it clears a gap along its orbit and throws planetesimals onto eccentric paths. Switch the colour to eccentricity to see the resonances, and turn off the gas drag to see how quickly the disk heats up dynamically without it. Drag to rotate, scroll or pinch to zoom. Embryo collision radii are inflated about 100× so that growth that really takes 10⁵–10⁷ years happens in minutes.
+</Sim>
+
+The simulation takes several liberties. Collision radii are inflated (common in demonstration N-body codes, and a known accelerant of growth). Planetesimal tracers are test particles: they feel the embryos but not each other, so there is no dynamical friction on the embryos from the swarm. Real Kirkwood gaps take $10^5$–$10^6$ years to clear, far longer than you will watch; what you see here is the eccentricity excitation that starts the process. And the gas disk is static, with no migration torques. Even so, the key qualitative behaviour emerges on its own: growth is fastest where the orbits are shortest and the solids densest, the ice-rich outer disk grows massive but slowly, and a giant planet reshapes everything near it.
+
+<Hood title="a Kepler-drift / kick integrator on the GPU">
+**Splitting the Hamiltonian.** For bodies orbiting a dominant star, write the Hamiltonian as $H = H_\text{Kepler} + H_\text{interaction}$, where the second part (embryo pulls, giant planets, the star's reflex motion) is about $10^{-3}$ of the first. Each piece alone is exactly solvable: under $H_\text{Kepler}$ every body follows a conic, and under $H_\text{interaction}$ positions stay fixed and velocities receive a kick. Alternating them (kick, drift, kick) is a second-order symplectic map, the leapfrog of [Chapter 2](/ch/orbits/) but with the free drift replaced by an exact Kepler orbit. This is the idea behind the Wisdom–Holman (1991) mapping. Its error scales as $\epsilon\,h^2$ where $\epsilon \sim 10^{-3}$ is the size of the perturbation, so we can take steps of 0.01 yr, just 20 per orbit at the inner edge, and still keep energy errors tiny. A plain leapfrog would need hundreds of steps per orbit to do as well.
+
+We use heliocentric coordinates with the star fixed at the origin. The star is actually tugged by the embryos and giants, so every kick includes the **indirect term** $-\sum_j G m_j \vec r_j / r_j^3$. It is computed once per step, as a 256-thread tree reduction, and reused by every body. (For a body's own entry in that sum, it supplies exactly the $Gm_i$ that the drift, which uses $GM_\star$ only, leaves out.) Democratic-heliocentric coordinates would be more exact, but for this demonstration the simpler split is fine.
+
+**The drift** advances each orbit with Gauss's $f$ and $g$ functions. We solve Kepler's equation for the *change* in eccentric anomaly $x = \Delta E$ rather than for $E$ itself, so we never need the absolute mean anomaly, which would lose precision in f32:
+
+```wgsl
+let alpha = 2.0 / r - dot(v0, v0) / G;          // 1/a from vis-viva
+let n = sqrt(G * alpha * alpha * alpha);         // mean motion
+let ec = 1.0 - r * alpha;                        // e cos E0
+let es = dot(r0, v0) / (n * a * a);              // e sin E0
+var x = n * dt;                                  // Newton on ΔE
+for (var k = 0; k < 6; k++) {
+  let s = sin(x);
+  let omc = 2.0 * sin(0.5 * x) * sin(0.5 * x);   // 1 − cos x, no cancellation
+  x -= (x - ec * s + es * omc - n * dt) / (1.0 - ec * (1.0 - omc) + es * s);
+}
+// x − sin x by its series when small: in f32 the direct difference loses ~all digits
+let xms = select(x - s, x * x2 * (1.0/6.0 - x2 * (1.0/120.0 - x2/5040.0)), abs(x) < 0.25);
+let f = 1.0 - (a / r) * omc;   let g = dt - xms / n;
+```
+
+**Precision.** Units are AU, years and solar masses, so $G = 4\pi^2$ and every position and velocity is O(1–10). f32 has a 24-bit mantissa: positions at 8 AU are resolved to about $5\times10^{-7}$ AU (70 km), comfortably below an embryo's inflated radius. The two traps are catastrophic cancellations: $1 - \cos x$ (rewritten as $2\sin^2(x/2)$) and $x - \sin x$ (a series for small $x$). For an orbit at 8 AU, $x \approx 0.003$ per step and $x - \sin x \approx 4\times10^{-9}$, which the direct f32 subtraction gets only to one significant figure. Without the series the outer disk slowly heats up from pure round-off.
+
+**Kicks and collisions.** The particle-kick kernel stages all 256 body slots (position and $Gm$) in workgroup memory and loops over them. The same loop checks for planetesimal–embryo contact, so accretion costs almost nothing extra and needs no spatial hash:
+
+```wgsl
+for (var j = 0u; j < P.nBodies; j++) {
+  let d = tPos[j].xyz - p.xyz;
+  let r2 = dot(d, d);
+  if (r2 < tRad[j] * tRad[j]) { hit = i32(j); }   // inside an embryo: accreted
+  let inv = inverseSqrt(r2 + 1e-9);
+  acc += d * (tPos[j].w * inv * inv * inv);
+}
+if (hit >= 0) {
+  atomicAdd(&counts[2u * u32(hit) + icy], 1u);    // WGSL has no float atomics:
+  particles[2u * i + 1u] = vec4f(v.xyz, 0.0);     // count tracers, all of equal mass
+  return;
+}
+```
+
+Because all tracers have the same mass, counting them with `atomicAdd` on `u32` sidesteps WGSL's lack of floating-point atomics. A final single-workgroup pass folds the counts into the embryo masses (tracking rock and ice separately), then finds overlapping embryo pairs in parallel (each thread tests the bodies above it, $N^2/2 = 32{,}768$ tests) and lets one thread resolve the rare mergers serially. That avoids races entirely, and each merger conserves mass and momentum exactly: the survivor gets the mass-weighted position and velocity.
+
+**Gas drag** relaxes the velocity toward the sub-Keplerian gas velocity with an exact exponential, $\vec v \leftarrow \vec v_\text{gas} + (\vec v - \vec v_\text{gas})e^{-h\Omega/\text{St}}$, which is stable for any step. Drag is dissipative, so it breaks symplecticity, but that is the physics we want.
+
+**Cost.** Each step is five dispatches: kick bodies, kick tracers, drift bodies, drift tracers, finish. The tracer kick is $O(N \times 256)$: with 131k tracers that is 34 million pair interactions per step, about 1 GFLOP. At 4 steps per frame that fits comfortably in an M1's budget, and the 524k option at the fastest speed will not. Rendering is one instanced quad per tracer, blended additively into a half-float target and tonemapped with $1 - e^{-x}$.
+</Hood>
+
+## Giant planets: core accretion or collapse?
+
+Jupiter and Saturn are mostly hydrogen and helium, so they must have formed while the gas disk was still there: within a few million years. Two scenarios compete.
+
+### Core accretion
+
+In the **core accretion** model (Pollack et al. 1996), a solid core grows first, by planetesimal or pebble accretion. As it grows it binds a gas envelope in hydrostatic equilibrium. The envelope is kept puffed up by the heat of accretion. Its structure is a small version of the stellar-structure problem in [Chapter 11](/ch/stellar-structure/): an envelope can remain in equilibrium only up to a mass comparable to the core's. Beyond a **critical core mass** of about **10 M⊕** (the exact value depends on opacity and on how fast solids arrive), no static envelope exists. The envelope contracts, which lets more gas flow in, which increases the gravity, which makes it contract further: **runaway gas accretion**. The planet can grow from 20 to 300 M⊕ in $10^4$–$10^5$ years, limited only by how fast the disk can supply gas, until it opens a gap and starves itself.
+
+This explains a lot. Giant planets are more common around metal-rich stars (more solids, faster cores): the planet occurrence rate rises about tenfold from [Fe/H] = −0.5 to +0.5. Saturn and Jupiter are enriched in heavy elements relative to the Sun. And Uranus and Neptune, at 15–17 M⊕ and mostly ice and rock, look like cores that reached the threshold too late, when the gas was already dispersing.
+
+<Aside>**Juno's fuzzy core.** Juno's gravity measurements (2017–2022) found that Jupiter does not have a compact rocky core but a "dilute" one, with heavy elements spread through perhaps half its radius. Whether this reflects how the core formed or a later giant impact that stirred it is an open question.</Aside>
+
+### Gravitational instability
+
+The alternative is that a massive, cold disk fragments directly, the way a molecular cloud does (see the Jeans analysis in [Chapter 7](/ch/star-formation/)). A rotating disk is stabilised by pressure on small scales and by rotation (shear) on large ones. It fragments when the **Toomre parameter**
+
+$$
+Q = \frac{c_s\,\Omega}{\pi G \Sigma} \lesssim 1
+$$
+
+and, crucially, when it can cool faster than about one orbital period, so that the fragments do not simply heat up and re-expand. Both conditions hold only in the outer parts (beyond about 50 AU) of unusually massive disks. The fragments come out at several Jupiter masses. **Gravitational instability** is a plausible origin for the rare, massive planets on wide orbits that direct imaging finds, like the four super-Jupiters of HR 8799 at 15–70 AU, but it cannot easily make Jupiter at 5 AU or the far more common Neptunes.
+
+## Terrestrial planets and giant impacts
+
+Inside the snow line, oligarchic growth leaves dozens of Moon-to-Mars-sized embryos after about a million years. They stay separated while the gas damps their eccentricities. When the gas goes, the damping stops. The embryos' mutual perturbations pump up their eccentricities until their orbits cross, and a chaotic phase of **giant impacts** follows, lasting 30–100 million years. Simulations of this phase (Chambers and Wetherill, 1998, and many since) typically produce two to five terrestrial planets, with a spread of outcomes: which is to say, planet formation is chaotic in the sense of [Chapter 3](/ch/three-body/), and the solar system is one draw.
+
+The best-known giant impact made the Moon. About 30–100 Myr after the first solids condensed, a Mars-sized body (often called Theia) struck the proto-Earth at an oblique angle. The debris formed a disk around Earth, which coalesced into the Moon. This explains the Moon's large size, its iron-poor composition (the impact ejected mostly mantle material), and the Earth–Moon system's high angular momentum. Its main puzzle is that the Moon is isotopically almost identical to Earth's mantle (in oxygen, titanium and tungsten), whereas an impactor from elsewhere should have left a different signature. Variants of the model, such as a more energetic impact that thoroughly mixed the two bodies into a synestia, try to fix that.
+
+<Aside>**Mars is too small.** Standard simulations make a Mars of about an Earth mass, not the actual 0.11 M⊕. Mars also formed quickly (in 2–4 Myr, from hafnium–tungsten dating), like a stranded embryo that never joined the giant-impact phase. Something depleted the region beyond 1 AU: one proposal is the Grand Tack, below.</Aside>
+
+## Migration: planets don't stay put
+
+A planet embedded in a gas disk launches spiral density waves at its Lindblad resonances, and those waves carry angular momentum. The outer wave pulls the planet back (the disk outside orbits more slowly), the inner wave pushes it forward. The two torques almost cancel, but not quite, and the net torque on a low-mass planet usually drives it **inward**. Tanaka et al. (2002) derived the timescale for this **Type I migration**:
+
+$$
+\tau_\text{I} \approx \frac{1}{2.7 + 1.1p}\,\frac{M_\star}{M_p}\,\frac{M_\star}{\Sigma r^2}\left(\frac{H}{r}\right)^2\Omega^{-1},
+$$
+
+where $p$ is the power-law index of $\Sigma$. It scales as $1/M_p$: the heavier the planet, the faster it moves. For an Earth-mass planet at 5 AU in the MMSN this is under a million years, and for a 10 M⊕ core about $10^5$ years, well inside the disk lifetime. Taken at face value, every core would fall into its star before becoming a giant. (Corotation torques, which depend on the thermal structure of the disk, can slow or even reverse Type I migration in some regions, creating "planet traps".)
+
+A planet massive enough to open a gap (roughly Saturn's mass or more, depending on $H/r$ and $\alpha$) switches to **Type II migration**: it is locked into the disk's viscous flow and drifts with it, on the viscous timescale $r^2/\nu$, and more slowly still once it outweighs the local disk.
+
+<Sim name="planet-formation-migration" size="text" minHeight={380}>
+**Migration timescales.** The time for a planet to migrate a distance comparable to its orbit, versus its mass, at the chosen orbital radius. Type I (orange) speeds up with planet mass until the planet opens a gap, then Type II (blue) takes over at roughly the disk's viscous timescale. Anything below the red line moves substantially before the disk disperses. Lower α to see gaps open at much lower masses.
+</Sim>
+
+### Hot Jupiters and the Grand Tack
+
+Migration explains **hot Jupiters**, the first exoplanets found (51 Peg b, 1995; see [Chapter 10](/ch/exoplanets/)): gas giants in orbits of a few days, far inside any snow line. They probably formed further out and migrated in through the disk, or were thrown onto eccentric orbits by planet–planet scattering or distant companions and then circularised by tides. The observed spin–orbit misalignments of many hot Jupiters (measured through the Rossiter–McLaughlin effect) suggest that both channels operate.
+
+For the solar system, the **Grand Tack** model (Walsh et al. 2011) proposes that Jupiter migrated inward to about 1.5 AU, then was caught by Saturn in the 3:2 mean-motion resonance. In that configuration, the two planets share a gap and the net torque reverses, and they migrated back out together, "tacking" like a sailing boat. Jupiter's excursion would have truncated the inner disk at about 1 AU (explaining the small Mars) and scattered both rocky and icy bodies into the asteroid belt (explaining its mixed composition). It is elegant, but not the only option: Mars's small mass may also come from an inner disk that was intrinsically depleted beyond 1 AU. Much later, perhaps a few hundred million years in, an instability among the giant planets (the **Nice model**) likely rearranged the outer solar system and scattered Neptune outward into the Kuiper belt.
+
+## The disk disappears
+
+Near-infrared excesses from warm dust fade from most young stars within 3–5 million years; about half of the disks in a young cluster are gone by 2–3 Myr, and almost all by 10 Myr. Accretion onto the star removes most of the mass, but the end comes quickly and from outside: **photoevaporation**. High-energy (ultraviolet and X-ray) radiation from the star heats the disk surface to thousands of kelvin. Beyond the radius where the sound speed of this hot gas exceeds the local escape speed, $r_g \approx GM_\star/c_s^2$ (a few AU for a solar-type star), the gas flows off as a wind. When the accretion rate falls below the wind's mass-loss rate, the wind opens a gap, cutting the inner disk off from its supply. The inner disk drains onto the star in about $10^5$ years, and the outer disk is evaporated from the inside out. Those **transition disks** with large inner holes are observed. Stars born in dense clusters also have their disks eroded from outside by the ultraviolet light of nearby massive stars, as in the Orion Nebula's "proplyds".
+
+After that, planets can only collide, scatter and migrate by gravitational interactions with remaining planetesimals. The debris disks that remain around older stars (Vega, β Pictoris, Fomalhaut) are second-generation dust, ground down from colliding planetesimals.
+
+## What we can see
+
+For most of the 20th century, planet formation theory was built to explain one system, our own. That changed quickly.
+
+- **ALMA's HL Tau (2014).** The first high-resolution ALMA image showed a disk around a star less than a million years old, cut by a set of concentric bright rings and dark gaps. It was the long-baseline test image, and it transformed the field overnight.
+- **DSHARP (2018).** The Disk Substructures at High Angular Resolution Project imaged 20 disks at 5 AU resolution. Nearly all show rings and gaps; some show spirals. Rings are just what pressure traps should look like, and the gaps are widely (though not universally) interpreted as the work of unseen planets, from Neptune to Jupiter mass.
+- **PDS 70 (2018–).** The first unambiguous detection of forming planets: two giant planets, PDS 70 b and c, imaged directly inside the gap of a transition disk, glowing in the infrared and in hydrogen-alpha as gas falls onto them. ALMA has even detected a circumplanetary disk around PDS 70 c, where moons may be forming.
+- **JWST (2022–).** Mid-infrared spectra map the chemistry of the inner few AU: water, CO₂, hydrocarbons, and the silicate dust itself. Disks around very low-mass stars turn out to be carbon-rich, while around Sun-like stars water can dominate. JWST has also found water vapour enhanced in compact disks, as expected if icy pebbles drift across the snow line and evaporate there.
+
+<Aside>**Survivorship everywhere.** Kepler and TESS found that the most common planets in the Galaxy are "super-Earths" and "sub-Neptunes", 1–4 Earth radii, orbiting within 1 AU. The solar system has none. Whether they formed in place or migrated inward, and why our system missed out, is a leading question in planet formation today.</Aside>
+
+## Where we go from here
+
+We have followed matter from a rotating cloud core through a flared, accreting disk, across the snow line, past the drift and fragmentation barriers via the streaming instability and pebble accretion, into runaway and oligarchic growth, through the runaway accretion of gas giants, and through the violent final assembly of the rocky planets. The numbers along the way are worth remembering: disks last 3 Myr; the snow line sits near 3 AU; metre-sized bodies at 1 AU drift into the star in a century; embryos reach Mars mass in $10^5$ years and giant cores need about 10 M⊕.
+
+Many of the forces that shaped the young solar system do not go away when the gas does. Planets keep tugging on each other through resonances, raise tides on their moons and on each other, and grind small bodies into rings. That is the subject of [Chapter 9](/ch/tides/). After that, in [Chapter 10](/ch/exoplanets/), we turn the telescope around and learn how to find the planets this process has made around other stars.

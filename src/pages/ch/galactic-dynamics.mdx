@@ -1,0 +1,289 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: galactic-dynamics
+lede: A galaxy is a hundred billion suns that never touch. They feel only the smooth, collective pull of everything else, and that simple fact explains spiral arms, bars, tidal tails and the fate of the Milky Way.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+
+## A gas of stars that never collides
+
+In [Chapter 2](/ch/orbits/) we solved the two-body problem exactly, and in Chapter 3 we saw that three bodies are already chaotic. A galaxy has about $10^{11}$ bodies. That sounds hopeless. Surprisingly, it is *easier* than three bodies, because with enough bodies the individual pulls blur into a smooth average, and each star simply orbits in that average field.
+
+Think of the Milky Way's disk as a gas whose "molecules" are stars. Two questions decide how the gas behaves: do the molecules collide, and if they do not collide physically, do they scatter each other gravitationally?
+
+Physical collisions are out of the question. A star has a radius of about $R_\odot = 7\times10^{8}$ m. Near the Sun the stars are about 1 pc ($3\times10^{16}$ m) apart. Shrink the Sun to a grain of sand 1 mm across and its nearest neighbour is another grain of sand 40 km away. In the entire history of the disk, only a tiny fraction of stars have ever touched another star. (Dense cluster cores are the exception, and they are where stellar collisions and blue stragglers happen.)
+
+Gravitational scattering is subtler. Every time star A passes star B, B nudges A's velocity a little. One nudge is tiny, but there are many. Do they add up?
+
+### Two-body relaxation
+
+Consider a test star crossing a galaxy of $N$ stars of mass $m$, radius $R$, typical speed $v$. An encounter with impact parameter $b$ deflects it by a velocity kick $\delta v \approx 2Gm/(bv)$: the force $Gm/b^2$ acts for about the time $2b/v$ that the star spends near its partner. The kicks point in random directions, so they add like a random walk: their *squares* add.
+
+Per crossing, the number of stars with impact parameter between $b$ and $b + db$ is the surface density $N/\pi R^2$ times the ring area $2\pi b\,db$. Summing the squared kicks,
+
+$$
+\Delta v^2 \approx \int_{b_\text{min}}^{R} \left(\frac{2Gm}{bv}\right)^2 \frac{2N}{R^2}\, b\,db = 8N\left(\frac{Gm}{Rv}\right)^2 \ln\Lambda,
+\qquad \Lambda = \frac{R}{b_\text{min}}.
+$$
+
+Every factor of two in $b$ contributes equally, which is where the logarithm comes from: distant encounters are weaker but more numerous. Now use the virial theorem (below) to relate speed to mass, $v^2 \approx GNm/R$, and the fractional change per crossing becomes $\Delta v^2/v^2 \approx 8\ln\Lambda/N$. The star forgets its initial orbit after $n_\text{relax} = N/(8 \ln\Lambda)$ crossings. With $b_\text{min} \approx R/N$ (the impact parameter for a 90° deflection), $\Lambda \approx N$.
+
+<KeyEq title="Two-body relaxation time">
+$$
+t_\text{relax} \approx \frac{\htmlData{term=N}{N}}{8\ln \htmlData{term=N}{N}}\; \htmlData{term=tc}{t_\text{cross}}, \qquad t_\text{cross} = \frac{R}{v}
+$$
+<Fragment slot="where"><span data-term="N">N</span> is the number of stars and <span data-term="tc">$t_\text{cross}$</span> the time to cross the system once. After $t_\text{relax}$, the accumulated star–star encounters have changed a typical star's velocity by an amount comparable to the velocity itself. A system much younger than $t_\text{relax}$ is **collisionless**.</Fragment>
+</KeyEq>
+
+Try it. A system of <Var name="Nstars" value={1e11} min={100} max={1e12} log /> stars, <Var name="R" value={10} min={0.001} max={1000} log /> kpc across, with speeds of <Var name="v" value={200} min={1} max={2000} log /> km/s, has a crossing time of <Out name="tcross" /> and a relaxation time of <Out name="trelax" />. That is <Out name="relaxAge" />.
+
+<Aside>Drag the numbers. A globular cluster: $N = 10^5$, $R = 0.005$ kpc, $v = 10$ km/s. A galaxy cluster, counting galaxies as the "stars": $N = 1000$, $R = 1000$ kpc, $v = 1000$ km/s.</Aside>
+
+<Fermi title="Is the Milky Way collisionless?">
+The Milky Way has $N \approx 10^{11}$ stars, $\ln N \approx 25$, so $N/(8\ln N) \approx 5\times10^{8}$. The disk is $R \approx 10$ kpc across, and stars move at $v \approx 200$ km/s, so
+
+$$t_\text{cross} \approx \frac{3\times10^{20}\,\text{m}}{2\times10^{5}\,\text{m/s}} \approx 1.5\times10^{15}\,\text{s} \approx 50\,\text{Myr}.$$
+
+Then $t_\text{relax} \approx 5\times10^{8}\times 50\,\text{Myr} \approx 2\times10^{16}$ yr, a million times the age of the Universe. Star–star encounters are irrelevant to the Galaxy as a whole. By contrast, a globular cluster ($N = 10^5$, $t_\text{cross} \approx 0.5$ Myr) relaxes in about 0.5 Gyr: clusters *are* collisional, which is why they have mass segregation and why they slowly evaporate.
+</Fermi>
+
+The conclusion is the organising principle of this chapter. In a galaxy, **each star moves in the smooth gravitational field of all the others**, as if their mass were spread out like a fluid. Graininess does not matter. The flagship simulation in this chapter uses this fact, and so does every galaxy simulation ever run: the "particles" in an N-body code are not stars but samples of a smooth distribution.
+
+## The equations of a collisionless galaxy
+
+### The collisionless Boltzmann equation
+
+Describe the galaxy by its **distribution function** $f(\vec x, \vec v, t)$: the density of stars in six-dimensional phase space. Stars are not created or destroyed, and they move smoothly (no collisions), so $f$ flows through phase space like an incompressible fluid. The density of stars around any given star, as it moves, stays constant:
+
+<KeyEq title="Collisionless Boltzmann (Vlasov) equation">
+$$
+\frac{\partial f}{\partial t} + \vec v\cdot\nabla_{\vec x} f - \nabla\Phi\cdot\nabla_{\vec v} f = 0, \qquad \nabla^2\Phi = 4\pi G \rho, \quad \rho = \int f\, d^3v
+$$
+<Fragment slot="where">$f$ is the phase-space density of stars (mass per unit volume per unit velocity-volume), $\Phi$ the smooth gravitational potential, and $\rho$ the mass density it produces through Poisson's equation. The first equation is Liouville's theorem applied to stars; the pair is self-consistent: the stars make the potential that moves the stars.</Fragment>
+</KeyEq>
+
+This is the same equation that governs collisionless plasmas (with the sign of the force flipped) and dark matter in cosmology (Chapter 28). It is a partial differential equation in seven dimensions, which is why nobody solves it on a grid. Instead we **sample** $f$ with particles and move each one along its characteristic, that is, integrate its orbit. That *is* an N-body simulation.
+
+### Jeans equations
+
+Taking velocity moments of the Boltzmann equation gives fluid-like equations. Multiply by $v_j$ and integrate over velocities, and for a steady, spherical system you get the **Jeans equation**:
+
+$$
+\frac{d(\nu\sigma_r^2)}{dr} + \frac{2\beta}{r}\nu\sigma_r^2 = -\nu\frac{d\Phi}{dr},
+$$
+
+where $\nu$ is the stellar density, $\sigma_r$ the radial velocity dispersion and $\beta = 1 - \sigma_t^2/\sigma_r^2$ the anisotropy. It is hydrostatic equilibrium ([Chapter 11](/ch/stellar-structure/)) with "pressure" $\nu\sigma^2$ supplied by random stellar motions instead of thermal ones. It is how astronomers weigh elliptical galaxies and dwarf spheroidals from their measured dispersions, and it is a main source of evidence for dark matter in dwarf galaxies. The catch is the anisotropy $\beta$: radial and tangential motions give different masses, and they are hard to separate from line-of-sight velocities alone (the "mass–anisotropy degeneracy").
+
+### The virial theorem
+
+For any bound self-gravitating system in a steady state, the time-average of the kinetic energy $K$ and potential energy $W$ satisfies
+
+<KeyEq title="Virial theorem">
+$$
+2\langle K\rangle + \langle W\rangle = 0 \quad\Longrightarrow\quad M \approx \frac{\sigma^2 R}{G}
+$$
+<Fragment slot="where">$K = \tfrac12\sum m v^2$ and $W$ is the total gravitational potential energy (negative). Up to a structure factor of order a few, the mass of a system is its velocity dispersion squared times its radius, over $G$. The total energy is $E = K + W = -K$: a bound system that loses energy gets *hotter*.</Fragment>
+</KeyEq>
+
+It follows from differentiating $I = \sum m r^2$ twice and averaging (the "moment of inertia" trick; we skip the algebra). Fritz Zwicky applied it to the Coma cluster in 1933 and found that the galaxies moved far too fast for the visible mass: the first evidence for dark matter (Chapter 24).
+
+<Aside>**Negative heat capacity.** $E = -K$ means removing energy speeds stars up. It is why a star that radiates contracts and heats (Chapter 11), and why the cores of star clusters collapse.</Aside>
+
+## Orbits in a galaxy: rosettes and epicycles
+
+A star in a galaxy does not feel a point mass. The mass inside its orbit grows with radius, so the rotation curve is nearly flat, $v_c(R) \approx 220$ km/s at the Sun, rather than Keplerian. The consequence is that orbits do not close. An eccentric orbit traces a **rosette**, its pericentre advancing from one pass to the next.
+
+### Epicycles
+
+For a nearly circular orbit there is a beautiful approximation. Let the star's **guiding centre** move on a circle of radius $R_g$ with angular velocity $\Omega(R_g) = v_c/R_g$. Write the star's radius as $R = R_g + x$ with $x$ small. The radial equation of motion is $\ddot R = -\partial\Phi_\text{eff}/\partial R$, with the effective potential $\Phi_\text{eff} = \Phi + L^2/2R^2$ we met in Chapter 2. Expanding to first order in $x$ gives a harmonic oscillator, $\ddot x = -\kappa^2 x$, with the **epicyclic frequency**
+
+<KeyEq title="Epicyclic frequency">
+$$
+\kappa^2 = R\frac{d\Omega^2}{dR} + 4\Omega^2
+$$
+<Fragment slot="where">$\Omega(R)$ is the circular angular velocity. A star on a slightly eccentric orbit oscillates radially at frequency $\kappa$ while its guiding centre goes round at $\Omega$. For a point mass $\kappa = \Omega$ (the orbit closes: an ellipse). For a uniform sphere $\kappa = 2\Omega$. For a flat rotation curve $\kappa = \sqrt2\,\Omega$.</Fragment>
+</KeyEq>
+
+In a frame rotating with the guiding centre, the star traces a small ellipse, the **epicycle**, backwards (clockwise when the galaxy turns counter-clockwise). The ellipse's axes are in the ratio $2\Omega/\kappa$. Ptolemy's epicycles were a fitting device for planets; these are real.
+
+For a power-law rotation curve $v_c \propto R^{\beta}$ you can check that $\kappa/\Omega = \sqrt{2(1+\beta)}$. At the Sun, the Oort constants measured with Gaia give $\kappa \approx 37$ km/s/kpc and $\Omega \approx 28$ km/s/kpc, so $\kappa/\Omega \approx 1.3$. The Sun's own epicycle carries it about 0.5 kpc in and out of its mean radius every $2\pi/\kappa \approx 170$ Myr, and it bobs through the disk plane vertically every ~70 Myr or so.
+
+<Predict question="In a flat rotation curve (κ = √2 Ω), you watch the orbit from a frame rotating at Ω − κ/2 instead of Ω. What does the orbit look like?" choices={['A wider rosette', 'An almost closed oval centred on the galaxy', 'A straight line through the centre']} answer={1}>
+In a frame rotating at $\Omega_p$, the star completes one radial oscillation every $2\pi/\kappa$ while its angle advances by $2\pi(\Omega - \Omega_p)/\kappa$. With $\Omega_p = \Omega - \kappa/2$ that is exactly $\pi$: two radial oscillations per turn, so the orbit closes into an oval (an $m = 2$ shape) centred on the galaxy. Because $\Omega - \kappa/2$ is nearly constant over a wide range of radii in real galaxies, a whole family of such ovals can be nested and aligned. That is a bar, or a two-armed spiral. Switch the right-hand frame to "Ω − κ/2" and see.
+</Predict>
+
+<Sim name="galactic-dynamics-epicycles" minHeight={420}>
+**Rosettes and epicycles.** Left: a star's orbit in the inertial frame traces a rosette. Right: the same orbit seen from a rotating frame. At the guiding centre's angular velocity (cross), the orbit reduces to a small backwards ellipse, the epicycle. Slide β to −0.5 (a Kepler potential) and the rosette closes into an ellipse; at β = 1 (a uniform sphere) it closes into a centred ellipse. Switch the right frame to Ω − κ/2 to see why two-armed patterns are natural.
+</Sim>
+
+### Resonances
+
+A spiral or bar is a pattern that rotates rigidly at a **pattern speed** $\Omega_p$. A star at radius $R$ sees the pattern pass at frequency $m(\Omega - \Omega_p)$ for an $m$-armed pattern. Three radii are special:
+
+- **Corotation** (CR): $\Omega = \Omega_p$. Stars ride along with the pattern.
+- **Inner Lindblad resonance** (ILR): $\Omega - \kappa/m = \Omega_p$. The star meets an arm each time it reaches its epicyclic pericentre: pushes add up coherently.
+- **Outer Lindblad resonance** (OLR): $\Omega + \kappa/m = \Omega_p$.
+
+At resonances, a weak periodic force builds large responses, like pushing a swing in time. Between the ILR and OLR a spiral density wave can propagate; at the resonances it is absorbed. Bars end near their corotation radius, and the Sun sits close to the Milky Way bar's OLR. Gaia DR3's velocity maps of the solar neighbourhood show ridges and moving groups (the Hercules stream is the famous one) sculpted by just these resonances.
+
+<Aside>**Lindblad.** Bertil Lindblad worked out epicyclic orbits and their resonances in the 1920s–60s, and suggested that spiral arms might be kinematic patterns rather than material ones, an idea Lin and Shu made quantitative.</Aside>
+
+## Spiral structure
+
+### The winding problem
+
+Galaxies rotate differentially: at a flat rotation curve, a star at 4 kpc laps one at 16 kpc four times. Suppose a spiral arm were made of a fixed set of stars. After one rotation at the Sun ($2\pi \times 8\,\text{kpc}/220\,\text{km/s} \approx 220$ Myr), the inner parts would be ahead by a full turn relative to the outer parts. After 10 Gyr, about 40 turns: the arm would be wound as tightly as a watch spring. Real spirals have **pitch angles** of 10–30°, loosely wound. So arms cannot be material objects that persist. That is the **winding problem**.
+
+<Sim name="galactic-dynamics-winding" minHeight={400}>
+**Winding problem vs density wave.** Both disks rotate with the same flat 220 km/s rotation curve. Left: stars painted along a straight bar at t = 0 are carried by differential rotation and quickly wind into a tight spiral. Right: the arm is a pattern that turns rigidly at pattern speed Ω_p; the stars flow through it (they brighten while inside) and the arm keeps its shape forever. Inside the dashed corotation circle stars overtake the pattern; outside, the pattern overtakes the stars. Change the pitch angle and the corotation radius.
+</Sim>
+
+### Density waves: the Lin–Shu hypothesis
+
+In 1964, C. C. Lin and Frank Shu proposed that grand-design spiral arms are **density waves**: a quasi-stationary pattern of compression rotating at a single pattern speed, like a traffic jam on a motorway. Cars enter the jam, slow down, crowd together and leave; the jam itself moves slowly and persists while its members change. Stars' epicyclic motions are organised so they crowd where the arms are. The arms contain only perhaps 10–20% more stars than the gaps.
+
+Arms look far more dramatic than that because of the **gas**. Gas, being collisional and cold, is shocked as it enters the arm's potential well, compresses and forms stars. Massive O and B stars live only ~10 Myr, not long enough to drift far out of the arm, so the arms are lit up by young blue stars and pink HII regions ([Chapter 6](/ch/ism/)). An offset between dust lanes (on the inner, upstream edge inside corotation), young clusters and older stars is exactly what the theory predicts, and it is observed.
+
+Density-wave theory also gives a dispersion relation linking the arm spacing to $\kappa$, the surface density and velocity dispersion. It works well for the tightly-wound limit, and "grand-design" two-armed spirals like M51 and M81 (often driven by a companion or a bar) are the best examples. Many galaxies, though, are **flocculent**: patchy, short arm fragments. Modern simulations show that many arms are transient, continually forming, shearing and re-forming. That is where the next idea comes in.
+
+### Toomre's Q
+
+Why does a disk form any structure at all? A patch of disk of size $\lambda$ collapses under its own gravity unless something resists it. Two things do: random stellar motions ("pressure", which disperses small patches) and rotation (the Coriolis force, which makes large patches spin and stops them collapsing). Gravity wins only if there is a window between the two scales. Working it out properly for a thin disk (Toomre 1964) gives the condition for local stability against axisymmetric collapse:
+
+<KeyEq title="Toomre stability criterion">
+$$
+Q \equiv \frac{\sigma_R\,\kappa}{3.36\,G\,\Sigma} > 1
+$$
+<Fragment slot="where">$\sigma_R$ is the radial velocity dispersion of the stars, $\kappa$ the epicyclic frequency and $\Sigma$ the surface density of the disk. For a gas disk, replace 3.36 by $\pi$ and $\sigma_R$ by the sound speed. $Q \lt 1$: the disk fragments into clumps. $Q \approx 1$–2: it is stable to collapse but responds strongly to perturbations, making spiral arms. $Q \gg 1$: it is smooth and featureless.</Fragment>
+</KeyEq>
+
+A rough derivation: pressure stabilises scales smaller than the Jeans length $\sigma^2/G\Sigma$; rotation stabilises scales larger than $G\Sigma/\kappa^2$. Collapse is possible only if the first is smaller than the second, $\sigma^2/G\Sigma \lt G\Sigma/\kappa^2$, which is $\sigma\kappa/G\Sigma \lt 1$. The 3.36 comes from doing the calculation carefully.
+
+In the solar neighbourhood $\Sigma_\star \approx 35$ M☉/pc², $\sigma_R \approx 35$ km/s and $\kappa \approx 37$ km/s/kpc, giving $Q \approx 1.5$–2. The Milky Way's disk is just stable enough to avoid fragmenting and just unstable enough to be full of structure. That is not a coincidence: a disk with lower $Q$ grows spirals, which scatter stars, raising $\sigma$ and $Q$, until it settles near marginal stability. Galaxy disks self-regulate.
+
+<Predict question="A disk with Q = 1.2 is stable according to Toomre's criterion. What will you see when you run it?" choices={['A perfectly smooth disk', 'Spiral arms that come and go', 'Immediate fragmentation into clumps']} answer={1}>
+Toomre's $Q > 1$ guarantees stability only against **axisymmetric** (ring-like) collapse. Non-axisymmetric perturbations get a boost the criterion ignores: as differential rotation shears a leading wavelet into a trailing one, it spends a little time nearly radial, where self-gravity, shear and epicyclic motion conspire to amplify it by a large factor. This **swing amplification** (Goldreich & Lynden-Bell 1965; Julian & Toomre 1966; Toomre 1981) turns the particle noise of the disk into a pattern of multi-armed, trailing, transient spirals. Only above $Q \approx 2$ does it fade.
+</Predict>
+
+<Sim name="galactic-dynamics-toomre" minHeight={480}>
+**Toomre Q decides.** A razor-thin disk of 16k self-gravitating particles in a fixed dark halo, all orbiting counter-clockwise. The initial random velocities are set from the Toomre criterion for the Q you choose. **Cold** (Q = 0.4): within one rotation the disk shatters into rings, then dense clumps. **Marginal** (Q = 1.2): swing amplification grows flocculent trailing spiral arms from pure particle noise. **Hot** (Q = 2.2): the disk stays smooth. Drag to tilt the view.
+</Sim>
+
+### Bars
+
+About two-thirds of disk galaxies, the Milky Way included, have a **bar**: a rigidly rotating elongated structure made of stars on elongated orbits (the $x_1$ family) aligned with it. In the late 1960s and early 1970s, the first N-body disk simulations had an embarrassing habit: they all formed bars within a rotation or two. Ostriker and Peebles (1973) argued that real disks must be stabilised by a massive, hot, **dark halo**, one of the earliest theoretical arguments for dark matter. The modern view is subtler: halos exchange angular momentum with bars through resonances, and can even make them grow (Athanassoula 2002). The Milky Way's bar is about 4.5–5 kpc long and turns with $\Omega_p \approx 35$–40 km/s/kpc (from Gaia and APOGEE). Bars funnel gas to the centre, fuelling starbursts and black holes (Chapter 21), and thicken over time into the "boxy/peanut" bulge we see in the Milky Way's infrared images.
+
+<Aside>**JWST bars.** JWST has found barred disks at redshift $z \approx 3$ and beyond, less than 2 Gyr after the Big Bang, earlier than many simulations predicted. Cold, massive disks must have settled surprisingly early.</Aside>
+
+## When galaxies collide
+
+Stars in a galaxy never collide, but galaxies do, often. Galaxies are separated by only ~20–100 times their own diameters (compare stars: $10^7$ diameters), and they are pulled together by their dark halos. The Local Group is falling together right now.
+
+### Dynamical friction
+
+A massive body $M$ moving through a sea of lighter bodies pulls them towards its path. They pile up in a gravitational **wake** behind it, and the wake pulls back on $M$. The body slows down and sinks. Chandrasekhar (1943) computed the drag for a uniform background of density $\rho$ with a Maxwellian velocity distribution of dispersion $\sigma$:
+
+<KeyEq title="Chandrasekhar dynamical friction">
+$$
+\frac{d\vec v_M}{dt} = -\frac{4\pi G^2 \htmlData{term=Msat}{M} \rho \ln\Lambda}{v_M^3}\left[\operatorname{erf}(X) - \frac{2X}{\sqrt\pi}e^{-X^2}\right]\vec v_M, \qquad X = \frac{v_M}{\sqrt2\,\sigma}
+$$
+<Fragment slot="where"><span data-term="Msat">$M$</span> is the mass of the sinking body, $\vec v_M$ its velocity relative to the background, $\rho$ the background density and $\ln\Lambda \approx \ln(b_\text{max}v^2/GM)$ the Coulomb logarithm, typically 2–10. The drag is proportional to $M$ (not to the mass of the background particles): heavy objects sink faster. For fast objects it falls as $1/v^2$.</Fragment>
+</KeyEq>
+
+The friction force scales as $M^2$, so the acceleration scales as $M$. In an isothermal halo, a satellite on a circular orbit at radius $r_0$ spirals in on the timescale
+
+$$
+t_\text{fric} = \frac{1.17}{\ln\Lambda}\frac{r_0^2 v_c}{GM}.
+$$
+
+The Large Magellanic Cloud ($M \approx 1$–$2\times10^{11}$ M☉ including its own dark halo, at 50 kpc) gives $t_\text{fric} \approx 1$–2 Gyr: it will merge with the Milky Way in about 2.5 Gyr (Cautun et al. 2019). A globular cluster of $10^5$ M☉ at 5 kpc takes much longer than the age of the Universe. Dynamical friction is also what makes galaxies merge at all: two halos passing through each other lose orbital energy to each other's dark matter.
+
+<Sim name="galactic-dynamics-friction" minHeight={400}>
+**Sinking by dynamical friction.** A satellite starts on a circular orbit in an isothermal dark halo and feels the Chandrasekhar drag. Right: its radius over time (solid) against the analytic result $r_0\sqrt{1 - t/t_\text{fric}}$ (dashed). Raise the satellite mass or the starting radius and watch $t_\text{fric} \propto r_0^2/M$ at work. An eccentric start sinks faster, because friction is strongest at pericentre, where the density is highest and the satellite is slow relative to the halo.
+</Sim>
+
+### Tidal tails and bridges
+
+In 1972, Alar and Juri Toomre ran a remarkably simple computer experiment. They modelled each galaxy as a point mass surrounded by rings of massless test particles, and sent two such galaxies past each other on parabolic orbits. The long, thin tails and bridges that came out matched the strange "peculiar galaxies" in Arp's atlas: the Antennae (NGC 4038/9), the Mice (NGC 4676), the Whirlpool with its companion (M51). Tidal features, they showed, are not ejected by explosions but are purely gravitational.
+
+The mechanism is tidal. The companion's pull differs across the disk: stronger on the near side, weaker on the far side. Stars on the near side are pulled into a **bridge** towards the companion; stars on the far side are left behind and flung into a **tail**. The effect is dramatic when the encounter is **prograde**, that is, the disk spins in the same sense as the companion's orbit. Then, for a while, the disk's stars move alongside the companion and feel its pull in resonance, for much longer than a passing glance. Retrograde disks barely notice. Tails are long because stars at the edge of the disk have the least binding energy and the largest lever arm.
+
+The flagship simulation below does what the Toomres did, with half a million particles, live self-gravitating disks, bulges, dark halos and dynamical friction, on your GPU.
+
+<Predict question="Two identical disk galaxies pass each other. Galaxy A spins in the same sense as the orbit (prograde); galaxy B spins the opposite way (retrograde). Which grows long tidal tails?" choices={['A (prograde)', 'B (retrograde)', 'Both equally']} answer={0}>
+Prograde. In a prograde encounter the disk's stars co-rotate with the companion's apparent motion around them, so near pericentre the tidal force pulls on the same stars for a long time, a near-resonance. In a retrograde encounter the tidal forcing sweeps past the stars quickly and averages out. Choose "One retrograde disk" in the simulation: the gold galaxy is retrograde and stays nearly intact while the blue one throws out a tail.
+</Predict>
+
+<Sim name="galactic-dynamics-merger" size="full" minHeight={560}>
+**Two disk galaxies collide, on your GPU.** Each galaxy is a rotating stellar disk plus bulge embedded in a dark-matter halo (5×10¹⁰ M☉ of disk, 1.5×10¹² M☉ of halo). Watch the first pericentre fling out a **bridge** and two long **tidal tails**, then dynamical friction brings the galaxies back for a second pass and they merge into one blob of stars within ~2–3 Gyr. Try **Head-on** for a ring galaxy like the Cartwheel, and **Milky Way – Andromeda** for our own future. Drag to rotate, scroll or pinch to zoom; colour **by speed** to see the violent relaxation at the moment of merger. Lower the particle count if your frame rate drops.
+</Sim>
+
+<Hood title="a GPU N-body code for galaxy mergers">
+**What is simulated.** Each galaxy has a *live* exponential stellar disk ($M_d = 5\times10^{10}$ M☉, scale length 3 kpc, sampled with 32k–512k particles), a Hernquist bulge and a Hernquist dark halo ($1.5\times10^{12}$ M☉, $a = 36$ kpc). The halos and bulges are *rigid* analytic potentials attached to two centres, whose orbit is integrated on the CPU in double precision, with the Chandrasekhar formula supplying the friction between the halos.
+
+**Why rigid halos?** A live halo is the "right" answer, but to keep the halo's graininess from heating the disk it needs roughly 5–10 times more particles than the disk, and its self-gravity costs $O(N^2)$ (or a tree). A rigid halo is free, perfectly smooth and quiet, and dynamical friction, the one important thing a live halo does in a merger, is put back analytically. The price: the halos do not deform, no momentum flows between disk and halo, and the final remnant's halo is an unrealistic superposition. For showing tails, bridges, rings and the merger sequence, which are set by the disk stars' response to the tide, that is an excellent trade (the same one Toomre & Toomre made, with far more fidelity).
+
+**Force calculation.** A contiguous prefix of the disk particles (1k–8k "sources") carries the disk mass; every particle feels every source through direct summation, plus the analytic potentials. The work is $N \times N_\text{src}$: at 128k particles and 4k sources that is $5\times10^8$ interactions per step. The kernel is **tiled**: a workgroup of 256 threads loads 256 sources into fast on-chip shared memory with one coalesced read each, synchronises, and then every thread accumulates 256 interactions from that tile before loading the next. Each source is fetched from main memory once per workgroup instead of once per thread, so the kernel is limited by arithmetic, not bandwidth.
+
+```wgsl
+var<workgroup> tile : array<vec4f, WG>;
+
+@compute @workgroup_size(WG)
+fn force(@builtin(global_invocation_id) gid : vec3u, @builtin(local_invocation_index) li : u32) {
+  let i = min(gid.x, P.n - 1u);           // idle threads still join the barriers
+  let p = pos[i].xyz;
+  var a = vec3f(0.0);
+  for (var base = 0u; base < P.nSrc; base += WG) {
+    tile[li] = pos[base + li];            // xyz + mass
+    workgroupBarrier();
+    for (var j = 0u; j < WG; j++) {
+      let q = tile[j];
+      let d = q.xyz - p;
+      let inv = inverseSqrt(dot(d, d) + P.eps2);   // Plummer softening
+      a += d * (q.w * inv * inv * inv);
+    }
+    workgroupBarrier();
+  }
+  a += rigid(p);                          // two Hernquist halos + bulges
+  ...
+}
+```
+
+**Softening and noise.** Forces are Plummer-softened, $\vec a = Gm\,\vec d/(d^2 + \epsilon^2)^{3/2}$ with $\epsilon = 360$ pc, which removes the $1/d^2$ singularity so close pairs cannot produce huge kicks. The source subset is a Monte Carlo estimate of the disk's field, and its noise causes exactly the two-body relaxation of the first section: with $N_\text{src} = 4096$ and $\epsilon$ this large, $t_\text{relax}$ is several Gyr, comparable to the run. That is the real limitation of this design, and why production codes use $10^6$–$10^{10}$ particles with tree or particle-mesh gravity.
+
+**Integration.** Kick–drift–kick leapfrog (Chapter 2) with a fixed step $\Delta t = 0.55$ Myr, split into two dispatches per step (half-kick and drift; then force and half-kick). An orbit at 3 kpc has a period of about 90 Myr, so ~160 steps per orbit; the step is also small compared to $\epsilon/v \approx 1.3$ Myr, the time to cross a softening length. Several steps are encoded per frame in one command buffer, each reading its own halo positions through a dynamic uniform offset.
+
+**Precision.** Everything on the GPU is `f32`. Units are chosen so the numbers are $O(1)$: $G = 1$, length 3 kpc, mass $5\times10^{10}$ M☉, so velocity 268 km/s and time 11 Myr. With a 7-digit mantissa, positions up to ~100 units keep ~$10^{-5}$ relative resolution, far below the softening. Leapfrog's energy error stays bounded rather than drifting; the round-off of $10^{3}$-term f32 sums is at the $10^{-6}$ level and is random, so it is swamped by the particle noise above. The halo centres, whose orbit decides *when* things happen, are integrated in f64 on the CPU.
+
+**Why not Barnes–Hut?** A tree reduces the cost to $O(N\log N)$ and is the right tool for $10^6$+ gravitating particles, but on a GPU it means rebuilding an octree every step (sorting by Morton code, building nodes, computing multipoles) and then walking it with divergent, pointer-chasing threads. For $N_\text{src} \lesssim 10^4$ the brute-force tile loop is simpler, branch-free, and on an M1-class GPU it runs a 128k-particle step in about 3 ms. Rendering is instanced quads with additive blending into a 16-bit float target, followed by a tonemapping pass ($1 - e^{-x}$), so dense cores saturate gracefully to white instead of clipping.
+</Hood>
+
+### Mergers make ellipticals
+
+Watch a merger to the end. The second and third passages come quickly, and the two disks dissolve into one smooth, roundish, featureless blob. That is how giant **elliptical galaxies** form: Toomre (1977) proposed it, and simulations since (Barnes & Hernquist 1992, and today's cosmological runs) confirm it.
+
+How can a collisionless system "forget" its initial ordered rotation? During the merger the potential itself fluctuates wildly on the crossing timescale. A star's energy is conserved only in a *static* potential; in a time-varying one, $dE/dt = m\,\partial\Phi/\partial t$, and stars gain or lose energy essentially at random. Lynden-Bell (1967) called this **violent relaxation**. It mixes stars in phase space within a few crossing times, far faster than two-body relaxation, and independent of stellar mass (unlike two-body relaxation, which makes heavy stars sink). The result has a characteristic de Vaucouleurs $R^{1/4}$ surface-brightness profile, like observed ellipticals.
+
+<Aside>**The gas.** Real mergers also have gas, which, being collisional, loses angular momentum in shocks and falls to the centre. That triggers starbursts (the Antennae are forming stars at ~20 M☉ per year) and feeds the central black holes, which may merge (the gravitational waves of Chapter 20 in the supermassive regime, detected by pulsar timing arrays in 2023).</Aside>
+
+Tidal tails carry stars far from the remnant, some falling back over billions of years as shells and streams. Deep images from surveys like Euclid and Rubin/LSST reveal faint shells and streams around a large fraction of nearby massive galaxies, fossils of past mergers. The Milky Way itself swallowed the Gaia–Sausage–Enceladus dwarf about 8–10 Gyr ago; Gaia found its debris in 2018 as a population of stars on strongly radial orbits.
+
+### The Milky Way meets Andromeda
+
+Andromeda (M31) is 780 kpc away and approaching at 110 km/s. Whether it will hit us depends on its *sideways* velocity, which requires measuring its proper motion of a few tens of micro-arcseconds per year. HST (van der Marel et al. 2012) found a small transverse velocity and predicted a head-on-ish collision in ~4 Gyr, with the merger complete in ~6 Gyr. Gaia (van der Marel et al. 2019) found a somewhat larger transverse velocity (~57 km/s), and a 2025 study (Sawala et al.) that included the LMC and M33 found only about a 50% chance of a merger within the next 10 Gyr. The masses of the two halos are uncertain by a factor of about two, and the outcome is sensitive to them.
+
+In the "Milky Way – Andromeda" scenario, the simulation starts today from 780 kpc with a closing speed of 110 km/s; the halo centres are fast-forwarded until they are 150 kpc apart, and then the disks are built and the collision is followed. With the default transverse velocity, the first close passage happens a little over 4 Gyr from now and the merger completes 2–3 Gyr later. Increase the transverse velocity to ~100 km/s and the galaxies miss wide the first time. The Sun, for what it is worth, will be fine: no star will collide with another, although the Solar System may be thrown into the merger remnant's outskirts. The remnant, a giant elliptical sometimes nicknamed "Milkomeda", will be the Local Group's dominant galaxy.
+
+## Where we go from here
+
+Galaxies turn out to be collisionless fluids in six-dimensional phase space. Stars move in a smooth potential; their orbits are rosettes, their small oscillations epicycles; resonances between those oscillations and rotating patterns make bars and spiral density waves; a disk's $Q$ decides whether it fragments, spirals or stays calm. When galaxies meet, tides pull out tails and bridges, dynamical friction drags the halos together, and violent relaxation scrambles two ordered disks into an elliptical.
+
+All of this rested on a silent assumption: that we know where the mass is. The rotation curves, Toomre's bar instability, the timing of mergers and Zwicky's virial masses all point to the same conclusion: most of it is not in stars. The next chapters follow that thread: the dark matter that makes up the halos we have treated as rigid spheres, and how halos and galaxies grew together from tiny fluctuations in the early Universe.

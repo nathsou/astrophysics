@@ -1,0 +1,174 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: main-sequence
+lede: Plot every star you can measure by how bright it is and how hot it looks, and they do not scatter randomly. Almost all of them fall on a single curving band. That band is a mass sequence, a clock, and — because the young universe hadn't had time to make old stars — one of the deepest tools in astronomy.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+
+## A scatter plot that isn't a scatter
+
+Around 1910, Ejnar Hertzsprung and Henry Norris Russell independently made the same plot: stellar luminosity against colour (equivalently, temperature). Hertzsprung, working with Cepheids and cluster photometry in Denmark, noticed that redder stars split into two very different groups — some dim, some enormously bright. Russell, at Princeton, plotted absolute magnitude against spectral class for stars with parallax-based distances and saw the same structure independently. Neither called it the "HR diagram" at first; that name came later, once the tool had proved itself indispensable.
+
+<Aside>**Annie Jump Cannon.** The spectral classes that make the x-axis possible — O, B, A, F, G, K, M, ordered by *decreasing* temperature despite the alphabetically odd order — are Cannon's. Working at Harvard, she classified around 350,000 stellar spectra by eye between 1911 and 1915, reducing an earlier alphabetical scheme (A through Q, based on hydrogen line strength) down to the temperature sequence still in use. "Oh, Be A Fine Girl/Guy, Kiss Me" is the traditional mnemonic; the *why* — hydrogen lines peak at intermediate temperature, not at the hottest stars — is the subject of [Chapter 5](/ch/spectra/).</Aside>
+
+Plot enough stars this way and a pattern jumps out: roughly 90% of all stars, including the Sun, sit on a single diagonal band running from hot-and-bright to cool-and-dim. Hertzsprung and Russell called it the **main sequence**. Off to the side sit two much smaller populations: a sparse band of hot, dim stars in the lower left, and a much larger clump of cool, extremely bright stars in the upper right. We now call these **white dwarfs** and **giants**, and understanding why they are so rare, and why the main sequence is so heavily populated, is most of what this chapter is about.
+
+### Two axes, two conventions
+
+Observers plot **colour–magnitude diagrams**: apparent or absolute magnitude on the y-axis (inverted — brighter is up, because magnitudes run backwards), and a colour index such as $B-V$ on the x-axis. This is what you get directly from two photometric filters, no spectroscopy required, which is why it's the workhorse of cluster surveys: point a telescope, take two exposures, plot 50,000 points.
+
+Theorists plot the same information as a **theoretical HR diagram**: $\log(L/L_\odot)$ on the y-axis, $\log T_\mathrm{eff}$ on the x-axis — running backwards too, with temperature *increasing to the left*. That convention is a fossil of the colour-magnitude diagram it grew out of (blue is left, and blue is hot), but it has stuck for over a century, and every diagram in this chapter follows it. Converting between the two axes needs a colour–temperature relation and a distance (to turn apparent into absolute magnitude, or flux into luminosity) — an entire sub-industry in itself, and the reason Gaia's parallaxes (below) were such a big deal.
+
+<Aside>**Reading backwards, twice.** Magnitudes are backwards (lower number = brighter, a Hipparchus-era convention nobody has successfully abolished) *and* the temperature axis is backwards (hot on the left). Once you've drawn a dozen of these you stop noticing; the first dozen are confusing on purpose, apparently.</Aside>
+
+## Why a band, not a cloud
+
+Stellar structure ([Chapter 11](/ch/stellar-structure/)) shows that a star in hydrostatic and thermal equilibrium is almost completely determined by two numbers: its mass and its chemical composition. Fix those, and the whole internal structure — pressure, density, temperature at every radius, and hence the luminosity and radius at the surface — follows from four coupled differential equations with no free parameters left over. This is the **Vogt–Russell theorem**, stated informally by both Heinrich Vogt and Henry Norris Russell in the 1920s: *for a given mass and composition, there is (generically) one equilibrium structure.*
+
+That is the entire reason the main sequence is a *line* and not a *cloud*. Vary the mass continuously from the smallest hydrogen-burning star to the largest stars that exist, holding composition fixed, and you sweep out a one-parameter family of equilibrium structures — a curve embedded in the $(L, T_\mathrm{eff})$ plane. The main sequence *is* that curve, traced out by mass. Every point on it is a star quietly fusing hydrogen to helium in its core, holding itself up against gravity with the pressure that fusion's heat provides ([Chapters 11–13](/ch/stellar-structure/)). Move along the sequence and you are moving in mass: the lower-right end is red dwarfs a tenth of a solar mass, the upper-left end is blue giants a hundred times heavier.
+
+<KeyEq title="The Vogt–Russell theorem (informal)">
+$$
+(M, X_i) \;\longrightarrow\; \{\rho(r),\, P(r),\, T(r),\, L(r)\} \;\longrightarrow\; (L, R, T_\mathrm{eff})
+$$
+<Fragment slot="where">Given a mass $M$ and a composition $X_i$ (mass fractions of H, He, metals), the structure equations fix the star's internal profile essentially uniquely, and hence its surface luminosity $L$, radius $R$ and $T_\mathrm{eff} = (L/4\pi R^2\sigma)^{1/4}$. Composition and evolutionary stage are the two things that move a star *off* the zero-age main sequence for a given mass.</Fragment>
+</KeyEq>
+
+### The scaling laws, assembled
+
+[Chapters 11–13](/ch/stellar-structure/) derived, from hydrostatic equilibrium, the virial theorem, radiative diffusion and Kramers-like opacities, that the main sequence should approximately obey power laws in mass. They are not exact — real stars have convective cores, changing opacity regimes, and electron degeneracy effects at the low-mass end — but they capture the physics remarkably well over two and a half decades of mass:
+
+<KeyEq title="Main-sequence scaling relations">
+$$
+\frac{L}{L_\odot} \approx \left(\frac{M}{M_\odot}\right)^{3.5}, \qquad \frac{R}{R_\odot} \approx \left(\frac{M}{M_\odot}\right)^{0.8}
+$$
+<Fragment slot="where">Both are piecewise in practice — the luminosity exponent softens toward $\approx 4$ near 1 $M_\odot$ and flattens to $\approx 1$ above $\sim$20 $M_\odot$, where radiation pressure and electron-scattering opacity take over and the star approaches the Eddington limit (below). The radius exponent is closer to 0.6–0.9 depending on the mass range; both are calibrated here to pass through the Sun. Combined with $T_\mathrm{eff}^4 = L/4\pi R^2\sigma$, they predict $T_\mathrm{eff} \propto M^{0.45}$ — massive stars are hotter *and* bigger *and* far brighter, all at once.</Fragment>
+</KeyEq>
+
+<Predict question="Sirius A (2.06 M☉) and the Sun (1 M☉) are both main-sequence stars. Using L ∝ M^3.5, roughly how much brighter is Sirius A?" choices={['About 2×', 'About 8×', 'About 25×', 'About 100×']} answer={2}>
+$2.06^{3.5} \approx 25$. Measured: Sirius A is about 25 L☉ — the naive power law nails it, because 2 M☉ sits comfortably in the exponent's "sweet spot" near solar mass. The mass–luminosity figure below shows where the simple law starts to bend for real stars.
+</Predict>
+
+<Sim name="main-sequence-ml" minHeight={380}>
+**Mass–luminosity and mass–radius relations.** Points are approximate measurements for well-known stars and detached eclipsing binaries (the gold standard for model-independent masses). The <span style="color:var(--accent)">solid orange line</span> is your adjustable power law; the <span style="color:var(--series-1)">dashed line</span> is this chapter's ZAMS fit. Drag the exponent sliders and see how far a single power law can be pushed before the O-star and M-dwarf ends misbehave.
+</Sim>
+
+<Fermi title="How much of the Sun's mass has fused so far?">
+The Sun's luminosity is $L_\odot \approx 3.83\times10^{26}$ W, and it has shone for about $4.6\times10^9$ yr $\approx 1.45\times10^{17}$ s. Total energy radiated so far: $E \approx L_\odot t \approx 5.6\times10^{43}$ J. The pp-chain ([Chapter 12](/ch/fusion/)) converts about 0.7% of fused mass to energy, so the fused mass is $\Delta m = E / (0.007\,c^2) \approx 5.6\times10^{43}/(0.007 \times 9\times10^{16}) \approx 9\times10^{28}$ kg — about **4.5% of the Sun's mass**, or roughly 13 Jupiters' worth of hydrogen quietly turned to helium and sunlight. The Sun has burned through less than a twentieth of its fuel; it is about half-way, in time, through its main-sequence life.
+</Fermi>
+
+## Mass limits: where the sequence starts and stops
+
+The main sequence does not run forever in either direction. Both ends are set by real physical limits, not observational bias.
+
+**The lower end** is set by whether the core ever gets hot enough to ignite sustained hydrogen fusion at all. Below about **0.075 M☉** (roughly 75 Jupiter masses), electron degeneracy pressure — a quantum-mechanical floor on how compressed matter can be pushed by gravity ([Chapter 16](/ch/stellar-death/)) — halts the core's contraction before the temperature reaches the roughly $3\times10^6$ K needed for the proton–proton chain to run efficiently. These failed stars are **brown dwarfs**: they still emit substantial infrared light for a while from the pure gravitational heat of formation, and low-mass ones can briefly fuse deuterium (down to about **13 Jupiter masses**, the "deuterium-burning limit," often used to separate brown dwarfs from planets) and, above roughly 65 Jupiter masses, lithium. But without steady-state hydrogen fusion they simply cool and fade over billions of years, sliding down and to the right on the HR diagram forever rather than settling onto the main sequence.
+
+**The upper end** is set by the **Eddington limit**: above a critical luminosity, radiation pressure on the outer layers overwhelms gravity and the star cannot hold itself together. Observationally, the most massive well-measured stars top out around **150–300 M☉** — R136a1, in the Tarantula Nebula, is the current record-holder at roughly 200 M☉ (revised down from early estimates near 250–320 M☉ as models improved) and about 4.7 million L☉. Whether significantly more massive stars can form and briefly survive is an open question tied to how efficiently radiation pressure disrupts the accreting gas during formation ([Chapter 7](/ch/star-formation/)).
+
+<KeyEq title="Eddington luminosity">
+$$
+L_\mathrm{Edd} = \frac{4\pi G M m_p c}{\sigma_T}
+$$
+<Fragment slot="where">$\sigma_T$ is the Thomson cross-section <C k="sigmaT" />, $m_p$ the proton mass. Above $L_\mathrm{Edd}$, radiation pressure on free electrons (which drag the protons along electrostatically) exceeds gravity's pull on the gas. For $M=100\,M_\odot$, $L_\mathrm{Edd} \approx 1.3\times10^{31}$ W $\approx 3.3\times10^4\,L_\odot \times M/M_\odot$ — and real O stars run close enough to this limit that radiatively driven winds strip mass at rates of $10^{-6}$–$10^{-5}\,M_\odot$/yr, shortening their already-short lives.</Fragment>
+</KeyEq>
+
+<Aside>**Both limits are about pressure fighting gravity**, just at opposite ends: degeneracy pressure stops fusion from starting at the bottom; radiation pressure stops the star from holding together at the top. The main sequence occupies the roughly four-decade window in mass where neither veto applies.</Aside>
+
+<Sim name="main-sequence-sizes" minHeight={340}>
+**Stars to scale.** Red dwarfs are barely visible next to supergiants — Betelgeuse's radius is about 5000 times Proxima Centauri's. Hover a star for its radius and temperature, and drag the zoom slider to see the whole range at once.
+</Sim>
+
+## How long does it last?
+
+A star's main-sequence lifetime is, to order of magnitude, its fuel supply divided by its burn rate: $\tau \sim M/L$. Since $M$ is the fuel reservoir (only the fusable fraction of it, and only the innermost part that ever gets hot enough, but those are roughly constant fractions across masses) and $L$ is literally the rate that reservoir is being spent, and since $L \propto M^{3.5}$:
+
+<KeyEq title="Main-sequence lifetime">
+$$
+\tau_\mathrm{MS} \approx \tau_\odot \left(\frac{M}{M_\odot}\right)^{-2.5}, \qquad \tau_\odot \approx 10^{10}\,\text{yr}
+$$
+<Fragment slot="where">$\tau_\odot$ is calibrated to the Sun's roughly 10-billion-year main-sequence lifespan (of which it has used about 4.6 Gyr). The steep negative exponent is the single most important fact in this chapter: massive stars are not just brighter, they are *dramatically* shorter-lived, because luminosity grows so much faster than fuel supply.</Fragment>
+</KeyEq>
+
+A star of <Var name="Mtau" value={1} min={0.08} max={150} log /> M☉ has $L \approx$ <Out name="LM" /> and a main-sequence lifetime of <Out name="tauM" />.
+
+<Aside>Drag the mass. A 20 M☉ star lives about 3.5 million years — a blink, geologically — while a 0.2 M☉ red dwarf will still be quietly fusing hydrogen when the Sun is a white dwarf, the Milky Way has merged with Andromeda, and every sun-like star that will ever form in the universe already has.</Aside>
+
+This is why **red dwarfs, which make up roughly three-quarters of all stars by number, dominate the count of stars in the universe but contribute almost none of the light** — the Sun alone outshines the thousand nearest red dwarfs combined — while a handful of O and B stars, individually rare, can dominate a galaxy's total luminosity and almost all of its ionising ultraviolet output. An initial mass function ([Chapter 7](/ch/star-formation/)) weighted by $L(M)\propto M^{3.5}$ makes this precise: integrate $\xi(M)\,L(M)$ over a Kroupa or Salpeter IMF and the integral is dominated by its high-mass cutoff, while $\int \xi(M)\,M\,dM$ (the mass budget) is dominated by the low-mass end. **Light comes from a few; mass belongs to the many.**
+
+## Evolution *along* the main sequence
+
+The main sequence is not perfectly static even while a star sits on it. As hydrogen fuses to helium in the core, the mean molecular weight rises, the core must contract and heat slightly to maintain pressure support, and the luminosity creeps up — by roughly 30–40% over the Sun's main-sequence lifetime. Model tracks put the **zero-age Sun at about 70% of its current luminosity**.
+
+This is not a footnote: it is the **faint young Sun paradox**. Geological evidence — liquid water, sedimentary rocks, even microbial fossils — shows Earth had liquid oceans as far back as 3.8–4 billion years ago, when the Sun was some 20–25% dimmer than today. A naive greenhouse-free Earth at that luminosity should have been frozen solid. The leading resolutions involve a much stronger greenhouse effect in the Archean atmosphere (more CO₂, and possibly more CH₄), though the exact accounting is still debated and connects directly to the long-term carbonate–silicate weathering cycle that regulates Earth's climate on geological timescales.
+
+Run the clock forward instead of back, and the same slow brightening becomes an existential deadline: at roughly **1 billion years from now**, solar luminosity will have risen enough (perhaps 10%) to trigger a runaway greenhouse and boil Earth's oceans away entirely — long before the Sun leaves the main sequence at all, let alone becomes a red giant in about 5 billion years ([Chapter 15](/ch/giants/)). Habitability has an expiry date set by main-sequence evolution alone.
+
+<Aside>**Population III, II, I.** Composition, the other Vogt–Russell input, shifts the whole main sequence slightly. The very first stars (Population III) formed from primordial hydrogen and helium with no metals at all; lower opacity and different core physics let them form at higher masses and burn slightly hotter and bluer for their mass than Population I stars like the Sun, which formed from gas enriched by many prior generations. Population II stars, found in globular clusters and galactic halos, sit in between. Metallicity is why two clusters of the same age can still look subtly different on the HR diagram.</Aside>
+
+## Clusters: the main sequence as a stopwatch
+
+A single star's HR-diagram position tells you its mass and roughly its age — *if* you already know when it formed. A star **cluster** removes that ambiguity almost entirely, because every star in it (to good approximation) formed at the same time from the same cloud, at the same distance, with the same composition. That turns the cluster HR diagram into a controlled experiment: mass is the only thing that varies from star to star, and age is the same free parameter for the whole population.
+
+As a cluster ages, its main sequence doesn't move uniformly — it **peels off from the top**. The most massive stars, with the shortest lifetimes, exhaust their core hydrogen first and evolve away from the main sequence into giants, while lower-mass stars are still sitting patiently where they started. The **main-sequence turn-off** — the mass (equivalently, luminosity and temperature) at which stars are *just* leaving the main sequence — is a direct clock: invert $\tau_\mathrm{MS}(M)$ using the turn-off mass and you have the cluster's age.
+
+<Predict question="A cluster's main-sequence turn-off is at 2 M☉. Roughly how old is the cluster?" choices={['~10 Myr', '~300 Myr', '~1.8 Gyr', '~14 Gyr']} answer={2}>
+$\tau_\mathrm{MS}(2\,M_\odot) \approx 10^{10}\times 2^{-2.5} \approx 1.8\times10^9$ yr. A turn-off at 2 M☉ is characteristic of a cluster a couple of billion years old — younger than the Hyades' hotter turn-off, older than the Pleiades' much hotter one, roughly in M67's territory.
+</Predict>
+
+The set of predicted HR-diagram positions for a whole coeval, single-metallicity population at a given age is an **isochrone** ("same time" — literally a curve of points all at one age). Fitting an observed cluster's photometry to a grid of model isochrones, varying age, distance and metallicity until the turn-off, giant branch and (if present) white-dwarf sequence all line up simultaneously, is *the* standard technique for dating star clusters.
+
+<Sim name="main-sequence-cluster" size="wide" minHeight={480}>
+**An aging star cluster.** A few thousand stars are sampled from a Kroupa initial mass function and placed on the zero-age main sequence; advancing the age slider (or pressing play) evolves every star with the same schematic post-main-sequence track — subgiant → red-giant branch → clump/AGB for lower masses, blueward supergiant excursions for the most massive, ending as a white dwarf (bottom left) or a brief supernova flash before vanishing. Watch the turn-off (the vertical marker) sweep down the main sequence, and the cluster image on the right redden as its brightest, bluest stars die off. Try the four preset ages.
+</Sim>
+
+### Open vs. globular: the universe's own age markers
+
+**Open clusters** — loose, young associations like the Pleiades (~100 Myr) or Hyades (~625 Myr), still embedded in or recently emerged from their parent molecular cloud — have hot, luminous turn-offs and only a handful of members (tens to a few thousand stars); they disperse within a few hundred million years as galactic tides and stellar encounters strip them apart. M67 (~4 Gyr) is an unusually long-lived exception, holding together long enough to become a favourite benchmark for solar-metallicity stellar models precisely because it is old *and* nearby *and* still intact.
+
+**Globular clusters** are a different animal: dense, roughly spherical swarms of $10^5$–$10^6$ stars, gravitationally bound tightly enough to survive for the age of the universe. Their turn-offs sit at $\sim$0.8 $M_\odot$ or below — 47 Tucanae and Omega Centauri clock in around 12–13 Gyr — making them some of the **oldest directly-dated objects known**. That a globular cluster's isochrone-fit age must be *less than* the age of the universe inferred independently from the cosmic microwave background (Chapters 26–27) was, historically, an important cross-check on both measurements; in the 1990s, globular-cluster ages briefly appeared to *exceed* the then-favoured cosmological age, a tension resolved by better distances (revised via Hipparcos parallaxes) and by recognising the accelerating expansion ([Chapter 25](/ch/expansion/)) that makes the universe older, at fixed expansion rate, than a matter-only model would predict.
+
+<Hood title="sampling an IMF and aging a cluster">
+The cluster sim never integrates a single stellar-structure equation. Every star's brightness and temperature at any age is a closed-form evaluation of `evolveStar(mass, age)` in `src/sims/main-sequence/zams.ts`, so scrubbing the age slider is exact and free of simulation state — no accumulated error, no need to replay history.
+
+**Sampling the IMF.** A Kroupa-style broken power law, $dN/dM \propto M^{-1.3}$ for 0.1–0.5 M☉ and $\propto M^{-2.3}$ above, is sampled by inverting its cumulative distribution — the standard trick for drawing from any power law without rejection sampling:
+
+```ts
+export function sampleKroupaMass(rng: () => number): number {
+  const m0 = 0.1, m1 = 0.5, m2 = 60;
+  const a1 = 1.3, a2 = 2.3;
+  const k2 = Math.pow(m1, a2 - a1);           // continuity at 0.5 M☉
+  const I1 = (Math.pow(m1, 1 - a1) - Math.pow(m0, 1 - a1)) / (1 - a1);
+  const I2 = (k2 * (Math.pow(m2, 1 - a2) - Math.pow(m1, 1 - a2))) / (1 - a2);
+  const u = rng() * (I1 + I2);
+  if (u <= I1) return Math.pow(u * (1 - a1) + Math.pow(m0, 1 - a1), 1 / (1 - a1));
+  const u2 = u - I1;
+  return Math.pow((u2 * (1 - a2)) / k2 + Math.pow(m1, 1 - a2), 1 / (1 - a2));
+}
+```
+
+Each segment's cumulative integral has a closed form because it's a pure power law; matching a uniform random draw against the combined CDF and inverting analytically gives an exact, O(1)-per-star sample — no loop, no rejection, no bias.
+
+**ZAMS placement** uses this chapter's power-law fits for $L(M)$ and $R(M)$ (see the mass–luminosity figure above), with $T_\mathrm{eff}$ derived self-consistently from $L=4\pi R^2\sigma T^4$ rather than fit separately — a real stellar-evolution grid, such as the widely used **MIST** (MESA Isochrones and Stellar Tracks) or **PARSEC** grids, instead tabulates $(L, R, T_\mathrm{eff}, \ldots)$ from full structure-and-nucleosynthesis calculations on a dense $(M, \text{age}, [\text{Fe/H}])$ grid, and an isochrone-fitting pipeline interpolates within that grid rather than evaluating a handful of power laws. That buys real accuracy — captured convective overshoot, mass loss, opacity tables — at the cost of needing gigabytes of precomputed tracks and careful interpolation across evolutionary phases that don't line up simply in age (a star's radius as a function of age is not smooth across, say, the onset of core helium burning, which is why isochrone grids interpolate in a monotonic "equivalent evolutionary phase" variable rather than age directly).
+
+**Post-main-sequence evolution** here is a hand-tuned, continuous but explicitly schematic function of the post-turn-off fraction of time — subgiant/RGB brightening and cooling, a horizontal-branch "hook," an AGB rise, then either white-dwarf cooling or (above 8 M☉) a supernova flash and removal. It reproduces the *qualitative* shape of a real isochrone's post-MS hook and giant branch without claiming quantitative accuracy — a genuine grid is doing detailed nuclear-network and mixing-length calculations where this sim does a labelled approximation.
+</Hood>
+
+## Fine structure: what Gaia sees
+
+<Sim name="main-sequence-hr" minHeight={380}>
+**A real, observational HR diagram.** Named stars plus a synthetic sample standing in for a broader survey, coloured by blackbody temperature. Hover any point for its name (or luminosity class, for the unlabelled sample), temperature and luminosity. Compare this scatter to the clean theoretical curve in the flagship sim — real photometry has scatter, unresolved binaries and measurement error that a pure ZAMS line does not.
+</Sim>
+
+Everything above describes the main sequence as a single clean line, which is a first approximation. **Gaia**, ESA's astrometric mission, has measured parallax-based distances (and hence absolute luminosities) for well over a billion stars, and its HR diagrams reveal that the main sequence has genuine substructure: a **split** in the lower main sequence tied to metallicity and to unresolved binarity (an unresolved equal-mass binary sits half a magnitude above the single-star sequence, since it has twice the luminosity at the same colour), gaps associated with changes in the dominant opacity source, and a visibly broadened giant branch that isochrone models still work to reproduce in detail. What looked, a century ago, like a fairly narrow band turns out, at Gaia's precision, to encode composition, multiplicity and dynamical history all at once — the main sequence rewards ever more precise measurement rather than becoming boring once you know the basic story.
+
+## Where we go from here
+
+The main sequence is where a star spends essentially all of its active life, and mass is the one dial that determines almost everything about that life: how bright, how hot, how long, and how it will die. [Chapter 15](/ch/giants/) follows what happens when the core hydrogen finally runs out — the giant branches this chapter's cluster sim only sketches schematically — and [Chapter 16](/ch/stellar-death/) follows the endpoints: white dwarfs for most stars, and the catastrophic core collapse that ends the most massive ones. Both chapters will reuse this one's central lesson: a star's mass, set once at birth, is a life sentence.

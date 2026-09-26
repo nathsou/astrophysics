@@ -1,0 +1,353 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: gravitational-waves
+lede: When two black holes spiral together they shake spacetime itself. By the time the ripple reaches Earth it stretches a 4-kilometre ruler by a thousandth of a proton, and we can hear it.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+
+## Ripples in the metric
+
+In Newtonian gravity, if the Sun vanished, the Earth would feel the change instantly. Newton himself found this "action at a distance" absurd. General relativity fixes it: gravity is the geometry of spacetime, and changes in that geometry propagate at a finite speed. They propagate as **gravitational waves**: travelling wrinkles in the metric, sourced by accelerating masses, moving at the speed of light <C k="c" />.
+
+In [Chapter 19](/ch/black-holes/) we met the full, non-linear Einstein equations near black holes. Far from any source, spacetime is almost flat, and that is where waves are easy to understand. So we linearise.
+
+### Linearised gravity
+
+The metric $g_{\mu\nu}$ is the object that turns coordinate differences into physical distances and times: $ds^2 = g_{\mu\nu}\,dx^\mu dx^\nu$. Flat spacetime has the Minkowski metric $\eta_{\mu\nu} = \mathrm{diag}(-1,1,1,1)$ (in units with $c=1$). Far from sources we write
+
+$$
+g_{\mu\nu} = \eta_{\mu\nu} + h_{\mu\nu}, \qquad |h_{\mu\nu}| \ll 1,
+$$
+
+and keep only terms linear in the small perturbation $h_{\mu\nu}$. That is all "linearised gravity" means. It is the same move an engineer makes when studying small vibrations of a bridge: expand around equilibrium and drop the squares.
+
+General relativity has a large gauge freedom (you can relabel coordinates however you like), and a careful choice tidies the equations. In the *Lorenz gauge*, the trace-reversed perturbation $\bar h_{\mu\nu} = h_{\mu\nu} - \tfrac12\eta_{\mu\nu}h$ obeys
+
+$$
+\Box\,\bar h_{\mu\nu} = -\frac{16\pi G}{c^4}\,T_{\mu\nu},
+$$
+
+where $\Box = -\partial_t^2/c^2 + \nabla^2$ is the wave operator and $T_{\mu\nu}$ is the stress–energy of the source. This is exactly the structure of electromagnetism in Lorenz gauge, $\Box A_\mu = -\mu_0 J_\mu$, with a tensor instead of a vector. In vacuum it is the wave equation: **the perturbation travels at $c$**.
+
+<Aside>**Einstein's own doubts.** Einstein predicted gravitational waves in 1916, then spent two decades unsure whether they were real or a coordinate artefact. In 1936 he and Nathan Rosen submitted a paper claiming they did not exist; a referee (Howard Robertson) found the error. The debate was only settled at the 1957 Chapel Hill conference, by Felix Pirani and Richard Feynman's "sticky bead" argument.</Aside>
+
+### The transverse–traceless gauge
+
+Even in Lorenz gauge there is leftover freedom. Use it all up and a plane wave travelling along $z$ can be written with only two independent numbers. This is the **transverse–traceless (TT) gauge**:
+
+$$
+h^{\rm TT}_{\mu\nu} =
+\begin{pmatrix} 0 & 0 & 0 & 0 \\ 0 & h_+ & h_\times & 0 \\ 0 & h_\times & -h_+ & 0 \\ 0 & 0 & 0 & 0 \end{pmatrix}
+\cos\!\big(\omega(t - z/c)\big).
+$$
+
+*Transverse*: nothing in the $t$ or $z$ rows, so the wave only acts in the plane perpendicular to its motion. *Traceless*: the diagonal entries are $+h_+$ and $-h_+$, so whatever it stretches in one direction it squeezes in the other. The two numbers $h_+$ ("plus") and $h_\times$ ("cross") are the wave's two **polarisations**. Electromagnetic waves also have two polarisations, but they are vectors, and a vector pattern repeats after rotating by 360°. The gravitational polarisations are tensors, and they repeat after 180°: rotate the plus pattern by 45° and it *becomes* the cross pattern.
+
+### What a wave does to a ring of masses
+
+Coordinates in TT gauge are tied to freely falling particles, so a single particle does not "move" in them. But the *proper distance* between two free particles does change. For particles at separation $(x, y)$ in the transverse plane, to first order in $h$ the physical displacement is
+
+$$
+\delta x = \tfrac12\,(h_+ x + h_\times y), \qquad \delta y = \tfrac12\,(h_\times x - h_+ y).
+$$
+
+A ring of test masses breathes into an ellipse along $x$, then along $y$, at the wave's frequency. The strain, the fractional change of length, is $\Delta L / L = h/2$ along the axes. That factor of a half matters when you read detector papers: "strain $h$" means a length change of $hL/2$ per arm.
+
+<Predict question="A circularly polarised wave (h₊ = A cos ωt, h× = A sin ωt) passes through the ring. What does each individual particle do?" choices={['Oscillates back and forth radially', 'Moves on a small circle', 'Stays still; only the ring rotates rigidly']} answer={1}>
+Each particle traces a small circle around its rest position. The *shape* is an ellipse of fixed eccentricity whose axes rotate at half the wave's angular frequency. No particle actually goes round the ring; it just looks as if the ellipse rotates. Try "circular" in the figure below and watch the highlighted particle.
+</Predict>
+
+<Sim name="gravitational-waves-ring" size="text" minHeight={420}>
+**A ring of free-falling test masses** in the TT gauge, with the wave travelling out of the screen. Switch between **+** and **×**: they are the same pattern rotated by 45°, not 90°. Use **ψ** to rotate a linearly polarised wave, and choose **circular** to see each particle move on its own little circle (the orange trail). The amplitude is exaggerated by about 10²⁰.
+</Sim>
+
+## Why the quadrupole?
+
+Electromagnetic radiation is dominated by the *dipole*: a charge sloshing back and forth radiates power $P \propto \ddot{\vec d}^{\,2}$, where $\vec d = \sum q\,\vec r$ is the dipole moment (Larmor's formula). Gravity has no dipole radiation, and the reason is momentum conservation.
+
+The gravitational analogue of the dipole moment is the mass dipole $\vec d = \sum m\,\vec r = M\vec R_{\rm cm}$. Its first derivative is the total momentum, $\dot{\vec d} = \vec P$, and its second derivative is $\dot{\vec P} = 0$ for any isolated system. So the source term that would drive dipole radiation vanishes identically. The "magnetic" dipole is the angular momentum $\sum m\,\vec r\times\vec v$, which is also conserved. In electromagnetism the charge-to-mass ratio differs between particles (electrons and protons slosh differently), so the dipole survives; in gravity every "charge" is its own inertial mass, and the equivalence principle kills the dipole.
+
+<Aside>**Monopole too.** A spherically symmetric star that pulsates does not radiate either. The monopole moment is the total mass–energy, which is conserved, and Birkhoff's theorem says the exterior of any spherical body is static Schwarzschild. You need a lopsided, changing mass distribution.</Aside>
+
+The first moment that *can* change is the **mass quadrupole**. Its trace-free ("reduced") form is
+
+$$
+I_{jk} = \int \rho\left(x_j x_k - \tfrac13\delta_{jk} r^2\right) d^3x.
+$$
+
+A spinning dumbbell, a binary star or a lumpy neutron star has a time-varying $I_{jk}$. A spinning sphere or cylinder about its axis does not.
+
+### The quadrupole formula by dimensional analysis
+
+Solving the wave equation with a retarded Green's function, exactly as for the retarded potentials of electromagnetism, and expanding for a slow, compact source gives Einstein's quadrupole formula. The derivation is a page of index gymnastics we will skip. We can get the answer within a factor of a few from dimensions alone.
+
+*Amplitude.* $h$ is dimensionless, falls off as $1/r$ (radiation always does, so that the flux $\propto h^2$ falls as $1/r^2$), and is sourced by the second time derivative of the quadrupole (the lowest derivative not killed by conservation laws). $G\,\ddot I/r$ has units of $\text{m}^3\,\text{kg}^{-1}\,\text{s}^{-2} \cdot \text{kg}\,\text{m}^2\,\text{s}^{-2} / \text{m} = \text{m}^4\,\text{s}^{-4}$, so dividing by $c^4$ makes it dimensionless:
+
+$$
+h \sim \frac{G}{c^4}\frac{\ddot I}{r}.
+$$
+
+*Luminosity.* The energy flux of a wave is proportional to (amplitude × frequency)² times $c^3/G$ (the only combination with the right units, and the reason gravity is "stiff": $c^3/G \approx 4\times10^{35}\,\text{kg/s}$). So $L \sim r^2 \cdot (c^3/G)\,\dot h^2 \sim (G/c^5)\,\dddot I^{\,2}$. The full calculation fixes the numbers:
+
+<KeyEq title="The quadrupole formula">
+$$
+\htmlData{term=h}{h_{jk}^{\rm TT}} = \frac{2G}{c^4\,\htmlData{term=r}{r}}\,\ddot{\htmlData{term=I}{I}}{}_{jk}^{\rm TT}\!\left(t - \frac{r}{c}\right),
+\qquad
+\htmlData{term=L}{L_{\rm GW}} = \frac{G}{5c^5}\left\langle \dddot{I}_{jk}\,\dddot{I}_{jk} \right\rangle
+$$
+<Fragment slot="where"><span data-term="h">$h^{\rm TT}_{jk}$</span> is the strain at distance <span data-term="r">$r$</span>, evaluated at the **retarded time** $t - r/c$. <span data-term="I">$I_{jk}$</span> is the reduced (trace-free) mass quadrupole, and dots are time derivatives. <span data-term="L">$L_{\rm GW}$</span> is the power carried off, with $\langle\cdot\rangle$ an average over several cycles and a sum over $j,k$. "TT" means: project onto the plane transverse to the line of sight and remove the trace.</Fragment>
+</KeyEq>
+
+The prefactor $G/c^5 \approx 2.8\times10^{-53}\,\text{W}^{-1}$ (in the sense that $L = (G/c^5)\times\text{(power)}^2$) is devastatingly small. Write $\dddot I \sim M R^2 \omega^3 = M v^2 \omega$ for a mass $M$ moving at speed $v$ on a scale $R$. Then
+
+$$
+L_{\rm GW} \sim \frac{G}{c^5}\,M^2 v^4 \omega^2 = \frac{c^5}{G}\left(\frac{GM}{Rc^2}\right)^{2}\left(\frac{v}{c}\right)^{6}.
+$$
+
+The scale $c^5/G = 3.6\times10^{52}$ W is enormous, more than all the stars in the observable universe put together, but it is multiplied by the square of the compactness and the sixth power of $v/c$. Everyday objects score essentially zero on both.
+
+<Fermi title="Can you make gravitational waves in the lab?">
+Spin a steel beam: $M = 500$ t, length 20 m, at 5 revolutions per second (it would be close to tearing itself apart). Then $I \sim MR^2 \approx 5\times10^{5}\times10^{2} = 5\times10^{7}\,\text{kg m}^2$ and $\omega_{\rm GW} = 2\Omega \approx 60\,\text{s}^{-1}$, so $\dddot I \sim I\omega^3 \approx 10^{13}$ in SI units.
+
+$$L \sim \frac{G}{5c^5}\,\dddot I^{\,2} \approx \frac{6.7\times10^{-11}}{5\times2.4\times10^{42}}\times10^{26} \approx 5\times10^{-28}\,\text{W}.$$
+
+A single visible photon carries $4\times10^{-19}$ J, so this beam would emit one photon's worth of energy every 25 years or so. Gravitational-wave astronomy is only possible because nature supplies objects with $GM/Rc^2 \sim 0.5$ and $v \sim c/2$: merging black holes and neutron stars.
+</Fermi>
+
+## The inspiral chirp
+
+The cleanest source is a circular binary: masses $m_1$ and $m_2$, total mass $M = m_1+m_2$, reduced mass $\mu = m_1m_2/M$, separation $a$ and orbital angular frequency $\Omega$, with $\Omega^2 = GM/a^3$ (Kepler III, [Chapter 2](/ch/orbits/)).
+
+### Luminosity of a circular binary
+
+Put the orbit in the $xy$ plane. In the centre-of-mass frame, the relative position is $\vec x = a(\cos\Omega t, \sin\Omega t, 0)$ and $I_{jk} = \mu\,(x_jx_k - \tfrac13\delta_{jk}a^2)$. So
+
+$$
+I_{xx} = \tfrac12\mu a^2\cos 2\Omega t + \text{const},\qquad I_{xy} = \tfrac12\mu a^2 \sin 2\Omega t,\qquad I_{yy} = -I_{xx}+\text{const}.
+$$
+
+Two things jump out. First, **the waves come out at twice the orbital frequency**: the mass distribution looks the same after half an orbit. Second, each third derivative brings down a factor of $2\Omega$, so $\dddot I \sim 4\mu a^2\Omega^3$. Summing the components and averaging:
+
+<KeyEq title="GW luminosity of a circular binary">
+$$
+L_{\rm GW} = \frac{32}{5}\,\frac{G^4}{c^5}\,\frac{\htmlData{term=m1}{m_1}^2\htmlData{term=m2}{m_2}^2\,(m_1+m_2)}{\htmlData{term=a}{a}^5}
+= \frac{32}{5}\frac{c^5}{G}\left(\frac{G\mathcal{M}\,\pi f}{c^3}\right)^{10/3}
+$$
+<Fragment slot="where"><span data-term="m1">$m_1$</span>, <span data-term="m2">$m_2$</span> are the masses and <span data-term="a">$a$</span> the orbital separation. In the second form $f = \Omega/\pi$ is the gravitational-wave frequency and $\mathcal M$ is the chirp mass, defined below. The $a^{-5}$ makes the process a runaway: halve the orbit and the power goes up 32-fold.</Fragment>
+</KeyEq>
+
+For the Earth–Sun system this gives about 200 W, a desk lamp, drawn from an orbital energy of $2.6\times10^{33}$ J. The orbit will decay in $10^{23}$ years. For two $30\,M_\odot$ black holes 350 km apart it gives $10^{49}$ W.
+
+### Orbital decay and the chirp mass
+
+The binary pays for that luminosity out of its orbital energy $E = -Gm_1m_2/2a$. Setting $dE/dt = -L_{\rm GW}$ gives $da/dt \propto -a^{-3}$, which integrates to $a^4 \propto (t_c - t)$, where $t_c$ is the coalescence time. Translating separation into gravitational-wave frequency via Kepler III, every factor of the individual masses collapses into one combination:
+
+$$
+\mathcal{M} = \frac{(m_1 m_2)^{3/5}}{(m_1+m_2)^{1/5}} = \mu^{3/5}M^{2/5}.
+$$
+
+This is the **chirp mass**. It is the one mass the leading-order waveform knows about, and so it is what detectors measure best. Equal $30+30\,M_\odot$ black holes have $\mathcal M = 26\,M_\odot$; the double neutron star GW170817 had $\mathcal M = 1.186\,M_\odot$, measured to 0.1%.
+
+<KeyEq title="The chirp">
+$$
+\dot f = \frac{96}{5}\pi^{8/3}\left(\frac{G\htmlData{term=Mc}{\mathcal M}}{c^3}\right)^{5/3} f^{11/3},
+\qquad
+f(t) = \frac{1}{\pi}\left(\frac{5}{256}\,\frac{1}{t_c - t}\right)^{3/8}\left(\frac{G\mathcal M}{c^3}\right)^{-5/8}
+$$
+<Fragment slot="where">$f$ is the gravitational-wave frequency (twice the orbital frequency), <span data-term="Mc">$\mathcal M$</span> the chirp mass, $t_c$ the coalescence time. Measure $f$ and $\dot f$ and you have $\mathcal M$ directly. The amplitude grows too: $h \propto \mathcal M^{5/3} f^{2/3}/d$. Rising pitch and rising volume make the "chirp".</Fragment>
+</KeyEq>
+
+Inverting gives the time left before merger, $t_c - t = \tfrac{5}{256}(\pi f)^{-8/3}(G\mathcal M/c^3)^{-5/3}$, which is enormously sensitive to both numbers. Try it: a binary with chirp mass <Var name="Mc" value={28} min={0.5} max={1e6} log /> M☉ radiating at <Var name="f0" value={30} min={1e-5} max={1000} log /> Hz will merge in <Out name="tauc" />. Its frequency is rising at <Out name="fdotc" />, and it has <Out name="ncyc" /> gravitational-wave cycles left before the innermost stable circular orbit.
+
+<Aside>Drag the orange numbers. Set $\mathcal M = 1.19$ and $f = 10$ Hz for a neutron-star pair entering LIGO's band: about 17 minutes and ~16,000 cycles. Set $\mathcal M = 4\times10^5$ and $f = 10^{-4}$ Hz for a supermassive pair in LISA's band.</Aside>
+
+At 30 Hz a GW150914-like binary has only 0.2 s left. A neutron-star pair at the same frequency has almost a minute, and thousands of cycles: the more cycles, the more precisely the phase pins down the parameters.
+
+### Merger and ringdown
+
+The quadrupole formula assumes slow motion and weak fields. Both fail at the end. Around the innermost stable circular orbit ($a \approx 6GM/c^2$ for a test particle, [Chapter 19](/ch/black-holes/)) the orbit stops being an orbit and the holes **plunge**. From there on only numerical relativity, solving the full Einstein equations on supercomputers (a problem cracked in 2005 by Frans Pretorius and, weeks later, by the Brownsville and NASA Goddard groups), gives the waveform. In practice, analyses use waveform families (effective-one-body, phenomenological, NR surrogates) calibrated to hundreds of such simulations.
+
+Qualitatively: the frequency and amplitude peak as the horizons merge into a single, distorted, spinning black hole. That remnant then sheds its lumps by ringing like a struck bell. The ringing is a set of **quasinormal modes**: damped sinusoids whose frequencies and damping times depend *only* on the final mass and spin (the no-hair theorem made audible). For the dominant mode of a remnant with spin $\chi \approx 0.7$,
+
+$$
+f_{\rm QNM} \approx 1.7\,\text{kHz}\left(\frac{10\,M_\odot}{M_f}\right),\qquad \tau \approx 0.6\,\text{ms}\left(\frac{M_f}{10\,M_\odot}\right).
+$$
+
+A $62\,M_\odot$ remnant rings at about 280 Hz and dies away within a few milliseconds. Measuring two or more modes and checking they agree with one Kerr black hole is "black-hole spectroscopy", now a routine test of GR with O4 events.
+
+<Aside>**Where the energy goes.** GW150914 radiated $3\,M_\odot c^2 \approx 5\times10^{47}$ J, most of it in the last 0.2 s. Its peak luminosity, $3.6\times10^{49}$ W, exceeded the combined light output of every star in the observable universe by a factor of ~50.</Aside>
+
+### The simulation
+
+The flagship figure puts all of this together. The two holes spiral in on the orbit the quadrupole formula dictates. Beneath them, a sheet represents the $h_+$ field in the orbital plane. Each point of the sheet shows the wave that left the binary a time $r/c$ ago, so the ripples form a two-armed spiral: the shape of the orbit, frozen into the outgoing wave and stretched by the chirp.
+
+<Predict question="In the orbital plane, how far apart are successive crests of the spiral, compared with the orbital separation early in the inspiral?" choices={['About the same as the separation', 'A few times the separation', 'Tens of times the separation']} answer={2}>
+The wavelength is $\lambda = c/f = \pi c/\Omega$, while the orbital speed is $v = \Omega a/2$ for each hole (equal masses). So $\lambda/a = \pi c/(2v)$. At $v \approx 0.15c$, early in the figure, $\lambda \approx 10a$: the source is much smaller than the waves it makes. That is precisely the "slow-motion" condition that makes the quadrupole formula accurate. It fails only near merger, where $v \to c/2$ and $\lambda$ shrinks to a few times $a$.
+</Predict>
+
+<Sim name="gravitational-waves-inspiral" size="wide" minHeight={640}>
+**A binary black-hole inspiral, merger and ringdown.** The glowing sheet is the plus-polarised strain in the orbital plane at the retarded time $t - r/c$, with its 1/r fall-off (and hugely exaggerated). Drag to rotate, scroll to zoom. Below: the waveform an observer at inclination ι would record, and the frequency track a spectrogram would show. Press **Listen** to hear the chirp: pitch follows the wave frequency (shifted into the audible band) and loudness follows the amplitude. Try unequal masses (more cycles, a slower chirp) and inclination 90° (edge-on: h× vanishes and h₊ halves).
+</Sim>
+
+The playback speed is not uniform: the figure spends about a third of a second per wave cycle, so the early inspiral is shown sped up by a factor of a few thousand and the final milliseconds are slowed down. The waveform and chirp panels are in real units, so for the GW150914 preset you can read off the numbers LIGO saw: a sweep from ~20 Hz to ~250 Hz in about 0.2 s, and a peak strain near $10^{-21}$.
+
+<Hood title="the inspiral model, the ripple surface and the audio">
+**The timeline.** Everything on screen is driven by one precomputed table. In geometric units ($G = c = 1$, total mass $M = 1$, so times and lengths are both in $M$), the leading-order inspiral is analytic: with $\tau = t_c - t$ and $\eta = \mu/M$,
+
+$$
+M\Omega(\tau) = \tfrac18\left(\frac{\eta\,\tau}{5M}\right)^{-3/8},\qquad A = 4\eta\,(M\Omega)^{2/3},\qquad r = (M\Omega)^{-2/3}.
+$$
+
+At the ISCO ($r = 6M$) we switch to a stylised merger: $\omega_{\rm GW}$ follows a cubic Hermite curve from $2\Omega_{\rm ISCO}$ to the ringdown frequency, matching the inspiral's slope so there is no kink, while the amplitude grows by 1.5×. After the peak, $\omega$ is the $\ell = m = 2$ quasinormal frequency and $A$ decays as $e^{-t/\tau_d}$, using published fits of $\omega_{\rm QNM}$ and $Q$ to the remnant spin (itself a fit to numerical relativity in terms of $\eta$). The merger part is *not* a solution of anything; it is a smooth bridge with the right endpoints.
+
+The phase is the integral of the frequency, done with the trapezoid rule in float64 over 16,384 uniform samples:
+
+```ts
+for (let i = 0; i < n; i++) {
+  const t = t0 + i * dt;
+  if (t <= tISCO) {                        // quadrupole-driven inspiral
+    const tau = tauI + (tISCO - t);
+    const wo = 0.125 * Math.pow((eta * tau) / 5, -3 / 8);
+    w = 2 * wo; A = 4 * eta * Math.pow(wo, 2 / 3); r = Math.pow(wo, -2 / 3);
+  } else if (t <= 0) { /* Hermite merger */ } else { w = rem.omegaQNM; A = Apk * Math.exp(-t / rem.tauD); }
+  phase[i] = i === 0 ? 0 : phase[i - 1] + 0.5 * dt * (w + omega[i - 1]);
+}
+```
+
+**The ripple surface.** The table (as `vec4f(Φ, A, ω, r)`) goes to the GPU once per parameter change, 256 kB. The sheet is a 320 × 320 grid generated from `vertex_index` with no vertex buffer. Each vertex evaluates the retarded field itself, $O(1)$ work with one table lookup:
+
+```wgsl
+fn strain(p: vec2f) -> f32 {
+  let R = length(p);
+  let s = sampleTL(u.p0.x - R);                 // retarded time t − R/c
+  let phi = atan2(p.y, p.x);
+  let fall = u.p1.z / max(R, u.p1.z);           // 1/r fall-off, clamped inside rRef
+  let nearZone = smoothstep(0.5 * u.p1.w, 1.5 * u.p1.w + 6.0, R);
+  return 0.5 * s.y * cos(s.x - 2.0 * phi) * fall * nearZone;
+}
+```
+
+In the orbital plane (inclination 90°) the quadrupole pattern is $h_+ = \tfrac12 A\cos(\Phi_{\rm GW}(t-r) - 2\phi)$ and $h_\times = 0$, which is why the sheet shows $h_+$. Inside the orbit we are in the *near zone*, where "wave" is not a meaningful description, so the ripple is faded out there and replaced by two cosmetic potential wells. The shader evaluates the field three times per vertex (for a finite-difference normal), so a frame costs $3\times 102{,}400$ table lookups plus ~600k indexed triangles: well under a millisecond on an M1. Grid lines are drawn analytically in the fragment shader with `fwidth`, so they stay one pixel wide at any zoom, and everything is blended with premultiplied alpha, lighter where the strain is large.
+
+**Precision.** Everything on the GPU is f32. Choosing $M = 1$ keeps times $\lesssim 10^4$ and the accumulated phase $\lesssim 10^3$ rad; f32 then resolves the phase to about $10^{-4}$ rad, invisible. Linear interpolation of the *unwrapped* phase between samples is essential: interpolating $\cos\Phi$ directly would smear the ringdown, which has only a couple of samples per cycle for the lightest remnants. The table's step ($\sim$0.3–1 $M$) is much shorter than the fastest wave period ($\sim$12 $M$).
+
+**Audio.** Real stellar-mass chirps are already audible (tens to hundreds of Hz), but the figure plays them thousands of times slower than reality, so we cannot just play the true waveform. Instead, two `OscillatorNode`s (fundamental plus a quiet second harmonic) are driven from the render loop: each frame sets frequency $f_{\rm audio} = 70\,\text{Hz}\times\omega(t)/\omega(t_0)$ and gain $\propto A(t)/A_{\rm peak}$ with `setTargetAtTime`, which smooths the parameter steps into glitch-free ramps. Because the same `t` drives the picture and the sound, they stay in sync, and pausing or scrolling the figure away ramps the gain to zero. The pitch sweep is a faithful *ratio* (the real one is ~16× from start to ringdown), not the true frequency.
+</Hood>
+
+## Hearing the first chirps
+
+### The Hulse–Taylor pulsar
+
+The first evidence came not from a detector but from a clock. In 1974 Russell Hulse and Joseph Taylor found PSR B1913+16: a pulsar (a spinning neutron star, [Chapter 18](/ch/neutron-stars/)) in a 7.75-hour, highly eccentric ($e = 0.617$) orbit around another neutron star. Pulsars are superb clocks, and timing them for years revealed the orbit's periastron advancing by 4.2° per year (the relativistic precession of Mercury's orbit, 35,000 times faster), the Einstein delay, and from these the two masses: $1.438$ and $1.390\,M_\odot$.
+
+With both masses known, the quadrupole formula (extended to eccentric orbits by Peters and Mathews in 1963) predicts, with no free parameters, how fast the orbit must shrink. For an orbital period of <Var name="Pb" value={7.752} min={0.5} max={48} step={0.01} /> hours and eccentricity <Var name="ecc" value={0.617} min={0} max={0.95} step={0.001} />, the period should change at <Out name="dPdt" />, and the two stars merge in <Out name="tht" />. The measured decay, $\dot P_b = -2.40\times10^{-12}$ after correcting for the Galaxy's acceleration, agrees with this to about 0.2%. The cumulative shift in periastron time is a perfect parabola, now traced for half a century. Hulse and Taylor received the 1993 Nobel Prize.
+
+<Aside>**Eccentricity matters.** Set $e = 0$ in the text and the merger time grows from 300 Myr to 1.6 Gyr. Eccentric orbits radiate strongly at each periastron passage, enhancing the power by $(1 + \tfrac{73}{24}e^2 + \tfrac{37}{96}e^4)/(1-e^2)^{7/2}$, a factor of 12 for Hulse–Taylor. The Double Pulsar (PSR J0737−3039A/B), timed since 2003, now tests the quadrupole formula to better than 0.02%.</Aside>
+
+### GW150914
+
+On 14 September 2015, two days into the first observing run and before it had officially started, both Advanced LIGO detectors recorded a 0.2-second chirp sweeping from 35 to 250 Hz, with peak strain $1.0\times10^{-21}$. Hanford and Livingston saw it 7 milliseconds apart, consistent with a wave crossing 3000 km at $c$. The signal matched two black holes of $36$ and $29\,M_\odot$ merging 1.3 billion light-years away (440 Mpc) into a $62\,M_\odot$ remnant with spin 0.67. It was the first direct detection of gravitational waves, the first observation of a binary black hole, and the first proof that stellar-mass black holes this heavy exist. Weiss, Barish and Thorne shared the 2017 Nobel Prize.
+
+You can check the chirp mass yourself from the key equation: at $f \approx 75$ Hz the frequency was rising at roughly 1100 Hz/s, and $\mathcal M = (c^3/G)\left[\tfrac{5}{96}\pi^{-8/3}f^{-11/3}\dot f\right]^{3/5} \approx 30\,M_\odot$, within the uncertainties of eyeballing the plot. That alone ruled out anything but black holes: two neutron stars could not reach such a mass, and the orbit closed to within 350 km.
+
+### GW170817: multi-messenger astronomy
+
+On 17 August 2017 LIGO and Virgo caught a signal that lasted 100 seconds in band: a pair of neutron stars ($\mathcal M = 1.186\,M_\odot$) 40 Mpc away. **1.7 seconds** after the merger, the Fermi and INTEGRAL satellites detected a short gamma-ray burst from the same patch of sky. Eleven hours later, optical telescopes found a new source in the galaxy NGC 4993, and some 70 observatories followed it across the spectrum. It was a **kilonova**: the glow of a few hundredths of a solar mass of neutron-rich debris, heated by the radioactive decay of freshly made *r*-process elements (gold, platinum, lanthanides; [Chapter 16](/ch/stellar-death/)).
+
+The 1.7-second delay, after a 130-million-year journey, bounds the difference between the speed of gravity and the speed of light:
+
+$$
+\left|\frac{v_{\rm GW} - c}{c}\right| \lesssim \frac{1.7\ \text{s}}{4\times10^{15}\ \text{s}} \approx 4\times10^{-16}.
+$$
+
+Allowing for an intrinsic emission delay of up to ~10 s gives $-3\times10^{-15} \le \Delta v/c \le 7\times10^{-16}$. That one number eliminated a large class of modified-gravity theories built to explain dark energy.
+
+<Aside>**Standard sirens.** The waveform's amplitude gives the *distance* directly: $h \propto \mathcal M^{5/3}f^{2/3}/d$, and $\mathcal M$ and $f$ come from the phase. No distance ladder, no calibration (see [Chapter 25](/ch/expansion/)). With the host galaxy's redshift, GW170817 gave $H_0 = 70^{+12}_{-8}$ km/s/Mpc, a single-event measurement with no systematics in common with Cepheids or the CMB. Dozens of such events could arbitrate the Hubble tension.</Aside>
+
+## Detectors: measuring a thousandth of a proton
+
+### The Michelson interferometer
+
+LIGO is a Michelson interferometer with 4-km arms at right angles. Laser light is split, sent down both arms, reflected back and recombined. A plus-polarised wave from overhead stretches one arm and squeezes the other, so the light returning from the two arms acquires a phase difference, and the output port brightens and dims in step with $h(t)$. The instrument is a differential ruler: it is insensitive to anything that changes both arms equally (laser frequency noise, for instance), and it has a broad antenna pattern, so it hears the whole sky at once rather than pointing.
+
+<Fermi title="How small is 10⁻²¹?">
+A strain of $h = 10^{-21}$ over $L = 4$ km changes the arm length by
+
+$$\Delta L \sim hL = 10^{-21}\times4\times10^3\ \text{m} = 4\times10^{-18}\ \text{m}.$$
+
+A proton is $1.7\times10^{-15}$ m across. So LIGO measures arm-length changes about **1/400 of a proton's diameter**, using mirrors made of $10^{25}$ atoms whose surfaces jiggle thermally by far more than that. It works because the laser beam is ~10 cm wide and averages over trillions of atoms, and because the measurement is a *frequency-resolved* one: only noise near 100 Hz matters. The equivalent measurement for the Earth–Sun distance would be accurate to the width of an atom.
+</Fermi>
+
+Several tricks turn a tabletop Michelson into that. **Fabry–Pérot cavities** in each arm bounce the light ~300 times, making the effective arm 1200 km long. **Power recycling** returns the light that would leave the bright port, building 750 kW of circulating power from a 100 W laser. **Signal recycling** shapes the frequency response. And since O3, **squeezed light** (a quantum state of the vacuum with reduced phase fluctuations) is injected into the dark port, and in O4 it is frequency-dependent, reducing quantum noise across the band.
+
+### Noise
+
+The sensitivity is set by a noise budget with three main pieces, which you can see in the shape of LIGO's curve in the figure further down:
+
+- **Seismic and Newtonian noise** below ~10–20 Hz. Mirrors hang from four-stage pendulums on active isolation platforms, suppressing ground motion by $10^{10}$ at 10 Hz. But the gravitational pull of moving ground and air ("Newtonian noise") cannot be shielded, which is why future detectors plan to go underground.
+- **Thermal noise** at 50–200 Hz: Brownian motion in the mirror coatings and suspension fibres, reduced by fused-silica monolithic suspensions and low-loss coatings.
+- **Quantum shot noise** at high frequency (photon counting statistics) and **radiation-pressure noise** at low frequency (random photon kicks). Squeezing trades one against the other.
+
+The result is a bucket-shaped amplitude spectral density with a minimum of about $3\times10^{-24}\ \text{Hz}^{-1/2}$ near 200 Hz at design sensitivity.
+
+### Matched filtering
+
+A signal of $h \sim 10^{-21}$ in data whose rms noise is larger is not visible by eye. It is found the way a radar finds a weak echo: by **matched filtering**. If the noise is Gaussian and you know the signal shape $h(t)$, the optimal linear statistic is the correlation of the data with the template, weighted by the inverse noise spectrum:
+
+$$
+\rho(t_0) = \frac{\langle d, h_{t_0}\rangle}{\sqrt{\langle h, h\rangle}}, \qquad \langle a, b\rangle = 4\,\mathrm{Re}\int_0^\infty \frac{\tilde a(f)\,\tilde b^*(f)}{S_n(f)}\,df.
+$$
+
+For engineers: this is a cross-correlation done in the frequency domain (one FFT of the data, one multiply per template, one inverse FFT gives $\rho$ for *every* arrival time at once), after whitening the data by dividing by the noise amplitude spectrum. Using a complex (analytic) template maximises over the unknown phase for free. A signal with $N$ cycles builds up SNR like $\sqrt N$ times the per-cycle amplitude, so long, coherent chirps are found even when every individual cycle is buried.
+
+Because we don't know the masses in advance, searches correlate against a **template bank**: hundreds of thousands of waveforms tiling the space of masses and spins so densely that no real signal loses more than ~3% of its SNR. Candidates need $\rho \gtrsim 8$ in the network plus consistency checks (a $\chi^2$ test that the SNR accumulates across frequency the way a real chirp would, and coincidence between detectors), and their significance is calibrated by time-shifting one detector's data against another's thousands of times to build an empirical background.
+
+<Sim name="gravitational-waves-matched" size="wide" minHeight={420}>
+**Matched filtering in action.** The grey trace is 8 s of whitened data: unit-variance Gaussian noise plus a chirp you cannot see. The bank of 90 templates is correlated with the data using FFTs, maximising over arrival time and phase, and the right panel shows each template's best SNR. Look for the peak near the true chirp mass, and the SNR-vs-time trace (blue) spiking at the merger time. Lower the optimal SNR towards 5 and watch the peak drown in noise fluctuations; press **New noise** a few times to see how often a pure-noise template reaches ρ ≈ 5.
+</Sim>
+
+Note the width of the SNR peak: templates within a few per cent of the true chirp mass still match well, because the phase evolution, which is what the filter locks onto, depends on $\mathcal M$ to leading order. The individual masses (through $\eta$) and the spins only enter at higher post-Newtonian order, which is why they are measured far less precisely.
+
+## The gravitational-wave sky in 2026
+
+### LIGO, Virgo and KAGRA: the O4 catalogue
+
+The fourth observing run, O4, ran from May 2023 to November 2025 with the two LIGO detectors, Virgo and (for parts of it) KAGRA in Japan, reaching binary-neutron-star ranges of 150–170 Mpc for LIGO. It roughly tripled the catalogue: around 90 confident detections from O1–O3 grew by more than 200 significant public alerts in O4, and the cumulative count now exceeds 300 candidates. A merger is found every two to three days. Highlights so far:
+
+- **GW230529**: a merger of a ~$1.4\,M_\odot$ neutron star with a compact object of about $2.5$–$4.5\,M_\odot$, squarely in the "lower mass gap" between the heaviest neutron stars and the lightest black holes seen in X-ray binaries. The gap is less empty than we thought.
+- **GW231123**: the most massive binary yet, with two black holes of roughly $100$ and $140\,M_\odot$ merging into a ~$225\,M_\odot$ remnant, both spinning very fast. Such masses lie in or above the **pair-instability gap**, where stars should explode without leaving a black hole ([Chapter 16](/ch/stellar-death/)), suggesting the components were themselves products of earlier mergers in dense clusters.
+- **GW250114**: the loudest event yet (network SNR ~80), which let LVK measure several ringdown modes and confirm Hawking's area theorem (the total horizon area increased) at high confidence.
+
+The population now tells its own story: a peak of black-hole masses near $10\,M_\odot$ and a second bump near $35\,M_\odot$, mostly small spins, and a merger rate of roughly 20–40 Gpc⁻³ yr⁻¹ for binary black holes. The next run, O5, is planned after upgrades later this decade, and third-generation detectors (Einstein Telescope in Europe, Cosmic Explorer in the US, with 10–40 km arms) are in design for the late 2030s.
+
+### LISA: gravitational waves from space
+
+On Earth, seismic noise walls off everything below ~10 Hz. Supermassive black-hole binaries, with $\mathcal M \sim 10^5$–$10^7\,M_\odot$, radiate at millihertz. The **Laser Interferometer Space Antenna**, adopted by ESA in January 2024 with NASA participation and planned for launch around 2035, will fly three spacecraft in a triangle with 2.5-million-km arms, trailing the Earth around the Sun. Its test masses float freely inside the spacecraft, which fly around them. LISA Pathfinder (2015–2017) showed the required free-fall is achievable, and beat its requirement.
+
+LISA will hear supermassive black holes merging out to redshift ~15, stellar-mass objects spiralling into them (extreme mass-ratio inspirals, which map the spacetime of a Kerr hole over $10^5$ orbits), and tens of thousands of white-dwarf binaries in our own Galaxy, some already known as "verification binaries" from their light curves. So many of them overlap that below ~3 mHz they will form a confusion foreground: the first time a noise source will be the Milky Way itself.
+
+### Pulsar timing arrays and the nanohertz background
+
+At nanohertz frequencies (periods of years), the detector is the Galaxy. A **pulsar timing array** monitors dozens of millisecond pulsars, each ticking with a stability that rivals atomic clocks. A passing wave stretches the Earth–pulsar path and shifts the arrival times of pulses by tens of nanoseconds. Individual pulsars cannot distinguish that from their own spin noise, but a gravitational-wave background produces a distinctive correlation between pairs of pulsars as a function of their angular separation on the sky: the **Hellings–Downs curve**, a quadrupolar fingerprint.
+
+In June 2023, NANOGrav (15 years, 68 pulsars), together with the European, Parkes, Chinese and Indian PTAs, announced evidence at the 3–4σ level for this correlation, and a common red-noise process of amplitude $h_c \approx 2.4\times10^{-15}$ at a frequency of 1/yr. The most likely source is the combined hum of supermassive black-hole binaries in galaxy nuclei across the universe, each with periods of months to years and millions of years from merger. Its amplitude is somewhat higher than many models predicted, which may say something about how quickly galaxy mergers bring black holes together ([Chapter 23](/ch/galaxy-formation/)), or hint at more exotic early-universe sources. The International PTA data combination aims at a 5σ detection over the next few years.
+
+<Sim name="gravitational-waves-sensitivity" size="wide" minHeight={460}>
+**The gravitational-wave spectrum, 17 decades wide.** Approximate noise curves (characteristic strain $h_n = \sqrt{f S_n}$) for pulsar timing arrays, LISA and design-sensitivity LIGO, from simple analytic fits, not official curves. Sources are drawn as characteristic-strain tracks $h_c = 2f|\tilde h(f)|$, ending at the ISCO; a track well above a curve is loudly detectable. Drag **Your ℳ** from 1 to $10^9\,M_\odot$ and watch the track slide from LIGO through LISA to the PTA band: heavier binaries merge at lower frequency, $f_{\rm ISCO} \approx 4.4\,\text{kHz}\,(M_\odot/M)$.
+</Sim>
+
+The figure makes the design logic of the field obvious. Each detector sees roughly three decades of frequency; the band sets the mass of the sources through $f \propto 1/M$; and between them, ground, space and pulsar timing cover sources from neutron stars to billion-solar-mass black holes. The gap between LISA and LIGO (0.1–10 Hz) is the target of proposed mid-band missions such as DECIGO.
+
+## Where we go from here
+
+A century after Einstein doubted they were real, gravitational waves are a routine observational channel. They give us things light cannot: the masses and spins of black holes that emit nothing else, distances without a ladder, a direct probe of strong-field gravity, and a view through the dust of galaxy centres. Every event so far agrees with general relativity, from the phase of the inspiral to the pitch of the ringdown.
+
+The ideas of this chapter recur throughout the rest of the course. The mergers seen here are the endpoints of the stellar evolution in Chapters 11–19, and the nanohertz background connects to the growth of supermassive black holes in the galaxy mergers of [Chapter 23](/ch/galaxy-formation/). The standard sirens enter the cosmology of [Chapter 25](/ch/expansion/). And somewhere beyond all current detectors lies a primordial background, from inflation itself, whose imprint on the polarisation of the cosmic microwave background (Chapter 27) is one of the most sought-after signals in physics.

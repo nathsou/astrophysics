@@ -12,13 +12,43 @@ import Predict from '../../components/Predict.astro';
 import C from '../../components/C.astro';
 import Var from '../../components/Var.astro';
 import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Photo from '../../components/Photo.astro';
 
 ## One force to rule them all
+
+<Photo src="/img/orbits/earthset-orion.jpg" alt="Earth, a thin crescent, setting behind the grey limb of the Moon, photographed from the Orion capsule" credit="NASA / Artemis II crew" license="Public domain" href="https://images.nasa.gov/details/art002e021278" size="wide" aspect="3 / 2">
+**Earthset, 6 April 2026.** The Artemis II crew took this photograph as Orion swung behind the far side of the Moon. The capsule was not steering: it followed a free-return trajectory, a path computed years in advance from the law in this chapter.
+</Photo>
 
 Newton's law of universal gravitation says that two point masses attract each other along the line joining them. The force is proportional to the product of their masses and inversely proportional to the square of the distance between them:
 
 <Aside>**Why gravity dominates.** The electric force between two protons is about 10³⁶ times stronger than their gravitational pull. But matter is almost perfectly neutral on large scales, so electric forces cancel. Mass has no negative charge, so gravity only adds up.</Aside>
 
+<Tiers>
+<Fragment slot="l1">
+Put simply: the pull grows with both masses and weakens with the *square* of the distance. Move twice as far away and the pull drops to a quarter; ten times as far, to a hundredth.
+
+Two facts about this force decide what every orbit looks like:
+
+1. **Energy is conserved.** A planet trades speed for height, like a skateboarder in a bowl: it moves fastest when it is closest to the star and slowest when it is farthest away.
+2. **Spin is conserved.** Nothing twists the planet sideways, because gravity pulls straight towards the star. So the orbit stays in one flat plane, and the line from star to planet sweeps out equal areas in equal times. That is **Kepler's second law**.
+</Fragment>
+<Fragment slot="l2">
+<KeyEq title="Newton's law of gravitation">
+$$
+F = \frac{\htmlData{term=G}{G}\,\htmlData{term=M}{M}\,\htmlData{term=m}{m}}{\htmlData{term=r}{r}^2}
+$$
+<Fragment slot="where"><span data-term="G">G</span> is the gravitational constant <C k="G" />. <span data-term="M">M</span> and <span data-term="m">m</span> are the two masses and <span data-term="r">r</span> the distance between them. Double the distance and the pull drops to a quarter. Hover the symbols to link them to the equation.</Fragment>
+</KeyEq>
+
+Two consequences shape everything in this chapter:
+
+1. **Energy is conserved.** $E = \tfrac12 m v^2 - GMm/r$ stays constant along an orbit: kinetic energy goes up exactly as much as potential energy goes down.
+2. **Angular momentum is conserved**, because gravity pulls straight towards the star and exerts no twist (torque). $L = m\,r\,v_\perp$ stays constant, where $v_\perp$ is the sideways part of the velocity. So the orbit stays in a plane, and the line from star to planet sweeps equal areas in equal times. That is **Kepler's second law**.
+</Fragment>
+<Fragment slot="l3">
 <KeyEq title="Newton's law of gravitation">
 $$
 \vec F = -\frac{\htmlData{term=G}{G}\,\htmlData{term=M}{M}\,\htmlData{term=m}{m}}{\htmlData{term=r}{r}^2}\,\hat r
@@ -30,19 +60,34 @@ The force comes from a potential, $\Phi(r) = -GM/r$, so $\vec F = -m\nabla\Phi$.
 
 1. **Energy is conserved.** $E = \tfrac12 m v^2 - GMm/r$ stays constant along an orbit.
 2. **Angular momentum is conserved**, because the force is *central* (it points along $\hat r$) and so exerts no torque. $\vec L = m\,\vec r \times \vec v$ is constant, so the motion stays in a plane. The areal velocity $\tfrac{dA}{dt} = L/2m$ is also constant. That is **Kepler's second law**, and it holds for *any* central force, not just the inverse-square law.
+</Fragment>
+</Tiers>
 
 ## The two-body problem is a one-body problem
 
-Two bodies pulling on each other look like a coupled problem. Change variables to the centre of mass $\vec R$ and the separation $\vec r = \vec r_2 - \vec r_1$. The centre of mass drifts at constant velocity. The separation obeys
+Two bodies pulling on each other look like a coupled problem. In fact the pair's centre of mass just drifts along at constant speed, and all the interesting motion is in the *separation* between the two bodies. That turns the problem into one body orbiting a fixed centre.
+
+<Level min={3} title="Reduced mass">
+Change variables to the centre of mass $\vec R$ and the separation $\vec r = \vec r_2 - \vec r_1$. The centre of mass drifts at constant velocity. The separation obeys
 
 $$
 \mu\,\ddot{\vec r} = -\frac{G M m}{r^2}\hat r, \qquad \mu = \frac{Mm}{M+m},
 $$
 
 which is a single fictitious particle of *reduced mass* $\mu$ orbiting a fixed centre with total mass $M+m$. From here on we work with this one-body problem.
+</Level>
 
 ### The effective potential
 
+<Tiers>
+<Fragment slot="l1">
+Imagine watching only the *distance* between planet and star. The planet's sideways motion acts like a spring that pushes it outward (the *centrifugal barrier*), while gravity pulls it inward. Together they make a valley. The distance behaves like a ball rolling in that valley:
+
+- If the ball sits still at the bottom of the valley, the distance never changes and the orbit is a **circle**.
+- If it rolls back and forth, the distance swings between a closest point (periapsis) and a farthest point (apoapsis). That is an **ellipse**.
+- If it has enough energy to roll out of the valley, the body comes in once and leaves forever, on a **parabola** or **hyperbola**.
+</Fragment>
+<Fragment slot="l3">
 Use polar coordinates and substitute $L = \mu r^2\dot\theta$. The energy then depends only on $r$:
 
 $$
@@ -54,18 +99,25 @@ The *centrifugal barrier* $L^2/2\mu r^2$ keeps an orbiting body from falling in.
 - If $E$ equals the minimum of the well, $r$ is fixed and the orbit is a **circle**.
 - If $E < 0$, $r$ oscillates between the turning points $r_p$ (periapsis) and $r_a$ (apoapsis), giving an **ellipse**.
 - If $E \ge 0$, the body comes in once and leaves, on a **parabola** or **hyperbola**.
+</Fragment>
+</Tiers>
 
-We will use this trick again in Chapter 19. There, general relativity adds a $-1/r^3$ term to $V_\text{eff}$, and that term makes the innermost stable circular orbit (ISCO) around black holes possible.
+We will use this trick again in Chapter 19. There, general relativity changes the shape of the valley near a black hole, and that change makes the innermost stable circular orbit (ISCO) around black holes possible.
 
 ### Ellipses: Kepler's first law
 
+Bound orbits are ellipses with the star at one focus, not at the centre. An ellipse is described by two numbers: the semi-major axis $a$ (half its longest width) and the eccentricity $e$ (0 for a circle, close to 1 for a long thin ellipse).
+
+<Level min={3} title="Solving the orbit equation">
 Solving the orbit equation (substitute $u = 1/r$ and the equation becomes a harmonic oscillator) gives a conic section:
 
 $$
 r(\theta) = \frac{a(1-e^2)}{1 + e\cos\theta}.
 $$
+</Level>
 
-Here $a$ is the semi-major axis and $e$ the eccentricity. The energy depends **only on $a$**: $E = -GM\mu/2a$. From that follows the *vis-viva* equation, the most useful formula in orbital mechanics:
+<Level min={2}>
+The energy depends **only on $a$**: $E = -GM\mu/2a$. From that follows the *vis-viva* equation, the most useful formula in orbital mechanics:
 
 <KeyEq title="Vis-viva">
 $$
@@ -73,16 +125,35 @@ v^2 = GM\left(\frac{2}{r} - \frac{1}{a}\right)
 $$
 <Fragment slot="where">This gives the speed at any point on any Keplerian orbit. At $r=a$ on a circle, $v = \sqrt{GM/a}$. The escape speed ($a\to\infty$) is $\sqrt{2}$ times the circular speed.</Fragment>
 </KeyEq>
+</Level>
 
 ### Kepler's third law
 
-The area of the ellipse is $\pi a b$. Divide it by the constant areal velocity and you get the period:
+<Tiers>
+<Fragment slot="l1">
+Planets farther from their star take longer to go round, and not just because the path is longer: they also move more slowly. Kepler found the exact rule in 1619. Square the period and you get the cube of the orbit's size:
+
+$$
+P^2 \propto a^3
+$$
+</Fragment>
+<Fragment slot="l2">
+Kepler found the rule linking an orbit's size to how long it takes. Newton later explained it and filled in the constant:
 
 $$
 P^2 = \frac{4\pi^2}{G(M+m)}\,a^3.
 $$
+</Fragment>
+<Fragment slot="l3">
+The area of the ellipse is $\pi a b$. Divide it by the constant areal velocity $L/2\mu$ and you get the period:
 
-In units of AU, years and solar masses, $4\pi^2/G = 1$. This is why astronomers love those units: **$P^2 = a^3 / M$.**
+$$
+P^2 = \frac{4\pi^2}{G(M+m)}\,a^3.
+$$
+</Fragment>
+</Tiers>
+
+In units of AU, years and solar masses, the constants drop out. This is why astronomers love those units: **$P^2 = a^3 / M$.**
 
 A planet at <Var name="a" value={5.2} min={0.05} max={100} log /> AU from a star of <Var name="M" value={1} min={0.08} max={50} log /> M☉ has a period of <Out name="P" />. Its orbital speed is <Out name="v" />.
 
@@ -119,7 +190,14 @@ Forward Euler updates $\vec r_{n+1} = \vec r_n + h\vec v_n$, $\vec v_{n+1} = \ve
 
 ### Symplectic integrators
 
+<Tiers>
+<Fragment slot="l1">
+Some integrators are built to respect the *geometry* of the motion rather than to be as precise as possible at each step. They make small errors, but those errors cannot pile up in one direction, so the energy wobbles around its true value instead of drifting away. These are called **symplectic** integrators.
+</Fragment>
+<Fragment slot="l3">
 Hamiltonian flows preserve phase-space volume (Liouville's theorem). More precisely, they preserve the *symplectic form* $d\vec q\wedge d\vec p$. An integrator that preserves it too cannot let the energy drift away secularly. Instead it exactly conserves a *shadow Hamiltonian* $\tilde H = H + O(h^2)$.
+</Fragment>
+</Tiers>
 
 <KeyEq title="Leapfrog / velocity Verlet (kick–drift–kick)">
 $$

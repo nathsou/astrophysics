@@ -1,0 +1,221 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: exoplanets
+lede: A planet is a billion times fainter than its star and sits an arcsecond away. Nobody has ever "just looked" and seen one around a normal star — every exoplanet we know was found by outwitting that number.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+
+## Why this is hard
+
+Start with the numbers. The Sun outshines Jupiter by a factor of about $2\times10^9$ in reflected visible light, and outshines the Earth by nearly $10^{10}$. In infrared, where a warm young Jupiter glows from its own leftover formation heat, the contrast improves to "only" $10^6$–$10^7$ — still brutal. Now add geometry: at 10 pc, 1 AU subtends 0.1 arcseconds, comparable to the diffraction limit of a single large ground-based telescope and swamped by atmospheric seeing. You are asked to detect a firefly next to a lighthouse, from another city, through fog.
+
+<Aside>**Two numbers, one problem.** Contrast and angular separation are not independent difficulties — they compound. A planet close enough to its star to be warm (and interesting) is also close enough, in angle, to be lost in the star's glare. This is why the two most successful techniques, radial velocity and transits, don't even try to see the planet: they infer it from what it does to the star's light.</Aside>
+
+This chapter is about the workarounds. Three of them — radial velocity, transits and direct imaging — dominate the ~6,000+ confirmed planets known by 2026 (NASA Exoplanet Archive; the count keeps climbing weekly as TESS and ground-based surveys report new candidates). A fourth, gravitational microlensing, gets a brief mention here and its own treatment in [Chapter 24](/ch/lensing/). We'll build up the physics of each method, then spend real time on the *statistics*: periodograms, box-fitting, phase-folding and the false positives that make this a data-analysis problem as much as an observational one.
+
+## Radial velocity: watching the star wobble
+
+A planet doesn't just orbit its star — the star orbits the planet too, both of them circling their common centre of mass, exactly as in [Chapter 2](/ch/orbits/#the-two-body-problem-is-a-one-body-problem). The star's orbit is tiny (scaled down by $m_p/M_\star$) but its *velocity* along the line of sight is measurable: as the star recedes and approaches, its spectral lines Doppler-shift red and blue, by a tiny amount, once per orbit.
+
+### Deriving the semi-amplitude
+
+Take the two-body problem with masses $M_\star$ and $m_p$, period $P$, eccentricity $e$, and inclination $i$ (the angle between the orbital angular-momentum vector and the line of sight; $i = 90°$ means we view the orbit edge-on). The star's orbit around the barycentre has semi-major axis $a_\star = a\, m_p/(M_\star+m_p)$, where $a$ is the *relative* semi-major axis obeying Kepler III ([Chapter 2](/ch/orbits/)): $a^3 = G(M_\star+m_p)P^2/4\pi^2$.
+
+The star's velocity along its own tiny orbit scales as $2\pi a_\star/P$ (vis-viva, [Chapter 2](/ch/orbits/#kepler-s-third-law)), and only the line-of-sight component matters, which brings in $\sin i$ and a $1/\sqrt{1-e^2}$ from how vis-viva's speed redistributes between radial and tangential components around an eccentric orbit. Chasing the algebra through (substitute $a_\star$, Kepler III, and simplify) gives a clean result that depends only on observables and one unknown, $\sin i$:
+
+<KeyEq title="Radial-velocity semi-amplitude">
+$$
+K = \left(\frac{2\pi G}{P}\right)^{1/3} \frac{m_p \sin i}{(M_\star+m_p)^{2/3}} \frac{1}{\sqrt{1-e^2}}
+$$
+<Fragment slot="where">$K$ is the peak-to-mean radial velocity of the star (m/s). $P$ is the orbital period, $m_p$ and $M_\star$ the planet and star masses, $i$ the orbital inclination, $e$ the eccentricity. For $m_p \ll M_\star$ this is often written with $M_\star + m_p \to M_\star$.</Fragment>
+</KeyEq>
+
+The measured radial velocity as a function of time is $v_r(t) = K[\cos(\theta(t)+\omega) + e\cos\omega]$, where $\theta(t)$ is the true anomaly (found from Kepler's equation, same machinery as [Chapter 2](/ch/orbits/)) and $\omega$ is the argument of periapsis. A circular orbit ($e=0$) gives a pure sinusoid; eccentric orbits give a lopsided curve with a sharp spike at periapsis passage.
+
+<Fermi title="How fast does the Sun move because of Jupiter?">
+Plug in $P = 11.9$ yr $= 3.75\times10^8$ s, $m_p = M_J = 1.898\times10^{27}$ kg, $M_\star = M_\odot$, $\sin i = 1$, $e\approx0$:
+
+$$K = \left(\frac{2\pi \times 6.67\times10^{-11}}{3.75\times10^8}\right)^{1/3}\frac{1.898\times10^{27}}{(1.99\times10^{30})^{2/3}} \approx 12.5\ \text{m/s}.$$
+
+That's a brisk walking pace, imparted to a star $2\times10^{30}$ kg in mass. Earth, at 1 AU and $3\times10^{-6}\,M_\odot$, induces only **~9 cm/s** — slower than a snail, and buried under noise sources far larger than the signal. This asymmetry — giant planets easy, Earth-mass planets brutally hard — shaped 20 years of the field's history.
+</Fermi>
+
+A planet of <Var name="Mp_rv" value={318} min={0.1} max={5000} log /> M⊕ orbiting a <Var name="Mstar_rv" value={1} min={0.1} max={3} log /> M☉ star every <Var name="P_rv" value={4332} min={0.5} max={4000} log /> days induces K = <Out name="K" /> (assuming edge-on, circular orbit).
+
+<Aside>Drag the numbers. Set P to 365 days and Mp to 1 to reproduce Earth's ~9 cm/s pull on the Sun.</Aside>
+
+### The measurement: splitting a pixel a thousand ways
+
+Measuring 1 m/s requires resolving a Doppler shift $\Delta\lambda/\lambda = v/c \approx 3\times10^{-9}$ — a few parts per billion. Spectrographs do this not by "seeing" the shift directly but by cross-correlating an observed spectrum, rich in thousands of narrow absorption lines, against a template and finding the sub-pixel shift that best aligns them; averaging over many lines beats down the noise like $1/\sqrt{N_\text{lines}}$.
+
+**HARPS** (2003, La Silla) reached ~1 m/s precision and found dozens of the first well-characterized rocky-planet candidates. **ESPRESSO** (2018, VLT) pushes toward ~10 cm/s, enough in principle to see Earth-mass planets around Sun-like stars, *if* nothing else moved the lines. The key enabling technology is the **laser frequency comb**: an ultra-stable set of evenly-spaced calibration lines (an optical-frequency-metrology trick that won a Nobel Prize in 2005) that lets you track instrumental drift to a tiny fraction of a pixel over years, rather than being limited by how well you know your calibration lamp.
+
+<Aside>**The real bottleneck: the star itself.** Convective granulation, oscillations (like the Sun's 5-minute p-modes) and starspots rotating in and out of view all jitter a star's disk-integrated line profile at the 1–3 m/s level for a quiet Sun-like star, and much more for active ones — often exceeding the instrumental floor. Distinguishing "stellar activity" from "planet" is now the central challenge of precision RV, tackled with multi-year baselines, activity indicators (like the Ca II H&K lines) and Gaussian-process regression.</Aside>
+
+### The mass you get is a lower limit: $m \sin i$
+
+RV alone gives you $m_p \sin i$, not $m_p$: a face-on system ($i\to0$) makes any planet's wobble vanish along the line of sight, no matter how massive. Without an independent measurement of $i$ — from a transit, from astrometry, or from mutual gravitational perturbations in a multi-planet system — you only get a lower bound on the mass. Statistically, orbits are inclined at random, so $\sin i$ is usually not tiny (the median of $\sin i$ for a randomly oriented axis is $\sqrt3/2\approx0.87$), but for any *individual* planet the true mass could be much larger than $m_p\sin i$ suggests.
+
+<Predict question="A newly announced planet has m sin i = 5 Jupiter masses from RV alone, with no transit and no other constraint. Which is the most defensible statement?" choices={['Its mass is 5 Jupiter masses', 'Its mass is at least 5 Jupiter masses, and could be much more if the orbit is nearly face-on', 'Its mass is at most 5 Jupiter masses']} answer={1}>
+$m\sin i \le m$ always, since $\sin i \le 1$. The measurement is a firm *lower* limit; the true mass climbs without bound as $i\to0$. In practice, follow-up (astrometry, transit search, or dynamics in multi-planet systems) is often needed to pin down $i$ and settle whether a candidate is a planet or a low-mass star seen nearly pole-on.
+</Predict>
+
+### 51 Pegasi b and the hot Jupiter surprise
+
+In October 1995, Michel Mayor and Didier Queloz announced a planet around 51 Pegasi with $P = 4.23$ days — a Jupiter-mass object orbiting **20 times closer than Mercury orbits the Sun**. Nobody's planet-formation theory predicted gas giants that close in; the leading idea, since developed in detail, is that 51 Peg b formed farther out (past the snow line, [Chapter 8](/ch/planet-formation/)) and migrated inward through its natal disk. The discovery — the first exoplanet found around a Sun-like star — won Mayor and Queloz a share of the 2019 Nobel Prize in Physics, and it single-handedly created an entire class of objects, "hot Jupiters," that occupy a small but disproportionately well-studied fraction of known exoplanets, precisely *because* they are the easiest to find: massive, close-in planets give the largest $K$ and, as we're about to see, the largest and fastest-repeating transits.
+
+## Transits: watching the star dim
+
+If a planet's orbit happens to be edge-on enough that it passes in front of its star as seen from Earth, the star dims by a small, precisely periodic amount. This is geometrically restrictive — most systems never transit — but when it works, transits deliver something RV cannot: the planet's actual *size*.
+
+### Depth, duration, and the geometry of a chord
+
+To first order (ignoring limb darkening for a moment), a transiting planet blocks a fraction of the star's disk equal to the ratio of areas:
+
+<KeyEq title="Transit depth">
+$$
+\delta = \left(\frac{R_p}{R_\star}\right)^2
+$$
+<Fragment slot="where">$\delta$ is the fractional dip in brightness. $R_p$ and $R_\star$ are the planet and star radii. A Jupiter ($R_p\approx0.1\,R_\star$ for a Sun-like star) gives $\delta\approx1\%$; an Earth around a Sun-like star gives $\delta\approx84$ ppm — a tiny signal buried in noise, which is exactly why <a href="#the-flagship-lab">the lab below</a> exists.</Fragment>
+</KeyEq>
+
+An Earth-radius planet of <Var name="Rp_t" value={1} min={0.3} max={20} log /> R⊕ around a star of <Var name="Rstar_t" value={1} min={0.1} max={10} log /> R☉ produces a transit depth of <Out name="depth" />.
+
+<Aside>Drag Rp down to 1 and Rstar to 1: that's Earth around the Sun, 84 parts per million. TESS's photometric precision on bright stars is a few hundred ppm per point — Earth analogs need many transits stacked together.</Aside>
+
+The transit lasts roughly the time it takes the planet to cross the stellar disk along its chord: $T_\text{dur} \approx (P/\pi)\arcsin\!\big(R_\star\sqrt{(1+R_p/R_\star)^2-b^2}\,/\,a\big)$, which for $a\gg R_\star$ simplifies to $T_\text{dur}\approx (P R_\star/\pi a)\sqrt{1-b^2}$. The **impact parameter** $b = (a\cos i)/R_\star$ measures how far off-center the planet's path is, in units of the stellar radius: $b=0$ is a central transit, and transits vanish once $b > 1+R_p/R_\star$. Near that edge, transits become *grazing* — shallow, oddly shaped, and hard to distinguish from noise or a smaller planet.
+
+**Limb darkening** — the star appears dimmer near its edge, because you're seeing cooler, higher layers at a grazing angle — rounds off the sharp corners a uniform disk would produce, softening ingress and egress into smooth curves. It's usually modeled with a quadratic law, $I(\mu)/I(1) = 1 - u_1(1-\mu) - u_2(1-\mu)^2$ where $\mu=\cos\theta$ is the angle from disk center.
+
+<Sim name="exoplanets-transit" size="wide" minHeight={360}>
+**Transit geometry.** Drag $R_p/R_\star$, the impact parameter $b$, and the limb-darkening coefficient $u_1$. Watch the disk-crossing animation (top) and the light curve it produces (right). Push $b$ past $1-R_p/R_\star$ and the transit turns grazing — shallower and V-shaped rather than flat-bottomed — and past $1+R_p/R_\star$ it vanishes.
+</Sim>
+
+### Transit probability, and why we need thousands of stars
+
+Only systems with $\cos i \lesssim R_\star/a$ transit at all — a geometric transit probability of about $R_\star/a$ (for $b<1$; strictly $\approx(R_\star+R_p)/a$). A hot Jupiter at 0.05 AU around a Sun-like star transits with probability ~10%; Earth at 1 AU transits with probability ~0.5%. That's why transit surveys stare at *huge* numbers of stars simultaneously: **Kepler** monitored ~150,000 stars in one patch of sky for four years (2009–2013) and found thousands of candidates; **TESS** (2018–present) trades depth for breadth, scanning nearly the whole sky in overlapping sectors, optimized for bright, nearby stars amenable to RV and atmospheric follow-up.
+
+A star of <Var name="Rstar_p" value={1} min={0.1} max={10} log /> R☉ with a planet at <Var name="a_p" value={1} min={0.02} max={30} log /> AU has a transit probability of <Out name="ptransit" />.
+
+**Transit timing variations (TTVs)**: in multi-planet systems, mutual gravitational tugs make transit times wander from a strict periodic prediction by minutes to hours. Measuring those wobbles constrains planet *masses* without any RV data at all — solving Newton's equations backward from timing residuals, a beautiful trick that gave some of the first mass measurements for planets around faint stars (like the TRAPPIST-1 system) that are too dim for good RV.
+
+### Combining the two: density tells you what a planet is made of
+
+RV gives mass; transits give radius. Together, $\rho_p = 3m_p/4\pi R_p^3$, and density is the single best clue to bulk composition without ever visiting the planet. Placed on a **mass–radius diagram**, planets separate into families along rough tracks: dense, iron-rich (like Mercury); rocky, Earth-like; water/ice worlds; and puffy planets with substantial H/He envelopes whose radius is set more by pressure-supported gas than by mass at all (radius grows only weakly, or even shrinks, with mass in the gas-giant regime — electron degeneracy pressure starts to matter, the same physics that caps white dwarf masses in [Chapter 16](/ch/stellar-death/)).
+
+<Sim name="exoplanets-massradius" size="wide" minHeight={420}>
+**Mass–radius diagram.** Points are real (approximate) planets and solar-system worlds; curves are simplified analytic composition tracks. Toggle curves on and off, and hover a point for its name. Notice the **radius valley** (the "Fulton gap") around 1.5–2 R⊕: close-in planets are statistically rare in this narrow radius band, thought to mark the boundary between bare rocky cores (that lost any primordial H/He atmosphere to stellar radiation) and sub-Neptunes that kept theirs.
+</Sim>
+
+<Aside>**Sub-Neptunes are the galaxy's most common planet type**, at least among the close-in planets Kepler was sensitive to — more common than either hot Jupiters or Earth-sized planets. We have no solar-system analog for them at all.</Aside>
+
+## Reading a planet's atmosphere in starlight
+
+Transits do more than measure a silhouette. As starlight grazes a planet's day-night terminator during ingress and egress, some of it passes through the upper atmosphere and picks up absorption features — **transmission spectroscopy**. The apparent planetary radius becomes wavelength-dependent: deeper at wavelengths absorbed by atmospheric molecules, shallower in between.
+
+JWST, with its combination of infrared reach, stability and aperture, has transformed this from a technique that strained 1990s-era space telescopes into routine science. In 2022–2023, JWST's NIRSpec unambiguously detected **CO₂** in the atmosphere of the hot Saturn WASP-39 b — the first definitive CO₂ detection on an exoplanet — along with SO₂, evidence of photochemistry driven by the star's UV light. For the temperate sub-Neptune **K2-18 b**, JWST observations reported hints of methane, CO₂, and tentatively dimethyl sulfide (DMS, associated on Earth with marine biology); this result generated enormous public interest but remains genuinely contested within the field as of 2026 — independent reanalyses have disputed the DMS detection significance, the planet's bulk density is also consistent with a "hycean" (H/He atmosphere over a liquid-water ocean) or a mini-Neptune interpretation without any implication of biology, and more observations are needed. State the uncertainty honestly: this is an active, unresolved case, not a settled biosignature detection.
+
+**Secondary eclipses** — when the planet passes *behind* the star — let you subtract the star-only spectrum from the star+planet spectrum, isolating the planet's thermal emission and albedo. **Phase curves**, tracking brightness continuously around a full orbit, map how a planet's temperature varies with longitude, revealing hot Jupiters' scorching, wind-blown dayside-nightside temperature contrasts.
+
+## Seeing the planet directly
+
+Direct imaging skips the inference and tries to actually resolve starlight from planet light. It needs young, self-luminous, wide-separation giant planets — HR 8799's four giant planets (imaged starting in 2008, at Keck and Gemini) are the textbook example, glowing in infrared from residual formation heat at tens of AU from their star, still cooling on a timescale set by the physics in [Chapter 16](/ch/stellar-death/) for degenerate cores, adapted downward for planetary masses.
+
+The trick is a **coronagraph**: an optical mask that blocks the star's core light and diffraction pattern while letting light from a nearby faint companion through, combined with adaptive optics to cancel atmospheric blurring in real time, and sometimes with a technique called angular differential imaging that uses the sky's rotation relative to the telescope to distinguish real companions from residual speckle noise. Contrast ratios achievable today reach roughly $10^{-6}$–$10^{-7}$ at a few tenths of an arcsecond from bright, nearby stars — enough for young giant planets, not yet for an Earth-twin around a Sun-like star (which needs $\sim10^{-10}$ contrast at 0.1″, the design target for a future flagship space mission).
+
+<Aside>**Gaia's astrometric census.** Astrometry — measuring a star's tiny back-and-forth wobble in *position* on the sky, rather than in radial velocity — is most sensitive to long-period, massive planets around nearby stars, complementary to RV and transits. Gaia (launched 2013) has been surveying nearly two billion stars' positions to microarcsecond precision for over a decade; its data releases are beginning to yield planet astrometric orbits, and Gaia DR3/DR4 planet catalogs are an active growth area as of 2026.</Aside>
+
+Microlensing — a background star's light magnified and split by a foreground star-plus-planet system's gravity, distorting the smooth lensing light curve with a brief extra spike — finds planets by an entirely different route again, sensitive to cold, wide-orbit planets (even free-floating ones) regardless of their own brightness. It gets full treatment in [Chapter 24](/ch/lensing/); the short version is that it, like transits, is a photometric technique whose statistical machinery (light curve modeling, false-positive rejection) rhymes strongly with what follows here.
+
+## The flagship lab: find the planet yourself
+
+Real exoplanet detection is a data-analysis problem before it is anything else. The simulation below generates a synthetic star with one or two hidden planets, complete with realistic stellar variability, white noise, and observing gaps, and hands you the raw light curve exactly as a survey pipeline would see it. Your job: find the periodic dips.
+
+<Predict question="Staring at the raw light curve below, before running anything: will you be able to spot the transits by eye?" choices={['Yes, easily — the dips are the biggest feature in the data', 'No — stellar variability and noise are usually bigger than a small planet’s transit depth', 'It depends only on how long the star was observed']} answer={1}>
+For anything Earth- or Neptune-sized, no: white noise and slow stellar brightness variations (rotation, granulation, spots) are typically larger than an individual transit's depth. The signal only emerges *statistically*, by testing many trial periods and combining the (many) individual transits' worth of signal coherently — exactly what the Box Least Squares periodogram below does.
+</Predict>
+
+<Sim name="exoplanets-hunt" size="wide" minHeight={620}>
+**Find the planet.** *Photometry tab*: a synthetic light curve with hidden transiting planet(s), stellar variability, white noise and data gaps. Click **Run BLS** to scan trial periods (watch the periodogram build up, chunked so the page stays responsive); click a peak to phase-fold the data at that period and see the transit resolved, with a fitted trapezoid model reading off the depth and duration — hence $R_p$, $a$, $P$ and the equilibrium temperature. Try raising the noise level or shrinking the baseline before running BLS again. *Radial velocity tab*: the same hidden planet's Doppler wobble, sampled at irregular real-world cadence; run the Lomb–Scargle periodogram and click its peak to overlay a fitted Keplerian RV curve. Click **New system** for a fresh hidden planet, and **Reveal answer** to check your fit against the truth.
+</Sim>
+
+<Hood title="Box Least Squares and Lomb-Scargle">
+Both periodograms in the lab above answer the same question — "does this unevenly-sampled time series repeat with some trial period $P$?" — but they assume different *shapes* for the repeating signal, which matters a lot.
+
+**Lomb–Scargle** (used for the RV data) assumes the signal is sinusoidal: for each trial angular frequency $\omega=2\pi/P$, it finds the best-fit sinusoid amplitude and reports a periodogram power essentially equal to $\chi^2_0-\chi^2(\omega)$, generalized to handle irregular sampling and a floating mean (the "generalized Lomb–Scargle" used here). It is the right tool for RV data, since a Keplerian RV curve is close to sinusoidal for low eccentricity.
+
+**Box Least Squares** (Kovács, Zucker & Mazeh 2002; used for the light curve) instead assumes the signal is a *box*: flat baseline, a short flat-bottomed dip, flat baseline again — much closer to a transit's true shape than a sinusoid, and far more sensitive to it per unit of computation. For each trial period, BLS phase-folds the data into bins and searches over box start-phase and duration for the combination that most improves the fit, with a statistic (implemented here as $r s^2/(1-r)$, where $r$ is the in-transit fraction of points and $s$ the depth) that rewards a good, deep, appropriately-narrow dip.
+
+```ts
+// simplified inner loop: for one trial period, bin the phase-folded light curve,
+// then scan box start/width combinations for the best "dip" statistic
+for (const dur of durations) {
+  const w = Math.max(1, Math.round(dur * nBins));
+  for (let b0 = 0; b0 < nBins; b0++) {
+    let sum = 0, cnt = 0;
+    for (let k = 0; k < w; k++) { const b = (b0 + k) % nBins; sum += binSum[b]; cnt += binCount[b]; }
+    const r = cnt / nValid, s = -sum / cnt;
+    if (s > 0) best = Math.max(best, (r * s * s) / (1 - r + 1e-9));
+  }
+}
+```
+
+**Complexity.** A direct BLS scan costs $O(N_\text{periods}\times N_\text{bins}\times N_\text{durations})$ once the data are pre-binned per period (binning itself is $O(N_\text{points})$ per trial period). With $N_\text{bins}=200$ and 5 trial durations, that's cheap enough — a few microseconds per trial period — to run thousands of periods interactively; the lab budgets a few milliseconds of main-thread time per animation frame so the UI never freezes, rather than blocking on the whole scan at once (a natural extension is to move the scan to a Web Worker, trading a little message-passing overhead for a completely unblocked main thread; this sim keeps it on the main thread, chunked, for simplicity).
+
+**The frequency grid, not period grid.** Both periodograms here step through *frequency* (or equivalently, oversampled toward short periods) rather than linear period, because a fixed period step under-samples the many possible short periods relative to long ones — a planet at $P=1.001$ d and one at $P=1.0$ d drift out of phase over the observing baseline at a rate that depends on $1/P - 1/(P+\delta P)\approx \delta P/P^2$, so equal *frequency* steps ($\delta(1/P)$ constant) give equal phase-drift resolution everywhere. You also need to **oversample**: too coarse a period grid can step clean over a genuine (but numerically narrow) peak, especially for BLS where a transit's width in phase is itself very small at short orbital periods.
+
+**Phase folding and detrending.** Phase-folding just means taking $t\bmod P$ (or, as we do, comparing to the nearest multiple of $P$) and plotting flux against phase instead of time — turning $N$ scattered transits into one dense, well-sampled transit shape. Real pipelines detrend first (dividing out slow stellar variability with, e.g., a Savitzky–Golay filter or Gaussian process) *before* folding, because otherwise slow brightness drifts can masquerade as, or wash out, a shallow periodic dip; the lab's stellar-variability model is slow enough relative to individual transits that we skip explicit detrending and let BLS's own baseline-fitting absorb it, which is a reasonable simplification but not what a production pipeline (like Kepler's or TESS's) actually does.
+</Hood>
+
+### The false positives that keep astronomers honest
+
+Not every periodic dip is a planet. An **eclipsing binary** — two stars orbiting each other — produces deep, often V-shaped dips at the right period, sometimes diluted to planet-like depths by a third, unrelated star blended into the same pixel (a "background eclipsing binary"). Distinguishing checks include: does the secondary eclipse (star passing behind star) show up at the expected shallow, opposite phase; does the transit depth or shape differ between colors (real planets are achromatic; grazing stellar eclipses often aren't); does high-resolution imaging reveal a blended second star; and does RV follow-up show a stellar-mass, not planetary-mass, companion. Kepler and TESS pipelines apply dozens of such "vetting" tests automatically before a candidate is promoted to "confirmed."
+
+**MCMC for fitting.** Once you have a promising candidate, getting honest uncertainties on $P$, $R_p/R_\star$, $b$, and limb-darkening parameters (which are correlated with each other in the fit) is usually done with Markov Chain Monte Carlo: rather than a single best-fit point, MCMC samples the full posterior probability distribution over parameters given the data, propagating correlations and non-Gaussian uncertainties honestly into, say, the final quoted mass and radius (and hence density) of the planet. This is the same broad idea used for gravitational-wave parameter estimation in [Chapter 20](/ch/gravitational-waves/) and cosmological parameter fits in [Chapter 27](/ch/cmb/).
+
+## The wobble and the shift, together
+
+Zooming back out to the whole picture: the star's tiny reflex orbit, the Doppler shift it produces, and the resulting RV curve are three views of the same physics.
+
+<Sim name="exoplanets-wobble" size="wide" minHeight={420}>
+**Barycentric wobble, synced.** Left: a top-down view of the star (orbit exaggerated ×12 to be visible) and planet orbiting their common barycentre. Right: the resulting radial-velocity curve, and a schematic spectral line shifting red as the star recedes and blue as it approaches. Raise the planet mass or eccentricity and watch K and the RV curve's shape change together.
+</Sim>
+
+## Demographics: what's actually out there
+
+By 2026 the confirmed-planet count sits above 6,000, drawn overwhelmingly from Kepler, K2, TESS and ground-based RV surveys, with thousands more unconfirmed candidates awaiting follow-up. Correcting Kepler's raw detections for its own selection effects (small, long-period planets are systematically missed) gives **occurrence rates**: on average, roughly one planet per star when integrated across the sizes and periods Kepler was sensitive to, with small planets (1–4 R⊕) far outnumbering giants, and M-dwarf stars hosting, on average, *more* small planets per star than Sun-like stars do.
+
+### The habitable zone, and why it scales as $\sqrt L$
+
+A planet's equilibrium temperature (balancing absorbed starlight against blackbody emission, ignoring greenhouse effects for a moment) goes as $T_\text{eq} \propto \sqrt{R_\star T_\star^2/a}= (L_\star/a^2)^{1/4}$ up to constants, since $L_\star = 4\pi R_\star^2\sigma T_\star^4$. Demanding a *fixed* equilibrium temperature (roughly, "surface conditions where liquid water can persist," which the real, greenhouse-corrected habitable zone approximates through detailed radiative-transfer modeling) as $L_\star$ varies forces $a \propto \sqrt{L_\star}$ — the habitable zone moves outward as the square root of stellar luminosity.
+
+<KeyEq title="Habitable-zone scaling">
+$$
+a_\text{HZ} \propto \sqrt{L_\star}
+$$
+<Fragment slot="where">$a_\text{HZ}$ is the distance at fixed equilibrium temperature (and hence, roughly, fixed insolation) as stellar luminosity $L_\star$ varies. The commonly used Kopparapu et al. (2013) conservative habitable zone runs from about $\sqrt{L_\star/1.1}$ AU (inner, "runaway greenhouse") to $\sqrt{L_\star/0.53}$ AU (outer, "maximum greenhouse"), which is the sqrt(L) scaling with specific numerical prefactors from detailed climate modeling.</Fragment>
+</KeyEq>
+
+A star of luminosity <Var name="L_hz" value={1} min={0.0001} max={30} log /> L☉ has a conservative habitable zone from <Out name="hzInner" /> to <Out name="hzOuter" />.
+
+<Aside>Drag L down to 0.000553 (TRAPPIST-1's actual luminosity): the habitable zone collapses to a sliver just a few percent of an AU across — which is exactly why several TRAPPIST-1 planets orbit within it despite periods of only a few days.</Aside>
+
+<Sim name="exoplanets-habitable" size="wide" minHeight={320}>
+**Habitable-zone calculator.** Drag the luminosity slider (or pick a preset star) and watch the green habitable-zone band slide outward as $\sqrt{L_\star}$. The orbital axis uses a square-root scale so both a red dwarf's tight HZ and a luminous star's distant one stay visible together.
+</Sim>
+
+<Fermi title="How many potentially habitable rocky planets are in the Milky Way?">
+Roughly a quarter of stars are Sun-like (F/G/K dwarfs); the rest are mostly M dwarfs. Kepler-derived occurrence rates suggest order 20–50% of small stars host a roughly Earth-sized planet in their (possibly quite narrow, per the note above) habitable zone. With $\sim2\times10^{11}$ stars in the Milky Way, even a conservative 10% occurrence rate gives $\sim2\times10^{10}$ candidate worlds — tens of billions. The number is uncertain by at least a factor of a few in every direction, and "in the habitable zone" is a long way from "habitable," but even the low end of the range is a staggering figure to hold in your head next to the exactly one inhabited planet we've confirmed so far.
+</Fermi>
+
+## Where we go from here
+
+Every method in this chapter turns a tiny, indirect signal — a wobble, a dimming, a magnification blip, a few extra photons squeezed past a coronagraph mask — into a planet's mass, radius, orbit, and increasingly its atmosphere. The statistical machinery (periodograms, phase-folding, MCMC, careful false-positive rejection) is not a footnote to the physics; it *is* how the physics gets extracted from real data, and the same toolkit reappears for gravitational waves ([Chapter 20](/ch/gravitational-waves/)), pulsar timing, and cosmological surveys ([Chapter 27](/ch/cmb/)). Next, in [Chapter 11](/ch/stellar-structure/), we turn from finding planets to the stars they orbit: the hydrostatic balance and energy transport that set a star's size, luminosity and lifetime — the very quantities that fix where a habitable zone sits.

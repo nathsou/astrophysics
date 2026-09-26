@@ -93,6 +93,75 @@ $$ \frac{dP}{dr} = -\frac{G m(r) \rho}{r^2} $$
 - Use `\htmlData{term=x}{…}` only inside math. It needs KaTeX `trust`, which is enabled.
 - Leave blank lines around block components (`<KeyEq>`, `<Sim>`, and so on) and around `$$` blocks.
 
+
+## Depth of explanation (required in every chapter)
+
+Readers choose a **depth** with a control in the chapter header and sidebar. The setting is global and remembered:
+
+| Depth | Name | Reader | Allowed maths |
+|---|---|---|---|
+| 1 | **Intuitive** | Curious, no maths background | Words, pictures, analogies, and proportionalities like "P² ∝ a³". Almost no symbols. |
+| 2 | **High school** | Comfortable with algebra | Algebra, powers, logs, basic trig, plugging numbers into formulas. No calculus, no vectors. |
+| 3 | **Engineering** | Calculus, vectors, ODEs, a little linear algebra | Everything: derivations, differential equations, tensors when essential. |
+
+The default is 2. **Every chapter must read well, top to bottom, at all three depths.** At depth 1 it should never feel like "the real text with holes in it".
+
+Tools (see `src/pages/ch/orbits.mdx` for worked examples):
+
+```mdx
+import Tiers from '../../components/Tiers.astro';
+import Level from '../../components/Level.astro';
+
+<!-- Alternative versions of the same passage: shows the reader's depth (or the nearest shallower
+     tier) plus a "Go deeper" pill that reveals the next tier below. Use for anything that exists in
+     2–3 versions: definitions, KeyEqs, explanations. Slots may be any subset of l1/l2/l3. -->
+<Tiers>
+<Fragment slot="l1"> plain words </Fragment>
+<Fragment slot="l2"> algebra version (a KeyEq may live here) </Fragment>
+<Fragment slot="l3"> vectors/calculus version </Fragment>
+</Tiers>
+
+<!-- Extra content with no simpler counterpart (e.g. a derivation). Below min it collapses to a
+     one-line pill titled `title` that the reader can expand in place. -->
+<Level min={3} title="Deriving the effective potential"> … </Level>
+
+<!-- Content only for shallow depths, hidden above max (e.g. a gentle analogy). -->
+<Level max={1}> … </Level>
+
+<!-- Inline fragments inside a sentence (no pill): -->
+… the force <Level min={3} inline>$\vec F = -m\nabla\Phi$</Level> points inward …
+```
+
+Guidelines:
+- **Structure:** headings (`##`/`###`), sims, photos, Fermi boxes and Predicts usually sit **outside** any gating, so everyone gets the story and the toys. Gate the *explanations*.
+- **Depth 1 has its own prose**, not a stripped-down copy of depth 3. Use analogies, concrete numbers and the sims.
+- **At depth 2**, every KeyEq should be algebra only. Put the calculus/vector form in the l3 tier.
+- **Derivations** go in `<Level min={3} title="…">`, with a short pill title that says what is derived.
+- **The `<Hood>` sections** are for everyone: they are already collapsed and describe the code. Keep them as they are.
+- `<Var>`/`<Out>` numbers work at every depth. Keep them outside gating when possible.
+- Blocks inside `Tiers`/`Level` stay in the article grid (Asides, wide Sims and Photos work inside them). Do not nest a `<Tiers>` inside another `<Tiers>`.
+- Sims may adapt to the depth, for example by hiding expert readouts: read `document.documentElement.dataset.depth` and listen for `window` event `depth:change`. This is optional.
+
+## Real images
+
+Where they help and look beautiful, include **real astronomical images from reputable sources**. A chapter should usually have 2–5, used as openers, "what it really looks like" moments, or comparisons with the sims.
+
+- **Allowed sources** (all free to reuse with credit): NASA (public domain; `images.nasa.gov` has an API at `https://images-api.nasa.gov/search?q=…&media_type=image`), ESA/Webb (`esawebb.org`, CC BY 4.0), ESA/Hubble (`esahubble.org`, CC BY 4.0), ESO (`eso.org/public/images`, CC BY 4.0), NOIRLab/NSF (`noirlab.edu/public/images`, CC BY 4.0), the EHT Collaboration (via ESO, CC BY 4.0), NASA/SDO, JPL. Do **not** use Wikipedia, stock sites or anything with unclear licensing.
+- **Vendor them locally:** download to `public/img/<slug>/<name>.jpg` with `curl`, then resize with `sips -Z 1800 -s formatOptions 82 file.jpg` (macOS). Keep each file **≤ 400 KB** and ≤ 1800 px on the long side. Use the agencies' "large"/"screen" JPG renditions, never the multi-hundred-MB originals.
+- **Verify** that each image is what you think it is (read its official description page) before writing the caption.
+- Embed:
+
+```mdx
+import Photo from '../../components/Photo.astro';
+
+<Photo src="/img/orbits/earthset-orion.jpg" alt="Accessible description" credit="NASA / Artemis II crew"
+       license="Public domain" href="https://images.nasa.gov/details/art002e021278" size="wide" aspect="3 / 2">
+**Bold lead.** Caption: what we are looking at, the scale, how it was taken, and how it connects to the physics.
+</Photo>
+```
+
+  `size` is `text` (default), `wide` or `full`. `credit` and `href` (the official page) are **mandatory**. Give `license` as `Public domain` (NASA) or `CC BY 4.0` (ESA/ESO/NOIRLab/EHT, whose credit lines must follow the agency's requested format, e.g. "ESA/Webb, NASA & CSA, J. Lee").
+
 ## Simulations
 
 ### Contract (`src/lib/runtime/sim.ts`)

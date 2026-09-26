@@ -1,0 +1,314 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: galaxy-formation
+lede: Dark matter builds the scaffolding and gas does the decorating. Galaxies are what happens when cooling, gravity and a few violent black holes argue for 13.8 billion years.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+
+## Halos first, galaxies second
+
+A galaxy is a small, bright thing sitting at the bottom of a large, dark thing. The Milky Way's stars and gas weigh about $6\times10^{10}$ M☉ and mostly lie inside 20 kpc of the centre. The dark-matter halo around them (see [Chapter 21](/ch/milky-way/)) weighs about $1\text{–}1.5\times10^{12}$ M☉ and reaches out to roughly 250 kpc. So to understand galaxy formation you first need to know how halos form. Then you need to understand why so little of the ordinary matter ends up as stars.
+
+The halo story is told in detail in [Chapter 28](/ch/structure/), so here is the summary. The early universe had tiny density fluctuations, roughly Gaussian, with slightly more power on small scales. Once matter dominated, overdense patches grew. Each patch expanded more slowly than its surroundings, reached a maximum size ("turnaround"), then collapsed and *virialised*: it relaxed into a roughly spherical, pressure-supported cloud of dark matter with density about 200 times the cosmic mean. Small patches collapse first because their fluctuations are largest. Those small halos then fall together into bigger ones. This bottom-up pattern is called **hierarchical assembly**. A Milky Way halo today is the result of thousands of mergers. Its major mergers mostly ended about 10 billion years ago, and it has been slowly accreting smaller lumps ever since.
+
+<Aside>**Merger trees.** Simulators record which halos merged into which as a *merger tree*. The Milky Way's tree has a trunk (the "main progenitor") and a few notable branches: Gaia-Enceladus/Sausage, a dwarf of about $10^{9}$ M☉ in stars that merged about 10 Gyr ago, and Sagittarius, which is being torn apart right now.</Aside>
+
+### Virial numbers
+
+A virialised halo of mass $M$ and radius $R$ has kinetic energy equal to half the magnitude of its potential energy. That fixes a characteristic circular speed $V_c = \sqrt{GM/R}$. It also fixes a temperature: gas that falls in at speed $V_c$ is shock-heated until its thermal energy per particle matches that kinetic energy. The result is the **virial temperature**
+
+$$
+T_\text{vir} = \frac{\mu m_p V_c^2}{2k_B} \approx 3.6\times10^5\ \text{K}\left(\frac{V_c}{100\ \text{km/s}}\right)^2,
+$$
+
+with $\mu \approx 0.6$ for ionised primordial gas. A dwarf halo with $V_c = 30$ km/s has $T_\text{vir} \sim 3\times10^4$ K. The Milky Way halo, with $V_c \approx 160$–220 km/s, has about $10^6$ K. A rich cluster, with $V_c \approx 1500$ km/s, has about $10^8$ K. The hot gas in clusters glows in X-rays, which is one way we know this picture is right.
+
+## Why gas has to cool
+
+Dark matter cannot radiate, so a dark halo stays puffy forever. Gas can radiate. Once it has been heated to $T_\text{vir}$, it sits in rough hydrostatic equilibrium, like a star's atmosphere, and it can only sink to the centre by *losing energy*. The whole of galaxy formation turns on a comparison of two clocks:
+
+- the **free-fall time** $t_\text{ff} = \sqrt{3\pi / 32 G\rho}$, how long the gas takes to collapse if nothing holds it up; and
+- the **cooling time**, how long the gas takes to radiate away its thermal energy.
+
+For gas with particle density $n$ at temperature $T$, the thermal energy density is about $\tfrac32 n k_B T$. The radiated power per unit volume is $n^2\Lambda(T)$: two-body collisions excite atoms or accelerate electrons, so the rate goes as density squared. The function $\Lambda(T)$ is the **cooling function**, and it contains all the atomic physics (see [Chapter 6](/ch/ism/)).
+
+<KeyEq title="Cooling time">
+$$
+t_\text{cool} = \frac{\tfrac32\, n\, k_B \htmlData{term=T}{T}}{\htmlData{term=n}{n}^2\, \htmlData{term=lam}{\Lambda(T)}} \;\propto\; \frac{T}{n\,\Lambda(T)}
+$$
+<Fragment slot="where"><span data-term="n">$n$</span> is the particle number density, <span data-term="T">$T$</span> the temperature and <span data-term="lam">$\Lambda(T)$</span> the cooling function (erg cm³ s⁻¹). Gas that can cool within a free-fall time, $t_\text{cool} < t_\text{ff}$, collapses and can form stars. Gas that cannot cool stays as a hot, pressure-supported halo.</Fragment>
+</KeyEq>
+
+The cooling function has a characteristic shape. Below about $10^4$ K hydrogen is neutral and cooling almost stops, apart from molecules and metals. Between $10^4$ and $10^{5.5}$ K there is a huge peak, at roughly $10^{-22}$–$10^{-21.5}$ erg cm³ s⁻¹ for gas with some metals: collisions excite hydrogen, helium, and highly ionised carbon and oxygen, which radiate the energy away as ultraviolet lines. Above about $10^7$ K the atoms are fully stripped and only bremsstrahlung (free–free emission) remains, with $\Lambda \propto T^{1/2}$ and a value about 30 times lower than the peak.
+
+### Rees–Ostriker and Silk: a maximum galaxy mass
+
+In 1977 Martin Rees and Jeremiah Ostriker, Joseph Silk, and James Binney independently asked a simple question: which halos can cool within a free-fall time? The answer depends on density and temperature, but it produces a clear boundary. For $t_\text{cool} \approx t_\text{ff}$ the critical mass is roughly $10^{11}$–$10^{12}$ M☉ and the critical size roughly 100 kpc.
+
+The physics works like this. Below this mass, halos are cool enough to sit on the steep side of the $\Lambda(T)$ peak, and their gas cools almost as fast as it falls in. Above it, gas is heated above $10^6$ K into the bremsstrahlung regime. There cooling is slow, and the gas also sits at low density in the outer halo, so $t_\text{cool}$ becomes longer than the age of the universe. This is why no galaxy is much more massive than a few $\times10^{11}$ M☉ in stars, even though halos reach $10^{15}$ M☉. The biggest structures are groups and clusters, full of hot gas that has never cooled.
+
+<Aside>**Why "cooling" makes things *collapse*.** Self-gravitating systems have negative heat capacity (see [Chapter 11](/ch/stellar-structure/)). A gas cloud supported by pressure that loses energy contracts, and by the virial theorem it *heats up*. Cooling doesn't make the gas cold in a lasting way. It lets the gas sink until something else, like rotation or star formation, stops it.</Aside>
+
+### Hot mode and cold mode
+
+For decades, the textbook picture was that all infalling gas shocks to $T_\text{vir}$ at the virial radius and then cools slowly out of a hot atmosphere. Simulations in the 2000s (Kereš et al. 2005; Dekel & Birnboim 2006) complicated this. In halos below about $10^{11.5}$–$10^{12}$ M☉, the post-shock gas cools so fast that a stable shock cannot even form. Gas flows in at around $10^4$–$10^5$ K straight to the centre (**cold-mode accretion**). In massive halos at high redshift, the cosmic web feeds the halo through narrow, dense filaments. Their gas is dense enough to cool faster than it can be shock-heated, so **cold streams** penetrate deep into an otherwise hot halo. This is likely how galaxies at $z \sim 2$–3 sustained star-formation rates of $100$ M☉/yr. The streams are hard to observe directly because they are faint, but Lyman-α emitting nebulae around quasars and absorption lines in background sightlines are consistent with them.
+
+## Disks, spin and angular momentum
+
+Gas that cools does not fall to a point, because it has angular momentum. Tidal torques from neighbouring structure spin up every protohalo slightly during its expansion phase (Peebles 1969; Doroshkevich 1970; White 1984). The amount is characterised by a dimensionless **spin parameter**:
+
+$$
+\lambda = \frac{J\,|E|^{1/2}}{G M^{5/2}},
+$$
+
+where $J$ is the angular momentum and $E$ the total energy. Simulations find a log-normal distribution with median $\lambda \approx 0.035$. That is a small number: the halo is supported almost entirely by random motions, and rotation contributes only a few per cent. But when the gas cools and contracts, it keeps its specific angular momentum $j = J/M$ while it loses energy. It spins up like an ice skater pulling in her arms, until rotation supports it. A simple calculation (Mo, Mao & White 1998) with a singular isothermal halo and an exponential disk gives the scale length
+
+<KeyEq title="Disk size from halo spin">
+$$
+\htmlData{term=Rd}{R_d} \approx \frac{\htmlData{term=lambda}{\lambda}}{\sqrt 2}\, \htmlData{term=Rvir}{R_\text{vir}}
+$$
+<Fragment slot="where"><span data-term="Rd">$R_d$</span> is the exponential scale length of the disk, <span data-term="lambda">$\lambda$</span> the halo spin parameter and <span data-term="Rvir">$R_\text{vir}$</span> the virial radius. This assumes the gas keeps the specific angular momentum of its halo. For the Milky Way, $\lambda = 0.035$ and $R_\text{vir} \approx 250$ kpc give $R_d \approx 6$ kpc. The observed value is about 2.5–3 kpc: the right order of magnitude, with the gap explained by halo concentration and by baryons pulling the halo in.</Fragment>
+</KeyEq>
+
+The derivation takes a few lines. For a singular isothermal sphere, $|E| = MV_c^2/2$ and $R_\text{vir} = GM/V_c^2$. Substituting into the definition gives $J = \sqrt2\,\lambda M V_c R_\text{vir}$. An exponential disk with flat rotation curve $V_c$ has $J_d = 2 M_d R_d V_c$. Setting $J_d/M_d = J/M$ gives $R_d = \lambda R_\text{vir}/\sqrt2$.
+
+That this works at all is remarkable. Galaxy sizes are set by tidal torques from structures megaparsecs away. The details were famously *hard* to get right in simulations, though: in the 1990s gas lost most of its angular momentum during mergers and formed disks ten times too small (the "angular momentum catastrophe"). The cure turned out to be feedback, which stops gas from cooling too early inside small clumps. Keep this in mind for the next sections.
+
+## The flagship: watching a galaxy assemble
+
+Time to see all of this happen. The simulation below starts at $z \approx 8.5$ with about forty lumps of dark matter and gas, a slow infall, and a slight net rotation. Everything falls together into one halo of $1.5\times10^{12}$ M☉. The gas follows a few simple rules: it heats to the local virial temperature, cools if $t_\text{cool} < t_\text{ff}$, settles into a disk, and forms stars with a two-billion-year depletion time. Supernova winds and an AGN can push back.
+
+<Predict question="Turn cooling on but all feedback off. What fraction of the halo's baryons end up as stars by z = 0?" choices={['About 1%', 'About 20%', 'Most of them (>50%)']} answer={2}>
+Without feedback, nearly every gas particle that reaches a dense, cool centre eventually turns into stars. That drives the stellar mass towards the full baryon budget, about $f_b M_h \approx 2.4\times10^{11}$ M☉ here. This is the classic **overcooling problem** of the 1990s. Real Milky Way-sized halos turn only about 20% of their baryons into stars, and dwarf halos turn well under 1%. Try it: set SN feedback to 0, untick AGN, and compare the M★ readout with the default run.
+</Predict>
+
+<Sim name="galaxy-formation-assembly" size="wide" minHeight={520}>
+**Toy hierarchical assembly.** Dark matter (<span style="color:#8a78e0">violet</span>) collapses into clumps that merge. Gas turns <span style="color:#ff7a3a">orange</span> when shock-heated and <span style="color:#3a9cff">blue</span> when it cools and settles. Stars are born <span style="color:#a8c8ff">blue-white</span> and redden as they age. Watch for supernova winds (<span style="color:#4dffc0">green</span>) blowing out of small halos, and AGN outflows (<span style="color:#ff45c0">magenta</span>) shooting along the spin axis once the central halo gets hot. Drag to rotate, scroll or pinch to zoom, and untick *Dark matter* to see the disk. The inset tracks the model's own star-formation history. Try turning off cooling (no galaxy), then feedback (too many stars). This is a *toy*: see the Hood below for what is physical and what is cosmetic.
+</Sim>
+
+<Hood title="gravity, sub-grid gas and the honest caveats">
+**Gravity.** Every particle feels the softened gravity of 2048 "source" dark-matter particles, which carry all of the mass, including the baryons. Direct summation over sources costs $O(N \times 2048)$: 134 million pair interactions per step at 65k particles. The WGSL kernel loads sources in tiles of 256 into workgroup shared memory, so each source is read from global memory once per workgroup rather than once per particle. The same loop also accumulates a compact kernel $W = (1-r^2/h^2)^2$ over nearby sources, which gives a local density, centroid, mean velocity and velocity dispersion almost for free:
+
+```wgsl
+for (var k = 0u; k < WG; k++) {
+  let s = tilePos[k].xyz;
+  let d = s - x;
+  let d2 = dot(d, d);
+  let ir = inverseSqrt(d2 + P.eps2);        // Plummer softening
+  acc += d * (ir * ir * ir);
+  let q2 = d2 * invh2;
+  if (q2 < 1.0) {                            // compact kernel W = (1 - q^2)^2
+    let w = (1.0 - q2) * (1.0 - q2);
+    let vv = tileVel[k].xyz;
+    wsum += w; wx += w * s; wv += w * vv; wv2 += w * dot(vv, vv);
+  }
+}
+```
+
+Integration is kick–drift leapfrog (velocities at half steps, [Chapter 2](/ch/orbits/)) with a fixed step of 6 Myr and Plummer softening of 6 kpc. With only 2048 sources the halo is noticeably *grainy*: two-body relaxation time is about $N/(8\ln N) \approx 34$ crossing times, so over 13 Gyr the inner halo relaxes somewhat artificially. Production codes use $10^8$–$10^{10}$ particles with tree or particle-mesh gravity ([Chapter 28](/ch/structure/)).
+
+**Gas recipes (per gas particle, per step).**
+1. *Temperature:* $T = \max(10^4\,\text{K}, \mu m_p \sigma^2/3k_B)$, where $\sigma$ is the local dark-matter velocity dispersion. This stands in for virial shock heating.
+2. *Cooling:* $t_\text{cool}$ from the formula above, using a toy $\Lambda(T)$ with the right peak and bremsstrahlung tail, and a gas density $f_b\rho$. If $t_\text{cool} < t_\text{ff}$, the gas's radial and vertical velocities relative to the local halo are damped on a free-fall time, while its tangential velocity is kept. That is the essence of "radiate energy, keep angular momentum", and it makes disks.
+3. *Star formation:* cold gas above a density threshold turns into a star particle with probability $\Delta t / t_\text{dep}$, $t_\text{dep} = 2$ Gyr, the observed molecular-gas depletion time.
+4. *Supernova winds:* each star-forming gas particle is instead ejected with probability $\eta\,\Delta t/t_\text{dep}$, with a fixed kick of about 260 km/s and mass loading $\eta \propto 1/\sigma^2$ ("energy-driven" winds). Winds escape shallow wells but fall back as fountains in deep ones.
+5. *AGN:* in halos hotter than $10^{5.9}$ K, diffuse gas is not allowed to cool ("radio mode": jets reheat the atmosphere), and dense central gas is sometimes kicked out along the spin axis ("quasar mode").
+
+**What is cosmetic.** Gas has no pressure forces at all: there is no hydrodynamics, no shocks, no cold streams. Gas does not source gravity (the dark-matter sources include its mass). All disks settle in the global $x$–$y$ plane, because vertical damping uses the global spin axis. The start is a hand-built clumpy sphere, not cosmological initial conditions, and "cosmic time" is just the code clock converted to Gyr ($t_\text{unit} = \sqrt{L^3/GM} = 1.52$ Gyr for $L = 250$ kpc, $M = 1.5\times10^{12}$ M☉). The black hole itself is not modelled.
+
+**Precision.** All GPU arithmetic is f32. Units are chosen so positions, velocities and densities are $O(10^{-2}\text{–}10^{3})$, well within f32 range, and softening keeps $1/r^3$ bounded. Physical constants appear only as two pre-computed factors, the $T$ and $t_\text{cool}$ conversions, computed in double precision on the CPU. Random numbers come from a PCG hash of particle index and step number, so a seed and a set of controls give the same history on any GPU. Each frame dispatches two to eight compute passes, one render pass into an `rgba16float` target with additive blending, and a tonemap. Every twelfth frame a tiny counter kernel is read back asynchronously for the readouts.
+
+**What real simulations do.** IllustrisTNG (AREPO, a moving-mesh hydro code), EAGLE (SPH) and FIRE (meshless finite-mass hydro, resolving individual star-forming regions) solve the equations of hydrodynamics with radiative cooling tables that depend on metallicity and the UV background. They use sub-grid models for star formation, stellar winds, supernovae, black-hole seeding, accretion and two modes of AGN feedback. These recipes are *calibrated* to reproduce the stellar mass function and galaxy sizes today. What they then predict, including morphology, colours, gas content and evolution, is the real test.
+</Hood>
+
+## The galaxy zoo
+
+Galaxies come in a remarkably small number of shapes. Edwin Hubble's 1926 "tuning fork" sorted them into **ellipticals** (E0–E7, from round to flattened), **lenticulars** (S0, disks without spiral arms or much gas), **spirals** (Sa–Sd, with ever looser arms and smaller bulges), barred spirals (SBa–SBd) and **irregulars**. Hubble called ellipticals "early type" and spirals "late type", and the names stuck even though no one thinks ellipticals evolve into spirals.
+
+<Aside>**Galaxy Zoo.** In 2007, 150,000 volunteers classified about a million Sloan galaxies by eye in the first Galaxy Zoo project. Among their finds: blue ellipticals, red spirals, and the "green peas", compact starbursts that turned out to be local analogues of the galaxies JWST now finds at $z > 6$.</Aside>
+
+### Red sequence and blue cloud
+
+A more physical classification comes from colour. Plot the optical colour of galaxies against their stellar mass (a colour–magnitude diagram) and you find two populations:
+
+- the **blue cloud**: star-forming disk galaxies, whose light is dominated by short-lived hot, blue O and B stars; and
+- the **red sequence**: *quiescent* galaxies, mostly ellipticals and S0s, whose stars are old and red, with a tight colour–mass relation set mostly by metallicity.
+
+Between them lies a sparsely populated **green valley**. The small number of galaxies there tells us galaxies cross it quickly, in about 1 Gyr. Something *quenches* star formation, and it acts fast. Above about $3\times10^{10}$ M☉ most galaxies are red, and below it most are blue. Since $z \approx 2$ the mass in the red sequence has roughly doubled, while the blue cloud's has changed little: galaxies keep moving from blue to red.
+
+### Morphology–density relation
+
+In 1980 Alan Dressler found that the fraction of ellipticals and S0s rises from about 20% in the field to about 80% in the cores of rich clusters. Environment matters. Clusters strip gas from infalling spirals with **ram pressure** (the galaxy moving at 1000 km/s through $10^8$ K gas feels a strong headwind; "jellyfish" galaxies with trailing tentacles of stripped gas are the smoking gun). Satellites also lose their hot gas supply ("strangulation"), and repeated high-speed encounters ("harassment") thicken their disks.
+
+### Mergers make ellipticals
+
+The other route to an elliptical is a major merger. [Chapter 22](/ch/galactic-dynamics/) shows that when two disks of similar mass collide, violent relaxation scrambles the ordered orbits into a hot, roughly spheroidal system. Toomre & Toomre (1972) proposed this, and simulations have confirmed it. Gas in the merging disks is driven to the centre by tidal torques, which fuels a burst of star formation and feeds the central black hole. The most massive ellipticals probably grew mainly through many "dry" (gas-poor) minor mergers, which puffs them up without adding young stars. That explains why they are both old and largely assembled late.
+
+## Why galaxy formation is inefficient
+
+Here is the most important plot in the subject. Count halos by mass in a simulation, and count galaxies by stellar mass in a survey. Then match them in order, the most massive galaxy to the most massive halo, and so on down. This technique is called **abundance matching**. It gives the **stellar-to-halo mass relation**:
+
+<Sim name="galaxy-formation-shmr" minHeight={420}>
+**How much of each halo becomes stars?** The fit (Moster, Naab & White 2013) peaks at about 4% of the halo mass, or roughly **20–25% of the available baryons**, at $M_h \approx 10^{11.8}$ M☉, close to the Milky Way. Drag across the plot to read off the stellar mass of a halo. Move the redshift slider to see the peak shift to slightly higher masses in the past. The dashed curve is $z = 0$.
+</Sim>
+
+Every halo starts with the cosmic baryon fraction $f_b = \Omega_b/\Omega_m \approx 0.157$. If all of it became stars, the curve would be a flat line at 0.157. Instead it is a sharp peak, with efficiencies falling to below 1% at both ends. Two different physical processes cut off the two sides.
+
+**Small halos: supernova feedback (and reionisation).** A $10^{10}$ M☉ halo has an escape speed of about 60 km/s. A single supernova releases about $10^{51}$ erg, and about one supernova forms for every 100 M☉ of stars. That gives $10^{49}$ erg per solar mass of stars formed, or a speed of about 700 km/s if all of it went into kinetic energy. Even if 90% of the energy is radiated away, supernovae can easily expel the gas of a dwarf. The ratio of gas ejected to stars formed, the *mass loading* $\eta$, scales as $V_c^{-2}$ if the winds are energy-driven, or $V_c^{-1}$ if momentum-driven. Reionisation adds a second effect: after $z \approx 6$, the UV background heats the intergalactic medium to about $10^4$ K, and halos with $V_c \lesssim 20$–30 km/s can no longer hold onto their gas at all. This is why the smallest dwarfs, like the ultra-faint satellites of the Milky Way, have only a few thousand M☉ of stars in $10^{8}$–$10^{9}$ M☉ halos.
+
+**Big halos: long cooling times and AGN feedback.** Above $10^{12}$ M☉ the Rees–Ostriker argument already means cooling is slow. But not slow *enough*: X-ray observations show that cluster cores should cool at hundreds of M☉/yr (the "cooling flow" problem), yet they form far fewer stars. Something keeps adding heat. The culprit is the central supermassive black hole. X-ray images of Perseus and other clusters show cavities hundreds of kpc across, inflated by radio jets, with enough $PV$ work to offset the cooling. That is the subject of the next section.
+
+<Fermi title="Can a black hole unbind its galaxy's gas?">
+A black hole growing to mass $M_\text{BH}$ radiates about $\epsilon M_\text{BH} c^2$ with $\epsilon \approx 0.1$. For $M_\text{BH} = 10^8$ M☉ that is $10^{-1} \times 2\times10^{38}\,\text{kg}\times 9\times10^{16}\,\text{m}^2\text{s}^{-2} \approx 2\times10^{54}$ J.
+
+The binding energy of the gas in its host is about $M_\text{gas}\sigma^2$. For a bulge with $M_\text{gas} = 10^{11}$ M☉ $= 2\times10^{41}$ kg and $\sigma = 200$ km/s, this is $2\times10^{41}\times 4\times10^{10} \approx 10^{52}$ J.
+
+The black hole's output is **about 100 times** the gas binding energy. Coupling even a few per cent of it to the gas is enough to reshape the galaxy. That is the energetic case for AGN feedback, and why a black hole with only 0.1% of the bulge mass matters.
+</Fermi>
+
+## Supermassive black holes
+
+Every massive galaxy seems to host a central black hole of $10^6$–$10^{10}$ M☉. The Milky Way's, Sgr A\*, weighs $4.3\times10^6$ M☉, measured from stellar orbits (Nobel Prize 2020) and imaged by the EHT in 2022. M87's weighs $6.5\times10^9$ M☉. When gas falls onto them through an accretion disk, they become **active galactic nuclei** (AGN), the most luminous persistent objects in the universe.
+
+### The Eddington limit
+
+How bright can an accreting object be? Radiation pressure pushes outward on the infalling gas. The gas is mostly ionised hydrogen. Photons scatter off electrons with the Thomson cross-section $\sigma_T$, and electrostatic forces drag the protons along. At distance $r$ from a source of luminosity $L$, the photon momentum flux is $L/(4\pi r^2 c)$, so the outward force on each electron–proton pair is
+
+$$
+F_\text{rad} = \frac{\sigma_T L}{4\pi r^2 c}.
+$$
+
+Gravity pulls inward mostly on the proton: $F_\text{grav} = GMm_p/r^2$. Both scale as $1/r^2$, so the distance drops out. Set them equal:
+
+<KeyEq title="Eddington luminosity">
+$$
+\htmlData{term=Ledd}{L_\text{Edd}} = \frac{4\pi G \htmlData{term=Mbh}{M} m_p c}{\htmlData{term=sigT}{\sigma_T}} \approx 1.26\times10^{31}\ \text{W}\left(\frac{M}{\text{M}_\odot}\right) \approx 3.3\times10^4\,L_\odot \left(\frac{M}{\text{M}_\odot}\right)
+$$
+<Fragment slot="where"><span data-term="Ledd">$L_\text{Edd}$</span> is the luminosity at which radiation pressure on electrons balances gravity on protons. <span data-term="Mbh">$M$</span> is the central mass, $m_p$ the proton mass <C k="mp" /> and <span data-term="sigT">$\sigma_T$</span> the Thomson cross-section <C k="sigmaT" />. Spherically accreting gas cannot shine brighter than this for long; disks and beaming allow modest super-Eddington phases.</Fragment>
+</KeyEq>
+
+A black hole of <Var name="Mbh" value={1e9} min={1e2} max={1e11} log digits={2} /> M☉ has $L_\text{Edd} =$ <Out name="LEdd" />. A bright quasar at $10^{9}$ M☉ outshines its entire host galaxy of $10^{11}$ stars by a factor of about 100.
+
+### Accretion efficiency and the Salpeter time
+
+Gas spiralling in through a thin disk radiates the binding energy at its innermost stable circular orbit (ISCO, [Chapter 19](/ch/black-holes/)). That efficiency $\epsilon = L/\dot M c^2$ is 5.7% for a non-spinning black hole and up to 42% for a maximally spinning one. The usual fiducial value is $\epsilon \approx 0.1$, about 15 times more efficient than hydrogen fusion. To sustain $L_\text{Edd}$ with efficiency <Var name="eff" value={0.1} min={0.04} max={0.42} digits={2} />, our black hole must swallow <Out name="Mdot" />.
+
+Only a fraction $1 - \epsilon$ of the infalling mass ends up in the hole. The rest leaves as radiation. So a black hole accreting at the Eddington rate grows as
+
+$$
+\frac{dM}{dt} = \frac{(1-\epsilon)}{\epsilon}\frac{L_\text{Edd}}{c^2} = \frac{M}{t_S}, \qquad t_S = \frac{\epsilon}{1-\epsilon}\,\frac{\sigma_T c}{4\pi G m_p} \approx \frac{\epsilon}{1-\epsilon}\times 450\ \text{Myr}.
+$$
+
+The growth is **exponential**, with e-folding time (the **Salpeter time**) of <Out name="tSal" /> for the efficiency above. It doesn't depend on the mass, because both the luminosity limit and the mass scale linearly with $M$.
+
+A seed of <Var name="Mseed" value={100} min={10} max={1e6} log digits={2} /> M☉, perhaps a remnant of a Population III star ([Chapter 16](/ch/stellar-death/)), needs <Out name="nFold" /> e-folds to reach $10^9$ M☉, which takes <Out name="tGrow" /> of uninterrupted Eddington-limited accretion. The universe was only 700 Myr old at $z = 7.5$, when the first billion-solar-mass quasars already shone.
+
+<Sim name="galaxy-formation-eddington" minHeight={440}>
+**The race against the cosmic clock.** The orange curve is a black hole growing continuously at a fixed fraction of its Eddington rate from a seed formed at the chosen redshift. Blue points are some of the most distant black holes known, with masses uncertain by factors of about 3. Can a 100 M☉ seed make a $10^9$ M☉ quasar by $z = 7.5$? Try lowering $\epsilon$ (which helps growth), raising the seed to $10^5$ M☉ (a "direct-collapse" seed), or allowing mildly super-Eddington accretion.
+</Sim>
+
+The figure shows the problem. Light seeds only work if they accrete at the Eddington limit, continuously, from $z \approx 25$, with low radiative efficiency. Real black holes spend most of their lives far below Eddington. Hence two classes of solution: **heavy seeds** of $10^4$–$10^6$ M☉, formed by direct collapse of pristine gas clouds in atomic-cooling halos, or by runaway mergers in dense star clusters; and **super-Eddington** phases, where photons are trapped in the inflow and the luminosity limit no longer caps the accretion rate.
+
+### The M–σ relation
+
+In 2000, two teams (Ferrarese & Merritt; Gebhardt et al.) found that black-hole mass correlates tightly with the velocity dispersion of the host's bulge:
+
+$$
+M_\text{BH} \approx 3\times10^8\,\text{M}_\odot \left(\frac{\sigma}{200\ \text{km/s}}\right)^{4.4},
+$$
+
+with only about 0.3 dex of scatter (Kormendy & Ho 2013). Equivalently, $M_\text{BH} \approx 0.5\%$ of the bulge's stellar mass. This is strange: the black hole's sphere of influence, $GM_\text{BH}/\sigma^2 \sim 10$ pc, is a thousand times smaller than the bulge. Something must connect them. The favourite explanation is feedback self-regulation. A black hole grows until its momentum-driven outflow ($L_\text{Edd}/c$) can push the gas out of the bulge. Setting $L_\text{Edd}/c \approx$ the weight of the gas shell gives $M_\text{BH} \propto \sigma^4$ (King 2003), close to the observed slope.
+
+<Aside>**Coevolution, maybe.** The cosmic black-hole accretion rate density tracks the star-formation history below (both peak at $z \approx 2$) with a ratio of about $10^{-3}$, which is further evidence the two grow together. But JWST finds many early black holes *overmassive* relative to their hosts, so the relation may have been established from the black-hole side first.</Aside>
+
+### One engine, many faces: AGN unification
+
+Historically AGN were named by how they looked: **Seyfert galaxies** (bright nuclei in spirals), **quasars** (point-like, so luminous that the host is hard to see), **radio galaxies** with huge lobes, and **blazars** (violently variable, featureless spectra). Types 1 and 2 were distinguished by whether their spectra showed broad emission lines (thousands of km/s wide) or only narrow ones.
+
+The **unified model** (Antonucci 1993; Urry & Padovani 1995) says most of these are the same engine seen from different angles:
+
+- a black hole and hot accretion disk, radiating mostly in the UV (the "big blue bump");
+- the **broad-line region**, fast clouds within light-days to light-months of the hole;
+- a dusty **torus** (more likely a clumpy, flared, outflowing structure) at parsec scales, which absorbs the UV and re-radiates it in the infrared;
+- the **narrow-line region**, slower gas extending hundreds of pc out; and
+- in about 10% of AGN, a pair of relativistic **jets** perpendicular to the disk.
+
+Look over the torus and you see the broad lines: a type 1 Seyfert or quasar. Look through it and they are hidden: a type 2. (Spectropolarimetry proved this: NGC 1068 shows broad lines in *polarised* light, scattered into view by electrons above the torus.) Look straight down the jet and relativistic beaming amplifies it into a blazar. A second parameter is accretion rate. At high Eddington ratio the disk is thin and radiatively efficient ("quasar mode"). Below about 1% of Eddington it becomes a hot, puffed-up, inefficient flow that mostly launches jets ("radio mode"). The same split appears in the feedback recipes of every cosmological simulation.
+
+### Superluminal motion
+
+In the 1970s, radio interferometers watched blobs in quasar jets move across the sky at *several times the speed of light*. The quasar 3C 279 shows apparent speeds of 20c. Nothing is breaking relativity; the light-travel time is playing a trick.
+
+A blob moves at speed $\beta c$ at angle $\theta$ to our line of sight. It emits a pulse at $t = 0$ and another at $t = \Delta t$. In between, it moves $\beta c\,\Delta t\cos\theta$ toward us, so the second pulse has that much less distance to travel. The observed interval is compressed:
+
+$$
+\Delta t_\text{obs} = \Delta t\,(1 - \beta\cos\theta).
+$$
+
+The transverse distance covered is $\beta c\,\Delta t\sin\theta$. So the apparent transverse speed is
+
+<KeyEq title="Apparent superluminal speed">
+$$
+\htmlData{term=bapp}{\beta_\text{app}} = \frac{\htmlData{term=beta}{\beta}\sin\htmlData{term=theta}{\theta}}{1 - \htmlData{term=beta}{\beta}\cos\htmlData{term=theta}{\theta}}
+$$
+<Fragment slot="where"><span data-term="bapp">$\beta_\text{app}$</span> is the apparent speed across the sky in units of $c$. <span data-term="beta">$\beta$</span> is the true speed and <span data-term="theta">$\theta$</span> the angle to the line of sight. Setting $d\beta_\text{app}/d\theta = 0$ gives a maximum at $\cos\theta = \beta$, where $\beta_\text{app} = \beta\gamma$. For Lorentz factor $\gamma = 10$, blobs can appear to move at nearly $10c$.</Fragment>
+</KeyEq>
+
+<Sim name="galaxy-formation-superluminal" minHeight={420}>
+**Faster than light, apparently.** Left: a blob leaves the core at $\beta c$, emitting light pulses (circles). Wavefronts bunch up on the observer's side because the blob nearly keeps pace with its own light. Right: $\beta_\text{app}$ against viewing angle. Drag across the plot to change $\theta$. For any $\Gamma \gtrsim 1.4$ there is a range of angles where the blob appears to move faster than light, and the fastest apparent motion always occurs at $\cos\theta = \beta$. The Doppler factor $\delta$ shows why these sources are also the brightest: flux is boosted by roughly $\delta^{3\text{–}4}$.
+</Sim>
+
+The same Doppler factor explains why we usually see only *one* jet: the approaching jet is boosted and the receding one dimmed, by factors that can exceed $10^4$ ([Chapter 17](/ch/relativity/)).
+
+### Quenching
+
+We can now assemble the story of why galaxies stop forming stars. Candidate mechanisms include:
+
+- **Halo quenching:** above about $10^{12}$ M☉ new gas is shock-heated and cools slowly, and radio-mode AGN keep it hot.
+- **Quasar-mode feedback:** a burst of accretion, often triggered by a merger, drives winds that clear gas out of the centre. Outflows of hundreds of M☉/yr at 1000 km/s are observed in molecular gas.
+- **Morphological quenching:** a massive bulge stabilises the gas disk against collapse.
+- **Environmental quenching:** ram-pressure stripping and strangulation in groups and clusters, which is why satellites are more often red.
+
+Simulations like IllustrisTNG reproduce the red sequence mainly through kinetic AGN feedback that turns on once the black hole exceeds about $10^8$ M☉. Observationally, quiescence correlates better with central stellar density and black-hole mass than with anything else.
+
+## The cosmic star-formation history
+
+Pull all of this back to the scale of the universe. Measure the star-formation rate per unit comoving volume at each redshift, from UV light corrected for dust, infrared re-emission, H-α and radio. You get the **Madau plot** (Madau et al. 1996; Madau & Dickinson 2014), one of the great summaries of observational cosmology. The Madau & Dickinson fit is
+
+$$
+\psi(z) = 0.015\,\frac{(1+z)^{2.7}}{1 + [(1+z)/2.9]^{5.6}}\ \ \text{M}_\odot\,\text{yr}^{-1}\,\text{Mpc}^{-3}.
+$$
+
+<Sim name="galaxy-formation-madau" minHeight={400}>
+**When the stars were made.** Star formation rose steeply for the first 3 Gyr, peaked at $z \approx 1.9$ ("cosmic noon", 10.5 Gyr ago) about **9 times higher than today**, and has declined ever since. Drag to read values. Switch the x-axis to cosmic time to see how lopsided it is: half of all stars had formed by $z \approx 1.3$ (4.9 Gyr after the Big Bang), and three-quarters by $z \approx 0.7$.
+</Sim>
+
+The rise is gravity at work: halos grow, cool gas flows in along cold streams, and star formation follows the accretion. The decline has three causes. Cosmic expansion lowers densities and slows accretion. More of the mass sits in halos above the quenching scale. And galaxies are running out of fuel: the gas depletion time is 1–2 Gyr, while inflow has slowed. The universe is past its prime. Today's star formation rate is only about 2 M☉/yr in a Milky Way-sized galaxy and falling.
+
+<Aside>**Don't forget recycling.** About 30–40% of the mass of stars formed goes back to the interstellar medium through winds and supernovae (the "return fraction"), so the stellar mass density today is less than the integral of $\psi$. The Madau–Dickinson fit assumes a Salpeter IMF. Changing to a Chabrier IMF lowers all values by a factor of 1.6.</Aside>
+
+## JWST surprises at cosmic dawn
+
+Since 2022, JWST has pushed the frontier from $z \approx 11$ to beyond $z = 14$. The spectroscopic record is JADES-GS-z14-0 at $z = 14.2$, just 290 Myr after the Big Bang, and MoM-z14 at $z = 14.4$ followed in 2025. Three findings stand out, each with honest uncertainty.
+
+**Too many bright galaxies.** At $z > 10$, JWST finds UV-bright galaxies up to ten times more abundant than most pre-launch models predicted. The early claims of "universe-breaking" massive galaxies at $z \sim 7$–9 mostly softened once spectra arrived: some were AGN, and masses were overestimated. But the excess of bright galaxies at $z > 10$ is robust. Candidate explanations, none of which require new cosmology: star formation was more efficient in dense early halos where feedback had no time to act; it was *bursty*, so the brightest are temporarily lit up; there was less dust; or the IMF was top-heavy, making more light per unit mass.
+
+**Little red dots.** JWST found a population of compact, very red sources at $z \approx 4$–8 with broad H-α lines, dubbed "little red dots". They have a V-shaped spectrum: blue in the UV, red in the optical. If the broad lines indicate AGN, the black holes are $10^6$–$10^8$ M☉ and often overmassive relative to their hosts. But they are strangely X-ray weak and show little variability or hot dust. By 2025–26 a leading interpretation is that they are black holes accreting inside dense gas cocoons, so the red colour comes from extremely dense gas rather than dust. Their nature is still actively debated.
+
+**Early, heavy black holes.** UHZ1, seen in X-rays by Chandra behind a lensing cluster at $z = 10.1$, has a black hole of about $4\times10^7$ M☉, comparable to its host's stellar mass. GN-z11 at $z = 10.6$ appears to host a $\sim10^6$ M☉ accreting black hole. These strongly favour heavy seeds or super-Eddington growth: return to the Eddington figure and see what it takes to reach UHZ1.
+
+None of these yet threatens ΛCDM. They do tell us that the physics of the first galaxies (star-formation efficiency, feedback, dust, black-hole seeding) was different from what we assumed based on the nearby universe.
+
+## Where we go from here
+
+Galaxy formation compresses into a surprisingly short list of principles. Dark matter builds halos hierarchically. Gas can only follow if it cools faster than it falls, which limits galaxies to a narrow range of halo masses. Angular momentum from tidal torques turns cooled gas into disks, and mergers turn disks into ellipticals. Feedback from supernovae at the low-mass end and black holes at the high-mass end keeps the whole process inefficient, peaking at about 20% of baryons in Milky Way-mass halos. The universe made most of its stars around $z \approx 2$ and has been winding down since.
+
+Next, [Chapter 24](/ch/lensing/) shows how gravitational lensing weighs the dark halos directly and magnifies the faintest early galaxies into view, including several of the JWST objects above. After that, [Chapters 25–28](/ch/expansion/) build the expanding universe that sets the clock in every figure of this chapter, ending with the cosmic web whose filaments feed the galaxies.

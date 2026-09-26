@@ -1,0 +1,24 @@
+---
+// Alternative versions of the same explanation for different depths. Shows the version matching the
+// reader's depth (or the nearest shallower one), plus a "Go deeper" pill revealing the next version below.
+//
+//   <Tiers>
+//   <Fragment slot="l1"> plain-words version </Fragment>
+//   <Fragment slot="l2"> algebra version </Fragment>
+//   <Fragment slot="l3"> calculus version </Fragment>
+//   </Tiers>
+//
+// Any subset of slots may be given (e.g. l1 + l3). Content stays in the article grid (asides, wide sims OK).
+const names = { 1: 'Intuitive', 2: 'High-school math', 3: 'Engineering math' } as const;
+const tiers = ([1, 2, 3] as const).filter((n) => Astro.slots.has(`l${n}`));
+const html = await Promise.all(tiers.map((n) => Astro.slots.render(`l${n}`)));
+---
+<div class="tiers" data-tiers={tiers.join(',')}>
+  {tiers.map((n, i) => (
+    <div class="tier" data-tier={n}>
+      <div class="lvl-tag tier-tag"><span class="lvl-badge">{n === 3 ? '∫' : n === 2 ? 'x²' : '◐'}</span>{names[n]} version</div>
+      <Fragment set:html={html[i]} />
+    </div>
+  ))}
+  <button class="lvl-pill tier-more" type="button"><span class="lvl-badge">+</span><span class="lvl-pill-text"></span><span class="lvl-pill-action">Go deeper</span></button>
+</div>

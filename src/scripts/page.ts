@@ -94,3 +94,77 @@ for (const box of document.querySelectorAll<HTMLElement>('.box.predict')) {
 const chapterScripts = import.meta.glob('../chapters/*.ts');
 const slug = document.body.dataset.chapter;
 if (slug) chapterScripts[`../chapters/${slug}.ts`]?.();
+
+// ---------- Depth of explanation ----------
+// Global reader preference (1 Intuitive · 2 High school · 3 Engineering), stored on <html data-depth>.
+// Sims can read it via document.documentElement.dataset.depth and listen for `depth:change`.
+const DEPTH_HINTS: Record<string, string> = {
+  '1': 'Ideas and pictures first — equations only where they tell a story.',
+  '2': 'Algebra and simple formulas; calculus-based derivations are folded away.',
+  '3': 'Everything: calculus, vectors and full derivations.',
+};
+function applyDepth(d: string, persist: boolean) {
+  const root = document.documentElement;
+  root.dataset.depth = d;
+  document.querySelectorAll<HTMLButtonElement>('.depth-seg button').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.depth === d)));
+  document.querySelectorAll<HTMLElement>('.depth-hint').forEach((el) => (el.textContent = DEPTH_HINTS[d]));
+  // blocks opened manually stay open only if still above the new depth
+  document.querySelectorAll<HTMLElement>('.lvl.open').forEach((el) => { if (+el.dataset.min! <= +d) el.classList.remove('open'); });
+  if (persist) {
+    try { localStorage.setItem('depth', d); } catch {}
+    window.dispatchEvent(new CustomEvent('depth:change', { detail: +d }));
+  }
+}
+applyDepth(document.documentElement.dataset.depth || '2', false);
+document.addEventListener('click', (e) => {
+  const t = e.target as HTMLElement;
+  const seg = t.closest<HTMLButtonElement>('.depth-seg button');
+  if (seg) {
+    // keep the reader's place: anchor on the first heading/paragraph currently in view
+    const anchor = [...document.querySelectorAll<HTMLElement>('.article > h2, .article > h3, .article > p')].find((el) => el.getBoundingClientRect().top > 0);
+    const before = anchor?.getBoundingClientRect().top ?? 0;
+    applyDepth(seg.dataset.depth!, true);
+    if (anchor) window.scrollBy(0, anchor.getBoundingClientRect().top - before);
+    return;
+  }
+  const pill = t.closest('.lvl-pill');
+  if (pill) { pill.parentElement!.classList.add('open'); return; }
+  const hide = t.closest('.lvl-hide');
+  if (hide) hide.closest('.lvl')!.classList.remove('open');
+});
+
+// ---------- <Tiers> ----------
+const TIER_NAMES: Record<number, string> = { 1: 'Intuitive', 2: 'High-school math', 3: 'Engineering math' };
+function layoutTiers(box: HTMLElement, depth: number, reveal = 0) {
+  const tiers = [...box.querySelectorAll<HTMLElement>(':scope > .tier')];
+  const levels = tiers.map((t) => +t.dataset.tier!);
+  // base = deepest tier ≤ depth, else the shallowest available
+  let base = levels.filter((l) => l <= depth).pop() ?? levels[0];
+  const upto = Math.max(base, reveal);
+  tiers.forEach((t, i) => {
+    const l = levels[i];
+    const shown = l === base || (l > base && l <= upto);
+    t.classList.toggle('shown', shown);
+    t.classList.toggle('extra', shown && l !== base);
+  });
+  const next = levels.find((l) => l > upto);
+  box.classList.toggle('has-more', next !== undefined);
+  box.dataset.reveal = String(upto);
+  const txt = box.querySelector<HTMLElement>(':scope > .tier-more .lvl-pill-text');
+  if (txt && next) txt.textContent = `${TIER_NAMES[next]} version of this explanation`;
+}
+function layoutAllTiers() {
+  const d = +(document.documentElement.dataset.depth || '2');
+  document.querySelectorAll<HTMLElement>('.tiers').forEach((b) => layoutTiers(b, d));
+}
+layoutAllTiers();
+window.addEventListener('depth:change', layoutAllTiers);
+document.addEventListener('click', (e) => {
+  const more = (e.target as HTMLElement).closest('.tier-more');
+  if (!more) return;
+  const box = more.parentElement as HTMLElement;
+  const levels = [...box.querySelectorAll<HTMLElement>(':scope > .tier')].map((t) => +t.dataset.tier!);
+  const cur = +(box.dataset.reveal || '0');
+  const next = levels.find((l) => l > cur);
+  if (next) layoutTiers(box, +(document.documentElement.dataset.depth || '2'), next);
+});

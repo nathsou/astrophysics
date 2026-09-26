@@ -1,0 +1,258 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: light
+lede: Every temperature has a colour and a brightness. Planck's law is the single formula that fixes both, and it is the reason we need space telescopes at all.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+
+## Waves, photons, and the spectrum we can't see
+
+Light is an oscillation of the electromagnetic field, and it is also a stream of particles. Both descriptions are exact, and an engineer should be fluent in the arithmetic of each.
+
+As a wave, light of frequency $\nu$ and wavelength $\lambda$ travels at $c = \lambda\nu$. As a particle, each photon carries a fixed energy and momentum set by that same frequency:
+
+<KeyEq title="Photon energy and momentum">
+$$
+E = h\nu = \frac{hc}{\lambda}, \qquad p = \frac{E}{c} = \frac{h}{\lambda}
+$$
+<Fragment slot="where">$h$ is <C k="h" />. A visible photon ($\lambda \approx 550$ nm) carries $E \approx 2.25$ eV; an X-ray photon ($\lambda \approx 0.1$ nm) carries $E \approx 12$ keV — about five thousand times more energetic, for a wavelength five thousand times shorter.</Fragment>
+</KeyEq>
+
+The particle picture matters whenever a single interaction is discrete: a photon ionising an atom, a pixel on a CCD registering one count, or the pressure that photons exert when they scatter (radiation pressure, momentum $p$ per photon, which becomes decisive in Chapter 15's stellar winds and Chapter 23's AGN feedback). The wave picture matters whenever many photons interfere or diffract, and whenever we want to talk about *continuous* fields of radiation — which is most of this chapter.
+
+<Aside>**Why photons don't have mass, but do have momentum.** From special relativity (Chapter 17), $E^2 = (pc)^2 + (mc^2)^2$. Setting $m=0$ collapses this to $E = pc$, matching $p = E/c$ above. A massless particle is not "$mv$ with $m=0$" — it is a distinct kind of object that must move at $c$ or not exist.</Aside>
+
+### The electromagnetic spectrum and why we need space telescopes
+
+The spectrum runs continuously from radio ($\lambda \gtrsim 1$ m) through microwave, infrared, visible ($380$–$780$ nm), ultraviolet, X-ray, down to gamma rays ($\lambda \lesssim 10$ pm). Astronomically interesting sources exist across the entire range: cold dust glows in the far-infrared, stellar photospheres peak in the optical or near-infrared, accretion disks and coronae blaze in X-rays, and nuclear/particle processes make gamma rays.
+
+Earth's atmosphere is a good filter for exactly one purpose — keeping us alive — and a bad one for astronomy outside two narrow "windows": the optical/near-infrared window (with gaps from water vapour) and the radio window. Ozone absorbs essentially all UV shortward of $\approx 300$ nm; water and CO₂ absorb most of the infrared in bands; the ionosphere reflects long-radio wavelengths back into space; and X-rays and gamma rays are absorbed high in the atmosphere by photoionisation, which is a mercy for astronauts but means an X-ray telescope on the ground sees nothing at all.
+
+<Aside>**In the real universe…** this is not a historical curiosity. JWST observes at 0.6–28 μm specifically because that infrared range is where the reionisation-era galaxies, cool substellar objects, and dust-enshrouded star formation that ground telescopes cannot reach are brightest — redshifted starlight and thermal dust emission both peak there. Chandra and XMM-Newton do the same job for the X-ray sky (hot accretion flows, X-ray binaries, cluster gas); both are necessarily space telescopes.</Aside>
+
+That is the whole reason an X-ray, UV, or far-infrared telescope has to launch on a rocket rather than sit on a mountain: it isn't about being "above the weather", it's about being above gases whose molecular and electronic transitions happen to sit exactly in the band you want to observe.
+
+## Radiometric quantities, precisely
+
+Astronomers casually say "brightness", but there are several distinct, precisely defined radiometric quantities, and conflating them is the single most common error engineers make when they first pick up an astronomy problem.
+
+- **Luminosity** $L$ (W): total power radiated by a source, in all directions, summed over all wavelengths.
+- **Flux** $F$ (W m⁻²): power per unit area crossing a surface — what a detector of known area actually collects.
+- **Intensity** (specific intensity) $I_\nu$ (W m⁻² Hz⁻¹ sr⁻¹): power per unit area, per unit frequency, per unit solid angle, along a single ray. This is the fundamental quantity; flux and luminosity are both integrals of it.
+
+For an isotropic point source at distance $d$, the luminosity spreads over a sphere of area $4\pi d^2$, giving the inverse-square law:
+
+<KeyEq title="Inverse-square law">
+$$
+F = \frac{L}{4\pi d^2}
+$$
+<Fragment slot="where">$F$ is the flux received at distance $d$ from an isotropic source of luminosity $L$. This is why distant things look faint even if they are intrinsically brilliant — quasars at $d \sim$ Gpc outshine our Sun by a factor of $10^{13}$ yet are invisible to the naked eye.</Fragment>
+</KeyEq>
+
+### Why surface brightness doesn't care about distance
+
+Here is the counter-intuitive part. $I_\nu$ along a ray in empty space (no absorption, no emission) is **exactly conserved**, no matter how far the ray travels. Consider a small patch of emitting surface with area $dA$ and a detector with area $dA'$ at distance $d$, both tilted so their normals make angle $\theta,\theta'$ with the line joining them. The power reaching the detector is $I_\nu\, dA\cos\theta\, d\Omega$, where $d\Omega = dA'\cos\theta'/d^2$ is the solid angle the detector subtends as seen from the source. But by exactly the same construction run backwards, the source subtends solid angle $dA\cos\theta/d^2$ as seen from the detector. Multiply through and the $d^2$ cancels: the intensity you *measure*, looking at a resolved surface, is the same as the intensity *emitted*, independent of $d$.
+
+<Aside>**The catch: "resolved".** Conservation of $I_\nu$ assumes your beam samples the source's own surface, not the whole source as an unresolved point. Move a star far enough away and it stops filling even one pixel; then all its flux piles into that pixel, and *that* pixel's brightness falls with distance in the ordinary $1/d^2$ way. Resolved surface brightness and unresolved point-source flux are different regimes of the same physics.</Aside>
+
+This is why a nearby patch of the Sun's photosphere and an equally-sized, equally-hot patch of a photosphere on a star 100 pc away look *exactly as bright per unit solid angle* through a telescope that resolves them — the star is fainter overall only because it subtends a smaller solid angle, not because each resolved element is dimmer. Surface photometry (surface brightness in mag/arcsec²) exploits exactly this fact, and it's why measuring a galaxy's *surface* brightness profile is distance-independent while measuring its total flux is not.
+
+<Predict question="A star is moved from 10 pc to 100 pc. Assuming your telescope still resolves its disk, what happens to the brightness of each pixel on the star's image?" choices={['Falls by 10×', 'Falls by 100×', 'Stays the same']} answer={2}>
+Each *resolved* pixel samples the star's own surface intensity $I_\nu$, which is conserved along the ray. What changes is that the star's disk now covers 100× fewer pixels (angular area $\propto 1/d^2$), so the *total* flux collected falls by 100× — consistent with the inverse-square law — even though no individual pixel dims. Try it in the figure below.
+</Predict>
+
+<Sim name="light-inverse-square" size="wide" minHeight={420}>
+**Move the star out to 2000 AU and watch two different numbers.** The total flux collected falls as $1/d^2$ — that's the inverse-square law. But as long as the disk is resolved (many pixels), the *brightness per pixel* — the surface brightness — never changes; the disk just shrinks. Once it shrinks below a few pixels, it becomes a point source, and only then does its apparent brightness fall with distance in the usual way.
+</Sim>
+
+## Cavity modes and the ultraviolet catastrophe
+
+Now turn to *thermal* radiation: the light emitted by any object simply because it has a temperature $T > 0$. The cleanest idealisation is a **blackbody**: a perfect absorber and emitter, in thermal equilibrium, with no preferred surface features. Model it as radiation trapped in a cavity with perfectly reflecting walls.
+
+Classically (19th-century physics, no quanta), a cavity of size $\ell$ supports standing electromagnetic waves — modes — at wavelengths $\lambda = 2\ell/n$ for integer $n$, in each of 3 spatial dimensions and 2 polarisations. Counting how many modes fit between frequency $\nu$ and $\nu+d\nu$ (this is a purely geometric exercise, counting lattice points inside a spherical shell in $k$-space) gives a **mode density**
+
+$$
+g(\nu)\,d\nu = \frac{8\pi\nu^2}{c^3}\,d\nu \quad \text{(per unit volume)}.
+$$
+
+Classical statistical mechanics (equipartition) assigns every mode a mean energy $k_BT$, regardless of its frequency. Multiplying mode density by energy per mode gives the **Rayleigh–Jeans law**:
+
+<KeyEq title="Rayleigh–Jeans law (classical, wrong)">
+$$
+B_\nu^{\rm RJ}(T) = \frac{2\nu^2}{c^2}\,k_BT, \qquad B_\lambda^{\rm RJ}(T) = \frac{2ck_BT}{\lambda^4}
+$$
+<Fragment slot="where">Correct at low frequency (radio), but the energy density $\int_0^\infty B_\nu^{\rm RJ}\,d\nu$ diverges — every classical cavity, no matter how cold, would radiate infinite power into ever-shorter wavelengths. This is the **ultraviolet catastrophe**.</Fragment>
+</KeyEq>
+
+The fix, due to Planck (1900), keeps the *mode counting* exactly as above — that part of the classical argument was fine — and replaces equipartition with quantisation: each mode of frequency $\nu$ can only hold energy in packets of $h\nu$, and in thermal equilibrium the number of packets in a mode follows the Bose–Einstein occupation number $\bar n = 1/(e^{h\nu/k_BT}-1)$. The mean energy per mode is then $h\nu\,\bar n$, not $k_BT$: at low frequency ($h\nu \ll k_BT$) this expands to $\approx k_BT$, recovering Rayleigh–Jeans, but at high frequency ($h\nu \gg k_BT$) it is suppressed exponentially — there simply isn't enough thermal energy lying around to excite a single quantum that large. Multiplying mode density by this quantum mean energy gives Planck's law:
+
+<KeyEq title="Planck's law">
+$$
+B_\nu(T) = \frac{2h\nu^3}{c^2}\,\frac{1}{e^{h\nu/k_BT}-1}, \qquad B_\lambda(T) = \frac{2hc^2}{\lambda^5}\,\frac{1}{e^{hc/\lambda k_BT}-1}
+$$
+<Fragment slot="where">$B_\nu$ and $B_\lambda$ are both specific intensities (W m⁻² Hz⁻¹ sr⁻¹ and W m⁻² m⁻¹ sr⁻¹ respectively) of an ideal thermal emitter — they depend on $T$ alone, not on composition. $B_\nu\,d\nu = -B_\lambda\,d\lambda$ relates them (the minus sign because $\nu$ and $\lambda$ run opposite ways); this is why they peak at different places, below.</Fragment>
+</KeyEq>
+
+<Fermi title="How wrong is the ultraviolet catastrophe, quantitatively?">
+Integrate the classical energy density $u_\nu^{\rm RJ} = (4\pi/c)B_\nu^{\rm RJ} \propto \nu^2$ from some UV cutoff $\nu_{\rm min}$ to $\infty$: it's already infinite. Even integrating the other way, from $0$ to a cutoff $\nu_{\rm min}$, gives a *finite* but already-large number that grows without bound as $\nu_{\rm min}\to 0$ is relaxed the other direction — the point is there is no natural stopping scale in the classical formula at all. Planck's law provides exactly that scale, $\nu \sim k_BT/h$, self-consistently set by the temperature. At $T = 300$ K, $k_BT/h \approx 6\times10^{12}$ Hz (far infrared) — wavelengths shorter than about 10 μm are exponentially suppressed rather than classically overcounted.
+</Fermi>
+
+<Predict question="If you cool a cavity to absolute zero, what happens to the classical (Rayleigh–Jeans) prediction for its total radiated power?" choices={['Goes to zero, same as Planck', 'Stays infinite regardless of T', 'Becomes negative']} answer={1}>
+Rayleigh–Jeans integrated over all frequencies is $\int_0^\infty (2\nu^2/c^2)k_BT\,d\nu$, which diverges for *any* $T>0$ (and is exactly zero, trivially, only at $T=0$ — but the divergence exists at every finite temperature, however small). The mode-counting is temperature-independent; only Bose–Einstein occupancy introduces the exponential cutoff that makes the total finite and, crucially, makes it scale sensibly as $T^4$ (next section).
+</Predict>
+
+<Sim name="light-catastrophe" size="wide" minHeight={420}>
+**Rayleigh–Jeans (dashed red) vs. Planck (solid) at the same temperature.** Drag λ_min down and watch the classical energy density in modes shortward of it (the shaded region) grow without bound — that is the ultraviolet catastrophe, made numerically concrete. Planck's curve turns over and heads to zero instead.
+</Sim>
+
+## Wien's law and the Stefan–Boltzmann law
+
+### The peak: Wien's displacement law
+
+$B_\lambda(T)$ has a maximum. Differentiate, set to zero, and you get a transcendental equation $(5 - x)e^x = 5$ (with $x = hc/\lambda k_BT$) whose numerical root gives:
+
+<KeyEq title="Wien's displacement law">
+$$
+\lambda_{\rm peak}\,T = b, \qquad b \approx 2.898\times10^{-3}\ \text{m·K}
+$$
+<Fragment slot="where">Hotter objects peak at shorter wavelengths. The Sun ($T_{\rm eff}=5772$ K) peaks at $\approx 502$ nm — green, not that it looks green (see below). The CMB (2.725 K) peaks at $\approx 1.06$ mm, deep in the microwave.</Fragment>
+</KeyEq>
+
+<Aside>**$B_\nu$ and $B_\lambda$ peak at different wavelengths — this is not an error.** $B_\lambda$ peaks where $hc/\lambda k_BT \approx 4.965$; $B_\nu$ peaks where $h\nu/k_BT\approx 2.821$, which converts to a *longer* wavelength than the $B_\lambda$ peak by a factor of $\approx 1.76$. The reason is the nonlinear change of variables $d\lambda = -(c/\nu^2)d\nu$: equal-width frequency bins near the peak correspond to unequal-width wavelength bins, which shifts where the "most power per bin" lands. Always be explicit about which one you mean; "the peak wavelength of the spectrum" is ambiguous without saying $B_\nu$ or $B_\lambda$.</Aside>
+
+A star's <Var name="Twien" value={5772} min={100} max={100000} log /> K blackbody peaks at <Out name="lambdaPeak" />.
+
+### The total: Stefan–Boltzmann law
+
+Integrate $B_\lambda$ over all wavelengths and all outward directions of a hemisphere (an extra factor of $\pi$, not $4\pi$ — for a surface, contributions only leave into the outward $2\pi$ steradians, weighted by $\cos\theta$, which integrates to $\pi$) to get the total power emitted per unit area:
+
+$$
+F = \pi\int_0^\infty B_\lambda\,d\lambda = \frac{2\pi h c^2}{15}\left(\frac{k_B}{hc}\right)^4 T^4 \int_0^\infty \frac{x^3}{e^x-1}\,dx, \qquad x \equiv \frac{hc}{\lambda k_BT}.
+$$
+
+The dimensionless integral is a classic: $\int_0^\infty x^3/(e^x-1)\,dx = \Gamma(4)\zeta(4) = 6\cdot\frac{\pi^4}{90} = \frac{\pi^4}{15}$ (expand $1/(e^x-1)$ as a geometric series $\sum_{n\ge1}e^{-nx}$, integrate term-by-term with $\int_0^\infty x^3e^{-nx}dx = 6/n^4$, and sum $\sum 1/n^4 = \pi^4/90$ — we'll skip the tedious convergence bookkeeping). Substituting collapses all the constants into one:
+
+<KeyEq title="Stefan–Boltzmann law">
+$$
+F = \sigma T^4, \qquad \sigma \equiv \frac{2\pi^5k_B^4}{15h^3c^2} \approx 5.670\times10^{-8}\ \text{W m}^{-2}\text{K}^{-4}
+$$
+<Fragment slot="where">$\sigma$ is <C k="sigma" />, built entirely from $h$, $c$, $k_B$. A blackbody surface radiates power per unit area proportional to the *fourth power* of its temperature — double the temperature, radiate 16× the power per unit area.</Fragment>
+</KeyEq>
+
+For a sphere of radius $R$ radiating as a blackbody at its **effective temperature** $T_{\rm eff}$ (defined by this very relation — it's the temperature a blackbody of the same radius and luminosity would have, whether or not the real object is a perfect blackbody):
+
+<KeyEq title="Luminosity of a spherical blackbody">
+$$
+L = 4\pi R^2\sigma T_{\rm eff}^4
+$$
+<Fragment slot="where">This is *the* formula that turns a star's photosphere into a point on the HR diagram (Chapter 14): measure $L$ and $T_{\rm eff}$ (from the spectrum) and you get $R$ for free. It is also the reason giant stars are cool but huge, and white dwarfs are hot but tiny — luminosity trades radius against temperature to the fourth power.</Fragment>
+</KeyEq>
+
+<Fermi title="How much does the Sun's luminosity change if T_eff rose by 1%?">
+$L \propto T^4$, so $\Delta L/L \approx 4\,\Delta T/T = 4\%$. Small temperature swings in stars matter a lot; conversely, main-sequence lifetimes (Chapter 14) are exquisitely sensitive to mass, which sets $T_{\rm eff}$ steeply via $L \propto M^{3.5}$.
+</Fermi>
+
+## The flagship: exploring the Planck spectrum
+
+Everything above — Wien's peak, the $B_\nu$/$B_\lambda$ distinction, Rayleigh–Jeans and Wien's high-frequency limit, the Stefan–Boltzmann total, and the perceived colour — lives in one function of two variables, $\lambda$ and $T$. The simulation below lets you drive $T$ across nine decades, from the CMB to an accretion disk's inner edge, and watch every one of those quantities move together.
+
+<Predict question="As you heat a blackbody from red-hot to white-hot to blue-hot, does the visible-light *fraction* of its total power output increase monotonically?" choices={['Yes, monotonically', 'No — it peaks around 10,000 K and then falls', 'No — it is constant']} answer={1}>
+It rises as the Wien peak sweeps into the visible band (roughly 4,000–10,000 K puts $\lambda_{\rm peak}$ near 380–780 nm), but for hotter stars the peak sweeps on into the UV and beyond, and the visible band only catches the Rayleigh–Jeans tail — an ever-smaller *fraction* of an ever-larger total. An O star radiates most of its light where your eye cannot see it at all.
+</Predict>
+
+<Sim name="light-planck" size="wide" minHeight={480}>
+**Drag the temperature slider (or pick a preset) from the CMB (2.725 K) to an accretion disk (10⁶ K).** The rainbow strip under the curve is the true-colour visible band; the marker is the Wien peak. Toggle the Rayleigh–Jeans and Wien approximations to see which half of the curve each one gets right. Pin up to four curves to compare temperatures side by side. The right-hand panel renders the star's actual perceived colour and a glow scaled to its luminosity at fixed radius.
+</Sim>
+
+<Hood title="rendering a physically correct colour from a spectrum">
+The star swatch and disk in the flagship sim, and the colour locus figure below, are not looked up from a table — they are computed from Planck's law through the same pipeline the human eye uses, in `src/lib/physics/blackbody.ts`:
+
+1. **Evaluate the spectrum.** Sample $B_\lambda(T)$ across the visible band (380–780 nm here, at 5 nm steps — coarse enough to be cheap, fine enough that the CIE curves below are locally smooth).
+2. **Integrate against colour-matching functions.** The CIE 1931 $\bar x(\lambda),\bar y(\lambda),\bar z(\lambda)$ curves encode the eye's three cone responses (approximated here by a fast multi-lobe Gaussian fit, not table lookup):
+   ```ts
+   export function cieXYZ(nm: number): [number, number, number] {
+     const x = 1.056 * g(nm, 599.8, 37.9, 31.0) + 0.362 * g(nm, 442.0, 16.0, 26.7) - 0.065 * g(nm, 501.1, 20.4, 26.2);
+     const y = 0.821 * g(nm, 568.8, 46.9, 40.5) + 0.286 * g(nm, 530.9, 16.3, 31.1);
+     const z = 1.217 * g(nm, 437.0, 11.8, 36.0) + 0.681 * g(nm, 459.0, 26.0, 13.8);
+     return [x, y, z];
+   }
+   ```
+   Summing $B_\lambda(T)\cdot(\bar x,\bar y,\bar z)$ over the sampled wavelengths gives tristimulus values $(X,Y,Z)$ — the same three numbers your retina effectively reports for *any* spectrum, thermal or not.
+3. **Convert to linear sRGB** with the standard $3\times3$ matrix, then **gamma-encode** ($u \le 0.0031308$: multiply by 12.92; otherwise $1.055\,u^{1/2.4}-0.055$) to get displayable sRGB.
+4. **Normalise and handle out-of-gamut.** Blackbody chromaticities are normalised so the brightest channel is 1 (`blackbodyRGB` reports *colour*, not absolute brightness — a 3 K and a 30,000 K blackbody can have wildly different total power but the function only answers "what hue"). Monochromatic wavelength colours (`wavelengthRGB`, used for the visible-band rainbow) can have a *negative* linear-RGB component — a saturation the sRGB gamut cannot represent — which is desaturated by adding white until all three channels are non-negative, then renormalised.
+
+Because this is real colorimetry, not an artist's palette, it reproduces a genuinely surprising fact: **no blackbody looks green.** Green sits in the middle of the visible band, and a thermal spectrum is smooth and broad — by the time $\bar y$ (green-sensitive) is firing hard, $\bar x$ and $\bar z$ (red/blue-sensitive) are already firing too, because they overlap green's response curve substantially, and a Planck spectrum simply doesn't have a narrow enough hump to excite one cone response without the others. Every blackbody chromaticity, from 1000 K to $\infty$, lies on one curve in colour space — the **Planckian locus** — and that curve passes nowhere near the green corner of the gamut. (A gas-discharge lamp, by contrast, *can* look green — it emits sharp spectral lines, not a smooth thermal continuum.)
+
+Cost: one sim frame recomputes $B_\lambda$ and CIE at ~80 wavelength samples, a $3\times3$ matrix multiply, and a gamma encode — microseconds, and the result is cached per rounded-Kelvin in `blackbodyRGB` since colour only needs to be recomputed when $T$ actually changes.
+</Hood>
+
+## The colour of stars
+
+### Colour index and bolometric correction
+
+Astronomers rarely measure a full spectrum for every star; instead they measure flux through two or more standard filters (e.g. Johnson $B$ centred near 440 nm, $V$ near 550 nm) and form a **colour index**, $B-V$, in magnitudes (recall magnitudes are $-2.5\log_{10}$ of a flux ratio — Chapter 1). A hotter star is brighter in $B$ relative to $V$, so $B-V$ is *negative* for hot blue stars and *positive* for cool red ones — the Sun's is $+0.63$.
+
+Because a magnitude system measures light only within specific filters, the *total* (bolometric) luminosity requires a **bolometric correction** $BC = m_{\rm bol} - V$, a (negative, usually) offset that accounts for all the light outside the $V$ band — largest in magnitude for very hot stars (most of their flux is UV) and very cool stars (most of their flux is infrared), smallest for Sun-like G stars whose peak sits right in the visible.
+
+<Fermi title="Estimating B−V from Planck ratios alone">
+Ignoring real filter response curves and using just the ratio $B_\lambda(440\text{ nm})/B_\lambda(550\text{ nm})$, converted to magnitudes and zero-pointed to the Sun's known $B-V=0.63$, reproduces the right *sign* and *order of magnitude* of real colour indices across spectral types (this is exactly what the "Colour index" readout in the flagship sim reports) — good enough for a back-of-envelope estimate, even though real photometry integrates over broad filter+CCD response curves and isn't perfectly Planckian (see the Sun vs. blackbody comparison next).
+</Fermi>
+
+### The Planckian locus and why there are no green stars
+
+<Sim name="light-locus" size="wide" minHeight={260}>
+**Drag along the strip, or use the slider, from 1000 K to 40,000 K.** Real stars are marked at their effective temperatures. Notice the strip runs orange→white→blue with no green segment anywhere — the perceptual argument from the Hood box above, made visible.
+</Sim>
+
+### The Sun's spectrum vs. a perfect blackbody
+
+The Sun's actual spectrum is *close* to a $T_{\rm eff}=5772$ K blackbody but not identical: Fraunhofer absorption lines (Chapter 5) notch out narrow wavelength ranges where the cooler outer photosphere absorbs specific atomic transitions, and the UV is somewhat depleted relative to a perfect Planck curve because those photons are preferentially absorbed higher up. "Blackbody" is an idealisation that real stars — and real anything — only approximate; the approximation is excellent for broadband energetics (Stefan–Boltzmann, Wien's law) and poor for line-by-line spectroscopy, which is precisely why Chapter 5 exists as a separate subject.
+
+### Some benchmark temperatures
+
+| Object | $T$ | $\lambda_{\rm peak}$ | Notes |
+|---|---|---|---|
+| CMB | 2.725 K | 1.06 mm | Relic of recombination, Chapter 27 |
+| Human body | ~310 K | 9.3 μm | Thermal infrared, why night-vision works |
+| Earth (equilibrium) | ~255 K | 11.4 μm | Colder than the surface — greenhouse gap, below |
+| Sun | 5772 K | 502 nm | Defines $T_{\rm eff}$ for all other stars |
+| Sirius A | 9940 K | 291 nm (UV) | Looks blue-white, peaks outside the visible |
+| O star | ~40,000 K | 72 nm (far UV) | Nearly all its light is invisible to human eyes |
+| Accretion disk (inner) | ~$10^6$ K | 2.9 nm (X-ray) | Chapter 19; multi-temperature, this is the hottest annulus |
+
+<Aside>**Brightness temperature.** For sources that *aren't* thermal blackbodies (synchrotron radio jets, masers), radio astronomers still quote a "brightness temperature" $T_b$: whatever temperature a blackbody would need to match the *observed* $I_\nu$ at that one frequency, via the Rayleigh–Jeans relation $T_b \equiv I_\nu c^2/2\nu^2 k_B$. It is a convenient unit conversion, not a claim that the source is thermal — some radio sources report $T_b \sim 10^{12}$ K, far hotter than any real plasma, a tall tale about synchrotron emission, not temperature.</Aside>
+
+## Planetary equilibrium temperature
+
+A planet absorbs starlight over its cross-section ($\pi R_p^2$) and re-radiates as a (roughly) uniform blackbody over its full surface ($4\pi R_p^2$), fraction $(1-A)$ of the incident flux absorbed (albedo $A$ reflects the rest straight back into space). Setting absorbed power equal to emitted power at equilibrium:
+
+$$
+\pi R_p^2\,(1-A)\,\frac{L_\star}{4\pi a^2} = 4\pi R_p^2\,\sigma T_{\rm eq}^4 \ \Longrightarrow\ T_{\rm eq} = T_\star\sqrt{\frac{R_\star}{2a}}\,(1-A)^{1/4}.
+$$
+
+<KeyEq title="Planetary equilibrium temperature">
+$$
+T_{\rm eq} = T_\star\left(\frac{R_\star}{2a}\right)^{1/2}(1-A)^{1/4}
+$$
+<Fragment slot="where">$T_\star, R_\star$ are the star's effective temperature and radius, $a$ is the orbital distance, and $A$ is the planet's Bond albedo (fraction of incident light reflected, not absorbed). Notice $R_p$ cancelled entirely — equilibrium temperature doesn't care how big the planet is, only how big and hot its star is and how far away it orbits.</Fragment>
+</KeyEq>
+
+A star of <Var name="Tstar2" value={5772} min={2500} max={40000} log /> K, planet at <Var name="a2" value={1} min={0.05} max={5} log /> AU with albedo <Var name="A2" value={0.3} min={0} max={0.95} step={0.01} />, has equilibrium temperature <Out name="Teq" />.
+
+<Aside>**This is not the surface temperature.** Earth's $T_{\rm eq}\approx255$ K (−18 °C) is well below its actual mean surface temperature of 288 K (+15 °C): the extra 33 K is the **greenhouse effect** — an atmosphere transparent to incoming visible light but partly opaque to outgoing infrared traps some of the re-radiated heat before it escapes. Venus's atmosphere pushes this to an extreme: $T_{\rm eq}\approx 232$ K, but the actual surface sits at 737 K, a +500 K runaway greenhouse from its dense CO₂ atmosphere. The formula above sets the *radiative* baseline; the atmosphere (or lack of one, for the Moon) does the rest.</Aside>
+
+<Sim name="light-equilibrium" size="wide" minHeight={340}>
+**Drag the star's temperature and radius, and the planet's distance and albedo.** Switch between Venus, Earth and Mars presets to see how far the equilibrium-temperature baseline sits from each planet's actual measured surface temperature — the gap is the greenhouse effect, largest for Venus and almost negligible for Mars.
+</Sim>
+
+## Where we go from here
+
+Planck's law fixes the *continuum*: the smooth thermal glow every hot object makes, purely as a function of temperature. It says nothing about *composition* — sodium and helium and iron all glow with the identical blackbody curve at the same $T$. The sharp absorption and emission lines layered on top of that continuum are where composition, ionisation state and quantum mechanics's discrete energy levels finally enter the story, and unpicking them — Boltzmann and Saha equations, why the spectral sequence runs O B A F G K M and not alphabetically — is [Chapter 5](/ch/spectra/). The effective temperatures and radii this chapter teaches you to extract from a spectrum are also exactly the two coordinates of the Hertzsprung–Russell diagram at the heart of [Chapter 14](/ch/main-sequence/), and the Stefan–Boltzmann law you derived here reappears, barely changed, as the radiation-pressure term inside a star's structure equations in [Chapter 11](/ch/stellar-structure/).

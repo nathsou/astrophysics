@@ -1,0 +1,299 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: lensing
+lede: Mass bends light, so every galaxy and cluster in the sky is also a lens, a telescope made of gravity that magnifies, multiplies and distorts whatever lies behind it. Learn to read those distortions and you can weigh things that do not shine.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+
+## Light falls too
+
+Throw a ball horizontally and it curves toward the ground. In general relativity a light ray does the same thing near a mass, because it follows the straightest possible path (a null geodesic) through curved spacetime. The effect is tiny near anything we can touch. Near a galaxy cluster it becomes big enough to smear background galaxies into arcs tens of arcseconds long, and that is a spectacle astronomers now use as a precision instrument.
+
+This chapter builds the whole subject from one number, the deflection angle, plus some geometry. Along the way we will find the Einstein radius, the lens equation, magnification, caustics, time delays, microlensing planets and weak-lensing mass maps. All of it rests on the fact that deflection is small, so we can linearise almost everything.
+
+### The deflection angle, and a famous factor of two
+
+Start with a naive Newtonian calculation. Treat a photon as a fast particle with speed $c$ passing a mass $M$ with impact parameter $b$. If the path is barely bent, you can integrate the transverse acceleration along the straight, unperturbed line (the *Born approximation*, borrowed from scattering theory):
+
+$$
+\Delta v_\perp = \int_{-\infty}^{\infty} \frac{GM\,b}{(b^2 + x^2)^{3/2}}\,\frac{dx}{c} = \frac{2GM}{bc},
+\qquad
+\alpha_\text{Newton} = \frac{\Delta v_\perp}{c} = \frac{2GM}{c^2 b}.
+$$
+
+The answer does not depend on the photon's "mass", which cancels as it does for any falling body. Soldner published this result in 1801.
+
+General relativity doubles it. In the weak-field metric around a mass, both time *and* space are curved by equal amounts: $g_{00} \approx -(1 + 2\Phi/c^2)$ and $g_{ij} \approx (1 - 2\Phi/c^2)\delta_{ij}$. A slow particle only feels $g_{00}$, which is why Newtonian gravity works for planets. A photon moves as fast through space as through time, so it feels both terms equally, and the deflection doubles. An equivalent picture: the metric acts like a medium with refractive index $n = 1 - 2\Phi/c^2 > 1$ (since $\Phi<0$), and light bends toward the region of slower effective speed, just as in a glass lens.
+
+<KeyEq title="Deflection of light by a point mass">
+$$
+\hat\alpha = \frac{4\,G\,\htmlData{term=M}{M}}{c^2\,\htmlData{term=b}{b}} = \frac{2 R_s}{b}
+$$
+<Fragment slot="where">$\hat\alpha$ is the bending angle in radians, <span data-term="M">$M$</span> the lensing mass and <span data-term="b">$b$</span> the impact parameter of the ray (its closest approach, in metres). $R_s = 2GM/c^2$ is the Schwarzschild radius (see [Chapter 19](/ch/black-holes/)). Valid when $b \gg R_s$, i.e. $\hat\alpha \ll 1$.</Fragment>
+</KeyEq>
+
+For a ray grazing the Sun, $b = R_\odot = 6.96\times10^8$ m and $R_s = 2.95$ km, so $\hat\alpha = 8.5\times10^{-6}$ rad $= 1.75''$. Newton predicts $0.87''$.
+
+<Aside>**Eddington, 1919.** Expeditions to Príncipe and Sobral photographed stars near the Sun during the total eclipse of 29 May 1919 and found deflections consistent with 1.75″. The error bars were large and the analysis has been argued over ever since, but modern radio interferometry of quasars passing near the Sun confirms the GR value to about 1 part in 10⁴. The *Gaia* satellite has to correct for light bending by the Sun and even by Jupiter for every star it measures.</Aside>
+
+Because the equations are linear in the weak field, deflections from different pieces of mass simply add. For an extended lens you sum $4G\,dm/(c^2 b)$ vectors over every mass element. That additivity is what makes lensing tractable.
+
+## The thin lens and the lens equation
+
+Real lenses are galaxies and clusters whose depth is a few megaparsecs, while the distances to source and lens are gigaparsecs. So we treat the lens as a flat sheet: all the bending happens at one plane. This is the **thin-lens approximation**, and it is excellent.
+
+Three angular diameter distances describe the geometry: $D_L$ from observer to lens, $D_S$ from observer to source, and $D_{LS}$ from lens to source. In an expanding universe these are *not* additive ($D_{LS} \neq D_S - D_L$), and they must be the angular-diameter distances of [Chapter 25](/ch/expansion/), because what matters is how physical sizes relate to angles.
+
+Let $\vec\theta$ be the angle on the sky where we *see* a ray arrive, and $\vec\beta$ the angle where the source actually is (where we would see it without the lens). Draw the ray from the observer to the lens plane at transverse position $D_L\vec\theta$, bend it by $\hat{\vec\alpha}$, and follow it to the source plane. Similar triangles give $D_S\vec\beta = D_S\vec\theta - D_{LS}\hat{\vec\alpha}$. Divide by $D_S$ and define the *scaled* deflection $\vec\alpha = (D_{LS}/D_S)\,\hat{\vec\alpha}$:
+
+<KeyEq title="The lens equation">
+$$
+\htmlData{term=beta}{\vec\beta} = \htmlData{term=theta}{\vec\theta} - \vec\alpha(\htmlData{term=theta}{\vec\theta}),
+\qquad
+\vec\alpha = \frac{D_{LS}}{D_S}\,\hat{\vec\alpha}
+$$
+<Fragment slot="where"><span data-term="beta">$\vec\beta$</span> is the true angular position of the source, <span data-term="theta">$\vec\theta$</span> the observed position of an image, and $\vec\alpha$ the reduced deflection angle. $D_L$, $D_S$, $D_{LS}$ are angular-diameter distances (Chapter 25).</Fragment>
+</KeyEq>
+
+It looks innocent, but notice its direction. Given where a ray lands on our sky ($\vec\theta$), it tells you directly where that ray came from ($\vec\beta$). Going the other way, from a known source to its images, means solving a nonlinear equation that can have several solutions. **Each solution is an image.** Multiple imaging is simply the lens equation being many-to-one.
+
+### The Einstein radius
+
+For a point mass, $\alpha(\theta) = \frac{D_{LS}}{D_S}\frac{4GM}{c^2 D_L \theta}$ (using $b = D_L\theta$). If the source sits exactly behind the lens, $\beta=0$, then every direction around the lens with $\theta = \alpha(\theta)$ is an image: we see a ring. Its radius is
+
+<KeyEq title="Einstein radius">
+$$
+\theta_E = \sqrt{\frac{4GM}{c^2}\,\frac{D_{LS}}{D_L D_S}}
+$$
+<Fragment slot="where">$M$ is the lens mass inside the ring and the $D$s are angular-diameter distances. For a point mass the lens equation becomes $\beta = \theta - \theta_E^2/\theta$. $\theta_E$ sets the angular scale of every lensing phenomenon.</Fragment>
+</KeyEq>
+
+The square root matters: $\theta_E$ grows only as $\sqrt M$ and falls as $1/\sqrt{D}$. Try it. A lens of <Var name="M" value={0.3} min={0.001} max={1e15} log /> M☉ at <Var name="DL" value={4} min={0.01} max={3e6} log /> kpc in front of a source at <Var name="DS" value={8} min={0.02} max={4e6} log /> kpc has $\theta_E =$ <Out name="thetaE" />, a physical Einstein radius $R_E = D_L\theta_E$ of <Out name="RE" />, and at a typical transverse speed of 200 km/s the source crosses it in <Out name="tE" />.
+
+<Aside>These distances are simple subtractions ($D_{LS} = D_S - D_L$), which is fine inside the Milky Way. For galaxies at a gigaparsec, use the angular-diameter distances of Chapter 25; they can differ by factors of two.</Aside>
+
+With the defaults (a red dwarf halfway to the Galactic bulge), $\theta_E \approx 0.6$ milliarcseconds and $R_E \approx 2$ AU. Now set the mass to $10^{12}$ M☉ and the distances to $10^6$ and $2\times10^6$ kpc (roughly 1 and 2 Gpc): $\theta_E$ becomes about 2″. A $10^{15}$ M☉ cluster gives tens of arcseconds. These three scales, **milliarcseconds, arcseconds and tens of arcseconds**, correspond to three different subjects: microlensing (images too close to resolve, so you see only brightening), strong galaxy lensing (resolved multiple images), and cluster lensing (giant arcs).
+
+<Fermi title="Is the Sun a gravitational telescope?">
+The Einstein radius has a mirror image: for a fixed lens, rays with impact parameter $b$ focus at a distance $d = b/\hat\alpha = b^2c^2/(4GM)$. For rays grazing the Sun, $b = R_\odot$:
+
+$$d = \frac{(7\times10^8)^2\,(3\times10^8)^2}{4\,(6.7\times10^{-11})(2\times10^{30})} \approx 8\times10^{13}\ \text{m} \approx 550\ \text{AU}.$$
+
+Beyond about 550 AU the Sun focuses light from a distant source onto a line, with enormous gain. A spacecraft there (the "solar gravitational lens" mission concept) could in principle image an exoplanet's surface. The catch is getting there: Voyager 1 is at about 170 AU after 49 years.
+</Fermi>
+
+## Images and their magnification
+
+Solve the point-lens equation $\beta = \theta - \theta_E^2/\theta$ in units of $\theta_E$ (write $u = \beta/\theta_E$, $x = \theta/\theta_E$). It is a quadratic, $x^2 - ux - 1 = 0$, with two roots:
+
+$$
+x_\pm = \tfrac12\left(u \pm \sqrt{u^2+4}\right).
+$$
+
+There are always **two images**, on opposite sides of the lens: one outside the Einstein ring on the same side as the source, one inside it on the far side. As the source moves away, the outer image approaches the true position and the inner one shrinks into the lens.
+
+The graph below plots the lens equation in one dimension. The dashed diagonal is $\beta = \theta$, what you would get with no lens; the solid curve is $\beta = \theta - \alpha(\theta)$. A source at height $\beta$ is a horizontal line, and each crossing with the curve is an image.
+
+<Predict question="A point-mass lens and a singular isothermal sphere (SIS) both have an Einstein radius of 1. Move the source to β = 1.5. How many images does each form?" choices={['Two each', 'Point mass: 2, SIS: 1', 'Point mass: 1, SIS: 2', 'One each']} answer={1}>
+The point-mass curve $\theta - 1/\theta$ has branches that reach every value of $\beta$ on both sides, so the horizontal line always crosses twice. The SIS deflection is a constant $\pm\theta_E$, so its curve is two parallel lines offset by $\pm1$, with a jump at $\theta=0$. For $|\beta| > \theta_E$ only one branch is reachable: a second image exists only when the source lies inside the Einstein radius. This is the first hint that *multiple imaging needs enough mass concentrated inside θ_E*.
+</Predict>
+
+<Sim name="lensing-equation" size="text" minHeight={420}>
+**The lens equation as a graph.** Drag vertically to move the source. Images (orange dots) are where the horizontal source line crosses the lens curve. The strip below shows the sky: the lens, the true source, and the images, with height proportional to the square root of their magnification (blue marks negative parity, i.e. mirror-reversed images). Switch to the SIS and watch the inner image vanish as the source leaves the Einstein ring.
+</Sim>
+
+### Why lensing magnifies
+
+Gravitational lensing neither creates nor destroys photons, and it does not change their frequency (the lens is static). By Liouville's theorem, the photon phase-space density along a ray is conserved, so **surface brightness is conserved**: a patch of an image looks exactly as bright per square arcsecond as the corresponding patch of the source. What changes is the *solid angle*. If the lens stretches a source into an image of larger area, you receive proportionally more light.
+
+The local stretching is described by the Jacobian of the lens mapping,
+
+$$
+A_{ij} = \frac{\partial\beta_i}{\partial\theta_j} = \delta_{ij} - \frac{\partial\alpha_i}{\partial\theta_j},
+\qquad
+\mu = \frac{1}{\det A}.
+$$
+
+An image's magnification $\mu$ is the ratio of image area to source area. A negative $\mu$ means the image is mirror-flipped (negative *parity*). For the point lens, this gives $\mu_\pm = \left[1 - (\theta_E/\theta_\pm)^4\right]^{-1}$, and adding the absolute values of both images:
+
+<KeyEq title="Total magnification of a point-mass lens">
+$$
+\mu_\text{tot}(u) = |\mu_+| + |\mu_-| = \frac{u^2 + 2}{u\sqrt{u^2+4}}
+$$
+<Fragment slot="where">$u = \beta/\theta_E$ is the source's offset from the lens in Einstein radii. At $u=1$, $\mu = 3/\sqrt5 \approx 1.34$, and for $u \ll 1$, $\mu \approx 1/u$, which diverges for a perfectly aligned point source. Real sources have finite size, which caps the peak.</Fragment>
+</KeyEq>
+
+That $1/u$ divergence is our first encounter with a **caustic**: a place in the source plane where $\det A = 0$ and magnification formally becomes infinite. For a point lens the caustic is a single point behind the lens.
+
+## Extended lenses: galaxies and clusters
+
+Stars are point masses. Galaxies are not, and their mass distribution changes the images qualitatively.
+
+### Convergence, shear and the potential
+
+Because deflection is linear in mass, $\vec\alpha$ is the gradient of a 2D *lensing potential* $\psi$ that obeys a 2D Poisson equation:
+
+$$
+\vec\alpha = \nabla\psi, \qquad \nabla^2\psi = 2\kappa, \qquad \kappa(\vec\theta) = \frac{\Sigma(\vec\theta)}{\Sigma_\text{cr}}, \qquad \Sigma_\text{cr} = \frac{c^2}{4\pi G}\frac{D_S}{D_L D_{LS}}.
+$$
+
+Here $\Sigma$ is the projected surface mass density (kg m⁻²) and $\Sigma_\text{cr}$ the *critical density*. The dimensionless **convergence** $\kappa$ measures how "strong" the lens is: roughly, a region with $\kappa \gtrsim 1$ can make multiple images. For a lens at $z=0.3$ and source at $z=1$, $\Sigma_\text{cr} \approx 0.4$ g cm⁻², or about $2\times10^{3}$ M☉ pc⁻².
+
+The Jacobian is symmetric (it is the Hessian of $\tfrac12\theta^2 - \psi$), so it has three independent parts:
+
+$$
+A = \begin{pmatrix} 1 - \kappa - \gamma_1 & -\gamma_2 \\ -\gamma_2 & 1 - \kappa + \gamma_1 \end{pmatrix},
+\qquad
+\mu = \frac{1}{(1-\kappa)^2 - \gamma^2}.
+$$
+
+**Convergence** $\kappa$ magnifies isotropically, like a magnifying glass. **Shear** $\gamma = (\gamma_1, \gamma_2)$, a spin-2 quantity (it returns to itself after a 180° rotation, like an ellipse), stretches images along one axis and squeezes them along the other. Shear is sourced by mass *outside* the ray as well as inside, which is why a single nearby galaxy group can distort a whole lens system; in models it is added as a constant "external shear" term.
+
+<Aside>**Spin 2.** Ellipticities and shears are described by an angle 2φ, not φ, because an ellipse rotated by 180° is the same ellipse. This is also why gravitational-wave polarisations ([Chapter 20](/ch/gravitational-waves/)) have the same "plus and cross" structure: both are spin-2 tidal fields.</Aside>
+
+### The singular isothermal sphere
+
+Galaxies have flat rotation curves ([Chapter 21](/ch/milky-way/)), so their density falls as $\rho\propto r^{-2}$: the *singular isothermal sphere*, with velocity dispersion $\sigma_v$. The projected mass inside radius $b$ grows linearly with $b$, so the deflection $4GM(b)/c^2b$ is **constant**:
+
+$$
+\hat\alpha_\text{SIS} = 4\pi\frac{\sigma_v^2}{c^2}, \qquad \theta_E = 4\pi\frac{\sigma_v^2}{c^2}\frac{D_{LS}}{D_S}, \qquad \kappa = \gamma = \frac{\theta_E}{2\theta}.
+$$
+
+For a massive elliptical with $\sigma_v = 250$ km/s, $4\pi\sigma_v^2/c^2 = 8.7\times10^{-6}$ rad $= 1.8''$, and with $D_{LS}/D_S \approx 0.5$ the Einstein radius is about $0.9''$. That is why galaxy-scale lenses have images about an arcsecond apart. In the SIS, $\kappa = \gamma$ everywhere, the second image appears only for $\beta < \theta_E$, and the two images have magnifications $|\mu_\pm| = \theta_E/\beta \pm 1$, the brighter one outside the ring.
+
+Real lens galaxies are flattened. The **singular isothermal ellipsoid (SIE)** replaces the circular contours by ellipses of axis ratio $q$, and it has a closed-form deflection involving $\arctan$ and $\operatorname{artanh}$ (see the Hood). Together with external shear, "SIE + γ" fits most of the several hundred known galaxy-scale lenses surprisingly well.
+
+### Critical curves and caustics
+
+Where $\det A = 0$ in the image plane, the magnification diverges. These loci are the **critical curves**; mapped through the lens equation into the source plane they become **caustics**. The two are the key to reading every strong-lensing image:
+
+- For a circular lens the *tangential* critical curve is the Einstein ring, and its caustic degenerates to a point. An elliptical lens or external shear unfolds that point into a four-cusped **astroid** (diamond) caustic.
+- Every time the source crosses a caustic line, the number of images changes by two. A source outside every caustic has one image; inside the radial caustic but outside the astroid, three (one usually demagnified to invisibility near the lens centre); inside the astroid, five (four bright ones plus a faint central one). This odd-number theorem holds for any non-singular transparent lens.
+- A source just inside a caustic *fold* gets two bright, merging images straddling the critical curve. A source near a *cusp* gets three merging images: a giant arc.
+
+The playground below puts all of this under your mouse.
+
+<Predict question="An elliptical galaxy lens (SIE) has a diamond-shaped caustic. A small quasar sits exactly at the lens centre, behind it. What do you see?" choices={['A complete Einstein ring', 'Two images', 'Four images in a cross', 'Nothing; it is hidden behind the lens']} answer={2}>
+With an elliptical lens the source at the centre lies inside the astroid caustic, so there are four bright images arranged in a cross (plus a fifth, strongly demagnified one at the centre that is normally invisible). A complete ring needs a circularly symmetric lens and a perfectly aligned source. An *extended* source that covers the whole caustic does produce a ring, which is why rings are usually seen in galaxies, not in quasars. Try the "Einstein cross" preset, then switch the source to the spiral galaxy.
+</Predict>
+
+<Sim name="lensing-playground" size="wide" minHeight={560}>
+**A gravitational lens in your browser.** Every pixel is a light ray traced backwards through the lens to a procedural universe of background galaxies and stars. **Drag** anywhere to move the lens, or grab the dashed green circle to move the featured source. The red lines are critical curves (infinite magnification in the image plane) and the green lines are caustics (the same curves mapped back to the source plane). Put the source inside the diamond caustic of the SIE to get an Einstein cross, drag it across a fold to watch two images merge and vanish, and try the cluster to see giant arcs. The magnification map colours the sky by log |μ|, orange for normal images and blue for mirror-flipped ones.
+</Sim>
+
+A few experiments worth doing. With the point mass, the caustic is one dot: put the source on it for a ring. With SIE, set $q=1$ and raise the shear; the caustic still becomes a diamond, because shear from neighbours breaks circular symmetry just as ellipticity does. In the cluster, notice that the critical curve wraps around the member galaxies, and that small galaxies near a giant arc add "wiggles" to it. Those wiggles are how astronomers detect dark-matter substructure too faint to see directly.
+
+<Hood title="inverse ray shooting on the GPU">
+The forward problem (source → images) is a root-finding nightmare. The inverse problem is trivial: for every pixel $\vec\theta$ on the screen, compute $\vec\beta = \vec\theta - \vec\alpha(\vec\theta)$ and look up the source brightness there. No roots, no image finding, no bookkeeping of how many images exist: each pixel is independent, which is exactly the shape of work a fragment shader does best. Multiple images appear automatically because several pixels map to the same source point.
+
+```wgsl
+for (var j = 0; j < n; j++) {
+  for (var i = 0; i < n; i++) {
+    let o = (vec2f(f32(i), f32(j)) + 0.5) / f32(n) - 0.5;
+    let t = toTheta(fc.xy + rot(o, 0.4636));   // rotated-grid supersample
+    col += source(t - alpha(t));               // lens equation, then sample
+  }
+}
+col = col / f32(n * n);
+```
+
+**Surface brightness is conserved**, so the shader never multiplies by $\mu$: a magnified image is simply one that covers more pixels. That is physics for free, and it is why the arcs brighten correctly.
+
+**Anti-aliasing.** Near critical curves the mapping stretches enormously in one direction, so one pixel samples a long thin strip of the source and aliasing becomes severe (moiré in the arcs, sparkling stars). The fix is supersampling: $n\times n$ rays per pixel on a slightly rotated grid, which breaks up axis-aligned aliasing. At 4 rays per pixel a 1600×1000 canvas traces 6.4 million rays per frame, far below what a laptop GPU manages at 60 fps. The procedural source is the expensive part: each sample checks nine jittered grid cells of galaxies plus a star cell, about 100 transcendental functions per ray.
+
+**Magnification and critical curves.** At each pixel's centre the shader computes $\det A$ by central differences of $\vec\alpha$ with step $h$ of half a pixel. The critical curve is drawn where $|\det A|$ is less than about one pixel's worth of change, measured by `fwidth(det)`, so the line is always one or two pixels wide regardless of how steep $\det A$ is:
+
+```wgsl
+let det  = detA(theta, 0.5 * U.b.x);
+let line = 1.0 - smoothstep(0.6, 1.6, abs(det) / max(fwidth(det), 1e-6));
+```
+
+**Caustics** need a different trick, because they live in the source plane. A compute pass runs marching squares over 2×2-pixel cells: it evaluates $\det A$ at the cell corners, linearly interpolates the zero crossings on the edges, samples 13 points along the resulting segment of critical curve, pushes each through the lens equation and `atomicMax`es a flag into a screen-sized buffer. The fragment shader reads a 3×3 neighbourhood of that buffer. Cells where $|\det A|$ jumps by more than 50 are rejected: that is the singular centre of a point mass or SIS, where the sign flips through infinity, not through zero. The pass runs only when a parameter changes.
+
+**Precision.** Everything is f32. Angles are in "view units" of about an arcsecond so that $|\vec\theta|$ and $|\vec\alpha|$ are O(1). The finite-difference Jacobian loses digits: the round-off error of $\Delta\alpha/2h$ is about $\epsilon_{32}|\alpha|/h \approx 10^{-7}/10^{-3} = 10^{-4}$, harmless for plotting contours but a reason why research codes use analytic Jacobians. The SIE's $\operatorname{artanh}$ argument is clamped just below 1, and the NFW deflection switches to its $x=1$ limit in a small window to avoid $0/0$.
+
+**Complexity.** Cost is $O(\text{pixels}\times\text{rays per pixel}\times\text{lens components})$, independent of how many images form. The same idea, at far higher ray counts and binned into a source-plane histogram instead of a screen, is how microlensing magnification maps (next section) and cosmological ray-tracing through N-body simulations ([Chapter 28](/ch/structure/)) are computed.
+</Hood>
+
+### Arcs, rings and crosses in the real sky
+
+The first multiply imaged quasar, Q0957+561 (Walsh, Carswell and Weymann, 1979), is two images 6″ apart lensed by a galaxy in a small cluster. Since then a few thousand strong lenses have been found. Classics include the **Einstein Cross** (Q2237+0305), four images of a quasar within 1.8″ of the bulge of a nearby spiral, and the SLACS sample of Einstein rings around massive ellipticals. Euclid's first data release in 2025 turned up hundreds of new candidates, and Euclid plus Rubin should find of order 100,000 galaxy-scale lenses by the 2030s.
+
+<Aside>**JWST's cluster lenses.** The first JWST deep field, SMACS 0723, was chosen *because* the cluster magnifies the universe behind it. El Gordo, a colliding cluster at z = 0.87, produces the long red "Fishhook" arc. Earendel, a single star at z ≈ 6.2 seen by Hubble in 2022, is magnified by a factor of thousands because it sits almost on a caustic of the cluster WHL0137−08.</Aside>
+
+Galaxy clusters are the strongest lenses. Abell 1689, Abell 370 and the Hubble Frontier Fields clusters show dozens of multiply imaged background galaxies, and modelling them pins down the mass distribution to a few percent inside the Einstein radius. The result is consistent every time: the visible galaxies and hot gas account for only about 15% of the lensing mass. The rest is dark matter ([Chapter 21](/ch/milky-way/)).
+
+### Time delays and the Hubble constant
+
+The light forming each image travels a different path, so images arrive at different times. Two effects contribute: the geometric path-length difference and the *Shapiro delay* from climbing out of the potential. Both are captured by the Fermat potential,
+
+$$
+t(\vec\theta) = \frac{(1+z_L)}{c}\frac{D_L D_S}{D_{LS}}\left[\tfrac12(\vec\theta - \vec\beta)^2 - \psi(\vec\theta)\right],
+$$
+
+and images sit exactly at the stationary points of $t$ (minima, saddles and maxima: Fermat's principle). The prefactor $D_L D_S/D_{LS}$ is a ratio of distances, so it scales as $1/H_0$. Measure the delay between images of a variable quasar, model the lens potential, and you have measured $H_0$ with a single step, bypassing the whole distance ladder. Refsdal proposed this in 1964.
+
+Typical delays are days to months for galaxies, and years for clusters. **SN Refsdal**, a supernova in a galaxy behind the cluster MACS J1149, was seen in 2014 as an Einstein cross of four images; lens models predicted another image would appear about a year later elsewhere in the cluster, and it did, in December 2015. Its measured delay gave $H_0 = 66.6^{+4.1}_{-3.3}$ km/s/Mpc (2023). The H0LiCOW and TDCOSMO collaborations, using monitored quasars, get values around 72–74 km/s/Mpc with 2–5% uncertainty, depending on how the lens galaxies' mass profiles are constrained. The dominant systematic is the **mass-sheet degeneracy**: adding a uniform sheet of convergence and rescaling the rest leaves all image positions unchanged but changes the delays. Breaking it requires stellar kinematics of the lens galaxy. Lensing therefore contributes a genuinely independent vote in the "Hubble tension" debate (Chapter 25), and so far it has not settled it.
+
+## Microlensing: when the images are too close to see
+
+A star in the Galactic bulge lensed by a foreground red dwarf produces two images less than a milliarcsecond apart. No telescope separates them. But their *combined* brightness changes as the lens drifts across the line of sight, with $u(t) = \sqrt{u_0^2 + ((t-t_0)/t_E)^2}$, tracing a smooth, symmetric, achromatic brightening: the **Paczyński curve** $A(t) = \mu_\text{tot}(u(t))$. The Einstein crossing time $t_E = R_E/v_\perp$ is typically 20 days for bulge events.
+
+Paczyński proposed in 1986 to monitor millions of stars to find **MACHOs** (massive compact halo objects: dead stars, black holes, planets) that might make up the Milky Way's dark halo. The probability that any given star is lensed at any moment (the *optical depth*) is about $10^{-6}$, so you have to watch tens of millions of stars. The MACHO, EROS and OGLE surveys did exactly that toward the Magellanic Clouds in the 1990s–2000s. They found far too few events: compact objects between about $10^{-7}$ and $10$ M☉ make up at most a few percent of the halo. That result helped establish that dark matter is not made of ordinary compact objects, and pushed attention toward new particles.
+
+<Aside>**A near miss for primordial black holes.** The window left open by microlensing (roughly asteroid mass, 10⁻¹⁶–10⁻¹¹ M☉) is still the one mass range where primordial black holes could be all of the dark matter. Microlensing of stars in M31 by Subaru's HSC closed part of it in 2019.</Aside>
+
+### Planets by microlensing
+
+If the lens star has a planet, the planet has its own tiny Einstein ring, of radius $\sqrt q\,\theta_E$ for mass ratio $q$. The binary lens creates small caustics near the planet's position and near the star. When the source crosses or grazes one, the light curve shows a sharp spike or dip lasting hours to a day, on top of the weeks-long Paczyński curve. A Jupiter around an M dwarf ($q\sim10^{-3}$) produces day-long anomalies; an Earth ($q\sim10^{-5}$) only hours.
+
+Microlensing is most sensitive to planets near the Einstein radius, 1–5 AU from their star: exactly the "cold" region beyond the snow line that transits and radial velocities ([Chapter 10](/ch/exoplanets/)) struggle with. It also detects planets around faint stars thousands of parsecs away, and even free-floating planets with no star at all. OGLE and MOA pioneered the method; KMTNet's three-continent network now watches the bulge around the clock, and about 250 microlensing planets are known. NASA's **Roman Space Telescope**, launching in the late 2020s, is expected to find over a thousand, including Mars-mass planets and hundreds of free-floaters.
+
+<Sim name="lensing-microlensing" minHeight={420}>
+**A microlensing event, with and without a planet.** Left: the source-plane magnification map of a star with a planet, computed by shooting four million rays on the CPU (bright lines are caustics). The blue line is the background star's path; drag on the map to change the impact parameter $u_0$. Right: the resulting light curve (solid) and the planet-free Paczyński curve (dashed). Try $u_0 \approx 0.02$ to pass through the central caustic, or set the separation near 1 and move the track across the planetary caustic. Shrink the mass ratio toward $10^{-5}$ (an Earth) and see how brief the anomaly becomes.
+</Sim>
+
+Two geometries dominate discoveries. In *high-magnification events* ($u_0 \ll 1$), the source passes near the central caustic, which any planet perturbs; these events can be predicted a day in advance, so telescopes worldwide pile on. In *planetary-caustic crossings*, the source happens to pass over the planet's own caustic, which lies at a distance of about $s - 1/s$ from the star (in Einstein radii) for separation $s$.
+
+## Weak lensing: statistics of distortion
+
+Far from the centre of a cluster, $\kappa$ and $\gamma$ are a few percent. There are no multiple images, and each background galaxy is only slightly stretched. But galaxies are not round to begin with: their intrinsic ellipticities have a scatter of about $\sigma_e \approx 0.25$ per component. A 2% shear on one galaxy is invisible.
+
+The trick is averaging. Intrinsic orientations are random, so the average ellipticity of many galaxies in a patch is an unbiased estimate of the (reduced) shear $g = \gamma/(1-\kappa)$, with noise $\sigma_e/\sqrt{N}$. Measuring a 1% shear to 10% precision needs about $N \approx (0.25/0.001)^2 \approx 60{,}000$ galaxies. Around a cluster you average in annuli, measuring the *tangential* shear profile, which for an SIS is $\gamma_t = \theta_E/2\theta$.
+
+<Sim name="lensing-shear" minHeight={420}>
+**Coherent stretching hidden in noise.** Each ellipse is a background galaxy with a random intrinsic shape. Toggle lensing on and off: the change is hard to see by eye, except near the mass. The right panel stacks galaxies in rings and plots the mean tangential ellipticity with error bars against the true reduced shear. Increase the number of galaxies to beat down shape noise, set $\sigma_e$ to zero to see the pure shear pattern, and show the whiskers for the field that an ideal survey would reconstruct.
+</Sim>
+
+### Mass maps and the Bullet Cluster
+
+Since the shear field is a second derivative of the same potential that gives $\kappa$, one can invert a shear map into a convergence (mass) map. Kaiser and Squires found the linear inversion in 1993; it is a simple convolution, easy in Fourier space.
+
+The most famous weak-lensing mass map is of the **Bullet Cluster** (1E 0657−558), two clusters that passed through each other about 150 million years ago. X-ray observations show the hot gas, which holds most of the ordinary matter, shocked and lagging in the middle, where the gas clouds collided and slowed. The lensing mass map (Clowe et al. 2006) shows two mass peaks that moved on with the galaxies, separated from the gas at 8σ significance. Most of the mass is therefore something that passes through itself without colliding: collisionless dark matter. Modified-gravity theories that try to explain rotation curves ([Chapter 21](/ch/milky-way/)) without dark matter struggle to put the lensing mass where there is no baryonic mass.
+
+### Cosmic shear
+
+The whole universe is a weak lens. Light from distant galaxies crosses the entire cosmic web ([Chapter 28](/ch/structure/)), and the resulting correlated shears, about 1% on arcminute scales, measure the clumpiness of matter directly, whether it is dark or not. This **cosmic shear** is summarised by $S_8 = \sigma_8\sqrt{\Omega_m/0.3}$. Surveys such as KiDS, DES and HSC have measured $S_8$ to a few percent, finding values slightly below the value predicted from the CMB (Chapter 27), a "mild $S_8$ tension" that has partly eased as analyses improved.
+
+The next generation is here. **Euclid** (launched 2023) is imaging 14,000 square degrees from space with a PSF sharp enough to measure shapes of about 1.5 billion galaxies. The **Vera C. Rubin Observatory** began its ten-year LSST survey in 2025, with deeper, repeated ground-based imaging of the southern sky. The hardest part is not statistics but systematics: the telescope's point-spread function also distorts galaxy shapes, at a level larger than the signal, and it must be modelled to about one part in $10^4$.
+
+## What lensing tells us, and what comes next
+
+Gravitational lensing is unique among astronomical tools because it responds to *all* mass, luminous or not, and requires no assumption about dynamical equilibrium. From one equation, $\vec\beta = \vec\theta - \vec\alpha(\vec\theta)$, we got:
+
+- an Einstein radius that sets three regimes (mas, arcsec, tens of arcsec);
+- magnification from area stretching, with surface brightness conserved;
+- critical curves and caustics that organise multiple images, arcs and rings;
+- time delays that measure $H_0$;
+- microlensing light curves that find cold planets and rule out MACHO dark matter;
+- weak shear statistics that map dark matter and measure the growth of structure.
+
+Every one of those applications needs the distances $D_L$, $D_S$ and $D_{LS}$ in an expanding universe. So far we have treated them as given. The next chapter builds them from the FLRW metric and the Friedmann equations: [Chapter 25, the expanding universe](/ch/expansion/).

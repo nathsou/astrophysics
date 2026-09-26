@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import 'katex/dist/katex.min.css';
 import { parts } from '../course';
+import DepthControl from '../components/DepthControl.astro';
 
 interface Props { title: string; description?: string; current?: string }
 const { title, description = 'An interactive astrophysics course with live simulations.', current } = Astro.props;
@@ -22,7 +23,8 @@ const published = new Set(
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&display=swap" rel="stylesheet" />
     <script is:inline>
-      try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch {}
+      const r = document.documentElement; r.dataset.depth = '2';
+      try { const t = localStorage.getItem('theme'); if (t) r.dataset.theme = t; const d = localStorage.getItem('depth'); if (d === '1' || d === '2' || d === '3') r.dataset.depth = d; } catch {}
     </script>
   </head>
   <body data-chapter={current}>
@@ -48,6 +50,8 @@ const published = new Set(
             </ol>
           </>
         ))}
+        <div class="part">Depth of explanation</div>
+        <DepthControl compact />
         <div class="tools"><button class="btn" data-action="theme">◐ Theme</button></div>
       </nav>
       <main><slot /></main>

@@ -1,0 +1,22 @@
+---
+// Segmented control for the explanation depth. Global (persisted), so it applies to every chapter.
+interface Props { compact?: boolean }
+const { compact = false } = Astro.props;
+const levels = [
+  { n: 1, label: 'Intuitive', hint: 'Ideas and pictures, very light math' },
+  { n: 2, label: 'High school', hint: 'Algebra, powers, simple formulas' },
+  { n: 3, label: 'Engineering', hint: 'Calculus, vectors, full derivations' },
+];
+---
+<div class:list={['depth', compact && 'compact']} role="radiogroup" aria-label="Depth of explanation">
+  {!compact && <span class="depth-label">Depth of explanation</span>}
+  <div class="depth-seg">
+    {levels.map((l) => (
+      <button type="button" role="radio" data-depth={l.n} title={l.hint}>
+        <span class="depth-dots">{'●'.repeat(l.n)}{'○'.repeat(3 - l.n)}</span>
+        <span class="depth-name">{l.label}</span>
+      </button>
+    ))}
+  </div>
+  {!compact && <span class="depth-hint"></span>}
+</div>
