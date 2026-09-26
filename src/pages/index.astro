@@ -1,0 +1,46 @@
+---
+import Base from '../layouts/Base.astro';
+import { parts } from '../course';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const published = new Set(
+  Object.keys(import.meta.glob('./ch/*.mdx')).map((p) => p.split('/').pop()!.replace('.mdx', '')),
+);
+---
+<Base title="The Cosmos, Computed">
+  <article class="article home">
+    <header class="chapter-head">
+      <div class="kicker">An interactive course in astrophysics</div>
+      <h1>The Cosmos, Computed</h1>
+      <p class="lede">From orbits to the cosmic web: the physics of the universe, the equations behind it, and live simulations running on your GPU.</p>
+    </header>
+    <p>This course is written for people who think in code. Each chapter pairs a full physical explanation, with equations included, with simulations you can take apart. <em>Under the hood</em> sections show the algorithms: integrators, solvers, Monte Carlo methods, ray tracers and FFTs. Physics and computation turn out to be two views of the same thing.</p>
+    <div class="wide toc-grid">
+      {parts.map((p) => (
+        <section>
+          <div class="part-label">Part {p.roman}</div>
+          <h2>{p.title}</h2>
+          <ol>
+            {p.chapters.map((c) => (
+              <li class:list={[!published.has(c.slug) && 'soon']}>
+                {published.has(c.slug) ? <a href={`${base}/ch/${c.slug}/`}><b>{c.n}. {c.title}</b></a> : <b>{c.n}. {c.title}</b>}
+                <span>{c.blurb}</span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      ))}
+    </div>
+  </article>
+</Base>
+<style>
+  .toc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr)); gap: 2.5rem 3rem; margin-top: 3rem; }
+  .toc-grid h2 { margin: 0.2rem 0 1rem; font-size: 1.5rem; }
+  .part-label { font-family: var(--font-ui); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+  .toc-grid ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.9rem; }
+  .toc-grid li { display: flex; flex-direction: column; gap: 0.15rem; }
+  .toc-grid li a { text-decoration: none; color: var(--fg); }
+  .toc-grid li a:hover b { color: var(--accent); }
+  .toc-grid li b { font-weight: 500; }
+  .toc-grid li span { font-family: var(--font-ui); font-size: 0.8rem; color: var(--fg-muted); }
+  .toc-grid li.soon b { color: var(--fg-faint); }
+</style>

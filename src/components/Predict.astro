@@ -1,0 +1,13 @@
+---
+// "Predict, then run". choices: labels; answer: index of the correct choice. Slot = explanation revealed after answering.
+interface Props { question: string; choices: string[]; answer: number }
+const { question, choices, answer } = Astro.props;
+---
+<div class="box predict" data-answer={String(answer)}>
+  <div class="box-label">? Predict first</div>
+  <p style="margin:0">{question}</p>
+  <div class="choices">
+    {choices.map((c, i) => <button class="btn" data-choice={String(i)}>{c}</button>)}
+  </div>
+  <div class="reveal"><slot /></div>
+</div>

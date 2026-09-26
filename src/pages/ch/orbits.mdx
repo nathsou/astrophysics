@@ -1,0 +1,154 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: orbits
+lede: One inverse-square law explains the planets, the tides, binary stars and the orbits of galaxies. Integrating it on a computer turns out to need more care than you might expect.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+
+## One force to rule them all
+
+Newton's law of universal gravitation says that two point masses attract each other along the line joining them. The force is proportional to the product of their masses and inversely proportional to the square of the distance between them:
+
+<Aside>**Why gravity dominates.** The electric force between two protons is about 10³⁶ times stronger than their gravitational pull. But matter is almost perfectly neutral on large scales, so electric forces cancel. Mass has no negative charge, so gravity only adds up.</Aside>
+
+<KeyEq title="Newton's law of gravitation">
+$$
+\vec F = -\frac{\htmlData{term=G}{G}\,\htmlData{term=M}{M}\,\htmlData{term=m}{m}}{\htmlData{term=r}{r}^2}\,\hat r
+$$
+<Fragment slot="where"><span data-term="G">G</span> is the gravitational constant <C k="G" />. <span data-term="M">M</span> and <span data-term="m">m</span> are the two masses. <span data-term="r">r</span> is their separation, and $\hat r$ is the unit vector from $M$ to $m$. Hover the symbols to link them to the equation.</Fragment>
+</KeyEq>
+
+The force comes from a potential, $\Phi(r) = -GM/r$, so $\vec F = -m\nabla\Phi$. Two consequences shape everything in this chapter:
+
+1. **Energy is conserved.** $E = \tfrac12 m v^2 - GMm/r$ stays constant along an orbit.
+2. **Angular momentum is conserved**, because the force is *central* (it points along $\hat r$) and so exerts no torque. $\vec L = m\,\vec r \times \vec v$ is constant, so the motion stays in a plane. The areal velocity $\tfrac{dA}{dt} = L/2m$ is also constant. That is **Kepler's second law**, and it holds for *any* central force, not just the inverse-square law.
+
+## The two-body problem is a one-body problem
+
+Two bodies pulling on each other look like a coupled problem. Change variables to the centre of mass $\vec R$ and the separation $\vec r = \vec r_2 - \vec r_1$. The centre of mass drifts at constant velocity. The separation obeys
+
+$$
+\mu\,\ddot{\vec r} = -\frac{G M m}{r^2}\hat r, \qquad \mu = \frac{Mm}{M+m},
+$$
+
+which is a single fictitious particle of *reduced mass* $\mu$ orbiting a fixed centre with total mass $M+m$. From here on we work with this one-body problem.
+
+### The effective potential
+
+Use polar coordinates and substitute $L = \mu r^2\dot\theta$. The energy then depends only on $r$:
+
+$$
+E = \tfrac12 \mu \dot r^2 + \underbrace{\frac{L^2}{2\mu r^2} - \frac{GM\mu}{r}}_{V_\text{eff}(r)}.
+$$
+
+The *centrifugal barrier* $L^2/2\mu r^2$ keeps an orbiting body from falling in. The radial motion is a ball rolling in the one-dimensional well $V_\text{eff}$:
+
+- If $E$ equals the minimum of the well, $r$ is fixed and the orbit is a **circle**.
+- If $E < 0$, $r$ oscillates between the turning points $r_p$ (periapsis) and $r_a$ (apoapsis), giving an **ellipse**.
+- If $E \ge 0$, the body comes in once and leaves, on a **parabola** or **hyperbola**.
+
+We will use this trick again in Chapter 19. There, general relativity adds a $-1/r^3$ term to $V_\text{eff}$, and that term makes the innermost stable circular orbit (ISCO) around black holes possible.
+
+### Ellipses: Kepler's first law
+
+Solving the orbit equation (substitute $u = 1/r$ and the equation becomes a harmonic oscillator) gives a conic section:
+
+$$
+r(\theta) = \frac{a(1-e^2)}{1 + e\cos\theta}.
+$$
+
+Here $a$ is the semi-major axis and $e$ the eccentricity. The energy depends **only on $a$**: $E = -GM\mu/2a$. From that follows the *vis-viva* equation, the most useful formula in orbital mechanics:
+
+<KeyEq title="Vis-viva">
+$$
+v^2 = GM\left(\frac{2}{r} - \frac{1}{a}\right)
+$$
+<Fragment slot="where">This gives the speed at any point on any Keplerian orbit. At $r=a$ on a circle, $v = \sqrt{GM/a}$. The escape speed ($a\to\infty$) is $\sqrt{2}$ times the circular speed.</Fragment>
+</KeyEq>
+
+### Kepler's third law
+
+The area of the ellipse is $\pi a b$. Divide it by the constant areal velocity and you get the period:
+
+$$
+P^2 = \frac{4\pi^2}{G(M+m)}\,a^3.
+$$
+
+In units of AU, years and solar masses, $4\pi^2/G = 1$. This is why astronomers love those units: **$P^2 = a^3 / M$.**
+
+A planet at <Var name="a" value={5.2} min={0.05} max={100} log /> AU from a star of <Var name="M" value={1} min={0.08} max={50} log /> M☉ has a period of <Out name="P" />. Its orbital speed is <Out name="v" />.
+
+<Aside>Drag the orange numbers left and right.</Aside>
+
+
+At 5.2 AU and 1 M☉ that is Jupiter: about 11.9 years. Push the mass down to 0.08 M☉, the smallest possible star, and the distance down to 0.02 AU, and you have the TRAPPIST-1 system. Its planets orbit in a day or two.
+
+<Fermi title="Weighing the Sun with a calendar">
+The Earth goes round once a year at $1\,\text{AU} = 1.5\times10^{11}$ m. Rearranging Kepler III:
+
+$$M_\odot = \frac{4\pi^2 a^3}{G P^2} = \frac{4\pi^2 (1.5\times10^{11})^3}{6.67\times10^{-11}\,(3.16\times10^{7})^2} \approx 2\times10^{30}\,\text{kg}.$$
+
+Astronomy measures masses this way almost everywhere. Watch something orbit, time it, measure the size of its orbit, and you have the mass. The same trick weighs black holes, galaxies and clusters (Chapters 19, 21 and 24).
+</Fermi>
+
+## Putting orbits on a computer
+
+The equations of motion are a simple ordinary differential equation (ODE): $\dot{\vec r} = \vec v$, $\dot{\vec v} = -GM\vec r/r^3$. Integrating them for many orbits is surprisingly unforgiving, and the reason teaches a lot about simulating physics.
+
+The figure below integrates **the same orbit three times** with three algorithms, using the same step size. The dashed ellipse is the exact solution. The right panel tracks the relative energy error $|\Delta E/E_0|$ on a log scale.
+
+<Predict question="Which integrator will keep the orbit closed longest: Euler (first order), RK4 (fourth order), or Verlet (second order)?" choices={['Euler', 'RK4', 'Verlet']} answer={2}>
+Over short times RK4 is the most *accurate*: its error per step is $O(h^5)$. But its energy error **drifts steadily**, and after enough orbits the planet spirals away. Verlet's energy error is larger at first but **bounded**: it oscillates and never grows. Verlet is *symplectic*, meaning it exactly conserves a slightly perturbed energy. Over long runs, respecting the geometry of the problem matters more than formal order. Run the simulation for a while and watch the plot.
+</Predict>
+
+<Sim name="orbit-integrators" minHeight={420}>
+**Three integrators, one orbit.** <span style="color:var(--series-3)">Euler</span> gains energy every step and spirals outward. <span style="color:var(--series-2)">RK4</span> is very accurate at first but drifts slowly. <span style="color:var(--series-1)">Verlet</span> keeps a bounded energy error for as long as you run it. Raise the eccentricity: the rapid swing through periapsis is where every method struggles.
+</Sim>
+
+### Why Euler fails
+
+Forward Euler updates $\vec r_{n+1} = \vec r_n + h\vec v_n$, $\vec v_{n+1} = \vec v_n + h\vec a_n$. For a circular orbit, each step moves along the *tangent*, which always leads slightly outside the circle. The radius grows by a factor $\sqrt{1 + (h\omega)^2}$ every step, a systematic error that compounds. The method is not merely inaccurate: it breaks the conservation laws.
+
+### Symplectic integrators
+
+Hamiltonian flows preserve phase-space volume (Liouville's theorem). More precisely, they preserve the *symplectic form* $d\vec q\wedge d\vec p$. An integrator that preserves it too cannot let the energy drift away secularly. Instead it exactly conserves a *shadow Hamiltonian* $\tilde H = H + O(h^2)$.
+
+<KeyEq title="Leapfrog / velocity Verlet (kick–drift–kick)">
+$$
+\begin{aligned}
+\vec v_{n+\frac12} &= \vec v_n + \tfrac{h}{2}\,\vec a(\vec r_n) \\
+\vec r_{n+1} &= \vec r_n + h\,\vec v_{n+\frac12} \\
+\vec v_{n+1} &= \vec v_{n+\frac12} + \tfrac{h}{2}\,\vec a(\vec r_{n+1})
+\end{aligned}
+$$
+<Fragment slot="where">It is second order, time-reversible and symplectic, and costs one force evaluation per step (the last one is reused). It is the workhorse of N-body codes, from planetary dynamics to the galaxy mergers in Chapter 22 and the cosmological simulations in Chapter 28.</Fragment>
+</KeyEq>
+
+<Hood title="the integrators in this figure">
+All three methods run in double precision on the CPU. For a two-body problem, `Float64Array` and plain loops are plenty fast. Units are chosen so that $GM = 4\pi^2$, giving a 1 AU orbit a period of exactly 1.
+
+```ts
+verlet(s, h) {
+  // kick–drift–kick leapfrog (symplectic, time-reversible)
+  let [ax, ay] = accel(s[0], s[1]);
+  s[2] += 0.5 * h * ax; s[3] += 0.5 * h * ay;   // half kick
+  s[0] += h * s[2];     s[1] += h * s[3];       // drift
+  [ax, ay] = accel(s[0], s[1]);
+  s[2] += 0.5 * h * ax; s[3] += 0.5 * h * ay;   // half kick
+}
+```
+
+Production codes add **adaptive timesteps**: small steps near periapsis, large ones far out. Naive adaptivity breaks symplecticity, though. Codes that need both use time-transformed leapfrog, or regularisations such as Kustaanheimo–Stiefel, which turn the Kepler problem into a harmonic oscillator. For near-Keplerian planetary systems, *Wisdom–Holman* mapping solves each Kepler orbit analytically and only integrates the small planet–planet perturbations numerically.
+</Hood>
+
+## Where we go from here
+
+The two-body problem is exactly solvable. Add a third body and the problem becomes chaotic in general, which is the subject of the next chapter. Yet the tools from this chapter keep coming back: conserved quantities, effective potentials, vis-viva, Kepler III as a scale, and symplectic integration as the default way to push particles around.

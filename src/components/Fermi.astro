@@ -1,0 +1,6 @@
+---
+// Back-of-the-envelope estimate box.
+interface Props { title?: string }
+const { title = 'Back of the envelope' } = Astro.props;
+---
+<div class="box fermi"><div class="box-label">≈ {title}</div><slot /></div>

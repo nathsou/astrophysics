@@ -1,0 +1,19 @@
+---
+// Embeds a simulation from src/sims/<name>.ts. It is lazily loaded when scrolled into view.
+interface Props {
+  name: string;
+  /** 'text' (column width), 'wide' (text + margin, default), 'full' (edge to edge) */
+  size?: 'text' | 'wide' | 'full';
+  /** Minimum host height in px before the sim mounts (avoids layout shift). */
+  minHeight?: number;
+  params?: Record<string, string | number | boolean>;
+}
+const { name, size = 'wide', minHeight = 360, params = {} } = Astro.props;
+const p = Object.fromEntries(Object.entries(params).map(([k, v]) => [k, String(v)]));
+---
+<figure class:list={['sim', size !== 'text' && size]}>
+  <div class="sim-host" data-sim={name} data-params={JSON.stringify(p)} style={`min-height:${minHeight}px`}>
+    <div class="sim-loading">Loading simulation…</div>
+  </div>
+  {Astro.slots.has('default') && <figcaption><slot /></figcaption>}
+</figure>

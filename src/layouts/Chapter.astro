@@ -1,0 +1,29 @@
+---
+import Base from './Base.astro';
+import { chapters, chapterBySlug } from '../course';
+
+const { frontmatter } = Astro.props;
+const meta = chapterBySlug(frontmatter.slug);
+if (!meta) throw new Error(`Chapter slug "${frontmatter.slug}" is not in src/course.ts`);
+const i = chapters.indexOf(meta);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const published = new Set(
+  Object.keys(import.meta.glob('../pages/ch/*.mdx')).map((p) => p.split('/').pop()!.replace('.mdx', '')),
+);
+const prev = chapters.slice(0, i).reverse().find((c) => published.has(c.slug));
+const next = chapters.slice(i + 1).find((c) => published.has(c.slug));
+---
+<Base title={`${meta.title} · The Cosmos, Computed`} description={meta.blurb} current={meta.slug}>
+  <article class="article">
+    <header class="chapter-head">
+      <div class="kicker">Part {meta.part.roman} · {meta.part.title} — Chapter {meta.n}</div>
+      <h1>{meta.title}</h1>
+      <p class="lede">{frontmatter.lede ?? meta.blurb}</p>
+    </header>
+    <slot />
+    <nav class="chapter-nav">
+      {prev && <a href={`${base}/ch/${prev.slug}/`}>← Chapter {prev.n}<b>{prev.title}</b></a>}
+      {next && <a class="next" href={`${base}/ch/${next.slug}/`}>Chapter {next.n} →<b>{next.title}</b></a>}
+    </nav>
+  </article>
+</Base>

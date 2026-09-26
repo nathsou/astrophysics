@@ -1,0 +1,6 @@
+---
+// Draggable number bound to a page variable (see lib/runtime/vars.ts).
+interface Props { name: string; value: number; min: number; max: number; step?: number; log?: boolean; digits?: number }
+const { name, value, min, max, step, log = false, digits = 3 } = Astro.props;
+---
+<span class="var" data-var={name} data-value={value} data-min={min} data-max={max} data-step={step} data-log={String(log)} data-digits={digits} title="Drag me">{value}</span>

@@ -1,0 +1,10 @@
+---
+// Inline constant with a tooltip: <C k="Msun" /> or <C k="G">custom text</C>
+import { CONST, type ConstKey } from '../lib/physics/constants';
+interface Props { k: ConstKey }
+const c = CONST[Astro.props.k];
+if (!c) throw new Error(`Unknown constant ${Astro.props.k}`);
+const note = 'note' in c ? c.note : undefined;
+const val = c.value.toExponential(4).replace(/e\+?(-?)(\d+)/, (_, s, d) => ` × 10${s ? '⁻' : ''}${[...d].map((x: string) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+x]).join('')}`);
+---
+<span class="const" tabindex="0">{Astro.slots.has('default') ? <slot /> : c.symbol}<span class="tip"><b>{c.symbol} = {val} {c.unit}</b><br />{c.name}{note && <><br />{note}</>}</span></span>

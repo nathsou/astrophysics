@@ -1,0 +1,60 @@
+---
+import '../styles/global.css';
+import 'katex/dist/katex.min.css';
+import { parts } from '../course';
+
+interface Props { title: string; description?: string; current?: string }
+const { title, description = 'An interactive astrophysics course with live simulations.', current } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const published = new Set(
+  Object.keys(import.meta.glob('../pages/ch/*.mdx')).map((p) => p.split('/').pop()!.replace('.mdx', '')),
+);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&display=swap" rel="stylesheet" />
+    <script is:inline>
+      try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch {}
+    </script>
+  </head>
+  <body data-chapter={current}>
+    <button class="btn menu-toggle" aria-label="Menu">☰</button>
+    <div class="shell">
+      <nav class="sidebar">
+        <a class="brand" href={`${base}/`}>The <span>Cosmos</span>, Computed</a>
+        {parts.map((p) => (
+          <>
+            <div class="part">Part {p.roman} · {p.title}</div>
+            <ol>
+              {p.chapters.map((c) => (
+                <li>
+                  {published.has(c.slug) ? (
+                    <a href={`${base}/ch/${c.slug}/`} aria-current={current === c.slug ? 'page' : undefined}>
+                      <span class="num">{c.n}</span>{c.title}
+                    </a>
+                  ) : (
+                    <span title="Coming soon"><span class="num">{c.n}</span>{c.title}</span>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </>
+        ))}
+        <div class="tools"><button class="btn" data-action="theme">◐ Theme</button></div>
+      </nav>
+      <main><slot /></main>
+    </div>
+    <script>
+      import '../scripts/page.ts';
+      import '../scripts/islands.ts';
+    </script>
+  </body>
+</html>

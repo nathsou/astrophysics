@@ -1,0 +1,9 @@
+---
+// "Under the hood": collapsible section about the algorithm/numerics behind a sim.
+interface Props { title: string; open?: boolean }
+const { title, open = false } = Astro.props;
+---
+<details class="hood" open={open}>
+  <summary><span>⚙ Under the hood —</span> <b>{title}</b></summary>
+  <div class="hood-body"><slot /></div>
+</details>

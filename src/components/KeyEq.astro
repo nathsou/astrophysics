@@ -1,0 +1,10 @@
+---
+// A boxed key equation. Put the display math in the default slot and the legend in slot="where".
+interface Props { title: string }
+const { title } = Astro.props;
+---
+<div class="box keyeq">
+  <div class="box-label">∑ {title}</div>
+  <slot />
+  {Astro.slots.has('where') && <div class="where"><slot name="where" /></div>}
+</div>
