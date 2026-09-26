@@ -35,6 +35,7 @@ import Portrait from '../../components/Portrait.astro';
   k2: ['Slope at the midpoint (first try)', 'Take half an Euler step with k₁ and sample the slope there.'],
   k3: ['Slope at the midpoint (second try)', 'Take half a step using k₂ instead, and sample again: a better estimate of the midpoint slope.'],
   k4: ['Slope at the end', 'Take a full step with k₃ and sample the slope there. The weighted average 1-2-2-1 cancels errors up to fourth order.'],
+  zz: ['z = hμ', 'Step size times the mode\'s rate (an eigenvalue of the Jacobian). A decaying mode has Re z < 0; stability depends on z alone, not on h and μ separately.'],
   err: ['Global error', 'How far the numerical answer is from the true one after integrating to a fixed time.'],
   p: ['Order p', 'The exponent in error ∝ hᵖ. Halve the step and the error falls by 2ᵖ: by 2 for Euler, 4 for leapfrog, 16 for RK4.'],
   amp: ['Growth factor per step g', 'Each step multiplies the error by this. If its size exceeds 1, errors grow exponentially and the method is unstable.'],
@@ -252,9 +253,13 @@ $$
 <Fragment slot="l3">
 Linearise any system about its current state: $\dot{\vec y} \approx J\,\vec y$ with $J = \partial\vec f/\partial\vec y$ the Jacobian ([A4](/ch/primer-calculus/)). In the eigenbasis of $J$, each mode obeys the **Dahlquist test equation** $\dot y = \mu y$ with $\mu$ an eigenvalue. Applied to it, any one-step method gives $y_{n+1} = g(z)\,y_n$ with $z = h\mu$. The **region of absolute stability** is where $|g(z)| \le 1$:
 
-<KeyEq title="Amplification factors (z = hμ, decay means Re z < 0)">
+<KeyEq title="Amplification factors per step">
 $$
-\term{amp}{g}_\text{Euler} = 1 + z, \qquad \term{amp}{g}_\text{RK4} = 1 + z + \tfrac{z^2}{2} + \tfrac{z^3}{6} + \tfrac{z^4}{24}, \qquad \term{amp}{g}_\text{implicit Euler} = \frac{1}{1 - z}
+\term{amp}{g}_\text{Euler} = 1 + \term{zz}{z}, \qquad \term{amp}{g}_\text{implicit Euler} = \frac{1}{1 - \term{zz}{z}},
+$$
+
+$$
+\term{amp}{g}_\text{RK4} = 1 + \term{zz}{z} + \tfrac{\term{zz}{z}^2}{2} + \tfrac{\term{zz}{z}^3}{6} + \tfrac{\term{zz}{z}^4}{24}
 $$
 <Fragment slot="where">Explicit methods have polynomial <span data-term="amp">g</span>, so their stability regions are bounded: for real negative $z$, Euler needs $|z| < 2$ and RK4 $|z| < 2.79$. Implicit Euler's region is everything outside a disc in the right half-plane, which includes the entire left half-plane. That property is called **A-stability**, and it means decaying modes are never amplified whatever $h$ is. For the pure oscillator ($\mu = \pm i\omega$), Euler's $|1 + i h\omega| > 1$ explains the outward spiral, and leapfrog is stable for $h\omega < 2$.</Fragment>
 </KeyEq>

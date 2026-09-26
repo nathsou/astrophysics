@@ -77,7 +77,7 @@ $$
 <Fragment slot="l3">
 <KeyEq title="The derivative">
 $$
-\term{fp}{f'}(\term{x}{x}) \;=\; \frac{df}{dx} \;=\; \term{lim}{\lim_{\Delta x\to 0}}\; \frac{\term{f}{f}(\term{x}{x}+\term{dx}{\Delta x}) - \term{f}{f}(\term{x}{x})}{\term{dx}{\Delta x}}
+\term{fp}{f'}(\term{x}{x}) \;=\; \frac{df}{dx} \;=\; \mathop{\term{lim}{\mathrm{lim}}}\limits_{\Delta x\to 0}\; \frac{\term{f}{f}(\term{x}{x}+\term{dx}{\Delta x}) - \term{f}{f}(\term{x}{x})}{\term{dx}{\Delta x}}
 $$
 <Fragment slot="where">The limit exists for "smooth" functions, which is nearly everything in physics. Equivalently, near $x$ the function is a straight line plus something that vanishes faster than $\Delta x$: $f(x+\Delta x) = f(x) + f'(x)\,\Delta x + o(\Delta x)$. That second form, "locally linear", generalises to many variables and is the seed of Taylor series.</Fragment>
 </KeyEq>
@@ -137,7 +137,11 @@ Angles must be in **radians** for the sine and cosine rules to hold. In degrees 
 Beyond the basic table ($x^n \to nx^{n-1}$, $e^{kx} \to ke^{kx}$, $\ln x \to 1/x$, $\sin \to \cos$, $\cos \to -\sin$) you need three structural rules:
 
 $$
-(\term{f}{f}\term{gfn}{g})' = \term{f}{f}'\term{gfn}{g} + \term{f}{f}\term{gfn}{g}', \qquad \left(\frac{\term{f}{f}}{\term{gfn}{g}}\right)' = \frac{\term{f}{f}'\term{gfn}{g} - \term{f}{f}\term{gfn}{g}'}{\term{gfn}{g}^2}, \qquad \frac{d}{d\term{x}{x}}\,\term{f}{f}\big(\term{gfn}{g}(\term{x}{x})\big) = \term{f}{f}'\big(\term{gfn}{g}(\term{x}{x})\big)\,\term{gfn}{g}'(\term{x}{x}).
+(\term{f}{f}\term{gfn}{g})' = \term{f}{f}'\term{gfn}{g} + \term{f}{f}\term{gfn}{g}', \qquad \left(\frac{\term{f}{f}}{\term{gfn}{g}}\right)' = \frac{\term{f}{f}'\term{gfn}{g} - \term{f}{f}\term{gfn}{g}'}{\term{gfn}{g}^2},
+$$
+
+$$
+\frac{d}{d\term{x}{x}}\,\term{f}{f}\big(\term{gfn}{g}(\term{x}{x})\big) = \term{f}{f}'\big(\term{gfn}{g}(\term{x}{x})\big)\,\term{gfn}{g}'(\term{x}{x}).
 $$
 
 The last is the **chain rule**, and it is the one that does the heavy lifting: the rate of change of a composition is the product of the rates of each link. In Leibniz notation it looks like fraction cancellation, $\frac{df}{dx} = \frac{df}{dg}\frac{dg}{dx}$, which is why that notation won. Examples:
@@ -177,7 +181,7 @@ $$
 <Fragment slot="l3">
 <KeyEq title="The Riemann integral">
 $$
-\int_{\term{a}{a}}^{\term{b}{b}} \term{f}{f}(\term{x}{x})\,dx \;=\; \term{lim}{\lim_{N\to\infty}}\; \sum_{i=1}^{\term{N}{N}} \term{f}{f}(\term{xi}{x_i})\,\term{dx}{\Delta x}, \qquad \term{dx}{\Delta x} = \frac{\term{b}{b}-\term{a}{a}}{\term{N}{N}}
+\int_{\term{a}{a}}^{\term{b}{b}} \term{f}{f}(\term{x}{x})\,dx \;=\; \mathop{\term{lim}{\mathrm{lim}}}\limits_{N\to\infty}\; \sum_{i=1}^{\term{N}{N}} \term{f}{f}(\term{xi}{x_i})\,\term{dx}{\Delta x}, \qquad \term{dx}{\Delta x} = \frac{\term{b}{b}-\term{a}{a}}{\term{N}{N}}
 $$
 <Fragment slot="where">For continuous <span data-term="f">f</span> the limit does not depend on where in each strip the sample point <span data-term="xi">xᵢ</span> sits. For a finite <span data-term="N">N</span> it very much does, as the figure shows: that choice is the difference between a first- and a second-order quadrature rule.</Fragment>
 </KeyEq>
