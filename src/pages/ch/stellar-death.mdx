@@ -1,0 +1,259 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: stellar-death
+lede: Every star loses its fight with gravity eventually. What decides whether it dies quietly as an ember or blows itself to pieces is a rule from quantum mechanics that has nothing to do with heat.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Photo from '../../components/Photo.astro';
+
+## Death by degeneracy
+
+<Photo src="/img/stellar-death/crab-nebula.jpg" alt="The Crab Nebula: a filamentary orange-and-blue shell of gas with intricate wispy structure, the shredded remains of an exploded star" credit="NASA, ESA, J. Hester and A. Loll (Arizona State University)" license="Public domain" href="https://www.nasa.gov/image-article/most-detailed-image-of-crab-nebula/" size="wide" aspect="3 / 2">
+**The Crab Nebula, 6,500 light-years away.** Chinese and Japanese astronomers recorded this star's death as a "guest star" in 1054 CE, bright enough to see in daylight for weeks. Everything glowing here is the star's outer layers, still expanding at ~1,500 km/s nearly a thousand years later. What is left of the core spins 30 times a second at the centre — a neutron star (Chapter 18).
+</Photo>
+
+Every star is a decades-to-eons-long argument between gravity, which wants to collapse it, and pressure, which wants to hold it up. For most of a star's life (Chapters 11–15) that pressure comes from heat: fusion keeps the core hot, hot gas pushes back. Death arrives when the fuel runs out. What happens next depends entirely on **mass**, because mass decides which of two very different kinds of pressure — thermal or quantum — gets the final word.
+
+<Tiers>
+<Fragment slot="l1">
+Pack electrons close enough together and something strange happens, with no analogue in everyday gases: they start to resist being squeezed *even at absolute zero*, with no heat involved at all. This is quantum mechanics insisting that no two electrons can be crammed into the same state. The resulting pressure — **degeneracy pressure** — is what holds up a white dwarf, and it is what decides whether a dying star fades quietly or explodes.
+</Fragment>
+<Fragment slot="l2">
+The Pauli exclusion principle says no two electrons (or any other fermions) can occupy the same quantum state. Squeeze electrons into a small enough volume and, regardless of temperature, most of them are forced into high-momentum states simply because the low-momentum ones are already full. That momentum resists further compression: it is a pressure with a quantum origin, called **degeneracy pressure**, and unlike ordinary gas pressure it does not need heat.
+</Fragment>
+<Fragment slot="l3">
+The Pauli exclusion principle forbids two electrons from occupying the same quantum state. In a box of volume $V$, quantum states of momentum $\vec p$ are spaced by $\Delta p_x \Delta p_y \Delta p_z = h^3/V$ (each state occupies a cell of that volume in phase space, with 2 spin states per cell). Squeeze $N$ electrons into a small $V$ and, even at $T=0$, the exclusion principle forces them to fill a **Fermi sphere** in momentum space up to some maximum radius $p_F$: there is nowhere lower left to put them. That filled sphere is what resists compression.
+</Fragment>
+</Tiers>
+
+<KeyEq title="The Fermi momentum">
+$$
+p_F = \hbar\left(3\pi^2 n\right)^{1/3}
+$$
+<Fragment slot="where">$n = N/V$ is the electron number density. This comes from counting momentum states: the Fermi sphere's volume $\tfrac{4}{3}\pi p_F^3$, divided by the phase-space cell size $h^3$ per spin state and multiplied by 2 spins, must equal $N$.</Fragment>
+</KeyEq>
+
+<Level min={3} title="From Fermi momentum to pressure">
+The pressure of a degenerate Fermi gas is $\tfrac13$ of the momentum flux integrated over the filled sphere: $P = \tfrac{1}{3}\int_0^{p_F} v(p)\,p \cdot \frac{8\pi p^2}{h^3}\,dp$, where $v(p) = p/m_e$ non-relativistically or $v(p) = pc^2/\sqrt{p^2c^2+m_e^2c^4}$ in general. Non-relativistically ($p_F \ll m_e c$) this integral gives $P \propto p_F^5 \propto n^{5/3}$. When compression pushes $p_F$ up toward $m_e c$, electrons become relativistic, $v \to c$, and the integral instead gives $P \propto p_F^4 \propto n^{4/3}$ — a **softer** law, one power of density weaker. That softening, as we will see, is the whole reason there is a Chandrasekhar limit.
+</Level>
+
+<Level min={2} title="Why the exponent changes" max={2}>
+Non-relativistically $E \propto p^2$ so the pressure (which comes from $v\,p = p^2/m$) scales as $p_F^5$, i.e. $P \propto n^{5/3}$. Once electrons are moving near $c$, $v \to c$ is fixed and the pressure comes from $v\,p \propto p$, one power of $p_F$ weaker: $P \propto p_F^4 \propto n^{4/3}$.
+</Level>
+
+<Fermi title="How dense is degenerate?">
+Take the Sun's core density, $\rho \sim 1.5\times10^5\ \text{kg/m}^3$, with roughly one free electron per two nucleons: $n_e \sim \rho/(2 m_p) \approx 4.5\times10^{31}\ \text{m}^{-3}$. Then $p_F = \hbar(3\pi^2 n_e)^{1/3} \approx 1.3\times10^{-23}\ \text{kg m/s}$, giving $p_F/m_ec \approx 0.04$: mildly degenerate at best. Push the density up to a white dwarf's, $\rho\sim10^9\ \text{kg/m}^3$ (roughly $10^6\ \text{g/cm}^3$), and $n_e$ rises by the same factor, $p_F$ by its cube root — about $6\times10^{-22}\ \text{kg m/s}$, or $\beta = p_F/m_ec \approx 2$: fully relativistic. **A white dwarf's electrons are squeezed so hard that most of them move at an appreciable fraction of the speed of light, for no reason but Pauli's principle.**
+</Fermi>
+
+<Sim name="stellar-death-degeneracy" minHeight={420}>
+**Drag the density.** Left: a cartoon Fermi sphere (electrons fill it from the bottom up, whatever the temperature). Right: degenerate pressure (solid, density only) against ideal-gas pressure at three temperatures (dashed). Crank the density up and the degenerate line eventually beats even a $10^9$ K gas — heat becomes irrelevant.
+</Sim>
+
+<Predict question="At fixed density, what happens to the degeneracy pressure of a gas if you heat it up by a factor of 100?" choices={['It rises by ×100', 'It rises by a small amount', 'It is exactly unchanged', 'It falls']} answer={1}>
+Degeneracy pressure $P\propto n^{5/3}$ (or $n^{4/3}$) has **no temperature dependence** at leading order — that is its defining feature. There is a small thermal correction of order $(k_BT/E_F)^2$, but for a white dwarf at $10^7$ K with $E_F$ of order hundreds of keV, that correction is a part in $10^7$. This is why white dwarfs can sit at nearly constant radius for billions of years while they cool: the mechanical structure genuinely does not care about the temperature.
+</Predict>
+
+## White dwarfs: stars held up by Pauli exclusion
+
+Roughly 97% of stars, including the Sun, end up as **white dwarfs**: the exposed core left behind after a low-to-intermediate-mass star sheds its envelope as a planetary nebula (Chapter 15). Electron degeneracy pressure holds it up against its own gravity, with no fusion, indefinitely.
+
+<Aside>**Sirius B.** The first white dwarf identified was the faint companion of Sirius, spotted in 1862. It has about the Sun's mass packed into a body the size of the Earth — a density around 3×10⁶ g/cm³ — and was one of the first strong tests of general relativity via its gravitational redshift (1925, Adams).</Aside>
+
+<Tiers>
+<Fragment slot="l1">
+The heavier a normal object, the bigger it is. White dwarfs do the opposite: **the more massive one is, the smaller it is.** Piling on mass squeezes the degenerate electrons harder, they push back at higher density, so the star settles at a smaller radius.
+</Fragment>
+<Fragment slot="l2">
+Balancing degeneracy pressure against gravity for a non-relativistic degenerate star gives $R\propto M^{-1/3}$: more mass means a *smaller* radius, the opposite of a normal star.
+</Fragment>
+<Fragment slot="l3">
+For a polytrope of index $n=3/2$ (the non-relativistic degenerate equation of state $P=K\rho^{5/3}$), hydrostatic equilibrium gives $R \propto K^{1/2} M^{-1/3}$, with $K$ fixed by fundamental constants. More mass forces higher central density, hence higher $p_F$, hence — once relativistic — a softer equation of state that cannot keep up.
+</Fragment>
+</Tiers>
+
+<KeyEq title="Mass–radius relation (non-relativistic limit)">
+$$
+R \propto \mu_e^{-5/3}\,M^{-1/3}
+$$
+<Fragment slot="where">$\mu_e$ is the mean mass per electron in units of $m_p$ (2.0 for carbon/oxygen). This comes from the $P\propto\rho^{5/3}$ equation of state combined with hydrostatic equilibrium (an $n=3/2$ polytrope). It fails as $M$ approaches the limit below, where electrons turn relativistic.</Fragment>
+</KeyEq>
+
+The figure below does not use this approximation — it integrates the **exact** Chandrasekhar equation of state, valid from non-relativistic to ultra-relativistic electrons, as a shooting problem in general relativity's simpler cousin, plain Newtonian hydrostatic equilibrium (which is accurate for white dwarfs; only neutron stars need General Relativity, Chapter 18).
+
+<Sim name="stellar-death-wdmr" minHeight={460}>
+**The exact white dwarf mass–radius relation.** Drag the central density (equivalently, $x_c = p_F/m_ec$ at the centre) and watch the whole star's structure integrate outward in real time. The curve bends away from the dashed non-relativistic $M^{-1/3}$ line as the core turns relativistic, and radius plunges to zero at the Chandrasekhar mass. Sirius B is marked for reference.
+</Sim>
+
+<Hood title="integrating the exact Chandrasekhar equation of state">
+Chandrasekhar's 1935 equation of state writes everything in terms of $x = p_F/m_ec$:
+
+$$
+P(x) = \frac{\pi m_e^4c^5}{3h^3}f(x), \quad f(x) = x(2x^2-3)\sqrt{x^2+1} + 3\sinh^{-1}x, \qquad
+\rho(x) = \frac{8\pi\mu_e m_p}{3h^3}(m_ec)^3\,x^3.
+$$
+
+$f(x)\to \tfrac{8}{5}x^5$ as $x\to0$ (recovering $P\propto\rho^{5/3}$) and $f(x)\to 2x^4$ as $x\to\infty$ ($P\propto\rho^{4/3}$). We shoot-integrate hydrostatic equilibrium outward from a chosen central $x_c$:
+
+```ts
+while (n < maxPts && P > P_c * 1e-9 && r < 1e11) {
+  const h_ = Math.max(r * 0.02, 10);          // adaptive step: fine near the centre
+  const [k1m, k1P] = deriv(r, m, P);
+  const [k2m, k2P] = deriv(r + h_/2, m + (h_/2)*k1m, P + (h_/2)*k1P);
+  const [k3m, k3P] = deriv(r + h_/2, m + (h_/2)*k2m, P + (h_/2)*k2P);
+  const [k4m, k4P] = deriv(r + h_,   m + h_*k3m,     P + h_*k3P);
+  m += (h_/6)*(k1m + 2*k2m + 2*k3m + k4m);
+  P += (h_/6)*(k1P + 2*k2P + 2*k3P + k4P);
+  r += h_;
+}
+```
+
+At each RK4 stage, `deriv` needs $\rho(P)$, i.e. the *inverse* of $P(x)$. $f(x)$ has no closed-form inverse, but it is smooth and strictly increasing, so we invert it by bisection (60 iterations gives machine precision) rather than a fragile Newton iteration. Integration stops when $P$ falls to zero: that radius and enclosed mass are $R$ and $M$. Sweeping $x_c$ from $0.01$ to about $25$ (60 points) traces the whole curve. Everything runs in double precision on the CPU — a few thousand RK4 steps per star, well under a millisecond — so the whole curve recomputes live when you drag $\mu_e$. The reference non-relativistic line in the figure is not a separately-derived formula: it is a power law $R\propto M^{-1/3}$ calibrated to this *same* curve's own low-density limit, which is the cleanest way to show where the exact solution departs from it.
+</Hood>
+
+## The Chandrasekhar limit
+
+As $x_c\to\infty$, the equation of state's exponent silently drops from $5/3$ to $4/3$ — and an $n=3$ polytrope ($P\propto\rho^{4/3}$) has a very different property from an $n=3/2$ one: **its mass is fixed, independent of central density or radius.** Push more mass in and the star does not find a new, smaller equilibrium; there isn't one. This is the Chandrasekhar limit.
+
+<Level min={2} title="An energy argument for the limit">
+Compare the degeneracy energy and gravitational energy of a uniform sphere of relativistic degenerate electrons. Gravitational energy scales as $E_\text{grav}\sim -GM^2/R$. Ultra-relativistic degenerate energy scales as $E_\text{deg}\sim +\hbar c\,N^{4/3}/R \propto \hbar c\,(M/\mu_e m_p)^{4/3}/R$ — both go as $1/R$. If $|E_\text{grav}| > E_\text{deg}$ for *all* $R$, nothing stops the collapse: this happens above a critical mass where the $1/R$ coefficients cross,
+
+$$
+M_\text{Ch} \approx \left(\frac{\hbar c}{G}\right)^{3/2}\frac{1}{(\mu_e m_p)^2} \approx 1.44\left(\frac{2}{\mu_e}\right)^2 M_\odot.
+$$
+
+Because both energies scale the same way with $R$, there is no stable radius above $M_\text{Ch}$ at all — not a small one, none.
+</Level>
+
+<KeyEq title="The Chandrasekhar mass">
+$$
+M_\text{Ch} \approx 1.44\left(\frac{2}{\mu_e}\right)^2 M_\odot
+$$
+<Fragment slot="where">$\mu_e\approx2.0$ for carbon/oxygen white dwarfs (equal numbers of protons and neutrons), giving $M_\text{Ch}\approx1.4\,M_\odot$. A white dwarf with $\mu_e=2$ M☉ of <Var name="muE" value={2.0} min={2.0} max={2.2} step={0.01} /> has $M_\text{Ch}=$<Out name="Mch" />.</Fragment>
+</KeyEq>
+
+<Aside>**Chandrasekhar vs. Eddington.** Subrahmanyan Chandrasekhar derived this limit in 1930, on the boat from India to Cambridge, aged 19. Arthur Eddington, the most eminent astrophysicist of the day, publicly ridiculed the idea at a 1935 Royal Astronomical Society meeting, calling it "stellar buffoonery" and insisting nature would prevent it. Chandrasekhar was right; Eddington's objection (a vague appeal to an unknown law preventing collapse) had no theoretical basis. Chandrasekhar won the 1983 Nobel Prize in Physics for this and later work on stellar structure.</Aside>
+
+## Growing old: cooling, crystallisation, cosmochronology
+
+A white dwarf below $M_\text{Ch}$ just cools. With no fusion, it radiates away its leftover heat over billions of years — a slow, well-understood decline (roughly $L\propto t^{-7/5}$ once the interior is fully degenerate) that makes white dwarfs useful clocks: measure a white dwarf's temperature and mass, and you can read off its age, then add the main-sequence lifetime of its progenitor to date the whole population (**white dwarf cosmochronology**), used to age the Galactic disk and globular clusters.
+
+<Level min={2} title="Crystallisation">
+As a white dwarf cools, its ions (not the degenerate electrons — they stay a quantum fluid) eventually get cold enough, relative to their mutual Coulomb repulsion, to freeze into a crystal lattice — an "earth-sized diamond," loosely speaking, though mostly carbon and oxygen. Crystallisation releases latent heat and separates oxygen from carbon by gravity, both of which slow the cooling further. Gaia's exquisite parallaxes and colours (Gaia DR3, 2022) revealed a pile-up of white dwarfs on the cooling track exactly where crystallisation theory predicts extra delay — the **Q branch** — direct observational proof of solid cores inside these stars.
+</Level>
+
+## Type Ia supernovae: the standard candle that isn't quite standard
+
+If a white dwarf in a binary accretes mass, or if two white dwarfs merge, and the total pushes toward $M_\text{Ch}$, carbon ignites explosively throughout the degenerate core (degenerate gas cannot self-regulate by expanding and cooling the way normal gas would — runaway fusion is the direct consequence of the same physics that supports the star). The whole white dwarf unbinds in a **Type Ia supernova**.
+
+<Aside>**The channel problem.** Whether the trigger is one white dwarf steadily accreting from a companion star (the "single-degenerate" channel) or two white dwarfs merging (the "double-degenerate" channel) is still debated — probably both occur, in ratios that may vary with galaxy type. This matters because it affects whether Type Ia peak luminosities evolve with cosmic time, a systematic that precision cosmology (Chapter 25) has to worry about.</Aside>
+
+<Tiers>
+<Fragment slot="l1">
+The explosion forges roughly half a solar mass of radioactive nickel-56, and that radioactivity — not the explosion itself — is what powers the months-long glow you actually see.
+</Fragment>
+<Fragment slot="l3">
+Explosive silicon burning synthesises $\sim0.4$–$0.9\,M_\odot$ of $^{56}\text{Ni}$. $^{56}\text{Ni}$ decays to $^{56}\text{Co}$ (half-life 6.08 days) which decays to stable $^{56}\text{Fe}$ (half-life 77.2 days), each decay releasing gamma rays that thermalise in the ejecta and re-emerge as optical light with a delay set by the photon diffusion time. The light curve is a race between radioactive heating and photon escape (Arnett's rule): peak luminosity occurs when the two rates match, and the peak brightness is set almost entirely by the nickel mass.
+</Fragment>
+</Tiers>
+
+<Predict question="A supernova synthesises more ⁵⁶Ni than usual. Besides being brighter, what happens to how fast it fades after peak?" choices={['Fades faster (more fuel burns out sooner)', 'Fades slower', 'No change — decline rate only depends on the isotopes, not the amount']} answer={1}>
+More ejected mass (which tends to accompany more ⁵⁶Ni in these explosions) means a **longer photon diffusion time**, so the light curve is broader as well as brighter. This is the **Phillips relation**: brighter Type Ia supernovae decline more slowly. It is tight enough (once corrected) to standardise Type Ia peak luminosities to a few percent, which is exactly what let them reveal the accelerating expansion of the universe (Chapter 25).
+</Predict>
+
+<Sim name="stellar-death-lightcurves" minHeight={420}>
+**Radioactively-powered light curves.** Toggle between Type Ia (nickel/cobalt decay powers the whole thing) and Type II-P (a plateau from a hydrogen recombination front, then a cobalt-powered tail). Raise the ⁵⁶Ni mass for Type Ia and watch the peak rise **and** broaden together — the Phillips relation, live.
+</Sim>
+
+## Core collapse: when iron stops paying
+
+<Photo src="/img/stellar-death/sn1987a.jpg" alt="A bright orange blob surrounded by a thin ring of glowing dots, itself embedded in a soft purple haze, in a false-colour composite image" credit="NASA, ESA, A. Angelich (NRAO/AUI/NSF); Hubble, ALMA and Chandra composite" license="Public domain" href="https://www.nasa.gov/image-article/dawn-of-new-era-for-supernova-1987a/" size="wide" aspect="16 / 9">
+**Supernova 1987A**, in the Large Magellanic Cloud, 168,000 light-years away — the nearest supernova observed since telescopes existed, and the only one so far to be seen in neutrinos. The bright ring is a shell of gas shed by the progenitor tens of thousands of years earlier, now lit up as the supernova's blast wave slams into it. Three observatories are combined here: ALMA (red, cold dust), Hubble (green, visible), Chandra (blue, X-rays from the shock).
+</Photo>
+
+Stars above about 8 $M_\odot$ fuse all the way to iron. Iron-56 has the **most tightly bound nucleus per nucleon** of any element: fusing it releases no energy, and neither does splitting it. The core is out of fuel with no possible reaction to replace the pressure it loses as it cools — and it is supported only by *electron* degeneracy pressure, at a mass sitting right near the Chandrasekhar limit.
+
+<Tiers>
+<Fragment slot="l1">
+Two things then remove the electrons that were holding the core up. High-energy photons start smashing iron nuclei back into helium and neutrons (undoing billions of years of fusion in an instant), and the same crush forces electrons to merge with protons into neutrons, releasing ghostly particles called neutrinos and taking away the core's pressure support. Both processes *feed on themselves*: losing electrons drops the pressure, which increases the crush, which removes more electrons. The core does not fall gently — it free-falls, going from the size of the Earth to the size of a city in about a tenth of a second.
+</Fragment>
+<Fragment slot="l3">
+Two runaway processes remove electron degeneracy support almost simultaneously. **Photodisintegration**, $\gamma + {}^{56}\text{Fe} \to 13\,{}^4\text{He} + 4n$, is endothermic (it *costs* energy, extracted from the thermal/degeneracy pressure) and its rate rises steeply with temperature as compression heats the core. **Electron capture**, $e^- + p \to n + \nu_e$, removes the very electrons providing pressure support, and its rate rises steeply with density via the growing electron Fermi energy. Both feed back positively on collapse: lower pressure means faster collapse means higher density and temperature means faster electron capture and photodisintegration. The core free-falls from $\sim3000$ km to $\sim30$ km in about 0.1 s, briefly outrunning even the sound-crossing time needed for pressure waves to communicate what is happening.
+</Fragment>
+</Tiers>
+
+Collapse halts abruptly once the core reaches nuclear density ($\sim2.3\times10^{17}\ \text{kg/m}^3$): the strong nuclear force becomes repulsive at short range, exactly like a ball hitting a floor. The inner core **bounces**, launching a shock wave outward — and 99% of the roughly $3\times10^{53}$ erg of gravitational binding energy released is carried away not by the shock, but by a ten-second flood of neutrinos as the newly formed proto-neutron star deleptonises and cools.
+
+<Aside>**SN 1987A's neutrinos.** Three detectors (Kamiokande-II, IMB, Baksan) recorded a burst of just **25 neutrino interactions** over about 13 seconds, hours before the light from SN 1987A reached Earth — direct confirmation of the core-collapse mechanism, and a Nobel Prize (2002, Koshiba) for one of the teams. Extrapolating from 25 events to the full $\sim10^{58}$ neutrinos emitted is itself a striking demonstration of how few particles a "faint" detection can represent.</Aside>
+
+The shock, however, stalls: photodisintegrating the infalling outer iron core costs it enormous energy, and it typically grinds to a halt 100–200 km out, having become an accretion shock rather than an explosion. Reviving it needs **neutrino heating** — a small fraction (a few percent) of the neutrino luminosity streaming out from the proto-neutron star is reabsorbed just behind the shock, and if that heating exceeds the cooling and ram pressure of infalling matter for long enough, convective plumes and a large-scale sloshing instability (the **standing accretion shock instability**, SASI) can tip the balance and push the shock back out. If not, matter keeps falling onto the proto-neutron star until it exceeds *its* maximum mass and collapses further to a black hole — a "failed supernova," seen for real in at least one case (the disappearance of the red supergiant N6946-BH1).
+
+<Predict question="Modern 3D simulations show explosion is easier in 3D than in earlier 1D (spherical) models. Why?" choices={['3D lets convection and SASI develop, adding turbulent pressure and mixing that boost heating', '3D calculations simply use more accurate neutrino physics', 'It is a numerical artefact and 1D is actually more correct']} answer={0}>
+Spherical symmetry suppresses genuinely 3D instabilities: convective overturn driven by the negative entropy gradient behind the shock, and SASI sloshing. Both increase the time material spends absorbing neutrino heating and add turbulent pressure that helps push the shock outward, so full 3D simulations explode more readily (and at somewhat lower neutrino luminosities) than artificially spherical ones.
+</Predict>
+
+<Sim name="stellar-death-collapse" size="wide" minHeight={520}>
+**A stylised core-collapse supernova.** Iron core collapse (ms) → bounce → a stalled shock sloshing under SASI-like instability → neutrino-driven revival (or failure) → the shock ploughs outward through the star's onion layers over hours. The clock is deliberately non-linear — watch the units change from milliseconds to hours. Turn **neutrino heating** below the threshold and the shock never revives: the star quietly grows a black hole instead.
+</Sim>
+
+<Hood title="the toy core-collapse model">
+This is not a hydrodynamics solver — a real one (e.g. FORNAX, CHIMERA) needs a multi-dimensional Boltzmann neutrino-transport solve coupled to compressible hydrodynamics, thousands of CPU-hours per model. Instead this is a **phenomenological, scripted model**, tuned to reproduce the qualitative sequence and rough timescales, run entirely on the CPU because there is no per-cell grid to update — just a handful of ODEs and a rendering pass:
+
+```ts
+if (phase === 'stalled') {
+  sasiAmp = Math.min(0.16, sasiAmp + dtStory * 0.03);           // SASI grows while stalled
+  const rEq = 150 * (1 + 0.15 * Math.sin(sasiPh1 * 1.7));       // sloshing equilibrium radius
+  rShockKm += (rEq - rShockKm) * Math.min(1, dtStory * 4);      // relax toward it
+  if (tPB >= HEAT_WINDOW) {
+    phase = heating >= THRESH ? 'exploding' : 'failed';         // the one decision point
+  }
+}
+```
+
+Two things make this an honest *toy* rather than a fake result dressed up as physics: it is clearly labelled as such, and it is built entirely from **real, cited timescales and energetics** (bounce at ~0.1 s, stall radius ~150 km, ~99% of energy in neutrinos, a decision point around 0.3–0.5 s) rather than an arbitrary animation. The composition rings use a **logarithmic radial coordinate**, from ~10 km to the stellar radius (up to ~$3\times10^8$ km for a red supergiant) — a factor of $3\times10^7$ in radius that no linear plot could show on one screen, which is also why we don't render an actual 2D fluid grid: a uniform grid spanning core to envelope at useful resolution would need more cells than any reasonable frame budget allows, whereas a shooting/logarithmic approach costs nothing. Rayleigh–Taylor fingering at composition interfaces is likewise stylised: a handful of random angular Fourier modes whose amplitude grows once the shock is past an interface, standing in for the genuine fluid instability that 3D simulations show shreds the shock front. The **non-linear clock** is implemented by ramping a `warp` factor (physical seconds per real second) by roughly five orders of magnitude once the explosion begins, so a breakout that would physically take hours plays out in tens of seconds without ever telling the state a lie about *how much* time has passed — the displayed clock is the true physical time, just traversed at a wildly uneven rate.
+</Hood>
+
+### Pair instability and failed supernovae
+
+Above roughly 40 $M_\odot$ (metallicity-dependent, since winds strip mass from metal-rich stars), collapse may not even produce a bright explosion: it goes directly, or almost directly, to a black hole, with much of the envelope falling back. In an even rarer, higher-mass window (roughly 140–260 $M_\odot$), the core gets so hot that gamma rays start spontaneously producing electron-positron pairs. This *removes* photon pressure (converting photons into rest mass) precisely when the core needs it most, triggering runaway explosive burning that can **completely unbind the star, leaving no remnant at all** — a pair-instability supernova. A related process, pulsational pair instability at somewhat lower mass, produces violent mass-losing pulses without full disruption. Both leave a predicted gap in black hole masses (roughly 50–130 $M_\odot$) that gravitational-wave observations (Chapter 20) are actively testing.
+
+## What's left behind
+
+<Sim name="stellar-death-fate" size="wide" minHeight={340}>
+**Initial mass decides the ending**, though not sharply — the boundaries below (after Heger et al. 2003) are approximate and shift with metallicity, rotation and binary interactions. Drag the mass slider and toggle metallicity.
+</Sim>
+
+The exploding layers leave a **supernova remnant**: the Crab Nebula (SN 1054) pictured above is one; Cassiopeia A, whose light reached Earth around 1680 unnoticed (dust obscured it), is another, and X-ray spectroscopy of its still-expanding debris directly maps out freshly synthesised iron, silicon and calcium — the onion layers turned inside out and laid bare.
+
+<Photo src="/img/stellar-death/cas-a.jpg" alt="A roughly circular, mottled shell of glowing debris in false-colour magenta, blue, yellow and orange, the remnant of a supernova, shown across five wavebands" credit="NASA/DOE/Fermi LAT Collaboration, CXC/SAO/JPL-Caltech/Steward/O. Krause et al., and NRAO/AUI" license="Public domain" href="https://www.nasa.gov/image-article/fermis-latest-look-at-a-supernova-remnant/" size="wide" aspect="4 / 3">
+**Cassiopeia A across the spectrum**, roughly 340 years after it exploded: gamma rays (Fermi, magenta), X-rays (Chandra, blue/green), visible light (Hubble, yellow), infrared (Spitzer, red) and radio (VLA, orange), all combined. The gamma-ray glow traces cosmic rays being accelerated at the shock front — a supernova remnant is a particle accelerator as much as a light show.
+</Photo>
+
+Type Ib/Ic supernovae come from massive stars that have already shed their hydrogen (Ib) or hydrogen-and-helium (Ic) envelopes, usually via a binary companion, before core collapse — same mechanism, different progenitor. Type II-P supernovae keep a large hydrogen envelope and show the recombination plateau modelled in the light-curve figure above.
+
+<Level min={2} title="Neutron star mergers and the r-process">
+Roughly half of the periodic table's elements heavier than iron — including all the gold and platinum on Earth — are built by the **r-process** (rapid neutron capture), which needs an extraordinarily neutron-rich environment. Core-collapse supernovae can make some, but the 2017 detection of **GW170817**, a neutron star merger seen simultaneously in gravitational waves (Chapter 20) and light, caught a **kilonova**: an optical/infrared afterglow powered by the radioactive decay of freshly synthesised r-process nuclei in the merger ejecta, fading and reddening over days exactly as r-process heating models predicted. This confirmed neutron star mergers as a major (perhaps dominant) r-process site.
+</Level>
+
+<Photo src="/img/stellar-death/gw170817.jpg" alt="Three panels of the galaxy NGC 4993, in visible and infrared light, with a faint point of light marked by tick marks near the galaxy's centre, fading between panels" credit="NASA/JPL-Caltech" license="Public domain" href="https://www.nasa.gov/image-article/spitzer-observes-neutron-star-collision/" size="wide" aspect="1000 / 350">
+**The kilonova after GW170817**, in the galaxy NGC 4993, imaged by Spitzer. The marked source is the fading infrared afterglow of freshly made r-process elements, weeks after the neutron star merger that LIGO/Virgo detected in gravitational waves on 17 August 2017 — the first cosmic event ever observed in both gravitational waves and light across the spectrum.
+</Photo>
+
+The most energetic core collapses, when the collapsing core retains enough angular momentum, can launch relativistic jets that drill through the star and produce a **long gamma-ray burst** — a "collapsar." These are rare, need rapid rotation (uncommon in single massive stars after realistic angular-momentum losses), and are covered further alongside their short-GRB cousins (neutron star mergers) in Chapter 20.
+
+<Fermi title="Should we worry about Betelgeuse?">
+Betelgeuse, a red supergiant roughly 550 light-years away, will go supernova sometime in the next ~100,000 years (astronomically "soon," not "Tuesday"). At $d=550\ \text{ly}\approx5\times10^{18}$ m, and a typical core-collapse explosion energy $E\sim10^{51}$ erg $=10^{44}$ J, the flux delivered to Earth would be $E/4\pi d^2 \sim 3\times10^5\ \text{J/m}^2$ spread over the light-curve's duration (months) — utterly harmless; even the closest plausible galactic supernova would need to be within a few tens of light-years to threaten the ozone layer via cosmic rays and gamma rays, and no such star is anywhere near us. Betelgeuse will simply become, for a few weeks, brighter than the full Moon and visible in daylight — a spectacular, safe show.
+</Fermi>
+
+## Where we go from here
+
+The remnant core, if one survives, is the subject of the next two chapters: a **neutron star** (Chapter 18) if the collapsed core stays below about 2–2.5 $M_\odot$, held up now by *neutron* degeneracy pressure and the strong force, spinning as a pulsar; or a **black hole** (Chapter 19) if it does not, with no pressure in the universe able to stop it. Either way, the explosion has scattered newly forged elements — carbon, oxygen, silicon, iron, and now confirmed r-process gold and platinum — back into the interstellar medium (Chapter 6), to be recycled into the next generation of stars, planets, and, at least once, chemists.

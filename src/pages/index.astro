@@ -17,7 +17,7 @@ const published = new Set(
     <div class="wide toc-grid">
       {parts.map((p) => (
         <section>
-          <div class="part-label">Part {p.roman}</div>
+          <div class="part-label">{p.appendix ? 'Appendix' : `Part ${p.roman}`}</div>
           <h2>{p.title}</h2>
           <ol>
             {p.chapters.map((c) => (

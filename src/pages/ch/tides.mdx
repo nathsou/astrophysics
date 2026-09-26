@@ -12,11 +12,39 @@ import Predict from '../../components/Predict.astro';
 import C from '../../components/C.astro';
 import Var from '../../components/Var.astro';
 import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Photo from '../../components/Photo.astro';
 
 ## Gravity has a gradient
 
+<Photo src="/img/tides/saturn-rings.jpg" alt="Saturn and its full ring system in natural colour, seen nearly edge-on to broadside, mosaicked from over a hundred Cassini images" credit="NASA/JPL/Space Science Institute" license="Public domain" href="https://images.nasa.gov/details/PIA06193" size="wide" aspect="16 / 9">
+**Saturn, October 2004.** This 126-frame Cassini mosaic is the picture this whole chapter is trying to explain: a ring system, not one more moon, sitting almost entirely inside Saturn's Roche limit — and shepherded, gapped and warped by resonances with Saturn's moons.
+</Photo>
+
 [Chapter 2](/ch/orbits/) treated planets and moons as points: gravity pulls the *centre of mass* toward another *centre of mass*, full stop. Real bodies have size, and gravity is stronger on the near side of a body than on the far side. That difference — the **tidal force** — is what this chapter is about. It is not a new force; it's ordinary Newtonian gravity, but *differenced* across an extended body rather than evaluated at a point.
 
+<Tiers>
+<Fragment slot="l1">
+Picture a body — an ocean, a moon, a star — sitting near something massive. Gravity pulls harder on the near side than on the far side, simply because the near side is closer. That mismatch *stretches* the body along the line to the perturber. It's not a new force, just the same gravity pulling unevenly across something that has size.
+
+Squeeze a body from the sides while stretching it end-to-end and it puffs out into two bulges: one facing the perturber, one facing directly away. Both bulges are real, and both are pulled *up*, not "left behind" — the far one just gets pulled toward the perturber a little *less* than the body's centre does, so relative to the centre it lags outward too.
+
+The strength of this stretch falls off very fast with distance — faster than ordinary gravity — so it is almost always the *closest* massive neighbour that matters, not the most massive one.
+</Fragment>
+<Fragment slot="l2">
+Put a perturber of mass $M$ a distance $d$ from the centre of an extended body of radius $R \ll d$. Gravity is slightly stronger on the near side and slightly weaker on the far side than at the centre; subtracting off the centre's own acceleration leaves a small leftover field, the **tidal field**, that stretches the body along the line to the perturber and squeezes it side-on:
+
+<KeyEq title="The tidal acceleration (leading order, scalar form)">
+$$
+a_\text{tidal,axis} = \frac{2GMr}{d^3}, \qquad a_\text{tidal,transverse} = -\frac{GMr}{d^3}
+$$
+<Fragment slot="where">$r$ is the distance from the body's own centre, along ($r_\parallel$) or across ($r_\perp$) the line to the perturber. Both scale as $1/d^3$ — one power steeper than ordinary gravity's $1/d^2$ — which is why tides fall off so fast with distance and why a close neighbour usually beats a far, more massive one.</Fragment>
+</KeyEq>
+
+Because the field stretches along the axis and compresses across it **on both sides**, a deformable body grows **two** bulges — one toward the perturber, one away from it — not one. The far bulge is not "left behind"; it is pulled up by the same physics as the near bulge, just pulled toward the perturber a little less than the centre is.
+</Fragment>
+<Fragment slot="l3">
 Put a perturber of mass $M$ a distance $d$ from the centre of an extended body of radius $R \ll d$. A point on the body's surface, displaced by $\vec r$ from the centre (with $|\vec r| = R$), feels
 
 $$
@@ -32,9 +60,13 @@ $$
 <Fragment slot="where">$r_\parallel$ is the component of $\vec r$ along the body–perturber line $\hat d$; $r_\perp$ is the component transverse to it. The along-axis term stretches (coefficient $+2GMr/d^3$); the transverse term compresses (coefficient $-GMr/d^3$). Both scale as $1/d^3$, one power steeper than the $1/d^2$ monopole force — this is why tides fall off so fast with distance and why close encounters matter so much more than distant ones.</Fragment>
 </KeyEq>
 
-<Aside>**Deriving the factor of 2.** Along the axis, $g(d-r) - g(d) \approx \frac{d}{dr}\!\left[-\frac{GM}{(d-r)^2}\right]_{r=0} \cdot (-r)$… work through the sign and you get $+2GMr/d^3$ pointing *away* from the centre on both the near and far side. Perpendicular to the axis, geometry (the two lines from the perturber to $\pm r_\perp$ converge slightly) gives the compressive $-GMr/d^3$. The two are related by $\nabla\!\cdot\!\vec a_\text{tidal}=0$ in vacuum (Laplace's equation for the potential), so stretching one way must compress the other by exactly half.</Aside>
-
 The two coefficients aren't independent: the tidal field is (minus) the gradient of a potential, $\vec a_\text{tidal} = -\nabla \Phi_\text{tidal}$, with $\Phi_\text{tidal}(\vec r) = -\frac{GM}{d^3}\left(r_\parallel^2 - \tfrac12 r_\perp^2\right)$, and $\nabla^2\Phi_\text{tidal}=0$ away from any mass. A traceless, harmonic quadrupole is the generic leading-order shape of *any* differential force field — the same mathematics reappears for gravitational-wave strain in [Chapter 20](/ch/gravitational-waves/).
+</Fragment>
+</Tiers>
+
+<Level min={3} title="Deriving the factor of 2">
+Along the axis, $g(d-r) - g(d) \approx \frac{d}{dr}\!\left[-\frac{GM}{(d-r)^2}\right]_{r=0} \cdot (-r)$… work through the sign and you get $+2GMr/d^3$ pointing *away* from the centre on both the near and far side. Perpendicular to the axis, geometry (the two lines from the perturber to $\pm r_\perp$ converge slightly) gives the compressive $-GMr/d^3$. The two are related by $\nabla\!\cdot\!\vec a_\text{tidal}=0$ in vacuum (Laplace's equation for the potential), so stretching one way must compress the other by exactly half.
+</Level>
 
 Because the field stretches along the axis and compresses transverse to it **on both sides**, a deformable body raised by tides grows **two** bulges — one facing the perturber, one facing away — not one. This is the single most common tidal misconception to clear up early: the far bulge is not "left behind" or "flung out"; it is pulled *up* by the same physics as the near bulge, just because the far side is pulled toward the perturber *less* than the centre is.
 

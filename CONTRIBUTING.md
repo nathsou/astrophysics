@@ -162,6 +162,60 @@ import Photo from '../../components/Photo.astro';
 
   `size` is `text` (default), `wide` or `full`. `credit` and `href` (the official page) are **mandatory**. Give `license` as `Public domain` (NASA) or `CC BY 4.0` (ESA/ESO/NOIRLab/EHT, whose credit lines must follow the agency's requested format, e.g. "ESA/Webb, NASA & CSA, J. Lee").
 
+
+## Interactive equations (required)
+
+**Every symbol in every `<KeyEq>`, and in every important display equation, is hoverable.** Hovering (or tapping) a term shows its name, its value if it is a constant, and **why it is there**: what it does to the result and how to think about it.
+
+1. Mark terms in LaTeX with the `\term` macro: `\term{id}{tex}`, e.g. `\term{M}{M}`, `\term{rs}{r_s}`, `\term{rhat}{\hat r}`. Mark the corresponding symbols in prose with `<span data-term="id">M</span>`. Hovering highlights every occurrence of the term on the page.
+2. Define the ids once per chapter, near the top, right after the imports:
+   ```mdx
+   import Terms from '../../components/Terms.astro';
+
+   <Terms defs={{
+     M: ['Mass of the central body', 'More mass, stronger pull: the force grows in direct proportion.'],
+     r: ['Separation', 'Squared in the denominator: double the distance and the force falls to a quarter.'],
+     mu: ['Mean molecular weight', 'Average particle mass in units of m_p; ionised hydrogen has μ ≈ 0.5, since each proton brings a free electron.'],
+   }} />
+   ```
+   The format is `[name, explanation]` or `[name, explanation, value]`. Keep explanations to one or two sentences and **explain the role** ("in the exponent, so tiny temperature changes matter enormously"), not just the name. Escape apostrophes as `\\'` inside the MDX string literals.
+3. **Constants are predefined globally** under their key in `src/lib/physics/constants.ts`, so `\term{G}{G}`, `\term{c}{c}`, `\term{h}{h}`, `\term{hbar}{\hbar}`, `\term{kB}{k_B}`, `\term{sigma}{\sigma}`, `\term{me}{m_e}`, `\term{mp}{m_p}`, `\term{Msun}{M_\odot}` and the rest show their value and a note automatically. You may override one in `<Terms>` to add chapter-specific context.
+4. In dev, the console warns about every `data-term` that has no definition. **Make sure there are no such warnings.**
+5. Combined terms can have their own id (e.g. `\term{GMterm}{GM}`). Operators and plain numbers don't need terms.
+
+## History (required)
+
+Science is made by people. Each chapter should include **2–4 historical vignettes** about the key discoveries: who, when, how they worked it out, what they got wrong, and the rivalries and luck involved. Use a `<History>` box for longer stories, and `<Aside>` for one-liners.
+
+```mdx
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<History title="A bet over coffee, and the Principia" year="1684">
+<Portrait src="/img/people/newton.jpg" name="Isaac Newton" years="1642–1727" credit="Godfrey Kneller, 1689"
+          license="Public domain" href="https://commons.wikimedia.org/wiki/File:GodfreyKneller-IsaacNewton-1689.jpg" />
+
+Story text…
+</History>
+```
+
+A `<Portrait>` inside a `<History>` floats right. Placed on its own, directly after a paragraph, it sits in the margin like an `<Aside>`.
+
+**Portraits of scientists:**
+- **Wikimedia Commons is allowed for portraits only**, and only when the file's license is **Public domain, CC0, CC BY or CC BY-SA**. Check it with the API. Do not use Nobel Prize, AIP or Getty images.
+  ```bash
+  curl -s -A "astro-course/1.0 (educational)" "https://commons.wikimedia.org/w/api.php?action=query&titles=File:NAME.jpg&prop=imageinfo&iiprop=url|extmetadata&iiurlwidth=640&format=json"
+  ```
+  Read `extmetadata.LicenseShortName`, `Artist` and `ImageDescription`, and download `thumburl` with `curl -L -A "astro-course/1.0 (educational)"`.
+- **Check who is actually pictured.** Some famous portraits are misattributed: the well-known "1610 Kepler" portrait is disputed. Read the description page, and pick another portrait if there is doubt.
+- **Shared folder:** save portraits as `public/img/people/<lastname>[-firstname].jpg`, resized with `sips -Z 640 -s formatOptions 80`, ≤ 150 KB. **Check whether the file already exists first** (another chapter may have added it) and reuse it with the same credit.
+- For CC BY / BY-SA files, use the author's name as the `credit` and the exact license (e.g. `CC BY-SA 4.0`). Use women's and non-European scientists' portraits too where they belong in the story (e.g. Leavitt, Cannon, Payne-Gaposchkin, Rubin, Bell Burnell, Chandrasekhar, Saha).
+- Historical documents (manuscript pages, first plates, original plots) are also welcome under the same license rules.
+
+## Appendix primers
+
+The course has an appendix (Part A in `src/course.ts`): **A1** numbers/units/logs, **A2** functions/powers/exponentials, **A3** vectors, **A4** calculus, **A5** differential equations and numerics, **A6** classical mechanics, **A7** heat/gases/statistics, **A8** waves/light/Fourier, **A9** quantum ideas. Chapters should **link to the relevant primer** the first time they lean on a tool, e.g. "(new to derivatives? see [Appendix A4](/ch/primer-calculus/))". In a depth-1 tier, such a link is a friendly pointer. In a depth-3 derivation, a short parenthetical is enough.
+
 ## Simulations
 
 ### Contract (`src/lib/runtime/sim.ts`)

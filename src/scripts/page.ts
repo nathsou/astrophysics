@@ -168,3 +168,50 @@ document.addEventListener('click', (e) => {
   const next = levels.find((l) => l > cur);
   if (next) layoutTiers(box, +(document.documentElement.dataset.depth || '2'), next);
 });
+
+// ---------- Equation-term tooltips ----------
+// Any [data-term] element (KaTeX \term{id}{…} or prose spans) gets a tooltip explaining the term.
+import { GLOBAL_TERMS, type TermDef } from '../lib/terms';
+const TERMS: Record<string, TermDef> = { ...GLOBAL_TERMS };
+document.querySelectorAll<HTMLScriptElement>('script[data-terms]').forEach((s) => {
+  try { Object.assign(TERMS, JSON.parse(s.textContent || '{}')); } catch (err) { console.warn('Bad <Terms> JSON', err); }
+});
+document.querySelectorAll<HTMLElement>('[data-term]').forEach((el) => {
+  if (TERMS[el.dataset.term!]) el.classList.add('has-tip');
+  else if (import.meta.env.DEV) console.warn(`No <Terms> definition for equation term "${el.dataset.term}"`);
+});
+const tip = document.createElement('div');
+tip.className = 'term-tip';
+tip.setAttribute('role', 'tooltip');
+document.body.append(tip);
+let tipFor: HTMLElement | null = null;
+function showTip(el: HTMLElement) {
+  const def = TERMS[el.dataset.term!];
+  if (!def) return hideTip();
+  tipFor = el;
+  tip.replaceChildren();
+  const b = document.createElement('b');
+  b.textContent = def.name;
+  tip.append(b);
+  if (def.value) { const v = document.createElement('code'); v.textContent = def.value; tip.append(v); }
+  if (def.text) { const t = document.createElement('span'); t.textContent = def.text; tip.append(t); }
+  tip.classList.add('on');
+  const r = el.getBoundingClientRect();
+  const tw = tip.offsetWidth, th = tip.offsetHeight;
+  let x = r.left + r.width / 2 - tw / 2;
+  x = Math.max(8, Math.min(innerWidth - tw - 8, x));
+  let y = r.top - th - 10;
+  if (y < 8) y = r.bottom + 10;
+  tip.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px)`;
+}
+function hideTip() { tipFor = null; tip.classList.remove('on'); }
+document.addEventListener('pointerover', (e) => {
+  const el = (e.target as Element).closest?.('[data-term]') as HTMLElement | null;
+  if (el && el !== tipFor) showTip(el);
+  else if (!el && tipFor) hideTip();
+});
+document.addEventListener('click', (e) => { // touch: tap a term to toggle its tip
+  const el = (e.target as Element).closest?.('[data-term]') as HTMLElement | null;
+  if (el) { if (el === tipFor) hideTip(); else showTip(el); } else hideTip();
+});
+window.addEventListener('scroll', hideTip, { passive: true });

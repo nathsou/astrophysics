@@ -1,0 +1,14 @@
+---
+// Chapter-level dictionary for hoverable equation terms. Place once near the top of the chapter.
+//   <Terms defs={{
+//     M: ['Mass of the central body', 'More mass, stronger pull: the force is proportional to it.'],
+//     r: ['Distance between the centres', 'Squared in the denominator: double it, quarter the force.'],
+//   }} />
+// Use them in LaTeX as \term{M}{M} and in prose as <span data-term="M">M</span>.
+// Constants from src/lib/physics/constants.ts (G, c, h, kB, Msun…) are defined globally already.
+interface Props { defs: Record<string, [string, string?] | [string, string, string]> }
+const defs = Object.fromEntries(
+  Object.entries(Astro.props.defs).map(([k, [name, text, value]]) => [k, { name, text, value }]),
+);
+---
+<script type="application/json" data-terms set:html={JSON.stringify(defs).replace(/</g, '\\u003c')} />

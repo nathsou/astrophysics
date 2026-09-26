@@ -34,7 +34,7 @@ const published = new Set(
         <a class="brand" href={`${base}/`}>The <span>Cosmos</span>, Computed</a>
         {parts.map((p) => (
           <>
-            <div class="part">Part {p.roman} · {p.title}</div>
+            <div class="part">{p.appendix ? p.title : <>Part {p.roman} · {p.title}</>}</div>
             <ol>
               {p.chapters.map((c) => (
                 <li>

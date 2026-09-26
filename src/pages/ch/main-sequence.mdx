@@ -12,20 +12,43 @@ import Predict from '../../components/Predict.astro';
 import C from '../../components/C.astro';
 import Var from '../../components/Var.astro';
 import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Photo from '../../components/Photo.astro';
 
 ## A scatter plot that isn't a scatter
 
+<Photo src="/img/main-sequence/pleiades.jpg" alt="The Pleiades star cluster, a knot of blue-white stars wrapped in wispy blue reflection nebulosity, in infrared light" credit="NASA / JPL-Caltech" license="Public domain" href="https://images.nasa.gov/details/PIA09263" size="wide" aspect="1 / 1">
+**The Pleiades, in infrared.** A young (~100 Myr) open cluster: dozens of hot, blue, short-lived stars still wrapped in the dust of the cloud they formed from. Every star here formed at essentially the same time — which is exactly what makes a cluster's HR diagram so useful (see below).
+</Photo>
+
+<Tiers>
+<Fragment slot="l1">
+Take every star you can measure, and for each one write down two numbers: how bright it actually is (not just how bright it looks from Earth — correct for distance first) and what colour it is. Red stars are cool, like the glowing end of a poker; blue-white stars are hot, like a welding arc. Now plot brightness against colour for thousands of stars at once.
+
+You might expect a shapeless blob — stars come in every size, why would brightness and colour line up? Instead, most stars fall neatly along one curving line, running from cool-and-dim up to hot-and-bright. Around 1910, Ejnar Hertzsprung and Henry Norris Russell each made this plot independently and noticed the same thing. It's now called the Hertzsprung–Russell (HR) diagram, and that line is the **main sequence**.
+</Fragment>
+<Fragment slot="l2">
 Around 1910, Ejnar Hertzsprung and Henry Norris Russell independently made the same plot: stellar luminosity against colour (equivalently, temperature). Hertzsprung, working with Cepheids and cluster photometry in Denmark, noticed that redder stars split into two very different groups — some dim, some enormously bright. Russell, at Princeton, plotted absolute magnitude against spectral class for stars with parallax-based distances and saw the same structure independently. Neither called it the "HR diagram" at first; that name came later, once the tool had proved itself indispensable.
+
+Plot enough stars this way and a pattern jumps out: roughly 90% of all stars, including the Sun, sit on a single diagonal band running from hot-and-bright to cool-and-dim. Hertzsprung and Russell called it the **main sequence**. Off to the side sit two much smaller populations: a sparse band of hot, dim stars in the lower left, and a much larger clump of cool, extremely bright stars in the upper right. We now call these **white dwarfs** and **giants**.
+</Fragment>
+</Tiers>
 
 <Aside>**Annie Jump Cannon.** The spectral classes that make the x-axis possible — O, B, A, F, G, K, M, ordered by *decreasing* temperature despite the alphabetically odd order — are Cannon's. Working at Harvard, she classified around 350,000 stellar spectra by eye between 1911 and 1915, reducing an earlier alphabetical scheme (A through Q, based on hydrogen line strength) down to the temperature sequence still in use. "Oh, Be A Fine Girl/Guy, Kiss Me" is the traditional mnemonic; the *why* — hydrogen lines peak at intermediate temperature, not at the hottest stars — is the subject of [Chapter 5](/ch/spectra/).</Aside>
 
-Plot enough stars this way and a pattern jumps out: roughly 90% of all stars, including the Sun, sit on a single diagonal band running from hot-and-bright to cool-and-dim. Hertzsprung and Russell called it the **main sequence**. Off to the side sit two much smaller populations: a sparse band of hot, dim stars in the lower left, and a much larger clump of cool, extremely bright stars in the upper right. We now call these **white dwarfs** and **giants**, and understanding why they are so rare, and why the main sequence is so heavily populated, is most of what this chapter is about.
-
 ### Two axes, two conventions
 
+<Tiers>
+<Fragment slot="l1">
+Astronomers actually draw this plot two ways. Point a telescope at a cluster, take pictures through two colour filters, and you get a **colour–magnitude diagram** straight away — no extra assumptions needed, which is why it's the everyday workhorse. Physicists prefer a **theoretical HR diagram**: true luminosity against true surface temperature, which needs a distance and a bit of extra physics to compute, but connects directly to the equations later in this chapter. Confusingly, both kinds of diagram are drawn "backwards": brightness increases upward but the numbers used for it (magnitudes) decrease upward, and temperature increases to the *left*. Every diagram in this chapter uses the theorist's convention.
+</Fragment>
+<Fragment slot="l2">
 Observers plot **colour–magnitude diagrams**: apparent or absolute magnitude on the y-axis (inverted — brighter is up, because magnitudes run backwards), and a colour index such as $B-V$ on the x-axis. This is what you get directly from two photometric filters, no spectroscopy required, which is why it's the workhorse of cluster surveys: point a telescope, take two exposures, plot 50,000 points.
 
 Theorists plot the same information as a **theoretical HR diagram**: $\log(L/L_\odot)$ on the y-axis, $\log T_\mathrm{eff}$ on the x-axis — running backwards too, with temperature *increasing to the left*. That convention is a fossil of the colour-magnitude diagram it grew out of (blue is left, and blue is hot), but it has stuck for over a century, and every diagram in this chapter follows it. Converting between the two axes needs a colour–temperature relation and a distance (to turn apparent into absolute magnitude, or flux into luminosity) — an entire sub-industry in itself, and the reason Gaia's parallaxes (below) were such a big deal.
+</Fragment>
+</Tiers>
 
 <Aside>**Reading backwards, twice.** Magnitudes are backwards (lower number = brighter, a Hipparchus-era convention nobody has successfully abolished) *and* the temperature axis is backwards (hot on the left). Once you've drawn a dozen of these you stop noticing; the first dozen are confusing on purpose, apparently.</Aside>
 

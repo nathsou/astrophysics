@@ -12,8 +12,22 @@ import Predict from '../../components/Predict.astro';
 import C from '../../components/C.astro';
 import Var from '../../components/Var.astro';
 import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Photo from '../../components/Photo.astro';
 
 ## Halos first, galaxies second
+
+<Photo src="/img/galaxy-formation/antennae.jpg" alt="Two colliding spiral galaxies, the Antennae, with tangled dust lanes and bright pink and blue knots of new stars" credit="NASA, ESA, and the Hubble Heritage Team (STScI/AURA)-ESA/Hubble Collaboration" license="CC BY 4.0" href="https://esahubble.org/images/heic0615a/" size="wide" aspect="1 / 1">
+**Galaxy formation in the act.** The Antennae (NGC 4038/4039), about 45 million light-years away, are two spiral galaxies partway through a merger. The collision squeezes their gas into thousands of bright blue star clusters, and pink regions glow with hydrogen lit by newborn stars. In a few hundred million years the pair will probably settle into a single elliptical galaxy.
+</Photo>
+
+<Level max={1}>
+Imagine the young universe as an almost perfectly smooth fog of matter, with tiny lumps. Gravity makes the lumps grow. Most of the mass is **dark matter**, invisible stuff that only feels gravity, and it gathers into huge round clouds called **halos**. Small halos form first and then crash together into bigger ones, like raindrops running together into puddles.
+
+Ordinary gas falls into these halos too. But unlike dark matter, gas can shed energy by glowing. As it glows it sinks to the middle of the halo, spins up into a flat disk (like pizza dough tossed in the air), and turns into stars. A galaxy is that bright disk of stars sitting at the bottom of a much bigger, darker halo. The rest of this chapter asks three questions: how does the gas get in, why does so little of it become stars, and what do the giant black holes at galaxy centres have to do with it?
+</Level>
+
 
 A galaxy is a small, bright thing sitting at the bottom of a large, dark thing. The Milky Way's stars and gas weigh about $6\times10^{10}$ M☉ and mostly lie inside 20 kpc of the centre. The dark-matter halo around them (see [Chapter 21](/ch/milky-way/)) weighs about $1\text{–}1.5\times10^{12}$ M☉ and reaches out to roughly 250 kpc. So to understand galaxy formation you first need to know how halos form. Then you need to understand why so little of the ordinary matter ends up as stars.
 
@@ -23,6 +37,11 @@ The halo story is told in detail in [Chapter 28](/ch/structure/), so here is the
 
 ### Virial numbers
 
+<Tiers>
+<Fragment slot="l1">
+When gas falls into a halo it crashes into the gas already there and heats up, like a meteor burning in the air. Bigger halos pull harder, so their gas gets hotter: about 30,000 K in a small dwarf galaxy, about a million degrees around the Milky Way, and about 100 million degrees in a giant cluster of galaxies. That last gas is so hot it glows in X-rays, and X-ray telescopes see it directly.
+</Fragment>
+<Fragment slot="l2">
 A virialised halo of mass $M$ and radius $R$ has kinetic energy equal to half the magnitude of its potential energy. That fixes a characteristic circular speed $V_c = \sqrt{GM/R}$. It also fixes a temperature: gas that falls in at speed $V_c$ is shock-heated until its thermal energy per particle matches that kinetic energy. The result is the **virial temperature**
 
 $$
@@ -30,9 +49,18 @@ T_\text{vir} = \frac{\mu m_p V_c^2}{2k_B} \approx 3.6\times10^5\ \text{K}\left(\
 $$
 
 with $\mu \approx 0.6$ for ionised primordial gas. A dwarf halo with $V_c = 30$ km/s has $T_\text{vir} \sim 3\times10^4$ K. The Milky Way halo, with $V_c \approx 160$–220 km/s, has about $10^6$ K. A rich cluster, with $V_c \approx 1500$ km/s, has about $10^8$ K. The hot gas in clusters glows in X-rays, which is one way we know this picture is right.
+</Fragment>
+</Tiers>
 
 ## Why gas has to cool
 
+<Tiers>
+<Fragment slot="l1">
+Dark matter can't glow, so it stays puffed up forever. Gas can glow, and glowing is how it loses energy and sinks. So everything depends on a race between two clocks. One is how long it takes the gas to fall to the centre if nothing holds it up (the **free-fall time**). The other is how long it takes the gas to glow away its heat (the **cooling time**). If cooling wins, the gas sinks and makes stars. If falling wins, the gas stays as a hot, thin atmosphere around the galaxy.
+
+How fast gas cools depends on its temperature. Gas at around 100,000 K cools very fast, because its atoms are constantly being knocked into excited states and then shining the energy away. Much hotter gas has lost all its electrons, so it can only cool slowly. Denser gas cools faster, because its particles collide more often.
+</Fragment>
+<Fragment slot="l2">
 Dark matter cannot radiate, so a dark halo stays puffy forever. Gas can radiate. Once it has been heated to $T_\text{vir}$, it sits in rough hydrostatic equilibrium, like a star's atmosphere, and it can only sink to the centre by *losing energy*. The whole of galaxy formation turns on a comparison of two clocks:
 
 - the **free-fall time** $t_\text{ff} = \sqrt{3\pi / 32 G\rho}$, how long the gas takes to collapse if nothing holds it up; and
@@ -48,8 +76,16 @@ $$
 </KeyEq>
 
 The cooling function has a characteristic shape. Below about $10^4$ K hydrogen is neutral and cooling almost stops, apart from molecules and metals. Between $10^4$ and $10^{5.5}$ K there is a huge peak, at roughly $10^{-22}$–$10^{-21.5}$ erg cm³ s⁻¹ for gas with some metals: collisions excite hydrogen, helium, and highly ionised carbon and oxygen, which radiate the energy away as ultraviolet lines. Above about $10^7$ K the atoms are fully stripped and only bremsstrahlung (free–free emission) remains, with $\Lambda \propto T^{1/2}$ and a value about 30 times lower than the peak.
+</Fragment>
+</Tiers>
 
 ### Rees–Ostriker and Silk: a maximum galaxy mass
+
+<Level max={1}>
+In 1977, several astronomers realised this race sets a **maximum size for galaxies**. In halos up to about a trillion Suns, the gas is at a temperature where it cools quickly. In bigger halos it gets so hot, and is spread so thin, that it would take longer than the age of the universe to cool. That's why no galaxy has much more than a few hundred billion Suns' worth of stars, even though some dark halos are a thousand times heavier.
+</Level>
+
+<Level min={2}>
 
 In 1977 Martin Rees and Jeremiah Ostriker, Joseph Silk, and James Binney independently asked a simple question: which halos can cool within a free-fall time? The answer depends on density and temperature, but it produces a clear boundary. For $t_\text{cool} \approx t_\text{ff}$ the critical mass is roughly $10^{11}$–$10^{12}$ M☉ and the critical size roughly 100 kpc.
 
@@ -57,11 +93,19 @@ The physics works like this. Below this mass, halos are cool enough to sit on th
 
 <Aside>**Why "cooling" makes things *collapse*.** Self-gravitating systems have negative heat capacity (see [Chapter 11](/ch/stellar-structure/)). A gas cloud supported by pressure that loses energy contracts, and by the virial theorem it *heats up*. Cooling doesn't make the gas cold in a lasting way. It lets the gas sink until something else, like rotation or star formation, stops it.</Aside>
 
+</Level>
+
 ### Hot mode and cold mode
 
 For decades, the textbook picture was that all infalling gas shocks to $T_\text{vir}$ at the virial radius and then cools slowly out of a hot atmosphere. Simulations in the 2000s (Kereš et al. 2005; Dekel & Birnboim 2006) complicated this. In halos below about $10^{11.5}$–$10^{12}$ M☉, the post-shock gas cools so fast that a stable shock cannot even form. Gas flows in at around $10^4$–$10^5$ K straight to the centre (**cold-mode accretion**). In massive halos at high redshift, the cosmic web feeds the halo through narrow, dense filaments. Their gas is dense enough to cool faster than it can be shock-heated, so **cold streams** penetrate deep into an otherwise hot halo. This is likely how galaxies at $z \sim 2$–3 sustained star-formation rates of $100$ M☉/yr. The streams are hard to observe directly because they are faint, but Lyman-α emitting nebulae around quasars and absorption lines in background sightlines are consistent with them.
 
 ## Disks, spin and angular momentum
+
+<Level max={1}>
+Gas that cools doesn't fall straight to a point, because it is spinning slightly. Every halo gets a gentle twist from the tug of its neighbours while it forms. The twist is tiny, just a few per cent of what would be needed to hold the halo up. But as the gas shrinks inward it spins faster, like a figure skater pulling in her arms, until the spin holds it up. The result is a flat, rotating disk, which is why spiral galaxies look the way they do. A simple version of this argument predicts disks a few kiloparsecs across (about 10,000–20,000 light-years), which is about right for the Milky Way.
+</Level>
+
+<Level min={2}>
 
 Gas that cools does not fall to a point, because it has angular momentum. Tidal torques from neighbouring structure spin up every protohalo slightly during its expansion phase (Peebles 1969; Doroshkevich 1970; White 1984). The amount is characterised by a dimensionless **spin parameter**:
 
@@ -78,9 +122,13 @@ $$
 <Fragment slot="where"><span data-term="Rd">$R_d$</span> is the exponential scale length of the disk, <span data-term="lambda">$\lambda$</span> the halo spin parameter and <span data-term="Rvir">$R_\text{vir}$</span> the virial radius. This assumes the gas keeps the specific angular momentum of its halo. For the Milky Way, $\lambda = 0.035$ and $R_\text{vir} \approx 250$ kpc give $R_d \approx 6$ kpc. The observed value is about 2.5–3 kpc: the right order of magnitude, with the gap explained by halo concentration and by baryons pulling the halo in.</Fragment>
 </KeyEq>
 
+<Level min={3} title="Deriving the disk size">
 The derivation takes a few lines. For a singular isothermal sphere, $|E| = MV_c^2/2$ and $R_\text{vir} = GM/V_c^2$. Substituting into the definition gives $J = \sqrt2\,\lambda M V_c R_\text{vir}$. An exponential disk with flat rotation curve $V_c$ has $J_d = 2 M_d R_d V_c$. Setting $J_d/M_d = J/M$ gives $R_d = \lambda R_\text{vir}/\sqrt2$.
+</Level>
 
 That this works at all is remarkable. Galaxy sizes are set by tidal torques from structures megaparsecs away. The details were famously *hard* to get right in simulations, though: in the 1990s gas lost most of its angular momentum during mergers and formed disks ten times too small (the "angular momentum catastrophe"). The cure turned out to be feedback, which stops gas from cooling too early inside small clumps. Keep this in mind for the next sections.
+
+</Level>
 
 ## The flagship: watching a galaxy assemble
 
@@ -180,6 +228,12 @@ Every massive galaxy seems to host a central black hole of $10^6$–$10^{10}$ M�
 
 ### The Eddington limit
 
+<Level max={1}>
+There is a speed limit on how fast a black hole can feed. Gas falling in gets very hot and shines, and that light pushes outward on the gas. The more gas falls in, the brighter it shines and the harder it pushes back. At some brightness, the **Eddington limit**, the push of light balances the pull of gravity, and extra gas gets blown away instead of swallowed. The limit is about 30,000 times the Sun's brightness for every Sun's worth of black-hole mass. A billion-Sun black hole shining at its limit outshines a whole galaxy of a hundred billion stars about a hundred times over.
+</Level>
+
+<Level min={2} title="Radiation pressure against gravity">
+
 How bright can an accreting object be? Radiation pressure pushes outward on the infalling gas. The gas is mostly ionised hydrogen. Photons scatter off electrons with the Thomson cross-section $\sigma_T$, and electrostatic forces drag the protons along. At distance $r$ from a source of luminosity $L$, the photon momentum flux is $L/(4\pi r^2 c)$, so the outward force on each electron–proton pair is
 
 $$
@@ -187,6 +241,8 @@ F_\text{rad} = \frac{\sigma_T L}{4\pi r^2 c}.
 $$
 
 Gravity pulls inward mostly on the proton: $F_\text{grav} = GMm_p/r^2$. Both scale as $1/r^2$, so the distance drops out. Set them equal:
+
+</Level>
 
 <KeyEq title="Eddington luminosity">
 $$
@@ -201,6 +257,11 @@ A black hole of <Var name="Mbh" value={1e9} min={1e2} max={1e11} log digits={2} 
 
 Gas spiralling in through a thin disk radiates the binding energy at its innermost stable circular orbit (ISCO, [Chapter 19](/ch/black-holes/)). That efficiency $\epsilon = L/\dot M c^2$ is 5.7% for a non-spinning black hole and up to 42% for a maximally spinning one. The usual fiducial value is $\epsilon \approx 0.1$, about 15 times more efficient than hydrogen fusion. To sustain $L_\text{Edd}$ with efficiency <Var name="eff" value={0.1} min={0.04} max={0.42} digits={2} />, our black hole must swallow <Out name="Mdot" />.
 
+<Level max={1}>
+Because the feeding limit grows with the black hole's mass, a black hole feeding at the limit grows by the same *percentage* every so often, like money earning compound interest. It roughly triples every 50 million years or so. That sounds fast, but going from 100 Suns to a billion Suns takes about 16 of those triplings: roughly 800 million years of nonstop feeding.
+</Level>
+
+<Level min={2} title="The Salpeter growth law">
 Only a fraction $1 - \epsilon$ of the infalling mass ends up in the hole. The rest leaves as radiation. So a black hole accreting at the Eddington rate grows as
 
 $$
@@ -208,6 +269,8 @@ $$
 $$
 
 The growth is **exponential**, with e-folding time (the **Salpeter time**) of <Out name="tSal" /> for the efficiency above. It doesn't depend on the mass, because both the luminosity limit and the mass scale linearly with $M$.
+
+</Level>
 
 A seed of <Var name="Mseed" value={100} min={10} max={1e6} log digits={2} /> M☉, perhaps a remnant of a Population III star ([Chapter 16](/ch/stellar-death/)), needs <Out name="nFold" /> e-folds to reach $10^9$ M☉, which takes <Out name="tGrow" /> of uninterrupted Eddington-limited accretion. The universe was only 700 Myr old at $z = 7.5$, when the first billion-solar-mass quasars already shone.
 
@@ -229,6 +292,10 @@ with only about 0.3 dex of scatter (Kormendy & Ho 2013). Equivalently, $M_\text{
 
 <Aside>**Coevolution, maybe.** The cosmic black-hole accretion rate density tracks the star-formation history below (both peak at $z \approx 2$) with a ratio of about $10^{-3}$, which is further evidence the two grow together. But JWST finds many early black holes *overmassive* relative to their hosts, so the relation may have been established from the black-hole side first.</Aside>
 
+<Photo src="/img/galaxy-formation/m87-eht.jpg" alt="A glowing orange ring of radio emission around a dark central shadow" credit="EHT Collaboration" license="CC BY 4.0" href="https://www.eso.org/public/images/eso1907a/" size="text" aspect="1800 / 1048">
+**The shadow of M87\*.** The first image of a black hole, released by the Event Horizon Telescope in 2019. The ring is radio light at 1.3 mm from hot gas orbiting a black hole of 6.5 billion Suns at the centre of the giant elliptical galaxy M87, 55 million light-years away. The ring is about 40 microarcseconds across.
+</Photo>
+
 ### One engine, many faces: AGN unification
 
 Historically AGN were named by how they looked: **Seyfert galaxies** (bright nuclei in spirals), **quasars** (point-like, so luminous that the host is hard to see), **radio galaxies** with huge lobes, and **blazars** (violently variable, featureless spectra). Types 1 and 2 were distinguished by whether their spectra showed broad emission lines (thousands of km/s wide) or only narrow ones.
@@ -245,8 +312,17 @@ Look over the torus and you see the broad lines: a type 1 Seyfert or quasar. Loo
 
 ### Superluminal motion
 
+<Photo src="/img/galaxy-formation/m87-jet.jpg" alt="The bright core of galaxy M87 with a thin blue jet extending towards the upper right" credit="The Hubble Heritage Team (STScI/AURA) and NASA/ESA" license="CC BY 4.0" href="https://esahubble.org/images/opo0020a/" size="text" aspect="1724 / 1800">
+**A jet 5,000 light-years long.** Hubble's view of M87's jet, powered by the same black hole as the image above. The blue light is synchrotron radiation from electrons spiralling in magnetic fields at nearly the speed of light. Hubble has watched knots in this jet move across the sky at up to six times the speed of light.
+</Photo>
+
 In the 1970s, radio interferometers watched blobs in quasar jets move across the sky at *several times the speed of light*. The quasar 3C 279 shows apparent speeds of 20c. Nothing is breaking relativity; the light-travel time is playing a trick.
 
+<Level max={1}>
+Here is the trick. Suppose a blob in the jet is flying almost straight at us, at nearly the speed of light. It gives off a flash of light, then moves a long way towards us before giving off a second flash. The second flash has a much shorter trip to make, so the two flashes arrive at our telescope much closer together than they were sent. The blob seems to have crossed the sky in far less time than it really took, so its apparent speed can be many times the speed of light. Nothing actually moves faster than light. The figure below shows the effect.
+</Level>
+
+<Level min={2} title="Deriving the apparent speed">
 A blob moves at speed $\beta c$ at angle $\theta$ to our line of sight. It emits a pulse at $t = 0$ and another at $t = \Delta t$. In between, it moves $\beta c\,\Delta t\cos\theta$ toward us, so the second pulse has that much less distance to travel. The observed interval is compressed:
 
 $$
@@ -261,6 +337,8 @@ $$
 $$
 <Fragment slot="where"><span data-term="bapp">$\beta_\text{app}$</span> is the apparent speed across the sky in units of $c$. <span data-term="beta">$\beta$</span> is the true speed and <span data-term="theta">$\theta$</span> the angle to the line of sight. Setting $d\beta_\text{app}/d\theta = 0$ gives a maximum at $\cos\theta = \beta$, where $\beta_\text{app} = \beta\gamma$. For Lorentz factor $\gamma = 10$, blobs can appear to move at nearly $10c$.</Fragment>
 </KeyEq>
+
+</Level>
 
 <Sim name="galaxy-formation-superluminal" minHeight={420}>
 **Faster than light, apparently.** Left: a blob leaves the core at $\beta c$, emitting light pulses (circles). Wavefronts bunch up on the observer's side because the blob nearly keeps pace with its own light. Right: $\beta_\text{app}$ against viewing angle. Drag across the plot to change $\theta$. For any $\Gamma \gtrsim 1.4$ there is a range of angles where the blob appears to move faster than light, and the fastest apparent motion always occurs at $\cos\theta = \beta$. The Doppler factor $\delta$ shows why these sources are also the brightest: flux is boosted by roughly $\delta^{3\text{–}4}$.

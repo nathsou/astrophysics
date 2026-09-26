@@ -1,0 +1,20 @@
+---
+// A small portrait of a scientist, with name, dates and mandatory attribution.
+//   <Portrait src="/img/people/kepler.jpg" name="Johannes Kepler" years="1571–1630"
+//             credit="Unknown artist, 1610" license="Public domain"
+//             href="https://commons.wikimedia.org/wiki/File:…">One-line why-they-matter</Portrait>
+// Default placement is the margin column (like an Aside): put it directly after the paragraph
+// it belongs to. Inside a <History> box it floats right instead.
+interface Props { src: string; name: string; years?: string; credit: string; license: string; href: string }
+const { src, name, years, credit, license, href } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const url = src.startsWith('/') ? base + src : src;
+---
+<figure class="portrait">
+  <img src={url} alt={`Portrait of ${name}`} loading="lazy" decoding="async" />
+  <figcaption>
+    <b>{name}</b>{years && <span class="portrait-years">{years}</span>}
+    {Astro.slots.has('default') && <span class="portrait-note"><slot /></span>}
+    <span class="portrait-credit"><a href={href} target="_blank" rel="noopener">{credit}</a> · {license}</span>
+  </figcaption>
+</figure>

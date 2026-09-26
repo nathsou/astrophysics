@@ -12,6 +12,9 @@ import Predict from '../../components/Predict.astro';
 import C from '../../components/C.astro';
 import Var from '../../components/Var.astro';
 import Out from '../../components/Out.astro';
+import Tiers from '../../components/Tiers.astro';
+import Level from '../../components/Level.astro';
+import Photo from '../../components/Photo.astro';
 
 ## Two postulates
 
@@ -29,6 +32,14 @@ The first postulate was already true of Newtonian mechanics (Galileo's ship). Th
 If both postulates hold, something else has to give. That something is the idea that time is the same for everyone.
 
 ### The light clock
+
+<Tiers>
+<Fragment slot="l1">
+Imagine a clock made of a flash of light bouncing between two mirrors, one above the other. Each round trip is one tick. Now watch that clock fly past you. From where you stand, the light no longer goes straight up and down: it has to follow a zig-zag to keep up with the moving mirrors. A zig-zag is longer than a straight line. The light can't go faster to make up for it, because its speed is fixed. So each tick takes longer.
+
+That is the whole idea: **moving clocks run slow**, as seen by you. The slowing factor is called the **Lorentz factor**, γ (gamma). At everyday speeds γ is 1 to many decimal places. At 87% of light speed γ = 2, so a moving clock ticks once for every two of yours. As the speed approaches light speed, γ grows without limit. And this is not a trick of light clocks: every clock, heartbeat and radioactive atom riding along must agree with the light clock, or you could tell you were moving.
+</Fragment>
+<Fragment slot="l2">
 
 Here is the fastest route to the core result. Build a clock from two mirrors a distance $L$ apart, with a pulse of light bouncing between them. In the clock's own frame, one tick takes $\Delta\tau = 2L/c$.
 
@@ -48,11 +59,22 @@ $$
 
 is the **Lorentz factor**, and it runs through the whole chapter. Moving clocks tick slowly: $\Delta t = \gamma\,\Delta\tau$. This is not an illusion of signal delays, and it is not a quirk of light clocks. By postulate 1, *every* clock must agree with the light clock riding next to it, including atomic clocks, radioactive decay and heartbeats. Otherwise you could tell you were moving.
 
+</Fragment>
+</Tiers>
+
 At everyday speeds, $\gamma \approx 1 + \beta^2/2$. For a jet airliner that is $1 + 4\times10^{-13}$. In 1971 Hafele and Keating flew caesium clocks around the world and measured exactly this, along with a larger gravitational effect we will meet in [Chapter 19](/ch/black-holes/). Your phone's GPS corrects for both every second.
 
 ## The Lorentz transformation
 
 Time dilation is one consequence. To get them all, we want the rule that converts the coordinates $(t, x, y, z)$ of an event in frame $S$ into the coordinates $(t', x', y', z')$ in a frame $S'$ moving at speed $v$ along $+x$. The origins coincide at $t = t' = 0$.
+
+<Level max={1}>
+
+The rule that converts where and when an event happens, from one observer's point of view to another's, is called the **Lorentz transformation**. You don't need its formula to follow the rest of the chapter. Its message fits in three sentences. Moving clocks run slow. Moving objects are shorter along their motion. And two events that are simultaneous for one observer happen at different times for another, if they are far apart. There is no single, universal "now".
+
+</Level>
+
+<Level min={3} title="Deriving the Lorentz transformation">
 
 ### Deriving it
 
@@ -70,6 +92,10 @@ $$
 
 **Relativity fixes $A$.** By postulate 1, the inverse transformation (from $S'$ back to $S$) must look the same with $v \to -v$. Composing the two must give the identity. This forces $A^2(1 - v^2/c^2) = 1$, so $A = \gamma$.
 
+</Level>
+
+<Level min={2}>
+
 <KeyEq title="The Lorentz transformation (boost along x)">
 $$
 \begin{aligned}
@@ -82,6 +108,8 @@ $$
 </KeyEq>
 
 The newcomer is the $-vx/c^2$ term in $t'$. It says that the time you assign to an event depends on *where* it is, as well as when.
+
+</Level>
 
 ### Three consequences
 
@@ -98,6 +126,12 @@ The newcomer is the $-vx/c^2$ term in $t'$. It says that the time you assign to 
 Hermann Minkowski, Einstein's former maths teacher, saw in 1908 that all of this is geometry. Draw events on a diagram with $x$ across and $ct$ up. Light rays are the lines at 45°. The worldline of anything slower than light is steeper than 45°.
 
 ### The invariant interval
+
+<Level max={1}>
+
+Different observers disagree about times and distances separately. But they all agree on one combination of the two, called the **interval**. It plays the role that distance plays in ordinary geometry. For a clock carried between two events, the interval is simply the time that clock records, its **proper time**. The diagonal lines at 45° on the diagram below are paths of light. The region between them, above and below an event, is its **light cone**: everything it could ever affect, or be affected by. Nothing crosses the cone, and that is why cause always comes before effect for everybody.
+
+</Level>
 
 Rotations in ordinary space change $x$ and $y$ but preserve $x^2 + y^2$. Lorentz boosts change $t$ and $x$ but preserve a different combination. You can check with two lines of algebra that
 
@@ -118,11 +152,15 @@ The **light cone** of an event divides spacetime into three regions. Its future 
 
 ### Proper time and the twin paradox
 
-The proper time along any worldline is the sum of its intervals:
+The proper time along any worldline is the sum of its intervals<Level min={2} inline>: on each stretch of constant speed a clock records the elapsed time divided by γ</Level>.
+
+<Level min={3}>
 
 $$
 \tau = \int \sqrt{1 - \frac{v(t)^2}{c^2}}\;dt = \int \frac{dt}{\gamma(t)} .
 $$
+
+</Level>
 
 In Euclidean geometry the straight line between two points is the *shortest* path. In Minkowski geometry the minus sign flips this: **the straight (inertial) worldline between two events has the *longest* proper time.** Any detour ages you less.
 
@@ -142,6 +180,11 @@ In the muon's own frame, its clock is fine and the *atmosphere* is contracted by
 
 ## Four-vectors and $E = mc^2$
 
+<Tiers>
+<Fragment slot="l1">
+Relativity ties energy and mass together. A fast object carries energy of motion, as in everyday physics, but even an object sitting still carries a huge store of energy just by having mass: its **rest energy**, $E = mc^2$. Because $c^2$ is enormous, one gram of mass is worth about as much energy as a 20-kiloton nuclear bomb. Light has energy and momentum but no mass at all, which is why light can push on things.
+</Fragment>
+<Fragment slot="l3">
 The interval is a kind of length, so it is natural to package quantities into four-component vectors whose "length" is invariant. The **four-position** is $x^\mu = (ct, \vec x)$. Divide its change by the invariant $d\tau$ and you get the **four-velocity** $u^\mu = \gamma(c, \vec v)$. Multiply by the mass and you get the **four-momentum**:
 
 $$
@@ -149,6 +192,9 @@ p^\mu = m\,u^\mu = \left(\frac{E}{c},\ \vec p\right), \qquad E = \gamma m c^2, \
 $$
 
 Why call $\gamma mc^2$ the energy? Expand it for small $v$: $\gamma mc^2 \approx mc^2 + \tfrac12 mv^2 + \tfrac38 mv^4/c^2 + \ldots$. The second term is Newton's kinetic energy. Conservation of $\vec p$ in every frame requires conservation of this whole package, and the constant first term comes along with it. The invariant length of $p^\mu$ gives the most useful equation in high-energy astrophysics:
+
+</Fragment>
+</Tiers>
 
 <KeyEq title="The energy–momentum relation">
 $$
@@ -177,6 +223,20 @@ about four million tonnes per second, which is a Great Pyramid every second. It 
 
 ### Rapidity: velocities that add
 
+<Tiers>
+<Fragment slot="l1">
+If a spaceship moving at 90% of light speed fires a probe forward at 90% of light speed, everyday arithmetic says the probe goes at 180%. It doesn't. The clocks and rulers of the two frames disagree in just such a way that the combined speed is 99.4% of light speed. However many boosts you stack, you never reach light speed. Physicists use a quantity called **rapidity** that does simply add, boost after boost, and the flight simulator below uses it for its speed slider.
+</Fragment>
+<Fragment slot="l2">
+Add two speeds of $0.9c$ Galilean-style and you get $1.8c$. The Lorentz transformation gives something else. Compose two boosts, and the velocities combine as
+
+$$
+\beta_{\text{tot}} = \frac{\beta_1 + \beta_2}{1 + \beta_1\beta_2},
+$$
+
+which gives $0.994c$, never more than 1. No sum of speeds below $c$ ever reaches $c$.
+</Fragment>
+<Fragment slot="l3">
 Add two speeds of $0.9c$ Galilean-style and you get $1.8c$. The Lorentz transformation gives something else. Compose two boosts, and the velocities combine as
 
 $$
@@ -191,11 +251,22 @@ $$
 
 Rapidities simply add. A boost is a hyperbolic rotation by angle $\varphi$, exactly as the diagram suggested. A rocket with constant proper acceleration $a$ gains rapidity at a steady rate, $\varphi = a\tau/c$. At 1 $g$ you would reach $\gamma = 1000$ ($\varphi = 7.6$) in 7.4 years of ship time. Rapidity is also the right variable for computers, as we will see in the flight simulator: near $\beta = 1$, $\beta$ itself runs out of digits, but $\varphi$ does not.
 
+</Fragment>
+</Tiers>
+
 ## What a fast observer sees
 
 So far we have asked what is *measured* in a frame: the coordinates of events, assigned with rulers and synchronised clocks. What you *see* is different. What you see is the set of photons that reach your eye at one instant. Those photons left their sources at different times, and they arrive from directions and with frequencies that depend on your motion. Astronomers only ever see. So this section is the part of relativity that telescopes care about.
 
 ### Aberration
+
+<Level max={1}>
+
+Run through vertical rain and the drops seem to come at you from ahead. Light does the same thing. The faster you go, the more the stars appear to crowd toward the point you are heading for. At 99.5% of light speed, all the stars that were in the front half of your sky are packed into a circle about 11° across. Their light is also squeezed: more frequent waves (bluer light, the **Doppler effect**) arrive more often (more brightness, **beaming**). Behind you, the reverse: the stars thin out, redden and dim.
+
+</Level>
+
+<Level min={2}>
 
 Rain falling straight down seems to slant toward you when you run. Light does the same. Transform a photon's four-momentum $(E/c)(1, -\hat n)$ from the rest frame of the stars into the frame of an observer moving at $\beta$. Let $\theta$ be the angle between the direction of motion and a star in the stars' frame, and $\theta'$ the angle the observer measures. Then
 
@@ -205,6 +276,8 @@ $$
 $$
 
 Everything crowds toward the direction of motion. A star at $\theta = 90°$ appears at $\cos\theta' = \beta$, so the whole front hemisphere of the sky is squeezed into a cone of half-angle $\sin\theta' = 1/\gamma$. At $\gamma = 10$, half the sky fits within 5.7° of the point you are heading for.
+
+</Level>
 
 <Aside>**Bradley, 1727.** James Bradley discovered aberration while trying to measure stellar parallax. Stars trace small ellipses with semi-major axis $\beta_\oplus = v_\oplus/c = 10^{-4}$ rad, or 20.5″, as Earth orbits the Sun. It was the first direct evidence that Earth moves, and the first good measurement of $c$. Gaia corrects for relativistic aberration, including the $\beta^2$ term, to microarcsecond precision.</Aside>
 
@@ -227,6 +300,11 @@ Two features have no Newtonian counterpart. First, the Doppler effect is asymmet
 
 ### Beaming and the invariance of $I_\nu/\nu^3$
 
+<Tiers>
+<Fragment slot="l1">
+How much brighter does an approaching source look? A lot. A glowing blob of gas rushing toward you at 99.9% of light speed can look thousands to tens of thousands of times brighter than the same blob at rest, while an identical blob moving away can all but vanish. That is why many cosmic jets look one-sided. A useful rule falls out of the maths: a hot glowing body seen in motion still has the rainbow of a hot body, just at a different temperature, hotter ahead and cooler behind. That is also how we know Earth is moving through the leftover glow of the Big Bang: it is very slightly warmer in one direction.
+</Fragment>
+<Fragment slot="l3">
 How bright does a moving source look? The cleanest route uses one of the deep facts of radiative transfer: the specific intensity divided by $\nu^3$ is a Lorentz invariant,
 
 $$
@@ -242,6 +320,9 @@ S_\nu \propto \delta^{3+\alpha}\ (\text{discrete blob}) \quad\text{or}\quad \del
 $$
 
 with an extra power when the radiating region is counted per unit length. Either way, the forward lobe is devastating. At $\delta = 20$, $\delta^{3.7} \approx 6\times10^4$. A counter-jet at $\delta = 1/20$ is dimmed by the same factor.
+
+</Fragment>
+</Tiers>
 
 <Sim name="relativity-beaming" minHeight={460}>
 **Aberration and beaming for a moving source.** On the left, the source emits one ray every 15° in its own frame; the rays are drawn at the angles they have in the lab. <span style="color:var(--series-1)">Forward</span> rays pile into a cone of half-angle about 1/γ, and even the <span style="color:var(--series-3)">backward-emitted</span> ones swing forward. The shaded lobe is the relative brightness $\delta^p$. On the right, $\delta(\theta)$ and $\delta^p$ on a log scale. Note the transverse point at 90°, where the source is *redshifted* by 1/γ, and the angle where δ = 1. Slide γ from 1 to 300 and change the boost exponent.
@@ -322,6 +403,10 @@ Fitting the observed spectra requires $\Gamma \gtrsim 100$ and, in Fermi-LAT bur
 
 ### Blazars and Doppler boosting
 
+<Photo src="/img/relativity/m87-jet-spitzer.jpg" alt="Infrared image of the elliptical galaxy M87 with a faint jet to the right and a shock arc beyond it" credit="NASA/JPL-Caltech/IPAC" license="Public domain" href="https://images.nasa.gov/details/PIA23122" size="wide" aspect="16 / 9">
+**One jet visible, two jets present.** Spitzer's infrared view of M87, 55 million light-years away, home of the black hole imaged by the EHT. A faint jet runs to the right of the galaxy. The jet on the other side, moving away from us, is dimmed by Doppler de-boosting and is invisible here, though the shocks both jets drive into the surrounding gas can be seen on both sides. Hubble has clocked knots in the visible jet at up to 6c in apparent speed.
+</Photo>
+
 An active galactic nucleus ([Chapter 23](/ch/galaxy-formation/)) can launch a pair of jets at $\Gamma \sim 10$–$30$. If one points nearly at us, we see a **blazar**: a source whose flux is dominated by the jet, variable on timescales of minutes, and bright from radio to TeV gamma rays. For a blob with Doppler factor <Var name="dop" value={15} min={1} max={50} log /> and spectral index <Var name="alpha" value={0.7} min={0} max={1.5} />, the flux is boosted by $\delta^{3+\alpha} =$ <Out name="boost" /> compared with the same blob at rest.
 
 The same factor, in reverse, hides the counter-jet. The ratio of approaching to receding jet brightness is $[(1+\beta\cos\theta)/(1-\beta\cos\theta)]^{2+\alpha}$, which easily exceeds 1000. Most powerful radio sources look one-sided for this reason, not because they have only one jet.
@@ -329,6 +414,10 @@ The same factor, in reverse, hides the counter-jet. The ratio of approaching to 
 <Aside>**Minutes, not years.** The blazar PKS 2155−304 has doubled its TeV brightness in about 3 minutes. Light-crossing arguments would limit the source to smaller than the black hole's event horizon, unless $\delta \gtrsim 50$. Doppler factors that large are still debated.</Aside>
 
 ### Synchrotron radiation
+
+<Photo src="/img/relativity/crab-hubble.jpg" alt="The Crab Nebula: a tangle of orange and red filaments around a bluish glowing interior" credit="NASA, ESA, J. Hester and A. Loll (Arizona State University)" license="Public domain" href="https://images.nasa.gov/details/PIA03606" aspect="1 / 1">
+**The Crab Nebula, a synchrotron engine.** A Hubble mosaic of 24 exposures of the remnant of the supernova seen in 1054. The red and orange filaments are ordinary hot gas glowing in spectral lines. The eerie bluish-white haze inside them is synchrotron light from electrons with γ of millions, fed by the pulsar at the centre ([Chapter 18](/ch/neutron-stars/)). The nebula is about 11 light-years across.
+</Photo>
 
 Relativistic electrons spiralling in magnetic fields make **synchrotron radiation**, the dominant non-thermal emission of the universe: radio galaxies, supernova remnants, pulsar wind nebulae, GRB afterglows. Relativity shapes its spectrum. A non-relativistic electron gyrating at frequency $\nu_g = eB/2\pi m_e$ ($2.8$ MHz per gauss) radiates at $\nu_g$, like a dipole antenna. A relativistic electron beams its radiation into a cone of width $1/\gamma$ that sweeps past us once per orbit. We receive a brief pulse, shortened by another factor of $\gamma^2$ by the same arrival-time compression as the GRB shell. The spectrum peaks near
 
@@ -340,6 +429,14 @@ An electron with $\gamma =$ <Var name="gsync" value={10000} min={10} max={1e8} l
 
 ### Superluminal motion
 
+<Level max={1}>
+
+Some jets appear to move across the sky faster than light. They aren't: a blob racing almost toward us nearly catches up with its own light, so light it emits years apart arrives only weeks apart, and its sideways motion seems enormously fast.
+
+</Level>
+
+<Level min={2}>
+
 Radio interferometers watching the blobs in quasar jets find them moving across the sky at up to $50c$ in apparent speed. This is not a violation of relativity. It is another time-of-flight effect. A blob moving at $\beta$ at angle $\theta$ to the line of sight has an apparent transverse speed
 
 $$
@@ -347,6 +444,8 @@ $$
 $$
 
 which has a maximum of $\gamma\beta$ at $\cos\theta = \beta$. Observing $\beta_{\text{app}} = 10$ tells you that $\gamma \ge 10$. [Chapter 23](/ch/galaxy-formation/) takes this up with the jets themselves.
+
+</Level>
 
 ## From here to gravity
 

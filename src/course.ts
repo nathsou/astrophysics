@@ -2,7 +2,8 @@
 // A chapter is "published" when src/pages/ch/<slug>.mdx exists.
 
 export interface ChapterMeta {
-  n: number;
+  /** Display number: 1…28 for chapters, 'A1'… for appendices. */
+  n: number | string;
   slug: string;
   title: string;
   blurb: string;
@@ -11,6 +12,8 @@ export interface ChapterMeta {
 export interface Part {
   roman: string;
   title: string;
+  /** Appendix parts are labelled "Appendix" instead of "Part". */
+  appendix?: boolean;
   chapters: ChapterMeta[];
 }
 
@@ -77,6 +80,22 @@ export const parts: Part[] = [
       { n: 26, slug: 'big-bang', title: 'The Hot Big Bang', blurb: 'Thermal history, nucleosynthesis and recombination.' },
       { n: 27, slug: 'cmb', title: 'The Cosmic Microwave Background', blurb: 'Acoustic oscillations and the angular power spectrum.' },
       { n: 28, slug: 'structure', title: 'Cosmic Structure', blurb: 'Linear growth, the particle-mesh method and the cosmic web.' },
+    ],
+  },
+  {
+    roman: 'A',
+    title: 'Appendix: Primers',
+    appendix: true,
+    chapters: [
+      { n: 'A1', slug: 'primer-numbers', title: 'Numbers, Units & Logarithms', blurb: 'Scientific notation, significant figures, logs and log scales, dimensional analysis.' },
+      { n: 'A2', slug: 'primer-functions', title: 'Functions, Powers & Exponentials', blurb: 'Power laws, exponentials, trigonometry, and reading log–log plots.' },
+      { n: 'A3', slug: 'primer-vectors', title: 'Vectors & Coordinates', blurb: 'Vectors, dot and cross products, polar and spherical coordinates, frames.' },
+      { n: 'A4', slug: 'primer-calculus', title: 'Calculus in a Hurry', blurb: 'Derivatives, integrals, Taylor series, gradients — the ideas and the rules you need.' },
+      { n: 'A5', slug: 'primer-odes', title: 'Differential Equations & Numerics', blurb: 'ODEs, stability, integrators, root finding and the tools behind every simulation.' },
+      { n: 'A6', slug: 'primer-mechanics', title: 'Classical Mechanics', blurb: 'Newton, energy, momentum, angular momentum, potentials and conservation laws.' },
+      { n: 'A7', slug: 'primer-thermo', title: 'Heat, Gases & Statistics', blurb: 'Temperature, the ideal gas, the Boltzmann factor, entropy and distributions.' },
+      { n: 'A8', slug: 'primer-waves', title: 'Waves, Light & Fourier', blurb: 'Waves, the Doppler effect, electromagnetism in brief, and Fourier analysis.' },
+      { n: 'A9', slug: 'primer-quantum', title: 'Quantum Ideas', blurb: 'Photons, uncertainty, energy levels, spin, Pauli exclusion and tunnelling.' },
     ],
   },
 ];

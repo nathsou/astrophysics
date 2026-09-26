@@ -1,0 +1,12 @@
+---
+// A historical vignette: who discovered what, when, how, and what they got wrong.
+//   <History title="Kepler's war with Mars" year="1609"> … </History>
+// May contain a <Portrait> (it floats right inside the box).
+interface Props { title: string; year?: string }
+const { title, year } = Astro.props;
+---
+<div class="box history">
+  <div class="box-label">⌛ History{year && <span class="history-year">{year}</span>}</div>
+  <div class="history-title">{title}</div>
+  <slot />
+</div>
