@@ -12,11 +12,29 @@ import Predict from '../../components/Predict.astro';
 import C from '../../components/C.astro';
 import Var from '../../components/Var.astro';
 import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Photo from '../../components/Photo.astro';
 
 ## From ripples to a web
 
+<Photo src="/img/structure/webb-deep-field.jpg" alt="Thousands of galaxies of many shapes and colours, with a bright galaxy cluster at the centre bending the light of distant galaxies into arcs" credit="NASA, ESA, CSA, STScI" license="Public domain" href="https://images.nasa.gov/details/webb_first_deep_field" size="wide" aspect="1 / 1">
+**Webb's First Deep Field.** Almost every point of light here is a galaxy. The foreground cluster SMACS 0723, some 4.6 billion light-years away, is one of the knots of the cosmic web; its mass (mostly dark matter) bends light from galaxies behind it into arcs. The patch is about the size of a grain of sand held at arm's length.
+</Photo>
+
 The cosmic microwave background (Chapter 27, [The Cosmic Microwave Background](/ch/cmb/)) is a photograph of the universe at an age of 380,000 years. Its temperature is the same in every direction to about one part in $10^5$. Today the same universe contains galaxies that are a million times denser than the cosmic average, clusters of galaxies, and enormous empty voids 50 Mpc across. Something turned tiny ripples into huge contrasts. That something is gravity, and this chapter is about how it did it.
 
+<Tiers>
+<Fragment slot="l1">
+The story has three acts:
+
+1. **Random ripples.** The early universe was not perfectly smooth. It was covered in tiny, random bumps in density, like the static on an old television, but in 3D. Some sizes of bump were stronger than others, and a single recipe, the *power spectrum*, says how much of each size there was.
+2. **Slow, steady growth.** A slightly denser region pulls in a little more matter than its surroundings, so it becomes denser still. Meanwhile the universe expands and tries to pull everything apart. The result is gentle growth: while the bumps are small, they grow in step with the size of the universe.
+3. **Collapse.** Once a region is about twice as dense as average, gravity wins decisively. Matter falls in, first into flat sheets, then into threads, and finally into dense balls called *halos*, where galaxies form.
+
+The big figure in this chapter is a real computer simulation of that process, running on your graphics card, from when the universe was 50 times smaller than today to now.
+</Fragment>
+<Fragment slot="l3">
 The story has three acts, and they map neatly onto three kinds of mathematics:
 
 1. **Statistics.** The initial ripples are random. We describe them with a *Gaussian random field* and its *power spectrum* $P(k)$, which is essentially the recipe for how much of each Fourier mode goes into the mixture.
@@ -24,9 +42,18 @@ The story has three acts, and they map neatly onto three kinds of mathematics:
 3. **Nonlinear collapse.** Once the ripples reach order unity they collapse into sheets, filaments and bound *halos*. Now nothing is independent, the modes couple, and we need an N-body simulation.
 
 The flagship figure of this chapter is that simulation: a real particle-mesh (PM) cosmological code, running entirely on your GPU, that starts from the ripples at redshift 50 and evolves them to today.
+</Fragment>
+</Tiers>
 
 ### Density contrast
 
+<Tiers>
+<Fragment slot="l1">
+Cosmologists describe lumpiness with one number, the **density contrast**: how much denser (or emptier) a place is than the cosmic average. Zero means exactly average. A great empty void is about 80% emptier than average. A cluster of galaxies is a few hundred times denser. The neighbourhood of the Sun is about a million times denser.
+
+We also use a clever map: coordinates that stretch along with the universe, like dots drawn on a balloon. As the balloon inflates, each dot keeps its label, so "where things are" only changes when matter actually moves relative to the expansion.
+</Fragment>
+<Fragment slot="l2">
 The universe's mean matter density is $\bar\rho(t)$. It falls as $a^{-3}$, where $a$ is the scale factor (Chapter 25, [The Expanding Universe](/ch/expansion/); $a = 1$ today and $a = 1/(1+z)$ at redshift $z$). We care about departures from that mean, so we define the **density contrast**
 
 $$
@@ -36,9 +63,27 @@ $$
 It is dimensionless, averages to zero, and cannot go below $-1$ (empty space) though it can go as high as it likes. A void has $\delta \approx -0.8$. The inside of a galaxy cluster sits at $\delta \sim 200$ to $1000$. The solar neighbourhood of the Milky Way is at $\delta \sim 10^6$. We use **comoving coordinates** $\vec x$ throughout: positions measured on a grid that expands with the universe, so a particle at rest relative to the Hubble flow keeps the same $\vec x$ forever. Physical distance is $a\vec x$.
 
 <Aside>**Units.** Cosmologists quote lengths in $h^{-1}\,\text{Mpc}$, where $H_0 = 100h$ km/s/Mpc and $h \approx 0.68$. This hides the uncertainty in $H_0$ inside the unit. 1 Mpc = 3.26 million light-years, about 15 Milky Way diameters.</Aside>
+</Fragment>
+</Tiers>
 
 ## Gaussian random fields and the power spectrum
 
+<Tiers>
+<Fragment slot="l1">
+Where did the first ripples come from? The leading idea, *inflation*, says they began as tiny quantum jitters, stretched to enormous size in the first split second. What matters for us is that they are **random, but with a recipe**.
+
+Here is a way to picture the recipe. Imagine a sound mixing desk with sliders for bass, middle and treble. Start with pure hiss (white noise), where every pitch is equally loud. Now push some sliders up and others down. The result is still random, but it has a *character*: rumbly, or hissy. The universe's initial density is exactly this, in 3D, with "pitch" replaced by "size of the bump". The slider settings are the **power spectrum**. Simulations make their starting conditions in precisely this way.
+
+One number sums up how lumpy the universe is today: **σ₈ ≈ 0.81**. Take random spheres 8 megaparsecs (about 26 million light-years) across. Their mass typically differs from the average by about 81%.
+</Fragment>
+<Fragment slot="l2">
+Where did the first ripples come from? The leading idea, *inflation*, says they began as tiny quantum jitters stretched to enormous size, and every measurement so far says they are a **Gaussian random field**: random numbers following the bell curve, with no special place or direction.
+
+An engineer can build one in three steps. Fill a 3D grid with random bell-curve numbers (white noise, equal power at every size). Split it into waves of different wavelengths with a Fourier transform. Turn the volume of each wave up or down according to a recipe that depends only on the wavelength, then add the waves back together. That recipe is the **power spectrum** $P(k)$, where the *wavenumber* $k = 2\pi/\lambda$ is large for small bumps and small for big ones. Each wave keeps its random starting position (phase), so all the information is in the amplitudes.
+
+The overall amplitude is quoted as $\sigma_8 \approx 0.81$: if you average the density over spheres of radius $8\,h^{-1}$Mpc (about 12 Mpc, or 38 million light-years), the result typically differs from the mean by 81%.
+</Fragment>
+<Fragment slot="l3">
 The initial density field is not a designed object. According to inflation, it was generated by quantum fluctuations stretched to cosmic size, and all measurements so far (Planck finds any non-Gaussianity parameter $f_\text{NL}$ consistent with zero) say it is a **Gaussian random field**. That phrase sounds exotic but it is a concept an engineer already knows: coloured noise.
 
 ### The engineer's version
@@ -59,8 +104,17 @@ $$
 $$
 <Fragment slot="where"><span data-term="P">$P(k)$</span> has units of volume and measures the variance per Fourier mode. Different modes are uncorrelated, which is what $\delta_D$ (a Dirac delta) says. The combination $\Delta^2(k) = k^3P(k)/2\pi^2$ is the variance contributed per logarithmic interval of $k$. <span data-term="sigma">$\sigma(R)$</span> is the rms fluctuation of the field smoothed by a top-hat window $W$ of radius $R$. Its value at $R = 8\,h^{-1}$Mpc today, $\sigma_8 \approx 0.81$, is the standard way to quote the amplitude.</Fragment>
 </KeyEq>
+</Fragment>
+</Tiers>
 
+<Tiers>
+<Fragment slot="l1">
+The figure below lets you play with the mixing desk in 2D. The slider tilts the recipe. Push it to the left and the big, slow waves dominate: the picture looks like rolling hills. Push it to the right and small ripples dominate: it looks like static. The real universe started close to the balanced middle setting that inflation predicts. The matter we see today follows a different, curved recipe: pick "ΛCDM-shaped" to see it.
+</Fragment>
+<Fragment slot="l2">
 A power-law spectrum $P \propto k^n$ is the simplest case, and it is worth building intuition with it. The figure below generates a 2D field on a $256^2$ grid. Small $n$ (very negative) piles power into long waves, and the field looks like smooth rolling hills. Large $n$ puts power into short waves, and the field looks like television static. Inflation predicts a primordial spectrum close to $n = 1$ in 3D, the *Harrison–Zel'dovich* spectrum (Planck measures $n_s = 0.965 \pm 0.004$). The matter spectrum today is not a power law at all: switch to the ΛCDM shape to see why.
+</Fragment>
+</Tiers>
 
 <Sim name="structure-grf" minHeight={420}>
 **A Gaussian random field from coloured noise.** Left: the field (amber overdense, blue underdense). Right: the power measured in rings of $|k|$ (dots) against the input $P(k)$ (line). Drag the spectral index and watch the texture change while the phases stay the same. Switch to the ΛCDM shape: power rises as $k^1$ on large scales, turns over at $k_\text{eq}$, then falls roughly as $k^{-3}$. Note the scatter of the dots at small $k$: there are only a handful of large-scale modes in a finite box (*cosmic variance*).
@@ -68,6 +122,13 @@ A power-law spectrum $P \propto k^n$ is the simplest case, and it is worth build
 
 ### The shape of the matter power spectrum
 
+<Tiers>
+<Fragment slot="l1">
+The recipe we observe today has a peak: bumps about 600 Mpc (2 billion light-years) across are the strongest, and both larger and smaller bumps are weaker. The reason is timing.
+
+A bump can only start growing once light has had time to cross it, because until then its different parts cannot "feel" each other. Small bumps get crossed early, while the universe is still dominated by radiation, and radiation's rapid expansion stops dark matter from clumping. So small bumps sat frozen for a while. Big bumps were crossed later, after matter took over, and grew at full speed from the start. The dividing line is the size light could cross when matter and radiation were equally important, about 50,000 years after the Big Bang.
+</Fragment>
+<Fragment slot="l3">
 Why does the ΛCDM spectrum turn over? The primordial spectrum from inflation is almost exactly $P_\text{prim} \propto k^{n_s}$ with $n_s \approx 1$. What we see after the universe has processed it is
 
 $$
@@ -83,15 +144,50 @@ $$
 a wavelength of about 600 Mpc. Modes with $k \gg k_\text{eq}$ are suppressed by roughly $(k_\text{eq}/k)^2$ in amplitude, up to a logarithm, so $P \propto k^{n_s - 4}\ln^2 k$ on small scales. The simulation uses the classic Bardeen–Bond–Kaiser–Szalay (1986) fit for $T(k)$, a rational function of $q = k/\Gamma$ with $\Gamma \approx \Omega_m h$.
 
 <Aside>**Why "ΛCDM-like".** The BBKS fit ignores baryons. Real transfer functions are computed with Boltzmann codes such as CAMB and CLASS, which solve the coupled photon, neutrino, baryon and dark-matter equations to 0.1% precision.</Aside>
+</Fragment>
+</Tiers>
 
 ### Baryon acoustic oscillations
 
+<Tiers>
+<Fragment slot="l1">
+Ordinary matter adds one faint but famous feature. Before the universe was 380,000 years old, gas and light were locked together and sound waves rang through them, the same waves that paint the spots on the cosmic microwave background (Chapter 27). When the light broke free, each sound wave froze in place. That left a tiny preference, about 1%, for pairs of galaxies to be 147 Mpc (480 million light-years) apart.
+
+Because we know that distance from physics, it works as a **standard ruler**: measure how big it looks at different distances and you learn how the universe has expanded. The DESI survey does exactly this. Its 2024–2025 results hint that dark energy may be weakening over time, one of the most exciting open questions right now.
+</Fragment>
+<Fragment slot="l2">
 Baryons add a small but famous feature. Before recombination the baryons were locked to the photons in a single fluid, and pressure made that fluid ring with sound waves: the same acoustic oscillations that give the CMB its peaks (Chapter 27). When the photons decoupled at $z \approx 1090$, each sound wave froze where it was. The result is a preferred separation, the **sound horizon** at the drag epoch, $r_d \approx 147$ Mpc. Galaxies are slightly more likely (by about 1%) to be found at that separation from each other than at 130 or 170 Mpc.
 
 In $P(k)$ this shows up as small wiggles with period $\Delta k = 2\pi/r_d$. In the correlation function, which is the Fourier transform of $P(k)$, it is a single bump at 147 Mpc. Because $r_d$ is known from CMB physics, the BAO bump is a **standard ruler**. Measure its angular size at various redshifts and you have a distance–redshift relation. That is how the Dark Energy Spectroscopic Instrument (DESI) measures the expansion history. Its 2024 and 2025 releases, from tens of millions of redshifts, found BAO distances that, combined with the CMB and supernovae, prefer a dark energy that weakens with time at 2.8 to 4.2σ. Whether that holds up is one of the big questions of the late 2020s.
+</Fragment>
+</Tiers>
 
 ## Linear growth in an expanding universe
 
+<Tiers>
+<Fragment slot="l1">
+Now the physics of growth. Two things fight over every slightly dense region:
+
+- **Gravity** pulls matter in, making it denser.
+- **Expansion** drags everything apart, slowing the infall. Cosmologists call this *Hubble drag*.
+
+The result is a truce that favours gravity, but only slowly. While the universe is dominated by matter, a density bump grows **in proportion to the size of the universe**. When the universe doubled in size, every small bump doubled in strength. That is far slower than the runaway collapse you would get in a static universe, where a dense cloud collapses exponentially fast.
+
+Two more facts make this simple. First, bumps of all sizes grow by the same factor, so the recipe keeps its shape and just gets louder. Second, the growth depends only on how the universe expands, so measuring structure growth tests our picture of the cosmos.
+</Fragment>
+<Fragment slot="l2">
+Now the physics of growth. Two things fight over every slightly dense region: gravity pulls matter in, and the expansion (*Hubble drag*) pulls it apart. Working out the balance takes calculus, but the result is simple enough to state with algebra.
+
+<KeyEq title="Growth of small ripples">
+$$
+\htmlData{term=delta}{\delta}(t) = \htmlData{term=D}{D}(t)\,\delta_0, \qquad D \propto a \ \ \text{(matter era)}
+$$
+<Fragment slot="where"><span data-term="delta">$\delta$</span> is the density contrast of a region, $\delta_0$ its starting value, and <span data-term="D">$D$</span> the **growth factor**, the same for every size of bump. In a universe of matter only, $D$ grows in proportion to the scale factor $a$: when the universe doubles in size, every small ripple doubles in strength.</Fragment>
+</KeyEq>
+
+Since $a = 1/(1+z)$, a ripple at redshift $z = 1100$ (the CMB) has grown by roughly $1100$ times by today, minus the drag from dark energy. Compare that with a static universe, where a dense cloud collapses exponentially: expansion turns an explosion of growth into a slow, steady climb.
+</Fragment>
+<Fragment slot="l3">
 Now the dynamics. Treat the matter as a pressureless fluid (cold dark matter has negligible pressure on any scale we care about). In comoving coordinates, and to first order in $\delta$ and in the peculiar velocity, three equations govern it: continuity, Euler, and Poisson. Taking the time derivative of the linearised continuity equation and substituting the others gives a single equation for $\delta$. We skip the ten lines of algebra; any cosmology text has them.
 
 <KeyEq title="Linear growth of density perturbations">
@@ -112,6 +208,8 @@ p(p-1) + \tfrac43 p = \tfrac23 \quad\Rightarrow\quad p = \tfrac23 \ \text{or}\ p
 $$
 
 The decaying mode $t^{-1}$ disappears quickly. The growing mode is $\delta \propto t^{2/3} \propto a$. **Perturbations grow in proportion to the scale factor.** This is a lot slower than the exponential growth of the Jeans instability in a static medium, because Hubble drag fights gravity. In a static universe an overdensity grows as $e^{t/t_\text{ff}}$; in an expanding one it only grows as a power law.
+</Fragment>
+</Tiers>
 
 <Fermi title="Why we need dark matter">
 The CMB temperature fluctuations are $\Delta T/T \sim 10^{-5}$, and the baryons at recombination had $\delta_b \sim 10^{-4}$ or so on galaxy scales. Between recombination ($a \approx 1/1100$) and today, linear theory grows perturbations by a factor of at most $\sim 1100$, and by less (about $0.78\times$) once Λ is included:
@@ -123,11 +221,23 @@ That is not $\gg 1$. Without help, no galaxies would have formed yet. The help i
 
 ### The Mészáros effect
 
+<Tiers>
+<Fragment slot="l1">
+Two eras spoil this steady climb:
+
+- **Early on, radiation ruled.** Light and neutrinos made the universe expand so fast that dark-matter bumps barely grew at all, at most by a factor of about 2.5 (the *Mészáros effect*, found in 1974). That is why the recipe has a peak.
+- **Recently, dark energy took over.** About 5 billion years ago the expansion began to accelerate. Now expansion wins over gravity, and growth is grinding to a halt. Today's structure is about 78% of what it would be without dark energy, and it will only grow about 40% more, ever. The cosmic web is nearly frozen.
+
+How fast structure grows is a sharp test of Einstein's gravity, which is one reason surveys such as DESI, Euclid and Rubin measure it.
+</Fragment>
+<Fragment slot="l2">
 In the radiation era the right-hand side of the growth equation contains only the dark-matter density, but $H$ is set by the much larger radiation density. Gravity is weak compared with Hubble drag, and the solution is $\delta \propto 1 + \tfrac32 a/a_\text{eq}$: from horizon entry until equality, a dark-matter perturbation grows by at most a factor 2.5, logarithmically. Péter Mészáros found this in 1974. It is the physical origin of the turnover in $P(k)$ at $k_\text{eq}$: all modes that entered the horizon during the radiation era were frozen for a while, and the earlier they entered, the longer they were frozen.
 
 ### Λ stops the growth
 
 Add a cosmological constant. As Λ comes to dominate, $H$ tends to a constant and $\bar\rho$ keeps falling as $a^{-3}$. Hubble drag wins, and $\delta$ freezes. For ΛCDM the growth factor today is about 78% of what it would be in a pure-matter universe, and it will grow by only about 40% more, ever. The growth rate $f = d\ln D/d\ln a$ is well approximated by $f \approx \Omega_m(a)^{0.55}$ in general relativity. That exponent, 0.55, is a prediction of GR: modified-gravity theories that mimic dark energy usually change it. DESI, Euclid and Rubin measure $f\sigma_8$ through redshift-space distortions and weak lensing precisely to test it.
+</Fragment>
+</Tiers>
 
 <Predict question="Today Ωm ≈ 0.31. Compared with a universe of pure matter (Ωm = 1), how much has structure grown by today, in a flat universe with Ωm = 0.1 and ΩΛ = 0.9?" choices={['About the same', 'About half as much', 'About a fifth as much']} answer={1}>
 A bit more than half. With $\Omega_m = 0.1$, Λ took over much earlier (at $z \approx 1.1$ instead of $z \approx 0.3$), so growth froze earlier. The growth factor is $D(1) \approx 0.59$ compared with 1 for pure matter. It is not a factor of 10: during most of cosmic history the universe was matter dominated regardless, and all those models look alike at $a \lesssim 0.3$. Try it in the plot below.
@@ -137,6 +247,8 @@ A bit more than half. With $\Omega_m = 0.1$, Λ took over much earlier (at $z \a
 **The linear growth factor.** $D(a)$ integrated from the growth equation for your choice of $\Omega_m$ and $\Omega_\Lambda$ (thick line), normalised to $D = a$ early on. Compare the pure-matter universe (dashed), an open universe without Λ, and Planck ΛCDM. Everything grows as $a$ at first. Λ makes growth stall; curvature slows it more gently. Look to the right of "today": in ΛCDM the web is almost frozen already.
 </Sim>
 
+<Level min={3} title="The growth equation the plot solves">
+
 Numerically, the plot integrates the growth equation in $\ln a$:
 
 $$
@@ -145,8 +257,23 @@ $$
 
 with RK4 from $a = 10^{-3}$, where $D = a$. The flagship simulation uses the same table to set its initial conditions and to translate between $a$ and the linear amplitude.
 
+</Level>
+
 ## When linear theory breaks: collapse
 
+<Tiers>
+<Fragment slot="l1">
+Growth theory breaks down when a region becomes about twice as dense as average. What happens next? Two simple models tell the story.
+
+The first imagines a perfectly round, slightly dense ball in an expanding universe. At first the ball expands along with everything else, but a little more slowly. Its own gravity brakes it, like a ball thrown upwards. It reaches a maximum size (*turnaround*), then falls back in. In reality it doesn't crush to a point: the particles swirl, swap energy and settle into a stable, puffy ball half the size it had at turnaround. That settled ball is a **halo**.
+
+Three numbers from this model are used all over cosmology:
+
+- At turnaround the ball is about **5.5 times** denser than average.
+- It finishes collapsing exactly when the simple growth rule says it should have reached **1.686**. So you can predict collapse with the easy rule, used as a clock.
+- The finished halo is about **200 times** denser than average. That is why astronomers define a halo's edge as where its average density falls to 200 times the cosmic density.
+</Fragment>
+<Fragment slot="l2">
 Linear theory fails when $\delta \sim 1$. Two classic analytic models tell us what happens next, and they bracket the truth nicely: one follows a single spherical lump, the other follows the flows of a whole random field.
 
 ### Spherical top-hat collapse
@@ -164,6 +291,8 @@ The sphere expands, slows, turns around at $\theta = \pi$, and collapses to a po
 - **Virialisation.** Real lumps are not perfect spheres and do not collapse to a point. Particles cross, exchange energy and settle into equilibrium with $2K + W = 0$. Energy conservation then gives a final radius of half the turnaround radius. Compared with the background at the moment of collapse, the halo is $\Delta_\text{vir} = 18\pi^2 \approx 178$ times denser than average.
 
 That is where the ubiquitous "200" comes from: a halo is conventionally defined as the sphere within which the mean density is 200 times the critical (or mean) density. In ΛCDM the exact virial overdensity depends a little on $\Omega_m$ and is about 100 relative to critical today, but 200 has stuck.
+</Fragment>
+</Tiers>
 
 <Sim name="structure-collapse" minHeight={360}>
 **A spherical top-hat.** Left: the shell radius (orange) against the background sphere of the same mass (dashed). Right: the true density contrast (orange) and what linear theory would predict (blue). They agree while $\delta \ll 1$, part at turnaround, and at the moment of collapse linear theory says exactly 1.686 while the true density has reached the virial value 178. Scrub the time slider to compare the numbers.
@@ -175,6 +304,15 @@ The powerful idea here is that we can predict *nonlinear* collapse using *linear
 
 ### The Zel'dovich approximation
 
+<Tiers>
+<Fragment slot="l1">
+Real lumps are not round, and that changes everything. In 1970 Yakov Zel'dovich had a beautifully simple idea: give every particle a small push based on the initial ripples, and let it keep coasting in a straight line, with the push growing over time.
+
+Because a lump is rarely equally squeezed in all directions, it collapses along its *shortest* direction first, like a lump of dough under a rolling pin. That makes flat **sheets** (Zel'dovich called them pancakes). Where two directions collapse, you get **filaments**, long threads. Where all three collapse, you get **nodes**, dense knots where the biggest halos and galaxy clusters sit. Most random spots collapse along one or two directions, so the universe is mostly walls and threads, surrounding large empty voids. That pattern is the **cosmic web**.
+
+When particles coming from opposite sides pass through each other, the density spikes sharply, much as sunlight at the bottom of a swimming pool focuses into bright lines. The 1D figure below shows this "shell crossing".
+</Fragment>
+<Fragment slot="l3">
 Real overdensities are not spherical. Yakov Zel'dovich (1970) found an approximation that captures their shape. Instead of tracking density, track particles. Every particle starts at a Lagrangian position $\vec q$ and moves along a straight line:
 
 <KeyEq title="The Zel'dovich approximation">
@@ -193,6 +331,8 @@ $$
 The largest eigenvalue $\lambda_1$ reaches $1/D$ first, and the density becomes infinite along a surface: a **pancake** (a wall, or sheet). Collapse is generically one-dimensional first. Where two eigenvalues are large, you get a **filament**. Where all three, a **node**, the site of a massive halo. For a Gaussian field, the chance that all three eigenvalues of a random point are positive is only 8%; 42% have exactly one and another 42% exactly two. That is why the cosmic web is dominated by walls and filaments, with rare dense knots at their intersections, and why most of the volume ends up as voids.
 
 When particles cross (*shell crossing*), the single-valued velocity field breaks down. In phase space the particle sheet *folds*. Three streams overlap in the same place, and the edges of the fold are caustics with formally infinite density. The 1D figure shows this.
+</Fragment>
+</Tiers>
 
 <Sim name="structure-zeldovich" minHeight={440}>
 **Zel'dovich in one dimension.** Particles on a line start evenly spaced and move by $D\,\psi(q)$. Top: phase space. Each particle's velocity is proportional to $\psi$, so the sheet is initially a wiggly line. Press play or drag $D$. At $D = 1$ the steepest part of the sheet becomes vertical: the first shell crossing, where the density (bottom) spikes to infinity. Beyond that the sheet folds into an S, the region turns red (three streams), and caustics bound it. In 3D these folds are the walls and filaments of the cosmic web.
@@ -206,6 +346,13 @@ After collapse and virialisation, dark matter settles into gravitationally bound
 
 ### How many halos? The Press–Schechter idea
 
+<Tiers>
+<Fragment slot="l1">
+How many halos of each mass should there be? In 1974 William Press and Paul Schechter found a neat answer by combining the two ideas above: take the initial ripples, blur them on the scale of a given mass, and count the regions whose simple growth rule has passed 1.686. Those regions have collapsed.
+
+The answer is that small halos are extremely common and big ones rare, with a sharp cut-off at the top. Today halos up to about $10^{13}$ Sun masses (groups of galaxies) are common, but giant clusters of $10^{15}$ Sun masses are rare, just a few thousand in the observable universe. In the past, the cut-off was lower still. Structure builds **from the bottom up**: small halos form first and merge into bigger ones. Because the number of giant clusters is so sensitive to the lumpiness σ₈, counting them is a powerful way to measure it.
+</Fragment>
+<Fragment slot="l3">
 Press and Schechter (1974) combined the two results above into a formula for the abundance of halos. Smooth the linear density field on a sphere of mass $M$ (radius $R$ with $M = \tfrac43\pi R^3\bar\rho$). The smoothed field is Gaussian with variance $\sigma^2(M)$. Every region where it exceeds $\delta_c/D(t)$ has collapsed into a halo of mass at least $M$. So the fraction of mass in halos above $M$ is a Gaussian tail probability:
 
 $$
@@ -213,11 +360,22 @@ F(>M) = 2\times\tfrac12\,\text{erfc}\!\left(\frac{\nu}{\sqrt2}\right), \qquad \n
 $$
 
 The factor of 2 was a famous fudge that was later justified by the *excursion set* argument (Bond et al. 1991). Differentiating gives the **halo mass function** $dn/dM$. Its shape is a power law at low mass, where $\sigma(M)$ is large and nearly everything has collapsed, and an exponential cutoff $e^{-\nu^2/2}$ at high mass. The cutoff mass $M_*$, where $\nu = 1$, is about $10^{13}\,M_\odot$ today: groups of galaxies. It was far smaller in the past, which is **hierarchical structure formation**: small halos form first and merge into bigger ones. Rich clusters of $10^{15}\,M_\odot$ are $\nu \approx 3$ peaks, and there are only a few thousand of them in the observable universe. Their exponentially sensitive abundance makes them a sharp probe of $\sigma_8$.
+</Fragment>
+</Tiers>
 
 <Aside>**Refinements.** Sheth & Tormen (1999) improved the formula by allowing ellipsoidal collapse. Modern analyses use mass functions calibrated on large simulations (Tinker et al. 2008; emulators such as Aemulus) to about 1% accuracy.</Aside>
 
+<Photo src="/img/structure/webb-dark-matter.jpg" alt="A dark field full of tiny galaxies, overlaid with soft blue patches marking where dark matter is concentrated" credit="NASA/STScI/J. DePasquale/A. Pagan" license="Public domain" href="https://images.nasa.gov/details/PIA26702" size="wide" aspect="1257 / 1400">
+**Dark-matter halos, mapped.** Nearly 800,000 galaxies seen by Webb in the COSMOS field (0.54 square degrees, about 2½ full Moons), overlaid in blue with the dark matter inferred from how its gravity distorts the shapes of background galaxies. The blue clumps are halos and the fainter bridges between them are pieces of the web, exactly what the simulation below produces.
+</Photo>
+
 ### The NFW profile
 
+<Tiers>
+<Fragment slot="l1">
+Simulated halos all have nearly the same shape, found by Julio Navarro, Carlos Frenk and Simon White in 1996. Density rises steadily towards the centre, gently in the inner parts and steeply further out. Small halos are more compact than big ones, because they formed earlier, when the universe was denser. Nobody fully understands why the shape is so universal, but gravitational lensing (Chapter 24) and X-ray observations of clusters confirm it.
+</Fragment>
+<Fragment slot="l2">
 Simulated halos have a nearly universal density profile, found by Navarro, Frenk and White (1996):
 
 $$
@@ -225,11 +383,20 @@ $$
 $$
 
 It falls as $r^{-1}$ in the inner parts (a *cusp*) and as $r^{-3}$ in the outskirts. The ratio $c = R_{200}/r_s$ is the **concentration**, about 10 for a Milky Way–sized halo and about 4 for a cluster. Smaller halos formed earlier, when the universe was denser, and are more concentrated. Why the profile is universal is still not fully understood; it is an empirical result of simulations, confirmed by lensing (Chapter 24) and X-ray observations of clusters.
+</Fragment>
+</Tiers>
 
 The size of a halo follows from its definition. A halo of <Var name="Mh" value={1.3e12} min={1e8} max={3e15} log /> M☉ has $R_{200} = $ <Out name="r200" /> and a circular velocity at that radius of <Out name="v200" />. That is a Milky Way–like halo at $10^{12}$, a dwarf galaxy at $10^{9}$–$10^{10}$, and a Coma-like cluster at $10^{15}$. Since $M \propto R^3$ at fixed density, $V_{200} \propto M^{1/3}$: a cluster is a thousand times more massive than the Milky Way but only ten times faster.
 
 ### Cold versus warm dark matter
 
+<Tiers>
+<Fragment slot="l1">
+"Cold" dark matter means its particles moved slowly when structure began to form. If they were faster, **warm** dark matter, they would have streamed out of small lumps before those could grow, like sand blowing off a small dune. The smallest halos would never form, and filaments would look smooth instead of beaded with little clumps.
+
+Observations of the smallest galaxies and of distant gas clouds say dark matter can only be very slightly warm, if at all. The simulation offers two deliberately exaggerated "toy" warm options, long since ruled out, so the effect is big enough to see. Try them with the same seed as the cold version.
+</Fragment>
+<Fragment slot="l2">
 "Cold" means the dark-matter particles moved slowly when structure began to form. If instead they were **warm**, for example a thermal relic with a mass of a few keV, their random motions would have let them stream out of small overdensities (*free streaming*), erasing structure below a scale of
 
 $$
@@ -237,9 +404,18 @@ $$
 $$
 
 The power spectrum is cut off exponentially above a wavenumber $\sim 1/\lambda_\text{fs}$. Halos smaller than the corresponding mass never form by gravitational collapse at all, and filaments become smooth rather than beaded with small halos. WDM was proposed partly to fix apparent small-scale problems of CDM (too many satellite galaxies, cusps rather than cores). Today the Lyman-α forest, the counts of Milky Way satellites, and strong-lensing anomalies all require $m \gtrsim 5$–$6$ keV for a thermal relic, which is almost indistinguishable from CDM on scales above a dwarf galaxy. The flagship simulation offers two extreme "toy" WDM masses, 0.1 and 0.05 keV, long ruled out, so that the cutoff falls where the simulation can resolve it. Try them with the same seed as CDM.
+</Fragment>
+</Tiers>
 
 ## Simulating the cosmic web
 
+<Tiers>
+<Fragment slot="l1">
+Beyond the edge of collapse only simulation will do. The idea is simple: fill a box with particles, each standing in for an enormous amount of dark matter, and let them pull on each other under gravity while the box expands. When a particle leaves through one face it comes back in through the opposite face, so the box behaves like a small piece of an endless universe.
+
+The simulation moves the particles with the same "leapfrog" recipe used for planets in Chapter 2: nudge velocities, move positions, recompute the pull, nudge again.
+</Fragment>
+<Fragment slot="l3">
 The linear and spherical calculations take us to the edge of collapse. Beyond it, only simulation will do. The equations are simple: $N$ particles, each representing a huge number of dark-matter particles, moving under their mutual gravity in an expanding box with periodic boundaries.
 
 ### Equations in comoving coordinates
@@ -254,9 +430,16 @@ $$
 </KeyEq>
 
 We integrate these with the kick–drift–kick leapfrog from Chapter 2, with $a$ as the time variable: half a kick, a full drift, a new force, half a kick. The kick and drift factors are the integrals $\int da/(aH)$ and $\int da/(a^3H)$ over the step, computed exactly on the CPU. Steps are uniform in $\sqrt a$: large at early times when nothing much happens, small near today when halos are dense.
+</Fragment>
+</Tiers>
 
 ### The particle-mesh method
 
+<Tiers>
+<Fragment slot="l1">
+Adding up every particle's pull on every other one would take far too long: two million particles means four trillion pairs, every step. The **particle-mesh** method takes a shortcut. It spreads the particles' mass onto a 3D grid, like smearing paint into the squares of graph paper, then uses a fast mathematical trick (the Fourier transform) to find the gravitational pull everywhere on the grid at once. Each particle then reads off the pull from the grid squares around it. The cost drops from trillions of operations to tens of millions.
+</Fragment>
+<Fragment slot="l2">
 Direct summation costs $O(N^2)$: for two million particles that is $4\times10^{12}$ interactions per step. The **particle-mesh (PM)** method replaces it with a density grid and a Fourier transform. Each step:
 
 1. **Assign mass to the mesh.** Spread each particle over the 8 nearest grid points with cloud-in-cell (CIC) weights.
@@ -266,6 +449,8 @@ Direct summation costs $O(N^2)$: for two million particles that is $4\times10^{1
 5. **Interpolate** the acceleration back to each particle with the same CIC weights, and kick.
 
 Periodic boundaries come for free, because the discrete Fourier transform is periodic.
+</Fragment>
+</Tiers>
 
 <Predict question="The simulation starts at z = 50 with a nearly uniform particle lattice. At what redshift does the cosmic web first become clearly visible?" choices={['Around z = 20', 'Around z = 5', 'Only below z = 1']} answer={1}>
 Around $z \sim 5$ to 3 for this box, with filaments sharpening down to $z \approx 1$. Between $z = 50$ and $z = 10$ the growth factor increases fivefold, but $\delta$ on the scales the grid resolves is still much less than 1, so nothing visibly moves. The action is back-loaded: half of all the growth in $D$ happens after $z \approx 1$. Then Λ takes over and the web nearly freezes, so the last few gigayears look calm. Watch the redshift counter.
@@ -340,11 +525,22 @@ We can compare simulations with the real web because galaxy redshift surveys map
 
 **DESI** (on the 4-m Mayall telescope since 2021) takes 5,000 spectra at a time with robotic fibre positioners. By 2025 it had tens of millions of redshifts, making the largest 3D map of the universe to date. **Euclid** (ESA, launched 2023) is imaging a third of the sky to measure weak lensing (Chapter 24) and tens of millions of spectroscopic redshifts; its first quick data release came in 2025. The **Vera C. Rubin Observatory** began its ten-year LSST survey in 2025 and will measure the shapes of billions of galaxies.
 
+<Photo src="/img/structure/desi-map.jpg" alt="Two fan-shaped slices of millions of dots, forming a lacy network of filaments and voids, with Earth at the point where the fans meet" credit="DESI Collaboration/DOE/KPNO/NOIRLab/NSF/AURA/R. Proctor" license="CC BY 4.0" href="https://noirlab.edu/public/images/noirlab2512a/" size="wide" aspect="1400 / 787">
+**The real cosmic web.** DESI's three-year map: each dot is a galaxy or quasar with a measured redshift, in two fans above and below the plane of the Milky Way, with Earth at the apex. Bluer points are more distant, billions of light-years away. The lacework of filaments and voids is statistically the same pattern that grows in the simulation above.
+</Photo>
+
 These surveys measure the same statistics we have used in this chapter: the galaxy power spectrum and its BAO wiggles, the growth rate $f\sigma_8$ from redshift-space distortions, and the lensing amplitude.
 
 ### σ8 and the S8 tension
 
+<Tiers>
+<Fragment slot="l1">
+One puzzle has kept cosmologists busy: is the universe today as lumpy as it should be? The CMB, combined with our growth theory, predicts a certain lumpiness. Several surveys that weigh matter using gravitational lensing found the universe slightly *smoother* than predicted, the **S8 tension**. If real, it could point to new physics, but it might also be ordinary gas pushed around by black-hole winds. The newest analyses have narrowed the gap, and Euclid and Rubin should settle the question.
+</Fragment>
+<Fragment slot="l2">
 Weak-lensing surveys are most sensitive to the combination $S_8 = \sigma_8\sqrt{\Omega_m/0.3}$. Planck's CMB, extrapolated forward with ΛCDM, predicts $S_8 \approx 0.83$. Lensing surveys (KiDS, DES, HSC) measured lower values, around 0.76 to 0.78, a 2–3σ discrepancy called the **S8 tension**. If real, it would mean structure grew less than ΛCDM predicts: new physics in dark matter or dark energy, or massive neutrinos, or simply stronger baryonic feedback than assumed, since AGN winds push matter out of halos and suppress small-scale power. Recent analyses (KiDS-Legacy in 2025, and combined DES+KiDS) have moved closer to Planck, and the tension now looks more like a mild $\lesssim 2\sigma$ difference. Euclid and Rubin should settle it.
+</Fragment>
+</Tiers>
 
 ## Where we go from here
 

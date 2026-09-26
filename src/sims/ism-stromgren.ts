@@ -28,7 +28,7 @@ export default defineSim({
     const stage = createStage(host, { aspect: 16 / 9 });
     const ctx = stage.canvas.getContext('2d')!;
 
-    let star = STARS[0];
+    let star: (typeof STARS)[number] = STARS[0];
     let logN = 1; // log10 n (cm^-3)
 
     function R_S_pc(): number {

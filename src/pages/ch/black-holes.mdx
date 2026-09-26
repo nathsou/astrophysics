@@ -13,15 +13,40 @@ import C from '../../components/C.astro';
 import Var from '../../components/Var.astro';
 import Out from '../../components/Out.astro';
 
+import Tiers from '../../components/Tiers.astro';
+import Level from '../../components/Level.astro';
+import Photo from '../../components/Photo.astro';
+
 ## When pressure loses
+
+<Photo src="/img/black-holes/m87-eht.jpg" alt="A glowing orange ring, brighter at the bottom, around a dark centre: the first image of a black hole's shadow, in M87" credit="EHT Collaboration" license="CC BY 4.0" href="https://www.eso.org/public/images/eso1907a/" size="wide" aspect="1280 / 746">
+**The first picture of a black hole.** The shadow of M87\*, 6.5 billion solar masses at the heart of the galaxy M87, 55 million light-years away. The Event Horizon Telescope made it by combining radio dishes across the planet at 1.3 mm wavelength. The ring is 42 microarcseconds across: the size of an orange on the Moon. The dark centre is the shadow we derive in this chapter, and the brighter bottom is hot gas moving towards us.
+</Photo>
+
+<Tiers>
+<Fragment slot="l1">
+Stars hold themselves up with pressure, the push of hot, crowded matter. [Chapter 16](/ch/stellar-death/) followed that push to its limits. The dead core of a star can be held up by crowded electrons (a white dwarf) or, if it is heavier, by crowded neutrons (a neutron star). But above roughly two and a half Suns' worth of mass, nothing known can hold it.
+
+Worse, in Einstein's gravity pressure itself has weight. Squeeze harder to resist collapse, and the extra pressure pulls inward too. Past a certain point the fight is lost for good, and the core collapses into a region from which nothing, not even light, can get out: a **black hole**.
+</Fragment>
+<Fragment slot="l2">
 
 [Chapter 16](/ch/stellar-death/) ended with a stellar core that no pressure could hold up. The story goes like this. A white dwarf is supported by electron degeneracy pressure, which fails above the Chandrasekhar mass of about 1.4 M☉. A neutron star is supported by neutron degeneracy plus the repulsive core of the strong force. That fails too, somewhere around 2.2–2.5 M☉. This is the Tolman–Oppenheimer–Volkoff limit, and its exact value depends on the poorly known equation of state of nuclear matter ([Chapter 18](/ch/neutron-stars/)).
 
 The deeper reason for this failure is worth understanding, because it is general relativistic. Hydrostatic equilibrium needs a pressure gradient to balance gravity. In Newtonian physics, only mass density $\rho$ gravitates. In general relativity (GR), **pressure gravitates too**: the source of gravity is roughly $\rho + 3P/c^2$. As a star is compressed, the extra pressure it needs adds to its weight, and so it needs still more pressure. Beyond a critical compactness no equation of state can win, even the stiffest one that causality allows (sound speed = $c$). Buchdahl proved in 1959 that no static fluid ball can be smaller than $\tfrac98$ of the radius we are about to derive. So a core heavier than about 2.5 M☉ **has to** collapse, and nothing known can stop it.
 
+</Fragment>
+</Tiers>
+
 <Aside>**Failed supernovae.** Not every black hole needs an explosion. Some massive stars seem simply to wink out. A 25 M☉ supergiant in NGC 6946 brightened slightly in 2009 and then vanished in the optical. JWST now sees only a faint infrared glow at its position. This is the best candidate so far for a direct collapse to a black hole.</Aside>
 
 ### An escape-velocity heuristic
+
+<Tiers>
+<Fragment slot="l1">
+Throw a ball upward hard enough and it never comes back: that speed is the **escape speed**. It is 11 km/s for the Earth and 618 km/s from the Sun's surface. Squash a body smaller while keeping its mass, and its escape speed grows. At a certain size it reaches the speed of light. In 1783 John Michell guessed that such a "dark star" would be invisible. His reasoning was off, but his size was exactly right. It is called the **Schwarzschild radius**, and it is about 3 km for every solar mass:
+</Fragment>
+<Fragment slot="l2">
 
 Here is a surprisingly good Newtonian guess. In Chapter 2's vis-viva equation, the escape speed from the surface of a mass $M$ of radius $R$ is $v_\text{esc}=\sqrt{2GM/R}$. Set $v_\text{esc}=c$ and solve for $R$:
 
@@ -30,6 +55,9 @@ R = \frac{2GM}{c^2}.
 $$
 
 John Michell (1783) and Pierre-Simon Laplace (1796) did exactly this and imagined "dark stars". Their reasoning is wrong in two ways. Light has no rest mass for Newtonian gravity to act on, and in their picture light could still climb partway up and fall back. Yet the answer is exactly right. It is the **Schwarzschild radius**:
+
+</Fragment>
+</Tiers>
 
 <KeyEq title="The Schwarzschild radius">
 $$
@@ -43,6 +71,29 @@ A black hole of <Var name="Mbh" value={10} min={1e-9} max={1e11} log /> M☉ has
 <Aside>**Scale check.** Squeezed to its Schwarzschild radius, the Earth would be a black hole 9 mm across, about the size of a marble. The Sun would be 5.9 km across.</Aside>
 
 ## The Schwarzschild metric
+
+<Tiers>
+<Fragment slot="l1">
+Einstein replaced Newton's force of gravity with *geometry*. Mass bends space and time, and objects that feel no force simply follow the straightest paths through that bent spacetime. Around a single ball of mass the bending was worked out in 1915 by Karl Schwarzschild. His answer says three things in plain words:
+
+- **Clocks run slow deep down.** A clock close to the hole ticks slower than one far away. At twice the Schwarzschild radius it runs at 71% of the far-away rate; at the horizon it would appear to stop altogether.
+- **Space is stretched.** Walking from one circle around the hole to the next takes more steps than their circumferences would suggest, like the steep inside of a funnel.
+- **The horizon is a one-way door.** A traveller falling in feels nothing special when crossing it. But once inside, every possible future leads inward, as unavoidably as tomorrow follows today.
+</Fragment>
+<Fragment slot="l2">
+Einstein replaced Newton's force of gravity with geometry: mass curves space and time, and free objects follow the straightest possible paths. Outside a non-rotating mass the answer, found by Karl Schwarzschild in 1915, boils down to one number at each radius $r$:
+
+$$
+\sqrt{1-\frac{r_s}{r}} .
+$$
+
+- **Clocks:** a clock hovering at radius $r$ ticks at $\sqrt{1-r_s/r}$ times the rate of a far-away clock. At $r = 2r_s$ that is $\sqrt{0.5}=0.71$.
+- **Rulers:** the true distance between two nearby circles is *larger* than the difference of their radii, by $1/\sqrt{1-r_s/r}$. Space is stretched like a funnel.
+- **Far away** ($r \gg r_s$) the factor is 1, and ordinary flat space returns.
+
+At $r = r_s$ the clock factor is zero: the **event horizon**. Someone falling in crosses it without noticing anything local, but nothing inside can ever come back out. Every path inside leads to the centre.
+</Fragment>
+<Fragment slot="l3">
 
 Newtonian gravity is a force. General relativity replaces it with geometry. Spacetime is curved, freely falling bodies follow the straightest possible paths (**geodesics**), and the curvature is set by the mass-energy present through Einstein's field equations. We won't solve those here. We only need their answer for the simplest case.
 
@@ -64,9 +115,19 @@ Read it term by term, as you would read a piece of code:
 
 At $r = r_s$ the $dt^2$ coefficient vanishes and the $dr^2$ coefficient blows up. This is a *coordinate* singularity. A falling observer passes through it in finite proper time and notices nothing locally special there. (Curvature invariants such as the Kretschmann scalar $\propto r_s^2/r^6$ are finite at the horizon.) It is still a real boundary: inside, $r$ becomes a timelike coordinate. Decreasing $r$ is then as unavoidable as tomorrow, and every future-directed path ends at $r = 0$, where the curvature really is infinite.
 
+</Fragment>
+</Tiers>
+
+
 <Aside>**Coordinates can lie.** In Eddington–Finkelstein or Kruskal coordinates the horizon is a perfectly smooth null surface. The $1/(1 - r_s/r)$ blow-up is an artefact of using clocks at infinity to label events near the hole, much as longitude is undefined at the North Pole.</Aside>
 
 ### Clocks and colours near the hole
+
+<Tiers>
+<Fragment slot="l1">
+Slow clocks deep down have a colour. Light is a clock too: every wave crest is a tick. Light sent up from near the hole arrives with its ticks spread out, so it is shifted to longer, redder wavelengths. This **gravitational redshift** has been measured on Earth over a height of just 22 metres, and GPS satellites have to correct for it every day. Near a black hole it becomes enormous. Light from the horizon itself would be stretched infinitely, which is one way to see why a horizon is black.
+</Fragment>
+<Fragment slot="l2">
 
 The clock-rate factor has a direct observable consequence. Suppose an atom hovering at radius $r$ emits light at frequency $\nu_\text{em}$. The wave crests are emitted at a fixed rate of the local proper time, but they are counted by a distant observer in coordinate time $t$. The spacetime is static, so it takes each crest the same coordinate time to climb out. The distant observer therefore receives
 
@@ -75,6 +136,9 @@ $$
 $$
 
 At the surface of the Sun, $r_s/r = 4\times10^{-6}$, so $z = 2\times10^{-6}$. This shift was measured in the solar spectrum and in the lab (Pound and Rebka, 1959). GPS satellites correct for the Earth's version of it, about +45 μs per day. Near a black hole the effect becomes enormous.
+
+</Fragment>
+</Tiers>
 
 A clock hovering at <Var name="rr" value={1.5} min={1.0001} max={100} log digits={4} /> $r_s$ runs at <Out name="rate" /> of the rate of a distant clock. One hour there is <Out name="hours" /> far away. The redshift is $z =$ <Out name="zz" />, so hydrogen's red H-alpha line (656.3 nm) arrives at <Out name="lam" />. Drag $r$ towards 1: the redshift diverges, which is why a horizon is black.
 
@@ -85,6 +149,24 @@ A clock hovering at <Var name="rr" value={1.5} min={1.0001} max={100} log digits
 <Aside>**Miller's planet.** In *Interstellar*, one hour on a planet near Gargantua equals 7 years on Earth, a factor of 61,000. A non-rotating hole cannot give that on any stable orbit: at the ISCO the circular-orbit factor is only $1/\sqrt{1-1/2} = 1.41$. Kip Thorne needed a black hole spinning within $10^{-14}$ of the maximum to make it work.</Aside>
 
 ## Geodesics: orbits in curved spacetime
+
+<Tiers>
+<Fragment slot="l1">
+In [Chapter 2](/ch/orbits/) we pictured an orbit as a marble rolling in a bowl. The bowl's slope is gravity pulling in; its steep rim near the centre is the **centrifugal barrier**. Anything circling sideways is flung outward and bounces off that rim, so in Newton's gravity a planet with sideways motion can never fall straight in.
+
+Einstein's gravity changes the bowl in one way: it adds an extra pull that grows very fast close in. So the rim has a **top**. Come in with too much energy, or too little sideways motion, and you go over it and fall into the hole. No amount of sideways speed can save you if you get too close.
+</Fragment>
+<Fragment slot="l2">
+Two quantities are conserved for anything moving freely around the hole, just as in [Chapter 2](/ch/orbits/): its **energy** and its **angular momentum** $L$ (per unit mass, $L = r\,v_\perp$ for sideways speed $v_\perp$). Working through the Schwarzschild geometry (the calculus is in the engineering version), the radial motion obeys exactly the Newtonian energy equation with one extra term:
+
+<KeyEq title="Effective potential near a black hole">
+$$
+V_\text{eff}(r) = -\frac{GM}{r} + \frac{L^2}{2r^2} - \frac{\htmlData{term=gr}{GML^2}}{\htmlData{term=gr}{c^2r^3}}
+$$
+<Fragment slot="where">$\tfrac12 v_r^2 + V_\text{eff}(r)$ is constant, where $v_r$ is the radial speed. The first two terms are Newton's gravity and the centrifugal barrier from Chapter 2. The <span data-term="gr">last term</span> is Einstein's correction. It is tiny far away but grows like $1/r^3$, faster than the barrier's $1/r^2$.</Fragment>
+</KeyEq>
+</Fragment>
+<Fragment slot="l3">
 
 How do things move in this geometry? A free particle extremises its proper time. The equations of motion follow from the Euler–Lagrange equations, but the metric's symmetries let us skip nearly all of that algebra. The same thing happened in [Chapter 2](/ch/orbits/): **each symmetry gives a conserved quantity**.
 
@@ -108,7 +190,14 @@ $$
 
 This is the Chapter 2 picture again, with one addition. The radial motion is a ball rolling in a one-dimensional potential. The new term is small at large $r$, but it falls off as $1/r^3$, faster than the centrifugal barrier's $1/r^2$. So at small $r$ it always wins: **the centrifugal barrier has a top**, and past it the particle falls in, however much angular momentum it has. In Newtonian gravity, a particle with any $L \neq 0$ bounces off the barrier. Here, the barrier has a finite height.
 
+</Fragment>
+</Tiers>
+
 ### Circular orbits and the ISCO
+
+Circular orbits sit where the curve is flat: at the bottom of a valley (stable) or the top of a hill (unstable). For a lot of angular momentum there are two: the familiar Newtonian one far out, and a new, unstable one close in, at about $1.5\,r_s$. As $L$ drops, the valley and the hill move together, and at a critical value they merge and vanish. That happens at $3\,r_s$. **Inside three Schwarzschild radii there is no stable circular orbit.** Try it in the figure below.
+
+<Level min={3} title="Finding the circular orbits">
 
 Circular orbits sit where $dV_\text{eff}/dr = 0$. Differentiate and multiply by $r^4/GM$:
 
@@ -117,6 +206,8 @@ r^2 - \frac{L^2}{GM}\,r + \frac{3L^2}{c^2} = 0 \quad\Longrightarrow\quad r_\pm =
 $$
 
 For large $L$ there are two roots. $r_+ \approx L^2/GM$ is the Newtonian stable orbit at the bottom of the well. $r_-\approx 3GM/c^2$ is a new, *unstable* circular orbit on top of the barrier. As $L$ decreases, the two approach each other. They merge when the square root vanishes, at $L^2 = 12\,G^2M^2/c^2$, where $r = 6GM/c^2 = 3r_s$. Below that, there are no circular orbits at all.
+
+</Level>
 
 <KeyEq title="The innermost stable circular orbit (ISCO)">
 $$
@@ -132,6 +223,29 @@ The new term also makes bound orbits precess. The period of radial oscillation n
 </Sim>
 
 ### Light: the photon sphere and the shadow
+
+<Tiers>
+<Fragment slot="l1">
+Light feels the pull too. Far away it is bent only slightly. At **1.5 Schwarzschild radii** gravity is strong enough to bend light into a full circle: the **photon sphere**. A photon there could orbit forever, but the orbit is as unstable as a pencil balanced on its tip.
+
+A ray aimed a bit closer than about **2.6 Schwarzschild radii** from the centre is swallowed. Turn that around: looking at a black hole, every direction within that distance shows nothing but darkness. The hole casts a **shadow** about 2.6 times the size of its horizon. Rays that just miss whirl around the photon sphere a few times before escaping and form a thin, bright **photon ring** at the shadow's edge.
+</Fragment>
+<Fragment slot="l2">
+For light the same bookkeeping works, with one change: what matters is the **impact parameter** $b$, the distance by which the ray would miss the centre if it went straight. Light can circle the hole at
+
+$$
+r_\text{ph} = \tfrac32\,r_s ,
+$$
+
+the **photon sphere**, an unstable orbit. Every ray with
+
+$$
+b < b_c = \frac{\sqrt{27}}{2}\,r_s \approx 2.60\,r_s
+$$
+
+is captured. So the hole casts a **shadow** of radius $2.6\,r_s$, bigger than the horizon because the hole lenses its own silhouette. Rays with $b$ just above $b_c$ wind around the photon sphere before escaping, making a thin bright **photon ring**.
+</Fragment>
+<Fragment slot="l3">
 
 For light, $ds^2 = 0$ replaces the $-c^2$ on the right-hand side with 0, and $\tau$ is replaced by an affine parameter $\lambda$. The same steps give
 
@@ -153,6 +267,11 @@ $$
 
 is captured. Run this backwards from a telescope. Every pixel whose backwards-traced ray has $b < b_c$ ends on the horizon, and no light can come from that direction. The black hole casts a **shadow** of radius $\sqrt{27}\,GM/c^2$. That is 2.6 times the horizon radius, magnified by the hole's own lensing. Rays with $b$ just above $b_c$ wind round the photon sphere several times before escaping. Each extra half-turn makes an exponentially thinner copy of the whole sky, stacked at the shadow's edge: the **photon ring**.
 
+</Fragment>
+</Tiers>
+
+<Level min={3} title="The orbit equation for light">
+
 The shape of a light ray also follows from $u = 1/r$ as a function of $\phi$, exactly as in Chapter 2. With $u' = du/d\phi$:
 
 $$
@@ -160,6 +279,8 @@ $$
 $$
 
 Without the right-hand side this is a straight line, $u = \sin\phi/b$. With it, a ray grazing the Sun is bent by $2r_s/b = 1.75''$. Eddington's 1919 eclipse expedition measured this deflection and made Einstein famous.
+
+</Level>
 
 <Predict question="A photon is fired past a black hole with an impact parameter only 0.01% larger than the critical value. What happens?" choices={['It is captured', 'It is deflected by a few degrees', 'It circles the hole several times, then escapes']} answer={2}>
 It escapes, but only after whirling round the photon sphere. Near the unstable circular orbit, the distance from it grows by a factor $e^{2\pi}\approx 535$ per revolution. A 0.01% offset ($10^{-4}$) takes about $\ln(10^4)/2\pi \approx 1.5$ turns to grow to order unity. Try it below with the **Photon whirl** preset, or fire a fan of photons and look at the rays nearest the shadow's edge.
@@ -180,6 +301,17 @@ Light from the far side of the disk, behind the hole, passes over the top and is
 <Sim name="black-holes-raytracer" minHeight={440} params={{ distance: '24', inclination: '82' }}>
 **A Schwarzschild ray tracer, one geodesic per pixel.** Drag to orbit the camera and scroll or pinch to zoom. The disk runs from the ISCO ($3r_s$) to $14r_s$. Its colour and brightness come from a blackbody at the local temperature, shifted by $g^4$. Look for the **arch** of the far side of the disk bent over the top, the thin **secondary image** hugging the shadow, and the **lopsided brightness**: the approaching side (left) is beamed and blueshifted. Turn off **Doppler beaming** and **Grav. redshift** to see the "true" disk, and turn off **Lensing** to see how different straight-line optics would look. **Grid sky** shows how the sky is remapped, and **Galaxy behind hole** makes an Einstein ring.
 </Sim>
+
+<Tiers>
+<Fragment slot="l1">
+The picture is built from four effects, and you can switch each one off:
+
+- **Lensing.** Light bends around the hole. That is why you see the far side of the disk arched over the top, and why stars near the shadow are smeared into arcs and rings.
+- **A hot disk.** Gas spiralling in heats up, hottest a little outside the innermost stable orbit, and glows like a blackbody: redder far out, whiter close in.
+- **Doppler beaming.** The inner disk orbits at about half the speed of light. Gas coming towards us looks bluer and *much* brighter than gas moving away, which is why one side of the ring outshines the other.
+- **Gravitational redshift.** Light climbing out of the well loses energy, dimming and reddening the innermost gas.
+</Fragment>
+<Fragment slot="l2">
 
 The picture is built up from four pieces of physics, and you can turn each one on and off.
 
@@ -202,6 +334,9 @@ g = \frac{\sqrt{1 - \tfrac32 r_s/r}}{1 - \Omega\,\ell/c^2},
 $$
 
 where $\ell$ is the photon's conserved angular momentum per unit energy about the disk's axis ($\ell\,c$ plays the role of $L/\mathcal E$). The numerator combines gravitational redshift with the moving clock's time dilation. The denominator is the ordinary first-order Doppler shift.
+
+</Fragment>
+</Tiers>
 
 <Hood title="a WebGPU geodesic ray tracer">
 The whole renderer is one full-screen fragment shader. Each pixel is independent, which makes this an embarrassingly parallel problem and a natural fit for a GPU. There are no meshes and no textures except a 256-entry blackbody colour look-up table.
@@ -249,6 +384,12 @@ for (var i = 0; i < maxSteps; i++) {
 
 ## Accretion: the most efficient engine in nature
 
+<Tiers>
+<Fragment slot="l1">
+A black hole does not shine, but gas falling into one does, and very efficiently. Gas can only spiral in slowly, orbit by orbit, rubbing against itself and glowing hot as it goes. By the time it reaches the innermost stable orbit and drops in, it has given off **about 6%** of its mass as energy (Einstein's $E = mc^2$). Nuclear fusion in the Sun manages only 0.7%. Around a fast-spinning hole the figure can reach about 30–40%. Pound for pound, falling into a black hole is the most powerful energy source in nature short of matter meeting antimatter. That is how quasars outshine whole galaxies.
+</Fragment>
+<Fragment slot="l2">
+
 A black hole does not shine, but gas falling into one does, very efficiently. Consider a parcel of gas that spirals inward through a thin disk, radiating its orbital energy as it goes. It reaches the ISCO with specific energy $\mathcal E_\text{ISCO}$ and then plunges, taking that energy across the horizon. What it radiated along the way is the **radiative efficiency**:
 
 $$
@@ -256,6 +397,9 @@ $$
 $$
 
 Hydrogen fusion into helium releases 0.7% of the rest mass ([Chapter 12](/ch/fusion/)). A non-rotating black hole is **eight times better** than the best nuclear fuel. A maximally spinning one (next section) has $\eta = 1 - 1/\sqrt3 = 42\%$. In practice, disks torque the hole up to about $a = 0.998$, where $\eta \approx 32\%$. This is why quasars are the most luminous steady objects in the universe, and why most of the energy released by baryons since the Big Bang came out of accretion onto black holes as well as from stars.
+
+</Fragment>
+</Tiers>
 
 <Fermi title="How fast does a quasar eat?">
 A bright quasar has $L \sim 10^{40}$ W, about $2.6\times10^{13}\,L_\odot$. With $\eta \approx 0.1$ and $L = \eta\dot Mc^2$:
@@ -269,9 +413,24 @@ Real accretion flows are messier than the thin disk in the simulation. At low ac
 
 <Aside>**Jets.** Magnetised gas around a spinning hole can tap its rotational energy directly (the Blandford–Znajek mechanism, 1977). The jets of M87 reach thousands of light-years and are powered at up to $\sim10^{37}$ W, with efficiencies that can exceed 100% of the accreted rest-mass energy because the energy comes from the hole's spin.</Aside>
 
+<Photo src="/img/black-holes/m87-jet.jpg" alt="The galaxy M87 as a fuzzy yellow glow with a thin blue jet shooting out to the upper right" credit="The Hubble Heritage Team (STScI/AURA) and NASA/ESA" license="CC BY 4.0" href="https://esahubble.org/images/opo0020a/" aspect="1280 / 1337">
+**A cosmic searchlight.** Hubble's view of the jet of electrons and magnetic field launched from right next to M87\*, the black hole in the EHT image at the top of this chapter. The jet is about 5,000 light-years long, and its blue colour is synchrotron light from electrons spiralling at nearly the speed of light. It is powered by the black hole's spin and the magnetised gas around it.
+</Photo>
+
 ## Spinning black holes
 
 Real black holes spin. Collapsing stars rotate, and accreted gas brings angular momentum. The spinning solution was found by Roy Kerr in 1963, 48 years after Schwarzschild's. It is described by the mass $M$ and a dimensionless spin $a = cJ/GM^2$ between 0 and 1. (Charge could be a third number, but astrophysical holes neutralise quickly.) That is all. The "no-hair" theorems say that a stationary black hole in GR is fully described by $M$, $J$ and $Q$. Every other detail of the collapsing star is radiated away.
+
+<Tiers>
+<Fragment slot="l1">
+Spin changes things in four ways:
+
+- **Space is dragged around.** Near a spinning hole, space itself swirls with it, like honey around a turning spoon.
+- **The ergosphere.** Close in, the swirl is so strong that nothing can stay still, even moving at the speed of light. Energy can be stolen from the hole's spin there, which is probably what powers the great jets.
+- **Orbits can go closer.** Gas orbiting with the spin can circle stably much closer in, and so radiates more of its energy before falling: up to 42% of its mass, in theory.
+- **The shadow is squashed** slightly on one side, but its size barely changes. That makes it a good scale for weighing the hole.
+</Fragment>
+<Fragment slot="l2">
 
 Rotation changes the picture qualitatively:
 
@@ -279,6 +438,9 @@ Rotation changes the picture qualitatively:
 - **The ergosphere.** Inside the surface $r_\text{E}(\theta) = \frac{GM}{c^2}\bigl(1 + \sqrt{1 - a^2\cos^2\theta}\bigr)$, dragging is so strong that nothing can stay still relative to distant stars, even moving at $c$ against the rotation. At the equator this surface is at $2GM/c^2$, outside the horizon at $r_+ = \frac{GM}{c^2}(1 + \sqrt{1-a^2})$. Particles in the ergosphere can have *negative* energy as seen from infinity. That makes it possible to extract rotational energy (the Penrose process), up to 29% of the mass for $a = 1$.
 - **A spin-dependent ISCO.** Prograde orbits are helped by the dragging. The ISCO moves in from $6GM/c^2$ ($a = 0$) to $GM/c^2$ ($a\to1$), deep in the well, where orbiting gas has lost 42% of its rest energy. Retrograde orbits are pushed out to $9GM/c^2$. X-ray astronomers measure spins by fitting the inner edge of the disk: its thermal spectrum, and the relativistically smeared iron Kα line at 6.4 keV. Many X-ray binaries and AGN come out with $a \gtrsim 0.9$.
 - **A squashed, shifted shadow.** Seen from the equator, the shadow of a rapidly spinning hole is flattened on one side and displaced by up to $2GM/c^2$. Its size changes by only about 4% across all spins, which is why the EHT ring measures mass so robustly.
+
+</Fragment>
+</Tiers>
 
 ## The evidence
 
@@ -290,6 +452,10 @@ Black holes are no longer theoretical. Four independent lines of evidence now ea
 
 **Images of the shadow.** The Event Horizon Telescope (EHT) links radio dishes from Greenland to the South Pole into an Earth-sized interferometer at 1.3 mm wavelength. Its resolution is about 20 microarcseconds, enough to read a newspaper in New York from Paris. In 2019 it published M87\*, a ring $42\pm3$ μas across. For a $6.5\times10^9$ M☉ hole at 16.8 Mpc, the shadow diameter $2\sqrt{27}\,GM/c^2$ subtends 40 μas. In 2022 came Sgr A\*, with a $51.8\pm2.3$ μas ring against a predicted 53 μas from the S2 mass. These two holes differ in mass by a factor of 1,500, and both rings match the GR shadow size to within about 10%. Later EHT campaigns have mapped the magnetic field polarisation around both holes and followed M87\*'s ring from year to year. The brighter side of the ring moves around, as expected for turbulent accretion around a steady shadow.
 
+<Photo src="/img/black-holes/sgra-eht.jpg" alt="A glowing orange ring with three brighter knots around a dark centre: the black hole at the centre of the Milky Way" credit="EHT Collaboration" license="CC BY 4.0" href="https://www.eso.org/public/images/eso2208-eht-mwa/" aspect="1 / 1">
+**Our own black hole.** Sagittarius A\*, 4.3 million solar masses at the centre of the Milky Way, imaged by the Event Horizon Telescope (released 2022). It is 1,500 times lighter than M87\*, but also 2,000 times closer, so its ring looks about the same size: 52 microarcseconds, as predicted from the orbit of the star S2. The bright knots are an average over many images; gas here swirls around in minutes.
+</Photo>
+
 **X-ray binaries.** Cygnus X-1, the first black-hole candidate (1971), is a hot X-ray source in a 5.6-day orbit with a blue supergiant 2.2 kpc away. The companion's radial-velocity curve ([Chapter 10](/ch/exoplanets/) uses the same technique for planets) together with a VLBI parallax distance gives a compact object of $21\pm2$ M☉. That is nearly ten times the maximum neutron-star mass. About twenty such "dynamically confirmed" stellar black holes are known, and Gaia DR3 has found some dormant ones. Gaia BH3 (2024), with 33 M☉, is the heaviest stellar black hole known in the Galaxy.
 
 **Gravitational waves.** On 14 September 2015, LIGO heard two black holes of 36 and 29 M☉ merge 1.3 billion light-years away. The signal rose in frequency and amplitude over a fraction of a second, which is the chirp of [Chapter 20](/ch/gravitational-waves/), and then rang down at the frequency of the final 62 M☉ Kerr hole. About $3\,\text{M}_\odot c^2$ was radiated in 0.2 s, briefly outshining all the stars in the observable universe combined. By the end of the fourth observing run (O4, 2023–2025), LIGO–Virgo–KAGRA had around 300 merger candidates. They include GW231123, with a total mass of about 225 M☉ and both holes spinning near the Kerr limit. There is also the exceptionally loud GW250114, whose ringdown tests the no-hair theorem and confirms Hawking's area theorem: the horizon area grew in the merger, as it must.
@@ -299,6 +465,10 @@ Black holes are no longer theoretical. Four independent lines of evidence now ea
 ## Not quite black: Hawking radiation
 
 In 1974 Stephen Hawking combined quantum field theory with the Schwarzschild geometry and found that black holes are not quite black. A horizon emits thermal radiation at a temperature set by its **surface gravity** $\kappa = c^4/4GM$. That is the acceleration needed to hover just outside, redshifted to infinity.
+
+<Level max={1}>
+In plain words: quantum physics makes the horizon glow very faintly, as if it had a temperature. The bigger the hole, the colder it is. A black hole the mass of the Sun would be 60 billionths of a degree above absolute zero, far too cold to see and colder than the afterglow of the Big Bang. Only tiny black holes, the mass of a mountain, would be hot enough to glow brightly and eventually evaporate.
+</Level>
 
 <KeyEq title="Hawking temperature">
 $$

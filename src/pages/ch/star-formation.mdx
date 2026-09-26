@@ -12,6 +12,9 @@ import Predict from '../../components/Predict.astro';
 import C from '../../components/C.astro';
 import Var from '../../components/Var.astro';
 import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Photo from '../../components/Photo.astro';
 
 ## Where stars are born
 
@@ -23,7 +26,19 @@ A typical *giant molecular cloud* (GMC) in the Milky Way has a mass of $10^4$–
 
 Inside clouds, the gas is far from uniform. Maps from *Herschel* showed that nearly every cloud is threaded with **filaments**, a remarkably uniform ~0.1 pc wide, and that the dense **cores** where individual stars form (0.05–0.1 pc, $10^4$–$10^5$ cm⁻³, about 1 M☉) sit like beads along those filaments. Cores are the immediate parents of stars. Our job is to understand the chain: cloud → filament → core → protostar → star.
 
+<Photo src="/img/star-formation/pillars-webb.jpg" alt="Tall, dusty, orange-brown columns of gas rising from the bottom of the frame against a glowing blue background, with red dots at their tips" credit="NASA, ESA, CSA, STScI; J. DePasquale, A. Koekemoer, A. Pagan (STScI)" license="CC BY 4.0" href="https://esawebb.org/images/weic2216a/" size="wide" aspect="1 / 1">
+**The Pillars of Creation in near-infrared light.** JWST's 2022 NIRCam view of these columns of cold gas and dust in the Eagle Nebula (M16), about 2,000 pc away; the tallest pillar is roughly 1.5 pc long. Ultraviolet light from nearby massive stars is eroding them. The bright red dots near the pillar edges are newborn stars, only a few hundred thousand years old, still embedded in the gas they formed from, some with jets.
+</Photo>
+
 ### The virial theorem for a cloud
+
+<Tiers>
+<Fragment slot="l1">
+
+The first question for any cloud is whether it can hold itself up. There is a simple energy test, the **virial theorem**. Compare the energy of the cloud's internal motions (the random jiggling of its molecules plus its swirling bulk flows) with the energy that binds it together by gravity. If gravity's grip is much stronger, the cloud collapses; if the motions are much stronger, the cloud flies apart; if they are about even, it hangs in balance. Real giant molecular clouds turn out to sit near that balance, which is itself a puzzle we will return to.
+
+</Fragment>
+<Fragment slot="l2">
 
 The first question for any self-gravitating blob is whether it can hold itself up. The virial theorem (derived for stars in [Chapter 11](/ch/stellar-structure/)) answers it on average. For a cloud in a steady state,
 
@@ -39,9 +54,22 @@ $$
 
 with $\sigma$ the one-dimensional velocity dispersion. $\alpha_\text{vir} \approx 1$ means balance, $\alpha_\text{vir} \ll 1$ means collapse and $\alpha_\text{vir} \gg 1$ means the cloud flies apart (or is held in by outside pressure). Real GMCs cluster around $\alpha_\text{vir}\sim 1$–$2$, which is itself a puzzle we will return to: clouds seem to live near the edge.
 
+</Fragment>
+</Tiers>
+
 ## The Jeans criterion
 
 ### Pressure against gravity
+
+<Tiers>
+<Fragment slot="l1">
+
+Think of a cloud as a crowd of molecules in a tug of war. **Gravity pulls everything together**, and the more mass there is, the harder it pulls. **Heat pushes outward**: warm molecules zip around and resist being squeezed, just like the air in a bicycle pump. For a small blob, heat always wins and the blob puffs back out. But gravity grows faster with size than heat does, so above a certain size, and a certain mass, gravity wins and collapse is unstoppable.
+
+That critical mass is the **Jeans mass**, after James Jeans who worked it out in 1902. It goes up in hot gas (more push) and down in dense gas (more pull, and the collapse happens faster than sound can carry the pushback). In a cold, dense core at 10 K it is about the mass of the Sun, and in warm interstellar gas it is tens of millions of Suns.
+
+</Fragment>
+<Fragment slot="l2">
 
 Take a uniform, isothermal gas of density $\rho$ and temperature $T$ and imagine squeezing a sphere of radius $R$ inside it. Two energies compete. The thermal energy is $K \approx \tfrac32 N k_BT = \tfrac32 M c_s^2$, where $c_s = \sqrt{k_BT/\mu m_H}$ is the isothermal sound speed and $\mu \approx 2.33$ is the mean mass per particle in molecular gas (in units of the hydrogen mass). The gravitational energy is $|U| = \tfrac35 GM^2/R$. Collapse wins if $2K < |U|$:
 
@@ -51,9 +79,18 @@ $$
 
 Now substitute $M = \tfrac43\pi R^3\rho$. Gravity grows as $R^5$ while thermal energy grows only as $R^3$, so there is a critical size above which gravity always wins. Solving for $R$ gives a length of order $c_s/\sqrt{G\rho}$.
 
+</Fragment>
+</Tiers>
+
+<Level min={3} title="Jeans's dispersion relation">
+
 James Jeans got the same answer in 1902 from a more careful calculation: perturb a uniform medium with a sound wave $\propto e^{i(kx-\omega t)}$, linearise the fluid equations plus Poisson's equation, and you get the dispersion relation $\omega^2 = c_s^2 k^2 - 4\pi G\rho$. Short waves ($k$ large) oscillate as ordinary sound. Long waves have $\omega^2 < 0$: the "sound wave" grows exponentially instead of oscillating. The dividing line is $k_J^2 = 4\pi G\rho/c_s^2$.
 
 <Aside>**The Jeans swindle.** A static, infinite, uniform medium cannot actually be in equilibrium under gravity: Poisson's equation says $\nabla^2\Phi = 4\pi G\rho \ne 0$. Jeans simply ignored the background potential. The swindle works (it can be justified in an expanding universe, and for finite clouds the order of magnitude is right), which is why everyone still uses it.</Aside>
+
+</Level>
+
+<Level min={2}>
 
 <KeyEq title="Jeans length and Jeans mass">
 $$
@@ -62,6 +99,8 @@ $$
 $$
 <Fragment slot="where"><span data-term="lj">$\lambda_J$</span> is the wavelength above which perturbations grow; <span data-term="mj">$M_J$</span> is the mass inside a sphere of diameter $\lambda_J$. <span data-term="cs">$c_s=\sqrt{k_BT/\mu m_H}$</span> is the isothermal sound speed and <span data-term="rho">$\rho$</span> the mass density. Hot gas resists collapse; dense gas succumbs. Numerical prefactors differ between textbooks by factors of ~2 depending on whether one uses radius or diameter.</Fragment>
 </KeyEq>
+
+</Level>
 
 Try it. Gas at a number density of <Var name="jn" value={10000} min={0.01} max={1e12} log /> cm⁻³ and a temperature of <Var name="jT" value={10} min={3} max={30000} log /> K has a sound speed of <Out name="jCs" />, a Jeans length of <Out name="jLam" />, a Jeans mass of <Out name="jMJ" /> and a free-fall time of <Out name="jTff" />.
 
@@ -73,6 +112,14 @@ The defaults describe a dense core, and the Jeans mass comes out at a couple of 
 
 ### Free fall
 
+<Tiers>
+<Fragment slot="l1">
+
+If pressure loses completely, how fast does the cloud fall in? The answer, the **free-fall time**, depends only on the cloud's density: denser clouds collapse faster. It does not depend on the size of the cloud at all. For a typical molecular cloud it is about 3 million years, and for a dense core about 300,000 years. That is quick by astronomical standards, which turns out to be a puzzle (see the estimate below).
+
+</Fragment>
+<Fragment slot="l2">
+
 If pressure loses entirely, how long does collapse take? Consider a uniform, pressureless sphere at rest. Each shell falls as if all the mass inside it were a point mass, so it follows a degenerate Kepler orbit (eccentricity 1) with semi-major axis $R/2$. The time to reach the centre is half that orbit's period, $\tfrac12 \cdot 2\pi\sqrt{(R/2)^3/GM}$. Substituting $M = \tfrac43\pi R^3\rho$, the $R$ cancels:
 
 <KeyEq title="Free-fall time">
@@ -81,6 +128,9 @@ t_\text{ff} = \sqrt{\frac{3\pi}{32\,G\,\rho}}
 $$
 <Fragment slot="where">$\rho$ is the initial mean density. The free-fall time depends *only* on density, so every shell of a uniform sphere arrives at the centre at the same instant ("homologous collapse"). For $n = 100$ cm⁻³ it is about 3.4 Myr; for a dense core at $10^4$ cm⁻³, about 0.34 Myr.</Fragment>
 </KeyEq>
+
+</Fragment>
+</Tiers>
 
 Real clouds are centrally concentrated, so the inner parts, being denser, collapse first: collapse proceeds **inside-out**. In the singular isothermal sphere model of Frank Shu (1977), a collapse wave moves outward at the sound speed and the protostar accretes at a constant rate $\dot M \approx c_s^3/G \approx 2\times10^{-6}$ M☉ yr⁻¹ at 10 K. That makes a Sun-mass star in half a million years, in line with the observed statistics of protostars.
 
@@ -106,6 +156,14 @@ Unsupported turbulence decays in about one crossing time, which is comparable to
 
 ### Magnetic fields and the mass-to-flux ratio
 
+<Tiers>
+<Fragment slot="l1">
+
+Clouds are also threaded by weak magnetic fields, about a millionth the strength of a fridge magnet but spread over parsecs. The gas is slightly electrically charged, so it and the field are stuck together: squeeze the gas and you squeeze the field, which pushes back like a spring. The contest is decided by **how much mass hangs on each field line**. If there is too little, the field can hold the cloud up forever; if there is enough, gravity wins. Most dense cores observed turn out to be about twice over the line: magnetic fields slow collapse but do not stop it.
+
+</Fragment>
+<Fragment slot="l2">
+
 Clouds are threaded by magnetic fields of 10–100 μG, measured through the Zeeman splitting of OH and CN lines and the polarisation of dust emission. Because the gas is slightly ionised, the field is frozen into it: squeezing the cloud squeezes the field lines too, and magnetic pressure $B^2/2\mu_0$ pushes back. Magnetic energy scales like $B^2R^3$, and with the flux $\Phi = \pi R^2 B$ conserved that is $\propto \Phi^2/R$, *exactly the same* $R$-dependence as gravity. So magnetic support does not care how compressed the cloud is. Either the field can hold the cloud or it can't, and the deciding quantity is the **mass-to-flux ratio**:
 
 $$
@@ -113,6 +171,9 @@ $$
 $$
 
 Clouds with $M/\Phi$ below the critical value are *subcritical* and can never collapse as long as flux is frozen. Observations (Crutcher 2012) find most cores are mildly *supercritical*, by a factor of ~2.
+
+</Fragment>
+</Tiers>
 
 ### Ambipolar diffusion
 
@@ -126,7 +187,18 @@ As a cloud collapses isothermally, its density rises while $T$ stays at ~10 K, b
 
 ### The opacity limit
 
+<Tiers>
+<Fragment slot="l1">
+
+Fragmentation cannot go on for ever. As a fragment gets denser it eventually becomes **opaque to its own heat radiation**, like a room with the windows shut. Heat is trapped, the gas warms up, pressure rises and the fragment stops splitting. Where that happens sets the smallest mass a star-like object can be born with: about **one hundredth of a solar mass**, roughly ten Jupiters. Remarkably, this number barely depends on the conditions in the cloud.
+
+</Fragment>
+<Fragment slot="l2">
+
 Fragmentation stops when the gas can no longer cool. At densities around $10^{-13}$ g cm⁻³ ($\sim 3\times10^{10}$ cm⁻³) the collapsing fragment becomes opaque to its own infrared radiation. Heat is trapped, the gas turns adiabatic, $T$ rises as $\rho^{\gamma-1}$ with $\gamma\approx 5/3$, and $M_J \propto T^{3/2}\rho^{-1/2}\propto\rho^{1/2}$ starts to *grow*. The minimum fragment mass is set where these two regimes meet. Low (1976) and Rees (1976) estimated it by balancing the compressional heating rate $\sim GM^2/(R t_\text{ff})$ against the maximum rate a blackbody can radiate, $4\pi R^2\sigma T^4$. The result is remarkably insensitive to conditions: **about 0.007–0.01 M☉**, roughly 10 Jupiter masses. It is the floor of the stellar (and brown-dwarf) mass function, and it predicts that "free-floating planetary-mass objects" should exist, which JWST now finds by the dozen in young clusters.
+
+</Fragment>
+</Tiers>
 
 <Aside>**JuMBOs.** In 2023 JWST reported "Jupiter-mass binary objects" in the Orion Nebula Cluster, pairs of ~1 M_Jup objects with no star. If confirmed (follow-up has questioned many of them as background sources), they sit awkwardly below the opacity limit and may have been ejected from disks instead.</Aside>
 
@@ -181,6 +253,14 @@ fn pressure(rho: f32) -> f32 { return rho * P.cs2 * (1.0 + pow(rho / P.rhoCrit, 
 
 When a cloud has finished fragmenting, what masses do its stars have? Remarkably, the answer seems to be nearly the same everywhere we look, from the solar neighbourhood to young clusters to the Galactic centre: the **initial mass function** (IMF), $\xi(M) = dN/dM$.
 
+<Tiers>
+<Fragment slot="l1">
+
+Count the stars in a newborn cluster by mass and a pattern appears that looks almost the same everywhere. **Most stars are small**: for every star ten times the Sun's mass there are a couple of hundred Sun-like stars and many more red dwarfs. The most common star is a red dwarf of a few tenths of a solar mass. Heavy stars are rare, but because each is so massive and so bright they matter enormously. Astronomers call this distribution the **initial mass function**, and above about one solar mass the number of stars falls roughly as mass to the power −2.35 (Salpeter's law): each time you double the mass, you find about five times fewer stars.
+
+</Fragment>
+<Fragment slot="l2">
+
 Edwin Salpeter (1955) found that above about 1 M☉ it is a power law,
 
 $$
@@ -188,6 +268,9 @@ $$
 $$
 
 With $\alpha = 2.35$ there are about 200 times fewer 10 M☉ stars than 1 M☉ stars. Below ~0.5 M☉ the IMF flattens. **Kroupa** (2001) described it as a broken power law ($\alpha = 1.3$ from 0.08 to 0.5 M☉, $\alpha = 2.3$ above), and **Chabrier** (2003) as a lognormal peaking near 0.2 M☉ joined to a Salpeter tail. The two agree within their uncertainties. Plotted per logarithmic mass interval, the IMF is a broad hump peaking at a few tenths of a solar mass: the typical star is a red dwarf.
+
+</Fragment>
+</Tiers>
 
 <Sim name="star-formation-imf" size="wide" minHeight={400}>
 **Drawing a cluster from the IMF.** Each bar counts sampled stars per dex of mass; lines are the analytic Kroupa, Salpeter and Chabrier forms. **Try:** draw 1,000 stars several times and watch the most massive one jump around (with only a few O stars expected, stochastic sampling matters hugely for small clusters). Then tick **Weight by mass**: the peak moves up, showing where the mass sits. Stars below 1 M☉ are over 90% of the objects but only about half of the mass; stars above 8 M☉, a quarter of a percent by number, hold ~15% of it and do nearly all the feedback.
@@ -222,7 +305,19 @@ Observers classify young stellar objects by their infrared spectra: **Class 0** 
 
 <Aside>**Pictures.** ALMA's 2014 image of **HL Tau** showed a disk around a ~1 Myr old star already carved into concentric rings and gaps, likely by forming planets, the story of [Chapter 8](/ch/planet-formation/). JWST's images of HH 211 and HH 212 resolve jets down to individual shock knots, and the 2022 NIRCam view of the **Pillars of Creation** in M16 shows red, jet-launching protostars emerging from the pillar tips.</Aside>
 
+<Photo src="/img/star-formation/hl-tau-alma.jpg" alt="A face-on disk of orange dust around the young star HL Tauri, cut by a series of concentric dark rings" credit="ALMA (ESO/NAOJ/NRAO)" license="CC BY 4.0" href="https://www.eso.org/public/images/eso1436a/" size="text" aspect="1 / 1">
+**HL Tauri's disk, seen by ALMA.** Millimetre-wave light from dust in the disk around a star less than about a million years old, 140 pc away in Taurus. The disk is roughly 200 AU across, about three times the diameter of Neptune's orbit. The dark gaps are probably being cleared by planets that are already forming, the story of Chapter 8.
+</Photo>
+
 ### Pre-main-sequence contraction
+
+<Tiers>
+<Fragment slot="l1">
+
+When accretion ends, the young star is still bigger than it will be as an adult, and it shines not by fusion but by **slowly shrinking**. Squeezing a ball of gas under its own weight releases energy, roughly half of which heats the inside and half of which escapes as light. How long can a star live on this? Roughly: its gravitational energy divided by how fast it shines it away, the **Kelvin–Helmholtz time**. For a Sun-like star it is tens of millions of years. Big stars are both more tightly bound and far more luminous, so they get through this phase much faster.
+
+</Fragment>
+<Fragment slot="l2">
 
 Once accretion ends, the young star is still larger than its main-sequence self and shines by **contraction**, releasing gravitational energy. The virial theorem says half of the released energy is radiated and half heats the interior. The timescale is the **Kelvin–Helmholtz time**
 
@@ -230,9 +325,23 @@ $$
 t_\text{KH} \approx \frac{GM^2}{RL}.
 $$
 
+</Fragment>
+</Tiers>
+
 A star of <Var name="khM" value={1} min={0.1} max={30} log /> M☉, radius <Var name="khR" value={2} min={0.2} max={50} log /> R☉ and luminosity <Var name="khL" value={2} min={0.001} max={100000} log /> L☉ has $t_\text{KH}\approx$ <Out name="tKH" />. For the Sun today it would be ~30 Myr, the number that in the 19th century contradicted geologists and Darwin until nuclear energy was discovered ([Chapter 12](/ch/fusion/)).
 
+<Tiers>
+<Fragment slot="l1">
+
+How does a newborn star look as it shrinks? At first it is cool, big and churning like boiling water all the way through (convection). Such stars cannot get cooler than about 3,000–4,500 K at their surface, so as they shrink their surface temperature stays roughly fixed and they simply get **dimmer**: on the HR diagram they slide straight down, along what is called the **Hayashi track**. Later, heavier stars develop a calm core, their surface heats up at roughly constant brightness, and they slide sideways to the left along the **Henyey track**. When the centre reaches about 10 million K, hydrogen fusion switches on, shrinking stops, and the star has arrived on the **main sequence** ([Chapter 14](/ch/main-sequence/)).
+
+</Fragment>
+<Fragment slot="l2">
+
 The path a contracting star takes on the Hertzsprung–Russell diagram depends on how it transports energy ([Chapter 13](/ch/energy-transport/)). A young, cool, opaque star is **fully convective**. Hayashi (1961) showed that fully convective stars cannot be cooler than a limiting temperature of about 3,000–4,500 K, set by the steep temperature-sensitivity of H⁻ opacity in their photospheres. So they contract at nearly *constant temperature*: $L = 4\pi R^2\sigma T^4$ falls as $R^2$, and they move almost vertically down the **Hayashi track**. As the interior heats, opacity drops, a radiative core grows, and stars above ~0.5 M☉ turn left along the **Henyey track**: nearly constant luminosity, rising temperature. Contraction stops when the core reaches ~10⁷ K and hydrogen fusion takes over: the star arrives on the **zero-age main sequence** (ZAMS, [Chapter 14](/ch/main-sequence/)).
+
+</Fragment>
+</Tiers>
 
 <Sim name="star-formation-pms" size="wide" minHeight={440}>
 **Growing up on the HR diagram.** Coloured lines are approximate pre-main-sequence tracks for six masses, from the birthline (dashed, where stars first become visible) to the ZAMS (thick line). Ages come from a Kelvin–Helmholtz integration along each track, so they are good only to a factor of a few (real models give ~40 Myr for 1 M☉). **Press Play** and watch the isochrone (dotted): massive stars sprint to the main sequence in well under a million years (often while still accreting), while a 0.1 M☉ star is still contracting after hundreds of millions. That is why young clusters show a main sequence at the top and a "pre-main sequence" of red, overluminous stars at the bottom.
@@ -246,6 +355,14 @@ The Fermi estimate showed star formation runs at ~1% per free-fall time; integra
 
 ### The Kennicutt–Schmidt law
 
+<Tiers>
+<Fragment slot="l1">
+
+Across whole galaxies there is a simple rule of thumb, found by Maarten Schmidt and Robert Kennicutt: **where there is more gas, stars form faster, and more than proportionally so**. Double the amount of gas packed into a patch of a galaxy and it forms stars about 2.6 times faster. Denser gas collapses faster, so it gets through its supply quicker. In ordinary spiral galaxies like ours, the molecular gas would all be used up in about two billion years if nothing replenished it. This rule is the bridge to galaxy formation in [Chapter 23](/ch/galaxy-formation/), where simulations too coarse to see individual clouds use it in place of everything we simulated above.
+
+</Fragment>
+<Fragment slot="l2">
+
 Averaged over galaxies, the star-formation rate per unit area tracks gas surface density:
 
 $$
@@ -254,9 +371,16 @@ $$
 
 Kennicutt (1998) measured this over five orders of magnitude, from spiral disks to starbursts. The exponent 1.4 has a natural reading: if stars form at a fixed efficiency per free-fall time, then $\dot\rho_\star \propto \rho/t_\text{ff}\propto\rho^{3/2}$. Resolved studies find that star formation tracks *molecular* gas almost linearly, with a depletion time $\Sigma_{H_2}/\Sigma_\text{SFR}\approx 2$ Gyr in normal spirals. This relation is the bridge from this chapter to galaxy formation in [Chapter 23](/ch/galaxy-formation/), where subgrid recipes like it stand in for everything we simulated above.
 
+</Fragment>
+</Tiers>
+
 ### What we see
 
 The **Orion Nebula**, 400 pc away, is the nearest site of massive star formation: the Trapezium's O stars have blown a blister in the Orion A cloud, and HST and JWST reveal hundreds of protoplanetary disks ("proplyds") being photo-evaporated by them. The **Taurus** cloud, by contrast, forms low-mass stars in isolation, with no O stars at all, and is where most T Tauri stars were first studied. JWST's infrared vision cuts through dust to show the embedded protostars in the Pillars of Creation, in the Cosmic Cliffs of NGC 3324 and in the ρ Ophiuchi cloud, while ALMA's millimetre resolution maps the disks and the infalling, rotating envelopes around Class 0 protostars down to a few AU.
+
+<Photo src="/img/star-formation/orion-hubble.jpg" alt="The Orion Nebula: glowing clouds of gas in red, green and blue around a bright central cavity, sprinkled with thousands of young stars" credit="NASA, ESA, M. Robberto (STScI/ESA) and the Hubble Space Telescope Orion Treasury Project Team" license="CC BY 4.0" href="https://esahubble.org/images/heic0601a/" size="wide" aspect="1 / 1">
+**The Orion Nebula, a star factory next door.** About 400 pc away and a few pc across, this Hubble mosaic shows the cavity that the Trapezium's hot O stars (near the centre) have blown into their parent cloud. Their ultraviolet light makes the gas glow and is eroding the cloud around them: feedback in action. Thousands of young, mostly low-mass stars are scattered through the image, just as the IMF predicts.
+</Photo>
 
 ## Where we go from here
 
