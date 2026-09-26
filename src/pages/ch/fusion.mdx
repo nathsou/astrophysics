@@ -12,8 +12,33 @@ import Predict from '../../components/Predict.astro';
 import C from '../../components/C.astro';
 import Var from '../../components/Var.astro';
 import Out from '../../components/Out.astro';
+import Tiers from '../../components/Tiers.astro';
+import Level from '../../components/Level.astro';
+import Photo from '../../components/Photo.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  Mstar: ['Stellar mass', 'Sets the gravitational binding energy available to radiate away while contracting, and (via the virial theorem) the core temperature that gravity settles on.'],
+  Rstar: ['Stellar radius', 'Appears in the denominator of the binding energy: a more compact star has released more energy getting to its current size.'],
+  Lstar: ['Luminosity', 'The rate the energy reservoir is being spent. A bigger L means a shorter timescale for any fixed reservoir.'],
+  dm: ['Mass defect', 'The mass "missing" from a bound system compared to its free constituents. It is not lost — it left as energy, via E=Δmc².'],
+  EG: ['Gamow energy', 'Sets the steepness of the tunnelling probability curve. Depends only on the charges and reduced mass of the colliding pair, not on temperature.'],
+  muterm: ['Reduced mass', 'The effective one-body mass of the colliding pair, μ = m₁m₂/(m₁+m₂). Heavier pairs tunnel less easily at the same energy.'],
+  Z1: ['Charge number of the first nucleus', 'Enters the Gamow energy squared: doubling either charge quadruples E_G and makes tunnelling much harder.'],
+  Z2: ['Charge number of the second nucleus', 'Same role as Z₁. It is the product Z₁Z₂ that matters, which is why heavy-on-heavy fusion is so much harder than hydrogen fusion.'],
+  alphaFS: ['Fine-structure constant', 'The dimensionless strength of the electromagnetic interaction, ≈ 1/137. It sets the overall scale of the Coulomb barrier relative to nuclear energies.'],
+  E0term: ['Gamow peak energy', 'The single energy that dominates the reaction rate: the sweet spot between "common" (low E, Maxwell–Boltzmann favoured) and "penetrating" (high E, tunnelling favoured).'],
+  Wterm: ['Gamow peak width', 'How spread out in energy the effective reaction window is. Narrow compared to E₀, which is what makes the Gaussian (saddle-point) approximation accurate.'],
+  Tterm: ['Temperature', 'Set by gravity via the virial theorem (Chapter 11), not chosen by the fusion physics. Everything in this chapter is downstream of whatever T gravity provides.'],
+}} />
 
 ## An accounting problem
+
+<Photo src="/img/fusion/sdo-spicules.jpg" alt="Towering orange jets of plasma, called spicules, rising from the Sun's surface as imaged by the Solar Dynamics Observatory" credit="NASA/SDO/AIA" license="Public domain" href="https://images.nasa.gov/details/GSFC_20171208_Archive_e001831" size="wide" aspect="3 / 2">
+**The Sun's restless surface.** Spicules — jets of plasma up to 32,000 miles high — sway with ripples in the magnetic field, carrying energy up from below. All of that energy, and the light that eventually reaches Earth, was made as gamma rays deep in the core by the reactions in this chapter, tens of thousands of years earlier (Chapter 13's photon random walk).
+</Photo>
 
 [Chapter 11](/ch/stellar-structure/) showed that a star in hydrostatic equilibrium is a ball of gas held up against its own gravity by pressure, and that the virial theorem ties its internal energy to its gravitational binding energy. That equilibrium is a *statement*, not an *explanation*: it says nothing about where the pressure's energy supply comes from, or how long it can last. The Sun radiates <C k="Lsun" /> — about the light output of four trillion trillion incandescent bulbs — and has apparently done so for at least 4.6 billion years, the age of the oldest meteorites. What is actually burning?
 
@@ -21,16 +46,39 @@ Three candidates, in the order 19th-century physicists reached for them:
 
 **Chemical energy.** Burning the Sun's mass as if it were coal releases about $3\times10^7\,\text{J/kg}$. At $L_\odot$, that fuel lasts $E/L_\odot \approx 5{,}000$ years. Written civilisation is older than that. Chemistry is not the answer.
 
-**Gravitational energy.** Contracting a gas cloud converts gravitational potential energy into heat and light. Kelvin and Helmholtz estimated the Sun's *thermal* timescale this way:
+**Gravitational energy.** Contracting a gas cloud converts gravitational potential energy into heat and light.
+
+<Tiers>
+<Fragment slot="l1">
+Kelvin and Helmholtz reasoned like this: as the Sun's own gravity slowly squeezes it smaller, the "falling" material heats up and radiates. How long could sunlight last purely from that slow squeeze, without any other energy source? Working it out gives about **thirty million years** — far too short. Geologists already knew the Earth was older, and this mismatch was a real, unsolved puzzle for decades.
+</Fragment>
+<Fragment slot="l2">
+Kelvin and Helmholtz estimated the Sun's *thermal* timescale — how long it could shine by slowly contracting — by comparing its luminosity to its gravitational binding energy:
 
 <KeyEq title="The Kelvin–Helmholtz timescale">
 $$
-t_{KH} \sim \frac{GM^2}{R L}
+t_{KH} \sim \frac{G\,\term{Mstar}{M}^2}{\term{Rstar}{R}\,\term{Lstar}{L}}
 $$
-<Fragment slot="where">$M$, $R$, $L$ are the star's mass, radius and luminosity. It is the time to radiate away an energy comparable to the star's gravitational binding energy $GM^2/R$, i.e. the free-fall/thermal-adjustment timescale from Chapter 11's virial argument.</Fragment>
+<Fragment slot="where"><span data-term="Mstar">M</span>, <span data-term="Rstar">R</span>, <span data-term="Lstar">L</span> are the star's mass, radius and luminosity. It is the time to radiate away an energy comparable to the star's gravitational binding energy $GM^2/R$.</Fragment>
 </KeyEq>
 
-For the Sun, $t_{KH} \approx 3\times10^7$ years — thirty million years, not billions. Kelvin used exactly this number, in 1862, to argue the Earth (and hence life on it) could be at most tens of millions of years old. Geologists and, later, Darwin's evolutionary timescale needed far longer. Something was missing, and it took the discovery of radioactivity (1896) and special relativity (1905) to supply it.
+For the Sun, $t_{KH} \approx 3\times10^7$ years — thirty million years, not billions.
+</Fragment>
+<Fragment slot="l3">
+Kelvin and Helmholtz estimated the Sun's *thermal* timescale this way:
+
+<KeyEq title="The Kelvin–Helmholtz timescale">
+$$
+t_{KH} \sim \frac{G\,\term{Mstar}{M}^2}{\term{Rstar}{R}\,\term{Lstar}{L}}
+$$
+<Fragment slot="where"><span data-term="Mstar">M</span>, <span data-term="Rstar">R</span>, <span data-term="Lstar">L</span> are the star's mass, radius and luminosity. It is the time to radiate away an energy comparable to the star's gravitational binding energy $GM^2/R$, i.e. the free-fall/thermal-adjustment timescale from Chapter 11's virial argument.</Fragment>
+</KeyEq>
+
+For the Sun, $t_{KH} \approx 3\times10^7$ years — thirty million years, not billions.
+</Fragment>
+</Tiers>
+
+Kelvin used exactly this number, in 1862, to argue the Earth (and hence life on it) could be at most tens of millions of years old. Geologists and, later, Darwin's evolutionary timescale needed far longer. Something was missing, and it took the discovery of radioactivity (1896) and special relativity (1905) to supply it.
 
 <Aside>**Kelvin's number was right — for the wrong star property.** $t_{KH}$ is exactly the timescale on which a star's *structure* readjusts after a disturbance (Chapter 11) and the timescale pre-main-sequence protostars actually spend contracting (Chapter 7). It is just not the timescale on which a *stable*, fusing star shines.</Aside>
 
@@ -38,9 +86,9 @@ For the Sun, $t_{KH} \approx 3\times10^7$ years — thirty million years, not bi
 
 <KeyEq title="Mass–energy equivalence">
 $$
-E = \Delta m\, c^2
+E = \term{dm}{\Delta m}\, c^2
 $$
-<Fragment slot="where">$\Delta m$ is the mass defect — the difference between a bound system's mass and the sum of its free constituents' masses. $c^2 \approx 9\times10^{16}\,\text{J/kg}$, which is why even a tiny fractional mass loss releases an enormous amount of energy.</Fragment>
+<Fragment slot="where"><span data-term="dm">$\Delta m$</span> is the mass defect — the difference between a bound system's mass and the sum of its free constituents' masses. $c^2 \approx 9\times10^{16}\,\text{J/kg}$, which is why even a tiny fractional mass loss releases an enormous amount of energy.</Fragment>
 </KeyEq>
 
 <Fermi title="How long can the Sun run on hydrogen fusion?">
@@ -65,13 +113,25 @@ Every atomic nucleus is a bound state of protons and neutrons (together, nucleon
 **Binding energy per nucleon vs mass number.** Hover an isotope to see its exact value. The curve rises steeply for the lightest nuclei (deuterium, helium, carbon), peaks near iron/nickel at $A\approx56$, and falls slowly toward the heaviest elements. Reactions that move a nucleus *toward the peak* — fusing light nuclei, or splitting heavy ones — release energy.
 </Sim>
 
+<Tiers>
+<Fragment slot="l1">
+Think of binding energy per nucleon as "how tightly glued together, per piece." Light nuclei are glued together loosely; nuclei near iron are glued the tightest; the heaviest nuclei (uranium and beyond) are glued a bit less tightly again, mostly because they are so crowded with mutually repelling protons. Any rearrangement that moves nucleons *toward* the tightly-glued middle — fusing light nuclei together, or splitting heavy ones apart — has energy left over afterwards. That leftover is what powers both stars and reactors.
+</Fragment>
+<Fragment slot="l2">
+A crude but useful model, the **semi-empirical mass formula**, reproduces this curve from five competing physical effects: nucleons want to bind (a volume term), surface nucleons bind less well (a penalty, like surface tension), protons repel each other electrically (a growing penalty for heavy nuclei), lopsided proton-to-neutron ratios are disfavoured, and paired-up nucleons bind slightly better. Light nuclei gain a lot of binding by growing; very heavy nuclei start losing binding because of proton–proton repulsion. Iron and nickel sit at the balance point.
+</Fragment>
+<Fragment slot="l3">
 A crude but useful model, the **semi-empirical mass formula**, reproduces this curve from five physical terms:
 
 $$
 B(A,Z) = a_V A - a_S A^{2/3} - a_C\frac{Z(Z-1)}{A^{1/3}} - a_A\frac{(A-2Z)^2}{A} \pm \frac{a_P}{\sqrt A}.
 $$
+</Fragment>
+</Tiers>
 
+<Level min={3} title="Reading the five terms of the mass formula">
 Each term has a direct physical picture: **volume** binding ($a_V A$) because the strong force is short-ranged and saturates, so every nucleon binds to a fixed number of neighbours regardless of $A$; a **surface** correction ($-a_S A^{2/3}$) because nucleons at the surface have fewer neighbours, exactly like surface tension; a **Coulomb** penalty ($-a_C Z^2/A^{1/3}$) from mutual proton repulsion, growing with the *number of proton pairs*; an **asymmetry** penalty ($-a_A(A-2Z)^2/A$) from the Pauli exclusion principle disfavouring lopsided proton-to-neutron ratios; and a small **pairing** term rewarding even numbers of like nucleons. Together they explain why light nuclei want more binding (climbing the steep left side of the curve pays handsomely) while very heavy nuclei have so many protons that Coulomb repulsion starts winning — the mechanism behind both stellar fusion and terrestrial fission, and the reason iron and nickel, sitting at the summit, are nuclear "ash": nothing further can be extracted from them by rearranging nucleons.
+</Level>
 
 Fusing four protons into one helium-4 nucleus (via intermediate steps, below) converts 0.7% of the input mass into energy — not because helium is *especially* well bound, but because hydrogen is so poorly bound to begin with (a lone proton has $B=0$). That single number, 0.7%, sets almost every timescale in this chapter and the two after it.
 
@@ -83,32 +143,65 @@ $$
 V(r) = \frac{1}{4\pi\varepsilon_0}\frac{Z_1 Z_2 e^2}{r}.
 $$
 
-For two protons ($Z_1=Z_2=1$) meeting at a nuclear radius of $r\approx 2\,\text{fm}$, this evaluates to $V \approx \htmlData{term=barrier}{1.4}\,\text{MeV}$ using $e^2/4\pi\varepsilon_0 \approx 1.44\,\text{MeV·fm}$ — a standard combination worth memorising.
-
-Compare that to the thermal energy available in the Sun's core, at $T\approx15\times10^6\,\text{K}$:
+<Tiers>
+<Fragment slot="l1">
+Imagine rolling a ball up a hill: the harder you push, the higher up the ball gets before it stops. Two protons pushed together by ordinary heat are like a very gentle push against a very tall electrical "hill" — the mutual repulsion of their positive charges. For two protons just touching (about 2 femtometres apart), that hill is about **1.4 million electron-volts (MeV)** high. The push available from the Sun's 15-million-degree core is only about **1,300 electron-volts** — a thousand times too gentle. Classically, the ball never gets over the hill, and the Sun should not shine at all.
+</Fragment>
+<Fragment slot="l2">
+For two protons ($Z_1=Z_2=1$) meeting at a nuclear radius of $r\approx 2\,\text{fm}$, this evaluates to $V \approx 1.4\,\text{MeV}$ using $e^2/4\pi\varepsilon_0 \approx 1.44\,\text{MeV·fm}$ — a standard combination worth memorising. Compare that to the thermal energy available in the Sun's core, at $T\approx15\times10^6\,\text{K}$: $k_B T \approx 1.3\,\text{keV}$. Thermal energy is three orders of magnitude below the barrier height.
+</Fragment>
+<Fragment slot="l3">
+For two protons ($Z_1=Z_2=1$) meeting at a nuclear radius of $r\approx 2\,\text{fm}$, this evaluates to $V \approx 1.4\,\text{MeV}$ using $e^2/4\pi\varepsilon_0 \approx 1.44\,\text{MeV·fm}$ — a standard combination worth memorising. Compare that to the thermal energy available in the Sun's core, at $T\approx15\times10^6\,\text{K}$:
 
 $$
 k_B T = (8.617\times10^{-5}\,\text{eV/K})(1.5\times10^7\,\text{K}) \approx 1.3\,\text{keV}.
 $$
 
+Thermal energy is *three orders of magnitude* below the barrier height (new to exponentials and orders of magnitude? see [Appendix A1](/ch/primer-numbers/)).
+</Fragment>
+</Tiers>
+
 Two protons of charge $Z_1$, $Z_2$ separated by <Var name="sep" value={2} min={0.5} max={20} log step={0.1} /> fm feel a Coulomb barrier of <Out name="barrierMeV" />.
 
-Thermal energy is *three orders of magnitude* below the barrier height. Classically, protons in the Sun's core essentially never get close enough to fuse — the Sun should be dark and cold forever. That the Sun shines at all is direct macroscopic evidence for quantum tunnelling.
+Classically, protons in the Sun's core essentially never get close enough to fuse — the Sun should be dark and cold forever. That the Sun shines at all is direct macroscopic evidence for quantum tunnelling (an idea that also underpins radioactive alpha decay and scanning-tunnelling microscopy; a gentle introduction is [Appendix A9](/ch/primer-quantum/)).
 
 <Aside>**Why not just get hotter?** The Sun's core sits at 15 MK because that is the temperature at which gravity and pressure balance for its mass (Chapter 11's virial theorem again: $T\sim GM m_p/R k_B$). Stars can't simply choose a temperature that makes fusion easy — gravity fixes it, and fusion has to make do with whatever tunnelling probability that temperature allows.</Aside>
 
 ### Tunnelling through the barrier: the Gamow factor
 
-A particle of energy $E < V(r)$ has, in one dimension, a wavefunction that decays exponentially rather than vanishing inside the forbidden region — the WKB approximation gives a transmission probability $P\sim\exp\left(-2\int_{r_1}^{r_2}\kappa(r)\,dr\right)$ where $\kappa(r) = \sqrt{2\mu(V(r)-E)}/\hbar$ and $\mu$ is the reduced mass of the two-body system. Take $r_1$ as the nuclear radius (where the strong force takes over) and $r_2 = Z_1Z_2 e^2/(4\pi\varepsilon_0 E)$ as the *classical turning point*, where $V(r_2)=E$. Carrying out the integral (the algebra is routine but tedious, so we skip straight to the result — substitute $r=r_2\sin^2\theta$ and use $r_1\ll r_2$) gives:
+<History title="A postcard-sized calculation that explained the stars" year="1928">
+George Gamow, a 24-year-old Soviet physicist visiting Göttingen, worked out the quantum tunnelling probability through a Coulomb barrier to explain *alpha decay* — radioactive nuclei spitting out helium nuclei despite classically insufficient energy. He wrote up the barrier-penetration calculation as a short, elegant application of the new Schrödinger equation. Within a decade, Atkinson and Houtermans (and later Gamow himself) realised the identical mathematics answered a completely different question: how two nuclei manage to fuse inside a star at all. The same exponential that explains why some radioactive isotopes decay in microseconds and others in billennia also explains why the Sun burns for billions of years rather than not at all — a rare case of one piece of 1920s theoretical physics quietly underwriting two, otherwise unconnected, areas of nuclear astrophysics.
+</History>
 
+<Level min={3} title="Deriving the Gamow factor from the WKB tunnelling integral">
+A particle of energy $E < V(r)$ has, in one dimension, a wavefunction that decays exponentially rather than vanishing inside the forbidden region — the WKB approximation (new to this kind of approximation and to solving ODEs numerically? see [Appendix A5](/ch/primer-odes/)) gives a transmission probability $P\sim\exp\left(-2\int_{r_1}^{r_2}\kappa(r)\,dr\right)$ where $\kappa(r) = \sqrt{2\mu(V(r)-E)}/\hbar$ and $\mu$ is the reduced mass of the two-body system. Take $r_1$ as the nuclear radius (where the strong force takes over) and $r_2 = Z_1Z_2 e^2/(4\pi\varepsilon_0 E)$ as the *classical turning point*, where $V(r_2)=E$. Carrying out the integral (the algebra is routine but tedious, so we skip straight to the result — substitute $r=r_2\sin^2\theta$ and use $r_1\ll r_2$) gives the Gamow tunnelling factor below.
+</Level>
+
+<Tiers>
+<Fragment slot="l1">
+The chance of tunnelling through rises very fast as the collision energy goes up, but even so, at the Sun's actual temperature it stays extraordinarily small — around one in three hundred million for a "typical" fast proton. What saves the Sun is not that tunnelling is likely, but that there are an enormous number of protons and an enormous amount of time.
+</Fragment>
+<Fragment slot="l2">
 <KeyEq title="The Gamow tunnelling factor">
 $$
-P_\text{tunnel}(E) \approx \exp\left(-\sqrt{\frac{E_G}{E}}\right), \qquad E_G = 2\mu c^2 (\pi\alpha Z_1 Z_2)^2
+P_\text{tunnel}(E) \approx \exp\left(-\sqrt{\frac{\term{EG}{E_G}}{E}}\right), \qquad E_G = 2\term{muterm}{\mu} c^2 (\pi\term{alphaFS}{\alpha}\, \term{Z1}{Z_1}\, \term{Z2}{Z_2})^2
 $$
-<Fragment slot="where">$E_G$ is the **Gamow energy**, $\mu$ the reduced mass of the colliding pair, $\alpha\approx1/137$ the fine-structure constant, and $Z_1,Z_2$ the two charges. For p+p, $E_G\approx493\,\text{keV}$. Note $E_G$ depends only on $Z_1Z_2$ and $\mu$ — not on the barrier height at any particular radius — because the tunnelling integral effectively probes the barrier's whole shape at once.</Fragment>
+<Fragment slot="where"><span data-term="EG">$E_G$</span> is the **Gamow energy**, <span data-term="muterm">$\mu$</span> the reduced mass of the colliding pair, <span data-term="alphaFS">$\alpha$</span>$\approx1/137$ the fine-structure constant, and <span data-term="Z1">$Z_1$</span>, <span data-term="Z2">$Z_2$</span> the two charges. For p+p, $E_G\approx493\,\text{keV}$.</Fragment>
 </KeyEq>
 
-The tunnelling probability rises steeply with $E$ but is tiny for thermal energies: at $E=1.3\,\text{keV}$ and $E_G=493\,\text{keV}$, $P_\text{tunnel} = \exp(-\sqrt{380}) = \exp(-19.5) \approx 3\times10^{-9}$. Combined with the fraction of particles that even reach $1.3\,\text{keV}$ (most sit near the *mean* thermal energy $\tfrac32k_BT$, not far into the tail), fusion in the Sun's core is a spectacularly rare event per encounter — and yet, given $10^{57}$ protons and billions of years, rare is all it needs to be.
+The tunnelling probability rises steeply with $E$ but is tiny for thermal energies: at $E=1.3\,\text{keV}$ and $E_G=493\,\text{keV}$, $P_\text{tunnel} = \exp(-\sqrt{380}) \approx 3\times10^{-9}$.
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="The Gamow tunnelling factor">
+$$
+P_\text{tunnel}(E) \approx \exp\left(-\sqrt{\frac{\term{EG}{E_G}}{E}}\right), \qquad E_G = 2\term{muterm}{\mu} c^2 (\pi\term{alphaFS}{\alpha}\, \term{Z1}{Z_1}\, \term{Z2}{Z_2})^2
+$$
+<Fragment slot="where"><span data-term="EG">$E_G$</span> is the **Gamow energy**, <span data-term="muterm">$\mu$</span> the reduced mass of the colliding pair, <span data-term="alphaFS">$\alpha$</span>$\approx1/137$ the fine-structure constant, and <span data-term="Z1">$Z_1$</span>, <span data-term="Z2">$Z_2$</span> the two charges. For p+p, $E_G\approx493\,\text{keV}$. Note $E_G$ depends only on $Z_1Z_2$ and $\mu$ — not on the barrier height at any particular radius — because the tunnelling integral effectively probes the barrier's whole shape at once.</Fragment>
+</KeyEq>
+
+The tunnelling probability rises steeply with $E$ but is tiny for thermal energies: at $E=1.3\,\text{keV}$ and $E_G=493\,\text{keV}$, $P_\text{tunnel} = \exp(-\sqrt{380}) = \exp(-19.5) \approx 3\times10^{-9}$. Combined with the fraction of particles that even reach $1.3\,\text{keV}$ (most sit near the *mean* thermal energy $\tfrac32k_BT$, not far into the tail — a Boltzmann-distribution refresher is [Appendix A7](/ch/primer-thermo/)), fusion in the Sun's core is a spectacularly rare event per encounter — and yet, given $10^{57}$ protons and billions of years, rare is all it needs to be.
+</Fragment>
+</Tiers>
 
 ## The Gamow peak
 
@@ -122,14 +215,31 @@ Much higher. For p+p at 15 MK, $E_0\approx5.9\,\text{keV}$ — about three times
 **The Gamow peak, live.** Left: the Maxwell–Boltzmann factor $e^{-E/k_BT}$ (falling), the Gamow tunnelling factor $e^{-\sqrt{E_G/E}}$ (rising), and their product — the Gamow peak — on a log scale, with a linear zoomed inset. Right: the Coulomb barrier for the selected reaction, with a schematic wavefunction amplitude showing the exponential decay under the barrier and the (much smaller) transmitted wave beyond it. Change the temperature and the reaction (which sets $Z_1$, $Z_2$ and the reduced mass) and watch $E_0$, the peak's width, the relative reaction rate, and the effective temperature exponent $\nu$ respond.
 </Sim>
 
-Setting $d/dE\left[-E/k_BT - \sqrt{E_G/E}\right]=0$ gives the peak location and, via a Gaussian (saddle-point) approximation of the exponent around that maximum, its width:
+<Tiers>
+<Fragment slot="l1">
+Picture two curves fighting over where the "action" happens: one says low-energy particles are common, the other says only higher-energy particles can tunnel through at all. Multiply them and there is a single sweet-spot energy where the compromise is best — common enough to happen often, energetic enough to occasionally get through. That sweet spot, and how wide it is, is all that matters for how fast the reaction runs.
+</Fragment>
+<Fragment slot="l2">
+Setting the derivative of the exponent to zero gives the peak location and, via a Gaussian (bell-curve) approximation around that maximum, its width:
 
 <KeyEq title="Gamow peak: location and width">
 $$
-E_0 = \left(\frac{E_G (k_BT)^2}{4}\right)^{1/3}, \qquad \Delta = \frac{4}{\sqrt3}\sqrt{E_0\,k_BT}
+\term{E0term}{E_0} = \left(\frac{E_G\, (k_B\term{Tterm}{T})^2}{4}\right)^{1/3}, \qquad \term{Wterm}{\Delta} = \frac{4}{\sqrt3}\sqrt{E_0\,k_BT}
 $$
-<Fragment slot="where">$E_0$ is the energy where the integrand of the reaction rate is largest; $\Delta$ is its (Gaussian) full width. For p+p at 15 MK: $E_0\approx5.9\,\text{keV}$, $\Delta\approx4.8\,\text{keV}$ — a narrow window compared to $E_0$ itself, which is what makes the Gaussian approximation good.</Fragment>
+<Fragment slot="where"><span data-term="E0term">$E_0$</span> is the energy where the reaction rate's integrand is largest; <span data-term="Wterm">$\Delta$</span> is its full width. For p+p at <span data-term="Tterm">15 MK</span>: $E_0\approx5.9\,\text{keV}$, $\Delta\approx4.8\,\text{keV}$.</Fragment>
 </KeyEq>
+</Fragment>
+<Fragment slot="l3">
+Setting $d/dE\left[-E/k_BT - \sqrt{E_G/E}\right]=0$ gives the peak location and, via a Gaussian (saddle-point) approximation of the exponent around that maximum, its width (new to Taylor-expanding a function near its maximum? see [Appendix A4](/ch/primer-calculus/)):
+
+<KeyEq title="Gamow peak: location and width">
+$$
+\term{E0term}{E_0} = \left(\frac{E_G\, (k_B\term{Tterm}{T})^2}{4}\right)^{1/3}, \qquad \term{Wterm}{\Delta} = \frac{4}{\sqrt3}\sqrt{E_0\,k_BT}
+$$
+<Fragment slot="where"><span data-term="E0term">$E_0$</span> is the energy where the integrand of the reaction rate is largest; <span data-term="Wterm">$\Delta$</span> is its (Gaussian) full width. For p+p at <span data-term="Tterm">15 MK</span>: $E_0\approx5.9\,\text{keV}$, $\Delta\approx4.8\,\text{keV}$ — a narrow window compared to $E_0$ itself, which is what makes the Gaussian approximation good.</Fragment>
+</KeyEq>
+</Fragment>
+</Tiers>
 
 Real cross-sections also depend on nuclear physics beyond the barrier — resonances, spin, the details of the strong interaction — bundled into the **astrophysical S-factor** $S(E)$, defined so that $\sigma(E) = \frac{S(E)}{E}\exp\left(-\sqrt{E_G/E}\right)$. $S(E)$ varies slowly and smoothly compared to the exponentials (that is the point of factoring it out), so it can usually be measured in the lab at higher, more accessible energies and extrapolated down to the Gamow peak, which typically sits far below what a terrestrial accelerator can directly probe at relevant rates.
 
@@ -171,13 +281,31 @@ Every `Math.exp(g)` now sees an argument in $[-\infty, 0]$, so it never overflow
 
 ## Why fusion is so sensitive to temperature
 
-Because the Gamow peak sits on the steep flank of two exponentials, small changes in temperature produce large changes in the reaction rate — far larger than the mild $T^{1}$ or $T^{2}$ dependence familiar from everyday chemistry or blackbody radiation (Chapter 4). Near a reference temperature, the rate is well approximated locally as a power law, $\varepsilon \propto T^\nu$, with
+Because the Gamow peak sits on the steep flank of two exponentials, small changes in temperature produce large changes in the reaction rate — far larger than the mild $T^{1}$ or $T^{2}$ dependence familiar from everyday chemistry or blackbody radiation (Chapter 4).
+
+<Tiers>
+<Fragment slot="l1">
+Near any given temperature, the reaction rate behaves like a power law, $\varepsilon \propto T^\nu$, for some exponent $\nu$. For the pp-chain, $\nu\approx4$: double the core temperature and the rate rises sixteenfold. For the CNO cycle, $\nu\approx17$–$20$: double the temperature and the rate rises by a factor of a hundred thousand to a million. The heavier the charges involved, the more brutally the reaction rate depends on temperature.
+</Fragment>
+<Fragment slot="l2">
+Near a reference temperature, the rate is well approximated locally as a power law, $\varepsilon \propto T^\nu$, with
+
+$$
+\nu = \frac{d\ln\langle\sigma v\rangle}{d\ln T} \approx \frac{1}{3}\left(\frac{E_G}{k_BT}\right)^{1/3} - 2.
+$$
+
+For the **pp reaction** at solar core conditions, $\nu\approx4$: doubling the temperature raises the rate by $2^4=16\times$. For the **CNO cycle** (below), whose slowest step is a proton capture on nitrogen-14 with six times the charge product and correspondingly larger $E_G$, $\nu\approx17$–$20$: doubling the temperature there raises the rate by a factor of $10^5$–$10^6$.
+</Fragment>
+<Fragment slot="l3">
+Near a reference temperature, the rate is well approximated locally as a power law, $\varepsilon \propto T^\nu$, with
 
 $$
 \nu = \frac{d\ln\langle\sigma v\rangle}{d\ln T} \approx \frac{1}{3}\left(\frac{E_G}{k_BT}\right)^{1/3} - 2
 $$
 
-(derived by differentiating $\ln\langle\sigma v\rangle$ with the saddle-point integral above; the flagship sim computes it exactly, numerically, by finite-differencing $\ln(\text{rate})$). For the **pp reaction** at solar core conditions, $\nu\approx4$: doubling the temperature raises the rate by $2^4=16\times$. For the **CNO cycle** (below), whose slowest step is a proton capture on nitrogen-14 with six times the charge product and correspondingly larger $E_G$, $\nu\approx17$–$20$: doubling the temperature there raises the rate by a factor of $10^5$–$10^6$.
+(derived by differentiating $\ln\langle\sigma v\rangle$ with the saddle-point integral above; the flagship sim computes it exactly, numerically, by finite-differencing $\ln(\text{rate})$ — see [Appendix A4](/ch/primer-calculus/) for differentiation and [Appendix A2](/ch/primer-functions/) for reading power laws off a log–log plot). For the **pp reaction** at solar core conditions, $\nu\approx4$: doubling the temperature raises the rate by $2^4=16\times$. For the **CNO cycle** (below), whose slowest step is a proton capture on nitrogen-14 with six times the charge product and correspondingly larger $E_G$, $\nu\approx17$–$20$: doubling the temperature there raises the rate by a factor of $10^5$–$10^6$.
+</Fragment>
+</Tiers>
 
 <Sim name="fusion-rate" size="wide" minHeight={420}>
 **Energy generation rate vs core temperature**, on a log–log scale, for the pp-chain and the CNO cycle (using the same Gamow-peak machinery, applied to $p+p$ and to $p+^{14}\text{N}$, CNO's slowest step). Drag along the temperature axis or use the slider. The two curves cross near 17–18 MK: below that, the gently-sloped pp-chain wins; above it, the steep CNO cycle takes over completely. The Sun's core, at 15.7 MK, sits just on the pp-chain side of the line — but a star only 30% more massive, whose core runs hotter, is CNO-dominated.
@@ -189,6 +317,12 @@ This crossover, near $17\,\text{MK}$ and a stellar mass of about $1.3\,M_\odot$,
 
 Two families of nuclear reactions convert hydrogen to helium in stars, both starting and ending at the same net result ($4\,^1\text{H}\rightarrow\,^4\text{He} + 2e^+ + 2\nu_e + \text{energy}$) but by different routes.
 
+<History title="Filling in the Sun's actual recipe" year="1939">
+<Portrait src="/img/people/bethe.jpg" name="Hans Bethe" years="1906–2005" credit="Los Alamos National Laboratory" license="CC BY 3.0" href="https://commons.wikimedia.org/wiki/File:Hans_Bethe.jpg">Worked out the pp-chain and CNO cycle within weeks of each other in 1938–39.</Portrait>
+
+By the 1930s, physicists knew fusion had to be the Sun's power source in outline, but not the actual reaction sequence. Hans Bethe, prompted partly by a 1938 Washington conference organised specifically to get astrophysicists and nuclear physicists talking to each other, worked out both the proton–proton chain and (independently, around the same time, also found by Carl von Weizsäcker) the CNO cycle within about a year. Bethe reportedly worked out the CNO cycle's details on a train home from that conference, on the back of an envelope, and initially thought the pp-chain — not CNO — was irrelevant to the Sun, before further calculation showed pp actually dominates at solar core temperatures. He received the 1967 Nobel Prize in Physics "for his contributions to the theory of nuclear reactions, especially his discoveries concerning the energy production in stars" — nearly three decades after doing the work, a common pattern in a field where confirmation takes generations.
+</History>
+
 ### The proton–proton chain
 
 The pp-chain dominates in stars at or below the Sun's mass. Its first step is also its bottleneck:
@@ -197,7 +331,16 @@ $$
 p + p \rightarrow\, ^2\text{H} + e^+ + \nu_e.
 $$
 
-This reaction *must* proceed via the **weak nuclear interaction** — one proton has to convert to a neutron mid-collision, which the strong force cannot do. Weak interactions are, true to their name, enormously less probable per encounter than strong ones: the mean time for a given proton in the Sun's core to fuse this way is about **ten billion years**. That number, not the Gamow tunnelling probability of the *strong*-force steps that follow, is what makes the Sun a ten-billion-year-lifetime star rather than a bomb. Once deuterium forms, it captures a further proton in about a second (a strong-force reaction, `p + d → 3He + γ`), and the chain branches three ways depending on what happens to the resulting helium-3:
+<Tiers>
+<Fragment slot="l1">
+This first step needs the **weak nuclear force** to work at all — one of the two protons has to turn into a neutron mid-collision, which the strong force alone cannot do. The weak force is, true to its name, extremely reluctant: a given proton in the Sun's core waits **ten billion years on average** before this happens to it. That reluctance, not any difficulty with the later steps, is the real reason the Sun burns slowly enough to last this long.
+</Fragment>
+<Fragment slot="l2">
+This reaction *must* proceed via the **weak nuclear interaction** — one proton has to convert to a neutron mid-collision, which the strong force cannot do. Weak interactions are, true to their name, enormously less probable per encounter than strong ones: the mean time for a given proton in the Sun's core to fuse this way is about **ten billion years**. That number, not the Gamow tunnelling probability of the *strong*-force steps that follow, is what makes the Sun a ten-billion-year-lifetime star rather than a bomb.
+</Fragment>
+</Tiers>
+
+Once deuterium forms, it captures a further proton in about a second (a strong-force reaction, `p + d → 3He + γ`), and the chain branches three ways depending on what happens to the resulting helium-3:
 
 <Sim name="fusion-network" size="wide" minHeight={460}>
 **The pp-chain and CNO cycle, as a clickable reaction network.** Click any step for its energy release, its characteristic timescale in the solar core, and any neutrinos it emits. The pp-I branch (³He+³He, about 86% of the time in the Sun) closes without further weak decays; pp-II and pp-III route through beryllium-7 and boron-8 and are individually rarer but produce the highest-energy solar neutrinos.
@@ -231,13 +374,29 @@ The **Borexino** experiment, using ultra-pure liquid scintillator under the Gran
 
 Once core hydrogen is exhausted ([Chapter 15](/ch/giants/) covers this transition in full), the core contracts and heats until helium itself can fuse. The obvious step, $^4\text{He}+\,^4\text{He}\rightarrow\,^8\text{Be}$, produces a nucleus that is **unstable** and decays back to two alpha particles in about $10^{-16}$ seconds — normally far too fast for a third helium nucleus to arrive and capture before it falls back apart. Helium burning via this **triple-alpha process** should be astronomically slow, and by simple estimates, it is — except that carbon-12 happens to have an excited nuclear state at almost exactly the combined energy of $^8\text{Be}+{}^4\text{He}$ (about 7.65 MeV above carbon's ground state). This near-perfect energy match creates a **resonance**: the capture rate is boosted by many orders of magnitude compared to a generic (non-resonant) reaction, enough to make helium burning proceed at astrophysically relevant rates within the brief window a star spends as a red giant.
 
-<Aside>**The anthropic anecdote.** Fred Hoyle predicted this excited carbon-12 state should exist, on essentially the argument above — reasoning backward from the observed cosmic abundance of carbon — *before* it was found experimentally in 1953. It is one of physics' most-cited examples of using an anthropic argument (carbon-based life exists, therefore whatever nuclear physics is needed for cosmic carbon abundance must hold) to successfully predict a specific, falsifiable number. The resonance energy could have been just far enough off to make carbon (and by extension, us) enormously rarer in the Universe.</Aside>
+<History title="Predicting a nucleus into existence" year="1953">
+<Portrait src="/img/people/hoyle.jpg" name="Fred Hoyle" years="1915–2001" credit="NRAO/AUI/NSF, Woodruff T. Sullivan III" license="CC BY 4.0" href="https://commons.wikimedia.org/wiki/File:Fred_Hoyle.jpg">Argued a specific excited state of carbon-12 had to exist, reasoning from cosmic carbon abundance alone.</Portrait>
+
+Fred Hoyle predicted this excited carbon-12 state should exist, on essentially the anthropic argument above — reasoning backward from the observed cosmic abundance of carbon (if the resonance were absent or badly mismatched, stars could barely make any carbon at all, in flagrant contradiction with the carbon-rich Universe we observe) — *before* it was found experimentally. He persuaded nuclear physicist Willy Fowler's Caltech group to look for the state specifically at the energy his argument demanded, and in 1953 they found it, within about 4% of Hoyle's prediction. It remains one of physics' most-cited examples of an anthropic argument (carbon-based observers exist, therefore whatever nuclear physics is needed for cosmic carbon abundance must hold) successfully predicting a specific, falsifiable, and previously unmeasured number. Hoyle, notably, was passed over for the 1983 Nobel Prize in Physics that went to his collaborator Fowler for exactly this body of work — one of the more debated snubs in the prize's history.
+</History>
+
+<Aside>**A close call.** The resonance energy could have been just far enough off to make carbon (and by extension, us) enormously rarer in the Universe. How *finely tuned* this coincidence really is remains debated — some later calculations suggest more room for error than the popular telling implies — but the qualitative point stands: the amount of carbon in the Universe is sensitive to nuclear physics that has nothing obviously to do with chemistry or biology.</Aside>
 
 Beyond helium, successive burning stages (carbon, neon, oxygen, silicon burning) climb the binding-energy curve toward the iron peak, each stage running faster and at a higher temperature than the last — [Chapter 15](/ch/giants/) and [Chapter 16](/ch/stellar-death/) cover this cascade and the core-collapse supernova that follows once nothing further can be fused for energy.
 
+<Photo src="/img/fusion/cas-a-composite.jpg" alt="The Cassiopeia A supernova remnant shown as a multiwavelength composite: a bubble-like blue-and-green shell in X-rays and visible light, overlaid with magenta gamma-ray emission" credit="NASA/DOE/Fermi LAT Collaboration, CXC/SAO/JPL-Caltech, STScI" license="Public domain" href="https://images.nasa.gov/details/GSFC_20171208_Archive_e002183" size="wide" aspect="4 / 3">
+**Cassiopeia A, a supernova remnant about 11,000 light-years away.** This composite combines gamma rays (Fermi, magenta), X-rays (Chandra, blue/green), visible light (Hubble, yellow) and infrared (Spitzer). The debris is the scattered outer layers of a massive star that had fused all the way up the binding-energy curve to the iron peak — and then, unable to release further energy by fusion, collapsed and exploded (Chapter 16).
+</Photo>
+
 ### Where the elements actually came from
 
-Elements heavier than iron cannot be made by fusion that releases energy (recall the binding curve: past the peak, fusion *costs* energy). They are instead built by **neutron capture**: a nucleus absorbs free neutrons and occasionally beta-decays, walking up the chart of isotopes. The **s-process** ("slow") does this gradually, in the neutron-poor outer layers of aging low-mass stars, with time for beta decay between captures — it explains most of the middle-to-heavy stable isotopes. The **r-process** ("rapid") floods a nucleus with neutrons faster than it can decay, building far up past stability before decaying back down, and requires an extreme neutron-rich environment. For decades the r-process site was uncertain; the 2017 detection of gravitational waves from a neutron-star merger (GW170817, event AT2017gfo — [Chapter 20](/ch/gravitational-waves/)) accompanied by a **kilonova** whose light curve and spectrum matched r-process radioactive decay confirmed that merging neutron stars are a dominant, if not the dominant, r-process site, alongside rarer supernova channels. [Chapter 16](/ch/stellar-death/) returns to kilonovae in detail.
+Elements heavier than iron cannot be made by fusion that releases energy (recall the binding curve: past the peak, fusion *costs* energy). They are instead built by **neutron capture**: a nucleus absorbs free neutrons and occasionally beta-decays, walking up the chart of isotopes. The **s-process** ("slow") does this gradually, in the neutron-poor outer layers of aging low-mass stars, with time for beta decay between captures — it explains most of the middle-to-heavy stable isotopes. The **r-process** ("rapid") floods a nucleus with neutrons faster than it can decay, building far up past stability before decaying back down, and requires an extreme neutron-rich environment.
+
+<Photo src="/img/fusion/neutron-star-merger.jpg" alt="A frame from a supercomputer simulation of two colliding neutron stars, showing a swirling disc of hot, reddish, ejected material forming a black hole at the centre" credit="NASA Goddard Space Flight Center" license="Public domain" href="https://images.nasa.gov/details/GSFC_20171208_Archive_e001100" size="wide" aspect="5 / 4">
+**A supercomputer simulation frame of two merging neutron stars.** As the lower-mass star is tidally torn apart, its extremely neutron-rich debris is exactly the environment the r-process needs. Ejecta like this, expanding and radioactively decaying, produces the "kilonova" glow that follows a real merger — first confirmed observationally in GW170817/AT2017gfo in 2017.
+</Photo>
+
+For decades the r-process site was uncertain; the 2017 detection of gravitational waves from a neutron-star merger (GW170817, event AT2017gfo — [Chapter 20](/ch/gravitational-waves/)) accompanied by a **kilonova** whose light curve and spectrum matched r-process radioactive decay confirmed that merging neutron stars are a dominant, if not the dominant, r-process site, alongside rarer supernova channels. [Chapter 16](/ch/stellar-death/) returns to kilonovae in detail.
 
 <Sim name="fusion-origins" size="wide" minHeight={420}>
 **The periodic table, coloured by dominant origin** (approximate, mass-weighted — following the style of studies such as Johnson 2019). Click an element for a short note. Notice the pattern: hydrogen and helium are primordial; lithium/beryllium/boron are cosmic-ray debris rather than stellar products at all; carbon through calcium are stellar fusion products of various kinds; the iron peak is dominated by exploding white dwarfs; and almost everything heavier than silver leans on the r-process, made in neutron-star mergers.

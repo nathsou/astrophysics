@@ -15,6 +15,31 @@ import Out from '../../components/Out.astro';
 import Tiers from '../../components/Tiers.astro';
 import Level from '../../components/Level.astro';
 import Photo from '../../components/Photo.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  n: ['Principal quantum number', 'Counts the "rung" of the ladder — n=1 is the ground state. Levels crowd together as n grows, approaching the n→∞ ionisation limit.'],
+  lam: ['Wavelength', 'What a spectrograph actually measures. Shorter wavelength means a more energetic photon.'],
+  Rinf: ['Rydberg constant', '1.097×10⁷ m⁻¹ for an infinitely heavy nucleus; sets the overall scale of every hydrogen wavelength.'],
+  n1: ['Lower quantum number', 'Fixes the series: n₁=1 is Lyman (UV), n₁=2 is Balmer (visible), n₁=3 is Paschen (IR).'],
+  n2: ['Upper quantum number', 'The level the electron starts from (emission) or is excited to (absorption); always n₂>n₁.'],
+  dlam: ['Doppler width', 'The line\'s spread in wavelength from thermal motion alone — grows only as the square root of temperature.'],
+  mmass: ['Absorber mass', 'Heavier atoms move more sluggishly at a given T, so their thermal Doppler width is narrower — this is why metal lines are often narrower than hydrogen lines at the same temperature.'],
+  Tg: ['Temperature', 'Sets the width here via the mean thermal speed, and (through the Boltzmann and Saha equations below) the whole line strength.'],
+  Nb: ['Population of the upper level', 'Number density of atoms sitting in the higher-energy state b.'],
+  Na: ['Population of the lower level', 'Number density of atoms sitting in the lower-energy state a — the one that actually absorbs the line.'],
+  gb: ['Statistical weight of level b', 'Counts the distinct quantum states sharing that energy; more sub-states means more ways for an atom to be there.'],
+  ga: ['Statistical weight of level a', 'Same idea for the lower level.'],
+  dEab: ['Excitation energy', 'Energy gap between the two levels; sits in the exponent, so a change of just a few k_BT swings the ratio by orders of magnitude.'],
+  Nr: ['Population of ionisation stage r', 'Number density of atoms/ions in the lower ionisation stage (e.g. neutral).'],
+  Nr1: ['Population of ionisation stage r+1', 'Number density one ionisation stage up (e.g. singly ionised).'],
+  ner: ['Electron density', 'More free electrons favour recombination, pushing the balance back toward the lower (less ionised) stage — the same logic as Le Chatelier\'s principle in chemistry.'],
+  Ur: ['Partition function of stage r', 'Weighted count of all bound levels accessible in that ionisation stage, each suppressed by its own Boltzmann factor.'],
+  Ur1: ['Partition function of stage r+1', 'Same idea, one ionisation stage up.'],
+  chir: ['Ionisation energy', 'Energy needed to remove the electron entirely from stage r; sits in the exponent, so it sets the temperature scale for ionisation.'],
+}} />
 
 ## Three laws of light
 
@@ -26,6 +51,12 @@ In 1859, Gustav Kirchhoff and Robert Bunsen pointed a prism at a gas-discharge l
 
 <Aside>**Fraunhofer lines.** Joseph von Fraunhofer catalogued hundreds of dark lines in sunlight in 1814, decades before anyone knew what caused them. He labelled the strongest ones with letters — the Ca II H & K lines and Na D lines in this chapter's flagship figure still carry his labels today.</Aside>
 
+<History title="A salt flame and a rooftop telescope" year="1859">
+<Portrait src="/img/people/kirchhoff.jpg" name="Gustav Kirchhoff" years="1824–1887" credit="Unknown author, Smithsonian Libraries" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Gustav_Robert_Kirchhoff.jpg" />
+
+Robert Bunsen (inventor of the burner that bears his name) and Gustav Kirchhoff, both at Heidelberg, built the first spectroscope worth the name by pointing a prism and a small telescope at a Bunsen-burner flame salted with different chemicals. Each element burned with its own unmistakable set of coloured lines. Kirchhoff then aimed the same instrument at sunlight projected through a slit and noticed the dark lines Fraunhofer had already catalogued lined up exactly with the bright emission lines of sodium and iron from the lab. Within months he had the three laws that open this chapter, and Bunsen is said to have joked that they had discovered a way to identify the chemical make-up of the Sun — 150 million kilometres away, with no way of ever bringing back a sample. Bunsen and Kirchhoff went on to discover the elements caesium and rubidium spectroscopically, the first elements ever found by their light rather than in a test tube.
+</History>
+
 The lamp strips below show law 2 directly: each element's characteristic set of bright lines, the same lines that would appear dark if you put that gas in front of a hotter source (law 3). No two elements share a pattern — that is precisely why line spectra work as fingerprints.
 
 <Sim name="spectra-emission" size="wide" minHeight={340}>
@@ -36,7 +67,13 @@ Why does a star, which is mostly hot gas, give an *absorption* spectrum rather t
 
 ## The Bohr atom and hydrogen's ladder
 
-Kirchhoff's laws describe *what* happens; explaining the *exact* wavelengths took until 1913, when Niels Bohr proposed that an electron orbiting a nucleus is only allowed at certain radii — those where its angular momentum is an integer multiple of $\hbar$: $L = n\hbar$, $n = 1, 2, 3, \dots$.
+Kirchhoff's laws describe *what* happens; explaining the *exact* wavelengths took until 1913, when Niels Bohr proposed that an electron orbiting a nucleus is only allowed at certain radii — those where its angular momentum is an integer multiple of $\hbar$: $L = n\hbar$, $n = 1, 2, 3, \dots$ (new to quantised angular momentum? see [Appendix A9](/ch/primer-quantum/)).
+
+<History title="Three postulates and a spectral line" year="1913">
+<Portrait src="/img/people/bohr.jpg" name="Niels Bohr" years="1885–1962" credit="Bain News Service, Library of Congress" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Niels_Bohr_-_LOC_-_ggbain_-_35303.jpg" />
+
+Ernest Rutherford's 1911 nuclear atom had a fatal flaw: classical electromagnetism says an orbiting (accelerating) electron should radiate energy continuously and spiral into the nucleus in about $10^{-11}$ seconds. Matter should not exist. A 27-year-old Niels Bohr, working in Rutherford's lab, cut through the problem by simply *declaring* certain orbits stable by fiat — quantising angular momentum — and deriving the hydrogen spectrum from that one postulate. It reproduced the Balmer formula, already known empirically for decades, to the accuracy of the day, and predicted the ultraviolet Lyman series and infrared Paschen series before either had been observed. Bohr himself never claimed to know *why* only those orbits were allowed; that answer had to wait until 1926, when Schrödinger's wave equation replaced Bohr's orbits with probability clouds that happened to give the same energies.
+</History>
 
 <Tiers>
 <Fragment slot="l1">
@@ -47,9 +84,9 @@ For hydrogen (one proton, one electron), balancing the Coulomb attraction agains
 
 <KeyEq title="Bohr energy levels">
 $$
-E_n = -\frac{13.6\,\text{eV}}{n^2}
+E_\term{n}{n} = -\frac{13.6\,\text{eV}}{\term{n}{n}^2}
 $$
-<Fragment slot="where">$n$ is the principal quantum number. $E_n$ is measured relative to the ionised state ($n\to\infty$, $E=0$); all bound states have $E_n < 0$. The $-13.6\,\text{eV}$ ground-state energy is the **Rydberg energy** — the binding energy of hydrogen in its lowest state.</Fragment>
+<Fragment slot="where"><span data-term="n">n</span> is the principal quantum number. $E_n$ is measured relative to the ionised state ($n\to\infty$, $E=0$); all bound states have $E_n < 0$. The $-13.6\,\text{eV}$ ground-state energy is the **Rydberg energy** — the binding energy of hydrogen in its lowest state. Hover <span data-term="n">n</span> to see it highlighted.</Fragment>
 </KeyEq>
 </Fragment>
 </Tiers>
@@ -71,9 +108,9 @@ Bigger jumps release (or need) more energetic, shorter-wavelength photons. Jumps
 <Fragment slot="l2">
 <KeyEq title="Rydberg formula">
 $$
-\frac{1}{\lambda} = R_\infty \left(\frac{1}{n_1^2} - \frac{1}{n_2^2}\right)
+\frac{1}{\term{lam}{\lambda}} = \term{Rinf}{R_\infty} \left(\frac{1}{\term{n1}{n_1}^2} - \frac{1}{\term{n2}{n_2}^2}\right)
 $$
-<Fragment slot="where">$R_\infty = 1.097\times 10^7\,\text{m}^{-1}$ is the Rydberg constant. Transitions sharing the same lower level $n_1$ form a **series**: Lyman ($n_1=1$, ultraviolet), Balmer ($n_1=2$, visible), Paschen ($n_1=3$, infrared), Brackett ($n_1=4$, infrared).</Fragment>
+<Fragment slot="where"><span data-term="Rinf">$R_\infty = 1.097\times 10^7\,\text{m}^{-1}$</span> is the Rydberg constant. Transitions sharing the same lower level <span data-term="n1">$n_1$</span> form a **series**: Lyman ($n_1=1$, ultraviolet), Balmer ($n_1=2$, visible), Paschen ($n_1=3$, infrared), Brackett ($n_1=4$, infrared). <span data-term="n2">$n_2$</span> is the level the transition starts (or ends) at.</Fragment>
 </KeyEq>
 </Fragment>
 </Tiers>
@@ -98,6 +135,10 @@ Heavier atoms and ions produce far richer spectra, but two special cases are wor
 
 **Forbidden lines.** Quantum mechanics' selection rules say most transitions must change angular momentum by exactly one unit and involve an electric-dipole-allowed jump; transitions that violate these rules are not literally impossible, just enormously less probable (lifetimes of seconds to hours instead of nanoseconds). In the dense lab or a stellar photosphere, collisions de-excite an atom in a forbidden state long before it can radiate. But in the exceedingly thin gas of a planetary or supernova-remnant nebula — densities of 10²–10⁶ cm⁻³, collision times of days — there's nothing to stop it, and forbidden lines dominate the spectrum. The green light of many nebulae is **[O III] 500.7 nm** (and its partner 495.9 nm), a transition inside doubly-ionised oxygen so improbable it was originally attributed to a hypothetical element, "nebulium," before quantum mechanics explained it in 1927.
 
+<Photo src="/img/spectra/catseye.jpg" alt="The Cat's Eye Nebula: a bullseye pattern of concentric blue-green shells around a bright white central star, on a dark background" credit="NASA, ESA, HEIC, and The Hubble Heritage Team (STScI/AURA)" license="Public domain" href="https://images.nasa.gov/details/GSFC_20171208_Archive_e002155" size="wide" aspect="1 / 1">
+**The Cat's Eye Nebula (NGC 6543), Hubble Space Telescope.** The green glow filling the shells is overwhelmingly the [O III] forbidden line: gas this thin (far less dense than the best laboratory vacuum) lets an otherwise "impossible" transition happen anyway, because nothing collides with the ion fast enough to de-excite it first.
+</Photo>
+
 <Aside>**Notation.** Square brackets, as in [O III], mark a forbidden line. The roman numeral is the ionisation stage: O I is neutral oxygen, O II is O⁺, O III is O²⁺. The same convention appears for every element in this chapter (Ca II, Fe I, He II, …).</Aside>
 
 **The 21-cm line.** Neutral hydrogen's ground state has two nearly degenerate sub-levels, split by the tiny magnetic interaction between the electron's and proton's spins (hyperfine structure). Flipping between them releases just $5.9\times10^{-6}\,\text{eV}$ — a photon at 1420.4 MHz, or 21.1 cm, deep in the radio. The transition is so forbidden (spontaneous lifetime ≈ 11 million years) that it only matters at all because interstellar space has so much hydrogen and so much time. It is one of the most important tools in astronomy: it maps neutral gas throughout the Milky Way and other galaxies even where dust blocks visible light entirely, and it traces galaxy rotation curves out to radii where no stars remain to serve as tracers (Chapter 21 and Chapter 6 build on it directly).
@@ -108,13 +149,13 @@ Real spectral lines are never mathematically thin. Three effects set their shape
 
 **Natural broadening.** The Heisenberg energy-time uncertainty relation, $\Delta E\, \Delta t \gtrsim \hbar$, means a level with a finite lifetime $\tau$ has an energy spread $\Delta E \sim \hbar/\tau$, giving every line an intrinsic **Lorentzian** profile. It is almost always the narrowest contribution and often negligible next to the other two.
 
-**Thermal Doppler broadening.** Atoms in a gas at temperature $T$ have a Maxwell-Boltzmann velocity distribution along the line of sight, and each atom's line is Doppler-shifted by its own velocity. Averaging over the distribution gives a **Gaussian** profile:
+**Thermal Doppler broadening.** Atoms in a gas at temperature $T$ have a Maxwell-Boltzmann velocity distribution along the line of sight, and each atom's line is Doppler-shifted by its own velocity. Averaging over the distribution gives a **Gaussian** profile (new to this kind of averaging over a distribution? see [Appendix A7](/ch/primer-thermo/)):
 
 <KeyEq title="Doppler width">
 $$
-\frac{\Delta\lambda}{\lambda} = \sqrt{\frac{2 k_B T}{m c^2}}
+\frac{\term{dlam}{\Delta\lambda}}{\lambda} = \sqrt{\frac{2 k_B \term{Tg}{T}}{\term{mmass}{m}\, c^2}}
 $$
-<Fragment slot="where">$m$ is the absorbing atom's mass. Lighter atoms and hotter gas both broaden lines. This is the *same* physics as the redshift/blueshift of bulk motion (below) — here the "motion" is thermal, and it broadens rather than shifts.</Fragment>
+<Fragment slot="where"><span data-term="mmass">m</span> is the absorbing atom's mass and <span data-term="Tg">T</span> its temperature. Lighter atoms and hotter gas both broaden lines. This is the *same* physics as the redshift/blueshift of bulk motion (below) — here the "motion" is thermal, and it broadens rather than shifts.</Fragment>
 </KeyEq>
 
 A hydrogen atom at <Var name="Tdop" value={5800} min={1000} max={40000} log /> K (mass <Var name="massDop" value={1} min={1} max={56} log /> u) gives Hα a Doppler width of <Out name="dopplerWidth" />.
@@ -141,13 +182,13 @@ One more piece completes the picture of a real line: as you add more absorbers, 
 
 To predict how strong a given line should be, you need to know what *fraction* of a given element's atoms are sitting in the right lower energy level of the right ionisation stage to absorb that photon. Two equations, both from statistical mechanics, answer that.
 
-**Excitation: the Boltzmann equation.** Within one ionisation stage, level populations in thermal equilibrium follow
+**Excitation: the Boltzmann equation.** Within one ionisation stage, level populations in thermal equilibrium follow (new to the Boltzmann factor? see [Appendix A7](/ch/primer-thermo/)):
 
 <KeyEq title="Boltzmann excitation equation">
 $$
-\frac{N_b}{N_a} = \frac{g_b}{g_a}\, e^{-\Delta E_{ab}/k_B T}
+\frac{\term{Nb}{N_b}}{\term{Na}{N_a}} = \frac{\term{gb}{g_b}}{\term{ga}{g_a}}\, e^{-\term{dEab}{\Delta E_{ab}}/k_B T}
 $$
-<Fragment slot="where">$N_a, N_b$ are the number of atoms in levels $a$ (lower) and $b$ (upper); $g_a, g_b$ are their statistical weights (degeneracies, $g_n = 2n^2$ for hydrogen); $\Delta E_{ab} = E_b - E_a > 0$.</Fragment>
+<Fragment slot="where"><span data-term="Na">$N_a$</span>, <span data-term="Nb">$N_b$</span> are the number of atoms in levels $a$ (lower) and $b$ (upper); <span data-term="ga">$g_a$</span>, <span data-term="gb">$g_b$</span> are their statistical weights (degeneracies, $g_n = 2n^2$ for hydrogen); <span data-term="dEab">$\Delta E_{ab}$</span>$= E_b - E_a > 0$.</Fragment>
 </KeyEq>
 
 For Hα and Hβ, the relevant lower level is $n=2$, at $\Delta E = 10.2\,\text{eV}$ above the ground state. Even at a scorching 10,000 K, $k_BT \approx 0.86\,\text{eV}$ — thirty times smaller than $\Delta E$ — so only a tiny Boltzmann-suppressed fraction of neutral hydrogen ever sits in $n=2$. That fraction rises steeply with $T$, which is why Balmer lines strengthen as you go from cool to hot stars.
@@ -156,10 +197,16 @@ For Hα and Hβ, the relevant lower level is $n=2$, at $\Delta E = 10.2\,\text{e
 
 <KeyEq title="Saha ionisation equation">
 $$
-\frac{N_{r+1}\,n_e}{N_r} = \frac{2\,U_{r+1}}{U_r}\left(\frac{2\pi m_e k_B T}{h^2}\right)^{3/2} e^{-\chi_r/k_B T}
+\frac{\term{Nr1}{N_{r+1}}\,\term{ner}{n_e}}{\term{Nr}{N_r}} = \frac{2\,\term{Ur1}{U_{r+1}}}{\term{Ur}{U_r}}\left(\frac{2\pi m_e k_B T}{h^2}\right)^{3/2} e^{-\term{chir}{\chi_r}/k_B T}
 $$
-<Fragment slot="where">$N_r, N_{r+1}$ are populations in successive ionisation stages; $n_e$ is the electron density; $\chi_r$ is the energy needed to ionise stage $r$; $U_r$ are partition functions (sums over all bound levels' Boltzmann factors — this chapter's sims approximate $U_r$ by the ground-state degeneracy alone, an honest simplification — see the flagship's "under the hood" section). The factor of 2 counts the electron's two spin states.</Fragment>
+<Fragment slot="where"><span data-term="Nr">$N_r$</span>, <span data-term="Nr1">$N_{r+1}$</span> are populations in successive ionisation stages; <span data-term="ner">$n_e$</span> is the electron density; <span data-term="chir">$\chi_r$</span> is the energy needed to ionise stage $r$; <span data-term="Ur">$U_r$</span>, <span data-term="Ur1">$U_{r+1}$</span> are partition functions (sums over all bound levels' Boltzmann factors — this chapter's sims approximate them by the ground-state degeneracy alone, an honest simplification — see the flagship's "under the hood" section). The factor of 2 counts the electron's two spin states.</Fragment>
 </KeyEq>
+
+<History title="A thesis on the ionisation of atoms" year="1920">
+<Portrait src="/img/people/saha.jpg" name="Meghnad Saha" years="1893–1956" credit="Aliva Sahoo" license="CC BY-SA 4.0" href="https://commons.wikimedia.org/wiki/File:Meghnad_Saha.jpg" />
+
+Meghnad Saha, an Indian physicist working at the University of Calcutta, was the first to realise that a star's spectrum is a thermometer *and* a barometer at once, if you apply the right piece of chemistry: treat ionisation as a reversible reaction and apply the same law of mass action that a chemist would use for any equilibrium. His 1920 equation let astronomers, for the first time, read off both temperature and pressure/density directly from which ionisation stages' lines were present — turning stellar classification from a taxonomy of shapes into physics. Saha later became a member of the Indian parliament and championed large scientific institutions and river-management projects; the crater Saha on the Moon and India's Meghnad Saha Institute of Nuclear Physics are named for him.
+</History>
 
 <Aside>**Why $n_e$ appears.** Saha's equation has electron density, not just temperature, on the ionisation side. More free electrons around make recombination (the reverse reaction) more likely, pushing the balance back toward the neutral stage — exactly like adding a product shifts a chemical equilibrium. Stellar atmospheres are dense enough, and cool stars' free electrons scarce enough, that this matters: a red giant's puffed-up, low-density outer layers are *more* ionised at fixed $T$ than a dwarf's compact photosphere.</Aside>
 
@@ -222,9 +269,17 @@ Stack spectra like the flagship's across the full temperature range and a natura
 | K | 3,700–5,200 | orange | Metal lines, molecular bands start | Arcturus |
 | M | 2,400–3,700 | red | TiO bands dominate | Betelgeuse, Proxima |
 
+<Photo src="/img/spectra/betelgeuse.jpg" alt="Betelgeuse as a bright central blob surrounded by a faint, clumpy orange envelope of ejected material, in infrared" credit="ESA/Herschel/PACS/L. Decin et al." license="Public domain" href="https://images.nasa.gov/details/PIA16680" size="wide" aspect="1 / 1">
+**Betelgeuse's circumstellar envelope, Herschel Space Observatory (infrared).** Betelgeuse is a red supergiant (spectral type M1-M2), cool enough that TiO bands dominate its visible spectrum. This far-infrared view shows the clumpy shell of gas and dust it has shed — material it will keep shedding until it ends as a core-collapse supernova (Chapter 16).
+</Photo>
+
 This looks alphabetically scrambled because it *is*: the sequence was first ordered A through (roughly) P purely by the strength of hydrogen lines, before anyone knew what set that strength. Once astronomers understood that hydrogen-line strength is not monotonic in temperature (the peak you found in the figure above), that ordering had to be scrambled and re-sorted by temperature — and O, B, A, F, G, K, M is what survived the reshuffling.
 
-<Aside>**Cecilia Payne-Gaposchkin, 1925.** Applying the still-new Saha equation to stellar spectra in her Harvard PhD thesis, Payne showed that the enormous strength of hydrogen and helium lines across the spectral sequence implied that stars are made almost entirely of hydrogen and helium — a result so at odds with the accepted view (that stars had roughly Earth-like composition) that her thesis advisor persuaded her to call it merely "spectroscopically indicated" rather than physically real. Henry Norris Russell, who had held the conventional view, confirmed her result independently four years later and is sometimes wrongly credited with it. Payne's thesis is now considered one of the most consequential in the history of astronomy: stars — and hence the ordinary matter of the universe — are mostly hydrogen, not rock.</Aside>
+<History title="The most brilliant PhD thesis ever written in astronomy" year="1925">
+<Portrait src="/img/people/payne-gaposchkin.jpg" name="Cecilia Payne-Gaposchkin" years="1900–1979" credit="Smithsonian Institution / Science Service, restored by Adam Cuerden" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Cecilia_Helena_Payne-Gaposchkin_(1900-1979)_-_Science_Service.png" />
+
+Applying the still-new Saha equation to stellar spectra in her Harvard PhD thesis, Cecilia Payne showed that the enormous strength of hydrogen and helium lines across the spectral sequence implied that stars are made almost entirely of hydrogen and helium — a result so at odds with the accepted view (that stars had roughly Earth-like composition) that her thesis advisor, Henry Norris Russell, persuaded her to call it merely "spectroscopically indicated" rather than physically real. Russell, who had held the conventional view, confirmed her result independently four years later and for decades was wrongly credited with it alone. Astronomer Otto Struve later called her thesis "the most brilliant PhD thesis ever written in astronomy." Stars — and hence the ordinary matter of the universe — are mostly hydrogen, not rock.
+</History>
 
 Within a class, decimal sub-types (G2 for the Sun, M1 for Betelgeuse, M5.5 for Proxima Centauri) interpolate temperature further; luminosity classes (Ia, Ib, II…V) added by the Morgan-Keenan system separate giants and supergiants from main-sequence dwarfs of the same temperature by subtle differences in line *widths and ratios* — lower-density giant atmospheres show narrower pressure-broadened lines and different Saha balances at fixed $T$, exactly the density-dependence the Saha equation predicts.
 
@@ -237,6 +292,10 @@ Everything so far has been about *which* wavelengths appear. Their *exact* wavel
 **Cosmological redshift.** On the largest scales, the systematic recession of distant galaxies stretches every line by the same factor $1+z$, not because galaxies are "moving through" space in the ordinary sense but because space itself is expanding while the light is in transit (Chapter 25). The same Balmer and Ca II H&K lines this chapter builds appear in every galaxy's integrated spectrum, redshifted by anywhere from a percent (nearby galaxies) to a factor of several (the most distant galaxies DESI and JWST have found) — spectroscopy is how essentially every cosmological redshift in this book was actually measured.
 
 **Exoplanet atmospheres.** During a transit, starlight grazes an exoplanet's upper atmosphere on its way to us, picking up narrow absorption features from whatever gases are there. JWST's transmission spectra of exoplanets have detected water, carbon dioxide, methane, and sulfur dioxide this way — Kirchhoff's third law, applied to a planet's atmosphere instead of a stellar photosphere, at a distance of hundreds of light-years.
+
+<Photo src="/img/spectra/wasp96b.jpg" alt="A graph of light blocked (parts per million) versus wavelength in microns, with data points, error bars and a best-fit model showing water-vapour absorption peaks, beside an illustration of the hot gas-giant exoplanet WASP-96 b" credit="NASA, ESA, CSA, STScI" license="Public domain" href="https://images.nasa.gov/details/wasp-96_b_transmission_spectrum" size="wide" aspect="1920 / 1291">
+**WASP-96 b's transmission spectrum, JWST/NIRISS (2022).** Each white point is the fraction of starlight blocked at one wavelength as the planet's atmosphere transits in front of its star; the bumps are water-vapour absorption. This is Kirchhoff's third law again — starlight passing through a cooler absorbing gas — measured for a planet 1,150 light-years away instead of the Sun's photosphere.
+</Photo>
 
 **Molecular bands.** Below about 4,000 K, individual atomic lines share the spectrum with broad **molecular bands** — thousands of unresolved rotational-vibrational lines from molecules like TiO and VO, whose band heads pile up sharply at particular wavelengths (visible as the ramps in this chapter's flagship once you push the temperature slider down into the M-star range). The **G-band**, a CH molecular feature near 430.5 nm prominent in G and early K stars, gave that whole spectral class its letter long before anyone knew it was a carbon compound rather than an atomic line.
 

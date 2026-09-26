@@ -144,6 +144,8 @@ Guidelines:
 
 ## Real images
 
+> **Privacy:** never put the user's email or any personal data in HTTP requests. For every `curl` to external APIs and CDNs, use `-A "astro-course/1.0 (educational)"` as the User-Agent.
+
 Where they help and look beautiful, include **real astronomical images from reputable sources**. A chapter should usually have 2–5, used as openers, "what it really looks like" moments, or comparisons with the sims.
 
 - **Allowed sources** (all free to reuse with credit): NASA (public domain; `images.nasa.gov` has an API at `https://images-api.nasa.gov/search?q=…&media_type=image`), ESA/Webb (`esawebb.org`, CC BY 4.0), ESA/Hubble (`esahubble.org`, CC BY 4.0), ESO (`eso.org/public/images`, CC BY 4.0), NOIRLab/NSF (`noirlab.edu/public/images`, CC BY 4.0), the EHT Collaboration (via ESO, CC BY 4.0), NASA/SDO, JPL. Do **not** use Wikipedia, stock sites or anything with unclear licensing.
@@ -178,7 +180,7 @@ import Photo from '../../components/Photo.astro';
      mu: ['Mean molecular weight', 'Average particle mass in units of m_p; ionised hydrogen has μ ≈ 0.5, since each proton brings a free electron.'],
    }} />
    ```
-   The format is `[name, explanation]` or `[name, explanation, value]`. Keep explanations to one or two sentences and **explain the role** ("in the exponent, so tiny temperature changes matter enormously"), not just the name. Escape apostrophes as `\\'` inside the MDX string literals.
+   The format is `[name, explanation]` or `[name, explanation, value]`. Keep explanations to one or two sentences and **explain the role** ("in the exponent, so tiny temperature changes matter enormously"), not just the name. Escape apostrophes as `\'` (single backslash) inside the MDX string literals.
 3. **Constants are predefined globally** under their key in `src/lib/physics/constants.ts`, so `\term{G}{G}`, `\term{c}{c}`, `\term{h}{h}`, `\term{hbar}{\hbar}`, `\term{kB}{k_B}`, `\term{sigma}{\sigma}`, `\term{me}{m_e}`, `\term{mp}{m_p}`, `\term{Msun}{M_\odot}` and the rest show their value and a note automatically. You may override one in `<Terms>` to add chapter-specific context.
 4. In dev, the console warns about every `data-term` that has no definition. **Make sure there are no such warnings.**
 5. Combined terms can have their own id (e.g. `\term{GMterm}{GM}`). Operators and plain numbers don't need terms.

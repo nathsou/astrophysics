@@ -9,12 +9,25 @@ import Fermi from '../../components/Fermi.astro';
 import KeyEq from '../../components/KeyEq.astro';
 import Hood from '../../components/Hood.astro';
 import Predict from '../../components/Predict.astro';
-import C from '../../components/C.astro';
 import Var from '../../components/Var.astro';
 import Out from '../../components/Out.astro';
 import Level from '../../components/Level.astro';
 import Tiers from '../../components/Tiers.astro';
 import Photo from '../../components/Photo.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  Xi: ['Composition (mass fractions)', 'The mix of hydrogen, helium and heavier elements; together with mass it fixes the whole stellar structure (the Vogt–Russell theorem).'],
+  Lsym: ['Luminosity', 'Total power radiated, in watts or L☉. The main sequence is steep in mass: L grows almost as the 3.5th power of M.'],
+  Rsym: ['Radius', 'Surface radius, in metres or R☉. Sets the emitting area, so it enters T_eff to the 2nd power.'],
+  Teff: ['Effective temperature', 'The blackbody temperature that reproduces a star’s luminosity at its radius: L = 4πR²σT_eff⁴.'],
+  Msym: ['Mass', 'The single most important number for a main-sequence star: everything else in this chapter is a function of it.'],
+  LEdd: ['Eddington luminosity', 'The luminosity at which outward radiation pressure on free electrons exactly balances inward gravity on the gas they drag with them.'],
+  tauMS: ['Main-sequence lifetime', 'Time spent burning hydrogen in the core: roughly fuel (proportional to M) divided by burn rate (proportional to L, itself proportional to M^3.5), giving M^-2.5 overall.'],
+  tauSun: ['Solar-calibrated lifetime constant', 'About 10 billion years: the Sun’s own main-sequence lifetime, used to normalise the scaling law for every other mass.'],
+}} />
 
 ## A scatter plot that isn't a scatter
 
@@ -35,7 +48,11 @@ Plot enough stars this way and a pattern jumps out: roughly 90% of all stars, in
 </Fragment>
 </Tiers>
 
-<Aside>**Annie Jump Cannon.** The spectral classes that make the x-axis possible — O, B, A, F, G, K, M, ordered by *decreasing* temperature despite the alphabetically odd order — are Cannon's. Working at Harvard, she classified around 350,000 stellar spectra by eye between 1911 and 1915, reducing an earlier alphabetical scheme (A through Q, based on hydrogen line strength) down to the temperature sequence still in use. "Oh, Be A Fine Girl/Guy, Kiss Me" is the traditional mnemonic; the *why* — hydrogen lines peak at intermediate temperature, not at the hottest stars — is the subject of [Chapter 5](/ch/spectra/).</Aside>
+<History title="Three hundred and fifty thousand spectra, by eye" year="1911–1915">
+<Portrait src="/img/people/cannon.jpg" name="Annie Jump Cannon" years="1863–1941" credit="New York World-Telegram and the Sun Newspaper" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Annie_Jump_Cannon_1922_Portrait.jpg">Classified more stars than anyone in history, entirely by eye.</Portrait>
+
+The spectral classes that make the x-axis possible — O, B, A, F, G, K, M, ordered by *decreasing* temperature despite the alphabetically odd order — are Cannon's. Working as one of the Harvard College Observatory's "computers" (a team of women hired, in part, because the observatory's director considered them more careful — and cheaper — than the men he could otherwise afford), she classified around 350,000 stellar spectra by eye between 1911 and 1915, reducing an earlier alphabetical scheme (A through Q, based on raw hydrogen line strength) down to the temperature sequence still in use today. She could classify roughly three stars a minute from photographic plates. "Oh, Be A Fine Girl/Guy, Kiss Me" is the traditional mnemonic; the *why* — hydrogen lines peak at intermediate temperature, not at the hottest stars — waited for quantum mechanics and is the subject of [Chapter 5](/ch/spectra/).
+</History>
 
 ### Two axes, two conventions
 
@@ -54,24 +71,30 @@ Theorists plot the same information as a **theoretical HR diagram**: $\log(L/L_\
 
 ## Why a band, not a cloud
 
-Stellar structure ([Chapter 11](/ch/stellar-structure/)) shows that a star in hydrostatic and thermal equilibrium is almost completely determined by two numbers: its mass and its chemical composition. Fix those, and the whole internal structure — pressure, density, temperature at every radius, and hence the luminosity and radius at the surface — follows from four coupled differential equations with no free parameters left over. This is the **Vogt–Russell theorem**, stated informally by both Heinrich Vogt and Henry Norris Russell in the 1920s: *for a given mass and composition, there is (generically) one equilibrium structure.*
+<History title="The theorem that explains its own diagram" year="1920s">
+<Portrait src="/img/people/russell.jpg" name="Henry Norris Russell" years="1877–1957" credit="Unknown author" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Portrait_of_Henry_Norris_Russell.jpg">Co-discovered the diagram, then helped explain why it exists.</Portrait>
+
+Russell did not stop at plotting the diagram that bears his and Hertzsprung's names — he spent the following decade helping work out *why* it looks the way it does. Heinrich Vogt, in Germany, and Russell, at Princeton, independently arrived at essentially the same conclusion: a star's mass and composition, once fixed, leave no freedom in its structure. It is a remarkable claim — that four coupled differential equations plus two numbers pin down everything about a star — and it is the reason a plot of luminosity against temperature turns out to trace a single curve rather than fill the plane. Neither Vogt nor Russell proved it rigorously (the modern theorem has known exceptions, mostly around unstable or convectively strange structures), but the informal statement below is accurate for essentially every real star on the main sequence.
+</History>
+
+Stellar structure ([Chapter 11](/ch/stellar-structure/)) shows that a star in hydrostatic and thermal equilibrium is almost completely determined by two numbers: its mass and its chemical composition. Fix those, and the whole internal structure — pressure, density, temperature at every radius, and hence the luminosity and radius at the surface — follows from four coupled differential equations (new to these? see [Appendix A5](/ch/primer-odes/)) with no free parameters left over. This is the **Vogt–Russell theorem**, stated informally by both Heinrich Vogt and Henry Norris Russell in the 1920s: *for a given mass and composition, there is (generically) one equilibrium structure.*
 
 That is the entire reason the main sequence is a *line* and not a *cloud*. Vary the mass continuously from the smallest hydrogen-burning star to the largest stars that exist, holding composition fixed, and you sweep out a one-parameter family of equilibrium structures — a curve embedded in the $(L, T_\mathrm{eff})$ plane. The main sequence *is* that curve, traced out by mass. Every point on it is a star quietly fusing hydrogen to helium in its core, holding itself up against gravity with the pressure that fusion's heat provides ([Chapters 11–13](/ch/stellar-structure/)). Move along the sequence and you are moving in mass: the lower-right end is red dwarfs a tenth of a solar mass, the upper-left end is blue giants a hundred times heavier.
 
 <KeyEq title="The Vogt–Russell theorem (informal)">
 $$
-(M, X_i) \;\longrightarrow\; \{\rho(r),\, P(r),\, T(r),\, L(r)\} \;\longrightarrow\; (L, R, T_\mathrm{eff})
+(\term{Msym}{M},\, \term{Xi}{X_i}) \;\longrightarrow\; \{\rho(r),\, P(r),\, T(r),\, L(r)\} \;\longrightarrow\; (\term{Lsym}{L},\, \term{Rsym}{R},\, \term{Teff}{T_\mathrm{eff}})
 $$
-<Fragment slot="where">Given a mass $M$ and a composition $X_i$ (mass fractions of H, He, metals), the structure equations fix the star's internal profile essentially uniquely, and hence its surface luminosity $L$, radius $R$ and $T_\mathrm{eff} = (L/4\pi R^2\sigma)^{1/4}$. Composition and evolutionary stage are the two things that move a star *off* the zero-age main sequence for a given mass.</Fragment>
+<Fragment slot="where">Given a mass <span data-term="Msym">M</span> and a composition <span data-term="Xi">X_i</span> (mass fractions of H, He, metals), the structure equations fix the star's internal profile essentially uniquely, and hence its surface <span data-term="Lsym">luminosity L</span>, <span data-term="Rsym">radius R</span> and <span data-term="Teff">T_eff</span> $= (L/4\pi R^2\sigma)^{1/4}$. Composition and evolutionary stage are the two things that move a star *off* the zero-age main sequence for a given mass.</Fragment>
 </KeyEq>
 
 ### The scaling laws, assembled
 
-[Chapters 11–13](/ch/stellar-structure/) derived, from hydrostatic equilibrium, the virial theorem, radiative diffusion and Kramers-like opacities, that the main sequence should approximately obey power laws in mass. They are not exact — real stars have convective cores, changing opacity regimes, and electron degeneracy effects at the low-mass end — but they capture the physics remarkably well over two and a half decades of mass:
+[Chapters 11–13](/ch/stellar-structure/) derived, from hydrostatic equilibrium, the virial theorem, radiative diffusion and Kramers-like opacities, that the main sequence should approximately obey power laws in mass (a refresher on reading and manipulating power laws: [Appendix A2](/ch/primer-functions/)). They are not exact — real stars have convective cores, changing opacity regimes, and electron degeneracy effects at the low-mass end — but they capture the physics remarkably well over two and a half decades of mass:
 
 <KeyEq title="Main-sequence scaling relations">
 $$
-\frac{L}{L_\odot} \approx \left(\frac{M}{M_\odot}\right)^{3.5}, \qquad \frac{R}{R_\odot} \approx \left(\frac{M}{M_\odot}\right)^{0.8}
+\frac{\term{Lsym}{L}}{L_\odot} \approx \left(\frac{\term{Msym}{M}}{M_\odot}\right)^{3.5}, \qquad \frac{\term{Rsym}{R}}{R_\odot} \approx \left(\frac{M}{M_\odot}\right)^{0.8}
 $$
 <Fragment slot="where">Both are piecewise in practice — the luminosity exponent softens toward $\approx 4$ near 1 $M_\odot$ and flattens to $\approx 1$ above $\sim$20 $M_\odot$, where radiation pressure and electron-scattering opacity take over and the star approaches the Eddington limit (below). The radius exponent is closer to 0.6–0.9 depending on the mass range; both are calibrated here to pass through the Sun. Combined with $T_\mathrm{eff}^4 = L/4\pi R^2\sigma$, they predict $T_\mathrm{eff} \propto M^{0.45}$ — massive stars are hotter *and* bigger *and* far brighter, all at once.</Fragment>
 </KeyEq>
@@ -92,15 +115,26 @@ The Sun's luminosity is $L_\odot \approx 3.83\times10^{26}$ W, and it has shone 
 
 The main sequence does not run forever in either direction. Both ends are set by real physical limits, not observational bias.
 
+<Tiers>
+<Fragment slot="l1">
+Squeeze too little mass together and the core never gets hot and dense enough to strike a match: below about 75 Jupiter masses, gravity simply cannot compress the gas enough to ignite steady hydrogen fusion, and you get a **brown dwarf** — a failed star that glows faintly from leftover formation heat and slowly fades, rather than shining steadily for billions of years. Pile on too much mass instead, and the star becomes so luminous that the pressure of its own light starts blowing its outer layers away faster than it can hold onto them. That caps real stars at somewhere around 150–300 Suns' worth of mass.
+</Fragment>
+<Fragment slot="l2">
 **The lower end** is set by whether the core ever gets hot enough to ignite sustained hydrogen fusion at all. Below about **0.075 M☉** (roughly 75 Jupiter masses), electron degeneracy pressure — a quantum-mechanical floor on how compressed matter can be pushed by gravity ([Chapter 16](/ch/stellar-death/)) — halts the core's contraction before the temperature reaches the roughly $3\times10^6$ K needed for the proton–proton chain to run efficiently. These failed stars are **brown dwarfs**: they still emit substantial infrared light for a while from the pure gravitational heat of formation, and low-mass ones can briefly fuse deuterium (down to about **13 Jupiter masses**, the "deuterium-burning limit," often used to separate brown dwarfs from planets) and, above roughly 65 Jupiter masses, lithium. But without steady-state hydrogen fusion they simply cool and fade over billions of years, sliding down and to the right on the HR diagram forever rather than settling onto the main sequence.
+</Fragment>
+</Tiers>
 
 **The upper end** is set by the **Eddington limit**: above a critical luminosity, radiation pressure on the outer layers overwhelms gravity and the star cannot hold itself together. Observationally, the most massive well-measured stars top out around **150–300 M☉** — R136a1, in the Tarantula Nebula, is the current record-holder at roughly 200 M☉ (revised down from early estimates near 250–320 M☉ as models improved) and about 4.7 million L☉. Whether significantly more massive stars can form and briefly survive is an open question tied to how efficiently radiation pressure disrupts the accreting gas during formation ([Chapter 7](/ch/star-formation/)).
 
+<Photo src="/img/main-sequence/tarantula.jpg" alt="The Tarantula Nebula, a bright star-forming region with orange filaments of glowing dust surrounding clusters of young blue stars" credit="NASA / JPL-Caltech" license="Public domain" href="https://images.nasa.gov/details/PIA05062" size="wide" aspect="16 / 10">
+**The Tarantula Nebula.** R136, the dense star cluster near its centre, hosts R136a1 — at roughly 200 M☉, the most massive star known — along with dozens of other stars above 50 M☉. All are close enough to the Eddington limit that radiation pressure drives strong winds off their surfaces.
+</Photo>
+
 <KeyEq title="Eddington luminosity">
 $$
-L_\mathrm{Edd} = \frac{4\pi G M m_p c}{\sigma_T}
+\term{LEdd}{L_\mathrm{Edd}} = \frac{4\pi \term{G}{G} \term{Msym}{M} \term{mp}{m_p} \term{c}{c}}{\term{sigmaT}{\sigma_T}}
 $$
-<Fragment slot="where">$\sigma_T$ is the Thomson cross-section <C k="sigmaT" />, $m_p$ the proton mass. Above $L_\mathrm{Edd}$, radiation pressure on free electrons (which drag the protons along electrostatically) exceeds gravity's pull on the gas. For $M=100\,M_\odot$, $L_\mathrm{Edd} \approx 1.3\times10^{31}$ W $\approx 3.3\times10^4\,L_\odot \times M/M_\odot$ — and real O stars run close enough to this limit that radiatively driven winds strip mass at rates of $10^{-6}$–$10^{-5}\,M_\odot$/yr, shortening their already-short lives.</Fragment>
+<Fragment slot="where"><span data-term="sigmaT">$\sigma_T$</span> is the Thomson cross-section, <span data-term="mp">$m_p$</span> the proton mass. Above <span data-term="LEdd">$L_\mathrm{Edd}$</span>, radiation pressure on free electrons (which drag the protons along electrostatically) exceeds gravity's pull on the gas. For $M=100\,M_\odot$, $L_\mathrm{Edd} \approx 1.3\times10^{31}$ W $\approx 3.3\times10^4\,L_\odot \times M/M_\odot$ — and real O stars run close enough to this limit that radiatively driven winds strip mass at rates of $10^{-6}$–$10^{-5}\,M_\odot$/yr, shortening their already-short lives.</Fragment>
 </KeyEq>
 
 <Aside>**Both limits are about pressure fighting gravity**, just at opposite ends: degeneracy pressure stops fusion from starting at the bottom; radiation pressure stops the star from holding together at the top. The main sequence occupies the roughly four-decade window in mass where neither veto applies.</Aside>
@@ -111,13 +145,20 @@ $$
 
 ## How long does it last?
 
+<Tiers>
+<Fragment slot="l1">
+Think of a star as a fuel tank with a burn rate. The tank size is the mass; the burn rate is the luminosity. A bigger tank should last longer — except main-sequence stars don't work that way, because bigger stars also burn *far* faster. A star ten times the Sun's mass has ten times the fuel but roughly $10^{3.5}\approx 3000$ times the burn rate, so it actually lasts about 300 times *less* long. Mass buys a star brightness, not longevity.
+</Fragment>
+<Fragment slot="l2">
 A star's main-sequence lifetime is, to order of magnitude, its fuel supply divided by its burn rate: $\tau \sim M/L$. Since $M$ is the fuel reservoir (only the fusable fraction of it, and only the innermost part that ever gets hot enough, but those are roughly constant fractions across masses) and $L$ is literally the rate that reservoir is being spent, and since $L \propto M^{3.5}$:
+</Fragment>
+</Tiers>
 
 <KeyEq title="Main-sequence lifetime">
 $$
-\tau_\mathrm{MS} \approx \tau_\odot \left(\frac{M}{M_\odot}\right)^{-2.5}, \qquad \tau_\odot \approx 10^{10}\,\text{yr}
+\term{tauMS}{\tau_\mathrm{MS}} \approx \term{tauSun}{\tau_\odot} \left(\frac{\term{Msym}{M}}{M_\odot}\right)^{-2.5}, \qquad \tau_\odot \approx 10^{10}\,\text{yr}
 $$
-<Fragment slot="where">$\tau_\odot$ is calibrated to the Sun's roughly 10-billion-year main-sequence lifespan (of which it has used about 4.6 Gyr). The steep negative exponent is the single most important fact in this chapter: massive stars are not just brighter, they are *dramatically* shorter-lived, because luminosity grows so much faster than fuel supply.</Fragment>
+<Fragment slot="where"><span data-term="tauSun">$\tau_\odot$</span> is calibrated to the Sun's roughly 10-billion-year main-sequence lifespan (of which it has used about 4.6 Gyr). The steep negative exponent is the single most important fact in this chapter: massive stars are not just brighter, they are *dramatically* shorter-lived, because luminosity grows so much faster than fuel supply.</Fragment>
 </KeyEq>
 
 A star of <Var name="Mtau" value={1} min={0.08} max={150} log /> M☉ has $L \approx$ <Out name="LM" /> and a main-sequence lifetime of <Out name="tauM" />.
@@ -133,6 +174,16 @@ The main sequence is not perfectly static even while a star sits on it. As hydro
 This is not a footnote: it is the **faint young Sun paradox**. Geological evidence — liquid water, sedimentary rocks, even microbial fossils — shows Earth had liquid oceans as far back as 3.8–4 billion years ago, when the Sun was some 20–25% dimmer than today. A naive greenhouse-free Earth at that luminosity should have been frozen solid. The leading resolutions involve a much stronger greenhouse effect in the Archean atmosphere (more CO₂, and possibly more CH₄), though the exact accounting is still debated and connects directly to the long-term carbonate–silicate weathering cycle that regulates Earth's climate on geological timescales.
 
 Run the clock forward instead of back, and the same slow brightening becomes an existential deadline: at roughly **1 billion years from now**, solar luminosity will have risen enough (perhaps 10%) to trigger a runaway greenhouse and boil Earth's oceans away entirely — long before the Sun leaves the main sequence at all, let alone becomes a red giant in about 5 billion years ([Chapter 15](/ch/giants/)). Habitability has an expiry date set by main-sequence evolution alone.
+
+<Photo src="/img/main-sequence/betelgeuse.jpg" alt="An infrared image of Betelgeuse showing the red supergiant surrounded by a faint, clumpy envelope of ejected material" credit="ESA / Herschel / PACS / L. Decin et al." license="Public domain" href="https://images.nasa.gov/details/PIA16680" size="wide" aspect="1 / 1">
+**Betelgeuse's messy surroundings.** This far-infrared view shows Betelgeuse (centre) wrapped in an irregular envelope of gas and dust it has shed as it nears the end of core hydrogen burning — a preview of the post-main-sequence future the cluster sim sketches schematically for massive stars, and of [Chapter 15](/ch/giants/)'s subject in full.
+</Photo>
+
+<History title="What stars are actually made of" year="1925">
+<Portrait src="/img/people/payne-gaposchkin.jpg" name="Cecilia Payne-Gaposchkin" years="1900–1979" credit="Smithsonian Institution / Science Service" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Cecilia_Helena_Payne-Gaposchkin_(1900-1979)_-_Science_Service.jpg">Showed stars are mostly hydrogen and helium — and was initially told not to believe it.</Portrait>
+
+The composition term $X_i$ in the Vogt–Russell theorem — which elements a star is made of, and in what proportion — was itself unknown until Cecilia Payne's 1925 Radcliffe/Harvard PhD thesis, often called the most brilliant astronomy thesis ever written. Applying the new Saha ionisation theory ([Chapter 5](/ch/spectra/)) to stellar spectra, she showed that stars are overwhelmingly hydrogen and helium — a result so at odds with the era's assumption that stars shared the Earth's rocky composition that Russell himself, reviewing her thesis, persuaded her to call it "almost certainly not real." Four years later, using different methods, he confirmed she had been right all along, and belatedly gave her credit. She went on to become the first person to earn a PhD in astronomy from Radcliffe and, in 1956, the first woman promoted to full professor from within Harvard's faculty.
+</History>
 
 <Aside>**Population III, II, I.** Composition, the other Vogt–Russell input, shifts the whole main sequence slightly. The very first stars (Population III) formed from primordial hydrogen and helium with no metals at all; lower opacity and different core physics let them form at higher masses and burn slightly hotter and bluer for their mass than Population I stars like the Sun, which formed from gas enriched by many prior generations. Population II stars, found in globular clusters and galactic halos, sit in between. Metallicity is why two clusters of the same age can still look subtly different on the HR diagram.</Aside>
 
@@ -158,10 +209,14 @@ The set of predicted HR-diagram positions for a whole coeval, single-metallicity
 
 **Globular clusters** are a different animal: dense, roughly spherical swarms of $10^5$–$10^6$ stars, gravitationally bound tightly enough to survive for the age of the universe. Their turn-offs sit at $\sim$0.8 $M_\odot$ or below — 47 Tucanae and Omega Centauri clock in around 12–13 Gyr — making them some of the **oldest directly-dated objects known**. That a globular cluster's isochrone-fit age must be *less than* the age of the universe inferred independently from the cosmic microwave background (Chapters 26–27) was, historically, an important cross-check on both measurements; in the 1990s, globular-cluster ages briefly appeared to *exceed* the then-favoured cosmological age, a tension resolved by better distances (revised via Hipparcos parallaxes) and by recognising the accelerating expansion ([Chapter 25](/ch/expansion/)) that makes the universe older, at fixed expansion rate, than a matter-only model would predict.
 
+<Photo src="/img/main-sequence/47tuc.jpg" alt="A dense field of stars in the southern constellation Tucana, imaged by the Hubble Space Telescope, including the outskirts of the globular cluster 47 Tucanae" credit="NASA, ESA, and F. Ferraro (University of Bologna)" license="Public domain" href="https://images.nasa.gov/details/hubble-catches-stellar-exodus-in-action_17644845341_o" size="wide" aspect="4 / 3">
+**A stellar exodus in 47 Tucanae.** Hubble imaging of this ~12 Gyr globular cluster caught newly formed white dwarfs beginning their slow, roughly 40-million-year migration outward from the crowded cluster core — direct observational evidence for the remnants this chapter's cluster sim produces at the bottom left of the HR diagram.
+</Photo>
+
 <Hood title="sampling an IMF and aging a cluster">
 The cluster sim never integrates a single stellar-structure equation. Every star's brightness and temperature at any age is a closed-form evaluation of `evolveStar(mass, age)` in `src/sims/main-sequence/zams.ts`, so scrubbing the age slider is exact and free of simulation state — no accumulated error, no need to replay history.
 
-**Sampling the IMF.** A Kroupa-style broken power law, $dN/dM \propto M^{-1.3}$ for 0.1–0.5 M☉ and $\propto M^{-2.3}$ above, is sampled by inverting its cumulative distribution — the standard trick for drawing from any power law without rejection sampling:
+**Sampling the IMF.** A Kroupa-style broken power law, $dN/dM \propto M^{-1.3}$ for 0.1–0.5 M☉ and $\propto M^{-2.3}$ above, is sampled by inverting its cumulative distribution — the standard trick for drawing from any probability distribution (background: [Appendix A7](/ch/primer-thermo/)) without rejection sampling:
 
 ```ts
 export function sampleKroupaMass(rng: () => number): number {

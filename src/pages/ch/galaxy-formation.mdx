@@ -15,6 +15,36 @@ import Out from '../../components/Out.astro';
 import Level from '../../components/Level.astro';
 import Tiers from '../../components/Tiers.astro';
 import Photo from '../../components/Photo.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  Tvir: ['Virial temperature', 'The temperature infalling gas is shocked to. It grows as the square of the halo\'s circular speed, so bigger halos have much hotter gas.'],
+  Vc: ['Circular speed of the halo', 'Sets the depth of the gravitational well. Squared in T_vir: double V_c and the gas is four times hotter.'],
+  mu: ['Mean molecular weight', 'Average particle mass in units of m_p; about 0.6 for ionised primordial gas, because free electrons count as particles.'],
+  T: ['Gas temperature', 'Sets how much heat the gas holds (numerator of t_cool) and, through Λ(T), how fast it radiates.'],
+  n: ['Particle number density', 'Radiation needs two-body collisions, so power goes as n² while stored heat goes as n: denser gas cools faster, as 1/n.'],
+  lam: ['Cooling function Λ(T)', 'All the atomic physics in one curve: peaks near 10⁵ K (line emission), falls in the ~10⁷ K bremsstrahlung regime. Bigger Λ, shorter cooling time.'],
+  tcool: ['Cooling time', 'How long gas takes to radiate its thermal energy. Compare with t_ff: shorter means the gas collapses and forms stars.'],
+  tff: ['Free-fall time', 'Collapse time with no pressure support; depends only on density, as 1/√ρ.'],
+  rho: ['Density', 'Mass per volume; denser regions collapse faster.'],
+  Rd: ['Disk scale length', 'The distance over which the disk\'s surface brightness falls by a factor e. Proportional to the spin: slowly spinning halos make compact disks.'],
+  lambda: ['Spin parameter λ', 'How much the halo rotates compared with what would be needed to support it; typically 0.035. Small, but it sets the whole size of the disk.'],
+  Rvir: ['Virial radius', 'The edge of the halo, where the mean density is about 200 times the cosmic mean. The disk is about 40 times smaller.'],
+  Ledd: ['Eddington luminosity', 'The brightness at which radiation pressure balances gravity. It grows in proportion to the mass.'],
+  Mbh: ['Black-hole (central) mass', 'Gravity scales with it, so the luminosity limit scales with it too.'],
+  sigT: ['Thomson cross-section', 'The effective target area an electron presents to a photon. Bigger σ_T means light pushes harder, which lowers the limit.', '6.65×10⁻²⁹ m²'],
+  eps: ['Radiative efficiency ε', 'The fraction of infalling rest-mass energy radiated away: 0.057 (non-spinning) to 0.42 (maximal spin). More efficient means slower growth, since more energy pushes back per gram swallowed.'],
+  tS: ['Salpeter time', 'The e-folding time of Eddington-limited growth, about 50 Myr for ε = 0.1. Independent of mass, so growth is exponential.'],
+  bapp: ['Apparent transverse speed', 'What we measure on the sky, in units of c. Can exceed 1 without anything moving faster than light.'],
+  beta: ['True speed β = v/c', 'The closer to 1, the more the blob chases its own light and compresses the arrival times.'],
+  theta: ['Viewing angle', 'Angle between the jet and our line of sight. Small angles compress time most; the maximum apparent speed is at cos θ = β.'],
+  gamma: ['Lorentz factor Γ', '1/√(1−β²). The maximum apparent speed is βΓ.'],
+  sigmav: ['Bulge velocity dispersion σ', 'The spread of stellar speeds, a measure of the bulge\'s depth of potential. Black-hole mass scales as roughly its 4th–5th power.'],
+  psi: ['Star-formation rate density', 'Solar masses of new stars per year per cubic megaparsec of the universe.'],
+  z: ['Redshift', 'How much the universe has expanded since the light left: 1 + z is the stretch factor.'],
+}} />
 
 ## Halos first, galaxies second
 
@@ -45,7 +75,7 @@ When gas falls into a halo it crashes into the gas already there and heats up, l
 A virialised halo of mass $M$ and radius $R$ has kinetic energy equal to half the magnitude of its potential energy. That fixes a characteristic circular speed $V_c = \sqrt{GM/R}$. It also fixes a temperature: gas that falls in at speed $V_c$ is shock-heated until its thermal energy per particle matches that kinetic energy. The result is the **virial temperature**
 
 $$
-T_\text{vir} = \frac{\mu m_p V_c^2}{2k_B} \approx 3.6\times10^5\ \text{K}\left(\frac{V_c}{100\ \text{km/s}}\right)^2,
+\term{Tvir}{T_\text{vir}} = \frac{\term{mu}{\mu}\, \term{mp}{m_p} \term{Vc}{V_c}^2}{2\term{kB}{k_B}} \approx 3.6\times10^5\ \text{K}\left(\frac{\term{Vc}{V_c}}{100\ \text{km/s}}\right)^2,
 $$
 
 with $\mu \approx 0.6$ for ionised primordial gas. A dwarf halo with $V_c = 30$ km/s has $T_\text{vir} \sim 3\times10^4$ K. The Milky Way halo, with $V_c \approx 160$–220 km/s, has about $10^6$ K. A rich cluster, with $V_c \approx 1500$ km/s, has about $10^8$ K. The hot gas in clusters glows in X-rays, which is one way we know this picture is right.
@@ -63,14 +93,14 @@ How fast gas cools depends on its temperature. Gas at around 100,000 K cools ver
 <Fragment slot="l2">
 Dark matter cannot radiate, so a dark halo stays puffy forever. Gas can radiate. Once it has been heated to $T_\text{vir}$, it sits in rough hydrostatic equilibrium, like a star's atmosphere, and it can only sink to the centre by *losing energy*. The whole of galaxy formation turns on a comparison of two clocks:
 
-- the **free-fall time** $t_\text{ff} = \sqrt{3\pi / 32 G\rho}$, how long the gas takes to collapse if nothing holds it up; and
+- the **free-fall time** $\term{tff}{t_\text{ff}} = \sqrt{3\pi / 32 \term{G}{G}\term{rho}{\rho}}$, how long the gas takes to collapse if nothing holds it up; and
 - the **cooling time**, how long the gas takes to radiate away its thermal energy.
 
-For gas with particle density $n$ at temperature $T$, the thermal energy density is about $\tfrac32 n k_B T$. The radiated power per unit volume is $n^2\Lambda(T)$: two-body collisions excite atoms or accelerate electrons, so the rate goes as density squared. The function $\Lambda(T)$ is the **cooling function**, and it contains all the atomic physics (see [Chapter 6](/ch/ism/)).
+For gas with particle density $n$ at temperature $T$, (new to temperature and ideal gases? see [Appendix A7](/ch/primer-thermo/)) the thermal energy density is about $\tfrac32 n k_B T$. The radiated power per unit volume is $n^2\Lambda(T)$: two-body collisions excite atoms or accelerate electrons, so the rate goes as density squared. The function $\Lambda(T)$ is the **cooling function**, and it contains all the atomic physics (see [Chapter 6](/ch/ism/)).
 
 <KeyEq title="Cooling time">
 $$
-t_\text{cool} = \frac{\tfrac32\, n\, k_B \htmlData{term=T}{T}}{\htmlData{term=n}{n}^2\, \htmlData{term=lam}{\Lambda(T)}} \;\propto\; \frac{T}{n\,\Lambda(T)}
+\term{tcool}{t_\text{cool}} = \frac{\tfrac32\, \term{n}{n}\, \term{kB}{k_B} \term{T}{T}}{\term{n}{n}^2\, \term{lam}{\Lambda(T)}} \;\propto\; \frac{T}{n\,\Lambda(T)}
 $$
 <Fragment slot="where"><span data-term="n">$n$</span> is the particle number density, <span data-term="T">$T$</span> the temperature and <span data-term="lam">$\Lambda(T)$</span> the cooling function (erg cm³ s⁻¹). Gas that can cool within a free-fall time, $t_\text{cool} < t_\text{ff}$, collapses and can form stars. Gas that cannot cool stays as a hot, pressure-supported halo.</Fragment>
 </KeyEq>
@@ -95,6 +125,12 @@ The physics works like this. Below this mass, halos are cool enough to sit on th
 
 </Level>
 
+<History title="Why galaxies are the size they are" year="1977">
+<Portrait src="/img/people/rees-martin.jpg" name="Martin Rees" years="b. 1942" credit="Roger Harris" license="CC BY 3.0" href="https://commons.wikimedia.org/wiki/File:Official_portrait_of_Lord_Rees_of_Ludlow_crop_2.jpg" />
+
+In 1977 three papers appeared within months of each other, from Martin Rees and Jeremiah Ostriker at Cambridge, Joseph Silk at Berkeley, and James Binney at Oxford. All three made the same comparison of cooling time with free-fall time, and all found the same characteristic mass of about $10^{12}$ M☉. The next year Simon White and Rees added the missing piece: gas cools inside dark halos that had already formed by hierarchical clustering. That 1978 paper is the ancestor of every galaxy-formation model since, including the toy one in this chapter.
+</History>
+
 ### Hot mode and cold mode
 
 For decades, the textbook picture was that all infalling gas shocks to $T_\text{vir}$ at the virial radius and then cools slowly out of a hot atmosphere. Simulations in the 2000s (Kereš et al. 2005; Dekel & Birnboim 2006) complicated this. In halos below about $10^{11.5}$–$10^{12}$ M☉, the post-shock gas cools so fast that a stable shock cannot even form. Gas flows in at around $10^4$–$10^5$ K straight to the centre (**cold-mode accretion**). In massive halos at high redshift, the cosmic web feeds the halo through narrow, dense filaments. Their gas is dense enough to cool faster than it can be shock-heated, so **cold streams** penetrate deep into an otherwise hot halo. This is likely how galaxies at $z \sim 2$–3 sustained star-formation rates of $100$ M☉/yr. The streams are hard to observe directly because they are faint, but Lyman-α emitting nebulae around quasars and absorption lines in background sightlines are consistent with them.
@@ -110,14 +146,14 @@ Gas that cools doesn't fall straight to a point, because it is spinning slightly
 Gas that cools does not fall to a point, because it has angular momentum. Tidal torques from neighbouring structure spin up every protohalo slightly during its expansion phase (Peebles 1969; Doroshkevich 1970; White 1984). The amount is characterised by a dimensionless **spin parameter**:
 
 $$
-\lambda = \frac{J\,|E|^{1/2}}{G M^{5/2}},
+\term{lambda}{\lambda} = \frac{J\,|E|^{1/2}}{\term{G}{G} M^{5/2}},
 $$
 
-where $J$ is the angular momentum and $E$ the total energy. Simulations find a log-normal distribution with median $\lambda \approx 0.035$. That is a small number: the halo is supported almost entirely by random motions, and rotation contributes only a few per cent. But when the gas cools and contracts, it keeps its specific angular momentum $j = J/M$ while it loses energy. It spins up like an ice skater pulling in her arms, until rotation supports it. A simple calculation (Mo, Mao & White 1998) with a singular isothermal halo and an exponential disk gives the scale length
+where $J$ is the angular momentum and $E$ the total energy. Simulations find a log-normal distribution with median $\lambda \approx 0.035$. That is a small number: the halo is supported almost entirely by random motions, and rotation contributes only a few per cent. But when the gas cools and contracts, it keeps its specific angular momentum $j = J/M$ while it loses energy. (Angular momentum is reviewed in [Appendix A6](/ch/primer-mechanics/).) It spins up like an ice skater pulling in her arms, until rotation supports it. A simple calculation (Mo, Mao & White 1998) with a singular isothermal halo and an exponential disk gives the scale length
 
 <KeyEq title="Disk size from halo spin">
 $$
-\htmlData{term=Rd}{R_d} \approx \frac{\htmlData{term=lambda}{\lambda}}{\sqrt 2}\, \htmlData{term=Rvir}{R_\text{vir}}
+\term{Rd}{R_d} \approx \frac{\term{lambda}{\lambda}}{\sqrt 2}\, \term{Rvir}{R_\text{vir}}
 $$
 <Fragment slot="where"><span data-term="Rd">$R_d$</span> is the exponential scale length of the disk, <span data-term="lambda">$\lambda$</span> the halo spin parameter and <span data-term="Rvir">$R_\text{vir}$</span> the virial radius. This assumes the gas keeps the specific angular momentum of its halo. For the Milky Way, $\lambda = 0.035$ and $R_\text{vir} \approx 250$ kpc give $R_d \approx 6$ kpc. The observed value is about 2.5–3 kpc: the right order of magnitude, with the gap explained by halo concentration and by baryons pulling the halo in.</Fragment>
 </KeyEq>
@@ -183,6 +219,12 @@ Galaxies come in a remarkably small number of shapes. Edwin Hubble's 1926 "tunin
 
 <Aside>**Galaxy Zoo.** In 2007, 150,000 volunteers classified about a million Sloan galaxies by eye in the first Galaxy Zoo project. Among their finds: blue ellipticals, red spirals, and the "green peas", compact starbursts that turned out to be local analogues of the galaxies JWST now finds at $z > 6$.</Aside>
 
+<History title="Sorting the nebulae" year="1926">
+<Portrait src="/img/people/hubble-edwin.jpg" name="Edwin Hubble" years="1889–1953" credit="Johan Hagemeyer, 1931" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Studio_portrait_photograph_of_Edwin_Powell_Hubble_(cropped).JPG" />
+
+In 1924 Edwin Hubble found Cepheid variables in the Andromeda "nebula" on plates from the 100-inch Hooker telescope. That settled the Great Debate: the spiral nebulae were galaxies far outside our own. Two years later he published a classification of about 400 of them, sorted by how smooth or knotty they looked. He called ellipticals "early" and spirals "late", borrowing the language of stellar spectral types, and he was careful to say the words implied no evolution. Readers ignored the caveat for decades. The scheme itself survived almost untouched, and Hubble's real legacy, the expanding universe, came three years later ([Chapter 25](/ch/expansion/)).
+</History>
+
 ### Red sequence and blue cloud
 
 A more physical classification comes from colour. Plot the optical colour of galaxies against their stellar mass (a colour–magnitude diagram) and you find two populations:
@@ -237,7 +279,7 @@ There is a speed limit on how fast a black hole can feed. Gas falling in gets ve
 How bright can an accreting object be? Radiation pressure pushes outward on the infalling gas. The gas is mostly ionised hydrogen. Photons scatter off electrons with the Thomson cross-section $\sigma_T$, and electrostatic forces drag the protons along. At distance $r$ from a source of luminosity $L$, the photon momentum flux is $L/(4\pi r^2 c)$, so the outward force on each electron–proton pair is
 
 $$
-F_\text{rad} = \frac{\sigma_T L}{4\pi r^2 c}.
+F_\text{rad} = \frac{\term{sigT}{\sigma_T} L}{4\pi r^2 \term{c}{c}}.
 $$
 
 Gravity pulls inward mostly on the proton: $F_\text{grav} = GMm_p/r^2$. Both scale as $1/r^2$, so the distance drops out. Set them equal:
@@ -246,7 +288,7 @@ Gravity pulls inward mostly on the proton: $F_\text{grav} = GMm_p/r^2$. Both sca
 
 <KeyEq title="Eddington luminosity">
 $$
-\htmlData{term=Ledd}{L_\text{Edd}} = \frac{4\pi G \htmlData{term=Mbh}{M} m_p c}{\htmlData{term=sigT}{\sigma_T}} \approx 1.26\times10^{31}\ \text{W}\left(\frac{M}{\text{M}_\odot}\right) \approx 3.3\times10^4\,L_\odot \left(\frac{M}{\text{M}_\odot}\right)
+\term{Ledd}{L_\text{Edd}} = \frac{4\pi \term{G}{G} \term{Mbh}{M}\, \term{mp}{m_p} \term{c}{c}}{\term{sigT}{\sigma_T}} \approx 1.26\times10^{31}\ \text{W}\left(\frac{M}{\text{M}_\odot}\right) \approx 3.3\times10^4\,L_\odot \left(\frac{M}{\text{M}_\odot}\right)
 $$
 <Fragment slot="where"><span data-term="Ledd">$L_\text{Edd}$</span> is the luminosity at which radiation pressure on electrons balances gravity on protons. <span data-term="Mbh">$M$</span> is the central mass, $m_p$ the proton mass <C k="mp" /> and <span data-term="sigT">$\sigma_T$</span> the Thomson cross-section <C k="sigmaT" />. Spherically accreting gas cannot shine brighter than this for long; disks and beaming allow modest super-Eddington phases.</Fragment>
 </KeyEq>
@@ -265,10 +307,10 @@ Because the feeding limit grows with the black hole's mass, a black hole feeding
 Only a fraction $1 - \epsilon$ of the infalling mass ends up in the hole. The rest leaves as radiation. So a black hole accreting at the Eddington rate grows as
 
 $$
-\frac{dM}{dt} = \frac{(1-\epsilon)}{\epsilon}\frac{L_\text{Edd}}{c^2} = \frac{M}{t_S}, \qquad t_S = \frac{\epsilon}{1-\epsilon}\,\frac{\sigma_T c}{4\pi G m_p} \approx \frac{\epsilon}{1-\epsilon}\times 450\ \text{Myr}.
+\frac{d\term{Mbh}{M}}{dt} = \frac{(1-\term{eps}{\epsilon})}{\term{eps}{\epsilon}}\frac{\term{Ledd}{L_\text{Edd}}}{\term{c}{c}^2} = \frac{\term{Mbh}{M}}{\term{tS}{t_S}}, \qquad \term{tS}{t_S} = \frac{\term{eps}{\epsilon}}{1-\term{eps}{\epsilon}}\,\frac{\term{sigT}{\sigma_T} \term{c}{c}}{4\pi \term{G}{G} \term{mp}{m_p}} \approx \frac{\epsilon}{1-\epsilon}\times 450\ \text{Myr}.
 $$
 
-The growth is **exponential**, with e-folding time (the **Salpeter time**) of <Out name="tSal" /> for the efficiency above. It doesn't depend on the mass, because both the luminosity limit and the mass scale linearly with $M$.
+The growth is **exponential** (a refresher on exponentials is in [Appendix A2](/ch/primer-functions/)), with e-folding time (the **Salpeter time**) of <Out name="tSal" /> for the efficiency above. It doesn't depend on the mass, because both the luminosity limit and the mass scale linearly with $M$.
 
 </Level>
 
@@ -285,7 +327,7 @@ The figure shows the problem. Light seeds only work if they accrete at the Eddin
 In 2000, two teams (Ferrarese & Merritt; Gebhardt et al.) found that black-hole mass correlates tightly with the velocity dispersion of the host's bulge:
 
 $$
-M_\text{BH} \approx 3\times10^8\,\text{M}_\odot \left(\frac{\sigma}{200\ \text{km/s}}\right)^{4.4},
+\term{Mbh}{M_\text{BH}} \approx 3\times10^8\,\term{Msun}{\text{M}_\odot} \left(\frac{\term{sigmav}{\sigma}}{200\ \text{km/s}}\right)^{4.4},
 $$
 
 with only about 0.3 dex of scatter (Kormendy & Ho 2013). Equivalently, $M_\text{BH} \approx 0.5\%$ of the bulge's stellar mass. This is strange: the black hole's sphere of influence, $GM_\text{BH}/\sigma^2 \sim 10$ pc, is a thousand times smaller than the bulge. Something must connect them. The favourite explanation is feedback self-regulation. A black hole grows until its momentum-driven outflow ($L_\text{Edd}/c$) can push the gas out of the bulge. Setting $L_\text{Edd}/c \approx$ the weight of the gas shell gives $M_\text{BH} \propto \sigma^4$ (King 2003), close to the observed slope.
@@ -295,6 +337,12 @@ with only about 0.3 dex of scatter (Kormendy & Ho 2013). Equivalently, $M_\text{
 <Photo src="/img/galaxy-formation/m87-eht.jpg" alt="A glowing orange ring of radio emission around a dark central shadow" credit="EHT Collaboration" license="CC BY 4.0" href="https://www.eso.org/public/images/eso1907a/" size="text" aspect="1800 / 1048">
 **The shadow of M87\*.** The first image of a black hole, released by the Event Horizon Telescope in 2019. The ring is radio light at 1.3 mm from hot gas orbiting a black hole of 6.5 billion Suns at the centre of the giant elliptical galaxy M87, 55 million light-years away. The ring is about 40 microarcseconds across.
 </Photo>
+
+<History title="The star that wasn't" year="1963">
+<Portrait src="/img/people/schmidt-maarten.jpg" name="Maarten Schmidt" years="1929–2022" credit="Caltech, 1978" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Maarten_Schmidt_1978_(cropped).png" />
+
+In 1962 Cyril Hazard and colleagues used the Moon as a knife-edge: timing when it covered the radio source 3C 273 fixed the source's position to about a second of arc. It lined up with a 13th-magnitude "star". Maarten Schmidt at Palomar took its spectrum and found broad emission lines at wavelengths nothing matched. On 5 February 1963, writing up a paper, he noticed the lines' spacing followed the hydrogen Balmer series, shifted 16% to the red. At that redshift ($z = 0.158$), 3C 273 lies about 2 billion light-years away and outshines the Milky Way a hundredfold from a region small enough to vary within months. Schmidt later recalled going home and telling his wife that something terrible had happened at the office. Explaining such power from so small a volume led straight to accretion onto supermassive black holes, proposed by Salpeter and by Zel'dovich in 1964 and developed by Lynden-Bell in 1969.
+</History>
 
 ### One engine, many faces: AGN unification
 
@@ -326,16 +374,16 @@ Here is the trick. Suppose a blob in the jet is flying almost straight at us, at
 A blob moves at speed $\beta c$ at angle $\theta$ to our line of sight. It emits a pulse at $t = 0$ and another at $t = \Delta t$. In between, it moves $\beta c\,\Delta t\cos\theta$ toward us, so the second pulse has that much less distance to travel. The observed interval is compressed:
 
 $$
-\Delta t_\text{obs} = \Delta t\,(1 - \beta\cos\theta).
+\Delta t_\text{obs} = \Delta t\,(1 - \term{beta}{\beta}\cos\term{theta}{\theta}).
 $$
 
 The transverse distance covered is $\beta c\,\Delta t\sin\theta$. So the apparent transverse speed is
 
 <KeyEq title="Apparent superluminal speed">
 $$
-\htmlData{term=bapp}{\beta_\text{app}} = \frac{\htmlData{term=beta}{\beta}\sin\htmlData{term=theta}{\theta}}{1 - \htmlData{term=beta}{\beta}\cos\htmlData{term=theta}{\theta}}
+\term{bapp}{\beta_\text{app}} = \frac{\term{beta}{\beta}\sin\term{theta}{\theta}}{1 - \term{beta}{\beta}\cos\term{theta}{\theta}}
 $$
-<Fragment slot="where"><span data-term="bapp">$\beta_\text{app}$</span> is the apparent speed across the sky in units of $c$. <span data-term="beta">$\beta$</span> is the true speed and <span data-term="theta">$\theta$</span> the angle to the line of sight. Setting $d\beta_\text{app}/d\theta = 0$ gives a maximum at $\cos\theta = \beta$, where $\beta_\text{app} = \beta\gamma$. For Lorentz factor $\gamma = 10$, blobs can appear to move at nearly $10c$.</Fragment>
+<Fragment slot="where"><span data-term="bapp">$\beta_\text{app}$</span> is the apparent speed across the sky in units of $c$. <span data-term="beta">$\beta$</span> is the true speed and <span data-term="theta">$\theta$</span> the angle to the line of sight. Setting $d\beta_\text{app}/d\theta = 0$ gives a maximum at $\cos\theta = \beta$, where $\beta_\text{app} = \beta\term{gamma}{\gamma}$. For Lorentz factor $\gamma = 10$, blobs can appear to move at nearly $10c$.</Fragment>
 </KeyEq>
 
 </Level>
@@ -362,7 +410,7 @@ Simulations like IllustrisTNG reproduce the red sequence mainly through kinetic 
 Pull all of this back to the scale of the universe. Measure the star-formation rate per unit comoving volume at each redshift, from UV light corrected for dust, infrared re-emission, H-α and radio. You get the **Madau plot** (Madau et al. 1996; Madau & Dickinson 2014), one of the great summaries of observational cosmology. The Madau & Dickinson fit is
 
 $$
-\psi(z) = 0.015\,\frac{(1+z)^{2.7}}{1 + [(1+z)/2.9]^{5.6}}\ \ \text{M}_\odot\,\text{yr}^{-1}\,\text{Mpc}^{-3}.
+\term{psi}{\psi}(\term{z}{z}) = 0.015\,\frac{(1+\term{z}{z})^{2.7}}{1 + [(1+\term{z}{z})/2.9]^{5.6}}\ \ \text{M}_\odot\,\text{yr}^{-1}\,\text{Mpc}^{-3}.
 $$
 
 <Sim name="galaxy-formation-madau" minHeight={400}>

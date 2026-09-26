@@ -15,6 +15,24 @@ import Out from '../../components/Out.astro';
 import Level from '../../components/Level.astro';
 import Tiers from '../../components/Tiers.astro';
 import Photo from '../../components/Photo.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  m: ['Enclosed mass', 'Mass inside radius r, not the star\'s total mass. It is what actually pulls on a shell at r, by the shell theorem.'],
+  rho: ['Density', 'Local mass per volume. It sets how much weight, and how much extra enclosed mass, a shell adds.'],
+  P: ['Pressure', 'What holds the star up. It must fall outward, since the weight above any shell only decreases as you go out.'],
+  Kvir: ['Total thermal (kinetic) energy', 'The sum of ½mv² over every gas particle in the star. Proportional to temperature.'],
+  Uvir: ['Total gravitational binding energy', 'Negative: the energy cost of pulling the star apart to infinity. Bigger in magnitude for more compact, more massive stars.'],
+  muMW: ['Mean molecular weight', 'Average particle mass in units of m_p. Smaller μ (more free particles per unit mass, from ionisation) means more pressure at fixed ρ, T.'],
+  npoly: ['Polytropic index', 'Sets how stiffly pressure resists compression. Larger n means softer gas and a much more centrally concentrated star.'],
+  Kpoly: ['Polytropic constant', 'Fixed by composition and entropy (or by fundamental constants for degenerate matter) — not the same K as kinetic energy.'],
+  xi: ['Dimensionless radius', 'Radius in units of the length scale α; the star\'s surface is at ξ = ξ₁.'],
+  theta: ['Dimensionless density^(1/n)', 'Runs from 1 at the centre to 0 at the surface. Also equals T/T_c for an ideal gas, for free.'],
+  tKH: ['Kelvin\'s contraction timescale', 'How long gravitational contraction alone could power the star\'s current luminosity, with no fusion.'],
+  Tstar: ['Temperature', 'Sets how hard the gas bounces back per particle. Appears to the first power in the ideal-gas law, but to the fourth power in radiation pressure — which is why radiation pressure only matters in very hot, massive stars.'],
+}} />
 
 ## A ball of gas that holds itself up
 
@@ -34,29 +52,61 @@ A spherically symmetric, non-rotating, non-magnetic star in equilibrium is descr
 
 ### Mass continuity
 
+<Tiers>
+<Fragment slot="l1">
+Slice the star into thin onion-skin shells. Each shell adds a little mass, equal to its volume times how dense the gas is there. Add up the shells from the centre outward and, by the time you reach the surface, you've added up the whole star. It sounds obvious, but it is the bookkeeping fact that everything else in this chapter builds on.
+</Fragment>
+<Fragment slot="l2">
+Consider a thin spherical shell between radius $r$ and $r+\Delta r$, density $\rho(r)$. Its volume is (surface area) × (thickness) = $4\pi r^2\,\Delta r$, so the mass it adds is $\Delta m \approx 4\pi r^2\rho(r)\,\Delta r$. As the shell shrinks this becomes exact:
+
+<KeyEq title="Mass continuity">
+$$
+\frac{d\term{m}{m}}{dr} = 4\pi r^2 \term{rho}{\rho}(r)
+$$
+<Fragment slot="where"><span data-term="m">m(r)</span> is the mass enclosed within radius $r$ — not the star's total mass, except at the surface. <span data-term="rho">ρ(r)</span> is the local density. This is bookkeeping, not physics: it is true for *any* spherically symmetric mass distribution, equilibrium or not.</Fragment>
+</KeyEq>
+</Fragment>
+<Fragment slot="l3">
 Consider a thin spherical shell between radius $r$ and $r+dr$, of thickness $dr$, density $\rho(r)$. Its volume is $4\pi r^2\,dr$ (to first order in $dr$), so its mass is
 
 <KeyEq title="Mass continuity">
 $$
-\frac{dm}{dr} = 4\pi r^2 \rho(r)
+\frac{d\term{m}{m}}{dr} = 4\pi r^2 \term{rho}{\rho}(r)
 $$
-<Fragment slot="where">$m(r)$ is the mass enclosed within radius $r$ — not the star's total mass, except at the surface. $\rho(r)$ is the local density. This is bookkeeping, not physics: it is true for *any* spherically symmetric mass distribution, equilibrium or not.</Fragment>
+<Fragment slot="where"><span data-term="m">m(r)</span> is the mass enclosed within radius $r$ — not the star's total mass, except at the surface. <span data-term="rho">ρ(r)</span> is the local density. This is bookkeeping, not physics: it is true for *any* spherically symmetric mass distribution, equilibrium or not.</Fragment>
 </KeyEq>
 
-Integrate it from the centre ($m=0$) to the surface ($m=M$, $r=R$) and you recover the total mass. It looks trivial, but it is one of the two equations that lets us change independent variable from $r$ to $m$ — genuinely useful, because $m$ ranges over a fixed interval $[0,M]$ for the star's entire life, while $R$ shrinks and swells by orders of magnitude as the star evolves. Stellar-evolution codes (Chapter 14) integrate in $m$, not $r$, for exactly this reason.
+Integrate it from the centre ($m=0$) to the surface ($m=M$, $r=R$) and you recover the total mass. It is one of the two equations that lets us change independent variable from $r$ to $m$ — genuinely useful, because $m$ ranges over a fixed interval $[0,M]$ for the star's entire life, while $R$ shrinks and swells by orders of magnitude as the star evolves. Stellar-evolution codes (Chapter 14) integrate in $m$, not $r$, for exactly this reason (new to derivatives and integrals? see [Appendix A4](/ch/primer-calculus/)).
+</Fragment>
+</Tiers>
 
 ### Hydrostatic equilibrium
 
-Now demand equilibrium. The same shell has a pressure $P(r)$ pushing up on its inner face and a slightly smaller pressure $P(r+dr)$ pushing down on its outer face — pressure decreases outward because there's less gas weighing down from above. The net outward pressure force per unit shell must exactly cancel the shell's weight.
-
-The pressure force on the shell (inner face pushes out, outer face pushes in) is $\big[P(r) - P(r+dr)\big]\times 4\pi r^2 = -\dfrac{dP}{dr}\,4\pi r^2\,dr$. The gravitational force on the shell is $-\dfrac{Gm(r)}{r^2}\times \rho(r)\,4\pi r^2\,dr$ (Newton's law from Chapter 2, applied to a shell using the shell theorem: only the mass *interior* to $r$ pulls on it). Setting the sum to zero and dividing by the shell's volume:
+<Tiers>
+<Fragment slot="l1">
+Now demand balance. Picture that same onion-skin shell: the gas just below it pushes up, the gas just above it pushes down (a little less hard, since pressure fades with height), and gravity pulls the whole shell inward. For the star to sit still, the *net* push from pressure on each shell has to exactly cancel that shell's weight — nothing left over to accelerate it.
+</Fragment>
+<Fragment slot="l2">
+The shell has pressure $P(r)$ pushing up on its inner face and a slightly smaller pressure pushing down on its outer face. The net outward push, per unit volume, is the pressure drop across the shell divided by its thickness: $-\Delta P/\Delta r$. That must balance the shell's weight per unit volume, $g(r)\rho(r)$, where $g(r)=Gm(r)/r^2$ is the local gravity (only the *enclosed* mass pulls, by the shell theorem — [Chapter 2](/ch/orbits/)). As the shell shrinks:
 
 <KeyEq title="Hydrostatic equilibrium">
 $$
-\frac{dP}{dr} = -\frac{G\,m(r)\,\rho(r)}{r^2}
+\frac{d\term{P}{P}}{dr} = -\frac{\term{G}{G}\,\term{m}{m}(r)\,\term{rho}{\rho}(r)}{r^2}
 $$
-<Fragment slot="where">$P(r)$ is the gas (plus radiation, plus degeneracy — whatever's present) pressure. The right-hand side is (minus) the local weight per unit volume: exactly $g(r)\rho(r)$, with $g(r)=Gm(r)/r^2$ the local gravitational acceleration.</Fragment>
+<Fragment slot="where"><span data-term="P">P(r)</span> is the total pressure (gas, plus radiation, plus degeneracy — whatever's present). The right-hand side is minus the local weight per unit volume.</Fragment>
 </KeyEq>
+</Fragment>
+<Fragment slot="l3">
+The pressure force on the shell (inner face pushes out, outer face pushes in) is $\big[P(r) - P(r+dr)\big]\times 4\pi r^2 = -\dfrac{dP}{dr}\,4\pi r^2\,dr$. The gravitational force on the shell is $-\dfrac{Gm(r)}{r^2}\times \rho(r)\,4\pi r^2\,dr$ (Newton's law from [Chapter 2](/ch/orbits/), applied to a shell using the shell theorem: only the mass *interior* to $r$ pulls on it). Setting the sum to zero and dividing by the shell's volume:
+
+<KeyEq title="Hydrostatic equilibrium">
+$$
+\frac{d\term{P}{P}}{dr} = -\frac{\term{G}{G}\,\term{m}{m}(r)\,\term{rho}{\rho}(r)}{r^2}
+$$
+<Fragment slot="where"><span data-term="P">P(r)</span> is the total pressure (gas, plus radiation, plus degeneracy — whatever's present). The right-hand side is (minus) the local weight per unit volume: exactly $g(r)\rho(r)$, with $g(r)=Gm(r)/r^2$ the local gravitational acceleration.</Fragment>
+</KeyEq>
+</Fragment>
+</Tiers>
 
 <Aside>**A gas in a box, stacked.** You can read hydrostatic equilibrium as nothing more than "the pressure at the bottom of a column of gas supports the weight of everything above it" — the same principle that gives Earth's atmosphere its pressure profile, except here gravity itself is generated by the gas, so $g$ falls as you go outward instead of staying constant. The figure below makes this literal: discrete shells, each one's pressure step equal to the weight of the shell above it.</Aside>
 
@@ -70,7 +120,7 @@ Together, mass continuity and hydrostatic equilibrium are two equations in three
 
 Those two remaining equations govern energy, and they are the subject of the next two chapters:
 
-- **Energy generation**, $\dfrac{dL}{dr} = 4\pi r^2 \rho\,\varepsilon(\rho,T)$, where $L(r)$ is the luminosity flowing through radius $r$ and $\varepsilon$ is the nuclear energy generation rate per unit mass. This is [Chapter 12](/ch/nuclear-fusion/)'s subject: why fusion rates are so viciously sensitive to temperature, and why that sensitivity is exactly what makes stars stable.
+- **Energy generation**, $\dfrac{dL}{dr} = 4\pi r^2 \rho\,\varepsilon(\rho,T)$, where $L(r)$ is the luminosity flowing through radius $r$ and $\varepsilon$ is the nuclear energy generation rate per unit mass. This is [Chapter 12](/ch/fusion/)'s subject: why fusion rates are so viciously sensitive to temperature, and why that sensitivity is exactly what makes stars stable.
 - **Energy transport**, which in the radiative case reads $\dfrac{dT}{dr} = -\dfrac{3\kappa\rho L}{16\pi a c r^2 T^3}$ (radiative diffusion, with $\kappa$ the opacity), or a different, non-local prescription where convection takes over. [Chapter 13](/ch/energy-transport/) derives both and explains how a star "chooses" which one operates at each radius.
 
 Four first-order ODEs, four unknowns ($m,P,\rho,T$, with $L$ folded in as a fifth once energy generation is included), plus an equation of state and expressions for $\varepsilon$ and $\kappa$: that closed system, solved from the centre to the surface, *is* a stellar model. The rest of this chapter mines what the mechanical half — mass continuity and hydrostatic equilibrium alone — already tells us, before nuclear physics or radiative transfer enter at all.
@@ -109,24 +159,43 @@ The temperature estimate lands within a factor of two of the real answer (the Su
 
 The Fermi estimate hints at something deeper: squeezing a self-gravitating gas ball makes it hotter, not colder. The **virial theorem** makes this exact, and its consequence — a *negative heat capacity* — is arguably the single most important fact about why stars are stable at all.
 
+<Tiers>
+<Fragment slot="l1">
+For any self-gravitating gas ball sitting still (not collapsing, not exploding), there is a fixed exchange rate between its heat and its gravity: the total kinetic (thermal) energy always ends up exactly *half* the size of the total gravitational binding energy, with the opposite sign. Squeeze more binding energy out of it, and the heat energy is forced to grow to match — by exactly half as much.
+</Fragment>
+<Fragment slot="l2">
+For a system in equilibrium under its own gravity, the total kinetic energy $K$ (all the random thermal motion, added up) and the total gravitational potential energy $U$ (negative, since it costs energy to pull the star apart) always satisfy:
+
+<KeyEq title="The virial theorem">
+$$
+2\term{Kvir}{K} + \term{Uvir}{U} = 0
+$$
+<Fragment slot="where"><span data-term="Kvir">K</span> is the star's total thermal energy, and grows with temperature. <span data-term="Uvir">U</span> is its total gravitational binding energy. This particular factor of 2 holds for an ideal monatomic gas.</Fragment>
+</KeyEq>
+</Fragment>
+<Fragment slot="l3">
 For a system in equilibrium under its own gravity, the time-averaged kinetic energy $K$ and gravitational potential energy $U$ satisfy
 
 <KeyEq title="The virial theorem">
 $$
-2K + U = 0
+2\term{Kvir}{K} + \term{Uvir}{U} = 0
 $$
-<Fragment slot="where">$K=\int \tfrac32 \dfrac{\rho k_B T}{\mu m_p}\,dV$ is the total thermal kinetic energy of the gas. $U = -\int_0^M \dfrac{Gm(r)}{r}\,dm$ is the total gravitational binding energy (negative, since it takes energy to disperse the star to infinity). This particular form, $2K=-U$, holds specifically for an ideal monatomic gas ($\gamma=5/3$); more generally $3(\gamma-1)K+U=0$.</Fragment>
+<Fragment slot="where"><span data-term="Kvir">K</span>$=\int \tfrac32 \dfrac{\rho k_B T}{\mu m_p}\,dV$ is the total thermal kinetic energy of the gas. <span data-term="Uvir">U</span>$ = -\int_0^M \dfrac{Gm(r)}{r}\,dm$ is the total gravitational binding energy (negative, since it takes energy to disperse the star to infinity). This particular form, $2K=-U$, holds specifically for an ideal monatomic gas ($\gamma=5/3$); more generally $3(\gamma-1)K+U=0$.</Fragment>
 </KeyEq>
+</Fragment>
+</Tiers>
 
-*Sketch of the derivation:* multiply hydrostatic equilibrium by $4\pi r^3\,dr$ and integrate over the star:
+<Level min={3} title="Deriving the virial theorem from hydrostatic equilibrium">
+Multiply hydrostatic equilibrium by $4\pi r^3\,dr$ and integrate over the star:
 
 $$
 \int_0^R 4\pi r^3 \frac{dP}{dr}\,dr = -\int_0^R \frac{Gm(r)}{r}\,4\pi r^2\rho\,dr = U.
 $$
 
-Integrate the left side by parts ($u=4\pi r^3$, $dv=dP$); the boundary term vanishes ($P(R)=0$ at the surface, and the $r^3$ factor kills the $r=0$ end), leaving $-\int_0^R 3P\cdot 4\pi r^2\,dr = -3\int P\,dV$. For an ideal gas, $P=\tfrac23\big(\tfrac32\rho k_BT/\mu m_p\big)/1=\tfrac23 u$ where $u$ is the kinetic energy density, so $-3\int P\,dV = -2\int u\,dV = -2K$. Hence $-2K = U$.
+Integrate the left side by parts ($u=4\pi r^3$, $dv=dP$); the boundary term vanishes ($P(R)=0$ at the surface, and the $r^3$ factor kills the $r=0$ end), leaving $-\int_0^R 3P\cdot 4\pi r^2\,dr = -3\int P\,dV$. For an ideal gas, $P=\tfrac23\big(\tfrac32\rho k_BT/\mu m_p\big)/1=\tfrac23 u$ where $u$ is the kinetic energy density, so $-3\int P\,dV = -2\int u\,dV = -2K$. Hence $-2K = U$ (new to integration by parts? see [Appendix A4](/ch/primer-calculus/)).
 
 The total energy is $E=K+U$. Substituting $U=-2K$: $E = K+(-2K) = -K$, and equally $E=U/2$. Both $K$ and $E$ are pinned to $U$ by a factor of $-2$ or $-\tfrac12$ — there is only *one* free parameter, the star's overall gravitational binding, not two.
+</Level>
 
 ### Negative heat capacity
 
@@ -138,13 +207,17 @@ $$
 
 **Losing energy makes the gas hotter.** This is the opposite of every macroscopic object you've ever touched, and it is the reason a star doesn't need active thermostatting to stay stable: if the core's fusion rate dips for any reason, the core loses more energy than it generates, $E$ drops, $K$ (and hence $T$) *rises*, and — because fusion rates are ferociously sensitive to temperature (Chapter 12) — the energy generation rate rockets back up and refills the deficit. The reverse happens if fusion runs too hot: the excess luminosity blows the core to lower density, $|U|$ drops, and both $K$ and $T$ fall back down. This self-regulating feedback loop, powered entirely by the sign of the virial theorem, is why main-sequence stars sit quietly on a well-defined track for billions of years instead of thermally running away in either direction.
 
-<Predict question="A globular cluster of stars slowly loses energy to gravitational evaporation (Chapter 24) and two-body relaxation. What happens to its characteristic velocity dispersion (its 'temperature')?" choices={['It decreases — losing energy always cools things down', 'It increases — negative heat capacity applies to any self-gravitating system, not just gas', 'It stays constant — energy loss changes the shape, not the temperature']} answer={1}>
-The virial theorem doesn't care whether the "particles" are gas molecules or entire stars — it only needs a self-gravitating system in equilibrium. Globular clusters really do contract and speed up (their core velocity dispersion rises) as they lose energy through evaporation of their fastest stars, exactly like a star's core heating up as it radiates. This is the same physics that drives *core collapse* in globular clusters (Chapter 24) and, in a different guise, black-hole accretion disks.
+<Predict question="A globular cluster of stars slowly loses energy to gravitational evaporation ([Chapter 22](/ch/galactic-dynamics/)) and two-body relaxation. What happens to its characteristic velocity dispersion (its 'temperature')?" choices={['It decreases — losing energy always cools things down', 'It increases — negative heat capacity applies to any self-gravitating system, not just gas', 'It stays constant — energy loss changes the shape, not the temperature']} answer={1}>
+The virial theorem doesn't care whether the "particles" are gas molecules or entire stars — it only needs a self-gravitating system in equilibrium. Globular clusters really do contract and speed up (their core velocity dispersion rises) as they lose energy through evaporation of their fastest stars, exactly like a star's core heating up as it radiates. This is the same physics that drives *core collapse* in globular clusters ([Chapter 22](/ch/galactic-dynamics/)) and, in a different guise, black-hole accretion disks.
 </Predict>
 
 <Sim name="stellar-structure-virial" minHeight={360}>
 **Losing energy, getting hotter.** The ball's radius, brightness and colour track a self-gravitating gas losing energy at the rate you set with the slider. $K$ (kinetic/thermal energy) and $|U|$ (binding energy) grow together, exactly obeying $|U|=2K$, while the ball shrinks and heats — the mechanism behind Kelvin–Helmholtz contraction below.
 </Sim>
+
+<Photo src="/img/stellar-structure/ngc6535-globular.jpg" alt="NGC 6535, a sparse globular cluster of white and blue-white stars densely packed toward its centre, against a dark background speckled with background galaxies" credit="ESA/Hubble & NASA" license="CC BY 4.0" href="https://images.nasa.gov/details/GSFC_20171208_Archive_e000846" size="wide" aspect="3 / 2">
+**NGC 6535, a real ball of self-gravitating "particles."** Each point of light in this Hubble image is an entire star, and the whole cluster is held together by their mutual gravity in exactly the same virial balance as the gas inside a single star. As NGC 6535's stars slowly exchange energy and evaporate outward, the survivors near the core are the ones you'd predict from negative heat capacity: on average faster, and more tightly bound, than when the cluster was young.
+</Photo>
 
 ## Three timescales, three kinds of "when"
 
@@ -166,14 +239,18 @@ How long could a star's *own gravitational energy* power its observed luminosity
 
 <KeyEq title="Kelvin–Helmholtz timescale">
 $$
-t_\text{KH} \sim \frac{GM^2}{RL}
+\term{tKH}{t_\text{KH}} \sim \frac{GM^2}{RL}
 $$
-<Fragment slot="where">This is, up to a factor of order unity, how long the Sun could shine purely by slowly contracting and converting gravitational energy into heat (via the negative-heat-capacity mechanism above), with no fusion at all.</Fragment>
+<Fragment slot="where"><span data-term="tKH">t_KH</span> is, up to a factor of order unity, how long the Sun could shine purely by slowly contracting and converting gravitational energy into heat (via the negative-heat-capacity mechanism above), with no fusion at all.</Fragment>
 </KeyEq>
 
 For the Sun, $t_\text{KH}\approx 3\times10^7$ years — about **30 million years**. Using the same main-sequence scalings as the timescale figure below, a star of $M=<Var name="MtKH" value={1} min={0.1} max={40} log />\,M_\odot$ has $t_\text{KH}\approx$ <Out name="tKH_fermi" />.
 
-<Aside>**Kelvin, Darwin, and the age of the Earth.** In the 1860s, Lord Kelvin used exactly this argument to estimate the Sun's age at tens of millions of years, and used it to attack Darwin's theory of evolution by natural selection, which needed hundreds of millions of years of a stable Sun to work. Both men were right about their own physics: Kelvin's thermal contraction genuinely can't power the Sun for more than ~30 Myr, and Darwin's biology genuinely needs far longer. The resolution — nuclear fusion, unknown until the 20th century — vindicated Darwin and revealed a fifth force (the strong nuclear interaction) nobody in 1860 knew existed.</Aside>
+<History title="Kelvin's sun, and a fight with the geologists" year="1862">
+In 1862, William Thomson — later Lord Kelvin, already famous for the second law of thermodynamics and the Atlantic telegraph — applied exactly the argument above to the Sun and got tens of millions of years. He used it as a weapon: Charles Darwin's 1859 theory of evolution by natural selection needed geological ages of *hundreds of millions* of years to work, and Kelvin insisted physics simply forbade the Sun (and hence a habitable Earth) from being that old. Darwin, unable to counter the physics, quietly deleted a specific-age estimate from later editions of *On the Origin of Species*.
+
+Kelvin was not being obstinate for its own sake: no energy source other than gravity was known in the 1860s, and $t_\text{KH}$ genuinely is the honest upper limit gravity alone allows. The debate ran for decades (Kelvin's ally Charles Darwin's own son George refined the contraction argument further), and both sides had real physics on their side of an incomplete picture. It was radioactivity — discovered in 1896, after Kelvin's calculation — that broke the impasse twice over: it gave the Earth an internal heat source Kelvin hadn't accounted for, dating rocks directly to billions of years, and (via Eddington and others, decades later) pointed toward nuclear reactions as the Sun's actual power source.
+</History>
 
 ### The nuclear timescale
 
@@ -197,30 +274,67 @@ To close the mechanical equations we need $P(\rho,T)$. Stellar interiors host up
 
 ### Ideal gas and the mean molecular weight
 
+<Tiers>
+<Fragment slot="l1">
+Ordinary gas pressure is just molecules (or, in a star's hot interior, bare nuclei and stripped electrons) bouncing around and colliding with everything nearby. More particles, or a higher temperature (faster bouncing), means more pressure. What matters for a star's *average* particle mass is composition: stripping electrons off hydrogen and helium roughly doubles the number of free particles per unit mass compared to un-ionised gas, so hot ionised stellar gas pushes back harder than the same mass of cold gas would.
+</Fragment>
+<Fragment slot="l2">
+Kinetic theory gives $P_\text{gas} = n k_B T$ (new to the kinetic theory of gases? see [Appendix A7](/ch/primer-thermo/)), where $n$ is the *total* number density of free particles — ions and electrons both, since both carry momentum. Write $n = \rho/(\mu m_p)$, where $\mu$ (the mean molecular weight) is the average particle mass in units of $m_p$:
+
+<KeyEq title="Ideal gas pressure">
+$$
+P_\text{gas} = \frac{\rho \term{kB}{k_B} \term{Tstar}{T}}{\term{muMW}{\mu}\, \term{mp}{m_p}}
+$$
+<Fragment slot="where"><span data-term="muMW">μ</span> depends only on composition and ionisation state. For fully ionised hydrogen, each proton contributes 2 free particles (the proton and its electron) per $m_p$ of mass, so $\mu_H = 1/2$. For fully ionised helium, each nucleus (mass $4m_p$) contributes 3 particles (1 nucleus + 2 electrons), so $\mu_{He} = 4/3$.</Fragment>
+</KeyEq>
+</Fragment>
+<Fragment slot="l3">
 For non-degenerate, fully or partially ionised gas, kinetic theory gives $P_\text{gas} = n k_B T$, where $n$ is the *total* number density of free particles — ions and electrons both, since both carry momentum. Write $n = \rho/(\mu m_p)$, where $\mu$ (the *mean molecular weight*) is the average particle mass in units of $m_p$:
 
 <KeyEq title="Ideal gas pressure">
 $$
-P_\text{gas} = \frac{\rho k_B T}{\mu m_p}
+P_\text{gas} = \frac{\rho \term{kB}{k_B} \term{Tstar}{T}}{\term{muMW}{\mu}\, \term{mp}{m_p}}
 $$
-<Fragment slot="where">$\mu$ depends only on composition and ionisation state. For fully ionised hydrogen, each proton contributes 2 free particles (the proton and its electron) per $m_p$ of mass, so $\mu_H = 1/2$. For fully ionised helium, each nucleus (mass $4m_p$) contributes 3 particles (1 nucleus + 2 electrons), so $\mu_{He} = 4/3$.</Fragment>
+<Fragment slot="where"><span data-term="muMW">μ</span> depends only on composition and ionisation state. For fully ionised hydrogen, each proton contributes 2 free particles (the proton and its electron) per $m_p$ of mass, so $\mu_H = 1/2$. For fully ionised helium, each nucleus (mass $4m_p$) contributes 3 particles (1 nucleus + 2 electrons), so $\mu_{He} = 4/3$.</Fragment>
 </KeyEq>
+</Fragment>
+</Tiers>
 
 For a mixture with hydrogen mass fraction $X$ and helium mass fraction $Y$ ($X+Y\approx1$ for the metal-poor approximation), the particle counts add: $1/\mu \approx 2X + \tfrac34 Y$. For the Sun's photospheric composition ($X\approx0.71$, $Y\approx0.27$), this gives $\mu\approx0.61$ — the value used throughout this chapter's simulations and Fermi estimates.
 
+<History title="What the Sun is actually made of" year="1925">
+<Portrait src="/img/people/payne-gaposchkin.jpg" name="Cecilia Payne-Gaposchkin" years="1900–1979" credit="Smithsonian Institution, via Flickr Commons" license="No known copyright restrictions" href="https://commons.wikimedia.org/wiki/File:Cecilia_Helena_Payne_Gaposchkin_(1900-1979)_(cropped).jpg" />
+
+The $X\approx0.71$, $Y\approx0.27$ split above — hydrogen and helium making up nearly all of a star's mass — was not the consensus view until Cecilia Payne's 1925 Radcliffe College (Harvard) PhD thesis. Applying the then-new theory of ionisation (Meghnad Saha's equation) to stellar spectra, she found that hydrogen had to be around a million times more abundant than metals like iron — wildly against the prevailing belief that stars shared roughly Earth's rocky composition.
+
+Her thesis examiner, the astronomer Henry Norris Russell, told her the result had to be wrong; she dutifully wrote in the thesis that the enormous inferred hydrogen abundance was "almost certainly not real." Four years later, Russell rederived the same result independently, published it under his own name with a citation to Payne, and is still sometimes wrongly credited as the sole discoverer. Otto Struve later called her thesis "the most brilliant PhD thesis ever written in astronomy."
+</History>
+
 ### Radiation pressure
 
-Photons carry momentum too. A photon gas in thermal equilibrium exerts $P_\text{rad} = \tfrac13 aT^4$, with $a=4\sigma_{SB}/c$ the radiation constant (Chapter 6's blackbody result, revisited). Define $\beta \equiv P_\text{gas}/P_\text{total}$; then
+Photons carry momentum too. A photon gas in thermal equilibrium exerts $P_\text{rad} = \tfrac13 aT^4$, with $a=4\sigma_{SB}/c$ the radiation constant ([Chapter 4](/ch/light/)'s result, revisited). Define $\beta \equiv P_\text{gas}/P_\text{total}$; then
 
 $$
 P_\text{total} = P_\text{gas} + P_\text{rad} = \frac{\rho k_BT}{\mu m_p} + \frac13 aT^4.
 $$
 
-Eddington showed that for a star in hydrostatic and radiative equilibrium, $\beta$ satisfies a **quartic equation** (the "Eddington standard model," previewed properly under the $n=3$ polytrope below): the more massive and luminous a star, the smaller $\beta$ becomes — radiation pressure takes over from gas pressure as $M$ grows. For the Sun, $\beta\approx0.9997$: radiation pressure is a rounding error. For a $50\,M_\odot$ O star, $\beta$ drops to around 0.7 — radiation pressure is nearly a third of the total, and pushes the star close to its Eddington limit (Chapter 17).
+Eddington showed that for a star in hydrostatic and radiative equilibrium, $\beta$ satisfies a **quartic equation** (the "Eddington standard model," previewed properly under the $n=3$ polytrope below): the more massive and luminous a star, the smaller $\beta$ becomes — radiation pressure takes over from gas pressure as $M$ grows. For the Sun, $\beta\approx0.9997$: radiation pressure is a rounding error. For a $50\,M_\odot$ O star, $\beta$ drops to around 0.7 — radiation pressure is nearly a third of the total, and pushes the star close to its Eddington limit ([Chapter 14](/ch/main-sequence/)).
+
+<History title="Eddington's standard model, and a wager on relativity" year="1926">
+<Portrait src="/img/people/eddington.jpg" name="Arthur Stanley Eddington" years="1882–1944" credit="PeterBarrington, Wikimedia Commons" license="CC BY-SA 4.0" href="https://commons.wikimedia.org/wiki/File:Arthur_Eddington.jpg" />
+
+Arthur Eddington built the "standard model" of a star (the $\beta$-quartic and the $n=3$ polytrope below) in his 1926 book *The Internal Constitution of the Stars*, in the process deriving the mass–luminosity relation and the Eddington limit that still bear his name. He was already the most famous astronomer in Britain, having led the 1919 solar-eclipse expedition to Príncipe whose measurement of starlight bending around the Sun made Einstein a household name overnight.
+
+Eddington also, famously and wrongly, spent his later years fighting Subrahmanyan Chandrasekhar's result that sufficiently massive degenerate stars *must* collapse past the white-dwarf stage — publicly ridiculing it at a 1935 Royal Astronomical Society meeting as something that should be prevented by "a law of Nature." Chandrasekhar was right; the limiting mass (about $1.4\,M_\odot$, set by the $n=3$ relativistic-degenerate polytrope of this chapter) now bears his name, and the collapse Eddington thought impossible is [Chapter 16](/ch/stellar-death/)'s neutron stars and black holes.
+</History>
 
 ### Degeneracy pressure
 
-At high enough density, quantum mechanics — not temperature — sets the pressure: the Pauli exclusion principle forbids electrons from occupying the same momentum states, and squeezing them further forces them into higher-momentum states regardless of $T$. This *degeneracy pressure* is what supports white dwarfs (and, in its relativistic limit, sets the Chandrasekhar mass). It is the subject of [Chapter 16](/ch/compact-remnants/); for now, notice only that it gives $P\propto\rho^{5/3}$ (non-relativistic) or $P\propto\rho^{4/3}$ (relativistic) — both *independent of temperature*, and both, not coincidentally, exactly the polytropic power laws we build next.
+At high enough density, quantum mechanics — not temperature — sets the pressure: the Pauli exclusion principle forbids electrons from occupying the same momentum states, and squeezing them further forces them into higher-momentum states regardless of $T$. This *degeneracy pressure* is what supports white dwarfs (and, in its relativistic limit, sets the Chandrasekhar mass). It is the subject of [Chapter 16](/ch/stellar-death/); for now, notice only that it gives $P\propto\rho^{5/3}$ (non-relativistic) or $P\propto\rho^{4/3}$ (relativistic) — both *independent of temperature*, and both, not coincidentally, exactly the polytropic power laws we build next.
+
+<Photo src="/img/stellar-structure/white-dwarfs-m4.jpg" alt="A dense Hubble field of stars in the globular cluster M4, with several faint blue-white white dwarf stars circled" credit="NASA/ESA, Harvey Richer (University of British Columbia)" license="Public domain" href="https://images.nasa.gov/details/PIA04231" size="wide" aspect="3 / 2">
+**White dwarfs in the globular cluster M4.** Hubble resolved the faintest, oldest white dwarfs in this 7,000-light-year-distant cluster — burned-out stellar cores no bigger than Earth, held up entirely by the electron degeneracy pressure described here rather than by heat. Their sheer age (comparable to the cluster's ~13 billion years) let astronomers cross-check the age of the universe independently of cosmological measurements.
+</Photo>
 
 ## Polytropes: when pressure is just a function of density
 
@@ -228,15 +342,18 @@ A remarkable number of physical situations — including both limits of degenera
 
 <KeyEq title="Polytropic equation of state">
 $$
-P = K\rho^{1+1/n}
+\term{P}{P} = \term{Kpoly}{K}\,\term{rho}{\rho}^{1+1/\term{npoly}{n}}
 $$
-<Fragment slot="where">$K$ is a constant (fixed by composition and entropy, or by fundamental constants for degenerate matter) and $n$, the **polytropic index**, sets the equation of state's stiffness. $\Gamma \equiv 1+1/n$ is sometimes called the polytropic exponent.</Fragment>
+<Fragment slot="where"><span data-term="Kpoly">K</span> is a constant (fixed by composition and entropy, or by fundamental constants for degenerate matter) and <span data-term="npoly">n</span>, the **polytropic index**, sets the equation of state's stiffness. $\Gamma \equiv 1+1/n$ is sometimes called the polytropic exponent.</Fragment>
 </KeyEq>
 
-When $P$ depends on $\rho$ alone, mass continuity and hydrostatic equilibrium become a *closed* system — no energy equations needed — and the whole stellar structure problem collapses to a single, universal, dimensionless ODE.
+When $P$ depends on $\rho$ alone, mass continuity and hydrostatic equilibrium become a *closed* system — no energy equations needed — and the whole stellar structure problem collapses to a single, universal, dimensionless ODE, the **Lane–Emden equation**: solve it once for a given $n$ and you have solved *every* star with that equation of state, of any mass or radius — only an overall length and density scale differ between them.
 
 ### Deriving the Lane–Emden equation
 
+Rescale radius, density and pressure into dimensionless versions of themselves — a fraction $\theta$ of the central density and pressure, at a fraction $\xi$ of a natural length scale — and hydrostatic equilibrium plus mass continuity collapse into one ODE with no free constants left in it at all: the same equation, for the same $n$, describes a giant star and a tiny degenerate core alike.
+
+<Level min={3} title="Deriving the Lane–Emden equation">
 Combine hydrostatic equilibrium with mass continuity by differentiating $r^2\,dP/dr$ and substituting $dm/dr$:
 
 $$
@@ -249,16 +366,17 @@ $$
 \alpha \equiv \sqrt{\frac{(n+1)P_c}{4\pi G\rho_c^2}}.
 $$
 
-Since $P=K\rho^{1+1/n}=K\rho_c^{1+1/n}\theta^{n+1}=P_c\theta^{n+1}$, substituting everything in and cancelling the constants (that's the whole point of choosing $\alpha$ this way) leaves the **Lane–Emden equation**:
+Since $P=K\rho^{1+1/n}=K\rho_c^{1+1/n}\theta^{n+1}=P_c\theta^{n+1}$, substituting everything in and cancelling the constants (that's the whole point of choosing $\alpha$ this way) leaves the **Lane–Emden equation** (new to ODEs like this? see [Appendix A5](/ch/primer-odes/)):
 
 <KeyEq title="The Lane–Emden equation">
 $$
-\frac{1}{\xi^2}\frac{d}{d\xi}\!\left(\xi^2\frac{d\theta}{d\xi}\right) = -\theta^n, \qquad \theta(0)=1,\ \ \theta'(0)=0
+\frac{1}{\term{xi}{\xi}^2}\frac{d}{d\xi}\!\left(\xi^2\frac{d\term{theta}{\theta}}{d\xi}\right) = -\theta^{\term{npoly}{n}}, \qquad \theta(0)=1,\ \ \theta'(0)=0
 $$
-<Fragment slot="where">$\xi$ is dimensionless radius, $\theta$ is dimensionless density$^{1/n}$ (and, remarkably, also dimensionless temperature for an ideal gas — see below). The two boundary conditions come from requiring a finite, smooth centre.</Fragment>
+<Fragment slot="where"><span data-term="xi">ξ</span> is dimensionless radius, <span data-term="theta">θ</span> is dimensionless density$^{1/n}$ (and, remarkably, also dimensionless temperature for an ideal gas — see below). The two boundary conditions come from requiring a finite, smooth centre.</Fragment>
 </KeyEq>
 
 Every polytrope of index $n$, regardless of $K$, $M$ or $R$, has the *same* $\theta(\xi)$ — only the length and density scales $\alpha,\rho_c$ differ. Solve it once per $n$ and you've solved every star (or degenerate core, or convective envelope) with that equation of state.
+</Level>
 
 ### An elegant bonus: temperature tracks $\theta$ exactly
 
@@ -342,4 +460,4 @@ Put all four equations together — mass continuity, hydrostatic equilibrium, nu
 
 ## Where we go from here
 
-Mass continuity and hydrostatic equilibrium — two equations any of you could re-derive on demand — already deliver the Sun's core temperature to within a factor of two, explain why stars are thermally self-stabilising via the virial theorem's negative heat capacity, sort out three wildly different timescales that used to confuse Kelvin himself, and, via the Lane–Emden equation, produce a full radial model good enough to compare against helioseismology. What's still missing is *why* the gas is at 10⁷ K in the first place, and how the energy generated there actually gets out. [Chapter 12](/ch/nuclear-fusion/) supplies the missing energy source — the ferociously temperature-sensitive nuclear reactions that make the virial theorem's stabilising feedback loop *necessary* — and [Chapter 13](/ch/energy-transport/) supplies the missing transport mechanism, radiative diffusion and convection, that decides whether a star's envelope looks like the Sun's or like a red giant's.
+Mass continuity and hydrostatic equilibrium — two equations any of you could re-derive on demand — already deliver the Sun's core temperature to within a factor of two, explain why stars are thermally self-stabilising via the virial theorem's negative heat capacity, sort out three wildly different timescales that used to confuse Kelvin himself, and, via the Lane–Emden equation, produce a full radial model good enough to compare against helioseismology. What's still missing is *why* the gas is at 10⁷ K in the first place, and how the energy generated there actually gets out. [Chapter 12](/ch/fusion/) supplies the missing energy source — the ferociously temperature-sensitive nuclear reactions that make the virial theorem's stabilising feedback loop *necessary* — and [Chapter 13](/ch/energy-transport/) supplies the missing transport mechanism, radiative diffusion and convection, that decides whether a star's envelope looks like the Sun's or like a red giant's.

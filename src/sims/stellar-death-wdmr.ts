@@ -91,9 +91,6 @@ export default defineSim({
       y: { min: 0.001, max: 0.03, log: true, label: 'radius (R☉)' },
       title: 'White dwarf mass–radius relation',
     });
-    stage.onResize((w, hh, dpr) => { plot.resize(w, hh, dpr); draw(); });
-    onThemeChange(() => { pal = palette(); draw(); });
-
     let muE = 2.0;
     let xc = 1.0; // current star shown as a point, draggable via slider
     let curve = buildCurve(muE);
@@ -129,7 +126,8 @@ export default defineSim({
         plot.text('dashed: R ∝ M⁻¹/³ (non-relativistic limit of the same EOS)', plot.m.l + 8, plot.m.t + 14, { color: pal.muted, size: 10.5 });
       });
     }
-    draw();
+    stage.onResize((w, hh, dpr) => { plot.resize(w, hh, dpr); draw(); });
+    onThemeChange(() => { pal = palette(); draw(); });
 
     return { setVisible() {}, destroy() {} };
   },

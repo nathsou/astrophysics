@@ -15,6 +15,60 @@ import Out from '../../components/Out.astro';
 import Level from '../../components/Level.astro';
 import Tiers from '../../components/Tiers.astro';
 import Photo from '../../components/Photo.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  delta: ['Density contrast δ', 'How much denser than average a place is: 0 is average, −1 is empty, 200 is a halo. Everything in this chapter is about how it grows.'],
+  delta0: ['Initial density contrast', 'The tiny starting ripple; linear growth just multiplies it by D.'],
+  deltak: ['Fourier amplitude of δ', 'How strongly one wave of wavenumber k is present in the field; its phase is random.'],
+  ddelta: ['Acceleration of δ', 'How fast the growth itself speeds up; set by the balance of gravity and Hubble drag.'],
+  drag: ['Rate of growth of δ', 'Multiplied by 2H it becomes Hubble drag: the faster the universe expands, the more it brakes growth.'],
+  x: ['Comoving position', 'Position on a grid that stretches with the universe, so it changes only when matter moves relative to the expansion.'],
+  q: ['Lagrangian (starting) position', 'Where a particle sat in the smooth early universe; each particle keeps this label forever.'],
+  t: ['Cosmic time', 'Time since the Big Bang.'],
+  a: ['Scale factor', 'The size of the universe relative to today (a = 1 now, a = 1/(1+z) in the past). The natural clock for structure growth.'],
+  rho: ['Local density', 'Mass per unit volume at a point.'],
+  rhobar: ['Mean matter density', 'The cosmic average, falling as a⁻³; it sets how strongly gravity pulls on a given δ.'],
+  Pk: ['Power spectrum P(k)', 'The variance per Fourier mode: the recipe saying how much of each size of ripple the universe contains.'],
+  k: ['Wavenumber', 'k = 2π/λ: large k means small ripples, small k means big ones.'],
+  kvec: ['Wavevector', 'Direction and wavenumber of one Fourier wave.'],
+  dirac: ['Dirac delta', 'Says different Fourier modes are uncorrelated, the hallmark of a statistically uniform field.'],
+  sigR: ['rms fluctuation on scale R', 'Typical density contrast after averaging over spheres of radius R; at R = 8 Mpc/h it is σ₈ ≈ 0.81.'],
+  sigM: ['rms fluctuation at mass M', 'Smaller for bigger masses; halos form where D·σ(M) approaches δ_c.'],
+  W: ['Top-hat window', 'Averages the field over a sphere, suppressing waves smaller than R.'],
+  R: ['Smoothing radius', 'The size of the spheres we average over.'],
+  Aamp: ['Amplitude', 'Overall normalisation of the spectrum, fixed by measuring σ₈.'],
+  ns: ['Spectral index', 'Tilt of the primordial spectrum; inflation predicts just below 1, and Planck measures 0.965.'],
+  Tk: ['Transfer function', 'Equal to 1 for big waves and falling for small ones, which were frozen during the radiation era.'],
+  D: ['Growth factor', 'How much every small ripple has grown; ∝ a while matter dominates, stalling once dark energy takes over.'],
+  keq: ['Equality wavenumber', 'The size of the horizon at matter–radiation equality; the peak of P(k).'],
+  Om: ['Matter density parameter', 'Fraction of the critical density in matter today (≈ 0.31). More matter, stronger gravity, faster growth.'],
+  Oma: ['Matter fraction at time a', 'Close to 1 in the past, falling as dark energy takes over, which is what shuts growth off.'],
+  hlittle: ['Dimensionless Hubble constant h', 'H₀ in units of 100 km/s/Mpc, about 0.68.'],
+  H: ['Hubble rate', 'How fast the universe is expanding. In the growth equation it is the brake: Hubble drag.'],
+  pexp: ['Power-law exponent', 'Trying δ ∝ tᵖ turns the growth equation into a quadratic; the positive root gives the growing mode.'],
+  Rsh: ['Shell radius', 'Radius of the collapsing sphere: grows, turns around, collapses.'],
+  Acyc: ['Cycloid radius scale', 'Half the turnaround radius.'],
+  Bcyc: ['Cycloid time scale', 'Collapse happens at t = 2πB.'],
+  theta: ['Development angle θ', 'A convenient clock: θ = π is turnaround, θ = 2π is collapse.'],
+  Msh: ['Mass inside the shell', 'Conserved during collapse, so the sphere behaves like a closed mini-universe.'],
+  lam: ['Deformation eigenvalue', 'The compression rate along one principal axis; the largest one collapses first into a sheet.'],
+  psi: ['Displacement field', 'Which way and how far each particle will move; fixed by the initial ripples.'],
+  Fcoll: ['Collapsed fraction', 'Fraction of all mass already inside halos heavier than M.'],
+  Mh: ['Halo mass', 'The mass of a halo, in M☉.'],
+  nu: ['Peak height ν', 'How many standard deviations a region must be to have collapsed; big ν means rare, exponentially suppressed halos.'],
+  deltac: ['Critical overdensity 1.686', 'The linear-theory value at which a spherical region has actually collapsed.'],
+  rr: ['Radius from halo centre', 'Distance from the halo centre.'],
+  rhos: ['Characteristic density', 'Sets the overall density of the NFW halo.'],
+  rs: ['Scale radius', 'Where the slope changes from r⁻¹ inside to r⁻³ outside; R200/r_s is the concentration.'],
+  lfs: ['Free-streaming length', 'How far warm particles drift before structure forms; smaller ripples are erased.'],
+  mwdm: ['WDM particle mass', 'Heavier particles are slower, so they stream less: λ_fs shrinks steeply with m.'],
+  pmom: ['Canonical momentum p = a²ẋ', 'The natural momentum in an expanding box; peculiar velocity is p/a.'],
+  phi: ['Peculiar potential', 'Gravitational potential sourced only by the density contrast; the uniform background is already in a(t).'],
+  H0: ['Hubble constant', 'Today\'s expansion rate; in code units H₀ = 1.'],
+}} />
 
 ## From ripples to a web
 
@@ -57,7 +111,7 @@ We also use a clever map: coordinates that stretch along with the universe, like
 The universe's mean matter density is $\bar\rho(t)$. It falls as $a^{-3}$, where $a$ is the scale factor (Chapter 25, [The Expanding Universe](/ch/expansion/); $a = 1$ today and $a = 1/(1+z)$ at redshift $z$). We care about departures from that mean, so we define the **density contrast**
 
 $$
-\delta(\vec x, t) = \frac{\rho(\vec x, t) - \bar\rho(t)}{\bar\rho(t)}.
+\term{delta}{\delta}(\term{x}{\vec x}, \term{t}{t}) = \frac{\term{rho}{\rho}(\vec x, t) - \term{rhobar}{\bar\rho}(t)}{\term{rhobar}{\bar\rho}(t)}.
 $$
 
 It is dimensionless, averages to zero, and cannot go below $-1$ (empty space) though it can go as high as it likes. A void has $\delta \approx -0.8$. The inside of a galaxy cluster sits at $\delta \sim 200$ to $1000$. The solar neighbourhood of the Milky Way is at $\delta \sim 10^6$. We use **comoving coordinates** $\vec x$ throughout: positions measured on a grid that expands with the universe, so a particle at rest relative to the Hubble flow keeps the same $\vec x$ forever. Physical distance is $a\vec x$.
@@ -72,14 +126,14 @@ It is dimensionless, averages to zero, and cannot go below $-1$ (empty space) th
 <Fragment slot="l1">
 Where did the first ripples come from? The leading idea, *inflation*, says they began as tiny quantum jitters, stretched to enormous size in the first split second. What matters for us is that they are **random, but with a recipe**.
 
-Here is a way to picture the recipe. Imagine a sound mixing desk with sliders for bass, middle and treble. Start with pure hiss (white noise), where every pitch is equally loud. Now push some sliders up and others down. The result is still random, but it has a *character*: rumbly, or hissy. The universe's initial density is exactly this, in 3D, with "pitch" replaced by "size of the bump". The slider settings are the **power spectrum**. Simulations make their starting conditions in precisely this way.
+Here is a way to picture the recipe. If waves and frequencies are new to you, [Appendix A8](/ch/primer-waves/) is a gentle start. Imagine a sound mixing desk with sliders for bass, middle and treble. Start with pure hiss (white noise), where every pitch is equally loud. Now push some sliders up and others down. The result is still random, but it has a *character*: rumbly, or hissy. The universe's initial density is exactly this, in 3D, with "pitch" replaced by "size of the bump". The slider settings are the **power spectrum**. Simulations make their starting conditions in precisely this way.
 
 One number sums up how lumpy the universe is today: **σ₈ ≈ 0.81**. Take random spheres 8 megaparsecs (about 26 million light-years) across. Their mass typically differs from the average by about 81%.
 </Fragment>
 <Fragment slot="l2">
 Where did the first ripples come from? The leading idea, *inflation*, says they began as tiny quantum jitters stretched to enormous size, and every measurement so far says they are a **Gaussian random field**: random numbers following the bell curve, with no special place or direction.
 
-An engineer can build one in three steps. Fill a 3D grid with random bell-curve numbers (white noise, equal power at every size). Split it into waves of different wavelengths with a Fourier transform. Turn the volume of each wave up or down according to a recipe that depends only on the wavelength, then add the waves back together. That recipe is the **power spectrum** $P(k)$, where the *wavenumber* $k = 2\pi/\lambda$ is large for small bumps and small for big ones. Each wave keeps its random starting position (phase), so all the information is in the amplitudes.
+An engineer can build one in three steps. Fill a 3D grid with random bell-curve numbers (see [Appendix A7](/ch/primer-thermo/) for the normal distribution; white noise, equal power at every size). Split it into waves of different wavelengths with a Fourier transform (see [Appendix A8](/ch/primer-waves/)). Turn the volume of each wave up or down according to a recipe that depends only on the wavelength, then add the waves back together. That recipe is the **power spectrum** $P(k)$, where the *wavenumber* $k = 2\pi/\lambda$ is large for small bumps and small for big ones. Each wave keeps its random starting position (phase), so all the information is in the amplitudes.
 
 The overall amplitude is quoted as $\sigma_8 \approx 0.81$: if you average the density over spheres of radius $8\,h^{-1}$Mpc (about 12 Mpc, or 38 million light-years), the result typically differs from the mean by 81%.
 </Fragment>
@@ -88,7 +142,7 @@ The initial density field is not a designed object. According to inflation, it w
 
 ### The engineer's version
 
-Take a 3D grid of white noise: an independent standard normal random number in every cell. Fourier transform it. Each Fourier coefficient is now a complex Gaussian number with a random phase, and all $|k|$ have the same average power: that is what "white" means. Now multiply each coefficient by a real filter $\sqrt{P(k)}$ that depends only on $|k|$. Inverse transform. The result is a Gaussian random field with power spectrum $P(k)$.
+Take a 3D grid of white noise (new to Fourier transforms? see [Appendix A8](/ch/primer-waves/)): an independent standard normal random number in every cell. Fourier transform it. Each Fourier coefficient is now a complex Gaussian number with a random phase, and all $|k|$ have the same average power: that is what "white" means. Now multiply each coefficient by a real filter $\sqrt{P(k)}$ that depends only on $|k|$. Inverse transform. The result is a Gaussian random field with power spectrum $P(k)$.
 
 That is exactly how the initial conditions of every cosmological simulation are made, including the one in this chapter. Three properties make it special:
 
@@ -100,9 +154,9 @@ Formally, with Fourier modes $\delta_{\vec k}$, the power spectrum is defined by
 
 <KeyEq title="The power spectrum">
 $$
-\langle \delta_{\vec k}\, \delta^*_{\vec k'} \rangle = (2\pi)^3\, \delta_D(\vec k - \vec k')\, \htmlData{term=P}{P(k)}, \qquad \htmlData{term=sigma}{\sigma^2(R)} = \int_0^\infty \frac{k^3 P(k)}{2\pi^2}\, W^2(kR)\,\frac{dk}{k}
+\langle \term{deltak}{\delta_{\vec k}}\, \delta^*_{\vec k'} \rangle = (2\pi)^3\, \term{dirac}{\delta_D}(\term{kvec}{\vec k} - \vec k')\, \term{Pk}{P}(\term{k}{k}), \qquad \term{sigR}{\sigma^2(R)} = \int_0^\infty \frac{\term{k}{k}^3 \term{Pk}{P}(k)}{2\pi^2}\, \term{W}{W}^2(k\term{R}{R})\,\frac{dk}{k}
 $$
-<Fragment slot="where"><span data-term="P">$P(k)$</span> has units of volume and measures the variance per Fourier mode. Different modes are uncorrelated, which is what $\delta_D$ (a Dirac delta) says. The combination $\Delta^2(k) = k^3P(k)/2\pi^2$ is the variance contributed per logarithmic interval of $k$. <span data-term="sigma">$\sigma(R)$</span> is the rms fluctuation of the field smoothed by a top-hat window $W$ of radius $R$. Its value at $R = 8\,h^{-1}$Mpc today, $\sigma_8 \approx 0.81$, is the standard way to quote the amplitude.</Fragment>
+<Fragment slot="where"><span data-term="Pk">$P(k)$</span> has units of volume and measures the variance per Fourier mode. Different modes are uncorrelated, which is what $\delta_D$ (a Dirac delta) says. The combination $\Delta^2(k) = k^3P(k)/2\pi^2$ is the variance contributed per logarithmic interval of $k$. <span data-term="sigR">$\sigma(R)$</span> is the rms fluctuation of the field smoothed by a top-hat window $W$ of radius $R$. Its value at $R = 8\,h^{-1}$Mpc today, $\sigma_8 \approx 0.81$, is the standard way to quote the amplitude.</Fragment>
 </KeyEq>
 </Fragment>
 </Tiers>
@@ -132,13 +186,13 @@ A bump can only start growing once light has had time to cross it, because until
 Why does the ΛCDM spectrum turn over? The primordial spectrum from inflation is almost exactly $P_\text{prim} \propto k^{n_s}$ with $n_s \approx 1$. What we see after the universe has processed it is
 
 $$
-P(k, a) = A\,k^{n_s}\,T^2(k)\,D^2(a),
+\term{Pk}{P}(\term{k}{k}, \term{a}{a}) = \term{Aamp}{A}\,\term{k}{k}^{\term{ns}{n_s}}\,\term{Tk}{T}^2(k)\,\term{D}{D}^2(a),
 $$
 
 where $D(a)$ is the growth factor (next section) and $T(k)$ is the **transfer function**. $T(k) = 1$ for long waves and falls off for short ones. The reason is timing. A perturbation of wavelength $\lambda$ can only grow once it fits inside the horizon, the distance light has travelled since the Big Bang. Short waves enter the horizon early, while the universe is still dominated by radiation. As we will see, in that era dark-matter perturbations barely grow. Long waves enter after matter–radiation equality at $z_\text{eq} \approx 3400$ and grow at the full rate from the start. The dividing line is the horizon scale at equality:
 
 $$
-k_\text{eq} \approx 0.073\,\Omega_m h^2\ \text{Mpc}^{-1} \approx 0.010\ \text{Mpc}^{-1},
+\term{keq}{k_\text{eq}} \approx 0.073\,\term{Om}{\Omega_m} \term{hlittle}{h}^2\ \text{Mpc}^{-1} \approx 0.010\ \text{Mpc}^{-1},
 $$
 
 a wavelength of about 600 Mpc. Modes with $k \gg k_\text{eq}$ are suppressed by roughly $(k_\text{eq}/k)^2$ in amplitude, up to a logarithm, so $P \propto k^{n_s - 4}\ln^2 k$ on small scales. The simulation uses the classic Bardeen–Bond–Kaiser–Szalay (1986) fit for $T(k)$, a rational function of $q = k/\Gamma$ with $\Gamma \approx \Omega_m h$.
@@ -176,11 +230,11 @@ The result is a truce that favours gravity, but only slowly. While the universe 
 Two more facts make this simple. First, bumps of all sizes grow by the same factor, so the recipe keeps its shape and just gets louder. Second, the growth depends only on how the universe expands, so measuring structure growth tests our picture of the cosmos.
 </Fragment>
 <Fragment slot="l2">
-Now the physics of growth. Two things fight over every slightly dense region: gravity pulls matter in, and the expansion (*Hubble drag*) pulls it apart. Working out the balance takes calculus, but the result is simple enough to state with algebra.
+Now the physics of growth. Two things fight over every slightly dense region: gravity pulls matter in, and the expansion (*Hubble drag*) pulls it apart. Working out the balance takes calculus ([Appendix A4](/ch/primer-calculus/) if you are curious), but the result is simple enough to state with algebra.
 
 <KeyEq title="Growth of small ripples">
 $$
-\htmlData{term=delta}{\delta}(t) = \htmlData{term=D}{D}(t)\,\delta_0, \qquad D \propto a \ \ \text{(matter era)}
+\term{delta}{\delta}(\term{t}{t}) = \term{D}{D}(t)\,\term{delta0}{\delta_0}, \qquad \term{D}{D} \propto \term{a}{a} \ \ \text{(matter era)}
 $$
 <Fragment slot="where"><span data-term="delta">$\delta$</span> is the density contrast of a region, $\delta_0$ its starting value, and <span data-term="D">$D$</span> the **growth factor**, the same for every size of bump. In a universe of matter only, $D$ grows in proportion to the scale factor $a$: when the universe doubles in size, every small ripple doubles in strength.</Fragment>
 </KeyEq>
@@ -188,11 +242,11 @@ $$
 Since $a = 1/(1+z)$, a ripple at redshift $z = 1100$ (the CMB) has grown by roughly $1100$ times by today, minus the drag from dark energy. Compare that with a static universe, where a dense cloud collapses exponentially: expansion turns an explosion of growth into a slow, steady climb.
 </Fragment>
 <Fragment slot="l3">
-Now the dynamics. Treat the matter as a pressureless fluid (cold dark matter has negligible pressure on any scale we care about). In comoving coordinates, and to first order in $\delta$ and in the peculiar velocity, three equations govern it: continuity, Euler, and Poisson. Taking the time derivative of the linearised continuity equation and substituting the others gives a single equation for $\delta$. We skip the ten lines of algebra; any cosmology text has them.
+Now the dynamics. Treat the matter as a pressureless fluid (cold dark matter has negligible pressure on any scale we care about). In comoving coordinates, and to first order in $\delta$ and in the peculiar velocity, three equations govern it: continuity, Euler, and Poisson. Taking the time derivative of the linearised continuity equation and substituting the others gives a single equation for $\delta$. We skip the ten lines of algebra; any cosmology text has them. (Rusty on second-order ODEs? See [Appendix A5](/ch/primer-odes/).)
 
 <KeyEq title="Linear growth of density perturbations">
 $$
-\ddot{\htmlData{term=delta}{\delta}} + 2\htmlData{term=H}{H}\,\dot\delta = 4\pi G\,\htmlData{term=rhobar}{\bar\rho}\,\delta
+\term{ddelta}{\ddot{\delta}} + 2\term{H}{H}\,\term{drag}{\dot\delta} = 4\pi \term{G}{G}\,\term{rhobar}{\bar\rho}\,\term{delta}{\delta}
 $$
 <Fragment slot="where"><span data-term="delta">$\delta$</span> is the density contrast of one Fourier mode (in linear theory each mode evolves independently, with the same equation for all $k$ larger than the horizon scale). <span data-term="H">$H = \dot a/a$</span> is the Hubble rate. <span data-term="rhobar">$\bar\rho$</span> is the mean matter density. The right-hand side is gravity pulling matter into overdensities; the $2H\dot\delta$ term is **Hubble drag**, the expansion stretching things apart.</Fragment>
 </KeyEq>
@@ -204,7 +258,7 @@ This is a damped harmonic oscillator with the wrong sign of the spring constant,
 In a flat universe of pure matter (the Einstein–de Sitter model), $a \propto t^{2/3}$, $H = 2/3t$ and $4\pi G\bar\rho = \tfrac32 H^2 = 2/3t^2$. Try $\delta \propto t^p$:
 
 $$
-p(p-1) + \tfrac43 p = \tfrac23 \quad\Rightarrow\quad p = \tfrac23 \ \text{or}\ p = -1.
+\term{pexp}{p}(p-1) + \tfrac43 p = \tfrac23 \quad\Rightarrow\quad \term{pexp}{p} = \tfrac23 \ \text{or}\ p = -1.
 $$
 
 The decaying mode $t^{-1}$ disappears quickly. The growing mode is $\delta \propto t^{2/3} \propto a$. **Perturbations grow in proportion to the scale factor.** This is a lot slower than the exponential growth of the Jeans instability in a static medium, because Hubble drag fights gravity. In a static universe an overdensity grows as $e^{t/t_\text{ff}}$; in an expanding one it only grows as a power law.
@@ -252,7 +306,7 @@ A bit more than half. With $\Omega_m = 0.1$, Λ took over much earlier (at $z \a
 Numerically, the plot integrates the growth equation in $\ln a$:
 
 $$
-D'' + \Big(2 + \frac{d\ln H}{d\ln a}\Big) D' = \tfrac32\,\Omega_m(a)\, D,
+\term{D}{D}'' + \Big(2 + \frac{d\ln \term{H}{H}}{d\ln \term{a}{a}}\Big) D' = \tfrac32\,\term{Oma}{\Omega_m(a)}\, \term{D}{D},
 $$
 
 with RK4 from $a = 10^{-3}$, where $D = a$. The flagship simulation uses the same table to set its initial conditions and to translate between $a$ and the linear amplitude.
@@ -281,7 +335,7 @@ Linear theory fails when $\delta \sim 1$. Two classic analytic models tell us wh
 Take a uniform sphere with a slight overdensity in an otherwise uniform Einstein–de Sitter universe. By Newton's shell theorem (and Birkhoff's theorem in GR), the sphere evolves exactly like a small closed universe. Its radius obeys $\ddot R = -GM/R^2$, which is the Kepler problem in one dimension (Chapter 2, [Gravity & Orbits](/ch/orbits/)), with the parametric *cycloid* solution
 
 $$
-R = A(1 - \cos\theta), \qquad t = B(\theta - \sin\theta), \qquad A^3 = GMB^2.
+\term{Rsh}{R} = \term{Acyc}{A}(1 - \cos\term{theta}{\theta}), \qquad \term{t}{t} = \term{Bcyc}{B}(\theta - \sin\theta), \qquad A^3 = \term{G}{G}\term{Msh}{M}B^2.
 $$
 
 The sphere expands, slows, turns around at $\theta = \pi$, and collapses to a point at $\theta = 2\pi$. The background sphere of the same mass keeps growing as $t^{2/3}$, and the ratio of their volumes gives the nonlinear density contrast. Expand everything for small $\theta$ and you get linear theory, which lets us translate between the two. Three numbers come out of this and are used everywhere:
@@ -317,7 +371,7 @@ Real overdensities are not spherical. Yakov Zel'dovich (1970) found an approxima
 
 <KeyEq title="The Zel'dovich approximation">
 $$
-\vec x(\vec q, t) = \vec q + D(t)\,\htmlData{term=psi}{\vec\psi}(\vec q), \qquad \nabla_q\cdot\vec\psi = -\delta_0(\vec q)
+\term{x}{\vec x}(\term{q}{\vec q}, \term{t}{t}) = \term{q}{\vec q} + \term{D}{D}(t)\,\term{psi}{\vec\psi}(\vec q), \qquad \nabla_q\cdot\term{psi}{\vec\psi} = -\term{delta0}{\delta_0}(\vec q)
 $$
 <Fragment slot="where"><span data-term="psi">$\vec\psi$</span> is the displacement field, fixed at the start; $D(t)$ is the linear growth factor. In Fourier space $\vec\psi_{\vec k} = i\vec k\,\delta_{\vec k}/k^2$. The density follows from mass conservation, $1+\delta = 1/\det(\mathbb 1 + D\,\partial\vec\psi/\partial\vec q)$.</Fragment>
 </KeyEq>
@@ -325,7 +379,7 @@ $$
 To first order this is exactly linear theory. But particles keep moving along their straight lines even after $\delta$ becomes large, and the determinant tells you what happens. The deformation tensor $\partial\psi_i/\partial q_j$ is a symmetric $3\times3$ matrix with eigenvalues $-\lambda_1 \le -\lambda_2 \le -\lambda_3$. The density is
 
 $$
-1 + \delta = \frac{1}{(1 - D\lambda_1)(1 - D\lambda_2)(1 - D\lambda_3)}.
+1 + \term{delta}{\delta} = \frac{1}{(1 - \term{D}{D}\term{lam}{\lambda_1})(1 - D\lambda_2)(1 - D\lambda_3)}.
 $$
 
 The largest eigenvalue $\lambda_1$ reaches $1/D$ first, and the density becomes infinite along a surface: a **pancake** (a wall, or sheet). Collapse is generically one-dimensional first. Where two eigenvalues are large, you get a **filament**. Where all three, a **node**, the site of a massive halo. For a Gaussian field, the chance that all three eigenvalues of a random point are positive is only 8%; 42% have exactly one and another 42% exactly two. That is why the cosmic web is dominated by walls and filaments, with rare dense knots at their intersections, and why most of the volume ends up as voids.
@@ -339,6 +393,14 @@ When particles cross (*shell crossing*), the single-valued velocity field breaks
 </Sim>
 
 Zel'dovich keeps moving particles in straight lines after shell crossing, so pancakes overshoot and dissolve instead of staying bound. Real gravity pulls the streams back and they wind up into halos. But the approximation is excellent up to shell crossing, which is why simulations (including ours) use it to set up initial conditions at high redshift. Modern codes use second-order Lagrangian perturbation theory (2LPT) or higher to start later with smaller transients.
+
+<History title="Zel'dovich's pancakes" year="1970">
+<Portrait src="/img/people/zeldovich.jpg" name="Yakov Zel'dovich" years="1914–1987" credit="Woodruff T. Sullivan III, NRAO/AUI/NSF" license="CC BY 4.0" href="https://commons.wikimedia.org/wiki/File:Yakov_Zeldovich,_December_1980.jpg" />
+
+Yakov Borisovich Zel'dovich had no university degree. He started as a laboratory assistant, became a leading expert on combustion and detonation, and then spent years on the Soviet atomic bomb project. Only in the 1960s did he turn to astrophysics, founding a Moscow school that included Sunyaev, Novikov and Doroshkevich. Stephen Hawking reportedly told him that, before they met, he had assumed "Zel'dovich" was the pen name of a whole collective.
+
+His 1970 paper, *Gravitational instability: an approximate theory for large density perturbations*, was only a few pages long. Its straight-line approximation predicted that the first objects would be vast flattened "pancakes", where gas would shock and fragment into galaxies. That top-down picture fitted the massive neutrinos then favoured as dark matter, and it lost out in the 1980s to bottom-up cold dark matter. But the pancakes survived. They are the walls of the cosmic web, and every cosmological simulation still starts from Zel'dovich's formula.
+</History>
 
 ## Halos: the building blocks
 
@@ -356,7 +418,7 @@ The answer is that small halos are extremely common and big ones rare, with a sh
 Press and Schechter (1974) combined the two results above into a formula for the abundance of halos. Smooth the linear density field on a sphere of mass $M$ (radius $R$ with $M = \tfrac43\pi R^3\bar\rho$). The smoothed field is Gaussian with variance $\sigma^2(M)$. Every region where it exceeds $\delta_c/D(t)$ has collapsed into a halo of mass at least $M$. So the fraction of mass in halos above $M$ is a Gaussian tail probability:
 
 $$
-F(>M) = 2\times\tfrac12\,\text{erfc}\!\left(\frac{\nu}{\sqrt2}\right), \qquad \nu = \frac{\delta_c}{D(t)\,\sigma(M)}.
+\term{Fcoll}{F}(>\term{Mh}{M}) = 2\times\tfrac12\,\text{erfc}\!\left(\frac{\term{nu}{\nu}}{\sqrt2}\right), \qquad \term{nu}{\nu} = \frac{\term{deltac}{\delta_c}}{\term{D}{D}(t)\,\term{sigM}{\sigma(M)}}.
 $$
 
 The factor of 2 was a famous fudge that was later justified by the *excursion set* argument (Bond et al. 1991). Differentiating gives the **halo mass function** $dn/dM$. Its shape is a power law at low mass, where $\sigma(M)$ is large and nearly everything has collapsed, and an exponential cutoff $e^{-\nu^2/2}$ at high mass. The cutoff mass $M_*$, where $\nu = 1$, is about $10^{13}\,M_\odot$ today: groups of galaxies. It was far smaller in the past, which is **hierarchical structure formation**: small halos form first and merge into bigger ones. Rich clusters of $10^{15}\,M_\odot$ are $\nu \approx 3$ peaks, and there are only a few thousand of them in the observable universe. Their exponentially sensitive abundance makes them a sharp probe of $\sigma_8$.
@@ -379,7 +441,7 @@ Simulated halos all have nearly the same shape, found by Julio Navarro, Carlos F
 Simulated halos have a nearly universal density profile, found by Navarro, Frenk and White (1996):
 
 $$
-\rho(r) = \frac{\rho_s}{(r/r_s)(1 + r/r_s)^2}.
+\term{rho}{\rho}(\term{rr}{r}) = \frac{\term{rhos}{\rho_s}}{(r/\term{rs}{r_s})(1 + r/r_s)^2}.
 $$
 
 It falls as $r^{-1}$ in the inner parts (a *cusp*) and as $r^{-3}$ in the outskirts. The ratio $c = R_{200}/r_s$ is the **concentration**, about 10 for a Milky Way–sized halo and about 4 for a cluster. Smaller halos formed earlier, when the universe was denser, and are more concentrated. Why the profile is universal is still not fully understood; it is an empirical result of simulations, confirmed by lensing (Chapter 24) and X-ray observations of clusters.
@@ -400,7 +462,7 @@ Observations of the smallest galaxies and of distant gas clouds say dark matter 
 "Cold" means the dark-matter particles moved slowly when structure began to form. If instead they were **warm**, for example a thermal relic with a mass of a few keV, their random motions would have let them stream out of small overdensities (*free streaming*), erasing structure below a scale of
 
 $$
-\lambda_\text{fs} \sim 0.1\,\text{Mpc}\,\left(\frac{m}{1\,\text{keV}}\right)^{-4/3}.
+\term{lfs}{\lambda_\text{fs}} \sim 0.1\,\text{Mpc}\,\left(\frac{\term{mwdm}{m}}{1\,\text{keV}}\right)^{-4/3}.
 $$
 
 The power spectrum is cut off exponentially above a wavenumber $\sim 1/\lambda_\text{fs}$. Halos smaller than the corresponding mass never form by gravitational collapse at all, and filaments become smooth rather than beaded with small halos. WDM was proposed partly to fix apparent small-scale problems of CDM (too many satellite galaxies, cusps rather than cores). Today the Lyman-α forest, the counts of Milky Way satellites, and strong-lensing anomalies all require $m \gtrsim 5$–$6$ keV for a thermal relic, which is almost indistinguishable from CDM on scales above a dwarf galaxy. The flagship simulation offers two extreme "toy" WDM masses, 0.1 and 0.05 keV, long ruled out, so that the cutoff falls where the simulation can resolve it. Try them with the same seed as CDM.
@@ -424,7 +486,7 @@ With comoving position $\vec x$ and the *canonical momentum* $\vec p = a^2\,d\ve
 
 <KeyEq title="Comoving equations of motion">
 $$
-\frac{d\vec x}{da} = \frac{\vec p}{a^3 H(a)}, \qquad \frac{d\vec p}{da} = -\frac{\nabla\htmlData{term=phi}{\phi}}{a\,H(a)}, \qquad \nabla^2\phi = \frac{3}{2}\frac{\Omega_m H_0^2}{a}\,\delta
+\frac{d\term{x}{\vec x}}{d\term{a}{a}} = \frac{\term{pmom}{\vec p}}{a^3 \term{H}{H}(a)}, \qquad \frac{d\term{pmom}{\vec p}}{da} = -\frac{\nabla\term{phi}{\phi}}{a\,\term{H}{H}(a)}, \qquad \nabla^2\term{phi}{\phi} = \frac{3}{2}\frac{\term{Om}{\Omega_m} \term{H0}{H_0}^2}{a}\,\term{delta}{\delta}
 $$
 <Fragment slot="where">$\vec x$ is the comoving position, $\vec p$ the canonical momentum (peculiar velocity is $\vec p/a$), $H(a) = H_0\sqrt{\Omega_m a^{-3} + \Omega_\Lambda}$ the Hubble rate, and <span data-term="phi">$\phi$</span> the peculiar gravitational potential sourced only by the density *contrast*: the uniform background drives the expansion and is already accounted for in $a(t)$. Using $a$ as the clock avoids solving for $t$ at all.</Fragment>
 </KeyEq>
@@ -517,6 +579,12 @@ The largest simulations are the same algorithm scaled up by a factor of a millio
 - **Uchuu** (2021): $12800^3 = 2.1$ trillion particles in a 2 $h^{-1}$Gpc box.
 - **Euclid Flagship 2** (2024): about 4.1 trillion particles in a 3.6 $h^{-1}$Gpc box, run with the PKDGRAV3 code to make mock galaxy catalogues for the Euclid mission.
 
+<History title="The Millennium Run" year="2005">
+In 2004 the Virgo Consortium, an Anglo-German collaboration led by Simon White and Carlos Frenk, took over the IBM supercomputer at the Max Planck Society's computing centre in Garching for a month. Volker Springel's TreePM code Gadget-2 followed $2160^3 \approx 10^{10}$ particles, ten times more than any earlier run, from redshift 127 to today, and wrote about 25 terabytes of snapshots. Merger trees of 20 million galaxies were built from the halos.
+
+The Millennium Run, published in *Nature* in 2005, did two things. It showed that ΛCDM, with galaxies painted onto halos by a semi-analytic model, could reproduce the web seen by redshift surveys, including rare, massive early quasars. And by releasing its catalogues publicly through an SQL database, it changed how cosmology is done: thousands of papers have been written with its data by people who never ran a simulation.
+</History>
+
 <Aside>**Particles are not dark-matter particles.** A simulation particle of $10^9\,M_\odot$ is a tracer of the phase-space distribution of perhaps $10^{76}$ real particles. Two-body encounters between simulation particles are an artefact, suppressed by softening.</Aside>
 
 ## The cosmic web observed
@@ -528,6 +596,14 @@ We can compare simulations with the real web because galaxy redshift surveys map
 <Photo src="/img/structure/desi-map.jpg" alt="Two fan-shaped slices of millions of dots, forming a lacy network of filaments and voids, with Earth at the point where the fans meet" credit="DESI Collaboration/DOE/KPNO/NOIRLab/NSF/AURA/R. Proctor" license="CC BY 4.0" href="https://noirlab.edu/public/images/noirlab2512a/" size="wide" aspect="1400 / 787">
 **The real cosmic web.** DESI's three-year map: each dot is a galaxy or quasar with a measured redshift, in two fans above and below the plane of the Milky Way, with Earth at the apex. Bluer points are more distant, billions of light-years away. The lacework of filaments and voids is statistically the same pattern that grows in the simulation above.
 </Photo>
+
+<History title="The stick man and the Great Wall" year="1986">
+<Portrait src="/img/people/geller.jpg" name="Margaret Geller" years="born 1947" credit="ServiceAT" license="CC BY-SA 4.0" href="https://commons.wikimedia.org/wiki/File:MargaretGeller1981a.jpg" />
+
+In the early 1980s most astronomers expected galaxies beyond the local clusters to be sprinkled more or less evenly. Margaret Geller and John Huchra at the Harvard–Smithsonian Center for Astrophysics decided to find out by measuring redshifts one galaxy at a time with a 1.5-m telescope on Mount Hopkins, working through a thin strip of sky. Their student Valérie de Lapparent plotted the first slice, about 1,100 galaxies, in 1986.
+
+It was not uniform at all. The galaxies traced thin walls around huge empty bubbles, with the Coma cluster in the middle forming a figure that looked like a stick man. The team described the universe as looking like "soap bubbles". In 1989, more slices revealed the **CfA2 Great Wall**, a sheet of galaxies some 500 million light-years long, then the largest known structure. Today's DESI map (above) is the same kind of plot with tens of millions of galaxies instead of a thousand.
+</History>
 
 These surveys measure the same statistics we have used in this chapter: the galaxy power spectrum and its BAO wiggles, the growth rate $f\sigma_8$ from redshift-space distortions, and the lensing amplitude.
 

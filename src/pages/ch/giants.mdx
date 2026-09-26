@@ -1,0 +1,325 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: giants
+lede: A star spends 90% of its life quietly burning hydrogen, then spends the rest of it having an identity crisis — swelling to the size of an orbit, flashing, pulsing, and finally throwing itself away.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Photo from '../../components/Photo.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  qsc: ['Schönberg–Chandrasekhar mass fraction', 'The largest fraction of a star total mass that an isothermal helium core can hold up before it must contract. Roughly 0.37×(μ_env/μ_core)².'],
+  Mcore: ['Core mass', 'Mass of the isothermal (or degenerate) helium core, growing as the hydrogen shell burns.'],
+  Mstar: ['Total stellar mass', 'Mass of the whole star, fixed except for the AGB and later where winds strip it.'],
+  muenv: ['Mean molecular weight, envelope', 'Around 0.6 for an ionised solar-composition envelope.'],
+  mucore: ['Mean molecular weight, core', 'Around 1.3 for pure ionised helium (two particles — nucleus and 2 electrons — per 4 amu, roughly).'],
+  Pdeg: ['Degeneracy pressure', 'Pressure from the Pauli exclusion principle alone, independent of temperature.'],
+  Kdeg: ['Degeneracy constant', 'Fixed by fundamental constants and composition; sets the pressure at a given density.'],
+  rhoC: ['Core density', 'Mass density in the helium core, tens of tonnes per cubic centimetre by the time flash conditions are reached.'],
+  EF: ['Fermi energy', 'The characteristic energy scale of a degenerate electron gas; grows as ρ^(2/3).'],
+  kBT: ['Thermal energy', 'k_B T, the characteristic energy of thermal motion.'],
+  P: ['Pulsation period', 'Time for one full brightness cycle of a pulsating star.'],
+  rhobar: ['Mean density', 'Stellar mass divided by volume, in solar units.'],
+  Q: ['Pulsation constant', 'Roughly 0.03–0.09 days for classical Cepheids, set by the internal structure of the star.'],
+  MV: ['Absolute V-band magnitude', 'Intrinsic brightness; the quantity the period predicts via the Leavitt law.'],
+}} />
+
+## Core exhaustion and the Schönberg–Chandrasekhar limit
+
+<Photo src="/img/giants/eta-carinae.jpg" alt="The Homunculus Nebula, a bright, lobed, hourglass-shaped cloud of gas and dust around the massive binary star Eta Carinae, glowing orange and white against black space" credit="NASA, ESA, Hubble Heritage Team (STScI/AURA), N. Smith (University of California, Berkeley)" license="Public domain" href="https://images.nasa.gov/details/GSFC_20171208_Archive_e001783" size="wide" aspect="3 / 2">
+**The Homunculus Nebula around Eta Carinae.** This dumbbell of gas was thrown off in the "Great Eruption" of the 1840s, when the star briefly became the second-brightest in the sky without exploding — a preview of the mass loss and instability that awaits every star discussed in this chapter, just on a much grander scale for the most massive ones.
+</Photo>
+
+A star on the main sequence is a slave to one number: the rate at which it converts H to He in its core. [Chapter 14](/ch/main-sequence/) showed that this rate barely changes over the star's main-sequence life, because the core is a self-regulating thermostat — a little hotter, a little more pressure, a little expansion, a little cooling. That thermostat is powered by an *ideal* gas, where pressure depends on temperature. Everything in this chapter is about what happens once that assumption starts to fail.
+
+<Tiers>
+<Fragment slot="l1">
+Eventually the core runs out of hydrogen. What's left is an inert ball of helium "ash", too cool to fuse into anything, sitting inside a shell of hydrogen that is still burning. As that shell dumps more helium onto the core, the core has to shrink and get denser to hold up the extra weight — small cores can support themselves that way. But there is a limit: past a certain size, no ordinary (non-degenerate) core can support the weight above it just by getting a bit hotter and denser. When the growing helium core crosses that limit, it can no longer stay in balance and starts to *contract in earnest*, which is the trigger for everything that follows: the star swells up into a giant.
+</Fragment>
+<Fragment slot="l2">
+The core becomes essentially isothermal (its own weight is too small to sustain a temperature gradient once fusion there stops), while a hydrogen-burning shell dumps processed material onto it from above. An isothermal, self-gravitating ball of gas embedded in a much larger envelope cannot support an arbitrarily large fraction of the total mass: past a critical fraction, no isothermal solution in hydrostatic equilibrium exists, and the core must contract. This is the **Schönberg–Chandrasekhar (SC) limit**, discovered in 1942.
+</Fragment>
+<Fragment slot="l3">
+Model the core as an isothermal, self-gravitating sphere of ideal gas embedded in an envelope of pressure $P_\text{env}$. The maximum pressure such a sphere can supply at its own surface, for a given mass $M_c$, temperature $T_c$ and radius $R_c$, is bounded: $P_\text{max} \propto (k_B T_c)^4 / (G M_c)^2 \mu_c^4$. Setting this equal to the pressure the envelope must supply for hydrostatic support gives a maximum core mass fraction, independent of the details of $T_c$ and $R_c$.
+</Fragment>
+</Tiers>
+
+<Level min={3} title="Deriving the Schönberg–Chandrasekhar limit">
+For an isothermal self-gravitating sphere in hydrostatic equilibrium, integrating $dP/dr = -G m(r)\rho/r^2$ with the ideal-gas law shows that the central pressure needed to support a mass $M_c$ at radius $R_c$ has a *maximum* over all valid density profiles (there is no equilibrium once the envelope demands more than this). Working through the algebra (Chandrasekhar 1942; see any stellar-structure text for the full integral) gives a maximum core-mass fraction
+
+$$
+\left(\frac{\term{Mcore}{M_c}}{\term{Mstar}{M}}\right)_\text{max} \approx 0.37 \left(\frac{\term{muenv}{\mu_\text{env}}}{\term{mucore}{\mu_c}}\right)^2.
+$$
+
+For a solar-composition envelope ($\mu_\text{env}\approx 0.6$) and a pure-helium core ($\mu_c \approx 1.3$), this comes out to $q_\text{SC} \approx 0.08$: once the helium core reaches about 8–10% of the star's mass, it cannot stay in equilibrium as an isothermal ideal gas and must contract.
+</Level>
+
+<KeyEq title="Schönberg–Chandrasekhar limit">
+$$
+\term{qsc}{q_\text{SC}} \equiv \left(\frac{M_c}{M}\right)_\text{max} \approx 0.37\left(\frac{\term{muenv}{\mu_\text{env}}}{\term{mucore}{\mu_c}}\right)^2
+$$
+<Fragment slot="where">$q_\text{SC}$ is the largest fraction of the total stellar mass an isothermal helium core can support. $\mu_\text{env}$ and $\mu_c$ are the mean molecular weights of the envelope and core. Low-mass stars ($\lesssim 2\,M_\odot$) reach electron degeneracy in the core (see below) before hitting this limit at all; intermediate and high-mass stars hit the SC limit first and contract while still non-degenerate.</Fragment>
+</KeyEq>
+
+A star of mean-molecular-weight ratio <Var name="muRatio" value={0.46} min={0.3} max={0.8} step={0.01} /> has $q_\text{SC} \approx$ <Out name="qsc" />. Push the ratio up (a more evolved, more metal-poor, or hotter envelope) and the limit rises; push it down and the core must contract sooner.
+
+<Aside>**Why this matters for computing, not just physics.** The SC limit is one of the first places stellar-evolution codes hit a *numerical* crisis: as the core approaches the limit, the envelope's response becomes extremely sensitive to the core mass, and naive fixed-step integrators fail to converge. Henyey-method codes (and later MESA) use implicit, globally-coupled solves of the whole structure precisely to get through moments like this — more in the "Under the hood" section further down this chapter.</Aside>
+
+Once past the SC limit, the core contracts, heats by gravitational contraction (releasing energy exactly as in the pre-main-sequence collapse of [Chapter 9](/ch/star-formation/)), and the hydrogen-burning shell around it heats up and speeds up in response. The whole star must now readjust — and it does so in a way that looks, at first, backwards.
+
+## Shell burning, the mirror principle, and the ascent of the giant branch
+
+<Tiers>
+<Fragment slot="l1">
+Here is the strange rule that governs this whole chapter: **when the core of a star shrinks, the envelope around it swells.** Contraction on the inside somehow means expansion on the outside — as if the star were a mirror image of itself. This is why "giant" stars are giant: their cores have shrunk to something small and dense, while their outer layers have puffed up to hundreds of times the Sun's radius.
+</Fragment>
+<Fragment slot="l2">
+As the helium core contracts and heats, the hydrogen shell just outside it heats too, and burns hydrogen far faster than the whole star did on the main sequence. That dumps more energy into the base of the envelope than it can radiate away in a simple, quasi-static way, and the envelope's response — for reasons discussed below — is to expand and cool. The result is the defining shape of the giant branch: a shrinking, heating core, and a swelling, cooling envelope.
+</Fragment>
+</Tiers>
+
+<Aside>**No one fully agrees on the simple explanation.** Every textbook states the "mirror principle" (core contracts, envelope expands) as if it were obvious, but there is no single, universally accepted one-line argument for *why*, in the sense of a short chain of inequalities that always holds. What follows are the standard arguments, which are individually persuasive and mutually consistent, but the full story is properly established only by solving the stellar-structure equations (numerically, as MESA does) rather than by a clean piece of algebra.</Aside>
+
+<Level min={2} title="The standard arguments for the mirror principle">
+Three arguments are usually offered, and they reinforce each other:
+
+1. **Homology / virial argument.** As the dense core shrinks, the region just outside it sits in a much steeper local gravitational potential. For a star obeying an approximately homologous structure, larger central concentration of mass drives the outer layers to *larger* radius for the same total mass and luminosity — this is a generic feature of centrally-concentrated polytropic-like models. <Level min={3} inline>Formally, in homology relations $R \propto \mu^{-1}$ and increasing central concentration acts like decreasing an effective molecular weight in the outer layers.</Level>
+2. **Thin-shell instability.** A shell source sitting in a steep density gradient just outside a contracting core is thermally unstable in a specific way: a shell thinner than a certain fraction of the local radius overshoots any perturbation (this is why AGB shell flashes exist — see below). The shell's response to being squeezed is not to settle quietly, but to dump a burst of extra luminosity into the envelope above it.
+3. **Envelope opacity response.** The extra luminosity flowing through the envelope, combined with the strong temperature-dependence of opacity in cool outer layers (H⁻ and molecular opacities), means the envelope cannot simply heat up to radiate the extra flux — its equilibrium radius increases instead, cooling the surface even as luminosity rises. This pushes the star to the right on the HR diagram, onto the giant branch.
+</Level>
+
+Whatever the precise mechanism, the observed and computed result is robust: **subgiant** stars cross the HR diagram from the main sequence almost horizontally (radius growing, luminosity barely changing) as the core contracts and the shell ignites, then turn upward onto the **red giant branch (RGB)**, where luminosity climbs steeply as the core keeps contracting and the convective envelope deepens.
+
+### The red giant branch and first dredge-up
+
+As a star climbs the RGB, its convective envelope deepens until it reaches layers that were partially processed by CNO-cycle burning earlier in the star's life (see [Chapter 12](/ch/fusion/)). This mixing event, the **first dredge-up**, brings ¹³C- and ¹⁴N-enriched, ¹²C-depleted material to the surface — one of the cleanest observational fingerprints of a star's interior history, measurable directly from surface abundances.
+
+<Fermi title="How big does the RGB tip get?">
+The core mass at the RGB tip for a solar-mass star is almost universal, $M_c \approx 0.48\,M_\odot$, nearly independent of the star's total mass (because the SC/degeneracy limit depends on composition, not much on $M$). The core-mass–luminosity relation is roughly $L \propto M_c^{7}$ (an extremely steep dependence, from detailed shell-burning models), so a small further rise in core mass from 0.47 to 0.48 $M_\odot$ can raise $L$ several-fold. That steepness is *why* the RGB luminosity function has a sharp "tip" — used as a standard candle (the tip of the red giant branch, TRGB) almost as precise as Cepheids, and with no dust-extinction complications from pulsation.
+</Fermi>
+
+<Aside>**In the real universe.** Betelgeuse is not on the RGB — it is a much more massive red *supergiant* (see below) — but the Sun will pass through an RGB phase reaching about 170 $R_\odot$, engulfing Mercury and Venus. See the flagship simulation and the Sun's-fate figure later in this chapter.</Aside>
+
+## Degenerate cores and the helium flash
+
+<Tiers>
+<Fragment slot="l1">
+For a star like the Sun, the helium core hits a different limit before it ever reaches the Schönberg–Chandrasekhar wall: **electron degeneracy**. Pack electrons tightly enough and quantum mechanics (the Pauli exclusion principle — new to this? see [Appendix A9](/ch/primer-quantum/)) forces most of them into high-momentum states whether or not the gas is hot. The pressure that results does not care about temperature at all. That single fact turns a gentle contraction into an explosive one.
+</Fragment>
+<Fragment slot="l2">
+A non-degenerate (ideal) gas has $P \propto \rho T$: heat it, and it expands, cools, and the pressure comes back down — self-regulating, like the main-sequence core. A **degenerate** gas has $P \propto \rho^{5/3}$ (non-relativistic) with *no* $T$ dependence. Heat a degenerate core and its pressure barely changes, so it does not expand to cool itself off. Any nuclear reaction that switches on in a degenerate core therefore runs away: more heat, faster reaction, more heat, with nothing to stop it until the gas becomes non-degenerate again.
+</Fragment>
+</Tiers>
+
+<KeyEq title="Non-relativistic electron degeneracy pressure">
+$$
+\term{Pdeg}{P_\text{deg}} = \term{Kdeg}{K}\,\term{rhoC}{\rho}^{5/3}, \qquad K = \frac{(3\pi^2)^{2/3}}{5}\frac{\hbar^2}{m_e}\left(\frac{1}{\mu_e m_u}\right)^{5/3}
+$$
+<Fragment slot="where">$P_\text{deg}$ has no explicit temperature dependence at all — the defining, dangerous feature of degenerate matter. $\mu_e$ is the mean molecular weight per electron (≈2 for helium). This is the same physics that supports white dwarfs (teased at the end of this chapter and central to [Chapter 16](/ch/stellar-death/)) and, in its relativistic form, sets the Chandrasekhar mass.</Fragment>
+</KeyEq>
+
+<Level min={2} title="When does degeneracy win?">
+Degeneracy dominates over thermal pressure when the **Fermi energy** exceeds the thermal energy, $E_F \gg k_B T$. The Fermi energy for a non-relativistic electron gas scales as $E_F \propto \rho^{2/3}$, while thermal energy is just $k_B T$. Cores that are *cool and dense* (helium cores of low-mass stars — cool because the whole star's energy output has always been modest) become degenerate; cores that are *hot and less dense* (helium cores in more massive stars, which contract from a hotter, brighter main-sequence state) reach the SC limit while still non-degenerate and never flash.
+</Level>
+
+<Fermi title="Is the helium core actually degenerate?">
+Near the tip of the RGB, a solar-mass star's helium core has $\rho_c \sim 2\times10^8\,\text{kg/m}^3$ and $T_c \sim 10^8\,\text{K}$. The electron Fermi energy at that density, $\term{EF}{E_F} \approx 3.65\,(\rho_7)^{2/3}$ keV (with $\rho_7 = \rho/10^7\,\text{kg m}^{-3}$, a standard non-relativistic scaling), works out to several keV — while $k_BT \approx 8.6$ keV at $10^8$ K. The two are comparable: the core is **partially** degenerate, exactly the messy, marginal regime where the flash is neither a clean textbook limit nor negligible. For a density of <Var name="rho7" value={20} min={1} max={200} log /> (in units of $10^7$ kg/m³), $E_F \approx$ <Out name="degen" />.
+</Fermi>
+
+<Predict question="You perturb a degenerate helium core with a small pulse of extra heat. What happens next, compared to doing the same thing to an ordinary (ideal-gas) stellar core?" choices={['Nothing — both cores absorb the heat and settle back down', 'The ideal-gas core runs away; the degenerate core is stable', 'The degenerate core runs away; the ideal-gas core is stable', 'Both run away, but the degenerate one runs away faster']} answer={2}>
+An ideal-gas core responds to extra heat by expanding (P ∝ ρT, so a hotter gas at fixed pressure is less dense) and cooling back down — the same thermostat that stabilises main-sequence burning. A degenerate core's pressure doesn't care about T, so it can't relieve itself by expanding: the extra heat just drives the reaction rate higher, which produces more heat, in a runaway. That runaway is the helium flash. It only stops once the rising temperature becomes high enough that thermal pressure catches up and lifts the degeneracy (or, in the toy model below, when you turn on expansion by hand).
+</Predict>
+
+<Sim name="giants-flash" minHeight={380}>
+**The thermostat, broken.** A minimal two-variable toy model of core temperature and density. Switch between an ideal-gas core (self-regulating: perturb it and it settles back to equilibrium) and a degenerate core (no pressure feedback: perturb it and the heating runs away, exactly as in a real helium core's ignition). Click "Perturb" after resetting, and compare.
+</Sim>
+
+<History title="Predicting an explosion no one had seen" year="1955">
+<Portrait src="/img/people/hoyle.jpg" name="Fred Hoyle" years="1915–2001" credit="NRAO/AUI Archives, Sullivan Collection (photo: Woodruff T. Sullivan III)" license="CC BY 4.0" href="https://commons.wikimedia.org/wiki/File:Fred_Hoyle.jpg" />
+
+The helium flash was discovered on paper, years before anyone could observe its aftermath directly. In 1955, Fred Hoyle and Martin Schwarzschild built one of the first detailed numerical models of a star climbing the red giant branch, using early electronic computers to integrate the stellar-structure equations forward in time — an ancestor of the same basic method MESA uses today (see this chapter's Hood section). Their models showed the degenerate helium core's temperature and density crossing into a regime where the nuclear energy generation rate would run away catastrophically fast, releasing roughly $10^{10}$–$10^{11}\,L_\odot$ in the core for a few seconds — briefly comparable to the luminosity of an entire galaxy, though almost none of it escapes the star directly (it is absorbed and re-radiated slowly by the overlying envelope, so the star's *surface* brightness barely changes). No telescope of the time could have seen the flash itself; the discovery is a triumph of numerical simulation predicting an event that stellar-evolution codes still cannot fully resolve today, because the burning is turbulent, three-dimensional, and happens on a timescale far shorter than the code's normal stepping (see the Hood on adaptive timestepping later in this chapter).
+</History>
+
+## The horizontal branch, the AGB, and the manufacture of new elements
+
+Once the flash lifts core degeneracy, the star settles onto stable, non-degenerate core helium burning — the **horizontal branch** (for metal-poor stars) or, for solar-metallicity stars like the Sun, the compact, well-defined **red clump**. Both are named for their nearly constant luminosity across a range of masses, which is itself a standard-candle tool for distance measurement in old stellar populations.
+
+<Tiers>
+<Fragment slot="l1">
+Core helium burning uses the **triple-alpha process**: three helium nuclei stick together to make carbon. It is a delicate, two-step process that almost doesn't work at all — and would not work, were it not for an extremely fortunate nuclear coincidence, discussed in [Chapter 12](/ch/fusion/). Some of that carbon then captures one more helium nucleus to make oxygen. So by the end of this phase, the star has built up a core of carbon and oxygen.
+</Fragment>
+<Fragment slot="l2">
+Triple-alpha, $3\,{}^4\text{He} \to {}^{12}\text{C} + \gamma$, proceeds via an unstable ${}^8\text{Be}$ intermediate and a resonance in ${}^{12}\text{C}$ close to the He+Be threshold energy (predicted by Hoyle in 1953 on anthropic grounds before it was measured — see [Chapter 12](/ch/fusion/)). The reaction rate is extremely temperature-sensitive, $\varepsilon_{3\alpha} \propto \rho^2 T^{40}$ near ignition, which is exactly the ferocious sensitivity that makes the helium flash a runaway. Once carbon accumulates, $^{12}\text{C}(\alpha,\gamma)^{16}\text{O}$ competes for the remaining helium; the C/O ratio left behind by core helium burning sets the composition of the white dwarf, the details of later carbon burning in massive stars, and (through the amount of carbon available) whether a low-mass AGB star's atmosphere ends up carbon-rich.
+</Fragment>
+</Tiers>
+
+### Double-shell burning and thermal pulses on the AGB
+
+When core helium is exhausted, the star repeats the mirror-principle trick one level up: a carbon–oxygen core, surrounded by a helium-burning shell, surrounded by a hydrogen-burning shell, surrounded by a vast convective envelope. This is the **asymptotic giant branch (AGB)**, and it is mechanically unstable in a specific, periodic way.
+
+<Level min={2} title="Why the shells pulse">
+The helium shell is thin compared to its radius, and thin nuclear-burning shells are thermally unstable (the same thin-shell instability mentioned above, now acting in the classic textbook sense): a small increase in temperature raises the local burning rate faster than the local pressure can respond by expanding, so the shell brightens in a **thermal pulse**, pushing the hydrogen shell above it outward and extinguishing it temporarily. The helium shell then dies down, the hydrogen shell reignites, and the whole star cycles between the two on a timescale of $10^3$–$10^5$ years — far too fast to see directly, but etched into detailed stellar models and into isotopic ratios in stardust grains found in meteorites.
+</Level>
+
+Each thermal pulse can be followed by convection reaching down into the helium- and carbon-rich intershell region and dredging processed material up to the surface again — the **third dredge-up**. Repeated third dredge-up events are how a star that started with more oxygen than carbon in its atmosphere can become a **carbon star**, with C/O > 1, visibly reddened by carbon-rich dust and molecules.
+
+<Aside>**Technetium: nucleosynthesis caught red-handed.** In 1952 Paul Merrill found absorption lines of technetium — an element with no stable isotopes, whose longest-lived isotope (⁹⁹Tc) has a half-life of about 211,000 years — in the spectra of S-type (AGB) stars. Because 211,000 years is short compared to the star's age, the technetium *must* have been made recently, inside the star, and dredged to the surface. It was one of the first direct proofs that stars actively manufacture heavy elements during their own lives, not only in some primordial event.</Aside>
+
+The intershell region, heated by helium-shell flashes to a few $\times10^8$ K with a modest neutron flux from $^{13}\text{C}(\alpha,n)^{16}\text{O}$, is exactly where the **slow neutron-capture process (s-process)** builds elements heavier than iron, one neutron capture at a time, with time between captures typically longer than most beta-decay half-lives (hence "slow", as opposed to the rapid r-process discussed in [Chapter 16](/ch/stellar-death/) and [Chapter 21](/ch/gravitational-waves/)). Technetium, barium, and other s-process elements are AGB signatures.
+
+<History title="Reading the recipe for the elements" year="1957">
+The 1957 paper by Margaret Burbidge, Geoffrey Burbidge, William Fowler and Fred Hoyle — universally cited as "B²FH" — laid out for the first time which nuclear process builds which elements, in which kind of star: hydrogen and helium burning, the s- and r-processes, explosive nucleosynthesis. Margaret Burbidge, denied a fellowship at Mount Wilson Observatory in the early 1950s purely because of her sex (fellowships there were restricted to men), worked around the restriction with her husband Geoffrey's formal affiliation and observing time, and went on to direct the Royal Greenwich Observatory. The mapping between element and stellar site that B²FH proposed is still, in its essentials, the modern picture.
+</History>
+
+Late on the AGB, mass loss dominates everything: cool, extended, pulsating AGB envelopes drive winds at $\dot M \sim 10^{-7}$–$10^{-5}\,M_\odot\,\text{yr}^{-1}$, propelled by radiation pressure on dust that condenses in the cooling outflow a few stellar radii out. The most extreme, large-amplitude pulsators in this phase are called **Mira variables**, after the prototype Mira (o Ceti), which varies by several magnitudes in visible light over a ~332-day period as its huge, cool photosphere pulses.
+
+<Fermi title="How fast does an AGB star lose itself?">
+At $\dot M = 10^{-5}\,M_\odot\,\text{yr}^{-1}$, a $1\,M_\odot$ AGB envelope of order $0.3$–$0.5\,M_\odot$ is gone in $3$–$5\times10^4$ years — a blink of an eye next to the star's $10^{10}$-year main-sequence life, and consistent with the short AGB and post-AGB durations tabulated in the flagship simulation below.
+</Fermi>
+
+## Planetary nebulae and the massive-star endgame
+
+<Photo src="/img/giants/ring-nebula.jpg" alt="The Ring Nebula, M57, imaged by JWST: a glowing central cavity surrounded by a ragged orange-red ring of gas with fine filamentary structure, and faint blue-white spikes of gas at the edges" credit="ESA/Webb, NASA, CSA, M. Barlow, N. Cox, R. Wesson" license="CC BY 4.0" href="https://esawebb.org/images/weic2320a/" size="wide" aspect="16 / 9">
+**The Ring Nebula (M57) in the near- and mid-infrared, JWST.** The bright inner ring is hydrogen ionised and heated by the hot, exposed core of the dying star at the centre — the same central-star heating that powers every planetary nebula. JWST resolved roughly 20,000 individual dense knots of gas and dust in the outer filaments, a level of structure no previous telescope could see.
+</Photo>
+
+Once the AGB envelope is gone, the exposed core — now hot enough (tens of thousands of K) to emit a flood of ionising ultraviolet photons — lights up its own ejected envelope as a **planetary nebula (PN)**: exactly the same Strömgren-sphere physics from [Chapter 6](/ch/star-formation/) (there applied to O stars ionising the interstellar medium), just applied to a star's own recently-shed material instead of the ambient ISM. Planetary nebulae are short-lived, glowing for only about $10^4$ years before the gas disperses and dims below detectability — one of the shortest visible phases in stellar evolution, and part of why they were historically prized "fireworks" objects.
+
+<Aside>**Not actually planets.** William Herschel coined "planetary nebula" in the 1780s because their round, greenish disks in his telescope resembled the newly-found planet Uranus. The name stuck for two centuries after anyone still believed the objects had anything to do with planets.</Aside>
+
+<Tiers>
+<Fragment slot="l1">
+Many planetary nebulae are strikingly *not* round — they come as hourglasses, bipolar lobes, spirals, and much more exotic shapes. The likely explanation for most of them is that the dying star wasn't alone: a close binary companion (or even just a planet) can shape a disk or torus of gas around the star's equator, and the fast wind from the hot central star then escapes preferentially out of the poles, sculpting the classic bipolar shapes.
+</Fragment>
+<Fragment slot="l2">
+A single, isolated, non-rotating star should produce a nearly spherical planetary nebula. The rich zoo of observed bipolar, multipolar and point-symmetric shapes points to angular momentum from a binary companion (stellar or substellar) shaping a dense equatorial torus during the AGB mass-loss phase; a later fast, hot wind from the exposed core is then collimated by that torus into bipolar lobes. JWST's images of both the Ring Nebula and the Southern Ring Nebula (NGC 3132) show clumpy, filamentary structure and, in the Southern Ring's case, a probable second, fainter companion star implicated in shaping the nebula — active research as of the mid-2020s, not a fully closed case.
+</Fragment>
+</Tiers>
+
+At the centre of every planetary nebula is the exposed stellar core: for low- and intermediate-mass stars this is a **white dwarf**, a body supported entirely by the same electron degeneracy pressure that caused the helium flash — but now stable, because there is no more nuclear burning to run away. White dwarfs, their structure, their cooling, and the Chandrasekhar mass limit that caps how large one can be, are the subject of [Chapter 16](/ch/stellar-death/).
+
+### Massive stars: supergiants, blue loops, Wolf–Rayet stars, and onion-shell burning
+
+Stars above about $8$–$10\,M_\odot$ never become degenerate on the giant branch — they hit and cross the Schönberg–Chandrasekhar limit while the core is still an ordinary gas, ignite helium gently, and keep building progressively heavier cores through a sequence of non-degenerate burning stages, with no flashes at all until the very end. Their outer layers, meanwhile, swing back and forth across the HR diagram in **blue loops** — episodes where the star temporarily becomes hotter and bluer mid-giant-phase, driven by the detailed response of the envelope's opacity and composition to the growing core, before returning to the red.
+
+<Aside>**Betelgeuse's Great Dimming.** In late 2019 and early 2020, the red supergiant Betelgeuse (in Orion, roughly 15–20 $M_\odot$, several hundred $R_\odot$) dimmed to about a third of its normal brightness, prompting speculation it might be about to explode. Follow-up observations (notably with Hubble) instead pointed to an enormous surface mass ejection — a dusty cloud thrown off the star's photosphere that cooled and blocked light from part of the disk, combined with the star's normal pulsation reaching a dim phase at the same time. Betelgeuse has since returned to its usual brightness; it will explode as a supernova (see [Chapter 16](/ch/stellar-death/)) at some point in the next roughly 100,000 years, astronomically "any moment now".</Aside>
+
+The most massive stars lose so much of their envelope to radiation-driven winds that they expose their hot, helium-burning (or later) interior directly as a **Wolf–Rayet star**, and can undergo violent, episodic eruptions as **luminous blue variables (LBVs)** — Eta Carinae, pictured above, is the archetype, having thrown off roughly 10–20 solar masses of material in its 1840s Great Eruption while remaining intact.
+
+<Level min={2} title="Why advanced burning stages get so short, so fast">
+Once the core is hot enough, a new energy-loss channel opens up that is negligible everywhere else in stellar evolution: **neutrino losses**. Above a few $\times10^8$–10^9 K, thermal processes (pair annihilation, photo-neutrino, and plasmon-decay processes) produce neutrino–antineutrino pairs that escape the star instantly — the star is transparent to them — carrying energy away far faster than photons ever could. Because the neutrino emission rate rises extremely steeply with temperature, each successive burning stage in a massive star's core must run hotter and hence *much* faster than the last, simply to replace the energy leaking out as neutrinos as fast as it leaks. The result is the "onion" structure of a pre-supernova massive star: concentric shells of H, He, C, Ne, O and Si burning simultaneously around an inert iron core, with each successive fuel burning for a dramatically shorter time than the one before.
+</Level>
+
+<Sim name="giants-onion" minHeight={360}>
+**How fast each fuel burns, and why.** Approximate burning-stage durations for a ~20 $M_\odot$ star, on a log scale. Hover a bar. Notice the pattern: roughly ten million years of hydrogen burning, a million years of helium, then a collapse in duration — down to about a day for silicon burning — driven by neutrino losses that grow steeply with the rising core temperature at each stage.
+</Sim>
+
+The endpoint, an inert core of iron (which cannot release energy by further fusion — iron sits at the peak of nuclear binding energy per nucleon, see [Chapter 12](/ch/fusion/)), is unstable in a way no earlier core was, and collapses catastrophically. That collapse, and the supernova, neutron star or black hole that follows, is the whole subject of [Chapter 16](/ch/stellar-death/) — this chapter stops at the threshold.
+
+## Pulsation: the instability strip and Cepheid standard candles
+
+A giant or supergiant passing through a particular strip of the HR diagram — roughly vertical, at intermediate temperatures — doesn't sit still even in its bulk structure: it pulsates, breathing in and out with a period set by its own mean density.
+
+<Tiers>
+<Fragment slot="l1">
+Picture the whole star as a spring: compress it and it pushes back, overshoots, and oscillates. What keeps a real star's pulsation going, rather than dying out, is a layer of partially ionised helium that acts like a valve: when the star is compressed, that layer becomes *more* opaque and traps extra heat, which then pushes the star back out harder than it fell in. That one-way valve is called the **κ-mechanism** (κ, kappa, is the standard symbol for opacity), and it is what makes some stars pulsate steadily for as long as they sit in the right temperature range.
+</Fragment>
+<Fragment slot="l2">
+The **κ-mechanism**: in a layer where opacity $\kappa$ *increases* on compression (rather than the more usual decrease), radiation is dammed up during compression, doing extra work on the gas above and driving the pulsation rather than damping it. This happens naturally in the partial-ionisation zone of He⁺→He²⁺ (around $4$–$5\times10^4$ K) when it sits at the right depth in the envelope — which happens only in a diagonal band of the HR diagram, the **instability strip**. Stars crossing this strip as giants or supergiants — the classical Cepheids among them — pulsate; stars elsewhere in the HR diagram (including the Sun, whose relevant ionisation zone sits too near the surface) do not, or only very weakly (solar p-mode oscillations, [Chapter 13](/ch/energy-transport/), are a different, much smaller-amplitude phenomenon).
+</Fragment>
+</Tiers>
+
+<Level min={2} title="The period–mean-density relation">
+A pulsating star's fundamental period scales with its mean density as $P\sqrt{\bar\rho/\bar\rho_\odot} \approx Q$, with $Q$ a slowly-varying constant of order $0.03$–$0.09$ days depending on the mode and structure. Because more luminous giants are also larger and hence less dense, $P$ correlates with $L$ — the physical root of the period–luminosity relation.
+</Level>
+
+<KeyEq title="Classical Cepheid period–luminosity relation (Leavitt law)">
+$$
+\term{MV}{M_V} = -2.81\,\log_{10}\left(\frac{\term{P}{P}}{\text{day}}\right) - 1.43
+$$
+<Fragment slot="where">$M_V$ is the star's intrinsic (absolute) V-band brightness; $P$ is the pulsation period, directly measurable from the light curve alone, with no distance information needed. Comparing $M_V$ to the *observed* (apparent) brightness gives the distance via the distance modulus — the single most important rung on the cosmic distance ladder, extended to much greater distances with JWST and revisited quantitatively in [Chapter 25](/ch/galactic-dynamics/).</Fragment>
+</KeyEq>
+
+<History title="A pattern that outlived its discoverer's credit" year="1908">
+<Portrait src="/img/people/leavitt.jpg" name="Henrietta Swan Leavitt" years="1868–1921" credit="Unknown author, c. 1898 (Popular Astronomy, 1922)" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Henrietta_Swan_Leavitt.jpg" />
+
+Henrietta Swan Leavitt worked at the Harvard College Observatory as a "computer" — one of a team of women hired specifically because the observatory's director considered their labour cheaper than men's, and did not expect them to pursue independent research. Measuring thousands of variable stars on photographic plates of the Magellanic Clouds, Leavitt noticed in 1908, and confirmed with a larger sample in 1912, that Cepheid variables' periods correlated tightly with their apparent brightness. Because all the stars in a single Magellanic Cloud are at essentially the same distance, this meant period tracked *intrinsic* brightness — turning Cepheids into distance indicators, provided the zero point could be calibrated. Leavitt's supervisor Edward Pickering published the discovery under her name, but observatory policy barred her from pursuing the distance-scale implications herself. It was Ejnar Hertzsprung and Harlow Shapley who first calibrated the relation, and Edwin Hubble who used it in 1923–1925 to show that the Andromeda "nebula" was a separate galaxy far outside the Milky Way — arguably the single measurement that opened up the modern scale of the universe (see [Chapter 25](/ch/galactic-dynamics/) and [Chapter 26](/ch/galaxy-formation/)). Leavitt died of cancer in 1921, before the Nobel Committee's inquiry about nominating her — they had not realised she had already died.
+</History>
+
+<Predict question="A Cepheid's period lengthens. Does its predicted absolute brightness get brighter or dimmer?" choices={['Brighter', 'Dimmer', 'No relation — period and luminosity are independent']} answer={0}>
+Brighter. The Leavitt law has a negative coefficient on $\log_{10}P$, and $M_V$ is a magnitude (smaller/more negative = brighter), so longer period maps to more negative $M_V$: intrinsically brighter. Physically, a longer period means a larger, lower-density star (from the period–mean-density relation), and larger giants at similar temperature are more luminous.
+</Predict>
+
+<Sim name="giants-cepheid" minHeight={380}>
+**Drag a star across the instability strip, then read its distance off from its period.** Left: the HR diagram, with the diagonal instability strip shaded. Drag the point to change the star's luminosity and temperature; its pulsation period (from the period–mean-density relation) updates live. Right: the period–luminosity relation itself. Set an apparent magnitude to see the implied distance — this is literally how the cosmic distance ladder's first rung works.
+</Sim>
+
+## The whole story: simulating stellar evolution, and the Sun's fate
+
+Put every piece from this chapter together — core exhaustion, the mirror principle, the flash or its absence, shell burning, dredge-up, mass loss, and (for massive stars) the onion-shell endgame — and you get a star's complete post-main-sequence life, from a few gigayears for the Sun down to a few million years for a 25 $M_\odot$ blue supergiant.
+
+<Predict question="Over a star's whole post-main-sequence life, which phase do you think occupies the largest slider-fraction of TIME (not of a naive equal-length scrubber)?" choices={['Subgiant branch', 'Red giant branch / red supergiant ascent', 'Horizontal branch / core helium burning', 'AGB or advanced burning']} answer={2}>
+For low- and intermediate-mass stars, core helium burning (the horizontal branch / red clump) lasts roughly 10% as long as the main sequence itself — around 100 million years for the Sun's eventual red-clump phase — dwarfing the subgiant branch (~1–2 Gyr), RGB ascent (~0.5–0.6 Gyr) and AGB (~10–20 Myr) that come after it. It is the last "long, quiet" burning phase a star gets. Try the flagship simulation below and watch how little slider-width the real durations would occupy if the scrubber weren't rescaled.
+</Predict>
+
+<Sim name="giants-evolution" size="full" minHeight={620}>
+**The life of a star, animated.** Pick a mass (or drag the mass slider from $0.8$ to $40\,M_\odot$), then scrub or press play through its post-main-sequence evolution. Three synchronised views: the HR diagram track (grey curve, with a marker for the current point); a log-zoomed, blackbody-coloured rendering of the star itself (watch it swell, pulse, blow a planetary-nebula shell, or flash as a supernova); and a schematic cross-section of the star's composition layers and burning shells below. Try 1 $M_\odot$ for the Sun's own fate, then 15 or 25 $M_\odot$ for a massive star's much faster, more violent ending.
+</Sim>
+
+<Hood title="How the tracks were built, and how MESA actually steps through time">
+**The tracks in this figure are schematic, not a stellar-evolution code.** Real stellar-evolution codes — the modern standard is MESA (Modules for Experiments in Stellar Astrophysics) — solve a coupled system of stiff, non-linear PDEs (structure + composition + nuclear network) on a 1D mesh of mass shells, at every timestep. Three numerical choices make this tractable:
+
+1. **Implicit time-stepping.** The nuclear reaction network is *stiff*: reaction rates for different isotopes span dozens of orders of magnitude, so an explicit (forward-Euler-like) integrator would need absurdly small steps to stay stable — exactly the instability discussed for the [orbit integrators of Chapter 2](/ch/orbits/), but far worse here because the stiffness ratio is enormous. MESA instead solves the whole structure + composition update *implicitly*, as one large nonlinear system per timestep (via Newton–Raphson iteration on all mesh points simultaneously), which is unconditionally stable regardless of how disparate the reaction timescales are. New to implicit ODE solvers? see [Appendix A5](/ch/primer-odes/).
+2. **Adaptive timesteps.** The code takes tiny steps (down to seconds, near a helium flash or a thermal pulse) when structure is changing fast, and enormous steps (thousands of years, on the quiet main sequence) when nothing much is happening — controlled by limiting the fractional change allowed in any structural or compositional variable per step.
+3. **Adaptive mesh refinement.** Mass shells are added and removed automatically to keep resolution where gradients are steep — at burning shells, at convective boundaries, at the surface of a rapidly pulsing AGB envelope — without wasting resolution on the deep, nearly-uniform interior.
+
+This chapter's flagship instead tabulates just **seven phase points** at five anchor masses (1, 2, 5, 15, 25 $M_\odot$: `src/sims/giants/tracks.ts`) — luminosity, temperature, radius and core mass at the start and end of each phase — sourced from the qualitative and rough quantitative shape of published tracks, and interpolates log-linearly in mass between anchors and linearly within a phase:
+
+```ts
+export function stateAt(mass: number, s: number): EvolState {
+  const phases = trackForMass(mass);      // interpolate the 7-phase table in log(mass)
+  const n = phases.length;
+  const idx = Math.min(n - 1, Math.floor(s * n));   // which of the 7 phases are we in?
+  const frac = s * n - idx;                          // 0..1 progress within that phase
+  const spec = phases[idx];
+  let age = 0;
+  for (let i = 0; i < idx; i++) age += phases[i].duration;   // real elapsed age, non-uniform in s
+  age += spec.duration * frac;
+  return { phase: spec.id, phaseFrac: frac, age, /* logL, logT, R, Mcore linearly interpolated */ };
+}
+```
+
+The scrubber `s` is **phase-weighted**: each of the seven phases gets an *equal* 1/7 share of the slider, regardless of its true duration. Without this, a linear-in-time scrubber would be unusable — the main sequence and core-helium-burning phases would occupy 99.9% of the slider's length, and the RGB ascent, flash, and planetary nebula (each genuinely fast but genuinely important) would be compressed into a pixel or two. The `age` readout, computed from the *true* phase durations, still shows just how non-uniform real stellar time is: the marker crawls for a long time in the "Main sequence" 1/7 of the slider, then visibly races through the last two or three 1/7-segments in what the age readout reveals to be a cosmic eyeblink. This mirrors a real, practical MESA concept called `PhaseVars`/mesh + timestep control by evolutionary phase, though MESA's actual adaptivity is driven by numerical error control, not a fixed phase list.
+</Hood>
+
+### The Sun's fate, and its planets' slow retreat
+
+<Sim name="giants-sun-future" minHeight={420}>
+**The Sun's radius over the next ~7.6 billion years, with the inner planets.** Drag the time slider. Watch the Sun swell past Mercury and Venus on the RGB, shrink abruptly at the helium flash, swell again (further, and to a lower temperature) on the AGB, then collapse to a white dwarf — while the surviving planets' orbits *expand*, because the Sun's own mass loss loosens its gravitational grip ($a \propto 1/M$ for slow, symmetric mass loss).
+</Sim>
+
+<Aside>**Earth's fate is genuinely uncertain.** Detailed models (e.g. Schröder & Smith 2008) put the Sun's RGB-tip radius at roughly $170$–$180\,R_\odot$ (about $0.8$ AU) — enough to engulf Mercury and Venus outright — while Earth's current orbit at 1 AU sits close enough to the edge that the outcome depends sensitively on the competing rates of solar mass loss (which pushes Earth's orbit outward) and tidal drag inside the swollen envelope (which pulls it inward). Most recent models give Earth roughly 50/50 odds either way. Either way, the oceans boil and the biosphere ends long before the star physically reaches Earth's orbit — well before the RGB tip, in fact, as luminosity climbs to over 1,000 $L_\odot$.</Aside>
+
+### Binary evolution, briefly
+
+Nothing in this chapter assumed the star was alone, and most stars aren't. In a close binary, once either component swells onto the giant branch, it can overflow its **Roche lobe** (the region around each star within which material stays gravitationally bound to it) and dump mass onto its companion.
+
+<Aside>**The Algol paradox.** In the Algol binary system, the *less massive* star is the more evolved one (a subgiant), which seems backwards: more massive stars evolve faster, so the initially more massive star should be the first to swell up and evolve — not end up less massive. The resolution is that it *was* initially more massive and evolved first, filled its Roche lobe, and transferred most of its mass onto its companion, reversing the mass ratio. The "paradox" is really a clue that mass transfer has already happened.</Aside>
+
+If the mass transfer is fast enough, or the orbit tight enough, the companion can end up plunging *inside* the giant's envelope altogether — a **common envelope** phase, where drag from the shared gas rapidly shrinks the orbit, often ejecting the envelope entirely and leaving a close binary of two compact remnants (or a merger). Common-envelope evolution is how most close white-dwarf and neutron-star binaries — including future gravitational-wave sources — end up so close together in the first place, a thread picked up again in [Chapter 20](/ch/gravitational-waves/).
+
+## Where we go from here
+
+A star's post-main-sequence life is a race between two things: how fast its core can process ever-heavier fuel, and how fast it can shed mass back into space. For the Sun, that race ends gently, with a white dwarf inside an expanding, glowing shell of its own former envelope. For the most massive stars, it ends in days, in an iron core that no longer has any way to hold itself up. What happens to that core — white dwarf, neutron star, or black hole, and the explosion (or lack of one) along the way — is [Chapter 16](/ch/stellar-death/).

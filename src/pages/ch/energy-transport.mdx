@@ -12,14 +12,37 @@ import Predict from '../../components/Predict.astro';
 import C from '../../components/C.astro';
 import Var from '../../components/Var.astro';
 import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Photo from '../../components/Photo.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  ell: ['Photon mean free path', 'The typical distance a photon travels before it is scattered or absorbed. Smaller means the material is more opaque, and the photon\'s path out is a much longer, much slower random walk.'],
+  kappa: ['Opacity', 'Cross-section for photon interaction per unit mass (cm² g⁻¹). It sets the mean free path together with density: larger κ means photons interact more often and diffuse out more slowly.'],
+  rho: ['Density', 'Mass per unit volume. Appears alongside opacity because what matters is the number of interaction targets per unit volume, i.e. κρ.'],
+  Nsteps: ['Number of random-walk steps', 'How many scatterings are needed to reach a net distance R. Grows as the square of R/ℓ, because a random walk\'s net displacement grows only as the square root of the number of steps.'],
+  Rstar: ['Radius of the star (or slab)', 'The distance a photon must random-walk before it counts as "escaped".'],
+  tdiff: ['Diffusion time', 'How long the random walk takes: the number of steps times the time per step (ℓ/c).'],
+  Ltrans: ['Luminosity carried through radius r', 'The rate of energy flow through a sphere of radius r. In a static star it equals all the nuclear power generated inside that radius.'],
+  Ttrans: ['Local temperature', 'Appears cubed and in a derivative: the temperature gradient needed to push a given luminosity through drops fast as T rises, since hot gas radiates so much more efficiently.'],
+  rrad: ['Radius', 'Distance from the stellar centre. The r² in the denominator is just the same inverse-square dilution of flux over a sphere\'s surface area that shows up everywhere in radiative transport.'],
+  Mmass: ['Stellar mass', 'Sets both the gravity that must be supported (hence the central temperature) and, through density, the opacity available to resist the outward flow of radiation.'],
+}} />
 
 ## Three ways to move energy
+
+<Photo src="/img/energy-transport/2017-eclipse-corona.jpg" alt="The white, streaming corona of the Sun visible around the dark disk of the Moon during the 2017 total solar eclipse, with red flecks of Baily's beads at the edge" credit="NASA / Carla Thomas" license="Public domain" href="https://images.nasa.gov/details/AFRC2017-0233-008" size="wide" aspect="3 / 2">
+**The 2017 total solar eclipse**, photographed from a NASA research aircraft. Only during a total eclipse can the faint corona — heated to millions of kelvin by a process still not fully understood — be seen with the naked eye against the glare of the photosphere, the visible "surface" defined in this chapter.
+</Photo>
 
 [Chapter 11](/ch/stellar-structure/) built a star from hydrostatic equilibrium and [Chapter 12](/ch/fusion/) gave it a furnace. Neither says how the energy generated in the core gets to the surface, where it can finally leave as starlight. That is the subject of this chapter, and there are exactly three mechanisms available, the same three you'd list for a cup of coffee:
 
 1. **Radiation.** Photons carry energy directly. This is by far the dominant transport mechanism in most of a star's volume, and the one that takes the most work to understand, because the star is not transparent.
 2. **Convection.** Bulk motion of fluid: hot blobs rise, cool blobs sink, carrying energy with them. It is dramatically more efficient than radiation once it switches on, and it switches on according to a sharp, checkable criterion derived below.
-3. **Conduction.** Direct transfer via particle collisions, negligible in ordinary stellar plasma but dominant in the electron-degenerate matter of white dwarfs ([Chapter 16](/ch/stellar-death/)), where the electrons are quantum-mechanically forced into high-speed states that conduct heat efficiently.
+3. **Conduction.** Direct transfer via particle collisions, negligible in ordinary stellar plasma but dominant in the electron-degenerate matter of white dwarfs ([Chapter 16](/ch/stellar-death/)), where the electrons are quantum-mechanically forced (new to quantum ideas? see [Appendix A9](/ch/primer-quantum/)) into high-speed states that conduct heat efficiently.
 
 Stellar structure comes down to picking the right one of these three, locally, at every radius — the star does this automatically by minimising resistance, and our job is to work out which mechanism wins where.
 
@@ -31,25 +54,55 @@ Stellar structure comes down to picking the right one of these three, locally, a
 
 The Sun's core has a density around 150 g/cm³ and is ionised hydrogen and helium plus a trace of heavier elements. A photon moving through it is repeatedly scattered — mostly off free electrons — long before it can travel any macroscopic distance. The relevant length scale is the **photon mean free path**:
 
+<Tiers>
+<Fragment slot="l1">
+Think of walking through a thick fog: you can only see a short distance before your view is scattered away. A photon deep inside the Sun is in exactly that situation, except the "fog" is ionised gas, and the visibility distance — the **mean free path** — is barely a centimetre. Photons don't fly straight out; they bounce, over and over, in essentially random directions.
+</Fragment>
+<Fragment slot="l2">
 <KeyEq title="Photon mean free path">
 $$
-\ell = \frac{1}{\kappa \rho}
+\term{ell}{\ell} = \frac{1}{\term{kappa}{\kappa}\,\term{rho}{\rho}}
 $$
-<Fragment slot="where">$\kappa$ (kappa) is the <span data-term="opacity">opacity</span>, in cm² g⁻¹ — the cross-section for photon interaction *per unit mass* of material, not per particle. $\rho$ is the local density. $\kappa\rho$ has units of inverse length: it is the number of "extinction lengths" per centimetre.</Fragment>
+<Fragment slot="where"><span data-term="kappa">κ</span> is the <span data-term="opacity">opacity</span>, in cm² g⁻¹ — the cross-section for photon interaction *per unit mass* of material. <span data-term="rho">ρ</span> is the local density. Bigger κ or ρ means shorter <span data-term="ell">ℓ</span>: more, or denser, scattering targets per unit volume.</Fragment>
 </KeyEq>
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="Photon mean free path">
+$$
+\term{ell}{\ell} = \frac{1}{\term{kappa}{\kappa}\,\term{rho}{\rho}}
+$$
+<Fragment slot="where"><span data-term="kappa">κ</span> (kappa) is the <span data-term="opacity">opacity</span>, in cm² g⁻¹ — the cross-section for photon interaction *per unit mass* of material, not per particle. <span data-term="rho">ρ</span> is the local density. $\kappa\rho$ has units of inverse length: it is the number of "extinction lengths" per centimetre.</Fragment>
+</KeyEq>
+</Fragment>
+</Tiers>
 
 In the solar core, $\kappa \approx 1\text{–}2\ \text{cm}^2/\text{g}$ (mostly electron scattering) and $\rho \approx 150\ \text{g/cm}^3$, giving $\ell \sim 1/(1.5 \times 150) \approx 0.4\ \text{cm}$ — about the width of a fingernail. Deeper still or with heavier-element opacity the mean free path can shrink to millimetres; near the surface, where $\rho$ plummets, it stretches out again. Across the radiative interior, $\ell$ ranges roughly from a millimetre to a centimetre: astronomically minuscule compared to the solar radius $R_\odot = 6.96\times10^{10}\ \text{cm}$.
 
 ### The Fermi random-walk estimate
 
-If a photon moves a distance $\ell$ in a random direction, gets scattered, moves another $\ell$ in a *new* random direction, and so on, how many steps $N$ does it need to get a net displacement of order $R$? This is the classic drunkard's-walk problem: the *net* displacement after $N$ independent random steps of length $\ell$ grows as $\sqrt{N}\,\ell$ (each step contributes independently to the variance of the position, and variances add). Setting $\sqrt{N}\,\ell \sim R$:
+If a photon moves a distance $\ell$ in a random direction, gets scattered, moves another $\ell$ in a *new* random direction, and so on, how many steps $N$ does it need to get a net displacement of order $R$? This is the classic drunkard's-walk problem (new to this kind of estimate? see [Appendix A5](/ch/primer-odes/) and [Appendix A7](/ch/primer-thermo/) on statistics): the *net* displacement after $N$ independent random steps of length $\ell$ grows as $\sqrt{N}\,\ell$, because the variances of independent steps add, not the displacements themselves.
 
+<Tiers>
+<Fragment slot="l1">
+Picture someone taking random steps on a plaza, a pace in a random direction each time. After $N$ paces they are typically only $\sqrt{N}$ paces from where they started — nowhere near $N$ paces away, because the random turns cancel out most of the progress. To wander a net distance $R$ in paces of length $\ell$ takes roughly $(R/\ell)^2$ paces, and since each pace also takes some time, wandering out of a big region takes very much longer than travelling that same distance in a straight line.
+</Fragment>
+<Fragment slot="l2">
 <KeyEq title="Random-walk step count and diffusion time">
 $$
-N \sim \left(\frac{R}{\ell}\right)^2, \qquad t \sim \frac{N\ell}{c} \sim \frac{R^2}{\ell c}
+\term{Nsteps}{N} \sim \left(\frac{\term{Rstar}{R}}{\term{ell}{\ell}}\right)^2, \qquad \term{tdiff}{t} \sim \frac{N\ell}{c}
 $$
-<Fragment slot="where">$N$ is the number of scatterings needed to random-walk a net distance $R$. $t$ is the time this takes: each step is traversed at the speed of light $c$, but $N$ of them are needed, so the total path length travelled is $N\ell$, enormously longer than $R$ itself.</Fragment>
+<Fragment slot="where"><span data-term="Nsteps">N</span> is the scatterings needed to random-walk a net distance <span data-term="Rstar">R</span>. <span data-term="tdiff">t</span> is the time this takes, travelling at the speed of light <C k="c" /> for a total path length $N\ell$ — far longer than $R$ itself.</Fragment>
 </KeyEq>
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="Random-walk step count and diffusion time">
+$$
+\term{Nsteps}{N} \sim \left(\frac{\term{Rstar}{R}}{\term{ell}{\ell}}\right)^2, \qquad \term{tdiff}{t} \sim \frac{N\ell}{c} \sim \frac{R^2}{\ell c}
+$$
+<Fragment slot="where"><span data-term="Nsteps">N</span> is the number of scatterings needed to random-walk a net distance <span data-term="Rstar">R</span>. <span data-term="tdiff">t</span> is the time this takes: each step is traversed at the speed of light <C k="c" />, but $N$ of them are needed, so the total path length travelled is $N\ell$, enormously longer than $R$ itself.</Fragment>
+</KeyEq>
+</Fragment>
+</Tiers>
 
 <Fermi title="How long does sunlight take to leave the Sun?">
 Take $\ell \approx 1\ \text{cm}$ (a convenient round number inside the true mm–cm range) and $R_\odot = 6.96\times10^{10}\ \text{cm}$:
@@ -61,61 +114,102 @@ $$
 t \sim \frac{R_\odot^2}{\ell c} = \frac{(6.96\times10^{10})^2}{1 \times 3\times10^{10}} \approx 1.6\times10^{11}\ \text{s} \approx 5{,}000\ \text{years}.
 $$
 
-Popular science famously rounds this to **"170,000 years"** (sometimes quoted as anywhere from 10,000 to 200,000 years depending on the assumed $\ell$ and whether the estimate uses a real, depth-dependent opacity profile or a single average). The honest answer is "somewhere in the range $10^4$–$10^5$ years, and the exact number is sensitive to assumptions the simple Fermi estimate glosses over" — the random walk isn't through a *uniform* medium; $\ell$ varies by orders of magnitude between the dense core and the diffuse outer radiative zone, and a full radiative-transfer calculation weights each region correctly. What is robust, and worth remembering, is the *scaling*: $t \propto R^2/\ell$, and it is many orders of magnitude longer than the light-crossing time $R/c \approx 2.3\ \text{s}$.
+Popular science famously rounds this to **"170,000 years"** (sometimes quoted anywhere from 10,000 to 200,000 years, depending on the assumed $\ell$ and whether the estimate uses a real, depth-dependent opacity profile or a single average). The honest answer is "somewhere in the range $10^4$–$10^5$ years, and the exact number is sensitive to assumptions the simple Fermi estimate glosses over" — the random walk isn't through a *uniform* medium; $\ell$ varies by orders of magnitude between the dense core and the diffuse outer radiative zone, and a full radiative-transfer calculation weights each region correctly. What is robust, and worth remembering, is the *scaling*: $t \propto R^2/\ell$, and it is many orders of magnitude longer than the light-crossing time $R/c \approx 2.3\ \text{s}$.
 </Fermi>
 
 <Aside>**Random walks are everywhere in this course.** The same $\sqrt{N}$ scaling shows up in the diffusion of heat, the growth of density perturbations in [Chapter 27](/ch/large-scale-structure/), and even the statistical mechanics of stellar dynamics in [Chapter 22](/ch/galactic-dynamics/). Whenever you see steps of a fixed size accumulating incoherently, expect $\sqrt{N}$.</Aside>
 
 ### From random walk to a diffusion equation
 
-The random-walk estimate is a scaling argument; the real physics is a diffusion equation for the radiation energy density. In the *diffusion approximation* (valid deep inside a star, where $\ell \ll R$ and the radiation field is very nearly isotropic), the net flux of radiation is proportional to minus the gradient of radiation energy density, exactly like Fourier heat conduction. Carrying through the algebra (each scattering randomizes direction, so the *net* drift down a gradient survives while the isotropic part cancels) gives the **radiative diffusion equation**:
+The random-walk estimate is a scaling argument; the real physics is a diffusion equation for the radiation energy density. In the *diffusion approximation* (valid deep inside a star, where $\ell \ll R$ and the radiation field is very nearly isotropic), the net flux of radiation is proportional to minus the gradient of radiation energy density, exactly like Fourier heat conduction.
+
+<Level min={3} title="Deriving the radiative diffusion equation">
+Radiation pressure is $P_\text{rad} = \tfrac13 aT^4$. Each scattering randomises a photon's direction, so any *net* flux down the star must come from a slight imbalance between the (huge, nearly cancelling) upward and downward photon streams — an imbalance proportional to how much the radiation field changes over one mean free path. This gives $dP_\text{rad}/dr = -\kappa\rho F/c$, where $F = L(r)/4\pi r^2$ is the flux (new to derivatives and gradients? see [Appendix A4](/ch/primer-calculus/)). Differentiating $P_\text{rad}$ and substituting for $F$:
+
+$$
+\frac{4}{3}aT^3\frac{dT}{dr} = -\frac{\kappa\rho}{c}\frac{L(r)}{4\pi r^2}
+$$
+
+Rearranging for $dT/dr$ gives the boxed result below.
+</Level>
 
 <KeyEq title="Radiative diffusion equation">
 $$
-\frac{dT}{dr} = -\frac{3\kappa\rho}{16\pi a c\, T^3}\frac{L(r)}{r^2}
+\frac{d\term{Ttrans}{T}}{d\term{rrad}{r}} = -\frac{3\term{kappa}{\kappa}\term{rho}{\rho}}{16\pi a c\, T^3}\frac{\term{Ltrans}{L(r)}}{r^2}
 $$
-<Fragment slot="where">$T(r)$ is the local temperature, $L(r)$ the luminosity passing through radius $r$ (in a static star, $L$ is set by the total nuclear energy generation interior to $r$), $a$ the radiation constant <C k="a_rad" />, and $\kappa\rho$ the inverse mean free path from above. Larger opacity or luminosity means a steeper temperature gradient is needed to push the flux through.</Fragment>
+<Fragment slot="where"><span data-term="Ttrans">T(r)</span> is the local temperature, <span data-term="Ltrans">L(r)</span> the luminosity passing through radius <span data-term="rrad">r</span> (in a static star, set by the total nuclear energy generation interior to $r$), $a$ the radiation constant <C k="a_rad" />, and $\kappa\rho$ the inverse mean free path from above. Larger opacity or luminosity means a steeper temperature gradient is needed to push the flux through.</Fragment>
 </KeyEq>
 
-This is derived from the radiation pressure gradient $dP_\text{rad}/dr = -\kappa\rho F/c$ (radiation pressure $P_\text{rad} = \tfrac13 a T^4$ pushes outward against the inward pull of photons being absorbed and re-emitted) combined with the definition of flux $F = L/4\pi r^2$. It is one of the four fundamental stellar-structure equations, alongside hydrostatic equilibrium, mass continuity, and energy generation ([Chapter 11](/ch/stellar-structure/)).
+This is one of the four fundamental stellar-structure equations, alongside hydrostatic equilibrium, mass continuity, and energy generation ([Chapter 11](/ch/stellar-structure/)).
 
 ### The Eddington limit
 
-The diffusion equation has an immediate, dramatic consequence. Radiation pressure pushes outward on the same gas that gravity pulls inward on. If the luminosity gets too large, radiation pressure alone can exceed gravity and blow the outer layers off. Setting the outward radiative acceleration equal to gravitational acceleration for fully ionised, electron-scattering-dominated gas gives the **Eddington luminosity**:
-
+<Tiers>
+<Fragment slot="l1">
+The diffusion equation has an immediate, dramatic consequence. Radiation pressure pushes outward on the same gas that gravity pulls inward on. If a star gets too bright for its mass, radiation pressure alone can exceed gravity and blow the outer layers off. There is a maximum steady luminosity a star of a given mass can have, called the **Eddington luminosity**. For the Sun's composition it works out to about 32,000 times the Sun's own luminosity for every solar mass of the star.
+</Fragment>
+<Fragment slot="l2">
+Setting the outward radiative acceleration equal to gravitational acceleration for fully ionised, electron-scattering-dominated gas gives the **Eddington luminosity**:
 $$
 L_\text{Edd} = \frac{4\pi G M c}{\kappa_\text{es}}
 $$
+For solar composition ($\kappa_\text{es} \approx 0.34\ \text{cm}^2/\text{g}$, including helium), $L_\text{Edd} \approx 3.2\times10^4\,(M/M_\odot)\ L_\odot$.
+</Fragment>
+</Tiers>
 
-For solar composition ($\kappa_\text{es} \approx 0.34\ \text{cm}^2/\text{g}$, including helium), $L_\text{Edd} \approx 3.2\times10^4\,(M/M_\odot)\ L_\odot$. No steadily radiating star can exceed it (accreting compact objects and some massive-star winds get close, or briefly exceed it, and that is exactly what limits their growth and shapes their most violent outbursts — see [Chapter 23](/ch/accretion/) for accretion disks pinned at the Eddington rate).
+No steadily radiating star can exceed it (accreting compact objects and some massive-star winds get close, or briefly exceed it, and that is exactly what limits their growth and shapes their most violent outbursts — see [Chapter 23](/ch/accretion/) for accretion disks pinned at the Eddington rate).
+
+<History title="Standing on a limit: Eddington and the internal constitution of the stars" year="1926">
+<Portrait src="/img/people/eddington.jpg" name="Arthur Eddington" years="1882–1944" credit="George Grantham Bain Collection, Library of Congress" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Arthur_Stanley_Eddington.jpg" />
+
+Arthur Eddington was already famous — his 1919 eclipse expedition had provided some of the first strong evidence for general relativity — when he turned to the interiors of stars. His 1926 book *The Internal Constitution of the Stars* worked out, from little more than hydrostatic equilibrium and radiative diffusion, how energy must flow from a stellar core to its surface, decades before anyone knew nuclear fusion powered the furnace. Eddington derived the luminosity limit that bears his name from exactly the balance of forces described above, and used a simplified, still-useful model — the "standard model" (no relation to particle physics) — in which radiation pressure is a fixed fraction of gas pressure everywhere. He was famously sure of his own analysis: when a critic pointed out that stellar interiors, by his own numbers, should be far too hot for known physics to explain how stars keep from immediately fusing all their fuel, Eddington's reply was that the critic should "go and find a hotter place" — a joke that has outlived the specific dispute, since subsequent physics (quantum tunnelling, [Chapter 12](/ch/fusion/)) vindicated his stellar models even though it revised the physics underneath them.
+</History>
 
 ## What sets the opacity
 
 Opacity $\kappa(\rho, T, \text{composition})$ is the single most important — and most complicated — input to stellar structure. It has several physically distinct contributors that dominate in different regimes:
 
-- **Electron (Thomson) scattering.** A photon scatters elastically off a free electron. The cross-section is a constant of nature, independent of photon energy in the non-relativistic, non-degenerate limit:
-$$
-\kappa_\text{es} = \frac{\sigma_T}{m_p}(1+X) \approx 0.2\,(1+X)\ \text{cm}^2/\text{g}
-$$
-where $X$ is the hydrogen mass fraction (more free electrons per gram when there's more hydrogen, since each hydrogen atom fully ionises to one electron and one proton, versus one electron per two nucleons for helium). It has no temperature or density dependence: it *floors* the opacity in fully ionised gas and dominates in hot stellar interiors.
+- **Electron (Thomson) scattering.** A photon scatters elastically off a free electron. The cross-section is a constant of nature, independent of photon energy in the non-relativistic, non-degenerate limit.
 - **Free–free absorption.** A free electron passing near an ion absorbs a photon, converting the photon's energy into extra electron kinetic energy (inverse bremsstrahlung).
 - **Bound–free absorption.** A photon ionises a bound electron (photoionisation).
 - **Bound–bound absorption.** A photon is absorbed in a discrete atomic transition. Individually narrow, but in the aggregate — millions of lines from partially ionised heavy elements — these produce broad "bumps" in the opacity, especially the iron **opacity bump** ("Z-bump") near $T\sim 2\times10^5\ \text{K}$, important for pulsation-driving in variable stars.
 
-Free–free and bound–free absorption both scale similarly with density and temperature, captured by **Kramers' law**, a classical (pre-quantum, still surprisingly useful) approximation:
+<Tiers>
+<Fragment slot="l1">
+Electron scattering gives every fully-ionised gas a *floor* opacity that doesn't care about temperature or density — more hydrogen means more free electrons, so more of this floor. Free–free and bound–free absorption, by contrast, fall off fast as the gas heats up: they matter most in cooler, denser gas and lose out to electron scattering once things get hot.
+</Fragment>
+<Fragment slot="l2">
+$$
+\kappa_\text{es} = 0.2\,(1+X)\ \text{cm}^2/\text{g}
+$$
+where $X$ is the hydrogen mass fraction (more free electrons per gram when there's more hydrogen: each hydrogen atom fully ionises to one electron and one proton, versus one electron per two nucleons for helium). Free–free and bound–free absorption both scale similarly with density and temperature, captured by the classical **Kramers' law** approximation, $\kappa_\text{Kr} \approx \kappa_0\,\rho\,T^{-3.5}$.
+</Fragment>
+<Fragment slot="l3">
+<KeyEq title="Electron-scattering opacity">
+$$
+\kappa_\text{es} = \frac{\sigma_T}{m_p}(1+X) \approx 0.2\,(1+X)\ \text{cm}^2/\text{g}
+$$
+<Fragment slot="where">$\sigma_T$ is the Thomson cross-section <C k="sigmaT" />, $m_p$ the proton mass <C k="mp" />, and $X$ the hydrogen mass fraction.</Fragment>
+</KeyEq>
 
 <KeyEq title="Kramers opacity law">
 $$
 \kappa_\text{Kr} \approx \kappa_0\,\rho\,T^{-3.5}
 $$
-<Fragment slot="where">$\kappa_0$ depends on composition. The steep $T^{-3.5}$ falls fast with temperature: free–free and bound–free opacity matter most in *cooler*, denser gas, and lose out to electron scattering as $T$ climbs.</Fragment>
+<Fragment slot="where">$\kappa_0$ depends on composition. The steep $T^{-3.5}$ falls fast with temperature: free–free and bound–free opacity matter most in cooler, denser gas, and lose out to electron scattering as $T$ climbs.</Fragment>
 </KeyEq>
+</Fragment>
+</Tiers>
 
 ### The H⁻ ion and the solar photosphere
 
 None of the above dominates at the temperatures of the Sun's visible surface (~5800 K). There, the dominant opacity source is the **negative hydrogen ion**, H⁻: a neutral hydrogen atom that has captured a second electron, bound by only 0.75 eV. It is fragile and rare (only about 1 in 10⁸ hydrogen atoms is H⁻ at photospheric conditions) but its photoionisation cross-section is large enough, and free electrons from ionised metals are abundant enough (hydrogen itself is mostly neutral at 5800 K), that H⁻ dominates the visible and near-IR opacity of the Sun and other cool stars. This is why the "surface" of the Sun that we see is set by a trace ion, not by hydrogen itself — a nice illustration of how small ingredients can dominate macroscopic appearances.
 
 Real stellar-structure and stellar-atmosphere codes don't use a single analytic formula for $\kappa$: they use tabulated **Rosseland mean opacities** (the harmonic mean of $\kappa_\nu$ over frequency, weighted by the derivative of the Planck function — the mean that correctly reproduces the total radiative flux in the diffusion approximation) from projects like **OPAL** and the **Opacity Project (OP)**, computed from detailed atomic physics across a fine $(\rho, T, X, Z)$ grid and interpolated by the stellar-evolution code. The schematic figure below sketches the three main regimes; the real tables have much more structure, especially near partial-ionisation zones.
+
+<History title="A trace ion holds up the whole picture" year="1939">
+Rupert Wildt, a German-American astronomer, realised in 1939 that the negative hydrogen ion — not neutral hydrogen, which is nearly transparent at photospheric temperatures — must be the Sun's dominant source of visible-light opacity. The suggestion was initially controversial: H⁻ is barely bound and was hard to compute reliably with the atomic physics of the time. Precise quantum-mechanical calculations of the H⁻ photoionisation cross-section (by Subrahmanyan Chandrasekhar and collaborators in the 1940s) confirmed Wildt's hypothesis and became a standard ingredient of every subsequent stellar-atmosphere model, including the OPAL and OP tables used today.
+</History>
 
 <Predict question="As you drag the (ρ, T) point in the opacity figure from the Sun's core (high T, high ρ) toward its photosphere (T ~ 5800 K), what happens to the opacity in between?" choices={['It falls monotonically', 'It rises monotonically', 'It dips in the middle (H⁻ minimum) then can rise again toward the coolest T', 'It stays flat throughout']} answer={2}>
 Electron scattering is flat and dominant at high T. Kramers opacity rises steeply as T falls (∝ T⁻³·⁵) — until, near a few thousand K, hydrogen starts recombining and free electrons vanish, which suppresses free-free/bound-free opacity faster than Kramers' law alone suggests. The H⁻ opacity then takes over and can itself rise at even lower T before contributions fall off entirely. The result is *not* monotonic — real Rosseland-mean tables show genuine local minima and bumps, which is exactly why tabulated opacities, not one formula, are used in practice.
@@ -127,19 +221,19 @@ Electron scattering is flat and dominant at high T. Kramers opacity rises steepl
 
 ## The mass–luminosity relation
 
-Put the diffusion equation and the virial theorem together (as [Chapter 11](/ch/stellar-structure/) did for pressure) and a strikingly simple scaling emerges. Order-of-magnitude, $dT/dr \sim T/R$ and $\rho \sim M/R^3$, so the diffusion equation gives
-
+<Level min={3} title="Combining diffusion with the virial theorem">
+Order-of-magnitude, $dT/dr \sim T/R$ and $\rho \sim M/R^3$, so the diffusion equation gives
 $$
 \frac{T}{R} \sim \frac{\kappa \rho L}{T^3 R^2} \quad\Longrightarrow\quad L \sim \frac{T^4 R^3}{\kappa \rho} \sim \frac{T^4 R^6}{\kappa M}.
 $$
-
-Hydrostatic equilibrium (virial scaling) separately gives $T \sim GM/R$ (Chapter 11's central-temperature estimate), so $T^4 R^6 \sim (GM/R)^4 R^6 = G^4 M^4 R^2$... but $R$ itself scales only weakly with $M$ along the main sequence for a given opacity law; carrying the scaling through self-consistently for **constant opacity** (electron-scattering-dominated massive stars) gives the classic result:
+Hydrostatic equilibrium (virial scaling) separately gives $T \sim GM/R$ (Chapter 11's central-temperature estimate). Carrying the scaling through self-consistently for **constant opacity** (electron-scattering-dominated massive stars) gives the mass–luminosity relation boxed below.
+</Level>
 
 <KeyEq title="Mass–luminosity relation (constant opacity)">
 $$
-L \propto \frac{M^3}{\kappa}
+L \propto \frac{\term{Mmass}{M}^3}{\kappa}
 $$
-<Fragment slot="where">Valid when $\kappa$ doesn't depend strongly on $M$ — true for massive, electron-scattering-dominated stars. Lower-mass stars, where Kramers opacity matters, have a steeper effective slope, observationally closer to $L \propto M^{3.5\text{–}4}$ over the bulk of the main sequence — the subject of [Chapter 14](/ch/main-sequence/).</Fragment>
+<Fragment slot="where">Valid when <span data-term="kappa">κ</span> doesn't depend strongly on <span data-term="Mmass">M</span> — true for massive, electron-scattering-dominated stars. Lower-mass stars, where Kramers opacity matters, have a steeper effective slope, observationally closer to $L \propto M^{3.5\text{–}4}$ over the bulk of the main sequence — the subject of [Chapter 14](/ch/main-sequence/).</Fragment>
 </KeyEq>
 
 A star of <Var name="Mms" value={1} min={0.3} max={40} log /> M☉ has, by this constant-opacity scaling alone, a luminosity of <Out name="Lmass" /> relative to the Sun (the real mass–luminosity relation bends away from a pure cube law at low mass — treat this as the clean limiting case, not a precision fit). The steep power drives one of the most important facts in stellar evolution: massive stars burn drastically brighter *and* run out of fuel drastically faster, even though they start with more of it — lifetime $\propto M/L \propto M^{-2}$, which is why the most massive stars live only a few million years.
@@ -148,16 +242,37 @@ A star of <Var name="Mms" value={1} min={0.3} max={40} log /> M☉ has, by this 
 
 ### The Schwarzschild criterion
 
-Radiative diffusion moves energy down a temperature gradient, but if that gradient gets *too steep*, radiative transport isn't fast enough and the gas becomes unstable to bulk overturning: convection. The standard argument imagines displacing a blob of gas upward by $\delta r$ and asks whether it keeps rising (unstable → convection) or sinks back (stable → radiation wins).
+Radiative diffusion moves energy down a temperature gradient, but if that gradient gets *too steep*, radiative transport isn't fast enough and the gas becomes unstable to bulk overturning: convection.
 
+<Tiers>
+<Fragment slot="l1">
+Imagine nudging a bubble of hot gas slightly upward. As it rises into lower pressure it expands and cools a bit, the way a bubble of air cools as a diver releases it toward the surface — but *only* by expanding, not by exchanging heat with the surroundings, because it moves too fast for that. Now compare its new temperature to the gas already sitting at that height. If the surroundings, going up, are *even cooler* than the bubble is once it has expanded and cooled, the bubble is still hotter — and hence lighter — than its new neighbours, so it keeps rising. That runaway is convection. If instead the surroundings cool more gently than the rising bubble does, the bubble ends up colder than its surroundings and sinks back: no convection, and radiation carries the energy instead.
+</Fragment>
+<Fragment slot="l2">
+The blob moves fast enough that it doesn't exchange heat with its surroundings on the way up — it expands **adiabatically**, cooling at the fixed adiabatic rate $(dT/dr)_\text{ad} = 0.4\,T/P \times (dP/dr)$ for an ideal monatomic gas. If the *ambient* gas cools even faster than that with height, the blob ends up hotter and less dense than its surroundings, and buoyancy keeps pushing it up:
+<KeyEq title="Schwarzschild criterion for convective instability">
+$$
+\left|\frac{dT}{dr}\right|_\text{rad} > \left|\frac{dT}{dr}\right|_\text{ad}
+$$
+<Fragment slot="where">$(dT/dr)_\text{rad}$ is whatever gradient the diffusion equation *requires* to carry the local luminosity. $(dT/dr)_\text{ad} = 0.4\,T/P \times dP/dr$ is fixed by the gas law alone.</Fragment>
+</KeyEq>
+</Fragment>
+<Fragment slot="l3">
 The blob moves fast enough that it doesn't exchange heat with its surroundings on the way up — it expands **adiabatically**, cooling at the adiabatic rate $(dT/dr)_\text{ad}$. If the *ambient* gas outside the blob cools even faster than that with height, the blob — despite cooling adiabatically — ends up *hotter and less dense* than its surroundings at its new height, and buoyancy keeps pushing it up. That is the whole argument:
-
 <KeyEq title="Schwarzschild criterion for convective instability">
 $$
 \left|\frac{dT}{dr}\right|_\text{rad} > \left|\frac{dT}{dr}\right|_\text{ad} \quad\Longleftrightarrow\quad \nabla_\text{rad} > \nabla_\text{ad}
 $$
-<Fragment slot="where">Both sides are usually written as dimensionless logarithmic gradients $\nabla \equiv d\ln T/d\ln P$. For a monatomic ideal gas, $\nabla_\text{ad} = 2/5 = 0.4$ exactly (from $P V^\gamma = \text{const}$ with $\gamma = 5/3$). $\nabla_\text{rad}$ is whatever gradient the diffusion equation *requires* to carry the local luminosity — it is large wherever $\kappa$, $\rho$, or $L$ are large, or $T$ is small.</Fragment>
+<Fragment slot="where">Both sides are usually written as dimensionless logarithmic gradients $\nabla \equiv d\ln T/d\ln P$. For a monatomic ideal gas, $\nabla_\text{ad} = 2/5 = 0.4$ exactly (from $P V^\gamma = \text{const}$ with $\gamma = 5/3$; new to this notation? see [Appendix A7](/ch/primer-thermo/)). $\nabla_\text{rad}$ is large wherever $\kappa$, $\rho$, or $L$ are large, or $T$ is small.</Fragment>
 </KeyEq>
+</Fragment>
+</Tiers>
+
+<History title="A wartime paper on the solar atmosphere" year="1906">
+<Portrait src="/img/people/schwarzschild.jpg" name="Karl Schwarzschild" years="1873–1916" credit="Unknown photographer" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Karl_schwarzschild.portrait.jpg" />
+
+Karl Schwarzschild is best remembered today for the black-hole solution he derived from Einstein's field equations in 1915, worked out from the trenches of the First World War and mailed to Einstein just months before Schwarzschild died of an autoimmune disease contracted at the front. Nearly a decade earlier, in 1906, he had already made a foundational contribution to a very different problem: in "On the Equilibrium of the Solar Atmosphere," he worked out exactly when radiative equilibrium in a stellar atmosphere becomes unstable to convective overturning — the criterion that carries his name today, still stated in essentially the form he gave it. It is a strange coincidence of the field that one of its most famous names is attached both to the geometry of a collapsed star ([Chapter 19](/ch/black-holes/)) and to the far gentler physics of why the Sun's outer layers churn.
+</History>
 
 <Sim name="energy-transport-blob" size="wide" minHeight={420}>
 **The rising-blob argument, live.** The solid curve is the ambient temperature profile (set by the radiative gradient slider); the dashed curve is a blob that starts at the marked height and cools adiabatically as it's nudged upward. When the ambient profile falls faster than the adiabat (∇_rad > ∇_ad = 0.4), the blob (bright dot) stays hotter than its surroundings at every height above its start — unstable. Push the slider back down and watch the same blob sink back: stable.
@@ -196,7 +311,11 @@ Whether a layer of a star convects depends on both $\nabla_\text{rad}$ (opacity,
 
 ### Granulation: convection seen with a telescope
 
-The Sun's convective envelope isn't visible directly, but its top is: **granulation**, the mottled, cellular pattern covering the entire visible solar surface. Each granule is the top of a convective cell roughly 1,000 km across, with hot, bright plasma rising in the centre and cooler, darker plasma sinking at the edges (limb darkening and granulation together are why the Sun's disk, magnified, looks like a simmering pot rather than a smooth ball). A single granule's lifetime is only about 8–20 minutes before it's replaced — a direct, observable signature of the mixing-length turnover time near the photosphere. Much larger, longer-lived patterns called **supergranules** (~30,000 km, ~24 hours) trace convection deeper in the envelope.
+<Photo src="/img/energy-transport/dkist-granulation.jpg" alt="Close-up view of the Sun's granulated surface, showing bright cell-like convection cells the size of Texas separated by dark lanes, imaged by the Inouye Solar Telescope" credit="NSO/NSF/AURA" license="CC BY 4.0" href="https://noirlab.edu/public/images/NSO-DKIST-firstlight-full/" size="wide" aspect="1 / 1">
+**The highest-resolution image of the Sun's surface ever taken** (Daniel K. Inouye Solar Telescope, first light, January 2020), resolving features as small as 30 km. Each bright cell — roughly the size of Texas — is the top of a single convective plume: hot plasma rising in the bright centres, cooling, and sinking in the dark lanes between them. The tiny bright specks in those dark lanes mark concentrated magnetic fields thought to help heat the corona above.
+</Photo>
+
+The Sun's convective envelope isn't visible directly, but its top is: **granulation**, the mottled, cellular pattern covering the entire visible solar surface, shown above. A single granule's lifetime is only about 8–20 minutes before it's replaced — a direct, observable signature of the mixing-length turnover time near the photosphere. Much larger, longer-lived patterns called **supergranules** (~30,000 km, ~24 hours) trace convection deeper in the envelope.
 
 ## The photosphere and limb darkening
 
@@ -212,7 +331,7 @@ This is exactly the curve overlaid on the flagship simulation's exit-angle histo
 
 ## Conduction in degenerate matter
 
-Conduction — direct energy transfer via particle collisions without net particle transport — is negligible in ordinary stellar plasma: ions are too far apart and interactions too infrequent compared to photon transport. It becomes dominant in one important regime: **electron-degenerate matter**, found in white dwarfs and the cores of red giants before helium ignition ([Chapters 15](/ch/giants/) and [16](/ch/stellar-death/)). Degenerate electrons occupy a Fermi sea up to a high momentum set by the Pauli exclusion principle, regardless of temperature; these fast electrons have long mean free paths (few collisions available at their energy, because so many nearby quantum states are already occupied) and conduct heat efficiently — closer to a metal than to an ordinary gas. This is why white dwarfs, despite having no internal energy source, cool slowly and nearly isothermally: efficient electron conduction keeps the whole degenerate interior at nearly one temperature, with only a thin, non-degenerate radiative envelope controlling the actual cooling rate to space.
+Conduction — direct energy transfer via particle collisions without net particle transport — is negligible in ordinary stellar plasma: ions are too far apart and interactions too infrequent compared to photon transport. It becomes dominant in one important regime: **electron-degenerate matter**, found in white dwarfs and the cores of red giants before helium ignition ([Chapters 15](/ch/giants/) and [16](/ch/stellar-death/)). Degenerate electrons occupy a Fermi sea up to a high momentum set by the Pauli exclusion principle (new to quantum ideas? see [Appendix A9](/ch/primer-quantum/)), regardless of temperature; these fast electrons have long mean free paths (few collisions available at their energy, because so many nearby quantum states are already occupied) and conduct heat efficiently — closer to a metal than to an ordinary gas. This is why white dwarfs, despite having no internal energy source, cool slowly and nearly isothermally: efficient electron conduction keeps the whole degenerate interior at nearly one temperature, with only a thin, non-degenerate radiative envelope controlling the actual cooling rate to space.
 
 ## The flagship: Monte Carlo radiative transfer
 
@@ -241,7 +360,7 @@ else if (rnd(&rng) > albedo) { /* absorbed: thermalised, stop */ }
 
 **PRNG.** Each photon carries its own PCG32 state (`state = state*747796405u + 2891336453u`, then an XSH-RR output permutation), seeded from its index. PCG is chosen over a linear congruential generator or xorshift because it passes standard statistical test suites (TestU01) at very low cost — important with hundreds of thousands of independent streams and no way to synchronise seeds across threads. Each `rnd()` call advances that photon's own state; there is no shared randomness and hence no need for atomics on the RNG itself.
 
-**Sampling.** An exponentially-distributed path length with mean $\ell$ comes from $s = -\ell\ln(u)$ for $u$ uniform on $(0,1)$ — the standard inverse-CDF trick for the exponential distribution, which is exactly the memoryless "probability of interaction per unit length is constant" assumption behind $\ell = 1/\kappa\rho$. Isotropic direction sampling draws $\cos\theta$ *uniformly* on $[-1,1]$ (not $\theta$ uniformly — that would bunch points near the poles) and $\phi$ uniformly on $[0,2\pi)$, which is the standard sphere-point-picking recipe.
+**Sampling.** An exponentially-distributed path length with mean $\ell$ comes from $s = -\ell\ln(u)$ for $u$ uniform on $(0,1)$ — the standard inverse-CDF trick for the exponential distribution (new to this technique? see [Appendix A5](/ch/primer-odes/)), which is exactly the memoryless "probability of interaction per unit length is constant" assumption behind $\ell = 1/\kappa\rho$. Isotropic direction sampling draws $\cos\theta$ *uniformly* on $[-1,1]$ (not $\theta$ uniformly — that would bunch points near the poles) and $\phi$ uniformly on $[0,2\pi)$, which is the standard sphere-point-picking recipe.
 
 **Atomics and variance.** Two 64-bucket histograms (exit angle, escape time) and a 4-entry counter buffer (active/escaped/absorbed/total-steps) are shared across all invocations, so every write to them is `atomicAdd`/`atomicSub` on a `u32` storage array. Contention is low because 64 buckets are spread across hundreds of thousands of threads. Monte Carlo estimates carry statistical noise that falls as $1/\sqrt{N}$ (the same $\sqrt{N}$ scaling as the random walk itself, now working in our favour): the 524k preset gives visibly smoother histograms than the 32k preset, at a GPU cost that is still trivial — this is precisely the kind of embarrassingly parallel workload GPU compute exists for.
 
@@ -251,3 +370,9 @@ else if (rnd(&rng) > albedo) { /* absorbed: thermalised, stop */ }
 ## Where we go from here
 
 Radiation, convection and conduction between them account for every watt that ever left a star. The mass–luminosity scaling from this chapter feeds directly into [Chapter 14](/ch/main-sequence/), where the same physics, combined with the fusion rates of [Chapter 12](/ch/fusion/), produces the Hertzsprung–Russell diagram and the main-sequence lifetime as a function of mass. The convective boundaries mapped out here shift dramatically once a star runs out of core hydrogen — the subject of shell burning and the giant branches in [Chapter 15](/ch/giants/) — and the degenerate conduction glimpsed briefly above becomes the whole story for the compact remnants of [Chapter 16](/ch/stellar-death/).
+
+<History title="A woman's thesis, mostly believed too late" year="1925">
+<Portrait src="/img/people/payne-gaposchkin.jpg" name="Cecilia Payne-Gaposchkin" years="1900–1979" credit="Smithsonian Institution / Science Service, restored by Adam Cuerden" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Cecilia_Helena_Payne-Gaposchkin_(1900-1979)_-_Science_Service.png" />
+
+In her 1925 Radcliffe College (Harvard) PhD thesis — later called "the most brilliant PhD thesis ever written in astronomy" by fellow astronomer Otto Struve — Cecilia Payne used the then-new theory of stellar ionisation to show that stars are overwhelmingly hydrogen and helium, with heavier elements a small trace by comparison. This flatly contradicted the assumption that stars shared Earth's rocky composition. Senior astronomer Henry Norris Russell, whose own work assumed otherwise, persuaded her to call the result "almost certainly not real" in the published thesis; four years later, Russell rederived the same conclusion by different means and largely got the credit for it, though the record has since been corrected. The composition Payne established — hydrogen dominant, helium next, everything else at a few percent by mass — is exactly the $X$, $Y$, $Z$ that fixes the opacities, mean molecular weight, and nuclear reaction rates used throughout this chapter and the two before it.
+</History>

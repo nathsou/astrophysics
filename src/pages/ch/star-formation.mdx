@@ -15,6 +15,33 @@ import Out from '../../components/Out.astro';
 import Level from '../../components/Level.astro';
 import Tiers from '../../components/Tiers.astro';
 import Photo from '../../components/Photo.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  K: ['Kinetic energy of the cloud', 'Thermal jiggling plus bulk turbulent and rotational motion: everything that resists gravity by moving. Appears doubled in the virial balance.'],
+  U: ['Gravitational potential energy', 'Negative, and about −(3/5)GM²/R for a uniform sphere: the deeper it is, the harder the cloud is to pull apart.'],
+  Mmag: ['Magnetic energy', 'Energy stored in the field threading the cloud. Like gravity it scales as 1/R, so squeezing the cloud cannot make magnetic support win or lose.'],
+  avir: ['Virial parameter', 'Ratio of motion to binding: about 1 is balance, much less than 1 means collapse, much more means the cloud disperses.'],
+  sigmav: ['Velocity dispersion', 'Spread of gas velocities along the line of sight, from line widths. It enters squared, as a kinetic energy.'],
+  R: ['Cloud radius', 'Size of the region considered. Gravity per unit mass weakens with R, so bigger (at fixed mass) means less bound.'],
+  M: ['Cloud (or clump) mass', 'Gravity grows as M², thermal energy only as M: enough mass always wins.'],
+  cs: ['Isothermal sound speed', 'How fast pressure signals travel, √(k_B T / μ m_H), about 0.2 km/s at 10 K. It enters cubed in the Jeans mass, so it dominates.'],
+  T: ['Gas temperature', 'Hotter gas pushes back harder: the Jeans mass grows as T^(3/2), so tripling T multiplies it by five.'],
+  rho: ['Mass density', 'Denser gas pulls harder and collapses faster. It sits under a square root, so a 100× denser core has a 10× smaller Jeans mass and free-fall time.'],
+  lj: ['Jeans length', 'The largest wavelength that pressure can still hold up: perturbations bigger than this collapse.'],
+  mj: ['Jeans mass', 'Mass inside a Jeans-length sphere: the minimum mass that can collapse under its own weight.'],
+  tff: ['Free-fall time', 'Time for a pressureless uniform sphere to collapse to a point. Depends only on density, as 1/√ρ.'],
+  Phi: ['Magnetic flux', 'Field strength times area, conserved while the field is frozen into the gas: it is the magnetic "anchor" the mass hangs on.'],
+  xi: ['Initial mass function', 'Number of stars born per unit mass interval. Its steep slope means massive stars are rare.'],
+  Mstar: ['Stellar mass', 'Mass of an individual star. In the IMF it sits in a power with a negative exponent, so counts fall steeply with mass.'],
+  Rstar: ['Stellar radius', 'A bigger star is less tightly bound, so it has less energy to radiate and a shorter contraction time.'],
+  Lstar: ['Luminosity', 'Rate at which the star radiates its energy away; brighter stars finish contracting sooner.'],
+  tKH: ['Kelvin–Helmholtz time', 'How long a star can shine on gravitational contraction alone: its binding energy divided by its luminosity.'],
+  SigSFR: ['Star-formation rate surface density', 'Mass of new stars per year per unit area of a galaxy disk (M☉ yr⁻¹ kpc⁻²).'],
+  Siggas: ['Gas surface density', 'Gas mass per unit area. The exponent 1.4 above 1 means denser gas forms stars disproportionately faster.'],
+}} />
 
 ## Where stars are born
 
@@ -30,6 +57,12 @@ Inside clouds, the gas is far from uniform. Maps from *Herschel* showed that nea
 **The Pillars of Creation in near-infrared light.** JWST's 2022 NIRCam view of these columns of cold gas and dust in the Eagle Nebula (M16), about 2,000 pc away; the tallest pillar is roughly 1.5 pc long. Ultraviolet light from nearby massive stars is eroding them. The bright red dots near the pillar edges are newborn stars, only a few hundred thousand years old, still embedded in the gas they formed from, some with jets.
 </Photo>
 
+<History title="Holes in the sky that were not holes" year="1919">
+<Portrait src="/img/people/barnard.jpg" name="Edward Emerson Barnard" years="1857–1923" credit="Unknown photographer" license="Public domain" href="https://commons.wikimedia.org/wiki/File:EdwardEmersonBarnard.jpg" />
+
+Edward Emerson Barnard grew up poor in Nashville, left school to work in a photographer's studio at nine, and taught himself astronomy. By the 1900s he was the finest astrophotographer alive, taking long-exposure wide-field plates of the Milky Way from Lick and Yerkes observatories. On them he kept seeing dark lanes and blotches where there were almost no stars. William Herschel had called such places "holes in the heavens", openings in the star field through which we look out into empty space. Barnard grew convinced they were the opposite: opaque clouds in front of the stars. In 1919 he published a catalogue of 182 "dark markings of the sky"; by 1927 it had 349. He was right, although the proof (reddening of starlight by dust, measured by Robert Trumpler in 1930) came after his death. Barnard's dark nebulae, such as B68 and the Pipe Nebula, are exactly the cold, dusty molecular cores this chapter is about.
+</History>
+
 ### The virial theorem for a cloud
 
 <Tiers>
@@ -43,13 +76,13 @@ The first question for any cloud is whether it can hold itself up. There is a si
 The first question for any self-gravitating blob is whether it can hold itself up. The virial theorem (derived for stars in [Chapter 11](/ch/stellar-structure/)) answers it on average. For a cloud in a steady state,
 
 $$
-2K + U + \mathcal{M} = 0,
+2\term{K}{K} + \term{U}{U} + \term{Mmag}{\mathcal{M}} = 0,
 $$
 
 where $K$ is the kinetic energy (thermal plus bulk motions), $U$ the gravitational potential energy and $\mathcal{M}$ the magnetic energy. For a uniform sphere of mass $M$ and radius $R$, $U = -\tfrac35 GM^2/R$. Astronomers package this into the **virial parameter**
 
 $$
-\alpha_\text{vir} = \frac{2K}{|U|} \approx \frac{5\sigma^2 R}{GM},
+\term{avir}{\alpha_\text{vir}} = \frac{2\term{K}{K}}{|\term{U}{U}|} \approx \frac{5\term{sigmav}{\sigma}^2 \term{R}{R}}{\term{G}{G}\term{M}{M}},
 $$
 
 with $\sigma$ the one-dimensional velocity dispersion. $\alpha_\text{vir} \approx 1$ means balance, $\alpha_\text{vir} \ll 1$ means collapse and $\alpha_\text{vir} \gg 1$ means the cloud flies apart (or is held in by outside pressure). Real GMCs cluster around $\alpha_\text{vir}\sim 1$–$2$, which is itself a puzzle we will return to: clouds seem to live near the edge.
@@ -66,15 +99,15 @@ with $\sigma$ the one-dimensional velocity dispersion. $\alpha_\text{vir} \appro
 
 Think of a cloud as a crowd of molecules in a tug of war. **Gravity pulls everything together**, and the more mass there is, the harder it pulls. **Heat pushes outward**: warm molecules zip around and resist being squeezed, just like the air in a bicycle pump. For a small blob, heat always wins and the blob puffs back out. But gravity grows faster with size than heat does, so above a certain size, and a certain mass, gravity wins and collapse is unstoppable.
 
-That critical mass is the **Jeans mass**, after James Jeans who worked it out in 1902. It goes up in hot gas (more push) and down in dense gas (more pull, and the collapse happens faster than sound can carry the pushback). In a cold, dense core at 10 K it is about the mass of the Sun, and in warm interstellar gas it is tens of millions of Suns.
+(If the tug of war between heat and gravity feels abstract, [Appendix A7](/ch/primer-thermo/) explains what temperature really is.) That critical mass is the **Jeans mass**, after James Jeans who worked it out in 1902. It goes up in hot gas (more push) and down in dense gas (more pull, and the collapse happens faster than sound can carry the pushback). In a cold, dense core at 10 K it is about the mass of the Sun, and in warm interstellar gas it is tens of millions of Suns.
 
 </Fragment>
 <Fragment slot="l2">
 
-Take a uniform, isothermal gas of density $\rho$ and temperature $T$ and imagine squeezing a sphere of radius $R$ inside it. Two energies compete. The thermal energy is $K \approx \tfrac32 N k_BT = \tfrac32 M c_s^2$, where $c_s = \sqrt{k_BT/\mu m_H}$ is the isothermal sound speed and $\mu \approx 2.33$ is the mean mass per particle in molecular gas (in units of the hydrogen mass). The gravitational energy is $|U| = \tfrac35 GM^2/R$. Collapse wins if $2K < |U|$:
+Take a uniform, isothermal gas of density $\rho$ and temperature $T$ and imagine squeezing a sphere of radius $R$ inside it. Two energies compete. The thermal energy is $K \approx \tfrac32 N k_BT = \tfrac32 M c_s^2$, where $c_s = \sqrt{k_BT/\mu m_H}$ (new to temperature and the ideal gas? see [Appendix A7](/ch/primer-thermo/)) is the isothermal sound speed and $\mu \approx 2.33$ is the mean mass per particle in molecular gas (in units of the hydrogen mass). The gravitational energy is $|U| = \tfrac35 GM^2/R$. Collapse wins if $2K < |U|$:
 
 $$
-3 M c_s^2 < \frac35\frac{GM^2}{R} \quad\Longrightarrow\quad M > \frac{5 c_s^2 R}{G}.
+3 \term{M}{M} \term{cs}{c_s}^2 < \frac35\frac{\term{G}{G}\term{M}{M}^2}{\term{R}{R}} \quad\Longrightarrow\quad \term{M}{M} > \frac{5 \term{cs}{c_s}^2 \term{R}{R}}{\term{G}{G}}.
 $$
 
 Now substitute $M = \tfrac43\pi R^3\rho$. Gravity grows as $R^5$ while thermal energy grows only as $R^3$, so there is a critical size above which gravity always wins. Solving for $R$ gives a length of order $c_s/\sqrt{G\rho}$.
@@ -84,20 +117,24 @@ Now substitute $M = \tfrac43\pi R^3\rho$. Gravity grows as $R^5$ while thermal e
 
 <Level min={3} title="Jeans's dispersion relation">
 
-James Jeans got the same answer in 1902 from a more careful calculation: perturb a uniform medium with a sound wave $\propto e^{i(kx-\omega t)}$, linearise the fluid equations plus Poisson's equation, and you get the dispersion relation $\omega^2 = c_s^2 k^2 - 4\pi G\rho$. Short waves ($k$ large) oscillate as ordinary sound. Long waves have $\omega^2 < 0$: the "sound wave" grows exponentially instead of oscillating. The dividing line is $k_J^2 = 4\pi G\rho/c_s^2$.
+James Jeans got the same answer in 1902 from a more careful calculation (waves and linearisation: see [Appendix A8](/ch/primer-waves/)): perturb a uniform medium with a sound wave $\propto e^{i(kx-\omega t)}$, linearise the fluid equations plus Poisson's equation, and you get the dispersion relation $\omega^2 = c_s^2 k^2 - 4\pi G\rho$. Short waves ($k$ large) oscillate as ordinary sound. Long waves have $\omega^2 < 0$: the "sound wave" grows exponentially instead of oscillating. The dividing line is $k_J^2 = 4\pi G\rho/c_s^2$.
 
 <Aside>**The Jeans swindle.** A static, infinite, uniform medium cannot actually be in equilibrium under gravity: Poisson's equation says $\nabla^2\Phi = 4\pi G\rho \ne 0$. Jeans simply ignored the background potential. The swindle works (it can be justified in an expanding universe, and for finite clouds the order of magnitude is right), which is why everyone still uses it.</Aside>
 
 </Level>
 
+<History title="Jeans and the instability of a gaseous nebula" year="1902">
+James Jeans was 25 and a fellow of Trinity College, Cambridge, when he asked a question that went back to Newton: could an infinite, uniform gas break up into lumps under its own gravity? Newton had speculated in a 1692 letter to Richard Bentley that matter spread through infinite space would "convene into masses". Jeans made it quantitative. He perturbed the gas with sound waves and found the critical wavelength above which gravity beats pressure. He had to ignore the fact that his uniform background could not be in equilibrium, the "Jeans swindle" that bothered mathematicians for decades before it was justified properly. Jeans went on to write best-selling popular books on astronomy in the 1920s and 30s. His criterion is now used for everything from star formation to the growth of galaxies in the expanding universe.
+</History>
+
 <Level min={2}>
 
 <KeyEq title="Jeans length and Jeans mass">
 $$
-\htmlData{term=lj}{\lambda_J} = \htmlData{term=cs}{c_s}\sqrt{\frac{\pi}{G\htmlData{term=rho}{\rho}}}, \qquad
-\htmlData{term=mj}{M_J} = \frac{4\pi}{3}\rho\left(\frac{\lambda_J}{2}\right)^3 = \frac{\pi^{5/2}}{6}\frac{c_s^3}{G^{3/2}\rho^{1/2}} \;\propto\; \frac{T^{3/2}}{\rho^{1/2}}
+\term{lj}{\lambda_J} = \term{cs}{c_s}\sqrt{\frac{\pi}{\term{G}{G}\term{rho}{\rho}}}, \qquad
+\term{mj}{M_J} = \frac{4\pi}{3}\term{rho}{\rho}\left(\frac{\term{lj}{\lambda_J}}{2}\right)^3 = \frac{\pi^{5/2}}{6}\frac{\term{cs}{c_s}^3}{\term{G}{G}^{3/2}\term{rho}{\rho}^{1/2}} \;\propto\; \frac{\term{T}{T}^{3/2}}{\term{rho}{\rho}^{1/2}}
 $$
-<Fragment slot="where"><span data-term="lj">$\lambda_J$</span> is the wavelength above which perturbations grow; <span data-term="mj">$M_J$</span> is the mass inside a sphere of diameter $\lambda_J$. <span data-term="cs">$c_s=\sqrt{k_BT/\mu m_H}$</span> is the isothermal sound speed and <span data-term="rho">$\rho$</span> the mass density. Hot gas resists collapse; dense gas succumbs. Numerical prefactors differ between textbooks by factors of ~2 depending on whether one uses radius or diameter.</Fragment>
+<Fragment slot="where"><span data-term="lj">$\lambda_J$</span> is the wavelength above which perturbations grow; <span data-term="mj">$M_J$</span> is the mass inside a sphere of diameter $\lambda_J$. <span data-term="cs">$c_s=\sqrt{k_BT/\mu m_H}$</span> is the isothermal sound speed (for gas at <span data-term="T">temperature $T$</span>) and <span data-term="rho">$\rho$</span> the mass density. Hot gas resists collapse; dense gas succumbs. Numerical prefactors differ between textbooks by factors of ~2 depending on whether one uses radius or diameter.</Fragment>
 </KeyEq>
 
 </Level>
@@ -120,13 +157,13 @@ If pressure loses completely, how fast does the cloud fall in? The answer, the *
 </Fragment>
 <Fragment slot="l2">
 
-If pressure loses entirely, how long does collapse take? Consider a uniform, pressureless sphere at rest. Each shell falls as if all the mass inside it were a point mass, so it follows a degenerate Kepler orbit (eccentricity 1) with semi-major axis $R/2$. The time to reach the centre is half that orbit's period, $\tfrac12 \cdot 2\pi\sqrt{(R/2)^3/GM}$. Substituting $M = \tfrac43\pi R^3\rho$, the $R$ cancels:
+If pressure loses entirely, how long does collapse take? Consider a uniform, pressureless sphere at rest (energy and Kepler orbits are reviewed in [Appendix A6](/ch/primer-mechanics/)). Each shell falls as if all the mass inside it were a point mass, so it follows a degenerate Kepler orbit (eccentricity 1) with semi-major axis $R/2$. The time to reach the centre is half that orbit's period, $\tfrac12 \cdot 2\pi\sqrt{(R/2)^3/GM}$. Substituting $M = \tfrac43\pi R^3\rho$, the $R$ cancels:
 
 <KeyEq title="Free-fall time">
 $$
-t_\text{ff} = \sqrt{\frac{3\pi}{32\,G\,\rho}}
+\term{tff}{t_\text{ff}} = \sqrt{\frac{3\pi}{32\,\term{G}{G}\,\term{rho}{\rho}}}
 $$
-<Fragment slot="where">$\rho$ is the initial mean density. The free-fall time depends *only* on density, so every shell of a uniform sphere arrives at the centre at the same instant ("homologous collapse"). For $n = 100$ cm⁻³ it is about 3.4 Myr; for a dense core at $10^4$ cm⁻³, about 0.34 Myr.</Fragment>
+<Fragment slot="where"><span data-term="rho">$\rho$</span> is the initial mean density, and <span data-term="tff">$t_\text{ff}$</span> the time for the whole cloud to fall to a point. The free-fall time depends *only* on density, so every shell of a uniform sphere arrives at the centre at the same instant ("homologous collapse"). For $n = 100$ cm⁻³ it is about 3.4 Myr; for a dense core at $10^4$ cm⁻³, about 0.34 Myr.</Fragment>
 </KeyEq>
 
 </Fragment>
@@ -167,7 +204,7 @@ Clouds are also threaded by weak magnetic fields, about a millionth the strength
 Clouds are threaded by magnetic fields of 10–100 μG, measured through the Zeeman splitting of OH and CN lines and the polarisation of dust emission. Because the gas is slightly ionised, the field is frozen into it: squeezing the cloud squeezes the field lines too, and magnetic pressure $B^2/2\mu_0$ pushes back. Magnetic energy scales like $B^2R^3$, and with the flux $\Phi = \pi R^2 B$ conserved that is $\propto \Phi^2/R$, *exactly the same* $R$-dependence as gravity. So magnetic support does not care how compressed the cloud is. Either the field can hold the cloud or it can't, and the deciding quantity is the **mass-to-flux ratio**:
 
 $$
-\left(\frac{M}{\Phi}\right)_\text{crit} = \frac{1}{2\pi\sqrt{G}} \quad(\text{in Gaussian units}).
+\left(\frac{\term{M}{M}}{\term{Phi}{\Phi}}\right)_\text{crit} = \frac{1}{2\pi\sqrt{\term{G}{G}}} \quad(\text{in Gaussian units}).
 $$
 
 Clouds with $M/\Phi$ below the critical value are *subcritical* and can never collapse as long as flux is frozen. Observations (Crutcher 2012) find most cores are mildly *supercritical*, by a factor of ~2.
@@ -261,10 +298,10 @@ Count the stars in a newborn cluster by mass and a pattern appears that looks al
 </Fragment>
 <Fragment slot="l2">
 
-Edwin Salpeter (1955) found that above about 1 M☉ it is a power law,
+Edwin Salpeter (1955) found that above about 1 M☉ it is a power law (power laws are straight lines on log–log plots: [Appendix A2](/ch/primer-functions/)),
 
 $$
-\xi(M) \propto M^{-2.35}.
+\term{xi}{\xi}(\term{Mstar}{M}) \propto \term{Mstar}{M}^{-2.35}.
 $$
 
 With $\alpha = 2.35$ there are about 200 times fewer 10 M☉ stars than 1 M☉ stars. Below ~0.5 M☉ the IMF flattens. **Kroupa** (2001) described it as a broken power law ($\alpha = 1.3$ from 0.08 to 0.5 M☉, $\alpha = 2.3$ above), and **Chabrier** (2003) as a lognormal peaking near 0.2 M☉ joined to a Salpeter tail. The two agree within their uncertainties. Plotted per logarithmic mass interval, the IMF is a broad hump peaking at a few tenths of a solar mass: the typical star is a red dwarf.
@@ -275,6 +312,10 @@ With $\alpha = 2.35$ there are about 200 times fewer 10 M☉ stars than 1 M☉ s
 <Sim name="star-formation-imf" size="wide" minHeight={400}>
 **Drawing a cluster from the IMF.** Each bar counts sampled stars per dex of mass; lines are the analytic Kroupa, Salpeter and Chabrier forms. **Try:** draw 1,000 stars several times and watch the most massive one jump around (with only a few O stars expected, stochastic sampling matters hugely for small clusters). Then tick **Weight by mass**: the peak moves up, showing where the mass sits. Stars below 1 M☉ are over 90% of the objects but only about half of the mass; stars above 8 M☉, a quarter of a percent by number, hold ~15% of it and do nearly all the feedback.
 </Sim>
+
+<History title="Salpeter's slope" year="1955">
+Edwin Salpeter, an Austrian-born physicist who had fled to Australia as a teenager, is better known for nuclear astrophysics: he worked out how helium burns in red giants. His 1955 paper on the "luminosity function and stellar evolution" was a side project. He took the number of stars of each brightness in the solar neighbourhood, used new estimates of stellar lifetimes to correct for massive stars that had already died, and asked how many stars of each mass must have been *born*. The answer was a power law with index 1.35 in logarithmic form (2.35 per unit mass). He based it on rather rough data, yet seventy years of far better measurements have barely changed it above one solar mass.
+</History>
 
 Why this shape? The honest answer is that nobody knows for sure. The peak near 0.2–0.5 M☉ plausibly reflects the thermal Jeans mass in dense cores (as we found above), perhaps modified by the heating from the first protostars that raises the local temperature. The power-law tail may reflect the scale-free statistics of turbulent density fluctuations (Padoan–Nordlund, Hennebelle–Chabrier theories), or competitive accretion, in which protostars at the bottom of a cluster's potential well grab more gas (Bonnell and Bate). The striking fact is that the **core mass function** measured by Herschel and ALMA has a similar shape to the IMF, shifted up by a factor of ~3: as if each core turns about a third of its mass into a star.
 
@@ -322,7 +363,7 @@ When accretion ends, the young star is still bigger than it will be as an adult,
 Once accretion ends, the young star is still larger than its main-sequence self and shines by **contraction**, releasing gravitational energy. The virial theorem says half of the released energy is radiated and half heats the interior. The timescale is the **Kelvin–Helmholtz time**
 
 $$
-t_\text{KH} \approx \frac{GM^2}{RL}.
+\term{tKH}{t_\text{KH}} \approx \frac{\term{G}{G}\term{Mstar}{M}^2}{\term{Rstar}{R}\term{Lstar}{L}}.
 $$
 
 </Fragment>
@@ -342,6 +383,10 @@ The path a contracting star takes on the Hertzsprung–Russell diagram depends o
 
 </Fragment>
 </Tiers>
+
+<History title="Hayashi turns the tracks vertical" year="1961">
+In the 1950s, models of contracting young stars assumed they were radiative inside. In 1955, Louis Henyey and colleagues computed tracks on which young stars moved almost horizontally across the HR diagram. That left a puzzle: T Tauri stars sat far above the main sequence, much too bright for those tracks. In 1961 Chushiro Hayashi, a Kyoto physicist who had already made important contributions to Big Bang nucleosynthesis, showed that the outer layers of a cool star must be convective, and that fully convective stars cannot be cooler than a limiting temperature. Young stars therefore start large and bright and slide nearly straight down the diagram at constant temperature before joining the Henyey track. The T Tauri stars fell into place. Both names now label the two legs of every pre-main-sequence track.
+</History>
 
 <Sim name="star-formation-pms" size="wide" minHeight={440}>
 **Growing up on the HR diagram.** Coloured lines are approximate pre-main-sequence tracks for six masses, from the birthline (dashed, where stars first become visible) to the ZAMS (thick line). Ages come from a Kelvin–Helmholtz integration along each track, so they are good only to a factor of a few (real models give ~40 Myr for 1 M☉). **Press Play** and watch the isochrone (dotted): massive stars sprint to the main sequence in well under a million years (often while still accreting), while a 0.1 M☉ star is still contracting after hundreds of millions. That is why young clusters show a main sequence at the top and a "pre-main sequence" of red, overluminous stars at the bottom.
@@ -366,7 +411,7 @@ Across whole galaxies there is a simple rule of thumb, found by Maarten Schmidt 
 Averaged over galaxies, the star-formation rate per unit area tracks gas surface density:
 
 $$
-\Sigma_\text{SFR} \propto \Sigma_\text{gas}^{1.4}.
+\term{SigSFR}{\Sigma_\text{SFR}} \propto \term{Siggas}{\Sigma_\text{gas}}^{1.4}.
 $$
 
 Kennicutt (1998) measured this over five orders of magnitude, from spiral disks to starbursts. The exponent 1.4 has a natural reading: if stars form at a fixed efficiency per free-fall time, then $\dot\rho_\star \propto \rho/t_\text{ff}\propto\rho^{3/2}$. Resolved studies find that star formation tracks *molecular* gas almost linearly, with a depletion time $\Sigma_{H_2}/\Sigma_\text{SFR}\approx 2$ Gyr in normal spirals. This relation is the bridge from this chapter to galaxy formation in [Chapter 23](/ch/galaxy-formation/), where subgrid recipes like it stand in for everything we simulated above.

@@ -13,6 +13,43 @@ import C from '../../components/C.astro';
 import Var from '../../components/Var.astro';
 import Out from '../../components/Out.astro';
 import Tiers from '../../components/Tiers.astro';
+import Level from '../../components/Level.astro';
+import Photo from '../../components/Photo.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  Sigma: ['Gas surface density', 'Mass per unit area of disk, summed through its thickness. It sets how much material is available, and how hard the gas pushes on solids.'],
+  Sigmas: ['Solid surface density', 'Mass of dust and ice per unit area. Raised to the 3/2 power in the isolation mass, so a bit more solid material makes much bigger embryos.'],
+  r: ['Distance from the star', 'Almost every disk property is a power law in r: density and temperature fall outward.'],
+  T: ['Temperature', 'Sets the sound speed and hence the disk thickness; where it drops below ~160 K water freezes.'],
+  H: ['Scale height', 'The disk\'s vertical thickness: gas density falls by a factor e^(-1/2) at one H above the midplane.'],
+  cs: ['Sound speed', 'How fast pressure signals travel in the gas; warmer gas has a larger c_s and a puffier disk.'],
+  vK: ['Keplerian speed', 'The circular orbital speed √(GM/r), about 30 km/s at 1 AU. Everything is measured against it.'],
+  Omega: ['Orbital angular frequency', 'Radians per unit time of a circular orbit, 2π/P. The natural clock of the disk.'],
+  eta: ['Headwind parameter', 'Fraction by which the pressure-supported gas orbits slower than Kepler, ~0.002. The whole drift problem is proportional to it.'],
+  St: ['Stokes number', 'Stopping time in units of 1/Ω. Much less than 1: the grain follows the gas; much more than 1: it ignores it; 1: fastest drift.'],
+  ts: ['Stopping time', 'How long drag takes to erase a solid\'s velocity relative to the gas. Grows with size and material density.'],
+  vr: ['Radial drift speed', 'How fast solids spiral toward the star. Peaks at ηv_K for St = 1.'],
+  rhos: ['Material density of the solid', 'Denser grains carry more momentum per area, so they decouple from the gas at smaller sizes.'],
+  rhog: ['Gas density', 'More gas means more collisions per second and stronger drag.'],
+  vth: ['Mean thermal speed of gas molecules', 'Sets how often molecules hit a grain in the Epstein regime.'],
+  alpha: ['Turbulence parameter α', 'Dimensionless strength of turbulent viscosity, usually 10⁻⁴–10⁻². Bigger α drains the disk faster and smashes grains harder.'],
+  nu: ['Effective viscosity', 'Rate at which turbulence spreads angular momentum; r²/ν is the time for the disk to evolve.'],
+  rc: ['Centrifugal radius', 'Where infalling gas with a given angular momentum ends up on a circular orbit: the size of the newborn disk.'],
+  sig: ['Collision cross-section', 'The effective target area an embryo presents, enlarged by its gravity.'],
+  R: ['Physical radius of the embryo', 'Sets the bare geometric target πR²; focusing multiplies it.'],
+  v: ['Approach speed', 'Relative speed far from the embryo. In the denominator of the focusing term, so slow encounters are captured far more often.'],
+  vesc: ['Escape speed', '√(2GM/R) from the embryo\'s surface. Grows with mass, which is what makes big bodies grow faster (runaway).'],
+  Mstar: ['Stellar mass', 'Sets the orbital speeds and the size of each embryo\'s Hill sphere.'],
+  Mp: ['Planet mass', 'Type I migration time scales as 1/M_p: heavier planets raise stronger waves and move faster.'],
+  Miso: ['Isolation mass', 'The mass an embryo reaches once it has eaten everything in its feeding zone.'],
+}} />
+
+<Photo src="/img/planet-formation/hl-tau.jpg" alt="Orange concentric rings and dark gaps in the dusty disk around the young star HL Tauri, seen by ALMA" credit="ALMA (ESO/NAOJ/NRAO)" license="CC BY 4.0" href="https://www.eso.org/public/images/eso1436a/" size="wide" aspect="1 / 1">
+**HL Tauri, about a million years old.** ALMA's 2014 image of the dust disk around a star 450 light-years away, seen at millimetre wavelengths. The disk is roughly 200 AU across, and its dark gaps are thought to be carved by planets forming in it right now.
+</Photo>
 
 ## Why disks?
 
@@ -24,12 +61,12 @@ Start with a slowly spinning cloud of gas, like the collapsing cloud core of [Ch
 </Fragment>
 <Fragment slot="l3">
 
-In [Chapter 7](/ch/star-formation/) a molecular cloud core collapsed under its own gravity. We treated the collapse as spherical, but real cores rotate slightly. A typical core of radius $0.1$ pc spins with an angular velocity of roughly $10^{-14}\,\text{s}^{-1}$, about one turn per ten million years. That is tiny, but angular momentum is conserved, and the specific angular momentum $j = r^2\Omega$ of each gas parcel stays fixed as it falls in. (As in [Chapter 2](/ch/orbits/), a central force exerts no torque.)
+In [Chapter 7](/ch/star-formation/) a molecular cloud core collapsed under its own gravity. We treated the collapse as spherical, but real cores rotate slightly. A typical core of radius $0.1$ pc spins with an angular velocity of roughly $10^{-14}\,\text{s}^{-1}$, about one turn per ten million years. That is tiny, but angular momentum is conserved, and the specific angular momentum $j = r^2\Omega$ of each gas parcel stays fixed as it falls in. (As in [Chapter 2](/ch/orbits/), a central force exerts no torque; for a refresher on angular momentum see [Appendix A6](/ch/primer-mechanics/).)
 
 Gravity can pull gas inward along the rotation axis without any resistance. Perpendicular to the axis, though, a parcel with specific angular momentum $j$ can only fall until it reaches the radius where its orbit is circular:
 
 $$
-r_\text{c} = \frac{j^2}{GM}.
+\term{rc}{r_\text{c}} = \frac{j^2}{GM}.
 $$
 
 Plug in $j \approx \Omega_0 r_0^2$ with $r_0 = 0.05$ pc and $\Omega_0 = 10^{-14}\,\text{s}^{-1}$, and you get $r_\text{c}$ of order a hundred AU. Nothing collapses to a point. Material from the poles piles onto the equatorial plane, collisions between gas streams dissipate the vertical motion, and the end state is a thin, rotating **protoplanetary disk**, fed by the envelope for its first $10^5$ years and draining onto the star for the next few million. Every star forms with one. Planets are what happen to a small fraction of the disk's solids before it disappears.
@@ -37,7 +74,11 @@ Plug in $j \approx \Omega_0 r_0^2$ with $r_0 = 0.05$ pc and $\Omega_0 = 10^{-14}
 </Fragment>
 </Tiers>
 
-<Aside>**Kant and Laplace.** The "nebular hypothesis", that the planets formed from a flattened rotating cloud, dates to Kant (1755) and Laplace (1796). It explained why all the planets orbit in nearly the same plane and the same direction. The angular-momentum problem (the Sun holds 99.9% of the mass but only 2% of the angular momentum) took two more centuries to resolve.</Aside>
+<History title="Nebulae, Kant and Laplace" year="1755–1796">
+<Portrait src="/img/people/laplace.jpg" name="Pierre-Simon Laplace" years="1749–1827" credit="Paulin Guérin" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Pierre-Simon_Laplace.jpg" />
+
+In 1755 the young Immanuel Kant, not yet a famous philosopher, published an anonymous book arguing that the Sun and planets had condensed from a rotating cloud. His publisher went bankrupt and the stock was impounded, so almost nobody read it. Forty years later Pierre-Simon Laplace, working independently, tucked a similar idea into a note at the end of his popular *Exposition du système du monde* (1796): a hot, rotating nebula contracted, spun faster and shed rings that condensed into planets. He offered it, he said, with the distrust due to anything not founded on observation or calculation. The idea explained why all the planets orbit in one plane and one direction. It then fell out of favour for more than a century because it could not explain why the Sun, holding 99.9% of the mass, carries only 2% of the angular momentum. Modern disk physics, with angular momentum carried outward by turbulence, winds and magnetic fields, revived it in essentially Laplace's form.
+</History>
 
 The disk has a few percent of the star's mass, and about 1% of that is solid: silicate and carbon dust, plus ices where it is cold enough. So a solar-mass star's disk might hold $0.01$–$0.1$ M☉ of gas and something like $30$–$300$ Earth masses of dust. The whole of this chapter is about how some of that dust ends up as planets before the gas vanishes.
 
@@ -55,11 +96,11 @@ Astronomers can estimate what our own disk looked like by a neat trick: take all
 
 <KeyEq title="Minimum-mass solar nebula (Hayashi 1981)">
 $$
-\htmlData{term=sigma}{\Sigma}_\text{gas}(r) \approx 1700\ \text{g cm}^{-2}\left(\frac{\htmlData{term=r}{r}}{1\ \text{AU}}\right)^{-3/2},
+\term{Sigma}{\Sigma}_\text{gas}(r) \approx 1700\ \text{g cm}^{-2}\left(\frac{\term{r}{r}}{1\ \text{AU}}\right)^{-3/2},
 \qquad
-\htmlData{term=T}{T}(r) \approx 280\ \text{K}\left(\frac{\htmlData{term=r}{r}}{1\ \text{AU}}\right)^{-1/2}
+\term{T}{T}(r) \approx 280\ \text{K}\left(\frac{\term{r}{r}}{1\ \text{AU}}\right)^{-1/2}
 $$
-<Fragment slot="where"><span data-term="sigma">Σ</span> is the mass per unit area of the disk, integrated through its thickness. <span data-term="r">r</span> is the distance from the star. The solids are about 1/240 of the gas inside the snow line (Σ_solid ≈ 7 g cm⁻² at 1 AU), rising by a factor of about 4 beyond it, where water freezes out. <span data-term="T">T</span> is the temperature of a blackbody grain lit by the Sun. Integrated out to 36 AU, the MMSN holds about 0.013 M☉.</Fragment>
+<Fragment slot="where"><span data-term="Sigma">Σ</span> is the mass per unit area of the disk, integrated through its thickness. <span data-term="r">r</span> is the distance from the star. The solids are about 1/240 of the gas inside the snow line (Σ_solid ≈ 7 g cm⁻² at 1 AU), rising by a factor of about 4 beyond it, where water freezes out. <span data-term="T">T</span> is the temperature of a blackbody grain lit by the Sun. Integrated out to 36 AU, the MMSN holds about 0.013 M☉.</Fragment>
 </KeyEq>
 
 It is called "minimum" because it assumes every atom of rock ended up in a planet, which certainly overstates the efficiency. Real disks, measured with ALMA, span two orders of magnitude around it. The temperature law comes from a simple balance: a grain at distance $r$ absorbs $L_\odot/(4\pi r^2)$ per unit area over its cross-section and radiates over four times that area, so $T^4 \propto L/r^2$, or $T \propto L^{1/4} r^{-1/2}$.
@@ -77,15 +118,15 @@ Seen edge-on, the disk is remarkably thin. The star's gravity squeezes the gas t
 </Fragment>
 <Fragment slot="l3">
 
-Now look at the disk edge-on. Gas at height $z$ above the midplane feels the vertical component of the star's gravity, $g_z = -GMz/(r^2+z^2)^{3/2} \approx -\Omega^2 z$ for $z \ll r$, where $\Omega = \sqrt{GM/r^3}$ is the Keplerian angular frequency. Balance that against the pressure gradient $dP/dz = -\rho\,\Omega^2 z$ with an isothermal gas, $P = \rho c_s^2$, and the solution is a Gaussian:
+Now look at the disk edge-on. Gas at height $z$ above the midplane feels the vertical component of the star's gravity, $g_z = -GMz/(r^2+z^2)^{3/2} \approx -\Omega^2 z$ for $z \ll r$, where $\Omega = \sqrt{GM/r^3}$ is the Keplerian angular frequency. Balance that against the pressure gradient $dP/dz = -\rho\,\Omega^2 z$ with an isothermal gas, $P = \rho c_s^2$, and the solution is a Gaussian (new to this kind of equation? see [Appendix A4](/ch/primer-calculus/) and, for gas pressure and sound speed, [Appendix A7](/ch/primer-thermo/)):
 
 $$
-\rho(z) = \rho_0\, e^{-z^2/2H^2}, \qquad H = \frac{c_s}{\Omega}.
+\rho(z) = \rho_0\, e^{-z^2/2H^2}, \qquad H = \frac{\term{cs}{c_s}}{\term{Omega}{\Omega}}.
 $$
 
 <KeyEq title="Disk scale height">
 $$
-\frac{\htmlData{term=H}{H}}{r} = \frac{\htmlData{term=cs}{c_s}}{v_K}
+\frac{\term{H}{H}}{r} = \frac{\term{cs}{c_s}}{\term{vK}{v_K}}
 $$
 <Fragment slot="where"><span data-term="H">H</span> is the vertical scale height, <span data-term="cs">c_s</span> = √(k_BT/μm_H) the isothermal sound speed (μ ≈ 2.34 for molecular gas), and v_K = Ωr the Keplerian orbital speed. A disk is thin because its gas is cold: sound speed ≪ orbital speed.</Fragment>
 </KeyEq>
@@ -112,13 +153,13 @@ Molecular friction between the rings of gas is far too weak to matter. Instead, 
 Molecular viscosity is hopelessly weak: the viscous time $r^2/\nu$ for gas at 1 AU would exceed the age of the universe. Shakura and Sunyaev (1973) sidestepped the unknown physics by writing the effective viscosity as
 
 $$
-\nu = \alpha\, c_s H,
+\term{nu}{\nu} = \term{alpha}{\alpha}\, \term{cs}{c_s} H,
 $$
 
 where $\alpha \lesssim 1$ packages all the turbulence (the magnetorotational instability, disk winds, hydrodynamic instabilities) into one dimensionless number. The viscous timescale is then
 
 $$
-t_\nu = \frac{r^2}{\nu} = \frac{1}{\alpha}\left(\frac{H}{r}\right)^{-2}\frac{1}{\Omega}.
+t_{\term{nu}{\nu}} = \frac{r^2}{\term{nu}{\nu}} = \frac{1}{\term{alpha}{\alpha}}\left(\frac{H}{r}\right)^{-2}\frac{1}{\term{Omega}{\Omega}}.
 $$
 
 </Fragment>
@@ -172,7 +213,7 @@ Planets are built from the bottom up. Dust grains start at about a micron. They 
 <Tiers>
 <Fragment slot="l1">
 
-Here is the key subtlety. The gas is partly held up by its own pressure, so it doesn't need to orbit quite as fast as a free-falling pebble would. The gas lags behind by about 50 m/s, a tiny fraction of the 30 km/s orbital speed. To a pebble moving at the full orbital speed, that feels like a steady **headwind**.
+Here is the key subtlety. The gas is partly held up by its own pressure, so it doesn't need to orbit quite as fast as a free-falling pebble would. The gas lags behind by about 50 m/s (for why gas pressure pushes, see [Appendix A7](/ch/primer-thermo/)), a tiny fraction of the 30 km/s orbital speed. To a pebble moving at the full orbital speed, that feels like a steady **headwind**.
 
 </Fragment>
 <Fragment slot="l3">
@@ -180,7 +221,7 @@ Here is the key subtlety. The gas is partly held up by its own pressure, so it d
 The gas is partly supported by its own pressure, which falls outward. That outward push reduces the effective gravity, so the gas orbits a little slower than the Keplerian speed:
 
 $$
-v_\text{gas} = v_K(1 - \eta), \qquad \eta = -\frac{1}{2}\left(\frac{H}{r}\right)^2\frac{d\ln P}{d\ln r} \approx 2\times10^{-3}.
+v_\text{gas} = \term{vK}{v_K}(1 - \term{eta}{\eta}), \qquad \term{eta}{\eta} = -\frac{1}{2}\left(\frac{H}{r}\right)^2\frac{d\ln P}{d\ln r} \approx 2\times10^{-3}.
 $$
 
 The difference $\eta v_K$ is only about 50 m/s at 1 AU, a gentle breeze in a disk orbiting at 30 km/s. But a solid body is not pressure-supported. It *wants* to orbit at $v_K$, so from its point of view there is a constant 50 m/s headwind.
@@ -202,7 +243,7 @@ The headwind speed is $\eta v_K$, with $\eta \approx 0.002$: about 50 m/s at 1 A
 
 <KeyEq title="Radial drift speed">
 $$
-v_r = \frac{2\,\eta\, v_K}{\text{St} + 1/\text{St}}
+\term{vr}{v_r} = \frac{2\,\term{eta}{\eta}\, \term{vK}{v_K}}{\term{St}{\text{St}} + 1/\term{St}{\text{St}}}
 $$
 <Fragment slot="where">For St ≪ 1 the speed is small and ∝ St (dust rides with the gas); for St ≫ 1 it falls off as 1/St (boulders ignore the gas). The maximum, v_r = ηv_K, is at St = 1, which at 1 AU corresponds to bodies about a metre across.</Fragment>
 </KeyEq>
@@ -213,15 +254,15 @@ $$
 How strongly a grain couples to the gas depends on its **stopping time** $t_s$, the time drag takes to erase its velocity relative to the gas. For grains smaller than the mean free path of gas molecules (about a centimetre at 1 AU in the MMSN, metres further out), molecules bounce off the grain independently. This is the **Epstein regime**, and the drag force is roughly (momentum per collision) × (collision rate), $F \approx \rho_g v_\text{th} s^2 \Delta v$, giving
 
 $$
-t_s = \frac{\rho_s\, s}{\rho_g\, v_\text{th}},
+\term{ts}{t_s} = \frac{\term{rhos}{\rho_s}\, s}{\term{rhog}{\rho_g}\, \term{vth}{v_\text{th}}},
 $$
 
 with $s$ the grain radius, $\rho_s$ its material density and $v_\text{th} = \sqrt{8/\pi}\,c_s$ the mean thermal speed. Bigger bodies, larger than the mean free path, are in the fluid (Stokes) regime, where $t_s$ grows as $s^2$. The number that matters is the stopping time compared with the orbital time:
 
 <KeyEq title="Stokes number and radial drift">
 $$
-\text{St} = \Omega\, t_s, \qquad
-v_r = -\frac{2\,\eta\, v_K}{\text{St} + \text{St}^{-1}}
+\term{St}{\text{St}} = \term{Omega}{\Omega}\, \term{ts}{t_s}, \qquad
+\term{vr}{v_r} = -\frac{2\,\term{eta}{\eta}\, \term{vK}{v_K}}{\term{St}{\text{St}} + \term{St}{\text{St}}^{-1}}
 $$
 <Fragment slot="where">St ≪ 1: the grain is glued to the gas and drifts only slowly. St ≫ 1: the body barely feels the gas and keeps its Keplerian orbit. At St = 1, drag removes angular momentum on exactly one orbital timescale and the inward drift reaches its maximum, v_r = ηv_K. Derived by Weidenschilling (1977) from the steady-state solution of the drag and Coriolis equations.</Fragment>
 </KeyEq>
@@ -288,18 +329,26 @@ Eliminate $v_\text{max}$ and you get the critical impact parameter, and hence th
 </Fragment>
 </Tiers>
 
+<Level min={2} title="The focusing formula">
+
 <KeyEq title="Gravitational focusing">
 $$
-\htmlData{term=sig}{\sigma} = \pi \htmlData{term=R}{R}^2\left(1 + \frac{v_\text{esc}^2}{\htmlData{term=v}{v}^2}\right)
+\term{sig}{\sigma} = \pi \term{R}{R}^2\left(1 + \frac{\term{vesc}{v_\text{esc}}^2}{\term{v}{v}^2}\right)
 $$
 <Fragment slot="where"><span data-term="sig">σ</span> is the effective collision cross-section, <span data-term="R">R</span> the body's physical radius, v_esc = √(2GM/R) its surface escape speed and <span data-term="v">v</span> the approach speed at large distance. The second term is the Safronov focusing factor Θ; it can exceed 1000 when the swarm is dynamically cold.</Fragment>
 </KeyEq>
+
+</Level>
 
 Focusing is what makes planet formation fast. Earth's escape speed is 11 km/s. If the planetesimals around it moved at 1 km/s relative to it, the focusing factor would be about 120.
 
 <Sim name="planet-formation-focusing" minHeight={420}>
 **Gravitational focusing and runaway growth.** Left: planetesimals approach an embryo from the left. The ones that hit are highlighted, and the dashed circle is the focused cross-section. Lower the approach speed and gravity pulls in paths that would have missed by several radii. Right: two embryos, one 50% heavier, grow in the same swarm. When focusing dominates (slow approach), the growth rate scales as $M^{4/3}$ and the heavier one pulls away (runaway growth). Raise the speed above the escape speed and growth becomes orderly: the mass ratio shrinks back toward 1.
 </Sim>
+
+<History title="Safronov's book" year="1969">
+The modern theory of planetesimal growth was written almost single-handedly in Moscow. Victor Safronov, at the Schmidt Institute of the Physics of the Earth, spent the 1950s and 1960s working out how a swarm of solid bodies stirs itself, how gravity focuses collisions (the factor $1 + v_\text{esc}^2/v^2$ is still called the Safronov number), and how long Earth would take to grow. His 1969 book, *Evolution of the Protoplanetary Cloud and Formation of the Earth and the Planets*, was translated by NASA in 1972. It reached American researchers such as George Wetherill, who turned its analytic estimates into the first Monte Carlo and N-body simulations of planet growth. Safronov's one big miss was the timescale for the outer planets: his orderly growth took longer than the age of the solar system at Uranus and Neptune. Runaway growth, discovered in simulations in the late 1980s, and pebble accretion in the 2010s, were both attempts to fix that.
+</History>
 
 ### Runaway, then oligarchic growth
 
@@ -332,7 +381,7 @@ Runaway growth doesn't go on for ever. Each big embryo eventually sweeps up ever
 An oligarch stops growing when it has eaten its feeding zone, an annulus of half-width about $b \approx 10$ Hill radii $R_H = r(M/3M_\star)^{1/3}$. Setting its mass equal to the solids in the zone, $M = 2\pi r \cdot 2 b R_H \cdot \Sigma_\text{solid}/2$, and solving for $M$ gives the **isolation mass**:
 
 $$
-M_\text{iso} = \frac{(2\pi b\, r^2 \Sigma_\text{solid})^{3/2}}{(3M_\star)^{1/2}}.
+\term{Miso}{M_\text{iso}} = \frac{(2\pi b\, r^2 \term{Sigmas}{\Sigma_\text{solid}})^{3/2}}{(3\term{Mstar}{M_\star})^{1/2}}.
 $$
 
 </Fragment>
@@ -434,7 +483,7 @@ The alternative is that a very massive, cold disk simply breaks up under its own
 The alternative is that a massive, cold disk fragments directly, the way a molecular cloud does (see the Jeans analysis in [Chapter 7](/ch/star-formation/)). A rotating disk is stabilised by pressure on small scales and by rotation (shear) on large ones. It fragments when the **Toomre parameter**
 
 $$
-Q = \frac{c_s\,\Omega}{\pi G \Sigma} \lesssim 1
+Q = \frac{\term{cs}{c_s}\,\term{Omega}{\Omega}}{\pi G \term{Sigma}{\Sigma}} \lesssim 1
 $$
 
 and, crucially, when it can cool faster than about one orbital period, so that the fragments do not simply heat up and re-expand. Both conditions hold only in the outer parts (beyond about 50 AU) of unusually massive disks. The fragments come out at several Jupiter masses. **Gravitational instability** is a plausible origin for the rare, massive planets on wide orbits that direct imaging finds, like the four super-Jupiters of HR 8799 at 15–70 AU, but it cannot easily make Jupiter at 5 AU or the far more common Neptunes.
@@ -463,7 +512,7 @@ A planet embedded in the gas raises spiral waves in the disk, and the waves pull
 A planet embedded in a gas disk launches spiral density waves at its Lindblad resonances, and those waves carry angular momentum. The outer wave pulls the planet back (the disk outside orbits more slowly), the inner wave pushes it forward. The two torques almost cancel, but not quite, and the net torque on a low-mass planet usually drives it **inward**. Tanaka et al. (2002) derived the timescale for this **Type I migration**:
 
 $$
-\tau_\text{I} \approx \frac{1}{2.7 + 1.1p}\,\frac{M_\star}{M_p}\,\frac{M_\star}{\Sigma r^2}\left(\frac{H}{r}\right)^2\Omega^{-1},
+\tau_\text{I} \approx \frac{1}{2.7 + 1.1p}\,\frac{\term{Mstar}{M_\star}}{\term{Mp}{M_p}}\,\frac{\term{Mstar}{M_\star}}{\term{Sigma}{\Sigma} r^2}\left(\frac{H}{r}\right)^2\term{Omega}{\Omega}^{-1},
 $$
 
 where $p$ is the power-law index of $\Sigma$. It scales as $1/M_p$: the heavier the planet, the faster it moves. For an Earth-mass planet at 5 AU in the MMSN this is under a million years, and for a 10 M⊕ core about $10^5$ years, well inside the disk lifetime. Taken at face value, every core would fall into its star before becoming a giant. (Corotation torques, which depend on the thermal structure of the disk, can slow or even reverse Type I migration in some regions, creating "planet traps".)
@@ -478,6 +527,10 @@ A planet massive enough to open a gap (roughly Saturn's mass or more, depending 
 </Sim>
 
 ### Hot Jupiters and the Grand Tack
+
+<History title="A planet that should not exist" year="1995">
+In October 1995 Michel Mayor and his student Didier Queloz, of the Geneva Observatory, announced a planet orbiting the Sun-like star 51 Pegasi. They had found it with a new spectrograph, ELODIE, at the Haute-Provence observatory. It had half Jupiter's mass and an orbit of just 4.2 days, twenty times closer to its star than Mercury is to the Sun. Theory said giants could only form beyond the snow line, so many astronomers suspected an error, or stellar pulsations mimicking a planet. Within weeks Geoffrey Marcy and Paul Butler confirmed the signal from Lick Observatory. Planet-formation theorists quickly revived Type I and II migration, which Peter Goldreich, Scott Tremaine and William Ward had worked out around 1980 and which had been largely ignored. Mayor and Queloz shared the 2019 Nobel Prize in Physics.
+</History>
 
 Migration explains **hot Jupiters**, the first exoplanets found (51 Peg b, 1995; see [Chapter 10](/ch/exoplanets/)): gas giants in orbits of a few days, far inside any snow line. They probably formed further out and migrated in through the disk, or were thrown onto eccentric orbits by planet–planet scattering or distant companions and then circularised by tides. The observed spin–orbit misalignments of many hot Jupiters (measured through the Rossiter–McLaughlin effect) suggest that both channels operate.
 
@@ -496,6 +549,14 @@ For most of the 20th century, planet formation theory was built to explain one s
 - **ALMA's HL Tau (2014).** The first high-resolution ALMA image showed a disk around a star less than a million years old, cut by a set of concentric bright rings and dark gaps. It was the long-baseline test image, and it transformed the field overnight.
 - **DSHARP (2018).** The Disk Substructures at High Angular Resolution Project imaged 20 disks at 5 AU resolution. Nearly all show rings and gaps; some show spirals. Rings are just what pressure traps should look like, and the gaps are widely (though not universally) interpreted as the work of unseen planets, from Neptune to Jupiter mass.
 - **PDS 70 (2018–).** The first unambiguous detection of forming planets: two giant planets, PDS 70 b and c, imaged directly inside the gap of a transition disk, glowing in the infrared and in hydrogen-alpha as gas falls onto them. ALMA has even detected a circumplanetary disk around PDS 70 c, where moons may be forming.
+<Photo src="/img/planet-formation/pds70b.jpg" alt="Infrared image with the star masked at centre, a disk arc around it and a bright dot to the right: the planet PDS 70b" credit="ESO/A. Müller et al." license="CC BY 4.0" href="https://www.eso.org/public/images/eso1821a/" size="text" aspect="1 / 1">
+**A planet caught forming.** VLT/SPHERE image of PDS 70b, a giant planet a few times Jupiter's mass, as the bright spot to the right of the masked star. It sits inside the gap it has cleared in its disk, about 22 AU from its star.
+</Photo>
+
+<Photo src="/img/planet-formation/pds70c-disk.jpg" alt="Two ALMA panels: a ring of dust around PDS 70 and a close-up of the faint blob of dust around the planet PDS 70c" credit="ALMA (ESO/NAOJ/NRAO)/Benisty et al." license="CC BY 4.0" href="https://www.eso.org/public/images/eso2111a/" size="wide" aspect="2 / 1">
+**A moon-forming disk.** ALMA's views of PDS 70: the wide ring of dust (left) and a close-up of the compact disk of dust around the planet PDS 70c (right), about as wide as Earth's orbit, where moons may be forming.
+</Photo>
+
 - **JWST (2022–).** Mid-infrared spectra map the chemistry of the inner few AU: water, CO₂, hydrocarbons, and the silicate dust itself. Disks around very low-mass stars turn out to be carbon-rich, while around Sun-like stars water can dominate. JWST has also found water vapour enhanced in compact disks, as expected if icy pebbles drift across the snow line and evaporate there.
 
 <Aside>**Survivorship everywhere.** Kepler and TESS found that the most common planets in the Galaxy are "super-Earths" and "sub-Neptunes", 1–4 Earth radii, orbiting within 1 AU. The solar system has none. Whether they formed in place or migrated inward, and why our system missed out, is a leading question in planet formation today.</Aside>

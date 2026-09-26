@@ -1,0 +1,298 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: big-bang
+lede: "Run the expansion backwards and the universe becomes a plasma, then a soup of nuclei, then a blur of quarks — all of it computable from three ideas: a cooling law, a competition between reaction rates and expansion, and detailed thermodynamics."
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Photo from '../../components/Photo.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  a: ['Scale factor', 'Sets the size of space relative to today (a=1 now). Everything else in this chapter is really a statement about a(t).'],
+  T: ['Temperature', 'Falls as 1/a. Appears in every rate and every equilibrium in this chapter, usually in an exponential — small changes in T can switch a process on or off.'],
+  gstar: ['Effective number of relativistic species', 'Counts how many kinds of particle are carrying energy at temperature T, weighted by spin and statistics. Sets how fast the universe cools for a given energy density.'],
+  t: ['Cosmic time', 'Age of the universe at temperature T. In radiation domination it runs like 1/T².'],
+  Gamma: ['Interaction rate', 'How often a particle scatters or reacts per unit time. Compared directly against H to decide whether a species stays in equilibrium.'],
+  H: ['Hubble rate', 'The expansion rate. Once Γ drops below H, particles cannot react fast enough to keep up with the expansion diluting them, and the species freezes out.'],
+  eta: ['Baryon-to-photon ratio', 'The single number that controls nucleosynthesis: how many photons there are for every baryon. Small η delays deuterium formation; large η lets it happen earlier and hotter.'],
+  Bd: ['Deuterium binding energy', '2.22 MeV. Deuterium cannot survive photodissociation until T drops to a few percent of this, because there are vastly more photons than baryons.'],
+  npratio: ['Neutron-to-proton ratio', 'Frozen in around 1/6 by weak decoupling, then drifts to about 1/7 as free neutrons decay before nucleosynthesis finishes; it sets the final helium fraction almost by itself.'],
+}} />
+
+## Running the film backwards
+
+<Photo src="/img/big-bang/webb-deep-field-smacs0723.jpg" alt="JWST near-infrared deep field of galaxy cluster SMACS 0723, showing thousands of galaxies including lensed arcs" credit="NASA, ESA, CSA, STScI" license="Public domain" href="https://images.nasa.gov/details/webb_first_deep_field" size="wide" aspect="16 / 9">
+**Looking back is looking deep.** Every galaxy in this JWST image is a snapshot from the past — the farthest, most magnified ones (lensed into the orange arcs) as they were less than a billion years after the Big Bang. This chapter runs the film back further still, past the first galaxies, past the first atoms, to the plasma and nuclear reactions of the first minutes.
+</Photo>
+
+[Chapter 25](/ch/expansion/) showed that the universe is expanding: galaxies recede from each other, and the Friedmann equations relate the expansion rate to the energy density. Run that expansion backwards and space shrinks, radiation piles up, and the universe gets hot. This chapter is about what that hot, dense, early universe was actually *doing* — what particles existed, what reactions ran, and which ones left permanent fingerprints we can still measure today.
+
+<Tiers>
+<Fragment slot="l1">
+Here is the whole chapter in one picture. As the universe expands, everything inside it gets stretched and diluted, including light. Stretched light is cooler light (that is <span data-term="T">redshift</span>, from [Chapter 25](/ch/expansion/)), so the universe was *hotter* in the past — dramatically hotter, because the stretching factor has been enormous. Trace the temperature back far enough and it goes higher than the core of any star, higher than the energy released in nuclear bombs, high enough to rip nuclei apart, then atoms, then even protons and neutrons. Reversing 13.8 billion years of cooling in your head is the single most useful skill in cosmology.
+</Fragment>
+<Fragment slot="l2">
+Temperature and the <span data-term="a">scale factor</span> are tied together: <span data-term="T">T</span> ∝ 1/a. That single proportionality, run backwards, takes the universe from 2.7 K today through thousands of kelvin (atoms ionise), millions of kelvin, and up past 10¹³ K (nuclei dissolve into protons and neutrons) in the first fraction of a second. The energy density that early is dominated by radiation — photons and other relativistic particles — not matter, which changes how fast time passes for a given drop in temperature.
+</Fragment>
+<Fragment slot="l3">
+For a relativistic species, $n \propto a^{-3}$ and $E \propto a^{-1}$ (redshift), so the energy density $\rho \propto a^{-4}$: it falls faster than matter's $\rho \propto a^{-3}$ because photons *dilute and redshift*. Blackbody radiation keeps $T \propto 1/a$ exactly, because a redshifted blackbody is still a blackbody at a lower temperature — a fact you will use again for the CMB in [Chapter 27](/ch/cmb/).
+</Fragment>
+</Tiers>
+
+### Radiation domination and the t–T relation
+
+<Level min={2} title="From Friedmann to a clock">
+The first Friedmann equation is $H^2 = \frac{8\pi G}{3}\rho$. In the early universe $\rho$ is almost entirely radiation, and every relativistic species contributes its own blackbody energy density, added up with a bookkeeping factor <span data-term="gstar">g<sub>&#42;</sub></span> (T):
+
+<KeyEq title="Radiation energy density">
+$$
+\rho_{\rm rad} = \term{gstar}{g_*(T)}\,\frac{\pi^2}{30}\term{T}{T}^4
+$$
+<Fragment slot="where">Working in natural units ($\hbar=c=k_B=1$) so T is an energy. <span data-term="gstar">g<sub>&#42;</sub>(T)</span> counts relativistic bosons at weight 1 and fermions at weight 7/8 (their quantum statistics carry less energy per particle at fixed T). Photons alone give g<sub>&#42;</sub>=2; add electrons, positrons and three neutrino flavours below T ~ 1 MeV and g<sub>&#42;</sub> ≈ 10.75.</Fragment>
+</KeyEq>
+
+Substitute into Friedmann's equation and solve for the age of the universe at temperature T (a short exercise in algebra once you accept $H = \dot a/a \propto 1/t$ in radiation domination):
+
+<KeyEq title="The cosmic clock">
+$$
+\term{H}{H(T)} \approx 1.66\,\sqrt{\term{gstar}{g_*}}\,\frac{\term{T}{T}^2}{M_{\rm Pl}}, \qquad \term{t}{t}(T) \approx \frac{1}{2H} \approx \frac{2.4}{\sqrt{g_*}}\left(\frac{T}{1\,{\rm MeV}}\right)^{-2}\ {\rm s}
+$$
+<Fragment slot="where">$M_{\rm Pl} = 1.22\times10^{19}$ GeV is the Planck mass. The numerical form on the right is the single most useful formula in this chapter: it says the universe was 1 second old at T ≈ 1 MeV, and — since t ∝ T⁻² — was already 1 year old by the time T fell to about 1 eV.</Fragment>
+</KeyEq>
+</Level>
+
+<Level max={1}>
+You don't need the algebra to use the result: **the hotter the universe, the younger it was, and the relationship is a strict cooling curve** — double the temperature and the age is four times smaller (T² × t is constant, if g<sub>&#42;</sub> is held fixed). One second after the Big Bang the universe was about as hot as the core of an exploding star; a year later, it had cooled to about the temperature of a light bulb filament, stretched over all of space.
+</Level>
+
+This t–T relation is the ruler this entire chapter is measured with: every event below is easier to place in temperature (which sets the physics) and time (which sets how much of it could happen) than in any other units. (New to logs and orders of magnitude? See [Appendix A1](/ch/primer-numbers/); new to solving an ODE for t(T)? See [Appendix A5](/ch/primer-odes/).)
+
+<Aside>**Why "Big Bang" at all?** The name was coined, half-mockingly, by astronomer Fred Hoyle in a 1949 BBC radio broadcast — he preferred an eternal "steady state" universe and meant it as a jab. The evidence (this chapter's nucleosynthesis yields and the CMB in Chapter 27) sided decisively against him by the late 1960s, but the name stuck.</Aside>
+
+<History title="The hot beginning, on paper before it was seen" year="1948">
+<Portrait src="/img/people/alpher.jpg" name="Ralph Alpher" years="1921–2007" credit="Alpher Papers" license="CC BY-SA 4.0" href="https://commons.wikimedia.org/wiki/File:Ralph_Alpher_(cropped).jpg" />
+
+In 1948, physicist George Gamow and his graduate student Ralph Alpher worked out that a hot, dense early universe should have synthesised the light elements, and — as a joke — added theorist Hans Bethe's name to their paper so the author list read "Alpher, Bethe, Gamow," a pun on the Greek letters α, β, γ. Alpher and physicist Robert Herman went on to predict, correctly, that the afterglow of that hot phase should still be detectable today as microwave radiation at a few kelvin — sixteen years before Penzias and Wilson found it by accident. Alpher spent much of his later career frustrated that the prediction's confirmation in 1965 barely credited the people who made it; he was awarded the National Medal of Science only in 2005, two years before his death.
+</History>
+
+## Freeze-out: the rule that runs the whole chapter
+
+Every particle species in the early universe is trying to do one of two things: stay in thermal equilibrium with everything else via reactions, or get carried away by the expansion faster than reactions can keep up. Which one wins is decided by comparing two rates.
+
+<Tiers>
+<Fragment slot="l1">
+Think of a crowded party where people are constantly meeting and swapping gossip (staying "in sync"). If the party thins out fast enough, people stop bumping into each other before the gossip finishes spreading, and different groups end up believing different things — frozen with whatever information they had at the moment they stopped mixing. The universe's expansion is the thinning-out; particle reactions are the gossip.
+</Fragment>
+<Fragment slot="l2">
+Compare the <span data-term="Gamma">reaction rate</span> Γ (reactions per particle per second) to the <span data-term="H">expansion rate</span> H (which sets how fast the universe dilutes and cools). While Γ ≫ H, reactions run faster than the universe changes, and the species tracks equilibrium. Once Γ drops below H, reactions become too slow to matter, and the species' abundance (or its distribution) *freezes* at whatever value it had.
+</Fragment>
+<Fragment slot="l3">
+Formally, a Boltzmann equation for a comoving number density $n a^3$ has a collision term proportional to $\Gamma = n\langle\sigma v\rangle$ competing against the Hubble drag from the $\partial(na^3)/\partial t$ term. Freeze-out is the temperature $T_f$ where $\Gamma(T_f) \sim H(T_f)$; because $\Gamma$ typically falls faster with T than H does, this crossing is usually sharp rather than gradual, which is why "freeze-out" is a good approximation to a smooth process.
+</Fragment>
+</Tiers>
+
+<KeyEq title="The freeze-out condition">
+$$
+\term{Gamma}{\Gamma(T_f)} \sim \term{H}{H(T_f)}
+$$
+<Fragment slot="where">Solve this for $T_f$ and you have, in one line, when a species stops talking to the rest of the plasma. Every frozen relic in this chapter — the neutron-to-proton ratio, the cosmic neutrino background, dark matter in other chapters — comes from exactly this comparison.</Fragment>
+</KeyEq>
+
+<Predict question="If you could magically increase the weak interaction's cross-section (make neutrons and protons interconvert more easily), would neutrons freeze out at a higher or lower temperature?" choices={['Higher temperature', 'Lower temperature', 'No change']} answer={0}>
+A larger cross-section means a larger Γ at every temperature, so the crossing Γ(T)=H(T) happens while H is still larger — i.e. earlier, at higher T. Try it in the slider below: cranking up the cross-section pushes freeze-out to higher T, and because the n/p equilibrium ratio $e^{-\Delta m/T}$ is closer to 1 at higher T, more neutrons survive and you get *more* helium in the end.
+</Predict>
+
+<Sim name="big-bang-freezeout" minHeight={420}>
+**Left: Γ vs H.** The weak interaction rate that interconverts neutrons and protons falls steeply with temperature (Γ ∝ T⁵); the Hubble rate falls more gently (H ∝ T²). Where they cross is freeze-out. Drag the cross-section slider and watch the crossing point — and the final n/p ratio on the right — move. **Right:** the equilibrium n/p ratio (dashed) versus what actually happens: freeze-out locks in a value near 1/6, and free neutron decay (mean life 880 s) then pulls it down towards 1/7 by the time nucleosynthesis gets going.
+</Sim>
+
+<Level min={3} title="Where the T⁵ scaling comes from">
+The weak rate for $n \leftrightarrow p$ conversion involves a phase-space integral over the Fermi four-point interaction, $\Gamma \sim G_F^2 T^5$ (dimensional analysis: $G_F$ has units of (energy)⁻², so $G_F^2$ times something with units (energy)⁵ gives a rate). Comparing to $H \propto T^2$, the ratio $\Gamma/H \propto G_F^2 M_{\rm Pl}\, T^3$ falls with T, guaranteeing freeze-out happens at some finite T rather than never or always — a recurring feature of weak-interaction freeze-outs throughout cosmology.
+</Level>
+
+### Counting degrees of freedom: g<sub>&#42;</sub>
+
+<span data-term="gstar">g<sub>&#42;</sub>(T)</span> is not just bookkeeping — it is the thermometer's calibration. Every time a species' rest mass drops below the ambient T (so it becomes non-relativistic and annihilates or decays) or a species decouples, g<sub>&#42;</sub> changes, and so does the relationship between T and t. In the standard model, g<sub>&#42;</sub> ≈ 10.75 for T from a few MeV down to about 0.5 MeV (photons, e⁺e⁻, three neutrino flavours), dropping to 3.36 once electrons and positrons have annihilated. At much higher energies (T ≳ 100 GeV, before this chapter's story starts in earnest) g<sub>&#42;</sub> approaches 106.75 in the Standard Model, counting every quark, lepton, gauge boson and the Higgs.
+
+<Aside>**N<sub>eff</sub>.** The precise number of "effective" neutrino species, N<sub>eff</sub> = 3.046 in the Standard Model, is slightly more than 3 because neutrinos are not *quite* fully decoupled during e⁺e⁻ annihilation and pick up a small extra heating. Any new light particle — a fourth neutrino flavour, a light dark sector — would push N<sub>eff</sub> up, which is why CMB and BBN measurements of N<sub>eff</sub> are among the tightest constraints on physics beyond the Standard Model.</Aside>
+
+## A timeline of the hot universe
+
+<Sim name="big-bang-timeline" size="full" minHeight={340}>
+**The whole thermal history, log time.** Scroll or drag to zoom from the Planck time to today; hover an event for its temperature. Notice how much happens in the first microsecond compared with how little (in log terms) happens between recombination and today.
+</Sim>
+
+<Tiers>
+<Fragment slot="l1">
+Reading left to right: an unimaginably brief burst of extra-fast expansion called inflation; then, one by one, the forces of nature "split apart" from a single unified force as the universe cools; quarks lock together into protons and neutrons; light nuclei form; atoms form; and finally, hundreds of millions of years later, the first stars switch on and re-ionise the gas around them.
+</Fragment>
+<Fragment slot="l3">
+Each transition is a symmetry-breaking or a freeze-out at a temperature set by a mass scale: the electroweak scale (~100 GeV) for W/Z boson masses turning on, the QCD scale (~150 MeV) for confinement of quarks into hadrons, the electron mass and $\Delta m_{np}$ for the weak and nuclear physics in this chapter, and the hydrogen binding energy (13.6 eV, suppressed by the huge photon-to-baryon ratio down to ~0.3 eV, see below) for recombination.
+</Fragment>
+</Tiers>
+
+### Inflation, in one paragraph
+
+<Level min={2} title="Why we think something like inflation happened">
+Two puzzles motivate inflation. The **horizon problem**: regions of the CMB sky separated by more than about 2° were never in causal contact in a universe that only ever expanded at the rate we see today — yet they have almost identical temperatures. The **flatness problem**: the universe's density is close to the critical density today, but that is an unstable equilibrium (any deviation grows with time), so it must have been tuned to nearly exactly 1 part in 10⁶⁰ soon after the Planck time unless something drove it there. A brief period of exponential expansion, $a \propto e^{Ht}$, stretches any initial region to enormous size — solving both: everything we see was once in causal contact, and any curvature is diluted to negligible size, exactly as a balloon's surface looks flatter the more you inflate it.
+</Level>
+<Level max={1}>
+Cosmologists suspect the universe went through an extremely short burst of runaway expansion, ballooning by a factor of at least 10²⁶ in a tiny fraction of a second. That single episode would explain two odd coincidences: why the sky looks the same temperature everywhere, and why space is so close to perfectly flat.
+</Level>
+
+<Aside>Inflation is well-motivated but not yet directly confirmed; if it happened, it also stretched quantum fluctuations into the seeds of all structure — the subject of [Chapter 28](/ch/structure/).</Aside>
+
+### From quark soup to the cosmic neutrino background
+
+By T ~ 150 MeV, about 10 microseconds in, the **QCD transition** confines quarks and gluons into individual protons and neutrons — the last time nuclear matter itself changes phase. <span data-term="Gamma">Weak reactions</span> then keep neutrons and protons interconverting until the freeze-out described above, around T ≈ 0.8 MeV, t ≈ 1 second: this is **neutrino decoupling** too, since the same weak processes that interconvert n and p also keep neutrinos coupled to the plasma. From here on neutrinos free-stream, forming the **cosmic neutrino background (CνB)** — the neutrino analogue of the CMB, never yet directly detected because MeV-era neutrinos have redshifted to sub-meV energies today.
+
+<Level min={2} title="Why the neutrino background is colder than the photon background">
+Shortly after decoupling, at T ~ 0.5 MeV, electrons and positrons become non-relativistic and annihilate, $e^+ + e^- \to 2\gamma$, dumping their entropy into the photon bath — but *not* into neutrinos, which had already decoupled. Entropy conservation in the photon-electron-positron plasma alone gives:
+
+<KeyEq title="Neutrino temperature after e⁺e⁻ annihilation">
+$$
+\frac{T_\nu}{T_\gamma} = \left(\frac{4}{11}\right)^{1/3}
+$$
+<Fragment slot="where">A short entropy-conservation argument ($g_*^{\rm before} T_{\rm before}^3 = g_*^{\rm after} T_{\rm after}^3$ for the photon-lepton plasma) gives this factor. With $T_{\gamma,0}=2.725$ K today, the CνB should sit at $T_\nu = (4/11)^{1/3}\times2.725\,{\rm K} \approx 1.95$ K — colder than the CMB, and (so far) unobserved directly, though its gravitational imprint on the CMB and on structure has been measured.</Fragment>
+</KeyEq>
+</Level>
+
+## Big Bang Nucleosynthesis
+
+Between about 3 and 20 minutes (T falling from roughly 0.1 MeV to 0.03 MeV), free protons and neutrons assemble into the universe's first nuclei heavier than hydrogen. This is the best-tested prediction of hot Big Bang cosmology: it fixes numbers — the primordial helium fraction, the deuterium abundance — that we can still measure today in pristine, unprocessed gas.
+
+### The deuterium bottleneck
+
+<Tiers>
+<Fragment slot="l1">
+You might expect nucleosynthesis to start the instant the universe is cool enough for deuterium (a bound proton-neutron pair) to be stable — around 2.2 MeV worth of binding energy, corresponding to a temperature of tens of billions of kelvin. It doesn't. There are more than a *billion* photons for every baryon, and even after the typical photon energy drops well below deuterium's binding energy, the extreme numbers in the high-energy tail of the photon spectrum keep blasting newborn deuterium apart. Nucleosynthesis has to wait for the temperature to fall much further, until even that tail is too weak. This delay is the **deuterium bottleneck**, and every heavier nucleus is built from deuterium, so nothing else can happen until it breaks.
+</Fragment>
+<Fragment slot="l3">
+The Saha equation for $n + p \leftrightarrow D + \gamma$ in equilibrium gives $n_D/(n_n n_p) \propto \exp(\term{Bd}{B_D}/T)$ times a phase-space prefactor. Multiplying by $n_b = \term{eta}{\eta}\, n_\gamma$ to convert to abundances $Y_i \equiv n_i/n_b$, the equilibrium deuterium fraction only becomes order unity once $\exp(B_D/T)$ has grown enough to beat the huge suppression from $\eta \sim 6\times10^{-10}$ — i.e. at $T_{\rm nuc}$ well below $B_D$ itself. This is a recurring pattern in cosmology (recombination has the same structure, and is discussed below): **a large number-density ratio, not a naive comparison of energy to temperature, sets the transition point.**
+</Fragment>
+</Tiers>
+
+<Fermi title="Estimating the bottleneck temperature">
+Roughly, the bottleneck breaks once $\eta\, e^{B_D/T} \sim 1$ (up to an $O(1)$ phase-space prefactor absorbed here for a back-of-envelope estimate), i.e. $T_{\rm nuc} \approx B_D / \ln(1/\eta)$.
+
+With $B_D = 2.22$ MeV and $\eta \approx 6\times10^{-10}$: $\ln(1/\eta) \approx \ln(1.7\times10^9) \approx 21.2$, so
+
+$$T_{\rm nuc} \approx \frac{2.22\ \text{MeV}}{21.2} \approx 0.10\ \text{MeV} \approx 1.2\times10^9\,\text{K}.$$
+
+That is within a factor of ~1.5 of the more careful network result below (T ≈ 0.07–0.08 MeV) — good enough for a two-line estimate, and it correctly captures *why* nucleosynthesis waits until T is a tenth of the binding energy rather than comparable to it.
+</Fermi>
+
+### The flagship: a live reaction network
+
+<Predict question="If the baryon-to-photon ratio η were ten times larger (more baryons per photon), would the deuterium bottleneck break earlier or later, and would you expect more or less deuterium left over today?" choices={['Earlier; more leftover D', 'Earlier; less leftover D', 'Later; more leftover D']} answer={1}>
+More baryons per photon means the equilibrium deuterium fraction reaches order unity at a *higher* temperature (less suppression to overcome), so the bottleneck breaks earlier. And because reactions run faster (higher density, and more time is left before the universe dilutes further), deuterium gets burned to helium more completely, leaving *less* D/H behind — the opposite of the naive guess. This anti-correlation between η and residual deuterium is precisely what makes D/H such a sensitive baryometer.
+</Predict>
+
+<Sim name="big-bang-bbn" size="wide" minHeight={480}>
+**A reduced BBN network, integrated live.** Left: abundances $Y_i = n_i/n_{\rm baryon}$ for n, p, D, T, ³He, ⁴He and ⁷Li vs time, on log–log axes, as a stiff implicit solver steps through t = 0.01 s to 30 minutes. Watch neutron freeze-out, the deuterium bottleneck breaking, and helium assembling almost instantaneously once it does. Right: the same network re-run on a grid of η values (computed progressively in the background) — the classic **Schramm plot**. Drag **η** to find the value where deuterium, helium and lithium all land in their observed ranges at once; drag **N<sub>eff</sub>** to see how an extra relativistic species speeds the clock and raises the helium yield.
+</Sim>
+
+<Aside>**Reading the Schramm plot.** Historically this plot ran the other way: astronomers measured D/H, ³He/H, ⁴He and ⁷Li/H in real gas and stars, then read off the *single* η consistent with all four simultaneously. That consistency, across four wildly different nuclei and abundances spanning nine orders of magnitude, is one of the strongest pieces of evidence for the entire hot Big Bang picture.</Aside>
+
+A reader with <Var name="eta10" value={6.1} min={1} max={90} log /> ×10⁻¹⁰ for η gets an approximate primordial helium mass fraction of <Out name="Yp" /> and D/H of <Out name="DH" /> (quick fits for the prose; the sim above solves the real network). Compare: Planck 2018's CMB-derived baryon density independently implies η ≈ 6.1×10⁻¹⁰ — right where the Schramm plot puts it from nuclear abundances alone, a triumph of two completely different pieces of physics agreeing.
+
+<Hood title="a stiff implicit reaction-network solver">
+The rates in this network span *many* orders of magnitude — the weak rate falls by five powers of T while the universe's clock only runs by two, and the deuterium formation/photodissociation pair swings from balanced (equilibrium) to wildly one-sided (net formation) within a small change in T. An explicit method (forward Euler, or even RK4) forces the step size down to resolve the *fastest* rate in the system, which can be many orders of magnitude smaller than the timescale you actually care about — the network is **stiff**.
+
+The fix is an implicit method. **Backward Euler** solves for $Y_{n+1}$ satisfying $Y_{n+1} = Y_n + h\,f(Y_{n+1}, T_{n+1})$ — the derivative is evaluated at the *new* state, not the old one, so however fast a rate is, it can only pull the solution towards its own equilibrium, never overshoot it into instability. Because $f$ is nonlinear (every reaction rate here is bilinear in two abundances), each step needs a **Newton iteration**: linearise the residual $F(Y) = Y - Y_n - hf(Y)$ around the current guess, solve the resulting linear system for the correction, and repeat until $F$ is tiny.
+
+```ts
+// one backward-Euler step: solve F(Y) = Y - Y0 - h f(Y, T) = 0 by Newton's method
+for (let iter = 0; iter < 25; iter++) {
+  rhs(Ynew, T, params, f);                     // evaluate f at the current guess
+  for (let i = 0; i < NS; i++) F[i] = Ynew[i] - Y0[i] - h * f[i];
+  if (maxAbs(F) < 1e-16) break;
+  const J = numericalJacobian(Ynew, T, params, h, F);   // finite-difference dF/dY
+  const delta = solveLinear(J, F);              // Gaussian elimination, NS×NS
+  for (let i = 0; i < NS; i++) Ynew[i] -= step * delta[i];  // damped update, clamps at 0
+}
+```
+
+The Jacobian here is computed by finite differences rather than symbolically — with only seven species that costs seven extra rate evaluations per Newton iteration, cheap enough to redo every step, and it saves hand-deriving (and maintaining) 49 partial derivatives for a network that might grow. **Steps are spaced evenly in log t**, not t, because the interesting physics — freeze-out, the bottleneck, helium formation — happens across decades of time, and a log grid puts resolution where the action is without wasting steps on the long quiet stretches. **Baryon number is conserved automatically**: every reaction in `rhs()` removes exactly as many nucleons from the reactants as it adds to the products, so summing $A_i Y_i$ over all species is a very cheap correctness check (and a good one to run after changing a rate). (New to implicit methods or Newton's method for nonlinear systems? See [Appendix A5](/ch/primer-odes/).)
+
+The rate coefficients themselves are **approximate analytic fits** — order-of-magnitude-correct thermally averaged cross-sections, not the output of a precision reaction-rate compilation (real BBN codes such as PArthENoPE or AlterBBN use dozens of measured rates with careful temperature dependence and error budgets). The qualitative story — freeze-out near 1/6, the bottleneck breaking around T ~ 0.07–0.09 MeV, a final helium mass fraction near 25% — comes out right, and the η-dependence needed to find the concordance value is preserved, but do not read off a sixth significant figure.
+</Hood>
+
+### What actually forms, and how much
+
+<Photo src="/img/big-bang/ngc6535-globular-cluster.jpg" alt="Hubble Space Telescope image of the globular cluster NGC 6535, a dense ball of old, faint stars" credit="NASA, ESA/Hubble" license="Public domain" href="https://images.nasa.gov/details/GSFC_20171208_Archive_e000846" size="wide" aspect="4 / 3">
+**Ancient and metal-poor.** NGC 6535 is a globular cluster of stars roughly as old as the universe allows, formed before galaxies had processed much gas through generations of stellar fusion. Their spectra are close to the cleanest surviving samples of primordial abundances — the numbers this section predicts.
+</Photo>
+
+Almost all surviving neutrons — whatever the weak freeze-out and subsequent decay left, about one for every seven protons — end up bound inside helium-4, because ⁴He's binding energy per nucleon is far higher than D, T or ³He, so once the bottleneck breaks, the reaction chain runs downhill to ⁴He almost completely and almost immediately.
+
+<Level min={2} title="From n/p to Y_p in one line">
+If essentially every available neutron ends up in ⁴He (2 neutrons and 2 protons per nucleus), the helium-4 **mass fraction** is
+$$
+Y_p \approx \frac{2\,(n/p)}{1+n/p}.
+$$
+Put in $n/p \approx 1/7$ (freeze-out at 1/6, then some neutron decay before nucleosynthesis) and you get $Y_p \approx 2(1/7)/(8/7) = 1/4 = 25\%$ — remarkably close to the observed 24.7% ± 0.1%, essentially without touching the *nuclear* rates at all. The mass fraction is dominated by the *weak* physics that set n/p, not by the details of the nuclear network.
+</Level>
+
+Everything that is *not* helium is a rounding error by mass, but those roundings are precisely what makes BBN such a sharp probe of η:
+
+- **Deuterium (D/H ≈ 2.5×10⁻⁵):** the small residue left when the bottleneck broke before every last deuteron could be burned to helium. Falls steeply with η — more baryons means more efficient burning — which makes D/H the most sensitive "baryometer" of the four light elements, especially valuable because essentially no astrophysical process *creates* deuterium (unlike helium and lithium, which stars can also make), so any D you find is primordial.
+- **Helium-3 and tritium (³He/H ≈ 10⁻⁵, T decays to ³He):** intermediate steps in the chain to ⁴He that don't quite all get consumed.
+- **Lithium-7 (⁷Li/H ≈ 10⁻¹⁰):** made in a slow radiative-capture tail (T + ⁴He and ³He + ⁴He, the latter via beryllium-7, which later captures an electron). This is where BBN has its one real tension with observation — the **lithium problem**: the standard-model prediction is about three times *higher* than what is measured in old, metal-poor stars, and no fully convincing resolution (nuclear, astrophysical or new physics) has stuck.
+- **Nothing at mass 5 or 8:** there are no stable nuclei with A = 5 or A = 8 (⁵He, ⁵Li, ⁸Be all decay in $10^{-16}$–$10^{-22}$ s), which is why the chain has to detour through ⁷Li/⁷Be rather than building up smoothly, and why BBN essentially stops at helium — heavier elements have to wait for stars ([Chapter 12](/ch/fusion/)) and supernovae ([Chapter 16](/ch/stellar-death/)).
+
+<Aside>The **deuterium route to η** and the **CMB route to η** ([Chapter 27](/ch/cmb/), from the relative heights of the acoustic peaks) use completely independent physics — three minutes after the Big Bang versus 380,000 years after — and agree to within a few percent. That agreement is one of cosmology's most important consistency checks.</Aside>
+
+## Recombination: the other Saha transition
+
+Roughly 380,000 years later (T falling all the way to about 3000 K), free electrons and protons combine into neutral hydrogen — **recombination** — and photons stop scattering off free electrons, streaming freely from then on as the light we see today as the CMB ([Chapter 27](/ch/cmb/)).
+
+<Tiers>
+<Fragment slot="l1">
+Hydrogen's binding energy corresponds to a temperature of about 158,000 K, so you might expect atoms to form as soon as the universe cools below that. They don't, for exactly the same reason deuterium was delayed: there are more than a billion photons for every proton, and the rare, ultra-energetic photons in the tail of the blackbody spectrum keep re-ionising any atom that dares to form, all the way down to about 3000 K — roughly a factor of 50 below the naive guess.
+</Fragment>
+<Fragment slot="l3">
+This is the Saha equation again — the same mathematical structure used for the deuterium bottleneck above and introduced for stellar spectra in [Chapter 5](/ch/spectra/) — now applied to $p + e^- \leftrightarrow H + \gamma$ with binding energy 13.6 eV instead of deuterium's 2.22 MeV. The ionisation fraction $x_e$ solves $x_e^2/(1-x_e) = S(T)/n_b$ with $S(T) \propto (m_e T)^{3/2}e^{-13.6\,{\rm eV}/T}$, and because $n_b/n_\gamma = \term{eta}{\eta} \sim 6\times10^{-10}$, the crossing $x_e=1/2$ lands at $T \approx 0.26$ eV ≈ 3000 K rather than at 13.6 eV.
+</Fragment>
+</Tiers>
+
+<Sim name="big-bang-saha" minHeight={380}>
+**Ionisation fraction vs redshift.** The solid curve uses the real baryon-to-photon ratio η ≈ 6×10⁻¹⁰; the dashed curve shows the hypothetical η = 1 case (one photon per baryon) for comparison. With fewer photons per baryon, recombination would happen much *closer* to the naive 13.6 eV/k<sub>B</sub> ≈ 158,000 K guess — drag η down and watch the crossing point march upward in temperature.
+</Sim>
+
+<Aside>Because recombination and last scattering happen at almost, but not exactly, the same time, [Chapter 27](/ch/cmb/) treats them as a single "surface of last scattering" with a finite thickness — the CMB is not an instantaneous snapshot but a thin shell in time.</Aside>
+
+<History title="The equation before the universe needed it" year="1920">
+<Portrait src="/img/people/saha.jpg" name="Meghnad Saha" years="1893–1956" credit="Unknown author" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Dr-Meghnad-Saha_(cropped).jpg" />
+
+Meghnad Saha derived his ionisation equation in 1920 to explain the puzzling pattern of absorption lines across stellar spectral classes — not with cosmology in mind at all, since the expanding universe itself was not established until Hubble's work a decade later. Saha, working in Calcutta with limited resources and largely outside the era's major physics centres, showed that a star's *temperature*, not its composition, mostly explains why some stars show strong ionised-metal lines and others show neutral hydrogen — the key that let Cecilia Payne (and, building on her, Annie Jump Cannon) sort the OBAFGKM sequence correctly ([Chapter 5](/ch/spectra/)). It took another generation before the same equation was pointed at the infant universe to work out when it, too, turned neutral.
+</History>
+
+## Baryogenesis: an open problem
+
+Everything above assumes there *were* leftover baryons to do nucleosynthesis with — but the Standard Model, run forward from a symmetric hot beginning, predicts equal numbers of matter and antimatter, which should have annihilated to almost nothing. Yet $\eta \sim 6\times10^{-10}$: about one baryon survives for every two billion photons, and (as far as every experiment has found) essentially *no* leftover antimatter. Explaining that asymmetry is called **baryogenesis**, and physicist Andrei Sakharov laid out in 1967 the three conditions any successful mechanism must satisfy:
+
+<KeyEq title="Sakharov conditions (1967)">
+$$
+\text{(1) baryon-number violation} \quad \text{(2) C and CP violation} \quad \text{(3) departure from thermal equilibrium}
+$$
+<Fragment slot="where">All three are necessary: without (1) baryon number is fixed at zero forever; without (2) any baryon-number-violating process makes equal matter and antimatter; without (3), CPT symmetry alone forces the equilibrium baryon density to vanish regardless of the other two. The Standard Model technically satisfies all three (via electroweak sphalerons and the CKM matrix's CP violation) but by far too little to explain the observed η — making this one of the strongest pieces of evidence that physics beyond the Standard Model exists.</Fragment>
+</KeyEq>
+
+No confirmed mechanism exists yet; leptogenesis (via heavy right-handed neutrinos), electroweak baryogenesis with new particles, and Affleck–Dine mechanisms in supersymmetric theories are all live candidates, distinguished mainly by which future experiment (neutrino mass measurements, colliders, or gravitational-wave signatures of a first-order electroweak phase transition) might catch them out.
+
+## Where we go from here
+
+Run forward again: baryogenesis (however it happened) sets η once and for all; the freeze-out machinery of this chapter fixes the neutron-to-proton ratio and then the light-element abundances; recombination lets photons stream freely, carrying an almost-perfect snapshot of the universe at 380,000 years. That snapshot — its temperature, its tiny anisotropies, the acoustic pattern imprinted by sound waves in the pre-recombination plasma — is the Cosmic Microwave Background, and it is precise enough to pin down η, the expansion history and the geometry of the universe all at once. That is [Chapter 27](/ch/cmb/).

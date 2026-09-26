@@ -15,6 +15,31 @@ import Out from '../../components/Out.astro';
 import Tiers from '../../components/Tiers.astro';
 import Level from '../../components/Level.astro';
 import Photo from '../../components/Photo.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  M: ['Lens mass', 'The mass doing the bending. The deflection is directly proportional to it, but the Einstein radius grows only as its square root.'],
+  b: ['Impact parameter', 'How close the ray passes to the mass. In the denominator: rays passing twice as far out are bent half as much.'],
+  alphahat: ['Bending angle', 'The actual angle by which the ray is turned at the lens, in radians. Tiny: 1.75 arcseconds even for a ray grazing the Sun.'],
+  alpha: ['Scaled deflection', 'The bending angle times D_LS/D_S: how far the bend shifts the ray as seen from Earth. Only the fraction of the trip after the lens counts.'],
+  beta: ['True source position', 'Where the source would appear with no lens, measured from the lens direction. Moving the source changes how many images form.'],
+  theta: ['Image position', 'Where we actually see light arrive on the sky. Every solution θ of the lens equation is a separate image.'],
+  thetaE: ['Einstein radius', 'The radius of the ring seen for perfect alignment: the natural ruler of lensing. Images and magnification all scale with it.'],
+  DL: ['Distance to the lens', 'Angular-diameter distance from us to the lens. A nearer lens gives a larger Einstein radius.'],
+  DS: ['Distance to the source', 'Angular-diameter distance from us to the source.'],
+  DLS: ['Lens-to-source distance', 'Angular-diameter distance from the lens to the source. If the source is just behind the lens, this is small and there is almost no lensing: the bent ray has no room to separate.'],
+  Rs: ['Schwarzschild radius', 'The event-horizon radius 2GM/c² of the lens mass (about 3 km for the Sun). The bend is twice R_s divided by b.'],
+  u: ['Source offset in Einstein radii', 'β/θ_E. Everything about a point lens depends only on this ratio; u below 1 means strong brightening.'],
+  mu: ['Magnification', 'Image area divided by source area (surface brightness is conserved). Negative values mean mirror-flipped images.'],
+  kappa: ['Convergence', 'Projected mass density in units of the critical density. It magnifies evenly in all directions; κ near 1 or more can make multiple images.'],
+  gamma: ['Shear', 'The stretching part of lensing: pulls images out along one axis and squeezes the other. Produced by mass inside and outside the beam.'],
+  Sigma: ['Surface mass density', 'Mass per unit area of the lens, projected along the line of sight.'],
+  Sigmacr: ['Critical surface density', 'The density that makes κ = 1. It depends only on the distances; about 2000 M☉ per square parsec for typical galaxy lenses.'],
+  sigmav: ['Velocity dispersion', 'The spread of stellar speeds in the lens galaxy, a proxy for its mass. It enters squared: a galaxy with twice the dispersion bends light four times as much.'],
+  psi: ['Lensing potential', 'A 2D "height map" whose slope is the deflection and whose curvature is the convergence and shear. It also sets the Shapiro time delay.'],
+}} />
 
 ## Light falls too
 
@@ -39,7 +64,7 @@ General relativity doubles it, because gravity curves space as well as time, and
 
 <KeyEq title="Deflection of light by a point mass">
 $$
-\hat\alpha = \frac{4\,G\,\htmlData{term=M}{M}}{c^2\,\htmlData{term=b}{b}}
+\term{alphahat}{\hat\alpha} = \frac{4\,\term{G}{G}\,\term{M}{M}}{\term{c}{c}^2\,\term{b}{b}}
 $$
 <Fragment slot="where">$\hat\alpha$ is the bending angle in radians, <span data-term="M">$M$</span> the lensing mass and <span data-term="b">$b$</span> the closest-approach distance of the ray (in metres). Valid when the angle is small.</Fragment>
 </KeyEq>
@@ -48,7 +73,7 @@ For a ray grazing the Sun, $M = 2\times10^{30}$ kg and $b = 7\times10^8$ m, so $
 </Fragment>
 <Fragment slot="l3">
 
-Start with a naive Newtonian calculation. Treat a photon as a fast particle with speed $c$ passing a mass $M$ with impact parameter $b$. If the path is barely bent, you can integrate the transverse acceleration along the straight, unperturbed line (the *Born approximation*, borrowed from scattering theory):
+Start with a naive Newtonian calculation. Treat a photon as a fast particle with speed $c$ passing a mass $M$ with impact parameter $b$. If the path is barely bent, you can integrate the transverse acceleration along the straight, unperturbed line (the *Born approximation*, borrowed from scattering theory; new to integrals? see [Appendix A4](/ch/primer-calculus/)):
 
 $$
 \Delta v_\perp = \int_{-\infty}^{\infty} \frac{GM\,b}{(b^2 + x^2)^{3/2}}\,\frac{dx}{c} = \frac{2GM}{bc},
@@ -62,7 +87,7 @@ General relativity doubles it. In the weak-field metric around a mass, both time
 
 <KeyEq title="Deflection of light by a point mass">
 $$
-\hat\alpha = \frac{4\,G\,\htmlData{term=M}{M}}{c^2\,\htmlData{term=b}{b}} = \frac{2 R_s}{b}
+\term{alphahat}{\hat\alpha} = \frac{4\,\term{G}{G}\,\term{M}{M}}{\term{c}{c}^2\,\term{b}{b}} = \frac{2 \term{Rs}{R_s}}{\term{b}{b}}
 $$
 <Fragment slot="where">$\hat\alpha$ is the bending angle in radians, <span data-term="M">$M$</span> the lensing mass and <span data-term="b">$b$</span> the impact parameter of the ray (its closest approach, in metres). $R_s = 2GM/c^2$ is the Schwarzschild radius (see [Chapter 19](/ch/black-holes/)). Valid when $b \gg R_s$, i.e. $\hat\alpha \ll 1$.</Fragment>
 </KeyEq>
@@ -72,7 +97,17 @@ For a ray grazing the Sun, $b = R_\odot = 6.96\times10^8$ m and $R_s = 2.95$ km,
 </Tiers>
 
 
-<Aside>**Eddington, 1919.** Expeditions to Príncipe and Sobral photographed stars near the Sun during the total eclipse of 29 May 1919 and found deflections consistent with 1.75″. The error bars were large and the analysis has been argued over ever since, but modern radio interferometry of quasars passing near the Sun confirms the GR value to about 1 part in 10⁴. The *Gaia* satellite has to correct for light bending by the Sun and even by Jupiter for every star it measures.</Aside>
+<History title="Soldner's half, Einstein's whole" year="1801–1915">
+<Portrait src="/img/people/einstein.jpg" name="Albert Einstein" years="1879–1955" credit="Ferdinand Schmutzer, 1921" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Einstein_1921_by_F_Schmutzer_-_restoration.jpg" />
+
+In 1801 the Bavarian astronomer Johann Georg von Soldner asked whether starlight passing the Sun would be bent by gravity if light were made of Newtonian corpuscles. He got 0.84″, concluded that it was too small to matter, and the paper was forgotten. In 1911 Einstein, using only the equivalence principle, derived the *same* Newtonian value, and astronomers began planning eclipse expeditions to test it. War and cloudy skies foiled them, which was lucky for Einstein: in November 1915, with the full field equations in hand, he realised that the curvature of space doubles the effect, to 1.75″. Had the 1914 Crimean expedition not been interned at the outbreak of war, it might have "confirmed" the wrong number, or refuted it.
+</History>
+
+<History title="The eclipse that made Einstein famous" year="1919">
+<Portrait src="/img/people/eddington.jpg" name="Arthur Stanley Eddington" years="1882–1944" credit="George Grantham Bain Collection, Library of Congress" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Arthur_Stanley_Eddington.jpg" />
+
+Arthur Eddington, a Quaker and conscientious objector, was spared wartime service partly so that he could lead the test. Two teams photographed the Hyades stars around the eclipsed Sun on 29 May 1919: Eddington and Cottingham on the island of Príncipe, Crommelin and Davidson at Sobral in Brazil. Príncipe was clouded until the last minutes and yielded only a couple of usable plates; Sobral's main telescope suffered from a focus shift in the heat. The published result favoured Einstein's 1.75″ over Newton's 0.87″, and the announcement at the Royal Society in November made Einstein an overnight celebrity. Critics have long accused Eddington of cherry-picking plates; a 1979 remeasurement of the Sobral plates and modern reanalyses broadly vindicate his choices, but the error bars were large. Today radio interferometry of quasars near the Sun confirms the GR value to about 1 part in 10⁴, and the *Gaia* satellite corrects every star it measures for bending by the Sun and even by Jupiter.
+</History>
 
 Because the equations are linear in the weak field, deflections from different pieces of mass simply add. For an extended lens you sum $4G\,dm/(c^2 b)$ vectors over every mass element. That additivity is what makes lensing tractable.
 
@@ -85,13 +120,13 @@ Think of three places lined up: us, the lens (a star, galaxy or cluster), and a 
 Astronomers capture this in one short rule, the **lens equation**: *where the source really is* equals *where we see an image* minus *how much the light was bent there*. Reading it "backwards", from the image to the source, is easy. Reading it "forwards", from a source to all of its images, is the hard puzzle that the rest of this chapter (and our simulations) solves.
 </Fragment>
 <Fragment slot="l2">
-Measure everything as angles on the sky, from the direction of the lens. Let $\theta$ be where we *see* an image, and $\beta$ where the source really is. Distances matter too: $D_L$ to the lens, $D_S$ to the source, and $D_{LS}$ from lens to source (for cosmological distances these are the angular-diameter distances of [Chapter 25](/ch/expansion/)). Simple geometry (similar triangles) gives:
+Measure everything as angles on the sky, from the direction of the lens. Let $\theta$ be where we *see* an image, and $\beta$ where the source really is. Distances matter too: $D_L$ to the lens, $D_S$ to the source, and $D_{LS}$ from lens to source (for cosmological distances these are the angular-diameter distances of [Chapter 25](/ch/expansion/)). Simple geometry (similar triangles and small angles, see [Appendix A2](/ch/primer-functions/)) gives:
 
 <KeyEq title="The lens equation">
 $$
-\htmlData{term=beta}{\beta} = \htmlData{term=theta}{\theta} - \alpha(\htmlData{term=theta}{\theta}),
+\term{beta}{\beta} = \term{theta}{\theta} - \term{alpha}{\alpha}(\term{theta}{\theta}),
 \qquad
-\alpha = \frac{D_{LS}}{D_S}\,\hat\alpha
+\term{alpha}{\alpha} = \frac{\term{DLS}{D_{LS}}}{\term{DS}{D_S}}\,\term{alphahat}{\hat\alpha}
 $$
 <Fragment slot="where"><span data-term="beta">$\beta$</span> is the true position of the source, <span data-term="theta">$\theta$</span> the observed position of an image, and $\alpha$ the bending angle scaled by the ratio of distances. All angles are measured from the lens.</Fragment>
 </KeyEq>
@@ -106,9 +141,9 @@ Let $\vec\theta$ be the angle on the sky where we *see* a ray arrive, and $\vec\
 
 <KeyEq title="The lens equation">
 $$
-\htmlData{term=beta}{\vec\beta} = \htmlData{term=theta}{\vec\theta} - \vec\alpha(\htmlData{term=theta}{\vec\theta}),
+\term{beta}{\vec\beta} = \term{theta}{\vec\theta} - \term{alpha}{\vec\alpha}(\term{theta}{\vec\theta}),
 \qquad
-\vec\alpha = \frac{D_{LS}}{D_S}\,\hat{\vec\alpha}
+\term{alpha}{\vec\alpha} = \frac{\term{DLS}{D_{LS}}}{\term{DS}{D_S}}\,\term{alphahat}{\hat{\vec\alpha}}
 $$
 <Fragment slot="where"><span data-term="beta">$\vec\beta$</span> is the true angular position of the source, <span data-term="theta">$\vec\theta$</span> the observed position of an image, and $\vec\alpha$ the reduced deflection angle. $D_L$, $D_S$, $D_{LS}$ are angular-diameter distances (Chapter 25).</Fragment>
 </KeyEq>
@@ -129,7 +164,7 @@ For a point mass the bending is $\hat\alpha = 4GM/(c^2 b)$ with $b = D_L\theta$.
 
 <KeyEq title="Einstein radius">
 $$
-\theta_E = \sqrt{\frac{4GM}{c^2}\,\frac{D_{LS}}{D_L D_S}}
+\term{thetaE}{\theta_E} = \sqrt{\frac{4\term{G}{G}\term{M}{M}}{\term{c}{c}^2}\,\frac{\term{DLS}{D_{LS}}}{\term{DL}{D_L} \term{DS}{D_S}}}
 $$
 <Fragment slot="where">$M$ is the lens mass and the $D$s are the distances. The ring grows only as $\sqrt M$. For a point mass the lens equation becomes $\beta = \theta - \theta_E^2/\theta$.</Fragment>
 </KeyEq>
@@ -140,14 +175,14 @@ For a point mass, $\alpha(\theta) = \frac{D_{LS}}{D_S}\frac{4GM}{c^2 D_L \theta}
 
 <KeyEq title="Einstein radius">
 $$
-\theta_E = \sqrt{\frac{4GM}{c^2}\,\frac{D_{LS}}{D_L D_S}}
+\term{thetaE}{\theta_E} = \sqrt{\frac{4\term{G}{G}\term{M}{M}}{\term{c}{c}^2}\,\frac{\term{DLS}{D_{LS}}}{\term{DL}{D_L} \term{DS}{D_S}}}
 $$
 <Fragment slot="where">$M$ is the lens mass inside the ring and the $D$s are angular-diameter distances. For a point mass the lens equation becomes $\beta = \theta - \theta_E^2/\theta$. $\theta_E$ sets the angular scale of every lensing phenomenon.</Fragment>
 </KeyEq>
 </Fragment>
 </Tiers>
 
-Try it. A lens of <Var name="M" value={0.3} min={0.001} max={1e15} log /> M☉ at <Var name="DL" value={4} min={0.01} max={3e6} log /> kpc in front of a source at <Var name="DS" value={8} min={0.02} max={4e6} log /> kpc makes an Einstein ring of angular radius <Out name="thetaE" />. At the lens that ring is <Out name="RE" /> across in radius, and at a typical sideways speed of 200 km/s the lens drifts across it in <Out name="tE" />.
+Try it (the numbers span many powers of ten; see [Appendix A1](/ch/primer-numbers/) if scientific notation is rusty). A lens of <Var name="M" value={0.3} min={0.001} max={1e15} log /> M☉ at <Var name="DL" value={4} min={0.01} max={3e6} log /> kpc in front of a source at <Var name="DS" value={8} min={0.02} max={4e6} log /> kpc makes an Einstein ring of angular radius <Out name="thetaE" />. At the lens that ring is <Out name="RE" /> across in radius, and at a typical sideways speed of 200 km/s the lens drifts across it in <Out name="tE" />.
 
 <Aside>These distances are simple subtractions ($D_{LS} = D_S - D_L$), which is fine inside the Milky Way. For galaxies at a gigaparsec, use the angular-diameter distances of Chapter 25; they can differ by factors of two.</Aside>
 
@@ -201,7 +236,7 @@ Lensing neither creates nor destroys photons, so each patch of an image has the 
 
 <KeyEq title="Total magnification of a point-mass lens">
 $$
-\mu_\text{tot}(u) = \frac{u^2 + 2}{u\sqrt{u^2+4}}
+\term{mu}{\mu_\text{tot}}(\term{u}{u}) = \frac{\term{u}{u}^2 + 2}{\term{u}{u}\sqrt{\term{u}{u}^2+4}}
 $$
 <Fragment slot="where">$u = \beta/\theta_E$ is the source's offset from the lens in Einstein radii. At $u=1$, $\mu = 3/\sqrt5 \approx 1.34$. For small $u$, $\mu \approx 1/u$: halve the offset and you double the brightening.</Fragment>
 </KeyEq>
@@ -212,19 +247,19 @@ That $1/u$ blow-up at perfect alignment marks a **caustic**, a place behind the 
 
 Gravitational lensing neither creates nor destroys photons, and it does not change their frequency (the lens is static). By Liouville's theorem, the photon phase-space density along a ray is conserved, so **surface brightness is conserved**: a patch of an image looks exactly as bright per square arcsecond as the corresponding patch of the source. What changes is the *solid angle*. If the lens stretches a source into an image of larger area, you receive proportionally more light.
 
-The local stretching is described by the Jacobian of the lens mapping,
+The local stretching is described by the Jacobian of the lens mapping, the matrix of its partial derivatives ([Appendix A3](/ch/primer-vectors/) and [A4](/ch/primer-calculus/)),
 
 $$
 A_{ij} = \frac{\partial\beta_i}{\partial\theta_j} = \delta_{ij} - \frac{\partial\alpha_i}{\partial\theta_j},
 \qquad
-\mu = \frac{1}{\det A}.
+\term{mu}{\mu} = \frac{1}{\det A}.
 $$
 
 An image's magnification $\mu$ is the ratio of image area to source area. A negative $\mu$ means the image is mirror-flipped (negative *parity*). For the point lens, this gives $\mu_\pm = \left[1 - (\theta_E/\theta_\pm)^4\right]^{-1}$, and adding the absolute values of both images:
 
 <KeyEq title="Total magnification of a point-mass lens">
 $$
-\mu_\text{tot}(u) = |\mu_+| + |\mu_-| = \frac{u^2 + 2}{u\sqrt{u^2+4}}
+\term{mu}{\mu_\text{tot}}(\term{u}{u}) = |\mu_+| + |\mu_-| = \frac{\term{u}{u}^2 + 2}{\term{u}{u}\sqrt{\term{u}{u}^2+4}}
 $$
 <Fragment slot="where">$u = \beta/\theta_E$ is the source's offset from the lens in Einstein radii. At $u=1$, $\mu = 3/\sqrt5 \approx 1.34$, and for $u \ll 1$, $\mu \approx 1/u$, which diverges for a perfectly aligned point source. Real sources have finite size, which caps the peak.</Fragment>
 </KeyEq>
@@ -250,7 +285,7 @@ An extended lens has two effects. The **convergence** $\kappa$ magnifies images 
 Galaxies have flat rotation curves ([Chapter 21](/ch/milky-way/)): their mass inside radius $r$ grows in proportion to $r$. For such a *singular isothermal sphere* (SIS) with stellar velocity spread $\sigma_v$, the bending angle is the same at every radius:
 
 $$
-\hat\alpha_\text{SIS} = 4\pi\frac{\sigma_v^2}{c^2}.
+\term{alphahat}{\hat\alpha_\text{SIS}} = 4\pi\frac{\term{sigmav}{\sigma_v}^2}{c^2}.
 $$
 
 For a massive elliptical with $\sigma_v = 250$ km/s, that is $8.7\times10^{-6}$ rad $= 1.8''$, and the Einstein radius (after the distance factor) is about $0.9''$. A second image appears only if the source is inside the Einstein radius.
@@ -262,7 +297,7 @@ For a massive elliptical with $\sigma_v = 250$ km/s, that is $8.7\times10^{-6}$ 
 Because deflection is linear in mass, $\vec\alpha$ is the gradient of a 2D *lensing potential* $\psi$ that obeys a 2D Poisson equation:
 
 $$
-\vec\alpha = \nabla\psi, \qquad \nabla^2\psi = 2\kappa, \qquad \kappa(\vec\theta) = \frac{\Sigma(\vec\theta)}{\Sigma_\text{cr}}, \qquad \Sigma_\text{cr} = \frac{c^2}{4\pi G}\frac{D_S}{D_L D_{LS}}.
+\term{alpha}{\vec\alpha} = \nabla\term{psi}{\psi}, \qquad \nabla^2\term{psi}{\psi} = 2\term{kappa}{\kappa}, \qquad \term{kappa}{\kappa}(\term{theta}{\vec\theta}) = \frac{\term{Sigma}{\Sigma}(\term{theta}{\vec\theta})}{\term{Sigmacr}{\Sigma_\text{cr}}}, \qquad \term{Sigmacr}{\Sigma_\text{cr}} = \frac{c^2}{4\pi G}\frac{\term{DS}{D_S}}{\term{DL}{D_L} \term{DLS}{D_{LS}}}.
 $$
 
 Here $\Sigma$ is the projected surface mass density (kg m⁻²) and $\Sigma_\text{cr}$ the *critical density*. The dimensionless **convergence** $\kappa$ measures how "strong" the lens is: roughly, a region with $\kappa \gtrsim 1$ can make multiple images. For a lens at $z=0.3$ and source at $z=1$, $\Sigma_\text{cr} \approx 0.4$ g cm⁻², or about $2\times10^{3}$ M☉ pc⁻².
@@ -270,9 +305,9 @@ Here $\Sigma$ is the projected surface mass density (kg m⁻²) and $\Sigma_\tex
 The Jacobian is symmetric (it is the Hessian of $\tfrac12\theta^2 - \psi$), so it has three independent parts:
 
 $$
-A = \begin{pmatrix} 1 - \kappa - \gamma_1 & -\gamma_2 \\ -\gamma_2 & 1 - \kappa + \gamma_1 \end{pmatrix},
+A = \begin{pmatrix} 1 - \term{kappa}{\kappa} - \term{gamma}{\gamma_1} & -\term{gamma}{\gamma_2} \\ -\term{gamma}{\gamma_2} & 1 - \term{kappa}{\kappa} + \term{gamma}{\gamma_1} \end{pmatrix},
 \qquad
-\mu = \frac{1}{(1-\kappa)^2 - \gamma^2}.
+\term{mu}{\mu} = \frac{1}{(1-\term{kappa}{\kappa})^2 - \term{gamma}{\gamma}^2}.
 $$
 
 **Convergence** $\kappa$ magnifies isotropically, like a magnifying glass. **Shear** $\gamma = (\gamma_1, \gamma_2)$, a spin-2 quantity (it returns to itself after a 180° rotation, like an ellipse), stretches images along one axis and squeezes them along the other. Shear is sourced by mass *outside* the ray as well as inside, which is why a single nearby galaxy group can distort a whole lens system; in models it is added as a constant "external shear" term.
@@ -284,7 +319,7 @@ $$
 Galaxies have flat rotation curves ([Chapter 21](/ch/milky-way/)), so their density falls as $\rho\propto r^{-2}$: the *singular isothermal sphere*, with velocity dispersion $\sigma_v$. The projected mass inside radius $b$ grows linearly with $b$, so the deflection $4GM(b)/c^2b$ is **constant**:
 
 $$
-\hat\alpha_\text{SIS} = 4\pi\frac{\sigma_v^2}{c^2}, \qquad \theta_E = 4\pi\frac{\sigma_v^2}{c^2}\frac{D_{LS}}{D_S}, \qquad \kappa = \gamma = \frac{\theta_E}{2\theta}.
+\term{alphahat}{\hat\alpha_\text{SIS}} = 4\pi\frac{\term{sigmav}{\sigma_v}^2}{c^2}, \qquad \term{thetaE}{\theta_E} = 4\pi\frac{\term{sigmav}{\sigma_v}^2}{c^2}\frac{\term{DLS}{D_{LS}}}{\term{DS}{D_S}}, \qquad \term{kappa}{\kappa} = \term{gamma}{\gamma} = \frac{\term{thetaE}{\theta_E}}{2\term{theta}{\theta}}.
 $$
 
 For a massive elliptical with $\sigma_v = 250$ km/s, $4\pi\sigma_v^2/c^2 = 8.7\times10^{-6}$ rad $= 1.8''$, and with $D_{LS}/D_S \approx 0.5$ the Einstein radius is about $0.9''$. That is why galaxy-scale lenses have images about an arcsecond apart. In the SIS, $\kappa = \gamma$ everywhere, the second image appears only for $\beta < \theta_E$, and the two images have magnifications $|\mu_\pm| = \theta_E/\beta \pm 1$, the brighter one outside the ring.
@@ -371,6 +406,10 @@ Galaxy clusters are the strongest lenses. Abell 1689, Abell 370 and the Hubble F
 **Earendel, the most distant single star seen.** The "Sunrise Arc" is a galaxy at redshift about 6.2, stretched by the cluster WHL0137−08. One dot on the arc is a single star, Earendel, whose light left it when the universe was under a billion years old. It sits almost on the cluster's caustic, so it is magnified thousands of times.
 </Photo>
 
+<History title="Zwicky's bet and the twin quasar" year="1937–1979">
+Einstein himself, in a short 1936 note written at the urging of the amateur Rudi Mandl, worked out the ring for a star lensing a star, and declared there was "no great chance of observing this phenomenon". A year later the combative Caltech astronomer Fritz Zwicky, who had just inferred dark matter from the speeds of galaxies in the Coma cluster, turned the argument round: galaxies and clusters are so massive that their Einstein radii would be arcseconds, and lensing should be *easy* to see, a way to weigh them and a natural telescope to magnify galaxies beyond. He was right, but it took 42 years. In 1979 Dennis Walsh, Robert Carswell and Ray Weymann noticed that two quasars 6″ apart, Q0957+561 A and B, had identical spectra and redshifts. They were one quasar seen twice through a foreground galaxy. The first giant arcs in clusters followed in 1986–87 (Lynds and Petrosian; Soucail and colleagues), exactly as Zwicky had predicted.
+</History>
+
 ### Time delays and the Hubble constant
 
 <Tiers>
@@ -385,7 +424,7 @@ The light forming each image travels a different path, so images arrive at diffe
 The light forming each image travels a different path, so images arrive at different times. Two effects contribute: the geometric path-length difference and the *Shapiro delay* from climbing out of the potential. Both are captured by the Fermat potential,
 
 $$
-t(\vec\theta) = \frac{(1+z_L)}{c}\frac{D_L D_S}{D_{LS}}\left[\tfrac12(\vec\theta - \vec\beta)^2 - \psi(\vec\theta)\right],
+t(\term{theta}{\vec\theta}) = \frac{(1+z_L)}{c}\frac{\term{DL}{D_L} \term{DS}{D_S}}{\term{DLS}{D_{LS}}}\left[\tfrac12(\term{theta}{\vec\theta} - \term{beta}{\vec\beta})^2 - \term{psi}{\psi}(\term{theta}{\vec\theta})\right],
 $$
 
 and images sit exactly at the stationary points of $t$ (minima, saddles and maxima: Fermat's principle). The prefactor $D_L D_S/D_{LS}$ is a ratio of distances, so it scales as $1/H_0$. Measure the delay between images of a variable quasar, model the lens potential, and you have measured $H_0$ with a single step, bypassing the whole distance ladder. Refsdal proposed this in 1964.
@@ -446,7 +485,7 @@ The trick is averaging. Intrinsic orientations are random, so the average ellipt
 
 <Level min={2}>
 
-Since the shear field is a second derivative of the same potential that gives $\kappa$, one can invert a shear map into a convergence (mass) map. Kaiser and Squires found the linear inversion in 1993; it is a simple convolution, easy in Fourier space.
+Since the shear field is a second derivative of the same potential that gives $\kappa$, one can invert a shear map into a convergence (mass) map. Kaiser and Squires found the linear inversion in 1993; it is a simple convolution, easy in Fourier space ([Appendix A8](/ch/primer-waves/)).
 </Level>
 
 

@@ -12,36 +12,123 @@ import Predict from '../../components/Predict.astro';
 import C from '../../components/C.astro';
 import Var from '../../components/Var.astro';
 import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Photo from '../../components/Photo.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  Inu: ['Specific intensity', 'Power per unit area, per unit frequency, per unit solid angle arriving from the sky. This is what FIRAS measured at 43 frequencies.'],
+  nu: ['Frequency', 'Appears cubed up front (more room for high-frequency photons) and in the exponent (too few quanta of energy hν to go round): the balance makes the peak.'],
+  T0: ['CMB temperature today', 'The single number that fixes the whole spectrum: 2.7255 K. Everything scales with it; the photon count goes as T³.', '2.7255 K'],
+  T: ['Temperature', 'The temperature of the radiation at some epoch. It falls as 1/(1+z) as the universe expands.'],
+  z: ['Redshift', 'How much wavelengths have stretched: 1 + z is the factor by which the universe has grown since the light was emitted.'],
+  v: ['Our velocity', 'The Sun\'s speed relative to the CMB rest frame, about 370 km/s. The sky looks hotter ahead of us in proportion to v/c.'],
+  theta: ['Angle from the direction of motion', 'Hottest straight ahead (cos = 1), coldest directly behind (cos = −1): the dipole pattern.'],
+  Theta: ['Fractional temperature anomaly ΔT/T', 'How much hotter or colder than average one direction is: about 10⁻⁵, i.e. tens of microkelvin.'],
+  alm: ['Harmonic coefficient a_ℓm', 'How much of the pattern Y_ℓm the sky contains. Each one is a Gaussian random number drawn at inflation.'],
+  Ylm: ['Spherical harmonic Y_ℓm', 'A standard wavy pattern on the sphere, the curved-sky version of a sine wave. ℓ counts wiggles; m sets their orientation.'],
+  ell: ['Multipole ℓ', 'The angular wavenumber: a pattern with multipole ℓ has features about 180°/ℓ across. ℓ ≈ 220 is about 0.8°.'],
+  Cl: ['Angular power spectrum C_ℓ', 'The variance of the a_ℓm at each ℓ. For a Gaussian sky it contains all the statistical information.'],
+  Dl: ['Scaled spectrum 𝒟_ℓ', 'ℓ(ℓ+1)C_ℓ/2π times T0²: roughly the temperature variance per logarithmic band of ℓ, in μK². This is what CMB plots show.'],
+  R: ['Baryon loading R = 3ρ_b/4ρ_γ', 'How much baryon inertia weighs down the photon fluid (≈ 0.62 at recombination). It slows sound and shifts the oscillation\'s zero point, making odd peaks taller.'],
+  rs: ['Sound horizon', 'How far a sound wave travelled from the Big Bang to recombination: about 144 Mpc today. The universe\'s built-in ruler.'],
+  cs: ['Sound speed', 'About c/√3 in a pure photon gas (pressure is a third of the energy density); baryons add inertia without pressure and slow it to ≈ 0.45c.'],
+  k: ['Wavenumber', 'Spatial frequency of a perturbation mode (2π / wavelength). Larger k means smaller blobs, which oscillate faster.'],
+  Psi: ['Gravitational potential Ψ', 'Depth of the dark-matter potential well (negative in a well). It sets both the gravitational redshift and the force driving the oscillation.'],
+  thetastar: ['Acoustic angular scale θ*', 'The angle the sound horizon subtends on our sky: 0.596°, measured to 0.03%.'],
+  DM: ['Comoving angular-diameter distance to last scattering', 'About 13.9 Gpc. Curvature enters here: in a closed universe light rays converge and the ruler looks bigger.'],
+  lA: ['Acoustic multipole ℓ_A = π/θ*', 'The harmonic of the sound-horizon scale, ≈ 302. The peaks sit near multiples of it, shifted down by driving effects.'],
+  l1: ['First peak position', 'Where the biggest bump in the spectrum sits: ℓ ≈ 220, about 0.8°. It moves if space is curved.'],
+  nmode: ['Peak number n', 'Odd n: modes caught at maximum compression. Even n: at maximum rarefaction.'],
+}} />
 
 ## The oldest light
 
+<Photo src="/img/cmb/planck-map.jpg" alt="An oval all-sky map mottled with blue and orange-red spots, the cosmic microwave background as seen by Planck" credit="ESA and the Planck Collaboration" license="CC BY-SA 3.0 IGO" href="https://images.nasa.gov/details/PIA16873" size="wide" aspect="2 / 1">
+**The sky 380,000 years after the Big Bang.** Planck's 2013 map of the cosmic microwave background, with our own motion and the Milky Way's glow removed, in the Mollweide projection. Red spots are about 0.0002 K warmer than average and blue ones about as much colder. The typical spot is about 1° across: twice the width of the full Moon. You will generate skies like this one yourself further down.
+</Photo>
+
+<Tiers>
+<Fragment slot="l1">
+For its first 380,000 years the universe was a glowing fog. It was so hot that atoms could not hold on to their electrons, and loose electrons bounce light around like fog droplets bounce a car's headlights. When the universe cooled to about 3000 K (the temperature of a dim red star) the electrons settled into atoms, the fog cleared, and the light set off in straight lines. It has been travelling ever since, and it is still arriving from every direction.
+
+On the way, the expanding universe stretched its waves about 1100 times. The light of a red-hot glow arrives today as a faint microwave hiss at a temperature of 2.7 degrees above absolute zero. This is the **cosmic microwave background**, or CMB: the afterglow of the Big Bang (see [Chapter 26](/ch/big-bang/)). A small part of the "snow" on an old analogue TV set was this light.
+</Fragment>
+<Fragment slot="l2">
+[Chapter 26](/ch/big-bang/) ended with the universe at about 3000 K, 380,000 years after the Big Bang. Until then free electrons scattered photons so often that the cosmos was opaque. As it cooled, electrons and protons combined into neutral hydrogen (*recombination*) and the light has flown freely ever since. The moment the photons last scattered is the **surface of last scattering**, at redshift $z_* \approx 1090$.
+
+Since then every wavelength has stretched by a factor $1+z$. A glow with a thermal (blackbody) spectrum stays thermal, but its temperature drops by the same factor (new to redshift? see [Appendix A8](/ch/primer-waves/)):
+
+$$
+\term{T}{T} = \term{T0}{T_0}\,(1+\term{z}{z}).
+$$
+</Fragment>
+<Fragment slot="l3">
 [Chapter 26](/ch/big-bang/) ended with the universe at about 3000 K, 380,000 years after the Big Bang. Until then, free electrons scattered photons so often that the cosmos was an opaque fog. As the plasma cooled, electrons and protons combined into neutral hydrogen (*recombination*), the photon mean free path jumped from about a kiloparsec to the size of the observable universe, and the light has flown freely ever since. The moment the photons last scattered is the **surface of last scattering**, at redshift $z_* \approx 1090$.
 
-Nothing about the photons' spectrum changes during free streaming except the redshift. Every wavelength stretches by $1+z$, and a blackbody at temperature $T$ becomes a blackbody at $T/(1+z)$. The 3000 K glow of a red dwarf's surface arrives today as a 2.7 K glow peaking at about 1 mm, in the microwaves.
+Nothing about the photons' spectrum changes during free streaming except the redshift. Every wavelength stretches by $1+z$, and the phase-space density of photons is conserved, so a blackbody at temperature $T$ becomes a blackbody at $\term{T}{T} = \term{T0}{T_0}(1+\term{z}{z})$ at every earlier epoch. The 3000 K glow of a red dwarf's surface arrives today as a 2.7 K glow peaking at about 1 mm, in the microwaves.
+</Fragment>
+</Tiers>
 
 Drag the redshift: at <Var name="z" value={1090} min={0} max={1e4} log /> the CMB temperature was <Out name="Tz" />, and its spectrum peaked (in wavelength) at <Out name="lamz" />.
 
-<Aside>**Discovered by accident.** Arno Penzias and Robert Wilson found an irreducible 3.5 K excess hiss in a Bell Labs horn antenna in 1964–65, after evicting pigeons and cleaning out what they politely called "white dielectric material". A few miles away, Dicke, Peebles, Roll and Wilkinson were building a radiometer to look for exactly that signal. Penzias and Wilson got the 1978 Nobel Prize.</Aside>
+<History title="Pigeons, a horn antenna, and a phone call to Princeton" year="1965">
+<Portrait src="/img/people/penzias.jpg" name="Arno Penzias" years="1933–2024" credit="Willy Pragher" license="CC BY 3.0 de" href="https://commons.wikimedia.org/wiki/File:32._Tagung_1982_Physiker;_Beim_Studentenabend_Arno_A._Penzias_-_W134Nr.119142_-_Willy_Pragher_(cropped).jpg" />
+
+In 1964 two young radio astronomers at Bell Labs, Arno Penzias and Robert Wilson, were converting a 6-metre horn antenna at Holmdel, New Jersey, built for satellite communications, into a radio telescope. They found a hiss they could not get rid of: the same in every direction, day and night, winter and summer, equivalent to about 3.5 K of extra temperature. They checked the electronics, taped over joints, and evicted a pair of pigeons that had nested in the horn and coated it with what Penzias called "white dielectric material". The noise stayed.
+
+Thirty miles away in Princeton, Robert Dicke's group (with Jim Peebles, Peter Roll and David Wilkinson) had predicted that a hot Big Bang should leave a few-kelvin radiation bath, and they were building a small radiometer on a laboratory roof to find it. George Gamow's students Ralph Alpher and Robert Herman had made the same prediction in 1948, and it had been forgotten. When Penzias mentioned his puzzle to a colleague, word reached Dicke, who took the phone call, listened, and turned to his team: "Well, boys, we've been scooped." The two groups published back-to-back papers in 1965. Penzias and Wilson shared the 1978 Nobel Prize; Peebles received his in 2019, for turning the CMB into a precision tool.
+</History>
+
+<Photo src="/img/cmb/holmdel-horn.jpg" alt="Black and white photograph of a large horn-shaped radio antenna on a rotating mount" credit="NASA" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Horn_Antenna-in_Holmdel,_New_Jersey_-_restoration1.jpg" size="text" aspect="4 / 3">
+**The Holmdel Horn Antenna.** Built in 1959 for Project Echo, the first passive communications satellite, and used by Penzias and Wilson to discover the CMB. The horn shape shields the receiver from radio noise from the ground, which is what made a 3 K excess detectable at all.
+</Photo>
 
 A few numbers are worth having in your head:
 
 - **Temperature** $T_0 = 2.7255 \pm 0.0006$ K today.
-- **Photon number density** $n_\gamma = 411$ cm⁻³, about $1.6\times10^9$ photons for every baryon. This huge ratio is why recombination waited until $k_BT \approx 0.26$ eV, far below hydrogen's 13.6 eV binding energy: the rare photons in the Wien tail kept ionising atoms.
-- **Energy density** $\rho_\gamma c^2 = aT_0^4 \approx 0.26$ MeV/m³, a fraction $\Omega_\gamma h^2 = 2.47\times10^{-5}$ of the critical density.
-- **Distance** to the last-scattering surface: about 13.9 Gpc comoving, or 46 billion light-years. The light has travelled for 13.8 Gyr, but the source has since been carried away by the expansion ([Chapter 25](/ch/expansion/)).
+- **Photon number** 411 per cubic centimetre, about $1.6\times10^9$ photons for every proton or neutron. <Level min={2} inline>This huge ratio is why recombination waited until $k_BT \approx 0.26$ eV, far below hydrogen's 13.6 eV binding energy: the rare photons in the high-energy tail kept knocking atoms apart.</Level>
+- **Energy** only about 0.26 MeV per cubic metre, 0.005% of the universe's total today.
+- **Distance** to the last-scattering surface: about 46 billion light-years (13.9 Gpc) today. The light has travelled for 13.8 billion years, but its source has since been carried away by the expansion ([Chapter 25](/ch/expansion/)).
 
 ### The most perfect blackbody
 
+<Tiers>
+<Fragment slot="l1">
+Anything hot glows, and if it is in perfect thermal balance, the mix of colours it glows with has a precise, universal shape called a **blackbody spectrum**: a hump whose peak position depends only on the temperature. Stars are rough blackbodies. The CMB is the best one ever measured.
+
+In 1990 NASA's COBE satellite pointed an instrument called FIRAS at the sky and at a carefully made artificial blackbody on board, and compared the two. After nine minutes of data the sky's spectrum matched the textbook curve so exactly that the audience at the American Astronomical Society gave the plot a standing ovation. Any deviation is smaller than 50 parts in a million.
+
+That perfection is itself a clue. Only a universe that was once hot, dense and thoroughly mixed can produce it. Any big release of energy after the first couple of months (from decaying exotic particles, say) would have left a visible dent in the curve.
+</Fragment>
+<Fragment slot="l2">
+In 1990 the FIRAS instrument on NASA's COBE satellite compared the sky against an onboard blackbody calibrator and produced the most famous plot in cosmology: points lying exactly on a Planck curve. Modern re-analyses give $T_0 = 2.72548 \pm 0.00057$ K. Deviations are below **50 parts per million** of the peak.
+
+<KeyEq title="Planck spectrum of the CMB">
+$$
+\term{Inu}{I_\nu} = \frac{2\term{h}{h}\term{nu}{\nu}^3}{\term{c}{c}^2}\,\frac{1}{e^{\term{h}{h}\term{nu}{\nu}/\term{kB}{k_B}\term{T0}{T_0}} - 1}
+$$
+<Fragment slot="where"><span data-term="Inu">$I_\nu$</span> is the brightness per unit frequency, <span data-term="nu">$\nu$</span> the frequency, and <span data-term="T0">$T_0 = 2.7255$ K</span>. $h$ is <C k="h" />, $k_B$ is <C k="kB" />. The peak is at 160 GHz (1.9 mm). Only one number, the temperature, sets the whole curve.</Fragment>
+</KeyEq>
+
+A perfect blackbody needs perfect thermal equilibrium, with photons being created and destroyed fast enough to erase any disturbance. That was only true in the first couple of months. Anything that injected energy later would leave a measurable distortion, and FIRAS sees none: distortions are smaller than about $10^{-5}$.
+</Fragment>
+<Fragment slot="l3">
 In 1990 the FIRAS instrument on NASA's COBE satellite compared the sky against an onboard blackbody calibrator for a few minutes and produced the most famous plot in cosmology: 43 data points lying exactly on a Planck curve. Modern re-analyses give $T_0 = 2.72548 \pm 0.00057$ K. Deviations from a pure Planck spectrum are below **50 parts per million** of the peak intensity.
 
 <KeyEq title="Planck spectrum of the CMB">
 $$
-I_\nu = \frac{2h\nu^3}{c^2}\,\frac{1}{e^{h\nu/k_BT_0} - 1}, \qquad T_0 = 2.7255\ \text{K}
+\term{Inu}{I_\nu} = \frac{2\term{h}{h}\term{nu}{\nu}^3}{\term{c}{c}^2}\,\frac{1}{e^{\term{h}{h}\term{nu}{\nu}/\term{kB}{k_B}\term{T0}{T_0}} - 1}
 $$
-<Fragment slot="where">$I_\nu$ is the specific intensity (W m⁻² Hz⁻¹ sr⁻¹), $h$ is <C k="h" />, $k_B$ is <C k="kB" />. The peak in $I_\nu$ is at 160 GHz (1.9 mm, 5.35 cm⁻¹). Redshifting a blackbody gives a blackbody at $T/(1+z)$, which is why a single number describes the whole spectrum.</Fragment>
+<Fragment slot="where"><span data-term="Inu">$I_\nu$</span> is the specific intensity (W m⁻² Hz⁻¹ sr⁻¹), $h$ is <C k="h" />, $k_B$ is <C k="kB" />. The peak in $I_\nu$ is at 160 GHz (1.9 mm, 5.35 cm⁻¹). Redshifting a blackbody gives a blackbody at $T/(1+z)$, which is why a single number describes the whole spectrum.</Fragment>
 </KeyEq>
 
-Why should that be impressive? A blackbody requires *thermal equilibrium*: processes that create and destroy photons (double Compton scattering, bremsstrahlung) must have been fast enough to erase any energy injection. That was only true in the first couple of months, at $z \gtrsim 2\times10^6$. Anything that dumped energy into the plasma later would leave a fingerprint: a **chemical-potential ($\mu$) distortion** from $z \sim 10^5$–$2\times10^6$, or a **Compton-$y$ distortion** from later hot electrons up-scattering CMB photons. FIRAS limits $|\mu| < 9\times10^{-5}$ and $|y| < 1.5\times10^{-5}$. Those two numbers rule out whole families of exotic models: decaying particles, early energy release, even a steady-state origin for the radiation.
+Why should that be impressive? A blackbody requires *thermal equilibrium*: processes that create and destroy photons (double Compton scattering, bremsstrahlung) must have been fast enough to erase any energy injection. That was only true in the first couple of months, at $z \gtrsim 2\times10^6$. Anything that dumped energy into the plasma later would leave a fingerprint: a **chemical-potential ($\mu$) distortion** from $z \sim 10^5$–$2\times10^6$, or a **Compton-$y$ distortion** from later hot electrons up-scattering CMB photons. FIRAS limits $|\mu| < 9\times10^{-5}$ and $|y| < 1.5\times10^{-5}$. Those two numbers rule out whole families of exotic models: decaying particles, early energy release, even a steady-state origin for the radiation (see [Appendix A7](/ch/primer-thermo/) for the statistical mechanics of a photon gas).
+</Fragment>
+</Tiers>
 
 <Sim name="cmb-blackbody" size="text" minHeight={420}>
 **A Planck curve against FIRAS-like data.** The points sit on a 2.7255 K blackbody with realistic FIRAS uncertainties; in the top panel the error bars are inflated ×400 so you can see them. Move the model temperature by a tenth of a millikelvin and watch the residuals (bottom, in kJy/sr) leave the error bars. Then add a Compton-$y$ distortion: a hot-electron fingerprint that removes photons below 217 GHz (7.2 cm⁻¹) and adds them above. The FIRAS limit, $y < 1.5\times10^{-5}$, sits right at the edge of visibility. (Points are illustrative, generated at the FIRAS frequencies, not the published table.)
@@ -49,24 +136,72 @@ Why should that be impressive? A blackbody requires *thermal equilibrium*: proce
 
 ## Dipole and anisotropy
 
+<Tiers>
+<Fragment slot="l1">
+Point a perfect thermometer around the sky and the first thing you notice is not the Big Bang but *us*. The Sun is moving through the CMB at about 370 km/s. Like the sound of an approaching siren, the light ahead of us is squeezed to slightly higher energy and the light behind is stretched: the sky is about 0.1% hotter in one direction and colder in the opposite one. This two-sided pattern is called the **dipole**.
+
+Remove it, and remove the microwave glow of our own Milky Way, and what is left is the real treasure: a pattern of spots a hundred thousand times fainter than the average glow, varying by about a ten-thousandth of a degree.
+</Fragment>
+<Fragment slot="l2">
+Point a perfect thermometer around the sky and the first thing you see is not cosmology but *us*. The Solar System moves at $v = 370$ km/s relative to the CMB, and the Doppler effect makes the sky slightly hotter ahead and colder behind:
+
+$$
+T \approx \term{T0}{T_0}\left(1 + \frac{\term{v}{v}}{\term{c}{c}}\cos\term{theta}{\vartheta}\right).
+$$
+
+The measured amplitude is 3.362 mK, about one part in a thousand. Subtract it (and the Milky Way's own glow), and what remains are fluctuations of about **$\pm 100\,\mu$K**, or $\Delta T/T \sim 10^{-5}$.
+</Fragment>
+<Fragment slot="l3">
 Point a perfect thermometer around the sky and the first thing you see is not cosmology but *us*. The Solar System moves at $v = 369.8 \pm 0.1$ km/s relative to the CMB rest frame, towards the constellation Crater (galactic longitude 264°, latitude 48°). The Doppler effect makes the sky slightly hotter ahead and colder behind:
 
 $$
-T(\hat n) = \frac{T_0}{\gamma\,(1 - \vec\beta\cdot\hat n)} \approx T_0\left(1 + \beta\cos\vartheta + O(\beta^2)\right).
+T(\hat n) = \frac{\term{T0}{T_0}}{\gamma\,(1 - \vec\beta\cdot\hat n)} \approx \term{T0}{T_0}\left(1 + \frac{\term{v}{v}}{\term{c}{c}}\cos\term{theta}{\vartheta} + O(\beta^2)\right).
 $$
 
-At <Var name="v" value={370} min={1} max={3000} log /> km/s the dipole amplitude is $T_0 v/c =$ <Out name="dT" />. The measured value is 3.362 mK, a part in a thousand. Subtract it (and our annual motion round the Sun, and the Milky Way's own microwave glow), and what remains is the real thing: fluctuations of about **$\pm 100\,\mu$K**, or $\Delta T/T \sim 10^{-5}$.
+The measured amplitude is 3.362 mK. Subtract it (and our annual motion round the Sun, and the Milky Way's own microwave glow), and what remains is the real thing: fluctuations of about **$\pm 100\,\mu$K**, or $\Delta T/T \sim 10^{-5}$.
+</Fragment>
+</Tiers>
+
+At <Var name="v" value={370} min={1} max={3000} log /> km/s the dipole amplitude is $T_0 v/c =$ <Out name="dT" />.
 
 <Aside>**How fast is the Local Group moving?** Subtract the Sun's orbit around the Galaxy and the Milky Way's motion within the Local Group, and the Local Group moves at about 620 km/s towards Hydra–Centaurus. That motion is produced by the gravitational pull of large-scale structure within a few hundred Mpc. It is the same peculiar velocity field that Chapter 28 grows from the CMB's seeds.</Aside>
 
-The famous COBE DMR result (1992) was the first detection of these anisotropies, at $\Delta T/T \approx 1.1\times10^{-5}$ on angular scales above 7°. WMAP (2001–2010) mapped them down to 0.2°, and Planck (2009–2013) down to 5 arcminutes with a sensitivity limited only by the sky itself.
+<History title="COBE: a satellite, a spectrum and 'the face of God'" year="1989–1992">
+<Portrait src="/img/people/mather.jpg" name="John C. Mather" years="b. 1946" credit="NASA" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Dr._John_Mather_Addresses_NASA_Johnson_(34611348014).jpg" />
+
+The Cosmic Background Explorer was proposed in 1974 and was meant to launch on the Space Shuttle. After the Challenger disaster in 1986 the team redesigned the spacecraft to half its weight so it could fly on a Delta rocket instead, and it launched in November 1989. John Mather, who had joined the project as a 28-year-old postdoc, led FIRAS, the spectrometer. In January 1990 he showed the first spectrum at a meeting of the American Astronomical Society: the data sat on the blackbody curve with no visible error bars, and the room rose to its feet.
+
+George Smoot led DMR, the instrument that compared the temperature of pairs of directions 60° apart. The expected anisotropies were so faint that the team spent two years ruling out every instrumental and galactic source they could think of. In April 1992 Smoot announced them at $\Delta T/T \approx 10^{-5}$, telling reporters that "if you're religious, it's like seeing the face of God". Stephen Hawking called it "the discovery of the century, if not of all time". Mather and Smoot shared the 2006 Nobel Prize.
+<Portrait src="/img/people/smoot.jpg" name="George F. Smoot" years="b. 1945" credit="Falcorian" license="CC BY 2.5" href="https://commons.wikimedia.org/wiki/File:George_Smoot_crop.jpg" />
+</History>
+
+After COBE, WMAP (2001–2010) mapped the anisotropies down to 0.2°, and Planck (2009–2013) down to 5 arcminutes, with a sensitivity limited only by the sky itself.
 
 ### Decomposing a sphere
 
-The anisotropy is a function on the sphere, $\Theta(\hat n) = \Delta T/T_0$. Just as a function on a line is decomposed into Fourier modes $e^{ikx}$, a function on the sphere is decomposed into **spherical harmonics** $Y_{\ell m}(\theta,\phi)$:
+<Tiers>
+<Fragment slot="l1">
+How do you describe a pattern of spots on a sphere? The same way a music app describes a sound: by breaking it into pure tones and listing how loud each one is. On a sphere the "pure tones" are standard wavy patterns called **spherical harmonics**, labelled by a number ℓ (say "ell"). Small ℓ means a few big blotches; large ℓ means many small spots. A pattern with number ℓ has spots roughly 180°/ℓ across.
+
+The key quantity is how strong the sky's pattern is at each ℓ. Plot that against ℓ and you get the **power spectrum**: the CMB's "graphic equaliser" display. Because the spots are random (like the ripples on a lake, not like a drawing), that one curve carries essentially everything the map has to tell us.
+</Fragment>
+<Fragment slot="l2">
+The CMB pattern is a function on the sphere. A function on a line can be broken into sine waves; a function on a sphere is broken into **spherical harmonics** $Y_{\ell m}$, standard patterns labelled by two whole numbers (see [Appendix A8](/ch/primer-waves/) for Fourier analysis). The multipole $\ell$ plays the role of frequency: a harmonic with index $\ell$ has features about $180°/\ell$ across. $\ell = 1$ is the dipole, $\ell = 2$ the quadrupole, and degree-sized spots sit at $\ell \approx 200$. The second label $m$ just sets the pattern's orientation.
+
+The sky is a sum of these patterns with amplitudes $a_{\ell m}$. Theory predicts the amplitudes are random numbers, with an average size that depends only on $\ell$. That average size squared is the **power spectrum** $C_\ell$:
+
+<KeyEq title="The angular power spectrum">
+$$
+\term{Cl}{C_\ell} = \text{average of } |\term{alm}{a_{\ell m}}|^2, \qquad \term{Dl}{\mathcal D_\ell} = \frac{\term{ell}{\ell}(\term{ell}{\ell}+1)}{2\pi}\,\term{Cl}{C_\ell}\,\term{T0}{T_0}^2
+$$
+<Fragment slot="where"><span data-term="Cl">$C_\ell$</span> measures how strong the pattern is at multipole <span data-term="ell">$\ell$</span>. <span data-term="Dl">$\mathcal D_\ell$</span>, in μK², is the conventional way to plot it: roughly the temperature variance from a band of $\ell$ values.</Fragment>
+</KeyEq>
+</Fragment>
+<Fragment slot="l3">
+The anisotropy is a function on the sphere, $\Theta(\hat n) = \Delta T/T_0$. Just as a function on a line is decomposed into Fourier modes $e^{ikx}$ ([Appendix A8](/ch/primer-waves/)), a function on the sphere is decomposed into **spherical harmonics** $Y_{\ell m}(\theta,\phi)$:
 
 $$
-\Theta(\hat n) = \sum_{\ell=0}^{\infty}\sum_{m=-\ell}^{\ell} a_{\ell m}\,Y_{\ell m}(\hat n), \qquad a_{\ell m} = \int \Theta(\hat n)\,Y^*_{\ell m}(\hat n)\,d\Omega .
+\term{Theta}{\Theta}(\hat n) = \sum_{\term{ell}{\ell}=0}^{\infty}\sum_{m=-\ell}^{\ell} \term{alm}{a_{\ell m}}\,\term{Ylm}{Y_{\ell m}}(\hat n), \qquad \term{alm}{a_{\ell m}} = \int \term{Theta}{\Theta}(\hat n)\,\term{Ylm}{Y^*_{\ell m}}(\hat n)\,d\Omega .
 $$
 
 The multipole $\ell$ plays the role of wavenumber: a harmonic with index $\ell$ has $\ell$ nodal lines, and its typical feature spans an angle $\vartheta \approx 180°/\ell$. $\ell = 0$ is the monopole (the mean, $T_0$), $\ell = 1$ is the dipole, $\ell = 2$ the quadrupole, and the degree-scale spots sit at $\ell \approx 200$. The index $m$ describes orientation, and does not matter for physics if the universe is statistically isotropic.
@@ -75,32 +210,50 @@ Inflation (and every model consistent with the data) predicts that the $a_{\ell 
 
 <KeyEq title="The angular power spectrum">
 $$
-\langle a_{\ell m}\,a^*_{\ell' m'}\rangle = \delta_{\ell\ell'}\,\delta_{mm'}\,\htmlData{term=Cl}{C_\ell}, \qquad \htmlData{term=Dl}{\mathcal D_\ell} \equiv \frac{\ell(\ell+1)}{2\pi}\,C_\ell\,T_0^2
+\langle \term{alm}{a_{\ell m}}\,\term{alm}{a^*_{\ell' m'}}\rangle = \delta_{\ell\ell'}\,\delta_{mm'}\,\term{Cl}{C_\ell}, \qquad \term{Dl}{\mathcal D_\ell} \equiv \frac{\term{ell}{\ell}(\term{ell}{\ell}+1)}{2\pi}\,\term{Cl}{C_\ell}\,\term{T0}{T_0}^2
 $$
 <Fragment slot="where"><span data-term="Cl">$C_\ell$</span> is the variance of the harmonic coefficients at multipole $\ell$. <span data-term="Dl">$\mathcal D_\ell$</span> (in μK²) is the conventional way to plot it: it is roughly the variance of the temperature per logarithmic interval of $\ell$, and it is flat for a scale-invariant spectrum on large scales.</Fragment>
 </KeyEq>
 
 If the field is Gaussian, $C_\ell$ contains **all** the statistical information. A map with 50 million Planck pixels compresses, without loss, into a curve of about 2500 numbers. That curve is what cosmologists fit.
+</Fragment>
+</Tiers>
 
 ### Cosmic variance
 
+<Tiers>
+<Fragment slot="l1">
+There is a catch. We only have one sky. To judge how strong the biggest patterns are, we can only look at the handful of big blotches our sky happens to contain, which is like judging a die from five throws. For the largest patterns the unavoidable uncertainty is more than 50%, no matter how good the telescope. For small spots there are millions of examples and the uncertainty shrinks to a few percent. Cosmologists call this **cosmic variance**: the error bar on the universe itself.
+</Fragment>
+<Fragment slot="l3">
 We have one sky. At each $\ell$ there are only $2\ell+1$ independent $a_{\ell m}$ with which to estimate the variance $C_\ell$. A variance estimated from $N$ Gaussian samples has a fractional uncertainty $\sqrt{2/N}$, so even a perfect experiment faces
 
 $$
-\frac{\Delta C_\ell}{C_\ell} = \sqrt{\frac{2}{2\ell+1}} .
+\frac{\Delta \term{Cl}{C_\ell}}{\term{Cl}{C_\ell}} = \sqrt{\frac{2}{2\term{ell}{\ell}+1}} .
 $$
 
 For the quadrupole that is 63%. At $\ell = 1000$ it is 3%. This **cosmic variance** is the error bar on the universe itself, and it is why the low-$\ell$ points in any CMB plot have such large bars. The observed quadrupole is low (about 200 μK² against ~1000 μK² predicted), which is roughly a 1-in-20 fluke; interesting, but not a crisis.
+</Fragment>
+</Tiers>
 
 <Fermi title="How many independent numbers are there in the CMB temperature map?">
 Up to multipole $\ell_\text{max}$ there are $\sum_\ell (2\ell+1) \approx \ell_\text{max}^2$ modes. Beyond $\ell \approx 2500$, the primary CMB is erased by Silk damping (below) and swamped by point sources. So the primordial temperature map contains about $2500^2 \approx 6\times10^6$ independent numbers, of which about 3/4 lie outside the galactic mask. The ΛCDM model fits all of them with **six parameters**. By comparison, a single high-resolution photograph has a few million pixels. The CMB is, quite literally, a photograph of the early universe, and it can never get any sharper.
 </Fermi>
 
+<Photo src="/img/cmb/planck-spectrum.jpg" alt="Graph of temperature fluctuations squared versus multipole moment, showing a tall first peak near ell 220 followed by smaller peaks, with red data points on a green model curve" credit="ESA and the Planck Collaboration" license="CC BY-SA 3.0 IGO" href="https://images.nasa.gov/details/PIA16879" size="text" aspect="1800 / 1390">
+**The real thing.** Planck's 2013 temperature power spectrum: red points are data, the green curve is the six-parameter ΛCDM fit, and the green band at the left is cosmic variance. The horizontal axis switches from logarithmic to linear at ℓ = 50. Every bump in this curve is explained in the next two sections.
+</Photo>
+
 ## The sky generator
 
-Below is a real Gaussian random sky, synthesised on your GPU. The recipe is exactly the statistical statement above: draw a set of unit-variance complex Gaussians $g_{\ell m}$, multiply them by $\sqrt{C_\ell}$, and sum the spherical harmonics. The power spectrum comes from an approximate model of ΛCDM, described in the next section. When you move a slider, the random numbers $g_{\ell m}$ stay the same; only the amplitudes $\sqrt{C_\ell}$ change. You see the same sky, reshaped.
+<Level max={1}>
+Below is a sky made by your computer the way nature made the real one: take random patterns of every size, give each size the strength the power spectrum says, and add them up. The sliders change the recipe of the early universe (how much ordinary matter, how much dark matter, whether space is curved), and you see the spots change size and contrast while the random "dice rolls" stay the same.
+</Level>
+<Level min={2}>
+Below is a real Gaussian random sky, synthesised on your GPU. The recipe is exactly the statistical statement above: draw a set of random numbers $g_{\ell m}$, multiply them by $\sqrt{C_\ell}$, and sum the spherical harmonics. The power spectrum comes from an approximate model of ΛCDM, described in the next section. When you move a slider, the random numbers $g_{\ell m}$ stay the same; only the amplitudes $\sqrt{C_\ell}$ change. You see the same sky, reshaped.
+</Level>
 
-<Predict question="If you double the physical baryon density Ω_b h², what happens to the typical size of the hot and cold spots?" choices={['They get much bigger', 'They barely change, but the contrast of the degree-scale spots goes up', 'They get much smaller']} answer={1}>
+<Predict question="If you double the density of ordinary matter (Ω_b h²), what happens to the typical size of the hot and cold spots?" choices={['They get much bigger', 'They barely change, but the contrast of the degree-scale spots goes up', 'They get much smaller']} answer={1}>
 The spot size is set by the angle subtended by the sound horizon, $\theta_* = r_s/D_M$. Baryons slow the sound speed a little, so $r_s$ shrinks a few percent and the first peak moves slightly *right*. The big effect is on the heights: extra baryons deepen the compressions, so the first (and third) peaks grow and the degree-scale spots become more contrasted. To change the spot *size* substantially, you need curvature: try the $\Omega_k$ slider.
 </Predict>
 
@@ -110,33 +263,70 @@ The spot size is set by the angle subtended by the sound horizon, $\theta_* = r_
 
 ## Why the spectrum has peaks
 
-The power spectrum of the CMB rises from a plateau at low $\ell$, climbs to a big peak at $\ell \approx 220$, and then rings through a series of smaller peaks until it fades away beyond $\ell \sim 2000$. Each feature has a physical cause.
+The power spectrum rises from a plateau on large angles, climbs to a big peak at $\ell \approx 220$ (about 1°), and then rings through a series of smaller peaks until it fades away beyond $\ell \sim 2000$. Each feature has a physical cause.
 
 ### The Sachs–Wolfe plateau
 
+<Tiers>
+<Fragment slot="l1">
+The biggest patches on the sky are so large that, by the time the fog cleared, not even light had had time to cross them. Nothing could have happened inside them yet, so they show us the raw ripples left over from the very beginning, probably from a period called inflation. Oddly, the *denser* patches look *colder*: light climbing out of their slightly deeper gravity loses a little energy, and that wins over the fact that they were slightly hotter.
+</Fragment>
+<Fragment slot="l2">
+On scales larger than about 1° (low $\ell$), nothing causal could have happened before last scattering: light had not yet crossed those regions. The photons carry the raw imprint of the primordial ripples. A photon leaving a gravitational potential well of depth $\Psi$ loses energy climbing out, but the well was also slightly hotter; for the kind of ripples inflation makes, the net effect is
+
+$$
+\frac{\Delta T}{T} = \frac{\term{Psi}{\Psi}}{3},
+$$
+
+the **Sachs–Wolfe effect**. Since $\Psi$ is negative in a well, dense regions look *cold*. The plateau height measures the strength of the primordial ripples: a few parts in $10^5$.
+</Fragment>
+<Fragment slot="l3">
 On scales larger than the horizon at recombination (about 1°, $\ell \lesssim 100$), nothing causal could have happened before last scattering. The photons simply carry the imprint of the primordial perturbations from inflation. A photon leaving a potential well of depth $\Psi$ (in units of $c^2$; $\Psi<0$ in a well) loses energy climbing out, $\Delta T/T = \Psi$. But the well is also a slightly denser, hence hotter, region, and time runs slower inside it, so the photons we see there were emitted a little earlier when the universe was hotter. For adiabatic perturbations in a matter-dominated universe the two effects combine to
 
 $$
-\Theta_\text{obs} = \Theta_0 + \Psi = \frac{\Psi}{3},
+\Theta_\text{obs} = \Theta_0 + \term{Psi}{\Psi} = \frac{\term{Psi}{\Psi}}{3},
 $$
 
 the **Sachs–Wolfe effect** (1967). Overdense regions appear *cold*. With a nearly scale-invariant primordial spectrum, $\mathcal D_\ell$ is flat at low $\ell$, with a slight tilt set by the spectral index $n_s$. The plateau height fixes the primordial amplitude $A_s \approx 2.1\times10^{-9}$: the curvature perturbations from inflation were about $\sqrt{A_s} \approx 5\times10^{-5}$.
+</Fragment>
+</Tiers>
 
 ### Acoustic oscillations of the photon–baryon fluid
 
+<Tiers>
+<Fragment slot="l1">
+On smaller scales, things had time to happen, and what happened was **sound**. Before the fog cleared, light and ordinary matter were stuck together into one hot fluid. Dark matter, which light does not push around, had already gathered into slight clumps, and the fluid fell into them. As it fell it got squeezed and heated, the light pressure pushed back, the fluid bounced out, and then fell in again. The whole universe rang like a bell, with sound waves of every size at once.
+
+Here is the key trick. All the waves started at the same moment, the beginning, and all of them were stopped at the same moment, when the fog cleared. Small waves vibrate faster than big ones. So at the moment of release, waves of one particular size had had exactly the time to fall in *once*, reaching maximum squeeze; waves half that size had fallen in and bounced back out; and so on. Those "lucky" sizes show up as the strongest spots, and they are the **peaks** of the power spectrum. The distance sound could travel in those 380,000 years, about 500,000 light-years then and 470 million light-years today, is called the **sound horizon**. It is the size of the first-peak spots.
+</Fragment>
+<Fragment slot="l2">
+Inside the horizon, physics had time to act. Before recombination, photons and baryons (ordinary matter) were locked together by scattering into a single fluid. Photons supply pressure, baryons supply mass, and dark matter provides potential wells. A fluid with pressure in a gravitational well oscillates: it falls in, is compressed, heats up, its pressure pushes it out, and it rarefies. These are sound waves.
+
+Treat each wavelength of ripple as a separate oscillator (a mass on a spring, see [Appendix A6](/ch/primer-mechanics/)). A ripple with wavenumber $k$ (smaller blobs, bigger $k$) oscillates as
+
+<KeyEq title="Acoustic oscillations">
+$$
+\frac{\Delta T}{T} + \term{Psi}{\Psi} = \frac{\term{Psi}{\Psi}}{3}\Big[(1+3\term{R}{R})\cos\big(\term{k}{k}\,\term{rs}{r_s}\big) - 3\term{R}{R}\Big], \qquad \term{cs}{c_s} = \frac{\term{c}{c}}{\sqrt{3(1+\term{R}{R})}}
+$$
+<Fragment slot="where"><span data-term="rs">$r_s$</span> is the **sound horizon**, the distance sound travels at speed <span data-term="cs">$c_s$</span> before recombination: 144 Mpc today. <span data-term="R">$R \approx 0.62$</span> measures how much the baryons weigh the fluid down. At recombination the cosine is frozen at whatever phase each mode had reached.</Fragment>
+</KeyEq>
+
+Every mode starts in step, at $\cos 0 = 1$, and recombination stops them all at once. Modes that had just time for half an oscillation ($k r_s = \pi$) were caught at maximum compression; a full oscillation ($k r_s = 2\pi$), at maximum rarefaction. Both extremes give the biggest temperature differences, so **the power spectrum has peaks at $k r_s = \pi, 2\pi, 3\pi, \ldots$**
+</Fragment>
+<Fragment slot="l3">
 Inside the horizon, physics had time to act. Before recombination, photons and baryons were locked together by Thomson scattering into a single fluid. Baryons supply inertia and gravitational mass; photons supply pressure $P = \rho_\gamma c^2/3$. Dark matter, which does not feel the pressure, provides the potential wells. A fluid with pressure in a gravitational well oscillates: it falls in, is compressed, heats up, its pressure pushes it out, and it rarefies. These are sound waves, and the universe was full of them.
 
-Expand the perturbation in Fourier modes of comoving wavenumber $k$. In the tight-coupling limit the photon temperature $\Theta_0$ obeys a driven harmonic oscillator:
+Expand the perturbation in Fourier modes of comoving wavenumber $k$. In the tight-coupling limit the photon temperature $\Theta_0$ obeys a driven harmonic oscillator (differential equations refresher: [Appendix A5](/ch/primer-odes/)):
 
 $$
-\ddot\Theta_0 + \frac{\dot R}{1+R}\,\dot\Theta_0 + k^2 c_s^2\,\Theta_0 = -\frac{k^2}{3}\Psi - \frac{\dot R}{1+R}\dot\Phi + \ddot\Phi,
+\ddot\Theta_0 + \frac{\dot{\term{R}{R}}}{1+\term{R}{R}}\,\dot\Theta_0 + \term{k}{k}^2 \term{cs}{c_s}^2\,\Theta_0 = -\frac{\term{k}{k}^2}{3}\term{Psi}{\Psi} - \frac{\dot{\term{R}{R}}}{1+\term{R}{R}}\dot\Phi + \ddot\Phi,
 $$
 
 where dots are derivatives with respect to conformal time $\eta$ ($d\eta = c\,dt/a$), $\Phi$ and $\Psi$ are the metric potentials, and $R$ is the baryon loading. Take $R$ and the potentials constant (a decent approximation after equality) and the solution with adiabatic initial conditions is
 
 <KeyEq title="Acoustic oscillations">
 $$
-\Theta_0 + \Psi = \frac{\Psi}{3}\Big[(1+3\htmlData{term=R}{R})\cos\big(k\,\htmlData{term=rs}{r_s}\big) - 3\htmlData{term=R}{R}\Big], \qquad \htmlData{term=rs}{r_s} = \int_0^{t_*} \frac{c_s\,dt}{a}, \qquad c_s = \frac{c}{\sqrt{3(1+\htmlData{term=R}{R})}}
+\Theta_0 + \term{Psi}{\Psi} = \frac{\term{Psi}{\Psi}}{3}\Big[(1+3\term{R}{R})\cos\big(\term{k}{k}\,\term{rs}{r_s}\big) - 3\term{R}{R}\Big], \qquad \term{rs}{r_s} = \int_0^{t_*} \frac{\term{cs}{c_s}\,dt}{a}, \qquad \term{cs}{c_s} = \frac{\term{c}{c}}{\sqrt{3(1+\term{R}{R})}}
 $$
 <Fragment slot="where"><span data-term="R">$R = 3\rho_b/4\rho_\gamma \approx 0.62$</span> at $z_*$ is the baryon-to-photon momentum ratio; it grows as $a$. <span data-term="rs">$r_s$</span> is the comoving **sound horizon**, the distance a sound wave travels before recombination: 144.4 Mpc today (0.13 Mpc physical at the time). The sound speed $c_s \approx 0.45c$ at $z_*$, and $c/\sqrt3$ with no baryons.</Fragment>
 </KeyEq>
@@ -144,10 +334,12 @@ $$
 Every mode starts in phase (at $\cos 0 = 1$) because inflation set up all perturbations at once, outside the horizon. Each mode then oscillates at its own frequency $k c_s$. Recombination stops the music all at once: the photons escape carrying whatever phase their mode had reached. Modes that had time for exactly half an oscillation ($k r_s = \pi$) were caught at maximum compression; a full oscillation ($k r_s = 2\pi$), at maximum rarefaction. Both extremes give maximum $|\Theta|$, so **the power spectrum has peaks at**
 
 $$
-k_n\,r_s = n\pi, \qquad n = 1, 2, 3, \ldots
+\term{k}{k}_n\,\term{rs}{r_s} = \term{nmode}{n}\pi, \qquad n = 1, 2, 3, \ldots
 $$
+</Fragment>
+</Tiers>
 
-The coherent starting phase is essential. Random phases would smear the peaks into a featureless continuum. That the peaks exist at all is strong evidence that perturbations were created *before* the modes entered the horizon, which is to say, by something like inflation. Cosmic strings and other "active" seeds, popular in the 1990s, were ruled out this way.
+The coherent starting phase is essential. Random starting times would smear the peaks into a featureless continuum. That the peaks exist at all is strong evidence that the ripples were created *before* they began to oscillate, which is to say, by something like inflation. Cosmic strings and other "active" seeds, popular in the 1990s, were ruled out this way.
 
 <Sim name="cmb-acoustic" size="text" minHeight={420}>
 **Five sound waves, one recombination.** Left: $\Theta_0+\Psi$ for five modes of increasing $k$ in a potential well, as time runs to recombination at $\eta_*$. Right: the square of the frozen amplitude against $k$, which is what the CMB power spectrum measures. When the clock stops, the $k r_s = \pi, 2\pi, 3\pi$ modes are at extremes. Now raise the **baryon loading** $R$: the equilibrium point shifts to $-3R$, so compressions (odd peaks) swing much further than rarefactions (even peaks). Set $R = 0$ and all peaks are equal. Toggle Silk damping to see the high-$k$ modes fade.
@@ -155,55 +347,110 @@ The coherent starting phase is essential. Random phases would smear the peaks in
 
 ### Odd and even peaks: weighing the baryons
 
+<Tiers>
+<Fragment slot="l1">
+Ordinary matter adds weight to the fluid but no springiness. Picture a ball on a spring hanging in a gravity field: add weight and it hangs lower, so it swings further down than up. In the CMB this makes the "squeeze" peaks (1st, 3rd, 5th) taller than the "stretch" peaks (2nd, 4th). By comparing their heights, cosmologists weigh the universe's ordinary matter: about 5% of the total. The answer agrees beautifully with the completely independent estimate from the helium and deuterium made in the first three minutes ([Chapter 26](/ch/big-bang/)).
+</Fragment>
+<Fragment slot="l3">
 Baryons add mass to the oscillator but not pressure. A heavier ball on the same spring, in a gravitational field, settles lower: the equilibrium shifts from $\Theta_0+\Psi = 0$ to $-R\Psi$. The oscillation is now lopsided. Compressions (odd peaks, $n = 1, 3, 5$) reach $|1+6R|\,|\Psi|/3$ while rarefactions (even peaks) reach only $|\Psi|/3$. **The ratio of odd to even peak heights measures $\Omega_b h^2$**, independently of Big Bang nucleosynthesis ([Chapter 26](/ch/big-bang/)). The two methods agree: $\Omega_b h^2 = 0.0224 \pm 0.0001$ from Planck, $0.0222 \pm 0.0005$ from deuterium. Two measurements of the same number, using physics at 3 minutes and at 380,000 years.
 
 The real spectrum's odd/even asymmetry is smaller than the toy model's $(1+6R)^2 \approx 20$, because two effects dilute it. Photons also carry a **Doppler** signal from the fluid velocity, which oscillates as $\sin(kr_s)$ and fills in the troughs. And the projection from 3D wavenumbers onto 2D multipoles blurs each peak.
+</Fragment>
+</Tiers>
 
 <Aside>**The first peak is not at $k r_s = \pi$ exactly.** Potential decay during the radiation era and the finite thickness of the last-scattering shell shift the phases, so that $\ell_n \approx \ell_A(n - \phi_n)$ with $\ell_A = \pi D_M/r_s \approx 302$ and $\phi_1 \approx 0.27$. Hence the first peak at $\ell \approx 220$ rather than 302.</Aside>
 
 ### Radiation driving and the third peak: weighing dark matter
 
+<Tiers>
+<Fragment slot="l1">
+Dark matter leaves its own fingerprint. Early on, when light dominated the universe's energy, the gravity wells kept fading away just as the fluid fell into them, so the fluid rebounded unopposed, like a child pushed on a swing at exactly the right moment. More dark matter means the wells survive better, less of this extra push, and lower peaks. Dark matter also keeps the wells in place at the moment of release, which keeps the third peak as high as the second. Without dark matter, the third peak would be much lower than it is.
+</Fragment>
+<Fragment slot="l3">
 The potentials are not constant. A mode that enters the horizon while radiation dominates sees its potential well *decay*, because radiation pressure prevents the radiation from staying clumped. The fluid falls into a well that then vanishes, so it rebounds with nothing pulling it back: the oscillation is **driven** to about five times the Sachs–Wolfe amplitude. The more dark matter there is, the earlier matter–radiation equality ($z_\text{eq} \approx 3400$ for Planck), the fewer modes are driven, and the *lower* the peaks.
 
 Dark matter also keeps the potential wells in place at recombination, and it is the wells that give baryons their lopsided equilibrium. Without dark matter, the wells on small scales would have decayed, and the third peak would be much lower than the second. The observed third peak, about as high as the second, is one of the cleanest pieces of evidence that dark matter existed at $z \approx 1100$ and is not a modification of gravity: $\Omega_c h^2 = 0.1200 \pm 0.0012$.
+</Fragment>
+</Tiers>
 
 ### Silk damping
 
+<Tiers>
+<Fragment slot="l1">
+The smallest ripples are wiped out. Light in the fluid was not perfectly stuck to the matter: each photon wandered a little way between collisions, and over 380,000 years these random walks blurred out any ripple smaller than about 25,000 light-years (then). That is why the peaks get weaker and weaker beyond the third, and why the CMB has almost no detail finer than a few arcminutes. It is named after Joe Silk, who worked it out in 1968.
+</Fragment>
+<Fragment slot="l3">
 The photon–baryon fluid is not perfectly coupled. Photons random-walk through the electrons with a mean free path $\lambda_\text{mfp} = 1/(n_e\sigma_T)$. By recombination, a photon has diffused a comoving distance $\lambda_D \sim \sqrt{N}\,\lambda_\text{mfp} \sim \sqrt{\lambda_\text{mfp}\,c t}$ (the geometric mean of the mean free path and the horizon), and it erases perturbations smaller than that. This **Silk damping** (Joe Silk, 1968) cuts the spectrum off exponentially, roughly as $e^{-(k/k_D)^2}$ with $k_D^{-1} \approx 8$ Mpc, or $\ell_D \approx 1500$. The damping tail constrains the number of relativistic species ($N_\text{eff} = 2.99 \pm 0.17$, consistent with three neutrinos) and the helium abundance, because both change the ratio of the damping scale to the sound horizon.
+</Fragment>
+</Tiers>
 
 ## Geometry: the flatness measurement
 
+<Tiers>
+<Fragment slot="l1">
+The sound horizon is a ruler of known length: physics tells us how far sound could travel in 380,000 years. Seeing how big it looks on the sky tells us about the shape of space between us and it. On a curved surface like the Earth, "straight" lines that start out parallel can meet (on a globe) or spread apart (on a saddle). In a universe curved like a globe, the ruler would look bigger than expected; in a saddle-shaped one, smaller. The first peak sits exactly where it should for **flat** space, the geometry you learnt at school, to within about 0.2%.
+</Fragment>
+<Fragment slot="l2">
+The sound horizon is a **standard ruler** whose length we can calculate. Measure the angle it subtends on the sky and you learn the distance to last scattering *and the geometry of space in between*. With a small angle in radians, angle = size / distance:
+
+<KeyEq title="The acoustic scale">
+$$
+\term{thetastar}{\theta_*} = \frac{\term{rs}{r_s}}{\term{DM}{D_M}} \approx 0.6°, \qquad \term{l1}{\ell_1} \approx 0.73 \times \frac{\pi}{\term{thetastar}{\theta_*}} \approx 220
+$$
+<Fragment slot="where"><span data-term="rs">$r_s \approx 144$ Mpc</span> is the sound horizon and <span data-term="DM">$D_M \approx 13.9$ Gpc</span> the distance to last scattering (in today's units). The factor 0.73 comes from phase shifts described above. Planck measures $\theta_*$ to 0.03%, the most precise number in cosmology.</Fragment>
+</KeyEq>
+
+In a closed universe, light rays that start parallel converge like lines of longitude on a globe, so the ruler looks *bigger* and the first peak moves to lower $\ell$. In an open universe it looks smaller.
+</Fragment>
+<Fragment slot="l3">
 The sound horizon is a **standard ruler** whose length we can calculate from well-understood physics (the sound speed, and the expansion history before recombination). Measure the angle it subtends and you learn the distance to last scattering *and the geometry of space in between*.
 
 <KeyEq title="The acoustic scale">
 $$
-\theta_* = \frac{r_s}{D_M(z_*)}, \qquad \ell_A = \frac{\pi}{\theta_*} \approx 302, \qquad \ell_1 \approx 0.73\,\ell_A \approx 220
+\term{thetastar}{\theta_*} = \frac{\term{rs}{r_s}}{\term{DM}{D_M}(z_*)}, \qquad \term{lA}{\ell_A} = \frac{\pi}{\term{thetastar}{\theta_*}} \approx 302, \qquad \term{l1}{\ell_1} \approx 0.73\,\term{lA}{\ell_A} \approx 220
 $$
-<Fragment slot="where">$D_M$ is the comoving angular-diameter distance (Chapter 25): $D_M = \chi$ in flat space, $R_c\sinh(\chi/R_c)$ in open space and $R_c\sin(\chi/R_c)$ in closed space, with $R_c = c/(H_0\sqrt{|\Omega_k|})$. Planck measures $100\,\theta_* = 1.04110 \pm 0.00031$: a 0.03% measurement, the most precise number in cosmology.</Fragment>
+<Fragment slot="where"><span data-term="DM">$D_M$</span> is the comoving angular-diameter distance (Chapter 25): $D_M = \chi$ in flat space, $R_c\sinh(\chi/R_c)$ in open space and $R_c\sin(\chi/R_c)$ in closed space, with $R_c = c/(H_0\sqrt{|\Omega_k|})$. Planck measures $100\,\theta_* = 1.04110 \pm 0.00031$: a 0.03% measurement, the most precise number in cosmology.</Fragment>
 </KeyEq>
 
-In a closed universe (positive curvature, $\Omega_k < 0$), light rays that set off parallel converge, like lines of longitude on a globe. A ruler at fixed distance therefore subtends a *larger* angle than in flat space, and the spots look bigger. In an open universe, rays diverge and the spots look smaller. With a sound horizon of <Var name="rs" value={144} min={100} max={200} /> Mpc at a comoving distance of <Var name="DM" value={13.9} min={8} max={20} step={0.1} /> Gpc, the first peak lands at <Out name="ell1" />.
+In a closed universe (positive curvature, $\Omega_k < 0$), light rays that set off parallel converge, like lines of longitude on a globe. A ruler at fixed distance therefore subtends a *larger* angle than in flat space, and the spots look bigger. In an open universe, rays diverge and the spots look smaller.
+</Fragment>
+</Tiers>
 
-In 2000, the BOOMERanG and MAXIMA balloon experiments located the first peak at $\ell \approx 200$. That was the first strong evidence that space is flat, and combined with the supernova results of 1998, it clinched the case for dark energy: matter supplies only $\Omega_m \approx 0.3$, so something else must bring the total to 1.
+With a sound horizon of <Var name="rs" value={144} min={100} max={200} /> Mpc at a distance of <Var name="DM" value={13.9} min={8} max={20} step={0.1} /> Gpc, the first peak lands at <Out name="ell1" />.
+
+In 2000, the BOOMERanG and MAXIMA balloon experiments located the first peak at $\ell \approx 200$. That was the first strong evidence that space is flat, and combined with the supernova results of 1998, it clinched the case for dark energy: matter supplies only about 30% of the critical density, so something else must bring the total to 100%.
 
 <Sim name="cmb-flatness" size="text" minHeight={400}>
 **Triangulating the universe.** Left: rays from the ends of the sound horizon at $z_* \approx 1090$ to us. The bending is exaggerated so you can see it, but the angle readout is computed properly. Right: the resulting power spectrum (with $h$ and the matter densities held at Planck values) against the data. Slide $\Omega_k$ from $-0.15$ (closed) to $+0.15$ (open) and watch the first peak slide across the Planck points. The data allow only a sliver around zero.
 </Sim>
 
-There is a catch, the **geometric degeneracy**: $D_M$ depends on both curvature and $H_0$ (through $\Omega_\Lambda$), so the CMB alone can trade one against the other. Adding baryon acoustic oscillations in galaxy surveys (the same sound horizon, frozen into the matter distribution at lower redshift, [Chapter 28](/ch/structure/)) breaks the degeneracy. Planck plus BAO gives $\Omega_k = 0.0007 \pm 0.0019$. Space is flat to within 0.2%.
+<Level min={2}>
+There is a catch, the **geometric degeneracy**: $D_M$ depends on both curvature and the Hubble constant, so the CMB alone can trade one against the other. Adding baryon acoustic oscillations in galaxy surveys (the same sound horizon, frozen into the matter distribution at lower redshift, [Chapter 28](/ch/structure/)) breaks the degeneracy. Planck plus BAO gives $\Omega_k = 0.0007 \pm 0.0019$. Space is flat to within 0.2%.
+</Level>
 
 <Aside>**Why is space so flat?** A universe that is nearly flat today must have been flat to one part in $10^{60}$ at the Planck time, since curvature grows relative to matter and radiation. Inflation explains this by stretching any initial curvature away, just as the Earth looks flat from your garden.</Aside>
 
 ## Polarisation
 
+<Tiers>
+<Fragment slot="l1">
+The CMB is also slightly **polarised**: its light waves vibrate a little more in one direction than another, like the glare that polarising sunglasses cut out. Light scattered off an electron becomes polarised if the electron is lit more strongly from some directions than others, and the flowing fluid at recombination provided exactly that. The pattern of polarisation directions on the sky comes in two kinds. **E-modes** point straight towards or around hot and cold spots, like spokes or rings. **B-modes** swirl, like a pinwheel, and have a handedness. Ordinary sound waves only make E-modes. B-modes are the prize: they can be made by *gravitational waves* from the first instant of the universe.
+</Fragment>
+<Fragment slot="l3">
 Thomson scattering polarises light. An electron illuminated from all sides with equal intensity scatters unpolarised light. But if the incoming radiation has a **quadrupole anisotropy**, hotter from $\pm x$ than from $\pm y$, the scattered light is linearly polarised. At last scattering, velocity gradients in the acoustic flow produced exactly such local quadrupoles in the last mean free path. About 5% of the temperature anisotropy was converted into polarisation, a few μK.
 
-A polarisation field is described by the Stokes parameters $Q$ and $U$, which transform under rotation like a spin-2 quantity: a headless stick. Just as a vector field in the plane splits into a curl-free gradient part and a divergence-free curl part, a spin-2 field splits into two scalar patterns:
+A polarisation field is described by the Stokes parameters $Q$ and $U$, which transform under rotation like a spin-2 quantity: a headless stick. Just as a vector field in the plane splits into a curl-free gradient part and a divergence-free curl part ([Appendix A3](/ch/primer-vectors/)), a spin-2 field splits into two scalar patterns:
 
 - **E-modes** (gradient-like): sticks are radial or tangential around hot and cold spots, and parallel or perpendicular to the wavevector of a plane wave. They are mirror-symmetric.
 - **B-modes** (curl-like): the same sticks rotated by 45°, forming swirls with a handedness. They flip sign under reflection.
 
 Scalar density perturbations are mirror-symmetric, so at linear order they produce **only E-modes**. The E-mode spectrum, and the TE correlation between temperature and E, were detected by DASI in 2002 and are now measured precisely. They oscillate out of phase with the temperature peaks, exactly as predicted, because polarisation traces the fluid *velocity*.
+</Fragment>
+</Tiers>
+
+<Photo src="/img/cmb/planck-polarization.jpg" alt="All-sky oval map with a fingerprint-like texture of swirling lines over mottled red and blue, showing the direction of CMB polarisation" credit="ESA and the Planck Collaboration" license="CC BY-SA 3.0 IGO" href="https://images.nasa.gov/details/PIA18916" size="wide" aspect="2 / 1">
+**The polarised sky.** Planck's visualisation of CMB polarisation: the colour shows temperature fluctuations, and the fingerprint-like texture traces the direction of polarisation, smoothed to show only large-scale structure. Most of this pattern is E-mode polarisation from the acoustic flow at recombination.
+</Photo>
 
 <Sim name="cmb-polarization" size="text" minHeight={380}>
 **E and B patterns.** Headless sticks show polarisation direction and strength; the colour wash shows the underlying scalar field. Around a hot spot, a pure E-mode is radial then tangential. Slide the **B-mode fraction** to 100% and the same field turns into a swirl: every stick rotates by 45°. Try the single plane wave: E sticks are parallel or perpendicular to the wave crests, B sticks lie at 45°. In the random patch, notice how hard it is to tell E from B by eye. That is why B-mode searches rely on careful harmonic analysis.
@@ -211,24 +458,28 @@ Scalar density perturbations are mirror-symmetric, so at linear order they produ
 
 ### B-modes: gravitational waves and lensing
 
-Gravitational waves are tensor perturbations. They have a handedness, and they produce B-modes as well as E-modes. Inflation predicts a background of primordial gravitational waves with a tensor-to-scalar ratio $r$ related to the energy scale of inflation: $V^{1/4} \approx 1.04\times10^{16}\,\text{GeV}\,(r/0.01)^{1/4}$. Detecting primordial B-modes at $\ell \sim 80$ would be a direct view of physics at energies a trillion times beyond the LHC.
+Gravitational waves ([Chapter 20](/ch/gravitational-waves/)) have a handedness, and they produce B-modes as well as E-modes. Inflation predicts a background of primordial gravitational waves whose strength, measured by the tensor-to-scalar ratio $r$, reveals the energy scale of inflation. <Level min={3} inline>Quantitatively, $V^{1/4} \approx 1.04\times10^{16}\,\text{GeV}\,(r/0.01)^{1/4}$.</Level> Detecting primordial B-modes at $\ell \sim 80$ would be a direct view of physics at energies a trillion times beyond the LHC.
 
-The 2014 BICEP2 claim of $r \approx 0.2$ turned out to be polarised emission from dust grains aligned by the Galactic magnetic field. The current limit, from BICEP/Keck with Planck and WMAP, is $r < 0.036$ (95%), which already excludes the simplest $V \propto \phi^2$ inflation models. The Simons Observatory and the planned LiteBIRD satellite aim for $\sigma(r) \sim 10^{-3}$.
+The 2014 BICEP2 claim of $r \approx 0.2$ turned out to be polarised emission from dust grains aligned by the Galactic magnetic field. The current limit, from BICEP/Keck with Planck and WMAP, is $r < 0.036$ (95%), which already excludes the simplest inflation models. The Simons Observatory and the planned LiteBIRD satellite aim for $\sigma(r) \sim 10^{-3}$.
 
-B-modes also arise from **gravitational lensing**. Large-scale structure deflects CMB photons by about 2 arcminutes, coherent over degrees, which shears the E-mode pattern and leaks part of it into B. Lensing B-modes were detected by SPTpol in 2013, and they are a foreground that must be "delensed" to reach small $r$.
+B-modes also arise from **gravitational lensing** ([Chapter 24](/ch/lensing/)). Large-scale structure deflects CMB photons by about 2 arcminutes, coherent over degrees, which shears the E-mode pattern and leaks part of it into B. Lensing B-modes were detected by SPTpol in 2013, and they are a foreground that must be "delensed" to reach small $r$.
 
-<Aside>**A lensing map of all the mass.** The deflection field of the CMB can be reconstructed from the correlations it induces between different $\ell$ modes. Planck, ACT and SPT have mapped the projected mass out to $z \approx 1100$, detecting lensing at over 40σ. It is the cleanest measurement of the matter distribution on large scales, and it links directly to [Chapter 24](/ch/lensing/).</Aside>
+<Aside>**A lensing map of all the mass.** The deflection field of the CMB can be reconstructed from the correlations it induces between different $\ell$ modes. Planck, ACT and SPT have mapped the projected mass out to $z \approx 1100$, detecting lensing at over 40σ. It is the cleanest measurement of the matter distribution on large scales.</Aside>
 
 ## Secondary anisotropies
 
-The CMB photons have crossed 13.8 Gyr of evolving universe. A few things happened to them on the way:
+The CMB photons have crossed 13.8 billion years of evolving universe. A few things happened to them on the way:
 
-- **Reionisation.** When the first galaxies reionised hydrogen at $z \approx 7$–8, about 5% of CMB photons scattered again. This uniformly suppresses the small-scale anisotropy by $e^{-2\tau}$ and adds a polarisation bump at $\ell \lesssim 10$. Planck measures the optical depth $\tau = 0.054 \pm 0.007$.
-- **The integrated Sachs–Wolfe (ISW) effect.** A photon falling into a potential well gains energy and loses it climbing out. If the well stays the same depth, nothing changes. But when dark energy starts to dominate ($z \lesssim 1$), potentials decay, and a photon gains a net blue-shift crossing a supercluster. The late ISW effect adds power at $\ell \lesssim 20$, and it has been detected by cross-correlating the CMB with galaxy surveys: independent evidence for dark energy.
-- **The Sunyaev–Zel'dovich (SZ) effect.** Hot electrons in galaxy clusters ($k_BT \sim 5$ keV) inverse-Compton scatter CMB photons, shifting them to higher frequency: a Compton-$y$ distortion with $y \sim 10^{-4}$. Below 217 GHz a cluster appears as a *cold* spot, above it as a hot one. The SZ brightness does not dim with redshift, so SZ surveys by ACT, SPT and Planck have found thousands of clusters out to $z \approx 2$.
+- **Reionisation.** When the first galaxies reionised hydrogen at $z \approx 7$–8, about 5% of CMB photons scattered again. This slightly blurs the small-scale pattern and adds a polarisation bump on the largest scales. Planck measures the optical depth $\tau = 0.054 \pm 0.007$.
+- **The integrated Sachs–Wolfe (ISW) effect.** A photon falling into a potential well gains energy and loses it climbing out. If the well stays the same depth, nothing changes. But when dark energy starts to dominate, potentials decay, and a photon gains a net blue-shift crossing a supercluster. The late ISW effect adds power at $\ell \lesssim 20$, and it has been detected by cross-correlating the CMB with galaxy surveys: independent evidence for dark energy.
+- **The Sunyaev–Zel'dovich (SZ) effect.** Hot electrons in galaxy clusters ($k_BT \sim 5$ keV) scatter CMB photons to higher frequency. Below 217 GHz a cluster appears as a *cold* spot, above it as a hot one. The SZ brightness does not dim with redshift, so SZ surveys by ACT, SPT and Planck have found thousands of clusters out to $z \approx 2$ ([Chapter 23](/ch/galaxy-formation/)).
 - **Lensing**, discussed above, smooths the acoustic peaks slightly and transfers power to small scales.
 
 ## Six numbers and one tension
+
+<Level max={1}>
+Put all of this together and the whole CMB, millions of independent numbers, is described by a model with just six adjustable settings: how much ordinary matter, how much dark matter, how big the ruler looks, how cloudy the universe became when stars first lit up, and how strong and how evenly spread across sizes the original ripples were. From them follow the age of the universe (13.8 billion years), its expansion rate today, and the fact that ordinary matter is only 5% of it. The table below is for the curious; the one-sentence version is that a very simple model fits a very detailed picture astonishingly well.
+</Level>
 
 Fit the temperature and polarisation spectra with the six-parameter ΛCDM model and you get (Planck 2018, TT,TE,EE+lowE+lensing):
 
@@ -243,15 +494,22 @@ Fit the temperature and polarisation spectra with the six-parameter ΛCDM model 
 
 Derived: $H_0 = 67.4 \pm 0.5$ km s⁻¹ Mpc⁻¹, $\Omega_m = 0.315 \pm 0.007$, age $13.797 \pm 0.023$ Gyr. The ground-based telescopes now match or beat Planck at small scales. ACT DR6 (2025) and SPT-3G give consistent parameters, and all three combined (with DESI BAO) have shrunk the errors further without moving the central values much.
 
-Two results deserve emphasis. First, $n_s = 0.965$ is **not 1**: a 8σ detection that the primordial spectrum has slightly more power on large scales, just as slow-roll inflation predicts. Second, the value of $H_0$.
+Two results deserve emphasis. First, $n_s = 0.965$ is **not 1**: an 8σ detection that the primordial ripples are slightly stronger on large scales, just as slow-roll inflation predicts. Second, the value of $H_0$.
 
 <Aside>**The ground-based fleet.** The Atacama Cosmology Telescope (6 m, Chile, 2007–2022) and the South Pole Telescope (10 m) mapped the damping tail and polarisation at arcminute resolution. The Simons Observatory (Chile, first light 2024) and the next generation of South Pole instruments are pushing to $\sigma(r) \sim 0.003$ and to $N_\text{eff}$ at the 0.05 level.</Aside>
 
 ### The Hubble tension
 
+<Tiers>
+<Fragment slot="l1">
+The CMB predicts how fast the universe should be expanding today: 67.4 km/s for every megaparsec of distance. Measuring the expansion directly, with pulsating stars and exploding stars in nearby galaxies, gives about 73. Both measurements claim about 1% precision, so they cannot both be right. Either one of them has a subtle error, or the standard model is missing an ingredient, perhaps something that made the sound horizon slightly smaller. Nobody knows yet, and it is one of the most exciting open questions in cosmology.
+</Fragment>
+<Fragment slot="l3">
 The CMB does not measure $H_0$ directly. It measures $\theta_*$ precisely, computes $r_s$ from the fitted densities, and so infers the distance $D_M(z_*)$, which ΛCDM converts into $H_0 = 67.4 \pm 0.5$. The local distance ladder of Cepheids and type Ia supernovae (SH0ES) gives $73.0 \pm 1.0$: a 5σ discrepancy. JWST has confirmed the Cepheid photometry, while an independent ladder calibrated with the tip of the red giant branch (CCHP) finds about 70, in between.
 
 If the tension is real, the most popular resolutions shrink the sound horizon by about 7%, for example with a brief burst of "early dark energy" before recombination, so that the same $\theta_*$ implies a nearer last-scattering surface and a larger $H_0$. Such models are strongly constrained by the damping tail and by ACT DR6, and none is compelling. It remains the biggest open question in the six-parameter model, together with DESI's 2025 hint that dark energy may evolve.
+</Fragment>
+</Tiers>
 
 <Hood title="spherical-harmonic synthesis on the GPU">
 The sky generator computes $T(\theta,\phi) = \sum_{\ell m} a_{\ell m} Y_{\ell m}(\theta,\phi)$ with $a_{\ell m} = \sqrt{C_\ell}\,g_{\ell m}$. Summing $(\ell_\text{max}+1)^2$ harmonics at every pixel directly would cost $O(N_\text{pix}\,\ell_\text{max}^2)$: $5\times10^5$ pixels × $2.6\times10^5$ harmonics at $\ell_\text{max} = 512$ is $10^{11}$ evaluations, far too slow. The trick is that $Y_{\ell m} = \lambda_{\ell m}(\cos\theta)\,e^{im\phi}$ **separates** in latitude and longitude. On an equirectangular grid of $N_\theta$ rings, each with $N_\phi$ pixels:
@@ -298,7 +556,7 @@ for (var l = m; l <= P.lmax; l++) {
 }
 ```
 
-While $e \le -100$ the true value is below $2^{32}\cdot2^{-100} \approx 3\times10^{-21}$, so its contribution is negligible and is skipped; as soon as the exponent climbs above $-100$ the number is folded back into an ordinary f32 (values down to $2^{-126}$ are still normal). The only precision cost is in the seed: $\log_2\lambda_{mm}$ can be around $-1000$, where f32 has a resolution of $6\times10^{-5}$, giving a relative error of about $4\times10^{-5}$ in that mode. The recurrence itself loses a few ulps per step, so after 500 steps the relative error is around $10^{-5}$. That is invisible in a colour map. A production code (HEALPix, libsharp, ducc) does the same thing in double precision to reach $\ell \sim 10^4$ at $10^{-10}$ accuracy.
+While $e \le -100$ the true value is below $2^{32}\cdot2^{-100} \approx 3\times10^{-21}$, so its contribution is negligible and is skipped; as soon as the exponent climbs above $-100$ the number is folded back into an ordinary f32 (values down to $2^{-126}$ are still normal). The only precision cost is in the seed: $\log_2\lambda_{mm}$ can be around $-1000$, where f32 has a resolution of $6\times10^{-5}$, giving a relative error of about $4\times10^{-5}$ in that mode. The recurrence itself loses a few ulps per step, so after 500 steps the relative error is around $10^{-5}$. That is invisible in a colour map. There is one exception, which a test against a double-precision reference exposed: within a degree or so of the poles, $x = \cos\theta$ itself is poorly resolved in f32 ($\delta x \approx 6\times10^{-8}$ means $\delta\theta \approx \delta x/\sin\theta \approx 3\times10^{-5}$ rad on the first ring), so a high-$\ell$ mode picks up a phase error $\ell\,\delta\theta$. For $\ell = 512$, $m = 0$ that is about a 2% amplitude error, confined to a few polar rings; mid-latitudes and lower $\ell$ agree to $10^{-5}$–$10^{-6}$. Feeding the recurrence $\cos\theta$ from a double-precision table (or recurring in $\sin^2(\theta/2)$) would remove it. A production code (HEALPix, libsharp, ducc) does the same thing in double precision to reach $\ell \sim 10^4$ at $10^{-10}$ accuracy.
 
 **The Fourier pass** uses one workgroup of 256 threads per ring segment, loads the $F_m$ into workgroup memory in tiles of 256, and advances $e^{im\phi}$ by complex rotation. Instead of $\cos(m\phi)$ for large $m\phi$ (where f32 argument reduction loses digits) it starts each tile at the exact phase $2\pi\,(m_0 i \bmod N_\phi)/N_\phi$, computed with integers. The random numbers $g_{\ell m}$ come from a hash of $(\text{seed}, \ell, m)$, so the "same sky" survives a change of resolution.
 
@@ -307,4 +565,11 @@ While $e \le -100$ the true value is below $2^{32}\cdot2^{-100} \approx 3\times1
 
 ## Where we go from here
 
+<Tiers>
+<Fragment slot="l1">
+The CMB is a baby picture of the universe at 380,000 years old: almost perfectly smooth, with ripples of one part in a hundred thousand. Those same ripples, in the dark matter, are the seeds of every galaxy. In the next chapter gravity gets 13.8 billion years to amplify them, and you can watch the cosmic web of galaxies grow on your own screen.
+</Fragment>
+<Fragment slot="l2">
 The CMB is a snapshot of the universe at 380,000 years: nearly uniform, with Gaussian ripples of one part in $10^5$ whose statistics are fixed by six numbers. The same ripples, in the dark matter, are the seeds of every galaxy. In [Chapter 28](/ch/structure/) we let gravity amplify them for 13.8 billion years with a particle-mesh code, and watch the cosmic web emerge, with the sound horizon still faintly visible as the 150 Mpc BAO bump in the galaxy distribution.
+</Fragment>
+</Tiers>

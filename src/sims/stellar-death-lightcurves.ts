@@ -58,9 +58,6 @@ export default defineSim({
       y: { min: 0.03, max: 30, log: true, label: 'relative luminosity' },
       title: 'Supernova light curves',
     });
-    stage.onResize((w, h, dpr) => { plot.resize(w, h, dpr); draw(); });
-    onThemeChange(() => { pal = palette(); draw(); });
-
     let mNi = 0.6; // Msun of 56Ni synthesised (Phillips relation driver)
     let type: 'Ia' | 'IIP' = 'Ia';
     const days: number[] = [];
@@ -99,7 +96,8 @@ export default defineSim({
         }
       });
     }
-    draw();
+    stage.onResize((w, h, dpr) => { plot.resize(w, h, dpr); draw(); });
+    onThemeChange(() => { pal = palette(); draw(); });
 
     return { setVisible() {}, destroy() {} };
   },

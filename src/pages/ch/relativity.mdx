@@ -15,12 +15,45 @@ import Out from '../../components/Out.astro';
 import Tiers from '../../components/Tiers.astro';
 import Level from '../../components/Level.astro';
 import Photo from '../../components/Photo.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+
+<Terms defs={{
+  gam: ['Lorentz factor γ', 'The single number that measures how relativistic a motion is: 1 at rest, 2 at 87% of c, unbounded as v → c. Clocks slow and lengths shrink by this factor.'],
+  beta: ['Speed as a fraction of c, β = v/c', 'Relativity cares about speed only through β; everyday speeds have β ~ 10⁻⁶, jets and cosmic rays have β within a hair of 1.'],
+  v: ['Relative speed of the two frames', 'Enters only in the ratio v/c: that is why Newton works so well at low speed.'],
+  t: ['Time of an event in frame S', 'Mixed with position by a boost: the clock reading assigned to an event depends on the frame.'],
+  x: ['Position of an event along the direction of motion, in S', 'Mixes into the other frame\'s time through vx/c²: that term is the relativity of simultaneity.'],
+  tp: ['Coordinates of the event in the moving frame S′', 'The same event, relabelled by an observer moving at v; boosts rearrange time and space but never the interval.'],
+  xp: ['Position in the moving frame S′', 'Shifted by vt as in Galilean relativity, then stretched by γ.'],
+  dt: ['Coordinate time between two events', 'The time a stationary observer assigns; always at least as long as the proper time.'],
+  dtau: ['Proper time', 'The time recorded by a clock that is present at both events; every observer agrees on it.'],
+  L: ['Mirror separation of the light clock', 'Sets the tick length; it cancels out of the time-dilation factor, so any clock gives the same γ.'],
+  ds2: ['Spacetime interval', 'The Minkowski analogue of distance squared, identical in every inertial frame; its sign tells timelike from spacelike.'],
+  dx: ['Spatial separation of the two events', 'Enters with a minus sign: space and time are measured with opposite signs, so spatial distance reduces the interval.'],
+  E: ['Total energy', 'Rest energy plus kinetic energy, γmc²; the time component of the four-momentum.'],
+  p: ['Momentum', 'γmv for a massive particle, E/c for light; its square is subtracted, like the spatial part of the interval.'],
+  m: ['Rest mass', 'The invariant length of the four-momentum; the same for every observer. Zero for photons.'],
+  delta: ['Doppler factor δ', 'Ratio of observed to emitted frequency; brightness scales as a power of it, so a factor of 10 in δ can mean 10⁴ in flux.'],
+  thobs: ['Angle to the direction of motion, observer\'s frame', 'Where you see the source; small angles (head-on) give the strongest blueshift.'],
+  th: ['Angle to the direction of motion, source frame', 'Where the source is (or emits) in its own frame; aberration maps it forward to θ′.'],
+  btot: ['Combined speed of two boosts', 'Always below 1 when both inputs are: the denominator grows exactly fast enough.'],
+  b12: ['The two speeds being combined', 'Each a fraction of c; their product in the denominator is the relativistic correction, negligible at everyday speeds.'],
+  nuc: ['Synchrotron characteristic frequency', 'Where the spectrum of one electron peaks; γ² means a tenfold more energetic electron shines a hundredfold higher in frequency.'],
+  nug: ['Gyrofrequency eB/2πm_e', '2.8 MHz per gauss: how often a slow electron circles the field line.'],
+  pitch: ['Pitch angle', 'Angle between the electron\'s velocity and the magnetic field; only the perpendicular motion radiates.'],
+  bapp: ['Apparent transverse speed, in units of c', 'Can exceed 1 because the source nearly keeps up with its own light; maximal (γβ) when cos θ = β.'],
+  Inu: ['Specific intensity', 'Brightness per unit frequency, area, time and solid angle; it changes between frames, but I_ν/ν³ does not.'],
+  nu: ['Frequency', 'Cubed because phase-space density, not brightness, is what every observer agrees on.'],
+}} />
 
 ## Two postulates
 
 Until now, speeds in this course have been small. Planets orbit at tens of km/s. Gas in a stellar interior moves at hundreds. That is $10^{-4}$ of the speed of light, and Newton's mechanics is fine to one part in $10^{8}$. From here on, that changes. The remnants of dead stars in [Chapter 16](/ch/stellar-death/) power jets and winds that move at $0.9c$ and beyond. Particles in pulsar winds reach Lorentz factors of $10^{6}$. The fireballs of gamma-ray bursts expand at $0.99995c$. To interpret any of that light, we need **special relativity** (SR).
 
-Einstein built it in 1905 on two postulates:
+Einstein built it in 1905 on two postulates (for a refresher on waves and light, see [Appendix A8](/ch/primer-waves/)):
 
 1. **The principle of relativity.** The laws of physics are the same in every *inertial frame*, meaning every frame that moves at constant velocity with no rotation. No experiment done inside a sealed, smoothly moving laboratory can tell you how fast it is moving.
 2. **The constancy of the speed of light.** Light in vacuum travels at $c = 299\,792\,458$ m/s in every inertial frame, whatever the motion of its source.
@@ -30,6 +63,12 @@ The first postulate was already true of Newtonian mechanics (Galileo's ship). Th
 <Aside>**Why the metre is exact.** Since 1983 the metre has been *defined* as the distance light travels in 1/299 792 458 s. The speed of light is not measured any more. It fixes the relationship between our units of length and time. Relativity says those are two directions in one geometry, so a fixed conversion factor makes sense. We will often set $c = 1$ and measure distance in light-years and time in years.</Aside>
 
 If both postulates hold, something else has to give. That something is the idea that time is the same for everyone.
+
+<History title="A patent clerk's year" year="1905">
+<Portrait src="/img/people/einstein.jpg" name="Albert Einstein" years="1879–1955" credit="Ferdinand Schmutzer, 1921" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Einstein_1921_by_F_Schmutzer_-_restoration.jpg" />
+
+In 1905 Albert Einstein was 26, a "technical expert, third class" at the Swiss patent office in Bern, with no academic job. In that one year he published papers on the photoelectric effect (light comes in quanta), on Brownian motion (atoms are real), and, in June, "On the electrodynamics of moving bodies", which contained all of special relativity. A September note added $E = mc^2$. His starting point was an asymmetry in electromagnetism: a magnet moving past a coil and a coil moving past a magnet produce the same current, but the theory of the day explained the two cases differently. Einstein decided the asymmetry was the clue. The paper had no references. Much of the mathematics was already in the work of Lorentz and Poincaré, and Einstein credited his friend Michele Besso for discussions. What was new was the reading: the ether was "superfluous", and time itself had to be redefined through the synchronisation of clocks by light signals. Clock synchronisation was a live practical problem at the time, and patent applications for it may have passed across his desk. Recognition was slow; his 1921 Nobel Prize was awarded for the photoelectric effect, not relativity.
+</History>
 
 ### The light clock
 
@@ -48,13 +87,13 @@ Now watch the same clock fly past at speed $v$, with the mirrors perpendicular t
 $$
 \left(\frac{c\,\Delta t}{2}\right)^2 = L^2 + \left(\frac{v\,\Delta t}{2}\right)^2
 \quad\Longrightarrow\quad
-\Delta t = \frac{2L/c}{\sqrt{1 - v^2/c^2}} = \gamma\,\Delta\tau .
+\term{dt}{\Delta t} = \frac{2\term{L}{L}/\term{c}{c}}{\sqrt{1 - \term{v}{v}^2/\term{c}{c}^2}} = \term{gam}{\gamma}\,\term{dtau}{\Delta\tau} .
 $$
 
 The factor
 
 $$
-\gamma = \frac{1}{\sqrt{1-\beta^2}}, \qquad \beta = \frac{v}{c},
+\term{gam}{\gamma} = \frac{1}{\sqrt{1-\term{beta}{\beta}^2}}, \qquad \term{beta}{\beta} = \frac{\term{v}{v}}{\term{c}{c}},
 $$
 
 is the **Lorentz factor**, and it runs through the whole chapter. Moving clocks tick slowly: $\Delta t = \gamma\,\Delta\tau$. This is not an illusion of signal delays, and it is not a quirk of light clocks. By postulate 1, *every* clock must agree with the light clock riding next to it, including atomic clocks, radioactive decay and heartbeats. Otherwise you could tell you were moving.
@@ -80,6 +119,8 @@ The rule that converts where and when an event happens, from one observer's poin
 
 We need three ingredients.
 
+(Matrix-free, but you should be at ease with frames and components: [Appendix A3](/ch/primer-vectors/).)
+
 **Linearity.** A free particle moves in a straight line at constant speed in every inertial frame, so the map must send straight lines to straight lines. It must be linear. Motion along $x$ cannot affect $y$ and $z$ (a symmetry argument: otherwise, which way would a perpendicular metre stick shrink?), so $y' = y$ and $z' = z$. That leaves
 
 $$
@@ -99,8 +140,8 @@ $$
 <KeyEq title="The Lorentz transformation (boost along x)">
 $$
 \begin{aligned}
-\htmlData{term=tp}{t'} &= \htmlData{term=gam}{\gamma}\left(t - \frac{v\,x}{c^2}\right) \\
-x' &= \htmlData{term=gam}{\gamma}\,(x - v\,t) \\
+\term{tp}{t'} &= \term{gam}{\gamma}\left(\term{t}{t} - \frac{\term{v}{v}\,\term{x}{x}}{\term{c}{c}^2}\right) \\
+\term{xp}{x'} &= \term{gam}{\gamma}\,(\term{x}{x} - \term{v}{v}\,\term{t}{t}) \\
 y' &= y, \qquad z' = z
 \end{aligned}
 $$
@@ -123,7 +164,13 @@ The newcomer is the $-vx/c^2$ term in $t'$. It says that the time you assign to 
 
 ## The geometry of spacetime
 
-Hermann Minkowski, Einstein's former maths teacher, saw in 1908 that all of this is geometry. Draw events on a diagram with $x$ across and $ct$ up. Light rays are the lines at 45°. The worldline of anything slower than light is steeper than 45°.
+<History title="&quot;Space by itself and time by itself…&quot;" year="1908">
+<Portrait src="/img/people/minkowski.jpg" name="Hermann Minkowski" years="1864–1909" credit="Frontispiece of Raum und Zeit (1909)" license="Public domain" href="https://commons.wikimedia.org/wiki/File:De_Raum_zeit_Minkowski_Bild_(cropped).jpg" />
+
+Hermann Minkowski had taught Einstein mathematics at the ETH in Zürich, and was not impressed; he reportedly called his student a "lazy dog" who never bothered with mathematics. In September 1908, in a lecture in Cologne, he returned the compliment in the grandest way. He opened with a line that is still quoted: from now on, space by itself and time by itself were doomed to fade into mere shadows, and only a union of the two would preserve an independent reality. He showed that the Lorentz transformation is a rotation in a four-dimensional geometry with the interval as its invariant, and drew the first spacetime diagrams, with light cones and hyperbolae. Einstein at first dismissed this as "superfluous learnedness". Within a few years he realised that he could not build general relativity without it. Minkowski did not see that: he died of appendicitis in January 1909, aged 44.
+</History>
+
+Minkowski saw that all of this is geometry. Draw events on a diagram with $x$ across and $ct$ up. Light rays are the lines at 45°. The worldline of anything slower than light is steeper than 45°.
 
 ### The invariant interval
 
@@ -137,7 +184,7 @@ Rotations in ordinary space change $x$ and $y$ but preserve $x^2 + y^2$. Lorentz
 
 <KeyEq title="The spacetime interval">
 $$
-\Delta s^2 = c^2\Delta t^2 - \Delta x^2 - \Delta y^2 - \Delta z^2 = c^2\,\Delta\tau^2
+\term{ds2}{\Delta s^2} = \term{c}{c}^2\term{dt}{\Delta t}^2 - \term{dx}{\Delta x}^2 - \term{dx}{\Delta y}^2 - \term{dx}{\Delta z}^2 = \term{c}{c}^2\,\term{dtau}{\Delta\tau}^2
 $$
 <Fragment slot="where">$\Delta s^2$ is the same in every inertial frame. If $\Delta s^2 > 0$ the separation is **timelike**: some observer can be present at both events, and $\Delta\tau = \Delta s/c$ is the time their clock records between them (the **proper time**). If $\Delta s^2 = 0$ the events can be joined by a light ray (**lightlike**). If $\Delta s^2 < 0$ they are **spacelike**: no signal can connect them, and different observers disagree about their order.</Fragment>
 </KeyEq>
@@ -155,6 +202,8 @@ The **light cone** of an event divides spacetime into three regions. Its future 
 The proper time along any worldline is the sum of its intervals<Level min={2} inline>: on each stretch of constant speed a clock records the elapsed time divided by γ</Level>.
 
 <Level min={3}>
+
+(Integrals: [Appendix A4](/ch/primer-calculus/).)
 
 $$
 \tau = \int \sqrt{1 - \frac{v(t)^2}{c^2}}\;dt = \int \frac{dt}{\gamma(t)} .
@@ -198,9 +247,9 @@ Why call $\gamma mc^2$ the energy? Expand it for small $v$: $\gamma mc^2 \approx
 
 <KeyEq title="The energy–momentum relation">
 $$
-E^2 = (\htmlData{term=pc}{p c})^2 + (\htmlData{term=mc2}{m c^2})^2
+\term{E}{E}^2 = (\term{p}{p}\, \term{c}{c})^2 + (\term{m}{m}\, \term{c}{c}^2)^2
 $$
-<Fragment slot="where">$E$ is the total energy, $p$ the magnitude of the momentum and $m$ the (invariant) rest mass. For a particle at rest, <span data-term="mc2">$E = mc^2$</span>, the rest energy. For a photon, $m = 0$ and <span data-term="pc">$E = pc$</span>. For an ultra-relativistic particle ($E \gg mc^2$), $E \approx pc$ and $\gamma = E/mc^2$. A 10 TeV proton has $\gamma \approx 10^4$.</Fragment>
+<Fragment slot="where">$E$ is the total energy, $p$ the magnitude of the momentum and $m$ the (invariant) rest mass. For a particle at rest, <span data-term="m">$E = mc^2$</span>, the rest energy. For a photon, $m = 0$ and <span data-term="p">$E = pc$</span>. For an ultra-relativistic particle ($E \gg mc^2$), $E \approx pc$ and $\gamma = E/mc^2$. A 10 TeV proton has $\gamma \approx 10^4$.</Fragment>
 </KeyEq>
 
 Photons carry momentum $E/c$, so light exerts pressure. That radiation pressure sets the Eddington limit on the luminosity of accreting objects ([Chapter 19](/ch/black-holes/)) and holds up massive stars. The equation also tells you the threshold for making new particles. For two photons to make an electron–positron pair, their combined invariant mass must exceed $2m_ec^2 = 1.022$ MeV. This process makes GRB fireballs opaque unless they move very fast, as we will see.
@@ -231,7 +280,7 @@ If a spaceship moving at 90% of light speed fires a probe forward at 90% of ligh
 Add two speeds of $0.9c$ Galilean-style and you get $1.8c$. The Lorentz transformation gives something else. Compose two boosts, and the velocities combine as
 
 $$
-\beta_{\text{tot}} = \frac{\beta_1 + \beta_2}{1 + \beta_1\beta_2},
+\term{btot}{\beta_{\text{tot}}} = \frac{\term{b12}{\beta_1} + \term{b12}{\beta_2}}{1 + \term{b12}{\beta_1}\term{b12}{\beta_2}},
 $$
 
 which gives $0.994c$, never more than 1. No sum of speeds below $c$ ever reaches $c$.
@@ -240,7 +289,7 @@ which gives $0.994c$, never more than 1. No sum of speeds below $c$ ever reaches
 Add two speeds of $0.9c$ Galilean-style and you get $1.8c$. The Lorentz transformation gives something else. Compose two boosts, and the velocities combine as
 
 $$
-\beta_{\text{tot}} = \frac{\beta_1 + \beta_2}{1 + \beta_1\beta_2},
+\term{btot}{\beta_{\text{tot}}} = \frac{\term{b12}{\beta_1} + \term{b12}{\beta_2}}{1 + \term{b12}{\beta_1}\term{b12}{\beta_2}},
 $$
 
 which gives $0.994c$, never more than 1. The formula looks messy until you notice that it is the addition law for the hyperbolic tangent. Define the **rapidity** $\varphi$ by $\beta = \tanh\varphi$. Then $\gamma = \cosh\varphi$, $\gamma\beta = \sinh\varphi$, and
@@ -249,7 +298,7 @@ $$
 \varphi_{\text{tot}} = \varphi_1 + \varphi_2 .
 $$
 
-Rapidities simply add. A boost is a hyperbolic rotation by angle $\varphi$, exactly as the diagram suggested. A rocket with constant proper acceleration $a$ gains rapidity at a steady rate, $\varphi = a\tau/c$. At 1 $g$ you would reach $\gamma = 1000$ ($\varphi = 7.6$) in 7.4 years of ship time. Rapidity is also the right variable for computers, as we will see in the flight simulator: near $\beta = 1$, $\beta$ itself runs out of digits, but $\varphi$ does not.
+Rapidities simply add (the hyperbolic functions are covered in [Appendix A2](/ch/primer-functions/)). A boost is a hyperbolic rotation by angle $\varphi$, exactly as the diagram suggested. A rocket with constant proper acceleration $a$ gains rapidity at a steady rate, $\varphi = a\tau/c$. At 1 $g$ you would reach $\gamma = 1000$ ($\varphi = 7.6$) in 7.4 years of ship time. Rapidity is also the right variable for computers, as we will see in the flight simulator: near $\beta = 1$, $\beta$ itself runs out of digits, but $\varphi$ does not.
 
 </Fragment>
 </Tiers>
@@ -287,9 +336,9 @@ The time component of the same transformation gives the photon's energy. The obs
 
 <KeyEq title="Doppler factor and aberration">
 $$
-\htmlData{term=delta}{\delta} = \frac{1}{\gamma\,(1 - \beta\cos\htmlData{term=thobs}{\theta'})} = \gamma\,(1 + \beta\cos\theta),
+\term{delta}{\delta} = \frac{1}{\term{gam}{\gamma}\,(1 - \term{beta}{\beta}\cos\term{thobs}{\theta'})} = \term{gam}{\gamma}\,(1 + \term{beta}{\beta}\cos\term{th}{\theta}),
 \qquad
-\cos\htmlData{term=thobs}{\theta'} = \frac{\cos\theta + \beta}{1 + \beta\cos\theta}
+\cos\term{thobs}{\theta'} = \frac{\cos\term{th}{\theta} + \term{beta}{\beta}}{1 + \term{beta}{\beta}\cos\term{th}{\theta}}
 $$
 <Fragment slot="where"><span data-term="delta">$\delta$</span> is the ratio of observed to emitted frequency, $\beta = v/c$ is the relative speed and $\gamma$ its Lorentz factor. <span data-term="thobs">$\theta'$</span> is the angle between the relative velocity and the line of sight, measured in the observer's frame, and $\theta$ is the same angle in the source's frame. Head-on, $\delta = \sqrt{(1+\beta)/(1-\beta)} \approx 2\gamma$. Straight behind, $\delta = 1/(2\gamma)$ approximately. The same formula applies whether you move or the source does; only the relative velocity matters.</Fragment>
 </KeyEq>
@@ -308,7 +357,7 @@ How much brighter does an approaching source look? A lot. A glowing blob of gas 
 How bright does a moving source look? The cleanest route uses one of the deep facts of radiative transfer: the specific intensity divided by $\nu^3$ is a Lorentz invariant,
 
 $$
-\frac{I_\nu}{\nu^3} = \text{invariant}.
+\frac{\term{Inu}{I_\nu}}{\term{nu}{\nu}^3} = \text{invariant}.
 $$
 
 It is (up to constants) the photon occupation number in phase space, and phase-space density is the same in every frame. Integrate over frequency and the bolometric intensity scales as $I \propto \delta^4$. Apply it to a blackbody, $I_\nu = B_\nu(T)$, and you find that a Doppler-shifted blackbody is *exactly* another blackbody, at temperature $\delta T$. That is how we know the CMB dipole is our motion: in the direction of Leo we see the 2.7255 K background hotter by 3.36 mK, a Doppler factor of $1 + 0.00123$, or 370 km/s.
@@ -422,7 +471,7 @@ The same factor, in reverse, hides the counter-jet. The ratio of approaching to 
 Relativistic electrons spiralling in magnetic fields make **synchrotron radiation**, the dominant non-thermal emission of the universe: radio galaxies, supernova remnants, pulsar wind nebulae, GRB afterglows. Relativity shapes its spectrum. A non-relativistic electron gyrating at frequency $\nu_g = eB/2\pi m_e$ ($2.8$ MHz per gauss) radiates at $\nu_g$, like a dipole antenna. A relativistic electron beams its radiation into a cone of width $1/\gamma$ that sweeps past us once per orbit. We receive a brief pulse, shortened by another factor of $\gamma^2$ by the same arrival-time compression as the GRB shell. The spectrum peaks near
 
 $$
-\nu_c \approx \tfrac32\,\gamma^2\,\nu_g \sin\alpha .
+\term{nuc}{\nu_c} \approx \tfrac32\,\term{gam}{\gamma}^2\,\term{nug}{\nu_g} \sin\term{pitch}{\alpha} .
 $$
 
 An electron with $\gamma =$ <Var name="gsync" value={10000} min={10} max={1e8} log /> in a <Var name="Bsync" value={10} min={0.1} max={1e9} log /> μG field radiates near <Out name="nuSync" />. With the interstellar field of a few μG, GeV electrons make radio waves. To make the Crab Nebula's X-rays in its field of a few hundred μG you need $\gamma \sim 10^{7}$–$10^{8}$, electrons of 5–50 TeV. A power-law distribution of electron energies gives the power-law radio spectra, $F_\nu \propto \nu^{-\alpha}$ with $\alpha \approx 0.7$, that appeared in the blazar formula above.
@@ -440,7 +489,7 @@ Some jets appear to move across the sky faster than light. They aren't: a blob r
 Radio interferometers watching the blobs in quasar jets find them moving across the sky at up to $50c$ in apparent speed. This is not a violation of relativity. It is another time-of-flight effect. A blob moving at $\beta$ at angle $\theta$ to the line of sight has an apparent transverse speed
 
 $$
-\beta_{\text{app}} = \frac{\beta\sin\theta}{1 - \beta\cos\theta},
+\term{bapp}{\beta_{\text{app}}} = \frac{\term{beta}{\beta}\sin\term{thobs}{\theta}}{1 - \term{beta}{\beta}\cos\term{thobs}{\theta}},
 $$
 
 which has a maximum of $\gamma\beta$ at $\cos\theta = \beta$. Observing $\beta_{\text{app}} = 10$ tells you that $\gamma \ge 10$. [Chapter 23](/ch/galaxy-formation/) takes this up with the jets themselves.

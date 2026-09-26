@@ -38,9 +38,6 @@ export default defineSim({
     let pal = palette();
     const stage = createStage(host, { aspect: 21 / 9, maxDpr: 2 });
     const ctx = stage.canvas.getContext('2d')!;
-    stage.onResize(() => draw());
-    onThemeChange(() => { pal = palette(); draw(); });
-
     let mass = 15; // Msun
     let z: Z = 'solar';
     const MMIN = 0.08, MMAX = 300;
@@ -100,7 +97,8 @@ export default defineSim({
       const hit = bs.find((b) => mass >= b.lo && mass < b.hi) ?? bs[bs.length - 1];
       roFate.set(`${hit.label} — ${hit.desc}`);
     }
-    draw();
+    stage.onResize(() => draw());
+    onThemeChange(() => { pal = palette(); draw(); });
 
     return { setVisible() {}, destroy() {} };
   },

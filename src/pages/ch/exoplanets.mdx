@@ -12,14 +12,55 @@ import Predict from '../../components/Predict.astro';
 import C from '../../components/C.astro';
 import Var from '../../components/Var.astro';
 import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Photo from '../../components/Photo.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  K: ['RV semi-amplitude', 'The peak-to-mean speed of the star\'s reflex wobble along our line of sight. This is the number a spectrograph actually measures.'],
+  P: ['Orbital period', 'Time for one full orbit. Sets the pace of everything: shorter periods mean faster, easier-to-measure wobbles and more frequent transits.'],
+  mp: ['Planet mass', 'What we are trying to weigh. Appears in the numerator: a heavier planet tugs its star around more.'],
+  Mstar: ['Star mass', 'Usually known independently from the star\'s spectrum and models. Appears to the 2/3 power, so a factor-of-2 error in stellar mass only shifts the inferred planet mass by about 60%.'],
+  i: ['Orbital inclination', 'Angle between the orbit\'s spin axis and our line of sight. Only the sin i part of the planet\'s pull projects onto the direction we can measure — face-on orbits (i near 0) hide the wobble entirely.'],
+  ecc: ['Orbital eccentricity', 'How stretched the ellipse is (0 = circle). Enters as 1/sqrt(1-e^2): highly eccentric orbits need a bigger correction because the star\'s speed varies more around the orbit.'],
+  Rp: ['Planet radius', 'Sets how much starlight the planet blocks during a transit. Squared in the depth formula, so it is the size, not the mass, that transits measure directly.'],
+  Rstar: ['Star radius', 'The disk being partially blocked. Also squared, and in the denominator: a bigger star means a shallower, harder-to-see transit for the same planet.'],
+  delta: ['Transit depth', 'Fractional dip in brightness during transit — the direct observable of the transit method.'],
+  b: ['Impact parameter', 'How far off-centre the planet\'s path crosses the star, in stellar radii. b=0 is dead centre; b > 1 + Rp/R* means no transit at all.'],
+  aHZ: ['Habitable-zone distance', 'Orbital distance at fixed equilibrium temperature (fixed insolation) as the star\'s luminosity changes.'],
+  Lstar: ['Stellar luminosity', 'Total power radiated by the star. Insolation falls off as 1/a^2, so matching it as L changes requires moving the habitable zone outward as the square root of L.'],
+}} />
 
 ## Why this is hard
 
-Start with the numbers. The Sun outshines Jupiter by a factor of about $2\times10^9$ in reflected visible light, and outshines the Earth by nearly $10^{10}$. In infrared, where a warm young Jupiter glows from its own leftover formation heat, the contrast improves to "only" $10^6$–$10^7$ — still brutal. Now add geometry: at 10 pc, 1 AU subtends 0.1 arcseconds, comparable to the diffraction limit of a single large ground-based telescope and swamped by atmospheric seeing. You are asked to detect a firefly next to a lighthouse, from another city, through fog.
+<Photo src="/img/exoplanets/tess-spacecraft.jpg" alt="The TESS spacecraft, wrapped for transport, being moved on a trolley into a clean-room facility ahead of launch" credit="NASA / Kim Shiflett" license="Public domain" href="https://images.nasa.gov/details/KSC-20180212-PH_JBS01_0131" size="wide" aspect="3 / 2">
+**A planet-hunting machine, before launch.** NASA's Transiting Exoplanet Survey Satellite (TESS) at Kennedy Space Center in February 2018, days before it shipped to the launch pad. TESS stares at bright, nearby stars across nearly the whole sky, watching for the tiny periodic dimmings this chapter is about.
+</Photo>
+
+<Tiers>
+<Fragment slot="l1">
+A star is enormously brighter than any planet going round it, and the two of them sit so close together in the sky, seen from Earth, that no camera can tell them apart. The Sun outshines Jupiter by roughly two billion times in ordinary light, and outshines the Earth by ten billion times. Meanwhile, from the distance of a nearby star, the gap between a planet and its star on the sky is like the width of a coin viewed from several kilometres away. You are being asked to spot a firefly next to a lighthouse, from another city, in the fog.
+</Fragment>
+<Fragment slot="l2">
+Start with the numbers. The Sun outshines Jupiter by a factor of about $2\times10^9$ in reflected visible light, and outshines the Earth by nearly $10^{10}$. In infrared, where a warm young Jupiter glows from its own leftover formation heat, the contrast improves to "only" $10^6$–$10^7$ — still brutal. Now add geometry: at 10 pc, 1 AU subtends 0.1 arcseconds, comparable to the diffraction limit of a single large ground-based telescope and swamped by atmospheric seeing.
+</Fragment>
+<Fragment slot="l3">
+Start with the numbers. The Sun outshines Jupiter by a factor of about $2\times10^9$ in reflected visible light, and outshines the Earth by nearly $10^{10}$. In infrared, where a warm young Jupiter glows from its own leftover formation heat, the contrast improves to "only" $10^6$–$10^7$ — still brutal. Now add geometry: at 10 pc, 1 AU subtends 0.1 arcseconds, comparable to the diffraction limit of a single large ground-based telescope and swamped by atmospheric seeing (angular resolution $\theta\sim1.22\lambda/D$; see [Appendix A8](/ch/primer-waves/) for the diffraction background). You are asked to detect a firefly next to a lighthouse, from another city, through fog.
+</Fragment>
+</Tiers>
 
 <Aside>**Two numbers, one problem.** Contrast and angular separation are not independent difficulties — they compound. A planet close enough to its star to be warm (and interesting) is also close enough, in angle, to be lost in the star's glare. This is why the two most successful techniques, radial velocity and transits, don't even try to see the planet: they infer it from what it does to the star's light.</Aside>
 
 This chapter is about the workarounds. Three of them — radial velocity, transits and direct imaging — dominate the ~6,000+ confirmed planets known by 2026 (NASA Exoplanet Archive; the count keeps climbing weekly as TESS and ground-based surveys report new candidates). A fourth, gravitational microlensing, gets a brief mention here and its own treatment in [Chapter 24](/ch/lensing/). We'll build up the physics of each method, then spend real time on the *statistics*: periodograms, box-fitting, phase-folding and the false positives that make this a data-analysis problem as much as an observational one.
+
+<History title="A pulsar's clock, thrown off by two invisible worlds" year="1992">
+<Portrait src="/img/people/wolszczan.jpg" name="Aleksander Wolszczan" years="b. 1946" credit="Jacek 767, Polish Wikipedia" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Aleksander_Wolszczan_(2007).jpg" />
+
+The first confirmed exoplanets were not found around an ordinary star at all. Aleksander Wolszczan and Dale Frail were timing the millisecond pulsar PSR B1257+12 — a rapidly spinning neutron star ([Chapter 18](/ch/neutron-stars/)) whose radio pulses arrive with clockwork regularity — when they noticed the arrival times wobbling periodically, by milliseconds, in a pattern that repeated with two (later three) distinct periods. The explanation: two or three small planets, a few Earth masses each, tugging the pulsar back and forth exactly as a planet tugs an ordinary star in the radial-velocity method, except measured through timing residuals instead of Doppler shifts. Announced in 1992, three years before 51 Pegasi b, they remain the first planets confirmed outside our solar system — orbiting a stellar corpse rather than a living star, in a system that must have survived (or re-formed after) the supernova that made the pulsar.
+</History>
 
 ## Radial velocity: watching the star wobble
 
@@ -27,18 +68,34 @@ A planet doesn't just orbit its star — the star orbits the planet too, both of
 
 ### Deriving the semi-amplitude
 
+<Tiers>
+<Fragment slot="l1">
+The star doesn't sit still — it circles the same balance point (the barycentre) that the planet does, just on a much smaller loop, because the planet pulls back on it exactly as hard as the star pulls on the planet. We can't see that tiny loop directly, but we can catch the star nudging toward and away from us, once per orbit, in the colour of its light: light gets very slightly bluer as the star approaches and redder as it recedes (a Doppler shift, the same effect that changes a passing ambulance siren's pitch). A heavier planet, or a closer/faster orbit, makes a bigger nudge.
+</Fragment>
+<Fragment slot="l2">
+Take the two-body problem with star mass $M_\star$, planet mass $m_p$, period $P$, eccentricity $e$, and inclination $i$ (the tilt of the orbit relative to our line of sight; $i=90°$ is edge-on). Both bodies orbit the barycentre; the star's share of the motion scales as $m_p/(M_\star+m_p)$, so a heavier planet or lighter star gives a bigger stellar wobble. Only the *line-of-sight* part of that wobble shows up as a Doppler shift, which brings in a factor of $\sin i$.
+</Fragment>
+<Fragment slot="l3">
 Take the two-body problem with masses $M_\star$ and $m_p$, period $P$, eccentricity $e$, and inclination $i$ (the angle between the orbital angular-momentum vector and the line of sight; $i = 90°$ means we view the orbit edge-on). The star's orbit around the barycentre has semi-major axis $a_\star = a\, m_p/(M_\star+m_p)$, where $a$ is the *relative* semi-major axis obeying Kepler III ([Chapter 2](/ch/orbits/)): $a^3 = G(M_\star+m_p)P^2/4\pi^2$.
 
-The star's velocity along its own tiny orbit scales as $2\pi a_\star/P$ (vis-viva, [Chapter 2](/ch/orbits/#kepler-s-third-law)), and only the line-of-sight component matters, which brings in $\sin i$ and a $1/\sqrt{1-e^2}$ from how vis-viva's speed redistributes between radial and tangential components around an eccentric orbit. Chasing the algebra through (substitute $a_\star$, Kepler III, and simplify) gives a clean result that depends only on observables and one unknown, $\sin i$:
+The star's velocity along its own tiny orbit scales as $2\pi a_\star/P$ (vis-viva, [Chapter 2](/ch/orbits/#kepler-s-third-law)), and only the line-of-sight component matters, which brings in $\sin i$ and a $1/\sqrt{1-e^2}$ from how vis-viva's speed redistributes between radial and tangential components around an eccentric orbit (new to derivatives and small-angle expansions? see [Appendix A4](/ch/primer-calculus/)). Chasing the algebra through (substitute $a_\star$, Kepler III, and simplify) gives a clean result that depends only on observables and one unknown, $\sin i$.
+</Fragment>
+</Tiers>
+
+<Level min={3} title="Chasing the algebra to K">
+Substituting $a_\star$ and Kepler III into $v_\star = 2\pi a_\star/P$, then keeping only the line-of-sight projection and the eccentricity correction, gives the semi-amplitude below without any further approximation for a Keplerian two-body orbit.
+</Level>
 
 <KeyEq title="Radial-velocity semi-amplitude">
 $$
-K = \left(\frac{2\pi G}{P}\right)^{1/3} \frac{m_p \sin i}{(M_\star+m_p)^{2/3}} \frac{1}{\sqrt{1-e^2}}
+\term{K}{K} = \left(\frac{2\pi G}{\term{P}{P}}\right)^{1/3} \frac{\term{mp}{m_p} \sin \term{i}{i}}{(\term{Mstar}{M_\star}+m_p)^{2/3}} \frac{1}{\sqrt{1-\term{ecc}{e}^2}}
 $$
-<Fragment slot="where">$K$ is the peak-to-mean radial velocity of the star (m/s). $P$ is the orbital period, $m_p$ and $M_\star$ the planet and star masses, $i$ the orbital inclination, $e$ the eccentricity. For $m_p \ll M_\star$ this is often written with $M_\star + m_p \to M_\star$.</Fragment>
+<Fragment slot="where"><span data-term="K">$K$</span> is the peak-to-mean radial velocity of the star (m/s). <span data-term="P">$P$</span> is the orbital period, <span data-term="mp">$m_p$</span> and <span data-term="Mstar">$M_\star$</span> the planet and star masses, <span data-term="i">$i$</span> the orbital inclination, <span data-term="ecc">$e$</span> the eccentricity. For $m_p \ll M_\star$ this is often written with $M_\star + m_p \to M_\star$. Hover any symbol to see what it does to $K$.</Fragment>
 </KeyEq>
 
+<Level min={2}>
 The measured radial velocity as a function of time is $v_r(t) = K[\cos(\theta(t)+\omega) + e\cos\omega]$, where $\theta(t)$ is the true anomaly (found from Kepler's equation, same machinery as [Chapter 2](/ch/orbits/)) and $\omega$ is the argument of periapsis. A circular orbit ($e=0$) gives a pure sinusoid; eccentric orbits give a lopsided curve with a sharp spike at periapsis passage.
+</Level>
 
 <Fermi title="How fast does the Sun move because of Jupiter?">
 Plug in $P = 11.9$ yr $= 3.75\times10^8$ s, $m_p = M_J = 1.898\times10^{27}$ kg, $M_\star = M_\odot$, $\sin i = 1$, $e\approx0$:
@@ -70,6 +127,12 @@ $m\sin i \le m$ always, since $\sin i \le 1$. The measurement is a firm *lower* 
 
 ### 51 Pegasi b and the hot Jupiter surprise
 
+<History title="Fifty years of trying, four days of data" year="1995">
+<Portrait src="/img/people/mayor.jpg" name="Michel Mayor" years="b. 1942" credit="ESO / L. Weinstein, Ciel et Espace Photos" license="CC BY 4.0" href="https://commons.wikimedia.org/wiki/File:Michel_Mayor,_2012_(cropped).jpg" />
+
+Otto Struve had suggested as early as 1952 that a big enough, close enough planet might be found by the Doppler wobble it induces, but the precision needed — a few tens of m/s at the time — was far beyond 1950s spectrographs. It took four more decades of incremental instrumental progress before Michel Mayor and his student Didier Queloz, observing with the ELODIE spectrograph at Haute-Provence, found a signal in 51 Pegasi that repeated every 4.23 days with a semi-amplitude of about 56 m/s. Their first instinct was to suspect a mistake: no theory predicted a Jupiter-mass planet orbiting closer than Mercury orbits the Sun. They spent months trying to rule out stellar pulsations before announcing it, in October 1995, as the first planet found around a normal, Sun-like star. Geoffrey Marcy and Paul Butler confirmed it within a week using their own decade of archival Doppler data on the same star, having initially been searching for much longer-period, Jupiter-like orbits and nearly missing short-period signals like this one. Mayor and Queloz shared half of the 2019 Nobel Prize in Physics for the discovery (the other half went to James Peebles, for theoretical cosmology).
+</History>
+
 In October 1995, Michel Mayor and Didier Queloz announced a planet around 51 Pegasi with $P = 4.23$ days — a Jupiter-mass object orbiting **20 times closer than Mercury orbits the Sun**. Nobody's planet-formation theory predicted gas giants that close in; the leading idea, since developed in detail, is that 51 Peg b formed farther out (past the snow line, [Chapter 8](/ch/planet-formation/)) and migrated inward through its natal disk. The discovery — the first exoplanet found around a Sun-like star — won Mayor and Queloz a share of the 2019 Nobel Prize in Physics, and it single-handedly created an entire class of objects, "hot Jupiters," that occupy a small but disproportionately well-studied fraction of known exoplanets, precisely *because* they are the easiest to find: massive, close-in planets give the largest $K$ and, as we're about to see, the largest and fastest-repeating transits.
 
 ## Transits: watching the star dim
@@ -78,20 +141,36 @@ If a planet's orbit happens to be edge-on enough that it passes in front of its 
 
 ### Depth, duration, and the geometry of a chord
 
-To first order (ignoring limb darkening for a moment), a transiting planet blocks a fraction of the star's disk equal to the ratio of areas:
+<Tiers>
+<Fragment slot="l1">
+Picture a tiny black dot creeping across a bright disk: the disk's total light dims by exactly the fraction of its area the dot covers. Since area grows with the *square* of size, a planet half as wide as its star blocks a quarter of the light, not half.
+</Fragment>
+<Fragment slot="l2">
+To first order (ignoring limb darkening for a moment), a transiting planet blocks a fraction of the star's disk equal to the ratio of areas.
+</Fragment>
+<Fragment slot="l3">
+To first order (ignoring limb darkening for a moment), a transiting planet blocks a fraction of the star's disk equal to the ratio of areas — the geometric cross-section $\pi R_p^2$ over $\pi R_\star^2$.
+</Fragment>
+</Tiers>
 
 <KeyEq title="Transit depth">
 $$
-\delta = \left(\frac{R_p}{R_\star}\right)^2
+\term{delta}{\delta} = \left(\frac{\term{Rp}{R_p}}{\term{Rstar}{R_\star}}\right)^2
 $$
-<Fragment slot="where">$\delta$ is the fractional dip in brightness. $R_p$ and $R_\star$ are the planet and star radii. A Jupiter ($R_p\approx0.1\,R_\star$ for a Sun-like star) gives $\delta\approx1\%$; an Earth around a Sun-like star gives $\delta\approx84$ ppm — a tiny signal buried in noise, which is exactly why <a href="#the-flagship-lab">the lab below</a> exists.</Fragment>
+<Fragment slot="where"><span data-term="delta">$\delta$</span> is the fractional dip in brightness. <span data-term="Rp">$R_p$</span> and <span data-term="Rstar">$R_\star$</span> are the planet and star radii. A Jupiter ($R_p\approx0.1\,R_\star$ for a Sun-like star) gives $\delta\approx1\%$; an Earth around a Sun-like star gives $\delta\approx84$ ppm — a tiny signal buried in noise, which is exactly why <a href="#the-flagship-lab">the lab below</a> exists.</Fragment>
 </KeyEq>
 
 An Earth-radius planet of <Var name="Rp_t" value={1} min={0.3} max={20} log /> R⊕ around a star of <Var name="Rstar_t" value={1} min={0.1} max={10} log /> R☉ produces a transit depth of <Out name="depth" />.
 
 <Aside>Drag Rp down to 1 and Rstar to 1: that's Earth around the Sun, 84 parts per million. TESS's photometric precision on bright stars is a few hundred ppm per point — Earth analogs need many transits stacked together.</Aside>
 
-The transit lasts roughly the time it takes the planet to cross the stellar disk along its chord: $T_\text{dur} \approx (P/\pi)\arcsin\!\big(R_\star\sqrt{(1+R_p/R_\star)^2-b^2}\,/\,a\big)$, which for $a\gg R_\star$ simplifies to $T_\text{dur}\approx (P R_\star/\pi a)\sqrt{1-b^2}$. The **impact parameter** $b = (a\cos i)/R_\star$ measures how far off-center the planet's path is, in units of the stellar radius: $b=0$ is a central transit, and transits vanish once $b > 1+R_p/R_\star$. Near that edge, transits become *grazing* — shallow, oddly shaped, and hard to distinguish from noise or a smaller planet.
+<Level min={2}>
+The transit lasts roughly the time it takes the planet to cross the stellar disk along its chord: $T_\text{dur} \approx (P/\pi)\arcsin\!\big(R_\star\sqrt{(1+R_p/R_\star)^2-b^2}\,/\,a\big)$, which for $a\gg R_\star$ simplifies to $T_\text{dur}\approx (P R_\star/\pi a)\sqrt{1-b^2}$. The **impact parameter** $\term{b}{b} = (a\cos i)/R_\star$ measures how far off-center the planet's path is, in units of the stellar radius: <span data-term="b">$b=0$</span> is a central transit, and transits vanish once $b > 1+R_p/R_\star$. Near that edge, transits become *grazing* — shallow, oddly shaped, and hard to distinguish from noise or a smaller planet.
+</Level>
+
+<Level max={1}>
+The transit also lasts only a few hours out of an orbit that can take days to years — the planet has to actually be crossing the star's face, which is a small part of the whole trip round.
+</Level>
 
 **Limb darkening** — the star appears dimmer near its edge, because you're seeing cooler, higher layers at a grazing angle — rounds off the sharp corners a uniform disk would produce, softening ingress and egress into smooth curves. It's usually modeled with a quadratic law, $I(\mu)/I(1) = 1 - u_1(1-\mu) - u_2(1-\mu)^2$ where $\mu=\cos\theta$ is the angle from disk center.
 
@@ -119,6 +198,10 @@ RV gives mass; transits give radius. Together, $\rho_p = 3m_p/4\pi R_p^3$, and d
 
 ## Reading a planet's atmosphere in starlight
 
+<Photo src="/img/exoplanets/hat-p-11b-spectrum.jpg" alt="A plot of transit depth in parts per million versus wavelength in microns, showing a bump in depth around 1.4 microns matching a water-absorption model curve" credit="NASA / GSFC" license="Public domain" href="https://images.nasa.gov/details/PIA18839" size="wide" aspect="16 / 9">
+**A planet's atmosphere, read in transit depth.** The combined transmission spectrum of the Neptune-sized planet HAT-P-11b, from NASA's Kepler, Hubble and Spitzer telescopes. Transit depth (vertical axis) rises at wavelengths where water vapour absorbs starlight passing through the planet's upper atmosphere — direct evidence, via the method below, that this planet has a hydrogen-dominated atmosphere with clouds confined to low altitude.
+</Photo>
+
 Transits do more than measure a silhouette. As starlight grazes a planet's day-night terminator during ingress and egress, some of it passes through the upper atmosphere and picks up absorption features — **transmission spectroscopy**. The apparent planetary radius becomes wavelength-dependent: deeper at wavelengths absorbed by atmospheric molecules, shallower in between.
 
 JWST, with its combination of infrared reach, stability and aperture, has transformed this from a technique that strained 1990s-era space telescopes into routine science. In 2022–2023, JWST's NIRSpec unambiguously detected **CO₂** in the atmosphere of the hot Saturn WASP-39 b — the first definitive CO₂ detection on an exoplanet — along with SO₂, evidence of photochemistry driven by the star's UV light. For the temperate sub-Neptune **K2-18 b**, JWST observations reported hints of methane, CO₂, and tentatively dimethyl sulfide (DMS, associated on Earth with marine biology); this result generated enormous public interest but remains genuinely contested within the field as of 2026 — independent reanalyses have disputed the DMS detection significance, the planet's bulk density is also consistent with a "hycean" (H/He atmosphere over a liquid-water ocean) or a mini-Neptune interpretation without any implication of biology, and more observations are needed. State the uncertainty honestly: this is an active, unresolved case, not a settled biosignature detection.
@@ -126,6 +209,10 @@ JWST, with its combination of infrared reach, stability and aperture, has transf
 **Secondary eclipses** — when the planet passes *behind* the star — let you subtract the star-only spectrum from the star+planet spectrum, isolating the planet's thermal emission and albedo. **Phase curves**, tracking brightness continuously around a full orbit, map how a planet's temperature varies with longitude, revealing hot Jupiters' scorching, wind-blown dayside-nightside temperature contrasts.
 
 ## Seeing the planet directly
+
+<Photo src="/img/exoplanets/hr8799-direct.jpg" alt="A grainy infrared image showing four faint point sources of light arranged around a dark central region where the host star's light has been blocked out" credit="NASA/JPL-Caltech, courtesy Project 1640" license="Public domain" href="https://images.nasa.gov/details/PIA17010" size="wide" aspect="1 / 1">
+**Four planets, photographed.** The HR 8799 system, imaged with the Project 1640 coronagraph and adaptive-optics instrument at the Palomar Observatory. The star's own light has been optically suppressed and subtracted in software; what remains are the four giant planets themselves, each still glowing in infrared from the heat of its own formation, tens of AU out from a star 129 light-years away.
+</Photo>
 
 Direct imaging skips the inference and tries to actually resolve starlight from planet light. It needs young, self-luminous, wide-separation giant planets — HR 8799's four giant planets (imaged starting in 2008, at Keck and Gemini) are the textbook example, glowing in infrared from residual formation heat at tens of AU from their star, still cooling on a timescale set by the physics in [Chapter 16](/ch/stellar-death/) for degenerate cores, adapted downward for planetary masses.
 
@@ -179,7 +266,7 @@ for (const dur of durations) {
 
 Not every periodic dip is a planet. An **eclipsing binary** — two stars orbiting each other — produces deep, often V-shaped dips at the right period, sometimes diluted to planet-like depths by a third, unrelated star blended into the same pixel (a "background eclipsing binary"). Distinguishing checks include: does the secondary eclipse (star passing behind star) show up at the expected shallow, opposite phase; does the transit depth or shape differ between colors (real planets are achromatic; grazing stellar eclipses often aren't); does high-resolution imaging reveal a blended second star; and does RV follow-up show a stellar-mass, not planetary-mass, companion. Kepler and TESS pipelines apply dozens of such "vetting" tests automatically before a candidate is promoted to "confirmed."
 
-**MCMC for fitting.** Once you have a promising candidate, getting honest uncertainties on $P$, $R_p/R_\star$, $b$, and limb-darkening parameters (which are correlated with each other in the fit) is usually done with Markov Chain Monte Carlo: rather than a single best-fit point, MCMC samples the full posterior probability distribution over parameters given the data, propagating correlations and non-Gaussian uncertainties honestly into, say, the final quoted mass and radius (and hence density) of the planet. This is the same broad idea used for gravitational-wave parameter estimation in [Chapter 20](/ch/gravitational-waves/) and cosmological parameter fits in [Chapter 27](/ch/cmb/).
+**MCMC for fitting.** Once you have a promising candidate, getting honest uncertainties on $P$, $R_p/R_\star$, $b$, and limb-darkening parameters (which are correlated with each other in the fit) is usually done with Markov Chain Monte Carlo: rather than a single best-fit point, MCMC samples the full posterior probability distribution over parameters given the data, propagating correlations and non-Gaussian uncertainties honestly into, say, the final quoted mass and radius (and hence density) of the planet (new to probability distributions and random sampling? see [Appendix A7](/ch/primer-thermo/) for the statistical-mechanics background these methods borrow from). This is the same broad idea used for gravitational-wave parameter estimation in [Chapter 20](/ch/gravitational-waves/) and cosmological parameter fits in [Chapter 27](/ch/cmb/).
 
 ## The wobble and the shift, together
 
@@ -195,13 +282,23 @@ By 2026 the confirmed-planet count sits above 6,000, drawn overwhelmingly from K
 
 ### The habitable zone, and why it scales as $\sqrt L$
 
+<Tiers>
+<Fragment slot="l1">
+A planet's temperature depends on how much starlight lands on each square metre of it, which fades with the square of distance, the same way a fire feels less warm the farther back you stand. A brighter star can therefore keep a planet at the same comfortable temperature much farther away. Because the fading goes as distance *squared*, matching a fixed temperature as brightness changes means the right distance grows as the *square root* of the brightness — quadruple the star's light output, and the same-temperature orbit only doubles in size, not quadruples.
+</Fragment>
+<Fragment slot="l2">
+A planet's equilibrium temperature (balancing absorbed starlight against blackbody emission, ignoring greenhouse effects for a moment) depends on the star's luminosity $L_\star$ and the orbital distance $a$ as $T_\text{eq}\propto(L_\star/a^2)^{1/4}$ (see [Appendix A2](/ch/primer-functions/) for reading power-law scalings like this one). Demanding a *fixed* equilibrium temperature as $L_\star$ varies forces $a\propto\sqrt{L_\star}$.
+</Fragment>
+<Fragment slot="l3">
 A planet's equilibrium temperature (balancing absorbed starlight against blackbody emission, ignoring greenhouse effects for a moment) goes as $T_\text{eq} \propto \sqrt{R_\star T_\star^2/a}= (L_\star/a^2)^{1/4}$ up to constants, since $L_\star = 4\pi R_\star^2\sigma T_\star^4$. Demanding a *fixed* equilibrium temperature (roughly, "surface conditions where liquid water can persist," which the real, greenhouse-corrected habitable zone approximates through detailed radiative-transfer modeling) as $L_\star$ varies forces $a \propto \sqrt{L_\star}$ — the habitable zone moves outward as the square root of stellar luminosity.
+</Fragment>
+</Tiers>
 
 <KeyEq title="Habitable-zone scaling">
 $$
-a_\text{HZ} \propto \sqrt{L_\star}
+\term{aHZ}{a_\text{HZ}} \propto \sqrt{\term{Lstar}{L_\star}}
 $$
-<Fragment slot="where">$a_\text{HZ}$ is the distance at fixed equilibrium temperature (and hence, roughly, fixed insolation) as stellar luminosity $L_\star$ varies. The commonly used Kopparapu et al. (2013) conservative habitable zone runs from about $\sqrt{L_\star/1.1}$ AU (inner, "runaway greenhouse") to $\sqrt{L_\star/0.53}$ AU (outer, "maximum greenhouse"), which is the sqrt(L) scaling with specific numerical prefactors from detailed climate modeling.</Fragment>
+<Fragment slot="where"><span data-term="aHZ">$a_\text{HZ}$</span> is the distance at fixed equilibrium temperature (and hence, roughly, fixed insolation) as stellar luminosity <span data-term="Lstar">$L_\star$</span> varies. The commonly used Kopparapu et al. (2013) conservative habitable zone runs from about $\sqrt{L_\star/1.1}$ AU (inner, "runaway greenhouse") to $\sqrt{L_\star/0.53}$ AU (outer, "maximum greenhouse"), which is the sqrt(L) scaling with specific numerical prefactors from detailed climate modeling.</Fragment>
 </KeyEq>
 
 A star of luminosity <Var name="L_hz" value={1} min={0.0001} max={30} log /> L☉ has a conservative habitable zone from <Out name="hzInner" /> to <Out name="hzOuter" />.

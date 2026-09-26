@@ -15,6 +15,19 @@ import Out from '../../components/Out.astro';
 import Level from '../../components/Level.astro';
 import Tiers from '../../components/Tiers.astro';
 import Photo from '../../components/Photo.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  pF: ['Fermi momentum', 'The momentum of the single most energetic electron in the filled Fermi sea. It sets both the pressure and how relativistic the gas is.'],
+  n: ['Electron number density', 'Electrons per unit volume. A bigger Fermi sphere (more electrons packed in) means a higher Fermi momentum and higher pressure.'],
+  R: ['Stellar radius', 'For an ordinary star, more mass means a bigger star. For a degenerate one it is the opposite: more mass squeezes it to a *smaller* radius.'],
+  M: ['Stellar mass', "Total mass of the white dwarf, in units of the Sun's mass."],
+  muE: ['Mean mass per electron', 'Average nucleon mass carried by each electron, in units of the proton mass. 2.0 for carbon/oxygen, since equal numbers of protons and neutrons mean one electron per two nucleons.'],
+  Mch: ['Chandrasekhar mass', 'The maximum mass a cold, non-rotating, electron-degenerate star can ever support. Above it, no radius balances gravity — not a small one, none at all.'],
+  x: ['Relativity parameter', '$p_F/m_ec$: near 0 the electrons are non-relativistic, above ~1 most of them move at an appreciable fraction of the speed of light.'],
+}} />
 
 ## Death by degeneracy
 
@@ -32,19 +45,19 @@ Pack electrons close enough together and something strange happens, with no anal
 The Pauli exclusion principle says no two electrons (or any other fermions) can occupy the same quantum state. Squeeze electrons into a small enough volume and, regardless of temperature, most of them are forced into high-momentum states simply because the low-momentum ones are already full. That momentum resists further compression: it is a pressure with a quantum origin, called **degeneracy pressure**, and unlike ordinary gas pressure it does not need heat.
 </Fragment>
 <Fragment slot="l3">
-The Pauli exclusion principle forbids two electrons from occupying the same quantum state. In a box of volume $V$, quantum states of momentum $\vec p$ are spaced by $\Delta p_x \Delta p_y \Delta p_z = h^3/V$ (each state occupies a cell of that volume in phase space, with 2 spin states per cell). Squeeze $N$ electrons into a small $V$ and, even at $T=0$, the exclusion principle forces them to fill a **Fermi sphere** in momentum space up to some maximum radius $p_F$: there is nowhere lower left to put them. That filled sphere is what resists compression.
+The Pauli exclusion principle (new to quantum ideas? see [Appendix A9](/ch/primer-quantum/)) forbids two electrons from occupying the same quantum state. In a box of volume $V$, quantum states of momentum $\vec p$ are spaced by $\Delta p_x \Delta p_y \Delta p_z = h^3/V$ (each state occupies a cell of that volume in phase space, with 2 spin states per cell). Squeeze $N$ electrons into a small $V$ and, even at $T=0$, the exclusion principle forces them to fill a **Fermi sphere** in momentum space up to some maximum radius $p_F$: there is nowhere lower left to put them. That filled sphere is what resists compression.
 </Fragment>
 </Tiers>
 
 <KeyEq title="The Fermi momentum">
 $$
-p_F = \hbar\left(3\pi^2 n\right)^{1/3}
+\term{pF}{p_F} = \term{hbar}{\hbar}\left(3\pi^2 \term{n}{n}\right)^{1/3}
 $$
-<Fragment slot="where">$n = N/V$ is the electron number density. This comes from counting momentum states: the Fermi sphere's volume $\tfrac{4}{3}\pi p_F^3$, divided by the phase-space cell size $h^3$ per spin state and multiplied by 2 spins, must equal $N$.</Fragment>
+<Fragment slot="where"><span data-term="n">n</span> $= N/V$ is the electron number density. This comes from counting momentum states: the Fermi sphere's volume $\tfrac{4}{3}\pi p_F^3$, divided by the phase-space cell size $h^3$ per spin state and multiplied by 2 spins, must equal $N$. Hover the symbols to link them to the equation.</Fragment>
 </KeyEq>
 
 <Level min={3} title="From Fermi momentum to pressure">
-The pressure of a degenerate Fermi gas is $\tfrac13$ of the momentum flux integrated over the filled sphere: $P = \tfrac{1}{3}\int_0^{p_F} v(p)\,p \cdot \frac{8\pi p^2}{h^3}\,dp$, where $v(p) = p/m_e$ non-relativistically or $v(p) = pc^2/\sqrt{p^2c^2+m_e^2c^4}$ in general. Non-relativistically ($p_F \ll m_e c$) this integral gives $P \propto p_F^5 \propto n^{5/3}$. When compression pushes $p_F$ up toward $m_e c$, electrons become relativistic, $v \to c$, and the integral instead gives $P \propto p_F^4 \propto n^{4/3}$ — a **softer** law, one power of density weaker. That softening, as we will see, is the whole reason there is a Chandrasekhar limit.
+(a short integral; new to this kind of calculus? see [Appendix A4](/ch/primer-calculus/)) The pressure of a degenerate Fermi gas is $\tfrac13$ of the momentum flux integrated over the filled sphere: $P = \tfrac{1}{3}\int_0^{p_F} v(p)\,p \cdot \frac{8\pi p^2}{h^3}\,dp$, where $v(p) = p/m_e$ non-relativistically or $v(p) = pc^2/\sqrt{p^2c^2+m_e^2c^4}$ in general. Non-relativistically ($p_F \ll m_e c$) this integral gives $P \propto p_F^5 \propto n^{5/3}$. When compression pushes $p_F$ up toward $m_e c$, electrons become relativistic, $v \to c$, and the integral instead gives $P \propto p_F^4 \propto n^{4/3}$ — a **softer** law, one power of density weaker. That softening, as we will see, is the whole reason there is a Chandrasekhar limit.
 </Level>
 
 <Level min={2} title="Why the exponent changes" max={2}>
@@ -56,7 +69,7 @@ Take the Sun's core density, $\rho \sim 1.5\times10^5\ \text{kg/m}^3$, with roug
 </Fermi>
 
 <Sim name="stellar-death-degeneracy" minHeight={420}>
-**Drag the density.** Left: a cartoon Fermi sphere (electrons fill it from the bottom up, whatever the temperature). Right: degenerate pressure (solid, density only) against ideal-gas pressure at three temperatures (dashed). Crank the density up and the degenerate line eventually beats even a $10^9$ K gas — heat becomes irrelevant.
+**Drag the density.** Left: a cartoon Fermi sphere (electrons fill it from the bottom up, whatever the temperature). Right: degenerate pressure (solid, density only) against ideal-gas pressure (new to the statistics behind that? see [Appendix A7](/ch/primer-thermo/)) at three temperatures (dashed). Crank the density up and the degenerate line eventually beats even a $10^9$ K gas — heat becomes irrelevant.
 </Sim>
 
 <Predict question="At fixed density, what happens to the degeneracy pressure of a gas if you heat it up by a factor of 100?" choices={['It rises by ×100', 'It rises by a small amount', 'It is exactly unchanged', 'It falls']} answer={1}>
@@ -67,7 +80,13 @@ Degeneracy pressure $P\propto n^{5/3}$ (or $n^{4/3}$) has **no temperature depen
 
 Roughly 97% of stars, including the Sun, end up as **white dwarfs**: the exposed core left behind after a low-to-intermediate-mass star sheds its envelope as a planetary nebula (Chapter 15). Electron degeneracy pressure holds it up against its own gravity, with no fusion, indefinitely.
 
-<Aside>**Sirius B.** The first white dwarf identified was the faint companion of Sirius, spotted in 1862. It has about the Sun's mass packed into a body the size of the Earth — a density around 3×10⁶ g/cm³ — and was one of the first strong tests of general relativity via its gravitational redshift (1925, Adams).</Aside>
+<History title="The star that wobbled" year="1844–1862">
+<Portrait src="/img/people/bessel.jpg" name="Friedrich Bessel" years="1784–1846" credit="Deutsche Bundespost (1984 commemorative stamp)" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Friedrich_Wilhelm_Bessel.jpg" />
+
+In 1844, Friedrich Bessel noticed that Sirius, the brightest star in the sky, was not moving in a straight line: it wobbled very slightly along its path across the decades of positional measurements he had. He correctly deduced an unseen companion pulling on it gravitationally, and estimated its orbit and mass — this before anyone had actually seen the object, purely from the wobble (the same technique, astrometry, that finds some exoplanets today, Chapter 10).
+
+Sirius B itself was finally spotted in 1862 by telescope maker Alvan Graham Clark, while testing a new 18-inch refractor lens — then the largest in the world — almost exactly where Bessel's calculation had put it. It took another sixty years, and Ralph Fowler's 1926 application of the brand-new quantum statistics of degenerate electron gases, to explain how something with the Sun's mass could be crammed into a body the size of the Earth without collapsing further.
+</History>
 
 <Tiers>
 <Fragment slot="l1">
@@ -83,9 +102,9 @@ For a polytrope of index $n=3/2$ (the non-relativistic degenerate equation of st
 
 <KeyEq title="Mass–radius relation (non-relativistic limit)">
 $$
-R \propto \mu_e^{-5/3}\,M^{-1/3}
+\term{R}{R} \propto \term{muE}{\mu_e}^{-5/3}\,\term{M}{M}^{-1/3}
 $$
-<Fragment slot="where">$\mu_e$ is the mean mass per electron in units of $m_p$ (2.0 for carbon/oxygen). This comes from the $P\propto\rho^{5/3}$ equation of state combined with hydrostatic equilibrium (an $n=3/2$ polytrope). It fails as $M$ approaches the limit below, where electrons turn relativistic.</Fragment>
+<Fragment slot="where"><span data-term="muE">μ_e</span> is the mean mass per electron in units of the proton mass <C k="mp" /> (2.0 for carbon/oxygen). This comes from the $P\propto\rho^{5/3}$ equation of state combined with hydrostatic equilibrium (an $n=3/2$ polytrope; new to differential equations? see <a href="/ch/primer-odes/">Appendix A5</a>). It fails as <span data-term="M">M</span> approaches the limit below, where electrons turn relativistic.</Fragment>
 </KeyEq>
 
 The figure below does not use this approximation — it integrates the **exact** Chandrasekhar equation of state, valid from non-relativistic to ultra-relativistic electrons, as a shooting problem in general relativity's simpler cousin, plain Newtonian hydrostatic equilibrium (which is accurate for white dwarfs; only neutron stars need General Relativity, Chapter 18).
@@ -136,12 +155,16 @@ Because both energies scale the same way with $R$, there is no stable radius abo
 
 <KeyEq title="The Chandrasekhar mass">
 $$
-M_\text{Ch} \approx 1.44\left(\frac{2}{\mu_e}\right)^2 M_\odot
+\term{Mch}{M_\text{Ch}} \approx 1.44\left(\frac{2}{\term{muE}{\mu_e}}\right)^2 \term{Msun}{M_\odot}
 $$
-<Fragment slot="where">$\mu_e\approx2.0$ for carbon/oxygen white dwarfs (equal numbers of protons and neutrons), giving $M_\text{Ch}\approx1.4\,M_\odot$. A white dwarf with $\mu_e=2$ M☉ of <Var name="muE" value={2.0} min={2.0} max={2.2} step={0.01} /> has $M_\text{Ch}=$<Out name="Mch" />.</Fragment>
+<Fragment slot="where"><span data-term="muE">μ_e</span> $\approx2.0$ for carbon/oxygen white dwarfs (equal numbers of protons and neutrons), giving <span data-term="Mch">M_Ch</span> $\approx1.4\,M_\odot$. A white dwarf with μ_e = <Var name="muE" value={2.0} min={2.0} max={2.2} step={0.01} /> has <span data-term="Mch">M_Ch</span> = <Out name="Mch" />.</Fragment>
 </KeyEq>
 
-<Aside>**Chandrasekhar vs. Eddington.** Subrahmanyan Chandrasekhar derived this limit in 1930, on the boat from India to Cambridge, aged 19. Arthur Eddington, the most eminent astrophysicist of the day, publicly ridiculed the idea at a 1935 Royal Astronomical Society meeting, calling it "stellar buffoonery" and insisting nature would prevent it. Chandrasekhar was right; Eddington's objection (a vague appeal to an unknown law preventing collapse) had no theoretical basis. Chandrasekhar won the 1983 Nobel Prize in Physics for this and later work on stellar structure.</Aside>
+<History title="&quot;Stellar buffoonery&quot;" year="1930–1935">
+Subrahmanyan Chandrasekhar worked out this limit in 1930 as a 19-year-old graduate student, during the three-week boat voyage from Madras to Southampton to begin his PhD at Cambridge, by combining special relativity with the new quantum statistics of degenerate gases. He published and refined it over the following years.
+
+At a January 1935 Royal Astronomical Society meeting, Arthur Eddington — then the most eminent astrophysicist alive, and the man whose 1919 eclipse expedition had confirmed general relativity — stood up right after Chandrasekhar's talk and dismissed it as "stellar buffoonery," arguing (without a real theoretical basis) that some undiscovered law of nature must prevent the collapse. Eddington's stature meant the room, and much of the field, sided with him for years. Chandrasekhar was completely correct; he left stellar structure for other topics for over a decade, and eventually received the 1983 Nobel Prize in Physics for exactly this work.
+</History>
 
 ## Growing old: cooling, crystallisation, cosmochronology
 
@@ -180,6 +203,12 @@ More ejected mass (which tends to accompany more ⁵⁶Ni in these explosions) m
 **Supernova 1987A**, in the Large Magellanic Cloud, 168,000 light-years away — the nearest supernova observed since telescopes existed, and the only one so far to be seen in neutrinos. The bright ring is a shell of gas shed by the progenitor tens of thousands of years earlier, now lit up as the supernova's blast wave slams into it. Three observatories are combined here: ALMA (red, cold dust), Hubble (green, visible), Chandra (blue, X-rays from the shock).
 </Photo>
 
+<History title="Coining &quot;supernova&quot;" year="1934">
+<Portrait src="/img/people/zwicky.jpg" name="Fritz Zwicky" years="1898–1974" credit="ETH-Bibliothek Zürich, Bildarchiv" license="Public domain" href="https://commons.wikimedia.org/wiki/File:ETH-BIB-Zwicky,_Fritz_(1898-1974)-Portr_01030_(cropped).tif" />
+
+In 1934, astronomers Fritz Zwicky and Walter Baade — an odd pairing; Zwicky reportedly called Baade a Nazi to his face, and Baade was said to fear for his life around him — coined the term "super-nova" to distinguish these events from the much fainter, more common ordinary novae, and correctly proposed, in the same paper, that a supernova marks the transition of an ordinary star into an extremely dense state made of neutrons: a **neutron star**, more than three decades before pulsars (Chapter 18) were discovered and confirmed the idea. Zwicky, notoriously combative and often dismissed in his own time, was also the first (1933) to infer dark matter from galaxy cluster dynamics (Chapter 21) — twice ahead of the field, and twice not believed.
+</History>
+
 Stars above about 8 $M_\odot$ fuse all the way to iron. Iron-56 has the **most tightly bound nucleus per nucleon** of any element: fusing it releases no energy, and neither does splitting it. The core is out of fuel with no possible reaction to replace the pressure it loses as it cools — and it is supported only by *electron* degeneracy pressure, at a mass sitting right near the Chandrasekhar limit.
 
 <Tiers>
@@ -193,7 +222,11 @@ Two runaway processes remove electron degeneracy support almost simultaneously. 
 
 Collapse halts abruptly once the core reaches nuclear density ($\sim2.3\times10^{17}\ \text{kg/m}^3$): the strong nuclear force becomes repulsive at short range, exactly like a ball hitting a floor. The inner core **bounces**, launching a shock wave outward — and 99% of the roughly $3\times10^{53}$ erg of gravitational binding energy released is carried away not by the shock, but by a ten-second flood of neutrinos as the newly formed proto-neutron star deleptonises and cools.
 
-<Aside>**SN 1987A's neutrinos.** Three detectors (Kamiokande-II, IMB, Baksan) recorded a burst of just **25 neutrino interactions** over about 13 seconds, hours before the light from SN 1987A reached Earth — direct confirmation of the core-collapse mechanism, and a Nobel Prize (2002, Koshiba) for one of the teams. Extrapolating from 25 events to the full $\sim10^{58}$ neutrinos emitted is itself a striking demonstration of how few particles a "faint" detection can represent.</Aside>
+<History title="Twenty-five neutrinos" year="1987">
+<Portrait src="/img/people/koshiba.jpg" name="Masatoshi Koshiba" years="1926–2020" credit="Cabinet Public Relations Office, Government of Japan" license="CC BY 4.0" href="https://commons.wikimedia.org/wiki/File:Masatoshi_Koshiba_2002_(headshot).jpg" />
+
+On 23 February 1987, three underground detectors — Kamiokande-II in Japan (led by Masatoshi Koshiba), IMB in Ohio, and Baksan in the Soviet Union — each built to search for proton decay, recorded a handful of unusual particle interactions within a 13-second window. Between them, they had caught just **25 neutrino interactions**, roughly three hours before the light from a supernova in the Large Magellanic Cloud reached Earth. It was the first (and so far only) direct detection of neutrinos from a supernova, and it confirmed the core-collapse mechanism's central prediction: that almost all the energy comes out as neutrinos, not light. Koshiba shared the 2002 Nobel Prize in Physics for it. Extrapolating from those 25 events to the full $\sim10^{58}$ neutrinos the explosion actually emitted is itself a striking demonstration of how much a "faint" detection can represent.
+</History>
 
 The shock, however, stalls: photodisintegrating the infalling outer iron core costs it enormous energy, and it typically grinds to a halt 100–200 km out, having become an accretion shock rather than an explosion. Reviving it needs **neutrino heating** — a small fraction (a few percent) of the neutrino luminosity streaming out from the proto-neutron star is reabsorbed just behind the shock, and if that heating exceeds the cooling and ram pressure of infalling matter for long enough, convective plumes and a large-scale sloshing instability (the **standing accretion shock instability**, SASI) can tip the balance and push the shock back out. If not, matter keeps falling onto the proto-neutron star until it exceeds *its* maximum mass and collapses further to a black hole — a "failed supernova," seen for real in at least one case (the disappearance of the red supergiant N6946-BH1).
 

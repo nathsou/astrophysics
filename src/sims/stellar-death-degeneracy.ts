@@ -29,10 +29,6 @@ export default defineSim({
       y: { min: 1e10, max: 1e28, log: true, label: 'pressure P (Pa)' },
       title: 'Degenerate vs ideal-gas pressure',
     });
-    sphereStage.onResize(() => draw());
-    plotStage.onResize((w, h, dpr) => { plot.resize(w, h, dpr); draw(); });
-    onThemeChange(() => { pal = palette(); draw(); });
-
     let n = 1e33; // ~ white dwarf core, m^-3
     let T = 1e7; // K
 
@@ -94,7 +90,9 @@ export default defineSim({
         plot.text('dashed: ideal gas at 10⁵, 10⁷, 10⁹ K', plot.m.l + 8, plot.m.t + 28, { color: pal.muted, size: 10.5 });
       });
     }
-    draw();
+    sphereStage.onResize(() => draw());
+    plotStage.onResize((w, h, dpr) => { plot.resize(w, h, dpr); draw(); });
+    onThemeChange(() => { pal = palette(); draw(); });
 
     return { setVisible() {}, destroy() {} };
   },

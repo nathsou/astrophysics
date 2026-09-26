@@ -1,0 +1,324 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: ism
+lede: The space between the stars is not empty. It is a thin, turbulent, multi-phase soup of gas and dust, heated by starlight and cosmic rays, cooled by atoms and molecules, and blown into bubbles by dying stars — and it is where every star and planet, including the Sun and Earth, was once a cloud.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+import Tiers from '../../components/Tiers.astro';
+import Level from '../../components/Level.astro';
+import Photo from '../../components/Photo.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  n: ['Number density', 'How crowded the gas is, in particles per cm³. It sets both the pressure (with T) and how fast the gas cools (cooling scales as n² per unit volume).'],
+  T: ['Temperature', 'A stand-in for the average kinetic energy per particle. Ranges from ~10 K in molecular clouds to ~10⁶–10⁷ K in supernova-blown bubbles — five orders of magnitude.'],
+  P: ['Thermal pressure', 'P = nk_BT. What actually balances between phases: two gas parcels in contact settle to the same P even if n and T individually differ hugely.'],
+  Gamma: ['Heating rate per particle', 'Mostly starlight photons kicking electrons off dust grains (the photoelectric effect). Roughly constant per H atom, so it sets one side of the thermal balance.'],
+  Lambda: ['Cooling coefficient', 'How efficiently a particle radiates energy away at temperature T, tabulated from atomic and molecular physics. The cooling rate per volume is n²Λ(T).'],
+  Z: ['Metallicity', 'Abundance of elements heavier than helium, relative to the Sun. Metals and dust carry most of the coolants, so lower-Z gas cools more slowly.'],
+  Q: ['Ionising photon rate', 'Photons per second above 13.6 eV that a hot star emits. Sets the size of its H\\u2009II region: more photons, more ionised gas to balance recombinations.'],
+  alphaB: ['Case-B recombination coefficient', 'Rate coefficient for a proton and electron to recombine (skipping direct recombinations to the ground state, which are re-absorbed on the spot). About 2.6\\u00d710⁻¹³ cm³/s at 10⁴ K.'],
+  RS: ['Strömgren radius', 'The radius at which photon supply exactly balances recombinations. Inside it hydrogen is almost fully ionised; outside, almost fully neutral — the transition (the ionisation front) is just a few mean free paths thick.'],
+  AV: ['Visual extinction', 'Extra dimming in magnitudes at 550 nm from dust along the line of sight. A_V = 1 mag removes 60% of the light.'],
+  EBV: ['Colour excess', 'E(B−V), the extra reddening in magnitudes between blue and visual light. Related to A_V by the reddening law.'],
+  RV: ['Total-to-selective extinction ratio', 'A_V / E(B−V) ≈ 3.1 for typical Milky Way dust: a fingerprint of the grain size distribution.'],
+  E: ['Explosion energy', 'Kinetic + thermal energy released by a supernova, of order 10⁵¹ erg. Sets the size of the blast at fixed age and density.'],
+  rho: ['Ambient mass density', 'The density of the undisturbed medium the shock is ploughing into. Denser surroundings slow the blast down faster.'],
+  R: ['Blast radius', 'Grows as t^{2/5} during the energy-conserving Sedov–Taylor stage — much slower than the free expansion (∝t) right after the explosion.'],
+  t: ['Time since the explosion', 'The blast decelerates as it sweeps up mass, so R grows sub-linearly with t once the swept-up mass exceeds the ejecta mass.'],
+}} />
+
+## Almost nothing, but not quite empty
+
+<Photo src="/img/ism/pillars-webb.jpg" alt="Dense, pillar-like columns of gas and dust in the Rho Ophiuchi molecular cloud, glowing orange and studded with young stars, imaged by the James Webb Space Telescope" credit="NASA, ESA, CSA, STScI, K. Pontoppidan (STScI), A. Pagan (STScI)" license="CC BY 4.0" href="https://esawebb.org/images/weic2316a/" size="wide" aspect="3 / 2">
+**The Rho Ophiuchi cloud complex, JWST, 2023.** About 390 light-years away, this is the nearest active star-forming region to Earth — roughly 50 young stars are embedded in the dusty gas, some still firing off jets (the red arcs). Everything in this chapter — the cold dense gas, the dust that glows orange in infrared light, the young hot stars starting to carve out cavities — is on display in a single frame.
+</Photo>
+
+Space, even inside a galaxy, is a much better vacuum than anything built on Earth. The best laboratory vacuum chambers reach roughly $10^{-13}$ mbar, corresponding to about $3\times10^6$ particles per cm³. A "typical" patch of the interstellar medium (ISM) — the gas and dust filling the space between stars in the Milky Way — has around $n\sim1$ particle per cm³: a *million* times emptier than that. And "typical" hides enormous range: dense molecular cloud cores reach $n\sim10^4$–$10^6\,\mathrm{cm^{-3}}$, while the hot gas blown out by supernovae can be as sparse as $n\sim10^{-3}\,\mathrm{cm^{-3}}$.
+
+Despite being extremely dilute, the ISM is not a footnote. It makes up 10–15% of the Milky Way's baryonic (ordinary, non-dark) mass in the disk, it is the raw material every star and planet condenses from (the subject of [Chapter 7](/ch/star-formation/) and [Chapter 8](/ch/planet-formation/)), and it is where the heavy elements manufactured in stars ([Chapter 12](/ch/fusion/)) and scattered by supernovae ([Chapter 16](/ch/stellar-death/)) get mixed back in, ready to be recycled into the next generation.
+
+<Tiers>
+<Fragment slot="l1">
+By mass, the ISM is about **99% gas and 1% dust** — tiny solid grains, not the "dust" you'd wipe off a shelf, more like fine soot and sand. The gas itself is almost entirely hydrogen and helium, left over from the Big Bang ([Chapter 26](/ch/big-bang/)), with a sprinkling — a percent or two by mass — of everything heavier, cooked up inside stars.
+</Fragment>
+<Fragment slot="l2">
+By mass the ISM is roughly 70% hydrogen, 28% helium and ~1–2% "metals" (astronomer's shorthand for anything heavier than helium — carbon, oxygen, nitrogen, iron, and so on), with about 1% of the total mass locked up in solid dust grains rather than gas. By particle number hydrogen dominates even more, since helium atoms are four times heavier.
+</Fragment>
+<Fragment slot="l3">
+The mass fractions $X\approx0.70$ (H), $Y\approx0.28$ (He), $Z\approx0.01$–$0.02$ (metals) mirror Big Bang nucleosynthesis plus a small stellar contribution. Dust is a minority constituent of the metals: roughly half of the available carbon, silicon, magnesium and iron is locked into solid grains rather than gas-phase atoms, which is why dust carries about 1% of the *total* mass while gas-phase metals carry less.
+</Fragment>
+</Tiers>
+
+<Aside>**Why so little dust matters so much.** Grain surfaces are where H₂ molecules form (gas-phase reactions are too slow — see below), grains absorb and re-radiate roughly a third of all starlight in the Galaxy at infrared wavelengths, and they dim and redden everything we see through them. A 1% ingredient does a lot of the chemistry and most of the obscuring.</Aside>
+
+## The phases of the interstellar medium
+
+Real gas in the Galaxy doesn't sit at one density and temperature. Observations sort it into a handful of recurring states, or **phases**, each in rough pressure balance with its neighbours despite wildly different $n$ and $T$:
+
+| Phase | $T$ (K) | $n$ (cm⁻³) | Volume filling factor | Tracer |
+|---|---|---|---|---|
+| Molecular clouds (MC) | 10–30 | $10^2$–$10^6$ | ~1% | CO, dust continuum |
+| Cold neutral medium (CNM) | 50–100 | 20–50 | ~1–5% | 21 cm absorption |
+| Warm neutral medium (WNM) | $6\times10^3$–$10^4$ | 0.2–0.5 | ~30–40% | 21 cm emission |
+| Warm ionised medium (WIM) | $\sim8\times10^3$ | 0.1–0.3 | ~20–50% | H$\alpha$, pulsar dispersion |
+| Hot ionised medium (HIM) | $10^5$–$10^7$ | $10^{-4}$–$10^{-2}$ | ~30–70% (varies a lot with height above the disk) | soft X-rays, O VI absorption |
+
+<Aside>**Filling factor** is the fraction of *volume*, not mass, occupied by a phase. The HIM and WNM/WIM dominate the volume of the ISM; the CNM and molecular clouds hold most of the *mass* in a small fraction of the space, like fog patches in a mostly clear valley.</Aside>
+
+The phases coexist because, to good approximation, they share the same thermal pressure:
+
+<KeyEq title="Pressure equilibrium between phases">
+$$
+\frac{\term{P}{P}}{k_B} = \term{n}{n}\,\term{T}{T} \approx 10^3\text{–}10^4\ \mathrm{K\,cm^{-3}}
+$$
+<Fragment slot="where">Astronomers usually quote $P/k_B$ (units K cm⁻³) rather than $P$ itself, since it is directly $nT$. A canonical local value is $nT\approx3000\,\mathrm{K\,cm^{-3}}$, though the true ISM is turbulent and far from a single equilibrium value everywhere.</Fragment>
+</KeyEq>
+
+Because $P=nT$ (in these units) is roughly fixed, a phase with $n\sim30\,\mathrm{cm^{-3}}$ must have $T\sim100\,$K (the CNM), while a phase with $n\sim0.3\,\mathrm{cm^{-3}}$ sits at $T\sim10^4\,$K (the WNM) — both give $nT\sim3000$. The hot phase, blown by supernovae, is usually *not* in pressure equilibrium with the rest; it is transient, overpressured gas cooling and expanding on million-year timescales (more on this below).
+
+<Fermi title="Could you fit the whole ISM's mass into one solar-neighbourhood cube?">
+Take a 100 pc cube of the Milky Way disk near the Sun, with an average $n\approx1\,\mathrm{cm^{-3}}$ (mostly hydrogen, $m\approx m_p$). Its mass is
+$$
+M \approx n\, m_p \,(100\,\mathrm{pc})^3 = 1\times1.67\times10^{-24}\,\mathrm{g\,cm^{-3}}\times(3.1\times10^{20}\,\mathrm{cm})^3 \approx 5\times10^{37}\,\mathrm{g} \approx 2.5\times10^4\,M_\odot.
+$$
+That is a respectable star cluster's worth of mass, sitting almost entirely as gas nobody would notice by eye. Multiply by the disk's ~$10^4$ such cubes and you get the Galaxy's ISM mass, of order a few $\times10^9\,M_\odot$ — a few percent of the stellar mass.
+</Fermi>
+
+<Level min={3} title="Why pressure, and not density or temperature, equalises">
+Two adjacent parcels of gas exchange momentum at their boundary far faster than they exchange heat (sound waves cross a parcel in a crossing time $\ell/c_s$; thermal conduction and radiation are slower once radiative losses are included). Any pressure mismatch launches a sound wave that erases it on a sound-crossing time, typically $\ll1$ Myr for parsec-scale clumps. Mismatches in $n$ and $T$ individually persist far longer, because a fluid element can trade one for the other (via heating/cooling and compression) while keeping $P=nk_BT$ fixed. Full mechanical equilibrium in a stratified, turbulent, magnetised medium is of course only approximate — turbulent ram pressure and magnetic pressure both contribute alongside $nk_BT$, and self-gravity dominates inside collapsing clouds (the subject of [Chapter 7](/ch/star-formation/)).
+</Level>
+
+## Heating, cooling and why the ISM has two stable phases
+
+Two competing processes set the temperature at each density: **heating** (mostly starlight) and **cooling** (mostly radiation from atoms, ions and molecules). Their balance is not always stable, and the *instability* is exactly what carves the ISM into distinct phases rather than a smooth continuum.
+
+### Heating
+
+<Tiers>
+<Fragment slot="l1">
+Starlight — mostly ultraviolet photons from young, hot stars — knocks electrons off dust grains, and those electrons carry away some kinetic energy that heats the gas. This is the dominant heat source almost everywhere in the neutral ISM. Cosmic rays (fast particles from supernova shocks) add a smaller, steadier trickle of heat that reaches even the densest, most shielded gas that starlight can't penetrate.
+</Fragment>
+<Fragment slot="l3">
+The dominant process in the warm and cold neutral gas is the **photoelectric effect on dust grains**: a UV photon ($h\nu\gtrsim6$ eV) ejects an electron from a grain, and the electron's kinetic energy thermalises with the gas. The heating rate per H atom, $\Gamma$, scales with the local UV radiation field and the grain photoelectric yield, both of which depend on grain size distribution and charge — messy microphysics usually folded into a single calibrated number, $\Gamma\sim10^{-26}$–$10^{-25}\,\mathrm{erg\,s^{-1}}$ per particle for the solar neighbourhood. **Cosmic-ray ionisation** heats gas that UV cannot reach (deep inside molecular clouds), at a much smaller but non-zero rate, $\sim10^{-27}\,\mathrm{erg\,s^{-1}}$ per particle for a Galactic cosmic-ray flux.
+</Fragment>
+</Tiers>
+
+### Cooling
+
+Cooling works through spontaneous emission: a collision excites an atom, ion or molecule, and it emits a photon that (usually) escapes, carrying energy away. The efficiency depends sharply on temperature because it depends on which transitions are collisionally accessible:
+
+- **Below ~$10^4$ K**: fine-structure lines of singly-ionised carbon (**[C II] 158 μm**) and neutral oxygen (**[O I] 63 μm**) dominate — low-energy transitions easily excited by the modest kinetic energies of cool gas.
+- **Around $10^4$–$10^5$ K**: **Lyman-$\alpha$** (hydrogen's $n=2\to1$ transition, 10.2 eV) and collisionally excited metal lines take over as gas gets hot enough to excite them.
+- **Above $10^5$–$10^6$ K**: collisional ionisation of hydrogen, helium and metals peaks around $10^5\,$K; above a few $\times10^6\,$K, **thermal bremsstrahlung** (free–free emission from electron–ion collisions) takes over and cooling weakens again — this is the main reason hot supernova bubbles survive for millions of years instead of cooling in thousands.
+- **In molecular clouds**: **CO rotational lines** (millimetre wavelengths) are the main coolant once gas is dense and shielded enough for CO to survive; see the tracers section below.
+
+<Level min={3} title="The net cooling function">
+Write the heating and cooling per unit volume as $n\Gamma$ and $n^2\Lambda(T)$ respectively (cooling is two-body: it needs a particle to be excited by, and a partner to excite it, and radiates once at each event, giving a rate $\propto n^2$, versus heating's $\propto n$ from photoelectric ejection off individual grains illuminated by a fixed radiation field). The gas temperature evolves as
+$$
+\frac{3}{2}n k_B\,\frac{dT}{dt} = n\Gamma - n^2\Lambda(T)Z,
+$$
+where $Z$ scales the metal-dominated part of $\Lambda$. Thermal equilibrium ($dT/dt=0$) requires $n = \Gamma/[\Lambda(T)Z]$ — a *relation* between $n$ and $T$, not a single value of either.
+</Level>
+
+### The thermal instability and the two-phase medium
+
+Plot the equilibrium pressure $P_\mathrm{eq}(n) = n\,T_\mathrm{eq}(n)$ implied by that balance, and — because $\Lambda(T)$ has bumps (the fine-structure and Lyman-$\alpha$ features above) rather than a smooth power law — the curve can bend backwards: over some range of $n$, *higher* density implies *lower* equilibrium pressure. That backward-bending branch is thermally **unstable**: nudge a parcel there to slightly higher density, and it cools faster than heating can keep up, so it keeps compressing and cooling — running away toward the cold, dense branch. Nudge it the other way and it heats and expands toward the warm, dilute branch. This is the mechanism proposed by George Field in 1965 and refined by Wolfire and collaborators: **thermal instability sorts the neutral gas into two stable phases** (CNM and WNM) connected by a rapidly-evacuated unstable middle, exactly as observed.
+
+<History title="A theory of interstellar clouds" year="1965">
+Astronomers had noticed since the 1950s that 21 cm observations implied hydrogen at two very different temperatures, but no one had shown *why* nature would prefer two temperatures over a continuum. George Field, at Princeton and then Berkeley, worked out the linear stability analysis of a heated, cooled interstellar gas and showed that the classical thermal-instability criterion (isobaric perturbations grow when $\partial(\Lambda/T)/\partial T<0$ at fixed pressure) is satisfied for realistic heating and cooling functions right in the density range where cold and warm clouds are observed. Mark Wolfire, Chris McKee and collaborators later (1995, 2003) built detailed heating/cooling models confirming and refining the picture with modern atomic data, including grain photoelectric heating, which Field's original models lacked.
+</History>
+
+<Aside>**Terminology.** "Thermally unstable" gas is not gas that doesn't exist — it is gas that doesn't *linger*: any patch caught there moves quickly (on a cooling timescale, often $\lesssim1$ Myr) to one of the two stable branches. Observationally it shows up as a genuinely under-populated range of temperatures, exactly as the theory predicts.</Aside>
+
+<Sim name="ism-pressure" minHeight={420}>
+**The thermal-equilibrium pressure curve.** Green segments are thermally stable (a perturbation is damped); the dashed red segment is unstable (a perturbation runs away). Drag along the curve, or use the sliders to change the UV heating rate and metallicity — notice how raising $\Gamma$ shifts both stable branches to higher pressure without removing the instability, while metallicity mostly reshapes the cooling-dominated hot end.
+</Sim>
+
+<Predict question="If you turn the flagship simulation's supernova rate all the way to zero and just let the box sit, which phase will eventually fill almost the whole volume?" choices={['The cold, dense phase', 'The warm phase, near the equilibrium curve', 'A 50/50 mix that never changes']} answer={1}>
+With no supernovae to re-heat it, every parcel of gas relaxes onto the nearest stable branch of the equilibrium curve and mostly stays there — pressure differences get ironed out by sound waves faster than the phases can otherwise mix. Because the box starts with modest density contrasts and no gravity to build up cold clumps from scratch, most of the volume settles onto the **warm**, lower-density branch: it takes real compression (turbulence, gravity, or a passing shock) to push enough gas past the unstable region onto the cold branch and keep it there. Once you turn supernovae back on, their shocks do exactly that compressing job, alongside heating everything they touch.
+</Predict>
+
+<Sim name="ism-phases" size="wide" minHeight={560}>
+**A toy ISM ecosystem.** A 2D gas grid evolves under pressure forces, advection and the heating/cooling law above. Click anywhere to trigger a supernova, or set a rate and let them go off at random (preferentially in denser gas, mimicking star formation). Watch hot, low-density bubbles blow outward, sweep up shells that cool and pile into dense clumps, and the whole box settle into a churning mix of phases. The right-hand panel is a live phase diagram: each grid cell is one point in $(n,T)$, and the dashed line is the equilibrium curve from the sim above — watch the cloud of points cluster around it, with a hot, sparse tail from the supernova bubbles that haven't had time to cool.
+</Sim>
+
+<Hood title="the toy ISM solver">
+`ism-phases.ts` runs a $100\times100$ grid representing a 220 pc periodic box, entirely on the CPU (Float32Array, no allocation inside the hot loop). Each physics step does four things, in this order:
+
+1. **Pressure force.** Central differences of $nT$ give an acceleration $a\propto-\nabla(nT)/n$, with a hard speed cap standing in for a proper Riemann solver.
+2. **Semi-Lagrangian advection.** Instead of stepping forward along a fixed grid (which needs the time step to satisfy the CFL condition $v\,\Delta t<\Delta x$), each cell looks *backward* along the velocity field to find where its new value came from, and bilinearly samples the old grid there:
+
+```ts
+// semi-Lagrangian advection: unconditionally stable regardless of CFL, at the cost of
+// numerical diffusion — sharp fronts smear out over a few cells per crossing.
+for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+  const i = y * N + x;
+  const px = x - vx[i] * cellPerS, py = y - vy[i] * cellPerS;
+  n2[i] = Math.max(N_FLOOR, sample(n, px, py));
+  T2[i] = Math.min(T_CEIL, Math.max(T_FLOOR, sample(T, px, py)));
+}
+```
+
+   This is *unconditionally stable*: however far a cell's fluid has moved in one step, sampling the old field just interpolates it, with no danger of blowing up. The price is **numerical diffusion**: bilinear interpolation smooths features by roughly one grid cell per crossing, which is why supernova shells in the sim are a few cells wide rather than an infinitesimally sharp front. A real code (see below) resolves fronts far better, at the cost of a timestep tied to the CFL condition.
+3. **Operator-split cooling.** Heating and cooling are integrated separately from advection ("operator splitting"), because the cooling term is *stiff*: in dense, cold gas the cooling timescale can be thousands of times shorter than the hydro timestep. Each cell picks its own number of sub-steps, capped for a bounded worst case:
+
+```ts
+const tau = thermalTimescale(n[i], T[i], Gamma, Z);
+const nsub = Math.min(24, Math.max(1, Math.ceil(dtSub / (0.25 * tau))));
+const h = dtSub / nsub;
+let Ti = T[i];
+for (let k = 0; k < nsub; k++) Ti = Math.min(T_CEIL, Math.max(T_FLOOR, Ti + dTdt(n[i], Ti, Gamma, Z) * h));
+```
+
+4. **Supernovae.** A click or a Poisson-random event injects thermal energy and an outward velocity kick into a small disk of cells.
+
+**What this toy gets wrong, on purpose.** There is no self-gravity, no magnetic field, no proper shock-capturing (just a velocity cap plus a little numerical diffusion to stay stable), and the cooling table (`src/sims/ism/cooling.ts`) is a hand-tuned stand-in for real tabulated cooling functions, not a fit to one. Real ISM simulations — TIGRESS (Kim & Ostriker) and SILCC (Walch, Girichidis et al.) are two well-known examples — solve the compressible MHD equations with a proper Riemann-solver hydro scheme, self-gravity via a Poisson solver, non-equilibrium chemistry networks for H, H₂ and CO formation, individually-resolved supernova remnants, and radiative transfer for the UV heating field, on grids of $512^3$ or larger, at a computational cost many orders of magnitude beyond a real-time browser demo. The qualitative story — supernova-driven turbulence maintaining a multi-phase, pressure-balanced medium — is the same; the numbers you'd trust for real astrophysics are not.
+</Hood>
+
+## H II regions: carving out bubbles of ionised gas
+
+A hot O or B star floods its surroundings with photons energetic enough ($h\nu>13.6\,$eV) to ionise hydrogen. Every ionisation is eventually undone by a recombination, and in equilibrium the two balance within some radius: the **Strömgren sphere**.
+
+<Photo src="/img/ism/orion-hubble.jpg" alt="The Orion Nebula, a bright pink and orange cloud of ionised gas and dust surrounding young hot stars, imaged by the Hubble Space Telescope" credit="NASA, ESA, M. Robberto (STScI/ESA) and the Hubble Space Telescope Orion Treasury Project Team" license="CC BY 4.0" href="https://esahubble.org/images/heic0601a/" size="wide" aspect="16 / 10">
+**The Orion Nebula, Hubble, 2006.** At 1,344 light-years, this is the nearest large H II region to Earth — a few parsecs of gas ionised by the young, massive stars of the Trapezium cluster near its centre. The pink glow is mostly recombination emission (H$\alpha$); dark lanes are foreground dust that hasn't yet been ionised or blown away.
+</Photo>
+
+<Level min={3} title="Deriving the Strömgren radius">
+Assume a uniform density $n$ of hydrogen around a star emitting $Q$ ionising photons per second, and that essentially every photon is absorbed within some radius $R_S$ (a sharp ionisation front — a good approximation because the absorption cross-section for ionising photons is large). Inside $R_S$, ionisations balance recombinations in steady state:
+$$
+Q = \int_0^{R_S} n_e n_p\,\alpha_B\,4\pi r^2\,dr \approx n^2\alpha_B\cdot\frac{4}{3}\pi R_S^3,
+$$
+using $n_e\approx n_p\approx n$ for fully ionised hydrogen and pulling $n$ out of the (assumed uniform) integral. Here $\alpha_B$ is the case-B recombination coefficient — "case B" means recombinations straight to the ground state are excluded, because the photon they emit is itself ionising and gets reabsorbed almost immediately (this is called "on-the-spot" absorption), so only recombinations to excited states actually remove an ion from the balance.
+</Level>
+
+<KeyEq title="Strömgren radius">
+$$
+\term{RS}{R_S} = \left(\frac{3\,\term{Q}{Q}}{4\pi\,\term{n}{n}^2\,\term{alphaB}{\alpha_B}}\right)^{1/3}
+$$
+<Fragment slot="where">A hotter, more luminous star (bigger $Q$) or a more tenuous medium (smaller $n$) both make a bigger H II region, but $R_S$ only grows as the cube root — an O star ten times more ionising than a B star only clears out a region $10^{1/3}\approx2.15$ times wider, not ten times wider.</Fragment>
+</KeyEq>
+
+An O5 star emits roughly $Q\sim5\times10^{49}$ photons/s. In typical ISM gas ($n\sim1\,\mathrm{cm^{-3}}$) that alone would give a preposterously large $R_S$; real H II regions like Orion sit in much denser natal gas ($n\sim10^2$–$10^4\,\mathrm{cm^{-3}}$), which is exactly what keeps $R_S$ down to a few parsecs.
+
+A star with <Var name="Q" value={5} min={0.01} max={100} log /> ×10⁴⁸ ionising photons/s, in gas of density <Var name="n" value={100} min={1} max={10000} log /> cm⁻³, carves out a Strömgren sphere of radius <Out name="RS" />.
+
+<Aside>Drag the orange numbers. Push $n$ down toward the diffuse ISM value of ~1 cm⁻³ and watch $R_S$ balloon to hundreds of parsecs — real O stars in low-density gas really do produce enormous, faint ionised bubbles.</Aside>
+
+<Sim name="ism-stromgren" minHeight={420}>
+**Strömgren sphere, to scale.** Choose a spectral type (sets $Q$ and the star's colour) and drag the ambient density. The dashed circle marks the Orion Nebula's real size (≈1.2 pc) for comparison. Ionisation fronts are not perfectly sharp in reality — a thin transition layer, typically much smaller than $R_S$, separates fully ionised from fully neutral gas, which is why the "sharp edge" assumption in the derivation works as well as it does.
+</Sim>
+
+<Aside>**Recombination lines.** Every recombination cascades the electron down through the atom's energy levels, and each downward jump emits a photon at a specific wavelength — H$\alpha$ (656.3 nm) is the strongest visible one, which is why H II regions glow pink-red in visible-light images. Radio recombination lines and free–free (bremsstrahlung) radio emission trace the same ionised gas even through the dust that blocks H$\alpha$.</Aside>
+
+## Dust: dimming, reddening and glowing
+
+Interstellar dust grains — mostly silicates and carbonaceous material, roughly 5 nm to 1 μm across — scatter and absorb starlight preferentially at *short* wavelengths, for the same reason the sky is blue: scattering and absorption by particles comparable to or smaller than the wavelength fall off roughly as $1/\lambda$ to $1/\lambda^{1.6}$ over the optical range. The practical consequences are extinction (light lost) and reddening (blue light lost more than red).
+
+<Photo src="/img/ism/horsehead-eso.jpg" alt="The Horsehead Nebula, a dark, horse-head-shaped silhouette of dust set against the red glow of ionised hydrogen, imaged from the ESO Very Large Telescope" credit="ESO" license="CC BY 4.0" href="https://www.eso.org/public/images/eso0202a/" size="wide" aspect="16 / 10">
+**The Horsehead Nebula, VLT/FORS2.** The horse-head shape is a dense dust pillar silhouetted against the bright, ionised gas of the H II region IC 434 behind it — dust so thick that essentially no visible light gets through at all, rather than merely dimmed and reddened.
+</Photo>
+
+<History title="Proving the dust was really there" year="1930">
+Before 1930, some astronomers assumed interstellar space was essentially transparent and that the apparent dimming of distant stars was purely due to distance. Robert Trumpler, working at Lick Observatory, compared the angular sizes and estimated distances of open star clusters against their observed brightnesses. Clusters that *should* have looked a certain brightness, based on their size, were systematically fainter and redder than expected the farther away they were — exactly the signature of light passing through more absorbing material. Trumpler's 1930 analysis gave one of the first solid measurements of interstellar extinction and proved that the space between the stars contains real, light-absorbing matter, not just occasional dark clouds. It also meant every photometric distance measured up to that point had been systematically wrong, an uncomfortable but important correction.
+</History>
+
+<KeyEq title="Extinction and reddening">
+$$
+\Delta m_\lambda = \term{AV}{A_V}\left(\frac{\lambda}{550\,\mathrm{nm}}\right)^{-p}, \qquad \term{RV}{R_V}\equiv\frac{A_V}{\term{EBV}{E(B-V)}}\approx3.1
+$$
+<Fragment slot="where">$\Delta m_\lambda$ is the extra dimming (in magnitudes) at wavelength $\lambda$; $p\approx1$–$1.6$ over the optical band. $R_V$ is set by the grain size distribution — a larger $R_V$ means relatively more big grains, which scatter more evenly across wavelengths and so redden less per magnitude of total extinction.</Fragment>
+</KeyEq>
+
+<Sim name="ism-extinction" minHeight={380}>
+**Dimming and reddening a star's light.** Pick a stellar temperature and drag $A_V$. The pale dashed curve is the star's true blackbody spectrum; the solid curve is what a distant observer actually receives after light passes through the dust column. Watch the swatch on the right: even a modest $A_V$ shifts a star's apparent colour noticeably redder, which is exactly why astronomers must correct for it before trusting a star's photometric temperature.
+</Sim>
+
+<Aside>**Where the absorbed light goes.** Energy isn't destroyed — grains heat up (typically to 15–30 K in the diffuse ISM, warmer near hot stars) and re-radiate the absorbed starlight as thermal infrared continuum, following a modified blackbody. About a third of all the starlight ever emitted in the Galaxy is estimated to have been reprocessed this way. Aligned, non-spherical grains also **polarise** starlight slightly (typically ≲1–2%), which traces the interstellar magnetic field direction — this is one of the main ways astronomers map Galactic magnetism.</Aside>
+
+## Molecular clouds and the tracers of a mostly-invisible medium
+
+Hydrogen atoms are terrible at forming H₂ in the gas phase — the reaction $\mathrm{H}+\mathrm{H}\to\mathrm{H_2}$ releases energy that a two-body collision has nowhere to put, so it essentially never happens directly. Dust grains solve the problem: two H atoms stick to a grain surface, meet by random walk across it, bond, and the grain itself absorbs the recoil energy as heat before releasing the finished H₂ molecule. **Every H₂ molecule in the universe owes its existence to a dust grain acting as a catalyst and a third body simultaneously.**
+
+Once enough H₂ (and dust) accumulates to shield the cloud interior from dissociating UV photons, a rich molecular chemistry follows, and molecular clouds — the coldest, densest phase, and the exclusive nurseries of new stars (next chapter) — take shape. But H₂ itself is a poor observational tracer: it is a symmetric molecule with no permanent dipole moment, so it has no easily excited rotational transitions at the low temperatures typical of clouds. Astronomers instead track molecular gas indirectly:
+
+<Tiers>
+<Fragment slot="l1">
+The most common trace-molecule used to "see" invisible H₂ gas is **carbon monoxide (CO)**. It's much rarer than H₂, but it emits bright radio light that telescopes can detect easily, so astronomers use its brightness (with a calibration factor) as a stand-in for how much H₂ must be there.
+</Fragment>
+<Fragment slot="l3">
+**CO** is the second most abundant molecule after H₂, and unlike H₂ it has a permanent dipole moment, giving it easily-excited rotational transitions (the $J=1\to0$ line at 2.6 mm is the workhorse). Its critical density for excitation ($\sim10^3\,\mathrm{cm^{-3}}$) is conveniently within the range of typical molecular cloud gas, and its line is usually optically thick, which — counterintuitively — makes it a *robust* tracer: the emergent brightness temperature saturates at the gas kinetic temperature, largely independent of the exact CO abundance. Converting CO luminosity to H₂ mass uses an empirically calibrated factor, $X_\mathrm{CO}$, that varies with metallicity and radiation environment and is a persistent source of systematic uncertainty in molecular gas mass estimates.
+</Fragment>
+</Tiers>
+
+Different phases and processes each have their own observational signature:
+
+| Tracer | Wavelength / band | Traces |
+|---|---|---|
+| 21 cm line | Radio | Atomic hydrogen (CNM absorption, WNM emission) |
+| CO rotational lines | Millimetre | Molecular hydrogen (indirectly) |
+| Dust continuum | Far-IR / submm | Dust mass, and (with $T_\mathrm{dust}$) column density |
+| H$\alpha$, other recombination lines | Optical / radio | Warm ionised gas, H II regions |
+| Soft X-rays, O VI, Ne VIII absorption | X-ray / UV | Hot ionised medium |
+
+<History title="Predicting, then hearing, a whisper from every hydrogen atom" year="1944–1951">
+<Portrait src="/img/people/purcell.jpg" name="Edward Purcell" years="1912–1997" credit="Unknown author, via Wikimedia Commons" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Edward_Mills_Purcell.jpg">Co-detected the interstellar 21 cm line in 1951.</Portrait>
+In 1944, during the Nazi occupation of the Netherlands, the Dutch astronomer Hendrik van de Hulst — prompted by Jan Oort, who wanted a way to map neutral hydrogen across the whole Galaxy including regions hidden by dust — worked out that the hyperfine transition of atomic hydrogen should be detectable at radio wavelengths, even though the transition is fantastically forbidden (see the Fermi box below) and had never been observed. Seven years later, in 1951, Harold Ewen and Edward Purcell at Harvard built a horn antenna on the roof of the physics building and detected the 21 cm line from the Galaxy — the same week, coincidentally, that Dutch (Oort's group) and Australian teams were racing to confirm it too, all three groups eventually publishing together. It remains the single most important tracer of atomic hydrogen in the universe, used from Milky Way mapping to 21 cm cosmology surveys today.
+</History>
+
+<Fermi title="Why does a 'forbidden' transition dominate radio astronomy?">
+The 21 cm line comes from a hyperfine flip: the electron and proton spins in a hydrogen atom go from aligned to anti-aligned, releasing a tiny magnetic energy,
+$$
+h\nu = \Delta E \approx \mu_p B_e \sim 6\times10^{-6}\,\mathrm{eV} \ \Rightarrow\ \nu=\Delta E/h\approx1420\,\mathrm{MHz}\ (\lambda\approx21\,\mathrm{cm}),
+$$
+where $B_e$ is the magnetic field the proton feels from the electron's spin at the Bohr radius, of order a few tesla. This transition is "forbidden" (magnetic dipole, not electric dipole) and correspondingly slow — the spontaneous decay rate is only $A\approx2.9\times10^{-15}\,\mathrm{s^{-1}}$, an average wait of **11 million years** per atom. Yet it dominates radio astronomy because there is so much atomic hydrogen, everywhere, all the time: even with such a low per-atom rate, a sightline through the Galaxy's disk crosses enough hydrogen atoms that the aggregate emission is easily detected with a modest radio telescope. Rare events, multiplied by huge numbers, are how a great deal of astronomy works.
+</Fermi>
+
+## Supernova remnants, superbubbles and the galactic ecosystem
+
+<Photo src="/img/ism/cas-a-chandra.jpg" alt="A multi-wavelength composite of the Cassiopeia A supernova remnant, showing overlapping shells of X-ray, infrared, visible and radio emission around the expanding blast wave" credit="NASA/DOE/Fermi LAT Collaboration, CXC/SAO/JPL-Caltech/Steward/O. Krause et al., and NRAO/AUI" license="Public domain" href="https://images.nasa.gov/details/GSFC_20171208_Archive_e002183" size="wide" aspect="4 / 3">
+**Cassiopeia A across the spectrum.** Gamma rays (Fermi, magenta), X-rays (Chandra, blue/green), visible light (Hubble, yellow), infrared (Spitzer, red) and radio (VLA, orange) all trace different pieces of the same ~350-year-old supernova remnant, ~11,000 light-years away. The overlapping shells are exactly the swept-up, shock-heated shell that the flagship simulation approximates in 2D.
+</Photo>
+
+Supernovae are the ISM's most violent architects. A single core-collapse or thermonuclear supernova (see [Chapter 16](/ch/stellar-death/)) dumps roughly $10^{51}\,$erg into its surroundings. For most of a remnant's life that energy is conserved (radiative losses are small), and the blast simply sweeps up the ambient medium.
+
+<Level min={3} title="Deriving the Sedov–Taylor scaling">
+Dimensional analysis alone almost gets you there. The only quantities available are the explosion energy $E$, the ambient density $\rho$, and the elapsed time $t$; the only combination with dimensions of length is
+$$
+\term{R}{R}(\term{t}{t}) \sim \left(\frac{\term{E}{E}\,t^2}{\term{rho}{\rho}}\right)^{1/5}.
+$$
+A full self-similar solution of the Euler equations (Sedov 1946; Taylor 1950, who used the same scaling to estimate the yield of the first atomic bomb from film of its fireball) fixes the numerical prefactor, $R=\xi_0(Et^2/\rho)^{1/5}$ with $\xi_0\approx1.15$ for a monatomic gas ($\gamma=5/3$).
+</Level>
+
+<KeyEq title="Sedov–Taylor blast radius">
+$$
+\term{R}{R} \approx 1.15\left(\frac{\term{E}{E}\,\term{t}{t}^2}{\term{rho}{\rho}}\right)^{1/5}
+$$
+<Fragment slot="where">Because the exponent is $1/5$, the remnant's growth is very insensitive to both $E$ and $\rho$: a supernova ten times more energetic is only $10^{1/5}\approx1.58$ times bigger at the same age. Eventually radiative losses become significant (once the shocked gas has had time to cool), the remnant leaves this stage, and expansion slows further.</Fragment>
+</KeyEq>
+
+<Sim name="ism-sedov" minHeight={420}>
+**Sedov–Taylor blast wave.** Drag the energy and ambient-density sliders, or the time slider (also draggable directly on the R–t plot). The shell colour flips from orange to red once the remnant's age exceeds its estimated cooling time — the point where the adiabatic assumption behind the $t^{2/5}$ law starts to break down and the remnant enters a radiative, momentum-conserving stage instead.
+</Sim>
+
+A single remnant fades within a few $\times10^5$ years, but massive stars are born in clusters and die together (their main-sequence lifetimes are all a few Myr — see [Chapter 14](/ch/main-sequence/)), so their supernovae overlap in space and time, merging into **superbubbles** hundreds of parsecs across. This is the direct source of the hot ionised medium: without a steady drumbeat of supernovae, the hot phase would simply cool and vanish within its cooling time (mostly $10^5$–$10^7$ yr, depending on density), rather than persisting as ~30–70% of the ISM's volume as observed.
+
+<Aside>**In the real universe:** the same physics scales up to galaxy clusters, where accumulated supernova and AGN feedback heats gas to $10^7$–$10^8\,$K and blows enormous bubbles (see [Chapter 23](/ch/galaxy-formation/)), and down to individual star-forming clumps, where a single massive star's wind and eventual supernova can disrupt the very cloud that formed it — a process called feedback that regulates how efficiently gas turns into stars everywhere from a single cluster to a whole galaxy.</Aside>
+
+This closes a loop: gas collapses into stars ([Chapter 7](/ch/star-formation/)), stars fuse light elements into heavy ones and eventually explode or shed their envelopes ([Chapters 12](/ch/fusion/), [15](/ch/giants/) and [16](/ch/stellar-death/)), the ejecta reheats and re-enriches the surrounding ISM with metals and dust, and — once it has cooled back down through the phases described in this chapter — the enriched gas is available to collapse into the *next* generation of stars, slightly richer in heavy elements than the last. The Sun itself, and the carbon, oxygen and iron in your body, passed through this cycle at least once, probably several times, before ending up here.
+
+## Where we go from here
+
+The interstellar medium is the bridge between stellar evolution and star formation: it receives the ejecta of dying stars and supplies the raw material for new ones, all while sorting itself into a turbulent, multi-phase, pressure-balanced ecosystem shaped by heating, cooling, dust chemistry and supernova feedback. The next chapter asks the obvious follow-up question: under what conditions does a patch of this medium stop being supported by pressure and turbulence, and instead collapse under its own gravity to form a star?
+
+*(New to differential equations or numerical integration? See [Appendix A5](/ch/primer-odes/). For the underlying statistical-mechanics ideas behind pressure and the Boltzmann-factor cooling functions used here, see [Appendix A7](/ch/primer-thermo/).)*

@@ -15,6 +15,50 @@ import Out from '../../components/Out.astro';
 import Tiers from '../../components/Tiers.astro';
 import Level from '../../components/Level.astro';
 import Photo from '../../components/Photo.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+import Terms from '../../components/Terms.astro';
+
+<Terms defs={{
+  N: ['Number of stars', 'Sets how grainy the system is. Relaxation time grows almost in proportion to N, so huge systems are smooth.'],
+  mstar: ['Mass of one star', 'Heavier individual stars give bigger kicks; at fixed total mass, fewer heavier stars relax faster.'],
+  Rsys: ['Size of the system', 'Sets the crossing time and, with the speed, the total mass through the virial theorem.'],
+  vtyp: ['Typical stellar speed', 'Fast stars spend little time near each other, so each encounter kicks them less.'],
+  bimp: ['Impact parameter', 'How close an encounter passes. Kicks fall as 1/b, but there are more distant encounters, so every factor of two in b contributes equally.'],
+  bmin: ['Closest relevant encounter', 'The distance for a 90° deflection, about R/N. It sets the lower cut-off of the logarithm.'],
+  dv2: ['Accumulated squared velocity kick', 'Random kicks add like a random walk, so their squares add. When it reaches v² the star has forgotten its orbit.'],
+  lnL: ['Coulomb logarithm', 'Log of the ratio of largest to smallest encounter distance. Typically 2–25; it varies so slowly that a rough value is fine.'],
+  tc: ['Crossing time', 'Time to cross the system once, R/v: about 50 Myr for the Milky Way, 0.5 Myr for a globular cluster.'],
+  trelax: ['Relaxation time', 'Time for star–star encounters to erase a star\'s initial orbit. Much longer than the age of the system means collisionless.'],
+  fdf: ['Distribution function', 'Density of stars in 6D phase space (position and velocity). Everything observable is an average over it.'],
+  time: ['Time', 'The equation says how the phase-space density changes as the system evolves.'],
+  xvec: ['Position', 'Three of the six phase-space coordinates.'],
+  vvec: ['Velocity', 'The other three phase-space coordinates. Stars move in position at this rate.'],
+  Phi: ['Gravitational potential', 'The smooth potential of all the mass. Its gradient is the acceleration that moves stars through velocity space.'],
+  rhom: ['Mass density', 'Integral of f over velocities: what the stars (plus dark matter) contribute to gravity through Poisson\'s equation.'],
+  nu: ['Stellar number density', 'How many stars per unit volume at radius r; its gradient is part of the "pressure" gradient.'],
+  sigr: ['Radial velocity dispersion', 'Spread of radial speeds; ν σ_r² acts as a pressure holding the system up against gravity.'],
+  betaan: ['Velocity anisotropy', '1 − σ_t²/σ_r². Zero for isotropic motions, positive for radial orbits; poorly known, hence the mass–anisotropy degeneracy.'],
+  rr: ['Radius', 'Distance from the centre of a spherical system.'],
+  Kin: ['Kinetic energy', 'Total energy of motion of all stars, time-averaged.'],
+  Wpot: ['Potential energy', 'Total gravitational binding energy (negative). In equilibrium it is exactly −2 times the kinetic energy.'],
+  Mtot: ['Total mass', 'What the virial theorem weighs, including everything that gravitates, visible or not.'],
+  sigv: ['Velocity dispersion', 'Spread of stellar speeds. Mass goes as its square, so a 10% error in σ is a 20% error in mass.'],
+  kappa: ['Epicyclic frequency', 'Rate of a star\'s in-and-out radial wobble. It also measures how strongly rotation resists collapse.'],
+  Omega: ['Orbital angular velocity', 'How fast the guiding centre goes round: v_c/R.'],
+  betarc: ['Rotation-curve slope', 'v_c ∝ R^β: −½ for a point mass, 0 for a flat curve, 1 for solid-body rotation.'],
+  Rgal: ['Galactocentric radius', 'Distance from the galaxy\'s centre in the disk plane.'],
+  Q: ['Toomre Q', 'Stability parameter. Below 1 the disk fragments; around 1–2 it grows spiral arms; well above 2 it stays smooth.'],
+  sigR: ['Radial velocity dispersion', 'Random stellar motions that puff small patches apart, stabilising the disk on small scales.'],
+  Sigma: ['Surface density', 'Mass per unit area of the disk. More mass means stronger self-gravity, lowering Q.'],
+  tfric: ['Dynamical-friction time', 'Time for a satellite on a circular orbit to spiral to the centre. Grows as r₀² and falls as 1/M.'],
+  r0: ['Starting radius', 'Squared: a satellite twice as far out takes four times as long to sink.'],
+  vc: ['Halo circular speed', 'Sets both the orbital speed and the halo density (ρ ∝ v_c²/r²).'],
+  Msat: ['Satellite mass', 'The drag force scales as M², so the deceleration scales as M: heavy satellites sink first.'],
+  vM: ['Satellite velocity', 'Relative to the background. Drag falls as 1/v² for fast objects: they plough through before the wake can build.'],
+  rhobg: ['Background density', 'Density of the dark matter (and stars) the satellite moves through; the wake is made of this material.'],
+  Xr: ['Speed ratio', 'Satellite speed over the background\'s typical speed; the bracket counts only the slower background particles, which can form a wake.'],
+}} />
 
 ## A gas of stars that never collides
 
@@ -24,22 +68,26 @@ import Photo from '../../components/Photo.astro';
 
 In [Chapter 2](/ch/orbits/) we solved the two-body problem exactly, and in Chapter 3 we saw that three bodies are already chaotic. A galaxy has about $10^{11}$ bodies. That sounds hopeless. Surprisingly, it is *easier* than three bodies, because with enough bodies the individual pulls blur into a smooth average, and each star simply orbits in that average field.
 
-Think of the Milky Way's disk as a gas whose "molecules" are stars. Two questions decide how the gas behaves: do the molecules collide, and if they do not collide physically, do they scatter each other gravitationally?
+Think of the Milky Way's disk as a gas (a refresher on gases and random motions: [Appendix A7](/ch/primer-thermo/)) whose "molecules" are stars. Two questions decide how the gas behaves: do the molecules collide, and if they do not collide physically, do they scatter each other gravitationally?
 
 Physical collisions are out of the question. A star has a radius of about $R_\odot = 7\times10^{8}$ m. Near the Sun the stars are about 1 pc ($3\times10^{16}$ m) apart. Shrink the Sun to a grain of sand 1 mm across and its nearest neighbour is another grain of sand 40 km away. In the entire history of the disk, only a tiny fraction of stars have ever touched another star. (Dense cluster cores are the exception, and they are where stellar collisions and blue stragglers happen.)
 
 Gravitational scattering is subtler. Every time star A passes star B, B nudges A's path a little. One nudge is tiny, but there are many. Do they add up?
 
+<History title="Galaxies on a table of light bulbs" year="1941">
+Long before computers could do it, the Swedish astronomer **Erik Holmberg** at Lund ran the first N-body simulation of colliding galaxies with light bulbs. Light intensity falls off as $1/r^2$, exactly like gravity, so he built each galaxy from 37 bulbs on a table, measured the total light arriving at each bulb with a photocell (from several directions, to get the force components), and moved the bulbs by hand, step by step. His 1941 paper showed two passing disks raising spiral-like tidal arms and losing orbital energy, so that they could capture each other: tidal tails and merging, 30 years before the Toomres. Almost nobody noticed. Holmberg's "analog computer" had the same core as the GPU kernel in this chapter: add up every pair's inverse-square pull, then take a timestep.
+</History>
+
 ### Two-body relaxation
 
 <Tiers>
 <Fragment slot="l1">
-Picture a star crossing the galaxy. Every other star it passes gives it a tiny sideways tug, each in a random direction. Random tugs mostly cancel, like a drunkard's steps, but slowly they accumulate. The question is how many crossings it takes before the tugs have added up to something as big as the star's own speed, so that it has "forgotten" its original path.
+Picture a star crossing the galaxy. Every other star it passes gives it a tiny sideways tug, each in a random direction. Random tugs mostly cancel, like a drunkard's steps, but slowly they accumulate. The question is how many crossings it takes before the tugs have added up to something as big as the star's own speed, so that it has "forgotten" its original path. (For a refresher on speeds, energy and orbits, see [Appendix A6](/ch/primer-mechanics/).)
 
 The answer turns out to be roughly *the number of stars divided by ten times a small logarithm*. The more stars there are, the smoother the galaxy looks, because each one is a smaller fraction of the total. For a galaxy with a hundred billion stars it takes hundreds of millions of crossings.
 </Fragment>
 <Fragment slot="l2">
-Consider a test star crossing a galaxy of $N$ stars. Each encounter gives it a small velocity kick in a random direction. Random kicks add like a random walk: after $n$ of them the total is about $\sqrt n$ times one kick, so it is the *squares* of the kicks that add up. Adding up the squared kicks from all the stars it passes in one crossing, and using the fact that $v^2 \approx GM/R$ for a galaxy in balance (the virial theorem, below), gives a remarkably simple result: each crossing changes $v^2$ by a fraction of about $8\ln N/N$. The star forgets its initial orbit after about $N/(8\ln N)$ crossings. The logarithm appears because every factor of two in encounter distance contributes equally: distant encounters are weaker but more numerous.
+Consider a test star crossing a galaxy of $N$ stars. Each encounter gives it a small velocity kick in a random direction. Random kicks add like a random walk (logarithms and powers rusty? see [Appendix A1](/ch/primer-numbers/)): after $n$ of them the total is about $\sqrt n$ times one kick, so it is the *squares* of the kicks that add up. Adding up the squared kicks from all the stars it passes in one crossing, and using the fact that $v^2 \approx GM/R$ for a galaxy in balance (the virial theorem, below), gives a remarkably simple result: each crossing changes $v^2$ by a fraction of about $8\ln N/N$. The star forgets its initial orbit after about $N/(8\ln N)$ crossings. The logarithm appears because every factor of two in encounter distance contributes equally: distant encounters are weaker but more numerous.
 </Fragment>
 <Fragment slot="l3">
 Consider a test star crossing a galaxy of $N$ stars of mass $m$, radius $R$, typical speed $v$. An encounter with impact parameter $b$ deflects it by a velocity kick $\delta v \approx 2Gm/(bv)$: the force $Gm/b^2$ acts for about the time $2b/v$ that the star spends near its partner. The kicks point in random directions, so they add like a random walk: their *squares* add.
@@ -47,8 +95,8 @@ Consider a test star crossing a galaxy of $N$ stars of mass $m$, radius $R$, typ
 Per crossing, the number of stars with impact parameter between $b$ and $b + db$ is the surface density $N/\pi R^2$ times the ring area $2\pi b\,db$. Summing the squared kicks,
 
 $$
-\Delta v^2 \approx \int_{b_\text{min}}^{R} \left(\frac{2Gm}{bv}\right)^2 \frac{2N}{R^2}\, b\,db = 8N\left(\frac{Gm}{Rv}\right)^2 \ln\Lambda,
-\qquad \Lambda = \frac{R}{b_\text{min}}.
+\term{dv2}{\Delta v^2} \approx \int_{\term{bmin}{b_\text{min}}}^{\term{Rsys}{R}} \left(\frac{2\term{G}{G}\term{mstar}{m}}{\term{bimp}{b}\,\term{vtyp}{v}}\right)^2 \frac{2\term{N}{N}}{\term{Rsys}{R}^2}\, \term{bimp}{b}\,d\term{bimp}{b} = 8\term{N}{N}\left(\frac{\term{G}{G}\term{mstar}{m}}{\term{Rsys}{R}\term{vtyp}{v}}\right)^2 \term{lnL}{\ln\Lambda},
+\qquad \term{lnL}{\Lambda} = \frac{\term{Rsys}{R}}{\term{bmin}{b_\text{min}}}.
 $$
 
 Every factor of two in $b$ contributes equally, which is where the logarithm comes from: distant encounters are weaker but more numerous. Now use the virial theorem (below) to relate speed to mass, $v^2 \approx GNm/R$, and the fractional change per crossing becomes $\Delta v^2/v^2 \approx 8\ln\Lambda/N$. The star forgets its initial orbit after $n_\text{relax} = N/(8 \ln\Lambda)$ crossings. With $b_\text{min} \approx R/N$ (the impact parameter for a 90° deflection), $\Lambda \approx N$.
@@ -58,7 +106,7 @@ Every factor of two in $b$ contributes equally, which is where the logarithm com
 
 <KeyEq title="Two-body relaxation time">
 $$
-t_\text{relax} \approx \frac{\htmlData{term=N}{N}}{8\ln \htmlData{term=N}{N}}\; \htmlData{term=tc}{t_\text{cross}}, \qquad t_\text{cross} = \frac{R}{v}
+\term{trelax}{t_\text{relax}} \approx \frac{\term{N}{N}}{8\ln \term{N}{N}}\; \term{tc}{t_\text{cross}}, \qquad \term{tc}{t_\text{cross}} = \frac{\term{Rsys}{R}}{\term{vtyp}{v}}
 $$
 <Fragment slot="where"><span data-term="N">N</span> is the number of stars and <span data-term="tc">$t_\text{cross}$</span> the time to cross the system once. After $t_\text{relax}$, the accumulated star–star encounters have changed a typical star's velocity by an amount comparable to the velocity itself. A system much younger than $t_\text{relax}$ is **collisionless**.</Fragment>
 </KeyEq>
@@ -90,7 +138,7 @@ Describe the galaxy by its **distribution function** $f(\vec x, \vec v, t)$: the
 
 <KeyEq title="Collisionless Boltzmann (Vlasov) equation">
 $$
-\frac{\partial f}{\partial t} + \vec v\cdot\nabla_{\vec x} f - \nabla\Phi\cdot\nabla_{\vec v} f = 0, \qquad \nabla^2\Phi = 4\pi G \rho, \quad \rho = \int f\, d^3v
+\frac{\partial \term{fdf}{f}}{\partial \term{time}{t}} + \term{vvec}{\vec v}\cdot\nabla_{\term{xvec}{\vec x}} \term{fdf}{f} - \nabla\term{Phi}{\Phi}\cdot\nabla_{\term{vvec}{\vec v}} \term{fdf}{f} = 0, \qquad \nabla^2\term{Phi}{\Phi} = 4\pi \term{G}{G} \term{rhom}{\rho}, \quad \term{rhom}{\rho} = \int \term{fdf}{f}\, d^3\term{vvec}{v}
 $$
 <Fragment slot="where">$f$ is the phase-space density of stars (mass per unit volume per unit velocity-volume), $\Phi$ the smooth gravitational potential, and $\rho$ the mass density it produces through Poisson's equation. The first equation is Liouville's theorem applied to stars; the pair is self-consistent: the stars make the potential that moves the stars.</Fragment>
 </KeyEq>
@@ -102,10 +150,10 @@ This is the same equation that governs collisionless plasmas (with the sign of t
 
 <Level min={3} title="Jeans equations: weighing galaxies from their stellar motions">
 
-Taking velocity moments of the Boltzmann equation gives fluid-like equations. Multiply by $v_j$ and integrate over velocities, and for a steady, spherical system you get the **Jeans equation**:
+Taking velocity moments (integrals over velocity; see [Appendix A4](/ch/primer-calculus/)) of the Boltzmann equation gives fluid-like equations. Multiply by $v_j$ and integrate over velocities, and for a steady, spherical system you get the **Jeans equation**:
 
 $$
-\frac{d(\nu\sigma_r^2)}{dr} + \frac{2\beta}{r}\nu\sigma_r^2 = -\nu\frac{d\Phi}{dr},
+\frac{d(\term{nu}{\nu}\term{sigr}{\sigma_r}^2)}{d\term{rr}{r}} + \frac{2\term{betaan}{\beta}}{\term{rr}{r}}\term{nu}{\nu}\term{sigr}{\sigma_r}^2 = -\term{nu}{\nu}\frac{d\term{Phi}{\Phi}}{d\term{rr}{r}},
 $$
 
 where $\nu$ is the stellar density, $\sigma_r$ the radial velocity dispersion and $\beta = 1 - \sigma_t^2/\sigma_r^2$ the anisotropy. It is hydrostatic equilibrium ([Chapter 11](/ch/stellar-structure/)) with "pressure" $\nu\sigma^2$ supplied by random stellar motions instead of thermal ones. It is how astronomers weigh elliptical galaxies and dwarf spheroidals from their measured dispersions, and it is a main source of evidence for dark matter in dwarf galaxies. The catch is the anisotropy $\beta$: radial and tangential motions give different masses, and they are hard to separate from line-of-sight velocities alone (the "mass–anisotropy degeneracy").
@@ -118,7 +166,7 @@ For any bound self-gravitating system in a steady state, the time-average of the
 
 <KeyEq title="Virial theorem">
 $$
-2\langle K\rangle + \langle W\rangle = 0 \quad\Longrightarrow\quad M \approx \frac{\sigma^2 R}{G}
+2\langle \term{Kin}{K}\rangle + \langle \term{Wpot}{W}\rangle = 0 \quad\Longrightarrow\quad \term{Mtot}{M} \approx \frac{\term{sigv}{\sigma}^2 \term{Rsys}{R}}{\term{G}{G}}
 $$
 <Fragment slot="where">$K = \tfrac12\sum m v^2$ and $W$ is the total gravitational potential energy (negative). Up to a structure factor of order a few, the mass of a system is its velocity dispersion squared times its radius, over $G$. The total energy is $E = K + W = -K$: a bound system that loses energy gets *hotter*.</Fragment>
 </KeyEq>
@@ -142,7 +190,7 @@ For a nearly circular orbit there is a beautiful approximation. Let the star's *
 
 <KeyEq title="Epicyclic frequency (power-law rotation curve)">
 $$
-\frac{\kappa}{\Omega} = \sqrt{2(1+\beta)}
+\frac{\term{kappa}{\kappa}}{\term{Omega}{\Omega}} = \sqrt{2(1+\term{betarc}{\beta})}
 $$
 <Fragment slot="where">$\Omega$ is the orbital angular velocity and $\kappa$ the frequency of radial oscillation. For a point mass ($\beta = -\tfrac12$) $\kappa = \Omega$ and the orbit closes: an ellipse. For a flat rotation curve ($\beta = 0$) $\kappa = \sqrt2\,\Omega \approx 1.41\,\Omega$. For a uniform sphere ($\beta = 1$) $\kappa = 2\Omega$.</Fragment>
 </KeyEq>
@@ -150,11 +198,11 @@ $$
 In a frame rotating with the guiding centre, the star traces a small ellipse, the **epicycle**, backwards. Each radial oscillation, the pericentre advances by $360°\times\Omega/\kappa$: about 255° for a flat rotation curve instead of 360°, which is why the orbit is a rosette.
 </Fragment>
 <Fragment slot="l3">
-For a nearly circular orbit there is a beautiful approximation. Let the star's **guiding centre** move on a circle of radius $R_g$ with angular velocity $\Omega(R_g) = v_c/R_g$. Write the star's radius as $R = R_g + x$ with $x$ small. The radial equation of motion is $\ddot R = -\partial\Phi_\text{eff}/\partial R$, with the effective potential $\Phi_\text{eff} = \Phi + L^2/2R^2$ we met in Chapter 2. Expanding to first order in $x$ gives a harmonic oscillator, $\ddot x = -\kappa^2 x$, with the **epicyclic frequency**
+For a nearly circular orbit there is a beautiful approximation. Let the star's **guiding centre** move on a circle of radius $R_g$ with angular velocity $\Omega(R_g) = v_c/R_g$. Write the star's radius as $R = R_g + x$ with $x$ small. The radial equation of motion is $\ddot R = -\partial\Phi_\text{eff}/\partial R$, with the effective potential $\Phi_\text{eff} = \Phi + L^2/2R^2$ we met in Chapter 2. Expanding to first order in $x$ gives a harmonic oscillator (see [Appendix A5](/ch/primer-odes/)), $\ddot x = -\kappa^2 x$, with the **epicyclic frequency**
 
 <KeyEq title="Epicyclic frequency">
 $$
-\kappa^2 = R\frac{d\Omega^2}{dR} + 4\Omega^2
+\term{kappa}{\kappa}^2 = \term{Rgal}{R}\frac{d\term{Omega}{\Omega}^2}{d\term{Rgal}{R}} + 4\term{Omega}{\Omega}^2
 $$
 <Fragment slot="where">$\Omega(R)$ is the circular angular velocity. A star on a slightly eccentric orbit oscillates radially at frequency $\kappa$ while its guiding centre goes round at $\Omega$. For a point mass $\kappa = \Omega$ (the orbit closes: an ellipse). For a uniform sphere $\kappa = 2\Omega$. For a flat rotation curve $\kappa = \sqrt2\,\Omega$.</Fragment>
 </KeyEq>
@@ -210,6 +258,12 @@ Galaxies rotate differentially: at a flat rotation curve, a star at 4 kpc laps o
 
 ### Density waves: the Lin–Shu hypothesis
 
+<History title="A traffic jam in the sky" year="1964">
+<Portrait src="/img/people/lin-chia-chiao.jpg" name="Chia-Chiao Lin" years="1916–2013" credit="Unknown photographer, 1940s–50s" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Chia-Chiao_Lin.jpg" />
+
+**C. C. Lin** was an applied mathematician at MIT, famous for his work on hydrodynamic stability and turbulence, when he turned to the winding problem in the early 1960s. With his student **Frank Shu**, he recast Bertil Lindblad's ideas about kinematic spiral waves as the tools of fluid stability theory: a disk of stars could support a *wave* of density with its own pattern speed, and the arms were the crests. Their 1964 paper launched decades of work and some fierce debate. Toomre and others showed that such waves should propagate and die out in a few rotations unless something keeps regenerating them, a problem still not fully settled: in 2026, many astronomers think grand-design spirals are density waves driven by bars and companions, while most flocculent arms are transient, swing-amplified features.
+</History>
+
 In 1964, C. C. Lin and Frank Shu proposed that grand-design spiral arms are **density waves**: a quasi-stationary pattern of compression rotating at a single pattern speed, like a traffic jam on a motorway. Cars enter the jam, slow down, crowd together and leave; the jam itself moves slowly and persists while its members change. Stars' epicyclic motions are organised so they crowd where the arms are. The arms contain only perhaps 10–20% more stars than the gaps.
 
 <Photo src="/img/galactic-dynamics/m51.jpg" alt="The Whirlpool Galaxy M51, a face-on two-armed spiral with dark dust lanes and pink star-forming regions, connected to a smaller yellowish companion at the tip of one arm" credit="NASA, ESA, S. Beckwith (STScI), and The Hubble Heritage Team (STScI/AURA)" license="CC BY 4.0" href="https://esahubble.org/images/heic0506a/" size="wide" aspect="1400 / 970">
@@ -231,7 +285,7 @@ Why does a disk form any structure at all? A patch of disk of size $\lambda$ col
 
 <KeyEq title="Toomre stability criterion">
 $$
-Q \equiv \frac{\sigma_R\,\kappa}{3.36\,G\,\Sigma} > 1
+\term{Q}{Q} \equiv \frac{\term{sigR}{\sigma_R}\,\term{kappa}{\kappa}}{3.36\,\term{G}{G}\,\term{Sigma}{\Sigma}} > 1
 $$
 <Fragment slot="where">$\sigma_R$ is the radial velocity dispersion of the stars, $\kappa$ the epicyclic frequency and $\Sigma$ the surface density of the disk. For a gas disk, replace 3.36 by $\pi$ and $\sigma_R$ by the sound speed. $Q \lt 1$: the disk fragments into clumps. $Q \approx 1$–2: it is stable to collapse but responds strongly to perturbations, making spiral arms. $Q \gg 1$: it is smooth and featureless.</Fragment>
 </KeyEq>
@@ -263,6 +317,12 @@ Stars in a galaxy never collide, but galaxies do, often. Galaxies are separated 
 
 ### Dynamical friction
 
+<History title="Chandrasekhar's drag" year="1943">
+<Portrait src="/img/people/chandrasekhar.jpg" name="Subrahmanyan Chandrasekhar" years="1910–1995" credit="NASA" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Subrahmanyan_Chandrasekhar.gif" />
+
+**Subrahmanyan Chandrasekhar** had a habit of mastering a field completely, writing the definitive book, and moving on. After white dwarfs (Chapter 17), he spent the early 1940s at Yerkes Observatory on stellar dynamics, treating a star in a cluster like a particle in Brownian motion. In 1943 he showed that the random pulls from the other stars have a systematic part: a drag opposite to the star's motion, proportional to its mass. He meant it for stars in clusters. Its greatest application came decades later, when it explained why satellite galaxies sink, why galaxies merge and why the LMC's days are numbered. The same formula runs inside the flagship simulation below, pulling the two dark halos together.
+</History>
+
 <Tiers>
 <Fragment slot="l1">
 A heavy object moving through a sea of lighter ones pulls them towards its path as it passes. They bunch up in a **wake** behind it, like the wake behind a boat, and the wake's gravity pulls the object back. It slows down and sinks towards the centre. The heavier the object, the bigger its wake and the faster it sinks. A satellite galaxy far out in a big halo can take many billions of years; a heavy one close in, only a few hundred million.
@@ -272,7 +332,7 @@ A massive body $M$ moving through a sea of lighter bodies pulls them towards its
 
 <KeyEq title="Dynamical friction sinking time">
 $$
-t_\text{fric} \approx \frac{1.17}{\ln\Lambda}\,\frac{r_0^2\, v_c}{G\,\htmlData{term=Msat}{M}}
+\term{tfric}{t_\text{fric}} \approx \frac{1.17}{\term{lnL}{\ln\Lambda}}\,\frac{\term{r0}{r_0}^2\, \term{vc}{v_c}}{\term{G}{G}\,\term{Msat}{M}}
 $$
 <Fragment slot="where">$r_0$ is the starting radius, <span data-term="Msat">$M$</span> the satellite's mass, $v_c$ the halo's circular speed and $\ln\Lambda$ the "Coulomb logarithm", a slowly varying number of 2–10. Heavy satellites sink fast; double the distance and it takes four times longer.</Fragment>
 </KeyEq>
@@ -282,7 +342,7 @@ A massive body $M$ moving through a sea of lighter bodies pulls them towards its
 
 <KeyEq title="Chandrasekhar dynamical friction">
 $$
-\frac{d\vec v_M}{dt} = -\frac{4\pi G^2 \htmlData{term=Msat}{M} \rho \ln\Lambda}{v_M^3}\left[\operatorname{erf}(X) - \frac{2X}{\sqrt\pi}e^{-X^2}\right]\vec v_M, \qquad X = \frac{v_M}{\sqrt2\,\sigma}
+\frac{d\term{vM}{\vec v_M}}{d\term{time}{t}} = -\frac{4\pi \term{G}{G}^2 \term{Msat}{M} \term{rhobg}{\rho} \term{lnL}{\ln\Lambda}}{\term{vM}{v_M}^3}\left[\operatorname{erf}(\term{Xr}{X}) - \frac{2\term{Xr}{X}}{\sqrt\pi}e^{-\term{Xr}{X}^2}\right]\term{vM}{\vec v_M}, \qquad \term{Xr}{X} = \frac{\term{vM}{v_M}}{\sqrt2\,\term{sigv}{\sigma}}
 $$
 <Fragment slot="where"><span data-term="Msat">$M$</span> is the mass of the sinking body, $\vec v_M$ its velocity relative to the background, $\rho$ the background density and $\ln\Lambda \approx \ln(b_\text{max}v^2/GM)$ the Coulomb logarithm, typically 2–10. The drag is proportional to $M$ (not to the mass of the background particles): heavy objects sink faster. For fast objects it falls as $1/v^2$.</Fragment>
 </KeyEq>
@@ -290,7 +350,7 @@ $$
 The friction force scales as $M^2$, so the acceleration scales as $M$. In an isothermal halo, a satellite on a circular orbit at radius $r_0$ spirals in on the timescale
 
 $$
-t_\text{fric} = \frac{1.17}{\ln\Lambda}\frac{r_0^2 v_c}{GM}.
+\term{tfric}{t_\text{fric}} = \frac{1.17}{\term{lnL}{\ln\Lambda}}\frac{\term{r0}{r_0}^2 \term{vc}{v_c}}{\term{G}{G}\term{Msat}{M}}.
 $$
 
 </Fragment>
@@ -305,6 +365,10 @@ The Large Magellanic Cloud ($M \approx 1$–$2\times10^{11}$ M☉ including its 
 ### Tidal tails and bridges
 
 In 1972, Alar and Juri Toomre ran a remarkably simple computer experiment. They modelled each galaxy as a point mass surrounded by rings of massless test particles, and sent two such galaxies past each other on parabolic orbits. The long, thin tails and bridges that came out matched the strange "peculiar galaxies" in Arp's atlas: the Antennae (NGC 4038/9), the Mice (NGC 4676), the Whirlpool with its companion (M51). Tidal features, they showed, are not ejected by explosions but are purely gravitational.
+
+<History title="Two brothers and a CDC 6600" year="1972">
+**Alar Toomre** (MIT) and his brother **Juri Toomre** (then at NYU) wanted to know whether the bizarre filaments in Halton Arp's *Atlas of Peculiar Galaxies* were the relics of explosions or magnetic fields, as many believed, or just gravity. Their "restricted" model was deliberately minimal: two point masses on parabolic orbits, each surrounded by a few rings of massless test particles, integrated on a mainframe with output drawn by plotter. The pictures that came out matched the Antennae and the Mice, down to the curvature of the tails. Their paper also made a bold suggestion: that such mergers, far more frequent in the past, turn spirals into ellipticals. It took two decades of better simulations to confirm it.
+</History>
 
 The mechanism is tidal. The companion's pull differs across the disk: stronger on the near side, weaker on the far side. Stars on the near side are pulled into a **bridge** towards the companion; stars on the far side are left behind and flung into a **tail**. The effect is dramatic when the encounter is **prograde**, that is, the disk spins in the same sense as the companion's orbit. Then, for a while, the disk's stars move alongside the companion and feel its pull in resonance, for much longer than a passing glance. Retrograde disks barely notice. Tails are long because stars at the edge of the disk have the least binding energy and the largest lever arm.
 

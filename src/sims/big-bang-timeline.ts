@@ -102,7 +102,7 @@ export default defineSim({
 
       if (hoverEvent) {
         const e = hoverEvent;
-        ctx.fillStyle = pal.bg2 ?? pal.grid;
+        ctx.fillStyle = pal.faint;
         const bw = Math.min(340, W - 16);
         ctx.globalAlpha = 0.95;
         ctx.fillRect(8, H - 54, bw, 46);

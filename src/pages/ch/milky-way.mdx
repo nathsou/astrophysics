@@ -1,0 +1,484 @@
+---
+layout: ../../layouts/Chapter.astro
+slug: milky-way
+lede: We live inside a 100,000-light-year pancake of stars, and for most of history we couldn't tell. Once we could measure how fast it spins, we found that four-fifths of its mass is invisible.
+---
+import Sim from '../../components/Sim.astro';
+import Aside from '../../components/Aside.astro';
+import Fermi from '../../components/Fermi.astro';
+import KeyEq from '../../components/KeyEq.astro';
+import Hood from '../../components/Hood.astro';
+import Predict from '../../components/Predict.astro';
+import C from '../../components/C.astro';
+import Var from '../../components/Var.astro';
+import Out from '../../components/Out.astro';
+import Level from '../../components/Level.astro';
+import Tiers from '../../components/Tiers.astro';
+import Photo from '../../components/Photo.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  vc: ['Circular (rotation) speed', 'How fast a star or gas cloud moves on a circular orbit at radius r. This is the quantity every rotation curve plots.'],
+  Menc: ['Mass enclosed within radius r', 'Only the mass inside r pulls on a circular orbit there (Newton\'s shell theorem), so measuring v_c(r) weighs the Galaxy layer by layer.'],
+  Rd: ['Disk scale length', 'The exponential disk\'s e-folding radius: surface brightness falls by a factor e every Rd. For the Milky Way, Rd ≈ 2.5–3 kpc.'],
+  Sigma0: ['Central surface density', 'Disk mass per unit area at r = 0, in the idealised infinitely-thin exponential disk.'],
+  y: ['Dimensionless radius r / 2Rd', 'Freeman\'s formula depends only on this ratio, which is why the Bessel-function shape is universal across disk galaxies of different sizes.'],
+  I0: ['Modified Bessel function I0(y)', 'Grows exponentially; captures the near-field pull of the disk close to a given radius.'],
+  K0: ['Modified Bessel function K0(y)', 'Diverges logarithmically at y = 0 and decays exponentially at large y; captures the far-field falloff.'],
+  rho0: ['Halo central density', 'Density of the assumed dark-matter distribution at its scale radius, a free parameter fit to the rotation curve.'],
+  rs: ['Halo scale radius', 'Radius where the NFW density profile\'s log-slope steepens from −1 to −3.'],
+  sigma: ['Velocity dispersion', 'The spread (standard deviation) of galaxy velocities in a cluster, the cluster analogue of a rotation speed.'],
+  a0: ['MOND acceleration scale', 'The empirical constant ≈ 1.2×10⁻¹⁰ m/s² below which Milgrom\'s modified dynamics departs from Newton.'],
+  R0: ['Sun\'s galactocentric radius', 'Our distance from the Galactic Centre, about 8.2 kpc — the ruler for every Milky Way measurement made from inside the disk.'],
+  l: ['Galactic longitude', 'Angle around the Galactic plane, measured from the direction to the Galactic Centre.'],
+}} />
+
+## Living inside the thing you are trying to map
+
+<Photo src="/img/milky-way/great-observatories.jpg" alt="A composite infrared, visible and X-ray panorama of the Milky Way's central plane, showing dust lanes, star clusters and glowing gas along the galactic disk" credit="NASA / JPL-Caltech / ESA / CXC / STScI" license="Public domain" href="https://images.nasa.gov/details/PIA12348" size="wide" aspect="16 / 8">
+**The plane of the Milky Way, in infrared, visible and X-ray light.** Spitzer, Hubble and Chandra each see through the dust differently. Combined, they reveal thousands of stars, star-forming clouds and stellar remnants along the disk we live inside — the same disk this chapter tries to weigh.
+</Photo>
+
+<Tiers>
+<Fragment slot="l1">
+Every star you can see with the naked eye is a neighbour: part of the same flattened, spinning system as the Sun, called the Milky Way. Because we sit inside its disk rather than looking down on it from outside, mapping it is a bit like trying to draw a map of a forest while standing among the trees, at night, with fog. It took centuries of careful reasoning — and, eventually, a controversy settled almost entirely by chance — before anyone knew the Galaxy's true size and where the Sun sat in it.
+</Fragment>
+<Fragment slot="l2">
+Every star visible to the naked eye belongs to the Milky Way, the flattened, rotating system of gas and stars that contains the Sun. We view it from inside its disk, which makes basic questions — how big is it, where is its centre, are we near the middle or the edge — surprisingly hard to answer, and they were only settled in the twentieth century.
+</Fragment>
+<Fragment slot="l3">
+Every star visible to the naked eye belongs to the Milky Way, and nearly all of them lie within its ~15-kpc-radius disk. Being embedded in the system under study, without external vantage, is why the Galaxy's basic parameters — its scale, centre, and the Sun's location within it — were determined only in the twentieth century, later than the sizes of many external galaxies.
+</Fragment>
+</Tiers>
+
+<History title="Herschel's star-gauges and the Kapteyn Universe" year="1785–1922">
+<Portrait src="/img/people/herschel-william.jpg" name="William Herschel" years="1738–1822" credit="Edward S. Holden, frontispiece, 1881" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Sir_William_Herschel,_his_life_and_works_(1881),_portrait.jpg" />
+
+In 1785, William Herschel counted stars in 683 patches of sky with his 20-foot telescope and tried to infer the Galaxy's shape from how their numbers thinned with direction — a technique called "star-gauging." He got a flattened, Sun-centred disk roughly right in outline, but far too small: he had no way to account for interstellar dust dimming distant stars, so he could only see a fraction of the true extent.
+
+A century later, Jacobus Kapteyn refined the statistics into the "Kapteyn Universe" (1922): a disk about 15 kpc across with the Sun *near the centre*. It was a careful, quantitative analysis — and it was wrong, for exactly Herschel's reason. Dust absorbs light roughly exponentially with distance in the plane, so every survey that didn't correct for it found stars thinning out artificially fast in every direction, making the observer look central. The Sun only *looked* special because extinction hid the far side of the true, much larger disk.
+</History>
+
+<Aside>**Same trap, still relevant.** Extinction is why the whole map of dust in Ch. 6 matters here: any Milky Way structure inferred from starlight alone must first correct for dust, or it recreates Kapteyn's illusion.</Aside>
+
+## Shapley, globular clusters and the true centre
+
+<Photo src="/img/milky-way/globular-ngc6535.jpg" alt="Hubble Space Telescope image of the globular cluster NGC 6535, showing thousands of old stars densely packed in a spherical swarm" credit="NASA / ESA / Hubble" license="Public domain" href="https://images.nasa.gov/details/GSFC_20171208_Archive_e000846" size="wide" aspect="16 / 9">
+**NGC 6535, a globular cluster 22,000 light-years away.** Roughly 150 such clusters orbit the Milky Way in a nearly spherical halo. Harlow Shapley used their distribution — not starlight in the dusty plane — to find the Galactic Centre, and discovered we are nowhere near it.
+</Photo>
+
+<Tiers>
+<Fragment slot="l1">
+Globular clusters — dense spherical swarms of hundreds of thousands of old stars — sit mostly *above and below* the dusty disk, so their light reaches us largely undimmed. Harlow Shapley measured their distances using pulsating stars inside them as standard candles (Ch. 14) and found they were arranged in a huge sphere centred not on the Sun, but on a point roughly 8 kiloparsecs away, in the direction of Sagittarius. That point is the true Galactic Centre. We are not at the centre of the Galaxy — we are out in its suburbs, about two-thirds of the way to the edge.
+</Fragment>
+<Fragment slot="l2">
+Globular clusters lie mostly out of the dusty plane, so Shapley could measure their distances (via RR Lyrae and Cepheid variables, see Ch. 14) without the extinction problem that fooled Kapteyn. Their 3-D distribution traces a roughly spherical halo centred far from the Sun. Shapley's 1918 result placed the Galactic Centre about 8–15 kpc away (his early distance scale was too large by roughly a factor of 2–3, but the qualitative shift was correct): the Sun is not central.
+</Fragment>
+<Fragment slot="l3">
+Globular clusters populate the stellar halo with a roughly $\rho \propto r^{-3.5}$ density profile and negligible dust extinction along most lines of sight to them. Shapley (1918) fit their sky distribution and distances (from RR Lyrae/Cepheid period–luminosity relations) to a spherical system and located its centroid about 8–15 kpc from the Sun toward Sagittarius — his absolute distance scale was later corrected down (a systematic calibration error in the period–luminosity zero point), but the displacement of the centroid from the Sun, the qualitative result, survived intact. It reoriented Galactic astronomy the way Copernicus reoriented the Solar System.
+</Fragment>
+</Tiers>
+
+<Fermi title="How far to the Galactic Centre, from a globular cluster count?">
+If globular clusters are symmetric about the true centre, and you see roughly three times as many in one half of the sky as the other at similar apparent brightness, that asymmetry directly encodes your offset from the centroid relative to the cluster system's overall size (~15 kpc). Shapley's actual method used distances directly, but this proportional-counting argument is how you could sanity-check it with nothing but a good star atlas.
+</Fermi>
+
+### The Great Debate, and Hubble's Cepheid
+
+<History title="The Great Debate" year="1920">
+<Portrait src="/img/people/shapley.jpg" name="Harlow Shapley" years="1885–1972" credit="Smithsonian Institution Archives" license="Public domain" href="https://commons.wikimedia.org/wiki/File:HarlowShapley-crop.jpg" />
+
+On 26 April 1920, Harlow Shapley and Heber Curtis argued in front of the National Academy of Sciences over whether spiral nebulae — including Andromeda — were small satellite structures inside our own (Shapley's view, motivated partly by his own large Galaxy) or entire separate "island universes" comparable to the Milky Way itself (Curtis's view). Neither side had decisive data; both marshalled real evidence and real mistakes (Shapley, for instance, over-relied on a since-discredited claim of measured rotation in spiral nebulae, which would have been impossible if they were as large and distant as Curtis proposed).
+
+The debate was settled three years later, not by argument but by a single photographic plate.
+</History>
+
+<Photo src="/img/milky-way/andromeda-hubble.jpg" alt="Hubble Space Telescope's high-definition panoramic mosaic of a portion of the Andromeda Galaxy's disk, resolving over 100 million individual stars" credit="NASA / ESA / J. Dalcanton, B. F. Williams, L. C. Johnson / PHAT team" license="Public domain" href="https://images.nasa.gov/details/GSFC_20171208_Archive_e000833" size="wide" aspect="16 / 9">
+**Andromeda (M31), resolved star by star.** In 1923, Edwin Hubble found a single Cepheid variable on a photographic plate of Andromeda (then still called "the Andromeda Nebula") and used its period to get a distance far beyond the Kapteyn Universe's boundary. It was not a satellite. It was, and is, a whole other galaxy — this Hubble mosaic resolves over 100 million of its individual stars.
+</Photo>
+
+<Tiers>
+<Fragment slot="l1">
+Cepheid variable stars pulse with a period that reveals their true brightness (Ch. 14). Compare true brightness to how dim the star looks from Earth, and you get the distance — the same "standard candle" trick used everywhere in this course. Hubble found one in Andromeda and got a distance of roughly 900,000 light-years (the modern value, with better calibration, is about 2.5 million). Either number is far outside even the *largest* estimates of the Milky Way's size. Andromeda had to be its own galaxy.
+</Fragment>
+<Fragment slot="l3">
+The Cepheid period–luminosity relation gives an absolute magnitude from the pulsation period; comparing to the apparent magnitude gives a distance modulus. Hubble's 1923–1925 Cepheid in M31 gave $d \sim 285\,\text{kpc}$ by his calibration (a systematic Cepheid zero-point error, corrected decades later, means the modern distance is $\sim 770\,\text{kpc}$) — either value placed Andromeda far outside any contemporary estimate of the Milky Way's extent, resolving the Great Debate decisively in Curtis's favour on the "island universes" question, even though Shapley's own displacement of the Sun from the Galactic Centre also stood.
+</Fragment>
+</Tiers>
+
+(New to standard candles and distance ladders? See [Appendix A1](/ch/primer-numbers/) for the log-scale reasoning behind magnitudes.)
+
+## Anatomy of a disk galaxy
+
+<Tiers>
+<Fragment slot="l1">
+Modern surveys — especially the European Gaia satellite, which has measured positions, motions and distances for nearly two billion stars — let us assemble a structural map of our Galaxy from the inside out:
+
+- A **thin disk** of young-ish stars and gas, about 300 pc thick, where the Sun lives, containing most of the Galaxy's light and star formation.
+- A **thick disk**, an older, more puffed-up population about 1 kpc thick, moving on average a bit slower around the centre.
+- A **bulge**, a dense, roughly egg-shaped concentration of old stars in the middle few kiloparsecs — recent surveys show it is not spherical but a **bar**, elongated and seen nearly end-on from the Sun's vantage point.
+- A **stellar halo**, a sparse, roughly spherical swarm of old, metal-poor stars and globular clusters extending to 100 kpc or more, contributing little light but a great deal to the story of how the Galaxy formed.
+- **Satellites**: the Large and Small Magellanic Clouds (LMC/SMC), naked-eye companions about 50 and 60 kpc away, and the more tightly bound Sagittarius Dwarf, which is actively being torn apart and smeared into a stream across the sky by the Galaxy's tides (Ch. 9's tidal machinery, at galactic scale).
+</Fragment>
+<Fragment slot="l2">
+Gaia's astrometry (positions, proper motions, distances via parallax, for ~2 billion stars) lets us decompose the Galaxy into components by their spatial distribution and kinematics:
+
+- **Thin disk**: scale height $h_z \approx 300$ pc, scale length $R_d \approx 2.5$–3 kpc, contains most stars and star formation, orbits close to circularly.
+- **Thick disk**: $h_z \approx 1$ kpc, older and more metal-poor, lags the thin disk's rotation by tens of km/s.
+- **Bulge/bar**: the inner few kpc form an X-shaped, boxy/peanut bulge produced by disk instability, seen end-on as a bar roughly 25° from the Sun–Centre line.
+- **Stellar halo**: $\rho \propto r^{-3}$ to $r^{-3.5}$, extends to $\gtrsim 100$ kpc, includes ~150 globular clusters and streams of disrupted satellites.
+- **Satellites**: LMC (M ≈ 1–2×10¹⁰ M☉, 50 kpc), SMC (60 kpc), and the Sagittarius Dwarf, whose tidal stream wraps the sky and is still forming as its host is disrupted.
+</Fragment>
+<Fragment slot="l3">
+Structural decomposition uses Gaia DR3 astrometry (parallaxes to ~10 kpc at high precision, proper motions and, for a growing subsample, radial velocities) fit to multi-component density and kinematic models:
+
+- **Thin disk**: exponential in $R$ and $\text{sech}^2$ or exponential in $z$, $h_z \approx 300$ pc, $R_d \approx 2.5$–3 kpc, velocity dispersion $\sigma_z \sim 15$–20 km/s (dynamically cold).
+- **Thick disk**: $h_z \approx 900$ pc–1 kpc, asymmetric drift lagging circular velocity by 20–50 km/s, $\alpha$-enhanced abundances suggesting an early, turbulent formation epoch, possibly heated further by the Gaia–Enceladus merger (below).
+- **Bulge/bar**: red-clump star counts and microlensing surveys (e.g. VVV, OGLE) reveal a boxy/peanut-shaped bulge with an embedded bar of half-length ~5 kpc, angled $\sim$20–30° to the Sun–Centre line — a secular buckling instability of the inner disk, not a separate merger product.
+- **Stellar halo**: broken power-law density, $\rho \propto r^{-2.1}$ inside $\sim$25 kpc steepening to $r^{-4}$ beyond, built partly in situ and partly from accreted satellites (below).
+- **Satellites**: over 60 known dwarf satellites; LMC/SMC are the most massive, and the Sagittarius Dwarf's ongoing disruption (Ibata et al. 1994) supplies an ongoing, observable laboratory for tidal stripping (Ch. 9, Ch. 22).
+</Fragment>
+</Tiers>
+
+<Sim name="milky-way-map" size="wide" minHeight={420}>
+**A schematic Milky Way**, face-on and edge-on. Toggle the view. Thin-disk stars (bright), thick-disk stars (dim, puffier), the bulge/bar (orange glow), globular clusters (red dots) and a faint stellar halo are all drawn to the same physical scale, with the Sun marked at $R_0 \approx 8.2$ kpc.
+</Sim>
+
+<Level min={3} title="Gaia's dynamical surprises">
+Gaia has done more than map positions — its combination of 6-D phase-space information (position + velocity) revealed structure invisible to any static map:
+
+- **Gaia–Enceladus (or the "Gaia Sausage")**: a population of stars on eccentric, retrograde-biased orbits with a distinctive chemical signature, identified as the debris of a single massive ($M \sim 10^{8\text{–}9}\,M_\odot$) satellite galaxy that merged with the Milky Way roughly 8–11 Gyr ago. It plausibly heated the thick disk and rearranged the inner halo.
+- **The phase-space spiral**: in the $(z, v_z)$ plane (height above the disk vs vertical velocity) for stars near the Sun, Gaia revealed a clear spiral pattern — the signature of the disk still visibly *ringing* like a struck bell from a relatively recent (few-hundred-Myr) perturbation, likely a close passage of the Sagittarius Dwarf or the LMC through the disk. It is direct, dynamical evidence that our disk is not in equilibrium.
+- **The disk warp**: the outer disk's midplane tilts upward on one side and downward on the other rather than staying flat, likely driven by torques from the LMC and the misaligned outer halo. Gaia and other surveys show the warp itself precesses over time.
+
+These findings turn galactic structure from a static map into a movie of ongoing, gravitationally driven change.
+</Level>
+
+## The Sun's orbit
+
+<Tiers>
+<Fragment slot="l1">
+The Sun, and everything in the Solar System, is itself orbiting the Galactic Centre — at roughly 230 km/s, once every 230 million years. Dinosaurs went extinct about one-quarter of a galactic year ago.
+</Fragment>
+<Fragment slot="l2">
+The Sun orbits the Galactic Centre at <span data-term="R0">$R_0$</span> ≈ 8.2 kpc with speed <span data-term="vc">$v_c$</span> ≈ 230 km/s, giving an orbital period of about 230 million years (one "galactic year"). Its orbit is close to circular but not exact: it oscillates gently above and below the midplane with a period of ~70 Myr, currently sitting just north of it.
+</Fragment>
+<Fragment slot="l3">
+The Sun's local standard of rest moves at $(U,V,W) \approx$ small deviations from a circular orbit at $R_0 \approx 8.2$ kpc, $v_c \approx 230$ km/s (both measured via Sgr A*'s proper motion and stellar orbits, see below, plus maser and Cepheid parallaxes). Its vertical oscillation about the midplane, driven by the disk's restoring gravity, has a period $\sim 70$ Myr and amplitude $\sim 70$ pc — small compared to the thin disk's own scale height.
+</Fragment>
+</Tiers>
+
+A Sun at <Var name="R0" value={8.2} min={5} max={12} step={0.1} /> kpc moving at <Var name="v0" value={230} min={150} max={300} step={5} /> km/s completes one orbit every <Out name="Tsun" />.
+
+<Aside>**How we know both numbers precisely.** Reflex motion of Sgr A* against background quasars gives the Sun's *transverse* speed around the centre directly; combined with the geometric distance to Sgr A* from stellar orbits (Ch. 19's [black hole](/ch/black-holes/) chapter), this pins down $R_0$ and $v_c$ almost independently of any rotation-curve model.</Aside>
+
+## Sgr A\* and the anchor at the centre
+
+At the dynamical centre of all this sits Sagittarius A\*, a $4.3\times 10^6\,M_\odot$ supermassive black hole whose mass was weighed directly by watching individual stars complete full Keplerian orbits around it — the same vis-viva bookkeeping from [Chapter 2](/ch/orbits/), applied to a star instead of a planet. [Chapter 19](/ch/black-holes/) covers its physics; here it matters only as the Galaxy's centre of rotation and the fixed point every other measurement in this chapter is referenced to.
+
+## Weighing the Galaxy with its own spin
+
+<Tiers>
+<Fragment slot="l1">
+If you know how fast something orbits and how far out it is, you can weigh whatever is pulling on it — that's the trick behind every mass measurement in this course. Apply it star by star, or gas cloud by gas cloud, across the whole disk, and you get a *rotation curve*: orbital speed as a function of distance from the centre. It is the single most important observational tool in this chapter.
+</Fragment>
+<Fragment slot="l2">
+For a circular orbit, gravity supplies the centripetal force: $v_c^2/r = GM(\!<\!r)/r^2$, so $v_c(r) = \sqrt{GM(\!<\!r)/r}$, where $M(\!<\!r)$ is the mass enclosed within radius $r$ (only that mass matters, by symmetry). Measuring $v_c(r)$ at many radii — a *rotation curve* — directly maps out how mass is distributed with radius.
+</Fragment>
+<Fragment slot="l3">
+For a test particle on a circular orbit in a spherically (or axisymmetrically, to good approximation) averaged potential, centripetal acceleration equals the radial gravitational acceleration:
+</Fragment>
+</Tiers>
+
+<KeyEq title="The rotation curve as a mass probe">
+$$
+\term{vc}{v_c}^2(r) = \frac{G\,\term{Menc}{M(<r)}}{r}
+$$
+<Fragment slot="where">Newton's shell theorem guarantees that only the mass interior to $r$ contributes, exactly as for planetary orbits. Rearranged, $M(\!<\!r) = v_c^2 r / G$: measure the rotation curve, and you have measured the mass profile.</Fragment>
+</KeyEq>
+
+<Level min={3} title="Why only the enclosed mass matters">
+For a spherically symmetric mass distribution, Gauss's law for gravity (the shell theorem) guarantees the field at radius $r$ depends only on $M(\!<\!r)$; contributions from mass shells outside $r$ cancel exactly by symmetry. Real galaxies are flattened, not spherical, so this is an approximation — but it is an excellent one for the roughly axisymmetric halo and bulge, and correctable for the disk via the Freeman formula below, which handles the flattened geometry exactly.
+</Level>
+
+### Measuring it from inside: the 21 cm tangent-point method
+
+<Tiers>
+<Fragment slot="l1">
+Neutral hydrogen gas fills the disk and glows faintly at a radio wavelength of 21 cm. Its Doppler shift along any line of sight tells you how fast the gas is moving toward or away from us. There's a clever trick for turning that into a rotation curve without knowing distances to individual clouds: along any line of sight that crosses the inner Galaxy, the gas closest to the centre — the "tangent point" — is moving directly along the line of sight (neither toward nor away in any transverse sense), so it produces the single most extreme Doppler shift on that line of sight. That extreme velocity, plus simple geometry, gives you the rotation speed at a radius you know exactly.
+</Fragment>
+<Fragment slot="l2">
+Along a line of sight at galactic longitude $l$ (with $|l| < 90°$, looking into the inner Galaxy), the point of closest approach to the centre lies at radius $R_\text{tan} = R_0 \sin l$ — pure geometry, since the line of sight is tangent to a circle of that radius. At that point, the gas's entire orbital velocity projects onto the line of sight, producing the largest (or smallest) line-of-sight velocity anywhere along that sightline: the **terminal velocity** $v_\text{term}$. A short geometric argument (below) turns $v_\text{term}$ directly into $v_c(R_\text{tan})$.
+</Fragment>
+<Fragment slot="l3">
+For gas on a circular orbit at radius $r$ with speed $v_c(r)$, the velocity projected onto a line of sight at longitude $l$ is
+</Fragment>
+</Tiers>
+
+<Level min={3} title="Deriving the tangent-point formula">
+Place the Sun at $(R_0, 0)$ and the Galactic Centre at the origin. A line of sight at longitude $l$ passes through points at distance $s$ from the Sun, with galactocentric radius $r(s) = \sqrt{R_0^2 + s^2 - 2R_0 s\cos l}$ (the law of cosines). The line-of-sight velocity of gas moving on a circular orbit with speed $v_c(r)$ works out to
+
+$$
+v_\text{los}(s) = v_c(r)\,\frac{R_0 \sin l}{r} - v_0 \sin l,
+$$
+
+where the first term is the gas's own transverse-projected motion and the second subtracts the Sun's own motion (needed because we observe from a moving platform). This is maximised (for $0 < l < 90°$) exactly at the point of closest approach, $s = R_0\cos l$, where $r = R_\text{tan} = R_0\sin l$ and the first term becomes simply $v_c(R_\text{tan})$: the projection factor $R_0\sin l / r$ equals 1 there, because the orbit's velocity vector is exactly parallel to the line of sight. So
+
+$$
+v_c(R_\text{tan}) = v_\text{term} + v_0\sin l, \qquad R_\text{tan} = R_0\sin l.
+$$
+
+Scan $l$ from a few degrees to 90°, and $R_\text{tan}$ sweeps from near the centre out to $R_0$ — mapping the *inner* rotation curve using only Doppler shifts and trigonometry, no distances to individual clouds required.
+</Level>
+
+<Predict question="As you increase the galactic longitude l from 10° toward 90°, what happens to the tangent-point radius R_tan?" choices={['It increases monotonically toward R0', 'It stays fixed at R0/2', 'It decreases toward 0']} answer={0}>
+$R_\text{tan} = R_0\sin l$ increases monotonically as $l$ goes from 0° to 90°, reaching $R_0$ itself at $l = 90°$ — a line of sight exactly perpendicular to the Sun–Centre line grazes the Sun's own orbital radius. Beyond $l = 90°$ there is no tangent point at all: every point on that sightline is farther from the centre than the Sun is.
+</Predict>
+
+<Sim name="milky-way-tangent" size="wide" minHeight={420}>
+**21 cm tangent-point geometry.** Drag galactic longitude $l$. Left: the line of sight (orange) and its tangent point (the closest approach to the Galactic Centre, dashed circle). Right: the line-of-sight velocity profile along that sightline, with the terminal velocity — the largest speed reached, at the tangent point — marked.
+</Sim>
+
+(New to trigonometric projection like this? See [Appendix A3](/ch/primer-vectors/).)
+
+## What the rotation curve actually shows
+
+<Predict question="Newton's law says orbital speed around a point mass falls off as 1/√r at large r — like the planets. Beyond the visible disk, does the Milky Way's rotation curve fall off this way?" choices={['Yes, it falls like 1/√r, just as Kepler III predicts', 'No — it stays remarkably flat out to the largest radii measured']} answer={1}>
+It stays flat — nearly constant at ~220–230 km/s out past 20 kpc, far beyond where the visible stars and gas thin out. If all the mass were in the stars and gas we can see, $v_c(r)$ should fall like $1/\sqrt{r}$ once you're outside most of the light, exactly like a planet far from the Sun. It doesn't. Something extra, and invisible, must be supplying gravity out there.
+</Predict>
+
+<Tiers>
+<Fragment slot="l1">
+Vera Rubin and Kent Ford measured rotation curves for dozens of spiral galaxies in the 1970s using the optical Doppler shift of glowing gas (an easier signal than 21 cm to get at large radii in other galaxies), and found the same thing every time: the curve rises near the centre and then stays *flat*, all the way to the edge of measurement, instead of turning over and falling as the visible light thins out. Albert Bosma found the same flatness independently using 21 cm radio data. Newton's law, applied to the mass we can actually see, gets this badly wrong.
+</Fragment>
+<Fragment slot="l2">
+If the Galaxy's mass tracked its light — concentrated in the bulge and falling off with the disk — then beyond the edge of the visible light, $M(\!<\!r)$ should stop growing, and $v_c(r) = \sqrt{GM/r}$ should fall as $r^{-1/2}$, just like the planets around the Sun. Rubin, Ford and Bosma instead found $v_c(r)$ staying flat to the largest radii they could measure. A flat $v_c$ means $M(\!<\!r) \propto r$: the enclosed mass keeps growing linearly with radius, long after the light has stopped.
+</Fragment>
+<Fragment slot="l3">
+A flat $v_c(r) = \text{const}$ in $v_c^2 = GM(\!<\!r)/r$ requires $M(\!<\!r) \propto r$, i.e. $\rho(r) \propto r^{-2}$ at large $r$ — the isothermal-sphere profile. No plausible extrapolation of the observed stellar and gas density (falling exponentially, or as a steep power law) produces this. Either Newtonian dynamics fails at these accelerations, or there is mass we cannot see, distributed very differently from the light.
+</Fragment>
+</Tiers>
+
+<History title="Rubin, Ford, and a discovery decades in the making" year="1970s">
+<Portrait src="/img/people/rubin-vera.jpg" name="Vera Rubin" years="1928–2016" credit="NASA" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Vera_Rubin.jpg" />
+
+Vera Rubin was repeatedly discouraged from pursuing astronomy — Princeton's graduate program did not accept women when she applied, and a Ph.D. abstract of hers on cosmology was, notoriously, prevented from being formally presented at an AAS meeting. She persisted, and with instrument-builder Kent Ford she carried out precise spectroscopy of spiral galaxy rotation through the late 1960s and 1970s. The flat rotation curves that resulted were not entirely new — Horace Babcock's 1939 thesis on Andromeda, and later Bosma's 21 cm surveys, hinted at the same thing — but Rubin and Ford's systematic, high-precision dataset across dozens of galaxies made the anomaly impossible to dismiss as a measurement fluke. Rubin herself was cautious about the interpretation for years; she is now, posthumously, one of the discovery's most closely associated names — and the Vera C. Rubin Observatory (formerly LSST) carries her name into the survey that will map cosmic structure shaped by the same missing mass.
+</History>
+
+<Sim name="milky-way-rotation" size="wide" minHeight={620}>
+**Rotation-curve fitting lab.** Adjust the bulge (Hernquist profile), the exponential stellar and gas disks (Freeman's formula), and a dark-matter halo (NFW or pseudo-isothermal); watch each component's contribution and their quadrature sum against approximate data. Try "Auto-fit" to minimise χ², toggle "no dark matter" to see the baryons alone fail, and toggle the MOND prediction. The panel on the right spins a few thousand stars at the speeds your current model predicts, painting a pinwheel that reveals how differently a flat curve winds up a disk compared to solid-body rotation.
+</Sim>
+
+## Building a mass model
+
+<Tiers>
+<Fragment slot="l1">
+To go from "the curve is flat" to "here is how much invisible mass there is and where," astronomers build a model: add up the gravity from the bulge, the visible disk (stars and gas), and a hypothetical dark halo, and see what combination reproduces the observed curve.
+</Fragment>
+<Fragment slot="l2">
+Fitting a rotation curve means writing down a mass model — bulge plus disk plus halo — computing each component's contribution to $v_c(r)$, summing them in quadrature (since accelerations from different, aligned radial directions add as vectors, and for a circular orbit they're all radial), and adjusting free parameters (masses, scale radii) until the sum matches the data.
+</Fragment>
+<Fragment slot="l3">
+The total circular speed from several superposed, centrally-symmetric-in-projection components adds in quadrature because each component's contribution to the radial force is itself radial (for a circularly symmetric, or thin-disk-averaged, mass distribution): $v_c^2(r) = \sum_i v_{c,i}^2(r)$.
+</Fragment>
+</Tiers>
+
+### The bulge: a simple cusp
+
+<KeyEq title="Hernquist bulge">
+$$
+\term{vc}{v_c}^2(r) = \frac{G\,M_b\,r}{(r+a)^2}
+$$
+<Fragment slot="where">$M_b$ is the bulge's total mass and $a$ its scale radius. This profile (Hernquist 1990) has a steep central density cusp ($\rho \propto r^{-1}$ near the centre) and falls off like a point mass at large $r$ — a reasonable, simple stand-in for the real, only mildly triaxial bulge/bar.</Fragment>
+</KeyEq>
+
+### The disk: Freeman's exponential
+
+<Tiers>
+<Fragment slot="l1">
+Galaxy disks get dimmer smoothly and predictably from the centre outward — their surface brightness falls off exponentially, at a rate set by a single "scale length." Working out the gravitational pull of a flat disk (rather than a sphere) with this profile takes more advanced maths than a point mass does, but the result is a clean, universal formula that depends only on radius measured in units of the scale length.
+</Fragment>
+<Fragment slot="l2">
+Disk galaxies' surface brightness — and, assuming a roughly constant mass-to-light ratio, surface *mass* density — falls off exponentially: $\Sigma(r) = \Sigma_0\,e^{-r/R_d}$. Freeman (1970) worked out the exact rotation curve sourced by an infinitely thin disk with this profile. It cannot be written with elementary functions; it needs a pair of special functions called modified Bessel functions, evaluated at $y = r/2R_d$.
+</Fragment>
+<Fragment slot="l3">
+For a razor-thin disk with $\Sigma(r) = \Sigma_0 e^{-r/R_d}$, Poisson's equation in the disk plane can be solved in closed form via a Hankel-transform (Bessel) representation of the potential, giving the exact rotation curve below (Freeman 1970; Binney & Tremaine §2.6).
+</Fragment>
+</Tiers>
+
+<KeyEq title="Freeman (1970) exponential-disk rotation curve">
+$$
+\term{vc}{v_c}^2(r) = 4\pi G\,\term{Sigma0}{\Sigma_0}\,\term{Rd}{R_d}\,\term{y}{y}^2\big[\term{I0}{I_0}(y)\term{K0}{K_0}(y) - I_1(y)K_1(y)\big], \qquad y \equiv \frac{r}{2R_d}
+$$
+<Fragment slot="where">$I_n$ and $K_n$ are modified Bessel functions of the first and second kind. The curve rises from zero, peaks around $r \approx 2.2\,R_d$, and falls slowly beyond — it never turns fully Keplerian at any finite radius you'd sample in a real disk, which is itself part of why "flat forever" is not, by itself, absolute proof of dark matter without also constraining the halo independently.</Fragment>
+</KeyEq>
+
+<Level min={3} title="Why Bessel functions, briefly">
+Solving for the potential of an axisymmetric, infinitesimally thin disk means solving Poisson's equation with a source confined to $z=0$. Expanding the surface density in a Hankel transform (the 2-D analogue of a Fourier transform, natural for axisymmetric problems) turns the exponential profile's transform into a combination of powers, and the resulting potential integral evaluates to exactly the $I_0K_0 - I_1K_1$ combination above. It is a standard, if unavoidable, feature of thin-disk gravity — the same special functions show up in accretion-disk and protoplanetary-disk potentials (Ch. 8).
+</Level>
+
+<Hood title="evaluating the disk formula and fitting the model">
+Two numerical ingredients make the flagship simulation work: the Bessel functions themselves, and an optimiser to fit the model to data.
+
+**Bessel functions.** $I_0, I_1, K_0, K_1$ have no elementary closed form, so the sim evaluates them with the classic Abramowitz & Stegun 9.8 polynomial/rational approximations — accurate to about $10^{-7}$ relative error, and fast (no series truncation logic, just a fixed polynomial per branch):
+
+```ts
+export function besselI0(x: number): number {
+  const ax = Math.abs(x);
+  if (ax < 3.75) {
+    const t = (x / 3.75) ** 2;
+    return 1 + t * (3.5156229 + t * (3.0899424 + t * (1.2067492 +
+           t * (0.2659732 + t * (0.0360768 + t * 0.0045813)))));
+  }
+  const t = 3.75 / ax; // large-x branch: asymptotic series times e^x/√x
+  const poly = 0.39894228 + t * (0.01328592 + t * (0.00225319 + /* … */ 0));
+  return (Math.exp(ax) / Math.sqrt(ax)) * poly;
+}
+```
+
+$K_0$ and $K_1$ need a small trick near $x=0$, where they diverge logarithmically: the small-$x$ branch is built from $-\ln(x/2)\,I_0(x)$ plus a regular polynomial remainder, so the log singularity is handled analytically rather than by the polynomial (which would need to blow up, badly, near $x=0$).
+
+**Fitting.** The "Auto-fit" button runs a Nelder–Mead simplex search over five free parameters (bulge mass, disk mass and scale length, halo density and scale radius) to minimise $\chi^2 = \frac{1}{N}\sum_i \left(\frac{v_\text{model}(r_i) - v_{\text{obs},i}}{\sigma_i}\right)^2$:
+
+```ts
+export function nelderMead(f: (x: number[]) => number, x0: number[], opts = {}) {
+  // build an (n+1)-point simplex around x0, then repeatedly reflect / expand /
+  // contract / shrink the worst point through the centroid of the rest,
+  // exactly as in the classic 1965 algorithm — no derivatives needed.
+}
+```
+Nelder–Mead needs no derivatives (useful here, since the Bessel-function disk term has no simple analytic gradient) and converges reliably for five parameters in a few hundred iterations, fast enough to run synchronously in response to a button click. It can get stuck in local minima for badly-scaled starting points, which is why the parameters are fit in log-space for the two masses and the halo density — keeping every free parameter's natural range within about one order of magnitude of 1 in the search's own units improves the simplex's conditioning.
+</Hood>
+
+### The halo: NFW or pseudo-isothermal
+
+<Tiers>
+<Fragment slot="l1">
+The dark-matter halo is the piece that isn't starlight, and its exact shape is one of the biggest open questions in this chapter. Two popular guesses: a profile called NFW, motivated by computer simulations of how dark matter clumps under gravity, which is very dense in the centre; and a "pseudo-isothermal" profile, motivated by fitting real rotation curves, which flattens out — has a *core* — near the centre instead.
+</Fragment>
+<Fragment slot="l2">
+The Navarro–Frenk–White (NFW) profile, $\rho(r) = \rho_0 / \left[(r/r_s)(1+r/r_s)^2\right]$, emerges from N-body simulations of collisionless cold dark matter collapsing under gravity (Ch. 28) and has a steep central "cusp," $\rho \propto r^{-1}$. Pseudo-isothermal profiles, $\rho(r) = \rho_0/[1+(r/r_c)^2]$, instead have a flat central "core." Real rotation curves, especially of small, dark-matter-dominated dwarf galaxies, often prefer cores over cusps — the "cusp–core problem" below.
+</Fragment>
+<Fragment slot="l3">
+Both are closed-form, spherically symmetric profiles with analytic enclosed-mass integrals (used directly in $v_c^2 = GM(\!<\!r)/r$):
+</Fragment>
+</Tiers>
+
+<KeyEq title="NFW and pseudo-isothermal halo profiles">
+$$
+\rho_\text{NFW}(r) = \frac{\term{rho0}{\rho_0}}{(r/\term{rs}{r_s})(1+r/r_s)^2}, \qquad \rho_\text{iso}(r) = \frac{\rho_0}{1+(r/r_c)^2}
+$$
+<Fragment slot="where">Both integrate in closed form to give $M(\!<\!r)$ and hence $v_c^2(r) = GM(\!<\!r)/r$; the simulation implements both exactly, selectable from a dropdown.</Fragment>
+</KeyEq>
+
+## The missing mass beyond our own Galaxy
+
+### Zwicky and the Coma cluster
+
+<History title="A '33 diagnosis, decades ahead of its time" year="1933">
+<Portrait src="/img/people/zwicky.jpg" name="Fritz Zwicky" years="1898–1974" credit="Comet Photo AG, Zürich, 1960 (Wikimedia Commons)" license="CC BY-SA 4.0" href="https://commons.wikimedia.org/wiki/File:Fritz_Zwicky_in_1960.jpg" />
+
+Fritz Zwicky, a famously combative astronomer at Caltech, measured the velocity dispersion of galaxies in the Coma cluster in 1933 and applied the virial theorem (below) to estimate the cluster's total mass. The answer came out roughly 400 times larger than the mass implied by the cluster's visible light. Zwicky called the discrepancy "dunkle Materie" — dark matter — the term's first modern use. He was decades ahead of the field, and largely ignored: his abrasive reputation, and the lack of any independent confirmation until Rubin and Ford's rotation curves four decades later, meant the "missing mass problem" sat mostly dormant until the 1970s made it impossible to ignore.
+</History>
+
+<Tiers>
+<Fragment slot="l1">
+Galaxies in a cluster aren't held together individually — the whole cluster's gravity has to be strong enough to keep its fast-moving member galaxies from flying apart. Measure how fast they're moving (via their velocity spread) and how big the cluster is, and you can weigh the whole cluster, the same "watch it move, weigh it" logic as a rotation curve, applied to a swarm instead of a disk.
+</Fragment>
+<Fragment slot="l2">
+For a self-gravitating system in equilibrium, the virial theorem relates the time-averaged kinetic and potential energy: $2\langle K\rangle + \langle U\rangle = 0$. Applied to a cluster of galaxies with velocity dispersion $\sigma$ and characteristic radius $R$, this gives an order-of-magnitude mass estimate $M \sim 5\sigma^2 R/G$.
+</Fragment>
+<Fragment slot="l3">
+The scalar virial theorem, $2K + U = 0$ for a bound, stationary (time-averaged) self-gravitating system, follows from the time derivative of the moment of inertia settling to zero. For an isotropic velocity distribution ($\sigma^2 = 3\sigma_r^2$, with $\sigma_r$ the observed line-of-sight dispersion) and a uniform sphere ($U = -3GM^2/5R$), this gives the estimator below.
+</Fragment>
+</Tiers>
+
+<KeyEq title="Virial cluster mass estimator">
+$$
+M_\text{vir} \approx \frac{5\,\term{sigma}{\sigma}^2 R}{G}
+$$
+<Fragment slot="where">$\sigma$ is the (line-of-sight) velocity dispersion of cluster members and $R$ a characteristic cluster radius. The factor of 5 depends on the assumed velocity isotropy and density profile and shouldn't be trusted to better than a factor of ~2, but the *existence* of a large gap between $M_\text{vir}$ and the visible mass does not depend on that factor.</Fragment>
+</KeyEq>
+
+<Sim name="milky-way-virial" size="wide" minHeight={420}>
+**Zwicky's virial estimator.** Drag the velocity dispersion σ and cluster radius R for a synthetic cluster of 60 galaxies; the histogram shows their (Gaussian, by construction) line-of-sight velocity spread. Watch the inferred virial mass dwarf the visible mass of the galaxies themselves — Zwicky's original discrepancy, reproduced with sliders.
+</Sim>
+
+<Aside>**Independent confirmations.** Gravitational lensing of background galaxies by clusters (Ch. 24, including the [Bullet Cluster](/ch/lensing/), where the lensing mass visibly separates from the hot X-ray gas after a cluster collision) and the acoustic peaks in the cosmic microwave background (Ch. 27) both independently require the same total, mostly non-baryonic matter budget as Zwicky's virial estimate and Rubin's rotation curves — three unrelated methods, three consistent answers.</Aside>
+
+## What could dark matter actually be?
+
+<Tiers>
+<Fragment slot="l1">
+"Dark matter" is a description of a gravitational effect, not (yet) an identification of a particle. The leading physical candidates are: some new, very weakly interacting massive particle left over from the early universe; an extremely light particle called the axion; ordinary black holes formed in unusual numbers soon after the Big Bang; or a fourth, exotic type of familiar neutrino. None has been directly detected yet, despite large, sensitive experiments built specifically to look.
+</Fragment>
+<Fragment slot="l2">
+The leading candidates, roughly in order of historical popularity:
+
+- **WIMPs** (weakly interacting massive particles), predicted generically by supersymmetric extensions of particle physics, with a "WIMP miracle" coincidence that a weak-scale particle's thermal relic abundance naturally matches the observed dark-matter density. Direct-detection experiments (LZ, XENONnT) have searched for WIMP–nucleus scattering down to extraordinarily low cross-sections and found nothing — pushing the allowed parameter space into a shrinking corner and motivating renewed interest in alternatives.
+- **Axions**: very light, very weakly coupled particles originally proposed to solve an unrelated problem in the strong nuclear force (the strong CP problem), which turn out to be excellent, "cold" dark-matter candidates if their mass falls in a suitable range. Haloscope experiments search for their conversion to photons in strong magnetic fields.
+- **Primordial black holes (PBHs)**: black holes formed from density fluctuations in the very early universe, before any star existed to collapse into one. Microlensing surveys and LIGO-Virgo-KAGRA merger-rate/mass-distribution constraints (Ch. 20) now rule out PBHs as *all* of the dark matter over most, but not quite all, of the possible mass range.
+- **Sterile neutrinos**: a hypothetical fourth neutrino species that doesn't feel the weak force (hence "sterile"), which could be produced in the right abundance in the early universe and would show up in X-ray telescopes as a faint decay line — tentative claims of such a line remain disputed.
+</Fragment>
+<Fragment slot="l3">
+Direct-detection null results now constrain the spin-independent WIMP–nucleon cross-section below $\sim 10^{-47}\,\text{cm}^2$ for masses near 30 GeV/$c^2$ (LZ 2022–2024, XENONnT), well into the "neutrino fog" where solar and atmospheric neutrino backgrounds start to mimic a WIMP signal — a fundamental sensitivity floor for this detection technique, not merely an engineering one. Axion haloscopes (ADMX and successors) have excluded significant portions of the QCD axion's predicted coupling–mass band in the μeV range. PBH constraints combine microlensing (EROS, OGLE, Subaru HSC) across sub-solar masses with LIGO-Virgo-KAGRA's O4 merger catalogue, which constrains any PBH contribution near stellar masses via the observed merger rate and mass/spin distribution. None of this rules out particle dark matter; it substantially narrows where it can hide.
+</Fragment>
+</Tiers>
+
+## MOND: a fair hearing
+
+<Predict question="MOND (modified Newtonian dynamics) proposes changing gravity, not adding invisible mass. Does it correctly predict individual galaxy rotation curves from their visible matter alone?" choices={['No — it fails just as badly as unmodified Newtonian gravity', 'Yes, remarkably well for individual disk galaxies — but it struggles with clusters and the CMB']} answer={1}>
+MOND (Milgrom 1983) is often dismissed too quickly. Given only a galaxy's baryonic mass distribution, it predicts the detailed shape of that galaxy's rotation curve — not just its flatness — to good accuracy across a huge range of disk galaxies, including the tight baryonic Tully–Fisher relation and radial acceleration relation below, both *predicted* by MOND before they were as well measured as they are now. Where it struggles badly is galaxy *clusters* (it under-predicts their mass by a factor of a few, even with MOND's own rule applied) and the detailed acoustic peak structure of the cosmic microwave background (Ch. 27), which particle dark matter fits naturally and MOND does not, without extra unseen mass of its own.
+</Predict>
+
+<Tiers>
+<Fragment slot="l1">
+Instead of adding invisible mass, MOND proposes that Newton's second law itself changes at extremely small accelerations — below roughly $10^{-10}\,\text{m/s}^2$, far smaller than anything tested in a lab or the Solar System, gravity's effective pull becomes stronger relative to the naive Newtonian prediction. Below this acceleration scale, gravitational dynamics quietly stop looking like ordinary Newtonian physics.
+</Fragment>
+<Fragment slot="l2">
+Milgrom's original proposal modifies Newton's second law at low accelerations: $F = m\mu(a/a_0)\,a$, where $\mu(x) \to 1$ for $x \gg 1$ (recovering ordinary Newtonian dynamics) and $\mu(x) \to x$ for $x \ll 1$. In the deep-MOND limit this gives $g \approx \sqrt{g_N a_0}$ for the true gravitational acceleration $g$ sourced by the Newtonian acceleration $g_N$ from baryons alone, with $a_0 \approx 1.2\times10^{-10}\,\text{m/s}^2$ an empirically fitted universal constant.
+</Fragment>
+<Fragment slot="l3">
+A convenient interpolating function used throughout this chapter's simulations, $g = \tfrac12\left(g_N + \sqrt{g_N^2 + 4g_N a_0}\right)$, smoothly connects the Newtonian ($g\to g_N$ for $g_N \gg a_0$) and deep-MOND ($g \to \sqrt{g_N a_0}$ for $g_N \ll a_0$) regimes. In the deep-MOND limit, $v_c^4 = GMa_0$ exactly — a mass–velocity relation with no free radius dependence at all, which is precisely the observed baryonic Tully–Fisher relation's slope and normalisation, a genuine, and still not fully explained, success.
+</Fragment>
+</Tiers>
+
+<KeyEq title="The deep-MOND limit and the baryonic Tully–Fisher relation">
+$$
+\term{vc}{v_c}^4 = G\,M_b\,\term{a0}{a_0}
+$$
+<Fragment slot="where">$M_b$ is a galaxy's total baryonic (stellar + gas) mass. This falls directly out of MOND's low-acceleration limit and matches the observed $M_b \propto v_c^{3.6\text{–}4}$ Tully–Fisher slope far more naturally, in the standard picture, than any dark-matter model manages without additional tuning of the halo–baryon connection.</Fragment>
+</KeyEq>
+
+<Sim name="milky-way-tf" size="wide" minHeight={420}>
+**Baryonic Tully–Fisher relation and the radial acceleration relation (RAR)**, both approximate/illustrative. Toggle between them. The BTF panel shows baryonic mass against flat rotation speed on a log–log plot with the MOND/observed slope near 4; the RAR panel shows observed acceleration against the acceleration predicted from baryons alone — real disk galaxies of wildly different sizes and masses all fall on very nearly the same curve, a regularity any theory has to explain, one way or another.
+</Sim>
+
+<Level min={2} title="Small-scale challenges to the standard picture">
+Even within the dark-matter paradigm, structure on the smallest scales raises open puzzles:
+
+- **The cusp–core problem**: NFW-like simulations predict steep central density cusps ($\rho \propto r^{-1}$), but many dwarf and low-surface-brightness galaxies' rotation curves prefer flatter cores. Baryonic feedback (supernova-driven gas outflows repeatedly punching mass out of the centre, Ch. 23) can plausibly flatten cusps into cores in at least some regimes, but whether it does so generically enough to explain the full population is still debated.
+- **Too-big-to-fail**: cold dark matter simulations of Milky Way-mass halos predict several satellite subhalos massive enough that they "should" have retained enough gas to form visible stars, yet the Milky Way's actual observed satellites are fainter than expected for their inferred masses. Better modelling of feedback and reionisation-suppressed star formation in small halos has substantially eased, though perhaps not entirely resolved, the tension.
+
+These are challenges to the *details* of cold dark matter structure formation, not evidence against dark matter's existence — the same simulations that predict the cusps and the missing bright satellites also reproduce the large-scale cosmic web (Ch. 28) and the CMB (Ch. 27) with high precision.
+</Level>
+
+## Adding it all up
+
+<Fermi title="Weighing the whole Galaxy, and its escape speed">
+Take the flat rotation speed $v_c \approx 230$ km/s as roughly constant out to at least $R \approx 50$ kpc (extrapolating beyond the directly measured tangent-point/stellar range, using the motions of distant halo stars and satellite galaxies as tracers). Then
+
+$$
+M(\!<\!R) = \frac{v_c^2 R}{G} \approx \frac{(230\,\text{km/s})^2 (50\,\text{kpc})}{4.30\times10^{-6}\,\text{kpc}\,(\text{km/s})^2 M_\odot^{-1}} \approx 6\times10^{11}\,M_\odot,
+$$
+
+and integrating a bit further with a slowly falling (rather than perfectly flat) profile gets you to the commonly quoted total Galaxy mass, $\sim 1$–$1.5\times10^{12}\,M_\odot$ within the virial radius (~250–300 kpc), of which the visible stars and gas are only a few percent. The escape speed from the Sun's location, $v_\text{esc} \approx \sqrt{2}\,v_c$ for a flat rotation curve extended to large radius (a rough approximation; the real value from detailed mass models is closer to 550 km/s), is comfortably above any star's typical orbital speed — which is exactly why "hypervelocity stars," flung out by close encounters with Sgr A\*, are rare and dramatic events rather than routine.
+</Fermi>
+
+A Galaxy of mass <Var name="Mgal" value={1.3} min={0.5} max={2} step={0.05} /> ×10¹² M☉ has an escape speed from the Sun's radius of roughly <Out name="vesc" />.
+
+## Where we go from here
+
+The rotation curve turned "the Galaxy looks calm and orderly" into "four-fifths of its mass is something we cannot see directly." That same logic — watch the motion, infer the mass, compare to the light — repeats at every larger scale in this course: in the dynamics of merging and interacting galaxies ([Chapter 22](/ch/galactic-dynamics/)), in gravitational lensing by clusters ([Chapter 24](/ch/lensing/)), and in the cosmic microwave background's acoustic peaks ([Chapter 27](/ch/cmb/)), which measure the *same* dark-matter density from the completely different vantage point of the infant universe, 13.8 billion years ago. That three independent methods, spanning galaxies to the whole observable universe, agree on how much invisible mass there is — without yet agreeing on what it's made of — is one of the strangest, and most secure, results in modern astrophysics.

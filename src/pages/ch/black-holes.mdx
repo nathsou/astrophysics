@@ -16,6 +16,47 @@ import Out from '../../components/Out.astro';
 import Tiers from '../../components/Tiers.astro';
 import Level from '../../components/Level.astro';
 import Photo from '../../components/Photo.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  M: ['Mass of the black hole', 'Sets every length scale in the problem: horizon, photon sphere and ISCO all grow in direct proportion to M.'],
+  R: ['Radius of the "dark star"', 'The size at which the Newtonian escape speed reaches c. By luck it equals the true horizon radius.'],
+  rs: ['Schwarzschild radius', 'The horizon of a non-rotating hole, 2GM/c². It is the natural unit of length here: everything else is a simple multiple of it.'],
+  r: ['Areal radius', 'Defined so a sphere at r has area 4πr². Not the distance to the centre, which is not even well defined inside the horizon.'],
+  t: ['Time on a distant clock', 'The time kept far from the hole. Clocks closer in tick more slowly relative to it.'],
+  ds: ['Spacetime interval', 'The invariant "distance" between two nearby events. ds² < 0 for massive particles, 0 for light.'],
+  theta: ['Polar angle', 'Ordinary angle on the sphere. By symmetry every orbit can be put in the plane θ = π/2.'],
+  phi: ['Azimuthal angle', 'Angle around the hole. The metric does not depend on it, which is why angular momentum is conserved.'],
+  nuinf: ['Frequency received far away', 'Lower than the emitted one: the light has lost energy climbing out of the well.'],
+  nuem: ['Frequency emitted', 'Measured by an observer hovering where the light was emitted.'],
+  z: ['Redshift', 'Fractional stretch of wavelength. It diverges at the horizon, which is why the horizon looks black.'],
+  Veff: ['Effective potential', 'Gravity plus the centrifugal barrier plus GR\'s correction. The radial motion is a ball rolling in this curve.'],
+  L: ['Angular momentum per unit mass', 'Sets the height of the centrifugal barrier. Below √3 r_s c there is no barrier at all, and everything plunges.'],
+  E: ['Energy per unit mass', 'Conserved because the metric does not change with time. It includes the rest energy c², so ℰ < c² means bound.'],
+  rdot: ['Radial velocity (proper time)', 'dr/dτ: how fast the particle moves in or out, measured by its own clock.'],
+  gr: ['General-relativistic correction', 'Falls off as 1/r³, faster than the centrifugal 1/r² barrier, so it always wins close in. It creates the ISCO, the photon sphere and capture.'],
+  rpm: ['Circular-orbit radii', 'The + root is the stable (Newtonian-like) orbit, the − root is the new unstable one on top of the barrier.'],
+  risco: ['Innermost stable circular orbit', 'Inside 3 r_s every circular orbit is unstable. It marks the inner edge of a thin accretion disk.'],
+  Eisco: ['Energy at the ISCO', '√(8/9) of the rest energy: the rest, 5.7%, was radiated on the way in.'],
+  rph: ['Photon sphere radius', 'Where light can orbit in a circle, 1.5 r_s. The orbit is unstable, like a pencil on its tip.'],
+  b: ['Impact parameter', 'How far a ray would miss the centre if space were flat. The ray\'s whole path depends only on b.'],
+  bc: ['Critical impact parameter', 'Rays with b below √27/2 r_s ≈ 2.6 r_s are captured: this is the radius of the shadow.'],
+  W: ['Effective potential for light', 'Has a single peak at 1.5 r_s and no well: light cannot be in a stable orbit.'],
+  lam: ['Affine parameter', 'Plays the role of time along a light ray, which has no proper time of its own.'],
+  u: ['Inverse radius 1/r', 'The substitution that turns orbits into oscillator equations, as in Chapter 2.'],
+  T: ['Disk temperature', 'Set by the local heating rate: T ∝ r^(−3/4) far out, peaking at about 4 r_s.'],
+  Mdot: ['Accretion rate', 'Mass swallowed per second. More fuel, hotter disk: T ∝ Ṁ^(1/4).'],
+  rin: ['Inner edge of the disk', 'The ISCO. The factor (1 − √(r_in/r)) is zero there because the gas stops being held up and plunges.'],
+  g: ['Frequency shift factor', 'ν_obs/ν_emit. Intensity scales as g⁴, so a 30% blueshift nearly triples the brightness.'],
+  Omega: ['Orbital angular velocity', '√(GM/r³): the gas moves at up to c/2 near the ISCO, which drives the Doppler beaming.'],
+  ell: ['Photon angular momentum per energy', 'Positive for light emitted along the gas\'s motion: that light is blueshifted.'],
+  x: ['Photon position (Cartesian)', 'The ray tracer integrates this directly, avoiding polar-coordinate singularities.'],
+  h2: ['Squared angular momentum of the ray', 'Conserved; it sets the strength of the bending. Radial rays (h = 0) are not bent at all.'],
+  eta: ['Radiative efficiency', 'Fraction of rest-mass energy released as light: 5.7% here, versus 0.7% for fusion.'],
+  TH: ['Hawking temperature', 'Inversely proportional to mass: big holes are colder than the cosmic microwave background.'],
+}} />
 
 ## When pressure loses
 
@@ -40,18 +81,24 @@ The deeper reason for this failure is worth understanding, because it is general
 
 <Aside>**Failed supernovae.** Not every black hole needs an explosion. Some massive stars seem simply to wink out. A 25 M☉ supergiant in NGC 6946 brightened slightly in 2009 and then vanished in the optical. JWST now sees only a faint infrared glow at its position. This is the best candidate so far for a direct collapse to a black hole.</Aside>
 
+<History title="Dark stars, twice forgotten" year="1783">
+<Portrait src="/img/people/laplace.jpg" name="Pierre-Simon Laplace" years="1749–1827" credit="Paulin Guérin" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Pierre-Simon_Laplace.jpg" />
+
+In November 1783 the English clergyman John Michell read a paper to the Royal Society. If light were made of particles slowed by gravity, he argued, a star 500 times the Sun's radius with the Sun's density would hold its light in. It would be invisible, detectable only by the orbits of companions around it. That is exactly how Cygnus X-1 and Sgr A\* were found two centuries later. Pierre-Simon Laplace reached the same idea independently and put it in the first two editions of his *Exposition du système du monde* (1796). Then he dropped it: once Thomas Young showed around 1801 that light behaves as a wave, a "corpuscle" slowed by gravity no longer made sense. The idea slept for more than a century, until general relativity gave it a new and much stranger meaning.
+</History>
+
 ### An escape-velocity heuristic
 
 <Tiers>
 <Fragment slot="l1">
-Throw a ball upward hard enough and it never comes back: that speed is the **escape speed**. It is 11 km/s for the Earth and 618 km/s from the Sun's surface. Squash a body smaller while keeping its mass, and its escape speed grows. At a certain size it reaches the speed of light. In 1783 John Michell guessed that such a "dark star" would be invisible. His reasoning was off, but his size was exactly right. It is called the **Schwarzschild radius**, and it is about 3 km for every solar mass:
+Throw a ball upward hard enough and it never comes back: that speed is the **escape speed** (a refresher on energy: [Appendix A6](/ch/primer-mechanics/)). It is 11 km/s for the Earth and 618 km/s from the Sun's surface. Squash a body smaller while keeping its mass, and its escape speed grows. At a certain size it reaches the speed of light. In 1783 John Michell guessed that such a "dark star" would be invisible. His reasoning was off, but his size was exactly right. It is called the **Schwarzschild radius**, and it is about 3 km for every solar mass:
 </Fragment>
 <Fragment slot="l2">
 
 Here is a surprisingly good Newtonian guess. In Chapter 2's vis-viva equation, the escape speed from the surface of a mass $M$ of radius $R$ is $v_\text{esc}=\sqrt{2GM/R}$. Set $v_\text{esc}=c$ and solve for $R$:
 
 $$
-R = \frac{2GM}{c^2}.
+\term{R}{R} = \frac{2\term{G}{G}\term{M}{M}}{\term{c}{c}^2}.
 $$
 
 John Michell (1783) and Pierre-Simon Laplace (1796) did exactly this and imagined "dark stars". Their reasoning is wrong in two ways. Light has no rest mass for Newtonian gravity to act on, and in their picture light could still climb partway up and fall back. Yet the answer is exactly right. It is the **Schwarzschild radius**:
@@ -61,14 +108,18 @@ John Michell (1783) and Pierre-Simon Laplace (1796) did exactly this and imagine
 
 <KeyEq title="The Schwarzschild radius">
 $$
-\htmlData{term=rs}{r_s} = \frac{2G\htmlData{term=M}{M}}{c^2} \approx 2.95\ \text{km}\,\left(\frac{\htmlData{term=M}{M}}{\text{M}_\odot}\right)
+\term{rs}{r_s} = \frac{2\term{G}{G}\term{M}{M}}{\term{c}{c}^2} \approx 2.95\ \text{km}\,\left(\frac{\term{M}{M}}{\term{Msun}{\text{M}_\odot}}\right)
 $$
 <Fragment slot="where"><span data-term="rs">$r_s$</span> is the radius of the event horizon of a non-rotating black hole of mass <span data-term="M">$M$</span>. $G$ is <C k="G" /> and $c$ is <C k="c" />. It scales **linearly** with mass, so the mean density inside the horizon scales as $M^{-2}$.</Fragment>
 </KeyEq>
 
+<Aside>**Scale check.** Squeezed to its Schwarzschild radius, the Earth would be a black hole 9 mm across, about the size of a marble. The Sun would be 5.9 km across.</Aside>
+
 A black hole of <Var name="Mbh" value={10} min={1e-9} max={1e11} log /> M☉ has $r_s =$ <Out name="rs" />, and a mean density inside the horizon of <Out name="rho" />. For a 10 M☉ stellar remnant, that density is far above nuclear density ($2\times10^{17}$ kg/m³). Drag the mass up to the $6.5\times10^9$ M☉ of M87\*. Its "density" is then less than that of air. Supermassive black holes do not need extreme densities to form, only a lot of mass in one place.
 
-<Aside>**Scale check.** Squeezed to its Schwarzschild radius, the Earth would be a black hole 9 mm across, about the size of a marble. The Sun would be 5.9 km across.</Aside>
+<Aside>**The name.** Physicists called them "frozen stars" or "collapsed stars" until John Wheeler popularised "black hole" in a 1967 lecture, after someone in the audience suggested it.</Aside>
+
+
 
 ## The Schwarzschild metric
 
@@ -84,7 +135,7 @@ Einstein replaced Newton's force of gravity with *geometry*. Mass bends space an
 Einstein replaced Newton's force of gravity with geometry: mass curves space and time, and free objects follow the straightest possible paths. Outside a non-rotating mass the answer, found by Karl Schwarzschild in 1915, boils down to one number at each radius $r$:
 
 $$
-\sqrt{1-\frac{r_s}{r}} .
+\sqrt{1-\frac{\term{rs}{r_s}}{\term{r}{r}}} .
 $$
 
 - **Clocks:** a clock hovering at radius $r$ ticks at $\sqrt{1-r_s/r}$ times the rate of a far-away clock. At $r = 2r_s$ that is $\sqrt{0.5}=0.71$.
@@ -101,10 +152,16 @@ In 1915, only weeks after Einstein published the field equations, Karl Schwarzsc
 
 <KeyEq title="The Schwarzschild metric">
 $$
-ds^2 = -\left(1-\frac{\htmlData{term=rs}{r_s}}{r}\right)c^2\,dt^2 + \left(1-\frac{\htmlData{term=rs}{r_s}}{r}\right)^{-1} dr^2 + r^2\left(d\theta^2 + \sin^2\theta\,d\phi^2\right)
+\term{ds}{ds}^2 = -\left(1-\frac{\term{rs}{r_s}}{\term{r}{r}}\right)\term{c}{c}^2\,d\term{t}{t}^2 + \left(1-\frac{\term{rs}{r_s}}{\term{r}{r}}\right)^{-1} d\term{r}{r}^2 + \term{r}{r}^2\left(d\term{theta}{\theta}^2 + \sin^2\term{theta}{\theta}\,d\term{phi}{\phi}^2\right)
 $$
 <Fragment slot="where">$t$ is the time on a clock at rest very far away. $r$ is the *areal* radius: a sphere at $r$ has area $4\pi r^2$. $\theta, \phi$ are the usual angles. The proper time along a timelike path is $d\tau = \sqrt{-ds^2}/c$. Light travels along paths with $ds = 0$.</Fragment>
 </KeyEq>
+
+<History title="A solution from the Russian front" year="1915">
+<Portrait src="/img/people/schwarzschild.jpg" name="Karl Schwarzschild" years="1873–1916" credit="Unknown photographer, c. 1900" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Karl.Schwarzschild.png" />
+
+Karl Schwarzschild was director of the Potsdam observatory, and at 40 one of Germany's leading astronomers, when he volunteered for the army in 1914. In late 1915 he was computing artillery trajectories on the Russian front when he read Einstein's newly published field equations. Within weeks he had found their exact solution outside a spherical mass, and mailed it to Einstein. Einstein replied that he "would not have expected that one could formulate the exact solution of the problem in such a simple way," and presented it to the Prussian Academy in January 1916. By then Schwarzschild had contracted pemphigus, a painful autoimmune skin disease. He was invalided home and died in May 1916, aged 42. Neither he nor Einstein thought the radius $r_s$ described anything real. It took until 1939 (Oppenheimer and Snyder's collapsing dust cloud) and really the 1960s for physicists to accept that stars could fall through it.
+</History>
 
 Read it term by term, as you would read a piece of code:
 
@@ -125,14 +182,14 @@ At $r = r_s$ the $dt^2$ coefficient vanishes and the $dr^2$ coefficient blows up
 
 <Tiers>
 <Fragment slot="l1">
-Slow clocks deep down have a colour. Light is a clock too: every wave crest is a tick. Light sent up from near the hole arrives with its ticks spread out, so it is shifted to longer, redder wavelengths. This **gravitational redshift** has been measured on Earth over a height of just 22 metres, and GPS satellites have to correct for it every day. Near a black hole it becomes enormous. Light from the horizon itself would be stretched infinitely, which is one way to see why a horizon is black.
+Slow clocks deep down have a colour (for waves and wavelengths, see [Appendix A8](/ch/primer-waves/)). Light is a clock too: every wave crest is a tick. Light sent up from near the hole arrives with its ticks spread out, so it is shifted to longer, redder wavelengths. This **gravitational redshift** has been measured on Earth over a height of just 22 metres, and GPS satellites have to correct for it every day. Near a black hole it becomes enormous. Light from the horizon itself would be stretched infinitely, which is one way to see why a horizon is black.
 </Fragment>
 <Fragment slot="l2">
 
 The clock-rate factor has a direct observable consequence. Suppose an atom hovering at radius $r$ emits light at frequency $\nu_\text{em}$. The wave crests are emitted at a fixed rate of the local proper time, but they are counted by a distant observer in coordinate time $t$. The spacetime is static, so it takes each crest the same coordinate time to climb out. The distant observer therefore receives
 
 $$
-\frac{\nu_\infty}{\nu_\text{em}} = \sqrt{1-\frac{r_s}{r}}, \qquad 1+z = \left(1-\frac{r_s}{r}\right)^{-1/2}.
+\frac{\term{nuinf}{\nu_\infty}}{\term{nuem}{\nu_\text{em}}} = \sqrt{1-\frac{\term{rs}{r_s}}{\term{r}{r}}}, \qquad 1+\term{z}{z} = \left(1-\frac{\term{rs}{r_s}}{\term{r}{r}}\right)^{-1/2}.
 $$
 
 At the surface of the Sun, $r_s/r = 4\times10^{-6}$, so $z = 2\times10^{-6}$. This shift was measured in the solar spectrum and in the lab (Pound and Rebka, 1959). GPS satellites correct for the Earth's version of it, about +45 μs per day. Near a black hole the effect becomes enormous.
@@ -161,14 +218,14 @@ Two quantities are conserved for anything moving freely around the hole, just as
 
 <KeyEq title="Effective potential near a black hole">
 $$
-V_\text{eff}(r) = -\frac{GM}{r} + \frac{L^2}{2r^2} - \frac{\htmlData{term=gr}{GML^2}}{\htmlData{term=gr}{c^2r^3}}
+\term{Veff}{V_\text{eff}}(\term{r}{r}) = -\frac{\term{G}{G}\term{M}{M}}{\term{r}{r}} + \frac{\term{L}{L}^2}{2\term{r}{r}^2} - \frac{\term{gr}{GML^2}}{\term{gr}{c^2r^3}}
 $$
 <Fragment slot="where">$\tfrac12 v_r^2 + V_\text{eff}(r)$ is constant, where $v_r$ is the radial speed. The first two terms are Newton's gravity and the centrifugal barrier from Chapter 2. The <span data-term="gr">last term</span> is Einstein's correction. It is tiny far away but grows like $1/r^3$, faster than the barrier's $1/r^2$.</Fragment>
 </KeyEq>
 </Fragment>
 <Fragment slot="l3">
 
-How do things move in this geometry? A free particle extremises its proper time. The equations of motion follow from the Euler–Lagrange equations, but the metric's symmetries let us skip nearly all of that algebra. The same thing happened in [Chapter 2](/ch/orbits/): **each symmetry gives a conserved quantity**.
+How do things move in this geometry? A free particle extremises its proper time (new to derivatives? see [Appendix A4](/ch/primer-calculus/)). The equations of motion follow from the Euler–Lagrange equations, but the metric's symmetries let us skip nearly all of that algebra. The same thing happened in [Chapter 2](/ch/orbits/): **each symmetry gives a conserved quantity**.
 
 - The metric does not depend on $t$, so there is a conserved **energy** per unit rest mass: $\ \mathcal E = \left(1-\frac{r_s}{r}\right)c^2\,\frac{dt}{d\tau}$.
 - The metric does not depend on $\phi$, so there is a conserved **angular momentum** per unit rest mass: $\ L = r^2\,\frac{d\phi}{d\tau}$. The motion stays in a plane, which we can take to be $\theta = \pi/2$.
@@ -176,14 +233,14 @@ How do things move in this geometry? A free particle extremises its proper time.
 The third relation is the normalisation of the four-velocity, $g_{\mu\nu}\,\dot x^\mu\dot x^\nu = -c^2$ (a dot means $d/d\tau$). Substitute $dt/d\tau$ and $d\phi/d\tau$ in terms of $\mathcal E$ and $L$:
 
 $$
--\frac{\mathcal E^2}{c^2}\left(1-\frac{r_s}{r}\right)^{-1} + \left(1-\frac{r_s}{r}\right)^{-1}\dot r^2 + \frac{L^2}{r^2} = -c^2 .
+-\frac{\term{E}{\mathcal E}^2}{\term{c}{c}^2}\left(1-\frac{\term{rs}{r_s}}{\term{r}{r}}\right)^{-1} + \left(1-\frac{\term{rs}{r_s}}{\term{r}{r}}\right)^{-1}\term{rdot}{\dot r}^2 + \frac{\term{L}{L}^2}{\term{r}{r}^2} = -\term{c}{c}^2 .
 $$
 
 Multiply through by $(1 - r_s/r)/2$ and use $r_s = 2GM/c^2$. After a line of algebra, you get something very familiar:
 
 <KeyEq title="Radial motion in Schwarzschild spacetime">
 $$
-\frac12\dot r^2 + V_\text{eff}(r) = \frac{\mathcal E^2 - c^4}{2c^2}, \qquad V_\text{eff}(r) = -\frac{GM}{r} + \frac{L^2}{2r^2} - \frac{\htmlData{term=gr}{GML^2}}{\htmlData{term=gr}{c^2r^3}}
+\frac12\term{rdot}{\dot r}^2 + \term{Veff}{V_\text{eff}}(\term{r}{r}) = \frac{\term{E}{\mathcal E}^2 - \term{c}{c}^4}{2\term{c}{c}^2}, \qquad \term{Veff}{V_\text{eff}}(\term{r}{r}) = -\frac{\term{G}{G}\term{M}{M}}{\term{r}{r}} + \frac{\term{L}{L}^2}{2\term{r}{r}^2} - \frac{\term{gr}{GML^2}}{\term{gr}{c^2r^3}}
 $$
 <Fragment slot="where">Here $\dot r = dr/d\tau$ uses the particle's proper time, $\mathcal E$ is its conserved energy per unit mass (including rest energy, so $\mathcal E = c^2$ means "released from rest at infinity"), and $L$ is its angular momentum per unit mass. The first two terms of $V_\text{eff}$ are **exactly** Newton's (Chapter 2). The <span data-term="gr">new term, $-GML^2/c^2r^3$</span>, is all of general relativity's correction for orbits.</Fragment>
 </KeyEq>
@@ -202,7 +259,7 @@ Circular orbits sit where the curve is flat: at the bottom of a valley (stable) 
 Circular orbits sit where $dV_\text{eff}/dr = 0$. Differentiate and multiply by $r^4/GM$:
 
 $$
-r^2 - \frac{L^2}{GM}\,r + \frac{3L^2}{c^2} = 0 \quad\Longrightarrow\quad r_\pm = \frac{L^2}{2GM}\left[1 \pm \sqrt{1 - \frac{12\,G^2M^2}{c^2L^2}}\right].
+\term{r}{r}^2 - \frac{\term{L}{L}^2}{\term{G}{G}\term{M}{M}}\,\term{r}{r} + \frac{3\term{L}{L}^2}{\term{c}{c}^2} = 0 \quad\Longrightarrow\quad \term{rpm}{r_\pm} = \frac{\term{L}{L}^2}{2\term{G}{G}\term{M}{M}}\left[1 \pm \sqrt{1 - \frac{12\,\term{G}{G}^2\term{M}{M}^2}{\term{c}{c}^2\term{L}{L}^2}}\right].
 $$
 
 For large $L$ there are two roots. $r_+ \approx L^2/GM$ is the Newtonian stable orbit at the bottom of the well. $r_-\approx 3GM/c^2$ is a new, *unstable* circular orbit on top of the barrier. As $L$ decreases, the two approach each other. They merge when the square root vanishes, at $L^2 = 12\,G^2M^2/c^2$, where $r = 6GM/c^2 = 3r_s$. Below that, there are no circular orbits at all.
@@ -211,7 +268,7 @@ For large $L$ there are two roots. $r_+ \approx L^2/GM$ is the Newtonian stable 
 
 <KeyEq title="The innermost stable circular orbit (ISCO)">
 $$
-r_\text{ISCO} = \frac{6GM}{c^2} = 3\,r_s, \qquad \frac{\mathcal E_\text{ISCO}}{c^2} = \sqrt{\frac{8}{9}} \approx 0.943
+\term{risco}{r_\text{ISCO}} = \frac{6\term{G}{G}\term{M}{M}}{\term{c}{c}^2} = 3\,\term{rs}{r_s}, \qquad \frac{\term{Eisco}{\mathcal E_\text{ISCO}}}{\term{c}{c}^2} = \sqrt{\frac{8}{9}} \approx 0.943
 $$
 <Fragment slot="where">Inside $3r_s$, no circular orbit is stable: the smallest nudge sends the particle spiralling in. A particle that has slowly drifted inward through a sequence of circular orbits has radiated $1-\sqrt{8/9} = 5.7\%$ of its rest-mass energy by the time it reaches the ISCO.</Fragment>
 </KeyEq>
@@ -234,13 +291,13 @@ A ray aimed a bit closer than about **2.6 Schwarzschild radii** from the centre 
 For light the same bookkeeping works, with one change: what matters is the **impact parameter** $b$, the distance by which the ray would miss the centre if it went straight. Light can circle the hole at
 
 $$
-r_\text{ph} = \tfrac32\,r_s ,
+\term{rph}{r_\text{ph}} = \tfrac32\,\term{rs}{r_s} ,
 $$
 
 the **photon sphere**, an unstable orbit. Every ray with
 
 $$
-b < b_c = \frac{\sqrt{27}}{2}\,r_s \approx 2.60\,r_s
+\term{b}{b} < \term{bc}{b_c} = \frac{\sqrt{27}}{2}\,\term{rs}{r_s} \approx 2.60\,\term{rs}{r_s}
 $$
 
 is captured. So the hole casts a **shadow** of radius $2.6\,r_s$, bigger than the horizon because the hole lenses its own silhouette. Rays with $b$ just above $b_c$ wind around the photon sphere before escaping, making a thin bright **photon ring**.
@@ -250,19 +307,19 @@ is captured. So the hole casts a **shadow** of radius $2.6\,r_s$, bigger than th
 For light, $ds^2 = 0$ replaces the $-c^2$ on the right-hand side with 0, and $\tau$ is replaced by an affine parameter $\lambda$. The same steps give
 
 $$
-\frac{1}{L^2}\left(\frac{dr}{d\lambda}\right)^2 + \underbrace{\frac{1}{r^2}\left(1 - \frac{r_s}{r}\right)}_{W(r)} = \frac{1}{b^2}, \qquad b \equiv \frac{cL}{\mathcal E}.
+\frac{1}{\term{L}{L}^2}\left(\frac{d\term{r}{r}}{d\term{lam}{\lambda}}\right)^2 + \underbrace{\frac{1}{\term{r}{r}^2}\left(1 - \frac{\term{rs}{r_s}}{\term{r}{r}}\right)}_{\term{W}{W(r)}} = \frac{1}{\term{b}{b}^2}, \qquad \term{b}{b} \equiv \frac{\term{c}{c}\term{L}{L}}{\term{E}{\mathcal E}}.
 $$
 
 Here $b$ is the **impact parameter**, the perpendicular distance at which the ray would pass the hole if spacetime were flat. The ray's path depends on $b$ alone. The "potential" $W(r)$ has no well at all, only a single peak. Setting $W' = 0$ gives
 
 $$
-r_\text{ph} = \tfrac32\,r_s = \frac{3GM}{c^2}, \qquad W_\text{max} = \frac{4}{27\,r_s^2}.
+\term{rph}{r_\text{ph}} = \tfrac32\,\term{rs}{r_s} = \frac{3\term{G}{G}\term{M}{M}}{\term{c}{c}^2}, \qquad \term{W}{W}_\text{max} = \frac{4}{27\,\term{rs}{r_s}^2}.
 $$
 
 At $r = 1.5\,r_s$ light can orbit in a circle. This is the **photon sphere**. The orbit is unstable, like a pencil balanced on its tip. A ray with $1/b^2 > W_\text{max}$ goes over the top and falls in. So every ray with
 
 $$
-b < b_c = \frac{\sqrt{27}}{2}\,r_s = \sqrt{27}\,\frac{GM}{c^2} \approx 2.60\,r_s
+\term{b}{b} < \term{bc}{b_c} = \frac{\sqrt{27}}{2}\,\term{rs}{r_s} = \sqrt{27}\,\frac{\term{G}{G}\term{M}{M}}{\term{c}{c}^2} \approx 2.60\,\term{rs}{r_s}
 $$
 
 is captured. Run this backwards from a telescope. Every pixel whose backwards-traced ray has $b < b_c$ ends on the horizon, and no light can come from that direction. The black hole casts a **shadow** of radius $\sqrt{27}\,GM/c^2$. That is 2.6 times the horizon radius, magnified by the hole's own lensing. Rays with $b$ just above $b_c$ wind round the photon sphere several times before escaping. Each extra half-turn makes an exponentially thinner copy of the whole sky, stacked at the shadow's edge: the **photon ring**.
@@ -275,7 +332,7 @@ is captured. Run this backwards from a telescope. Every pixel whose backwards-tr
 The shape of a light ray also follows from $u = 1/r$ as a function of $\phi$, exactly as in Chapter 2. With $u' = du/d\phi$:
 
 $$
-\frac{d^2u}{d\phi^2} + u = \frac{3}{2}\,r_s\,u^2 .
+\frac{d^2\term{u}{u}}{d\term{phi}{\phi}^2} + \term{u}{u} = \frac{3}{2}\,\term{rs}{r_s}\,\term{u}{u}^2 .
 $$
 
 Without the right-hand side this is a straight line, $u = \sin\phi/b$. With it, a ray grazing the Sun is bent by $2r_s/b = 1.75''$. Eddington's 1919 eclipse expedition measured this deflection and made Einstein famous.
@@ -320,7 +377,7 @@ The picture is built up from four pieces of physics, and you can turn each one o
 **Disk temperature.** Gas in a thin disk spirals inward slowly, through a sequence of nearly circular orbits. Viscosity transfers angular momentum outward and turns orbital energy into heat. Each ring radiates locally as a blackbody. Energy and angular-momentum conservation then give the flux emitted per unit area of each face:
 
 $$
-\sigma T^4(r) = \frac{3GM\dot M}{8\pi r^3}\left(1 - \sqrt{\frac{r_\text{in}}{r}}\right).
+\term{sigma}{\sigma} \term{T}{T}^4(\term{r}{r}) = \frac{3\term{G}{G}\term{M}{M}\term{Mdot}{\dot M}}{8\pi \term{r}{r}^3}\left(1 - \sqrt{\frac{\term{rin}{r_\text{in}}}{\term{r}{r}}}\right).
 $$
 
 Here $\dot M$ is the accretion rate (kg/s). The bracket comes from the zero-torque condition at the inner edge, where gas stops being held up by rotation and plunges. The profile peaks at $r = \tfrac{49}{36}r_\text{in}\approx 4.1\,r_s$, and $T \propto r^{-3/4}$ far out. For a 10 M☉ hole eating $10^{-8}$ M☉/yr, the peak temperature is around $10^7$ K, so the disk shines in X-rays. For a $10^8$ M☉ quasar it is a few $\times10^5$ K, in the ultraviolet ($T\propto M^{-1/4}$ at a fixed Eddington ratio). The sim lets you choose $T_\text{peak}$ so that the colours land in the visible.
@@ -330,7 +387,7 @@ Here $\dot M$ is the accretion rate (kg/s). The bracket comes from the zero-torq
 **Gravitational redshift.** The factor $\sqrt{1-r_s/r}$ from the previous section also applies to the disk. It dims the inner disk and reddens it. Combined with the orbital motion, the full shift for gas on a circular orbit at angular velocity $\Omega = \sqrt{GM/r^3}$ is
 
 $$
-g = \frac{\sqrt{1 - \tfrac32 r_s/r}}{1 - \Omega\,\ell/c^2},
+\term{g}{g} = \frac{\sqrt{1 - \tfrac32 \term{rs}{r_s}/\term{r}{r}}}{1 - \term{Omega}{\Omega}\,\term{ell}{\ell}/\term{c}{c}^2},
 $$
 
 where $\ell$ is the photon's conserved angular momentum per unit energy about the disk's axis ($\ell\,c$ plays the role of $L/\mathcal E$). The numerator combines gravitational redshift with the moving clock's time dilation. The denominator is the ordinary first-order Doppler shift.
@@ -344,14 +401,14 @@ The whole renderer is one full-screen fragment shader. Each pixel is independent
 **What to integrate.** The full geodesic equation has eight coupled first-order ODEs, with Christoffel symbols. We need much less. Every Schwarzschild geodesic lies in a plane through the centre, and a photon's path shape depends only on $b$. So we integrate the photon's 3D *spatial* path in plain Cartesian coordinates with a fictitious central force chosen to reproduce the Binet equation. For any central acceleration $f(r)\hat r$ with conserved $h = |\vec x\times\dot{\vec x}|$, Binet gives $u'' + u = -f/(h^2u^2)$. Setting $f = -\tfrac32 h^2/r^4$ (in units $r_s = c = 1$) gives exactly $u'' + u = \tfrac32 u^2$:
 
 $$
-\ddot{\vec x} = -\frac32\,h^2\,\frac{\vec x}{r^5}.
+\ddot{\term{x}{\vec x}} = -\frac32\,\term{h2}{h^2}\,\frac{\term{x}{\vec x}}{\term{r}{r}^5}.
 $$
 
 This avoids polar-coordinate singularities, gives the out-of-plane direction for free, and costs one `rsqrt`-ish operation per force evaluation. The parameter is not affine, but we never need arrival times.
 
 **Initial conditions.** A camera hovering at radius $r_c$ is a static observer. Its local sky is related to coordinate directions by the $\sqrt{1-r_s/r}$ radial stretch, so a local direction $\hat n = n_r\hat r + \vec n_t$ becomes coordinate velocity $\propto n_r\sqrt{1 - 1/r_c}\,\hat r + \vec n_t$. The equation is homogeneous in the velocity scale, so only the direction matters. With this correction the rendered shadow has exactly the angular size quoted in the readout. The disk's redshift also includes the camera's own blueshift, $1/\sqrt{1-1/r_c}$.
 
-**The integrator** is classical RK4. It is not symplectic, but each ray lives for a few hundred steps, not millions, so secular drift doesn't matter (compare Chapter 2). What does matter is the step size. Near the hole the curvature scale is $\sim r$, so we take $\Delta\lambda = k\,r$ with $k = 0.04$–$0.12$ (quality setting). This gives many steps per orbit near the photon sphere and a logarithmic march out to the escape sphere, about 30 steps from $r = 2$ to $r = 60$.
+**The integrator** is classical RK4 ([Appendix A5](/ch/primer-odes/) covers integrators). It is not symplectic, but each ray lives for a few hundred steps, not millions, so secular drift doesn't matter (compare Chapter 2). What does matter is the step size. Near the hole the curvature scale is $\sim r$, so we take $\Delta\lambda = k\,r$ with $k = 0.04$–$0.12$ (quality setting). This gives many steps per orbit near the photon sphere and a logarithmic march out to the escape sphere, about 30 steps from $r = 2$ to $r = 60$.
 
 ```wgsl
 fn accel(p: vec3f, k: f32) -> vec3f {
@@ -393,7 +450,7 @@ A black hole does not shine, but gas falling into one does, and very efficiently
 A black hole does not shine, but gas falling into one does, very efficiently. Consider a parcel of gas that spirals inward through a thin disk, radiating its orbital energy as it goes. It reaches the ISCO with specific energy $\mathcal E_\text{ISCO}$ and then plunges, taking that energy across the horizon. What it radiated along the way is the **radiative efficiency**:
 
 $$
-\eta = 1 - \frac{\mathcal E_\text{ISCO}}{c^2} = 1 - \sqrt{\tfrac89} = 5.7\% \quad\text{(Schwarzschild)}.
+\term{eta}{\eta} = 1 - \frac{\term{Eisco}{\mathcal E_\text{ISCO}}}{\term{c}{c}^2} = 1 - \sqrt{\tfrac89} = 5.7\% \quad\text{(Schwarzschild)}.
 $$
 
 Hydrogen fusion into helium releases 0.7% of the rest mass ([Chapter 12](/ch/fusion/)). A non-rotating black hole is **eight times better** than the best nuclear fuel. A maximally spinning one (next section) has $\eta = 1 - 1/\sqrt3 = 42\%$. In practice, disks torque the hole up to about $a = 0.998$, where $\eta \approx 32\%$. This is why quasars are the most luminous steady objects in the universe, and why most of the energy released by baryons since the Big Bang came out of accretion onto black holes as well as from stars.
@@ -456,6 +513,10 @@ Black holes are no longer theoretical. Four independent lines of evidence now ea
 **Our own black hole.** Sagittarius A\*, 4.3 million solar masses at the centre of the Milky Way, imaged by the Event Horizon Telescope (released 2022). It is 1,500 times lighter than M87\*, but also 2,000 times closer, so its ring looks about the same size: 52 microarcseconds, as predicted from the orbit of the star S2. The bright knots are an average over many images; gas here swirls around in minutes.
 </Photo>
 
+<History title="A bet on Cygnus X-1" year="1974">
+Cygnus X-1 was found by rocket-borne X-ray counters in 1964. In 1971–72 Louise Webster and Paul Murdin in England, and independently Tom Bolton in Toronto, found that a blue supergiant there swings back and forth every 5.6 days around an invisible companion of several solar masses. That was too heavy for a neutron star. In 1974 Stephen Hawking made a bet with Kip Thorne that it was *not* a black hole. Hawking called it an insurance policy: he had invested so much in black holes that if they turned out not to exist, he would at least win a year's subscription to *Private Eye*. By 1990 the evidence was overwhelming. Hawking broke into Thorne's office and signed the framed bet in concession, and Thorne got a year of *Penthouse*.
+</History>
+
 **X-ray binaries.** Cygnus X-1, the first black-hole candidate (1971), is a hot X-ray source in a 5.6-day orbit with a blue supergiant 2.2 kpc away. The companion's radial-velocity curve ([Chapter 10](/ch/exoplanets/) uses the same technique for planets) together with a VLBI parallax distance gives a compact object of $21\pm2$ M☉. That is nearly ten times the maximum neutron-star mass. About twenty such "dynamically confirmed" stellar black holes are known, and Gaia DR3 has found some dormant ones. Gaia BH3 (2024), with 33 M☉, is the heaviest stellar black hole known in the Galaxy.
 
 **Gravitational waves.** On 14 September 2015, LIGO heard two black holes of 36 and 29 M☉ merge 1.3 billion light-years away. The signal rose in frequency and amplitude over a fraction of a second, which is the chirp of [Chapter 20](/ch/gravitational-waves/), and then rang down at the frequency of the final 62 M☉ Kerr hole. About $3\,\text{M}_\odot c^2$ was radiated in 0.2 s, briefly outshining all the stars in the observable universe combined. By the end of the fourth observing run (O4, 2023–2025), LIGO–Virgo–KAGRA had around 300 merger candidates. They include GW231123, with a total mass of about 225 M☉ and both holes spinning near the Kerr limit. There is also the exceptionally loud GW250114, whose ringdown tests the no-hair theorem and confirms Hawking's area theorem: the horizon area grew in the merger, as it must.
@@ -464,7 +525,7 @@ Black holes are no longer theoretical. Four independent lines of evidence now ea
 
 ## Not quite black: Hawking radiation
 
-In 1974 Stephen Hawking combined quantum field theory with the Schwarzschild geometry and found that black holes are not quite black. A horizon emits thermal radiation at a temperature set by its **surface gravity** $\kappa = c^4/4GM$. That is the acceleration needed to hover just outside, redshifted to infinity.
+In 1974 Stephen Hawking (for the quantum background, see [Appendix A9](/ch/primer-quantum/)) combined quantum field theory with the Schwarzschild geometry and found that black holes are not quite black. A horizon emits thermal radiation at a temperature set by its **surface gravity** $\kappa = c^4/4GM$. That is the acceleration needed to hover just outside, redshifted to infinity.
 
 <Level max={1}>
 In plain words: quantum physics makes the horizon glow very faintly, as if it had a temperature. The bigger the hole, the colder it is. A black hole the mass of the Sun would be 60 billionths of a degree above absolute zero, far too cold to see and colder than the afterglow of the Big Bang. Only tiny black holes, the mass of a mountain, would be hot enough to glow brightly and eventually evaporate.
@@ -472,7 +533,7 @@ In plain words: quantum physics makes the horizon glow very faintly, as if it ha
 
 <KeyEq title="Hawking temperature">
 $$
-T_H = \frac{\hbar c^3}{8\pi G M k_B} \approx 6.2\times10^{-8}\ \text{K}\left(\frac{\text{M}_\odot}{M}\right)
+\term{TH}{T_H} = \frac{\term{hbar}{\hbar} \term{c}{c}^3}{8\pi \term{G}{G} \term{M}{M} \term{kB}{k_B}} \approx 6.2\times10^{-8}\ \text{K}\left(\frac{\term{Msun}{\text{M}_\odot}}{\term{M}{M}}\right)
 $$
 <Fragment slot="where">$\hbar$ is <C k="hbar" /> and $k_B$ is <C k="kB" />. The formula contains the constants of quantum mechanics ($\hbar$), relativity ($c$), gravity ($G$) and thermodynamics ($k_B$), which makes it perhaps the most "unified" equation in physics. Bigger holes are **colder**.</Fragment>
 </KeyEq>

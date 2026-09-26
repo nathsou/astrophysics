@@ -15,6 +15,36 @@ import Out from '../../components/Out.astro';
 import Level from '../../components/Level.astro';
 import Tiers from '../../components/Tiers.astro';
 import Photo from '../../components/Photo.astro';
+import Terms from '../../components/Terms.astro';
+import History from '../../components/History.astro';
+import Portrait from '../../components/Portrait.astro';
+
+<Terms defs={{
+  h: ['Strain', 'The fractional stretch of space: a ruler of length L changes by about hL. Dimensionless, and around 10⁻²¹ for the loudest events.'],
+  hp: ['Plus polarisation h₊', 'Stretches along x while squeezing along y, then the reverse.'],
+  hx: ['Cross polarisation h×', 'The same stretch-and-squeeze, rotated by 45°.'],
+  r: ['Distance to the source', 'Strain falls as 1/r, not 1/r²: go ten times farther and the signal is only ten times weaker, which is why detectors see so far.'],
+  t: ['Time', 'The wave seen at distance r left the source a time r/c earlier: the retarded time t − r/c.'],
+  I: ['Mass quadrupole moment', 'Roughly mass × size², measuring how elongated the mass distribution is. Only its changes radiate: each time derivative adds a factor of the frequency.'],
+  L: ['Gravitational-wave luminosity', 'Power carried off by the waves. It comes out of the orbital energy, making the binary shrink.'],
+  M: ['Mass of the moving body', 'Enters squared in the luminosity: more mass sloshing around, more radiation.'],
+  Mtot: ['Total mass m₁ + m₂', 'Sets the orbital speed at a given separation, and the frequency at merger (about 4.4 kHz divided by M in solar masses).'],
+  v: ['Speed of the masses', 'Enters as (v/c)⁶ in the power: slow systems are almost completely silent.'],
+  R: ['Size of the system', 'The compactness GM/Rc² measures how close the system is to being a black hole; it enters squared.'],
+  m1: ['Mass of the first body', 'Each mass enters the power squared.'],
+  m2: ['Mass of the second body', 'Each mass enters the power squared.'],
+  a: ['Orbital separation', 'To the fifth power in the denominator: halve the separation and the power rises 32-fold. This is the runaway behind the chirp.'],
+  mu: ['Reduced mass m₁m₂/(m₁+m₂)', 'The mass of the equivalent one-body problem; small when one body is much lighter.'],
+  Mc: ['Chirp mass', 'The one combination of the masses that controls how fast the frequency rises. Measured to better than 1% for neutron-star pairs.'],
+  f: ['Gravitational-wave frequency', 'Twice the orbital frequency. Its rate of rise grows as f^(11/3), so the final sweep is abrupt.'],
+  fdot: ['Rate of change of frequency', 'How fast the pitch rises. Together with f it gives the chirp mass directly.'],
+  tc: ['Coalescence time', 'The moment the two bodies merge; the frequency formally diverges there.'],
+  g: ['Metric', 'The table of numbers that converts coordinate differences into real distances and times.'],
+  eta: ['Flat-space metric', 'Spacetime with no gravity at all; the waves are a tiny ripple on top of it.'],
+  rho: ['Signal-to-noise ratio', 'How many noise standard deviations the matched-filter output reaches. About 8 is needed to claim a detection.'],
+  d: ['Detector data', 'The strain time series: noise plus (maybe) a signal.'],
+  Sn: ['Noise power spectral density', 'How loud the detector noise is at each frequency. Dividing by it gives the quiet frequencies the most weight.'],
+}} />
 
 ## Ripples in the metric
 
@@ -26,7 +56,7 @@ In [Chapter 19](/ch/black-holes/) we met the full, non-linear Einstein equations
 
 <Tiers>
 <Fragment slot="l1">
-Imagine spacetime as a vast, stiff trampoline. Heavy objects sit in dents, and that is gravity. Now whirl two heavy balls around each other very fast: the trampoline does not just dent, it *ripples*, and the ripples spread outward at the speed of light. Those ripples are gravitational waves.
+Imagine spacetime as a vast, stiff trampoline. Heavy objects sit in dents, and that is gravity. Now whirl two heavy balls around each other very fast: the trampoline does not just dent, it *ripples*, and the ripples spread outward at the speed of light. Those ripples are gravitational waves. (New to waves? See [Appendix A8](/ch/primer-waves/).)
 
 Unlike ripples on water, they do not move things up and down. As a wave passes, space itself is stretched in one direction and squeezed in the other, back and forth. Everything in its path, you included, gets very slightly taller and thinner, then shorter and wider. The effect is absurdly small: a wave from a black-hole collision a billion light-years away changes the size of the Earth by less than the width of an atomic nucleus.
 </Fragment>
@@ -34,10 +64,10 @@ Unlike ripples on water, they do not move things up and down. As a wave passes, 
 General relativity describes gravity with the **metric**, a table of numbers that says how to turn a coordinate difference into a real distance. Far from any source, space is almost flat, so we write the metric as "flat space plus a tiny correction":
 
 $$
-g = \eta + h, \qquad h \ll 1.
+\term{g}{g} = \term{eta}{\eta} + \term{h}{h}, \qquad \term{h}{h} \ll 1.
 $$
 
-Here $\eta$ is ordinary flat spacetime and $h$ is a small, dimensionless number called the **strain**. Einstein's equations then say that $h$ obeys a wave equation, like sound or light: disturbances in $h$ travel outward at speed $c$, and their size falls off as 1/distance. A strain $h$ means that a ruler of length $L$ changes length by about $hL$.
+Here $\eta$ is ordinary flat spacetime and $h$ is a small, dimensionless number called the **strain**. Einstein's equations then say that $h$ obeys a wave equation, like sound or light: disturbances in $h$ travel outward at speed $c$ (see [Appendix A8](/ch/primer-waves/) for waves), and their size falls off as 1/distance. A strain $h$ means that a ruler of length $L$ changes length by about $hL$.
 </Fragment>
 <Fragment slot="l3">
 The metric $g_{\mu\nu}$ is the object that turns coordinate differences into physical distances and times: $ds^2 = g_{\mu\nu}\,dx^\mu dx^\nu$. Flat spacetime has the Minkowski metric $\eta_{\mu\nu} = \mathrm{diag}(-1,1,1,1)$ (in units with $c=1$). Far from sources we write
@@ -58,7 +88,15 @@ where $\Box = -\partial_t^2/c^2 + \nabla^2$ is the wave operator and $T_{\mu\nu}
 </Fragment>
 </Tiers>
 
-<Aside>**Einstein's own doubts.** Einstein predicted gravitational waves in 1916, then spent two decades unsure whether they were real or a coordinate artefact. In 1936 he and Nathan Rosen submitted a paper claiming they did not exist; a referee (Howard Robertson) found the error. The debate was only settled at the 1957 Chapel Hill conference, by Felix Pirani and Richard Feynman's "sticky bead" argument.</Aside>
+<History title="Do gravitational waves exist?" year="1916–1957">
+<Portrait src="/img/people/einstein.jpg" name="Albert Einstein" years="1879–1955" credit="Ferdinand Schmutzer, 1921" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Einstein_1921_by_F_Schmutzer_-_restoration.jpg" />
+
+Einstein predicted gravitational waves in 1916, months after finishing general relativity, and got the formula for their power wrong by a factor of two; he corrected it in 1918, giving the quadrupole formula we still use. Then he spent two decades unsure whether the waves were real or an artefact of his coordinates. Arthur Eddington quipped that some kinds of wave in the theory travelled "with the speed of thought", because a change of coordinates could make them go at any speed.
+
+In 1936 Einstein and his assistant Nathan Rosen sent *Physical Review* a paper claiming gravitational waves did not exist. The anonymous referee, Howard Robertson, pointed out that their troublesome singularity was just a badly chosen coordinate system. Einstein, unused to anonymous peer review, withdrew the paper in indignation and never published in that journal again, but the version that finally appeared quietly reversed the conclusion.
+
+The question was settled at the 1957 Chapel Hill conference. Felix Pirani showed how a wave changes the separation of free particles, and Richard Feynman offered the "sticky bead" argument: thread two beads loosely on a rigid rod; the passing wave slides them back and forth along it, friction heats the rod, so the wave must carry energy. Joseph Weber, in the audience, went home and began building the first detector.
+</History>
 
 ### The transverse–traceless gauge
 
@@ -92,7 +130,7 @@ Picture a circle of tiny floating beads in space, facing the wave. As it passes,
 Coordinates in TT gauge are tied to freely falling particles, so a single particle does not "move" in them. But the *proper distance* between two free particles does change. For particles at separation $(x, y)$ in the transverse plane, to first order in $h$ the physical displacement is
 
 $$
-\delta x = \tfrac12\,(h_+ x + h_\times y), \qquad \delta y = \tfrac12\,(h_\times x - h_+ y).
+\delta x = \tfrac12\,(\term{hp}{h_+} x + \term{hx}{h_\times} y), \qquad \delta y = \tfrac12\,(\term{hx}{h_\times} x - \term{hp}{h_+} y).
 $$
 
 A ring of test masses breathes into an ellipse along $x$, then along $y$, at the wave's frequency. The strain, the fractional change of length, is $\Delta L / L = h/2$ along the axes. That factor of a half matters when you read detector papers: "strain $h$" means a length change of $hL/2$ per arm.
@@ -111,7 +149,7 @@ Each particle traces a small circle around its rest position. The *shape* is an 
 
 <Tiers>
 <Fragment slot="l1">
-Why don't all moving masses make strong waves? Electric charges radiate light when they simply jiggle back and forth. Masses cannot do the gravitational version of that: if one part of an isolated system lurches one way, the rest must lurch the other way (momentum is conserved), so the centre of mass never jiggles. The first thing that *can* change is the **shape** of the mass distribution: how stretched-out or lopsided it is. A spinning dumbbell or two stars orbiting each other keep changing their shape as seen from outside, so they radiate. A perfectly round spinning ball does not.
+Why don't all moving masses make strong waves? Electric charges radiate light when they simply jiggle back and forth. Masses cannot do the gravitational version of that: if one part of an isolated system lurches one way, the rest must lurch the other way (momentum is conserved; see [Appendix A6](/ch/primer-mechanics/)), so the centre of mass never jiggles. The first thing that *can* change is the **shape** of the mass distribution: how stretched-out or lopsided it is. A spinning dumbbell or two stars orbiting each other keep changing their shape as seen from outside, so they radiate. A perfectly round spinning ball does not.
 </Fragment>
 <Fragment slot="l2">
 Electric charges radiate when they jiggle back and forth: the "dipole", charge times position, oscillates. The gravitational version is mass times position, which is just the total mass times the position of the centre of mass. For an isolated system the centre of mass moves at constant speed (momentum conservation), so this "mass dipole" can never oscillate, and gravity has **no dipole radiation**. The same goes for a pulsating round star: its total mass does not change, so it stays silent.
@@ -141,24 +179,24 @@ A spinning dumbbell, a binary star or a lumpy neutron star has a time-varying $I
 
 <Tiers>
 <Fragment slot="l1">
-How strong are the waves? The answer involves the speed of light raised to the *fifth* power in the denominator, which is why they are so weak. Only a system that is both extremely **compact** (packed nearly as tightly as a black hole) and extremely **fast** (moving at a sizeable fraction of light speed) radiates a lot. For such a system the potential power is staggering: up to about $3.6	imes10^{52}$ watts, more than all the stars in the visible universe. For anything on Earth, the power works out to essentially nothing, as the estimate below shows.
+How strong are the waves? The answer involves the speed of light raised to the *fifth* power in the denominator, which is why they are so weak. Only a system that is both extremely **compact** (packed nearly as tightly as a black hole) and extremely **fast** (moving at a sizeable fraction of light speed) radiates a lot. For such a system the potential power is staggering: up to about $3.6\times10^{52}$ watts, more than all the stars in the visible universe. For anything on Earth, the power works out to essentially nothing, as the estimate below shows.
 </Fragment>
 <Fragment slot="l2">
 We can get the size of the wave from units alone. The strain $h$ must fall off as 1/distance $r$, grow with how fast the quadrupole is changing, and be dimensionless. For a mass $M$ moving at speed $v$, the result (confirmed by Einstein's full calculation, up to factors of 2) is:
 
 <KeyEq title="Quadrupole wave strength (order of magnitude)">
 $$
-\htmlData{term=h}{h} \sim rac{G\,M\,v^2}{c^4\,\htmlData{term=r}{r}},
+\term{h}{h} \sim \frac{\term{G}{G}\,\term{M}{M}\,\term{v}{v}^2}{\term{c}{c}^4\,\term{r}{r}},
 \qquad
-\htmlData{term=L}{L_{\rm GW}} \sim rac{c^5}{G}\left(rac{GM}{Rc^2}ight)^{2}\left(rac{v}{c}ight)^{6}
+\term{L}{L_{\rm GW}} \sim \frac{\term{c}{c}^5}{\term{G}{G}}\left(\frac{\term{G}{G}\term{M}{M}}{\term{R}{R}\term{c}{c}^2}\right)^{2}\left(\frac{\term{v}{v}}{\term{c}{c}}\right)^{6}
 $$
 <Fragment slot="where"><span data-term="h">$h$</span> is the strain at distance <span data-term="r">$r$</span> from a mass $M$ moving at speed $v$ on a scale $R$. <span data-term="L">$L_{\rm GW}$</span> is the radiated power. $GM/Rc^2$ is the *compactness* (0.5 for a black hole, $10^{-6}$ for the Sun) and $v/c$ the speed as a fraction of light.</Fragment>
 </KeyEq>
 
-The scale $c^5/G = 3.6	imes10^{52}$ W is enormous, more than all the stars in the observable universe put together, but it is multiplied by the square of the compactness and the sixth power of $v/c$. Everyday objects score essentially zero on both.
+The scale $c^5/G = 3.6\times10^{52}$ W is enormous, more than all the stars in the observable universe put together, but it is multiplied by the square of the compactness and the sixth power of $v/c$. Everyday objects score essentially zero on both.
 </Fragment>
 <Fragment slot="l3">
-Solving the wave equation with a retarded Green's function, exactly as for the retarded potentials of electromagnetism, and expanding for a slow, compact source gives Einstein's quadrupole formula. The derivation is a page of index gymnastics we will skip. We can get the answer within a factor of a few from dimensions alone.
+Solving the wave equation with a retarded Green's function (calculus refresher: [Appendix A4](/ch/primer-calculus/)), exactly as for the retarded potentials of electromagnetism, and expanding for a slow, compact source gives Einstein's quadrupole formula. The derivation is a page of index gymnastics we will skip. We can get the answer within a factor of a few from dimensions alone.
 
 *Amplitude.* $h$ is dimensionless, falls off as $1/r$ (radiation always does, so that the flux $\propto h^2$ falls as $1/r^2$), and is sourced by the second time derivative of the quadrupole (the lowest derivative not killed by conservation laws). $G\,\ddot I/r$ has units of $\text{m}^3\,\text{kg}^{-1}\,\text{s}^{-2} \cdot \text{kg}\,\text{m}^2\,\text{s}^{-2} / \text{m} = \text{m}^4\,\text{s}^{-4}$, so dividing by $c^4$ makes it dimensionless:
 
@@ -170,9 +208,9 @@ $$
 
 <KeyEq title="The quadrupole formula">
 $$
-\htmlData{term=h}{h_{jk}^{\rm TT}} = \frac{2G}{c^4\,\htmlData{term=r}{r}}\,\ddot{\htmlData{term=I}{I}}{}_{jk}^{\rm TT}\!\left(t - \frac{r}{c}\right),
+\term{h}{h_{jk}^{\rm TT}} = \frac{2\term{G}{G}}{\term{c}{c}^4\,\term{r}{r}}\,\ddot{\term{I}{I}}{}_{jk}^{\rm TT}\!\left(\term{t}{t} - \frac{\term{r}{r}}{\term{c}{c}}\right),
 \qquad
-\htmlData{term=L}{L_{\rm GW}} = \frac{G}{5c^5}\left\langle \dddot{I}_{jk}\,\dddot{I}_{jk} \right\rangle
+\term{L}{L_{\rm GW}} = \frac{\term{G}{G}}{5\term{c}{c}^5}\left\langle \dddot{\term{I}{I}}_{jk}\,\dddot{\term{I}{I}}_{jk} \right\rangle
 $$
 <Fragment slot="where"><span data-term="h">$h^{\rm TT}_{jk}$</span> is the strain at distance <span data-term="r">$r$</span>, evaluated at the **retarded time** $t - r/c$. <span data-term="I">$I_{jk}$</span> is the reduced (trace-free) mass quadrupole, and dots are time derivatives. <span data-term="L">$L_{\rm GW}$</span> is the power carried off, with $\langle\cdot\rangle$ an average over several cycles and a sum over $j,k$. "TT" means: project onto the plane transverse to the line of sight and remove the trace.</Fragment>
 </KeyEq>
@@ -206,8 +244,8 @@ For a circular binary the waves come out at **twice the orbital frequency** (the
 
 <KeyEq title="GW luminosity of a circular binary">
 $$
-L_{\rm GW} = \frac{32}{5}\,\frac{G^4}{c^5}\,\frac{\htmlData{term=m1}{m_1}^2\htmlData{term=m2}{m_2}^2\,(m_1+m_2)}{\htmlData{term=a}{a}^5}
-= \frac{32}{5}\frac{c^5}{G}\left(\frac{G\mathcal{M}\,\pi f}{c^3}\right)^{10/3}
+\term{L}{L_{\rm GW}} = \frac{32}{5}\,\frac{\term{G}{G}^4}{\term{c}{c}^5}\,\frac{\term{m1}{m_1}^2\term{m2}{m_2}^2\,(\term{m1}{m_1}+\term{m2}{m_2})}{\term{a}{a}^5}
+= \frac{32}{5}\frac{\term{c}{c}^5}{\term{G}{G}}\left(\frac{\term{G}{G}\term{Mc}{\mathcal{M}}\,\pi \term{f}{f}}{\term{c}{c}^3}\right)^{10/3}
 $$
 <Fragment slot="where"><span data-term="m1">$m_1$</span>, <span data-term="m2">$m_2$</span> are the masses and <span data-term="a">$a$</span> the orbital separation. In the second form $f = \Omega/\pi$ is the gravitational-wave frequency and $\mathcal M$ is the chirp mass, defined below. The $a^{-5}$ makes the process a runaway: halve the orbit and the power goes up 32-fold.</Fragment>
 </KeyEq>
@@ -229,8 +267,8 @@ Two things jump out. First, **the waves come out at twice the orbital frequency*
 
 <KeyEq title="GW luminosity of a circular binary">
 $$
-L_{\rm GW} = \frac{32}{5}\,\frac{G^4}{c^5}\,\frac{\htmlData{term=m1}{m_1}^2\htmlData{term=m2}{m_2}^2\,(m_1+m_2)}{\htmlData{term=a}{a}^5}
-= \frac{32}{5}\frac{c^5}{G}\left(\frac{G\mathcal{M}\,\pi f}{c^3}\right)^{10/3}
+\term{L}{L_{\rm GW}} = \frac{32}{5}\,\frac{\term{G}{G}^4}{\term{c}{c}^5}\,\frac{\term{m1}{m_1}^2\term{m2}{m_2}^2\,(\term{m1}{m_1}+\term{m2}{m_2})}{\term{a}{a}^5}
+= \frac{32}{5}\frac{\term{c}{c}^5}{\term{G}{G}}\left(\frac{\term{G}{G}\term{Mc}{\mathcal{M}}\,\pi \term{f}{f}}{\term{c}{c}^3}\right)^{10/3}
 $$
 <Fragment slot="where"><span data-term="m1">$m_1$</span>, <span data-term="m2">$m_2$</span> are the masses and <span data-term="a">$a$</span> the orbital separation. In the second form $f = \Omega/\pi$ is the gravitational-wave frequency and $\mathcal M$ is the chirp mass, defined below. The $a^{-5}$ makes the process a runaway: halve the orbit and the power goes up 32-fold.</Fragment>
 </KeyEq>
@@ -251,16 +289,16 @@ Remarkably, the whole chirp depends on the two masses only through one combinati
 The binary pays for that luminosity out of its orbital energy $E = -Gm_1m_2/2a$. Setting $dE/dt = -L_{\rm GW}$ gives $da/dt \propto -a^{-3}$, which integrates to $a^4 \propto (t_c - t)$, where $t_c$ is the coalescence time. Translating separation into gravitational-wave frequency via Kepler III, every factor of the individual masses collapses into one combination:
 
 $$
-\mathcal{M} = \frac{(m_1 m_2)^{3/5}}{(m_1+m_2)^{1/5}} = \mu^{3/5}M^{2/5}.
+\term{Mc}{\mathcal{M}} = \frac{(\term{m1}{m_1} \term{m2}{m_2})^{3/5}}{(\term{m1}{m_1}+\term{m2}{m_2})^{1/5}} = \term{mu}{\mu}^{3/5}\term{Mtot}{M}^{2/5}.
 $$
 
 This is the **chirp mass**. It is the one mass the leading-order waveform knows about, and so it is what detectors measure best. Equal $30+30\,M_\odot$ black holes have $\mathcal M = 26\,M_\odot$; the double neutron star GW170817 had $\mathcal M = 1.186\,M_\odot$, measured to 0.1%.
 
 <KeyEq title="The chirp">
 $$
-\dot f = \frac{96}{5}\pi^{8/3}\left(\frac{G\htmlData{term=Mc}{\mathcal M}}{c^3}\right)^{5/3} f^{11/3},
+\term{fdot}{\dot f} = \frac{96}{5}\pi^{8/3}\left(\frac{\term{G}{G}\term{Mc}{\mathcal M}}{\term{c}{c}^3}\right)^{5/3} \term{f}{f}^{11/3},
 \qquad
-f(t) = \frac{1}{\pi}\left(\frac{5}{256}\,\frac{1}{t_c - t}\right)^{3/8}\left(\frac{G\mathcal M}{c^3}\right)^{-5/8}
+\term{f}{f}(\term{t}{t}) = \frac{1}{\pi}\left(\frac{5}{256}\,\frac{1}{\term{tc}{t_c} - \term{t}{t}}\right)^{3/8}\left(\frac{\term{G}{G}\term{Mc}{\mathcal M}}{\term{c}{c}^3}\right)^{-5/8}
 $$
 <Fragment slot="where">$f$ is the gravitational-wave frequency (twice the orbital frequency), <span data-term="Mc">$\mathcal M$</span> the chirp mass, $t_c$ the coalescence time. Measure $f$ and $\dot f$ and you have $\mathcal M$ directly. The amplitude grows too: $h \propto \mathcal M^{5/3} f^{2/3}/d$. Rising pitch and rising volume make the "chirp".</Fragment>
 </KeyEq>
@@ -354,6 +392,14 @@ With both masses known, the quadrupole formula (extended to eccentric orbits by 
 
 <Aside>**Eccentricity matters.** Set $e = 0$ in the text and the merger time grows from 300 Myr to 1.6 Gyr. Eccentric orbits radiate strongly at each periastron passage, enhancing the power by $(1 + \tfrac{73}{24}e^2 + \tfrac{37}{96}e^4)/(1-e^2)^{7/2}$, a factor of 12 for Hulse–Taylor. The Double Pulsar (PSR J0737−3039A/B), timed since 2003, now tests the quadrupole formula to better than 0.02%.</Aside>
 
+<History title="From Weber's bars to LIGO" year="1960–2015">
+<Portrait src="/img/people/weiss-rainer.jpg" name="Rainer Weiss" years="1932–2025" credit="Bengt Nyman" license="CC BY 2.0" href="https://commons.wikimedia.org/wiki/File:Rainer_Weiss_EM1B8815_(38176300314).jpg" />
+
+Joseph Weber built the first detectors in the 1960s: aluminium cylinders two metres long, ringing at 1660 Hz, wrapped in piezoelectric sensors. In 1969 he announced coincident events between bars 1000 km apart. Nobody could reproduce them, and the implied source strength was absurd, but he had made the field an experimental science.
+
+In 1972 Rainer Weiss at MIT, preparing a course on general relativity, worked out as an exercise how a laser interferometer could measure such tiny strains, and listed every noise source that would fight it. That report still reads like a blueprint for LIGO. At Caltech, Kip Thorne built the theory and science case, and Ronald Drever brought optical tricks such as power recycling. After decades of prototypes, fights over cost and a management overhaul under Barry Barish in the 1990s, initial LIGO ran from 2002 to 2010 and saw nothing, as expected at its sensitivity. Advanced LIGO switched on in September 2015 and heard GW150914 within days. Weiss, Thorne and Barish shared the 2017 Nobel Prize; Drever had died that March.
+</History>
+
 ### GW150914
 
 On 14 September 2015, two days into the first observing run and before it had officially started, both Advanced LIGO detectors recorded a 0.2-second chirp sweeping from 35 to 250 Hz, with peak strain $1.0\times10^{-21}$. Hanford and Livingston saw it 7 milliseconds apart, consistent with a wave crossing 3000 km at $c$. The signal matched two black holes of $36$ and $29\,M_\odot$ merging 1.3 billion light-years away (440 Mpc) into a $62\,M_\odot$ remnant with spin 0.67. It was the first direct detection of gravitational waves, the first observation of a binary black hole, and the first proof that stellar-mass black holes this heavy exist. Weiss, Barish and Thorne shared the 2017 Nobel Prize.
@@ -363,6 +409,10 @@ You can check the chirp mass yourself from the key equation: at $f \approx 75$ H
 ### GW170817: multi-messenger astronomy
 
 On 17 August 2017 LIGO and Virgo caught a signal that lasted 100 seconds in band: a pair of neutron stars ($\mathcal M = 1.186\,M_\odot$) 40 Mpc away. **1.7 seconds** after the merger, the Fermi and INTEGRAL satellites detected a short gamma-ray burst from the same patch of sky. Eleven hours later, optical telescopes found a new source in the galaxy NGC 4993, and some 70 observatories followed it across the spectrum. It was a **kilonova**: the glow of a few hundredths of a solar mass of neutron-rich debris, heated by the radioactive decay of freshly made *r*-process elements (gold, platinum, lanthanides; [Chapter 16](/ch/stellar-death/)).
+
+<Photo src="/img/gravitational-waves/kilonova-hubble.jpg" alt="Hubble image of the elliptical galaxy NGC 4993 with a small bright point just off its centre: the kilonova" credit="NASA and ESA. Acknowledgment: A.J. Levan (U. Warwick), N.R. Tanvir (U. Leicester), and A. Fruchter and O. Fox (STScI)" license="CC BY 4.0" href="https://esahubble.org/images/heic1717a/" aspect="1310 / 1400">
+**The kilonova of GW170817.** Hubble's view of the galaxy NGC 4993, 130 million light-years away, with the fading kilonova just off the galaxy's core. It is the afterglow of the first neutron-star merger ever heard in gravitational waves.
+</Photo>
 
 The 1.7-second delay, after a 130-million-year journey, bounds the difference between the speed of gravity and the speed of light:
 
@@ -377,6 +427,10 @@ Allowing for an intrinsic emission delay of up to ~10 s gives $-3\times10^{-15} 
 ## Detectors: measuring a thousandth of a proton
 
 ### The Michelson interferometer
+
+<Photo src="/img/gravitational-waves/detectors.jpg" alt="Three satellite images of flat land, each crossed by two long straight arms at right angles: LIGO Livingston, LIGO Hanford and Virgo" credit="NASA/METI/AIST/Japan Space Systems, and U.S./Japan ASTER Science Team" license="Public domain" href="https://images.nasa.gov/details/PIA24129" size="wide" aspect="3 / 1">
+**Three detectors from orbit.** LIGO Livingston (Louisiana, left), LIGO Hanford (Washington, centre) and Virgo (near Pisa, right), seen by the ASTER instrument on NASA's Terra satellite. Each cutout is 6 km across; the thin L shapes are the vacuum tubes of the 4-km (LIGO) and 3-km (Virgo) arms. Widely separated detectors let the network triangulate a source on the sky from arrival-time differences of milliseconds.
+</Photo>
 
 LIGO is a Michelson interferometer with 4-km arms at right angles. Laser light is split, sent down both arms, reflected back and recombined. A plus-polarised wave from overhead stretches one arm and squeezes the other, so the light returning from the two arms acquires a phase difference, and the output port brightens and dims in step with $h(t)$. The instrument is a differential ruler: it is insensitive to anything that changes both arms equally (laser frequency noise, for instance), and it has a broad antenna pattern, so it hears the whole sky at once rather than pointing.
 
@@ -407,16 +461,16 @@ The result is a bucket-shaped amplitude spectral density with a minimum of about
 A signal a thousand times weaker than the detector noise cannot be seen by eye. Instead, computers compare the data with a huge library of predicted chirp shapes, sliding each one along the data to see how well it lines up. Random noise lines up only by chance; a real chirp lines up cycle after cycle, so the match builds and builds. This is **matched filtering**, the same idea radar uses to spot faint echoes.
 </Fragment>
 <Fragment slot="l2">
-A signal of $h \sim 10^{-21}$ in data whose rms noise is larger is not visible by eye. It is found the way a radar finds a weak echo: by **matched filtering**. If the noise is Gaussian and you know the signal shape $h(t)$. The optimal method is to correlate the data with the expected signal shape (a *template*), giving each frequency more weight where the detector is quieter. The result is the signal-to-noise ratio $\rho$; a candidate needs $\rho$ above about 8. A chirp with $N$ cycles builds up its SNR roughly like $\sqrt N$ times the strength of a single cycle, so long chirps are found even when each individual cycle is buried.
+A signal of $h \sim 10^{-21}$ in data whose rms noise is larger is not visible by eye. It is found the way a radar finds a weak echo: by **matched filtering**. The optimal method is to correlate the data with the expected signal shape (a *template*), giving each frequency more weight where the detector is quieter. The result is the signal-to-noise ratio $\rho$; a candidate needs $\rho$ above about 8. A chirp with $N$ cycles builds up its SNR roughly like $\sqrt N$ times the strength of a single cycle, so long chirps are found even when each individual cycle is buried.
 </Fragment>
 <Fragment slot="l3">
 A signal of $h \sim 10^{-21}$ in data whose rms noise is larger is not visible by eye. It is found the way a radar finds a weak echo: by **matched filtering**. If the noise is Gaussian and you know the signal shape $h(t)$, the optimal linear statistic is the correlation of the data with the template, weighted by the inverse noise spectrum:
 
 $$
-\rho(t_0) = \frac{\langle d, h_{t_0}\rangle}{\sqrt{\langle h, h\rangle}}, \qquad \langle a, b\rangle = 4\,\mathrm{Re}\int_0^\infty \frac{\tilde a(f)\,\tilde b^*(f)}{S_n(f)}\,df.
+\term{rho}{\rho}(t_0) = \frac{\langle \term{d}{d}, h_{t_0}\rangle}{\sqrt{\langle h, h\rangle}}, \qquad \langle a, b\rangle = 4\,\mathrm{Re}\int_0^\infty \frac{\tilde a(f)\,\tilde b^*(f)}{\term{Sn}{S_n}(f)}\,df.
 $$
 
-For engineers: this is a cross-correlation done in the frequency domain (one FFT of the data, one multiply per template, one inverse FFT gives $\rho$ for *every* arrival time at once), after whitening the data by dividing by the noise amplitude spectrum. Using a complex (analytic) template maximises over the unknown phase for free. A signal with $N$ cycles builds up SNR like $\sqrt N$ times the per-cycle amplitude, so long, coherent chirps are found even when every individual cycle is buried.
+For engineers: this is a cross-correlation done in the frequency domain ([Appendix A8](/ch/primer-waves/) covers Fourier transforms) (one FFT of the data, one multiply per template, one inverse FFT gives $\rho$ for *every* arrival time at once), after whitening the data by dividing by the noise amplitude spectrum. Using a complex (analytic) template maximises over the unknown phase for free. A signal with $N$ cycles builds up SNR like $\sqrt N$ times the per-cycle amplitude, so long, coherent chirps are found even when every individual cycle is buried.
 </Fragment>
 </Tiers>
 
