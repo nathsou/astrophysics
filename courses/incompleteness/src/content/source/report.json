@@ -1,0 +1,157 @@
+{
+ "diagnostics": [
+  {
+   "level": "info",
+   "code": "editorial-omitted",
+   "message": "editorial note omitted (not printed in the book)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/computability/recursive-functions/recursive-functions.tex",
+    "line": 10,
+    "endLine": 10
+   }
+  },
+  {
+   "level": "info",
+   "code": "editorial-omitted",
+   "message": "editorial note omitted (not printed in the book)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/arithmetization-syntax/arithmetization-syntax.tex",
+    "line": 10,
+    "endLine": 10
+   }
+  },
+  {
+   "level": "info",
+   "code": "multline",
+   "message": "multline is typeset as gather (KaTeX has no multline)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/arithmetization-syntax/coding-symbols.tex",
+    "line": 100,
+    "endLine": 100
+   }
+  },
+  {
+   "level": "info",
+   "code": "multline",
+   "message": "multline is typeset as gather (KaTeX has no multline)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/arithmetization-syntax/coding-formulas.tex",
+    "line": 86,
+    "endLine": 86
+   }
+  },
+  {
+   "level": "info",
+   "code": "multline",
+   "message": "multline is typeset as gather (KaTeX has no multline)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/arithmetization-syntax/substitution.tex",
+    "line": 29,
+    "endLine": 29
+   }
+  },
+  {
+   "level": "info",
+   "code": "multline",
+   "message": "multline is typeset as gather (KaTeX has no multline)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/arithmetization-syntax/proofs-in-nd.tex",
+    "line": 172,
+    "endLine": 172
+   }
+  },
+  {
+   "level": "info",
+   "code": "multline",
+   "message": "multline is typeset as gather (KaTeX has no multline)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/arithmetization-syntax/proofs-in-nd.tex",
+    "line": 183,
+    "endLine": 183
+   }
+  },
+  {
+   "level": "info",
+   "code": "multline",
+   "message": "multline is typeset as gather (KaTeX has no multline)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/arithmetization-syntax/proofs-in-nd.tex",
+    "line": 195,
+    "endLine": 195
+   }
+  },
+  {
+   "level": "info",
+   "code": "multline",
+   "message": "multline is typeset as gather (KaTeX has no multline)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/arithmetization-syntax/proofs-in-nd.tex",
+    "line": 209,
+    "endLine": 209
+   }
+  },
+  {
+   "level": "info",
+   "code": "multline",
+   "message": "multline is typeset as gather (KaTeX has no multline)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/arithmetization-syntax/proofs-in-nd.tex",
+    "line": 218,
+    "endLine": 218
+   }
+  },
+  {
+   "level": "info",
+   "code": "multline",
+   "message": "multline is typeset as gather (KaTeX has no multline)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/arithmetization-syntax/proofs-in-nd.tex",
+    "line": 296,
+    "endLine": 296
+   }
+  },
+  {
+   "level": "info",
+   "code": "multline",
+   "message": "multline is typeset as gather (KaTeX has no multline)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/representability-in-q/representable-comp.tex",
+    "line": 82,
+    "endLine": 82
+   }
+  },
+  {
+   "level": "info",
+   "code": "multline",
+   "message": "multline is typeset as gather (KaTeX has no multline)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/representability-in-q/composition-representable.tex",
+    "line": 79,
+    "endLine": 79
+   }
+  },
+  {
+   "level": "warning",
+   "code": "external-ref",
+   "message": "reference to inc:int:def:def:standard-model, which is outside the converted chapters"
+  },
+  {
+   "level": "warning",
+   "code": "external-ref",
+   "message": "reference to fol:ntd:sou:cor:consistency-soundness, which is outside the converted chapters"
+  }
+ ]
+}

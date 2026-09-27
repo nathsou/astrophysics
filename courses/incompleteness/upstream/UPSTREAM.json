@@ -1,0 +1,43 @@
+{
+  "$comment": "Pinned upstream sources. Refresh with `npm run upstream:sync -- --openlogic <checkout> --ic <checkout>`, then `npm run convert` and review the diff of src/content/source/.",
+  "license": {
+    "name": "Creative Commons Attribution 4.0 International",
+    "spdx": "CC-BY-4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "work": {
+    "title": "Incompleteness and Computability: An Open Introduction to Gödel's Theorems",
+    "author": "Richard Zach",
+    "authorUrl": "https://richardzach.org/",
+    "edition": "Fall 2025 (F25)",
+    "url": "https://ic.openlogicproject.org/",
+    "project": "The Open Logic Project",
+    "projectUrl": "https://openlogicproject.org/"
+  },
+  "repositories": {
+    "OpenLogic": {
+      "url": "https://github.com/OpenLogicProject/OpenLogic",
+      "commit": "1e960beff9ed7835bf3e3f1335e21af3439cd107",
+      "paths": [
+        "LICENSE.md",
+        "open-logic-config.sty",
+        "sty/*.sty",
+        "content/computability/recursive-functions/*.tex",
+        "content/incompleteness/arithmetization-syntax/*.tex",
+        "content/incompleteness/representability-in-q/*.tex",
+        "content/incompleteness/incompleteness-provability/*.tex"
+      ]
+    },
+    "incompleteness-computability": {
+      "url": "https://github.com/rzach/incompleteness-computability",
+      "commit": "6b09d985b93d6a56debd6016ae816d9c4dbb508e",
+      "paths": [
+        "README.md",
+        "ic.tex",
+        "ic-config.sty",
+        "ic-metadata.tex",
+        "include/summary-*.tex"
+      ]
+    }
+  }
+}
