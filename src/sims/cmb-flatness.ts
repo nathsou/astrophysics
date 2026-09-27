@@ -29,6 +29,7 @@ export default defineSim({
     let dirty = true;
     const inval = () => { dirty = true; loop.invalidate(); };
     const loop = new Loop(null, render);
+    loop.onDemand = true; // static figure: redraw only on invalidate()
     function render() {
       if (!dirty) return;
       dirty = false;
@@ -67,7 +68,7 @@ export default defineSim({
       ctx.font = '12px Inter, system-ui, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(`sound horizon r_s ≈ ${fmt(d.rs, 3)} Mpc (z* ≈ 1090)`, ox, top - 12);
-      ctx.fillText('us', ox, oy + 20);
+      ctx.textAlign = 'left'; ctx.fillText('us', ox + 10, oy + 4); ctx.textAlign = 'center';
       ctx.fillStyle = pal.muted;
       const geo = omk < -0.002 ? 'closed (Ω_k < 0): rays focus, ruler looks bigger' : omk > 0.002 ? 'open (Ω_k > 0): rays diverge, ruler looks smaller' : 'flat: straight rays';
       ctx.fillText(geo, ox, H - 6);

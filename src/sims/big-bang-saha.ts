@@ -41,6 +41,7 @@ export default defineSim({
 
     let eta = 6.1e-10;
     const loop = new Loop(null, render, 1 / 30);
+    loop.onDemand = true; // static figure: redraw only on invalidate()
 
     function render() {
       plot.draw(() => {

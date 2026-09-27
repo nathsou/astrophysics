@@ -91,6 +91,8 @@ export default defineSim({
     updateReadout();
 
     const loop = new Loop(null, render, 1 / 30);
+
+    loop.onDemand = true; // static figure: redraw only on invalidate()
     stage.onResize((w, h, dpr) => { plot.resize(w, h, dpr); loop.invalidate(); });
     onDestroy(() => { window.removeEventListener('pointermove', onMove); window.removeEventListener('pointerup', onUp); });
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };

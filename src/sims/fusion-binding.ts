@@ -83,6 +83,8 @@ export default defineSim({
     }
 
     const loop = new Loop(null, render, 1 / 30);
+
+    loop.onDemand = true; // static figure: redraw only on invalidate()
     stage.onResize((w, h, d) => { plot.resize(w, h, d); loop.invalidate(); });
     const panel = new Panel(host);
     panel.button('Explain the dip at A→1', () => {

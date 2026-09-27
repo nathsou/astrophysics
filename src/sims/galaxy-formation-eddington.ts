@@ -37,6 +37,7 @@ export default defineSim({
 
     let dirty = true;
     const loop = new Loop(null, () => { if (dirty) { dirty = false; render(); } });
+    loop.onDemand = true; // static figure: redraw only on invalidate()
     const inv = () => { dirty = true; loop.invalidate(); };
     function growth(t: number, f = fEdd, e = eps) {
       const ts = ageAt(zSeed);

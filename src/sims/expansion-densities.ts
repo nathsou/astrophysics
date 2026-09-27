@@ -22,6 +22,7 @@ export default defineSim({
 
     let p: OmegaParams = { ...FLAT_LCDM };
     const loop = new Loop(null, render, 1 / 30);
+    loop.onDemand = true; // static figure: redraw only on invalidate()
     stage.onResize((w, h, d) => { plot.resize(w, h, d); loop.invalidate(); });
 
     const N = 200;
@@ -62,8 +63,8 @@ export default defineSim({
         }
         // line labels, placed where each line crosses a chosen density so they stay on screen
         const at = (rho: number, O: number, n: number) => (O / rho) ** (1 / n);
-        const aR = at(1e-5, p.Or, 4), aM = at(1e4, p.Om, 3);
-        plot.text('radiation ∝ a⁻⁴', plot.px(aR) + 8, plot.py(1e-5), { color: pal.series[2] });
+        const aR = at(1e-2, p.Or, 4), aM = at(1e4, p.Om, 3);
+        plot.text('radiation ∝ a⁻⁴', plot.px(aR) + 8, plot.py(1e-2), { color: pal.series[2] });
         plot.text('matter ∝ a⁻³', plot.px(aM) + 8, plot.py(1e4), { color: pal.series[0] });
         plot.text('Λ (constant)', plot.px(1e-5), plot.py(p.OL) - 6, { color: pal.series[1] });
         // era names along the bottom

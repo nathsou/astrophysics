@@ -62,6 +62,8 @@ export default defineSim({
 
     const loop = new Loop(null, render, 1 / 30);
 
+    loop.onDemand = true; // static figure: redraw only on invalidate()
+
     function render() {
       const Tf = freezeOutT();
       plotGH.draw(() => {

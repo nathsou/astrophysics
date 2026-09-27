@@ -87,6 +87,8 @@ export default defineSim({
     }
 
     const loop = new Loop(null, render, 1 / 60);
+
+    loop.onDemand = true; // static figure: redraw only on invalidate()
     stage.onResize(() => loop.invalidate());
 
     const drag = (clientX: number, clientY: number) => {

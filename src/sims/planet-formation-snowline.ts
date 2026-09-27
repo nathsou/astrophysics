@@ -46,13 +46,13 @@ export default defineSim({
 
     let dirty = true;
     const loop = new Loop(null, render);
+    loop.onDemand = true; // static figure: redraw only on invalidate()
     const redraw = () => { dirty = true; loop.invalidate(); };
     stage.onResize((w, h, d) => { plot.resize(w, h, d); redraw(); });
     onThemeChange(() => { pal = palette(); redraw(); });
 
     function render() {
-      if (!dirty) return;
-      dirty = false;
+      dirty = false; // (onDemand already limits rendering to invalidations)
       const rw = lineAt(160), rc = lineAt(70), rco = lineAt(25);
       plot.draw(() => {
         const { ctx } = plot;

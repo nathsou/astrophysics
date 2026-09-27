@@ -82,7 +82,7 @@ export default defineSim({
     foldStage.onResize((w, h, dpr) => foldPlot.resize(w, h, dpr));
 
     const panel = new Panel(photView);
-    const noiseCtl = panel.slider('Noise level', { min: 0.0002, max: 0.006, value: 0.0004, log: true, unit: 'ppm', format: (v) => fmt(v * 1e6, 3) }, () => regen());
+    const noiseCtl = panel.slider('Noise level', { min: 0.0002, max: 0.006, value: 0.0008, log: true, unit: 'ppm', format: (v) => fmt(v * 1e6, 3) }, () => regen());
     const nTransitCtl = panel.slider('Baseline (days)', { min: 10, max: 120, value: 45, step: 5 }, () => regen());
     const twoPlanets = panel.toggle('Two planets', false, () => regen());
     const runBtn = panel.button('Run BLS', () => startScan(), true);
@@ -99,7 +99,7 @@ export default defineSim({
     const pMeas = panel.readout('P (measured)');
     const teqMeas = panel.readout('T_eq (measured)');
 
-    let seed = 12345;
+    let seed = 7; // a default system whose (sub-Neptune) transit BLS recovers at the default noise
     let system = randomSystem(seed, 1);
     let lc = generateLightCurve({ system, baselineDays: nTransitCtl.get(), cadenceMinutes: 20, noiseLevel: noiseCtl.get(), activityLevel: 0.0006, gapFraction: 0.08, seed });
     // Detrending: divide by a running median over ±0.4 d. That window is several transit durations
@@ -117,7 +117,7 @@ export default defineSim({
         win.length = 0;
         for (let k = lo; k < hi; k++) if (lc.mask[k]) win.push(lc.flux[k]);
         win.sort((p, q) => p - q);
-        trend[i] = win.length ? win[win.length >> 1] : NaN;
+        trend[i] = win.length && lc.mask[i] ? win[win.length >> 1] : NaN;
         det[i] = lc.mask[i] && win.length ? lc.flux[i] / trend[i] : NaN;
         shown[i] = lc.mask[i] ? lc.flux[i] : NaN;
       }

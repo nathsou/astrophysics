@@ -85,7 +85,7 @@ export default defineSim({
     }
     reset();
 
-    const s = { yrPerSec: 400, jupMass: 10 };
+    const s = { yrPerSec: 300, jupMass: 10 }; // 300 yr/s keeps the CPU integrator under ~2 ms per frame
 
     function jupiterAt(t: number): [number, number] {
       const n = Math.sqrt((GM * (1 + MJ * s.jupMass)) / (aJ * aJ * aJ));

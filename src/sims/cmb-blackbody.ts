@@ -47,6 +47,7 @@ export default defineSim({
     let T = T0, y = 0;
     const model = (s: number) => Bnu(s, T) + y * yShape(s, T);
     const loop = new Loop(null, render);
+    loop.onDemand = true; // static figure: redraw only on invalidate()
     let dirty = true;
     function render() {
       if (!dirty) return;
@@ -79,11 +80,11 @@ export default defineSim({
     }
     s1.onResize((w, hh, d) => { top.resize(w, hh, d); dirty = true; loop.invalidate(); });
     s2.onResize((w, hh, d) => { bot.resize(w, hh, d); dirty = true; loop.invalidate(); });
-    onThemeChange(() => { pal = palette(); dirty = true; });
+    onThemeChange(() => { pal = palette(); dirty = true; loop.invalidate(); });
 
     const panel = new Panel(host);
-    panel.slider('Model temperature', { min: 2.72, max: 2.735, value: T, step: 0.0001, unit: 'K', format: (v) => v.toFixed(4) }, (v) => { T = v; dirty = true; });
-    panel.slider('Compton y', { min: 0, max: 3e-4, value: 0, step: 1e-6, format: (v) => (v ? fmt(v, 2) : '0') }, (v) => { y = v; dirty = true; });
+    panel.slider('Model temperature', { min: 2.72, max: 2.735, value: T, step: 0.0001, unit: 'K', format: (v) => v.toFixed(4) }, (v) => { T = v; dirty = true; loop.invalidate(); });
+    panel.slider('Compton y', { min: 0, max: 3e-4, value: 0, step: 1e-6, format: (v) => (v ? fmt(v, 2) : '0') }, (v) => { y = v; dirty = true; loop.invalidate(); });
     const rChi = panel.readout('χ² =');
 
     host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure

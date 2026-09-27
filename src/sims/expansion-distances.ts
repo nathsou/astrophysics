@@ -28,6 +28,8 @@ export default defineSim({
     let z = 1.5;
 
     const loop = new Loop(null, render, 1 / 30);
+
+    loop.onDemand = true; // static figure: redraw only on invalidate()
     stage.onResize((w, h, d) => { plot.resize(w, h, d); loop.invalidate(); });
 
     const NZ = 160;

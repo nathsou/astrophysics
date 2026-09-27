@@ -72,6 +72,7 @@ export default defineSim({
       });
     }
     const loop = new Loop(null, render);
+    loop.onDemand = true; // static figure: redraw only on invalidate()
     s1.onResize((w, h, d) => { plotL.resize(w, h, d); loop.invalidate(); });
     s2.onResize((w, h, d) => { plotR.resize(w, h, d); loop.invalidate(); });
 

@@ -26,13 +26,13 @@ export default defineSim({
 
     let dirty = true;
     const loop = new Loop(null, render);
+    loop.onDemand = true; // static figure: redraw only on invalidate()
     const redraw = () => { dirty = true; loop.invalidate(); };
     stage.onResize((w, h, d) => { plot.resize(w, h, d); redraw(); });
     onThemeChange(() => { pal = palette(); redraw(); });
 
     function render() {
-      if (!dirty) return;
-      dirty = false;
+      dirty = false; // (onDemand already limits rendering to invalidations)
       const vfrag = r > snowLine(disk.L) ? 1000 : 100; // cm/s: icy aggregates are stickier
       const cs = soundSpeed(temperature(disk, r));
       const stFrag = (vfrag * vfrag) / (3 * alpha * cs * cs);

@@ -22,6 +22,8 @@ export default defineSim({
     const lcdm = growth(0.31, 0.69), open = growth(0.3, 0);
 
     const loop = new Loop(null, render);
+
+    loop.onDemand = true; // static figure: redraw only on invalidate()
     function render() {
       const lg = pal;
       plot.draw(() => {

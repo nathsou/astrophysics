@@ -33,6 +33,7 @@ export default defineSim({
     let pal = palette();
     let dirty = true;
     const loop = new Loop(null, () => { if (dirty) { dirty = false; render(); } });
+    loop.onDemand = true; // static figure: redraw only on invalidate()
     const inv = () => { dirty = true; loop.invalidate(); };
     onThemeChange(() => { pal = palette(); inv(); });
     const stage = createStage(host, { aspect: 16 / 9 });

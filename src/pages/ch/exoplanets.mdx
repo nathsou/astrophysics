@@ -165,7 +165,13 @@ An Earth-radius planet of <Var name="Rp_t" value={1} min={0.3} max={20} log /> R
 <Aside>Drag Rp down to 1 and Rstar to 1: that's Earth around the Sun, 84 parts per million. TESS's photometric precision on bright stars is a few hundred ppm per point — Earth analogs need many transits stacked together.</Aside>
 
 <Level min={2}>
-The transit lasts roughly the time it takes the planet to cross the stellar disk along its chord: $T_\text{dur} \approx (P/\pi)\arcsin\!\big(R_\star\sqrt{(1+R_p/R_\star)^2-b^2}\,/\,a\big)$, which for $a\gg R_\star$ simplifies to $T_\text{dur}\approx (P R_\star/\pi a)\sqrt{1-b^2}$. The **impact parameter** $\term{b}{b} = (a\cos i)/R_\star$ measures how far off-center the planet's path is, in units of the stellar radius: <span data-term="b">$b=0$</span> is a central transit, and transits vanish once $b > 1+R_p/R_\star$. Near that edge, transits become *grazing* — shallow, oddly shaped, and hard to distinguish from noise or a smaller planet.
+The transit lasts roughly the time it takes the planet to cross the stellar disk along its chord:
+
+$$
+T_\text{dur} \approx \frac{P}{\pi}\arcsin\!\left(\frac{R_\star\sqrt{(1+R_p/R_\star)^2-b^2}}{a}\right),
+$$
+
+which for $a\gg R_\star$ simplifies to $T_\text{dur}\approx (P R_\star/\pi a)\sqrt{1-b^2}$. The **impact parameter** $\term{b}{b} = (a\cos i)/R_\star$ measures how far off-center the planet's path is, in units of the stellar radius: <span data-term="b">$b=0$</span> is a central transit, and transits vanish once $b > 1+R_p/R_\star$. Near that edge, transits become *grazing* — shallow, oddly shaped, and hard to distinguish from noise or a smaller planet.
 </Level>
 
 <Level max={1}>

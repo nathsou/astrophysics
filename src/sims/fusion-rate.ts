@@ -55,8 +55,7 @@ export default defineSim({
     const redraw = () => { dirty = true; loop.invalidate(); };
 
     function render() {
-      if (!dirty) return;
-      dirty = false;
+      dirty = false; // (onDemand already limits rendering to invalidations)
       update();
       plot.draw(() => {
         plot.line(TS, PPS, { color: pal.series[0], width: 2.25 });
@@ -82,6 +81,8 @@ export default defineSim({
     window.addEventListener('pointerup', () => { dragging = false; });
 
     const loop = new Loop(null, render, 1 / 30);
+
+    loop.onDemand = true; // static figure: redraw only on invalidate()
     stage.onResize((w, h, d) => { plot.resize(w, h, d); redraw(); });
 
     const panel = new Panel(host);

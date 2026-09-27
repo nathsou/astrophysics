@@ -43,6 +43,9 @@ export default defineSim({
     const [sr, sg, sb] = blackbodyRGB(5800);
     const starRGB = (I: number) => `rgb(${Math.round(255 * Math.min(1, sr * I))},${Math.round(255 * Math.min(1, sg * I))},${Math.round(255 * Math.min(1, sb * I))})`;
     let phase = -PH_MAX;
+    const NC = 400;
+    const curveX = new Float64Array(NC + 1), curveY = new Float64Array(NC + 1);
+    let curveKey = '', maxDepth = 0;
 
     const loop = new Loop((dt) => { phase += dt * 0.006; if (phase > PH_MAX) phase = -PH_MAX; }, () => {
       const rp = rpCtl.get(), b = bCtl.get(), u1 = u1Ctl.get();
@@ -73,13 +76,22 @@ export default defineSim({
       dctx.strokeStyle = pal.muted;
       dctx.beginPath(); dctx.arc(px, py, rp * R, 0, 2 * Math.PI); dctx.fill(); dctx.stroke();
 
-      // --- light curve (y range follows the depth) ---
-      let maxDepth = 0;
-      for (let i = 0; i <= 60; i++) maxDepth = Math.max(maxDepth, transitDepthAt(-0.002 + (0.004 * i) / 60, pl, s, A_OVER_R));
+      // --- light curve (y range follows the depth); the curve is recomputed only when a slider moves ---
+      const key = `${rp}|${b}|${u1}`;
+      if (key !== curveKey) {
+        curveKey = key;
+        maxDepth = 0;
+        for (let i = 0; i <= NC; i++) {
+          curveX[i] = -PH_MAX + (2 * PH_MAX * i) / NC;
+          const d = transitDepthAt(curveX[i], pl, s, A_OVER_R);
+          curveY[i] = 1 - d;
+          maxDepth = Math.max(maxDepth, d);
+        }
+      }
       lcPlot.o.y.min = 1 - Math.max(0.004, maxDepth * 1.25);
       lcPlot.o.y.max = 1 + Math.max(0.004, maxDepth * 1.25) * 0.15;
       lcPlot.draw(() => {
-        lcPlot.fn((ph) => 1 - transitDepthAt(ph, pl, s, A_OVER_R), { color: pal.accent, samples: 240 });
+        lcPlot.line(curveX, curveY, { color: pal.accent });
         lcPlot.point(phase, 1 - transitDepthAt(phase, pl, s, A_OVER_R), { color: pal.series[0], r: 5 });
       });
       depthReadout.set(`${fmt(maxDepth * 1e6, 3)} ppm (a uniform disc would give (Rp/R★)² = ${fmt(rp * rp * 1e6, 3)} ppm)`);

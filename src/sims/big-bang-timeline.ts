@@ -45,6 +45,8 @@ export default defineSim({
 
     const loop = new Loop(null, render, 1 / 30);
 
+    loop.onDemand = true; // static figure: redraw only on invalidate()
+
     function tempLabel(logt: number): string {
       const t = 10 ** logt;
       if (t < 1e-2) return '';

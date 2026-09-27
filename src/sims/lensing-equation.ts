@@ -60,6 +60,7 @@ export default defineSim({
       ro.set(txt.join(' · ') + ` · total |μ| = ${fmt(tot, 3)}`);
     }
     const loop = new Loop(null, render);
+    loop.onDemand = true; // static figure: redraw only on invalidate()
     stage.onResize((w, h, d) => { plot.resize(w, h, d); loop.invalidate(); });
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 

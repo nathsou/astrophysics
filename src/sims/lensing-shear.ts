@@ -112,6 +112,7 @@ export default defineSim({
       plot.text('dashed: true reduced shear g_t', plot.m.l + 6, plot.m.t + 14, { color: pal.series[1] });
     }
     const loop = new Loop(null, render);
+    loop.onDemand = true; // static figure: redraw only on invalidate()
     sky.onResize(() => loop.invalidate());
     pst.onResize((w, h, d) => { plot.resize(w, h, d); loop.invalidate(); });
     onThemeChange(() => { pal = palette(); loop.invalidate(); });

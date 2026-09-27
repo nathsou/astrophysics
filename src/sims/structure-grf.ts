@@ -101,6 +101,8 @@ export default defineSim({
 
     const loop = new Loop(null, render);
 
+    loop.onDemand = true; // static figure: redraw only on invalidate()
+
     function render() {
       const { width: W, height: H, dpr } = fieldStage;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);

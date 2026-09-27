@@ -164,6 +164,8 @@ export default defineSim({
     }
 
     const loop = new Loop(null, render, 1 / 15);
+
+    loop.onDemand = true; // static figure: redraw only on invalidate()
     const inv = loop.invalidate.bind(loop);
     loop.invalidate = () => { dirty = true; inv(); };
     stage.onResize(() => loop.invalidate());

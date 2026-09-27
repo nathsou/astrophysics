@@ -68,6 +68,8 @@ export default defineSim({
     generate();
 
     const loop = new Loop(null, render, 1 / 30);
+
+    loop.onDemand = true; // static figure: redraw only on invalidate()
     mainStage.onResize((w, h, d) => { mainPlot.resize(w, h, d); loop.invalidate(); });
     resStage.onResize((w, h, d) => { resPlot.resize(w, h, d); loop.invalidate(); });
 
