@@ -1,0 +1,68 @@
+/* Proofs from the derivability conditions (ProvabilityLab). */
+
+.pv-lines { list-style: none; margin: 0; padding: 0; border: 1px solid var(--rule); border-radius: 12px; background: var(--panel); overflow: hidden; }
+.pv-line { border-top: 1px solid var(--rule); }
+.pv-line:first-child { border-top: none; }
+.pv-row { display: grid; grid-template-columns: 2em 4.2em minmax(0, 1fr) auto 1.4em; gap: 8px; align-items: center; width: 100%; text-align: left; background: none; border: none; padding: 7px 12px; cursor: pointer; font: inherit; color: inherit; }
+.pv-row.static { cursor: default; }
+button.pv-row:hover { background: var(--paper-2); }
+button.pv-row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.pv-line.sel > .pv-row { background: var(--accent-soft); }
+.pv-line.premise > .pv-row { background: var(--hl-2); box-shadow: inset 3px 0 0 var(--number); }
+.pv-line.given > .pv-row { background: var(--paper-2); }
+.pv-n { font-family: var(--sans); font-size: 12px; color: var(--muted); text-align: right; }
+.pv-book { font-family: var(--sans); font-size: 11.5px; color: var(--muted); }
+.pv-f { overflow-x: auto; overflow-y: hidden; min-width: 0; }
+.pv-just { font-family: var(--sans); font-size: 12px; color: var(--ink-2); max-width: 16em; text-align: right; }
+.pv-status { font-family: var(--sans); font-weight: 700; text-align: center; }
+.pv-line.ok .pv-status { color: var(--checked); }
+.pv-line.bad .pv-status { color: var(--danger); }
+.pv-line.bad > .pv-row { background: var(--danger-soft); }
+.pv-detail { padding: 4px 16px 12px 4.4em; font-family: var(--sans); font-size: 13.5px; color: var(--ink-2); line-height: 1.55; }
+.pv-detail p { margin: 6px 0; }
+.pv-note { color: var(--added); }
+.pv-error { color: var(--danger); font-family: var(--sans); font-size: 13px; }
+.pv-okmsg { color: var(--checked); font-family: var(--sans); font-size: 13px; }
+.pv-uses { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.pv-chip { border: 1px solid var(--rule-2); border-radius: 999px; padding: 0 8px; font-size: 12px; }
+.pv-verdict { font-family: var(--sans); font-size: 14px; margin: 0; padding: 10px 14px; border-radius: 10px; background: var(--paper-2); }
+.pv-verdict.ok { background: var(--checked-soft); color: var(--checked); }
+.pv-verdict.bad { background: var(--danger-soft); color: var(--danger); }
+.pv-tt-wrap { overflow-x: auto; max-height: 320px; overflow-y: auto; margin-top: 6px; }
+.pv-tt-table { border-collapse: collapse; font-family: var(--mono); font-size: 12px; }
+.pv-tt-table th, .pv-tt-table td { border-bottom: 1px solid var(--rule); padding: 2px 8px; text-align: center; white-space: nowrap; }
+.pv-tt-table th:last-child, .pv-tt-table td:last-child { border-left: 1px solid var(--rule-2); font-weight: 700; }
+.pv-tt-table tr.bad td { background: var(--danger-soft); }
+.pv-edit { display: flex; gap: 6px; align-items: center; padding: 6px 12px; flex-wrap: wrap; }
+.pv-input { flex: 1 1 220px; font-size: 15px; padding: 4px 8px; }
+.pv-from { flex: 0 0 5.5em; min-width: 0; font-size: 14px; padding: 4px 8px; }
+.pv-edit select { font-family: var(--sans); font-size: 13px; padding: 4px; border-radius: 6px; border: 1px solid var(--rule-2); background: var(--panel); color: var(--ink); }
+.pv-edit-status { padding: 0 12px 8px 3.4em; }
+
+@media (max-width: 560px) {
+  .pv-row { grid-template-columns: 1.6em minmax(0, 1fr) 1.2em; }
+  .pv-book { display: none; }
+  .pv-just { grid-column: 2; text-align: left; }
+  .pv-status { grid-row: 1; grid-column: 3; }
+  .pv-detail { padding-left: 12px; }
+}
+
+.rr-track { display: flex; flex-wrap: wrap; gap: 4px; align-items: stretch; }
+.rr-cell { width: 44px; height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 4px 0; border-radius: 8px; border: 1px solid var(--rule-2); background: var(--panel); color: var(--ink); cursor: pointer; font-family: var(--sans); }
+.rr-cell:hover { border-color: var(--accent); }
+.rr-cell:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.rr-cell.proof { background: var(--checked-soft); border-color: var(--checked); color: var(--checked); }
+.rr-cell.refut { background: var(--danger-soft); border-color: var(--danger); color: var(--danger); }
+.rr-k { font-size: 11px; color: var(--muted); }
+.rr-what { font-family: var(--math); font-size: 16px; font-weight: 600; min-height: 1.2em; }
+.rr-more { align-self: center; color: var(--muted); padding: 0 6px; }
+.rr-table { border-collapse: collapse; font-family: var(--sans); font-size: 13.5px; width: 100%; }
+.rr-table th, .rr-table td { border-bottom: 1px solid var(--rule); padding: 6px 8px; text-align: left; vertical-align: middle; }
+.rr-table th { font-weight: 400; white-space: nowrap; }
+.rr-table td.yes { color: var(--checked); font-weight: 700; }
+.rr-table td.no { color: var(--muted); font-weight: 700; }
+@media (max-width: 560px) { .rr-table td:last-child { display: none; } }
+.ci-field { display: flex; flex-direction: column; gap: 4px; flex: 1 1 200px; }
+.ci-table th { width: 9em; white-space: normal; vertical-align: top; }
+.ci-inst { overflow-x: auto; max-width: 0; width: 100%; }
+@media (max-width: 560px) { .ci-table td:last-child { display: table-cell; } }

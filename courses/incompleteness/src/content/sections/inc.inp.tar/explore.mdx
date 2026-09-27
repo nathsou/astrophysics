@@ -1,0 +1,7 @@
+import { ProvabilityProof } from '../../../workbench/provability/ProvabilityLab';
+
+<ProvabilityProof which="tarski" />
+
+<Callout title="Why propositional logic is enough">
+Truth in a structure is compositional: $\mathfrak N \vDash B \leftrightarrow C$ iff $B$ and $C$ have the same truth value there. So if both biconditionals are true in $\mathfrak N$, the sentences $A$ and $D(\ulcorner A\urcorner)$ must get truth values making $A \leftrightarrow \lnot D(\ulcorner A\urcorner)$ and $A \leftrightarrow D(\ulcorner A\urcorner)$ both true — and the truth table shows there are none.
+</Callout>

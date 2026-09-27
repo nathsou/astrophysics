@@ -1,0 +1,24 @@
+import { ReflectionExercise } from '../../../workbench/provability/exercises';
+
+<Added label="Added for this edition">
+
+The Gödel sentence says “I am not derivable” and is not derivable. What about a sentence $H$ that says “I am derivable”? Löb’s theorem answers this and more: $T$ derives an instance $\mathsf{Prov}(\ulcorner A\urcorner) \to A$ of the **reflection principle** only if it already derives $A$.
+
+</Added>
+
+## Santa Claus, formalized
+
+The book’s heuristic is the “proof” that Santa Claus exists via the sentence $X$: “if $X$ is true, then Santa Claus exists”. Assume $X$; then by what $X$ says, Santa Claus exists; so we have shown “if $X$ then Santa Claus exists”, which is $X$; so Santa Claus exists.
+
+The formal proof replaces “true” by “derivable” and uses the fixed point $D \leftrightarrow (\mathsf{Prov}(\ulcorner D\urcorner) \to A)$. The informal step “assume $X$ …” becomes an argument *under* $\mathsf{Prov}$, powered by P2 and P3. What makes it valid, unlike the Santa Claus argument, is that the only premise about $A$ is the hypothesis $T \vdash \mathsf{Prov}(\ulcorner A\urcorner) \to A$: reflection does all the work.
+
+## A slip in the last line
+
+The book’s last line reads “$A$ from (L-8) and (L-12)”. The checker rejects that step: from $\mathsf{Prov}(\ulcorner A\urcorner) \to A$ and $\mathsf{Prov}(\ulcorner D\urcorner)$ nothing follows by propositional logic (take $\mathsf{Prov}(\ulcorner A\urcorner)$ false and $A$ false). The step needs (L-9), $\mathsf{Prov}(\ulcorner D\urcorner) \to A$, and (L-12). Explore mode uses (L-9); tick “the book’s citations” there to see the checker’s counterexample.
+
+## Consequences
+
+- **The second incompleteness theorem again.** If $T \vdash \mathsf{Con}$, then $T \vdash \mathsf{Prov}(\ulcorner\bot\urcorner) \to \bot$ by logic, so $T \vdash \bot$ by Löb.
+- **Henkin’s sentence** $H \leftrightarrow \mathsf{Prov}(\ulcorner H\urcorner)$ is derivable: the left-to-right half is a reflection instance.
+
+<ReflectionExercise />

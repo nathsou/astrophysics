@@ -148,7 +148,9 @@ export type Just =
   | { r: 'logic'; from: number[] }
   | { r: 'P1'; from: number }
   | { r: 'P2' }
-  | { r: 'P3' };
+  | { r: 'P3' }
+  /** Löb's theorem used as a derived rule: from T ⊢ Prov(⌜A⌝) → A infer T ⊢ A. */
+  | { r: 'Lob'; from: number };
 
 export interface Line {
   n: number;
@@ -157,6 +159,8 @@ export interface Line {
   /** the book's label (e.g. "G2-5"), if the line is in the book */
   book?: string;
   note?: string;
+  /** where the book cites different premises for a logic step than the checked version uses */
+  bookFrom?: number[];
 }
 
 export interface LineCheck {
@@ -216,6 +220,13 @@ export function checkProof(lines: Line[], opts: { conditions?: Partial<Record<'P
         const f = l.f;
         const okShape = f.k === 'imp' && f.a.k === 'pred' && f.a.name === 'Prov' && f.b.k === 'pred' && f.b.name === 'Prov' && f.b.a.k === 'pred' && eq(f.b.a, f.a);
         if (!okShape) errors.push('not an instance of P3: Prov(⌜A⌝) → Prov(⌜Prov(⌜A⌝)⌝)');
+        break;
+      }
+      case 'Lob': {
+        uses.add('Löb’s theorem');
+        const p = need(j.from);
+        if (p && !(p.f.k === 'imp' && p.f.a.k === 'pred' && p.f.a.name === 'Prov' && eq(p.f.a.a, p.f.b) && eq(p.f.b, l.f)))
+          errors.push(`Löb’s theorem needs line ${j.from} to be Prov(⌜A⌝) → A, and gives A`);
         break;
       }
       case 'logic': {
@@ -280,17 +291,157 @@ export function lob(): Line[] {
     { n: 12, f: imp(imp(PD, A), D), just: { r: 'logic', from: [1] }, book: 'L-10' },
     { n: 13, f: D, just: { r: 'logic', from: [11, 12] }, book: 'L-11' },
     { n: 14, f: PD, just: { r: 'P1', from: 13 }, book: 'L-12' },
-    { n: 15, f: A, just: { r: 'logic', from: [11, 14] }, book: '(last line)' },
+    { n: 15, f: A, just: { r: 'logic', from: [11, 14] }, book: '(last line)', bookFrom: [10, 14], note: 'the book cites (L-8) and (L-12); the step needs (L-9) and (L-12)' },
   ];
 }
 
-/** Section 5.9: no truth definition — from the two biconditionals, T derives ⊥. */
+/** Section 5.9: Tarski's theorem. The book's argument is about truth in ℕ, not derivability: if
+ *  D(x) defined truth, then ℕ ⊨ A ↔ D(⌜A⌝) for every A; the fixed point A of ¬D(x) gives
+ *  ℕ ⊨ A ↔ ¬D(⌜A⌝) (Q ⊢ it, and Q is true in ℕ). Truth in ℕ obeys propositional logic, so ⊥. */
 export function tarski(): Line[] {
-  const L = atom('L');
-  const TL = prov(L, 'True');
+  const A = atom('A');
+  const DA = prov(A, 'D');
   return [
-    { n: 1, f: iff(L, not(TL)), just: { r: 'hyp', name: 'fixed point of ¬True(x)' } },
-    { n: 2, f: iff(L, TL), just: { r: 'hyp', name: 'True(x) is a truth definition (instance for L)' } },
-    { n: 3, f: bot, just: { r: 'logic', from: [1, 2] }, note: 'L ↔ ¬True(⌜L⌝) and L ↔ True(⌜L⌝) cannot both hold' },
+    { n: 1, f: iff(A, not(DA)), just: { r: 'hyp', name: 'fixed point of ¬D(x), true in ℕ because Q is' } },
+    { n: 2, f: iff(A, DA), just: { r: 'hyp', name: 'D(x) defines truth: the instance for A' } },
+    { n: 3, f: bot, just: { r: 'logic', from: [1, 2] }, note: 'ℕ ⊨ A iff ℕ ⊨ ¬D(⌜A⌝), and ℕ ⊨ A iff ℕ ⊨ D(⌜A⌝): impossible' },
   ];
+}
+
+// ------------------------------------------------------------------ instances, tables, parsing
+
+/** If f is an instance of P2, the A and B it is an instance for. */
+export function p2Instance(f: PF): { A: PF; B: PF } | null {
+  if (f.k === 'imp' && f.a.k === 'pred' && f.a.name === 'Prov' && f.a.a.k === 'imp' && f.b.k === 'imp' && f.b.a.k === 'pred' && f.b.a.name === 'Prov' && f.b.b.k === 'pred' && f.b.b.name === 'Prov' && eq(f.a.a.a, f.b.a.a) && eq(f.a.a.b, f.b.b.a))
+    return { A: f.a.a.a, B: f.a.a.b };
+  return null;
+}
+
+/** If f is an instance of P3, the A it is an instance for. */
+export function p3Instance(f: PF): { A: PF } | null {
+  if (f.k === 'imp' && f.a.k === 'pred' && f.a.name === 'Prov' && f.b.k === 'pred' && f.b.name === 'Prov' && eq(f.b.a, f.a)) return { A: f.a.a };
+  return null;
+}
+
+/** The full truth table of f (for display; at most 6 atoms). */
+export function truthTable(f: PF): { atoms: string[]; rows: { values: boolean[]; result: boolean }[] } | null {
+  const atoms = [...atomsOf(f).keys()];
+  if (atoms.length > 6) return null;
+  const rows: { values: boolean[]; result: boolean }[] = [];
+  for (let m = 0; m < 1 << atoms.length; m++) {
+    const values = atoms.map((_, i) => !(m & (1 << (atoms.length - 1 - i))));
+    rows.push({ values, result: value(f, new Map(atoms.map((a, i) => [a, values[i]]))) });
+  }
+  return { atoms, rows };
+}
+
+/** The premises of a logic step, as the single formula checked: (A1 ∧ … ∧ Ak) → B. */
+export function logicClaim(premises: PF[], conclusion: PF): PF {
+  if (premises.length === 0) return conclusion;
+  return imp(premises.slice(1).reduce<PF>((acc, p) => and(acc, p), premises[0]), conclusion);
+}
+
+export class PFParseError extends Error {
+  pos: number;
+  constructor(message: string, pos: number) {
+    super(message);
+    this.pos = pos;
+  }
+}
+
+/** Parses the notation used by `show`, plus ASCII: ~ ! & | -> <-> _|_ bot. Con abbreviates ¬Prov(⌜⊥⌝);
+ *  `Name(…)` with or without corner quotes is a predicate applied to the code of a sentence. */
+export function parsePF(src: string): PF {
+  const toks: { t: string; pos: number }[] = [];
+  const re = /\s*(<->|->|\/\\|\\\/|_\|_|[⌜⌝()¬~!∧&∨|→↔⊥]|[A-Za-z][A-Za-z0-9_']*)/y;
+  let i = 0;
+  while (i < src.length) {
+    if (/^\s*$/.test(src.slice(i))) break;
+    re.lastIndex = i;
+    const m = re.exec(src);
+    if (!m) throw new PFParseError(`unexpected “${src[i + (src.slice(i).length - src.slice(i).trimStart().length)]}”`, i);
+    toks.push({ t: m[1], pos: m.index + m[0].length - m[1].length });
+    i = re.lastIndex;
+  }
+  let k = 0;
+  const peek = () => toks[k]?.t;
+  const next = () => toks[k++];
+  const expect = (t: string) => {
+    if (peek() !== t) throw new PFParseError(`expected “${t}”`, toks[k]?.pos ?? src.length);
+    k++;
+  };
+  const IMP = new Set(['→', '->']);
+  const IFF = new Set(['↔', '<->']);
+  const AND = new Set(['∧', '&', '/\\']);
+  const OR = new Set(['∨', '|', '\\/']);
+  const NOT = new Set(['¬', '~', '!']);
+  const parseIff = (): PF => {
+    let a = parseImp();
+    while (IFF.has(peek())) {
+      k++;
+      a = iff(a, parseImp());
+    }
+    return a;
+  };
+  const parseImp = (): PF => {
+    const a = parseOr();
+    if (IMP.has(peek())) {
+      k++;
+      return imp(a, parseImp());
+    }
+    return a;
+  };
+  const parseOr = (): PF => {
+    let a = parseAnd();
+    while (OR.has(peek())) {
+      k++;
+      a = or(a, parseAnd());
+    }
+    return a;
+  };
+  const parseAnd = (): PF => {
+    let a = parseUnary();
+    while (AND.has(peek())) {
+      k++;
+      a = and(a, parseUnary());
+    }
+    return a;
+  };
+  const parseUnary = (): PF => {
+    const tok = next();
+    if (!tok) throw new PFParseError('unexpected end of input', src.length);
+    if (NOT.has(tok.t)) return not(parseUnary());
+    if (tok.t === '⊥' || tok.t === '_|_' || tok.t === 'bot') return bot;
+    if (tok.t === '(') {
+      const a = parseIff();
+      expect(')');
+      return a;
+    }
+    if (/^[A-Za-z]/.test(tok.t)) {
+      if (peek() === '(') {
+        k++;
+        const quoted = peek() === '⌜';
+        if (quoted) k++;
+        const a = parseIff();
+        if (quoted) expect('⌝');
+        expect(')');
+        return prov(a, tok.t);
+      }
+      if (tok.t === 'Con') return not(prov(bot));
+      return atom(tok.t);
+    }
+    throw new PFParseError(`unexpected “${tok.t}”`, tok.pos);
+  };
+  const f = parseIff();
+  if (k < toks.length) throw new PFParseError(`unexpected “${toks[k].t}”`, toks[k].pos);
+  return f;
+}
+
+export function tryParsePF(src: string): { ok: true; value: PF } | { ok: false; error: string; pos: number } {
+  try {
+    return { ok: true, value: parsePF(src) };
+  } catch (e) {
+    if (e instanceof PFParseError) return { ok: false, error: e.message, pos: e.pos };
+    throw e;
+  }
 }

@@ -1,0 +1,31 @@
+import { ConditionsExercise } from '../../../workbench/provability/exercises';
+
+<Added label="Added for this edition">
+
+The second incompleteness theorem and Löb’s theorem use only three properties of the formula $\mathsf{Prov}_{\mathbf{PA}}(y)$. This section states them and — like Gödel — asks you to take them on faith. Everything in the next two sections is propositional logic on top of these three conditions, and this edition checks that part mechanically.
+
+</Added>
+
+## Why PA and not Q
+
+$\mathbf{PA}$ adds to $\mathbf Q$ every instance of the induction schema
+$$(A(0) \land \forall x\,(A(x) \to A(x'))) \to \forall x\,A(x).$$
+There are infinitely many axioms, but deciding whether a sentence is one is mechanical, so $\mathbf{PA}$ is computably axiomatized and $\mathsf{Prf}_{\mathbf{PA}}$ is represented in $\mathbf Q$. The first incompleteness theorem only needed $\mathbf Q$. The second needs the theory to *reason about* derivations — to verify, inside the theory, facts like “if there are derivations of $A \to B$ and of $A$, there is one of $B$” — and that requires induction.
+
+## The conditions
+
+- **P1** If $\mathbf{PA} \vdash A$, then $\mathbf{PA} \vdash \mathsf{Prov}(\ulcorner A\urcorner)$. A derivation of $A$ has a Gödel number $n$; $\mathbf Q$ derives $\mathsf{Prf}(\overline n, \ulcorner A\urcorner)$ because $\mathsf{Prf}$ is represented; then ∃-introduction.
+- **P2** $\mathbf{PA} \vdash \mathsf{Prov}(\ulcorner A \to B\urcorner) \to (\mathsf{Prov}(\ulcorner A\urcorner) \to \mathsf{Prov}(\ulcorner B\urcorner))$: $\mathbf{PA}$ knows that derivability is closed under modus ponens.
+- **P3** $\mathbf{PA} \vdash \mathsf{Prov}(\ulcorner A\urcorner) \to \mathsf{Prov}(\ulcorner \mathsf{Prov}(\ulcorner A\urcorner)\urcorner)$: $\mathbf{PA}$ knows P1. This is the hard one: it is P1 carried out inside $\mathbf{PA}$, for an arbitrary derivation.
+
+A fourth condition, **P4** (if $\mathbf{PA} \vdash \mathsf{Prov}(\ulcorner A\urcorner)$ then $\mathbf{PA} \vdash A$), holds for a reasonable choice of $\mathsf{Prov}$ but is not needed.
+
+<NotAProof>The conditions are not proved in the book or in this edition. Every “checked” proof in the next sections is checked *relative to* P1–P3.</NotAProof>
+
+## Rule versus theorem
+
+P1 is a rule about what $\mathbf{PA}$ derives; P2 and P3 are schemas of sentences $\mathbf{PA}$ derives. The difference matters: P1 applies to *derivable* sentences only. From an assumption $A$ you may not infer $\mathsf{Prov}(\ulcorner A\urcorner)$ — indeed $A \to \mathsf{Prov}(\ulcorner A \urcorner)$ is not derivable in general.
+
+<ConditionsExercise />
+
+Explore mode shows the instances of each condition for sentences you choose.

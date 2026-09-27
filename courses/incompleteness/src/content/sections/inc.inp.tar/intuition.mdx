@@ -1,0 +1,21 @@
+import { TarskiExercise } from '../../../workbench/provability/exercises';
+
+<Added label="Added for this edition">
+
+Derivability in $\mathbf Q$ can be expressed by a formula of arithmetic; so can the halting relation. Tarski’s theorem says that **truth** cannot: no formula $D(x)$ is true of exactly the Gödel numbers of true sentences. The liar paradox, which only motivated Gödel’s theorem, here becomes a proof.
+
+</Added>
+
+## Definable versus computable
+
+A relation is *definable in $\mathfrak N$* if some formula is true of exactly the tuples in it. Representability in $\mathbf Q$ is a *derivability* condition; definability is a *truth* condition, so it is weaker. Every computable relation is definable (the formula that represents it in $\mathbf Q$ also defines it, since $\mathbf Q$ is true in $\mathfrak N$). The converse fails: the halting relation is defined by $\exists s\, D_T(z, x, s)$, but it is not computable. One unbounded quantifier already takes us past the computable.
+
+## The liar, made precise
+
+Suppose $D(x)$ defined truth: $\mathfrak N \vDash A$ iff $\mathfrak N \vDash D(\ulcorner A\urcorner)$, for every sentence $A$. Apply the fixed-point lemma to $\lnot D(x)$: some $A$ has $\mathbf Q \vdash A \leftrightarrow \lnot D(\ulcorner A\urcorner)$, so this biconditional is *true* in $\mathfrak N$. Now $A$ is true iff $D(\ulcorner A\urcorner)$ is true (definition of truth) iff $A$ is false (fixed point). The contradiction is purely propositional once the two biconditionals are on the table — Explore mode checks it by truth table.
+
+## Compared with incompleteness
+
+With $\mathsf{Prov}$ in place of $D$ there is no contradiction, because $\mathsf{Prov}$ does not satisfy $A \leftrightarrow \mathsf{Prov}(\ulcorner A\urcorner)$ — the Gödel sentence is a counterexample. Tarski’s theorem also gives a quick route to (a form of) incompleteness: the set of theorems of a computably axiomatized theory is definable, the set of truths is not, so they differ; if the theory is sound, some truth is not derivable.
+
+<TarskiExercise />

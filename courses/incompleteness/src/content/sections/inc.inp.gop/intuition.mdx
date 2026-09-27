@@ -1,0 +1,22 @@
+<Added label="Added for this edition">
+
+The book suggests reading Gödel’s 1931 paper, “On formally undecidable propositions of *Principia Mathematica* and related systems I”. This table is a reading guide: for each stage of Gödel’s paper, where the same idea appears in this book. The mapping follows the book’s own summary in this section.
+
+</Added>
+
+| Gödel 1931 | What it does | In this book |
+|---|---|---|
+| §1 | A sketch of the whole argument, with the analogy to the liar and to Richard’s paradox | <Ref k="inc:inp:int:sec" />, <Ref k="inc:inp:fix:sec" /> |
+| §2, the system $P$ | Syntax, axioms and rules of a formal system (simple type theory over the natural numbers) | first-order arithmetic, $\mathbf Q$ and $\mathbf{PA}$ (<Ref k="inc:req:int:sec" />, <Ref k="inc:inp:prc:sec" />) |
+| §2, primitive recursion | Defines the (primitive) recursive functions and relations | <Ref k="cmp:rec:pre:sec" /> and the rest of chapter 2 |
+| §2, definitions 1–46 | Arithmetizes syntax, ending with $x\,B\,y$ (“$x$ is a proof of the formula $y$”) and $\mathrm{Bew}(y)$ (“$y$ is provable”) | chapter 3, <Ref k="inc:art:int:sec" /> to <Ref k="inc:art:pnd:sec" /> |
+| §2, Theorem V | Recursive relations are representable in $P$ | chapter 4, <Ref k="inc:req:crq:sec" /> |
+| §2, Theorem VI | The first incompleteness theorem (for ω-consistent systems) | <Ref k="inc:inp:1in:sec" /> (and Rosser’s strengthening, <Ref k="inc:inp:ros:sec" />) |
+| §3 | The undecidable sentence can be taken to be arithmetical: the β-function | <Ref k="inc:req:bet:sec" /> |
+| §4 | A sketch of the second incompleteness theorem | <Ref k="inc:inp:2in:sec" /> |
+
+## Differences worth noticing
+
+- Gödel’s system is higher-order and has more axioms than needed; the book shows that the weak theory $\mathbf Q$ already represents every computable function, so every consistent computably axiomatized extension of $\mathbf Q$ is incomplete.
+- Gödel does not use a general fixed-point lemma; he constructs his sentence directly. The lemma in the form used here was isolated later (it is often credited to Carnap).
+- Gödel promised the details of §4 in a sequel that never appeared; this book, too, takes the derivability conditions on faith (<Ref k="inc:inp:prc:sec" />).
