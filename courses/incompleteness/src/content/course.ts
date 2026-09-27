@@ -6,6 +6,7 @@
 
 import type { ComponentType } from 'react';
 import type { Annotations } from '../formal/FormalText';
+import { sourceIndex } from './source';
 
 export type Mode = 'intuition' | 'explore' | 'formal';
 
@@ -23,9 +24,15 @@ export interface SectionPlan {
 
 const mdx = import.meta.glob<{ default: ComponentType }>('./sections/*/*.mdx');
 const tsx = import.meta.glob<{ useAnnotations: () => Annotations }>('./sections/*/formal.tsx');
+const metas = import.meta.glob<{ blurb: string; object?: SectionPlan['object'] }>('./sections/*/meta.ts', { eager: true });
 
-function plan(id: string, blurb: string, object?: SectionPlan['object']): SectionPlan {
-  const p: SectionPlan = { id, blurb, object };
+// Each section directory holds its own meta.ts (blurb, object) next to its content, so that
+// sections can be added without touching a shared list. Plans follow the book's order.
+const order = new Map(sourceIndex.chapters.flatMap((c) => c.sections.map((s) => s.id)).map((id, i) => [id, i]));
+
+function plan(id: string): SectionPlan {
+  const m = metas[`./sections/${id}/meta.ts`];
+  const p: SectionPlan = { id, blurb: m.blurb, object: m.object };
   const i = mdx[`./sections/${id}/intuition.mdx`];
   const e = mdx[`./sections/${id}/explore.mdx`];
   const f = tsx[`./sections/${id}/formal.tsx`];
@@ -35,20 +42,14 @@ function plan(id: string, blurb: string, object?: SectionPlan['object']): Sectio
   return p;
 }
 
-export const PLANS: SectionPlan[] = [
-  plan('cmp.rec.seq', 'Numbers that code finite sequences: the tool behind every Gödel number.', 'sequence'),
-  plan('inc.art.int', 'Why logic needs to talk about its own syntax, in numbers.', 'formula'),
-  plan('inc.art.cod', 'A code for every symbol: the table, and how to read it back.', 'formula'),
-  plan('inc.art.trm', 'Gödel numbers of terms, numerals and the function num.', 'term'),
-  plan('inc.art.frm', 'The formula / symbols / codes / number workbench.', 'formula'),
-  plan('inc.art.sub', 'Substitution, capture, and substitution done on Gödel numbers.', 'subst'),
-  plan('inc.req.int', 'Robinson’s Q, and what it means for a formula to represent a function.', 'function'),
-  plan('inc.req.bre', 'The basic functions, and Q’s derivations about numerals, checked.', 'function'),
-  plan('inc.req.cmp', 'Representing a composition: witnesses from the computation.', 'function'),
-  plan('inc.req.min', 'Representing regular minimization.', 'function'),
-  plan('inc.inp.fix', 'Diagonalisation: a sentence that talks about its own Gödel number.', 'B'),
-  plan('inc.inp.1in', 'Gödel’s theorem, and exactly where each hypothesis is used.', 'B'),
-];
+export const PLANS: SectionPlan[] = Object.keys(metas)
+  .map((k) => k.split('/')[2])
+  .filter((id) => {
+    if (!order.has(id)) console.warn(`section ${id} has content but is not in the book`);
+    return order.has(id);
+  })
+  .sort((a, b) => order.get(a)! - order.get(b)!)
+  .map(plan);
 
 export const planOf = (id: string) => PLANS.find((p) => p.id === id);
 export const isInteractive = (id: string) => {
