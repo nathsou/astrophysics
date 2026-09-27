@@ -10,7 +10,7 @@
     "dev": "pnpm --filter course dev",
     "build": "pnpm --filter course build",
     "preview": "pnpm --filter course preview",
-    "test": "vitest run",
+    "test": "pnpm --filter course exec svelte-kit sync && vitest run",
     "typecheck": "tsc -p tsconfig.json && pnpm --filter course check",
     "check": "pnpm typecheck && pnpm test"
   },
