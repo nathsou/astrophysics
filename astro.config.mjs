@@ -5,7 +5,8 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
 export default defineConfig({
-  site: 'http://localhost:4321',
+  site: 'https://nathsou.github.io',
+  base: '/astrophysics',
   integrations: [mdx()],
   devToolbar: { enabled: false },
   markdown: {
