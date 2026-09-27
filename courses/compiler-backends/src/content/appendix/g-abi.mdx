@@ -1,0 +1,70 @@
+<p className="lede">
+The parts of an ABI beyond the calling convention of Chapter 9: data layout, aggregates, variadic functions, unwinding and system calls.
+</p>
+
+## Data layout
+
+An ABI fixes the size and alignment of every fundamental type. On all three of kiln’s targets (LP64 data model):
+
+| type | size | alignment |
+|---|---|---|
+| `char` | 1 | 1 |
+| `short` | 2 | 2 |
+| `int` | 4 | 4 |
+| `long`, pointers | 8 | 8 |
+| `long long` | 8 | 8 |
+| `double` | 8 | 8 |
+| `long double` | 16 (RISC-V, AArch64 Linux: IEEE quad; x86-64: 80-bit x87 padded to 16) | 16 |
+
+Windows x64 is **LLP64**: `long` is 4 bytes there. All three targets are little-endian in practice; AArch64 also has a rarely used big-endian mode.
+
+**Structs** are laid out in declaration order, each member aligned to its own alignment, with the whole struct padded to a multiple of its largest member’s alignment. `struct { char c; long l; }` is 16 bytes: 1 byte, 7 bytes of padding, then 8.
+
+## Passing aggregates
+
+Each ABI has a **classification** algorithm for structs and unions:
+
+- **System V x86-64** splits an aggregate of up to 16 bytes into 8-byte chunks, and classifies each as `INTEGER` (goes in `rdi`, …), `SSE` (goes in `xmm0`, …) or `MEMORY`. Anything larger, or anything unaligned, is passed in memory — copied onto the stack by the caller.
+- **AAPCS64** passes composites of up to 16 bytes in up to two general registers. *Homogeneous floating-point aggregates* of up to four floats or doubles go in consecutive vector registers. Larger ones are passed by reference, as a pointer to a caller-made copy.
+- **RISC-V** passes aggregates of up to two pointer-widths in registers. With a hardware floating-point ABI (`lp64d`), structs of one or two floats are *flattened* into FP registers.
+
+Return values follow the same classification, with a hidden pointer argument for large results.
+
+## Variadic functions
+
+Callees of `printf`-style functions must be able to find their arguments with `va_arg`. Conventions differ:
+- **x86-64** passes variadic arguments like any other, and puts in `al` an upper bound on the number of vector registers used. The callee’s prologue spills register arguments to a *register save area*.
+- **AAPCS64 on Linux** is similar; **Apple arm64** puts all variadic arguments on the stack.
+- **RISC-V** passes variadic floating-point values in *integer* registers, and aligns 16-byte types to even register pairs.
+
+## Unwinding and exceptions
+
+C++ exceptions, Rust panics, debuggers and profilers all need to **unwind** the stack: find each caller’s frame and restore its callee-saved registers. Most platforms use table-driven, “zero-cost” exception handling (Itanium C++ ABI): nothing runs on the normal path, and when an exception is thrown the unwinder reads the tables.
+- On ELF, **DWARF CFI** in `.eh_frame` describes, for every instruction address, how to compute the CFA and where each saved register lives; `.gcc_except_table` holds the language-specific catch and cleanup information.
+- Windows x64 uses `.pdata`/`.xdata` unwind codes.
+- Apple uses *compact unwind*, with DWARF as a fallback.
+
+## Name mangling
+
+C++ (Itanium ABI: `_ZN3foo3barEi`), Rust and Swift encode namespaces, types and generics into symbol names. The ABI defines the mangling so that separately compiled code can agree on names. `c++filt` decodes them.
+
+## System calls
+
+The kernel ABI is separate from the function ABI:
+
+| | syscall number | arguments | instruction | return |
+|---|---|---|---|---|
+| RISC-V Linux | `a7` | `a0`–`a5` | `ecall` | `a0` |
+| AArch64 Linux | `x8` | `x0`–`x5` | `svc #0` | `x0` |
+| x86-64 Linux | `rax` | `rdi rsi rdx r10 r8 r9` | `syscall` | `rax` |
+
+On x86-64 the fourth argument is in `r10` rather than `rcx`, because `syscall` overwrites `rcx` with the return address. The numbers also differ between architectures: `write` is 64 on RISC-V and AArch64, but 1 on x86-64. Kiln’s runtime uses the RISC-V numbers, 64 (`write`) and 93 (`exit`).
+
+## ABI stability
+
+Changing an ABI breaks every binary built against the old one, so ABIs change very rarely. Some famous breaks:
+- 32-bit x86 Linux raised its required stack alignment from 4 to 16 bytes when GCC started relying on it for SSE, and code built with older assumptions crashed when calling newer code;
+- GCC 5 changed `std::string`’s layout;
+- Apple’s arm64 departs from AAPCS64 for variadic functions.
+
+This is why a backend’s ABI lowering is its most conservative, most carefully tested part.

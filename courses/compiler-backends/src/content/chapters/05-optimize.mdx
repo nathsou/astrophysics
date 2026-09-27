@@ -1,0 +1,72 @@
+<p className="lede">
+This is a backend course, but a backend’s output can only be as good as its input. A few cheap, classic passes turn the raw SSA from mem2reg into the tidy, canonical form that instruction selection expects.
+</p>
+
+## What the backend wants
+
+Instruction selection works by matching patterns (Chapter 7). Every pattern that matches `add %x, 1` would also have to match `add 1, %x`, `sub %x, -1` and `add (add %x, 0), 1`, unless someone has already **canonicalised** them. So the passes that run just before the backend mostly make the IR *predictable*:
+
+- constants on the right of commutative operations;
+- `sub x, C` rewritten as `add x, -C` (every target has an add-immediate; few have a subtract-immediate);
+- multiplication by a power of two turned into a shift;
+- no dead instructions, no unreachable blocks, no empty blocks that just jump elsewhere.
+
+Kiln runs four passes to a fixed point: **combine**, **DCE**, **SimplifyCFG** and (at -O2) **CSE**. SimplifyCFG also does **if-conversion** at -O2.
+
+<OptExplorer example="max" fn="max" caption="The max function before and after optimisation. At -O1 the diamond stays; at -O2 if-conversion replaces the branch and phi with a select, which the targets implement without branching (csel, cmov, or an arithmetic trick on RISC-V). The pass log lists every rewrite." />
+
+## Combine: folding and canonicalisation
+
+`combine` walks every instruction and applies local rewrites until none apply. It is kiln’s version of LLVM’s `InstCombine` (which is thousands of rules). Kiln has a few dozen:
+
+| rewrite | example |
+|---|---|
+| constant folding | `add 2, 3` → `5`; `icmp slt 1, 2` → `true` |
+| identities | `x + 0`, `x * 1`, `x & -1`, `x \| 0` → `x`; `x * 0` → `0`; `x - x` → `0` |
+| canonical order | `add 1, %x` → `add %x, 1`; `icmp sgt 3, %x` → `icmp slt %x, 3` |
+| subtract immediate | `sub %x, 5` → `add %x, -5` |
+| strength reduction | `mul %x, 8` → `shl %x, 3` |
+| reassociation | `(x + 3) + 4` → `x + 7` |
+| boolean round-trips | `icmp ne (zext c), 0` → `c` |
+| trivial φ | `phi [%a, b1], [%a, b2]` → `%a` |
+
+Each rewrite is tiny, but they compound. Array indexing `a[i]` lowers to `add a, (mul i, 8)`, and `mul i, 8` becomes `shl i, 3`. That turns the address into exactly the shape x86’s `[base + index*8]` and AArch64’s `[base, index, lsl #3]` addressing modes match, and RISC-V’s Zba `sh3add` instruction too.
+
+## Dead-code elimination
+
+A value that nothing uses and that has no side effect can be deleted. The naive version — delete instructions with no uses, repeat — cannot remove a *cycle* of dead values. The typical example is a pair of loop φs that only feed each other. Kiln instead uses **mark and sweep**:
+- mark every instruction with a side effect (`store`, `call`, terminators) as live;
+- mark everything they transitively use as live;
+- delete the rest.
+
+## SimplifyCFG
+
+Lowering produces lots of trivial blocks: empty `else` branches, `while.end` blocks that only jump onwards, and blocks stranded after a `return`. SimplifyCFG:
+
+- folds `condbr` on a constant (or with identical targets) into `br`, deleting the now-unreachable successor and fixing up its φs;
+- **merges** a block into its predecessor when that predecessor has no other successor and the block has no other predecessor;
+- **forwards** empty blocks — those containing just `br T` — by pointing their predecessors straight at `T`, adding φ operands as needed. It skips the case where that would give a φ two conflicting entries from the same predecessor.
+
+## Common-subexpression elimination over the dominator tree
+
+If `add %x, %y` has already been computed in a block that **dominates** the current one, recomputing it is pointless; reuse the earlier result. Kiln walks the dominator tree with a *scoped* hash table keyed by opcode and operands, with commutative operands sorted. Each block can see the expressions of its dominators and nothing else. When the walk leaves a block, its entries are popped. This is dominator-based value numbering, a simplified form of the global value numbering (GVN) every production compiler has. Loads are excluded: an intervening store could change memory, and deciding otherwise needs alias analysis.
+
+## If-conversion: branches into selects
+
+Branches are cheap when predicted, and very expensive when mispredicted: a modern out-of-order core throws away 15 or more cycles of work. For a small diamond whose arms only compute values, like `max`, it is often better to compute both arms and **select** the result.
+
+SimplifyCFG looks for a two-way branch whose arms are empty or contain a few cheap, pure instructions, and which rejoin at a block with one or two φs. It hoists the arms’ instructions into the branching block and replaces each φ with `select %cond, %a, %b`. The backend then decides how to implement `select`. AArch64 has `csel`, x86 has `cmov`, and base RISC-V has neither, so its legaliser expands `select` into a bit trick (Chapter 8).
+
+<Aside kind="llvm">
+<p>LLVM’s middle end runs well over a hundred passes at -O2: inlining, SROA, InstCombine, GVN, loop-invariant code motion, loop unrolling, vectorisation and more. If-conversion is split between SimplifyCFG (speculation into selects) and a later machine-level pass that uses a cost model of the target’s branch predictor. Kiln’s handful of passes is just enough to feed the backend sensibly.</p>
+</Aside>
+
+## What we did *not* do
+
+No inlining, no loop-invariant code motion, no loop unrolling, no alias analysis. You will see the consequences in the generated code:
+- the constant bound of a `while` loop is materialised in every iteration, because instruction selection works one block at a time;
+- global addresses are recomputed in each block that uses them.
+
+Chapter 17 discusses the machine-level passes (Machine LICM, rematerialisation-aware hoisting) that production compilers use to fix exactly these.
+
+<Pipeline example="sieve" stage="opt" stages={['ssa', 'opt']} height={400} caption="The sieve before and after optimisation. Note the strength-reduced shl for indexing, the merged blocks, and the global address computed by gaddr in each block that needs it." />

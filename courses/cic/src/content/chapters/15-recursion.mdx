@@ -1,0 +1,167 @@
+Nobody writes programs with recursors. `Nat.rec (motive := fun _ => Nat → Nat) …` is unreadable, and real definitions — with nested patterns, several arguments, overlapping cases — would be nightmares to express that way. Yet the kernel knows nothing *but* recursors. This chapter is about the gap between the two: how definitions by **pattern matching** and **recursion** are compiled down to eliminators, and why recursion has to be restricted at all.
+
+## Pattern matching is notation
+
+A `match` on a single argument is just `casesOn` — the recursor without induction hypotheses — with the cases in order. Here is the compiled form of a few non-recursive definitions. Edit them and watch the right-hand side change:
+
+<CompileView code={`def isZero : Nat → Bool
+  | 0 => Bool.true
+  | _ => Bool.false
+
+def pred : Nat → Nat
+  | 0 => 0
+  | n + 1 => n
+
+def xor : Bool → Bool → Bool
+  | Bool.true, Bool.false => Bool.true
+  | Bool.false, Bool.true => Bool.true
+  | _, _ => Bool.false`} />
+
+A few things to notice:
+
+- The motive of each `casesOn` is computed from the expected type. In `isZero` it is `fun _ => Bool`; in dependent matches it mentions the scrutinee.
+- `n + 1` is a pattern: the elaborator reads it as `Nat.succ n`, and numerals as towers of `succ` on `zero`.
+- `xor` matches two arguments. The compiler builds a **case tree**: it splits on the first argument, then in each branch on the second. Patterns overlap (the last line catches the remaining cases); the first matching row wins.
+
+<Engineer title="Compiling a pattern matrix">
+The algorithm (a simplified version of the classical one used in ML compilers, extended with dependent types) works on a *matrix* whose columns are the values being matched and whose rows are the alternatives. If the first row is all variables, it wins: its right-hand side is elaborated with the variables bound to the column values. Otherwise pick a column where the first row has a constructor pattern and split on it with `casesOn`: for each constructor, keep the rows whose pattern in that column is that constructor or a variable, replace the column by the constructor's fields, and recurse. If no rows remain for some case, the match is **non-exhaustive** — unless the case is impossible, which the index unification of Chapter 13 detects. Rows that are never selected are **redundant** and reported as warnings. The code is in `src/kernel/elab/match.ts`.
+</Engineer>
+
+<Playground errors title="Exhaustiveness and redundancy" code={`def f : Nat → Nat
+  | 0 => 1
+  | 1 => 2          -- missing: n + 2
+
+def g : Bool → Nat
+  | Bool.true => 1
+  | Bool.false => 2
+  | _ => 3          -- redundant`} />
+
+## Recursion becomes induction
+
+When a definition calls itself, `casesOn` is not enough. The compiler instead performs the first split on the **decreasing argument** with the full recursor, `rec`. The recursor provides, in each case, an induction hypothesis for every recursive field — the value of the function on that smaller argument. Every recursive call on such a field is then replaced by the corresponding induction hypothesis.
+
+<CompileView code={`def add : Nat → Nat → Nat
+  | n, 0 => n
+  | n, m + 1 => Nat.succ (add n m)
+
+def length {α : Type} : List α → Nat
+  | List.nil => 0
+  | List.cons _ xs => length xs + 1
+
+def append {α : Type} : List α → List α → List α
+  | List.nil, ys => ys
+  | List.cons x xs, ys => List.cons x (append xs ys)`} />
+
+In `add`, the recursive call `add n m` has become `n_ih✝ n` — the induction hypothesis for `m`, applied to the argument `n`. Why applied? Because the compiler generalises the *other* arguments: the motive is `fun _ => Nat → Nat`, so the induction hypothesis is a function of the remaining arguments, and recursive calls may pass different values for them. This is what allows accumulator-style definitions:
+
+<Playground title="Recursion with a changing accumulator" code={`def revAux {α : Type} : List α → List α → List α
+  | List.nil, acc => acc
+  | List.cons x xs, acc => revAux xs (List.cons x acc)
+
+def rev {α : Type} (xs : List α) : List α := revAux xs List.nil
+
+#reduce rev (1 :: 2 :: 3 :: List.nil)`} />
+
+## Proofs by recursion are proofs by induction
+
+Since theorems are just definitions whose type is a proposition, everything above applies to proofs: a recursive proof *is* a proof by induction, and the compiler turns it into an application of the recursor with a propositional motive.
+
+<Playground title="Induction by pattern matching" code={`theorem zero_add : (n : Nat) → 0 + n = n
+  | 0 => rfl
+  | n + 1 => congrArg Nat.succ (zero_add n)
+
+theorem length_append {α : Type} : (xs ys : List α) →
+    List.length (xs ++ ys) = List.length ys + List.length xs
+  | List.nil, ys => rfl
+  | List.cons x xs, ys => congrArg Nat.succ (length_append xs ys)
+
+#print zero_add`} />
+
+In the successor case of `zero_add`, the goal is `0 + (n + 1) = n + 1`, which computes to `Nat.succ (0 + n) = Nat.succ n`; the recursive call `zero_add n : 0 + n = n` is the induction hypothesis. `#print` shows the `Nat.rec` it became.
+
+<Exercise id="rec:mul" title="Multiplication by zero" code={`theorem zero_mul : (n : Nat) → 0 * n = 0
+  | 0 => rfl
+  | n + 1 => sorry`} hint="0 * (n + 1) computes to 0 * n + 0, which computes to 0 * n. So the induction hypothesis zero_mul n is exactly what you need." solution={`theorem zero_mul : (n : Nat) → 0 * n = 0
+  | 0 => rfl
+  | n + 1 => zero_mul n`}>
+Prove that `0 * n = 0` by induction. (Recall that `n * (m + 1)` is defined as `n * m + n`.)
+</Exercise>
+
+## Why recursion must be restricted
+
+Why not allow arbitrary recursion, as every programming language does? Because in a logic, a recursive definition that does not terminate is a proof of anything:
+
+```lean
+def bad : False := bad          -- "by bad, False"
+```
+
+If this were accepted, `bad` would be a closed term of type `False` — and its only "computation" is to unfold to itself forever. Termination is not a matter of convenience: it is exactly what keeps the logic consistent (Chapter 4) and type checking decidable (Chapter 7).
+
+<Playground errors title="Non-terminating definitions are rejected" code={`def bad : False := bad
+
+def loop (n : Nat) : Nat := loop n
+
+def fib : Nat → Nat
+  | 0 => 0
+  | 1 => 1
+  | n + 2 => fib n + fib (n + 1)`} />
+
+The first two are rejected because they are not by pattern matching at all. The third one — Fibonacci — is a perfectly terminating function, but its call `fib n` is on a subterm *two* constructors deep: `n + 2` is `succ (succ n)`, and the recursor only provides an induction hypothesis for the immediate field `succ n`. The course's compiler, like the simplest possible one, only accepts recursive calls on **immediate** structural subterms.
+
+<Note title="How Lean does better">
+Lean 4's structural recursion handles `fib` using a construction called `brecOn` ("course-of-values recursion"): instead of the induction hypothesis for the immediate predecessor only, it builds, by a single recursion, a data structure containing the results for *all* smaller values, from which any structurally smaller call can be looked up. For functions that are not structurally recursive at all, Lean uses **well-founded recursion** (Chapter 16) and asks for — or tries to find — a proof that some measure decreases. In both cases the result is, again, an application of recursors that the kernel checks. Lean's kernel itself has no notion of recursion at all.
+</Note>
+
+A useful workaround for `fib` is to compute two values at once — a classic trick that also makes it efficient:
+
+<Playground title="Fibonacci with pairs" code={`def fibPair : Nat → Nat × Nat
+  | 0 => ⟨0, 1⟩
+  | n + 1 => ⟨(fibPair n).2, (fibPair n).1 + (fibPair n).2⟩
+
+def fib (n : Nat) : Nat := (fibPair n).1
+
+#reduce fib 10`} />
+
+### Higher-order primitive recursion
+
+Structural recursion on one argument is *primitive recursion*, and primitive recursion on natural numbers alone cannot define every total function: the Ackermann function grows too fast. But in a typed λ-calculus the recursor can return *functions*, and primitive recursion at higher types is vastly more powerful — this is Gödel's System T (1958). Ackermann's function is primitive recursive at type `Nat → Nat`:
+
+<Exercise id="rec:ack" title="Ackermann, by higher-order recursion" code={`-- ack 0 n = n + 1
+-- ack (m+1) 0 = ack m 1
+-- ack (m+1) (n+1) = ack m (ack (m+1) n)
+def ack : Nat → Nat → Nat
+  | 0 => Nat.succ
+  | m + 1 => sorry
+
+#reduce ack 2 3   -- 9`} hint="In the second case you have ack m (as the induction hypothesis) and must return a function Nat → Nat. Define it by an inner recursion on n: use Nat.rec (motive := fun _ => Nat) (ack m 1) (fun _ r => ack m r) or an inner helper." solution={`def iter (f : Nat → Nat) : Nat → Nat
+  | 0 => f 1
+  | n + 1 => f (iter f n)
+
+def ack : Nat → Nat → Nat
+  | 0 => Nat.succ
+  | m + 1 => iter (ack m)
+
+#reduce ack 2 3   -- 9`}>
+The usual two-argument definition of Ackermann's function isn't structurally recursive on either argument alone (try it!). Define it instead by recursion on `m` *returning a function*: `ack (m + 1)` is a function defined by recursion on `n` using `ack m`.
+</Exercise>
+
+## Two designs: guards versus recursors
+
+There are two ways a proof assistant can make recursion safe.
+
+- **Rocq** (and Agda) put `fix` (general recursion) and `match` into the kernel's term language, and the kernel checks a syntactic **guard condition**: every recursive call must be on a variable obtained by pattern matching on the decreasing argument. The check is powerful (it handles `fib` directly, and nested matches) but it is also subtle and has been the source of several soundness bugs over the years.
+- **Lean** keeps only recursors in the kernel. Pattern matching and recursion are compiled *outside* the kernel, by the elaborator, into recursor applications (via `casesOn`, `brecOn` and well-founded recursion). The kernel stays small and never checks termination — it doesn't need to: recursors terminate by construction.
+
+This course follows Lean's design. The price is a more complex compiler; the benefit is a smaller trusted kernel, true to the de Bruijn criterion.
+
+## Summary
+
+- `match` compiles to `casesOn`, multi-column matches to case trees; exhaustiveness is checked, redundant rows are reported, and impossible cases are discharged by index unification.
+- Structural recursion compiles to the recursor: the first split is on the decreasing argument, and recursive calls become induction hypotheses. Other arguments are generalised, so they may vary between calls.
+- Recursive proofs are proofs by induction, compiled the same way.
+- Unrestricted recursion is unsound (`def bad : False := bad`), so recursive calls must be on structurally smaller arguments.
+- Rocq checks recursion with a guard condition in the kernel; Lean compiles recursion away before the kernel sees it.
+
+<History title="From recursors to pattern matching">
+Martin-Löf's type theory and early Coq only had eliminators. Coquand introduced pattern matching with a termination check to type theory in 1992 (*Pattern matching with dependent types*), and Eduardo Giménez formulated the guard condition for Coq's `fix` in 1994 (it also covers coinductive types). Conor McBride showed how to compile dependent pattern matching to eliminators (1999–2006), and Lean 3 and 4 adopted that approach with an *equation compiler*, adding well-founded recursion and, in Lean 4, automatic termination proofs.
+</History>

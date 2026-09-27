@@ -1,0 +1,129 @@
+So far, types have depended on types, and terms on terms and types. We now let **types depend on terms**. It is the step that turns a programming language into a logic in which one can say something about individual values — "4 is even", "this list has length n", "for every natural number n, n + 0 = n" — and it is the step that gives CIC its name: the *Calculus of Constructions* is about constructions that live at all levels at once.
+
+## Why dependency?
+
+Consider a few types you might want to write:
+
+- `Vec A n`: lists of elements of `A` of length exactly `n`. Then `head : Vec A (n + 1) → A` can never be called on an empty list, and `zip : Vec A n → Vec B n → Vec (A × B) n` can only be called on lists of equal length.
+- `Even n`: the proposition that the number `n` is even. A proof of `Even 4` is a certificate; there is no proof of `Even 3`.
+- `n + 0 = n`: an equation between two terms, which is itself a type, inhabited when the equation holds.
+- `Matrix m n`, `Fin n` (numbers below `n`), `Format s` (printf arguments determined by the format string `s`)…
+
+In each case the type mentions a *value* — a number, a string. A type-valued function of a term, such as `Vec A : Nat → *` or `Even : Nat → *`, is called a **type family** or, when its values are propositions, a **predicate**.
+
+## Π-types, in full generality
+
+We have already been writing $\Pi (x : A).\, B$ for functions whose result type may mention the argument. So far the argument was always a type (in polymorphism) or $B$ did not mention it (ordinary functions). Now the argument can be an ordinary *term* and the result type can depend on it:
+
+$$
+\Pi (n : \mathbb{N}).\ \mathsf{Vec}\ A\ n \qquad\text{``a function that, given } n\text{, returns a vector of length } n\text{''}
+$$
+
+A function of this type returns results in *different types* for different inputs. Its typing rules are the ones we already know, with the substitution in the conclusion of App finally doing real work:
+
+<Rules ids="pts.prod pts.abs pts.app" />
+
+In `Application`, the result type $B[a/x]$ depends on *which* argument was passed. Applying $f : \Pi (n : \mathbb{N}).\, \mathsf{Vec}\,A\,n$ to $3$ gives a result of type $\mathsf{Vec}\,A\,3$.
+
+What makes the new system new is again a single product rule. To form the kind of a type family, `N → *`, we need a Π-type whose domain `N` is a type (sort `*`) and whose codomain `*` is a kind (sort `□`): the rule `(*, □)`, "types depending on terms". The calculus with rules `(*, *)` and `(*, □)` only is called **λP**. It has dependent types but neither polymorphism nor type operators.
+
+## First-order logic
+
+Under Curry–Howard, a dependent function type $\Pi (x : A).\, P\,x$ is a **universal quantification**: a proof of $\forall x : A.\, P(x)$ is a function taking any $x$ and returning a proof of $P(x)$. Its introduction rule is λ-abstraction; its elimination rule — instantiating a universal statement at a particular $a$ — is application. So λP is a proof system for (minimal) **first-order predicate logic**.
+
+Here is a theory of even numbers written in λP. We declare, as global constants, a type `N`, a zero and a successor, a predicate `Even`, and two axioms. Then we *prove* that four is even by writing a term.
+
+<Playground calculus="lp" title="Even numbers in λP" code={`variable (N : *) (zero : N) (succ : N → N)
+variable (Even : N → *)
+
+axiom even_zero : Even zero
+axiom even_ss : Π (n : N), Even n → Even (succ (succ n))
+
+def four : N := succ (succ (succ (succ zero)))
+
+theorem even_four : Even four :=
+  even_ss (succ (succ zero)) (even_ss zero even_zero)`} />
+
+Open the derivation tree of `even_four`. The outermost App rule types `even_ss (succ (succ zero)) (…)`; its type is computed by substituting `succ (succ zero)` for `n` in `Even n → Even (succ (succ n))`. And the final Conv step compares `Even (succ (succ (succ (succ zero))))` with the declared type `Even four` — equal only after unfolding the definition of `four`. Types now contain terms, so convertibility of types requires computing with *terms*.
+
+<Exercise id="lp:even6" calculus="lp" title="Six is even" code={`variable (N : *) (zero : N) (succ : N → N)
+variable (Even : N → *)
+axiom even_zero : Even zero
+axiom even_ss : Π (n : N), Even n → Even (succ (succ n))
+
+theorem even_six : Even (succ (succ (succ (succ (succ (succ zero)))))) :=
+  ?_`} hint="Three applications of even_ss, starting from even_zero. Each even_ss needs the n explicitly." solution={`variable (N : *) (zero : N) (succ : N → N)
+variable (Even : N → *)
+axiom even_zero : Even zero
+axiom even_ss : Π (n : N), Even n → Even (succ (succ n))
+
+theorem even_six : Even (succ (succ (succ (succ (succ (succ zero)))))) :=
+  even_ss (succ (succ (succ (succ zero)))) (even_ss (succ (succ zero)) (even_ss zero even_zero))`}>
+Prove that six is even.
+</Exercise>
+
+Notice what is *not* here: we cannot prove `Π (n : N), Even (succ (succ n)) → Even n` or anything else requiring induction, because nothing says that `zero` and `succ` generate all of `N`. The constants are completely uninterpreted. Getting induction requires the inductive types of Part IV.
+
+## Judgements as types: the Logical Framework
+
+λP has an important alternative reading, developed by Robert Harper, Furio Honsell and Gordon Plotkin in 1987 under the name **LF** (the *Logical Framework*). Instead of using λP *as* a logic, use it as a *metalanguage* for defining other logics. The recipe:
+
+- declare a type `o` of the object logic's formulas, and constants for its connectives;
+- declare a type family `pf : o → *`, where `pf A` is the type of proofs of the formula `A` — the *judgement* "A is provable" becomes a type;
+- declare each inference rule as a constant whose type is the rule.
+
+Here is implicational logic in LF:
+
+<Playground calculus="lp" title="A logic defined in LF" code={`variable (o : *) (imp : o → o → o)
+variable (pf : o → *)
+
+axiom impI : Π (A B : o), (pf A → pf B) → pf (imp A B)
+axiom impE : Π (A B : o), pf (imp A B) → pf A → pf B
+
+-- the K combinator, as a proof in the encoded logic
+theorem K : Π (A B : o), pf (imp A (imp B A)) :=
+  λ (A B : o) => impI A (imp B A) (λ (a : pf A) => impI B A (λ (b : pf B) => a))`} />
+
+Look at the type of `impI`: its premise is a *function* `pf A → pf B`. The discharged hypothesis of the →I rule is represented by the λ-bound variable of LF itself — so the object logic inherits capture-avoiding substitution, α-equivalence and hypothetical reasoning from the framework, for free. This technique is called **higher-order abstract syntax**, and a theorem of LF (*adequacy*) guarantees that the closed normal terms of type `pf A` correspond exactly to the derivations of `A` in the object logic. The Twelf system is built on LF and has been used to formalise the metatheory of programming languages such as Standard ML.
+
+## Dependent types for programs
+
+Dependent types are just as useful for programming as for logic. Here is a preview from the full CIC — we'll build it properly in Part IV. The type of vectors is indexed by their length, and a function that builds a vector of length `n` has a dependent function type:
+
+<Playground title="Vectors (preview)" code={`inductive Vec (α : Type u) : Nat → Type u where
+  | nil : Vec α 0
+  | cons {n : Nat} (a : α) (v : Vec α n) : Vec α (n + 1)
+
+def replicate {α : Type} (a : α) : (n : Nat) → Vec α n
+  | 0 => Vec.nil
+  | n + 1 => Vec.cons a (replicate a n)
+
+#check replicate Bool.true 3
+#reduce replicate Bool.true 3`} />
+
+Note the type of `replicate`: `(n : Nat) → Vec α n` is Lean's notation for $\Pi (n : \mathbb{N}).\, \mathsf{Vec}\,\alpha\,n$. The type checker verifies that each case returns a vector of the right length: in the second case it must check that `Vec.cons a (replicate a n)`, of type `Vec α (n + 1)`, has the type `Vec α (n + 1)` required by the pattern — easy here, but in general it requires computing with numbers inside types.
+
+<Engineer title="Why the kernel must evaluate programs">
+With dependent types the line between type checking and running programs disappears. To accept `v : Vec α (2 + 2)` where `Vec α 4` is expected, the kernel must compute `2 + 2`. This is why a type theory with dependent types must be *strongly normalising* if type checking is to be decidable: an arbitrary program could appear inside a type. It is also why CIC's recursion is so tightly restricted (Chapter 15) and why proof assistants care about the efficiency of their evaluators: Lean's kernel has special support for arithmetic on natural number literals so that `2^64 + 1` doesn't have to be computed in unary.
+</Engineer>
+
+## Two families of dependent type theory
+
+Dependent types were not invented in the λ-cube. Two traditions developed them:
+
+- **Automath** (de Bruijn, from 1967) was the first system to use dependent types, for checking mathematics. Its descendants in spirit are LF and the Calculus of Constructions.
+- **Martin-Löf type theory** (Per Martin-Löf, 1971–1984) presented dependent types as a *foundation* of constructive mathematics, with Π-types, dependent pair types (Σ-types, the constructive existential), identity types, inductive types and a hierarchy of *predicative* universes. Agda, Idris and the NuPRL system descend from it.
+
+CIC stands at the confluence: it combines the impredicative polymorphism of System F and Fω with the dependent types of Martin-Löf. The next chapter shows how all these systems fit into a single picture.
+
+## Summary
+
+- Dependent types let types mention terms: type families like `Vec A n`, predicates like `Even n`.
+- Π-types generalise function types; application substitutes the argument into the result type.
+- The new product rule `(*, □)` gives λP, whose Curry–Howard reading is first-order predicate logic.
+- λP can also be used as a logical framework (LF), representing object logics with judgements as types and higher-order abstract syntax.
+- Type checking now requires computing with terms, so normalisation of terms is essential for decidability.
+
+<History title="From Automath to LF">
+De Bruijn's Automath languages (1967–1980) used dependent types (and λ-abstraction over proofs) long before the Curry–Howard correspondence was widely known; Howard's 1969 manuscript independently described dependent types for predicate logic. Martin-Löf's first type theory (1971) included a type of all types and was shown inconsistent by Girard; his 1972 and later theories fixed this with predicative universes (Chapter 10). Harper, Honsell and Plotkin's *A Framework for Defining Logics* appeared in 1987 (journal version 1993), and Twelf, by Frank Pfenning and Carsten Schürmann, dates from the late 1990s.
+</History>

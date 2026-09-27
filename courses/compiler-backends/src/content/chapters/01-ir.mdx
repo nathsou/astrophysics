@@ -1,0 +1,118 @@
+<p className="lede">
+Everything in a backend is a transformation of some representation. We start with the one the backend receives: a small SSA-shaped intermediate representation called KIR, and the front end that lowers source code into it.
+</p>
+
+## The source language
+
+Kiln is deliberately tiny. Every value is a 64-bit signed integer; comparisons produce 0 or 1; arrays are just addresses. There are functions, `let` bindings, `if`/`else`, `while`, `for i in a..b`, `break`, `continue`, `return`, global scalars and arrays, and two built-ins, `print` and `putchar`, supplied by a runtime library.
+
+<CodeSnippet lang="kiln" title="A taste of Kiln" code={`
+global table[4] = [3, 1, 4, 1];
+
+fn sum(a, n) {
+  let s = 0;
+  for i in 0..n {
+    s += a[i];
+  }
+  return s;
+}
+
+fn main() {
+  print(sum(table, 4));   // 9
+  return 0;
+}
+`} />
+
+This is enough to create everything a backend has to cope with: loops and joins in the control flow, function calls and the calling convention, memory accesses with address arithmetic, constants of every size, and — once you write a little more — more live values than there are registers.
+
+## Design of KIR
+
+KIR (“Kiln IR”) is modelled on LLVM IR, stripped to the essentials. It is **SSA-based**: every value is defined exactly once, and every use of a value is dominated by its definition. Chapter 4 explains how we get there. The main pieces are:
+
+- A **module** holds functions and global variables.
+- A **function** holds a list of <Term k="basic-block">basic blocks</Term>; the first is the entry block.
+- A **basic block** holds a list of instructions, the last of which is a *terminator* (`br`, `condbr` or `ret`).
+- An **instruction** *is* the value it computes. `%s12 = add %s9, %11` is not an assignment to a variable called `%s12`; `%s12` is simply the name of the add instruction. Operands are pointers to other values: instructions, function parameters or constants.
+- There are only two value types: **`i64`** for data and addresses, and **`i1`**, the result of comparisons, used by branches and `select`.
+
+<IRView example="fib" fn="fib" stage="optimized" title="KIR for fib, after optimisation" caption="Hover an instruction name for its semantics, and a value to highlight every use of it. The numbers in value names are stable IDs; letters, where present, come from source variable names." />
+
+The instruction set is small enough to fit in a table:
+
+| group | instructions | notes |
+|---|---|---|
+| arithmetic | `add sub mul sdiv srem` | wrap modulo 2⁶⁴; division by zero is undefined |
+| bitwise | `and or xor shl ashr lshr` | shift amounts are taken modulo 64 |
+| comparison | `icmp eq/ne/slt/sle/sgt/sge` | produce `i1` |
+| conversion & choice | `zext`, `select` | `i1` → `i64`; `c ? a : b` without a branch |
+| memory | `alloca load store gaddr` | stack slots, 8-byte loads/stores, global addresses |
+| calls | `call @f(…)` | `print` and `putchar` become calls to the runtime |
+| SSA | `phi [v, block], …` | the value depends on the predecessor we came from |
+| terminators | `br`, `condbr`, `ret` | exactly one, at the end of every block |
+
+<Aside kind="llvm">
+<p>LLVM IR has a rich type system, `getelementptr` for address arithmetic, and dozens of instructions. Kiln computes addresses with plain `mul` and `add`, which makes instruction selection’s job of recognising addressing modes more visible. GCC’s GIMPLE and Cranelift’s CLIF are similar three-address SSA forms; GCC’s RTL, which its backend uses, is closer to our machine IR.</p>
+</Aside>
+
+## Lowering: the easy way to generate IR
+
+How does a front end produce SSA? The trick every production front end uses is: **it doesn’t**. Clang, rustc and many others emit IR in which every local variable lives in a stack slot:
+
+- a variable declaration becomes an `alloca` in the entry block;
+- every read becomes a `load`;
+- every write becomes a `store`.
+
+This IR is trivially correct and trivially in SSA form, because the only values are the loads, computations and addresses. Nothing is ever assigned twice. The hard work of turning stack slots into proper SSA values with phis is left to a dedicated pass, *mem2reg*, which we build in Chapter 4.
+
+Here is what that looks like. The left pane is editable; the right pane shows the IR at three levels. **IR** is the raw lowering, **SSA** is after mem2reg, and **Optimised** is after the clean-up passes of Chapter 5.
+
+<Pipeline example="sum" stage="ir" opt={1} stages={['ir', 'ssa', 'opt']} height={380} caption="Source-to-IR lowering. Hover a source line to see the IR it produced (and vice versa). At the IR stage every use of `s` and `i` is a load from a stack slot; after mem2reg they are values joined by phis in the loop header." />
+
+### Expressions
+
+Expressions become a post-order walk of the syntax tree: evaluate the operands, then emit one instruction. The front end names nothing — `s + i * i` becomes three loads, a `mul` and an `add`. Array indexing `a[i]` is desugared into explicit address arithmetic, `load (add a, (mul i, 8))`, which the optimiser later strength-reduces to a shift.
+
+### Control flow
+
+Statements become blocks and branches. An `if` produces a `then` block, an optional `else` block and a join block. A `while` loop produces a *condition* block, a *body* block that branches back to the condition, and an *exit* block. `break` and `continue` are simply branches to the exit and condition blocks of the innermost loop.
+
+Conditions use **jumping code**, a technique described in the Dragon Book. Instead of computing a boolean value and then testing it, the lowering of a condition takes two target blocks, *true* and *false*, and emits branches directly:
+
+- `a && b` becomes “test `a`; if false, go to *false*; otherwise test `b`”;
+- `a || b` is the mirror image;
+- `!a` swaps the two targets and emits nothing.
+
+This is how short-circuit evaluation falls out for free. Only when a boolean is needed as a *value* (`x = a < b && c`) does the front end build it with branches that meet at a phi.
+
+<Aside kind="history">
+<p>The technique of generating branches for boolean expressions without materialising their values goes back to early Algol compilers; it appears as “backpatching” in Aho, Sethi and Ullman’s <i>Compilers: Principles, Techniques and Tools</i> (1986), the Dragon Book.</p>
+</Aside>
+
+### Everything else
+
+- A function without a final `return` gets `ret 0`.
+- Code after a `return` or `break` lands in an unreachable block, which is deleted immediately.
+- All `alloca`s are hoisted to the top of the entry block, as clang does. This gives the frame a static size, and makes it trivial for mem2reg to find candidates.
+
+## What a program means
+
+A backend is only correct relative to some semantics, so kiln has a **reference interpreter** for KIR. It runs any module at any stage — before or after mem2reg, before or after optimisation — and must always print the same output. The interpreter fixes the few things that could otherwise be ambiguous:
+
+- integers wrap modulo 2⁶⁴, and shift amounts are taken modulo 64 (all three hardware targets do this);
+- `sdiv`/`srem` by zero is an error (hardware disagrees wildly: RISC-V returns −1, AArch64 returns 0, x86 traps);
+- reading an uninitialised array element is reported as a warning, because that is the one way two correct backends can legitimately print different results.
+
+Throughout the course, every compiled program is run twice: by this interpreter, and by the machine code (on the RISC-V emulator, or as WebAssembly in your browser). The **Run** tab of every pipeline figure shows whether they agree.
+
+## Keeping ourselves honest: the verifier
+
+Every pass leaves the IR in a state a **verifier** can check. The IR must be well formed:
+- every block ends in exactly one terminator;
+- phis sit at the top of their block;
+- each phi has exactly one incoming value per predecessor.
+
+Once the IR is in SSA form, the verifier also checks the SSA property: the definition of every value **dominates** each of its uses. For a phi operand, the use counts as happening at the end of the corresponding predecessor block. Chapter 3 defines dominance precisely. Verifiers are unglamorous and indispensable. LLVM runs its verifier between passes in debug builds, and most compiler bugs are caught by one.
+
+<Callout kind="key">
+KIR is simple on purpose: a handful of opcodes, two types, SSA values and explicit control flow. That is all the backend needs. The rest of the course turns this representation — and nothing else — into machine code.
+</Callout>

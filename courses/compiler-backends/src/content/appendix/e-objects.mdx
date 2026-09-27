@@ -1,0 +1,57 @@
+<p className="lede">
+A field guide to the three object-file formats in use today: ELF, Mach-O and PE/COFF.
+</p>
+
+## ELF in detail
+
+An ELF file starts with a 64-byte header:
+- the magic `7f 45 4c 46` (“\x7fELF”);
+- class (32/64-bit), endianness, OS ABI;
+- type: relocatable, executable, shared object or core;
+- machine: 243 for RISC-V, 183 for AArch64, 62 for x86-64;
+- entry point;
+- offsets of the program and section header tables.
+
+**Sections** are the linker’s view: named regions with a type, flags, alignment and optional link and info fields. Common types:
+
+| type | meaning | examples |
+|---|---|---|
+| `PROGBITS` | bytes from the file | `.text`, `.data`, `.rodata` |
+| `NOBITS` | occupies memory but no file space | `.bss` |
+| `SYMTAB` / `DYNSYM` | symbol tables (full / dynamic) | `.symtab`, `.dynsym` |
+| `STRTAB` | NUL-separated strings | `.strtab`, `.shstrtab` |
+| `RELA` / `REL` | relocations with / without explicit addend | `.rela.text` |
+| `DYNAMIC` | dynamic-linking information | `.dynamic` |
+| `NOTE` | vendor notes | `.note.GNU-stack` |
+
+Flags: `A` (occupies memory at run time), `W` (writable), `X` (executable).
+
+**Segments** (program headers) are the loader’s view. `PT_LOAD` maps a file range at a virtual address with permissions; `PT_DYNAMIC`, `PT_INTERP`, `PT_TLS` and `PT_GNU_STACK` do the rest. Relocatable objects have sections but no segments; executables need segments, and their sections are optional.
+
+**Symbols** are 24 bytes each:
+- a name offset into the string table;
+- **binding**: `LOCAL`, `GLOBAL` or `WEAK`;
+- **type**: `NOTYPE`, `OBJECT`, `FUNC`, `SECTION` or `FILE`;
+- **visibility**: default, hidden or protected;
+- the section index — or `UND` for undefined, or `ABS` for an absolute value;
+- value and size.
+
+All local symbols must come before all global ones; the symbol table’s `sh_info` gives the index of the first non-local.
+
+**Relocations** (`Elf64_Rela`) are an offset, an info word (`symbol << 32 | type`) and a signed addend. Each processor supplement defines its own types and formulas.
+
+<ElfExplorer which="runtime" caption="The runtime library’s object file, written by kiln’s own assembler. Its symbol table has global functions (_start, print_int, …), local labels, and a local helper function." />
+
+## Mach-O
+
+Apple platforms use Mach-O, which came from NeXTSTEP. A header is followed by **load commands**. `LC_SEGMENT_64` describes a segment (`__TEXT`, `__DATA`, `__LINKEDIT`) containing **sections** such as `__text`, `__cstring` and `__data`. Other load commands carry the symbol table, dynamic-linking information and code signatures.
+
+Relocations are attached to sections and are more compact than ELF’s: addends are stored in the instruction bits themselves, and paired relocations such as `ARM64_RELOC_PAGE21` and `PAGEOFF12` encode the `adrp`/`add` idiom. Symbols carry a leading underscore (`_main`) by C convention; you saw this in kiln’s Darwin-flavoured AArch64 output. Libraries are resolved with a *two-level namespace*: each undefined symbol records which library should provide it.
+
+## PE/COFF
+
+Windows executables are PE (Portable Executable) files: a DOS stub, a PE header, an optional header (which is not optional for images) with data directories, and a section table (`.text`, `.rdata`, `.data`, `.pdata`, `.reloc`). Object files are plain COFF. Imports are resolved through the **import address table**, the equivalent of ELF’s GOT. Images are linked for a preferred base address, and `.reloc` holds **base relocations** for when they must be loaded elsewhere. `.pdata` and `.xdata` hold the unwind information that x64 Windows requires for every non-leaf function.
+
+## Archives and friends
+
+Static libraries (`.a`) are `ar` archives of object files, with an index of which member defines which symbol. The linker pulls in a member only if it defines a symbol that is currently undefined. That is why library order on the command line matters with traditional linkers.

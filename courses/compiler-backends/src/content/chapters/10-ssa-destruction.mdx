@@ -1,0 +1,100 @@
+<p className="lede">
+Processors do not execute φ-functions. Before registers are assigned, every φ must become ordinary copies on the edges that feed it. This looks trivial, and two classic bugs show that it is not.
+</p>
+
+## Where kiln leaves SSA
+
+Kiln stays in SSA through instruction selection: the machine IR that comes out of the selector still has `PHI` instructions at the top of blocks. The **PHI elimination** pass then replaces them with `COPY`s, just before register allocation. LLVM’s pipeline is the same (`PHIElimination` runs just before its register coalescer).
+
+The alternative is **SSA-based register allocation**, which allocates while still in SSA form and only then destroys it. It has attractive theoretical properties, discussed in Chapter 12, but the simple ordering is still the common one.
+
+## The obvious translation
+
+A φ at the top of block *B*,
+
+<CodeSnippet lang="ir" code={`
+B:  %x = phi [%a, P1], [%b, P2]
+`} />
+
+means “on the edge from P1, `%x` gets `%a`; on the edge from P2, `%x` gets `%b`”. The obvious implementation puts a copy at the end of each predecessor, just before its branch: `%x ← %a` at the end of P1, `%x ← %b` at the end of P2. Then it deletes the φ. `%x` now has two definitions, and the program is no longer in SSA form — which is the point.
+
+This works for code straight out of a naive SSA construction. It breaks after optimisation, in two well-known ways.
+
+## Bug 1: the lost copy
+
+Copy propagation can make a φ’s result **live past the edge** on which the copy would be placed:
+
+<CodeSnippet lang="ir" title="After copy propagation" code={`
+loop:                                   ; preds: entry, loop
+  %i = phi [0, entry], [%next, loop]
+  %next = add %i, 1
+  condbr %c, loop, exit                  ; loop -> loop is a critical edge
+exit:
+  ret %i                                 ; uses %i, the OLD value
+`} />
+
+The naive translation puts `%i ← %next` at the end of `loop`, before its `condbr`. But that code also runs when control leaves for `exit`, which then returns the *new* value instead of the old one. The copy has overwritten a value that one of the block’s *other* successors still needs.
+
+The culprit is the **<Term k="critical-edge">critical edge</Term>** `loop → loop`: its source has two successors and its target two predecessors, so there is no place to put code that runs *only* on that edge. The fix is to **split critical edges** into φ-blocks. Insert a new block on the edge and put the copies there.
+
+## Bug 2: the swap
+
+Now consider a loop that swaps two variables each iteration. In SSA, the loop header has
+
+<CodeSnippet lang="ir" code={`
+head:
+  %x = phi [%x0, entry], [%y, head]
+  %y = phi [%y0, entry], [%x, head]
+`} />
+
+Both φs read their operands *simultaneously*, on entry to the block. Emitted one at a time as `%x ← %y; %y ← %x`, the second copy reads the already-overwritten `%x`, and both end up equal. The φs of a block together form a **<Term k="parallel-copy">parallel copy</Term>**, `(x, y) := (y, x)`, and a parallel copy containing a cycle cannot be sequentialised without a **temporary**.
+
+## Sequentialising a parallel copy
+
+Think of the parallel copy as a graph with an edge *src → dst* for each copy. Every location has at most one incoming edge, since each destination is written once. So each connected piece is a tree hanging off at most one cycle. The algorithm is:
+
+1. **While some copy’s destination is not the source of any pending copy**, emit it. Overwriting that destination is harmless, because nobody still needs its old value. Emitting it may free up another destination.
+2. **Otherwise**, every pending copy is part of a cycle. Pick one, save its destination in a fresh **temporary**, redirect every copy that reads that location to read the temporary instead, and continue. The cycle is now a chain.
+
+```ts
+export function sequentialize(copies: PCopy[], tmp: () => number): PCopy[] {
+  let pending = copies.filter((c) => c.dst !== c.src);
+  const out: PCopy[] = [];
+  while (pending.length) {
+    const ready = pending.find((c) => !pending.some((o) => o !== c && o.src === c.dst));
+    if (ready) { out.push(ready); pending = pending.filter((c) => c !== ready); continue; }
+    const c = pending[0], t = tmp();            // only cycles remain: break one
+    out.push({ dst: t, src: c.dst });
+    for (const o of pending) if (o.src === c.dst) o.src = t;
+  }
+  return out;
+}
+```
+
+A cycle of length *n* costs *n + 1* copies. (A target with an `xchg` or a swap instruction could do it in *n − 1* swaps; x86 has `xchg`, but it is slow when one operand is in memory, so compilers rarely use it.)
+
+<ParallelCopyStepper initial="cycle + tree" caption="Sequentialising a parallel copy. Edges point from source to destination. Copies whose destination nobody else reads go first; once only a cycle remains, one value is parked in a temporary. Edit the copies to try your own, e.g. a 4-cycle, or two independent swaps." />
+
+## Putting it together
+
+Kiln’s PHI elimination:
+
+1. **Splits** every critical edge that enters a block with φs, inserting a block that just jumps to the target, and redirecting the branch and the φ operands.
+2. For each block with φs, groups the φ operands **per incoming edge** into a parallel copy, and sequentialises each group at the end of the predecessor, before its terminator. After step 1, that predecessor has a single successor.
+3. Deletes the φs.
+
+Constant φ operands were already materialised into virtual registers in the predecessor during instruction selection, so every copy is register to register.
+
+<PhiElimExplorer example="rotate" fn="rotate" caption="PHI elimination for a loop that rotates three values (x, y, z) := (y, z, x). The back edge into the loop header is critical, so it is split first. Its parallel copy is a 3-cycle, so four copies and one temporary are needed. Try the CFG view to see the split blocks (red)." />
+
+## Is this optimal? Not remotely
+
+The translation inserts many copies. Most of them are removed later by **coalescing** in the register allocator, which gives the source and destination of a copy the same register whenever their live ranges do not overlap. That division of labour — insert copies freely, then coalesce aggressively — is the standard design.
+
+<Aside kind="history">
+<p>The lost-copy and swap problems were described by Briggs, Cooper, Harvey and Simpson in “Practical Improvements to the Construction and Destruction of SSA Form” (1998). Sreedhar et al. (1999) introduced <i>conventional SSA</i>, in which the operands of a φ can always share a name, and showed how to reach it with few copies. Boissinot et al. (CGO 2009) gave a correct, fast method that works on any SSA and integrates coalescing, using parallel copies throughout.</p>
+</Aside>
+
+<Callout kind="key">
+A block’s φs are a parallel copy on each incoming edge. Put the copies on the edge, splitting it if it is critical (the lost-copy problem). Sequentialise them carefully, using a temporary for cycles (the swap problem). Then let the register allocator coalesce most of the copies away.
+</Callout>

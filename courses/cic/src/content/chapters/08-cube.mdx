@@ -1,0 +1,120 @@
+We have now met four ways for one thing to depend on another:
+
+| dependency | example | first seen in | product rule |
+|---|---|---|---|
+| terms on terms | `λ (x : A) => f x` | λ→ | `(*, *)` |
+| terms on types | `λ (A : *) (x : A) => x` | System F (λ2) | `(□, *)` |
+| types on types | `λ (A : *) => A → A` | Fω (λω) | `(□, □)` |
+| types on terms | `λ (n : N) => Vec A n` | λP | `(*, □)` |
+
+The first is always present. The other three are independent: each can be added or left out, giving $2^3 = 8$ calculi. Henk Barendregt arranged them in 1991 as the vertices of a cube.
+
+<CubeViz />
+
+Each edge adds one dependency; opposite faces differ in one. At the origin is λ→, and at the far corner, with all three extra dependencies, is λC — the **Calculus of Constructions**, the subject of the next chapter. Try typing terms into the *where does this term live?* box: the vertices where the kernel accepts the term light up. Because each extra rule only *adds* typable terms, the set of accepting vertices is always "upward closed" — once a term typechecks somewhere, it typechecks in every calculus above.
+
+## Pure Type Systems
+
+The cube is an instance of a more general and remarkably economical framework, found independently by Stefano Berardi and Jan Terlouw around 1989: **Pure Type Systems** (PTS). A PTS is specified by three sets:
+
+<Definition title="Pure Type System">
+A PTS is a triple $(\mathcal{S}, \mathcal{A}, \mathcal{R})$ where
+
+- $\mathcal{S}$ is a set of **sorts**;
+- $\mathcal{A} \subseteq \mathcal{S} \times \mathcal{S}$ is a set of **axioms** $s_1 : s_2$;
+- $\mathcal{R} \subseteq \mathcal{S} \times \mathcal{S} \times \mathcal{S}$ is a set of **rules** $(s_1, s_2, s_3)$, saying that a Π-type whose domain lives in $s_1$ and whose codomain lives in $s_2$ lives in $s_3$. A rule $(s_1, s_2)$ abbreviates $(s_1, s_2, s_2)$.
+
+Terms are those of the λ-calculus plus sorts and Π-types, with no distinction between terms and types:
+
+$$
+M, N, A, B ::= s \mid x \mid \lambda (x : A).\, M \mid M\, N \mid \Pi (x : A).\, B
+$$
+</Definition>
+
+The typing rules are the same for every PTS; only the sets vary.
+
+<Rules ids="pts.axiom pts.start pts.weak pts.prod pts.abs pts.app pts.conv" />
+
+That's the whole system. There is no separate syntax for types, kinds, polymorphism or type operators: they are all terms, distinguished only by where they live in the hierarchy of sorts. The λ-cube is the family of PTSs with
+
+$$
+\mathcal{S} = \{*, \square\} \qquad \mathcal{A} = \{* : \square\} \qquad (*, *) \in \mathcal{R} \subseteq \{(*, *), (\square, *), (\square, \square), (*, \square)\}.
+$$
+
+<Engineer title="One kernel for eight calculi">
+This is exactly how the course kernel implements Part II. There is one type checker, and a `Features` record says which calculus is active; for the cube, it holds the list of product rules. The only place the rules are consulted is the function that computes the sort of a Π-type:
+
+```ts
+private piSort(u: Level, v: Level): Level {
+  if (this.features.cube) {
+    const s1 = toNat(u), s2 = toNat(v);           // 0 is *, 1 is □
+    if (!cubeAllows(this.features, s1, s2))
+      throw new KernelError(['the product rule (…) is not available in …']);
+    return v;                                      // (s1, s2, s2)
+  }
+  return this.features.impredicativeProp ? limax(u, v) : lmax(u, v);
+}
+```
+
+(plus a check, in the λ rule, that the λ's type is a well-formed Π-type). The last line is CIC's version, which we'll understand in Chapter 10: it is a PTS with infinitely many sorts.
+</Engineer>
+
+The kernel's own rules — shown in its derivation trees — are an *algorithmic* version of the PTS rules. Weakening and Start disappear, because the context is consulted directly by Var; Conversion is folded into the places where types are compared (the argument of an application, the declared type of a definition), and the "compute the type" direction is fixed. For well-behaved PTSs such as those of the cube, the algorithmic and declarative systems derive the same judgements.
+
+## What all PTSs share
+
+Much of the theory can be done once for all PTSs:
+
+- **Confluence** of β-reduction (the terms are just λ-terms).
+- **Subject reduction**: if $\Gamma \vdash M : A$ and $M \longrightarrow_\beta M'$ then $\Gamma \vdash M' : A$.
+- **Uniqueness of types**, for *functional* PTSs (where $\mathcal{A}$ and $\mathcal{R}$ are functions of their first arguments): all types of a term are convertible.
+- **Strong normalisation** does *not* hold for every PTS. It holds for all eight corners of the cube — the proof for λC is the hardest, by Coquand in 1985 and later simplified — but fails for some very innocent-looking systems, which we'll meet in Chapter 10.
+
+## The logic cube
+
+Under Curry–Howard each corner is a logic. Barendregt and Geuvers describe a parallel "logic cube", with propositional logic at the origin:
+
+| calculus | logic |
+|---|---|
+| λ→ | propositional logic (implicational fragment) |
+| λ2 | second-order propositional logic |
+| λω̲ | weakly higher-order propositional logic |
+| λω | higher-order propositional logic |
+| λP | predicate logic |
+| λP2 | second-order predicate logic |
+| λPω̲ | weakly higher-order predicate logic |
+| λC | higher-order predicate logic (constructive) |
+
+The correspondence is not perfect — the calculi identify some things the logics keep apart, which becomes important for λC — but it captures the intuition: each dependency adds a kind of quantification. Polymorphism quantifies over propositions, type operators give connectives and predicates on propositions, and dependent types quantify over individuals.
+
+<Exercise id="cube:where" calculus="lp2" title="A term for λP2" code={`variable (N : *)
+
+-- Write the term λ (P : N → *) (n : N) (h : P n) => h here,
+-- and find its type with #check.
+#check ?_`} hint="Replace ?_ by the λ-term from the comment. Which product rules does its type need?" solution={`variable (N : *)
+
+#check λ (P : N → *) (n : N) (h : P n) => h`}>
+The term `λ (P : N → *) (n : N) (h : P n) => h` quantifies over a *predicate* `P`. Check it in λP2 and read off its type. Then use the cube above to find the lowest corners where it typechecks. Why does it need both `(□, *)` and `(*, □)`?
+</Exercise>
+
+## Beyond the cube: more sorts
+
+Nothing forces a PTS to have only two sorts. Some famous examples:
+
+- **λHOL**: sorts $*, \square, \triangle$ with $* : \square$, $\square : \triangle$ and rules $(*,*), (\square,*), (\square,\square)$ — Church's higher-order logic as a PTS.
+- **λU** and **λU⁻**: add a sort above □ with rules allowing quantification over kinds. Girard showed they are inconsistent: they are not strongly normalising, and $\Pi (X : *).\, X$ is inhabited.
+- **λ\***: a single sort with $* : *$ and rule $(*, *)$ — "Type : Type". Also inconsistent, as we'll see.
+- **ECC** and **CIC**: infinitely many sorts $\mathsf{Prop}, \mathsf{Type}_0, \mathsf{Type}_1, \ldots$ This is where we are heading.
+
+So the PTS framework is both a unifying description and a warning: choosing $(\mathcal{S}, \mathcal{A}, \mathcal{R})$ carelessly produces a system in which every proposition is provable.
+
+## Summary
+
+- The three extra dependencies — polymorphism `(□, *)`, type operators `(□, □)` and dependent types `(*, □)` — are independent, giving the eight vertices of the λ-cube.
+- All eight are Pure Type Systems: one set of generic typing rules, parameterised by sorts, axioms and product rules. A single kernel implements them all.
+- Confluence and subject reduction hold for all PTSs; strong normalisation holds for the cube but not in general.
+- At the top corner sits the Calculus of Constructions.
+
+<History title="The cube">
+Barendregt introduced the λ-cube in *Introduction to generalized type systems* (1991), to explain the Calculus of Constructions by factoring it into independent features. Pure Type Systems were defined by Berardi (1988) and Terlouw (1989) and developed by Barendregt and by Geuvers and Nederhof; Barendregt's chapter *Lambda calculi with types* in the *Handbook of Logic in Computer Science* (1992) remains the standard reference. Many proof assistants' kernels, including early versions of Coq, were described as PTSs extended with extra features.
+</History>

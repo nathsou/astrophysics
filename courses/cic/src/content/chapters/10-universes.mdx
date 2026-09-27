@@ -1,0 +1,149 @@
+The last chapter ended with a diagnosis: to define a proposition by recursion on data — the property "n is zero", needed to prove $0 \neq 1$ — we must iterate *into* the type of propositions, `*`. But `*` is not a type of sort `*`; it has sort □, and nothing in CoC eliminates into □. We need types of types that are themselves ordinary types, so that functions can compute them. We need **universes**.
+
+## The obvious solution, and why it fails
+
+The simplest idea is to have a single universe that contains everything, including itself:
+
+$$
+\mathsf{Type} : \mathsf{Type}
+$$
+
+As a PTS: one sort `Type`, axiom `Type : Type`, rule `(Type, Type)`. This is exactly what Per Martin-Löf proposed in the first version of his type theory, in 1971. It is wonderfully simple, it gives large elimination for free, and it is inconsistent.
+
+Jean-Yves Girard showed in 1972 that in this system every type is inhabited — including the empty type. The argument, **Girard's paradox**, is a type-theoretic version of the Burali-Forti paradox about the ordinal of all ordinals: if there is a type of all types, one can build a well-founded relation whose order type is larger than itself. Antonius Hurkens found a much shorter version in 1995. Here it is, checked by the course kernel with the (deliberately inconsistent) option `kernel.typeInType`, which makes all universes above `Prop` equal:
+
+<Playground errors title="Hurkens' paradox" code={`set_option kernel.typeInType true
+
+-- P X is the "powerset" of X
+def P (X : Type) : Type := X → Prop
+def U : Type := (X : Type) → (P (P X) → X) → P (P X)
+
+def tau (t : P (P U)) : U :=
+  fun (X : Type) (f : P (P X) → X) (p : P X) => t (fun (x : U) => p (f (x X f)))
+def sigma (s : U) : P (P U) := s U (fun t => tau t)
+
+def Delta : P U := fun y => (∀ (p : P U), sigma y p → p (tau (sigma y))) → False
+def Omega : U := tau (fun p => ∀ (x : U), sigma x p → p x)
+def D : Prop := ∀ (p : P U), sigma Omega p → p (tau (sigma Omega))
+
+theorem lem1 : ∀ (p : P U), (∀ (x : U), sigma x p → p x) → p Omega :=
+  fun p H1 => H1 Omega (fun x => H1 (tau (sigma x)))
+theorem lem2 : D → False :=
+  fun d => d Delta (fun x H2 H3 => H3 Delta H2 (fun p => H3 (fun y => p (tau (sigma y)))))
+               (fun p => d (fun y => p (tau (sigma y))))
+theorem lem3 : D := fun p => lem1 (fun y => p (tau (sigma y)))
+
+theorem paradox : False := lem2 lem3
+#print axioms paradox
+#reduce paradox`} />
+
+The kernel accepts `paradox : False` without any axioms. The `#reduce` at the end tries to normalise the proof and gives up: the term does not terminate — confirming the connection from Chapter 4 between consistency and normalisation. Now remove the first line. The kernel rejects `U` immediately: `(X : Type) → …` quantifies over `Type` and therefore lives in `Type 1`, not in `Type`, so it cannot be passed as the argument `X`.
+
+<Note title="Why is Prop allowed to be impredicative, then?">
+CoC's `*` quantifies over itself too, and CoC is consistent. The difference is subtle. An impredicative sort is safe as long as it is "small" in a precise sense — roughly, its elements can't be used to compute things in higher universes. Girard's paradox needs *two* levels of impredicativity (it is originally a paradox of his System U, which has an impredicative sort of kinds on top of an impredicative sort of types). CoC has only one, and CIC keeps it only at the very bottom, for `Prop`, with a restriction on large elimination out of `Prop` (Chapter 14) that keeps it small.
+</Note>
+
+## A hierarchy of universes
+
+The standard remedy, going back to Russell's ramified types and adopted by Martin-Löf in 1972, is an infinite **tower** of universes, each an element of the next:
+
+$$
+\mathsf{Prop} : \mathsf{Type}_0 : \mathsf{Type}_1 : \mathsf{Type}_2 : \cdots
+$$
+
+A type quantifying over a universe lives in a *higher* universe. The Π-type rule is **predicative**: $(x : A) \to B$ lives in the larger of the universes of $A$ and $B$ —
+
+<Rule name="Π (predicative)" premises="\Gamma \vdash A : \mathsf{Type}_i || \Gamma,\, x : A \vdash B : \mathsf{Type}_j" conclusion="\Gamma \vdash (x : A) \to B : \mathsf{Type}_{\max(i,j)}" />
+
+— except when $B$ is a proposition, where `Prop` stays impredicative:
+
+<Rule name="Π (into Prop)" premises="\Gamma \vdash A : s || \Gamma,\, x : A \vdash B : \mathsf{Prop}" conclusion="\Gamma \vdash (x : A) \to B : \mathsf{Prop}" />
+
+This is Zhaohui Luo's **Extended Calculus of Constructions** (ECC, 1990), minus its Σ-types: an impredicative `Prop` at the bottom of a predicative hierarchy. As a PTS it has infinitely many sorts.
+
+Explore where things live. Each line is sent to the kernel, which computes its type; types are placed in the band of the universe they inhabit.
+
+<UniverseLab />
+
+`Nat` is a `Type`; `Prop` itself is a `Type`; `Type` is a `Type 1`; `(α : Type) → α → α`, which quantifies over `Type`, lands in `Type 1` — predicativity. But `∀ (p : Prop), p → p`, which quantifies over `Prop`, is still a `Prop` — impredicativity. Try adding your own lines, such as `Type 2 → Prop` or `(n : Nat) → n = n`.
+
+## Large elimination, at last
+
+With universes, a function can return a type. Recall the failed attempt of the previous chapter to define "n is zero" on Church numerals. Put the numerals one universe up, quantifying over `X : Type` — so the numeral type itself lives in `Type 1` — and they can now be iterated *at* `X := Prop`:
+
+<Playground calculus="ecc" title="0 ≠ 1, with universes" code={`def Nat' : Type 1 := (X : Type) → (X → X) → X → X
+def zero : Nat' := fun X s z => z
+def succ (n : Nat') : Nat' := fun X s z => s (n X s z)
+
+def False' : Prop := ∀ (C : Prop), C
+def True' : Prop := ∀ (C : Prop), C → C
+def Eq' {A : Type 1} (x y : A) : Prop := ∀ (P : A → Prop), P x → P y
+
+-- large elimination: a proposition computed from a number
+def isZero (n : Nat') : Prop := n Prop (fun _ => False') True'
+
+theorem zero_ne_one (e : Eq' zero (succ zero)) : False' :=
+  e isZero (fun C c => c)`} />
+
+`isZero zero` computes to `True'`, `isZero (succ zero)` to `False'`, and Leibniz equality transports the trivial proof of the first into a proof of the second. (This playground uses "CoC + universes": the course's kernel with universe levels but without inductive types.)
+
+We have fixed one of the three problems. The induction principle is still not provable, and the encoding is getting heavier: to eliminate into `Type 1`, the numerals would have to move up to `Type 2`, and so on. Inductive types, in Part IV, will solve both problems at once.
+
+## Universes in Lean 4
+
+Lean 4 writes its universes a little differently. There is one family, `Sort u`, indexed by a **universe level** $u$:
+
+$$
+\mathsf{Prop} = \mathsf{Sort}\ 0 \qquad \mathsf{Type} = \mathsf{Sort}\ 1 \qquad \mathsf{Type}\ u = \mathsf{Sort}\ (u+1)
+$$
+
+and `Sort u : Sort (u+1)`. Levels are expressions built from `0`, successor `u+1`, `max u v`, `imax u v` and level variables.
+
+### Universe polymorphism
+
+Should the identity function take arguments in `Type`, or `Type 1`, or `Prop`? All of them. Lean definitions can be parameterised by **universe levels**:
+
+<Playground title="Universe-polymorphic definitions" code={`def myId.{u} {α : Sort u} (a : α) : α := a
+
+#check @myId
+#check @myId.{0}      -- the identity on proofs
+#check @myId.{1}      -- the identity on elements of types in Type
+#check myId Nat       -- Nat : Type, so this uses myId.{2}
+#check myId (fun (p : Prop) => p)`} />
+
+`myId` is not one function but a family, one for each level. The kernel checks the definition once, with `u` a variable, and instantiates `u` wherever `myId` is used; the elaborator infers the levels by unification, just as it infers implicit arguments. Level names that you use without declaring them are bound automatically (as in `(α : Sort u)` above, even without the `.{u}`). Hover over the `#check` results to see the instantiated levels.
+
+### imax
+
+With level *variables*, we need a formula for the level of a Π-type that works uniformly. If $A : \mathsf{Sort}\ u$ and $B : \mathsf{Sort}\ v$, then
+
+$$
+(x : A) \to B \;:\; \mathsf{Sort}\ (\mathrm{imax}\ u\ v) \qquad \mathrm{imax}\ u\ v = \begin{cases} 0 & \text{if } v = 0 \\ \max(u, v) & \text{otherwise} \end{cases}
+$$
+
+The "impredicative max" is `max`, except that a Π-type into `Prop` stays in `Prop`. It can't be simplified to `max` when `v` is a variable, because we don't know whether `v` will be instantiated at 0. The kernel must therefore decide equalities and inequalities between level expressions containing `imax` — the course kernel does this by case analysis on whether each variable is zero, after which every `imax` disappears and the remaining `max`-expressions have a canonical form.
+
+<Engineer title="Universe constraints">
+Elaboration produces universe *metavariables* (for levels left implicit) and constraints between them (`?u + 1 = max v ?w`, …). The course elaborator solves easy ones by assignment and generalises leftover metavariables into fresh level parameters `u_1`, `u_2`, … — which is why `#check @const` for `def const (a : α) (b : β) : α := a` shows `Sort u_1` and `Sort u_2`. Real systems do considerably more: Rocq maintains a global graph of universe constraints and checks it for cycles; Lean solves constraints during elaboration and rejects definitions whose level constraints are unsatisfiable.
+</Engineer>
+
+### No cumulativity
+
+In Rocq, universes are **cumulative**: every element of `Type i` is also an element of `Type (i+1)`, so `Nat : Type 0` also has type `Type 1`. Lean 4 is **not** cumulative: a term has a unique type up to definitional equality, and moving something up a universe needs an explicit wrapper (`ULift`). Non-cumulativity keeps the kernel simpler — definitional equality never has to consider subtyping — at the price of occasional explicit lifts.
+
+<Playground errors title="Universe errors" code={`def T : Type := Type            -- Type : Type 1, not Type
+def T1 : Type 1 := Type          -- fine
+def pair (α : Type) : Type := α → α → α
+#check pair Nat
+#check pair Type                 -- Type is not a Type`} />
+
+## Summary
+
+- `Type : Type` is inconsistent: Girard's paradox, here in Hurkens' form, proves `False` — and the proof does not normalise.
+- A predicative hierarchy of universes, with an impredicative `Prop` at the bottom (ECC), avoids the paradox.
+- Universes make large elimination possible: types can be computed by functions.
+- Lean 4 uses `Sort u` with `Prop = Sort 0`, universe-polymorphic definitions, the `imax` rule for Π-types, and no cumulativity.
+
+<History title="Universes">
+Martin-Löf's 1971 theory had `V ∈ V` and was refuted by Girard in the same year (the paradox appeared in Girard's 1972 thesis). Martin-Löf's 1972 and 1973 theories introduced predicative universes à la Russell's hierarchy. Thierry Coquand analysed Girard's paradox in 1986 and showed which impredicative systems are affected; Hurkens' short version appeared in 1995. Luo's ECC (1990) combined CoC's impredicative `Prop` with a cumulative predicative hierarchy; Harper and Pollack (1991) studied universe polymorphism ("typical ambiguity" in Russell and Whitehead's terms). Lean inherited `imax` and non-cumulative, universe-polymorphic `Sort u` from Lean 2 and 3.
+</History>

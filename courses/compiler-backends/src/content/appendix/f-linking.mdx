@@ -1,0 +1,43 @@
+<p className="lede">
+Static and dynamic linking, position-independent code, and the tricks linkers play at the boundary between compile time and run time.
+</p>
+
+## Static linking
+
+A static linker combines object files and archive members into one executable:
+1. **Symbol resolution.** Every undefined reference must resolve to exactly one definition. *Weak* definitions yield to strong ones, and *COMDAT* groups — such as C++ inline functions and templates, emitted in many objects — are deduplicated.
+2. **Layout.** Input sections are grouped into output sections and placed in segments. Linker scripts, or built-in defaults, control the order. `--gc-sections` drops sections that nothing references.
+3. **Relocation.** Every relocation is applied, as kiln’s linker does (Chapter 20).
+
+## Position-independent code
+
+Shared libraries, and position-independent executables (the default on modern Linux, for ASLR), can be loaded at any address. Code must therefore not contain absolute addresses:
+
+- References *within* the module use **pc-relative** addressing: RISC-V `auipc`, AArch64 `adrp`, x86-64 `[rip + disp]`.
+- References to symbols that might be defined *elsewhere* (another shared object, or *interposed* by the executable) go through the **GOT**. The code loads the symbol’s address from a GOT slot, pc-relative, and the dynamic linker fills the slot at load time. Code pages stay read-only and shared between processes; only the GOT is per-process.
+- **Calls** to external functions go through **PLT** stubs, which jump via the GOT. With lazy binding, the GOT initially points back into a resolver that looks up the symbol on the first call and patches the slot. `-z now` binds everything at startup instead, which enables **RELRO** (making the GOT read-only after relocation).
+
+## Visibility and interposition
+
+By default, ELF global symbols in a shared library can be **interposed**: `LD_PRELOAD` or the main executable can replace them. That forces even internal calls through the PLT. Marking symbols `hidden` (`-fvisibility=hidden`) removes them from the dynamic symbol table, allows direct calls, and is one of the most effective optimisations for shared libraries.
+
+## Dynamic loading
+
+At startup the kernel maps the executable and its **interpreter** (`PT_INTERP`, for example `/lib/ld-linux-riscv64-lp64d.so.1`). The dynamic linker then:
+1. maps each needed shared library;
+2. resolves symbols in breadth-first order;
+3. applies **dynamic relocations** (`R_*_RELATIVE`, `GLOB_DAT`, `JUMP_SLOT`);
+4. runs initialisers;
+5. jumps to the program’s entry point.
+
+## Thread-local storage
+
+`__thread`/`thread_local` variables live in per-thread blocks. There are four access models, from most general to fastest: *general dynamic*, *local dynamic*, *initial exec* and *local exec*. Each has its own relocations, and linkers relax from general to cheaper models when the final layout allows.
+
+## Link-time optimisation
+
+With **LTO**, the compiler writes IR instead of machine code into the object files, and the linker invokes the optimiser and backend on the whole program, enabling cross-module inlining and dead-code elimination. **ThinLTO** (LLVM) keeps it parallel: it summarises each module, makes global decisions from the summaries, then optimises modules independently, importing only what they need.
+
+## Linker relaxation
+
+Linkers can also *shrink* code once addresses are known. RISC-V relaxes `auipc`+`jalr` into `jal`, and `lui`/`auipc` address pairs into `gp`-relative single instructions. x86-64 relaxes GOT loads (`mov rax, [rip + foo@GOTPCREL]`) into `lea rax, [rip + foo]` when `foo` turns out to be local. AArch64 relaxes TLS sequences. Deleting bytes, as RISC-V does, requires re-resolving every pc-relative reference across the deletion, which is why RISC-V assemblers keep relocations even for local branches when relaxation is on.

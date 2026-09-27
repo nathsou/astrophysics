@@ -1,0 +1,100 @@
+<p className="lede">
+Every function invocation needs some private memory: for locals that live in memory, spilled values, saved registers and outgoing arguments. Frame lowering decides the layout of that memory and writes the prologue and epilogue that create and destroy it.
+</p>
+
+## Why it happens so late
+
+Until register allocation is finished, the backend does not know:
+- how many **spill slots** it needs;
+- which **callee-saved registers** it clobbered, and therefore must save;
+- whether the function **makes calls**, which it does learn during selection, and which means saving the return address.
+
+So machine IR refers to stack memory through abstract **frame indices** (`%stack.2` in the listings: hover one) and ignores the stack pointer entirely. Only after allocation does **frame lowering**:
+
+1. collect everything that needs a slot;
+2. assign each slot an offset;
+3. round the frame to the ABI’s alignment;
+4. rewrite every frame index into `sp + offset` (or `fp + offset`);
+5. insert the prologue at function entry, and an epilogue before every return.
+
+LLVM calls step 4 *frame index elimination*, and it runs at the very same point in its pipeline.
+
+## The anatomy of a frame
+
+Kiln lays frames out downwards from the **<Term k="cfa">CFA</Term>**, the canonical frame address: the value of the stack pointer just before the call that created this frame. Offsets relative to the CFA are fixed as soon as the layout is known; offsets relative to `sp` depend on the total frame size. From the top:
+
+1. the **return address** (RISC-V’s `ra` or AArch64’s `x30`, saved only by non-leaf functions; on x86 it is pushed by `call`);
+2. the caller’s **frame pointer**, if a frame record is kept;
+3. **callee-saved registers** this function uses;
+4. **locals** that live in memory, which in Kiln means arrays;
+5. **spill slots**;
+6. the **outgoing argument area**, for stack arguments of the calls this function makes. It must be at the bottom, at `sp + 0`, where callees expect to find their stack arguments.
+
+The whole frame is rounded up to 16 bytes.
+
+<FrameExplorer example="sort" fn="main" target="rv64" caption="The frame of main in the insertion-sort example, which keeps an 8-element array on the stack and makes calls. Step through the prologue: watch sp move down, and the saved registers land in their slots. Switch targets to compare the three prologue styles, or the function to see a leaf with no frame at all." />
+
+## Three prologue styles
+
+<AsmSnippet target="rv64" title="RISC-V: adjust sp once, then store relative to it" code={`
+    addi sp, sp, -32        # allocate the whole frame
+    sd   ra, 24(sp)         # save the return address (we make calls)
+    sd   s1, 16(sp)         # save callee-saved s1 (we use it)
+    ...
+    ld   ra, 24(sp)
+    ld   s1, 16(sp)
+    addi sp, sp, 32
+    ret
+`} />
+
+<AsmSnippet target="aarch64" title="AArch64: a frame record {x29, x30} and stp/ldp pairs" code={`
+    sub  sp, sp, #32
+    stp  x29, x30, [sp, #16]  // save frame pointer + link register as a pair
+    add  x29, sp, #16         // x29 points at the frame record
+    str  x19, [sp, #8]
+    ...
+    ldr  x19, [sp, #8]
+    ldp  x29, x30, [sp, #16]
+    add  sp, sp, #32
+    ret
+`} />
+
+<AsmSnippet target="x86_64" title="x86-64: push/pop, with the return address already on the stack" code={`
+    push rbp                # save the caller's frame pointer
+    mov  rbp, rsp           # set up our own
+    push rbx                # save callee-saved rbx
+    sub  rsp, 8             # locals + keep rsp 16-byte aligned at calls
+    ...
+    add  rsp, 8
+    pop  rbx
+    pop  rbp
+    ret
+`} />
+
+The x86 version shows the alignment rule at work. `call` pushed 8 bytes, `push rbp` pushed 8 more, `push rbx` another 8 — 24 in total. The prologue therefore subtracts 8 more, so that `rsp` is again 16-byte aligned for this function’s own calls.
+
+A **leaf function** that uses only caller-saved registers and needs no stack slots gets **no prologue at all**: RISC-V’s `gcd` is just its loop and a `ret`. This is one of the biggest wins of the caller- and callee-saved split.
+
+## Frame pointers
+
+A **<Term k="frame-pointer">frame pointer</Term>** is a register (`s0`, `x29`, `rbp`) that points to a fixed place in the current frame, while `sp` may move. Each frame saves the previous frame pointer, forming a linked list of frames. Debuggers, profilers and crash reporters can walk that list to produce a backtrace without any other metadata.
+
+The cost is one register and a couple of instructions per call, so compilers long defaulted to *omitting* the frame pointer (`-fomit-frame-pointer`) on register-starved targets like 32-bit x86. The pendulum has swung back:
+- whole-system profiling tools want cheap, reliable stack walks, and Fedora 38 (2023) and Ubuntu 24.04 rebuilt their distributions with frame pointers enabled;
+- Apple’s arm64 ABI has always *required* a valid frame record.
+
+Kiln keeps a frame record on AArch64 and x86 for every function that has a frame, and makes it optional on RISC-V (`framePointer`).
+
+A frame pointer is *mandatory* for correctness when the frame size is not a compile-time constant, such as with C’s `alloca` or variable-length arrays. Locals must then be addressed relative to something that does not move.
+
+## Unwinding without frame pointers
+
+Without frame pointers, the unwinder needs a table that says, for every instruction address, where the CFA is and where each saved register is stored. That is **DWARF call frame information** (the `.eh_frame` section on Linux), or Apple’s compact unwind format, or Windows x64 unwind codes. Compilers emit it through assembler directives such as `.cfi_def_cfa_offset 32` and `.cfi_offset ra, -8`, placed right after the prologue instructions they describe. The same tables drive C++ exception unwinding. Kiln does not emit CFI, which is one reason its binaries are for learning rather than production.
+
+## Big frames and small immediates
+
+RISC-V loads and stores reach only ±2047 bytes from their base register. A slot at `sp + 3000` needs its address built in a register first, *after* register allocation, when there may be no free register. LLVM solves this with a **register scavenger**, which finds a register that is dead at that point or spills one to an emergency slot reserved in the frame. Large frames also need **stack probes**: touching each page in turn, so that the guard page below the stack is hit before the allocation jumps past it. Kiln keeps frames small and rejects huge ones with an explanation.
+
+<Callout kind="key">
+Frame layout happens after register allocation, when spill slots and the set of clobbered callee-saved registers are known. Frame lowering rewrites abstract frame indices into sp-relative addresses and wraps the body in a prologue and epilogue that follow the ABI: 16-byte alignment, saved return address, saved callee-saved registers, and optionally a frame record for unwinding.
+</Callout>

@@ -1,0 +1,85 @@
+In 2005 Georges Gonthier finished a proof of the Four Colour Theorem that nobody needed to trust. The original 1976 proof, by Appel and Haken, had relied on a computer program checking nearly two thousand configurations, and for three decades mathematicians argued over whether *that program* could be believed. Gonthier's proof was different: it was written in a formal language, and every single step — every case, every calculation, every appeal to a lemma — was checked by a small program called a **kernel**. To believe the theorem, you no longer had to read 60,000 lines of proof. You had to believe a few thousand lines of kernel code.
+
+That kernel implemented a formal system called the **Calculus of Inductive Constructions** (CIC). The same system — in a slightly different flavour — sits at the heart of **Lean 4**, where the community library Mathlib has formalised a large fraction of undergraduate mathematics, and where projects like the Liquid Tensor Experiment and the ongoing formalisation of Fermat's Last Theorem live.
+
+This course is about that system: what it is, why it looks the way it does, and how you get to it from very simple beginnings.
+
+## What does it mean to check a proof?
+
+Here is a proof, written in the language used throughout this course. It is also valid Lean 4.
+
+```lean
+theorem and_swap (p q : Prop) : p ∧ q → q ∧ p :=
+  fun h => ⟨h.right, h.left⟩
+```
+
+Read it as a claim and a justification. The claim, after the colon, says: *for all propositions p and q, if p and q hold then q and p hold*. The justification, after `:=`, is … a function. It takes `h`, a proof of `p ∧ q`, and returns a pair made of the second and first components of `h`.
+
+That is the central idea of the course, and it will take several chapters to unpack properly:
+
+- a **proposition** is a **type**;
+- a **proof** of the proposition is a **program** of that type;
+- **checking a proof** means **type-checking a program**.
+
+So a proof checker is a type checker. And type checkers are things software engineers understand: you have written programs a compiler rejected. The difference is that the type system here is so expressive that its types can state arbitrary mathematics — and still simple enough that checking is a mechanical, terminating process.
+
+<Playground errors title="Your first kernel check" code={`theorem and_swap (p q : Prop) : p ∧ q → q ∧ p :=
+  fun h => ⟨h.right, h.left⟩
+
+-- change the proof and watch the kernel complain:
+theorem and_swap_wrong (p q : Prop) : p ∧ q → q ∧ p :=
+  fun h => ⟨h.left, h.right⟩`} />
+
+Every playground in this course runs a real kernel, in your browser: a compact TypeScript implementation of the same type theory Lean 4 uses. Try hovering over any part of the code to see its type. In the panel on the right, click **derivation tree** to see the complete formal proof that the term has its type — the object the kernel actually builds.
+
+## The de Bruijn criterion
+
+Real proof assistants are big pieces of software. Lean 4 has hundreds of thousands of lines of code: a parser, an *elaborator* that fills in the details you leave out, automation that searches for proofs, a compiler, an editor integration. Any of it could have bugs. How can we trust anything that comes out?
+
+The answer, first articulated by Nicolaas de Bruijn for his *Automath* system in the late 1960s, is architectural. All the clever machinery is only allowed to *produce* terms. A separate, small component — the **kernel** — checks every term before it is accepted. If the kernel is correct, the rest of the system can be as buggy as you like: the worst it can do is fail to find a proof, never accept a wrong one. This is now called the **de Bruijn criterion**.
+
+<Engineer title="An architecture you already know">
+This is the same idea as a capability system or a verified sandbox: a large untrusted component talks to a small trusted one through a narrow interface. Here the interface is "a term of the core calculus". The kernel is the only code whose correctness matters for soundness, so it is kept small, simple and heavily scrutinised. The course kernel follows the same split: a *frontend* (parser, elaborator, pattern-matching compiler) produces core terms, and a separate `TypeChecker` class re-checks every declaration before it enters the environment.
+</Engineer>
+
+This puts enormous pressure on the design of the core calculus. It has to be:
+
+- **expressive** enough that all of mathematics (and the programs we want to verify) can be written in it;
+- **consistent**, meaning that there is no proof of `False` — otherwise every statement would be provable and the whole enterprise meaningless;
+- **decidable** to check: the kernel must always terminate with a yes or a no;
+- **small**: a handful of rules that humans can understand and trust.
+
+These goals pull against each other. Expressiveness wants more features; consistency and decidability want fewer. Much of this course is the story of how CIC threads that needle — and of the many seemingly harmless extensions that would break it.
+
+## The road ahead
+
+We will not start with CIC. We will start with the smallest possible programming language — the untyped λ-calculus, which has nothing but functions — and add one ingredient at a time. Each addition is motivated by something the previous system cannot do.
+
+<CourseMap />
+
+- **Part I · Computation.** The untyped λ-calculus: what computation is, when it terminates, and why that matters. How to represent variables and binders correctly — the first thing any kernel implementation must get right.
+- **Part II · Types.** Simple types make every program terminate, but cost us expressiveness. The Curry–Howard correspondence reveals that typed programs *are* proofs. We then recover expressiveness along three independent axes — polymorphism, type operators and dependent types — and discover that they form a cube.
+- **Part III · The Calculus of Constructions.** Taking all three axes at once gives Coquand and Huet's Calculus of Constructions: a system where logic can be *encoded*. We see why the encodings are not good enough, and why `Type : Type` destroys everything.
+- **Part IV · Inductive Constructions.** Data types become primitive: constructors, recursors, and the rules — strict positivity, universe constraints, the special role of `Prop` — that keep them from breaking consistency. We see how pattern matching and recursion are compiled down to them.
+- **Part V · The whole system.** All the rules on one page, the metatheory that justifies them, the specific choices Lean 4 makes, and where type theory is going next.
+
+## How to read this course
+
+<Legend />
+
+Terms are coloured by what they *are*: **sorts** (the types of types, like `Prop` and `Type`), **types**, **propositions** (types of proofs), **proofs**, **constructors** and **variables**. The colouring is computed by the kernel as the term is displayed, so it is always accurate — and after a few chapters you will start to "see" the level of a term at a glance.
+
+Throughout the text you will find:
+
+- **Playgrounds** — editable code, checked live. Hover for types; open derivation trees and step-by-step reductions from the results panel. You can type Unicode with Lean-style abbreviations: `\lam` then space gives λ, `\to` gives →, `\all` gives ∀, `\and` gives ∧, `\<` and `\>` give ⟨ and ⟩, `\a` gives α.
+- **Labs** — specialised visualisations of reduction, syntax trees, proof construction, universes and more.
+- **Exercises**, checked automatically. Your progress is remembered by your browser.
+- **Callouts** for definitions and theorems, notes for the engineer, historical context, and comparisons with the real Lean 4.
+
+The [Playground](#/playground) page has a full-size editor where you can switch between every calculus in the course, from the simply typed λ-calculus up to CIC.
+
+<History title="A century of foundations">
+The story starts with a crisis. In 1901 Bertrand Russell found a contradiction in Frege's logic — the set of all sets that do not contain themselves — and spent the next decade building a *theory of types* to avoid it. In the 1930s Alonzo Church invented the λ-calculus, first as a foundation for logic (which turned out to be inconsistent) and then as a theory of computation. In 1940 he combined the two into the *simple theory of types*. Nicolaas de Bruijn's Automath (1967) was the first system to check real mathematics by machine; Per Martin-Löf's intuitionistic type theory (1971–1984) put dependent types on a firm philosophical footing; and Thierry Coquand and Gérard Huet's Calculus of Constructions (1985), extended with inductive types by Coquand and Christine Paulin-Mohring (1989), became the basis of the Coq proof assistant — renamed **Rocq** in 2025 — and later of Lean, begun by Leonardo de Moura in 2013.
+</History>
+
+Let's begin with functions.

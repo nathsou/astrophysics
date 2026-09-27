@@ -1,0 +1,97 @@
+<p className="lede">
+Static single assignment form gives every value exactly one definition. It turns data flow into explicit edges between instructions — and it is what makes a modern backend’s analyses simple and fast. This chapter builds it: mem2reg, the pass that turns the front end’s stack slots into SSA values.
+</p>
+
+## Why SSA?
+
+In ordinary three-address code a variable may be assigned many times. To know which assignment a use sees, you need a dataflow analysis (*reaching definitions*), and its answer is a set. In **<Term k="ssa">SSA</Term>** form each name is assigned exactly once, so the question disappears: a use sees *the* definition of its name. Every use-def chain is a single pointer. Many optimisations become simple and *sparse*, working only along those pointers instead of iterating over every program point:
+- constant propagation;
+- global value numbering;
+- dead-code elimination;
+- strength reduction.
+
+When two control-flow paths assign a variable differently and then meet, SSA introduces a **<Term k="phi">φ-function</Term>** at the join:
+
+<CodeSnippet lang="ir" title="A φ in a loop header (from gcd)" code={`
+while.cond:                        ; preds: entry, while.body
+  %b = phi [%b0, entry], [%t, while.body]
+  %a = phi [%a0, entry], [%b, while.body]
+  ...
+`} />
+
+A φ is not a real instruction; no processor executes it. It says: *if control arrived from `entry`, the value is `%b0`; if from `while.body`, it is `%t`*. Two rules matter throughout the rest of the course:
+
+1. All φs at the top of a block execute **simultaneously**. The second φ above reads the *old* `%b` — the value flowing in along the edge — not the one the first φ just produced.
+2. A φ operand is a use at the **end of the corresponding predecessor**, not in the φ’s own block. That is how the SSA dominance property applies to phis, and it is also where SSA destruction will place its copies (Chapter 10).
+
+<Aside kind="history">
+<p>SSA was developed at IBM Research in the late 1980s by Ron Cytron, Jeanne Ferrante, Barry Rosen, Mark Wegman and Kenneth Zadeck. Their TOPLAS paper, “Efficiently Computing Static Single Assignment Form and the Control Dependence Graph” (1991), gave the dominance-frontier construction used here. GCC adopted SSA in 2004 (Tree SSA); LLVM was SSA-based from its start in 2000.</p>
+</Aside>
+
+## Where do the φs go?
+
+For a variable *v*, let *Defs(v)* be the set of blocks that assign it. By the argument of the previous chapter, a φ is needed at every block in the **iterated dominance frontier** DF⁺(*Defs(v)*). The φ is itself a definition, so its block joins the worklist:
+
+```ts
+for (const v of promotableVariables) {
+  const work = [...defBlocks(v)];
+  const hasPhi = new Set<Block>();
+  while (work.length) {
+    const x = work.pop()!;
+    for (const y of DF(x)) {
+      if (hasPhi.has(y)) continue;
+      insertPhi(v, y);                         // y now defines v too...
+      hasPhi.add(y);
+      if (!defBlocks(v).has(y)) work.push(y);  // ...so its frontier needs phis as well
+    }
+  }
+}
+```
+
+This yields **minimal SSA**: as few φs as possible *given only the def sites*. It may still create φs whose result is never used. Take a variable reassigned inside a loop but never read after it: minimal SSA puts a φ in the loop exit, even though the variable is dead there.
+
+**Pruned SSA** avoids those φs by first computing where each variable is *live*, and skipping any φ placement at a block where the variable is dead. **Semi-pruned SSA** is a cheaper compromise that only considers variables live across some block boundary. Kiln builds pruned SSA by default. Minimal-SSA φs would be removed later by dead-code elimination anyway, but pruning keeps the intermediate IR smaller.
+
+## Renaming
+
+Placement only creates empty φs. The second phase walks the **dominator tree** in preorder and keeps, for each variable, a **stack of current definitions**:
+
+- entering a block, each φ for *v* pushes itself as *v*’s current value;
+- each `load` of *v* is deleted and its uses are replaced by the top of *v*’s stack;
+- each `store` to *v* pushes the stored value (and the store is deleted);
+- for each CFG successor, fill in the φ operand for this edge with the current top;
+- recurse into dominator-tree children, then pop everything this block pushed.
+
+Why the dominator tree? When we are in block *b*, the stacks hold exactly the definitions from *b*’s dominators, and those are precisely the definitions guaranteed to have executed. Any value that might have come from elsewhere was captured by a φ in phase 1.
+
+Only some stack slots can be promoted. A slot qualifies only if it is used exclusively as the address of `load`s and `store`s. Arrays fail this test: their address is used in arithmetic to index them, so they stay in memory. So does any variable whose address escapes into a call.
+
+<Mem2RegStepper example="gcd" fn="gcd" caption="mem2reg on Euclid’s algorithm. Phase 1 places φs: teal blocks store the variable, orange is the block whose frontier is being processed, red is where a φ goes (or would go, but is pruned). Phase 2 renames: follow the definition stacks as the walk descends the dominator tree, and watch each load vanish into the current top of stack." />
+
+<Callout kind="try">
+Switch the figure to `@main` (no loops, just calls) and see that no φ is needed at all. Then look at `sort` in the figure below: the inner `while` loop’s condition block collects φs for both `j` and the short-circuit `&&` value.
+</Callout>
+
+## The result
+
+<Pipeline example="sort" stage="ssa" opt={1} stages={['ir', 'ssa']} height={420} caption="Before and after mem2reg for insertion sort. The array `v` in main stays in memory (its address is taken for indexing), while every scalar becomes a register-like SSA value. Hover φ operands to see where they come from." />
+
+After mem2reg the IR has no `alloca`s for scalars, and data flow is explicit. `%j` in the loop is a φ of the initial `i - 1` and the decremented value from the loop body. This is the form the rest of the backend consumes.
+
+## Another way to build SSA
+
+Cytron’s algorithm needs the whole CFG, the dominator tree and the dominance frontiers up front. In 2013 Braun, Buchwald, Hack, Leißa, Mallon and Zwinkau showed a strikingly simple alternative that builds SSA **directly while generating the IR**:
+
+- To look up variable *v* in block *b*: if *b* defines *v*, use that definition. If *b* has one predecessor, look *v* up recursively there. Otherwise, put an operandless φ in *b*, record it as *v*’s definition to break cycles, and fill its operands by looking *v* up in every predecessor.
+- A block is **sealed** once all its predecessors are known; lookups in unsealed blocks create *incomplete* φs that get finished at sealing time.
+- A φ whose operands are all the same value (or itself) is **trivial** and is removed, recursively.
+
+On reducible CFGs this produces minimal, pruned SSA with no dominance computation at all.
+
+<Aside kind="llvm">
+<p>Clang relies on the alloca + mem2reg approach, as kiln does (in LLVM the pass is `PromoteMemToReg`, used by `mem2reg` and `SROA`). Cranelift’s front-end helper builds SSA with Braun et al.’s algorithm, and LLVM’s `SSAUpdater` utility uses a similar on-demand lookup when passes need to repair SSA after cloning code.</p>
+</Aside>
+
+<Callout kind="key">
+SSA is built in two phases. φs go at the iterated dominance frontiers of each variable’s definitions (pruned where the variable is dead). Then a preorder walk of the dominator tree, with a stack per variable, replaces every load with the definition that reaches it.
+</Callout>

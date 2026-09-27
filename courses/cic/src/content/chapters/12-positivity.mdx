@@ -1,0 +1,124 @@
+The last chapter gave us a mechanism of astonishing generality: write down any list of constructors, and the kernel produces a type with an induction principle. Too astonishing, it turns out. Some lists of constructors describe no sensible collection of values, and accepting them destroys consistency just as surely as `Type : Type` did. This chapter is about the condition the kernel imposes to rule them out: **strict positivity**.
+
+## A type that eats itself
+
+Consider this declaration:
+
+```lean
+inductive Bad : Type where
+  | mk : (Bad → False) → Bad
+```
+
+An element of `Bad` is built from a function that refutes `Bad`. It looks harmless — it type-checks in every sense we have seen so far. Let's see what happens if the kernel accepts it. The course kernel has a switch, `kernel.positivity`, to turn the check off:
+
+<Playground errors title="Proving False from a negative type" code={`set_option kernel.positivity false
+
+inductive Bad : Type where
+  | mk : (Bad → False) → Bad
+
+-- any b : Bad contains a refutation of Bad; apply it to b itself
+def self (b : Bad) : False :=
+  match b with
+  | Bad.mk f => f b
+
+theorem oops : False := self (Bad.mk self)
+#print axioms oops
+#reduce oops`} />
+
+`self` unpacks its argument and applies the function inside to the argument itself — a self-application, exactly the thing simple types were invented to prevent. Then `self (Bad.mk self)` is a closed proof of `False` using no axioms. And, as always, the inconsistency comes with non-termination: `#reduce oops` loops, since `self (Bad.mk self)` reduces to `self (Bad.mk self)`.
+
+The problem is more general than logic. With a single negative constructor we can embed the whole untyped λ-calculus:
+
+<Playground errors title="The untyped λ-calculus as an inductive type" code={`set_option kernel.positivity false
+
+inductive D : Type where
+  | lam : (D → D) → D
+
+def app (f : D) (x : D) : D :=
+  match f with
+  | D.lam g => g x
+
+def omega : D := D.lam (fun x => app x x)   -- λx. x x
+#reduce app omega omega                     -- Ω`} />
+
+A type `D` isomorphic to `D → D` is a model of the untyped λ-calculus (this is Dana Scott's insight from 1969), so Ω becomes a well-typed term, and strong normalisation is gone.
+
+## Polarity
+
+What distinguishes `Bad` from `MyNat`? Where the type being defined occurs in the constructor's arguments. In a function type $A \to B$, the domain $A$ is in a **negative** position — the function *consumes* an $A$ — and the codomain $B$ in a **positive** position — it *produces* a $B$. Polarities multiply like signs: in $(A \to B) \to C$, the $A$ is positive again (negative times negative), and $B$ negative.
+
+<Definition title="Strict positivity">
+A constructor argument of type $T$ is acceptable if the type being defined, $I$, either does not occur in $T$ at all, or $T$ has the form
+
+$$
+(y_1 : C_1) \to \cdots \to (y_k : C_k) \to I\ \vec{p}\ \vec{t}
+$$
+
+where $I$ does not occur in any $C_j$ nor in the index arguments $\vec{t}$. In words: $I$ may only occur as the final result of the argument's type, never to the left of any arrow. Such an occurrence is **strictly positive**.
+</Definition>
+
+Try the checker. It shows every constructor field of the declarations in the editor, with each occurrence of the type being defined highlighted by kind, and the kernel's verdict.
+
+<PositivityLab code={`inductive Bad : Type where
+  | mk : (Bad → False) → Bad
+
+inductive Ord : Type where
+  | zero : Ord
+  | succ : Ord → Ord
+  | limit : (Nat → Ord) → Ord`} />
+
+`Ord` is fine: in `limit : (Nat → Ord) → Ord` the type `Ord` occurs only as the result of the field's type. Such a constructor is *infinitely branching* — a limit ordinal is built from a whole sequence of smaller ordinals — but every element is still a well-founded tree. The induction principle generated for `limit` has an induction hypothesis for *every* element of the sequence: `(f : Nat → Ord) → ((n : Nat) → motive (f n)) → motive (limit f)`.
+
+Now paste in some other examples:
+
+- `inductive T : Type where | mk : ((T → Nat) → Nat) → T` — positive (T is to the left of two arrows) but not strictly positive;
+- `inductive Rose : Type where | node : List Rose → Rose` — a *nested* occurrence, inside another type former;
+- `inductive W (A : Type) (B : A → Type) : Type where | sup (a : A) (f : B a → W A B) : W A B` — Martin-Löf's W-type, strictly positive.
+
+## Why not just positivity?
+
+The negative case is clearly bad. But why forbid occurrences that are positive without being strict, like `((T → Nat) → Nat) → T`? Set-theoretically there is no problem with "monotone" operators, and some systems accept them. In CIC they are dangerous because of the impredicative `Prop`. Coquand and Paulin-Mohring showed in 1988 that
+
+```lean
+inductive A : Type where
+  | intro : ((A → Prop) → Prop) → A
+```
+
+leads to a contradiction: using impredicativity, $(A \to \mathsf{Prop}) \to \mathsf{Prop}$ is like the powerset of the powerset of $A$, and the constructor gives an injection from it back into $A$ — Cantor's theorem says no such injection exists. Strict positivity is the simple, syntactic criterion that avoids all such problems.
+
+<Theorem title="Strictly positive types are well-founded">
+Every strictly positive inductive type is the least fixed point of a *polynomial functor* — a "shape" of constructors with finitely many holes indexed by sets — and its elements are well-founded trees. Such fixed points exist in every standard model of the theory, and adding them preserves strong normalisation and consistency.
+</Theorem>
+
+This is why, with strict positivity enforced, the recursor is safe: each induction hypothesis talks about a strictly smaller subtree, and the recursion it performs terminates.
+
+## Nested and mutual types
+
+Strict positivity as stated forbids the nested `Rose` type above, even though `List Rose` is perfectly well-founded: `List` only stores its elements positively. Lean 4 accepts nested inductive types by translating them into **mutual** inductive types — types defined simultaneously, each allowed to refer to the others:
+
+```lean
+mutual
+  inductive Rose : Type where
+    | node : Roses → Rose
+  inductive Roses : Type where
+    | nil  : Roses
+    | cons : Rose → Roses → Roses
+end
+```
+
+The course kernel supports mutual declarations (with one motive per type in the generated recursors) but not the automatic translation of nested ones; we come back to both in Chapter 16.
+
+<Engineer title="The check in the kernel">
+The kernel's positivity check walks each field type: it opens the leading Π-binders (after reducing to weak head normal form, so that definitions can't hide an occurrence), checks that the type being defined does not occur in any binder domain, and checks that the final codomain is the type applied to exactly the declared parameters, with indices that don't mention it. Anything else containing the type is rejected. See `checkPositivity` in `src/kernel/core/inductive.ts`.
+</Engineer>
+
+## Summary
+
+- A constructor that takes a function *out of* the type being defined (a negative occurrence) makes the logic inconsistent and breaks normalisation — it lets you encode the untyped λ-calculus.
+- Kernels therefore require recursive occurrences to be strictly positive: only as the final result of a field's type.
+- Positive but non-strict occurrences are also unsound in the presence of an impredicative `Prop`.
+- Strictly positive types correspond to well-founded trees, which is what makes their recursors terminate.
+
+<History title="Positivity">
+The positivity condition appeared with Mendler's work on inductive types in second-order λ-calculi (1987) and in Coquand and Paulin-Mohring's paper introducing inductive types into CoC (1988), which also gave the counterexample against non-strict positivity. Nested inductive types were studied by Paulin-Mohring and others in the 1990s; Lean 4 handles them by an elaborate translation to mutual types in the kernel's front end.
+</History>

@@ -1,0 +1,122 @@
+We have built the Calculus of Inductive Constructions one ingredient at a time. This chapter puts all the pieces on one page — the terms, the typing rules, the rules of definitional equality — and then looks at how a kernel actually implements them, using the course's own kernel as the running example.
+
+## The terms
+
+Every term of CIC, as implemented by Lean 4's kernel and by this course, is one of:
+
+| term | written | introduced in |
+|---|---|---|
+| sort | `Sort u`, `Prop`, `Type u` | Chapter 10 |
+| bound variable | (de Bruijn index) | Chapter 2 |
+| free variable | `x` (from the local context) | Chapter 2 |
+| constant | `c.{u₁,…}` (from the environment) | Chapter 11 |
+| application | `f a` | Chapter 1 |
+| abstraction | `fun (x : A) => t` | Chapter 1 |
+| dependent function type | `(x : A) → B` | Chapter 7 |
+| local definition | `let x : A := v; t` | — |
+
+Inductive types, their constructors and recursors, definitions, theorems, axioms and the quotient primitives are all **constants** in a global **environment** Σ. That's the whole syntax. (Lean's kernel adds literals for natural numbers and strings, for efficiency, and a primitive projection for structures.)
+
+## The typing rules
+
+These are the rules the kernel checks — the same rules whose names appear in the derivation trees throughout the course.
+
+<Rules ids="sort var const pi lam app let conv" />
+
+with the level rule for Π-types built in: if $A : \mathsf{Sort}\ u$ and $B : \mathsf{Sort}\ v$ then $(x : A) \to B : \mathsf{Sort}\ (\mathrm{imax}\ u\ v)$. The side condition of App and the Conv rule both appeal to **definitional equality** $A \equiv B$, the heart of the system.
+
+The environment grows by **declarations**, each checked before it is added:
+
+- `axiom c : T` — check that `T` is a type;
+- `def c : T := v` and `theorem c : T := v` — check that `T` is a type and that `v : T` (for theorems, that `T : Prop`);
+- `inductive …` — check the declaration (Chapter 11: well-formedness, strict positivity, universe constraints), decide its elimination sort (Chapter 14), and generate the recursor with its ι-rules;
+- `init_quot` — add the quotient primitives (Chapter 19).
+
+Universe-polymorphic declarations are checked once with their level parameters as variables.
+
+## Definitional equality
+
+Two terms are definitionally equal when the kernel can see they are the same by computation and a few extensionality principles:
+
+| rule | equation | example |
+|---|---|---|
+| β | `(fun x => t) a ≡ t[a/x]` | `(fun x => x + 1) 2 ≡ 2 + 1` |
+| δ | `c ≡ v` if `def c := v` | `Nat.add ≡ fun n m => …` |
+| ζ | `let x := v; t ≡ t[v/x]` | |
+| ι | `I.rec … (cᵢ a…) ≡ mᵢ a… ih…` | `Nat.rec z s 0 ≡ z` |
+| η | `fun x => f x ≡ f` | |
+| structure η | `p ≡ ⟨p.1, p.2⟩` for structures | |
+| proof irrelevance | `h₁ ≡ h₂` if `h₁ h₂ : P` and `P : Prop` | |
+| quotient | `Quot.lift f h (Quot.mk r a) ≡ f a` | Chapter 19 |
+| levels | `Sort u ≡ Sort v` if `u = v` in the level algebra | `imax u 0 = 0` |
+
+plus the congruence rules (if the parts are equal, so are the wholes). There is also Lean's *K-like reduction*: `Eq.rec m h` computes even when `h` is not syntactically `Eq.refl`, as long as its type makes it one.
+
+<Playground title="Every kind of definitional equality" code={`-- β, δ and ι: computation
+example : (fun x => x + 1) 2 = 3 := rfl
+-- η for functions
+example (f : Nat → Nat) : (fun x => f x) = f := rfl
+-- η for structures
+example (p : Nat × Bool) : p = ⟨p.1, p.2⟩ := rfl
+-- proof irrelevance
+example (p : Prop) (h₁ h₂ : p) : h₁ = h₂ := rfl
+-- ζ: local definitions
+example : (let x := 2; x + x) = 4 := rfl`} />
+
+<Engineer title="Deciding definitional equality">
+The kernel's `isDefEq(a, b)` is roughly:
+
+1. If `a` and `b` are syntactically equal, succeed. If both are sorts, compare levels; if both are λs or Πs, compare binder types and then bodies (under a fresh free variable).
+2. If both are proofs of the same proposition, succeed (proof irrelevance).
+3. Reduce both to weak head normal form *without* unfolding definitions (β, ζ, ι).
+4. **Lazy δ-reduction**: while either side has a definition at its head, unfold the one with the greater *definitional height* (how deeply it is defined in terms of other definitions); if both heads are the same constant, first try comparing the arguments — often `f a ≡ f b` because `a ≡ b`, with no need to unfold `f` at all.
+5. Compare the resulting weak head normal forms: same constant or free variable at the head and equal arguments.
+6. Try η (λ against a non-λ) and structure η (constructor against a non-constructor).
+
+Laziness matters enormously. Unfolding everything first would make typical Lean proofs, full of large definitions, impossibly slow.
+</Engineer>
+
+## Watching the kernel
+
+Here is the kernel checking a small theorem, event by event: every call to type inference (`infer`), every definitional-equality question (`defeq`, with its answer), every definition unfolding (δ), every β- and ι-step. Filter by kind with the buttons, and edit the code to trace something else.
+
+<KernelTrace code={`def double (n : Nat) : Nat := n + n
+
+theorem double_two : double 2 = 4 := rfl`} />
+
+Notice how few δ-steps are needed: to check `rfl : double 2 = 4` the kernel compares `@Eq Nat (double 2) (double 2)` with `@Eq Nat (double 2) 4`, reduces the question to `double 2 ≡ 4`, unfolds `double` and `Nat.add`, and lets ι-reduction do the arithmetic.
+
+## Bidirectional checking
+
+The kernel *infers* types: given a term, it computes its type bottom-up, and only *checks* at the points where two types must agree. The elaborator, in contrast, works **bidirectionally**: it pushes expected types down into terms (so that `fun x => …` knows the type of `x`, and `⟨a, b⟩` knows which structure to build), creates metavariables for everything it doesn't know, and solves them by unification. Everything the elaborator produces is checked again, from scratch, by the kernel.
+
+<CodeSize />
+
+The trusted core — levels, terms, environments, the type checker and the inductive-types module — is a small fraction of the code. The parser, the elaborator with its unifier and the pattern-matching compiler, the pretty printer and the visualisation support are all outside it. A bug in the elaborator can make it fail to accept a correct program or produce a wrong term; the kernel will then reject the term, and no false theorem is accepted. That is the de Bruijn criterion of the Prologue, made concrete.
+
+## The design, in one table
+
+| design decision | reason | chapter |
+|---|---|---|
+| typed λ-calculus as the core | Curry–Howard: proofs are programs | 3, 4 |
+| dependent Π-types | quantification over values; types that mention data | 7 |
+| impredicative `Prop` | polymorphic propositions; propositions quantify over propositions | 5, 9 |
+| predicative `Type u` hierarchy | `Type : Type` is inconsistent | 10 |
+| universe polymorphism, `imax` | one definition for all universes | 10 |
+| inductive types with recursors | induction, large elimination, efficient computation | 11 |
+| strict positivity | negative types break consistency and normalisation | 12 |
+| inductive families, `Eq` as a family | dependent data and propositional equality | 13 |
+| subsingleton elimination | proof irrelevance, erasure, consistency | 14 |
+| recursion compiled to recursors | termination guaranteed without a kernel-level check | 15, 16 |
+| definitional proof irrelevance, η, quotients | the Lean 4 flavour | 19 |
+
+## Summary
+
+- CIC's terms are sorts, variables, constants, applications, λ-abstractions, Π-types and lets; everything else lives in the environment.
+- Eight typing rules, a handful of declaration checks, and definitional equality given by β, δ, ζ, ι, η (for functions and structures), proof irrelevance and quotient reduction.
+- The kernel infers types and decides definitional equality lazily; the elaborator is bidirectional and untrusted.
+- The trusted kernel is small; everything else is checked by it.
+
+<History title="Kernels">
+Coq's kernel was the first large-scale implementation of CIC; its architecture, with a separate elaborator ("pretyping") and kernel, established the pattern. Lean 3's kernel (2015) was designed by Leonardo de Moura to be small and fast, and Lean 4's kernel (2021), written in C++, keeps the same design; independent kernels for Lean 4 — such as Lean4Lean, written in Lean itself, and the Rust-based nanoda — can re-check Mathlib, providing some assurance that the main kernel is correct. The MetaCoq project has formalised the metatheory of Coq's kernel in Coq and verified a type checker for it.
+</History>

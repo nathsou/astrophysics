@@ -1,0 +1,199 @@
+The untyped λ-calculus lets you apply anything to anything. `TRUE 3` is a perfectly good term; so is `3 TRUE`; so is Ω. Most of these terms are nonsense — they compute *something*, but nothing anyone intended — and some of them never stop. Programmers have a standard remedy for nonsense: **types**.
+
+This chapter introduces the simplest typed λ-calculus, Church's **simply typed λ-calculus** (λ→). It is small enough to understand completely, and every idea in it — judgements, contexts, inference rules, derivations, the connection between typing and termination — carries over to CIC unchanged.
+
+## Types
+
+<Definition title="Simple types">
+Given a set of **base types** $A, B, C, \dots$, the simple types are
+
+$$
+\tau, \sigma \;::=\; A \;\mid\; \tau \to \sigma
+$$
+
+A function type $\tau \to \sigma$ describes functions taking a $\tau$ and returning a $\sigma$. The arrow associates to the right: $A \to B \to C$ means $A \to (B \to C)$ — a curried two-argument function.
+</Definition>
+
+Base types are opaque: we know nothing about them except their names. Think of them as type parameters of a generic function that the rest of the program cannot inspect. That is enough to study the structure of typed programs, and it keeps the calculus minimal: there is not even a type of booleans.
+
+In the course language, λ→ is selected by the playgrounds of this chapter. Base types are declared with `variable (A B C : *)`. The symbol `*` is the **sort** of types — "`A` is a type" is written `A : *`. We will say much more about sorts in the chapter on the λ-cube; for now `*` just means "type".
+
+Binders are annotated with their type — this is Church's original, *explicitly typed* presentation:
+
+```lean
+λ (x : A) => x                          -- the identity on A
+λ (f : A → B) (x : A) => f x            -- application
+λ (f : A → A) (x : A) => f (f x)        -- apply twice
+```
+
+<Playground calculus="stlc" title="λ→" code={`variable (A B C : *)
+
+#check λ (x : A) => x
+#check λ (f : A → B) (x : A) => f x
+#check λ (f : A → A) (x : A) => f (f x)
+#check λ (g : B → C) (f : A → B) (x : A) => g (f x)`} />
+
+## Judgements and contexts
+
+To say a term has a type we need to know the types of its free variables. A **context** $\Gamma$ is a list of typing assumptions $x_1 : \tau_1, \dots, x_n : \tau_n$ with distinct variables. A **typing judgement**
+
+$$
+\Gamma \vdash t : \tau
+$$
+
+asserts that, assuming the variables have the types listed in $\Gamma$, the term $t$ has type $\tau$. The turnstile $\vdash$ is read "entails" or "proves". For example
+
+$$
+f : A \to B,\; x : A \;\vdash\; f\,x : B.
+$$
+
+A judgement is not true or false on its own; it is *derivable* or not from a set of rules.
+
+## The rules
+
+λ→ has three typing rules, one per kind of term.
+
+<Rules ids="stlc.var stlc.abs stlc.app" />
+
+Read each rule as: *if the judgements above the line are derivable, so is the judgement below it*. The side condition to the right (for Var) is an ordinary check, not a judgement.
+
+- **Var**: a variable has the type the context says it has.
+- **Abs**: to show that $\lambda(x : A).\, t$ has type $A \to B$, show that $t$ has type $B$ in the context extended with $x : A$. Going under the binder *extends the context* — this is exactly the "opening" of binders from Chapter 2.
+- **App**: if $f$ is a function from $A$ to $B$ and $a$ has type $A$, then $f\,a$ has type $B$. The argument type must *match* the domain exactly.
+
+## Derivations
+
+A **derivation** is a tree of rule applications whose leaves are axioms (rules with no premises, like Var) and whose root is the judgement we want. Below is the derivation of the "apply twice" function, built by the course kernel. It starts collapsed: press **grow tree** to reveal one more level of premises at a time, as you would construct it by hand, working upwards from the goal.
+
+<DerivationView calculus="stlc" setup="variable (A : *)" term="λ (f : A → A) (x : A) => f (f x)" stepwise title="Derivation of apply-twice" />
+
+A few things to notice:
+
+- The tree is read **bottom-up**. The conclusion at the bottom is what we want; each bar is one rule; the premises above it are what that rule requires.
+- The context grows as we pass through the Lam rules and is copied unchanged into both premises of App.
+- The kernel's Lam rule has an extra premise that the binder's type is a well-formed type. For λ→ this is trivial and it is hidden by default; untick **hide type formation** to see it. From Chapter 5 onwards types become interesting terms in their own right and these premises start to matter.
+- Hover a rule name to see the rule, and a term to see its type.
+
+Edit the term above — for instance to `λ (f : A → A) (x : A) => f x x` — to see a failing derivation: the kernel shows the partial tree up to the rule that failed, with the offending premise marked in red.
+
+<Engineer title="The rules are an algorithm">
+Each λ→ term matches the conclusion of exactly one rule, determined by its outermost constructor. So the rules can be read as a recursive function — this property is called being **syntax-directed**:
+
+```ts
+function typeOf(ctx: Map<string, Type>, t: Term): Type {
+  switch (t.kind) {
+    case 'var': {                                   // Var
+      const ty = ctx.get(t.name);
+      if (!ty) throw new Error(`unbound variable ${t.name}`);
+      return ty;
+    }
+    case 'lam': {                                   // Abs
+      const body = typeOf(new Map(ctx).set(t.name, t.domain), t.body);
+      return { kind: 'arrow', dom: t.domain, cod: body };
+    }
+    case 'app': {                                   // App
+      const f = typeOf(ctx, t.fn);
+      if (f.kind !== 'arrow') throw new Error('not a function');
+      const a = typeOf(ctx, t.arg);
+      if (!typeEquals(a, f.dom)) throw new Error('argument type mismatch');
+      return f.cod;
+    }
+  }
+}
+```
+
+The course kernel's `inferType` is this function, grown up: the context holds free variables in the locally nameless style, `typeEquals` becomes *definitional equality* (which involves computation), and the function optionally records the derivation tree it has implicitly followed — which is how the trees in this course are produced.
+</Engineer>
+
+## What types rule out
+
+Try to type the self-application $\lambda x.\, x\, x$. Whatever type $A$ we give $x$, the App rule needs $x$ to be a function whose domain is $A$ — so $A$ would have to equal $A \to B$ for some $B$. No simple type is equal to a strictly larger type containing itself, so there is no derivation.
+
+<Playground calculus="stlc" errors title="Self-application is untypable" code={`variable (A B : *)
+#check λ (x : A) => x x
+#check λ (x : A → B) => x x`} />
+
+Without self-application, Ω and the Y combinator are untypable, and we lose general recursion. That is not an accident; it is the main theorem of this chapter.
+
+## The good news: three theorems
+
+<Theorem title="Subject reduction (type preservation)">
+If $\Gamma \vdash t : \tau$ and $t \longrightarrow_\beta t'$, then $\Gamma \vdash t' : \tau$.
+</Theorem>
+
+Computation never changes the type. The proof uses a *substitution lemma*: if $\Gamma, x : \sigma \vdash t : \tau$ and $\Gamma \vdash s : \sigma$ then $\Gamma \vdash t[x := s] : \tau$ — a typed version of β-reduction, which is exactly the "graft a derivation of $s$ in place of every use of Var for $x$" operation on derivation trees.
+
+<Theorem title="Strong normalisation (Tait, 1967)">
+If $\Gamma \vdash t : \tau$, then *every* reduction sequence starting at $t$ is finite.
+</Theorem>
+
+Not only does a normal form exist; *every* strategy reaches it. The obvious proof — induction on the typing derivation — fails at the App case: knowing that $f$ and $a$ each terminate says nothing about $f\,a$, since β-reduction can create new redexes by substituting $a$ into the body of $f$. William Tait's insight was to prove a stronger, *type-indexed* property. Define the **reducible** terms of each type:
+
+- a term of base type is reducible if it is strongly normalising;
+- a term $f$ of type $\sigma \to \tau$ is reducible if for every reducible $a$ of type $\sigma$, $f\,a$ is reducible.
+
+Then show (by induction on types) that reducible terms are strongly normalising, and (by induction on derivations) that every typed term is reducible. The definition of reducibility at arrow types is where the strength comes from: it builds in exactly the property needed for the App case. This technique — *logical relations* — is the backbone of normalisation proofs for every calculus in this course, including CIC, where it becomes very sophisticated indeed.
+
+<Theorem title="Decidability">
+Given $\Gamma$, $t$ and $\tau$, it is decidable whether $\Gamma \vdash t : \tau$. And given two typed terms, it is decidable whether they are β-equal: normalise both and compare.
+</Theorem>
+
+The first part is the syntax-directed algorithm above. The second follows from strong normalisation and confluence, and it will become essential once types contain computation.
+
+## Checking versus inference
+
+We annotated every binder with its type. What if we don't? In the **Curry-style** presentation, terms are untyped λ-terms and typing assigns them types after the fact: $\lambda x.\, x$ has type $A \to A$ for *every* type $A$.
+
+For λ→, **type inference** — finding a type for an unannotated term, if one exists — is decidable. Every typable term has a *principal type* from which all its other types are instances ($\lambda f\, x.\, f\,(f\,x)$ has principal type $(\alpha \to \alpha) \to \alpha \to \alpha$, with $\alpha$ a type variable), and the algorithm to compute it is first-order **unification**, found independently by Hindley (1969) and Milner (1978). Its extension with `let`-polymorphism is the Hindley–Milner type system at the heart of ML, OCaml and Haskell.
+
+Inference will not survive much further up the ladder: it is undecidable for System F (Chapter 5) and for dependent types. Proof assistants therefore use *bidirectional* elaboration — types flow down from annotations and up from subterms — and fill in the gaps with **metavariables** solved by unification. The course's elaborator does exactly that: in the full language you can write `fun x => f x` when the expected type is known. Everything the elaborator guesses is re-checked by the kernel in Church style, with all annotations explicit.
+
+## The bad news: what we lost
+
+Strong normalisation means λ→ is not Turing-complete: every program terminates, so some computable functions cannot be expressed. And types are *monomorphic*: there is no single identity function, only an identity on $A$, one on $B$, one on $A \to B$…
+
+Church numerals survive, at a fixed type: for any type $A$, let $\mathbb{N}_A = (A \to A) \to A \to A$.
+
+<Playground calculus="stlc" title="Church numerals in λ→" code={`variable (A : *)
+
+def NatA : * := (A → A) → A → A
+def two : NatA := λ (f : A → A) (x : A) => f (f x)
+def three : NatA := λ (f : A → A) (x : A) => f (f (f x))
+def plus : NatA → NatA → NatA :=
+  λ (m n : NatA) (f : A → A) (x : A) => m f (n f x)
+#reduce plus two three`} />
+
+Addition and multiplication are definable. But Helmut Schwichtenberg proved in 1976 that the functions on $\mathbb{N}_A$ definable in λ→ are exactly the *extended polynomials*: built from constants, addition, multiplication and a test for zero. There is no predecessor, no subtraction, no exponentiation with the result at the same type. The `def` command here is a convenience of the course language — each definition is just an abbreviation, unfolded by the kernel when needed (a δ-reduction).
+
+<Exercise id="stlc:flip" calculus="stlc" title="Swapping arguments" code={`variable (A B C : *)
+
+def flip : (A → B → C) → B → A → C :=
+  ?_`} hint="Take three arguments f, b and a, and apply f to them in the right order." solution={`variable (A B C : *)
+
+def flip : (A → B → C) → B → A → C :=
+  λ (f : A → B → C) (b : B) (a : A) => f a b`}>
+Replace `?_` with a term of the given type. The results panel shows the *goal* the hole must fill; the exercise is solved when the file checks without errors.
+</Exercise>
+
+<Exercise id="stlc:s" calculus="stlc" title="The S combinator" code={`variable (A B C : *)
+
+def S : (A → B → C) → (A → B) → A → C :=
+  ?_`} hint="Given x : A, you can compute g x : B and then apply f x to it." solution={`variable (A B C : *)
+
+def S : (A → B → C) → (A → B) → A → C :=
+  λ (f : A → B → C) (g : A → B) (x : A) => f x (g x)`}>
+Write the combinator $S = \lambda f\, g\, x.\, f\, x\, (g\, x)$ with its type annotations.
+</Exercise>
+
+Notice something about these exercises. To find a term of type $(A \to B \to C) \to (A \to B) \to A \to C$, you reasoned: *assume I have a function from A to (B to C), and a function from A to B, and an A…* That is exactly how one proves the logical formula $(A \Rightarrow B \Rightarrow C) \Rightarrow (A \Rightarrow B) \Rightarrow A \Rightarrow C$. The next chapter shows that this is no coincidence.
+
+## Summary
+
+- Simple types are base types and function types. Terms carry type annotations on binders.
+- Typing judgements $\Gamma \vdash t : \tau$ are derived by three syntax-directed rules — Var, Abs, App — which double as a type-checking algorithm.
+- Well-typed terms are preserved by reduction and are strongly normalising; typing and β-equality are decidable.
+- The price is expressiveness: no self-application, no general recursion, no polymorphism, and only polynomial arithmetic on Church numerals.
+
+<History title="Church's simple theory of types">
+Church introduced the simply typed λ-calculus in his 1940 paper *A formulation of the simple theory of types*, as a streamlined version of Russell and Whitehead's ramified type theory from *Principia Mathematica*. It was intended as a *logic*: base types for individuals and truth values, with logical connectives as constants. Its descendants include the higher-order logic of the HOL family of provers (HOL4, HOL Light, Isabelle/HOL), which are still based on Church's 1940 system. Haskell Curry had independently studied types for combinators in 1934; the implicit, inferred style is named after him. Tait's normalisation proof appeared in 1967, and the Hindley–Milner algorithm in 1969/1978.
+</History>

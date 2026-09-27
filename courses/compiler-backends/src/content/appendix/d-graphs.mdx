@@ -1,0 +1,54 @@
+<p className="lede">
+The graph algorithms a backend uses, each with its complexity and where it appears in this course.
+</p>
+
+## Traversals and orders
+
+**Depth-first search** visits a node, then recursively each unvisited successor. It runs in O(V + E). It gives:
+- **preorder** and **postorder** numberings;
+- **reverse postorder** (RPO), which is a topological order of any DAG;
+- a classification of edges into **tree**, **back**, **forward** and **cross** (Chapter 2).
+
+In a CFG, back edges identify loops. Postorder drives backward dataflow such as liveness; RPO drives forward dataflow and dominator computation. Implement DFS iteratively in production: real CFGs can be deep enough to overflow a recursive implementation.
+
+**Topological sort** of a DAG is RPO, or Kahn’s algorithm (repeatedly remove a node with no incoming edges). Used by list scheduling (Chapter 16) to process instructions in dependence order.
+
+## Strongly connected components
+
+**Tarjan’s algorithm** (1972) finds all SCCs in one DFS in O(V + E), tracking each node’s *lowlink* — the smallest preorder number reachable. SCCs of a CFG are its maximal cyclic regions (loops, including irreducible ones). The call graph’s SCCs are the mutually recursive function groups, which interprocedural passes process bottom-up. Kiln implements it in `analysis/graph.ts`.
+
+## Dominators
+
+- **Iterative dataflow** over sets: simple, O(V²) space.
+- **Lengauer–Tarjan** (1979): O(E α(E, V)) using semi-dominators and path compression.
+- **Cooper–Harvey–Kennedy** (2001): iterative, storing only the idom, and intersecting via RPO numbers; fast in practice (Chapter 3).
+- **Semi-NCA** (Georgiadis et al.): used by LLVM, with incremental updates.
+
+**Dominance frontiers** come from walking up the dominator tree from each predecessor of each join node. **Iterated** frontiers come from a worklist.
+
+## Graph colouring
+
+*K*-colourability is NP-complete for *K* ≥ 3. Useful facts:
+
+- **Kempe’s rule**: a node of degree < *K* can always be coloured after the rest; removing such nodes repeatedly is the basis of Chaitin-style allocation.
+- **Greedy colouring** in a given order uses at most Δ + 1 colours, where Δ is the maximum degree.
+- **Interval graphs** (intersection graphs of intervals on a line) are coloured optimally by sorting intervals by start point and taking the lowest free colour. This is the theory behind linear scan.
+- **Chordal graphs** (every cycle longer than 3 has a chord) have perfect elimination orders and can be coloured optimally in linear time. SSA interference graphs are chordal.
+
+## Union–find
+
+Disjoint-set forests with union by rank and path compression give near-constant amortised merges and lookups. Register coalescing uses them for alias chains (in kiln, `getAlias`), and so do type unification and equivalence classes of values.
+
+## Worklist fixpoints
+
+Many analyses iterate monotone equations until they stabilise. A **worklist** holds only the nodes whose inputs changed:
+- dataflow analyses;
+- SCCP;
+- the iterated dominance frontier;
+- the simplify worklists of iterated register coalescing.
+
+Termination follows from monotonicity over a finite-height lattice; efficiency follows from a good initial order (RPO or postorder).
+
+## Shortest and longest paths
+
+List scheduling’s priority is a **longest path** (critical path) in a DAG. Compute it in O(V + E) in reverse topological order. In general graphs, longest path is NP-hard; in DAGs it is trivial.

@@ -1,0 +1,185 @@
+In λ→ there is no identity function. There is an identity on `A`, `λ (x : A) => x`, and an identity on `B`, and one on `A → B`, and they are all different terms that happen to look alike. Every useful generic function — composition, `map`, sorting — must be written again for every type. Programmers know the fix: **generics**. In TypeScript,
+
+```ts
+function id<T>(x: T): T { return x; }
+```
+
+`id` takes a *type* argument `T` and then a value of type `T`. This chapter adds exactly that to the λ-calculus. The result, discovered independently by the logician Jean-Yves Girard in 1972 and the computer scientist John Reynolds in 1974, is **System F**, also called the *polymorphic* or *second-order* λ-calculus.
+
+## Terms that take types
+
+System F adds two constructs to λ→: abstraction over a type variable, and application of a term to a type.
+
+<Definition title="System F">
+Types: $\quad \tau ::= \alpha \mid \tau \to \tau \mid \forall \alpha.\, \tau$
+
+Terms: $\quad t ::= x \mid \lambda (x : \tau).\, t \mid t\, t \mid \Lambda \alpha.\, t \mid t\,[\tau]$
+</Definition>
+
+$\Lambda \alpha.\, t$ is a function whose argument is a type; its type is the **universal type** $\forall \alpha.\, \tau$. Applying it to a type $\sigma$, written $t\,[\sigma]$, substitutes $\sigma$ for $\alpha$. The new typing rules mirror Abs and App one level up:
+
+<Rules ids="f.tabs f.tapp" />
+
+and there is a new computation rule, *type β-reduction*: $(\Lambda \alpha.\, t)\,[\sigma] \longrightarrow t[\alpha := \sigma]$.
+
+The polymorphic identity is $\Lambda \alpha.\, \lambda (x : \alpha).\, x : \forall \alpha.\, \alpha \to \alpha$, and $\mathit{id}\,[\mathbb{B}]\; \mathsf{true} \longrightarrow (\lambda (x : \mathbb{B}).\, x)\, \mathsf{true} \longrightarrow \mathsf{true}$.
+
+## One notation for both
+
+Look at the two kinds of abstraction side by side: $\lambda (x : \tau).\, t$ abstracts a term variable whose type is $\tau$; $\Lambda \alpha.\, t$ abstracts a type variable whose "type" is… "type". If we write `*` for the sort of types, as in the last chapter, then $\alpha : *$, and the two constructs become one:
+
+$$
+\Lambda \alpha.\, t \;\;=\;\; \lambda (\alpha : *).\, t \qquad\qquad \forall \alpha.\, \tau \;\;=\;\; \Pi (\alpha : *).\, \tau
+$$
+
+Type application $t\,[\sigma]$ becomes ordinary application $t\ \sigma$. The **Π-type** $\Pi (x : A).\, B$ is the type of functions taking an argument $x$ of type $A$ and returning something of type $B$ — where $B$ may mention $x$. When it doesn't, $\Pi (x : A).\, B$ is just $A \to B$.
+
+This is how the course language writes System F, and how Lean 4 writes everything:
+
+<Playground calculus="f" title="System F" code={`def id : Π (A : *), A → A := λ (A : *) (x : A) => x
+
+def compose : Π (A B C : *), (B → C) → (A → B) → A → C :=
+  λ (A B C : *) (g : B → C) (f : A → B) (x : A) => g (f x)
+
+def twice : Π (A : *), (A → A) → A → A :=
+  λ (A : *) (f : A → A) (x : A) => f (f x)
+
+variable (Bool : *)
+axiom true : Bool
+#reduce id Bool true
+#check twice (Bool → Bool)`} />
+
+Open the derivation tree of `compose` and look for the Lam rules that bind `A`, `B` and `C`: they are exactly the same rule as the ones that bind `g`, `f` and `x`, applied to variables of sort `*`. The kernel doesn't know about "type abstraction" as a separate feature. What makes this System F rather than λ→ is which Π-types are *allowed to exist*: λ→ permits $\Pi (x : A).\, B$ only when $A$ is a type (`A : *`); System F also permits it when $A$ is `*` itself — functions whose argument is a type. The side condition `(□, *) ∈ R` on the Pi rule records this. In λ→ the same term is rejected:
+
+<Playground calculus="stlc" errors title="…and in λ→" code={`def id : Π (A : *), A → A := λ (A : *) (x : A) => x`} />
+
+We will make this precise in Chapter 8, where it turns out that every calculus in Part II differs from the others only in this one parameter.
+
+## Implicit type arguments
+
+Writing `id Bool true` is tedious; the type argument can be inferred from the value argument. Declare it **implicit** with curly braces and the elaborator will insert a metavariable for it and solve it by unification — exactly what Java, TypeScript or Rust do for generics:
+
+<Playground calculus="f" title="Implicit arguments" code={`def id {A : *} (x : A) : A := x
+def compose {A B C : *} (g : B → C) (f : A → B) : A → C := λ (x : A) => g (f x)
+
+variable (Bool : *)
+axiom not : Bool → Bool
+axiom true : Bool
+
+#check id true
+#check compose not not
+#check @compose`} />
+
+Hover over `id true` in the editor to see the elaborated term: the kernel receives `id Bool true`, with the type argument filled in. The `@` in `@compose` turns off implicit insertion, showing the full type. Lean 4 uses implicit arguments pervasively; you have been using them since Chapter 4 whenever you wrote `Or.inl hp` (the full term is `@Or.inl p q hp`).
+
+## Impredicativity
+
+Here is something strange. The type $\forall \alpha.\, \alpha \to \alpha$ quantifies over *all* types $\alpha$. But $\forall \alpha.\, \alpha \to \alpha$ is itself a type. So we may instantiate `id` at its own type:
+
+$$
+\mathit{id}\ (\Pi (\alpha : *).\, \alpha \to \alpha)\ \mathit{id} \;:\; \Pi (\alpha : *).\, \alpha \to \alpha
+$$
+
+<Playground calculus="f" title="Self-application, typed" code={`def id : Π (A : *), A → A := λ (A : *) (x : A) => x
+#check id (Π (A : *), A → A) id
+#reduce id (Π (A : *), A → A) id`} />
+
+A definition that quantifies over a totality containing the thing being defined is called **impredicative**. Russell and Poincaré considered such "vicious circles" the root of the paradoxes, and Russell's ramified type theory was designed to forbid them. Yet System F is consistent: Girard proved in 1972 that every well-typed term is strongly normalising, extending Tait's reducibility method with a brilliant twist — *reducibility candidates*, which let the reducibility predicate for $\forall \alpha.\, \tau$ quantify over all possible candidate interpretations of $\alpha$. We'll see in Chapter 10 that impredicativity has limits: push it one step further and the system collapses.
+
+## Data types for free
+
+The Church encodings of Chapter 1 now get honest types. A Church numeral iterates a function *on any type*:
+
+$$
+\mathbb{N} \;=\; \Pi (X : *).\, (X \to X) \to X \to X
+$$
+
+and this is a single type, not a family $\mathbb{N}_A$ as in λ→. Booleans, pairs and sums work the same way — each data type is encoded by its **elimination principle**: "tell me what to do in each case, for any result type $X$, and I'll do it".
+
+<Playground calculus="f" title="Church numerals in System F" code={`def Nat' : * := Π (X : *), (X → X) → X → X
+
+def zero : Nat' := λ (X : *) (s : X → X) (z : X) => z
+def succ : Nat' → Nat' := λ (n : Nat') (X : *) (s : X → X) (z : X) => s (n X s z)
+def add : Nat' → Nat' → Nat' := λ (m n : Nat') (X : *) (s : X → X) (z : X) => m X s (n X s z)
+def mul : Nat' → Nat' → Nat' := λ (m n : Nat') (X : *) (s : X → X) => m X (n X s)
+def exp : Nat' → Nat' → Nat' := λ (m n : Nat') (X : *) => n (X → X) (m X)
+
+def two : Nat' := succ (succ zero)
+def three : Nat' := succ two
+#reduce exp two three`} />
+
+Exponentiation is now definable: `exp m n` instantiates `n` at the type `X → X`, a *different* type from the one the result is used at. This was impossible in λ→, where Schwichtenberg's theorem limited us to polynomials. In fact the functions on Church numerals definable in System F are exactly those that can be proved total in second-order Peano arithmetic — an enormous class, including functions that grow faster than anything you could compute in the lifetime of the universe.
+
+<Exercise id="f:bool" calculus="f" title="Church booleans" code={`def Bool' : * := Π (X : *), X → X → X
+def tt : Bool' := λ (X : *) (t f : X) => t
+def ff : Bool' := λ (X : *) (t f : X) => f
+
+def not : Bool' → Bool' := ?_
+
+#reduce not tt`} hint="A boolean b chooses between two arguments; to negate it, give it ff and tt in the swapped order — but first instantiate it at the type Bool'." solution={`def Bool' : * := Π (X : *), X → X → X
+def tt : Bool' := λ (X : *) (t f : X) => t
+def ff : Bool' := λ (X : *) (t f : X) => f
+
+def not : Bool' → Bool' := λ (b : Bool') => b Bool' ff tt
+
+#reduce not tt`}>
+Define negation on Church booleans. (There is also a solution that doesn't instantiate `b` at `Bool'`: can you find it?)
+</Exercise>
+
+## Second-order logic
+
+Under Curry–Howard, $\Pi (X : *)$ is universal quantification over propositions, so System F is a proof system for **second-order propositional logic**. And the connectives we had to add to λ→ by hand in Chapter 4 are now *definable*:
+
+$$
+\begin{aligned}
+\bot &\;:=\; \Pi (X : *).\, X && \text{(proves anything)}\\
+A \wedge B &\;:=\; \Pi (X : *).\, (A \to B \to X) \to X && \text{(if A and B give X, then X)}\\
+A \vee B &\;:=\; \Pi (X : *).\, (A \to X) \to (B \to X) \to X && \text{(if each case gives X, then X)}
+\end{aligned}
+$$
+
+These are the same Church encodings as the data types — conjunction is the pair type, disjunction the sum type, falsity the empty type. Here is conjunction for two fixed propositions `C` and `D`, with its introduction and elimination rules as definable functions:
+
+<Playground calculus="f" title="Logic by encoding" code={`variable (C D : *)
+
+def CandD : * := Π (X : *), (C → D → X) → X
+
+def intro (c : C) (d : D) : CandD := λ (X : *) (k : C → D → X) => k c d
+def left (p : CandD) : C := p C (λ (c : C) (d : D) => c)
+def right (p : CandD) : D := p D (λ (c : C) (d : D) => d)
+
+def False' : * := Π (X : *), X
+def exFalso (h : False') : C := h C`} />
+
+Why only for fixed `C` and `D`? Because `And'` itself — the *function* that takes two propositions and returns their conjunction — maps types to a type, and that is something System F cannot express:
+
+<Playground calculus="f" errors title="Type-level functions are missing" code={`def And' (A B : *) : * := Π (X : *), (A → B → X) → X`} />
+
+The kernel rejects this because the *type* of `And'`, namely `* → * → *`, would itself need a Π-type whose domain is `*` and whose codomain is `*` — the product rule *(□, □)*. Adding it is the next chapter.
+
+## Parametricity: theorems for free
+
+A polymorphic function of type $\Pi (X : *).\, X \to X$ receives a value of a type it knows nothing about. It cannot inspect it, compare it, or create a new one. All it can do is return it. So the *only* closed normal term of that type is the identity. Similarly, a term of type $\Pi (X : *).\, X \to X \to X$ can only return its first or its second argument — which is why this is the type of booleans.
+
+Reynolds made this precise in 1983 with the **abstraction theorem**, now called *parametricity*: every term of a polymorphic type respects all relations between instantiations of its type variables. Philip Wadler turned it into a party trick in *Theorems for free!* (1989): from the type alone, one can derive equations every function of that type satisfies. For instance any `f : ∀X. List X → List X` commutes with `map`: `f (map g xs) = map g (f xs)` — it can only rearrange, drop or duplicate elements, never look at them.
+
+<Engineer title="Why generics can't do instanceof">
+Parametricity is the reason good generic APIs are easy to reason about, and the reason languages with runtime type inspection (`instanceof`, reflection, `typeof`) lose these free theorems. A Java method `<T> T id(T x)` could, in principle, check whether `x` is a `String` and return something else. In System F — and in Lean's type theory — it cannot. (Lean does allow *type classes*, where the type argument comes with explicit operations; that is a different, explicit mechanism.)
+</Engineer>
+
+## The cost: inference and termination
+
+Strong normalisation still holds, so System F is still not Turing-complete and still consistent. And type checking the explicitly typed (Church-style) terms is still easy. But **type inference** — reconstructing the type abstractions and applications of an unannotated term — is undecidable, as Joe Wells proved in 1994. This is why ML and Haskell restrict polymorphism to `let`-bound definitions (*prenex* or *rank-1* polymorphism), where Hindley–Milner inference works, and why dependently typed proof assistants rely on elaboration with explicit annotations and implicit arguments solved locally by unification.
+
+## Summary
+
+- System F adds abstraction over types and application to types; with a sort `*` of types both become ordinary λ and application, and ∀ becomes a Π-type.
+- The system is impredicative: $\forall$ ranges over all types, including the one being defined. It is nevertheless strongly normalising (Girard's reducibility candidates).
+- Data types are definable by Church encoding, now with a single polymorphic type each; much more arithmetic becomes definable.
+- Second-order logic comes for free: ⊥, ∧, ∨ are definable.
+- Parametricity yields free theorems; type inference becomes undecidable.
+- Still missing: functions from types to types, such as `And'`.
+
+<History title="Girard and Reynolds">
+Girard introduced System F in his 1972 doctoral thesis, as a tool for proving the consistency of second-order arithmetic via normalisation, extending Gödel's System T. In the same thesis he defined an extension, System U, and showed it inconsistent: that result, *Girard's paradox*, is the subject of Chapter 10. Reynolds, unaware of Girard's work, introduced the same calculus in 1974 as a foundation for polymorphic programming languages. The two perspectives — logic and programming — have been intertwined ever since.
+</History>

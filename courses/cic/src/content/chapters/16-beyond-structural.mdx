@@ -1,0 +1,150 @@
+Structural recursion on a single inductive type covers a surprising amount of ground, but not everything. Some data comes in families of types defined together; some types contain themselves inside other type constructors; and some functions terminate for reasons that have nothing to do with the shape of their arguments. This chapter looks at the three standard extensions — **mutual**, **nested** and **well-founded** definitions — and shows that each can be reduced to the machinery we already have.
+
+## Mutual inductive types
+
+Sometimes two types are naturally defined in terms of each other. Even and odd numbers:
+
+<Playground title="Mutually inductive predicates" code={`mutual
+  inductive Even' : Nat → Prop where
+    | zero : Even' 0
+    | succ {n : Nat} (h : Odd' n) : Even' (n + 1)
+  inductive Odd' : Nat → Prop where
+    | succ {n : Nat} (h : Even' n) : Odd' (n + 1)
+end
+
+theorem even_two : Even' 2 := Even'.succ (Odd'.succ Even'.zero)
+
+#check @Even'.rec`} />
+
+The kernel checks the whole `mutual` block at once: both types must have the same parameters and live in the same universe, and each constructor may refer to either type (strictly positively). Look at the type of `Even'.rec`: it has **two motives**, one for each type, and minor premises for the constructors of *both* types. A mutual recursor proves (or computes) something about `Even'` and something about `Odd'` simultaneously, because neither can be handled without the other. `Odd'.rec` has the same motives and minor premises and differs only in its conclusion.
+
+A classic mutual data type is a tree whose nodes carry a *forest* of children:
+
+<Playground title="Trees and forests" code={`mutual
+  inductive Tree' : Type where
+    | node : Nat → Forest → Tree'
+  inductive Forest : Type where
+    | nil : Forest
+    | cons : Tree' → Forest → Forest
+end
+
+-- counting nodes, with both motives
+def size (t : Tree') : Nat :=
+  Tree'.rec (motive_1 := fun _ => Nat) (motive_2 := fun _ => Nat)
+    (fun _ _ ih => ih + 1)            -- node: 1 + size of the forest
+    0                                  -- nil
+    (fun _ _ ih₁ ih₂ => ih₁ + ih₂)     -- cons: size of tree + size of rest
+    t
+
+#reduce size (Tree'.node 1 (Forest.cons (Tree'.node 2 Forest.nil) Forest.nil))`} />
+
+The course's pattern-matching compiler doesn't support mutual recursion, so this example uses the recursor directly (Lean's compiler handles mutual structural recursion by combining the recursors in the same way).
+
+## Nested inductive types
+
+The forest above is just a list of trees. It would be nicer to reuse `List`:
+
+```lean
+inductive Rose : Type where
+  | node : Nat → List Rose → Rose
+```
+
+Here `Rose` occurs *nested* inside another inductive type. This is not strictly positive in the sense of Chapter 12 — `Rose` appears as an argument of `List`, not as the result of the field's type — yet it is clearly well-founded, since `List` only stores its elements in positive positions. Lean 4 accepts nested inductive types; the course kernel does not. Lean's kernel handles them by an ingenious translation: it replaces `List Rose` by a fresh type defined mutually with `Rose` — exactly the `Forest` above — checks the mutual block, and translates the resulting recursors back. Nested types therefore add convenience, not power: anything expressible with them is expressible with mutual types.
+
+<Playground errors title="Nested occurrences in the course kernel" code={`inductive Rose : Type where
+  | node : Nat → List Rose → Rose`} />
+
+## Well-founded recursion
+
+Here is a function that terminates, but not by structural recursion:
+
+```lean
+def log2 (n : Nat) : Nat :=
+  if n < 2 then 0 else log2 (n / 2) + 1
+```
+
+`n / 2` is not a constructor field of `n`; the function terminates because `n / 2 < n` whenever `n ≥ 2`, and the order `<` on natural numbers has no infinite descending chains. Such an order is called **well-founded**, and recursion along it is **well-founded recursion**. How can type theory express "no infinite descending chains"? With an inductive predicate, of course.
+
+### Accessibility
+
+<Definition title="Accessibility">
+```lean
+inductive Acc {α : Sort u} (r : α → α → Prop) : α → Prop where
+  | intro (x : α) (h : (y : α) → r y x → Acc r y) : Acc r x
+```
+An element `x` is **accessible** for a relation `r` if every `y` with `r y x` is accessible. A relation is **well-founded** if every element is accessible.
+</Definition>
+
+Read this inductively: an element with no `r`-predecessors is accessible (vacuously); an element all of whose predecessors are accessible is accessible; and nothing else is. A proof of `Acc r x` is thus a well-founded tree — infinitely branching, like the ordinals of Chapter 12 — whose structure mirrors all the descending chains from `x`. Since the tree is finite in depth, so is every chain.
+
+<RecursorView name="Acc'" code={`inductive Acc' {α : Sort u} (r : α → α → Prop) : α → Prop where
+  | intro (x : α) (h : (y : α) → r y x → Acc' r y) : Acc' r x`} />
+
+Two things about this recursor are crucial:
+
+1. `Acc` lives in `Prop` but has a universe parameter: it supports **large elimination**. It satisfies the subsingleton condition of Chapter 14 — one constructor, whose field `x` is an index and whose field `h` is a proof. So a proof of accessibility can be used to *compute data*.
+2. The induction hypothesis says: for every `y` with `r y x`, we already have `motive y`. That is exactly the shape of a recursive call on a smaller argument.
+
+### Proving well-foundedness
+
+Every natural number is accessible for `<`. The proof is a nice exercise in dependent pattern matching: to show all numbers below `n` are accessible, do induction on `n`; the hypothesis `y < n + 1` (which unfolds to `y + 1 ≤ n + 1`) is either `≤`-reflexivity, in which case `y` is `n` itself, or a step, in which case `y < n` and the induction hypothesis applies.
+
+<Playground title="< is well-founded" code={`theorem lt_acc : (n : Nat) → (y : Nat) → y < n → Acc Nat.lt y
+  | 0, y, h => nomatch h
+  | n + 1, y, h =>
+    match h with
+    | Nat.le.refl => Acc.intro y (lt_acc n)     -- here y is n
+    | Nat.le.step h' => lt_acc n y h'
+
+theorem lt_wf : WellFounded Nat.lt :=
+  WellFounded.intro (fun n => Acc.intro n (lt_acc n))`} />
+
+In the `Nat.le.refl` case the index unification of Chapter 13 has solved `y + 1 = n + 1`, replacing `y` by `n` everywhere — so `Acc.intro y (lt_acc n)` has the required type `Acc Nat.lt n`.
+
+### The fixed-point combinator, tamed
+
+With `Acc.rec` we can define a *terminating* fixed-point combinator. Given a "step function" `F` that computes the result at `x` from results at all smaller `y`, and a proof that `x` is accessible, `fix F x` computes the result at `x`:
+
+<Playground title="Well-founded recursion from Acc.rec" code={`theorem lt_acc : (n : Nat) → (y : Nat) → y < n → Acc Nat.lt y
+  | 0, y, h => nomatch h
+  | n + 1, y, h =>
+    match h with
+    | Nat.le.refl => Acc.intro y (lt_acc n)
+    | Nat.le.step h' => lt_acc n y h'
+
+def fix {α : Sort u} {r : α → α → Prop} {C : α → Sort v}
+    (F : (x : α) → ((y : α) → r y x → C y) → C x) (x : α) (a : Acc r x) : C x :=
+  Acc.rec (motive := fun x _ => C x) (fun x _ ih => F x ih) a
+
+-- one step of factorial; recursive calls need a proof that the argument is smaller
+def factStep (x : Nat) (rec : (y : Nat) → y < x → Nat) : Nat :=
+  match x with
+  | 0 => 1
+  | n + 1 => (n + 1) * rec n Nat.le.refl
+
+def fact (n : Nat) : Nat := fix factStep n (Acc.intro n (lt_acc n))
+
+#reduce fact 4`} />
+
+Compare `fix` with the Y combinator of Chapter 1. Both tie a recursive knot; but `fix` can only call itself through `rec`, which demands evidence that the argument decreases, and it recurses *on the accessibility proof*, a well-founded tree. The `match` in `factStep` also shows another Lean behaviour: because the hypothesis `rec` mentions `x`, the match generalises it, so in the `n + 1` branch `rec` has type `(y : Nat) → y < n + 1 → Nat`.
+
+This is exactly how Lean 4 implements `termination_by`: it builds a step function, proves the recursive calls decrease (automatically when it can, with `decreasing_by` when it can't), and defines the function with `WellFounded.fix`.
+
+<Warning title="Computation with well-founded recursion">
+Here `#reduce fact 4` works because the kernel can evaluate the accessibility *proof* `Acc.intro n (lt_acc n)` until it exposes the `Acc.intro` constructor that ι-reduction needs. In general, reducing well-founded definitions requires reducing proofs, which can be very expensive — and, combined with proof irrelevance, can even make definitional equality undecidable (Chapter 19). Lean therefore marks functions defined by well-founded recursion as *irreducible*: you reason about them through the equations Lean proves for them, not by computation.
+</Warning>
+
+## What about infinite data?
+
+All the types in this course are *inductive*: their elements are finite trees (possibly infinitely branching, but with no infinite paths). The dual notion, **coinductive** types, describes possibly infinite data — streams, infinite trees, the behaviour of a server that never stops — built by *corecursion* and reasoned about by *coinduction*. Rocq has primitive coinductive types (with a guard condition for corecursion, dual to the one for recursion); Lean 4 does not have them in its kernel, but they can be constructed inside the theory, for instance as quotients or via the theory of *quotients of polynomial functors*.
+
+## Summary
+
+- Mutual inductive types are checked together and have recursors with one motive per type.
+- Nested inductive types (a type occurring inside another inductive type) are reduced to mutual ones by Lean; the course kernel does not support them.
+- Accessibility, `Acc r x`, is an inductive predicate with large elimination; a relation is well-founded if every element is accessible.
+- Well-founded recursion is defined by recursion on accessibility proofs; this is how Lean's `termination_by` works, and why such functions are usually irreducible.
+
+<History title="Well-founded recursion in type theory">
+The accessibility predicate goes back to Peter Aczel's work on inductive definitions (1977) and was introduced into type theory by Bengt Nordström (1988). The Bove–Capretta method (2001) showed how to use accessibility-like predicates specific to a function to define general recursive functions. Mutual inductive types were part of the Coq kernel from the early 1990s; nested inductive types were added to Coq by Paulin-Mohring and others and to Lean 4 by its translation to mutual types.
+</History>

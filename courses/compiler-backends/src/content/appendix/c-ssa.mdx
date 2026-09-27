@@ -1,0 +1,44 @@
+<p className="lede">
+A compact, more formal account of SSA form: its definitions, its variants, and the properties the backend relies on.
+</p>
+
+## Definitions
+
+A program is in **SSA form** if every variable (value) has exactly one static definition. It is in **strict SSA** if, in addition, every use is dominated by its definition. For a φ operand, the use counts as happening at the end of the corresponding predecessor. Kiln’s verifier checks strictness after every pass.
+
+A φ-function at the start of block *B* with predecessors *P₁ … Pₙ*,
+
+$$ x = \varphi(x_1 : P_1, \;\ldots,\; x_n : P_n), $$
+
+defines *x* to be *xᵢ* when control reaches *B* from *Pᵢ*. All φs at the top of a block are evaluated **simultaneously**. Their semantics is a parallel copy on each incoming edge.
+
+## Variants
+
+- **Minimal SSA**: φs exactly at the iterated dominance frontiers of each variable’s definition sites, with no liveness information.
+- **Pruned SSA**: minimal SSA restricted to blocks where the variable is live-in. There are no dead φs.
+- **Semi-pruned SSA**: φs only for variables live across some block boundary (“non-local” variables); cheaper than pruned.
+- **Conventional SSA** (CSSA): all operands and the result of each φ can be renamed to one variable without changing the program. Their live ranges never interfere. The SSA produced directly by construction is conventional; copy propagation and other optimisations generally break this, giving **transformed SSA** (TSSA), which is why SSA destruction must be careful (Chapter 10).
+- **Memory SSA**: SSA over *memory states*, treating each store as defining a new version of memory. LLVM’s `MemorySSA` makes load/store analyses sparse.
+- **e-SSA / SSI**: extra copies (σ-functions, π-nodes) at branches, so that facts learned from a condition (`x < 10` on the true edge) attach to a new name.
+
+## Properties the backend uses
+
+**Dominance.** Every use is dominated by its definition, so value availability is a tree property. Common-subexpression elimination is a dominator-tree walk, and so is SSA renaming.
+
+**Live ranges are subtrees.** In strict SSA, the set of program points where a value is live is connected within the dominator tree: a subtree rooted at the definition, pruned at the uses. Consequently, *a* and *b* interfere only if one of them is live at the other’s definition. A cheap interference test follows: compare definitions by dominance, then check liveness at a single point.
+
+**Chordal interference.** The interference graph of a strict SSA program is chordal. Chordal graphs have a *perfect elimination order*, and colouring greedily in reverse of it — here, in dominance order of definitions — uses exactly ω colours, the size of the largest clique. And ω equals MAXLIVE, the maximum register pressure. So SSA programs can be register-allocated optimally without spilling whenever MAXLIVE ≤ *K*. This is the basis of SSA-based register allocation.
+
+**Sparse analysis.** Facts attached to definitions (constant values, value ranges, types) need no dataflow iteration over program points: propagate them along def–use edges with a worklist. Sparse conditional constant propagation (SCCP; Wegman and Zadeck, 1991) is the classic example.
+
+## Destruction, formally
+
+To leave SSA, each φ is replaced by copies on its incoming edges. The copies on one edge form a parallel copy. This is correct if:
+1. the copies can be placed so that they run exactly on their edge — critical edges must be split, or the method must otherwise ensure the copied-to variable is not live on other edges;
+2. each parallel copy is sequentialised correctly, with cycles broken by a temporary.
+
+Boissinot et al. (2009) additionally introduce copies *after* each φ, so that the program becomes conventional, and then coalesce aggressively using the interference test above.
+
+## Further reading
+
+Rastello and Bouchez Tichadou (eds.), *SSA-based Compiler Design* (Springer, 2022), covers all of this in depth. Cytron et al. (1991) remains very readable.

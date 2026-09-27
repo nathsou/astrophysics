@@ -1,0 +1,61 @@
+<p className="lede">
+Graph colouring builds a graph that can have quadratically many edges, then iterates. When compile time is part of run time — in a JIT — that is too slow. Linear scan allocates registers in a single sweep over live intervals.
+</p>
+
+## The idea
+
+Linearise the function: put its blocks in some order and number the instructions. Then approximate every value’s live range by an **<Term k="live-interval">interval</Term>** [start, end] in that numbering. Two values can share a register if their intervals do not overlap. That is **interval graph colouring**, which is solvable greedily and optimally: sweep from left to right, and give each interval any register not held by an interval still active.
+
+**Poletto and Sarkar’s** linear scan (TOPLAS 1999) does exactly this, with a simple spill rule:
+
+```ts
+active = [];                                   // intervals currently holding a register
+for (const cur of intervals.sortedByStart()) {
+  expire(active, cur.start);                   // free registers of intervals that ended
+  if (freeRegisters.length) assign(cur, freeRegisters.pop());
+  else {
+    const victim = active.maxBy((iv) => iv.end);   // the one needed furthest in the future
+    if (victim.end > cur.end) { cur.reg = victim.reg; spill(victim); }
+    else spill(cur);
+  }
+}
+```
+
+Spilling the interval that **ends last** is Belady’s classic cache replacement idea (1966): evict whatever is needed furthest in the future. Everything is linear in the number of intervals, apart from keeping `active` sorted, and there is no graph and no iteration.
+
+<LinearScanStepper example="pressure" fn="mix" maxRegs={6} caption="Linear scan on the high-pressure function with K = 6. The orange line is the sweep position. Grey rows at the top are fixed intervals of physical registers (argument registers, call clobbers), where a register is unavailable. Coloured bars are assigned; dashed red bars are spilled. Rounds 2+ reallocate after spill code has been inserted." />
+
+## The price of speed
+
+The interval is a **conservative** approximation. A value live at positions 10–20 and 60–70, with a hole in between, is treated as occupying its register over 10–70. Two values whose intervals overlap may never actually be live at the same time, yet linear scan will not let them share a register. The block order matters too: a loop whose body is placed far from its header stretches every loop-carried value’s interval across the code in between.
+
+In exchange, linear scan is fast and simple. Its output is usually within a few percent of graph colouring on straight-line code, and worse on code with many overlapping short ranges and many copies.
+
+Kiln’s version adds two refinements that are cheap to implement:
+
+- **Fixed intervals.** Physical registers that the code names directly — argument registers around calls, call clobbers, x86’s `rax`/`rdx` for division — have their own interval lists, *with* holes. A register is free for `cur` only if its fixed intervals do not intersect `cur`. That is how a value live across a call is kept out of caller-saved registers.
+- **Copy hints.** If `cur` is the source or destination of a copy and the register on the other side is free, take it, and the copy becomes trivial. It is a poor man’s coalescing, but it removes most ABI copies.
+
+When anything spills, kiln inserts spill code (Chapter 14) and simply runs the allocator again, just as the graph-colouring allocator does. The spill temporaries have tiny intervals and are never spilled themselves.
+
+## Making linear scan good
+
+The interesting history of linear scan is a series of fixes for its weaknesses:
+
+- **Second-chance binpacking** (Traub, Holloway and Smith, PLDI 1998) uses lifetime holes, and when a value is spilled it may later get a register again (its second chance).
+- **Interval splitting** (Wimmer and Mössenböck, VEE 2005; used in the HotSpot client compiler and later in V8 and other JITs) splits an interval at a well-chosen position instead of spilling all of it. The value stays in a register where it is used heavily, goes to memory across a region with high pressure, and is reloaded afterwards.
+- **SSA-based linear scan** (Wimmer and Franz, 2010) allocates directly on SSA form and resolves φs with moves afterwards.
+
+<Aside kind="llvm">
+<p>LLVM’s default <b>greedy</b> allocator (Jakob Stoklund Olesen, 2011) is a descendant of these ideas rather than of Chaitin. It processes live ranges in priority order (larger and hotter first), assigns a free register if there is one, and otherwise <i>evicts</i> a cheaper range already assigned. When that fails too, it <i>splits</i> the range — around loops, around individual uses, or into per-block pieces — and requeues the pieces. Spilling is the last resort. The result is close to graph-colouring quality at a fraction of the cost.</p>
+</Aside>
+
+## Comparing the two allocators
+
+Run the same programs through both allocators in the pipeline explorer below: switch the *Allocated* stage between the two using the playground’s allocator option, or compare them with the spill explorer in the next chapter. On most of our examples they produce identical register counts. Linear scan pays extra in functions with many copies (x86 two-address code) and under high pressure, where its conservative intervals spill values that graph colouring keeps in registers.
+
+<Pipeline example="collatz" stage="ra" stages={['destroy', 'ra', 'asm']} options={{ regalloc: 'linear' }} height={360} caption="The collatz program allocated by linear scan. Hover values to follow their registers; compare with graph colouring in the playground (Allocator: graph colouring / linear scan)." />
+
+<Callout kind="key">
+Linear scan approximates live ranges by intervals over a linear instruction order, sweeps once, and spills the interval that ends furthest away. It is fast enough for JITs; lifetime holes, interval splitting and eviction bring its quality close to graph colouring.
+</Callout>

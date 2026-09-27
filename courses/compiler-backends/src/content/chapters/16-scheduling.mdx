@@ -1,0 +1,82 @@
+<p className="lede">
+A processor overlaps the execution of many instructions, but a result is not available the moment its instruction starts. Instruction scheduling reorders code so that the machine has independent work to do while it waits.
+</p>
+
+## Why order matters
+
+A pipelined processor starts a new instruction every cycle, or several per cycle on a superscalar core, but a load may take three or four cycles to produce its value and a divide twenty or more. If the very next instruction uses that value, an **in-order** core simply stalls. The classic 5-stage RISC pipeline is described in the architecture primer (Appendix B).
+
+<AsmSnippet target="rv64" title="A stall, and the same code scheduled" code={`
+    ld   a0, 0(a1)          # load: result ready 3 cycles later
+    add  a0, a0, a2         # needs a0 -> stalls 2 cycles
+    addi a3, a3, 1          # independent
+    slli a4, a4, 3          # independent
+
+    ld   a0, 0(a1)
+    addi a3, a3, 1          # fill the load's shadow with independent work
+    slli a4, a4, 3
+    add  a0, a0, a2         # a0 is ready now: no stall
+`} />
+
+**Out-of-order** cores (Tomasulo’s algorithm, IBM 360/91, 1967, and every big modern core) do this reordering in hardware, over a window of hundreds of instructions. Compiler scheduling still matters for them — for front-end bandwidth, for long-latency chains at the window’s edge, and for keeping register pressure in check. It matters a great deal for the many **in-order** cores still shipping: small RISC-V and Arm cores in phones and microcontrollers, and GPUs and DSPs.
+
+## Dependences
+
+Reordering is legal only if it preserves every **dependence** between instructions:
+
+- **RAW** (true dependence): *B* reads what *A* writes, so *B* must wait for *A*’s result. The edge weight is *A*’s latency.
+- **WAR** (<Term k="anti-dependence">anti-dependence</Term>): *B* writes a register that *A* reads, so *B* must not overtake *A*.
+- **WAW** (output dependence): both write the same register, so their order must be kept.
+- **Memory**: a store and a later load or store to a *possibly* identical address must keep their order.
+
+WAR and WAW are *false* dependences. They exist only because a register name is reused, and renaming removes them. That is exactly what SSA does for virtual registers, and what register renaming does in hardware. Memory dependences need **<Term k="alias-analysis">alias analysis</Term>** to be relaxed. Kiln knows only that distinct stack slots never overlap, and that two accesses at different constant offsets from the same base register do not either. Everything else is assumed to alias.
+
+## List scheduling
+
+The dependences of a basic block form a DAG. **List scheduling** is the standard heuristic for ordering it:
+
+1. Compute each node’s priority. The classic choice is **height**, the length of the longest latency-weighted path from the node to the end of the block — its <Term k="critical-path">critical path</Term>.
+2. Simulate cycles. In each cycle, the **ready list** holds instructions whose predecessors have all issued and whose operand latencies have elapsed. Issue the highest-priority ready instructions, up to the machine’s issue width and subject to functional-unit limits.
+3. If nothing is ready, the cycle is a stall. Advance.
+
+```ts
+while (unscheduled) {
+  const ready = nodes.filter((n) => allPredsIssued(n) && operandsReady(n, cycle));
+  ready.sort((a, b) => height[b] - height[a]);          // critical path first
+  for (const n of ready) if (canIssue(n, cycle)) issue(n, cycle);  // width, units
+  cycle++;
+}
+```
+
+Finding an optimal schedule is NP-hard even for a single basic block on simple machines. List scheduling is greedy and very good in practice. Gibbons and Muchnick (1986) described a practical version for pipelined machines that became standard.
+
+<SchedExplorer example="collatz" fn="steps" caption="List scheduling a basic block of the Collatz loop for a 2-wide in-order core. Left: the dependence DAG (edge labels are latencies; h is each node’s critical-path height). Right: when each instruction issues in the original order and in the scheduled order, with each instruction’s latency shaded after it. Step through the cycles to see the ready list and the choices." />
+
+## A machine model
+
+The scheduler is only as good as its model of the machine. Kiln’s is deliberately simple: 2-wide in-order issue, one memory port and one multiply/divide unit, and latencies of 1 (ALU), 3 (load, multiply) and 20 (divide). It is roughly a small application core like SiFive’s U74. Real models are much richer.
+
+<Aside kind="llvm">
+<p>LLVM describes each CPU with a `SchedMachineModel` in TableGen: issue width, the buffer sizes of out-of-order cores, and per-instruction lists of <i>processor resources</i> (ports and pipes) with latencies. The same data drives the `MachineScheduler`, the post-RA scheduler, and the `llvm-mca` performance analyser. Tuning a compiler for a new core is largely a matter of writing this model.</p>
+</Aside>
+
+## Before or after register allocation?
+
+This is the classic phase-ordering tension.
+
+- **Before allocation**, virtual registers are in SSA form, so there are almost no false dependences, and the scheduler has maximum freedom. But moving loads earlier and uses later **lengthens live ranges**, which can raise register pressure and cause spills — which cost more than the stalls saved.
+- **After allocation**, register reuse has introduced WAR and WAW dependences that pin instructions in place, but spill code is known and can be scheduled too.
+
+Kiln can run either (the playground’s *Scheduler* option). The default is pre-RA, with calls and ABI copies treated as region boundaries. LLVM’s default pre-RA `MachineScheduler` tracks register pressure explicitly, and switches from latency to pressure as its priority when pressure nears the register limit. Many targets also run a lighter post-RA pass.
+
+## Beyond basic blocks
+
+Basic blocks are short, and the best scheduling opportunities cross their boundaries:
+
+- **Trace scheduling** (Josh Fisher, 1981) schedules a whole likely path through the CFG as if it were one block, adding compensation code on the side exits. It was built for VLIW machines such as Multiflow.
+- **Superblocks** (Hwu et al., 1993) simplify this with single-entry traces formed by tail duplication.
+- **Software pipelining** overlaps successive iterations of a loop, starting iteration *i+1* before iteration *i* finishes. Monica Lam’s 1988 work on the Warp machine and Bob Rau’s *iterative modulo scheduling* (1994) made it practical.
+
+<Callout kind="key">
+Build a DAG of true, anti, output and memory dependences. Schedule greedily, giving priority to the critical path, against a model of the machine’s latencies and resources. Pre-RA scheduling has more freedom but raises register pressure; post-RA scheduling is constrained by register reuse.
+</Callout>

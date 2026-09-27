@@ -1,0 +1,127 @@
+"The Calculus of Inductive Constructions" names a family of closely related systems rather than a single one. Rocq, Lean 3 and Lean 4 all implement a CIC, and they differ in many details. This chapter describes the specific type theory of **Lean 4** — the one this course's kernel implements — and compares it with its siblings.
+
+## Lean 4's type theory at a glance
+
+| feature | Lean 4 | chapter |
+|---|---|---|
+| universes | `Sort u`, `Prop = Sort 0`, non-cumulative, universe-polymorphic, `imax` | 10 |
+| `Prop` | impredicative, **definitionally proof-irrelevant** | 14 |
+| inductive types | mutual and nested families, recursors, subsingleton elimination | 11–16 |
+| definitional equality | β, δ, ζ, ι, η for functions, η for structures, proof irrelevance, K-like reduction | 17 |
+| quotients | primitive: `Quot`, `Quot.mk`, `Quot.lift`, `Quot.ind`, with a computation rule | this chapter |
+| axioms | `propext`, `Quot.sound`, `Classical.choice` | this chapter |
+| recursion | compiled to recursors outside the kernel (structural via `brecOn`, well-founded via `WellFounded.fix`) | 15, 16 |
+| efficiency extensions | kernel support for `Nat` and `String` literals with GMP-accelerated arithmetic | — |
+
+Everything except the efficiency extensions and nested inductive types is implemented by the course kernel.
+
+## Quotient types
+
+Mathematics is full of quotients: the integers modulo $n$, rational numbers as fractions up to equivalence, sets as lists up to order and repetition, real numbers as Cauchy sequences up to having the same limit. In set theory one takes equivalence classes. In type theory there is no powerset to take classes in, so Lean adds quotients as **primitive constants**:
+
+```lean
+Quot     : {α : Sort u} → (α → α → Prop) → Sort u
+Quot.mk  : {α : Sort u} → (r : α → α → Prop) → α → Quot r
+Quot.lift : {α : Sort u} → {r : α → α → Prop} → {β : Sort v} → (f : α → β) →
+            (∀ a b, r a b → f a = f b) → Quot r → β
+Quot.ind : {α : Sort u} → {r : α → α → Prop} → {β : Quot r → Prop} →
+           (∀ a, β (Quot.mk r a)) → ∀ q, β q
+```
+
+`Quot r` is the type of classes; `Quot.mk r a` the class of `a`; `Quot.lift f h` defines a function on classes from a function `f` on representatives *that respects `r`* (the proof obligation `h`); `Quot.ind` says every class has a representative. The kernel knows one computation rule:
+
+$$
+\mathsf{Quot.lift}\ f\ h\ (\mathsf{Quot.mk}\ r\ a) \;\equiv\; f\ a
+$$
+
+and one axiom makes related elements equal in the quotient:
+
+```lean
+axiom Quot.sound : r a b → Quot.mk r a = Quot.mk r b
+```
+
+<Playground title="A quotient and a lifted function" code={`-- a (silly) relation: a ~ b iff succ a = succ b
+def r (a b : Nat) : Prop := Nat.succ a = Nat.succ b
+
+-- lifting the identity requires proving it respects r
+def back : Quot r → Nat :=
+  Quot.lift (fun n => n) (fun a b h => congrArg Nat.pred h)
+
+#reduce back (Quot.mk r 5)    -- the computation rule of Quot.lift
+#check @Quot.sound`} />
+
+### Function extensionality, for free
+
+Is a function determined by its values — if `f x = g x` for all `x`, is `f = g`? This principle, **function extensionality**, is not provable in plain CIC. In Lean it is a *theorem*, and its proof is one of the most elegant arguments in the library: quotient functions by pointwise equality, and use η.
+
+<Playground title="funext from quotients" code={`def Pointwise {α : Sort u} {β : α → Sort v} (f g : (x : α) → β x) : Prop :=
+  ∀ x, f x = g x
+
+-- apply a class of pointwise-equal functions to an argument
+def extApp {α : Sort u} {β : α → Sort v} (q : Quot (@Pointwise α β)) (x : α) : β x :=
+  Quot.lift (fun f => f x) (fun _ _ h => h x) q
+
+theorem funext' {α : Sort u} {β : α → Sort v} {f g : (x : α) → β x}
+    (h : ∀ x, f x = g x) : f = g :=
+  congrArg extApp (Quot.sound h : Quot.mk Pointwise f = Quot.mk Pointwise g)
+
+#print axioms funext'`} />
+
+Why does this typecheck? `congrArg extApp (Quot.sound h)` has type `extApp (Quot.mk _ f) = extApp (Quot.mk _ g)`. By the computation rule, `extApp (Quot.mk _ f)` is `fun x => f x`, which is `f` by η. So the kernel accepts the term as a proof of `f = g`. Open the derivation tree to find the conversion step.
+
+## The three axioms
+
+Lean's library adds exactly three axioms to the type theory:
+
+- `propext : (a ↔ b) → a = b` — **propositional extensionality**: logically equivalent propositions are equal.
+- `Quot.sound` — as above; together with η it gives function extensionality.
+- `Classical.choice : Nonempty α → α` — the **axiom of choice** in its type-theoretic form: from a proof that a type is inhabited, get an element.
+
+From these, one derives the law of excluded middle (by Diaconescu's argument, which uses choice, propext and funext), so Lean's logic is **classical**. The axioms are carefully chosen to be consistent with the model of Chapter 18 (where `Prop` is interpreted by two truth values) and to not interfere with computation on data: they live in `Prop` or produce noncomputable values. `#print axioms t` lists the axioms a theorem depends on — try it on the theorems of earlier chapters: almost all of them depend on none.
+
+<Playground title="Using propext" code={`theorem not_not_not (p : Prop) : (¬¬¬p) = ¬p :=
+  propext ⟨fun h hp => h (fun hn => hn hp), fun hn hnn => hnn hn⟩
+
+#print axioms not_not_not`} />
+
+## Definitional proof irrelevance
+
+In Lean 4, any two proofs of the same proposition are *definitionally* equal. This is convenient — a subtype `{ x // p x }` has equal elements whenever their values are equal, without any lemma about proofs; functions that take proofs as arguments never distinguish them — and it is what the model suggests. The cost, as we saw in Chapters 14 and 18, is that the kernel's definitional equality is not transitive and, in the presence of `Acc`, not decidable in general. In practice, the problematic situations require reducing proofs of accessibility, which Lean avoids by making well-founded definitions irreducible.
+
+## Lean versus Rocq
+
+| | Lean 4 | Rocq |
+|---|---|---|
+| universes | non-cumulative `Sort u` | cumulative `Type@{i}`, plus `Set` and `Prop` |
+| proof irrelevance | definitional, for all of `Prop` | not for `Prop`; separate sort `SProp` with definitional irrelevance |
+| recursion in the kernel | recursors only | `fix` and `match` with a syntactic guard condition |
+| coinductive types | not primitive | primitive `CoInductive` with guarded corecursion |
+| quotients | primitive, with computation rule | via setoids or axioms |
+| η for records | yes (structure η) | with primitive records |
+| universe polymorphism | always | opt-in (`Polymorphic`), plus template polymorphism |
+| kernel language | C++ | OCaml |
+| extraction / compilation | compiles Lean code natively | extraction to OCaml, Haskell, Scheme |
+
+Both descend from Coquand and Paulin-Mohring's CIC and are consistent with ZFC plus inaccessibles. The main philosophical difference is in the kernel: Rocq's kernel knows about pattern matching and recursion, and checks termination syntactically; Lean's kernel knows only recursors, making it smaller and pushing complexity into the (untrusted) elaborator.
+
+Agda, the third major dependently typed system, is based on Martin-Löf type theory instead: a predicative hierarchy with no impredicative `Prop` by default, pattern matching with coverage and termination checking as the primitive (no recursors in the core), optional axiom K, and a cubical mode with univalence (Chapter 20).
+
+## What the course kernel leaves out
+
+For completeness, here is what separates the course's kernel from Lean 4's:
+
+- **Nested inductive types** (Chapter 16), which Lean translates to mutual ones.
+- **Literals**: Lean represents `2^64` as a literal and computes on it with GMP; the course uses unary `Nat.succ` towers.
+- **Primitive projections** for structures, which make structure η more efficient.
+- The elaborator's features: type classes, coercions, tactics, `do`-notation, macros… Lean's elaborator is an enormous piece of software; all of it produces terms of the small core you now know.
+
+## Summary
+
+- Lean 4 implements a CIC with non-cumulative universes, impredicative definitionally proof-irrelevant `Prop`, inductive families, η for functions and structures, and primitive quotients.
+- Quotients come with a computation rule and the axiom `Quot.sound`, from which function extensionality is provable.
+- The library's three axioms — `propext`, `Quot.sound`, `Classical.choice` — make the logic classical without compromising computation on data.
+- Rocq and Agda make different trade-offs: cumulativity, `SProp`, kernel-level pattern matching, coinduction, predicativity.
+
+<History title="Lean">
+Leonardo de Moura started Lean at Microsoft Research in 2013. Lean 2 (2015) experimented with homotopy type theory; Lean 3 (2017) settled on the current type theory, with a small kernel and a powerful metaprogramming framework, and saw the birth of Mathlib. Lean 4 (released 2021, stable from 2023) is reimplemented in Lean itself, compiles to efficient native code, and is developed by the Lean Focused Research Organization, founded in 2023. The Liquid Tensor Experiment (2022) and the formalisation of the Polynomial Freiman–Ruzsa conjecture (2023) showed it could handle cutting-edge mathematics; projects such as the formalisation of Fermat's Last Theorem continue.
+</History>

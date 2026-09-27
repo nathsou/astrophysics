@@ -1,0 +1,155 @@
+In the Calculus of Constructions, data and proofs lived in the same sort `*`: a Church numeral was a proposition, and a proof of a disjunction was a function you could compute with. CIC as implemented in Lean keeps two separate worlds at the bottom of the universe hierarchy — `Type` for data and `Prop` for propositions — and treats them differently. This chapter explains why, and what the rules are.
+
+## Logic as inductive types
+
+With inductive types, the logical connectives no longer need Church encodings. They are ordinary inductive declarations whose sort is `Prop`. Here are the definitions from the course prelude, which match Lean 4's:
+
+```lean
+inductive True : Prop where
+  | intro : True
+
+inductive False : Prop            -- no constructors
+
+structure And (a b : Prop) : Prop where
+  intro ::
+  left : a
+  right : b
+
+inductive Or (a b : Prop) : Prop where
+  | inl (h : a) : Or a b
+  | inr (h : b) : Or a b
+
+inductive Exists {α : Sort u} (p : α → Prop) : Prop where
+  | intro (w : α) (h : p w) : Exists p
+```
+
+Each introduction rule of natural deduction (Chapter 4) is a constructor; each elimination rule is (a special case of) the generated recursor. `False` has no introduction rule, so its recursor has no minor premises — it proves anything from a proof of `False`. `structure` is a convenient way to declare an inductive type with one constructor, which also generates projection functions for the fields (`And.left`, `And.right`).
+
+<RecursorView name="MyOr" code={`inductive MyOr (a b : Prop) : Prop where
+  | inl (h : a) : MyOr a b
+  | inr (h : b) : MyOr a b`} />
+
+Notice the recursor of `MyOr`. Unlike `MyNat.rec`, it has **no universe parameter**: its motive has type `MyOr a b → Prop`, not `MyOr a b → Sort u`. You can use a disjunction to prove another proposition, but not to compute data. Now try changing the sort of `MyOr` to `Type` (and the two field types to `a` and `b` in `Type`): the universe parameter reappears.
+
+## Why proofs must not compute data
+
+Three independent reasons lead to the same restriction.
+
+**1. Proof irrelevance.** Mathematically, a proof is a witness that a proposition holds, and *which* proof you have shouldn't matter — any two proofs of the same proposition should be interchangeable. Lean builds this into definitional equality: any two proofs of the same `Prop` are definitionally equal.
+
+<Playground title="Definitional proof irrelevance" code={`theorem pi (p : Prop) (h₁ h₂ : p) : h₁ = h₂ := rfl
+
+-- two different-looking proofs of True ∨ True are the same
+theorem same_proof : (Or.inl trivial : True ∨ True) = Or.inr trivial := rfl`} />
+
+But if we could write a function `pick : a ∨ b → Bool` returning `true` for `inl` and `false` for `inr`, then `pick (Or.inl trivial) = pick (Or.inr trivial)` by proof irrelevance, and computing both sides gives `true = false`. The course kernel lets you switch the restriction off, to see exactly this happen:
+
+<Playground errors title="Eliminating proofs into data is inconsistent" code={`set_option kernel.restrictPropElim false
+
+inductive MyOr (a b : Prop) : Prop where
+  | inl (h : a) : MyOr a b
+  | inr (h : b) : MyOr a b
+
+-- a function from proofs to data: which side was proved?
+def pick {a b : Prop} (h : MyOr a b) : Bool :=
+  MyOr.rec (motive := fun _ => Bool) (fun _ => Bool.true) (fun _ => Bool.false) h
+
+-- by proof irrelevance, the two arguments are the same proof
+theorem same : pick (MyOr.inl trivial : MyOr True True) = pick (MyOr.inr trivial : MyOr True True) := rfl
+
+-- and by computation, the two sides are true and false
+theorem bad : Bool.true = Bool.false := same
+theorem contradiction : False := nomatch bad
+#print axioms contradiction`} />
+
+<Note title="Definitional equality is not transitive">
+Look at how the contradiction had to be split into two theorems. Proving `Bool.true = Bool.false` by `rfl` directly fails: the kernel computes `pick (inl …)` to `true`, and `true` is not `false`. It never considers going *through* `pick (inr …)`. Checking `same` compares `pick (inl …)` with `pick (inr …)` — same function, arguments equal by proof irrelevance — and checking `bad` compares the type of `same` with `true = false` by computing both sides. Each step is a valid definitional equality, but the kernel's algorithm doesn't compose them. In Lean 4, definitional equality with proof irrelevance is famously *not transitive*: the algorithm is sound but slightly incomplete. We return to this in Chapter 19.
+</Note>
+
+**2. Erasure.** Compilers want to delete proofs from programs: they have no runtime content, and some are large. That is only possible if no data ever depends on a proof. The restriction guarantees it.
+
+**3. Impredicativity.** `Prop` is impredicative — `∀ (p : Prop), p → p` is itself a `Prop`. If impredicative propositions could be eliminated into large types, we could recreate paradoxes of the Girard kind: a `Prop`-valued type would be able to "contain" its own universe. Keeping `Prop` from flowing into `Type` keeps it small.
+
+## Subsingleton elimination
+
+Forbidding all elimination from `Prop` into `Type` would be too strict. `False.elim : False → C` must work for any `C`, including data types — it's how impossible cases are closed. And pattern matching on a proof of `a ∧ b` is harmless whatever the result type, because all it can reveal are the two component proofs, which are themselves irrelevant. The precise rule is called **subsingleton elimination** (or *singleton elimination*):
+
+<Definition title="Subsingleton elimination">
+An inductive type in `Prop` may be eliminated into any universe if it has
+- **no constructors**, or
+- **exactly one constructor**, all of whose fields are either proofs (their types are in `Prop`) or appear among the indices of the constructor's result type.
+
+Otherwise its recursor only targets `Prop`.
+</Definition>
+
+Such types have at most one "shape" of proof, and all information in that shape is either irrelevant (a proof) or already visible in the type (an index). So eliminating them can't reveal anything that proof irrelevance hides. The examples:
+
+| type | constructors | large elimination? | why |
+|---|---|---|---|
+| `False` | none | yes | no constructors |
+| `True` | `intro` | yes | one constructor, no fields |
+| `And a b` | `intro (left : a) (right : b)` | yes | one constructor, fields are proofs |
+| `Eq a b` | `refl` | yes | one constructor, no fields (the value is an index) |
+| `Or a b` | `inl`, `inr` | no | two constructors |
+| `Exists p` | `intro (w : α) (h : p w)` | no | the witness `w` is data |
+
+`Eq`'s large elimination is what lets us **cast** along an equality of types, `α = β → α → β`, and rewrite in data as well as in proofs. `Exists`'s restriction is the one programmers bump into:
+
+<Playground errors title="You cannot extract a witness from ∃" code={`-- fine: using an existential to prove a proposition
+theorem ex_imp (h : ∃ n : Nat, n = 3) : ∃ m : Nat, m = 3 :=
+  match h with
+  | ⟨w, hw⟩ => ⟨w, hw⟩
+
+-- not allowed: computing data from a proof of ∃
+def witness (h : ∃ n : Nat, n = 3) : Nat :=
+  match h with
+  | ⟨w, _⟩ => w
+
+-- casting along an equality of types is fine: Eq eliminates into Type
+def cast' {α β : Type} (h : α = β) (a : α) : β :=
+  Eq.rec (motive := fun x _ => x) a h`} />
+
+## Data with proofs: Σ and subtypes
+
+When you *do* want to compute the witness, use a type in `Type` instead: the dependent pair `Sigma` (Σ-type) for a value together with data depending on it, or `Subtype` for a value together with a proof about it. These are structures in `Type`, so their fields can be projected freely.
+
+<Playground title="Subtypes carry their witnesses" code={`-- positive numbers: a number together with a proof that it is positive
+def Pos : Type := Subtype (fun (n : Nat) => n > 0)
+
+theorem three_pos : 3 > 0 := Nat.le.step (Nat.le.step Nat.le.refl)
+
+def three : Pos := ⟨3, three_pos⟩
+def val (p : Pos) : Nat := p.val
+#reduce val three`} />
+
+The distinction between `∃ x, p x : Prop` and `{ x // p x } : Type` is the distinction between *knowing that* something exists and *having* it — the first can be established by classical reasoning, the second only by construction.
+
+<Exercise id="prop:and" title="Using And in data" code={`-- And eliminates into Type (subsingleton elimination), so this is allowed:
+def choose (p q : Prop) (h : p ∧ q) (a b : Nat) : Nat :=
+  sorry`} hint="Any natural number will do — the point is that matching on h is allowed. Try match h with | ⟨hp, hq⟩ => a." solution={`def choose (p q : Prop) (h : p ∧ q) (a b : Nat) : Nat :=
+  match h with
+  | ⟨_, _⟩ => a`}>
+Pattern-match on the proof `h : p ∧ q` in a definition that returns a `Nat`. It's allowed because `And` satisfies the subsingleton condition. Then try the same with `h : p ∨ q` and read the error.
+</Exercise>
+
+## Classical logic, safely
+
+Chapter 4 showed that excluded middle has no constructive proof. Lean nevertheless supports classical reasoning, through a single axiom:
+
+```lean
+axiom Classical.choice {α : Sort u} : Nonempty α → α
+```
+
+where `Nonempty α : Prop` says that `α` has some element. `choice` extracts an element of `α` from a mere proof that one exists — precisely the kind of `Prop`-to-`Type` elimination the restriction forbids. As an *axiom* it is consistent (every standard model validates it), but it has no computational content: the kernel can't reduce `Classical.choice h`, and definitions using it are marked `noncomputable`. From `choice`, excluded middle follows (Diaconescu's theorem, via the quotient types of Chapter 19). The separation between `Prop` and `Type` is what makes this safe: classical axioms live in `Prop`-land and can't break the computational behaviour of data.
+
+## Summary
+
+- `Prop` is the sort of propositions: impredicative, and with definitional proof irrelevance in Lean.
+- Logical connectives are inductive types in `Prop`.
+- Inductive propositions may only be eliminated into `Prop`, except for subsingletons: no constructors, or one constructor whose fields are proofs or indices (`False`, `True`, `And`, `Eq`, …).
+- The restriction is needed for proof irrelevance, erasure and consistency with impredicativity; switching it off lets you prove `true = false`.
+- Σ-types and subtypes in `Type` carry data together with proofs.
+
+<History title="Prop and Set">
+Coq originally had two impredicative sorts, `Prop` and `Set`, both at the bottom of the hierarchy; in 2004 (Coq 8.0) `Set` was made predicative by default, because an impredicative `Set` is inconsistent with classical axioms such as excluded middle combined with the axiom of choice for types. The subsingleton elimination rule dates from Paulin-Mohring's work on extraction (1989), where the `Prop`/`Set` distinction told the extraction mechanism what to erase. Definitional proof irrelevance was added to Lean in its first versions and to Coq/Rocq in 2019 in the form of the separate sort `SProp` (Gilbert, Cockx, Sozeau and Tabareau).
+</History>

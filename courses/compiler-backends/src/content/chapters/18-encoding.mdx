@@ -1,0 +1,103 @@
+<p className="lede">
+The final machine IR still has names: mnemonics, labels, symbols. Emission turns it into bytes — expanding pseudo-instructions, deciding branch sizes, packing fields into bits, and recording what cannot be known until link time.
+</p>
+
+## What an assembler does
+
+Whether a compiler writes assembly text for a separate assembler (GCC) or encodes directly into an object file (LLVM’s integrated assembler, and kiln), the same steps happen:
+
+1. **Expand <Term k="pseudo-instruction">pseudo-instructions</Term>** into real instructions.
+2. **Lay out** each section, assigning every instruction and label an offset.
+3. **Resolve** references to labels within the same section, and choose instruction sizes that depend on those distances (**<Term k="relaxation">relaxation</Term>**).
+4. **Encode** each instruction into bits.
+5. Record **relocations** for references the assembler cannot resolve — other sections, other files — and build the **symbol table**.
+
+Kiln’s RISC-V emission produces bytes identical to the GNU assembler’s for the same input. Its AArch64 and x86-64 encoders match LLVM’s `llvm-mc`. The test-suite checks this for every example program at several optimisation levels.
+
+## RISC-V: six formats
+
+Every base RISC-V instruction is 32 bits wide, in one of six formats:
+
+| format | 31 … 25 | 24 … 20 | 19 … 15 | 14 … 12 | 11 … 7 | 6 … 0 | used by |
+|---|---|---|---|---|---|---|---|
+| R | funct7 | rs2 | rs1 | funct3 | rd | opcode | `add`, `mul`, `slt` |
+| I | imm[11:0] (12 bits) || rs1 | funct3 | rd | opcode | `addi`, `ld`, `jalr` |
+| S | imm[11:5] | rs2 | rs1 | funct3 | imm[4:0] | opcode | `sd` |
+| B | imm[12\|10:5] | rs2 | rs1 | funct3 | imm[4:1\|11] | opcode | `beq`, `blt` |
+| U | imm[31:12] (20 bits) |||| rd | opcode | `lui`, `auipc` |
+| J | imm[20\|10:1\|11\|19:12] |||| rd | opcode | `jal` |
+
+The strange immediate layouts are deliberate:
+
+- **rs1, rs2 and rd are always in the same place**, so the decoder can read the register file before it even knows which instruction it has.
+- **The immediate’s sign bit is always bit 31**, so sign extension can start early.
+- B and J immediates are the S and I layouts with bits rotated so that as many bits as possible line up with the other formats. They omit bit 0 entirely: branch targets are always even, because compressed instructions are 2 bytes.
+
+<EncodingExplorer initial="beq a0, a1, -64" caption="Type any RISC-V instruction, or pick one. Each field is shown with its bits and meaning. Pseudo-instructions like li, mv, call and ret are expanded first, exactly as the assembler does. Watch how the branch offset −64 is scattered across the B-type fields." />
+
+### Pseudo-instructions
+
+Much of what compilers print is not real RISC-V at all:
+
+| pseudo | expands to | notes |
+|---|---|---|
+| `li rd, imm` | `addi` / `lui`+`addiw` / … `slli` … | 1 to 8 instructions (Chapter 8) |
+| `mv rd, rs` | `addi rd, rs, 0` | there is no move instruction |
+| `neg rd, rs`, `not rd, rs` | `sub rd, zero, rs`, `xori rd, rs, -1` | the zero register at work |
+| `seqz`, `snez` | `sltiu rd, rs, 1`, `sltu rd, zero, rs` | unsigned-compare tricks |
+| `beqz rs, L` etc. | `beq rs, zero, L` | |
+| `j L` | `jal zero, L` | discard the return address |
+| `ret` | `jalr zero, 0(ra)` | |
+| `call f` | `auipc ra, …` ; `jalr ra, …(ra)` | a relocation pair that reaches ±2 GiB |
+| `lla rd, sym` | `auipc rd, %pcrel_hi` ; `addi rd, rd, %pcrel_lo` | pc-relative address, two relocations |
+
+## Branch relaxation
+
+A B-type branch reaches ±4 KiB; `jal` reaches ±1 MiB. The assembler knows the distance to a local label only after layout, and layout depends on the sizes of the instructions before the label. When a conditional branch cannot reach, it is **relaxed** into an inverted branch over a `jal`:
+
+<AsmSnippet target="rv64" code={`
+    beq  a0, a1, far          # target too far away...
+    bne  a0, a1, .+8          # ...becomes: skip the next instruction if NOT equal
+    jal  zero, far            # and jump with the 1 MiB range
+`} />
+
+Making one branch longer can push *another* branch out of range, so relaxation iterates until nothing changes. Growing only, never shrinking, guarantees that it terminates. (Choosing the minimum sizes is a harder problem: Szymanski showed in 1978 that the general version is NP-complete, but starting everything short and growing is optimal in the common cases.)
+
+<BranchRelaxation example="collatz" fn="main" caption="Our functions are far too small to need relaxation, so this figure pretends branches have a shorter range. Drag the range down and watch branches to far labels turn into bne/jal pairs, which moves later code and can push further branches out of range." />
+
+## AArch64: 32 bits, many classes
+
+AArch64 instructions are also 32 bits, but the encoding space is split into classes by a few top-level bits, and within each class the fields vary. Three things stand out when writing an encoder:
+
+- **Register 31** is `sp` in address and add/sub-immediate contexts and `xzr` elsewhere. So `mov x0, sp` must be encoded as `add x0, sp, #0`, while `mov x0, x1` is `orr x0, xzr, x1`.
+- **Logical immediates** are 13-bit `N:immr:imms` fields describing a run of ones, a rotation and an element size. Encoding a 64-bit constant means finding the smallest repeating element and checking that it is a rotated run of ones.
+- **Load/store offsets** are *scaled*: `ldr x0, [sp, #24]` stores 24 / 8 = 3 in its 12-bit field, reaching 32 KiB. Unscaled `ldur` covers small negative offsets.
+
+## x86-64: variable length
+
+An x86-64 instruction is a sequence of optional and mandatory parts, 1 to 15 bytes in all:
+
+<CodeSnippet lang="text" code={`
+[legacy prefixes] [REX] opcode (1-3 bytes) [ModRM] [SIB] [displacement 1/4] [immediate 1/2/4/8]
+
+REX    = 0100WRXB   W: 64-bit operand   R, X, B: 4th bit of reg / index / base
+ModRM  = mod(2) reg(3) rm(3)            mod 11 = register operand, else memory
+SIB    = scale(2) index(3) base(3)      base + index * 2^scale
+`} />
+
+The special cases are where encoders go wrong:
+- `rm = 100` means “a SIB byte follows”, so any address based on `rsp` or `r12` needs a SIB byte;
+- `mod = 00, rm = 101` means **RIP-relative**, so an address based on `rbp` or `r13` with no displacement must be encoded with an explicit zero `disp8`;
+- short forms exist for common cases: `add rax, imm32` has its own opcode, `imm8` forms save three bytes, and `push`/`pop` encode the register in the opcode byte.
+
+Jumps are relaxed just like RISC-V branches: `jmp`/`jcc` start as 2-byte `rel8` forms and grow to 5 or 6-byte `rel32` forms when needed.
+
+<MachineCodeCompare example="gcd" fn="gcd" caption="gcd encoded for all three targets. Click any instruction to see its fields — bit fields for RISC-V and AArch64, byte groups (REX, opcode, ModRM, SIB, displacement, immediate) for x86-64. Compare total sizes: x86’s variable length usually wins on density, despite its long REX-prefixed forms." />
+
+<Aside kind="arch">
+<p>Code density matters for instruction caches and memory bandwidth. RISC-V’s C extension adds 16-bit encodings for the most common instructions, typically shrinking code by 25–30%. Arm’s Thumb-2 does the same for 32-bit Arm. AArch64 chose to stay fixed-width, trading density for decode simplicity.</p>
+</Aside>
+
+<Callout kind="key">
+The assembler expands pseudo-instructions, lays out code, relaxes branches that cannot reach, packs fields into instruction words, and records relocations for everything it cannot resolve. RISC-V and AArch64 use fixed 32-bit words with carefully arranged fields; x86-64 builds variable-length instructions from prefix, opcode, ModRM, SIB, displacement and immediate.
+</Callout>

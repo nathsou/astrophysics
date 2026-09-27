@@ -1,0 +1,87 @@
+<p className="lede">
+A function compiled today must be callable from code compiled years ago by a different compiler. The calling convention is the contract that makes this possible, and it constrains the backend more than any instruction set detail.
+</p>
+
+## The contract
+
+An **<Term k="abi">application binary interface</Term>** fixes everything two separately compiled pieces of code must agree on:
+- sizes and alignment of types;
+- layout of structs;
+- how the stack is used;
+- how system calls and dynamic linking work;
+- how exceptions unwind;
+- and, most visibly for a backend, the **<Term k="calling-convention">calling convention</Term>**.
+
+The calling convention answers:
+
+1. Where do **arguments** go — which registers, in what order, and where on the stack when registers run out?
+2. Where does the **return value** go?
+3. Which registers must a function **preserve** for its caller (<Term k="callee-saved">callee-saved</Term>), and which may it destroy (<Term k="caller-saved">caller-saved</Term>)?
+4. What must be true of the **stack pointer** at a call (alignment)? Who allocates the space for stack arguments, and who frees it?
+
+<ABIExplorer caption="Argument locations for Kiln’s all-integer functions under four real calling conventions. Slide past the number of argument registers to see where the rest go. Windows x64 is not a kiln target, but it is included because its choices differ instructively." />
+
+<Aside kind="history">
+<p>The x86 world grew a zoo of conventions: `cdecl` (caller pops the arguments, so varargs work), `stdcall` (callee pops; Win32 APIs), `fastcall` (first two in registers) and more. The System V AMD64 ABI, drafted around 2000–2003 by Jan Hubička, Andreas Jaeger and Mark Mitchell among others, finally put the first six integer arguments in registers. Microsoft chose differently for Windows x64: four register arguments, plus 32 bytes of “shadow space” that the caller always reserves.</p>
+</Aside>
+
+## Why split registers into caller- and callee-saved?
+
+Suppose *all* registers were caller-saved. Then every value live across a call would have to be saved to the stack by the caller and reloaded afterwards, even if the callee never touches that register. Now suppose all were callee-saved. Then every function that uses a register, even a tiny leaf, must save and restore it in its prologue and epilogue.
+
+The split is a bet on typical code:
+
+- **Leaf functions** and short-lived temporaries use the caller-saved registers and never pay anything.
+- **Values that live across calls** go in callee-saved registers. The function saves each such register once, in its prologue, however many calls it makes, and the functions it calls only save what they actually use.
+
+RISC-V’s ABI makes 12 registers callee-saved (`s0`–`s11`) and 15 caller-saved (`ra`, `t0`–`t6`, `a0`–`a7`). AArch64 is similar (`x19`–`x28` saved). For the register allocator this becomes a real decision, and it comes out of the interference graph automatically. A call **defines** every caller-saved register, so any value live across the call interferes with all of them, and the allocator is forced to put it in a callee-saved register or spill it (Chapters 12–14).
+
+## How kiln lowers calls
+
+The instruction selector hands each call to the target’s `lowerCall`. What comes out is ordinary machine IR, with physical registers where the convention demands them:
+
+<AsmSnippet target="rv64" title="print(fib(n - 1)) on RISC-V, after selection — virtual registers still unassigned" code={`
+    addi %5, %n0, -1       # compute the argument
+    COPY a0, %5            # argument #0 goes in a0
+    call fib               # uses a0; clobbers ra, t0-t6, a0-a7
+    COPY %6, a0            # the result comes back in a0
+    COPY a0, %6
+    call print_int
+`} />
+
+Four details make this work:
+
+- **Copies, not moves into place.** The selector never tries to compute the argument directly into `a0`. It emits `COPY a0, %5` and lets the register allocator *coalesce* `%5` into `a0` if it can, which it usually does.
+- **Implicit operands.** The `call` instruction carries *implicit uses* of the argument registers — so they stay live until the call — and *implicit defs* of every caller-saved register. That is how the rest of the backend learns what the call clobbers, with no special cases anywhere.
+- **Stack arguments.** Arguments beyond the register ones are stored at fixed offsets from `sp` in an *outgoing argument area* at the bottom of the caller’s frame. Its size is the maximum over all calls in the function, and it is allocated once in the prologue rather than pushed and popped around each call.
+- **Parameters** are the mirror image. The entry block begins with `COPY %param, a0` and so on, and parameters beyond the register ones are loaded from the caller’s outgoing area, just above our frame.
+
+<CallLowering example="fib" fn="fib" target="rv64" caption="Calls in machine IR, before and after register allocation. Teal lines are ABI copies, orange lines are calls. After allocation, most copies have vanished (source and destination got the same register), and the value that must survive the recursive call sits in a callee-saved s-register." />
+
+<Callout kind="try">
+Switch the figure to x86-64 and to `@weighted` in the “many arguments” example (via the playground). Arguments 6 and up are passed on the stack, and the callee loads them from above its return address.
+</Callout>
+
+## Stack alignment and other rules
+
+All three ABIs require `sp` to be **16-byte aligned** at a call. This lets callees use aligned vector loads and stores on the stack without checking.
+- On x86, the `call` instruction pushes an 8-byte return address, so at function entry `rsp` is 8 mod 16. The prologue must restore alignment before the next call.
+- On RISC-V and AArch64 the return address goes in a register, so the frame size is simply a multiple of 16.
+
+The **red zone** of the System V x86-64 ABI is a 128-byte area below `rsp` that signal handlers promise not to clobber. A leaf function can keep its locals there without adjusting `rsp` at all. AArch64 Linux and RISC-V have no red zone.
+
+## What kiln leaves out
+
+Kiln only passes 64-bit integers. Real ABIs spend most of their pages on everything else:
+
+- **Aggregates.** The System V x86-64 ABI classifies each 8-byte chunk of a struct as INTEGER, SSE or MEMORY, and passes small structs in up to two registers. AAPCS64 passes “homogeneous floating-point aggregates” in vector registers. The RISC-V ABI flattens small structs into their fields.
+- **Floating point** has its own register files and rules.
+- **Variadic functions**:
+  - x86-64 passes in `al` an upper bound on the number of vector registers used;
+  - Apple’s arm64 ABI passes all variadic arguments on the stack.
+- **Large return values** are returned through memory whose address the caller passes in a hidden argument (`x8` on AArch64; the first argument register on RISC-V and x86-64).
+- **Unwinding**: debuggers and exception handlers must be able to walk the stack, which needs either frame pointers or unwind tables (DWARF CFI). Chapter 15 returns to this.
+
+<Callout kind="key">
+The calling convention is lowered into explicit copies to and from physical registers, plus implicit uses and definitions on the call instruction. Once it is written this way, the register allocator enforces the whole convention with no special cases: values that live across calls end up in callee-saved registers or on the stack.
+</Callout>

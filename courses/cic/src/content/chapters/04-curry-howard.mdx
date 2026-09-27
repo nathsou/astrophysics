@@ -1,0 +1,153 @@
+At the end of the last chapter you found a term of type $(A \to B \to C) \to (A \to B) \to A \to C$ by reasoning "assume a function from $A$ to $B \to C$, assume a function from $A$ to $B$, assume an $A$…". That is the kind of argument one makes to prove the *logical* statement "if $A$ implies that $B$ implies $C$, and $A$ implies $B$, then $A$ implies $C$". This chapter shows that the resemblance is not an analogy but an identity. It is the single most important idea in this course:
+
+<Definition title="The Curry–Howard correspondence">
+**Propositions are types. Proofs are programs.** A proof of a proposition $P$ is a term whose type is $P$; a proposition is true exactly when its type is inhabited; checking a proof is type checking; and simplifying a proof is running the program.
+</Definition>
+
+## Natural deduction
+
+In 1935 Gerhard Gentzen proposed a formal system meant to capture how mathematicians actually reason, which he called **natural deduction**. Each logical connective comes with **introduction rules**, saying how to prove it, and **elimination rules**, saying how to use it. For implication:
+
+<RuleRow>
+<Rule name="→I" premises="\begin{matrix}[A]^h \\ \vdots \\ B\end{matrix}" conclusion="A \Rightarrow B" side="h" />
+<Rule name="→E" premises="A \Rightarrow B || A" conclusion="B" />
+</RuleRow>
+
+**→I** says: to prove $A \Rightarrow B$, *temporarily assume* $A$ (giving the assumption a label $h$) and prove $B$; the assumption is then *discharged* — it is no longer needed once we conclude $A \Rightarrow B$. **→E** is modus ponens.
+
+Now compare with the typing rules of λ→ from the last chapter, erasing the terms:
+
+<Rules ids="stlc.var stlc.abs stlc.app" />
+
+Abs *is* →I: the context entry $x : A$ is the temporary assumption, labelled $x$. App *is* →E. Var is the use of an assumption. A natural-deduction proof and a typing derivation are the same tree; the λ-term is a compact notation for the tree.
+
+Try it. Build a proof of $A \to B \to A$ by clicking the open goal (in red) and choosing rules on the right. Watch the proof term at the bottom as you go.
+
+<ProofBuilder goal="A → B → A" title="Prove A → B → A" editable="false" />
+
+The hypotheses are listed with their names. Clicking a hypothesis uses it: if it proves the goal directly that is an assumption; if it is an implication whose conclusion is the goal, it is applied, leaving its premises as new goals.
+
+## The dictionary
+
+The correspondence goes much further than implication. For each logical connective there is a type former, its introduction rules are the constructors, and its elimination rules are the destructors:
+
+| logic | type theory | introduction | elimination |
+|---|---|---|---|
+| implication $A \Rightarrow B$ | function type $A \to B$ | `λ (x : A) => b` | application `f a` |
+| conjunction $A \wedge B$ | pair (product) type $A \times B$ | `⟨a, b⟩` | projections `p.1`, `p.2` |
+| disjunction $A \vee B$ | tagged union (sum) $A + B$ | `inl a`, `inr b` | case analysis |
+| truth $\top$ | unit type | `()` | — |
+| falsity $\bot$ | empty type | — | `absurd` : from $\bot$, anything |
+| negation $\neg A$ | $A \to \bot$ | a function refuting $A$ | apply it to a proof of $A$ |
+
+Let's extend λ→ with these. We don't need to define them by hand: the full course language (and Lean 4) has them — `And`, `Or`, `True`, `False` — as *inductive types*, a mechanism we build in Part IV. Here we just use them.
+
+<RuleRow>
+<Rule name="∧I" premises="A || B" conclusion="A \wedge B" />
+<Rule name="∧E₁" premises="A \wedge B" conclusion="A" />
+<Rule name="∧E₂" premises="A \wedge B" conclusion="B" />
+<Rule name="∨I₁" premises="A" conclusion="A \vee B" />
+<Rule name="∨I₂" premises="B" conclusion="A \vee B" />
+<Rule name="∨E" premises="A \vee B || \begin{matrix}[A]^x \\ \vdots \\ C\end{matrix} || \begin{matrix}[B]^y \\ \vdots \\ C\end{matrix}" conclusion="C" side="x,y" />
+<Rule name="⊥E" premises="\bot" conclusion="C" />
+</RuleRow>
+
+The ∨E rule is reasoning by cases: if $A \vee B$ holds, and $C$ follows from $A$ and also from $B$, then $C$ holds. Its term is a `match`, or equivalently `Or.elim d (λ x => …) (λ y => …)`: a function that inspects which side of the union it got.
+
+<ProofBuilder goal="A ∧ B → B ∧ A" title="Commutativity of ∧" />
+
+<ProofBuilder goal="A ∨ B → B ∨ A" title="Commutativity of ∨" />
+
+When a proof is complete the widget translates its term into a Lean theorem and sends it to the kernel, which confirms (or refutes) that it has the right type. You can type any propositional formula into the box: use `→`, `∧`, `∨`, `¬`, `⊤`, `⊥` (or `->`, `/\`, `\/`, `~`, `True`, `False`).
+
+## Proofs in the course language
+
+Here are the same proofs written as programs. The type after the colon is the proposition; everything after `:=` is the proof. `Prop` is the sort of propositions — read `(p q : Prop)` as "for any propositions p and q".
+
+<Playground title="Proofs are programs" code={`theorem and_swap (p q : Prop) : p ∧ q → q ∧ p :=
+  fun h => ⟨h.right, h.left⟩
+
+theorem or_swap (p q : Prop) : p ∨ q → q ∨ p :=
+  fun h => Or.elim h (fun hp => Or.inr hp) (fun hq => Or.inl hq)
+
+theorem modus_tollens (p q : Prop) : (p → q) → ¬q → ¬p :=
+  fun hpq hnq hp => hnq (hpq hp)
+
+theorem ex_falso (p : Prop) : False → p :=
+  fun h => False.elim h`} />
+
+Notice `modus_tollens`. Since `¬p` *means* `p → False`, a proof of `¬p` is a function that turns a proof of `p` into a proof of `False`: after taking `hpq`, `hnq`, the definition keeps going and takes `hp : p` too, then produces `False` by feeding `hpq hp : q` to `hnq : ¬q`.
+
+<Exercise id="ch:syllogism" title="Hypothetical syllogism" code={`theorem syllogism (p q r : Prop) : (p → q) → (q → r) → p → r :=
+  sorry`} hint="Take three arguments and compose." solution={`theorem syllogism (p q r : Prop) : (p → q) → (q → r) → p → r :=
+  fun hpq hqr hp => hqr (hpq hp)`}>
+Replace `sorry` by a proof. (`sorry` is an escape hatch that proves anything; the kernel accepts it but flags the theorem, and the exercise is only solved without it.)
+</Exercise>
+
+<Exercise id="ch:distrib" title="Distributivity" code={`theorem distrib (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) :=
+  sorry`} hint="Take the pair apart, then do case analysis on the disjunction with Or.elim." solution={`theorem distrib (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) :=
+  fun h => Or.elim h.right (fun hq => Or.inl ⟨h.left, hq⟩) (fun hr => Or.inr ⟨h.left, hr⟩)`}>
+Prove that ∧ distributes over ∨.
+</Exercise>
+
+## Constructive logic
+
+The logic that falls out of the correspondence is not quite the logic you learned in school. Consider the **law of excluded middle**, $A \vee \neg A$. A proof of a disjunction is a term `inl a` or `inr b` — it must *pick a side*. To prove $A \vee \neg A$ for an arbitrary, unknown proposition $A$ we would have to decide, without knowing anything about $A$, whether it is provable or refutable. No program can do that.
+
+<ProofBuilder goal="A ∨ ¬A" title="Try (and fail) to prove excluded middle" />
+
+This is **intuitionistic** (or **constructive**) logic, developed by Brouwer, Heyting and Kolmogorov in the 1920s and 30s. Its interpretation of the connectives — the *BHK interpretation* — is precisely Curry–Howard in informal language: a proof of $A \wedge B$ is a pair of proofs, a proof of $A \Rightarrow B$ is a method transforming proofs of $A$ into proofs of $B$, a proof of $A \vee B$ is a proof of one of them together with an indication of which. Constructive proofs have computational content: a proof of "there exists an $n$ such that …" contains the $n$.
+
+Intuitionistic logic is not weaker in the sense of believing classical laws are false — it just doesn't assume them. You *can* prove that excluded middle is not refutable:
+
+<ProofBuilder goal="¬¬(A ∨ ¬A)" title="The double negation of excluded middle" />
+
+(Hint: after →I you have `h₁ : ¬(A ∨ ¬A)` and must prove `⊥`. Apply `h₁`. Now you must prove `A ∨ ¬A` — choose the right side, and prove `¬A`, i.e. `A → ⊥`, by applying `h₁` again…)
+
+<LeanNote title="Classical reasoning in Lean">
+Lean 4's logic is classical: its library contains the axiom `Classical.choice`, from which excluded middle (`Classical.em : ∀ p, p ∨ ¬p`) is derived. Axioms are constants with a type and no definition; they block computation (the kernel cannot reduce `Classical.em p` to `Or.inl …` or `Or.inr …`) but are perfectly usable in proofs about propositions. Chapter 19 explains why adding it is safe. In the course kernel you can inspect which axioms a theorem depends on with `#print axioms`.
+</LeanNote>
+
+## Proof simplification is computation
+
+What does β-reduction mean for proofs? A β-redex $(\lambda x.\, b)\, a$ in a proof term is an →I immediately followed by an →E: we proved $A \Rightarrow B$ by assuming $A$ and deriving $B$, and then used that implication on a proof of $A$. That is a **detour**: we could have just taken the proof of $B$ and plugged the proof of $A$ in wherever the assumption was used. That is exactly substitution.
+
+Dag Prawitz studied this systematically in 1965: every introduction followed by an elimination of the same connective can be removed, and repeatedly removing detours terminates, yielding a **normal proof** with no detours. Under Curry–Howard, Prawitz's normalisation theorem *is* the strong normalisation theorem for typed λ-calculus.
+
+<Playground title="Normalising a proof" code={`theorem detour (p q : Prop) (hp : p) (hq : q) : p ∧ q :=
+  (fun (x : p) => ⟨x, hq⟩) ((fun (y : p) => y) hp)
+
+#reduce (fun (p q : Prop) (hp : p) (hq : q) => (fun (x : p) => And.intro x hq) ((fun (y : p) => y) hp))`} />
+
+Click **reduce step by step** on the `#reduce` result to watch the detours disappear.
+
+## Consistency, for free
+
+Normal proofs have a remarkable property: every formula occurring in a normal proof is a *subformula* of the conclusion or of an open assumption. In particular, look at a normal, closed proof of $\bot$: its last rule cannot be an introduction (there is no introduction rule for $\bot$), and an elimination would need a major premise whose formula is not a subformula of $\bot$… Following the chain, there is no such proof.
+
+<Theorem title="Consistency from normalisation">
+If every proof can be normalised, and there is no normal closed proof of $\bot$, then there is no closed proof of $\bot$ at all: the logic is **consistent**.
+</Theorem>
+
+This argument is the conceptual core of why type theories are trusted as logics, and it explains the obsession with termination in the rest of the course. **A non-terminating term is a proof of anything.** In the untyped λ-calculus, $Y\,(\lambda x.\, x)$ would inhabit $\bot$; in a typed language with unrestricted recursion, `def bad : False := bad` would be accepted. Every time we extend the calculus we will have to check that normalisation still holds, and several tempting extensions — `Type : Type` (Chapter 10), non-positive inductive types (Chapter 12), unrestricted recursion (Chapter 15) — fail precisely here.
+
+## Beyond propositional logic
+
+So far our types correspond to *propositional* logic: there are propositional variables $A, B, C$ but no way to quantify. The correspondence extends:
+
+- quantifying over *propositions* — $\forall A.\, A \Rightarrow A$ — is **polymorphism**, and gives System F (Chapter 5): second-order propositional logic;
+- quantifying over *individuals* — $\forall n : \mathbb{N}.\, n + 0 = n$ — needs types that depend on terms, the **dependent types** of Chapter 7: first-order (predicate) logic;
+- the existential $\exists n.\, P(n)$ becomes a **dependent pair**: a witness $n$ together with a proof of $P(n)$.
+
+CIC puts all of these together, which is why it can express (almost) all of mathematics.
+
+## Summary
+
+- Natural deduction rules correspond exactly to typing rules: introduction rules to constructors, elimination rules to destructors, hypotheses to variables.
+- Implication, conjunction, disjunction, truth and falsity correspond to function, product, sum, unit and empty types.
+- The logic obtained is intuitionistic: excluded middle is not provable, though its double negation is.
+- Proof normalisation is β-reduction, and normalisation implies consistency — which is why termination matters so much.
+
+<History title="Curry, Howard, and others">
+Haskell Curry noticed in 1934 that the types of his combinators $K : A \to B \to A$ and $S : (A \to B \to C) \to (A \to B) \to A \to C$ were exactly the axioms of Hilbert-style implicational logic, and that modus ponens corresponded to application. In 1969 William Howard circulated a manuscript, *The formulae-as-types notion of construction* (published only in 1980), extending the observation to natural deduction, the full set of connectives and quantifiers, and proof normalisation. De Bruijn's Automath (1967) independently used the same idea as its foundation. Joachim Lambek showed in the early 1970s that the correspondence extends to cartesian closed categories — hence "Curry–Howard–Lambek". In 1990 Timothy Griffin discovered that classical logic also has computational content: Peirce's law $((A \to B) \to A) \to A$ is the type of `call/cc`, the control operator of Scheme.
+</History>

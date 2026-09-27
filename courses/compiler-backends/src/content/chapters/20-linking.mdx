@@ -1,0 +1,73 @@
+<p className="lede">
+The last step turns object files into a program: lay out every section in memory, resolve every symbol, patch every relocation, and write an executable the operating system can load. Then we run it.
+</p>
+
+## The runtime
+
+A Kiln program cannot run on its own. Something has to call `main`, and something must implement `print` and `putchar`. That is the **runtime library**: about 150 lines of RISC-V assembly (`obj/runtime.ts`), assembled by kiln’s own assembler into `runtime.o`. It provides:
+
+- **`_start`**, the entry point. It calls `main`, then makes the Linux `exit` system call with `main`’s return value.
+- **`print_int`**, which converts a number to decimal in a stack buffer and calls `write(1, buf, len)`.
+- **`putchar`**, which writes one byte.
+- **`__muldi3`, `__divdi3`, `__moddi3`**: shift-and-add multiplication and restoring division, for when the M extension is disabled (Chapter 8).
+
+System calls follow the Linux RISC-V convention: the call number goes in `a7` (64 = `write`, 93 = `exit`), the arguments in `a0`–`a5`, then `ecall`. Because the runtime uses real Linux system calls, kiln’s executables also run under `qemu-riscv64` or on real RISC-V Linux machines.
+
+## What the linker does
+
+Kiln’s linker (`obj/link.ts`, about 200 lines) follows the same steps as `ld`, `lld` or `mold`, minus many features:
+
+1. **Read** each input object: parse the ELF header, sections, symbols and relocations.
+2. **Lay out**: concatenate same-named sections from all inputs, respecting each section’s alignment. Assign the output sections addresses: `.text` at `0x11000`, `.data` on the next page, and `.bss` right after `.data`.
+3. **Resolve symbols**:
+   - every *global* definition goes into a global symbol table; two definitions of the same name are an error (“multiple definition of `x`”);
+   - every *undefined* reference must find exactly one definition (“undefined reference to `x`”);
+   - *local* symbols resolve only within their own file.
+4. **Relocate**: for each relocation, compute *S* (the resolved symbol address), *P* (the final address of the patched place) and *A*; evaluate the relocation’s formula; and write the result into the instruction’s bits. For RISC-V’s paired relocations, remember each `HI20` result by the `auipc`’s address, so the matching `LO12` can reuse it.
+5. **Write the executable**: an ELF header with the entry point (`_start`), and **program headers** telling the loader which file bytes to map at which addresses with which permissions. There is one read+execute `PT_LOAD` segment for `.text`, and one read+write segment for `.data` and `.bss`, whose memory size exceeds its file size by the size of `.bss`.
+
+<LinkerExplorer example="sieve" caption="Linking the sieve with the runtime. Left: the address map — where each input’s sections landed, and every symbol’s final address. Right: every relocation. Step through them to see P, S, A, the computed value, and the instruction before and after patching." />
+
+<Aside kind="history">
+<p>Linkers are older than compilers: early machines had “loaders” that combined relocatable subroutines at load time. John Levine’s <i>Linkers and Loaders</i> (2000) is the classic book. Ian Lance Taylor’s blog series on writing the <i>gold</i> linker (2007), and Rui Ueyama’s work on <i>lld</i> and then <i>mold</i> (2021), show how much speed is available in this “simple” step through parallelism and careful data layout.</p>
+</Aside>
+
+## The executable
+
+<ElfExplorer example="sieve" which="exe" caption="The linked executable. Compared with the object file: the type is now EXEC, there is an entry point, program headers describe two loadable segments, section addresses are real, and there are no relocations left — every hole has been filled." />
+
+Loading it is simple for a static executable like ours. The kernel (or our emulator):
+- maps each `PT_LOAD` segment at its virtual address;
+- zero-fills the rest of the `.bss` segment;
+- sets up a stack;
+- jumps to `e_entry`.
+
+Everything interesting has already been decided by the linker.
+
+## Dynamic linking, in brief
+
+Real programs call into shared libraries (`libc.so`) whose addresses are unknown until run time and differ from process to process (ASLR). Two data structures make this cheap:
+
+- The **GOT** (global offset table) is a table of addresses in writable memory, filled in by the dynamic linker at load time. Code reaches a global in another library by loading its address from the GOT, using a pc-relative reference to the GOT itself, so the code pages stay read-only and can be shared.
+- The **PLT** (procedure linkage table) holds small stubs, one per external function. A call to `printf` really calls `printf@plt`, which jumps through a GOT entry. With lazy binding, that entry first points to the resolver, which patches it on the first call.
+
+That is why `call` relocations are named `…_PLT`: if the callee turns out to be in a shared library, the linker redirects the call to a PLT stub; otherwise it resolves it directly, as kiln’s static linker does. Appendix F covers position-independent code, symbol visibility and link-time optimisation.
+
+## Running it
+
+Kiln’s RV64 **emulator** loads the linked ELF executable by its program headers, sets `sp` near the top of a 16 MiB address space, and interprets instructions:
+- RV64IM plus Zba and Zicond;
+- a pre-decoded instruction cache;
+- `write` and `exit` system calls.
+
+This is the machine at the end of the pipeline: it runs the bytes kiln encoded, after they have been through kiln’s ELF writer, ELF reader and linker.
+
+<EmulatorView example="fib" caption="The linked Fibonacci program running on the emulator. Step one instruction at a time from _start into main and fib, step over calls, or run to exit. Changed registers are highlighted; the stack view shows the frame (look for saved ra values pointing back into .text); counts next to instructions show how often each has executed." />
+
+<Callout kind="try">
+Step through the first few instructions of `fib`: the `addi sp, sp, -…` of its prologue moves `sp`, then `sd ra` writes the return address into the new frame (it lights up in the stack view). Later, `run to exit` shows the total instruction count — compare it at `-O0` and `-O2` in the playground.
+</Callout>
+
+<Callout kind="key">
+The linker lays out sections at final addresses, resolves every undefined symbol to exactly one definition, and applies every relocation’s formula to patch the instruction bits. It then writes program headers that tell the loader what to map. The result runs — here, on an emulator that shares nothing with the compiler except the ELF file.
+</Callout>

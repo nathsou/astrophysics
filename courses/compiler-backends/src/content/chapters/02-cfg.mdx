@@ -1,0 +1,91 @@
+<p className="lede">
+Before a backend can reason about a function it needs the function’s shape: which code can run after which. That shape is the control-flow graph, and nearly every algorithm in this course is a walk over it.
+</p>
+
+## Basic blocks
+
+A **<Term k="basic-block">basic block</Term>** is a maximal sequence of instructions that always executes from start to finish: control enters only at the first instruction and leaves only through the last. Inside a block there are no decisions, so any analysis can treat the block as a unit and reason about its instructions in order.
+
+For a flat list of machine instructions, the classic way to find blocks is the *leaders* algorithm:
+- the first instruction is a leader;
+- every branch target is a leader;
+- every instruction after a branch is a leader.
+
+Each block runs from one leader to the next. Kiln’s front end never needs this: it creates blocks directly while lowering `if`s and loops, and ends each one with an explicit terminator (`br`, `condbr` or `ret`). There is no implicit fall-through in KIR, which makes the edges easy to read off.
+
+## The control-flow graph
+
+The **<Term k="cfg">control-flow graph</Term>** has one node per basic block and an edge from block *A* to block *B* when control can pass directly from the end of *A* to the start of *B*. Each block has a list of **successors** (from its terminator) and **predecessors** (every block that branches to it). The *entry* block has no predecessors; blocks ending in `ret` have no successors.
+
+<CFGExplorer example="sort" fn="sort" caption="The CFG of insertion sort after optimisation. The outer for-loop and the inner while-loop both show up as cycles; their back edges are dashed. Switch to the lowered IR to see the CFG before clean-up, or open the listing to compare it with the text." />
+
+A few properties are worth noticing:
+
+- The graph is **directed and may contain cycles**; loops are cycles.
+- Edge **order** matters for `condbr`: the first successor is the *true* target.
+- Everything is **reachable** from the entry: the front end deletes unreachable blocks. Many algorithms quietly assume this.
+- The inner loop’s condition `j >= 0 && a[j] > x` is **two** blocks, `while.cond` and `and.rhs`. Short-circuit evaluation is control flow, not an instruction.
+
+Kiln stores each block’s instructions and recomputes predecessors from terminators when needed:
+
+```ts
+class Block {
+  instrs: Instr[] = [];
+  preds: Block[] = [];
+  get terminator() { return this.instrs.at(-1); }          // br / condbr / ret
+  get succs(): Block[] { return this.terminator?.blocks ?? []; }
+}
+```
+
+Analyses work on a stripped-down view — nodes numbered `0..n-1`, arrays of successor and predecessor indices — so the same code serves both the IR and the machine IR of later chapters.
+
+## Visiting every block: depth-first search
+
+The workhorse traversal is **depth-first search** from the entry. It assigns each block two numbers:
+- its **preorder** number, when it is first visited;
+- its **postorder** number, when all its successors have been explored and it is finished.
+
+Along the way it classifies every edge:
+
+- **tree edges** lead to a block seen for the first time;
+- **back edges** lead to a block still on the DFS stack — an ancestor. They close cycles;
+- **forward edges** lead to an already-finished descendant;
+- **cross edges** lead to a block in a different, already-finished subtree.
+
+<DFSStepper example="sort" fn="sort" caption="Depth-first search on the CFG of sort. Violet: on the stack; green: finished; orange: the current step. Watch the back edges appear when the search reaches a loop header that is still on the stack." />
+
+### Why reverse postorder matters
+
+Listing blocks in **reverse postorder** (RPO) has a crucial property. For every edge *A → B* that is *not* a back edge, *A* comes before *B*. In an acyclic graph RPO is a topological order; in a cyclic one it is “as topological as possible”. This is why RPO shows up everywhere:
+
+- **Forward dataflow analyses** converge in few passes if blocks are visited in RPO: most facts flow along forward edges, so a block’s inputs are usually ready by the time it is visited.
+- **Backward analyses** such as liveness (Chapter 11) prefer postorder for the same reason.
+- The **dominator algorithm** of the next chapter compares blocks by their RPO index.
+- **Code layout** often starts from RPO, so that most branches jump forwards.
+
+The implementation is an iterative DFS with an explicit stack. Recursion would overflow the JavaScript stack on large generated functions, and production compilers are equally careful here.
+
+## Loops, back edges and reducibility
+
+In the DFS stepper, each loop shows up as a back edge from the end of the loop body to the loop header. For the CFGs our front end produces, something stronger holds: the target of every back edge **dominates** its source, meaning every path from the entry to the source passes through the header. Such an edge defines a **natural loop**: the header, plus every block that can reach the edge’s source without passing through the header. Loop nesting depth is recorded for every block; register allocation later weighs spill costs by 10^depth.
+
+A CFG in which every retreating edge is a true back edge in this sense is **reducible**. Structured programs — `if`, `while`, `for`, `break`, `continue` — always produce reducible CFGs. A `goto` into the middle of a loop can produce an **irreducible** one, a cycle with two entries. Many algorithms become more complicated or less precise on such cycles. Some targets flatly refuse them: WebAssembly’s structured control flow (Chapter 21) needs extra work to express an irreducible loop.
+
+<Aside kind="history">
+<p>Frances Allen’s 1970 paper “Control flow analysis” introduced intervals and much of the vocabulary used here. Hecht and Ullman (1972) characterised reducibility with two graph transformations, T1 (remove a self-loop) and T2 (merge a node into its unique predecessor): a graph is reducible if and only if they collapse it to a single node.</p>
+</Aside>
+
+## Critical edges
+
+One more edge property will matter a lot later. An edge is **<Term k="critical-edge">critical</Term>** if its source has several successors *and* its target has several predecessors.
+
+Why care? Sometimes the compiler needs to run code *on an edge*: only when control goes from *A* to *B*. Phi copies (Chapter 10) and some spill code (Chapter 14) are examples.
+- If *A* has one successor, the code can go at the end of *A*.
+- If *B* has one predecessor, it can go at the start of *B*.
+- If the edge is critical, neither works: code at the end of *A* would also run on *A*’s other edges, and code at the start of *B* would also run when arriving from elsewhere.
+
+The fix is to **split** the edge by inserting a new, empty block in the middle. The CFG figure above paints critical edges red. After optimisation there are usually a few, and Chapter 10 splits exactly those that need it.
+
+<Callout kind="key">
+A CFG is basic blocks plus successor and predecessor edges. Depth-first search numbers the blocks and exposes back edges (loops). Reverse postorder is the natural order for forward analyses. Critical edges are where the compiler cannot place code without first splitting the edge.
+</Callout>

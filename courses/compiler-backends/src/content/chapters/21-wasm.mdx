@@ -1,0 +1,81 @@
+<p className="lede">
+WebAssembly is a compilation target with no registers to allocate, no calling convention to honour and no gotos. Compiling for it keeps some of what we have built, discards a lot, and adds one hard problem of its own: recovering structured control flow.
+</p>
+
+## A virtual instruction set
+
+WebAssembly (Wasm) was designed as a portable, safe, fast-to-validate compilation target for the web. It shipped in all major browsers in 2017 and became a W3C standard in 2019. From a backend’s point of view it is unusual in four ways:
+
+- It is a **<Term k="stack-machine">stack machine</Term>**. `i64.add` pops two operands and pushes their sum. Values that must outlive the operand stack go into **locals**, of which there can be as many as you like.
+- Control flow is **structured**. There are no jumps to arbitrary addresses — only `block`, `loop` and `if`, which nest like brackets, and `br N`, which exits the *N*-th enclosing `block` (jumping forward to its end) or re-enters the *N*-th enclosing `loop` (jumping back to its start).
+- Memory is a sandboxed **linear memory**: a byte array indexed by 32-bit addresses, completely separate from the engine’s own stack. The call stack itself is not addressable.
+- Modules are **validated** before they run. Every instruction’s stack effect is type-checked, so the engine’s JIT can compile a module quickly without any runtime checks for stack misuse.
+
+## What goes away, and what doesn’t
+
+Compare with the native pipeline:
+
+- **Register allocation disappears.** Wasm has unlimited locals. The engine’s own compiler allocates registers later, when it JITs the module for your actual CPU. So does most of instruction selection: the IR maps nearly one-to-one onto Wasm instructions.
+- **The calling convention disappears.** `call $f` takes arguments from the operand stack. The engine handles the machine-level convention.
+- **Liveness and SSA destruction remain, in a new guise.** φs must still become copies — `local.set` on each incoming edge — and a parallel copy with a cycle still needs a temporary. Minimising the number of locals is graph colouring again: LLVM’s WebAssembly backend runs a “register colouring” pass over its locals.
+- **Address-taken memory needs a stack.** Arrays can’t live on the engine’s call stack, which programs cannot address. Instead the compiler keeps a **shadow stack** in linear memory, with a stack-pointer global. Kiln’s functions with arrays subtract their frame size from `$sp` on entry and add it back on return, exactly like a native prologue and epilogue.
+- **A new problem appears**: every CFG must be expressed as nested blocks and loops.
+
+## From a CFG to structured control flow
+
+Given an arbitrary reducible CFG, how do you express it with only `block`, `loop`, `if` and `br`?
+
+Emscripten’s **Relooper** (Alon Zakai, 2011) was the first widely used answer. It recursively identifies “simple”, “loop” and “multiple” shapes, falling back to a label variable and a dispatch loop for anything irreducible. LLVM’s WebAssembly backend instead uses **CFG stackification**: it sorts blocks topologically, then inserts `block`/`loop` markers so that every branch target is reachable by some `br`.
+
+In 2022 Norman Ramsey published **“Beyond Relooper”**, a recursive translation driven entirely by the dominator tree and reverse postorder. Kiln implements it. For each block *x*, in dominator-tree order:
+
+1. If *x* is a **loop header** (the target of a back edge), wrap its code in `loop`, so that `br` to it continues the loop.
+2. Find *x*’s dominator-tree children that are **merge nodes**: blocks with two or more forward predecessors. Each needs a `block` whose `end` is where that merge node’s code begins. Nest these blocks so that the merge node with the *highest* RPO number is outermost; its code comes last.
+3. Inside all of that, emit *x*’s own instructions, then translate its terminator:
+   - a two-way branch becomes an `if`/`else`;
+   - each edge becomes:
+     - a `br` to the enclosing `loop` (a back edge);
+     - a `br` to the enclosing `block` that ends at a merge node (a forward edge to a join);
+     - or, if the target has only one predecessor, **the target’s own code, inlined right there**.
+
+φ copies are emitted right before each branch site. Every CFG edge becomes a distinct place in the structured code, so no critical-edge splitting is needed.
+
+<WasmExplorer example="collatz" fn="steps" caption="Structuring the Collatz loop. Step through the translation: which blocks become loop headers, which merge points get a block whose end is their label, and where code is simply inlined. The WAT on the right is the result; turn off “stackify” to see every value go through a local. The program runs natively in your browser’s WebAssembly engine." />
+
+<Aside kind="arch">
+<p>Irreducible control flow — a loop with two entries — cannot be expressed directly in Wasm. The standard fixes are node splitting (duplicate code until the graph becomes reducible) and a dispatch loop with a label variable. Ramsey’s algorithm assumes a reducible CFG; Kiln’s structured source language never produces anything else.</p>
+</Aside>
+
+## Stackification
+
+A naive translation puts every SSA value in a local: compute, `local.set`, and later `local.get`. That works, but it is bulky, and it throws away the fact that most values are used once, right after they are computed. **Stackifying** keeps such values on the operand stack. It uses the same rule instruction selection used to build trees: if a value is pure, has one use, and that use is in the same block with no intervening side effects, emit it inline as an operand of its user.
+
+For kiln’s examples this removes most locals and a large fraction of instructions. Toggle it in the figure above.
+
+## The binary format
+
+A Wasm module starts with the magic bytes `\0asm` and a version, followed by numbered **sections**:
+- *type* (function signatures);
+- *import* (here `env.print_int` and `env.putchar`);
+- *function*;
+- *memory*;
+- *global* (the shadow-stack pointer);
+- *export* (`main`);
+- *code* (one body per function, with its locals);
+- *data* (initial values of globals).
+
+Integers are encoded in **LEB128**, a variable-length format with 7 bits per byte. Signed constants use its sign-extending variant. Kiln writes the binary directly and hands it to `WebAssembly.instantiate`.
+
+<Pipeline example="sieve" target="wasm" stage="wat" stages={['opt', 'wat', 'wasmbin', 'run']} height={420} caption="The sieve compiled to WebAssembly. The global array lives at a fixed address in linear memory (data segment); loads and stores wrap 64-bit addresses to 32 bits. The binary tab breaks the module into its sections; the Run tab executes it and compares with the IR interpreter." />
+
+## Who allocates the registers?
+
+Browser engines compile Wasm in tiers:
+- a fast **baseline** compiler (V8’s Liftoff, SpiderMonkey’s baseline) translates in a single pass with a simple register cache;
+- an **optimising** compiler (V8’s TurboFan and now Turboshaft, SpiderMonkey’s Ion) rebuilds an SSA graph from the stack code and runs a full backend, register allocation included.
+
+Standalone runtimes such as Wasmtime use Cranelift. So the problems of Chapters 7–16 have not gone away. They have moved into the engine, where compile time is precious — which is why JIT allocators favour linear scan and its descendants.
+
+<Callout kind="key">
+Compiling to WebAssembly swaps register allocation and the calling convention for structured control flow and stackification. Structure comes from the dominator tree: loops for back-edge targets, blocks for merge points, and inlining for blocks with a single predecessor. The native backend’s other problems reappear inside the engine that runs the module.
+</Callout>

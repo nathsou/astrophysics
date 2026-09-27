@@ -1,0 +1,136 @@
+At the top of the λ-cube sits the **Calculus of Constructions** (CoC, or λC), introduced by Thierry Coquand and Gérard Huet in 1985. It has all four product rules, so everything can depend on everything: terms on terms and types, types on types and terms. It is the first system in this course in which one can do serious mathematics — and in this chapter we'll also find out exactly where it falls short, which will motivate the rest of the course.
+
+## One language for everything
+
+<Definition title="The Calculus of Constructions">
+The PTS with sorts $\{*, \square\}$, axiom $* : \square$ and rules
+
+$$
+\mathcal{R} = \{(*, *),\ (\square, *),\ (\square, \square),\ (*, \square)\}.
+$$
+</Definition>
+
+In CoC it is customary to read `*` as **Prop**, the sort of propositions, and □ as the sort of "large" things such as `*` itself, predicates `A → *` and propositional operators `* → *`. Programs, proofs, propositions, predicates and data types are all terms of one language, related by the single judgement $\Gamma \vdash t : T$.
+
+The rule `(□, *)` is the crucial and dangerous one. It says that a Π-type whose domain is *large* (for example, quantifying over all propositions $\Pi (P : *)$, or over all predicates $\Pi (Q : A \to *)$) is nevertheless *small* — it lives in `*`. So `*` is **impredicative**: a proposition may quantify over all propositions, itself included. This is what makes the encodings of this chapter possible.
+
+## Logic, encoded
+
+In Chapter 5 we encoded the connectives for *fixed* propositions; in Fω we could define them as operators. CoC adds dependent types, so we can now also define the quantifiers — and equality.
+
+<Playground calculus="coc" title="Higher-order logic in CoC" code={`def False' : * := Π (C : *), C
+def Not' (A : *) : * := A → False'
+def And' (A B : *) : * := Π (C : *), (A → B → C) → C
+def Or' (A B : *) : * := Π (C : *), (A → C) → (B → C) → C
+
+-- ∃ x : A, P x   is   "for every C, if P x implies C for all x, then C"
+def Ex (A : *) (P : A → *) : * := Π (C : *), (Π (x : A), P x → C) → C
+def exIntro (A : *) (P : A → *) (w : A) (h : P w) : Ex A P :=
+  λ (C : *) (k : Π (x : A), P x → C) => k w h
+
+#check Ex`} />
+
+Each connective is encoded by its elimination rule, universally quantified over the conclusion `C`. The existential is particularly neat: a proof of $\exists x.\, P\,x$ is a function which, given any `C` and a way to conclude `C` from a witness and a proof about it, produces `C` — by calling the continuation on its hidden witness.
+
+### Leibniz equality
+
+What does it mean for $x$ and $y$ to be equal? Leibniz's answer — the *identity of indiscernibles* — is that they have exactly the same properties. In CoC that is a definition:
+
+$$
+x =_A y \;:=\; \Pi (P : A \to *).\ P\,x \to P\,y
+$$
+
+"$x = y$ if every property of $x$ is a property of $y$". Reflexivity is the identity function. Symmetry is a small puzzle: from `e : Π P, P x → P y` we must build a function in the other direction. The trick is to pick a clever property: $P\,z := (z =_A x)$. Then `e` turns a proof of $x = x$ into a proof of $y = x$.
+
+<Playground calculus="coc" title="Leibniz equality" code={`def Eq' (A : *) (x y : A) : * := Π (P : A → *), P x → P y
+
+def refl' (A : *) (x : A) : Eq' A x x :=
+  λ (P : A → *) (h : P x) => h
+
+def symm' (A : *) (x y : A) (e : Eq' A x y) : Eq' A y x :=
+  e (λ (z : A) => Eq' A z x) (refl' A x)
+
+def congr' (A B : *) (f : A → B) (x y : A) (e : Eq' A x y) : Eq' B (f x) (f y) :=
+  e (λ (z : A) => Eq' B (f x) (f z)) (refl' B (f x))`} />
+
+<Exercise id="coc:trans" calculus="coc" title="Transitivity" code={`def Eq' (A : *) (x y : A) : * := Π (P : A → *), P x → P y
+
+def trans' (A : *) (x y z : A) (e1 : Eq' A x y) (e2 : Eq' A y z) : Eq' A x z :=
+  ?_`} hint="Use e2 with the property λ w, Eq' A x w, starting from e1." solution={`def Eq' (A : *) (x y : A) : * := Π (P : A → *), P x → P y
+
+def trans' (A : *) (x y z : A) (e1 : Eq' A x y) (e2 : Eq' A y z) : Eq' A x z :=
+  e2 (λ (w : A) => Eq' A x w) e1`}>
+Prove that Leibniz equality is transitive.
+</Exercise>
+
+Here the power of the system is on full display: `symm'` instantiates the quantifier `Π (P : A → *)` with a predicate built from `Eq'` itself — an impredicative instantiation.
+
+## Data, encoded
+
+Natural numbers are Church numerals, exactly as in System F, and we can state propositions about them:
+
+<Playground calculus="coc" title="Numbers and a statement about them" code={`def Nat' : * := Π (X : *), (X → X) → X → X
+def zero : Nat' := λ (X : *) (s : X → X) (z : X) => z
+def succ (n : Nat') : Nat' := λ (X : *) (s : X → X) (z : X) => s (n X s z)
+
+def Eq' (A : *) (x y : A) : * := Π (P : A → *), P x → P y
+
+-- the induction principle, as a proposition
+def Induction : * :=
+  Π (P : Nat' → *), P zero → (Π (n : Nat'), P n → P (succ n)) → Π (n : Nat'), P n
+
+#check Eq' Nat' zero (succ zero)
+#check Induction`} />
+
+The type `Induction` is a perfectly good proposition. But can we *prove* it? And can we prove that zero is different from one? It turns out that we can do neither.
+
+## Three problems
+
+### 1. No induction
+
+A Church numeral `n : Nat'` is *any* term of type $\Pi (X : *).\, (X \to X) \to X \to X$. We can iterate with it, but nothing inside CoC says that every such term is of the form `succ (succ … zero)`. Semantically, there are models of CoC in which `Nat'` contains extra "junk" elements, and in such models induction fails. So the induction principle — the single most important tool for reasoning about numbers — is not provable. (Parametricity says there is no junk, but parametricity is a meta-theorem *about* the calculus, not a theorem *inside* it.) The usual workaround, restricting to the numbers that satisfy every inductive predicate, works but is extremely clumsy in practice.
+
+### 2. Zero might equal one
+
+To prove $\neg(0 = 1)$ with Leibniz equality we need a property that holds of 0 but not of 1. The natural choice is a *type-valued function* on numbers: $P\,n$ := "if $n$ is zero then `True` else `False`". Define it by iteration: start from `True`, and apply "constantly `False`" $n$ times:
+
+$$
+P\,n \;:=\; n\ *\ (\lambda (\_ : *).\ \mathsf{False})\ \mathsf{True}
+$$
+
+But this instantiates the numeral at the type $X := *$, and `*` is not a type of sort `*` — it has sort □. The kernel refuses:
+
+<Playground calculus="coc" errors title="No large elimination" code={`def Nat' : * := Π (X : *), (X → X) → X → X
+def False' : * := Π (C : *), C
+def True' : * := Π (C : *), C → C
+
+def isZero (n : Nat') : * := n * (λ (p : *) => False') True'`} />
+
+Church numerals can only compute *small* things — elements of types in `*`, never propositions or types. Computing a type by recursion on data is called **large elimination**, and CoC doesn't have it. In fact $\neg(0 = 1)$ is *not provable* in CoC: there is a model in which every proposition has at most one proof (`*` is interpreted by the two truth values), and in it `Nat'`, being a proposition, has only one element.
+
+### 3. Inefficiency
+
+The predecessor function is definable (with Kleene's pairing trick), but it takes $O(n)$ steps; more generally, Church-encoded data only supports *iteration*, not *primitive recursion* where each step also sees the previous argument. Parigot showed in 1989 that no encoding in this style can give a constant-time predecessor. For a proof assistant whose kernel must evaluate programs inside types, this matters.
+
+<Problem title="What we need">
+We need a way to define data types whose **induction principle holds by definition**, whose constructors are **provably distinct and injective**, which support **large elimination** (defining types and propositions by recursion on data), and which compute **efficiently** (constant-time pattern matching). Large elimination in turn needs somewhere to eliminate *into*: a type of types that is itself a type, i.e. **universes**.
+
+The next chapter adds universes. Part IV adds inductive types. Together they give CIC.
+</Problem>
+
+## Strong normalisation and consistency
+
+Despite its impredicativity, CoC is strongly normalising — Coquand proved this in his 1985 thesis, and it was one of the landmark results of the field — and therefore consistent: the proposition `False' = Π (C : *), C` has no closed proof. The proof is a sophisticated extension of Girard's reducibility candidates to a setting where types can depend on terms.
+
+CoC is also where the Curry–Howard picture starts to strain. In CoC, proofs and programs live in the same sort `*`: `Nat'` is a proposition just like `False'`, and there is no way to distinguish "data" from "proof". Later systems separate them — Coq's `Set` and `Prop`, Lean's `Type` and `Prop` — because the two need different rules: proofs can be erased at runtime and should be *irrelevant* (Chapter 14), while data must be computed with.
+
+## Summary
+
+- CoC has all four product rules; `*` (Prop) is impredicative thanks to `(□, *)`.
+- The logical connectives, the existential quantifier and Leibniz equality are definable.
+- Church-encoded data lacks an induction principle, cannot be eliminated into types (no large elimination: $0 \neq 1$ is unprovable), and computes inefficiently.
+- CoC is strongly normalising and consistent.
+
+<History title="From CoC to Coq">
+Coquand and Huet presented the Calculus of Constructions at EUROCAL 1985 (*Constructions: a higher order proof system for mechanizing mathematics*), and the journal version, *The Calculus of Constructions*, appeared in 1988. An implementation — the "CoC" proof checker — was developed at INRIA. Its limitations with data types led Coquand and Christine Paulin-Mohring to add inductive definitions as primitives in 1988–89: the *Calculus of Inductive Constructions*, implemented in the system that became **Coq** (1989), renamed **Rocq** in 2025. Zhaohui Luo's *Extended Calculus of Constructions* (1990) added a hierarchy of predicative universes on top of an impredicative `Prop` — the structure Lean inherits.
+</History>

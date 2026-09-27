@@ -1,0 +1,57 @@
+<p className="lede">
+You have now seen every stage of a compiler backend, from the first SSA value to the last relocated byte. This chapter puts the pipeline back together, measures what each stage bought, and suggests where to go next.
+</p>
+
+## The whole pipeline, once more
+
+<PipelineDiagram />
+
+Here is every stage again, on a program of your choosing. The editor is live, so write something new. A matrix multiply on global arrays, a sieve with a larger bound, or a recursive function with many arguments will each stress a different stage.
+
+<Pipeline example="collatz" stage="run" height={460} caption="The complete compiler. Every stage from IR to Run, for four targets, at three optimisation levels. The Run tab compares the emulator’s output (or your browser’s, for Wasm) with the reference interpreter." />
+
+## What each stage is worth
+
+The emulator counts every instruction it executes, so we can measure what the passes buy. These are dynamic RISC-V instruction counts for four of the examples, as measured by the test-suite:
+
+| program | -O0 | -O1 | -O2 | -O2, linear scan | -O2, 5 registers | -O2, no peephole |
+|---|---|---|---|---|---|---|
+| collatz | 233,729 | 145,807 | 147,886 | 181,752 | 151,173 | 152,850 |
+| sieve | 3,573 | 2,246 | 2,042 | 2,439 | 2,287 | 2,043 |
+| insertion sort | 1,081 | 724 | 708 | 748 | 788 | 711 |
+| fib(20) | 361,253 | 361,254 | 361,254 | 361,254 | 328,416 | 372,199 |
+
+The numbers are more interesting than a table of steady improvements:
+
+- **mem2reg is the big win** — 1.4–1.6× fewer instructions — everywhere except `fib`. In `fib`, the value `n` must survive a recursive call no matter what. At -O0 it lives in a stack slot; at -O1 it lives in a callee-saved register, which the prologue saves and the epilogue restores. Both cost one store and one load per call.
+- **-O2 is not always better than -O1.** CSE and if-conversion help the sieve and the sort, but not the Collatz loop. Optimisations are heuristics, and every production compiler has benchmarks that regress.
+- **Linear scan costs 5–23%** here, mostly in extra moves around loops, where its interval approximation is weakest.
+- **Five registers made `fib` faster.** With no callee-saved registers available, the allocator spills `n` instead. The spill code runs only where it is needed, whereas the -O2 prologue saves `s1` and `s2` even on the leaf path (`n < 2`), which half of all calls take. This is exactly the waste that *shrink-wrapping* (Chapter 14) removes.
+- **Scheduling does not change these counts at all.** It reorders instructions without adding or removing any. Its benefit is in cycles on an in-order core, which the scheduling figure of Chapter 16 estimates.
+
+## Things to build next
+
+If you want to keep going, here are projects that fit naturally into kiln’s structure, roughly in order of effort:
+
+1. **A new instruction pattern.** Add RISC-V `Zbb`’s `andn`/`orn` to the grammar in `target/riscv.ts`, with its encodings in `emit/rv64asm.ts` and its semantics in `sim/rv64.ts`. The tiling explorer will show when it fires.
+2. **Machine LICM.** Hoist loop-invariant `li` and `lla` instructions into loop preheaders before register allocation, and measure the effect on dynamic instruction counts.
+3. **Shrink-wrapping.** Move prologue saves off the paths that don’t need them.
+4. **Live-range splitting in linear scan.** Split intervals at block boundaries instead of spilling them entirely (Wimmer and Mössenböck).
+5. **Compressed instructions.** Emit RVC encodings for eligible instructions. This interacts with branch relaxation, because instructions become 2 or 4 bytes.
+6. **A 32-bit integer type.** Add `i32` to KIR and legalise it on each target: `addw`/`sext.w` on RV64, `w` registers on AArch64, 32-bit operand size on x86 (which zero-extends!).
+7. **DWARF CFI.** Emit `.eh_frame` so that `gdb` and profilers can unwind kiln’s frames without frame pointers.
+8. **SSA-based register allocation.** Spill until MAXLIVE ≤ K, colour in dominance order on SSA, then destroy SSA afterwards.
+
+The test-suite (`tests/`) differentially tests every example at many configurations. Keep it green and you can change anything with confidence.
+
+## Further reading
+
+- Keith Cooper and Linda Torczon, *Engineering a Compiler* (3rd ed., 2022): the best single textbook for backends; chapters on selection, scheduling and allocation.
+- Andrew Appel, *Modern Compiler Implementation in ML/Java/C* (1998): iterated register coalescing, liveness and instruction selection, as implemented here.
+- Steven Muchnick, *Advanced Compiler Design and Implementation* (1997): encyclopaedic on machine-level optimisation.
+- Fabrice Rastello and Florent Bouchez Tichadou (eds.), *SSA-based Compiler Design* (2022): everything about SSA, including SSA-based register allocation and destruction.
+- Jan Hubička et al., *System V AMD64 ABI*; the *RISC-V ELF psABI*; Arm’s *AAPCS64*: the real contracts.
+- John Levine, *Linkers and Loaders* (2000), and Ian Lance Taylor’s 20-part blog series on linkers (2007).
+- The LLVM source, especially `lib/CodeGen` and `lib/Target/RISCV`. It is large, but it is organised along exactly the lines of this course.
+
+The [glossary and bibliography](#/ch/glossary) collect every term and paper cited along the way.

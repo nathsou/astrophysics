@@ -1,0 +1,75 @@
+<p className="lede">
+Two values can share a register only if they are never needed at the same time. Liveness analysis computes, for every point in the program, which values are still needed — the fact register allocation is built on.
+</p>
+
+## When is a value live?
+
+A value *v* is **<Term k="liveness">live</Term>** at a program point *p* if there is a path from *p* to a **use** of *v* that does not pass through a **redefinition** of *v*. Informally, *v* is live at *p* if its current contents might still be read. Otherwise the register holding it can be reused.
+
+Liveness is a **backward** problem: information flows from uses back towards definitions. We compute it once per basic block, and then recover the per-instruction answer with a single backward scan of each block.
+
+## The dataflow equations
+
+For each block *b*, summarise its instructions with two sets:
+- **Use(b)**: values read in *b* before any write to them in *b*. These are *upward-exposed* uses.
+- **Def(b)**: values written in *b*.
+
+Then the live sets at the block boundaries satisfy
+
+$$
+\mathrm{LiveOut}(b) = \bigcup_{s \,\in\, \mathrm{succ}(b)} \mathrm{LiveIn}(s)
+\qquad
+\mathrm{LiveIn}(b) = \mathrm{Use}(b) \,\cup\, \big(\mathrm{LiveOut}(b) \setminus \mathrm{Def}(b)\big).
+$$
+
+A value is live out of *b* if some successor needs it. It is live into *b* if *b* uses it before overwriting it, or if it is live out and *b* does not overwrite it.
+
+Loops make these equations circular. We solve them by **iteration**: start with every set empty, recompute every block, and repeat until nothing changes. The sets only ever grow, and they are bounded by the number of values, so the iteration terminates. It reaches the *least* solution, which is the precise one.
+
+```ts
+for (let changed = true; changed; ) {
+  changed = false;
+  for (const b of postorder) {                 // backward problem: visit successors first
+    const out = union(succs(b).map((s) => liveIn[s]));
+    const inn = union([use[b], difference(out, def[b])]);
+    if (inn.size !== liveIn[b].size || out.size !== liveOut[b].size) changed = true;
+    liveIn[b] = inn; liveOut[b] = out;
+  }
+}
+```
+
+The **visit order** matters for speed, but not for the answer. In postorder a block is visited after its successors (ignoring back edges), so most LiveIn sets it needs are already up to date. A loop typically costs one extra round to carry values around the back edge, plus a final round that changes nothing and confirms the fixed point.
+
+<LivenessStepper example="sum" fn="main" caption="Iterating liveness for the sum-of-squares loop, on machine IR after SSA destruction. Each step recomputes one block; new set members are outlined in green. Watch the loop-carried values (i and s) spread through the loop blocks’ sets as the back edge carries them around, until a round changes nothing. Tick “show physical registers” to include a0 and the other ABI registers." />
+
+<Aside kind="history">
+<p>Gary Kildall’s 1973 POPL paper, “A Unified Approach to Global Program Optimization”, framed dataflow analyses as fixed points over lattices. Kam and Ullman (1976–77) characterised when iteration gives the precise answer (monotone frameworks). Liveness is the textbook instance: the lattice is sets of values, the meet is union, and the transfer functions are gen/kill.</p>
+</Aside>
+
+## Physical registers are values too
+
+Machine IR mentions physical registers explicitly: the ABI copies (`COPY a0, %5`), fixed-register instructions like x86’s `idiv`, and the implicit uses and definitions on calls. Kiln’s liveness tracks the physical registers the allocator cares about alongside virtual ones, as negative keys. As a result:
+- an argument register is live from its `COPY` to the `call` that implicitly uses it;
+- a call’s clobbers are definitions that end nothing and start nothing, but still interfere with everything live across the call.
+
+## From sets to intervals
+
+Register allocation wants more detail than LiveIn/LiveOut: exactly *where* inside blocks each value is live. Number every instruction in a linear order, giving each one two positions: an even one where it **reads** its operands and an odd one where it **writes** its results. Then each value’s **<Term k="live-interval">live interval</Term>** is a set of position ranges, built by one backward walk per block:
+
+- everything in LiveOut is live to the end of the block;
+- walking upwards, a **definition** at position *p* starts the value’s range at *p*, since it was not live just before;
+- a **use** at position *p* makes the value live from the block start up to *p*, unless a later definition in the block shortens it.
+
+A value can be live in several disjoint ranges: its interval can have **holes**, for example when it is live through one branch of an `if` but not the other. Ranges do not follow the source order of the program; they follow the linear order we chose, which here is the block layout.
+
+<LiveRanges example="pressure" fn="mix" caption="Live intervals for a function with many simultaneously live values. Squares are definitions, dots are uses. The bars along the bottom show register pressure — the number of live values at each instruction — in red where it exceeds the allocatable registers. Hover a bar to highlight the value in the listing." />
+
+The maximum number of simultaneously live values, **MAXLIVE**, is a lower bound on the registers needed without spilling. In a general program it is not a tight bound: the interference graph can need more colours than MAXLIVE. In **SSA** programs, remarkably, it is exact. The interference graph of a strict SSA program is *chordal*, and a chordal graph needs exactly as many colours as its largest clique, which is MAXLIVE. This is the key insight behind SSA-based register allocation (Chapter 12).
+
+<Aside kind="llvm">
+<p>LLVM’s `LiveIntervals` analysis numbers instructions with <i>slot indexes</i>, which have four slots per instruction (block boundary, early clobber, register use/def, dead def), for exactly this reason. For SSA values there are also faster, sparser methods that avoid iterating over the whole CFG: path exploration from each use back to the definition, and liveness *checking* (Boissinot et al., 2008), which answers “is *v* live at *p*?” with precomputed reachability.</p>
+</Aside>
+
+<Callout kind="key">
+Liveness is a backward dataflow problem: LiveIn = Use ∪ (LiveOut − Def), iterated to a fixed point in postorder. A backward scan of each block turns block-level sets into per-instruction live sets and live intervals. Register pressure is the number of values live at once.
+</Callout>

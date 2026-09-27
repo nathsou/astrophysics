@@ -1,0 +1,164 @@
+In the last chapter we wrote $M[x := N]$ for "substitute $N$ for $x$ in $M$" and moved on quickly. Every textbook does this; every implementer regrets it. Substitution under binders is the first place where the elegant mathematics of the λ-calculus meets the unforgiving reality of code, and getting it wrong is the classic way to build a type checker that accepts false theorems.
+
+This chapter is about how bound variables are represented. It is the most "engineering" chapter of the course, and it pays off immediately: once we have typed calculi, types will contain binders too — `(x : Nat) → Vec α x` binds `x` — and every operation of the kernel (type inference, reduction, equality checking) is built on top of substitution.
+
+## Capture
+
+Here is the problem again. In
+
+$$
+(\lambda x.\, \lambda y.\, x)\; y
+$$
+
+the function returns its first argument and ignores the second, so the result should be a function that ignores its argument and returns *the free variable* $y$. Naive textual substitution of $y$ for $x$ in $\lambda y.\, x$ gives $\lambda y.\, y$, the identity function: the free $y$ has been **captured** by the inner binder, and the meaning of the term has silently changed.
+
+<SubstLab term="λy. x" x="x" arg="y" />
+
+Change the inputs and look for other captures. Capture happens exactly when the replacement $N$ has a free variable that has the same name as a binder of $M$ that the substitution passes under. Capture-avoiding substitution detects this and renames the binder first, which is always legitimate because bound names are irrelevant (α-equivalence).
+
+<Definition title="Capture-avoiding substitution">
+$$
+\begin{aligned}
+x[x := N] &= N \\
+y[x := N] &= y \qquad (y \neq x)\\
+(M_1\, M_2)[x := N] &= M_1[x := N]\; M_2[x := N]\\
+(\lambda x.\, M)[x := N] &= \lambda x.\, M \\
+(\lambda y.\, M)[x := N] &= \lambda y.\, M[x := N] \qquad (y \neq x,\ y \notin \mathrm{FV}(N))\\
+(\lambda y.\, M)[x := N] &= \lambda z.\, M[y := z][x := N] \qquad (y \in \mathrm{FV}(N),\ z \text{ fresh})
+\end{aligned}
+$$
+</Definition>
+
+The last line is the troublemaker. It needs a supply of *fresh* names, it substitutes twice, and it makes the definition of substitution not structurally recursive (we substitute into $M[y := z]$, which is not a subterm of the input). Proofs about it are painful; implementations are slow (checking free variables at every binder) and bug-prone.
+
+<Note title="The Barendregt convention">
+Paper proofs usually sidestep the issue with a convention, due to Henk Barendregt: *assume all bound variables are distinct from each other and from all free variables in sight.* Since we can always α-rename to achieve this, capture "never happens". It is a perfectly good convention for humans. A program cannot assume it: after one β-step a term can contain two copies of the same binder, and the convention has to be re-established.
+</Note>
+
+## De Bruijn indices
+
+In 1972, while building the Automath proof checker, Nicolaas de Bruijn proposed getting rid of bound variable names altogether. Replace each bound variable by a number: **how many λs you have to cross to reach its binder**, counting from 0.
+
+$$
+\lambda x.\, \lambda y.\, x\,(\lambda z.\, z\, y) \quad\rightsquigarrow\quad \lambda\, \lambda\, 1\,(\lambda\, 0\; 1)
+$$
+
+The outer $x$ is under one λ (the $y$ binder) before reaching its own, so it becomes 1; inside $\lambda z$, the $z$ is 0 and the $y$ is now 1 (we cross $\lambda z$ to get to $\lambda y$).
+
+<BinderLab code="λx y. x (λz. z y) w" />
+
+Notice that the same variable $y$ has different indices at different places, and the same index denotes different variables at different places. Indices are relative addresses — like relative jumps in machine code.
+
+The pay-off is dramatic:
+
+- **α-equivalence becomes syntactic equality.** $\lambda x.\, x$ and $\lambda y.\, y$ are both $\lambda\, 0$. Comparing terms is a simple structural recursion; terms can be hashed.
+- **There is nothing to capture.** A binder has no name, so no free variable can accidentally refer to it.
+
+The price is paid elsewhere. When a term moves under or out of binders, its free indices have to be adjusted.
+
+### Shifting and substitution
+
+Consider β-reducing $(\lambda\, M)\, N$. The body $M$ refers to the argument as index 0 — at the top level of $M$; under $k$ further binders inside $M$ it is index $k$. So substitution must track the depth. And when $N$ is copied under $k$ binders, *its* free indices must be increased by $k$, or they would point to the wrong binders. Finally, removing the outer λ means the other free indices of $M$ must be decreased by one.
+
+<Definition title="Shifting and substitution with indices">
+The **shift** $\uparrow^d_c\, M$ adds $d$ to every index $\geq c$ (the *cutoff*) in $M$:
+
+$$
+\uparrow^d_c\, n = \begin{cases} n & n < c \\ n + d & n \geq c\end{cases}
+\qquad
+\uparrow^d_c\, (\lambda\, M) = \lambda\, \uparrow^d_{c+1} M
+\qquad
+\uparrow^d_c\, (M\, N) = (\uparrow^d_c M)\, (\uparrow^d_c N)
+$$
+
+Substitution of $N$ for index $j$:
+
+$$
+n[j := N] = \begin{cases} N & n = j \\ n & n \neq j\end{cases}
+\qquad
+(\lambda\, M)[j := N] = \lambda\, M[j+1 := \uparrow^1_0 N]
+$$
+
+and β-reduction becomes
+
+$$
+(\lambda\, M)\, N \;\longrightarrow_\beta\; \uparrow^{-1}_0\big(M[0 := \uparrow^1_0 N]\big).
+$$
+</Definition>
+
+Every clause is simple, but there are many opportunities for an off-by-one error, and such errors don't crash: they silently produce a term that refers to the wrong variable. Tests on small terms often pass. The LambdaLab's **de Bruijn** view lets you watch indices change as terms reduce.
+
+<LambdaLab title="Indices during reduction" stdlib="false" code="(λx y. x (λz. z y)) (λw. y w)" view="debruijn" views="debruijn,text,tree" />
+
+In that example the argument contains a free variable `y`, and the function body contains a binder for `y`. In the named view, the kernel of the lab has to rename; in the de Bruijn view nothing special happens — the free `y` simply stays free.
+
+<Engineer title="Levels instead of indices">
+A *de Bruijn level* counts binders from the outside instead of from the inside: the outermost binder is 0. Levels have the opposite trade-off: moving a term *under* binders needs no shifting (a variable's level doesn't depend on how deep it is used), but substituting into a body does. Many modern implementations, especially those based on *normalisation by evaluation*, use indices for syntax and levels for values, getting the best of both.
+</Engineer>
+
+## Locally nameless: the best of both
+
+Indices are wonderful for bound variables, but awkward for the *free* variables a type checker works with. When the kernel checks $\lambda (x : A).\, t$, it goes under the binder and checks $t$ in a context extended with $x : A$. If $t$ is represented with indices, the context must be a stack indexed by position, and every type pulled out of it must be shifted to be valid at the current depth.
+
+The **locally nameless** representation, used by Lean 4's kernel and by this course's, splits the difference:
+
+- **bound** variables are de Bruijn indices (`bvar`);
+- **free** variables are unique identifiers pointing into the local context (`fvar`), never shifted, never renamed.
+
+Going under a binder is called **opening** (or *instantiating*) it: replace index 0 of the body by a brand-new free variable, and record its type in the context. Coming back out is **closing** (*abstracting*): replace the free variable by an index again. Because free variables are globally unique, there is no capture and no shifting of free variables. Because bound variables are indices, α-equivalence is still syntactic equality.
+
+Here is the representation the kernel actually uses for a term. Try editing it.
+
+<CoreTermView code="fun (x : Nat) (y : Nat) => Nat.add x y" />
+
+The `name hint` on each binder is kept only for printing. The binder types are themselves terms, and so is every type in the context. The badge *loose &lt; n* marks subterms that mention binders outside themselves (their "loose" bound variables); closed subterms, which have none, can be skipped entirely by substitution — a crucial optimisation, since most subterms of a large term are closed.
+
+<Engineer title="The kernel's instantiation function">
+This is (slightly simplified) the function the course kernel uses to open binders. `subst` lists the values for the outermost-first bound variables; `off` counts binders crossed during the traversal; `lb` is a cached upper bound on the loose indices of each node.
+
+```ts
+function instantiateRev(e: Expr, subst: Expr[]): Expr {
+  const n = subst.length;
+  if (n === 0 || e.lb === 0) return e;          // closed: nothing to do
+  return replaceExpr(e, (x, off) => {
+    if (x.lb <= off) return x;                  // no loose bvars below here
+    if (x.k === 'bvar') {
+      const i = x.i - off;
+      if (i < n) return liftLooseBVars(subst[n - 1 - i], 0, off);
+      return mkBVar(x.i - n);                   // an outer binder: shift down
+    }
+    return undefined;                           // recurse into children
+  });
+}
+```
+
+The shifting clauses of the de Bruijn definition are still there (`liftLooseBVars`, `x.i - n`), but in the kernel they only fire in the rare case of substituting a term with loose indices — during reduction of open terms. When the kernel opens a binder with a fresh free variable, which is by far the common case, the replacement is closed and no shifting is needed at all.
+</Engineer>
+
+## Other approaches
+
+For completeness, here are the main alternatives you may meet:
+
+- **Named variables with Barendregt-style renaming**, as in the λ-labs of Chapter 1. Simple to print, expensive to compare, easy to get wrong.
+- **Higher-order abstract syntax (HOAS)**: represent the body of a λ by a function of the host language, `Lam(x => ...)`. Substitution is just function application in the host. Elegant, but you cannot look inside the body without applying it, and it is hard to use in a proof assistant's own logic.
+- **Nominal techniques**: names with a formal theory of swapping and freshness, used for instance in Isabelle's Nominal package.
+- **Normalisation by evaluation**, which we meet again in Chapter 17: evaluate terms into a semantic domain of host-language closures, and read the result back into syntax. It sidesteps substitution during evaluation entirely.
+
+<Exercise id="binders:church" kind="lambda" title="Reading indices" code={`-- λ λ 1 0 as a named term:
+K' = λa b. b
+K' TRUE FALSE`} expect="TRUE" hint="Index 1 refers to the outer binder, index 0 to the inner one." solution={`K' = λa b. a
+K' TRUE FALSE`}>
+The de Bruijn term $\lambda\,\lambda\, 1$ is a two-argument function. Write it as a named term `K'` so that `K' TRUE FALSE` evaluates to `TRUE`. (The given definition corresponds to $\lambda\,\lambda\, 0$.)
+</Exercise>
+
+## Summary
+
+- Substitution must avoid capturing free variables; the textbook definition requires renaming with fresh names.
+- De Bruijn indices make α-equivalence trivial and capture impossible, at the cost of shifting indices when terms move under binders.
+- The locally nameless representation — indices for bound variables, unique names for free ones — is what Lean 4's kernel uses, and what this course's kernel uses: binders are *opened* with fresh free variables when the checker goes under them, and *closed* again afterwards.
+
+From now on we will write terms with names, as humans do, and trust the kernel to handle them correctly underneath.
+
+<History title="Automath and the birth of indices">
+De Bruijn introduced his indices in a 1972 paper with the wonderful title *Lambda calculus notation with nameless dummies, a tool for automatic formula manipulation*. Automath had by then been used to check a translation of Landau's *Grundlagen der Analysis* — the construction of the real numbers — line by line. The locally nameless style was described in the 1980s and 90s (by Huet, Pollack, McKinna and others) and popularised by Charguéraud's 2012 paper *The Locally Nameless Representation*.
+</History>

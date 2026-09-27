@@ -1,0 +1,70 @@
+Why should anyone believe that CIC is consistent — that there is no proof of `False`? Throughout the course we have met properties that "hold for this calculus" and extensions that "break it". This chapter collects them: the **metatheory** of CIC, the theorems *about* the system that justify trusting theorems proved *in* it.
+
+## The properties we want
+
+<Definition title="Key metatheoretic properties">
+- **Subject reduction**: reduction preserves types. If $\Gamma \vdash t : A$ and $t \longrightarrow t'$ then $\Gamma \vdash t' : A$.
+- **Confluence**: if $t \twoheadrightarrow t_1$ and $t \twoheadrightarrow t_2$ then $t_1$ and $t_2$ reduce to a common term.
+- **Strong normalisation**: every reduction sequence from a well-typed term is finite.
+- **Consistency**: there is no closed term of type `False`.
+- **Decidability of type checking**: there is an algorithm deciding $\Gamma \vdash t : A$.
+- **Canonicity**: every closed term of an inductive type (without axioms) reduces to a constructor application — every closed `Nat` is a numeral.
+</Definition>
+
+They depend on each other in a precise way:
+
+- **Normalisation ⇒ consistency.** A closed proof of `False` would normalise, by subject reduction, to a closed *normal* proof of `False`. A closed normal term of an inductive type must be a constructor application (canonicity of normal forms) — and `False` has no constructors.
+- **Normalisation + confluence ⇒ decidable conversion.** To decide $A \equiv B$ (for β, δ, ι, ζ), normalise both and compare. (η and proof irrelevance need a slightly more careful algorithm, but the idea is the same.)
+- **Decidable conversion ⇒ decidable type checking**, because the typing rules are syntax-directed except for conversion.
+
+So everything rests on strong normalisation. That is why every chapter asked "does this still terminate?", and why the kernel's restrictions are exactly those needed to keep it true.
+
+## Breaking it
+
+Each restriction of the kernel was introduced to block a specific way of breaking normalisation or consistency. The course kernel can switch most of them off. Pick an exploit:
+
+<BreakIt />
+
+The first three switches are genuinely unsound — they yield closed proofs of `False` without any axiom. The last three are harmless: a predicative `Prop`, no proof irrelevance and no η are all consistent (and correspond to real systems — Agda, Rocq's `Prop`, early type theories) but less convenient.
+
+## How consistency is proved
+
+A consistency proof for CIC must use *stronger* assumptions than CIC itself: Gödel's second incompleteness theorem forbids a sufficiently strong consistent system from proving its own consistency. Two approaches are standard.
+
+**Normalisation proofs.** Extend Tait's reducibility method (Chapter 3) and Girard's reducibility candidates (Chapter 5) to the whole of CIC: interpret each type as a set of strongly normalising terms closed under certain operations, show every typed term lies in the interpretation of its type. For CIC this is a formidable undertaking, because types can be computed by large eliminations, and the interpretation of a universe must contain the interpretations of all smaller types. Benjamin Werner's 1994 thesis gave such a proof for CIC with inductive types; Bruno Barras formalised a large part of it in Coq.
+
+**Models.** Interpret CIC in set theory: `Prop` by the two truth values $\{\emptyset, \{\emptyset\}\}$ (proof irrelevance!), `Type u` by a Grothendieck universe, Π-types by set-theoretic function spaces, inductive types by least fixed points. Werner (1997) showed that CIC with $n$ universes is consistent relative to ZFC plus $n$ inaccessible cardinals — and conversely that it can interpret that set theory, so the two are *equiconsistent*. Lean's type theory, with countably many universes, is correspondingly equiconsistent with ZFC plus countably many inaccessibles. Mario Carneiro's master's thesis (2019) worked this out in detail for Lean.
+
+<Theorem title="Consistency of Lean's type theory (Carneiro 2019)">
+Lean's type theory, including `Classical.choice`, `propext` and quotients, has a model in ZFC plus $\omega$ inaccessible cardinals; hence it is consistent if that set theory is.
+</Theorem>
+
+The model interprets `Prop` proof-irrelevantly and `Type` classically, which is why the classical axioms are validated. It does not prove that the *kernel implementation* is correct — for that, independent re-implementations and formal verification projects (Chapter 17) are needed.
+
+## Where Lean's type theory is less tidy
+
+Adding features to a type theory can compromise the nice properties even when consistency survives. Lean 4 knowingly accepts some such compromises in exchange for convenience:
+
+- **Definitional equality is not transitive.** Chapter 14 showed a case: `pick (inl …) ≡ pick (inr …)` by proof irrelevance and `pick (inr …) ≡ false` by computation, yet the kernel does not accept `pick (inl …) ≡ false`. Abel and Coquand (2020) showed that with proof irrelevance, impredicative `Prop` and `Acc`'s large elimination, definitional equality is in fact **undecidable** — the kernel's algorithm is a sound but incomplete approximation of the declarative rules.
+- **Subject reduction fails** in corner cases, as a consequence: reduction can turn a well-typed term into one the algorithm does not accept.
+- **Canonicity fails with axioms.** A closed term built with `Classical.choice` or `propext` may be stuck: the kernel cannot compute it to a constructor.
+
+<Playground errors title="Stuck on an axiom" code={`axiom myChoice : Nat        -- an axiom has no definition
+
+def n : Nat := myChoice + 1
+#reduce n                     -- stuck: cannot compute past the axiom
+theorem t : n = Nat.succ myChoice := rfl   -- but still fine by computation
+#print axioms t`} />
+
+None of these affect consistency: the model still exists. They are the price of definitional proof irrelevance and of classical reasoning. Rocq makes different trade-offs — its `Prop` is not definitionally proof-irrelevant (a separate sort `SProp` is), which keeps definitional equality decidable — and other systems (Chapter 20) try to have the best of both.
+
+## Summary
+
+- The key properties are subject reduction, confluence, strong normalisation, consistency, decidability and canonicity; normalisation implies consistency and, with confluence, decidability.
+- Each kernel restriction blocks a known route to inconsistency; the course kernel lets you lift them and see the paradoxes appear.
+- CIC is proved consistent by normalisation arguments (Werner) or by set-theoretic models; Lean's theory is equiconsistent with ZFC plus countably many inaccessibles.
+- Lean trades a few tidy properties (transitivity and decidability of definitional equality, canonicity with axioms) for convenience, without compromising consistency.
+
+<History title="The metatheory of CIC">
+Coquand and Gallier proved strong normalisation of CoC in 1990 with a modular proof; Werner's thesis (1994) extended normalisation to CIC; his *Sets in types, types in sets* (1997) established the relationship with set theory. The MetaCoq project (from 2018) formalised Coq's metatheory, including a verified type checker, inside Coq, under the assumption of strong normalisation. Abel and Coquand's *Failure of normalization in impredicative type theory with proof-irrelevant propositional equality* (2020) showed the limits of definitional proof irrelevance; Carneiro's *The Type Theory of Lean* (2019) is the standard reference for Lean's metatheory.
+</History>

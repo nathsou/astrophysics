@@ -1,0 +1,60 @@
+<p className="lede">
+After allocation and frame lowering the code is correct, and a little clumsy: moves from a register to itself, jumps to the very next instruction, reloads of values that are still in a register. Peephole optimisation cleans this up by looking at a few instructions at a time.
+</p>
+
+## Looking through a peephole
+
+William McKeeman named the technique in 1965: slide a small window — the “peephole” — over the final instruction stream, and whenever the window matches a known wasteful pattern, replace it with something better. Repeat until nothing matches. It works because the earlier passes each produce locally sensible code without knowing what their neighbours produced, and redundancies appear at the seams.
+
+Each of kiln’s rules is a pattern plus the conditions under which the rewrite is correct:
+
+| rule | pattern | rewrite | why it arises |
+|---|---|---|---|
+| self-move | `mv x, x` | delete | a copy whose endpoints were coalesced into the same register |
+| add zero | `addi x, x, 0` | delete | frame offsets that resolved to zero |
+| store–load forwarding | `sd a, k(sp)` ; `ld b, k(sp)` | `sd a, k(sp)` ; `mv b, a` | a spill immediately followed by its reload |
+| redundant load | `ld a, k(sp)` ; `ld a, k(sp)` | delete the second | reloads for adjacent uses |
+| jump to next | `j L` ; `L:` | delete the jump | the successor is laid out right after |
+| branch over jump | `bcc L1` ; `j L2` ; `L1:` | `b!cc L2` ; `L1:` | selection always emits both a conditional and an unconditional branch |
+| zero idiom (x86) | `mov r, 0` | `xor r, r` | shorter, and breaks dependencies — but only if the flags are dead |
+
+The last rule shows why peepholes need care. `xor r, r` sets the flags and `mov` does not, so the rewrite is legal only if no later instruction reads the flags before something else sets them. The rule checks this by scanning forward: a tiny, local liveness analysis. Store-to-load forwarding needs a similar check. It is correct only if the base register and offset are identical, and nothing between the store and the load could have changed memory; with adjacent instructions, nothing can.
+
+<PeepholeExplorer example="gcd" fn="gcd" target="rv64" caption="Peephole optimisation for gcd. Red lines were deleted; blue lines were rewritten. The rule log shows what fired. The branch-over-jump rule turns the conditional branch plus jump at the end of each loop block into a single inverted branch that falls through to the next block. Try x86-64 to see mov/xor and jmp rules." />
+
+## Layout: which block comes next?
+
+Two of the rules depend on **block layout**, the order in which blocks are emitted. Selection always ends a block with an explicit conditional branch *and* an unconditional jump. Once the layout is fixed, whichever successor comes immediately after the block can be reached by falling through, and its jump disappears. A good layout makes the most frequently taken successor the fall-through, keeps loop bodies contiguous, and moves cold code out of the way.
+
+Kiln keeps the front end’s block order, which follows the source and puts loop bodies after their headers, and inserts split blocks next to their predecessors.
+
+<Aside kind="llvm">
+<p>LLVM’s `MachineBlockPlacement` builds chains of blocks using branch probabilities, from heuristics or profiles. It rotates loops so that the loop test comes at the bottom and the back edge is a conditional branch, and it aligns loop headers. Layout matters surprisingly much on modern cores, because taken branches cost front-end bandwidth and fetch-block alignment.</p>
+</Aside>
+
+## Machine-level optimisations
+
+Between selection and emission, production compilers run a long list of passes on machine IR. A few that would visibly improve kiln’s output:
+
+- **Machine LICM** hoists loop-invariant machine instructions out of loops. Kiln rematerialises the constant bound of a `while` loop (`li a2, 10`) in every iteration because selection works per block; Machine LICM would hoist it to the preheader, if a register is free.
+- **Machine CSE** and **MachineSink**: redundancy elimination and code sinking after selection has exposed new opportunities, such as two `lla` of the same global.
+- **Branch folding** and **tail duplication** merge identical block tails, or duplicate small blocks into their predecessors to remove jumps.
+- **Early and late if-conversion** turn diamonds into conditional selects when the target’s cost model says so.
+- The **MachineCombiner** reassociates and fuses operations — for example into `madd` — when it shortens the critical path.
+- **Post-RA copy propagation** and **dead-definition elimination** clean up after the allocator.
+
+Each is small; together they are a good part of the difference between `-O1` and `-O3`.
+
+## Superoptimisation
+
+What if, instead of hand-writing peephole rules, we *searched* for the shortest instruction sequence equivalent to a given one? Henry Massalin’s **superoptimizer** (1987) enumerated all short 68020 programs and found astonishing branch-free idioms, such as a sign function in three instructions. Later work made the search practical:
+- **STOKE** (Schkufza, Sharma and Aiken, 2013) uses stochastic search to optimise x86-64 loops;
+- **Souper** (2017) finds missing peepholes in LLVM IR with an SMT solver, and many of its discoveries became new InstCombine rules.
+
+<Aside kind="history">
+<p>Davidson and Fraser’s PO (1980) generalised peepholes into a retargetable optimiser over register-transfer lists: combine adjacent instructions symbolically, then ask the machine description whether the result is a legal instruction. That design became GCC’s `combine` pass and RTL, and lives on in the `define_peephole2` patterns of GCC machine descriptions.</p>
+</Aside>
+
+<Callout kind="key">
+Peephole optimisation matches short instruction windows against patterns and rewrites them, each rule guarded by a local correctness condition. Block layout decides which branches become fall-throughs. Machine-level CSE, LICM, sinking and combining catch what per-block selection missed.
+</Callout>

@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap');
+
+:root { color-scheme: dark; font-family: 'DM Sans', system-ui, sans-serif; background: #111827; color: #f5f3ec; }
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; background: radial-gradient(ellipse at 72% -15%, #233657 0, transparent 43%), #111827; }
+a { color: inherit; }
+.site-shell { max-width: 1240px; margin: 0 auto; padding: 0 44px; }
+.site-header { height: 96px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #ffffff20; }
+.wordmark { display: inline-flex; gap: 12px; align-items: center; font-weight: 700; font-size: 15px; letter-spacing: -.02em; text-decoration: none; }
+.wordmark-symbol { color: #e8bb83; font-size: 25px; line-height: 1; }
+.header-note { color: #aeb7c8; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
+.hero { max-width: 780px; padding: 88px 0 82px; }
+.eyebrow { margin: 0 0 20px; color: #e8bb83; font-size: 11px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+h1, h2, h3, p { margin-top: 0; }
+h1, h3 { font-family: Newsreader, Georgia, serif; font-weight: 400; }
+h1 { margin-bottom: 24px; font-size: clamp(58px, 7.3vw, 102px); line-height: .96; letter-spacing: -.055em; }
+h1 em { color: #e8bb83; font-weight: 400; }
+.intro { margin-bottom: 0; max-width: 640px; color: #b9c3d1; font-size: 18px; line-height: 1.65; }
+.section-heading { display: flex; justify-content: space-between; align-items: baseline; padding: 0 0 18px; border-bottom: 1px solid #ffffff30; }
+.section-heading h2 { margin: 0; font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.section-heading span { color: #8f9caf; font-size: 12px; letter-spacing: .12em; }
+.course-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding-top: 22px; }
+.course-card { min-width: 0; overflow: hidden; border: 1px solid #ffffff20; border-radius: 6px; background: #1b2534; text-decoration: none; transition: transform .2s, border-color .2s, box-shadow .2s; }
+.course-card:hover, .course-card:focus-visible { transform: translateY(-5px); border-color: #e8bb83; box-shadow: 0 15px 35px #0004; outline: none; }
+.art { position: relative; height: 208px; overflow: hidden; }
+.cosmos-art { background: radial-gradient(circle at 45% 44%, #f5c087 0 3px, #df9b6a 4px, transparent 6px), radial-gradient(circle at 52% 54%, #273e68, #0b1930 70%); }
+.orbit { position: absolute; left: 50%; top: 50%; border: 1px solid #d8b78e6b; border-radius: 50%; transform: translate(-50%, -50%) rotate(-24deg); }
+.orbit-one { width: 245px; height: 88px; }.orbit-two { width: 340px; height: 142px; transform: translate(-50%, -50%) rotate(22deg); }
+.planet { position: absolute; top: 70px; left: 67%; width: 20px; height: 20px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #f6d6af, #af654f 65%, #522d3a); box-shadow: 0 0 24px #e5977266; }
+.star { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #fff; box-shadow: 0 0 7px #fff; }.star-one { top: 36px; left: 22%; }.star-two { top: 149px; left: 31%; }.star-three { top: 46px; left: 83%; }
+.cic-art { background: radial-gradient(circle at 70% 20%, #806d9a55, transparent 55%), #34314c; }
+.lambda { position: absolute; top: 17px; left: 42px; color: #e9d4be; font-family: Georgia, serif; font-size: 172px; line-height: 1; opacity: .92; }
+.proof { position: absolute; right: 16px; color: #e2d8e3b0; font-family: ui-monospace, monospace; font-size: 11px; white-space: nowrap; }.proof-one { top: 51px; }.proof-two { top: 92px; }.proof-three { top: 134px; }
+.compiler-art { display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 80% 20%, #a46e4255, transparent 55%), #302e2b; }
+.pipeline { display: flex; align-items: center; gap: 9px; transform: rotate(-6deg); color: #efddc4; font-family: ui-monospace, monospace; font-size: 11px; }.pipeline span { padding: 13px 11px; border: 1px solid #e3aa74a0; background: #3e3b38; box-shadow: 6px 6px 0 #161b22; }.pipeline b { color: #f0b36e; font-size: 16px; }
+.code-lines { position: absolute; bottom: 15px; left: 22px; display: grid; gap: 5px; }.code-lines i { display: block; width: 46px; height: 2px; background: #d0a77a55; }.code-lines i:nth-child(2), .code-lines i:nth-child(4) { width: 31px; }
+.chip { position: absolute; right: 15px; bottom: 14px; color: #e3aa74a0; font-family: ui-monospace, monospace; font-size: 9px; }
+.card-body { padding: 24px 25px 26px; }.card-meta { display: flex; justify-content: space-between; gap: 12px; color: #e8bb83; font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }.card-meta span:last-child { color: #9daabe; }
+h3 { min-height: 71px; margin: 19px 0 8px; font-size: 30px; line-height: 1.05; letter-spacing: -.02em; }
+.card-body p { min-height: 74px; margin: 0 0 23px; color: #bac5d1; font-size: 13px; line-height: 1.65; }
+.card-link { display: flex; justify-content: space-between; align-items: center; padding-top: 17px; border-top: 1px solid #ffffff23; font-size: 12px; font-weight: 700; }.card-link span { color: #e8bb83; font-size: 19px; line-height: 1; }
+footer { display: flex; justify-content: space-between; gap: 15px; margin-top: 95px; padding: 23px 0 31px; border-top: 1px solid #ffffff20; color: #8f9caf; font-size: 11px; letter-spacing: .04em; }
+@media (max-width: 900px) { .course-grid { grid-template-columns: 1fr; }.course-card { display: grid; grid-template-columns: 36% 1fr; }.art { height: 100%; min-height: 230px; }.card-body p, h3 { min-height: 0; }.hero { padding: 70px 0; } }
+@media (max-width: 600px) { .site-shell { padding: 0 20px; }.site-header { height: 72px; }.header-note { display: none; }.hero { padding: 62px 0; }.intro { font-size: 16px; }.course-card { display: block; }.art { height: 180px; min-height: 0; }.card-body { padding: 22px; }h3 { font-size: 29px; }footer { margin-top: 65px; flex-direction: column; } }

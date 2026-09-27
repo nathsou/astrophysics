@@ -1,0 +1,188 @@
+The Calculus of Constructions can *encode* data, but the encodings don't support induction, can't be eliminated into types without climbing the universe hierarchy, and compute slowly. The solution adopted by Coquand and Paulin-Mohring in 1988 — and by every major proof assistant since — is to stop encoding and make data types **primitive**. You declare a type by listing its constructors; the kernel checks the declaration and generates, automatically, the principle for reasoning about and computing with it. This is the "Inductive" in the Calculus of Inductive Constructions.
+
+## Declaring a type
+
+Here are the natural numbers, declared from scratch (we call them `MyNat` because the course prelude already has a `Nat`):
+
+<Playground title="An inductive declaration" code={`inductive MyNat : Type where
+  | zero : MyNat
+  | succ (n : MyNat) : MyNat
+
+#check MyNat
+#check MyNat.zero
+#check MyNat.succ
+#check @MyNat.rec`} />
+
+The declaration says: `MyNat` is a type, and its elements are *generated* by two **constructors**, `zero` and `succ`. The word *inductive* carries two promises that no encoding could keep:
+
+- **freeness**: every element is built by the constructors, in exactly one way — constructors are injective and distinct (`succ n = succ m` implies `n = m`; `zero ≠ succ n`);
+- **minimality**: there is nothing else — every element is `zero` or `succ` of an element, finitely many times over. This is what makes induction valid.
+
+The kernel responds by adding several constants to the environment. Look at the result of the declaration in the results panel: besides `MyNat` and its constructors it generated `MyNat.rec`, the **recursor**, and `MyNat.casesOn`, derived from it.
+
+## The four rules
+
+Every inductive type comes with four kinds of rules, echoing the introduction and elimination rules of natural deduction:
+
+<Rules ids="ind.form ind.intro ind.elim ind.iota" />
+
+1. **Formation**: the type itself, `MyNat : Type`.
+2. **Introduction**: the constructors — the ways to build elements.
+3. **Elimination**: the recursor — the one way to *use* an element.
+4. **Computation** (ι-reduction): what the recursor does when applied to a constructor.
+
+The first two are what you wrote. The last two are generated.
+
+## The recursor
+
+The recursor is where all the power is. Here it is, dissected. The widget runs the kernel on the declaration in the editor and splits the type of the generated recursor into its parts.
+
+<RecursorView name="MyNat" code={`inductive MyNat : Type where
+  | zero : MyNat
+  | succ (n : MyNat) : MyNat`} />
+
+Read the type of `MyNat.rec` as a recipe for defining a function out of `MyNat`:
+
+- The **motive** says what we want to build for each number `t`: an element of `motive t`. The motive is a *type family* — the result type may depend on the number. When it doesn't, the recursor defines an ordinary function; when `motive t` is a proposition, it proves a theorem about all numbers.
+- There is one **minor premise** per constructor. For `zero`, we must provide `motive zero` directly. For `succ n`, we get the field `n` and an **induction hypothesis** `n_ih : motive n` — the result for the smaller number — and must produce `motive (succ n)`.
+- The **major premise** `t` is the number we eliminate.
+
+In logical terms, with a proposition as motive, this is exactly the **principle of mathematical induction**:
+
+$$
+P(0) \;\to\; (\forall n.\ P(n) \to P(n+1)) \;\to\; \forall n.\ P(n)
+$$
+
+The induction principle that CoC could state but not prove is now a *constant of the kernel*.
+
+The ι-rules at the bottom of the widget say how the recursor computes: on `zero` it returns the zero case; on `succ n` it calls the succ case with `n` and — this is the recursion — the recursor applied to `n` as the induction hypothesis. A single ι-step is constant-time pattern matching on the head constructor, which fixes the inefficiency of the Church encoding: the predecessor is now one step.
+
+## Recursion and induction are the same thing
+
+Let's use the recursor directly. Addition is defined by recursion on the second argument, with a motive that doesn't depend on the number (`fun _ => MyNat`):
+
+<Playground title="Programming with the recursor" code={`inductive MyNat : Type where
+  | zero : MyNat
+  | succ (n : MyNat) : MyNat
+
+open MyNat
+
+def add (m n : MyNat) : MyNat :=
+  MyNat.rec (motive := fun _ => MyNat) m (fun _ ih => succ ih) n
+
+def two : MyNat := succ (succ zero)
+#reduce add two two`} />
+
+Click **reduce step by step** on the `#reduce` result and watch the ι-steps (orange badges): each one peels a `succ` off the second argument.
+
+Now the *same* recursor, with a propositional motive, proves a theorem by induction. `add m zero = m` holds by computation (`rfl`). The other direction, `add zero n = n`, is not a matter of computation — `add zero n` is stuck because `n` is a variable — so it needs induction:
+
+<Playground title="Induction with the recursor" code={`inductive MyNat : Type where
+  | zero : MyNat
+  | succ (n : MyNat) : MyNat
+open MyNat
+
+def add (m n : MyNat) : MyNat :=
+  MyNat.rec (motive := fun _ => MyNat) m (fun _ ih => succ ih) n
+
+theorem add_zero (m : MyNat) : add m zero = m := rfl
+
+theorem zero_add (n : MyNat) : add zero n = n :=
+  MyNat.rec (motive := fun n => add zero n = n)
+    rfl
+    (fun n ih => congrArg succ ih)
+    n`} />
+
+In the successor case, the goal `add zero (succ n) = succ n` computes to `succ (add zero n) = succ n`, and `congrArg succ ih` turns the induction hypothesis `add zero n = n` into exactly that. Open the derivation tree of `zero_add` to see the conversion the kernel performs.
+
+<Exercise id="ind:double" title="Double by recursion" code={`inductive MyNat : Type where
+  | zero : MyNat
+  | succ (n : MyNat) : MyNat
+open MyNat
+
+def double (n : MyNat) : MyNat :=
+  MyNat.rec (motive := fun _ => MyNat) sorry sorry n
+
+theorem double_two : double (succ (succ zero)) = succ (succ (succ (succ zero))) := rfl`} hint="double zero = zero; double (succ n) = succ (succ (double n)) — the induction hypothesis is double n." solution={`inductive MyNat : Type where
+  | zero : MyNat
+  | succ (n : MyNat) : MyNat
+open MyNat
+
+def double (n : MyNat) : MyNat :=
+  MyNat.rec (motive := fun _ => MyNat) zero (fun _ ih => succ (succ ih)) n
+
+theorem double_two : double (succ (succ zero)) = succ (succ (succ (succ zero))) := rfl`}>
+Define `double` using the recursor, so that the theorem `double_two` is proved by `rfl`.
+</Exercise>
+
+## Large elimination: constructors are distinct
+
+The motive of `MyNat.rec` has type `MyNat → Sort u`: it can land in *any* universe, including `Prop` and `Type`. So we can define a proposition by recursion — the large elimination that CoC lacked — and prove that `zero ≠ succ n`, then that `succ` is injective:
+
+<Playground title="No confusion" code={`inductive MyNat : Type where
+  | zero : MyNat
+  | succ (n : MyNat) : MyNat
+open MyNat
+
+-- a proposition computed by recursion: True for zero, False for successors
+def IsZero (n : MyNat) : Prop :=
+  MyNat.rec (motive := fun _ => Prop) True (fun _ _ => False) n
+
+theorem zero_ne_succ (n : MyNat) : zero ≠ succ n :=
+  fun h => Eq.subst (motive := IsZero) h trivial
+
+def pred (n : MyNat) : MyNat := MyNat.rec (motive := fun _ => MyNat) zero (fun k _ => k) n
+
+theorem succ_inj (m n : MyNat) (h : succ m = succ n) : m = n :=
+  congrArg pred h`} />
+
+`Eq.subst` transports `trivial : IsZero zero` along `h : zero = succ n` to `IsZero (succ n)`, which *computes* to `False`. Injectivity is even simpler: apply `pred` to both sides — `pred (succ m)` computes to `m` in one ι-step. These are the "no confusion" properties that make an inductive type *free*. Lean generates them automatically as `MyNat.noConfusion`.
+
+## Beyond numbers
+
+The same scheme works for any collection of constructors. A few classics, each with its generated recursor — edit the declaration in the widget to try your own.
+
+<RecursorView name="Tree" code={`inductive Tree (α : Type) where
+  | leaf : Tree α
+  | node (l : Tree α) (x : α) (r : Tree α) : Tree α`} />
+
+- `Bool`, with two constructors and no fields: its recursor is `if-then-else` (dependent: the two branches may have different types, as long as the motive predicts them).
+- `List α`, with a **parameter** `α`: a parameter is fixed throughout the definition and becomes an (implicit) argument of the recursor and constructors.
+- `Tree α`, with two recursive fields: the node case gets *two* induction hypotheses.
+- `Empty`, with no constructors: its recursor has no minor premises at all and produces anything from an element of `Empty` — this is `False.elim` in `Type`.
+
+## Universe constraints
+
+An inductive type in `Type u` may only have constructor fields whose types live in `Type u` or below. Otherwise the type would contain elements "larger" than itself — the road to Russell-style paradoxes:
+
+<Playground errors title="Universe constraints on constructors" code={`inductive Box : Type where
+  | mk : Type → Box          -- a field of type Type does not fit in Type
+
+inductive Box1 : Type 1 where
+  | mk : Type → Box1         -- fine: Box1 lives one universe up`} />
+
+When the universe is left out, as in `inductive List (α : Type u)`, the elaborator infers the smallest one that fits every field. This rule has a crucial exception for `Prop`, which Chapter 14 explains.
+
+<Engineer title="What the kernel checks">
+When it receives an inductive declaration, the course kernel (like Lean's, in its `add_inductive` function) checks:
+
+1. that the type of each inductive type is well formed and ends in a sort, with the declared number of parameters;
+2. that each constructor type is well formed, starts with exactly the parameters, and ends in the type being defined applied to the parameters (and to some indices, Chapter 13);
+3. that every field fits in the universe of the type;
+4. that recursive occurrences are *strictly positive* (Chapter 12);
+5. which universes the type may be eliminated into (Chapter 14).
+
+Then it constructs the recursor's type and its ι-rules (one closed term per constructor, in the form `λ params motives minors fields, minor fields ihs`) and adds everything to the environment. The code is in `src/kernel/core/inductive.ts`.
+</Engineer>
+
+## Summary
+
+- Inductive types are declared by their constructors; the kernel generates the recursor and its computation rules.
+- The recursor takes a dependent motive, one minor premise per constructor (with induction hypotheses for recursive fields) and a major premise. With a propositional motive it is the induction principle.
+- ι-reduction makes recursion compute in constant time per constructor.
+- Large elimination (motives into `Prop` and `Type`) gives distinctness and injectivity of constructors.
+- Fields must fit in the universe of the type.
+
+<History title="Inductive definitions">
+Martin-Löf's type theories had built-in types for natural numbers, lists, disjoint sums and so on, each with its own elimination rule, and in 1979 he introduced the W-type, a single generic inductive type from which many others can be encoded. Coquand and Paulin-Mohring's *Inductively defined types* (1988, published 1990) instead gave a general *schema* for declaring inductive types in the Calculus of Constructions, with automatically generated elimination rules — the approach of Coq, Lean and Agda. Peter Dybjer (1994) and Paulin-Mohring (1993) extended the schema to inductive families, the subject of Chapter 13.
+</History>

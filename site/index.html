@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Interactive courses in astrophysics, type theory, and compiler backends.">
+    <meta name="theme-color" content="#111827">
+    <title>Interactive Courses</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="site-header">
+        <a class="wordmark" href="./" aria-label="Interactive Courses home"><span class="wordmark-symbol">✳</span> Interactive Courses</a>
+        <span class="header-note">Learn by exploring</span>
+      </header>
+
+      <main>
+        <section class="hero" aria-labelledby="page-title">
+          <p class="eyebrow">A library of interactive textbooks</p>
+          <h1 id="page-title">Ideas you can <em>take apart.</em></h1>
+          <p class="intro">From the physics of the universe to the machinery of proofs and compilers. Read the explanation, change the inputs, and watch the ideas work.</p>
+        </section>
+
+        <section class="courses" aria-labelledby="courses-title">
+          <div class="section-heading"><h2 id="courses-title">Explore the courses</h2><span>01 — 03</span></div>
+          <div class="course-grid">
+            <a class="course-card cosmos" href="./astrophysics/">
+              <div class="art cosmos-art" aria-hidden="true"><span class="orbit orbit-one"></span><span class="orbit orbit-two"></span><span class="planet"></span><span class="star star-one"></span><span class="star star-two"></span><span class="star star-three"></span></div>
+              <div class="card-body"><div class="card-meta"><span>01 / Physics</span><span>Astrophysics</span></div><h3>The Cosmos, Computed</h3><p>Explore orbits, stars, black holes, and the cosmic web through equations and live simulations.</p><span class="card-link">Explore course <span aria-hidden="true">↗</span></span></div>
+            </a>
+            <a class="course-card cic" href="./cic/">
+              <div class="art cic-art" aria-hidden="true"><span class="lambda">λ</span><span class="proof proof-one">Γ ⊢ A : Type</span><span class="proof proof-two">Π (x : A), B x</span><span class="proof proof-three">⊢ proof : theorem</span></div>
+              <div class="card-body"><div class="card-meta"><span>02 / Logic</span><span>Type theory</span></div><h3>The Calculus of Inductive Constructions</h3><p>Build the foundations behind Lean, one idea at a time, with a real kernel running in your browser.</p><span class="card-link">Explore course <span aria-hidden="true">↗</span></span></div>
+            </a>
+            <a class="course-card compiler" href="./compiler-backends/">
+              <div class="art compiler-art" aria-hidden="true"><div class="pipeline"><span>source</span><b>→</b><span>SSA</span><b>→</b><span>machine code</span></div><div class="code-lines"><i></i><i></i><i></i><i></i></div><span class="chip">0x4f 0x52 0x42</span></div>
+              <div class="card-body"><div class="card-meta"><span>03 / Systems</span><span>Compilers</span></div><h3>SSA to Silicon</h3><p>Follow a real compiler backend from intermediate representation to machine code.</p><span class="card-link">Explore course <span aria-hidden="true">↗</span></span></div>
+            </a>
+          </div>
+        </section>
+      </main>
+
+      <footer><span>Built for curious minds.</span><span>Read · Experiment · Understand</span></footer>
+    </div>
+  </body>
+</html>

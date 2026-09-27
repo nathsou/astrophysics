@@ -1,0 +1,104 @@
+<p className="lede">
+Before selecting instructions we need to know what we are selecting from. This chapter introduces the three instruction set architectures kiln targets, and how a backend describes a target to itself.
+</p>
+
+## Three architectures, three philosophies
+
+An <Term k="isa">ISA</Term> is a contract between hardware and software. It defines:
+- the registers;
+- the instructions, and exactly what each does;
+- how instructions are encoded as bits;
+- how memory behaves.
+
+Compilers care about *all* of it. The number of registers drives register allocation. The shapes of the instructions drive selection. Their encodings drive code size and the assembler. Kiln targets three ISAs that make very different choices.
+
+<Aside kind="history">
+<p>The RISC idea came from three places around 1980: IBM’s 801 (John Cocke), Berkeley RISC (David Patterson) and Stanford MIPS (John Hennessy). Patterson and Ditzel’s 1980 paper “The Case for the Reduced Instruction Set Computer” argued that simple, regular instructions plus a good compiler beat complex instructions implemented in microcode. Hennessy and Patterson shared the 2017 Turing Award for it.</p>
+</Aside>
+
+### RISC-V
+
+RISC-V started at UC Berkeley in 2010 as a clean-slate, open ISA. It is **modular**: a tiny base integer ISA (RV32I or RV64I), plus standard extensions. The ones that matter here:
+- **M**: multiply and divide;
+- **A**: atomics;
+- **F/D**: floating point;
+- **C**: 16-bit compressed encodings;
+- **V**: vectors;
+- **Zba/Zbb/…**: bit manipulation;
+- **Zicond**: conditional zeroing.
+
+Kiln targets **RV64IM**, optionally with **Zba** and **Zicond**.
+
+- **32 integer registers** `x0`–`x31`. `x0` is hard-wired to zero, which gives many instructions a second use: `sub rd, x0, rs` is negation, and `addi rd, rs, 0` is a move. The ABI gives the registers descriptive names (`ra`, `sp`, `a0`–`a7`, `s0`–`s11`, `t0`–`t6`).
+- **Load/store architecture**: only loads and stores touch memory, with a single addressing mode, register plus 12-bit signed offset.
+- **No condition flags.** Conditional branches compare two registers directly (`blt a0, a1, target`), and `slt` produces a 0/1 value. There are only four signed and unsigned comparison branches; the rest are obtained by swapping operands.
+- **Immediates are small**: 12 bits for arithmetic and offsets, 20 bits for `lui`/`auipc`. Large constants are built from pieces.
+- **Fixed 32-bit instructions** with a handful of very regular formats (Chapter 18).
+
+### AArch64
+
+AArch64, the 64-bit execution state introduced with ARMv8-A in 2011, is also a load/store RISC with fixed 32-bit instructions. It makes different choices almost everywhere:
+
+- **31 general registers** `x0`–`x30`, plus register number 31, which means either the **stack pointer** or the **zero register** depending on the instruction. `x29` is the frame pointer and `x30` the link register.
+- **Condition flags** (NZCV). Compares set them; `b.lt`, `csel`, `cset` read them. There is also `cbz`/`cbnz`, which branch on a register being zero without touching the flags.
+- **Rich operands**:
+  - the second operand of many ALU instructions can be a *shifted register* (`add x0, x1, x2, lsl #3`);
+  - logical instructions take *bitmask immediates* (a rotated run of ones, replicated);
+  - loads take *scaled register offsets* (`ldr x0, [x1, x2, lsl #3]`);
+  - there is a fused *multiply-add* (`madd`).
+
+  Each of these lets one instruction do the work of two.
+- **Load/store pair** (`stp`, `ldp`), used heavily in prologues.
+
+### x86-64
+
+x86-64 extends Intel’s 1978 8086 through the 32-bit i386. AMD designed the 64-bit extension (first shipped in 2003, and later adopted by Intel), adding eight registers and a 64-bit mode. It is the archetypal CISC:
+
+- **16 general registers** with historical names: `rax rcx rdx rbx rsp rbp rsi rdi`, then `r8`–`r15`.
+- **Two-address arithmetic**: `add rax, rbx` means `rax += rbx`. The destination is also a source, so the compiler often copies a value before operating on it.
+- **Memory operands** almost everywhere: `add rax, [rbx + rcx*8 + 16]` loads and adds in one instruction. The addressing mode *base + index×scale + disp32* is also available as pure arithmetic through `lea`.
+- **Implicit and fixed registers**: `idiv` divides `rdx:rax`; variable shifts need their count in `cl`. These are hard constraints for the register allocator.
+- **Flags** set by nearly every arithmetic instruction, read by `jcc`, `setcc` and `cmov`.
+- **Variable-length encoding**, from 1 to 15 bytes, with prefixes, a REX byte for 64-bit operands and the upper registers, and ModRM/SIB bytes for operands.
+
+| | RISC-V (RV64) | AArch64 | x86-64 |
+|---|---|---|---|
+| general registers | 31 + zero | 31 + sp/zero | 16 |
+| allocatable in kiln | 27 | 26 | 14 |
+| instruction size | 4 bytes (2 with C) | 4 bytes | 1–15 bytes |
+| condition flags | none | NZCV | RFLAGS |
+| arithmetic form | three-address | three-address | two-address |
+| memory in ALU ops | no | no | yes |
+| arithmetic immediate | 12-bit signed | 12-bit unsigned (+ shift) | 8 or 32-bit signed |
+| integer divide by 0 | returns −1 | returns 0 | traps (#DE) |
+
+<RegisterFile target="rv64" caption="The register files and their calling-convention roles. Hover a register for details; switch architectures to compare. Amber registers are caller-saved (a call may clobber them), teal ones are callee-saved (a function must preserve them), violet ones are reserved." />
+
+## Describing a target
+
+A retargetable compiler keeps everything that depends on the ISA behind an interface. In LLVM this is a large collection of TableGen files and C++ classes, including `TargetRegisterInfo`, `TargetInstrInfo`, `TargetLowering` and `TargetFrameLowering`. Kiln compresses it into a single `Target` object per architecture:
+
+```ts
+interface Target {
+  regs: RegInfo[];                // names, roles, caller/callee-saved
+  allocOrder: number[];           // registers the allocator may use, in preference order
+  argRegs: number[]; retReg: number;
+  opInfo(op: string): OpInfo;     // syntax, semantics, latency: what the tooltips show
+  legalize(fn: Func): void;       // IR-level rewrites (Chapter 8)
+  rules: Rule[];                  // the instruction-selection tree grammar (Chapter 7)
+  lowerParams / lowerCall / lowerReturn   // the calling convention (Chapter 9)
+  copy / spillStore / reload      // what the register allocator inserts (Chapters 12–14)
+  lowerFrame(f: MFunc): void;     // prologue, epilogue, stack offsets (Chapter 15)
+  sched: { issueWidth; lat(mi); unit(mi) };   // a machine model (Chapter 16)
+  peepholes: Peephole[];          // local rewrites (Chapter 17)
+  formatInstr(...)                // assembly syntax
+}
+```
+
+Everything else — SSA destruction, liveness, both register allocators, the scheduler and the pass pipeline — is written once and shared by all three targets. Each target file (`riscv.ts`, `aarch64.ts`, `x86_64.ts`) is 500–650 lines, most of it the instruction-selection grammar and tooltip documentation.
+
+<TargetCompare example="gcd" fn="gcd" caption="The same KIR function compiled for three targets. Note RISC-V’s compare-and-branch, AArch64’s cbz and flags, and x86’s cqo/idiv pinned to rax and rdx. Hover the instructions: each explains itself. The byte counts come from the real encoders." />
+
+<Callout kind="key">
+The three targets span the design space: RISC-V is minimal and regular; AArch64 is a RISC with powerful operands and flags; x86-64 is two-address CISC with memory operands and fixed registers. A backend isolates these differences behind a target description, so that most of the pipeline is shared.
+</Callout>

@@ -1,0 +1,113 @@
+<p className="lede">
+Instruction selection turns IR operations into target instructions. Done naively it is a lookup table; done well it is a tiling problem with an elegant dynamic-programming solution — and the first place where the three targets visibly diverge.
+</p>
+
+## From operations to instructions
+
+The simplest instruction selector is **macro expansion**: for each IR instruction, emit a fixed sequence of machine instructions, loading operands from wherever they live and storing the result.
+- It is easy to write and easy to retarget.
+- It produces poor code, because it cannot see that one machine instruction might cover *several* IR operations.
+
+On x86, `load (add %p, (shl %i, 3))` is a single `mov rax, [rdx + rcx*8]`. On AArch64 it is a single `ldr x0, [x1, x2, lsl #3]`. On RISC-V it takes three instructions, or two with Zba. A selector that looks at one operation at a time will emit four instructions everywhere.
+
+The standard approach instead views each basic block as a forest of **expression trees** and covers each tree with **<Term k="tile">tiles</Term>**. A tile is a pattern of IR operations that one machine instruction (or a short fixed sequence) implements. The goal is a covering of minimal total cost.
+
+## Carving blocks into trees
+
+SSA IR is a DAG, not a forest: a value can have several uses. Kiln builds trees with a simple rule. An instruction is **folded** into its user — becomes an interior node of the user’s tree — if:
+- it is pure (or a `load` with no store or call between it and its user);
+- it has exactly **one** use;
+- that use is in the **same block**, and is not a φ.
+
+Everything else is a tree **root**, whose value lives in its own virtual register. Leaves are then of four kinds: constants, stack-slot addresses (`frame`), global addresses, and values already in registers (`reg`).
+
+This is how LLVM’s older selectors, `lcc`, and many textbook compilers work. It is not optimal: a value used twice gets a register even if both users could have folded it. Covering a DAG optimally is NP-complete, though, so every practical selector makes a compromise like this.
+
+## A tree grammar
+
+Tiles are described as rules of a **tree grammar**. A rule has four parts:
+- a *result* **nonterminal**;
+- a **pattern** over IR operations, whose leaves are nonterminals or immediate predicates;
+- a **cost**;
+- an **emitter** that generates the machine instructions.
+
+```ts
+// RISC-V rules (target/riscv.ts)
+rule('reg',  '(add reg reg)',              1, 'add rd, rs1, rs2', bin('add')),
+rule('reg',  '(add reg #simm12)',          1, 'addi rd, rs1, imm', bin('addi')),
+rule('reg',  '(add reg (shl reg #scale))', ZBA, 'shNadd rd, rs1, rs2', …),  // only with Zba
+rule('addr', '(add reg #simm12)',          0, 'imm(rs1)', …),              // an addressing mode
+rule('reg',  '(load addr)',                1, 'ld rd, imm(rs1)', …),
+rule('stmt', '(condbr (icmp.slt reg reg))', 2, 'blt a, b, T ; j F', …),   // fused compare-and-branch
+rule('reg',  '#any', (n) => rvMatInt(n.c).length, 'li rd, imm', …),      // cost = length of the sequence
+```
+
+**Nonterminals** name *where a value ends up*:
+- `reg` is a value in a register;
+- `addr` is an address that has not been computed yet, only described (base plus displacement), which a load or store can absorb;
+- `cc` (AArch64 and x86) is a comparison whose result is in the flags;
+- `bool` (RISC-V) is a 0/1 value from `slt`/`seqz`;
+- `stmt` is a tree that produces no value.
+
+**Chain rules** like `reg ← cc` (materialise flags as 0/1 with `cset`/`setcc`) and `reg ← addr` (compute an address with `lea` or `addi`) connect the nonterminals.
+
+<RuleTable target="rv64" caption="The complete tree grammars. Switch targets and filter by an operation (try `load`, `add` or `cc`) to compare how each target expresses the same patterns." />
+
+## Optimal tiling by dynamic programming
+
+Given a grammar, the **cheapest cover** of a tree can be computed exactly, bottom-up.
+
+1. **Label.** Visit the nodes in postorder. For each node and each nonterminal, find the cheapest rule that produces that nonterminal at that node: the rule’s cost plus the best costs of whatever the pattern’s leaves need from the subtrees below. Then apply chain rules until nothing improves.
+2. **Reduce.** From the root, apply the chosen rule for the nonterminal the root needs, then recursively reduce each leaf of that pattern to the nonterminal the pattern asked for, emitting instructions on the way.
+
+Because each node’s best costs depend only on its subtrees, the labelling is linear in the tree size times the number of rules. It is optimal for the given cost model.
+
+<TilingExplorer example="sieve" fn="main" target="rv64" caption="Tiling the sieve’s inner-loop tests. Phase 1 labels nodes bottom-up with the cheapest cost of each nonterminal; phase 2 reduces top-down, colouring the chosen tiles. Switch to x86-64 and the add and shift are absorbed into an addr tile, so the whole load(add(reg, shl(reg, 3))) subtree becomes a single instruction, mov r, [base + index*8]; AArch64 does the same with [x, x, lsl #3] (and uses cbz for the comparison with zero). On RISC-V without Zba it takes three instructions." />
+
+<Aside kind="history">
+<p>Aho and Johnson (1976) showed that dynamic programming gives optimal code for expression trees. Twig (Aho, Ganapathi and Tjiang, 1989) generated tree matchers from grammars. BURG (Fraser, Henry and Proebsting, 1992) moved the DP to compile-compile time, as a bottom-up rewrite system (BURS). Its simpler cousin iburg, from the same year, does the labelling at compile time and is essentially what kiln does.</p>
+</Aside>
+
+Try these in the figure:
+
+- **x86-64** folds `load` into arithmetic (`add rax, [mem]`, “memory operand” rules with cost 1.5, cheaper than a separate load plus an add) and uses `lea` as a three-operand add.
+- **AArch64** covers `add(mul(a, b), c)` with a single `madd`, and `srem` with `sdiv` + `msub` — AArch64 has no remainder instruction, so the grammar says how to build one.
+- **RISC-V** fuses `condbr(icmp.slt(a, b))` into `blt a, b` and has no flags at all. Its compare-to-zero branches use `x0` as the second register.
+
+## Two-address targets and fixed registers
+
+x86 arithmetic overwrites its first operand. Kiln’s x86 emitters therefore produce `COPY d, a` followed by `add d, b`, where `d`’s operand is marked as both *used* and *defined*. The copy is usually free: if `a` is not needed afterwards, the register allocator assigns `a` and `d` the same register and deletes the copy (*coalescing*, Chapter 12).
+
+Division and variable shifts name physical registers directly:
+
+<AsmSnippet target="x86_64" title="x86-64 signed division, as selected (before register allocation)" code={`
+    mov rax, %a        # COPY: the dividend must be in rax
+    cqo                # sign-extend rax into rdx:rax
+    idiv %b            # quotient -> rax, remainder -> rdx
+    mov %q, rax        # COPY the quotient out
+`} />
+
+These physical registers are *pre-coloured* nodes as far as the register allocator is concerned. The selector just states the constraint, and allocation satisfies it.
+
+## Beyond trees: what production compilers do
+
+<Aside kind="llvm">
+<p>LLVM’s SelectionDAG selector builds a DAG per basic block and matches patterns generated from TableGen `.td` files (tens of thousands of patterns for x86). GlobalISel, its newer framework, works on generic machine IR across blocks. GCC matches RTL patterns from `.md` machine descriptions, with a `combine` pass that merges instructions. Cranelift describes lowering rules in ISLE, a term-rewriting DSL compiled to Rust.</p>
+</Aside>
+
+Real selectors also:
+- select over **DAGs**, sharing common subexpressions and handling multi-output nodes;
+- run across **basic-block boundaries**, for example to sink a compare next to its branch;
+- use detailed **cost models**: latency, code size, and whether an instruction can issue on a given pipe.
+
+The core idea is unchanged: a declarative description of what each instruction computes, and a matcher that covers the program with those descriptions.
+
+## Where the ABI comes in
+
+A few IR instructions are not tiled at all but handed to the target’s calling-convention code:
+- **`call`** and **`ret`**;
+- **function parameters**, at the top of the entry block.
+
+That code copies arguments into the right physical registers, marks the call as clobbering every caller-saved register, and copies the result out. Chapter 9 covers it. Afterwards the function is in **machine IR**: target instructions over virtual registers, still in SSA form, with PHIs at block entries.
+
+<Pipeline example="bits" stage="isel" stages={['legal', 'isel', 'asm']} height={420} caption="Instruction selection for the bit-tricks example. The ISel tab shows machine IR over virtual registers; hover `li`, which becomes a multi-instruction sequence for the 64-bit hash constant. Switch targets to see the same IR tiled three ways." />

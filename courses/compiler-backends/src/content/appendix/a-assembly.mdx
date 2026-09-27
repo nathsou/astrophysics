@@ -1,0 +1,75 @@
+<p className="lede">
+Enough assembly to read everything in this course fluently — RISC-V in detail, with AArch64 and x86-64 side by side.
+</p>
+
+## The model
+
+An assembly program is a list of instructions, each operating on **registers**, **immediates** (constants inside the instruction) and **memory**, plus **labels** (names for addresses) and **directives** (instructions to the assembler: `.text`, `.globl main`, `.p2align 2`, `.quad 42`). Each instruction line assembles to one machine instruction, or to a few if it is a pseudo-instruction.
+
+## RISC-V in one page
+
+Registers are 64 bits wide on RV64. By the ABI:
+
+| register | ABI name | role |
+|---|---|---|
+| `x0` | `zero` | always 0 |
+| `x1` | `ra` | return address |
+| `x2` | `sp` | stack pointer |
+| `x5–x7`, `x28–x31` | `t0–t6` | temporaries (caller-saved) |
+| `x8` | `s0`/`fp` | saved register / frame pointer |
+| `x9`, `x18–x27` | `s1–s11` | saved registers (callee-saved) |
+| `x10–x17` | `a0–a7` | arguments; `a0`/`a1` also return values |
+
+Instructions are **three-address** and read registers, never memory, except for loads and stores:
+
+<AsmSnippet target="rv64" code={`
+    add   a0, a1, a2        # a0 = a1 + a2
+    addi  a0, a0, -1        # a0 = a0 - 1          (12-bit signed immediate)
+    slli  t0, a1, 3         # t0 = a1 << 3
+    ld    t1, 16(sp)        # t1 = mem64[sp + 16]
+    sd    t1, 0(a0)         # mem64[a0] = t1
+    slt   t2, a0, a1        # t2 = (a0 < a1) ? 1 : 0
+    blt   a0, a1, loop      # if a0 < a1 goto loop  (compare-and-branch; no flags)
+    j     done              # jump
+    call  print_int         # ra = return address; jump
+    ret                     # jump to ra
+`} />
+
+Hover any mnemonic or register above for its description. Useful pseudo-instructions: `li` (load any constant), `mv`, `neg`, `not`, `seqz`, `snez`, `beqz`/`bnez`, `j`, `call`, `ret` and `lla`/`la` (load an address).
+
+## The same operations on three machines
+
+| operation | RISC-V | AArch64 | x86-64 (Intel syntax) |
+|---|---|---|---|
+| add registers | `add a0, a1, a2` | `add x0, x1, x2` | `lea rax, [rsi + rdx]` or `mov rax, rsi` + `add rax, rdx` |
+| add constant | `addi a0, a0, 5` | `add x0, x0, #5` | `add rax, 5` |
+| load | `ld a0, 8(a1)` | `ldr x0, [x1, #8]` | `mov rax, qword ptr [rsi + 8]` |
+| indexed load | `slli t0, a1, 3` + `add t0, a0, t0` + `ld a0, 0(t0)` | `ldr x0, [x0, x1, lsl #3]` | `mov rax, qword ptr [rdi + rsi*8]` |
+| store | `sd a0, 8(a1)` | `str x0, [x1, #8]` | `mov qword ptr [rsi + 8], rax` |
+| compare + branch | `blt a0, a1, L` | `cmp x0, x1` + `b.lt L` | `cmp rdi, rsi` + `jl L` |
+| comparison as value | `slt a0, a0, a1` | `cmp x0, x1` + `cset x0, lt` | `cmp rdi, rsi` + `setl al` + `movzx eax, al` |
+| select | (bit tricks, or Zicond) | `csel x0, x1, x2, lt` | `cmovl rax, rsi` |
+| multiply | `mul a0, a0, a1` | `mul x0, x0, x1` | `imul rax, rsi` |
+| divide | `div a0, a0, a1` | `sdiv x0, x0, x1` | `cqo` + `idiv rsi` (rdx:rax ÷ rsi) |
+| call / return | `call f` / `ret` | `bl f` / `ret` | `call f` / `ret` |
+| arguments | `a0–a7` | `x0–x7` | `rdi rsi rdx rcx r8 r9` |
+| return value | `a0` | `x0` | `rax` |
+
+## Reading x86 syntax
+
+x86 has two syntaxes. Kiln prints **Intel** syntax (`op dst, src`, `qword ptr [base + index*scale + disp]`), which matches the manuals. GNU tools default to **AT&T** syntax, which reverses the operand order and decorates everything: `addq %rsi, %rax` means `rax += rsi`, and `movq 8(%rsi,%rdx,8), %rax` means `mov rax, [rsi + rdx*8 + 8]`. Registers have `%`, immediates have `$`, and the size is a suffix (`b w l q`).
+
+x86 also has **partial registers**: `eax` is the low 32 bits of `rax`, `ax` the low 16 bits and `al` the low 8. Writing a 32-bit register **zero-extends** into the full 64-bit register; writing an 8- or 16-bit register does not. This is why `movzx eax, al` follows `setcc`.
+
+## Reading compiler output
+
+To read the assembly of any function, find three things first:
+- the **prologue**, which tells you the frame size and which callee-saved registers are used;
+- the **loop back edges** (branches to earlier labels);
+- the **calls**, around which caller-saved values must be preserved.
+
+Then follow values through registers. The pipeline figures in this course let you hover a register to highlight every occurrence, which is the fastest way to do this.
+
+To see real compilers’ output, `clang -O2 -S --target=riscv64 file.c -o -` prints assembly for any LLVM target, and Compiler Explorer (godbolt.org) shows many compilers side by side.
+
+<RegisterFile target="aarch64" caption="Register roles for each target. Switch architectures and hover registers." />

@@ -1,0 +1,66 @@
+<p className="lede">
+When there are more live values than registers, some of them must live in memory. Which ones, and where the loads and stores go, determines much of the quality of the final code. This chapter looks at the spill decision, spill code, and the cheaper alternative of recomputing values.
+</p>
+
+## Register pressure
+
+**<Term k="register-pressure">Register pressure</Term>** at a point is the number of values live there. If it never exceeds the number of allocatable registers *K*, a good allocator needs no memory traffic, apart from saving callee-saved registers. If it does exceed *K* somewhere, something must be **<Term k="spill">spilled</Term>**: kept in a stack slot, with a store after it is computed and a load before each use.
+
+The *pressure* example deliberately keeps a dozen values live at once. RISC-V has 27 allocatable registers, so it compiles without any spills. Shrink the register file and the compiler has to start making choices.
+
+<SpillExplorer example="pressure" fn="mix" maxRegs={5} caption="The same function compiled with a restricted register file. Red-tagged lines are spill stores and reloads; green ones are rematerialisations. The stats bar counts them and shows how many instructions the program actually executed on the emulator, compared with an unrestricted allocation. Move the slider to see the cost of each spilled value." />
+
+## Spill everywhere
+
+The simplest spill code, and the one kiln uses, is **spill everywhere**:
+- give the value a stack slot;
+- after each definition, store the register to the slot;
+- before each use, load from the slot into a **fresh** virtual register.
+
+The original long live range becomes many tiny ones: each reload lives only from the load to the next instruction. Those tiny ranges barely interfere with anything, so the next allocation round almost always succeeds. They must be marked **unspillable**, otherwise the allocator could choose to spill them again, forever.
+
+```ts
+// allocate.ts: after a failed round, rewrite every spilled vreg v
+for (const mi of instructionsUsingOrDefining(v)) {
+  const t = newVreg();                           // tiny live range, never spilled again
+  rename(mi, v, t);
+  if (uses(mi, v)) insertBefore(mi, reload(t, slot));
+  if (defines(mi, v)) insertAfter(mi, spillStore(t, slot));
+}
+```
+
+Spill everywhere is simple and predictable, but wasteful. A value used five times in a loop gets five loads, where one load before the loop and a register inside it might have done. Better strategies split instead, as the previous chapter described.
+
+## Choosing what to spill
+
+Both allocators choose by **spill cost**: the number of uses and definitions of a value, each weighted by 10^(loop depth). Graph colouring divides the cost by degree, to prefer values whose removal relieves the most interference. Linear scan prefers the interval whose next use is furthest away. Neither is optimal. Optimal spilling is NP-hard even for straight-line code under realistic cost models, though it becomes tractable in special cases, and ILP formulations can solve moderate functions exactly.
+
+The loop-depth weighting is what keeps the inner loop fast. A value used once before a loop and once after is spilled long before a loop counter is. The weights could be real profile counts instead of 10^depth guesses; production compilers use branch probabilities and profile data (PGO) exactly this way.
+
+## Rematerialisation
+
+Some values are cheaper to **recompute** than to reload. A constant is the typical case. Reloading `li t0, 1000` costs a store, a slot and a load with several cycles of latency; recomputing it costs one ALU instruction and no memory at all. **<Term k="rematerialization">Rematerialisation</Term>** replaces every reload of such a value with a copy of its original definition. The definition itself becomes dead, and so does the spill slot.
+
+Kiln treats a value as rematerialisable when its single definition is an instruction whose only inputs are immediates: `li` on RISC-V, `movz`/`mov` on AArch64, `mov r, imm` on x86. It rematerialises such values instead of spilling them. Uncheck “rematerialise constants” in the figure above to see the difference: every constant that would have been recomputed now costs a stack slot, a store and a load per use.
+
+<Aside kind="history">
+<p>Briggs, Cooper and Torczon’s “Rematerialization” (PLDI 1992) propagated rematerialisability through SSA to decide, per live range, whether it could be recomputed rather than spilled. Production compilers generalise it to anything cheap with available inputs: frame addresses, global addresses, simple arithmetic on values that are live anyway.</p>
+</Aside>
+
+## Splitting instead of spilling
+
+The real alternative to spill-everywhere is **live-range splitting**. Cut a long live range into pieces joined by copies, loads or stores, and allocate the pieces separately.
+- A value used heavily in a loop but also live across a call before the loop can sit in a caller-saved register inside the loop, and move to the stack only around the call.
+- A value with two distant clusters of uses can be in different registers, or in memory, between the clusters.
+
+Splitting well is subtle: where the split copies go matters as much as whether to split. LLVM’s greedy allocator places them by solving a small optimisation problem over the CFG’s edges, weighted by block frequency. Its `SpillPlacement` pass uses a Hopfield-network-style relaxation to decide which blocks keep the value in a register.
+
+## Callee-saved registers are a kind of spill
+
+Putting a value in a callee-saved register is not free either: the function must save and restore that register in its prologue and epilogue, which is a store and a load, just like a spill. The difference is that the cost is paid **once per call of the function** rather than once per use. So for a value used in a hot loop that also crosses a call, the callee-saved register is a good choice. For a value live across a call on a rarely taken path, spilling around that one call can be cheaper than making every invocation save a register.
+
+**Shrink-wrapping** refines this further by moving the saves and restores off the common path, into the region that actually needs the register. LLVM and GCC both implement it; kiln always saves in the entry block.
+
+<Callout kind="key">
+Spilling puts values in stack slots and inserts loads and stores. Kiln spills everywhere and re-allocates until everything fits. Spill costs weighted by loop depth decide what goes; rematerialisation recomputes cheap values instead of reloading them; splitting (not implemented in kiln) keeps values in registers where they matter most.
+</Callout>

@@ -1,0 +1,89 @@
+<p className="lede">
+A compiler’s front end understands your program; its backend has to make a machine run it. This course builds a real backend from the ground up — from a small SSA intermediate representation all the way to bytes a CPU executes — and lets you poke at every data structure on the way.
+</p>
+
+## The job description
+
+By the time a program reaches the backend, the front end has checked it, resolved its names, and translated it into an <Term k="ir">intermediate representation</Term>. The middle end may have optimised it. What is left is a gap between two very different worlds:
+
+- The IR has **unbounded values**, arbitrary expressions, abstract control flow and no idea where anything lives in memory.
+- The machine has **a few dozen registers**, a fixed menu of instructions with odd restrictions, a calling convention it shares with every other program, and bit-exact encodings.
+
+Closing that gap is a sequence of hard, interacting problems:
+
+1. **Instruction selection**: which machine instructions implement each piece of the IR? One IR `add` might become `addi`, `add`, `lea`, part of an addressing mode, or disappear into a fused multiply-add.
+2. **Legalization**: the IR may use things the target doesn’t have — 64-bit constants, conditional selects, division without a divide instruction — and they have to be rewritten into things it does.
+3. **The ABI**: arguments, return values, the stack pointer and callee-saved registers follow rules fixed by the platform, not by us.
+4. **Register allocation**: map thousands of virtual values onto a handful of registers, spilling the rest to memory. This is graph colouring, which is NP-complete, and it is the part that matters most for performance.
+5. **Scheduling**: order instructions so the pipeline doesn’t stall.
+6. **Emission**: encode instructions into bits, lay out code and data, and describe everything the linker must still patch.
+
+<Aside kind="history">
+<p>The first optimising compiler, IBM’s FORTRAN I (1957), already had all the backend problems in this list. Its designers ran a Monte Carlo simulation of the program’s flow to estimate execution frequencies, then used those to decide which values got the IBM 704’s three index registers — an early form of spill-cost-driven register allocation.</p>
+</Aside>
+
+None of these steps is independent. Selection determines how many registers you need; allocation adds loads and stores that scheduling must place; scheduling increases the number of values alive at once, which makes allocation harder. Real compilers accept this *phase-ordering problem* and apply the passes in a sensible order, with heuristics tuned over decades. This course follows the same order as our compiler does.
+
+<PipelineDiagram caption="The backend we build, stage by stage. Pills are representations; boxes are passes. Every box links to the chapter that builds it." />
+
+## A first look
+
+Here is the whole pipeline running on a recursive Fibonacci function. The left pane is live: edit the program and every stage updates. The right pane has one tab per stage — start at **IR** and walk right to **Run**, or jump straight to **Assembly**.
+
+<Pipeline example="fib" stage="asm" caption="The complete compiler. Hover any instruction: the bar under the listing explains why the compiler emitted it, and the source line it came from lights up in the editor. Hover an operand, a register or a mnemonic for details. Try switching the target, or dropping to -O0." />
+
+<Callout kind="try">
+Hover the `sd ra, …(sp)` near the top of `fib` in the assembly tab. It exists because `fib` calls other functions, and `call` overwrites the return-address register `ra` — so the <Term k="prologue">prologue</Term> saves it. Now switch to the **Machine code** tab: the `call fib` you saw has become an `auipc`/`jalr` pair with a relocation. Chapters 15 and 19 explain both.
+</Callout>
+
+## The compiler we are building
+
+The compiler is called **kiln**. It is about nine thousand lines of TypeScript and runs entirely in your browser. It has:
+
+- a small source language, **Kiln** — 64-bit integers, functions, loops, arrays and globals — just enough to produce interesting control flow and register pressure;
+- **KIR**, an SSA-based IR in the style of LLVM IR, with a reference interpreter that defines what programs mean;
+- three native backends — **RISC-V** (RV64IM with optional Zba and Zicond), **AArch64** and **x86-64** — sharing one target-independent machine layer;
+- a **WebAssembly** backend, because a stack machine with structured control flow turns half of this course upside down in instructive ways;
+- an assembler, an ELF object-file writer, a static **linker**, a small runtime library, and an **RV64 emulator** that runs the linked executable.
+
+It is small, but it is not a toy. The RISC-V machine code it emits is byte-for-byte identical to what the GNU assembler produces from the same assembly text. Its AArch64 and x86-64 encodings match LLVM’s, relocations included. Its object files pass `readelf`, link with GNU `ld`, and the results run. Every example in this course is differentially tested: the reference IR interpreter, the RISC-V emulator and the browser’s WebAssembly engine must all print the same output. For AArch64 the test runs natively on Apple Silicon; for x86-64 it runs in a CPU emulator.
+
+<Aside kind="llvm">
+<p>Every chapter has notes like this one that connect the course to production compilers — mostly LLVM, sometimes GCC or Cranelift. Kiln’s structure deliberately mirrors LLVM’s: SSA machine IR, PHI elimination before register allocation, frame indices resolved late, pseudo-instructions expanded by the assembler.</p>
+</Aside>
+
+## Why RISC-V first?
+
+The main target is 64-bit RISC-V. It is a clean-slate design from UC Berkeley (2010). Its encoding is regular, it has no condition flags, its 32 registers have clear roles, and its specifications are open and readable. Those same qualities make it easy to explain.
+
+The other two targets are here for contrast. **AArch64** looks like RISC-V at first glance. Its details differ in interesting ways: condition flags, a wide variety of immediates, shifted-register operands, fused multiply-add. **x86-64** is the opposite extreme: two-address arithmetic, memory operands in ALU instructions, a handful of instructions tied to specific registers, and variable-length encoding. Watching one IR program become three different instruction streams is the fastest way to see which parts of a backend are universal and which are accidents of one architecture.
+
+## How to read this course
+
+- **Hover everything.** In any code view, instructions explain themselves and say why they are there; registers show their role in the calling convention; values highlight all their uses; lines link back to the source. Dotted-underlined terms in the text, like <Term k="dominator" />, are glossary entries.
+- **Step through algorithms.** Figures with a transport bar replay an algorithm one step at a time: use the buttons, or <Kbd>←</Kbd> <Kbd>→</Kbd> and <Kbd>space</Kbd> once the figure has focus.
+- **Break things.** Most figures take a different example or function, a different target, or a smaller register file. The [playground](#/playground) has everything at once.
+- **Use the appendices.** If assembly, pipelines or ELF are hazy, the primers at the end cover what you need.
+
+The chapters follow the pipeline. **Part I** builds the IR and the analyses everything else rests on: control-flow graphs, dominance and SSA. **Part II** selects instructions and deals with the target’s constraints and calling convention. **Part III** leaves SSA, computes liveness, allocates registers and lays out stack frames. **Part IV** schedules, cleans up, encodes, writes object files, links them, and finally runs the program. **Part V** leaves the world of registers for WebAssembly, then puts everything together.
+
+## A very short history of backends
+
+<Aside kind="history">
+<p>Frances Allen and John Cocke’s work at IBM in the late 1960s — control-flow analysis, intervals, global dataflow — laid the foundations of the middle end. Allen received the 2006 Turing Award; she was the first woman to do so.</p>
+</Aside>
+
+Early compilers generated code with hand-written, per-machine logic. **Retargetable** code generation became a research goal in the 1970s:
+- Steve Johnson’s Portable C Compiler (PCC, about 1978) at Bell Labs drove code generation from tables and made C easy to port.
+- Glanville and Graham (1978) treated instruction selection as LR parsing.
+- Cattell (1980) derived code generators from machine descriptions.
+
+The **IBM 801** project, the first RISC machine, came with the PL.8 compiler. There, Gregory Chaitin and colleagues turned register allocation into graph colouring (1981), a formulation every allocator still starts from.
+
+The 1980s and 1990s brought tree-pattern-matching code-generator generators such as twig, BURG and iburg. They also brought optimistic colouring (Briggs), iterated register coalescing (George and Appel), SSA form (Cytron et al., 1991) and linear-scan allocation (Poletto and Sarkar, 1999). **GCC** (1987) built on Davidson and Fraser’s register-transfer lists. **LLVM** (Lattner and Adve, from 2000) brought an SSA IR all the way down to a machine layer that stays in SSA through instruction selection. Newer compilers like **Cranelift** revisit the trade-offs for just-in-time compilation, where compile time is part of run time.
+
+We will meet all of these along the way, at the point where each idea is needed.
+
+## What this course leaves out
+
+To stay focused, kiln has no floating point, no vectorisation, no debug information, no exceptions, no shared-library output and only a minimal optimiser. Each of these is a large topic in its own right. The appendices point to the literature where they would plug in. None of them changes the core pipeline you are about to build.

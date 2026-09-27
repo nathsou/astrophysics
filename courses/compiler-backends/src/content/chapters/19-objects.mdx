@@ -1,0 +1,67 @@
+<p className="lede">
+A compiler rarely sees the whole program. It produces an object file for each source file: machine code and data with holes in them, plus precise instructions for filling each hole once the final addresses are known.
+</p>
+
+## Why object files exist
+
+When kiln compiles `main`, it does not know where `print_int` will end up. The runtime is a separate object file, and the linker has not run yet. It does not even know the final address of its *own* code, or of a global array like `composite`. Every instruction that depends on such an address is emitted with a placeholder, and the object file records a **<Term k="relocation">relocation</Term>** saying how to fix it.
+
+An **<Term k="object-file">object file</Term>** therefore contains:
+
+- **<Term k="section">Sections</Term>**: named blobs of bytes with attributes. `.text` holds code (read + execute), `.data` initialised data (read + write), and `.bss` zero-initialised data, which takes no space in the file, only a size. Real compilers add `.rodata` for constants, `.eh_frame` for unwind tables, debug sections and more.
+- A **symbol table**: every named address the file defines (functions, globals, local labels) with its section, offset, size, type and binding (*local* or *global*), plus every name it **references but does not define**, marked *undefined*.
+- **Relocation tables**, one per section that needs patching: *at this offset in `.text`, apply relocation type T using symbol S plus addend A*.
+- A **string table** holding all the names.
+
+## ELF
+
+On Linux and most Unix-like systems, the format is **<Term k="elf">ELF</Term>** (Executable and Linkable Format), introduced with System V Release 4 around 1989. The same format serves relocatable objects (`.o`), executables and shared libraries; a header field says which. An ELF file is a 64-byte **header**, then section contents, then a **section header table** describing each section, and — in executables — a **program header table** describing what to load into memory.
+
+<ElfExplorer example="sieve" which="obj" caption="The ELF object file kiln writes for the sieve. Hover any byte to see which structure it belongs to, and the decoded fields of that structure; click to pin. The ELF header says where everything else is; section headers name and locate .text, .bss, .rela.text, .symtab and .strtab. Find the relocations and hover one: the four bytes it patches light up in .text." />
+
+Kiln writes ELF itself and reads it back with its own parser. The linker in the next chapter consumes the parsed files, not the in-memory objects, so the round trip is real. `readelf` and `objdump` from GNU binutils accept every file kiln produces.
+
+<Aside kind="arch">
+<p>Other platforms use other formats with the same ideas. macOS and iOS use <b>Mach-O</b> (from NeXTSTEP), with “segments” containing “sections” and relocations attached to them. Windows uses <b>PE/COFF</b>, derived from the older Unix COFF format. Appendix E compares the three.</p>
+</Aside>
+
+## Relocations, concretely
+
+A relocation has four parts:
+- an **offset** (*where* to patch);
+- a **type** (*how* to patch — which bits, and what arithmetic);
+- a **symbol** *S*;
+- an **addend** *A*.
+
+The computation usually involves *P*, the address of the place being patched. Kiln’s RISC-V output uses three types:
+
+| type | on | computes | used for |
+|---|---|---|---|
+| `R_RISCV_CALL_PLT` | an `auipc`+`jalr` pair | *S + A − P*, split into a 20-bit high part and a 12-bit low part | `call f` |
+| `R_RISCV_PCREL_HI20` | `auipc` | high 20 bits of *S + A − P*, rounded (+0x800) | first half of `lla` |
+| `R_RISCV_PCREL_LO12_I` | `addi` or a load | low 12 bits of the offset computed **at the paired `auipc`** | second half of `lla` |
+
+The last row is RISC-V’s famous oddity. The `addi` needs the low bits of *the same pc-relative offset* the `auipc` computed, and that offset is relative to the `auipc`’s address, not the `addi`’s. So the `LO12` relocation does not point at the global at all. It points at a **local label on the `auipc`** (kiln names them `.Lpcrel_hiN`, as GNU `as` does), and the linker must find the `HI20` relocation at that label and reuse its result.
+
+<AsmSnippet target="rv64" title="Loading the address of a global, before linking" code={`
+.Lpcrel_hi0:
+    auipc a5, 0               # R_RISCV_PCREL_HI20   composite
+    addi  a5, a5, 0           # R_RISCV_PCREL_LO12_I .Lpcrel_hi0
+`} />
+
+The other targets make different trade-offs:
+
+- **AArch64** uses `adrp`, which computes the address of the 4 KiB *page* containing the symbol (`R_AARCH64_ADR_PREL_PG_HI21`), followed by an `add` or load of the symbol’s low 12 bits (`R_AARCH64_ADD_ABS_LO12_NC`). The low part is absolute rather than pc-relative, because pages are aligned, so there is no pairing problem. `bl` uses `R_AARCH64_CALL26`, reaching ±128 MiB.
+- **x86-64** folds a 32-bit pc-relative displacement straight into the instruction: `lea rax, [rip + composite]` with `R_X86_64_PC32`, and `call print_int` with `R_X86_64_PLT32`. Both have addend −4, because `rip` points to the *next* instruction, 4 bytes past the start of the displacement field. If an immediate follows the displacement, the addend is more negative still.
+
+Hover the relocation notes in the **Machine code** stage of any pipeline figure to see which relocation each instruction carries.
+
+## Linker relaxation (RISC-V)
+
+`call` reserves eight bytes for `auipc` + `jalr` because the assembler cannot know whether the callee will be within `jal`’s ±1 MiB. RISC-V linkers can fix this after the fact. If the assembler marks the pair with an `R_RISCV_RELAX` relocation, the linker is allowed to replace the pair with a single `jal` and **delete** four bytes. Deleting bytes shifts everything after them, which invalidates every pc-relative offset spanning the deletion. So relaxation-enabled assemblers emit relocations even for local branches, and the linker recomputes them all. Similar relaxations turn `lla` into a single `addi` relative to the global pointer `gp`.
+
+Kiln assembles with relaxation disabled: it resolves local branches itself and emits no `R_RISCV_RELAX`, matching `as -mno-relax`. This keeps its linker simple.
+
+<Callout kind="key">
+An object file is sections, a symbol table (including undefined symbols) and relocations. A relocation names a place, a symbol, an addend and a formula. The instruction encodings dictate how many relocations an address needs: one for x86’s disp32, two for RISC-V’s auipc/addi and AArch64’s adrp/add.
+</Callout>

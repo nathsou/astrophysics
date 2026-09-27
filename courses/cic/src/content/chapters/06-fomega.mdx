@@ -1,0 +1,135 @@
+System F let us write a single polymorphic identity, a single type of Church numerals, and conjunction for any two *fixed* propositions. It did not let us write conjunction itself: the operation that takes two propositions $A$ and $B$ and returns the proposition $A \wedge B$. That operation is a function — but a function from types to types, and System F has functions only from terms to terms and from types to terms.
+
+Programmers meet the same limitation as soon as they try to abstract over *containers*. `List` is not a type; `List Int` and `List String` are. `List` is a **type constructor**: a function that takes a type and returns a type. Languages like Haskell and Scala let you abstract over such things ("higher-kinded types"); TypeScript and Java do not.
+
+This chapter adds type-level functions. The resulting calculus is **Fω**, also introduced by Girard in 1972.
+
+## Kinds
+
+If types can be functions, they need types of their own. The type of a type is called its **kind**:
+
+- ordinary types like `Nat` or `A → A` have kind `*`;
+- a type constructor taking one type, like `List`, has kind `* → *`;
+- `And'`, taking two, has kind `* → * → *`;
+- a constructor taking a constructor, such as "apply `F` twice", has kind `(* → *) → * → *`.
+
+Kinds are to types what types are to terms. They are classified in turn by a sort, written `□` ("box"): `* : □`, and `* → * : □`. So there are now three levels:
+
+| level | examples | classified by |
+|---|---|---|
+| terms | `λ (x : A) => x`, `zero` | types |
+| types (and type constructors) | `A → A`, `And' A B`, `List'` | kinds |
+| kinds | `*`, `* → *` | the sort `□` |
+
+## Type-level λ
+
+Fω adds λ-abstraction and application *at the level of types*: $\lambda (A : *).\, A \to A$ is the type constructor sending each type to its endofunction type, of kind $* \to *$. With it, `And'` can finally be defined, once and for all:
+
+<Playground calculus="fomega" title="Type operators" code={`def And' (A B : *) : * := Π (X : *), (A → B → X) → X
+def Or' (A B : *) : * := Π (X : *), (A → X) → (B → X) → X
+
+def intro {A B : *} (a : A) (b : B) : And' A B :=
+  λ (X : *) (k : A → B → X) => k a b
+
+def swap {A B : *} (p : And' A B) : And' B A :=
+  p (And' B A) (λ (a : A) (b : B) => intro b a)
+
+#check And'
+#check @swap`} />
+
+`And'` has kind `* → * → *`. And `swap` is a proof of commutativity of conjunction *for all propositions*: $\Pi (A\,B : *).\, A \wedge B \to B \wedge A$ — second-order logic can now talk about its own connectives. Fω corresponds to **higher-order propositional logic**.
+
+In the kernel, the new ingredient is again just one extra product rule. Abstracting a *type* over a *type* needs the Π-type $\Pi (A : *).\, *$ — a Π whose domain and codomain are both kinds, i.e. both of sort □. That is the rule `(□, □)`, missing from System F. Fω has three rules: `(*, *)` for ordinary functions, `(□, *)` for polymorphism, `(□, □)` for type operators.
+
+## Computation in types
+
+Something important has happened. Types now contain β-redexes. The type `And' C D` is an application of a type-level function; unfolding the definition gives
+
+$$
+(\lambda (A\,B : *).\, \Pi (X : *).\, (A \to B \to X) \to X)\; C\; D
+$$
+
+which β-reduces to $\Pi (X : *).\, (C \to D \to X) \to X$. These are two different expressions for the *same* type. If a function expects an argument of type $\Pi (X : *).\, (C \to D \to X) \to X$, it must accept an argument of type `And' C D`. Type equality can no longer be syntactic; it must be *equality up to computation*.
+
+<Rules ids="pts.conv" />
+
+The **conversion rule** says that if $t$ has type $A$, and $A$ and $B$ are β-equivalent (convertible), then $t$ also has type $B$. Here it is in action. The App rule in the derivation below has a side condition comparing the argument's type with the function's domain; click **why?** next to it to see both sides normalised to the same type.
+
+<DerivationView calculus="fomega" setup={`def And' (A B : *) : * := Π (X : *), (A → B → X) → X
+def intro {A B : *} (a : A) (b : B) : And' A B := λ (X : *) (k : A → B → X) => k a b
+variable (C D : *)
+axiom c : C
+axiom d : D
+def fst (p : Π (X : *), (C → D → X) → X) : C := p C (λ (x : C) (y : D) => x)`} term="fst (intro c d)" title="Conversion in a derivation" />
+
+The kernel's `isDefEq` decides convertibility. It is an algorithm, so it had better terminate — and it does, because the type level of Fω is itself a simply typed λ-calculus (with one base type `*`), which is strongly normalising. Type equality is decidable because *types* normalise, just as β-equality of λ→ terms was decidable because *terms* normalise.
+
+<Engineer title="Definitional equality">
+This is the moment the kernel stops being a simple structural recursion. Deciding `A ≡ B` means computing — unfolding definitions (δ-reduction), contracting β-redexes — until the two sides can be compared. Real kernels do this *lazily*: they compare the heads of both sides first, unfold only the side whose definition is "higher", compare arguments before unfolding when both sides have the same head, and cache results. The course kernel's `isDefEq` follows Lean's strategy (lazy δ-reduction by definitional height). In the full CIC, this is where most of the kernel's time goes.
+</Engineer>
+
+You can watch type-level computation directly: `#reduce` works on types too.
+
+<Playground calculus="fomega" title="Reducing types" code={`def List' (A : *) : * := Π (X : *), (A → X → X) → X → X
+def Compose (F G : * → *) (A : *) : * := F (G A)
+
+#check Compose List' List'
+#reduce Compose List' List'`} />
+
+Click **reduce step by step** on the second result.
+
+## Higher-kinded polymorphism
+
+With type operators we can abstract over them, too. Here are polymorphic lists, `map`, and the *interface* of a functor — a type constructor `F` equipped with a way to map functions over it — which in Haskell is the `Functor` type class:
+
+<Playground calculus="fomega" title="Lists and functors" code={`def List' (A : *) : * := Π (X : *), (A → X → X) → X → X
+
+def nil {A : *} : List' A := λ (X : *) (c : A → X → X) (n : X) => n
+def cons {A : *} (a : A) (l : List' A) : List' A :=
+  λ (X : *) (c : A → X → X) (n : X) => c a (l X c n)
+
+def map {A B : *} (f : A → B) (l : List' A) : List' B :=
+  l (List' B) (λ (a : A) (r : List' B) => cons (f a) r) nil
+
+def Functor (F : * → *) : * := Π (A B : *), (A → B) → F A → F B
+
+def listFunctor : Functor List' := λ (A B : *) (f : A → B) (l : List' A) => map f l`} />
+
+A list is encoded, like everything in System F, by its fold: "give me what to do with an element and the rest, and what to do with the empty list". The type `Functor List'` is computed: `Functor` is applied to the operator `List'` and the result reduces to a Π-type whose instances mention `List' A` and `List' B`.
+
+<Exercise id="fomega:or" calculus="fomega" title="Disjunction is commutative" code={`def Or' (A B : *) : * := Π (X : *), (A → X) → (B → X) → X
+def inl {A B : *} (a : A) : Or' A B := λ (X : *) (l : A → X) (r : B → X) => l a
+def inr {A B : *} (b : B) : Or' A B := λ (X : *) (l : A → X) (r : B → X) => r b
+
+def orSwap {A B : *} (p : Or' A B) : Or' B A := ?_`} hint="Instantiate p at the result type Or' B A and give it one function for each case." solution={`def Or' (A B : *) : * := Π (X : *), (A → X) → (B → X) → X
+def inl {A B : *} (a : A) : Or' A B := λ (X : *) (l : A → X) (r : B → X) => l a
+def inr {A B : *} (b : B) : Or' A B := λ (X : *) (l : A → X) (r : B → X) => r b
+
+def orSwap {A B : *} (p : Or' A B) : Or' B A := p (Or' B A) (λ (a : A) => inr a) (λ (b : B) => inl b)`}>
+Prove that disjunction, encoded as its elimination principle, is commutative.
+</Exercise>
+
+## A detour: type operators without polymorphism
+
+Adding `(□, □)` to λ→ *without* `(□, *)` also makes sense: you get type-level functions but no polymorphic terms — named type abbreviations with parameters, like C's `typedef` or TypeScript's generic type aliases used without generic functions. Barendregt calls this system **λω̲** ("weak λω"). It is not very useful on its own, but it is one corner of the cube we are about to discover.
+
+<Playground calculus="womega" errors title="λω̲: operators but no polymorphism" code={`def Endo : * → * := λ (A : *) => A → A
+variable (N : *)
+axiom s : N → N
+def f : Endo N := s                         -- fine: Endo N reduces to N → N
+def id : Π (A : *), A → A := λ (A : *) (x : A) => x   -- rejected: no (□, *)`} />
+
+## What's still missing
+
+We now have terms depending on terms (functions), terms depending on types (polymorphism), and types depending on types (type operators). One combination is left: **types depending on terms**. The type of vectors of length $n$, `Vec A n`, depends on the *number* $n$. The proposition $n + 0 = n$ depends on $n$. Without such dependency we cannot state anything about individual values — only about types and propositions. Fω is a higher-order *propositional* logic; to get predicate logic, with quantifiers over individuals, we need dependent types.
+
+## Summary
+
+- Types can be functions from types to types (type operators), classified by kinds; kinds are classified by the sort □.
+- The new product rule `(□, □)` gives type-level λ; together with `(*, *)` and `(□, *)` it yields Fω.
+- Types now contain computation, so type equality becomes convertibility, and the conversion rule enters the system. Deciding it requires normalising types — possible because the type level is simply typed.
+- Higher-kinded polymorphism (functors, monads) and all the propositional connectives become definable.
+
+<History title="Fω in practice">
+Girard's thesis introduced Fω alongside System F; he proved its strong normalisation with the same reducibility-candidate technique. Fω later became the theoretical core of typed functional languages: the intermediate language of the Glasgow Haskell Compiler is *System FC*, an extension of Fω with type-equality coercions, and much of the theory of ML modules can be explained by translation into Fω (Rossberg, Russo and Dreyer's *F-ing modules*, 2010).
+</History>

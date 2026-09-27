@@ -1,0 +1,23 @@
+// Every interactive widget available to MDX chapters.
+export { PipelineExplorer } from './Pipeline';
+export { Pipeline } from './common';
+export { CFGExplorer, DFSStepper } from './CFGViz';
+export { DominanceStepper, DominanceExplorer } from './DomViz';
+export { Mem2RegStepper } from './SSAViz';
+export { OptExplorer } from './OptViz';
+export { RegisterFile, TargetCompare } from './TargetViz';
+export { TilingExplorer, RuleTable } from './ISelViz';
+export { ConstantMaterializer, LegalizeExplorer } from './LegalViz';
+export { ABIExplorer, CallLowering } from './ABIViz';
+export { ParallelCopyStepper, PhiElimExplorer } from './DestroyViz';
+export { LivenessStepper, LiveRanges } from './LiveViz';
+export { IRCStepper } from './RAViz';
+export { LinearScanStepper, SpillExplorer } from './LSViz';
+export { FrameExplorer } from './FrameViz';
+export { SchedExplorer } from './SchedViz';
+export { PeepholeExplorer, EncodingExplorer, MachineCodeCompare, BranchRelaxation } from './EmitViz';
+export { ElfExplorer, LinkerExplorer, EmulatorView } from './ObjViz';
+export { WasmExplorer } from './WasmViz';
+export { IRView, SourceView, CodeSnippet, AsmSnippet } from './Snippets';
+export { PipelineDiagram } from './Diagrams';
+export { PipelineSim, Glossary, Bibliography } from './ArchViz';

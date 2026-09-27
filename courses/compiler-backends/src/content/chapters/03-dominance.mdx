@@ -1,0 +1,94 @@
+<p className="lede">
+Dominance is the single most useful structural fact about a control-flow graph. It tells you which code is guaranteed to have run before a given point — and that is exactly what SSA form, code motion, loop detection and structured control flow all need.
+</p>
+
+## Definitions
+
+Block *a* **<Term k="dominator">dominates</Term>** block *b* (written *a* dom *b*) if every path from the entry to *b* goes through *a*. By definition every block dominates itself; *a* **strictly dominates** *b* if *a* dom *b* and *a* ≠ *b*.
+
+Dominance is a partial order (reflexive, antisymmetric and transitive), and the strict dominators of any block form a *chain*: they can be ordered so each dominates the next. So every block except the entry has a unique closest strict dominator, its **immediate dominator** `idom(b)`. Draw an edge from `idom(b)` to `b` for every *b* and you get a tree rooted at the entry, the **<Term k="dominator-tree">dominator tree</Term>**. The dominators of *b* are exactly its ancestors in that tree.
+
+Two consequences that we will use again and again:
+
+- If a value is defined in block *a* and *a* dominates *b*, the value is **available** in *b*: whichever way control arrived, the definition ran. This is the SSA property, and the basis of common-subexpression elimination over the dominator tree (Chapter 5).
+- A back edge *t → h* is one where *h* dom *t*. This is how natural loops are found (Chapter 2).
+
+## Computing dominators
+
+Dominance can be phrased as a dataflow problem:
+
+$$
+\mathrm{Dom}(\mathit{entry}) = \{\mathit{entry}\}, \qquad
+\mathrm{Dom}(n) = \{n\} \;\cup \bigcap_{p \,\in\, \mathrm{preds}(n)} \mathrm{Dom}(p).
+$$
+
+Start with every other set equal to “all blocks”, iterate until nothing changes, and you have the answer. That works, but storing a full set per block costs quadratic space. The classic fast algorithm is **Lengauer and Tarjan’s** (1979). It computes *semi-dominators* over a DFS spanning tree in almost linear time, is famously hard to get right, and is the one production compilers used for decades.
+
+In 2001 Cooper, Harvey and Kennedy published a surprising observation. The iterative algorithm is just as fast in practice, and much simpler, if you **store only the immediate dominator** of each node and **process nodes in reverse postorder**. Kiln uses their algorithm. The key is the `intersect` function: to intersect the dominator sets of two nodes, walk both up the partially-built dominator tree until they meet. Since a node’s dominators always have smaller RPO numbers, you always advance whichever *finger* has the larger RPO number.
+
+```ts
+// Cooper, Harvey & Kennedy, "A Simple, Fast Dominance Algorithm" (2001)
+idom[entry] = entry;
+while (changed) {
+  changed = false;
+  for (const b of rpo) {                       // reverse postorder, skipping entry
+    if (b === entry) continue;
+    let nu = -1;
+    for (const p of preds[b]) {
+      if (idom[p] === -1) continue;            // predecessor not processed yet
+      nu = nu === -1 ? p : intersect(p, nu);
+    }
+    if (idom[b] !== nu) { idom[b] = nu; changed = true; }
+  }
+}
+
+function intersect(a, b) {                     // "two-finger" walk up the tree
+  while (a !== b) {
+    while (rpoIndex[a] > rpoIndex[b]) a = idom[a];
+    while (rpoIndex[b] > rpoIndex[a]) b = idom[b];
+  }
+  return a;
+}
+```
+
+Step through it below. On a reducible CFG it settles in one pass, plus a second pass to confirm nothing changes. Each step processes one block: it intersects over the predecessors whose idom is already known, and records the new idom. The dominator tree on the right grows as it goes.
+
+<DominanceStepper example="sort" fn="sort" caption="Cooper–Harvey–Kennedy on insertion sort. Orange: the block being processed; teal: its predecessors that contribute; violet: nodes visited by the two-finger walk. Predecessors reached through back edges are skipped in the first pass, because their idom is not known yet." />
+
+<Aside kind="llvm">
+<p>LLVM’s `DominatorTree` uses the Semi-NCA algorithm, a simplification of Lengauer–Tarjan, and supports incremental updates as passes edit the CFG. GCC uses Lengauer–Tarjan. On the small CFGs typical of a single function, all of them are fast; the difference shows up on huge generated functions.</p>
+</Aside>
+
+### O(1) dominance queries
+
+Once the tree is built, “does *a* dominate *b*?” should not require walking up the tree. Number the tree in a single DFS, recording for each node its entry time `tin` and exit time `tout`. Then *a* dominates *b* exactly when *b*’s interval nests inside *a*’s:
+
+$$ a \;\mathrm{dom}\; b \iff \mathit{tin}(a) \le \mathit{tin}(b) \,\wedge\, \mathit{tout}(b) \le \mathit{tout}(a). $$
+
+The IR verifier makes this query for every operand of every instruction.
+
+## Dominance frontiers
+
+Dominance tells us where a definition is guaranteed to be visible. SSA construction needs the opposite question: where does a definition **stop** being the only one that reaches? The answer is the **<Term k="dominance-frontier">dominance frontier</Term>**:
+
+$$ \mathrm{DF}(x) = \{\, y \mid x \text{ dominates a predecessor of } y \text{ but does not strictly dominate } y \,\}. $$
+
+Intuitively, DF(*x*) is the set of join points where paths that went through *x* meet paths that did not. If variable *v* is assigned in *x*, then at each block of DF(*x*) the value of *v* might come from *x* or from somewhere else. That is where a φ-function is needed. And since the φ is itself a new assignment, we must repeat the argument from the φ’s block: phis go in the **iterated dominance frontier** DF⁺ of the set of assignment sites.
+
+Cooper, Harvey and Kennedy also give a compact frontier algorithm. Only blocks with two or more predecessors can be in any frontier. For such a join block *b*, walk up the dominator tree from each predecessor until reaching `idom(b)`; every node passed on the way has *b* in its frontier.
+
+```ts
+for (const b of joinBlocks)                    // blocks with >= 2 predecessors
+  for (const p of preds[b])
+    for (let r = p; r !== idom[b]; r = idom[r]) df[r].add(b);
+```
+
+<DominanceExplorer example="sort" fn="sort" initial="while.body" caption="Click any block. Violet: its dominators; teal: the blocks it dominates; red: its dominance frontier (and iterated frontier). Try the loop body: its frontier is the loop header, which is exactly where a variable updated in the body needs a φ." />
+
+## Post-dominance, briefly
+
+Run the same algorithms on the **reversed** CFG, from a virtual exit node, and you get **post-dominators**. Block *a* post-dominates *b* if every path from *b* to the exit passes through *a*. The post-dominance frontier gives *control dependence*: which branch decides whether a block runs. It underlies aggressive dead-code elimination and program slicing. Kiln computes it (`postDominators` in `dom.ts`) but its backend does not need it.
+
+<Callout kind="key">
+Dominators say what must have run; the dominator tree organises them; dominance frontiers say where control-flow paths join. SSA construction (next chapter) is essentially these three ideas applied to variables.
+</Callout>

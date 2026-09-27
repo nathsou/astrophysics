@@ -6,7 +6,7 @@ import rehypeKatex from 'rehype-katex';
 
 export default defineConfig({
   site: 'https://nathsou.github.io',
-  base: '/astrophysics',
+  base: `${process.env.COURSES_BASE_PATH ?? ''}/astrophysics`,
   integrations: [mdx()],
   devToolbar: { enabled: false },
   markdown: {

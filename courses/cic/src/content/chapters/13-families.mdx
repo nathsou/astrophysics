@@ -1,0 +1,214 @@
+In Chapter 7 we saw the promise of dependent types — vectors that know their length, propositions about numbers — but could only postulate such types. Inductive types make them real. This chapter is about **inductive families**: inductive types that are defined not one at a time but as a whole family indexed by values. It ends with the most important family of all, **equality**.
+
+## Parameters and indices
+
+Compare two declarations:
+
+```lean
+inductive List (α : Type u) where
+  | nil  : List α
+  | cons (head : α) (tail : List α) : List α
+
+inductive Vec (α : Type u) : Nat → Type u where
+  | nil  : Vec α 0
+  | cons {n : Nat} (a : α) (v : Vec α n) : Vec α (n + 1)
+```
+
+In `List α`, the argument `α` is a **parameter**: it is the same in every constructor's result type and every recursive occurrence. A `List Nat` is built only from `List Nat`s. Declaring `α` before the colon says so.
+
+In `Vec α n`, the number after the colon is an **index**: each constructor chooses its own value. `nil` constructs a `Vec α 0`; `cons` takes a vector of length `n` and constructs one of length `n + 1`. The family `Vec α : Nat → Type u` is defined *simultaneously* for all lengths — you cannot define `Vec α 3` on its own, because it is built from `Vec α 2`.
+
+<RecursorView name="Vec" code={`inductive Vec (α : Type u) : Nat → Type u where
+  | nil : Vec α 0
+  | cons {n : Nat} (a : α) (v : Vec α n) : Vec α (n + 1)`} />
+
+The difference shows up in the recursor. The parameter `α` is fixed once, at the front. But the index appears in the **motive**: `motive : (a : Nat) → Vec α a → Sort u` must describe what to build for a vector of *every* length. Each minor premise instantiates the index according to its constructor — the `nil` case must produce `motive 0 nil`, the `cons` case `motive (n + 1) (cons a v)` from the induction hypothesis `motive n v`. The recursor can be applied to a vector of any length `a`, which is why the index comes just before the major premise.
+
+## Programming with vectors
+
+Vectors let the type checker track lengths. Appending a vector of length `n` to one of length `m` gives one of length `m + n` — and the kernel checks it:
+
+<Playground title="Length-indexed vectors" code={`inductive Vec (α : Type u) : Nat → Type u where
+  | nil : Vec α 0
+  | cons {n : Nat} (a : α) (v : Vec α n) : Vec α (n + 1)
+
+def Vec.map {α β : Type} (f : α → β) : {n : Nat} → Vec α n → Vec β n
+  | Vec.nil => Vec.nil
+  | Vec.cons a v => Vec.cons (f a) (Vec.map f v)
+
+def Vec.append {α : Type} {m : Nat} : {n : Nat} → Vec α n → Vec α m → Vec α (m + n)
+  | Vec.nil, w => w
+  | Vec.cons a v, w => Vec.cons a (Vec.append v w)
+
+def v3 : Vec Nat 3 := Vec.cons 10 (Vec.cons 20 (Vec.cons 30 Vec.nil))
+#check Vec.append v3 v3
+#reduce Vec.append v3 (Vec.map (fun x => x + 1) v3)`} />
+
+Look closely at why `append` typechecks. In the `nil` case, the result must have type `Vec α (m + 0)`, and we return `w : Vec α m`. That is accepted because `m + 0` *computes* to `m` — `Nat.add` recurses on its second argument. In the `cons` case the goal is `Vec α (m + (n + 1))`, which computes to `Vec α ((m + n) + 1)`, the type of `cons a (append v w)`. Had we written the length as `n + m`, neither case would typecheck by computation, and we would need to *prove* and use the equations `0 + m = m` and `(n + 1) + m = (n + m) + 1`. The interplay between computation in types and the definitions of functions is one of the characteristic difficulties — and pleasures — of dependently typed programming.
+
+## Impossible cases
+
+The payoff of indices is that some cases can't happen. The head of a vector of length `n + 1` always exists:
+
+<Playground title="Safe head, tail and indexing" code={`inductive Vec (α : Type u) : Nat → Type u where
+  | nil : Vec α 0
+  | cons {n : Nat} (a : α) (v : Vec α n) : Vec α (n + 1)
+
+def Vec.head {α : Type} {n : Nat} : Vec α (n + 1) → α
+  | Vec.cons a _ => a
+
+def Vec.tail {α : Type} {n : Nat} : Vec α (n + 1) → Vec α n
+  | Vec.cons _ v => v
+
+-- numbers smaller than n
+inductive Fin' : Nat → Type where
+  | zero {n : Nat} : Fin' (n + 1)
+  | succ {n : Nat} (i : Fin' n) : Fin' (n + 1)
+
+-- indexing can never go out of bounds
+def Vec.get {α : Type} : {n : Nat} → Vec α n → Fin' n → α
+  | Vec.cons a _, Fin'.zero => a
+  | Vec.cons _ v, Fin'.succ i => Vec.get v i
+
+def v3 : Vec Nat 3 := Vec.cons 10 (Vec.cons 20 (Vec.cons 30 Vec.nil))
+#reduce Vec.head v3
+#reduce Vec.get v3 (Fin'.succ (Fin'.succ Fin'.zero))`} />
+
+There is no `nil` case in `head`: a `nil` has length `0`, which can never equal `n + 1`. Likewise `Vec.get` has no case for the empty vector, because `Fin' 0` has no elements at all. The elaborator has to *justify* the omission to the kernel, which only understands complete eliminations. How?
+
+### Index unification
+
+To eliminate `v : Vec α (n + 1)` the compiler cannot use the recursor's motive directly: the motive must work for vectors of every length, and our result type is only meaningful at lengths of the form `n + 1`. So it **generalises**: it eliminates `v` with the motive
+
+$$
+\lambda\, k\ (w : \mathsf{Vec}\ \alpha\ k).\ \ k = n + 1 \;\to\; \alpha
+$$
+
+and applies the result to a proof of `n + 1 = n + 1`. Each case now receives an *equation* between the constructor's index and the actual one, which is solved by three rules — the core of the algorithm described by Goguen, McBride and McKinna (2006):
+
+- **conflict**: in the `nil` case the equation is `0 = n + 1`. Constructors are distinct (Chapter 11's "no confusion"), so this is a contradiction, and the case is discharged without any code from you.
+- **injection**: in the `cons` case the equation is `k + 1 = n + 1`, i.e. `Nat.succ k = Nat.succ n`. Constructors are injective, so it can be replaced by `k = n`.
+- **substitution**: an equation `k = n` between a pattern variable and a term is solved by substituting — using the recursor of equality, `Eq.rec`, to rewrite every occurrence.
+
+`#print Vec.head` in the playground to see the result: a `Vec.casesOn` whose `nil` branch is closed off by a no-confusion argument and whose `cons` branch rewrites with `Eq.rec`. You never write these terms, but they are what the kernel checks.
+
+<Exercise id="fam:zip" title="Zipping vectors" code={`inductive Vec (α : Type u) : Nat → Type u where
+  | nil : Vec α 0
+  | cons {n : Nat} (a : α) (v : Vec α n) : Vec α (n + 1)
+
+def Vec.zip {α β : Type} : {n : Nat} → Vec α n → Vec β n → Vec (α × β) n
+  | Vec.nil, Vec.nil => Vec.nil
+  | Vec.cons a v, Vec.cons b w => sorry`} hint="Pair the heads with Prod.mk (or ⟨a, b⟩) and zip the tails recursively." solution={`inductive Vec (α : Type u) : Nat → Type u where
+  | nil : Vec α 0
+  | cons {n : Nat} (a : α) (v : Vec α n) : Vec α (n + 1)
+
+def Vec.zip {α β : Type} : {n : Nat} → Vec α n → Vec β n → Vec (α × β) n
+  | Vec.nil, Vec.nil => Vec.nil
+  | Vec.cons a v, Vec.cons b w => Vec.cons ⟨a, b⟩ (Vec.zip v w)`}>
+Complete `zip`, which pairs up two vectors *of the same length*. Notice that there are no cases for vectors of different lengths — they are impossible.
+</Exercise>
+
+## Inductive predicates
+
+With `Prop` as the target sort, an inductive family is an **inductive predicate**: a property defined by rules. Each constructor is an inference rule; a proof is a derivation built from them.
+
+<Playground title="Even numbers, inductively" code={`inductive Even : Nat → Prop where
+  | zero : Even 0
+  | ss {n : Nat} (h : Even n) : Even (n + 2)
+
+theorem even_four : Even 4 := Even.ss (Even.ss Even.zero)
+
+-- inversion: the only way to prove Even (n + 2) is Even.ss
+theorem even_inv {n : Nat} (h : Even (n + 2)) : Even n :=
+  match h with
+  | Even.ss h' => h'
+
+-- 1 is not even: every case is impossible
+theorem not_even_one : ¬ Even 1 :=
+  fun h => nomatch h`} />
+
+Compare with Chapter 7, where `Even` was a postulated predicate with two axioms. Now the axioms are constructors, and the recursor adds what was missing: **inversion** (if `Even (n + 2)`, it must have come from `ss`) and the fact that nothing else is even — `not_even_one` is proved by a `nomatch` that finds every case impossible by index unification (`0 = 1` conflicts; `n + 2 = 1` reduces by injection to `n + 1 = 0`, which conflicts).
+
+<Exercise id="fam:le" title="Less than or equal" code={`inductive Le : Nat → Nat → Prop where
+  | refl {n : Nat} : Le n n
+  | step {n m : Nat} (h : Le n m) : Le n (m + 1)
+
+theorem le_0_3 : Le 0 3 := sorry`} hint="Start from Le.refl at 0 and step three times." solution={`inductive Le : Nat → Nat → Prop where
+  | refl {n : Nat} : Le n n
+  | step {n m : Nat} (h : Le n m) : Le n (m + 1)
+
+theorem le_0_3 : Le 0 3 := Le.step (Le.step (Le.step Le.refl))`}>
+The relation `Le n m` (n ≤ m) is generated by reflexivity and a step rule. Prove `Le 0 3`. Which argument of `Le` is a parameter, and which an index? (Lean promotes `n` to a parameter because it is the same in every constructor's result.)
+</Exercise>
+
+## Equality as an inductive family
+
+Here is how equality is defined in the course prelude — and in Lean 4:
+
+```lean
+inductive Eq : α → α → Prop where
+  | refl (a : α) : Eq a a
+```
+
+`Eq a b` is an inductive predicate with a single constructor, `refl`, which only ever proves `Eq a a`. The first argument is uniform and becomes a parameter; the second is an index. Its recursor is the elimination principle for equality — in Martin-Löf type theory it is called **J**:
+
+<RecursorView name="MyEq" code={`inductive MyEq {α : Type} : α → α → Prop where
+  | refl (a : α) : MyEq a a`} />
+
+Read the type of the recursor as: to prove `motive b h` for every `b` equal to `a` (and every proof `h` of it), it suffices to prove `motive a (refl a)`. In other words: **if something holds for `a` itself, it holds for everything equal to `a`**. This single principle gives transport (the substitutivity of equals), and from it symmetry, transitivity and congruence:
+
+<Playground title="Equality from its recursor" code={`theorem my_symm {α : Type} {a b : α} (h : a = b) : b = a :=
+  Eq.rec (motive := fun x _ => x = a) rfl h
+
+theorem my_trans {α : Type} {a b c : α} (h₁ : a = b) (h₂ : b = c) : a = c :=
+  Eq.rec (motive := fun x _ => a = x) h₁ h₂
+
+theorem my_congr {α β : Type} (f : α → β) {a b : α} (h : a = b) : f a = f b :=
+  Eq.rec (motive := fun x _ => f a = f x) rfl h
+
+-- the same, by pattern matching on rfl
+theorem my_symm' {α : Type} {a b : α} (h : a = b) : b = a :=
+  match h with
+  | rfl => rfl`} />
+
+In the last proof, matching `h : a = b` against `rfl` unifies `b` with `a` (the substitution rule of index unification), after which the goal `a = a` is proved by `rfl`.
+
+### Leibniz equality is equivalent
+
+In Chapter 9 equality was *defined* à la Leibniz: `x = y` meant `∀ P, P x → P y`. The two definitions are logically equivalent: `Eq.rec` gives Leibniz's principle, and conversely instantiating Leibniz's `P` with `fun z => x = z` turns `rfl : x = x` into `x = y`. The inductive definition is preferred because it has better properties with respect to computation and universes (Leibniz equality lives in a higher universe than its arguments when they are large).
+
+## Definitional and propositional equality
+
+There are now two notions of equality in play, and keeping them apart is essential.
+
+- **Definitional** (or *judgemental*) equality, `≡`, is what the kernel checks automatically, by computation: `2 + 2 ≡ 4`, `(fun x => x + 1) 3 ≡ 4`, `n + 0 ≡ n`. It is decidable, and it is not a proposition — you can't assume it or prove it.
+- **Propositional** equality, `=`, is the inductive type `Eq`. It is a proposition, which may be assumed as a hypothesis and proved by any means, including induction.
+
+`rfl : a = a` connects the two: `rfl` proves `a = b` exactly when `a ≡ b`, because the kernel then accepts `a = a` as the type `a = b`.
+
+<Playground errors title="What computation can and cannot prove" code={`theorem t1 : 2 + 2 = 4 := rfl                        -- by computation
+theorem t2 (n : Nat) : n + 0 = n := rfl              -- n + 0 computes to n
+theorem t3 (n : Nat) : 0 + n = n := rfl              -- stuck: + recurses on the right
+
+theorem t4 : (n : Nat) → 0 + n = n                   -- needs induction
+  | 0 => rfl
+  | n + 1 => congrArg Nat.succ (t4 n)`} />
+
+`t3` fails because `0 + n` cannot be computed when `n` is a variable: the definition of `+` is stuck waiting for `n` to become `0` or a successor. Propositionally it is true, and `t4` proves it by induction (compiled to `Nat.rec`, Chapter 15).
+
+<LeanNote title="Uniqueness of identity proofs">
+Can two proofs of `a = b` be different? In Lean, no, for two reasons: `Eq` lives in `Prop`, where any two proofs of the same proposition are definitionally equal (Chapter 14), and Lean's kernel has a special reduction for `Eq.rec` (*K-like* reduction) that lets it compute even when the proof is not literally `rfl`. Martin-Löf type theory leaves the question open, and **homotopy type theory** (Chapter 20) builds an entire mathematics on the idea that proofs of equality can be genuinely different paths.
+</LeanNote>
+
+## Summary
+
+- Parameters are fixed across a definition; indices vary per constructor. Indices appear in the recursor's motive.
+- Families like `Vec α n` let types track information about values, and some pattern matches become exhaustive with fewer cases.
+- Impossible cases and index constraints are justified by index unification: conflict, injection and substitution, all reduced to the recursors of the types involved and of equality.
+- Inductive predicates define properties by rules, with inversion for free.
+- Equality is the inductive family generated by `refl`; its recursor (J) gives transport, symmetry, transitivity and congruence.
+- Definitional equality (computation, decided by the kernel) is distinct from propositional equality (a type, proved like any other proposition).
+
+<History title="Families and pattern matching">
+Inductive families were introduced by Peter Dybjer (1991, 1994) and incorporated into CIC by Christine Paulin-Mohring (1993). Thierry Coquand proposed dependent pattern matching for type theory in 1992, together with the first account of how it relates to eliminators; Conor McBride's thesis (1999) and the paper by Goguen, McBride and McKinna (2006) showed how to compile it to eliminators using a unification algorithm on constructor forms. Coquand's original version relied on the principle known as axiom K (uniqueness of identity proofs); Jesper Cockx and colleagues later worked out which parts of the algorithm need K and which don't — a distinction that matters for homotopy type theory.
+</History>

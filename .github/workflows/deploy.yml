@@ -26,9 +26,16 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: |
+            courses/astrophysics/package-lock.json
+            courses/cic/package-lock.json
+            courses/compiler-backends/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm ci --prefix courses/astrophysics
+          npm ci --prefix courses/cic
+          npm ci --prefix courses/compiler-backends
 
       - name: Build
         run: npm run build

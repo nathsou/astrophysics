@@ -1,0 +1,72 @@
+<p className="lede">
+The IR is written for an idealised machine. Real machines are missing operations, have limits on immediates, and support only some types. Legalization is the unglamorous, essential work of rewriting the program into what the target can actually do.
+</p>
+
+## What “legal” means
+
+An operation is **legal** on a target if instruction selection can implement it directly. The IR says `select`, `srem`, `mul`, or a constant `0x9E3779B97F4A7C15`, and the target may have no single instruction for any of them. The **legaliser** rewrites such operations into ones that *are* legal, before or during selection.
+
+<Aside kind="llvm">
+<p>LLVM’s SelectionDAG legaliser works in two phases. <b>Type legalisation</b> <i>promotes</i> small integers to register width, <i>expands</i> wide integers into pairs, <i>splits</i> or <i>widens</i> vectors, and <i>softens</i> floating point to integers on soft-float targets. <b>Operation legalisation</b> then applies, per (operation, type) pair, one of the actions Legal, Promote, Expand, Custom or LibCall, declared in each target’s `TargetLowering` constructor.</p>
+</Aside>
+
+KIR has only two types, so type legalisation is trivial. `i1` values are kept as 0/1 in full 64-bit registers, and `zext` of an `i1` costs nothing (the grammar has a zero-cost rule for it). Production compilers do much more here. On RV64 a 32-bit C `int` add becomes `addw`, which sign-extends its result, because RV64 keeps 32-bit values sign-extended in 64-bit registers. On AArch64 a `char` must be masked or extended at the right moments. Kiln sidesteps all of that by having one integer type.
+
+**Operation** legalisation is where kiln has real work to do.
+
+## Expanding operations
+
+### `select` without a conditional move
+
+AArch64 implements `select` with `csel`, and x86 with `cmov`. Base RISC-V has **no conditional move**. The legaliser expands `select c, t, f` into branch-free arithmetic:
+
+$$ \mathit{mask} = -\,\mathrm{zext}(c) \qquad r = f \oplus \big((t \oplus f) \wedge \mathit{mask}\big) $$
+
+If `c` is 1, the mask is all ones and `r = f ^ t ^ f = t`; if `c` is 0, the mask is zero and `r = f`. That is four instructions instead of a branch that might be mispredicted.
+
+With the **Zicond** extension (ratified in 2023) the legaliser leaves `select` alone. Instead the grammar selects `czero.eqz` and `czero.nez` (“zero the operand if the condition is / is not zero”) and ORs the results.
+
+### Multiplication and division without hardware
+
+RV64I without the **M** extension has no multiply or divide instructions. The legaliser turns each `mul`, `sdiv` and `srem` into a **library call**: `__muldi3`, `__divdi3` and `__moddi3`, the names GCC’s support library `libgcc` uses. Kiln’s runtime implements them in assembly: shift-and-add multiplication, and restoring division, one bit per iteration.
+
+A libcall is a much bigger change than it looks. The function now makes calls, so it needs a stack frame and must save `ra`. Every value live across the multiply must survive a call, which pushes it into callee-saved registers or onto the stack.
+
+<LegalizeExplorer example="max" caption="Legalising for RISC-V. The select example shows the bit trick; turn on Zicond to see czero instead. The div/rem example (collatz) with the M extension off turns division into calls; watch the selected code grow a stack frame." />
+
+### Missing comparisons
+
+RISC-V has `slt` (set if less than) and nothing else that produces a comparison result. `sgt` swaps the operands; `sle` is `!(b < a)`, which is `slt` then `xori 1`; `eq` is `seqz(xor a, b)`. Kiln expresses these as **selection rules** rather than IR rewrites: legalisation and selection overlap, and where a rewrite is purely local it is simpler as a multi-instruction tile. The same goes for AArch64’s `srem` → `sdiv` + `msub`.
+
+## Constants
+
+Every ISA limits the size of **<Term k="immediate">immediates</Term>**, and every backend needs an algorithm to build arbitrary 64-bit constants in registers. The three targets could hardly be more different.
+
+**RISC-V.** `addi` takes a 12-bit signed immediate, and `lui` loads a 20-bit immediate into bits 31:12, sign-extending the result. A 32-bit constant is therefore `lui hi` followed by `addi(w) lo`. The subtlety is that `lo` is *signed*: if bit 11 of the constant is set, `lo` is negative, and `hi` must be one larger to compensate. Hence the famous rounding:
+
+$$ \mathit{hi} = (v + \texttt{0x800}) \gg 12, \qquad \mathit{lo} = v - (\mathit{hi} \ll 12) \in [-2048, 2047]. $$
+
+64-bit constants are built recursively. Split off the sign-extended low 12 bits, shift the rest right past its trailing zeros, materialise that recursively, then `slli` and `addi`. The worst case is eight instructions. Kiln’s implementation follows LLVM’s `RISCVMatInt`, adjusted to be byte-identical with GNU `as`.
+
+**AArch64.** `movz` writes a 16-bit chunk into one of four positions and zeroes the rest; `movk` writes a chunk and keeps the rest. So any constant takes at most four instructions: one per non-zero 16-bit chunk. If most chunks are `0xffff`, start from `movn` (move NOT) instead. And if the constant happens to be a **bitmask immediate** — a rotated run of ones, repeated with period 2, 4, …, 64 — a single `orr x0, xzr, #imm` does it.
+
+**x86-64.** Most instructions take a 32-bit immediate, sign-extended. `mov r64, imm32` is 7 bytes; anything wider needs `movabs`, the only x86 instruction with a full 8-byte immediate, which is 10 bytes long.
+
+<ConstantMaterializer initial="0x9E3779B97F4A7C15" caption="Type any 64-bit constant. Each row shows the instruction, its encoding, and the register value after it executes. Try 0x80000000 (just outside RISC-V’s 32-bit range), 0x5555555555555555 (a bitmask immediate on AArch64) and 2048 (one more than addi can take)." />
+
+<Aside kind="arch">
+<p>Other strategies exist: <b>constant pools</b> load the value from memory next to the code (ARM32’s literal pools; x86 floating-point constants). Some compilers also use <b>rematerialisation</b> to recompute a constant instead of keeping it in a register across a loop (Chapter 14).</p>
+</Aside>
+
+## Addresses and offsets
+
+Two more classes of “too big for the instruction” problems:
+
+- **Global addresses** are unknown until link time. RISC-V uses `auipc` + `addi` (the `lla` pseudo-instruction), AArch64 uses `adrp` + `add :lo12:`, and x86 folds `[rip + disp32]` into the instruction. Each needs **relocations**, the subject of Chapter 19.
+- **Stack offsets** may not fit an immediate if the frame is large: RISC-V’s `sd` reaches only ±2 KiB from `sp`. Frame offsets are only known after register allocation (Chapter 15), when no free register may be left to build a large offset in. LLVM keeps an emergency spill slot and a *register scavenger* for this. Kiln simply limits frame sizes and reports an error beyond that.
+
+Branch distances have the same problem, solved by the assembler’s **relaxation** (Chapter 18).
+
+<Callout kind="key">
+Legalization rewrites what the target lacks into what it has: branch-free arithmetic for `select`, library calls for missing arithmetic, multi-instruction sequences for constants, relocations for addresses. Some of it is an IR pass, and some is folded into instruction selection as multi-instruction tiles.
+</Callout>
