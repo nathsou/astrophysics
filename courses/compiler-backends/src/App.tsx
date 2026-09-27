@@ -66,7 +66,7 @@ function Chapter({ slug, anchor }: { slug: string; anchor?: string }) {
 function Sidebar({ route, open, onNav }: { route: string; open: boolean; onNav: () => void }) {
   const theme = useStore(themeStore);
   const cycle = () => {
-    const next: Theme = theme === 'auto' ? 'dark' : theme === 'dark' ? 'light' : 'auto';
+    const next: Theme = theme === 'system' ? 'light' : theme === 'light' ? 'dark' : 'system';
     themeStore.set(next);
     applyTheme(next);
   };
@@ -82,7 +82,7 @@ function Sidebar({ route, open, onNav }: { route: string; open: boolean; onNav: 
       </a>
       <div className="sidebar-tools">
         <a className="chip-btn primary" href="#/playground" style={{ textDecoration: 'none' }}>▶ Playground</a>
-        <button className="chip-btn" onClick={cycle} title="Theme">{theme === 'auto' ? '◐ auto' : theme === 'dark' ? '☾ dark' : '☀ light'}</button>
+        <button className="chip-btn" onClick={cycle} title={`Theme: ${theme}`}>{theme === 'system' ? '◐ system' : theme === 'dark' ? '☾ dark' : '☀ light'}</button>
       </div>
       <div className="toc">
         {PARTS.map((p) => (
@@ -104,7 +104,7 @@ function Sidebar({ route, open, onNav }: { route: string; open: boolean; onNav: 
 export function App() {
   const route = useRoute();
   const [open, setOpen] = useState(false);
-  useEffect(() => { applyTheme(themeStore.get()); }, []);
+  useEffect(() => { applyTheme(themeStore.get(), false); }, []);
   let page;
   if (route.startsWith('ch/')) {
     const [slug, anchor] = route.slice(3).split('#');

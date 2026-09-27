@@ -86,16 +86,33 @@ export const hideTip = () => tipStore.set(null);
 
 // ------------------------------------------------------------ theme
 
-export type Theme = 'light' | 'dark' | 'auto';
+export type Theme = 'light' | 'dark' | 'system';
 const initialTheme = (): Theme => {
-  try { return (localStorage.getItem('theme') as Theme) || 'auto'; } catch { return 'auto'; }
+  try {
+    const saved = localStorage.getItem('theme') ?? localStorage.getItem('cic-theme');
+    return saved === 'light' || saved === 'dark' ? saved : 'system';
+  } catch { return 'system'; }
 };
 export const themeStore = new Store<Theme>(initialTheme());
-export function applyTheme(t: Theme) {
-  if (t === 'auto') document.documentElement.removeAttribute('data-theme');
-  else document.documentElement.setAttribute('data-theme', t);
-  try { localStorage.setItem('theme', t); } catch { /* private mode */ }
+const themeMedia = typeof matchMedia !== 'undefined' ? matchMedia('(prefers-color-scheme: dark)') : null;
+export function applyTheme(t: Theme, persist = true) {
+  document.documentElement.setAttribute('data-theme', t === 'system' ? (themeMedia?.matches ? 'dark' : 'light') : t);
+  if (persist) {
+    try {
+      localStorage.setItem('theme', t);
+      localStorage.removeItem('cic-theme');
+    } catch { /* private mode */ }
+  }
 }
+themeMedia?.addEventListener('change', () => {
+  if (themeStore.get() === 'system') applyTheme('system', false);
+});
+if (typeof window !== 'undefined') window.addEventListener('storage', (event) => {
+  if (event.key !== 'theme') return;
+  const next = initialTheme();
+  themeStore.set(next);
+  applyTheme(next, false);
+});
 
 export function persisted<T>(key: string, fallback: T): T {
   try {

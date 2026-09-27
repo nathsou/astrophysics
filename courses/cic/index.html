@@ -3,6 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      try {
+        const saved = localStorage.getItem('theme') ?? localStorage.getItem('cic-theme');
+        const preference = saved === 'auto' ? 'system' : saved;
+        document.documentElement.dataset.theme = preference === 'light' || preference === 'dark'
+          ? preference
+          : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      } catch {}
+    </script>
     <meta name="description" content="An interactive course on the Calculus of Inductive Constructions — from the untyped λ-calculus to the type theory of Lean 4, with a real kernel running in the browser." />
     <meta name="theme-color" content="#fbfaf6" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#15171b" media="(prefers-color-scheme: dark)" />

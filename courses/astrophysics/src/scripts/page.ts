@@ -5,14 +5,46 @@ import { vars } from '../lib/runtime/vars';
 import { fmt } from '../lib/ui/controls';
 
 // ---------- Theme ----------
-document.querySelectorAll('[data-action="theme"]').forEach((b) =>
-  b.addEventListener('click', () => {
-    const root = document.documentElement;
-    const next = root.dataset.theme === 'light' ? 'dark' : 'light';
-    root.dataset.theme = next;
-    try { localStorage.setItem('theme', next); } catch {}
+type ThemePref = 'system' | 'light' | 'dark';
+const themeOrder: ThemePref[] = ['system', 'light', 'dark'];
+const themeIcons: Record<ThemePref, string> = { system: '◐', light: '☀', dark: '☾' };
+const media = matchMedia('(prefers-color-scheme: dark)');
+function readTheme(): ThemePref {
+  try {
+    const saved = localStorage.getItem('theme') ?? localStorage.getItem('cic-theme');
+    if (saved === 'light' || saved === 'dark') return saved;
+  } catch {}
+  return 'system';
+}
+let themePreference = readTheme();
+function applyTheme(preference: ThemePref) {
+  themePreference = preference;
+  document.documentElement.dataset.theme = preference === 'system'
+    ? (media.matches ? 'dark' : 'light')
+    : preference;
+  document.querySelectorAll<HTMLButtonElement>('[data-action="theme"]').forEach((button) => {
+    button.textContent = `${themeIcons[preference]} ${preference[0].toUpperCase()}${preference.slice(1)}`;
+    button.title = `Theme: ${preference}. Click to change`;
+    button.setAttribute('aria-label', `Theme: ${preference}. Click to change`);
+  });
+}
+applyTheme(themePreference);
+document.querySelectorAll<HTMLButtonElement>('[data-action="theme"]').forEach((button) =>
+  button.addEventListener('click', () => {
+    const next = themeOrder[(themeOrder.indexOf(themePreference) + 1) % themeOrder.length];
+    applyTheme(next);
+    try {
+      localStorage.setItem('theme', next);
+      localStorage.removeItem('cic-theme');
+    } catch {}
   }),
 );
+media.addEventListener('change', () => {
+  if (themePreference === 'system') applyTheme('system');
+});
+window.addEventListener('storage', (event) => {
+  if (event.key === 'theme') applyTheme(readTheme());
+});
 
 // ---------- Sidebar ----------
 {

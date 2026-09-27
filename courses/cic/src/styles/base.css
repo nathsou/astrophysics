@@ -229,6 +229,7 @@ hr {
   display: inline-flex;
   align-items: center;
   gap: 0.4em;
+  text-decoration: none;
   font-family: var(--font-sans);
   font-size: 0.82rem;
   font-weight: 500;
@@ -262,9 +263,11 @@ hr {
   border-color: var(--accent);
   color: #fff;
 }
-:root[data-theme='dark'] .btn.primary,
-:root:not([data-theme='light']) .btn.primary {
+:root[data-theme='dark'] .btn.primary {
   color: #10132a;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .btn.primary { color: #10132a; }
 }
 .btn.primary:hover {
   filter: brightness(1.07);

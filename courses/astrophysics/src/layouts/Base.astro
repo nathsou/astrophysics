@@ -20,16 +20,26 @@ const published = new Set(
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      const r = document.documentElement;
+      r.dataset.depth = '2';
+      let preference = 'system';
+      try {
+        const saved = localStorage.getItem('theme') ?? localStorage.getItem('cic-theme');
+        if (saved === 'light' || saved === 'dark') preference = saved;
+        const d = localStorage.getItem('depth');
+        if (d === '1' || d === '2' || d === '3') r.dataset.depth = d;
+      } catch {}
+      r.dataset.theme = preference === 'system'
+        ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        : preference;
+    </script>
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&display=swap" rel="stylesheet" />
-    <script is:inline>
-      const r = document.documentElement; r.dataset.depth = '2';
-      try { const t = localStorage.getItem('theme'); if (t) r.dataset.theme = t; const d = localStorage.getItem('depth'); if (d === '1' || d === '2' || d === '3') r.dataset.depth = d; } catch {}
-    </script>
   </head>
   <body data-chapter={current}>
     <button class="btn menu-toggle" aria-label="Menu" aria-controls="site-nav" aria-expanded="false">☰</button>
@@ -56,7 +66,7 @@ const published = new Set(
         ))}
         <div class="part">Depth of explanation</div>
         <DepthControl compact />
-        <div class="tools"><button class="btn" data-action="theme" aria-label="Toggle light or dark theme">◐ Theme</button></div>
+        <div class="tools"><button class="btn" data-action="theme">◐ System</button></div>
       </nav>
       <main><slot /></main>
     </div>
