@@ -76,15 +76,22 @@ export default defineSim({
     let s = 1; // 0 = linear, 1 = logarithmic
     let hover = -1;
 
-    const stage = createStage(host, { aspect: 16 / 7 });
+    const stage = createStage(host, { aspect: 16 / 5 });
     const ctx = stage.canvas.getContext('2d')!;
 
     const loop = new Loop(null, render);
+
+    loop.onDemand = true;
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
-    stage.onResize(() => loop.invalidate());
+    stage.onResize((w) => {
+      const a = w < 520 ? 4 / 3 : 16 / 5;
+      if (stage.el.style.aspectRatio !== String(a)) stage.el.style.aspectRatio = String(a);
+      loop.invalidate();
+    });
 
     const M = { l: 28, r: 28 };
-    const axisY = () => stage.height * 0.56;
+    // Labels need more lanes on a narrow screen: keep at least ~190 px above the axis.
+    const axisY = () => Math.max(stage.height * 0.68, Math.min(stage.height - 50, 190));
 
     function positions(ds: Dataset, W: number): number[] {
       const vs = ds.items.map((i) => i.v);
@@ -113,7 +120,7 @@ export default defineSim({
 
       // Decade ticks (fade in as s → 1) and linear ticks (fade out).
       const map = (v: number) => M.l + ((1 - s) * (v / vmax) + s * ((Math.log10(v) - lmin) / (lmax - lmin))) * pw;
-      const stride = Math.max(1, Math.ceil((lmax - lmin) / 14));
+      const stride = Math.max(1, Math.ceil((lmax - lmin) / Math.min(14, Math.max(3, Math.floor(pw / 44)))));
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
       for (let e = lmin; e <= lmax; e++) {
@@ -147,33 +154,47 @@ export default defineSim({
       ctx.textAlign = 'right';
       ctx.fillText(`${ds.label.toLowerCase()} (${ds.unit}) — ${s > 0.98 ? 'logarithmic' : s < 0.02 ? 'linear' : 'morphing'}`, W - M.r, y0 + 26);
 
-      // Greedy label lanes above the axis.
+      // Greedy label lanes above the axis. A label near the right edge hangs to the LEFT of its
+      // leader line so it is never clipped.
       const order = xs.map((x, i) => ({ x, i })).sort((a, b) => a.x - b.x);
       const lanes: number[] = [];
       const laneOf = new Map<number, number>();
-      const nLanes = Math.max(2, Math.floor((y0 - 20) / 15));
+      const startOf = new Map<number, number>();
+      const nLanes = Math.max(2, Math.floor((y0 - 24) / 15));
       for (const { x, i } of order) {
-        const w = ctx.measureText(ds.items[i].name).width + 10;
-        let L = lanes.findIndex((end) => end < x);
-        if (L < 0 && lanes.length < nLanes) { L = lanes.length; lanes.push(0); }
-        if (L >= 0) { lanes[L] = x + w; laneOf.set(i, L); }
+        const w = ctx.measureText(ds.items[i].name).width;
+        const x0 = x + 3 + w > W - 4 ? x - 3 - w : x + 3;
+        let L = lanes.findIndex((end) => end < x0 - 6 && end < x - 4);
+        if (L < 0 && lanes.length < nLanes) { L = lanes.length; lanes.push(-1e9); }
+        if (L >= 0) { lanes[L] = Math.max(x0 + w, x); laneOf.set(i, L); startOf.set(i, x0); }
       }
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'middle';
+      const laneY = (L: number) => y0 - 16 - L * 15;
+      // Leader lines first, then dots, then haloed labels on top, so no line crosses a label.
       xs.forEach((X, i) => {
         const L = laneOf.get(i);
-        const col = pal.series[i % 5];
-        if (L !== undefined) {
-          const Y = y0 - 16 - L * 15;
-          ctx.strokeStyle = col; ctx.globalAlpha = 0.45;
-          ctx.beginPath(); ctx.moveTo(X + 0.5, y0); ctx.lineTo(X + 0.5, Y); ctx.stroke();
-          ctx.globalAlpha = 1;
-          ctx.fillStyle = i === hover ? pal.accent : pal.fg;
-          ctx.fillText(ds.items[i].name, X + 3, Y);
-        }
-        ctx.fillStyle = col;
+        if (L === undefined) return;
+        ctx.strokeStyle = pal.series[i % 5]; ctx.globalAlpha = 0.45;
+        ctx.beginPath(); ctx.moveTo(X + 0.5, y0); ctx.lineTo(X + 0.5, laneY(L)); ctx.stroke();
+      });
+      ctx.globalAlpha = 1;
+      xs.forEach((X, i) => {
+        ctx.fillStyle = pal.series[i % 5];
         ctx.beginPath(); ctx.arc(X, y0, i === hover ? 5.5 : 4, 0, Math.PI * 2); ctx.fill();
       });
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.lineJoin = 'round';
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = pal.bg;
+      xs.forEach((_, i) => {
+        const L = laneOf.get(i);
+        if (L === undefined) return;
+        const x0 = startOf.get(i)!, Y = laneY(L);
+        ctx.strokeText(ds.items[i].name, x0, Y);
+        ctx.fillStyle = i === hover ? pal.accent : pal.fg;
+        ctx.fillText(ds.items[i].name, x0, Y);
+      });
+      ctx.lineWidth = 1;
 
       // How many objects share the first pixel?
       const firstPx = xs.filter((x) => x - M.l < 1).length;

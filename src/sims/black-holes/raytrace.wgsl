@@ -1,3 +1,6 @@
+// Derivatives are taken after the geodesic loop, where every invocation of a quad has reconverged.
+diagnostic(off, derivative_uniformity);
+
 // Chapter 19 flagship: per-pixel Schwarzschild null-geodesic ray tracer.
 //
 // Units: r_s = 2GM/c² = 1, c = 1. Photon sphere at r = 1.5, ISCO at r = 3.
@@ -63,19 +66,32 @@ fn bbColor(T: f32) -> vec3f {
 }
 
 // ---------- background sky ----------
-fn starLayer(d: vec3f, s: f32) -> vec3f {
+// Stars are points, so each one is drawn as a ~1-pixel spot *in the image*, whatever the lensing does
+// to the sky behind it. J = (∂d/∂x, ∂d/∂y) is the screen-space Jacobian of the escaped direction
+// (from derivatives); solving J·δ = Δ gives the star's offset δ in pixels. Its brightness is multiplied
+// by the lensing magnification μ = (unlensed pixel solid angle) / |∂d/∂x × ∂d/∂y|.
+struct Foot { jx: vec3f, jy: vec3f, gram: vec3f, idet: f32, mu: f32 };
+
+fn starLayer(d: vec3f, s: f32, ft: Foot) -> vec3f {
   let q = d * s;
   let cell = floor(q);
   let h = hash3(cell);
   if (h < 0.88) { return vec3f(0.0); }
   let jit = vec3f(hash3(cell + 1.7), hash3(cell + 3.1), hash3(cell + 5.3)) - 0.5;
-  let dist = length(q - (cell + 0.5 + jit * 0.5));
-  let b = pow((h - 0.88) / 0.12, 4.0) * 4.0 + 0.08;
+  let c = normalize(cell + 0.5 + jit * 0.6);
+  let dl = c - d;
+  // least-squares pixel offset: (JᵀJ) δ = Jᵀ Δ
+  let rx = dot(ft.jx, dl);
+  let ry = dot(ft.jy, dl);
+  let a = (ft.gram.z * rx - ft.gram.y * ry) * ft.idet;
+  let b = (ft.gram.x * ry - ft.gram.y * rx) * ft.idet;
+  let w = exp(-(a * a + b * b) * 1.1);
+  let br = pow((h - 0.88) / 0.12, 6.0) * 9.0 + 0.012;
   let T = 2800.0 + 22000.0 * pow(hash3(cell + 9.1), 3.0);
-  return bbColor(T) * b * exp(-dist * dist * 30.0);
+  return bbColor(T) * br * w * ft.mu;
 }
 
-fn sky(d: vec3f) -> vec3f {
+fn sky(d: vec3f, ft: Foot) -> vec3f {
   if (u.flags2.x > 0.5) {
     // latitude/longitude grid: makes the lensing map obvious
     let phi = atan2(d.y, d.x) / (PI / 12.0);
@@ -94,7 +110,13 @@ fn sky(d: vec3f) -> vec3f {
     let n2 = fbm(d * 7.0 + 4.0);
     c += (vec3f(0.42, 0.20, 0.55) * n1 * n1 * 1.4 + vec3f(0.10, 0.22, 0.40) * n2 * n2) * band * 0.35;
     c += vec3f(0.006, 0.007, 0.012);
-    c += starLayer(d, 70.0) + starLayer(d, 160.0) * 0.5 + starLayer(d.zxy, 330.0) * 0.3;
+    // fade the point stars where one pixel covers several star cells (near the shadow edge)
+    let fp = max(length(ft.jx), length(ft.jy));
+    c += starLayer(d, 70.0, ft) * (1.0 - smoothstep(1.0, 3.0, fp * 70.0));
+    c += starLayer(d, 160.0, ft) * 0.55 * (1.0 - smoothstep(1.0, 3.0, fp * 160.0));
+    var fz = ft;                                                 // the third layer is rotated (d.zxy): rotate J too
+    fz.jx = ft.jx.zxy; fz.jy = ft.jy.zxy;
+    c += starLayer(d.zxy, 330.0, fz) * 0.25 * (1.0 - smoothstep(1.0, 3.0, fp * 330.0));
   }
   if (u.src.w > 0.5) {
     // a background galaxy exactly behind the hole → Einstein ring
@@ -163,6 +185,7 @@ fn aces(x: vec3f) -> vec3f {
 @fragment fn fs(in: VO) -> @location(0) vec4f {
   // Direction n in the static observer's local orthonormal frame.
   let n = normalize(u.fwd.xyz + in.ndc.x * u.eye.w * u.right.w * u.right.xyz + in.ndc.y * u.eye.w * u.up.xyz);
+  let pix0 = length(cross(dpdx(n), dpdy(n)));                 // unlensed solid angle of this pixel
   var p = u.eye.xyz;
   let rc = length(p);
   let rhat = p / rc;
@@ -196,7 +219,15 @@ fn aces(x: vec3f) -> vec3f {
       if (trans < 0.02) { break; }
     }
   }
-  if (escaped) { col += trans * sky(normalize(v)); }
+  // Screen-space footprint of the escaped direction (control flow has reconverged after the loop).
+  let dOut = normalize(v);
+  var ft: Foot;
+  ft.jx = dpdx(dOut);
+  ft.jy = dpdy(dOut);
+  ft.gram = vec3f(dot(ft.jx, ft.jx), dot(ft.jx, ft.jy), dot(ft.jy, ft.jy));
+  ft.idet = 1.0 / max(ft.gram.x * ft.gram.z - ft.gram.y * ft.gram.y, 1e-24);
+  ft.mu = clamp(pix0 / max(length(cross(ft.jx, ft.jy)), 1e-12), 0.0, 25.0);
+  if (escaped) { col += trans * sky(dOut, ft); }
 
   var c = aces(col * u.prm.z);
   c = pow(c, vec3f(1.0 / 2.2));

@@ -90,6 +90,7 @@ export default defineSim({
     const stage = createStage(host, { aspect: 16 / 9 });
     const plot = new Plot(stage.canvas, { x: { min: fn.x[0], max: fn.x[1], label: fn.xLabel }, y: { min: fn.y[0], max: fn.y[1] } });
     const loop = new Loop(null, render);
+    loop.onDemand = true;
 
     const poly = (x: number, n: number) => {
       // Horner's rule in (x − a)

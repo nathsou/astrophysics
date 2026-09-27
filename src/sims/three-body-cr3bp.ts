@@ -21,21 +21,26 @@ interface Particle {
 const TRAIL_LEN = 3000;
 const MAX_PARTICLES = 5;
 
-const PRESETS: { label: string; mu: number; build: (mu: number, L: LagrangePoints) => [number, number, number, number] }[] = [
+// `speed` is the playback rate the preset sets: tadpole and horseshoe librations take tens to
+// hundreds of orbital periods (time units of 1/ω), so they are shown fast-forwarded.
+const PRESETS: { label: string; mu: number; speed: number; build: (mu: number, L: LagrangePoints) => [number, number, number, number] }[] = [
   {
-    label: 'Trojan tadpole', mu: PRESET_MU.sunJupiter.mu,
+    label: 'Trojan tadpole', mu: PRESET_MU.sunJupiter.mu, speed: 10,
     build: (mu, L) => [L.L4[0] - 0.03, L.L4[1] + 0.02, 0.02, -0.01],
   },
   {
-    label: 'Horseshoe', mu: PRESET_MU.earthMoon.mu,
-    build: (mu) => [1 - mu - 1.02 * Math.cbrt(mu / 3) * 3.2, 0, 0, -0.72],
+    // A circular orbit 2% outside the secondary's, started opposite it (by L3): it drifts back
+    // towards the secondary, turns round ~17° short of it, and swings all the way back past L3.
+    // Horseshoes need a small μ; at the Earth–Moon ratio this start would fall into the primary.
+    label: 'Horseshoe', mu: PRESET_MU.sunJupiter.mu, speed: 16,
+    build: () => { const r = 1.02; return [-r, 0, 0, r - 1 / Math.sqrt(r)]; },
   },
   {
-    label: 'L1 transfer', mu: PRESET_MU.earthMoon.mu,
+    label: 'L1 transfer', mu: PRESET_MU.earthMoon.mu, speed: 1,
     build: (mu, L) => [L.L1[0], 0.0, 0.02, 0.36],
   },
   {
-    label: 'Chaotic', mu: PRESET_MU.earthMoon.mu,
+    label: 'Chaotic', mu: PRESET_MU.earthMoon.mu, speed: 1,
     build: (mu, L) => [L.L1[0] - 0.01, 0.02, -0.05, 0.55],
   },
 ];
@@ -47,7 +52,8 @@ export default defineSim({
 
     const wrap = document.createElement('div');
     host.append(wrap);
-    const stage = createStage(wrap, { aspect: 16 / 10, maxDpr: 2 });
+    const narrow = host.getBoundingClientRect().width < 560; // phones: stack the panels / taller plots
+    const stage = createStage(wrap, { aspect: narrow ? 1.3 : 16 / 10, maxDpr: 2 });
     stage.canvas.style.touchAction = 'none';
     stage.canvas.style.cursor = 'crosshair';
     const ctx = stage.canvas.getContext('2d')!;
@@ -134,6 +140,7 @@ export default defineSim({
       const [x, y, vx, vy] = p.build(mu, L);
       launch(x, y, vx, vy);
       muCtl.set(mu);
+      speed = p.speed; speedCtl.set(speed);
       loop.invalidate();
     }
 
@@ -302,7 +309,7 @@ export default defineSim({
     const muCtl = panel.slider('Mass ratio μ', { min: 0.0005, max: 0.45, value: mu, log: true, format: (v) => fmt(v, 3) }, (v) => { setMu(v); loop.invalidate(); });
     panel.toggle('Inertial frame', showInertial, (v) => { showInertial = v; loop.invalidate(); });
     panel.toggle('Labels', showLabels, (v) => { showLabels = v; loop.invalidate(); });
-    panel.slider('Speed', { min: 0.1, max: 4, value: speed, step: 0.05 }, (v) => { speed = v; });
+    const speedCtl = panel.slider('Speed', { min: 0.1, max: 20, value: speed, log: true, format: (v) => `${fmt(v, 2)}×` }, (v) => { speed = v; });
     panel.button('Earth–Moon', () => { setMu(PRESET_MU.earthMoon.mu); muCtl.set(mu); loop.invalidate(); });
     panel.button('Sun–Jupiter', () => { setMu(PRESET_MU.sunJupiter.mu); muCtl.set(mu); loop.invalidate(); });
     panel.button('Equal-ish', () => { setMu(PRESET_MU.equal.mu); muCtl.set(mu); loop.invalidate(); });
@@ -318,6 +325,8 @@ export default defineSim({
       }
       ro.set(`μ = ${fmt(mu, 4)} · μ_crit = ${fmt(MU_CRIT, 4)} · L4/L5 ${stable}${jline}`);
     }
+    // start with something moving: the L1 transfer (Earth–Moon mass ratio, the default)
+    preset(PRESETS[2]);
 
     return {
       setVisible: (v) => loop.setVisible(v),

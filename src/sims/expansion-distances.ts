@@ -14,6 +14,7 @@ export default defineSim({
   mount({ host }) {
     let pal = palette();
     const stage = createStage(host, { aspect: 16 / 10 });
+    if (host.clientWidth < 560) stage.el.style.aspectRatio = '1.1'; // taller on phones
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
     const plot = new Plot(stage.canvas, {
@@ -86,6 +87,7 @@ export default defineSim({
       loop.invalidate();
     }
 
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

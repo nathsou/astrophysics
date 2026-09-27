@@ -79,6 +79,7 @@ export default defineSim({
         EOut.set(`b = ${fmt(b, 3)} r_s`);
       }
     });
+    loop.onDemand = true;
     stage.onResize((w, h, d) => { plot.resize(w, h, d); loop.invalidate(); });
 
     // drag vertically to set the energy line

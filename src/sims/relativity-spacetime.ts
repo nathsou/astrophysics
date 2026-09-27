@@ -187,12 +187,11 @@ export default defineSim({
       ctx.font = '12px Inter, system-ui, sans-serif';
       label(`home: ${fmt(ta, 3)} yr`, 0, ta, homeCol, 'right', 4);
       label(`traveller: ${fmt(ta / gg, 3)} yr`, xa, ta, travCol, 'left', 4);
-      label('turnaround', D_TWIN, tHalf, pal.muted, 'left', 10);
+      label('turnaround', D_TWIN, tHalf, pal.muted, 'left', -8);
       label('Earth', 0, -0.4, homeCol, 'center', 16);
       label(`${D_TWIN} ly`, D_TWIN, -0.4, pal.muted, 'center', 16);
-      label('the "jump": home time the traveller\'s', 0, (tOut + tIn) / 2 + 0.3, pal.bad, 'left', 0);
-      label('notion of "now" skips at turnaround', 0, (tOut + tIn) / 2 - 0.3, pal.bad, 'left', 8);
-      readA.set(`γ = ${fmt(gg, 4)}`);
+      label('the jump', 0, (tOut + tIn) / 2, pal.bad, 'right', 6);
+      readA.set(`γ = ${fmt(gg, 4)} · red bar: home time the traveller's "now" skips at turnaround = ${fmt(tIn - tOut, 3)} yr`);
       readB.set(`home twin ages ${fmt(T, 3)} yr`);
       readC.set(`traveller ages ${fmt(T / gg, 3)} yr`);
     }

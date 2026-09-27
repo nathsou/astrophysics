@@ -84,14 +84,14 @@ For hydrogen (one proton, one electron), balancing the Coulomb attraction agains
 
 <KeyEq title="Bohr energy levels">
 $$
-E_\term{n}{n} = -\frac{13.6\,\text{eV}}{\term{n}{n}^2}
+E_{\term{n}{n}} = -\frac{13.6\,\text{eV}}{\term{n}{n}^2}
 $$
 <Fragment slot="where"><span data-term="n">n</span> is the principal quantum number. $E_n$ is measured relative to the ionised state ($n\to\infty$, $E=0$); all bound states have $E_n < 0$. The $-13.6\,\text{eV}$ ground-state energy is the **Rydberg energy** — the binding energy of hydrogen in its lowest state. Hover <span data-term="n">n</span> to see it highlighted.</Fragment>
 </KeyEq>
 </Fragment>
 </Tiers>
 
-<Level min={3} title="Deriving E_n from Newton's second law and quantised angular momentum">
+<Level min={3} title="Deriving the energy levels from Newton's second law and quantised angular momentum">
 Set the Coulomb attraction equal to the centripetal force required for a circular orbit of radius $r$ and speed $v$:
 
 $$\frac{k e^2}{r^2} = \frac{m_e v^2}{r}, \qquad k = \frac{1}{4\pi\varepsilon_0}.$$
@@ -250,9 +250,9 @@ export function solveElectronDensity(T: number, nTot: number, heFrac = 0.1): num
 }
 ```
 
-For each curated line, the model multiplies a Saha ionisation-stage fraction by a two-level Boltzmann excitation fraction to get a **line strength**, then maps strength to line **depth** with a hand-tuned saturating power law (`maxDepth * strength^gamma`) rather than a real curve-of-growth integral. Depths are then rendered with the pseudo-Voigt profile from the broadening figure, combining thermal-Doppler and pressure widths, and the whole line list is Doppler-shifted by the velocity slider before compositing onto the Planck continuum.
+For each curated line, the model multiplies a Saha ionisation-stage fraction by a two-level Boltzmann excitation fraction to get a **line strength**, then turns that into a line-centre optical depth $\tau$ with a curated opacity scale per line, and maps it to line **depth** with a crude curve of growth, `maxDepth * tau / (1 + tau)`: linear while the line is weak, saturating once its core is opaque. Saturated lines keep strengthening through their wings, so the drawn width also grows as $\sqrt{\tau}$, which is why A-star Balmer lines look so fat. Depths are then rendered with the pseudo-Voigt profile from the broadening figure, combining thermal-Doppler and pressure widths, and the whole line list is Doppler-shifted by the velocity slider before compositing onto the Planck continuum.
 
-**What's real:** the Planck continuum, the Rydberg/Bohr level structure, the Boltzmann and Saha equations themselves, and the pseudo-Voigt line shape are all the genuine physics. **What's simplified, and why:** partition functions are truncated to ground-state degeneracies (full $U(T)$ sums would need tabulated energy levels for every ion); TiO and CH molecular-band strengths are empirical logistic fits to temperature rather than a molecular-equilibrium (Saha-like, but for molecules) solve; and line depth uses a saturating power law rather than integrating the equation of radiative transfer through a model atmosphere. Real spectral-synthesis codes — MOOG, Turbospectrum, SME, or full model-atmosphere codes like PHOENIX — solve the transfer equation layer by layer through a 1D (or 3D, for the state of the art) atmosphere model, with millions of tabulated atomic and molecular transitions and non-LTE corrections where collisions are too rare to keep level populations thermal. This sim is tuned to get the qualitative *and* rough quantitative story right — which lines appear when, and roughly how strong — in a form cheap enough to recompute at 60 fps.
+**What's real:** the Planck continuum, the Rydberg/Bohr level structure, the Boltzmann and Saha equations themselves, and the pseudo-Voigt line shape are all the genuine physics. **What's simplified, and why:** partition functions are truncated to ground-state degeneracies (full $U(T)$ sums would need tabulated energy levels for every ion); TiO and CH molecular-band strengths are empirical logistic fits to temperature rather than a molecular-equilibrium (Saha-like, but for molecules) solve; and line depth uses a one-line curve of growth rather than integrating the equation of radiative transfer through a model atmosphere. Real spectral-synthesis codes — MOOG, Turbospectrum, SME, or full model-atmosphere codes like PHOENIX — solve the transfer equation layer by layer through a 1D (or 3D, for the state of the art) atmosphere model, with millions of tabulated atomic and molecular transitions and non-LTE corrections where collisions are too rare to keep level populations thermal. This sim is tuned to get the qualitative *and* rough quantitative story right — which lines appear when, and roughly how strong — in a form cheap enough to recompute at 60 fps.
 </Hood>
 
 ## The spectral sequence: OBAFGKM(LTY)

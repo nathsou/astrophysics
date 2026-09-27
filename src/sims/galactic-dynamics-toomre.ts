@@ -100,6 +100,7 @@ export default defineSim({
       return device.queue.onSubmittedWorkDone();
     };
 
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

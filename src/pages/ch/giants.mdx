@@ -110,7 +110,7 @@ As a star climbs the RGB, its convective envelope deepens until it reaches layer
 The core mass at the RGB tip for a solar-mass star is almost universal, $M_c \approx 0.48\,M_\odot$, nearly independent of the star's total mass (because the SC/degeneracy limit depends on composition, not much on $M$). The core-mass–luminosity relation is roughly $L \propto M_c^{7}$ (an extremely steep dependence, from detailed shell-burning models), so a small further rise in core mass from 0.47 to 0.48 $M_\odot$ can raise $L$ several-fold. That steepness is *why* the RGB luminosity function has a sharp "tip" — used as a standard candle (the tip of the red giant branch, TRGB) almost as precise as Cepheids, and with no dust-extinction complications from pulsation.
 </Fermi>
 
-<Aside>**In the real universe.** Betelgeuse is not on the RGB — it is a much more massive red *supergiant* (see below) — but the Sun will pass through an RGB phase reaching about 170 $R_\odot$, engulfing Mercury and Venus. See the flagship simulation and the Sun's-fate figure later in this chapter.</Aside>
+<Aside>**In the real universe.** Betelgeuse is not on the RGB — it is a much more massive red *supergiant* (see below) — but the Sun will pass through an RGB phase reaching roughly 170–260 $R_\odot$ (0.8–1.2 AU, depending on the model), engulfing Mercury and Venus. See the flagship simulation and the Sun's-fate figure later in this chapter.</Aside>
 
 ## Degenerate cores and the helium flash
 
@@ -219,7 +219,7 @@ Stars above about $8$–$10\,M_\odot$ never become degenerate on the giant branc
 The most massive stars lose so much of their envelope to radiation-driven winds that they expose their hot, helium-burning (or later) interior directly as a **Wolf–Rayet star**, and can undergo violent, episodic eruptions as **luminous blue variables (LBVs)** — Eta Carinae, pictured above, is the archetype, having thrown off roughly 10–20 solar masses of material in its 1840s Great Eruption while remaining intact.
 
 <Level min={2} title="Why advanced burning stages get so short, so fast">
-Once the core is hot enough, a new energy-loss channel opens up that is negligible everywhere else in stellar evolution: **neutrino losses**. Above a few $\times10^8$–10^9 K, thermal processes (pair annihilation, photo-neutrino, and plasmon-decay processes) produce neutrino–antineutrino pairs that escape the star instantly — the star is transparent to them — carrying energy away far faster than photons ever could. Because the neutrino emission rate rises extremely steeply with temperature, each successive burning stage in a massive star's core must run hotter and hence *much* faster than the last, simply to replace the energy leaking out as neutrinos as fast as it leaks. The result is the "onion" structure of a pre-supernova massive star: concentric shells of H, He, C, Ne, O and Si burning simultaneously around an inert iron core, with each successive fuel burning for a dramatically shorter time than the one before.
+Once the core is hot enough, a new energy-loss channel opens up that is negligible everywhere else in stellar evolution: **neutrino losses**. Above a few $\times 10^8$ to $10^9$ K, thermal processes (pair annihilation, photo-neutrino, and plasmon-decay processes) produce neutrino–antineutrino pairs that escape the star instantly — the star is transparent to them — carrying energy away far faster than photons ever could. Because the neutrino emission rate rises extremely steeply with temperature, each successive burning stage in a massive star's core must run hotter and hence *much* faster than the last, simply to replace the energy leaking out as neutrinos as fast as it leaks. The result is the "onion" structure of a pre-supernova massive star: concentric shells of H, He, C, Ne, O and Si burning simultaneously around an inert iron core, with each successive fuel burning for a dramatically shorter time than the one before.
 </Level>
 
 <Sim name="giants-onion" minHeight={360}>
@@ -263,7 +263,7 @@ Brighter. The Leavitt law has a negative coefficient on $\log_{10}P$, and $M_V$ 
 </Predict>
 
 <Sim name="giants-cepheid" minHeight={380}>
-**Drag a star across the instability strip, then read its distance off from its period.** Left: the HR diagram, with the diagonal instability strip shaded. Drag the point to change the star's luminosity and temperature; its pulsation period (from the period–mean-density relation) updates live. Right: the period–luminosity relation itself. Set an apparent magnitude to see the implied distance — this is literally how the cosmic distance ladder's first rung works.
+**Drag a star across the instability strip, then read its distance off from its period.** Left: the HR diagram, with the diagonal instability strip shaded. Drag the point to change the star's luminosity and temperature; its pulsation period (from the period–mean-density relation) updates live, and the star visibly pulsates. Outside the strip it is stable and does not pulsate at all. Right: the period–luminosity relation itself. Set an apparent magnitude to see the implied distance — this is literally how the cosmic distance ladder's first rung works.
 </Sim>
 
 ## The whole story: simulating stellar evolution, and the Sun's fate
@@ -275,7 +275,7 @@ For low- and intermediate-mass stars, core helium burning (the horizontal branch
 </Predict>
 
 <Sim name="giants-evolution" size="full" minHeight={620}>
-**The life of a star, animated.** Pick a mass (or drag the mass slider from $0.8$ to $40\,M_\odot$), then scrub or press play through its post-main-sequence evolution. Three synchronised views: the HR diagram track (grey curve, with a marker for the current point); a log-zoomed, blackbody-coloured rendering of the star itself (watch it swell, pulse, blow a planetary-nebula shell, or flash as a supernova); and a schematic cross-section of the star's composition layers and burning shells below. Try 1 $M_\odot$ for the Sun's own fate, then 15 or 25 $M_\odot$ for a massive star's much faster, more violent ending.
+**The life of a star, animated.** Pick a mass (or drag the mass slider from $0.8$ to $40\,M_\odot$), then scrub or press play through its post-main-sequence evolution. Three synchronised views: the HR diagram track (grey curve, with a marker for the current point); a log-zoomed, blackbody-coloured rendering of the star itself (watch it swell, pulse, blow a planetary-nebula shell, or flash as a supernova); and a schematic cutaway of the star's composition layers below, with the burning core or shells in red. Try 1 $M_\odot$ for the Sun's own fate, then 15 or 25 $M_\odot$ for a massive star's much faster, more violent ending.
 </Sim>
 
 <Hood title="How the tracks were built, and how MESA actually steps through time">
@@ -297,20 +297,20 @@ export function stateAt(mass: number, s: number): EvolState {
   let age = 0;
   for (let i = 0; i < idx; i++) age += phases[i].duration;   // real elapsed age, non-uniform in s
   age += spec.duration * frac;
-  return { phase: spec.id, phaseFrac: frac, age, /* logL, logT, R, Mcore linearly interpolated */ };
+  return { phase: spec.id, phaseFrac: frac, age, /* logL, logT, R, Mcore interpolated within the phase */ };
 }
 ```
 
-The scrubber `s` is **phase-weighted**: each of the seven phases gets an *equal* 1/7 share of the slider, regardless of its true duration. Without this, a linear-in-time scrubber would be unusable — the main sequence and core-helium-burning phases would occupy 99.9% of the slider's length, and the RGB ascent, flash, and planetary nebula (each genuinely fast but genuinely important) would be compressed into a pixel or two. The `age` readout, computed from the *true* phase durations, still shows just how non-uniform real stellar time is: the marker crawls for a long time in the "Main sequence" 1/7 of the slider, then visibly races through the last two or three 1/7-segments in what the age readout reveals to be a cosmic eyeblink. This mirrors a real, practical MESA concept called `PhaseVars`/mesh + timestep control by evolutionary phase, though MESA's actual adaptivity is driven by numerical error control, not a fixed phase list.
+The scrubber `s` is **phase-weighted**: each of the seven phases gets an *equal* 1/7 share of the slider, regardless of its true duration. Without this, a linear-in-time scrubber would be unusable — the main sequence and core-helium-burning phases would occupy 99.9% of the slider's length, and the RGB ascent, flash, and planetary nebula (each genuinely fast but genuinely important) would be compressed into a pixel or two. The `age` readout, computed from the *true* phase durations, still shows just how non-uniform real stellar time is: the marker crawls for a long time in the "Main sequence" 1/7 of the slider, then visibly races through the last two or three 1/7-segments in what the age readout reveals to be a cosmic eyeblink. Real stellar-evolution codes such as MESA face the same problem in time rather than on a slider: they shrink the timestep through the fast phases, though their adaptivity is driven by numerical error control, not by a fixed list of phases.
 </Hood>
 
 ### The Sun's fate, and its planets' slow retreat
 
 <Sim name="giants-sun-future" minHeight={420}>
-**The Sun's radius over the next ~7.6 billion years, with the inner planets.** Drag the time slider. Watch the Sun swell past Mercury and Venus on the RGB, shrink abruptly at the helium flash, swell again (further, and to a lower temperature) on the AGB, then collapse to a white dwarf — while the surviving planets' orbits *expand*, because the Sun's own mass loss loosens its gravitational grip ($a \propto 1/M$ for slow, symmetric mass loss).
+**The Sun's radius over the next ~7.7 billion years, with the inner planets.** Drag the time slider; it and the time axis are logarithmic in the time left, so the brief giant phases get room. Watch the Sun swell past Mercury and Venus at the tip of the RGB, shrink abruptly at the helium flash, swell again on the AGB (in this model, after Schröder & Smith 2008, not quite as far, because it has already lost a third of its mass), then collapse to a white dwarf. Meanwhile the surviving planets' orbits *expand*, because the Sun's mass loss loosens its gravitational grip ($a \propto 1/M$ for slow, symmetric mass loss). Tidal drag, which probably pulls the Earth in anyway, is not modelled.
 </Sim>
 
-<Aside>**Earth's fate is genuinely uncertain.** Detailed models (e.g. Schröder & Smith 2008) put the Sun's RGB-tip radius at roughly $170$–$180\,R_\odot$ (about $0.8$ AU) — enough to engulf Mercury and Venus outright — while Earth's current orbit at 1 AU sits close enough to the edge that the outcome depends sensitively on the competing rates of solar mass loss (which pushes Earth's orbit outward) and tidal drag inside the swollen envelope (which pulls it inward). Most recent models give Earth roughly 50/50 odds either way. Either way, the oceans boil and the biosphere ends long before the star physically reaches Earth's orbit — well before the RGB tip, in fact, as luminosity climbs to over 1,000 $L_\odot$.</Aside>
+<Aside>**Earth's fate is genuinely uncertain.** Detailed models put the Sun's RGB-tip radius anywhere from about $170\,R_\odot$ (0.8 AU; Sackmann et al. 1993) to $256\,R_\odot$ (1.2 AU; Schröder & Smith 2008, with stronger mass loss): enough to engulf Mercury and Venus outright. Earth sits close enough to the edge that the outcome depends on the competing effects of solar mass loss (which pushes its orbit outward, to about 1.5 AU) and tidal drag from the swollen envelope (which pulls it inward). Schröder & Smith conclude that the Earth is probably dragged in; other models let it survive, scorched. Either way, the oceans boil and the biosphere ends long before the star physically reaches Earth's orbit — well before the RGB tip, in fact, as luminosity climbs to over 1,000 $L_\odot$.</Aside>
 
 ### Binary evolution, briefly
 

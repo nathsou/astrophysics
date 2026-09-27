@@ -26,6 +26,17 @@ export default defineSim({
     const atStage = createStage(leftCol, { aspect: 4 / 3 });
     const planeStage = createStage(rightCol, { aspect: 1.15 });
     const gridStage = createStage(rightCol, { aspect: 1.7 });
+    // Wide: a(t) fills the full height of the right column. Narrow: stack everything.
+    leftCol.style.cssText = 'display:flex;flex-direction:column;min-width:0;';
+    const layout = () => {
+      const wide = host.clientWidth >= 600;
+      wrap.style.gridTemplateColumns = wide ? 'minmax(0,1.3fr) minmax(0,1fr)' : 'minmax(0,1fr)';
+      atStage.el.style.aspectRatio = wide ? 'auto' : String(4 / 3);
+      atStage.el.style.flex = wide ? '1 1 auto' : '';
+    };
+    layout();
+    const ro = new ResizeObserver(layout);
+    ro.observe(host);
 
     const atPlot = new Plot(atStage.canvas, {
       x: { min: -20, max: 20, label: 't − t₀ (Gyr)' },
@@ -99,38 +110,41 @@ export default defineSim({
       const { dpr } = planeStage;
       planePlot.resize(planeStage.width, planeStage.height, dpr);
       planePlot.draw(() => {
-        // shaded regions via dense scatter classification (cheap, looks like a heatmap)
-        const N = 46;
-        for (let i = 0; i < N; i++) {
-          for (let j = 0; j < N; j++) {
-            const om = planePlot.o.x.min + (planePlot.o.x.max - planePlot.o.x.min) * (i + 0.5) / N;
-            const ol = planePlot.o.y.min + (planePlot.o.y.max - planePlot.o.y.min) * (j + 0.5) / N;
-            const p: OmegaParams = { Om: om, OL: ol, Or: 0 };
-            const decel = q0(p) > 0;
-            // recollapse test: does E2(a) go negative for some a>1?
-            let recollapse = false;
-            for (let k = 1; k <= 40; k++) { const a = 1 + k * 0.5; if (E2(a, p) < 0) { recollapse = true; break; } }
-            let color = decel ? pal.faint : pal.grid;
-            if (recollapse) color = 'rgba(220,90,90,0.16)';
-            const x0 = planePlot.px(om - (planePlot.o.x.max - planePlot.o.x.min) / N / 2);
-            const y0 = planePlot.py(ol + (planePlot.o.y.max - planePlot.o.y.min) / N / 2);
-            const cellW = planePlot.pw / N, cellH = planePlot.ph / N;
-            planePlot.ctx.fillStyle = color;
-            planePlot.ctx.fillRect(x0, y0, cellW + 1, cellH + 1);
-          }
-        }
+        // Regions from the exact (Ωr = 0) boundaries of Carroll, Press & Turner (1992):
+        //  • accelerating today iff q₀ = Ωm/2 − ΩΛ < 0;
+        //  • recollapse iff ΩΛ < 0 (Ωm ≤ 1) or ΩΛ < 4Ωm cos³[⅓ arccos((1−Ωm)/Ωm) + 4π/3] (Ωm > 1);
+        //  • no Big Bang (a bounce in the past) iff ΩΛ > 4Ωm f³[⅓ f⁻¹((1−Ωm)/Ωm)], f = cosh (Ωm < ½) or cos.
+        const { ctx } = planePlot;
+        const X0 = planePlot.o.x.min, X1 = planePlot.o.x.max, Y0 = planePlot.o.y.min, Y1 = planePlot.o.y.max;
+        const recollapseOL = (om: number) => om <= 1 ? 0 : 4 * om * Math.cos(Math.acos((1 - om) / om) / 3 + (4 * Math.PI) / 3) ** 3;
+        const bounceOL = (om: number) => {
+          if (om <= 1e-4) return 1;
+          const r = (1 - om) / om;
+          return 4 * om * (om < 0.5 ? Math.cosh(Math.acosh(r) / 3) : Math.cos(Math.acos(Math.min(1, r)) / 3)) ** 3;
+        };
+        const region = (lower: (om: number) => number, upper: (om: number) => number, fill: string, alpha: number) => {
+          ctx.beginPath();
+          const n = 120;
+          for (let k = 0; k <= n; k++) { const om = X0 + ((X1 - X0) * k) / n; const X = planePlot.px(om), Y = planePlot.py(Math.min(Y1, Math.max(Y0, upper(om)))); k ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); }
+          for (let k = n; k >= 0; k--) { const om = X0 + ((X1 - X0) * k) / n; ctx.lineTo(planePlot.px(om), planePlot.py(Math.min(Y1, Math.max(Y0, lower(om))))); }
+          ctx.closePath();
+          ctx.globalAlpha = alpha; ctx.fillStyle = fill; ctx.fill(); ctx.globalAlpha = 1;
+        };
+        region((om) => om / 2, () => Y1, pal.accent, 0.07);                 // accelerating
+        region(() => Y0, recollapseOL, pal.bad, 0.16);                       // recollapse
+        region(bounceOL, () => Y1, pal.series[4], 0.2);                      // no Big Bang
+        planePlot.fn((om) => om / 2, { color: pal.accent, dash: [2, 3], width: 1, alpha: 0.6 });
+        planePlot.fn(recollapseOL, { color: pal.bad, dash: [2, 3], width: 1 });
+        planePlot.fn(bounceOL, { color: pal.series[4], dash: [2, 3], width: 1 });
         // flat universe line: OL = 1 - Om
         planePlot.fn((om) => 1 - om, { color: pal.muted, dash: [4, 3] });
-        planePlot.text('flat', planePlot.px(1.3), planePlot.py(1 - 1.3) - 6, { color: pal.muted });
-        // no-big-bang / recollapse boundary trace (numeric)
-        {
-          const xs: number[] = [], ys: number[] = [];
-          for (let om = 0.02; om <= 1.6; om += 0.02) {
-            const aRoot = findTangentA(om);
-            if (aRoot) { xs.push(om); ys.push(0.5 * om / (aRoot * aRoot * aRoot)); }
-          }
-          planePlot.line(Float64Array.from(xs), Float64Array.from(ys), { color: pal.bad, dash: [2, 3] });
-        }
+        const lab = (t: string, om: number, ol: number, color: string, align: CanvasTextAlign = 'left') =>
+          planePlot.text(t, planePlot.px(om), planePlot.py(ol), { color, align, size: 10 });
+        lab('flat', 1.3, 1 - 1.3 + 0.08, pal.muted);
+        lab('accelerating', 0.62, 1.12, pal.accent);
+        lab('decelerating', 1.55, 0.45, pal.muted, 'right');
+        lab('recollapses', 0.05, -0.85, pal.bad);
+        lab('no Big Bang', 0.05, 1.68, pal.series[4]);
         // approximate observational ellipses (illustrative only)
         drawEllipse(0.30, 0.70, 0.10, 0.09, pal.series[1], 'SNe Ia (approx.)');
         drawEllipse(0.31, 0.69, 0.03, 0.09, pal.series[2], 'CMB (approx.)');
@@ -138,8 +152,12 @@ export default defineSim({
         // current point
         planePlot.point(Om, OL, { color: pal.accent, r: 6, stroke: pal.bg ?? '#000' });
       });
+      // legend for the (illustrative) constraint ellipses
+      const lx = planePlot.m.l + planePlot.pw - 6;
+      [['SNe Ia', pal.series[1]], ['CMB', pal.series[2]], ['BAO', pal.series[3]]].forEach(([t, c], i) =>
+        planePlot.text(`◯ ${t}`, lx, planePlot.m.t + 14 + i * 13, { color: c, align: 'right', size: 10 }));
 
-      function drawEllipse(cx: number, cy: number, rx: number, ry: number, color: string, label: string) {
+      function drawEllipse(cx: number, cy: number, rx: number, ry: number, color: string, _label: string) {
         const { ctx } = planePlot;
         ctx.beginPath();
         for (let k = 0; k <= 40; k++) {
@@ -154,20 +172,6 @@ export default defineSim({
         ctx.globalAlpha = 0.85;
         ctx.stroke();
         ctx.globalAlpha = 1;
-        void label;
-      }
-
-      function findTangentA(om: number): number | null {
-        // find a>1 where E2(a)=0 and dE2/da=0 simultaneously for Or=0: Ok=-1.5*Om/a
-        // solve 1-om-0.5*om/a^3 = -1.5*om/a  for a, by bisection over a in (1,60)
-        const f = (a: number) => (1 - om - 0.5 * om / (a * a * a)) + 1.5 * om / a;
-        let lo = 1.001, hi = 60, flo = f(lo), fhi = f(hi);
-        if (flo * fhi > 0) return null;
-        for (let it = 0; it < 40; it++) {
-          const mid = 0.5 * (lo + hi), fm = f(mid);
-          if (flo * fm <= 0) hi = mid; else { lo = mid; flo = fm; }
-        }
-        return 0.5 * (lo + hi);
       }
     }
 
@@ -288,6 +292,7 @@ export default defineSim({
       loop.invalidate();
     }
 
-    return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
+    return { setVisible: (v) => loop.setVisible(v), destroy: () => { ro.disconnect(); loop.destroy(); } };
   },
 });

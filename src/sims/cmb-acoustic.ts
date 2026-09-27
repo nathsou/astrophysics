@@ -66,6 +66,7 @@ export default defineSim({
     panel.toggle('Silk damping', damping, (v) => { damping = v; loop.invalidate(); });
     const rRatio = panel.readout('1st/2nd peak power (undamped) =');
 
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

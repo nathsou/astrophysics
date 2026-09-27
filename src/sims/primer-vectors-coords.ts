@@ -6,6 +6,7 @@
 //    dot product of the unit vectors (and, more robustly, from atan2(|a×b|, a·b)).
 
 import { defineSim, Loop, createStage } from '../lib/runtime/sim';
+import { narrowAspect } from './primer-common/stack';
 import { Panel, fmt } from '../lib/ui/controls';
 import { palette, onThemeChange } from '../lib/ui/theme';
 
@@ -35,8 +36,11 @@ export default defineSim({
     let A = { name: 'Betelgeuse', ra: 88.793, dec: 7.407 }, B = { name: 'Rigel', ra: 78.634, dec: -8.202 };
 
     const stage = createStage(host, { aspect: 16 / 10 });
+
+    narrowAspect(stage, 16 / 10, 1.1);
     const ctx = stage.canvas.getContext('2d')!;
     const loop = new Loop(null, render);
+    loop.onDemand = true;
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
     stage.onResize(() => loop.invalidate());
 
@@ -68,8 +72,11 @@ export default defineSim({
     }
     function label(p: V3, text: string, color: string, dx = 6, dy = -6) {
       const q = proj(p);
-      ctx.fillStyle = color; ctx.font = '12px Inter, system-ui, sans-serif'; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
-      ctx.fillText(text, q[0] + dx, q[1] + dy);
+      ctx.fillStyle = color; ctx.font = '12px Inter, system-ui, sans-serif'; ctx.textBaseline = 'bottom';
+      // keep labels inside the canvas: flip to the left of the point near the right edge
+      const flip = q[0] + dx + ctx.measureText(text).width > stage.width - 4;
+      ctx.textAlign = flip ? 'right' : 'left';
+      ctx.fillText(text, flip ? q[0] - dx : q[0] + dx, q[1] + dy);
     }
     function dotAt(p: V3, color: string, rad = 5) {
       const q = proj(p);

@@ -12,8 +12,8 @@
 
 import { defineSim, Loop, createStage } from '../lib/runtime/sim';
 import { Panel, fmt } from '../lib/ui/controls';
-import { Plot, Series } from '../lib/ui/plot';
-import { palette, onThemeChange } from '../lib/ui/theme';
+import { Plot } from '../lib/ui/plot';
+import { palette, onThemeChange, currentTheme } from '../lib/ui/theme';
 import { OrbitCamera } from '../lib/runtime/camera';
 
 const c = 2.99792458e8;
@@ -56,7 +56,7 @@ function project(vp: Float32Array, x: number, y: number, z: number, W: number, H
 }
 
 export default defineSim({
-  mount({ host }) {
+  mount({ host, onDestroy }) {
     let pal = palette();
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
@@ -66,16 +66,24 @@ export default defineSim({
     const scene = createStage(wrap, { aspect: 1.1 });
     const side = createStage(wrap, { aspect: 1 / 0.92 });
     scene.el.style.borderRight = '1px solid var(--rule)';
+    // side by side on wide screens, stacked on phones
+    const stackRO = new ResizeObserver(() => {
+      const narrow = wrap.clientWidth < 560;
+      wrap.style.gridTemplateColumns = narrow ? 'minmax(0,1fr)' : 'minmax(0,1.3fr) minmax(0,1fr)';
+      scene.el.style.borderRight = narrow ? '' : '1px solid var(--rule)';
+      scene.el.style.borderBottom = narrow ? '1px solid var(--rule)' : '';
+    });
+    stackRO.observe(wrap);
+    onDestroy(() => stackRO.disconnect());
     const ctx = scene.canvas.getContext('2d')!;
 
-    const cam = new OrbitCamera(scene.canvas, { distance: 7, yaw: 0.7, pitch: 0.45, autoRotate: 0.04 });
+    const cam = new OrbitCamera(scene.canvas, { distance: 9, yaw: 0.7, pitch: 0.45, autoRotate: 0.04 });
     cam.onChange = () => loop.invalidate();
 
     // --- state ---
     let P = 0.03313, Pdot = 4.21e-13, alphaDeg = 70, zetaDeg = 65, dm = 56.8;
-    let timeScale = 1, view: 'profile' | 'waterfall' = 'profile';
+    let timeScale = Math.max(1e-4, Math.min(5, P / 1.5)), view: 'profile' | 'waterfall' = 'profile';
     let elapsed = 0; // real seconds of simulated pulsar time (before display slow-down)
-    const profile = new Series(2000);
     let listening = false;
     let audioCtx: AudioContext | null = null;
     let audioPhaseAcc = 0;
@@ -106,7 +114,6 @@ export default defineSim({
     function reset() {
       elapsed = 0;
       audioPhaseAcc = 0;
-      profile.clear();
       wfCtx.fillStyle = '#000'; wfCtx.fillRect(0, 0, WF_W, WF_H);
     }
     reset();
@@ -175,7 +182,9 @@ export default defineSim({
       if (Math.floor(audioPhaseAcc) > Math.floor(prevAudioPhase)) click();
     }, render, 1 / 120);
 
+    let uiTick = () => {};
     function render() {
+      uiTick();
       const displayPhase = ((2 * Math.PI * elapsed * timeScale) / P) % (2 * Math.PI * 1000);
       const alpha = (alphaDeg * Math.PI) / 180;
       const I = intensityAt(displayPhase);
@@ -223,7 +232,7 @@ export default defineSim({
 
       // emission beams (cones around ±m̂), drawn as translucent fans, additive-ish glow
       const rho = beamWidthRad(P);
-      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalCompositeOperation = currentTheme() === 'dark' ? 'lighter' : 'source-over';
       for (const sign of [1, -1]) {
         const [mx, my, mz] = rotAxis(0, 0, sign, alpha, displayPhase);
         // build an orthonormal basis around m
@@ -282,12 +291,14 @@ export default defineSim({
 
       // --- side panel: profile or waterfall ---
       const rotCount = (elapsed * timeScale) / P;
-      profile.push(rotCount % 2, I);
       if (view === 'profile') {
-        plot.o.x.min = Math.max(0, Math.floor(rotCount % 2) - 1 + (rotCount % 1 < 0.02 ? 0 : 0));
+        // The folded pulse profile (what a radio telescope builds up by averaging many rotations),
+        // with a marker at the star's current rotational phase.
+        const ph = (rotCount % 2 + 2) % 2;
         plot.draw(() => {
-          const [xs, ys] = profile.linear();
-          plot.line(xs, ys, { color: pal.accent });
+          plot.fn((x) => intensityAt(2 * Math.PI * x), { color: pal.accent, width: 2, samples: 600 });
+          plot.vline(ph, { color: pal.good, dash: [4, 3] });
+          plot.point(ph, I, { r: 5, color: pal.good });
         });
       } else {
         // shift waterfall left by 1 px, draw a fresh column at the retarded phase per channel
@@ -330,16 +341,16 @@ export default defineSim({
         const p = PRESETS.find((q) => q.label === v)!;
         P = p.P; Pdot = p.Pdot; alphaDeg = p.alphaDeg; zetaDeg = p.zetaDeg; dm = p.dm;
         periodCtl.set(P); alphaCtl.set(alphaDeg); zetaCtl.set(zetaDeg); dmCtl.set(dm);
-        timeScale = Math.max(0.02, Math.min(5, 0.35 / P)); tsCtl.set(timeScale);
+        timeScale = Math.max(1e-4, Math.min(5, P / 1.5)); tsCtl.set(timeScale);
         reset(); loop.invalidate();
       },
     );
     panel.playPause(() => loop.paused, (v) => (loop.paused = v));
     panel.button('Reset phase', () => { reset(); loop.invalidate(); });
-    const periodCtl = panel.slider('Period P', { min: 0.0014, max: 10, value: P, log: true, unit: 's', format: (v) => (v < 1 ? `${fmt(v * 1000, 3)} ms` : `${fmt(v, 3)} s`) }, (v) => { P = v; loop.invalidate(); });
+    const periodCtl = panel.slider('Period P', { min: 0.0014, max: 10, value: P, log: true, format: (v) => (v < 1 ? `${fmt(v * 1000, 3)} ms` : `${fmt(v, 3)} s`) }, (v) => { P = v; loop.invalidate(); });
     const alphaCtl = panel.slider('Inclination α', { min: 0, max: 90, value: alphaDeg, step: 1, unit: '°' }, (v) => { alphaDeg = v; loop.invalidate(); });
     const zetaCtl = panel.slider('Viewing angle ζ', { min: 0, max: 90, value: zetaDeg, step: 1, unit: '°' }, (v) => { zetaDeg = v; loop.invalidate(); });
-    const tsCtl = panel.slider('Time scale', { min: 0.02, max: 5, value: timeScale, log: true }, (v) => (timeScale = v));
+    const tsCtl = panel.slider('Time scale', { min: 1e-4, max: 5, value: timeScale, log: true }, (v) => (timeScale = v));
     const dmCtl = panel.slider('DM (waterfall)', { min: 0, max: 300, value: dm, step: 1, unit: 'pc cm⁻³' }, (v) => (dm = v));
     panel.select('View', [{ value: 'profile', label: 'Pulse profile' }, { value: 'waterfall', label: 'Dispersion waterfall' }], view, (v) => { view = v; loop.invalidate(); });
     panel.toggle('Listen (spin-rate clicks)', listening, (v) => { listening = v; if (v) ensureAudio(); });
@@ -347,12 +358,11 @@ export default defineSim({
     const edotOut = panel.readout('Ė ≈');
     const ageOut = panel.readout('τc ≈');
 
-    const uiTick = () => {
+    uiTick = () => {
       const d = derived();
       bOut.set(`${fmt(d.Btesla, 3)} T (${fmt(d.Btesla * 1e4, 3)} G)`);
       edotOut.set(`${fmt(d.EdotW, 3)} W`);
       ageOut.set(d.tauYr > 1e3 ? `${fmt(d.tauYr, 3)} yr` : `${fmt(d.tauYr * 365.25, 3)} days`);
-      requestAnimationFrame(uiTick);
     };
     uiTick();
 

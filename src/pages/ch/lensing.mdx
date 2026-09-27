@@ -109,7 +109,14 @@ In 1801 the Bavarian astronomer Johann Georg von Soldner asked whether starlight
 Arthur Eddington, a Quaker and conscientious objector, was spared wartime service partly so that he could lead the test. Two teams photographed the Hyades stars around the eclipsed Sun on 29 May 1919: Eddington and Cottingham on the island of Príncipe, Crommelin and Davidson at Sobral in Brazil. Príncipe was clouded until the last minutes and yielded only a couple of usable plates; Sobral's main telescope suffered from a focus shift in the heat. The published result favoured Einstein's 1.75″ over Newton's 0.87″, and the announcement at the Royal Society in November made Einstein an overnight celebrity. Critics have long accused Eddington of cherry-picking plates; a 1979 remeasurement of the Sobral plates and modern reanalyses broadly vindicate his choices, but the error bars were large. Today radio interferometry of quasars near the Sun confirms the GR value to about 1 part in 10⁴, and the *Gaia* satellite corrects every star it measures for bending by the Sun and even by Jupiter.
 </History>
 
+<Tiers>
+<Fragment slot="l1">
+Bending from different pieces of mass simply adds up: the pull of a whole galaxy on a light ray is the sum of the tiny bends from each of its stars and dark-matter clumps. That simple bookkeeping is what makes lensing a solvable problem.
+</Fragment>
+<Fragment slot="l2">
 Because the equations are linear in the weak field, deflections from different pieces of mass simply add. For an extended lens you sum $4G\,dm/(c^2 b)$ vectors over every mass element. That additivity is what makes lensing tractable.
+</Fragment>
+</Tiers>
 
 ## The thin lens and the lens equation
 
@@ -327,7 +334,14 @@ For a massive elliptical with $\sigma_v = 250$ km/s, $4\pi\sigma_v^2/c^2 = 8.7\t
 </Tiers>
 
 
+<Tiers>
+<Fragment slot="l1">
+Real lens galaxies are flattened rather than perfectly round, and neighbouring galaxies add a sideways stretch of their own. A flattened lens plus a little stretch from its neighbours reproduces most of the several hundred known galaxy lenses surprisingly well.
+</Fragment>
+<Fragment slot="l2">
 Real lens galaxies are flattened. The **singular isothermal ellipsoid (SIE)** replaces the circular contours by ellipses of axis ratio $q$, and it has a closed-form deflection involving $\arctan$ and $\operatorname{artanh}$ (see the Hood). Together with external shear, "SIE + γ" fits most of the several hundred known galaxy-scale lenses surprisingly well.
+</Fragment>
+</Tiers>
 
 ### Critical curves and caustics
 
@@ -380,10 +394,10 @@ col = col / f32(n * n);
 
 ```wgsl
 let det  = detA(theta, 0.5 * U.b.x);
-let line = 1.0 - smoothstep(0.6, 1.6, abs(det) / max(fwidth(det), 1e-6));
+let line = 1.0 - smoothstep(0.35, 1.25, abs(det) / max(fwidth(det), 1e-6));
 ```
 
-**Caustics** need a different trick, because they live in the source plane. A compute pass runs marching squares over 2×2-pixel cells: it evaluates $\det A$ at the cell corners, linearly interpolates the zero crossings on the edges, samples 13 points along the resulting segment of critical curve, pushes each through the lens equation and `atomicMax`es a flag into a screen-sized buffer. The fragment shader reads a 3×3 neighbourhood of that buffer. Cells where $|\det A|$ jumps by more than 50 are rejected: that is the singular centre of a point mass or SIS, where the sign flips through infinity, not through zero. The pass runs only when a parameter changes.
+**Caustics** need a different trick, because they live in the source plane. A compute pass runs marching squares over 2×2-pixel cells: it evaluates $\det A$ at the cell corners, linearly interpolates the zero crossings on the edges, samples 13 points along the resulting segment of critical curve, pushes each through the lens equation and `atomicMax`es a flag into a screen-sized buffer. The fragment shader reads that buffer at the pixel and its four neighbours, drawing a soft line about two pixels wide. Cells where $|\det A|$ jumps by more than 50 are rejected: that is the singular centre of a point mass or SIS, where the sign flips through infinity, not through zero. The pass runs only when a parameter changes.
 
 **Precision.** Everything is f32. Angles are in "view units" of about an arcsecond so that $|\vec\theta|$ and $|\vec\alpha|$ are O(1). The finite-difference Jacobian loses digits: the round-off error of $\Delta\alpha/2h$ is about $\epsilon_{32}|\alpha|/h \approx 10^{-7}/10^{-3} = 10^{-4}$, harmless for plotting contours but a reason why research codes use analytic Jacobians. The SIE's $\operatorname{artanh}$ argument is clamped just below 1, and the NFW deflection switches to its $x=1$ limit in a small window to avoid $0/0$.
 
@@ -483,7 +497,7 @@ The trick is averaging. Intrinsic orientations are random, so the average ellipt
 
 ### Mass maps and the Bullet Cluster
 
-<Level min={2}>
+<Level min={2} title="Turning a shear map into a mass map">
 
 Since the shear field is a second derivative of the same potential that gives $\kappa$, one can invert a shear map into a convergence (mass) map. Kaiser and Squires found the linear inversion in 1993; it is a simple convolution, easy in Fourier space ([Appendix A8](/ch/primer-waves/)).
 </Level>

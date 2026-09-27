@@ -6,7 +6,7 @@
 import { defineSim, Loop, createStage } from '../lib/runtime/sim';
 import { Panel, fmt } from '../lib/ui/controls';
 import { Plot } from '../lib/ui/plot';
-import { palette, onThemeChange } from '../lib/ui/theme';
+import { palette, onThemeChange, currentTheme } from '../lib/ui/theme';
 import { blackbodyCSS } from '../lib/physics/blackbody';
 import { sampleKroupaMass, mulberry32, zamsL, zamsR, teffFromLR, evolveStar, turnoffMass, Tsun } from './main-sequence/zams';
 
@@ -23,7 +23,8 @@ const PRESETS: { label: string; ageMyr: number }[] = [
 export default defineSim({
   mount({ host }) {
     let pal = palette();
-    onThemeChange(() => { pal = palette(); loop.invalidate(); });
+    onThemeChange(() => { pal = palette(); redraw(); });
+    const redraw = () => { dirty = true; loop.invalidate(); };
 
     const wrap = document.createElement('div');
     wrap.style.cssText = 'display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:0;';
@@ -34,7 +35,7 @@ export default defineSim({
     const imgCtx = imgStage.canvas.getContext('2d')!;
 
     const plot = new Plot(hrStage.canvas, {
-      x: { min: -Math.log10(55000), max: -Math.log10(2400), label: 'Tₑff (K) — increasing to the left', format: (v) => fmt(10 ** -v, 2) },
+      x: { min: -Math.log10(55000), max: -Math.log10(2400), label: 'Tₑff (K) — increasing to the left', format: (v) => String(Math.round(10 ** -v)), ticks: [40000, 20000, 10000, 6000, 4000, 3000].map((T) => -Math.log10(T)) },
       y: { min: -4.2, max: 6.2, label: 'log(L / L☉)' },
       title: 'HR diagram',
     });
@@ -60,7 +61,11 @@ export default defineSim({
 
     const xData = (T: number) => -Math.log10(T);
 
+    // Redraw only when something changed: every frame while playing, otherwise on demand.
+    let dirty = true;
     function render() {
+      if (!dirty && !playing) return;
+      dirty = false;
       const ageYr = ageMyr * 1e6;
       // HR diagram
       plot.draw(() => {
@@ -70,8 +75,9 @@ export default defineSim({
           plot.fn((xd) => 2 * logR - 4 * logTsun - 4 * xd, { color: pal.grid, dash: [2, 4], width: 1 });
           const xLabel = plot.o.x.max + (plot.o.x.min - plot.o.x.max) * 0.03;
           const yLabel = 2 * logR - 4 * logTsun - 4 * xLabel;
-          if (yLabel > plot.o.y.min && yLabel < plot.o.y.max) plot.text(`${fmt(R, 2)} R☉`, plot.px(xLabel), plot.py(yLabel), { color: pal.faint, size: 10 });
+          if (yLabel > plot.o.y.min && yLabel < plot.o.y.max) plot.text(`${fmt(R, 2)} R☉`, plot.px(xLabel), plot.py(yLabel) - 3, { color: pal.faint, size: 10, align: 'right' });
         }
+        const edge = currentTheme() === 'light' ? 'rgba(40,36,30,0.45)' : undefined; // outline pale stars on paper
         let nWD = 0, nSN = 0;
         let sumR = 0, sumG = 0, sumB = 0, sumW = 0;
         for (let i = 0; i < N; i++) {
@@ -81,7 +87,7 @@ export default defineSim({
           if (s.phase === 'sn') nSN++;
           const logL = Math.log10(Math.max(s.L, 1e-6));
           const col = blackbodyCSS(s.T);
-          plot.point(xData(s.T), logL, { r: s.phase === 'ms' ? 1.6 : s.phase === 'wd' ? 1.4 : 2.4, color: col });
+          plot.point(xData(s.T), logL, { r: s.phase === 'ms' ? 1.6 : s.phase === 'wd' ? 1.4 : 2.4, color: col, stroke: edge });
           const w = Math.max(s.L, 1e-6);
           // rough sRGB from blackbody for the integrated-colour readout
           const rgb = col.match(/\d+/g)!.map(Number);
@@ -104,22 +110,24 @@ export default defineSim({
       // cluster image
       const { width: W, height: H, dpr } = imgStage;
       imgCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      imgCtx.fillStyle = pal.bg;
       imgCtx.globalCompositeOperation = 'source-over';
-      imgCtx.clearRect(0, 0, W, H);
+      imgCtx.fillStyle = '#05060a'; // night sky in both themes
+      imgCtx.fillRect(0, 0, W, H);
       imgCtx.globalCompositeOperation = 'lighter';
+      const S = Math.min(W, H), ox = (W - S) / 2, oy = (H - S) / 2; // keep the cluster round
       for (let i = 0; i < N; i++) {
         const s = evolveStar(masses[i], ageYr);
         if (s.phase === 'gone') continue;
         const p = positions[i];
         const rad = Math.max(0.5, Math.min(6, 0.7 + 0.55 * Math.log10(Math.max(s.L, 1e-3) + 1)));
         const col = blackbodyCSS(s.T, s.phase === 'sn' ? 1 : 0.85);
-        const g = imgCtx.createRadialGradient(p.x * W, p.y * H, 0, p.x * W, p.y * H, rad * (s.phase === 'sn' ? 6 : 2.2));
+        const px = ox + p.x * S, py = oy + p.y * S;
+        const g = imgCtx.createRadialGradient(px, py, 0, px, py, rad * (s.phase === 'sn' ? 6 : 2.2));
         g.addColorStop(0, col);
         g.addColorStop(1, blackbodyCSS(s.T, 0));
         imgCtx.fillStyle = g;
         imgCtx.beginPath();
-        imgCtx.arc(p.x * W, p.y * H, rad * (s.phase === 'sn' ? 6 : 2.2), 0, Math.PI * 2);
+        imgCtx.arc(px, py, rad * (s.phase === 'sn' ? 6 : 2.2), 0, Math.PI * 2);
         imgCtx.fill();
       }
       imgCtx.globalCompositeOperation = 'source-over';
@@ -133,16 +141,16 @@ export default defineSim({
       }
     }, render, 1 / 30);
 
-    hrStage.onResize((w, h, d) => { plot.resize(w, h, d); loop.invalidate(); });
-    imgStage.onResize(() => loop.invalidate());
+    hrStage.onResize((w, h, d) => { plot.resize(w, h, d); redraw(); });
+    imgStage.onResize(() => redraw());
 
     const panel = new Panel(host);
-    const ageSlider = panel.slider('Age', { min: 1, max: 16000, value: ageMyr, log: true, format: (v) => (v < 1000 ? `${fmt(v, 3)} Myr` : `${fmt(v / 1000, 3)} Gyr`) }, (v) => { ageMyr = v; loop.invalidate(); });
+    const ageSlider = panel.slider('Age', { min: 1, max: 16000, value: ageMyr, log: true, format: (v) => (v < 1000 ? `${fmt(v, 3)} Myr` : `${fmt(v / 1000, 3)} Gyr`) }, (v) => { ageMyr = v; redraw(); });
     panel.playPause(() => !playing, (p) => { playing = !p; });
-    panel.button('Resample IMF', () => { seed = (seed * 2654435761) >>> 0; resample(); loop.invalidate(); });
+    panel.button('Resample IMF', () => { seed = (seed * 2654435761) >>> 0; resample(); redraw(); });
     panel.select('Preset', PRESETS.map((p) => ({ value: p.label, label: p.label })), PRESETS[0].label, (v) => {
       const p = PRESETS.find((x) => x.label === v)!;
-      ageMyr = p.ageMyr; ageSlider.set(ageMyr, false); loop.invalidate();
+      ageMyr = p.ageMyr; ageSlider.set(ageMyr, false); redraw();
     });
 
     const readouts = {

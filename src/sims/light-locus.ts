@@ -107,7 +107,7 @@ export default defineSim({
     window.addEventListener('pointerup', () => { dragging = false; });
 
     const panel = new Panel(host);
-    const slider = panel.slider('Temperature', { min: T_MIN, max: T_MAX, value: T, log: true, unit: 'K' }, (v) => { T = v; loop.invalidate(); });
+    const slider = panel.slider('Temperature', { min: T_MIN, max: T_MAX, value: T, log: true, unit: 'K', format: (v) => String(Math.round(v)) }, (v) => { T = v; loop.invalidate(); });
     const readout = panel.readout('');
 
     return {

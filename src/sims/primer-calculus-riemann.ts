@@ -3,6 +3,7 @@
 // slope reveals the order of the rule (−1 for left-endpoint, −2 for midpoint and trapezoid).
 
 import { defineSim, Loop, createStage } from '../lib/runtime/sim';
+import { stackWhenNarrow } from './primer-common/stack';
 import { Panel, fmt } from '../lib/ui/controls';
 import { Plot } from '../lib/ui/plot';
 import { palette, onThemeChange } from '../lib/ui/theme';
@@ -53,7 +54,7 @@ function backdrop(ctx: CanvasRenderingContext2D, bg: string, x: number, y: numbe
 }
 
 export default defineSim({
-  mount({ host }) {
+  mount({ host, onDestroy }) {
     let pal = palette();
     let fn = FNS[0];
     let rule: Rule = 'left';
@@ -77,6 +78,7 @@ export default defineSim({
     host.append(wrap);
     const left = createStage(wrap, { aspect: 1.35 });
     const right = createStage(wrap, { aspect: 0.85 });
+    stackWhenNarrow(host, wrap, 'minmax(0,1.5fr) minmax(0,1fr)', [[left, 1.35, 1.35], [right, 0.85, 1.4]], onDestroy);
     left.el.style.borderRight = '1px solid var(--rule)';
 
     const main = new Plot(left.canvas, { x: { min: fn.a, max: fn.b, label: fn.xLabel }, y: { min: fn.y[0], max: fn.y[1] } });
@@ -88,6 +90,8 @@ export default defineSim({
     });
 
     const loop = new Loop(null, render);
+
+    loop.onDemand = true;
 
     function render() {
       const S = riemann(fn.f, fn.a, fn.b, N, rule);

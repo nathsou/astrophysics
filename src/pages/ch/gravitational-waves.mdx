@@ -476,7 +476,7 @@ For engineers: this is a cross-correlation done in the frequency domain ([Append
 
 Because we don't know the masses in advance, searches correlate against a **template bank**: hundreds of thousands of waveforms tiling the space of masses and spins so densely that no real signal loses more than ~3% of its SNR. Candidates need $\rho \gtrsim 8$ in the network plus consistency checks (a $\chi^2$ test that the SNR accumulates across frequency the way a real chirp would, and coincidence between detectors), and their significance is calibrated by time-shifting one detector's data against another's thousands of times to build an empirical background.
 
-<Sim name="gravitational-waves-matched" size="wide" minHeight={420}>
+<Sim name="gravitational-waves-matched" size="wide" minHeight={340}>
 **Matched filtering in action.** The grey trace is 8 s of whitened data: unit-variance Gaussian noise plus a chirp you cannot see. The bank of 90 templates is correlated with the data using FFTs, maximising over arrival time and phase, and the right panel shows each template's best SNR. Look for the peak near the true chirp mass, and the SNR-vs-time trace (blue) spiking at the merger time. Lower the optimal SNR towards 5 and watch the peak drown in noise fluctuations; press **New noise** a few times to see how often a pure-noise template reaches ρ ≈ 5.
 </Sim>
 

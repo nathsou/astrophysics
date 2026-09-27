@@ -1,6 +1,6 @@
 // Emission-line "lamp strips": bright lines on a dark background for a few gas-discharge lamps,
 // the mirror image of the dark absorption lines in stellar spectra (Kirchhoff's laws in one
-// picture). Click a lamp to see it; hover a line for its wavelength.
+// picture). Hover a line for its wavelength.
 import { defineSim, createStage } from '../lib/runtime/sim';
 import { Panel } from '../lib/ui/controls';
 import { palette, onThemeChange } from '../lib/ui/theme';
@@ -35,14 +35,12 @@ export default defineSim({
     let pal = palette();
     onThemeChange(() => { pal = palette(); drawAll(); });
 
-    const panel = new Panel(host);
-    const info = panel.readout('Line');
-
     const strips: { lamp: Lamp; canvas: HTMLCanvasElement }[] = [];
     const list = document.createElement('div');
     list.style.display = 'flex';
     list.style.flexDirection = 'column';
     list.style.gap = '10px';
+    list.style.padding = '14px 16px 8px';
     host.append(list);
 
     const LAM_MIN = 380, LAM_MAX = 750;
@@ -73,6 +71,29 @@ export default defineSim({
       });
     }
 
+    // wavelength axis under the strips
+    const axis = document.createElement('canvas');
+    axis.style.cssText = 'width:100%;height:22px;display:block';
+    list.append(axis);
+    function drawAxis() {
+      const dpr = window.devicePixelRatio || 1;
+      const w = axis.clientWidth || 400, h = 22;
+      axis.width = Math.round(w * dpr); axis.height = Math.round(h * dpr);
+      const ctx = axis.getContext('2d')!;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      for (let nm = 400; nm <= 750; nm += w < 500 ? 100 : 50) {
+        const x = ((nm - LAM_MIN) / (LAM_MAX - LAM_MIN)) * w;
+        ctx.fillStyle = pal.axis; ctx.fillRect(x - 0.5, 0, 1, 5);
+        ctx.fillStyle = pal.muted; ctx.fillText(nm === 700 && w < 500 ? '700 nm' : nm === 750 ? '750 nm' : String(nm), Math.min(x, w - 22), 17);
+      }
+    }
+
+    const panel = new Panel(host);
+    const info = panel.readout('Line');
+    info.set('hover a line');
+
     function drawStrip(lamp: Lamp, canvas: HTMLCanvasElement) {
       const dpr = window.devicePixelRatio || 1;
       const w = canvas.clientWidth || 400, h = 36;
@@ -99,7 +120,7 @@ export default defineSim({
       ctx.strokeRect(0.5, 0.5, w - 1, h - 1);
     }
 
-    function drawAll() { for (const s of strips) drawStrip(s.lamp, s.canvas); }
+    function drawAll() { for (const s of strips) drawStrip(s.lamp, s.canvas); drawAxis(); }
 
     const ro = new ResizeObserver(drawAll);
     ro.observe(host);

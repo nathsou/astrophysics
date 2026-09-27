@@ -17,9 +17,9 @@ export default defineSim({
     const stage = createStage(host, { aspect: 16 / 9 });
     const plot = new Plot(stage.canvas, {
       x: { min: 0, max: 1, label: 'r / R (layer boundary)' },
-      y: { min: 0, max: 1, label: 'pressure P / P_c' },
+      y: { min: 0, max: 1, label: 'pressure P / P_c(Sun)' },
+      title: 'Each shaded step = ΔP across a shell = weight of that shell’s gas, per unit area',
     });
-    stage.onResize((w, h, dpr) => { plot.resize(w, h, dpr); draw(); });
     let pal = palette();
     onThemeChange(() => { pal = palette(); draw(); });
 
@@ -36,21 +36,28 @@ export default defineSim({
       return ((2 / 3) * Math.PI * G * rho * rho * (Rm * Rm - (x * Rm) ** 2));
     }
 
+    // Reference: the same uniform-density model of the Sun, so the axis stays in fixed units.
+    const rhoSun = Msun / ((4 / 3) * Math.PI * Rsun ** 3);
+    const PcSun = pressureProfile(0, rhoSun, Rsun);
+
     function draw() {
       const Mkg = M * Msun, Rm = R * Rsun;
       const rho = Mkg / ((4 / 3) * Math.PI * Rm ** 3);
       const Pc = pressureProfile(0, rho, Rm);
+      const k = Pc / PcSun; // this star's central pressure in solar units
       const g = G * Mkg / (Rm * Rm);
-      roPc.set(`${fmt(Pc, 3)} Pa`);
+      roPc.set(`${fmt(Pc, 3)} Pa (${fmt(k, 3)} × Sun)`);
       roG.set(`${fmt(g, 3)} m/s²`);
 
-      plot.o.y.max = 1;
+      plot.o.y.max = Math.max(1.15, k * 1.15);
       plot.draw(() => {
-        // continuous curve
-        plot.fn((x) => pressureProfile(x, rho, Rm) / Pc, { color: pal.faint, width: 1.25 });
+        // the Sun for reference, then this star's continuous curve
+        plot.fn((x) => 1 - x * x, { color: pal.muted, width: 1, dash: [4, 4] });
+        plot.text('Sun', plot.px(0.02), plot.py(1) - 6, { color: pal.muted, size: 11 });
+        plot.fn((x) => k * (1 - x * x), { color: pal.faint, width: 1.25 });
         // discrete layers: bars showing pressure at each boundary, and weight-per-layer as bar height delta
         const xs: number[] = [], ps: number[] = [];
-        for (let i = 0; i <= NLAYERS; i++) { const x = i / NLAYERS; xs.push(x); ps.push(pressureProfile(x, rho, Rm) / Pc); }
+        for (let i = 0; i <= NLAYERS; i++) { const x = i / NLAYERS; xs.push(x); ps.push(k * pressureProfile(x, rho, Rm) / Pc); }
         for (let i = 0; i < NLAYERS; i++) {
           const x0 = xs[i], x1 = xs[i + 1];
           const p0 = ps[i], p1 = ps[i + 1];
@@ -63,11 +70,10 @@ export default defineSim({
           plot.point(x0, p0, { r: 3, color: pal.series[i % 5] });
         }
         plot.point(1, 0, { r: 3, color: pal.muted });
-        plot.text('Each shaded step = ΔP across a shell = weight of the gas above it, per unit area.', plot.m.l + 6, 16, { color: pal.muted, size: 11 });
       });
     }
 
-    draw();
+    stage.onResize((w, h, dpr) => { plot.resize(w, h, dpr); draw(); });
     return { setVisible() {}, destroy() {} };
   },
 });

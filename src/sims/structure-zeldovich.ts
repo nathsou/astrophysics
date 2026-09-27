@@ -14,7 +14,9 @@ export default defineSim({
     let pal = palette();
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
     const psStage = createStage(host, { aspect: 2.6 });
+    if (host.clientWidth < 560) psStage.el.style.aspectRatio = '1.6'; // taller on phones
     const rhoStage = createStage(host, { aspect: 3.4 });
+    if (host.clientWidth < 560) rhoStage.el.style.aspectRatio = '1.9'; // taller on phones
     const ps = new Plot(psStage.canvas, {
       x: { min: 0, max: 1, label: '' }, y: { min: -1, max: 1, label: 'velocity' },
       title: 'Phase space: position x vs velocity',
@@ -23,7 +25,7 @@ export default defineSim({
       x: { min: 0, max: 1, label: 'comoving position x (box units)' }, y: { min: 0.05, max: 50, log: true, label: 'ρ / ρ̄' },
     });
 
-    let D = 0, seed = 5, playing = false;
+    let D = 0.6, seed = 5, playing = false; // start part-way, so the first view already shows the sheet tilting
     const amp = new Float64Array(MODES), phase = new Float64Array(MODES);
     let norm = 1;
     const psi = (q: number) => { let s = 0; for (let m = 0; m < MODES; m++) s += amp[m] * Math.sin(2 * Math.PI * (m + 1) * q + phase[m]); return s * norm; };
@@ -89,6 +91,7 @@ export default defineSim({
     const pb = panel.button('▶ Play', () => { playing = !playing; pb.textContent = playing ? '❚❚ Pause' : '▶ Play'; });
     const dCtl = panel.slider('Growth D', { min: 0, max: 2.5, value: D, step: 0.005 }, (v) => { D = v; loop.invalidate(); });
     panel.button('New field', () => { seed = (seed * 16807) % 2147483647; newField(); loop.invalidate(); });
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

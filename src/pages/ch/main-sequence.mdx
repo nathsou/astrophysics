@@ -99,8 +99,8 @@ $$
 <Fragment slot="where">Both are piecewise in practice — the luminosity exponent softens toward $\approx 4$ near 1 $M_\odot$ and flattens to $\approx 1$ above $\sim$20 $M_\odot$, where radiation pressure and electron-scattering opacity take over and the star approaches the Eddington limit (below). The radius exponent is closer to 0.6–0.9 depending on the mass range; both are calibrated here to pass through the Sun. Combined with $T_\mathrm{eff}^4 = L/4\pi R^2\sigma$, they predict $T_\mathrm{eff} \propto M^{0.45}$ — massive stars are hotter *and* bigger *and* far brighter, all at once.</Fragment>
 </KeyEq>
 
-<Predict question="Sirius A (2.06 M☉) and the Sun (1 M☉) are both main-sequence stars. Using L ∝ M^3.5, roughly how much brighter is Sirius A?" choices={['About 2×', 'About 8×', 'About 25×', 'About 100×']} answer={2}>
-$2.06^{3.5} \approx 25$. Measured: Sirius A is about 25 L☉ — the naive power law nails it, because 2 M☉ sits comfortably in the exponent's "sweet spot" near solar mass. The mass–luminosity figure below shows where the simple law starts to bend for real stars.
+<Predict question="Sirius A (2.06 M☉) and the Sun (1 M☉) are both main-sequence stars. Using L ∝ M^3.5, roughly how much brighter is Sirius A?" choices={['About 2×', 'About 12×', 'About 25×', 'About 100×']} answer={1}>
+$2.06^{3.5} \approx 12.6$, so the power law says about 12×. Measured, Sirius A is about 25 L☉, twice that: between one and two solar masses the real exponent is closer to 4.5 ($2.06^{4.5}\approx 26$), and Sirius has also brightened a little since it arrived on the main sequence. The mass–luminosity figure below shows how a single power law bends for real stars.
 </Predict>
 
 <Sim name="main-sequence-ml" minHeight={380}>
@@ -134,13 +134,13 @@ Squeeze too little mass together and the core never gets hot and dense enough to
 $$
 \term{LEdd}{L_\mathrm{Edd}} = \frac{4\pi \term{G}{G} \term{Msym}{M} \term{mp}{m_p} \term{c}{c}}{\term{sigmaT}{\sigma_T}}
 $$
-<Fragment slot="where"><span data-term="sigmaT">$\sigma_T$</span> is the Thomson cross-section, <span data-term="mp">$m_p$</span> the proton mass. Above <span data-term="LEdd">$L_\mathrm{Edd}$</span>, radiation pressure on free electrons (which drag the protons along electrostatically) exceeds gravity's pull on the gas. For $M=100\,M_\odot$, $L_\mathrm{Edd} \approx 1.3\times10^{31}$ W $\approx 3.3\times10^4\,L_\odot \times M/M_\odot$ — and real O stars run close enough to this limit that radiatively driven winds strip mass at rates of $10^{-6}$–$10^{-5}\,M_\odot$/yr, shortening their already-short lives.</Fragment>
+<Fragment slot="where"><span data-term="sigmaT">$\sigma_T$</span> is the Thomson cross-section, <span data-term="mp">$m_p$</span> the proton mass. Above <span data-term="LEdd">$L_\mathrm{Edd}$</span>, radiation pressure on free electrons (which drag the protons along electrostatically) exceeds gravity's pull on the gas. For $M=100\,M_\odot$, $L_\mathrm{Edd} \approx 1.3\times10^{33}$ W $\approx 3.3\times10^4\,L_\odot \times M/M_\odot$ — and real O stars run close enough to this limit that radiatively driven winds strip mass at rates of $10^{-6}$–$10^{-5}\,M_\odot$/yr, shortening their already-short lives.</Fragment>
 </KeyEq>
 
 <Aside>**Both limits are about pressure fighting gravity**, just at opposite ends: degeneracy pressure stops fusion from starting at the bottom; radiation pressure stops the star from holding together at the top. The main sequence occupies the roughly four-decade window in mass where neither veto applies.</Aside>
 
 <Sim name="main-sequence-sizes" minHeight={340}>
-**Stars to scale.** Red dwarfs are barely visible next to supergiants — Betelgeuse's radius is about 5000 times Proxima Centauri's. Hover a star for its radius and temperature, and drag the zoom slider to see the whole range at once.
+**Stars to scale.** Red dwarfs are barely visible next to supergiants — Betelgeuse's radius is about 5000 times Proxima Centauri's. Hover a star for its radius and temperature, and drag the zoom slider to magnify the small end: at ×200 Proxima Centauri is finally a proper disc, and Betelgeuse is a wall of orange.
 </Sim>
 
 ## How long does it last?
@@ -194,7 +194,7 @@ A single star's HR-diagram position tells you its mass and roughly its age — *
 As a cluster ages, its main sequence doesn't move uniformly — it **peels off from the top**. The most massive stars, with the shortest lifetimes, exhaust their core hydrogen first and evolve away from the main sequence into giants, while lower-mass stars are still sitting patiently where they started. The **main-sequence turn-off** — the mass (equivalently, luminosity and temperature) at which stars are *just* leaving the main sequence — is a direct clock: invert $\tau_\mathrm{MS}(M)$ using the turn-off mass and you have the cluster's age.
 
 <Predict question="A cluster's main-sequence turn-off is at 2 M☉. Roughly how old is the cluster?" choices={['~10 Myr', '~300 Myr', '~1.8 Gyr', '~14 Gyr']} answer={2}>
-$\tau_\mathrm{MS}(2\,M_\odot) \approx 10^{10}\times 2^{-2.5} \approx 1.8\times10^9$ yr. A turn-off at 2 M☉ is characteristic of a cluster a couple of billion years old — younger than the Hyades' hotter turn-off, older than the Pleiades' much hotter one, roughly in M67's territory.
+$\tau_\mathrm{MS}(2\,M_\odot) \approx 10^{10}\times 2^{-2.5} \approx 1.8\times10^9$ yr. A turn-off at 2 M☉ marks a cluster one to two billion years old (detailed models say nearer 1.2 Gyr): older than the Hyades (625 Myr, turn-off near 2.5 M☉) and far older than the Pleiades, but younger than M67 (4 Gyr, turn-off near 1.2 M☉).
 </Predict>
 
 The set of predicted HR-diagram positions for a whole coeval, single-metallicity population at a given age is an **isochrone** ("same time" — literally a curve of points all at one age). Fitting an observed cluster's photometry to a grid of model isochrones, varying age, distance and metallicity until the turn-off, giant branch and (if present) white-dwarf sequence all line up simultaneously, is *the* standard technique for dating star clusters.
@@ -242,7 +242,7 @@ Each segment's cumulative integral has a closed form because it's a pure power l
 ## Fine structure: what Gaia sees
 
 <Sim name="main-sequence-hr" minHeight={380}>
-**A real, observational HR diagram.** Named stars plus a synthetic sample standing in for a broader survey, coloured by blackbody temperature. Hover any point for its name (or luminosity class, for the unlabelled sample), temperature and luminosity. Compare this scatter to the clean theoretical curve in the flagship sim — real photometry has scatter, unresolved binaries and measurement error that a pure ZAMS line does not.
+**An observational-style HR diagram.** Named stars plus a synthetic sample standing in for a broader survey, coloured by blackbody temperature. Hover any point for its name (or luminosity class, for the unlabelled sample), temperature and luminosity. Compare this scatter to the clean theoretical curve in the flagship sim — real photometry has scatter, unresolved binaries and measurement error that a pure ZAMS line does not.
 </Sim>
 
 Everything above describes the main sequence as a single clean line, which is a first approximation. **Gaia**, ESA's astrometric mission, has measured parallax-based distances (and hence absolute luminosities) for well over a billion stars, and its HR diagrams reveal that the main sequence has genuine substructure: a **split** in the lower main sequence tied to metallicity and to unresolved binarity (an unresolved equal-mass binary sits half a magnitude above the single-star sequence, since it has twice the luminosity at the same colour), gaps associated with changes in the dominant opacity source, and a visibly broadened giant branch that isochrone models still work to reproduce in detail. What looked, a century ago, like a fairly narrow band turns out, at Gaia's precision, to encode composition, multiplicity and dynamical history all at once — the main sequence rewards ever more precise measurement rather than becoming boring once you know the basic story.

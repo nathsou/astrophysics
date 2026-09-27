@@ -22,7 +22,7 @@ export default defineSim({
     sky.el.style.borderRight = '1px solid var(--rule)';
     sky.el.style.touchAction = 'none';
     const ctx = sky.canvas.getContext('2d')!;
-    const plot = new Plot(pst.canvas, { x: { min: 0, max: 5, label: 'radius θ (arcmin)' }, y: { min: -0.1, max: 0.5, label: 'tangential ellipticity' }, title: 'Stacked shear profile' });
+    const plot = new Plot(pst.canvas, { x: { min: 0, max: 5, label: 'radius θ (arcmin)' }, y: { min: -0.1, max: 0.6, label: 'tangential ellipticity' }, title: 'Stacked shear profile' });
 
     const st = { thetaE: 0.5, n: 1500, sigma: 0.25, whiskers: false, lensed: true, lens: [0, 0] as C };
     let gals: { x: number; y: number; e: C; r: number }[] = [];
@@ -32,7 +32,7 @@ export default defineSim({
         // Gaussian intrinsic ellipticity (Box-Muller), random orientation
         const m = Math.min(0.8, Math.abs(st.sigma * Math.sqrt(-2 * Math.log(Math.random() + 1e-9)) * Math.cos(2 * Math.PI * Math.random())));
         const ph = Math.PI * Math.random();
-        gals.push({ x: (Math.random() - 0.5) * FIELD, y: (Math.random() - 0.5) * FIELD, e: [m * Math.cos(2 * ph), m * Math.sin(2 * ph)], r: 0.05 + 0.05 * Math.random() });
+        gals.push({ x: (Math.random() - 0.5) * FIELD, y: (Math.random() - 0.5) * FIELD, e: [m * Math.cos(2 * ph), m * Math.sin(2 * ph)], r: 0.035 + 0.045 * Math.random() });
       }
     }
     seed();
@@ -87,15 +87,22 @@ export default defineSim({
       ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(lx, ly, 40, 0, 7); ctx.fill();
       ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.setLineDash([3, 4]);
       ctx.beginPath(); ctx.arc(lx, ly, st.thetaE * k, 0, 7); ctx.stroke(); ctx.setLineDash([]);
-      ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.font = '11px Inter, system-ui, sans-serif';
-      ctx.fillText(`${FIELD}′ × ${FIELD}′ field — drag the mass`, 8, 16);
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      const title = `${FIELD}′ × ${FIELD}′ field — drag the mass`;
+      ctx.fillStyle = 'rgba(0,0,0,0.6)'; ctx.fillRect(4, 4, ctx.measureText(title).width + 10, 18);
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      ctx.fillText(title, 9, 17);
 
       for (let i = 0; i < NB; i++) rs[i] = ((i + 0.5) * 5) / NB;
       plot.draw(() => {
         plot.hline(0, { color: pal.axis, dash: [] });
-        plot.fn((t) => { const kk = st.thetaE / (2 * t); return kk / (1 - kk); }, { color: pal.series[1], dash: [4, 4] });
+        // weak-lensing prediction, valid outside the Einstein radius (inside it images are strongly lensed)
+        plot.fn((t) => { if (t < st.thetaE) return NaN; const kk = st.thetaE / (2 * t); return kk / (1 - kk); }, { color: pal.series[1], dash: [4, 4] });
+        plot.ctx.fillStyle = pal.faint; plot.ctx.globalAlpha = 0.15;
+        plot.ctx.fillRect(plot.px(0), plot.m.t, plot.px(st.thetaE) - plot.px(0), plot.ph); plot.ctx.globalAlpha = 1;
+        plot.text('strong', plot.px(st.thetaE / 2), plot.m.t + plot.ph - 8, { color: pal.muted, align: 'center', size: 10 });
         for (let i = 0; i < NB; i++) {
-          if (cnt[i] < 2) continue;
+          if (cnt[i] < 2 || rs[i] < st.thetaE) continue;
           const m = prof[i] / cnt[i], err = st.sigma / Math.sqrt(cnt[i]);
           plot.ctx.strokeStyle = pal.series[0]; plot.ctx.lineWidth = 1.5;
           plot.ctx.beginPath(); plot.ctx.moveTo(plot.px(rs[i]), plot.py(m - err)); plot.ctx.lineTo(plot.px(rs[i]), plot.py(m + err)); plot.ctx.stroke();
@@ -125,6 +132,18 @@ export default defineSim({
     panel.slider('Einstein radius', { min: 0.05, max: 1.2, value: st.thetaE, step: 0.01, unit: '′' }, (v) => { st.thetaE = v; loop.invalidate(); });
     panel.slider('Galaxies', { min: 200, max: 6000, value: st.n, log: true, step: 1, format: (v) => String(Math.round(v)) }, (v) => { st.n = Math.round(v); seed(); loop.invalidate(); });
     panel.slider('Shape noise σ_e', { min: 0, max: 0.4, value: st.sigma, step: 0.01, format: (v) => fmt(v, 2) }, (v) => { st.sigma = v; seed(); loop.invalidate(); });
+    // Side by side when there is room, stacked on phones.
+    const twoCol = wrap.style.gridTemplateColumns;
+    const cols = () => {
+      const narrow = host.clientWidth < 560;
+      wrap.style.gridTemplateColumns = narrow ? 'minmax(0,1fr)' : twoCol;
+      const first = wrap.firstElementChild as HTMLElement;
+      first.style.borderRight = narrow ? '' : '1px solid var(--rule)';
+      first.style.borderBottom = narrow ? '1px solid var(--rule)' : '';
+    };
+    cols();
+    new ResizeObserver(cols).observe(host);
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

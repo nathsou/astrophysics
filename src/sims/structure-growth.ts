@@ -11,6 +11,7 @@ export default defineSim({
     let pal = palette();
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
     const stage = createStage(host, { aspect: 16 / 9 });
+    if (host.clientWidth < 560) stage.el.style.aspectRatio = '1.2'; // taller on phones
     const plot = new Plot(stage.canvas, {
       x: { min: 0.01, max: 10, log: true, label: 'scale factor a  (today a = 1)' },
       y: { min: 0.01, max: 10, log: true, label: 'growth factor D(a)' },
@@ -49,6 +50,7 @@ export default defineSim({
     const supp = panel.readout('D today');
     const rate = panel.readout('growth rate f today');
     const fut = panel.readout('further growth to a = 10');
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

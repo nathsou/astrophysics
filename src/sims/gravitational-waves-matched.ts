@@ -51,8 +51,8 @@ export default defineSim({
     host.append(grid);
     const sData = createStage(grid, { aspect: 1.7 });
     const sSnr = createStage(grid, { aspect: 1.7 });
-    const dataPlot = new Plot(sData.canvas, { x: { min: 0, max: 8, label: 'time (s)' }, y: { min: -5, max: 5, label: 'whitened strain (σ)' }, title: 'Data = noise + hidden signal' });
-    const snrPlot = new Plot(sSnr.canvas, { x: { min: MC_MIN, max: MC_MAX, log: true, label: 'template chirp mass ℳ (M☉)', ticks: [5, 10, 20, 50] }, y: { min: 0, max: 20, label: 'peak SNR ρ' }, title: 'Template bank: SNR vs ℳ' });
+    const dataPlot = new Plot(sData.canvas, { x: { min: 0, max: 8, label: 'time (s)' }, y: { min: -5, max: 5, label: 'whitened strain (σ)' }, title: 'Data = noise + hidden signal; blue: SNR(t) of best template' });
+    const snrPlot = new Plot(sSnr.canvas, { x: { min: MC_MIN, max: MC_MAX, log: true, label: 'template chirp mass ℳ (M☉)', ticks: [5, 10, 20, 50], format: (v) => String(v) }, y: { min: 0, max: 20, label: 'peak SNR ρ' }, title: 'Template bank: SNR vs ℳ' });
 
     let trueMc = 20, rho = 10, showSig = false;
     const data = new Float64Array(N), sig = new Float64Array(N), tmp = new Float64Array(N);
@@ -102,6 +102,8 @@ export default defineSim({
     }
 
     const loop = new Loop(null, render);
+
+    loop.onDemand = true;
     onDestroy(onThemeChange(() => { pal = palette(); loop.invalidate(); }));
     const X = new Float64Array(N / 2), Y = new Float64Array(N / 2), Ys = new Float64Array(N / 2), Yt = new Float64Array(N / 2);
 
@@ -118,7 +120,6 @@ export default defineSim({
         const mx = Math.max(...snr);
         const scale = 4.5 / Math.max(mx, 8);
         dataPlot.line(X, Array.from(Yt, (v) => v * scale - 4.8), { color: pal.series[1], width: 1.3 });
-        dataPlot.text('best-template SNR(t) (bottom trace)', dataPlot.m.l + 6, dataPlot.m.t + dataPlot.ph - 6, { color: pal.series[1] });
         if (showSig) dataPlot.text('true signal ×4', dataPlot.m.l + 6, dataPlot.m.t + 14, { color: pal.accent });
       });
       snrPlot.draw(() => {

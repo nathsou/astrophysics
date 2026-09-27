@@ -13,7 +13,28 @@ const T0 = 0.01, T1 = 1800; // seconds
 const ETA0 = 6.1e-10;
 
 const SP_LABEL = ['n', 'p', 'D', 'T', '³He', '⁴He', '⁷Li'];
-const SP_COLOR = [3, 2, 0, 4, 1, 0, 1]; // palette.series index reused with different alpha where needed
+type Pal = ReturnType<typeof palette>;
+// Seven species, seven distinguishable styles: n dashed grey, p neutral, the rest from the series palette.
+const spColor = (pal: Pal, i: number) => [pal.muted, pal.fg, pal.series[1], pal.series[4], pal.series[3], pal.series[0], pal.series[2]][i];
+const SP_DASH: (number[] | undefined)[] = [[5, 3], undefined, undefined, undefined, undefined, undefined, undefined];
+
+/** Horizontal legend under a plot title; wraps to more rows when narrow. Returns the rows used. */
+function legendRow(ctx: CanvasRenderingContext2D, items: [string, string, number[]?][], x0: number, y0: number, maxX: number, fg: string): number {
+  ctx.font = '11px Inter, system-ui, sans-serif';
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  let x = x0, y = y0, rows = 1;
+  for (const [label, color, dash] of items) {
+    const w = 18 + ctx.measureText(label).width + 12;
+    if (x + w > maxX && x > x0) { x = x0; y += 15; rows++; }
+    ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.setLineDash(dash ?? []);
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 14, y); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = fg;
+    ctx.fillText(label, x + 18, y);
+    x += w;
+  }
+  return rows;
+}
 
 export default defineSim({
   mount({ host }) {
@@ -31,11 +52,13 @@ export default defineSim({
       x: { min: 0.01, max: 1800, log: true, label: 't (s)' },
       y: { min: 1e-12, max: 2, log: true, label: 'Y = n_i / n_baryon' },
       title: 'Abundances vs time',
+      margin: { l: 56, r: 16, t: 46, b: 42 },
     });
     const plotSchramm = new Plot(rightStage.canvas, {
       x: { min: 1e-11, max: 1e-8, log: true, label: 'η (baryon-to-photon)' },
       y: { min: 1e-11, max: 1, log: true, label: 'abundance' },
       title: 'Schramm plot (final abundances vs η)',
+      margin: { l: 56, r: 16, t: 46, b: 42 },
     });
 
     let eta = ETA0;
@@ -82,33 +105,38 @@ export default defineSim({
 
     function render() {
       const point = findAtTime(animT);
+      const tLbl = point.T >= 1 ? `${fmt(point.T, 3)} MeV` : `${fmt(point.T * 1000, 3)} keV`;
+      plotAbund.o.title = `Abundances vs time · t = ${fmt(point.t, 3)} s, T = ${tLbl}`;
       plotAbund.draw(() => {
+        const xs = run.map((r) => r.t);
         // full traces, faint
         for (let i = 0; i < 7; i++) {
-          const xs = run.map((r) => r.t);
           const ys = run.map((r) => Math.max(r.Y[i], 1e-13));
-          plotAbund.line(xs, ys, { color: pal.series[SP_COLOR[i] % 5], alpha: 0.28, width: 1.5 });
+          plotAbund.line(xs, ys, { color: spColor(pal, i), alpha: 0.3, width: 1.5, dash: SP_DASH[i] });
         }
-        // freeze-out marker
-        plotAbund.vline(1.0, { color: pal.muted, label: 'n/p freeze-out' });
-        plotAbund.vline(180, { color: pal.muted, label: 'D bottleneck breaks' });
-        // moving time cursor
-        plotAbund.vline(point.t, { color: pal.accent, width: 2, dash: [] });
+        // the part already "lived through", bright
+        const k = run.findIndex((r) => r.t > point.t);
+        const n = k < 0 ? run.length : k;
         for (let i = 0; i < 7; i++) {
-          plotAbund.point(point.t, Math.max(point.Y[i], 1e-13), { color: pal.series[SP_COLOR[i] % 5], r: 4 });
+          const ys = run.map((r) => Math.max(r.Y[i], 1e-13));
+          plotAbund.line(xs, ys, { color: spColor(pal, i), width: 1.75, dash: SP_DASH[i], n });
+        }
+        plotAbund.vline(1.0, { color: pal.muted });
+        plotAbund.vline(180, { color: pal.muted });
+        const { ctx } = plotAbund;
+        const yl = plotAbund.m.t + plotAbund.ph - 8;
+        const nar = plotAbund.pw < 420;
+        plotAbund.text(nar ? 'freeze-out' : 'n/p freeze-out', plotAbund.px(1.0) + 4, yl - (nar ? 14 : 0), { color: pal.muted });
+        plotAbund.text(nar ? 'D bottleneck' : 'D bottleneck breaks', plotAbund.px(180) - 4, yl, { color: pal.muted, align: 'right' });
+        ctx.textAlign = 'left';
+        // moving time cursor
+        plotAbund.vline(point.t, { color: pal.fg, width: 1, dash: [], alpha: 0.6 });
+        for (let i = 0; i < 7; i++) {
+          plotAbund.point(point.t, Math.max(point.Y[i], 1e-13), { color: spColor(pal, i), r: 3.5 });
         }
       });
-      // legend
-      const { ctx } = plotAbund;
-      ctx.font = '11px Inter, system-ui, sans-serif';
-      SP_LABEL.forEach((l, i) => {
-        ctx.fillStyle = pal.series[SP_COLOR[i] % 5];
-        ctx.fillRect(plotAbund.m.l + 4, 8 + i * 13, 9, 3);
-        ctx.fillStyle = pal.fg;
-        ctx.fillText(l, plotAbund.m.l + 17, 12 + i * 13);
-      });
-      ctx.fillStyle = pal.muted;
-      ctx.fillText(`t = ${fmt(point.t, 3)} s   T = ${fmt(point.T * 1000, 3)} keV`, plotAbund.m.l + 4, plotAbund.ph + plotAbund.m.t - 6);
+      legendRow(plotAbund.ctx, SP_LABEL.map((l, i) => [l, spColor(pal, i), SP_DASH[i]] as [string, string, number[]?]),
+        plotAbund.m.l, 30, plotAbund.m.l + plotAbund.pw, pal.fg);
 
       plotSchramm.draw(() => {
         const xs: number[] = [], yD: number[] = [], yHe3: number[] = [], yLi: number[] = [], yYp: number[] = [];
@@ -120,30 +148,29 @@ export default defineSim({
           yLi.push(Math.max(gridResults[i]!.Li7toH, 1e-13));
           yYp.push(Math.max(gridResults[i]!.Yp, 1e-3));
         }
-        // approximate observational bands (illustrative widths, not exact fit intervals)
+        // approximate observational bands: D/H (quasar absorbers), Y_p (metal-poor H II regions),
+        // ⁷Li/H (Spite plateau in old halo stars)
         const { ctx: c2 } = plotSchramm;
-        c2.save();
-        c2.globalAlpha = 0.12;
-        c2.fillStyle = pal.good;
-        const yb = (v: number) => plotSchramm.py(v);
-        c2.fillRect(plotSchramm.m.l, yb(3.0e-5), plotSchramm.pw, yb(2.2e-5) - yb(3.0e-5)); // D/H band
-        c2.restore();
+        const band = (lo: number, hi: number, color: string, label: string) => {
+          const y0 = plotSchramm.py(hi), y1 = plotSchramm.py(lo);
+          c2.save();
+          c2.globalAlpha = 0.16; c2.fillStyle = color;
+          c2.fillRect(plotSchramm.m.l, y0, plotSchramm.pw, Math.max(2, y1 - y0));
+          c2.restore();
+          plotSchramm.text(label, plotSchramm.m.l + plotSchramm.pw - 4, y0 - 3, { color, align: 'right', size: 10 });
+        };
+        band(2.45e-5, 2.6e-5, pal.series[1], 'observed D/H');
+        band(0.0242, 0.0248, pal.series[3], 'observed Yₚ');
+        band(1.3e-10, 1.9e-10, pal.series[2], 'observed ⁷Li/H (old stars)');
 
-        plotSchramm.line(xs, yD, { color: pal.series[0] });
-        plotSchramm.line(xs, yHe3, { color: pal.series[1] });
+        plotSchramm.line(xs, yD, { color: pal.series[1] });
+        plotSchramm.line(xs, yHe3, { color: pal.series[4] });
         plotSchramm.line(xs, yLi, { color: pal.series[2] });
         plotSchramm.line(xs, yYp.map((v) => v / 10), { color: pal.series[3] }); // Yp scaled onto same log decade for display
-        plotSchramm.vline(eta, { color: pal.accent2, width: 2 });
+        plotSchramm.vline(eta, { color: pal.accent, width: 1.5 });
       });
-      const { ctx: c3 } = plotSchramm;
-      c3.font = '11px Inter, system-ui, sans-serif';
-      const legend = [['D/H', 0], ['³He/H', 1], ['⁷Li/H', 2], ['Y_p /10', 3]] as [string, number][];
-      legend.forEach(([l, i], k) => {
-        c3.fillStyle = pal.series[i];
-        c3.fillRect(plotSchramm.m.l + 4, 8 + k * 13, 9, 3);
-        c3.fillStyle = pal.fg;
-        c3.fillText(l, plotSchramm.m.l + 17, 12 + k * 13);
-      });
+      legendRow(plotSchramm.ctx, [['D/H', pal.series[1]], ['³He/H', pal.series[4]], ['⁷Li/H', pal.series[2]], ['Yₚ / 10', pal.series[3]]],
+        plotSchramm.m.l, 30, plotSchramm.m.l + plotSchramm.pw, pal.fg);
     }
 
     leftStage.onResize((w, h, d) => { plotAbund.resize(w, h, d); loop.invalidate(); });
@@ -167,6 +194,18 @@ export default defineSim({
     });
     updateReadouts();
 
+    // Side by side when there is room, stacked on phones.
+    const twoCol = wrap.style.gridTemplateColumns;
+    const cols = () => {
+      const narrow = host.clientWidth < 560;
+      wrap.style.gridTemplateColumns = narrow ? 'minmax(0,1fr)' : twoCol;
+      const first = wrap.firstElementChild as HTMLElement;
+      first.style.borderRight = narrow ? '' : '1px solid var(--rule)';
+      first.style.borderBottom = narrow ? '1px solid var(--rule)' : '';
+    };
+    cols();
+    new ResizeObserver(cols).observe(host);
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

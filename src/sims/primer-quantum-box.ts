@@ -7,6 +7,7 @@
 //    bisection so that the occupancies add up to N.
 
 import { defineSim, Loop, createStage } from '../lib/runtime/sim';
+import { narrowAspect } from './primer-common/stack';
 import { Panel, fmt } from '../lib/ui/controls';
 import { palette, onThemeChange } from '../lib/ui/theme';
 
@@ -25,6 +26,8 @@ export default defineSim({
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
     const stage = createStage(host, { aspect: 16 / 9 });
+
+    narrowAspect(stage, 16 / 9, 1.1);
     const ctx = stage.canvas.getContext('2d')!;
 
     let mode: Mode = params.mode === 'fill' || params.mode === 'super' ? params.mode : 'states';
@@ -224,7 +227,7 @@ export default defineSim({
       if (mode === 'states' && nSel > 1) {
         const dE = En(nSel) - En(nSel - 1);
         r2.set(`photon for n=${nSel}→${nSel - 1}: λ = ${fmt(HC_EV_NM / dE, 3)} nm`);
-      } else if (mode === 'fill') r2.set(`k_BT = ${fmtE(KB_EV * T)}`);
+      } else if (mode === 'fill') r2.set(`kT = ${fmtE(KB_EV * T)}`);
       else r2.set('');
       loop.invalidate();
     }

@@ -51,6 +51,8 @@ export default defineSim({
 
     const loop = new Loop(null, render, 1 / 30);
 
+    loop.onDemand = true;
+
     function render() {
       const { width: W, height: H, dpr } = stage;
       const plot = mode === 'btf' ? plotBTF : plotRAR;

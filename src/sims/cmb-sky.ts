@@ -54,8 +54,8 @@ export default defineSim({
     const wrap = document.createElement('div');
     wrap.style.cssText = 'display:grid;gap:0;align-items:start;';
     host.append(wrap);
-    const skyStage = createStage(wrap, { aspect: 2 });
-    const plotStage = createStage(wrap, { aspect: 1.25 });
+    const skyStage = createStage(wrap, { aspect: 1.65 });
+    const plotStage = createStage(wrap, { aspect: 1.02 });
     const layout = () => {
       const wide = host.clientWidth >= 640;
       wrap.style.gridTemplateColumns = wide ? 'minmax(0,1.55fr) minmax(0,1fr)' : 'minmax(0,1fr)';
@@ -221,7 +221,8 @@ export default defineSim({
         const x0 = plot.px(Math.max(2, a)), x1 = plot.px(Math.min(lmax, b));
         ctx.fillRect(x0, plot.m.t, Math.max(0, x1 - x0), plot.ph);
         ctx.globalAlpha = 1;
-        plot.vline(lmax, { label: `ℓ_max = ${lmax}` });
+        plot.vline(lmax);
+        plot.text(`ℓ_max = ${lmax}`, plot.px(lmax) - 4, plot.m.t + plot.ph - 8, { align: 'right', color: pal.muted });
         // Planck-like reference points with error bars
         ctx.strokeStyle = pal.muted;
         ctx.lineWidth = 1;
@@ -234,8 +235,9 @@ export default defineSim({
         plot.scatter(PLANCK_POINTS.map((p) => p[0]), PLANCK_POINTS.map((p) => p[1]), { size: 4, color: pal.fg });
         plot.line(xs, sub(Dref), { color: pal.faint, dash: [4, 4], width: 1.2 });
         plot.line(xs, sub(Dl), { color: pal.accent, width: 2 });
-        plot.text('● Planck 2018 (approx.)', plot.m.l + plot.pw - 4, plot.m.t + 14, { align: 'right', color: pal.muted });
-        plot.text('— model', plot.m.l + plot.pw - 4, plot.m.t + 28, { align: 'right', color: pal.accent });
+        plot.text('● Planck 2018 (approx.)', plot.m.l + 8, plot.m.t + 14, { color: pal.muted });
+        plot.text('— your model', plot.m.l + 8, plot.m.t + 28, { color: pal.accent });
+        plot.text('- - Planck best fit', plot.m.l + 8, plot.m.t + 42, { color: pal.faint });
       });
     }
 
@@ -333,6 +335,7 @@ export default defineSim({
       hi.textContent = `+${fmt(scale, 2)} μK`;
     }
 
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return {
       setVisible: (v) => loop.setVisible(v),
       destroy: () => loop.destroy(),

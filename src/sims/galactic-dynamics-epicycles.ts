@@ -137,6 +137,18 @@ export default defineSim({
     const rAdv = panel.readout('');
     const rT = panel.readout('t =');
     reset();
+    // Side by side when there is room, stacked on phones.
+    const twoCol = wrap.style.gridTemplateColumns;
+    const cols = () => {
+      const narrow = host.clientWidth < 560;
+      wrap.style.gridTemplateColumns = narrow ? 'minmax(0,1fr)' : twoCol;
+      const first = wrap.firstElementChild as HTMLElement;
+      first.style.borderRight = narrow ? '' : '1px solid var(--rule)';
+      first.style.borderBottom = narrow ? '1px solid var(--rule)' : '';
+    };
+    cols();
+    new ResizeObserver(cols).observe(host);
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

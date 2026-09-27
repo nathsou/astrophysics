@@ -23,15 +23,16 @@ export default defineSim({
     let pal = palette();
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
+    const narrow = host.getBoundingClientRect().width < 560; // phones: stack the panels / taller plots
     const wrap = document.createElement('div');
-    wrap.style.cssText = 'display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:0;';
+    wrap.style.cssText = `display:grid;grid-template-columns:${narrow ? 'minmax(0,1fr)' : 'minmax(0,1.3fr) minmax(0,1fr)'};gap:0`;
     host.append(wrap);
     const plotStage = createStage(wrap, { aspect: 16 / 10 });
     const swatchStage = createStage(wrap, { aspect: 16 / 10 });
-    plotStage.el.style.borderRight = '1px solid var(--rule)';
+    plotStage.el.style[narrow ? 'borderBottom' : 'borderRight'] = '1px solid var(--rule)';
 
     const plot = new Plot(plotStage.canvas, {
-      x: { min: 200, max: 2400, log: true, label: 'wavelength (nm)' },
+      x: { min: 200, max: 2400, log: true, label: 'wavelength (nm)', ticks: [300, 500, 1000, 2000], format: (v) => String(v) },
       y: { min: 0, max: 1, label: 'relative flux' },
       title: 'Spectrum before / after dust',
     });
@@ -64,8 +65,8 @@ export default defineSim({
         plot.fn((nm) => (planckLambda(nm * 1e-9, T) * 10 ** (-0.4 * Av * extinctionShape(nm))) / peak, { color: pal.accent, width: 2.25 });
         plot.vline(550, { color: pal.muted, label: 'V (550 nm)' });
       });
-      plot.text('dimmed & reddened', plot.m.l + 10, plot.m.t + 14, { color: pal.accent, size: 11 });
-      plot.text('unextincted', plot.m.l + 10, plot.m.t + 30, { color: pal.muted, size: 11 });
+      plot.text('— dimmed & reddened', plot.m.l + plot.pw - 10, plot.py(0.72), { color: pal.accent, size: 11, align: 'right' });
+      plot.text('┄ without dust', plot.m.l + plot.pw - 10, plot.py(0.72) + 16, { color: pal.muted, size: 11, align: 'right' });
 
       const { width: W, height: H, dpr } = swatchStage;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);

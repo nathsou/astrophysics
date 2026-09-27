@@ -107,8 +107,10 @@ export default defineSim({
       ctx.imageSmoothingEnabled = true;
       ctx.drawImage(off, 0, 0, W, H);
       ctx.font = '12px Inter, system-ui, sans-serif';
-      ctx.fillStyle = 'rgba(255,255,255,.85)';
-      ctx.fillText(shape === 'power' ? `P(k) ∝ k^${fmt(n, 3)}` : `ΛCDM-like, box ${BOX} Mpc/h`, 10, 18);
+      const lbl = shape === 'power' ? `P(k) ∝ k^${fmt(n, 3)}` : `ΛCDM-like, box ${BOX} Mpc/h`;
+      ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillRect(4, 4, ctx.measureText(lbl).width + 12, 20);
+      ctx.fillStyle = 'rgba(255,255,255,.92)';
+      ctx.fillText(lbl, 10, 18);
       plot.draw(() => {
         plot.fn((k) => P(k) / pNorm, { color: pal.accent, width: 2, samples: 300 });
         for (let b = 0; b < NB; b++) if (binN[b]) plot.point(binK[b] / binN[b], binP[b] / binN[b], { r: 3, color: pal.series[1] });
@@ -131,6 +133,7 @@ export default defineSim({
 
     noise();
     build();
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

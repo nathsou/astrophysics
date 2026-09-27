@@ -13,7 +13,8 @@ const LMIN = Math.log10(IMF_MIN), LMAX = Math.log10(IMF_MAX), DL = (LMAX - LMIN)
 export default defineSim({
   mount({ host, onDestroy }) {
     let pal = palette();
-    const stage = createStage(host, { aspect: 16 / 9 });
+    const narrow = host.getBoundingClientRect().width < 560; // phones: stack the panels / taller plots
+    const stage = createStage(host, { aspect: narrow ? 1 : 16 / 9 });
     const plot = new Plot(stage.canvas, {
       x: { min: IMF_MIN, max: IMF_MAX, log: true, label: 'stellar mass M (M☉)' },
       y: { min: 0.5, max: 1e6, log: true, label: 'stars per dex' },

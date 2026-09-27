@@ -1,6 +1,10 @@
 ---
 import '../styles/global.css';
-import 'katex/dist/katex.min.css';
+// KaTeX CSS must match the KaTeX version that renders the maths at build time. rehype-katex 7 bundles
+// its own KaTeX 0.16 (nested in its node_modules), whose markup uses class names (.sizing, .strut,
+// .sqrt>.root, .stretchy…) that the top-level katex 0.18 stylesheet renamed. With the 0.18 CSS,
+// inline fractions, sub/superscript sizes, roots and accents render at the wrong size and overlap.
+import '../../node_modules/rehype-katex/node_modules/katex/dist/katex.min.css';
 import { parts } from '../course';
 import DepthControl from '../components/DepthControl.astro';
 
@@ -28,9 +32,9 @@ const published = new Set(
     </script>
   </head>
   <body data-chapter={current}>
-    <button class="btn menu-toggle" aria-label="Menu">☰</button>
+    <button class="btn menu-toggle" aria-label="Menu" aria-controls="site-nav" aria-expanded="false">☰</button>
     <div class="shell">
-      <nav class="sidebar">
+      <nav class="sidebar" id="site-nav" aria-label="Course contents">
         <a class="brand" href={`${base}/`}>The <span>Cosmos</span>, Computed</a>
         {parts.map((p) => (
           <>
@@ -52,7 +56,7 @@ const published = new Set(
         ))}
         <div class="part">Depth of explanation</div>
         <DepthControl compact />
-        <div class="tools"><button class="btn" data-action="theme">◐ Theme</button></div>
+        <div class="tools"><button class="btn" data-action="theme" aria-label="Toggle light or dark theme">◐ Theme</button></div>
       </nav>
       <main><slot /></main>
     </div>

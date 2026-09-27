@@ -204,7 +204,7 @@ export default defineSim({
         }
         c.globalAlpha = 1;
         plot.fn((v) => f(v) * 1e3, { color: pal.accent, width: 2 });
-        plot.vline(sigmaV(), { color: pal.muted, label: 'v_p' });
+        plot.vline(sigmaV(), { color: pal.muted, label: 'vₚ' });
       });
 
       // readouts
@@ -230,7 +230,7 @@ export default defineSim({
     panel.playPause(() => loop.paused, (p) => (loop.paused = p));
     panel.button('Reset (equal speeds)', () => { reset(); loop.invalidate(); });
     const rT = panel.readout('T from ⟨KE⟩');
-    const rV = panel.readout('v_p');
+    const rV = panel.readout('vₚ');
     const rP = panel.readout('P / (NkT/A)');
 
     reset();

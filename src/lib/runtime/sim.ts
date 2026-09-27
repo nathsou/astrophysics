@@ -41,6 +41,13 @@ export class Loop {
   /** Max physics steps per frame, to avoid the spiral of death. */
   maxSteps = 240;
   simTime = 0;
+  /**
+   * Opt-in, for loops without a `step` (static figures): render only when needed, i.e. on
+   * `invalidate()` and when the figure becomes visible, instead of on every animation frame.
+   * Leave it false for render-only loops that animate using `frameDt`.
+   */
+  onDemand = false;
+  private fontWait = false;
   private acc = 0;
   private last = 0;
   private raf = 0;
@@ -83,6 +90,14 @@ export class Loop {
       if (n === this.maxSteps) this.acc = 0;
     }
     this.render(this.step ? this.acc / this.dt : 1, this.paused ? 0 : frameDt);
+    if (this.onDemand && !this.step) {
+      // Text drawn before the web fonts arrive would otherwise keep the fallback font.
+      if (!this.fontWait && document.fonts?.status === 'loading') {
+        this.fontWait = true;
+        document.fonts.ready.then(() => this.invalidate());
+      }
+      return;
+    }
     if (this.visible) this.raf = requestAnimationFrame(this.tick);
   };
 

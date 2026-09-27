@@ -120,6 +120,7 @@ export default defineSim({
     panel.button('3C 279 (Γ≈20, θ≈2°)', () => { gamma = 20; thetaDeg = 2; gCtl(); loop.invalidate(); });
     function gCtl() { thetaCtl.set(thetaDeg); gammaCtl.set(gamma); }
 
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

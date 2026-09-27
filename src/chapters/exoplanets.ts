@@ -30,4 +30,4 @@ compute('ptransit', ['Rstar_p', 'a_p'], ({ Rstar_p, a_p }) => {
 
 // Habitable-zone distance ~ sqrt(L) (conservative inner/outer edges).
 compute('hzInner', ['L_hz'], ({ L_hz }) => `${fmt(Math.sqrt(L_hz / 1.1), 3)} AU`);
-compute('hzOuter', ['L_hz'], ({ L_hz }) => `${fmt(Math.sqrt(L_hz / 0.53), 3)} AU`);
+compute('hzOuter', ['L_hz'], ({ L_hz }) => `${fmt(Math.sqrt(L_hz / 0.36), 3)} AU`);

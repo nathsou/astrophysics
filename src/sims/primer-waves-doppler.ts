@@ -20,7 +20,9 @@ export default defineSim({
     const ctx = stage.canvas.getContext('2d')!;
 
     // World units: the view is 16 × 9 units, wave speed 1.6 units/s, rest period 0.45 s.
-    const VW = 16, VH = 9, C = 1.6, T0 = 0.45;
+    // On a phone the view is narrower (10 units) and squarer, so the crests stay a readable size.
+    let VW = 16;
+    const C = 1.6, T0 = 0.45;
     let mode: Mode = 'sound';
     let beta = 0.5;
     let t = 0, sx = 2, lastEmit = -1e9;
@@ -58,7 +60,7 @@ export default defineSim({
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, W, H);
       const s = W / VW;
-      const cy = (VH / 2) * s;
+      const cy = H / 2;
       // crests
       ctx.lineWidth = 1.4;
       for (let n = 0; n < nf; n++) {
@@ -117,10 +119,16 @@ export default defineSim({
       }
       ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
       ctx.fillStyle = pal.muted;
-      ctx.fillText(mode === 'sound' ? `v = ${fmt(beta, 3)} × c_sound` : `v = ${fmt(beta, 3)} c   (source emits 550 nm)`, 12, H - 12);
+      ctx.fillText(mode === 'sound' ? `v = ${fmt(beta, 3)} × sound speed` : `v = ${fmt(beta, 3)} c   (source emits 550 nm)`, 12, H - 12);
     }
 
-    stage.onResize(() => loop.invalidate());
+    stage.onResize((w) => {
+      const narrow = w < 520;
+      VW = narrow ? 10 : 16;
+      const a = narrow ? '1.25' : String(16 / 9);
+      if (stage.el.style.aspectRatio !== a) stage.el.style.aspectRatio = a;
+      loop.invalidate();
+    });
 
     const panel = new Panel(host);
     panel.playPause(() => loop.paused, (p) => (loop.paused = p));

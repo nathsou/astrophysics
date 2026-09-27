@@ -12,7 +12,7 @@ import { defineSim, createStage } from '../lib/runtime/sim';
 import { Panel, fmt } from '../lib/ui/controls';
 import { Plot } from '../lib/ui/plot';
 import { palette, onThemeChange } from '../lib/ui/theme';
-import { blackbodyCSS } from '../lib/physics/blackbody';
+import { blackbodyRGB } from '../lib/physics/blackbody';
 import { G, Msun, Rsun, mp as MP, kB } from '../lib/physics/constants';
 import { solveLaneEmden, buildStar, starAt, thetaAt, type LaneEmdenProfile, type StarModel } from './stellar-structure/laneemden';
 
@@ -63,7 +63,6 @@ export default defineSim({
       x: { min: 0, max: 1, label: 'r / R' },
       y: { min: 0, max: 1, label: 'normalised value' },
     });
-    plotStage.onResize((w, h, dpr) => plot.resize(w, h, dpr));
 
     const diskCtx = diskStage.canvas.getContext('2d')!;
 
@@ -113,14 +112,32 @@ export default defineSim({
       const cx = w / 2, cy = h / 2;
       const rad = Math.min(w, h) * 0.46;
       const steps = 90;
+      // Colour = blackbody colour of the local temperature; brightness rises with log T, so the
+      // (uniformly blue-white, T > 10⁵ K) interior still shows where the heat is concentrated.
+      const lTc = Math.log10(star.Tc), lT0 = Math.log10(3000);
       for (let i = steps; i >= 1; i--) {
         const x = i / steps;
-        const r = x * R * Rsun;
-        const { T } = starAt(star, r);
+        const { T } = starAt(star, x * R * Rsun);
+        const Tc = Math.max(T, 1500);
+        const [cr, cg, cb] = blackbodyRGB(Tc);
+        const b = 0.25 + 0.75 * Math.min(1, Math.max(0, (Math.log10(Tc) - lT0) / (lTc - lT0)));
         diskCtx.beginPath();
         diskCtx.arc(cx, cy, rad * x, 0, Math.PI * 2);
-        diskCtx.fillStyle = blackbodyCSS(Math.max(T, 1500));
+        diskCtx.fillStyle = `rgb(${(cr * b * 255) | 0},${(cg * b * 255) | 0},${(cb * b * 255) | 0})`;
         diskCtx.fill();
+      }
+      // isotherms
+      diskCtx.font = '10px Inter, system-ui, sans-serif';
+      diskCtx.textAlign = 'left';
+      for (const Tiso of [1e5, 1e6, 1e7]) {
+        if (Tiso >= star.Tc) continue;
+        let lo = 0, hi = 1;
+        for (let k = 0; k < 30; k++) { const mid = (lo + hi) / 2; if (starAt(star, mid * R * Rsun).T > Tiso) lo = mid; else hi = mid; }
+        diskCtx.strokeStyle = 'rgba(0,0,0,0.45)'; diskCtx.lineWidth = 1; diskCtx.setLineDash([3, 3]);
+        diskCtx.beginPath(); diskCtx.arc(cx, cy, rad * lo, 0, Math.PI * 2); diskCtx.stroke();
+        diskCtx.setLineDash([]);
+        diskCtx.fillStyle = 'rgba(0,0,0,0.7)';
+        diskCtx.fillText(`10${['⁵', '⁶', '⁷'][Math.round(Math.log10(Tiso)) - 5]} K`, cx + rad * lo * 0.7071 + 3, cy - rad * lo * 0.7071 - 3);
       }
       // vignette rim
       const grad = diskCtx.createRadialGradient(cx, cy, rad * 0.85, cx, cy, rad * 1.02);
@@ -133,7 +150,7 @@ export default defineSim({
       diskCtx.fillStyle = pal.muted;
       diskCtx.font = '11px Inter, system-ui, sans-serif';
       diskCtx.textAlign = 'center';
-      diskCtx.fillText(`${fmt(R, 3)} R☉ · surface T ≈ ${fmt(star.Tc * (star.n < 5 ? thetaAt(star.profile, star.profile.xi1 * 0.999) : 0.01), 2)} K`, cx, h - 8);
+      diskCtx.fillText(`${fmt(R, 3)} R☉ · centre ${fmt(star.Tc, 2)} K`, cx, h - 8);
     }
 
     function drawProfiles() {
@@ -160,7 +177,6 @@ export default defineSim({
       plot.o.y.max = 1.02;
       plot.draw(() => {
         plot.line(xs, th, { color: pal.muted, dash: [3, 3], width: 1.25 });
-        plot.text('θ(ξ)', 8, 14, { color: pal.muted, size: 10 });
         plot.line(xs, rho, { color: pal.series[0] });
         plot.line(xs, P, { color: pal.series[1] });
         plot.line(xs, T, { color: pal.series[2] });
@@ -169,12 +185,18 @@ export default defineSim({
           const ssm = new Float64Array(N + 1);
           for (let i = 0; i <= N; i++) ssm[i] = ssmDensityRatio(xs[i]);
           plot.line(xs, ssm, { color: pal.bad, width: 1.5, dash: [6, 3] });
-          plot.text('SSM ρ/ρ_c', plot.w - 90, 30, { color: pal.bad, size: 10 });
+          plot.text('Standard Solar Model ρ/ρ_c', plot.m.l + plot.pw - 6, plot.m.t + 14, { color: pal.bad, size: 10, align: 'right' });
         }
-        plot.text('ρ/ρ_c', 8, plot.py(rho[4]) - 6, { color: pal.series[0], size: 10 });
-        plot.text('P/P_c', 8, plot.py(P[4]) - 6, { color: pal.series[1], size: 10 });
-        plot.text('T/T_c', 8, plot.py(T[Math.round(N * 0.3)]) - 6, { color: pal.series[2], size: 10 });
-        plot.text('m(r)/M', plot.w - 70, plot.py(m[Math.round(N * 0.7)]) - 6, { color: pal.series[3], size: 10 });
+        // curve labels, each placed beside its own curve
+        const lab = (text: string, arr: Float64Array, fx: number, color: string) => {
+          const i = Math.round(N * fx);
+          const v = logY ? Math.max(arr[i], 1.2e-4) : arr[i];
+          plot.text(text, plot.px(xs[i]) + 6, plot.py(v) - 5, { color, size: 10 });
+        };
+        lab('ρ/ρ_c', rho, 0.14, pal.series[0]);
+        lab('P/P_c', P, 0.06, pal.series[1]);
+        lab('T/T_c = θ', T, 0.45, pal.series[2]);
+        lab('m(r)/M', m, 0.42, pal.series[3]);
       });
     }
 
@@ -193,7 +215,7 @@ export default defineSim({
     }
 
     diskStage.onResize(() => redraw());
-    redraw();
+    plotStage.onResize((w, h, dpr) => { plot.resize(w, h, dpr); redraw(); });
 
     onDestroy(() => {});
     return { setVisible() {}, destroy() {} };

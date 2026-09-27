@@ -22,14 +22,15 @@ const MARKS: [number, string][] = [
 export default defineSim({
   mount({ host }) {
     let pal = palette();
-    const stage = createStage(host, { height: 210 });
+    const narrow = host.getBoundingClientRect().width < 560; // phones: stack the panels / taller plots
+    const stage = createStage(host, { height: narrow ? 250 : 210 });
     const ctx = stage.canvas.getContext('2d')!;
     let a = 1, b = 9, dA = OBJ[1][2];
     const M = (o: Obj) => o[1] - 5 * Math.log10(o[2] / 10);
     const mA = () => M(OBJ[a]) + 5 * Math.log10(dA / 10);
 
     const lo = -28, hi = 33;
-    const X = (m: number) => 20 + ((m - lo) / (hi - lo)) * (stage.width - 40);
+    const X = (m: number) => 20 + ((m - lo) / (hi - lo)) * (stage.width - 90); // right margin leaves room for the slanted labels
 
     function render() {
       const { width: W, height: H, dpr } = stage;
@@ -52,22 +53,29 @@ export default defineSim({
       ctx.fillStyle = pal.faint;
       ctx.fillText('apparent magnitude m  (← brighter · fainter →)', W / 2, y0 + 40);
       ctx.textAlign = 'left';
-      MARKS.forEach(([m, name], i) => {
+      let lastMark = -1e9;
+      MARKS.slice().sort((p, q) => p[0] - q[0]).forEach(([m, name], i) => {
         const x = X(m);
+        if (x - lastMark < 13) return; // slanted labels need ~13 px of spacing
+        lastMark = x;
         ctx.fillStyle = pal.faint;
         ctx.fillRect(x - 0.5, y0 - 10, 1, 10);
         ctx.save(); ctx.translate(x + 3, y0 - 12); ctx.rotate(-0.6);
         ctx.fillStyle = pal.muted; ctx.fillText(name, 0, 0); ctx.restore();
         void i;
       });
-      const drawStar = (m: number, o: Obj, col: string, label: string, up: boolean) => {
-        const x = X(m);
+      // each label hangs away from the other star's marker so it never crosses its dashed line
+      const drawStar = (m: number, other: number, o: Obj, col: string, label: string, up: boolean) => {
+        const x = X(m), tw = ctx.measureText(label).width;
         ctx.fillStyle = blackbodyCSS(o[3]);
         ctx.beginPath(); ctx.arc(x, y0, 6, 0, 7); ctx.fill();
         ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.stroke(); ctx.lineWidth = 1;
         ctx.fillStyle = col;
-        ctx.textAlign = 'center';
-        ctx.fillText(label, x, up ? y0 + 58 : y0 + 74);
+        let left = m < other || (m === other && up);
+        if (left && x - 5 - tw < 4) left = false;
+        if (!left && x + 5 + tw > stage.width - 4) left = true;
+        ctx.textAlign = left ? 'right' : 'left';
+        ctx.fillText(label, left ? x - 5 : x + 5, up ? y0 + 58 : y0 + 74);
         ctx.textAlign = 'left';
       };
       const ma = mA(), mb = OBJ[b][1];
@@ -76,16 +84,17 @@ export default defineSim({
       ctx.strokeStyle = pal.accent; ctx.setLineDash([3, 3]);
       ctx.beginPath(); ctx.moveTo(xa, y0 + 8); ctx.lineTo(xa, H - 8); ctx.moveTo(xb, y0 + 8); ctx.lineTo(xb, H - 8); ctx.stroke();
       ctx.setLineDash([]);
-      drawStar(ma, OBJ[a], pal.series[0], `A: ${OBJ[a][0]} (m = ${ma.toFixed(2)})`, true);
-      drawStar(mb, OBJ[b], pal.series[1], `B: ${OBJ[b][0]} (m = ${mb.toFixed(2)})`, false);
+      drawStar(ma, mb, OBJ[a], pal.series[0], `A: ${OBJ[a][0]} (m = ${ma.toFixed(2).replace('-', '−')})`, true);
+      drawStar(mb, ma, OBJ[b], pal.series[1], `B: ${OBJ[b][0]} (m = ${mb.toFixed(2).replace('-', '−')})`, false);
       const dm = mb - ma;
       ctx.fillStyle = pal.fg; ctx.font = '13px Inter, system-ui, sans-serif';
-      ctx.fillText(`Δm = ${Math.abs(dm).toFixed(2)}  ⇒  ${dm >= 0 ? 'A' : 'B'} is ${fmt(10 ** (0.4 * Math.abs(dm)), 3)} × brighter than ${dm >= 0 ? 'B' : 'A'}`, 14, 22);
+      ctx.fillText(`Δm = ${Math.abs(dm).toFixed(2)}  ⇒  ${dm >= 0 ? 'A' : 'B'} is ${fmt(10 ** (0.4 * Math.abs(dm)), 3)}× brighter${narrow ? '' : ` than ${dm >= 0 ? 'B' : 'A'}`}`, 14, 22);
       ctx.font = '11px Inter, system-ui, sans-serif';
       ctx.fillStyle = pal.muted;
       const MA = M(OBJ[a]), MB = M(OBJ[b]);
-      ctx.fillText(`Absolute magnitudes: M_A = ${MA.toFixed(2)}, M_B = ${MB.toFixed(2)}  ⇒  luminosity ratio L_A/L_B = ${fmt(10 ** (0.4 * (MB - MA)), 3)}`, 14, 40);
-      ctx.fillText(`A at ${fmt(dA, 3)} pc: distance modulus m − M = 5 log₁₀(d / 10 pc) = ${(ma - MA).toFixed(2)}`, 14, 56);
+      const mm = (v: number) => v.toFixed(2).replace('-', '−');
+      ctx.fillText(narrow ? `M = ${mm(MA)} (A), ${mm(MB)} (B) ⇒ L_A : L_B = ${fmt(10 ** (0.4 * (MB - MA)), 3)}` : `Absolute magnitudes: M = ${mm(MA)} (A), ${mm(MB)} (B)  ⇒  luminosity ratio A : B = ${fmt(10 ** (0.4 * (MB - MA)), 3)}`, 14, 40);
+      ctx.fillText(narrow ? `A at ${fmt(dA, 3)} pc: m − M = ${mm(ma - MA)}` : `A at ${fmt(dA, 3)} pc: distance modulus m − M = 5 log₁₀(d / 10 pc) = ${mm(ma - MA)}`, 14, 56);
     }
 
     const loop = new Loop(null, render);

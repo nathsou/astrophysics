@@ -24,7 +24,8 @@ export default defineSim({
     let pal = palette();
     onThemeChange(() => { pal = palette(); draw(); });
 
-    const stage = createStage(host, { aspect: 16 / 9 });
+    const narrow = host.getBoundingClientRect().width < 560; // phones: stack the panels / taller plots
+    const stage = createStage(host, { aspect: narrow ? 0.9 : 16 / 9 });
     const panel = new Panel(host);
     const readPeak = panel.readout('Peak near');
 
@@ -49,8 +50,17 @@ export default defineSim({
         plot.fn((T) => Math.max(n2Fraction(T, ne).boltz, 1e-9), { color: pal.series[2], dash: [3, 3], alpha: 0.7 });
         plot.fn((T) => Math.max(n2Fraction(T, ne).ionFrac, 1e-9), { color: pal.series[3], dash: [3, 3], alpha: 0.7 });
         plot.fn((T) => Math.max(n2Fraction(T, ne).total, 1e-9), { color: pal.series[0], width: 2.2 });
-        plot.vline(peakT, { color: pal.accent, label: `peak ${fmt(peakT, 3)} K` });
-        plot.vline(9800, { color: pal.muted, dash: [1, 3], label: 'Balmer max (obs.)' });
+        plot.vline(peakT, { color: pal.accent });
+        plot.vline(9800, { color: pal.muted, dash: [1, 3] });
+        // labels on opposite sides of their lines so they never collide
+        const obsLeft = peakT >= 9800;
+        plot.text(`model peak ${fmt(peakT, 3)} K`, plot.px(peakT) + (obsLeft ? 4 : -4), plot.m.t + 4, { align: obsLeft ? 'left' : 'right', baseline: 'top', color: pal.accent });
+        plot.text('Balmer max (observed)', plot.px(9800) + (obsLeft ? -4 : 4), plot.m.t + 20, { align: obsLeft ? 'right' : 'left', baseline: 'top', color: pal.muted });
+        // legend
+        const lx = plot.m.l + 10, ly = plot.py(1e-2);
+        plot.text('— fraction in n=2 (product)', lx, ly, { align: 'left', color: pal.series[0] });
+        plot.text('- - Boltzmann: excited to n=2', lx, ly + 16, { align: 'left', color: pal.series[2] });
+        plot.text('- - Saha: still neutral', lx, ly + 32, { align: 'left', color: pal.series[3] });
       });
     }
 

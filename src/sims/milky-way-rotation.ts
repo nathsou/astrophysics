@@ -13,7 +13,7 @@ import {
 const OMEGA_CONV = 1.02268e-3; // rad/Myr per (km/s / kpc)
 
 export default defineSim({
-  mount({ host }) {
+  mount({ host, onDestroy }) {
     let pal = palette();
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
@@ -23,6 +23,15 @@ export default defineSim({
     const curveStage = createStage(wrap, { aspect: 1.35 });
     const diskStage = createStage(wrap, { aspect: 1 });
     curveStage.el.style.borderRight = '1px solid var(--rule)';
+    // side by side on wide screens, stacked on phones
+    const stackRO = new ResizeObserver(() => {
+      const narrow = wrap.clientWidth < 560;
+      wrap.style.gridTemplateColumns = narrow ? 'minmax(0,1fr)' : 'minmax(0,1.3fr) minmax(0,1fr)';
+      curveStage.el.style.borderRight = narrow ? '' : '1px solid var(--rule)';
+      curveStage.el.style.borderBottom = narrow ? '1px solid var(--rule)' : '';
+    });
+    stackRO.observe(wrap);
+    onDestroy(() => stackRO.disconnect());
     const dctx = diskStage.canvas.getContext('2d')!;
 
     let dataset: 'mw' | 'ngc3198' = 'mw';
@@ -123,7 +132,7 @@ export default defineSim({
         if (!p.noDarkMatter) {
           plot.fn((r) => Math.sqrt(p.haloType === 'nfw' ? vHaloNFW2(r, p.halo as any) : vHaloISO2(r, p.halo as any)), { color: pal.series[3], dash: [4, 3], width: 1.3 });
         }
-        plot.fn((r) => vTotal(r, p), { color: pal.accent, width: 2.4 });
+        plot.fn((r) => vTotal(r, p), { color: pal.fg, width: 2.4 });
         if (showMond) plot.fn((r) => vMond(r, p), { color: pal.bad, width: 1.8, dash: [1, 3] });
         for (const pt of data()) {
           plot.line([pt.r, pt.r], [Math.max(0, pt.v - pt.err), pt.v + pt.err], { color: pal.muted, width: 1 });
@@ -135,7 +144,7 @@ export default defineSim({
       const legend: [string, string][] = [
         ['Bulge', pal.series[0]], ['Disk', pal.series[1]], ['Gas', pal.series[2]],
         ...(p.noDarkMatter ? [] : ([['Halo', pal.series[3]]] as [string, string][])),
-        ['Total', pal.accent],
+        ['Total', pal.fg],
         ...(showMond ? ([['MOND (baryons)', pal.bad]] as [string, string][]) : []),
       ];
       legend.forEach(([lab, col], i) => {

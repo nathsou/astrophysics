@@ -13,20 +13,23 @@ import { rayleighJeansLambda, wienApproxLambda, totalFlux, visibleFraction, colo
 const NM = 1e-9;
 const VIS_LO = 380, VIS_HI = 780; // nm
 
+const SKY = '#05060c', SKY_TEXT = 'rgba(220,226,240,0.75)';
+
 export default defineSim({
   mount({ host }) {
     let pal = palette();
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
+    const narrow = host.getBoundingClientRect().width < 560; // phones: stack the panels / taller plots
     const wrap = document.createElement('div');
-    wrap.style.cssText = 'display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:0;';
+    wrap.style.cssText = `display:grid;grid-template-columns:${narrow ? 'minmax(0,1fr)' : 'minmax(0,1.6fr) minmax(0,1fr)'};gap:0`;
     host.append(wrap);
 
     const plotStage = createStage(wrap, { aspect: 16 / 11 });
     const starCol = document.createElement('div');
     starCol.style.cssText = 'display:flex;flex-direction:column;';
     wrap.append(starCol);
-    plotStage.el.style.borderRight = '1px solid var(--rule)';
+    plotStage.el.style[narrow ? 'borderBottom' : 'borderRight'] = '1px solid var(--rule)';
     const starStage = createStage(starCol, { aspect: 1 });
 
     const swatch = document.createElement('div');
@@ -34,7 +37,7 @@ export default defineSim({
     starCol.append(swatch);
 
     const readoutBox = document.createElement('div');
-    readoutBox.style.cssText = 'padding:2px 10px 8px;font-size:12.5px;line-height:1.65;color:var(--fg-muted)';
+    readoutBox.style.cssText = 'padding:2px 10px 8px;font-family:var(--font-ui);font-size:12.5px;line-height:1.65;color:var(--fg-muted)';
     starCol.append(readoutBox);
 
     let T = 5772;
@@ -57,7 +60,7 @@ export default defineSim({
     const [x0, x1] = xRange();
     const plot = new Plot(plotStage.canvas, {
       x: { min: x0, max: x1, log: logX, label: 'wavelength λ (nm)' },
-      y: { min: 1e-2, max: 1, log: logX, label: 'B_λ (W sr⁻¹ m⁻³)' },
+      y: { min: 1e-2, max: 1, log: logX, label: 'Bλ (W sr⁻¹ m⁻³)' },
       title: 'Planck spectrum',
     });
 
@@ -75,7 +78,8 @@ export default defineSim({
         const { width: W, height: H, dpr } = starStage;
         const ctx = starStage.canvas.getContext('2d')!;
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        ctx.clearRect(0, 0, W, H);
+        // the star is drawn in its physical colour, so it always sits on a night sky (both themes)
+        ctx.fillStyle = SKY; ctx.fillRect(0, 0, W, H);
         const [r, g, b] = blackbodyRGB(T);
         const rgb = `${(r * 255) | 0},${(g * 255) | 0},${(b * 255) | 0}`;
         const cx = W / 2, cy = H / 2;
@@ -94,10 +98,10 @@ export default defineSim({
         disk.addColorStop(1, `rgba(${rgb},0.85)`);
         ctx.fillStyle = disk;
         ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = pal.muted;
+        ctx.fillStyle = SKY_TEXT;
         ctx.font = '11px Inter, system-ui, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(`L / L☉(same R) ≈ ${fmt(relL, 3)}×`, cx, H - 10);
+        ctx.fillText(`L / L☉ (same R) ≈ ${fmt(relL, 3)}×`, cx, H - 10);
       }
       swatch.style.background = blackbodyCSS(T);
 
@@ -108,9 +112,9 @@ export default defineSim({
       const bv = colorIndexBV(T);
       const bvText = vis < 1e-6 ? 'n/a (no visible emission)' : `≈ ${fmt(Math.max(-1, Math.min(bv, 50)), 2)}`;
       readoutBox.innerHTML = `
-        <div><b>λ_peak</b> = ${lamPeak < 1000 ? fmt(lamPeak, 3) + ' nm' : fmt(lamPeak / 1000, 3) + ' μm'}</div>
+        <div><b>λ<sub>peak</sub></b> = ${lamPeak < 1000 ? fmt(lamPeak, 3) + ' nm' : fmt(lamPeak / 1000, 3) + ' μm'}</div>
         <div><b>Flux</b> σT⁴ = ${fmt(flux, 3)} W/m²</div>
-        <div><b>Visible</b> fraction ≈ ${vis < 1e-4 ? '<0.0001' : fmt(vis, 3)}%</div>
+        <div><b>Visible</b> fraction ≈ ${vis < 1e-4 ? '&lt;0.0001' : fmt(vis, 3)}%</div>
         <div><b>Colour index</b> (proxy B−V) ${bvText}</div>
       `;
 

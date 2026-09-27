@@ -11,7 +11,7 @@ import { palette, onThemeChange } from '../lib/ui/theme';
 
 type Vec12 = Float64Array; // [x,y,vx,vy] × 3 bodies
 
-const EPS2 = 1e-6; // softening
+const EPS2 = 1e-12; // tiny softening: only guards against an exact collision; the adaptive step does the real work
 
 function accelAll(s: Vec12, m: [number, number, number], out: Float64Array) {
   for (let i = 0; i < 3; i++) {
@@ -36,9 +36,10 @@ function derivs(s: Vec12, m: [number, number, number], acc: Float64Array, out: V
   }
 }
 
+// scratch buffers, allocated once (rk4 runs thousands of times per frame during close encounters)
+const acc = new Float64Array(12), k1 = new Float64Array(12), k2 = new Float64Array(12), k3 = new Float64Array(12), k4 = new Float64Array(12), tmp = new Float64Array(12);
 function rk4(s: Vec12, m: [number, number, number], h: number) {
   const n = 12;
-  const acc = new Float64Array(n), k1 = new Float64Array(n), k2 = new Float64Array(n), k3 = new Float64Array(n), k4 = new Float64Array(n), tmp = new Float64Array(n);
   derivs(s, m, acc, k1);
   for (let i = 0; i < n; i++) tmp[i] = s[i] + (h / 2) * k1[i];
   derivs(tmp, m, acc, k2);
@@ -47,6 +48,17 @@ function rk4(s: Vec12, m: [number, number, number], h: number) {
   for (let i = 0; i < n; i++) tmp[i] = s[i] + h * k3[i];
   derivs(tmp, m, acc, k4);
   for (let i = 0; i < n; i++) s[i] += (h / 6) * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]);
+}
+
+/** Shortest pairwise free-fall time √(r³/G(mᵢ+mⱼ)): the step must resolve it during close encounters. */
+function dynTime(s: Vec12, m: [number, number, number]) {
+  let tmin = Infinity;
+  for (let i = 0; i < 3; i++) for (let j = i + 1; j < 3; j++) {
+    const dx = s[j * 4] - s[i * 4], dy = s[j * 4 + 1] - s[i * 4 + 1];
+    const r2 = dx * dx + dy * dy;
+    tmin = Math.min(tmin, Math.sqrt((r2 * Math.sqrt(r2)) / (m[i] + m[j])));
+  }
+  return tmin;
 }
 
 interface Preset { label: string; m: [number, number, number]; ic: number[]; span: number; }
@@ -69,12 +81,13 @@ export default defineSim({
     let pal = palette();
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
+    const narrow = host.getBoundingClientRect().width < 560; // phones: stack the panels / taller plots
     const wrap = document.createElement('div');
-    wrap.style.cssText = 'display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);';
+    wrap.style.cssText = `display:grid;grid-template-columns:${narrow ? 'minmax(0,1fr)' : 'minmax(0,1.2fr) minmax(0,1fr)'}`;
     host.append(wrap);
     const orbitStage = createStage(wrap, { aspect: 1 });
     const plotStage = createStage(wrap, { aspect: 1 / 0.92 });
-    orbitStage.el.style.borderRight = '1px solid var(--rule)';
+    orbitStage.el.style[narrow ? 'borderBottom' : 'borderRight'] = '1px solid var(--rule)';
     const ctx = orbitStage.canvas.getContext('2d')!;
 
     const plot = new Plot(plotStage.canvas, {
@@ -112,11 +125,18 @@ export default defineSim({
 
     const h0 = 1 / 4000;
     const loop = new Loop((dt) => {
-      const n = Math.max(1, Math.round((dt * speed) / h0));
-      for (let k = 0; k < n; k++) {
-        rk4(state, m, h0);
-        if (showShadow) rk4(shadow, m, h0);
-        t += h0;
+      // Adaptive step: h0 normally, shrinking to a small fraction of the shortest pairwise dynamical
+      // time in close encounters (the Pythagorean problem has passages at r ~ 10⁻³). Both copies take
+      // the same steps so their separation measures the dynamics, not the integrator. A step budget
+      // keeps the frame time bounded: during a very close passage the clock simply runs slower.
+      let left = dt * speed, budget = 20000;
+      while (left > 1e-12 && budget-- > 0) {
+        let tau = dynTime(state, m);
+        if (showShadow) tau = Math.min(tau, dynTime(shadow, m));
+        const h = Math.min(left, h0, 0.02 * tau);
+        rk4(state, m, h);
+        if (showShadow) rk4(shadow, m, h);
+        t += h; left -= h;
       }
       for (let i = 0; i < 3; i++) {
         const tr = trails[i];
@@ -140,7 +160,9 @@ export default defineSim({
       if (t > plot.o.x.max) plot.o.x.max *= 1.5;
     }, render, 1 / 60);
 
+    let updateReadout = () => {};
     function render() {
+      updateReadout();
       const { width: W, height: H, dpr } = orbitStage;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, W, H);
@@ -191,10 +213,9 @@ export default defineSim({
     panel.toggle('Shadow copy (Δ=10⁻⁹)', showShadow, (v) => { showShadow = v; reset(); loop.invalidate(); });
     panel.slider('Speed', { min: 0.1, max: 4, value: speed, step: 0.05 }, (v) => { speed = v; });
     const ro = panel.readout('');
-    let roRaf = 0;
-    const roTick = () => { ro.set(showShadow && reg.n > 5 ? `measured Lyapunov exponent λ ≈ ${fmt(lambda, 3)} (e-fold time 1/λ ≈ ${fmt(1 / Math.abs(lambda), 2)})` : 'enable the shadow copy to measure λ'); roRaf = requestAnimationFrame(roTick); };
-    roTick();
+    updateReadout = () => ro.set(showShadow && reg.n > 5 ? `measured Lyapunov exponent λ ≈ ${fmt(lambda, 3)} (e-fold time 1/λ ≈ ${fmt(1 / Math.abs(lambda), 2)})` : showShadow ? 'measuring λ…' : 'enable the shadow copy to measure λ');
+    updateReadout();
 
-    return { setVisible: (v) => loop.setVisible(v), destroy: () => { loop.destroy(); cancelAnimationFrame(roRaf); } };
+    return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

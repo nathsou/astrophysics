@@ -6,6 +6,7 @@
 // Top: the potential and the wavefunction (animated as Re ψ e^{-iωt}). Bottom: T versus width.
 
 import { defineSim, Loop, createStage } from '../lib/runtime/sim';
+import { narrowAspect } from './primer-common/stack';
 import { Panel, fmt } from '../lib/ui/controls';
 import { Plot } from '../lib/ui/plot';
 import { palette, onThemeChange } from '../lib/ui/theme';
@@ -84,7 +85,10 @@ export default defineSim({
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
     const top = createStage(host, { aspect: 2.4 });
+
+    narrowAspect(top, 2.4, 1.5);
     const bot = createStage(host, { aspect: 3.2 });
+    narrowAspect(bot, 3.2, 1.7);
     bot.el.style.borderTop = '1px solid var(--rule)';
     const ctx = top.canvas.getContext('2d')!;
     const tplot = new Plot(bot.canvas, {
@@ -142,7 +146,9 @@ export default defineSim({
       ctx.strokeStyle = pal.accent2; ctx.lineWidth = 1.2; ctx.globalAlpha = 0.85; ctx.stroke(); ctx.globalAlpha = 1;
       ctx.font = '11px Inter, system-ui, sans-serif';
       ctx.fillStyle = pal.muted; ctx.textAlign = 'left';
-      ctx.fillText(`E = ${fmt(E, 3)} eV`, X(xmin) + 4, Y(E) - amp * 0.9 - 4);
+      // Energy label under the dashed line on the transmitted side, where |ψ| ≤ 1 keeps it clear of the wave.
+      ctx.textAlign = 'right';
+      ctx.fillText(`E = ${fmt(E, 3)} eV`, X(xmax) - 4, Math.min(yb - 6, Y(E) + amp / 2 + 16));
       ctx.textAlign = 'center';
       ctx.fillText(`V₀ = ${fmt(V0, 3)} eV`, (X(0) + X(a)) / 2, Y(V0) - 6);
       ctx.fillStyle = pal.accent; ctx.textAlign = 'right';

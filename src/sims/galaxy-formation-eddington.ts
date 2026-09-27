@@ -11,10 +11,11 @@ import { ageAt, redshiftAt } from './galaxy-formation/cosmo';
 const T_EDD_GYR = (6.6524587e-29 * 2.99792458e8) / (4 * Math.PI * 6.6743e-11 * 1.67262192e-27) / 3.15576e16;
 
 // Masses are uncertain by factors of ~3 (virial estimators); UHZ1's is inferred from X-rays + host mass.
-const OBS: { name: string; z: number; M: number }[] = [
-  { name: 'J0313−1806', z: 7.64, M: 1.6e9 },
-  { name: 'J1342+0928', z: 7.54, M: 8e8 },
-  { name: 'J1120+0641', z: 7.08, M: 1.35e9 },
+// Label placement (dx, dy in px; align) keeps the three z ≈ 7–7.6 quasars' names apart.
+const OBS: { name: string; z: number; M: number; lx?: number; ly?: number; al?: CanvasTextAlign }[] = [
+  { name: 'J0313−1806', z: 7.64, M: 1.6e9, lx: -7, ly: -6, al: 'right' },
+  { name: 'J1342+0928', z: 7.54, M: 8e8, lx: 2, ly: 16 },
+  { name: 'J1120+0641', z: 7.08, M: 1.35e9, lx: 7, ly: -6 },
   { name: 'CEERS 1019', z: 8.68, M: 9e6 },
   { name: 'UHZ1', z: 10.1, M: 4e7 },
   { name: 'GN-z11', z: 10.6, M: 1.6e6 },
@@ -25,10 +26,11 @@ export default defineSim({
     let pal = palette();
     onThemeChange(() => { pal = palette(); inv(); });
     const stage = createStage(host, { aspect: 16 / 9 });
+    if (host.clientWidth < 560) stage.el.style.aspectRatio = '0.95'; // taller on phones
     const plot = new Plot(stage.canvas, {
       x: { min: 0.1, max: 1.6, label: 'cosmic time (Gyr)   [redshift marked along the top]' },
       y: { min: 10, max: 1e11, log: true, label: 'black-hole mass (M☉)' },
-      margin: { l: 58, r: 16, t: 30, b: 42 },
+      margin: { l: 58, r: 16, t: 34, b: 42 },
     });
 
     let M0 = 100, zSeed = 25, fEdd = 1, eps = 0.1;
@@ -46,30 +48,41 @@ export default defineSim({
       const salp = (eps / (1 - eps)) * T_EDD_GYR / fEdd; // e-folding time
       const tTo1e9 = ageAt(zSeed) + salp * Math.log(1e9 / M0);
       plot.draw(() => {
-        // redshift ticks along the top
-        for (const z of [30, 20, 15, 12, 10, 8, 7, 6, 5, 4]) {
-          const t = ageAt(z);
-          if (t < plot.o.x.min || t > plot.o.x.max) continue;
-          const X = plot.px(t);
-          plot.ctx.strokeStyle = pal.grid;
-          plot.ctx.beginPath(); plot.ctx.moveTo(X, plot.m.t); plot.ctx.lineTo(X, plot.m.t + 6); plot.ctx.stroke();
-          plot.text(`z=${z}`, X, plot.m.t + 16, { align: 'center', color: pal.muted, size: 10 });
-        }
-        plot.vline(ageAt(zSeed), { label: 'seed', color: pal.faint });
+        plot.vline(ageAt(zSeed), { color: pal.faint });
+        plot.text('seed', plot.px(ageAt(zSeed)) + 4, plot.m.t + plot.ph - 8, { color: pal.muted, size: 10 });
         // comparison curves
         plot.fn((t) => growth(t, fEdd, 0.3), { color: pal.series[2], dash: [4, 4], width: 1.2 });
         plot.fn((t) => growth(t, Math.min(fEdd * 3, 10), eps), { color: pal.series[3], dash: [2, 3], width: 1.2 });
         plot.fn((t) => growth(t), { color: pal.accent, width: 2.4 });
         plot.hline(1e9, { label: '10⁹ M☉ (luminous quasar)', color: pal.muted });
-        for (const o of OBS) plot.point(ageAt(o.z), o.M, { r: 4, color: pal.series[1], label: o.name });
+        for (const o of OBS) {
+          plot.point(ageAt(o.z), o.M, { r: 4, color: pal.series[1] });
+          plot.text(o.name, plot.px(ageAt(o.z)) + (o.lx ?? 7), plot.py(o.M) + (o.ly ?? -6), { align: o.al ?? 'left' });
+        }
       });
+      // redshift ticks along the top edge, outside the plot area
+      let lastZx = -1e9;
+      for (const z of [30, 20, 15, 12, 10, 8, 7, 6, 5, 4]) {
+        const t = ageAt(z);
+        if (t < plot.o.x.min || t > plot.o.x.max) continue;
+        const X = plot.px(t);
+        if (X < plot.m.l + 16) continue; // keep clear of the y-axis labels
+        if (X - lastZx < 34) continue; // and of each other when narrow
+        lastZx = X;
+        plot.ctx.strokeStyle = pal.axis; plot.ctx.lineWidth = 1;
+        plot.ctx.beginPath(); plot.ctx.moveTo(X, plot.m.t - 4); plot.ctx.lineTo(X, plot.m.t); plot.ctx.stroke();
+        plot.text(`z=${z}`, X, plot.m.t - 8, { align: 'center', color: pal.muted, size: 10 });
+      }
       const c = plot.ctx;
       c.font = '11px Inter, system-ui, sans-serif'; c.textAlign = 'left';
-      const lx = plot.m.l + 10; let ly = plot.m.t + 32;
+      // legend in the empty lower-right corner
+      const labels = [`your black hole (ε = ${eps.toFixed(2)}, f_Edd = ${fmt(fEdd, 2)})`, 'same, but ε = 0.3 (spinning BH)', `same, but ${fmt(Math.min(fEdd * 3, 10), 2)}× Eddington`];
+      const lw = Math.max(...labels.map((t) => c.measureText(t).width)) + 24;
+      const lx = plot.m.l + plot.pw - lw - 8; let ly = plot.m.t + plot.ph - 44;
       const item = (col: string, dash: number[], s: string) => {
         c.strokeStyle = col; c.setLineDash(dash); c.lineWidth = 2;
         c.beginPath(); c.moveTo(lx, ly - 4); c.lineTo(lx + 18, ly - 4); c.stroke(); c.setLineDash([]);
-        c.fillStyle = pal.fg; c.fillText(s, lx + 24, ly); ly += 16;
+        c.fillStyle = pal.fg; c.textAlign = 'left'; c.textBaseline = 'alphabetic'; c.fillText(s, lx + 24, ly); ly += 16;
       };
       item(pal.accent, [], `your black hole (ε = ${eps.toFixed(2)}, f_Edd = ${fmt(fEdd, 2)})`);
       item(pal.series[2], [4, 4], 'same, but ε = 0.3 (spinning BH)');
@@ -86,6 +99,7 @@ export default defineSim({
     panel.slider('Efficiency ε', { min: 0.04, max: 0.42, value: eps, step: 0.01 }, (v) => { eps = v; inv(); });
     const tOut = panel.readout('e-folding (Salpeter) time');
     const reach = panel.readout('reaches 10⁹ M☉ at');
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

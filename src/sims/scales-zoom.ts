@@ -195,7 +195,7 @@ export default defineSim({
     const oort = mkLayer({ name: 'oort', kind: 'points', unit: AU, rot: IDENT, origin: [0, 0, 0], fade: [[13.6, 0], [14.8, 1], [16.8, 1], [17.7, 0]], gain: 0.7, minPx: 1.0, worldR: 0, maxPx: 50 });
     const solar = mkLayer({ name: 'solar', kind: 'points', unit: AU, rot: IDENT, origin: [0, 0, 0], fade: [[10.0, 0], [10.8, 1], [14.0, 1], [15.0, 0]], gain: 1.0, minPx: 1.3, worldR: 0, maxPx: 50 });
     const orbits = mkLayer({ name: 'orbits', kind: 'lines', unit: AU, rot: IDENT, origin: [0, 0, 0], fade: [[9.3, 0], [10.2, 1], [14.0, 1], [15.2, 0]], gain: 0.5, minPx: 1, worldR: 0, maxPx: 1 });
-    const moonL = mkLayer({ name: 'moon-orbit', kind: 'lines', unit: R_EARTH, rot: IDENT, origin: EARTH, fade: [[6.5, 0], [7.4, 1], [9.6, 1], [10.4, 0]], gain: 0.5, minPx: 1, worldR: 0, maxPx: 1 });
+    const moonL = mkLayer({ name: 'moon-orbit', kind: 'lines', unit: R_EARTH, rot: IDENT, origin: EARTH, fade: [[7.9, 0], [8.6, 1], [9.6, 1], [10.4, 0]], gain: 0.5, minPx: 1, worldR: 0, maxPx: 1 });
 
     const QUALITY: Record<string, [number, number]> = { low: [32768, 90000], medium: [131072, 300000], high: [524288, 700000] };
     let quality = (params.quality as string) in QUALITY ? (params.quality as string) : narrow ? 'low' : 'medium';
@@ -245,14 +245,14 @@ export default defineSim({
     ov.style.color = 'rgba(225,232,255,0.9)';
     ov.style.overflow = 'hidden';
     const title = document.createElement('div');
-    title.style.cssText = 'position:absolute;left:14px;top:12px;max-width:min(26rem,70%);text-shadow:0 1px 3px #000;transition:opacity .4s';
+    title.style.cssText = `position:absolute;left:14px;top:12px;max-width:${narrow ? '47%' : 'min(26rem,70%)'};text-shadow:0 1px 3px #000;transition:opacity .4s`;
     const tH = document.createElement('div');
     tH.style.cssText = 'font-size:1.05rem;font-weight:600;letter-spacing:.01em;color:#fff';
     const tP = document.createElement('div');
     tP.style.cssText = 'font-size:.72rem;line-height:1.35;margin-top:3px;color:rgba(220,228,255,.78)';
     title.append(tH, tP);
     const zBig = document.createElement('div');
-    zBig.style.cssText = 'position:absolute;right:14px;top:10px;text-align:right;font-family:var(--font-mono);color:#fff;text-shadow:0 1px 3px #000';
+    zBig.style.cssText = `position:absolute;right:14px;top:10px;text-align:right;${narrow ? 'max-width:40%;' : ''}font-family:var(--font-mono);color:#fff;text-shadow:0 1px 3px #000`;
     const bar = document.createElement('div');
     bar.style.cssText = 'position:absolute;left:14px;bottom:14px;font-family:var(--font-mono);font-size:.7rem;color:#fff;text-shadow:0 1px 2px #000';
     const barLine = document.createElement('div');

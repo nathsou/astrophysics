@@ -30,10 +30,10 @@ interface Preset {
 const norm = (v: Vec3): Vec3 => { const l = Math.hypot(...v); return [v[0] / l, v[1] / l, v[2] / l]; };
 
 const PRESETS: Record<PresetId, Preset> = {
-  prograde: { label: 'Prograde encounter', q: 1, rp: 5, E: -0.5, d0: 40, n0: [0, 0, 1], n1: norm([0.35, -0.45, 0.82]), cam: 75 },
-  retrograde: { label: 'One retrograde disk', q: 1, rp: 5, E: -0.5, d0: 40, n0: [0, 0, -1], n1: norm([0.35, -0.45, 0.82]), cam: 75 },
-  headon: { label: 'Head-on (ring galaxy)', q: 0.3, rp: 0.4, E: -0.4, d0: 32, n0: [1, 0, 0], n1: norm([0.2, 0.5, 0.85]), cam: 55 },
-  mwm31: { label: 'Milky Way – Andromeda', q: 1.3, rp: 0, E: 0, d0: 260, n0: norm([0.1, 0.4, 0.9]), n1: norm([0.65, -0.35, 0.67]), cam: 90 },
+  prograde: { label: 'Prograde encounter', q: 1, rp: 5, E: -0.5, d0: 40, n0: [0, 0, 1], n1: norm([0.35, -0.45, 0.82]), cam: 52 },
+  retrograde: { label: 'One retrograde disk', q: 1, rp: 5, E: -0.5, d0: 40, n0: [0, 0, -1], n1: norm([0.35, -0.45, 0.82]), cam: 52 },
+  headon: { label: 'Head-on (ring galaxy)', q: 0.3, rp: 0.4, E: -0.4, d0: 32, n0: [1, 0, 0], n1: norm([0.2, 0.5, 0.85]), cam: 42 },
+  mwm31: { label: 'Milky Way – Andromeda', q: 1.3, rp: 0, E: 0, d0: 260, n0: norm([0.1, 0.4, 0.9]), n1: norm([0.65, -0.35, 0.67]), cam: 70 },
 };
 
 const COUNTS = [32768, 131072, 262144, 524288];
@@ -46,6 +46,7 @@ export default defineSim({
   async mount({ host, params, onDestroy }) {
     const device = await requireDevice();
     const stage = createStage(host, { aspect: 16 / 9 });
+    if (host.clientWidth < 560) stage.el.style.aspectRatio = '1'; // taller on phones
     const { ctx, format } = configureCanvas(stage.canvas, device, 'opaque');
     const eng = new NBodyEngine(device, format);
     onDestroy(() => eng.destroy());
@@ -181,6 +182,7 @@ export default defineSim({
       return device.queue.onSubmittedWorkDone();
     };
 
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

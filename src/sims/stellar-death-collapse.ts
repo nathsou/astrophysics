@@ -24,10 +24,10 @@ interface Layer { name: string; colorOf: (pal: Palette) => string; outerKm: numb
 function layersForMass(Mprog: number): Layer[] {
   const s = (Mprog / 15) ** 0.25;
   return [
-    { name: 'Fe core', colorOf: (p) => p.series[3], outerKm: 3000 * s },
-    { name: 'Si', colorOf: (p) => p.series[2], outerKm: 1.2e4 * s },
-    { name: 'Ne/Mg/O', colorOf: (p) => p.series[1], outerKm: 8e4 * s },
-    { name: 'C/O', colorOf: (p) => p.series[0], outerKm: 6e5 * (Mprog / 15) ** 0.4 },
+    { name: 'Fe core', colorOf: (p) => p.muted, outerKm: 3000 * s },
+    { name: 'Si', colorOf: (p) => p.series[4], outerKm: 1.2e4 * s },
+    { name: 'Ne/Mg/O', colorOf: (p) => p.series[2], outerKm: 8e4 * s },
+    { name: 'C/O', colorOf: (p) => p.series[3], outerKm: 6e5 * (Mprog / 15) ** 0.4 },
     { name: 'He', colorOf: (p) => p.accent2, outerKm: 3e6 * (Mprog / 15) ** 0.5 },
     { name: 'H envelope', colorOf: (p) => p.accent, outerKm: 3.2e8 * (Mprog / 15) ** 0.3 },
   ];
@@ -41,7 +41,7 @@ function neutrinoLuminosity(tPB: number): number {
 }
 
 export default defineSim({
-  mount({ host }) {
+  mount({ host, onDestroy }) {
     let pal = palette();
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
@@ -51,6 +51,15 @@ export default defineSim({
     const mainStage = createStage(wrap, { aspect: 1 });
     const plotStage = createStage(wrap, { aspect: 1 / 1.05 });
     mainStage.el.style.borderRight = '1px solid var(--rule)';
+    // side by side on wide screens, stacked on phones
+    const stackRO = new ResizeObserver(() => {
+      const narrow = wrap.clientWidth < 560;
+      wrap.style.gridTemplateColumns = narrow ? 'minmax(0,1fr)' : 'minmax(0,1.35fr) minmax(0,1fr)';
+      mainStage.el.style.borderRight = narrow ? '' : '1px solid var(--rule)';
+      mainStage.el.style.borderBottom = narrow ? '1px solid var(--rule)' : '';
+    });
+    stackRO.observe(wrap);
+    onDestroy(() => stackRO.disconnect());
     const ctx = mainStage.canvas.getContext('2d')!;
 
     const plot = new Plot(plotStage.canvas, {
@@ -243,14 +252,15 @@ export default defineSim({
       // legend
       let ly = H - 14 - (outcome ? 18 : 0) - layers.length * 15;
       ctx.font = '10.5px Inter, system-ui, sans-serif';
-      for (const layer of layers) {
-        const col = layer.colorOf(pal);
-        ctx.fillStyle = col;
-        ctx.fillRect(W - 118, ly, 10, 10);
+      const legend = layers.map((layer) => `${layer.name} (R ≈ ${fmt(layer.outerKm, 2)} km)`);
+      const lx = W - 8 - 14 - Math.max(...legend.map((t) => ctx.measureText(t).width));
+      layers.forEach((layer, i) => {
+        ctx.fillStyle = layer.colorOf(pal);
+        ctx.fillRect(lx, ly, 10, 10);
         ctx.fillStyle = pal.muted;
-        ctx.fillText(`${layer.name} (R ≈ ${fmt(layer.outerKm, 2)} km)`, W - 104, ly + 9);
+        ctx.fillText(legend[i], lx + 14, ly + 9);
         ly += 15;
-      }
+      });
 
       plot.draw(() => {
         const [xs, ys] = nuHist.linear();

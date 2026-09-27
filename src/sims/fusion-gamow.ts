@@ -66,8 +66,9 @@ export default defineSim({
       insetPlot.o.x.min = Math.max((E0 - 5 * width) / 1e3, 0);
       insetPlot.o.x.max = (E0 + 6 * width) / 1e3;
       const rc = (KEV_FM * reaction.Z1 * reaction.Z2) / (E0 / 1e3); // fm, V(rc) = E0
-      barrierPlot.o.x.min = rc / 40;
-      barrierPlot.o.x.max = rc * 6;
+      const rnuc = 1.2 * (Math.cbrt(reaction.A1) + Math.cbrt(reaction.A2)); // fm
+      barrierPlot.o.x.min = rnuc * 0.5;
+      barrierPlot.o.x.max = rc * 5;
       barrierPlot.o.y.max = (E0 / 1e3) * 3.2;
     }
 
@@ -81,7 +82,7 @@ export default defineSim({
         mainPlot.vline(E0 / 1e3, { color: pal.muted, label: 'E₀' });
         mainPlot.text('e^(−E/kT)  Maxwell–Boltzmann tail', mainPlot.px(mainPlot.o.x.max * 0.55), mainPlot.py(0.55), { color: pal.series[2], align: 'left' });
         mainPlot.text('e^(−√(E_G/E))  tunnelling probability', mainPlot.px(mainPlot.o.x.max * 0.02), mainPlot.py(1.6e-6), { color: pal.series[1], align: 'left', baseline: 'bottom' });
-        mainPlot.text('product = Gamow peak', mainPlot.px(E0 / 1e3), mainPlot.py(1.3), { color: pal.series[0], align: 'center', baseline: 'bottom' });
+        mainPlot.text('← product = Gamow peak', mainPlot.px((E0 / 1e3) * 2.3) + 6, mainPlot.py(0.3), { color: pal.series[0], align: 'left', baseline: 'middle' });
       });
 
       insetPlot.draw(() => {
@@ -103,20 +104,22 @@ export default defineSim({
         barrierPlot.vline(rn, { color: pal.faint, label: 'nuclear radius' });
         barrierPlot.vline(rc, { color: pal.faint, label: 'classical turning point' });
 
-        // Wavefunction amplitude, schematic: oscillating outside, exponentially damped under the barrier.
+        // Wavefunction amplitude, schematic: the incoming wave oscillates outside the turning point,
+        // decays exponentially under the barrier, and a much smaller wave reaches the nucleus.
+        // Oscillations are drawn per decade of r so they read on the log axis.
         const { ctx, m, ph } = barrierPlot;
-        const band = ph * 0.28, y0 = m.t + band + 8;
-        const k = 10; // arbitrary oscillation wavenumber for the cartoon, in 1/fm
-        const kappa = Math.log(30) / Math.max(rc - rn, 1e-6); // decays ~30x across the barrier
+        const band = ph * 0.22, y0 = m.t + band + 18;
+        const wiggle = (r: number) => Math.cos(2 * Math.PI * 7 * Math.log10(r) - phase);
+        const inside = 0.1; // amplitude that makes it through (exaggerated so it is visible)
+        const kappa = Math.log(1 / inside) / Math.max(Math.log(rc / rn), 1e-6);
         const amp = (r: number) => {
-          if (r < rn) return Math.cos(k * r + phase);
-          if (r < rc) return Math.exp(-kappa * (r - rn)) * Math.cos(k * rn + phase);
-          const transmitted = Math.exp(-kappa * (rc - rn));
-          return transmitted * Math.cos(k * (r - rc) * 0.3 + phase * 0.6);
+          if (r >= rc) return wiggle(r);
+          if (r >= rn) return Math.exp(-kappa * Math.log(rc / r)) * wiggle(rc);
+          return inside * wiggle(r * rc / rn);
         };
         ctx.save();
         ctx.beginPath();
-        ctx.rect(m.l, m.t, barrierPlot.pw, band + 8);
+        ctx.rect(m.l, m.t, barrierPlot.pw, 2 * band + 20);
         ctx.clip();
         ctx.strokeStyle = pal.accent2;
         ctx.lineWidth = 1.75;
@@ -130,7 +133,7 @@ export default defineSim({
         }
         ctx.stroke();
         ctx.restore();
-        barrierPlot.text('ψ(r) amplitude (schematic)', m.l + 4, m.t + 10, { color: pal.accent2, baseline: 'top' });
+        barrierPlot.text('ψ(r), schematic: incoming wave → decays under the barrier', m.l + barrierPlot.pw - 4, m.t + 2 * band + 22, { color: pal.accent2, baseline: 'top', align: 'right' });
       });
     }
 

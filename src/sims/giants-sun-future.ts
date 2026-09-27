@@ -1,6 +1,10 @@
-// Secondary figure: the Sun's future radius vs time on the RGB/AGB, with the terrestrial
-// planets' orbits — which expand as the Sun loses mass (angular momentum conservation:
-// a ∝ 1/M for adiabatic mass loss) even as the Sun itself swells enormously.
+// Secondary figure: the Sun's future radius on the RGB/AGB, with the terrestrial planets' orbits,
+// which expand as the Sun loses mass (a ∝ 1/M for slow, isotropic mass loss) even as the Sun
+// itself swells enormously. Waypoints follow Schröder & Smith (2008); tidal drag, which they find
+// probably drags the Earth in at the RGB tip, is not modelled.
+//
+// The late phases last ~1% of the remaining time, so both the slider and the plot use a log scale
+// in the time remaining before the white dwarf forms.
 
 import { defineSim, Loop, createStage } from '../lib/runtime/sim';
 import { Panel, fmt } from '../lib/ui/controls';
@@ -10,16 +14,23 @@ import { blackbodyCSS } from '../lib/physics/blackbody';
 
 const AU_PER_RSUN = 6.957e8 / 1.495978707e11;
 
-// Time since now, in Gyr, at a handful of key waypoints (approximate, e.g. Schröder & Smith 2008 / Sackmann+ 1993).
+// Time from today (Gyr), radius (R☉), T_eff (K), mass (M☉).
 const WAYPOINTS = [
   { t: 0, R: 1, T: 5772, M: 1.0, label: 'today' },
-  { t: 6.0, R: 1.6, T: 5500, M: 1.0, label: 'end of MS' },
-  { t: 7.0, R: 30, T: 4500, M: 0.98, label: 'subgiant' },
-  { t: 7.5, R: 170, T: 3300, M: 0.86, label: 'RGB tip (engulfs Mercury, Venus)' },
-  { t: 7.59, R: 10, T: 4700, M: 0.54, label: 'He flash → red clump' },
-  { t: 7.6, R: 180, T: 3400, M: 0.54, label: 'AGB tip (Earth: ~50/50)' },
-  { t: 7.62, R: 0.011, T: 60000, M: 0.53, label: 'white dwarf' },
+  { t: 6.4, R: 1.7, T: 5600, M: 1.0, label: 'end of the main sequence' },
+  { t: 7.0, R: 2.6, T: 4900, M: 1.0, label: 'subgiant' },
+  { t: 7.45, R: 20, T: 4300, M: 0.97, label: 'red giant branch' },
+  { t: 7.59, R: 256, T: 2600, M: 0.67, label: 'RGB tip: Mercury and Venus engulfed' },
+  { t: 7.5901, R: 11, T: 4700, M: 0.67, label: 'helium flash → red clump' },
+  { t: 7.70, R: 13, T: 4600, M: 0.66, label: 'core helium burning (~110 Myr)' },
+  { t: 7.7199, R: 149, T: 3150, M: 0.54, label: 'AGB tip: thermal pulses, mass loss' },
+  { t: 7.72, R: 0.012, T: 100000, M: 0.54, label: 'white dwarf (+ planetary nebula)' },
 ];
+const T_END = 7.72;
+const EPS = 1e-4; // Gyr (0.1 Myr): the right-hand end of the log time axis
+const U_MAX = Math.log10(T_END + EPS), U_MIN = Math.log10(EPS);
+const tOfU = (u: number) => T_END + EPS - 10 ** u; // u = log10(time remaining + ε)
+const uOfT = (t: number) => Math.log10(Math.max(T_END + EPS - t, EPS));
 
 function interp(t: number) {
   let i = 0;
@@ -28,7 +39,7 @@ function interp(t: number) {
   const f = Math.min(1, Math.max(0, (t - a.t) / (b.t - a.t || 1)));
   return {
     R: a.R * Math.pow(b.R / a.R, f),
-    T: a.T + (b.T - a.T) * f,
+    T: a.T * Math.pow(b.T / a.T, f),
     M: a.M + (b.M - a.M) * f,
   };
 }
@@ -40,8 +51,15 @@ const PLANETS = [
   { name: 'Mars', a0: 1.524 },
 ];
 
+function remainingLabel(u: number): string {
+  const g = 10 ** u; // Gyr
+  if (g >= 1) return `${fmt(g, 2)} Gyr`;
+  if (g >= 1e-3) return `${fmt(g * 1e3, 2)} Myr`;
+  return `${fmt(g * 1e6, 2)} kyr`;
+}
+
 export default defineSim({
-  mount({ host }) {
+  mount({ host, onDestroy }) {
     let pal = palette();
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
@@ -50,11 +68,19 @@ export default defineSim({
     host.append(wrap);
     const rStage = createStage(wrap, { aspect: 1 });
     const plotStage = createStage(wrap, { aspect: 1 });
-    rStage.el.style.borderRight = '1px solid var(--rule)';
+    const ro = new ResizeObserver(() => {
+      const narrow = wrap.clientWidth < 560;
+      wrap.style.gridTemplateColumns = narrow ? 'minmax(0,1fr)' : 'minmax(0,1fr) minmax(0,1fr)';
+      rStage.el.style.borderRight = narrow ? '' : '1px solid var(--rule)';
+      rStage.el.style.borderBottom = narrow ? '1px solid var(--rule)' : '';
+    });
+    ro.observe(wrap);
+    onDestroy(() => ro.disconnect());
 
     const plot = new Plot(plotStage.canvas, {
-      x: { min: 0, max: 7.62, label: 'time from today (Gyr)' },
-      y: { min: -2.5, max: 2.4, log: false, label: 'log₁₀ (R / R☉)' },
+      // reversed log axis of time remaining: today on the left, the white dwarf on the right
+      x: { min: U_MAX, max: U_MIN, label: 'time left before the white dwarf (log scale)', ticks: [0.699, 0, -1, -2, -3], format: remainingLabel },
+      y: { min: -2.5, max: 2.7, label: 'log₁₀ (R / R☉)' },
       title: 'Solar radius vs time',
     });
 
@@ -62,75 +88,76 @@ export default defineSim({
 
     function render() {
       const st = interp(t);
-      // ---- rendered solar system ----
+      // ---- rendered solar system (to scale) ----
       const { width: W, height: H, dpr } = rStage;
       const ctx = rStage.canvas.getContext('2d')!;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, W, H);
       const cx = W / 2, cy = H / 2;
-      const pxPerAU = Math.min(W, H) / 3.6;
-      // planet orbits expand as a ∝ 1/M (present mass ratio)
-      const massFactor = 1 / st.M;
-      ctx.strokeStyle = pal.faint;
+      const pxPerAU = Math.min(W, H) / 2 / 3.0;
+      const massFactor = 1 / st.M; // orbits expand as a ∝ 1/M
+      ctx.strokeStyle = pal.faint; ctx.lineWidth = 1;
       for (const p of PLANETS) {
-        const a = p.a0 * massFactor;
-        ctx.beginPath(); ctx.arc(cx, cy, a * pxPerAU, 0, Math.PI * 2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(cx, cy, p.a0 * massFactor * pxPerAU, 0, Math.PI * 2); ctx.stroke();
       }
-      // Sun (log-zoomed radius so it stays visible from 1 to 180 Rsun)
       const rAU = st.R * AU_PER_RSUN;
-      const pxR = Math.max(3, Math.min(rAU * pxPerAU, Math.min(W, H) * 0.46));
+      const pxR = Math.max(2.5, rAU * pxPerAU);
       const col = blackbodyCSS(st.T, 1), colFade = blackbodyCSS(st.T, 0);
-      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, pxR);
-      g.addColorStop(0, '#fff'); g.addColorStop(0.2, col); g.addColorStop(1, colFade);
+      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, pxR * 1.15);
+      g.addColorStop(0, '#fff'); g.addColorStop(0.25, col); g.addColorStop(0.87, col); g.addColorStop(1, colFade);
       ctx.fillStyle = g;
-      ctx.beginPath(); ctx.arc(cx, cy, pxR, 0, Math.PI * 2); ctx.fill();
-      // planet markers, swallowed once inside the Sun
+      ctx.beginPath(); ctx.arc(cx, cy, pxR * 1.15, 0, Math.PI * 2); ctx.fill();
       ctx.font = '11px Inter, system-ui, sans-serif';
-      for (const p of PLANETS) {
+      ctx.textBaseline = 'alphabetic';
+      const engulfed: string[] = [];
+      PLANETS.forEach((p, i) => {
         const a = p.a0 * massFactor;
-        const swallowed = a < rAU; // planet's orbital radius (AU) inside the Sun's surface (AU)
-        const px = cx + a * pxPerAU, py = cy;
-        if (!swallowed) {
-          ctx.fillStyle = pal.fg;
-          ctx.beginPath(); ctx.arc(px, py, 3.5, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = pal.muted;
-          ctx.fillText(p.name, px + 6, py - 6);
-        }
-      }
-      ctx.fillStyle = pal.muted;
-      ctx.fillText(`R☉ ≈ ${fmt(st.R, 4)} R☉ = ${fmt(rAU, 3)} AU`, 10, H - 26);
-      ctx.fillText(`T_eff ≈ ${fmt(st.T, 4)} K,  M ≈ ${fmt(st.M, 3)} M☉`, 10, H - 10);
+        if (a < rAU) { engulfed.push(p.name); return; }
+        const ang = -0.5 - 0.55 * i; // spread the planets round their orbits so labels never collide
+        const px = cx + a * pxPerAU * Math.cos(ang), py = cy + a * pxPerAU * Math.sin(ang);
+        ctx.fillStyle = pal.fg;
+        ctx.beginPath(); ctx.arc(px, py, 3.5, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = pal.muted; ctx.textAlign = 'left';
+        ctx.fillText(p.name, px + 6, py - 6);
+      });
+      ctx.fillStyle = pal.muted; ctx.textAlign = 'left';
+      ctx.fillText(`R ≈ ${fmt(st.R, 3)} R☉ = ${fmt(rAU, 3)} AU`, 10, H - 42);
+      ctx.fillText(`T_eff ≈ ${fmt(st.T, 3)} K,  M ≈ ${fmt(st.M, 3)} M☉`, 10, H - 26);
+      ctx.fillStyle = engulfed.length ? pal.bad : pal.muted;
+      ctx.fillText(engulfed.length ? `engulfed: ${engulfed.join(', ')}` : 'orbits to scale; the Sun is drawn to scale too', 10, H - 10);
 
       // ---- radius vs time plot ----
       plot.resize(plotStage.width, plotStage.height, plotStage.dpr);
       plot.draw(() => {
-        const N = 400;
+        const N = 600;
         const xs = new Float64Array(N), ys = new Float64Array(N);
-        for (let i = 0; i < N; i++) { const tt = (i / (N - 1)) * 7.62; xs[i] = tt; ys[i] = Math.log10(interp(tt).R); }
+        for (let i = 0; i < N; i++) { const u = U_MAX + ((U_MIN - U_MAX) * i) / (N - 1); xs[i] = u; ys[i] = Math.log10(interp(tOfU(u)).R); }
         plot.line(xs, ys, { color: pal.series[1], width: 2 });
-        for (const w of WAYPOINTS) plot.point(w.t, Math.log10(w.R), { r: 3, color: pal.muted });
-        const x = plot.px(t), y = plot.py(Math.log10(st.R));
-        plot.ctx.fillStyle = pal.accent;
-        plot.ctx.beginPath(); plot.ctx.arc(x, y, 5, 0, Math.PI * 2); plot.ctx.fill();
+        for (const w of WAYPOINTS) plot.point(uOfT(w.t), Math.log10(w.R), { r: 2.5, color: pal.muted });
+        plot.hline(Math.log10(1 / AU_PER_RSUN), { color: pal.faint, dash: [3, 4], label: '1 AU' });
+        plot.point(uOfT(t), Math.log10(st.R), { r: 5, color: pal.accent, stroke: pal.fg });
       });
 
       readWaypoint.set(labelAt(t));
     }
     function labelAt(tv: number): string {
-      let closest = WAYPOINTS[0];
-      for (const w of WAYPOINTS) if (Math.abs(w.t - tv) < Math.abs(closest.t - tv)) closest = w;
-      return closest.label;
+      let cur = WAYPOINTS[0];
+      for (const w of WAYPOINTS) if (w.t <= tv + 1e-9) cur = w;
+      return cur.label;
     }
 
-    const loop = new Loop(() => {}, render, 1 / 20);
+    const loop = new Loop(null, render);
+    loop.onDemand = true;
     rStage.onResize(() => loop.invalidate());
     plotStage.onResize(() => loop.invalidate());
 
     const panel = new Panel(host);
-    panel.slider('Time from today', { min: 0, max: 7.62, value: 0, step: 0.001 }, (v) => { t = v; loop.invalidate(); });
-    const readWaypoint = panel.readout('Nearest milestone');
+    // slider position s ∈ [0, 1] ↦ log time remaining
+    panel.slider('Time from today', { min: 0, max: 1, value: 0, step: 0.0005, format: (s) => { const tt = tOfU(U_MAX + (U_MIN - U_MAX) * s); return `${fmt(tt < 1e-6 ? 0 : tt, 4)} Gyr`; } }, (s) => {
+      t = Math.min(T_END, tOfU(U_MAX + (U_MIN - U_MAX) * s)); loop.invalidate();
+    });
+    const readWaypoint = panel.readout('Phase');
 
-    loop.invalidate();
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

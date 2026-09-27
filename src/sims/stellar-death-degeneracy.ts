@@ -3,7 +3,7 @@
 // radius p_F = ħ(3π²n)^{1/3}; the resulting pressure is set by density alone, not temperature.
 
 import { defineSim, createStage } from '../lib/runtime/sim';
-import { Panel, fmt } from '../lib/ui/controls';
+import { Panel, fmt, superscript } from '../lib/ui/controls';
 import { Plot } from '../lib/ui/plot';
 import { palette, onThemeChange } from '../lib/ui/theme';
 import { hbar, me, c, kB } from '../lib/physics/constants';
@@ -14,7 +14,7 @@ const Pdeg = (n: number) => (hbar * hbar / (5 * me)) * (3 * Math.PI * Math.PI) *
 const Pideal = (n: number, T: number) => n * kB * T;
 
 export default defineSim({
-  mount({ host }) {
+  mount({ host, onDestroy }) {
     let pal = palette();
     const wrap = document.createElement('div');
     wrap.style.cssText = 'display:grid;grid-template-columns:minmax(0,0.8fr) minmax(0,1.2fr);gap:0;';
@@ -22,6 +22,15 @@ export default defineSim({
     const sphereStage = createStage(wrap, { aspect: 1 });
     const plotStage = createStage(wrap, { aspect: 1 / 0.92 });
     sphereStage.el.style.borderRight = '1px solid var(--rule)';
+    // side by side on wide screens, stacked on phones
+    const stackRO = new ResizeObserver(() => {
+      const narrow = wrap.clientWidth < 560;
+      wrap.style.gridTemplateColumns = narrow ? 'minmax(0,1fr)' : 'minmax(0,0.8fr) minmax(0,1.2fr)';
+      sphereStage.el.style.borderRight = narrow ? '' : '1px solid var(--rule)';
+      sphereStage.el.style.borderBottom = narrow ? '1px solid var(--rule)' : '';
+    });
+    stackRO.observe(wrap);
+    onDestroy(() => stackRO.disconnect());
     const sctx = sphereStage.canvas.getContext('2d')!;
 
     const plot = new Plot(plotStage.canvas, {
@@ -84,10 +93,12 @@ export default defineSim({
         plot.fn(Pdeg, { color: pal.series[0], width: 2.25 });
         for (const [Ti, col] of [[1e5, pal.series[3]], [1e7, pal.series[2]], [1e9, pal.series[1]]] as const) {
           plot.fn((n_) => Pideal(n_, Ti), { color: col, dash: [5, 4] });
+          plot.text(`10${superscript(String(Math.log10(Ti)))} K`, plot.px(1.6e28), plot.py(Pideal(1.6e28, Ti)) - 7, { color: col, size: 10.5, align: 'left' });
         }
+        plot.fn((n_) => Pideal(n_, T), { color: pal.fg, dash: [2, 3], alpha: 0.55 });
         plot.point(n, Math.max(Pdeg(n), Pideal(n, T)), { r: 5, color: pal.accent, stroke: pal.fg });
         plot.text('solid: degenerate P(n) ∝ n^(5/3), T-independent', plot.m.l + 8, plot.m.t + 14, { color: pal.series[0], size: 10.5 });
-        plot.text('dashed: ideal gas at 10⁵, 10⁷, 10⁹ K', plot.m.l + 8, plot.m.t + 28, { color: pal.muted, size: 10.5 });
+        plot.text('dashed: ideal gas at 10⁵, 10⁷, 10⁹ K; dotted: your T', plot.m.l + 8, plot.m.t + 28, { color: pal.muted, size: 10.5 });
       });
     }
     sphereStage.onResize(() => draw());

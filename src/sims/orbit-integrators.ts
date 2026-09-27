@@ -55,12 +55,13 @@ export default defineSim({
     let pal = palette();
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
+    const narrow = host.getBoundingClientRect().width < 560; // phones: stack the panels / taller plots
     const wrap = document.createElement('div');
-    wrap.style.cssText = 'display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);';
+    wrap.style.cssText = `display:grid;grid-template-columns:${narrow ? 'minmax(0,1fr)' : 'minmax(0,1.1fr) minmax(0,1fr)'}`;
     host.append(wrap);
     const orbitStage = createStage(wrap, { aspect: 1 });
     const plotStage = createStage(wrap, { aspect: 1 / 0.92 });
-    orbitStage.el.style.borderRight = '1px solid var(--rule)';
+    orbitStage.el.style[narrow ? 'borderBottom' : 'borderRight'] = '1px solid var(--rule)';
     const ctx = orbitStage.canvas.getContext('2d')!;
 
     const plot = new Plot(plotStage.canvas, {

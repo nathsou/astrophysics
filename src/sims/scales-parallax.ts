@@ -9,12 +9,13 @@ import { palette, onThemeChange } from '../lib/ui/theme';
 export default defineSim({
   mount({ host }) {
     let pal = palette();
+    const narrow = host.getBoundingClientRect().width < 560; // phones: stack the panels / taller plots
     const wrap = document.createElement('div');
-    wrap.style.cssText = 'display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);';
+    wrap.style.cssText = `display:grid;grid-template-columns:${narrow ? 'minmax(0,1fr)' : 'minmax(0,1fr) minmax(0,1fr)'}`;
     host.append(wrap);
     const left = createStage(wrap, { aspect: 1 });
     const right = createStage(wrap, { aspect: 1 });
-    left.el.style.borderRight = '1px solid var(--rule)';
+    left.el.style[narrow ? 'borderBottom' : 'borderRight'] = '1px solid var(--rule)';
     const lc = left.canvas.getContext('2d')!, rc = right.canvas.getContext('2d')!;
 
     let d = 10; // pc

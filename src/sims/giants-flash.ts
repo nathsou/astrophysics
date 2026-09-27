@@ -42,6 +42,7 @@ export default defineSim({
       x: { min: 0, max: 8, label: 'time (arbitrary thermal units)' },
       y: { min: 0, max: 6, label: 'T / T₀ , ρ / ρ₀' },
       title: 'Perturb the core: ideal gas self-regulates, degenerate gas runs away',
+      margin: { l: 56, r: 16, t: 78, b: 42 },
     });
 
     let T = 1, rho = 1, t = 0;
@@ -79,11 +80,15 @@ export default defineSim({
       });
       const ctx = plot.ctx;
       ctx.font = '12px Inter, system-ui, sans-serif';
-      ctx.fillStyle = pal.series[2]; ctx.fillText('T / T₀', 60, 22);
-      ctx.fillStyle = pal.series[0]; ctx.fillText('ρ / ρ₀', 120, 22);
+      ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+      ctx.fillStyle = pal.series[2]; ctx.fillText('— T / T₀', 60, 36);
+      ctx.fillStyle = pal.series[0]; ctx.fillText('— ρ / ρ₀', 130, 36);
       ctx.fillStyle = pal.muted;
-      ctx.fillText(mode === 'degenerate' ? 'Degenerate core: P ∝ ρ^(5/3), independent of T — no expansion, no relief.' : 'Ideal gas core: P ∝ ρT — heats, expands, cools, restabilises.', 60, 40);
-      if (blown) { ctx.fillStyle = pal.bad; ctx.fillText('Runaway — this is the He flash (in a real core, halted once T rises enough to lift degeneracy).', 60, 58); }
+      const narrow = stage.width < 620;
+      ctx.fillText(mode === 'degenerate'
+        ? (narrow ? 'Degenerate: P ∝ ρ^(5/3), no T feedback' : 'Degenerate core: P ∝ ρ^(5/3), independent of T: no expansion, no relief.')
+        : (narrow ? 'Ideal gas: P ∝ ρT, self-regulating' : 'Ideal-gas core: P ∝ ρT. It heats, expands, cools and restabilises.'), 60, 54);
+      if (blown) { ctx.fillStyle = pal.bad; ctx.fillText(narrow ? 'Runaway: the helium flash' : 'Runaway: this is the helium flash (in a real core it stops once T is high enough to lift the degeneracy).', 60, 70); }
     }
 
     stage.onResize(() => loop.invalidate());

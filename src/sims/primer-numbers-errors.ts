@@ -60,6 +60,7 @@ export default defineSim({
       margin: { l: 36, r: 16, t: 28, b: 42 },
     });
     const loop = new Loop(null, render);
+    loop.onDemand = true;
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
     stage.onResize((w, h, d) => { plot.resize(w, h, d); loop.invalidate(); });
 
@@ -116,7 +117,8 @@ export default defineSim({
       ctx.textBaseline = 'bottom';
       ctx.textAlign = 'left';
       ctx.fillStyle = pal.muted;
-      ctx.fillText('where the error comes from', X0, Y0 - 1);
+      const narrow = plot.pw < 480;
+      ctx.fillText(narrow ? 'error budget' : 'where the error comes from', X0, Y0 - 1);
       let x = X0;
       f.inputs.forEach((inp, j) => {
         const share = (inp.n * inp.sigma) ** 2 / tot;
@@ -131,7 +133,7 @@ export default defineSim({
         x += BW * share;
       });
       plot.text(`${f.tex}`, plot.m.l + 6, plot.m.t + 16, { color: pal.fg, size: 12 });
-      plot.text('━ linear propagation   ▮ Monte Carlo', plot.m.l + 6, plot.m.t + 32, { color: pal.muted });
+      if (!narrow) plot.text('━ linear propagation   ▮ Monte Carlo', plot.m.l + 6, plot.m.t + 32, { color: pal.muted });
 
       rLin.set(`±${fmt(sigLin * 100, 3)}%`);
       rMc.set(`${fmt(p50, 3)} (−${fmt((p50 - p16) * 100, 2)}% / +${fmt((p84 - p50) * 100, 2)}%)`);

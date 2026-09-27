@@ -105,6 +105,8 @@ export default defineSim({
     }
 
     const loop = new Loop(null, render);
+
+    loop.onDemand = true;
     polar.onResize(() => loop.invalidate());
     right.onResize((w, h, d) => { plot.resize(w, h, d); loop.invalidate(); });
     onThemeChange(() => { pal = palette(); loop.invalidate(); });

@@ -13,6 +13,7 @@ export default defineSim({
   mount({ host }) {
     let pal = palette();
     const stage = createStage(host, { aspect: 16 / 9 });
+    if (host.clientWidth < 560) stage.el.style.aspectRatio = '1.2'; // taller on phones
     const ctx = stage.canvas.getContext('2d')!;
     let mode: Mode = 'spot', bfrac = 0, t = 0, seed = 3;
 
@@ -110,6 +111,7 @@ export default defineSim({
     panel.slider('B-mode fraction', { min: 0, max: 1, value: 0, step: 0.01, format: (v) => `${Math.round(v * 100)}%` }, (v) => { bfrac = v; inval(); });
     panel.button('New patch', () => { seed++; makeModes(); inval(); });
 
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

@@ -24,6 +24,21 @@ function status(host: HTMLElement, cls: string, text: string) {
   host.append(d);
 }
 
+// <Sim minHeight> only reserves space until the sim mounts (to avoid layout shift). Once the sim has
+// laid out its own in-flow content, drop the reservation so no empty band is left under the panel
+// (common on phones, where a 16:9 canvas is much shorter than the reserved height). Sims that
+// position everything absolutely keep it.
+function releaseMinHeight(host: HTMLElement) {
+  if (!host.style.minHeight) return;
+  requestAnimationFrame(() => {
+    const inFlow = [...host.children].some((c) => {
+      const pos = getComputedStyle(c).position;
+      return pos !== 'absolute' && pos !== 'fixed' && c.getBoundingClientRect().height >= 60;
+    });
+    if (inFlow) host.style.minHeight = '';
+  });
+}
+
 async function mount(e: Entry) {
   e.loading = true;
   const name = e.host.dataset.sim!;
@@ -42,6 +57,7 @@ async function mount(e: Entry) {
     e.inst = inst;
     status(e.host, '', '');
     inst.setVisible?.(e.onscreen && !document.hidden);
+    releaseMinHeight(e.host);
   } catch (err) {
     console.error(err);
     status(e.host, 'sim-error', (err as Error).message);

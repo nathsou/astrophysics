@@ -5,7 +5,7 @@
 import { defineSim, Loop, createStage } from '../lib/runtime/sim';
 import { Panel } from '../lib/ui/controls';
 import { Plot } from '../lib/ui/plot';
-import { palette, onThemeChange } from '../lib/ui/theme';
+import { palette, onThemeChange, currentTheme } from '../lib/ui/theme';
 import { blackbodyCSS } from '../lib/physics/blackbody';
 import { mulberry32 } from './main-sequence/zams';
 
@@ -68,9 +68,9 @@ export default defineSim({
 
     const stage = createStage(host, { aspect: 16 / 10 });
     const plot = new Plot(stage.canvas, {
-      x: { min: -Math.log10(45000), max: -Math.log10(2600), label: 'Tₑff (K) — increasing to the left', format: (v) => String(Math.round(10 ** -v)) },
+      x: { min: -Math.log10(45000), max: -Math.log10(2600), label: 'Tₑff (K) — increasing to the left', format: (v) => String(Math.round(10 ** -v)), ticks: [40000, 20000, 10000, 6000, 4000, 3000].map((T) => -Math.log10(T)) },
       y: { min: -4.5, max: 6, label: 'log(L / L☉)' },
-      title: '≈150 bright and nearby stars',
+      title: 'Named bright stars plus a synthetic survey sample',
     });
     const xData = (T: number) => -Math.log10(T);
 
@@ -92,13 +92,16 @@ export default defineSim({
     });
 
     function render() {
+      // pale blackbody colours need an outline on the light theme's paper background
+      const edge = currentTheme() === 'light' ? 'rgba(40,36,30,0.55)' : undefined;
       plot.draw(() => {
         for (const s of stars) {
-          plot.point(xData(s.T), Math.log10(s.L), { r: s === hover ? 5 : 3, color: blackbodyCSS(s.T), stroke: s === hover ? pal.fg : undefined });
+          plot.point(xData(s.T), Math.log10(s.L), { r: s === hover ? 5 : 3, color: blackbodyCSS(s.T), stroke: s === hover ? pal.fg : edge });
         }
         if (hover) {
           const label = hover.name || CLASS_LABEL[hover.cls];
-          plot.text(`${label} — ${Math.round(hover.T)} K, ${hover.L >= 1 ? hover.L.toFixed(1) : hover.L.toExponential(1)} L☉`, plot.px(xData(hover.T)) + 8, plot.py(Math.log10(hover.L)) - 8, { color: pal.fg });
+          const X = plot.px(xData(hover.T)), right = X > plot.m.l + plot.pw * 0.55;
+          plot.text(`${label} — ${Math.round(hover.T)} K, ${hover.L >= 1 ? hover.L.toFixed(1) : hover.L.toExponential(1)} L☉`, X + (right ? -8 : 8), plot.py(Math.log10(hover.L)) - 8, { color: pal.fg, align: right ? 'right' : 'left' });
         }
       });
     }

@@ -4,6 +4,7 @@
 // N_i/N = g_i exp(−E_i/kT) / Z, drawn as outline bars next to the sampled (filled) bars.
 
 import { defineSim, Loop, createStage } from '../lib/runtime/sim';
+import { narrowAspect } from './primer-common/stack';
 import { Panel, fmt } from '../lib/ui/controls';
 import { palette, onThemeChange } from '../lib/ui/theme';
 
@@ -32,6 +33,7 @@ export default defineSim({
   mount({ host }) {
     let pal = palette();
     const stage = createStage(host, { aspect: 16 / 9 });
+    narrowAspect(stage, 16 / 9, 1.05);
     const ctx = stage.canvas.getContext('2d')!;
 
     let preset: Preset = 'ladder', degeneracy = false, logScale = false;
@@ -75,7 +77,7 @@ export default defineSim({
       for (let a = 0; a < NATOMS; a++) counts[state[a]]++;
       const { p, Z } = theory();
 
-      const top = 30, bot = H - 26;
+      const top = 38, bot = H - 26;
       const yOf = (i: number) => bot - ((bot - top) * i) / (n - 1 || 1);
       const split = W * 0.56;
       const x0 = 70, x1 = split - 10;
@@ -130,7 +132,7 @@ export default defineSim({
         ctx.fillText(lab, Math.min(bx0 + len(p[i]) + 5, W - 46), y - 3);
       }
       ctx.fillStyle = pal.muted;
-      ctx.fillText(logScale ? 'fraction (log, 10⁻⁶ … 1)' : 'fraction of atoms', bx0, top - 16);
+      if (W >= 480) ctx.fillText(logScale ? 'fraction (log, 10⁻⁶ … 1)' : 'fraction of atoms', bx0 + 6, top - 18);
       ctx.fillStyle = pal.series[0]; ctx.fillRect(14, 10, 10, 8);
       ctx.fillStyle = pal.muted; ctx.fillText(`${NATOMS} atoms (Monte Carlo)`, 30, 18);
       ctx.strokeStyle = pal.accent; ctx.lineWidth = 2; ctx.strokeRect(W - 150, 10, 10, 8);

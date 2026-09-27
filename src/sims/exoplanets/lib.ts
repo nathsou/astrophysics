@@ -130,7 +130,7 @@ export function generateLightCurve(opts: {
 
   // A few sinusoids at different periods/phases approximate rotation + granulation.
   const modes = Array.from({ length: 4 }, () => ({
-    P: 0.5 + rng() * 20,
+    P: 2 + rng() * 18, // rotational modulation: days to weeks
     A: activityLevel * (0.3 + rng()),
     phi: rng() * 2 * Math.PI,
   }));
@@ -212,11 +212,18 @@ export interface ChunkedScan {
  * the main thread stays responsive.
  */
 export function createBLS(t: Float64Array, flux: Float64Array, mask: Uint8Array, pMin: number, pMax: number, nPeriods: number): ChunkedScan {
-  const periods = new Float64Array(nPeriods);
-  // Frequency grid, not period grid: BLS/transit search is linear in frequency for even
-  // sensitivity to the (many) short periods, oversampled per the chapter's Hood discussion.
+  // Frequency grid fine enough that a transit cannot drift out of its box over the baseline:
+  // adjacent trial frequencies must differ by less than (duration × f)/(2 × baseline), so the
+  // grid is geometric in f (uniform in log f) and far denser than a naive linear grid.
+  // nPeriods acts as a floor on the number of trial periods.
   const fMin = 1 / pMax, fMax = 1 / pMin;
-  for (let i = 0; i < nPeriods; i++) periods[i] = 1 / (fMin + ((fMax - fMin) * i) / (nPeriods - 1));
+  const baseline = Math.max(1, t[t.length - 1] - t[0]);
+  const durMin = 0.06; // days: the shortest transit we look for (about 1.5 hours)
+  const ratio = 1 + Math.min(durMin / (2 * baseline), Math.log(fMax / fMin) / nPeriods);
+  const nP = Math.ceil(Math.log(fMax / fMin) / Math.log(ratio)) + 1;
+  nPeriods = nP;
+  const periods = new Float64Array(nPeriods);
+  for (let i = 0; i < nPeriods; i++) periods[i] = 1 / (fMin * Math.pow(ratio, i));
   const power = new Float64Array(nPeriods);
   const nBins = 200;
   const durations = [0.01, 0.02, 0.035, 0.05, 0.08]; // fraction of period

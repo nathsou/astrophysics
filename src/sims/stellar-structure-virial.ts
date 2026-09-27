@@ -85,8 +85,8 @@ export default defineSim({
       plot.draw(() => {
         plot.line(tx, ty, { color: pal.series[0] });
         plot.line(tx, ry, { color: pal.series[2] });
-        plot.text('K, T (heating up)', plot.m.l + 6, 14, { color: pal.series[0], size: 10 });
-        plot.text('R (shrinking)', plot.m.l + 6, 28, { color: pal.series[2], size: 10 });
+        plot.text('K, T (heating up)', plot.m.l + 8, plot.m.t + 14, { color: pal.series[0], size: 10 });
+        plot.text('R (shrinking)', plot.m.l + 8, plot.m.t + 28, { color: pal.series[2], size: 10 });
       });
     }
 
@@ -94,8 +94,8 @@ export default defineSim({
     panel.slider('Energy loss rate L', { min: 0.002, max: 0.06, value: L, log: true }, (v) => { L = v; });
     panel.playPause(() => loop.paused, (p) => (loop.paused = p));
     panel.button('Reset', reset);
+    panel.el.style.flex = '1 1 100%'; // full-width control row under the ball and the plot
 
-    loop.setVisible(true);
     onDestroy(() => loop.destroy());
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },

@@ -21,6 +21,7 @@ export default defineSim({
     const stage = createStage(host, { aspect: 16 / 10 });
     const ctx = stage.canvas.getContext('2d')!;
     const loop = new Loop(null, render);
+    loop.onDemand = true;
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
     stage.onResize(() => loop.invalidate());
 

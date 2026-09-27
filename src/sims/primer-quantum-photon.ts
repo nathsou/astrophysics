@@ -3,6 +3,7 @@
 // energies marked, and a draggable wavelength marker with live readouts.
 
 import { defineSim, Loop, createStage } from '../lib/runtime/sim';
+import { narrowAspect } from './primer-common/stack';
 import { Panel, fmt } from '../lib/ui/controls';
 import { Plot } from '../lib/ui/plot';
 import { palette, onThemeChange } from '../lib/ui/theme';
@@ -27,7 +28,7 @@ const REFS: [string, number][] = [
   ['electron rest energy 511 keV', 511e3],
   ['hydrogen ionisation 13.6 eV', 13.6],
   ['chemical bond ≈ 4 eV', 4],
-  ['k_BT at 300 K = 0.026 eV', 0.0259],
+  ['thermal kT at 300 K = 0.026 eV', 0.0259],
   ['CMB photon (typical) ≈ 0.6 meV', 6.3e-4],
   ['21 cm line 5.9 μeV', 5.87e-6],
 ];
@@ -38,6 +39,8 @@ export default defineSim({
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
     const stage = createStage(host, { aspect: 16 / 9 });
+
+    narrowAspect(stage, 16 / 9, 0.95);
     const plot = new Plot(stage.canvas, {
       x: { min: 1e-14, max: 100, log: true, label: 'wavelength λ (m)' },
       y: { min: 1e-8, max: 1e8, log: true, label: 'photon energy E (eV)' },
@@ -46,6 +49,8 @@ export default defineSim({
     let lam = 5.5e-7; // m
 
     const loop = new Loop(null, render);
+
+    loop.onDemand = true;
 
     function render() {
       const { ctx } = plot;
@@ -66,7 +71,8 @@ export default defineSim({
             ctx.fillStyle = i % 2 ? pal.grid : 'transparent';
           }
           ctx.fillRect(X0, top, X1 - X0, bot - top);
-          if (name) plot.text(name, (X0 + X1) / 2, bot - 6, { align: 'center', color: pal.muted, size: 11 });
+          // band names only where they fit (the narrow bands crowd together on a phone)
+          if (name && X1 - X0 > name.length * 6.5 + 6) plot.text(name, (X0 + X1) / 2, bot - 6, { align: 'center', color: pal.muted, size: 11 });
         });
         // reference energies
         for (const [label, E] of REFS) {

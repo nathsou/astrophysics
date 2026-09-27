@@ -3,6 +3,7 @@
 // Right: global error at t = T against step size on log–log axes, whose slopes (1, 2, 4) are the orders.
 
 import { defineSim, Loop, createStage } from '../lib/runtime/sim';
+import { stackWhenNarrow } from './primer-common/stack';
 import { Panel, fmt } from '../lib/ui/controls';
 import { Plot } from '../lib/ui/plot';
 import { palette, onThemeChange } from '../lib/ui/theme';
@@ -42,7 +43,7 @@ const METHODS: { id: Method; label: string; color: number; order: number }[] = [
 const T_END = 20; // about 3.2 periods
 
 export default defineSim({
-  mount({ host }) {
+  mount({ host, onDestroy }) {
     let pal = palette();
     let h = 0.3;
 
@@ -82,6 +83,7 @@ export default defineSim({
     host.append(wrap);
     const left = createStage(wrap, { aspect: 1 });
     const right = createStage(wrap, { aspect: 1 / 0.87 });
+    stackWhenNarrow(host, wrap, 'minmax(0,1fr) minmax(0,1.15fr)', [[left, 1, 1.2], [right, 1.149, 1.3]], onDestroy);
     left.el.style.borderRight = '1px solid var(--rule)';
     const phase = new Plot(left.canvas, { x: { min: -2.2, max: 2.2, label: 'position x' }, y: { min: -2.2, max: 2.2, label: 'velocity v' }, title: 'Phase space', margin: { l: 44, r: 10, t: 28, b: 40 } });
     const conv = new Plot(right.canvas, {

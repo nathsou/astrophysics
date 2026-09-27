@@ -69,12 +69,12 @@ Substitute into Friedmann's equation and solve for the age of the universe at te
 $$
 \term{H}{H(T)} \approx 1.66\,\sqrt{\term{gstar}{g_*}}\,\frac{\term{T}{T}^2}{M_{\rm Pl}}, \qquad \term{t}{t}(T) \approx \frac{1}{2H} \approx \frac{2.4}{\sqrt{g_*}}\left(\frac{T}{1\,{\rm MeV}}\right)^{-2}\ {\rm s}
 $$
-<Fragment slot="where">$M_{\rm Pl} = 1.22\times10^{19}$ GeV is the Planck mass. The numerical form on the right is the single most useful formula in this chapter: it says the universe was 1 second old at T ≈ 1 MeV, and — since t ∝ T⁻² — was already 1 year old by the time T fell to about 1 eV.</Fragment>
+<Fragment slot="where">$M_{\rm Pl} = 1.22\times10^{19}$ GeV is the Planck mass. The numerical form on the right is the single most useful formula in this chapter: it says the universe was about 1 second old at T ≈ 1 MeV and, since t ∝ T⁻², about a year old at T ≈ 200 eV (two million kelvin) and some 40,000 years old at T ≈ 1 eV.</Fragment>
 </KeyEq>
 </Level>
 
 <Level max={1}>
-You don't need the algebra to use the result: **the hotter the universe, the younger it was, and the relationship is a strict cooling curve** — double the temperature and the age is four times smaller (T² × t is constant, if g<sub>&#42;</sub> is held fixed). One second after the Big Bang the universe was about as hot as the core of an exploding star; a year later, it had cooled to about the temperature of a light bulb filament, stretched over all of space.
+You don't need the algebra to use the result: **the hotter the universe, the younger it was, and the relationship is a strict cooling curve** — double the temperature and the age is four times smaller (temperature squared times age stays roughly constant). One second after the Big Bang the universe was about ten billion kelvin, as hot as the core of an exploding star; a year later it was still about two million kelvin, hotter than the surface of any star; and it took some 380,000 years to cool to the few thousand kelvin of a light-bulb filament, stretched over all of space.
 </Level>
 
 This t–T relation is the ruler this entire chapter is measured with: every event below is easier to place in temperature (which sets the physics) and time (which sets how much of it could happen) than in any other units. (New to logs and orders of magnitude? See [Appendix A1](/ch/primer-numbers/); new to solving an ODE for t(T)? See [Appendix A5](/ch/primer-odes/).)
@@ -124,7 +124,14 @@ The weak rate for $n \leftrightarrow p$ conversion involves a phase-space integr
 
 ### Counting degrees of freedom: g<sub>&#42;</sub>
 
+<Tiers>
+<Fragment slot="l1">
+The exact numbers on that cooling curve depend on how many kinds of particle are zipping around at nearly the speed of light, because each kind adds its own share of energy and so speeds up the expansion. Physicists keep a head-count of them, written g<sub>&#42;</sub>. Early on it is large (photons, electrons, positrons and three kinds of neutrino); once the electrons and positrons annihilate, a few seconds in, the count drops, and the clock shifts a little. A new, unknown light particle would add to the count, which is one way cosmologists hunt for new physics.
+</Fragment>
+<Fragment slot="l2">
 <span data-term="gstar">g<sub>&#42;</sub>(T)</span> is not just bookkeeping — it is the thermometer's calibration. Every time a species' rest mass drops below the ambient T (so it becomes non-relativistic and annihilates or decays) or a species decouples, g<sub>&#42;</sub> changes, and so does the relationship between T and t. In the standard model, g<sub>&#42;</sub> ≈ 10.75 for T from a few MeV down to about 0.5 MeV (photons, e⁺e⁻, three neutrino flavours), dropping to 3.36 once electrons and positrons have annihilated. At much higher energies (T ≳ 100 GeV, before this chapter's story starts in earnest) g<sub>&#42;</sub> approaches 106.75 in the Standard Model, counting every quark, lepton, gauge boson and the Higgs.
+</Fragment>
+</Tiers>
 
 <Aside>**N<sub>eff</sub>.** The precise number of "effective" neutrino species, N<sub>eff</sub> = 3.046 in the Standard Model, is slightly more than 3 because neutrinos are not *quite* fully decoupled during e⁺e⁻ annihilation and pick up a small extra heating. Any new light particle — a fourth neutrino flavour, a light dark sector — would push N<sub>eff</sub> up, which is why CMB and BBN measurements of N<sub>eff</sub> are among the tightest constraints on physics beyond the Standard Model.</Aside>
 
@@ -201,7 +208,7 @@ More baryons per photon means the equilibrium deuterium fraction reaches order u
 </Predict>
 
 <Sim name="big-bang-bbn" size="wide" minHeight={480}>
-**A reduced BBN network, integrated live.** Left: abundances $Y_i = n_i/n_{\rm baryon}$ for n, p, D, T, ³He, ⁴He and ⁷Li vs time, on log–log axes, as a stiff implicit solver steps through t = 0.01 s to 30 minutes. Watch neutron freeze-out, the deuterium bottleneck breaking, and helium assembling almost instantaneously once it does. Right: the same network re-run on a grid of η values (computed progressively in the background) — the classic **Schramm plot**. Drag **η** to find the value where deuterium, helium and lithium all land in their observed ranges at once; drag **N<sub>eff</sub>** to see how an extra relativistic species speeds the clock and raises the helium yield.
+**A reduced BBN network, integrated live.** Left: abundances $Y_i = n_i/n_{\rm baryon}$ for n, p, D, T, ³He, ⁴He and ⁷Li vs time, on log–log axes, as a stiff implicit solver steps through t = 0.01 s to 30 minutes. Watch neutron freeze-out, the deuterium bottleneck breaking, and helium assembling almost instantaneously once it does. Right: the same network re-run on a grid of η values (computed progressively in the background) — the classic **Schramm plot**. The shaded bands are the observed values. Drag **η** to find where deuterium and helium both land in their bands at once, and notice that lithium stays stubbornly above its band (our simplified rates put ⁷Li/H near 3×10⁻¹⁰ at the Planck η; the full network gives about 5×10⁻¹⁰, which makes the mismatch worse). Drag **N<sub>eff</sub>** to see how an extra relativistic species speeds the clock and raises the helium yield.
 </Sim>
 
 <Aside>**Reading the Schramm plot.** Historically this plot ran the other way: astronomers measured D/H, ³He/H, ⁴He and ⁷Li/H in real gas and stars, then read off the *single* η consistent with all four simultaneously. That consistency, across four wildly different nuclei and abundances spanning nine orders of magnitude, is one of the strongest pieces of evidence for the entire hot Big Bang picture.</Aside>
@@ -243,14 +250,14 @@ If essentially every available neutron ends up in ⁴He (2 neutrons and 2 proton
 $$
 Y_p \approx \frac{2\,(n/p)}{1+n/p}.
 $$
-Put in $n/p \approx 1/7$ (freeze-out at 1/6, then some neutron decay before nucleosynthesis) and you get $Y_p \approx 2(1/7)/(8/7) = 1/4 = 25\%$ — remarkably close to the observed 24.7% ± 0.1%, essentially without touching the *nuclear* rates at all. The mass fraction is dominated by the *weak* physics that set n/p, not by the details of the nuclear network.
+Put in $n/p \approx 1/7$ (freeze-out at 1/6, then some neutron decay before nucleosynthesis) and you get $Y_p \approx 2(1/7)/(8/7) = 1/4 = 25\%$ — remarkably close to the observed 24.5% ± 0.3%, essentially without touching the *nuclear* rates at all. The mass fraction is dominated by the *weak* physics that set n/p, not by the details of the nuclear network.
 </Level>
 
 Everything that is *not* helium is a rounding error by mass, but those roundings are precisely what makes BBN such a sharp probe of η:
 
 - **Deuterium (D/H ≈ 2.5×10⁻⁵):** the small residue left when the bottleneck broke before every last deuteron could be burned to helium. Falls steeply with η — more baryons means more efficient burning — which makes D/H the most sensitive "baryometer" of the four light elements, especially valuable because essentially no astrophysical process *creates* deuterium (unlike helium and lithium, which stars can also make), so any D you find is primordial.
 - **Helium-3 and tritium (³He/H ≈ 10⁻⁵, T decays to ³He):** intermediate steps in the chain to ⁴He that don't quite all get consumed.
-- **Lithium-7 (⁷Li/H ≈ 10⁻¹⁰):** made in a slow radiative-capture tail (T + ⁴He and ³He + ⁴He, the latter via beryllium-7, which later captures an electron). This is where BBN has its one real tension with observation — the **lithium problem**: the standard-model prediction is about three times *higher* than what is measured in old, metal-poor stars, and no fully convincing resolution (nuclear, astrophysical or new physics) has stuck.
+- **Lithium-7 (⁷Li/H ≈ 5×10⁻¹⁰ predicted):** made in a slow radiative-capture tail (T + ⁴He and ³He + ⁴He, the latter via beryllium-7, which later captures an electron). This is where BBN has its one real tension with observation — the **lithium problem**: the standard-model prediction is about three times *higher* than the ⁷Li/H ≈ 1.6×10⁻¹⁰ measured in the atmospheres of old, metal-poor stars (the "Spite plateau"), and no fully convincing resolution (nuclear, astrophysical or new physics) has stuck.
 - **Nothing at mass 5 or 8:** there are no stable nuclei with A = 5 or A = 8 (⁵He, ⁵Li, ⁸Be all decay in $10^{-16}$–$10^{-22}$ s), which is why the chain has to detour through ⁷Li/⁷Be rather than building up smoothly, and why BBN essentially stops at helium — heavier elements have to wait for stars ([Chapter 12](/ch/fusion/)) and supernovae ([Chapter 16](/ch/stellar-death/)).
 
 <Aside>The **deuterium route to η** and the **CMB route to η** ([Chapter 27](/ch/cmb/), from the relative heights of the acoustic peaks) use completely independent physics — three minutes after the Big Bang versus 380,000 years after — and agree to within a few percent. That agreement is one of cosmology's most important consistency checks.</Aside>
@@ -264,12 +271,12 @@ Roughly 380,000 years later (T falling all the way to about 3000 K), free electr
 Hydrogen's binding energy corresponds to a temperature of about 158,000 K, so you might expect atoms to form as soon as the universe cools below that. They don't, for exactly the same reason deuterium was delayed: there are more than a billion photons for every proton, and the rare, ultra-energetic photons in the tail of the blackbody spectrum keep re-ionising any atom that dares to form, all the way down to about 3000 K — roughly a factor of 50 below the naive guess.
 </Fragment>
 <Fragment slot="l3">
-This is the Saha equation again — the same mathematical structure used for the deuterium bottleneck above and introduced for stellar spectra in [Chapter 5](/ch/spectra/) — now applied to $p + e^- \leftrightarrow H + \gamma$ with binding energy 13.6 eV instead of deuterium's 2.22 MeV. The ionisation fraction $x_e$ solves $x_e^2/(1-x_e) = S(T)/n_b$ with $S(T) \propto (m_e T)^{3/2}e^{-13.6\,{\rm eV}/T}$, and because $n_b/n_\gamma = \term{eta}{\eta} \sim 6\times10^{-10}$, the crossing $x_e=1/2$ lands at $T \approx 0.26$ eV ≈ 3000 K rather than at 13.6 eV.
+This is the Saha equation again — the same mathematical structure used for the deuterium bottleneck above and introduced for stellar spectra in [Chapter 5](/ch/spectra/) — now applied to $p + e^- \leftrightarrow H + \gamma$ with binding energy 13.6 eV instead of deuterium's 2.22 MeV. The ionisation fraction $x_e$ solves $x_e^2/(1-x_e) = S(T)/n_b$ with $S(T) \propto (m_e T)^{3/2}e^{-13.6\,{\rm eV}/T}$, and because $n_b/n_\gamma = \term{eta}{\eta} \sim 6\times10^{-10}$, the crossing $x_e=1/2$ lands at $T \approx 0.32$ eV ≈ 3,700 K ($z \approx 1{,}380$) rather than at 13.6 eV. Real recombination runs slightly behind Saha's equilibrium prediction (atoms can only form through a slow bottleneck of Lyman-α photons escaping, the "Peebles" correction), so the photons actually decouple a little later, near 3,000 K and $z \approx 1{,}100$.
 </Fragment>
 </Tiers>
 
 <Sim name="big-bang-saha" minHeight={380}>
-**Ionisation fraction vs redshift.** The solid curve uses the real baryon-to-photon ratio η ≈ 6×10⁻¹⁰; the dashed curve shows the hypothetical η = 1 case (one photon per baryon) for comparison. With fewer photons per baryon, recombination would happen much *closer* to the naive 13.6 eV/k<sub>B</sub> ≈ 158,000 K guess — drag η down and watch the crossing point march upward in temperature.
+**Ionisation fraction vs redshift.** The solid curve uses the real baryon-to-photon ratio η ≈ 6×10⁻¹⁰ and crosses x<sub>e</sub> = ½ near 3,700 K. The dashed curve is the hypothetical η = 1 (one photon per baryon): recombination moves up to about 8,000 K, still far below the naive 13.6 eV/k<sub>B</sub> ≈ 158,000 K, because free electrons have so many more available states than bound ones. Drag η: more baryons per photon means fewer ionising photons per atom, and an earlier, hotter recombination.
 </Sim>
 
 <Aside>Because recombination and last scattering happen at almost, but not exactly, the same time, [Chapter 27](/ch/cmb/) treats them as a single "surface of last scattering" with a finite thickness — the CMB is not an instantaneous snapshot but a thin shell in time.</Aside>
@@ -277,7 +284,7 @@ This is the Saha equation again — the same mathematical structure used for the
 <History title="The equation before the universe needed it" year="1920">
 <Portrait src="/img/people/saha.jpg" name="Meghnad Saha" years="1893–1956" credit="Unknown author" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Dr-Meghnad-Saha_(cropped).jpg" />
 
-Meghnad Saha derived his ionisation equation in 1920 to explain the puzzling pattern of absorption lines across stellar spectral classes — not with cosmology in mind at all, since the expanding universe itself was not established until Hubble's work a decade later. Saha, working in Calcutta with limited resources and largely outside the era's major physics centres, showed that a star's *temperature*, not its composition, mostly explains why some stars show strong ionised-metal lines and others show neutral hydrogen — the key that let Cecilia Payne (and, building on her, Annie Jump Cannon) sort the OBAFGKM sequence correctly ([Chapter 5](/ch/spectra/)). It took another generation before the same equation was pointed at the infant universe to work out when it, too, turned neutral.
+Meghnad Saha derived his ionisation equation in 1920 to explain the puzzling pattern of absorption lines across stellar spectral classes — not with cosmology in mind at all, since the expanding universe itself was not established until Hubble's work a decade later. Saha, working in Calcutta with limited resources and largely outside the era's major physics centres, showed that a star's *temperature*, not its composition, mostly explains why some stars show strong ionised-metal lines and others show neutral hydrogen — the key that let Cecilia Payne, in 1925, explain the OBAFGKM sequence that Annie Jump Cannon had sorted by eye a decade earlier, and show that stars are made mostly of hydrogen ([Chapter 5](/ch/spectra/)). It took another generation before the same equation was pointed at the infant universe to work out when it, too, turned neutral.
 </History>
 
 ## Baryogenesis: an open problem

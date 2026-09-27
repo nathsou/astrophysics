@@ -26,14 +26,23 @@ function yShape(sig: number, T: number) {
 
 const SIG = Array.from({ length: 43 }, (_, i) => 2.27 + i * 0.4535);
 const ERR_KJY = SIG.map((s) => 10 + 40 * Math.exp(-((s - 5) ** 2) / 20)); // illustrative 1σ, kJy/sr
+// Deterministic Gaussian scatter (in units of σ) so the fake data behave like real data: χ² ≈ N at the true T.
+const NOISE = (() => {
+  let a = 20260927;
+  const rnd = () => { a = (a * 1664525 + 1013904223) >>> 0; return (a + 0.5) / 4294967296; };
+  return SIG.map(() => Math.sqrt(-2 * Math.log(rnd())) * Math.cos(2 * Math.PI * rnd()));
+})();
+const DATA = SIG.map((s, i) => Bnu(s, T0) + (NOISE[i] * ERR_KJY[i]) / 1000); // MJy/sr
 
 export default defineSim({
   mount({ host }) {
     let pal = palette();
     const s1 = createStage(host, { aspect: 1.9 });
+    if (host.clientWidth < 560) s1.el.style.aspectRatio = '1.3'; // taller on phones
     const s2 = createStage(host, { aspect: 4.2 });
+    if (host.clientWidth < 560) s2.el.style.aspectRatio = '2.2'; // taller residual panel on phones
     const top = new Plot(s1.canvas, { x: { min: 0, max: 23, label: '' }, y: { min: 0, max: 420, label: 'I_ν (MJy/sr)' }, title: 'CMB spectrum (FIRAS-like points, error bars ×400)' });
-    const bot = new Plot(s2.canvas, { x: { min: 0, max: 23, label: 'wavenumber (cm⁻¹)   [1 cm⁻¹ = 30 GHz]' }, y: { min: -300, max: 300, label: 'model − data (kJy/sr)' }, margin: { l: 56, r: 16, t: 8, b: 38 } });
+    const bot = new Plot(s2.canvas, { x: { min: 0, max: 23, label: 'wavenumber (cm⁻¹)   [1 cm⁻¹ = 30 GHz]' }, y: { min: -300, max: 300, label: 'residual from 2.7255 K (kJy/sr)' }, margin: { l: 56, r: 16, t: 8, b: 38 } });
 
     let T = T0, y = 0;
     const model = (s: number) => Bnu(s, T) + y * yShape(s, T);
@@ -47,10 +56,10 @@ export default defineSim({
         const ctx = top.ctx;
         ctx.strokeStyle = pal.fg; ctx.lineWidth = 1;
         SIG.forEach((s, i) => {
-          const v = Bnu(s, T0), e = (ERR_KJY[i] / 1000) * 400;
+          const v = DATA[i], e = (ERR_KJY[i] / 1000) * 400;
           ctx.beginPath(); ctx.moveTo(top.px(s), top.py(v - e)); ctx.lineTo(top.px(s), top.py(v + e)); ctx.stroke();
         });
-        top.scatter(SIG, SIG.map((s) => Bnu(s, T0)), { size: 3, color: pal.fg });
+        top.scatter(SIG, DATA, { size: 3, color: pal.fg });
         top.text(`model T = ${T.toFixed(4)} K${y ? `, y = ${fmt(y, 2)}` : ''}`, top.px(12), top.py(360), { color: pal.accent });
       });
       let chi = 0;
@@ -60,11 +69,11 @@ export default defineSim({
         const ctx = bot.ctx;
         ctx.strokeStyle = pal.fg; ctx.lineWidth = 1;
         SIG.forEach((s, i) => {
-          const e = ERR_KJY[i];
-          ctx.beginPath(); ctx.moveTo(bot.px(s), bot.py(-e)); ctx.lineTo(bot.px(s), bot.py(e)); ctx.stroke();
-          chi += (((model(s) - Bnu(s, T0)) * 1000) / e) ** 2;
+          const e = ERR_KJY[i], r = NOISE[i] * e; // data − 2.7255 K blackbody, kJy/sr
+          ctx.beginPath(); ctx.moveTo(bot.px(s), bot.py(r - e)); ctx.lineTo(bot.px(s), bot.py(r + e)); ctx.stroke();
+          chi += (((model(s) - DATA[i]) * 1000) / e) ** 2;
         });
-        bot.scatter(SIG, SIG.map(() => 0), { size: 3, color: pal.fg });
+        bot.scatter(SIG, NOISE.map((g, i) => g * ERR_KJY[i]), { size: 3, color: pal.fg });
       });
       rChi.set(`${fmt(chi, 3)} for 43 points`);
     }
@@ -77,6 +86,7 @@ export default defineSim({
     panel.slider('Compton y', { min: 0, max: 3e-4, value: 0, step: 1e-6, format: (v) => (v ? fmt(v, 2) : '0') }, (v) => { y = v; dirty = true; });
     const rChi = panel.readout('χ² =');
 
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

@@ -28,6 +28,9 @@ export default defineSim({
     const u = new Float64Array(NX * NY);
     const v = new Float64Array(NX * NY);
     const img = ctx2.createImageData(NX, NY);
+    const off = document.createElement('canvas');
+    off.width = NX; off.height = NY;
+    const offCtx = off.getContext('2d')!;
 
     const s = { deltaT: 1.2, viscosity: 0.06, running: true };
 
@@ -113,30 +116,30 @@ export default defineSim({
       const w2 = stage.canvas.width, h2 = stage.canvas.height;
       // draw into the small imageData then blit scaled (nearest → let CSS smooth it)
       const warm = hexToRgb(pal.bad), cool = hexToRgb(pal.accent2 || pal.accent);
+      // Grid row y = 0 is the (hot) floor, so flip vertically: image row 0 is the top of the box.
       for (let i = 0; i < NX * NY; i++) {
-        const t = Math.min(1, Math.max(0, T[i]));
+        const gx = i % NX, gy = (i / NX) | 0;
+        const t = Math.min(1, Math.max(0, T[idx(gx, NY - 1 - gy)]));
         const r = warm[0] * t + cool[0] * (1 - t);
         const g = warm[1] * t + cool[1] * (1 - t);
         const b = warm[2] * t + cool[2] * (1 - t);
         img.data[i * 4] = r; img.data[i * 4 + 1] = g; img.data[i * 4 + 2] = b; img.data[i * 4 + 3] = 255;
       }
-      const off = document.createElement('canvas');
-      off.width = NX; off.height = NY;
-      off.getContext('2d')!.putImageData(img, 0, 0);
+      offCtx.putImageData(img, 0, 0);
       ctx2.imageSmoothingEnabled = true;
       ctx2.clearRect(0, 0, w2, h2);
       ctx2.drawImage(off, 0, 0, w2, h2);
       // velocity glyphs
-      ctx2.strokeStyle = pal.fg; ctx2.globalAlpha = 0.35; ctx2.lineWidth = Math.max(1, w2 / NX * 0.08);
+      ctx2.strokeStyle = '#fff'; ctx2.globalAlpha = 0.3; ctx2.lineWidth = Math.max(1, w2 / NX * 0.08);
       const step2 = 6;
       ctx2.beginPath();
       for (let y = 2; y < NY - 2; y += step2) {
         for (let x = 2; x < NX - 2; x += step2) {
           const i = idx(x, y);
-          const px = (x / NX) * w2, py = (y / NY) * h2;
+          const px = (x / NX) * w2, py = (1 - y / NY) * h2;
           const scale = 12;
           ctx2.moveTo(px, py);
-          ctx2.lineTo(px + u[i] * scale, py + v[i] * scale);
+          ctx2.lineTo(px + u[i] * scale, py - v[i] * scale);
         }
       }
       ctx2.stroke(); ctx2.globalAlpha = 1;

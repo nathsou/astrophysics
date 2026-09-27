@@ -14,17 +14,28 @@ const EOS_LIST: EOS[] = [
   { label: 'Medium', Mmax: 2.15, R14: 12.2, Rlow: 12.6, color: 'accent' },
   { label: 'Stiff', Mmax: 2.35, R14: 13.6, Rlow: 13.8, color: 'accent3' },
 ];
-// R(M): near-flat plateau then a steep turn-down to zero at Mmax (schematic, calibrated to hit R(1.4)).
+// R(M) along the stable branch: a sqrt turn-over at M_max (where dM/dR = 0, as for a real TOV curve),
+// calibrated so that R(1.4 M☉) = R14 exactly, plus a gentle swell at low mass. Schematic, not a solution.
 function radiusOf(eos: EOS, M: number): number {
   if (M >= eos.Mmax) return NaN;
-  const x = M / eos.Mmax;
-  const plateau = eos.Rlow - (eos.Rlow - eos.R14) * Math.min(1, M / 1.4) ** 0.7;
-  const turn = Math.pow(1 - x, 0.22);
-  return plateau * turn + 0.15;
+  const Rtop = eos.R14 - 1.3; // radius at the maximum mass
+  const low = (m: number) => (eos.Rlow - eos.R14) * Math.max(0, (1.4 - m) / 0.9) ** 2;
+  const c = (eos.R14 - Rtop) / Math.sqrt(1 - 1.4 / eos.Mmax);
+  return Rtop + c * Math.sqrt(1 - M / eos.Mmax) + low(M);
 }
 
+// Manhattan island outline in km: a spine 21.6 km long, up to 3.7 km wide, tilted ~29° east of north.
+const MANHATTAN: [number, number][] = (() => {
+  const L = 21.6, N = 24, pts: [number, number][] = [];
+  const half = (s: number) => 1.85 * Math.pow(Math.sin((Math.PI * s) / L), 0.55) * (0.75 + 0.25 * s / L);
+  for (let i = 0; i <= N; i++) { const s = (L * i) / N; pts.push([s - L / 2, half(s)]); }
+  for (let i = N; i >= 0; i--) { const s = (L * i) / N; pts.push([s - L / 2, -half(s)]); }
+  const a = (61 * Math.PI) / 180, ca = Math.cos(a), sa = Math.sin(a);
+  return pts.map(([x, y]) => [x * ca - y * sa, x * sa + y * ca]);
+})();
+
 export default defineSim({
-  mount({ host }) {
+  mount({ host, onDestroy }) {
     let pal = palette();
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
@@ -34,6 +45,15 @@ export default defineSim({
     const plotStage = createStage(wrap, { aspect: 1.15 });
     const cityStage = createStage(wrap, { aspect: 1 / 0.92 });
     plotStage.el.style.borderRight = '1px solid var(--rule)';
+    // side by side on wide screens, stacked on phones
+    const stackRO = new ResizeObserver(() => {
+      const narrow = wrap.clientWidth < 560;
+      wrap.style.gridTemplateColumns = narrow ? 'minmax(0,1fr)' : 'minmax(0,1.3fr) minmax(0,1fr)';
+      plotStage.el.style.borderRight = narrow ? '' : '1px solid var(--rule)';
+      plotStage.el.style.borderBottom = narrow ? '1px solid var(--rule)' : '';
+    });
+    stackRO.observe(wrap);
+    onDestroy(() => stackRO.disconnect());
     const cctx = cityStage.canvas.getContext('2d')!;
 
     const plot = new Plot(plotStage.canvas, {
@@ -47,6 +67,8 @@ export default defineSim({
 
     const loop = new Loop(null, render, 1 / 30);
 
+    loop.onDemand = true;
+
     function render() {
       const { width: W, height: H, dpr } = plotStage;
       plot.resize(W, H, dpr);
@@ -55,8 +77,8 @@ export default defineSim({
           const xs: number[] = [], ys: number[] = [];
           for (let m = 0.5; m < eos.Mmax; m += 0.01) { xs.push(radiusOf(eos, m)); ys.push(m); }
           plot.line(xs, ys, { color: pal[eos.color], width: eos.label === EOS_LIST[eosIdx].label ? 2.5 : 1.3, alpha: eos.label === EOS_LIST[eosIdx].label ? 1 : 0.45 });
-          plot.text(eos.label, plot.px(radiusOf(eos, eos.Mmax * 0.55)) , plot.py(eos.Mmax * 0.55) - 6, { color: pal[eos.color], size: 10 });
-          plot.hline(eos.Mmax, { color: pal[eos.color], dash: [2, 3], alpha: 0.5 });
+          plot.text(eos.label, plot.px(radiusOf(eos, 0.75)) + 5, plot.py(0.75), { color: pal[eos.color], size: 10, align: 'left' });
+          plot.hline(eos.Mmax, { color: pal[eos.color], dash: [2, 3], alpha: 0.5, label: `M_max (${eos.label.toLowerCase()})` });
         }
         // NICER constraints (Miller et al. 2019/2021, illustrative error bars)
         const nicer = [
@@ -70,7 +92,7 @@ export default defineSim({
         }
         // GW170817 tidal-deformability band at 1.4 M☉
         plot.line([9, 13.6], [1.4, 1.4], { color: pal.bad, width: 4, alpha: 0.18 });
-        plot.text('GW170817: R(1.4M☉) ≲ 13.6 km', plot.px(9), plot.py(1.4) + 14, { color: pal.bad, size: 10 });
+        plot.text('GW170817: R(1.4 M☉) ≲ 13.6 km', plot.px(8.15), plot.py(1.4) - 8, { color: pal.bad, size: 10, align: 'left' });
         // current selection
         const R = radiusOf(EOS_LIST[eosIdx], M);
         if (Number.isFinite(R)) plot.point(R, M, { r: 6, color: pal.fg, stroke: pal[EOS_LIST[eosIdx].color] });
@@ -82,31 +104,28 @@ export default defineSim({
       cctx.clearRect(0, 0, CW, CH);
       const R = radiusOf(EOS_LIST[eosIdx], M);
       const Rkm = Number.isFinite(R) ? R : 12;
-      // Manhattan, schematically: ~21 km long, ~3.7 km wide island outline
-      const scale = Math.min(CW, CH) / 26;
-      const ox = CW / 2 - 8 * scale, oy = CH / 2;
-      cctx.fillStyle = pal.faint; cctx.globalAlpha = 0.35;
-      cctx.beginPath();
-      const shape: [number, number][] = [[0, -1.6], [1, -1.9], [2, -1.6], [3.2, 0], [2.6, 1.2], [1.2, 1.9], [-0.5, 1.7], [-1, 0.4]];
-      shape.forEach(([x, y], i) => { const X = ox + x * scale, Y = oy + y * scale; i ? cctx.lineTo(X, Y) : cctx.moveTo(X, Y); });
-      cctx.closePath(); cctx.fill(); cctx.globalAlpha = 1;
-      cctx.fillStyle = pal.muted; cctx.font = '11px Inter, system-ui, sans-serif';
-      cctx.fillText('Manhattan (≈21 km long)', ox - 1.2 * scale, oy - 2.2 * scale);
-
-      const nsx = ox + 9 * scale, nsy = oy;
+      // Neutron star to scale, with Manhattan laid over it (same scale).
+      const scale = Math.min(CW, CH - 40) / 30; // px per km
+      const nsx = CW / 2, nsy = (CH - 40) / 2 + 30;
       const g = cctx.createRadialGradient(nsx, nsy, 0, nsx, nsy, Rkm * scale);
-      g.addColorStop(0, '#eaf3ff'); g.addColorStop(0.6, pal.accent); g.addColorStop(1, 'rgba(0,0,0,0)');
+      g.addColorStop(0, '#f4f8ff'); g.addColorStop(0.55, '#9cc3ff'); g.addColorStop(1, '#3d6fd0');
       cctx.fillStyle = g;
       cctx.beginPath(); cctx.arc(nsx, nsy, Rkm * scale, 0, Math.PI * 2); cctx.fill();
-      cctx.strokeStyle = pal.fg; cctx.lineWidth = 1; cctx.beginPath(); cctx.arc(nsx, nsy, Rkm * scale, 0, Math.PI * 2); cctx.stroke();
+      cctx.strokeStyle = pal.fg; cctx.lineWidth = 1; cctx.stroke();
+      cctx.beginPath();
+      MANHATTAN.forEach(([x, y], i) => { const X = nsx + x * scale, Y = nsy - y * scale; i ? cctx.lineTo(X, Y) : cctx.moveTo(X, Y); });
+      cctx.closePath();
+      cctx.fillStyle = 'rgba(20,24,32,0.55)'; cctx.fill();
+      cctx.strokeStyle = '#ffffff'; cctx.lineWidth = 1.2; cctx.stroke();
+      cctx.font = '12px Inter, system-ui, sans-serif'; cctx.textAlign = 'left'; cctx.textBaseline = 'top';
       cctx.fillStyle = pal.fg;
-      cctx.fillText(`neutron star, R ≈ ${fmt(Rkm, 3)} km`, nsx - 55, nsy + Rkm * scale + 16);
-      cctx.fillText(`M ≈ ${fmt(M, 3)} M☉`, nsx - 30, nsy + Rkm * scale + 30);
+      cctx.fillText(`Neutron star: R ≈ ${fmt(Rkm, 3)} km, M ≈ ${fmt(M, 3)} M☉`, 10, 8);
+      cctx.fillStyle = pal.muted;
+      cctx.fillText('Outline: Manhattan (21.6 km long), same scale', 10, 24);
       // scale bar
-      cctx.strokeStyle = pal.muted; cctx.beginPath();
-      cctx.moveTo(14, CH - 16); cctx.lineTo(14 + 10 * scale, CH - 16); cctx.stroke();
-      cctx.fillText('10 km', 14, CH - 20);
-
+      cctx.strokeStyle = pal.muted; cctx.lineWidth = 1.5; cctx.beginPath();
+      cctx.moveTo(10, CH - 12); cctx.lineTo(10 + 10 * scale, CH - 12); cctx.stroke();
+      cctx.textBaseline = 'bottom'; cctx.fillText('10 km', 10, CH - 15);
       mOut.set(`${fmt(M, 3)} M☉`);
       rOut.set(Number.isFinite(R) ? `${fmt(R, 4)} km` : 'above M_max — collapses');
       const rho = Number.isFinite(R) ? (M * 1.98847e30) / ((4 / 3) * Math.PI * (R * 1000) ** 3) : NaN;

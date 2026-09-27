@@ -20,7 +20,8 @@ const PHASES = [
 export default defineSim({
   mount({ host, onDestroy }) {
     let pal = palette();
-    const stage = createStage(host, { aspect: 16 / 10 });
+    const narrow = host.getBoundingClientRect().width < 560; // phones: stack the panels / taller plots
+    const stage = createStage(host, { aspect: narrow ? 0.85 : 16 / 10 });
     const plot = new Plot(stage.canvas, {
       x: { min: 1e-2, max: 1e12, log: true, label: 'number density n (cm⁻³)' },
       y: { min: 3, max: 3e4, log: true, label: 'temperature T (K)' },
@@ -36,7 +37,7 @@ export default defineSim({
       if (key === imgKey && img) return img;
       imgKey = key;
       img = ctx.createImageData(W, H);
-      const unst = hex(pal.accent), st = hex(pal.series[0]);
+      const unst = hex(pal.accent), st = hex(pal.series[1]); // orange = collapses, blue = supported
       for (let py = 0; py < H; py++) {
         const Ty = plot.dy(plot.m.t + (py + 0.5) / plot.dpr);
         for (let px = 0; px < W; px++) {
@@ -61,7 +62,7 @@ export default defineSim({
           const M = 10 ** e;
           const f = (x: number) => Math.pow((M / jeans(x, 1).MJ) ** 2, 1 / 3);
           plot.fn(f, { color: pal.faint, width: e === 0 ? 1.4 : 0.8, samples: 40 });
-          const xl = 1e11 / 10 ** 0; const yl = f(xl);
+          const xl = 3e11; const yl = f(xl); // right edge, clear of the labelled phases
           if (yl > 3 && yl < 3e4) plot.text(`${M >= 1 ? fmt(M) : fmt(M, 1)} M☉`, plot.px(xl), plot.py(yl) - 3, { color: pal.muted, size: 10, align: 'center' });
         }
         // boundary for the chosen clump mass
@@ -70,11 +71,11 @@ export default defineSim({
         plot.point(n, T, { r: 7, color: pal.accent2, stroke: pal.fg });
       });
       const j = jeans(n, T);
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = `${narrow ? 11 : 12}px Inter, system-ui, sans-serif`;
       ctx.fillStyle = pal.fg; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
-      const x0 = plot.m.l + 10, y0 = plot.m.t + 8;
+      const x0 = plot.px(narrow ? 1e5 : 3e4), y0 = plot.m.t + 8; // top middle: clear of the labelled phases
       [`n = ${fmt(n, 2)} cm⁻³, T = ${fmt(T, 3)} K`, `M_J = ${fmt(j.MJ, 3)} M☉`, `λ_J = ${fmt(j.lambdaPc, 3)} pc`, `t_ff = ${fmt(j.tffMyr, 3)} Myr`,
-        Mclump > j.MJ ? `${fmt(Mclump, 3)} M☉ clump: collapses` : `${fmt(Mclump, 3)} M☉ clump: supported`].forEach((s, i) => ctx.fillText(s, x0, y0 + i * 16));
+        Mclump > j.MJ ? `${fmt(Mclump, 3)} M☉ clump: collapses` : `${fmt(Mclump, 3)} M☉ clump: supported`].forEach((s, i) => ctx.fillText(s, x0, y0 + i * (narrow ? 14 : 16)));
     }
 
     const loop = new Loop(null, render);
@@ -99,7 +100,7 @@ export default defineSim({
 
     const panel = new Panel(host);
     panel.slider('Clump mass', { min: 0.01, max: 1e5, value: Mclump, log: true, unit: 'M☉' }, (v) => { Mclump = v; imgKey = ''; loop.invalidate(); });
-    panel.readout('Drag the marker;').set('shaded orange = Jeans-unstable for this mass');
+    panel.readout('Drag the marker:').set('orange = Jeans-unstable (collapses), blue = supported, for this clump mass');
 
     return { setVisible: (v) => { loop.setVisible(v); loop.invalidate(); }, destroy: () => loop.destroy() };
   },

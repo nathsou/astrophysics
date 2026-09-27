@@ -26,7 +26,7 @@ export default defineSim({
     mapStage.el.style.borderRight = '1px solid var(--rule)';
     mapStage.el.style.touchAction = 'none';
     const mctx = mapStage.canvas.getContext('2d')!;
-    const plot = new Plot(lcStage.canvas, { x: { min: -1.5, max: 1.5, label: 'time (t − t₀) / t_E' }, y: { min: 1, max: 12, log: true, label: 'magnification A' }, title: 'Light curve' });
+    const plot = new Plot(lcStage.canvas, { x: { min: -1.5, max: 1.5, label: 'time (t − t₀) / t_E' }, y: { min: 1, max: 12, log: true, label: 'magnification A', format: (v) => String(v) }, title: 'Light curve' });
 
     const st = { u0: 0.2, planet: true, q: 1e-3, sep: 1.1, angle: 0.5, rho: 0.004 };
     const map = new Float32Array(N * N);
@@ -49,8 +49,15 @@ export default defineSim({
           const dx1 = x - x1, r1 = dx1 * dx1 + y2;
           let bx = x - (m1 * dx1) / r1, by = y - (m1 * y) / r1;
           if (m2 > 0) { const dx2 = x - x2, r2 = dx2 * dx2 + y2; bx -= (m2 * dx2) / r2; by -= (m2 * y) / r2; }
-          const px = ((bx + HALF) * k) | 0, py = ((by + HALF) * k) | 0;
-          if (px >= 0 && px < N && py >= 0 && py < N && bx > -HALF && by > -HALF) map[py * N + px]++;
+          // cloud-in-cell deposit (bilinear splat) instead of nearest-bin counting: removes most of the
+          // aliasing noise a regular ray grid otherwise leaves in the light curve
+          const fx = (bx + HALF) * k - 0.5, fy = (by + HALF) * k - 0.5;
+          const px = Math.floor(fx), py = Math.floor(fy);
+          if (px >= 0 && px < N - 1 && py >= 0 && py < N - 1) {
+            const u = fx - px, v = fy - py, o = py * N + px;
+            map[o] += (1 - u) * (1 - v); map[o + 1] += u * (1 - v);
+            map[o + N] += (1 - u) * v; map[o + N + 1] += u * v;
+          }
         }
       }
       const norm = (1 / (2 * HALF / N)) ** 2 * dr * dr; // unlensed rays per source pixel = (dr/pix)^2
@@ -98,6 +105,7 @@ export default defineSim({
         Amax = Math.max(Amax, curveA[i]);
       }
       plot.o.y.max = Math.max(3, Math.min(200, Amax * 1.4));
+      plot.o.y.ticks = [1, 1.5, 2, 3, 5, 7, 10, 20, 30, 50, 100, 200].filter((v) => v <= plot.o.y.max && (plot.o.y.max < 25 || ![1.5, 7].includes(v)));
     }
 
     let rebuild = true;
@@ -165,6 +173,18 @@ export default defineSim({
     panel.slider('Separation s', { min: 0.4, max: 2.2, value: st.sep, step: 0.01, unit: 'θ_E' }, (v) => { st.sep = v; rebuild = true; loop.invalidate(); });
     const roA = panel.readout('Peak A');
 
+    // Side by side when there is room, stacked on phones.
+    const twoCol = wrap.style.gridTemplateColumns;
+    const cols = () => {
+      const narrow = host.clientWidth < 560;
+      wrap.style.gridTemplateColumns = narrow ? 'minmax(0,1fr)' : twoCol;
+      const first = wrap.firstElementChild as HTMLElement;
+      first.style.borderRight = narrow ? '' : '1px solid var(--rule)';
+      first.style.borderBottom = narrow ? '1px solid var(--rule)' : '';
+    };
+    cols();
+    new ResizeObserver(cols).observe(host);
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

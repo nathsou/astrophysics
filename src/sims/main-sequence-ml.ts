@@ -33,6 +33,8 @@ export default defineSim({
     const s1 = createStage(wrap, { aspect: 1.15 });
     const s2 = createStage(wrap, { aspect: 1.15 });
     s1.el.style.borderRight = '1px solid var(--rule)';
+    const ro = new ResizeObserver(() => { wrap.style.gridTemplateColumns = host.clientWidth < 560 ? '1fr' : '1fr 1fr'; });
+    ro.observe(host);
 
     const plotL = new Plot(s1.canvas, {
       x: { min: 0.08, max: 250, log: true, label: 'M / M☉' },
@@ -47,16 +49,26 @@ export default defineSim({
 
     let a = 3.5, b = 0.8; // adjustable fit exponents (normalised to pass through the Sun)
 
+    // Label placement: most names sit up and to the right; a few are moved to avoid clashes/clipping.
+    const LEFT = new Set(['R136a1', 'ζ Ori A']);
+    const BELOW = new Set(['α Cen A']);
+    function labelled(plot: Plot, x: number, y: number, name: string) {
+      plot.point(x, y, { r: 3.5, color: pal.fg });
+      const X = plot.px(x), Y = plot.py(y);
+      if (LEFT.has(name)) plot.text(name, X - 7, Y - 4, { color: pal.fg, align: 'right' });
+      else if (BELOW.has(name)) plot.text(name, X + 7, Y + 13, { color: pal.fg });
+      else plot.text(name, X + 7, Y - 4, { color: pal.fg });
+    }
     function render() {
       plotL.draw(() => {
         plotL.fn((M) => M ** a, { color: pal.accent });
         plotL.fn((M) => zamsL(M), { color: pal.series[0], dash: [4, 3] });
-        for (const s of BINARIES) plotL.point(s.M, s.L, { r: 3.5, color: pal.fg, label: s.name });
+        for (const s of BINARIES) labelled(plotL, s.M, s.L, s.name);
       });
       plotR.draw(() => {
         plotR.fn((M) => M ** b, { color: pal.accent });
         plotR.fn((M) => zamsR(M), { color: pal.series[0], dash: [4, 3] });
-        for (const s of BINARIES) plotR.point(s.M, s.R, { r: 3.5, color: pal.fg, label: s.name });
+        for (const s of BINARIES) labelled(plotR, s.M, s.R, s.name);
       });
     }
     const loop = new Loop(null, render);
@@ -67,6 +79,6 @@ export default defineSim({
     panel.slider('L ∝ Mᵃ, a =', { min: 2, max: 5, value: a, step: 0.05 }, (v) => { a = v; loop.invalidate(); });
     panel.slider('R ∝ Mᵇ, b =', { min: 0.3, max: 1.2, value: b, step: 0.02 }, (v) => { b = v; loop.invalidate(); });
 
-    return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
+    return { setVisible: (v) => loop.setVisible(v), destroy: () => { loop.destroy(); ro.disconnect(); } };
   },
 });

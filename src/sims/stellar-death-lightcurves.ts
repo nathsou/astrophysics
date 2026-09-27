@@ -9,45 +9,41 @@ import { Panel, fmt } from '../lib/ui/controls';
 import { Plot } from '../lib/ui/plot';
 import { palette, onThemeChange } from '../lib/ui/theme';
 
-const LN2 = Math.LN2;
-const T_HALF_NI = 6.075; // days
-const T_HALF_CO = 77.236; // days
-const LAM_NI = LN2 / T_HALF_NI;
-const LAM_CO = LN2 / T_HALF_CO;
+// ⁵⁶Ni → ⁵⁶Co → ⁵⁶Fe: mean lifetimes (days) and specific heating rates (erg g⁻¹ s⁻¹), as in Arnett (1982).
+const TAU_NI = 8.8, TAU_CO = 111.3;
+const EPS_NI = 3.9e10, EPS_CO = 6.78e9;
+const heating = (t: number, mNi: number) => mNi * ((EPS_NI - EPS_CO) * Math.exp(-t / TAU_NI) + EPS_CO * Math.exp(-t / TAU_CO));
 
-/** Energy release rate per unit ⁵⁶Ni mass from the decay chain Ni->Co->Fe, in arbitrary power units. */
-function decayLuminosity(t: number, mNi: number): number {
-  // Number of remaining Ni nuclei ~ exp(-lam_Ni t); Co grows from Ni decay and itself decays.
-  const nNi = Math.exp(-LAM_NI * t);
-  const nCo = (LAM_NI / (LAM_NI - LAM_CO)) * (Math.exp(-LAM_CO * t) - Math.exp(-LAM_NI * t));
-  // Energy per decay: Co-56 releases much more energy per decay than Ni-56 (gamma+positron cascade).
-  const eNi = 1.0, eCo = 3.7; // relative energy scales (illustrative, ratio ~ observed)
-  return mNi * (LAM_NI * eNi * nNi + LAM_CO * eCo * nCo);
-}
-
-/** Arnett-style diffusion: the escaping luminosity lags energy deposition by the diffusion time tau_d,
- *  peaking near maximum light (~ Δm15's rise time) then tracking the decay tail once optically thin. */
-function typeIaCurve(days: number[], mNi: number, tauD: number): number[] {
-  const dt = days[1] - days[0];
-  const L: number[] = [];
-  let store = 0;
-  for (const t of days) {
-    const heat = decayLuminosity(Math.max(t, 0), mNi);
-    store += (heat - store / tauD) * dt;
-    L.push(Math.max(store / tauD, 1e-6));
-  }
-  return L;
-}
-
-function typeIIpCurve(days: number[], Lplateau: number, tPlateau: number, mNi: number): number[] {
+/** Arnett's rule as an ODE: dL/dt = (2t/τ_m²)(Q − L). The photon diffusion time τ_m sets the width;
+ *  late on, γ-rays leak out of the thinning ejecta (trapping fraction 1 − e^{−(T₀/t)²}, T₀ ≈ 35 d). */
+function typeIaCurve(days: number[], mNi: number, tauM: number): number[] {
+  let l = 0, tPrev = 0;
   return days.map((t) => {
-    if (t < 0) return 0;
-    if (t < tPlateau) return Lplateau * (1 - 0.15 * Math.exp(-t / 8));
-    const tail = decayLuminosity(t - tPlateau, mNi) * 25; // tail luminosity set by Co-56 in the ejecta
-    const drop = Math.exp(-(((t - tPlateau) / 6) ** 2)); // the "plateau cliff" as recombination front hits core
-    return Lplateau * drop * 0.3 + tail;
+    if (t <= 0) return 1e-9;
+    const dt = t - tPrev; tPrev = t;
+    const q = heating(t, mNi) * (1 - Math.exp(-((35 / t) ** 2)));
+    const k = (2 * t) / (tauM * tauM);
+    l = (l + dt * k * q) / (1 + dt * k); // implicit step: stable for any dt
+    return l;
   });
 }
+
+/** II-P: a ~100-day plateau from the receding recombination front, a drop, then a fully trapped ⁵⁶Co tail. */
+function typeIIpCurve(days: number[], Lplateau: number, tPlateau: number, mNi: number): number[] {
+  return days.map((t) => {
+    if (t <= 0) return 1e-9;
+    const rise = 1 - Math.exp(-t / 4);
+    const plateau = Lplateau * rise * (1 - 0.25 * (t / tPlateau)) / (1 + Math.exp((t - tPlateau) / 4));
+    const tail = mNi * EPS_CO * Math.exp(-t / TAU_CO) * (1 - Math.exp(-t / 20));
+    return plateau + tail;
+  });
+}
+
+const tauMOf = (mNi: number) => 7 + 13 * mNi; // more ⁵⁶Ni ↔ more massive, slower-diffusing ejecta
+const DAYS: number[] = [];
+for (let t = -5; t <= 300; t += 0.25) DAYS.push(t);
+// Normalisation: a Type Ia with 0.6 M☉ of ⁵⁶Ni peaks at L = 1.
+const L_REF = Math.max(...typeIaCurve(DAYS, 0.6, tauMOf(0.6)));
 
 export default defineSim({
   mount({ host }) {
@@ -55,25 +51,22 @@ export default defineSim({
     const stage = createStage(host, { aspect: 16 / 9 });
     const plot = new Plot(stage.canvas, {
       x: { min: 0, max: 200, label: 'days since explosion' },
-      y: { min: 0.03, max: 30, log: true, label: 'relative luminosity' },
+      y: { min: 0.003, max: 3, log: true, label: 'bolometric luminosity (Ia peak with 0.6 M☉ ⁵⁶Ni = 1)' },
       title: 'Supernova light curves',
     });
     let mNi = 0.6; // Msun of 56Ni synthesised (Phillips relation driver)
     let type: 'Ia' | 'IIP' = 'Ia';
-    const days: number[] = [];
-    for (let t = -5; t <= 300; t += 0.5) days.push(t);
+    const days = DAYS;
 
     const panel = new Panel(host);
-    panel.select('Type', [{ value: 'Ia', label: 'Type Ia (thermonuclear)' }, { value: 'IIP', label: 'Type II-P (core collapse)' }], type, (v) => { type = v; draw(); });
+    panel.select('Type', [{ value: 'Ia', label: 'Type Ia (thermonuclear)' }, { value: 'IIP', label: 'Type II-P (core collapse)' }], type, (v) => { type = v; mNi = v === 'Ia' ? 0.6 : 0.05; niCtl.set(mNi); draw(); });
     const roPeak = panel.readout('Peak (relative)');
-    const roDm15 = panel.readout('Δm₁₅ (decline in 15 d)');
-    panel.slider('⁵⁶Ni mass synthesised', { min: 0.1, max: 1.2, value: mNi, unit: 'M☉', step: 0.01 }, (v) => { mNi = v; draw(); });
+    const roDm15 = panel.readout('Δm₁₅ (bolometric decline in 15 d)');
+    const niCtl = panel.slider('⁵⁶Ni mass synthesised', { min: 0.01, max: 1.2, value: mNi, log: true, unit: 'M☉' }, (v) => { mNi = v; draw(); });
 
     function draw() {
-      const tauD = 12 + 6 * Math.sqrt(mNi); // more ejecta mass -> longer diffusion time -> broader, brighter peak
-      let L: number[];
-      if (type === 'Ia') L = typeIaCurve(days, mNi, tauD);
-      else L = typeIIpCurve(days, 30 * mNi + 8, 100, mNi);
+      const raw = type === 'Ia' ? typeIaCurve(days, mNi, tauMOf(mNi)) : typeIIpCurve(days, 0.07 * L_REF, 105, mNi);
+      const L = raw.map((v) => v / L_REF);
 
       const peakIdx = L.reduce((best, v, i) => (v > L[best] ? i : best), 0);
       const peak = L[peakIdx];
@@ -84,15 +77,18 @@ export default defineSim({
       roPeak.set(fmt(peak, 3));
       roDm15.set(type === 'Ia' ? `${fmt(dm15, 3)} mag` : '— (plateau, not a decliner)');
 
-      plot.o.y.max = Math.max(3, peak * 1.8);
       plot.draw(() => {
         plot.line(days, L, { color: pal.series[type === 'Ia' ? 1 : 0], width: 2.25 });
         plot.vline(days[peakIdx], { color: pal.muted, label: 'peak' });
         if (type === 'Ia') {
           plot.vline(days[peakIdx] + 15, { color: pal.bad, label: '+15 d' });
-          plot.text(`Phillips relation: brighter Ia decline more slowly (higher ⁵⁶Ni ⇒ higher peak, smaller Δm₁₅).`, plot.m.l + 8, plot.m.t + 14, { color: pal.muted, size: 10.5 });
+          plot.text('Phillips relation: more ⁵⁶Ni gives a brighter peak', plot.px(45), plot.m.t + 16, { color: pal.muted, size: 11, align: 'left' });
+          plot.text('and a slower decline (smaller Δm₁₅).', plot.px(45), plot.m.t + 31, { color: pal.muted, size: 11, align: 'left' });
+          plot.text('tail: ⁵⁶Co decay, 77-day half-life', plot.px(120), plot.py(L[days.indexOf(120)]) - 10, { color: pal.muted, size: 11, align: 'left' });
         } else {
-          plot.text('Plateau: recombination front eats through the H envelope at ~constant L, then the tail is powered by ⁵⁶Co.', plot.m.l + 8, plot.m.t + 14, { color: pal.muted, size: 10.5 });
+          plot.text('Plateau: the recombination front eats inward', plot.px(8), plot.py(0.07) - 18, { color: pal.muted, size: 11, align: 'left' });
+          plot.text('through the H envelope at nearly constant L.', plot.px(8), plot.py(0.07) - 4, { color: pal.muted, size: 11, align: 'left' });
+          plot.text('tail: ⁵⁶Co decay', plot.px(160), plot.py(L[days.indexOf(160)]) - 10, { color: pal.muted, size: 11, align: 'left' });
         }
       });
     }

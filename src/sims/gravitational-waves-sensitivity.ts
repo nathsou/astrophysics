@@ -55,6 +55,7 @@ export default defineSim({
     });
     let myMc = 1e4, myD = 3000; // your source
     const loop = new Loop(null, render);
+    loop.onDemand = true;
     onDestroy(onThemeChange(() => { pal = palette(); loop.invalidate(); }));
 
     function track(s: { Mc: number; M: number; D: number; tObs: number }, col: string, label?: string) {
@@ -62,7 +63,14 @@ export default defineSim({
       const n = 80, xs = new Float64Array(n), ys = new Float64Array(n);
       for (let i = 0; i < n; i++) { xs[i] = f1 * Math.pow(f2 / f1, i / (n - 1)); ys[i] = hcInspiral(s.Mc, s.D, xs[i]); }
       plot.line(xs, ys, { color: col, width: 2.6 });
-      if (label) plot.point(xs[n - 1], ys[n - 1], { r: 3, color: col, label });
+      plot.point(xs[n - 1], ys[n - 1], { r: 3, color: col });
+      if (label) {
+        // label above the end point; flip to the left near the right edge so it is never clipped
+        const X = plot.px(xs[n - 1]), Y = plot.py(ys[n - 1]);
+        const right = X > plot.m.l + plot.pw - 150 || label === 'GW150914';
+        const below = label.startsWith('GW170817'); // its track runs just under GW150914's label
+        plot.text(label, right ? X - 6 : X + 6, below ? Y + 17 : Y - 7, { color: pal.fg, size: 11, align: right ? 'right' : 'left' });
+      }
     }
 
     function render() {
@@ -71,8 +79,8 @@ export default defineSim({
         plot.fn(hn(lisaS), { color: pal.series[2], width: 2 });
         plot.fn(hn(ligoS), { color: pal.series[0], width: 2 });
         plot.text('PTA (~15 yr)', plot.px(2e-9), plot.py(3e-13), { color: pal.series[3] });
-        plot.text('LISA', plot.px(3e-4), plot.py(6e-19), { color: pal.series[2] });
-        plot.text('LIGO (design)', plot.px(15), plot.py(1e-20), { color: pal.series[0] });
+        plot.text('LISA', plot.px(3e-3), plot.py(2.5e-22), { color: pal.series[2] });
+        plot.text('LIGO (design)', plot.px(200), plot.py(1.5e-23), { color: pal.series[0] });
         // NANOGrav 15-yr background: h_c = 2.4e-15 (f / 1 yr⁻¹)^{-2/3}
         const fyr = 1 / YR;
         const xs = [2e-9, 3e-8], ys = xs.map((f) => 2.4e-15 * Math.pow(f / fyr, -2 / 3));
@@ -81,7 +89,7 @@ export default defineSim({
         // Galactic white-dwarf binaries (verification binaries) ~ mHz, h_c ~ h·√(f T_obs)
         const wd = [[1.9e-3, 1e-22], [6.2e-3, 6e-23], [3.5e-3, 2e-22]];
         for (const [f, h] of wd) plot.point(f, h * Math.sqrt(f * 4 * YR), { r: 3, color: pal.accent3 });
-        plot.text('Galactic WD binaries', plot.px(1.2e-3), plot.py(4e-19), { color: pal.accent3 });
+        plot.text('Galactic WD binaries', plot.px(3e-3), plot.py(1.2e-20), { color: pal.accent3 });
         for (const s of SOURCES) track(s, pal.series[s.col === 2 ? 4 : s.col === 1 ? 1 : 0], s.name);
         track({ Mc: myMc, M: myMc * Math.pow(2, 6 / 5), D: myD, tObs: 4 * YR }, pal.accent, 'your binary');
       });

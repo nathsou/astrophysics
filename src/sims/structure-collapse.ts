@@ -65,13 +65,15 @@ export default defineSim({
         pR.hline(0.5, { color: pal.series[2], dash: [2, 3], label: 'R_vir = R_ta / 2' });
         pR.point(ts[i], R[i], { r: 5, color: pal.accent });
         pR.point(ts[i], Rbg[i], { r: 3.5, color: pal.muted });
-        pR.text('background sphere (same mass, unperturbed)', pR.px(0.62), pR.py(Math.min(2.05, Rb(0.9)) ) - 10, { color: pal.muted, size: 11 });
+        pR.text(pR.pw < 400 ? 'dashed: unperturbed sphere' : 'dashed: background sphere (same mass, unperturbed)', pR.px(0.03), pR.py(1.9), { color: pal.muted, size: 11 });
       });
       pD.draw(() => {
         pD.line(ts, dL, { color: pal.series[1], width: 2 });
         pD.line(ts, dNL, { color: pal.accent, width: 2.5 });
-        pD.hline(1.686, { color: pal.series[1], dash: [3, 3], label: 'δ_c = 1.686' });
-        pD.hline(177.7, { color: pal.accent, dash: [3, 3], label: 'Δ_vir ≈ 178' });
+        pD.hline(1.686, { color: pal.series[1], dash: [3, 3] });
+        pD.hline(177.7, { color: pal.accent, dash: [3, 3] });
+        pD.text('δ_c = 1.686', pD.px(0.03), pD.py(1.686) - 4, { color: pal.series[1], size: 11 });
+        pD.text('Δ_vir ≈ 178', pD.px(0.03), pD.py(177.7) - 4, { color: pal.accent, size: 11 });
         pD.vline(1, { color: pal.faint, dash: [2, 3] });
         pD.point(ts[i], Math.max(0.011, dNL[i]), { r: 5, color: pal.accent });
         pD.point(ts[i], dL[i], { r: 4, color: pal.series[1] });
@@ -87,6 +89,7 @@ export default defineSim({
     panel.playPause(() => !playing, (p) => { playing = !p; });
     const tCtl = panel.slider('Time', { min: 0.02, max: T_MAX, value: t, step: 0.002 }, (v) => { t = v; playing = false; loop.invalidate(); });
     const tOut = panel.readout('');
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

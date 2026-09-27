@@ -13,7 +13,8 @@ export default defineSim({
     let pal = palette();
     onThemeChange(() => { pal = palette(); draw(); });
 
-    const stage = createStage(host, { aspect: 16 / 10 });
+    const narrow = host.getBoundingClientRect().width < 560; // phones: stack the panels / taller plots
+    const stage = createStage(host, { aspect: narrow ? 1.1 : 16 / 8 });
     const panel = new Panel(host);
     const info = panel.readout('Transition');
     panel.button('Clear', () => { picked = []; draw(); });
@@ -21,11 +22,10 @@ export default defineSim({
     let picked: number[] = [];
     let hoverN = -1;
 
-    const yFor = (n: number, h: number, top: number, bot: number) => {
-      // Energy levels are compressed near E=0; use a mild nonlinear (sqrt-like) map so all levels are visible.
-      const eMin = bohrLevelEV(1), eMax = 0.5; // eV
-      const e = bohrLevelEV(n);
-      const t = Math.pow((e - eMin) / (eMax - eMin), 0.6);
+    const yFor = (n: number, _h: number, top: number, bot: number) => {
+      // E_n ∝ −1/n² crowds the upper levels against E = 0, so the vertical axis is stretched there:
+      // height ∝ 1 − 1/n = 1 − √(E_n/E_1), monotonic in energy, with n → ∞ at the top line.
+      const t = 1 - 1 / n;
       return bot - t * (bot - top);
     };
 
@@ -66,12 +66,15 @@ export default defineSim({
       // Series highlight (draw arrows for the currently hovered/selected series' first few lines)
       if (picked.length === 2) {
         const [a, b] = picked.slice().sort((x, y) => x - y);
-        drawArrow(ctx, left, right, yFor(a, h, top, bot), yFor(b, h, top, bot), pal.accent);
+        // emission: the electron drops from the upper level b to the lower level a; arrow in the photon's colour
+        const nm = bohrWavelengthNM(a, b);
+        const col = nm >= 380 && nm <= 780 ? `rgb(${wavelengthRGB(nm).map((v) => Math.round(v * 255)).join(',')})` : pal.accent;
+        drawArrow(ctx, left, right, yFor(b, h, top, bot), yFor(a, h, top, bot), col);
       }
       ctx.textAlign = 'left';
-      ctx.fillStyle = pal.fg;
-      ctx.font = '12px Inter, system-ui, sans-serif';
-      ctx.fillText('Balmer/Lyman/Paschen buttons →', left, bot + 20);
+      ctx.fillStyle = pal.faint;
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.fillText('energy axis stretched near 0 eV so the upper levels stay apart · click a level', left, bot + 20);
     }
 
     function drawArrow(ctx: CanvasRenderingContext2D, left: number, right: number, yHi: number, yLo: number, color: string) {
@@ -124,6 +127,7 @@ export default defineSim({
     }
 
     stage.onResize(() => draw());
+    picked = [2, 3]; // start on Hα, the red Balmer line
     updateInfo();
     onDestroy(() => {});
     return { setVisible(v) { if (v) draw(); }, destroy() {} };

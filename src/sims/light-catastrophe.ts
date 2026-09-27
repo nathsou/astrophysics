@@ -16,10 +16,11 @@ export default defineSim({
     let pal = palette();
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
-    const stage = createStage(host, { aspect: 16 / 9 });
+    const narrow = host.getBoundingClientRect().width < 560; // phones: stack the panels / taller plots
+    const stage = createStage(host, { aspect: narrow ? 1.1 : 16 / 9 });
     const plot = new Plot(stage.canvas, {
       x: { min: 10, max: 1e5, log: true, label: 'wavelength λ (nm)' },
-      y: { min: 1e-6, max: 1, log: true, label: 'B_λ (W sr⁻¹ m⁻³)' },
+      y: { min: 1e-6, max: 1, log: true, label: 'Bλ (W sr⁻¹ m⁻³)' },
       title: 'Classical modes vs. Planck',
     });
 
@@ -53,8 +54,9 @@ export default defineSim({
         plot.vline(lamMinNm, { color: pal.fg, label: 'λ_min' });
       });
 
+      const planckTotal = (5.670374e-8 * T ** 4) / Math.PI; // σT⁴/π: the finite answer
       panel2.set(
-        `Classical energy density with λ < λ_min: ${classicalBelow > 1e6 ? classicalBelow.toExponential(2) : fmt(classicalBelow, 3)} W sr⁻¹ m⁻² — grows without bound as λ_min → 0 (⁠∝ λ_min⁻³). Planck's curve stays finite because ⟨E⟩ per mode → 0 exponentially once hν ≫ k_BT.`,
+        `Classical radiance summed over λ > λ_min: ${fmt(classicalBelow, 3)} W m⁻² sr⁻¹, ∝ λ_min⁻³, so it grows without bound as λ_min → 0. Planck's total at this temperature: ${fmt(planckTotal, 3)} W m⁻² sr⁻¹, finite, because the mean energy per mode → 0 once hν ≫ kT.`,
       );
     }
 
@@ -62,7 +64,7 @@ export default defineSim({
     stage.onResize((w, h, d) => { plot.resize(w, h, d); loop.invalidate(); });
 
     const panel = new Panel(host);
-    panel.slider('Temperature', { min: 300, max: 40000, value: T, log: true, unit: 'K' }, (v) => { T = v; rescale(); loop.invalidate(); });
+    panel.slider('Temperature', { min: 300, max: 40000, value: T, log: true, unit: 'K', format: (v) => String(Math.round(v)) }, (v) => { T = v; rescale(); loop.invalidate(); });
     panel.slider('λ_min cutoff', { min: 10, max: 2000, value: lamMinNm, log: true, unit: 'nm' }, (v) => { lamMinNm = v; loop.invalidate(); });
     const panel2 = panel.readout('');
 

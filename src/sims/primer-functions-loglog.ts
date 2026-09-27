@@ -52,6 +52,7 @@ export default defineSim({
     const stage = createStage(host, { aspect: 16 / 9 });
     const plot = new Plot(stage.canvas, { x: { min: 0, max: 1 }, y: { min: 0, max: 1 } });
     const loop = new Loop(null, render);
+    loop.onDemand = true;
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
     stage.onResize((w, h, d) => { plot.resize(w, h, d); loop.invalidate(); });
 

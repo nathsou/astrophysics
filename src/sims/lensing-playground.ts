@@ -36,6 +36,7 @@ export default defineSim({
   async mount({ host, params }) {
     const device = await requireDevice();
     const stage = createStage(host, { aspect: 16 / 10, maxDpr: 2 });
+    if (host.clientWidth < 560) stage.el.style.aspectRatio = '1'; // taller on phones
     const { ctx, format } = configureCanvas(stage.canvas, device, 'opaque');
 
     // 2D overlay for markers and labels
@@ -147,8 +148,14 @@ export default defineSim({
       g2.setLineDash([3, 3]);
       g2.beginPath(); g2.arc(sx, sy, 9, 0, Math.PI * 2); g2.stroke();
       g2.setLineDash([]);
-      g2.fillStyle = 'rgba(200,255,220,0.9)';
-      g2.fillText('source (true position)', sx + 12, sy - 8);
+      // label on the side away from the lens, with a dark halo so it reads over bright arcs
+      const away = sx >= lx ? 1 : -1;
+      g2.textAlign = away > 0 ? 'left' : 'right';
+      g2.lineWidth = 3; g2.strokeStyle = 'rgba(0,0,0,0.75)'; g2.lineJoin = 'round';
+      g2.strokeText('true source position', sx + away * 13, sy - 10);
+      g2.fillStyle = 'rgba(200,255,220,0.95)';
+      g2.fillText('true source position', sx + away * 13, sy - 10);
+      g2.textAlign = 'left'; g2.lineWidth = 1;
       // scale bar: 1 unit
       const [k, lab] = UNIT[s.model];
       const px = stage.height / viewH;
@@ -213,8 +220,8 @@ export default defineSim({
     panel.select('Rays / pixel', [{ value: '1', label: '1' }, { value: '2', label: '4' }, { value: '3', label: '9' }], String(s.ss), (v) => { s.ss = +v; set(); });
     const preset = (f: () => void) => () => { f(); modelSel.set(s.model); Esl.set(s.E); qsl.set(s.q); gsl.set(s.gamma); srcSel.set(String(s.srcType)); sz.set(s.srcSize); set(); };
     panel.button('Einstein ring', preset(() => { Object.assign(s, { model: 'sis', E: 1.2, gamma: 0, srcType: 0, srcSize: 0.3 }); s.lens = [0, 0]; s.src = [0.02, 0.0]; }));
-    panel.button('Einstein cross', preset(() => { Object.assign(s, { model: 'sie', E: 1.2, q: 0.6, phi: 0.5, gamma: 0.05, srcType: 1, srcSize: 0.25 }); s.lens = [0, 0]; s.src = [0.06, 0.05]; }));
-    panel.button('Giant arcs', preset(() => { Object.assign(s, { model: 'cluster', E: 1.4, q: 0.85, gamma: 0.02, srcType: 0, srcSize: 0.25 }); s.lens = [0, 0]; s.src = [0.55, 0.6]; }));
+    panel.button('Einstein cross', preset(() => { Object.assign(s, { model: 'sie', E: 1.2, q: 0.6, phi: 0.5, gamma: 0.05, srcType: 1, srcSize: 0.08 }); s.lens = [0, 0]; s.src = [0.06, 0.05]; }));
+    panel.button('Giant arcs', preset(() => { Object.assign(s, { model: 'cluster', E: 1.0, q: 0.85, gamma: 0.02, srcType: 0, srcSize: 0.2 }); s.lens = [0, 0]; s.src = [0.12, 0.07]; }));
     const ro = panel.readout('');
     function syncVisibility() {
       qsl.el.style.display = s.model === 'sie' || s.model === 'cluster' ? '' : 'none';
@@ -228,6 +235,7 @@ export default defineSim({
     }
 
     // redraw while dragging / after changes; the loop is cheap when not dirty
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return {
       setVisible: (v) => { if (v) dirty = true; loop.setVisible(v); },
       destroy: () => { loop.destroy(); cbuf?.destroy(); ubuf.destroy(); },

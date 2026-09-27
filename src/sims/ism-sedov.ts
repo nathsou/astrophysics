@@ -17,12 +17,13 @@ export default defineSim({
     let pal = palette();
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
+    const narrow = host.getBoundingClientRect().width < 560; // phones: stack the panels / taller plots
     const wrap = document.createElement('div');
-    wrap.style.cssText = 'display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);';
+    wrap.style.cssText = `display:grid;grid-template-columns:${narrow ? 'minmax(0,1fr)' : 'minmax(0,1fr) minmax(0,1.15fr)'}`;
     host.append(wrap);
     const blastStage = createStage(wrap, { aspect: 1 });
     const plotStage = createStage(wrap, { aspect: 1 / 0.92 });
-    blastStage.el.style.borderRight = '1px solid var(--rule)';
+    blastStage.el.style[narrow ? 'borderBottom' : 'borderRight'] = '1px solid var(--rule)';
     const ctx = blastStage.canvas.getContext('2d')!;
 
     const plot = new Plot(plotStage.canvas, {
@@ -44,7 +45,8 @@ export default defineSim({
     }
 
     function render() {
-      const E = 10 ** logE51 * 1e51, n = 10 ** logN, rho = n * mp;
+      // cgs throughout: ρ = 1.4 n m_H in g cm⁻³ (the 1.4 accounts for helium; mp is in kg, hence 1e3)
+      const E = 10 ** logE51 * 1e51, n = 10 ** logN, rho = 1.4 * n * mp * 1e3;
       const tRad = radiativeTime(n);
       // --- blast panel ---
       const { width: W, height: H, dpr } = blastStage;

@@ -82,7 +82,7 @@ export default defineSim({
     panel.button('Show a solution', () => { target.solution.forEach((e, i) => (exps[i] = e)); update(); });
 
     const box = document.createElement('div');
-    box.style.cssText = 'display:grid;grid-template-columns:auto 1fr auto;gap:0.35rem 0.8rem;align-items:center;padding:0.9rem 1rem;font-family:var(--font-ui);font-size:0.85rem;border-top:1px solid var(--rule);';
+    box.style.cssText = 'display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:0.35rem 0.8rem;align-items:center;padding:0.9rem 1rem;font-family:var(--font-ui);font-size:0.85rem;border-top:1px solid var(--rule);';
     host.prepend(box);
 
     const expEls: HTMLElement[] = [];
@@ -90,7 +90,7 @@ export default defineSim({
       const name = document.createElement('div');
       name.innerHTML = `<b style="font-family:var(--font-mono);font-size:1rem;color:var(--accent)">${q.sym}</b> <span style="color:var(--fg-muted)">${q.name}</span>`;
       const dim = document.createElement('div');
-      dim.style.cssText = 'color:var(--fg-muted);font-family:var(--font-mono);font-size:0.78rem';
+      dim.style.cssText = 'color:var(--fg-muted);font-family:var(--font-mono);font-size:0.78rem;white-space:nowrap';
       dim.textContent = `[${dimStr(q.dim)}]`;
       const ctl = document.createElement('div');
       ctl.style.cssText = 'display:flex;align-items:center;gap:0.3rem';

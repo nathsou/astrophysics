@@ -59,9 +59,12 @@ export default defineSim({
         const y0 = plot.py(170), y1 = plot.py(150);
         ctx.fillStyle = pal.series[1]; ctx.globalAlpha = 0.15;
         ctx.fillRect(plot.m.l, y0, plot.pw, y1 - y0); ctx.globalAlpha = 1;
-        plot.hline(160, { color: pal.series[1], label: 'H₂O ice 150–170 K' });
-        plot.hline(70, { color: pal.series[4], label: 'CO₂ ice ~70 K' });
-        plot.hline(25, { color: pal.series[3], label: 'CO ice ~25 K' });
+        // Ice lines, labelled at the left where the (hot, inner-disk) curve is far above them.
+        const ice: [number, string, string][] = [[160, pal.series[1], 'H₂O ice 150–170 K'], [70, pal.series[4], 'CO₂ ice ~70 K'], [25, pal.series[3], 'CO ice ~25 K']];
+        for (const [T, col, label] of ice) {
+          plot.hline(T, { color: col });
+          plot.text(label, plot.m.l + 6, plot.py(T) - 4, { color: col });
+        }
         plot.fn(tIrr, { color: pal.muted, dash: [5, 4], width: 1.4 });
         plot.fn(tMid, { color: pal.series[0], width: 2.2 });
         plot.vline(rw, { color: pal.series[1], label: `snow line ${fmt(rw, 3)} AU` });

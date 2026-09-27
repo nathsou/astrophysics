@@ -35,7 +35,7 @@ export default defineSim({
       const { width: W, height: H, dpr } = s1;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, W, H);
-      const ox = W / 2, oy = H - 34, top = 46, hgt = oy - top;
+      const ox = W / 2, oy = H - 34, top = 70, hgt = oy - top;
       const w = W * 0.16;
       // apparent half-angle, exaggerated: ratio θ*(Ω_k)/θ*(flat) drives the bend
       const ratio = d.theta / flat.theta;
@@ -95,6 +95,7 @@ export default defineSim({
     });
     panel.button('Flat', () => { omk = 0; d = spectrum({ ...PLANCK, omk }, L, D); (panel.el.querySelector('input[type=range]') as HTMLInputElement).value = '500'; panel.el.querySelector('output')!.textContent = '0.000'; inval(); });
 
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

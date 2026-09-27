@@ -48,7 +48,8 @@ function build(): Track[] {
 export default defineSim({
   mount({ host, onDestroy }) {
     let pal = palette();
-    const stage = createStage(host, { aspect: 16 / 11 });
+    const narrow = host.getBoundingClientRect().width < 560; // phones: stack the panels / taller plots
+    const stage = createStage(host, { aspect: narrow ? 0.9 : 16 / 11 });
     const plot = new Plot(stage.canvas, {
       x: { min: 25000, max: 2500, log: true, label: 'effective temperature (K)', ticks: [20000, 10000, 7000, 5000, 4000, 3000], format: (v) => fmt(v) },
       y: { min: 10 ** -3.3, max: 1e3, log: true, label: 'luminosity (L☉)' },
@@ -87,10 +88,11 @@ export default defineSim({
         });
         plot.text('ZAMS', plot.px(12000), plot.py(40), { color: pal.fg, size: 11 });
         plot.text('birthline', plot.px(4100), plot.py(60), { color: pal.muted, size: 11 });
-        plot.text('Hayashi (convective, vertical)', plot.px(3900), plot.py(0.02), { color: pal.muted, size: 10 });
-        plot.text('Henyey (radiative, horizontal)', plot.px(9000), plot.py(4), { color: pal.muted, size: 10 });
+        // track-phase labels placed in empty space beside the tracks they describe
+        if (!narrow) plot.text('Hayashi track', plot.px(4450), plot.py(1.6), { color: pal.muted, size: 10, align: 'right' });
+        if (!narrow) plot.text('(convective, ↓)', plot.px(4450), plot.py(1.6) + 12, { color: pal.muted, size: 10, align: 'right' });
+        if (!narrow) plot.text('Henyey track (radiative, ←)', plot.px(8000), plot.py(14), { color: pal.muted, size: 10 });
       });
-      ageRO.set(age < 1e6 ? `${fmt(age / 1e3, 3)} kyr` : `${fmt(age / 1e6, 3)} Myr`);
     }
 
     const loop = new Loop(null, render);
@@ -99,8 +101,7 @@ export default defineSim({
 
     const panel = new Panel(host);
     const playBtn = panel.button('▶ Play', () => { playing = !playing; if (playing && logAge >= 9) logAge = 5; playBtn.textContent = playing ? '❚❚ Pause' : '▶ Play'; loop.invalidate(); });
-    const ageSl = panel.slider('Age', { min: 5, max: 9, value: logAge, step: 0.01, format: (v) => `10^${v.toFixed(2)} yr` }, (v) => { logAge = v; loop.invalidate(); });
-    const ageRO = panel.readout('Age');
+    const ageSl = panel.slider('Age', { min: 5, max: 9, value: logAge, step: 0.01, format: (v) => { const y = 10 ** v; return y < 1e6 ? `${fmt(y / 1e3, 3)} kyr` : `${fmt(y / 1e6, 3)} Myr`; } }, (v) => { logAge = v; loop.invalidate(); });
     panel.readout('Time to reach the ZAMS:').set(tracks.map((t) => `${t.M} M☉ ${t.tZams < 1e6 ? fmt(t.tZams / 1e3, 2) + ' kyr' : fmt(t.tZams / 1e6, 2) + ' Myr'}`).join(' · '));
     return { setVisible: (v) => { loop.setVisible(v); loop.invalidate(); }, destroy: () => loop.destroy() };
   },

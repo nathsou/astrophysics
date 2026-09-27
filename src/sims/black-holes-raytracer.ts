@@ -73,7 +73,7 @@ export default defineSim({
 
     const s = {
       quality: 'med' as Quality,
-      Tpeak: 9000,
+      Tpeak: 6500,
       lensing: true, disk: true, doppler: true, gravz: true, grid: false, stars: true, galaxy: false,
       time: 0,
     };

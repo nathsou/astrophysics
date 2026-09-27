@@ -115,6 +115,18 @@ export default defineSim({
     panel.slider('Corotation', { min: 4, max: 20, value: RCR, step: 0.5, unit: 'kpc' }, (v) => { RCR = v; loop.invalidate(); });
     const rT = panel.readout('t =');
     const rO = panel.readout('Orbit at 8 kpc:');
+    // Side by side when there is room, stacked on phones.
+    const twoCol = wrap.style.gridTemplateColumns;
+    const cols = () => {
+      const narrow = host.clientWidth < 560;
+      wrap.style.gridTemplateColumns = narrow ? 'minmax(0,1fr)' : twoCol;
+      const first = wrap.firstElementChild as HTMLElement;
+      first.style.borderRight = narrow ? '' : '1px solid var(--rule)';
+      first.style.borderBottom = narrow ? '1px solid var(--rule)' : '';
+    };
+    cols();
+    new ResizeObserver(cols).observe(host);
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

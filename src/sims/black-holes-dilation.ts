@@ -39,6 +39,7 @@ export default defineSim({
       rateOut.set(`${fmt(a, 4)} (1 h here = ${a > 1e-6 ? fmt(1 / a, 4) : '∞'} h far away)`);
       zOut.set(a > 1e-6 ? `z = ${fmt(1 / a - 1, 4)}; 500 nm → ${fmt(500 / a, 4)} nm` : '∞');
     });
+    loop.onDemand = true;
     stage.onResize((w, h, d) => { plot.resize(w, h, d); loop.invalidate(); });
     const unsub = vars.subscribe('rr', (v) => { rr = v; loop.invalidate(); });
 

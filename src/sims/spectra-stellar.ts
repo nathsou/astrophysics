@@ -8,7 +8,7 @@ import { palette, onThemeChange } from '../lib/ui/theme';
 import { planckLambda, wavelengthRGB } from '../lib/physics/blackbody';
 import { c } from '../lib/physics/constants';
 import {
-  LINES, lineDepth, dopplerFWHM_nm, lorentzFWHM_nm, pseudoVoigt, solveElectronDensity,
+  LINES, lineDepth, lineTau, dopplerFWHM_nm, lorentzFWHM_nm, pseudoVoigt, solveElectronDensity,
   spectralSubtype, STAR_PRESETS, SPECIES,
 } from './spectra/physics';
 
@@ -63,7 +63,7 @@ export default defineSim({
     let vel = 0; // km/s, +away
     let labelsOn = true;
 
-    const tSlider = panel.slider('Temperature', { min: 2500, max: 40000, value: T, log: true, unit: 'K' }, (v) => {
+    const tSlider = panel.slider('Temperature', { min: 2500, max: 40000, value: T, log: true, unit: 'K', format: (v) => String(Math.round(v)) }, (v) => {
       T = v; presetSel.set('—'); redraw();
     });
     const vSlider = panel.slider('Velocity', { min: -3000, max: 3000, value: 0, step: 10, unit: 'km/s' }, (v) => {
@@ -90,7 +90,10 @@ export default defineSim({
         line,
         nm: line.nm * f,
         depth: lineDepth(line, T, ne),
-        fwhm: Math.max(voigtCombined(line, T, ne), 0.15),
+        // saturated lines keep growing through their damping wings (equivalent width ∝ √τ):
+        // this is what makes A-star Balmer lines so broad
+        // molecular bands are blends of thousands of lines: drawn ~15 nm wide
+        fwhm: line.category === 'molecule' ? 15 : Math.max(voigtCombined(line, T, ne), 0.4) * Math.min(12, 1 + 1.2 * Math.sqrt(lineTau(line, T, ne))),
       }));
       return { ne, lines };
     }
@@ -132,13 +135,15 @@ export default defineSim({
         plot.fn((nm) => (continuum(nm, T) / norm) * fluxAt(nm, lines), { color: pal.series[0], width: 1.8 });
         plot.fn((nm) => continuum(nm, T) / norm, { color: pal.muted, width: 1, dash: [2, 3], alpha: 0.6 });
         if (labelsOn) {
-          const seen = new Set<number>();
-          for (const l of lines) {
-            if (l.depth < 0.04 || l.nm < LAM_MIN || l.nm > LAM_MAX) continue;
-            const key = Math.round(l.nm / 3);
-            if (seen.has(key)) continue;
-            seen.add(key);
-            plot.vline(l.nm, { color: lineColor(l.line.category), alpha: 0.35, label: l.line.label });
+          // label visible lines left to right, skipping labels that would collide with the previous one
+          let lastEnd = -1e9;
+          const vis = lines.filter((l) => l.depth >= 0.04 && l.nm >= LAM_MIN && l.nm <= LAM_MAX).sort((a, b) => a.nm - b.nm);
+          for (const l of vis) {
+            const X = plot.px(l.nm);
+            const pair = l.line.id === 'CaK' || l.line.id === 'CaH' ? 'Ca II H & K' : l.line.id.startsWith('NaD') ? 'Na D' : l.line.label;
+            const room = X > lastEnd;
+            plot.vline(l.nm, { color: lineColor(l.line.category), alpha: 0.35, label: room ? pair : undefined });
+            if (room) lastEnd = X + 10 + pair.length * 6;
           }
         }
       });
@@ -160,7 +165,8 @@ export default defineSim({
       const img = ctx.createImageData(Math.round(w), 1);
       for (let x = 0; x < img.width; x++) {
         const nm = LAM_MIN + (x / img.width) * (LAM_MAX - LAM_MIN);
-        const [r, g, b] = wavelengthRGB(nm);
+        // beyond the visible band the strip is dark (outside 380–780 nm there is no colour to show)
+        const [r, g, b] = nm < 380 || nm > 780 ? [0, 0, 0] : wavelengthRGB(nm);
         const flux = fluxAt(nm, lines);
         img.data[x * 4] = r * 255 * (0.15 + 0.85 * flux);
         img.data[x * 4 + 1] = g * 255 * (0.15 + 0.85 * flux);

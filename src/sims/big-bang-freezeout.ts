@@ -26,7 +26,7 @@ export default defineSim({
       title: 'Γ vs H',
     });
     const plotNP = new Plot(rightStage.canvas, {
-      x: { min: 0.1, max: 10, log: true, label: 'T (MeV)' },
+      x: { min: 0.05, max: 10, log: true, label: 'T (MeV)   ← time runs this way' },
       y: { min: 0.05, max: 1.1, label: 'n / p' },
       title: 'Neutron-to-proton ratio',
     });
@@ -77,8 +77,13 @@ export default defineSim({
       plotNP.draw(() => {
         plotNP.fn((T) => Math.exp(-DELTA_M / T), { color: pal.muted, dash: [3, 3] });
         plotNP.fn((T) => npRatio(T, Tf), { color: pal.series[0] });
-        plotNP.hline(1 / 6, { color: pal.accent2, label: '1/6' });
-        plotNP.hline(1 / 7, { color: pal.accent3 ?? pal.good, label: '1/7' });
+        plotNP.hline(1 / 6, { color: pal.accent2 });
+        plotNP.hline(1 / 7, { color: pal.accent3 });
+        plotNP.vline(0.07, { color: pal.muted });
+        const xr = plotNP.m.l + plotNP.pw - 4;
+        plotNP.text('1/6', xr, plotNP.py(1 / 6) - 3, { color: pal.accent2, align: 'right', baseline: 'bottom' });
+        plotNP.text('1/7', xr, plotNP.py(1 / 7) + 3, { color: pal.accent3, align: 'right', baseline: 'top' });
+        plotNP.text('BBN starts', plotNP.px(0.07) + 4, plotNP.py(0.5), { color: pal.muted });
       });
       const { ctx: c2 } = plotNP;
       c2.fillStyle = pal.muted; c2.font = '11px Inter, system-ui, sans-serif';
@@ -96,6 +101,18 @@ export default defineSim({
     const origInvalidate = loop.invalidate.bind(loop);
     loop.invalidate = () => { update(); origInvalidate(); };
 
+    // Side by side when there is room, stacked on phones.
+    const twoCol = wrap.style.gridTemplateColumns;
+    const cols = () => {
+      const narrow = host.clientWidth < 560;
+      wrap.style.gridTemplateColumns = narrow ? 'minmax(0,1fr)' : twoCol;
+      const first = wrap.firstElementChild as HTMLElement;
+      first.style.borderRight = narrow ? '' : '1px solid var(--rule)';
+      first.style.borderBottom = narrow ? '1px solid var(--rule)' : '';
+    };
+    cols();
+    new ResizeObserver(cols).observe(host);
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

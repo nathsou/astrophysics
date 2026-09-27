@@ -176,13 +176,14 @@ export default defineSim({
     });
     panel.slider('Zoom', { min: 6, max: 60, value: view, log: true, step: 1, unit: 'r_s', format: (v) => String(Math.round(v)) }, (v) => { view = v; loop.invalidate(); });
     panel.slider('Speed', { min: 0.2, max: 5, value: speed, log: true }, (v) => (speed = v));
-    panel.button('Fan of photons', () => {
-      for (let i = 0; i < 12; i++) fire('photon', 20, -3.6 + i * 0.6, -1, 0);
-    });
+    const fan = () => { for (let i = 0; i < 12; i++) fire('photon', 20, -3.6 + i * 0.6, -1, 0); };
+    panel.button('Fan of photons', fan);
     panel.button('Clear', () => { shots.length = 0; last = null; loop.invalidate(); });
     const Lout = panel.readout('');
     const Eout = panel.readout('E =');
     const fateOut = panel.readout('Fate:');
+
+    fan(); // start with something to look at
 
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },

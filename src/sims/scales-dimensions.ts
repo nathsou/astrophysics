@@ -23,9 +23,13 @@ const PRESETS: { name: string; exps: Record<string, number>; note: string }[] = 
   { name: 'Free-fall time 1/√(Gρ)', exps: { G: -0.5, 'ρ': -0.5 }, note: 'For the Sun: ~1 hour. The exact free-fall time is √(3π/32) ≈ 0.54 × this.' },
   { name: 'Bohr radius ħ²/(mₑ e²/4πε₀)', exps: { 'ħ': 2, 'mₑ': -1, 'e²/4πε₀': -1 }, note: 'a₀ = 0.529 Å, exactly — no fudge factor.' },
   { name: 'Planck length √(ħG/c³)', exps: { 'ħ': 0.5, G: 0.5, c: -1.5 }, note: '1.6 × 10⁻³⁵ m.' },
-  { name: 'Chandrasekhar mass (ħc/G)^{3/2}/mₚ²', exps: { 'ħ': 1.5, c: 1.5, G: -1.5, 'mₚ': -2 }, note: '≈ 1.85 M☉. The real limit is 1.44 M☉ (Chapter 16).' },
+  { name: 'Chandrasekhar mass (ħc/G)^1.5 / mₚ²', exps: { 'ħ': 1.5, c: 1.5, G: -1.5, 'mₚ': -2 }, note: '≈ 1.85 M☉. The real limit is 1.44 M☉ (Chapter 16).' },
   { name: 'Schwarzschild radius GM/c²', exps: { G: 1, M: 1, c: -2 }, note: 'Times 2: 2.95 km for the Sun.' },
 ];
+
+// HTML rendering of each symbol (the Unicode subscripts ₚ/ₑ are missing from most fonts).
+const HTML: Record<string, string> = { 'mₚ': 'm<sub>p</sub>', 'mₑ': 'm<sub>e</sub>', 'e²/4πε₀': 'e<sup>2</sup>/4πε<sub>0</sub>', M: 'M<sub>☉</sub>', R: 'R<sub>☉</sub>', 'ρ': 'ρ<sub>☉</sub>' };
+const sym = (k: string) => HTML[k] ?? k;
 
 const SUPS = (n: number) => {
   if (n === 1) return '';
@@ -52,7 +56,7 @@ export default defineSim({
       const plus = document.createElement('button'); plus.className = 'btn'; plus.textContent = '+';
       for (const b of [minus, plus]) b.style.cssText = 'padding:0 .5em;min-width:0';
       const lab = document.createElement('span');
-      lab.style.cssText = 'flex:1;text-align:center;font-family:var(--font-mono)';
+      lab.style.cssText = 'flex:1;text-align:center;font-family:var(--font-body);font-style:italic;font-size:1.05rem;line-height:1.2';
       minus.onclick = () => { exps[q[0]] -= 0.5; update(); };
       plus.onclick = () => { exps[q[0]] += 0.5; update(); };
       d.append(minus, lab, plus);
@@ -71,12 +75,12 @@ export default defineSim({
       const parts: string[] = [];
       for (const { q, lab, d } of chips) {
         const e = exps[q[0]];
-        lab.innerHTML = `${q[0]}${e ? SUPS(e) : ''}${e ? '' : '<span style="opacity:.4">⁰</span>'}`;
+        lab.innerHTML = e ? `${sym(q[0])}${SUPS(e)}` : `<span style="opacity:.55">${sym(q[0])}</span>`;
         d.style.borderColor = e ? 'var(--accent)' : 'var(--rule)';
         if (!e) continue;
         for (let k = 0; k < 3; k++) dim[k] += e * q[3][k];
         logv += e * Math.log10(q[2]);
-        parts.push(`${q[0]}${SUPS(e)}`);
+        parts.push(`${sym(q[0])}${SUPS(e)}`);
       }
       const dimStr = ['kg', 'm', 's'].map((u, k) => (dim[k] ? `${u}${SUPS(dim[k])}` : '')).filter(Boolean).join(' ') || 'dimensionless';
       const v = Math.pow(10, logv);

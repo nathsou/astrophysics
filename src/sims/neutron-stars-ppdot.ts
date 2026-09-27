@@ -6,7 +6,7 @@
 // straight diagonal line of constant B, moving down and to the right as it ages and slows.
 
 import { defineSim, Loop, createStage } from '../lib/runtime/sim';
-import { Panel, fmt } from '../lib/ui/controls';
+import { Panel, fmt, superscript } from '../lib/ui/controls';
 import { Plot } from '../lib/ui/plot';
 import { palette, onThemeChange } from '../lib/ui/theme';
 
@@ -102,15 +102,16 @@ export default defineSim({
       plot.draw(() => {
         // death line
         plot.fn(deathLine, { color: pal.faint, dash: [2, 3] });
-        plot.text('death line (approx.)', plot.px(3), plot.py(deathLine(3)) - 6, { color: pal.faint, size: 10 });
+        plot.text('death line (approx.)', plot.px(0.07), plot.py(deathLine(0.07)) - 6, { color: pal.muted, size: 10, align: 'left' });
         // constant-B diagonals
         for (const B of [1e9, 1e11, 1e13, 1e15]) {
           plot.fn(bLine(B), { color: pal.grid, dash: [4, 3], width: 1 });
-          plot.text(`B=10${String(Math.round(Math.log10(B))).replace(/-/, '⁻')} G`, plot.px(0.0013), plot.py(bLine(B)(0.0013)) - 3, { color: pal.muted, size: 9 });
+          plot.text(`B = 10${superscript(String(Math.round(Math.log10(B))))} G`, plot.px(0.0013), plot.py(bLine(B)(0.0013)) - 3, { color: pal.muted, size: 9, align: 'left' });
         }
         // constant-age diagonals
         for (const tau of [1e3, 1e6, 1e9]) {
           plot.fn(ageLine(tau), { color: pal.grid, dash: [1, 4], width: 1 });
+          plot.text(`τ = 1 ${tau === 1e3 ? 'kyr' : tau === 1e6 ? 'Myr' : 'Gyr'}`, plot.px(14), plot.py(ageLine(tau)(14)) - 4, { color: pal.muted, size: 9, align: 'right' });
         }
         // population
         for (const p of pts) {
@@ -121,7 +122,10 @@ export default defineSim({
         if (track.length > 1) {
           plot.line(track.map((t) => t.P), track.map((t) => t.Pdot), { color: pal.accent, width: 2 });
         }
-        if (drag) plot.point(drag.P, drag.Pdot, { r: 6, color: pal.accent, stroke: pal.fg });
+        if (drag) {
+          plot.point(drag.P, drag.Pdot, { r: 6, color: pal.accent, stroke: pal.fg });
+          plot.text(evolving || track.length ? 'your pulsar' : 'your pulsar (click to move)', plot.px(drag.P), plot.py(drag.Pdot) + 16, { color: pal.accent, size: 10 });
+        }
       });
       if (drag) {
         bOut.set(`${fmt(bOf(drag.P, drag.Pdot), 3)} G`);

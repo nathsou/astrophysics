@@ -6,5 +6,8 @@ const c = CONST[Astro.props.k];
 if (!c) throw new Error(`Unknown constant ${Astro.props.k}`);
 const note = 'note' in c ? c.note : undefined;
 const val = c.value.toExponential(4).replace(/e\+?(-?)(\d+)/, (_, s, d) => ` × 10${s ? '⁻' : ''}${[...d].map((x: string) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+x]).join('')}`);
+// ASCII subscripts in symbols ("k_B", "m_p", "σ_T") are rendered as <sub>.
+const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const sym = esc(c.symbol).replace(/_(\p{L}+|\p{N}+)/u, '<sub>$1</sub>');
 ---
-<span class="const" tabindex="0">{Astro.slots.has('default') ? <slot /> : c.symbol}<span class="tip"><b>{c.symbol} = {val} {c.unit}</b><br />{c.name}{note && <><br />{note}</>}</span></span>
+<span class="const" tabindex="0">{Astro.slots.has('default') ? <slot /> : <Fragment set:html={sym} />}<span class="tip"><b><Fragment set:html={sym} /> = {val} {c.unit}</b><br />{c.name}{note && <><br />{note}</>}</span></span>

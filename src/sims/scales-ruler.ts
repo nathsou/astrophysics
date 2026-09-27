@@ -76,6 +76,9 @@ const DATA: Record<'size' | 'mass' | 'time', { unit: string; items: Item[] }> = 
   ] },
 };
 
+// the greedy label stacking below assumes each list is sorted by value
+for (const d of Object.values(DATA)) d.items.sort((a, b) => a[0] - b[0]);
+
 export default defineSim({
   mount({ host, params }) {
     let pal = palette();
@@ -119,10 +122,13 @@ export default defineSim({
         const x = X(Math.log10(it[0]));
         if (x < -100 || x > W + 10) return;
         const tw = ctx.measureText(it[1]).width + 8;
+        // labels near the right edge hang to the left of their tick instead of being clipped
+        const flip = x + tw > W - 4;
+        const start = flip ? x - tw : x;
         let row = 0;
-        while (row < rows.length && rows[row] > x) row++;
+        while (row < rows.length && rows[row] > start) row++;
         if (row > 7) return;
-        rows[row] = x + tw;
+        rows[row] = flip ? x + 4 : x + tw;
         const y = y0 - 16 - row * 20;
         const col = i === hover ? pal.accent : pal.series[i % 5];
         ctx.strokeStyle = col; ctx.globalAlpha = 0.5;
@@ -131,7 +137,8 @@ export default defineSim({
         ctx.fillStyle = col;
         ctx.beginPath(); ctx.arc(x, y0, i === hover ? 4.5 : 3, 0, 7); ctx.fill();
         ctx.fillStyle = i === hover ? pal.accent : pal.fg;
-        ctx.fillText(it[1], x + 3, y);
+        ctx.textAlign = flip ? 'right' : 'left';
+        ctx.fillText(it[1], flip ? x - 3 : x + 3, y);
       });
       if (hover >= 0) {
         const it = items[hover];

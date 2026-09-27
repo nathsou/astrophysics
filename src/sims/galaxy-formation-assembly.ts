@@ -32,6 +32,7 @@ export default defineSim({
   async mount({ host, params, onDestroy }) {
     const device = await requireDevice();
     const stage = createStage(host, { aspect: 16 / 9 });
+    if (host.clientWidth < 560) stage.el.style.aspectRatio = '1'; // taller on phones
     stage.el.style.background = '#030409';
     const { ctx, format } = configureCanvas(stage.canvas, device);
 
@@ -287,6 +288,7 @@ export default defineSim({
         restart: () => build(),
       };
     }
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (vis) => loop.setVisible(vis), destroy: destroyAll };
   },
 });

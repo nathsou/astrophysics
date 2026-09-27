@@ -11,6 +11,7 @@ export default defineSim({
   mount({ host }) {
     let pal = palette();
     const stage = createStage(host, { aspect: 16 / 10 });
+    if (host.clientWidth < 560) stage.el.style.aspectRatio = '1.1'; // taller on phones
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
     const plot = new Plot(stage.canvas, {
@@ -49,13 +50,30 @@ export default defineSim({
         plot.line(as, rhoR, { color: pal.series[2] });
         plot.line(as, rhoM, { color: pal.series[0] });
         plot.line(as, rhoL, { color: pal.series[1] });
-        plot.vline(1, { color: pal.muted, label: 'today' });
-        if (aEq > plot.o.x.min) plot.vline(aEq, { color: pal.faint, label: `a_eq=${fmt(aEq, 2)}` });
-        if (Number.isFinite(aML) && aML > plot.o.x.min && aML < plot.o.x.max) plot.vline(aML, { color: pal.faint, label: `a≈${fmt(aML, 2)}` });
-
-        plot.text('radiation ∝ a⁻⁴', plot.px(1e-5), plot.py(p.Or / (1e-5) ** 4) - 6, { color: pal.series[2] });
-        plot.text('matter ∝ a⁻³', plot.px(1e-4), plot.py(p.Om / (1e-4) ** 3) - 6, { color: pal.series[0] });
-        plot.text('Λ (const)', plot.px(1e-5), plot.py(p.OL) + 14, { color: pal.series[1] });
+        plot.vline(1, { color: pal.muted });
+        plot.text('today', plot.px(1) + 4, plot.m.t + 12, { color: pal.muted });
+        if (aEq > plot.o.x.min) {
+          plot.vline(aEq, { color: pal.faint });
+          plot.text(`a_eq ≈ ${fmt(aEq, 2)}`, plot.px(aEq) + 4, plot.m.t + 12, { color: pal.muted });
+        }
+        if (Number.isFinite(aML) && aML > plot.o.x.min && aML < plot.o.x.max) {
+          plot.vline(aML, { color: pal.faint });
+          plot.text(`a ≈ ${fmt(aML, 2)}`, plot.px(aML) - 4, plot.m.t + 12, { color: pal.muted, align: 'right' });
+        }
+        // line labels, placed where each line crosses a chosen density so they stay on screen
+        const at = (rho: number, O: number, n: number) => (O / rho) ** (1 / n);
+        const aR = at(1e-5, p.Or, 4), aM = at(1e4, p.Om, 3);
+        plot.text('radiation ∝ a⁻⁴', plot.px(aR) + 8, plot.py(1e-5), { color: pal.series[2] });
+        plot.text('matter ∝ a⁻³', plot.px(aM) + 8, plot.py(1e4), { color: pal.series[0] });
+        plot.text('Λ (constant)', plot.px(1e-5), plot.py(p.OL) - 6, { color: pal.series[1] });
+        // era names along the bottom
+        const era = (a0: number, a1: number, name: string) => {
+          const x0 = plot.px(Math.max(a0, plot.o.x.min)), x1 = plot.px(Math.min(a1, plot.o.x.max));
+          if (x1 - x0 > 60) plot.text(name, (x0 + x1) / 2, plot.m.t + plot.ph - 8, { color: pal.muted, align: 'center' });
+        };
+        era(plot.o.x.min, aEq, 'radiation era');
+        era(aEq, aML, 'matter era');
+        era(aML, plot.o.x.max, 'Λ era');
       });
       eqOut.set(`a_eq = ${fmt(aEq, 4)}  (z_eq ≈ ${fmt(1 / aEq - 1, 4)})`);
       mlOut.set(Number.isFinite(aML) ? `a ≈ ${fmt(aML, 3)}  (z ≈ ${fmt(1 / aML - 1, 3)})` : 'never (ΩΛ = 0)');
@@ -67,6 +85,7 @@ export default defineSim({
     const eqOut = panel.readout('Matter–radiation equality');
     const mlOut = panel.readout('Matter–Λ equality');
 
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

@@ -26,9 +26,8 @@ export default defineSim({
     const stage = createStage(host, { aspect: 16 / 9 });
     const plot = new Plot(stage.canvas, {
       x: { min: 0.1, max: 60, log: true, label: 'M / M☉' },
-      y: { min: 1e-4, max: 3e11, log: true, label: 't (yr)' },
+      y: { min: 3e-6, max: 3e11, log: true, label: 't (yr)' },
     });
-    stage.onResize((w, h, dpr) => { plot.resize(w, h, dpr); draw(); });
     let pal = palette();
     onThemeChange(() => { pal = palette(); draw(); });
 
@@ -58,13 +57,13 @@ export default defineSim({
         plot.point(M, t.tDyn, { color: pal.series[0] });
         plot.point(M, t.tKH, { color: pal.series[1] });
         plot.point(M, t.tNuc, { color: pal.series[2] });
-        plot.text('t_dyn', plot.w - 60, plot.py(timescales(50).tDyn), { color: pal.series[0], size: 10 });
-        plot.text('t_KH', plot.w - 60, plot.py(timescales(50).tKH), { color: pal.series[1], size: 10 });
-        plot.text('t_nuc', plot.w - 60, plot.py(timescales(50).tNuc), { color: pal.series[2], size: 10 });
+        plot.text('t_dyn', plot.w - 60, plot.py(timescales(50).tDyn) - 8, { color: pal.series[0], size: 10 });
+        plot.text('t_KH', plot.w - 60, plot.py(timescales(50).tKH) - 8, { color: pal.series[1], size: 10 });
+        plot.text('t_nuc', plot.w - 60, plot.py(timescales(50).tNuc) - 8, { color: pal.series[2], size: 10 });
       });
     }
 
-    draw();
+    stage.onResize((w, h, dpr) => { plot.resize(w, h, dpr); draw(); });
     return { setVisible() {}, destroy() {} };
   },
 });

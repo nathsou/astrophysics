@@ -10,7 +10,7 @@ import { G_ASTRO } from './milky-way/mass-models';
 const MPC_TO_KPC = 1000;
 
 export default defineSim({
-  mount({ host }) {
+  mount({ host, onDestroy }) {
     let pal = palette();
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
@@ -20,6 +20,15 @@ export default defineSim({
     const clusterStage = createStage(wrap, { aspect: 1 });
     const histStage = createStage(wrap, { aspect: 1.2 });
     clusterStage.el.style.borderRight = '1px solid var(--rule)';
+    // side by side on wide screens, stacked on phones
+    const stackRO = new ResizeObserver(() => {
+      const narrow = wrap.clientWidth < 560;
+      wrap.style.gridTemplateColumns = narrow ? 'minmax(0,1fr)' : 'minmax(0,1fr) minmax(0,1.1fr)';
+      clusterStage.el.style.borderRight = narrow ? '' : '1px solid var(--rule)';
+      clusterStage.el.style.borderBottom = narrow ? '1px solid var(--rule)' : '';
+    });
+    stackRO.observe(wrap);
+    onDestroy(() => stackRO.disconnect());
     const cctx = clusterStage.canvas.getContext('2d')!;
 
     let sigma = 1000; // km/s, line-of-sight velocity dispersion
@@ -52,6 +61,8 @@ export default defineSim({
 
     const loop = new Loop(null, render, 1 / 30);
 
+    loop.onDemand = true;
+
     function render() {
       const { width: W, height: H, dpr } = clusterStage;
       cctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -63,12 +74,15 @@ export default defineSim({
       for (let i = 0; i < NG; i++) {
         const x = cx + gx[i] * scale, y = cy + gy[i] * scale;
         const t = Math.max(0, Math.min(1, (gv[i] + 3) / 6));
-        cctx.fillStyle = `hsl(${(1 - t) * 220 + t * 0} 75% 55%)`;
+        // diverging colour map: blue (approaching) → grey (systemic) → red (receding)
+        const [c0, c1] = t < 0.5 ? [[80, 145, 255], [165, 165, 170]] : [[165, 165, 170], [255, 95, 75]];
+        const f = t < 0.5 ? t * 2 : t * 2 - 1;
+        cctx.fillStyle = `rgb(${c0.map((a, k) => Math.round(a + (c1[k] - a) * f)).join(',')})`;
         cctx.beginPath(); cctx.arc(x, y, 4, 0, 2 * Math.PI); cctx.fill();
       }
       cctx.fillStyle = pal.muted;
       cctx.font = '11px Inter, system-ui, sans-serif';
-      cctx.fillText(`${NG} galaxies · colour = line-of-sight velocity`, 10, H - 12);
+      cctx.fillText(`${NG} galaxies · blue approaching, red receding`, 10, H - 12);
       cctx.fillText(`R ≈ ${fmt(Rmpc, 2)} Mpc`, 10, 18);
 
       plot.resize(histStage.width, histStage.height, histStage.dpr);
@@ -93,8 +107,8 @@ export default defineSim({
 
       const Mvir = virialMass();
       const Mlight = NG * Lgalaxy;
-      mvirOut.set(`${fmt(Mvir / 1e14, 3)} ×10¹⁴ M☉`);
-      mlightOut.set(`${fmt(Mlight / 1e13, 3)} ×10¹³ M☉`);
+      mvirOut.set(`${fmt(Mvir, 3)} M☉`);
+      mlightOut.set(`${fmt(Mlight, 3)} M☉`);
       ratioOut.set(`${fmt(Mvir / Mlight, 3)}×`);
     }
 

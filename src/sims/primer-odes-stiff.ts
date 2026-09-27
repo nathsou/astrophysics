@@ -3,6 +3,7 @@
 // Euler is stable for every h. Right panel: the amplification factor per step, |g(hλ)|, for both.
 
 import { defineSim, Loop, createStage } from '../lib/runtime/sim';
+import { stackWhenNarrow } from './primer-common/stack';
 import { Panel, fmt } from '../lib/ui/controls';
 import { Plot } from '../lib/ui/plot';
 import { palette, onThemeChange } from '../lib/ui/theme';
@@ -26,7 +27,7 @@ function backdrop(ctx: CanvasRenderingContext2D, bg: string, x: number, y: numbe
 }
 
 export default defineSim({
-  mount({ host }) {
+  mount({ host, onDestroy }) {
     let pal = palette();
     let lam = 50;
     let h = 0.03;
@@ -37,6 +38,7 @@ export default defineSim({
     host.append(wrap);
     const left = createStage(wrap, { aspect: 1.45 });
     const right = createStage(wrap, { aspect: 0.9 });
+    stackWhenNarrow(host, wrap, 'minmax(0,1.6fr) minmax(0,1fr)', [[left, 1.45, 1.45], [right, 0.9, 1.4]], onDestroy);
     left.el.style.borderRight = '1px solid var(--rule)';
     const main = new Plot(left.canvas, { x: { min: 0, max: T_END, label: 'time t' }, y: { min: -2, max: 2, label: 'y' }, title: 'y′ = −λ (y − cos t)' });
     const amp = new Plot(right.canvas, {
@@ -46,6 +48,7 @@ export default defineSim({
       margin: { l: 50, r: 10, t: 28, b: 42 },
     });
     const loop = new Loop(null, render);
+    loop.onDemand = true;
 
     function run(kind: 'explicit' | 'implicit' | 'rk4') {
       const n = Math.ceil(T_END / h);

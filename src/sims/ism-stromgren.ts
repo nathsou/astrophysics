@@ -25,7 +25,8 @@ export default defineSim({
     let pal = palette();
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
-    const stage = createStage(host, { aspect: 16 / 9 });
+    const narrow = host.getBoundingClientRect().width < 560; // phones: stack the panels / taller plots
+    const stage = createStage(host, { aspect: narrow ? 1 : 16 / 9 });
     const ctx = stage.canvas.getContext('2d')!;
 
     let star: (typeof STARS)[number] = STARS[0];
@@ -77,8 +78,14 @@ export default defineSim({
         ctx.setLineDash([4, 4]);
         ctx.beginPath(); ctx.arc(cx, cy, orionR * scale, 0, Math.PI * 2); ctx.stroke();
         ctx.setLineDash([]);
-        ctx.fillStyle = pal.faint;
-        ctx.fillText('Orion Nebula (≈1.2 pc)', Math.min(cx + orionR * scale + 6, W - 130), cy);
+        // label on a short leader line, up and to the right, so it stays legible over the glow
+        const ex = cx + orionR * scale * 0.71, ey = cy - orionR * scale * 0.71;
+        const lx = Math.min(ex + 26, W - 150), ly = ey - 22;
+        ctx.strokeStyle = pal.muted; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(lx, ly); ctx.stroke();
+        ctx.fillStyle = pal.fg;
+        ctx.textAlign = 'left';
+        ctx.fillText('Orion Nebula (≈1.2 pc)', lx + 4, ly - 2);
       }
 
       ctx.textAlign = 'right';

@@ -77,6 +77,7 @@ export default defineSim({
     const panel = new Panel(host);
     panel.select<M>('Lens', [{ value: 'point', label: 'Point mass' }, { value: 'sis', label: 'Singular isothermal sphere' }], model, (v) => { model = v; loop.invalidate(); });
     const ro = panel.readout('Images:');
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

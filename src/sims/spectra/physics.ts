@@ -122,7 +122,8 @@ export interface LineDef {
   dE_eV: number; // excitation of the lower level above the ground state of that stage
   gLower: number;
   maxDepth: number; // hand-tuned ceiling on line depth (curated, see <Hood>)
-  gamma: number; // saturation softness exponent
+  gamma: number; // saturation softness exponent (molecular bands only)
+  k?: number; // opacity scale: optical depth τ = k × abundance × stage fraction × Boltzmann fraction
 }
 
 // Balmer series lower level is n=2: dE = 13.6*(1 - 1/4) = 10.2 eV, g(n=2) = 2n^2 = 8.
@@ -130,27 +131,27 @@ const H_N2_DE = RY_EV * (1 - 1 / 4); // 10.2 eV above the ground state
 const H_N2_G = 8;
 
 export const LINES: LineDef[] = [
-  { id: 'Ha', label: 'Hα', species: 'H', category: 'H', nm: 656.28, stage: 0, dE_eV: H_N2_DE, gLower: H_N2_G, maxDepth: 0.75, gamma: 0.55 },
-  { id: 'Hb', label: 'Hβ', species: 'H', category: 'H', nm: 486.13, stage: 0, dE_eV: H_N2_DE, gLower: H_N2_G, maxDepth: 0.7, gamma: 0.55 },
-  { id: 'Hg', label: 'Hγ', species: 'H', category: 'H', nm: 434.05, stage: 0, dE_eV: H_N2_DE, gLower: H_N2_G, maxDepth: 0.6, gamma: 0.55 },
-  { id: 'Hd', label: 'Hδ', species: 'H', category: 'H', nm: 410.17, stage: 0, dE_eV: H_N2_DE, gLower: H_N2_G, maxDepth: 0.5, gamma: 0.55 },
-  { id: 'HeI', label: 'He I', species: 'He', category: 'He', nm: 587.6, stage: 0, dE_eV: 20.6, gLower: 3, maxDepth: 0.4, gamma: 0.6 },
-  { id: 'HeII', label: 'He II', species: 'He', category: 'He', nm: 468.6, stage: 1, dE_eV: 48.4, gLower: 32, maxDepth: 0.3, gamma: 0.6 },
-  { id: 'CaK', label: 'Ca II K', species: 'Ca', category: 'metal', nm: 393.37, stage: 1, dE_eV: 0, gLower: 2, maxDepth: 0.9, gamma: 0.4 },
-  { id: 'CaH', label: 'Ca II H', species: 'Ca', category: 'metal', nm: 396.85, stage: 1, dE_eV: 0, gLower: 2, maxDepth: 0.85, gamma: 0.4 },
-  { id: 'NaD2', label: 'Na D₂', species: 'Na', category: 'metal', nm: 589.0, stage: 0, dE_eV: 0, gLower: 2, maxDepth: 0.55, gamma: 0.45 },
-  { id: 'NaD1', label: 'Na D₁', species: 'Na', category: 'metal', nm: 589.6, stage: 0, dE_eV: 0, gLower: 2, maxDepth: 0.5, gamma: 0.45 },
-  { id: 'Mgb', label: 'Mg b', species: 'Mg', category: 'metal', nm: 517.3, stage: 0, dE_eV: 2.71, gLower: 5, maxDepth: 0.45, gamma: 0.5 },
-  { id: 'FeI', label: 'Fe I (blend)', species: 'Fe', category: 'metal', nm: 527.0, stage: 0, dE_eV: 0.05, gLower: 9, maxDepth: 0.35, gamma: 0.4 },
+  { id: 'Ha', label: 'Hα', species: 'H', category: 'H', nm: 656.28, stage: 0, dE_eV: H_N2_DE, gLower: H_N2_G, maxDepth: 0.75, gamma: 0.55, k: 6e+07 },
+  { id: 'Hb', label: 'Hβ', species: 'H', category: 'H', nm: 486.13, stage: 0, dE_eV: H_N2_DE, gLower: H_N2_G, maxDepth: 0.7, gamma: 0.55, k: 3e+07 },
+  { id: 'Hg', label: 'Hγ', species: 'H', category: 'H', nm: 434.05, stage: 0, dE_eV: H_N2_DE, gLower: H_N2_G, maxDepth: 0.6, gamma: 0.55, k: 1.5e+07 },
+  { id: 'Hd', label: 'Hδ', species: 'H', category: 'H', nm: 410.17, stage: 0, dE_eV: H_N2_DE, gLower: H_N2_G, maxDepth: 0.5, gamma: 0.55, k: 1e+07 },
+  { id: 'HeI', label: 'He I', species: 'He', category: 'He', nm: 587.6, stage: 0, dE_eV: 20.6, gLower: 3, maxDepth: 0.4, gamma: 0.6, k: 3e+09 },
+  { id: 'HeII', label: 'He II', species: 'He', category: 'He', nm: 468.6, stage: 1, dE_eV: 48.4, gLower: 32, maxDepth: 0.3, gamma: 0.6, k: 4e+08 },
+  { id: 'CaK', label: 'Ca II K', species: 'Ca', category: 'metal', nm: 393.37, stage: 1, dE_eV: 0, gLower: 2, maxDepth: 0.9, gamma: 0.4, k: 2e+07 },
+  { id: 'CaH', label: 'Ca II H', species: 'Ca', category: 'metal', nm: 396.85, stage: 1, dE_eV: 0, gLower: 2, maxDepth: 0.85, gamma: 0.4, k: 2e+07 },
+  { id: 'NaD2', label: 'Na D₂', species: 'Na', category: 'metal', nm: 589.0, stage: 0, dE_eV: 0, gLower: 2, maxDepth: 0.55, gamma: 0.45, k: 1.5e+11 },
+  { id: 'NaD1', label: 'Na D₁', species: 'Na', category: 'metal', nm: 589.6, stage: 0, dE_eV: 0, gLower: 2, maxDepth: 0.5, gamma: 0.45, k: 1.5e+11 },
+  { id: 'Mgb', label: 'Mg b', species: 'Mg', category: 'metal', nm: 517.3, stage: 0, dE_eV: 2.71, gLower: 5, maxDepth: 0.45, gamma: 0.5, k: 1.5e+10 },
+  { id: 'FeI', label: 'Fe I (blend)', species: 'Fe', category: 'metal', nm: 527.0, stage: 0, dE_eV: 0.05, gLower: 9, maxDepth: 0.35, gamma: 0.4, k: 5e+08 },
   { id: 'TiO1', label: 'TiO band', species: 'TiO', category: 'molecule', nm: 495, stage: 0, dE_eV: 0, gLower: 1, maxDepth: 0.85, gamma: 1 },
   { id: 'TiO2', label: 'TiO band', species: 'TiO', category: 'molecule', nm: 620, stage: 0, dE_eV: 0, gLower: 1, maxDepth: 0.8, gamma: 1 },
   { id: 'TiO3', label: 'TiO band', species: 'TiO', category: 'molecule', nm: 715, stage: 0, dE_eV: 0, gLower: 1, maxDepth: 0.75, gamma: 1 },
   { id: 'GBand', label: 'G-band (CH)', species: 'CH', category: 'molecule', nm: 430.5, stage: 0, dE_eV: 0, gLower: 1, maxDepth: 0.5, gamma: 1 },
 ];
 
-/** Line strength in [0,1): population fraction of the lower level in its ionisation stage, saturated. */
+/** Population of the line's lower level per H atom: abundance × Saha stage fraction × Boltzmann fraction. */
 export function lineStrength(line: LineDef, T: number, ne_m3: number): number {
-  if (line.species === 'TiO') return molecularBandStrength(T, 4200, 550);
+  if (line.species === 'TiO') return molecularBandStrength(T, 4200, 300); // TiO survives only below ~4500 K (K5–M)
   if (line.species === 'CH') return molecularBandStrength(T, 6300, 700) * molecularCoolCutoff(T);
   const sp = SPECIES[line.species];
   const fracStage = stageFractions(sp.chi_eV, sp.g, T, ne_m3)[line.stage];
@@ -158,7 +159,12 @@ export function lineStrength(line: LineDef, T: number, ne_m3: number): number {
   // Two-level Boltzmann fraction of the lower level within its stage (bounded, see <Hood>).
   const boltz = line.dE_eV === 0 ? 1 : boltzmannRatio(gGroundOfStage, line.gLower, line.dE_eV, T) /
     (1 + boltzmannRatio(gGroundOfStage, line.gLower, line.dE_eV, T));
-  return sp.abundance > 0 ? fracStage * boltz * Math.min(1, sp.abundance * 5e5) : fracStage * boltz;
+  return sp.abundance * fracStage * boltz;
+}
+
+/** Line-centre optical depth: the lower-level population times a curated opacity scale `k`. */
+export function lineTau(line: LineDef, T: number, ne_m3: number): number {
+  return (line.k ?? 0) * lineStrength(line, T, ne_m3);
 }
 
 // TiO/CH molecular bands: empirical logistic cutoffs (no molecular-equilibrium solve here).
@@ -170,10 +176,15 @@ function molecularCoolCutoff(T: number): number {
   return 1 / (1 + Math.exp((3200 - T) / 250));
 }
 
-/** Depth (0..1, fraction of continuum removed at line centre) with a soft saturation curve. */
+/**
+ * Depth (0..1, fraction of continuum removed at line centre). Atomic lines use a crude curve of
+ * growth, depth = maxDepth · τ/(1+τ): linear in the population while weak, saturating once the
+ * line centre is opaque. Molecular bands use an empirical logistic strength with a soft power.
+ */
 export function lineDepth(line: LineDef, T: number, ne_m3: number): number {
-  const s = lineStrength(line, T, ne_m3);
-  return line.maxDepth * Math.pow(Math.min(1, Math.max(0, s)), line.gamma);
+  if (line.category === 'molecule') return line.maxDepth * Math.pow(Math.min(1, Math.max(0, lineStrength(line, T, ne_m3))), line.gamma);
+  const tau = lineTau(line, T, ne_m3);
+  return line.maxDepth * (tau / (1 + tau));
 }
 
 // ---------------------------------------------------------------------------
@@ -228,14 +239,18 @@ export const SPECTRAL_SEQUENCE: SpectralClass[] = [
   { letter: 'M', color: '#ffb56c', Tmax: 3700 },
   { letter: 'L/T/Y', color: '#ff8c5a', Tmax: 2400 },
 ];
-export function spectralType(T: number): string {
-  for (let i = 0; i < SPECTRAL_SEQUENCE.length; i++) if (T >= SPECTRAL_SEQUENCE[i].Tmax) return SPECTRAL_SEQUENCE[i].letter;
-  return SPECTRAL_SEQUENCE[SPECTRAL_SEQUENCE.length - 1].letter;
+/** Index of the class whose range [Tmax of the next class, own Tmax) contains T. */
+function classIndex(T: number): number {
+  const i = SPECTRAL_SEQUENCE.findIndex((s) => T >= s.Tmax); // first class entirely cooler than T
+  if (i === 0) return 0; // hotter than every bound: O
+  return i < 0 ? SPECTRAL_SEQUENCE.length - 1 : i - 1;
 }
-/** Rough numeric sub-type 0-9 within a class, for labels like "G2". */
+export function spectralType(T: number): string {
+  return SPECTRAL_SEQUENCE[classIndex(T)].letter;
+}
+/** Rough numeric sub-type 0-9 within a class (0 = hottest), for labels like "G2". */
 export function spectralSubtype(T: number): { letter: string; sub: number } {
-  const idx = SPECTRAL_SEQUENCE.findIndex((s) => T >= s.Tmax);
-  const i = idx < 0 ? SPECTRAL_SEQUENCE.length - 1 : idx;
+  const i = classIndex(T);
   const hi = SPECTRAL_SEQUENCE[i].Tmax;
   const lo = i + 1 < SPECTRAL_SEQUENCE.length ? SPECTRAL_SEQUENCE[i + 1].Tmax : hi * 0.5;
   const sub = Math.round(9 * (1 - (T - lo) / (hi - lo)));

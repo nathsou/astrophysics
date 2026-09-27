@@ -104,20 +104,22 @@ fn source(b: vec2f) -> vec3f {
     outc = mix(outc, hue * (0.15 + 0.85 * lm), 0.6);
   }
   if (U.f.x > 0.5) { // critical curves: det A = 0, drawn with a screen-space-width line
-    let line = 1.0 - smoothstep(0.6, 1.6, abs(det) / fw);
-    outc = mix(outc, vec3f(1.0, 0.35, 0.35), line);
+    let line = 1.0 - smoothstep(0.35, 1.25, abs(det) / fw);
+    outc = mix(outc, vec3f(1.0, 0.38, 0.38), 0.85 * line);
   }
   if (U.f.y > 0.5) { // caustics splatted by the compute pass
     let W = i32(U.g.x); let H = i32(U.g.y);
     let p = vec2i(fc.xy);
     var m = 0u;
-    for (var dy = -1; dy <= 1; dy++) {
-      for (var dx = -1; dx <= 1; dx++) {
-        let q = clamp(p + vec2i(dx, dy), vec2i(0), vec2i(W - 1, H - 1));
-        m = max(m, caustic[q.y * W + q.x]);
-      }
+    // centre pixel at full strength, its 4 neighbours at half: a ~2 px antialiased line
+    let c0 = caustic[clamp(p.y, 0, H - 1) * W + clamp(p.x, 0, W - 1)];
+    for (var k = 0; k < 4; k++) {
+      let d = select(select(vec2i(0, -1), vec2i(0, 1), k == 1), select(vec2i(-1, 0), vec2i(1, 0), k == 3), k >= 2);
+      let q = clamp(p + d, vec2i(0), vec2i(W - 1, H - 1));
+      m = max(m, caustic[q.y * W + q.x]);
     }
-    if (m > 0u) { outc = mix(outc, vec3f(0.35, 1.0, 0.6), 0.9); }
+    let cw = select(select(0.0, 0.45, m > 0u), 0.85, c0 > 0u);
+    outc = mix(outc, vec3f(0.35, 1.0, 0.6), cw);
   }
   return vec4f(outc, 1.0);
 }

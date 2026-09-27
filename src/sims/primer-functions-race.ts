@@ -66,8 +66,11 @@ export default defineSim({
         if (!logY || pw(x) > 0) plot.point(x, Math.max(pw(x), logY ? 0.1 : 0), { color: pal.series[1], r: 5 });
         plot.point(x, ex(x), { color: pal.series[2], r: 5 });
       });
-      plot.text(`x${n === 1 ? '' : sup(n)}`, plot.m.l + 10, plot.m.t + 14, { color: pal.series[1], size: 13 });
-      plot.text(`${fmt(b, 3)}ˣ`, plot.m.l + 10, plot.m.t + 32, { color: pal.series[2], size: 13 });
+      // Legend in the bottom-right corner, which both curves leave empty in either view (and clear of
+      // the crossover labels along the top).
+      const lx = plot.m.l + plot.pw - 10, ly = plot.m.t + plot.ph - 34;
+      plot.text(`power law  x${n === 1 ? '' : sup(n)}`, lx, ly, { color: pal.series[1], size: 13, align: 'right' });
+      plot.text(`exponential  ${fmt(b, 3)}ˣ`, lx, ly + 18, { color: pal.series[2], size: 13, align: 'right' });
       const P = pw(x), E = ex(x);
       rX.set(`x = ${fmt(x, 3)}`);
       rP.set(fmt(P, 3));

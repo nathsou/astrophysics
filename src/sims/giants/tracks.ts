@@ -151,6 +151,22 @@ export interface EvolState extends PhasePoint {
  * true elapsed age (which is highly non-uniform in s: the main sequence alone consumes
  * a huge fraction of the real years but only 1/7 of the slider).
  */
+/**
+ * Position along a phase. The low-mass 'final' phase is not a straight line in the HR diagram:
+ * the post-AGB star first crosses to the left at nearly constant L (the envelope is stripped and
+ * hotter layers are exposed), then the hot remnant fades down the white-dwarf cooling track.
+ */
+function along(spec: PhaseSpec, frac: number, mass: number): { logL: number; logT: number } {
+  if (spec.id === 'final' && mass < 8) {
+    const knee = { logL: spec.start.logL, logT: 5.05 };
+    const k = 0.6; // fraction of the phase spent on the horizontal crossing (schematic)
+    if (frac < k) return { logL: knee.logL, logT: lerp(spec.start.logT, knee.logT, frac / k) };
+    const f = (frac - k) / (1 - k);
+    return { logL: lerp(knee.logL, spec.end.logL, f), logT: lerp(knee.logT, spec.end.logT, f) };
+  }
+  return { logL: lerp(spec.start.logL, spec.end.logL, frac), logT: lerp(spec.start.logT, spec.end.logT, frac) };
+}
+
 export function stateAt(mass: number, s: number): EvolState {
   const phases = trackForMass(mass);
   const n = phases.length;
@@ -161,12 +177,13 @@ export function stateAt(mass: number, s: number): EvolState {
   let age = 0;
   for (let i = 0; i < idx; i++) age += phases[i].duration;
   age += spec.duration * frac;
+  const pos = along(spec, frac, mass);
   return {
     phase: spec.id,
     phaseFrac: frac,
     age,
-    logL: lerp(spec.start.logL, spec.end.logL, frac),
-    logT: lerp(spec.start.logT, spec.end.logT, frac),
+    logL: pos.logL,
+    logT: pos.logT,
     R: lerpLog(spec.start.R, spec.end.R, frac),
     Mcore: lerp(spec.start.Mcore, spec.end.Mcore, frac),
   };
@@ -186,10 +203,9 @@ export function hrCurve(mass: number, samplesPerPhase = 24): { logT: number; log
   const phases = trackForMass(mass);
   const pts: { logT: number; logL: number }[] = [];
   for (const p of phases) {
-    for (let i = 0; i <= samplesPerPhase; i++) {
-      const f = i / samplesPerPhase;
-      pts.push({ logT: lerp(p.start.logT, p.end.logT, f), logL: lerp(p.start.logL, p.end.logL, f) });
-    }
+    // a supernova is not a place on the HR diagram: stop the massive-star curve at core collapse
+    if (p.id === 'final' && mass >= 8) break;
+    for (let i = 0; i <= samplesPerPhase; i++) pts.push(along(p, i / samplesPerPhase, mass));
   }
   return pts;
 }

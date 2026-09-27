@@ -81,14 +81,14 @@ $$
 </KeyEq>
 
 The two coefficients aren't independent: the tidal field is (minus) the gradient of a potential, $\vec a_\text{tidal} = -\nabla \Phi_\text{tidal}$, with $\Phi_\text{tidal}(\vec r) = -\frac{GM}{d^3}\left(r_\parallel^2 - \tfrac12 r_\perp^2\right)$, and $\nabla^2\Phi_\text{tidal}=0$ away from any mass. A traceless, harmonic quadrupole is the generic leading-order shape of *any* differential force field — the same mathematics reappears for gravitational-wave strain in [Chapter 20](/ch/gravitational-waves/).
+
+Because the field stretches along the axis and compresses transverse to it **on both sides**, a deformable body raised by tides grows **two** bulges — one facing the perturber, one facing away — not one. This is the single most common tidal misconception to clear up early: the far bulge is not "left behind" or "flung out"; it is pulled *up* by the same physics as the near bulge, just because the far side is pulled toward the perturber *less* than the centre is.
 </Fragment>
 </Tiers>
 
 <Level min={3} title="Deriving the factor of 2">
 Along the axis, $g(d-r) - g(d) \approx \frac{d}{dr}\!\left[-\frac{GM}{(d-r)^2}\right]_{r=0} \cdot (-r)$… work through the sign and you get $+2GMr/d^3$ pointing *away* from the centre on both the near and far side. Perpendicular to the axis, geometry (the two lines from the perturber to $\pm r_\perp$ converge slightly) gives the compressive $-GMr/d^3$. The two are related by $\nabla\!\cdot\!\vec a_\text{tidal}=0$ in vacuum (Laplace's equation for the potential), so stretching one way must compress the other by exactly half.
 </Level>
-
-Because the field stretches along the axis and compresses transverse to it **on both sides**, a deformable body raised by tides grows **two** bulges — one facing the perturber, one facing away — not one. This is the single most common tidal misconception to clear up early: the far bulge is not "left behind" or "flung out"; it is pulled *up* by the same physics as the near bulge, just because the far side is pulled toward the perturber *less* than the centre is.
 
 <Sim name="tides-field" minHeight={420} params={{ distance: '3' }}>
 **The tidal field around a body.** Arrows show the differential acceleration relative to the body's centre — note the two bulge directions (toward and away from the perturber) and the compression at 90°. Drag the perturber, or use the sliders, and watch the arrows shrink as $1/d^3$: pull the perturber twice as far away and the field drops by a factor of eight.
@@ -110,7 +110,7 @@ $$
 
 <Aside>**Numbers.** $M_\odot/M_\text{Moon}\approx 2.7\times10^7$; the Sun is about 390× farther than the Moon, and $390^3 \approx 5.9\times10^7$. The ratio of these two huge numbers lands close to $1/2$ — a coincidence of the current era, since the Moon is slowly receding (more below).</Aside>
 
-So solar tides are about **46% as strong** as lunar tides, despite the Sun's overwhelming mass. When the Sun and Moon pull along the same line (new and full Moon), their bulges add: **spring tides**, roughly $1+0.46\approx 1.46\times$ the lunar-only range. When they pull at right angles (quarter Moon), the Sun's stretch partially fills in the Moon's compression: **neap tides**, roughly $1-0.46\approx 0.54\times$. The spring/neap ratio of about **2.2 : 1** better known to sailors than to astronomers is a direct, checkable consequence of the $1/d^3$ law and the specific numbers above.
+So solar tides are about **46% as strong** as lunar tides, despite the Sun's overwhelming mass. When the Sun and Moon pull along the same line (new and full Moon), their bulges add: **spring tides**, roughly $1+0.46\approx 1.46\times$ the lunar-only range. When they pull at right angles (quarter Moon), the Sun's stretch partially fills in the Moon's compression: **neap tides**, roughly $1-0.46\approx 0.54\times$. The spring/neap ratio of about **2.7 : 1**, better known to sailors than to astronomers is a direct, checkable consequence of the $1/d^3$ law and the specific numbers above.
 
 <Fermi title="Why is the ratio close to 1/2, not 1/1000?">
 Naively the Sun's gravity on Earth is $\sim(M_\odot/M_\text{Moon})/(d_\odot/d_\text{Moon})^2 \approx 2.7\times10^7/1.5\times10^5 \approx 180\times$ stronger than the Moon's — which is true, and is why Earth orbits the Sun and not the Moon. But *tides* care about the gradient, which trades one more power of distance for the mass ratio: $180 \times (d_\text{Moon}/d_\odot) \approx 180 \times 0.0026 \approx 0.46$. Every extra power of $1/d$ you add to a force law suppresses distant sources relative to near ones — which is exactly why the tidal field, and not the orbital field, is dominated by whatever is *close*, regardless of mass.
@@ -131,8 +131,8 @@ $$
 
 Nearly every large moon in the solar system is tidally locked to its planet — our Moon, all the large moons of Jupiter and Saturn. Mercury is the interesting exception that proves the rule works: it is **not** in a 1:1 lock with the Sun, but a **3:2 spin–orbit resonance** — it rotates three times for every two orbits. This happens because Mercury's orbit is fairly eccentric ($e \approx 0.206$); the tidal torque, which depends on the (rapidly varying) instantaneous distance, is strongest near perihelion, and for an eccentric orbit the time-averaged torque can lock the spin at a half-integer multiple of the mean motion rather than exactly 1:1. The 3:2 state is a stable equilibrium for Mercury's eccentricity; the exact-synchronous state also exists mathematically but Mercury's early spin history landed it in the 3:2 basin instead.
 
-<Sim name="tides-spinlock" minHeight={420} params={{ e: '0.35' }}>
-**Spin–orbit locking.** An elongated body's spin (arrow) relaxes toward the local orbital angular rate via a simplified tidal torque $\propto \sin(2\,\text{lag})/r^6$. At low eccentricity it settles at 1:1; push the eccentricity up and start the spin near 1.5× the mean motion to find Mercury's 3:2 state.
+<Sim name="tides-spinlock" minHeight={420} params={{ e: '0.206' }}>
+**Spin–orbit locking.** An elongated body (the white dot marks one end of its long axis) spins on an eccentric orbit. Two torques act on it: a dissipative tidal torque, $\propto (\omega - \dot\theta)/r^6$ and so strongest at periapsis, that drags the spin toward the orbital angular rate; and the star's pull on the body's permanent bulge, $\propto \sin 2(\phi-\theta)/r^3$, which can trap it in a resonance. It starts at Mercury's eccentricity (0.206), spinning 1.7 times per orbit, and spins down until it locks into 3:2, Mercury's actual state. Drop the eccentricity below about 0.1 and it settles into 1:1 instead, facing the star like the Moon. Start it spinning fast (3× or more) and capture becomes a matter of luck: it may be caught at 2:1 or 3:2, or sail through into 1:1, just as Mercury's own capture was a roll of the dice. Both torques are exaggerated enormously, so locking takes tens of orbits rather than millions of years.
 </Sim>
 
 ## Tidal dissipation, dissected: the Earth–Moon system
@@ -140,7 +140,7 @@ Nearly every large moon in the solar system is tidally locked to its planet — 
 Locking one side (the Moon) is not the end of the story, because Earth itself is *not* locked to the Moon — Earth's day (24 h) is far shorter than the Moon's orbital period (27.3 d). Earth's spin drags its tidal bulge slightly *ahead* of the Earth–Moon line (friction takes time to relax the bulge back into alignment). That misaligned bulge pulls on the Moon with a small forward component of force — the same mechanism that would eventually lock Earth's spin to the Moon's orbit too, if the Sun doesn't disrupt things first (it will, in a few billion years, as Earth's oceans evaporate under a brightening Sun).
 
 <Sim name="tides-recession" minHeight={420}>
-**The lag angle and its torque.** Because Earth spins faster than the Moon orbits, friction drags the near bulge ahead of the Earth–Moon line by a small lag angle (real value ≈ 0.15°, exaggerated here for visibility). The bulge's gravity pulls the Moon forward — accelerating it outward — and pulls Earth's spin backward. Drag the lag-angle slider to zero to see the torque vanish.
+**The lag angle and its torque.** Because Earth spins faster than the Moon orbits, friction drags the ocean bulge ahead of the Earth–Moon line by a lag angle δ (about 3° today, the default). The near bulge's pull on the Moon then has a small forward component, drawn magnified: it speeds the Moon up so it spirals outward, while the Moon's equal and opposite pull brakes Earth's spin. The readouts scale today's measured rates by sin 2δ. Drag δ to zero and the torque vanishes; drag it up and both rates climb.
 </Sim>
 
 That forward tug does two things simultaneously, both required by conservation of angular momentum for the Earth–Moon system as a whole:
@@ -176,7 +176,7 @@ The catch: pure tidal circularisation (below) should drive $e\to 0$ quickly, whi
 **A moon caught mid-eruption.** This 1997 Galileo image shows a 140-km plume erupting from Pillan Patera on Io's bright limb (top inset), next to the smaller, long-lived Prometheus plume (bottom inset) — both powered entirely by the tidal flexing the Laplace resonance keeps pumped up, with no help from radioactive decay or a young interior the way Earth's volcanism gets its heat.
 </Photo>
 
-The same mechanism, gentler, keeps **Europa's** and possibly **Enceladus's** subsurface oceans liquid: Europa's ice shell floats on a global salt-water ocean sustained partly by tidal flexing, and Enceladus (in a resonance with Dione) vents observed plumes of water ice from its south pole, discovered by Cassini, that are direct evidence of a tidally heated subsurface ocean venting to space. Both moons are prime astrobiology targets for exactly this reason (see [Chapter 26](/ch/exoplanets/) on habitability more broadly).
+The same mechanism, gentler, keeps **Europa's** and possibly **Enceladus's** subsurface oceans liquid: Europa's ice shell floats on a global salt-water ocean sustained partly by tidal flexing, and Enceladus (in a resonance with Dione) vents observed plumes of water ice from its south pole, discovered by Cassini, that are direct evidence of a tidally heated subsurface ocean venting to space. Both moons are prime astrobiology targets for exactly this reason (see [Chapter 10](/ch/exoplanets/) on habitability more broadly).
 
 <Photo src="/img/tides/enceladus-plume.jpg" alt="Enceladus in silhouette against Saturn's dim glow, backlit by the Sun, with a tall fountain of water-ice jets erupting from the south-polar terrain" credit="NASA/JPL/Space Science Institute" license="Public domain" href="https://images.nasa.gov/details/PIA07758" aspect="4 / 3">
 **Fountains of Enceladus, 2005.** Backlit by the Sun, Cassini's cameras caught individual jets of water-ice fanning out of the south-polar "tiger stripe" fractures, hundreds of kilometres above a moon barely 500 km across. The plume material feeds Saturn's diffuse E ring — direct, visible proof that a tidally flexed interior is venting a subsurface ocean straight into space.
@@ -249,22 +249,31 @@ A single close pass inside the Roche limit doesn't have time to fully disperse a
 </Predict>
 
 <Sim name="tides-roche" size="wide" minHeight={520} params={{ periapsis: '1.0', density: '1.0' }}>
-**A rubble-pile moon near a planet.** A few thousand self-gravitating grains, with real (not linearised) planetary gravity, mutual softened gravity, and soft-sphere contacts. Push the orbit distance below 1 Roche radius and watch the pile stretch into a Shoemaker–Levy-style chain, or smear into a ring if it stays there; keep it well outside and self-gravity holds the pile together as it orbits. The density-ratio slider changes where the Roche limit itself sits.
+**A rubble-pile moon near a planet.** Two thousand self-gravitating grains, starting tidally locked on a circular orbit, with the planet's real (not linearised) gravity, softened mutual gravity and soft-sphere contacts. At the fluid Roche limit (the default) the pile stretches into an egg but holds. Drag the orbit distance to about 0.9 × Roche or closer and it tears apart: first a stretched "string of pearls", then clumps that shear out into a ring of debris, with the inner fragments raining onto the planet (grains that hit it are absorbed) and the outer ones flung onto wider orbits. The density-ratio slider moves the Roche limit itself; the two dashed circles mark the fluid and rigid limits.
 </Sim>
 
 <Hood title="the rubble-pile N-body sim">
-The flagship runs entirely on the GPU: two compute passes per half-step (accelerate, then kick-drift-kick leapfrog, exactly the scheme from [Chapter 2](/ch/orbits/)) evaluate direct $O(N^2)$ self-gravity between every pair of the few thousand grains, plus the planet's exact (not linearised) monopole pull — using the real force law rather than the tidal approximation is what lets the same code show both a gentle far-field stretch and a violent close disruption without switching models.
+The flagship runs entirely on the GPU. Each step is a kick-drift-kick leapfrog (exactly the scheme from [Chapter 2](/ch/orbits/)) built from three tiny compute passes plus one heavy one that evaluates direct $O(N^2)$ self-gravity between every pair of the few thousand grains, plus the planet's exact (not linearised) monopole pull — using the real force law rather than the tidal approximation is what lets the same code show both a gentle far-field stretch and a violent close disruption without switching models.
 
 ```wgsl
-// planet's exact gravity, plus softened pairwise self-gravity and soft-sphere contacts
+// planet's exact gravity, then softened self-gravity + soft-sphere contacts, 64 grains at a time
 var a = -pr.GMp * ri / (rp * rp * rp + 1e-6);
-for (var j = 0u; j < n; j = j + 1u) {
-  if (j == i) { continue; }
-  let d = pIn[j].pos - ri;
-  let invR3 = 1.0 / pow(dot(d, d) + pr.eps2, 1.5);   // softened: caps force at close range
-  a = a + pr.Gm * d * invR3;
-  let overlap = 2.0 * pr.grainR - length(d);
-  if (overlap > 0.0) { a = a - pr.kSpring * overlap * normalize(d); }  // crude "cohesion"
+for (var t = 0u; t < n; t = t + WG) {
+  tile[lid.x] = pIn[min(t + lid.x, n - 1u)];   // each thread loads one grain into shared memory
+  workgroupBarrier();
+  for (var k = 0u; k < min(WG, n - t); k = k + 1u) {
+    if (t + k == i) { continue; }
+    let d = tile[k].pos - ri;
+    let r2 = dot(d, d);
+    let s2 = r2 + pr.eps2;                      // softened: caps the force at close range
+    a = a + pr.Gm * d / (s2 * sqrt(s2));
+    let overlap = radius(i) + radius(t + k) - sqrt(r2);
+    if (overlap > 0.0 && r2 > 1e-12) {          // spring + dashpot along the contact normal
+      let nrm = d * inverseSqrt(r2);
+      a = a - (pr.kSpring * overlap - pr.kDamp * dot(tile[k].vel - me.vel, nrm)) * nrm;
+    }
+  }
+  workgroupBarrier();
 }
 ```
 
@@ -272,9 +281,11 @@ for (var j = 0u; j < n; j = j + 1u) {
 
 **Choosing the frame.** The sim integrates in the planet's frame, treated as *inertial* (the planet doesn't move) rather than a frame *rotating* with the pile's orbit. A rotating frame would need explicit centrifugal and Coriolis terms and is the natural choice if you want a body sitting still at a fixed distance; the inertial planet frame is simpler and is exactly what real spacecraft trajectory codes use, since the planet's own barycentric motion is usually negligible over the encounter.
 
-**Timestep near periapsis.** The orbit is fastest and most curved at closest approach, exactly where the leapfrog needs to resolve it best — so the fixed timestep here is set as a fraction of the *periapsis* orbital period, not the whole orbit's, which costs extra steps far from the planet (where nothing dramatic is happening) to guarantee stability during the close passage. A production N-body code would instead use an adaptive or block timestep, spending fine resolution only where it's needed — the same trade-off flagged for Keplerian integrators in Chapter 2.
+**Timestep: the springs, not the orbit.** The orbit is slow; the stiffest thing in the problem is the contact spring between touching grains, which must be stiff enough that self-gravity squeezes grains by only about a tenth of their radius. Its oscillation period is only a few thousandths of an orbit, and a leapfrog step must resolve it (about 14 steps per spring period here), or energy leaks *into* the pile and it boils apart on its own. So the step is the smaller of 1/800 of an orbit and 1/14 of a spring period — roughly 3,000 steps per orbit — and all of a frame's steps are recorded into one GPU command buffer. A production granular code would use sub-cycling or implicit contacts to escape this limit.
 
-Complexity is $O(N^2)$ per half-step; at a few thousand particles that's a few tens of millions of pairwise force evaluations, comfortably inside a 60 fps budget on the GPU (each grain's inner loop is simple arithmetic, no branching beyond the contact check) but it would not scale to planetary-ring particle counts (millions) without a tree code or grid-based method — the Barnes–Hut and particle-mesh approaches used for galaxy-scale N-body work in [Chapter 22](/ch/galactic-dynamics/).
+**A flat pile is not a sphere.** The grains live in a plane, and a flat disk pulls on its own rim about 2.2 times harder than a sphere of the same mass and radius would. Left alone, that makes the pile artificially tough (it survives down to about three quarters of the fluid Roche distance), so each grain's mass is scaled down by that factor. The grains also come in a spread of sizes: identical discs lock into a hexagonal crystal that resists shear like a solid, while mixed sizes flow like loose rubble. With both fixes the pile holds together at the fluid Roche limit and comes apart about 10% inside it.
+
+Complexity is $O(N^2)$ per step; at a few thousand grains that's a few million pairwise force evaluations per step and tens of millions per frame, comfortably inside a 60 fps budget on the GPU (each thread reads its partners from fast workgroup memory, 64 at a time, and the inner loop is simple arithmetic with one branch for the contact check) but it would not scale to planetary-ring particle counts (millions) without a tree code or grid-based method — the Barnes–Hut and particle-mesh approaches used for galaxy-scale N-body work in [Chapter 22](/ch/galactic-dynamics/).
 </Hood>
 
 ## Rings, shepherds and gaps
@@ -287,8 +298,8 @@ Rings aren't structureless. **Shepherd moons** — small moons orbiting just ins
 
 The same resonant logic that confines a shepherded ring edge can instead **clear a gap**, depending on geometry. In the asteroid belt, Jupiter's gravity has swept clean the semi-major axes where an asteroid's orbital period is a simple ratio of Jupiter's (a **mean-motion resonance**): repeated conjunctions at the same orbital phase pump up eccentricity until the asteroid's orbit crosses a planet's or is otherwise perturbed away, over millions of years. These are the **Kirkwood gaps** — most prominently at the 3:1, 5:2 and 2:1 resonances with Jupiter. Saturn's rings show the analogous effect turned up to eleven: the sharp inner edge of the Cassini division is maintained by the 2:1 resonance with the moon Mimas.
 
-<Sim name="tides-kirkwood" size="wide" minHeight={560}>
-**Kirkwood gaps forming in real time.** A few hundred massless test asteroids orbit the Sun while Jupiter's gravity perturbs them every step. Run it forward (raise the speed) and watch the semi-major-axis histogram empty out at the marked 3:1, 5:2 and 2:1 resonances — exactly where the real asteroid belt is depleted. Turning Jupiter's mass to zero freezes the gaps from forming; raising it accelerates and deepens them.
+<Sim name="tides-kirkwood" size="wide" minHeight={520}>
+**Kirkwood gaps, fast-forwarded.** Five hundred massless test asteroids orbit the Sun while Jupiter (on its real, slightly eccentric orbit) perturbs them. Asteroids whose eccentricity gets pumped above 0.2 turn orange; once an orbit reaches Mars' (or strays toward Jupiter's) it is removed, as a close encounter would eventually do. Watch the survivor histogram empty out at the marked 3:1, 5:2 and 2:1 resonances while the bins in between stay full. Real clearing takes millions of years, so Jupiter's mass is boosted ×10 by default; turn it down toward ×1 and the gaps still form, just far too slowly to watch, and at zero nothing happens at all.
 </Sim>
 
 Resonances aren't only destabilising, though — the very same mechanism can **lock** a system into long-term stability if the geometry avoids close approaches. Neptune and Pluto orbit in a stable 3:2 mean-motion resonance: Pluto's orbit actually crosses inside Neptune's, but the resonance guarantees they are never simultaneously near the crossing point, so they've never had a close encounter in over 4 billion years despite the orbits geometrically overlapping. The Laplace resonance that keeps Io hot (above) is the same phenomenon: stabilising for the system's long-term architecture, while pumping individual eccentricities that then get dissipated as heat.

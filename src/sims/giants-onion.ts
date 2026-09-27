@@ -13,8 +13,8 @@ const STAGES = [
   { fuel: 'H', product: 'He', T_GK: 0.02, duration_yr: 1.0e7, color: 0 },
   { fuel: 'He', product: 'C, O', T_GK: 0.2, duration_yr: 1.0e6, color: 1 },
   { fuel: 'C', product: 'Ne, Mg', T_GK: 0.8, duration_yr: 1.0e3, color: 2 },
-  { fuel: 'Ne', product: 'O, Mg', T_GK: 1.5, duration_yr: 3.0, color: 3 },
-  { fuel: 'O', product: 'Si, S', T_GK: 2.0, duration_yr: 0.8, color: 4 },
+  { fuel: 'Ne', product: 'O, Mg', T_GK: 1.5, duration_yr: 1.0, color: 3 },
+  { fuel: 'O', product: 'Si, S', T_GK: 2.0, duration_yr: 0.5, color: 4 },
   { fuel: 'Si', product: 'Fe (core)', T_GK: 3.5, duration_yr: 1 / 365, color: 0 },
 ];
 
@@ -27,7 +27,7 @@ export default defineSim({
     host.append(wrap);
     const stage = createStage(wrap, { aspect: 16 / 10 });
     const plot = new Plot(stage.canvas, {
-      x: { min: 3e-3, max: 3e7, log: true, label: 'burning-stage duration' },
+      x: { min: 1e-4, max: 1e8, log: true, label: 'burning-stage duration (years, log scale)' },
       y: { min: -0.7, max: STAGES.length - 0.3 },
       title: 'How long each fuel lasts in a ~20 M☉ star',
     });
@@ -49,23 +49,27 @@ export default defineSim({
           ctx.font = '12px Inter, system-ui, sans-serif';
           ctx.textBaseline = 'middle';
           ctx.fillText(`${st.fuel} → ${st.product}  (T ≈ ${fmt(st.T_GK, 2)} GK)`, x0 + 8, (y0 + y1) / 2);
-          ctx.textAlign = 'right';
-          ctx.fillStyle = pal.muted;
-          ctx.fillText(durLabel(st.duration_yr), x1 - 8, (y0 + y1) / 2);
           ctx.textAlign = 'left';
+          ctx.fillStyle = pal.fg;
+          ctx.font = '600 12px Inter, system-ui, sans-serif';
+          const label = durLabel(st.duration_yr);
+          const lw = ctx.measureText(`${st.fuel} → ${st.product}  (T ≈ ${fmt(st.T_GK, 2)} GK)`).width;
+          // duration just past the end of the bar (or past the stage label when the bar is short)
+          ctx.fillText(label, Math.max(x1 + 8, x0 + lw + 24), (y0 + y1) / 2);
         });
       });
     }
 
     function durLabel(yr: number): string {
-      if (yr < 1 / 300) return `${fmt(yr * 365.25 * 24, 2)} hr`;
+      if (yr < 0.5 / 365) return `${fmt(yr * 365.25 * 24, 2)} hr`;
       if (yr < 3) return `${fmt(yr * 365.25, 2)} d`;
       if (yr < 1e3) return `${fmt(yr, 3)} yr`;
       if (yr < 1e6) return `${fmt(yr / 1e3, 3)} kyr`;
       return `${fmt(yr / 1e6, 3)} Myr`;
     }
 
-    const loop = new Loop(() => {}, render, 1 / 10);
+    const loop = new Loop(null, render, 1 / 10);
+    loop.onDemand = true;
     stage.onResize(() => loop.invalidate());
     stage.canvas.addEventListener('pointermove', (e) => {
       const r = stage.canvas.getBoundingClientRect();

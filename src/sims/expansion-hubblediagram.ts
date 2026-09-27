@@ -26,10 +26,12 @@ export default defineSim({
   mount({ host }) {
     let pal = palette();
     const wrap = document.createElement('div');
-    wrap.style.cssText = 'display:flex;flex-direction:column;gap:2px;';
+    wrap.style.cssText = 'display:grid;grid-template-columns:minmax(0,1fr);';
     host.append(wrap);
-    const mainStage = createStage(wrap, { aspect: 16 / 9 });
-    const resStage = createStage(wrap, { aspect: 16 / 4.2 });
+    const mainStage = createStage(wrap, { aspect: 16 / 8 });
+    const resStage = createStage(wrap, { aspect: 16 / 5 });
+    for (const st of [mainStage, resStage]) { st.el.style.minHeight = '0'; st.el.style.overflow = 'hidden'; }
+    resStage.el.style.borderTop = '1px solid var(--rule)';
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
     const H0 = H0_PLANCK;
@@ -83,17 +85,20 @@ export default defineSim({
         mainPlot.line(zs, muNoL, { color: pal.series[2], dash: [4, 3] });
         mainPlot.line(zs, muLCDM, { color: pal.series[0] });
         mainPlot.scatter(sneZ, sneMu, { color: pal.muted, size: 4 });
-        mainPlot.text('Ωm=1, ΩΛ=0 (decelerating)', mainPlot.px(0.02), mainPlot.py(muNoL[2]) - 8, { color: pal.series[2] });
-        mainPlot.text('flat ΛCDM', mainPlot.px(0.02), mainPlot.py(muLCDM[2]) + 14, { color: pal.series[0] });
+        const iz = (z: number) => Math.round((Math.log(z / 0.01) / Math.log(1.2 / 0.01)) * (NZ - 1));
+        mainPlot.text('flat ΛCDM (accelerating)', mainPlot.px(0.12), mainPlot.py(muLCDM[iz(0.12)]) - 14, { color: pal.series[0], align: 'right' });
+        mainPlot.text('Ωm = 1, ΩΛ = 0 (decelerating)', mainPlot.px(0.3), mainPlot.py(muNoL[iz(0.3)]) + 16, { color: pal.series[2] });
       });
       resPlot.draw(() => {
-        resPlot.hline(0, { color: pal.faint });
+        resPlot.hline(0, { color: pal.series[2], dash: [4, 3] });
         const dLCDM = new Float64Array(NZ);
         for (let i = 0; i < NZ; i++) dLCDM[i] = muLCDM[i] - muNoL[i];
         resPlot.line(zs, dLCDM, { color: pal.series[0] });
         const dSN = new Float64Array(nSN);
         for (let i = 0; i < nSN; i++) dSN[i] = sneMu[i] - mu(luminosityDistanceMpc(sneZ[i], noLambda, H0));
         resPlot.scatter(sneZ, dSN, { color: pal.muted, size: 4 });
+        resPlot.text('Ωm = 1, ΩΛ = 0', resPlot.m.l + 6, resPlot.py(0) + 14, { color: pal.series[2] });
+        resPlot.text('flat ΛCDM: fainter = farther', resPlot.px(0.35), resPlot.py(0.55), { color: pal.series[0], align: 'right' });
       });
     }
 
@@ -102,6 +107,7 @@ export default defineSim({
     panel.slider('Measurement scatter (mag)', { min: 0.02, max: 0.4, value: noiseMag, step: 0.01, format: (v) => fmt(v, 2) }, (v) => { noiseMag = v; generate(); loop.invalidate(); });
     panel.button('New random sample', () => { seed = (seed * 2654435761 + 1) >>> 0; generate(); loop.invalidate(); });
 
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

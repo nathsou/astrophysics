@@ -67,7 +67,7 @@ function makeStars(n: number): Float32Array {
 
 const LAT_HALF = 4; // cells each side
 function makeLattice(): Float32Array {
-  const P = 2 * LAT_HALF + 1, S = 10; // samples per cell edge
+  const P = 2 * LAT_HALF + 1, S = 20; // samples per cell edge
   const pts: number[] = [];
   for (let axis = 0; axis < 3; axis++)
     for (let a = 0; a < P; a++)
@@ -76,7 +76,7 @@ function makeLattice(): Float32Array {
           const t = s / S - LAT_HALF - 0.5 + 0.5;
           const q = [0, 0, 0];
           q[axis] = t; q[(axis + 1) % 3] = a - LAT_HALF + 0.5; q[(axis + 2) % 3] = b - LAT_HALF + 0.5;
-          pts.push(q[0], q[1], q[2], 1, 5200, 0.0035, 0, 0);
+          pts.push(q[0], q[1], q[2], 1, 5200, 2.5, 0, 0);
         }
   return new Float32Array(pts);
 }
@@ -140,7 +140,7 @@ export default defineSim({
       });
       compBG = device.createBindGroup({
         layout: compPipe.getBindGroupLayout(0),
-        entries: [{ binding: 0, resource: { buffer: ubuf } }, { binding: 3, resource: hdrTex.createView() }],
+        entries: [{ binding: 0, resource: { buffer: ubuf } }, { binding: 2, resource: { buffer: lutBuf } }, { binding: 3, resource: hdrTex.createView() }],
       });
     }
 

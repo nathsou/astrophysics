@@ -48,7 +48,7 @@ export default defineSim({
     const s = {
       mode: (params.mode as Mode) ?? 'slab',
       tau: 30,
-      albedo: 0.97,
+      albedo: 1,
       quality: 1, // 0=32k 1=131k 2=524k
     };
     const COUNTS = [32768, 131072, 524288];
@@ -110,7 +110,9 @@ export default defineSim({
       });
     }
 
-    function resetPhotons() {
+    /** Launch a fresh batch from the base. With keepStats, the histograms and escape/absorb
+     *  counters keep accumulating (used for the automatic relaunch once a batch has drained). */
+    function resetPhotons(keepStats = false) {
       const buf = new ArrayBuffer(n * PHOTON_BYTES);
       const f32 = new Float32Array(buf);
       const u32 = new Uint32Array(buf);
@@ -126,6 +128,10 @@ export default defineSim({
         u32[o + 7] = 0;
       }
       device.queue.writeBuffer(photonBuf!, 0, buf);
+      if (keepStats) {
+        device.queue.writeBuffer(counterBuf, 0, new Uint32Array([n]));
+        return;
+      }
       device.queue.writeBuffer(counterBuf, 0, new Uint32Array([n, 0, 0, 0]));
       device.queue.writeBuffer(muHistBuf, 0, new Uint32Array(NBUCKETS));
       device.queue.writeBuffer(tHistBuf, 0, new Uint32Array(NBUCKETS));
@@ -133,13 +139,13 @@ export default defineSim({
       muSeries.fill(0);
     }
 
-    allocate();
-
     const timeSeries = new Uint32Array(NBUCKETS);
     const muSeries = new Uint32Array(NBUCKETS);
+    allocate();
     const counts = { active: n, escaped: 0, absorbed: 0 };
     let frame = 0;
     let reading = false;
+    let relaunch = 0;
 
     async function readBack() {
       if (reading) return;
@@ -156,6 +162,9 @@ export default defineSim({
         const cc = new Uint32Array(readCountBuf.getMappedRange());
         counts.active = cc[0]; counts.escaped = cc[1]; counts.absorbed = cc[2];
         readMuBuf.unmap(); readTBuf.unmap(); readCountBuf.unmap();
+        // Once a batch has fully drained, relaunch another after a short pause so the picture never
+        // goes dark; the histograms keep accumulating.
+        if (counts.active === 0 && !relaunch) relaunch = window.setTimeout(() => { relaunch = 0; resetPhotons(true); }, 1200);
       } catch { /* device may be busy; skip this frame's readback */ }
       reading = false;
     }
@@ -163,9 +172,9 @@ export default defineSim({
     const panel = new Panel(host);
     panel.select('Scene', [{ value: 'slab', label: 'Slab' }, { value: 'sun', label: 'Solar interior' }], s.mode, (v) => { s.mode = v as Mode; invalidateAll(); });
     const tauCtl = panel.slider('Optical depth τ = L/ℓ', { min: 2, max: 2000, value: s.tau, log: true }, (v) => { s.tau = v; resetPhotons(); invalidateAll(); });
-    panel.slider('Scattering albedo', { min: 0.5, max: 0.999, value: s.albedo, step: 0.001 }, (v) => { s.albedo = v; });
+    panel.slider('Scattering albedo', { min: 0.9, max: 1, value: s.albedo, step: 0.001 }, (v) => { s.albedo = v; });
     panel.select('Photons', [{ value: '0', label: '32,768' }, { value: '1', label: '131,072' }, { value: '2', label: '524,288' }], String(s.quality), (v) => { s.quality = +v; allocate(); });
-    panel.button('Restart', () => resetPhotons());
+    panel.button('Restart', () => { clearTimeout(relaunch); relaunch = 0; resetPhotons(); });
     const rActive = panel.readout('Active');
     const rEscaped = panel.readout('Escaped');
     const rAbsorbed = panel.readout('Absorbed');
@@ -215,21 +224,24 @@ export default defineSim({
         timePlot.vline(s.tau * s.tau, { color: pal.accent2, label: 'τ²' });
       });
 
-      let maxMu = 1;
-      for (const v of muSeries) maxMu = Math.max(maxMu, v);
+      // Escaping photons per dμ ∝ μ·I(μ) (a tilted surface element), so divide by μ to recover the
+      // specific intensity I(μ); normalise to the mean of the last few bins (μ → 1).
+      let norm = 0;
+      for (let i = NBUCKETS - 4; i < NBUCKETS; i++) norm += muSeries[i] / ((i + 0.5) / NBUCKETS);
+      norm = Math.max(1e-9, norm / 4);
       muPlot.o.y.max = 1.15;
       muPlot.draw(() => {
         const bw = muPlot.pw / NBUCKETS;
         for (let i = 0; i < NBUCKETS; i++) {
           const mu = (i + 0.5) / NBUCKETS;
-          const v = muSeries[i] / maxMu;
+          const v = Math.min(1.14, muSeries[i] / mu / norm);
           const x0 = muPlot.px(mu - 0.5 / NBUCKETS);
           const y0 = muPlot.py(0);
           const y1 = muPlot.py(v);
           muPlot.ctx.fillStyle = pal.series[0];
           muPlot.ctx.globalAlpha = 0.8;
           muPlot.ctx.fillRect(x0, y1, Math.max(1, bw - 1), y0 - y1);
-          muPlot.ctx.globalAlpha = 0;
+          muPlot.ctx.globalAlpha = 1;
         }
         // Eddington limb-darkening law I(mu) ~ 0.4 + 0.6 mu, normalised to peak at mu=1
         muPlot.fn((mu) => (0.4 + 0.6 * mu) / 1.0, { color: pal.accent, width: 2 });
@@ -245,8 +257,10 @@ export default defineSim({
       device.queue.writeBuffer(paramsBuf, 20, new Float32Array([tScale()]));
       const aspect = stage.width / stage.height;
       const viewF = new Float32Array(12);
-      viewF[0] = s.tau; viewF[1] = aspect; viewF[2] = Math.max(2, 5 - Math.log10(s.tau)) * 0.002 + 0.004; viewF[3] = 0;
+      // sprite ≈ 2.2 px half-size; brightness falls with photon count so dense clouds don't saturate
+      viewF[0] = s.tau; viewF[1] = aspect; viewF[2] = (2.2 * 2) / Math.max(1, stage.height); viewF[3] = 0;
       viewF.set(colA, 4);
+      viewF[7] = Math.min(0.8, 45000 / n);
       viewF.set(colB, 8);
       device.queue.writeBuffer(viewBuf, 0, viewF);
       device.queue.writeBuffer(viewBuf, 12, new Uint32Array([n]));
@@ -273,16 +287,32 @@ export default defineSim({
     }
 
     const loop = new Loop(step, () => {}, 1 / 60);
-    stage.onResize(() => { timePlot.resize(c1.clientWidth, c1.clientHeight, stage.dpr); muPlot.resize(c2.clientWidth, c2.clientHeight, stage.dpr); loop.invalidate(); });
-    const roTime = new ResizeObserver(() => timePlot.resize(c1.clientWidth, c1.clientHeight, window.devicePixelRatio || 1));
-    const roMu = new ResizeObserver(() => muPlot.resize(c2.clientWidth, c2.clientHeight, window.devicePixelRatio || 1));
+    stage.onResize(() => loop.invalidate());
+    // Size each plot canvas's backing store to its CSS box × devicePixelRatio.
+    const fit = (c: HTMLCanvasElement, p: Plot) => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      c.width = Math.max(1, Math.round(c.clientWidth * dpr));
+      c.height = Math.max(1, Math.round(c.clientHeight * dpr));
+      p.resize(c.clientWidth, c.clientHeight, dpr);
+      drawPlots();
+    };
+    const roTime = new ResizeObserver(() => fit(c1, timePlot));
+    const roMu = new ResizeObserver(() => fit(c2, muPlot));
     roTime.observe(c1); roMu.observe(c2);
-    c1.width = c1.clientWidth; c1.height = c1.clientHeight;
-    c2.width = c2.clientWidth; c2.height = c2.clientHeight;
-    timePlot.resize(c1.clientWidth, c1.clientHeight, 1);
-    muPlot.resize(c2.clientWidth, c2.clientHeight, 1);
+    fit(c1, timePlot); fit(c2, muPlot);
+
+    // Orientation labels on the slab view
+    const mkLabel = (text: string, css: string) => {
+      const el = document.createElement('div');
+      el.textContent = text;
+      el.style.cssText = `position:absolute;left:10px;font-size:0.72rem;color:#e8e8f0;background:rgba(0,0,0,0.6);padding:1px 6px;border-radius:4px;${css}`;
+      stage.overlay.append(el);
+    };
+    mkLabel('surface (τ = 0): photons escape here ↑', 'top:6px;');
+    mkLabel('deep interior: photons start here (reflecting base)', 'bottom:6px;');
 
     onDestroy(() => {
+      clearTimeout(relaunch);
       roTime.disconnect(); roMu.disconnect();
       photonBuf?.destroy();
       paramsBuf.destroy(); viewBuf.destroy(); muHistBuf.destroy(); tHistBuf.destroy(); counterBuf.destroy();

@@ -46,6 +46,7 @@ export default defineSim({
   async mount({ host, onDestroy }) {
     const device = await requireDevice();
     const stage = createStage(host, { aspect: 16 / 9 });
+    if (host.clientWidth < 560) stage.el.style.aspectRatio = '1'; // taller on phones
     const { ctx, format } = configureCanvas(stage.canvas, device);
     const G = growth(Om, OL);
     const D1 = G.D(1);
@@ -231,7 +232,7 @@ export default defineSim({
     }
 
     // ---------- rendering ----------
-    const cam = new OrbitCamera(stage.canvas, { distance: 3.3, pitch: 0.42, yaw: 0.7, autoRotate: 0.06, minDistance: 0.4, maxDistance: 8 });
+    const cam = new OrbitCamera(stage.canvas, { distance: 4.3, pitch: 0.42, yaw: 0.7, autoRotate: 0.06, minDistance: 0.4, maxDistance: 8 });
     let hdr: GPUTexture | null = null, toneBG: GPUBindGroup | null = null;
     function ensureHDR() {
       const w = stage.canvas.width, h = stage.canvas.height;
@@ -256,7 +257,7 @@ export default defineSim({
       rArr.set(vp, 0);
       const ng = res.ng;
       rArr[16] = proj[0]; rArr[17] = proj[5];
-      rArr[18] = (2 / ng) * 0.7;
+      rArr[18] = (2 / ng) * 0.85;
       rArr[19] = 0.16 * (64 / ng) ** 1.5 * Math.min(1.4, 3.3 / cam.distance);
       rArr[20] = ng; rArr[21] = colourMode; rArr[22] = aNow; rArr[23] = BOX / ng;
       rArr[24] = MSCALE; rArr[25] = 2 / ng;
@@ -325,6 +326,7 @@ export default defineSim({
       paramBuf.destroy();
       renderBuf.destroy();
     });
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

@@ -84,7 +84,7 @@ Long before computers could do it, the Swedish astronomer **Erik Holmberg** at L
 <Fragment slot="l1">
 Picture a star crossing the galaxy. Every other star it passes gives it a tiny sideways tug, each in a random direction. Random tugs mostly cancel, like a drunkard's steps, but slowly they accumulate. The question is how many crossings it takes before the tugs have added up to something as big as the star's own speed, so that it has "forgotten" its original path. (For a refresher on speeds, energy and orbits, see [Appendix A6](/ch/primer-mechanics/).)
 
-The answer turns out to be roughly *the number of stars divided by ten times a small logarithm*. The more stars there are, the smoother the galaxy looks, because each one is a smaller fraction of the total. For a galaxy with a hundred billion stars it takes hundreds of millions of crossings.
+The answer turns out to be roughly *the number of stars divided by eight times its natural logarithm*. The more stars there are, the smoother the galaxy looks, because each one is a smaller fraction of the total. For a galaxy with a hundred billion stars it takes hundreds of millions of crossings.
 </Fragment>
 <Fragment slot="l2">
 Consider a test star crossing a galaxy of $N$ stars. Each encounter gives it a small velocity kick in a random direction. Random kicks add like a random walk (logarithms and powers rusty? see [Appendix A1](/ch/primer-numbers/)): after $n$ of them the total is about $\sqrt n$ times one kick, so it is the *squares* of the kicks that add up. Adding up the squared kicks from all the stars it passes in one crossing, and using the fact that $v^2 \approx GM/R$ for a galaxy in balance (the virial theorem, below), gives a remarkably simple result: each crossing changes $v^2$ by a fraction of about $8\ln N/N$. The star forgets its initial orbit after about $N/(8\ln N)$ crossings. The logarithm appears because every factor of two in encounter distance contributes equally: distant encounters are weaker but more numerous.
@@ -171,7 +171,7 @@ $$
 <Fragment slot="where">$K = \tfrac12\sum m v^2$ and $W$ is the total gravitational potential energy (negative). Up to a structure factor of order a few, the mass of a system is its velocity dispersion squared times its radius, over $G$. The total energy is $E = K + W = -K$: a bound system that loses energy gets *hotter*.</Fragment>
 </KeyEq>
 
-It follows from differentiating $I = \sum m r^2$ twice and averaging (the "moment of inertia" trick; we skip the algebra). Fritz Zwicky applied it to the Coma cluster in 1933 and found that the galaxies moved far too fast for the visible mass: the first evidence for dark matter (Chapter 24).
+It follows from differentiating $I = \sum m r^2$ twice and averaging (the "moment of inertia" trick; we skip the algebra). Fritz Zwicky applied it to the Coma cluster in 1933 and found that the galaxies moved far too fast for the visible mass: the first evidence for dark matter ([Chapter 21](/ch/milky-way/)).
 
 <Aside>**Negative heat capacity.** $E = -K$ means removing energy speeds stars up. It is why a star that radiates contracts and heats (Chapter 11), and why the cores of star clusters collapse.</Aside>
 
@@ -212,7 +212,7 @@ In a frame rotating with the guiding centre, the star traces a small ellipse, th
 </Fragment>
 </Tiers>
 
-<Level min={2}>
+<Level min={2} title="κ/Ω for any rotation curve">
 
 For a power-law rotation curve $v_c \propto R^{\beta}$ you can check that $\kappa/\Omega = \sqrt{2(1+\beta)}$. At the Sun, the Oort constants measured with Gaia give $\kappa \approx 37$ km/s/kpc and $\Omega \approx 28$ km/s/kpc, so $\kappa/\Omega \approx 1.3$. The Sun's own epicycle carries it about 0.5 kpc in and out of its mean radius every $2\pi/\kappa \approx 170$ Myr, and it bobs through the disk plane vertically every ~70 Myr or so.
 
@@ -307,7 +307,7 @@ Toomre's $Q > 1$ guarantees stability only against **axisymmetric** (ring-like) 
 
 ### Bars
 
-About two-thirds of disk galaxies, the Milky Way included, have a **bar**: a rigidly rotating elongated structure made of stars on elongated orbits (the $x_1$ family) aligned with it. In the late 1960s and early 1970s, the first N-body disk simulations had an embarrassing habit: they all formed bars within a rotation or two. Ostriker and Peebles (1973) argued that real disks must be stabilised by a massive, hot, **dark halo**, one of the earliest theoretical arguments for dark matter. The modern view is subtler: halos exchange angular momentum with bars through resonances, and can even make them grow (Athanassoula 2002). The Milky Way's bar is about 4.5–5 kpc long and turns with $\Omega_p \approx 35$–40 km/s/kpc (from Gaia and APOGEE). Bars funnel gas to the centre, fuelling starbursts and black holes (Chapter 21), and thicken over time into the "boxy/peanut" bulge we see in the Milky Way's infrared images.
+About two-thirds of disk galaxies, the Milky Way included, have a **bar**: a rigidly rotating elongated structure made of stars on elongated orbits (the $x_1$ family) aligned with it. In the late 1960s and early 1970s, the first N-body disk simulations had an embarrassing habit: they all formed bars within a rotation or two. Ostriker and Peebles (1973) argued that real disks must be stabilised by a massive, hot, **dark halo**, one of the earliest theoretical arguments for dark matter. The modern view is subtler: halos exchange angular momentum with bars through resonances, and can even make them grow (Athanassoula 2002). The Milky Way's bar is about 4.5–5 kpc long and turns with $\Omega_p \approx 35$–40 km/s/kpc (from Gaia and APOGEE). Bars funnel gas to the centre, fuelling starbursts and black holes ([Chapter 23](/ch/galaxy-formation/)), and thicken over time into the "boxy/peanut" bulge we see in the Milky Way's infrared images.
 
 <Aside>**JWST bars.** JWST has found barred disks at redshift $z \approx 3$ and beyond, less than 2 Gyr after the Big Bang, earlier than many simulations predicted. Cold, massive disks must have settled surprisingly early.</Aside>
 
@@ -320,7 +320,7 @@ Stars in a galaxy never collide, but galaxies do, often. Galaxies are separated 
 <History title="Chandrasekhar's drag" year="1943">
 <Portrait src="/img/people/chandrasekhar.jpg" name="Subrahmanyan Chandrasekhar" years="1910–1995" credit="NASA" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Subrahmanyan_Chandrasekhar.gif" />
 
-**Subrahmanyan Chandrasekhar** had a habit of mastering a field completely, writing the definitive book, and moving on. After white dwarfs (Chapter 17), he spent the early 1940s at Yerkes Observatory on stellar dynamics, treating a star in a cluster like a particle in Brownian motion. In 1943 he showed that the random pulls from the other stars have a systematic part: a drag opposite to the star's motion, proportional to its mass. He meant it for stars in clusters. Its greatest application came decades later, when it explained why satellite galaxies sink, why galaxies merge and why the LMC's days are numbered. The same formula runs inside the flagship simulation below, pulling the two dark halos together.
+**Subrahmanyan Chandrasekhar** had a habit of mastering a field completely, writing the definitive book, and moving on. After white dwarfs ([Chapter 16](/ch/stellar-death/)), he spent the early 1940s at Yerkes Observatory on stellar dynamics, treating a star in a cluster like a particle in Brownian motion. In 1943 he showed that the random pulls from the other stars have a systematic part: a drag opposite to the star's motion, proportional to its mass. He meant it for stars in clusters. Its greatest application came decades later, when it explained why satellite galaxies sink, why galaxies merge and why the LMC's days are numbered. The same formula runs inside the flagship simulation below, pulling the two dark halos together.
 </History>
 
 <Tiers>
@@ -376,7 +376,7 @@ The mechanism is tidal. The companion's pull differs across the disk: stronger o
 **The Mice (NGC 4676), 90 Mpc away.** Two disk galaxies shortly after their first close pass, each flinging out a long tidal tail. Toomre & Toomre reproduced this pair almost exactly with their 1972 test-particle model; in about half a billion years they will fall back together and merge.
 </Photo>
 
-The flagship simulation below does what the Toomres did, with half a million particles, live self-gravitating disks, bulges, dark halos and dynamical friction, on your GPU.
+The flagship simulation below does what the Toomres did, with up to half a million particles, live self-gravitating disks, bulges, dark halos and dynamical friction, on your GPU.
 
 <Predict question="Two identical disk galaxies pass each other. Galaxy A spins in the same sense as the orbit (prograde); galaxy B spins the opposite way (retrograde). Which grows long tidal tails?" choices={['A (prograde)', 'B (retrograde)', 'Both equally']} answer={0}>
 Prograde. In a prograde encounter the disk's stars co-rotate with the companion's apparent motion around them, so near pericentre the tidal force pulls on the same stars for a long time, a near-resonance. In a retrograde encounter the tidal forcing sweeps past the stars quickly and averages out. Choose "One retrograde disk" in the simulation: the gold galaxy is retrograde and stays nearly intact while the blue one throws out a tail.
@@ -434,7 +434,7 @@ fn force(@builtin(global_invocation_id) gid : vec3u, @builtin(local_invocation_i
 
 Watch a merger to the end. The second and third passages come quickly, and the two disks dissolve into one smooth, roundish, featureless blob. That is how giant **elliptical galaxies** form: Toomre (1977) proposed it, and simulations since (Barnes & Hernquist 1992, and today's cosmological runs) confirm it.
 
-How can a collisionless system "forget" its initial ordered rotation? During the merger the potential itself fluctuates wildly on the crossing timescale. A star's energy is conserved only in a *static* potential; in a time-varying one<Level min={3} inline> ($dE/dt = m\,\partial\Phi/\partial t$)</Level>, and stars gain or lose energy essentially at random. Lynden-Bell (1967) called this **violent relaxation**. It mixes stars in phase space within a few crossing times, far faster than two-body relaxation, and independent of stellar mass (unlike two-body relaxation, which makes heavy stars sink). The result has a characteristic de Vaucouleurs $R^{1/4}$ surface-brightness profile, like observed ellipticals.
+How can a collisionless system "forget" its initial ordered rotation? During the merger the potential itself fluctuates wildly on the crossing timescale. A star's energy is conserved only in a *static* potential; in a time-varying one<Level min={3} inline> ($dE/dt = m\,\partial\Phi/\partial t$)</Level> it is not, and stars gain or lose energy essentially at random. Lynden-Bell (1967) called this **violent relaxation**. It mixes stars in phase space within a few crossing times, far faster than two-body relaxation, and independent of stellar mass (unlike two-body relaxation, which makes heavy stars sink). The result has a characteristic de Vaucouleurs $R^{1/4}$ surface-brightness profile, like observed ellipticals.
 
 <Aside>**The gas.** Real mergers also have gas, which, being collisional, loses angular momentum in shocks and falls to the centre. That triggers starbursts (the Antennae are forming stars at ~20 M☉ per year) and feeds the central black holes, which may merge (the gravitational waves of Chapter 20 in the supermassive regime, detected by pulsar timing arrays in 2023).</Aside>
 

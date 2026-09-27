@@ -13,7 +13,7 @@ import { defineSim, Loop, createStage } from '../lib/runtime/sim';
 import { Panel, fmt } from '../lib/ui/controls';
 import { Plot } from '../lib/ui/plot';
 import { palette, onThemeChange } from '../lib/ui/theme';
-import { dTdt, thermalTimescale, equilibriumT } from './ism/cooling';
+import { dTdt, thermalTimescale, equilibriumT, equilibriumCurve as eqCurveT } from './ism/cooling';
 
 const N = 100; // grid resolution (N×N)
 const L_PC = 220; // box size
@@ -32,12 +32,13 @@ export default defineSim({
     let pal = palette();
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
+    const narrow = host.getBoundingClientRect().width < 560; // phones: stack the panels / taller plots
     const wrap = document.createElement('div');
-    wrap.style.cssText = 'display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);';
+    wrap.style.cssText = `display:grid;grid-template-columns:${narrow ? 'minmax(0,1fr)' : 'minmax(0,1.35fr) minmax(0,1fr)'}`;
     host.append(wrap);
     const gasStage = createStage(wrap, { aspect: 1 });
     const phaseStage = createStage(wrap, { aspect: 1 / 0.92 });
-    gasStage.el.style.borderRight = '1px solid var(--rule)';
+    gasStage.el.style[narrow ? 'borderBottom' : 'borderRight'] = '1px solid var(--rule)';
     const gasCtx = gasStage.canvas.getContext('2d')!;
 
     const off = document.createElement('canvas');
@@ -63,14 +64,19 @@ export default defineSim({
     let simMyr = 0;
     let frac = { cold: 0, warm: 0, hot: 0 };
 
+    const MODES: [number, number, number, number][] = [];
     function seed() {
+      MODES.length = 0;
+      for (let k = 0; k < 7; k++) MODES.push([Math.floor(Math.random() * 7) - 3, Math.floor(Math.random() * 7) - 3, Math.random() * 6.283, 0.28 * Math.random()]);
       n.fill(0); T.fill(0);
       for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
         const i = y * N + x;
         // Mild turbulent-ish density fluctuations around n≈1, T set to the WNM equilibrium.
-        const noise = 1 + 0.6 * (Math.sin(x * 0.31) * Math.cos(y * 0.27) + Math.sin((x + y) * 0.15));
-        n[i] = Math.max(N_FLOOR, 0.6 * noise);
-        T[i] = equilibriumT(n[i], 10 ** logGamma, Z, 3000, 2e5);
+        // a few random periodic Fourier modes: a lumpy, turbulent-looking start rather than a lattice
+        let noise = 1;
+        for (const [kx, ky, ph, a] of MODES) noise += a * Math.sin((2 * Math.PI * (kx * x + ky * y)) / N + ph);
+        n[i] = Math.max(N_FLOOR, 1.2 * noise); // mean ≈ 1.2 cm⁻³: straddles the unstable range (n ≈ 1–10)
+        T[i] = equilibriumT(n[i], 10 ** logGamma, Z);
       }
       vx.fill(0); vy.fill(0);
       simMyr = 0;
@@ -132,10 +138,22 @@ export default defineSim({
         const px = x - vx[i] * cellPerS, py = y - vy[i] * cellPerS;
         n2[i] = Math.max(N_FLOOR, sample(n, px, py));
         T2[i] = Math.min(T_CEIL, Math.max(T_FLOOR, sample(T, px, py)));
-        vx2[i] = sample(vx, px, py) * 0.995; // tiny drag to bleed grid-scale noise
-        vy2[i] = sample(vy, px, py) * 0.995;
+        vx2[i] = sample(vx, px, py) * 0.9995; // weak drag (e-folding ~6 Myr) to bleed grid-scale noise
+        vy2[i] = sample(vy, px, py) * 0.9995;
       }
       [n, n2] = [n2, n]; [T, T2] = [T2, T]; [vx, vx2] = [vx2, vx]; [vy, vy2] = [vy2, vy];
+      // Semi-Lagrangian transport alone only carries n and T along the flow (Dn/Dt = 0); add the
+      // compression terms of the continuity and energy equations, Dn/Dt = −n∇·v and
+      // DT/Dt = −(γ−1)T∇·v, so converging flows actually build dense clumps (and heat adiabatically).
+      const invDx = dtSub / (2 * DX_CM);
+      for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+        const i = y * N + x;
+        const divDt = (vx[idxWrap(x + 1, y)] - vx[idxWrap(x - 1, y)] + vy[idxWrap(x, y + 1)] - vy[idxWrap(x, y - 1)]) * invDx;
+        const f = Math.min(1.5, Math.max(0.67, Math.exp(-divDt)));
+        n2[i] = Math.max(N_FLOOR, n[i] * f);
+        T2[i] = Math.min(T_CEIL, Math.max(T_FLOOR, T[i] * f ** (2 / 3)));
+      }
+      [n, n2] = [n2, n]; [T, T2] = [T2, T];
       // operator-split cooling: a stiff local ODE, integrated with an adaptive number of
       // sub-steps per cell (capped, for a bounded worst-case cost — see the <Hood>).
       const Gamma = 10 ** logGamma;
@@ -217,14 +235,8 @@ export default defineSim({
       const key = `${logGamma}:${Z}`;
       if (eqParamsKey === key && eqCurve) return eqCurve;
       eqParamsKey = key;
-      const Gamma = 10 ** logGamma;
-      const nOut: number[] = [], TOut: number[] = [];
-      let Tprev = equilibriumT(1e-3, Gamma, Z, 3000, 3e5);
-      for (let i = 0; i < 160; i++) {
-        const ni = 1e-3 * (1e4 / 1e-3) ** (i / 159);
-        const Ti = equilibriumT(ni, Gamma, Z, Math.max(3, Tprev / 6), Math.min(3e7, Tprev * 6));
-        nOut.push(ni); TOut.push(Ti); Tprev = Ti;
-      }
+      const c = eqCurveT(10 ** logGamma, Z, 10, 3e7, 300);
+      const nOut = Array.from(c.n), TOut = Array.from(c.T);
       eqCurve = { n: nOut, T: TOut };
       return eqCurve;
     }
@@ -247,12 +259,17 @@ export default defineSim({
 
     const loop = new Loop((dt) => {
       // dt is the fixed physics step (seconds of *real* time); convert to sim time via speed.
-      const dtSubYr = 3000 / speed; // finer sub-step at higher speed to keep CFL/pressure updates sane
-      const dtSub = dtSubYr * YR_S;
-      stepPhysics(dtSub);
-      maybeSpawnSN(dtSub / (YR_S * 1e6));
+      // Each physics step is 3 kyr (the semi-Lagrangian advection is stable at any CFL, but the
+      // explicit pressure kick is not); higher speeds take more steps per frame, lower ones fewer.
+      stepAcc += speed;
+      while (stepAcc >= 1) {
+        stepAcc -= 1;
+        const dtSub = 3000 * YR_S;
+        stepPhysics(dtSub);
+        maybeSpawnSN(dtSub / (YR_S * 1e6));
+      }
     }, render, 1 / 60);
-    let speed = 1;
+    let speed = 1, stepAcc = 0;
 
     gasStage.onResize(() => loop.invalidate());
     phaseStage.onResize((w, h, d) => { phase.resize(w, h, d); loop.invalidate(); });
@@ -271,10 +288,10 @@ export default defineSim({
     panel.playPause(() => loop.paused, (p) => (loop.paused = p));
     panel.button('Reset', seed);
     panel.select('View', [{ value: 'temp', label: 'Temperature' }, { value: 'density', label: 'Density' }], view, (v) => { view = v as 'temp' | 'density'; loop.invalidate(); });
-    panel.slider('SN rate', { min: 0, max: 2, value: snRatePerMyr, log: true, step: 0.01, format: (v) => `${fmt(v, 2)} / Myr` }, (v) => (snRatePerMyr = v));
+    panel.slider('SN rate', { min: 0, max: 2, value: snRatePerMyr, step: 0.05, format: (v) => `${fmt(v, 2)} / Myr` }, (v) => (snRatePerMyr = v));
     panel.slider('UV heating Γ', { min: -27, max: -25, value: logGamma, step: 0.02, format: (v) => `${fmt(10 ** v, 2)} erg/s` }, (v) => { logGamma = v; });
     panel.slider('Metallicity Z', { min: 0.1, max: 3, value: Z, log: true, step: 0.02, format: (v) => `${fmt(v, 2)}×Z☉` }, (v) => { Z = v; });
-    panel.slider('Speed', { min: 0.25, max: 8, value: speed, log: true, step: 0.05, format: (v) => `${fmt(v, 2)}×` }, (v) => (speed = v));
+    panel.slider('Speed', { min: 0.25, max: 4, value: speed, log: true, step: 0.05, format: (v) => `${fmt(v, 2)}×` }, (v) => (speed = v));
 
     loop.setVisible(true);
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };

@@ -4,6 +4,7 @@
 // against θ, with the relative error of sin θ ≈ tan θ ≈ θ (≈ θ²/6 and θ²/3 for small θ).
 
 import { defineSim, Loop, createStage } from '../lib/runtime/sim';
+import { stackWhenNarrow } from './primer-common/stack';
 import { Panel, fmt } from '../lib/ui/controls';
 import { Plot } from '../lib/ui/plot';
 import { palette, onThemeChange } from '../lib/ui/theme';
@@ -36,7 +37,7 @@ function angleStr(t: number): string {
 }
 
 export default defineSim({
-  mount({ host }) {
+  mount({ host, onDestroy }) {
     let pal = palette();
     let th = 35 * DEG;
     let dragging = false;
@@ -46,6 +47,7 @@ export default defineSim({
     host.append(wrap);
     const cs = createStage(wrap, { aspect: 1 });
     const ps = createStage(wrap, { aspect: 1 / 0.8 });
+    stackWhenNarrow(host, wrap, 'minmax(0,1fr) minmax(0,1.25fr)', [[cs, 1, 1.25], [ps, 1.25, 1.35]], onDestroy);
     cs.el.style.borderRight = '1px solid var(--rule)';
     const ctx = cs.canvas.getContext('2d')!;
     const plot = new Plot(ps.canvas, {
@@ -55,6 +57,8 @@ export default defineSim({
     });
 
     const loop = new Loop(null, render);
+
+    loop.onDemand = true;
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
     cs.onResize(() => loop.invalidate());
     ps.onResize((w, h, d) => { plot.resize(w, h, d); loop.invalidate(); });
@@ -100,13 +104,23 @@ export default defineSim({
       ctx.beginPath(); ctx.moveTo(px, cy); ctx.lineTo(px, py); ctx.stroke();
       ctx.fillStyle = pal.accent;
       ctx.beginPath(); ctx.arc(px, py, dragging ? 8 : 6.5, 0, Math.PI * 2); ctx.fill();
-      // labels
-      ctx.textBaseline = 'top'; ctx.textAlign = 'center';
-      ctx.fillStyle = pal.series[1]; ctx.fillText('cos θ', (cx + px) / 2, cy + 4);
-      ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-      ctx.fillStyle = pal.series[3]; ctx.fillText('sin θ', px + 5, (cy + py) / 2);
-      ctx.fillStyle = pal.series[2]; ctx.fillText('tan θ', cx + R + 6, Math.max(14, (cy + ty) / 2 - 10));
-      ctx.fillStyle = pal.accent; ctx.fillText('arc = θ rad', cx + R * 0.72 * Math.cos(th / 2) + 8, cy - R * 1.08 * Math.sin(th / 2) - 10);
+      // labels (haloed so they stay legible where they cross a line)
+      const label = (text: string, x: number, y: number, color: string, align: CanvasTextAlign) => {
+        ctx.textAlign = align;
+        ctx.lineWidth = 4; ctx.lineJoin = 'round'; ctx.strokeStyle = pal.bg;
+        ctx.strokeText(text, x, y);
+        ctx.fillStyle = color; ctx.fillText(text, x, y);
+      };
+      ctx.textBaseline = 'middle';
+      label('cos θ', (cx + px) / 2, cy + 12, pal.series[1], 'center');
+      label('sin θ', px - 7, (cy + py) / 2, pal.series[3], 'right');
+      // arc label just outside the circle at the arc's midpoint; the tan label sits at the top of its
+      // segment, pushed up if it would collide with the arc label.
+      const ax = cx + R * 1.1 * Math.cos(th / 2), ay = cy - R * 1.1 * Math.sin(th / 2);
+      label('arc θ', ax + 4, ay, pal.accent, 'left');
+      const tanY = Math.max(14, Math.min(ty + 8, ay - 18));
+      label('tan θ', cx + R + 8, tanY, pal.series[2], 'left');
+      ctx.lineWidth = 1;
       ctx.fillStyle = pal.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
       ctx.fillText('radius = 1 · drag the dot', 8, H - 8);
 

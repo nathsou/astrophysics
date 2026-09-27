@@ -114,9 +114,14 @@ $$
 **Weight, shell by shell.** Each translucent step is the pressure drop across one of ten equal-width shells of a uniform-density star — by construction, exactly equal to the weight of the gas in that shell, per unit area. Drag the mass and radius: heavier or more compact stars need a much steeper pressure gradient, and hence a much higher central pressure, to hold themselves up.
 </Sim>
 
-Together, mass continuity and hydrostatic equilibrium are two equations in three unknowns ($m$, $P$, $\rho$) — under-determined until you add an equation of state $P=P(\rho,T,\dots)$ relating pressure to density (and usually temperature), which introduces $T$ as a fourth unknown and needs two more equations to close the system.
-
 ### The other two equations (previewed)
+
+<Tiers>
+<Fragment slot="l1">
+Hydrostatic equilibrium is only half of a star. It says how pressure must fall with height, but not *what* the pressure is made of, and it says nothing about energy. Two more rules finish the job: how much energy the nuclear furnace releases at each depth ([Chapter 12](/ch/fusion/)), and how that energy leaks outward, by radiation or by the whole gas boiling in convection ([Chapter 13](/ch/energy-transport/)). Add a recipe for the gas's pressure, solve everything together from the centre to the surface, and you have a complete model of a star — which is exactly what stellar-evolution codes do. The rest of this chapter shows how much the mechanical half alone already tells us.
+</Fragment>
+<Fragment slot="l2">
+Together, mass continuity and hydrostatic equilibrium are two equations in three unknowns ($m$, $P$, $\rho$) — under-determined until you add an equation of state $P=P(\rho,T,\dots)$ relating pressure to density (and usually temperature), which introduces $T$ as a fourth unknown and needs two more equations to close the system.
 
 Those two remaining equations govern energy, and they are the subject of the next two chapters:
 
@@ -124,6 +129,8 @@ Those two remaining equations govern energy, and they are the subject of the nex
 - **Energy transport**, which in the radiative case reads $\dfrac{dT}{dr} = -\dfrac{3\kappa\rho L}{16\pi a c r^2 T^3}$ (radiative diffusion, with $\kappa$ the opacity), or a different, non-local prescription where convection takes over. [Chapter 13](/ch/energy-transport/) derives both and explains how a star "chooses" which one operates at each radius.
 
 Four first-order ODEs, four unknowns ($m,P,\rho,T$, with $L$ folded in as a fifth once energy generation is included), plus an equation of state and expressions for $\varepsilon$ and $\kappa$: that closed system, solved from the centre to the surface, *is* a stellar model. The rest of this chapter mines what the mechanical half — mass continuity and hydrostatic equilibrium alone — already tells us, before nuclear physics or radiative transfer enter at all.
+</Fragment>
+</Tiers>
 
 ## How hot is the Sun's core? A Fermi estimate
 
@@ -207,7 +214,7 @@ $$
 
 **Losing energy makes the gas hotter.** This is the opposite of every macroscopic object you've ever touched, and it is the reason a star doesn't need active thermostatting to stay stable: if the core's fusion rate dips for any reason, the core loses more energy than it generates, $E$ drops, $K$ (and hence $T$) *rises*, and — because fusion rates are ferociously sensitive to temperature (Chapter 12) — the energy generation rate rockets back up and refills the deficit. The reverse happens if fusion runs too hot: the excess luminosity blows the core to lower density, $|U|$ drops, and both $K$ and $T$ fall back down. This self-regulating feedback loop, powered entirely by the sign of the virial theorem, is why main-sequence stars sit quietly on a well-defined track for billions of years instead of thermally running away in either direction.
 
-<Predict question="A globular cluster of stars slowly loses energy to gravitational evaporation ([Chapter 22](/ch/galactic-dynamics/)) and two-body relaxation. What happens to its characteristic velocity dispersion (its 'temperature')?" choices={['It decreases — losing energy always cools things down', 'It increases — negative heat capacity applies to any self-gravitating system, not just gas', 'It stays constant — energy loss changes the shape, not the temperature']} answer={1}>
+<Predict question="A globular cluster of stars slowly loses energy to gravitational evaporation and two-body relaxation (Chapter 22). What happens to its characteristic velocity dispersion (its 'temperature')?" choices={['It decreases — losing energy always cools things down', 'It increases — negative heat capacity applies to any self-gravitating system, not just gas', 'It stays constant — energy loss changes the shape, not the temperature']} answer={1}>
 The virial theorem doesn't care whether the "particles" are gas molecules or entire stars — it only needs a self-gravitating system in equilibrium. Globular clusters really do contract and speed up (their core velocity dispersion rises) as they lose energy through evaporation of their fastest stars, exactly like a star's core heating up as it radiates. This is the same physics that drives *core collapse* in globular clusters ([Chapter 22](/ch/galactic-dynamics/)) and, in a different guise, black-hole accretion disks.
 </Predict>
 
@@ -231,7 +238,7 @@ $$
 t_\text{dyn} \sim \sqrt{\frac{R^3}{GM}} \sim \frac{1}{\sqrt{G\bar\rho}}.
 $$
 
-For the Sun, $t_\text{dyn}\approx$ 1 hour. This is also, up to $O(1)$ factors, the orbital period of a satellite skimming the surface, and the timescale on which a star pulsates (Chapter 15) or a shockwave crosses it in a supernova.
+For the Sun, $t_\text{dyn}\approx$ 1600 s, about half an hour. This is also, up to $O(1)$ factors, the orbital period of a satellite skimming the surface, and the timescale on which a star pulsates (Chapter 15) or a shockwave crosses it in a supernova.
 
 ### The Kelvin–Helmholtz (thermal) timescale
 
@@ -249,7 +256,7 @@ For the Sun, $t_\text{KH}\approx 3\times10^7$ years — about **30 million years
 <History title="Kelvin's sun, and a fight with the geologists" year="1862">
 <Portrait src="/img/people/kelvin.jpg" name="Lord Kelvin" years="1824–1907" credit="Photo by Messrs. Dickinson, London, via Smithsonian Libraries" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Lord_Kelvin_photograph.jpg" />
 
-In 1862, William Thomson — later Lord Kelvin, already famous for the second law of thermodynamics and the Atlantic telegraph — applied exactly the argument above to the Sun and got tens of millions of years. He used it as a weapon: Charles Darwin's 1859 theory of evolution by natural selection needed geological ages of *hundreds of millions* of years to work, and Kelvin insisted physics simply forbade the Sun (and hence a habitable Earth) from being that old. Darwin, unable to counter the physics, quietly deleted a specific-age estimate from later editions of *On the Origin of Species*.
+In 1862, William Thomson — later Lord Kelvin, already famous for the second law of thermodynamics and the Atlantic telegraph — applied exactly the argument above to the Sun and got tens of millions of years. He used it as a weapon: Charles Darwin's 1859 theory of evolution by natural selection needed geological ages of *hundreds of millions* of years to work, and Kelvin insisted physics simply forbade the Sun (and hence a habitable Earth) from being that old. Darwin, already criticised for it, had dropped his one specific age estimate (some 300 million years to erode the Weald of southern England) from *On the Origin of Species*, and later called Kelvin's arguments one of his "sorest troubles."
 
 Kelvin was not being obstinate for its own sake: no energy source other than gravity was known in the 1860s, and $t_\text{KH}$ genuinely is the honest upper limit gravity alone allows. The debate ran for decades (Kelvin's ally Charles Darwin's own son George refined the contraction argument further), and both sides had real physics on their side of an incomplete picture. It was radioactivity — discovered in 1896, after Kelvin's calculation — that broke the impasse twice over: it gave the Earth an internal heat source Kelvin hadn't accounted for, dating rocks directly to billions of years, and (via Eddington and others, decades later) pointed toward nuclear reactions as the Sun's actual power source.
 </History>
@@ -262,7 +269,7 @@ $$
 t_\text{nuc} \sim \frac{0.007\times X_\text{eff}\,Mc^2}{L}.
 $$
 
-For the Sun, $t_\text{nuc}\approx10^{10}$ years — **ten billion years**, of which about 4.6 billion have elapsed. The hierarchy $t_\text{dyn} \ll t_\text{KH} \ll t_\text{nuc}$ (roughly an hour, thirty million years, ten billion years, for the Sun) is why stellar structure calculations can treat hydrostatic and thermal equilibrium as *exact* at any instant: the star restores mechanical balance millions of times faster than it evolves thermally, and evolves thermally hundreds of times faster than it burns through its fuel.
+For the Sun, $t_\text{nuc}\approx10^{10}$ years — **ten billion years**, of which about 4.6 billion have elapsed. The hierarchy $t_\text{dyn} \ll t_\text{KH} \ll t_\text{nuc}$ (roughly half an hour, thirty million years and ten billion years, for the Sun) is why stellar structure calculations can treat hydrostatic and thermal equilibrium as *exact* at any instant: the star restores mechanical balance millions of times faster than it evolves thermally, and evolves thermally hundreds of times faster than it burns through its fuel.
 
 <Sim name="stellar-structure-timescales" minHeight={380}>
 **Three clocks, one star.** Drag the mass slider and watch all three timescales move at once, using the main-sequence scalings $R\propto M^{0.8}$, $L\propto M^{3.5}$. Massive stars have *shorter* nuclear lifetimes despite more fuel, because luminosity wins the race — the reason O and B stars live for millions, not billions, of years.
@@ -302,18 +309,30 @@ $$
 </Fragment>
 </Tiers>
 
+<Tiers>
+<Fragment slot="l1">
+The Sun is about 71% hydrogen and 27% helium by mass. Once all of it is stripped into bare nuclei and free electrons, the average particle weighs only about 0.6 of a proton's mass — the number used throughout this chapter's simulations and estimates.
+</Fragment>
+<Fragment slot="l2">
 For a mixture with hydrogen mass fraction $X$ and helium mass fraction $Y$ ($X+Y\approx1$ for the metal-poor approximation), the particle counts add: $1/\mu \approx 2X + \tfrac34 Y$. For the Sun's photospheric composition ($X\approx0.71$, $Y\approx0.27$), this gives $\mu\approx0.61$ — the value used throughout this chapter's simulations and Fermi estimates.
+</Fragment>
+</Tiers>
 
 <History title="What the Sun is actually made of" year="1925">
 <Portrait src="/img/people/payne-gaposchkin.jpg" name="Cecilia Payne-Gaposchkin" years="1900–1979" credit="Smithsonian Institution / Science Service, restored by Adam Cuerden" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Cecilia_Helena_Payne-Gaposchkin_(1900-1979)_-_Science_Service.png" />
 
-The $X\approx0.71$, $Y\approx0.27$ split above — hydrogen and helium making up nearly all of a star's mass — was not the consensus view until Cecilia Payne's 1925 Radcliffe College (Harvard) PhD thesis. Applying the then-new theory of ionisation (Meghnad Saha's equation) to stellar spectra, she found that hydrogen had to be around a million times more abundant than metals like iron — wildly against the prevailing belief that stars shared roughly Earth's rocky composition.
+The roughly 71% hydrogen, 27% helium split — hydrogen and helium making up nearly all of a star's mass — was not the consensus view until Cecilia Payne's 1925 Radcliffe College (Harvard) PhD thesis. Applying the then-new theory of ionisation (Meghnad Saha's equation) to stellar spectra, she found that hydrogen had to be around a million times more abundant than metals like iron — wildly against the prevailing belief that stars shared roughly Earth's rocky composition.
 
 Her thesis examiner, the astronomer Henry Norris Russell, told her the result had to be wrong; she dutifully wrote in the thesis that the enormous inferred hydrogen abundance was "almost certainly not real." Four years later, Russell rederived the same result independently, published it under his own name with a citation to Payne, and is still sometimes wrongly credited as the sole discoverer. Otto Struve later called her thesis "the most brilliant PhD thesis ever written in astronomy."
 </History>
 
 ### Radiation pressure
 
+<Tiers>
+<Fragment slot="l1">
+Light itself pushes. A hot gas is filled with photons, and their pressure climbs steeply with temperature (as its fourth power). In the Sun it is a rounding error, about 0.03% of the total. But the heavier a star, the hotter its interior, and in a star of 50 solar masses radiation supplies nearly a third of the pressure, pushing the star toward the Eddington limit ([Chapter 14](/ch/main-sequence/)), where light would blow the outer layers away.
+</Fragment>
+<Fragment slot="l2">
 Photons carry momentum too. A photon gas in thermal equilibrium exerts $P_\text{rad} = \tfrac13 aT^4$, with $a=4\sigma_{SB}/c$ the radiation constant ([Chapter 4](/ch/light/)'s result, revisited). Define $\beta \equiv P_\text{gas}/P_\text{total}$; then
 
 $$
@@ -321,6 +340,8 @@ P_\text{total} = P_\text{gas} + P_\text{rad} = \frac{\rho k_BT}{\mu m_p} + \frac
 $$
 
 Eddington showed that for a star in hydrostatic and radiative equilibrium, $\beta$ satisfies a **quartic equation** (the "Eddington standard model," previewed properly under the $n=3$ polytrope below): the more massive and luminous a star, the smaller $\beta$ becomes — radiation pressure takes over from gas pressure as $M$ grows. For the Sun, $\beta\approx0.9997$: radiation pressure is a rounding error. For a $50\,M_\odot$ O star, $\beta$ drops to around 0.7 — radiation pressure is nearly a third of the total, and pushes the star close to its Eddington limit ([Chapter 14](/ch/main-sequence/)).
+</Fragment>
+</Tiers>
 
 <History title="Eddington's standard model, and a wager on relativity" year="1926">
 <Portrait src="/img/people/eddington.jpg" name="Arthur Stanley Eddington" years="1882–1944" credit="George Grantham Bain Collection, Library of Congress" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Arthur_Stanley_Eddington.jpg" />
@@ -340,6 +361,11 @@ At high enough density, quantum mechanics — not temperature — sets the press
 
 ## Polytropes: when pressure is just a function of density
 
+<Tiers>
+<Fragment slot="l1">
+Sometimes the pressure depends only on how tightly the gas is packed, not on its temperature. That is true of the degeneracy pressure above, and roughly true of a star that is convecting from centre to surface. The pressure then follows a simple power of the density, and the power (the **polytropic index** $n$) says how "soft" the gas is: the higher $n$, the more easily it is squeezed.
+</Fragment>
+<Fragment slot="l2">
 A remarkable number of physical situations — including both limits of degeneracy pressure above, and (approximately) fully convective stellar envelopes — give an equation of state of the special form
 
 <KeyEq title="Polytropic equation of state">
@@ -348,6 +374,8 @@ $$
 $$
 <Fragment slot="where"><span data-term="Kpoly">K</span> is a constant (fixed by composition and entropy, or by fundamental constants for degenerate matter) and <span data-term="npoly">n</span>, the **polytropic index**, sets the equation of state's stiffness. $\Gamma \equiv 1+1/n$ is sometimes called the polytropic exponent.</Fragment>
 </KeyEq>
+</Fragment>
+</Tiers>
 
 When $P$ depends on $\rho$ alone, mass continuity and hydrostatic equilibrium become a *closed* system — no energy equations needed — and the whole stellar structure problem collapses to a single, universal, dimensionless ODE, the **Lane–Emden equation**: solve it once for a given $n$ and you have solved *every* star with that equation of state, of any mass or radius — only an overall length and density scale differ between them.
 
@@ -382,15 +410,28 @@ Every polytrope of index $n$, regardless of $K$, $M$ or $R$, has the *same* $\th
 
 ### An elegant bonus: temperature tracks $\theta$ exactly
 
+<Tiers>
+<Fragment slot="l1">
+For an ordinary gas, the same universal curve that gives the density and pressure also gives the temperature: it falls from the centre outward in exact step with that one curve, for free.
+</Fragment>
+<Fragment slot="l2">
 For an ideal gas, $P/\rho = k_BT/(\mu m_p)$. Since $P=P_c\theta^{n+1}$ and $\rho=\rho_c\theta^n$, their ratio is $P_c\theta/\rho_c$ — so $T=T_c\,\theta(\xi)$, with no extra dependence on $n$ at all. The same dimensionless solution that gives you the density and pressure profiles hands you the temperature profile for free.
+</Fragment>
+</Tiers>
 
 ### Analytic and numerical solutions
 
+<Level max={1}>
+Only three values of $n$ can be solved with pen and paper; one of them ($n=5$) describes a "star" with no edge at all, the limiting case beyond which no finite star exists.
+</Level>
+
+<Level min={2} title="The three exactly solvable polytropes">
 Three values of $n$ have closed-form solutions, and are worth memorising as sanity checks for any numerical solver:
 
 - $n=0$ (uniform density): $\theta = 1-\xi^2/6$, with surface at $\xi_1=\sqrt6\approx2.449$.
 - $n=1$: $\theta=\dfrac{\sin\xi}{\xi}$, with $\xi_1=\pi$. (Check: $\theta$ satisfies a *linear* Poisson equation when $n=1$, which is why the solution is an ordinary spherical Bessel function.)
 - $n=5$: $\theta = \big(1+\xi^2/3\big)^{-1/2}$, which **never reaches zero** — an $n=5$ polytrope has infinite radius. It's the limiting case beyond which no finite star exists.
+</Level>
 
 Every other $n$ — including the two most physically important cases, $n=1.5$ and $n=3$ — needs numerical integration. $n=1.5$ describes a fully convective star or non-relativistic degenerate matter (ordinary white dwarfs); $n=3$ describes the *Eddington standard model* (a star where radiation pressure fraction $1-\beta$ is uniform throughout) and, separately, relativistic degenerate matter (massive white dwarfs near the Chandrasekhar limit). Both show up constantly later in this book.
 
@@ -406,14 +447,21 @@ A single number, the **concentration ratio** $\rho_c/\bar\rho = -\xi_1/(3\theta'
 | 3 | 6.897 | 54.2 |
 | 4 | 14.97 | 622 |
 
+<Tiers>
+<Fragment slot="l1">
+The index also fixes how a star's mass and radius are related. For one special value, $n=3$, the answer is startling: the mass does not depend on the radius at all. A star supported by that kind of pressure can have one mass and one mass only. Relativistic electron degeneracy is exactly that kind of pressure, and the one allowed mass, about $1.4\,M_\odot$, is the **Chandrasekhar mass**: the heaviest a white dwarf can be ([Chapter 16](/ch/stellar-death/)).
+</Fragment>
+<Fragment slot="l3">
 Combining the definitions of $\alpha$ and the total mass integral $M = 4\pi\alpha^3\rho_c\int_0^{\xi_1}\xi^2\theta^n\,d\xi = -4\pi\alpha^3\rho_c\,\xi_1^2\theta'(\xi_1)$ with $R=\alpha\xi_1$ gives a mass–radius relation $M\propto R^{(3-n)/(1-n)}$ for fixed $K$. The case $n=3$ is singular: $M$ becomes *independent of $R$* — a fixed mass supported by a fixed $K$ regardless of how compact the star is. That is exactly the origin of the **Chandrasekhar mass**: a relativistic ($n=3$, since $P\propto\rho^{4/3}$) degenerate star has one and only one possible mass, about $1.4\,M_\odot$, no matter its radius.
+</Fragment>
+</Tiers>
 
-<Predict question="As you raise the polytropic index n from 0 toward 5 at fixed total mass and radius, what happens to the central density?" choices={['It stays roughly the same — n just changes the pressure law, not the concentration', 'It falls, because higher n means softer, more diffuse gas', 'It rises dramatically — by a factor of order 50 between n=0 and n=3, and by over 10,000 between n=0 and n=4']} answer={2}>
+<Predict question="As you raise the polytropic index n from 0 toward 5 at fixed total mass and radius, what happens to the central density?" choices={['It stays roughly the same — n just changes the pressure law, not the concentration', 'It falls, because higher n means softer, more diffuse gas', 'It rises dramatically — by a factor of order 50 between n=0 and n=3, and by over 600 between n=0 and n=4']} answer={2}>
 Higher n means a *softer* equation of state (pressure rises more slowly with density), which lets gravity concentrate far more mass into the core before the pressure gradient can push back — exactly the ρ_c/ρ̄ column above. This is why degenerate stellar cores (which behave like high-n polytropes) can pack a solar mass into a radius the size of the Earth or smaller.
 </Predict>
 
 <Sim name="stellar-structure-polytrope" size="wide" minHeight={480}>
-**Build a star.** Choose a polytropic index $n$, total mass and radius, and the flagship integrates the Lane–Emden equation live (RK4, with a series expansion to start at the singular point $\xi=0$). The disk on the left renders a cross-section coloured by the actual local blackbody temperature; the panel shows $\theta(\xi)$ and the normalised density, pressure, temperature and mass profiles, with the Standard Solar Model's density profile overlaid for comparison against $n=3$. Watch $\rho_c/\bar\rho$ in the readouts explode as you raise $n$ toward 5.
+**Build a star.** Choose a polytropic index $n$, total mass and radius, and the flagship integrates the Lane–Emden equation live (RK4, with a series expansion to start at the singular point $\xi=0$). The disk on the left is a cross-section coloured by the local blackbody colour, with brightness rising with $\log T$ and dashed isotherms at $10^5$, $10^6$ and $10^7$ K (the whole interior is far too hot to look anything but blue-white); the plot shows the normalised density, pressure, temperature and mass profiles (for an ideal-gas polytrope $T/T_c$ is exactly $\theta$), with the Standard Solar Model's density profile overlaid for comparison against $n=3$. Watch $\rho_c/\bar\rho$ in the readouts explode as you raise $n$ toward 5.
 </Sim>
 
 <Hood title="solving the Lane–Emden equation">

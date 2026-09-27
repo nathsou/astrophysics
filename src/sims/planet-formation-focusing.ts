@@ -94,7 +94,11 @@ export default defineSim({
       ctx.strokeStyle = pal.accent; ctx.setLineDash([4, 4]); ctx.lineWidth = 1;
       ctx.beginPath(); ctx.arc(cx, cy, bc * sc, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
       ctx.fillStyle = pal.accent; ctx.font = '11px Inter, system-ui, sans-serif';
-      ctx.fillText('focused cross-section', cx + bc * sc * 0.72 + 4, cy - bc * sc * 0.72);
+      const lbl = 'focused cross-section', lx = cx + bc * sc * 0.72 + 4;
+      const fits = lx + ctx.measureText(lbl).width < W - 4;
+      ctx.textAlign = fits ? 'left' : 'right';
+      ctx.fillText(lbl, fits ? lx : W - 6, cy - bc * sc * 0.72 - (fits ? 0 : 10));
+      ctx.textAlign = 'left';
       // paths
       for (const p of paths) {
         ctx.strokeStyle = p.hit ? pal.series[0] : pal.faint;

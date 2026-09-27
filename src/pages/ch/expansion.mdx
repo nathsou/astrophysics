@@ -105,7 +105,7 @@ The observational story has more names than the textbook shorthand suggests. Sta
 
 In 1927, the Belgian priest-physicist **Georges Lemaître** combined Slipher's redshifts with distance estimates and *derived* a linear velocity–distance relation from Einstein's equations, in a paper published in a relatively obscure Belgian journal. It went almost unnoticed.
 
-**Edwin Hubble**, using Henrietta Leavitt's period–luminosity relation (below) to measure galaxy distances at Mount Wilson, published essentially the same linear relation in 1929 with better data and much wider visibility. For decades the relation carried only his name; in 2018 the International Astronomical Union formally recommended "Hubble–Lemaître law", and this book follows that convention. Hubble's own value for the constant, about 500 km/s/Mpc, was almost eight times too high — his distance ladder had a systematic error (confusing two different types of variable star) that took over two decades to fully correct.
+**Edwin Hubble**, using Henrietta Leavitt's period–luminosity relation (below) to measure galaxy distances at Mount Wilson, published essentially the same linear relation in 1929 with better data and much wider visibility. For decades the relation carried only his name; in 2018 the International Astronomical Union formally recommended "Hubble–Lemaître law", and this book follows that convention. Hubble's own value for the constant, about 500 km/s/Mpc, was about seven times too high — his distance ladder had a systematic error (confusing two different types of variable star) that took over two decades to fully correct.
 </History>
 
 <Tiers>
@@ -122,10 +122,11 @@ $$
 
 A galaxy at <Var name="hubbled" value={100} min={1} max={5000} log /> Mpc, with $H_0 =$ <Var name="hubbleH0" value={70} min={50} max={90} /> km/s/Mpc, recedes at <Out name="hubblev" />.
 </Fragment>
-<Fragment slot="l3">
-More generally, $v=H_0 d$ is the $z\to 0$ limit of $H(t) = \dot a/a$ evaluated today. Differentiating $r = a(t)\chi$ at fixed comoving $\chi$ gives $\dot r = \dot a \chi = (\dot a/a) r = H(t) r$ — expansion is a *local, instantaneous* statement about the rate of stretching, valid everywhere at once, not a signal propagating outward from a centre.
-</Fragment>
 </Tiers>
+
+<Level min={3} title="Why v = H₀d holds everywhere at once">
+More generally, $v=H_0 d$ is the $z\to 0$ limit of $H(t) = \dot a/a$ evaluated today. Differentiating $r = a(t)\chi$ at fixed comoving $\chi$ gives $\dot r = \dot a \chi = (\dot a/a) r = H(t) r$ — expansion is a *local, instantaneous* statement about the rate of stretching, valid everywhere at once, not a signal propagating outward from a centre.
+</Level>
 
 <Fermi title="Weighing the Hubble time in your head">
 $1/H_0$ has units of time — a rough age for the universe if the expansion rate had always been what it is today. Converting units: $1\,\text{Mpc} = 3.09\times10^{19}\,\text{km}$, so
@@ -173,6 +174,9 @@ This *is* the first Friedmann equation. The Newtonian derivation gets the matter
 ### The real thing
 
 <Tiers>
+<Fragment slot="l1">
+The full version comes from Einstein's general relativity, and it reads like an energy budget for the whole universe. The expansion rate (squared) is set by three things: how much matter and radiation there is per unit volume, which acts as a brake; the overall curvature of space; and dark energy, a steady push built into space itself. As the universe grows, matter and radiation thin out but dark energy does not, which is why dark energy ends up in charge.
+</Fragment>
 <Fragment slot="l2">
 <KeyEq title="Friedmann equation (first)">
 $$
@@ -181,7 +185,9 @@ $$
 <Fragment slot="where">$\rho$ is the total energy density (matter + radiation). $k \in \{-1,0,+1\}$ is the curvature sign. $\Lambda$ is the <span data-term="Lambda">cosmological constant</span>, an alternative bookkeeping for dark energy folded into $\rho$ below.</Fragment>
 </KeyEq>
 </Fragment>
-<Fragment slot="l3">
+</Tiers>
+
+<Level min={3} title="From general relativity: the second Friedmann equation">
 This is the time–time component of Einstein's field equations for the FLRW metric,
 
 $$
@@ -196,8 +202,7 @@ $$
 $$
 <Fragment slot="where">$p$ is pressure. Note the $+3p$: unlike Newtonian gravity, *pressure itself gravitates* in general relativity. A fluid with large positive pressure decelerates the expansion more than its energy density alone would suggest — and a fluid with $p<-\rho/3$ can accelerate it. (New to $\ddot a$, an acceleration from a second time-derivative? See [Appendix A4](/ch/primer-calculus/).)</Fragment>
 </KeyEq>
-</Fragment>
-</Tiers>
+</Level>
 
 <Level min={3} title="The continuity equation and w">
 Energy conservation in an expanding volume ($d(\rho c^2 a^3) = -p\,d(a^3)$, the first law of thermodynamics for an adiabatically expanding fluid) gives
@@ -221,6 +226,9 @@ A general "dark energy" fluid can have any $w$, even one that evolves with time 
 ### Dimensionless bookkeeping: the density parameters
 
 <Tiers>
+<Fragment slot="l1">
+Cosmologists describe the contents of the universe with a handful of percentages, written Ω ("omega"), each measured against the density that would make space exactly flat. Today the recipe is about 31% matter (only a sixth of it ordinary atoms, the rest dark matter), 69% dark energy, a trace of radiation (about 0.009%), and a curvature consistent with zero. Each ingredient thins out at its own rate as the universe grows, which is what the next figure shows.
+</Fragment>
 <Fragment slot="l2">
 Divide the first Friedmann equation by $H_0^2$ and define $\Omega_i = \rho_{i,0}/\rho_{\text{crit},0}$ for each component, with $\rho_{\text{crit},0} = 3H_0^2/8\pi G$ the density that would make the universe exactly flat. Then at any scale factor,
 
@@ -259,10 +267,11 @@ $$
 
 The $d_A$ turnover happens because at high $z$ you are looking at light emitted when the universe — and the object's true comoving distance divided among a proportionally smaller sky — was much more compact; the extra $(1+z)^{-1}$ shrinks faster than $d_C$ grows past $z\sim1.5$.
 </Fragment>
-<Fragment slot="l3">
-For nonzero curvature, replace $d_C$ with the transverse comoving distance $d_M = (c/H_0)\,\text{sinh or sin}\big(\sqrt{|\Omega_k|}\,H_0 d_C/c\big)/\sqrt{|\Omega_k|}$ (sinh for open, sin for closed, $\to d_C$ as $\Omega_k\to0$), then $d_L=(1+z)d_M$, $d_A=d_M/(1+z)$. **Lookback time** is a genuinely different quantity from any distance: $t_{\text{lookback}}(z) = \int_0^z \frac{dz'}{(1+z')H(z')}$, the proper time elapsed for *us*, not a light-travel distance.
-</Fragment>
 </Tiers>
+
+<Level min={3} title="Curved space and lookback time">
+For nonzero curvature, replace $d_C$ with the transverse comoving distance $d_M = (c/H_0)\,\text{sinh or sin}\big(\sqrt{|\Omega_k|}\,H_0 d_C/c\big)/\sqrt{|\Omega_k|}$ (sinh for open, sin for closed, $\to d_C$ as $\Omega_k\to0$), then $d_L=(1+z)d_M$, $d_A=d_M/(1+z)$. **Lookback time** is a genuinely different quantity from any distance: $t_{\text{lookback}}(z) = \int_0^z \frac{dz'}{(1+z')H(z')}$, the proper time elapsed for *us*, not a light-travel distance.
+</Level>
 
 <Sim name="expansion-distances" size="wide" minHeight={440}>
 **Three distances, one redshift.** Drag the vertical marker (or the slider) across redshift. Comoving and luminosity distance climb without bound; angular-diameter distance turns over near $z\approx1.6$ and *shrinks* beyond that — the same galaxy would look bigger on the sky at $z=10$ than at $z=3$.
@@ -279,7 +288,7 @@ The particle horizon (comoving) is $\chi_p = \int_0^{t_0}\frac{c\,dt}{a(t)} = \i
 </Fragment>
 </Tiers>
 
-<Aside>**"Superluminal" is routine.** Essentially every galaxy with $z\gtrsim1.4$ is currently receding faster than $c$ in this sense, and was even receding faster than $c$ when it emitted the light we now see. None of this is paradoxical once you accept that recession velocity is a statement about the rate of change of distance between comoving points, not a velocity through local spacetime. See Chapter 24 for a related "no true motion" subtlety in gravitational lensing.</Aside>
+<Aside>**"Superluminal" is routine.** Essentially every galaxy with $z\gtrsim1.4$ is currently receding faster than $c$ in this sense, and those beyond $z\approx1.6$ were already receding faster than $c$ when they emitted the light we now see. None of this is paradoxical once you accept that recession velocity is a statement about the rate of change of distance between comoving points, not a velocity through local spacetime. Quasar jets fake faster-than-light motion in a completely different way, a pure light-travel-time illusion; see [Chapter 23](/ch/galaxy-formation/).</Aside>
 
 ## Building a universe
 
@@ -368,14 +377,14 @@ Concretely, a supernova's distance modulus $\mu = 5\log_{10}(d_L/\text{10 pc})$ 
 
 <Tiers>
 <Fragment slot="l1">
-"Dark energy" is the placeholder name for whatever causes the acceleration — most simply, Einstein's cosmological constant $\Lambda$, a fixed energy density built into empty space itself. It behaves like a fluid with negative pressure ($w=-1$): unlike everything else in the universe, its density does *not* dilute as space expands, so eventually (Chapter 26 aside) it dominates everything else, which is already happening now.
+"Dark energy" is the placeholder name for whatever causes the acceleration — most simply, Einstein's cosmological constant $\Lambda$, a fixed energy density built into empty space itself. It behaves like a fluid with negative pressure ($w=-1$): unlike everything else in the universe, its density does *not* dilute as space expands, so eventually (see the density plot above) it dominates everything else, which is already happening now.
 </Fragment>
 <Fragment slot="l2">
 The honest state of the evidence in 2026: flat ΛCDM with $w=-1$ fits essentially all data (CMB, BAO, SNe Ia, weak lensing) very well. But DESI's 2024–2025 baryon acoustic oscillation results show a mild ($2$–$4\sigma$, depending on the combination of datasets) preference for dark energy that has *evolved* — typically parametrised as $w(a) = w_0 + w_a(1-a)$ — over a strictly constant $\Lambda$. This is intriguing and worth watching, but it is **not yet a confirmed departure** from the simplest model: systematic effects in the BAO analysis and tension with some independent SN compilations remain live concerns. Treat "evolving dark energy" as a promising anomaly under active investigation, not (yet) an established fact.
 </Fragment>
 </Tiers>
 
-<Aside>**In the real universe…** the current best-fit deceleration parameter is $q_0 \approx -0.53$ (accelerating), and the transition from deceleration to acceleration happened at $z\approx0.6$, about 6–7 Gyr ago — matter and Λ happened to be comparable then, which is also, not entirely coincidentally, when structure formation (Chapter 28) began visibly slowing down.</Aside>
+<Aside>**In the real universe…** the current best-fit deceleration parameter is $q_0 \approx -0.53$ (accelerating), and the transition from deceleration to acceleration happened at $z\approx0.6$, about 6 Gyr ago — matter and Λ happened to be comparable then, which is also, not entirely coincidentally, when structure formation (Chapter 28) began visibly slowing down.</Aside>
 
 ## Where we go from here
 

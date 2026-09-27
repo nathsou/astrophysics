@@ -11,7 +11,7 @@ interface Eq { id: string; label: string; f: (t: number, y: number) => number; t
 
 const EQS: Eq[] = [
   { id: 'decay', label: 'Decay: y′ = −y', f: (_t, y) => -y, t: [0, 5], y: [-1, 3], ic: [0, 2.5], yLabel: 'N / N₀' },
-  { id: 'drag', label: 'Fall with drag: v′ = 1 − v²', f: (_t, v) => 1 - v * v, t: [0, 4], y: [-0.6, 2.2], ic: [0, 0], yLabel: 'v / v_terminal' },
+  { id: 'drag', label: 'Fall with drag: v′ = 1 − v²', f: (_t, v) => 1 - v * v, t: [0, 4], y: [-0.6, 2.2], ic: [0, 0], yLabel: 'v / terminal speed' },
   { id: 'logistic', label: 'Logistic: y′ = y(1 − y)', f: (_t, y) => y * (1 - y), t: [0, 10], y: [-0.4, 1.6], ic: [0, 0.05], yLabel: 'y' },
   { id: 'driven', label: 'Driven cooling: y′ = cos t − y', f: (t, y) => Math.cos(t) - y, t: [0, 12], y: [-2, 2], ic: [0, 1.8], yLabel: 'y' },
   { id: 'blowup', label: 'Blow-up: y′ = y²', f: (_t, y) => y * y, t: [0, 3], y: [-2, 4], ic: [0, 0.5], yLabel: 'y' },
@@ -41,6 +41,7 @@ export default defineSim({
     stage.canvas.style.cursor = 'crosshair';
     const plot = new Plot(stage.canvas, { x: { min: eq.t[0], max: eq.t[1], label: 'time t' }, y: { min: eq.y[0], max: eq.y[1], label: eq.yLabel } });
     const loop = new Loop(null, render);
+    loop.onDemand = true;
 
     const inBox = (t: number, y: number) => t >= eq.t[0] - 1e-9 && t <= eq.t[1] + 1e-9 && y >= eq.y[0] - 3 && y <= eq.y[1] + 3 && Number.isFinite(y);
 

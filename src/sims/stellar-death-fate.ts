@@ -63,16 +63,20 @@ export default defineSim({
         ctx.globalAlpha = 0.75;
         ctx.fillRect(x0, barY, x1 - x0, barH);
         ctx.globalAlpha = 1;
-        if (x1 - x0 > 34) {
-          ctx.save();
-          ctx.fillStyle = pal.bg;
-          ctx.font = '11px Inter, system-ui, sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          const midY = barY + barH / 2;
-          ctx.fillText(b.label, (x0 + x1) / 2, midY, x1 - x0 - 6);
-          ctx.restore();
+        // label: horizontal if it fits, otherwise rotated to run up the band
+        ctx.save();
+        ctx.fillStyle = pal.bg;
+        ctx.font = '11px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const midY = barY + barH / 2, bw = x1 - x0, tw = ctx.measureText(b.label).width;
+        if (tw + 8 <= bw) ctx.fillText(b.label, (x0 + x1) / 2, midY);
+        else if (bw >= 14 && tw + 8 <= barH) {
+          ctx.translate((x0 + x1) / 2, midY);
+          ctx.rotate(-Math.PI / 2);
+          ctx.fillText(b.label, 0, 0);
         }
+        ctx.restore();
       }
       // tick marks
       ctx.strokeStyle = pal.axis;
@@ -95,7 +99,9 @@ export default defineSim({
       ctx.fillStyle = pal.fg; ctx.fill();
 
       const hit = bs.find((b) => mass >= b.lo && mass < b.hi) ?? bs[bs.length - 1];
-      roFate.set(`${hit.label} — ${hit.desc}`);
+      roFate.set(mass < 0.9
+        ? 'Not yet! A star this light lives longer than the current age of the Universe. Eventually it will become a white dwarf (helium-rich below about 0.5 M☉).'
+        : `${hit.label}: ${hit.desc}`);
     }
     stage.onResize(() => draw());
     onThemeChange(() => { pal = palette(); draw(); });

@@ -61,7 +61,6 @@ export default defineSim({
       x: { min: 0, max: 1.6 * Rsun / Rsun, label: 'r (R☉)' },
       y: { min: 0, max: 1.4, label: 'P / P_c(target)' },
     });
-    stage.onResize((w, h, dpr) => { plot.resize(w, h, dpr); draw(); });
     let pal = palette();
     onThemeChange(() => { pal = palette(); draw(); });
 
@@ -82,7 +81,7 @@ export default defineSim({
       draw();
     }
 
-    function reset() { lo = PC_SUN * 0.15; hi = PC_SUN * 8; trials.length = 0; draw(); }
+    function reset() { lo = PC_SUN * 0.15; hi = PC_SUN * 8; trials.length = 0; step(); }
 
     const panel = new Panel(host);
     panel.button('Shoot once (bisect)', step, true);
@@ -113,7 +112,8 @@ export default defineSim({
       roN.set(String(trials.length));
     }
 
-    draw();
+    stage.onResize((w, h, dpr) => { plot.resize(w, h, dpr); draw(); });
+    step(); // show the first guess straight away
     return { setVisible() {}, destroy() {} };
   },
 });

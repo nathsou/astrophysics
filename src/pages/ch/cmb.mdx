@@ -47,7 +47,7 @@ import Portrait from '../../components/Portrait.astro';
 
 ## The oldest light
 
-<Photo src="/img/cmb/planck-map.jpg" alt="An oval all-sky map mottled with blue and orange-red spots, the cosmic microwave background as seen by Planck" credit="ESA and the Planck Collaboration" license="CC BY-SA 3.0 IGO" href="https://images.nasa.gov/details/PIA16873" size="wide" aspect="2 / 1">
+<Photo src="/img/cmb/planck-map.jpg" alt="An oval all-sky map mottled with blue and orange-red spots, the cosmic microwave background as seen by Planck" credit="ESA and the Planck Collaboration" license="ESA Standard Licence" href="https://www.esa.int/ESA_Multimedia/Images/2013/03/Planck_CMB" size="wide" aspect="2 / 1">
 **The sky 380,000 years after the Big Bang.** Planck's 2013 map of the cosmic microwave background, with our own motion and the Milky Way's glow removed, in the Mollweide projection. Red spots are about 0.0002 K warmer than average and blue ones about as much colder. The typical spot is about 1° across: twice the width of the full Moon. You will generate skies like this one yourself further down.
 </Photo>
 
@@ -84,7 +84,7 @@ In 1964 two young radio astronomers at Bell Labs, Arno Penzias and Robert Wilson
 Thirty miles away in Princeton, Robert Dicke's group (with Jim Peebles, Peter Roll and David Wilkinson) had predicted that a hot Big Bang should leave a few-kelvin radiation bath, and they were building a small radiometer on a laboratory roof to find it. George Gamow's students Ralph Alpher and Robert Herman had made the same prediction in 1948, and it had been forgotten. When Penzias mentioned his puzzle to a colleague, word reached Dicke, who took the phone call, listened, and turned to his team: "Well, boys, we've been scooped." The two groups published back-to-back papers in 1965. Penzias and Wilson shared the 1978 Nobel Prize; Peebles received his in 2019, for turning the CMB into a precision tool.
 </History>
 
-<Photo src="/img/cmb/holmdel-horn.jpg" alt="Black and white photograph of a large horn-shaped radio antenna on a rotating mount" credit="NASA" license="Public domain" href="https://commons.wikimedia.org/wiki/File:Horn_Antenna-in_Holmdel,_New_Jersey_-_restoration1.jpg" size="text" aspect="4 / 3">
+<Photo src="/img/cmb/holmdel-horn.jpg" alt="Black and white photograph of a large horn-shaped radio antenna on a rotating mount" credit="NASA" license="Public domain" href="https://www.flickr.com/photos/nasacommons/16315677368" size="text" aspect="4 / 3">
 **The Holmdel Horn Antenna.** Built in 1959 for Project Echo, the first passive communications satellite, and used by Penzias and Wilson to discover the CMB. The horn shape shields the receiver from radio noise from the ground, which is what made a 3 K excess detectable at all.
 </Photo>
 
@@ -241,18 +241,20 @@ For the quadrupole that is 63%. At $\ell = 1000$ it is 3%. This **cosmic varianc
 Up to multipole $\ell_\text{max}$ there are $\sum_\ell (2\ell+1) \approx \ell_\text{max}^2$ modes. Beyond $\ell \approx 2500$, the primary CMB is erased by Silk damping (below) and swamped by point sources. So the primordial temperature map contains about $2500^2 \approx 6\times10^6$ independent numbers, of which about 3/4 lie outside the galactic mask. The ΛCDM model fits all of them with **six parameters**. By comparison, a single high-resolution photograph has a few million pixels. The CMB is, quite literally, a photograph of the early universe, and it can never get any sharper.
 </Fermi>
 
-<Photo src="/img/cmb/planck-spectrum.jpg" alt="Graph of temperature fluctuations squared versus multipole moment, showing a tall first peak near ell 220 followed by smaller peaks, with red data points on a green model curve" credit="ESA and the Planck Collaboration" license="CC BY-SA 3.0 IGO" href="https://images.nasa.gov/details/PIA16879" size="text" aspect="1800 / 1390">
+<Photo src="/img/cmb/planck-spectrum.jpg" alt="Graph of temperature fluctuations squared versus multipole moment, showing a tall first peak near ell 220 followed by smaller peaks, with red data points on a green model curve" credit="ESA and the Planck Collaboration" license="ESA Standard Licence" href="https://www.esa.int/ESA_Multimedia/Images/2013/03/Planck_Power_Spectrum" size="text" aspect="1800 / 1390">
 **The real thing.** Planck's 2013 temperature power spectrum: red points are data, the green curve is the six-parameter ΛCDM fit, and the green band at the left is cosmic variance. The horizontal axis switches from logarithmic to linear at ℓ = 50. Every bump in this curve is explained in the next two sections.
 </Photo>
 
 ## The sky generator
 
-<Level max={1}>
+<Tiers>
+<Fragment slot="l1">
 Below is a sky made by your computer the way nature made the real one: take random patterns of every size, give each size the strength the power spectrum says, and add them up. The sliders change the recipe of the early universe (how much ordinary matter, how much dark matter, whether space is curved), and you see the spots change size and contrast while the random "dice rolls" stay the same.
-</Level>
-<Level min={2}>
+</Fragment>
+<Fragment slot="l2">
 Below is a real Gaussian random sky, synthesised on your GPU. The recipe is exactly the statistical statement above: draw a set of random numbers $g_{\ell m}$, multiply them by $\sqrt{C_\ell}$, and sum the spherical harmonics. The power spectrum comes from an approximate model of ΛCDM, described in the next section. When you move a slider, the random numbers $g_{\ell m}$ stay the same; only the amplitudes $\sqrt{C_\ell}$ change. You see the same sky, reshaped.
-</Level>
+</Fragment>
+</Tiers>
 
 <Predict question="If you double the density of ordinary matter (Ω_b h²), what happens to the typical size of the hot and cold spots?" choices={['They get much bigger', 'They barely change, but the contrast of the degree-scale spots goes up', 'They get much smaller']} answer={1}>
 The spot size is set by the angle subtended by the sound horizon, $\theta_* = r_s/D_M$. Baryons slow the sound speed a little, so $r_s$ shrinks a few percent and the first peak moves slightly *right*. The big effect is on the heights: extra baryons deepen the compressions, so the first (and third) peaks grow and the degree-scale spots become more contrasted. To change the spot *size* substantially, you need curvature: try the $\Omega_k$ slider.
@@ -425,7 +427,7 @@ In 2000, the BOOMERanG and MAXIMA balloon experiments located the first peak at 
 **Triangulating the universe.** Left: rays from the ends of the sound horizon at $z_* \approx 1090$ to us. The bending is exaggerated so you can see it, but the angle readout is computed properly. Right: the resulting power spectrum (with $h$ and the matter densities held at Planck values) against the data. Slide $\Omega_k$ from $-0.15$ (closed) to $+0.15$ (open) and watch the first peak slide across the Planck points. The data allow only a sliver around zero.
 </Sim>
 
-<Level min={2}>
+<Level min={2} title="The geometric degeneracy">
 There is a catch, the **geometric degeneracy**: $D_M$ depends on both curvature and the Hubble constant, so the CMB alone can trade one against the other. Adding baryon acoustic oscillations in galaxy surveys (the same sound horizon, frozen into the matter distribution at lower redshift, [Chapter 28](/ch/structure/)) breaks the degeneracy. Planck plus BAO gives $\Omega_k = 0.0007 \pm 0.0019$. Space is flat to within 0.2%.
 </Level>
 
@@ -449,7 +451,7 @@ Scalar density perturbations are mirror-symmetric, so at linear order they produ
 </Fragment>
 </Tiers>
 
-<Photo src="/img/cmb/planck-polarization.jpg" alt="All-sky oval map with a fingerprint-like texture of swirling lines over mottled red and blue, showing the direction of CMB polarisation" credit="ESA and the Planck Collaboration" license="CC BY-SA 3.0 IGO" href="https://images.nasa.gov/details/PIA18916" size="wide" aspect="2 / 1">
+<Photo src="/img/cmb/planck-polarization.jpg" alt="All-sky oval map with a fingerprint-like texture of swirling lines over mottled red and blue, showing the direction of CMB polarisation" credit="ESA and the Planck Collaboration" license="ESA Standard Licence" href="https://images.nasa.gov/details/PIA18916" size="wide" aspect="2 / 1">
 **The polarised sky.** Planck's visualisation of CMB polarisation: the colour shows temperature fluctuations, and the fingerprint-like texture traces the direction of polarisation, smoothed to show only large-scale structure. Most of this pattern is E-mode polarisation from the acoustic flow at recombination.
 </Photo>
 

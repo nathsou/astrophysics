@@ -8,7 +8,7 @@ import { Plot } from '../lib/ui/plot';
 import { palette, onThemeChange } from '../lib/ui/theme';
 
 export default defineSim({
-  mount({ host }) {
+  mount({ host, onDestroy }) {
     let pal = palette();
     onThemeChange(() => { pal = palette(); loop.invalidate(); });
 
@@ -18,6 +18,15 @@ export default defineSim({
     const geoStage = createStage(wrap, { aspect: 1 });
     const plotStage = createStage(wrap, { aspect: 1.2 });
     geoStage.el.style.borderRight = '1px solid var(--rule)';
+    // side by side on wide screens, stacked on phones
+    const stackRO = new ResizeObserver(() => {
+      const narrow = wrap.clientWidth < 560;
+      wrap.style.gridTemplateColumns = narrow ? 'minmax(0,1fr)' : 'minmax(0,1fr) minmax(0,1.15fr)';
+      geoStage.el.style.borderRight = narrow ? '' : '1px solid var(--rule)';
+      geoStage.el.style.borderBottom = narrow ? '1px solid var(--rule)' : '';
+    });
+    stackRO.observe(wrap);
+    onDestroy(() => stackRO.disconnect());
     const gctx = geoStage.canvas.getContext('2d')!;
 
     let lDeg = 40;
@@ -41,6 +50,8 @@ export default defineSim({
     }
 
     const loop = new Loop(null, render, 1 / 30);
+
+    loop.onDemand = true;
 
     function render() {
       const lRad = (lDeg * Math.PI) / 180;

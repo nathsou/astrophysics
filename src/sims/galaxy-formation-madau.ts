@@ -36,9 +36,11 @@ export default defineSim({
     const inv = () => { dirty = true; loop.invalidate(); };
     onThemeChange(() => { pal = palette(); inv(); });
     const stage = createStage(host, { aspect: 16 / 9 });
+    if (host.clientWidth < 560) stage.el.style.aspectRatio = '1.25'; // taller on phones
     const plot = new Plot(stage.canvas, {
       x: { min: 0, max: 10, label: 'redshift z' },
       y: { min: 0, max: 0.2, label: 'ψ  (M☉ yr⁻¹ Mpc⁻³)' },
+      margin: { l: 56, r: 46, t: 14, b: 42 },
     });
     let mode: 'z' | 't' = 'z';
     let zSel = 2;
@@ -59,11 +61,20 @@ export default defineSim({
         for (let i = 0; i <= 400; i++) { const z = (10 * i) / 400; xs.push(X(z)); ys.push(psi(z)); ys2.push(0.2 * cumAt(ageAt(z))); }
         plot.line(xs, ys, { color: pal.accent, width: 2.4 });
         plot.line(xs, ys2, { color: pal.series[1], width: 1.5, dash: [5, 4] });
-        plot.text('cumulative fraction of today’s stars (right scale: 0–100%)', plot.px(X(mode === 'z' ? 9.8 : 0.3)), plot.py(0.192), { color: pal.series[1], align: mode === 'z' ? 'right' : 'left', size: 10 });
+        if (plot.pw > 480) plot.text('cumulative fraction of today’s stars (right-hand scale)', plot.px(X(mode === 'z' ? 9.8 : 0.3)), plot.py(0.192), { color: pal.series[1], align: mode === 'z' ? 'right' : 'left', size: 10 });
         const zp = 1.86; // peak of the fit
-        plot.vline(X(zp), { label: 'peak z ≈ 1.9 (“cosmic noon”)', color: pal.muted });
+        plot.vline(X(zp), { label: plot.pw > 480 ? 'peak z ≈ 1.9 (“cosmic noon”)' : 'z ≈ 1.9', color: pal.muted });
         plot.point(X(zSel), psi(zSel), { r: 5, color: pal.fg, stroke: pal.accent });
       });
+      // right-hand axis for the cumulative curve
+      const c = plot.ctx, xr = plot.m.l + plot.pw;
+      c.strokeStyle = pal.series[1]; c.globalAlpha = 0.6; c.lineWidth = 1;
+      c.beginPath(); c.moveTo(xr + 0.5, plot.m.t); c.lineTo(xr + 0.5, plot.m.t + plot.ph); c.stroke(); c.globalAlpha = 1;
+      for (const f of [0, 0.25, 0.5, 0.75, 1]) {
+        const Y = plot.py(0.2 * f);
+        c.beginPath(); c.moveTo(xr, Y); c.lineTo(xr + 4, Y); c.stroke();
+        plot.text(`${f * 100}%`, xr + 7, Y, { color: pal.series[1], baseline: 'middle', size: 10 });
+      }
       const t = ageAt(zSel);
       rz.set(`z = ${fmt(zSel, 3)} · age ${fmt(t, 3)} Gyr · lookback ${fmt(AGE_NOW - t, 3)} Gyr`);
       rp.set(`${fmt(psi(zSel), 3)} M☉/yr/Mpc³ (${fmt(psi(zSel) / psi(0), 3)}× today)`);
@@ -86,6 +97,7 @@ export default defineSim({
     const rz = panel.readout('');
     const rp = panel.readout('ψ =');
     const rc = panel.readout('stars:');
+    host.style.minHeight = ''; // drop the loader's placeholder height: the mounted content now sizes the figure
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },
 });

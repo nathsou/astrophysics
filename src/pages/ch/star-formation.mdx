@@ -127,7 +127,7 @@ James Jeans got the same answer in 1902 from a more careful calculation (waves a
 James Jeans was 25 and a fellow of Trinity College, Cambridge, when he asked a question that went back to Newton: could an infinite, uniform gas break up into lumps under its own gravity? Newton had speculated in a 1692 letter to Richard Bentley that matter spread through infinite space would "convene into masses". Jeans made it quantitative. He perturbed the gas with sound waves and found the critical wavelength above which gravity beats pressure. He had to ignore the fact that his uniform background could not be in equilibrium, the "Jeans swindle" that bothered mathematicians for decades before it was justified properly. Jeans went on to write best-selling popular books on astronomy in the 1920s and 30s. His criterion is now used for everything from star formation to the growth of galaxies in the expanding universe.
 </History>
 
-<Level min={2}>
+<Level min={2} title="The Jeans length and Jeans mass formulas">
 
 <KeyEq title="Jeans length and Jeans mass">
 $$
@@ -144,7 +144,7 @@ Try it. Gas at a number density of <Var name="jn" value={10000} min={0.01} max={
 The defaults describe a dense core, and the Jeans mass comes out at a couple of solar masses: the characteristic mass of stars is already hiding in the numbers for 10 K gas at $10^4$ cm⁻³. Now drag the density down to 1 cm⁻³ and the temperature up to 8,000 K, the warm neutral medium. The Jeans mass climbs to tens of millions of solar masses, more than any cloud. Warm gas simply cannot form stars. It has to cool first, which is why the cooling physics of [Chapter 6](/ch/ism/) matters so much.
 
 <Sim name="star-formation-jeans" size="wide" minHeight={420}>
-**The Jeans mass across the ISM.** Faint lines are contours of constant $M_J$ (one per decade); they are straight in log–log because $M_J\propto T^{3/2}n^{-1/2}$. The orange line and shading show where a clump of the chosen mass is Jeans-unstable. **Drag the marker** (it is linked to the numbers in the text) and move the clump-mass slider: a 10⁵ M☉ GMC is unstable almost everywhere cold, while a 0.01 M☉ fragment needs densities beyond $10^{10}$ cm⁻³.
+**The Jeans mass across the ISM.** Faint lines are contours of constant $M_J$ (one per decade); they are straight in log–log because $M_J\propto T^{3/2}n^{-1/2}$. The orange line is the boundary for a clump of the chosen mass: in the orange-shaded region it is Jeans-unstable and collapses, in the blue region pressure holds it up. **Drag the marker** (it is linked to the numbers in the text) and move the clump-mass slider: a 10⁵ M☉ GMC is unstable almost everywhere cold, while a 0.01 M☉ fragment needs densities beyond $10^{10}$ cm⁻³.
 </Sim>
 
 ### Free fall

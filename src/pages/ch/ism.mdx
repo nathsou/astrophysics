@@ -170,7 +170,7 @@ for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
 }
 ```
 
-   This is *unconditionally stable*: however far a cell's fluid has moved in one step, sampling the old field just interpolates it, with no danger of blowing up. The price is **numerical diffusion**: bilinear interpolation smooths features by roughly one grid cell per crossing, which is why supernova shells in the sim are a few cells wide rather than an infinitesimally sharp front. A real code (see below) resolves fronts far better, at the cost of a timestep tied to the CFL condition.
+   This is *unconditionally stable*: however far a cell's fluid has moved in one step, sampling the old field just interpolates it, with no danger of blowing up. The price is **numerical diffusion**: bilinear interpolation smooths features by roughly one grid cell per crossing, which is why supernova shells in the sim are a few cells wide rather than an infinitesimally sharp front. A real code (see below) resolves fronts far better, at the cost of a timestep tied to the CFL condition. One subtlety: sampling upstream only *carries* density along the flow. Compression needs its own term, so after each advection step every cell is multiplied by $e^{-\nabla\cdot\vec v\,\Delta t}$ (and its temperature by that factor to the $2/3$, adiabatic heating). Without it, converging flows could never build the dense cold clumps that thermal instability produces.
 3. **Operator-split cooling.** Heating and cooling are integrated separately from advection ("operator splitting"), because the cooling term is *stiff*: in dense, cold gas the cooling timescale can be thousands of times shorter than the hydro timestep. Each cell picks its own number of sub-steps, capped for a bounded worst case:
 
 ```ts

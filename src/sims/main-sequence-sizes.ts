@@ -1,21 +1,22 @@
 // Chapter 14 figure: a to-scale star size lineup, from a red dwarf to Betelgeuse, coloured by
-// blackbody temperature. A zoom slider is unavoidable — R136a1 is roughly 2000× the radius of
-// Proxima Centauri — so it defaults zoomed on the small end and lets you zoom out.
+// blackbody temperature. A zoom slider is unavoidable — Betelgeuse is roughly 5000× the radius of
+// Proxima Centauri — so it opens showing everything and lets you zoom in on the small end.
 
 import { defineSim, Loop, createStage } from '../lib/runtime/sim';
 import { Panel, fmt } from '../lib/ui/controls';
 import { palette, onThemeChange } from '../lib/ui/theme';
 import { blackbodyCSS } from '../lib/physics/blackbody';
 
-const STARS: { name: string; R: number; T: number }[] = [
-  { name: 'Proxima Centauri (M dwarf)', R: 0.15, T: 3050 },
-  { name: 'the Sun (G dwarf)', R: 1, T: 5772 },
-  { name: 'Sirius A (A dwarf)', R: 1.71, T: 9940 },
-  { name: 'Regulus (B subgiant)', R: 3.1, T: 12500 },
-  { name: 'Pollux (K giant)', R: 9, T: 4666 },
-  { name: 'Aldebaran (K giant)', R: 44, T: 3900 },
-  { name: 'Betelgeuse (M supergiant)', R: 764, T: 3600 },
-  { name: 'R136a1 (O hypergiant)', R: 32, T: 46000 },
+// Sorted by radius, so zooming in keeps the small end in view.
+const STARS: { name: string; short: string; R: number; T: number }[] = [
+  { name: 'Proxima Centauri (M dwarf)', short: 'Proxima', R: 0.15, T: 3050 },
+  { name: 'the Sun (G dwarf)', short: 'Sun', R: 1, T: 5772 },
+  { name: 'Sirius A (A dwarf)', short: 'Sirius A', R: 1.71, T: 9940 },
+  { name: 'Regulus (B dwarf, fast rotator)', short: 'Regulus', R: 3.1, T: 12500 },
+  { name: 'Pollux (K giant)', short: 'Pollux', R: 9, T: 4666 },
+  { name: 'R136a1 (Wolf–Rayet, the most massive star known)', short: 'R136a1', R: 39, T: 46000 },
+  { name: 'Aldebaran (K giant)', short: 'Aldebaran', R: 44, T: 3900 },
+  { name: 'Betelgeuse (M supergiant)', short: 'Betelgeuse', R: 764, T: 3600 },
 ];
 
 export default defineSim({
@@ -25,7 +26,7 @@ export default defineSim({
 
     const stage = createStage(host, { aspect: 16 / 9 });
     const ctx = stage.canvas.getContext('2d')!;
-    let zoom = 1; // R☉ per... controls how many R☉ fit across the panel scale factor
+    let zoom = 1; // magnification relative to the view that fits Betelgeuse
     let hoverIdx = -1;
 
     stage.overlay.style.pointerEvents = 'auto';
@@ -52,10 +53,10 @@ export default defineSim({
       const { width: W, height: H, dpr } = stage;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, W, H);
-      const baseline = H * 0.72;
-      const maxR = Math.max(...STARS.map((s) => s.R)) / zoom;
-      pxPerRsun = (H * 0.62) / maxR;
-      const gap = 14;
+      const baseline = H * 0.5;
+      const maxR = Math.max(...STARS.map((s) => s.R));
+      pxPerRsun = ((H * 0.4) / maxR) * zoom;
+      const gap = 16;
       let x = gap;
       centers = [];
       ctx.textAlign = 'center';
@@ -65,9 +66,9 @@ export default defineSim({
         x += 2 * r + gap;
       }
       const totalW = x;
+      const shift = totalW <= W ? (W - totalW) / 2 : 0; // once it overflows, keep the small end in view
+      for (let i = 0; i < centers.length; i++) centers[i] += shift;
       ctx.save();
-      ctx.translate((W - totalW) / 2, 0);
-      for (let i = 0; i < centers.length; i++) centers[i] += (W - totalW) / 2;
       STARS.forEach((s, i) => {
         const r = Math.max(1.5, s.R * pxPerRsun);
         const cx = centers[i];
@@ -79,6 +80,19 @@ export default defineSim({
         ctx.arc(cx, baseline, r, 0, Math.PI * 2);
         ctx.fill();
         if (i === hoverIdx) { ctx.strokeStyle = pal.fg; ctx.lineWidth = 1.5; ctx.stroke(); }
+      });
+      // name labels under the stars that are small enough to leave room, without collisions
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.fillStyle = pal.muted;
+      const rowRight = [-Infinity, -Infinity, -Infinity]; // up to three staggered label rows
+      STARS.forEach((s, i) => {
+        const r = Math.max(1.5, s.R * pxPerRsun);
+        if (baseline + r + 44 > H || centers[i] < 0 || centers[i] > W) return;
+        const w = ctx.measureText(s.short).width;
+        const row = rowRight.findIndex((x) => centers[i] - w / 2 > x + 6);
+        if (row < 0) return;
+        rowRight[row] = centers[i] + w / 2;
+        ctx.fillText(s.short, centers[i], baseline + r + 16 + row * 13);
       });
       ctx.restore();
       ctx.fillStyle = pal.muted;
@@ -95,7 +109,7 @@ export default defineSim({
     stage.onResize(() => loop.invalidate());
 
     const panel = new Panel(host);
-    panel.slider('Zoom out ×', { min: 1, max: 800, value: zoom, log: true, format: (v) => fmt(v, 3) }, (v) => { zoom = v; loop.invalidate(); });
+    panel.slider('Zoom in ×', { min: 1, max: 300, value: zoom, log: true, format: (v) => fmt(v, 3) }, (v) => { zoom = v; loop.invalidate(); });
 
     return { setVisible: (v) => loop.setVisible(v), destroy: () => loop.destroy() };
   },

@@ -1,24 +1,25 @@
 // Shared toy cooling/heating microphysics for the ISM chapter's sims (ism-phases, ism-pressure).
 //
-// This is a *pedagogical* stand-in for real cooling functions (e.g. Sutherland & Dopita 1993,
-// Wolfire et al. 1995/2003), tuned to reproduce the qualitative shape that matters for the
-// two-phase medium: a fine-structure/Lyman-alpha bump that makes the equilibrium pressure curve
-// P_eq(n) = Gamma*T(n)/Lambda(T(n)) non-monotonic between n ~ 0.3 and ~30 cm^-3, and a much
-// stronger collisional-ionisation peak near 1e5 K that dominates the hot, low-density gas.
-// It is NOT a fit to any tabulated cooling function; do not use it for anything quantitative.
+// Below ~1.5e4 K this is the widely used analytic fit of Koyama & Inutsuka (2002, ApJ 564, L97;
+// with the corrected coefficient of Vázquez-Semadeni et al. 2007):
+//     Λ(T) = Γ₀ [ 1e7 exp(−114800 / (T + 1000)) + 1.4e−2 √T exp(−92 / T) ]  erg cm³ s⁻¹,
+// with Γ₀ = 2e−26 erg s⁻¹: a Lyman-α term and a [C II] 158 μm fine-structure term. With a heating
+// rate Γ ≈ Γ₀ it gives the classic two-phase S-curve: a cold branch (n ~ 10–100 cm⁻³, T ~ 50–200 K)
+// and a warm branch (n ~ 0.1–1 cm⁻³, T ~ 5000–8000 K) coexisting at P/k ≈ 1600–5000 K cm⁻³.
+// Above 1.5e4 K the fit is joined (log-log) onto a coarse collisional-ionisation-equilibrium table
+// (peak near 1e5 K, bremsstrahlung above 1e7 K). Pedagogical only: do not use it for anything quantitative.
 
-// (log10 T [K], log10 Lambda [erg cm^3 s^-1]) anchor points, solar metallicity.
+const GAMMA0 = 2e-26; // erg/s, the normalisation of the Koyama–Inutsuka fit
+
+/** Koyama & Inutsuka (2002) cooling coefficient, valid for T ≲ 2e4 K. */
+function coolingKI(T: number): number {
+  return GAMMA0 * (1e7 * Math.exp(-114800 / (T + 1000)) + 1.4e-2 * Math.sqrt(T) * Math.exp(-92 / T));
+}
+
+// (log10 T [K], log10 Λ [erg cm³ s⁻¹]) for the hot gas, starting where the fit is handed over.
+const T_JOIN = 1.5e4;
 const ANCHORS: [number, number][] = [
-  [1.0, -27.3], // 10 K: freeze-out, almost no coolants left
-  [1.5, -26.7], // 30 K
-  [2.0, -25.7], // 100 K: CII 158um fine-structure line
-  [2.3, -25.1], // 200 K: peak of the low-T (CNM) branch
-  [2.7, -25.6], // 500 K: declining — this dip is the thermal-instability saddle
-  [3.2, -26.3], // 1600 K
-  [3.6, -26.35], // 4000 K: shallow minimum before Lyman-alpha turns on
-  [3.9, -25.6], // 8000 K: WNM sits just past here
-  [4.2, -24.3], // 16000 K: Lyman-alpha rising fast
-  [4.6, -22.6], // 40000 K
+  [Math.log10(T_JOIN), Math.log10(coolingKI(T_JOIN))],
   [5.0, -21.6], // 1e5 K: collisional-ionisation peak (H, He, metals)
   [5.4, -21.85],
   [5.8, -22.4],
@@ -27,20 +28,33 @@ const ANCHORS: [number, number][] = [
   [7.0, -22.75], // bremsstrahlung slowly rising again
   [7.6, -22.35],
   [8.2, -21.9],
-] as const;
+];
 
 const LT = ANCHORS.map((a) => a[0]);
 const LL = ANCHORS.map((a) => a[1]);
 
-/** Log-log-interpolated cooling coefficient Lambda(T) in erg cm^3 s^-1, clamped outside the table. */
+/** Cooling coefficient Λ(T) in erg cm³ s⁻¹ (solar metallicity). */
 export function coolingLambda(T: number): number {
-  const lt = Math.log10(Math.max(T, 1));
-  if (lt <= LT[0]) return 10 ** LL[0];
+  if (T <= T_JOIN) return coolingKI(Math.max(T, 1));
+  const lt = Math.log10(T);
   if (lt >= LT[LT.length - 1]) return 10 ** LL[LT.length - 1];
   let i = 1;
   while (i < LT.length - 1 && LT[i] < lt) i++;
   const t = (lt - LT[i - 1]) / (LT[i] - LT[i - 1]);
   return 10 ** (LL[i - 1] + t * (LL[i] - LL[i - 1]));
+}
+
+/**
+ * The thermal-equilibrium curve traced parametrically in T: heating nΓ = cooling n²ΛZ gives
+ * n = Γ / (Λ(T) Z) directly, so every branch (including the unstable one) comes out in one pass.
+ */
+export function equilibriumCurve(Gamma: number, Z: number, Tmin = 10, Tmax = 3e7, nPts = 400): { n: Float64Array; T: Float64Array } {
+  const n = new Float64Array(nPts), T = new Float64Array(nPts);
+  for (let i = 0; i < nPts; i++) {
+    T[i] = Tmin * (Tmax / Tmin) ** (i / (nPts - 1));
+    n[i] = Gamma / (coolingLambda(T[i]) * Z);
+  }
+  return { n, T };
 }
 
 /** kB in erg/K, for the toy energy budget (u = 1.5 n kB T per unit volume). */
