@@ -25,6 +25,10 @@
     tooltip,
     format = (v: number) => (Math.abs(v) >= 1000 || (Math.abs(v) < 0.01 && v !== 0) ? v.toExponential(2) : v.toPrecision(3)),
     label = 'Heatmap',
+    overlay,
+    onclick,
+    maxWidth,
+    showScale = true,
   }: {
     values: Float32Array;
     rows: number;
@@ -43,6 +47,12 @@
     tooltip?: Snippet<[{ row: number; col: number; value: number }]>;
     format?: (v: number) => string;
     label?: string;
+    /** Drawn on top of the plot area; receives its size in CSS pixels and the cell size. */
+    overlay?: Snippet<[{ width: number; height: number; cell: number }]>;
+    onclick?: (cell: { row: number; col: number; x: number; y: number; width: number; height: number }) => void;
+    /** Cap the plot width in CSS pixels (useful for fine grids). */
+    maxWidth?: number;
+    showScale?: boolean;
   } = $props();
 
   let wrap: HTMLDivElement;
@@ -56,7 +66,7 @@
   const labelW = $derived(rowLabels ? Math.min(90, 8 + Math.max(...rowLabels.map((l) => l.length)) * 7.2) : 0);
   const longCols = $derived(!!colLabels && Math.max(...colLabels.map((l) => l.length)) > 2);
   const labelH = $derived(!colLabels ? 0 : longCols ? Math.min(70, 10 + Math.max(...colLabels.map((l) => l.length)) * 6.5) : 16);
-  const cell = $derived(Math.max(1, Math.min(maxCell, (width - labelW) / Math.max(1, cols))));
+  const cell = $derived(Math.max(0.5, Math.min(maxCell, (Math.min(width, maxWidth ?? Infinity) - labelW) / Math.max(1, cols))));
   const plotW = $derived(Math.floor(cell * cols));
   const plotH = $derived(Math.floor(cell * rows));
 
@@ -193,8 +203,21 @@
       {/if}
     </div>
     <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <div class="plot" onpointermove={onMove} onpointerleave={onLeave} role="img" aria-label={label}>
+    <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
+    <div
+      class="plot"
+      onpointermove={onMove}
+      onpointerleave={onLeave}
+      onclick={(e) => {
+        const r = canvasHost.getBoundingClientRect();
+        const x = e.clientX - r.left, y = e.clientY - r.top;
+        onclick?.({ row: Math.floor(y / cell), col: Math.floor(x / cell), x, y, width: plotW, height: plotH });
+      }}
+      role="img"
+      aria-label={label}
+    >
       <div class="canvas-host" bind:this={canvasHost}></div>
+      {#if overlay}<svg class="overlay" width={plotW} height={plotH}>{@render overlay({ width: plotW, height: plotH, cell })}</svg>{/if}
       {#if failed}<p class="fail">This browser supports neither WebGPU nor WebGL2.</p>{/if}
       {#if hover}
         <div class="tip" style:left="{hover.x}px" style:top="{hover.y}px" class:flip={hover.x > plotW * 0.6}>
@@ -207,7 +230,7 @@
     </div>
   </div>
   <div class="footer">
-    <div class="scale" style:margin-left="{labelW}px">
+    <div class="scale" style:margin-left="{labelW}px" style:visibility={showScale ? 'visible' : 'hidden'}>
       <span class="num">{format(valueRange[0])}</span>
       <span class="bar" style:background="linear-gradient(to right, {[0, 0.2, 0.4, 0.6, 0.8, 1].map((t) => colorAt(ramp, theme.resolved, t)).join(',')})"></span>
       <span class="num">{format(valueRange[1])}</span>
@@ -288,6 +311,13 @@
   .canvas-host :global(canvas) {
     display: block;
     border-radius: 3px;
+  }
+  .overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+    overflow: visible;
   }
   .tip {
     position: absolute;

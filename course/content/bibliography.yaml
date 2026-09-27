@@ -367,3 +367,37 @@ yang2019:
   title: PyTorch internals
   venue: Blog post
   url: http://blog.ezyang.com/2019/05/pytorch-internals/
+bottou2018:
+  authors: Léon Bottou, Frank E. Curtis and Jorge Nocedal
+  year: 2018
+  title: Optimization Methods for Large-Scale Machine Learning
+  venue: SIAM Review 60(2), 223–311
+  url: https://arxiv.org/abs/1606.04838
+bridle1990:
+  authors: John S. Bridle
+  year: 1990
+  title: "Probabilistic Interpretation of Feedforward Classification Network Outputs, with Relationships to Statistical Pattern Recognition"
+  venue: Neurocomputing (NATO ASI Series F68), Springer
+  url: https://doi.org/10.1007/978-3-642-76153-9_28
+cauchy1847:
+  authors: Augustin-Louis Cauchy
+  year: 1847
+  title: Méthode générale pour la résolution des systèmes d’équations simultanées
+  venue: Comptes rendus de l’Académie des sciences 25, 536–538
+nielsen2015:
+  authors: Michael A. Nielsen
+  year: 2015
+  title: Neural Networks and Deep Learning
+  venue: Determination Press (online book)
+  url: http://neuralnetworksanddeeplearning.com/
+robbins1951:
+  authors: Herbert Robbins and Sutton Monro
+  year: 1951
+  title: A Stochastic Approximation Method
+  venue: The Annals of Mathematical Statistics 22(3), 400–407
+  url: https://doi.org/10.1214/aoms/1177729586
+widrow1960:
+  authors: Bernard Widrow and Marcian E. Hoff
+  year: 1960
+  title: Adaptive Switching Circuits
+  venue: IRE WESCON Convention Record, Part 4, 96–104
