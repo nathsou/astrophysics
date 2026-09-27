@@ -1,0 +1,1067 @@
+# key: { authors, year, title, venue, url, note }
+# Cited from Markdown with :cite[key] or :cite[key1,key2].
+
+becker1988:
+  authors: Joseph D. Becker
+  year: 1988
+  title: "Unicode 88"
+  venue: Xerox Corporation (reprinted by the Unicode Consortium)
+  url: https://www.unicode.org/history/unicode88.pdf
+clauset2009:
+  authors: Aaron Clauset, Cosma Rohilla Shalizi and M. E. J. Newman
+  year: 2009
+  title: Power-law distributions in empirical data
+  venue: SIAM Review 51(4), 661–703
+  url: https://arxiv.org/abs/0706.1062
+cover2006:
+  authors: Thomas M. Cover and Joy A. Thomas
+  year: 2006
+  title: Elements of Information Theory (2nd edition)
+  venue: Wiley
+deletang2024:
+  authors: Grégoire Delétang, Anian Ruoss, Paul-Ambroise Duquenne and others
+  year: 2024
+  title: Language Modeling Is Compression
+  venue: ICLR 2024
+  url: https://arxiv.org/abs/2309.10668
+eldan2023:
+  authors: Ronen Eldan and Yuanzhi Li
+  year: 2023
+  title: "TinyStories: How Small Can Language Models Be and Still Speak Coherent English?"
+  venue: arXiv:2305.07759
+  url: https://arxiv.org/abs/2305.07759
+gao2020:
+  authors: Leo Gao, Stella Biderman, Sid Black and others
+  year: 2020
+  title: "The Pile: An 800GB Dataset of Diverse Text for Language Modeling"
+  venue: arXiv:2101.00027
+  url: https://arxiv.org/abs/2101.00027
+hayes2013:
+  authors: Brian Hayes
+  year: 2013
+  title: First Links in the Markov Chain
+  venue: American Scientist 101(2), 92–97
+  url: https://www.americanscientist.org/article/first-links-in-the-markov-chain
+heaps1978:
+  authors: Harold Stanley Heaps
+  year: 1978
+  title: "Information Retrieval: Computational and Theoretical Aspects"
+  venue: Academic Press
+karpathy2015:
+  authors: Andrej Karpathy
+  year: 2015
+  title: The Unreasonable Effectiveness of Recurrent Neural Networks
+  venue: Blog post
+  url: https://karpathy.github.io/2015/05/21/rnn-effectiveness/
+kucera1967:
+  authors: Henry Kučera and W. Nelson Francis
+  year: 1967
+  title: Computational Analysis of Present-Day American English
+  venue: Brown University Press
+  note: The book describing the Brown Corpus, compiled in 1961.
+kudo2018:
+  authors: Taku Kudo and John Richardson
+  year: 2018
+  title: "SentencePiece: A simple and language independent subword tokenizer and detokenizer for Neural Text Processing"
+  venue: EMNLP 2018 (System Demonstrations)
+  url: https://arxiv.org/abs/1808.06226
+markov1913:
+  authors: Andrey A. Markov
+  year: 1913
+  title: An Example of Statistical Investigation of the Text Eugene Onegin Concerning the Connection of Samples in Chains
+  venue: "Bulletin of the Imperial Academy of Sciences of St. Petersburg; English translation in Science in Context 19(4), 2006"
+  url: https://doi.org/10.1017/S0269889706001074
+miller1957:
+  authors: George A. Miller
+  year: 1957
+  title: Some effects of intermittent silence
+  venue: The American Journal of Psychology 70(2), 311–314
+  url: https://doi.org/10.2307/1419346
+penedo2024:
+  authors: Guilherme Penedo, Hynek Kydlíček, Loubna Ben Allal and others
+  year: 2024
+  title: "The FineWeb Datasets: Decanting the Web for the Finest Text Data at Scale"
+  venue: NeurIPS 2024 Datasets and Benchmarks Track
+  url: https://arxiv.org/abs/2406.17557
+piantadosi2014:
+  authors: Steven T. Piantadosi
+  year: 2014
+  title: "Zipf’s word frequency law in natural language: A critical review and future directions"
+  venue: Psychonomic Bulletin & Review 21, 1112–1130
+  url: https://doi.org/10.3758/s13423-014-0585-6
+pike2003:
+  authors: Rob Pike
+  year: 2003
+  title: UTF-8 history
+  venue: Email, hosted by Markus Kuhn (University of Cambridge)
+  url: https://www.cl.cam.ac.uk/~mgk25/ucs/utf-8-history.txt
+radford2019:
+  authors: Alec Radford, Jeffrey Wu, Rewon Child, David Luan, Dario Amodei and Ilya Sutskever
+  year: 2019
+  title: Language Models are Unsupervised Multitask Learners
+  venue: OpenAI technical report (GPT-2)
+  url: https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf
+raffel2020:
+  authors: Colin Raffel, Noam Shazeer, Adam Roberts and others
+  year: 2020
+  title: Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer
+  venue: Journal of Machine Learning Research 21(140)
+  url: https://jmlr.org/papers/v21/20-074.html
+  note: Introduced the C4 corpus.
+rfc3629:
+  authors: François Yergeau
+  year: 2003
+  title: "UTF-8, a transformation format of ISO 10646 (RFC 3629)"
+  venue: IETF
+  url: https://www.rfc-editor.org/rfc/rfc3629
+shannon1948:
+  authors: Claude E. Shannon
+  year: 1948
+  title: A Mathematical Theory of Communication
+  venue: Bell System Technical Journal 27, 379–423 and 623–656
+  url: https://doi.org/10.1002/j.1538-7305.1948.tb01338.x
+shannon1951:
+  authors: Claude E. Shannon
+  year: 1951
+  title: Prediction and Entropy of Printed English
+  venue: Bell System Technical Journal 30(1), 50–64
+  url: https://doi.org/10.1002/j.1538-7305.1951.tb01366.x
+spolsky2003:
+  authors: Joel Spolsky
+  year: 2003
+  title: The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets (No Excuses!)
+  venue: Joel on Software
+  url: https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/
+uax15:
+  authors: Ken Whistler (ed.)
+  year: 2024
+  title: "Unicode Standard Annex #15: Unicode Normalization Forms"
+  venue: The Unicode Consortium
+  url: https://www.unicode.org/reports/tr15/
+uax29:
+  authors: Josh Hadley (ed.)
+  year: 2024
+  title: "Unicode Standard Annex #29: Unicode Text Segmentation"
+  venue: The Unicode Consortium
+  url: https://www.unicode.org/reports/tr29/
+unicode:
+  authors: The Unicode Consortium
+  year: 2025
+  title: The Unicode Standard
+  venue: Latest version
+  url: https://www.unicode.org/versions/latest/
+zipf1935:
+  authors: George Kingsley Zipf
+  year: 1935
+  title: The Psycho-Biology of Language
+  venue: Houghton Mifflin
+zipf1949:
+  authors: George Kingsley Zipf
+  year: 1949
+  title: "Human Behavior and the Principle of Least Effort"
+  venue: Addison-Wesley
+bengio2003:
+  authors: Yoshua Bengio, Réjean Ducharme, Pascal Vincent and Christian Jauvin
+  year: 2003
+  title: A Neural Probabilistic Language Model
+  venue: Journal of Machine Learning Research 3, 1137–1155
+  url: https://www.jmlr.org/papers/v3/bengio03a.html
+brants2007:
+  authors: Thorsten Brants, Ashok C. Popat, Peng Xu, Franz J. Och and Jeffrey Dean
+  year: 2007
+  title: Large Language Models in Machine Translation
+  venue: EMNLP-CoNLL 2007
+  url: https://aclanthology.org/D07-1090/
+chen1998:
+  authors: Stanley F. Chen and Joshua Goodman
+  year: 1998
+  title: An Empirical Study of Smoothing Techniques for Language Modeling
+  venue: Technical Report TR-10-98, Harvard University
+  url: https://dash.harvard.edu/handle/1/25104739
+good1953:
+  authors: I. J. Good
+  year: 1953
+  title: The population frequencies of species and the estimation of population parameters
+  venue: Biometrika 40(3–4), 237–264
+  url: https://doi.org/10.1093/biomet/40.3-4.237
+goodman2001:
+  authors: Joshua T. Goodman
+  year: 2001
+  title: A Bit of Progress in Language Modeling
+  venue: Computer Speech & Language 15(4), 403–434
+  url: https://arxiv.org/abs/cs/0108005
+heafield2011:
+  authors: Kenneth Heafield
+  year: 2011
+  title: "KenLM: Faster and Smaller Language Model Queries"
+  venue: Sixth Workshop on Statistical Machine Translation
+  url: https://aclanthology.org/W11-2123/
+jelinek1997:
+  authors: Frederick Jelinek
+  year: 1997
+  title: Statistical Methods for Speech Recognition
+  venue: MIT Press
+jurafsky2025:
+  authors: Daniel Jurafsky and James H. Martin
+  year: 2025
+  title: Speech and Language Processing (3rd edition draft)
+  venue: Online manuscript
+  url: https://web.stanford.edu/~jurafsky/slp3/
+katz1987:
+  authors: Slava M. Katz
+  year: 1987
+  title: Estimation of probabilities from sparse data for the language model component of a speech recognizer
+  venue: IEEE Transactions on Acoustics, Speech, and Signal Processing 35(3), 400–401
+  url: https://doi.org/10.1109/TASSP.1987.1165125
+kneser1995:
+  authors: Reinhard Kneser and Hermann Ney
+  year: 1995
+  title: Improved backing-off for m-gram language modeling
+  venue: ICASSP 1995
+  url: https://doi.org/10.1109/ICASSP.1995.479394
+liu2024infini:
+  authors: Jiacheng Liu, Sewon Min, Luke Zettlemoyer, Yejin Choi and Hannaneh Hajishirzi
+  year: 2024
+  title: "Infini-gram: Scaling Unbounded n-gram Language Models to a Trillion Tokens"
+  venue: COLM 2024
+  url: https://arxiv.org/abs/2401.17377
+wenzek2020:
+  authors: Guillaume Wenzek, Marie-Anne Lachaux, Alexis Conneau and others
+  year: 2020
+  title: "CCNet: Extracting High Quality Monolingual Datasets from Web Crawl Data"
+  venue: LREC 2020
+  url: https://arxiv.org/abs/1911.00359
+bostrom2020:
+  authors: Kaj Bostrom and Greg Durrett
+  year: 2020
+  title: Byte Pair Encoding is Suboptimal for Language Model Pretraining
+  venue: Findings of EMNLP 2020
+  url: https://arxiv.org/abs/2004.03720
+dubey2024:
+  authors: Abhimanyu Dubey, Abhinav Jauhri, Abhinav Pandey and others (Llama team, Meta)
+  year: 2024
+  title: The Llama 3 Herd of Models
+  venue: arXiv:2407.21783
+  url: https://arxiv.org/abs/2407.21783
+gage1994:
+  authors: Philip Gage
+  year: 1994
+  title: A New Algorithm for Data Compression
+  venue: The C Users Journal 12(2), 23–38
+karpathy2024minbpe:
+  authors: Andrej Karpathy
+  year: 2024
+  title: "minbpe: Minimal, clean code for the Byte Pair Encoding algorithm"
+  venue: GitHub repository and video lecture
+  url: https://github.com/karpathy/minbpe
+kudo2018unigram:
+  authors: Taku Kudo
+  year: 2018
+  title: "Subword Regularization: Improving Neural Network Translation Models with Multiple Subword Candidates"
+  venue: ACL 2018
+  url: https://arxiv.org/abs/1804.10959
+land2024:
+  authors: Sander Land and Max Bartolo
+  year: 2024
+  title: "Fishing for Magikarp: Automatically Detecting Under-trained Tokens in Large Language Models"
+  venue: EMNLP 2024
+  url: https://arxiv.org/abs/2405.05417
+pagnoni2024blt:
+  authors: Artidoro Pagnoni, Ram Pasunuru, Pedro Rodriguez and others
+  year: 2024
+  title: "Byte Latent Transformer: Patches Scale Better Than Tokens"
+  venue: arXiv:2412.09871
+  url: https://arxiv.org/abs/2412.09871
+petrov2023:
+  authors: Aleksandar Petrov, Emanuele La Malfa, Philip H. S. Torr and Adel Bibi
+  year: 2023
+  title: Language Model Tokenizers Introduce Unfairness Between Languages
+  venue: NeurIPS 2023
+  url: https://arxiv.org/abs/2305.15425
+provilkov2020:
+  authors: Ivan Provilkov, Dmitrii Emelianenko and Elena Voita
+  year: 2020
+  title: "BPE-Dropout: Simple and Effective Subword Regularization"
+  venue: ACL 2020
+  url: https://arxiv.org/abs/1910.13267
+rumbelow2023:
+  authors: Jessica Rumbelow and Matthew Watkins
+  year: 2023
+  title: "SolidGoldMagikarp (plus, prompt generation)"
+  venue: LessWrong
+  url: https://www.lesswrong.com/posts/aPeJE8bSo6rAFoLqg/solidgoldmagikarp-plus-prompt-generation
+schuster2012:
+  authors: Mike Schuster and Kaisuke Nakajima
+  year: 2012
+  title: Japanese and Korean Voice Search
+  venue: ICASSP 2012
+  url: https://doi.org/10.1109/ICASSP.2012.6289079
+sennrich2016:
+  authors: Rico Sennrich, Barry Haddow and Alexandra Birch
+  year: 2016
+  title: Neural Machine Translation of Rare Words with Subword Units
+  venue: ACL 2016
+  url: https://arxiv.org/abs/1508.07909
+touvron2023:
+  authors: Hugo Touvron, Thibaut Lavril, Gautier Izacard and others
+  year: 2023
+  title: "LLaMA: Open and Efficient Foundation Language Models"
+  venue: arXiv:2302.13971
+  url: https://arxiv.org/abs/2302.13971
+xue2022byt5:
+  authors: Linting Xue, Aditya Barua, Noah Constant and others
+  year: 2022
+  title: "ByT5: Towards a Token-Free Future with Pre-trained Byte-to-Byte Models"
+  venue: Transactions of the ACL 10
+  url: https://arxiv.org/abs/2105.13626
+yu2023megabyte:
+  authors: Lili Yu, Dániel Simig, Colin Flaherty and others
+  year: 2023
+  title: "MEGABYTE: Predicting Million-byte Sequences with Multiscale Transformers"
+  venue: NeurIPS 2023
+  url: https://arxiv.org/abs/2305.07185
+mackay2003:
+  authors: David J. C. MacKay
+  year: 2003
+  title: Information Theory, Inference, and Learning Algorithms
+  venue: Cambridge University Press
+  url: https://www.inference.org.uk/itila/book.html
+collobert2002:
+  authors: Ronan Collobert, Samy Bengio and Johnny Mariéthoz
+  year: 2002
+  title: "Torch: a modular machine learning software library"
+  venue: IDIAP Research Report 02-46
+  url: https://publications.idiap.ch/downloads/reports/2002/rr02-46.pdf
+goto2008:
+  authors: Kazushige Goto and Robert A. van de Geijn
+  year: 2008
+  title: Anatomy of High-Performance Matrix Multiplication
+  venue: ACM Transactions on Mathematical Software 34(3)
+  url: https://doi.org/10.1145/1356052.1356053
+harris2020:
+  authors: Charles R. Harris, K. Jarrod Millman, Stéfan J. van der Walt and others
+  year: 2020
+  title: Array programming with NumPy
+  venue: Nature 585, 357–362
+  url: https://doi.org/10.1038/s41586-020-2649-2
+iverson1962:
+  authors: Kenneth E. Iverson
+  year: 1962
+  title: A Programming Language
+  venue: John Wiley & Sons
+lawson1979:
+  authors: C. L. Lawson, R. J. Hanson, D. R. Kincaid and F. T. Krogh
+  year: 1979
+  title: Basic Linear Algebra Subprograms for Fortran Usage
+  venue: ACM Transactions on Mathematical Software 5(3), 308–323
+  url: https://doi.org/10.1145/355841.355847
+paszke2019:
+  authors: Adam Paszke, Sam Gross, Francisco Massa and others
+  year: 2019
+  title: "PyTorch: An Imperative Style, High-Performance Deep Learning Library"
+  venue: NeurIPS 2019
+  url: https://arxiv.org/abs/1912.01703
+yang2019:
+  authors: Edward Z. Yang
+  year: 2019
+  title: PyTorch internals
+  venue: Blog post
+  url: http://blog.ezyang.com/2019/05/pytorch-internals/
+bottou2018:
+  authors: Léon Bottou, Frank E. Curtis and Jorge Nocedal
+  year: 2018
+  title: Optimization Methods for Large-Scale Machine Learning
+  venue: SIAM Review 60(2), 223–311
+  url: https://arxiv.org/abs/1606.04838
+bridle1990:
+  authors: John S. Bridle
+  year: 1990
+  title: "Probabilistic Interpretation of Feedforward Classification Network Outputs, with Relationships to Statistical Pattern Recognition"
+  venue: Neurocomputing (NATO ASI Series F68), Springer
+  url: https://doi.org/10.1007/978-3-642-76153-9_28
+cauchy1847:
+  authors: Augustin-Louis Cauchy
+  year: 1847
+  title: Méthode générale pour la résolution des systèmes d’équations simultanées
+  venue: Comptes rendus de l’Académie des sciences 25, 536–538
+nielsen2015:
+  authors: Michael A. Nielsen
+  year: 2015
+  title: Neural Networks and Deep Learning
+  venue: Determination Press (online book)
+  url: http://neuralnetworksanddeeplearning.com/
+robbins1951:
+  authors: Herbert Robbins and Sutton Monro
+  year: 1951
+  title: A Stochastic Approximation Method
+  venue: The Annals of Mathematical Statistics 22(3), 400–407
+  url: https://doi.org/10.1214/aoms/1177729586
+widrow1960:
+  authors: Bernard Widrow and Marcian E. Hoff
+  year: 1960
+  title: Adaptive Switching Circuits
+  venue: IRE WESCON Convention Record, Part 4, 96–104
+baydin2018:
+  authors: Atılım Güneş Baydin, Barak A. Pearlmutter, Alexey Andreyevich Radul and Jeffrey Mark Siskind
+  year: 2018
+  title: "Automatic Differentiation in Machine Learning: a Survey"
+  venue: Journal of Machine Learning Research 18(153)
+  url: https://arxiv.org/abs/1502.05767
+griewank2008:
+  authors: Andreas Griewank and Andrea Walther
+  year: 2008
+  title: "Evaluating Derivatives: Principles and Techniques of Algorithmic Differentiation (2nd edition)"
+  venue: SIAM
+  url: https://doi.org/10.1137/1.9780898717761
+karpathy2020micrograd:
+  authors: Andrej Karpathy
+  year: 2020
+  title: "micrograd: A tiny scalar-valued autograd engine"
+  venue: GitHub repository
+  url: https://github.com/karpathy/micrograd
+linnainmaa1976:
+  authors: Seppo Linnainmaa
+  year: 1976
+  title: Taylor expansion of the accumulated rounding error
+  venue: BIT Numerical Mathematics 16(2), 146–160
+  url: https://doi.org/10.1007/BF01931367
+  note: Based on the author’s 1970 master’s thesis (University of Helsinki).
+maclaurin2015:
+  authors: Dougal Maclaurin, David Duvenaud and Ryan P. Adams
+  year: 2015
+  title: "Autograd: Effortless Gradients in Numpy"
+  venue: ICML AutoML Workshop
+  url: https://github.com/HIPS/autograd
+olah2015:
+  authors: Christopher Olah
+  year: 2015
+  title: "Calculus on Computational Graphs: Backpropagation"
+  venue: Blog post
+  url: https://colah.github.io/posts/2015-08-Backprop/
+rumelhart1986:
+  authors: David E. Rumelhart, Geoffrey E. Hinton and Ronald J. Williams
+  year: 1986
+  title: Learning representations by back-propagating errors
+  venue: Nature 323, 533–536
+  url: https://doi.org/10.1038/323533a0
+wengert1964:
+  authors: R. E. Wengert
+  year: 1964
+  title: A simple automatic derivative evaluation program
+  venue: Communications of the ACM 7(8), 463–464
+  url: https://doi.org/10.1145/355586.364791
+werbos1982:
+  authors: Paul J. Werbos
+  year: 1982
+  title: Applications of advances in nonlinear sensitivity analysis
+  venue: "System Modeling and Optimization (Lecture Notes in Control and Information Sciences 38), Springer"
+  url: https://doi.org/10.1007/BFb0006203
+ba2016:
+  authors: Jimmy Lei Ba, Jamie Ryan Kiros and Geoffrey E. Hinton
+  year: 2016
+  title: Layer Normalization
+  venue: arXiv:1607.06450
+  url: https://arxiv.org/abs/1607.06450
+glorot2010:
+  authors: Xavier Glorot and Yoshua Bengio
+  year: 2010
+  title: Understanding the difficulty of training deep feedforward neural networks
+  venue: AISTATS 2010
+  url: https://proceedings.mlr.press/v9/glorot10a.html
+he2015:
+  authors: Kaiming He, Xiangyu Zhang, Shaoqing Ren and Jian Sun
+  year: 2015
+  title: "Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification"
+  venue: ICCV 2015
+  url: https://arxiv.org/abs/1502.01852
+hinton1986:
+  authors: Geoffrey E. Hinton
+  year: 1986
+  title: Learning distributed representations of concepts
+  venue: Proceedings of the Eighth Annual Conference of the Cognitive Science Society
+ioffe2015:
+  authors: Sergey Ioffe and Christian Szegedy
+  year: 2015
+  title: "Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift"
+  venue: ICML 2015
+  url: https://arxiv.org/abs/1502.03167
+karpathy2022zero:
+  authors: Andrej Karpathy
+  year: 2022
+  title: "Neural Networks: Zero to Hero"
+  venue: Video lecture series
+  url: https://karpathy.ai/zero-to-hero.html
+mikolov2013:
+  authors: Tomas Mikolov, Kai Chen, Greg Corrado and Jeffrey Dean
+  year: 2013
+  title: Efficient Estimation of Word Representations in Vector Space
+  venue: arXiv:1301.3781
+  url: https://arxiv.org/abs/1301.3781
+buck2004:
+  authors: Ian Buck, Tim Foley, Daniel Horn, Jeremy Sugerman, Kayvon Fatahalian, Mike Houston and Pat Hanrahan
+  year: 2004
+  title: "Brook for GPUs: Stream Computing on Graphics Hardware"
+  venue: ACM Transactions on Graphics 23(3), SIGGRAPH 2004
+  url: https://graphics.stanford.edu/papers/brookgpu/
+oh2004:
+  authors: Kyoung-Su Oh and Keechul Jung
+  year: 2004
+  title: GPU implementation of neural networks
+  venue: Pattern Recognition 37(6), 1311–1314
+chellapilla2006:
+  authors: Kumar Chellapilla, Sidd Puri and Patrice Simard
+  year: 2006
+  title: High Performance Convolutional Neural Networks for Document Processing
+  venue: International Workshop on Frontiers in Handwriting Recognition
+  url: https://inria.hal.science/inria-00112631
+nickolls2008:
+  authors: John Nickolls, Ian Buck, Michael Garland and Kevin Skadron
+  year: 2008
+  title: Scalable Parallel Programming with CUDA
+  venue: ACM Queue 6(2), 40–53
+  url: https://queue.acm.org/detail.cfm?id=1365500
+lindholm2008:
+  authors: Erik Lindholm, John Nickolls, Stuart Oberman and John Montrym
+  year: 2008
+  title: "NVIDIA Tesla: A Unified Graphics and Computing Architecture"
+  venue: IEEE Micro 28(2), 39–55
+volkov2008:
+  authors: Vasily Volkov and James W. Demmel
+  year: 2008
+  title: Benchmarking GPUs to Tune Dense Linear Algebra
+  venue: SC ’08 (Supercomputing)
+raina2009:
+  authors: Rajat Raina, Anand Madhavan and Andrew Y. Ng
+  year: 2009
+  title: Large-scale Deep Unsupervised Learning using Graphics Processors
+  venue: ICML 2009
+williams2009:
+  authors: Samuel Williams, Andrew Waterman and David Patterson
+  year: 2009
+  title: "Roofline: An Insightful Visual Performance Model for Multicore Architectures"
+  venue: Communications of the ACM 52(4), 65–76
+ciresan2010:
+  authors: Dan Claudiu Cireşan, Ueli Meier, Luca Maria Gambardella and Jürgen Schmidhuber
+  year: 2010
+  title: Deep, Big, Simple Neural Nets for Handwritten Digit Recognition
+  venue: Neural Computation 22(12), 3207–3220
+  url: https://arxiv.org/abs/1003.0358
+krizhevsky2012:
+  authors: Alex Krizhevsky, Ilya Sutskever and Geoffrey E. Hinton
+  year: 2012
+  title: ImageNet Classification with Deep Convolutional Neural Networks
+  venue: NeurIPS 2012
+  url: https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks
+harris2007:
+  authors: Mark Harris
+  year: 2007
+  title: Optimizing Parallel Reduction in CUDA
+  venue: NVIDIA Developer Technology (presentation)
+  url: https://developer.download.nvidia.com/assets/cuda/files/reduction.pdf
+tillet2019:
+  authors: Philippe Tillet, H. T. Kung and David Cox
+  year: 2019
+  title: "Triton: An Intermediate Language and Compiler for Tiled Neural Network Computations"
+  venue: MAPL 2019
+  url: https://www.eecs.harvard.edu/~htk/publication/2019-mapl-tillet-kung-cox.pdf
+boehm2022:
+  authors: Simon Boehm
+  year: 2022
+  title: "How to Optimize a CUDA Matmul Kernel for cuBLAS-like Performance: a Worklog"
+  venue: Blog post
+  url: https://siboehm.com/articles/22/CUDA-MMM
+hooker2021:
+  authors: Sara Hooker
+  year: 2021
+  title: The Hardware Lottery
+  venue: Communications of the ACM 64(12), 58–65
+  url: https://arxiv.org/abs/2009.06489
+goldberg1991:
+  authors: David Goldberg
+  year: 1991
+  title: What Every Computer Scientist Should Know About Floating-Point Arithmetic
+  venue: ACM Computing Surveys 23(1), 5–48
+webgpu:
+  authors: W3C GPU for the Web Working Group
+  year: 2024
+  title: WebGPU and the WebGPU Shading Language (W3C Candidate Recommendations)
+  venue: World Wide Web Consortium
+  url: https://www.w3.org/TR/webgpu/
+strang2016:
+  authors: Gilbert Strang
+  year: 2016
+  title: Introduction to Linear Algebra (5th edition)
+  venue: Wellesley-Cambridge Press
+  url: https://math.mit.edu/~gs/linearalgebra/
+sanderson2016:
+  authors: Grant Sanderson (3Blue1Brown)
+  year: 2016
+  title: Essence of Linear Algebra
+  venue: Video series
+  url: https://www.3blue1brown.com/topics/linear-algebra
+trefethen1997:
+  authors: Lloyd N. Trefethen and David Bau III
+  year: 1997
+  title: Numerical Linear Algebra
+  venue: SIAM
+yang2018:
+  authors: Zhilin Yang, Zihang Dai, Ruslan Salakhutdinov and William W. Cohen
+  year: 2018
+  title: "Breaking the Softmax Bottleneck: A High-Rank RNN Language Model"
+  venue: ICLR 2018
+  url: https://arxiv.org/abs/1711.03953
+eckart1936:
+  authors: Carl Eckart and Gale Young
+  year: 1936
+  title: The approximation of one matrix by another of lower rank
+  venue: Psychometrika 1(3), 211–218
+pearson1901:
+  authors: Karl Pearson
+  year: 1901
+  title: On lines and planes of closest fit to systems of points in space
+  venue: Philosophical Magazine 2(11), 559–572
+hotelling1933:
+  authors: Harold Hotelling
+  year: 1933
+  title: Analysis of a complex of statistical variables into principal components
+  venue: Journal of Educational Psychology 24(6), 417–441
+parr2018:
+  authors: Terence Parr and Jeremy Howard
+  year: 2018
+  title: The Matrix Calculus You Need For Deep Learning
+  venue: arXiv:1802.01528
+  url: https://arxiv.org/abs/1802.01528
+petersen2012:
+  authors: Kaare Brandt Petersen and Michael Syskind Pedersen
+  year: 2012
+  title: The Matrix Cookbook
+  venue: Technical University of Denmark
+  url: https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf
+magnus2019:
+  authors: Jan R. Magnus and Heinz Neudecker
+  year: 2019
+  title: Matrix Differential Calculus with Applications in Statistics and Econometrics (3rd edition)
+  venue: Wiley
+blitzstein2019:
+  authors: Joseph K. Blitzstein and Jessica Hwang
+  year: 2019
+  title: Introduction to Probability (2nd edition)
+  venue: CRC Press
+  url: https://projects.iq.harvard.edu/stat110
+bishop2006:
+  authors: Christopher M. Bishop
+  year: 2006
+  title: Pattern Recognition and Machine Learning
+  venue: Springer
+gumbel1954:
+  authors: Emil Julius Gumbel
+  year: 1954
+  title: "Statistical Theory of Extreme Values and Some Practical Applications: A Series of Lectures"
+  venue: US National Bureau of Standards, Applied Mathematics Series 33
+maddison2014:
+  authors: Chris J. Maddison, Daniel Tarlow and Tom Minka
+  year: 2014
+  title: A* Sampling
+  venue: NeurIPS 2014
+  url: https://arxiv.org/abs/1411.0030
+mcculloch1943:
+  authors: Warren S. McCulloch and Walter Pitts
+  year: 1943
+  title: A logical calculus of the ideas immanent in nervous activity
+  venue: Bulletin of Mathematical Biophysics 5, 115–133
+rosenblatt1958:
+  authors: Frank Rosenblatt
+  year: 1958
+  title: "The perceptron: a probabilistic model for information storage and organization in the brain"
+  venue: Psychological Review 65(6), 386–408
+minsky1969:
+  authors: Marvin Minsky and Seymour Papert
+  year: 1969
+  title: "Perceptrons: An Introduction to Computational Geometry"
+  venue: MIT Press
+fukushima1980:
+  authors: Kunihiko Fukushima
+  year: 1980
+  title: "Neocognitron: a self-organizing neural network model for a mechanism of pattern recognition unaffected by shift in position"
+  venue: Biological Cybernetics 36, 193–202
+lecun1989:
+  authors: Yann LeCun, Bernhard Boser, John S. Denker, Donnie Henderson, Richard E. Howard, Wayne Hubbard and Lawrence D. Jackel
+  year: 1989
+  title: Backpropagation Applied to Handwritten Zip Code Recognition
+  venue: Neural Computation 1(4), 541–551
+cybenko1989:
+  authors: George Cybenko
+  year: 1989
+  title: Approximation by superpositions of a sigmoidal function
+  venue: Mathematics of Control, Signals and Systems 2(4), 303–314
+hornik1989:
+  authors: Kurt Hornik, Maxwell Stinchcombe and Halbert White
+  year: 1989
+  title: Multilayer feedforward networks are universal approximators
+  venue: Neural Networks 2(5), 359–366
+elman1990:
+  authors: Jeffrey L. Elman
+  year: 1990
+  title: Finding Structure in Time
+  venue: Cognitive Science 14(2), 179–211
+hochreiter1997:
+  authors: Sepp Hochreiter and Jürgen Schmidhuber
+  year: 1997
+  title: Long Short-Term Memory
+  venue: Neural Computation 9(8), 1735–1780
+hinton2006:
+  authors: Geoffrey E. Hinton, Simon Osindero and Yee-Whye Teh
+  year: 2006
+  title: A Fast Learning Algorithm for Deep Belief Nets
+  venue: Neural Computation 18(7), 1527–1554
+nair2010:
+  authors: Vinod Nair and Geoffrey E. Hinton
+  year: 2010
+  title: Rectified Linear Units Improve Restricted Boltzmann Machines
+  venue: ICML 2010
+glorot2011:
+  authors: Xavier Glorot, Antoine Bordes and Yoshua Bengio
+  year: 2011
+  title: Deep Sparse Rectifier Neural Networks
+  venue: AISTATS 2011
+srivastava2014:
+  authors: Nitish Srivastava, Geoffrey Hinton, Alex Krizhevsky, Ilya Sutskever and Ruslan Salakhutdinov
+  year: 2014
+  title: "Dropout: A Simple Way to Prevent Neural Networks from Overfitting"
+  venue: Journal of Machine Learning Research 15, 1929–1958
+bahdanau2015:
+  authors: Dzmitry Bahdanau, Kyunghyun Cho and Yoshua Bengio
+  year: 2015
+  title: Neural Machine Translation by Jointly Learning to Align and Translate
+  venue: ICLR 2015
+  url: https://arxiv.org/abs/1409.0473
+hendrycks2016:
+  authors: Dan Hendrycks and Kevin Gimpel
+  year: 2016
+  title: Gaussian Error Linear Units (GELUs)
+  venue: arXiv:1606.08415
+  url: https://arxiv.org/abs/1606.08415
+goodfellow2016:
+  authors: Ian Goodfellow, Yoshua Bengio and Aaron Courville
+  year: 2016
+  title: Deep Learning
+  venue: MIT Press
+  url: https://www.deeplearningbook.org
+vaswani2017:
+  authors: Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser and Illia Polosukhin
+  year: 2017
+  title: Attention Is All You Need
+  venue: NeurIPS 2017
+  url: https://arxiv.org/abs/1706.03762
+radford2018:
+  authors: Alec Radford, Karthik Narasimhan, Tim Salimans and Ilya Sutskever
+  year: 2018
+  title: Improving Language Understanding by Generative Pre-Training
+  venue: OpenAI technical report
+  url: https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf
+belkin2019:
+  authors: Mikhail Belkin, Daniel Hsu, Siyuan Ma and Soumik Mandal
+  year: 2019
+  title: Reconciling modern machine-learning practice and the classical bias–variance trade-off
+  venue: PNAS 116(32), 15849–15854
+  url: https://arxiv.org/abs/1812.11118
+sutton2019:
+  authors: Richard S. Sutton
+  year: 2019
+  title: The Bitter Lesson
+  venue: Essay
+  url: http://www.incompleteideas.net/IncIdeas/BitterLesson.html
+brown2020:
+  authors: Tom B. Brown and 30 others
+  year: 2020
+  title: Language Models are Few-Shot Learners
+  venue: NeurIPS 2020
+  url: https://arxiv.org/abs/2005.14165
+kaplan2020:
+  authors: Jared Kaplan, Sam McCandlish, Tom Henighan, Tom B. Brown, Benjamin Chess, Rewon Child, Scott Gray, Alec Radford, Jeffrey Wu and Dario Amodei
+  year: 2020
+  title: Scaling Laws for Neural Language Models
+  venue: arXiv:2001.08361
+  url: https://arxiv.org/abs/2001.08361
+ouyang2022:
+  authors: Long Ouyang, Jeff Wu, Xu Jiang and others
+  year: 2022
+  title: Training language models to follow instructions with human feedback
+  venue: NeurIPS 2022
+  url: https://arxiv.org/abs/2203.02155
+hochreiter1991:
+  authors: Sepp Hochreiter
+  year: 1991
+  title: Untersuchungen zu dynamischen neuronalen Netzen
+  venue: Diploma thesis, Technische Universität München
+bengio1994:
+  authors: Yoshua Bengio, Patrice Simard and Paolo Frasconi
+  year: 1994
+  title: Learning long-term dependencies with gradient descent is difficult
+  venue: IEEE Transactions on Neural Networks 5(2), 157–166
+werbos1990:
+  authors: Paul J. Werbos
+  year: 1990
+  title: "Backpropagation through time: what it does and how to do it"
+  venue: Proceedings of the IEEE 78(10), 1550–1560
+gers2000:
+  authors: Felix A. Gers, Jürgen Schmidhuber and Fred Cummins
+  year: 2000
+  title: "Learning to Forget: Continual Prediction with LSTM"
+  venue: Neural Computation 12(10), 2451–2471
+mikolov2010:
+  authors: Tomáš Mikolov, Martin Karafiát, Lukáš Burget, Jan Černocký and Sanjeev Khudanpur
+  year: 2010
+  title: Recurrent neural network based language model
+  venue: Interspeech 2010
+sutskever2011:
+  authors: Ilya Sutskever, James Martens and Geoffrey Hinton
+  year: 2011
+  title: Generating Text with Recurrent Neural Networks
+  venue: ICML 2011
+graves2013:
+  authors: Alex Graves
+  year: 2013
+  title: Generating Sequences With Recurrent Neural Networks
+  venue: arXiv:1308.0850
+  url: https://arxiv.org/abs/1308.0850
+pascanu2013:
+  authors: Razvan Pascanu, Tomas Mikolov and Yoshua Bengio
+  year: 2013
+  title: On the difficulty of training recurrent neural networks
+  venue: ICML 2013
+  url: https://arxiv.org/abs/1211.5063
+cho2014:
+  authors: Kyunghyun Cho, Bart van Merriënboer, Caglar Gulcehre, Dzmitry Bahdanau, Fethi Bougares, Holger Schwenk and Yoshua Bengio
+  year: 2014
+  title: Learning Phrase Representations using RNN Encoder–Decoder for Statistical Machine Translation
+  venue: EMNLP 2014
+  url: https://arxiv.org/abs/1406.1078
+sutskever2014:
+  authors: Ilya Sutskever, Oriol Vinyals and Quoc V. Le
+  year: 2014
+  title: Sequence to Sequence Learning with Neural Networks
+  venue: NeurIPS 2014
+  url: https://arxiv.org/abs/1409.3215
+jozefowicz2015:
+  authors: Rafal Jozefowicz, Wojciech Zaremba and Ilya Sutskever
+  year: 2015
+  title: An Empirical Exploration of Recurrent Network Architectures
+  venue: ICML 2015
+karpathy2016:
+  authors: Andrej Karpathy, Justin Johnson and Li Fei-Fei
+  year: 2016
+  title: Visualizing and Understanding Recurrent Networks
+  venue: ICLR 2016 workshop
+  url: https://arxiv.org/abs/1506.02078
+olah2015lstm:
+  authors: Christopher Olah
+  year: 2015
+  title: Understanding LSTM Networks
+  venue: Blog post
+  url: https://colah.github.io/posts/2015-08-Understanding-LSTMs/
+arora2018:
+  authors: Sanjeev Arora, Nadav Cohen and Elad Hazan
+  year: 2018
+  title: "On the Optimization of Deep Networks: Implicit Acceleration by Overparameterization"
+  venue: ICML 2018
+  url: https://arxiv.org/abs/1802.06509
+gu2023:
+  authors: Albert Gu and Tri Dao
+  year: 2023
+  title: "Mamba: Linear-Time Sequence Modeling with Selective State Spaces"
+  venue: arXiv:2312.00752
+  url: https://arxiv.org/abs/2312.00752
+graves2014:
+  authors: Alex Graves, Greg Wayne and Ivo Danihelka
+  year: 2014
+  title: Neural Turing Machines
+  venue: arXiv:1410.5401
+  url: https://arxiv.org/abs/1410.5401
+weston2015:
+  authors: Jason Weston, Sumit Chopra and Antoine Bordes
+  year: 2015
+  title: Memory Networks
+  venue: ICLR 2015
+  url: https://arxiv.org/abs/1410.3916
+luong2015:
+  authors: Minh-Thang Luong, Hieu Pham and Christopher D. Manning
+  year: 2015
+  title: Effective Approaches to Attention-based Neural Machine Translation
+  venue: EMNLP 2015
+  url: https://arxiv.org/abs/1508.04025
+elhage2021:
+  authors: Nelson Elhage, Neel Nanda, Catherine Olsson and others
+  year: 2021
+  title: A Mathematical Framework for Transformer Circuits
+  venue: Transformer Circuits Thread
+  url: https://transformer-circuits.pub/2021/framework/index.html
+olsson2022:
+  authors: Catherine Olsson, Nelson Elhage, Neel Nanda and others
+  year: 2022
+  title: In-context Learning and Induction Heads
+  venue: Transformer Circuits Thread
+  url: https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html
+arora2023zoology:
+  authors: Simran Arora, Sabri Eyuboglu, Aman Timalsina, Isys Johnson, Michael Poli, James Zou, Atri Rudra and Christopher Ré
+  year: 2023
+  title: "Zoology: Measuring and Improving Recall in Efficient Language Models"
+  venue: arXiv:2312.04927
+  url: https://arxiv.org/abs/2312.04927
+jelassi2024:
+  authors: Samy Jelassi, David Brandfonbrener, Sham M. Kakade and Eran Malach
+  year: 2024
+  title: "Repeat After Me: Transformers are Better than State Space Models at Copying"
+  venue: ICML 2024
+  url: https://arxiv.org/abs/2402.01032
+alammar2018:
+  authors: Jay Alammar
+  year: 2018
+  title: The Illustrated Transformer
+  venue: Blog post
+  url: https://jalammar.github.io/illustrated-transformer/
+he2016:
+  authors: Kaiming He, Xiangyu Zhang, Shaoqing Ren and Jian Sun
+  year: 2016
+  title: Deep Residual Learning for Image Recognition
+  venue: CVPR 2016
+  url: https://arxiv.org/abs/1512.03385
+xiong2020:
+  authors: Ruibin Xiong, Yunchang Yang, Di He, Kai Zheng, Shuxin Zheng, Chen Xing, Huishuai Zhang, Yanyan Lan, Liwei Wang and Tie-Yan Liu
+  year: 2020
+  title: On Layer Normalization in the Transformer Architecture
+  venue: ICML 2020
+  url: https://arxiv.org/abs/2002.04745
+press2017:
+  authors: Ofir Press and Lior Wolf
+  year: 2017
+  title: Using the Output Embedding to Improve Language Models
+  venue: EACL 2017
+  url: https://arxiv.org/abs/1608.05859
+geva2021:
+  authors: Mor Geva, Roei Schuster, Jonathan Berant and Omer Levy
+  year: 2021
+  title: Transformer Feed-Forward Layers Are Key-Value Memories
+  venue: EMNLP 2021
+  url: https://arxiv.org/abs/2012.14913
+devlin2019:
+  authors: Jacob Devlin, Ming-Wei Chang, Kenton Lee and Kristina Toutanova
+  year: 2019
+  title: "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding"
+  venue: NAACL 2019
+  url: https://arxiv.org/abs/1810.04805
+phuong2022:
+  authors: Mary Phuong and Marcus Hutter
+  year: 2022
+  title: Formal Algorithms for Transformers
+  venue: arXiv:2207.09238
+  url: https://arxiv.org/abs/2207.09238
+karpathy2023gpt:
+  authors: Andrej Karpathy
+  year: 2023
+  title: "Let's build GPT: from scratch, in code, spelled out (video) and nanoGPT (code)"
+  venue: YouTube and GitHub
+  url: https://github.com/karpathy/nanoGPT
+goyal2017:
+  authors: Priya Goyal, Piotr Dollár, Ross Girshick, Pieter Noordhuis, Lukasz Wesolowski, Aapo Kyrola, Andrew Tulloch, Yangqing Jia and Kaiming He
+  year: 2017
+  title: "Accurate, Large Minibatch SGD: Training ImageNet in 1 Hour"
+  venue: arXiv:1706.02677
+  url: https://arxiv.org/abs/1706.02677
+loshchilov2017:
+  authors: Ilya Loshchilov and Frank Hutter
+  year: 2017
+  title: "SGDR: Stochastic Gradient Descent with Warm Restarts"
+  venue: ICLR 2017
+  url: https://arxiv.org/abs/1608.03983
+mccandlish2018:
+  authors: Sam McCandlish, Jared Kaplan, Dario Amodei and the OpenAI Dota Team
+  year: 2018
+  title: An Empirical Model of Large-Batch Training
+  venue: arXiv:1812.06162
+  url: https://arxiv.org/abs/1812.06162
+hu2024minicpm:
+  authors: Shengding Hu and colleagues
+  year: 2024
+  title: "MiniCPM: Unveiling the Potential of Small Language Models with Scalable Training Strategies"
+  venue: arXiv:2404.06395
+  url: https://arxiv.org/abs/2404.06395
+hagele2024:
+  authors: Alexander Hägele, Elie Bakouch, Atli Kosson, Loubna Ben Allal, Leandro Von Werra and Martin Jaggi
+  year: 2024
+  title: Scaling Laws and Compute-Optimal Training Beyond Fixed Training Durations
+  venue: NeurIPS 2024
+  url: https://arxiv.org/abs/2405.18392
+chowdhery2022:
+  authors: Aakanksha Chowdhery and colleagues
+  year: 2022
+  title: "PaLM: Scaling Language Modeling with Pathways"
+  venue: arXiv:2204.02311
+  url: https://arxiv.org/abs/2204.02311
+karpathy2019recipe:
+  authors: Andrej Karpathy
+  year: 2019
+  title: A Recipe for Training Neural Networks
+  venue: Blog post
+  url: https://karpathy.github.io/2019/04/25/recipe/
+kingma2015:
+  authors: Diederik P. Kingma and Jimmy Ba
+  year: 2015
+  title: "Adam: A Method for Stochastic Optimization"
+  venue: ICLR 2015
+  url: https://arxiv.org/abs/1412.6980
+loshchilov2019:
+  authors: Ilya Loshchilov and Frank Hutter
+  year: 2019
+  title: Decoupled Weight Decay Regularization
+  venue: ICLR 2019
+  url: https://arxiv.org/abs/1711.05101
+polyak1964:
+  authors: Boris T. Polyak
+  year: 1964
+  title: Some methods of speeding up the convergence of iteration methods
+  venue: USSR Computational Mathematics and Mathematical Physics 4(5), 1–17
+nesterov1983:
+  authors: Yurii Nesterov
+  year: 1983
+  title: A method for solving the convex programming problem with convergence rate O(1/k²)
+  venue: Soviet Mathematics Doklady 27, 372–376
+duchi2011:
+  authors: John Duchi, Elad Hazan and Yoram Singer
+  year: 2011
+  title: Adaptive Subgradient Methods for Online Learning and Stochastic Optimization
+  venue: Journal of Machine Learning Research 12, 2121–2159
+tieleman2012:
+  authors: Tijmen Tieleman and Geoffrey Hinton
+  year: 2012
+  title: "Lecture 6.5 — RMSProp: divide the gradient by a running average of its recent magnitude"
+  venue: "Coursera: Neural Networks for Machine Learning"
+jordan2024muon:
+  authors: Keller Jordan, Yuchen Jin, Vlado Boza, Jiacheng You, Franz Cesista, Laker Newhouse and Jeremy Bernstein
+  year: 2024
+  title: "Muon: An optimizer for hidden layers in neural networks"
+  venue: Blog post
+  url: https://kellerjordan.github.io/posts/muon/
+liu2025muon:
+  authors: Jingyuan Liu and colleagues (Moonshot AI)
+  year: 2025
+  title: Muon is Scalable for LLM Training
+  venue: arXiv:2502.16982
+  url: https://arxiv.org/abs/2502.16982
+bernstein2024:
+  authors: Jeremy Bernstein and Laker Newhouse
+  year: 2024
+  title: "Old Optimizer, New Norm: An Anthology"
+  venue: arXiv:2409.20325
+  url: https://arxiv.org/abs/2409.20325
+gupta2018:
+  authors: Vineet Gupta, Tomer Koren and Yoram Singer
+  year: 2018
+  title: "Shampoo: Preconditioned Stochastic Tensor Optimization"
+  venue: ICML 2018
+  url: https://arxiv.org/abs/1802.09568
+sutskever2013:
+  authors: Ilya Sutskever, James Martens, George Dahl and Geoffrey Hinton
+  year: 2013
+  title: On the importance of initialization and momentum in deep learning
+  venue: ICML 2013

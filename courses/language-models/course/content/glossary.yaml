@@ -1,0 +1,301 @@
+# id: { term, definition (Markdown), chapter (slug that introduces it) }
+add-k:
+  term: Add-k smoothing
+  definition: Adding a pseudo-count $k$ to every n-gram count before normalising, so no continuation has probability zero. $k = 1$ is Laplace smoothing.
+  chapter: n-gram-models
+arithmetic-coding:
+  term: Arithmetic coding
+  definition: A compression method that encodes a whole message as one number, spending about $-\log_2 q(x_t \mid x_{<t})$ bits per symbol. It turns any predictive model into a compressor.
+  chapter: information-theory
+backoff:
+  term: Backoff
+  definition: Using a shorter context’s estimate when the longer context was not seen often enough (Katz, 1987).
+  chapter: n-gram-models
+bpe:
+  term: Byte-pair encoding (BPE)
+  definition: A tokenisation method that starts from bytes and repeatedly merges the most frequent adjacent pair into a new token.
+  chapter: tokenisation
+chain-rule:
+  term: Chain rule of probability
+  definition: $P(x_1, \ldots, x_T) = \prod_t P(x_t \mid x_{<t})$ — the factorisation that turns sequence modelling into next-token prediction.
+  chapter: text-as-data
+code-point:
+  term: Code point
+  definition: The integer Unicode assigns to a character, written U+XXXX, from U+0000 to U+10FFFF.
+  chapter: text-as-data
+conditional-entropy:
+  term: Conditional entropy
+  definition: $H(Y \mid X)$, the uncertainty left in $Y$ once $X$ is known, averaged over $X$.
+  chapter: information-theory
+continuation-count:
+  term: Continuation count
+  definition: In Kneser–Ney smoothing, the number of distinct contexts a token has been seen to follow, $N_{1+}(\bullet\, w)$.
+  chapter: n-gram-models
+corpus:
+  term: Corpus
+  definition: A body of text used to train or evaluate a model (plural *corpora*).
+  chapter: text-as-data
+cross-entropy:
+  term: Cross-entropy
+  definition: The average surprisal $-\log q(x_t \mid x_{<t})$ of the actual data under a model $q$. The training loss of every language model in the course.
+  chapter: n-gram-models
+entropy:
+  term: Entropy
+  definition: The expected surprisal of a distribution, $H(p) = -\sum_x p(x) \log p(x)$ — its irreducible uncertainty.
+  chapter: text-as-data
+glitch-token:
+  term: Glitch (under-trained) token
+  definition: A token that exists in the vocabulary but was rare in the model’s training data, so its embedding is barely trained — e.g. GPT-2’s ` SolidGoldMagikarp`.
+  chapter: tokenisation
+grapheme:
+  term: Grapheme cluster
+  definition: What a reader perceives as one character, which may consist of several code points (e.g. `e` + combining accent, or an emoji family).
+  chapter: text-as-data
+hapax:
+  term: Hapax legomenon
+  definition: A word type that occurs exactly once in a corpus. Typically about half of all word types.
+  chapter: text-as-data
+heaps-law:
+  term: Heaps’ law
+  definition: Vocabulary size grows as a sublinear power of text length, $V(n) = K n^\beta$ with $0 < \beta < 1$.
+  chapter: text-as-data
+interpolation:
+  term: Interpolation (smoothing)
+  definition: Mixing the estimates of several n-gram orders, e.g. $\lambda \hat P(w \mid h) + (1-\lambda) P(w \mid h')$.
+  chapter: n-gram-models
+kl-divergence:
+  term: KL divergence
+  definition: $D_{\mathrm{KL}}(p \,\|\, q) = \sum_x p(x) \log \frac{p(x)}{q(x)}$ — the extra cost of using $q$ when the data follow $p$. Non-negative and asymmetric.
+  chapter: information-theory
+kneser-ney:
+  term: Kneser–Ney smoothing
+  definition: Smoothing that subtracts a fixed discount from every seen count and backs off to a lower-order distribution built from continuation counts.
+  chapter: n-gram-models
+language-model:
+  term: Language model
+  definition: A probability distribution over sequences of tokens, usually factorised into next-token predictions $P(x_t \mid x_{<t})$.
+  chapter: text-as-data
+markov-assumption:
+  term: Markov assumption
+  definition: The approximation that the next symbol depends only on the previous $n - 1$ symbols.
+  chapter: n-gram-models
+mle:
+  term: Maximum-likelihood estimation (MLE)
+  definition: Choosing parameters that make the observed data most probable. For categorical distributions the MLE is the relative frequency.
+  chapter: n-gram-models
+mutual-information:
+  term: Mutual information
+  definition: $I(X; Y) = H(X) - H(X \mid Y)$ — how much knowing one variable tells you about the other.
+  chapter: information-theory
+n-gram:
+  term: N-gram
+  definition: A sequence of $n$ consecutive tokens. An n-gram model predicts each token from the previous $n - 1$.
+  chapter: n-gram-models
+normalisation:
+  term: Unicode normalisation
+  definition: Rewriting text into a canonical form (NFC, NFD, NFKC or NFKD) so that equivalent strings have identical code points.
+  chapter: text-as-data
+overfitting:
+  term: Overfitting
+  definition: Fitting accidents of the training data so closely that performance on new data gets worse — training loss falls while validation loss rises.
+  chapter: n-gram-models
+perplexity:
+  term: Perplexity
+  definition: $2^{H}$ for a cross-entropy $H$ in bits — the effective number of equally likely choices a model is weighing per token.
+  chapter: n-gram-models
+pre-tokenisation:
+  term: Pre-tokenisation
+  definition: Splitting text into chunks (words with their leading space, numbers, punctuation) with a regular expression before learning or applying merges.
+  chapter: tokenisation
+smoothing:
+  term: Smoothing
+  definition: Any method that moves probability mass from seen to unseen events so a model never assigns probability zero.
+  chapter: n-gram-models
+sparsity:
+  term: Data sparsity
+  definition: The fact that most possible n-grams never occur in any finite corpus, so their probabilities cannot be estimated by counting.
+  chapter: n-gram-models
+special-token:
+  term: Special token
+  definition: A reserved token such as `<|endoftext|>` that marks structure (document boundaries, chat turns) and cannot be produced by ordinary text.
+  chapter: tokenisation
+surprisal:
+  term: Surprisal
+  definition: The information in an outcome, $-\log p(x)$. Rare outcomes are more surprising.
+  chapter: text-as-data
+token:
+  term: Token
+  definition: One unit of text as the model sees it — a character, byte, word or subword. Also, one occurrence of a unit in running text (as opposed to a *type*).
+  chapter: tokenisation
+type:
+  term: Type
+  definition: A distinct unit in a vocabulary. “To be or not to be” has six word tokens but four word types.
+  chapter: text-as-data
+utf-8:
+  term: UTF-8
+  definition: The variable-length encoding of Unicode code points as 1–4 bytes; ASCII-compatible and self-synchronising.
+  chapter: text-as-data
+validation-set:
+  term: Validation set
+  definition: Held-out data used to measure generalisation and tune hyperparameters. A separate test set is kept for final results.
+  chapter: n-gram-models
+vocabulary:
+  term: Vocabulary
+  definition: The fixed set of tokens a model can read and write; its size $V$ sets the size of the input and output layers.
+  chapter: tokenisation
+zipf-law:
+  term: Zipf’s law
+  definition: The frequency of the $r$-th most common word is roughly proportional to $1/r^s$ with $s \approx 1$.
+  chapter: text-as-data
+kernel:
+  term: Kernel (GPU)
+  definition: A function that runs on the GPU once per thread of a dispatch, each thread using its built-in ids to choose which data to work on.
+  chapter: gpu-compute
+workgroup:
+  term: Workgroup
+  definition: A group of GPU threads (CUDA calls it a *block*) that run on one compute unit and can share fast workgroup memory and synchronise with barriers.
+  chapter: gpu-compute
+workgroup-memory:
+  term: Workgroup memory
+  definition: Small, fast on-chip memory shared by the threads of one workgroup (CUDA *shared memory*); used to stage data that many threads reuse.
+  chapter: gpu-compute
+barrier:
+  term: Barrier
+  definition: A synchronisation point (`workgroupBarrier()` in WGSL) that no thread of a workgroup passes until all have reached it, so writes to workgroup memory are visible to all.
+  chapter: gpu-compute
+arithmetic-intensity:
+  term: Arithmetic intensity
+  definition: Floating-point operations performed per byte moved to or from memory. Low intensity makes a kernel memory-bound; high intensity lets it be compute-bound.
+  chapter: gpu-compute
+roofline:
+  term: Roofline model
+  definition: "Attainable performance = min(peak FLOP/s, arithmetic intensity × memory bandwidth) — a plot that shows whether a kernel is limited by memory or by arithmetic."
+  chapter: gpu-compute
+memory-bound:
+  term: Memory-bound
+  definition: Limited by how fast data can be moved rather than by arithmetic. Element-wise operations, normalisation and softmax are memory-bound on every modern GPU.
+  chapter: gpu-compute
+tiling:
+  term: Tiling
+  definition: Splitting a computation into blocks that fit in fast memory, so each value loaded from slow memory is reused many times. The key to fast matrix multiplication.
+  chapter: gpu-compute
+kernel-fusion:
+  term: Kernel fusion
+  definition: Combining several operations into one kernel so intermediate results stay on-chip instead of being written to and re-read from memory.
+  chapter: gpu-compute
+recurrent-network:
+  term: Recurrent neural network (RNN)
+  definition: A network that reads a sequence one element at a time, updating a fixed-size hidden state with the same weights at every step.
+  chapter: recurrent-networks
+bptt:
+  term: Backpropagation through time (BPTT)
+  definition: Backpropagation applied to a recurrent network unrolled over the steps of a sequence. *Truncated* BPTT backpropagates only within chunks, carrying the state forward but not the gradient.
+  chapter: recurrent-networks
+vanishing-gradient:
+  term: Vanishing and exploding gradients
+  definition: Gradients that shrink or grow exponentially as they pass back through many layers or time steps, because they are products of many Jacobians.
+  chapter: recurrent-networks
+lstm:
+  term: LSTM (long short-term memory)
+  definition: A gated recurrent cell with an additively updated cell state, whose forget, input and output gates let information and gradients persist over many steps.
+  chapter: recurrent-networks
+gradient-clipping:
+  term: Gradient clipping
+  definition: Rescaling the gradient when its norm exceeds a threshold, keeping its direction; prevents exploding gradients from derailing training.
+  chapter: recurrent-networks
+attention:
+  term: Attention
+  definition: A weighted average of value vectors, with weights from a softmax over query–key dot products. Lets each position read directly from any other.
+  chapter: attention
+self-attention:
+  term: Self-attention
+  definition: Attention in which queries, keys and values are all projections of the same sequence.
+  chapter: attention
+causal-mask:
+  term: Causal mask
+  definition: The mask that stops each position attending to later positions (adds −∞ above the diagonal), so a language model cannot see the token it must predict.
+  chapter: attention
+multi-head-attention:
+  term: Multi-head attention
+  definition: Several attention operations (heads) run in parallel on lower-dimensional projections, their outputs concatenated and mixed by a final projection.
+  chapter: attention
+induction-head:
+  term: Induction head
+  definition: A two-step attention circuit that finds an earlier occurrence of the current token and copies the token that followed it — a basis of in-context learning.
+  chapter: attention
+residual-connection:
+  term: Residual connection
+  definition: Adding a layer’s output to its input (x ← x + f(x)), so each layer refines a running representation instead of replacing it.
+  chapter: attention
+transformer:
+  term: Transformer
+  definition: A network of stacked blocks, each an attention layer and a per-position MLP wrapped in residual connections and normalisation (Vaswani et al., 2017). GPT is a decoder-only Transformer.
+  chapter: transformer
+residual-stream:
+  term: Residual stream
+  definition: The vector at each position that flows through a Transformer; every block reads it (through LayerNorm) and adds its output to it.
+  chapter: transformer
+pre-norm:
+  term: Pre-norm
+  definition: Normalising each block's input rather than its output (x ← x + f(LN(x))), which keeps a clean residual path and makes deep Transformers easy to train.
+  chapter: transformer
+weight-tying:
+  term: Weight tying
+  definition: Using the token embedding matrix as the output layer too, so each token has one vector for reading and predicting it.
+  chapter: transformer
+positional-encoding:
+  term: Positional encoding
+  definition: Information about each token's position added to its vector (learned, sinusoidal or rotary), since attention itself ignores order.
+  chapter: transformer
+epoch:
+  term: Epoch
+  definition: One complete pass over the training data. Large language models are often trained for about one epoch; small datasets are repeated many times.
+  chapter: training-loop
+gradient-accumulation:
+  term: Gradient accumulation
+  definition: Summing the gradients of several micro-batches (each loss divided by their number) before one optimiser step, to reach a batch too large for memory.
+  chapter: training-loop
+warmup:
+  term: Learning-rate warm-up
+  definition: Increasing the learning rate from near zero to its peak over the first steps of training, to avoid destabilising the untrained model.
+  chapter: training-loop
+cosine-schedule:
+  term: Cosine schedule
+  definition: Decaying the learning rate along half a cosine from its peak to a small fraction of it over the run.
+  chapter: training-loop
+mfu:
+  term: Model FLOPs utilisation (MFU)
+  definition: The fraction of the hardware's peak arithmetic rate that a training run actually uses for the model's required computation.
+  chapter: training-loop
+checkpoint:
+  term: Checkpoint
+  definition: A saved snapshot of a training run — weights, optimiser state, step, random state and configuration — from which it can resume.
+  chapter: training-loop
+safetensors:
+  term: Safetensors
+  definition: A simple, safe file format for tensors (a JSON header plus raw bytes), used to share model weights without the code-execution risk of pickle.
+  chapter: training-loop
+momentum:
+  term: Momentum
+  definition: An optimiser that steps along a decaying sum of past gradients, accelerating along consistent directions and damping oscillations.
+  chapter: optimisers
+adam:
+  term: Adam
+  definition: An optimiser that divides a momentum-averaged gradient by the root-mean-square of recent gradients, per parameter, with bias correction.
+  chapter: optimisers
+adamw:
+  term: AdamW
+  definition: Adam with decoupled weight decay — weights are shrunk directly rather than through the gradient — the standard optimiser for language models.
+  chapter: optimisers
+weight-decay:
+  term: Weight decay
+  definition: Shrinking every weight by a small fraction at each step, a regulariser equivalent to a Gaussian prior on the weights.
+  chapter: optimisers
+condition-number:
+  term: Condition number
+  definition: The ratio of the largest to the smallest curvature of a loss surface; large values make plain gradient descent slow.
+  chapter: optimisers
+muon:
+  term: Muon
+  definition: An optimiser for weight matrices that orthogonalises the momentum update (every singular value set to about 1) with a Newton–Schulz iteration.
+  chapter: optimisers

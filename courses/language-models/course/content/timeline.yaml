@@ -1,0 +1,229 @@
+# Milestones in the history of language modelling. chapter = slug of the chapter that discusses it.
+- year: 1913
+  title: Markov chains on Eugene Onegin
+  people: Andrey Markov
+  chapter: text-as-data
+  text: Counted vowel–consonant transitions in 20,000 letters of Pushkin to show that letters are not independent.
+- year: 1935
+  title: The rank–frequency law
+  people: George Kingsley Zipf
+  chapter: text-as-data
+  text: Popularised what became Zipf’s law in *The Psycho-Biology of Language*.
+- year: 1948
+  title: A Mathematical Theory of Communication
+  people: Claude Shannon
+  chapter: text-as-data
+  text: Defined entropy and generated text from letter and word n-gram statistics.
+- year: 1951
+  title: Prediction and Entropy of Printed English
+  people: Claude Shannon
+  chapter: text-as-data
+  text: The guessing game; estimated English at roughly 0.6–1.3 bits per character.
+- year: 1953
+  title: Good–Turing estimation
+  people: I. J. Good, Alan Turing
+  chapter: n-gram-models
+  text: Estimating the probability of unseen events from the number of things seen once — rooted in Turing’s wartime codebreaking.
+- year: 1963
+  title: ASCII
+  chapter: text-as-data
+  text: A 7-bit standard encoding of 128 characters.
+- year: 1976
+  title: Continuous speech recognition by statistical methods
+  people: Frederick Jelinek
+  chapter: n-gram-models
+  text: IBM’s statistical approach, with n-gram language models, sets the template for three decades of speech and language processing.
+- year: 1987
+  title: Katz backoff
+  people: Slava Katz
+  chapter: n-gram-models
+  text: Back off to shorter contexts when longer ones are unreliable, with Good–Turing discounts.
+- year: 1991
+  title: Unicode 1.0
+  chapter: text-as-data
+  text: One code for the world’s writing systems.
+- year: 1992
+  title: UTF-8
+  people: Ken Thompson, Rob Pike
+  chapter: text-as-data
+  text: The ASCII-compatible, self-synchronising encoding now used by nearly all of the web.
+- year: 1994
+  title: Byte-pair encoding for compression
+  people: Philip Gage
+  chapter: tokenisation
+  text: Repeatedly replace the most frequent pair of bytes with a new symbol.
+- year: 1995
+  title: Kneser–Ney smoothing
+  people: Reinhard Kneser, Hermann Ney
+  chapter: n-gram-models
+  text: Absolute discounting with continuation counts — the strongest classical n-gram method.
+- year: 1998
+  title: An empirical study of smoothing
+  people: Stanley Chen, Joshua Goodman
+  chapter: n-gram-models
+  text: Modified Kneser–Ney emerges as the best smoothing method in an exhaustive comparison.
+- year: 2003
+  title: A neural probabilistic language model
+  people: Yoshua Bengio, Réjean Ducharme, Pascal Vincent, Christian Jauvin
+  chapter: mlp-language-model
+  text: Word embeddings and a neural network replace count tables, sharing statistical strength between similar words.
+- year: 2007
+  title: “Large Language Models in Machine Translation”
+  people: Thorsten Brants and colleagues (Google)
+  chapter: n-gram-models
+  text: N-gram models trained on up to two trillion tokens with Stupid Backoff.
+- year: 2012
+  title: WordPiece
+  people: Mike Schuster, Kaisuke Nakajima
+  chapter: tokenisation
+  text: Data-driven subword units for Japanese and Korean voice search.
+- year: 2016
+  title: Subword units for machine translation
+  people: Rico Sennrich, Barry Haddow, Alexandra Birch
+  chapter: tokenisation
+  text: BPE brought to NLP to handle rare words in an open vocabulary.
+- year: 2017
+  title: Attention Is All You Need
+  people: Ashish Vaswani and colleagues (Google)
+  chapter: transformer
+  text: The Transformer architecture, built entirely from attention and feed-forward layers.
+- year: 2018
+  title: SentencePiece and the Unigram tokeniser
+  people: Taku Kudo, John Richardson
+  chapter: tokenisation
+  text: Language-independent subword tokenisation from raw text.
+- year: 2019
+  title: GPT-2 and byte-level BPE
+  people: Alec Radford and colleagues (OpenAI)
+  chapter: tokenisation
+  text: BPE over bytes gives a 50,257-token vocabulary that can encode any string.
+- year: 2023
+  title: TinyStories
+  people: Ronen Eldan, Yuanzhi Li
+  chapter: text-as-data
+  text: A synthetic corpus on which tiny models learn fluent English — the dataset for this course’s CourseGPT.
+- year: 2023
+  title: SolidGoldMagikarp
+  people: Jessica Rumbelow, Matthew Watkins
+  chapter: tokenisation
+  text: Under-trained tokens that made GPT-3 behave bizarrely.
+- year: 2024
+  title: FineWeb
+  people: Guilherme Penedo and colleagues (Hugging Face)
+  chapter: text-as-data
+  text: A 15-trillion-token filtered web corpus released openly.
+- year: 2024
+  title: Infini-gram
+  people: Jiacheng Liu and colleagues
+  chapter: n-gram-models
+  text: Unbounded-n n-gram models over trillions of tokens using suffix arrays.
+- year: 2004
+  title: Neural networks on graphics cards
+  people: Kyoung-Su Oh and Keechul Jung; Ian Buck and colleagues (Brook)
+  chapter: gpu-compute
+  text: Early general-purpose GPU computing, with programs disguised as graphics shaders; a neural network ran 20× faster than on a CPU.
+- year: 2007
+  title: CUDA
+  people: NVIDIA (John Nickolls, Ian Buck and others)
+  chapter: gpu-compute
+  text: A C-like language for GPU compute kernels, with threads, blocks and shared memory — the model WebGPU’s compute shaders still follow.
+- year: 2012
+  title: AlexNet
+  people: Alex Krizhevsky, Ilya Sutskever and Geoffrey Hinton
+  chapter: gpu-compute
+  text: A convolutional network trained on two consumer GPUs won ImageNet by a wide margin, and deep learning moved to GPUs.
+- year: 2023
+  title: WebGPU ships in Chrome
+  people: W3C GPU for the Web Working Group
+  chapter: gpu-compute
+  text: Compute shaders arrive in the browser (Chrome 113), making in-browser training like this course’s practical.
+- year: 1943
+  title: The McCulloch–Pitts neuron
+  people: Warren McCulloch and Walter Pitts
+  chapter: neural-networks
+  text: An idealised neuron that sums weighted inputs and fires above a threshold; networks of them can compute any logical function.
+- year: 1958
+  title: The perceptron
+  people: Frank Rosenblatt
+  chapter: neural-networks
+  text: A neuron whose weights are learned from examples by a simple error-correcting rule.
+- year: 1969
+  title: Perceptrons
+  people: Marvin Minsky and Seymour Papert
+  chapter: neural-networks
+  text: A rigorous analysis of what single-layer perceptrons cannot compute, such as XOR; interest in neural networks collapsed for a decade.
+- year: 1986
+  title: Learning representations by back-propagating errors
+  people: David Rumelhart, Geoffrey Hinton and Ronald Williams
+  chapter: automatic-differentiation
+  text: Showed that backpropagation trains hidden units to discover useful internal representations.
+- year: 1989
+  title: Universal approximation
+  people: George Cybenko; Kurt Hornik, Maxwell Stinchcombe and Halbert White
+  chapter: neural-networks
+  text: One hidden layer with enough units can approximate any continuous function.
+- year: 1997
+  title: Long short-term memory
+  people: Sepp Hochreiter and Jürgen Schmidhuber
+  chapter: recurrent-networks
+  text: A gated recurrent cell that preserves gradients over long sequences.
+- year: 1990
+  title: Finding structure in time
+  people: Jeffrey Elman
+  chapter: recurrent-networks
+  text: The simple recurrent network, with a hidden state fed back as input, learns word boundaries and grammatical categories from sequences.
+- year: 1991
+  title: The vanishing-gradient problem
+  people: Sepp Hochreiter; Yoshua Bengio, Patrice Simard and Paolo Frasconi (1994)
+  chapter: recurrent-networks
+  text: Gradients through many recurrent steps shrink or grow exponentially, so plain RNNs cannot learn long-range dependencies.
+- year: 2010
+  title: Recurrent neural network language model
+  people: Tomáš Mikolov and colleagues
+  chapter: recurrent-networks
+  text: An RNN language model beats heavily tuned n-gram models in speech recognition.
+- year: 2014
+  title: Sequence-to-sequence learning
+  people: Ilya Sutskever, Oriol Vinyals and Quoc Le
+  chapter: recurrent-networks
+  text: One LSTM reads a sentence, another writes its translation; the basis of neural machine translation.
+- year: 2015
+  title: The Unreasonable Effectiveness of Recurrent Neural Networks
+  people: Andrej Karpathy
+  chapter: recurrent-networks
+  text: Character-level LSTMs generating Shakespeare, Wikipedia markup and C code; char-rnn popularised neural text generation.
+- year: 2014
+  title: Attention for translation
+  people: Dzmitry Bahdanau, Kyunghyun Cho and Yoshua Bengio
+  chapter: attention
+  text: A decoder that looks back at every encoder state with learned soft alignments, removing the fixed-vector bottleneck of sequence-to-sequence models.
+- year: 2022
+  title: Induction heads
+  people: Catherine Olsson, Nelson Elhage, Neel Nanda and colleagues (Anthropic)
+  chapter: attention
+  text: Two-layer attention circuits that copy what followed an earlier occurrence of the current token, forming in a sudden phase change during training.
+- year: 2015
+  title: Residual networks
+  people: Kaiming He, Xiangyu Zhang, Shaoqing Ren and Jian Sun
+  chapter: transformer
+  text: Identity shortcuts around each layer (x + f(x)) let networks of over a hundred layers train; the Transformer's residual stream inherits them.
+- year: 2018
+  title: GPT and BERT
+  people: Alec Radford and colleagues (OpenAI); Jacob Devlin and colleagues (Google)
+  chapter: transformer
+  text: Pre-training Transformers on unlabelled text — GPT as a left-to-right language model, BERT by filling in masked words — then fine-tuning for tasks.
+- year: 1964
+  title: The heavy-ball method
+  people: Boris Polyak
+  chapter: optimisers
+  text: Gradient descent with momentum, which accelerates convergence on ill-conditioned problems.
+- year: 2014
+  title: Adam
+  people: Diederik Kingma and Jimmy Ba
+  chapter: optimisers
+  text: Adaptive per-parameter step sizes with momentum and bias correction; it became deep learning's default optimiser.
+- year: 2024
+  title: Muon
+  people: Keller Jordan and colleagues
+  chapter: optimisers
+  text: Orthogonalised momentum updates for weight matrices, computed with a Newton–Schulz iteration; faster training than AdamW in speed-run benchmarks.

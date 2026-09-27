@@ -1,0 +1,24 @@
+{
+  "name": "language-models-course",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.6.0",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "pnpm --filter course dev",
+    "build": "pnpm --filter course build",
+    "preview": "pnpm --filter course preview",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json && pnpm --filter course check",
+    "check": "pnpm typecheck && pnpm test"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "@webgpu/types": "^0.1.74",
+    "typescript": "6.0.3",
+    "vitest": "^5.0.2",
+    "webgpu": "0.6.1"
+  }
+}

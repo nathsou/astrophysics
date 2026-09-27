@@ -1,0 +1,9 @@
+export { GpuContext, groups1d, type Dispatch } from './context.ts';
+export { GpuTensor, scope, noGradGpu, concatRows, sliceRows, matmulInto, MATMUL_KERNELS, type MatmulDims, type MatmulVariant } from './tensor.ts';
+export { GpuIds, GpuSGD, GpuAdamW, embedding, crossEntropy, tokenLosses, clipGradNorm } from './nn.ts';
+export * as kernels from './kernels.ts';
+export { lstmCell } from './rnn.ts';
+export { bmm, permute, softmax, multiHeadAttention } from './attention.ts';
+export { layerNorm, gelu, dropout, matmulT } from './layers.ts';
+export { Gpt, type GptConfig } from './gpt.ts';
+export { GpuMuon, newtonSchulz } from './muon.ts';

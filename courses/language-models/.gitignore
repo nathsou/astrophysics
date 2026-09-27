@@ -1,0 +1,16 @@
+node_modules/
+.svelte-kit/
+build/
+dist/
+*.tsbuildinfo
+.DS_Store
+# python
+training/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+# data & weights (large; fetched/produced by scripts)
+training/data/
+training/runs/
+training/checkpoints/
+course/static/weights/

@@ -1,0 +1,22 @@
+{
+  // Checks every plain .ts file in the repo (library, tools, exercises).
+  // .svelte and .svelte.ts files are checked by svelte-check from course/.
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "paths": {
+      "$lib": ["./course/src/lib"],
+      "$lib/*": ["./course/src/lib/*"],
+      "$content/*": ["./course/content/*"],
+      "@lm/test": ["./course/src/lib/exercise/harness.ts"]
+    }
+  },
+  "include": [
+    "packages/*/src/**/*.ts",
+    "course/src/lib/**/*.ts",
+    "course/src/ambient/**/*.d.ts",
+    "course/tools/**/*.ts",
+    "course/content/**/*.ts",
+    "vitest.config.ts"
+  ],
+  "exclude": ["**/node_modules/**", "**/*.svelte.ts"]
+}
