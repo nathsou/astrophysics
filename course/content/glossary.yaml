@@ -183,3 +183,23 @@ kernel-fusion:
   term: Kernel fusion
   definition: Combining several operations into one kernel so intermediate results stay on-chip instead of being written to and re-read from memory.
   chapter: gpu-compute
+recurrent-network:
+  term: Recurrent neural network (RNN)
+  definition: A network that reads a sequence one element at a time, updating a fixed-size hidden state with the same weights at every step.
+  chapter: recurrent-networks
+bptt:
+  term: Backpropagation through time (BPTT)
+  definition: Backpropagation applied to a recurrent network unrolled over the steps of a sequence. *Truncated* BPTT backpropagates only within chunks, carrying the state forward but not the gradient.
+  chapter: recurrent-networks
+vanishing-gradient:
+  term: Vanishing and exploding gradients
+  definition: Gradients that shrink or grow exponentially as they pass back through many layers or time steps, because they are products of many Jacobians.
+  chapter: recurrent-networks
+lstm:
+  term: LSTM (long short-term memory)
+  definition: A gated recurrent cell with an additively updated cell state, whose forget, input and output gates let information and gradients persist over many steps.
+  chapter: recurrent-networks
+gradient-clipping:
+  term: Gradient clipping
+  definition: Rescaling the gradient when its norm exceeds a threshold, keeping its direction; prevents exploding gradients from derailing training.
+  chapter: recurrent-networks

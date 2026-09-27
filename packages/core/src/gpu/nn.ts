@@ -115,3 +115,86 @@ export class GpuSGD {
     this.velocity.length = 0;
   }
 }
+
+/**
+ * Clip the global gradient norm to `maxNorm`, entirely on the GPU (no readback): returns the
+ * pre-clipping norm as a 1-element tensor, which can be read later for display.
+ */
+export function clipGradNorm(params: GpuTensor[], maxNorm: number): GpuTensor {
+  const withGrad = params.filter((p) => p.grad);
+  const ctx = withGrad[0]?.ctx ?? params[0]!.ctx;
+  return noGradGpu(() => {
+    let total: GpuTensor | null = null;
+    for (const p of withGrad) {
+      const sq = p.grad!.mul(p.grad!).sum();
+      total = total ? total.add(sq) : sq;
+    }
+    const norm = total ? total.binaryRaw(total, 'sqrt(x)') : GpuTensor.zeros(ctx, []);
+    if (Number.isFinite(maxNorm)) {
+      for (const p of withGrad) {
+        ctx.run({ code: K.clipKernel, uniforms: { spec: 'uf', values: [p.size, maxNorm] }, buffers: [p.grad!.buffer, norm.buffer], groups: groups1d(p.size) });
+      }
+    }
+    return norm;
+  });
+}
+
+/** AdamW on the GPU (Chapter 13 derives it): per-parameter adaptive steps plus decoupled weight decay. */
+export class GpuAdamW {
+  readonly params: GpuTensor[];
+  lr: number;
+  readonly beta1: number;
+  readonly beta2: number;
+  readonly eps: number;
+  weightDecay: number;
+  private t = 0;
+  private readonly m: GPUBuffer[];
+  private readonly v: GPUBuffer[];
+  /** Parameters exempt from weight decay (typically biases and normalisation gains). */
+  private readonly noDecay: Set<GpuTensor>;
+
+  constructor(params: GpuTensor[], opts: { lr: number; betas?: [number, number]; eps?: number; weightDecay?: number; noDecay?: GpuTensor[] }) {
+    this.params = params;
+    this.lr = opts.lr;
+    [this.beta1, this.beta2] = opts.betas ?? [0.9, 0.999];
+    this.eps = opts.eps ?? 1e-8;
+    this.weightDecay = opts.weightDecay ?? 0;
+    this.noDecay = new Set(opts.noDecay ?? []);
+    const zeros = (p: GpuTensor) => {
+      const b = p.ctx.alloc(p.size * 4);
+      p.ctx.clear(b, p.size * 4);
+      return b;
+    };
+    this.m = params.map(zeros);
+    this.v = params.map(zeros);
+  }
+
+  get steps(): number {
+    return this.t;
+  }
+
+  step(): void {
+    this.t++;
+    const c1 = 1 - this.beta1 ** this.t, c2 = 1 - this.beta2 ** this.t;
+    this.params.forEach((p, i) => {
+      if (!p.grad) return;
+      const wd = this.noDecay.has(p) ? 0 : this.weightDecay;
+      p.ctx.run({
+        code: K.adamwKernel,
+        uniforms: { spec: 'ufffffff', values: [p.size, this.lr, this.beta1, this.beta2, this.eps, wd, c1, c2] },
+        buffers: [p.buffer, this.m[i]!, this.v[i]!, p.grad.buffer],
+        groups: groups1d(p.size),
+      });
+    });
+  }
+
+  zeroGrad(): void {
+    for (const p of this.params) p.zeroGrad();
+  }
+
+  dispose(): void {
+    const ctx = this.params[0]?.ctx;
+    if (!ctx) return;
+    for (const b of [...this.m, ...this.v]) ctx.release(b);
+  }
+}

@@ -542,6 +542,35 @@ export class Tensor {
   }
 }
 
+// ───────────── joining ─────────────
+
+/** Concatenate tensors along an existing dimension. All other dimensions must match. */
+export function cat(tensors: Tensor[], dim = 0): Tensor {
+  if (tensors.length === 0) throw new Error('cat needs at least one tensor');
+  const first = tensors[0]!;
+  const d = normDim(dim, first.ndim);
+  for (const t of tensors) {
+    if (t.ndim !== first.ndim || t.shape.some((s, i) => i !== d && s !== first.shape[i])) throw new Error(`cat: shapes [${first.shape}] and [${t.shape}] differ outside dimension ${d}`);
+  }
+  const shape = [...first.shape];
+  shape[d] = tensors.reduce((a, t) => a + t.shape[d]!, 0);
+  const out = Tensor.zeros(shape);
+  let start = 0;
+  const starts: number[] = [];
+  for (const t of tensors) {
+    starts.push(start);
+    const region = new Tensor(out.storage, t.shape, out.strides, start * out.strides[d]!);
+    forEachOffset2(t.shape, region.strides, region.offset, t.strides, t.offset, (o, i) => (out.storage[o] = t.storage[i]!));
+    start += t.shape[d]!;
+  }
+  return record(out, 'cat', tensors, (g) => tensors.map((t, k) => g.slice(d, starts[k]!, starts[k]! + t.shape[d]!).contiguous()));
+}
+
+/** Stack equally shaped tensors along a new dimension. */
+export function stack(tensors: Tensor[], dim = 0): Tensor {
+  return cat(tensors.map((t) => t.unsqueeze(dim)), dim);
+}
+
 // ───────────── helpers ─────────────
 
 function lift(x: TensorLike): Tensor {

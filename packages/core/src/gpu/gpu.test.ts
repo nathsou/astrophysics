@@ -5,7 +5,8 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { mulberry32 } from '../util/random.ts';
 import { Tensor, nn } from '../tensor/index.ts';
-import { GpuContext, GpuIds, GpuSGD, GpuTensor, MATMUL_KERNELS, crossEntropy, embedding, matmulInto, scope, type MatmulVariant } from './index.ts';
+import { GpuContext, GpuIds, GpuSGD, GpuTensor, MATMUL_KERNELS, clipGradNorm, concatRows, crossEntropy, embedding, lstmCell, matmulInto, scope, sliceRows, type MatmulVariant } from './index.ts';
+import { cat } from '../tensor/tensor.ts';
 import { nodeGpu } from './node.ts';
 
 let ctx: GpuContext | null = null;
@@ -109,5 +110,95 @@ describe('GPU backend', () => {
     expect(kept.disposed).toBe(false);
     expect(x.disposed).toBe(false);
     close(await kept.read(), Float32Array.from([1, 2, 3, 4], (v) => 2 * Math.tanh(v)));
+  });
+
+  it('back-propagates through time like the CPU library (gated RNN, concatenation, clipping)', async (t) => {
+    if (!ctx) return t.skip();
+    const V = 7, H = 6, B = 3, T = 5;
+    const rng = mulberry32(8);
+    // h_t = g_t * tanh(Wx[x_t] + h_{t-1} U) + (1 − g_t) * h_{t-1},  g_t = σ(Gx[x_t] + h_{t-1} R)
+    const cpu = {
+      Wx: Tensor.randn([V, H], { rng, std: 0.5, requiresGrad: true }),
+      U: Tensor.randn([H, H], { rng, std: 0.4, requiresGrad: true }),
+      Gx: Tensor.randn([V, H], { rng, std: 0.5, requiresGrad: true }),
+      R: Tensor.randn([H, H], { rng, std: 0.4, requiresGrad: true }),
+      Wy: Tensor.randn([H, V], { rng, std: 0.5, requiresGrad: true }),
+    };
+    const xs = Array.from({ length: T }, () => Array.from({ length: B }, () => Math.floor(rng() * V)));
+    const ys = Array.from({ length: T * B }, () => Math.floor(rng() * V));
+    let h = Tensor.zeros([B, H]);
+    const hs: Tensor[] = [];
+    for (let s = 0; s < T; s++) {
+      const g = nn.embedding(cpu.Gx, xs[s]!).add(h.matmul(cpu.R)).sigmoid();
+      const c = nn.embedding(cpu.Wx, xs[s]!).add(h.matmul(cpu.U)).tanh();
+      h = g.mul(c).add(Tensor.scalar(1).sub(g).mul(h));
+      hs.push(h);
+    }
+    const cpuLoss = nn.crossEntropy(cat(hs, 0).matmul(cpu.Wy), ys);
+    cpuLoss.backward();
+
+    const names = Object.keys(cpu) as (keyof typeof cpu)[];
+    const gpu = Object.fromEntries(names.map((k) => [k, GpuTensor.from(ctx!, cpu[k], undefined, { requiresGrad: true })])) as Record<keyof typeof cpu, GpuTensor>;
+    const ids = xs.map((x) => new GpuIds(ctx!, x));
+    const targets = new GpuIds(ctx, ys);
+    const one = GpuTensor.from(ctx, Float32Array.of(1), []);
+    const { loss, norm } = scope(() => {
+      let hg = GpuTensor.zeros(ctx!, [B, H]);
+      const outs: GpuTensor[] = [];
+      for (let s = 0; s < T; s++) {
+        const g = embedding(gpu.Gx, ids[s]!).add(hg.matmul(gpu.R)).sigmoid();
+        const c = embedding(gpu.Wx, ids[s]!).add(hg.matmul(gpu.U)).tanh();
+        hg = g.mul(c).add(one.sub(g).mul(hg));
+        outs.push(hg);
+      }
+      const loss = crossEntropy(concatRows(outs).matmul(gpu.Wy), targets);
+      loss.backward();
+      return { loss, norm: clipGradNorm(Object.values(gpu), Infinity) };
+    });
+    expect(await loss.item()).toBeCloseTo(cpuLoss.item(), 4);
+    for (const k of names) close(await gpu[k].grad!.read(), cpu[k].grad!.toFloat32Array());
+    const cpuNorm = nn.clipGradNorm(names.map((k) => cpu[k]));
+    expect(await norm.item()).toBeCloseTo(cpuNorm, 3);
+    // Clipping to half the norm halves every gradient.
+    const before = await gpu.U.grad!.read();
+    scope(() => clipGradNorm(Object.values(gpu), cpuNorm / 2));
+    close(await gpu.U.grad!.read(), before.map((v) => v / 2), 1e-3);
+  });
+
+  it('runs a fused LSTM cell with the same gradients as its unfused CPU version', async (t) => {
+    if (!ctx) return t.skip();
+    const B = 3, H = 5, T = 4;
+    const rng = mulberry32(21);
+    const Z = Array.from({ length: T }, () => Tensor.randn([B, 4 * H], { rng, std: 1.5, requiresGrad: true }));
+    const U = Tensor.randn([H, 4 * H], { rng, std: 0.5, requiresGrad: true });
+    const w = Tensor.randn([B, H], { rng });
+    // CPU reference: the LSTM equations written out with ordinary ops.
+    let h = Tensor.zeros([B, H]), c = Tensor.zeros([B, H]);
+    for (let s = 0; s < T; s++) {
+      const z = Z[s]!.add(h.matmul(U));
+      const i = z.slice(1, 0, H).sigmoid(), f = z.slice(1, H, 2 * H).sigmoid(), o = z.slice(1, 2 * H, 3 * H).sigmoid(), g = z.slice(1, 3 * H).tanh();
+      c = f.mul(c).add(i.mul(g));
+      h = o.mul(c.tanh());
+    }
+    const cpuLoss = h.mul(w).sum().add(c.sum());
+    cpuLoss.backward();
+
+    const Zg = Z.map((z) => GpuTensor.from(ctx!, z, undefined, { requiresGrad: true }));
+    const Ug = GpuTensor.from(ctx, U, undefined, { requiresGrad: true });
+    const wg = GpuTensor.from(ctx, w);
+    const loss = scope(() => {
+      let hg = GpuTensor.zeros(ctx!, [B, H]), cg = GpuTensor.zeros(ctx!, [B, H]);
+      for (let s = 0; s < T; s++) {
+        const st = lstmCell(Zg[s]!.add(hg.matmul(Ug)), cg);
+        hg = sliceRows(st, 0, B);
+        cg = sliceRows(st, B, B);
+      }
+      const l = hg.mul(wg).sum().add(cg.sum());
+      l.backward();
+      return l;
+    });
+    expect(await loss.item()).toBeCloseTo(cpuLoss.item(), 4);
+    close(await Ug.grad!.read(), U.grad!.toFloat32Array());
+    for (let s = 0; s < T; s++) close(await Zg[s]!.grad!.read(), Z[s]!.grad!.toFloat32Array());
   });
 });

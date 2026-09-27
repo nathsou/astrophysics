@@ -167,3 +167,28 @@
   people: Sepp Hochreiter and Jürgen Schmidhuber
   chapter: recurrent-networks
   text: A gated recurrent cell that preserves gradients over long sequences.
+- year: 1990
+  title: Finding structure in time
+  people: Jeffrey Elman
+  chapter: recurrent-networks
+  text: The simple recurrent network, with a hidden state fed back as input, learns word boundaries and grammatical categories from sequences.
+- year: 1991
+  title: The vanishing-gradient problem
+  people: Sepp Hochreiter; Yoshua Bengio, Patrice Simard and Paolo Frasconi (1994)
+  chapter: recurrent-networks
+  text: Gradients through many recurrent steps shrink or grow exponentially, so plain RNNs cannot learn long-range dependencies.
+- year: 2010
+  title: Recurrent neural network language model
+  people: Tomáš Mikolov and colleagues
+  chapter: recurrent-networks
+  text: An RNN language model beats heavily tuned n-gram models in speech recognition.
+- year: 2014
+  title: Sequence-to-sequence learning
+  people: Ilya Sutskever, Oriol Vinyals and Quoc Le
+  chapter: recurrent-networks
+  text: One LSTM reads a sentence, another writes its translation; the basis of neural machine translation.
+- year: 2015
+  title: The Unreasonable Effectiveness of Recurrent Neural Networks
+  people: Andrej Karpathy
+  chapter: recurrent-networks
+  text: Character-level LSTMs generating Shakespeare, Wikipedia markup and C code; char-rnn popularised neural text generation.

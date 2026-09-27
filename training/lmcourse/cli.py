@@ -42,6 +42,16 @@ def main() -> None:
 
     c8 = sub.add_parser("ch08", help="Chapter 8: GPU bandwidth, matmul throughput and speed-ups")
     c8.add_argument("--triton", action="store_true", help="also benchmark a Triton matmul kernel (CUDA)")
+    c9 = sub.add_parser("ch09", help="Chapter 9: character-level RNN / LSTM / GRU (PyTorch)")
+    c9.add_argument("--cell", choices=["lstm", "gru", "rnn"], default="lstm")
+    c9.add_argument("--hidden", type=int, default=256)
+    c9.add_argument("--layers", type=int, default=1)
+    c9.add_argument("--steps", type=int, default=2000)
+    c9.add_argument("--batch", type=int, default=64)
+    c9.add_argument("--bptt", type=int, default=64)
+    c9.add_argument("--lr", type=float, default=3e-3)
+    c9.add_argument("--dropout", type=float, default=0.0)
+    c9.add_argument("--device", default="auto")
     args = p.parse_args()
     if args.cmd == "data":
         from .data import download
@@ -80,6 +90,20 @@ def main() -> None:
         from . import ch08
 
         ch08.main(use_triton=args.triton)
+    elif args.cmd == "ch09":
+        from . import ch09
+
+        ch09.main(
+            cell=args.cell,
+            hidden=args.hidden,
+            layers=args.layers,
+            steps=args.steps,
+            batch=args.batch,
+            bptt=args.bptt,
+            lr=args.lr,
+            dropout=args.dropout,
+            device=args.device,
+        )
 
 
 if __name__ == "__main__":

@@ -75,7 +75,7 @@ class Bench {
     let t = await time(gpu, () => gpu.run({ code: copy, uniforms: { spec: 'uf', values: [n, 0] }, buffers: [a, c], groups: groups1d(n) }));
     this.bandwidth = (8 * n) / t / 1e9;
     const saxpy = kernels.binaryKernel('2.0 * x + y');
-    t = await time(gpu, () => gpu.run({ code: saxpy, uniforms: { spec: 'uu', values: [n, n] }, buffers: [a, b, c], groups: groups1d(n) }));
+    t = await time(gpu, () => gpu.run({ code: saxpy, uniforms: { spec: 'uuu', values: [n, n, n] }, buffers: [a, b, c], groups: groups1d(n) }));
     this.saxpy = (2 * n) / t / 1e9;
     // Whichever kernel streamed more bytes per second sets the bandwidth roof.
     this.bandwidth = Math.max(this.bandwidth, (12 * n) / t / 1e9);

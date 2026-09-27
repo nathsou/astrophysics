@@ -23,11 +23,11 @@ fn main(@builtin(global_invocation_id) gid: vec3u, @builtin(num_workgroups) nw: 
 }`;
 
 /**
- * out[i] = f(a[i], b[i mod bLen]) — covers equal shapes (bLen = n), a bias broadcast along the
- * last dimension (bLen = columns) and a scalar (bLen = 1).
+ * out[i] = f(a[i mod aLen], b[i mod bLen]) — covers equal shapes, an operand broadcast along the
+ * trailing dimensions (e.g. a bias: length = columns) and a scalar (length 1), on either side.
  */
 export const binaryKernel = (expr: string) => /* wgsl */ `
-struct P { n: u32, bLen: u32 }
+struct P { n: u32, aLen: u32, bLen: u32 }
 @group(0) @binding(0) var<uniform> p: P;
 @group(0) @binding(1) var<storage, read> a: array<f32>;
 @group(0) @binding(2) var<storage, read> b: array<f32>;
@@ -36,7 +36,7 @@ struct P { n: u32, bLen: u32 }
 fn main(@builtin(global_invocation_id) gid: vec3u, @builtin(num_workgroups) nw: vec3u) {
   let i = gid.x + gid.y * nw.x * ${WG}u;
   if (i >= p.n) { return; }
-  let x = a[i];
+  let x = a[i % p.aLen];
   let y = b[i % p.bLen];
   out[i] = ${expr};
 }`;
@@ -272,4 +272,40 @@ fn main(@builtin(global_invocation_id) gid: vec3u, @builtin(num_workgroups) nw: 
   if (i >= p.n) { return; }
   v[i] = p.mu * v[i] + g[i];
   w[i] = w[i] - p.lr * v[i];
+}`;
+
+/** Scale every element of g in place by min(1, maxNorm / norm), reading norm from a 1-element buffer. */
+export const clipKernel = /* wgsl */ `
+struct P { n: u32, maxNorm: f32 }
+@group(0) @binding(0) var<uniform> p: P;
+@group(0) @binding(1) var<storage, read_write> g: array<f32>;
+@group(0) @binding(2) var<storage, read> norm: array<f32>;
+@compute @workgroup_size(${WG})
+fn main(@builtin(global_invocation_id) gid: vec3u, @builtin(num_workgroups) nw: vec3u) {
+  let i = gid.x + gid.y * nw.x * ${WG}u;
+  if (i >= p.n) { return; }
+  g[i] = g[i] * min(1.0, p.maxNorm / (norm[0] + 1e-6));
+}`;
+
+/**
+ * AdamW, in place (Chapter 13): m ← β₁m + (1−β₁)g;  v ← β₂v + (1−β₂)g²;
+ * w ← w − lr·(m̂ / (√v̂ + ε) + λw), with bias corrections c1 = 1 − β₁ᵗ, c2 = 1 − β₂ᵗ.
+ */
+export const adamwKernel = /* wgsl */ `
+struct P { n: u32, lr: f32, b1: f32, b2: f32, eps: f32, wd: f32, c1: f32, c2: f32 }
+@group(0) @binding(0) var<uniform> p: P;
+@group(0) @binding(1) var<storage, read_write> w: array<f32>;
+@group(0) @binding(2) var<storage, read_write> m: array<f32>;
+@group(0) @binding(3) var<storage, read_write> v: array<f32>;
+@group(0) @binding(4) var<storage, read> g: array<f32>;
+@compute @workgroup_size(${WG})
+fn main(@builtin(global_invocation_id) gid: vec3u, @builtin(num_workgroups) nw: vec3u) {
+  let i = gid.x + gid.y * nw.x * ${WG}u;
+  if (i >= p.n) { return; }
+  let gi = g[i];
+  m[i] = p.b1 * m[i] + (1.0 - p.b1) * gi;
+  v[i] = p.b2 * v[i] + (1.0 - p.b2) * gi * gi;
+  let mh = m[i] / p.c1;
+  let vh = v[i] / p.c2;
+  w[i] = w[i] - p.lr * (mh / (sqrt(vh) + p.eps) + p.wd * w[i]);
 }`;

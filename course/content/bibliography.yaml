@@ -789,3 +789,86 @@ ouyang2022:
   title: Training language models to follow instructions with human feedback
   venue: NeurIPS 2022
   url: https://arxiv.org/abs/2203.02155
+hochreiter1991:
+  authors: Sepp Hochreiter
+  year: 1991
+  title: Untersuchungen zu dynamischen neuronalen Netzen
+  venue: Diploma thesis, Technische Universität München
+bengio1994:
+  authors: Yoshua Bengio, Patrice Simard and Paolo Frasconi
+  year: 1994
+  title: Learning long-term dependencies with gradient descent is difficult
+  venue: IEEE Transactions on Neural Networks 5(2), 157–166
+werbos1990:
+  authors: Paul J. Werbos
+  year: 1990
+  title: "Backpropagation through time: what it does and how to do it"
+  venue: Proceedings of the IEEE 78(10), 1550–1560
+gers2000:
+  authors: Felix A. Gers, Jürgen Schmidhuber and Fred Cummins
+  year: 2000
+  title: "Learning to Forget: Continual Prediction with LSTM"
+  venue: Neural Computation 12(10), 2451–2471
+mikolov2010:
+  authors: Tomáš Mikolov, Martin Karafiát, Lukáš Burget, Jan Černocký and Sanjeev Khudanpur
+  year: 2010
+  title: Recurrent neural network based language model
+  venue: Interspeech 2010
+sutskever2011:
+  authors: Ilya Sutskever, James Martens and Geoffrey Hinton
+  year: 2011
+  title: Generating Text with Recurrent Neural Networks
+  venue: ICML 2011
+graves2013:
+  authors: Alex Graves
+  year: 2013
+  title: Generating Sequences With Recurrent Neural Networks
+  venue: arXiv:1308.0850
+  url: https://arxiv.org/abs/1308.0850
+pascanu2013:
+  authors: Razvan Pascanu, Tomas Mikolov and Yoshua Bengio
+  year: 2013
+  title: On the difficulty of training recurrent neural networks
+  venue: ICML 2013
+  url: https://arxiv.org/abs/1211.5063
+cho2014:
+  authors: Kyunghyun Cho, Bart van Merriënboer, Caglar Gulcehre, Dzmitry Bahdanau, Fethi Bougares, Holger Schwenk and Yoshua Bengio
+  year: 2014
+  title: Learning Phrase Representations using RNN Encoder–Decoder for Statistical Machine Translation
+  venue: EMNLP 2014
+  url: https://arxiv.org/abs/1406.1078
+sutskever2014:
+  authors: Ilya Sutskever, Oriol Vinyals and Quoc V. Le
+  year: 2014
+  title: Sequence to Sequence Learning with Neural Networks
+  venue: NeurIPS 2014
+  url: https://arxiv.org/abs/1409.3215
+jozefowicz2015:
+  authors: Rafal Jozefowicz, Wojciech Zaremba and Ilya Sutskever
+  year: 2015
+  title: An Empirical Exploration of Recurrent Network Architectures
+  venue: ICML 2015
+karpathy2016:
+  authors: Andrej Karpathy, Justin Johnson and Li Fei-Fei
+  year: 2016
+  title: Visualizing and Understanding Recurrent Networks
+  venue: ICLR 2016 workshop
+  url: https://arxiv.org/abs/1506.02078
+olah2015lstm:
+  authors: Christopher Olah
+  year: 2015
+  title: Understanding LSTM Networks
+  venue: Blog post
+  url: https://colah.github.io/posts/2015-08-Understanding-LSTMs/
+arora2018:
+  authors: Sanjeev Arora, Nadav Cohen and Elad Hazan
+  year: 2018
+  title: "On the Optimization of Deep Networks: Implicit Acceleration by Overparameterization"
+  venue: ICML 2018
+  url: https://arxiv.org/abs/1802.06509
+gu2023:
+  authors: Albert Gu and Tri Dao
+  year: 2023
+  title: "Mamba: Linear-Time Sequence Modeling with Selective State Spaces"
+  venue: arXiv:2312.00752
+  url: https://arxiv.org/abs/2312.00752

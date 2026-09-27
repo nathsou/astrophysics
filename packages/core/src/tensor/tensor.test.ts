@@ -119,3 +119,19 @@ describe('training', () => {
     expect(last).toBeLessThan(first / 5);
   });
 });
+
+describe('cat and stack', () => {
+  it('concatenates along a dimension and routes gradients back', async () => {
+    const { cat, stack } = await import('./tensor.ts');
+    const a = Tensor.from([[1, 2], [3, 4]], undefined, { requiresGrad: true });
+    const b = Tensor.from([[5, 6]], undefined, { requiresGrad: true });
+    const c = cat([a, b], 0);
+    expect(c.shape).toEqual([3, 2]);
+    expect(c.toArray()).toEqual([[1, 2], [3, 4], [5, 6]]);
+    c.mul(Tensor.from([[1, 2], [3, 4], [5, 6]])).sum().backward();
+    expect(a.grad!.toArray()).toEqual([[1, 2], [3, 4]]);
+    expect(b.grad!.toArray()).toEqual([[5, 6]]);
+    expect(cat([a.T, a.T], 1).toArray()).toEqual([[1, 3, 1, 3], [2, 4, 2, 4]]);
+    expect(stack([Tensor.from([1, 2]), Tensor.from([3, 4])], 1).toArray()).toEqual([[1, 3], [2, 4]]);
+  });
+});

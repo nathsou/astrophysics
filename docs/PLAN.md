@@ -45,6 +45,9 @@ Every model is compared on the same data so progress is visible across chapters.
 | MLP, browser CPU (n 8, d 16, h 128, SGD, 10k steps) | 7 | ≈ 2.94 | ≈ 7.7 |
 | MLP, PyTorch (2 × 512, AdamW) | 7 | 2.28 | 4.85 |
 | MLP, browser GPU (d 24, h 1024, batch 1024, momentum, 20k steps) | 8 | 2.43 | 5.4 |
+| Vanilla RNN, H 256, browser GPU / PyTorch (2k Adam steps) | 9 | 2.32 / 2.31 | 5.0 |
+| LSTM, H 256, browser GPU / PyTorch (2k Adam steps) | 9 | 2.24 / 2.20 | 4.7 |
+| LSTM 2 × 512, dropout 0.25, PyTorch, 10k steps | 9 | 2.10 | 4.3 |
 
 ## Chapter template
 

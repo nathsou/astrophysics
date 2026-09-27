@@ -145,6 +145,13 @@ export class GpuTensor {
     }
   }
 
+  /** A copy with no autograd history (e.g. a hidden state carried into the next batch). */
+  detach(): GpuTensor {
+    const out = GpuTensor.empty(this.ctx, this.shape);
+    this.ctx.copy(this.buffer, out.buffer, this.size * 4);
+    return out;
+  }
+
   // ───────────── shape ─────────────
 
   /** A view with a new shape (free: the data is already contiguous). One dimension may be −1. */
@@ -158,17 +165,17 @@ export class GpuTensor {
 
   // ───────────── element-wise ─────────────
 
-  /** a + b, where b has the same shape or matches a trailing part of it (e.g. a bias). */
+  /** a + b. Either operand may be a scalar or match a trailing part of the other’s shape (e.g. a bias). */
   add(b: GpuTensor): GpuTensor {
-    return this.binary(b, 'x + y', 'add', (g) => [g, sumToSuffix(g, b)]);
+    return this.binary(b, 'x + y', 'add', (g) => [sumToSuffix(g, this), sumToSuffix(g, b)]);
   }
 
   sub(b: GpuTensor): GpuTensor {
-    return this.binary(b, 'x - y', 'sub', (g) => [g, sumToSuffix(g, b).scale(-1)]);
+    return this.binary(b, 'x - y', 'sub', (g) => [sumToSuffix(g, this), sumToSuffix(g, b).scale(-1)]);
   }
 
   mul(b: GpuTensor): GpuTensor {
-    return this.binary(b, 'x * y', 'mul', (g) => [g.mul(b), sumToSuffix(g.mul(this), b)]);
+    return this.binary(b, 'x * y', 'mul', (g) => [sumToSuffix(g.mul(b), this), sumToSuffix(g.mul(this), b)]);
   }
 
   scale(s: number): GpuTensor {
@@ -180,6 +187,11 @@ export class GpuTensor {
     // tanh(x) = 1 − 2 / (exp(2x) + 1), which is safe for large |x| (WGSL's tanh can return NaN there on some GPUs).
     const out = this.unary('1.0 - 2.0 / (exp(2.0 * clamp(x, -15.0, 15.0)) + 1.0)');
     return record(out, 'tanh', [this], (g) => [g.binaryRaw(out, 'x * (1.0 - y * y)')]);
+  }
+
+  sigmoid(): GpuTensor {
+    const out = this.unary('1.0 / (1.0 + exp(-clamp(x, -30.0, 30.0)))');
+    return record(out, 'sigmoid', [this], (g) => [g.binaryRaw(out, 'x * y * (1.0 - y)')]);
   }
 
   relu(): GpuTensor {
@@ -281,11 +293,13 @@ export class GpuTensor {
     return out;
   }
 
-  /** Element-wise kernel with suffix broadcasting of `b`; no autograd node. */
+  /** Element-wise kernel with suffix broadcasting of either operand; no autograd node. */
   binaryRaw(b: GpuTensor, expr: string): GpuTensor {
-    if (!isSuffix(b.shape, this.shape) && b.size !== 1) throw new Error(`cannot broadcast [${b.shape}] against [${this.shape}]`);
-    const out = GpuTensor.empty(this.ctx, this.shape);
-    this.ctx.run({ code: K.binaryKernel(expr), uniforms: { spec: 'uu', values: [this.size, b.size] }, buffers: [this.buffer, b.buffer, out.buffer], groups: groups1d(this.size) });
+    const shape = b.size > this.size ? b.shape : this.shape;
+    const fits = (t: GpuTensor) => t.size === 1 || isSuffix(t.shape, shape);
+    if (!fits(this) || !fits(b)) throw new Error(`cannot broadcast [${this.shape}] and [${b.shape}]`);
+    const out = GpuTensor.empty(this.ctx, shape);
+    this.ctx.run({ code: K.binaryKernel(expr), uniforms: { spec: 'uuu', values: [out.size, this.size, b.size] }, buffers: [this.buffer, b.buffer, out.buffer], groups: groups1d(out.size) });
     return out;
   }
 
@@ -312,9 +326,9 @@ function isSuffix(small: readonly number[], big: readonly number[]): boolean {
   return small.every((d, i) => d === big[off + i]);
 }
 
-/** Reduce a gradient of a's shape to b's shape (b a trailing part of a, or a scalar). */
+/** Reduce a gradient to b's shape (b equal to it, a trailing part of it, or a scalar). */
 function sumToSuffix(g: GpuTensor, b: GpuTensor): GpuTensor {
-  if (g.size === b.size) return g.reshape(...b.shape);
+  if (g.size === b.size) return g.shape.length === b.shape.length && g.shape.every((d, i) => d === b.shape[i]) ? g : g.reshape(...b.shape);
   if (b.size === 1) return g.sum().reshape(...b.shape);
   return g.reshape(-1, b.size).sumRows().reshape(...b.shape);
 }
@@ -322,7 +336,7 @@ function sumToSuffix(g: GpuTensor, b: GpuTensor): GpuTensor {
 /** Tile a tensor (scalar, or a trailing part of `shape`) to `shape`. */
 function broadcast(g: GpuTensor, shape: readonly number[]): GpuTensor {
   const out = GpuTensor.empty(g.ctx, shape);
-  g.ctx.run({ code: K.binaryKernel('y'), uniforms: { spec: 'uu', values: [out.size, g.size] }, buffers: [g.buffer, g.buffer, out.buffer], groups: groups1d(out.size) });
+  g.ctx.run({ code: K.binaryKernel('y'), uniforms: { spec: 'uuu', values: [out.size, g.size, g.size] }, buffers: [g.buffer, g.buffer, out.buffer], groups: groups1d(out.size) });
   return out;
 }
 
@@ -339,6 +353,53 @@ function accumulateLeaf(t: GpuTensor, g: GpuTensor): void {
   } else {
     t.ctx.run({ code: K.axpyKernel, uniforms: { spec: 'uf', values: [t.size, 1] }, buffers: [t.grad.buffer, g.buffer], groups: groups1d(t.size) });
   }
+}
+
+/**
+ * Concatenate tensors along their first dimension (all trailing dimensions equal). Forward and
+ * backward are plain buffer copies — no kernel needed.
+ */
+export function concatRows(tensors: GpuTensor[]): GpuTensor {
+  if (tensors.length === 0) throw new Error('concatRows needs at least one tensor');
+  const first = tensors[0]!;
+  const rowShape = first.shape.slice(1);
+  const rowSize = rowShape.reduce((a, b) => a * b, 1);
+  for (const t of tensors) {
+    if (t.shape.length !== first.shape.length || t.shape.slice(1).some((d, i) => d !== rowShape[i])) throw new Error(`concatRows: [${t.shape}] does not match [${first.shape}]`);
+  }
+  const rows = tensors.reduce((a, t) => a + t.shape[0]!, 0);
+  const ctx = first.ctx;
+  const out = GpuTensor.empty(ctx, [rows, ...rowShape]);
+  let offset = 0;
+  const offsets: number[] = [];
+  for (const t of tensors) {
+    offsets.push(offset);
+    ctx.copy(t.buffer, out.buffer, t.size * 4, 0, offset * 4);
+    offset += t.size;
+  }
+  return record(out, 'concatRows', tensors, (g) =>
+    tensors.map((t, k) => {
+      if (!t.requiresGrad) return null;
+      const gt = GpuTensor.empty(ctx, t.shape);
+      ctx.copy(g.buffer, gt.buffer, t.size * 4, offsets[k]! * 4, 0);
+      return gt;
+    }),
+  );
+}
+
+/** Rows [start, start + count) of the first dimension, as a copy. */
+export function sliceRows(x: GpuTensor, start: number, count: number): GpuTensor {
+  const rows = x.shape[0]!;
+  if (start < 0 || count < 0 || start + count > rows) throw new RangeError(`sliceRows(${start}, ${count}) out of range for ${rows} rows`);
+  const rowSize = x.size / rows;
+  const ctx = x.ctx;
+  const out = GpuTensor.empty(ctx, [count, ...x.shape.slice(1)]);
+  ctx.copy(x.buffer, out.buffer, count * rowSize * 4, start * rowSize * 4, 0);
+  return record(out, 'sliceRows', [x], (g) => {
+    const full = GpuTensor.zeros(ctx, x.shape);
+    ctx.copy(g.buffer, full.buffer, count * rowSize * 4, 0, start * rowSize * 4);
+    return [full];
+  });
 }
 
 export interface MatmulDims {
