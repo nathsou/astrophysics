@@ -1,0 +1,1132 @@
+{
+ "id": "ic.bios",
+ "number": "D",
+ "title": "Biographies",
+ "loc": {
+  "repo": "incompleteness-computability",
+  "file": "ic.tex",
+  "line": 260,
+  "endLine": 260
+ },
+ "sections": [
+  {
+   "id": "his.bio.chu",
+   "number": "D.1",
+   "title": [
+    {
+     "t": "text",
+     "v": "Alonzo Church"
+    }
+   ],
+   "titleText": "Alonzo Church",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/history/biographies/alonzo-church.tex",
+    "line": 1,
+    "endLine": 52
+   },
+   "blocks": [
+    {
+     "t": "p",
+     "id": "his.bio.chu/p2",
+     "c": [
+      {
+       "t": "text",
+       "v": "Alonzo Church was born in Washington, DC on June 14, 1903. In early childhood, an air gun incident left Church blind in one eye. He finished preparatory school in Connecticut in 1920 and began his university education at Princeton that same year. He completed his doctoral studies in 1927. After a couple years abroad, Church returned to Princeton. Church was known to be exceedingly polite and careful. His blackboard writing was immaculate, and he would preserve important papers by carefully covering them in Duco cement (a clear glue). Outside of his academic pursuits, he enjoyed reading science fiction magazines and was not afraid to write to the editors if he spotted any inaccuracies in the writing."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/alonzo-church.tex",
+      "line": 15,
+      "endLine": 25
+     }
+    },
+    {
+     "t": "p",
+     "id": "his.bio.chu/p5",
+     "c": [
+      {
+       "t": "text",
+       "v": "Church’s academic achievements were great. Together with his students Stephen Kleene and Barkley Rosser, he developed a theory of effective calculability, the lambda calculus, independently of Alan Turing’s development of the Turing machine. The two definitions of computability are equivalent, and give rise to what is now known as the "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "Church–Turing Thesis"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": ", that a function of the natural numbers is effectively computable if and only if it is computable via Turing machine (or lambda calculus). He also proved what is now known as "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "Church’s Theorem"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": ": The decision problem for the validity of first-order formulas is unsolvable."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/alonzo-church.tex",
+      "line": 35,
+      "endLine": 36
+     }
+    },
+    {
+     "t": "p",
+     "id": "his.bio.chu/p6",
+     "c": [
+      {
+       "t": "text",
+       "v": "Church continued his work into old age. In 1967 he left Princeton for UCLA, where he was professor until his retirement in 1990. Church passed away on August 1, 1995 at the age of 92."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/alonzo-church.tex",
+      "line": 38,
+      "endLine": 40
+     }
+    },
+    {
+     "t": "env",
+     "id": "his.bio.chu/reading7",
+     "kind": "reading",
+     "c": [
+      {
+       "t": "p",
+       "id": "his.bio.chu/p9",
+       "c": [
+        {
+         "t": "text",
+         "v": "For a brief biography of Church, see "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "EndertonND"
+         ]
+        },
+        {
+         "t": "text",
+         "v": ". Church’s original writings on the lambda calculus and the Entscheidungsproblem (Church’s Thesis) are "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Church1936",
+          "Church1936a"
+         ]
+        },
+        {
+         "t": "text",
+         "v": ". "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Aspray1984"
+         ]
+        },
+        {
+         "t": "text",
+         "v": " records an interview with Church about the Princeton mathematics community in the 1930s. Church wrote a series of book reviews of the "
+        },
+        {
+         "t": "em",
+         "c": [
+          {
+           "t": "text",
+           "v": "Journal of Symbolic Logic"
+          }
+         ]
+        },
+        {
+         "t": "text",
+         "v": " from 1936 until 1979. They are all archived on John MacFarlane’s website "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "MacFarlane2015"
+         ]
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/history/biographies/alonzo-church.tex",
+        "line": 48,
+        "endLine": 51
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/alonzo-church.tex",
+      "line": 42,
+      "endLine": 51
+     }
+    }
+   ]
+  },
+  {
+   "id": "his.bio.god",
+   "number": "D.2",
+   "title": [
+    {
+     "t": "text",
+     "v": "Kurt Gödel"
+    }
+   ],
+   "titleText": "Kurt Gödel",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/history/biographies/kurt-goedel.tex",
+    "line": 1,
+    "endLine": 80
+   },
+   "blocks": [
+    {
+     "t": "p",
+     "id": "his.bio.god/p3",
+     "c": [
+      {
+       "t": "text",
+       "v": "Kurt Gödel ("
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "ger"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": "-dle) was born on April 28, 1906 in Brünn in the Austro-Hungarian empire (now Brno in the Czech Republic). Due to his inquisitive and bright nature, young Kurtele was often called “Der kleine Herr Warum” (Little Mr. Why) by his family. He excelled in academics from primary school onward, where he got less than the highest grade only in mathematics. Gödel was often absent from school due to poor health and was exempt from physical education. He was diagnosed with rheumatic fever during his childhood. Throughout his life, he believed this permanently affected his heart despite medical assessment saying otherwise."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/kurt-goedel.tex",
+      "line": 15,
+      "endLine": 25
+     }
+    },
+    {
+     "t": "p",
+     "id": "his.bio.god/p4",
+     "c": [
+      {
+       "t": "text",
+       "v": "Gödel began studying at the University of Vienna in 1924 and completed his doctoral studies in 1929. He first intended to study physics, but his interests soon moved to mathematics and especially logic, in part due to the influence of the philosopher Rudolf Carnap. His dissertation, written under the supervision of Hans Hahn, proved the completeness theorem of first-order predicate logic with identity "
+      },
+      {
+       "t": "cite",
+       "keys": [
+        "Godel1929"
+       ]
+      },
+      {
+       "t": "text",
+       "v": ". Only a year later, he obtained his most famous results—the first and second incompleteness theorems (published in "
+      },
+      {
+       "t": "cite",
+       "keys": [
+        "Godel1931"
+       ]
+      },
+      {
+       "t": "text",
+       "v": "). During his time in Vienna, Gödel was heavily involved with the Vienna Circle, a group of scientifically-minded philosophers that included Carnap, whose work was especially influenced by Gödel’s results."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/kurt-goedel.tex",
+      "line": 27,
+      "endLine": 38
+     }
+    },
+    {
+     "t": "p",
+     "id": "his.bio.god/p5",
+     "c": [
+      {
+       "t": "text",
+       "v": "In 1938, Gödel married Adele Nimbursky. His parents were not pleased: not only was she six years older than him and already divorced, but she worked as a dancer in a nightclub.  Social pressures did not affect Gödel, however, and they remained happily married until his death."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/kurt-goedel.tex",
+      "line": 40,
+      "endLine": 44
+     }
+    },
+    {
+     "t": "p",
+     "id": "his.bio.god/p6",
+     "c": [
+      {
+       "t": "text",
+       "v": "After Nazi Germany annexed Austria in 1938, Gödel and Adele emigrated to the United States, where he took up a position at the Institute for Advanced Study in Princeton, New Jersey. Despite his introversion and eccentric nature, Gödel’s time at Princeton was collaborative and fruitful. He published essays in set theory, philosophy and physics. Notably, he struck up a particularly strong friendship with his colleague at the IAS, Albert Einstein."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/kurt-goedel.tex",
+      "line": 46,
+      "endLine": 52
+     }
+    },
+    {
+     "t": "p",
+     "id": "his.bio.god/p7",
+     "c": [
+      {
+       "t": "text",
+       "v": "In his later years, Gödel’s mental health deteriorated. His wife’s hospitalization in 1977 meant she was no longer able to cook his meals for him. Having suffered from mental health issues throughout his life, he succumbed to paranoia. Deathly afraid of being poisoned, Gödel refused to eat. He died of starvation on January 14, 1978, in Princeton."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/kurt-goedel.tex",
+      "line": 54,
+      "endLine": 59
+     }
+    },
+    {
+     "t": "env",
+     "id": "his.bio.god/reading8",
+     "kind": "reading",
+     "c": [
+      {
+       "t": "p",
+       "id": "his.bio.god/p9",
+       "c": [
+        {
+         "t": "text",
+         "v": "For a complete biography of Gödel’s life is available, see "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Dawson1997"
+         ]
+        },
+        {
+         "t": "text",
+         "v": ". For further biographical pieces, as well as essays about Gödel’s contributions to logic and philosophy, see "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Wang1990"
+         ]
+        },
+        {
+         "t": "text",
+         "v": ", "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Baaz2011"
+         ]
+        },
+        {
+         "t": "text",
+         "v": ", "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Takeuti2003"
+         ]
+        },
+        {
+         "t": "text",
+         "v": ", and "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Sigmund2007"
+         ]
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/history/biographies/kurt-goedel.tex",
+        "line": 62,
+        "endLine": 66
+       }
+      },
+      {
+       "t": "p",
+       "id": "his.bio.god/p11",
+       "c": [
+        {
+         "t": "text",
+         "v": "Gödel’s PhD thesis is available in the original German "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Godel1929"
+         ]
+        },
+        {
+         "t": "text",
+         "v": ". The original text of the incompleteness theorems is "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Godel1931"
+         ]
+        },
+        {
+         "t": "text",
+         "v": ". All of Gödel’s published and unpublished writings, as well as a selection of correspondence, are available in English in his "
+        },
+        {
+         "t": "em",
+         "c": [
+          {
+           "t": "text",
+           "v": "Collected Papers"
+          }
+         ]
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Godel1986",
+          "Godel1990"
+         ]
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/history/biographies/kurt-goedel.tex",
+        "line": 72,
+        "endLine": 72
+       }
+      },
+      {
+       "t": "p",
+       "id": "his.bio.god/p12",
+       "c": [
+        {
+         "t": "text",
+         "v": "For a detailed treatment of Gödel’s incompleteness theorems, see "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Smith2013"
+         ]
+        },
+        {
+         "t": "text",
+         "v": ". For an informal, philosophical discussion of Gödel’s theorems, see Mark Linsenmayer’s podcast "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Linsenmayer2014"
+         ]
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/history/biographies/kurt-goedel.tex",
+        "line": 74,
+        "endLine": 78
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/kurt-goedel.tex",
+      "line": 61,
+      "endLine": 78
+     }
+    }
+   ]
+  },
+  {
+   "id": "his.bio.pet",
+   "number": "D.3",
+   "title": [
+    {
+     "t": "text",
+     "v": "Rózsa Péter"
+    }
+   ],
+   "titleText": "Rózsa Péter",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/history/biographies/rozsa-peter.tex",
+    "line": 1,
+    "endLine": 76
+   },
+   "blocks": [
+    {
+     "t": "p",
+     "id": "his.bio.pet/p2",
+     "c": [
+      {
+       "t": "text",
+       "v": "Rózsa Péter was born Rósza Politzer, in Budapest, Hungary, on February 17, 1905. She is best known for her work on recursive functions, which was essential for the creation of the field of recursion theory."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/rozsa-peter.tex",
+      "line": 15,
+      "endLine": 18
+     }
+    },
+    {
+     "t": "p",
+     "id": "his.bio.pet/p4",
+     "c": [
+      {
+       "t": "text",
+       "v": "Péter was raised during harsh political times—WWI raged when she was a teenager—but was able to attend the affluent Maria Terezia Girls’ School in Budapest, from where she graduated in 1922. She then studied at Pázmány Péter University (later renamed Loránd Eötvös University) in Budapest. She began studying chemistry at the insistence of her father, but later switched to mathematics, and graduated in 1927. Although she had the credentials to teach high school mathematics, the economic situation at the time was dire as the Great Depression affected the world economy. During this time, Péter took odd jobs as a tutor and private teacher of mathematics. She eventually returned to university to take up graduate studies in mathematics. She had originally planned to work in number theory, but after finding out that her results had already been proven, she almost gave up on mathematics altogether. She was encouraged to work on Gödel’s incompleteness theorems, and unknowingly proved several of his results in different ways. This restored her confidence, and Péter went on to write her first papers on recursion theory, inspired by David Hilbert’s foundational program. She received her PhD in 1935, and in 1937 she became an editor for the "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "Journal of Symbolic Logic"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": "."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/rozsa-peter.tex",
+      "line": 38,
+      "endLine": 39
+     }
+    },
+    {
+     "t": "p",
+     "id": "his.bio.pet/p5",
+     "c": [
+      {
+       "t": "text",
+       "v": "Péter’s early papers are widely credited as founding contributions to the field of recursive function theory. In "
+      },
+      {
+       "t": "cite",
+       "keys": [
+        "Peter1935a"
+       ]
+      },
+      {
+       "t": "text",
+       "v": ", she investigated the relationship between different kinds of recursion. In "
+      },
+      {
+       "t": "cite",
+       "keys": [
+        "Peter1935b"
+       ]
+      },
+      {
+       "t": "text",
+       "v": ", she showed that a certain recursively defined function is not primitive recursive. This simplified an earlier result due to Wilhelm Ackermann. Péter’s simplified function is what’s now often called the Ackermann function—and sometimes, more properly, the Ackermann–Péter function. She wrote the first book on recursive function theory "
+      },
+      {
+       "t": "cite",
+       "keys": [
+        "Peter1951"
+       ]
+      },
+      {
+       "t": "text",
+       "v": "."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/rozsa-peter.tex",
+      "line": 41,
+      "endLine": 49
+     }
+    },
+    {
+     "t": "p",
+     "id": "his.bio.pet/p6",
+     "c": [
+      {
+       "t": "text",
+       "v": "Despite the importance and influence of her work, Péter did not obtain a full-time teaching position until 1945. During the Nazi occupation of Hungary during World War II, Péter was not allowed to teach due to anti-Semitic laws. In 1944 the government created a Jewish ghetto in Budapest; the ghetto was cut off from the rest of the city and attended by armed guards. Péter was forced to live in the ghetto until 1945 when it was liberated. She then went on to teach at the Budapest Teachers Training College, and from 1955 onward at Eötvös Loránd University. She was the first female Hungarian mathematician to become an Academic Doctor of Mathematics, and the first woman to be elected to the Hungarian Academy of Sciences."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/rozsa-peter.tex",
+      "line": 51,
+      "endLine": 61
+     }
+    },
+    {
+     "t": "p",
+     "id": "his.bio.pet/p7",
+     "c": [
+      {
+       "t": "text",
+       "v": "Péter was known as a passionate teacher of mathematics, who preferred to explore the nature and beauty of mathematical problems with her students rather than to merely lecture. As a result, she was affectionately called “Aunt Rosa” by her students. Péter died in 1977 at the age of 71."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/rozsa-peter.tex",
+      "line": 63,
+      "endLine": 67
+     }
+    },
+    {
+     "t": "env",
+     "id": "his.bio.pet/reading8",
+     "kind": "reading",
+     "c": [
+      {
+       "t": "p",
+       "id": "his.bio.pet/p10",
+       "c": [
+        {
+         "t": "text",
+         "v": "For more biographical reading, see "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Oconnor2014"
+         ]
+        },
+        {
+         "t": "text",
+         "v": " and "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Andrasfai1986"
+         ]
+        },
+        {
+         "t": "text",
+         "v": ". "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Tamassy1994"
+         ]
+        },
+        {
+         "t": "text",
+         "v": " conducted a brief interview with Péter. For a fun read about mathematics, see Péter’s book "
+        },
+        {
+         "t": "em",
+         "c": [
+          {
+           "t": "text",
+           "v": "Playing With Infinity"
+          }
+         ]
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Peter2010"
+         ]
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/history/biographies/rozsa-peter.tex",
+        "line": 73,
+        "endLine": 74
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/rozsa-peter.tex",
+      "line": 69,
+      "endLine": 74
+     }
+    }
+   ]
+  },
+  {
+   "id": "his.bio.rob",
+   "number": "D.4",
+   "title": [
+    {
+     "t": "text",
+     "v": "Julia Robinson"
+    }
+   ],
+   "titleText": "Julia Robinson",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/history/biographies/julia-robinson.tex",
+    "line": 1,
+    "endLine": 92
+   },
+   "blocks": [
+    {
+     "t": "p",
+     "id": "his.bio.rob/p2",
+     "c": [
+      {
+       "t": "text",
+       "v": "Julia Bowman Robinson was an American mathematician. She is known mainly for her work on decision problems, and most famously for her contributions to the solution of Hilbert’s tenth problem. Robinson was born in St. Louis, Missouri, on December 8, 1919. Robinson recalls being intrigued by numbers already as a child "
+      },
+      {
+       "t": "cite",
+       "keys": [
+        "Reid1986"
+       ]
+      },
+      {
+       "t": "text",
+       "v": ". At age nine she contracted scarlet fever and suffered from several recurrent bouts of rheumatic fever. This forced her to spend much of her time in bed, putting her behind in her education. Although she was able to catch up with the help of private tutors, the physical effects of her illness had a lasting impact on her life."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/julia-robinson.tex",
+      "line": 14,
+      "endLine": 23
+     }
+    },
+    {
+     "t": "p",
+     "id": "his.bio.rob/p3",
+     "c": [
+      {
+       "t": "text",
+       "v": "Despite her childhood struggles, Robinson graduated high school with several awards in mathematics and the sciences. She started her university career at San Diego State College, and transferred to the University of California, Berkeley, as a senior. There she was influenced by the mathematician Raphael Robinson. They became good friends, and married in 1941. As a spouse of a faculty member, Robinson was barred from teaching in the mathematics department at Berkeley. Although she continued to audit mathematics classes, she hoped to leave university and start a family. Not long after her wedding, however, Robinson contracted pneumonia. She was told that there was substantial scar tissue build up on her heart due to the rheumatic fever she suffered as a child. Due to the severity of the scar tissue, the doctor predicted that she would not live past forty and she was advised not to have children "
+      },
+      {
+       "t": "cite",
+       "keys": [
+        "Reid1986"
+       ]
+      },
+      {
+       "t": "text",
+       "v": "."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/julia-robinson.tex",
+      "line": 25,
+      "endLine": 38
+     }
+    },
+    {
+     "t": "p",
+     "id": "his.bio.rob/p4",
+     "c": [
+      {
+       "t": "text",
+       "v": "Robinson was depressed for a long time, but eventually decided to continue studying mathematics. She returned to Berkeley and completed her PhD in 1948 under the supervision of Alfred Tarski. The first-order theory of the real numbers had been shown to be decidable by Tarski, and from Gödel’s work it followed that the first-order theory of the natural numbers is undecidable. It was a major open problem whether the first-order theory of the rationals is decidable or not. In her thesis "
+      },
+      {
+       "t": "cite",
+       "keys": [
+        "Robinson1949"
+       ]
+      },
+      {
+       "t": "text",
+       "v": ", Robinson proved that it was not."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/julia-robinson.tex",
+      "line": 40,
+      "endLine": 48
+     }
+    },
+    {
+     "t": "p",
+     "id": "his.bio.rob/p6",
+     "c": [
+      {
+       "t": "text",
+       "v": "Interested in decision problems, Robinson next attempted to find a solution to Hilbert’s tenth problem. This problem was one of a famous list of 23 mathematical problems posed by David Hilbert in 1900. The tenth problem asks whether there is an algorithm that will answer, in a finite amount of time, whether or not a polynomial equation with integer coefficients, such as "
+      },
+      {
+       "t": "math",
+       "tex": "3x^2 - 2y +3 = 0",
+       "src": "3x^2 - 2y +3 = 0"
+      },
+      {
+       "t": "text",
+       "v": ", has a solution in the integers. Such questions are known as "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "Diophantine problems"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": ". After some initial successes, Robinson joined forces with Martin Davis and Hilary Putnam, who were also working on the problem. They succeeded in showing that exponential Diophantine problems (where the unknowns may also appear as exponents) are undecidable, and showed that a certain conjecture (later called “J.R.”) implies that Hilbert’s tenth problem is undecidable "
+      },
+      {
+       "t": "cite",
+       "keys": [
+        "DavisPutnamRobinson1961"
+       ]
+      },
+      {
+       "t": "text",
+       "v": ". Robinson continued to work on the problem throughout the 1960s. In 1970, the young Russian mathematician Yuri Matijasevich finally proved the J.R. hypothesis. The combined result is now called the Matijasevich–Robinson–Davis–Putnam theorem, or MRDP theorem for short. Matijasevich and Robinson became friends and collaborated on several papers. In a letter to Matijasevich, Robinson once wrote that “actually I am very pleased that working together (thousands of miles apart) we are obviously making more progress than either one of us could alone” "
+      },
+      {
+       "t": "cite",
+       "keys": [
+        "Matijasevich1992"
+       ]
+      },
+      {
+       "t": "text",
+       "v": "."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/julia-robinson.tex",
+      "line": 56,
+      "endLine": 72
+     }
+    },
+    {
+     "t": "p",
+     "id": "his.bio.rob/p7",
+     "c": [
+      {
+       "t": "text",
+       "v": "Robinson was the first female president of the American Mathematical Society, and the first woman to be elected to the National Academy of Science. She died on July 30, 1985 at the age of 65 after being diagnosed with leukemia."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/julia-robinson.tex",
+      "line": 74,
+      "endLine": 77
+     }
+    },
+    {
+     "t": "env",
+     "id": "his.bio.rob/reading8",
+     "kind": "reading",
+     "c": [
+      {
+       "t": "p",
+       "id": "his.bio.rob/p10",
+       "c": [
+        {
+         "t": "text",
+         "v": "Robinson’s mathematical papers are available in her "
+        },
+        {
+         "t": "em",
+         "c": [
+          {
+           "t": "text",
+           "v": "Collected Works"
+          }
+         ]
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Robinson1996"
+         ]
+        },
+        {
+         "t": "text",
+         "v": ", which also includes a reprint of her National Academy of Sciences biographical memoir "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Feferman1994"
+         ]
+        },
+        {
+         "t": "text",
+         "v": ". Robinson’s older sister Constance Reid published an “Autobiography of Julia,” based on interviews "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Reid1986"
+         ]
+        },
+        {
+         "t": "text",
+         "v": ", as well as a full memoir "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Reid1996"
+         ]
+        },
+        {
+         "t": "text",
+         "v": ". A short documentary about Robinson and Hilbert’s tenth problem was directed by George Csicsery "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Csicsery2016"
+         ]
+        },
+        {
+         "t": "text",
+         "v": ". For a brief memoir about Yuri Matijasevich’s collaborations with Robinson, and her influence on his work, see "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Matijasevich1992"
+         ]
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/history/biographies/julia-robinson.tex",
+        "line": 80,
+        "endLine": 90
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/julia-robinson.tex",
+      "line": 79,
+      "endLine": 90
+     }
+    }
+   ]
+  },
+  {
+   "id": "his.bio.tar",
+   "number": "D.5",
+   "title": [
+    {
+     "t": "text",
+     "v": "Alfred Tarski"
+    }
+   ],
+   "titleText": "Alfred Tarski",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/history/biographies/alfred-tarski.tex",
+    "line": 1,
+    "endLine": 54
+   },
+   "blocks": [
+    {
+     "t": "p",
+     "id": "his.bio.tar/p2",
+     "c": [
+      {
+       "t": "text",
+       "v": "Alfred Tarski was born on January 14, 1901 in Warsaw, Poland (then part of the Russian Empire). Described as “Napoleonic,” Tarski was boisterous, talkative, and intense. His energy was often reflected in his lectures—he once set fire to a wastebasket while disposing of a cigarette during a lecture, and was forbidden from lecturing in that building again."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/alfred-tarski.tex",
+      "line": 15,
+      "endLine": 20
+     }
+    },
+    {
+     "t": "p",
+     "id": "his.bio.tar/p3",
+     "c": [
+      {
+       "t": "text",
+       "v": "Tarski had a thirst for knowledge from a young age. Although later in life he would tell students that he studied logic because it was the only class in which he got a B, his high school records show that he got A’s across the board—even in logic. He studied at the University of Warsaw from 1918 to 1924. Tarski first intended to study biology, but became interested in mathematics, philosophy, and logic, as the university was the center of the Warsaw School of Logic and Philosophy. Tarski earned his doctorate in 1924 under the supervision of Stanisław Leśniewski."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/alfred-tarski.tex",
+      "line": 22,
+      "endLine": 30
+     }
+    },
+    {
+     "t": "p",
+     "id": "his.bio.tar/p4",
+     "c": [
+      {
+       "t": "text",
+       "v": "Before emigrating to the United States in 1939, Tarski completed some of his most important work while working as a secondary school teacher in Warsaw. His work on logical consequence and logical truth were written during this time. In 1939, Tarski was visiting the United States for a lecture tour. During his visit, Germany invaded Poland, and because of his Jewish heritage, Tarski could not return. His wife and children remained in Poland until the end of the war, but were then able to emigrate to the United States as well. Tarski taught at Harvard, the College of the City of New York, and the Institute for Advanced Study at Princeton, and finally the University of California, Berkeley. There he founded the multidisciplinary program in Logic and the Methodology of Science. Tarski died on October 26, 1983 at the age of 82."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/alfred-tarski.tex",
+      "line": 32,
+      "endLine": 44
+     }
+    },
+    {
+     "t": "env",
+     "id": "his.bio.tar/reading5",
+     "kind": "reading",
+     "c": [
+      {
+       "t": "p",
+       "id": "his.bio.tar/p7",
+       "c": [
+        {
+         "t": "text",
+         "v": "For more on Tarski’s life, see the biography "
+        },
+        {
+         "t": "em",
+         "c": [
+          {
+           "t": "text",
+           "v": "Alfred Tarski: Life and Logic"
+          }
+         ]
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Feferman2004"
+         ]
+        },
+        {
+         "t": "text",
+         "v": ". Tarski’s seminal works on logical consequence and truth are available in English in "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Tarski1983"
+         ]
+        },
+        {
+         "t": "text",
+         "v": ". All of Tarski’s original works have been collected into a four volume series, "
+        },
+        {
+         "t": "cite",
+         "keys": [
+          "Tarski1981"
+         ]
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/history/biographies/alfred-tarski.tex",
+        "line": 47,
+        "endLine": 52
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/history/biographies/alfred-tarski.tex",
+      "line": 46,
+      "endLine": 52
+     }
+    }
+   ]
+  }
+ ]
+}

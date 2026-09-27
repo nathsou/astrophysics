@@ -46,6 +46,7 @@ export const OVERRIDES: Record<string, { args: string; body: string; why: string
   boxright: { args: '', body: '\\mathbin{\\Box\\kern-0.2em\\rightarrow}', why: 'a symbol from the ntxsyc font' },
   fishhookright: { args: '', body: '\\mathbin{\\prec}', why: 'a symbol from the ntxsyc font' },
   iddots: { args: '', body: '\\mathinner{\\kern1mu\\raisebox{0.1em}{.}\\kern2mu\\raisebox{0.4em}{.}\\kern2mu\\raisebox{0.7em}{.}}', why: 'from the mathdots package, unknown to KaTeX' },
+  VDash: { args: '', body: '\\mathrel{|}\\!\\vDash', why: 'defined in assignments.tex with \\joinrel and \\Relbar, which KaTeX lacks' },
   nsless: { args: '', body: '\\mathbin{\\ominus}', why: '\\varolessthan comes from the stmaryrd font' },
 };
 
@@ -175,7 +176,7 @@ export function readConfig(state: ConfigState, source: string, file: string): vo
   const s = stripComments(source);
   const lineOf = (i: number) => s.slice(0, i).split('\n').length;
   const re =
-    /\\(DeclareDocumentCommand|NewDocumentCommand|RenewDocumentCommand|ProvideDocumentCommand|DeclareDocumentMacro|newcommand\*?|renewcommand\*?|providecommand\*?|def|let|tagtrue|tagfalse|settexttoken|DeclareMathOperator\*?|ollatinformulas|olgreekformulas|olalphagreekformulas)(?![a-zA-Z])/g;
+    /\\(DeclareDocumentCommand|NewDocumentCommand|RenewDocumentCommand|ProvideDocumentCommand|DeclareDocumentMacro|newcommand\*?|renewcommand\*?|providecommand\*?|DeclareRobustCommand|def|let|tagtrue|tagfalse|settexttoken|DeclareMathOperator\*?|ollatinformulas|olgreekformulas|olalphagreekformulas)(?![a-zA-Z])/g;
   let m: RegExpExecArray | null;
   while ((m = re.exec(s))) {
     const cmd = m[1];

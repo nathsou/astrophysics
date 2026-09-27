@@ -9,7 +9,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { applyOverrides, emptyConfig, readConfig } from './latex/macros.ts';
-import { convertChapter, readBookPlan, type ConvertContext } from './latex/document.ts';
+import { convertBook, type ConvertContext } from './latex/document.ts';
 import type { Chapter, LabelTarget, SourceIndex } from '../src/content/schema.ts';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -23,13 +23,12 @@ export function convertAll() {
   readConfig(config, readFileSync(join(upstreamDir, 'incompleteness-computability', 'ic-config.sty'), 'utf8'), 'incompleteness-computability/ic-config.sty');
   applyOverrides(config);
 
-  const plan = readBookPlan(upstreamDir).filter((c) => existsSync(join(upstreamDir, 'OpenLogic', 'content', c.path)));
   let known = new Map<string, LabelTarget>();
   let result: { chapters: Chapter[]; ctx: ConvertContext } | null = null;
   // Two passes: the first collects labels so that forward references resolve in the second.
   for (let pass = 0; pass < 2; pass++) {
-    const ctx: ConvertContext = { upstreamDir, config, diagnostics: [], used: new Map(), labels: new Map(), knownLabels: known };
-    const chapters = plan.map((p) => convertChapter(ctx, p));
+    const ctx: ConvertContext = { upstreamDir, config, diagnostics: [], used: new Map(), labels: new Map(), knownLabels: known, suppressedEnvs: new Set() };
+    const chapters = convertBook(ctx);
     known = ctx.labels;
     result = { chapters, ctx };
   }

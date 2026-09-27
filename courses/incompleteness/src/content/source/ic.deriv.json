@@ -1,0 +1,4268 @@
+{
+ "id": "ic.deriv",
+ "number": "A",
+ "title": "Derivations in Arithmetic Theories",
+ "loc": {
+  "repo": "incompleteness-computability",
+  "file": "include/ic-derivations.tex",
+  "line": 2,
+  "endLine": 2
+ },
+ "sections": [
+  {
+   "id": "ic.deriv.text",
+   "number": "A.1",
+   "title": [
+    {
+     "t": "text",
+     "v": "Derivations in Arithmetic Theories"
+    }
+   ],
+   "titleText": "Derivations in Arithmetic Theories",
+   "loc": {
+    "repo": "incompleteness-computability",
+    "file": "include/ic-derivations.tex",
+    "line": 2,
+    "endLine": 2
+   },
+   "blocks": [
+    {
+     "t": "p",
+     "id": "ic.deriv.text/p2",
+     "c": [
+      {
+       "t": "text",
+       "v": "When we showed that all general recursive functions are representable in "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": ", and in the proofs of the incompleteness theorems, we claimed that various things are provable in "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": " and "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{PA}",
+       "src": "\\Th{PA}"
+      },
+      {
+       "t": "text",
+       "v": ". The proofs of these claims, however, just gave the arguments informally without exhibiting actual "
+      },
+      {
+       "t": "term",
+       "token": "derivation",
+       "v": "derivations"
+      },
+      {
+       "t": "text",
+       "v": " in natural deduction. We provide some of these "
+      },
+      {
+       "t": "term",
+       "token": "derivation",
+       "v": "derivations"
+      },
+      {
+       "t": "text",
+       "v": " in this capter."
+      }
+     ],
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/ic-derivations.tex",
+      "line": 5,
+      "endLine": 10
+     }
+    },
+    {
+     "t": "p",
+     "id": "ic.deriv.text/p3",
+     "c": [
+      {
+       "t": "text",
+       "v": "For instance, in "
+      },
+      {
+       "t": "ref",
+       "key": "inc:req:bre:lem:q-proves-add"
+      },
+      {
+       "t": "text",
+       "v": " we proved that, for all "
+      },
+      {
+       "t": "math",
+       "tex": "n",
+       "src": "n"
+      },
+      {
+       "t": "text",
+       "v": " and "
+      },
+      {
+       "t": "math",
+       "tex": "m \\in \\mathbb{N}",
+       "src": "m \\in \\Nat"
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q} \\vdash (\\overline{n} + \\overline{m}) = \\overline{n+m}",
+       "src": "\\Th{Q} \\Proves (\\num{n} +\n\\num{m}) = \\num{n+m}"
+      },
+      {
+       "t": "text",
+       "v": ". We did this by induction on "
+      },
+      {
+       "t": "math",
+       "tex": "m",
+       "src": "m"
+      },
+      {
+       "t": "text",
+       "v": "."
+      }
+     ],
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/ic-derivations.tex",
+      "line": 12,
+      "endLine": 14
+     }
+    },
+    {
+     "t": "env",
+     "id": "ic.deriv.text/proof5",
+     "kind": "proof",
+     "c": [
+      {
+       "t": "p",
+       "id": "ic.deriv.text/p6",
+       "c": [
+        {
+         "t": "text",
+         "v": "Base case: "
+        },
+        {
+         "t": "math",
+         "tex": "m = 0",
+         "src": "m = 0"
+        },
+        {
+         "t": "text",
+         "v": ". Then what has to be proved is that, for all "
+        },
+        {
+         "t": "math",
+         "tex": "n",
+         "src": "n"
+        },
+        {
+         "t": "text",
+         "v": ", "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q} \\vdash \\overline{n} + \\overline{0} = \\overline{n+0}",
+         "src": "\\Th{Q} \\Proves \\num{n} + \\num{0} = \\num{n+0}"
+        },
+        {
+         "t": "text",
+         "v": ". Since "
+        },
+        {
+         "t": "math",
+         "tex": "\\overline{0}",
+         "src": "\\num{0}"
+        },
+        {
+         "t": "text",
+         "v": " is just "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathsfit{0}",
+         "src": "\\Obj 0"
+        },
+        {
+         "t": "text",
+         "v": " and "
+        },
+        {
+         "t": "math",
+         "tex": "\\overline{n+0}",
+         "src": "\\num{n+0}"
+        },
+        {
+         "t": "text",
+         "v": " is "
+        },
+        {
+         "t": "math",
+         "tex": "\\overline{n}",
+         "src": "\\num{n}"
+        },
+        {
+         "t": "text",
+         "v": ", this amounts to showing that "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q} \\vdash (\\overline{n} + \\mathsfit{0}) = \\overline{n}",
+         "src": "\\Th{Q} \\Proves (\\num{n} + \\Obj 0) = \\num{n}"
+        },
+        {
+         "t": "text",
+         "v": ". The "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "derivation"
+        }
+       ],
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 17,
+        "endLine": 21
+       }
+      },
+      {
+       "t": "prooftree",
+       "id": "ic.deriv.text/tree10",
+       "root": {
+        "c": [
+         {
+          "t": "math",
+          "tex": "(\\overline{n} + \\mathsfit{0}) = \\overline{n}",
+          "src": "(\\num{n} + \\Obj 0) = \\num{n}"
+         }
+        ],
+        "line": "single",
+        "premises": [
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "\\forall x \\, (x + \\mathsfit{0}) = x",
+            "src": "\\lforall[x][(x + \\Obj 0) = x]"
+           }
+          ],
+          "line": "none",
+          "premises": []
+         }
+        ],
+        "right": [
+         {
+          "t": "math",
+          "tex": "{ \\forall  \n    }\\mathrm{Elim}",
+          "src": "\\Elim\\lforall"
+         }
+        ]
+       },
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 21,
+        "endLine": 25
+       }
+      },
+      {
+       "t": "p",
+       "id": "ic.deriv.text/p11",
+       "c": [
+        {
+         "t": "text",
+         "v": "is a natural deduction "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "derivation"
+        },
+        {
+         "t": "text",
+         "v": " of "
+        },
+        {
+         "t": "math",
+         "tex": "(\\overline{n} + \\mathsfit{0}) = \\overline{n}",
+         "src": "(\\num{n} + \\Obj 0) = \\num{n}"
+        },
+        {
+         "t": "text",
+         "v": " with one undischarged assumption, and that undischarged assumption is an axiom of "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q}",
+         "src": "\\Th{Q}"
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 26,
+        "endLine": 28
+       }
+      },
+      {
+       "t": "p",
+       "id": "ic.deriv.text/p12",
+       "c": [
+        {
+         "t": "text",
+         "v": "Inductive step: Suppose that, for any "
+        },
+        {
+         "t": "math",
+         "tex": "n",
+         "src": "n"
+        },
+        {
+         "t": "text",
+         "v": ", "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q} \\vdash (\\overline{n} + \\overline{m}) = \\overline{n+m}",
+         "src": "\\Th{Q} \\Proves (\\num{n} +\n\\num{m}) = \\num{n+m}"
+        },
+        {
+         "t": "text",
+         "v": " (say, by "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "a derivation"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "\\delta_{n,m}",
+         "src": "\\delta_{n,m}"
+        },
+        {
+         "t": "text",
+         "v": "). We have to show that also "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q} \\vdash (\\overline{n} + \\overline{m+1}) = \\overline{n+m+1}",
+         "src": "\\Th{Q} \\Proves (\\num{n} + \\num{m+1}) =\n\\num{n+m+1}"
+        },
+        {
+         "t": "text",
+         "v": ". Note that "
+        },
+        {
+         "t": "math",
+         "tex": "\\overline{m+1} \\equiv \\overline{m}'",
+         "src": "\\num{m+1} \\ident \\num{m}'"
+        },
+        {
+         "t": "text",
+         "v": ", and that "
+        },
+        {
+         "t": "math",
+         "tex": "\\overline{n+m+1} \\equiv \\overline{n+m}'",
+         "src": "\\num{n+m+1} \\ident \\num{n+m}'"
+        },
+        {
+         "t": "text",
+         "v": ". So we are looking for "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "a derivation"
+        },
+        {
+         "t": "text",
+         "v": " of "
+        },
+        {
+         "t": "math",
+         "tex": "(\\overline{n} + \\overline{m}') = \\overline{n+m}'",
+         "src": "(\\num{n} + \\num{m}') = \\num{n+m}'"
+        },
+        {
+         "t": "text",
+         "v": " from the axioms of "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q}",
+         "src": "\\Th{Q}"
+        },
+        {
+         "t": "text",
+         "v": ". Our "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "derivation"
+        },
+        {
+         "t": "text",
+         "v": "may use the "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "derivation"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "\\delta_{n,m}",
+         "src": "\\delta_{n,m}"
+        },
+        {
+         "t": "text",
+         "v": " which exists by inductive hypothesis."
+        }
+       ],
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 30,
+        "endLine": 38
+       }
+      },
+      {
+       "t": "prooftree",
+       "id": "ic.deriv.text/tree22",
+       "root": {
+        "c": [
+         {
+          "t": "math",
+          "tex": "(\\overline{n}+\\overline{m}') = \\overline{n+m}'",
+          "src": "(\\num{n}+\\num{m}') = \\num{n+m}'"
+         }
+        ],
+        "line": "single",
+        "premises": [
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "(\\overline{n} + \\overline{m}) = \\overline{n+m}",
+            "src": "(\\num{n} + \\num{m}) = \\num{n+m}"
+           }
+          ],
+          "line": "dots",
+          "premises": [
+           {
+            "c": [],
+            "line": "none",
+            "premises": []
+           }
+          ],
+          "right": [
+           {
+            "t": "math",
+            "tex": "\\delta_{n,m}",
+            "src": "\\delta_{n,m}"
+           }
+          ]
+         },
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "(\\overline{n}+\\overline{m}') = (\\overline{n}+\\overline{m})'",
+            "src": "(\\num{n}+\\num{m}') = (\\num{n}+\\num{m})'"
+           }
+          ],
+          "line": "single",
+          "premises": [
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "\\forall y \\, (\\overline{n}+y') = (\\overline{n}+y)'",
+              "src": "\\lforall[y][(\\num{n}+y') = (\\num{n}+y)']"
+             }
+            ],
+            "line": "single",
+            "premises": [
+             {
+              "c": [
+               {
+                "t": "math",
+                "tex": "\\forall x \\, \\forall y [(x+y') = (x+y)']]",
+                "src": "\\lforall[x][\\lforall[y][(x+y') = (x+y)']]"
+               }
+              ],
+              "line": "none",
+              "premises": []
+             }
+            ],
+            "right": [
+             {
+              "t": "math",
+              "tex": "{ \\forall  \n    }\\mathrm{Elim}",
+              "src": "\\Elim\\lforall"
+             }
+            ]
+           }
+          ],
+          "right": [
+           {
+            "t": "math",
+            "tex": "{ \\forall  \n    }\\mathrm{Elim}",
+            "src": "\\Elim\\lforall"
+           }
+          ]
+         }
+        ],
+        "right": [
+         {
+          "t": "math",
+          "tex": "{=}\\mathrm{Elim}",
+          "src": "\\Elim="
+         }
+        ]
+       },
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 38,
+        "endLine": 49
+       }
+      },
+      {
+       "t": "p",
+       "id": "ic.deriv.text/p23",
+       "c": [
+        {
+         "t": "text",
+         "v": "In the last "
+        },
+        {
+         "t": "math",
+         "tex": "{=}\\mathrm{Elim}",
+         "src": "\\Elim="
+        },
+        {
+         "t": "text",
+         "v": " inference, we replace the subterm "
+        },
+        {
+         "t": "math",
+         "tex": "\\overline{n} + \\overline{m}",
+         "src": "\\num{n} +\n\\num{m}"
+        },
+        {
+         "t": "text",
+         "v": " of the right side "
+        },
+        {
+         "t": "math",
+         "tex": "(\\overline{n} + \\overline{m})'",
+         "src": "(\\num{n} + \\num{m})'"
+        },
+        {
+         "t": "text",
+         "v": " of the right premise by the term "
+        },
+        {
+         "t": "math",
+         "tex": "\\overline{n+m}",
+         "src": "\\num{n+m}"
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 50,
+        "endLine": 53
+       }
+      }
+     ],
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/ic-derivations.tex",
+      "line": 16,
+      "endLine": 53
+     },
+     "title": [
+      {
+       "t": "text",
+       "v": "Proof of "
+      },
+      {
+       "t": "ref",
+       "key": "inc:req:bre:lem:q-proves-add"
+      }
+     ],
+     "proves": "inc:req:bre:lem:q-proves-add"
+    },
+    {
+     "t": "p",
+     "id": "ic.deriv.text/p24",
+     "c": [
+      {
+       "t": "text",
+       "v": "In "
+      },
+      {
+       "t": "ref",
+       "key": "inc:req:min:lem:less-zero"
+      },
+      {
+       "t": "text",
+       "v": ", we showed that "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q} \\vdash \\forall x \\, \\lnot x < \\mathsfit{0}",
+       "src": "\\Th{Q} \\Proves\n\\lforall[x][\\lnot x < \\Obj 0]"
+      },
+      {
+       "t": "text",
+       "v": ". What does an actual "
+      },
+      {
+       "t": "term",
+       "token": "derivation",
+       "v": "derivation"
+      },
+      {
+       "t": "text",
+       "v": " look like?"
+      }
+     ],
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/ic-derivations.tex",
+      "line": 55,
+      "endLine": 56
+     }
+    },
+    {
+     "t": "env",
+     "id": "ic.deriv.text/proof26",
+     "kind": "proof",
+     "c": [
+      {
+       "t": "p",
+       "id": "ic.deriv.text/p27",
+       "c": [
+        {
+         "t": "text",
+         "v": "To prove a universal claim like this, we use "
+        },
+        {
+         "t": "math",
+         "tex": "{ \\forall }\\mathrm{Intro}",
+         "src": "\\Intro\\lforall"
+        },
+        {
+         "t": "text",
+         "v": ", which requires "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "a derivation"
+        },
+        {
+         "t": "text",
+         "v": " of "
+        },
+        {
+         "t": "math",
+         "tex": "\\lnot a < \\mathsfit{0}",
+         "src": "\\lnot a < \\Obj 0"
+        },
+        {
+         "t": "text",
+         "v": ". Looking at axiom "
+        },
+        {
+         "t": "math",
+         "tex": "Q_8",
+         "src": "!Q_8"
+        },
+        {
+         "t": "text",
+         "v": ", this means proving "
+        },
+        {
+         "t": "math",
+         "tex": "\\lnot \\exists z (z' + a) = \\mathsfit{0}",
+         "src": "\\lnot \\exists z (z' + a) = \\Obj 0"
+        },
+        {
+         "t": "text",
+         "v": ". Specifically, if we had a proof of the latter, "
+        },
+        {
+         "t": "math",
+         "tex": "Q_8",
+         "src": "!Q_8"
+        },
+        {
+         "t": "text",
+         "v": " would allow us to prove the former (recall that "
+        },
+        {
+         "t": "math",
+         "tex": "A \\mathbin{\\leftrightarrow} B",
+         "src": "A \\liff B"
+        },
+        {
+         "t": "text",
+         "v": " is short for "
+        },
+        {
+         "t": "math",
+         "tex": "(A \\mathbin{\\rightarrow} B) \\land (B \\mathbin{\\rightarrow} A)",
+         "src": "(A \\lif B) \\land (B \\lif\nA)"
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 59,
+        "endLine": 65
+       }
+      },
+      {
+       "t": "prooftree",
+       "id": "ic.deriv.text/tree44",
+       "root": {
+        "c": [
+         {
+          "t": "math",
+          "tex": "\\lnot a<\\mathsfit{0}",
+          "src": "\\lnot a<\\Obj 0"
+         }
+        ],
+        "line": "single",
+        "premises": [
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "\\bot",
+            "src": "\\lfalse"
+           }
+          ],
+          "line": "single",
+          "premises": [
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "\\lnot\\exists z \\, (z' + a) = \\mathsfit{0}",
+              "src": "\\lnot\\lexists[z][(z' + a) = \\Obj 0]"
+             }
+            ],
+            "line": "none",
+            "premises": []
+           },
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "\\exists z \\, (z' + a) = \\mathsfit{0}",
+              "src": "\\lexists[z][(z' + a) = \\Obj 0]"
+             }
+            ],
+            "line": "single",
+            "premises": [
+             {
+              "c": [
+               {
+                "t": "math",
+                "tex": "a < \\mathsfit{0} \\mathbin{\\rightarrow} \\exists z \\, (z' + a) = \\mathsfit{0}",
+                "src": "a < \\Obj 0 \\lif \\lexists[z][(z' + a) = \\Obj 0]"
+               }
+              ],
+              "line": "single",
+              "premises": [
+               {
+                "c": [
+                 {
+                  "t": "math",
+                  "tex": "a < \\mathsfit{0} \\mathbin{\\leftrightarrow} \\exists z \\, (z' + a) = \\mathsfit{0}",
+                  "src": "a < \\Obj 0 \\liff \\lexists[z][(z' + a) = \\Obj 0]"
+                 }
+                ],
+                "line": "single",
+                "premises": [
+                 {
+                  "c": [
+                   {
+                    "t": "math",
+                    "tex": "\\forall y \\, (a < y \\mathbin{\\leftrightarrow} \\exists z [(z' + a) = y])]",
+                    "src": "\\lforall[y][(a < y \\liff \\lexists[z][(z' + a) = y])]"
+                   }
+                  ],
+                  "line": "single",
+                  "premises": [
+                   {
+                    "c": [
+                     {
+                      "t": "math",
+                      "tex": "\\forall x \\, \\forall y [(x < y \\mathbin{\\leftrightarrow} \\exists z \\, (z' + x) = y )]]",
+                      "src": "\\lforall[x][\\lforall[y][(x < y \\liff \\lexists[z][(z' + x) = y])]]"
+                     }
+                    ],
+                    "line": "none",
+                    "premises": []
+                   }
+                  ],
+                  "right": [
+                   {
+                    "t": "math",
+                    "tex": "{ \\forall  \n    }\\mathrm{Elim}",
+                    "src": "\\Elim\\lforall"
+                   }
+                  ]
+                 }
+                ],
+                "right": [
+                 {
+                  "t": "math",
+                  "tex": "{ \\forall  \n    }\\mathrm{Elim}",
+                  "src": "\\Elim\\lforall"
+                 }
+                ]
+               }
+              ],
+              "right": [
+               {
+                "t": "math",
+                "tex": "{\\land}\\mathrm{Elim}",
+                "src": "\\Elim\\land"
+               }
+              ]
+             },
+             {
+              "c": [
+               {
+                "t": "math",
+                "tex": "[a < \\mathsfit{0}]^{1}",
+                "src": "\\Discharge{a < \\Obj 0}{1}"
+               }
+              ],
+              "line": "none",
+              "premises": []
+             }
+            ],
+            "right": [
+             {
+              "t": "math",
+              "tex": "{\\mathbin{\\rightarrow}}\\mathrm{Elim}",
+              "src": "\\Elim\\lif"
+             }
+            ]
+           }
+          ],
+          "right": [
+           {
+            "t": "math",
+            "tex": "{\\lnot}\\mathrm{Elim}",
+            "src": "\\Elim\\lnot"
+           }
+          ]
+         }
+        ],
+        "right": [
+         {
+          "t": "math",
+          "tex": "{\\lnot}\\mathrm{Intro}",
+          "src": "\\Intro\\lnot"
+         }
+        ],
+        "left": [
+         {
+          "t": "text",
+          "v": "1"
+         }
+        ]
+       },
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 65,
+        "endLine": 82
+       }
+      },
+      {
+       "t": "p",
+       "id": "ic.deriv.text/p45",
+       "c": [
+        {
+         "t": "text",
+         "v": "This is "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "a derivation"
+        },
+        {
+         "t": "text",
+         "v": " of "
+        },
+        {
+         "t": "math",
+         "tex": "\\lnot a<\\mathsfit{0}",
+         "src": "\\lnot a<\\Obj 0"
+        },
+        {
+         "t": "text",
+         "v": " from "
+        },
+        {
+         "t": "math",
+         "tex": "\\lnot\\exists z \\, (z' + a) = \\mathsfit{0}",
+         "src": "\\lnot\\lexists[z][(z' +\na) = \\Obj 0]"
+        },
+        {
+         "t": "text",
+         "v": " (and "
+        },
+        {
+         "t": "math",
+         "tex": "Q_8",
+         "src": "!Q_8"
+        },
+        {
+         "t": "text",
+         "v": "); let’s call it "
+        },
+        {
+         "t": "math",
+         "tex": "\\delta_1",
+         "src": "\\delta_1"
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 83,
+        "endLine": 84
+       }
+      },
+      {
+       "t": "p",
+       "id": "ic.deriv.text/p46",
+       "c": [
+        {
+         "t": "text",
+         "v": "Now how do we prove "
+        },
+        {
+         "t": "math",
+         "tex": "\\lnot\\exists z \\, (z' + a) = \\mathsfit{0}",
+         "src": "\\lnot\\lexists[z][(z' + a) = \\Obj 0]"
+        },
+        {
+         "t": "text",
+         "v": " from the axioms of "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q}",
+         "src": "\\Th{Q}"
+        },
+        {
+         "t": "text",
+         "v": "? To prove a negated claim like this, we’d need "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "a derivation"
+        },
+        {
+         "t": "text",
+         "v": " of the form"
+        }
+       ],
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 86,
+        "endLine": 89
+       }
+      },
+      {
+       "t": "prooftree",
+       "id": "ic.deriv.text/tree52",
+       "root": {
+        "c": [
+         {
+          "t": "math",
+          "tex": "\\lnot\\exists z \\, (z' + a) = \\mathsfit{0}",
+          "src": "\\lnot\\lexists[z][(z' + a) = \\Obj 0]"
+         }
+        ],
+        "line": "single",
+        "premises": [
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "\\bot",
+            "src": "\\lfalse"
+           }
+          ],
+          "line": "dots",
+          "premises": [
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "[\\exists z \\, (z' + a) = \\mathsfit{0} ]^{2}",
+              "src": "\\Discharge{\\lexists[z][(z' + a) = \\Obj 0]}{2}"
+             }
+            ],
+            "line": "none",
+            "premises": []
+           }
+          ]
+         }
+        ],
+        "right": [
+         {
+          "t": "math",
+          "tex": "{\\lnot}\\mathrm{Intro}",
+          "src": "\\Intro\\lnot"
+         }
+        ],
+        "left": [
+         {
+          "t": "text",
+          "v": "2"
+         }
+        ]
+       },
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 89,
+        "endLine": 94
+       }
+      },
+      {
+       "t": "p",
+       "id": "ic.deriv.text/p53",
+       "c": [
+        {
+         "t": "text",
+         "v": "To get a contradiction from an existential claim, we introduce a constant "
+        },
+        {
+         "t": "math",
+         "tex": "b",
+         "src": "b"
+        },
+        {
+         "t": "text",
+         "v": " for the existentially quantified variable "
+        },
+        {
+         "t": "math",
+         "tex": "z",
+         "src": "z"
+        },
+        {
+         "t": "text",
+         "v": " and use "
+        },
+        {
+         "t": "math",
+         "tex": "{\\exists \n     \n     \n    }\\mathrm{Elim}",
+         "src": "\\Elim\\lexists"
+        },
+        {
+         "t": "text",
+         "v": ":"
+        }
+       ],
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 95,
+        "endLine": 98
+       }
+      },
+      {
+       "t": "prooftree",
+       "id": "ic.deriv.text/tree64",
+       "root": {
+        "c": [
+         {
+          "t": "math",
+          "tex": "\\lnot\\exists z \\, (z' + a) = \\mathsfit{0}",
+          "src": "\\lnot\\lexists[z][(z' + a) = \\Obj 0]"
+         }
+        ],
+        "line": "single",
+        "premises": [
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "\\bot",
+            "src": "\\lfalse"
+           }
+          ],
+          "line": "single",
+          "premises": [
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "[\\exists z \\, (z' + a) = \\mathsfit{0} ]^{2}",
+              "src": "\\Discharge{\\lexists[z][(z' + a) = \\Obj 0]}{2}"
+             }
+            ],
+            "line": "none",
+            "premises": []
+           },
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "\\bot",
+              "src": "\\lfalse"
+             }
+            ],
+            "line": "dots",
+            "premises": [
+             {
+              "c": [
+               {
+                "t": "math",
+                "tex": "[(b'+a) = \\mathsfit{0}]^{3}",
+                "src": "\\Discharge{(b'+a) = \\Obj 0}{3}"
+               }
+              ],
+              "line": "none",
+              "premises": []
+             }
+            ],
+            "right": [
+             {
+              "t": "math",
+              "tex": "\\delta_2",
+              "src": "\\delta_2"
+             }
+            ]
+           }
+          ],
+          "right": [
+           {
+            "t": "math",
+            "tex": "{\\exists}\\mathrm{Elim}",
+            "src": "\\Elim\\exists"
+           }
+          ],
+          "left": [
+           {
+            "t": "text",
+            "v": "3"
+           }
+          ]
+         }
+        ],
+        "right": [
+         {
+          "t": "math",
+          "tex": "{\\lnot}\\mathrm{Intro}",
+          "src": "\\Intro\\lnot"
+         }
+        ],
+        "left": [
+         {
+          "t": "text",
+          "v": "2"
+         }
+        ]
+       },
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 98,
+        "endLine": 107
+       }
+      },
+      {
+       "t": "p",
+       "id": "ic.deriv.text/p65",
+       "c": [
+        {
+         "t": "text",
+         "v": "Now the task is to fill in "
+        },
+        {
+         "t": "math",
+         "tex": "\\delta_2",
+         "src": "\\delta_2"
+        },
+        {
+         "t": "text",
+         "v": ", i.e., prove "
+        },
+        {
+         "t": "math",
+         "tex": "\\bot",
+         "src": "\\lfalse"
+        },
+        {
+         "t": "text",
+         "v": " from "
+        },
+        {
+         "t": "math",
+         "tex": "(b'+a) = \\mathsfit{0}",
+         "src": "(b'+a) = \\Obj 0"
+        },
+        {
+         "t": "text",
+         "v": " and the axioms of "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q}",
+         "src": "\\Th{Q}"
+        },
+        {
+         "t": "text",
+         "v": ". "
+        },
+        {
+         "t": "math",
+         "tex": "Q_2",
+         "src": "Q_2"
+        },
+        {
+         "t": "text",
+         "v": " says that "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathsfit{0}",
+         "src": "\\Obj 0"
+        },
+        {
+         "t": "text",
+         "v": " can’t be the successor of some number, so one way of doing that would be to show that "
+        },
+        {
+         "t": "math",
+         "tex": "(b' + a)",
+         "src": "(b' + a)"
+        },
+        {
+         "t": "text",
+         "v": " is equal to the successor of some number. Since that expression itself is a sum, the axioms for addition must come into play. If "
+        },
+        {
+         "t": "math",
+         "tex": "a = \\mathsfit{0}",
+         "src": "\\eq[a][\\Obj 0]"
+        },
+        {
+         "t": "text",
+         "v": ", "
+        },
+        {
+         "t": "math",
+         "tex": "Q_5",
+         "src": "Q_5"
+        },
+        {
+         "t": "text",
+         "v": " would tell us that "
+        },
+        {
+         "t": "math",
+         "tex": "(b' + a) = b'",
+         "src": "\\eq[(b'\n+ a)][b']"
+        },
+        {
+         "t": "text",
+         "v": ", i.e., "
+        },
+        {
+         "t": "math",
+         "tex": "b' + a",
+         "src": "b' + a"
+        },
+        {
+         "t": "text",
+         "v": " is the successor of some number, namely of "
+        },
+        {
+         "t": "math",
+         "tex": "b",
+         "src": "b"
+        },
+        {
+         "t": "text",
+         "v": ". On the other hand, if "
+        },
+        {
+         "t": "math",
+         "tex": "a = c'",
+         "src": "\\eq[a][c']"
+        },
+        {
+         "t": "text",
+         "v": " for some "
+        },
+        {
+         "t": "math",
+         "tex": "c",
+         "src": "c"
+        },
+        {
+         "t": "text",
+         "v": ", then "
+        },
+        {
+         "t": "math",
+         "tex": "(b'+a) = (b'+c')",
+         "src": "\\eq[(b'+a)][(b'+c')]"
+        },
+        {
+         "t": "text",
+         "v": " by "
+        },
+        {
+         "t": "math",
+         "tex": "{  =  }\\mathrm{Elim}",
+         "src": "\\Elim\\eq"
+        },
+        {
+         "t": "text",
+         "v": ", and "
+        },
+        {
+         "t": "math",
+         "tex": "(b'+c') = (b'+c)'",
+         "src": "\\eq[(b'+c')][(b'+c)']"
+        },
+        {
+         "t": "text",
+         "v": " by "
+        },
+        {
+         "t": "math",
+         "tex": "Q_6",
+         "src": "Q_6"
+        },
+        {
+         "t": "text",
+         "v": ". So again, "
+        },
+        {
+         "t": "math",
+         "tex": "b'+a",
+         "src": "b'+a"
+        },
+        {
+         "t": "text",
+         "v": " is the successor of a number—in this case, "
+        },
+        {
+         "t": "math",
+         "tex": "b'+c",
+         "src": "b'+c"
+        },
+        {
+         "t": "text",
+         "v": ". So the strategy is to divide the task into these two cases. We also have to verify that "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q}",
+         "src": "\\Th{Q}"
+        },
+        {
+         "t": "text",
+         "v": " proves that one of these cases holds, i.e., "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q} \\vdash a = 0 \\lor \\exists y \\, (a = y')",
+         "src": "\\Th{Q} \\Proves a = 0 \\lor \\lexists[y][(a = y')]"
+        },
+        {
+         "t": "text",
+         "v": ", but this follows directly from "
+        },
+        {
+         "t": "math",
+         "tex": "Q_3",
+         "src": "Q_3"
+        },
+        {
+         "t": "text",
+         "v": " by "
+        },
+        {
+         "t": "math",
+         "tex": "{ \\forall  \n    }\\mathrm{Elim}",
+         "src": "\\Elim\\lforall"
+        },
+        {
+         "t": "text",
+         "v": ". Here are the two cases:"
+        }
+       ],
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 108,
+        "endLine": 122
+       }
+      },
+      {
+       "t": "p",
+       "id": "ic.deriv.text/p66",
+       "c": [
+        {
+         "t": "text",
+         "v": "Case 1: Prove "
+        },
+        {
+         "t": "math",
+         "tex": "\\bot",
+         "src": "\\lfalse"
+        },
+        {
+         "t": "text",
+         "v": " from "
+        },
+        {
+         "t": "math",
+         "tex": "a = \\mathsfit{0}",
+         "src": "\\eq[a][\\Obj 0]"
+        },
+        {
+         "t": "text",
+         "v": " and "
+        },
+        {
+         "t": "math",
+         "tex": "(b'+a) = \\mathsfit{0}",
+         "src": "\\eq[(b'+a)][\\Obj\n  0]"
+        },
+        {
+         "t": "text",
+         "v": " (and axioms "
+        },
+        {
+         "t": "math",
+         "tex": "Q_2",
+         "src": "Q_2"
+        },
+        {
+         "t": "text",
+         "v": ", "
+        },
+        {
+         "t": "math",
+         "tex": "Q_5",
+         "src": "Q_5"
+        },
+        {
+         "t": "text",
+         "v": "):"
+        }
+       ],
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 124,
+        "endLine": 126
+       }
+      },
+      {
+       "t": "prooftree",
+       "id": "ic.deriv.text/tree82",
+       "root": {
+        "c": [
+         {
+          "t": "math",
+          "tex": "\\bot",
+          "src": "\\lfalse"
+         }
+        ],
+        "line": "single",
+        "premises": [
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "\\lnot \\mathsfit{0} = b'",
+            "src": "\\lnot \\Obj 0 = b'"
+           }
+          ],
+          "line": "single",
+          "premises": [
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "\\forall x \\, \\lnot \\mathsfit{0} = x'",
+              "src": "\\lforall[x][\\lnot \\Obj 0 = x']"
+             }
+            ],
+            "line": "none",
+            "premises": []
+           }
+          ],
+          "right": [
+           {
+            "t": "math",
+            "tex": "{ \\forall  \n    }\\mathrm{Elim}",
+            "src": "\\Elim\\lforall"
+           }
+          ]
+         },
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "\\mathsfit{0} = b'",
+            "src": "\\Obj 0 = b'"
+           }
+          ],
+          "line": "single",
+          "premises": [
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "(b' + \\mathsfit{0}) = b'",
+              "src": "(b' + \\Obj 0) = b'"
+             }
+            ],
+            "line": "single",
+            "premises": [
+             {
+              "c": [
+               {
+                "t": "math",
+                "tex": "\\forall x \\, (x+\\mathsfit{0}) = x",
+                "src": "\\lforall[x][(x+\\Obj 0) = x]"
+               }
+              ],
+              "line": "none",
+              "premises": []
+             }
+            ],
+            "right": [
+             {
+              "t": "math",
+              "tex": "{ \\forall  \n    }\\mathrm{Elim}",
+              "src": "\\Elim\\lforall"
+             }
+            ]
+           },
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "\\mathsfit{0} = (b' + \\mathsfit{0})",
+              "src": "\\Obj 0 = (b' + \\Obj 0)"
+             }
+            ],
+            "line": "double",
+            "premises": [
+             {
+              "c": [
+               {
+                "t": "math",
+                "tex": "(b' + \\mathsfit{0}) = \\mathsfit{0}",
+                "src": "(b' + \\Obj 0) = \\Obj 0"
+               }
+              ],
+              "line": "single",
+              "premises": [
+               {
+                "c": [
+                 {
+                  "t": "math",
+                  "tex": "a = \\mathsfit{0}",
+                  "src": "a = \\Obj 0"
+                 }
+                ],
+                "line": "none",
+                "premises": []
+               },
+               {
+                "c": [
+                 {
+                  "t": "math",
+                  "tex": "(b'+a) = \\mathsfit{0}",
+                  "src": "(b'+a) = \\Obj 0"
+                 }
+                ],
+                "line": "none",
+                "premises": []
+               }
+              ],
+              "right": [
+               {
+                "t": "math",
+                "tex": "{=}\\mathrm{Elim}",
+                "src": "\\Elim="
+               }
+              ]
+             }
+            ]
+           }
+          ],
+          "right": [
+           {
+            "t": "math",
+            "tex": "{=}\\mathrm{Elim}",
+            "src": "\\Elim="
+           }
+          ]
+         }
+        ],
+        "right": [
+         {
+          "t": "math",
+          "tex": "{\\lnot}\\mathrm{Elim}",
+          "src": "\\Elim\\lnot"
+         }
+        ]
+       },
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 126,
+        "endLine": 144
+       }
+      },
+      {
+       "t": "p",
+       "id": "ic.deriv.text/p83",
+       "c": [
+        {
+         "t": "text",
+         "v": "Call this "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "derivation"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "\\delta_3",
+         "src": "\\delta_3"
+        },
+        {
+         "t": "text",
+         "v": ". (We’ve abbreviated the "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "derivation"
+        },
+        {
+         "t": "text",
+         "v": " of "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathsfit{0} = (b' + \\mathsfit{0})",
+         "src": "\\Obj 0 = (b' + \\Obj 0)"
+        },
+        {
+         "t": "text",
+         "v": " from "
+        },
+        {
+         "t": "math",
+         "tex": "(b' + \\mathsfit{0}) = \\mathsfit{0}",
+         "src": "(b' + \\Obj 0) = \\Obj 0"
+        },
+        {
+         "t": "text",
+         "v": " by a double inference line.)"
+        }
+       ],
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 145,
+        "endLine": 147
+       }
+      },
+      {
+       "t": "p",
+       "id": "ic.deriv.text/p84",
+       "c": [
+        {
+         "t": "text",
+         "v": "Case 2: Prove "
+        },
+        {
+         "t": "math",
+         "tex": "\\bot",
+         "src": "\\lfalse"
+        },
+        {
+         "t": "text",
+         "v": " from "
+        },
+        {
+         "t": "math",
+         "tex": "\\exists y \\, a = y'",
+         "src": "\\lexists[y][a = y']"
+        },
+        {
+         "t": "text",
+         "v": " and "
+        },
+        {
+         "t": "math",
+         "tex": "(b'+a) = \\mathsfit{0}",
+         "src": "\\eq[(b'+a)][\\Obj 0]"
+        },
+        {
+         "t": "text",
+         "v": " (and axioms "
+        },
+        {
+         "t": "math",
+         "tex": "Q_2",
+         "src": "Q_2"
+        },
+        {
+         "t": "text",
+         "v": ", "
+        },
+        {
+         "t": "math",
+         "tex": "Q_6",
+         "src": "Q_6"
+        },
+        {
+         "t": "text",
+         "v": "). We first show how to derive "
+        },
+        {
+         "t": "math",
+         "tex": "\\bot",
+         "src": "\\lfalse"
+        },
+        {
+         "t": "text",
+         "v": " from "
+        },
+        {
+         "t": "math",
+         "tex": "a = c'",
+         "src": "\\eq[a][c']"
+        },
+        {
+         "t": "text",
+         "v": " and "
+        },
+        {
+         "t": "math",
+         "tex": "(b'+a) = \\mathsfit{0}",
+         "src": "\\eq[(b'+a)][\\Obj 0]"
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 149,
+        "endLine": 152
+       }
+      },
+      {
+       "t": "prooftree",
+       "id": "ic.deriv.text/tree101",
+       "root": {
+        "c": [
+         {
+          "t": "math",
+          "tex": "\\bot",
+          "src": "\\lfalse"
+         }
+        ],
+        "line": "single",
+        "premises": [
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "\\lnot \\mathsfit{0} = (b'+c)'",
+            "src": "\\lnot \\Obj 0 = (b'+c)'"
+           }
+          ],
+          "line": "single",
+          "premises": [
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "\\forall x \\, \\lnot \\mathsfit{0} = x'",
+              "src": "\\lforall[x][\\lnot \\Obj 0 = x']"
+             }
+            ],
+            "line": "none",
+            "premises": []
+           }
+          ],
+          "right": [
+           {
+            "t": "math",
+            "tex": "{ \\forall  \n    }\\mathrm{Elim}",
+            "src": "\\Elim\\lforall"
+           }
+          ]
+         },
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "\\mathsfit{0} = (b' + c)'",
+            "src": "\\Obj 0 = (b' + c)'"
+           }
+          ],
+          "line": "single",
+          "premises": [
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "\\mathsfit{(}b'+c') = \\mathsfit{0}",
+              "src": "\\Obj (b'+c') = \\Obj 0"
+             }
+            ],
+            "line": "single",
+            "premises": [
+             {
+              "c": [
+               {
+                "t": "math",
+                "tex": "a = c'",
+                "src": "a = c'"
+               }
+              ],
+              "line": "none",
+              "premises": []
+             },
+             {
+              "c": [
+               {
+                "t": "math",
+                "tex": "(b'+a) = \\mathsfit{0}",
+                "src": "(b'+a) = \\Obj 0"
+               }
+              ],
+              "line": "none",
+              "premises": []
+             }
+            ],
+            "right": [
+             {
+              "t": "math",
+              "tex": "{=}\\mathrm{Elim}",
+              "src": "\\Elim="
+             }
+            ]
+           },
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "(b' + c') = (b'+c)'",
+              "src": "(b' + c') = (b'+c)'"
+             }
+            ],
+            "line": "single",
+            "premises": [
+             {
+              "c": [
+               {
+                "t": "math",
+                "tex": "\\forall y \\, (b'+y') = (b'+y)'",
+                "src": "\\lforall[y][(b'+y') = (b'+y)']"
+               }
+              ],
+              "line": "single",
+              "premises": [
+               {
+                "c": [
+                 {
+                  "t": "math",
+                  "tex": "\\forall x \\, \\forall y [(x+y') = (x+y)']]",
+                  "src": "\\lforall[x][\\lforall[y][(x+y') = (x+y)']]"
+                 }
+                ],
+                "line": "none",
+                "premises": []
+               }
+              ],
+              "right": [
+               {
+                "t": "math",
+                "tex": "{ \\forall  \n    }\\mathrm{Elim}",
+                "src": "\\Elim\\lforall"
+               }
+              ]
+             }
+            ],
+            "right": [
+             {
+              "t": "math",
+              "tex": "{ \\forall  \n    }\\mathrm{Elim}",
+              "src": "\\Elim\\lforall"
+             }
+            ]
+           }
+          ],
+          "right": [
+           {
+            "t": "math",
+            "tex": "{=}\\mathrm{Elim}",
+            "src": "\\Elim="
+           }
+          ]
+         }
+        ],
+        "right": [
+         {
+          "t": "math",
+          "tex": "{\\lnot}\\mathrm{Elim}",
+          "src": "\\Elim\\lnot"
+         }
+        ]
+       },
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 152,
+        "endLine": 172
+       }
+      },
+      {
+       "t": "p",
+       "id": "ic.deriv.text/p102",
+       "c": [
+        {
+         "t": "text",
+         "v": "Call this "
+        },
+        {
+         "t": "math",
+         "tex": "\\delta_4",
+         "src": "\\delta_4"
+        },
+        {
+         "t": "text",
+         "v": ". We get the required "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "derivation"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "\\delta_5",
+         "src": "\\delta_5"
+        },
+        {
+         "t": "text",
+         "v": " by applying "
+        },
+        {
+         "t": "math",
+         "tex": "{\\exists }\\mathrm{Elim}",
+         "src": "\\Elim\\lexists"
+        },
+        {
+         "t": "text",
+         "v": " and discharging the assumption "
+        },
+        {
+         "t": "math",
+         "tex": "a = c'",
+         "src": "\\eq[a][c']"
+        },
+        {
+         "t": "text",
+         "v": ":"
+        }
+       ],
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 173,
+        "endLine": 175
+       }
+      },
+      {
+       "t": "prooftree",
+       "id": "ic.deriv.text/tree110",
+       "root": {
+        "c": [
+         {
+          "t": "math",
+          "tex": "\\bot",
+          "src": "\\lfalse"
+         }
+        ],
+        "line": "single",
+        "premises": [
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "\\exists y \\, a=y'",
+            "src": "\\lexists[y][a=y']"
+           }
+          ],
+          "line": "none",
+          "premises": []
+         },
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "\\bot",
+            "src": "\\lfalse"
+           }
+          ],
+          "line": "dots",
+          "premises": [
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "[a = c']^{6} \\quad (b'+a) = \\mathsfit{0}",
+              "src": "\\Discharge{a = c'}{6} \\quad \\eq[(b'+a)][\\Obj 0]"
+             }
+            ],
+            "line": "none",
+            "premises": []
+           }
+          ],
+          "right": [
+           {
+            "t": "math",
+            "tex": "\\delta_4",
+            "src": "\\delta_4"
+           }
+          ]
+         }
+        ],
+        "right": [
+         {
+          "t": "math",
+          "tex": "{\\exists}\\mathrm{Elim}",
+          "src": "\\Elim\\exists"
+         }
+        ],
+        "left": [
+         {
+          "t": "text",
+          "v": "6"
+         }
+        ]
+       },
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 175,
+        "endLine": 182
+       }
+      },
+      {
+       "t": "p",
+       "id": "ic.deriv.text/p111",
+       "c": [
+        {
+         "t": "text",
+         "v": "Putting everything together, the full proof looks like this:"
+        }
+       ],
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 185,
+        "endLine": 186
+       }
+      },
+      {
+       "t": "prooftree",
+       "id": "ic.deriv.text/tree135",
+       "root": {
+        "c": [
+         {
+          "t": "math",
+          "tex": "\\forall x \\, \\lnot x < \\mathsfit{0}",
+          "src": "\\lforall[x][\\lnot x < \\Obj 0]"
+         }
+        ],
+        "line": "single",
+        "premises": [
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "\\lnot a<\\mathsfit{0}",
+            "src": "\\lnot a<\\Obj 0"
+           }
+          ],
+          "line": "dots",
+          "premises": [
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "\\lnot\\exists z \\, (z' + a) = \\mathsfit{0}",
+              "src": "\\lnot\\lexists[z][(z' + a) = \\Obj 0]"
+             }
+            ],
+            "line": "single",
+            "premises": [
+             {
+              "c": [
+               {
+                "t": "math",
+                "tex": "\\bot",
+                "src": "\\lfalse"
+               }
+              ],
+              "line": "single",
+              "premises": [
+               {
+                "c": [
+                 {
+                  "t": "math",
+                  "tex": "[\\exists z \\, (z' + a) = \\mathsfit{0} ]^{2}",
+                  "src": "\\Discharge{\\lexists[z][(z' + a) = \\Obj 0]}{2}"
+                 }
+                ],
+                "line": "none",
+                "premises": []
+               },
+               {
+                "c": [
+                 {
+                  "t": "math",
+                  "tex": "\\bot",
+                  "src": "\\lfalse"
+                 }
+                ],
+                "line": "single",
+                "premises": [
+                 {
+                  "c": [
+                   {
+                    "t": "math",
+                    "tex": "\\begin{gathered}a = 0 \\lor {}\\\\ \\exists y \\, (a = y') \\end{gathered}",
+                    "src": "\\begin{gathered}a = 0 \\lor {}\\\\\n  \\lexists[y][(a = y')]\n  \\end{gathered}"
+                   }
+                  ],
+                  "line": "single",
+                  "premises": [
+                   {
+                    "c": [
+                     {
+                      "t": "math",
+                      "tex": "\\begin{gathered} \\forall x \\, (x = 0 \\lor {} \\\\ \\exists y \\, (a = y') ) \\end{gathered}",
+                      "src": "\\begin{gathered}\n  \\lforall[x][(x = 0 \\lor {}]\\\\\n  \\lexists[y][(a = y')])\n  \\end{gathered}"
+                     }
+                    ],
+                    "line": "none",
+                    "premises": []
+                   }
+                  ],
+                  "right": [
+                   {
+                    "t": "math",
+                    "tex": "{ \\forall  \n    }\\mathrm{Elim}",
+                    "src": "\\Elim\\lforall"
+                   }
+                  ]
+                 },
+                 {
+                  "c": [
+                   {
+                    "t": "math",
+                    "tex": "\\bot",
+                    "src": "\\lfalse"
+                   }
+                  ],
+                  "line": "dots",
+                  "premises": [
+                   {
+                    "c": [
+                     {
+                      "t": "math",
+                      "tex": "\\begin{gathered}[b] [a = \\mathsfit{0}]^{7} \\\\ [(b'+a) = \\mathsfit{0}]^{3} \\end{gathered}",
+                      "src": "\\begin{gathered}[b]\n      \\Discharge{a = \\Obj 0}{7} \\\\\n      \\Discharge{(b'+a) = \\Obj 0}{3}\n      \\end{gathered}"
+                     }
+                    ],
+                    "line": "none",
+                    "premises": []
+                   }
+                  ],
+                  "right": [
+                   {
+                    "t": "math",
+                    "tex": "\\delta_3",
+                    "src": "\\delta_3"
+                   }
+                  ]
+                 },
+                 {
+                  "c": [
+                   {
+                    "t": "math",
+                    "tex": "\\bot",
+                    "src": "\\lfalse"
+                   }
+                  ],
+                  "line": "dots",
+                  "premises": [
+                   {
+                    "c": [
+                     {
+                      "t": "math",
+                      "tex": "\\begin{gathered}[b] [\\exists y \\, a=y' ]^{7} \\\\ [(b'+a) = \\mathsfit{0}]^{3} \\end{gathered}",
+                      "src": "\\begin{gathered}[b]\n        \\Discharge{\\lexists[y][a=y']}{7} \\\\\n        \\Discharge{(b'+a) = \\Obj 0}{3}\n        \\end{gathered}"
+                     }
+                    ],
+                    "line": "none",
+                    "premises": []
+                   }
+                  ],
+                  "right": [
+                   {
+                    "t": "math",
+                    "tex": "\\delta_5",
+                    "src": "\\delta_5"
+                   }
+                  ]
+                 }
+                ],
+                "right": [
+                 {
+                  "t": "math",
+                  "tex": "{\\lor}\\mathrm{Elim}",
+                  "src": "\\Elim\\lor"
+                 }
+                ],
+                "left": [
+                 {
+                  "t": "text",
+                  "v": "7"
+                 }
+                ]
+               }
+              ],
+              "right": [
+               {
+                "t": "math",
+                "tex": "{\\exists}\\mathrm{Elim}",
+                "src": "\\Elim\\exists"
+               }
+              ],
+              "left": [
+               {
+                "t": "text",
+                "v": "3"
+               }
+              ]
+             }
+            ],
+            "right": [
+             {
+              "t": "math",
+              "tex": "{\\lnot}\\mathrm{Intro}",
+              "src": "\\Intro\\lnot"
+             }
+            ],
+            "left": [
+             {
+              "t": "text",
+              "v": "2"
+             }
+            ]
+           }
+          ],
+          "right": [
+           {
+            "t": "math",
+            "tex": "\\delta_1",
+            "src": "\\delta_1"
+           }
+          ]
+         }
+        ],
+        "right": [
+         {
+          "t": "math",
+          "tex": "{ \\forall  \n    }\\mathrm{Intro}",
+          "src": "\\Intro\\lforall"
+         }
+        ]
+       },
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 186,
+        "endLine": 220
+       }
+      }
+     ],
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/ic-derivations.tex",
+      "line": 58,
+      "endLine": 221
+     },
+     "title": [
+      {
+       "t": "text",
+       "v": "Proof of "
+      },
+      {
+       "t": "ref",
+       "key": "inc:req:min:lem:less-zero"
+      }
+     ],
+     "proves": "inc:req:min:lem:less-zero"
+    },
+    {
+     "t": "p",
+     "id": "ic.deriv.text/p136",
+     "c": [
+      {
+       "t": "text",
+       "v": "In the proof of "
+      },
+      {
+       "t": "ref",
+       "key": "inc:inp:ros:thm:rosser"
+      },
+      {
+       "t": "text",
+       "v": ", we defined "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathsf{RProv}(y)",
+       "src": "\\ORProv(y)"
+      },
+      {
+       "t": "text",
+       "v": " as"
+      }
+     ],
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/ic-derivations.tex",
+      "line": 223,
+      "endLine": 224
+     }
+    },
+    {
+     "t": "display",
+     "id": "ic.deriv.text/d137",
+     "env": "equation",
+     "rows": [
+      {
+       "tex": "\\exists x \\, (\\mathsf{Prf}(x, y) \\land \\forall z [(z < x \\mathbin{\\rightarrow} \\lnot \\mathsf{Ref}(z, y))])]."
+      }
+     ],
+     "src": "\\lexists[x][(\\OPrf(x, y) \\land \\lforall[z][(z < x\n    \\lif \\lnot \\ORefut(z, y))])].",
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/ic-derivations.tex",
+      "line": 224,
+      "endLine": 225
+     }
+    },
+    {
+     "t": "p",
+     "id": "ic.deriv.text/p138",
+     "c": [
+      {
+       "t": "math",
+       "tex": "\\mathsf{Prf}(x,y)",
+       "src": "\\OPrf(x,y)"
+      },
+      {
+       "t": "text",
+       "v": " is the formula representing the proof relation of "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{T}",
+       "src": "\\Th{T}"
+      },
+      {
+       "t": "text",
+       "v": " (a consistent, axiomatizable extension of "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": ") in "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": ", and "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathsf{Ref}(z, y)",
+       "src": "\\ORefut(z, y)"
+      },
+      {
+       "t": "text",
+       "v": " is the formula representing the refutation relation. That means that if "
+      },
+      {
+       "t": "math",
+       "tex": "n",
+       "src": "n"
+      },
+      {
+       "t": "text",
+       "v": " is the Gödel number of a proof of "
+      },
+      {
+       "t": "math",
+       "tex": "A",
+       "src": "!A"
+      },
+      {
+       "t": "text",
+       "v": ", then "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q} \\vdash \\mathsf{Prf}(\\overline{n}, \\ulcorner A \\urcorner)",
+       "src": "\\Th{Q} \\Proves\n\\OPrf(\\num{n}, \\gn{!A})"
+      },
+      {
+       "t": "text",
+       "v": ", and otherwise "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q} \\vdash \\lnot\\mathsf{Prf}(\\overline{n}, \\ulcorner A \\urcorner)",
+       "src": "\\Th{Q} \\Proves\n\\lnot\\OPrf(\\num{n}, \\gn{!A})"
+      },
+      {
+       "t": "text",
+       "v": ". Similarly, if "
+      },
+      {
+       "t": "math",
+       "tex": "n",
+       "src": "n"
+      },
+      {
+       "t": "text",
+       "v": " is the Gödel number of a proof of "
+      },
+      {
+       "t": "math",
+       "tex": "\\lnot A",
+       "src": "\\lnot !A"
+      },
+      {
+       "t": "text",
+       "v": ", then "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q} \\vdash \\mathsf{Ref}(\\overline{n}, \\ulcorner A \\urcorner)",
+       "src": "\\Th{Q} \\Proves \\ORefut(\\num{n},\n\\gn{!A})"
+      },
+      {
+       "t": "text",
+       "v": ", and otherwise "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q} \\vdash \\lnot\\mathsf{Ref}(\\overline{n}, \\ulcorner A \\urcorner)",
+       "src": "\\Th{Q} \\Proves \\lnot\\ORefut(\\num{n},\n\\gn{!A})"
+      },
+      {
+       "t": "text",
+       "v": ". We use the Diagonal Lemma to find a sentence "
+      },
+      {
+       "t": "math",
+       "tex": "R",
+       "src": "!R"
+      },
+      {
+       "t": "text",
+       "v": " such that "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q} \\vdash R \\mathbin{\\leftrightarrow} \\lnot \\mathsf{RProv}(\\ulcorner R \\urcorner)",
+       "src": "\\Th{Q} \\Proves !R \\liff \\lnot \\ORProv(\\gn{!R})"
+      },
+      {
+       "t": "text",
+       "v": ". Rosser’s Theorem states that "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{T} \\nvdash R",
+       "src": "\\Th{T} \\Proves/ !R"
+      },
+      {
+       "t": "text",
+       "v": " and "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{T} \\nvdash \\lnot R",
+       "src": "\\Th{T} \\Proves/ \\lnot !R"
+      },
+      {
+       "t": "text",
+       "v": ". Both claims were proved indirectly: we show that if "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{T} \\vdash R",
+       "src": "\\Th{T} \\Proves !R"
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{T}",
+       "src": "\\Th{T}"
+      },
+      {
+       "t": "text",
+       "v": " is inconsistent, i.e., "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{T} \\vdash \\bot",
+       "src": "\\Th{T} \\Proves \\lfalse"
+      },
+      {
+       "t": "text",
+       "v": ", and the same if "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{T} \\vdash \\lnot R",
+       "src": "\\Th{T} \\Proves \\lnot !R"
+      },
+      {
+       "t": "text",
+       "v": "."
+      }
+     ],
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/ic-derivations.tex",
+      "line": 225,
+      "endLine": 239
+     }
+    },
+    {
+     "t": "env",
+     "id": "ic.deriv.text/proof140",
+     "kind": "proof",
+     "c": [
+      {
+       "t": "p",
+       "id": "ic.deriv.text/p141",
+       "c": [
+        {
+         "t": "text",
+         "v": "First we prove something things about "
+        },
+        {
+         "t": "math",
+         "tex": "<",
+         "src": "<"
+        },
+        {
+         "t": "text",
+         "v": ". By "
+        },
+        {
+         "t": "ref",
+         "key": "inc:req:min:lem:less-nsucc"
+        },
+        {
+         "t": "text",
+         "v": ", we know that "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q} \\vdash \\forall x \\, (x < \\overline{n+1} \\mathbin{\\rightarrow} ( = [\\mathsfit{0}] \\lor \\dots \\lor x = \\overline{n} ))]",
+         "src": "\\Th{Q} \\Proves\n\\lforall[x][(x < \\num {n+1} \\lif (\\eq[x][\\Obj 0] \\lor \\dots \\lor\n  \\eq[x][\\num n]))]"
+        },
+        {
+         "t": "text",
+         "v": " for every "
+        },
+        {
+         "t": "math",
+         "tex": "n",
+         "src": "n"
+        },
+        {
+         "t": "text",
+         "v": ". So of course also (if "
+        },
+        {
+         "t": "math",
+         "tex": "n>1",
+         "src": "n>1"
+        },
+        {
+         "t": "text",
+         "v": "), "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q} \\vdash \\forall x \\, (x < \\overline{n} \\mathbin{\\rightarrow} ( = [\\mathsfit{0}] \\lor \\dots \\lor x = \\overline{n-1} ))]",
+         "src": "\\Th{Q} \\Proves \\lforall[x][(x < \\num {n} \\lif (\\eq[x][\\Obj 0] \\lor\n  \\dots \\lor \\eq[x][\\num{n-1}]))]"
+        },
+        {
+         "t": "text",
+         "v": ". We can use this to derive "
+        },
+        {
+         "t": "math",
+         "tex": "a = \\mathsfit{0} \\lor \\dots \\lor a = \\overline{n-1}",
+         "src": "\\eq[a][\\Obj 0] \\lor \\dots \\lor \\eq[a][\\num{n-1}]"
+        },
+        {
+         "t": "text",
+         "v": " from "
+        },
+        {
+         "t": "math",
+         "tex": "a < \\overline{n}",
+         "src": "a < \\num{n}"
+        },
+        {
+         "t": "text",
+         "v": ":"
+        }
+       ],
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 242,
+        "endLine": 249
+       }
+      },
+      {
+       "t": "prooftree",
+       "id": "ic.deriv.text/tree148",
+       "root": {
+        "c": [
+         {
+          "t": "math",
+          "tex": "a = \\overline{0} \\lor \\dots \\lor a = \\overline{n-1}",
+          "src": "a = \\num{0} \\lor \\dots \\lor a = \\num{n-1}"
+         }
+        ],
+        "line": "single",
+        "premises": [
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "a < \\overline{n}",
+            "src": "a < \\num{n}"
+           }
+          ],
+          "line": "none",
+          "premises": []
+         },
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "a < \\overline{n} \\mathbin{\\rightarrow} (a = \\overline{0} \\lor \\dots \\lor a = \\overline{n-1})",
+            "src": "a < \\num{n} \\lif (a = \\num{0} \\lor \n      \\dots \\lor a = \\num{n-1})"
+           }
+          ],
+          "line": "single",
+          "premises": [
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "\\forall x \\, (x < \\overline{n} \\mathbin{\\rightarrow} (x = \\overline{0} \\lor \\dots \\lor x = \\overline{n-1}))",
+              "src": "\\lforall[x][(x < \\num{n} \\lif (x = \\num{0} \\lor \n      \\dots \\lor x = \\num{n-1}))]"
+             }
+            ],
+            "line": "dots",
+            "premises": [
+             {
+              "c": [],
+              "line": "none",
+              "premises": []
+             }
+            ]
+           }
+          ],
+          "right": [
+           {
+            "t": "math",
+            "tex": "{\\forall}\\mathrm{Elim}",
+            "src": "\\Elim\\forall"
+           }
+          ]
+         }
+        ],
+        "right": [
+         {
+          "t": "math",
+          "tex": "{\\mathbin{\\rightarrow}}\\mathrm{Elim}",
+          "src": "\\Elim\\lif"
+         }
+        ]
+       },
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 249,
+        "endLine": 259
+       }
+      },
+      {
+       "t": "p",
+       "id": "ic.deriv.text/p149",
+       "c": [
+        {
+         "t": "text",
+         "v": "Let’s call this "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "derivation"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "\\lambda_1",
+         "src": "\\lambda_1"
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 260,
+        "endLine": 260
+       }
+      },
+      {
+       "t": "p",
+       "id": "ic.deriv.text/p150",
+       "c": [
+        {
+         "t": "text",
+         "v": "Now, to show that "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{T} \\nvdash R",
+         "src": "\\Th{T} \\Proves/ !R"
+        },
+        {
+         "t": "text",
+         "v": ", we assume that "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{T} \\vdash R",
+         "src": "\\Th{T}\n\\Proves !R"
+        },
+        {
+         "t": "text",
+         "v": " (with "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "a derivation"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "\\delta",
+         "src": "\\delta"
+        },
+        {
+         "t": "text",
+         "v": ") and show that "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{T}",
+         "src": "\\Th{T}"
+        },
+        {
+         "t": "text",
+         "v": " then would be inconsistent. Let "
+        },
+        {
+         "t": "math",
+         "tex": "n",
+         "src": "n"
+        },
+        {
+         "t": "text",
+         "v": " be the Gödel number of "
+        },
+        {
+         "t": "math",
+         "tex": "\\delta",
+         "src": "\\delta"
+        },
+        {
+         "t": "text",
+         "v": ". Since "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathsf{Prf}",
+         "src": "\\OPrf"
+        },
+        {
+         "t": "text",
+         "v": " represents the proof relation in "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q}",
+         "src": "\\Th{Q}"
+        },
+        {
+         "t": "text",
+         "v": ", there is "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "a derivation"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "\\delta_1",
+         "src": "\\delta_1"
+        },
+        {
+         "t": "text",
+         "v": " of "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathsf{Prf}(\\overline{n}, \\ulcorner R \\urcorner)",
+         "src": "\\OPrf(\\num{n},\n\\gn{!R})"
+        },
+        {
+         "t": "text",
+         "v": ". Furthermore, no "
+        },
+        {
+         "t": "math",
+         "tex": "k < n",
+         "src": "k < n"
+        },
+        {
+         "t": "text",
+         "v": " is the Gödel number of a refutation of "
+        },
+        {
+         "t": "math",
+         "tex": "R",
+         "src": "!R"
+        },
+        {
+         "t": "text",
+         "v": " since "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{T}",
+         "src": "\\Th{T}"
+        },
+        {
+         "t": "text",
+         "v": " is assumed to be consistent, so for each "
+        },
+        {
+         "t": "math",
+         "tex": "k < n",
+         "src": "k < n"
+        },
+        {
+         "t": "text",
+         "v": ", "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q} \\vdash \\lnot \\mathsf{Ref}(\\overline{k}, \\ulcorner R \\urcorner)",
+         "src": "\\Th{Q} \\Proves \\lnot \\ORefut(\\num{k}, \\gn{!R})"
+        },
+        {
+         "t": "text",
+         "v": "; let "
+        },
+        {
+         "t": "math",
+         "tex": "\\rho_k",
+         "src": "\\rho_k"
+        },
+        {
+         "t": "text",
+         "v": " be the corresponding "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "derivation"
+        },
+        {
+         "t": "text",
+         "v": ". We get "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "a derivation"
+        },
+        {
+         "t": "text",
+         "v": " of "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathsf{RProv}(\\ulcorner R \\urcorner)",
+         "src": "\\ORProv(\\gn{!R})"
+        },
+        {
+         "t": "text",
+         "v": ":"
+        }
+       ],
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 262,
+        "endLine": 272
+       }
+      },
+      {
+       "t": "prooftree",
+       "id": "ic.deriv.text/tree175",
+       "root": {
+        "c": [
+         {
+          "t": "math",
+          "tex": "\\exists x \\, (\\mathsf{Prf}(x, \\ulcorner R \\urcorner) \\land \\forall z [(z < x \\mathbin{\\rightarrow} \\lnot \\mathsf{Ref}(z, \\ulcorner R \\urcorner))])]",
+          "src": "\\lexists[x][(\\OPrf(x, \\gn{!R}) \\land \\lforall[z][(z < x \\lif \\lnot \\ORefut(z, \\gn{!R}))])]"
+         }
+        ],
+        "line": "single",
+        "premises": [
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "\\mathsf{Prf}(\\overline{n}, \\ulcorner R \\urcorner) \\land \\forall z \\, (z < \\overline{n} \\mathbin{\\rightarrow} \\lnot \\mathsf{Ref}(\\overline{z}, \\ulcorner R \\urcorner))",
+            "src": "\\OPrf(\\num{n}, \\gn{!R}) \\land \\lforall[z][(z < \\num{n} \\lif \\lnot \\ORefut(\\num{z}, \\gn{!R}))]"
+           }
+          ],
+          "line": "single",
+          "premises": [
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "\\mathsf{Prf}(\\overline{n}, \\ulcorner R \\urcorner)",
+              "src": "\\OPrf(\\num{n}, \\gn{!R})"
+             }
+            ],
+            "line": "dots",
+            "premises": [
+             {
+              "c": [],
+              "line": "none",
+              "premises": []
+             }
+            ],
+            "right": [
+             {
+              "t": "math",
+              "tex": "\\delta_1",
+              "src": "\\delta_1"
+             }
+            ]
+           },
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "\\forall z \\, (z < \\overline{n} \\mathbin{\\rightarrow} \\lnot \\mathsf{Ref}(z, \\ulcorner R \\urcorner))",
+              "src": "\\lforall[z][(z < \\num{n} \\lif \\lnot \\ORefut(z, \\gn{!R}))]"
+             }
+            ],
+            "line": "single",
+            "premises": [
+             {
+              "c": [
+               {
+                "t": "math",
+                "tex": "a < \\overline{n} \\mathbin{\\rightarrow} \\lnot \\mathsf{Ref}(a, \\ulcorner R \\urcorner)",
+                "src": "a < \\num{n} \\lif \\lnot \\ORefut(a, \\gn{!R})"
+               }
+              ],
+              "line": "single",
+              "premises": [
+               {
+                "c": [
+                 {
+                  "t": "math",
+                  "tex": "\\lnot \\mathsf{Ref}(a, \\ulcorner R \\urcorner)",
+                  "src": "\\lnot \\ORefut(a, \\gn{!R})"
+                 }
+                ],
+                "line": "double",
+                "premises": [
+                 {
+                  "c": [
+                   {
+                    "t": "math",
+                    "tex": "\\begin{gathered}[b] a= \\overline{0} \\lor \\dots {} \\\\ {} \\lor a = \\overline{n-1} \\end{gathered}",
+                    "src": "\\begin{gathered}[b]\n      a= \\num{0} \\lor \\dots {} \\\\\n      {} \\lor a = \\num{n-1}\n      \\end{gathered}"
+                   }
+                  ],
+                  "line": "dots",
+                  "premises": [
+                   {
+                    "c": [
+                     {
+                      "t": "math",
+                      "tex": "[a < \\overline{n}]^{1}",
+                      "src": "\\Discharge{a < \\num{n}}{1}"
+                     }
+                    ],
+                    "line": "none",
+                    "premises": []
+                   }
+                  ],
+                  "right": [
+                   {
+                    "t": "math",
+                    "tex": "\\lambda_1",
+                    "src": "\\lambda_1"
+                   }
+                  ]
+                 },
+                 {
+                  "c": [
+                   {
+                    "t": "math",
+                    "tex": "\\dots",
+                    "src": "\\dots"
+                   }
+                  ],
+                  "line": "none",
+                  "premises": []
+                 },
+                 {
+                  "c": [
+                   {
+                    "t": "math",
+                    "tex": "\\lnot \\mathsf{Ref}(a, \\ulcorner R \\urcorner)",
+                    "src": "\\lnot \\ORefut(a, \\gn{!R})"
+                   }
+                  ],
+                  "line": "single",
+                  "premises": [
+                   {
+                    "c": [
+                     {
+                      "t": "math",
+                      "tex": "[a=\\overline{k}]^{2}",
+                      "src": "\\Discharge{a=\\num{k}}{2}"
+                     }
+                    ],
+                    "line": "none",
+                    "premises": []
+                   },
+                   {
+                    "c": [
+                     {
+                      "t": "math",
+                      "tex": "\\lnot \\mathsf{Ref}(\\overline{k}, \\ulcorner R \\urcorner)",
+                      "src": "\\lnot \\ORefut(\\num{k}, \\gn{!R})"
+                     }
+                    ],
+                    "line": "dots",
+                    "premises": [
+                     {
+                      "c": [],
+                      "line": "none",
+                      "premises": []
+                     }
+                    ],
+                    "right": [
+                     {
+                      "t": "math",
+                      "tex": "\\rho_k",
+                      "src": "\\rho_k"
+                     }
+                    ]
+                   }
+                  ],
+                  "right": [
+                   {
+                    "t": "math",
+                    "tex": "{=}\\mathrm{Elim}",
+                    "src": "\\Elim="
+                   }
+                  ]
+                 },
+                 {
+                  "c": [
+                   {
+                    "t": "math",
+                    "tex": "\\dots",
+                    "src": "\\dots"
+                   }
+                  ],
+                  "line": "none",
+                  "premises": []
+                 }
+                ],
+                "right": [
+                 {
+                  "t": "math",
+                  "tex": "{\\lor}\\mathrm{Elim}^*",
+                  "src": "\\Elim\\lor^*"
+                 }
+                ],
+                "left": [
+                 {
+                  "t": "text",
+                  "v": "2"
+                 }
+                ]
+               }
+              ],
+              "right": [
+               {
+                "t": "math",
+                "tex": "{\\mathbin{\\rightarrow}}\\mathrm{Intro}",
+                "src": "\\Intro\\lif"
+               }
+              ],
+              "left": [
+               {
+                "t": "text",
+                "v": "1"
+               }
+              ]
+             }
+            ],
+            "right": [
+             {
+              "t": "math",
+              "tex": "{ \\forall  \n    }\\mathrm{Intro}",
+              "src": "\\Intro\\lforall"
+             }
+            ]
+           }
+          ],
+          "right": [
+           {
+            "t": "math",
+            "tex": "{\\land}\\mathrm{Intro}",
+            "src": "\\Intro\\land"
+           }
+          ]
+         }
+        ],
+        "right": [
+         {
+          "t": "math",
+          "tex": "{\\exists \n     \n     \n    }\\mathrm{Intro}",
+          "src": "\\Intro\\lexists"
+         }
+        ]
+       },
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 272,
+        "endLine": 306
+       }
+      },
+      {
+       "t": "p",
+       "id": "ic.deriv.text/p176",
+       "c": [
+        {
+         "t": "text",
+         "v": "(We abbreviate multiple applications of "
+        },
+        {
+         "t": "math",
+         "tex": "{\\lor}\\mathrm{Elim}",
+         "src": "\\Elim\\lor"
+        },
+        {
+         "t": "text",
+         "v": " by "
+        },
+        {
+         "t": "math",
+         "tex": "{\\lor}\\mathrm{Elim}^*",
+         "src": "\\Elim\\lor^*"
+        },
+        {
+         "t": "text",
+         "v": " above.) We’ve shown that if "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{T} \\vdash R",
+         "src": "\\Th{T} \\Proves !R"
+        },
+        {
+         "t": "text",
+         "v": " there would be "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "a derivation"
+        },
+        {
+         "t": "text",
+         "v": " of "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathsf{RProv}(\\ulcorner R \\urcorner)",
+         "src": "\\ORProv(\\gn{!R})"
+        },
+        {
+         "t": "text",
+         "v": ". Then, since "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{T} \\vdash R \\mathbin{\\leftrightarrow} \\lnot \\mathsf{RProv}(\\ulcorner R \\urcorner)",
+         "src": "\\Th{T} \\Proves R \\liff\n\\lnot \\ORProv(\\gn{!R})"
+        },
+        {
+         "t": "text",
+         "v": ", also "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{T} \\vdash \\mathsf{RProv}(\\ulcorner R \\urcorner) \\mathbin{\\rightarrow} \\lnot R",
+         "src": "\\Th{T} \\Proves \\ORProv(\\gn{!R}) \\lif\n\\lnot R"
+        },
+        {
+         "t": "text",
+         "v": ", we’d have "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{T} \\vdash \\lnot R",
+         "src": "\\Th{T} \\Proves \\lnot !R"
+        },
+        {
+         "t": "text",
+         "v": " and "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{T}",
+         "src": "\\Th{T}"
+        },
+        {
+         "t": "text",
+         "v": " would be inconsistent."
+        }
+       ],
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 307,
+        "endLine": 312
+       }
+      },
+      {
+       "t": "p",
+       "id": "ic.deriv.text/p177",
+       "c": [
+        {
+         "t": "text",
+         "v": "Now let’s show that "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{T} \\nvdash \\lnot R",
+         "src": "\\Th{T} \\Proves/ \\lnot !R"
+        },
+        {
+         "t": "text",
+         "v": ". Again, suppose it did. Then there is "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "a derivation"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "\\rho",
+         "src": "\\rho"
+        },
+        {
+         "t": "text",
+         "v": " of "
+        },
+        {
+         "t": "math",
+         "tex": "\\lnot R",
+         "src": "\\lnot !R"
+        },
+        {
+         "t": "text",
+         "v": " with Gödel number "
+        },
+        {
+         "t": "math",
+         "tex": "m",
+         "src": "m"
+        },
+        {
+         "t": "text",
+         "v": "—a refutation of "
+        },
+        {
+         "t": "math",
+         "tex": "R",
+         "src": "!R"
+        },
+        {
+         "t": "text",
+         "v": "—and so "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q} \\vdash \\mathsf{Ref}(\\overline{m}, \\ulcorner R \\urcorner)",
+         "src": "\\Th{Q} \\Proves\n\\ORefut(\\num{m}, \\gn{!R})"
+        },
+        {
+         "t": "text",
+         "v": " by "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "a derivation"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "\\rho_1",
+         "src": "\\rho_1"
+        },
+        {
+         "t": "text",
+         "v": ". Since we assume "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{T}",
+         "src": "\\Th{T}"
+        },
+        {
+         "t": "text",
+         "v": " is consistent, "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{T} \\nvdash R",
+         "src": "\\Th{T} \\Proves/ !R"
+        },
+        {
+         "t": "text",
+         "v": ". So for all "
+        },
+        {
+         "t": "math",
+         "tex": "k",
+         "src": "k"
+        },
+        {
+         "t": "text",
+         "v": ", "
+        },
+        {
+         "t": "math",
+         "tex": "k",
+         "src": "k"
+        },
+        {
+         "t": "text",
+         "v": " is not a Gödel number of "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "a derivation"
+        },
+        {
+         "t": "text",
+         "v": " of "
+        },
+        {
+         "t": "math",
+         "tex": "R",
+         "src": "!R"
+        },
+        {
+         "t": "text",
+         "v": ", and hence "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q} \\vdash \\lnot \\mathsf{Prf}(\\overline{k}, \\ulcorner R \\urcorner)",
+         "src": "\\Th{Q} \\Proves \\lnot\n\\OPrf(\\num{k}, \\gn{!R})"
+        },
+        {
+         "t": "text",
+         "v": " by "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "a derivation"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "\\pi_k",
+         "src": "\\pi_k"
+        },
+        {
+         "t": "text",
+         "v": ". So we have:"
+        }
+       ],
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 314,
+        "endLine": 320
+       }
+      },
+      {
+       "t": "prooftree",
+       "id": "ic.deriv.text/tree203",
+       "root": {
+        "c": [
+         {
+          "t": "math",
+          "tex": "\\lnot\\exists x(\\mathsf{Prf}(x, \\ulcorner R \\urcorner) \\land \\forall z(z < x \\mathbin{\\rightarrow} \\lnot \\mathsf{Ref}(z, \\ulcorner R \\urcorner)))",
+          "src": "\\lnot\\exists x(\\OPrf(x, \\gn{!R}) \\land \\forall z(z\n    < x \\lif \\lnot \\ORefut(z, \\gn{!R})))"
+         }
+        ],
+        "line": "dots",
+        "premises": [
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "\\forall x(\\mathsf{Prf}(x, \\ulcorner R \\urcorner) \\mathbin{\\rightarrow} \\exists z(z < x \\land \\mathsf{Ref}(z, \\ulcorner R \\urcorner)))",
+            "src": "\\forall x(\\OPrf(x, \\gn{!R}) \\lif \\exists z(z\n    < x \\land \\ORefut(z, \\gn{!R})))"
+           }
+          ],
+          "line": "single",
+          "premises": [
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "\\mathsf{Prf}(a, \\ulcorner R \\urcorner) \\mathbin{\\rightarrow} \\exists z(z < a \\land \\mathsf{Ref}(z, \\ulcorner R \\urcorner))",
+              "src": "\\OPrf(a, \\gn{!R}) \\lif \\exists z(z\n    < a \\land \\ORefut(z, \\gn{!R}))"
+             }
+            ],
+            "line": "single",
+            "premises": [
+             {
+              "c": [
+               {
+                "t": "math",
+                "tex": "\\exists z(z < a \\land \\mathsf{Ref}(z, \\ulcorner R \\urcorner))",
+                "src": "\\exists z(z\n    < a \\land \\ORefut(z, \\gn{!R}))"
+               }
+              ],
+              "line": "single",
+              "premises": [
+               {
+                "c": [
+                 {
+                  "t": "math",
+                  "tex": "\\overline{m} < a \\land \\mathsf{Ref}(\\overline{m}, \\ulcorner R \\urcorner)",
+                  "src": "\\num{m}\n    < a \\land \\ORefut(\\num{m}, \\gn{!R})"
+                 }
+                ],
+                "line": "single",
+                "premises": [
+                 {
+                  "c": [
+                   {
+                    "t": "math",
+                    "tex": "\\overline{m} < a",
+                    "src": "\\num{m} < a"
+                   }
+                  ],
+                  "line": "double",
+                  "premises": [
+                   {
+                    "c": [
+                     {
+                      "t": "math",
+                      "tex": "\\begin{gathered}[b] a = \\overline{0} \\lor \\dots \\lor\\\\ a = \\overline{m} \\lor \\overline{m} < a\\end{gathered}",
+                      "src": "\\begin{gathered}[b] a = \\num{0} \\lor \\dots \\lor\\\\\n      a = \\num{m} \\lor \\num{m} < a\\end{gathered}"
+                     }
+                    ],
+                    "line": "dots",
+                    "premises": [
+                     {
+                      "c": [],
+                      "line": "none",
+                      "premises": []
+                     }
+                    ],
+                    "right": [
+                     {
+                      "t": "math",
+                      "tex": "\\lambda_2",
+                      "src": "\\lambda_2"
+                     }
+                    ]
+                   },
+                   {
+                    "c": [
+                     {
+                      "t": "math",
+                      "tex": "\\dots",
+                      "src": "\\dots"
+                     }
+                    ],
+                    "line": "none",
+                    "premises": []
+                   },
+                   {
+                    "c": [
+                     {
+                      "t": "math",
+                      "tex": "\\overline{m}<a",
+                      "src": "\\num{m}<a"
+                     }
+                    ],
+                    "line": "single",
+                    "premises": [
+                     {
+                      "c": [
+                       {
+                        "t": "math",
+                        "tex": "\\bot",
+                        "src": "\\lfalse"
+                       }
+                      ],
+                      "line": "dots",
+                      "premises": [
+                       {
+                        "c": [
+                         {
+                          "t": "math",
+                          "tex": "\\begin{gathered}[\\mathsf{Prf}(a, \\ulcorner R \\urcorner)]^{1}\\\\ [a = \\overline{k}]^{2}\\end{gathered}",
+                          "src": "\\begin{gathered}\\Discharge{\\OPrf(a, \\gn{!R})}{1}\\\\\n    \\Discharge{a = \\num{k}}{2}\\end{gathered}"
+                         }
+                        ],
+                        "line": "none",
+                        "premises": []
+                       }
+                      ],
+                      "right": [
+                       {
+                        "t": "math",
+                        "tex": "\\pi_k'",
+                        "src": "\\pi_k'"
+                       }
+                      ]
+                     }
+                    ],
+                    "right": [
+                     {
+                      "t": "math",
+                      "tex": "\\bot_I",
+                      "src": "\\lfalse_I"
+                     }
+                    ]
+                   },
+                   {
+                    "c": [
+                     {
+                      "t": "math",
+                      "tex": "\\dots",
+                      "src": "\\dots"
+                     }
+                    ],
+                    "line": "none",
+                    "premises": []
+                   },
+                   {
+                    "c": [
+                     {
+                      "t": "math",
+                      "tex": "[\\overline{m} < a]^{2}",
+                      "src": "\\Discharge{\\num{m} < a}{2}"
+                     }
+                    ],
+                    "line": "none",
+                    "premises": []
+                   }
+                  ],
+                  "right": [
+                   {
+                    "t": "math",
+                    "tex": "{\\lor}\\mathrm{Elim}^*",
+                    "src": "\\Elim\\lor^*"
+                   }
+                  ],
+                  "left": [
+                   {
+                    "t": "text",
+                    "v": "2"
+                   }
+                  ]
+                 },
+                 {
+                  "c": [
+                   {
+                    "t": "math",
+                    "tex": "\\mathsf{Ref}(\\overline{m}, \\ulcorner R \\urcorner)",
+                    "src": "\\ORefut(\\num{m}, \\gn{!R})"
+                   }
+                  ],
+                  "line": "dots",
+                  "premises": [
+                   {
+                    "c": [],
+                    "line": "none",
+                    "premises": []
+                   }
+                  ],
+                  "right": [
+                   {
+                    "t": "math",
+                    "tex": "\\rho_1",
+                    "src": "\\rho_1"
+                   }
+                  ]
+                 }
+                ],
+                "right": [
+                 {
+                  "t": "math",
+                  "tex": "{\\land}\\mathrm{Intro}",
+                  "src": "\\Intro\\land"
+                 }
+                ]
+               }
+              ],
+              "right": [
+               {
+                "t": "math",
+                "tex": "{\\exists}\\mathrm{Intro}",
+                "src": "\\Intro\\exists"
+               }
+              ]
+             }
+            ],
+            "right": [
+             {
+              "t": "math",
+              "tex": "{\\mathbin{\\rightarrow}}\\mathrm{Intro}",
+              "src": "\\Intro\\lif"
+             }
+            ],
+            "left": [
+             {
+              "t": "text",
+              "v": "1"
+             }
+            ]
+           }
+          ],
+          "right": [
+           {
+            "t": "math",
+            "tex": "{\\forall}\\mathrm{Intro}",
+            "src": "\\Intro\\forall"
+           }
+          ]
+         }
+        ]
+       },
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 322,
+        "endLine": 358
+       }
+      },
+      {
+       "t": "p",
+       "id": "ic.deriv.text/p204",
+       "c": [
+        {
+         "t": "text",
+         "v": "where "
+        },
+        {
+         "t": "math",
+         "tex": "\\pi_k'",
+         "src": "\\pi_k'"
+        },
+        {
+         "t": "text",
+         "v": " is the "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "derivation"
+        }
+       ],
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 359,
+        "endLine": 360
+       }
+      },
+      {
+       "t": "prooftree",
+       "id": "ic.deriv.text/tree213",
+       "root": {
+        "c": [
+         {
+          "t": "math",
+          "tex": "\\bot",
+          "src": "\\lfalse"
+         }
+        ],
+        "line": "single",
+        "premises": [
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "\\lnot \\mathsf{Prf}(\\overline{k}, \\ulcorner R \\urcorner)",
+            "src": "\\lnot \\OPrf(\\num{k}, \\gn{!R})"
+           }
+          ],
+          "line": "dots",
+          "premises": [
+           {
+            "c": [],
+            "line": "none",
+            "premises": []
+           }
+          ],
+          "right": [
+           {
+            "t": "math",
+            "tex": "\\pi_k",
+            "src": "\\pi_k"
+           }
+          ]
+         },
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "\\mathsf{Prf}(\\overline{k}, \\ulcorner R \\urcorner)",
+            "src": "\\OPrf(\\num{k}, \\gn{!R})"
+           }
+          ],
+          "line": "single",
+          "premises": [
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "a = \\overline{k}",
+              "src": "a = \\num{k}"
+             }
+            ],
+            "line": "none",
+            "premises": []
+           },
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "\\mathsf{Prf}(a, \\ulcorner R \\urcorner)",
+              "src": "\\OPrf(a, \\gn{!R})"
+             }
+            ],
+            "line": "none",
+            "premises": []
+           }
+          ],
+          "right": [
+           {
+            "t": "math",
+            "tex": "{=}\\mathrm{Elim}",
+            "src": "\\Elim="
+           }
+          ]
+         }
+        ],
+        "right": [
+         {
+          "t": "math",
+          "tex": "{\\lnot}\\mathrm{Elim}",
+          "src": "\\Elim\\lnot"
+         }
+        ]
+       },
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 360,
+        "endLine": 370
+       }
+      },
+      {
+       "t": "p",
+       "id": "ic.deriv.text/p214",
+       "c": [
+        {
+         "t": "text",
+         "v": "and "
+        },
+        {
+         "t": "math",
+         "tex": "\\lambda_2",
+         "src": "\\lambda_2"
+        },
+        {
+         "t": "text",
+         "v": " is"
+        }
+       ],
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 371,
+        "endLine": 372
+       }
+      },
+      {
+       "t": "prooftree",
+       "id": "ic.deriv.text/tree229",
+       "root": {
+        "c": [
+         {
+          "t": "math",
+          "tex": "a = \\overline{0} \\lor \\dots \\lor a = \\overline{m} \\lor \\overline{m} < a",
+          "src": "a = \\num{0} \\lor \\dots \\lor a = \\num{m} \\lor \\num{m} < a"
+         }
+        ],
+        "line": "double",
+        "premises": [
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "\\begin{gathered}[b](a < \\overline{m} \\lor {}\\\\a = \\overline{m}) \\lor {}\\\\ \\overline{m} < a\\end{gathered}",
+            "src": "\\begin{gathered}[b](a < \\num{m} \\lor {}\\\\a = \\num{m}) \\lor {}\\\\ \\num{m} < a\\end{gathered}"
+           }
+          ],
+          "line": "dots",
+          "premises": [
+           {
+            "c": [],
+            "line": "none",
+            "premises": []
+           }
+          ],
+          "right": [
+           {
+            "t": "math",
+            "tex": "\\lambda_3",
+            "src": "\\lambda_3"
+           }
+          ]
+         },
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "\\begin{gathered}[b] a = \\overline{0} \\lor \\dots \\lor \\\\ a = \\overline{m} \\lor \\overline{m} < a \\end{gathered}",
+            "src": "\\begin{gathered}[b]\n      a = \\num{0} \\lor \\dots \\lor \\\\\n      a = \\num{m} \\lor \\num{m} < a\n    \\end{gathered}"
+           }
+          ],
+          "line": "double",
+          "premises": [
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "\\begin{gathered}[b]a = \\overline{0} \\lor \\dots \\lor {}\\\\ a = \\overline{m-1}\\end{gathered}",
+              "src": "\\begin{gathered}[b]a = \\num{0} \\lor \\dots \\lor {}\\\\\n  a = \\num{m-1}\\end{gathered}"
+             }
+            ],
+            "line": "dots",
+            "premises": [
+             {
+              "c": [
+               {
+                "t": "math",
+                "tex": "[a < \\overline{m}]^{3}",
+                "src": "\\Discharge{a < \\num{m}}{3}"
+               }
+              ],
+              "line": "none",
+              "premises": []
+             }
+            ],
+            "right": [
+             {
+              "t": "math",
+              "tex": "\\lambda_1",
+              "src": "\\lambda_1"
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "\\begin{gathered}[b] a = \\overline{0} \\lor \\dots \\lor \\\\ a = \\overline{m} \\lor \\overline{m} < a \\end{gathered}",
+            "src": "\\begin{gathered}[b]\n      a = \\num{0} \\lor \\dots \\lor \\\\\n      a = \\num{m} \\lor \\num{m} < a\n    \\end{gathered}"
+           }
+          ],
+          "line": "double",
+          "premises": [
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "[a = \\overline{m}]^{3}",
+              "src": "\\Discharge{a = \\num{m}}{3}"
+             }
+            ],
+            "line": "none",
+            "premises": []
+           }
+          ]
+         },
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "\\begin{gathered}[b] a = \\overline{0} \\lor \\dots \\lor \\\\ a = \\overline{m} \\lor \\overline{m} < a \\end{gathered}",
+            "src": "\\begin{gathered}[b]\n      a = \\num{0} \\lor \\dots \\lor \\\\\n      a = \\num{m} \\lor \\num{m} < a\n    \\end{gathered}"
+           }
+          ],
+          "line": "double",
+          "premises": [
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "[\\overline{m} < a]^{3}",
+              "src": "\\Discharge{\\num{m} < a}{3}"
+             }
+            ],
+            "line": "none",
+            "premises": []
+           }
+          ],
+          "right": [
+           {
+            "t": "math",
+            "tex": "{\\lor}\\mathrm{Intro}^*",
+            "src": "\\Intro\\lor^*"
+           }
+          ]
+         }
+        ],
+        "right": [
+         {
+          "t": "math",
+          "tex": "{\\lor}\\mathrm{Elim}^2",
+          "src": "\\Elim\\lor^2"
+         }
+        ],
+        "left": [
+         {
+          "t": "text",
+          "v": "3"
+         }
+        ]
+       },
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 372,
+        "endLine": 408
+       }
+      },
+      {
+       "t": "p",
+       "id": "ic.deriv.text/p230",
+       "c": [
+        {
+         "t": "text",
+         "v": "(The "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "derivation"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "\\lambda_3",
+         "src": "\\lambda_3"
+        },
+        {
+         "t": "text",
+         "v": " exists by "
+        },
+        {
+         "t": "ref",
+         "key": "inc:req:min:lem:trichotomy"
+        },
+        {
+         "t": "text",
+         "v": ". We abbreviate repeated use of "
+        },
+        {
+         "t": "math",
+         "tex": "{\\lor}\\mathrm{Intro}",
+         "src": "\\Intro\\lor"
+        },
+        {
+         "t": "text",
+         "v": " by "
+        },
+        {
+         "t": "math",
+         "tex": "{\\lor}\\mathrm{Intro}^*",
+         "src": "\\Intro\\lor^*"
+        },
+        {
+         "t": "text",
+         "v": " and the double use of "
+        },
+        {
+         "t": "math",
+         "tex": "{\\lor}\\mathrm{Elim}",
+         "src": "\\Elim\\lor"
+        },
+        {
+         "t": "text",
+         "v": " to derive "
+        },
+        {
+         "t": "math",
+         "tex": "a = \\overline{0} \\lor \\dots \\lor a = \\overline{m} \\lor \\overline{m} < a",
+         "src": "a = \\num{0} \\lor \\dots \\lor a = \\num{m} \\lor \\num{m} < a"
+        },
+        {
+         "t": "text",
+         "v": " from "
+        },
+        {
+         "t": "math",
+         "tex": "(a < \\overline{m} \\lor a = \\overline{m}) \\lor \\overline{m} < a",
+         "src": "(a < \\num{m} \\lor a = \\num{m}) \\lor \\num{m} < a"
+        },
+        {
+         "t": "text",
+         "v": " as "
+        },
+        {
+         "t": "math",
+         "tex": "{\\lor}\\mathrm{Elim}^2",
+         "src": "\\Elim\\lor^2"
+        },
+        {
+         "t": "text",
+         "v": ".)"
+        }
+       ],
+       "loc": {
+        "repo": "incompleteness-computability",
+        "file": "include/ic-derivations.tex",
+        "line": 409,
+        "endLine": 414
+       }
+      }
+     ],
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/ic-derivations.tex",
+      "line": 241,
+      "endLine": 414
+     },
+     "title": [
+      {
+       "t": "text",
+       "v": "Proof of "
+      },
+      {
+       "t": "ref",
+       "key": "inc:inp:ros:thm:rosser"
+      }
+     ],
+     "proves": "inc:inp:ros:thm:rosser"
+    }
+   ]
+  }
+ ]
+}

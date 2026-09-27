@@ -11,6 +11,57 @@
  },
  "chapters": [
   {
+   "id": "ic.preface",
+   "number": "",
+   "title": "Preface",
+   "file": "ic.preface.json",
+   "sections": [
+    {
+     "id": "ic.preface.text",
+     "number": "",
+     "title": "Preface"
+    },
+    {
+     "id": "ic.preface.notes-for-instructors",
+     "number": "",
+     "title": "Notes for Instructors"
+    },
+    {
+     "id": "ic.preface.acknowledgments",
+     "number": "",
+     "title": "Acknowledgments"
+    }
+   ]
+  },
+  {
+   "id": "inc.int",
+   "number": "1",
+   "title": "Introduction to Incompleteness",
+   "file": "inc.int.json",
+   "sections": [
+    {
+     "id": "inc.int.bgr",
+     "number": "1.1",
+     "title": "Historical Background"
+    },
+    {
+     "id": "inc.int.def",
+     "number": "1.2",
+     "title": "Definitions"
+    },
+    {
+     "id": "inc.int.ovr",
+     "number": "1.3",
+     "title": "Overview of Incompleteness Results"
+    },
+    {
+     "id": "inc.int.dec",
+     "number": "1.4",
+     "title": "Undecidability and Incompleteness"
+    }
+   ]
+  },
+  {
    "id": "cmp.rec",
    "number": "2",
    "title": "Recursive Functions",
@@ -205,7 +256,7 @@
     {
      "id": "inc.inp.s1c",
      "number": "4.11",
-     "title": "_1 completeness"
+     "title": "Σ_1 completeness"
     }
    ]
   },
@@ -261,9 +312,459 @@
      "title": "The Undefinability of Truth"
     }
    ]
+  },
+  {
+   "id": "ic.comp-inc",
+   "number": "6",
+   "title": "Computability and Incompleteness",
+   "file": "ic.comp-inc.json",
+   "sections": [
+    {
+     "id": "cmp.thy.int",
+     "number": "6.1",
+     "title": "Introduction"
+    },
+    {
+     "id": "cmp.thy.cod",
+     "number": "6.2",
+     "title": "Coding Computations"
+    },
+    {
+     "id": "cmp.thy.nfm",
+     "number": "6.3",
+     "title": "The Normal Form Theorem"
+    },
+    {
+     "id": "cmp.thy.smn",
+     "number": "6.4",
+     "title": "The s-m-n Theorem"
+    },
+    {
+     "id": "cmp.thy.uni",
+     "number": "6.5",
+     "title": "The Universal Partial Computable Function"
+    },
+    {
+     "id": "cmp.thy.nou",
+     "number": "6.6",
+     "title": "No Universal Computable Function"
+    },
+    {
+     "id": "cmp.thy.hlt",
+     "number": "6.7",
+     "title": "The Halting Problem"
+    },
+    {
+     "id": "cmp.thy.cps",
+     "number": "6.8",
+     "title": "Computable Sets"
+    },
+    {
+     "id": "cmp.thy.ces",
+     "number": "6.9",
+     "title": "Computably Enumerable Sets"
+    },
+    {
+     "id": "cmp.thy.eqc",
+     "number": "6.10",
+     "title": "Equivalent Defininitions of Computably Enumerable Sets"
+    },
+    {
+     "id": "cmp.thy.ncp",
+     "number": "6.11",
+     "title": "There Are Non-Computable Sets"
+    },
+    {
+     "id": "cmp.thy.cmp",
+     "number": "6.12",
+     "title": "Computably Enumerable Sets not Closed under Complement"
+    },
+    {
+     "id": "inc.cpi.int",
+     "number": "6.13",
+     "title": "Computable Enumerability and Axiomatizable Theories"
+    },
+    {
+     "id": "inc.cpi.hal",
+     "number": "6.14",
+     "title": "Incompleteness via the Halting Problem"
+    }
+   ]
+  },
+  {
+   "id": "ic.mod",
+   "number": "7",
+   "title": "Models of Arithmetic",
+   "file": "ic.mod.json",
+   "sections": [
+    {
+     "id": "mod.mar.int",
+     "number": "7.1",
+     "title": "Introduction"
+    },
+    {
+     "id": "mod.bas.red",
+     "number": "7.2",
+     "title": "Reducts and Expansions"
+    },
+    {
+     "id": "mod.bas.iso",
+     "number": "7.3",
+     "title": "Isomorphic Structures"
+    },
+    {
+     "id": "mod.bas.thm",
+     "number": "7.4",
+     "title": "The Theory of a Structure"
+    },
+    {
+     "id": "mod.mar.stm",
+     "number": "7.5",
+     "title": "Standard Models of Arithmetic"
+    },
+    {
+     "id": "mod.mar.nst",
+     "number": "7.6",
+     "title": "Non-Standard Models"
+    },
+    {
+     "id": "mod.mar.mdq",
+     "number": "7.7",
+     "title": "Models of Q"
+    },
+    {
+     "id": "mod.mar.mpa",
+     "number": "7.8",
+     "title": "Models of PA"
+    },
+    {
+     "id": "mod.mar.cmp",
+     "number": "7.9",
+     "title": "Computable Models of Arithmetic"
+    }
+   ]
+  },
+  {
+   "id": "ic.sol",
+   "number": "8",
+   "title": "Second-Order Logic",
+   "file": "ic.sol.json",
+   "sections": [
+    {
+     "id": "sol.syn.int",
+     "number": "8.1",
+     "title": "Introduction"
+    },
+    {
+     "id": "sol.syn.frm",
+     "number": "8.2",
+     "title": "Terms and Formulas"
+    },
+    {
+     "id": "sol.syn.sat",
+     "number": "8.3",
+     "title": "Satisfaction"
+    },
+    {
+     "id": "sol.syn.sem",
+     "number": "8.4",
+     "title": "Semantic Notions"
+    },
+    {
+     "id": "sol.syn.exp",
+     "number": "8.5",
+     "title": "Expressive Power"
+    },
+    {
+     "id": "sol.syn.siz",
+     "number": "8.6",
+     "title": "Describing Infinite and Countable Domains"
+    },
+    {
+     "id": "sol.met.spa",
+     "number": "8.7",
+     "title": "Second-order Arithmetic"
+    },
+    {
+     "id": "sol.met.nax",
+     "number": "8.8",
+     "title": "Second-order Logic is not Axiomatizable"
+    },
+    {
+     "id": "sol.met.com",
+     "number": "8.9",
+     "title": "Second-order Logic is not Compact"
+    },
+    {
+     "id": "sol.met.lst",
+     "number": "8.10",
+     "title": "The Löwenheim–Skolem Theorem Fails for Second-order Logic"
+    },
+    {
+     "id": "sol.set.cmp",
+     "number": "8.11",
+     "title": "Comparing Sets"
+    },
+    {
+     "id": "sol.set.crd",
+     "number": "8.12",
+     "title": "Cardinalities of Sets"
+    },
+    {
+     "id": "sol.set.pow",
+     "number": "8.13",
+     "title": "The Power of the Continuum"
+    }
+   ]
+  },
+  {
+   "id": "ic.lambda",
+   "number": "9",
+   "title": "The Lambda Calculus",
+   "file": "ic.lambda.json",
+   "sections": [
+    {
+     "id": "lam.int.ovr",
+     "number": "9.1",
+     "title": "Overview"
+    },
+    {
+     "id": "lam.int.syn",
+     "number": "9.2",
+     "title": "The Syntax of the Lambda Calculus"
+    },
+    {
+     "id": "lam.int.red",
+     "number": "9.3",
+     "title": "Reduction of Lambda Terms"
+    },
+    {
+     "id": "lam.int.cr",
+     "number": "9.4",
+     "title": "The Church–Rosser Property"
+    },
+    {
+     "id": "lam.rep.cur",
+     "number": "9.5",
+     "title": "Currying"
+    },
+    {
+     "id": "ic.lambda.lambda-definability",
+     "number": "9.6",
+     "title": "Lambda Definability"
+    },
+    {
+     "id": "lam.rep.arf",
+     "number": "9.7",
+     "title": "λ-Definable Arithmetical Functions"
+    },
+    {
+     "id": "lam.ldf.pai",
+     "number": "9.8",
+     "title": "Pairs and Predecessor"
+    },
+    {
+     "id": "lam.ldf.tvr",
+     "number": "9.9",
+     "title": "Truth Values and Relations"
+    },
+    {
+     "id": "lam.ldf.prf",
+     "number": "9.10",
+     "title": "Primitive Recursive Functions are λ-Definable"
+    },
+    {
+     "id": "lam.ldf.fp",
+     "number": "9.11",
+     "title": "Fixpoints"
+    },
+    {
+     "id": "lam.ldf.min",
+     "number": "9.12",
+     "title": "Minimization"
+    },
+    {
+     "id": "lam.ldf.par",
+     "number": "9.13",
+     "title": "Partial Recursive Functions are λ-Definable"
+    },
+    {
+     "id": "lam.dfl.ldr",
+     "number": "9.14",
+     "title": "λ-Definable Functions are Recursive"
+    }
+   ]
+  },
+  {
+   "id": "ic.deriv",
+   "number": "A",
+   "title": "Derivations in Arithmetic Theories",
+   "file": "ic.deriv.json",
+   "sections": [
+    {
+     "id": "ic.deriv.text",
+     "number": "A.1",
+     "title": "Derivations in Arithmetic Theories"
+    }
+   ]
+  },
+  {
+   "id": "ic.fol",
+   "number": "B",
+   "title": "First-order Logic",
+   "file": "ic.fol.json",
+   "sections": [
+    {
+     "id": "fol.syn.fol",
+     "number": "B.1",
+     "title": "First-Order Languages"
+    },
+    {
+     "id": "fol.syn.frm",
+     "number": "B.2",
+     "title": "Terms and Formulas"
+    },
+    {
+     "id": "fol.syn.fvs",
+     "number": "B.3",
+     "title": "Free Variables and Sentences"
+    },
+    {
+     "id": "fol.syn.sub",
+     "number": "B.4",
+     "title": "Substitution"
+    },
+    {
+     "id": "fol.syn.str",
+     "number": "B.5",
+     "title": "Structures for First-order Languages"
+    },
+    {
+     "id": "fol.syn.sat",
+     "number": "B.6",
+     "title": "Satisfaction of a Formula in a Structure"
+    },
+    {
+     "id": "fol.syn.ass",
+     "number": "B.7",
+     "title": "Variable Assignments"
+    },
+    {
+     "id": "fol.syn.ext",
+     "number": "B.8",
+     "title": "Extensionality"
+    },
+    {
+     "id": "fol.syn.sem",
+     "number": "B.9",
+     "title": "Semantic Notions"
+    },
+    {
+     "id": "ic.fol.theories",
+     "number": "B.10",
+     "title": "Theories"
+    }
+   ]
+  },
+  {
+   "id": "ic.nd",
+   "number": "C",
+   "title": "Natural Deduction",
+   "file": "ic.nd.json",
+   "sections": [
+    {
+     "id": "fol.prf.ntd",
+     "number": "C.1",
+     "title": "Natural Deduction"
+    },
+    {
+     "id": "fol.ntd.rul",
+     "number": "C.2",
+     "title": "Rules and Derivations"
+    },
+    {
+     "id": "fol.ntd.prl",
+     "number": "C.3",
+     "title": "Propositional Rules"
+    },
+    {
+     "id": "fol.ntd.qrl",
+     "number": "C.4",
+     "title": "Quantifier Rules"
+    },
+    {
+     "id": "fol.ntd.der",
+     "number": "C.5",
+     "title": "Derivations"
+    },
+    {
+     "id": "fol.ntd.pro",
+     "number": "C.6",
+     "title": "Examples of Derivations"
+    },
+    {
+     "id": "fol.ntd.prq",
+     "number": "C.7",
+     "title": "Derivations with Quantifiers"
+    },
+    {
+     "id": "fol.ntd.ide",
+     "number": "C.8",
+     "title": "Derivations with Identity predicate"
+    },
+    {
+     "id": "fol.ntd.ptn",
+     "number": "C.9",
+     "title": "Proof-Theoretic Notions"
+    },
+    {
+     "id": "fol.ntd.sou",
+     "number": "C.10",
+     "title": "Soundness"
+    }
+   ]
+  },
+  {
+   "id": "ic.bios",
+   "number": "D",
+   "title": "Biographies",
+   "file": "ic.bios.json",
+   "sections": [
+    {
+     "id": "his.bio.chu",
+     "number": "D.1",
+     "title": "Alonzo Church"
+    },
+    {
+     "id": "his.bio.god",
+     "number": "D.2",
+     "title": "Kurt Gödel"
+    },
+    {
+     "id": "his.bio.pet",
+     "number": "D.3",
+     "title": "Rózsa Péter"
+    },
+    {
+     "id": "his.bio.rob",
+     "number": "D.4",
+     "title": "Julia Robinson"
+    },
+    {
+     "id": "his.bio.tar",
+     "number": "D.5",
+     "title": "Alfred Tarski"
+    }
+   ]
   }
  ],
  "labels": {
+  "bios:chap": {
+   "kind": "chapter",
+   "text": "Chapter D",
+   "sectionId": "his.bio.chu",
+   "blockId": "ic.bios"
+  },
   "cmp:rec::chap": {
    "kind": "chapter",
    "text": "Chapter 2",
@@ -438,6 +939,498 @@
    "sectionId": "cmp.rec.tre",
    "blockId": "cmp.rec.tre"
   },
+  "cmp:thy:ces:sec": {
+   "kind": "section",
+   "text": "Section 6.9",
+   "sectionId": "cmp.thy.ces",
+   "blockId": "cmp.thy.ces"
+  },
+  "cmp:thy:cmp:cor:comp-k": {
+   "kind": "cor",
+   "text": "Corollary 6.14",
+   "blockId": "cmp.thy.cmp/cor:comp-k",
+   "sectionId": "cmp.thy.cmp"
+  },
+  "cmp:thy:cmp:sec": {
+   "kind": "section",
+   "text": "Section 6.12",
+   "sectionId": "cmp.thy.cmp",
+   "blockId": "cmp.thy.cmp"
+  },
+  "cmp:thy:cmp:thm:ce-comp": {
+   "kind": "thm",
+   "text": "Theorem 6.13",
+   "blockId": "cmp.thy.cmp/thm:ce-comp",
+   "sectionId": "cmp.thy.cmp"
+  },
+  "cmp:thy:cod:sec": {
+   "kind": "section",
+   "text": "Section 6.2",
+   "sectionId": "cmp.thy.cod",
+   "blockId": "cmp.thy.cod"
+  },
+  "cmp:thy:cps:sec": {
+   "kind": "section",
+   "text": "Section 6.8",
+   "sectionId": "cmp.thy.cps",
+   "blockId": "cmp.thy.cps"
+  },
+  "cmp:thy:eqc:case:ce": {
+   "kind": "item",
+   "text": "(1)",
+   "blockId": "cmp.thy.eqc/i5",
+   "sectionId": "cmp.thy.eqc"
+  },
+  "cmp:thy:eqc:case:ce-domain": {
+   "kind": "item",
+   "text": "(4)",
+   "blockId": "cmp.thy.eqc/i12",
+   "sectionId": "cmp.thy.eqc"
+  },
+  "cmp:thy:eqc:case:ran-pc": {
+   "kind": "item",
+   "text": "(2)",
+   "blockId": "cmp.thy.eqc/i7",
+   "sectionId": "cmp.thy.eqc"
+  },
+  "cmp:thy:eqc:case:ran-prim": {
+   "kind": "item",
+   "text": "(3)",
+   "blockId": "cmp.thy.eqc/i10",
+   "sectionId": "cmp.thy.eqc"
+  },
+  "cmp:thy:eqc:sec": {
+   "kind": "section",
+   "text": "Section 6.10",
+   "sectionId": "cmp.thy.eqc",
+   "blockId": "cmp.thy.eqc"
+  },
+  "cmp:thy:eqc:thm:ce-equiv": {
+   "kind": "thm",
+   "text": "Theorem 6.9",
+   "blockId": "cmp.thy.eqc/thm:ce-equiv",
+   "sectionId": "cmp.thy.eqc"
+  },
+  "cmp:thy:eqc:thm:exists-char": {
+   "kind": "thm",
+   "text": "Theorem 6.10",
+   "blockId": "cmp.thy.eqc/thm:exists-char",
+   "sectionId": "cmp.thy.eqc"
+  },
+  "cmp:thy:hlt:sec": {
+   "kind": "section",
+   "text": "Section 6.7",
+   "sectionId": "cmp.thy.hlt",
+   "blockId": "cmp.thy.hlt"
+  },
+  "cmp:thy:hlt:thm:halting-problem": {
+   "kind": "thm",
+   "text": "Theorem 6.6",
+   "blockId": "cmp.thy.hlt/thm:halting-problem",
+   "sectionId": "cmp.thy.hlt"
+  },
+  "cmp:thy:int:sec": {
+   "kind": "section",
+   "text": "Section 6.1",
+   "sectionId": "cmp.thy.int",
+   "blockId": "cmp.thy.int"
+  },
+  "cmp:thy:ncp:sec": {
+   "kind": "section",
+   "text": "Section 6.11",
+   "sectionId": "cmp.thy.ncp",
+   "blockId": "cmp.thy.ncp"
+  },
+  "cmp:thy:ncp:thm:K": {
+   "kind": "thm",
+   "text": "Theorem 6.12",
+   "blockId": "cmp.thy.ncp/thm:K",
+   "sectionId": "cmp.thy.ncp"
+  },
+  "cmp:thy:ncp:thm:K-0": {
+   "kind": "thm",
+   "text": "Theorem 6.11",
+   "blockId": "cmp.thy.ncp/thm:K-0",
+   "sectionId": "cmp.thy.ncp"
+  },
+  "cmp:thy:nfm:sec": {
+   "kind": "section",
+   "text": "Section 6.3",
+   "sectionId": "cmp.thy.nfm",
+   "blockId": "cmp.thy.nfm"
+  },
+  "cmp:thy:nfm:thm:normal-form": {
+   "kind": "thm",
+   "text": "Theorem 6.1",
+   "blockId": "cmp.thy.nfm/thm:normal-form",
+   "sectionId": "cmp.thy.nfm"
+  },
+  "cmp:thy:nou:sec": {
+   "kind": "section",
+   "text": "Section 6.6",
+   "sectionId": "cmp.thy.nou",
+   "blockId": "cmp.thy.nou"
+  },
+  "cmp:thy:nou:thm:no-univ": {
+   "kind": "thm",
+   "text": "Theorem 6.5",
+   "blockId": "cmp.thy.nou/thm:no-univ",
+   "sectionId": "cmp.thy.nou"
+  },
+  "cmp:thy:smn:sec": {
+   "kind": "section",
+   "text": "Section 6.4",
+   "sectionId": "cmp.thy.smn",
+   "blockId": "cmp.thy.smn"
+  },
+  "cmp:thy:smn:thm:s-m-n": {
+   "kind": "thm",
+   "text": "Theorem 6.3",
+   "blockId": "cmp.thy.smn/thm:s-m-n",
+   "sectionId": "cmp.thy.smn"
+  },
+  "cmp:thy:uni:sec": {
+   "kind": "section",
+   "text": "Section 6.5",
+   "sectionId": "cmp.thy.uni",
+   "blockId": "cmp.thy.uni"
+  },
+  "cmp:thy:uni:thm:univ-comp": {
+   "kind": "thm",
+   "text": "Theorem 6.4",
+   "blockId": "cmp.thy.uni/thm:univ-comp",
+   "sectionId": "cmp.thy.uni"
+  },
+  "comp-inc:chap": {
+   "kind": "chapter",
+   "text": "Chapter 6",
+   "sectionId": "cmp.thy.int",
+   "blockId": "ic.comp-inc"
+  },
+  "deriv:chap": {
+   "kind": "chapter",
+   "text": "Chapter A",
+   "sectionId": "ic.deriv.text",
+   "blockId": "ic.deriv"
+  },
+  "fol:chap": {
+   "kind": "chapter",
+   "text": "Chapter B",
+   "sectionId": "fol.syn.fol",
+   "blockId": "ic.fol"
+  },
+  "fol:ntd:der:sec": {
+   "kind": "section",
+   "text": "Section C.5",
+   "sectionId": "fol.ntd.der",
+   "blockId": "fol.ntd.der"
+  },
+  "fol:ntd:ide:sec": {
+   "kind": "section",
+   "text": "Section C.8",
+   "sectionId": "fol.ntd.ide",
+   "blockId": "fol.ntd.ide"
+  },
+  "fol:ntd:prl:sec": {
+   "kind": "section",
+   "text": "Section C.3",
+   "sectionId": "fol.ntd.prl",
+   "blockId": "fol.ntd.prl"
+  },
+  "fol:ntd:pro:sec": {
+   "kind": "section",
+   "text": "Section C.6",
+   "sectionId": "fol.ntd.pro",
+   "blockId": "fol.ntd.pro"
+  },
+  "fol:ntd:prq:sec": {
+   "kind": "section",
+   "text": "Section C.7",
+   "sectionId": "fol.ntd.prq",
+   "blockId": "fol.ntd.prq"
+  },
+  "fol:ntd:ptn:prop:incons": {
+   "kind": "prop",
+   "text": "Proposition C.18",
+   "blockId": "fol.ntd.ptn/prop:incons",
+   "sectionId": "fol.ntd.ptn"
+  },
+  "fol:ntd:ptn:prop:monotonicity": {
+   "kind": "prop",
+   "text": "Proposition C.16",
+   "blockId": "fol.ntd.ptn/prop:monotonicity",
+   "sectionId": "fol.ntd.ptn"
+  },
+  "fol:ntd:ptn:prop:proves-compact": {
+   "kind": "prop",
+   "text": "Proposition C.19",
+   "blockId": "fol.ntd.ptn/prop:proves-compact",
+   "sectionId": "fol.ntd.ptn"
+  },
+  "fol:ntd:ptn:prop:reflexivity": {
+   "kind": "prop",
+   "text": "Proposition C.15",
+   "blockId": "fol.ntd.ptn/prop:reflexivity",
+   "sectionId": "fol.ntd.ptn"
+  },
+  "fol:ntd:ptn:prop:transitivity": {
+   "kind": "prop",
+   "text": "Proposition C.17",
+   "blockId": "fol.ntd.ptn/prop:transitivity",
+   "sectionId": "fol.ntd.ptn"
+  },
+  "fol:ntd:ptn:sec": {
+   "kind": "section",
+   "text": "Section C.9",
+   "sectionId": "fol.ntd.ptn",
+   "blockId": "fol.ntd.ptn"
+  },
+  "fol:ntd:qrl:sec": {
+   "kind": "section",
+   "text": "Section C.4",
+   "sectionId": "fol.ntd.qrl",
+   "blockId": "fol.ntd.qrl"
+  },
+  "fol:ntd:rul:sec": {
+   "kind": "section",
+   "text": "Section C.2",
+   "sectionId": "fol.ntd.rul",
+   "blockId": "fol.ntd.rul"
+  },
+  "fol:ntd:sou:cor:consistency-soundness": {
+   "kind": "cor",
+   "text": "Corollary C.22",
+   "blockId": "fol.ntd.sou/cor:consistency-soundness",
+   "sectionId": "fol.ntd.sou"
+  },
+  "fol:ntd:sou:cor:weak-soundness": {
+   "kind": "cor",
+   "text": "Corollary C.21",
+   "blockId": "fol.ntd.sou/cor:weak-soundness",
+   "sectionId": "fol.ntd.sou"
+  },
+  "fol:ntd:sou:sec": {
+   "kind": "section",
+   "text": "Section C.10",
+   "sectionId": "fol.ntd.sou",
+   "blockId": "fol.ntd.sou"
+  },
+  "fol:ntd:sou:thm:soundness": {
+   "kind": "thm",
+   "text": "Theorem C.20",
+   "blockId": "fol.ntd.sou/thm:soundness",
+   "sectionId": "fol.ntd.sou"
+  },
+  "fol:prf:ntd:sec": {
+   "kind": "section",
+   "text": "Section C.1",
+   "sectionId": "fol.prf.ntd",
+   "blockId": "fol.prf.ntd"
+  },
+  "fol:syn:ass:cor:sat-sentence": {
+   "kind": "cor",
+   "text": "Corollary B.30",
+   "blockId": "fol.syn.ass/cor:sat-sentence",
+   "sectionId": "fol.syn.ass"
+  },
+  "fol:syn:ass:defn:sat": {
+   "kind": "defn",
+   "text": "Definition B.32",
+   "blockId": "fol.syn.ass/defn:sat",
+   "sectionId": "fol.syn.ass"
+  },
+  "fol:syn:ass:defn:satisfaction": {
+   "kind": "defn",
+   "text": "Definition B.31",
+   "blockId": "fol.syn.ass/defn:satisfaction",
+   "sectionId": "fol.syn.ass"
+  },
+  "fol:syn:ass:prop:sat-quant": {
+   "kind": "prop",
+   "text": "Proposition B.34",
+   "blockId": "fol.syn.ass/prop:sat-quant",
+   "sectionId": "fol.syn.ass"
+  },
+  "fol:syn:ass:prop:satindep": {
+   "kind": "prop",
+   "text": "Proposition B.29",
+   "blockId": "fol.syn.ass/prop:satindep",
+   "sectionId": "fol.syn.ass"
+  },
+  "fol:syn:ass:prop:sentence-sat-true": {
+   "kind": "prop",
+   "text": "Proposition B.33",
+   "blockId": "fol.syn.ass/prop:sentence-sat-true",
+   "sectionId": "fol.syn.ass"
+  },
+  "fol:syn:ass:prop:valindep": {
+   "kind": "prop",
+   "text": "Proposition B.28",
+   "blockId": "fol.syn.ass/prop:valindep",
+   "sectionId": "fol.syn.ass"
+  },
+  "fol:syn:ass:sec": {
+   "kind": "section",
+   "text": "Section B.7",
+   "sectionId": "fol.syn.ass",
+   "blockId": "fol.syn.ass"
+  },
+  "fol:syn:ext:cor:extensionality-sent": {
+   "kind": "cor",
+   "text": "Corollary B.36",
+   "blockId": "fol.syn.ext/cor:extensionality-sent",
+   "sectionId": "fol.syn.ext"
+  },
+  "fol:syn:ext:prop:ext-formulas": {
+   "kind": "prop",
+   "text": "Proposition B.38",
+   "blockId": "fol.syn.ext/prop:ext-formulas",
+   "sectionId": "fol.syn.ext"
+  },
+  "fol:syn:ext:prop:ext-terms": {
+   "kind": "prop",
+   "text": "Proposition B.37",
+   "blockId": "fol.syn.ext/prop:ext-terms",
+   "sectionId": "fol.syn.ext"
+  },
+  "fol:syn:ext:prop:extensionality": {
+   "kind": "prop",
+   "text": "Proposition B.35",
+   "blockId": "fol.syn.ext/prop:extensionality",
+   "sectionId": "fol.syn.ext"
+  },
+  "fol:syn:ext:sec": {
+   "kind": "section",
+   "text": "Section B.8",
+   "sectionId": "fol.syn.ext",
+   "blockId": "fol.syn.ext"
+  },
+  "fol:syn:fol:sec": {
+   "kind": "section",
+   "text": "Section B.1",
+   "sectionId": "fol.syn.fol",
+   "blockId": "fol.syn.fol"
+  },
+  "fol:syn:frm:defn:formulas": {
+   "kind": "defn",
+   "text": "Definition B.5",
+   "blockId": "fol.syn.frm/defn:formulas",
+   "sectionId": "fol.syn.frm"
+  },
+  "fol:syn:frm:defn:terms": {
+   "kind": "defn",
+   "text": "Definition B.4",
+   "blockId": "fol.syn.frm/defn:terms",
+   "sectionId": "fol.syn.frm"
+  },
+  "fol:syn:frm:lem:trmind": {
+   "kind": "lem",
+   "text": "Lemma B.8",
+   "blockId": "fol.syn.frm/lem:trmind",
+   "sectionId": "fol.syn.frm"
+  },
+  "fol:syn:frm:sec": {
+   "kind": "section",
+   "text": "Section B.2",
+   "sectionId": "fol.syn.frm",
+   "blockId": "fol.syn.frm"
+  },
+  "fol:syn:frm:thm:frmind": {
+   "kind": "lem",
+   "text": "Lemma B.9",
+   "blockId": "fol.syn.frm/thm:frmind",
+   "sectionId": "fol.syn.frm"
+  },
+  "fol:syn:fvs:defn:free-occ": {
+   "kind": "defn",
+   "text": "Definition B.10",
+   "blockId": "fol.syn.fvs/defn:free-occ",
+   "sectionId": "fol.syn.fvs"
+  },
+  "fol:syn:fvs:sec": {
+   "kind": "section",
+   "text": "Section B.3",
+   "sectionId": "fol.syn.fvs",
+   "blockId": "fol.syn.fvs"
+  },
+  "fol:syn:sat:defn:satisfaction": {
+   "kind": "defn",
+   "text": "Definition B.26",
+   "blockId": "fol.syn.sat/defn:satisfaction",
+   "sectionId": "fol.syn.sat"
+  },
+  "fol:syn:sat:sec": {
+   "kind": "section",
+   "text": "Section B.6",
+   "sectionId": "fol.syn.sat",
+   "blockId": "fol.syn.sat"
+  },
+  "fol:syn:sem:prop:entails-unsat": {
+   "kind": "prop",
+   "text": "Proposition B.43",
+   "blockId": "fol.syn.sem/prop:entails-unsat",
+   "sectionId": "fol.syn.sem"
+  },
+  "fol:syn:sem:prop:quant-terms": {
+   "kind": "prop",
+   "text": "Proposition B.46",
+   "blockId": "fol.syn.sem/prop:quant-terms",
+   "sectionId": "fol.syn.sem"
+  },
+  "fol:syn:sem:sec": {
+   "kind": "section",
+   "text": "Section B.9",
+   "sectionId": "fol.syn.sem",
+   "blockId": "fol.syn.sem"
+  },
+  "fol:syn:sem:thm:sem-deduction": {
+   "kind": "thm",
+   "text": "Theorem B.45",
+   "blockId": "fol.syn.sem/thm:sem-deduction",
+   "sectionId": "fol.syn.sem"
+  },
+  "fol:syn:str:sec": {
+   "kind": "section",
+   "text": "Section B.5",
+   "sectionId": "fol.syn.str",
+   "blockId": "fol.syn.str"
+  },
+  "fol:syn:sub:sec": {
+   "kind": "section",
+   "text": "Section B.4",
+   "sectionId": "fol.syn.sub",
+   "blockId": "fol.syn.sub"
+  },
+  "his:bio:chu:sec": {
+   "kind": "section",
+   "text": "Section D.1",
+   "sectionId": "his.bio.chu",
+   "blockId": "his.bio.chu"
+  },
+  "his:bio:god:sec": {
+   "kind": "section",
+   "text": "Section D.2",
+   "sectionId": "his.bio.god",
+   "blockId": "his.bio.god"
+  },
+  "his:bio:pet:sec": {
+   "kind": "section",
+   "text": "Section D.3",
+   "sectionId": "his.bio.pet",
+   "blockId": "his.bio.pet"
+  },
+  "his:bio:rob:sec": {
+   "kind": "section",
+   "text": "Section D.4",
+   "sectionId": "his.bio.rob",
+   "blockId": "his.bio.rob"
+  },
+  "his:bio:tar:sec": {
+   "kind": "section",
+   "text": "Section D.5",
+   "sectionId": "his.bio.tar",
+   "blockId": "his.bio.tar"
+  },
   "inc:art::chap": {
    "kind": "chapter",
    "text": "Chapter 3",
@@ -539,6 +1532,60 @@
    "text": "Section 3.3",
    "sectionId": "inc.art.trm",
    "blockId": "inc.art.trm"
+  },
+  "inc:cpi:hal:case:def": {
+   "kind": "item",
+   "text": "(1)",
+   "blockId": "inc.cpi.hal/i6",
+   "sectionId": "inc.cpi.hal"
+  },
+  "inc:cpi:hal:case:undef": {
+   "kind": "item",
+   "text": "(2)",
+   "blockId": "inc.cpi.hal/i8",
+   "sectionId": "inc.cpi.hal"
+  },
+  "inc:cpi:hal:sec": {
+   "kind": "section",
+   "text": "Section 6.14",
+   "sectionId": "inc.cpi.hal",
+   "blockId": "inc.cpi.hal"
+  },
+  "inc:cpi:hal:thm:complete-decidable": {
+   "kind": "thm",
+   "text": "Theorem 6.18",
+   "blockId": "inc.cpi.hal/thm:complete-decidable",
+   "sectionId": "inc.cpi.hal"
+  },
+  "inc:cpi:hal:thm:g1": {
+   "kind": "thm",
+   "text": "Theorem 6.20",
+   "blockId": "inc.cpi.hal/thm:g1",
+   "sectionId": "inc.cpi.hal"
+  },
+  "inc:cpi:hal:thm:undecidable": {
+   "kind": "thm",
+   "text": "Theorem 6.17",
+   "blockId": "inc.cpi.hal/thm:undecidable",
+   "sectionId": "inc.cpi.hal"
+  },
+  "inc:cpi:int:prop:ax-theory-ce": {
+   "kind": "prop",
+   "text": "Proposition 6.15",
+   "blockId": "inc.cpi.int/prop:ax-theory-ce",
+   "sectionId": "inc.cpi.int"
+  },
+  "inc:cpi:int:prop:ce-ax": {
+   "kind": "prop",
+   "text": "Proposition 6.16",
+   "blockId": "inc.cpi.int/prop:ce-ax",
+   "sectionId": "inc.cpi.int"
+  },
+  "inc:cpi:int:sec": {
+   "kind": "section",
+   "text": "Section 6.13",
+   "sectionId": "inc.cpi.int",
+   "blockId": "inc.cpi.int"
   },
   "inc:inp::chap": {
    "kind": "chapter",
@@ -858,6 +1905,48 @@
    "blockId": "inc.inp.tar/thm:tarski",
    "sectionId": "inc.inp.tar"
   },
+  "inc:int::chap": {
+   "kind": "chapter",
+   "text": "Chapter 1",
+   "sectionId": "inc.int.bgr",
+   "blockId": "inc.int"
+  },
+  "inc:int:bgr:sec": {
+   "kind": "section",
+   "text": "Section 1.1",
+   "sectionId": "inc.int.bgr",
+   "blockId": "inc.int.bgr"
+  },
+  "inc:int:dec:cor:incompleteness": {
+   "kind": "cor",
+   "text": "Corollary 1.17",
+   "blockId": "inc.int.dec/cor:incompleteness",
+   "sectionId": "inc.int.dec"
+  },
+  "inc:int:dec:sec": {
+   "kind": "section",
+   "text": "Section 1.4",
+   "sectionId": "inc.int.dec",
+   "blockId": "inc.int.dec"
+  },
+  "inc:int:def:def:standard-model": {
+   "kind": "defn",
+   "text": "Definition 1.2",
+   "blockId": "inc.int.def/def:standard-model",
+   "sectionId": "inc.int.def"
+  },
+  "inc:int:def:sec": {
+   "kind": "section",
+   "text": "Section 1.2",
+   "sectionId": "inc.int.def",
+   "blockId": "inc.int.def"
+  },
+  "inc:int:ovr:sec": {
+   "kind": "section",
+   "text": "Section 1.3",
+   "sectionId": "inc.int.ovr",
+   "blockId": "inc.int.ovr"
+  },
   "inc:req::chap": {
    "kind": "chapter",
    "text": "Chapter 4",
@@ -1127,253 +2216,974 @@
    "text": "Section 4.10",
    "sectionId": "inc.req.und",
    "blockId": "inc.req.und"
+  },
+  "lam:dfl:ldr:sec": {
+   "kind": "section",
+   "text": "Section 9.14",
+   "sectionId": "lam.dfl.ldr",
+   "blockId": "lam.dfl.ldr"
+  },
+  "lam:dfl:ldr:thm:lambda-computable": {
+   "kind": "thm",
+   "text": "Theorem 9.20",
+   "blockId": "lam.dfl.ldr/thm:lambda-computable",
+   "sectionId": "lam.dfl.ldr"
+  },
+  "lam:int:cr:sec": {
+   "kind": "section",
+   "text": "Section 9.4",
+   "sectionId": "lam.int.cr",
+   "blockId": "lam.int.cr"
+  },
+  "lam:int:cr:thm:church-rosser": {
+   "kind": "thm",
+   "text": "Theorem 9.1",
+   "blockId": "lam.int.cr/thm:church-rosser",
+   "sectionId": "lam.int.cr"
+  },
+  "lam:int:ovr:sec": {
+   "kind": "section",
+   "text": "Section 9.1",
+   "sectionId": "lam.int.ovr",
+   "blockId": "lam.int.ovr"
+  },
+  "lam:int:red:sec": {
+   "kind": "section",
+   "text": "Section 9.3",
+   "sectionId": "lam.int.red",
+   "blockId": "lam.int.red"
+  },
+  "lam:int:syn:sec": {
+   "kind": "section",
+   "text": "Section 9.2",
+   "sectionId": "lam.int.syn",
+   "blockId": "lam.int.syn"
+  },
+  "lam:ldf:fp:defn:Turing-Y": {
+   "kind": "defn",
+   "text": "Definition 9.15",
+   "blockId": "lam.ldf.fp/defn:Turing-Y",
+   "sectionId": "lam.ldf.fp"
+  },
+  "lam:ldf:fp:sec": {
+   "kind": "section",
+   "text": "Section 9.11",
+   "sectionId": "lam.ldf.fp",
+   "blockId": "lam.ldf.fp"
+  },
+  "lam:ldf:min:lem:min": {
+   "kind": "lem",
+   "text": "Lemma 9.17",
+   "blockId": "lam.ldf.min/lem:min",
+   "sectionId": "lam.ldf.min"
+  },
+  "lam:ldf:min:sec": {
+   "kind": "section",
+   "text": "Section 9.12",
+   "sectionId": "lam.ldf.min",
+   "blockId": "lam.ldf.min"
+  },
+  "lam:ldf:pai:sec": {
+   "kind": "section",
+   "text": "Section 9.8",
+   "sectionId": "lam.ldf.pai",
+   "blockId": "lam.ldf.pai"
+  },
+  "lam:ldf:par:sec": {
+   "kind": "section",
+   "text": "Section 9.13",
+   "sectionId": "lam.ldf.par",
+   "blockId": "lam.ldf.par"
+  },
+  "lam:ldf:prf:lem:basic": {
+   "kind": "lem",
+   "text": "Lemma 9.11",
+   "blockId": "lam.ldf.prf/lem:basic",
+   "sectionId": "lam.ldf.prf"
+  },
+  "lam:ldf:prf:lem:comp": {
+   "kind": "lem",
+   "text": "Lemma 9.12",
+   "blockId": "lam.ldf.prf/lem:comp",
+   "sectionId": "lam.ldf.prf"
+  },
+  "lam:ldf:prf:lem:prim": {
+   "kind": "lem",
+   "text": "Lemma 9.13",
+   "blockId": "lam.ldf.prf/lem:prim",
+   "sectionId": "lam.ldf.prf"
+  },
+  "lam:ldf:prf:sec": {
+   "kind": "section",
+   "text": "Section 9.10",
+   "sectionId": "lam.ldf.prf",
+   "blockId": "lam.ldf.prf"
+  },
+  "lam:ldf:tvr:sec": {
+   "kind": "section",
+   "text": "Section 9.9",
+   "sectionId": "lam.ldf.tvr",
+   "blockId": "lam.ldf.tvr"
+  },
+  "lam:rep:arf:prop:add-ld": {
+   "kind": "prop",
+   "text": "Proposition 9.7",
+   "blockId": "lam.rep.arf/prop:add-ld",
+   "sectionId": "lam.rep.arf"
+  },
+  "lam:rep:arf:prop:mult-ld": {
+   "kind": "prop",
+   "text": "Proposition 9.8",
+   "blockId": "lam.rep.arf/prop:mult-ld",
+   "sectionId": "lam.rep.arf"
+  },
+  "lam:rep:arf:prop:succ-ld": {
+   "kind": "prop",
+   "text": "Proposition 9.5",
+   "blockId": "lam.rep.arf/prop:succ-ld",
+   "sectionId": "lam.rep.arf"
+  },
+  "lam:rep:arf:sec": {
+   "kind": "section",
+   "text": "Section 9.7",
+   "sectionId": "lam.rep.arf",
+   "blockId": "lam.rep.arf"
+  },
+  "lam:rep:cur:sec": {
+   "kind": "section",
+   "text": "Section 9.5",
+   "sectionId": "lam.rep.cur",
+   "blockId": "lam.rep.cur"
+  },
+  "lambda:chap": {
+   "kind": "chapter",
+   "text": "Chapter 9",
+   "sectionId": "lam.int.ovr",
+   "blockId": "ic.lambda"
+  },
+  "mod:bas:iso:defn:elem-equiv": {
+   "kind": "defn",
+   "text": "Definition 7.4",
+   "blockId": "mod.bas.iso/defn:elem-equiv",
+   "sectionId": "mod.bas.iso"
+  },
+  "mod:bas:iso:defn:iso-const": {
+   "kind": "item",
+   "text": "(3)",
+   "blockId": "mod.bas.iso/i15",
+   "sectionId": "mod.bas.iso"
+  },
+  "mod:bas:iso:defn:iso-func": {
+   "kind": "item",
+   "text": "(5)",
+   "blockId": "mod.bas.iso/i20",
+   "sectionId": "mod.bas.iso"
+  },
+  "mod:bas:iso:defn:iso-pred": {
+   "kind": "item",
+   "text": "(4)",
+   "blockId": "mod.bas.iso/i17",
+   "sectionId": "mod.bas.iso"
+  },
+  "mod:bas:iso:defn:isomorphism": {
+   "kind": "defn",
+   "text": "Definition 7.5",
+   "blockId": "mod.bas.iso/defn:isomorphism",
+   "sectionId": "mod.bas.iso"
+  },
+  "mod:bas:iso:iso-1": {
+   "kind": "equation",
+   "text": "(7.1)",
+   "blockId": "mod.bas.iso/d44",
+   "sectionId": "mod.bas.iso"
+  },
+  "mod:bas:iso:iso-2": {
+   "kind": "equation",
+   "text": "(7.2)",
+   "blockId": "mod.bas.iso/d44",
+   "sectionId": "mod.bas.iso"
+  },
+  "mod:bas:iso:sec": {
+   "kind": "section",
+   "text": "Section 7.3",
+   "sectionId": "mod.bas.iso",
+   "blockId": "mod.bas.iso"
+  },
+  "mod:bas:iso:thm:isom": {
+   "kind": "thm",
+   "text": "Theorem 7.6",
+   "blockId": "mod.bas.iso/thm:isom",
+   "sectionId": "mod.bas.iso"
+  },
+  "mod:bas:red:defn:reduct": {
+   "kind": "defn",
+   "text": "Definition 7.1",
+   "blockId": "mod.bas.red/defn:reduct",
+   "sectionId": "mod.bas.red"
+  },
+  "mod:bas:red:prop:reduct": {
+   "kind": "prop",
+   "text": "Proposition 7.2",
+   "blockId": "mod.bas.red/prop:reduct",
+   "sectionId": "mod.bas.red"
+  },
+  "mod:bas:red:sec": {
+   "kind": "section",
+   "text": "Section 7.2",
+   "sectionId": "mod.bas.red",
+   "blockId": "mod.bas.red"
+  },
+  "mod:bas:thm:prop:equiv": {
+   "kind": "prop",
+   "text": "Proposition 7.10",
+   "blockId": "mod.bas.thm/prop:equiv",
+   "sectionId": "mod.bas.thm"
+  },
+  "mod:bas:thm:remark:R": {
+   "kind": "rem",
+   "text": "Remark",
+   "blockId": "mod.bas.thm/remark:R",
+   "sectionId": "mod.bas.thm"
+  },
+  "mod:bas:thm:sec": {
+   "kind": "section",
+   "text": "Section 7.4",
+   "sectionId": "mod.bas.thm",
+   "blockId": "mod.bas.thm"
+  },
+  "mod:chap": {
+   "kind": "chapter",
+   "text": "Chapter 7",
+   "sectionId": "mod.mar.int",
+   "blockId": "ic.mod"
+  },
+  "mod:mar:cmp:ex:comp-model-q": {
+   "kind": "ex",
+   "text": "Example 7.31",
+   "blockId": "mod.mar.cmp/ex:comp-model-q",
+   "sectionId": "mod.mar.cmp"
+  },
+  "mod:mar:cmp:sec": {
+   "kind": "section",
+   "text": "Section 7.9",
+   "sectionId": "mod.mar.cmp",
+   "blockId": "mod.mar.cmp"
+  },
+  "mod:mar:int:sec": {
+   "kind": "section",
+   "text": "Section 7.1",
+   "sectionId": "mod.mar.int",
+   "blockId": "mod.mar.int"
+  },
+  "mod:mar:mdq:ex:model-K-of-Q": {
+   "kind": "ex",
+   "text": "Example 7.18",
+   "blockId": "mod.mar.mdq/ex:model-K-of-Q",
+   "sectionId": "mod.mar.mdq"
+  },
+  "mod:mar:mdq:ex:model-L-of-Q": {
+   "kind": "ex",
+   "text": "Example 7.19",
+   "blockId": "mod.mar.mdq/ex:model-L-of-Q",
+   "sectionId": "mod.mar.mdq"
+  },
+  "mod:mar:mdq:sec": {
+   "kind": "section",
+   "text": "Section 7.7",
+   "sectionId": "mod.mar.mdq",
+   "blockId": "mod.mar.mdq"
+  },
+  "mod:mar:mpa:prop:blocks-dense": {
+   "kind": "prop",
+   "text": "Proposition 7.29",
+   "blockId": "mod.mar.mpa/prop:blocks-dense",
+   "sectionId": "mod.mar.mpa"
+  },
+  "mod:mar:mpa:prop:M-discrete": {
+   "kind": "prop",
+   "text": "Proposition 7.21",
+   "blockId": "mod.mar.mpa/prop:M-discrete",
+   "sectionId": "mod.mar.mpa"
+  },
+  "mod:mar:mpa:sec": {
+   "kind": "section",
+   "text": "Section 7.8",
+   "sectionId": "mod.mar.mpa",
+   "blockId": "mod.mar.mpa"
+  },
+  "mod:mar:nst:sec": {
+   "kind": "section",
+   "text": "Section 7.6",
+   "sectionId": "mod.mar.nst",
+   "blockId": "mod.mar.nst"
+  },
+  "mod:mar:stm:prop:standard-domain": {
+   "kind": "prop",
+   "text": "Proposition 7.12",
+   "blockId": "mod.mar.stm/prop:standard-domain",
+   "sectionId": "mod.mar.stm"
+  },
+  "mod:mar:stm:prop:thq-standard": {
+   "kind": "prop",
+   "text": "Proposition 7.13",
+   "blockId": "mod.mar.stm/prop:thq-standard",
+   "sectionId": "mod.mar.stm"
+  },
+  "mod:mar:stm:prop:thq-unique-iso": {
+   "kind": "prop",
+   "text": "Proposition 7.14",
+   "blockId": "mod.mar.stm/prop:thq-unique-iso",
+   "sectionId": "mod.mar.stm"
+  },
+  "mod:mar:stm:sec": {
+   "kind": "section",
+   "text": "Section 7.5",
+   "sectionId": "mod.mar.stm",
+   "blockId": "mod.mar.stm"
+  },
+  "nd:chap": {
+   "kind": "chapter",
+   "text": "Chapter C",
+   "sectionId": "fol.prf.ntd",
+   "blockId": "ic.nd"
+  },
+  "sol:chap": {
+   "kind": "chapter",
+   "text": "Chapter 8",
+   "sectionId": "sol.syn.int",
+   "blockId": "ic.sol"
+  },
+  "sol:met:com:sec": {
+   "kind": "section",
+   "text": "Section 8.9",
+   "sectionId": "sol.met.com",
+   "blockId": "sol.met.com"
+  },
+  "sol:met:com:thm:sol-undecidable": {
+   "kind": "thm",
+   "text": "Theorem 8.24",
+   "blockId": "sol.met.com/thm:sol-undecidable",
+   "sectionId": "sol.met.com"
+  },
+  "sol:met:lst:sec": {
+   "kind": "section",
+   "text": "Section 8.10",
+   "sectionId": "sol.met.lst",
+   "blockId": "sol.met.lst"
+  },
+  "sol:met:lst:thm:sol-no-ls": {
+   "kind": "thm",
+   "text": "Theorem 8.25",
+   "blockId": "sol.met.lst/thm:sol-no-ls",
+   "sectionId": "sol.met.lst"
+  },
+  "sol:met:nax:cor:sol-not-axiomatizable": {
+   "kind": "thm",
+   "text": "Theorem 8.23",
+   "blockId": "sol.met.nax/cor:sol-not-axiomatizable",
+   "sectionId": "sol.met.nax"
+  },
+  "sol:met:nax:sec": {
+   "kind": "section",
+   "text": "Section 8.8",
+   "sectionId": "sol.met.nax",
+   "blockId": "sol.met.nax"
+  },
+  "sol:met:nax:thm:sol-undecidable": {
+   "kind": "thm",
+   "text": "Theorem 8.22",
+   "blockId": "sol.met.nax/thm:sol-undecidable",
+   "sectionId": "sol.met.nax"
+  },
+  "sol:met:spa:cor:sol-pa-categorical": {
+   "kind": "cor",
+   "text": "Corollary 8.20",
+   "blockId": "sol.met.spa/cor:sol-pa-categorical",
+   "sectionId": "sol.met.spa"
+  },
+  "sol:met:spa:prop:sol-pa-definable": {
+   "kind": "prop",
+   "text": "Proposition 8.21",
+   "blockId": "sol.met.spa/prop:sol-pa-definable",
+   "sectionId": "sol.met.spa"
+  },
+  "sol:met:spa:sec": {
+   "kind": "section",
+   "text": "Section 8.7",
+   "sectionId": "sol.met.spa",
+   "blockId": "sol.met.spa"
+  },
+  "sol:met:spa:thm:sol-pa-standard": {
+   "kind": "thm",
+   "text": "Theorem 8.19",
+   "blockId": "sol.met.spa/thm:sol-pa-standard",
+   "sectionId": "sol.met.spa"
+  },
+  "sol:set:cmp:sec": {
+   "kind": "section",
+   "text": "Section 8.11",
+   "sectionId": "sol.set.cmp",
+   "blockId": "sol.set.cmp"
+  },
+  "sol:set:crd:sec": {
+   "kind": "section",
+   "text": "Section 8.12",
+   "sectionId": "sol.set.crd",
+   "blockId": "sol.set.crd"
+  },
+  "sol:set:pow:sec": {
+   "kind": "section",
+   "text": "Section 8.13",
+   "sectionId": "sol.set.pow",
+   "blockId": "sol.set.pow"
+  },
+  "sol:syn:exp:sec": {
+   "kind": "section",
+   "text": "Section 8.5",
+   "sectionId": "sol.syn.exp",
+   "blockId": "sol.syn.exp"
+  },
+  "sol:syn:frm:sec": {
+   "kind": "section",
+   "text": "Section 8.2",
+   "sectionId": "sol.syn.frm",
+   "blockId": "sol.syn.frm"
+  },
+  "sol:syn:int:sec": {
+   "kind": "section",
+   "text": "Section 8.1",
+   "sectionId": "sol.syn.int",
+   "blockId": "sol.syn.int"
+  },
+  "sol:syn:sat:sec": {
+   "kind": "section",
+   "text": "Section 8.3",
+   "sectionId": "sol.syn.sat",
+   "blockId": "sol.syn.sat"
+  },
+  "sol:syn:sem:sec": {
+   "kind": "section",
+   "text": "Section 8.4",
+   "sectionId": "sol.syn.sem",
+   "blockId": "sol.syn.sem"
+  },
+  "sol:syn:siz:sec": {
+   "kind": "section",
+   "text": "Section 8.6",
+   "sectionId": "sol.syn.siz",
+   "blockId": "sol.syn.siz"
   }
  },
  "macros": [
   {
-   "name": "mathbf",
-   "count": 740,
-   "origin": "katex"
-  },
-  {
-   "name": "Th",
-   "count": 740,
-   "origin": "upstream"
-  },
-  {
    "name": "mathrm",
-   "count": 571,
+   "count": 1328,
    "origin": "katex"
-  },
-  {
-   "name": "fn",
-   "count": 479,
-   "origin": "upstream"
-  },
-  {
-   "name": "overline",
-   "count": 434,
-   "origin": "katex"
-  },
-  {
-   "name": "num",
-   "count": 432,
-   "origin": "upstream"
-  },
-  {
-   "name": "vec",
-   "count": 231,
-   "origin": "katex"
-  },
-  {
-   "name": "eq",
-   "count": 220,
-   "origin": "upstream"
-  },
-  {
-   "name": "Proves",
-   "count": 204,
-   "origin": "upstream"
-  },
-  {
-   "name": "dots",
-   "count": 189,
-   "origin": "katex"
-  },
-  {
-   "name": "vdash",
-   "count": 187,
-   "origin": "katex"
-  },
-  {
-   "name": "mathsf",
-   "count": 161,
-   "origin": "katex"
-  },
-  {
-   "name": "mathbin",
-   "count": 159,
-   "origin": "katex"
-  },
-  {
-   "name": "gn",
-   "count": 154,
-   "origin": "override"
-  },
-  {
-   "name": "ulcorner",
-   "count": 154,
-   "origin": "katex"
-  },
-  {
-   "name": "urcorner",
-   "count": 154,
-   "origin": "katex"
-  },
-  {
-   "name": "mathsfit",
-   "count": 140,
-   "origin": "katex"
-  },
-  {
-   "name": "Obj",
-   "count": 140,
-   "origin": "upstream"
-  },
-  {
-   "name": "lif",
-   "count": 115,
-   "origin": "upstream"
-  },
-  {
-   "name": "rightarrow",
-   "count": 115,
-   "origin": "katex"
-  },
-  {
-   "name": "lnot",
-   "count": 114,
-   "origin": "katex"
-  },
-  {
-   "name": "land",
-   "count": 100,
-   "origin": "katex"
-  },
-  {
-   "name": "OProv",
-   "count": 100,
-   "origin": "upstream"
-  },
-  {
-   "name": "mbox",
-   "count": 95,
-   "origin": "katex"
-  },
-  {
-   "name": "forall",
-   "count": 93,
-   "origin": "katex"
-  },
-  {
-   "name": "Gn",
-   "count": 91,
-   "origin": "upstream"
-  },
-  {
-   "name": "reflectbox",
-   "count": 91,
-   "origin": "katex"
-  },
-  {
-   "name": "tiny",
-   "count": 91,
-   "origin": "katex"
-  },
-  {
-   "name": "exists",
-   "count": 89,
-   "origin": "katex"
-  },
-  {
-   "name": "langle",
-   "count": 83,
-   "origin": "katex"
-  },
-  {
-   "name": "rangle",
-   "count": 83,
-   "origin": "katex"
-  },
-  {
-   "name": "closeTuple",
-   "count": 75,
-   "origin": "upstream"
-  },
-  {
-   "name": "openTuple",
-   "count": 75,
-   "origin": "upstream"
-  },
-  {
-   "name": "text",
-   "count": 75,
-   "origin": "katex"
-  },
-  {
-   "name": "tuple",
-   "count": 75,
-   "origin": "upstream"
   },
   {
    "name": "boldsymbol",
-   "count": 74,
+   "count": 1281,
    "origin": "katex"
   },
   {
    "name": "mathbi",
-   "count": 74,
+   "count": 1281,
    "origin": "override"
   },
   {
    "name": "mathit",
-   "count": 74,
+   "count": 1281,
    "origin": "katex"
   },
   {
    "name": "Struct",
-   "count": 74,
+   "count": 1281,
    "origin": "upstream"
   },
   {
-   "name": "cdot",
-   "count": 73,
+   "name": "mathbf",
+   "count": 1072,
+   "origin": "katex"
+  },
+  {
+   "name": "Th",
+   "count": 1066,
+   "origin": "upstream"
+  },
+  {
+   "name": "overline",
+   "count": 947,
+   "origin": "katex"
+  },
+  {
+   "name": "num",
+   "count": 933,
+   "origin": "upstream"
+  },
+  {
+   "name": "fn",
+   "count": 783,
+   "origin": "upstream"
+  },
+  {
+   "name": "mathbin",
+   "count": 611,
+   "origin": "katex"
+  },
+  {
+   "name": "forall",
+   "count": 533,
+   "origin": "katex"
+  },
+  {
+   "name": "rightarrow",
+   "count": 512,
    "origin": "katex"
   },
   {
    "name": "lforall",
-   "count": 68,
+   "count": 503,
    "origin": "upstream"
   },
   {
-   "name": "Proj",
-   "count": 64,
+   "name": "lnot",
+   "count": 457,
+   "origin": "katex"
+  },
+  {
+   "name": "lif",
+   "count": 452,
    "origin": "upstream"
   },
   {
-   "name": "delta",
-   "count": 61,
+   "name": "eq",
+   "count": 422,
+   "origin": "upstream"
+  },
+  {
+   "name": "mathsfit",
+   "count": 402,
+   "origin": "katex"
+  },
+  {
+   "name": "Obj",
+   "count": 402,
+   "origin": "upstream"
+  },
+  {
+   "name": "vDash",
+   "count": 402,
+   "origin": "katex"
+  },
+  {
+   "name": "Proves",
+   "count": 377,
+   "origin": "upstream"
+  },
+  {
+   "name": "Gamma",
+   "count": 366,
+   "origin": "katex"
+  },
+  {
+   "name": "Sat",
+   "count": 365,
+   "origin": "upstream"
+  },
+  {
+   "name": "exists",
+   "count": 346,
+   "origin": "katex"
+  },
+  {
+   "name": "dots",
+   "count": 341,
+   "origin": "katex"
+  },
+  {
+   "name": "vdash",
+   "count": 340,
    "origin": "katex"
   },
   {
    "name": "lexists",
-   "count": 60,
+   "count": 307,
    "origin": "upstream"
   },
   {
+   "name": "land",
+   "count": 304,
+   "origin": "katex"
+  },
+  {
+   "name": "lambda",
+   "count": 287,
+   "origin": "katex"
+  },
+  {
+   "name": "lambd",
+   "count": 279,
+   "origin": "upstream"
+  },
+  {
+   "name": "mathord",
+   "count": 265,
+   "origin": "katex"
+  },
+  {
+   "name": "vec",
+   "count": 250,
+   "origin": "katex"
+  },
+  {
+   "name": "lor",
+   "count": 239,
+   "origin": "katex"
+  },
+  {
+   "name": "in",
+   "count": 219,
+   "origin": "katex"
+  },
+  {
+   "name": "mathsf",
+   "count": 215,
+   "origin": "katex"
+  },
+  {
+   "name": "left",
+   "count": 198,
+   "origin": "katex"
+  },
+  {
+   "name": "right",
+   "count": 198,
+   "origin": "katex"
+  },
+  {
+   "name": "Value",
+   "count": 195,
+   "origin": "upstream"
+  },
+  {
+   "name": "Domain",
+   "count": 193,
+   "origin": "upstream"
+  },
+  {
+   "name": "gn",
+   "count": 193,
+   "origin": "override"
+  },
+  {
+   "name": "ulcorner",
+   "count": 193,
+   "origin": "katex"
+  },
+  {
+   "name": "urcorner",
+   "count": 193,
+   "origin": "katex"
+  },
+  {
+   "name": "equiv",
+   "count": 191,
+   "origin": "katex"
+  },
+  {
+   "name": "Assign",
+   "count": 185,
+   "origin": "upstream"
+  },
+  {
+   "name": "ident",
+   "count": 179,
+   "origin": "upstream"
+  },
+  {
+   "name": "subst",
+   "count": 172,
+   "origin": "upstream"
+  },
+  {
+   "name": "Subst",
+   "count": 172,
+   "origin": "upstream"
+  },
+  {
+   "name": "langle",
+   "count": 170,
+   "origin": "katex"
+  },
+  {
+   "name": "rangle",
+   "count": 170,
+   "origin": "katex"
+  },
+  {
+   "name": "closeTuple",
+   "count": 156,
+   "origin": "upstream"
+  },
+  {
+   "name": "openTuple",
+   "count": 156,
+   "origin": "upstream"
+  },
+  {
+   "name": "tuple",
+   "count": 156,
+   "origin": "upstream"
+  },
+  {
+   "name": "Elim",
+   "count": 147,
+   "origin": "upstream"
+  },
+  {
+   "name": "text",
+   "count": 146,
+   "origin": "katex"
+  },
+  {
+   "name": "mathbb",
+   "count": 143,
+   "origin": "katex"
+  },
+  {
+   "name": "Intro",
+   "count": 136,
+   "origin": "upstream"
+  },
+  {
+   "name": "Nat",
+   "count": 130,
+   "origin": "upstream"
+  },
+  {
+   "name": "bot",
+   "count": 127,
+   "origin": "katex"
+  },
+  {
+   "name": "lfalse",
+   "count": 125,
+   "origin": "upstream"
+  },
+  {
+   "name": "Lang",
+   "count": 121,
+   "origin": "upstream"
+  },
+  {
+   "name": "mathcal",
+   "count": 121,
+   "origin": "katex"
+  },
+  {
+   "name": "delta",
+   "count": 115,
+   "origin": "katex"
+  },
+  {
+   "name": "mbox",
+   "count": 113,
+   "origin": "katex"
+  },
+  {
+   "name": "Gn",
+   "count": 109,
+   "origin": "upstream"
+  },
+  {
+   "name": "reflectbox",
+   "count": 109,
+   "origin": "katex"
+  },
+  {
+   "name": "tiny",
+   "count": 109,
+   "origin": "katex"
+  },
+  {
+   "name": "OProv",
+   "count": 101,
+   "origin": "upstream"
+  },
+  {
+   "name": "neq",
+   "count": 99,
+   "origin": "katex"
+  },
+  {
+   "name": "nssucc",
+   "count": 97,
+   "origin": "upstream"
+  },
+  {
+   "name": "Discharge",
+   "count": 89,
+   "origin": "upstream"
+  },
+  {
+   "name": "xrightarrow",
+   "count": 86,
+   "origin": "katex"
+  },
+  {
+   "name": "cdot",
+   "count": 85,
+   "origin": "katex"
+  },
+  {
+   "name": "mathrel",
+   "count": 81,
+   "origin": "katex"
+  },
+  {
+   "name": "nsless",
+   "count": 79,
+   "origin": "override"
+  },
+  {
+   "name": "ominus",
+   "count": 79,
+   "origin": "katex"
+  },
+  {
+   "name": "Atom",
+   "count": 77,
+   "origin": "upstream"
+  },
+  {
+   "name": "cfind",
+   "count": 74,
+   "origin": "upstream"
+  },
+  {
+   "name": "varphi",
+   "count": 74,
+   "origin": "katex"
+  },
+  {
+   "name": "oplus",
+   "count": 73,
+   "origin": "katex"
+  },
+  {
    "name": "Char",
-   "count": 57,
+   "count": 69,
    "origin": "upstream"
   },
   {
    "name": "chi",
-   "count": 57,
+   "count": 69,
    "origin": "katex"
   },
   {
-   "name": "Add",
-   "count": 56,
+   "name": "nsplus",
+   "count": 69,
    "origin": "upstream"
   },
   {
-   "name": "lor",
+   "name": "Proj",
+   "count": 69,
+   "origin": "upstream"
+  },
+  {
+   "name": "Entails",
+   "count": 67,
+   "origin": "upstream"
+  },
+  {
+   "name": "mkern",
+   "count": 60,
+   "origin": "katex"
+  },
+  {
+   "name": "red",
+   "count": 60,
+   "origin": "upstream"
+  },
+  {
+   "name": "xrightarrowdbl",
+   "count": 60,
+   "origin": "upstream"
+  },
+  {
+   "name": "begin",
+   "count": 59,
+   "origin": "katex"
+  },
+  {
+   "name": "end",
+   "count": 59,
+   "origin": "katex"
+  },
+  {
+   "name": "leftrightarrow",
+   "count": 58,
+   "origin": "katex"
+  },
+  {
+   "name": "liff",
+   "count": 58,
+   "origin": "upstream"
+  },
+  {
+   "name": "Add",
+   "count": 57,
+   "origin": "upstream"
+  },
+  {
+   "name": "subseteq",
    "count": 53,
    "origin": "katex"
   },
   {
-   "name": "neq",
-   "count": 45,
+   "name": "times",
+   "count": 53,
    "origin": "katex"
+  },
+  {
+   "name": "prime",
+   "count": 52,
+   "origin": "katex"
+  },
+  {
+   "name": "beta",
+   "count": 51,
+   "origin": "katex"
+  },
+  {
+   "name": "nvDash",
+   "count": 50,
+   "origin": "katex"
+  },
+  {
+   "name": "indfrm",
+   "count": 48,
+   "origin": "upstream"
+  },
+  {
+   "name": "Setabs",
+   "count": 48,
+   "origin": "upstream"
+  },
+  {
+   "name": "Succ",
+   "count": 45,
+   "origin": "upstream"
+  },
+  {
+   "name": "cup",
+   "count": 44,
+   "origin": "katex"
+  },
+  {
+   "name": "OPrf",
+   "count": 42,
+   "origin": "upstream"
   },
   {
    "name": "Mult",
@@ -1381,18 +3191,58 @@
    "origin": "upstream"
   },
   {
-   "name": "Succ",
+   "name": "mu",
    "count": 39,
-   "origin": "upstream"
+   "origin": "katex"
+  },
+  {
+   "name": "nvdash",
+   "count": 37,
+   "origin": "katex"
+  },
+  {
+   "name": "qquad",
+   "count": 37,
+   "origin": "katex"
   },
   {
    "name": "concat",
-   "count": 32,
+   "count": 34,
    "origin": "upstream"
   },
   {
    "name": "frown",
+   "count": 34,
+   "origin": "katex"
+  },
+  {
+   "name": "to",
+   "count": 34,
+   "origin": "katex"
+  },
+  {
+   "name": "downarrow",
+   "count": 33,
+   "origin": "katex"
+  },
+  {
+   "name": "ORefut",
+   "count": 33,
+   "origin": "upstream"
+  },
+  {
+   "name": "colon",
    "count": 32,
+   "origin": "katex"
+  },
+  {
+   "name": "fdefined",
+   "count": 32,
+   "origin": "upstream"
+  },
+  {
+   "name": "simeq",
+   "count": 30,
    "origin": "katex"
   },
   {
@@ -1401,17 +3251,47 @@
    "origin": "upstream"
   },
   {
-   "name": "equiv",
-   "count": 29,
+   "name": "omega",
+   "count": 28,
    "origin": "katex"
   },
   {
-   "name": "qquad",
-   "count": 26,
+   "name": "umin",
+   "count": 28,
+   "origin": "upstream"
+  },
+  {
+   "name": "Zero",
+   "count": 28,
+   "origin": "upstream"
+  },
+  {
+   "name": "quad",
+   "count": 27,
    "origin": "katex"
+  },
+  {
+   "name": "Prf",
+   "count": 26,
+   "origin": "upstream"
+  },
+  {
+   "name": "redone",
+   "count": 26,
+   "origin": "upstream"
   },
   {
    "name": "bforall",
+   "count": 25,
+   "origin": "upstream"
+  },
+  {
+   "name": "le",
+   "count": 25,
+   "origin": "katex"
+  },
+  {
+   "name": "len",
    "count": 25,
    "origin": "upstream"
   },
@@ -1421,34 +3301,19 @@
    "origin": "upstream"
   },
   {
-   "name": "leftrightarrow",
-   "count": 24,
+   "name": "OCon",
+   "count": 23,
+   "origin": "upstream"
+  },
+  {
+   "name": "dot",
+   "count": 22,
    "origin": "katex"
   },
   {
-   "name": "len",
-   "count": 24,
-   "origin": "upstream"
-  },
-  {
-   "name": "liff",
-   "count": 24,
-   "origin": "upstream"
-  },
-  {
-   "name": "Value",
-   "count": 24,
-   "origin": "upstream"
-  },
-  {
-   "name": "ident",
-   "count": 23,
-   "origin": "upstream"
-  },
-  {
-   "name": "Zero",
-   "count": 23,
-   "origin": "upstream"
+   "name": "ldots",
+   "count": 22,
+   "origin": "katex"
   },
   {
    "name": "mid",
@@ -1456,78 +3321,23 @@
    "origin": "katex"
   },
   {
-   "name": "OPrf",
-   "count": 22,
-   "origin": "upstream"
-  },
-  {
-   "name": "quad",
-   "count": 22,
-   "origin": "katex"
-  },
-  {
-   "name": "bot",
-   "count": 21,
-   "origin": "katex"
-  },
-  {
-   "name": "lfalse",
-   "count": 21,
-   "origin": "upstream"
-  },
-  {
-   "name": "mu",
-   "count": 21,
-   "origin": "katex"
-  },
-  {
-   "name": "Prf",
-   "count": 21,
-   "origin": "upstream"
-  },
-  {
-   "name": "begin",
-   "count": 20,
-   "origin": "katex"
-  },
-  {
-   "name": "beta",
-   "count": 20,
-   "origin": "katex"
-  },
-  {
-   "name": "dot",
-   "count": 20,
-   "origin": "katex"
-  },
-  {
-   "name": "end",
-   "count": 20,
-   "origin": "katex"
-  },
-  {
-   "name": "mathbb",
-   "count": 20,
-   "origin": "katex"
-  },
-  {
-   "name": "Nat",
-   "count": 20,
-   "origin": "upstream"
-  },
-  {
-   "name": "omega",
-   "count": 20,
-   "origin": "katex"
-  },
-  {
    "name": "tsub",
-   "count": 20,
+   "count": 22,
    "origin": "upstream"
   },
   {
-   "name": "Intro",
+   "name": "VDash",
+   "count": 20,
+   "origin": "override"
+  },
+  {
+   "name": "Delta",
    "count": 19,
+   "origin": "katex"
+  },
+  {
+   "name": "FalseCl",
+   "count": 18,
    "origin": "upstream"
   },
   {
@@ -1536,57 +3346,82 @@
    "origin": "katex"
   },
   {
-   "name": "Sat",
-   "count": 18,
+   "name": "circ",
+   "count": 16,
+   "origin": "katex"
+  },
+  {
+   "name": "ORProv",
+   "count": 16,
    "origin": "upstream"
   },
   {
-   "name": "nvdash",
-   "count": 17,
-   "origin": "katex"
-  },
-  {
-   "name": "vDash",
-   "count": 17,
-   "origin": "katex"
-  },
-  {
-   "name": "Elim",
+   "name": "Theory",
    "count": 15,
    "origin": "upstream"
   },
   {
-   "name": "OCon",
-   "count": 15,
-   "origin": "upstream"
-  },
-  {
-   "name": "cfind",
+   "name": "Complement",
    "count": 14,
    "origin": "upstream"
   },
   {
-   "name": "ORefut",
+   "name": "fundefined",
    "count": 14,
    "origin": "upstream"
   },
   {
-   "name": "varphi",
+   "name": "uparrow",
    "count": 14,
    "origin": "katex"
   },
   {
-   "name": "le",
+   "name": "ge",
    "count": 13,
    "origin": "katex"
   },
   {
-   "name": "Gamma",
-   "count": 11,
+   "name": "Pow",
+   "count": 13,
+   "origin": "upstream"
+  },
+  {
+   "name": "wp",
+   "count": 13,
    "origin": "katex"
   },
   {
+   "name": "aleph",
+   "count": 12,
+   "origin": "katex"
+  },
+  {
+   "name": "emptyset",
+   "count": 12,
+   "origin": "katex"
+  },
+  {
+   "name": "notin",
+   "count": 12,
+   "origin": "katex"
+  },
+  {
+   "name": "FalseInt",
+   "count": 11,
+   "origin": "upstream"
+  },
+  {
    "name": "defiff",
+   "count": 10,
+   "origin": "upstream"
+  },
+  {
+   "name": "equal",
+   "count": 10,
+   "origin": "upstream"
+  },
+  {
+   "name": "indfrmp",
    "count": 10,
    "origin": "upstream"
   },
@@ -1596,19 +3431,14 @@
    "origin": "katex"
   },
   {
-   "name": "ORProv",
+   "name": "Prov",
    "count": 10,
    "origin": "upstream"
   },
   {
-   "name": "times",
+   "name": "stackrel",
    "count": 10,
    "origin": "katex"
-  },
-  {
-   "name": "umin",
-   "count": 10,
-   "origin": "upstream"
   },
   {
    "name": "bmin",
@@ -1616,68 +3446,38 @@
    "origin": "upstream"
   },
   {
-   "name": "downarrow",
-   "count": 9,
-   "origin": "katex"
-  },
-  {
-   "name": "fdefined",
+   "name": "Real",
    "count": 9,
    "origin": "upstream"
   },
   {
-   "name": "in",
-   "count": 9,
-   "origin": "katex"
-  },
-  {
-   "name": "subst",
-   "count": 9,
-   "origin": "upstream"
-  },
-  {
-   "name": "Subst",
-   "count": 9,
-   "origin": "upstream"
-  },
-  {
-   "name": "Prov",
+   "name": "cardle",
    "count": 8,
    "origin": "upstream"
   },
   {
-   "name": "Delta",
+   "name": "preceq",
+   "count": 8,
+   "origin": "katex"
+  },
+  {
+   "name": "setminus",
+   "count": 8,
+   "origin": "katex"
+  },
+  {
+   "name": "approx",
    "count": 7,
    "origin": "katex"
   },
   {
-   "name": "prime",
+   "name": "cardeq",
    "count": 7,
-   "origin": "katex"
+   "origin": "upstream"
   },
   {
    "name": "Sigma",
    "count": 7,
-   "origin": "katex"
-  },
-  {
-   "name": "simeq",
-   "count": 7,
-   "origin": "katex"
-  },
-  {
-   "name": "fundefined",
-   "count": 6,
-   "origin": "upstream"
-  },
-  {
-   "name": "Lang",
-   "count": 6,
-   "origin": "upstream"
-  },
-  {
-   "name": "mathcal",
-   "count": 6,
    "origin": "katex"
   },
   {
@@ -1691,14 +3491,19 @@
    "origin": "katex"
   },
   {
-   "name": "Setabs",
+   "name": "nszero",
    "count": 6,
    "origin": "upstream"
   },
   {
-   "name": "uparrow",
+   "name": "vdots",
    "count": 6,
    "origin": "katex"
+  },
+  {
+   "name": "bredone",
+   "count": 5,
+   "origin": "upstream"
   },
   {
    "name": "defis",
@@ -1716,22 +3521,37 @@
    "origin": "katex"
   },
   {
-   "name": "left",
+   "name": "hline",
    "count": 5,
    "origin": "katex"
   },
   {
-   "name": "right",
+   "name": "ltrue",
+   "count": 5,
+   "origin": "upstream"
+  },
+  {
+   "name": "nstimes",
+   "count": 5,
+   "origin": "upstream"
+  },
+  {
+   "name": "otimes",
    "count": 5,
    "origin": "katex"
   },
   {
-   "name": "vdots",
+   "name": "rho",
    "count": 5,
    "origin": "katex"
   },
   {
-   "name": "colon",
+   "name": "top",
+   "count": 5,
+   "origin": "katex"
+  },
+  {
+   "name": "ast",
    "count": 4,
    "origin": "katex"
   },
@@ -1741,19 +3561,44 @@
    "origin": "upstream"
   },
   {
-   "name": "ge",
-   "count": 4,
-   "origin": "katex"
-  },
-  {
    "name": "Lambda",
    "count": 4,
    "origin": "katex"
   },
   {
-   "name": "to",
+   "name": "pi",
    "count": 4,
    "origin": "katex"
+  },
+  {
+   "name": "sim",
+   "count": 4,
+   "origin": "katex"
+  },
+  {
+   "name": "underbrace",
+   "count": 4,
+   "origin": "katex"
+  },
+  {
+   "name": "varAssign",
+   "count": 4,
+   "origin": "upstream"
+  },
+  {
+   "name": "bred",
+   "count": 3,
+   "origin": "upstream"
+  },
+  {
+   "name": "dagger",
+   "count": 3,
+   "origin": "katex"
+  },
+  {
+   "name": "elemequiv",
+   "count": 3,
+   "origin": "upstream"
   },
   {
    "name": "geq",
@@ -1761,9 +3606,24 @@
    "origin": "katex"
   },
   {
+   "name": "Id",
+   "count": 3,
+   "origin": "upstream"
+  },
+  {
+   "name": "Int",
+   "count": 3,
+   "origin": "upstream"
+  },
+  {
    "name": "kern",
    "count": 3,
    "origin": "katex"
+  },
+  {
+   "name": "ran",
+   "count": 3,
+   "origin": "upstream"
   },
   {
    "name": "Refut",
@@ -1771,12 +3631,12 @@
    "origin": "upstream"
   },
   {
-   "name": "Complement",
+   "name": "Frm",
    "count": 2,
    "origin": "upstream"
   },
   {
-   "name": "Discharge",
+   "name": "indcomplex",
    "count": 2,
    "origin": "upstream"
   },
@@ -1786,12 +3646,17 @@
    "origin": "upstream"
   },
   {
-   "name": "ldots",
+   "name": "mathfrak",
    "count": 2,
    "origin": "katex"
   },
   {
    "name": "max",
+   "count": 2,
+   "origin": "katex"
+  },
+  {
+   "name": "not",
    "count": 2,
    "origin": "katex"
   },
@@ -1806,8 +3671,13 @@
    "origin": "katex"
   },
   {
-   "name": "subseteq",
+   "name": "Trm",
    "count": 2,
+   "origin": "upstream"
+  },
+  {
+   "name": "alpha",
+   "count": 1,
    "origin": "katex"
   },
   {
@@ -1821,17 +3691,22 @@
    "origin": "katex"
   },
   {
-   "name": "cup",
+   "name": "cap",
    "count": 1,
    "origin": "katex"
   },
   {
-   "name": "FalseCl",
+   "name": "dotsc",
+   "count": 1,
+   "origin": "katex"
+  },
+  {
+   "name": "eqs",
    "count": 1,
    "origin": "upstream"
   },
   {
-   "name": "FalseInt",
+   "name": "Expan",
    "count": 1,
    "origin": "upstream"
   },
@@ -1841,9 +3716,19 @@
    "origin": "katex"
   },
   {
+   "name": "FrmSOL",
+   "count": 1,
+   "origin": "upstream"
+  },
+  {
    "name": "iddots",
    "count": 1,
    "origin": "override"
+  },
+  {
+   "name": "iso",
+   "count": 1,
+   "origin": "upstream"
   },
   {
    "name": "lfloor",
@@ -1851,17 +3736,22 @@
    "origin": "katex"
   },
   {
-   "name": "ltrue",
-   "count": 1,
-   "origin": "upstream"
-  },
-  {
    "name": "mathinner",
    "count": 1,
    "origin": "katex"
   },
   {
-   "name": "nvDash",
+   "name": "models",
+   "count": 1,
+   "origin": "katex"
+  },
+  {
+   "name": "ni",
+   "count": 1,
+   "origin": "katex"
+  },
+  {
+   "name": "overbrace",
    "count": 1,
    "origin": "katex"
   },
@@ -1869,6 +3759,16 @@
    "name": "prod",
    "count": 1,
    "origin": "katex"
+  },
+  {
+   "name": "pto",
+   "count": 1,
+   "origin": "override"
+  },
+  {
+   "name": "Rat",
+   "count": 1,
+   "origin": "upstream"
   },
   {
    "name": "rbrace",
@@ -1881,9 +3781,14 @@
    "origin": "katex"
   },
   {
-   "name": "setminus",
+   "name": "rightharpoonup",
    "count": 1,
    "origin": "katex"
+  },
+  {
+   "name": "Sent",
+   "count": 1,
+   "origin": "upstream"
   },
   {
    "name": "sum",
@@ -1891,9 +3796,14 @@
    "origin": "katex"
   },
   {
-   "name": "top",
+   "name": "TrmSOL",
    "count": 1,
-   "origin": "katex"
+   "origin": "upstream"
+  },
+  {
+   "name": "Var",
+   "count": 1,
+   "origin": "upstream"
   }
  ]
 }

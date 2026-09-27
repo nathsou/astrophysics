@@ -144,14 +144,279 @@
    }
   },
   {
-   "level": "warning",
-   "code": "external-ref",
-   "message": "reference to inc:int:def:def:standard-model, which is outside the converted chapters"
+   "level": "info",
+   "code": "multline",
+   "message": "multline is typeset as gather (KaTeX has no multline)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/second-order-logic/syntax-and-semantics/expressive-power.tex",
+    "line": 75,
+    "endLine": 75
+   }
   },
   {
    "level": "warning",
-   "code": "external-ref",
-   "message": "reference to fol:ntd:sou:cor:consistency-soundness, which is outside the converted chapters"
+   "code": "unbalanced-math",
+   "message": "a $ inside an unclosed brace group (upstream typo?)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/second-order-logic/metatheory/undecidability-and-axiomatizability.tex",
+    "line": 33,
+    "endLine": 33
+   }
+  },
+  {
+   "level": "info",
+   "code": "multline",
+   "message": "multline is typeset as gather (KaTeX has no multline)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/second-order-logic/sol-and-set-theory/comparing-sets.tex",
+    "line": 51,
+    "endLine": 51
+   }
+  },
+  {
+   "level": "info",
+   "code": "multline",
+   "message": "multline is typeset as gather (KaTeX has no multline)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/second-order-logic/sol-and-set-theory/cardinalities.tex",
+    "line": 22,
+    "endLine": 22
+   }
+  },
+  {
+   "level": "info",
+   "code": "multline",
+   "message": "multline is typeset as gather (KaTeX has no multline)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/second-order-logic/sol-and-set-theory/cardinalities.tex",
+    "line": 33,
+    "endLine": 33
+   }
+  },
+  {
+   "level": "info",
+   "code": "multline",
+   "message": "multline is typeset as gather (KaTeX has no multline)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/second-order-logic/sol-and-set-theory/power-of-continuum.tex",
+    "line": 59,
+    "endLine": 59
+   }
+  },
+  {
+   "level": "info",
+   "code": "multline",
+   "message": "multline is typeset as gather (KaTeX has no multline)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/second-order-logic/sol-and-set-theory/power-of-continuum.tex",
+    "line": 79,
+    "endLine": 79
+   }
+  },
+  {
+   "level": "info",
+   "code": "multline",
+   "message": "multline is typeset as gather (KaTeX has no multline)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/second-order-logic/sol-and-set-theory/power-of-continuum.tex",
+    "line": 103,
+    "endLine": 103
+   }
+  },
+  {
+   "level": "info",
+   "code": "multline",
+   "message": "multline is typeset as gather (KaTeX has no multline)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/second-order-logic/sol-and-set-theory/power-of-continuum.tex",
+    "line": 125,
+    "endLine": 125
+   }
+  },
+  {
+   "level": "info",
+   "code": "multline",
+   "message": "multline is typeset as gather (KaTeX has no multline)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/introduction/currying.tex",
+    "line": 55,
+    "endLine": 55
+   }
+  },
+  {
+   "level": "info",
+   "code": "editorial-omitted",
+   "message": "editorial note omitted (not printed in the book)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/lambda-definability/arithmetical-functions.tex",
+    "line": 108,
+    "endLine": 108
+   }
+  },
+  {
+   "level": "warning",
+   "code": "list-junk",
+   "message": "content before first \\item",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/first-order-logic/syntax-and-semantics/first-order-languages.tex",
+    "line": 36,
+    "endLine": 36
+   }
+  },
+  {
+   "level": "info",
+   "code": "editorial-omitted",
+   "message": "intro note omitted (not printed in the book)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/first-order-logic/syntax-and-semantics/first-order-languages.tex",
+    "line": 120,
+    "endLine": 120
+   }
+  },
+  {
+   "level": "info",
+   "code": "editorial-omitted",
+   "message": "intro note omitted (not printed in the book)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/first-order-logic/syntax-and-semantics/terms-formulas.tex",
+    "line": 110,
+    "endLine": 110
+   }
+  },
+  {
+   "level": "info",
+   "code": "editorial-omitted",
+   "message": "prob note omitted (not printed in the book)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/first-order-logic/syntax-and-semantics/satisfaction.tex",
+    "line": 378,
+    "endLine": 378
+   }
+  },
+  {
+   "level": "info",
+   "code": "editorial-omitted",
+   "message": "prob note omitted (not printed in the book)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/first-order-logic/syntax-and-semantics/satisfaction.tex",
+    "line": 395,
+    "endLine": 395
+   }
+  },
+  {
+   "level": "info",
+   "code": "multline",
+   "message": "multline is typeset as gather (KaTeX has no multline)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/first-order-logic/syntax-and-semantics/extensionality.tex",
+    "line": 87,
+    "endLine": 87
+   }
+  },
+  {
+   "level": "info",
+   "code": "editorial-omitted",
+   "message": "editorial note omitted (not printed in the book)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/first-order-logic/natural-deduction/proof-theoretic-notions.tex",
+    "line": 15,
+    "endLine": 15
+   }
+  },
+  {
+   "level": "info",
+   "code": "editorial-omitted",
+   "message": "prob note omitted (not printed in the book)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/first-order-logic/natural-deduction/proof-theoretic-notions.tex",
+    "line": 131,
+    "endLine": 131
+   }
+  },
+  {
+   "level": "info",
+   "code": "editorial-omitted",
+   "message": "prob note omitted (not printed in the book)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/first-order-logic/natural-deduction/soundness.tex",
+    "line": 286,
+    "endLine": 286
+   }
+  },
+  {
+   "level": "info",
+   "code": "photo-omitted",
+   "message": "photograph omitted (photos are not part of this edition)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/history/biographies/alonzo-church.tex",
+    "line": 13,
+    "endLine": 13
+   }
+  },
+  {
+   "level": "info",
+   "code": "photo-omitted",
+   "message": "photograph omitted (photos are not part of this edition)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/history/biographies/kurt-goedel.tex",
+    "line": 13,
+    "endLine": 13
+   }
+  },
+  {
+   "level": "info",
+   "code": "photo-omitted",
+   "message": "photograph omitted (photos are not part of this edition)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/history/biographies/rozsa-peter.tex",
+    "line": 13,
+    "endLine": 13
+   }
+  },
+  {
+   "level": "info",
+   "code": "photo-omitted",
+   "message": "photograph omitted (photos are not part of this edition)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/history/biographies/julia-robinson.tex",
+    "line": 12,
+    "endLine": 12
+   }
+  },
+  {
+   "level": "info",
+   "code": "photo-omitted",
+   "message": "photograph omitted (photos are not part of this edition)",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/history/biographies/alfred-tarski.tex",
+    "line": 13,
+    "endLine": 13
+   }
   }
  ]
 }

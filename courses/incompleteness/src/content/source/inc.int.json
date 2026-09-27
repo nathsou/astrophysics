@@ -1,0 +1,7247 @@
+{
+ "id": "inc.int",
+ "number": "1",
+ "title": "Introduction to Incompleteness",
+ "loc": {
+  "repo": "OpenLogic",
+  "file": "content/incompleteness/introduction/introduction.tex",
+  "line": 1,
+  "endLine": 20
+ },
+ "sections": [
+  {
+   "id": "inc.int.bgr",
+   "number": "1.1",
+   "title": [
+    {
+     "t": "text",
+     "v": "Historical Background"
+    }
+   ],
+   "titleText": "Historical Background",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/introduction/historical-background.tex",
+    "line": 1,
+    "endLine": 223
+   },
+   "blocks": [
+    {
+     "t": "p",
+     "id": "inc.int.bgr/p2",
+     "c": [
+      {
+       "t": "text",
+       "v": "In this section, we will briefly discuss historical developments that will help put the incompleteness theorems in context. In particular, we will give a very sketchy overview of the history of mathematical logic; and then say a few words about the history of the foundations of mathematics."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/historical-background.tex",
+      "line": 13,
+      "endLine": 17
+     }
+    },
+    {
+     "t": "env",
+     "id": "inc.int.bgr/digress3",
+     "kind": "digress",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.bgr/p4",
+       "c": [
+        {
+         "t": "text",
+         "v": "The phrase “mathematical logic” is ambiguous. One can interpret the word “mathematical” as describing the subject matter, as in, “the logic of mathematics,” denoting the principles of mathematical reasoning; or as describing the methods, as in “the mathematics of logic,” denoting a mathematical study of the principles of reasoning. The account that follows involves mathematical logic in both senses, often at the same time."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/historical-background.tex",
+        "line": 20,
+        "endLine": 27
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/historical-background.tex",
+      "line": 19,
+      "endLine": 27
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.bgr/p9",
+     "c": [
+      {
+       "t": "text",
+       "v": "The study of logic began, essentially, with Aristotle, who lived approximately 384–322 "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "bce"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": ". His "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "Categories"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "Prior analytics"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": ", and "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "Posterior analytics"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": " include systematic studies of the principles of scientific reasoning, including a thorough and systematic study of the syllogism."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/historical-background.tex",
+      "line": 31,
+      "endLine": 33
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.bgr/p10",
+     "c": [
+      {
+       "t": "text",
+       "v": "Aristotle’s logic dominated scholastic philosophy through the middle ages; indeed, as late as the eighteenth century, Kant maintained that Aristotle’s logic was perfect and in no need of revision. But the theory of the syllogism is far too limited to model anything but the most superficial aspects of mathematical reasoning. A century earlier, Leibniz, a contemporary of Newton’s, imagined a complete “calculus” for logical reasoning, and made some rudimentary steps towards designing such a calculus, essentially describing a version of propositional logic."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/historical-background.tex",
+      "line": 35,
+      "endLine": 43
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.bgr/p14",
+     "c": [
+      {
+       "t": "text",
+       "v": "The nineteenth century was a watershed for logic. In 1854 George Boole wrote "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "The Laws of Thought"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": ", with a thorough algebraic study of propositional logic that is not far from modern presentations. In 1879 Gottlob Frege published his "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "Begriffsschrift"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": " (Concept writing) which extends propositional logic with quantifiers and relations, and thus includes first-order logic. In fact, Frege’s logical systems included higher-order logic as well, and more. In his "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "Basic Laws of Arithmetic"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": ", Frege set out to show that all of arithmetic could be derived in his Begriffsschrift from purely logical assumption. Unfortunately, these assumptions turned out to be inconsistent, as Russell showed in 1902. But setting aside the inconsistent axiom, Frege more or less invented modern logic singlehandedly, a startling achievement. Quantificational logic was also developed independently by algebraically-minded thinkers after Boole, including Peirce and Schröder."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/historical-background.tex",
+      "line": 51,
+      "endLine": 59
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.bgr/p17",
+     "c": [
+      {
+       "t": "text",
+       "v": "Let us now turn to developments in the foundations of mathematics. Of course, since logic plays an important role in mathematics, there is a good deal of interaction with the developments just described. For example, Frege developed his logic with the explicit purpose of showing that all of mathematics could be based solely on his logical framework; in particular, he wished to show that mathematics consists of a priori "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "analytic"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": " truths instead of, as Kant had maintained, a priori "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "synthetic"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": " ones."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/historical-background.tex",
+      "line": 68,
+      "endLine": 68
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.bgr/p20",
+     "c": [
+      {
+       "t": "text",
+       "v": "Many take the birth of mathematics proper to have occurred with the Greeks. Euclid’s "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "Elements"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": ", written around 300 B.C., is already a mature representative of Greek mathematics, with its emphasis on rigor and precision. The definitions and proofs in Euclid’s "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "Elements"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": " survive more or less intact in high school geometry textbooks today (to the extent that geometry is still taught in high schools). This model of mathematical reasoning has been held to be a paradigm for rigorous argumentation not only in mathematics but in branches of philosophy as well. (Spinoza even presented moral and religious arguments in the Euclidean style, which is strange to see!)"
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/historical-background.tex",
+      "line": 74,
+      "endLine": 79
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.bgr/p21",
+     "c": [
+      {
+       "t": "text",
+       "v": "Calculus was invented by Newton and Leibniz in the seventeenth century. (A fierce priority dispute raged for centuries, but most scholars today hold that the two developments were for the most part independent.) Calculus involves reasoning about, for example, infinite sums of infinitely small quantities; these features fueled criticism by Bishop Berkeley, who argued that belief in God was no less rational than the mathematics of his time. The methods of calculus were widely used in the eighteenth century, for example by Leonhard Euler, who used calculations involving infinite sums with dramatic results."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/historical-background.tex",
+      "line": 81,
+      "endLine": 90
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.bgr/p22",
+     "c": [
+      {
+       "t": "text",
+       "v": "In the nineteenth century, mathematicians tried to address Berkeley’s criticisms by putting calculus on a firmer foundation. Efforts by Cauchy, Weierstrass, Bolzano, and others led to our contemporary definitions of limits, continuity, differentiation, and integration in terms of “epsilons and deltas,” in other words, devoid of any reference to infinitesimals. Later in the century, mathematicians tried to push further, and explain all aspects of calculus, including the real numbers themselves, in terms of the natural numbers. (Kronecker: “God created the whole numbers, all else is the work of man.”) In 1872, Dedekind wrote “Continuity and the irrational numbers,” where he showed how to “construct” the real numbers as sets of rational numbers (which, as you know, can be viewed as pairs of natural numbers); in 1888 he wrote “Was sind und was sollen die Zahlen” (roughly, “What are the natural numbers, and what should they be?”) which aimed to explain the natural numbers in purely “logical” terms. In 1887 Kronecker wrote “Über den Zahlbegriff” (“On the concept of number”) where he spoke of representing all mathematical object in terms of the integers; in 1889 Giuseppe Peano gave formal, symbolic axioms for the natural numbers."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/historical-background.tex",
+      "line": 92,
+      "endLine": 110
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.bgr/p23",
+     "c": [
+      {
+       "t": "text",
+       "v": "The end of the nineteenth century also brought a new boldness in dealing with the infinite. Before then, infinitary objects and structures (like the set of natural numbers) were treated gingerly; “infinitely many” was understood as “as many as you want,” and “approaches in the limit” was understood as “gets as close as you want.” But Georg Cantor showed that it was possible to take the infinite at face value. Work by Cantor, Dedekind, and others help to introduce the general set-theoretic understanding of mathematics that is now widely accepted."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/historical-background.tex",
+      "line": 112,
+      "endLine": 119
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.bgr/p25",
+     "c": [
+      {
+       "t": "text",
+       "v": "This brings us to twentieth century developments in logic and foundations. In 1902 Russell discovered the paradox in Frege’s logical system. In 1904 Zermelo proved Cantor’s well-ordering principle, using the so-called “axiom of choice”; the legitimacy of this axiom prompted a good deal of debate. Between 1910 and 1913 the three volumes of Russell and Whitehead’s "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "Principia Mathematica"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": " appeared, extending the Fregean program of establishing mathematics on logical grounds. Unfortunately, Russell and Whitehead were forced to adopt two principles that seemed hard to justify as purely logical: an axiom of infinity and an axiom of “reducibility.” In the 1900’s Poincaré criticized the use of “impredicative definitions” in mathematics, and in the 1910’s Brouwer began proposing to refound all of mathematics in an “intuitionistic” basis, which avoided the use of the law of the excluded middle ("
+      },
+      {
+       "t": "math",
+       "tex": "A \\lor \\lnot A",
+       "src": "!A \\lor \\lnot !A"
+      },
+      {
+       "t": "text",
+       "v": ")."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/historical-background.tex",
+      "line": 126,
+      "endLine": 134
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.bgr/p26",
+     "c": [
+      {
+       "t": "text",
+       "v": "Strange days indeed! The program of reducing all of mathematics to logic is now referred to as “logicism,” and is commonly viewed as having failed, due to the difficulties mentioned above. The program of developing mathematics in terms of intuitionistic mental constructions is called “intuitionism,” and is viewed as posing overly severe restrictions on everyday mathematics. Around the turn of the century, David Hilbert, one of the most influential mathematicians of all time, was a strong supporter of the new, abstract methods introduced by Cantor and Dedekind: “no one will drive us from the paradise that Cantor has created for us.” At the same time, he was sensitive to foundational criticisms of these new methods (oddly enough, now called “classical”). He proposed a way of having one’s cake and eating it too:"
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/historical-background.tex",
+      "line": 136,
+      "endLine": 149
+     }
+    },
+    {
+     "t": "list",
+     "id": "inc.int.bgr/l31",
+     "ordered": true,
+     "items": [
+      {
+       "id": "inc.int.bgr/i27",
+       "c": [
+        {
+         "t": "p",
+         "id": "inc.int.bgr/p28",
+         "c": [
+          {
+           "t": "text",
+           "v": "Represent classical methods with formal axioms and rules; represent mathematical questions as "
+          },
+          {
+           "t": "term",
+           "token": "formula",
+           "v": "formulas"
+          },
+          {
+           "t": "text",
+           "v": " in an axiomatic system."
+          }
+         ],
+         "loc": {
+          "repo": "OpenLogic",
+          "file": "content/incompleteness/introduction/historical-background.tex",
+          "line": 150,
+          "endLine": 152
+         }
+        }
+       ]
+      },
+      {
+       "id": "inc.int.bgr/i29",
+       "c": [
+        {
+         "t": "p",
+         "id": "inc.int.bgr/p30",
+         "c": [
+          {
+           "t": "text",
+           "v": "Use safe, “finitary” methods to prove that these formal deductive systems are consistent."
+          }
+         ],
+         "loc": {
+          "repo": "OpenLogic",
+          "file": "content/incompleteness/introduction/historical-background.tex",
+          "line": 153,
+          "endLine": 154
+         }
+        }
+       ]
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/historical-background.tex",
+      "line": 149,
+      "endLine": 155
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.bgr/p34",
+     "c": [
+      {
+       "t": "text",
+       "v": "Hilbert’s work went a long way toward accomplishing the first goal. In 1899, he had done this for geometry in his celebrated book "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "Foundations of geometry"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": ". In subsequent years, he and a number of his students and collaborators worked on other areas of mathematics to do what Hilbert had done for geometry. Hilbert himself gave axiom systems for arithmetic and analysis. Zermelo gave an axiomatization of set theory, which was expanded on by Fraenkel, Skolem, von Neumann, and others. By the mid-1920s, there were two approaches that laid claim to the title of an axiomatization of “all” of mathematics, the "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "Principia mathematica"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": " of Russell and Whitehead, and what came to be known as Zermelo–Fraenkel set theory."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/historical-background.tex",
+      "line": 166,
+      "endLine": 167
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.bgr/p35",
+     "c": [
+      {
+       "t": "text",
+       "v": "In 1921, Hilbert set out on a research project to establish the goal of proving these systems to be consistent. He was aided in this project by several of his students, in particular Bernays, Ackermann, and later Gentzen. The basic idea for accomplishing this goal was to cast the question of the possibility of "
+      },
+      {
+       "t": "term",
+       "token": "derivation",
+       "v": "derivation"
+      },
+      {
+       "t": "text",
+       "v": " of an inconsistency in mathematics as a combinatorial problem about possible sequences of symbols, namely possible sequences of sentences which meet the criterion of being a correct "
+      },
+      {
+       "t": "term",
+       "token": "derivation",
+       "v": "derivation"
+      },
+      {
+       "t": "text",
+       "v": " of, say, "
+      },
+      {
+       "t": "math",
+       "tex": "A \\land \\lnot A",
+       "src": "!A \\land\n\\lnot !A"
+      },
+      {
+       "t": "text",
+       "v": " from the axioms of an axiom system for arithmetic, analysis, or set theory. A proof of the impossibility of such a sequence of symbols would—since it is itself a mathematical proof—be formalizable in these axiomatic systems. In other words, there would be some sentence "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathsf{Con}",
+       "src": "\\OCon"
+      },
+      {
+       "t": "text",
+       "v": " which states that, say, arithmetic is consistent. Moreover, this sentence should be provable in the systems in question, especially if its proof requires only very restricted, “finitary” means."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/historical-background.tex",
+      "line": 169,
+      "endLine": 184
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.bgr/p37",
+     "c": [
+      {
+       "t": "text",
+       "v": "The second aim, that the axiom systems developed would settle every mathematical question, can be made precise in two ways. In one way, we can formulate it as follows: For any sentence "
+      },
+      {
+       "t": "math",
+       "tex": "A",
+       "src": "!A"
+      },
+      {
+       "t": "text",
+       "v": " in the language of an axiom system for mathematics, either "
+      },
+      {
+       "t": "math",
+       "tex": "A",
+       "src": "!A"
+      },
+      {
+       "t": "text",
+       "v": " or "
+      },
+      {
+       "t": "math",
+       "tex": "\\lnot A",
+       "src": "\\lnot !A"
+      },
+      {
+       "t": "text",
+       "v": " is provable from the axioms. If this were true, then there would be no sentences which can neither be proved nor refuted on the basis of the axioms, no questions which the axioms do not settle. An axiom system with this property is called "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "complete"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": ". Of course, for any given sentence it might still be a difficult task to determine which of the two alternatives holds. But in principle there should be a method to do so. In fact, for the axiom and "
+      },
+      {
+       "t": "term",
+       "token": "derivation",
+       "v": "derivation"
+      },
+      {
+       "t": "text",
+       "v": " systems considered by Hilbert, completeness would imply that such a method exists—although Hilbert did not realize this. The second way to interpret the question would be this stronger requirement: that there be a mechanical, computational method which would determine, for a given sentence "
+      },
+      {
+       "t": "math",
+       "tex": "A",
+       "src": "!A"
+      },
+      {
+       "t": "text",
+       "v": ", whether it is derivable from the axioms or not."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/historical-background.tex",
+      "line": 193,
+      "endLine": 201
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.bgr/p38",
+     "c": [
+      {
+       "t": "text",
+       "v": "In 1931, Gödel proved the two “incompleteness theorems,” which showed that this program could not succeed. There is no axiom system for mathematics which is complete, specifically, the sentence that expresses the consistency of the axioms is a sentence which can neither be proved nor refuted."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/historical-background.tex",
+      "line": 203,
+      "endLine": 207
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.bgr/p39",
+     "c": [
+      {
+       "t": "text",
+       "v": "This struck a lethal blow to Hilbert’s original program. However, as is so often the case in mathematics, it also opened up exciting new avenues for research. If there is no one, all-encompassing formal system of mathematics, it makes sense to develop more circumscribed systems and investigate what can be proved in them. It also makes sense to develop less restricted methods of proof for establishing the consistency of these systems, and to find ways to measure how hard it is to prove their consistency. Since Gödel showed that (almost) every formal system has questions it cannot settle, it makes sense to look for “interesting” questions a given formal system cannot settle, and to figure out how strong a formal system has to be to settle them. To the present day, logicians have been pursuing these questions in a new mathematical discipline, the theory of proofs."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/historical-background.tex",
+      "line": 209,
+      "endLine": 221
+     }
+    }
+   ]
+  },
+  {
+   "id": "inc.int.def",
+   "number": "1.2",
+   "title": [
+    {
+     "t": "text",
+     "v": "Definitions"
+    }
+   ],
+   "titleText": "Definitions",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/introduction/definitions.tex",
+    "line": 1,
+    "endLine": 313
+   },
+   "blocks": [
+    {
+     "t": "p",
+     "id": "inc.int.def/p2",
+     "c": [
+      {
+       "t": "text",
+       "v": "In order to carry out Hilbert’s project of formalizing mathematics and showing that such a formalization is consistent and complete, the first order of business would be that of picking a language, logical framework, and a system of axioms. For our purposes, let us suppose that mathematics can be formalized in a first-order language, i.e., that there is some set of "
+      },
+      {
+       "t": "term",
+       "token": "constant",
+       "v": "constant symbols"
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "term",
+       "token": "function",
+       "v": "function symbols"
+      },
+      {
+       "t": "text",
+       "v": ", and "
+      },
+      {
+       "t": "term",
+       "token": "predicate",
+       "v": "predicate symbols"
+      },
+      {
+       "t": "text",
+       "v": " which, together with the connectives and quantifiers of first-order logic, allow us to express the claims of mathematics. Most people agree that such a language exists: the language of set theory, in which "
+      },
+      {
+       "t": "math",
+       "tex": "\\in",
+       "src": "\\in"
+      },
+      {
+       "t": "text",
+       "v": " is the only non-logical symbol. That such a simple language is so expressive is of course a very implausible claim at first sight, and it took a lot of work to establish that practically all of mathematics can be expressed in this very austere vocabulary. To keep things simple, for now, let’s restrict our discussion to arithmetic, so the part of mathematics that just deals with the natural numbers "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbb{N}",
+       "src": "\\Nat"
+      },
+      {
+       "t": "text",
+       "v": ". The natural language in which to express facts of arithmetic is "
+      },
+      {
+       "t": "math",
+       "tex": "{\\mathcal{L}}_A",
+       "src": "\\Lang L_A"
+      },
+      {
+       "t": "text",
+       "v": ". "
+      },
+      {
+       "t": "math",
+       "tex": "{\\mathcal{L}}_A",
+       "src": "\\Lang L_A"
+      },
+      {
+       "t": "text",
+       "v": " contains a single two-place "
+      },
+      {
+       "t": "term",
+       "token": "predicate",
+       "v": "predicate symbol"
+      },
+      {
+       "t": "text",
+       "v": " "
+      },
+      {
+       "t": "math",
+       "tex": "<",
+       "src": "<"
+      },
+      {
+       "t": "text",
+       "v": ", a single "
+      },
+      {
+       "t": "term",
+       "token": "constant",
+       "v": "constant symbol"
+      },
+      {
+       "t": "text",
+       "v": " "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathsfit{0}",
+       "src": "\\Obj 0"
+      },
+      {
+       "t": "text",
+       "v": ", one one-place "
+      },
+      {
+       "t": "term",
+       "token": "function",
+       "v": "function symbol"
+      },
+      {
+       "t": "text",
+       "v": " "
+      },
+      {
+       "t": "math",
+       "tex": "\\prime",
+       "src": "\\prime"
+      },
+      {
+       "t": "text",
+       "v": ", and two two-place "
+      },
+      {
+       "t": "term",
+       "token": "function",
+       "v": "function symbols"
+      },
+      {
+       "t": "text",
+       "v": " "
+      },
+      {
+       "t": "math",
+       "tex": "+",
+       "src": "+"
+      },
+      {
+       "t": "text",
+       "v": " and "
+      },
+      {
+       "t": "math",
+       "tex": "\\times",
+       "src": "\\times"
+      },
+      {
+       "t": "text",
+       "v": "."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 13,
+      "endLine": 32
+     }
+    },
+    {
+     "t": "env",
+     "id": "inc.int.def/defn3",
+     "kind": "defn",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.def/p5",
+       "c": [
+        {
+         "t": "text",
+         "v": "A set of "
+        },
+        {
+         "t": "term",
+         "token": "sentence",
+         "v": "sentences"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " is a "
+        },
+        {
+         "t": "em",
+         "c": [
+          {
+           "t": "text",
+           "v": "theory"
+          }
+         ]
+        },
+        {
+         "t": "text",
+         "v": " if it is closed under entailment, i.e., if "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma = \\{ A : \\Gamma \\vDash A \\}",
+         "src": "\\Gamma = \\Setabs{!A}{\\Gamma \\Entails\n!A}"
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 35,
+        "endLine": 38
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 34,
+      "endLine": 38
+     },
+     "number": "1.1"
+    },
+    {
+     "t": "p",
+     "id": "inc.int.def/p6",
+     "c": [
+      {
+       "t": "text",
+       "v": "There are two easy ways to specify theories. One is as the set of "
+      },
+      {
+       "t": "term",
+       "token": "sentence",
+       "v": "sentences"
+      },
+      {
+       "t": "text",
+       "v": " true in some "
+      },
+      {
+       "t": "term",
+       "token": "structure",
+       "v": "structure"
+      },
+      {
+       "t": "text",
+       "v": ". For instance, consider the "
+      },
+      {
+       "t": "term",
+       "token": "structure",
+       "v": "structure"
+      },
+      {
+       "t": "text",
+       "v": " for "
+      },
+      {
+       "t": "math",
+       "tex": "{\\mathcal{L}}_A",
+       "src": "\\Lang L_A"
+      },
+      {
+       "t": "text",
+       "v": " in which the "
+      },
+      {
+       "t": "term",
+       "token": "domain",
+       "v": "domain"
+      },
+      {
+       "t": "text",
+       "v": " is "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbb{N}",
+       "src": "\\Nat"
+      },
+      {
+       "t": "text",
+       "v": " and all non-logical symbols are interpreted as you would expect."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 40,
+      "endLine": 43
+     }
+    },
+    {
+     "t": "env",
+     "id": "inc.int.def/def:standard-model",
+     "kind": "defn",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.def/p9",
+       "c": [
+        {
+         "t": "text",
+         "v": "The "
+        },
+        {
+         "t": "em",
+         "c": [
+          {
+           "t": "text",
+           "v": "standard model of arithmetic"
+          }
+         ]
+        },
+        {
+         "t": "text",
+         "v": " is the "
+        },
+        {
+         "t": "term",
+         "token": "structure",
+         "v": "structure"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "{\\boldsymbol{\\mathit{N}}}",
+         "src": "\\Struct\nN"
+        },
+        {
+         "t": "text",
+         "v": " defined as follows:"
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 46,
+        "endLine": 48
+       }
+      },
+      {
+       "t": "list",
+       "id": "inc.int.def/l22",
+       "ordered": true,
+       "items": [
+        {
+         "id": "inc.int.def/i10",
+         "c": [
+          {
+           "t": "p",
+           "id": "inc.int.def/p11",
+           "c": [
+            {
+             "t": "math",
+             "tex": "\\left| {\\boldsymbol{\\mathit{N}}} \\right| = \\mathbb{N}",
+             "src": "\\Domain N = \\Nat"
+            }
+           ],
+           "loc": {
+            "repo": "OpenLogic",
+            "file": "content/incompleteness/introduction/definitions.tex",
+            "line": 49,
+            "endLine": 49
+           }
+          }
+         ]
+        },
+        {
+         "id": "inc.int.def/i12",
+         "c": [
+          {
+           "t": "p",
+           "id": "inc.int.def/p13",
+           "c": [
+            {
+             "t": "math",
+             "tex": "\\mathord{\\mathsfit{0}^{{\\boldsymbol{\\mathit{N}}}}} = 0",
+             "src": "\\Assign{\\Obj 0}{N} = 0"
+            }
+           ],
+           "loc": {
+            "repo": "OpenLogic",
+            "file": "content/incompleteness/introduction/definitions.tex",
+            "line": 50,
+            "endLine": 50
+           }
+          }
+         ]
+        },
+        {
+         "id": "inc.int.def/i14",
+         "c": [
+          {
+           "t": "p",
+           "id": "inc.int.def/p15",
+           "c": [
+            {
+             "t": "math",
+             "tex": "\\mathord{\\mathsfit{\\prime}^{{\\boldsymbol{\\mathit{N}}}}}(n) = n + 1",
+             "src": "\\Assign{\\Obj \\prime}{N}(n) = n + 1"
+            },
+            {
+             "t": "text",
+             "v": " for all "
+            },
+            {
+             "t": "math",
+             "tex": "n \\in \\mathbb{N}",
+             "src": "n \\in \\Nat"
+            }
+           ],
+           "loc": {
+            "repo": "OpenLogic",
+            "file": "content/incompleteness/introduction/definitions.tex",
+            "line": 51,
+            "endLine": 51
+           }
+          }
+         ]
+        },
+        {
+         "id": "inc.int.def/i16",
+         "c": [
+          {
+           "t": "p",
+           "id": "inc.int.def/p17",
+           "c": [
+            {
+             "t": "math",
+             "tex": "\\mathord{\\mathsfit{+}^{{\\boldsymbol{\\mathit{N}}}}}(n, m) = n + m",
+             "src": "\\Assign{\\Obj +}{N}(n, m) = n + m"
+            },
+            {
+             "t": "text",
+             "v": " for all "
+            },
+            {
+             "t": "math",
+             "tex": "n, m \\in \\mathbb{N}",
+             "src": "n, m \\in \\Nat"
+            }
+           ],
+           "loc": {
+            "repo": "OpenLogic",
+            "file": "content/incompleteness/introduction/definitions.tex",
+            "line": 52,
+            "endLine": 52
+           }
+          }
+         ]
+        },
+        {
+         "id": "inc.int.def/i18",
+         "c": [
+          {
+           "t": "p",
+           "id": "inc.int.def/p19",
+           "c": [
+            {
+             "t": "math",
+             "tex": "\\mathord{\\mathsfit{\\times}^{{\\boldsymbol{\\mathit{N}}}}}(n, m) = n\\cdot m",
+             "src": "\\Assign{\\Obj \\times}{N}(n, m) = n\\cdot m"
+            },
+            {
+             "t": "text",
+             "v": " for all "
+            },
+            {
+             "t": "math",
+             "tex": "n, m \\in \\mathbb{N}",
+             "src": "n, m \\in \\Nat"
+            }
+           ],
+           "loc": {
+            "repo": "OpenLogic",
+            "file": "content/incompleteness/introduction/definitions.tex",
+            "line": 53,
+            "endLine": 53
+           }
+          }
+         ]
+        },
+        {
+         "id": "inc.int.def/i20",
+         "c": [
+          {
+           "t": "p",
+           "id": "inc.int.def/p21",
+           "c": [
+            {
+             "t": "math",
+             "tex": "\\mathord{\\mathsfit{<}^{{\\boldsymbol{\\mathit{N}}}}} = \\{ \\langle n, m \\rangle : n \\in \\mathbb{N}, m \\in \\mathbb{N}, n < m \\}",
+             "src": "\\Assign{\\Obj <}{N} = \\Setabs{\\tuple{n, m}}{n \\in \\Nat, m \\in\n  \\Nat, n < m}"
+            }
+           ],
+           "loc": {
+            "repo": "OpenLogic",
+            "file": "content/incompleteness/introduction/definitions.tex",
+            "line": 54,
+            "endLine": 55
+           }
+          }
+         ]
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 48,
+        "endLine": 56
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 45,
+      "endLine": 57
+     },
+     "number": "1.2",
+     "label": "inc:int:def:def:standard-model"
+    },
+    {
+     "t": "p",
+     "id": "inc.int.def/p24",
+     "c": [
+      {
+       "t": "text",
+       "v": "Note the difference between ‘"
+      },
+      {
+       "t": "math",
+       "tex": "\\times",
+       "src": "\\times"
+      },
+      {
+       "t": "text",
+       "v": "’ and ‘"
+      },
+      {
+       "t": "math",
+       "tex": "\\cdot",
+       "src": "\\cdot"
+      },
+      {
+       "t": "text",
+       "v": "’: "
+      },
+      {
+       "t": "math",
+       "tex": "\\times",
+       "src": "\\times"
+      },
+      {
+       "t": "text",
+       "v": " is a symbol in the language of arithmetic. Of course, we’ve chosen it to remind us of multiplication, but "
+      },
+      {
+       "t": "math",
+       "tex": "\\times",
+       "src": "\\times"
+      },
+      {
+       "t": "text",
+       "v": " is not the multiplication operation but a two-place function symbol (officially, "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathsfit{f}^2_1",
+       "src": "\\Obj f^2_1"
+      },
+      {
+       "t": "text",
+       "v": "). By contrast, "
+      },
+      {
+       "t": "math",
+       "tex": "\\cdot",
+       "src": "\\cdot"
+      },
+      {
+       "t": "text",
+       "v": " "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "is"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": " the ordinary multiplication function. When you see something like "
+      },
+      {
+       "t": "math",
+       "tex": "n \\cdot m",
+       "src": "n \\cdot m"
+      },
+      {
+       "t": "text",
+       "v": ", we mean the product of the numbers "
+      },
+      {
+       "t": "math",
+       "tex": "n",
+       "src": "n"
+      },
+      {
+       "t": "text",
+       "v": " and "
+      },
+      {
+       "t": "math",
+       "tex": "m",
+       "src": "m"
+      },
+      {
+       "t": "text",
+       "v": "; when you see something like "
+      },
+      {
+       "t": "math",
+       "tex": "x \\times y",
+       "src": "x \\times y"
+      },
+      {
+       "t": "text",
+       "v": " we are talking about a term in the language of arithmetic. In the standard model, the function symbol "
+      },
+      {
+       "t": "math",
+       "tex": "\\times",
+       "src": "\\times"
+      },
+      {
+       "t": "text",
+       "v": " is interpreted as the function "
+      },
+      {
+       "t": "math",
+       "tex": "\\cdot",
+       "src": "\\cdot"
+      },
+      {
+       "t": "text",
+       "v": " on the natural numbers. For addition, we use "
+      },
+      {
+       "t": "math",
+       "tex": "+",
+       "src": "+"
+      },
+      {
+       "t": "text",
+       "v": " as both the function symbol of the language of arithmetic, and the addition function on the natural numbers. Here you have to use the context to determine what is meant."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 63,
+      "endLine": 71
+     }
+    },
+    {
+     "t": "env",
+     "id": "inc.int.def/defn25",
+     "kind": "defn",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.def/p27",
+       "c": [
+        {
+         "t": "text",
+         "v": "The theory of "
+        },
+        {
+         "t": "em",
+         "c": [
+          {
+           "t": "text",
+           "v": "true arithmetic"
+          }
+         ]
+        },
+        {
+         "t": "text",
+         "v": " is the set of "
+        },
+        {
+         "t": "term",
+         "token": "sentence",
+         "v": "sentences"
+        },
+        {
+         "t": "text",
+         "v": " satisfied in the standard model of arithmetic, i.e.,"
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 74,
+        "endLine": 76
+       }
+      },
+      {
+       "t": "display",
+       "id": "inc.int.def/d28",
+       "env": "equation",
+       "rows": [
+        {
+         "tex": "\\mathbf{TA} = \\{ A : {\\boldsymbol{\\mathit{N}}} \\vDash A \\}."
+        }
+       ],
+       "src": "\\Th{TA} = \\Setabs{!A}{\\Sat{N}{!A}}.",
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 76,
+        "endLine": 77
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 73,
+      "endLine": 79
+     },
+     "number": "1.3"
+    },
+    {
+     "t": "p",
+     "id": "inc.int.def/p29",
+     "c": [
+      {
+       "t": "math",
+       "tex": "\\mathbf{TA}",
+       "src": "\\Th{TA}"
+      },
+      {
+       "t": "text",
+       "v": " is a theory, for whenever "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{TA} \\vDash A",
+       "src": "\\Th{TA} \\Entails !A"
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "math",
+       "tex": "A",
+       "src": "!A"
+      },
+      {
+       "t": "text",
+       "v": " is satisfied in every "
+      },
+      {
+       "t": "term",
+       "token": "structure",
+       "v": "structure"
+      },
+      {
+       "t": "text",
+       "v": " which satisfies "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{TA}",
+       "src": "\\Th{TA}"
+      },
+      {
+       "t": "text",
+       "v": ". Since "
+      },
+      {
+       "t": "math",
+       "tex": "{\\boldsymbol{\\mathit{N}}} \\vDash \\mathbf{TA}",
+       "src": "\\Sat{N}{\\Th{TA}}"
+      },
+      {
+       "t": "text",
+       "v": ", we have that "
+      },
+      {
+       "t": "math",
+       "tex": "{\\boldsymbol{\\mathit{N}}} \\vDash A",
+       "src": "\\Sat{N}{!A}"
+      },
+      {
+       "t": "text",
+       "v": ", and so "
+      },
+      {
+       "t": "math",
+       "tex": "A \\in \\mathbf{TA}",
+       "src": "!A \\in \\Th{TA}"
+      },
+      {
+       "t": "text",
+       "v": "."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 81,
+      "endLine": 83
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.def/p32",
+     "c": [
+      {
+       "t": "text",
+       "v": "The other way to specify a theory "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma",
+       "src": "\\Gamma"
+      },
+      {
+       "t": "text",
+       "v": " is as the set of "
+      },
+      {
+       "t": "term",
+       "token": "sentence",
+       "v": "sentences"
+      },
+      {
+       "t": "text",
+       "v": " entailed by some set of sentences "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma_0",
+       "src": "\\Gamma_0"
+      },
+      {
+       "t": "text",
+       "v": ". In that case, "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma",
+       "src": "\\Gamma"
+      },
+      {
+       "t": "text",
+       "v": " is the “closure” of "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma_0",
+       "src": "\\Gamma_0"
+      },
+      {
+       "t": "text",
+       "v": " under entailment. Specifying a theory this way is only interesting if "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma_0",
+       "src": "\\Gamma_0"
+      },
+      {
+       "t": "text",
+       "v": " is explicitly specified, e.g., if the "
+      },
+      {
+       "t": "term",
+       "token": "element",
+       "v": "elements"
+      },
+      {
+       "t": "text",
+       "v": " of "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma_0",
+       "src": "\\Gamma_0"
+      },
+      {
+       "t": "text",
+       "v": " are listed. At the very least, "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma_0",
+       "src": "\\Gamma_0"
+      },
+      {
+       "t": "text",
+       "v": " has to be decidable, i.e., there has to be a computable test for when "
+      },
+      {
+       "t": "term",
+       "token": "sentence",
+       "v": "a sentence"
+      },
+      {
+       "t": "text",
+       "v": " counts as an element of "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma_0",
+       "src": "\\Gamma_0"
+      },
+      {
+       "t": "text",
+       "v": " or not. We call the "
+      },
+      {
+       "t": "term",
+       "token": "sentence",
+       "v": "sentences"
+      },
+      {
+       "t": "text",
+       "v": " in "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma_0",
+       "src": "\\Gamma_0"
+      },
+      {
+       "t": "text",
+       "v": " "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "axioms"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": " for "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma",
+       "src": "\\Gamma"
+      },
+      {
+       "t": "text",
+       "v": ", and "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma",
+       "src": "\\Gamma"
+      },
+      {
+       "t": "text",
+       "v": " "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "axiomatized"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": " by "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma_0",
+       "src": "\\Gamma_0"
+      },
+      {
+       "t": "text",
+       "v": "."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 94,
+      "endLine": 94
+     }
+    },
+    {
+     "t": "env",
+     "id": "inc.int.def/defn33",
+     "kind": "defn",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.def/p35",
+       "c": [
+        {
+         "t": "text",
+         "v": "A theory "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " is "
+        },
+        {
+         "t": "em",
+         "c": [
+          {
+           "t": "text",
+           "v": "axiomatized"
+          }
+         ]
+        },
+        {
+         "t": "text",
+         "v": " by "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma_0",
+         "src": "\\Gamma_0"
+        },
+        {
+         "t": "text",
+         "v": " iff"
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 97,
+        "endLine": 98
+       }
+      },
+      {
+       "t": "display",
+       "id": "inc.int.def/d36",
+       "env": "equation",
+       "rows": [
+        {
+         "tex": "\\Gamma = \\{ A : \\Gamma_0 \\vDash A \\}"
+        }
+       ],
+       "src": "\\Gamma = \\Setabs{!A}{\\Gamma_0 \\Entails !A}",
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 98,
+        "endLine": 99
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 96,
+      "endLine": 101
+     },
+     "number": "1.4"
+    },
+    {
+     "t": "env",
+     "id": "inc.int.def/defn37",
+     "kind": "defn",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.def/p38",
+       "c": [
+        {
+         "t": "text",
+         "v": "The theory "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q}",
+         "src": "\\Th{Q}"
+        },
+        {
+         "t": "text",
+         "v": " axiomatized by the following sentences is known as “Robinson’s "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q}",
+         "src": "\\Th{Q}"
+        },
+        {
+         "t": "text",
+         "v": "” and is a very simple theory of arithmetic."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 104,
+        "endLine": 106
+       }
+      },
+      {
+       "t": "display",
+       "id": "inc.int.def/d39",
+       "env": "align",
+       "rows": [
+        {
+         "tex": "& \\forall x \\, \\forall y [( x' = y' \\mathbin{\\rightarrow} x = y )]]",
+         "tag": "$Q_1$"
+        },
+        {
+         "tex": "& \\forall x \\, \\neq [x']]",
+         "tag": "$Q_2$"
+        },
+        {
+         "tex": "& \\forall x \\, ( = [\\mathsfit{0}] \\lor \\exists y \\, = [y']])]",
+         "tag": "$Q_3$"
+        },
+        {
+         "tex": "& \\forall x \\, = [x]]",
+         "tag": "$Q_4$"
+        },
+        {
+         "tex": "& \\forall x \\, \\forall y [ (x + y') = (x + y)' ]]",
+         "tag": "$Q_5$"
+        },
+        {
+         "tex": "& \\forall x \\, = [\\mathsfit{0}]]",
+         "tag": "$Q_6$"
+        },
+        {
+         "tex": "& \\forall x \\, \\forall y [ (x \\times y') = ((x \\times y) + x) ]]",
+         "tag": "$Q_7$"
+        },
+        {
+         "tex": "& \\forall x \\, \\forall y [(x < y \\mathbin{\\leftrightarrow} \\exists z \\, = [y]])]]",
+         "tag": "$Q_8$"
+        }
+       ],
+       "src": "& \\lforall[x][\\lforall[y][(\\eq[x'][y'] \\lif \\eq[x][y])]] \\tag{$!Q_1$}\\\\\n& \\lforall[x][\\eq/[\\Obj 0][x']] \\tag{$!Q_2$}\\\\\n& \\lforall[x][(\\eq[x][\\Obj 0] \\lor \\lexists[y][\\eq[x][y']])] \\tag{$!Q_3$}\\\\\n& \\lforall[x][\\eq[(x + \\Obj 0)][x]] \\tag{$!Q_4$}\\\\\n& \\lforall[x][\\lforall[y][\\eq[(x + y')][(x + y)']]] \\tag{$!Q_5$}\\\\\n& \\lforall[x][\\eq[(x \\times \\Obj 0)][\\Obj 0]] \\tag{$!Q_6$}\\\\\n& \\lforall[x][\\lforall[y][\\eq[(x \\times y')][((x \\times y) + x)]]] \\tag{$!Q_7$}\\\\\n& \\lforall[x][\\lforall[y][(x < y \\liff \\lexists[z][\\eq[(z' + x)][y]])]] \\tag{$!Q_8$}",
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 106,
+        "endLine": 114
+       }
+      },
+      {
+       "t": "p",
+       "id": "inc.int.def/p40",
+       "c": [
+        {
+         "t": "text",
+         "v": "The set of "
+        },
+        {
+         "t": "term",
+         "token": "sentence",
+         "v": "sentences"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "\\{Q_1, \\dots, Q_8\\}",
+         "src": "\\{!Q_1, \\dots, !Q_8\\}"
+        },
+        {
+         "t": "text",
+         "v": " are the axioms of "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q}",
+         "src": "\\Th{Q}"
+        },
+        {
+         "t": "text",
+         "v": ", so "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q}",
+         "src": "\\Th{Q}"
+        },
+        {
+         "t": "text",
+         "v": " consists of all "
+        },
+        {
+         "t": "term",
+         "token": "sentence",
+         "v": "sentences"
+        },
+        {
+         "t": "text",
+         "v": " entailed by them:"
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 116,
+        "endLine": 118
+       }
+      },
+      {
+       "t": "display",
+       "id": "inc.int.def/d41",
+       "env": "equation",
+       "rows": [
+        {
+         "tex": "\\mathbf{Q} = \\{ A : \\{Q_1, \\dots, Q_8\\} \\vDash A \\}."
+        }
+       ],
+       "src": "\\Th{Q} = \\Setabs{!A}{\\{!Q_1, \\dots, !Q_8\\} \\Entails !A}.",
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 118,
+        "endLine": 119
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 103,
+      "endLine": 121
+     },
+     "number": "1.5"
+    },
+    {
+     "t": "env",
+     "id": "inc.int.def/defn42",
+     "kind": "defn",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.def/p43",
+       "c": [
+        {
+         "t": "text",
+         "v": "Suppose "
+        },
+        {
+         "t": "math",
+         "tex": "A(x)",
+         "src": "!A(x)"
+        },
+        {
+         "t": "text",
+         "v": " is "
+        },
+        {
+         "t": "term",
+         "token": "formula",
+         "v": "a formula"
+        },
+        {
+         "t": "text",
+         "v": " in "
+        },
+        {
+         "t": "math",
+         "tex": "{\\mathcal{L}}_A",
+         "src": "\\Lang L_A"
+        },
+        {
+         "t": "text",
+         "v": " with free variables "
+        },
+        {
+         "t": "math",
+         "tex": "x",
+         "src": "x"
+        },
+        {
+         "t": "text",
+         "v": " and "
+        },
+        {
+         "t": "math",
+         "tex": "y_1",
+         "src": "y_1"
+        },
+        {
+         "t": "text",
+         "v": ", …, "
+        },
+        {
+         "t": "math",
+         "tex": "y_n",
+         "src": "y_n"
+        },
+        {
+         "t": "text",
+         "v": ". Then any "
+        },
+        {
+         "t": "term",
+         "token": "sentence",
+         "v": "sentence"
+        },
+        {
+         "t": "text",
+         "v": " of the form"
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 124,
+        "endLine": 126
+       }
+      },
+      {
+       "t": "display",
+       "id": "inc.int.def/d44",
+       "env": "equation",
+       "rows": [
+        {
+         "tex": "\\forall y_1 \\, \\dots \\forall y_n [((A(\\mathsfit{0}) \\land \\forall x \\, (A(x) \\mathbin{\\rightarrow} A(x')) ) \\mathbin{\\rightarrow} \\forall x \\, A(x) )]]"
+        }
+       ],
+       "src": "\\lforall[y_1][\\dots\\lforall[y_n][((!A(\\Obj 0) \\land \\lforall[x][(!A(x)\n\\lif !A(x'))]) \\lif \\lforall[x][!A(x)])]]",
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 126,
+        "endLine": 128
+       }
+      },
+      {
+       "t": "p",
+       "id": "inc.int.def/p46",
+       "c": [
+        {
+         "t": "text",
+         "v": "is an instance of the "
+        },
+        {
+         "t": "em",
+         "c": [
+          {
+           "t": "text",
+           "v": "induction schema"
+          }
+         ]
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 130,
+        "endLine": 130
+       }
+      },
+      {
+       "t": "p",
+       "id": "inc.int.def/p48",
+       "c": [
+        {
+         "t": "em",
+         "c": [
+          {
+           "t": "text",
+           "v": "Peano arithmetic"
+          }
+         ]
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{PA}",
+         "src": "\\Th{PA}"
+        },
+        {
+         "t": "text",
+         "v": " is the theory axiomatized by the axioms of "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q}",
+         "src": "\\Th{Q}"
+        },
+        {
+         "t": "text",
+         "v": " together with all instances of the induction schema."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 132,
+        "endLine": 135
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 123,
+      "endLine": 135
+     },
+     "number": "1.6"
+    },
+    {
+     "t": "env",
+     "id": "inc.int.def/explain49",
+     "kind": "explain",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.def/p50",
+       "c": [
+        {
+         "t": "text",
+         "v": "Every instance of the induction schema is true in "
+        },
+        {
+         "t": "math",
+         "tex": "{\\boldsymbol{\\mathit{N}}}",
+         "src": "\\Struct{N}"
+        },
+        {
+         "t": "text",
+         "v": ". This is easiest to see if the "
+        },
+        {
+         "t": "term",
+         "token": "formula",
+         "v": "formula"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "A",
+         "src": "!A"
+        },
+        {
+         "t": "text",
+         "v": " only has one free "
+        },
+        {
+         "t": "term",
+         "token": "variable",
+         "v": "variable"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "x",
+         "src": "x"
+        },
+        {
+         "t": "text",
+         "v": ". Then "
+        },
+        {
+         "t": "math",
+         "tex": "A(x)",
+         "src": "!A(x)"
+        },
+        {
+         "t": "text",
+         "v": " defines a subset "
+        },
+        {
+         "t": "math",
+         "tex": "X_{A}",
+         "src": "X_{!A}"
+        },
+        {
+         "t": "text",
+         "v": " of "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbb{N}",
+         "src": "\\Nat"
+        },
+        {
+         "t": "text",
+         "v": " in "
+        },
+        {
+         "t": "math",
+         "tex": "{\\boldsymbol{\\mathit{N}}}",
+         "src": "\\Struct{N}"
+        },
+        {
+         "t": "text",
+         "v": ". "
+        },
+        {
+         "t": "math",
+         "tex": "X_{A}",
+         "src": "X_{!A}"
+        },
+        {
+         "t": "text",
+         "v": " is the set of all "
+        },
+        {
+         "t": "math",
+         "tex": "n \\in \\mathbb{N}",
+         "src": "n \\in \\Nat"
+        },
+        {
+         "t": "text",
+         "v": " such that "
+        },
+        {
+         "t": "math",
+         "tex": "{\\boldsymbol{\\mathit{N}}}, s \\vDash A(x)",
+         "src": "\\Sat{N}{!A(x)}[s]"
+        },
+        {
+         "t": "text",
+         "v": " when "
+        },
+        {
+         "t": "math",
+         "tex": "s(x) = n",
+         "src": "s(x) = n"
+        },
+        {
+         "t": "text",
+         "v": ". The corresponding instance of the induction schema is"
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 138,
+        "endLine": 144
+       }
+      },
+      {
+       "t": "display",
+       "id": "inc.int.def/d51",
+       "env": "equation",
+       "rows": [
+        {
+         "tex": "((A(\\mathsfit{0}) \\land \\forall x \\, (A(x) \\mathbin{\\rightarrow} A(x')) ) \\mathbin{\\rightarrow} \\forall x \\, A(x) )."
+        }
+       ],
+       "src": "((!A(\\Obj 0) \\land \\lforall[x][(!A(x) \\lif !A(x'))]) \\lif \n  \\lforall[x][!A(x)]).",
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 144,
+        "endLine": 146
+       }
+      },
+      {
+       "t": "p",
+       "id": "inc.int.def/p52",
+       "c": [
+        {
+         "t": "text",
+         "v": "If its antecedent is true in "
+        },
+        {
+         "t": "math",
+         "tex": "{\\boldsymbol{\\mathit{N}}}",
+         "src": "\\Struct{N}"
+        },
+        {
+         "t": "text",
+         "v": ", then "
+        },
+        {
+         "t": "math",
+         "tex": "0 \\in X_{A}",
+         "src": "0 \\in X_{!A}"
+        },
+        {
+         "t": "text",
+         "v": " and, whenever "
+        },
+        {
+         "t": "math",
+         "tex": "n \\in X_{A}",
+         "src": "n \\in X_{!A}"
+        },
+        {
+         "t": "text",
+         "v": ", so is "
+        },
+        {
+         "t": "math",
+         "tex": "n+1",
+         "src": "n+1"
+        },
+        {
+         "t": "text",
+         "v": ". Since "
+        },
+        {
+         "t": "math",
+         "tex": "0 \\in X_{A}",
+         "src": "0 \\in X_{!A}"
+        },
+        {
+         "t": "text",
+         "v": ", we get "
+        },
+        {
+         "t": "math",
+         "tex": "1 \\in X_{A}",
+         "src": "1 \\in X_{!A}"
+        },
+        {
+         "t": "text",
+         "v": ". With "
+        },
+        {
+         "t": "math",
+         "tex": "1 \\in X_{A}",
+         "src": "1 \\in X_{!A}"
+        },
+        {
+         "t": "text",
+         "v": " we get "
+        },
+        {
+         "t": "math",
+         "tex": "2 \\in X_{A}",
+         "src": "2 \\in X_{!A}"
+        },
+        {
+         "t": "text",
+         "v": ". And so on. So for every "
+        },
+        {
+         "t": "math",
+         "tex": "n \\in \\mathbb{N}",
+         "src": "n \\in \\Nat"
+        },
+        {
+         "t": "text",
+         "v": ", "
+        },
+        {
+         "t": "math",
+         "tex": "n \\in X_{A}",
+         "src": "n \\in X_{!A}"
+        },
+        {
+         "t": "text",
+         "v": ". But this means that "
+        },
+        {
+         "t": "math",
+         "tex": "\\forall x \\, A(x)",
+         "src": "\\lforall[x][!A(x)]"
+        },
+        {
+         "t": "text",
+         "v": " is satisfied in "
+        },
+        {
+         "t": "math",
+         "tex": "{\\boldsymbol{\\mathit{N}}}",
+         "src": "\\Struct{N}"
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 148,
+        "endLine": 153
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 137,
+      "endLine": 153
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.def/p53",
+     "c": [
+      {
+       "t": "text",
+       "v": "Both "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": " and "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{PA}",
+       "src": "\\Th{PA}"
+      },
+      {
+       "t": "text",
+       "v": " are axiomatized theories. The big question is, how strong are they? For instance, can "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{PA}",
+       "src": "\\Th{PA}"
+      },
+      {
+       "t": "text",
+       "v": " prove all the truths about "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbb{N}",
+       "src": "\\Nat"
+      },
+      {
+       "t": "text",
+       "v": " that can be expressed in "
+      },
+      {
+       "t": "math",
+       "tex": "{\\mathcal{L}}_A",
+       "src": "\\Lang L_A"
+      },
+      {
+       "t": "text",
+       "v": "? Specifically, do the axioms of "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{PA}",
+       "src": "\\Th{PA}"
+      },
+      {
+       "t": "text",
+       "v": " settle all the questions that can be formulated in "
+      },
+      {
+       "t": "math",
+       "tex": "{\\mathcal{L}}_A",
+       "src": "\\Lang L_A"
+      },
+      {
+       "t": "text",
+       "v": "?"
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 155,
+      "endLine": 159
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.def/p55",
+     "c": [
+      {
+       "t": "text",
+       "v": "Another way to put this is to ask: Is "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{PA} = \\mathbf{TA}",
+       "src": "\\Th{PA} = \\Th{TA}"
+      },
+      {
+       "t": "text",
+       "v": "? "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{TA}",
+       "src": "\\Th{TA}"
+      },
+      {
+       "t": "text",
+       "v": " obviously does prove (i.e., it includes) all the truths about "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbb{N}",
+       "src": "\\Nat"
+      },
+      {
+       "t": "text",
+       "v": ", and it settles all the questions that can be formulated in "
+      },
+      {
+       "t": "math",
+       "tex": "{\\mathcal{L}}_A",
+       "src": "\\Lang L_A"
+      },
+      {
+       "t": "text",
+       "v": ", since if "
+      },
+      {
+       "t": "math",
+       "tex": "A",
+       "src": "!A"
+      },
+      {
+       "t": "text",
+       "v": " is "
+      },
+      {
+       "t": "term",
+       "token": "sentence",
+       "v": "a sentence"
+      },
+      {
+       "t": "text",
+       "v": " in "
+      },
+      {
+       "t": "math",
+       "tex": "{\\mathcal{L}}_A",
+       "src": "\\Lang L_A"
+      },
+      {
+       "t": "text",
+       "v": ", then either "
+      },
+      {
+       "t": "math",
+       "tex": "{\\boldsymbol{\\mathit{N}}} \\vDash A",
+       "src": "\\Sat{N}{!A}"
+      },
+      {
+       "t": "text",
+       "v": " or "
+      },
+      {
+       "t": "math",
+       "tex": "{\\boldsymbol{\\mathit{N}}} \\vDash \\lnot A",
+       "src": "\\Sat{N}{\\lnot !A}"
+      },
+      {
+       "t": "text",
+       "v": ", and so either "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{TA} \\vDash A",
+       "src": "\\Th{TA}\n\\Entails !A"
+      },
+      {
+       "t": "text",
+       "v": " or "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{TA} \\vDash \\lnot A",
+       "src": "\\Th{TA} \\Entails \\lnot !A"
+      },
+      {
+       "t": "text",
+       "v": ". Call such a theory "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "term",
+         "token": "complete",
+         "v": "complete"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": "."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 167,
+      "endLine": 167
+     }
+    },
+    {
+     "t": "env",
+     "id": "inc.int.def/defn56",
+     "kind": "defn",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.def/p58",
+       "c": [
+        {
+         "t": "text",
+         "v": "A theory "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " is "
+        },
+        {
+         "t": "em",
+         "c": [
+          {
+           "t": "term",
+           "token": "complete",
+           "v": "complete"
+          }
+         ]
+        },
+        {
+         "t": "text",
+         "v": " iff for every "
+        },
+        {
+         "t": "term",
+         "token": "sentence",
+         "v": "sentence"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "A",
+         "src": "!A"
+        },
+        {
+         "t": "text",
+         "v": " in its language, either "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma \\vDash A",
+         "src": "\\Gamma \\Entails !A"
+        },
+        {
+         "t": "text",
+         "v": " or "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma \\vDash \\lnot A",
+         "src": "\\Gamma \\Entails \\lnot !A"
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 170,
+        "endLine": 173
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 169,
+      "endLine": 173
+     },
+     "number": "1.7"
+    },
+    {
+     "t": "env",
+     "id": "inc.int.def/explain59",
+     "kind": "explain",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.def/p60",
+       "c": [
+        {
+         "t": "text",
+         "v": "By the Completeness Theorem, "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma \\vDash A",
+         "src": "\\Gamma \\Entails !A"
+        },
+        {
+         "t": "text",
+         "v": " iff "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma \\vdash A",
+         "src": "\\Gamma \\Proves\n!A"
+        },
+        {
+         "t": "text",
+         "v": ", so "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " is complete iff for every "
+        },
+        {
+         "t": "term",
+         "token": "sentence",
+         "v": "sentence"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "A",
+         "src": "!A"
+        },
+        {
+         "t": "text",
+         "v": " in its language, either "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma \\vdash A",
+         "src": "\\Gamma \\Proves !A"
+        },
+        {
+         "t": "text",
+         "v": " or "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma \\vdash \\lnot A",
+         "src": "\\Gamma \\Proves \\lnot !A"
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 176,
+        "endLine": 179
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 175,
+      "endLine": 179
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.def/p61",
+     "c": [
+      {
+       "t": "text",
+       "v": "Another question we are led to ask is this: Is there a computational procedure we can use to test if "
+      },
+      {
+       "t": "term",
+       "token": "sentence",
+       "v": "a sentence"
+      },
+      {
+       "t": "text",
+       "v": " is in "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{TA}",
+       "src": "\\Th{TA}"
+      },
+      {
+       "t": "text",
+       "v": ", in "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{PA}",
+       "src": "\\Th{PA}"
+      },
+      {
+       "t": "text",
+       "v": ", or even just in "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": "? We can make this more precise by defining when a set (e.g., a set of "
+      },
+      {
+       "t": "term",
+       "token": "sentence",
+       "v": "sentences"
+      },
+      {
+       "t": "text",
+       "v": ") is "
+      },
+      {
+       "t": "term",
+       "token": "decidable",
+       "v": "decidable"
+      },
+      {
+       "t": "text",
+       "v": "."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 181,
+      "endLine": 185
+     }
+    },
+    {
+     "t": "env",
+     "id": "inc.int.def/defn62",
+     "kind": "defn",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.def/p64",
+       "c": [
+        {
+         "t": "text",
+         "v": "A set "
+        },
+        {
+         "t": "math",
+         "tex": "X",
+         "src": "X"
+        },
+        {
+         "t": "text",
+         "v": " is "
+        },
+        {
+         "t": "em",
+         "c": [
+          {
+           "t": "term",
+           "token": "decidable",
+           "v": "decidable"
+          }
+         ]
+        },
+        {
+         "t": "text",
+         "v": " iff there is a computational procedure which on input "
+        },
+        {
+         "t": "math",
+         "tex": "x",
+         "src": "x"
+        },
+        {
+         "t": "text",
+         "v": " returns "
+        },
+        {
+         "t": "math",
+         "tex": "1",
+         "src": "1"
+        },
+        {
+         "t": "text",
+         "v": " if "
+        },
+        {
+         "t": "math",
+         "tex": "x \\in X",
+         "src": "x \\in X"
+        },
+        {
+         "t": "text",
+         "v": " and "
+        },
+        {
+         "t": "math",
+         "tex": "0",
+         "src": "0"
+        },
+        {
+         "t": "text",
+         "v": " otherwise."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 188,
+        "endLine": 190
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 187,
+      "endLine": 190
+     },
+     "number": "1.8"
+    },
+    {
+     "t": "p",
+     "id": "inc.int.def/p65",
+     "c": [
+      {
+       "t": "text",
+       "v": "So our question becomes: Is "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{TA}",
+       "src": "\\Th{TA}"
+      },
+      {
+       "t": "text",
+       "v": " ("
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{PA}",
+       "src": "\\Th{PA}"
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": ") "
+      },
+      {
+       "t": "term",
+       "token": "decidable",
+       "v": "decidable"
+      },
+      {
+       "t": "text",
+       "v": "?"
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 192,
+      "endLine": 192
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.def/p67",
+     "c": [
+      {
+       "t": "text",
+       "v": "The answer to all these questions will be: no. None of these theories are decidable. However, this phenomenon is not specific to these particular theories. In fact, "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "any"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": " theory that satisfies certain conditions is subject to the same results. One of these conditions, which "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": " and "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{PA}",
+       "src": "\\Th{PA}"
+      },
+      {
+       "t": "text",
+       "v": " satisfy, is that they are axiomatized by "
+      },
+      {
+       "t": "term",
+       "token": "decidable",
+       "v": "a decidable"
+      },
+      {
+       "t": "text",
+       "v": " set of axioms."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 196,
+      "endLine": 199
+     }
+    },
+    {
+     "t": "env",
+     "id": "inc.int.def/defn68",
+     "kind": "defn",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.def/p70",
+       "c": [
+        {
+         "t": "text",
+         "v": "A theory is "
+        },
+        {
+         "t": "em",
+         "c": [
+          {
+           "t": "term",
+           "token": "axiomatizable",
+           "v": "axiomatizable"
+          }
+         ]
+        },
+        {
+         "t": "text",
+         "v": " if it is axiomatized by "
+        },
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "a decidable"
+        },
+        {
+         "t": "text",
+         "v": " set of axioms."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 202,
+        "endLine": 204
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 201,
+      "endLine": 204
+     },
+     "number": "1.9"
+    },
+    {
+     "t": "env",
+     "id": "inc.int.def/ex71",
+     "kind": "ex",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.def/p72",
+       "c": [
+        {
+         "t": "text",
+         "v": "Any theory axiomatized by a finite set of "
+        },
+        {
+         "t": "term",
+         "token": "sentence",
+         "v": "sentences"
+        },
+        {
+         "t": "text",
+         "v": " is "
+        },
+        {
+         "t": "term",
+         "token": "axiomatizable",
+         "v": "axiomatizable"
+        },
+        {
+         "t": "text",
+         "v": ", since any finite set is "
+        },
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "decidable"
+        },
+        {
+         "t": "text",
+         "v": ". Thus, "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q}",
+         "src": "\\Th{Q}"
+        },
+        {
+         "t": "text",
+         "v": ", for instance, is "
+        },
+        {
+         "t": "term",
+         "token": "axiomatizable",
+         "v": "axiomatizable"
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 207,
+        "endLine": 209
+       }
+      },
+      {
+       "t": "p",
+       "id": "inc.int.def/p73",
+       "c": [
+        {
+         "t": "text",
+         "v": "Schematically axiomatized theories like "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{PA}",
+         "src": "\\Th{PA}"
+        },
+        {
+         "t": "text",
+         "v": " are also "
+        },
+        {
+         "t": "term",
+         "token": "axiomatizable",
+         "v": "axiomatizable"
+        },
+        {
+         "t": "text",
+         "v": ". For to test if "
+        },
+        {
+         "t": "math",
+         "tex": "B",
+         "src": "!B"
+        },
+        {
+         "t": "text",
+         "v": " is among the axioms of "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{PA}",
+         "src": "\\Th{PA}"
+        },
+        {
+         "t": "text",
+         "v": ", i.e., to compute the function "
+        },
+        {
+         "t": "math",
+         "tex": "\\chi_{X}",
+         "src": "\\Char{X}"
+        },
+        {
+         "t": "text",
+         "v": " where "
+        },
+        {
+         "t": "math",
+         "tex": "\\chi_{X}(B) = 1",
+         "src": "\\Char{X}(!B) = 1"
+        },
+        {
+         "t": "text",
+         "v": " if "
+        },
+        {
+         "t": "math",
+         "tex": "B",
+         "src": "!B"
+        },
+        {
+         "t": "text",
+         "v": " is an axiom of "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{PA}",
+         "src": "\\Th{PA}"
+        },
+        {
+         "t": "text",
+         "v": " and "
+        },
+        {
+         "t": "math",
+         "tex": "= 0",
+         "src": "= 0"
+        },
+        {
+         "t": "text",
+         "v": " otherwise, we can do the following: First, check if "
+        },
+        {
+         "t": "math",
+         "tex": "B",
+         "src": "!B"
+        },
+        {
+         "t": "text",
+         "v": " is one of the axioms of "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q}",
+         "src": "\\Th{Q}"
+        },
+        {
+         "t": "text",
+         "v": ". If it is, the answer is “yes” and the value of "
+        },
+        {
+         "t": "math",
+         "tex": "\\chi_{X}(B) = 1",
+         "src": "\\Char{X}(!B) = 1"
+        },
+        {
+         "t": "text",
+         "v": ". If not, test if it is an instance of the induction schema. This can be done systematically; in this case, perhaps it’s easiest to see that it can be done as follows: Any instance of the induction schema begins with a number of universal quantifiers, and then a sub-"
+        },
+        {
+         "t": "term",
+         "token": "formula",
+         "v": "formula"
+        },
+        {
+         "t": "text",
+         "v": " that is a conditional. The consequent of that conditional is "
+        },
+        {
+         "t": "math",
+         "tex": "\\forall x \\, A(x, y_1, \\dots, y_n)",
+         "src": "\\lforall[x][!A(x, y_1, \\dots, y_n)]"
+        },
+        {
+         "t": "text",
+         "v": " where "
+        },
+        {
+         "t": "math",
+         "tex": "x",
+         "src": "x"
+        },
+        {
+         "t": "text",
+         "v": " and "
+        },
+        {
+         "t": "math",
+         "tex": "y_1",
+         "src": "y_1"
+        },
+        {
+         "t": "text",
+         "v": ", …, "
+        },
+        {
+         "t": "math",
+         "tex": "y_n",
+         "src": "y_n"
+        },
+        {
+         "t": "text",
+         "v": " are all the free variables of "
+        },
+        {
+         "t": "math",
+         "tex": "A",
+         "src": "!A"
+        },
+        {
+         "t": "text",
+         "v": " and the initial quantifiers of "
+        },
+        {
+         "t": "math",
+         "tex": "B",
+         "src": "!B"
+        },
+        {
+         "t": "text",
+         "v": " bind the variables "
+        },
+        {
+         "t": "math",
+         "tex": "y_1",
+         "src": "y_1"
+        },
+        {
+         "t": "text",
+         "v": ", …, "
+        },
+        {
+         "t": "math",
+         "tex": "y_n",
+         "src": "y_n"
+        },
+        {
+         "t": "text",
+         "v": ". Once we have extracted this "
+        },
+        {
+         "t": "math",
+         "tex": "A",
+         "src": "!A"
+        },
+        {
+         "t": "text",
+         "v": " and checked that its free variables match the variables bound by the universal quantifiers at the front and "
+        },
+        {
+         "t": "math",
+         "tex": "\\forall x",
+         "src": "\\lforall[x]"
+        },
+        {
+         "t": "text",
+         "v": ", we go on to check that the antecedent of the conditional matches"
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 211,
+        "endLine": 229
+       }
+      },
+      {
+       "t": "display",
+       "id": "inc.int.def/d74",
+       "env": "equation",
+       "rows": [
+        {
+         "tex": "A(\\mathsfit{0}, y_1, \\dots, y_n) \\land \\forall x \\, (A(x, y_1, \\dots, y_n) \\mathbin{\\rightarrow} A(x', y_1, \\dots, y_n))"
+        }
+       ],
+       "src": "!A(\\Obj 0, y_1, \\dots, y_n) \\land \\lforall[x][(!A(x, y_1, \\dots, y_n)\n\\lif !A(x', y_1, \\dots, y_n))]",
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 229,
+        "endLine": 231
+       }
+      },
+      {
+       "t": "p",
+       "id": "inc.int.def/p75",
+       "c": [
+        {
+         "t": "text",
+         "v": "Again, if it does, "
+        },
+        {
+         "t": "math",
+         "tex": "B",
+         "src": "!B"
+        },
+        {
+         "t": "text",
+         "v": " is an instance of the induction schema, and if it doesn’t, "
+        },
+        {
+         "t": "math",
+         "tex": "B",
+         "src": "!B"
+        },
+        {
+         "t": "text",
+         "v": " isn’t."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 233,
+        "endLine": 235
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 206,
+      "endLine": 235
+     },
+     "number": "1.10"
+    },
+    {
+     "t": "p",
+     "id": "inc.int.def/p76",
+     "c": [
+      {
+       "t": "text",
+       "v": "In answering this question—and the more general question of which theories are complete or decidable—it will be useful to consider also the following definition. Recall that a set "
+      },
+      {
+       "t": "math",
+       "tex": "X",
+       "src": "X"
+      },
+      {
+       "t": "text",
+       "v": " is "
+      },
+      {
+       "t": "term",
+       "token": "enumerable",
+       "v": "countable"
+      },
+      {
+       "t": "text",
+       "v": " iff it is empty or if there is "
+      },
+      {
+       "t": "term",
+       "token": "surjective",
+       "v": "a surjective"
+      },
+      {
+       "t": "text",
+       "v": " function "
+      },
+      {
+       "t": "math",
+       "tex": "f \\colon \\mathbb{N} \\to X",
+       "src": "f \\colon \\Nat\n\\to X"
+      },
+      {
+       "t": "text",
+       "v": ". Such a function is called an enumeration of "
+      },
+      {
+       "t": "math",
+       "tex": "X",
+       "src": "X"
+      },
+      {
+       "t": "text",
+       "v": "."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 237,
+      "endLine": 241
+     }
+    },
+    {
+     "t": "env",
+     "id": "inc.int.def/defn77",
+     "kind": "defn",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.def/p79",
+       "c": [
+        {
+         "t": "text",
+         "v": "A set "
+        },
+        {
+         "t": "math",
+         "tex": "X",
+         "src": "X"
+        },
+        {
+         "t": "text",
+         "v": " is called "
+        },
+        {
+         "t": "em",
+         "c": [
+          {
+           "t": "term",
+           "token": "computably enumerable",
+           "v": "computably enumerable"
+          }
+         ]
+        },
+        {
+         "t": "text",
+         "v": " (c.e.\\@ for short) iff it is empty or it has a computable enumeration."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 244,
+        "endLine": 246
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 243,
+      "endLine": 246
+     },
+     "number": "1.11"
+    },
+    {
+     "t": "p",
+     "id": "inc.int.def/p80",
+     "c": [
+      {
+       "t": "text",
+       "v": "In addition to "
+      },
+      {
+       "t": "term",
+       "token": "axiomatizability",
+       "v": "axiomatizability"
+      },
+      {
+       "t": "text",
+       "v": ", another condition on theories to which the incompleteness theorems apply will be that they are strong enough to prove basic facts about computable functions and "
+      },
+      {
+       "t": "term",
+       "token": "decidable",
+       "v": "decidable"
+      },
+      {
+       "t": "text",
+       "v": " relations. By “basic facts,” we mean "
+      },
+      {
+       "t": "term",
+       "token": "sentence",
+       "v": "sentences"
+      },
+      {
+       "t": "text",
+       "v": " which express what the values of computable functions are for each of their arguments. And by “strong enough” we mean that the theories in question count these sentences among its theorems. For instance, consider a prototypical computable function: addition. The value of "
+      },
+      {
+       "t": "math",
+       "tex": "+",
+       "src": "+"
+      },
+      {
+       "t": "text",
+       "v": " for arguments "
+      },
+      {
+       "t": "math",
+       "tex": "2",
+       "src": "2"
+      },
+      {
+       "t": "text",
+       "v": " and "
+      },
+      {
+       "t": "math",
+       "tex": "3",
+       "src": "3"
+      },
+      {
+       "t": "text",
+       "v": " is "
+      },
+      {
+       "t": "math",
+       "tex": "5",
+       "src": "5"
+      },
+      {
+       "t": "text",
+       "v": ", i.e., "
+      },
+      {
+       "t": "math",
+       "tex": "2+3 = 5",
+       "src": "2+3 = 5"
+      },
+      {
+       "t": "text",
+       "v": ". A sentence in the language of arithmetic that expresses that the value of "
+      },
+      {
+       "t": "math",
+       "tex": "+",
+       "src": "+"
+      },
+      {
+       "t": "text",
+       "v": " for arguments "
+      },
+      {
+       "t": "math",
+       "tex": "2",
+       "src": "2"
+      },
+      {
+       "t": "text",
+       "v": " and "
+      },
+      {
+       "t": "math",
+       "tex": "3",
+       "src": "3"
+      },
+      {
+       "t": "text",
+       "v": " is "
+      },
+      {
+       "t": "math",
+       "tex": "5",
+       "src": "5"
+      },
+      {
+       "t": "text",
+       "v": " is: "
+      },
+      {
+       "t": "math",
+       "tex": "(\\overline{2} + \\overline{3}) = \\overline{5}",
+       "src": "(\\num{2} + \\num{3}) = \\num{5}"
+      },
+      {
+       "t": "text",
+       "v": ". And, e.g., "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": " proves this sentence. More generally, we would like there to be, for each computable function "
+      },
+      {
+       "t": "math",
+       "tex": "f(x_1, x_2)",
+       "src": "f(x_1, x_2)"
+      },
+      {
+       "t": "text",
+       "v": " "
+      },
+      {
+       "t": "term",
+       "token": "formula",
+       "v": "a formula"
+      },
+      {
+       "t": "text",
+       "v": " "
+      },
+      {
+       "t": "math",
+       "tex": "A_f(x_1, x_2, y)",
+       "src": "!A_f(x_1, x_2, y)"
+      },
+      {
+       "t": "text",
+       "v": " in "
+      },
+      {
+       "t": "math",
+       "tex": "{\\mathcal{L}_A}",
+       "src": "\\Lang{L_A}"
+      },
+      {
+       "t": "text",
+       "v": " such that "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q} \\vdash A_f(\\overline{n_1}, \\overline{n_2}, \\overline{m})",
+       "src": "\\Th{Q}\n\\Proves !A_f(\\num{n_1}, \\num{n_2}, \\num{m})"
+      },
+      {
+       "t": "text",
+       "v": " whenever "
+      },
+      {
+       "t": "math",
+       "tex": "f(n_1, n_2) = m",
+       "src": "f(n_1, n_2) =\nm"
+      },
+      {
+       "t": "text",
+       "v": ". In this way, "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": " proves that the value of "
+      },
+      {
+       "t": "math",
+       "tex": "f",
+       "src": "f"
+      },
+      {
+       "t": "text",
+       "v": " for arguments "
+      },
+      {
+       "t": "math",
+       "tex": "n_1",
+       "src": "n_1"
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "math",
+       "tex": "n_2",
+       "src": "n_2"
+      },
+      {
+       "t": "text",
+       "v": " is "
+      },
+      {
+       "t": "math",
+       "tex": "m",
+       "src": "m"
+      },
+      {
+       "t": "text",
+       "v": ". In fact, we require that it proves a bit more, namely that no other number is the value of "
+      },
+      {
+       "t": "math",
+       "tex": "f",
+       "src": "f"
+      },
+      {
+       "t": "text",
+       "v": " for arguments "
+      },
+      {
+       "t": "math",
+       "tex": "n_1",
+       "src": "n_1"
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "math",
+       "tex": "n_2",
+       "src": "n_2"
+      },
+      {
+       "t": "text",
+       "v": ". And the same goes for "
+      },
+      {
+       "t": "term",
+       "token": "decidable",
+       "v": "decidable"
+      },
+      {
+       "t": "text",
+       "v": " relations. This is made precise in the following two definitions."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 248,
+      "endLine": 267
+     }
+    },
+    {
+     "t": "env",
+     "id": "inc.int.def/defn81",
+     "kind": "defn",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.def/p83",
+       "c": [
+        {
+         "t": "text",
+         "v": "A "
+        },
+        {
+         "t": "term",
+         "token": "formula",
+         "v": "formula"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "A(x_1, \\dots, x_k, y)",
+         "src": "!A(x_1, \\dots, x_k, y)"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "em",
+         "c": [
+          {
+           "t": "term",
+           "token": "represents",
+           "v": "represents"
+          }
+         ]
+        },
+        {
+         "t": "text",
+         "v": " the function "
+        },
+        {
+         "t": "math",
+         "tex": "f\\colon \\mathbb{N}^k \\to \\mathbb{N}",
+         "src": "f\\colon \\Nat^k \\to \\Nat"
+        },
+        {
+         "t": "text",
+         "v": " in "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " iff whenever "
+        },
+        {
+         "t": "math",
+         "tex": "f(n_1, \\dots, n_k) = m",
+         "src": "f(n_1,\n\\dots, n_k) = m"
+        },
+        {
+         "t": "text",
+         "v": ", then"
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 270,
+        "endLine": 273
+       }
+      },
+      {
+       "t": "list",
+       "id": "inc.int.def/l88",
+       "ordered": true,
+       "items": [
+        {
+         "id": "inc.int.def/i84",
+         "c": [
+          {
+           "t": "p",
+           "id": "inc.int.def/p85",
+           "c": [
+            {
+             "t": "math",
+             "tex": "\\Gamma \\vdash A(\\overline{n_1}, \\dots, \\overline{n_k}, \\overline{m})",
+             "src": "\\Gamma \\Proves !A(\\num{n_1}, \\dots, \\num{n_k}, \\num{m})"
+            },
+            {
+             "t": "text",
+             "v": ", and"
+            }
+           ],
+           "loc": {
+            "repo": "OpenLogic",
+            "file": "content/incompleteness/introduction/definitions.tex",
+            "line": 274,
+            "endLine": 274
+           }
+          }
+         ]
+        },
+        {
+         "id": "inc.int.def/i86",
+         "c": [
+          {
+           "t": "p",
+           "id": "inc.int.def/p87",
+           "c": [
+            {
+             "t": "math",
+             "tex": "\\Gamma \\vdash \\forall y (A(\\overline{n_1}, \\dots, \\overline{n_k}, y) \\mathbin{\\rightarrow} y = \\overline{m})",
+             "src": "\\Gamma \\Proves \\lforall[y](!A(\\num{n_1}, \\dots, \\num{n_k},\ny) \\lif y = \\num{m})"
+            },
+            {
+             "t": "text",
+             "v": "."
+            }
+           ],
+           "loc": {
+            "repo": "OpenLogic",
+            "file": "content/incompleteness/introduction/definitions.tex",
+            "line": 275,
+            "endLine": 276
+           }
+          }
+         ]
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 273,
+        "endLine": 277
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 269,
+      "endLine": 278
+     },
+     "number": "1.12"
+    },
+    {
+     "t": "env",
+     "id": "inc.int.def/defn89",
+     "kind": "defn",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.def/p91",
+       "c": [
+        {
+         "t": "text",
+         "v": "A "
+        },
+        {
+         "t": "term",
+         "token": "formula",
+         "v": "formula"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "A(x_1, \\dots, x_k)",
+         "src": "!A(x_1, \\dots, x_k)"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "em",
+         "c": [
+          {
+           "t": "term",
+           "token": "represents",
+           "v": "represents"
+          }
+         ]
+        },
+        {
+         "t": "text",
+         "v": " the relation "
+        },
+        {
+         "t": "math",
+         "tex": "R \\subseteq \\mathbb{N}^k",
+         "src": "R \\subseteq \\Nat^k"
+        },
+        {
+         "t": "text",
+         "v": " iff,"
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 281,
+        "endLine": 283
+       }
+      },
+      {
+       "t": "list",
+       "id": "inc.int.def/l96",
+       "ordered": true,
+       "items": [
+        {
+         "id": "inc.int.def/i92",
+         "c": [
+          {
+           "t": "p",
+           "id": "inc.int.def/p93",
+           "c": [
+            {
+             "t": "text",
+             "v": "whenever "
+            },
+            {
+             "t": "math",
+             "tex": "R(n_1, \\dots, n_k)",
+             "src": "R(n_1, \\dots, n_k)"
+            },
+            {
+             "t": "text",
+             "v": ", "
+            },
+            {
+             "t": "math",
+             "tex": "\\Gamma \\vdash A(\\overline{n_1}, \\dots, \\overline{n_k})",
+             "src": "\\Gamma \\Proves !A(\\num{n_1},\n\\dots, \\num{n_k})"
+            },
+            {
+             "t": "text",
+             "v": ", and"
+            }
+           ],
+           "loc": {
+            "repo": "OpenLogic",
+            "file": "content/incompleteness/introduction/definitions.tex",
+            "line": 284,
+            "endLine": 285
+           }
+          }
+         ]
+        },
+        {
+         "id": "inc.int.def/i94",
+         "c": [
+          {
+           "t": "p",
+           "id": "inc.int.def/p95",
+           "c": [
+            {
+             "t": "text",
+             "v": "whenever not "
+            },
+            {
+             "t": "math",
+             "tex": "R(n_1, \\dots, n_k)",
+             "src": "R(n_1, \\dots, n_k)"
+            },
+            {
+             "t": "text",
+             "v": ", "
+            },
+            {
+             "t": "math",
+             "tex": "\\Gamma \\vdash \\lnot A(\\overline{n_1}, \\dots, \\overline{n_k})",
+             "src": "\\Gamma \\Proves \\lnot\n!A(\\num{n_1}, \\dots, \\num{n_k})"
+            },
+            {
+             "t": "text",
+             "v": "."
+            }
+           ],
+           "loc": {
+            "repo": "OpenLogic",
+            "file": "content/incompleteness/introduction/definitions.tex",
+            "line": 286,
+            "endLine": 287
+           }
+          }
+         ]
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/definitions.tex",
+        "line": 283,
+        "endLine": 288
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 280,
+      "endLine": 289
+     },
+     "number": "1.13"
+    },
+    {
+     "t": "p",
+     "id": "inc.int.def/p97",
+     "c": [
+      {
+       "t": "text",
+       "v": "A theory is “strong enough” for the incompleteness theorems to apply if it "
+      },
+      {
+       "t": "term",
+       "token": "represents",
+       "v": "represents"
+      },
+      {
+       "t": "text",
+       "v": " all computable functions and all "
+      },
+      {
+       "t": "term",
+       "token": "decidable",
+       "v": "decidable"
+      },
+      {
+       "t": "text",
+       "v": " relations. "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": " and its extensions satisfy this condition, but it will take us a while to establish this—it’s a non-trivial fact about the kinds of things "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": " can prove, and it’s hard to show because "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": " has only a few axioms from which we’ll have to prove all these facts. However, "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": " is a very weak theory. So although it’s hard to prove that "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": " represents all computable functions, most interesting theories are stronger than "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": ", i.e., prove more than "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": " does. And if "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": " proves something, any stronger theory does; since "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": " represents all computable functions, every stronger theory does. This means that many interesting theories meet this condition of the incompleteness theorems. So our hard work will pay off, since it shows that the incompleteness theorems apply to a wide range of theories. Certainly, any theory aiming to formalize “all of mathematics” must prove everything that "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": " proves, since it should at the very least be able to capture the results of elementary computations. So any theory that is a candidate for a theory of “all of mathematics” will be one to which the incompleteness theorems apply."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/definitions.tex",
+      "line": 291,
+      "endLine": 310
+     }
+    }
+   ]
+  },
+  {
+   "id": "inc.int.ovr",
+   "number": "1.3",
+   "title": [
+    {
+     "t": "text",
+     "v": "Overview of Incompleteness Results"
+    }
+   ],
+   "titleText": "Overview of Incompleteness Results",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/introduction/overview.tex",
+    "line": 1,
+    "endLine": 100
+   },
+   "blocks": [
+    {
+     "t": "p",
+     "id": "inc.int.ovr/p2",
+     "c": [
+      {
+       "t": "text",
+       "v": "Hilbert expected that mathematics could be formalized in an "
+      },
+      {
+       "t": "term",
+       "token": "axiomatizable",
+       "v": "axiomatizable"
+      },
+      {
+       "t": "text",
+       "v": " theory which it would be possible to prove "
+      },
+      {
+       "t": "term",
+       "token": "complete",
+       "v": "complete"
+      },
+      {
+       "t": "text",
+       "v": " and "
+      },
+      {
+       "t": "term",
+       "token": "decidable",
+       "v": "decidable"
+      },
+      {
+       "t": "text",
+       "v": ". Moreover, he aimed to prove the consistency of this theory with very weak, “finitary,” means, which would defend classical mathematics against the challenges of intuitionism. Gödel’s incompleteness theorems showed that these goals cannot be achieved."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/overview.tex",
+      "line": 13,
+      "endLine": 19
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.ovr/p6",
+     "c": [
+      {
+       "t": "text",
+       "v": "Gödel’s first incompleteness theorem showed that a version of Russell and Whitehead’s "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "Principia Mathematica"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": " is not "
+      },
+      {
+       "t": "term",
+       "token": "complete",
+       "v": "complete"
+      },
+      {
+       "t": "text",
+       "v": ". But the proof was actually very general and applies to a wide variety of theories. This means that it wasn’t just that "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "Principia Mathematica"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": " did not manage to completely capture mathematics, but that "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "no"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": " acceptable theory does. It took a while to isolate the features of theories that suffice for the incompleteness theorems to apply, and to generalize Gödel’s proof to apply make it depend only on these features. But we are now in a position to state a very general version of the first incompleteness theorem for theories in the language "
+      },
+      {
+       "t": "math",
+       "tex": "{\\mathcal{L}}_A",
+       "src": "\\Lang L_A"
+      },
+      {
+       "t": "text",
+       "v": " of arithmetic."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/overview.tex",
+      "line": 26,
+      "endLine": 31
+     }
+    },
+    {
+     "t": "env",
+     "id": "inc.int.ovr/thm7",
+     "kind": "thm",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.ovr/p8",
+       "c": [
+        {
+         "t": "text",
+         "v": "If "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " is a consistent and "
+        },
+        {
+         "t": "term",
+         "token": "axiomatizable",
+         "v": "axiomatizable"
+        },
+        {
+         "t": "text",
+         "v": " theory in "
+        },
+        {
+         "t": "math",
+         "tex": "{\\mathcal{L}}_A",
+         "src": "\\Lang\nL_A"
+        },
+        {
+         "t": "text",
+         "v": " which "
+        },
+        {
+         "t": "term",
+         "token": "represents",
+         "v": "represents"
+        },
+        {
+         "t": "text",
+         "v": " all computable functions and "
+        },
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "decidable"
+        },
+        {
+         "t": "text",
+         "v": " relations, then "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " is not "
+        },
+        {
+         "t": "term",
+         "token": "complete",
+         "v": "complete"
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/overview.tex",
+        "line": 34,
+        "endLine": 37
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/overview.tex",
+      "line": 33,
+      "endLine": 37
+     },
+     "number": "1.14"
+    },
+    {
+     "t": "p",
+     "id": "inc.int.ovr/p13",
+     "c": [
+      {
+       "t": "text",
+       "v": "To say that "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma",
+       "src": "\\Gamma"
+      },
+      {
+       "t": "text",
+       "v": " is not "
+      },
+      {
+       "t": "term",
+       "token": "complete",
+       "v": "complete"
+      },
+      {
+       "t": "text",
+       "v": " is to say that for at least one "
+      },
+      {
+       "t": "term",
+       "token": "sentence",
+       "v": "sentence"
+      },
+      {
+       "t": "text",
+       "v": " "
+      },
+      {
+       "t": "math",
+       "tex": "A",
+       "src": "!A"
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma \\nvdash A",
+       "src": "\\Gamma \\Proves/ !A"
+      },
+      {
+       "t": "text",
+       "v": " and "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma \\nvdash \\lnot A",
+       "src": "\\Gamma \\Proves/ \\lnot\n!A"
+      },
+      {
+       "t": "text",
+       "v": ". Such "
+      },
+      {
+       "t": "term",
+       "token": "sentence",
+       "v": "a sentence"
+      },
+      {
+       "t": "text",
+       "v": " is called "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "independent"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": " (of "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma)",
+       "src": "\\Gamma)"
+      },
+      {
+       "t": "text",
+       "v": ". We can in fact relatively quickly prove that there must be independent sentences. But the power of Gödel’s proof of the theorem lies in the fact that it exhibits a "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "specific example"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": " of such an independent "
+      },
+      {
+       "t": "term",
+       "token": "sentence",
+       "v": "sentence"
+      },
+      {
+       "t": "text",
+       "v": ". The intriguing construction produces "
+      },
+      {
+       "t": "term",
+       "token": "sentence",
+       "v": "a sentence"
+      },
+      {
+       "t": "text",
+       "v": " "
+      },
+      {
+       "t": "math",
+       "tex": "G_\\Gamma",
+       "src": "!G_\\Gamma"
+      },
+      {
+       "t": "text",
+       "v": ", called a "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "Gödel sentence"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": " for "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma",
+       "src": "\\Gamma"
+      },
+      {
+       "t": "text",
+       "v": ", which is unprovable because in "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma",
+       "src": "\\Gamma"
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "math",
+       "tex": "G_\\Gamma",
+       "src": "!G_\\Gamma"
+      },
+      {
+       "t": "text",
+       "v": " is equivalent to the claim that "
+      },
+      {
+       "t": "math",
+       "tex": "G_\\Gamma",
+       "src": "!G_\\Gamma"
+      },
+      {
+       "t": "text",
+       "v": " is unprovable in "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma",
+       "src": "\\Gamma"
+      },
+      {
+       "t": "text",
+       "v": ". It does so "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "constructively"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": ", i.e., given an axiomatization of "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma",
+       "src": "\\Gamma"
+      },
+      {
+       "t": "text",
+       "v": " and a description of the "
+      },
+      {
+       "t": "term",
+       "token": "derivation",
+       "v": "derivation"
+      },
+      {
+       "t": "text",
+       "v": " system, the proof gives a method for actually writing down "
+      },
+      {
+       "t": "math",
+       "tex": "G_\\Gamma",
+       "src": "!G_\\Gamma"
+      },
+      {
+       "t": "text",
+       "v": "."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/overview.tex",
+      "line": 49,
+      "endLine": 51
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.ovr/p14",
+     "c": [
+      {
+       "t": "text",
+       "v": "The construction in Gödel’s proof requires that we find a way to express in "
+      },
+      {
+       "t": "math",
+       "tex": "{\\mathcal{L}}_A",
+       "src": "\\Lang L_A"
+      },
+      {
+       "t": "text",
+       "v": " the properties of and operations on terms and "
+      },
+      {
+       "t": "term",
+       "token": "formula",
+       "v": "formulas"
+      },
+      {
+       "t": "text",
+       "v": " of "
+      },
+      {
+       "t": "math",
+       "tex": "{\\mathcal{L}}_A",
+       "src": "\\Lang L_A"
+      },
+      {
+       "t": "text",
+       "v": " itself. These include properties such as “"
+      },
+      {
+       "t": "math",
+       "tex": "A",
+       "src": "!A"
+      },
+      {
+       "t": "text",
+       "v": " is "
+      },
+      {
+       "t": "term",
+       "token": "sentence",
+       "v": "a sentence"
+      },
+      {
+       "t": "text",
+       "v": ",” “"
+      },
+      {
+       "t": "math",
+       "tex": "\\delta",
+       "src": "\\delta"
+      },
+      {
+       "t": "text",
+       "v": " is "
+      },
+      {
+       "t": "term",
+       "token": "derivation",
+       "v": "a derivation"
+      },
+      {
+       "t": "text",
+       "v": " of "
+      },
+      {
+       "t": "math",
+       "tex": "A",
+       "src": "!A"
+      },
+      {
+       "t": "text",
+       "v": ",” and operations such as "
+      },
+      {
+       "t": "math",
+       "tex": "A[t/x]",
+       "src": "\\Subst{!A}{t}{x}"
+      },
+      {
+       "t": "text",
+       "v": ". This way must (a) express these properties and relations via a “coding” of symbols and sequences thereof (which is what terms, "
+      },
+      {
+       "t": "term",
+       "token": "formula",
+       "v": "formulas"
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "term",
+       "token": "derivation",
+       "v": "derivations"
+      },
+      {
+       "t": "text",
+       "v": ", etc. are) as natural numbers (which is what "
+      },
+      {
+       "t": "math",
+       "tex": "{\\mathcal{L}}_A",
+       "src": "\\Lang L_A"
+      },
+      {
+       "t": "text",
+       "v": " can talk about). It must (b) do this in such a way that "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma",
+       "src": "\\Gamma"
+      },
+      {
+       "t": "text",
+       "v": " will prove the relevant facts, so we must show that these properties are coded by "
+      },
+      {
+       "t": "term",
+       "token": "decidable",
+       "v": "decidable"
+      },
+      {
+       "t": "text",
+       "v": " properties of natural numbers and the operations correspond to computable functions on natural numbers. This is called “arithmetization of syntax.”"
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/overview.tex",
+      "line": 53,
+      "endLine": 65
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.ovr/p16",
+     "c": [
+      {
+       "t": "text",
+       "v": "Before we investigate how syntax can be arithmetized, however, we will consider the condition that "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma",
+       "src": "\\Gamma"
+      },
+      {
+       "t": "text",
+       "v": " is “strong enough,” i.e., "
+      },
+      {
+       "t": "term",
+       "token": "represents",
+       "v": "represents"
+      },
+      {
+       "t": "text",
+       "v": " all computable functions and "
+      },
+      {
+       "t": "term",
+       "token": "decidable",
+       "v": "decidable"
+      },
+      {
+       "t": "text",
+       "v": " relations. This requires that we give a precise definition of “computable.” This can be done in a number of ways, e.g., via the model of Turing machines, or as those functions computable by programs in some general-purpose programming language. Since our aim is to "
+      },
+      {
+       "t": "term",
+       "token": "represents",
+       "v": "represent"
+      },
+      {
+       "t": "text",
+       "v": " these functions and relations in a theory in the language "
+      },
+      {
+       "t": "math",
+       "tex": "{\\mathcal{L}}_A",
+       "src": "\\Lang L_A"
+      },
+      {
+       "t": "text",
+       "v": ", however, it is best to pick a simple definition of computability of just numerical functions. This is the notion of "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "recursive function"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": ". So we will first discuss the recursive functions. We will then show that "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": " already "
+      },
+      {
+       "t": "term",
+       "token": "represents",
+       "v": "represents"
+      },
+      {
+       "t": "text",
+       "v": " all recursive functions and relations. This will allow us to apply the incompleteness theorem to specific theories such as "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": " and "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{PA}",
+       "src": "\\Th{PA}"
+      },
+      {
+       "t": "text",
+       "v": ", since we will have established that these are examples of theories that are “strong enough.”"
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/overview.tex",
+      "line": 77,
+      "endLine": 82
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.ovr/p17",
+     "c": [
+      {
+       "t": "text",
+       "v": "The end result of the arithmetization of syntax is "
+      },
+      {
+       "t": "term",
+       "token": "formula",
+       "v": "a formula"
+      },
+      {
+       "t": "text",
+       "v": " "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathsf{Prov}_{\\Gamma}(x)",
+       "src": "\\OProv[\\Gamma](x)"
+      },
+      {
+       "t": "text",
+       "v": " which, via the coding of "
+      },
+      {
+       "t": "term",
+       "token": "formula",
+       "v": "formulas"
+      },
+      {
+       "t": "text",
+       "v": " as numbers, expresses provability from the axioms of "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma",
+       "src": "\\Gamma"
+      },
+      {
+       "t": "text",
+       "v": ". Specifically, if "
+      },
+      {
+       "t": "math",
+       "tex": "A",
+       "src": "!A"
+      },
+      {
+       "t": "text",
+       "v": " is coded by the number "
+      },
+      {
+       "t": "math",
+       "tex": "n",
+       "src": "n"
+      },
+      {
+       "t": "text",
+       "v": ", and "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma \\vdash A",
+       "src": "\\Gamma \\Proves\n!A"
+      },
+      {
+       "t": "text",
+       "v": ", then "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma \\vdash \\mathrm{Prov}_{\\Gamma}(\\overline{n})",
+       "src": "\\Gamma \\Proves \\Prov[\\Gamma](\\num{n})"
+      },
+      {
+       "t": "text",
+       "v": ". This “provability predicate” for "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma",
+       "src": "\\Gamma"
+      },
+      {
+       "t": "text",
+       "v": " allows us also to express, in a certain sense, the consistency of "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma",
+       "src": "\\Gamma"
+      },
+      {
+       "t": "text",
+       "v": " as "
+      },
+      {
+       "t": "term",
+       "token": "sentence",
+       "v": "a sentence"
+      },
+      {
+       "t": "text",
+       "v": " of "
+      },
+      {
+       "t": "math",
+       "tex": "{\\mathcal{L}}_A",
+       "src": "\\Lang L_A"
+      },
+      {
+       "t": "text",
+       "v": ": let the “consistency statement” for "
+      },
+      {
+       "t": "math",
+       "tex": "\\Gamma",
+       "src": "\\Gamma"
+      },
+      {
+       "t": "text",
+       "v": " be the "
+      },
+      {
+       "t": "term",
+       "token": "sentence",
+       "v": "sentence"
+      },
+      {
+       "t": "text",
+       "v": " "
+      },
+      {
+       "t": "math",
+       "tex": "\\lnot \\mathrm{Prov}_{\\Gamma}(\\overline{n})",
+       "src": "\\lnot \\Prov[\\Gamma](\\num{n})"
+      },
+      {
+       "t": "text",
+       "v": ", where we take "
+      },
+      {
+       "t": "math",
+       "tex": "n",
+       "src": "n"
+      },
+      {
+       "t": "text",
+       "v": " to be the code of a contradiction, e.g., of "
+      },
+      {
+       "t": "math",
+       "tex": "\\bot",
+       "src": "\\lfalse"
+      },
+      {
+       "t": "text",
+       "v": ". The second incompleteness theorem states that consistent "
+      },
+      {
+       "t": "term",
+       "token": "axiomatizable",
+       "v": "axiomatizable"
+      },
+      {
+       "t": "text",
+       "v": " theories also do not prove their own consistency statements. The conditions required for this theorem to apply are a bit more stringent than just that the theory represents all computable functions and "
+      },
+      {
+       "t": "term",
+       "token": "decidable",
+       "v": "decidable"
+      },
+      {
+       "t": "text",
+       "v": " relations, but we will show that "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{PA}",
+       "src": "\\Th{PA}"
+      },
+      {
+       "t": "text",
+       "v": " satisfies them."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/overview.tex",
+      "line": 84,
+      "endLine": 98
+     }
+    }
+   ]
+  },
+  {
+   "id": "inc.int.dec",
+   "number": "1.4",
+   "title": [
+    {
+     "t": "text",
+     "v": "Undecidability and Incompleteness"
+    }
+   ],
+   "titleText": "Undecidability and Incompleteness",
+   "loc": {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/introduction/undecidability.tex",
+    "line": 1,
+    "endLine": 137
+   },
+   "blocks": [
+    {
+     "t": "p",
+     "id": "inc.int.dec/p2",
+     "c": [
+      {
+       "t": "text",
+       "v": "Gödel’s proof of the incompleteness theorems require arithmetization of syntax. But even without that we can obtain some nice results just on the assumption that a theory "
+      },
+      {
+       "t": "term",
+       "token": "represents",
+       "v": "represents"
+      },
+      {
+       "t": "text",
+       "v": " all "
+      },
+      {
+       "t": "term",
+       "token": "decidable",
+       "v": "decidable"
+      },
+      {
+       "t": "text",
+       "v": " relations. The proof is a diagonal argument similar to the proof of the undecidability of the halting problem."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/undecidability.tex",
+      "line": 13,
+      "endLine": 17
+     }
+    },
+    {
+     "t": "env",
+     "id": "inc.int.dec/thm3",
+     "kind": "thm",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.dec/p4",
+       "c": [
+        {
+         "t": "text",
+         "v": "If "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " is a consistent theory that "
+        },
+        {
+         "t": "term",
+         "token": "represents",
+         "v": "represents"
+        },
+        {
+         "t": "text",
+         "v": " every "
+        },
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "decidable"
+        },
+        {
+         "t": "text",
+         "v": " relation, then "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " is not "
+        },
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "decidable"
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/undecidability.tex",
+        "line": 20,
+        "endLine": 22
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/undecidability.tex",
+      "line": 19,
+      "endLine": 22
+     },
+     "number": "1.15"
+    },
+    {
+     "t": "env",
+     "id": "inc.int.dec/proof5",
+     "kind": "proof",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.dec/p6",
+       "c": [
+        {
+         "t": "text",
+         "v": "Suppose "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " were "
+        },
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "decidable"
+        },
+        {
+         "t": "text",
+         "v": ". We show that if "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "term",
+         "token": "represents",
+         "v": "represents"
+        },
+        {
+         "t": "text",
+         "v": " every "
+        },
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "decidable"
+        },
+        {
+         "t": "text",
+         "v": " relation, it must be inconsistent."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/undecidability.tex",
+        "line": 25,
+        "endLine": 26
+       }
+      },
+      {
+       "t": "p",
+       "id": "inc.int.dec/p7",
+       "c": [
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "Decidable"
+        },
+        {
+         "t": "text",
+         "v": " properties (one-place relations) are represented by "
+        },
+        {
+         "t": "term",
+         "token": "formula",
+         "v": "formulas"
+        },
+        {
+         "t": "text",
+         "v": " with one free variable. Let "
+        },
+        {
+         "t": "math",
+         "tex": "A_0(x)",
+         "src": "!A_0(x)"
+        },
+        {
+         "t": "text",
+         "v": ", "
+        },
+        {
+         "t": "math",
+         "tex": "A_1(x)",
+         "src": "!A_1(x)"
+        },
+        {
+         "t": "text",
+         "v": ", …, be a computable enumeration of all such "
+        },
+        {
+         "t": "term",
+         "token": "formula",
+         "v": "formulas"
+        },
+        {
+         "t": "text",
+         "v": ". Now consider the following set "
+        },
+        {
+         "t": "math",
+         "tex": "D \\subseteq \\mathbb{N}",
+         "src": "D \\subseteq \\Nat"
+        },
+        {
+         "t": "text",
+         "v": ":"
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/undecidability.tex",
+        "line": 28,
+        "endLine": 32
+       }
+      },
+      {
+       "t": "display",
+       "id": "inc.int.dec/d8",
+       "env": "equation",
+       "rows": [
+        {
+         "tex": "D = \\{ n : \\Gamma \\vdash \\lnot A_n(\\overline{n}) \\}"
+        }
+       ],
+       "src": "D = \\Setabs{n}{\\Gamma \\Proves \\lnot !A_n(\\num{n})}",
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/undecidability.tex",
+        "line": 32,
+        "endLine": 33
+       }
+      },
+      {
+       "t": "p",
+       "id": "inc.int.dec/p9",
+       "c": [
+        {
+         "t": "text",
+         "v": "The set "
+        },
+        {
+         "t": "math",
+         "tex": "D",
+         "src": "D"
+        },
+        {
+         "t": "text",
+         "v": " is "
+        },
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "decidable"
+        },
+        {
+         "t": "text",
+         "v": ", since we can test if "
+        },
+        {
+         "t": "math",
+         "tex": "n \\in D",
+         "src": "n \\in D"
+        },
+        {
+         "t": "text",
+         "v": " by first computing "
+        },
+        {
+         "t": "math",
+         "tex": "A_n(x)",
+         "src": "!A_n(x)"
+        },
+        {
+         "t": "text",
+         "v": ", and from this "
+        },
+        {
+         "t": "math",
+         "tex": "\\lnot A_n(\\overline{n})",
+         "src": "\\lnot !A_n(\\num{n})"
+        },
+        {
+         "t": "text",
+         "v": ". Obviously, substituting the term "
+        },
+        {
+         "t": "math",
+         "tex": "\\overline{n}",
+         "src": "\\num{n}"
+        },
+        {
+         "t": "text",
+         "v": " for every free occurrence of "
+        },
+        {
+         "t": "math",
+         "tex": "x",
+         "src": "x"
+        },
+        {
+         "t": "text",
+         "v": " in "
+        },
+        {
+         "t": "math",
+         "tex": "A_n(x)",
+         "src": "!A_n(x)"
+        },
+        {
+         "t": "text",
+         "v": " and prefixing "
+        },
+        {
+         "t": "math",
+         "tex": "A(\\overline{n})",
+         "src": "!A(\\num{n})"
+        },
+        {
+         "t": "text",
+         "v": " by "
+        },
+        {
+         "t": "math",
+         "tex": "\\lnot",
+         "src": "\\lnot"
+        },
+        {
+         "t": "text",
+         "v": " is a mechanical matter. By assumption, "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " is "
+        },
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "decidable"
+        },
+        {
+         "t": "text",
+         "v": ", so we can test if "
+        },
+        {
+         "t": "math",
+         "tex": "\\lnot A(\\overline{n}) \\in \\Gamma",
+         "src": "\\lnot !A(\\num{n}) \\in \\Gamma"
+        },
+        {
+         "t": "text",
+         "v": ". If it is, "
+        },
+        {
+         "t": "math",
+         "tex": "n \\in D",
+         "src": "n \\in D"
+        },
+        {
+         "t": "text",
+         "v": ", and if it isn’t, "
+        },
+        {
+         "t": "math",
+         "tex": "n \\notin D",
+         "src": "n \\notin D"
+        },
+        {
+         "t": "text",
+         "v": ". So "
+        },
+        {
+         "t": "math",
+         "tex": "D",
+         "src": "D"
+        },
+        {
+         "t": "text",
+         "v": " is likewise "
+        },
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "decidable"
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/undecidability.tex",
+        "line": 35,
+        "endLine": 41
+       }
+      },
+      {
+       "t": "p",
+       "id": "inc.int.dec/p10",
+       "c": [
+        {
+         "t": "text",
+         "v": "Since "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "term",
+         "token": "represents",
+         "v": "represents"
+        },
+        {
+         "t": "text",
+         "v": " all "
+        },
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "decidable"
+        },
+        {
+         "t": "text",
+         "v": " properties, it "
+        },
+        {
+         "t": "term",
+         "token": "represents",
+         "v": "represents"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "D",
+         "src": "D"
+        },
+        {
+         "t": "text",
+         "v": ". And the "
+        },
+        {
+         "t": "term",
+         "token": "formula",
+         "v": "formulas"
+        },
+        {
+         "t": "text",
+         "v": " which "
+        },
+        {
+         "t": "term",
+         "token": "represents",
+         "v": "represent"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "D",
+         "src": "D"
+        },
+        {
+         "t": "text",
+         "v": " in "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " are all among "
+        },
+        {
+         "t": "math",
+         "tex": "A_0(x)",
+         "src": "!A_0(x)"
+        },
+        {
+         "t": "text",
+         "v": ", "
+        },
+        {
+         "t": "math",
+         "tex": "A_1(x)",
+         "src": "!A_1(x)"
+        },
+        {
+         "t": "text",
+         "v": ", …. So let "
+        },
+        {
+         "t": "math",
+         "tex": "d",
+         "src": "d"
+        },
+        {
+         "t": "text",
+         "v": " be a number such that "
+        },
+        {
+         "t": "math",
+         "tex": "A_d(x)",
+         "src": "!A_d(x)"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "term",
+         "token": "represents",
+         "v": "represents"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "D",
+         "src": "D"
+        },
+        {
+         "t": "text",
+         "v": " in "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": ". If "
+        },
+        {
+         "t": "math",
+         "tex": "d \\notin D",
+         "src": "d\n\\notin D"
+        },
+        {
+         "t": "text",
+         "v": ", then, since "
+        },
+        {
+         "t": "math",
+         "tex": "A_d(x)",
+         "src": "!A_d(x)"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "term",
+         "token": "represents",
+         "v": "represents"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "D",
+         "src": "D"
+        },
+        {
+         "t": "text",
+         "v": ", "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma \\vdash \\lnot A_d(\\overline{d})",
+         "src": "\\Gamma \\Proves\n\\lnot !A_d(\\num{d})"
+        },
+        {
+         "t": "text",
+         "v": ". But that means that "
+        },
+        {
+         "t": "math",
+         "tex": "d",
+         "src": "d"
+        },
+        {
+         "t": "text",
+         "v": " meets the defining condition of "
+        },
+        {
+         "t": "math",
+         "tex": "D",
+         "src": "D"
+        },
+        {
+         "t": "text",
+         "v": ", and so "
+        },
+        {
+         "t": "math",
+         "tex": "d \\in D",
+         "src": "d \\in D"
+        },
+        {
+         "t": "text",
+         "v": ". This contradicts "
+        },
+        {
+         "t": "math",
+         "tex": "d \\notin D",
+         "src": "d \\notin D"
+        },
+        {
+         "t": "text",
+         "v": ". So by indirect proof, "
+        },
+        {
+         "t": "math",
+         "tex": "d \\in D",
+         "src": "d \\in D"
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/undecidability.tex",
+        "line": 43,
+        "endLine": 50
+       }
+      },
+      {
+       "t": "p",
+       "id": "inc.int.dec/p11",
+       "c": [
+        {
+         "t": "text",
+         "v": "Since "
+        },
+        {
+         "t": "math",
+         "tex": "d \\in D",
+         "src": "d \\in D"
+        },
+        {
+         "t": "text",
+         "v": ", by the definition of "
+        },
+        {
+         "t": "math",
+         "tex": "D",
+         "src": "D"
+        },
+        {
+         "t": "text",
+         "v": ", "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma \\vdash \\lnot A_d(\\overline{d})",
+         "src": "\\Gamma \\Proves \\lnot\n!A_d(\\num{d})"
+        },
+        {
+         "t": "text",
+         "v": ". On the other hand, since "
+        },
+        {
+         "t": "math",
+         "tex": "A_d(x)",
+         "src": "!A_d(x)"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "term",
+         "token": "represents",
+         "v": "represents"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "math",
+         "tex": "D",
+         "src": "D"
+        },
+        {
+         "t": "text",
+         "v": " in "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": ", "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma \\vdash A_d(\\overline{d})",
+         "src": "\\Gamma \\Proves !A_d(\\num{d})"
+        },
+        {
+         "t": "text",
+         "v": ". Hence, "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " is inconsistent."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/undecidability.tex",
+        "line": 52,
+        "endLine": 56
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/undecidability.tex",
+      "line": 24,
+      "endLine": 56
+     }
+    },
+    {
+     "t": "env",
+     "id": "inc.int.dec/explain12",
+     "kind": "explain",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.dec/p13",
+       "c": [
+        {
+         "t": "text",
+         "v": "The preceding theorem shows that no consistent theory that "
+        },
+        {
+         "t": "term",
+         "token": "represents",
+         "v": "represents"
+        },
+        {
+         "t": "text",
+         "v": " all "
+        },
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "decidable"
+        },
+        {
+         "t": "text",
+         "v": " relations can be "
+        },
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "decidable"
+        },
+        {
+         "t": "text",
+         "v": ". We will show that "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q}",
+         "src": "\\Th{Q}"
+        },
+        {
+         "t": "text",
+         "v": " does "
+        },
+        {
+         "t": "term",
+         "token": "represents",
+         "v": "represent"
+        },
+        {
+         "t": "text",
+         "v": " all "
+        },
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "decidable"
+        },
+        {
+         "t": "text",
+         "v": " relations; this means that all theories that include "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{Q}",
+         "src": "\\Th{Q}"
+        },
+        {
+         "t": "text",
+         "v": ", such as "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{PA}",
+         "src": "\\Th{PA}"
+        },
+        {
+         "t": "text",
+         "v": " and "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{TA}",
+         "src": "\\Th{TA}"
+        },
+        {
+         "t": "text",
+         "v": ", also do, and hence also are not "
+        },
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "decidable"
+        },
+        {
+         "t": "text",
+         "v": ". (Since all these theories are true in the standard model, they are all consistent.)"
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/undecidability.tex",
+        "line": 59,
+        "endLine": 65
+       }
+      },
+      {
+       "t": "p",
+       "id": "inc.int.dec/p14",
+       "c": [
+        {
+         "t": "text",
+         "v": "We can also use this result to obtain a weak version of the first incompleteness theorem. Any theory that is "
+        },
+        {
+         "t": "term",
+         "token": "axiomatizable",
+         "v": "axiomatizable"
+        },
+        {
+         "t": "text",
+         "v": " and "
+        },
+        {
+         "t": "term",
+         "token": "complete",
+         "v": "complete"
+        },
+        {
+         "t": "text",
+         "v": " is "
+        },
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "decidable"
+        },
+        {
+         "t": "text",
+         "v": ". Consistent theories that are "
+        },
+        {
+         "t": "term",
+         "token": "axiomatizable",
+         "v": "axiomatizable"
+        },
+        {
+         "t": "text",
+         "v": " and "
+        },
+        {
+         "t": "term",
+         "token": "represents",
+         "v": "represent"
+        },
+        {
+         "t": "text",
+         "v": " all "
+        },
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "decidable"
+        },
+        {
+         "t": "text",
+         "v": " properties then cannot be "
+        },
+        {
+         "t": "term",
+         "token": "complete",
+         "v": "complete"
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/undecidability.tex",
+        "line": 67,
+        "endLine": 72
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/undecidability.tex",
+      "line": 58,
+      "endLine": 72
+     }
+    },
+    {
+     "t": "env",
+     "id": "inc.int.dec/thm15",
+     "kind": "thm",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.dec/p16",
+       "c": [
+        {
+         "t": "text",
+         "v": "If "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " is "
+        },
+        {
+         "t": "term",
+         "token": "axiomatizable",
+         "v": "axiomatizable"
+        },
+        {
+         "t": "text",
+         "v": " and "
+        },
+        {
+         "t": "term",
+         "token": "complete",
+         "v": "complete"
+        },
+        {
+         "t": "text",
+         "v": " it is "
+        },
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "decidable"
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/undecidability.tex",
+        "line": 75,
+        "endLine": 76
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/undecidability.tex",
+      "line": 74,
+      "endLine": 76
+     },
+     "number": "1.16"
+    },
+    {
+     "t": "env",
+     "id": "inc.int.dec/proof17",
+     "kind": "proof",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.dec/p18",
+       "c": [
+        {
+         "t": "text",
+         "v": "Any inconsistent theory is "
+        },
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "decidable"
+        },
+        {
+         "t": "text",
+         "v": ", since inconsistent theories contain all "
+        },
+        {
+         "t": "term",
+         "token": "sentence",
+         "v": "sentences"
+        },
+        {
+         "t": "text",
+         "v": ", so the answer to the question “is "
+        },
+        {
+         "t": "math",
+         "tex": "A \\in \\Gamma",
+         "src": "!A \\in\n\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": "” is always “yes,” i.e., can be decided."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/undecidability.tex",
+        "line": 79,
+        "endLine": 81
+       }
+      },
+      {
+       "t": "p",
+       "id": "inc.int.dec/p19",
+       "c": [
+        {
+         "t": "text",
+         "v": "So suppose "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " is consistent, and furthermore is "
+        },
+        {
+         "t": "term",
+         "token": "axiomatizable",
+         "v": "axiomatizable"
+        },
+        {
+         "t": "text",
+         "v": ", and "
+        },
+        {
+         "t": "term",
+         "token": "complete",
+         "v": "complete"
+        },
+        {
+         "t": "text",
+         "v": ". Since "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " is "
+        },
+        {
+         "t": "term",
+         "token": "axiomatizable",
+         "v": "axiomatizable"
+        },
+        {
+         "t": "text",
+         "v": ", it is "
+        },
+        {
+         "t": "term",
+         "token": "computably enumerable",
+         "v": "computably enumerable"
+        },
+        {
+         "t": "text",
+         "v": ". For we can enumerate all the correct "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "derivations"
+        },
+        {
+         "t": "text",
+         "v": " from the axioms of "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " by a computable function. From a correct "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "derivation"
+        },
+        {
+         "t": "text",
+         "v": " we can compute the "
+        },
+        {
+         "t": "term",
+         "token": "sentence",
+         "v": "sentence"
+        },
+        {
+         "t": "text",
+         "v": " it "
+        },
+        {
+         "t": "term",
+         "token": "derive",
+         "v": "derives"
+        },
+        {
+         "t": "text",
+         "v": ", and so together there is a computable function that enumerates all theorems of "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": ". A "
+        },
+        {
+         "t": "term",
+         "token": "sentence",
+         "v": "sentence"
+        },
+        {
+         "t": "text",
+         "v": " is a theorem of "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " iff "
+        },
+        {
+         "t": "math",
+         "tex": "\\lnot A",
+         "src": "\\lnot !A"
+        },
+        {
+         "t": "text",
+         "v": " is not a theorem, since "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " is consistent and "
+        },
+        {
+         "t": "term",
+         "token": "complete",
+         "v": "complete"
+        },
+        {
+         "t": "text",
+         "v": ". We can therefore decide if "
+        },
+        {
+         "t": "math",
+         "tex": "A \\in \\Gamma",
+         "src": "!A \\in\n\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " as follows. Enumerate all theorems of "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": ". When "
+        },
+        {
+         "t": "math",
+         "tex": "A",
+         "src": "!A"
+        },
+        {
+         "t": "text",
+         "v": " appears on this list, we know that "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma \\vdash A",
+         "src": "\\Gamma \\Proves !A"
+        },
+        {
+         "t": "text",
+         "v": ". When "
+        },
+        {
+         "t": "math",
+         "tex": "\\lnot A",
+         "src": "\\lnot\n!A"
+        },
+        {
+         "t": "text",
+         "v": " appears on this list, we know that "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma \\nvdash A",
+         "src": "\\Gamma \\Proves/ !A"
+        },
+        {
+         "t": "text",
+         "v": ". Since "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " is "
+        },
+        {
+         "t": "term",
+         "token": "complete",
+         "v": "complete"
+        },
+        {
+         "t": "text",
+         "v": ", one of these cases eventually obtains, so the procedure eventually produces an answer."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/undecidability.tex",
+        "line": 83,
+        "endLine": 97
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/undecidability.tex",
+      "line": 78,
+      "endLine": 97
+     }
+    },
+    {
+     "t": "env",
+     "id": "inc.int.dec/cor:incompleteness",
+     "kind": "cor",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.dec/p21",
+       "c": [
+        {
+         "t": "text",
+         "v": "If "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " is consistent, "
+        },
+        {
+         "t": "term",
+         "token": "axiomatizable",
+         "v": "axiomatizable"
+        },
+        {
+         "t": "text",
+         "v": ", and "
+        },
+        {
+         "t": "term",
+         "token": "represents",
+         "v": "represents"
+        },
+        {
+         "t": "text",
+         "v": " every "
+        },
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "decidable"
+        },
+        {
+         "t": "text",
+         "v": " property, it is not "
+        },
+        {
+         "t": "term",
+         "token": "complete",
+         "v": "complete"
+        },
+        {
+         "t": "text",
+         "v": "."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/undecidability.tex",
+        "line": 101,
+        "endLine": 103
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/undecidability.tex",
+      "line": 99,
+      "endLine": 103
+     },
+     "number": "1.17",
+     "label": "inc:int:dec:cor:incompleteness"
+    },
+    {
+     "t": "env",
+     "id": "inc.int.dec/proof22",
+     "kind": "proof",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.dec/p23",
+       "c": [
+        {
+         "t": "text",
+         "v": "If "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " were "
+        },
+        {
+         "t": "term",
+         "token": "complete",
+         "v": "complete"
+        },
+        {
+         "t": "text",
+         "v": ", it would be "
+        },
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "decidable"
+        },
+        {
+         "t": "text",
+         "v": " by the previous theorem (since it is "
+        },
+        {
+         "t": "term",
+         "token": "axiomatizable",
+         "v": "axiomatizable"
+        },
+        {
+         "t": "text",
+         "v": " and consistent). But since "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
+         "v": " "
+        },
+        {
+         "t": "term",
+         "token": "represents",
+         "v": "represents"
+        },
+        {
+         "t": "text",
+         "v": " every "
+        },
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "decidable"
+        },
+        {
+         "t": "text",
+         "v": " property, it is not "
+        },
+        {
+         "t": "term",
+         "token": "decidable",
+         "v": "decidable"
+        },
+        {
+         "t": "text",
+         "v": ", by the first theorem."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/undecidability.tex",
+        "line": 106,
+        "endLine": 110
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/undecidability.tex",
+      "line": 105,
+      "endLine": 110
+     }
+    },
+    {
+     "t": "env",
+     "id": "inc.int.dec/prob24",
+     "kind": "prob",
+     "c": [
+      {
+       "t": "p",
+       "id": "inc.int.dec/p25",
+       "c": [
+        {
+         "t": "text",
+         "v": "Show that "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{TA} = \\{ A : {\\boldsymbol{\\mathit{N}}} \\vDash A \\}",
+         "src": "\\Th{TA} = \\Setabs{!A}{\\Sat{N}{!A}}"
+        },
+        {
+         "t": "text",
+         "v": " is not "
+        },
+        {
+         "t": "term",
+         "token": "axiomatizable",
+         "v": "axiomatizable"
+        },
+        {
+         "t": "text",
+         "v": ". You may assume that "
+        },
+        {
+         "t": "math",
+         "tex": "\\mathbf{TA}",
+         "src": "\\Th{TA}"
+        },
+        {
+         "t": "text",
+         "v": " represents all decidable properties."
+        }
+       ],
+       "loc": {
+        "repo": "OpenLogic",
+        "file": "content/incompleteness/introduction/undecidability.tex",
+        "line": 113,
+        "endLine": 116
+       }
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/undecidability.tex",
+      "line": 112,
+      "endLine": 116
+     },
+     "number": "1.1"
+    },
+    {
+     "t": "p",
+     "id": "inc.int.dec/p26",
+     "c": [
+      {
+       "t": "text",
+       "v": "Once we have established that, e.g., "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "term",
+       "token": "represents",
+       "v": "represents"
+      },
+      {
+       "t": "text",
+       "v": " all "
+      },
+      {
+       "t": "term",
+       "token": "decidable",
+       "v": "decidable"
+      },
+      {
+       "t": "text",
+       "v": " properties, the corollary tells us that "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": " must be incomplete. However, its proof does not provide an example of an independent "
+      },
+      {
+       "t": "term",
+       "token": "sentence",
+       "v": "sentence"
+      },
+      {
+       "t": "text",
+       "v": "; it merely shows that such "
+      },
+      {
+       "t": "term",
+       "token": "sentence",
+       "v": "a sentence"
+      },
+      {
+       "t": "text",
+       "v": " must exist. For this, we have to arithmetize syntax and follow Gödel’s original proof idea. And of course, we still have to show the first claim, namely that "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": " does, in fact, "
+      },
+      {
+       "t": "term",
+       "token": "represents",
+       "v": "represent"
+      },
+      {
+       "t": "text",
+       "v": " all "
+      },
+      {
+       "t": "term",
+       "token": "decidable",
+       "v": "decidable"
+      },
+      {
+       "t": "text",
+       "v": " properties."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/undecidability.tex",
+      "line": 118,
+      "endLine": 125
+     }
+    },
+    {
+     "t": "p",
+     "id": "inc.int.dec/p28",
+     "c": [
+      {
+       "t": "text",
+       "v": "It should be noted that not every "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "interesting"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": " theory is incomplete or undecidable. There are many theories that are sufficiently strong to describe interesting mathematical facts that do not satisify the conditions of Gödel’s result. For instance, "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Pres} = \\{ A \\in {\\mathcal{L}_{A^+}} : {\\boldsymbol{\\mathit{N}}} \\vDash A \\}",
+       "src": "\\Th{Pres} = \\Setabs{!A \\in \\Lang{L_{A^+}}}{\\Sat{N}{!A}}"
+      },
+      {
+       "t": "text",
+       "v": ", the set of "
+      },
+      {
+       "t": "term",
+       "token": "sentence",
+       "v": "sentences"
+      },
+      {
+       "t": "text",
+       "v": " of the language of arithmetic without "
+      },
+      {
+       "t": "math",
+       "tex": "\\times",
+       "src": "\\times"
+      },
+      {
+       "t": "text",
+       "v": " true in the standard model, is both complete and decidable. This theory is called Presburger arithmetic, and proves all the truths about natural numbers that can be formulated just with "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathsfit{0}",
+       "src": "\\Obj{0}"
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "math",
+       "tex": "\\prime",
+       "src": "\\prime"
+      },
+      {
+       "t": "text",
+       "v": ", and "
+      },
+      {
+       "t": "math",
+       "tex": "+",
+       "src": "+"
+      },
+      {
+       "t": "text",
+       "v": "."
+      }
+     ],
+     "loc": {
+      "repo": "OpenLogic",
+      "file": "content/incompleteness/introduction/undecidability.tex",
+      "line": 127,
+      "endLine": 135
+     }
+    }
+   ]
+  }
+ ],
+ "summary": [
+  {
+   "t": "p",
+   "id": "inc.int.summary/p7",
+   "c": [
+    {
+     "t": "text",
+     "v": "Hilbert’s program aimed to show that all of mathematics could be formalized in an axiomatized theory in a formal language, such as the language of arithmetic or of set theory. He believed that such a theory would be "
+    },
+    {
+     "t": "strong",
+     "c": [
+      {
+       "t": "term",
+       "token": "complete",
+       "v": "complete"
+      }
+     ]
+    },
+    {
+     "t": "text",
+     "v": ". That is, for every "
+    },
+    {
+     "t": "term",
+     "token": "sentence",
+     "v": "sentence"
+    },
+    {
+     "t": "text",
+     "v": " "
+    },
+    {
+     "t": "math",
+     "tex": "A",
+     "src": "!A"
+    },
+    {
+     "t": "text",
+     "v": ", either "
+    },
+    {
+     "t": "math",
+     "tex": "\\mathbf{T} \\vdash A",
+     "src": "\\Th{T} \\Proves !A"
+    },
+    {
+     "t": "text",
+     "v": " or "
+    },
+    {
+     "t": "math",
+     "tex": "\\mathbf{T} \\vdash \\lnot A",
+     "src": "\\Th{T} \\Proves \\lnot !A"
+    },
+    {
+     "t": "text",
+     "v": ". In this sense then, "
+    },
+    {
+     "t": "math",
+     "tex": "\\mathbf{T}",
+     "src": "\\Th{T}"
+    },
+    {
+     "t": "text",
+     "v": " would have settled every mathematical question: it would either prove that it’s true or that it’s false. If Hilbert had been right, it would also have turned out that mathematics is "
+    },
+    {
+     "t": "strong",
+     "c": [
+      {
+       "t": "term",
+       "token": "decidable",
+       "v": "decidable"
+      }
+     ]
+    },
+    {
+     "t": "text",
+     "v": ". That’s because any "
+    },
+    {
+     "t": "term",
+     "token": "axiomatizable",
+     "v": "axiomatizable"
+    },
+    {
+     "t": "text",
+     "v": " theory is "
+    },
+    {
+     "t": "strong",
+     "c": [
+      {
+       "t": "term",
+       "token": "computably enumerable",
+       "v": "computably enumerable"
+      }
+     ]
+    },
+    {
+     "t": "text",
+     "v": ", i.e., there is a computable function that lists all its theorems. We can test if a "
+    },
+    {
+     "t": "term",
+     "token": "sentence",
+     "v": "sentence"
+    },
+    {
+     "t": "text",
+     "v": " "
+    },
+    {
+     "t": "math",
+     "tex": "A",
+     "src": "!A"
+    },
+    {
+     "t": "text",
+     "v": " is a theorem by listing all of them until we find "
+    },
+    {
+     "t": "math",
+     "tex": "A",
+     "src": "!A"
+    },
+    {
+     "t": "text",
+     "v": " (in which it is a theorem) or "
+    },
+    {
+     "t": "math",
+     "tex": "\\lnot A",
+     "src": "\\lnot !A"
+    },
+    {
+     "t": "text",
+     "v": " (in which case it isn’t). Alas, Hilbert was wrong. Gödel proved that no "
+    },
+    {
+     "t": "term",
+     "token": "axiomatizable",
+     "v": "axiomatizable"
+    },
+    {
+     "t": "text",
+     "v": ", consistent theory that is “strong enough” is "
+    },
+    {
+     "t": "term",
+     "token": "complete",
+     "v": "complete"
+    },
+    {
+     "t": "text",
+     "v": ". That’s the "
+    },
+    {
+     "t": "strong",
+     "c": [
+      {
+       "t": "text",
+       "v": "first incompleteness theorem"
+      }
+     ]
+    },
+    {
+     "t": "text",
+     "v": ". The requirement that the theory be “strong enough” amounts to it representing all computable functions and relations. Specifically, the very weak theory "
+    },
+    {
+     "t": "math",
+     "tex": "\\mathbf{Q}",
+     "src": "\\Th{Q}"
+    },
+    {
+     "t": "text",
+     "v": " satisfies this property, and any theory that is at least as strong as "
+    },
+    {
+     "t": "math",
+     "tex": "\\mathbf{Q}",
+     "src": "\\Th{Q}"
+    },
+    {
+     "t": "text",
+     "v": " also does. He also showed—that is the "
+    },
+    {
+     "t": "strong",
+     "c": [
+      {
+       "t": "text",
+       "v": "second incompleteness theorem"
+      }
+     ]
+    },
+    {
+     "t": "text",
+     "v": "—that the sentence that expresses the consistency of the theory is itself undecidable in it, i.e., the theory proves neither it nor its negation. So Hilbert’s further aim of finding “finitary” consistency proof of all of mathematics cannot be realized. For any finitary consistency proof would, presumably, be formalizable in a theory that captures all of mathematics. Finally, we established that theories that represent all computable functions and relations are not "
+    },
+    {
+     "t": "strong",
+     "c": [
+      {
+       "t": "term",
+       "token": "decidable",
+       "v": "decidable"
+      }
+     ]
+    },
+    {
+     "t": "text",
+     "v": ". Note that although axomatizability and completeness implies decidability, incompleteness does not imply undecidability. So this result shows that the second of Hilbert’s goals, namely that there be a procedure that decides if "
+    },
+    {
+     "t": "math",
+     "tex": "\\mathbf{T} \\vdash A",
+     "src": "\\Th{T} \\Proves !A"
+    },
+    {
+     "t": "text",
+     "v": " or not, can also not be achieved, at least not for theories at least as strong as "
+    },
+    {
+     "t": "math",
+     "tex": "\\mathbf{Q}",
+     "src": "\\Th{Q}"
+    },
+    {
+     "t": "text",
+     "v": "."
+    }
+   ],
+   "loc": {
+    "repo": "incompleteness-computability",
+    "file": "include/summary-1.tex",
+    "line": 29,
+    "endLine": 34
+   }
+  }
+ ]
+}

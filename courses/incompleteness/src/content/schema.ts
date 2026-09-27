@@ -36,7 +36,7 @@ export interface DisplayRow {
 
 export type EnvKind =
   | 'defn' | 'prop' | 'thm' | 'lem' | 'cor' | 'ex' | 'prob'
-  | 'proof' | 'explain' | 'digress' | 'intro' | 'history' | 'quote' | 'center' | 'rem' | 'conv';
+  | 'proof' | 'explain' | 'digress' | 'intro' | 'history' | 'quote' | 'center' | 'rem' | 'conv' | 'defish' | 'reading';
 
 export type Block =
   | { t: 'p'; id: string; c: Inline[]; loc: SourceLoc }
@@ -57,6 +57,8 @@ export type Block =
       loc: SourceLoc;
     }
   | { t: 'table'; id: string; rows: Inline[][][]; loc: SourceLoc }
+  /** \\section / \\subsection inside a section file. */
+  | { t: 'heading'; id: string; level: 3 | 4; c: Inline[]; loc: SourceLoc }
   /** A derivation tree typeset with bussproofs in the source. */
   | { t: 'prooftree'; id: string; root: ProofTreeNode; loc: SourceLoc };
 

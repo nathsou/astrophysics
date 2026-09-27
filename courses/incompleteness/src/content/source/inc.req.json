@@ -12727,7 +12727,7 @@
      "v": " completeness"
     }
    ],
-   "titleText": "_1 completeness",
+   "titleText": "Σ_1 completeness",
    "loc": {
     "repo": "OpenLogic",
     "file": "content/incompleteness/representability-in-q/sigma1-completeness.tex",

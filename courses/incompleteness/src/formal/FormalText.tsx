@@ -18,6 +18,7 @@ export interface FormalContext {
 const ENV_LABEL: Partial<Record<EnvKind, string>> = {
   defn: 'Definition', prop: 'Proposition', thm: 'Theorem', lem: 'Lemma', cor: 'Corollary', ex: 'Example', prob: 'Problem',
   rem: 'Remark', conv: 'Convention', explain: 'Explanation', digress: 'Digression', history: 'History', intro: 'Introduction',
+  reading: 'Further reading',
 };
 
 const THEOREMISH = new Set<EnvKind>(['prop', 'thm', 'lem', 'cor']);
@@ -103,6 +104,14 @@ function BlockView({ b, ctx }: { b: Block; ctx: FormalContext }): ReactNode {
           </table>
         </div>
       );
+    case 'heading': {
+      const H = b.level === 3 ? 'h3' : 'h4';
+      return (
+        <H className="ol-heading" id={anchor(b.id)}>
+          <Inlines c={b.c} />
+        </H>
+      );
+    }
     case 'prooftree':
       return (
         <div className="ol-tree" id={anchor(b.id)}>
@@ -126,6 +135,13 @@ function EnvView({ b, ctx }: { b: Extract<Block, { t: 'env' }>; ctx: FormalConte
         <FormalBlocks blocks={b.c} ctx={ctx} />
         <span className="qed" aria-label="end of proof">∎</span>
         <SourceTag loc={b.loc} />
+      </div>
+    );
+  }
+  if (b.kind === 'defish') {
+    return (
+      <div className="ol-defish" id={id}>
+        <FormalBlocks blocks={b.c} ctx={ctx} />
       </div>
     );
   }

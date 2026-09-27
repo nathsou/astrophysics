@@ -64,8 +64,11 @@ describe('conversion of the vendored chapters', () => {
     for (const [name, content] of files) expect(readFileSync(join(root, 'src/content/source', name), 'utf8') === content, name).toBe(true);
   });
 
-  it('follows the book’s chapter numbering from ic.tex', () => {
-    expect(index.chapters.map((c) => [c.id, c.number])).toEqual([['cmp.rec', '2'], ['inc.art', '3'], ['inc.req', '4'], ['inc.inp', '5']]);
+  it('follows the book’s structure and numbering from ic.tex', () => {
+    expect(index.chapters.map((c) => [c.id, c.number])).toEqual([
+      ['ic.preface', ''], ['inc.int', '1'], ['cmp.rec', '2'], ['inc.art', '3'], ['inc.req', '4'], ['inc.inp', '5'], ['ic.comp-inc', '6'], ['ic.mod', '7'],
+      ['ic.sol', '8'], ['ic.lambda', '9'], ['ic.deriv', 'A'], ['ic.fol', 'B'], ['ic.nd', 'C'], ['ic.bios', 'D'],
+    ]);
   });
 
   it('numbers theorem-like environments per chapter with a shared counter', () => {

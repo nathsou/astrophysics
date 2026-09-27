@@ -1,0 +1,816 @@
+{
+ "id": "ic.preface",
+ "number": "",
+ "title": "Preface",
+ "loc": {
+  "repo": "incompleteness-computability",
+  "file": "include/preface.tex",
+  "line": 3,
+  "endLine": 3
+ },
+ "sections": [
+  {
+   "id": "ic.preface.text",
+   "number": "",
+   "title": [
+    {
+     "t": "text",
+     "v": "Preface"
+    }
+   ],
+   "titleText": "Preface",
+   "loc": {
+    "repo": "incompleteness-computability",
+    "file": "include/preface.tex",
+    "line": 3,
+    "endLine": 3
+   },
+   "blocks": [
+    {
+     "t": "p",
+     "id": "ic.preface.text/p2",
+     "c": [
+      {
+       "t": "text",
+       "v": "Gödel’s incompleteness theorems are some of the most celebrated results in mathematical logic, if not in mathematics. The first of these states, roughly, that axiomatized mathematical theories that can carry out a minimal amount of arithmetic are either inconsistent (trivial, prove everything) or incomplete. In other words, if a mathematical theory can be written down in a compact way (is axiomatized), is strong enough to state and prove some basic facts about natural numbers, and contains no contradictions that would render it useless, there are always statements in the language of the theory it doesn’t settle, i.e., sentences "
+      },
+      {
+       "t": "math",
+       "tex": "A",
+       "src": "A"
+      },
+      {
+       "t": "text",
+       "v": " such that the theory proves neither "
+      },
+      {
+       "t": "math",
+       "tex": "A",
+       "src": "A"
+      },
+      {
+       "t": "text",
+       "v": " nor "
+      },
+      {
+       "t": "math",
+       "tex": "\\lnot A",
+       "src": "\\lnot A"
+      },
+      {
+       "t": "text",
+       "v": ". (This is the first incompleteness theorem.)"
+      }
+     ],
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/preface.tex",
+      "line": 5,
+      "endLine": 16
+     }
+    },
+    {
+     "t": "p",
+     "id": "ic.preface.text/p4",
+     "c": [
+      {
+       "t": "text",
+       "v": "This result was historically surprising since it might be taken to mean that we can never write down an axiomatic theory that “captures” all mathematical truths—at least if we require that what follows from the theory must be verified by a finite "
+      },
+      {
+       "t": "term",
+       "token": "derivation",
+       "v": "derivation"
+      },
+      {
+       "t": "text",
+       "v": " or proof which we can mechanically test for correctness. One consequence of the result is that mathematical truth is undecidable: there cannot be a mechanical way to decide, given a statement in a mathematical theory, whether it follows from the axioms. Another consequence is that mathematical theories that are strong enough and consistent cannot "
+      },
+      {
+       "t": "em",
+       "c": [
+        {
+         "t": "text",
+         "v": "prove"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": " their own consistency—at least for the most straightforward way of formalizing the statement of the theory’s consistency in the theory itself. (This is the second incompleteness theorem.)"
+      }
+     ],
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/preface.tex",
+      "line": 27,
+      "endLine": 30
+     }
+    },
+    {
+     "t": "p",
+     "id": "ic.preface.text/p5",
+     "c": [
+      {
+       "t": "text",
+       "v": "Assuming a minimal background of formal logic on the part of the reader, it is actually not hard to state and prove the first two of these results. In fact, we do so below in "
+      },
+      {
+       "t": "ref",
+       "key": "inc:int::chap"
+      },
+      {
+       "t": "text",
+       "v": ". But the version of the result we prove makes stronger assumptions for the first incompleteness than actually needed. We also do not show that these assumptions hold for the theories discussed, and the proofs are not constructive: they show that theories are incomplete, but don’t give examples of sentences that the theory leaves undecided. To do this in detail requires more background."
+      }
+     ],
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/preface.tex",
+      "line": 32,
+      "endLine": 40
+     }
+    },
+    {
+     "t": "p",
+     "id": "ic.preface.text/p6",
+     "c": [
+      {
+       "t": "text",
+       "v": "In "
+      },
+      {
+       "t": "ref",
+       "key": "cmp:rec::chap"
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "ref",
+       "key": "inc:art::chap"
+      },
+      {
+       "t": "text",
+       "v": ", and "
+      },
+      {
+       "t": "ref",
+       "key": "inc:req::chap"
+      },
+      {
+       "t": "text",
+       "v": " we provide this background: we discuss a model of computability (the primitive recursive functions), we show that by assigning numbers to symbols we can “arithmetize” the syntax and proof theory of arithmetical theories using primitive recursive functions and relations, and finally that the very simple arithmetical theory "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": " “represents” all primitive recursive functions and relations."
+      }
+     ],
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/preface.tex",
+      "line": 42,
+      "endLine": 48
+     }
+    },
+    {
+     "t": "p",
+     "id": "ic.preface.text/p7",
+     "c": [
+      {
+       "t": "text",
+       "v": "With this background it is then possible to state and prove the incompleteness theorems in the same level of detail as any thorough mathematical exposition of these results would. In "
+      },
+      {
+       "t": "ref",
+       "key": "inc:inp::chap"
+      },
+      {
+       "t": "text",
+       "v": " we prove Gödel’s original version of the first incompleteness theorem, Rosser’s improved version, the second incompleteness theorem, as well as Löb’s theorem and Tarski’s theorem about the undefinability of truth."
+      }
+     ],
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/preface.tex",
+      "line": 50,
+      "endLine": 56
+     }
+    },
+    {
+     "t": "p",
+     "id": "ic.preface.text/p8",
+     "c": [
+      {
+       "t": "text",
+       "v": "The incompleteness phenomena are closely tied to the notion of computability. The incompleteness theorem applies to theories that can be computably generated from computable sets of axioms. The mechanics of the arithmetization of syntax requires a model of computation (recursive functions) to spell out the details. And the result itself is structurally related to a famous result from the theory of computability, namely the theorem that the halting problem is undecidable due to Church and Turing. So it is natural to give an alternative description and proof of the incompleteness theorem that makes use of computability theory. We do this in "
+      },
+      {
+       "t": "ref",
+       "key": "comp-inc:chap"
+      },
+      {
+       "t": "text",
+       "v": " after introducing the basic theory of partial computable functions and decidable and computably enumerable sets."
+      }
+     ],
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/preface.tex",
+      "line": 58,
+      "endLine": 69
+     }
+    },
+    {
+     "t": "p",
+     "id": "ic.preface.text/p9",
+     "c": [
+      {
+       "t": "text",
+       "v": "That theories of arithmetic are incomplete means that they have models that not only don’t look like the “standard model” of the natural numbers, but that make sentences false which are true in the standard model. The structure of such models is itself an interesting area of research. We provide a brief glimpse of it in "
+      },
+      {
+       "t": "ref",
+       "key": "mod:chap"
+      },
+      {
+       "t": "text",
+       "v": "."
+      }
+     ],
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/preface.tex",
+      "line": 71,
+      "endLine": 75
+     }
+    },
+    {
+     "t": "p",
+     "id": "ic.preface.text/p10",
+     "c": [
+      {
+       "t": "text",
+       "v": "The incompleteness theorems concern, in the first instance, theories formulated and axiomatized in first-order languages, and for which we assume the usual first-order consequence and provability relation. By Gödel’s completeness theorem, we know that the proof systems we have for first-order logic and theories axiomatized in it are as strong as we want them to be: they prove everything that follows from the axioms. In a sense, the incompleteness theorems say that it is exactly this feature of first-order logic that prevents us from writing down mathematical theories that “settle every question.” A natural way out would be to adopt a stronger logic with a stronger consequence relation which does: second-order logic. We discuss its most important properties in "
+      },
+      {
+       "t": "ref",
+       "key": "sol:chap"
+      },
+      {
+       "t": "text",
+       "v": ": it is strong enough to characterize arithmetical truth and it is much more expressive than first-order logic. Second-order arithmetic is complete. But many results that hold for first-order logic (such as the compactness and Löwenheim–Skolem theorems) fail for second-order logic."
+      }
+     ],
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/preface.tex",
+      "line": 77,
+      "endLine": 92
+     }
+    },
+    {
+     "t": "p",
+     "id": "ic.preface.text/p13",
+     "c": [
+      {
+       "t": "text",
+       "v": "This book introduces recursive functions explicitly as a model of computability. Representability in "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": " can also be taken as a model of computability, and along the way we (almost) show that it is equivalent to recursive functions. The companion book "
+      },
+      {
+       "t": "link",
+       "href": "https://slc.openlogicproject.org/",
+       "c": [
+        {
+         "t": "em",
+         "c": [
+          {
+           "t": "text",
+           "v": "Sets, Logic, Computation"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": " discusses the Turing machine model of computation. In "
+      },
+      {
+       "t": "ref",
+       "key": "lambda:chap"
+      },
+      {
+       "t": "text",
+       "v": ", we introduce yet another model of computability: the (untyped) lambda-calculus."
+      }
+     ],
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/preface.tex",
+      "line": 98,
+      "endLine": 101
+     }
+    }
+   ]
+  },
+  {
+   "id": "ic.preface.notes-for-instructors",
+   "number": "",
+   "title": [
+    {
+     "t": "text",
+     "v": "Notes for Instructors"
+    }
+   ],
+   "titleText": "Notes for Instructors",
+   "loc": {
+    "repo": "incompleteness-computability",
+    "file": "include/preface.tex",
+    "line": 103,
+    "endLine": 103
+   },
+   "blocks": [
+    {
+     "t": "p",
+     "id": "ic.preface.notes-for-instructors/p16",
+     "c": [
+      {
+       "t": "text",
+       "v": "This is a textbook on Gödel’s incompleteness theorems and recursive function theory. I use it as the main text when I teach Philosophy 479 (Logic III) at the University of Calgary. It is based on material from the "
+      },
+      {
+       "t": "link",
+       "href": "https://openlogicproject.org",
+       "c": [
+        {
+         "t": "text",
+         "v": "Open Logic Project"
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": "."
+      }
+     ],
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/preface.tex",
+      "line": 108,
+      "endLine": 108
+     }
+    },
+    {
+     "t": "p",
+     "id": "ic.preface.notes-for-instructors/p21",
+     "c": [
+      {
+       "t": "text",
+       "v": "As its name suggests, the course is the third in a sequence, so students (and hence readers of this book) are expected to be familiar with first-order logic already. (Logic I uses the text "
+      },
+      {
+       "t": "link",
+       "href": "https://forallx.openlogicproject.org",
+       "c": [
+        {
+         "t": "em",
+         "c": [
+          {
+           "t": "text",
+           "v": "forall x: Calgary"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": ", and Logic II another textbook based on the OLP, "
+      },
+      {
+       "t": "link",
+       "href": "https://slc.openlogicproject.org",
+       "c": [
+        {
+         "t": "em",
+         "c": [
+          {
+           "t": "text",
+           "v": "Sets, Logic, Computation"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "t": "text",
+       "v": ".) The material assumed from Logic II, however, is included as "
+      },
+      {
+       "t": "ref",
+       "key": "fol:chap"
+      },
+      {
+       "t": "text",
+       "v": " and "
+      },
+      {
+       "t": "ref",
+       "key": "nd:chap"
+      },
+      {
+       "t": "text",
+       "v": ", and it is not absolutely necessary to assume more than that as background for a course based on this book."
+      }
+     ],
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/preface.tex",
+      "line": 116,
+      "endLine": 119
+     }
+    },
+    {
+     "t": "p",
+     "id": "ic.preface.notes-for-instructors/p22",
+     "c": [
+      {
+       "t": "text",
+       "v": "Logic III is a thirteen-week course, meeting three hours per week. This is typically enough to cover the material in "
+      },
+      {
+       "t": "ref",
+       "key": "inc:int::chap"
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "ref",
+       "key": "cmp:rec::chap"
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "ref",
+       "key": "inc:art::chap"
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "ref",
+       "key": "inc:req::chap"
+      },
+      {
+       "t": "text",
+       "v": ", and "
+      },
+      {
+       "t": "ref",
+       "key": "inc:inp::chap"
+      },
+      {
+       "t": "text",
+       "v": " and one or two of "
+      },
+      {
+       "t": "ref",
+       "key": "comp-inc:chap"
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "ref",
+       "key": "mod:chap"
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "ref",
+       "key": "sol:chap"
+      },
+      {
+       "t": "text",
+       "v": ", and "
+      },
+      {
+       "t": "ref",
+       "key": "lambda:chap"
+      },
+      {
+       "t": "text",
+       "v": ", depending on student interest. You may want to spend more time on the basics of first-order logic and especially on natural deduction, if students are not already familiar with it. Note that when provability in arithmetical theories (such as "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": " and "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{PA}",
+       "src": "\\Th{PA}"
+      },
+      {
+       "t": "text",
+       "v": ") is discussed in the main text, the proofs of provability claims are not given using a specific "
+      },
+      {
+       "t": "term",
+       "token": "derivation",
+       "v": "derivation"
+      },
+      {
+       "t": "text",
+       "v": " system. Rather, that certain claims follow from the axioms by first-order logic is justified intuitively. However, "
+      },
+      {
+       "t": "ref",
+       "key": "deriv:chap"
+      },
+      {
+       "t": "text",
+       "v": " contains a number of examples of actual natural deduction "
+      },
+      {
+       "t": "term",
+       "token": "derivation",
+       "v": "derivations"
+      },
+      {
+       "t": "text",
+       "v": " from the axioms of "
+      },
+      {
+       "t": "math",
+       "tex": "\\mathbf{Q}",
+       "src": "\\Th{Q}"
+      },
+      {
+       "t": "text",
+       "v": ". "
+      },
+      {
+       "t": "ref",
+       "key": "inc:art::chap"
+      },
+      {
+       "t": "text",
+       "v": " carries out the arithmetization of syntax for natural deduction. This is a perhaps unique feature of this book; most other tests just do it for axiomatic "
+      },
+      {
+       "t": "term",
+       "token": "derivation",
+       "v": "derivations"
+      },
+      {
+       "t": "text",
+       "v": ". Those are much easier to code, but much harder to give proofs with."
+      }
+     ],
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/preface.tex",
+      "line": 121,
+      "endLine": 137
+     }
+    }
+   ]
+  },
+  {
+   "id": "ic.preface.acknowledgments",
+   "number": "",
+   "title": [
+    {
+     "t": "text",
+     "v": "Acknowledgments"
+    }
+   ],
+   "titleText": "Acknowledgments",
+   "loc": {
+    "repo": "incompleteness-computability",
+    "file": "include/preface.tex",
+    "line": 139,
+    "endLine": 139
+   },
+   "blocks": [
+    {
+     "t": "p",
+     "id": "ic.preface.acknowledgments/p24",
+     "c": [
+      {
+       "t": "text",
+       "v": "The material in the OLP used in "
+      },
+      {
+       "t": "ref",
+       "key": "inc:int::chap"
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "ref",
+       "key": "cmp:rec::chap"
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "ref",
+       "key": "inc:art::chap"
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "ref",
+       "key": "inc:req::chap"
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "ref",
+       "key": "inc:inp::chap"
+      },
+      {
+       "t": "text",
+       "v": ", "
+      },
+      {
+       "t": "ref",
+       "key": "comp-inc:chap"
+      },
+      {
+       "t": "text",
+       "v": ", and "
+      },
+      {
+       "t": "ref",
+       "key": "lambda:chap"
+      },
+      {
+       "t": "text",
+       "v": " was based originally on Jeremy Avigad’s lecture notes on “Computability and Incompleteness,” which he contributed to the OLP. I have heavily revised and expanded this material. The lecture notes, e.g., based theories of arithmetic on an axiomatic "
+      },
+      {
+       "t": "term",
+       "token": "derivation",
+       "v": "derivation"
+      },
+      {
+       "t": "text",
+       "v": " system. Here, we use Gentzen’s standard natural deduction system (described in "
+      },
+      {
+       "t": "ref",
+       "key": "nd:chap"
+      },
+      {
+       "t": "text",
+       "v": "), which requires dealing with trees primitive recursively (in "
+      },
+      {
+       "t": "ref",
+       "key": "cmp:rec:tre:sec"
+      },
+      {
+       "t": "text",
+       "v": ") and a more complicated approach to the arithmetization of "
+      },
+      {
+       "t": "term",
+       "token": "derivation",
+       "v": "derivations"
+      },
+      {
+       "t": "text",
+       "v": " (in "
+      },
+      {
+       "t": "ref",
+       "key": "inc:art:pnd:sec"
+      },
+      {
+       "t": "text",
+       "v": "). The material in "
+      },
+      {
+       "t": "ref",
+       "key": "lambda:chap"
+      },
+      {
+       "t": "text",
+       "v": " was also expanded by Zesen Qian during his stay in Calgary as a Mitacs summer intern."
+      }
+     ],
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/preface.tex",
+      "line": 141,
+      "endLine": 153
+     }
+    },
+    {
+     "t": "p",
+     "id": "ic.preface.acknowledgments/p25",
+     "c": [
+      {
+       "t": "text",
+       "v": "The material in the OLP on model theory and models of arithmetic in "
+      },
+      {
+       "t": "ref",
+       "key": "mod:chap"
+      },
+      {
+       "t": "text",
+       "v": " was originally taken from Aldo Antonelli’s lecture notes on “The Completeness of Classical Propositional and Predicate Logic,” which he contributed to the OLP before his untimely death in 2015."
+      }
+     ],
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/preface.tex",
+      "line": 155,
+      "endLine": 159
+     }
+    },
+    {
+     "t": "p",
+     "id": "ic.preface.acknowledgments/p26",
+     "c": [
+      {
+       "t": "text",
+       "v": "The biographies of logicians in "
+      },
+      {
+       "t": "ref",
+       "key": "bios:chap"
+      },
+      {
+       "t": "text",
+       "v": " and much of the material in "
+      },
+      {
+       "t": "ref",
+       "key": "nd:chap"
+      },
+      {
+       "t": "text",
+       "v": " are originally due to Sam Burns. Dana Hägg originally worked on the material in "
+      },
+      {
+       "t": "ref",
+       "key": "fol:chap"
+      },
+      {
+       "t": "text",
+       "v": "."
+      }
+     ],
+     "loc": {
+      "repo": "incompleteness-computability",
+      "file": "include/preface.tex",
+      "line": 161,
+      "endLine": 163
+     }
+    }
+   ]
+  }
+ ]
+}

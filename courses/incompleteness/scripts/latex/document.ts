@@ -6,12 +6,12 @@
 // environments are numbered per chapter as in open-logic-envs.sty (thm, ex, lem, prop, cor and
 // defn share a counter; problems have their own).
 
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import katex from 'katex';
 import type { Block, Chapter, Diagnostic, DisplayRow, EnvKind, Inline, LabelTarget, ListItem, ProofTreeNode, Section, SourceLoc } from '../../src/content/schema.ts';
 import type { ConfigState } from './macros.ts';
-import { stripComments } from './macros.ts';
+import { applyOverrides, readConfig, stripComments } from './macros.ts';
 import { assembleDisplay } from '../../src/formal/display.ts';
 import { accent, expandMath, expandTextInMath, readArgs, readBalanced, readToken, textSymbol, tokenText, type ExpandHooks } from './expand.ts';
 
@@ -26,6 +26,19 @@ export interface ConvertContext {
   labels: Map<string, LabelTarget>;
   /** Labels from the previous pass, used to resolve forward references. */
   knownLabels: Map<string, LabelTarget>;
+  /** \\olsection is switched off (\\let\\olsection\\nosection): section files add to the current section. */
+  olsectionSuppressed?: boolean;
+  /** Environments switched off by the book (\\let\\intro\\comment in the appendices). */
+  suppressedEnvs: Set<string>;
+}
+
+export interface BookHandler {
+  receive(blocks: Block[]): void;
+  chapter(title: Inline[], label: string | undefined, loc: SourceLoc): void;
+  section(title: Inline[], loc: SourceLoc): void;
+  importFile(path: string | undefined, name: string, noSection: boolean): void;
+  input(file: string): void;
+  part(name: string): void;
 }
 
 const THEOREM_NAMES: Partial<Record<EnvKind, string>> = {
@@ -68,6 +81,10 @@ export class FileParser {
   sectionTitle: { c: Inline[]; text: string; start: number } | null = null;
   chapterTitle: string | null = null;
   readonly imports: { path?: string; name: string; star: boolean }[] = [];
+  private skipProb = false;
+  private ycommaFirst = false;
+  /** Set when this file is walked as part of the book structure (ic.tex, chapter drivers). */
+  book?: BookHandler;
 
   readonly ctx: ConvertContext;
   readonly repo: Repo;
@@ -362,6 +379,7 @@ export class FileParser {
           this.pos = close + 2;
           continue;
         }
+        if (stopAtItem && this.iftagHoldsItems()) return;
         if (stopAtItem && (this.src.startsWith('\\item', this.pos) || this.src.startsWith('\\tagitem', this.pos)) && !/[a-zA-Z]/.test(this.src[this.pos + (this.src.startsWith('\\item', this.pos) ? 5 : 8)])) return;
         const name = this.readCsName();
         if (name === 'end') {
@@ -405,7 +423,7 @@ export class FileParser {
       if (c === '!' && this.peek(1) === '!') {
         const t = readToken(this.src, this.pos);
         this.pos = t.end;
-        this.pushInline({ t: 'term', token: t.token, v: tokenText(this.ctx.config, t.token, t.caps, t.article, t.plural) });
+        this.pushToken(t.token, tokenText(this.ctx.config, t.token, t.caps, t.article, t.plural));
         continue;
       }
       if (c === '!' && this.src.startsWith('!{}', this.pos)) {
@@ -464,15 +482,36 @@ export class FileParser {
 
   private findMathClose(start: number): number {
     let depth = 0;
+    // Brace groups opened by \text-like commands contain text, where $…$ is nested mathematics.
+    const kinds: boolean[] = [];
     for (let j = start; j < this.end; j++) {
       const c = this.src[j];
       if (c === '\\') {
+        const m = /^\\(text|mbox|textrm|textit|textbf|emph|hbox)\s*\{/.exec(this.src.slice(j, j + 12));
+        if (m) {
+          kinds.push(true);
+          depth++;
+          j += m[0].length - 1;
+          continue;
+        }
         j++;
         continue;
       }
-      if (c === '{') depth++;
-      else if (c === '}') depth--;
-      else if (c === '$' && depth <= 0) return j;
+      if (c === '{') {
+        kinds.push(false);
+        depth++;
+      } else if (c === '}') {
+        kinds.pop();
+        depth--;
+      } else if (c === '$' && kinds[kinds.length - 1] === true) {
+        // nested mathematics inside \text{…}: skip to its closing $
+        const k = this.src.indexOf('$', j + 1);
+        if (k > 0) j = k;
+      } else if (c === '$') {
+        // TeX ends math mode at a $ even inside a group (and complains); so do we.
+        if (depth !== 0) this.diag('warning', 'unbalanced-math', 'a $ inside an unclosed brace group (upstream typo?)', j);
+        return j;
+      }
     }
     throw new Error(`${this.file}:${this.line(start)}: unterminated $`);
   }
@@ -596,6 +635,7 @@ export class FileParser {
       this.flush();
       return;
     }
+    if (this.book && this.bookCommand(name, at)) return;
     if (IGNORED.has(name)) {
       if (name === 'documentclass') {
         this.opt();
@@ -609,13 +649,22 @@ export class FileParser {
       return;
     }
     switch (name) {
+      case 'olphoto': {
+        this.group();
+        this.group();
+        this.diag('info', 'photo-omitted', 'photograph omitted (photos are not part of this edition)', at);
+        return;
+      }
       case 'olfileid': {
         this.opt();
         this.fileId = [this.group(), this.group(), this.group()];
         return;
       }
       case 'olsection': {
+        if (this.src[this.pos] === '*') this.pos++;
+        this.opt();
         const r = this.groupRange()!;
+        if (this.ctx.olsectionSuppressed) return;
         const c = this.parseInlineRange(r.start, r.end);
         this.sectionTitle = { c, text: plain(c), start: at };
         return;
@@ -742,13 +791,115 @@ export class FileParser {
         const token = this.group();
         const t = cfg.tokens.get(token);
         const v = t ? (form === 's' ? t.s : form === 'p' ? t.p : form === 'S' ? t.S : t.P) : token;
-        this.pushInline({ t: 'term', token, v });
+        this.pushToken(token, v);
         return;
       }
       case 'item':
       case 'tagitem':
         this.diag('error', 'item-outside-list', `\\${name} outside a list`, at);
         return;
+      case 'indcase': {
+        // \indcase*!{A}{complex}{case text}: defines \indfrm, \indcomplex and typesets the case.
+        const star = this.src[this.pos] === '*';
+        if (star) this.pos++;
+        const bang = this.src[this.pos] === '!';
+        if (bang) this.pos++;
+        const a = this.group();
+        const b = this.group();
+        const body = this.groupRange()!;
+        for (const [nm, v] of [['indfrm', a], ['indfrmp', a], ['indcomplex', b]] as const) {
+          this.ctx.config.macros.set(nm, { name: nm, args: [], body: v, origin: 'upstream', from: `\\indcase at ${this.file}:${this.line(at)}` });
+        }
+        const lead = star ? `${a}` : `${a} \\ident ${b}`;
+        const tex = expandMath(lead, this.hooks()).replace(/\s+/g, ' ').trim();
+        this.pushInline({ t: 'math', tex, src: lead });
+        this.pushText(star ? ' is atomic: ' : ': ');
+        if (bang) this.pushText('exercise.');
+        else this.splice(body.start, body.end);
+        return;
+      }
+      case 'DeclareDocumentMacro':
+      case 'DeclareDocumentCommand':
+      case 'NewDocumentCommand':
+      case 'RenewDocumentCommand':
+      case 'DeclareRobustCommand':
+      case 'newcommand':
+      case 'renewcommand':
+      case 'providecommand': {
+        // A local definition: register it, as LaTeX would.
+        if (this.src[this.pos] === '*') this.pos++;
+        this.skipWs();
+        if (this.src[this.pos] === '{') this.group();
+        else this.readCsName();
+        if (name.endsWith('DocumentCommand')) this.group();
+        else if (!name.endsWith('Macro')) {
+          this.opt();
+          this.opt();
+        }
+        this.group();
+        readConfig(this.ctx.config, this.src.slice(at, this.pos), `${this.file}:${this.line(at)}`);
+        applyOverrides(this.ctx.config);
+        return;
+      }
+      case 'section':
+      case 'subsection':
+      case 'subsubsection': {
+        if (this.src[this.pos] === '*') this.pos++;
+        this.opt();
+        const r = this.groupRange()!;
+        if (name === 'section' && this.sectionTitle === null && this.blocks.length === 0 && this.para.length === 0) {
+          // some section files use \\section instead of \\olsection
+          if (this.ctx.olsectionSuppressed) return;
+          const c = this.parseInlineRange(r.start, r.end);
+          this.sectionTitle = { c, text: plain(c), start: at };
+          return;
+        }
+        this.flush();
+        this.blocks.push({ t: 'heading', id: this.nextId('h'), level: name === 'section' ? 3 : 4, c: this.parseInlineRange(r.start, r.end), loc: this.loc(at, this.pos) });
+        return;
+      }
+      case 'tagprob': {
+        const def = this.opt();
+        const tags = this.group();
+        this.skipProb = !(this.tagOn(def ?? 'tagTrue') && this.tagOn(tags));
+        return;
+      }
+      case 'tagendprob':
+        this.skipProb = false;
+        return;
+      case 'startycommalist':
+        this.ycommaFirst = true;
+        return;
+      case 'ycomma':
+        if (!this.ycommaFirst) this.pushText(', ');
+        this.ycommaFirst = false;
+        return;
+      case 'article':
+      case 'Article': {
+        const t = this.ctx.config.tokens.get(this.group().trim());
+        const art = t?.an ? 'an' : 'a';
+        this.pushText(name === 'Article' ? art[0].toUpperCase() + art.slice(1) : art);
+        return;
+      }
+      case 'citeyearpar':
+        this.opt();
+        this.opt();
+        this.pushInline({ t: 'cite', keys: this.group().split(',').map((k) => k.trim()) });
+        return;
+      case 'quad':
+      case 'qquad':
+        this.pushText('\u2003');
+        return;
+      case 'AxiomC':
+      case 'Axiom': {
+        // bussproofs outside a prooftree environment: up to \DisplayProof
+        const close = this.src.indexOf('\\DisplayProof', at);
+        const endAt = close < 0 || close > this.end ? this.end : close;
+        this.flush();
+        for (const root of this.prooftree(at, endAt, at)) this.blocks.push({ t: 'prooftree', id: this.nextId('tree'), root, loc: this.loc(at, endAt) });
+        this.pos = close < 0 ? this.end : Math.min(this.end, close + '\\DisplayProof'.length);
+        return;
+      }
     }
     // Single-character commands.
     if (name.length === 1 && !/[a-zA-Z]/.test(name)) {
@@ -792,11 +943,121 @@ export class FileParser {
     this.pushInline({ t: 'unsupported', name, raw: `\\${name}` });
   }
 
+  /** A terminology token; its text may itself contain mathematics (e.g. “$\\lambd$-definable”). */
+  private pushToken(token: string, v: string) {
+    if (!/[$\\]/.test(v)) {
+      this.pushInline({ t: 'term', token, v });
+      return;
+    }
+    for (const part of v.split(/(\$[^$]*\$)/)) {
+      if (!part) continue;
+      if (part.startsWith('$')) {
+        const src = part.slice(1, -1);
+        this.pushInline({ t: 'math', tex: expandMath(src, this.hooks()).replace(/\s+/g, ' ').trim(), src });
+      } else this.pushText(part);
+    }
+  }
+
   private pushRefList(keys: string[]) {
     keys.forEach((key, k) => {
       if (k > 0) this.pushText(k === keys.length - 1 ? (keys.length > 2 ? ', and ' : ' and ') : ', ');
       this.pushInline({ t: 'ref', key });
     });
+  }
+
+  /** Structural commands of the book's driver files. Returns true if handled. */
+  private bookCommand(name: string, at: number): boolean {
+    const book = this.book!;
+    const hand = () => book.receive(this.drain());
+    switch (name) {
+      case 'chapter': {
+        const star = this.src[this.pos] === '*';
+        if (star) this.pos++;
+        this.opt();
+        const r = this.groupRange()!;
+        const title = this.parseInlineRange(r.start, r.end);
+        let label: string | undefined;
+        const save = this.pos;
+        this.skipWs();
+        if (this.src.startsWith('\\label', this.pos)) {
+          this.pos += 6;
+          label = this.group();
+        } else this.pos = save;
+        hand();
+        book.chapter(title, label, this.loc(at, this.pos));
+        return true;
+      }
+      case 'section':
+      case 'olsection': {
+        const star = this.src[this.pos] === '*';
+        if (star) this.pos++;
+        this.opt();
+        const r = this.groupRange()!;
+        if (this.ctx.olsectionSuppressed) return true;
+        const title = this.parseInlineRange(r.start, r.end);
+        hand();
+        book.section(title, this.loc(at, this.pos));
+        return true;
+      }
+      case 'olimport': {
+        const star = this.src[this.pos] === '*';
+        if (star) this.pos++;
+        const path = this.opt();
+        const file = this.group();
+        const trailing = this.opt();
+        hand();
+        book.importFile(path, file, !!trailing && trailing.includes('nosection'));
+        return true;
+      }
+      case 'input': {
+        const file = this.group();
+        hand();
+        book.input(file);
+        return true;
+      }
+      case 'appendix':
+      case 'mainmatter':
+      case 'frontmatter':
+        hand();
+        book.part(name);
+        return true;
+      case 'backmatter':
+        hand();
+        this.pos = this.end;
+        return true;
+      case 'let': {
+        const a = this.readLetName();
+        const b = this.readLetName();
+        if (a === 'olsection') this.ctx.olsectionSuppressed = b === 'nosection';
+        if (b === 'comment' && a !== 'endintro') this.ctx.suppressedEnvs.add(a);
+        return true;
+      }
+      case 'def': {
+        const nm = this.readLetName();
+        while (this.src[this.pos] === '#' && /\d/.test(this.src[this.pos + 1])) this.pos += 2;
+        const body = this.group();
+        if (nm === 'olsection' && body.trim() === '') this.ctx.olsectionSuppressed = true;
+        return true;
+      }
+      case 'label':
+        this.group();
+        return true;
+      case 'OLPfrontmatter':
+      case 'stopproblems':
+      case 'photocredits':
+        return true;
+      case 'preto':
+        this.readLetName();
+        this.group();
+        return true;
+    }
+    return false;
+  }
+
+  private readLetName(): string {
+    this.skipWs();
+    if (this.src[this.pos] !== '\\') return '';
+    return this.readCsName();
   }
 
   private readAccentArg(): string {
@@ -840,7 +1101,7 @@ export class FileParser {
       this.pos = close.end;
       return;
     }
-    if (env === 'editorial' || env === 'comment') {
+    if (env === 'editorial' || env === 'comment' || this.ctx.suppressedEnvs.has(env) || (env === 'prob' && this.skipProb)) {
       const close = this.findEnd(env);
       this.diag('info', 'editorial-omitted', `${env} note omitted (not printed in the book)`, at);
       this.pos = close.end;
@@ -850,8 +1111,7 @@ export class FileParser {
     if (env === 'prooftree') {
       const close = this.findEnd(env);
       this.flush();
-      const root = this.prooftree(this.pos, close.start, at);
-      if (root) this.blocks.push({ t: 'prooftree', id: this.nextId('tree'), root, loc: this.loc(at, close.end) });
+      for (const root of this.prooftree(this.pos, close.start, at)) this.blocks.push({ t: 'prooftree', id: this.nextId('tree'), root, loc: this.loc(at, close.end) });
       this.pos = close.end;
       return;
     }
@@ -942,15 +1202,45 @@ export class FileParser {
     const ordered = env !== 'itemize';
     const items: ListItem[] = [];
     const close = this.findEnd(env);
-    const endPos = close.start;
-    // Skip to the first item.
-    this.skipWs();
-    let index = 0;
+    this.collectItems(close.start, items, at);
+    this.pos = close.end;
+    this.blocks.push({ t: 'list', id: this.nextId('l'), ordered, items, loc: this.loc(at, this.pos) });
+  }
+
+  /** Does \\iftag at the current position select a branch that starts with an item? */
+  private iftagHoldsItems(): { tags: string; yes: { start: number; end: number }; no: { start: number; end: number } } | null {
+    if (!this.src.startsWith('\\iftag', this.pos) || /[a-zA-Z]/.test(this.src[this.pos + 6])) return null;
+    const save = this.pos;
+    this.pos += 6;
+    const tags = this.group();
+    const yes = this.groupRange();
+    const no = this.groupRange();
+    this.pos = save;
+    if (!yes || !no) return null;
+    const chosen = this.tagOn(tags) ? yes : no;
+    const body = this.src.slice(chosen.start, chosen.end).replace(/%[^\n]*/g, '').trim();
+    return body === '' || body.startsWith('\\item') || body.startsWith('\\tagitem') ? { tags, yes, no } : null;
+  }
+
+  private collectItems(endPos: number, items: ListItem[], at: number) {
     while (this.pos < endPos) {
       this.skipWs();
       if (this.pos >= endPos) break;
       let content: { start: number; end: number } | null = null;
       let marker: Inline[] | undefined;
+      const tagged = this.iftagHoldsItems();
+      if (tagged) {
+        this.pos += 6;
+        this.group();
+        this.groupRange();
+        this.groupRange();
+        const after = this.pos;
+        const chosen = this.tagOn(tagged.tags) ? tagged.yes : tagged.no;
+        this.pos = chosen.start;
+        this.collectItems(chosen.end, items, at);
+        this.pos = after;
+        continue;
+      }
       if (this.src.startsWith('\\tagitem', this.pos)) {
         this.pos += 8;
         const tag = this.group();
@@ -964,14 +1254,14 @@ export class FileParser {
         const m = this.optRange();
         if (m) marker = this.parseInlineRange(m.start, m.end);
       } else {
-        // Material before the first \item (should not happen).
+        // Material before the first \\item (should not happen).
         const junk = this.parseBlocks(endPos, undefined, true);
         if (junk.length) this.diag('warning', 'list-junk', 'content before first \\item', at);
+        if (this.iftagHoldsItems() === null && !this.src.startsWith('\\item', this.pos) && !this.src.startsWith('\\tagitem', this.pos)) break;
         continue;
       }
       const item: ListItem = { id: '', c: [] };
-      index++;
-      const itemNumber = index;
+      const itemNumber = items.length + 1;
       item.id = this.nextId('i');
       if (marker) item.marker = marker;
       this.labelStack.push({
@@ -991,19 +1281,18 @@ export class FileParser {
       this.labelStack.pop();
       items.push(item);
     }
-    this.pos = close.end;
-    this.blocks.push({ t: 'list', id: this.nextId('l'), ordered, items, loc: this.loc(at, this.pos) });
   }
 
   /** bussproofs: a stack machine over \AxiomC, \UnaryInfC, \BinaryInfC, … */
-  private prooftree(start: number, end: number, at: number): ProofTreeNode | null {
+  private prooftree(start: number, end: number, at: number): ProofTreeNode[] {
     const stack: ProofTreeNode[] = [];
+    const forest: ProofTreeNode[] = [];
     let right: Inline[] | undefined;
     let left: Inline[] | undefined;
     let line: ProofTreeNode['line'] = 'single';
     const save = this.pos;
     this.pos = start;
-    const arity: Record<string, number> = { DeduceC: 1, Axiom: 0, AxiomC: 0, UnaryInf: 1, UnaryInfC: 1, BinaryInf: 2, BinaryInfC: 2, TrinaryInf: 3, TrinaryInfC: 3, QuaternaryInf: 4, QuaternaryInfC: 4 };
+    const arity: Record<string, number> = { QuinaryInfC: 5, DeduceC: 1, Axiom: 0, AxiomC: 0, UnaryInf: 1, UnaryInfC: 1, BinaryInf: 2, BinaryInfC: 2, TrinaryInf: 3, TrinaryInfC: 3, QuaternaryInf: 4, QuaternaryInfC: 4 };
     while (this.pos < end) {
       this.skipWs();
       if (this.pos >= end) break;
@@ -1051,15 +1340,24 @@ export class FileParser {
       else if (name === 'singleLine') line = 'single';
       else if (name === 'doubleLine') line = 'double';
       else if (name === 'dashedLine') line = 'dashed';
-      else if (name === 'DisplayProof') continue;
-      else this.diag('error', 'prooftree', `\\${name} is not supported inside prooftree`, cmdAt);
+      else if (name === 'DisplayProof') {
+        if (stack.length === 1) forest.push(stack.pop()!);
+        continue;
+      }
+      else if (name === 'insertBetweenHyps' || name === 'hspace' || name === 'vspace') this.group();
+      else if (name === 'hskip' || name === 'kern') this.pos += /^\s*-?[\d.]+\s*[a-z]{2}/.exec(this.src.slice(this.pos))?.[0].length ?? 0;
+      else if (['footnotesize', 'small', 'scriptsize', 'normalsize', 'bottomAlignProof', 'centerAlignProof', 'topAlignProof', 'alwaysNoLine', 'alwaysSingleLine'].includes(name)) continue;
+      else if (name === 'RightSubproofLabel' || name === 'LeftSubproofLabel') this.group();
+      else if (name === 'def' || name === 'let') {
+        this.readLetName();
+        if (name === 'let') this.readLetName();
+        else this.group();
+      } else this.diag('error', 'prooftree', `\\${name} is not supported inside prooftree`, cmdAt);
     }
     this.pos = save;
-    if (stack.length !== 1) {
-      this.diag('error', 'prooftree', `prooftree leaves ${stack.length} trees on the stack`, at);
-      return stack[stack.length - 1] ?? null;
-    }
-    return stack[0];
+    if (stack.length === 1) forest.push(stack.pop()!);
+    if (stack.length !== 0) this.diag('error', 'prooftree', `prooftree leaves ${stack.length} trees on the stack`, at);
+    return forest;
   }
 
   /** Finds the matching \end{env} (respecting nesting); returns its range. */
@@ -1084,6 +1382,24 @@ export class FileParser {
     throw new Error(`${this.file}:${this.line(this.pos)}: missing \\end{${env}}`);
   }
 
+  /** Hands over the blocks accumulated at top level (book mode). */
+  drain(): Block[] {
+    this.flush();
+    const b = this.blocks;
+    this.blocks = [];
+    return b;
+  }
+
+  /** Walks [start, end) at top level, keeping blocks for drain() (book mode). */
+  walk(start: number, end: number) {
+    this.pos = start;
+    this.end = end;
+    this.blocks = [];
+    this.para = [];
+    this.run(undefined, false);
+    this.flush();
+  }
+
   /** Parses the whole file (or the rest of it) into blocks. */
   parseAll(): Block[] {
     this.pos = 0;
@@ -1096,6 +1412,7 @@ function envKind(env: string): EnvKind | null {
     defn: 'defn', prop: 'prop', thm: 'thm', lem: 'lem', cor: 'cor', ex: 'ex', prob: 'prob', probtag: 'prob',
     proof: 'proof', explain: 'explain', digress: 'digress', intro: 'intro', history: 'history',
     quote: 'quote', quotation: 'quote', center: 'center', rem: 'rem', conv: 'conv',
+    defish: 'defish', reading: 'reading',
   };
   return map[env] ?? null;
 }
@@ -1119,7 +1436,7 @@ export function plain(c: Inline[]): string {
         case 'term':
           return x.v;
         case 'math':
-          return x.tex.replace(/\\[a-zA-Z]+/g, '').replace(/[{}]/g, '').trim();
+          return texToPlain(x.tex);
         case 'em':
         case 'strong':
         case 'quote':
@@ -1130,6 +1447,19 @@ export function plain(c: Inline[]): string {
       }
     })
     .join('')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+const TEX_PLAIN: Record<string, string> = {
+  lambda: 'λ', mu: 'μ', omega: 'ω', alpha: 'α', beta: 'β', Sigma: 'Σ', Delta: 'Δ', Pi: 'Π', forall: '∀', exists: '∃', lnot: '¬', to: '→', rightarrow: '→', leq: '≤', geq: '≥', neq: '≠', in: '∈', times: '×', cdot: '·',
+};
+
+/** A plain-text rendering of simple TeX, for titles and the table of contents. */
+export function texToPlain(tex: string): string {
+  return tex
+    .replace(/\\([a-zA-Z]+)/g, (m, n: string) => TEX_PLAIN[n] ?? '')
+    .replace(/[{}]/g, '')
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -1173,73 +1503,194 @@ export { assembleDisplay };
 
 // ---------------------------------------------------------------- book structure
 
-export interface ChapterPlan {
-  /** Path of the chapter driver relative to upstream/OpenLogic/content, e.g. incompleteness/arithmetization-syntax. */
-  path: string;
-  number: string;
-}
+const slug = (t: string) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
 
-/** Reads ic.tex and returns the chapter numbering of the main matter. */
-export function readBookPlan(upstreamDir: string): ChapterPlan[] {
-  const src = stripComments(readFileSync(join(upstreamDir, 'incompleteness-computability', 'ic.tex'), 'utf8'));
-  const main = src.slice(src.indexOf('\\mainmatter'));
-  const plan: ChapterPlan[] = [];
-  let n = 0;
-  let appendix = false;
-  let letter = 0;
-  const re = /\\(olimport\*?\s*\[([^\]]*)\]\s*\{([^}]*)\}|chapter\s*\{|appendix\b|input\s*\{include\/ic-derivations\})/g;
-  let m: RegExpExecArray | null;
-  while ((m = re.exec(main))) {
-    if (m[1].startsWith('appendix')) {
-      appendix = true;
-      continue;
-    }
-    const num = () => (appendix ? String.fromCharCode(65 + letter++) : String(++n));
-    if (m[1].startsWith('chapter') || m[1].startsWith('input')) {
-      num();
-      continue;
-    }
-    const path = m[2];
-    const name = m[3];
-    // A chapter import is one whose file name is the last component of its path.
-    if (path.split('/').pop() === name) plan.push({ path, number: num() });
+/**
+ * Walks the book's driver ic.tex from \\frontmatter to \\backmatter, as LaTeX does: chapters come
+ * from chapter driver files (\\olchapter) or from \\chapter in ic.tex; sections from section files;
+ * \\let\\olsection\\nosection and \\def\\olsection#1{} merge a file into the current section.
+ */
+export class BookWalker implements BookHandler {
+  readonly chapters: Chapter[] = [];
+  private ctx: ConvertContext;
+  private cur: { chapter: Chapter; state: ChapterState } | null = null;
+  private curSection: Section | null = null;
+  private n = 0;
+  private letter = 0;
+  private matter: 'front' | 'main' | 'appendix' = 'front';
+  private dirs: { repo: Repo; dir: string }[] = [];
+
+  constructor(ctx: ConvertContext) {
+    this.ctx = ctx;
   }
-  return plan;
-}
 
-export function convertChapter(ctx: ConvertContext, plan: ChapterPlan): Chapter {
-  const chapter: ChapterState = { number: plan.number, counters: { thm: 0, prob: 0, eq: 0, section: 0 } };
-  const dir = `content/${plan.path}`;
-  const name = plan.path.split('/').pop()!;
-  const sections: Section[] = [];
-  let currentSection = 'udf';
-  const driver = new FileParser(ctx, 'OpenLogic', `${dir}/${name}.tex`, chapter, () => currentSection, (_path, file) => {
-    const p = new FileParser(ctx, 'OpenLogic', `${dir}/${file}.tex`, chapter, () => currentSection);
-    // Read \olfileid first so that ids and labels are right from the start.
-    const idMatch = /\\olfileid(?:\[[^\]]*\])?\{([^}]*)\}\{([^}]*)\}\{([^}]*)\}/.exec(p.src);
-    if (!idMatch) {
-      ctx.diagnostics.push({ level: 'error', code: 'no-fileid', message: `${file}.tex has no \\olfileid` });
+  run() {
+    const root = new FileParser(this.ctx, 'incompleteness-computability', 'ic.tex', this.freshState(''), () => this.sectionId());
+    root.book = this;
+    const start = root.src.indexOf('\\frontmatter');
+    const end = root.src.indexOf('\\backmatter');
+    this.dirs.push({ repo: 'incompleteness-computability', dir: '' });
+    root.walk(start, end < 0 ? root.src.length : end);
+    this.receive(root.drain());
+    this.endChapter();
+    return this.chapters;
+  }
+
+  private freshState(number: string): ChapterState {
+    return { number, counters: { thm: 0, prob: 0, eq: 0, section: 0 } };
+  }
+
+  private sectionId(): string {
+    return this.curSection?.id ?? (this.cur ? `${this.cur.chapter.id}.text` : 'udf');
+  }
+
+  private nextNumber(): string {
+    if (this.matter === 'front') return '';
+    if (this.matter === 'appendix') return String.fromCharCode(65 + this.letter++);
+    return String(++this.n);
+  }
+
+  private startChapter(id: string, title: string, loc: SourceLoc) {
+    this.endChapter();
+    const number = this.nextNumber();
+    const chapter: Chapter = { id, number, title, loc, sections: [] };
+    this.cur = { chapter, state: this.freshState(number) };
+    this.curSection = null;
+    this.chapters.push(chapter);
+  }
+
+  private endChapter() {
+    if (!this.cur) return;
+    const { chapter, state } = this.cur;
+    if (this.pendingLabel) {
+      this.ctx.labels.set(this.pendingLabel, { kind: 'chapter', text: chapter.number ? `Chapter ${chapter.number}` : chapter.title, sectionId: chapter.sections[0]?.id ?? chapter.id, blockId: chapter.id });
+      this.pendingLabel = null;
+    }
+    const file = `include/summary-${chapter.number}.tex`;
+    if (chapter.number && existsSync(join(this.ctx.upstreamDir, 'incompleteness-computability', file))) {
+      const p = new FileParser(this.ctx, 'incompleteness-computability', file, state, () => `${chapter.id}.summary`);
+      p.fileId = ['ic', chapter.id.replace(/^[^.]*\./, ''), 'sum'];
+      chapter.summary = p.parseAll();
+    }
+    this.cur = null;
+    this.curSection = null;
+  }
+
+  private newSection(id: string, title: Inline[], loc: SourceLoc, labelKey?: string) {
+    if (!this.cur) throw new Error(`section ${id} outside a chapter`);
+    const { chapter, state } = this.cur;
+    const number = chapter.number ? `${chapter.number}.${++state.counters.section}` : '';
+    let unique = id;
+    for (let k = 2; this.chapters.some((c) => c.sections.some((s) => s.id === unique)); k++) unique = `${id}-${k}`;
+    const sec: Section = { id: unique, number, title, titleText: plain(title), loc, blocks: [] };
+    chapter.sections.push(sec);
+    this.curSection = sec;
+    if (labelKey) this.ctx.labels.set(labelKey, { kind: 'section', text: number ? `Section ${number}` : plain(title), sectionId: unique, blockId: unique });
+    return sec;
+  }
+
+  receive(blocks: Block[]) {
+    if (!blocks.length || !this.cur) return;
+    if (!this.curSection) {
+      const ch = this.cur.chapter;
+      this.newSection(`${ch.id}.text`, [{ t: 'text', v: ch.title }], ch.loc);
+    }
+    this.curSection!.blocks.push(...blocks);
+  }
+
+  private pendingLabel: string | null = null;
+
+  chapter(title: Inline[], label: string | undefined, loc: SourceLoc) {
+    const t = plain(title);
+    const id = label ? `ic.${label.replace(/:chap$/, '')}` : `ic.${slug(t)}`;
+    this.startChapter(id, t, loc);
+    this.pendingLabel = label ?? null;
+  }
+
+  section(title: Inline[], loc: SourceLoc) {
+    const ch = this.cur?.chapter;
+    this.newSection(`${ch?.id ?? 'ic'}.${slug(plain(title))}`, title, loc);
+  }
+
+  part(name: string) {
+    if (name === 'mainmatter') this.matter = 'main';
+    else if (name === 'appendix') this.matter = 'appendix';
+  }
+
+  input(file: string) {
+    const f = file.endsWith('.tex') ? file : `${file}.tex`;
+    this.walkDriver('incompleteness-computability', f);
+  }
+
+  private walkDriver(repo: Repo, file: string, chapterFromDriver?: { id: string; title: string }) {
+    const p = new FileParser(this.ctx, repo, file, this.cur?.state ?? this.freshState(''), () => this.sectionId());
+    if (chapterFromDriver) this.startChapter(chapterFromDriver.id, chapterFromDriver.title, p.loc(0, p.src.length));
+    // The parser needs the current chapter's counters; rebind after a chapter starts.
+    const parser = chapterFromDriver ? new FileParser(this.ctx, repo, file, this.cur!.state, () => this.sectionId()) : p;
+    parser.book = this;
+    this.dirs.push({ repo, dir: file.includes('/') ? file.slice(0, file.lastIndexOf('/')) : '' });
+    // Chapter state for files that start chapters themselves (\\chapter inside): counters are looked up lazily.
+    parser.walk(0, parser.src.length);
+    this.receive(parser.drain());
+    this.dirs.pop();
+  }
+
+  importFile(path: string | undefined, name: string, noSection: boolean) {
+    const here = this.dirs[this.dirs.length - 1];
+    let repo: Repo = 'OpenLogic';
+    let file: string;
+    if (path === 'include') {
+      repo = 'incompleteness-computability';
+      file = `include/${name}.tex`;
+    } else if (path !== undefined) file = `content/${path}/${name}.tex`;
+    else {
+      repo = here.repo;
+      file = `${here.dir}/${name}.tex`;
+    }
+    if (!existsSync(join(this.ctx.upstreamDir, repo, file))) {
+      this.ctx.diagnostics.push({ level: 'error', code: 'missing-file', message: `${repo}/${file} is not vendored` });
       return;
     }
-    currentSection = `${idMatch[1]}.${idMatch[2]}.${idMatch[3]}`;
-    const number = `${plan.number}.${++chapter.counters.section}`;
-    const blocks = p.parseAll();
-    const title = p.sectionTitle ?? { c: [{ t: 'text', v: file } as Inline], text: file, start: 0 };
-    const key = `${idMatch[1]}:${idMatch[2]}:${idMatch[3]}:sec`;
-    ctx.labels.set(key, { kind: 'section', text: `Section ${number}`, sectionId: currentSection, blockId: currentSection });
-    sections.push({ id: currentSection, number, title: title.c, titleText: title.text, loc: p.loc(0, p.src.length), blocks });
-  });
-  driver.parseAll();
-  const id = `${driver.fileId[0]}.${driver.fileId[1]}`;
-  ctx.labels.set(`${driver.fileId[0]}:${driver.fileId[1]}::chap`, { kind: 'chapter', text: `Chapter ${plan.number}`, sectionId: sections[0]?.id ?? id, blockId: id });
-  const result: Chapter = { id, number: plan.number, title: driver.chapterTitle ?? name, loc: driver.loc(0, driver.src.length), sections };
-  // The book's end-of-chapter summary.
-  try {
-    const summary = new FileParser(ctx, 'incompleteness-computability', `include/summary-${plan.number}.tex`, chapter, () => `${id}.summary`);
-    summary.fileId = [driver.fileId[0], driver.fileId[1], 'sum'];
-    result.summary = summary.parseAll();
-  } catch {
-    // no summary for this chapter
+    const src = readFileSync(join(this.ctx.upstreamDir, repo, file), 'utf8');
+    const drv = /\\olchapter(?:\[[^\]]*\])?\{([^}]*)\}\{([^}]*)\}\{/.exec(stripComments(src));
+    if (drv) {
+      const titleMatch = /\\olchapter(?:\[[^\]]*\])?\{[^}]*\}\{[^}]*\}\{((?:[^{}]|\{[^{}]*\})*)\}/.exec(stripComments(src));
+      this.walkDriver(repo, file, { id: `${drv[1]}.${drv[2]}`, title: titleMatch ? titleMatch[1] : name });
+      const ch = this.cur!.chapter;
+      // Parse the title properly (it may contain mathematics).
+      ch.title = ch.title.replace(/\$\\Th\{(\w+)\}\$/g, '$1');
+      this.ctx.labels.set(`${drv[1]}:${drv[2]}::chap`, { kind: 'chapter', text: `Chapter ${ch.number}`, sectionId: ch.sections[0]?.id ?? ch.id, blockId: ch.id });
+      this.endChapter();
+      return;
+    }
+    const idMatch = /\\olfileid(?:\[[^\]]*\])?\{([^}]*)\}\{([^}]*)\}\{([^}]*)\}/.exec(src);
+    const merge = (noSection || this.ctx.olsectionSuppressed) && this.curSection;
+    if (!idMatch && !merge) {
+      this.ctx.diagnostics.push({ level: 'error', code: 'no-fileid', message: `${file} has no \\olfileid` });
+      return;
+    }
+    if (!this.cur) throw new Error(`${file} imported outside a chapter`);
+    let sectionId: string;
+    if (merge) sectionId = this.curSection!.id;
+    else sectionId = `${idMatch![1]}.${idMatch![2]}.${idMatch![3]}`;
+    const p = new FileParser(this.ctx, repo, file, this.cur.state, () => sectionId);
+    if (!merge) {
+      // Create the section first so its number is right; fill the title after parsing.
+      const sec = this.newSection(sectionId, [{ t: 'text', v: name }], p.loc(0, p.src.length), `${idMatch![1]}:${idMatch![2]}:${idMatch![3]}:sec`);
+      sectionId = sec.id;
+      const blocks = p.parseAll();
+      if (p.sectionTitle) {
+        sec.title = p.sectionTitle.c;
+        sec.titleText = p.sectionTitle.text;
+      }
+      sec.blocks.push(...blocks);
+    } else {
+      const blocks = noSection || this.ctx.olsectionSuppressed ? p.parseAll() : p.parseAll();
+      this.curSection!.blocks.push(...blocks);
+    }
   }
-  return result;
+}
+
+export function convertBook(ctx: ConvertContext): Chapter[] {
+  return new BookWalker(ctx).run();
 }

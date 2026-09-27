@@ -34,7 +34,8 @@ export function readBalanced(s: string, i: number): { content: string; end: numb
     if (c === '{') depth++;
     else if (c === '}' && --depth === 0) return { content: s.slice(i + 1, j), end: j + 1 };
   }
-  throw new Error(`unbalanced braces in: ${s.slice(i, i + 80)}`);
+  // Unbalanced (an upstream typo, or mathematics cut short by a $): take the rest.
+  return { content: s.slice(i + 1), end: s.length };
 }
 
 /** Reads one mandatory argument: a group, a control sequence, `!X`, or a single character. */
@@ -176,7 +177,9 @@ export function expandTextInMath(s: string, hooks: ExpandHooks, depth: number): 
       if (isLetter(s[j])) while (isLetter(s[j])) j++;
       else j++;
       const name = s.slice(i + 1, j);
-      if (ACCENTS[name] !== undefined) {
+      if (name === '/' || name === '@') {
+        i = j;
+      } else if (ACCENTS[name] !== undefined) {
         const a = readArg(s, j);
         out += accent(name, a.content) ?? a.content;
         i = a.end;
@@ -284,6 +287,13 @@ export function expandMath(src: string, hooks: ExpandHooks, depth = 0): string {
       const first = readArg(a.content, 0);
       emit(`{${expandMath(`${f.content}{${first.content}}${a.content.slice(first.end)}`, hooks, depth + 1)}}`);
       i = a.end;
+      continue;
+    }
+    if (name === 'iftag') {
+      const r = readArgs(s, j, [{ kind: 'm' }, { kind: 'm' }, { kind: 'm' }]);
+      const on = r.values[0].split(',').map((t) => t.trim()).some((t) => config.tags.get(t) === true);
+      emit(expandMath(on ? r.values[1] : r.values[2], hooks, depth + 1));
+      i = r.end;
       continue;
     }
     if (name === 'raisebox') {
