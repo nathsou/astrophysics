@@ -22,6 +22,10 @@ def main() -> None:
     c2.add_argument("--max-order", type=int, default=6)
     c2.add_argument("--write-fixture", action="store_true")
 
+    c3 = sub.add_parser("ch03", help="Chapter 3: train a byte-level BPE tokeniser")
+    c3.add_argument("--merges", type=int, default=1024)
+    c3.add_argument("--write-fixture", action="store_true")
+
     args = p.parse_args()
     if args.cmd == "data":
         from .data import download
@@ -35,6 +39,10 @@ def main() -> None:
         from . import ch02
 
         ch02.main(max_order=args.max_order, write_fixture=args.write_fixture)
+    elif args.cmd == "ch03":
+        from . import ch03
+
+        ch03.main(merges=args.merges, write_fixture=args.write_fixture)
 
 
 if __name__ == "__main__":

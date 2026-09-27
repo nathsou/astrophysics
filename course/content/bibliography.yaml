@@ -231,3 +231,92 @@ wenzek2020:
   title: "CCNet: Extracting High Quality Monolingual Datasets from Web Crawl Data"
   venue: LREC 2020
   url: https://arxiv.org/abs/1911.00359
+bostrom2020:
+  authors: Kaj Bostrom and Greg Durrett
+  year: 2020
+  title: Byte Pair Encoding is Suboptimal for Language Model Pretraining
+  venue: Findings of EMNLP 2020
+  url: https://arxiv.org/abs/2004.03720
+dubey2024:
+  authors: Abhimanyu Dubey, Abhinav Jauhri, Abhinav Pandey and others (Llama team, Meta)
+  year: 2024
+  title: The Llama 3 Herd of Models
+  venue: arXiv:2407.21783
+  url: https://arxiv.org/abs/2407.21783
+gage1994:
+  authors: Philip Gage
+  year: 1994
+  title: A New Algorithm for Data Compression
+  venue: The C Users Journal 12(2), 23–38
+karpathy2024minbpe:
+  authors: Andrej Karpathy
+  year: 2024
+  title: "minbpe: Minimal, clean code for the Byte Pair Encoding algorithm"
+  venue: GitHub repository and video lecture
+  url: https://github.com/karpathy/minbpe
+kudo2018unigram:
+  authors: Taku Kudo
+  year: 2018
+  title: "Subword Regularization: Improving Neural Network Translation Models with Multiple Subword Candidates"
+  venue: ACL 2018
+  url: https://arxiv.org/abs/1804.10959
+land2024:
+  authors: Sander Land and Max Bartolo
+  year: 2024
+  title: "Fishing for Magikarp: Automatically Detecting Under-trained Tokens in Large Language Models"
+  venue: EMNLP 2024
+  url: https://arxiv.org/abs/2405.05417
+pagnoni2024blt:
+  authors: Artidoro Pagnoni, Ram Pasunuru, Pedro Rodriguez and others
+  year: 2024
+  title: "Byte Latent Transformer: Patches Scale Better Than Tokens"
+  venue: arXiv:2412.09871
+  url: https://arxiv.org/abs/2412.09871
+petrov2023:
+  authors: Aleksandar Petrov, Emanuele La Malfa, Philip H. S. Torr and Adel Bibi
+  year: 2023
+  title: Language Model Tokenizers Introduce Unfairness Between Languages
+  venue: NeurIPS 2023
+  url: https://arxiv.org/abs/2305.15425
+provilkov2020:
+  authors: Ivan Provilkov, Dmitrii Emelianenko and Elena Voita
+  year: 2020
+  title: "BPE-Dropout: Simple and Effective Subword Regularization"
+  venue: ACL 2020
+  url: https://arxiv.org/abs/1910.13267
+rumbelow2023:
+  authors: Jessica Rumbelow and Matthew Watkins
+  year: 2023
+  title: "SolidGoldMagikarp (plus, prompt generation)"
+  venue: LessWrong
+  url: https://www.lesswrong.com/posts/aPeJE8bSo6rAFoLqg/solidgoldmagikarp-plus-prompt-generation
+schuster2012:
+  authors: Mike Schuster and Kaisuke Nakajima
+  year: 2012
+  title: Japanese and Korean Voice Search
+  venue: ICASSP 2012
+  url: https://doi.org/10.1109/ICASSP.2012.6289079
+sennrich2016:
+  authors: Rico Sennrich, Barry Haddow and Alexandra Birch
+  year: 2016
+  title: Neural Machine Translation of Rare Words with Subword Units
+  venue: ACL 2016
+  url: https://arxiv.org/abs/1508.07909
+touvron2023:
+  authors: Hugo Touvron, Thibaut Lavril, Gautier Izacard and others
+  year: 2023
+  title: "LLaMA: Open and Efficient Foundation Language Models"
+  venue: arXiv:2302.13971
+  url: https://arxiv.org/abs/2302.13971
+xue2022byt5:
+  authors: Linting Xue, Aditya Barua, Noah Constant and others
+  year: 2022
+  title: "ByT5: Towards a Token-Free Future with Pre-trained Byte-to-Byte Models"
+  venue: Transactions of the ACL 10
+  url: https://arxiv.org/abs/2105.13626
+yu2023megabyte:
+  authors: Lili Yu, Dániel Simig, Colin Flaherty and others
+  year: 2023
+  title: "MEGABYTE: Predicting Million-byte Sequences with Multiscale Transformers"
+  venue: NeurIPS 2023
+  url: https://arxiv.org/abs/2305.07185

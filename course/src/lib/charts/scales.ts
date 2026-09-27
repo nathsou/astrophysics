@@ -8,6 +8,8 @@ export interface AxisSpec {
   ticks?: number;
   format?: (v: number) => string;
   nice?: boolean;
+  /** Explicit tick positions (overrides the automatic choice). */
+  tickValues?: number[];
 }
 
 export type Scale = ScaleContinuousNumeric<number, number>;
@@ -32,6 +34,7 @@ const plain = d3format(',~r');
 /** Tick values and labels; log axes label powers of ten only. */
 export function ticksFor(spec: AxisSpec, scale: Scale): { value: number; label: string }[] {
   const fmt = spec.format ?? ((v: number) => (Math.abs(v) >= 10_000 ? si(v) : plain(Number(v.toPrecision(6)))));
+  if (spec.tickValues) return spec.tickValues.map((v) => ({ value: v, label: fmt(v) }));
   if (spec.type === 'log') {
     const [lo, hi] = scale.domain() as [number, number];
     const out: { value: number; label: string }[] = [];

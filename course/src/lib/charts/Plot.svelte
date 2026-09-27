@@ -90,6 +90,7 @@
   .plot {
     position: relative;
     width: 100%;
+    min-width: 0;
     background: var(--chart-surface);
   }
   svg {

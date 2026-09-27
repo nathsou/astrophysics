@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "numpy>=2.3",
+    "regex>=2026.9.10",
 ]
 
 [project.optional-dependencies]
@@ -22,6 +23,7 @@ lmc = "lmcourse.cli:main"
 dev = [
     "pytest>=8.4",
     "ruff>=0.13",
+    "tiktoken>=0.14.0",
 ]
 
 [build-system]
