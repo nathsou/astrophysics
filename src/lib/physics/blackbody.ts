@@ -70,6 +70,7 @@ export function wavelengthRGB(nm: number): [number, number, number] {
   const w = -Math.min(0, r, g2, b);
   r += w; g2 += w; b += w;
   const m = Math.max(r, g2, b) || 1;
+  if (nm < 380 || nm > 780) return [0, 0, 0];
   const fade = nm < 420 ? 0.3 + (0.7 * (nm - 380)) / 40 : nm > 700 ? 0.3 + (0.7 * (780 - nm)) / 80 : 1;
   return [toSRGB(r / m) * fade, toSRGB(g2 / m) * fade, toSRGB(b / m) * fade];
 }

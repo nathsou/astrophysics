@@ -32,6 +32,14 @@ document.querySelectorAll('[data-action="theme"]').forEach((b) =>
     if (toggle) toggle.textContent = open ? '✕' : '☰';
   };
   toggle?.setAttribute('aria-expanded', 'false');
+  // Hide the floating menu button while scrolling down (it would cover figures on phones).
+  let lastY = window.scrollY;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (Math.abs(y - lastY) < 8) return;
+    document.body.classList.toggle('scroll-down', y > lastY && y > 80);
+    lastY = y;
+  }, { passive: true });
   toggle?.addEventListener('click', () => setOpen(!sidebar?.classList.contains('open')));
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && sidebar?.classList.contains('open')) { setOpen(false); toggle?.focus(); }

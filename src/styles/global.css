@@ -271,7 +271,10 @@ input[type='range']:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px colo
   .menu-toggle {
     display: grid; place-items: center; position: fixed; top: 0.8rem; left: 0.8rem; z-index: 60;
     width: 2.4rem; height: 2.4rem; padding: 0; font-size: 1.05rem; line-height: 1; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.25s ease, opacity 0.25s ease;
   }
+  /* Get out of the way of figures while reading downwards; come back on scroll-up. */
+  body.scroll-down:not(.nav-open) .menu-toggle { transform: translateY(-140%); opacity: 0; pointer-events: none; }
   .chapter-head { padding-top: 4rem; }
   .article { grid-template-columns: [full-start] 16px [text-start margin-start] minmax(0, 1fr) [text-end margin-end] 16px [full-end]; }
   /* Wide tables scroll inside themselves instead of widening the page. */

@@ -60,6 +60,7 @@ export class Panel {
     const input = document.createElement('input');
     input.type = 'range';
     const out = document.createElement('output');
+    if (o.log && !(o.min > 0)) console.warn(`Panel.slider("${label}"): log sliders need min > 0 (got ${o.min})`);
     const N = 1000;
     const toT = (v: number) => (o.log ? (Math.log(v / o.min) / Math.log(o.max / o.min)) * N : ((v - o.min) / (o.max - o.min)) * N);
     const fromT = (t: number) => {

@@ -90,20 +90,24 @@ export class Plot {
     if (a.ticks) return a.ticks;
     if (a.log) {
       const out: number[] = [];
-      const lo = Math.floor(Math.log10(a.min)), hi = Math.ceil(Math.log10(a.max));
+      // reversed axes (min > max) are allowed: work on the sorted endpoints
+      const lo0 = Math.min(a.min, a.max), hi0 = Math.max(a.min, a.max);
+      const lo = Math.floor(Math.log10(lo0)), hi = Math.ceil(Math.log10(hi0));
       const stride = Math.max(1, Math.ceil((hi - lo) / 8));
       for (let e = lo; e <= hi; e += stride) {
         const v = 10 ** e;
-        if (v >= a.min * 0.999 && v <= a.max * 1.001) out.push(v);
+        if (v >= lo0 * 0.999 && v <= hi0 * 1.001) out.push(v);
       }
       return out;
     }
-    const span = a.max - a.min;
+    const lo = Math.min(a.min, a.max), hi = Math.max(a.min, a.max);
+    const span = hi - lo;
+    if (!(span > 0)) return [lo];
     const raw = span / 6;
     const mag = 10 ** Math.floor(Math.log10(raw));
     const step = [1, 2, 2.5, 5, 10].map((s) => s * mag).find((s) => span / s <= 7) ?? mag * 10;
     const out: number[] = [];
-    for (let v = Math.ceil(a.min / step) * step; v <= a.max + step * 1e-9; v += step) out.push(Math.abs(v) < step * 1e-9 ? 0 : v);
+    for (let v = Math.ceil(lo / step) * step; v <= hi + step * 1e-9; v += step) out.push(Math.abs(v) < step * 1e-9 ? 0 : v);
     return out;
   }
 
@@ -111,6 +115,8 @@ export class Plot {
     if (a.format) return a.format(v);
     if (a.log) {
       const e = Math.round(Math.log10(v));
+      // only label as a power of ten when the tick really is one (custom ticks like 5, 20, 300)
+      if (Math.abs(Math.log10(v) - e) > 1e-9) return fmt(v, 3);
       if (e >= -2 && e <= 3) return String(10 ** e >= 1 ? 10 ** e : Number((10 ** e).toPrecision(1)));
       return `10${superscript(String(e))}`;
     }

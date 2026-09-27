@@ -243,7 +243,8 @@ export default defineSim({
 
 - The loader lazy-imports the module when the figure nears the viewport, and calls `setVisible(false)` when it leaves or the tab is hidden. **Do no work while invisible.**
 - `host` is yours. Add stages, panels and grids inside it. Keep the whole figure visually self-contained.
-- `Loop` has `paused`, `timeScale`, `simTime` and `invalidate()` (redraw once while paused).
+- `Loop` has `paused`, `timeScale`, `simTime` and `invalidate()` (redraw once while paused). For **static figures** (no `step` function), set `loop.onDemand = true`. It then renders only when `invalidate()` is called or the figure becomes visible, instead of every frame.
+- Two-panel figures should stack vertically below about 560 px wide. Captions should not say "left"/"right" without also working when stacked ("the plot", "the diagram").
 - Colours come from the theme: `palette()` gives `fg, muted, faint, grid, axis, accent, accent2, accent3, good, bad, series[0..4]`. Re-read it on `onThemeChange`. The sim must look good in **dark and light** themes. For "physical" colours (stars, blackbodies) use `blackbodyRGB(T)`/`blackbodyCSS(T)` from `src/lib/physics/blackbody.ts`.
 - Plots: use `Plot` (axes, linear/log, `line`, `fn`, `scatter`, `point`, `vline`, `hline`, `text`) and `Series` (ring buffer). Call `plot.resize(w,h,dpr)` in `stage.onResize`.
 - Constants: `src/lib/physics/constants.ts`. Planck/CIE helpers: `src/lib/physics/blackbody.ts`.
