@@ -94,7 +94,7 @@ F optimisation · G neural networks · H GPU/WGSL · I PyTorch · J glossary, ti
 
 - **M0 — Platform** + Chapter 1 as proof of concept. ✅ built 2026-09-27, awaiting review
 - **M1** — Part I + appendices E and J. ✅ built 2026-09-27
-- **M2** — Part II + appendices A, B, C, G, H. Chapters 4–8 and appendix H ✅ built 2026-09-27; A, B, C, G next.
+- **M2** — Part II + appendices A, B, C, G, H. ✅ built 2026-09-27
 - **M3** — Part III.
 - **M4** — Part IV (CourseGPT trained and running in the browser).
 - **M5–M7** — Part V in three batches; remaining appendices.

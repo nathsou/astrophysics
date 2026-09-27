@@ -9,3 +9,4 @@ export * as tensor from './tensor/index.ts';
 export * from './lm.ts';
 export * from './util/random.ts';
 export * from './util/pca.ts';
+export * from './util/svd.ts';

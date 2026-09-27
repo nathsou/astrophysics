@@ -16,7 +16,9 @@ Interactive course "Language Models from Scratch". Plan and agreed decisions: do
 - Parity tests: Python writes fixtures to `training/fixtures/`; Vitest compares the TypeScript results.
 - British English in all prose. Charts use the palette tokens in course/src/app.css (--series-1…8).
 - Dev server: run `npx vite dev --port 5199` in `course/` (the preview launcher cannot access ~/Documents).
-  It restarts itself when `tools/markdown/` changes (the preprocessor is loaded once at startup).
+  In dev, the Markdown compiler is loaded through Vite's module graph (`useDevServer` in
+  `tools/markdown/preprocess.ts`), so edits to `tools/markdown/` apply live. Changes to `preprocess.ts` itself or
+  to `svelte.config.js` need a full dev-server restart (Node caches them for the life of the process).
 - Appendix J is generated from `content/{glossary,timeline,bibliography}.yaml` via the `::all-glossary`,
   `::timeline` and `::all-references` directives — add entries there as chapters are written.
 - GPU backend: `@lm/core/gpu` (WGSL kernels, `GpuContext`, `GpuTensor` with autograd). Kernel tests run in Node

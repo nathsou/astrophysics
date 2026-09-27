@@ -10,12 +10,12 @@
   <input class="search" type="search" placeholder="Filter {items.length} events…" bind:value={q} aria-label="Filter timeline" />
   <ol>
     {#each shown as e, i (i)}
-      {@const ch = e.chapter ? findEntry('chapter', e.chapter) : undefined}
+      {@const ch = e.chapter ? (findEntry('chapter', e.chapter) ?? findEntry('appendix', e.chapter)) : undefined}
       <li>
         <span class="year num">{e.year}</span>
         <span class="dot" aria-hidden="true"></span>
         <div class="body">
-          <div class="title">{e.title}{#if ch} <a class="where" href="{base}{ch.href}">Ch. {ch.number}</a>{/if}</div>
+          <div class="title">{e.title}{#if ch?.available} <a class="where" href="{base}{ch.href}">{ch.kind === 'chapter' ? 'Ch.' : 'App.'} {ch.number}</a>{/if}</div>
           {#if e.people}<div class="people">{e.people}</div>{/if}
           <div class="text">{@html e.text}</div>
         </div>

@@ -587,3 +587,205 @@ webgpu:
   title: WebGPU and the WebGPU Shading Language (W3C Candidate Recommendations)
   venue: World Wide Web Consortium
   url: https://www.w3.org/TR/webgpu/
+strang2016:
+  authors: Gilbert Strang
+  year: 2016
+  title: Introduction to Linear Algebra (5th edition)
+  venue: Wellesley-Cambridge Press
+  url: https://math.mit.edu/~gs/linearalgebra/
+sanderson2016:
+  authors: Grant Sanderson (3Blue1Brown)
+  year: 2016
+  title: Essence of Linear Algebra
+  venue: Video series
+  url: https://www.3blue1brown.com/topics/linear-algebra
+trefethen1997:
+  authors: Lloyd N. Trefethen and David Bau III
+  year: 1997
+  title: Numerical Linear Algebra
+  venue: SIAM
+yang2018:
+  authors: Zhilin Yang, Zihang Dai, Ruslan Salakhutdinov and William W. Cohen
+  year: 2018
+  title: "Breaking the Softmax Bottleneck: A High-Rank RNN Language Model"
+  venue: ICLR 2018
+  url: https://arxiv.org/abs/1711.03953
+eckart1936:
+  authors: Carl Eckart and Gale Young
+  year: 1936
+  title: The approximation of one matrix by another of lower rank
+  venue: Psychometrika 1(3), 211–218
+pearson1901:
+  authors: Karl Pearson
+  year: 1901
+  title: On lines and planes of closest fit to systems of points in space
+  venue: Philosophical Magazine 2(11), 559–572
+hotelling1933:
+  authors: Harold Hotelling
+  year: 1933
+  title: Analysis of a complex of statistical variables into principal components
+  venue: Journal of Educational Psychology 24(6), 417–441
+parr2018:
+  authors: Terence Parr and Jeremy Howard
+  year: 2018
+  title: The Matrix Calculus You Need For Deep Learning
+  venue: arXiv:1802.01528
+  url: https://arxiv.org/abs/1802.01528
+petersen2012:
+  authors: Kaare Brandt Petersen and Michael Syskind Pedersen
+  year: 2012
+  title: The Matrix Cookbook
+  venue: Technical University of Denmark
+  url: https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf
+magnus2019:
+  authors: Jan R. Magnus and Heinz Neudecker
+  year: 2019
+  title: Matrix Differential Calculus with Applications in Statistics and Econometrics (3rd edition)
+  venue: Wiley
+blitzstein2019:
+  authors: Joseph K. Blitzstein and Jessica Hwang
+  year: 2019
+  title: Introduction to Probability (2nd edition)
+  venue: CRC Press
+  url: https://projects.iq.harvard.edu/stat110
+bishop2006:
+  authors: Christopher M. Bishop
+  year: 2006
+  title: Pattern Recognition and Machine Learning
+  venue: Springer
+gumbel1954:
+  authors: Emil Julius Gumbel
+  year: 1954
+  title: "Statistical Theory of Extreme Values and Some Practical Applications: A Series of Lectures"
+  venue: US National Bureau of Standards, Applied Mathematics Series 33
+maddison2014:
+  authors: Chris J. Maddison, Daniel Tarlow and Tom Minka
+  year: 2014
+  title: A* Sampling
+  venue: NeurIPS 2014
+  url: https://arxiv.org/abs/1411.0030
+mcculloch1943:
+  authors: Warren S. McCulloch and Walter Pitts
+  year: 1943
+  title: A logical calculus of the ideas immanent in nervous activity
+  venue: Bulletin of Mathematical Biophysics 5, 115–133
+rosenblatt1958:
+  authors: Frank Rosenblatt
+  year: 1958
+  title: "The perceptron: a probabilistic model for information storage and organization in the brain"
+  venue: Psychological Review 65(6), 386–408
+minsky1969:
+  authors: Marvin Minsky and Seymour Papert
+  year: 1969
+  title: "Perceptrons: An Introduction to Computational Geometry"
+  venue: MIT Press
+fukushima1980:
+  authors: Kunihiko Fukushima
+  year: 1980
+  title: "Neocognitron: a self-organizing neural network model for a mechanism of pattern recognition unaffected by shift in position"
+  venue: Biological Cybernetics 36, 193–202
+lecun1989:
+  authors: Yann LeCun, Bernhard Boser, John S. Denker, Donnie Henderson, Richard E. Howard, Wayne Hubbard and Lawrence D. Jackel
+  year: 1989
+  title: Backpropagation Applied to Handwritten Zip Code Recognition
+  venue: Neural Computation 1(4), 541–551
+cybenko1989:
+  authors: George Cybenko
+  year: 1989
+  title: Approximation by superpositions of a sigmoidal function
+  venue: Mathematics of Control, Signals and Systems 2(4), 303–314
+hornik1989:
+  authors: Kurt Hornik, Maxwell Stinchcombe and Halbert White
+  year: 1989
+  title: Multilayer feedforward networks are universal approximators
+  venue: Neural Networks 2(5), 359–366
+elman1990:
+  authors: Jeffrey L. Elman
+  year: 1990
+  title: Finding Structure in Time
+  venue: Cognitive Science 14(2), 179–211
+hochreiter1997:
+  authors: Sepp Hochreiter and Jürgen Schmidhuber
+  year: 1997
+  title: Long Short-Term Memory
+  venue: Neural Computation 9(8), 1735–1780
+hinton2006:
+  authors: Geoffrey E. Hinton, Simon Osindero and Yee-Whye Teh
+  year: 2006
+  title: A Fast Learning Algorithm for Deep Belief Nets
+  venue: Neural Computation 18(7), 1527–1554
+nair2010:
+  authors: Vinod Nair and Geoffrey E. Hinton
+  year: 2010
+  title: Rectified Linear Units Improve Restricted Boltzmann Machines
+  venue: ICML 2010
+glorot2011:
+  authors: Xavier Glorot, Antoine Bordes and Yoshua Bengio
+  year: 2011
+  title: Deep Sparse Rectifier Neural Networks
+  venue: AISTATS 2011
+srivastava2014:
+  authors: Nitish Srivastava, Geoffrey Hinton, Alex Krizhevsky, Ilya Sutskever and Ruslan Salakhutdinov
+  year: 2014
+  title: "Dropout: A Simple Way to Prevent Neural Networks from Overfitting"
+  venue: Journal of Machine Learning Research 15, 1929–1958
+bahdanau2015:
+  authors: Dzmitry Bahdanau, Kyunghyun Cho and Yoshua Bengio
+  year: 2015
+  title: Neural Machine Translation by Jointly Learning to Align and Translate
+  venue: ICLR 2015
+  url: https://arxiv.org/abs/1409.0473
+hendrycks2016:
+  authors: Dan Hendrycks and Kevin Gimpel
+  year: 2016
+  title: Gaussian Error Linear Units (GELUs)
+  venue: arXiv:1606.08415
+  url: https://arxiv.org/abs/1606.08415
+goodfellow2016:
+  authors: Ian Goodfellow, Yoshua Bengio and Aaron Courville
+  year: 2016
+  title: Deep Learning
+  venue: MIT Press
+  url: https://www.deeplearningbook.org
+vaswani2017:
+  authors: Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser and Illia Polosukhin
+  year: 2017
+  title: Attention Is All You Need
+  venue: NeurIPS 2017
+  url: https://arxiv.org/abs/1706.03762
+radford2018:
+  authors: Alec Radford, Karthik Narasimhan, Tim Salimans and Ilya Sutskever
+  year: 2018
+  title: Improving Language Understanding by Generative Pre-Training
+  venue: OpenAI technical report
+  url: https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf
+belkin2019:
+  authors: Mikhail Belkin, Daniel Hsu, Siyuan Ma and Soumik Mandal
+  year: 2019
+  title: Reconciling modern machine-learning practice and the classical bias–variance trade-off
+  venue: PNAS 116(32), 15849–15854
+  url: https://arxiv.org/abs/1812.11118
+sutton2019:
+  authors: Richard S. Sutton
+  year: 2019
+  title: The Bitter Lesson
+  venue: Essay
+  url: http://www.incompleteideas.net/IncIdeas/BitterLesson.html
+brown2020:
+  authors: Tom B. Brown and 30 others
+  year: 2020
+  title: Language Models are Few-Shot Learners
+  venue: NeurIPS 2020
+  url: https://arxiv.org/abs/2005.14165
+kaplan2020:
+  authors: Jared Kaplan, Sam McCandlish, Tom Henighan, Tom B. Brown, Benjamin Chess, Rewon Child, Scott Gray, Alec Radford, Jeffrey Wu and Dario Amodei
+  year: 2020
+  title: Scaling Laws for Neural Language Models
+  venue: arXiv:2001.08361
+  url: https://arxiv.org/abs/2001.08361
+ouyang2022:
+  authors: Long Ouyang, Jeff Wu, Xu Jiang and others
+  year: 2022
+  title: Training language models to follow instructions with human feedback
+  venue: NeurIPS 2022
+  url: https://arxiv.org/abs/2203.02155

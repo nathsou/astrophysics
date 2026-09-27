@@ -43,7 +43,7 @@ export async function highlight(code: string, lang: string | null | undefined): 
   const h = await highlighter;
   const l = lang && LANGS.includes(lang) ? lang : 'text';
   // Shiki makes <pre> focusable (tabindex=0) so wide code can be scrolled from the keyboard,
-  // which is right for accessibility but trips Svelte's generic a11y lint.
+  // which is right for accessibility, but trips Svelte's generic a11y lint.
   const html = h.codeToHtml(code, {
     lang: l,
     themes: { light: 'github-light', dark: 'github-dark' },

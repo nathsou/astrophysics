@@ -137,3 +137,33 @@
   people: W3C GPU for the Web Working Group
   chapter: gpu-compute
   text: Compute shaders arrive in the browser (Chrome 113), making in-browser training like this course’s practical.
+- year: 1943
+  title: The McCulloch–Pitts neuron
+  people: Warren McCulloch and Walter Pitts
+  chapter: neural-networks
+  text: An idealised neuron that sums weighted inputs and fires above a threshold; networks of them can compute any logical function.
+- year: 1958
+  title: The perceptron
+  people: Frank Rosenblatt
+  chapter: neural-networks
+  text: A neuron whose weights are learned from examples by a simple error-correcting rule.
+- year: 1969
+  title: Perceptrons
+  people: Marvin Minsky and Seymour Papert
+  chapter: neural-networks
+  text: A rigorous analysis of what single-layer perceptrons cannot compute, such as XOR; interest in neural networks collapsed for a decade.
+- year: 1986
+  title: Learning representations by back-propagating errors
+  people: David Rumelhart, Geoffrey Hinton and Ronald Williams
+  chapter: automatic-differentiation
+  text: Showed that backpropagation trains hidden units to discover useful internal representations.
+- year: 1989
+  title: Universal approximation
+  people: George Cybenko; Kurt Hornik, Maxwell Stinchcombe and Halbert White
+  chapter: neural-networks
+  text: One hidden layer with enough units can approximate any continuous function.
+- year: 1997
+  title: Long short-term memory
+  people: Sepp Hochreiter and Jürgen Schmidhuber
+  chapter: recurrent-networks
+  text: A gated recurrent cell that preserves gradients over long sequences.
