@@ -227,3 +227,28 @@
   people: Keller Jordan and colleagues
   chapter: optimisers
   text: Orthogonalised momentum updates for weight matrices, computed with a Newton–Schulz iteration; faster training than AdamW in speed-run benchmarks.
+- year: 2017
+  title: Mixed-precision training
+  people: Paulius Micikevicius and colleagues (NVIDIA and Baidu)
+  chapter: scaling-up
+  text: Float16 arithmetic with float32 master weights and loss scaling trains networks as well as float32, at a fraction of the time and memory.
+- year: 2022
+  title: FlashAttention
+  people: Tri Dao, Daniel Fu, Stefano Ermon, Atri Rudra and Christopher Ré
+  chapter: scaling-up
+  text: Exact attention computed block by block with an online softmax, never storing the T × T matrix — faster, and linear rather than quadratic in memory.
+- year: 1976
+  title: Beam search
+  people: Bruce Lowerre
+  chapter: sampling
+  text: The Harpy speech recogniser kept only the best few partial hypotheses at each step — the beam — to search an enormous space of word sequences quickly.
+- year: 2019
+  title: Nucleus sampling
+  people: Ari Holtzman, Jan Buys, Li Du, Maxwell Forbes and Yejin Choi
+  chapter: sampling
+  text: Maximising likelihood makes neural text dull and repetitive; sampling from the smallest set of tokens holding most of the probability produces text closer to human writing.
+- year: 2022
+  title: Speculative decoding
+  people: Yaniv Leviathan, Matan Kalman and Yossi Matias (Google); Charlie Chen and colleagues (DeepMind)
+  chapter: inference
+  text: A small model drafts several tokens and the large model verifies them in one pass; a rejection-sampling rule keeps the output distribution exactly the large model's.

@@ -341,6 +341,7 @@ button {
   border: 1px solid var(--border);
   padding: 0.08em 0.35em;
   border-radius: 4px;
+  overflow-wrap: anywhere; /* long paths and identifiers must not widen the page on phones */
 }
 .article img {
   max-width: 100%;

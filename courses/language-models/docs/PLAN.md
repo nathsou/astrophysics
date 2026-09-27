@@ -51,6 +51,21 @@ Every model is compared on the same data so progress is visible across chapters.
 | Attention-only, 1 layer (C 128, 4 heads, T 128, 3k steps) | 10 | ≈ 2.9 | ≈ 7.5 |
 | Attention-only, 2 layers, browser GPU / PyTorch | 10 | 2.57 / 2.58 | 5.9 |
 
+## Baselines (TinyStories V2, CourseGPT's 8,192-token BPE)
+
+N-grams: the whole validation split (the bigram's interpolation weight tuned on its first half, scored on the second).
+Sweep runs: the first 1 M validation tokens. Bits per byte = bits per token ÷ 4.08 (bytes of story text per token).
+
+| Model | Chapter | Validation bits/token | Bits/byte |
+|---|---|---|---|
+| Uniform over 8,192 tokens | 14 | 13.00 | 3.19 |
+| Unigram | 14 | 8.42 | 2.06 |
+| Bigram, interpolated with unigram | 14 | 5.13 | 1.26 |
+| CourseGPT shape, AdamW 2e-3, 52 M tokens (sweep) | 14 | 2.35 | 0.58 |
+| CourseGPT shape, Muon 0.04, 52 M tokens (sweep) | 14 | 2.06 | 0.51 |
+| **CourseGPT** (8 × 512, Muon, 1.05 B tokens; whole validation split) | 14 | **1.647** | **0.404** |
+| Draft model (2 × 256, 131 M tokens) | 16 | 2.31 | 0.57 |
+
 ## Chapter template
 
 Motivation → theory (interactive equations) → visualisations → 🔬 lab (implement + experiment) →
@@ -101,7 +116,7 @@ F optimisation · G neural networks · H GPU/WGSL · I PyTorch · J glossary, ti
 - **M1** — Part I + appendices E and J. ✅ built 2026-09-27
 - **M2** — Part II + appendices A, B, C, G, H. ✅ built 2026-09-27
 - **M3** — Part III. ✅ built 2026-09-27 (Chapters 9–11)
-- **M4** — Part IV (CourseGPT trained and running in the browser). Chapters 12–13 ✅ built 2026-09-27; 14–16 next (see handoff).
+- **M4** — Part IV (CourseGPT trained and running in the browser). ✅ built 2026-09-27: Chapters 0 and 12–16, appendices F and I. Weights hosting needs the `coursegpt-v1` release uploaded (see below).
 - **M5–M7** — Part V in three batches; remaining appendices.
 
 ## Follow-ups noted during M0
@@ -113,56 +128,42 @@ F optimisation · G neural networks · H GPU/WGSL · I PyTorch · J glossary, ti
 - Chapter 0 (tour of the finished model) waits for CourseGPT (M4); Chapter 1 is the entry point until then.
 - GitHub Pages: ✅ the course now lives in the Interactive Courses monorepo (github.com/nathsou/courses, `courses/language-models/`), deployed with the other courses by the root workflow.
 
-## Handoff: moving to the Linux machine (RTX 4060 Ti) for Chapter 14 onwards
+## Part IV on the Linux machine (RTX 4060 Ti) — done 2026-09-27
 
-Written 2026-09-27 at the end of Chapter 13. Chapters 14+ need CUDA: CourseGPT (≈30M parameters, ≈1B
-TinyStories tokens, ≈1.8×10¹⁷ FLOPs) is ≈17–20 h on the M4 Pro's MPS but ≈2.5–3.5 h on the 4060 Ti with
-bf16 autocast and `torch.compile`; Part V labs want Triton, flash-attn and bitsandbytes.
+Setup notes: see the handoff in git history (commit d814b84) — `pnpm install`, `cd training && uv sync --extra torch`.
+Headless Chromium only gets the NVIDIA WebGPU adapter with `--use-angle=vulkan --ignore-gpu-blocklist`; `scripts/cdp.mjs`
+now adds these on Linux.
 
-### Setting up
-1. Clone the courses monorepo (`git clone git@github.com:nathsou/courses.git`); this course is `courses/language-models/`, and everything below runs from there. Node ≥ 23 (the Vitest suite relies on type
-   stripping) and pnpm 12: `pnpm install`.
-2. Python: `cd training && uv sync --extra torch` — Linux resolves torch from the cu130 index (driver
-   ≥ 580; with an older driver, switch the two cu130 entries in `pyproject.toml` to cu126). Check with
-   `uv run python -c "import torch; print(torch.cuda.get_device_name())"`.
-3. GPU tests and headless-browser checks use WebGPU through Vulkan: `vulkaninfo` should list the 4060 Ti.
-   `pnpm test` runs the GPU kernel tests on Dawn (skipped if no adapter). `node scripts/cdp.mjs <url> <steps.json>`
-   finds Chrome on Linux (or set `CHROME=`); if `navigator.gpu.requestAdapter()` returns null in headless
-   Chrome, try adding `--use-angle=vulkan` to its flags.
-4. Dev server: `npx vite dev --port 5199` in `course/`. Full checks: `pnpm test`, `pnpm typecheck`,
-   `pnpm build`, `cd training && uv run pytest && uv run ruff check`.
-5. Claude's memory notes live in `~/.claude/projects/<encoded path>/memory/` on the Mac; copy them to the
-   matching folder on Linux (the encoded path will differ) if you want them to carry over.
+What exists now:
+- **Data**: `lmc data tinystories` (TinyStories V2, GPT-4 stories), `lmc tokenise` → `training/data/tinystories/`
+  (`tokeniser.json`, `train.bin` 536 M tokens, `val.bin` 5.4 M, uint16). BPE trained on the first 100 MB
+  (21,499 distinct chunks, 4.08 bytes/token). The tokeniser is copied to `course/static/data/coursegpt/`.
+- **Training** (`lmcourse/train.py`): presets `smoke`, `coursegpt`, `draft`; `--set key=value` overrides; memmap batches,
+  bf16 autocast, `torch.compile`, Muon option, MFU against the GPU's bf16 peak, a fixed-seed sample per evaluation.
+  Resume/export use the checkpoint's own config. CourseGPT: 8 × 512, context 512, 29.6 M parameters, 8,000 steps ×
+  131 k tokens (1.05 B), Muon 0.04 + AdamW 4e-3, ≈ 2.1 h at ≈ 138 k tok/s (59% MFU).
+- **Measurements**: `lmcourse/ch14.py` (sweep, speed, attention, precision, baselines, fixtures, summary),
+  `ch15.py` (distributions, tradeoff), `ch16.py` (quant, speculative, weights), `ch00.py` (recorded tour). Each writes
+  JSON under `runs/`, and `summary` writes the chapter's `data.json`.
+- **Browser**: `@lm/core/sample` (temperature, top-k/p, min-p, penalties, beam search, speculative acceptance),
+  `@lm/core/gpu` `GptRunner` (KV cache, `attendCached` kernel, int8 weight-only matmul), `$lib/models/coursegpt.ts`
+  (loads tokeniser, CourseGPT and the draft model; shared runners).
+- **Parity**: tokeniser ids (Python ↔ TS), sampler distributions (PyTorch ↔ TS), CourseGPT logits from the exported
+  bf16 weights (PyTorch float64 ↔ WebGPU float32; skipped when the weights are absent), KV-cached ↔ full forward.
 
-### State of the code (what exists to build on)
-- `@lm/core/gpu`: WebGPU backend with autograd — matmul (naive/tiled/register-blocked, batched, transposes),
-  fused softmax/cross-entropy/LayerNorm/LSTM, GELU, dropout, permute, embedding, AdamW/SGD/Muon, clipping,
-  `Gpt` (named parameters, same as PyTorch), safetensors I/O (`@lm/core`). Parity tests against PyTorch
-  (`training/fixtures/gpt_parity*`) and the CPU tensor library.
-- `course/src/lib/train/gpt.svelte.ts`: the browser training loop (schedules, accumulation, clipping,
-  full-split evaluation, MFU, IndexedDB checkpoints, safetensors import/export, optimiser choice).
-- `training/lmcourse/model.py` (GPT, browser-compatible names, `state_for_browser`) and
-  `training/lmcourse/train.py` (`lmc train --preset …`, resume, export). Character-level only so far.
-
-### Chapter 14 — to do
-1. **Data.** Add TinyStories to `lmcourse/data.py` (`TinyStoriesV2-GPT4-train.txt` ≈2.2 GB and
-   `-valid.txt` ≈22 MB from `huggingface.co/datasets/roneneldan/TinyStories`). Downloading needs Nathan's
-   go-ahead; he runs `uv run lmc data tinystories`.
-2. **Tokeniser.** Train BPE with 8,192 tokens (`lmcourse.bpe`, identical to the browser's) on a sample
-   (≈50–100 MB) and add `<|endoftext|>`. Encoding all of TinyStories in pure Python is slow even with the
-   per-pretoken cache — use `multiprocessing` over chunks and write `train.bin`/`val.bin` (uint16 memmaps).
-3. **Training.** Generalise `train.py` to token files: memmap batches, bf16 autocast, `torch.compile`, fused
-   AdamW (and a Muon option), logging MFU against the 4060 Ti's bf16 peak. Start with a ≈1-minute smoke
-   run, then a small scaling sweep (also useful for Chapter 17), then CourseGPT (≈8 layers × 512, context
-   512 — decide from the sweep).
-4. **Parity and export.** Test that the browser `Gpt` + BPE tokeniser reproduce PyTorch's logits on
-   CourseGPT; export safetensors. Decide how to host the weights for GitHub Pages (`course/static/weights/`
-   is git-ignored; options: Git LFS, a GitHub release asset, or the Hugging Face Hub).
-5. **Chapter text:** parity testing, mixed precision (bf16 vs fp16 and loss scaling), FlashAttention and
-   memory, `torch.compile`, the data pipeline, the CourseGPT run and its measured MFU.
+**Weights hosting** (decided: GitHub release assets fetched at build time). `course/content/weights.json` lists
+the files and SHA-256 hashes; `scripts/weights.mjs` (run by the course build) downloads missing files into
+`course/static/weights/` (git-ignored) and fails the build on CI if it cannot. To publish:
+`gh release create coursegpt-v1 course/static/weights/coursegpt.safetensors course/static/weights/coursegpt-draft.safetensors`
+(repository nathsou/courses), then fill the manifest with `node scripts/weights.mjs --hash`.
 
 ### Known loose ends
-- Browser checkpoint restore reseeds the data sampler (not bit-identical to an uninterrupted run).
+- Browser checkpoint restore reseeds the data sampler (not bit-identical to an uninterrupted run). The PyTorch loop
+  now saves its NumPy sampler state.
 - Checkpoints in the browser trainer support AdamW only.
 - The browser char-GPT preset takes ≈8 minutes on the M4 Pro; the 2-layer "quick" preset ≈1.5 minutes.
-- Timing figures in the chapters were measured on the M4 Pro (say so where quoted).
+- Timing figures in Chapters 12–13 were measured on the M4 Pro; Chapters 14–16 on the RTX 4060 Ti (the text says so).
+- Our WebGPU decode is dominated by per-kernel overheads and the logits readback, not by weight bandwidth.
+
+### Next: Part V (M5–M7)
+Chapter 17 (scaling laws) can reuse `lmc train --set` for a sweep of 6–8 models (0.1–10 M parameters) on TinyStories.

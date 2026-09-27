@@ -7,6 +7,7 @@ from __future__ import annotations
 import heapq
 import json
 from collections import Counter
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 from itertools import pairwise
 from pathlib import Path
@@ -116,11 +117,14 @@ class BpeTokeniser:
 
 
 class BpeTrainer:
-    """Incremental trainer. Ties: highest count, then smallest first id, then smallest second id."""
+    """Incremental trainer. Ties: highest count, then smallest first id, then smallest second id.
+    `text` may be a list of documents, whose chunks are counted together (no chunk spans two)."""
 
-    def __init__(self, text: str, pattern: str = COURSE_PATTERN):
+    def __init__(self, text: str | Iterable[str], pattern: str = COURSE_PATTERN):
         self.pattern = pattern
-        chunks = Counter(pretokenise(text, pattern))
+        chunks: Counter[str] = Counter()
+        for doc in [text] if isinstance(text, str) else text:
+            chunks.update(pretokenise(doc, pattern))
         self.words: list[list[int]] = [list(c.encode("utf-8")) for c in chunks]
         self.freq: list[int] = list(chunks.values())
         self.counts: Counter[Pair] = Counter()

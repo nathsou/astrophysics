@@ -7,3 +7,4 @@ export { bmm, permute, softmax, multiHeadAttention } from './attention.ts';
 export { layerNorm, gelu, dropout, matmulT } from './layers.ts';
 export { Gpt, type GptConfig } from './gpt.ts';
 export { GpuMuon, newtonSchulz } from './muon.ts';
+export { GptRunner, KvCache, Int8Matrix, quantiseInt8, attendCached, MAX_CACHED_CONTEXT } from './inference.ts';

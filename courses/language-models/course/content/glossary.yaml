@@ -299,3 +299,63 @@ muon:
   term: Muon
   definition: An optimiser for weight matrices that orthogonalises the momentum update (every singular value set to about 1) with a Newton–Schulz iteration.
   chapter: optimisers
+parity-test:
+  term: Parity test
+  definition: A test that two implementations of the same computation — for example PyTorch and our WebGPU engine — give the same outputs from the same inputs, within a tolerance set by their floating-point precision.
+  chapter: scaling-up
+mixed-precision:
+  term: Mixed precision
+  definition: Training with matrix multiplications in a 16-bit format (bfloat16 or float16) while keeping the weights, optimiser state and sensitive operations in float32.
+  chapter: scaling-up
+bfloat16:
+  term: bfloat16
+  definition: A 16-bit floating-point format with float32’s 8 exponent bits and 7 mantissa bits — float32’s range at low precision — the standard format for training on modern accelerators.
+  chapter: scaling-up
+loss-scaling:
+  term: Loss scaling
+  definition: Multiplying the loss by a large factor before the backward pass so that small gradients do not underflow in float16, then dividing the gradients by it before the update.
+  chapter: scaling-up
+flashattention:
+  term: FlashAttention
+  definition: An exact attention algorithm that processes keys and values in blocks with a running softmax, so the T × T score matrix is never written to GPU memory.
+  chapter: scaling-up
+activation-checkpointing:
+  term: Activation checkpointing
+  definition: Storing only some activations during the forward pass and recomputing the rest during the backward pass, trading compute for memory.
+  chapter: scaling-up
+decoding:
+  term: Decoding
+  definition: The procedure that turns a language model’s next-token distributions into text — greedy choice, sampling with temperature and truncation, or a search such as beam search.
+  chapter: sampling
+temperature:
+  term: Temperature
+  definition: A divisor applied to the logits before the softmax. T < 1 sharpens the distribution towards the most probable tokens, T > 1 flattens it, and T → 0 is greedy decoding.
+  chapter: sampling
+top-p:
+  term: Top-p (nucleus) sampling
+  definition: Sampling only from the smallest set of most probable tokens whose total probability reaches p, renormalised.
+  chapter: sampling
+min-p:
+  term: Min-p sampling
+  definition: Sampling only from tokens whose probability is at least a fixed fraction of the most probable token’s.
+  chapter: sampling
+beam-search:
+  term: Beam search
+  definition: A search that keeps the k most probable partial sequences at every step, extending each and pruning back to k, to approximate the most probable complete sequence.
+  chapter: sampling
+kv-cache:
+  term: KV cache
+  definition: The keys and values of every layer for all positions generated so far, kept in memory so each new token needs only its own position's computation.
+  chapter: inference
+prefill:
+  term: Prefill and decode
+  definition: The two phases of generation. Prefill processes the whole prompt in parallel (compute-bound); decode produces one token per step (memory-bound).
+  chapter: inference
+quantisation:
+  term: Quantisation
+  definition: Storing weights (or activations) with fewer bits — int8, int4 — using per-group scales, to cut memory and the bytes read per token.
+  chapter: inference
+speculative-decoding:
+  term: Speculative decoding
+  definition: Generating several tokens per step of a large model by letting a cheap drafter propose them and the large model verify them all at once, with an acceptance rule that preserves its distribution exactly.
+  chapter: inference

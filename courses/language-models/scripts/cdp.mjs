@@ -10,6 +10,7 @@
  *   { "shot": "name", "widget": "title text" }  screenshot of the figure.widget whose title contains the text
  *   { "shot": "name", "selector": "css" }        screenshot of an element (or the viewport without either)
  * Screenshots go to $SHOTS_DIR (default: <tmp>/lm-shots). Console errors and exceptions are printed at the end.
+ * Extra Chrome flags can be passed in $CHROME_FLAGS (space-separated).
  */
 import { spawn } from 'node:child_process';
 import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'node:fs';
@@ -26,7 +27,10 @@ const chromePath = candidates.find((c) => c && existsSync(c));
 if (!chromePath) throw new Error('Chrome not found; set CHROME=/path/to/chrome');
 const chrome = spawn(chromePath, [
   '--headless=new', `--remote-debugging-port=${port}`, '--enable-unsafe-webgpu', '--enable-features=Vulkan',
-  `--window-size=${width},${height}`, '--user-data-dir=' + join(tmpdir(), 'lm-chrome-' + port), '--no-first-run', 'about:blank'], { stdio: 'ignore' });
+  `--window-size=${width},${height}`, '--user-data-dir=' + join(tmpdir(), 'lm-chrome-' + port), '--no-first-run',
+  // On Linux, headless Chrome falls back to SwiftShader (a CPU WebGPU) unless ANGLE uses Vulkan.
+  ...(process.platform === 'linux' ? ['--use-angle=vulkan', '--ignore-gpu-blocklist'] : []),
+  ...(process.env.CHROME_FLAGS?.split(' ').filter(Boolean) ?? []), 'about:blank'], { stdio: 'ignore' });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let targets;
 for (let i = 0; i < 50; i++) { try { targets = await (await fetch(`http://127.0.0.1:${port}/json`)).json(); break; } catch { await sleep(200); } }

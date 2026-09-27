@@ -32,3 +32,11 @@ theme preference is the `theme` localStorage key shared by all courses (`light` 
   Exercise tests that need a GPU use `gpuTest(name, async (gpu) => …)` from `@lm/test`.
 - When the browser pane is hidden, screenshots come back blank. `scripts/cdp.mjs` drives headless Chrome
   (with WebGPU) over the DevTools protocol instead: `node scripts/cdp.mjs <url> <steps.json>`.
+- CourseGPT weights (`course/static/weights/{coursegpt,coursegpt-draft}.safetensors`, git-ignored) are fetched at build
+  time by `scripts/weights.mjs` from the release listed in `course/content/weights.json`. To make them locally:
+  `uv run lmc train --preset coursegpt --export` and copy `training/runs/coursegpt/model.safetensors` there.
+  Browser code loads them through `$lib/models/coursegpt.ts`.
+- Measured data in chapters: `uv run lmc chNN <measurement>` writes `training/runs/chNN/*.json`, and
+  `uv run lmc chNN summary` gathers it into `course/content/chapters/<nn>-<slug>/data.json` (imported by `data.ts`).
+- On Linux, headless Chromium only finds the NVIDIA WebGPU adapter with `--use-angle=vulkan --ignore-gpu-blocklist`
+  (added by `scripts/cdp.mjs`); `CHROME_FLAGS` adds more.

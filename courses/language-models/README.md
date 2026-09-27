@@ -21,7 +21,8 @@ See [`docs/PLAN.md`](docs/PLAN.md) for the curriculum, decisions and milestones.
 | `course/tools/markdown/` | Markdown → Svelte compiler (directives, KaTeX, Shiki, hoverable terms) |
 | `course/src/lib/` | Shared components, charts, GPU renderers, exercise runner |
 | `packages/core/` | `@lm/core`, the language-model library built chapter by chapter |
-| `training/` | Python companion (uv): parity checks now, PyTorch training from Chapter 14 |
+| `training/` | Python companion (uv): parity checks, and the PyTorch training of CourseGPT (Chapter 14 onwards) |
+| `scripts/weights.mjs` | Fetches CourseGPT's weights (release assets listed in `course/content/weights.json`) before a build |
 
 ## Develop
 

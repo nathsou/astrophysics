@@ -1065,3 +1065,258 @@ sutskever2013:
   year: 2013
   title: On the importance of initialization and momentum in deep learning
   venue: ICML 2013
+micikevicius2018:
+  authors: Paulius Micikevicius, Sharan Narang, Jonah Alben and others
+  year: 2018
+  title: Mixed Precision Training
+  venue: ICLR 2018
+  url: https://arxiv.org/abs/1710.03740
+kalamkar2019:
+  authors: Dhiraj Kalamkar, Dheevatsa Mudigere, Naveen Mellempudi and others
+  year: 2019
+  title: A Study of BFLOAT16 for Deep Learning Training
+  venue: arXiv:1905.12322
+  url: https://arxiv.org/abs/1905.12322
+micikevicius2022:
+  authors: Paulius Micikevicius, Dusan Stosic, Neil Burgess and others
+  year: 2022
+  title: FP8 Formats for Deep Learning
+  venue: arXiv:2209.05433
+  url: https://arxiv.org/abs/2209.05433
+milakov2018:
+  authors: Maxim Milakov and Natalia Gimelshein
+  year: 2018
+  title: Online normalizer calculation for softmax
+  venue: arXiv:1805.02867
+  url: https://arxiv.org/abs/1805.02867
+rabe2021:
+  authors: Markus N. Rabe and Charles Staats
+  year: 2021
+  title: Self-attention Does Not Need O(n²) Memory
+  venue: arXiv:2112.05682
+  url: https://arxiv.org/abs/2112.05682
+dao2022:
+  authors: Tri Dao, Daniel Y. Fu, Stefano Ermon, Atri Rudra and Christopher Ré
+  year: 2022
+  title: "FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness"
+  venue: NeurIPS 2022
+  url: https://arxiv.org/abs/2205.14135
+dao2023:
+  authors: Tri Dao
+  year: 2023
+  title: "FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning"
+  venue: ICLR 2024
+  url: https://arxiv.org/abs/2307.08691
+korthikanti2022:
+  authors: Vijay Korthikanti, Jared Casper, Sangkug Lym and others
+  year: 2022
+  title: Reducing Activation Recomputation in Large Transformer Models
+  venue: MLSys 2023
+  url: https://arxiv.org/abs/2205.05198
+chen2016:
+  authors: Tianqi Chen, Bing Xu, Chiyuan Zhang and Carlos Guestrin
+  year: 2016
+  title: Training Deep Nets with Sublinear Memory Cost
+  venue: arXiv:1604.06174
+  url: https://arxiv.org/abs/1604.06174
+ansel2024:
+  authors: Jason Ansel, Edward Yang, Horace He and others
+  year: 2024
+  title: "PyTorch 2: Faster Machine Learning Through Dynamic Python Bytecode Transformation and Graph Compilation"
+  venue: ASPLOS 2024
+  url: https://doi.org/10.1145/3620665.3640366
+hoffmann2022:
+  authors: Jordan Hoffmann, Sebastian Borgeaud, Arthur Mensch and others
+  year: 2022
+  title: Training Compute-Optimal Large Language Models
+  venue: NeurIPS 2022
+  url: https://arxiv.org/abs/2203.15556
+rajbhandari2020:
+  authors: Samyam Rajbhandari, Jeff Rasley, Olatunji Ruwase and Yuxiong He
+  year: 2020
+  title: "ZeRO: Memory Optimizations Toward Training Trillion Parameter Models"
+  venue: SC 2020
+  url: https://arxiv.org/abs/1910.02054
+horace2022:
+  authors: Horace He
+  year: 2022
+  title: "Making Deep Learning Go Brrrr From First Principles"
+  venue: blog post
+  url: https://horace.io/brrr_intro.html
+holtzman2020:
+  authors: Ari Holtzman, Jan Buys, Li Du, Maxwell Forbes and Yejin Choi
+  year: 2020
+  title: The Curious Case of Neural Text Degeneration
+  venue: ICLR 2020
+  url: https://arxiv.org/abs/1904.09751
+fan2018:
+  authors: Angela Fan, Mike Lewis and Yann Dauphin
+  year: 2018
+  title: Hierarchical Neural Story Generation
+  venue: ACL 2018
+  url: https://arxiv.org/abs/1805.04833
+nguyen2024:
+  authors: Minh Nguyen, Andrew Baker, Clement Neo, Allen Roush, Andreas Kirsch and Ravid Shwartz-Ziv
+  year: 2024
+  title: "Turning Up the Heat: Min-p Sampling for Creative and Coherent LLM Outputs"
+  venue: ICLR 2025
+  url: https://arxiv.org/abs/2407.01082
+keskar2019:
+  authors: Nitish Shirish Keskar, Bryan McCann, Lav R. Varshney, Caiming Xiong and Richard Socher
+  year: 2019
+  title: "CTRL: A Conditional Transformer Language Model for Controllable Generation"
+  venue: arXiv:1909.05858
+  url: https://arxiv.org/abs/1909.05858
+meister2023:
+  authors: Clara Meister, Tiago Pimentel, Gian Wiher and Ryan Cotterell
+  year: 2023
+  title: Locally Typical Sampling
+  venue: Transactions of the ACL 11, 102–121
+  url: https://arxiv.org/abs/2202.00666
+hewitt2022:
+  authors: John Hewitt, Christopher D. Manning and Percy Liang
+  year: 2022
+  title: Truncation Sampling as Language Model Desmoothing
+  venue: Findings of EMNLP 2022
+  url: https://arxiv.org/abs/2210.15191
+kool2019:
+  authors: Wouter Kool, Herke van Hoof and Max Welling
+  year: 2019
+  title: "Stochastic Beams and Where to Find Them: The Gumbel-Top-k Trick for Sampling Sequences Without Replacement"
+  venue: ICML 2019
+  url: https://arxiv.org/abs/1903.06059
+lowerre1976:
+  authors: Bruce T. Lowerre
+  year: 1976
+  title: The Harpy Speech Recognition System
+  venue: PhD thesis, Carnegie Mellon University
+wu2016:
+  authors: Yonghui Wu, Mike Schuster, Zhifeng Chen and others
+  year: 2016
+  title: "Google's Neural Machine Translation System: Bridging the Gap between Human and Machine Translation"
+  venue: arXiv:1609.08144
+  url: https://arxiv.org/abs/1609.08144
+stahlberg2019:
+  authors: Felix Stahlberg and Bill Byrne
+  year: 2019
+  title: "On NMT Search Errors and Model Errors: Cat Got Your Tongue?"
+  venue: EMNLP 2019
+  url: https://arxiv.org/abs/1908.10090
+zhang2021:
+  authors: Hugh Zhang, Daniel Duckworth, Daphne Ippolito and Arvind Neelakantan
+  year: 2021
+  title: "Trading Off Diversity and Quality in Natural Language Generation"
+  venue: Workshop on Human Evaluation of NLP Systems, EACL 2021
+  url: https://arxiv.org/abs/2004.10450
+welleck2020:
+  authors: Sean Welleck, Ilia Kulikov, Stephen Roller, Emily Dinan, Kyunghyun Cho and Jason Weston
+  year: 2020
+  title: Neural Text Generation with Unlikelihood Training
+  venue: ICLR 2020
+  url: https://arxiv.org/abs/1908.04319
+willard2023:
+  authors: Brandon T. Willard and Rémi Louf
+  year: 2023
+  title: Efficient Guided Generation for Large Language Models
+  venue: arXiv:2307.09702
+  url: https://arxiv.org/abs/2307.09702
+pope2022:
+  authors: Reiner Pope, Sholto Douglas, Aakanksha Chowdhery and others
+  year: 2022
+  title: Efficiently Scaling Transformer Inference
+  venue: MLSys 2023
+  url: https://arxiv.org/abs/2211.05102
+shazeer2019:
+  authors: Noam Shazeer
+  year: 2019
+  title: "Fast Transformer Decoding: One Write-Head is All You Need"
+  venue: arXiv:1911.02150
+  url: https://arxiv.org/abs/1911.02150
+ainslie2023:
+  authors: Joshua Ainslie, James Lee-Thorp, Michiel de Jong, Yury Zemlyanskiy, Federico Lebrón and Sumit Sanghai
+  year: 2023
+  title: "GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints"
+  venue: EMNLP 2023
+  url: https://arxiv.org/abs/2305.13245
+kwon2023:
+  authors: Woosuk Kwon, Zhuohan Li, Siyuan Zhuang and others
+  year: 2023
+  title: Efficient Memory Management for Large Language Model Serving with PagedAttention
+  venue: SOSP 2023
+  url: https://arxiv.org/abs/2309.06180
+yu2022:
+  authors: Gyeong-In Yu, Joo Seong Jeong, Geon-Woo Kim, Soojeong Kim and Byung-Gon Chun
+  year: 2022
+  title: "Orca: A Distributed Serving System for Transformer-Based Generative Models"
+  venue: OSDI 2022
+  url: https://www.usenix.org/conference/osdi22/presentation/yu
+leviathan2023:
+  authors: Yaniv Leviathan, Matan Kalman and Yossi Matias
+  year: 2023
+  title: Fast Inference from Transformers via Speculative Decoding
+  venue: ICML 2023
+  url: https://arxiv.org/abs/2211.17192
+chen2023:
+  authors: Charlie Chen, Sebastian Borgeaud, Geoffrey Irving, Jean-Baptiste Lespiau, Laurent Sifre and John Jumper
+  year: 2023
+  title: Accelerating Large Language Model Decoding with Speculative Sampling
+  venue: arXiv:2302.01318
+  url: https://arxiv.org/abs/2302.01318
+saxena2023:
+  authors: Apoorv Saxena
+  year: 2023
+  title: Prompt Lookup Decoding
+  venue: GitHub repository
+  url: https://github.com/apoorvumang/prompt-lookup-decoding
+dettmers2022:
+  authors: Tim Dettmers, Mike Lewis, Younes Belkada and Luke Zettlemoyer
+  year: 2022
+  title: "LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale"
+  venue: NeurIPS 2022
+  url: https://arxiv.org/abs/2208.07339
+frantar2023:
+  authors: Elias Frantar, Saleh Ashkboos, Torsten Hoefler and Dan Alistarh
+  year: 2023
+  title: "GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers"
+  venue: ICLR 2023
+  url: https://arxiv.org/abs/2210.17323
+lin2024:
+  authors: Ji Lin, Jiaming Tang, Haotian Tang and others
+  year: 2024
+  title: "AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration"
+  venue: MLSys 2024
+  url: https://arxiv.org/abs/2306.00978
+jacob2018:
+  authors: Benoit Jacob, Skirmantas Kligys, Bo Chen and others
+  year: 2018
+  title: Quantization and Training of Neural Networks for Efficient Integer-Arithmetic-Only Inference
+  venue: CVPR 2018
+  url: https://arxiv.org/abs/1712.05877
+dauphin2014:
+  authors: Yann Dauphin, Razvan Pascanu, Caglar Gulcehre, Kyunghyun Cho, Surya Ganguli and Yoshua Bengio
+  year: 2014
+  title: Identifying and attacking the saddle point problem in high-dimensional non-convex optimization
+  venue: NeurIPS 2014
+  url: https://arxiv.org/abs/1406.2572
+cohen2021:
+  authors: Jeremy Cohen, Simran Kaur, Yuanzhi Li, J. Zico Kolter and Ameet Talwalkar
+  year: 2021
+  title: Gradient Descent on Neural Networks Typically Occurs at the Edge of Stability
+  venue: ICLR 2021
+  url: https://arxiv.org/abs/2103.00065
+nocedal2006:
+  authors: Jorge Nocedal and Stephen J. Wright
+  year: 2006
+  title: Numerical Optimization (2nd edition)
+  venue: Springer
+boyd2004:
+  authors: Stephen Boyd and Lieven Vandenberghe
+  year: 2004
+  title: Convex Optimization
+  venue: Cambridge University Press
+  url: https://web.stanford.edu/~boyd/cvxbook/
+amari1998:
+  authors: Shun-ichi Amari
+  year: 1998
+  title: Natural Gradient Works Efficiently in Learning
+  venue: Neural Computation 10(2), 251–276

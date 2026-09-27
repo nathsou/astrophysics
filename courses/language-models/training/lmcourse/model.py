@@ -106,6 +106,22 @@ class GPT(nn.Module):
         groups = [{"params": decay, "weight_decay": weight_decay}, {"params": no_decay, "weight_decay": 0.0}]
         return torch.optim.AdamW(groups, lr=lr, betas=betas, fused=torch.cuda.is_available())
 
+    def muon_optimizers(
+        self, muon_lr: float, adam_lr: float, weight_decay: float = 0.1, betas=(0.9, 0.99)
+    ) -> list[torch.optim.Optimizer]:
+        """Muon for the blocks' 2-D matrices, AdamW for embeddings and norms (Chapter 13's split)."""
+        matrices = [p for n, p in self.named_parameters() if n.startswith("blocks.") and p.ndim == 2]
+        ids = {id(p) for p in matrices}
+        decay, no_decay = [], []
+        for name, p in self.named_parameters():
+            if id(p) not in ids:
+                (no_decay if name.endswith((".g", ".b")) or name == "pos" else decay).append(p)
+        groups = [{"params": decay, "weight_decay": weight_decay}, {"params": no_decay, "weight_decay": 0.0}]
+        return [
+            torch.optim.Muon(matrices, lr=muon_lr, weight_decay=weight_decay, momentum=0.95),
+            torch.optim.AdamW(groups, lr=adam_lr, betas=betas, fused=torch.cuda.is_available()),
+        ]
+
     def num_parameters(self) -> int:
         return sum(p.numel() for p in self.parameters())
 
@@ -114,14 +130,14 @@ class GPT(nn.Module):
         return {_browser_name(n): p.detach().float().cpu().contiguous() for n, p in self.named_parameters()}
 
     @torch.no_grad()
-    def generate(self, ids, steps: int, temperature: float = 0.8, top_k: int | None = None):
+    def generate(self, ids, steps: int, temperature: float = 0.8, top_k: int | None = None, generator=None):
         for _ in range(steps):
             logits, _ = self(ids[:, -self.cfg.context :])
-            logits = logits[:, -1] / temperature
+            logits = logits[:, -1].float() / temperature
             if top_k:
                 v, _ = torch.topk(logits, top_k)
                 logits[logits < v[:, [-1]]] = -float("inf")
-            ids = torch.cat([ids, torch.multinomial(logits.softmax(-1), 1)], dim=1)
+            ids = torch.cat([ids, torch.multinomial(logits.softmax(-1), 1, generator=generator)], dim=1)
         return ids
 
 

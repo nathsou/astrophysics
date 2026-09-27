@@ -46,7 +46,8 @@ export function decodeSafetensors(bytes: Uint8Array): { tensors: Map<string, Nam
   for (const [name, info] of Object.entries(header)) {
     if (name === '__metadata__') continue;
     const { dtype, shape, data_offsets: [start, end] } = info as { dtype: string; shape: number[]; data_offsets: [number, number] };
-    const raw = bytes.slice(base + start, base + end); // copy, so the array is aligned
+    // Copy, so the array is aligned. (Not bytes.slice: on a Node Buffer that is a view of the whole file.)
+    const raw = new Uint8Array(bytes.subarray(base + start, base + end));
     let data: Float32Array;
     if (dtype === 'F32') data = new Float32Array(raw.buffer);
     else if (dtype === 'F16' || dtype === 'BF16') {

@@ -11,6 +11,7 @@ import * as coreLm from '@lm/core/lm';
 import * as coreRandom from '@lm/core/random';
 import * as coreTensor from '@lm/core/tensor';
 import * as coreGpu from '@lm/core/gpu';
+import * as coreSample from '@lm/core/sample';
 
 /** Library modules exercises may import. Grows as the course adds modules to @lm/core. */
 export const LIBRARY: Record<string, unknown> = {
@@ -22,6 +23,7 @@ export const LIBRARY: Record<string, unknown> = {
   '@lm/core/random': coreRandom,
   '@lm/core/tensor': coreTensor,
   '@lm/core/gpu': coreGpu,
+  '@lm/core/sample': coreSample,
 };
 
 /** Lines added by `new Function` before the module body (for mapping stack traces). */

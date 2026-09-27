@@ -15,6 +15,14 @@ def main() -> None:
     d.add_argument("name", choices=sorted(DATASETS))
     d.add_argument("--force", action="store_true", help="re-download even if present")
 
+    tk = sub.add_parser("tokenise", help="Chapter 14: train CourseGPT's tokeniser and encode TinyStories")
+    tk.add_argument("--vocab", type=int, default=8192)
+    tk.add_argument("--sample-mb", type=int, default=100, help="megabytes of text to train the tokeniser on")
+    tk.add_argument("--force", action="store_true", help="retrain and re-encode even if the files exist")
+
+    c0 = sub.add_parser("ch00", help="Chapter 0: record the CourseGPT tour for browsers without WebGPU")
+    c0.add_argument("--run", default="coursegpt")
+
     c1 = sub.add_parser("ch01", help="Chapter 1: corpus statistics")
     c1.add_argument("--write-fixture", action="store_true", help="write the parity fixture used by the TypeScript tests")
 
@@ -67,16 +75,35 @@ def main() -> None:
     c11.add_argument("--dropout", type=float, default=0.0)
     c11.add_argument("--no-mlp", action="store_true")
     c11.add_argument("--no-norm", action="store_true")
-    tr = sub.add_parser("train", help="Chapter 12+: train a GPT (presets: quick, chargpt, chargpt-big)")
+    c14 = sub.add_parser("ch14", help="Chapter 14: sweep | speed | attention | precision | baselines | fixtures | summary")
+    c14.add_argument("what", choices=["sweep", "speed", "attention", "precision", "baselines", "evaluate", "fixtures", "summary"])
+    c14.add_argument("--only", nargs="+", default=None, help="sweep: run only these entries")
+    c14.add_argument("--run", default=None, help="fixtures/precision: the run to use (default coursegpt / a sweep run)")
+    c15 = sub.add_parser("ch15", help="Chapter 15: distributions | tradeoff | fixtures | summary")
+    c15.add_argument("what", choices=["distributions", "tradeoff", "fixtures", "summary"])
+    c15.add_argument("--run", default="coursegpt", help="the trained model to use")
+    c16 = sub.add_parser("ch16", help="Chapter 16: quant | speculative | weights | summary")
+    c16.add_argument("what", choices=["quant", "speculative", "weights", "summary"])
+    c16.add_argument("--run", default="coursegpt", help="the trained model to use")
+    tr = sub.add_parser("train", help="Chapter 12+: train a GPT (presets: quick, chargpt, chargpt-big, smoke, coursegpt, draft)")
     tr.add_argument("--preset", default="chargpt")
     tr.add_argument("--steps", type=int, default=None)
     tr.add_argument("--resume", action="store_true", help="continue from runs/<name>/ckpt.pt")
     tr.add_argument("--export", action="store_true", help="write runs/<name>/model.safetensors for the browser")
+    tr.add_argument("--set", nargs="+", default=[], metavar="KEY=VALUE", help="override preset fields, e.g. lr=1e-3")
     args = p.parse_args()
     if args.cmd == "data":
         from .data import download
 
         print(download(args.name, force=args.force))
+    elif args.cmd == "tokenise":
+        from . import tokens
+
+        tokens.main(vocab=args.vocab, sample_mb=args.sample_mb, force=args.force)
+    elif args.cmd == "ch00":
+        from . import ch00
+
+        ch00.main(run=args.run)
     elif args.cmd == "ch01":
         from . import ch01
 
@@ -148,10 +175,33 @@ def main() -> None:
             mlp=not args.no_mlp,
             norm=not args.no_norm,
         )
+    elif args.cmd == "ch14":
+        from . import ch14
+
+        if args.what == "sweep":
+            ch14.sweep(only=args.only)
+        elif args.what in ("fixtures", "precision", "evaluate") and args.run:
+            getattr(ch14, args.what)(args.run)
+        else:
+            getattr(ch14, args.what)()
+    elif args.cmd == "ch15":
+        from . import ch15
+
+        if args.what in ("distributions", "tradeoff"):
+            getattr(ch15, args.what)(args.run)
+        else:
+            getattr(ch15, args.what)()
+    elif args.cmd == "ch16":
+        from . import ch16
+
+        if args.what == "summary":
+            ch16.summary()
+        else:
+            getattr(ch16, args.what)(args.run)
     elif args.cmd == "train":
         from . import train
 
-        train.main(preset=args.preset, resume=args.resume, export=args.export, steps=args.steps)
+        train.main(preset=args.preset, resume=args.resume, export=args.export, steps=args.steps, overrides=args.set)
 
 if __name__ == "__main__":
     main()
