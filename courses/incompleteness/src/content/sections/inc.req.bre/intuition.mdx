@@ -1,0 +1,17 @@
+<Added label="Added for this edition">
+
+The representing formulas of the basic functions are obvious: $y = 0$ for zero, $y = x_0'$ for successor, $y = (x_0 + x_1)$ for addition. The work is in showing that $\mathbf Q$ proves the right instances — and that uses nothing but its axioms applied to particular numerals.
+
+</Added>
+
+## Calculating in Q
+
+To derive $\overline 2 + \overline 3 = \overline 5$, $\mathbf Q$ unwinds the recursion equation $Q_5$, $x + y' = (x + y)'$, three times and finishes with $Q_4$, $x + 0 = x$. The proof in the book is an induction on $m$ — but an induction in *our* reasoning, which shows that for each $m$ there is such a derivation. $\mathbf Q$ itself never uses induction.
+
+Explore mode generates those derivations for numbers you choose, and the natural deduction checker verifies every inference. Open a step to see which axiom instance it uses, which earlier lines it depends on, and which rule licenses it.
+
+<ExWhichAxioms />
+
+## Different numerals are different
+
+<Ref k="inc:req:bre:lem:q-proves-neq" /> says $\mathbf Q$ proves $\overline n \neq \overline m$ whenever $n \neq m$ — using $Q_2$ ($0$ is not a successor) and $Q_1$ (successor is injective). It is what makes the representing formula of $\chi_=$ work in the “different” case.

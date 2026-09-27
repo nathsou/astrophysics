@@ -1,0 +1,33 @@
+<Added label="Added for this edition">
+
+The fixed-point lemma produces, for any property $B(x)$ of numbers, a sentence $A$ that $\mathbf Q$ proves equivalent to “$B$ holds of my own Gödel number”. Take $B$ to be “is not provable” and $A$ says of itself that it is not provable: Gödel’s sentence. Take $B$ to be “is false” and the lemma shows there can be no such $B$ (Tarski).
+
+</Added>
+
+## Self-reference without “this sentence”
+
+The language of arithmetic has no word for “this sentence”. Quine showed how to get self-reference anyway, with quotation. Take an expression with a gap for its subject, and precede it by its own quotation:
+
+<QuineDiagonal />
+
+In arithmetic, *quotation* is the numeral of a Gödel number, and *preceding by the quotation* is substituting that numeral for the free variable. The function doing this to Gödel numbers is $\mathrm{diag}$: it sends $\#E(x)\#$ to $\#E(\ulcorner E(x)\urcorner)\#$. It is primitive recursive — it is just substitution — so it is represented in $\mathbf Q$ by some formula $D_{\mathrm{diag}}(x, y)$.
+
+## The construction
+
+$$
+E(x) \;=\; \exists y\,\bigl(D_{\mathrm{diag}}(x, y) \land B(y)\bigr), \qquad A \;=\; E(\ulcorner E(x)\urcorner).
+$$
+
+$E(x)$ says: “$B$ holds of the diagonalisation of $x$”. Its diagonalisation $A$ therefore says: “$B$ holds of the diagonalisation of $E(x)$” — and that diagonalisation is $A$ itself.
+
+## Formula, number, numeral
+
+The whole argument depends on keeping three things apart. Here they are for the $E(x)$ of your $B(x) =$ <YourB />:
+
+<ThreeThings />
+
+<ExThreeKinds />
+
+Explore mode builds the construction for your $B(x)$ stage by stage — the numbers are kept exact but never expanded — checks that $\mathrm{diag}(\#E(x)\#) = \#A\#$ by decoding and re-encoding, and shows the derivation of $A \leftrightarrow B(\ulcorner A\urcorner)$, checked inference by inference.
+
+<ExTruthDefinition />

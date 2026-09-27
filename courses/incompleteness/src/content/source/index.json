@@ -149,7 +149,7 @@
   {
    "id": "inc.req",
    "number": "4",
-   "title": "Representability in $\\Th{Q}$",
+   "title": "Representability in Q",
    "file": "inc.req.json",
    "sections": [
     {
@@ -160,7 +160,7 @@
     {
      "id": "inc.req.rpc",
      "number": "4.2",
-     "title": "Functions Representable in \\Th{Q} are Computable"
+     "title": "Functions Representable in Q are Computable"
     },
     {
      "id": "inc.req.bet",
@@ -175,22 +175,22 @@
     {
      "id": "inc.req.bre",
      "number": "4.5",
-     "title": "Basic Functions are Representable in \\Th{Q}"
+     "title": "Basic Functions are Representable in Q"
     },
     {
      "id": "inc.req.cmp",
      "number": "4.6",
-     "title": "Composition is Representable in \\Th{Q}"
+     "title": "Composition is Representable in Q"
     },
     {
      "id": "inc.req.min",
      "number": "4.7",
-     "title": "Regular Minimization is Representable in \\Th{Q}"
+     "title": "Regular Minimization is Representable in Q"
     },
     {
      "id": "inc.req.crq",
      "number": "4.8",
-     "title": "Computable Functions are Representable in \\Th{Q}"
+     "title": "Computable Functions are Representable in Q"
     },
     {
      "id": "inc.req.rel",
@@ -205,7 +205,7 @@
     {
      "id": "inc.inp.s1c",
      "number": "4.11",
-     "title": "\\Sigma_1 completeness"
+     "title": "_1 completeness"
     }
    ]
   },
@@ -243,7 +243,7 @@
     {
      "id": "inc.inp.prc",
      "number": "5.6",
-     "title": "The Derivability Conditions for \\Th{PA}"
+     "title": "The Derivability Conditions for PA"
     },
     {
      "id": "inc.inp.2in",
@@ -1132,12 +1132,12 @@
  "macros": [
   {
    "name": "mathbf",
-   "count": 739,
+   "count": 740,
    "origin": "katex"
   },
   {
    "name": "Th",
-   "count": 739,
+   "count": 740,
    "origin": "upstream"
   },
   {

@@ -1,0 +1,23 @@
+<Added label="Added for this edition">
+
+A term is a string of symbols, so it already has a Gödel number: the code of the sequence of its symbols’ codes. The work in this section is to show that the *property* of being the Gödel number of a well-formed term is primitive recursive — decidable by a computation of a particularly simple kind.
+
+</Added>
+
+## Terms are built, so they can be checked
+
+A term is built from variables and constants by applying function symbols. So a string is a term exactly when there is a **formation sequence** for it: a list of terms, each a variable, a constant, or a function symbol applied to earlier entries, ending with the string. The proof of <Ref k="inc:art:trm:prop:term-primrec" /> codes such sequences as numbers too, and bounds how large a formation sequence ever needs to be — that bound is what makes the search primitive recursive rather than an open-ended hunt.
+
+Your term is shown at the top of the page; Formal mode lists a formation sequence for it next to the proposition.
+
+## Numerals
+
+The numerals $\overline{n} = 0'\cdots'$ matter more than any other terms, because they are how the language of arithmetic names numbers. Officially the numeral $\overline 2$ is the string $'(\,'(0)\,)$ of seven symbols. Its Gödel number is computed by a primitive recursion on $n$ (<Ref k="inc:art:trm:prop:num-primrec" />):
+
+$$
+\mathrm{num}(0) = \#0\#, \qquad \mathrm{num}(n+1) = \#{}'(\# \frown \mathrm{num}(n) \frown \#)\#.
+$$
+
+The numeral for $n$ has $3n + 1$ symbols, so its Gödel number grows very fast. For the Gödel number of a formula — hundreds of thousands of digits long — the numeral cannot be written down by anyone. This edition keeps such numerals as a single *run*: “$'($ repeated $n$ times, $0$, $)$ repeated $n$ times”. That is an exact description, not an approximation.
+
+<ExNumeralSymbols />

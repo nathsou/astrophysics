@@ -1,0 +1,17 @@
+<Added label="Added for this edition">
+
+Minimization searches: $f(z) = \mu x\,[g(x, z) = 0]$ is the least $x$ with $g(x, z) = 0$. Its representing formula says exactly that: $x = y$ is a zero of $g$, and no $w < y$ is.
+
+</Added>
+
+$$
+A_f(z, y) \;\equiv\; A_g(y, z, 0) \land \forall w\,(w < y \rightarrow \lnot A_g(w, z, 0))
+$$
+
+## Why this needs more lemmas
+
+Clause (b) now has to exclude every other candidate value. That requires $\mathbf Q$ to reason about $<$: that nothing is below $0$ (<Ref k="inc:req:min:lem:less-zero" />), that anything below $\overline{n+1}$ is one of $\overline 0, \ldots, \overline n$ (<Ref k="inc:req:min:lem:less-nsucc" />), and a form of trichotomy. The book argues these informally, giving hints for the formal derivations.
+
+<Callout title="What this edition does and does not check">
+Explore mode builds the representing formula of a minimization and computes the search. It does **not** generate derivations for minimization: the lemmas about $<$ would have to be mechanised first. That is honest work left for later, and the workbench says so rather than showing something unchecked.
+</Callout>

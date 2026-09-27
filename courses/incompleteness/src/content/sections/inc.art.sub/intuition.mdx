@@ -1,0 +1,27 @@
+<Added label="Added for this edition">
+
+Substitution — replacing the free occurrences of a variable by a term — is the operation behind every quantifier rule and, later, behind the fixed-point lemma. This section shows it is primitive recursive on Gödel numbers. Before that, it helps to see exactly what substitution does, and what can go wrong.
+
+</Added>
+
+## Free and bound occurrences
+
+In $\exists y\,(x < y) \land x = 2$ the variable $x$ occurs twice, both times free; $y$ occurs once, bound by $\exists y$. Substituting $3$ for $x$ gives $\exists y\,(3 < y) \land 3 = 2$. Substituting for $y$ changes nothing: $y$ has no free occurrence.
+
+## Capture
+
+Now substitute the term $y'$ for $x$. The first $x$ lies inside the scope of $\exists y$, so the result contains $\exists y\,(y' < y)$ — and the $y$ of $y'$, which was meant to be a free variable, is now bound by the quantifier. The formula has changed its meaning. We say $y'$ is **not free for** $x$ in the formula.
+
+The book’s definition of $A[t/x]$ replaces free occurrences regardless, and places the condition “$t$ is free for $x$” on the rules that use substitution. The workbench shows both the book’s operation and the capture-avoiding version that renames the bound variable first.
+
+<Callout title="Try it">
+Explore mode starts with this capture example; its menu has others.
+</Callout>
+
+## On Gödel numbers
+
+The substitution function on Gödel numbers, $\mathrm{Subst}(\#A\#, \#t\#, \#x\#) = \#A[t/x]\#$, is defined by a primitive recursion that walks along the symbol string of $A$: at each position it appends either the whole symbol string of $t$ (if the position is a free occurrence of $x$) or the symbol itself. Explore mode steps through it for your example and checks the equation exactly.
+
+<ExNotFreeFor />
+
+<ExSubstOnNumbers />

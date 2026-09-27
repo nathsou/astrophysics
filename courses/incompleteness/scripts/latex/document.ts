@@ -12,6 +12,7 @@ import katex from 'katex';
 import type { Block, Chapter, Diagnostic, DisplayRow, EnvKind, Inline, LabelTarget, ListItem, ProofTreeNode, Section, SourceLoc } from '../../src/content/schema.ts';
 import type { ConfigState } from './macros.ts';
 import { stripComments } from './macros.ts';
+import { assembleDisplay } from '../../src/formal/display.ts';
 import { accent, expandMath, expandTextInMath, readArgs, readBalanced, readToken, textSymbol, tokenText, type ExpandHooks } from './expand.ts';
 
 type Repo = SourceLoc['repo'];
@@ -624,7 +625,8 @@ export class FileParser {
         const p = this.group();
         const ch = this.group();
         this.fileId = [p, ch, 'udf'];
-        this.chapterTitle = this.group();
+        const r = this.groupRange()!;
+        this.chapterTitle = plain(this.parseInlineRange(r.start, r.end));
         return;
       }
       case 'olimport': {
@@ -1117,7 +1119,7 @@ export function plain(c: Inline[]): string {
         case 'term':
           return x.v;
         case 'math':
-          return x.src;
+          return x.tex.replace(/\\[a-zA-Z]+/g, '').replace(/[{}]/g, '').trim();
         case 'em':
         case 'strong':
         case 'quote':
@@ -1166,15 +1168,8 @@ export function splitRows(s: string): string[] {
   return rows.map((r) => r.trim()).filter((r, idx, all) => r !== '' || idx < all.length - 1);
 }
 
-/** Assembles display rows into one KaTeX source string. */
-export function assembleDisplay(env: string, rows: DisplayRow[]): string {
-  const withTags = rows.map((r) => (r.tag !== undefined ? `${r.tex} \\tag{${r.tag}}` : r.tex));
-  if (env === 'equation' && rows.length === 1) return withTags[0];
-  const e = env === 'align' || env === 'eqnarray' ? 'align*' : env === 'gather' ? 'gather*' : env === 'equation' ? 'gather*' : `${env.replace('*', '')}*`;
-  return `\\begin{${e}}${withTags.join(' \\\\ ')}\\end{${e}}`;
-}
-
 export type { ChapterState };
+export { assembleDisplay };
 
 // ---------------------------------------------------------------- book structure
 

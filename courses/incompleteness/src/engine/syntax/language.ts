@@ -164,7 +164,7 @@ export function symTex(s: Sym): string {
     case 'const':
       return constTex(s.index);
     case 'fn':
-      return s.arity === 1 && s.index === 0 ? '\\prime' : fnTex(s.arity, s.index);
+      return s.arity === 1 && s.index === 0 ? "{}'" : fnTex(s.arity, s.index);
     case 'pred':
       return predTex(s.arity, s.index);
   }

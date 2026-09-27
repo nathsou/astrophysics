@@ -5714,7 +5714,7 @@
      "src": "\\Th{PA}"
     }
    ],
-   "titleText": "The Derivability Conditions for \\Th{PA}",
+   "titleText": "The Derivability Conditions for PA",
    "loc": {
     "repo": "OpenLogic",
     "file": "content/incompleteness/incompleteness-provability/provability-conditions.tex",

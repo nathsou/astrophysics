@@ -1,0 +1,28 @@
+<Added label="Added for this edition">
+
+The arithmetization of syntax turned properties of formulas into computable functions and relations on numbers. This chapter closes the loop: every computable function can be **represented** in a very weak theory of arithmetic, $\mathbf Q$. So $\mathbf Q$ — and any theory that extends it — can *prove* the individual facts about any computation.
+
+</Added>
+
+## A weak theory
+
+$\mathbf Q$ has eight axioms: successor is injective and never $0$, every number other than $0$ is a successor, the recursion equations for $+$ and $\times$, and a definition of $<$. It has no induction. It cannot even prove $\forall x\, \forall y\, (x + y) = (y + x)$. What it can do is calculate: for any particular numbers it proves $\overline 2 + \overline 3 = \overline 5$, and $\overline 2 \neq \overline 3$.
+
+## What representing means
+
+A formula $A_f(x_0, \ldots, x_k, y)$ represents $f$ if, whenever $f(n_0, \ldots, n_k) = m$, $\mathbf Q$ proves
+
+- (a) $A_f(\overline{n_0}, \ldots, \overline{n_k}, \overline m)$ — the formula holds of the right value, and
+- (b) $\forall y\,(A_f(\overline{n_0}, \ldots, \overline{n_k}, y) \rightarrow y = \overline m)$ — and of no other.
+
+So inside $\mathbf Q$, the formula behaves exactly like the graph of $f$ — one input at a time. Nothing is claimed about $\mathbf Q$ proving general laws about $f$.
+
+## The strategy
+
+The book shows every computable function is representable by building formulas for a small set of basic functions (zero, successor, projections, addition, multiplication, $\chi_=$) and showing composition and minimization preserve representability. Primitive recursion is avoided: the β-function shows it can be replaced by minimization.
+
+In Explore mode you build a function from those pieces, compute it, and see its representing formula grow part by part — and the derivations in $\mathbf Q$ of both clauses for your input, generated from the computation and checked step by step.
+
+<Callout title="Computation and proof, side by side">
+Computing $f(3)$ uses the definition of $f$ to find a number. Deriving clause (a) uses the same definition to build a derivation in $\mathbf Q$: every witness the derivation needs for an $\exists$ is a value from the computation. Hover a part of the function in the workbench to see its piece of the formula.
+</Callout>

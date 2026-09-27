@@ -32,13 +32,22 @@ export interface Representation {
 
 export type RepresentError = { error: string; id?: string };
 
+/** Fresh bound variables, named as the book names them: y₀, y₁, … and w, w₀, w₁, … */
 class VarPool {
-  next: number;
+  used: Set<number>;
   constructor(avoid: number[]) {
-    this.next = Math.max(20, ...avoid.map((i) => i + 1));
+    this.used = new Set(avoid);
   }
-  fresh(): number {
-    return this.next++;
+  fresh(family: 'y' | 'w' = 'y'): number {
+    const names = family === 'y' ? Array.from({ length: 200 }, (_, k) => `y_${k}`) : ['w', ...Array.from({ length: 200 }, (_, k) => `w_${k}`)];
+    for (const n of names) {
+      const i = varIndex(n)!;
+      if (!this.used.has(i)) {
+        this.used.add(i);
+        return i;
+      }
+    }
+    throw new Error('out of variables');
   }
 }
 
@@ -94,7 +103,7 @@ export function representing(f: RF): Representation | RepresentError {
       }
       case 'min': {
         // A_g(y, z⃗, 0) ∧ ∀w (w < y → ¬ A_g(w, z⃗, 0))
-        const w = pool.fresh();
+        const w = pool.fresh('w');
         const first = build(g.f, [out, ...ins], A.zero());
         const below = build(g.f, [A.v(w), ...ins.map((t) => A.cloneFresh(t))], A.zero());
         r = A.and(first, A.forall(A.v(w), A.imp(A.less(A.v(w), A.cloneFresh(out)), A.not(below))));

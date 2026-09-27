@@ -1,7 +1,7 @@
 {
  "id": "inc.req",
  "number": "4",
- "title": "Representability in $\\Th{Q}$",
+ "title": "Representability in Q",
  "loc": {
   "repo": "OpenLogic",
   "file": "content/incompleteness/representability-in-q/representability-in-q.tex",
@@ -1007,7 +1007,7 @@
      "v": " are Computable"
     }
    ],
-   "titleText": "Functions Representable in \\Th{Q} are Computable",
+   "titleText": "Functions Representable in Q are Computable",
    "loc": {
     "repo": "OpenLogic",
     "file": "content/incompleteness/representability-in-q/representable-comp.tex",
@@ -4465,7 +4465,7 @@
      "src": "\\Th{Q}"
     }
    ],
-   "titleText": "Basic Functions are Representable in \\Th{Q}",
+   "titleText": "Basic Functions are Representable in Q",
    "loc": {
     "repo": "OpenLogic",
     "file": "content/incompleteness/representability-in-q/basic-representable.tex",
@@ -6834,7 +6834,7 @@
      "src": "\\Th{Q}"
     }
    ],
-   "titleText": "Composition is Representable in \\Th{Q}",
+   "titleText": "Composition is Representable in Q",
    "loc": {
     "repo": "OpenLogic",
     "file": "content/incompleteness/representability-in-q/composition-representable.tex",
@@ -8015,7 +8015,7 @@
      "src": "\\Th{Q}"
     }
    ],
-   "titleText": "Regular Minimization is Representable in \\Th{Q}",
+   "titleText": "Regular Minimization is Representable in Q",
    "loc": {
     "repo": "OpenLogic",
     "file": "content/incompleteness/representability-in-q/minimization-representable.tex",
@@ -10936,7 +10936,7 @@
      "src": "\\Th{Q}"
     }
    ],
-   "titleText": "Computable Functions are Representable in \\Th{Q}",
+   "titleText": "Computable Functions are Representable in Q",
    "loc": {
     "repo": "OpenLogic",
     "file": "content/incompleteness/representability-in-q/comp-representable.tex",
@@ -12727,7 +12727,7 @@
      "v": " completeness"
     }
    ],
-   "titleText": "\\Sigma_1 completeness",
+   "titleText": "_1 completeness",
    "loc": {
     "repo": "OpenLogic",
     "file": "content/incompleteness/representability-in-q/sigma1-completeness.tex",
