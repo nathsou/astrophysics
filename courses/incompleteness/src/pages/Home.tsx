@@ -68,26 +68,36 @@ export function Home() {
 
         <h2>Contents of this edition</h2>
         <p>
-          The first sections to receive the full treatment are the arithmetization of syntax, representability in <Tex tex="\mathbf{Q}" />, and the fixed-point lemma. All
-          sections of chapters 2–5 can already be read in Formal mode.
+          The whole book — nine chapters and four appendices — is converted from its LaTeX source and can be read in Formal mode. Sections with Intuition and Explore modes are
+          listed below; the others are marked as text-only in the table of contents.
         </p>
-        <ol className="home-toc">
-          {PLANS.map((p) => {
-            const s = titles.get(p.id);
-            if (!s) return null;
-            return (
-              <li key={p.id}>
-                <a href={`#/s/${p.id}`}>
-                  <span className="num">{s.number}</span> {s.title}
-                </a>
-                <span className="muted"> — {p.blurb}</span>
-              </li>
-            );
-          })}
-        </ol>
+        {sourceIndex.chapters.map((c) => {
+          const plans = PLANS.filter((p) => c.sections.some((s) => s.id === p.id));
+          if (plans.length === 0) return null;
+          return (
+            <section key={c.id} className="home-chapter">
+              <h3>
+                {c.number && <span className="num">{/^[A-Z]$/.test(c.number) ? `Appendix ${c.number}` : `Chapter ${c.number}`}</span>} {c.title}
+              </h3>
+              <ol className="home-toc">
+                {plans.map((p) => {
+                  const s = titles.get(p.id)!;
+                  return (
+                    <li key={p.id}>
+                      <a href={`#/s/${p.id}`}>
+                        <span className="num">{s.number}</span> {s.title}
+                      </a>
+                      <span className="muted"> — {p.blurb}</span>
+                    </li>
+                  );
+                })}
+              </ol>
+            </section>
+          );
+        })}
         <p>
-          <a className="chip-btn primary" href="#/s/inc.art.int">
-            Start with the arithmetization of syntax →
+          <a className="chip-btn primary" href="#/s/inc.int.bgr">
+            Start at the beginning →
           </a>
         </p>
         <Attribution />

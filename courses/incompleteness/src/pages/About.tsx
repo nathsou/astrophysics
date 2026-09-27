@@ -63,8 +63,8 @@ export function About() {
           <li>The LaTeX is converted to structured content by a converter written for this edition (see “Conversion” below). The wording of the converted text is not edited.</li>
           <li>Each section is presented in three modes. Intuition and Explore modes, the workbenches, exercises and all panels marked “Added”, “Computed” or “Checked” are new.</li>
           <li>
-            Formal mode keeps the book’s numbering. The chapters are numbered as in the book (Chapter 3 is the arithmetization of syntax); only chapters 2–5 are included so far,
-            so references to other chapters are shown as such.
+            Formal mode keeps the book’s numbering: chapters 1–9 and appendices A–D, as in the book. References to parts of the Open Logic Project outside this book are shown
+            as such.
           </li>
           <li>
             Where the book leaves a convention open, this edition fixes one and says so. In particular the official symbols of the language of arithmetic are taken to be 0 = c₀,

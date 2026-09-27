@@ -353,3 +353,5 @@ textarea.fi-field { font-family: var(--mono); font-size: 13px; width: 100%; resi
 .object-edit { margin-left: 4px; }
 .object-bar .object-view { flex: 1 1 auto; min-width: 0; overflow-x: auto; }
 .legend .prov { justify-self: start; }
+.home-chapter h3 { font-size: 1.05rem; margin: 1.4em 0 0.2em; }
+.home-chapter h3 .num { font-family: var(--sans); font-size: 0.8em; color: var(--muted); font-weight: 500; margin-right: 6px; }
