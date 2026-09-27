@@ -12,8 +12,8 @@
   const DEFAULT = 'the cat sat on the mat . the dog sat on the log . the cat saw the dog . the dog saw a cat on the mat .';
   let corpus = $state(DEFAULT);
   let current = $state('.');
-  let walk: string[] = $state([]);
-  let hoverEdge: string | null = $state(null);
+  let walk = $state<string[]>([]);
+  let hoverEdge = $state<string | null>(null);
   let running = $state(false);
   let timer: ReturnType<typeof setInterval> | undefined;
   const rng = mulberry32(Date.now() & 0xffff);

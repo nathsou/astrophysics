@@ -20,7 +20,7 @@
 
   const docs = tryPageDocs();
   let el: HTMLElement;
-  let termIds: string[] = $state([]);
+  let termIds = $state<string[]>([]);
 
   onMount(() => {
     termIds = [...new Set([...el.querySelectorAll<HTMLElement>('[data-term]')].map((e) => e.dataset.term!))];

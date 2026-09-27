@@ -6,7 +6,7 @@
   import Segmented from '$lib/components/ui/Segmented.svelte';
   import { charData, model, type CharData } from '../shared';
 
-  let data: CharData | null = $state(null);
+  let data = $state<CharData | null>(null);
   let context = $state('the qu');
   let order = $state(4);
   onMount(async () => {
@@ -81,7 +81,7 @@
     <div class="chart" role="table" aria-label="Probability of each next character under each estimator">
       {#each result.top as id (id)}
         <div class="row" role="row" class:unseen={!result.seen.has(id)}>
-          <code class="ch" role="rowheader">{show(id)}</code>
+          <span class="ch" role="rowheader"><code>{show(id)}</code></span>
           <div class="bars">
             {#each SERIES as s (s.key)}
               {@const p = result.dists[s.key][id]!}

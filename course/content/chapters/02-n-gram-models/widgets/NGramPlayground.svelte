@@ -8,15 +8,15 @@
   import Segmented from '$lib/components/ui/Segmented.svelte';
   import { charData, model, smoothingFrom, SMOOTHING_LABELS, type CharData, type SmoothingKind } from '../shared';
 
-  let data: CharData | null = $state(null);
+  let data = $state<CharData | null>(null);
   let order = $state(4);
-  let kind: SmoothingKind = $state('kn');
+  let kind = $state<SmoothingKind>('kn');
   let prompt = $state('ROMEO:\n');
   let seed = $state(1);
-  let out: { id: number; ctx: number[]; top: { id: number; p: number }[]; p: number }[] = $state([]);
-  let promptIds: number[] = $state([]);
-  let selected: number | null = $state(null);
-  let copied: Set<number> = $state(new Set());
+  let out = $state<{ id: number; ctx: number[]; top: { id: number; p: number }[]; p: number }[]>([]);
+  let promptIds = $state<number[]>([]);
+  let selected = $state<number | null>(null);
+  let copied = $state<Set<number>>(new Set());
   let busy = $state(false);
   let checked = $state(false);
 

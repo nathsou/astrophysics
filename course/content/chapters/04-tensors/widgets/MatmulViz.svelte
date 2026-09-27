@@ -22,7 +22,7 @@
   const M = 3, K = 4, N = 2;
   const C = A.map((row) => Array.from({ length: N }, (_, j) => row.reduce((s, a, k) => s + a * B[k]![j]!, 0)));
 
-  let view: 'dot' | 'outer' = $state('dot');
+  let view = $state<'dot' | 'outer'>('dot');
   let step = $state(0); // dot: cell index i*N+j; outer: k
   const maxStep = $derived(view === 'dot' ? M * N - 1 : K - 1);
   const i = $derived(Math.floor(step / N)), j = $derived(step % N);

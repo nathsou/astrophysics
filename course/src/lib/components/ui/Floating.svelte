@@ -10,7 +10,7 @@
     onleave,
   }: { anchor: HTMLElement; children: Snippet; width?: string; onenter?: () => void; onleave?: () => void } = $props();
 
-  let el: HTMLDivElement | undefined = $state();
+  let el = $state<HTMLDivElement | undefined>();
   let pos = $state({ top: -9999, left: 0 });
 
   function place() {

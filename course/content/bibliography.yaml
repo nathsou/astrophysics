@@ -401,3 +401,58 @@ widrow1960:
   year: 1960
   title: Adaptive Switching Circuits
   venue: IRE WESCON Convention Record, Part 4, 96–104
+baydin2018:
+  authors: Atılım Güneş Baydin, Barak A. Pearlmutter, Alexey Andreyevich Radul and Jeffrey Mark Siskind
+  year: 2018
+  title: "Automatic Differentiation in Machine Learning: a Survey"
+  venue: Journal of Machine Learning Research 18(153)
+  url: https://arxiv.org/abs/1502.05767
+griewank2008:
+  authors: Andreas Griewank and Andrea Walther
+  year: 2008
+  title: "Evaluating Derivatives: Principles and Techniques of Algorithmic Differentiation (2nd edition)"
+  venue: SIAM
+  url: https://doi.org/10.1137/1.9780898717761
+karpathy2020micrograd:
+  authors: Andrej Karpathy
+  year: 2020
+  title: "micrograd: A tiny scalar-valued autograd engine"
+  venue: GitHub repository
+  url: https://github.com/karpathy/micrograd
+linnainmaa1976:
+  authors: Seppo Linnainmaa
+  year: 1976
+  title: Taylor expansion of the accumulated rounding error
+  venue: BIT Numerical Mathematics 16(2), 146–160
+  url: https://doi.org/10.1007/BF01931367
+  note: Based on the author’s 1970 master’s thesis (University of Helsinki).
+maclaurin2015:
+  authors: Dougal Maclaurin, David Duvenaud and Ryan P. Adams
+  year: 2015
+  title: "Autograd: Effortless Gradients in Numpy"
+  venue: ICML AutoML Workshop
+  url: https://github.com/HIPS/autograd
+olah2015:
+  authors: Christopher Olah
+  year: 2015
+  title: "Calculus on Computational Graphs: Backpropagation"
+  venue: Blog post
+  url: https://colah.github.io/posts/2015-08-Backprop/
+rumelhart1986:
+  authors: David E. Rumelhart, Geoffrey E. Hinton and Ronald J. Williams
+  year: 1986
+  title: Learning representations by back-propagating errors
+  venue: Nature 323, 533–536
+  url: https://doi.org/10.1038/323533a0
+wengert1964:
+  authors: R. E. Wengert
+  year: 1964
+  title: A simple automatic derivative evaluation program
+  venue: Communications of the ACM 7(8), 463–464
+  url: https://doi.org/10.1145/355586.364791
+werbos1982:
+  authors: Paul J. Werbos
+  year: 1982
+  title: Applications of advances in nonlinear sensitivity analysis
+  venue: "System Modeling and Optimization (Lecture Notes in Control and Information Sciences 38), Springer"
+  url: https://doi.org/10.1007/BFb0006203

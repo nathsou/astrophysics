@@ -13,9 +13,9 @@
   let s = $state<CorpusStats | null>(null);
   let passage = $state('');
   let pos = $state(0);
-  let wrong: string[] = $state([]);
-  let guesses: number[] = $state([]);
-  let input: HTMLInputElement | undefined = $state();
+  let wrong = $state<string[]>([]);
+  let guesses = $state<number[]>([]);
+  let input = $state<HTMLInputElement | undefined>();
 
   const idx = (c: string) => (c === ' ' ? 26 : c.charCodeAt(0) - 97);
 

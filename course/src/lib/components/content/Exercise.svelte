@@ -26,7 +26,7 @@
   let showSolution = $state(false);
   let useMine = $state(false);
   let installError = $state<string | null>(null);
-  let editor: ReturnType<typeof CodeEditor> | undefined = $state();
+  let editor = $state<ReturnType<typeof CodeEditor> | undefined>();
   let saveTimer: ReturnType<typeof setTimeout> | undefined;
 
   const passedCount = $derived(report?.results.filter((r) => r.passed).length ?? 0);

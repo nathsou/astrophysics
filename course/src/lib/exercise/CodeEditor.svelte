@@ -28,7 +28,7 @@
   } = $props();
 
   let host: HTMLDivElement;
-  let view: EditorView | undefined = $state();
+  let view = $state<EditorView | undefined>();
   let lsState = $state<'off' | 'loading' | 'on' | 'failed'>('off');
 
   /** Replace the document (e.g. reset to starter code). */

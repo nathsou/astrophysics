@@ -50,12 +50,12 @@
     }),
   };
 
-  let which: keyof typeof FNS = $state('bowl');
+  let which = $state<keyof typeof FNS>('bowl');
   const fn = $derived(FNS[which]!());
   const lr = $derived(params.get('gd.lr', 0.15));
   let noisy = $state(false);
-  let start: [number, number] = $state([-1.6, 1.8]);
-  let path: [number, number][] = $state([]);
+  let start = $state<[number, number]>([-1.6, 1.8]);
+  let path = $state<[number, number][]>([]);
   let running = $state(false);
   let timer: ReturnType<typeof setInterval> | undefined;
 

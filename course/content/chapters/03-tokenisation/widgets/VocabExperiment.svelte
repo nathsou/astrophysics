@@ -15,7 +15,7 @@
 
   const SIZES = [256, 512, 1024, 2048, 4096, 8192];
   type Row = { V: number; bytesPerToken: number; bigram: number; trigram: number; tokens: number };
-  let rows: Row[] = $state([]);
+  let rows = $state<Row[]>([]);
   let status = $state('');
   let running = $state(false);
 

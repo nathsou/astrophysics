@@ -19,13 +19,13 @@
   ];
 
   let text = $state(PRESETS[0]!.text);
-  let kind: TokeniserKind = $state('bpe');
+  let kind = $state<TokeniserKind>('bpe');
   let merges = $state(1024);
   let showIds = $state(false);
-  let tokens: Token[] = $state([]);
+  let tokens = $state<Token[]>([]);
   let loading = $state(false);
-  let selected: Token | null = $state(null);
-  let treeTok: BpeTokeniser | null = $state(null);
+  let selected = $state<Token | null>(null);
+  let treeTok = $state<BpeTokeniser | null>(null);
 
   const note = $derived(PRESETS.find((p) => p.text === text)?.note);
 

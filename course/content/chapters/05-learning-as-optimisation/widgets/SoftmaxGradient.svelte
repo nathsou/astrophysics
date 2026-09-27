@@ -12,7 +12,7 @@
   let z = $state([1.5, 0.5, 0.2, -0.3, 1.0]);
   let target = $state(2);
   let lr = $state(1);
-  let history: number[] = $state([]);
+  let history = $state<number[]>([]);
 
   const p = $derived.by(() => {
     const m = Math.max(...z);

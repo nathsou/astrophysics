@@ -12,12 +12,12 @@
   import Plot from '$lib/charts/Plot.svelte';
 
   const SAMPLE = 'KING HENRY: Once more unto the breach, dear friends, once more;';
-  let source: 'shakespeare' | 'custom' = $state('shakespeare');
+  let source = $state<'shakespeare' | 'custom'>('shakespeare');
   let custom = $state('low lower lowest newer newest wider widest low low lower newest newest');
-  let trainer: BpeTrainer | null = $state(null);
+  let trainer = $state<BpeTrainer | null>(null);
   let version = $state(0); // bumps after each batch of merges so derived views refresh
   let running = $state(false);
-  let history: { merges: number; bpt: number }[] = $state([]);
+  let history = $state<{ merges: number; bpt: number }[]>([]);
 
   async function reset() {
     running = false;

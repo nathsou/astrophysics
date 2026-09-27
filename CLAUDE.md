@@ -10,7 +10,8 @@ Interactive course "Language Models from Scratch". Plan and agreed decisions: do
 - Learner code swapped into widgets: `$lib/exercise/impl.svelte.ts` (`impl.get(key, reference)`).
 - TypeScript 6 everywhere (TS 7 is native-only with no JS API, which svelte-check and the in-browser
   language service need). Plain `.ts` is checked from the repo root (`tsc -p tsconfig.json`);
-  `.svelte`/`.svelte.ts` by svelte-check.
+  `.svelte`/`.svelte.ts` by svelte-check (course/tsconfig.json includes `content/` explicitly — keep it that way).
+- Declare nullable/union state as `$state<T | null>(null)`, not `let x: T | null = $state(null)` (the latter narrows to `never`).
 - Checks before finishing: `pnpm test`, `pnpm typecheck`, `pnpm build`, and `cd training && uv run pytest && uv run ruff check`.
 - Parity tests: Python writes fixtures to `training/fixtures/`; Vitest compares the TypeScript results.
 - British English in all prose. Charts use the palette tokens in course/src/app.css (--series-1…8).

@@ -14,8 +14,8 @@
   let counts = $state([6, 3, 1]);
   const labels = ['a', 'b', 'c'];
   let canvas: HTMLCanvasElement;
-  let guess: [number, number, number] | null = $state(null);
-  let hover: [number, number, number] | null = $state(null);
+  let guess = $state<[number, number, number] | null>(null);
+  let hover = $state<[number, number, number] | null>(null);
 
   const S = 300; // canvas size (CSS px)
   const pad = 22;

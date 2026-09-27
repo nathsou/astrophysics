@@ -8,7 +8,7 @@
   import Button from '$lib/components/ui/Button.svelte';
   import { shakespeare } from '../corpus-stats';
 
-  let growth: { n: number; v: number }[] = $state([]);
+  let growth = $state<{ n: number; v: number }[]>([]);
   onMount(() => {
     shakespeare().then((s) => (growth = T.vocabularyGrowth(s.words, 80)));
   });

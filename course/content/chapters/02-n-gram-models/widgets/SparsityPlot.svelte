@@ -7,8 +7,8 @@
   import { charData, wordData, MAX_ORDER } from '../shared';
 
   type Row = { n: number; coverage: number; distinct: number; possible: number };
-  let chars: Row[] = $state([]);
-  let words: Row[] = $state([]);
+  let chars = $state<Row[]>([]);
+  let words = $state<Row[]>([]);
 
   /** Fraction of validation n-gram occurrences that also occur in training. */
   function coverage(stats: NGramStats, val: number[], maxN: number, V: number): Row[] {

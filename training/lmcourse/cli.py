@@ -30,6 +30,7 @@ def main() -> None:
     c5 = sub.add_parser("ch05", help="Chapter 5: neural bigram model trained by SGD (PyTorch)")
     c5.add_argument("--steps", type=int, default=8000)
     c5.add_argument("--lr", type=float, default=20.0)
+    sub.add_parser("ch06", help="Chapter 6: PyTorch's autograd graph")
 
     args = p.parse_args()
     if args.cmd == "data":
@@ -56,6 +57,10 @@ def main() -> None:
         from . import ch05
 
         ch05.main(steps=args.steps, lr=args.lr)
+    elif args.cmd == "ch06":
+        from . import ch06
+
+        ch06.main()
 
 
 if __name__ == "__main__":

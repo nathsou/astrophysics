@@ -75,8 +75,8 @@
   </div>
   {#if model.error}<p class="error">Your utf8Encode threw: {model.error}</p>{/if}
 
-  <div class="strip" role="table" aria-label="Breakdown of the text">
-    <div class="rowhead" role="rowheader">
+  <div class="strip" role="group" aria-label="Breakdown of the text">
+    <div class="rowhead" aria-hidden="true">
       <span class="h-g">Grapheme</span>
       <span class="h-cp">Code point</span>
       <span class="h-b">UTF-8</span>
@@ -84,7 +84,7 @@
     </div>
     {#each model.groups as grp, gi (gi)}
       <!-- svelte-ignore a11y_no_static_element_interactions -->
-      <div class="group" class:hl={hover === gi} onpointerenter={() => (hover = gi)} onpointerleave={() => (hover = null)} role="row">
+      <div class="group" class:hl={hover === gi} onpointerenter={() => (hover = gi)} onpointerleave={() => (hover = null)} role="group" aria-label="Grapheme {grp.g}">
         <div class="glyph">{grp.g === ' ' ? '␣' : grp.g === '\n' ? '↵' : grp.g}</div>
         <div class="cps">
           {#each grp.cps as c, ci (ci)}

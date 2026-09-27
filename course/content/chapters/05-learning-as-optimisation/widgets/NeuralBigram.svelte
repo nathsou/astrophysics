@@ -18,20 +18,20 @@
   import Legend from '$lib/charts/Legend.svelte';
   import { chars, referenceStep, type Chars } from '../shared';
 
-  let data: Chars | null = $state(null);
+  let data = $state<Chars | null>(null);
   let V = $state(65);
   let W = new Float32Array(0);
   let running = $state(false);
   let steps = $state(0);
   let batch = $state(256);
   let logScale = $state(true);
-  let curve: { step: number; train: number; val: number }[] = $state([]);
-  let probs = $state(new Float32Array(0));
-  let countProbs = $state(new Float32Array(0));
+  let curve = $state<{ step: number; train: number; val: number }[]>([]);
+  let probs = $state<Float32Array>(new Float32Array(0));
+  let countProbs = $state<Float32Array>(new Float32Array(0));
   let countLoss = $state(NaN);
   let trainEma = NaN;
   let rng = mulberry32(1);
-  let fraction: 'all' | 'tiny' = $state('all');
+  let fraction = $state<'all' | 'tiny'>('all');
   const trainIds = $derived(data ? (fraction === 'all' ? data.train : data.train.subarray(0, 10_000)) : new Int32Array(0));
 
   const lr = $derived(params.get('sgd.lr', 20));

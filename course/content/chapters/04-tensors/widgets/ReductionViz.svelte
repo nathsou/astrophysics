@@ -11,10 +11,10 @@
     [1, 1, 5, 0, -1],
     [3, 0, -1, 2, 2],
   ]);
-  let op: 'sum' | 'mean' | 'max' | 'softmax' = $state('sum');
-  let dim: 0 | 1 | 'all' = $state(1);
+  let op = $state<'sum' | 'mean' | 'max' | 'softmax'>('sum');
+  let dim = $state<0 | 1 | 'all'>(1);
   let keepdim = $state(false);
-  let hover: [number, number] | null = $state(null);
+  let hover = $state<[number, number] | null>(null);
 
   const result = $derived.by(() => {
     if (op === 'softmax') return x.softmax(dim === 'all' ? 1 : dim);

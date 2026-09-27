@@ -17,9 +17,9 @@
   const KINDS: SmoothingKind[] = ['mle', 'addk', 'interp', 'kn'];
   const COLOR: Record<SmoothingKind, string> = { mle: 'var(--series-1)', addk: 'var(--series-2)', interp: 'var(--series-3)', kn: 'var(--series-4)' };
 
-  let data: CharData | null = $state(null);
-  let show: 'val' | 'both' = $state('both');
-  let results: Record<SmoothingKind, { train: number; val: number }[]> = $state({ mle: [], addk: [], interp: [], kn: [] });
+  let data = $state<CharData | null>(null);
+  let show = $state<'val' | 'both'>('both');
+  let results = $state<Record<SmoothingKind, { train: number; val: number }[]>>({ mle: [], addk: [], interp: [], kn: [] });
   let progress = $state(0);
   let running = $state(false);
   let token = 0;

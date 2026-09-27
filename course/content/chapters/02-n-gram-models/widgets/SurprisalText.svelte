@@ -14,11 +14,11 @@
 
   const LEN = 360;
   const MAX_BITS = 8;
-  let data: CharData | null = $state(null);
+  let data = $state<CharData | null>(null);
   let order = $state(3);
-  let kind: SmoothingKind = $state('addk');
+  let kind = $state<SmoothingKind>('addk');
   let start = $state(1000);
-  let hover: number | null = $state(null);
+  let hover = $state<number | null>(null);
 
   onMount(async () => {
     data = await charData();

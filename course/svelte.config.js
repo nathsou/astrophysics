@@ -14,6 +14,8 @@ export default {
     alias: {
       $content: 'content',
       $tools: 'tools',
+      // Exercise tests import their harness from @lm/test (Vitest aliases it to Vitest itself).
+      '@lm/test': 'src/lib/exercise/harness.ts',
     },
   },
 };

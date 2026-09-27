@@ -23,10 +23,10 @@
   };
 
   let preset = $state('Loaded die');
-  let dist: Dist = $state({ labels: ['1', '2', '3', '4', '5', '6'], p: norm([1, 1, 1, 1, 1, 5]) });
+  let dist = $state<Dist>({ labels: ['1', '2', '3', '4', '5', '6'], p: norm([1, 1, 1, 1, 1, 5]) });
   let dragging = $state<number | null>(null);
   let hover = $state<number | null>(null);
-  let chart: SVGSVGElement | undefined = $state();
+  let chart = $state<SVGSVGElement | undefined>();
 
   async function choose(name: string) {
     preset = name;

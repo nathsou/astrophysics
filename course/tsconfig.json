@@ -11,5 +11,16 @@
     "allowImportingTsExtensions": true,
     "moduleResolution": "bundler",
     "types": ["@webgpu/types", "vite/client"]
-  }
+  },
+  // SvelteKit's generated config only covers src/; chapter widgets and exercises live in content/.
+  "include": [
+    ".svelte-kit/ambient.d.ts",
+    ".svelte-kit/non-ambient.d.ts",
+    ".svelte-kit/types/**/$types.d.ts",
+    "vite.config.ts",
+    "src/**/*.ts",
+    "src/**/*.svelte",
+    "content/**/*.ts",
+    "content/**/*.svelte"
+  ]
 }

@@ -62,7 +62,7 @@
   ];
 
   let n = $state(1024);
-  let results: { name: string; ms: number; gflops: number }[] = $state([]);
+  let results = $state<{ name: string; ms: number; gflops: number }[]>([]);
   let running = $state(false);
 
   async function run() {

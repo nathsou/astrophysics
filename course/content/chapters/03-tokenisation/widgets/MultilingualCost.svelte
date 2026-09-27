@@ -21,8 +21,8 @@
     { lang: 'Japanese', text: 'すべての人間は、生まれながらにして自由であり、かつ、尊厳と権利とについて平等である。人間は、理性と良心とを授けられており、互いに同胞の精神をもって行動しなければならない。' },
   ];
 
-  let kind: TokeniserKind = $state('gpt2');
-  let counts: number[] = $state([]);
+  let kind = $state<TokeniserKind>('gpt2');
+  let counts = $state<number[]>([]);
 
   $effect(() => {
     const k = kind;

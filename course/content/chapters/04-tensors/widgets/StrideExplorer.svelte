@@ -23,8 +23,8 @@
   const base = Tensor.arange(24).reshape(2, 3, 4);
   const view = $derived(SCENARIOS[which]!.make(base));
   const shares = $derived(view.storage === base.storage);
-  let hoverLogical: number[] | null = $state(null);
-  let hoverStorage: number | null = $state(null);
+  let hoverLogical = $state<number[] | null>(null);
+  let hoverStorage = $state<number | null>(null);
 
   // Enumerate logical elements (≤3-d) as blocks of rows × cols for display.
   const cells = $derived.by(() => {

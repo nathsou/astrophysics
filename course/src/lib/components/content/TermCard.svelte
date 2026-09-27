@@ -20,7 +20,7 @@
     onleave: () => void;
   } = $props();
 
-  let card: HTMLDivElement | undefined = $state();
+  let card = $state<HTMLDivElement | undefined>();
   let pos = $state({ top: 0, left: 0, above: false });
 
   function place() {
