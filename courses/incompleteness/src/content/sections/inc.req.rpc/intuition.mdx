@@ -1,0 +1,31 @@
+import { ExRpcPairs } from '../../../workbench/represent2/exercises';
+
+<Added label="Added for this edition">
+
+This is the easy half of “representable in $\mathbf Q$ iff computable”. If $\mathbf Q$ can prove what the value of $f$ is, then we can *compute* the value by looking for a proof. The two ingredients are that proofs can be listed mechanically (their codes are numbers, and being a proof is primitive recursive) and that $\mathbf Q$ never proves a wrong value.
+
+</Added>
+
+## Never a wrong value
+
+A representing formula only has to satisfy two clauses: $\mathbf Q$ proves $A_f(\vec{\overline n}, \overline{f(\vec n)})$, and $\mathbf Q$ proves that nothing else is a value: $\forall y\,(A_f(\vec{\overline n}, y) \to y = \overline{f(\vec n)})$. <Ref k="inc:req:rpc:lem:rep-q" /> turns this into: $\mathbf Q \vdash A_f(\vec{\overline n}, \overline m)$ **iff** $m = f(\vec n)$. For a wrong $m$, the second clause and $\overline m \neq \overline{f(\vec n)}$ make $\mathbf Q$ refute $A_f(\vec{\overline n}, \overline m)$; proving it too would make $\mathbf Q$ inconsistent. And $\mathbf Q$ is consistent, because its axioms are true in the standard model and derivations preserve truth.
+
+## The search
+
+Now compute $f(\vec n)$: go through all pairs $s = \langle d, m\rangle$ and stop at the first where $d$ codes a derivation from $\mathbf Q$ of $A_f(\vec{\overline n}, \overline m)$. Each test is primitive recursive — it uses $\mathrm{Prf}_{\mathbf Q}$ from <Ref k="inc:art:pnd:sec" /> and the functions $\mathrm{Subst}$ and $\mathrm{num}$ that produce $\#A_f(\vec{\overline n}, \overline m)\#$. The search stops, because a derivation of the right value exists; and what it finds is right, by the lemma. So
+
+$$
+f(\vec n) = \bigl(\mu s\ \mathrm{Prf}_{\mathbf Q}\bigl((s)_0,\ A(\vec n, (s)_1)\bigr)\bigr)_1,
+$$
+
+a regular minimization of a primitive recursive relation: $f$ is recursive.
+
+<ExRpcPairs />
+
+## Beyond Q
+
+Nothing in the argument is special to $\mathbf Q$ except two facts: derivations from its axioms can be recognised mechanically, and it proves no false equation between numerals. Any consistent theory whose axioms form a decidable set works the same way — so no such theory, however strong, represents a non-computable function.
+
+<Callout title="In Explore mode">
+Choose $f$ and an input. The workbench builds a derivation $\delta$ of $A_f(\vec{\overline n}, \overline m)$ in $\mathbf Q$ (checked), codes it, and verifies $\mathrm{Prf}_{\mathbf Q}((s)_0, A(\vec n, (s)_1))$ for $s = \langle \#\delta\#, m\rangle$ on the codes. For a wrong value you choose, it derives the refutation the lemma uses.
+</Callout>

@@ -1,0 +1,29 @@
+import { ExBetaByHand, ExBetaWhyJ } from '../../../workbench/represent2/exercises';
+
+<Added label="Added for this edition">
+
+To show every computable function is representable in $\mathbf Q$, the book works with a basis that has addition, multiplication and $\chi_=$, composition and regular minimization — but **no primitive recursion**. Primitive recursion has to be simulated, and the simulation needs a way to talk about finite sequences. The usual coding $2^{a_0+1}3^{a_1+1}\cdots$ needs exponentiation and the $n$-th prime, both defined by primitive recursion. Gödel's β-function avoids them: it decodes with nothing but $+$, $\times$ and remainders.
+
+</Added>
+
+## Remainders as memory
+
+Store $a_0, \ldots, a_n$ as the remainders of a single number $d_0$ modulo $n + 1$ different moduli $x_0, \ldots, x_n$: $a_i = \mathrm{rem}(x_i, d_0)$. By Sunzi's theorem (the Chinese remainder theorem) such a $d_0$ exists as soon as the moduli are pairwise relatively prime and each $x_i > a_i$.
+
+The trick is to choose moduli that can themselves be described by one number $d_1$ and the index $i$: $x_i = 1 + (i+1)\,d_1$. If every number up to $j = \max(n, a_0 + 1, \ldots, a_n+1)$ divides $d_1$ — the book takes $d_1 = \mathrm{lcm}(1, \ldots, j)$ — the moduli are pairwise relatively prime and larger than every $a_i$. So the pair $(d_0, d_1)$ codes the sequence, and one number $d = J(d_0, d_1)$ codes the pair:
+
+$$
+\beta(d, i) = \mathrm{rem}\bigl(1 + (i+1)\,L(d),\ K(d)\bigr).
+$$
+
+<ExBetaByHand />
+
+## What the lemma does and does not say
+
+<Ref k="inc:req:bet:lem:beta" /> is deliberately weak. It says every finite sequence has *some* code $d$ and that $\beta$ is definable from $+$, $\times$, $\chi_=$ by composition and regular minimization. It does not say $d$ can be computed from the sequence in that restricted way, it does not give the least code, and $d$ does not record the length of the sequence: $\beta(d, i)$ for $i > n$ is just some number. That is all the next section needs, because there the code is *found by search* — the minimization $\mu d$.
+
+<ExBetaWhyJ />
+
+<Callout title="In Explore mode">
+The workbench runs the proof for your sequence, including every step of Sunzi's theorem, then decodes $d$ with $\beta$. It also searches for the least code of your sequence, which is usually much smaller than the one the proof constructs.
+</Callout>

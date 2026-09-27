@@ -1,0 +1,47 @@
+import { ExPndEqIntro, ExPndLastRule } from '../../../workbench/represent2/exercises';
+
+<Added label="Added for this edition">
+
+Formulas became numbers in the previous sections. Now whole derivations do. A derivation is a tree, and the book codes a tree the way it codes any tree: as a tuple whose first entry says how many subtrees hang below, followed by their codes, followed by the labels of the root. The payoff is <Ref k="inc:art:pnd:prop:prf-prim-rec" />: “$x$ is the code of a derivation of the formula with Gödel number $y$ from $\Gamma$” is a primitive recursive relation $\mathrm{Prf}_\Gamma(x, y)$. That is what lets a formula of arithmetic talk about provability.
+
+</Added>
+
+## The code of a derivation
+
+An assumption $A$ is coded $\langle 0, \#A\#, n\rangle$, where $n$ is its label if it is discharged later and $0$ if it is not. A derivation ending in an inference is coded
+
+$$
+\langle m, \#\delta_1\#, \ldots, \#\delta_m\#, \#A\#, n, k\rangle
+$$
+
+with $m \le 3$ the number of premises, $\delta_i$ the sub-derivations ending in them, $A$ the conclusion, $n$ the discharge label ($0$ if nothing is discharged) and $k$ the number of the rule in the book's table (∧Intro is $1$, →Intro is $5$, =Elim is $16$, …). The book's example, $(A \land B) \to A$ by ∧Elim and →Intro, is
+
+$$
+\langle 1, \langle 1, \langle 0, \#(A \land B)\#, 1\rangle, \#A\#, 0, 2\rangle, \#((A \land B) \to A)\#, 1, 5\rangle .
+$$
+
+Two details are easy to miss. First, an inference with no premises (=Intro) has a code with *four* components, $\langle 0, \#A\#, 0, 15\rangle$, while an assumption has three — that is how they are told apart. Second, the code does not record the term used in ∀Elim or ∃Intro, nor the eigenvariable of ∀Intro or ∃Elim: they are determined by the formulas, and the tests for correctness have to find them (the book's $\mathrm{FollowsBy}_{\exists\mathrm{Intro}}$ does so with a bounded search $\exists t < d$).
+
+Axioms of $\Gamma$ are not marked in the code either. They are simply undischarged assumptions $\langle 0, \#A\#, 0\rangle$; $\mathrm{Prf}_\Gamma$ checks separately that every undischarged assumption is in $\Gamma$.
+
+<ExPndEqIntro />
+
+## Reading codes
+
+With $(d)_0$ the number of premises, the end-formula, discharge label and rule number sit at fixed offsets after the sub-derivations:
+
+$$
+\begin{aligned}
+\mathrm{EndFmla}(d) &= (d)_{(d)_0 + 1}, \\
+\mathrm{DischargeLabel}(d) &= (d)_{(d)_0 + 2}, \\
+\mathrm{LastRule}(d) &= (d)_{(d)_0 + 3}.
+\end{aligned}
+$$
+
+<ExPndLastRule />
+
+## Correctness is a finite check
+
+$\mathrm{Correct}(d)$ says the last inference is a correct instance of its rule; $\mathrm{Deriv}(d)$ says every sub-derivation (listed by $\mathrm{SubtreeSeq}$) is correct. The delicate part is discharge: an assumption is undischarged if on the way from the root down to it no inference carries its label — and the same formula may occur both discharged and undischarged. All of these are bounded searches over parts of $d$, hence primitive recursive.
+
+The numbers involved are beyond astronomical: $\#A\#$ for $A = (0 = 0)$ already has thousands of digits, and the code of a derivation has $\#A\# + 1$ in an exponent. Explore mode never writes them out. It keeps them exact but symbolic, codes a checked derivation, decodes it back, lets you change a rule number or a label inside the code, and runs the book's functions on the result.

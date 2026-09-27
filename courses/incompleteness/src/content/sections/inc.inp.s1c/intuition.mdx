@@ -1,0 +1,33 @@
+import { ExS1cClassify } from '../../../workbench/represent2/exercises';
+
+<Added label="Added for this edition">
+
+$\mathbf Q$ is very weak — it cannot even prove $\forall x\,(0 + x = x)$ — yet it proves every true sentence of a certain shape: an unbounded $\exists$ in front of a formula whose quantifiers are all *bounded*. These are the $\Sigma_1$ sentences, and they are exactly the sentences that say “some search succeeds”. This is the real content behind representability, and it is what the incompleteness theorems exploit on the other side: for $\Pi_1$ sentences, $\forall x\,B(x)$, no such guarantee exists.
+
+</Added>
+
+## Bounded quantifiers
+
+A bounded quantifier looks only below a term: $\forall x < t\, A(x)$ abbreviates $\forall x\,(x < t \to A(x))$, and $\exists x < t\, A(x)$ abbreviates $\exists x\,(x < t \land A(x))$. A $\Delta_0$ formula uses only connectives and bounded quantifiers. For a $\Delta_0$ *sentence*, the bound $t$ is a closed term with some value $k$, so the quantifier ranges over $0, \ldots, k-1$ only: $\forall x < t\, A(x)$ amounts to the finite conjunction $A(\overline 0) \land \cdots \land A(\overline{k-1})$. Truth of a $\Delta_0$ sentence can be decided by computation — and, the section shows, $\mathbf Q$ can follow that computation.
+
+(For the bound to bound anything, $x$ must not occur in $t$ itself; $\forall x\,(x < x' \to A(x))$ quantifies over all numbers. The book's definition leaves this implicit; the workbench checks it.)
+
+## The proof, in layers
+
+1. <Ref k="inc:inp:s1c:lem:q-proves-clterm-id" />: $\mathbf Q$ evaluates closed terms — $\mathbf Q \vdash t = \overline n$ where $n$ is the value of $t$.
+2. <Ref k="inc:inp:s1c:lem:atomic-completeness" />: so $\mathbf Q$ proves every true atomic sentence and the negation of every false one.
+3. <Ref k="inc:inp:s1c:lem:bounded-quant-equiv" />: a bounded quantifier with a closed bound is equivalent in $\mathbf Q$ to a finite conjunction or disjunction of instances.
+4. <Ref k="inc:inp:s1c:lem:delta0-completeness" />: by induction on the sentence, $\mathbf Q$ proves every true $\Delta_0$ sentence (and refutes every false one — the induction needs both).
+5. <Ref k="inc:inp:s1c:thm:sigma1-completeness" />: if $\exists x\,A(x)$ is true, some $n$ makes $A(\overline n)$ true; it is $\Delta_0$, so $\mathbf Q$ proves it, and then $\exists x\,A(x)$ by ∃Intro.
+
+The only non-constructive-looking step is “some $n$ makes $A(\overline n)$ true”. But that $n$ can be *found*: try $0, 1, 2, \ldots$ and decide each $A(\overline n)$ by computation. If the sentence is true, the search ends. If it is false, the search runs forever — and no finite amount of searching tells the two apart.
+
+<ExS1cClassify />
+
+## What does not follow
+
+The theorem says nothing about $\Pi_1$ sentences $\forall x\, B(x)$. Each instance $B(\overline n)$ of a true one is provable, but the universal sentence need not be: $\mathbf Q$ does not prove $\forall x\,(0 + x = x)$, although every instance $0 + \overline n = \overline n$ is provable. The first incompleteness theorem produces, for every consistent axiomatizable extension of $\mathbf Q$, a true sentence of a universal form that it does not prove: one saying of every number that it is not the code of a derivation of that very sentence.
+
+<Callout title="In Explore mode">
+Enter a sentence. The workbench classifies it (marking the bounded quantifiers), searches for a witness up to a limit you choose — reporting “no witness below $N$” rather than “false” when it finds none — and unfolds the proof of the lemma for the instance it found, case by case, down to atomic facts.
+</Callout>
