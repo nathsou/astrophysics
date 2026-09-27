@@ -111,7 +111,7 @@ F optimisation · G neural networks · H GPU/WGSL · I PyTorch · J glossary, ti
   own thin worker client.
 - Glossary (`:term[…]`) and `content/glossary.yaml` are wired up but not yet used by any chapter.
 - Chapter 0 (tour of the finished model) waits for CourseGPT (M4); Chapter 1 is the entry point until then.
-- GitHub Pages: create the repository, push, and enable Pages → "GitHub Actions" as the source.
+- GitHub Pages: ✅ the course now lives in the Interactive Courses monorepo (github.com/nathsou/courses, `courses/language-models/`), deployed with the other courses by the root workflow.
 
 ## Handoff: moving to the Linux machine (RTX 4060 Ti) for Chapter 14 onwards
 
@@ -120,7 +120,7 @@ TinyStories tokens, ≈1.8×10¹⁷ FLOPs) is ≈17–20 h on the M4 Pro's MPS b
 bf16 autocast and `torch.compile`; Part V labs want Triton, flash-attn and bitsandbytes.
 
 ### Setting up
-1. Clone or rsync the repo (everything is committed). Node ≥ 23 (the Vitest suite relies on type
+1. Clone the courses monorepo (`git clone git@github.com:nathsou/courses.git`); this course is `courses/language-models/`, and everything below runs from there. Node ≥ 23 (the Vitest suite relies on type
    stripping) and pnpm 12: `pnpm install`.
 2. Python: `cd training && uv sync --extra torch` — Linux resolves torch from the cu130 index (driver
    ≥ 580; with an older driver, switch the two cu130 entries in `pyproject.toml` to cu126). Check with

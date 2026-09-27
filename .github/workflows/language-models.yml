@@ -1,0 +1,48 @@
+name: Language models — checks
+
+# Tests, type checks and the Python lab for courses/language-models. (Deployment is in deploy.yml.)
+on:
+  push:
+    branches: [main]
+    paths: ['courses/language-models/**', '.github/workflows/language-models.yml']
+  pull_request:
+    paths: ['courses/language-models/**', '.github/workflows/language-models.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: courses/language-models
+
+jobs:
+  site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: courses/language-models/package.json
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: courses/language-models/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - name: Unit, exercise and parity tests (GPU tests skip without an adapter)
+        run: pnpm test
+      - name: Type-check (tsc + svelte-check)
+        run: pnpm typecheck
+
+  python:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: courses/language-models/training
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync
+      - run: uv run ruff check
+      - run: uv run pytest

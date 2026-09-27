@@ -1,5 +1,7 @@
 # Language Models from Scratch
 
+Part of the [Interactive Courses](../../README.md) collection, published at `/language-models/`. The collection's `npm run build` (in the repository root) builds this course with the right base path; for development, work in this directory as below.
+
 An interactive course that builds a GPT-style language model from nothing — text encoding, tokenisation,
 tensors, autograd, WebGPU kernels, attention, training, sampling and inference — and then covers scaling
 laws, mixture-of-experts, fine-tuning, preference learning, reasoning, tool use, evaluation,

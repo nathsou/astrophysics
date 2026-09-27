@@ -21,6 +21,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm (for the language-models workspace)
+        uses: pnpm/action-setup@v4
+        with:
+          package_json_file: courses/language-models/package.json
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -36,6 +41,7 @@ jobs:
           npm ci --prefix courses/astrophysics
           npm ci --prefix courses/cic
           npm ci --prefix courses/compiler-backends
+          pnpm --dir courses/language-models install --frozen-lockfile
 
       - name: Build
         run: npm run build

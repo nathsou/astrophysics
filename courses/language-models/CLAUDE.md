@@ -2,6 +2,11 @@
 
 Interactive course "Language Models from Scratch". Plan and agreed decisions: docs/PLAN.md. Read it first.
 
+It lives in `courses/language-models/` of the Interactive Courses monorepo (github.com/nathsou/courses). The root
+`scripts/build.mjs` builds every course into `dist/` (this one with `BASE_PATH=<base>/language-models`); deployment is
+the root `.github/workflows/deploy.yml`, and `.github/workflows/language-models.yml` runs this course's checks. The
+theme preference is the `theme` localStorage key shared by all courses (`light` / `dark` / `system`).
+
 - Monorepo (pnpm): `course/` (SvelteKit static site), `packages/core` (`@lm/core`), `training/` (uv/Python).
 - Chapters: `course/content/chapters/<nn>-<slug>/index.md` + `widgets/*.svelte` + `exercises/<id>/{starter,solution,solution.test,index}.ts`.
   Navigation comes from `course/content/outline.ts`. Bibliography/glossary/global terms are YAML in `course/content/`.

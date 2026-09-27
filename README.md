@@ -7,22 +7,24 @@ A collection of interactive textbooks. The [course index](site/index.html) links
 | The Cosmos, Computed | `courses/astrophysics/` | `/astrophysics/` |
 | The Calculus of Inductive Constructions | `courses/cic/` | `/cic/` |
 | SSA to Silicon | `courses/compiler-backends/` | `/compiler-backends/` |
-
-The language-models course is still in progress and is not part of this repository.
+| Language Models from Scratch *(in progress)* | `courses/language-models/` | `/language-models/` |
 
 ## Build
 
-Node.js 22 or later is required. Each course keeps its own dependencies and lockfile.
+Node.js 22 or later is required. Each course keeps its own dependencies and lockfile; language-models is a pnpm workspace (its site, its TypeScript library and a Python training lab), so it also needs [pnpm](https://pnpm.io).
 
 ```sh
 npm ci --prefix courses/astrophysics
 npm ci --prefix courses/cic
 npm ci --prefix courses/compiler-backends
+pnpm --dir courses/language-models install --frozen-lockfile
 npm run build
 ```
 
-The build creates `dist/index.html` and the three course directories in `dist/`. For a local preview, serve `dist/` as the web root, for example with `python3 -m http.server 8000 -d dist`.
+The build creates `dist/index.html` and the four course directories in `dist/`. For a local preview, serve `dist/` as the web root, for example with `python3 -m http.server 8000 -d dist`.
 
-On GitHub Actions, the build derives the Pages project path from `GITHUB_REPOSITORY`. If hosting under a different path, set `COURSES_BASE_PATH` to that path (or to an empty string for a domain root). Relative links on the index and the two Vite courses adapt automatically; Astro uses this value for astrophysics links and assets.
+On GitHub Actions, the build derives the Pages project path from `GITHUB_REPOSITORY`. If hosting under a different path, set `COURSES_BASE_PATH` to that path (or to an empty string for a domain root). Relative links on the index and the two Vite courses adapt automatically; Astro uses this value for astrophysics links and assets, and the build passes `<base>/language-models` to SvelteKit as `BASE_PATH`.
+
+Pushes that touch `courses/language-models/` also run its tests, type checks and Python lab checks (`.github/workflows/language-models.yml`).
 
 Course-specific development and tests are documented in each course's README.

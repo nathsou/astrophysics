@@ -5,7 +5,26 @@ import { dirname, join } from 'node:path';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const output = join(root, 'dist');
-const courses = ['astrophysics', 'cic', 'compiler-backends'];
+/**
+ * Each course builds into its own output directory. Most are npm projects built with
+ * `npm run build` into `dist/`; language-models is a pnpm workspace (site + library + Python
+ * training) whose SvelteKit site builds into `course/build/` and takes its base path from BASE_PATH.
+ */
+const courses = [
+  { name: 'astrophysics' },
+  { name: 'cic' },
+  { name: 'compiler-backends' },
+  {
+    name: 'language-models',
+    command: ['pnpm', ['--filter', 'course', 'build']],
+    output: 'course/build',
+    env: (base) => ({
+      BASE_PATH: `${base}/language-models`,
+      // Its SvelteKit config imports TypeScript directly; Node 22 needs type stripping switched on.
+      NODE_OPTIONS: `${process.env.NODE_OPTIONS ?? ''} --experimental-strip-types`.trim(),
+    }),
+  },
+];
 const repository = process.env.GITHUB_REPOSITORY?.split('/')[1];
 const basePath = (process.env.COURSES_BASE_PATH ?? (repository ? `/${repository}` : '')).replace(/\/$/, '');
 
@@ -18,16 +37,17 @@ mkdirSync(output, { recursive: true });
 cpSync(join(root, 'site'), output, { recursive: true });
 
 for (const course of courses) {
-  const directory = join(root, 'courses', course);
-  console.log(`\nBuilding ${course}...`);
-  const result = spawnSync('npm', ['run', 'build'], {
+  const directory = join(root, 'courses', course.name);
+  const [command, args] = course.command ?? ['npm', ['run', 'build']];
+  console.log(`\nBuilding ${course.name}...`);
+  const result = spawnSync(command, args, {
     cwd: directory,
-    env: { ...process.env, COURSES_BASE_PATH: basePath },
+    env: { ...process.env, COURSES_BASE_PATH: basePath, ...course.env?.(basePath) },
     stdio: 'inherit',
   });
   if (result.error) throw result.error;
   if (result.status !== 0) process.exit(result.status ?? 1);
-  cpSync(join(directory, 'dist'), join(output, course), { recursive: true });
+  cpSync(join(directory, course.output ?? 'dist'), join(output, course.name), { recursive: true });
 }
 
 // Keep existing links to astrophysics chapters working after its homepage becomes the index.

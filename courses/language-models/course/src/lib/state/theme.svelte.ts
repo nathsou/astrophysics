@@ -1,4 +1,7 @@
-/** Light/dark theme toggle. `system` follows prefers-color-scheme. */
+/**
+ * Light/dark theme toggle. `system` follows prefers-color-scheme. The choice is stored under the
+ * `theme` key that every course in the collection shares, so it carries across courses and tabs.
+ */
 
 export type ThemeChoice = 'system' | 'light' | 'dark';
 
@@ -24,6 +27,14 @@ class Theme {
     };
     mq.addEventListener('change', update);
     update();
+    // Another tab (or another course) changed the shared preference.
+    addEventListener('storage', (e: StorageEvent) => {
+      if (e.key !== 'theme') return;
+      this.choice = read();
+      if (this.choice === 'system') delete document.documentElement.dataset.theme;
+      else document.documentElement.dataset.theme = this.choice;
+      update();
+    });
   }
 
   set(choice: ThemeChoice): void {
