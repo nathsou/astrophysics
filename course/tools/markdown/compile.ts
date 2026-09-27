@@ -163,6 +163,19 @@ async function renderInline(md: string | undefined): Promise<string | undefined>
   return html;
 }
 
+/** Parse a fenced YAML block with an error message that points at the chapter and the usual culprit. */
+function parseYamlBlock<T>(ctx: Ctx, src: string, kind: string): T {
+  try {
+    return YAML.parse(src) as T;
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    throw new Error(
+      `${path.relative(ctx.contentRoot, ctx.file)}: invalid YAML in a \`\`\`${kind} block — ${msg}\n` +
+        `Hint: quote values that contain ": " or start with a special character; use single quotes when the value contains backslashes (LaTeX).`,
+    );
+  }
+}
+
 function loadYaml<T>(file: string, ctx: Ctx): T {
   ctx.deps.add(file);
   return existsSync(file) ? ((YAML.parse(readFileSync(file, 'utf8')) ?? {}) as T) : ({} as T);
@@ -304,12 +317,12 @@ async function transform(tree: Root, ctx: Ctx): Promise<void> {
       case 'code': {
         const code = node as Code;
         if (code.lang === 'terms') {
-          Object.assign(ctx.terms, YAML.parse(code.value) as Record<string, RawTerm>);
+          Object.assign(ctx.terms, parseYamlBlock<Record<string, RawTerm>>(ctx, code.value, 'terms'));
           parent.children.splice(index, 1);
           return index;
         }
         if (code.lang === 'quiz') {
-          const data = YAML.parse(code.value) as { q: string; options: { text: string; correct?: boolean; why?: string }[] };
+          const data = parseYamlBlock<{ q: string; options: { text: string; correct?: boolean; why?: string }[] }>(ctx, code.value, 'quiz');
           const i = ctx.components.push({ tag: 'B.Quiz', props: '' }) - 1;
           ctx.asyncJobs.push(
             (async () => {

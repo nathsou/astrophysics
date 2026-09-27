@@ -326,3 +326,44 @@ mackay2003:
   title: Information Theory, Inference, and Learning Algorithms
   venue: Cambridge University Press
   url: https://www.inference.org.uk/itila/book.html
+collobert2002:
+  authors: Ronan Collobert, Samy Bengio and Johnny Mariéthoz
+  year: 2002
+  title: "Torch: a modular machine learning software library"
+  venue: IDIAP Research Report 02-46
+  url: https://publications.idiap.ch/downloads/reports/2002/rr02-46.pdf
+goto2008:
+  authors: Kazushige Goto and Robert A. van de Geijn
+  year: 2008
+  title: Anatomy of High-Performance Matrix Multiplication
+  venue: ACM Transactions on Mathematical Software 34(3)
+  url: https://doi.org/10.1145/1356052.1356053
+harris2020:
+  authors: Charles R. Harris, K. Jarrod Millman, Stéfan J. van der Walt and others
+  year: 2020
+  title: Array programming with NumPy
+  venue: Nature 585, 357–362
+  url: https://doi.org/10.1038/s41586-020-2649-2
+iverson1962:
+  authors: Kenneth E. Iverson
+  year: 1962
+  title: A Programming Language
+  venue: John Wiley & Sons
+lawson1979:
+  authors: C. L. Lawson, R. J. Hanson, D. R. Kincaid and F. T. Krogh
+  year: 1979
+  title: Basic Linear Algebra Subprograms for Fortran Usage
+  venue: ACM Transactions on Mathematical Software 5(3), 308–323
+  url: https://doi.org/10.1145/355841.355847
+paszke2019:
+  authors: Adam Paszke, Sam Gross, Francisco Massa and others
+  year: 2019
+  title: "PyTorch: An Imperative Style, High-Performance Deep Learning Library"
+  venue: NeurIPS 2019
+  url: https://arxiv.org/abs/1912.01703
+yang2019:
+  authors: Edward Z. Yang
+  year: 2019
+  title: PyTorch internals
+  venue: Blog post
+  url: http://blog.ezyang.com/2019/05/pytorch-internals/

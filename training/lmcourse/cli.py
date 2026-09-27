@@ -26,6 +26,8 @@ def main() -> None:
     c3.add_argument("--merges", type=int, default=1024)
     c3.add_argument("--write-fixture", action="store_true")
 
+    sub.add_parser("ch04", help="Chapter 4: strides in NumPy and PyTorch")
+
     args = p.parse_args()
     if args.cmd == "data":
         from .data import download
@@ -43,6 +45,10 @@ def main() -> None:
         from . import ch03
 
         ch03.main(merges=args.merges, write_fixture=args.write_fixture)
+    elif args.cmd == "ch04":
+        from . import ch04
+
+        ch04.main()
 
 
 if __name__ == "__main__":

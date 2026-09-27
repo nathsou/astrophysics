@@ -60,7 +60,7 @@
       {#if meta.duration}<span><Icon name="history" size={14} /> {meta.duration}</span>{/if}
       {#if prereqs.length}
         <span>Assumes:
-          {#each prereqs as p, i (p.slug)}{#if i}, {/if}<a href="{base}{p.href}">{p.number}. {p.title}</a>{/each}
+          {#each prereqs as p, i (p.slug)}{#if i}, {/if}{#if p.available}<a href="{base}{p.href}">{p.number}. {p.title}</a>{:else}<span title="Coming in milestone {p.milestone}">{p.number}. {p.title}</span>{/if}{/each}
         </span>
       {/if}
     </div>

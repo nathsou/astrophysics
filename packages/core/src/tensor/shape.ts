@@ -37,7 +37,7 @@ export function broadcastShapes(a: readonly number[], b: readonly number[]): Sha
     const x = a[a.length - n + i] ?? 1;
     const y = b[b.length - n + i] ?? 1;
     if (x !== y && x !== 1 && y !== 1) throw new Error(`shapes [${a}] and [${b}] cannot be broadcast together`);
-    out[i] = Math.max(x, y);
+    out[i] = x === 1 ? y : x; // not Math.max: a size-0 dimension broadcast against 1 stays 0
   }
   return out;
 }
