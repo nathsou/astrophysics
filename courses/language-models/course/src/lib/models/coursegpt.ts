@@ -8,6 +8,7 @@ import { decodeSafetensors, mulberry32 } from '@lm/core';
 import { BpeTokeniser, type BpeSpec } from '@lm/core/tokenise';
 import { Gpt, GptRunner, GpuIds, noGradGpu, scope, sliceRows } from '@lm/core/gpu';
 import { getGpu } from '$lib/gpu/compute';
+import manifest from '$content/weights.json';
 
 export const EOT = '<|endoftext|>';
 
@@ -88,18 +89,29 @@ export function runnerFor(m: CourseGpt, opts: { int8?: boolean } = {}): Promise<
 async function download(url: string, onprogress?: (fraction: number) => void): Promise<Uint8Array> {
   const r = await fetch(url);
   if (!r.ok) throw new Error(r.status === 404 ? 'CourseGPT’s weights are not included in this build of the course.' : `Could not download CourseGPT (${r.status})`);
-  const total = Number(r.headers.get('Content-Length') ?? 0);
-  if (!r.body || !total) return new Uint8Array(await r.arrayBuffer());
-  const out = new Uint8Array(total);
+  // Don't size the buffer from Content-Length: it counts the bytes on the wire, and a server that
+  // compresses the file (GitHub Pages gzips it) sends fewer than the stream delivers. The manifest
+  // records the real size, for the progress bar.
+  const name = url.slice(url.lastIndexOf('/') + 1);
+  const expected = manifest.files.find((f) => f.name === name)?.bytes ?? Number(r.headers.get('Content-Length') ?? 0);
+  if (!r.body) return new Uint8Array(await r.arrayBuffer());
+  const chunks: Uint8Array[] = [];
+  let received = 0;
   const reader = r.body.getReader();
-  let done = 0;
   for (;;) {
-    const { value, done: end } = await reader.read();
-    if (end) break;
-    out.set(value, done);
-    done += value.length;
-    onprogress?.(done / total);
+    const { value, done } = await reader.read();
+    if (done) break;
+    chunks.push(value);
+    received += value.length;
+    if (expected) onprogress?.(Math.min(0.99, received / expected));
   }
+  const out = new Uint8Array(received);
+  let offset = 0;
+  for (const c of chunks) {
+    out.set(c, offset);
+    offset += c.length;
+  }
+  onprogress?.(1);
   return out;
 }
 
