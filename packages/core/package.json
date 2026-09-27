@@ -10,6 +10,7 @@
     "./tokenise": "./src/tokenise/index.ts",
     "./ngram": "./src/ngram/index.ts",
     "./lm": "./src/lm.ts",
-    "./random": "./src/util/random.ts"
+    "./random": "./src/util/random.ts",
+    "./tensor": "./src/tensor/index.ts"
   }
 }

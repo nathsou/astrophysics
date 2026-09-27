@@ -5,5 +5,6 @@
 export * as text from './text/index.ts';
 export * as tokenise from './tokenise/index.ts';
 export * as ngram from './ngram/index.ts';
+export * as tensor from './tensor/index.ts';
 export * from './lm.ts';
 export * from './util/random.ts';

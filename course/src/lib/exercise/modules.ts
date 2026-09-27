@@ -9,6 +9,7 @@ import * as coreTokenise from '@lm/core/tokenise';
 import * as coreNgram from '@lm/core/ngram';
 import * as coreLm from '@lm/core/lm';
 import * as coreRandom from '@lm/core/random';
+import * as coreTensor from '@lm/core/tensor';
 
 /** Library modules exercises may import. Grows as the course adds modules to @lm/core. */
 export const LIBRARY: Record<string, unknown> = {
@@ -18,6 +19,7 @@ export const LIBRARY: Record<string, unknown> = {
   '@lm/core/ngram': coreNgram,
   '@lm/core/lm': coreLm,
   '@lm/core/random': coreRandom,
+  '@lm/core/tensor': coreTensor,
 };
 
 /** Lines added by `new Function` before the module body (for mapping stack traces). */
