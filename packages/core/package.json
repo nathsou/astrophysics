@@ -6,6 +6,10 @@
   "description": "The language-model library built step by step throughout the course.",
   "exports": {
     ".": "./src/index.ts",
-    "./text": "./src/text/index.ts"
+    "./text": "./src/text/index.ts",
+    "./tokenise": "./src/tokenise/index.ts",
+    "./ngram": "./src/ngram/index.ts",
+    "./lm": "./src/lm.ts",
+    "./random": "./src/util/random.ts"
   }
 }

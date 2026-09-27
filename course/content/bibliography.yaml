@@ -160,3 +160,74 @@ zipf1949:
   year: 1949
   title: "Human Behavior and the Principle of Least Effort"
   venue: Addison-Wesley
+bengio2003:
+  authors: Yoshua Bengio, Réjean Ducharme, Pascal Vincent and Christian Jauvin
+  year: 2003
+  title: A Neural Probabilistic Language Model
+  venue: Journal of Machine Learning Research 3, 1137–1155
+  url: https://www.jmlr.org/papers/v3/bengio03a.html
+brants2007:
+  authors: Thorsten Brants, Ashok C. Popat, Peng Xu, Franz J. Och and Jeffrey Dean
+  year: 2007
+  title: Large Language Models in Machine Translation
+  venue: EMNLP-CoNLL 2007
+  url: https://aclanthology.org/D07-1090/
+chen1998:
+  authors: Stanley F. Chen and Joshua Goodman
+  year: 1998
+  title: An Empirical Study of Smoothing Techniques for Language Modeling
+  venue: Technical Report TR-10-98, Harvard University
+  url: https://dash.harvard.edu/handle/1/25104739
+good1953:
+  authors: I. J. Good
+  year: 1953
+  title: The population frequencies of species and the estimation of population parameters
+  venue: Biometrika 40(3–4), 237–264
+  url: https://doi.org/10.1093/biomet/40.3-4.237
+goodman2001:
+  authors: Joshua T. Goodman
+  year: 2001
+  title: A Bit of Progress in Language Modeling
+  venue: Computer Speech & Language 15(4), 403–434
+  url: https://arxiv.org/abs/cs/0108005
+heafield2011:
+  authors: Kenneth Heafield
+  year: 2011
+  title: "KenLM: Faster and Smaller Language Model Queries"
+  venue: Sixth Workshop on Statistical Machine Translation
+  url: https://aclanthology.org/W11-2123/
+jelinek1997:
+  authors: Frederick Jelinek
+  year: 1997
+  title: Statistical Methods for Speech Recognition
+  venue: MIT Press
+jurafsky2025:
+  authors: Daniel Jurafsky and James H. Martin
+  year: 2025
+  title: Speech and Language Processing (3rd edition draft)
+  venue: Online manuscript
+  url: https://web.stanford.edu/~jurafsky/slp3/
+katz1987:
+  authors: Slava M. Katz
+  year: 1987
+  title: Estimation of probabilities from sparse data for the language model component of a speech recognizer
+  venue: IEEE Transactions on Acoustics, Speech, and Signal Processing 35(3), 400–401
+  url: https://doi.org/10.1109/TASSP.1987.1165125
+kneser1995:
+  authors: Reinhard Kneser and Hermann Ney
+  year: 1995
+  title: Improved backing-off for m-gram language modeling
+  venue: ICASSP 1995
+  url: https://doi.org/10.1109/ICASSP.1995.479394
+liu2024infini:
+  authors: Jiacheng Liu, Sewon Min, Luke Zettlemoyer, Yejin Choi and Hannaneh Hajishirzi
+  year: 2024
+  title: "Infini-gram: Scaling Unbounded n-gram Language Models to a Trillion Tokens"
+  venue: COLM 2024
+  url: https://arxiv.org/abs/2401.17377
+wenzek2020:
+  authors: Guillaume Wenzek, Marie-Anne Lachaux, Alexis Conneau and others
+  year: 2020
+  title: "CCNet: Extracting High Quality Monolingual Datasets from Web Crawl Data"
+  venue: LREC 2020
+  url: https://arxiv.org/abs/1911.00359

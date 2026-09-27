@@ -34,6 +34,8 @@ Comlink.expose(
       types: [],
       paths: {
         '@lm/core': ['/lm/core/index.ts'],
+        '@lm/core/lm': ['/lm/core/lm.ts'],
+        '@lm/core/random': ['/lm/core/util/random.ts'],
         '@lm/core/*': ['/lm/core/*/index.ts'],
         '@lm/test': ['/lm/test.ts'],
       },

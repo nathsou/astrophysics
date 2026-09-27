@@ -5,11 +5,19 @@
 import { transform } from 'sucrase';
 import * as core from '@lm/core';
 import * as coreText from '@lm/core/text';
+import * as coreTokenise from '@lm/core/tokenise';
+import * as coreNgram from '@lm/core/ngram';
+import * as coreLm from '@lm/core/lm';
+import * as coreRandom from '@lm/core/random';
 
 /** Library modules exercises may import. Grows as the course adds modules to @lm/core. */
 export const LIBRARY: Record<string, unknown> = {
   '@lm/core': core,
   '@lm/core/text': coreText,
+  '@lm/core/tokenise': coreTokenise,
+  '@lm/core/ngram': coreNgram,
+  '@lm/core/lm': coreLm,
+  '@lm/core/random': coreRandom,
 };
 
 /** Lines added by `new Function` before the module body (for mapping stack traces). */

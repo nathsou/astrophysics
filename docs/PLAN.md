@@ -31,6 +31,16 @@ milestones. Update it when decisions change.
 | Optional capstone: CourseGPT-Web | 4060 Ti | 124 M, FineWeb-Edu, ~2.5 B tokens (Chinchilla-optimal) | ~1.5 days |
 | Scale-up comparisons | 4060 Ti | LoRA/DPO/GRPO on a small open model (e.g. Qwen3-0.6B) after we implement each method ourselves | ~1 h each |
 
+## Baselines (TinyShakespeare, character level, 90/10 split, full validation split)
+
+Every model is compared on the same data so progress is visible across chapters.
+
+| Model | Chapter | Validation bits/char | Perplexity |
+|---|---|---|---|
+| Uniform over 65 chars | 1 | 6.02 | 65 |
+| Unigram | 2 | ≈ 4.8 | ≈ 28 |
+| Kneser–Ney, n = 6 (best n-gram) | 2 | 2.22 | 4.66 |
+
 ## Chapter template
 
 Motivation → theory (interactive equations) → visualisations → 🔬 lab (implement + experiment) →
