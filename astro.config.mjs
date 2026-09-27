@@ -7,6 +7,7 @@ import rehypeKatex from 'rehype-katex';
 export default defineConfig({
   site: 'http://localhost:4321',
   integrations: [mdx()],
+  devToolbar: { enabled: false },
   markdown: {
     processor: unified({
       remarkPlugins: [remarkMath],
