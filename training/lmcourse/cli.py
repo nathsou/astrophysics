@@ -40,6 +40,8 @@ def main() -> None:
     c7.add_argument("--lr", type=float, default=None)
     c7.add_argument("--device", default="cpu")
 
+    c8 = sub.add_parser("ch08", help="Chapter 8: GPU bandwidth, matmul throughput and speed-ups")
+    c8.add_argument("--triton", action="store_true", help="also benchmark a Triton matmul kernel (CUDA)")
     args = p.parse_args()
     if args.cmd == "data":
         from .data import download
@@ -74,6 +76,10 @@ def main() -> None:
 
         ch07.main(n=args.context, h=args.hidden, layers=args.layers, steps=args.steps,
                   optimizer=args.optimizer, lr=args.lr, device=args.device)
+    elif args.cmd == "ch08":
+        from . import ch08
+
+        ch08.main(use_triton=args.triton)
 
 
 if __name__ == "__main__":

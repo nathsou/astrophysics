@@ -39,7 +39,12 @@ Every model is compared on the same data so progress is visible across chapters.
 |---|---|---|---|
 | Uniform over 65 chars | 1 | 6.02 | 65 |
 | Unigram | 2 | ≈ 4.8 | ≈ 28 |
+| Bigram (counted, add-k) | 2 | ≈ 3.57 | ≈ 11.9 |
 | Kneser–Ney, n = 6 (best n-gram) | 2 | 2.22 | 4.66 |
+| Neural bigram (SGD) | 5 | ≈ 3.61 | ≈ 12.2 |
+| MLP, browser CPU (n 8, d 16, h 128, SGD, 10k steps) | 7 | ≈ 2.94 | ≈ 7.7 |
+| MLP, PyTorch (2 × 512, AdamW) | 7 | 2.28 | 4.85 |
+| MLP, browser GPU (d 24, h 1024, batch 1024, momentum, 20k steps) | 8 | 2.43 | 5.4 |
 
 ## Chapter template
 
@@ -89,7 +94,7 @@ F optimisation · G neural networks · H GPU/WGSL · I PyTorch · J glossary, ti
 
 - **M0 — Platform** + Chapter 1 as proof of concept. ✅ built 2026-09-27, awaiting review
 - **M1** — Part I + appendices E and J. ✅ built 2026-09-27
-- **M2** — Part II + appendices A, B, C, G.
+- **M2** — Part II + appendices A, B, C, G, H. Chapters 4–8 and appendix H ✅ built 2026-09-27; A, B, C, G next.
 - **M3** — Part III.
 - **M4** — Part IV (CourseGPT trained and running in the browser).
 - **M5–M7** — Part V in three batches; remaining appendices.

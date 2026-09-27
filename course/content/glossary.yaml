@@ -147,3 +147,39 @@ zipf-law:
   term: Zipf’s law
   definition: The frequency of the $r$-th most common word is roughly proportional to $1/r^s$ with $s \approx 1$.
   chapter: text-as-data
+kernel:
+  term: Kernel (GPU)
+  definition: A function that runs on the GPU once per thread of a dispatch, each thread using its built-in ids to choose which data to work on.
+  chapter: gpu-compute
+workgroup:
+  term: Workgroup
+  definition: A group of GPU threads (CUDA calls it a *block*) that run on one compute unit and can share fast workgroup memory and synchronise with barriers.
+  chapter: gpu-compute
+workgroup-memory:
+  term: Workgroup memory
+  definition: Small, fast on-chip memory shared by the threads of one workgroup (CUDA *shared memory*); used to stage data that many threads reuse.
+  chapter: gpu-compute
+barrier:
+  term: Barrier
+  definition: A synchronisation point (`workgroupBarrier()` in WGSL) that no thread of a workgroup passes until all have reached it, so writes to workgroup memory are visible to all.
+  chapter: gpu-compute
+arithmetic-intensity:
+  term: Arithmetic intensity
+  definition: Floating-point operations performed per byte moved to or from memory. Low intensity makes a kernel memory-bound; high intensity lets it be compute-bound.
+  chapter: gpu-compute
+roofline:
+  term: Roofline model
+  definition: "Attainable performance = min(peak FLOP/s, arithmetic intensity × memory bandwidth) — a plot that shows whether a kernel is limited by memory or by arithmetic."
+  chapter: gpu-compute
+memory-bound:
+  term: Memory-bound
+  definition: Limited by how fast data can be moved rather than by arithmetic. Element-wise operations, normalisation and softmax are memory-bound on every modern GPU.
+  chapter: gpu-compute
+tiling:
+  term: Tiling
+  definition: Splitting a computation into blocks that fit in fast memory, so each value loaded from slow memory is reused many times. The key to fast matrix multiplication.
+  chapter: gpu-compute
+kernel-fusion:
+  term: Kernel fusion
+  definition: Combining several operations into one kernel so intermediate results stay on-chip instead of being written to and re-read from memory.
+  chapter: gpu-compute

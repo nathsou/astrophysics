@@ -4,6 +4,7 @@
  * Exercise tests are written against this subset so they run both here (in a worker, against the
  * learner's code) and under Vitest (against the reference solution, via an alias to `vitest`).
  */
+import { GpuContext } from '@lm/core/gpu';
 
 export interface TestResult {
   name: string;
@@ -34,6 +35,18 @@ export function test(name: string, fn: TestFn): void {
   registry.push({ name: [...prefix, name].join(' › '), fn });
 }
 export const it = test;
+
+let gpuContext: Promise<GpuContext | null> | undefined;
+
+/** A test that needs WebGPU: receives the shared GPU context (Chapter 8 onwards). */
+export function gpuTest(name: string, fn: (gpu: GpuContext) => void | Promise<void>): void {
+  test(name, async () => {
+    gpuContext ??= GpuContext.create();
+    const gpu = await gpuContext;
+    if (!gpu) throw new Error('This test needs WebGPU, which is not available in this browser.');
+    await fn(gpu);
+  });
+}
 
 /** Run and clear all registered tests. */
 export async function runRegistered(format: (e: unknown) => string = (e) => (e instanceof Error ? e.message : String(e))): Promise<TestResult[]> {

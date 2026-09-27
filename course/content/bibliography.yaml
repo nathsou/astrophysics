@@ -497,3 +497,93 @@ mikolov2013:
   title: Efficient Estimation of Word Representations in Vector Space
   venue: arXiv:1301.3781
   url: https://arxiv.org/abs/1301.3781
+buck2004:
+  authors: Ian Buck, Tim Foley, Daniel Horn, Jeremy Sugerman, Kayvon Fatahalian, Mike Houston and Pat Hanrahan
+  year: 2004
+  title: "Brook for GPUs: Stream Computing on Graphics Hardware"
+  venue: ACM Transactions on Graphics 23(3), SIGGRAPH 2004
+  url: https://graphics.stanford.edu/papers/brookgpu/
+oh2004:
+  authors: Kyoung-Su Oh and Keechul Jung
+  year: 2004
+  title: GPU implementation of neural networks
+  venue: Pattern Recognition 37(6), 1311–1314
+chellapilla2006:
+  authors: Kumar Chellapilla, Sidd Puri and Patrice Simard
+  year: 2006
+  title: High Performance Convolutional Neural Networks for Document Processing
+  venue: International Workshop on Frontiers in Handwriting Recognition
+  url: https://inria.hal.science/inria-00112631
+nickolls2008:
+  authors: John Nickolls, Ian Buck, Michael Garland and Kevin Skadron
+  year: 2008
+  title: Scalable Parallel Programming with CUDA
+  venue: ACM Queue 6(2), 40–53
+  url: https://queue.acm.org/detail.cfm?id=1365500
+lindholm2008:
+  authors: Erik Lindholm, John Nickolls, Stuart Oberman and John Montrym
+  year: 2008
+  title: "NVIDIA Tesla: A Unified Graphics and Computing Architecture"
+  venue: IEEE Micro 28(2), 39–55
+volkov2008:
+  authors: Vasily Volkov and James W. Demmel
+  year: 2008
+  title: Benchmarking GPUs to Tune Dense Linear Algebra
+  venue: SC ’08 (Supercomputing)
+raina2009:
+  authors: Rajat Raina, Anand Madhavan and Andrew Y. Ng
+  year: 2009
+  title: Large-scale Deep Unsupervised Learning using Graphics Processors
+  venue: ICML 2009
+williams2009:
+  authors: Samuel Williams, Andrew Waterman and David Patterson
+  year: 2009
+  title: "Roofline: An Insightful Visual Performance Model for Multicore Architectures"
+  venue: Communications of the ACM 52(4), 65–76
+ciresan2010:
+  authors: Dan Claudiu Cireşan, Ueli Meier, Luca Maria Gambardella and Jürgen Schmidhuber
+  year: 2010
+  title: Deep, Big, Simple Neural Nets for Handwritten Digit Recognition
+  venue: Neural Computation 22(12), 3207–3220
+  url: https://arxiv.org/abs/1003.0358
+krizhevsky2012:
+  authors: Alex Krizhevsky, Ilya Sutskever and Geoffrey E. Hinton
+  year: 2012
+  title: ImageNet Classification with Deep Convolutional Neural Networks
+  venue: NeurIPS 2012
+  url: https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks
+harris2007:
+  authors: Mark Harris
+  year: 2007
+  title: Optimizing Parallel Reduction in CUDA
+  venue: NVIDIA Developer Technology (presentation)
+  url: https://developer.download.nvidia.com/assets/cuda/files/reduction.pdf
+tillet2019:
+  authors: Philippe Tillet, H. T. Kung and David Cox
+  year: 2019
+  title: "Triton: An Intermediate Language and Compiler for Tiled Neural Network Computations"
+  venue: MAPL 2019
+  url: https://www.eecs.harvard.edu/~htk/publication/2019-mapl-tillet-kung-cox.pdf
+boehm2022:
+  authors: Simon Boehm
+  year: 2022
+  title: "How to Optimize a CUDA Matmul Kernel for cuBLAS-like Performance: a Worklog"
+  venue: Blog post
+  url: https://siboehm.com/articles/22/CUDA-MMM
+hooker2021:
+  authors: Sara Hooker
+  year: 2021
+  title: The Hardware Lottery
+  venue: Communications of the ACM 64(12), 58–65
+  url: https://arxiv.org/abs/2009.06489
+goldberg1991:
+  authors: David Goldberg
+  year: 1991
+  title: What Every Computer Scientist Should Know About Floating-Point Arithmetic
+  venue: ACM Computing Surveys 23(1), 5–48
+webgpu:
+  authors: W3C GPU for the Web Working Group
+  year: 2024
+  title: WebGPU and the WebGPU Shading Language (W3C Candidate Recommendations)
+  venue: World Wide Web Consortium
+  url: https://www.w3.org/TR/webgpu/

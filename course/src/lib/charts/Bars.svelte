@@ -47,13 +47,16 @@
 <style>
   .bars {
     display: grid;
-    gap: 2px;
+    /* Columns are shared by all rows (subgrid), so the bars start at the same x. */
+    grid-template-columns: minmax(2.5rem, max-content) 1fr 4.5rem;
+    gap: 2px 0.6rem;
     font-size: 0.78rem;
   }
   .row {
     position: relative;
     display: grid;
-    grid-template-columns: minmax(2.5rem, max-content) 1fr 4.5rem;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
     align-items: center;
     gap: 0.6rem;
     padding: 1px 0.3rem;

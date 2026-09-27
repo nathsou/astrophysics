@@ -117,3 +117,23 @@
   people: Jiacheng Liu and colleagues
   chapter: n-gram-models
   text: Unbounded-n n-gram models over trillions of tokens using suffix arrays.
+- year: 2004
+  title: Neural networks on graphics cards
+  people: Kyoung-Su Oh and Keechul Jung; Ian Buck and colleagues (Brook)
+  chapter: gpu-compute
+  text: Early general-purpose GPU computing, with programs disguised as graphics shaders; a neural network ran 20× faster than on a CPU.
+- year: 2007
+  title: CUDA
+  people: NVIDIA (John Nickolls, Ian Buck and others)
+  chapter: gpu-compute
+  text: A C-like language for GPU compute kernels, with threads, blocks and shared memory — the model WebGPU’s compute shaders still follow.
+- year: 2012
+  title: AlexNet
+  people: Alex Krizhevsky, Ilya Sutskever and Geoffrey Hinton
+  chapter: gpu-compute
+  text: A convolutional network trained on two consumer GPUs won ImageNet by a wide margin, and deep learning moved to GPUs.
+- year: 2023
+  title: WebGPU ships in Chrome
+  people: W3C GPU for the Web Working Group
+  chapter: gpu-compute
+  text: Compute shaders arrive in the browser (Chrome 113), making in-browser training like this course’s practical.

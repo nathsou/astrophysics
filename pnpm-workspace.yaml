@@ -1,3 +1,8 @@
 packages:
   - course
   - packages/*
+# webgpu (Dawn for Node, used by GPU kernel tests) ships prebuilt binaries; its postinstall only
+# clears the macOS quarantine flag, so it does not need to run.
+allowBuilds:
+  webgpu: false
+

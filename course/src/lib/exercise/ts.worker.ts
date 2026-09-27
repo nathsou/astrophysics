@@ -12,6 +12,8 @@ import { createWorker } from '@valtown/codemirror-ts/worker';
 const libs = import.meta.glob('/node_modules/typescript/lib/lib.*.d.ts', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
 const core = import.meta.glob('../../../../packages/core/src/**/*.ts', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
 const harness = import.meta.glob('./harness.ts', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+// TypeScript's DOM lib covers only part of WebGPU (no GPUBufferUsage constants, for instance).
+const webgpuTypes = import.meta.glob('/node_modules/@webgpu/types/dist/index.d.ts', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
 
 Comlink.expose(
   createWorker(async () => {
@@ -22,6 +24,7 @@ Comlink.expose(
       fsMap.set('/lm/core/' + p.split('/packages/core/src/')[1], src);
     }
     fsMap.set('/lm/test.ts', Object.values(harness)[0] ?? '');
+    fsMap.set('/webgpu.d.ts', Object.values(webgpuTypes)[0] ?? '');
     const system = createSystem(fsMap);
     const options: ts.CompilerOptions = {
       target: ts.ScriptTarget.ES2022,
@@ -40,6 +43,6 @@ Comlink.expose(
         '@lm/test': ['/lm/test.ts'],
       },
     };
-    return createVirtualTypeScriptEnvironment(system, [], ts, options);
+    return createVirtualTypeScriptEnvironment(system, ['/webgpu.d.ts'], ts, options);
   }),
 );

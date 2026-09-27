@@ -19,3 +19,9 @@ Interactive course "Language Models from Scratch". Plan and agreed decisions: do
   It restarts itself when `tools/markdown/` changes (the preprocessor is loaded once at startup).
 - Appendix J is generated from `content/{glossary,timeline,bibliography}.yaml` via the `::all-glossary`,
   `::timeline` and `::all-references` directives — add entries there as chapters are written.
+- GPU backend: `@lm/core/gpu` (WGSL kernels, `GpuContext`, `GpuTensor` with autograd). Kernel tests run in Node
+  on Dawn via the `webgpu` package (`packages/core/src/gpu/node.ts`, skipped without an adapter). In Node, keep a
+  reference to the `GPU` instance (GpuContext does) or it is garbage-collected and the process segfaults.
+  Exercise tests that need a GPU use `gpuTest(name, async (gpu) => …)` from `@lm/test`.
+- When the browser pane is hidden, screenshots come back blank. `scripts/cdp.mjs` drives headless Chrome
+  (with WebGPU) over the DevTools protocol instead: `node scripts/cdp.mjs <url> <steps.json>`.
