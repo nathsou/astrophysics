@@ -57,6 +57,21 @@ def main() -> None:
     c10.add_argument("--layers", type=int, default=2)
     c10.add_argument("--pairs", type=int, default=16)
     c10.add_argument("--steps", type=int, default=3000)
+    c11 = sub.add_parser("ch11", help="Chapter 11: the Transformer on TinyShakespeare (PyTorch)")
+    c11.add_argument("--layers", type=int, default=2)
+    c11.add_argument("--width", type=int, default=128)
+    c11.add_argument("--heads", type=int, default=4)
+    c11.add_argument("--context", type=int, default=128)
+    c11.add_argument("--steps", type=int, default=3000)
+    c11.add_argument("--lr", type=float, default=3e-3)
+    c11.add_argument("--dropout", type=float, default=0.0)
+    c11.add_argument("--no-mlp", action="store_true")
+    c11.add_argument("--no-norm", action="store_true")
+    tr = sub.add_parser("train", help="Chapter 12+: train a GPT (presets: quick, chargpt, chargpt-big)")
+    tr.add_argument("--preset", default="chargpt")
+    tr.add_argument("--steps", type=int, default=None)
+    tr.add_argument("--resume", action="store_true", help="continue from runs/<name>/ckpt.pt")
+    tr.add_argument("--export", action="store_true", help="write runs/<name>/model.safetensors for the browser")
     args = p.parse_args()
     if args.cmd == "data":
         from .data import download
@@ -119,6 +134,24 @@ def main() -> None:
             ch10.recall(pairs=args.pairs, steps=args.steps)
         else:
             ch10.speed()
+    elif args.cmd == "ch11":
+        from . import ch11
+
+        ch11.main(
+            layers=args.layers,
+            width=args.width,
+            heads=args.heads,
+            context=args.context,
+            steps=args.steps,
+            lr=args.lr,
+            dropout=args.dropout,
+            mlp=not args.no_mlp,
+            norm=not args.no_norm,
+        )
+    elif args.cmd == "train":
+        from . import train
+
+        train.main(preset=args.preset, resume=args.resume, export=args.export, steps=args.steps)
 
 if __name__ == "__main__":
     main()

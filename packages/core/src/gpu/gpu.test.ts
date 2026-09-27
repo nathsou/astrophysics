@@ -8,7 +8,10 @@ import { Tensor, nn } from '../tensor/index.ts';
 import { GpuContext, GpuIds, GpuSGD, GpuTensor, MATMUL_KERNELS, clipGradNorm, concatRows, crossEntropy, embedding, lstmCell, matmulInto, scope, sliceRows, type MatmulVariant } from './index.ts';
 import { cat } from '../tensor/tensor.ts';
 import { nodeGpu } from './node.ts';
-import { bmm, permute, softmax } from './attention.ts';
+import { bmm, multiHeadAttention, permute, softmax } from './attention.ts';
+import { dropout, gelu, layerNorm, matmulT } from './layers.ts';
+import { newtonSchulz } from './muon.ts';
+import { svd } from '../util/svd.ts';
 
 let ctx: GpuContext | null = null;
 beforeAll(async () => {
@@ -234,5 +237,65 @@ describe('GPU backend', () => {
     close(await probs.read(), att.toFloat32Array());
     close(await Xg.grad!.read(), X.grad!.toFloat32Array(), 1e-3);
     for (let i = 0; i < 4; i++) close(await Wg[i]!.grad!.read(), W[i]!.grad!.toFloat32Array(), 1e-3);
+  });
+
+  it('runs a pre-norm Transformer block with tied output weights like the CPU library', async (t) => {
+    if (!ctx) return t.skip();
+    const B = 2, T = 4, C = 8, h = 2, d = C / h, V = 5;
+    const rng = mulberry32(41);
+    const r = (shape: number[], std = 0.4) => Tensor.randn(shape, { rng, std, requiresGrad: true });
+    const cpu = { X: r([B, T, C], 1), g1: r([C]), b1: r([C]), g2: r([C]), b2: r([C]), Wq: r([C, C]), Wk: r([C, C]), Wv: r([C, C]), Wo: r([C, C]), W1: r([C, 4 * C]), W2: r([4 * C, C]), E: r([V, C]) };
+    const mask = new Tensor(Float32Array.from({ length: T * T }, (_, i) => (i % T > Math.floor(i / T) ? -Infinity : 0)), [T, T]);
+    const heads = (x: Tensor) => x.reshape(B, T, h, d).permute(0, 2, 1, 3);
+    let x = cpu.X;
+    const a = nn.layerNorm(x, cpu.g1, cpu.b1);
+    const [q, k, v] = [cpu.Wq, cpu.Wk, cpu.Wv].map((w) => heads(a.matmul(w)));
+    x = x.add(q!.matmul(k!.transpose(-1, -2)).mul(1 / Math.sqrt(d)).add(mask).softmax(-1).matmul(v!).permute(0, 2, 1, 3).reshape(B, T, C).matmul(cpu.Wo));
+    x = x.add(nn.layerNorm(x, cpu.g2, cpu.b2).matmul(cpu.W1).gelu().matmul(cpu.W2));
+    const ys = Array.from({ length: B * T }, () => Math.floor(rng() * V));
+    const cpuLoss = nn.crossEntropy(x.reshape(B * T, C).matmul(cpu.E.T), ys);
+    cpuLoss.backward();
+
+    const names = Object.keys(cpu) as (keyof typeof cpu)[];
+    const g = Object.fromEntries(names.map((n) => [n, GpuTensor.from(ctx!, cpu[n], undefined, { requiresGrad: true })])) as Record<keyof typeof cpu, GpuTensor>;
+    const targets = new GpuIds(ctx, ys);
+    const loss = scope(() => {
+      let xg = g.X;
+      xg = xg.add(multiHeadAttention(layerNorm(xg, g.g1, g.b1), { q: g.Wq, k: g.Wk, v: g.Wv, o: g.Wo }, h).y);
+      xg = xg.add(gelu(layerNorm(xg, g.g2, g.b2).matmul(g.W1)).matmul(g.W2));
+      const l = crossEntropy(matmulT(xg.reshape(B * T, C), g.E), targets);
+      l.backward();
+      return l;
+    });
+    expect(await loss.item()).toBeCloseTo(cpuLoss.item(), 4);
+    for (const n of names) close(await g[n].grad!.read(), cpu[n].grad!.toFloat32Array(), 2e-3);
+  });
+
+  it('drops out the right fraction, rescales, and reuses its mask in the backward pass', async (t) => {
+    if (!ctx) return t.skip();
+    const x = GpuTensor.from(ctx, new Float32Array(100_000).fill(1), [100_000], { requiresGrad: true });
+    const { y } = scope(() => {
+      const y = dropout(x, 0.25, 1234);
+      y.sum().backward();
+      return { y };
+    });
+    const vals = await y.read();
+    const kept = vals.filter((v) => v !== 0);
+    expect(Math.abs(kept.length / vals.length - 0.75)).toBeLessThan(0.01);
+    expect(kept.every((v) => Math.abs(v - 4 / 3) < 1e-6)).toBe(true);
+    close(await x.grad!.read(), vals); // gradient = same mask and scale
+  });
+
+  it('orthogonalises matrices by Newton–Schulz (both orientations)', async (t) => {
+    if (!ctx) return t.skip();
+    for (const [m, n] of [[8, 20], [24, 6]] as const) {
+      const G = GpuTensor.from(ctx, Tensor.randn([m, n], { rng: mulberry32(m) }));
+      const X = scope(() => newtonSchulz(G));
+      const { S } = svd(await X.read(), m, n);
+      for (const s of S) {
+        expect(s).toBeGreaterThan(0.6);
+        expect(s).toBeLessThan(1.25);
+      }
+    }
   });
 });

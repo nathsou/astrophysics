@@ -4,14 +4,14 @@
  */
 import { openDB, type IDBPDatabase } from 'idb';
 
-const STORES = ['exercises', 'progress', 'kv', 'runs'] as const;
+const STORES = ['exercises', 'progress', 'kv', 'runs', 'checkpoints'] as const;
 type Store = (typeof STORES)[number];
 
 let dbp: Promise<IDBPDatabase | null> | undefined;
 const memory = new Map<string, unknown>();
 
 function db(): Promise<IDBPDatabase | null> {
-  dbp ??= openDB('lm-course', 1, {
+  dbp ??= openDB('lm-course', 2, {
     upgrade(d) {
       for (const s of STORES) if (!d.objectStoreNames.contains(s)) d.createObjectStore(s);
     },
@@ -34,6 +34,16 @@ export async function put(store: Store, key: string, value: unknown): Promise<vo
   try {
     const d = await db();
     await d?.put(store, value, key);
+  } catch {
+    /* in-memory only */
+  }
+}
+
+export async function del(store: Store, key: string): Promise<void> {
+  memory.delete(`${store}:${key}`);
+  try {
+    const d = await db();
+    await d?.delete(store, key);
   } catch {
     /* in-memory only */
   }

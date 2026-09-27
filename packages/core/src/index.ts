@@ -10,3 +10,4 @@ export * from './lm.ts';
 export * from './util/random.ts';
 export * from './util/pca.ts';
 export * from './util/svd.ts';
+export * from './util/safetensors.ts';

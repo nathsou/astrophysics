@@ -227,3 +227,75 @@ residual-connection:
   term: Residual connection
   definition: Adding a layer’s output to its input (x ← x + f(x)), so each layer refines a running representation instead of replacing it.
   chapter: attention
+transformer:
+  term: Transformer
+  definition: A network of stacked blocks, each an attention layer and a per-position MLP wrapped in residual connections and normalisation (Vaswani et al., 2017). GPT is a decoder-only Transformer.
+  chapter: transformer
+residual-stream:
+  term: Residual stream
+  definition: The vector at each position that flows through a Transformer; every block reads it (through LayerNorm) and adds its output to it.
+  chapter: transformer
+pre-norm:
+  term: Pre-norm
+  definition: Normalising each block's input rather than its output (x ← x + f(LN(x))), which keeps a clean residual path and makes deep Transformers easy to train.
+  chapter: transformer
+weight-tying:
+  term: Weight tying
+  definition: Using the token embedding matrix as the output layer too, so each token has one vector for reading and predicting it.
+  chapter: transformer
+positional-encoding:
+  term: Positional encoding
+  definition: Information about each token's position added to its vector (learned, sinusoidal or rotary), since attention itself ignores order.
+  chapter: transformer
+epoch:
+  term: Epoch
+  definition: One complete pass over the training data. Large language models are often trained for about one epoch; small datasets are repeated many times.
+  chapter: training-loop
+gradient-accumulation:
+  term: Gradient accumulation
+  definition: Summing the gradients of several micro-batches (each loss divided by their number) before one optimiser step, to reach a batch too large for memory.
+  chapter: training-loop
+warmup:
+  term: Learning-rate warm-up
+  definition: Increasing the learning rate from near zero to its peak over the first steps of training, to avoid destabilising the untrained model.
+  chapter: training-loop
+cosine-schedule:
+  term: Cosine schedule
+  definition: Decaying the learning rate along half a cosine from its peak to a small fraction of it over the run.
+  chapter: training-loop
+mfu:
+  term: Model FLOPs utilisation (MFU)
+  definition: The fraction of the hardware's peak arithmetic rate that a training run actually uses for the model's required computation.
+  chapter: training-loop
+checkpoint:
+  term: Checkpoint
+  definition: A saved snapshot of a training run — weights, optimiser state, step, random state and configuration — from which it can resume.
+  chapter: training-loop
+safetensors:
+  term: Safetensors
+  definition: A simple, safe file format for tensors (a JSON header plus raw bytes), used to share model weights without the code-execution risk of pickle.
+  chapter: training-loop
+momentum:
+  term: Momentum
+  definition: An optimiser that steps along a decaying sum of past gradients, accelerating along consistent directions and damping oscillations.
+  chapter: optimisers
+adam:
+  term: Adam
+  definition: An optimiser that divides a momentum-averaged gradient by the root-mean-square of recent gradients, per parameter, with bias correction.
+  chapter: optimisers
+adamw:
+  term: AdamW
+  definition: Adam with decoupled weight decay — weights are shrunk directly rather than through the gradient — the standard optimiser for language models.
+  chapter: optimisers
+weight-decay:
+  term: Weight decay
+  definition: Shrinking every weight by a small fraction at each step, a regulariser equivalent to a Gaussian prior on the weights.
+  chapter: optimisers
+condition-number:
+  term: Condition number
+  definition: The ratio of the largest to the smallest curvature of a loss surface; large values make plain gradient descent slow.
+  chapter: optimisers
+muon:
+  term: Muon
+  definition: An optimiser for weight matrices that orthogonalises the momentum update (every singular value set to about 1) with a Newton–Schulz iteration.
+  chapter: optimisers

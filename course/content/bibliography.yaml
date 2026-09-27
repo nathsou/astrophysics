@@ -920,3 +920,148 @@ alammar2018:
   title: The Illustrated Transformer
   venue: Blog post
   url: https://jalammar.github.io/illustrated-transformer/
+he2016:
+  authors: Kaiming He, Xiangyu Zhang, Shaoqing Ren and Jian Sun
+  year: 2016
+  title: Deep Residual Learning for Image Recognition
+  venue: CVPR 2016
+  url: https://arxiv.org/abs/1512.03385
+xiong2020:
+  authors: Ruibin Xiong, Yunchang Yang, Di He, Kai Zheng, Shuxin Zheng, Chen Xing, Huishuai Zhang, Yanyan Lan, Liwei Wang and Tie-Yan Liu
+  year: 2020
+  title: On Layer Normalization in the Transformer Architecture
+  venue: ICML 2020
+  url: https://arxiv.org/abs/2002.04745
+press2017:
+  authors: Ofir Press and Lior Wolf
+  year: 2017
+  title: Using the Output Embedding to Improve Language Models
+  venue: EACL 2017
+  url: https://arxiv.org/abs/1608.05859
+geva2021:
+  authors: Mor Geva, Roei Schuster, Jonathan Berant and Omer Levy
+  year: 2021
+  title: Transformer Feed-Forward Layers Are Key-Value Memories
+  venue: EMNLP 2021
+  url: https://arxiv.org/abs/2012.14913
+devlin2019:
+  authors: Jacob Devlin, Ming-Wei Chang, Kenton Lee and Kristina Toutanova
+  year: 2019
+  title: "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding"
+  venue: NAACL 2019
+  url: https://arxiv.org/abs/1810.04805
+phuong2022:
+  authors: Mary Phuong and Marcus Hutter
+  year: 2022
+  title: Formal Algorithms for Transformers
+  venue: arXiv:2207.09238
+  url: https://arxiv.org/abs/2207.09238
+karpathy2023gpt:
+  authors: Andrej Karpathy
+  year: 2023
+  title: "Let's build GPT: from scratch, in code, spelled out (video) and nanoGPT (code)"
+  venue: YouTube and GitHub
+  url: https://github.com/karpathy/nanoGPT
+goyal2017:
+  authors: Priya Goyal, Piotr Dollár, Ross Girshick, Pieter Noordhuis, Lukasz Wesolowski, Aapo Kyrola, Andrew Tulloch, Yangqing Jia and Kaiming He
+  year: 2017
+  title: "Accurate, Large Minibatch SGD: Training ImageNet in 1 Hour"
+  venue: arXiv:1706.02677
+  url: https://arxiv.org/abs/1706.02677
+loshchilov2017:
+  authors: Ilya Loshchilov and Frank Hutter
+  year: 2017
+  title: "SGDR: Stochastic Gradient Descent with Warm Restarts"
+  venue: ICLR 2017
+  url: https://arxiv.org/abs/1608.03983
+mccandlish2018:
+  authors: Sam McCandlish, Jared Kaplan, Dario Amodei and the OpenAI Dota Team
+  year: 2018
+  title: An Empirical Model of Large-Batch Training
+  venue: arXiv:1812.06162
+  url: https://arxiv.org/abs/1812.06162
+hu2024minicpm:
+  authors: Shengding Hu and colleagues
+  year: 2024
+  title: "MiniCPM: Unveiling the Potential of Small Language Models with Scalable Training Strategies"
+  venue: arXiv:2404.06395
+  url: https://arxiv.org/abs/2404.06395
+hagele2024:
+  authors: Alexander Hägele, Elie Bakouch, Atli Kosson, Loubna Ben Allal, Leandro Von Werra and Martin Jaggi
+  year: 2024
+  title: Scaling Laws and Compute-Optimal Training Beyond Fixed Training Durations
+  venue: NeurIPS 2024
+  url: https://arxiv.org/abs/2405.18392
+chowdhery2022:
+  authors: Aakanksha Chowdhery and colleagues
+  year: 2022
+  title: "PaLM: Scaling Language Modeling with Pathways"
+  venue: arXiv:2204.02311
+  url: https://arxiv.org/abs/2204.02311
+karpathy2019recipe:
+  authors: Andrej Karpathy
+  year: 2019
+  title: A Recipe for Training Neural Networks
+  venue: Blog post
+  url: https://karpathy.github.io/2019/04/25/recipe/
+kingma2015:
+  authors: Diederik P. Kingma and Jimmy Ba
+  year: 2015
+  title: "Adam: A Method for Stochastic Optimization"
+  venue: ICLR 2015
+  url: https://arxiv.org/abs/1412.6980
+loshchilov2019:
+  authors: Ilya Loshchilov and Frank Hutter
+  year: 2019
+  title: Decoupled Weight Decay Regularization
+  venue: ICLR 2019
+  url: https://arxiv.org/abs/1711.05101
+polyak1964:
+  authors: Boris T. Polyak
+  year: 1964
+  title: Some methods of speeding up the convergence of iteration methods
+  venue: USSR Computational Mathematics and Mathematical Physics 4(5), 1–17
+nesterov1983:
+  authors: Yurii Nesterov
+  year: 1983
+  title: A method for solving the convex programming problem with convergence rate O(1/k²)
+  venue: Soviet Mathematics Doklady 27, 372–376
+duchi2011:
+  authors: John Duchi, Elad Hazan and Yoram Singer
+  year: 2011
+  title: Adaptive Subgradient Methods for Online Learning and Stochastic Optimization
+  venue: Journal of Machine Learning Research 12, 2121–2159
+tieleman2012:
+  authors: Tijmen Tieleman and Geoffrey Hinton
+  year: 2012
+  title: "Lecture 6.5 — RMSProp: divide the gradient by a running average of its recent magnitude"
+  venue: "Coursera: Neural Networks for Machine Learning"
+jordan2024muon:
+  authors: Keller Jordan, Yuchen Jin, Vlado Boza, Jiacheng You, Franz Cesista, Laker Newhouse and Jeremy Bernstein
+  year: 2024
+  title: "Muon: An optimizer for hidden layers in neural networks"
+  venue: Blog post
+  url: https://kellerjordan.github.io/posts/muon/
+liu2025muon:
+  authors: Jingyuan Liu and colleagues (Moonshot AI)
+  year: 2025
+  title: Muon is Scalable for LLM Training
+  venue: arXiv:2502.16982
+  url: https://arxiv.org/abs/2502.16982
+bernstein2024:
+  authors: Jeremy Bernstein and Laker Newhouse
+  year: 2024
+  title: "Old Optimizer, New Norm: An Anthology"
+  venue: arXiv:2409.20325
+  url: https://arxiv.org/abs/2409.20325
+gupta2018:
+  authors: Vineet Gupta, Tomer Koren and Yoram Singer
+  year: 2018
+  title: "Shampoo: Preconditioned Stochastic Tensor Optimization"
+  venue: ICML 2018
+  url: https://arxiv.org/abs/1802.09568
+sutskever2013:
+  authors: Ilya Sutskever, James Martens, George Dahl and Geoffrey Hinton
+  year: 2013
+  title: On the importance of initialization and momentum in deep learning
+  venue: ICML 2013

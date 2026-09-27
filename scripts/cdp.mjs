@@ -12,7 +12,7 @@
  * Screenshots go to $SHOTS_DIR (default: <tmp>/lm-shots). Console errors and exceptions are printed at the end.
  */
 import { spawn } from 'node:child_process';
-import { writeFileSync, readFileSync, mkdirSync } from 'node:fs';
+import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 const shotsDir = process.env.SHOTS_DIR ?? join(tmpdir(), 'lm-shots');
@@ -20,7 +20,11 @@ mkdirSync(shotsDir, { recursive: true });
 const [url, scriptPath, width = '1280', height = '900'] = process.argv.slice(2);
 const steps = JSON.parse(readFileSync(scriptPath, 'utf8'));
 const port = 9300 + Math.floor(Math.random() * 500);
-const chrome = spawn('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', [
+// Chrome: $CHROME, or the usual install locations on macOS and Linux.
+const candidates = [process.env.CHROME, '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/google-chrome-stable', '/usr/bin/chromium', '/usr/bin/chromium-browser', '/snap/bin/chromium'];
+const chromePath = candidates.find((c) => c && existsSync(c));
+if (!chromePath) throw new Error('Chrome not found; set CHROME=/path/to/chrome');
+const chrome = spawn(chromePath, [
   '--headless=new', `--remote-debugging-port=${port}`, '--enable-unsafe-webgpu', '--enable-features=Vulkan',
   `--window-size=${width},${height}`, '--user-data-dir=' + join(tmpdir(), 'lm-chrome-' + port), '--no-first-run', 'about:blank'], { stdio: 'ignore' });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

@@ -72,6 +72,19 @@ export function crossEntropy(logits: GpuTensor, targets: GpuIds): GpuTensor {
   return recordGpu(loss, 'crossEntropy', [logits], (g) => [grad.binaryRaw(g, 'x * y')]);
 }
 
+/** The cross-entropy of every row separately (N), in nats, without recording a graph (for evaluation). */
+export function tokenLosses(logits: GpuTensor, targets: GpuIds): GpuTensor {
+  const V = logits.shape.at(-1)!;
+  const N = logits.size / V;
+  const ctx = logits.ctx;
+  const rowLoss = GpuTensor.empty(ctx, [N]);
+  const grad = GpuTensor.empty(ctx, logits.shape); // the fused kernel writes a gradient too; discarded
+  const gx = Math.min(N, 65535);
+  ctx.run({ code: K.crossEntropyKernel, uniforms: { spec: 'uuf', values: [N, V, 1 / N] }, buffers: [logits.buffer, targets.buffer, rowLoss.buffer, grad.buffer], groups: [gx, Math.ceil(N / gx)] });
+  grad.dispose();
+  return rowLoss;
+}
+
 /** SGD on the GPU, optionally with momentum: one dispatch per parameter, no host round trip. */
 export class GpuSGD {
   readonly params: GpuTensor[];
@@ -190,6 +203,21 @@ export class GpuAdamW {
 
   zeroGrad(): void {
     for (const p of this.params) p.zeroGrad();
+  }
+
+  /** The optimiser's state (step count and both moment estimates), for checkpoints. */
+  async state(): Promise<{ t: number; m: Float32Array[]; v: Float32Array[] }> {
+    const read = (bufs: GPUBuffer[]) => Promise.all(bufs.map((b, i) => this.params[i]!.ctx.readFloat32(b, this.params[i]!.size)));
+    return { t: this.t, m: await read(this.m), v: await read(this.v) };
+  }
+
+  /** Restore a state saved by `state()` (same parameters, same shapes). */
+  load(s: { t: number; m: Float32Array[]; v: Float32Array[] }): void {
+    this.t = s.t;
+    this.params.forEach((p, i) => {
+      p.ctx.upload(s.m[i]!, this.m[i]);
+      p.ctx.upload(s.v[i]!, this.v[i]);
+    });
   }
 
   dispose(): void {

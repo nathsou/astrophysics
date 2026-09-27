@@ -202,3 +202,28 @@
   people: Catherine Olsson, Nelson Elhage, Neel Nanda and colleagues (Anthropic)
   chapter: attention
   text: Two-layer attention circuits that copy what followed an earlier occurrence of the current token, forming in a sudden phase change during training.
+- year: 2015
+  title: Residual networks
+  people: Kaiming He, Xiangyu Zhang, Shaoqing Ren and Jian Sun
+  chapter: transformer
+  text: Identity shortcuts around each layer (x + f(x)) let networks of over a hundred layers train; the Transformer's residual stream inherits them.
+- year: 2018
+  title: GPT and BERT
+  people: Alec Radford and colleagues (OpenAI); Jacob Devlin and colleagues (Google)
+  chapter: transformer
+  text: Pre-training Transformers on unlabelled text — GPT as a left-to-right language model, BERT by filling in masked words — then fine-tuning for tasks.
+- year: 1964
+  title: The heavy-ball method
+  people: Boris Polyak
+  chapter: optimisers
+  text: Gradient descent with momentum, which accelerates convergence on ill-conditioned problems.
+- year: 2014
+  title: Adam
+  people: Diederik Kingma and Jimmy Ba
+  chapter: optimisers
+  text: Adaptive per-parameter step sizes with momentum and bias correction; it became deep learning's default optimiser.
+- year: 2024
+  title: Muon
+  people: Keller Jordan and colleagues
+  chapter: optimisers
+  text: Orthogonalised momentum updates for weight matrices, computed with a Newton–Schulz iteration; faster training than AdamW in speed-run benchmarks.
