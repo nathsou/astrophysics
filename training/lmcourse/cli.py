@@ -31,6 +31,14 @@ def main() -> None:
     c5.add_argument("--steps", type=int, default=8000)
     c5.add_argument("--lr", type=float, default=20.0)
     sub.add_parser("ch06", help="Chapter 6: PyTorch's autograd graph")
+    c7 = sub.add_parser("ch07", help="Chapter 7: MLP language model (PyTorch)")
+    c7.add_argument("--layers", type=int, default=1)
+    c7.add_argument("--hidden", type=int, default=512)
+    c7.add_argument("--context", type=int, default=8)
+    c7.add_argument("--steps", type=int, default=30_000)
+    c7.add_argument("--optimizer", choices=["sgd", "adamw"], default="sgd")
+    c7.add_argument("--lr", type=float, default=None)
+    c7.add_argument("--device", default="cpu")
 
     args = p.parse_args()
     if args.cmd == "data":
@@ -61,6 +69,11 @@ def main() -> None:
         from . import ch06
 
         ch06.main()
+    elif args.cmd == "ch07":
+        from . import ch07
+
+        ch07.main(n=args.context, h=args.hidden, layers=args.layers, steps=args.steps,
+                  optimizer=args.optimizer, lr=args.lr, device=args.device)
 
 
 if __name__ == "__main__":

@@ -128,6 +128,7 @@ export interface Matchers {
   toBeTruthy(): void;
   toBeFalsy(): void;
   toBeUndefined(): void;
+  toBeNull(): void;
   toBeDefined(): void;
   toBeNaN(): void;
   toHaveLength(n: number): void;
@@ -153,6 +154,7 @@ function makeMatchers(actual: unknown, negate: boolean): Matchers {
     toBeTruthy: () => check(!!actual, () => `expected a truthy value, received ${show(actual)}`),
     toBeFalsy: () => check(!actual, () => `expected a falsy value, received ${show(actual)}`),
     toBeUndefined: () => check(actual === undefined, () => `expected undefined, received ${show(actual)}`),
+    toBeNull: () => check(actual === null, () => `expected null, received ${show(actual)}`),
     toBeDefined: () => check(actual !== undefined, () => `expected a defined value`),
     toBeNaN: () => check(Number.isNaN(actual), () => `expected NaN, received ${show(actual)}`),
     toHaveLength: (n) => check((actual as { length?: number })?.length === n, () => `expected length ${n}, received ${show((actual as { length?: number })?.length)}`),

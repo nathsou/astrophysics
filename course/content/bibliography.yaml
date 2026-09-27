@@ -456,3 +456,44 @@ werbos1982:
   title: Applications of advances in nonlinear sensitivity analysis
   venue: "System Modeling and Optimization (Lecture Notes in Control and Information Sciences 38), Springer"
   url: https://doi.org/10.1007/BFb0006203
+ba2016:
+  authors: Jimmy Lei Ba, Jamie Ryan Kiros and Geoffrey E. Hinton
+  year: 2016
+  title: Layer Normalization
+  venue: arXiv:1607.06450
+  url: https://arxiv.org/abs/1607.06450
+glorot2010:
+  authors: Xavier Glorot and Yoshua Bengio
+  year: 2010
+  title: Understanding the difficulty of training deep feedforward neural networks
+  venue: AISTATS 2010
+  url: https://proceedings.mlr.press/v9/glorot10a.html
+he2015:
+  authors: Kaiming He, Xiangyu Zhang, Shaoqing Ren and Jian Sun
+  year: 2015
+  title: "Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification"
+  venue: ICCV 2015
+  url: https://arxiv.org/abs/1502.01852
+hinton1986:
+  authors: Geoffrey E. Hinton
+  year: 1986
+  title: Learning distributed representations of concepts
+  venue: Proceedings of the Eighth Annual Conference of the Cognitive Science Society
+ioffe2015:
+  authors: Sergey Ioffe and Christian Szegedy
+  year: 2015
+  title: "Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift"
+  venue: ICML 2015
+  url: https://arxiv.org/abs/1502.03167
+karpathy2022zero:
+  authors: Andrej Karpathy
+  year: 2022
+  title: "Neural Networks: Zero to Hero"
+  venue: Video lecture series
+  url: https://karpathy.ai/zero-to-hero.html
+mikolov2013:
+  authors: Tomas Mikolov, Kai Chen, Greg Corrado and Jeffrey Dean
+  year: 2013
+  title: Efficient Estimation of Word Representations in Vector Space
+  venue: arXiv:1301.3781
+  url: https://arxiv.org/abs/1301.3781
