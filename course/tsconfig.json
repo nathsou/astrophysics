@@ -1,0 +1,15 @@
+{
+  // Used by svelte-check. Plain .ts files are also checked from the repo root (tsc -p tsconfig.json).
+  "extends": "./.svelte-kit/tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "allowJs": true,
+    "checkJs": false,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
+    "moduleResolution": "bundler",
+    "types": ["@webgpu/types", "vite/client"]
+  }
+}

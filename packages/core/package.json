@@ -1,0 +1,11 @@
+{
+  "name": "@lm/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "The language-model library built step by step throughout the course.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./text": "./src/text/index.ts"
+  }
+}

@@ -1,0 +1,162 @@
+# key: { authors, year, title, venue, url, note }
+# Cited from Markdown with :cite[key] or :cite[key1,key2].
+
+becker1988:
+  authors: Joseph D. Becker
+  year: 1988
+  title: "Unicode 88"
+  venue: Xerox Corporation (reprinted by the Unicode Consortium)
+  url: https://www.unicode.org/history/unicode88.pdf
+clauset2009:
+  authors: Aaron Clauset, Cosma Rohilla Shalizi and M. E. J. Newman
+  year: 2009
+  title: Power-law distributions in empirical data
+  venue: SIAM Review 51(4), 661–703
+  url: https://arxiv.org/abs/0706.1062
+cover2006:
+  authors: Thomas M. Cover and Joy A. Thomas
+  year: 2006
+  title: Elements of Information Theory (2nd edition)
+  venue: Wiley
+deletang2024:
+  authors: Grégoire Delétang, Anian Ruoss, Paul-Ambroise Duquenne and others
+  year: 2024
+  title: Language Modeling Is Compression
+  venue: ICLR 2024
+  url: https://arxiv.org/abs/2309.10668
+eldan2023:
+  authors: Ronen Eldan and Yuanzhi Li
+  year: 2023
+  title: "TinyStories: How Small Can Language Models Be and Still Speak Coherent English?"
+  venue: arXiv:2305.07759
+  url: https://arxiv.org/abs/2305.07759
+gao2020:
+  authors: Leo Gao, Stella Biderman, Sid Black and others
+  year: 2020
+  title: "The Pile: An 800GB Dataset of Diverse Text for Language Modeling"
+  venue: arXiv:2101.00027
+  url: https://arxiv.org/abs/2101.00027
+hayes2013:
+  authors: Brian Hayes
+  year: 2013
+  title: First Links in the Markov Chain
+  venue: American Scientist 101(2), 92–97
+  url: https://www.americanscientist.org/article/first-links-in-the-markov-chain
+heaps1978:
+  authors: Harold Stanley Heaps
+  year: 1978
+  title: "Information Retrieval: Computational and Theoretical Aspects"
+  venue: Academic Press
+karpathy2015:
+  authors: Andrej Karpathy
+  year: 2015
+  title: The Unreasonable Effectiveness of Recurrent Neural Networks
+  venue: Blog post
+  url: https://karpathy.github.io/2015/05/21/rnn-effectiveness/
+kucera1967:
+  authors: Henry Kučera and W. Nelson Francis
+  year: 1967
+  title: Computational Analysis of Present-Day American English
+  venue: Brown University Press
+  note: The book describing the Brown Corpus, compiled in 1961.
+kudo2018:
+  authors: Taku Kudo and John Richardson
+  year: 2018
+  title: "SentencePiece: A simple and language independent subword tokenizer and detokenizer for Neural Text Processing"
+  venue: EMNLP 2018 (System Demonstrations)
+  url: https://arxiv.org/abs/1808.06226
+markov1913:
+  authors: Andrey A. Markov
+  year: 1913
+  title: An Example of Statistical Investigation of the Text Eugene Onegin Concerning the Connection of Samples in Chains
+  venue: "Bulletin of the Imperial Academy of Sciences of St. Petersburg; English translation in Science in Context 19(4), 2006"
+  url: https://doi.org/10.1017/S0269889706001074
+miller1957:
+  authors: George A. Miller
+  year: 1957
+  title: Some effects of intermittent silence
+  venue: The American Journal of Psychology 70(2), 311–314
+  url: https://doi.org/10.2307/1419346
+penedo2024:
+  authors: Guilherme Penedo, Hynek Kydlíček, Loubna Ben Allal and others
+  year: 2024
+  title: "The FineWeb Datasets: Decanting the Web for the Finest Text Data at Scale"
+  venue: NeurIPS 2024 Datasets and Benchmarks Track
+  url: https://arxiv.org/abs/2406.17557
+piantadosi2014:
+  authors: Steven T. Piantadosi
+  year: 2014
+  title: "Zipf’s word frequency law in natural language: A critical review and future directions"
+  venue: Psychonomic Bulletin & Review 21, 1112–1130
+  url: https://doi.org/10.3758/s13423-014-0585-6
+pike2003:
+  authors: Rob Pike
+  year: 2003
+  title: UTF-8 history
+  venue: Email, hosted by Markus Kuhn (University of Cambridge)
+  url: https://www.cl.cam.ac.uk/~mgk25/ucs/utf-8-history.txt
+radford2019:
+  authors: Alec Radford, Jeffrey Wu, Rewon Child, David Luan, Dario Amodei and Ilya Sutskever
+  year: 2019
+  title: Language Models are Unsupervised Multitask Learners
+  venue: OpenAI technical report (GPT-2)
+  url: https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf
+raffel2020:
+  authors: Colin Raffel, Noam Shazeer, Adam Roberts and others
+  year: 2020
+  title: Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer
+  venue: Journal of Machine Learning Research 21(140)
+  url: https://jmlr.org/papers/v21/20-074.html
+  note: Introduced the C4 corpus.
+rfc3629:
+  authors: François Yergeau
+  year: 2003
+  title: "UTF-8, a transformation format of ISO 10646 (RFC 3629)"
+  venue: IETF
+  url: https://www.rfc-editor.org/rfc/rfc3629
+shannon1948:
+  authors: Claude E. Shannon
+  year: 1948
+  title: A Mathematical Theory of Communication
+  venue: Bell System Technical Journal 27, 379–423 and 623–656
+  url: https://doi.org/10.1002/j.1538-7305.1948.tb01338.x
+shannon1951:
+  authors: Claude E. Shannon
+  year: 1951
+  title: Prediction and Entropy of Printed English
+  venue: Bell System Technical Journal 30(1), 50–64
+  url: https://doi.org/10.1002/j.1538-7305.1951.tb01366.x
+spolsky2003:
+  authors: Joel Spolsky
+  year: 2003
+  title: The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets (No Excuses!)
+  venue: Joel on Software
+  url: https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/
+uax15:
+  authors: Ken Whistler (ed.)
+  year: 2024
+  title: "Unicode Standard Annex #15: Unicode Normalization Forms"
+  venue: The Unicode Consortium
+  url: https://www.unicode.org/reports/tr15/
+uax29:
+  authors: Josh Hadley (ed.)
+  year: 2024
+  title: "Unicode Standard Annex #29: Unicode Text Segmentation"
+  venue: The Unicode Consortium
+  url: https://www.unicode.org/reports/tr29/
+unicode:
+  authors: The Unicode Consortium
+  year: 2025
+  title: The Unicode Standard
+  venue: Latest version
+  url: https://www.unicode.org/versions/latest/
+zipf1935:
+  authors: George Kingsley Zipf
+  year: 1935
+  title: The Psycho-Biology of Language
+  venue: Houghton Mifflin
+zipf1949:
+  authors: George Kingsley Zipf
+  year: 1949
+  title: "Human Behavior and the Principle of Least Effort"
+  venue: Addison-Wesley

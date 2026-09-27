@@ -1,0 +1,30 @@
+{
+  "characters": 1115394,
+  "distinct_characters": 65,
+  "char_entropy_bits": 4.7793532719618534,
+  "words": 203863,
+  "distinct_words": 12374,
+  "hapax_legomena": 5520,
+  "word_entropy_bits": 9.730982856865328,
+  "top_words": [
+    "the",
+    "and",
+    "to",
+    "i",
+    "of",
+    "you",
+    "my",
+    "a",
+    "that",
+    "in"
+  ],
+  "zipf": {
+    "s": 1.2084940994224214,
+    "C": 83245.10720473371,
+    "r2": 0.9926341149425428
+  },
+  "heaps": {
+    "K": 7.660975369991381,
+    "beta": 0.6093649941354408
+  }
+}
