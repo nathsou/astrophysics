@@ -320,3 +320,9 @@ yu2023megabyte:
   title: "MEGABYTE: Predicting Million-byte Sequences with Multiscale Transformers"
   venue: NeurIPS 2023
   url: https://arxiv.org/abs/2305.07185
+mackay2003:
+  authors: David J. C. MacKay
+  year: 2003
+  title: Information Theory, Inference, and Learning Algorithms
+  venue: Cambridge University Press
+  url: https://www.inference.org.uk/itila/book.html

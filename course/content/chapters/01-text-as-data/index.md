@@ -444,5 +444,5 @@ options:
 
 - Joel Spolsky, *The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets* :cite[spolsky2003]. The classic, witty introduction.
 - Unicode Standard Annex #29, *Text Segmentation* :cite[uax29]. The precise rules for grapheme clusters that `Intl.Segmenter` implements.
-- Thomas Cover and Joy Thomas, *Elements of Information Theory*, chapters 2 and 5 :cite[cover2006]. Entropy and source coding, rigorously. Appendix E of this course gives a gentler primer.
+- Thomas Cover and Joy Thomas, *Elements of Information Theory*, chapters 2 and 5 :cite[cover2006]. Entropy and source coding, rigorously. [Appendix E](/appendix/information-theory/) of this course gives a gentler primer.
 - Steven Piantadosi, *Zipf’s word frequency law in natural language* :cite[piantadosi2014]. What we know, and don’t, about why the law holds.

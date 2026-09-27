@@ -11,3 +11,6 @@ export { default as GlossaryTerm } from './GlossaryTerm.svelte';
 export { default as Kbd } from './Kbd.svelte';
 export { default as Quiz } from './Quiz.svelte';
 export { default as Exercise } from './Exercise.svelte';
+export { default as ReferenceList } from './ReferenceList.svelte';
+export { default as GlossaryList } from './GlossaryList.svelte';
+export { default as Timeline } from './Timeline.svelte';

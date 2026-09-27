@@ -1,1 +1,149 @@
 # id: { term, definition (Markdown), chapter (slug that introduces it) }
+add-k:
+  term: Add-k smoothing
+  definition: Adding a pseudo-count $k$ to every n-gram count before normalising, so no continuation has probability zero. $k = 1$ is Laplace smoothing.
+  chapter: n-gram-models
+arithmetic-coding:
+  term: Arithmetic coding
+  definition: A compression method that encodes a whole message as one number, spending about $-\log_2 q(x_t \mid x_{<t})$ bits per symbol. It turns any predictive model into a compressor.
+  chapter: information-theory
+backoff:
+  term: Backoff
+  definition: Using a shorter context’s estimate when the longer context was not seen often enough (Katz, 1987).
+  chapter: n-gram-models
+bpe:
+  term: Byte-pair encoding (BPE)
+  definition: A tokenisation method that starts from bytes and repeatedly merges the most frequent adjacent pair into a new token.
+  chapter: tokenisation
+chain-rule:
+  term: Chain rule of probability
+  definition: $P(x_1, \ldots, x_T) = \prod_t P(x_t \mid x_{<t})$ — the factorisation that turns sequence modelling into next-token prediction.
+  chapter: text-as-data
+code-point:
+  term: Code point
+  definition: The integer Unicode assigns to a character, written U+XXXX, from U+0000 to U+10FFFF.
+  chapter: text-as-data
+conditional-entropy:
+  term: Conditional entropy
+  definition: $H(Y \mid X)$, the uncertainty left in $Y$ once $X$ is known, averaged over $X$.
+  chapter: information-theory
+continuation-count:
+  term: Continuation count
+  definition: In Kneser–Ney smoothing, the number of distinct contexts a token has been seen to follow, $N_{1+}(\bullet\, w)$.
+  chapter: n-gram-models
+corpus:
+  term: Corpus
+  definition: A body of text used to train or evaluate a model (plural *corpora*).
+  chapter: text-as-data
+cross-entropy:
+  term: Cross-entropy
+  definition: The average surprisal $-\log q(x_t \mid x_{<t})$ of the actual data under a model $q$. The training loss of every language model in the course.
+  chapter: n-gram-models
+entropy:
+  term: Entropy
+  definition: The expected surprisal of a distribution, $H(p) = -\sum_x p(x) \log p(x)$ — its irreducible uncertainty.
+  chapter: text-as-data
+glitch-token:
+  term: Glitch (under-trained) token
+  definition: A token that exists in the vocabulary but was rare in the model’s training data, so its embedding is barely trained — e.g. GPT-2’s ` SolidGoldMagikarp`.
+  chapter: tokenisation
+grapheme:
+  term: Grapheme cluster
+  definition: What a reader perceives as one character, which may consist of several code points (e.g. `e` + combining accent, or an emoji family).
+  chapter: text-as-data
+hapax:
+  term: Hapax legomenon
+  definition: A word type that occurs exactly once in a corpus. Typically about half of all word types.
+  chapter: text-as-data
+heaps-law:
+  term: Heaps’ law
+  definition: Vocabulary size grows as a sublinear power of text length, $V(n) = K n^\beta$ with $0 < \beta < 1$.
+  chapter: text-as-data
+interpolation:
+  term: Interpolation (smoothing)
+  definition: Mixing the estimates of several n-gram orders, e.g. $\lambda \hat P(w \mid h) + (1-\lambda) P(w \mid h')$.
+  chapter: n-gram-models
+kl-divergence:
+  term: KL divergence
+  definition: $D_{\mathrm{KL}}(p \,\|\, q) = \sum_x p(x) \log \frac{p(x)}{q(x)}$ — the extra cost of using $q$ when the data follow $p$. Non-negative and asymmetric.
+  chapter: information-theory
+kneser-ney:
+  term: Kneser–Ney smoothing
+  definition: Smoothing that subtracts a fixed discount from every seen count and backs off to a lower-order distribution built from continuation counts.
+  chapter: n-gram-models
+language-model:
+  term: Language model
+  definition: A probability distribution over sequences of tokens, usually factorised into next-token predictions $P(x_t \mid x_{<t})$.
+  chapter: text-as-data
+markov-assumption:
+  term: Markov assumption
+  definition: The approximation that the next symbol depends only on the previous $n - 1$ symbols.
+  chapter: n-gram-models
+mle:
+  term: Maximum-likelihood estimation (MLE)
+  definition: Choosing parameters that make the observed data most probable. For categorical distributions the MLE is the relative frequency.
+  chapter: n-gram-models
+mutual-information:
+  term: Mutual information
+  definition: $I(X; Y) = H(X) - H(X \mid Y)$ — how much knowing one variable tells you about the other.
+  chapter: information-theory
+n-gram:
+  term: N-gram
+  definition: A sequence of $n$ consecutive tokens. An n-gram model predicts each token from the previous $n - 1$.
+  chapter: n-gram-models
+normalisation:
+  term: Unicode normalisation
+  definition: Rewriting text into a canonical form (NFC, NFD, NFKC or NFKD) so that equivalent strings have identical code points.
+  chapter: text-as-data
+overfitting:
+  term: Overfitting
+  definition: Fitting accidents of the training data so closely that performance on new data gets worse — training loss falls while validation loss rises.
+  chapter: n-gram-models
+perplexity:
+  term: Perplexity
+  definition: $2^{H}$ for a cross-entropy $H$ in bits — the effective number of equally likely choices a model is weighing per token.
+  chapter: n-gram-models
+pre-tokenisation:
+  term: Pre-tokenisation
+  definition: Splitting text into chunks (words with their leading space, numbers, punctuation) with a regular expression before learning or applying merges.
+  chapter: tokenisation
+smoothing:
+  term: Smoothing
+  definition: Any method that moves probability mass from seen to unseen events so a model never assigns probability zero.
+  chapter: n-gram-models
+sparsity:
+  term: Data sparsity
+  definition: The fact that most possible n-grams never occur in any finite corpus, so their probabilities cannot be estimated by counting.
+  chapter: n-gram-models
+special-token:
+  term: Special token
+  definition: A reserved token such as `<|endoftext|>` that marks structure (document boundaries, chat turns) and cannot be produced by ordinary text.
+  chapter: tokenisation
+surprisal:
+  term: Surprisal
+  definition: The information in an outcome, $-\log p(x)$. Rare outcomes are more surprising.
+  chapter: text-as-data
+token:
+  term: Token
+  definition: One unit of text as the model sees it — a character, byte, word or subword. Also, one occurrence of a unit in running text (as opposed to a *type*).
+  chapter: tokenisation
+type:
+  term: Type
+  definition: A distinct unit in a vocabulary. “To be or not to be” has six word tokens but four word types.
+  chapter: text-as-data
+utf-8:
+  term: UTF-8
+  definition: The variable-length encoding of Unicode code points as 1–4 bytes; ASCII-compatible and self-synchronising.
+  chapter: text-as-data
+validation-set:
+  term: Validation set
+  definition: Held-out data used to measure generalisation and tune hyperparameters. A separate test set is kept for final results.
+  chapter: n-gram-models
+vocabulary:
+  term: Vocabulary
+  definition: The fixed set of tokens a model can read and write; its size $V$ sets the size of the input and output layers.
+  chapter: tokenisation
+zipf-law:
+  term: Zipf’s law
+  definition: The frequency of the $r$-th most common word is roughly proportional to $1/r^s$ with $s \approx 1$.
+  chapter: text-as-data

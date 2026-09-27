@@ -15,3 +15,6 @@ Interactive course "Language Models from Scratch". Plan and agreed decisions: do
 - Parity tests: Python writes fixtures to `training/fixtures/`; Vitest compares the TypeScript results.
 - British English in all prose. Charts use the palette tokens in course/src/app.css (--series-1…8).
 - Dev server: run `npx vite dev --port 5199` in `course/` (the preview launcher cannot access ~/Documents).
+  It restarts itself when `tools/markdown/` changes (the preprocessor is loaded once at startup).
+- Appendix J is generated from `content/{glossary,timeline,bibliography}.yaml` via the `::all-glossary`,
+  `::timeline` and `::all-references` directives — add entries there as chapters are written.

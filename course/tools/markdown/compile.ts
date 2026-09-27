@@ -168,6 +168,28 @@ function loadYaml<T>(file: string, ctx: Ctx): T {
   return existsSync(file) ? ((YAML.parse(readFileSync(file, 'utf8')) ?? {}) as T) : ({} as T);
 }
 
+async function buildReferenceList(ctx: Ctx, name: string, i: number): Promise<void> {
+  if (name === 'all-references') {
+    const bib = loadYaml<Record<string, { authors: string; year: number | string } & Record<string, unknown>>>(path.join(ctx.contentRoot, 'bibliography.yaml'), ctx);
+    const items = Object.entries(bib)
+      .map(([key, r]) => ({ key, ...r }))
+      .sort((a, b) => String(a.authors).localeCompare(String(b.authors)) || Number(a.year) - Number(b.year));
+    ctx.components[i] = { tag: 'B.ReferenceList', props: `items={${JSON.stringify(items)}}` };
+  } else if (name === 'all-glossary') {
+    const g = loadYaml<Record<string, { term: string; definition: string; chapter?: string }>>(path.join(ctx.contentRoot, 'glossary.yaml'), ctx);
+    const items = await Promise.all(
+      Object.entries(g).map(async ([id, e]) => ({ id, term: e.term, chapter: e.chapter, definition: await renderInline(e.definition) })),
+    );
+    items.sort((a, b) => a.term.localeCompare(b.term));
+    ctx.components[i] = { tag: 'B.GlossaryList', props: `items={${JSON.stringify(items)}}` };
+  } else {
+    const t = loadYaml<{ year: number; title: string; people?: string; chapter?: string; text: string }[]>(path.join(ctx.contentRoot, 'timeline.yaml'), ctx);
+    const items = await Promise.all((Array.isArray(t) ? t : []).map(async (e) => ({ ...e, text: await renderInline(e.text) })));
+    items.sort((a, b) => a.year - b.year);
+    ctx.components[i] = { tag: 'B.Timeline', props: `items={${JSON.stringify(items)}}` };
+  }
+}
+
 function transformDirective(ctx: Ctx, node: Directive, parent: Parent, index: number): number | void {
   const name = node.name;
   const attrs = { ...(node.attributes ?? {}) };
@@ -215,6 +237,12 @@ function transformDirective(ctx: Ctx, node: Directive, parent: Parent, index: nu
     } else {
       tag = 'B.Sidenote';
     }
+  } else if (name === 'all-references' || name === 'all-glossary' || name === 'timeline') {
+    // Whole-course reference lists, embedded at build time (Appendix J).
+    const i = ctx.components.push({ tag: '', props: '' }) - 1;
+    ctx.asyncJobs.push(buildReferenceList(ctx, name, i));
+    parent.children.splice(index, 1, marker('leaf', i));
+    return index + 1;
   } else if (name === 'exercise') {
     const id = attrs.id;
     if (!id) throw new Error(`${ctx.file}: ::exercise needs an id`);

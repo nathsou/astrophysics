@@ -150,7 +150,7 @@ $$
 H(p, q) \;=\; H(p) \;+\; D_{\mathrm{KL}}(p \,\|\, q) \;\ge\; H(p),
 $$
 
-where the Kullback–Leibler divergence $D_{\mathrm{KL}} \ge 0$ measures the extra bits we pay for using $q$ instead of $p$ (Gibbs’ inequality; see Appendix E). So a model’s cross-entropy on real text is an **upper bound** on the entropy of the language itself, and a better model gives a tighter bound. This is precisely how Shannon estimated the entropy of English, with human subjects as the model.
+where the Kullback–Leibler divergence $D_{\mathrm{KL}} \ge 0$ measures the extra bits we pay for using $q$ instead of $p$ (Gibbs’ inequality; see [Appendix E](/appendix/information-theory/)). So a model’s cross-entropy on real text is an **upper bound** on the entropy of the language itself, and a better model gives a tighter bound. This is precisely how Shannon estimated the entropy of English, with human subjects as the model.
 
 ::surprisal-text
 

@@ -1,0 +1,119 @@
+# Milestones in the history of language modelling. chapter = slug of the chapter that discusses it.
+- year: 1913
+  title: Markov chains on Eugene Onegin
+  people: Andrey Markov
+  chapter: text-as-data
+  text: Counted vowel–consonant transitions in 20,000 letters of Pushkin to show that letters are not independent.
+- year: 1935
+  title: The rank–frequency law
+  people: George Kingsley Zipf
+  chapter: text-as-data
+  text: Popularised what became Zipf’s law in *The Psycho-Biology of Language*.
+- year: 1948
+  title: A Mathematical Theory of Communication
+  people: Claude Shannon
+  chapter: text-as-data
+  text: Defined entropy and generated text from letter and word n-gram statistics.
+- year: 1951
+  title: Prediction and Entropy of Printed English
+  people: Claude Shannon
+  chapter: text-as-data
+  text: The guessing game; estimated English at roughly 0.6–1.3 bits per character.
+- year: 1953
+  title: Good–Turing estimation
+  people: I. J. Good, Alan Turing
+  chapter: n-gram-models
+  text: Estimating the probability of unseen events from the number of things seen once — rooted in Turing’s wartime codebreaking.
+- year: 1963
+  title: ASCII
+  chapter: text-as-data
+  text: A 7-bit standard encoding of 128 characters.
+- year: 1976
+  title: Continuous speech recognition by statistical methods
+  people: Frederick Jelinek
+  chapter: n-gram-models
+  text: IBM’s statistical approach, with n-gram language models, sets the template for three decades of speech and language processing.
+- year: 1987
+  title: Katz backoff
+  people: Slava Katz
+  chapter: n-gram-models
+  text: Back off to shorter contexts when longer ones are unreliable, with Good–Turing discounts.
+- year: 1991
+  title: Unicode 1.0
+  chapter: text-as-data
+  text: One code for the world’s writing systems.
+- year: 1992
+  title: UTF-8
+  people: Ken Thompson, Rob Pike
+  chapter: text-as-data
+  text: The ASCII-compatible, self-synchronising encoding now used by nearly all of the web.
+- year: 1994
+  title: Byte-pair encoding for compression
+  people: Philip Gage
+  chapter: tokenisation
+  text: Repeatedly replace the most frequent pair of bytes with a new symbol.
+- year: 1995
+  title: Kneser–Ney smoothing
+  people: Reinhard Kneser, Hermann Ney
+  chapter: n-gram-models
+  text: Absolute discounting with continuation counts — the strongest classical n-gram method.
+- year: 1998
+  title: An empirical study of smoothing
+  people: Stanley Chen, Joshua Goodman
+  chapter: n-gram-models
+  text: Modified Kneser–Ney emerges as the best smoothing method in an exhaustive comparison.
+- year: 2003
+  title: A neural probabilistic language model
+  people: Yoshua Bengio, Réjean Ducharme, Pascal Vincent, Christian Jauvin
+  chapter: mlp-language-model
+  text: Word embeddings and a neural network replace count tables, sharing statistical strength between similar words.
+- year: 2007
+  title: “Large Language Models in Machine Translation”
+  people: Thorsten Brants and colleagues (Google)
+  chapter: n-gram-models
+  text: N-gram models trained on up to two trillion tokens with Stupid Backoff.
+- year: 2012
+  title: WordPiece
+  people: Mike Schuster, Kaisuke Nakajima
+  chapter: tokenisation
+  text: Data-driven subword units for Japanese and Korean voice search.
+- year: 2016
+  title: Subword units for machine translation
+  people: Rico Sennrich, Barry Haddow, Alexandra Birch
+  chapter: tokenisation
+  text: BPE brought to NLP to handle rare words in an open vocabulary.
+- year: 2017
+  title: Attention Is All You Need
+  people: Ashish Vaswani and colleagues (Google)
+  chapter: transformer
+  text: The Transformer architecture, built entirely from attention and feed-forward layers.
+- year: 2018
+  title: SentencePiece and the Unigram tokeniser
+  people: Taku Kudo, John Richardson
+  chapter: tokenisation
+  text: Language-independent subword tokenisation from raw text.
+- year: 2019
+  title: GPT-2 and byte-level BPE
+  people: Alec Radford and colleagues (OpenAI)
+  chapter: tokenisation
+  text: BPE over bytes gives a 50,257-token vocabulary that can encode any string.
+- year: 2023
+  title: TinyStories
+  people: Ronen Eldan, Yuanzhi Li
+  chapter: text-as-data
+  text: A synthetic corpus on which tiny models learn fluent English — the dataset for this course’s CourseGPT.
+- year: 2023
+  title: SolidGoldMagikarp
+  people: Jessica Rumbelow, Matthew Watkins
+  chapter: tokenisation
+  text: Under-trained tokens that made GPT-3 behave bizarrely.
+- year: 2024
+  title: FineWeb
+  people: Guilherme Penedo and colleagues (Hugging Face)
+  chapter: text-as-data
+  text: A 15-trillion-token filtered web corpus released openly.
+- year: 2024
+  title: Infini-gram
+  people: Jiacheng Liu and colleagues
+  chapter: n-gram-models
+  text: Unbounded-n n-gram models over trillions of tokens using suffix arrays.
