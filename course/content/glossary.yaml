@@ -203,3 +203,27 @@ gradient-clipping:
   term: Gradient clipping
   definition: Rescaling the gradient when its norm exceeds a threshold, keeping its direction; prevents exploding gradients from derailing training.
   chapter: recurrent-networks
+attention:
+  term: Attention
+  definition: A weighted average of value vectors, with weights from a softmax over query–key dot products. Lets each position read directly from any other.
+  chapter: attention
+self-attention:
+  term: Self-attention
+  definition: Attention in which queries, keys and values are all projections of the same sequence.
+  chapter: attention
+causal-mask:
+  term: Causal mask
+  definition: The mask that stops each position attending to later positions (adds −∞ above the diagonal), so a language model cannot see the token it must predict.
+  chapter: attention
+multi-head-attention:
+  term: Multi-head attention
+  definition: Several attention operations (heads) run in parallel on lower-dimensional projections, their outputs concatenated and mixed by a final projection.
+  chapter: attention
+induction-head:
+  term: Induction head
+  definition: A two-step attention circuit that finds an earlier occurrence of the current token and copies the token that followed it — a basis of in-context learning.
+  chapter: attention
+residual-connection:
+  term: Residual connection
+  definition: Adding a layer’s output to its input (x ← x + f(x)), so each layer refines a running representation instead of replacing it.
+  chapter: attention

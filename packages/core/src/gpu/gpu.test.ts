@@ -8,6 +8,7 @@ import { Tensor, nn } from '../tensor/index.ts';
 import { GpuContext, GpuIds, GpuSGD, GpuTensor, MATMUL_KERNELS, clipGradNorm, concatRows, crossEntropy, embedding, lstmCell, matmulInto, scope, sliceRows, type MatmulVariant } from './index.ts';
 import { cat } from '../tensor/tensor.ts';
 import { nodeGpu } from './node.ts';
+import { bmm, permute, softmax } from './attention.ts';
 
 let ctx: GpuContext | null = null;
 beforeAll(async () => {
@@ -200,5 +201,38 @@ describe('GPU backend', () => {
     expect(await loss.item()).toBeCloseTo(cpuLoss.item(), 4);
     close(await Ug.grad!.read(), U.grad!.toFloat32Array());
     for (let s = 0; s < T; s++) close(await Zg[s]!.grad!.read(), Z[s]!.grad!.toFloat32Array());
+  });
+
+  it('computes multi-head causal self-attention and its gradients like the CPU library', async (t) => {
+    if (!ctx) return t.skip();
+    const B = 2, T = 5, C = 8, h = 2, d = C / h;
+    const rng = mulberry32(31);
+    const X = Tensor.randn([B, T, C], { rng, requiresGrad: true });
+    const W = ['q', 'k', 'v', 'o'].map(() => Tensor.randn([C, C], { rng, std: 0.5, requiresGrad: true }));
+    const mask = new Tensor(Float32Array.from({ length: T * T }, (_, i) => (i % T > Math.floor(i / T) ? -Infinity : 0)), [T, T]);
+    const heads = (x: Tensor) => x.reshape(B, T, h, d).permute(0, 2, 1, 3);
+    const [q, k, v] = [0, 1, 2].map((i) => heads(X.matmul(W[i]!)));
+    const att = q!.matmul(k!.transpose(-1, -2)).mul(1 / Math.sqrt(d)).add(mask).softmax(-1);
+    const y = att.matmul(v!).permute(0, 2, 1, 3).reshape(B, T, C).matmul(W[3]!);
+    const target = Tensor.randn([B, T, C], { rng });
+    const cpuLoss = y.mul(target).sum();
+    cpuLoss.backward();
+
+    const Xg = GpuTensor.from(ctx, X, undefined, { requiresGrad: true });
+    const Wg = W.map((w) => GpuTensor.from(ctx!, w, undefined, { requiresGrad: true }));
+    const tg = GpuTensor.from(ctx, target);
+    const { loss, probs } = scope(() => {
+      const hg = (x: GpuTensor) => permute(x.reshape(B, T, h, d), [0, 2, 1, 3]);
+      const [qg, kg, vg] = [0, 1, 2].map((i) => hg(Xg.matmul(Wg[i]!)));
+      const p = softmax(bmm(qg!, kg!, { transB: true }), { scale: 1 / Math.sqrt(d), causal: true });
+      const yg = permute(bmm(p, vg!), [0, 2, 1, 3]).reshape(B, T, C).matmul(Wg[3]!);
+      const l = yg.mul(tg).sum();
+      l.backward();
+      return { loss: l, probs: p };
+    });
+    expect(await loss.item()).toBeCloseTo(cpuLoss.item(), 3);
+    close(await probs.read(), att.toFloat32Array());
+    close(await Xg.grad!.read(), X.grad!.toFloat32Array(), 1e-3);
+    for (let i = 0; i < 4; i++) close(await Wg[i]!.grad!.read(), W[i]!.grad!.toFloat32Array(), 1e-3);
   });
 });

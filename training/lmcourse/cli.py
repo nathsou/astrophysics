@@ -52,6 +52,11 @@ def main() -> None:
     c9.add_argument("--lr", type=float, default=3e-3)
     c9.add_argument("--dropout", type=float, default=0.0)
     c9.add_argument("--device", default="auto")
+    c10 = sub.add_parser("ch10", help="Chapter 10: attention (lm | recall | speed)")
+    c10.add_argument("what", choices=["lm", "recall", "speed"])
+    c10.add_argument("--layers", type=int, default=2)
+    c10.add_argument("--pairs", type=int, default=16)
+    c10.add_argument("--steps", type=int, default=3000)
     args = p.parse_args()
     if args.cmd == "data":
         from .data import download
@@ -105,6 +110,15 @@ def main() -> None:
             device=args.device,
         )
 
+    elif args.cmd == "ch10":
+        from . import ch10
+
+        if args.what == "lm":
+            ch10.lm(layers=args.layers, steps=args.steps)
+        elif args.what == "recall":
+            ch10.recall(pairs=args.pairs, steps=args.steps)
+        else:
+            ch10.speed()
 
 if __name__ == "__main__":
     main()

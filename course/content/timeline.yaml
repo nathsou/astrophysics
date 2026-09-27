@@ -192,3 +192,13 @@
   people: Andrej Karpathy
   chapter: recurrent-networks
   text: Character-level LSTMs generating Shakespeare, Wikipedia markup and C code; char-rnn popularised neural text generation.
+- year: 2014
+  title: Attention for translation
+  people: Dzmitry Bahdanau, Kyunghyun Cho and Yoshua Bengio
+  chapter: attention
+  text: A decoder that looks back at every encoder state with learned soft alignments, removing the fixed-vector bottleneck of sequence-to-sequence models.
+- year: 2022
+  title: Induction heads
+  people: Catherine Olsson, Nelson Elhage, Neel Nanda and colleagues (Anthropic)
+  chapter: attention
+  text: Two-layer attention circuits that copy what followed an earlier occurrence of the current token, forming in a sudden phase change during training.

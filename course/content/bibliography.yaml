@@ -872,3 +872,51 @@ gu2023:
   title: "Mamba: Linear-Time Sequence Modeling with Selective State Spaces"
   venue: arXiv:2312.00752
   url: https://arxiv.org/abs/2312.00752
+graves2014:
+  authors: Alex Graves, Greg Wayne and Ivo Danihelka
+  year: 2014
+  title: Neural Turing Machines
+  venue: arXiv:1410.5401
+  url: https://arxiv.org/abs/1410.5401
+weston2015:
+  authors: Jason Weston, Sumit Chopra and Antoine Bordes
+  year: 2015
+  title: Memory Networks
+  venue: ICLR 2015
+  url: https://arxiv.org/abs/1410.3916
+luong2015:
+  authors: Minh-Thang Luong, Hieu Pham and Christopher D. Manning
+  year: 2015
+  title: Effective Approaches to Attention-based Neural Machine Translation
+  venue: EMNLP 2015
+  url: https://arxiv.org/abs/1508.04025
+elhage2021:
+  authors: Nelson Elhage, Neel Nanda, Catherine Olsson and others
+  year: 2021
+  title: A Mathematical Framework for Transformer Circuits
+  venue: Transformer Circuits Thread
+  url: https://transformer-circuits.pub/2021/framework/index.html
+olsson2022:
+  authors: Catherine Olsson, Nelson Elhage, Neel Nanda and others
+  year: 2022
+  title: In-context Learning and Induction Heads
+  venue: Transformer Circuits Thread
+  url: https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html
+arora2023zoology:
+  authors: Simran Arora, Sabri Eyuboglu, Aman Timalsina, Isys Johnson, Michael Poli, James Zou, Atri Rudra and Christopher Ré
+  year: 2023
+  title: "Zoology: Measuring and Improving Recall in Efficient Language Models"
+  venue: arXiv:2312.04927
+  url: https://arxiv.org/abs/2312.04927
+jelassi2024:
+  authors: Samy Jelassi, David Brandfonbrener, Sham M. Kakade and Eran Malach
+  year: 2024
+  title: "Repeat After Me: Transformers are Better than State Space Models at Copying"
+  venue: ICML 2024
+  url: https://arxiv.org/abs/2402.01032
+alammar2018:
+  authors: Jay Alammar
+  year: 2018
+  title: The Illustrated Transformer
+  venue: Blog post
+  url: https://jalammar.github.io/illustrated-transformer/

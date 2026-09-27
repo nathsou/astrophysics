@@ -3,3 +3,4 @@ export { GpuTensor, scope, noGradGpu, concatRows, sliceRows, matmulInto, MATMUL_
 export { GpuIds, GpuSGD, GpuAdamW, embedding, crossEntropy, clipGradNorm } from './nn.ts';
 export * as kernels from './kernels.ts';
 export { lstmCell } from './rnn.ts';
+export { bmm, permute, softmax, multiHeadAttention } from './attention.ts';

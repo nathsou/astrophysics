@@ -48,6 +48,8 @@ Every model is compared on the same data so progress is visible across chapters.
 | Vanilla RNN, H 256, browser GPU / PyTorch (2k Adam steps) | 9 | 2.32 / 2.31 | 5.0 |
 | LSTM, H 256, browser GPU / PyTorch (2k Adam steps) | 9 | 2.24 / 2.20 | 4.7 |
 | LSTM 2 × 512, dropout 0.25, PyTorch, 10k steps | 9 | 2.10 | 4.3 |
+| Attention-only, 1 layer (C 128, 4 heads, T 128, 3k steps) | 10 | ≈ 2.9 | ≈ 7.5 |
+| Attention-only, 2 layers, browser GPU / PyTorch | 10 | 2.57 / 2.58 | 5.9 |
 
 ## Chapter template
 
