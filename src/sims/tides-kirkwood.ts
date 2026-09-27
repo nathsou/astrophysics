@@ -22,7 +22,7 @@ const GM = 4 * Math.PI * Math.PI; // AU³/yr² for 1 M☉
 const aJ = 5.2, eJ = 0.048;
 const MJ = 1 / 1047; // Jupiter / Sun
 const A_MIN = 2.0, A_MAX = 3.6;
-const N = 500;
+const N = 400;
 const DT = 0.25; // yr
 const Q_MARS = 1.67, Q_JUP = 4.5;
 

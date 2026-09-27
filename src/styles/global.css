@@ -420,3 +420,6 @@ figure.portrait .portrait-credit a { color: inherit; }
   .article > figure.portrait img { width: 6.5rem; }
 }
 @media (max-width: 520px) { .box.history figure.portrait { width: 7rem; } }
+
+/* KaTeX layout spans (fractions, roots) sit above terms; lift hoverable terms so tooltips work. */
+.katex [data-term] { position: relative; z-index: 1; }
