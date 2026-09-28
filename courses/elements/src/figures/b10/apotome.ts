@@ -155,7 +155,7 @@ export function drawSide(g: G, ord: number): void {
   g.polygon([Pp, N, T, M], { aux: true });
   g.segment(Pp, R, { aux: true, dashed: true });
   g.text(v(x0 + X((s + t) / 2), X(t / 2)), 'U');
-  g.text(v(x0 + X(t / 2), X(t / 2)), 'V');
+  g.text(v(x0 + X(t * 0.28), X(t * 0.72)), 'V');
   g.text(v(x0 + X(t / 2), X((s + t) / 2)), 'W');
 
   g.show('AD = AG − GD', `${x} − ${y}`);
