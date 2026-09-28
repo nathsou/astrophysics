@@ -8,6 +8,7 @@ import type { PipelineOptions } from '../compiler/pipeline';
 import { Editor } from '../ui/Editor';
 import { Check, Select, Seg } from '../ui/controls';
 import { persist, persisted } from '../ui/store';
+import { ThemeToggle } from '../ui/ThemeToggle';
 import { useCompile, useDebounced } from '../ui/useCompile';
 import { NATIVE_STAGES, RunPanel, StageView, WASM_STAGES, safe, type StageId, type TargetSel } from './Pipeline';
 
@@ -94,7 +95,8 @@ export function Playground() {
     <div className="playground">
       <div className="pg-left">
         <div className="pg-toolbar">
-          <a href="#/" className="chip-btn" style={{ textDecoration: 'none' }} title="back to the course">← course</a>
+          <a href="#/" className="chip-btn" title="back to the course">← course</a>
+          <ThemeToggle />
           <span className="label">source</span>
           <Select value={EXAMPLES.find((e) => e.src === src)?.id ?? ''} options={[['', 'load an example…'], ...EXAMPLES.map((e) => [e.id, e.title] as [string, string])]} onChange={(id) => id && setSrc(exampleById(id).src)} />
           <span className="grow" />

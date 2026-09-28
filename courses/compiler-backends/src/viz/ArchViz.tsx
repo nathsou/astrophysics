@@ -88,7 +88,7 @@ export function PipelineSim({ caption }: { caption?: ReactNode }) {
     <Figure title="A 5-stage pipeline, cycle by cycle" caption={caption} controls={<><Check checked={fwd} onChange={setFwd}>forwarding</Check><Check checked={pred} onChange={setPred}>perfect branch prediction</Check></>}>
       <div className="panes" style={{ gridTemplateColumns: 'minmax(220px, 0.6fr) 1.4fr' }}>
         <div className="pane">
-          <textarea value={src} onChange={(e) => setSrc(e.target.value)} spellCheck={false} className="code" style={{ border: 'none', resize: 'vertical', padding: 12, minHeight: 200, width: '100%', outline: 'none' }} />
+          <textarea value={src} onChange={(e) => setSrc(e.target.value)} spellCheck={false} className="code inv" style={{ border: 'none', resize: 'vertical', padding: 12, minHeight: 200, width: '100%' }} />
         </div>
         <div className="pane" style={{ overflow: 'auto' }}>
           {typeof prog === 'string' ? <div className="error-box">{prog}</div> : (

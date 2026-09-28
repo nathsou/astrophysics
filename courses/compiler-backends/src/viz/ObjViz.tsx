@@ -191,7 +191,7 @@ export function EmulatorView({ example = 'fib', caption, src: srcProp }: { examp
       <div className="panes" style={{ gridTemplateColumns: '1.1fr 1fr 0.8fr' }}>
         <div className="pane">
           <div className="pane-head">pc = 0x{m.pc.toString(16)} <span className="muted" style={{ textTransform: 'none' }}>({m.symbolize(m.pc)})</span></div>
-          <div className="code" style={{ padding: '6px 0' }}>
+          <div className="code inv" style={{ padding: '6px 0' }}>
             {around.map((a) => (
               <div key={a} className={`ln ${a === m.pc ? 'm-current' : ''}`}>
                 <span className="addr">{a.toString(16)}</span>

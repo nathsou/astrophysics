@@ -117,5 +117,5 @@ export function Editor({ value, onChange, error, minHeight = 200 }: EditorProps)
     void setError;
   }, [error]);
 
-  return <div className="editor" ref={host} style={{ minHeight }} />;
+  return <div className="editor inv" ref={host} style={{ minHeight }} />;
 }

@@ -159,7 +159,7 @@ export function PipelineExplorer({ example = 'fib', src: srcProp, stage: stage0 
           <span className="spacer" />
           <Select value={EXAMPLES.find((e) => e.src === src)?.id ?? ''} options={[['', 'examples…'], ...EXAMPLES.map((e) => [e.id, e.title] as [string, string])]} onChange={(id) => id && setSrc(exampleById(id).src)} />
         </div>
-        {editable ? <Editor value={src} onChange={setSrc} error={r.error?.line ? r.error : null} minHeight={height} /> : <pre className="code" style={{ margin: 0, padding: 12 }}>{src}</pre>}
+        {editable ? <Editor value={src} onChange={setSrc} error={r.error?.line ? r.error : null} minHeight={height} /> : <pre className="code inv" style={{ margin: 0, padding: 12 }}>{src}</pre>}
         {r.error && <div className="error-box">{r.error.line ? `line ${r.error.line}: ` : ''}{r.error.msg}</div>}
       </div>
       <div className="pipe-right">
@@ -246,7 +246,7 @@ export function WasmHex({ bytes, height }: { bytes: Uint8Array; height?: number 
         {secs.map((s) => <span key={s.off} className="pill accent">{names[s.id] ?? `#${s.id}`} · {s.size} B</span>)}
         <span className="badge">{bytes.length} bytes total</span>
       </div>
-      <pre className="code" style={{ margin: 0, padding: '8px 14px' }}>{rows.join('\n')}</pre>
+      <pre className="code inv" style={{ margin: 0, padding: '8px 14px' }}>{rows.join('\n')}</pre>
     </div>
   );
 }

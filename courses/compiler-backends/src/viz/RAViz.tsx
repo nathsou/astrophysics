@@ -15,7 +15,7 @@ import { useExample, FnPicker } from './common';
 
 export function regColor(r: number) {
   const h = (r * 137.508) % 360;
-  return `hsl(${h} 62% 52%)`;
+  return `hsl(${h} 55% 42%)`;
 }
 
 interface Pos { x: number; y: number }

@@ -116,7 +116,7 @@ export function CodeView({ lines, target, gutter = 'none', bytes, maxHeight, min
     <div className={className} style={{ display: 'flex', flexDirection: 'column', minHeight: 0, ...style }}>
       <div
         ref={ref}
-        className="code"
+        className={`code${className?.includes('gnode') ? '' : ' inv'}`}
         style={{ maxHeight, minHeight, flex: 1, cursor: onLineClick ? 'pointer' : undefined, padding: '8px 0' }}
         onMouseOver={onOver}
         onMouseLeave={onLeave}
