@@ -85,6 +85,8 @@ def main() -> None:
     c16 = sub.add_parser("ch16", help="Chapter 16: quant | speculative | weights | summary")
     c16.add_argument("what", choices=["quant", "speculative", "weights", "summary"])
     c16.add_argument("--run", default="coursegpt", help="the trained model to use")
+    c17 = sub.add_parser("ch17", help="Chapter 17: sweep | fit | summary")
+    c17.add_argument("what", choices=["sweep", "fit", "summary"])
     tr = sub.add_parser("train", help="Chapter 12+: train a GPT (presets: quick, chargpt, chargpt-big, smoke, coursegpt, draft)")
     tr.add_argument("--preset", default="chargpt")
     tr.add_argument("--steps", type=int, default=None)
@@ -198,6 +200,10 @@ def main() -> None:
             ch16.summary()
         else:
             getattr(ch16, args.what)(args.run)
+    elif args.cmd == "ch17":
+        from . import ch17
+
+        getattr(ch17, args.what)()
     elif args.cmd == "train":
         from . import train
 

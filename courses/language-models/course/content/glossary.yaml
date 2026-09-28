@@ -359,3 +359,15 @@ speculative-decoding:
   term: Speculative decoding
   definition: Generating several tokens per step of a large model by letting a cheap drafter propose them and the large model verify them all at once, with an acceptance rule that preserves its distribution exactly.
   chapter: inference
+scaling-law:
+  term: Scaling law
+  definition: An empirical power law relating a model’s loss to its size, its training data or its training compute, such as L(N, D) = E + A/N^α + B/D^β.
+  chapter: scaling-laws
+compute-optimal:
+  term: Compute-optimal
+  definition: The split of a fixed training budget C ≈ 6ND between model size N and training tokens D that minimises the loss; for Chinchilla, about 20 tokens per parameter.
+  chapter: scaling-laws
+isoflop:
+  term: IsoFLOP curve
+  definition: Final loss against model size for runs that all use the same training compute; its minimum gives the compute-optimal size.
+  chapter: scaling-laws

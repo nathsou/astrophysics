@@ -117,7 +117,7 @@ F optimisation · G neural networks · H GPU/WGSL · I PyTorch · J glossary, ti
 - **M2** — Part II + appendices A, B, C, G, H. ✅ built 2026-09-27
 - **M3** — Part III. ✅ built 2026-09-27 (Chapters 9–11)
 - **M4** — Part IV (CourseGPT trained and running in the browser). ✅ built 2026-09-27: Chapters 0 and 12–16, appendices F and I. Weights hosting needs the `coursegpt-v1` release uploaded (see below).
-- **M5–M7** — Part V in three batches; remaining appendices.
+- **M5–M7** — Part V in three batches; remaining appendices. Chapter 17 ✅ built 2026-09-29.
 
 ## Follow-ups noted during M0
 
@@ -165,5 +165,11 @@ the files and SHA-256 hashes; `scripts/weights.mjs` (run by the course build) do
 - Timing figures in Chapters 12–13 were measured on the M4 Pro; Chapters 14–16 on the RTX 4060 Ti (the text says so).
 - Our WebGPU decode is dominated by per-kernel overheads and the logits readback, not by weight bandwidth.
 
-### Next: Part V (M5–M7)
-Chapter 17 (scaling laws) can reuse `lmc train --set` for a sweep of 6–8 models (0.1–10 M parameters) on TinyStories.
+### Part V progress
+- **Chapter 17 (scaling laws)** ✅ 2026-09-29. `lmcourse/ch17.py`: IsoFLOP sweep, 7 shapes (2×128 … 10×640), budgets
+  1, 2.5, 6.25 × 10¹⁵ FLOPs, 32,768 tokens/step, CourseGPT's recipe. Optima 4.2 / 7.2 / 12.7 M parameters
+  (9 → 6 tokens/parameter), N_opt ∝ C^0.60; L(N, D) = 1.69 + 5.2e4/N^0.77 + 1.3e5/D^0.73 bits/token; it predicts
+  1.81 for CourseGPT (measured 1.647). A first sweep at 8,192 tokens/step (kept, shown in the chapter) gave
+  N_opt ∝ C^0.75 and predicted 2.17: an untuned batch reproduced Kaplan's exponent (Porian et al., 2024).
+- Next: Chapter 18 (modern architecture: RMSNorm, SwiGLU, RoPE, GQA) — a good fit for ablations with `lmc train --set`
+  once the model gains those options.

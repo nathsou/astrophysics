@@ -17,6 +17,16 @@
   const kind = (r: TradeoffResult) => (r.label === 'real stories' ? 'ref' : r.label.startsWith('greedy') || r.label.startsWith('beam') ? 'search' : 'sample');
   const colour = { ref: 'var(--ink)', search: 'var(--series-2)', sample: 'var(--series-1)' } as const;
   const ex = R?.examples;
+  // The nearest setting to the pointer (x linear, y logarithmic, as plotted); none if far away.
+  function pick(p: { x: number; y: number } | null) {
+    if (!p) return void (hover = null);
+    let best: TradeoffResult | null = null, dist = Infinity;
+    for (const r of results) {
+      const d = ((r.repetition - p.x) / xMax) ** 2 + (Math.log(bits(r.logp) / p.y) / Math.log(yMax / 0.4)) ** 2;
+      if (d < dist) (best = r), (dist = d);
+    }
+    hover = dist < 0.003 ? best : null;
+  }
 </script>
 
 <Widget
@@ -28,10 +38,10 @@
     <p class="muted">Run <code>uv run lmc ch15 tradeoff</code> and <code>uv run lmc ch15 summary</code>.</p>
   {:else}
     <div class="two">
-      <Plot label="Surprise against repetition for each decoding setting" height={280} x={{ domain: [0, xMax], label: 'repetition: share of 4-grams already used in the same text', format: (v) => `${(v * 100).toFixed(0)}%`, ticks: 5 }} y={{ type: 'log', domain: [0.4, yMax], label: 'surprise (bits / token, model at T = 1)', tickValues: [0.5, 1, 2, 4, 8] }}>
+      <Plot label="Surprise against repetition for each decoding setting" height={280} onpointer={pick} x={{ domain: [0, xMax], label: 'repetition: share of 4-grams already used in the same text', format: (v) => `${(v * 100).toFixed(0)}%`, ticks: 5 }} y={{ type: 'log', domain: [0.4, yMax], label: 'surprise (bits / token, model at T = 1)', tickValues: [0.5, 1, 2, 4, 8] }}>
         {#snippet marks({ sx, sy })}
           {#each results as r (r.label)}
-            <circle cx={sx(r.repetition)} cy={sy(bits(r.logp))} r={hover === r ? 7 : r.label === 'real stories' ? 6 : 4.5} fill={colour[kind(r)]} opacity={hover && hover !== r ? 0.35 : 0.9} role="presentation" onpointerenter={() => (hover = r)} onpointerleave={() => (hover = null)} />
+            <circle cx={sx(r.repetition)} cy={sy(bits(r.logp))} r={hover === r ? 7 : r.label === 'real stories' ? 6 : 4.5} fill={colour[kind(r)]} opacity={hover && hover !== r ? 0.35 : 0.9} />
           {/each}
         {/snippet}
       </Plot>

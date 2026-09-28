@@ -252,3 +252,13 @@
   people: Yaniv Leviathan, Matan Kalman and Yossi Matias (Google); Charlie Chen and colleagues (DeepMind)
   chapter: inference
   text: A small model drafts several tokens and the large model verifies them in one pass; a rejection-sampling rule keeps the output distribution exactly the large model's.
+- year: 2020
+  title: Scaling laws for language models
+  people: Jared Kaplan, Sam McCandlish and colleagues (OpenAI)
+  chapter: scaling-laws
+  text: Language-model loss falls as a power law in parameters, data and compute over many orders of magnitude, so large runs can be planned from small ones.
+- year: 2022
+  title: Chinchilla
+  people: Jordan Hoffmann and colleagues (DeepMind)
+  chapter: scaling-laws
+  text: Compute-optimal training scales parameters and tokens equally, about 20 tokens per parameter; a 70-billion-parameter model beat the 280-billion-parameter Gopher on the same compute.

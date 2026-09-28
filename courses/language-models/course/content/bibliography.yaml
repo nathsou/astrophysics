@@ -1320,3 +1320,63 @@ amari1998:
   year: 1998
   title: Natural Gradient Works Efficiently in Learning
   venue: Neural Computation 10(2), 251–276
+hestness2017:
+  authors: Joel Hestness, Sharan Narang, Newsha Ardalani and others
+  year: 2017
+  title: Deep Learning Scaling is Predictable, Empirically
+  venue: arXiv:1712.00409
+  url: https://arxiv.org/abs/1712.00409
+besiroglu2024:
+  authors: Tamay Besiroglu, Ege Erdil, Matthew Barnett and Josh You
+  year: 2024
+  title: "Chinchilla Scaling: A replication attempt"
+  venue: arXiv:2404.10102
+  url: https://arxiv.org/abs/2404.10102
+pearce2024:
+  authors: Tim Pearce and Jinyeop Song
+  year: 2024
+  title: Reconciling Kaplan and Chinchilla Scaling Laws
+  venue: Transactions on Machine Learning Research
+  url: https://arxiv.org/abs/2406.12907
+porian2024:
+  authors: Tomer Porian, Mitchell Wortsman, Jenia Jitsev, Ludwig Schmidt and Yair Carmon
+  year: 2024
+  title: Resolving Discrepancies in Compute-Optimal Scaling of Language Models
+  venue: NeurIPS 2024
+  url: https://arxiv.org/abs/2406.19146
+sardana2024:
+  authors: Nikhil Sardana, Jacob Portes, Sasha Doubov and Jonathan Frankle
+  year: 2024
+  title: "Beyond Chinchilla-Optimal: Accounting for Inference in Language Model Scaling Laws"
+  venue: ICML 2024
+  url: https://arxiv.org/abs/2401.00448
+muennighoff2023:
+  authors: Niklas Muennighoff, Alexander M. Rush, Boaz Barak and others
+  year: 2023
+  title: Scaling Data-Constrained Language Models
+  venue: NeurIPS 2023
+  url: https://arxiv.org/abs/2305.16264
+wei2022emergent:
+  authors: Jason Wei, Yi Tay, Rishi Bommasani and others
+  year: 2022
+  title: Emergent Abilities of Large Language Models
+  venue: Transactions on Machine Learning Research
+  url: https://arxiv.org/abs/2206.07682
+schaeffer2023:
+  authors: Rylan Schaeffer, Brando Miranda and Sanmi Koyejo
+  year: 2023
+  title: Are Emergent Abilities of Large Language Models a Mirage?
+  venue: NeurIPS 2023
+  url: https://arxiv.org/abs/2304.15004
+yang2022mup:
+  authors: Greg Yang, Edward J. Hu, Igor Babuschkin and others
+  year: 2022
+  title: "Tensor Programs V: Tuning Large Neural Networks via Zero-Shot Hyperparameter Transfer"
+  venue: arXiv:2203.03466
+  url: https://arxiv.org/abs/2203.03466
+openai2023:
+  authors: OpenAI
+  year: 2023
+  title: GPT-4 Technical Report
+  venue: arXiv:2303.08774
+  url: https://arxiv.org/abs/2303.08774
