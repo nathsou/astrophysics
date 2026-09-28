@@ -1785,7 +1785,7 @@
          "label": "inc:inp:fix:repdiag1"
         },
         {
-         "tex": "& \\forall y \\, (D_{\\mathrm{diag}}(\\ulcorner E(x) \\urcorner,y) \\mathbin{\\rightarrow} = [\\ulcorner A \\urcorner])].",
+         "tex": "& \\forall y \\, (D_{\\mathrm{diag}}(\\ulcorner E(x) \\urcorner,y) \\mathbin{\\rightarrow} y = \\ulcorner A \\urcorner ) .",
          "tag": "5.2",
          "label": "inc:inp:fix:repdiag2"
         }
@@ -2475,7 +2475,7 @@
       },
       {
        "t": "math",
-       "tex": "\\exists x \\, \\mathsf{Prf}_{\\mathbf{T} }(x,y)]",
+       "tex": "\\exists x \\, \\mathsf{Prf}_{\\mathbf{T}}(x,y)",
        "src": "\\lexists[x][\\OPrf[\\Th{T}](x,y)]"
       },
       {
@@ -2884,7 +2884,7 @@
         },
         {
          "t": "math",
-         "tex": "\\exists x \\, \\mathsf{Prf}_{\\mathbf{T} }(x,\\ulcorner G_\\mathbf{T} \\urcorner)]",
+         "tex": "\\exists x \\, \\mathsf{Prf}_{\\mathbf{T}}(x,\\ulcorner G_\\mathbf{T} \\urcorner)",
          "src": "\\lexists[x][\\OPrf[\\Th{T}](x,\\gn{!G_\\Th{T}})]"
         },
         {
@@ -3602,7 +3602,7 @@
         },
         {
          "t": "math",
-         "tex": "\\exists x \\, \\mathsf{Prf}_{\\mathbf{T} }(x,\\ulcorner G_\\mathbf{T} \\urcorner)]",
+         "tex": "\\exists x \\, \\mathsf{Prf}_{\\mathbf{T}}(x,\\ulcorner G_\\mathbf{T} \\urcorner)",
          "src": "\\lexists[x][\\OPrf[\\Th{T}](x,\\gn{!G_\\Th{T}})]"
         },
         {
@@ -4064,7 +4064,7 @@
         },
         {
          "t": "math",
-         "tex": "\\exists x \\, \\mathsf{Prf}_{\\mathbf{T} }(x, y)]",
+         "tex": "\\exists x \\, \\mathsf{Prf}_{\\mathbf{T}}(x, y)",
          "src": "\\lexists[x][\\OPrf[\\Th{T}](x,\n  y)]"
         },
         {
@@ -4296,7 +4296,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "\\exists x \\, (\\mathsf{Prf}_{\\mathbf{T} }(x,y) \\land \\forall z \\, (z < x \\mathbin{\\rightarrow} \\lnot \\mathsf{Ref}_{\\mathbf{T} }(z,y))])]."
+         "tex": "\\exists x \\, (\\mathsf{Prf}_{\\mathbf{T}}(x,y) \\land \\forall z \\, (z < x \\mathbin{\\rightarrow} \\lnot \\mathsf{Ref}_{\\mathbf{T}}(z,y)) ) ."
         }
        ],
        "src": "\\lexists[x][(\\OPrf[\\Th{T}](x,y) \\land \\lforall[z][(z < x \\lif \\lnot\n  \\ORefut[\\Th{T}](z,y))])].",
@@ -4781,7 +4781,7 @@
         },
         {
          "t": "math",
-         "tex": "\\mathbf{Q} \\vdash \\forall z \\, (z < \\overline{n} \\mathbin{\\rightarrow} \\lnot \\mathsf{Ref}_{\\mathbf{T} }(z, \\ulcorner R_{\\mathbf{T}} \\urcorner))]",
+         "tex": "\\mathbf{Q} \\vdash \\forall z \\, (z < \\overline{n} \\mathbin{\\rightarrow} \\lnot \\mathsf{Ref}_{\\mathbf{T}}(z, \\ulcorner R_{\\mathbf{T}} \\urcorner))",
          "src": "\\Th{Q} \\Proves \\lforall[z][(z < \\num{n} \\lif \\lnot \\ORefut[\\Th{T}](z,\n  \\gn{!R_{\\Th{T}}}))]"
         },
         {
@@ -4802,7 +4802,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "\\mathbf{Q} \\vdash \\exists x \\, (\\mathsf{Prf}_{\\mathbf{T} }(x,\\ulcorner R_{\\mathbf{T}} \\urcorner) \\land \\forall z \\, (z < x \\mathbin{\\rightarrow} \\lnot \\mathsf{Ref}_{\\mathbf{T} }(z,\\ulcorner R_{\\mathbf{T}} \\urcorner))])],"
+         "tex": "\\mathbf{Q} \\vdash \\exists x \\, (\\mathsf{Prf}_{\\mathbf{T}}(x,\\ulcorner R_{\\mathbf{T}} \\urcorner) \\land \\forall z \\, (z < x \\mathbin{\\rightarrow} \\lnot \\mathsf{Ref}_{\\mathbf{T}}(z,\\ulcorner R_{\\mathbf{T}} \\urcorner)) ) ,"
         }
        ],
        "src": "\\Th{Q} \\Proves \\lexists[x][(\\OPrf[\\Th{T}](x,\\gn{!R_{\\Th{T}}}) \\land \\lforall[z][(z\n    < x \\lif \\lnot \\ORefut[\\Th{T}](z,\\gn{!R_{\\Th{T}}}))])],",
@@ -5132,7 +5132,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "\\lnot & \\exists x \\, (\\mathsf{Prf}_{\\mathbf{T} }(x,\\ulcorner R_{\\mathbf{T}} \\urcorner) \\land \\forall z \\, (z < x \\mathbin{\\rightarrow} \\lnot \\mathsf{Ref}_{\\mathbf{T} }(z,\\ulcorner R_{\\mathbf{T}} \\urcorner))])],"
+         "tex": "\\lnot & \\exists x \\, (\\mathsf{Prf}_{\\mathbf{T}}(x,\\ulcorner R_{\\mathbf{T}} \\urcorner) \\land \\forall z \\, (z < x \\mathbin{\\rightarrow} \\lnot \\mathsf{Ref}_{\\mathbf{T}}(z,\\ulcorner R_{\\mathbf{T}} \\urcorner)) ) ,"
         }
        ],
        "src": "\\lnot & \\lexists[x][(\\OPrf[\\Th{T}](x,\\gn{!R_{\\Th{T}}}) \\land\n    \\lforall[z][(z < x \\lif \\lnot \\ORefut[\\Th{T}](z,\\gn{!R_{\\Th{T}}}))])],",
@@ -5165,7 +5165,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "& \\forall x \\, (\\mathsf{Prf}_{\\mathbf{T} }(x,\\ulcorner R_{\\mathbf{T}} \\urcorner) \\mathbin{\\rightarrow} \\exists z \\, (z < x \\land \\mathsf{Ref}_{\\mathbf{T} }(z,\\ulcorner R_{\\mathbf{T}} \\urcorner))])]."
+         "tex": "& \\forall x \\, (\\mathsf{Prf}_{\\mathbf{T}}(x,\\ulcorner R_{\\mathbf{T}} \\urcorner) \\mathbin{\\rightarrow} \\exists z \\, (z < x \\land \\mathsf{Ref}_{\\mathbf{T}}(z,\\ulcorner R_{\\mathbf{T}} \\urcorner)) ) ."
         }
        ],
        "src": "& \\lforall[x][(\\OPrf[\\Th{T}](x,\\gn{!R_{\\Th{T}}}) \\lif\n    \\lexists[z][(z < x \\land \\ORefut[\\Th{T}](z,\\gn{!R_{\\Th{T}}}))])].",
@@ -5337,7 +5337,7 @@
         },
         {
          "t": "math",
-         "tex": "\\exists z \\, (z < x \\land \\mathsf{Ref}_{\\mathbf{T} }(z,\\ulcorner R_{\\mathbf{T}} \\urcorner))]",
+         "tex": "\\exists z \\, (z < x \\land \\mathsf{Ref}_{\\mathbf{T}}(z,\\ulcorner R_{\\mathbf{T}} \\urcorner))",
          "src": "\\lexists[z][(z < x\n\\land \\ORefut[\\Th{T}](z,\\gn{!R_{\\Th{T}}}))]"
         },
         {
@@ -5367,7 +5367,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "\\forall x \\, (\\mathsf{Prf}_{\\mathbf{T} }(x,\\ulcorner R_{\\mathbf{T}} \\urcorner) \\mathbin{\\rightarrow} \\exists z \\, (z < x \\land \\mathsf{Ref}_{\\mathbf{T} }(z,\\ulcorner R_{\\mathbf{T}} \\urcorner))])]."
+         "tex": "\\forall x \\, (\\mathsf{Prf}_{\\mathbf{T}}(x,\\ulcorner R_{\\mathbf{T}} \\urcorner) \\mathbin{\\rightarrow} \\exists z \\, (z < x \\land \\mathsf{Ref}_{\\mathbf{T}}(z,\\ulcorner R_{\\mathbf{T}} \\urcorner)) ) ."
         }
        ],
        "src": "\\lforall[x][(\\OPrf[\\Th{T}](x,\\gn{!R_{\\Th{T}}}) \\lif\n  \\lexists[z][(z < x \\land \\ORefut[\\Th{T}](z,\\gn{!R_{\\Th{T}}}))])].",
@@ -5964,7 +5964,7 @@
       },
       {
        "t": "math",
-       "tex": "\\exists x \\, \\mathrm{Prf}_{\\mathbf{PA} }(x,y)]",
+       "tex": "\\exists x \\, \\mathrm{Prf}_{\\mathbf{PA}}(x,y)",
        "src": "\\lexists[x][\\Prf[\\Th{PA}](x,y)]"
       },
       {
@@ -10798,7 +10798,7 @@
     },
     {
      "t": "math",
-     "tex": "\\exists x \\, \\mathrm{Prf}_{\\mathbf{T} }(x, y)]",
+     "tex": "\\exists x \\, \\mathrm{Prf}_{\\mathbf{T}}(x, y)",
      "src": "\\lexists[x][\\Prf[\\Th{T}](x, y)]"
     },
     {

@@ -355,3 +355,14 @@ textarea.fi-field { font-family: var(--mono); font-size: 13px; width: 100%; resi
 .legend .prov { justify-self: start; }
 .home-chapter h3 { font-size: 1.05rem; margin: 1.4em 0 0.2em; }
 .home-chapter h3 .num { font-family: var(--sans); font-size: 0.8em; color: var(--muted); font-weight: 500; margin-right: 6px; }
+
+/* Syntax trees (ui/SyntaxTree). Box fills use :where so that highlighting can override them. */
+.syntax-tree { overflow-x: auto; }
+.syntax-tree svg { display: block; }
+.syntax-tree .tn-edge { stroke: var(--rule-2); stroke-width: 1.3; }
+:where(.syntax-tree) .tn-box { fill: var(--panel); stroke: var(--rule-2); stroke-width: 1.2; }
+:where(.syntax-tree .tn-formula) .tn-box { stroke: var(--formula); }
+:where(.syntax-tree .tn-term) .tn-box { stroke: var(--number); }
+.syntax-tree .tn text { font-family: var(--math); font-size: 14px; fill: var(--ink); pointer-events: none; }
+.syntax-tree .tn { cursor: pointer; }
+.syntax-tree .tn:hover .tn-box { stroke-width: 2.2; }

@@ -522,7 +522,7 @@
               "c": [
                {
                 "t": "math",
-                "tex": "\\forall x \\, \\forall y [(x+y') = (x+y)']]",
+                "tex": "\\forall x \\, \\forall y \\, (x+y') = (x+y)'",
                 "src": "\\lforall[x][\\lforall[y][(x+y') = (x+y)']]"
                }
               ],
@@ -837,7 +837,7 @@
                   "c": [
                    {
                     "t": "math",
-                    "tex": "\\forall y \\, (a < y \\mathbin{\\leftrightarrow} \\exists z [(z' + a) = y])]",
+                    "tex": "\\forall y \\, (a < y \\mathbin{\\leftrightarrow} \\exists z \\, (z' + a) = y )",
                     "src": "\\lforall[y][(a < y \\liff \\lexists[z][(z' + a) = y])]"
                    }
                   ],
@@ -847,7 +847,7 @@
                     "c": [
                      {
                       "t": "math",
-                      "tex": "\\forall x \\, \\forall y [(x < y \\mathbin{\\leftrightarrow} \\exists z \\, (z' + x) = y )]]",
+                      "tex": "\\forall x \\, \\forall y \\, (x < y \\mathbin{\\leftrightarrow} \\exists z \\, (z' + x) = y )",
                       "src": "\\lforall[x][\\lforall[y][(x < y \\liff \\lexists[z][(z' + x) = y])]]"
                      }
                     ],
@@ -1959,7 +1959,7 @@
                 "c": [
                  {
                   "t": "math",
-                  "tex": "\\forall x \\, \\forall y [(x+y') = (x+y)']]",
+                  "tex": "\\forall x \\, \\forall y \\, (x+y') = (x+y)'",
                   "src": "\\lforall[x][\\lforall[y][(x+y') = (x+y)']]"
                  }
                 ],
@@ -2444,7 +2444,7 @@
      "env": "equation",
      "rows": [
       {
-       "tex": "\\exists x \\, (\\mathsf{Prf}(x, y) \\land \\forall z [(z < x \\mathbin{\\rightarrow} \\lnot \\mathsf{Ref}(z, y))])]."
+       "tex": "\\exists x \\, (\\mathsf{Prf}(x, y) \\land \\forall z \\, (z < x \\mathbin{\\rightarrow} \\lnot \\mathsf{Ref}(z, y)) ) ."
       }
      ],
      "src": "\\lexists[x][(\\OPrf(x, y) \\land \\lforall[z][(z < x\n    \\lif \\lnot \\ORefut(z, y))])].",
@@ -2688,7 +2688,7 @@
         },
         {
          "t": "math",
-         "tex": "\\mathbf{Q} \\vdash \\forall x \\, (x < \\overline{n+1} \\mathbin{\\rightarrow} ( = [\\mathsfit{0}] \\lor \\dots \\lor x = \\overline{n} ))]",
+         "tex": "\\mathbf{Q} \\vdash \\forall x \\, (x < \\overline{n+1} \\mathbin{\\rightarrow} ( x = \\mathsfit{0} \\lor \\dots \\lor x = \\overline{n} ))",
          "src": "\\Th{Q} \\Proves\n\\lforall[x][(x < \\num {n+1} \\lif (\\eq[x][\\Obj 0] \\lor \\dots \\lor\n  \\eq[x][\\num n]))]"
         },
         {
@@ -2715,7 +2715,7 @@
         },
         {
          "t": "math",
-         "tex": "\\mathbf{Q} \\vdash \\forall x \\, (x < \\overline{n} \\mathbin{\\rightarrow} ( = [\\mathsfit{0}] \\lor \\dots \\lor x = \\overline{n-1} ))]",
+         "tex": "\\mathbf{Q} \\vdash \\forall x \\, (x < \\overline{n} \\mathbin{\\rightarrow} ( x = \\mathsfit{0} \\lor \\dots \\lor x = \\overline{n-1} ))",
          "src": "\\Th{Q} \\Proves \\lforall[x][(x < \\num {n} \\lif (\\eq[x][\\Obj 0] \\lor\n  \\dots \\lor \\eq[x][\\num{n-1}]))]"
         },
         {
@@ -3070,7 +3070,7 @@
         "c": [
          {
           "t": "math",
-          "tex": "\\exists x \\, (\\mathsf{Prf}(x, \\ulcorner R \\urcorner) \\land \\forall z [(z < x \\mathbin{\\rightarrow} \\lnot \\mathsf{Ref}(z, \\ulcorner R \\urcorner))])]",
+          "tex": "\\exists x \\, (\\mathsf{Prf}(x, \\ulcorner R \\urcorner) \\land \\forall z \\, (z < x \\mathbin{\\rightarrow} \\lnot \\mathsf{Ref}(z, \\ulcorner R \\urcorner)) )",
           "src": "\\lexists[x][(\\OPrf(x, \\gn{!R}) \\land \\lforall[z][(z < x \\lif \\lnot \\ORefut(z, \\gn{!R}))])]"
          }
         ],

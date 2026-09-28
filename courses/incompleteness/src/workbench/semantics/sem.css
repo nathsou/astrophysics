@@ -128,14 +128,5 @@
   .sem-row { padding-left: 5px; }
 }
 
-/* syntax trees (the shared SyntaxTree component), styled within the semantics workbenches */
-.sem-tree svg { display: block; }
-.sem-tree .tn-edge { stroke: var(--rule-2); stroke-width: 1.3; }
-:where(.sem-tree) .tn-box { fill: var(--panel); stroke: var(--rule-2); stroke-width: 1.2; }
-:where(.sem-tree .tn-formula) .tn-box { stroke: var(--formula); }
-:where(.sem-tree .tn-term) .tn-box { stroke: var(--number); }
-.sem-tree .tn text { font-family: var(--math); font-size: 14px; fill: var(--ink); pointer-events: none; }
-.sem-tree .tn { cursor: pointer; }
-.sem-tree .tn:hover .tn-box { stroke-width: 2.2; }
 .sem-line { font-family: var(--sans); font-size: 14px; line-height: 1.7; }
 .sem-lab .fi-examples, .sem-lab select { max-width: 100%; min-width: 0; }

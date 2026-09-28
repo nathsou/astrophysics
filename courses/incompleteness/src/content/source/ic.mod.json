@@ -575,7 +575,7 @@
       },
       {
        "t": "math",
-       "tex": "\\lnot \\exists x \\, \\mathsf{Prf}_{\\mathbf{PA} }(x, \\ulcorner \\bot \\urcorner)]",
+       "tex": "\\lnot \\exists x \\, \\mathsf{Prf}_{\\mathbf{PA}}(x, \\ulcorner \\bot \\urcorner)",
        "src": "\\lnot\n\\lexists[x][\\OPrf[\\Th{PA}](x, \\gn{\\lfalse})]"
       },
       {
@@ -696,7 +696,7 @@
       },
       {
        "t": "math",
-       "tex": "\\exists x \\, \\mathsf{Prf}_{\\mathbf{PA} }(\\ulcorner \\bot \\urcorner)]",
+       "tex": "\\exists x \\, \\mathsf{Prf}_{\\mathbf{PA}}(\\ulcorner \\bot \\urcorner)",
        "src": "\\lexists[x][\\OPrf[\\Th{PA}](\\gn{\\lfalse})]"
       },
       {
@@ -5972,7 +5972,7 @@
         },
         {
          "t": "math",
-         "tex": "\\forall x \\, \\neq [x']]",
+         "tex": "\\forall x \\, \\mathsfit{0} \\neq x'",
          "src": "\\lforall[x][\\eq/[\\Obj 0][x']]"
         },
         {
@@ -6116,7 +6116,7 @@
         },
         {
          "t": "math",
-         "tex": "\\forall x \\, ( = [\\mathsfit{0}] \\lor \\exists y \\, = [x]])]",
+         "tex": "\\forall x \\, ( x = \\mathsfit{0} \\lor \\exists y \\, y' = x )",
          "src": "\\lforall[x][(\\eq[x][\\Obj 0] \\lor\n\\lexists[y][\\eq[y'][x]])]"
         },
         {
@@ -6721,15 +6721,15 @@
        "env": "align",
        "rows": [
         {
-         "tex": "& \\forall x \\, \\forall y [( x' = y' \\mathbin{\\rightarrow} x = y )]]",
+         "tex": "& \\forall x \\, \\forall y \\, ( x' = y' \\mathbin{\\rightarrow} x = y )",
          "tag": "$Q_1$"
         },
         {
-         "tex": "& \\forall x \\, \\neq [x']]",
+         "tex": "& \\forall x \\, \\mathsfit{0} \\neq x'",
          "tag": "$Q_2$"
         },
         {
-         "tex": "& \\forall x \\, ( = [\\mathsfit{0}] \\lor \\exists y \\, = [y']])]",
+         "tex": "& \\forall x \\, ( x = \\mathsfit{0} \\lor \\exists y \\, x = y' )",
          "tag": "$Q_3$"
         }
        ],
@@ -7072,7 +7072,7 @@
         },
         {
          "t": "math",
-         "tex": "\\forall x \\, \\neq [\\mathsfit{0}]]",
+         "tex": "\\forall x \\, x' \\neq \\mathsfit{0}",
          "src": "\\lforall[x][\\eq/[x'][\\Obj{0}]]"
         },
         {
@@ -7778,7 +7778,7 @@
         },
         {
          "t": "math",
-         "tex": "\\mathbf{Q} \\nvdash \\forall x \\, \\forall y [ (x + y) = (y+x) ]]",
+         "tex": "\\mathbf{Q} \\nvdash \\forall x \\, \\forall y \\, (x + y) = (y+x)",
          "src": "\\Th{Q} \\Proves/ \\lforall[x][\\lforall[y][\\eq[(x +\n      y)][(y+x)]]]"
         },
         {
@@ -7796,7 +7796,7 @@
         },
         {
          "t": "math",
-         "tex": "\\forall x \\, \\forall y [ (x + y) = (y+x) ]]",
+         "tex": "\\forall x \\, \\forall y \\, (x + y) = (y+x)",
          "src": "\\lforall[x][\\lforall[y][\\eq[(x + y)][(y+x)]]]"
         },
         {
@@ -8212,7 +8212,7 @@
        "c": [
         {
          "t": "math",
-         "tex": "{\\boldsymbol{\\mathit{K}}} \\vDash \\forall x \\, \\forall y [( x' = y' \\mathbin{\\rightarrow} x = y )]]",
+         "tex": "{\\boldsymbol{\\mathit{K}}} \\vDash \\forall x \\, \\forall y \\, ( x' = y' \\mathbin{\\rightarrow} x = y )",
          "src": "\\Sat{K}{\\lforall[x][\\lforall[y][(\\eq[x'][y'] \\lif \\eq[x][y])]]}"
         },
         {
@@ -8239,7 +8239,7 @@
         },
         {
          "t": "math",
-         "tex": "{\\boldsymbol{\\mathit{K}}} \\vDash \\forall x \\, \\neq [x']]",
+         "tex": "{\\boldsymbol{\\mathit{K}}} \\vDash \\forall x \\, \\mathsfit{0} \\neq x'",
          "src": "\\Sat{K}{\\lforall[x][\\eq/[\\Obj\n0][x']]}"
         },
         {
@@ -8275,7 +8275,7 @@
         },
         {
          "t": "math",
-         "tex": "{\\boldsymbol{\\mathit{K}}} \\vDash \\forall x \\, ( = [\\mathsfit{0}] \\lor \\exists y \\, = [y']])]",
+         "tex": "{\\boldsymbol{\\mathit{K}}} \\vDash \\forall x \\, ( x = \\mathsfit{0} \\lor \\exists y \\, x = y' )",
          "src": "\\Sat{K}{\\lforall[x][(\\eq[x][\\Obj 0] \\lor \\lexists[y][\\eq[x][y']])]}"
         },
         {
@@ -8323,7 +8323,7 @@
        "c": [
         {
          "t": "math",
-         "tex": "{\\boldsymbol{\\mathit{K}}} \\vDash \\forall x \\, = [x]]",
+         "tex": "{\\boldsymbol{\\mathit{K}}} \\vDash \\forall x \\, (x + \\mathsfit{0}) = x",
          "src": "\\Sat{K}{\\lforall[x][\\eq[(x + \\Obj 0)][x]]}"
         },
         {
@@ -8359,7 +8359,7 @@
         },
         {
          "t": "math",
-         "tex": "{\\boldsymbol{\\mathit{K}}} \\vDash \\forall x \\, \\forall y [ (x + y') = (x + y)' ]]",
+         "tex": "{\\boldsymbol{\\mathit{K}}} \\vDash \\forall x \\, \\forall y \\, (x + y') = (x + y)'",
          "src": "\\Sat{K}{\\lforall[x][\\lforall[y][\\eq[(x + y')][(x + y)']]]}"
         },
         {
@@ -8758,15 +8758,15 @@
        "env": "align",
        "rows": [
         {
-         "tex": "& \\forall x \\, = [\\mathsfit{0}]]",
+         "tex": "& \\forall x \\, (x \\times \\mathsfit{0}) = \\mathsfit{0}",
          "tag": "$Q_6$"
         },
         {
-         "tex": "& \\forall x \\, \\forall y [ (x \\times y') = ((x \\times y) + x) ]]",
+         "tex": "& \\forall x \\, \\forall y \\, (x \\times y') = ((x \\times y) + x)",
          "tag": "$Q_7$"
         },
         {
-         "tex": "& \\forall x \\, \\forall y [(x < y \\mathbin{\\leftrightarrow} \\exists z \\, = [y]])]]",
+         "tex": "& \\forall x \\, \\forall y \\, (x < y \\mathbin{\\leftrightarrow} \\exists z \\, (z' + x) = y )",
          "tag": "$Q_8$"
         }
        ],
@@ -9271,7 +9271,7 @@
         },
         {
          "t": "math",
-         "tex": "{\\boldsymbol{\\mathit{L}}} \\nvDash \\forall x \\, \\forall y [ (x+y) = (y+x) ]]",
+         "tex": "{\\boldsymbol{\\mathit{L}}} \\nvDash \\forall x \\, \\forall y \\, (x+y) = (y+x)",
          "src": "\\Sat/{L}{\\lforall[x][\\lforall[y][\\eq[(x+y)][(y+x)]]]}"
         },
         {
@@ -9385,15 +9385,15 @@
        "env": "align",
        "rows": [
         {
-         "tex": "& \\forall x \\, = [\\mathsfit{0}]]",
+         "tex": "& \\forall x \\, (x \\times \\mathsfit{0}) = \\mathsfit{0}",
          "tag": "$Q_6$"
         },
         {
-         "tex": "& \\forall x \\, \\forall y [ (x \\times y') = ((x \\times y) + x) ]]",
+         "tex": "& \\forall x \\, \\forall y \\, (x \\times y') = ((x \\times y) + x)",
          "tag": "$Q_7$"
         },
         {
-         "tex": "& \\forall x \\, \\forall y [(x < y \\mathbin{\\leftrightarrow} \\exists z \\, = [y]])]]",
+         "tex": "& \\forall x \\, \\forall y \\, (x < y \\mathbin{\\leftrightarrow} \\exists z \\, (z'+x) = y )",
          "tag": "$Q_8$"
         }
        ],
@@ -9592,7 +9592,7 @@
         },
         {
          "t": "math",
-         "tex": "\\mathbf{Q} \\vdash \\forall x \\, (x < \\overline{n}' \\mathbin{\\rightarrow} ( = [\\overline{0}] \\lor x = \\overline{1} \\lor \\dots \\lor x = \\overline{n} ))]",
+         "tex": "\\mathbf{Q} \\vdash \\forall x \\, (x < \\overline{n}' \\mathbin{\\rightarrow} ( x = \\overline{0} \\lor x = \\overline{1} \\lor \\dots \\lor x = \\overline{n} ))",
          "src": "\\Th{Q} \\Proves \\lforall[x][(x < \\num{n}' \\lif\n(\\eq[x][\\num{0}] \\lor \\eq[x][\\num{1}] \\lor \\dots \\lor\n\\eq[x][\\num{n}]))]"
         },
         {
@@ -9813,7 +9813,7 @@
         },
         {
          "t": "math",
-         "tex": "\\forall x \\, \\neq [x']]",
+         "tex": "\\forall x \\, x \\neq x'",
          "src": "\\lforall[x][\\eq/[x][x']]"
         },
         {
@@ -9822,7 +9822,7 @@
         },
         {
          "t": "math",
-         "tex": "\\forall x \\, \\forall y [ (x+y) = (y+x) ]]",
+         "tex": "\\forall x \\, \\forall y \\, (x+y) = (y+x)",
          "src": "\\lforall[x][\\lforall[y][\\eq[(x+y)][(y+x)]]]"
         },
         {
@@ -10072,7 +10072,7 @@
         },
         {
          "t": "math",
-         "tex": "{\\boldsymbol{\\mathit{M}}} \\vDash \\forall x \\, \\forall y [( x' = y' \\mathbin{\\rightarrow} x = y )]]",
+         "tex": "{\\boldsymbol{\\mathit{M}}} \\vDash \\forall x \\, \\forall y \\, ( x' = y' \\mathbin{\\rightarrow} x = y )",
          "src": "\\Sat{M}{\\lforall[x][\\lforall[y][(\\eq[x'][y'] \\lif \\eq[x][y])]]}"
         },
         {
@@ -10367,7 +10367,7 @@
            "c": [
             {
              "t": "math",
-             "tex": "\\forall x \\, \\forall y [ \\forall z \\, ((x < y \\land y < z) \\mathbin{\\rightarrow} x < z) ]]",
+             "tex": "\\forall x \\, \\forall y \\, \\forall z \\, ((x < y \\land y < z) \\mathbin{\\rightarrow} x < z)",
              "src": "\\lforall[x][\\lforall[y][\\lforall[z][((x < y \\land y < z) \\lif x < z)]]]"
             }
            ],
@@ -10389,7 +10389,7 @@
            "c": [
             {
              "t": "math",
-             "tex": "\\forall x \\, \\forall y [((x < y \\lor y < x) \\lor x = y ))]]",
+             "tex": "\\forall x \\, \\forall y \\, ((x < y \\lor y < x) \\lor x = y ))",
              "src": "\\lforall[x][\\lforall[y][((x < y \\lor y < x) \\lor \\eq[x][y]))]]"
             }
            ],
@@ -10859,7 +10859,7 @@
         },
         {
          "t": "math",
-         "tex": "\\forall x \\, (x < \\overline{n}' \\mathbin{\\rightarrow} ( = [\\overline{0}] \\lor x = \\overline{1} \\lor \\dots \\lor x = \\overline{n} ))]",
+         "tex": "\\forall x \\, (x < \\overline{n}' \\mathbin{\\rightarrow} ( x = \\overline{0} \\lor x = \\overline{1} \\lor \\dots \\lor x = \\overline{n} ))",
          "src": "\\lforall[x][(x < \\num{n}' \\lif (\\eq[x][\\num{0}] \\lor\n  \\eq[x][\\num{1}] \\lor \\dots \\lor \\eq[x][\\num{n}]))]"
         },
         {
@@ -11401,7 +11401,7 @@
         },
         {
          "t": "math",
-         "tex": "\\mathbf{PA} \\vdash \\forall x \\, = [(x + \\overline{n})]]",
+         "tex": "\\mathbf{PA} \\vdash \\forall x \\, x^{\\prime\\dots\\prime} = (x + \\overline{n})",
          "src": "\\Th{PA} \\Proves \\lforall[x][\\eq[x^{\\prime\\dots\\prime}][(x +\n    \\num{n})]]"
         },
         {
@@ -11532,7 +11532,7 @@
         },
         {
          "t": "math",
-         "tex": "\\mathbf{PA} \\vdash \\forall x \\, \\forall y [(x < y \\mathbin{\\rightarrow} (x' < y \\lor x' = y))]]",
+         "tex": "\\mathbf{PA} \\vdash \\forall x \\, \\forall y \\, (x < y \\mathbin{\\rightarrow} (x' < y \\lor x' = y))",
          "src": "\\Th{PA} \\Proves \\lforall[x][\\lforall[y][(x < y \\lif (x' < y\n    \\lor x' = y))]]"
         },
         {
@@ -12285,7 +12285,7 @@
         },
         {
          "t": "math",
-         "tex": "\\mathbf{PA} \\vdash \\forall x \\, \\forall y [ \\forall z \\, ( = [(x+z)] \\mathbin{\\rightarrow} y = z)]]]",
+         "tex": "\\mathbf{PA} \\vdash \\forall x \\, \\forall y \\, \\forall z \\, ( (x+y) = (x+z) \\mathbin{\\rightarrow} y = z)",
          "src": "\\Th{PA} \\Proves\n\\lforall[x][\\lforall[y][\\lforall[z][(\\eq[(x+y)][(x+z)] \\lif y = z)]]]"
         },
         {
@@ -12376,7 +12376,7 @@
        "c": [
         {
          "t": "math",
-         "tex": "\\mathbf{PA} \\vdash \\forall x \\, \\exists y [( (y+y) = x \\lor (y+y)' = x )]]",
+         "tex": "\\mathbf{PA} \\vdash \\forall x \\, \\exists y \\, ( (y+y) = x \\lor (y+y)' = x )",
          "src": "\\Th{PA} \\Proves \\lforall[x][\\lexists[y][(\\eq[(y+y)][x] \\lor\n      \\eq[(y+y)'][x])]]"
         },
         {
@@ -14692,7 +14692,7 @@
     },
     {
      "t": "math",
-     "tex": "\\mathbf{Q} \\nvdash \\forall x \\, \\forall y [ (x+y) = (y+x) ]]",
+     "tex": "\\mathbf{Q} \\nvdash \\forall x \\, \\forall y \\, (x+y) = (y+x)",
      "src": "\\Th{Q} \\Proves/ \\lforall[x][\\lforall[y][\\eq[(x+y)][(y+x)]]]"
     },
     {

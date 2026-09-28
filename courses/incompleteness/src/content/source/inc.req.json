@@ -194,35 +194,35 @@
      "env": "align",
      "rows": [
       {
-       "tex": "& \\forall x \\, \\forall y [( x' = y' \\mathbin{\\rightarrow} x = y )]]",
+       "tex": "& \\forall x \\, \\forall y \\, ( x' = y' \\mathbin{\\rightarrow} x = y )",
        "tag": "$Q_1$"
       },
       {
-       "tex": "& \\forall x \\, \\neq [x']]",
+       "tex": "& \\forall x \\, \\mathsfit{0} \\neq x'",
        "tag": "$Q_2$"
       },
       {
-       "tex": "& \\forall x \\, ( = [\\mathsfit{0}] \\lor \\exists y \\, = [y']])]",
+       "tex": "& \\forall x \\, ( x = \\mathsfit{0} \\lor \\exists y \\, x = y' )",
        "tag": "$Q_3$"
       },
       {
-       "tex": "& \\forall x \\, = [x]]",
+       "tex": "& \\forall x \\, (x + \\mathsfit{0}) = x",
        "tag": "$Q_4$"
       },
       {
-       "tex": "& \\forall x \\, \\forall y [ (x + y') = (x + y)' ]]",
+       "tex": "& \\forall x \\, \\forall y \\, (x + y') = (x + y)'",
        "tag": "$Q_5$"
       },
       {
-       "tex": "& \\forall x \\, = [\\mathsfit{0}]]",
+       "tex": "& \\forall x \\, (x \\times \\mathsfit{0}) = \\mathsfit{0}",
        "tag": "$Q_6$"
       },
       {
-       "tex": "& \\forall x \\, \\forall y [ (x \\times y') = ((x \\times y) + x) ]]",
+       "tex": "& \\forall x \\, \\forall y \\, (x \\times y') = ((x \\times y) + x)",
        "tag": "$Q_7$"
       },
       {
-       "tex": "& \\forall x \\, \\forall y [(x < y \\mathbin{\\leftrightarrow} \\exists z \\, = [y]])]]",
+       "tex": "& \\forall x \\, \\forall y \\, (x < y \\mathbin{\\leftrightarrow} \\exists z \\, (z' + x) = y )",
        "tag": "$Q_8$"
       }
      ],
@@ -381,7 +381,7 @@
       },
       {
        "t": "math",
-       "tex": "\\forall x \\, \\neq [x']]",
+       "tex": "\\forall x \\, x \\neq x'",
        "src": "\\lforall[x][\\eq/[x][x']]"
       },
       {
@@ -390,7 +390,7 @@
       },
       {
        "t": "math",
-       "tex": "\\forall x \\, \\forall y [(x + y) = (y + x)]]",
+       "tex": "\\forall x \\, \\forall y \\, (x + y) = (y + x)",
        "src": "\\lforall[x][\\lforall[y][(x + y) = (y +\n    x)]]"
       },
       {
@@ -616,7 +616,7 @@
      "env": "equation",
      "rows": [
       {
-       "tex": "\\forall y \\, ((A(\\mathsfit{0}) \\land \\forall x [(A(x) \\mathbin{\\rightarrow} A(x'))]) \\mathbin{\\rightarrow} \\forall x \\, A(x) )]"
+       "tex": "\\forall y \\, ((A(\\mathsfit{0}) \\land \\forall x \\, (A(x) \\mathbin{\\rightarrow} A(x')) ) \\mathbin{\\rightarrow} \\forall x \\, A(x) )"
       }
      ],
      "src": "\\lforall[y][((!A(\\Obj 0) \\land \\lforall[x][(!A(x) \\lif !A(x'))]) \\lif\n  \\lforall[x][!A(x)])]",
@@ -824,7 +824,7 @@
       },
       {
        "t": "math",
-       "tex": "\\forall y \\, (A_f(\\overline{n_0}, \\dots, \\overline{n_k}, y) \\mathbin{\\leftrightarrow} = [\\overline{m}])]",
+       "tex": "\\forall y \\, (A_f(\\overline{n_0}, \\dots, \\overline{n_k}, y) \\mathbin{\\leftrightarrow} y = \\overline{m} )",
        "src": "\\lforall[y][(!A_f(\\num{n_0}, \\dots,\n\\num{n_k}, y) \\liff \\eq[y][\\num{m}])]"
       },
       {
@@ -4658,7 +4658,7 @@
        "tex": "& \\overline{n} + \\overline{m} = \\overline{n+m} \\text{ and}"
       },
       {
-       "tex": "& \\forall y \\, ( = [y] \\mathbin{\\rightarrow} y = \\overline{n+m} )]."
+       "tex": "& \\forall y \\, ( (\\overline{n} + \\overline{m}) = y \\mathbin{\\rightarrow} y = \\overline{n+m} ) ."
       }
      ],
      "src": "& \\eq[\\num n + \\num m][\\num {n+m}] \\text{ and}\\\\\n& \\lforall[y][(\\eq[(\\num n + \\num m)][y] \\lif \\eq[y][\\num{n+m}])].",
@@ -5229,7 +5229,7 @@
         },
         {
          "t": "math",
-         "tex": "\\forall x \\, \\neq [x']]",
+         "tex": "\\forall x \\, 0 \\neq x'",
          "src": "\\lforall[x][\\eq/[0][x']]"
         },
         {
@@ -5389,7 +5389,7 @@
         },
         {
          "t": "math",
-         "tex": "\\forall x \\, \\forall y [ x' = y' \\mathbin{\\rightarrow} x = y ]]",
+         "tex": "\\forall x \\, \\forall y \\, x' = y' \\mathbin{\\rightarrow} x = y",
          "src": "\\lforall[x][\\lforall[y][\\eq[x'][y'] \\lif \\eq[x][y]]]"
         },
         {
@@ -5691,7 +5691,7 @@
         },
         {
          "t": "math",
-         "tex": "\\mathbf{Q} \\vdash \\forall y \\, (A_=(\\overline{n}, \\overline{m}, y) \\mathbin{\\rightarrow} = [\\overline{1}])]",
+         "tex": "\\mathbf{Q} \\vdash \\forall y \\, (A_=(\\overline{n}, \\overline{m}, y) \\mathbin{\\rightarrow} y = \\overline{1} )",
          "src": "\\Th{Q} \\Proves \\lforall[y][(!A_=(\\num{n}, \\num{m}, y)\n  \\lif \\eq[y][\\num{1}])]"
         },
         {
@@ -6308,7 +6308,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "\\mathbf{Q} \\vdash \\forall y \\, (A_\\mathrm{add}(\\overline{n}, \\overline{m}, y) \\mathbin{\\rightarrow} = [\\overline{k}])]."
+         "tex": "\\mathbf{Q} \\vdash \\forall y \\, (A_\\mathrm{add}(\\overline{n}, \\overline{m}, y) \\mathbin{\\rightarrow} y = \\overline{k} ) ."
         }
        ],
        "src": "\\Th{Q} \\Proves \\lforall[y][(!A_\\Add(\\num{n}, \\num{m}, y) \\lif\n  \\eq[y][\\num{k}])].",
@@ -7589,7 +7589,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "\\mathbf{Q} & \\vdash \\forall y \\, (A_g(\\overline{n}, y) \\mathbin{\\rightarrow} = [\\overline{k}])]"
+         "tex": "\\mathbf{Q} & \\vdash \\forall y \\, (A_g(\\overline{n}, y) \\mathbin{\\rightarrow} y = \\overline{k} )"
         }
        ],
        "src": "\\Th{Q} & \\Proves \\lforall[y][(!A_g(\\num{n}, y) \\lif \\eq[y][\\num{k}])]",
@@ -7640,7 +7640,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "\\mathbf{Q} & \\vdash \\forall z \\, (A_f(\\overline{k}, z) \\mathbin{\\rightarrow} = [\\overline{m}])]"
+         "tex": "\\mathbf{Q} & \\vdash \\forall z \\, (A_f(\\overline{k}, z) \\mathbin{\\rightarrow} z = \\overline{m} )"
         }
        ],
        "src": "\\Th{Q} & \\Proves \\lforall[z][(!A_f(\\num{k}, z) \\lif \\eq[z][\\num{m}])]",
@@ -7691,7 +7691,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "\\mathbf{Q} & \\vdash \\forall z \\, (\\exists y [(A_g(\\overline{n}, y) \\land A_f(y, z))] \\mathbin{\\rightarrow} z = \\overline{m} )]."
+         "tex": "\\mathbf{Q} & \\vdash \\forall z \\, (\\exists y \\, (A_g(\\overline{n}, y) \\land A_f(y, z)) \\mathbin{\\rightarrow} z = \\overline{m} ) ."
         }
        ],
        "src": "\\Th{Q} & \\Proves \\lforall[z][(\\lexists[y][(!A_g(\\num{n}, y) \\land\n      !A_f(y, z))] \\lif \\eq[z][\\num{m}])].",
@@ -7712,7 +7712,7 @@
         },
         {
          "t": "math",
-         "tex": "\\mathbf{Q} \\vdash \\forall y \\, (A_h(\\overline{n}, y) \\mathbin{\\rightarrow} = [\\overline{m}])]",
+         "tex": "\\mathbf{Q} \\vdash \\forall y \\, (A_h(\\overline{n}, y) \\mathbin{\\rightarrow} y = \\overline{m} )",
          "src": "\\Th{Q} \\Proves \\lforall[y][(!A_h(\\num n, y) \\lif \\eq[y][\\num m])]"
         },
         {
@@ -7859,7 +7859,7 @@
        "env": "gather",
        "rows": [
         {
-         "tex": "\\exists y_0\\dots \\, \\exists y_{k-1} [(A_{g_0}(x_0,\\dots,x_{l-1},y_0) \\land \\dots \\land {}]]"
+         "tex": "\\exists y_0\\dots \\, \\exists y_{k-1} \\, (A_{g_0}(x_0,\\dots,x_{l-1},y_0) \\land \\dots \\land {}"
         },
         {
          "tex": "A_{g_{k-1}}(x_0,\\dots,x_{l-1},y_{k-1}) \\land A_f(y_0,\\dots,y_{k-1},z))"
@@ -8529,7 +8529,7 @@
       },
       {
        "t": "math",
-       "tex": "\\forall x \\, \\forall y [(x' + y) = (x + y)']]",
+       "tex": "\\forall x \\, \\forall y \\, (x' + y) = (x + y)'",
        "src": "\\lforall[x][\\lforall[y][(x' + y) = (x + y)']]"
       },
       {
@@ -8674,7 +8674,7 @@
         },
         {
          "t": "math",
-         "tex": "\\lnot \\exists y \\, = [\\mathsfit{0}]]",
+         "tex": "\\lnot \\exists y \\, (y'+a) = \\mathsfit{0}",
          "src": "\\lnot\n\\lexists[y][\\eq[(y'+a)][\\Obj 0]]"
         },
         {
@@ -8692,7 +8692,7 @@
         },
         {
          "t": "math",
-         "tex": "\\exists y \\, = [\\mathsfit{0}]]",
+         "tex": "\\exists y \\, (y'+a) = \\mathsfit{0}",
          "src": "\\lexists[y][\\eq[(y'+a)][\\Obj 0]]"
         },
         {
@@ -8719,7 +8719,7 @@
         },
         {
          "t": "math",
-         "tex": "a = \\mathsfit{0} \\lor \\exists y \\, = [y']]",
+         "tex": "a = \\mathsfit{0} \\lor \\exists y \\, a = y'",
          "src": "\\eq[a][\\Obj 0] \\lor \\lexists[y][\\eq[a][y']]"
         },
         {
@@ -8945,7 +8945,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "\\mathbf{Q} \\vdash \\forall x \\, (x < \\overline{n+1} \\mathbin{\\rightarrow} ( = [\\mathsfit{0}] \\lor \\dots \\lor x = \\overline{n} ))]."
+         "tex": "\\mathbf{Q} \\vdash \\forall x \\, (x < \\overline{n+1} \\mathbin{\\rightarrow} ( x = \\mathsfit{0} \\lor \\dots \\lor x = \\overline{n} )) ."
         }
        ],
        "src": "\\Th{Q} \\Proves\n  \\lforall[x][(x < \\num {n+1} \\lif (\\eq[x][\\Obj 0] \\lor \\dots \\lor\n    \\eq[x][\\num n]))].",
@@ -9035,7 +9035,7 @@
         },
         {
          "t": "math",
-         "tex": "\\exists y \\, = [\\mathsfit{0}']]",
+         "tex": "\\exists y \\, (y'+a) = \\mathsfit{0}'",
          "src": "\\lexists[y][\\eq[(y'+a)][\\Obj 0']]"
         },
         {
@@ -9494,7 +9494,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "\\mathbf{Q} \\vdash \\forall y \\, ((y < \\overline{m} \\lor \\overline{m} < y) \\lor = [\\overline{m}])]."
+         "tex": "\\mathbf{Q} \\vdash \\forall y \\, ((y < \\overline{m} \\lor \\overline{m} < y) \\lor y = \\overline{m} ) ."
         }
        ],
        "src": "\\Th{Q} \\Proves\n  \\lforall[y][((y < \\num{m} \\lor \\num{m} < y) \\lor \\eq[y][\\num{m}])].",
@@ -9548,7 +9548,7 @@
         },
         {
          "t": "math",
-         "tex": "\\mathbf{Q} \\vdash \\forall y \\, ( = [\\mathsfit{0}] \\lor \\exists z \\, = [z']])]",
+         "tex": "\\mathbf{Q} \\vdash \\forall y \\, ( y = \\mathsfit{0} \\lor \\exists z \\, y = z' )",
          "src": "\\Th{Q} \\Proves\n\\lforall[y][(\\eq[y][\\Obj 0] \\lor \\lexists[z][\\eq[y][z']])]"
         },
         {
@@ -9665,7 +9665,7 @@
         },
         {
          "t": "math",
-         "tex": "\\exists z \\, = [a]]",
+         "tex": "\\exists z \\, (z' + \\mathsfit{0}) = a",
          "src": "\\lexists[z][\\eq[(z' + \\Obj 0)][a]]"
         },
         {
@@ -9747,7 +9747,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "\\mathbf{Q} & \\vdash \\forall y \\, ((y < \\overline{m} \\lor \\overline{m} < y) \\lor = [\\overline{m}])]"
+         "tex": "\\mathbf{Q} & \\vdash \\forall y \\, ((y < \\overline{m} \\lor \\overline{m} < y) \\lor y = \\overline{m} )"
         }
        ],
        "src": "\\Th{Q} & \\Proves \\lforall[y][((y < \\num{m} \\lor \\num{m} < y) \\lor\n    \\eq[y][\\num{m}])]",
@@ -9780,7 +9780,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "\\mathbf{Q} & \\vdash \\forall y \\, ((y < \\overline{m+1} \\lor \\overline{m+1} < y) \\lor = [\\overline{m+1}])]"
+         "tex": "\\mathbf{Q} & \\vdash \\forall y \\, ((y < \\overline{m+1} \\lor \\overline{m+1} < y) \\lor y = \\overline{m+1} )"
         }
        ],
        "src": "\\Th{Q} & \\Proves \\lforall[y][((y < \\num{m+1} \\lor \\num{m+1} < y) \\lor\n    \\eq[y][\\num{m+1}])]",
@@ -9950,7 +9950,7 @@
         },
         {
          "t": "math",
-         "tex": "\\exists z \\, = [\\overline{m}]]",
+         "tex": "\\exists z \\, (z' + b) = \\overline{m}",
          "src": "\\lexists[z][\\eq[(z' + b)][\\num{m}]]"
         },
         {
@@ -10013,7 +10013,7 @@
         },
         {
          "t": "math",
-         "tex": "\\exists u \\, = [\\overline{m+1}]]",
+         "tex": "\\exists u \\, (u' + b') = \\overline{m+1}",
          "src": "\\lexists[u][\\eq[(u' + b')][\\num{m+1}]]"
         },
         {
@@ -10092,7 +10092,7 @@
         },
         {
          "t": "math",
-         "tex": "\\exists z \\, = [b]]",
+         "tex": "\\exists z \\, (z' + \\overline{m}) = b",
          "src": "\\lexists[z][\\eq[(z' +\n\\num{m})][b]]"
         },
         {
@@ -10689,7 +10689,7 @@
         },
         {
          "t": "math",
-         "tex": "\\mathbf{Q} \\vdash \\forall y \\, (A_f(\\overline{n}, y) \\mathbin{\\rightarrow} = [\\overline{m}])]",
+         "tex": "\\mathbf{Q} \\vdash \\forall y \\, (A_f(\\overline{n}, y) \\mathbin{\\rightarrow} y = \\overline{m} )",
          "src": "\\Th{Q} \\Proves\n\\lforall[y][(!A_f(\\num{n}, y) \\lif \\eq[y][\\num{m}])]"
         },
         {
@@ -12169,7 +12169,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "\\mathrm{Prov}_{\\mathbf{Q}}(y) \\Leftrightarrow \\mathrm{Sent}(y) \\land \\exists x \\, \\mathrm{Prf}_{\\mathbf{Q} }(x, y)]"
+         "tex": "\\mathrm{Prov}_{\\mathbf{Q}}(y) \\Leftrightarrow \\mathrm{Sent}(y) \\land \\exists x \\, \\mathrm{Prf}_{\\mathbf{Q}}(x, y)"
         }
        ],
        "src": "\\Prov[\\Th{Q}](y) \\defiff \\fn{Sent}(y) \\land\n\\lexists[x][\\Prf[\\Th{Q}](x, y)]",
@@ -14045,7 +14045,7 @@
         },
         {
          "t": "math",
-         "tex": "x < y \\mathbin{\\leftrightarrow} \\exists z \\, = [y]]",
+         "tex": "x < y \\mathbin{\\leftrightarrow} \\exists z \\, z' + x = y",
          "src": "x < y \\liff \\lexists[z][\\eq[z' + x][y]]"
         },
         {
@@ -14150,7 +14150,7 @@
         },
         {
          "t": "math",
-         "tex": "\\mathbf{Q} \\vdash \\exists z \\, = [t_2]]",
+         "tex": "\\mathbf{Q} \\vdash \\exists z \\, z' + t_1 = t_2",
          "src": "\\Th{Q} \\Proves \\lexists[z][\\eq[z' + t_1][t_2]]"
         },
         {

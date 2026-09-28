@@ -1821,35 +1821,35 @@
        "env": "align",
        "rows": [
         {
-         "tex": "& \\forall x \\, \\forall y [( x' = y' \\mathbin{\\rightarrow} x = y )]]",
+         "tex": "& \\forall x \\, \\forall y \\, ( x' = y' \\mathbin{\\rightarrow} x = y )",
          "tag": "$Q_1$"
         },
         {
-         "tex": "& \\forall x \\, \\neq [x']]",
+         "tex": "& \\forall x \\, \\mathsfit{0} \\neq x'",
          "tag": "$Q_2$"
         },
         {
-         "tex": "& \\forall x \\, ( = [\\mathsfit{0}] \\lor \\exists y \\, = [y']])]",
+         "tex": "& \\forall x \\, ( x = \\mathsfit{0} \\lor \\exists y \\, x = y' )",
          "tag": "$Q_3$"
         },
         {
-         "tex": "& \\forall x \\, = [x]]",
+         "tex": "& \\forall x \\, (x + \\mathsfit{0}) = x",
          "tag": "$Q_4$"
         },
         {
-         "tex": "& \\forall x \\, \\forall y [ (x + y') = (x + y)' ]]",
+         "tex": "& \\forall x \\, \\forall y \\, (x + y') = (x + y)'",
          "tag": "$Q_5$"
         },
         {
-         "tex": "& \\forall x \\, = [\\mathsfit{0}]]",
+         "tex": "& \\forall x \\, (x \\times \\mathsfit{0}) = \\mathsfit{0}",
          "tag": "$Q_6$"
         },
         {
-         "tex": "& \\forall x \\, \\forall y [ (x \\times y') = ((x \\times y) + x) ]]",
+         "tex": "& \\forall x \\, \\forall y \\, (x \\times y') = ((x \\times y) + x)",
          "tag": "$Q_7$"
         },
         {
-         "tex": "& \\forall x \\, \\forall y [(x < y \\mathbin{\\leftrightarrow} \\exists z \\, = [y]])]]",
+         "tex": "& \\forall x \\, \\forall y \\, (x < y \\mathbin{\\leftrightarrow} \\exists z \\, (z' + x) = y )",
          "tag": "$Q_8$"
         }
        ],
@@ -2038,7 +2038,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "\\forall y_1 \\, \\dots \\forall y_n [((A(\\mathsfit{0}) \\land \\forall x \\, (A(x) \\mathbin{\\rightarrow} A(x')) ) \\mathbin{\\rightarrow} \\forall x \\, A(x) )]]"
+         "tex": "\\forall y_1 \\, \\dots \\forall y_n \\, ((A(\\mathsfit{0}) \\land \\forall x \\, (A(x) \\mathbin{\\rightarrow} A(x')) ) \\mathbin{\\rightarrow} \\forall x \\, A(x) )"
         }
        ],
        "src": "\\lforall[y_1][\\dots\\lforall[y_n][((!A(\\Obj 0) \\land \\lforall[x][(!A(x)\n\\lif !A(x'))]) \\lif \\lforall[x][!A(x)])]]",

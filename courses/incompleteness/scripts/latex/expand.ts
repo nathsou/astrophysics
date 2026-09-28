@@ -72,8 +72,10 @@ export function readArgs(s: string, i: number, specs: ArgSpec[]): { values: stri
     const open = spec.kind === 'o' ? '[' : spec.open;
     const close = spec.kind === 'o' ? ']' : spec.close;
     if (s[j] === open) {
-      // Find the matching close at brace depth 0.
+      // Find the matching close at brace depth 0. Like xparse, nested delimiters pair up:
+      // \lforall[y][(\eq[u(x)][u(y)] \lif …)] takes everything up to the outer ].
       let depth = 0;
+      let nest = 0;
       let k = j + 1;
       for (; k < s.length; k++) {
         if (s[k] === '\\') {
@@ -82,7 +84,11 @@ export function readArgs(s: string, i: number, specs: ArgSpec[]): { values: stri
         }
         if (s[k] === '{') depth++;
         else if (s[k] === '}') depth--;
-        else if (s[k] === close && depth === 0) break;
+        else if (depth === 0 && s[k] === open && open !== close) nest++;
+        else if (s[k] === close && depth === 0) {
+          if (nest === 0) break;
+          nest--;
+        }
       }
       values.push(s.slice(j + 1, k));
       i = k + 1;

@@ -6527,7 +6527,7 @@
         },
         {
          "t": "math",
-         "tex": "\\forall x \\, \\exists y [x < y]]",
+         "tex": "\\forall x \\, \\exists y \\, x < y",
          "src": "\\lforall[x][\\lexists[y][x < y]]"
         },
         {
@@ -8268,7 +8268,7 @@
         },
         {
          "t": "math",
-         "tex": "\\exists x \\, = [a]]",
+         "tex": "\\exists x \\, x = a",
          "src": "\\lexists[x][\\eq[x][a]]"
         },
         {
@@ -11927,7 +11927,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "\\forall x \\, (R(a,x) \\mathbin{\\rightarrow} \\exists y [R(x,y)])]."
+         "tex": "\\forall x \\, (R(a,x) \\mathbin{\\rightarrow} \\exists y \\, R(x,y) ) ."
         }
        ],
        "src": "\\lforall[x][(R(a,x) \\lif \\lexists[y][R(x,y)])].",
@@ -12280,7 +12280,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "{\\boldsymbol{\\mathit{M}}}, s \\vDash \\forall x \\, (R(a,x) \\mathbin{\\rightarrow} \\exists y [R(x,y)])] ."
+         "tex": "{\\boldsymbol{\\mathit{M}}}, s \\vDash \\forall x \\, (R(a,x) \\mathbin{\\rightarrow} \\exists y \\, R(x,y) ) ."
         }
        ],
        "src": "\\Sat{M}{\\lforall[x][(R(a,x) \\lif \\lexists[y][R(x,y)])]}[s].",
@@ -12313,7 +12313,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "{\\boldsymbol{\\mathit{M}}}, s \\nvDash \\exists x \\, (R(a,x) \\land \\forall y [R(x,y)])]."
+         "tex": "{\\boldsymbol{\\mathit{M}}}, s \\nvDash \\exists x \\, (R(a,x) \\land \\forall y \\, R(x,y) ) ."
         }
        ],
        "src": "\\Sat/{M}{\\lexists[x][(R(a,x) \\land \\lforall[y][R(x,y)])]}[s].",
@@ -12682,7 +12682,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "{\\boldsymbol{\\mathit{M}}}, s \\vDash \\exists x \\, (A(f(z), c) \\mathbin{\\rightarrow} \\forall y [(A(y, x) \\lor A(f(y), x))])]"
+         "tex": "{\\boldsymbol{\\mathit{M}}}, s \\vDash \\exists x \\, (A(f(z), c) \\mathbin{\\rightarrow} \\forall y \\, (A(y, x) \\lor A(f(y), x)) )"
         }
        ],
        "src": "\\Sat{M}{\\lexists[x][(A(f(z), c) \\lif \\lforall[y][(A(y, x) \\lor A(f(y),\n      x))])]}[s]",
@@ -16492,7 +16492,7 @@
         },
         {
          "t": "math",
-         "tex": "{\\boldsymbol{\\mathit{M}}} \\vDash \\forall x \\, \\exists y [A(x,y)]]",
+         "tex": "{\\boldsymbol{\\mathit{M}}} \\vDash \\forall x \\, \\exists y \\, A(x,y)",
          "src": "\\Sat{M}{\\lforall[x][\\lexists[y][!A(x,y)]]}"
         },
         {
@@ -16557,7 +16557,7 @@
         },
         {
          "t": "math",
-         "tex": "\\forall x \\, \\exists y [A(x,y)]]",
+         "tex": "\\forall x \\, \\exists y \\, A(x,y)",
          "src": "\\lforall[x][\\lexists[y][!A(x,y)]]"
         },
         {
@@ -20331,10 +20331,10 @@
          "tex": "& \\forall x \\, \\lnot x < x ,"
         },
         {
-         "tex": "& \\forall x \\, \\forall y [((x < y \\lor y < x) \\lor x = y)]],"
+         "tex": "& \\forall x \\, \\forall y \\, ((x < y \\lor y < x) \\lor x = y) ,"
         },
         {
-         "tex": "& \\forall x \\, \\forall y [ \\forall z \\, ((x < y \\land y < z) \\mathbin{\\rightarrow} x < z) ]]"
+         "tex": "& \\forall x \\, \\forall y \\, \\forall z \\, ((x < y \\land y < z) \\mathbin{\\rightarrow} x < z)"
         }
        ],
        "src": "& \\lforall[x][\\lnot x < x], \\\\\n& \\lforall[x][\\lforall[y][((x < y \\lor y <\n    x) \\lor x = y)]], \\\\\n& \\lforall[x][\\lforall[y][\\lforall[z][((x < y\n      \\land y < z) \\lif x < z)]]]",
@@ -20490,10 +20490,10 @@
          "tex": "& \\forall x \\, (x \\cdot \\mathsfit{1}) = x"
         },
         {
-         "tex": "& \\forall x \\, \\forall y [ \\forall z \\, = [((x \\cdot y) \\cdot z)]]]]"
+         "tex": "& \\forall x \\, \\forall y \\, \\forall z \\, (x \\cdot (y \\cdot z)) = ((x \\cdot y) \\cdot z)"
         },
         {
-         "tex": "& \\forall x \\, \\exists y [(x \\cdot y) = \\mathsfit{1}]]"
+         "tex": "& \\forall x \\, \\exists y \\, (x \\cdot y) = \\mathsfit{1}"
         }
        ],
        "src": "& \\lforall[x][(x \\cdot \\Obj 1) = x]\\\\\n& \\lforall[x][\\lforall[y][\\lforall[z][\\eq[(x \\cdot (y \\cdot z))][((x\n          \\cdot y) \\cdot z)]]]]\\\\\n& \\lforall[x][\\lexists[y][(x \\cdot y) = \\Obj 1]]",
@@ -20552,22 +20552,22 @@
          "tex": "& \\lnot\\exists x \\, x' = \\mathsfit{0}"
         },
         {
-         "tex": "& \\forall x \\, \\forall y [(x' = y' \\mathbin{\\rightarrow} x = y)]]"
+         "tex": "& \\forall x \\, \\forall y \\, (x' = y' \\mathbin{\\rightarrow} x = y)"
         },
         {
-         "tex": "& \\forall x \\, \\forall y [(x < y \\mathbin{\\leftrightarrow} \\exists z \\, = [y]])]]"
+         "tex": "& \\forall x \\, \\forall y \\, (x < y \\mathbin{\\leftrightarrow} \\exists z \\, (z' + x) = y )"
         },
         {
-         "tex": "& \\forall x \\, = [x]]"
+         "tex": "& \\forall x \\, (x + \\mathsfit{0}) = x"
         },
         {
-         "tex": "& \\forall x \\, \\forall y [ (x + y') = (x + y)' ]]"
+         "tex": "& \\forall x \\, \\forall y \\, (x + y') = (x + y)'"
         },
         {
-         "tex": "& \\forall x \\, = [\\mathsfit{0}]]"
+         "tex": "& \\forall x \\, (x \\times \\mathsfit{0}) = \\mathsfit{0}"
         },
         {
-         "tex": "& \\forall x \\, \\forall y [ (x \\times y') = ((x \\times y) + x) ]]"
+         "tex": "& \\forall x \\, \\forall y \\, (x \\times y') = ((x \\times y) + x)"
         }
        ],
        "src": "& \\lnot\\lexists[x][x' = \\Obj 0]\\\\\n& \\lforall[x][\\lforall[y][(x' = y' \\lif x = y)]]\\\\\n& \\lforall[x][\\lforall[y][(x < y \\liff \\lexists[z][\\eq[(z' + x)][y]])]]\\\\\n& \\lforall[x][\\eq[(x + \\Obj 0)][x]]\\\\\n& \\lforall[x][\\lforall[y][\\eq[(x + y')][(x + y)']]]\\\\\n& \\lforall[x][\\eq[(x \\times \\Obj 0)][\\Obj 0]]\\\\\n& \\lforall[x][\\lforall[y][\\eq[(x \\times y')][((x \\times y) + x)]]]\\\\",

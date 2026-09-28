@@ -2712,12 +2712,12 @@
   },
   {
    "name": "overline",
-   "count": 947,
+   "count": 950,
    "origin": "katex"
   },
   {
    "name": "num",
-   "count": 933,
+   "count": 936,
    "origin": "upstream"
   },
   {
@@ -2762,12 +2762,12 @@
   },
   {
    "name": "mathsfit",
-   "count": 402,
+   "count": 419,
    "origin": "katex"
   },
   {
    "name": "Obj",
-   "count": 402,
+   "count": 419,
    "origin": "upstream"
   },
   {
@@ -2797,7 +2797,7 @@
   },
   {
    "name": "dots",
-   "count": 341,
+   "count": 342,
    "origin": "katex"
   },
   {
@@ -3026,13 +3026,13 @@
    "origin": "upstream"
   },
   {
-   "name": "xrightarrow",
-   "count": 86,
+   "name": "cdot",
+   "count": 87,
    "origin": "katex"
   },
   {
-   "name": "cdot",
-   "count": 85,
+   "name": "xrightarrow",
+   "count": 86,
    "origin": "katex"
   },
   {
@@ -3121,6 +3121,11 @@
    "origin": "katex"
   },
   {
+   "name": "times",
+   "count": 59,
+   "origin": "katex"
+  },
+  {
    "name": "leftrightarrow",
    "count": 58,
    "origin": "katex"
@@ -3136,18 +3141,13 @@
    "origin": "upstream"
   },
   {
+   "name": "prime",
+   "count": 54,
+   "origin": "katex"
+  },
+  {
    "name": "subseteq",
    "count": 53,
-   "origin": "katex"
-  },
-  {
-   "name": "times",
-   "count": 53,
-   "origin": "katex"
-  },
-  {
-   "name": "prime",
-   "count": 52,
    "origin": "katex"
   },
   {

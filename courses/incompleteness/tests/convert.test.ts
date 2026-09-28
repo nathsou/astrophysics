@@ -35,6 +35,11 @@ describe('macro layer', () => {
     expect(expandMath('\\num{n}', hooks)).toBe('\\overline{n}');
     expect(expandMath('\\gn{!A}', hooks).replace(/\s+/g, ' ').trim()).toBe('\\ulcorner A \\urcorner');
   });
+  it('pairs nested optional arguments as xparse does', () => {
+    const norm = (t: string) => expandMath(t, hooks).replace(/\s+/g, ' ').trim();
+    expect(norm("\\lforall[x][\\lforall[y][(\\eq[x'][y'] \\lif \\eq[x][y])]]")).toBe("\\forall x \\, \\forall y \\, ( x' = y' \\mathbin{\\rightarrow} x = y )");
+    expect(norm("\\lforall[x][\\eq/[\\Obj 0][x']]")).toBe("\\forall x \\, \\mathsfit{0} \\neq x'");
+  });
   it('uses latin formula letters, as ic-config.sty asks', () => {
     expect(cfg.formulaLetters).toBeNull();
   });

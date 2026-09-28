@@ -380,7 +380,7 @@
       },
       {
        "t": "math",
-       "tex": "\\forall \\mathsfit{V^1_0} \\, \\forall \\mathsfit{v_0} [(\\mathsfit{V^1_0}(\\mathsfit{v_0}) \\lor \\lnot \\mathsfit{V^1_0}(\\mathsfit{v_0}))]]",
+       "tex": "\\forall \\mathsfit{V^1_0} \\, \\forall \\mathsfit{v_0} \\, (\\mathsfit{V^1_0}(\\mathsfit{v_0}) \\lor \\lnot \\mathsfit{V^1_0}(\\mathsfit{v_0}))",
        "src": "\\lforall[\\Obj{V^1_0}][\\lforall[\\Obj{v_0}][(\\Obj{V^1_0}(\\Obj{v_0}) \\lor\n    \\lnot \\Obj{V^1_0}(\\Obj{v_0}))]]"
       },
       {
@@ -389,7 +389,7 @@
       },
       {
        "t": "math",
-       "tex": "\\exists \\mathsfit{V^1_0} \\, \\forall \\mathsfit{v_0} [(\\mathsfit{V^1_0}(\\mathsfit{v_0}) \\lor \\lnot \\mathsfit{V^1_0}(\\mathsfit{v_0}))]]",
+       "tex": "\\exists \\mathsfit{V^1_0} \\, \\forall \\mathsfit{v_0} \\, (\\mathsfit{V^1_0}(\\mathsfit{v_0}) \\lor \\lnot \\mathsfit{V^1_0}(\\mathsfit{v_0}))",
        "src": "\\lexists[\\Obj{V^1_0}][\\lforall[\\Obj{v_0}][(\\Obj{V^1_0}(\\Obj{v_0}) \\lor\n    \\lnot \\Obj{V^1_0}(\\Obj{v_0}))]]"
       },
       {
@@ -3689,7 +3689,7 @@
        "c": [
         {
          "t": "math",
-         "tex": "{\\boldsymbol{\\mathit{M}}}, s \\vDash \\exists Y \\, (\\exists y [\\mathord{Y}(y)] \\land \\forall z \\, (\\mathord{X}(z) \\mathbin{\\leftrightarrow} \\lnot \\mathord{Y}(z)) )]",
+         "tex": "{\\boldsymbol{\\mathit{M}}}, s \\vDash \\exists Y \\, (\\exists y \\, \\mathord{Y}(y) \\land \\forall z \\, (\\mathord{X}(z) \\mathbin{\\leftrightarrow} \\lnot \\mathord{Y}(z)) )",
          "src": "\\Sat{M}{\\lexists[Y][(\\lexists[y][\\Atom{Y}{y}] \\land\n  \\lforall[z][(\\Atom{X}{z} \\liff \\lnot \\Atom{Y}{z})])]}[s]"
         },
         {
@@ -3743,7 +3743,7 @@
         },
         {
          "t": "math",
-         "tex": "{\\boldsymbol{\\mathit{M}}}, s \\vDash \\exists Y \\, (\\exists y [\\mathord{Y}(y)] \\land \\forall z \\, (\\mathord{X}(z) \\mathbin{\\leftrightarrow} \\lnot \\mathord{Y}(z)) )]",
+         "tex": "{\\boldsymbol{\\mathit{M}}}, s \\vDash \\exists Y \\, (\\exists y \\, \\mathord{Y}(y) \\land \\forall z \\, (\\mathord{X}(z) \\mathbin{\\leftrightarrow} \\lnot \\mathord{Y}(z)) )",
          "src": "\\Sat{M}{\\lexists[Y][(\\lexists[y][\\Atom{Y}{y}] \\land\n  \\lforall[z][(\\Atom{X}{z} \\liff \\lnot \\Atom{Y}{z})])]}[s]"
         },
         {
@@ -3857,7 +3857,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "\\forall X \\, \\exists Y [(\\exists y \\, \\mathord{Y}(y) \\land \\forall z \\, (\\mathord{X}(z) \\mathbin{\\leftrightarrow} \\lnot \\mathord{Y}(z)) )]]"
+         "tex": "\\forall X \\, \\exists Y \\, (\\exists y \\, \\mathord{Y}(y) \\land \\forall z \\, (\\mathord{X}(z) \\mathbin{\\leftrightarrow} \\lnot \\mathord{Y}(z)) )"
         }
        ],
        "src": "\\lforall[X][\\lexists[Y][(\\lexists[y][\\Atom{Y}{y}] \\land\n      \\lforall[z][(\\Atom{X}{z} \\liff \\lnot \\Atom{Y}{z})])]]",
@@ -3926,7 +3926,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "\\exists X \\, \\exists Y [(\\exists y \\, \\mathord{Y}(y) \\land \\forall z \\, (\\mathord{X}(z) \\mathbin{\\leftrightarrow} \\lnot \\mathord{Y}(z)) )]]"
+         "tex": "\\exists X \\, \\exists Y \\, (\\exists y \\, \\mathord{Y}(y) \\land \\forall z \\, (\\mathord{X}(z) \\mathbin{\\leftrightarrow} \\lnot \\mathord{Y}(z)) )"
         }
        ],
        "src": "\\lexists[X][\\lexists[Y][(\\lexists[y][\\Atom{Y}{y}] \\land\n      \\lforall[z][(\\Atom{X}{z} \\liff \\lnot \\Atom{Y}{z})])]]",
@@ -4022,7 +4022,7 @@
         },
         {
          "t": "math",
-         "tex": "\\forall X \\, \\forall y [X(y)]]",
+         "tex": "\\forall X \\, \\forall y \\, X(y)",
          "src": "\\lforall[X][\\lforall[y][X(y)]]"
         },
         {
@@ -4085,7 +4085,7 @@
         },
         {
          "t": "math",
-         "tex": "A \\mathbin{\\rightarrow} \\forall X \\, \\forall y [X(y)]]",
+         "tex": "A \\mathbin{\\rightarrow} \\forall X \\, \\forall y \\, X(y)",
          "src": "!A \\lif\n  \\lforall[X][\\lforall[y][X(y)]]"
         },
         {
@@ -4103,7 +4103,7 @@
         },
         {
          "t": "math",
-         "tex": "{\\boldsymbol{\\mathit{M}}} \\vDash A \\mathbin{\\rightarrow} \\forall X \\, \\forall y [X(y)]]",
+         "tex": "{\\boldsymbol{\\mathit{M}}} \\vDash A \\mathbin{\\rightarrow} \\forall X \\, \\forall y \\, X(y)",
          "src": "\\Sat{M}{!A \\lif\n  \\lforall[X][\\lforall[y][X(y)]]}"
         },
         {
@@ -4229,7 +4229,7 @@
             },
             {
              "t": "math",
-             "tex": "\\forall X \\, (A \\mathbin{\\rightarrow} (B \\mathbin{\\rightarrow} \\forall x [X(x)])\\mathbin{\\rightarrow} \\forall x \\, X(x) )]",
+             "tex": "\\forall X \\, (A \\mathbin{\\rightarrow} (B \\mathbin{\\rightarrow} \\forall x \\, X(x) )\\mathbin{\\rightarrow} \\forall x \\, X(x) )",
              "src": "\\lforall[X][(!A \\lif (!B \\lif \\lforall[x][X(x)])\\lif\n    \\lforall[x][X(x)])]"
             },
             {
@@ -5603,10 +5603,10 @@
        "env": "gather",
        "rows": [
         {
-         "tex": "B_R(X) \\equiv \\forall x \\, \\forall y [(R(x,y) \\mathbin{\\rightarrow} X(x, y))]] \\land {}"
+         "tex": "B_R(X) \\equiv \\forall x \\, \\forall y \\, (R(x,y) \\mathbin{\\rightarrow} X(x, y)) \\land {}"
         },
         {
-         "tex": "\\forall x \\, \\forall y [ \\forall z \\, ((X(x,y) \\land X(y,z)) \\mathbin{\\rightarrow} X(x, z)) ]]."
+         "tex": "\\forall x \\, \\forall y \\, \\forall z \\, ((X(x,y) \\land X(y,z)) \\mathbin{\\rightarrow} X(x, z)) ."
         }
        ],
        "src": "!B_R(X) \\ident \\lforall[x][\\lforall[y][(R(x,y) \\lif X(x, y))]] \\land {}\\\\\n\\lforall[x][\\lforall[y][\\lforall[z][((X(x,y) \\land X(y,z)) \\lif X(x,\n      z))]]].",
@@ -5705,7 +5705,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "R^*(X) \\equiv B_R(X) \\land \\forall Y \\, (B_R(Y) \\mathbin{\\rightarrow} \\forall x [ \\forall y \\, (X(x, y) \\mathbin{\\rightarrow} Y(x,y)) ])]."
+         "tex": "R^*(X) \\equiv B_R(X) \\land \\forall Y \\, (B_R(Y) \\mathbin{\\rightarrow} \\forall x \\, \\forall y \\, (X(x, y) \\mathbin{\\rightarrow} Y(x,y)) ) ."
         }
        ],
        "src": "R^*(X) \\ident !B_R(X) \\land \\lforall[Y][(!B_R(Y) \\lif\n  \\lforall[x][\\lforall[y][(X(x, y) \\lif Y(x,y))]])].",
@@ -5931,7 +5931,7 @@
      "env": "equation",
      "rows": [
       {
-       "tex": "\\forall x \\, \\forall y [( f(x) = f(y) \\to x = y )]] \\land \\exists y \\, \\forall x [ y \\neq f(x) ]]."
+       "tex": "\\forall x \\, \\forall y \\, ( f(x) = f(y) \\to x = y ) \\land \\exists y \\, \\forall x \\, y \\neq f(x) ."
       }
      ],
      "src": "\\lforall[x][\\lforall[y][(\\eq[f(x)][f(y)] \\to \\eq[x][y])]] \\land\n\\lexists[y][\\lforall[x][\\eq/[y][f(x)]]].",
@@ -6085,7 +6085,7 @@
      "env": "equation",
      "rows": [
       {
-       "tex": "\\mathrm{Inf} \\equiv \\exists u \\, ( \\forall x [ \\forall y \\, ( = [u(y)] \\mathbin{\\rightarrow} x = y )]] \\land \\exists y \\, \\forall x [ y \\neq u(x) ]])]."
+       "tex": "\\mathrm{Inf} \\equiv \\exists u \\, ( \\forall x \\, \\forall y \\, ( u(x) = u(y) \\mathbin{\\rightarrow} x = y ) \\land \\exists y \\, \\forall x \\, y \\neq u(x) ) ."
       }
      ],
      "src": "\\fn{Inf} \\ident \\lexists[u][(\\lforall[x][\\lforall[y][(\\eq[u(x)][u(y)]\n      \\lif \\eq[x][y])]] \\land \\lexists[y][\\lforall[x][\\eq/[y][u(x)]]])].",
@@ -6253,7 +6253,7 @@
         },
         {
          "t": "math",
-         "tex": "{\\boldsymbol{\\mathit{M}}}, s \\vDash \\forall x \\, \\forall y [( u(x) = u(y) \\mathbin{\\rightarrow} x = y )]] \\land \\exists y \\, \\forall x [ y \\neq u(x) ]]",
+         "tex": "{\\boldsymbol{\\mathit{M}}}, s \\vDash \\forall x \\, \\forall y \\, ( u(x) = u(y) \\mathbin{\\rightarrow} x = y ) \\land \\exists y \\, \\forall x \\, y \\neq u(x)",
          "src": "\\Sat{M}{\\lforall[x][\\lforall[y][(\\eq[u(x)][u(y)] \\lif \\eq[x][y])]]\n    \\land \\lexists[y][\\lforall[x][\\eq/[y][u(x)]]]}[s]"
         },
         {
@@ -6691,7 +6691,7 @@
      "env": "equation",
      "rows": [
       {
-       "tex": "\\mathrm{Count} \\equiv \\exists z \\, \\exists u [ \\forall X \\, ((X(z) \\land \\forall x [(X(x) \\mathbin{\\rightarrow} X(u(x)))]) \\mathbin{\\rightarrow} \\forall x \\, X(x) )]]]"
+       "tex": "\\mathrm{Count} \\equiv \\exists z \\, \\exists u \\, \\forall X \\, ((X(z) \\land \\forall x \\, (X(x) \\mathbin{\\rightarrow} X(u(x))) ) \\mathbin{\\rightarrow} \\forall x \\, X(x) )"
       }
      ],
      "src": "\\fn{Count} \\ident\n\\lexists[z][\\lexists[u][\\lforall[X][((X(z) \\land\n      \\lforall[x][(X(x) \\lif X(u(x)))]) \\lif \\lforall[x][X(x)])]]]",
@@ -6854,7 +6854,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "{\\boldsymbol{\\mathit{M}}}, s \\vDash \\forall X \\, ((X(z) \\land \\forall x [(X(x) \\mathbin{\\rightarrow} X(u(x)))]) \\mathbin{\\rightarrow} \\forall x \\, X(x) )]"
+         "tex": "{\\boldsymbol{\\mathit{M}}}, s \\vDash \\forall X \\, ((X(z) \\land \\forall x \\, (X(x) \\mathbin{\\rightarrow} X(u(x))) ) \\mathbin{\\rightarrow} \\forall x \\, X(x) )"
         }
        ],
        "src": "\\Sat{M}{\\lforall[X][((X(z) \\land \\lforall[x][(X(x) \\lif X(u(x)))])\n    \\lif \\lforall[x][X(x)])]}[s]",
@@ -7056,7 +7056,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "{\\boldsymbol{\\mathit{M}}}, s \\vDash \\forall X \\, ((X(z) \\land \\forall x [(X(x) \\mathbin{\\rightarrow} X(u(x)))]) \\mathbin{\\rightarrow} \\forall x \\, X(x) )]"
+         "tex": "{\\boldsymbol{\\mathit{M}}}, s \\vDash \\forall X \\, ((X(z) \\land \\forall x \\, (X(x) \\mathbin{\\rightarrow} X(u(x))) ) \\mathbin{\\rightarrow} \\forall x \\, X(x) )"
         }
        ],
        "src": "\\Sat{M}{\\lforall[X][((X(z) \\land \\lforall[x][(X(x) \\lif X(u(x)))])\n    \\lif \\lforall[x][X(x)])]}[s]",
@@ -7411,28 +7411,28 @@
      "env": "align",
      "rows": [
       {
-       "tex": "& \\forall x \\, \\neq [\\mathsfit{0}]]"
+       "tex": "& \\forall x \\, x' \\neq \\mathsfit{0}"
       },
       {
-       "tex": "& \\forall x \\, \\forall y [( x' = y' \\mathbin{\\rightarrow} x = y )]]"
+       "tex": "& \\forall x \\, \\forall y \\, ( x' = y' \\mathbin{\\rightarrow} x = y )"
       },
       {
-       "tex": "& \\forall x \\, ( = [\\mathsfit{0}] \\lor \\exists y \\, = [y']])]"
+       "tex": "& \\forall x \\, ( x = \\mathsfit{0} \\lor \\exists y \\, x = y' )"
       },
       {
-       "tex": "& \\forall x \\, = [x]]"
+       "tex": "& \\forall x \\, (x + \\mathsfit{0}) = x"
       },
       {
-       "tex": "& \\forall x \\, \\forall y [ (x + y') = (x + y)' ]]"
+       "tex": "& \\forall x \\, \\forall y \\, (x + y') = (x + y)'"
       },
       {
-       "tex": "& \\forall x \\, = [\\mathsfit{0}]]"
+       "tex": "& \\forall x \\, (x \\times \\mathsfit{0}) = \\mathsfit{0}"
       },
       {
-       "tex": "& \\forall x \\, \\forall y [ (x \\times y') = ((x \\times y) + x) ]]"
+       "tex": "& \\forall x \\, \\forall y \\, (x \\times y') = ((x \\times y) + x)"
       },
       {
-       "tex": "& \\forall x \\, \\forall y [(x < y \\mathbin{\\leftrightarrow} \\exists z \\, = [y]])]]"
+       "tex": "& \\forall x \\, \\forall y \\, (x < y \\mathbin{\\leftrightarrow} \\exists z \\, (z' + x) = y )"
       }
      ],
      "src": "& \\lforall[x][\\eq/[x'][\\Obj 0]]\\\\\n& \\lforall[x][\\lforall[y][(\\eq[x'][y'] \\lif \\eq[x][y])]]\\\\\n& \\lforall[x][(\\eq[x][\\Obj 0] \\lor \\lexists[y][\\eq[x][y']])]\\\\ \n& \\lforall[x][\\eq[(x + \\Obj 0)][x]]\\\\\n& \\lforall[x][\\lforall[y][\\eq[(x + y')][(x + y)']]]\\\\\n& \\lforall[x][\\eq[(x \\times \\Obj 0)][\\Obj 0]]\\\\\n& \\lforall[x][\\lforall[y][\\eq[(x \\times y')][((x \\times y) + x)]]]\\\\\n& \\lforall[x][\\lforall[y][(x < y \\liff \\lexists[z][\\eq[(z' + x)][y]])]]\\\\",
@@ -7582,7 +7582,7 @@
      "env": "equation",
      "rows": [
       {
-       "tex": "\\forall X \\, ((X(\\mathsfit{0}) \\land \\forall x [(X(x) \\mathbin{\\rightarrow} X(x'))]) \\mathbin{\\rightarrow} \\forall x \\, X(x) )]."
+       "tex": "\\forall X \\, ((X(\\mathsfit{0}) \\land \\forall x \\, (X(x) \\mathbin{\\rightarrow} X(x')) ) \\mathbin{\\rightarrow} \\forall x \\, X(x) ) ."
       }
      ],
      "src": "\\lforall[X][((X(\\Obj 0) \\land \\lforall[x][(X(x) \\lif X(x'))]) \\lif \\lforall[x][X(x)])].",
@@ -7897,7 +7897,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "{\\boldsymbol{\\mathit{M}}} \\vDash \\forall X \\, ((X(\\mathsfit{0}) \\land \\forall x [(X(x) \\mathbin{\\rightarrow} X(x'))]) \\mathbin{\\rightarrow} \\forall x \\, X(x) )] , & \\text{ thus}"
+         "tex": "{\\boldsymbol{\\mathit{M}}} \\vDash \\forall X \\, ((X(\\mathsfit{0}) \\land \\forall x \\, (X(x) \\mathbin{\\rightarrow} X(x')) ) \\mathbin{\\rightarrow} \\forall x \\, X(x) ) , & \\text{ thus}"
         },
         {
          "tex": "{\\boldsymbol{\\mathit{M}}}, s \\vDash (X(\\mathsfit{0}) \\land \\forall x \\, (X(x) \\mathbin{\\rightarrow} X(x')) ) \\mathbin{\\rightarrow} \\forall x \\, X(x) . &"
@@ -8523,7 +8523,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "A_+(x,y,z) \\equiv \\exists u \\, (u(\\mathsfit{0})=x \\land \\forall w [u(x')=u (x)'] \\land u(y)=z)]"
+         "tex": "A_+(x,y,z) \\equiv \\exists u \\, (u(\\mathsfit{0})=x \\land \\forall w \\, u(x')=u (x)' \\land u(y)=z)"
         }
        ],
        "src": "!A_+(x,y,z) \\ident \\lexists[u][(u(\\Obj 0)=x \\land \\lforall[w][u(x')=u\n (x)'] \\land u(y)=z)]",
@@ -8847,7 +8847,7 @@
         },
         {
          "t": "math",
-         "tex": "\\forall z \\, \\forall u [ \\forall u' \\, \\forall u'' [ \\forall L \\, (P' \\mathbin{\\rightarrow} A') ]]]]",
+         "tex": "\\forall z \\, \\forall u \\, \\forall u' \\, \\forall u'' \\, \\forall L \\, (P' \\mathbin{\\rightarrow} A')",
          "src": "\\lforall[z][\\lforall[u][\\lforall[u'][\\lforall[u''][\\lforall[L][(!P' \\lif !A')]]]]]"
         },
         {
@@ -9333,7 +9333,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "\\mathrm{Inf} \\equiv \\exists u \\, ( \\forall x [ \\forall y \\, ( = [u(y)] \\mathbin{\\rightarrow} x = y )]] \\land \\exists y \\, \\forall x [ y \\neq u(x) ]])]"
+         "tex": "\\mathrm{Inf} \\equiv \\exists u \\, ( \\forall x \\, \\forall y \\, ( u(x) = u(y) \\mathbin{\\rightarrow} x = y ) \\land \\exists y \\, \\forall x \\, y \\neq u(x) )"
         }
        ],
        "src": "\\fn{Inf} \\ident \\lexists[u][(\\lforall[x][\\lforall[y][(\\eq[u(x)][u(y)]\n      \\lif \\eq[x][y])]] \\land \\lexists[y][\\lforall[x][\\eq/[y][u(x)]]])]",
@@ -9402,7 +9402,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "A^{\\ge n} \\equiv \\exists x_1 \\, \\dots\\exists x_n [( x_1 \\neq x_2 \\land x_1 \\neq x_3 \\land \\dots \\land x_{n-1} \\neq x_n )]]."
+         "tex": "A^{\\ge n} \\equiv \\exists x_1 \\, \\dots\\exists x_n \\, ( x_1 \\neq x_2 \\land x_1 \\neq x_3 \\land \\dots \\land x_{n-1} \\neq x_n ) ."
         }
        ],
        "src": "!A^{\\ge n} \\ident \\lexists[x_1][\\dots\\lexists[x_n][(\\eq/[x_1][x_2]\n    \\land \\eq/[x_1][x_3] \\land \\dots \\land \\eq/[x_{n-1}][x_n])]].",
@@ -9872,7 +9872,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "\\mathrm{Count} \\equiv \\exists z \\, \\exists u [ \\forall X \\, ((X(z) \\land \\forall x [(X(x) \\mathbin{\\rightarrow} X(u(x)))]) \\mathbin{\\rightarrow} \\forall x \\, X(x) )]]]"
+         "tex": "\\mathrm{Count} \\equiv \\exists z \\, \\exists u \\, \\forall X \\, ((X(z) \\land \\forall x \\, (X(x) \\mathbin{\\rightarrow} X(u(x))) ) \\mathbin{\\rightarrow} \\forall x \\, X(x) )"
         }
        ],
        "src": "\\fn{Count} \\ident \\lexists[z][\\lexists[u][\\lforall[X][((X(z) \\land\n      \\lforall[x][(X(x) \\lif X(u(x)))]) \\lif \\lforall[x][X(x)])]]]",
@@ -10501,7 +10501,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "\\exists u \\, ( \\forall x [(X(x) \\mathbin{\\rightarrow} Y(u(x)))] \\land \\forall x \\, \\forall y [( u(x) = u(y) \\mathbin{\\rightarrow} x = y )]])]"
+         "tex": "\\exists u \\, ( \\forall x \\, (X(x) \\mathbin{\\rightarrow} Y(u(x))) \\land \\forall x \\, \\forall y \\, ( u(x) = u(y) \\mathbin{\\rightarrow} x = y ) )"
         }
        ],
        "src": "\\lexists[u][(\\lforall[x][(X(x) \\lif Y(u(x)))] \\land \\lforall[x][\\lforall[y][(\\eq[u(x)][u(y)] \\lif\n      \\eq[x][y])]])]",
@@ -10607,13 +10607,13 @@
        "env": "gather",
        "rows": [
         {
-         "tex": "\\exists u \\, ( \\forall x [(X(x) \\mathbin{\\rightarrow} Y(u(x)))] \\land {}"
+         "tex": "\\exists u \\, ( \\forall x \\, (X(x) \\mathbin{\\rightarrow} Y(u(x))) \\land {}"
         },
         {
-         "tex": "\\forall x \\, \\forall y [( u(x) = u(y) \\mathbin{\\rightarrow} x = y )]] \\land {}"
+         "tex": "\\forall x \\, \\forall y \\, ( u(x) = u(y) \\mathbin{\\rightarrow} x = y ) \\land {}"
         },
         {
-         "tex": "\\forall y \\, (Y(y) \\mathbin{\\rightarrow} \\exists x [(X(x) \\land y = u(x) )])])]"
+         "tex": "\\forall y \\, (Y(y) \\mathbin{\\rightarrow} \\exists x \\, (X(x) \\land y = u(x) ) ) )]"
         }
        ],
        "src": "\\lexists[u][(\\lforall[x][(X(x) \\lif Y(u(x)))] \\land {}\\\\\n    \\lforall[x][\\lforall[y][(\\eq[u(x)][u(y)] \\lif \\eq[x][y])]]\n  \\land {} \\\\\\lforall[y][(Y(y) \\lif \\lexists[x][(X(x)\n      \\land \\eq[y][u(x)])])])]",
@@ -10788,7 +10788,7 @@
         },
         {
          "t": "math",
-         "tex": "\\forall X \\, \\forall Y [((X \\preceq Y \\land Y \\preceq X) \\mathbin{\\rightarrow} X \\approx Y)]]",
+         "tex": "\\forall X \\, \\forall Y \\, ((X \\preceq Y \\land Y \\preceq X) \\mathbin{\\rightarrow} X \\approx Y)",
          "src": "\\lforall[X][\\lforall[Y][((\\cardle{X}{Y} \\land\n    \\cardle{Y}{X}) \\lif \\cardeq{X}{Y})]]"
         },
         {
@@ -11069,10 +11069,10 @@
        "env": "gather",
        "rows": [
         {
-         "tex": "\\exists u \\, ( \\forall x [ \\forall y \\, ( = [u(y)] \\mathbin{\\rightarrow} x = y )]] \\land {}"
+         "tex": "\\exists u \\, ( \\forall x \\, \\forall y \\, ( u(x) = u(y) \\mathbin{\\rightarrow} x = y ) \\land {}"
         },
         {
-         "tex": "\\exists y \\, (X(y) \\land \\forall x [(X(x) \\mathbin{\\rightarrow} y \\neq u(x) )]])]"
+         "tex": "\\exists y \\, (X(y) \\land \\forall x \\, (X(x) \\mathbin{\\rightarrow} y \\neq u(x) ) )]"
         }
        ],
        "src": "\\lexists[u][(\\lforall[x][\\lforall[y][(\\eq[u(x)][u(y)] \\lif \n      \\eq[x][y])]] \\land {} \\\\\\lexists[y][(X(y) \\land \\lforall[x][(X(x)\n      \\lif \\eq/[y][u(x)])]])]",
@@ -11158,10 +11158,10 @@
        "env": "gather",
        "rows": [
         {
-         "tex": "\\exists z \\, \\exists u [(X(z) \\land \\forall x \\, (X(x) \\mathbin{\\rightarrow} X(u(x))) \\land {}"
+         "tex": "\\exists z \\, \\exists u \\, (X(z) \\land \\forall x \\, (X(x) \\mathbin{\\rightarrow} X(u(x))) \\land {}"
         },
         {
-         "tex": "\\forall Y \\, ((Y(z) \\land \\forall x [(Y(x) \\mathbin{\\rightarrow} Y(u(x)))]) \\mathbin{\\rightarrow} X = Y])]])"
+         "tex": "\\forall Y \\, ((Y(z) \\land \\forall x \\, (Y(x) \\mathbin{\\rightarrow} Y(u(x))) ) \\mathbin{\\rightarrow} X = Y )]])"
         }
        ],
        "src": "\\lexists[z][\\lexists[u][(X(z) \\land \n    \\lforall[x][(X(x) \\lif X(u(x)))] \\land {} \\\\ \\lforall[Y][((Y(z) \\land\n      \\lforall[x][(Y(x) \\lif Y(u(x)))]) \\lif X = Y])]])",
@@ -12167,10 +12167,10 @@
          "tex": "\\mathrm{Pow}(Y, R, X) \\equiv"
         },
         {
-         "tex": "\\forall Z \\, (Z \\subseteq X \\mathbin{\\rightarrow} \\exists x [(Y(x) \\land \\mathrm{Codes}(x, R, Z))])] \\land {}"
+         "tex": "\\forall Z \\, (Z \\subseteq X \\mathbin{\\rightarrow} \\exists x \\, (Y(x) \\land \\mathrm{Codes}(x, R, Z)) ) \\land {}"
         },
         {
-         "tex": "\\forall x \\, (Y(x) \\mathbin{\\rightarrow} \\forall Z [(\\mathrm{Codes}(x, R, Z) \\mathbin{\\rightarrow} Z \\subseteq X)]]"
+         "tex": "\\forall x \\, (Y(x) \\mathbin{\\rightarrow} \\forall Z \\, (\\mathrm{Codes}(x, R, Z) \\mathbin{\\rightarrow} Z \\subseteq X)"
         }
        ],
        "src": "\\fn{Pow}(Y, R, X) \\ident \\\\\n  \\lforall[Z][(Z \\subseteq X \\lif \\lexists[x][(Y(x) \\land\n    \\fn{Codes}(x, R, Z))])] \\land {} \\\\ \\lforall[x][(Y(x) \\lif\n  \\lforall[Z][(\\fn{Codes}(x, R, Z) \\lif Z \\subseteq X)]]",
@@ -12343,10 +12343,10 @@
        "env": "gather",
        "rows": [
         {
-         "tex": "\\forall X \\, \\forall Y [ \\forall R \\, (\\mathrm{Pow}(Y, R, X) \\mathbin{\\rightarrow}"
+         "tex": "\\forall X \\, \\forall Y \\, \\forall R \\, (\\mathrm{Pow}(Y, R, X) \\mathbin{\\rightarrow}"
         },
         {
-         "tex": "\\lnot \\exists u \\, ( \\forall x [ \\forall y \\, ( = [u(y)] \\mathbin{\\rightarrow} x = y )]] \\land {}"
+         "tex": "\\lnot \\exists u \\, ( \\forall x \\, \\forall y \\, ( u(x) = u(y) \\mathbin{\\rightarrow} x = y ) \\land {}"
         },
         {
          "tex": "\\forall x \\, (Y(x) \\mathbin{\\rightarrow} X(u(x))) )])]]]"
@@ -12572,10 +12572,10 @@
        "env": "gather",
        "rows": [
         {
-         "tex": "\\mathrm{Cont}(Y) \\equiv \\exists X \\, \\exists R [((\\mathrm{Aleph}_0(X) \\land \\mathrm{Pow}(Y, R, X)) \\land"
+         "tex": "\\mathrm{Cont}(Y) \\equiv \\exists X \\, \\exists R \\, ((\\mathrm{Aleph}_0(X) \\land \\mathrm{Pow}(Y, R, X)) \\land"
         },
         {
-         "tex": "\\forall x \\, \\forall y [((Y(x) \\land {} Y(y) \\land \\forall z \\, R(x,z) \\mathbin{\\leftrightarrow} R(y,z) ) \\mathbin{\\rightarrow} x = y )]])]]"
+         "tex": "\\forall x \\, \\forall y \\, ((Y(x) \\land {} Y(y) \\land \\forall z \\, R(x,z) \\mathbin{\\leftrightarrow} R(y,z) ) \\mathbin{\\rightarrow} x = y ) )]]"
         }
        ],
        "src": "\\fn{Cont}(Y) \\ident \n\\lexists[X][\\lexists[R][((\\fn{Aleph}_0(X) \\land\n      \\fn{Pow}(Y, R, X)) \\land \\\\ \n      \\lforall[x][\\lforall[y][((Y(x) \\land {} \n      Y(y) \\land \\lforall[z][R(x,z) \\liff R(y,z)]) \\lif \\eq[x][y])]])]]",
@@ -12785,7 +12785,7 @@
        "env": "gather",
        "rows": [
         {
-         "tex": "{\\boldsymbol{\\mathit{M}}} \\vDash \\exists X \\, \\exists Y [\\exists R \\, (\\mathrm{Aleph}_0(X) \\land \\mathrm{Pow}(Y, R, X) \\land \\\\ \\exists u [( \\forall x \\, \\forall y [( u(x) = u(y) \\mathbin{\\rightarrow} x = y )]] \\land {} \\\\ \\forall y \\, (Y(y) \\mathbin{\\rightarrow} \\exists x [ y = u(x) ])])])]]] ."
+         "tex": "{\\boldsymbol{\\mathit{M}}} \\vDash \\exists X \\, \\exists Y \\, \\exists R \\, (\\mathrm{Aleph}_0(X) \\land \\mathrm{Pow}(Y, R, X) \\land \\\\ \\exists u \\, ( \\forall x \\, \\forall y \\, ( u(x) = u(y) \\mathbin{\\rightarrow} x = y ) \\land {} \\\\ \\forall y \\, (Y(y) \\mathbin{\\rightarrow} \\exists x \\, y = u(x) ) ) ) ."
         }
        ],
        "src": "\\Sat{M}{\\lexists[X][\\lexists[Y][\\lexists[R][(\\fn{Aleph}_0(X) \\land \\fn{Pow}(Y, R, X) \\land \\\\\n          \\lexists[u][(\\lforall[x][\\lforall[y][(\\eq[u(x)][u(y)] \\lif \\eq[x][y])]] \\land {} \\\\\\lforall[y][(Y(y) \\lif \\lexists[x][\\eq[y][u(x)]])])])]]]}.",
@@ -13012,7 +13012,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "\\mathrm{NCH} \\equiv \\forall X \\, (\\mathrm{Cont}(X) \\mathbin{\\rightarrow} \\exists Y [(Y \\subseteq X \\land \\lnot \\mathrm{Count}(Y) \\land \\lnot X \\approx Y)])]"
+         "tex": "\\mathrm{NCH} \\equiv \\forall X \\, (\\mathrm{Cont}(X) \\mathbin{\\rightarrow} \\exists Y \\, (Y \\subseteq X \\land \\lnot \\mathrm{Count}(Y) \\land \\lnot X \\approx Y) )"
         }
        ],
        "src": "\\fn{NCH} \\ident\n\\lforall[X][(\\fn{Cont}(X) \\lif \\lexists[Y][(Y \\subseteq X \\land \\lnot\n    \\fn{Count}(Y) \\land \\lnot \\cardeq{X}{Y})])]",
@@ -13288,7 +13288,7 @@
    "env": "equation",
    "rows": [
     {
-     "tex": "\\forall X \\, ((X(\\mathsfit{0}) \\land \\forall x [(X(x) \\mathbin{\\rightarrow} X(x'))]) \\mathbin{\\rightarrow} \\forall x \\, X(x) )]."
+     "tex": "\\forall X \\, ((X(\\mathsfit{0}) \\land \\forall x \\, (X(x) \\mathbin{\\rightarrow} X(x')) ) \\mathbin{\\rightarrow} \\forall x \\, X(x) ) ."
     }
    ],
    "src": "\\lforall[X][((X(\\Obj 0) \\land \\lforall[x][(X(x) \\lif X(x'))]) \\lif\n  \\lforall[x][X(x)])].",

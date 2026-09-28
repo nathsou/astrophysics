@@ -1047,7 +1047,7 @@
             },
             {
              "t": "math",
-             "tex": "\\lambda x .\\, \\lambda y [ \\lambda z .\\, M ]]",
+             "tex": "\\lambda x .\\, \\lambda y .\\, \\lambda z .\\, M",
              "src": "\\lambd[x][\\lambd[y][\\lambd[z][M]]]"
             },
             {
@@ -1102,7 +1102,7 @@
      "env": "equation",
      "rows": [
       {
-       "tex": "\\lambda xy .\\, xxyx \\lambda z [xz]]"
+       "tex": "\\lambda xy .\\, xxyx \\lambda z .\\, xz"
       }
      ],
      "src": "\\lambd[xy][xxyx \\lambd[z][xz]]",
@@ -1135,7 +1135,7 @@
      "env": "equation",
      "rows": [
       {
-       "tex": "\\lambda x .\\, \\lambda y [((((xx)y)x)( \\lambda z .\\, (xz) ))]]."
+       "tex": "\\lambda x .\\, \\lambda y .\\, ((((xx)y)x)( \\lambda z .\\, (xz) )) ."
       }
      ],
      "src": "\\lambd[x][\\lambd[y][((((xx)y)x)(\\lambd[z][(xz)]))]].",
@@ -1934,7 +1934,7 @@
          "env": "equation",
          "rows": [
           {
-           "tex": "( \\lambda x .\\, ( \\lambda y [yx]) z)] v \\xrightarrow{} ( \\lambda y .\\, yv ) z"
+           "tex": "( \\lambda x .\\, ( \\lambda y .\\, yx ) z) v \\xrightarrow{} ( \\lambda y .\\, yv ) z"
           }
          ],
          "src": "(\\lambd[x][(\\lambd[y][yx]) z)] v \\redone (\\lambd[y][yv]) z",
@@ -1967,7 +1967,7 @@
          "env": "equation",
          "rows": [
           {
-           "tex": "( \\lambda x .\\, ( \\lambda y [yx]) z)] v \\xrightarrow{} ( \\lambda x .\\, zx ) v"
+           "tex": "( \\lambda x .\\, ( \\lambda y .\\, yx ) z) v \\xrightarrow{} ( \\lambda x .\\, zx ) v"
           }
          ],
          "src": "(\\lambd[x][(\\lambd[y][yx]) z)] v \\redone (\\lambd[x][zx]) v",
@@ -2802,7 +2802,7 @@
       },
       {
        "t": "math",
-       "tex": "\\lambda x .\\, \\lambda y [x]]",
+       "tex": "\\lambda x .\\, \\lambda y .\\, x",
        "src": "\\lambd[x][\\lambd[y][x]]"
       },
       {
@@ -2856,7 +2856,7 @@
       },
       {
        "t": "math",
-       "tex": "\\lambda x .\\, \\lambda y [x]]",
+       "tex": "\\lambda x .\\, \\lambda y .\\, x",
        "src": "\\lambd[x][\\lambd[y][x]]"
       },
       {
@@ -2877,7 +2877,7 @@
      "env": "align",
      "rows": [
       {
-       "tex": "( \\lambda x .\\, \\lambda y [x]])MN \\xrightarrow{\\beta} & ( \\lambda y .\\, M )N"
+       "tex": "( \\lambda x .\\, \\lambda y .\\, x )MN \\xrightarrow{\\beta} & ( \\lambda y .\\, M )N"
       },
       {
        "tex": "\\xrightarrow{\\beta} & M"
@@ -2928,7 +2928,7 @@
       },
       {
        "t": "math",
-       "tex": "\\lambda x_1 .\\, \\lambda x_2 [\\ldots \\lambda x_n .\\, N ]]",
+       "tex": "\\lambda x_1 .\\, \\lambda x_2 .\\, \\ldots \\lambda x_n .\\, N",
        "src": "\\lambd[x_1][\\lambd[x_2][\\ldots\\lambd[x_n][N]]]"
       },
       {
@@ -2958,10 +2958,10 @@
      "env": "gather",
      "rows": [
       {
-       "tex": "( \\lambda x_1 .\\, \\lambda x_2 [\\ldots \\lambda x_n .\\, N ]]) M_1 \\dots M_n \\xrightarrow{\\beta}"
+       "tex": "( \\lambda x_1 .\\, \\lambda x_2 .\\, \\ldots \\lambda x_n .\\, N ) M_1 \\dots M_n \\xrightarrow{\\beta}"
       },
       {
-       "tex": "\\begin{aligned} \\xrightarrow{\\beta} {} & (( \\lambda x_2 .\\, \\ldots \\lambda x_n [N]])[M_1/x_1]) M_2 \\dots M_n\\\\ \\equiv {} & ( \\lambda x_2 .\\, \\ldots \\lambda x_n [N[M_1/x_1]]]) M_2 \\dots M_n \\\\ \\vdots & \\\\ \\xrightarrow{\\beta} {} &P[M_1/x_1]\\ldots[M_n/x_n] \\end{aligned}"
+       "tex": "\\begin{aligned} \\xrightarrow{\\beta} {} & (( \\lambda x_2 .\\, \\ldots \\lambda x_n .\\, N )[M_1/x_1]) M_2 \\dots M_n\\\\ \\equiv {} & ( \\lambda x_2 .\\, \\ldots \\lambda x_n .\\, N[M_1/x_1] ) M_2 \\dots M_n \\\\ \\vdots & \\\\ \\xrightarrow{\\beta} {} &P[M_1/x_1]\\ldots[M_n/x_n] \\end{aligned}"
       }
      ],
      "src": "(\\lambd[x_1][\\lambd[x_2][\\ldots\\lambd[x_n][N]]]) M_1 \\dots M_n \\bredone\\\\\n  \\begin{aligned}\n  \\bredone {} & (\\Subst{(\\lambd[x_2][\\ldots\\lambd[x_n][N]])}{M_1}{x_1}) M_2\n  \\dots M_n\\\\\n   \\eqs {} & (\\lambd[x_2][\\ldots\\lambd[x_n][\\Subst{N}{M_1}{x_1}]]) M_2\n            \\dots M_n \\\\\n  \\vdots & \\\\\n  \\bredone {} &\\Subst{\\Subst{P}{M_1}{x_1}\\ldots}{M_n}{x_n}\n  \\end{aligned}",
@@ -3904,7 +3904,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "\\mathrm{Succ} & \\equiv \\lambda a .\\, \\lambda fx [f ({a} f x)]]."
+         "tex": "\\mathrm{Succ} & \\equiv \\lambda a .\\, \\lambda fx .\\, f ({a} f x) ."
         }
        ],
        "src": "\\fn{Succ} & \\ident \\lambd[a][\\lambd[fx][f ({a} f x)]].",
@@ -3937,7 +3937,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "\\mathrm{Succ} & \\equiv \\lambda a .\\, \\lambda f [ \\lambda x .\\, (f (({a} f) x)) ]]."
+         "tex": "\\mathrm{Succ} & \\equiv \\lambda a .\\, \\lambda f .\\, \\lambda x .\\, (f (({a} f) x)) ."
         }
        ],
        "src": "\\fn{Succ} & \\ident \\lambd[a][\\lambd[f][\\lambd[x][(f (({a} f) x))]]].",
@@ -4002,7 +4002,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "( \\lambda a .\\, \\lambda fx [f ({a} f x)]])\\,\\overline{n} & \\xrightarrow{} \\lambda fx .\\, f ({\\overline{n}} f x) ."
+         "tex": "( \\lambda a .\\, \\lambda fx .\\, f ({a} f x) )\\,\\overline{n} & \\xrightarrow{} \\lambda fx .\\, f ({\\overline{n}} f x) ."
         }
        ],
        "src": "(\\lambd[a][\\lambd[fx][f ({a} f x)]])\\,\\num{n} & \\redone\n   \\lambd[fx][f ({\\num{n}} f x)].",
@@ -4169,16 +4169,16 @@
        "env": "align",
        "rows": [
         {
-         "tex": "\\mathrm{Succ}\\, \\overline{0} & \\equiv ( \\lambda a .\\, \\lambda f [ \\lambda x .\\, (f (({a} f) x)) ]])( \\lambda f .\\, \\lambda x [x]])"
+         "tex": "\\mathrm{Succ}\\, \\overline{0} & \\equiv ( \\lambda a .\\, \\lambda f .\\, \\lambda x .\\, (f (({a} f) x)) )( \\lambda f .\\, \\lambda x .\\, x )"
         },
         {
-         "tex": "& \\xrightarrow{} \\lambda f .\\, \\lambda x [(f (({( \\lambda f .\\, \\lambda x [x]])} f) x))]]"
+         "tex": "& \\xrightarrow{} \\lambda f .\\, \\lambda x .\\, (f (({( \\lambda f .\\, \\lambda x .\\, x )} f) x))"
         },
         {
-         "tex": "& \\xrightarrow{} \\lambda f .\\, \\lambda x [(f ({( \\lambda x .\\, x )} x))]]"
+         "tex": "& \\xrightarrow{} \\lambda f .\\, \\lambda x .\\, (f ({( \\lambda x .\\, x )} x))"
         },
         {
-         "tex": "& \\xrightarrow{} \\lambda f .\\, \\lambda x [(f x)]] \\equiv \\overline{1}"
+         "tex": "& \\xrightarrow{} \\lambda f .\\, \\lambda x .\\, (f x) \\equiv \\overline{1}"
         }
        ],
        "src": "\\fn{Succ}\\, \\num{0} & \\ident (\\lambd[a][\\lambd[f][\\lambd[x][(f (({a} f) x))]]])(\\lambd[f][\\lambd[x][x]])\\\\\n    & \\redone \\lambd[f][\\lambd[x][(f (({(\\lambd[f][\\lambd[x][x]])} f) x))]] \\\\\n    & \\redone \\lambd[f][\\lambd[x][(f ({(\\lambd[x][x])} x))]] \\\\\n    & \\redone \\lambd[f][\\lambd[x][(f x)]] \\ident \\num{1}\\\\",
@@ -4225,7 +4225,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "\\mathrm{Succ}' & \\equiv \\lambda {n} .\\, \\lambda fx [{n} f (f x)]]"
+         "tex": "\\mathrm{Succ}' & \\equiv \\lambda {n} .\\, \\lambda fx .\\, {n} f (f x)"
         }
        ],
        "src": "\\fn{Succ}' & \\ident \\lambd[{n}][\\lambd[fx][{n} f (f x)]]",
@@ -4351,7 +4351,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "\\mathrm{Add} & \\equiv \\lambda {a}{b} .\\, \\lambda fx [{a} f ({b} f x)]]"
+         "tex": "\\mathrm{Add} & \\equiv \\lambda {a}{b} .\\, \\lambda fx .\\, {a} f ({b} f x)"
         }
        ],
        "src": "\\fn{Add} & \\ident \\lambd[{a}{b}][\\lambd[fx][{a} f ({b} f x)]]",
@@ -4525,7 +4525,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "( \\lambda {a}{b} .\\, \\lambda fx [{a} f ({b} f x)]])\\overline{n}\\,\\overline{m} & \\xrightarrow{} \\lambda fx .\\, \\overline{n}\\, f (\\overline{m}\\, f x)"
+         "tex": "( \\lambda {a}{b} .\\, \\lambda fx .\\, {a} f ({b} f x) )\\overline{n}\\,\\overline{m} & \\xrightarrow{} \\lambda fx .\\, \\overline{n}\\, f (\\overline{m}\\, f x)"
         },
         {
          "tex": "& \\xrightarrow{} \\lambda fx .\\, \\overline{n}\\, f (f^m x)"
@@ -4767,7 +4767,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "\\mathrm{Mult} \\equiv \\lambda ab .\\, \\lambda fx [a (b f) x]]"
+         "tex": "\\mathrm{Mult} \\equiv \\lambda ab .\\, \\lambda fx .\\, a (b f) x"
         }
        ],
        "src": "\\fn{Mult} \\ident \\lambd[ab][\\lambd[fx][a (b f) x]]",
@@ -5284,7 +5284,7 @@
      "env": "equation",
      "rows": [
       {
-       "tex": "\\mathrm{Pair} \\equiv \\lambda mn .\\, \\lambda f [fmn]]"
+       "tex": "\\mathrm{Pair} \\equiv \\lambda mn .\\, \\lambda f .\\, fmn"
       }
      ],
      "src": "\\fn{Pair} \\ident \\lambd[mn][\\lambd[f][fmn]]",
@@ -5317,10 +5317,10 @@
      "env": "align",
      "rows": [
       {
-       "tex": "\\mathrm{Fst} & \\equiv \\lambda p .\\, p( \\lambda mn [m])]"
+       "tex": "\\mathrm{Fst} & \\equiv \\lambda p .\\, p( \\lambda mn .\\, m )"
       },
       {
-       "tex": "\\mathrm{Snd} & \\equiv \\lambda p .\\, p( \\lambda mn [n])]"
+       "tex": "\\mathrm{Snd} & \\equiv \\lambda p .\\, p( \\lambda mn .\\, n )"
       }
      ],
      "src": "\\fn{Fst} & \\ident \\lambd[p][p(\\lambd[mn][m])]\\\\\n  \\fn{Snd} & \\ident \\lambd[p][p(\\lambd[mn][n])]",
@@ -5410,7 +5410,7 @@
      "env": "equation",
      "rows": [
       {
-       "tex": "\\mathrm{Pred} \\equiv \\lambda n .\\, \\mathrm{Fst}(n ( \\lambda p [\\langle \\mathrm{Snd}\\, {p}, \\mathrm{Succ}(\\mathrm{Snd}\\, {p}) \\rangle]) \\langle \\overline{0}, \\overline{0} \\rangle)]"
+       "tex": "\\mathrm{Pred} \\equiv \\lambda n .\\, \\mathrm{Fst}(n ( \\lambda p .\\, \\langle \\mathrm{Snd}\\, {p}, \\mathrm{Succ}(\\mathrm{Snd}\\, {p}) \\rangle ) \\langle \\overline{0}, \\overline{0} \\rangle)"
       }
      ],
      "src": "\\fn{Pred} \\ident \\lambd[n][\\fn{Fst}(n (\\lambd[p][\\tuple{\\fn{Snd}\\, {p}, \\fn{Succ}(\\fn{Snd}\\, {p})}]) \\tuple{\\num 0, \\num 0})]",
@@ -5637,10 +5637,10 @@
      "env": "align",
      "rows": [
       {
-       "tex": "\\mathrm{true} & \\equiv \\lambda x .\\, \\lambda y [x]]"
+       "tex": "\\mathrm{true} & \\equiv \\lambda x .\\, \\lambda y .\\, x"
       },
       {
-       "tex": "\\mathrm{false} & \\equiv \\lambda x .\\, \\lambda y [y]]"
+       "tex": "\\mathrm{false} & \\equiv \\lambda x .\\, \\lambda y .\\, y"
       }
      ],
      "src": "\\fn{true} & \\ident \\lambd[x][\\lambd[y][x]]\\\\\n  \\fn{false} & \\ident \\lambd[x][\\lambd[y][y]]",
@@ -5924,7 +5924,7 @@
      "env": "equation",
      "rows": [
       {
-       "tex": "\\mathrm{IsZero} \\equiv \\lambda n .\\, n ( \\lambda x [\\mathrm{false}])\\, \\mathrm{true}]."
+       "tex": "\\mathrm{IsZero} \\equiv \\lambda n .\\, n ( \\lambda x .\\, \\mathrm{false} )\\, \\mathrm{true} ."
       }
      ],
      "src": "\\fn{IsZero} \\ident \\lambd[n][n (\\lambd[x][\\fn{false}])\\, \\fn{true}].",
@@ -6030,7 +6030,7 @@
        "tex": "\\mathrm{Not} & \\equiv \\lambda x .\\, x\\, \\mathrm{false}\\, \\mathrm{true}"
       },
       {
-       "tex": "\\mathrm{And} & \\equiv \\lambda x .\\, \\lambda y [xy \\,\\mathrm{false}]]"
+       "tex": "\\mathrm{And} & \\equiv \\lambda x .\\, \\lambda y .\\, xy \\,\\mathrm{false}"
       }
      ],
      "src": "\\fn{Not} & \\ident \\lambd[x][x\\, \\fn{false}\\, \\fn{true}]\\\\\n  \\fn{And} & \\ident \\lambd[x][\\lambd[y][xy \\,\\fn{false}]]",
@@ -6529,10 +6529,10 @@
        "env": "align",
        "rows": [
         {
-         "tex": "\\mathrm{Zero} & \\equiv \\lambda a .\\, \\lambda fx [x]]"
+         "tex": "\\mathrm{Zero} & \\equiv \\lambda a .\\, \\lambda fx .\\, x"
         },
         {
-         "tex": "\\mathrm{Succ} & \\equiv \\lambda a .\\, \\lambda fx [f (a f x)]]"
+         "tex": "\\mathrm{Succ} & \\equiv \\lambda a .\\, \\lambda fx .\\, f (a f x)"
         },
         {
          "tex": "\\mathrm{Proj}^n_i & \\equiv \\lambda x_0\\dots x_{n-1} .\\, x_i"
@@ -7148,7 +7148,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "H \\equiv & \\lambda x .\\, \\lambda y [\\mathrm{Snd} (y D \\langle \\overline{0}, F x \\rangle)]]"
+         "tex": "H \\equiv & \\lambda x .\\, \\lambda y .\\, \\mathrm{Snd} (y D \\langle \\overline{0}, F x \\rangle)"
         }
        ],
        "src": "H \\ident & \\lambd[x][\\lambd[y][\\fn{Snd} (y\n        D \\tuple{\\num{0}, F x})]]",
@@ -7538,7 +7538,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "H\\,\\overline{n}\\,\\overline{m} &\\equiv \\lambda x .\\, \\lambda y [\\mathrm{Snd} (y ( \\lambda p .\\langle \\mathrm{Succ} (\\mathrm{Fst}\\, p), (G\\, x\\, (\\mathrm{Fst}\\, p)\\, (\\mathrm{Snd}\\, p)) \\rangle) \\langle \\overline{0}, F x \\rangle)]]"
+         "tex": "H\\,\\overline{n}\\,\\overline{m} &\\equiv \\lambda x .\\, \\lambda y .\\, \\mathrm{Snd} (y ( \\lambda p .\\langle \\mathrm{Succ} (\\mathrm{Fst}\\, p), (G\\, x\\, (\\mathrm{Fst}\\, p)\\, (\\mathrm{Snd}\\, p)) \\rangle) \\langle \\overline{0}, F x \\rangle)"
         },
         {
          "tex": "& \\qquad\\,\\overline{n}\\, \\overline{m}"
@@ -8022,7 +8022,7 @@
      "env": "equation",
      "rows": [
       {
-       "tex": "\\mathrm{Fac}' \\equiv \\lambda g .\\, \\lambda n [\\mathrm{IsZero} \\, n \\, \\overline{1}\\, (\\mathrm{Mult} \\, n\\, (g (\\mathrm{Pred} n)))]]"
+       "tex": "\\mathrm{Fac}' \\equiv \\lambda g .\\, \\lambda n .\\, \\mathrm{IsZero} \\, n \\, \\overline{1}\\, (\\mathrm{Mult} \\, n\\, (g (\\mathrm{Pred} n)))"
       }
      ],
      "src": "\\fn{Fac}' \\ident \\lambd[g][\\lambd[n][\\fn{IsZero} \\, n \\, \\num 1\\, (\\fn{Mult} \\, n\\, (g (\\fn{Pred} n)))]]",
@@ -8735,7 +8735,7 @@
        "tex": "&\\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\mathrm{Fac}' (Y \\,\\mathrm{Fac}') \\, \\overline{3}"
       },
       {
-       "tex": "&\\equiv ( \\lambda x .\\, \\lambda n [\\mathrm{IsZero} \\, n\\, \\overline{1}\\, (\\mathrm{Mult}\\, n\\, (x (\\mathrm{Pred}\\, n)))]]) \\, \\mathrm{Fac} \\, \\overline{3}"
+       "tex": "&\\equiv ( \\lambda x .\\, \\lambda n .\\, \\mathrm{IsZero} \\, n\\, \\overline{1}\\, (\\mathrm{Mult}\\, n\\, (x (\\mathrm{Pred}\\, n))) ) \\, \\mathrm{Fac} \\, \\overline{3}"
       },
       {
        "tex": "& \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\mathrm{IsZero} \\, \\overline{3}\\, \\overline{1}\\, (\\mathrm{Mult}\\, \\overline{3}\\, (\\mathrm{Fac} (\\mathrm{Pred}\\, \\overline{3})))"
@@ -8813,7 +8813,7 @@
        "tex": "\\mathrm{Fac}\\,\\overline{0} &\\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\mathrm{Fac}' (Y \\,\\mathrm{Fac}') \\, \\overline{0}"
       },
       {
-       "tex": "&\\equiv ( \\lambda x .\\, \\lambda n [\\mathrm{IsZero} \\, n\\, \\overline{1}\\, (\\mathrm{Mult}\\, n\\, (x (\\mathrm{Pred}\\, n)))]]) \\, \\mathrm{Fac} \\, \\overline{0}"
+       "tex": "&\\equiv ( \\lambda x .\\, \\lambda n .\\, \\mathrm{IsZero} \\, n\\, \\overline{1}\\, (\\mathrm{Mult}\\, n\\, (x (\\mathrm{Pred}\\, n))) ) \\, \\mathrm{Fac} \\, \\overline{0}"
       },
       {
        "tex": "& \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\mathrm{IsZero} \\, \\overline{0}\\, \\overline{1}\\, (\\mathrm{Mult}\\, \\overline{0}\\, (\\mathrm{Fac} (\\mathrm{Pred}\\, \\overline{0})))."
@@ -8951,7 +8951,7 @@
       },
       {
        "t": "math",
-       "tex": "G \\equiv (Y \\lambda g .\\, \\lambda x_1\\dots x_n [N]])",
+       "tex": "G \\equiv (Y \\lambda g .\\, \\lambda x_1\\dots x_n .\\, N )",
        "src": "G \\ident (Y \\lambd[g][\\lambd[x_1\\dots x_n][N]])"
       },
       {
@@ -9005,10 +9005,10 @@
      "env": "align",
      "rows": [
       {
-       "tex": "G \\equiv (Y \\lambda g .\\, \\lambda x_1\\dots x_n [N]]) & \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\lambda g .\\, \\lambda x_1\\dots x_n [N]](Y \\lambda g .\\, \\lambda x_1\\dots x_n [N]])"
+       "tex": "G \\equiv (Y \\lambda g .\\, \\lambda x_1\\dots x_n .\\, N ) & \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\lambda g .\\, \\lambda x_1\\dots x_n .\\, N (Y \\lambda g .\\, \\lambda x_1\\dots x_n .\\, N )"
       },
       {
-       "tex": "& \\equiv ( \\lambda g .\\, \\lambda x_1\\dots x_n [N]])\\,G"
+       "tex": "& \\equiv ( \\lambda g .\\, \\lambda x_1\\dots x_n .\\, N )\\,G"
       }
      ],
      "src": "G \\ident (Y \\lambd[g][\\lambd[x_1\\dots x_n][N]]) & \\red \\lambd[g][\\lambd[x_1\\dots x_n][N]](Y \\lambd[g][\\lambd[x_1\\dots x_n][N]])\\\\\n& \\ident (\\lambd[g][\\lambd[x_1\\dots x_n][N]])\\,G",
@@ -9041,7 +9041,7 @@
      "env": "align",
      "rows": [
       {
-       "tex": "G\\,x_1 \\dots x_n & \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow ( \\lambda g .\\, \\lambda x_1\\dots x_n [N]])\\,G\\,x_1\\dots x_n"
+       "tex": "G\\,x_1 \\dots x_n & \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow ( \\lambda g .\\, \\lambda x_1\\dots x_n .\\, N )\\,G\\,x_1\\dots x_n"
       },
       {
        "tex": "& \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow ( \\lambda x_1\\dots x_n .\\, N[G/g] )\\,x_1\\dots x_n"
@@ -9106,7 +9106,7 @@
      "env": "equation",
      "rows": [
       {
-       "tex": "Y_C \\equiv \\lambda g .\\, ( \\lambda x [g(xx)])( \\lambda x .\\, g(xx) )]."
+       "tex": "Y_C \\equiv \\lambda g .\\, ( \\lambda x .\\, g(xx) )( \\lambda x .\\, g(xx) ) ."
       }
      ],
      "src": "Y_C \\ident \\lambd[g][(\\lambd[x][g(xx)])(\\lambd[x][g(xx)])].",
@@ -9514,7 +9514,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "\\mathrm{Search} & \\equiv \\lambda g .\\, \\lambda f\\,\\vec{x}\\,y [ \\mathrm{IsZero} (f\\, \\vec{x}\\, y)\\, y\\, (g\\, \\vec{x} (\\mathrm{Succ}\\, y)]]"
+         "tex": "\\mathrm{Search} & \\equiv \\lambda g .\\, \\lambda f\\,\\vec{x}\\,y .\\, \\mathrm{IsZero} (f\\, \\vec{x}\\, y)\\, y\\, (g\\, \\vec{x} (\\mathrm{Succ}\\, y)"
         },
         {
          "tex": "H & \\equiv \\lambda \\vec x .\\, (Y \\, \\mathrm{Search}) F\\, \\vec{x}\\, \\overline{0} ,"
@@ -10075,7 +10075,7 @@
       },
       {
        "t": "math",
-       "tex": "\\lambda x .\\, \\lambda y [y]]",
+       "tex": "\\lambda x .\\, \\lambda y .\\, y",
        "src": "\\lambd[x][\\lambd[y][y]]"
       },
       {
