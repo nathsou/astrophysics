@@ -1457,14 +1457,22 @@ export function plain(c: Inline[]): string {
 }
 
 const TEX_PLAIN: Record<string, string> = {
-  lambda: 'λ', mu: 'μ', omega: 'ω', alpha: 'α', beta: 'β', Sigma: 'Σ', Delta: 'Δ', Pi: 'Π', forall: '∀', exists: '∃', lnot: '¬', to: '→', rightarrow: '→', leq: '≤', geq: '≥', neq: '≠', in: '∈', times: '×', cdot: '·',
+  alpha: 'α', beta: 'β', gamma: 'γ', delta: 'δ', epsilon: 'ε', varepsilon: 'ε', eta: 'η', theta: 'θ', iota: 'ι', kappa: 'κ', lambda: 'λ', mu: 'μ', nu: 'ν', xi: 'ξ', pi: 'π',
+  rho: 'ρ', sigma: 'σ', tau: 'τ', phi: 'φ', varphi: 'φ', chi: 'χ', psi: 'ψ', omega: 'ω', Gamma: 'Γ', Delta: 'Δ', Theta: 'Θ', Lambda: 'Λ', Pi: 'Π', Sigma: 'Σ', Phi: 'Φ', Psi: 'Ψ', Omega: 'Ω',
+  forall: '∀', exists: '∃', lnot: '¬', neg: '¬', land: '∧', wedge: '∧', lor: '∨', vee: '∨', to: '→', rightarrow: '→', leftrightarrow: '↔', Rightarrow: '⇒', bot: '⊥', top: '⊤',
+  vDash: '⊨', models: '⊨', vdash: '⊢', nvdash: '⊬', nvDash: '⊭', leq: '≤', le: '≤', geq: '≥', ge: '≥', neq: '≠', ne: '≠', in: '∈', notin: '∉', subseteq: '⊆', subset: '⊂', cup: '∪', cap: '∩', emptyset: '∅',
+  times: '×', cdot: '·', circ: '∘', langle: '⟨', rangle: '⟩', ulcorner: '⌜', urcorner: '⌝', ldots: '…', dots: '…', cdots: '⋯', infty: '∞', mid: '|', setminus: '∖', dotminus: '∸', equiv: '≡', frown: '⌢',
 };
 
 /** A plain-text rendering of simple TeX, for titles and the table of contents. */
 export function texToPlain(tex: string): string {
   return tex
+    .replace(/\\([{}|])/g, '$1\u0000')
     .replace(/\\([a-zA-Z]+)/g, (m, n: string) => TEX_PLAIN[n] ?? '')
-    .replace(/[{}]/g, '')
+    .replace(/\\[,;:!]/g, ' ')
+    .replace(/([{}])(?!\u0000)/g, '')
+    .replace(/\u0000/g, '')
+    .replace(/[_^]/g, '')
     .replace(/\s+/g, ' ')
     .trim();
 }

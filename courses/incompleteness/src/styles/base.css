@@ -248,3 +248,23 @@ table { border-collapse: collapse; }
 .pager a:hover { border-color: var(--accent); }
 .pager .dir { font-size: 12px; color: var(--muted); }
 .error-box { border: 1px solid var(--danger); background: var(--danger-soft); color: var(--danger); border-radius: 8px; padding: 10px 14px; font-family: var(--sans); font-size: 14px; }
+
+/* Search (ui/Search.tsx) */
+.search-btn kbd, .search-foot kbd { font-family: var(--mono); font-size: 10.5px; border: 1px solid var(--rule-2); border-radius: 4px; padding: 0 4px; color: var(--muted); background: var(--paper); }
+.search-dialog { border: none; padding: 0; background: transparent; width: min(680px, calc(100vw - 24px)); max-height: min(78vh, 720px); margin: 10vh auto auto; overflow: visible; color: var(--ink); }
+.search-dialog::backdrop { background: rgba(20, 18, 14, 0.38); }
+.search-box { background: var(--panel); border: 1px solid var(--rule); border-radius: 14px; box-shadow: var(--shadow-lg); display: flex; flex-direction: column; max-height: min(78vh, 720px); overflow: hidden; }
+.search-input { font-family: var(--sans); font-size: 17px; padding: 14px 18px; border: none; border-bottom: 1px solid var(--rule); background: transparent; color: var(--ink); outline: none; }
+.search-results { list-style: none; margin: 0; padding: 6px; overflow-y: auto; }
+.search-results li { padding: 8px 12px; border-radius: 8px; cursor: pointer; font-family: var(--sans); }
+.search-results li.active { background: var(--accent-soft); }
+.search-results li.search-empty { color: var(--muted); cursor: default; }
+.search-head { font-size: 14.5px; font-weight: 600; }
+.search-kind { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; margin-right: 4px; }
+.search-kind.k-term { color: var(--added); }
+.search-kind.k-defn { color: var(--accent); }
+.search-kind.k-thm, .search-kind.k-lem, .search-kind.k-prop, .search-kind.k-cor { color: var(--formula); }
+.search-sub { font-size: 13px; color: var(--ink-2); margin-top: 2px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.search-where { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+.search-foot { border-top: 1px solid var(--rule); padding: 8px 14px; font-family: var(--sans); font-size: 11.5px; color: var(--muted); }
+@media (max-width: 560px) { .search-dialog { margin-top: 12px; } .search-foot { display: none; } }

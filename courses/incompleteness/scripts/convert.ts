@@ -9,8 +9,8 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { applyOverrides, emptyConfig, readConfig } from './latex/macros.ts';
-import { convertBook, type ConvertContext } from './latex/document.ts';
-import type { Chapter, LabelTarget, SourceIndex } from '../src/content/schema.ts';
+import { convertBook, plain, type ConvertContext } from './latex/document.ts';
+import type { Block, Chapter, Inline, LabelTarget, SearchEntry, SourceIndex } from '../src/content/schema.ts';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const upstreamDir = join(root, 'upstream');
@@ -57,10 +57,56 @@ export function convertAll() {
     macros: [...ctx.used].map(([name, u]) => ({ name, count: u.count, origin: u.origin })).sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)),
   };
   const files = new Map<string, string>();
+  files.set('search.json', JSON.stringify(searchIndex(chapters)) + '\n');
   for (const c of chapters) files.set(`${c.id}.json`, JSON.stringify(c, null, 1) + '\n');
   files.set('index.json', JSON.stringify(index, null, 1) + '\n');
   files.set('report.json', JSON.stringify({ diagnostics: ctx.diagnostics }, null, 1) + '\n');
   return { files, diagnostics: ctx.diagnostics };
+}
+
+const ENV_NAME: Partial<Record<Block extends infer B ? (B extends { t: 'env'; kind: infer K } ? K & string : never) : never, string>> = {
+  defn: 'Definition', thm: 'Theorem', lem: 'Lemma', prop: 'Proposition', cor: 'Corollary', ex: 'Example', prob: 'Problem',
+};
+
+/** Numbered blocks and the terms their definitions introduce, for the site's search. */
+function searchIndex(chapters: Chapter[]): SearchEntry[] {
+  const out: SearchEntry[] = [];
+  const anchor = (id: string) => id.replace(/[^a-zA-Z0-9_-]+/g, '-');
+  const blockText = (bs: Block[]): string =>
+    bs
+      .map((b) => (b.t === 'p' ? plain(b.c) : b.t === 'list' ? b.items.map((i) => blockText(i.c)).join(' ') : b.t === 'env' ? blockText(b.c) : ''))
+      .join(' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  const emphs = (x: unknown, acc: Inline[][]) => {
+    if (Array.isArray(x)) x.forEach((y) => emphs(y, acc));
+    else if (x && typeof x === 'object') {
+      const o = x as { t?: string; c?: Inline[] };
+      if (o.t === 'em' && o.c) acc.push(o.c);
+      else Object.values(o).forEach((v) => emphs(v, acc));
+    }
+  };
+  for (const c of chapters) {
+    for (const s of c.sections) {
+      for (const b of s.blocks) {
+        if (b.t !== 'env' || !ENV_NAME[b.kind] || !b.number) continue;
+        const text = blockText(b.c);
+        const a = anchor(b.label ?? b.id);
+        // The label's last part often names the result ("lem:fixed-point"): searchable keywords.
+        const keys = b.label ? b.label.split(':').pop()!.replace(/[-_]+/g, ' ') : undefined;
+        out.push({ kind: b.kind, head: `${ENV_NAME[b.kind]} ${b.number}`, title: b.title ? plain(b.title) : undefined, text: text.length > 220 ? text.slice(0, 217).replace(/\s\S*$/, '') + '…' : text, keys, sectionId: s.id, anchor: a });
+        if (b.kind === 'defn') {
+          const ems: Inline[][] = [];
+          emphs(b.c, ems);
+          for (const e of ems) {
+            const term = plain(e);
+            if (term.length > 1 && term.length < 60) out.push({ kind: 'term', head: term, text: `${ENV_NAME.defn} ${b.number}${b.title ? ` (${plain(b.title)})` : ''}`, sectionId: s.id, anchor: a });
+          }
+        }
+      }
+    }
+  }
+  return out;
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {

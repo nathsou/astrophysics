@@ -117,6 +117,22 @@ export interface SourceIndex {
   generatedFrom: Record<string, { url: string; commit: string }>;
   chapters: { id: string; number: string; title: string; file: string; sections: { id: string; number: string; title: string }[] }[];
   labels: Record<string, LabelTarget>;
-  /** Terms introduced with \emph in definitions, for the glossary. */
+  /** Macros used by the text, with where their definition came from. */
   macros: { name: string; count: number; origin: 'upstream' | 'override' | 'katex' }[];
+}
+
+/** An entry of the search index (src/content/source/search.json). */
+export interface SearchEntry {
+  /** 'term': a term introduced (emphasized) in a definition; otherwise the block's kind. */
+  kind: EnvKind | 'term';
+  /** "Definition 3.4", or the term itself. */
+  head: string;
+  title?: string;
+  /** The beginning of the block's text, in plain text. */
+  text: string;
+  /** Keywords from the block's label, e.g. "fixed point" for lem:fixed-point. */
+  keys?: string;
+  sectionId: string;
+  /** Anchor id of the block in Formal mode. */
+  anchor: string;
 }
