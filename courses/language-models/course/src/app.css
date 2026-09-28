@@ -1,175 +1,188 @@
-@import '@fontsource-variable/source-serif-4';
-@import '@fontsource-variable/source-serif-4/wght-italic.css';
-@import '@fontsource-variable/inter';
+@import '@fontsource-variable/dm-sans';
+@import '@fontsource-variable/dm-sans/wght-italic.css';
 @import '@fontsource-variable/jetbrains-mono';
 @import 'katex/dist/katex.min.css';
 
-/* ───────────────────────── Design tokens ───────────────────────── */
+/* ───────────────────────── Design tokens ─────────────────────────
+   "Notebook": a Jupyter-like page. Five tokens (--bg --fg --mute --ac --pn) carry the whole identity;
+   the older names (--page, --surface, --ink…) below are derived from them so every component follows. */
 
 :root {
-  color-scheme: light;
-  --font-body: 'Source Serif 4 Variable', 'Iowan Old Style', Georgia, serif;
-  --font-ui: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'DM Sans Variable', 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-ui: 'DM Sans Variable', 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SF Mono', Menlo, monospace;
 
-  --page: #f7f6f2;
-  --surface: #fcfcfb;
-  --surface-2: #f0efea;
-  --surface-3: #e7e5de;
-  --ink: #1a1917;
-  --ink-2: #52514e;
-  --ink-3: #898781;
-  --rule: #e1e0d9;
-  --rule-strong: #c3c2b7;
-  --border: rgba(11, 11, 11, 0.1);
-  --shadow: 0 1px 2px rgba(20, 18, 10, 0.06), 0 4px 16px rgba(20, 18, 10, 0.06);
-  --shadow-lg: 0 2px 6px rgba(20, 18, 10, 0.08), 0 16px 40px rgba(20, 18, 10, 0.12);
+  color-scheme: light;
+  /* The five Notebook tokens (see the design handoff): page, text, secondary text, accent, panel. */
+  --bg: #f8faf9;
+  --fg: #12251f;
+  --mute: #5f7a72;
+  --ac: #16705f;
+  --pn: #e8f0ed;
+  /* Status colours: done = accent, running = amber, queued = mute. `--running-text` is the AA-safe text tone. */
+  --running: #e0a13a;
+  --running-text: #8a5a00;
+  /* --mute at 4.4:1 misses AA for small text on the page; --ink-3 is the readable tone for labels. */
+  --ink-3: #557068;
+  --accent-ink: #0e5a4c;
+  --accent-soft: color-mix(in srgb, var(--ac) 12%, var(--bg));
+  --on-accent: #f8faf9;
+  --good: #1c7a4e;
+  --critical: #b8352d;
+  --shadow: 0 1px 2px rgba(18, 37, 31, 0.05), 0 4px 14px rgba(18, 37, 31, 0.05);
+  --shadow-lg: 0 2px 6px rgba(18, 37, 31, 0.07), 0 16px 40px rgba(18, 37, 31, 0.1);
 
-  --accent: #1c5cab;
-  --accent-2: #2a78d6;
-  --accent-soft: #e3eefc;
-  --accent-ink: #104281;
-  --on-accent: #ffffff;
-  --focus: #2a78d6;
-
-  /* Callout hues (tinted surfaces; text stays in ink tokens). */
-  --note: #2a78d6;
-  --tip: #1baf7a;
-  --warn: #eda100;
-  --lab: #4a3aa7;
-  --break: #e34948;
-  --challenge: #eb6834;
+  --note: #16705f;
+  --tip: #2f9a63;
+  --warn: #e0a13a;
+  --lab: #6c4ec2;
+  --break: #d0413b;
+  --challenge: #e0703a;
   --history: #8a6b3f;
-  --history-soft: #f3ede2;
+  --history-soft: color-mix(in srgb, #8a6b3f 9%, var(--bg));
 
-  /* Chart palette — validated categorical order (dataviz reference palette). */
-  --series-1: #2a78d6;
-  --series-2: #eb6834;
-  --series-3: #1baf7a;
-  --series-4: #eda100;
-  --series-5: #e87ba4;
-  --series-6: #008300;
-  --series-7: #4a3aa7;
-  --series-8: #e34948;
-  --chart-surface: #fcfcfb;
-  --grid: #e1e0d9;
-  --axis: #c3c2b7;
-  --good: #0ca30c;
-  --critical: #d03b3b;
+  /* Chart palette: teal and orange lead (most figures have two series), then blue, gold, pink, olive, violet, red. */
+  --series-1: #16705f;
+  --series-2: #e0703a;
+  --series-3: #3b6fd4;
+  --series-4: #d4a017;
+  --series-5: #c94f8a;
+  --series-6: #7a8f1d;
+  --series-7: #6c4ec2;
+  --series-8: #d0413b;
+  --term-hl: rgba(22, 112, 95, 0.14);
+  --term-hl-strong: rgba(22, 112, 95, 0.28);
 
-  --term-hl: rgba(42, 120, 214, 0.14);
-  --term-hl-strong: rgba(42, 120, 214, 0.28);
+  /* Code (all ≥ 4.5:1 on both the page and the panel). */
+  --code-keyword: #a8325a;
+  --code-string: #8a5300;
+  --code-number: #2456b5;
+  --code-comment: #586f68;
+  --code-fn: #6a3fb8;
+  --code-type: #a3480f;
+  --code-def: var(--fg);
+  --code-prop: #0f6b5a;
+  --code-punct: #45605a;
 
-  --code-keyword: #cf222e;
-  --code-string: #0a3069;
-  --code-number: #0550ae;
-  --code-comment: #6e7781;
-  --code-fn: #8250df;
-  --code-type: #953800;
-  --code-def: #1a1917;
-  --code-prop: #0550ae;
-  --code-punct: #52514e;
+  /* Derived surfaces and lines. */
+  --page: var(--bg);
+  --surface: var(--bg);
+  --surface-2: var(--pn);
+  --surface-3: color-mix(in srgb, var(--pn) 84%, var(--fg));
+  --ink: var(--fg);
+  --ink-2: color-mix(in srgb, var(--fg) 74%, var(--mute));
+  --rule: color-mix(in srgb, var(--mute) 26%, var(--bg));
+  --rule-strong: color-mix(in srgb, var(--mute) 50%, var(--bg));
+  --border: color-mix(in srgb, var(--mute) 32%, transparent);
+  --accent: var(--ac);
+  --accent-2: var(--ac);
+  --focus: var(--ac);
+  --chart-surface: var(--bg);
+  --grid: var(--rule);
+  --axis: var(--rule-strong);
 
-  --radius: 10px;
-  --radius-sm: 6px;
-  --sidebar-w: 18rem;
-  --main-w: 42rem;
+  --radius: 4px;
+  --radius-sm: 3px;
+  --sidebar-w: 16rem;
+  --main-w: 46rem;
+  --gutter-w: 70px;
+  --gutter-gap: 14px;
   --margin-w: 17rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:where(:not([data-theme='light'])) {
     color-scheme: dark;
-    --page: #111110;
-    --surface: #1a1a19;
-    --surface-2: #232321;
-    --surface-3: #2c2c2a;
-    --ink: #ecebe6;
-    --ink-2: #c3c2b7;
-    --ink-3: #898781;
-    --rule: #2c2c2a;
-    --rule-strong: #383835;
-    --border: rgba(255, 255, 255, 0.1);
-    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.5), 0 16px 40px rgba(0, 0, 0, 0.5);
-    --accent: #6da7ec;
-    --accent-2: #3987e5;
-    --accent-soft: #16263b;
-    --accent-ink: #9ec5f4;
-    --on-accent: #0b0b0b;
-    --history: #c9a978;
-    --lab: #9085e9;
-    --history-soft: #26221b;
-    --series-1: #3987e5;
-    --series-2: #d95926;
-    --series-3: #199e70;
-    --series-4: #c98500;
-    --series-5: #d55181;
-    --series-6: #008300;
-    --series-7: #9085e9;
-    --series-8: #e66767;
-    --chart-surface: #1a1a19;
-    --grid: #2c2c2a;
-    --axis: #383835;
-    --term-hl: rgba(57, 135, 229, 0.2);
-    --term-hl-strong: rgba(57, 135, 229, 0.38);
+    --bg: #0f2528;
+    --fg: #e0f1ec;
+    --mute: #88aaa2;
+    --ac: #7fd6c2;
+    --pn: #173538;
+    --running-text: #e0a13a;
+    --ink-3: #88aaa2;
+    --accent-ink: #a6ead9;
+    --accent-soft: color-mix(in srgb, var(--ac) 16%, var(--bg));
+    --on-accent: #0f2528;
+    --good: #6fd39a;
+    --critical: #f07a72;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 4px 14px rgba(0, 0, 0, 0.25);
+    --shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.45), 0 16px 40px rgba(0, 0, 0, 0.45);
 
-    --code-keyword: #ff7b72;
-    --code-string: #a5d6ff;
-    --code-number: #79c0ff;
-    --code-comment: #8b949e;
-    --code-fn: #d2a8ff;
-    --code-type: #ffa657;
-    --code-def: #ecebe6;
-    --code-prop: #79c0ff;
-    --code-punct: #c3c2b7;
+    --note: #7fd6c2;
+    --tip: #6fd39a;
+    --warn: #e0a13a;
+    --lab: #a493ee;
+    --break: #f07a72;
+    --challenge: #f08a54;
+    --history: #c9a978;
+    --history-soft: color-mix(in srgb, #c9a978 10%, var(--bg));
+
+    --series-1: #7fd6c2;
+    --series-2: #f08a54;
+    --series-3: #7ea6f2;
+    --series-4: #e6bb3f;
+    --series-5: #e77aa9;
+    --series-6: #a9c24a;
+    --series-7: #a493ee;
+    --series-8: #f07a72;
+    --term-hl: rgba(127, 214, 194, 0.16);
+    --term-hl-strong: rgba(127, 214, 194, 0.32);
+
+    --code-keyword: #f28aa8;
+    --code-string: #e6be7a;
+    --code-number: #8fb4f5;
+    --code-comment: #88aaa2;
+    --code-fn: #b9a4f2;
+    --code-type: #f0a070;
+    --code-prop: #7fd6c2;
+    --code-punct: #a9c4bc;
   }
 }
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --page: #111110;
-  --surface: #1a1a19;
-  --surface-2: #232321;
-  --surface-3: #2c2c2a;
-  --ink: #ecebe6;
-  --ink-2: #c3c2b7;
-  --ink-3: #898781;
-  --rule: #2c2c2a;
-  --rule-strong: #383835;
-  --border: rgba(255, 255, 255, 0.1);
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.5), 0 16px 40px rgba(0, 0, 0, 0.5);
-  --accent: #6da7ec;
-  --accent-2: #3987e5;
-  --accent-soft: #16263b;
-  --accent-ink: #9ec5f4;
-  --on-accent: #0b0b0b;
-  --history: #c9a978;
-  --lab: #9085e9;
-  --history-soft: #26221b;
-  --series-1: #3987e5;
-  --series-2: #d95926;
-  --series-3: #199e70;
-  --series-4: #c98500;
-  --series-5: #d55181;
-  --series-6: #008300;
-  --series-7: #9085e9;
-  --series-8: #e66767;
-  --chart-surface: #1a1a19;
-  --grid: #2c2c2a;
-  --axis: #383835;
-  --term-hl: rgba(57, 135, 229, 0.2);
-  --term-hl-strong: rgba(57, 135, 229, 0.38);
+  --bg: #0f2528;
+  --fg: #e0f1ec;
+  --mute: #88aaa2;
+  --ac: #7fd6c2;
+  --pn: #173538;
+  --running-text: #e0a13a;
+  --ink-3: #88aaa2;
+  --accent-ink: #a6ead9;
+  --accent-soft: color-mix(in srgb, var(--ac) 16%, var(--bg));
+  --on-accent: #0f2528;
+  --good: #6fd39a;
+  --critical: #f07a72;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 4px 14px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.45), 0 16px 40px rgba(0, 0, 0, 0.45);
 
-  --code-keyword: #ff7b72;
-  --code-string: #a5d6ff;
-  --code-number: #79c0ff;
-  --code-comment: #8b949e;
-  --code-fn: #d2a8ff;
-  --code-type: #ffa657;
-  --code-def: #ecebe6;
-  --code-prop: #79c0ff;
-  --code-punct: #c3c2b7;
+  --note: #7fd6c2;
+  --tip: #6fd39a;
+  --warn: #e0a13a;
+  --lab: #a493ee;
+  --break: #f07a72;
+  --challenge: #f08a54;
+  --history: #c9a978;
+  --history-soft: color-mix(in srgb, #c9a978 10%, var(--bg));
+
+  --series-1: #7fd6c2;
+  --series-2: #f08a54;
+  --series-3: #7ea6f2;
+  --series-4: #e6bb3f;
+  --series-5: #e77aa9;
+  --series-6: #a9c24a;
+  --series-7: #a493ee;
+  --series-8: #f07a72;
+  --term-hl: rgba(127, 214, 194, 0.16);
+  --term-hl-strong: rgba(127, 214, 194, 0.32);
+
+  --code-keyword: #f28aa8;
+  --code-string: #e6be7a;
+  --code-number: #8fb4f5;
+  --code-comment: #88aaa2;
+  --code-fn: #b9a4f2;
+  --code-type: #f0a070;
+  --code-prop: #7fd6c2;
+  --code-punct: #a9c4bc;
 }
 
 /* ───────────────────────── Base ───────────────────────── */
@@ -187,11 +200,11 @@ html {
 
 body {
   margin: 0;
-  background: var(--page);
-  color: var(--ink);
+  background: var(--bg);
+  color: var(--fg);
   font-family: var(--font-body);
-  font-size: 1.125rem;
-  line-height: 1.65;
+  font-size: 1.0625rem;
+  line-height: 1.7;
   font-optical-sizing: auto;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -225,23 +238,63 @@ button {
   font-family: var(--font-ui);
 }
 
+/* ───────────────────────── Notebook gutter ─────────────────────────
+   Cell labels ([md], In [n]:, Out[n]:) hang in a 70px gutter to the left of the content column.
+   `.nb` marks a label inside a positioned cell; on narrow screens the gutter disappears and the
+   label sits above its cell instead. `cell` counts code, exercise and widget cells through a page. */
+
+.nb {
+  position: absolute;
+  right: calc(100% + var(--gutter-gap));
+  width: var(--gutter-w);
+  text-align: right;
+  font: 400 11px/1.5 var(--font-mono);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-3);
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none;
+}
+.nb.in {
+  color: var(--accent);
+}
+.nb.in::before {
+  content: 'In [' counter(cell) ']:';
+}
+.nb.out::before {
+  content: 'Out[' counter(cell) ']:';
+}
+.nb.md::before {
+  content: '[md]';
+}
+@media (max-width: 759px) {
+  .nb {
+    position: static;
+    display: block;
+    width: auto;
+    text-align: left;
+    margin: 0 0 0.25rem;
+  }
+}
+
 /* ───────────────────────── Article grid ─────────────────────────
-   main column for prose; `wide` spans into the right margin; `full` spans the viewport.
-   Sidenotes float into the margin on wide screens. */
+   One content column, with the label gutter to its left. Widgets, code and prose share the column. */
 
 .article {
   display: grid;
   grid-template-columns:
     [full-start] minmax(1rem, 1fr)
+    [gutter-start] var(--gutter-w) var(--gutter-gap)
     [wide-start main-start] minmax(0, var(--main-w))
-    [main-end] minmax(0, calc(var(--margin-w) + 2.5rem))
-    [wide-end] minmax(1rem, 1fr) [full-end];
-  counter-reset: sidenote;
+    [main-end wide-end] minmax(1rem, 1fr) [full-end];
+  counter-reset: sidenote cell;
 }
 .article > *,
 .article > .term-layer > * {
   grid-column: main;
   min-width: 0;
+  position: relative;
 }
 .article > .term-layer {
   display: contents;
@@ -254,9 +307,9 @@ button {
 .article > .term-layer > .full {
   grid-column: full;
 }
-@media (max-width: 1279px) {
+@media (max-width: 759px) {
   .article {
-    grid-template-columns: [full-start] minmax(1rem, 1fr) [wide-start main-start] minmax(0, 46rem) [main-end wide-end] minmax(1rem, 1fr) [full-end];
+    grid-template-columns: [full-start gutter-start] 1rem [wide-start main-start] minmax(0, 1fr) [main-end wide-end] 1rem [full-end];
   }
 }
 
@@ -266,25 +319,49 @@ button {
 .article h3,
 .article h4 {
   font-family: var(--font-ui);
-  letter-spacing: -0.015em;
-  line-height: 1.25;
-  color: var(--ink);
+  line-height: 1.2;
+  color: var(--fg);
+  position: relative;
 }
 .article h2 {
-  font-size: 1.6rem;
-  font-weight: 650;
-  margin: 3.5rem 0 1rem;
-  padding-top: 1.25rem;
+  font-size: clamp(1.6rem, 3.6vw, 2.1rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin: 4rem 0 1rem;
+  padding-top: 1.75rem;
   border-top: 1px solid var(--rule);
 }
+.article h2::before {
+  /* the [md] cell label; sits level with the first line of the heading */
+  content: '[md]';
+  position: absolute;
+  right: calc(100% + var(--gutter-gap));
+  top: 2.15rem;
+  width: var(--gutter-w);
+  text-align: right;
+  font: 400 11px/1.5 var(--font-mono);
+  letter-spacing: 0;
+  color: var(--ink-3);
+}
+@media (max-width: 759px) {
+  .article h2::before {
+    position: static;
+    display: block;
+    width: auto;
+    text-align: left;
+    margin-bottom: 0.3rem;
+  }
+}
 .article h3 {
-  font-size: 1.2rem;
-  font-weight: 620;
-  margin: 2.25rem 0 0.6rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 2.5rem 0 0.6rem;
 }
 .article h4 {
   font-size: 1rem;
-  font-weight: 620;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   margin: 1.75rem 0 0.4rem;
 }
 .article p,
@@ -298,8 +375,11 @@ button {
 .article li > p {
   margin-bottom: 0.4rem;
 }
+.article li::marker {
+  color: var(--ink-3);
+}
 .article strong {
-  font-weight: 650;
+  font-weight: 700;
 }
 .article hr {
   border: 0;
@@ -311,15 +391,14 @@ button {
   padding: 0.2rem 0 0.2rem 1.25rem;
   border-left: 3px solid var(--rule-strong);
   color: var(--ink-2);
-  font-style: italic;
 }
 .article table {
   border-collapse: collapse;
   width: 100%;
   margin: 1.5rem 0;
-  font-family: var(--font-ui);
-  font-size: 0.9rem;
-  line-height: 1.45;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.5;
   font-variant-numeric: tabular-nums;
 }
 .article th,
@@ -330,17 +409,20 @@ button {
   vertical-align: top;
 }
 .article th {
-  font-weight: 600;
-  color: var(--ink-2);
+  font-weight: 500;
+  color: var(--ink-3);
+  background: var(--pn);
   border-bottom-color: var(--rule-strong);
+}
+.article tbody tr:hover td {
+  background: color-mix(in srgb, var(--pn) 60%, transparent);
 }
 .article :not(pre) > code {
   font-family: var(--font-mono);
   font-size: 0.84em;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  padding: 0.08em 0.35em;
-  border-radius: 4px;
+  background: var(--pn);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
   overflow-wrap: anywhere; /* long paths and identifiers must not widen the page on phones */
 }
 .article img {
@@ -348,44 +430,56 @@ button {
   height: auto;
 }
 
-/* Code blocks (Shiki dual theme). */
+/* Code blocks: a cell with the panel background and a 3px accent rule (Shiki, single themed palette). */
 figure.code-block {
   margin: 1.5rem 0;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  overflow: hidden;
+  border-left: 3px solid var(--ac);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: var(--pn);
+  counter-increment: cell;
+}
+figure.code-block::before {
+  content: 'In [' counter(cell) ']:';
+  position: absolute;
+  right: calc(100% + var(--gutter-gap));
+  top: 0.75rem;
+  width: var(--gutter-w);
+  text-align: right;
+  font: 400 11px/1.5 var(--font-mono);
+  color: var(--accent);
+  user-select: none;
+  pointer-events: none;
+}
+@media (max-width: 759px) {
+  figure.code-block {
+    margin-top: 2.1rem;
+  }
+  figure.code-block::before {
+    right: auto;
+    left: 0;
+    top: -1.45rem;
+    text-align: left;
+  }
 }
 figure.code-block figcaption {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
-  color: var(--ink-2);
-  padding: 0.45rem 1rem;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface-2);
+  font-size: 0.72rem;
+  color: var(--ink-3);
+  padding: 0.55rem 1rem 0;
 }
 figure.code-block pre {
   margin: 0;
-  padding: 0.9rem 1rem;
+  padding: 0.75rem 1rem;
   overflow-x: auto;
   font-family: var(--font-mono);
-  font-size: 0.84rem;
-  line-height: 1.6;
+  font-size: 0.8125rem;
+  line-height: 1.7;
   background: transparent !important;
 }
+/* Token colours come from the same --code-* variables as the exercise editor (see tools/markdown/render.ts). */
 .shiki,
 .shiki span {
-  color: var(--shiki-light);
-}
-:root[data-theme='dark'] .shiki,
-:root[data-theme='dark'] .shiki span {
-  color: var(--shiki-dark);
-}
-@media (prefers-color-scheme: dark) {
-  :root:where(:not([data-theme='light'])) .shiki,
-  :root:where(:not([data-theme='light'])) .shiki span {
-    color: var(--shiki-dark);
-  }
+  color: inherit;
 }
 
 /* Maths. */
@@ -405,7 +499,7 @@ figure.code-block pre {
   border-radius: 4px;
   cursor: help;
   transition: background-color 120ms ease;
-  box-shadow: inset 0 -1px 0 0 color-mix(in srgb, var(--accent-2) 55%, transparent);
+  box-shadow: inset 0 -1px 0 0 color-mix(in srgb, var(--accent) 55%, transparent);
 }
 [data-term]:hover,
 [data-term]:focus-visible,
