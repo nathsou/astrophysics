@@ -17,7 +17,7 @@ export default figure({
     const eh = len - ae;
     const x = v3(1, 0, 0);
     const w = mul(sph(gam), 1.2);
-    const c = v3(lean, 0.2 * lean, 1.3);
+    const c = v3(lean, 0.2 * lean, 1.5);
     const X0 = (t: number) => mul(x, t - len / 2);
     // bottom front line: L K A E H M N
     const fx = { L: -2 * ae, K: -ae, A: 0, E: ae, H: len, M: len + eh, N: len + 2 * eh };
