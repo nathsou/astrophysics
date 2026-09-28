@@ -8,7 +8,7 @@ When there are more live values than registers, some of them must live in memory
 
 The *pressure* example deliberately keeps a dozen values live at once. RISC-V has 27 allocatable registers, so it compiles without any spills. Shrink the register file and the compiler has to start making choices.
 
-<SpillExplorer example="pressure" fn="mix" maxRegs={5} caption="The same function compiled with a restricted register file. Red-tagged lines are spill stores and reloads; green ones are rematerialisations. The stats bar counts them and shows how many instructions the program actually executed on the emulator, compared with an unrestricted allocation. Move the slider to see the cost of each spilled value." />
+<SpillExplorer example="pressure" fn="mix" maxRegs={5} caption="The same function compiled with a restricted register file. Red-tagged lines are spill stores and reloads; lime ones are rematerialisations. The stats bar counts them and shows how many instructions the program actually executed on the emulator, compared with an unrestricted allocation. Move the slider to see the cost of each spilled value." />
 
 ## Spill everywhere
 

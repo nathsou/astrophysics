@@ -72,7 +72,7 @@ export function LinearScanStepper({ example = 'pressure', fn, caption, maxRegs: 
                 <text x={left - 6} y={y + 12} fontSize={10} textAnchor="end" fontFamily="var(--mono)" fill={fx ? 'var(--t-preg)' : 'var(--t-vreg)'}>{fx ? t.regs[keyPreg(iv.key)].name : f.vregName(iv.key)}</text>
                 {iv.ranges.map((rg, k) => (
                   <rect key={k} x={left + (rg.from / 2) * W} y={y + 3} width={Math.max(3, ((rg.to - rg.from) / 2) * W)} height={rowH - 6} rx={3}
-                    fill={fx ? 'color-mix(in srgb, var(--ink) 18%, transparent)' : spilled.has(iv.key) ? 'var(--red-soft)' : reg !== undefined ? regColor(reg) : started ? 'color-mix(in srgb, var(--amber) 45%, var(--panel))' : 'color-mix(in srgb, var(--ink) 8%, transparent)'}
+                    fill={fx ? 'color-mix(in srgb, var(--ink) 18%, transparent)' : spilled.has(iv.key) ? 'var(--red-soft)' : reg !== undefined ? regColor(reg) : started ? 'color-mix(in srgb, var(--amber) 45%, var(--panel))' : 'color-mix(in srgb, var(--ink) 12%, transparent)'}
                     stroke={isActive ? 'var(--ink)' : spilled.has(iv.key) ? 'var(--red)' : 'none'} strokeWidth={isActive ? 1.5 : 1} strokeDasharray={spilled.has(iv.key) ? '3 2' : undefined} />
                 ))}
                 {!fx && reg !== undefined && <text x={left + (iv.end / 2) * W + 4} y={y + 12} fontSize={9.5} fontFamily="var(--mono)" fill="var(--ink-2)">{t.regs[reg].name}</text>}

@@ -65,7 +65,7 @@ George and Appel interleave coalescing with simplification, because simplifying 
 
 then **select** colours, preferring for each node the colour of a node it has a move with, so that even non-coalesced copies often become `mv r, r` and vanish. Nodes that get no colour are **actual spills**. Spill code is inserted, and the whole process restarts on the rewritten program.
 
-<IRCStepper example="pressure" fn="mix" maxRegs={6} caption="Iterated register coalescing on a function with high register pressure, restricted to K = 6 registers. Circles are virtual registers; dashed orange edges are copies; filled colours are assigned registers. Step through simplify, coalesce, potential spill and select. Drag K up until nothing spills, or down to force several rounds. Turn off coalescing to see the copies survive." />
+<IRCStepper example="pressure" fn="mix" maxRegs={6} caption="Iterated register coalescing on a function with high register pressure, restricted to K = 6 registers. Circles are virtual registers; dashed green edges are copies; filled colours are assigned registers. Step through simplify, coalesce, potential spill and select. Drag K up until nothing spills, or down to force several rounds. Turn off coalescing to see the copies survive." />
 
 <Callout kind="try">
 Set K to 16 and step to the end: every node gets a register, and the only copies left are those between values that really interfere. Then turn on “physical regs” to see the pre-coloured argument registers the values are coalesced with.

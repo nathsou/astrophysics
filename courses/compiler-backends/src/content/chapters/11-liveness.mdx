@@ -40,7 +40,7 @@ for (let changed = true; changed; ) {
 
 The **visit order** matters for speed, but not for the answer. In postorder a block is visited after its successors (ignoring back edges), so most LiveIn sets it needs are already up to date. A loop typically costs one extra round to carry values around the back edge, plus a final round that changes nothing and confirms the fixed point.
 
-<LivenessStepper example="sum" fn="main" caption="Iterating liveness for the sum-of-squares loop, on machine IR after SSA destruction. Each step recomputes one block; new set members are outlined in green. Watch the loop-carried values (i and s) spread through the loop blocks’ sets as the back edge carries them around, until a round changes nothing. Tick “show physical registers” to include a0 and the other ABI registers." />
+<LivenessStepper example="sum" fn="main" caption="Iterating liveness for the sum-of-squares loop, on machine IR after SSA destruction. Each step recomputes one block; new set members are outlined in lime. Watch the loop-carried values (i and s) spread through the loop blocks’ sets as the back edge carries them around, until a round changes nothing. Tick “show physical registers” to include a0 and the other ABI registers." />
 
 <Aside kind="history">
 <p>Gary Kildall’s 1973 POPL paper, “A Unified Approach to Global Program Optimization”, framed dataflow analyses as fixed points over lattices. Kam and Ullman (1976–77) characterised when iteration gives the precise answer (monotone frameworks). Liveness is the textbook instance: the lattice is sets of values, the meet is union, and the transfer functions are gen/kill.</p>

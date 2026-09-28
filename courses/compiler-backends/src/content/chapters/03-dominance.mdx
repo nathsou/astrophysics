@@ -53,7 +53,7 @@ function intersect(a, b) {                     // "two-finger" walk up the tree
 
 Step through it below. On a reducible CFG it settles in one pass, plus a second pass to confirm nothing changes. Each step processes one block: it intersects over the predecessors whose idom is already known, and records the new idom. The dominator tree on the right grows as it goes.
 
-<DominanceStepper example="sort" fn="sort" caption="Cooper–Harvey–Kennedy on insertion sort. Orange: the block being processed; teal: its predecessors that contribute; violet: nodes visited by the two-finger walk. Predecessors reached through back edges are skipped in the first pass, because their idom is not known yet." />
+<DominanceStepper example="sort" fn="sort" caption="Cooper–Harvey–Kennedy on insertion sort. Green: the block being processed; teal: its predecessors that contribute; violet: nodes visited by the two-finger walk. Predecessors reached through back edges are skipped in the first pass, because their idom is not known yet." />
 
 <Aside kind="llvm">
 <p>LLVM’s `DominatorTree` uses the Semi-NCA algorithm, a simplification of Lengauer–Tarjan, and supports incremental updates as passes edit the CFG. GCC uses Lengauer–Tarjan. On the small CFGs typical of a single function, all of them are fast; the difference shows up on huge generated functions.</p>
