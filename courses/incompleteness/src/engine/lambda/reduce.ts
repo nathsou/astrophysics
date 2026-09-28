@@ -46,20 +46,26 @@ function isPrefix(p: Path, q: Path): boolean {
 /** All β-redexes of M, in pre-order (outer before inner, left before right). */
 export function redexes(m: Term): Redex[] {
   const found: { t: Term & { k: 'app'; fn: Abs }; path: Path; underLambda: boolean }[] = [];
-  const go = (s: Term, path: Path, under: boolean) => {
+  const path: number[] = [];
+  const go = (s: Term, under: boolean) => {
     switch (s.k) {
       case 'var':
         return;
       case 'app':
-        if (isRedex(s)) found.push({ t: s, path, underLambda: under });
-        go(s.fn, [...path, 0], under);
-        go(s.arg, [...path, 1], under);
+        if (isRedex(s)) found.push({ t: s, path: [...path], underLambda: under });
+        path.push(0);
+        go(s.fn, under);
+        path[path.length - 1] = 1;
+        go(s.arg, under);
+        path.pop();
         return;
       case 'abs':
-        go(s.body, [...path, 0], true);
+        path.push(0);
+        go(s.body, true);
+        path.pop();
     }
   };
-  go(m, [], false);
+  go(m, false);
   const out: Redex[] = found.map(({ t, path, underLambda }) => ({
     id: t.id,
     path,
@@ -152,26 +158,45 @@ export const STRATEGY_NAMES: Record<Strategy, string> = {
   cbv: 'call by value',
 };
 
-function leftmostOutermost(t: Term, path: Path): Path | null {
+// The finders push onto a shared path while descending and pop when backtracking, so a search
+// costs time proportional to the nodes it visits.
+
+function leftmostOutermost(t: Term, path: number[]): boolean {
   switch (t.k) {
     case 'var':
-      return null;
+      return false;
     case 'app':
-      if (t.fn.k === 'abs') return path;
-      return leftmostOutermost(t.fn, [...path, 0]) ?? leftmostOutermost(t.arg, [...path, 1]);
+      if (t.fn.k === 'abs') return true;
+      path.push(0);
+      if (leftmostOutermost(t.fn, path)) return true;
+      path[path.length - 1] = 1;
+      if (leftmostOutermost(t.arg, path)) return true;
+      path.pop();
+      return false;
     case 'abs':
-      return leftmostOutermost(t.body, [...path, 0]);
+      path.push(0);
+      if (leftmostOutermost(t.body, path)) return true;
+      path.pop();
+      return false;
   }
 }
 
-function leftmostInnermost(t: Term, path: Path): Path | null {
+function leftmostInnermost(t: Term, path: number[]): boolean {
   switch (t.k) {
     case 'var':
-      return null;
+      return false;
     case 'app':
-      return leftmostInnermost(t.fn, [...path, 0]) ?? leftmostInnermost(t.arg, [...path, 1]) ?? (t.fn.k === 'abs' ? path : null);
+      path.push(0);
+      if (leftmostInnermost(t.fn, path)) return true;
+      path[path.length - 1] = 1;
+      if (leftmostInnermost(t.arg, path)) return true;
+      path.pop();
+      return t.fn.k === 'abs';
     case 'abs':
-      return leftmostInnermost(t.body, [...path, 0]);
+      path.push(0);
+      if (leftmostInnermost(t.body, path)) return true;
+      path.pop();
+      return false;
   }
 }
 
@@ -187,22 +212,32 @@ function headRedex(t: Term): Path | null {
   return Array<number>(depth - 1).fill(0);
 }
 
-function cbvRedex(t: Term, path: Path): Path | null {
-  if (t.k !== 'app') return null;
-  return cbvRedex(t.fn, [...path, 0]) ?? cbvRedex(t.arg, [...path, 1]) ?? (t.fn.k === 'abs' && t.arg.k !== 'app' ? path : null);
+function cbvRedex(t: Term, path: number[]): boolean {
+  if (t.k !== 'app') return false;
+  path.push(0);
+  if (cbvRedex(t.fn, path)) return true;
+  path[path.length - 1] = 1;
+  if (cbvRedex(t.arg, path)) return true;
+  path.pop();
+  return t.fn.k === 'abs' && t.arg.k !== 'app';
 }
+
+const found = (f: (t: Term, path: number[]) => boolean, t: Term): Path | null => {
+  const path: number[] = [];
+  return f(t, path) ? path : null;
+};
 
 /** The path of the redex the strategy contracts next, or null if it has no step. */
 export function strategyRedexPath(m: Term, strategy: Strategy): Path | null {
   switch (strategy) {
     case 'normal':
-      return leftmostOutermost(m, []);
+      return found(leftmostOutermost, m);
     case 'applicative':
-      return leftmostInnermost(m, []);
+      return found(leftmostInnermost, m);
     case 'cbn':
       return headRedex(m);
     case 'cbv':
-      return cbvRedex(m, []);
+      return found(cbvRedex, m);
   }
 }
 
@@ -231,7 +266,7 @@ export type RunStatus =
 export interface ReduceOptions {
   /** Maximum number of steps (default 1000). */
   fuel?: number;
-  /** Stop when the term has more nodes than this (default 50 000). */
+  /** Stop when the term has more nodes than this (default 50 000; checked every 8 steps). */
   maxSize?: number;
   /** Record each contraction (default true). Without it only the count and final term are kept. */
   trace?: boolean;
@@ -278,7 +313,7 @@ export function reduce(m: Term, strategy: Strategy, opts: ReduceOptions = {}): R
         status: 'out-of-fuel',
         note: `stopped after ${count} steps without reaching a normal form; this alone does not show that there is none`,
       };
-    if (size(cur) > maxSize)
+    if (count % 8 === 0 && size(cur) > maxSize)
       return { strategy, start: m, final: cur, steps, count, status: 'size-limit', note: `stopped after ${count} steps: the term grew beyond ${maxSize} nodes` };
     const c = contractAt(cur, p);
     if (trace) steps.push(c);

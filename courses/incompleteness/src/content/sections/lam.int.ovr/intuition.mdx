@@ -1,0 +1,35 @@
+<Added label="Added for this edition">
+
+The lambda calculus has only two ways of building expressions: **abstraction** $\lambda x.\,M$, the function that sends $x$ to $M$, and **application** $M N$, a function applied to an argument. Computation is simplification: $(\lambda x.\,M)N$ is simplified by putting $N$ in place of $x$ in $M$. This chapter shows that this is enough to compute every partial recursive function, and nothing more.
+
+</Added>
+
+## Naming a function without naming it
+
+Mathematics usually introduces a function by giving it a name: “let $f(x) = x + 3$”. The notation $\lambda x.\,(x + 3)$ writes the function down directly, as an expression. The $x$ is a placeholder: $\lambda y.\,(y + 3)$ is the same function. That observation becomes precise in the next section as *α-equivalence*.
+
+Applying the function to $2$ and simplifying — $(\lambda x.\,(x+3))(2)$ becomes $2 + 3$ — is the one computational rule of the calculus, **β-reduction**.
+
+## Everything is a function
+
+The book stresses three features of the framework:
+
+1. Everything denotes a function.
+2. Functions are defined by λ-abstraction.
+3. Anything can be applied to anything else.
+
+In particular there are no numbers, no $+$ and no truth values in the *pure* lambda calculus: they have to be encoded as functions (Church numerals, from section 9.6 on). And a term may be applied to itself. $F F$ always makes sense. Take $F \equiv \lambda x.\,xx$: then $FF \equiv (\lambda x.\,xx)(\lambda x.\,xx)$ simplifies to itself, forever. This is the first sign that simplification need not end, which is exactly what one expects of a notion that captures *partial* computable functions.
+
+## Where the chapter goes
+
+| Sections | Content |
+|---|---|
+| 9.2–9.4 | terms, reduction, and the Church–Rosser property (normal forms are unique) |
+| 9.5 | functions of several arguments, by currying |
+| 9.6–9.9 | Church numerals; arithmetic, pairs and truth values as terms |
+| 9.10–9.13 | every primitive recursive, general recursive and partial recursive function is λ-definable (using a fixpoint combinator for recursion) |
+| 9.14 | and conversely, every λ-definable function is partial recursive |
+
+So the λ-definable functions are exactly the partial recursive functions — one more of the equivalent definitions of computability from the preceding chapters.
+
+Explore mode opens the **Lambda Lab**, which is used throughout the chapter: enter a term, click a redex to contract it, or let a reduction strategy run.

@@ -1,0 +1,27 @@
+import { ExLamCurry } from '../../../workbench/lambda/exercises';
+
+<Added label="Added for this edition">
+
+Every λ-abstraction has exactly one parameter. A function of two arguments is written as a function that takes the first argument and **returns a function** waiting for the second: $\lambda x.\lambda y.\,M$. This is **currying**, and the conventions of the syntax section — application to the left, several binders under one λ — are designed to make it painless.
+
+</Added>
+
+## Two arguments, one at a time
+
+To represent $f(x, y) = x$, write $\lambda x.\lambda y.\,x$. Applied to $M$ it gives $\lambda y.\,M$ — “the constant function with value $M$” — and that, applied to $N$, gives $M$:
+
+$$
+(\lambda x.\lambda y.\,x)\,M\,N \;\to\; (\lambda y.\,M)\,N \;\to\; M .
+$$
+
+Because application associates to the left, $F\,M\,N$ *means* $(F\,M)\,N$: “apply $F$ to $M$, then apply the result to $N$”. So a curried function is applied to several arguments just by writing them one after another.
+
+## Several arguments
+
+In general $\lambda x_1.\ldots\lambda x_n.\,N$ applied to $M_1 \ldots M_n$ reduces in $n$ steps to $N[M_1/x_1]\ldots[M_n/x_n]$: the arguments are substituted one at a time, from the outside in. Partial application comes for free: $(\lambda x.\lambda y.\,x)\,M$ is a perfectly good term, a function of one argument.
+
+## A hidden subtlety
+
+The second step above substitutes $N$ for $y$ in $M$. If $M$ contains $y$ free — try $(\lambda x.\lambda y.\,x)\,y\,n$ in Explore mode — the first step already has to rename the bound $y$, exactly as in the previous section; otherwise the second argument would replace the first.
+
+<ExLamCurry />

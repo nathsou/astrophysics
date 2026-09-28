@@ -1,0 +1,9 @@
+import { NumeralPanel, FunctionTable } from '../../../workbench/lambda/ChurchPanels';
+
+A numeral, its official syntax, and what it does when applied to a function $g$ and an argument $a$:
+
+<NumeralPanel />
+
+Which function does a term λ-define? The table applies it to the first few numerals and reduces by normal order. The starting example is the constant function $C_3 \equiv \lambda x.\,\overline 3$; try `λx. x`, `λn f x. f (n f x)` or `λn. n n`.
+
+<FunctionTable initial="λx. 3" />

@@ -1,0 +1,10 @@
+import { LambdaLab } from '../../../workbench/lambda/LambdaLab';
+import { SubstPanel } from '../../../workbench/lambda/Syntax';
+
+First, substitution on its own: $M[N/x]$ with the book’s renaming, next to naive replacement, which captures variables.
+
+<SubstPanel />
+
+Then the Lambda Lab, starting with the capture hazard $(\lambda x.\lambda y.\,x)\,y$. Every λ that starts a redex is a button: click it to contract that redex. Or choose a strategy and **Step** or **Run** it. After each step, panel 3 shows the substitution exactly as it was carried out, including any renaming of bound variables. The book’s four examples are in the menu.
+
+<LambdaLab initial="(λx.λy.x) y" />

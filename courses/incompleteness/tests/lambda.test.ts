@@ -7,6 +7,7 @@ import {
   applicativeOrder,
   applyNamed,
   betaEquivalent,
+  binderMap,
   callByName,
   callByValue,
   churchBoolean,
@@ -148,6 +149,26 @@ describe('parsing and printing', () => {
     expect(print(P('p (λm n.m)'))).toBe('p λm n.m');
     expect(print(P('p (λm n.m)'), { absArgParens: true })).toBe('p (λm n.m)');
     expect(print(P('λx.x'), { ascii: true })).toBe('\\x.x');
+  });
+
+  it('prints the official, fully parenthesised syntax', () => {
+    const t = parseLambda('λxy.xxyx λz.xz', { singleLetter: true });
+    expect(print(t, { parens: 'full' })).toBe('(λx.(λy.((((x x) y) x) (λz.(x z)))))');
+    expect(toTex(P('λx.x y'), { parens: 'full' })).toBe('(\\lambda x.\\, (xy))');
+    expect(alphaEq(P(print(t, { parens: 'full' })), t)).toBe(true);
+  });
+
+  it('maps each occurrence to its binder', () => {
+    const t = P('λx.x (λx.x) y');
+    const m = binderMap(t);
+    const vars: { name: string; binder: string | null }[] = [];
+    walk(t, (n) => {
+      if (n.k === 'var') vars.push({ name: n.name, binder: m.get(n.id)! });
+    });
+    expect(vars[0]!.binder).toBe(t.id);
+    expect(vars[1]!.binder).not.toBe(t.id);
+    expect(vars[1]!.binder).not.toBe(null);
+    expect(vars[2]!.binder).toBe(null);
   });
 
   it('gives tokens with the ids of the nodes they belong to', () => {

@@ -26,7 +26,13 @@ export interface LambdaPrintOptions {
   numerals?: boolean;
   /** Show subterms α-equivalent to one of these as its label. */
   known?: KnownTerm[];
-  /** Write λx.λy.M as λx y.M (text) / λxy.M (TeX). Default true. */
+  /**
+   * 'minimal' (default): the book's conventions. 'full': the official syntax of section "The
+   * Syntax of the Lambda Calculus", every application (MN) and abstraction (λx.M) in parentheses
+   * and one binder per λ.
+   */
+  parens?: 'minimal' | 'full';
+  /** Write λx.λy.M as λx y.M (text) / λxy.M (TeX). Default true (ignored with parens: 'full'). */
   mergeBinders?: boolean;
   /** Parenthesise every abstraction in argument position, e.g. p (λm n.m) rather than p λm n.m. Default false (minimal). */
   absArgParens?: boolean;
@@ -62,7 +68,8 @@ export interface PrintToken {
 
 export function printTokens(t: Term, o: LambdaPrintOptions = {}): PrintToken[] {
   const out: PrintToken[] = [];
-  const merge = o.mergeBinders ?? true;
+  const full = o.parens === 'full';
+  const merge = !full && (o.mergeBinders ?? true);
   const lambda = o.ascii ? '\\' : 'λ';
   const go = (s: Term, rightOpen: boolean, owners: NodeId[]) => {
     const own = [...owners, s.id];
@@ -73,6 +80,14 @@ export function printTokens(t: Term, o: LambdaPrintOptions = {}): PrintToken[] {
       case 'var':
         return push(s.name, 'var');
       case 'app': {
+        if (full) {
+          push('(', 'open');
+          go(s.fn, true, own);
+          push(' ', 'space');
+          go(s.arg, true, own);
+          push(')', 'close');
+          return;
+        }
         const argParen = (s.arg.k === 'app' || (o.absArgParens === true && s.arg.k === 'abs')) && collapsedLabel(s.arg, o) === null;
         go(s.fn, false, own);
         push(' ', 'space');
@@ -82,7 +97,7 @@ export function printTokens(t: Term, o: LambdaPrintOptions = {}): PrintToken[] {
         return;
       }
       case 'abs': {
-        const paren = !rightOpen;
+        const paren = full || !rightOpen;
         if (paren) push('(', 'open');
         push(lambda, 'lambda');
         let cur: Term = s;
@@ -174,7 +189,8 @@ function sep(a: Edge, b: Edge): string {
  * book; names, labels and λs are separated by a thin space.
  */
 export function toTex(t: Term, o: LambdaPrintOptions = {}): string {
-  const merge = o.mergeBinders ?? true;
+  const full = o.parens === 'full';
+  const merge = !full && (o.mergeBinders ?? true);
   const wrap = o.wrap ?? ((_n: Term, s: string) => s);
   const go = (s: Term, rightOpen: boolean): TexPiece => {
     const label = collapsedLabel(s, o);
@@ -188,6 +204,11 @@ export function toTex(t: Term, o: LambdaPrintOptions = {}): string {
         return { s: wrap(s, varTex(s.name)), first: kind, last: kind };
       }
       case 'app': {
+        if (full) {
+          const f = go(s.fn, true);
+          const a = go(s.arg, true);
+          return { s: wrap(s, `(${f.s}${sep(f.last, a.first)}${a.s})`), first: 'paren', last: 'paren' };
+        }
         const argParen = (s.arg.k === 'app' || (o.absArgParens === true && s.arg.k === 'abs')) && collapsedLabel(s.arg, o) === null;
         const f = go(s.fn, false);
         const a0 = go(s.arg, argParen || rightOpen);
@@ -204,7 +225,7 @@ export function toTex(t: Term, o: LambdaPrintOptions = {}): string {
         const joiner = params.every(isLetterVar) ? '' : '\\,';
         const body = go(cur.body, true);
         const inner = wrap(s, `\\lambda ${params.map(varTex).join(joiner)}.\\, ${body.s}`);
-        return rightOpen ? { s: inner, first: 'lambda', last: body.last } : { s: `(${inner})`, first: 'paren', last: 'paren' };
+        return rightOpen && !full ? { s: inner, first: 'lambda', last: body.last } : { s: `(${inner})`, first: 'paren', last: 'paren' };
       }
     }
   };

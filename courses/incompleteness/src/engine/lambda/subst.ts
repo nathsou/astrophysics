@@ -82,12 +82,13 @@ function run(m: Term, x: string, n: Term, avoidCapture: boolean): SubstResult {
   const captures: Capture[] = [];
   const renamed: SubstResult['renamed'] = [];
   const nFree = freeVars(n);
-  const ff = freeFor(n, x, m);
   let replaced = 0;
 
-  const go = (s: Term, path: Path, scopes: { id: NodeId; param: string }[]): Term => {
+  const path: number[] = [];
+  const scopes: { id: NodeId; param: string }[] = [];
+  const go = (s: Term): Term => {
     if (!isFree(x, s)) {
-      if (s.k === 'abs' && s.param === x && isFree(x, s.body)) steps.push({ kind: 'binder-stop', node: s.id, path, note: `λ${x} binds ${x} here: the ${x}’s inside are not free, so they stay` });
+      if (s.k === 'abs' && s.param === x && isFree(x, s.body)) steps.push({ kind: 'binder-stop', node: s.id, path: [...path], note: `λ${x} binds ${x} here: the ${x}’s inside are not free, so they stay` });
       return s;
     }
     switch (s.k) {
@@ -96,19 +97,22 @@ function run(m: Term, x: string, n: Term, avoidCapture: boolean): SubstResult {
         const traced = cloneFresh(n, map);
         for (const [k, o] of map) origin.set(k, { from: o, via: 'term' });
         replaced++;
-        steps.push({ kind: 'replace', node: s.id, path, copy: traced.id, note: `free occurrence of ${x}: replaced by a copy of the substituted term` });
-        for (const b of scopes) {
+        steps.push({ kind: 'replace', node: s.id, path: [...path], copy: traced.id, note: `free occurrence of ${x}: replaced by a copy of the substituted term` });
+        if (!avoidCapture) for (const b of scopes) {
           if (nFree.has(b.param)) {
             captures.push({ occurrence: s.id, binder: b.id, variable: b.param });
-            steps.push({ kind: 'capture', node: s.id, path, binder: b.id, variable: b.param, note: `the free ${b.param} of the substituted term is captured by λ${b.param}` });
+            steps.push({ kind: 'capture', node: s.id, path: [...path], binder: b.id, variable: b.param, note: `the free ${b.param} of the substituted term is captured by λ${b.param}` });
           }
         }
         return traced;
       }
       case 'app': {
         origin.set(s.id, { from: s.id, via: 'rebuilt' });
-        const fn = go(s.fn, [...path, 0], scopes);
-        const arg = go(s.arg, [...path, 1], scopes);
+        path.push(0);
+        const fn = go(s.fn);
+        path[path.length - 1] = 1;
+        const arg = go(s.arg);
+        path.pop();
         return { ...withLabel(s, undefined), fn, arg };
       }
       case 'abs': {
@@ -121,23 +125,33 @@ function run(m: Term, x: string, n: Term, avoidCapture: boolean): SubstResult {
           steps.push({
             kind: 'rename',
             node: s.id,
-            path,
+            path: [...path],
             from: s.param,
             to: fresh,
             note: `${s.param} is free in the substituted term and ${x} is free in the body of λ${s.param}: rename the bound ${s.param} to ${fresh} first`,
           });
           const body0 = renameFreeUnsafe(s.body, s.param, fresh, origin);
-          const body = go(body0, [...path, 0], [...scopes, { id: s.id, param: fresh }]);
+          path.push(0);
+          scopes.push({ id: s.id, param: fresh });
+          const body = go(body0);
+          scopes.pop();
+          path.pop();
           return { ...withLabel(s, undefined), param: fresh, body };
         }
-        const body = go(s.body, [...path, 0], [...scopes, { id: s.id, param: s.param }]);
+        path.push(0);
+        scopes.push({ id: s.id, param: s.param });
+        const body = go(s.body);
+        scopes.pop();
+        path.pop();
         return { ...withLabel(s, undefined), body };
       }
     }
   };
 
-  const result = go(m, [], []);
-  return { result, steps, origin, captures, renamed, replaced, freeFor: ff.ok };
+  const result = go(m);
+  // N is free for x in M exactly when no free occurrence of x lies under a λy with y ∈ FV(N):
+  // precisely the situations that trigger a renaming (or, naively, a capture).
+  return { result, steps, origin, captures, renamed, replaced, freeFor: renamed.length === 0 && captures.length === 0 };
 }
 
 /** M[N/x], renaming bound variables of M where they would capture free variables of N. */

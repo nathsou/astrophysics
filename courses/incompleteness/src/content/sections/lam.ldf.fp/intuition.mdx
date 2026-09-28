@@ -1,0 +1,39 @@
+import { ExLamSum } from '../../../workbench/lambda/exercises';
+
+<Added label="Added for this edition">
+
+A term cannot mention itself, so a recursive definition like $\mathrm{Fac}\,n = \text{if } n = 0 \text{ then } 1 \text{ else } n \cdot \mathrm{Fac}(n-1)$ is not directly a term. Instead, abstract the recursive call: $\mathrm{Fac}' \equiv \lambda g.\lambda n.\ldots g(\mathrm{Pred}\,n)\ldots$, and look for a **fixpoint** of $\mathrm{Fac}'$. The combinator $Y$ produces one for any term: $Y g \twoheadrightarrow g(Y g)$.
+
+</Added>
+
+## The problem
+
+Unfolding a recursive definition never ends: every copy of $\mathrm{Fac}$ on the right-hand side needs unfolding again. But the recursive equation says something useful: if $f$ is the factorial, then $\mathrm{Fac}'\,f$ is the factorial too. The factorial is a **fixpoint** of
+
+$$
+\mathrm{Fac}' \equiv \lambda g.\lambda n.\,\mathrm{IsZero}\,n\,\overline 1\,(\mathrm{Mult}\,n\,(g(\mathrm{Pred}\,n))).
+$$
+
+## Turing’s Y
+
+With $U \equiv \lambda u x.\,x(uux)$ and $Y \equiv UU$:
+
+$$
+Y g \equiv U U g \to (\lambda x.\,x(UUx))\,g \to g(UUg) \equiv g(Y g).
+$$
+
+So $Y g$ reduces to $g$ applied to $Y g$ — and so on without end: $g(g(Y g))$, $g(g(g(Y g)))$, … Think of $Yg$ as $g$ applied infinitely often.
+
+$\mathrm{Fac} \equiv Y\,\mathrm{Fac}'$ therefore satisfies $\mathrm{Fac}\,\overline n \twoheadrightarrow \mathrm{Fac}'\,\mathrm{Fac}\,\overline n$, which unfolds one level of the recursion. When $n$ reaches $0$, $\mathrm{IsZero}$ selects $\overline 1$ and *discards* the branch that contains the next copy of $\mathrm{Fac}$.
+
+## The order of reduction matters
+
+That discarding is why some reduction sequences end and others do not. Normal order passes $Y\,\mathrm{Fac}'$ along unevaluated and only unfolds it when it is needed; it reaches $\mathrm{Fac}\,\overline 3 \twoheadrightarrow \overline 6$. Applicative order insists on reducing inside $Y\,\mathrm{Fac}'$ first, which only unfolds it further and further, and it never gets to use the result. Explore mode runs both.
+
+## Any recursion
+
+For any equation $g\,x_1 \ldots x_n = N$, where $N$ may mention $g$, the term $G \equiv Y\,(\lambda g.\lambda x_1\ldots x_n.\,N)$ satisfies it up to β-equivalence. Church’s own combinator $Y_C \equiv \lambda g.\,(\lambda x.\,g(xx))(\lambda x.\,g(xx))$ also works, in the weaker sense that $Y_C\,g$ and $g(Y_C\,g)$ reduce to a common term, $g(VV)$ with $V \equiv \lambda x.\,g(xx)$.
+
+(The section’s side remark uses $\mathrm{Mult} \equiv \lambda ab.\,a(\mathrm{Add}\,a)\,0$ as an example of a definition in terms of earlier ones. As in Problem 9.2, the term as printed computes $a \cdot a$; see <Ref k="lam:rep:arf:sec" />. The point made there is unaffected.)
+
+<ExLamSum />

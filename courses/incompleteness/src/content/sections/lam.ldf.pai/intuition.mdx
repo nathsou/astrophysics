@@ -1,0 +1,35 @@
+import { ExLamSwap } from '../../../workbench/lambda/exercises';
+
+<Added label="Added for this edition">
+
+A pair is a term waiting for a function to hand its two components to: $\langle M, N\rangle \equiv \lambda f.\,f M N$. The projections pass it a selector. With pairs, the **predecessor** — surprisingly hard for iterators, which can only go forwards — becomes a walk along pairs $\langle k-1, k\rangle$.
+
+</Added>
+
+## Building and taking apart
+
+$$
+\mathrm{Pair} \equiv \lambda m n.\lambda f.\,f m n,\qquad \mathrm{Fst} \equiv \lambda p.\,p(\lambda m n.\,m),\qquad \mathrm{Snd} \equiv \lambda p.\,p(\lambda m n.\,n).
+$$
+
+$\mathrm{Fst}\,\langle M, N\rangle \to \langle M, N\rangle(\lambda mn.\,m) \to (\lambda mn.\,m)\,M\,N \twoheadrightarrow M$. The selector $\lambda mn.\,m$ is the same term as $\mathrm{true}$ of the next section, and $\lambda mn.\,n$ is $\mathrm{false}$.
+
+## Why the predecessor needs pairs
+
+$\overline n$ can apply a function $n$ times, but there is no way to “apply $f$ one time fewer”. The trick is to iterate something that remembers the previous value. Start from $\langle \overline 0, \overline 0\rangle$ and repeatedly apply
+
+$$
+D \equiv \lambda p.\,\langle \mathrm{Snd}\,p,\ \mathrm{Succ}(\mathrm{Snd}\,p)\rangle ,
+$$
+
+which shifts the pair one place along: $\langle 0,0\rangle \mapsto \langle 0,1\rangle \mapsto \langle 1,2\rangle \mapsto \cdots$. After $n$ steps the pair is $\langle \overline{n-1}, \overline n\rangle$ (or $\langle \overline 0, \overline 0\rangle$ for $n = 0$), and $\mathrm{Fst}$ takes out the predecessor:
+
+$$
+\mathrm{Pred} \equiv \lambda n.\,\mathrm{Fst}(n\,D\,\langle\overline 0, \overline 0\rangle).
+$$
+
+Subtraction then iterates the predecessor: $\mathrm{Sub} \equiv \lambda ab.\,b\,\mathrm{Pred}\,a$ applies $\mathrm{Pred}$ to $a$, $b$ times, and stops at $\overline 0$ — it is truncated subtraction $a \mathbin{\dot-} b$.
+
+The same pattern — iterate a step on a pair “(counter, value)” — is exactly how the proof that primitive recursive functions are λ-definable handles primitive recursion.
+
+<ExLamSwap />

@@ -143,17 +143,19 @@ export function nodeById(root: Term, id: NodeId): Term | null {
  * labels dropped (their subterm changed).
  */
 export function replaceAt(t: Term, path: Path, sub: Term): Term {
-  if (path.length === 0) return sub;
-  const [i, ...rest] = path;
-  const bare = withLabel(t, undefined);
-  switch (bare.k) {
-    case 'var':
-      throw new Error('replaceAt: path leads below a variable');
-    case 'app':
-      return i === 0 ? { ...bare, fn: replaceAt(bare.fn, rest, sub) } : { ...bare, arg: replaceAt(bare.arg, rest, sub) };
-    case 'abs':
-      return { ...bare, body: replaceAt(bare.body, rest, sub) };
-  }
+  const go = (s: Term, i: number): Term => {
+    if (i === path.length) return sub;
+    const bare = withLabel(s, undefined);
+    switch (bare.k) {
+      case 'var':
+        throw new Error('replaceAt: path leads below a variable');
+      case 'app':
+        return path[i] === 0 ? { ...bare, fn: go(bare.fn, i + 1) } : { ...bare, arg: go(bare.arg, i + 1) };
+      case 'abs':
+        return { ...bare, body: go(bare.body, i + 1) };
+    }
+  };
+  return go(t, 0);
 }
 
 /** Number of nodes. */
@@ -173,14 +175,22 @@ export function size(t: Term): number {
 export function cloneFresh(t: Term, origin?: Map<NodeId, NodeId>): Term {
   const id = freshId();
   origin?.set(id, t.id);
+  let copy: Term;
   switch (t.k) {
     case 'var':
-      return { ...t, id };
+      copy = { ...t, id };
+      break;
     case 'app':
-      return { ...t, id, fn: cloneFresh(t.fn, origin), arg: cloneFresh(t.arg, origin) };
+      copy = { ...t, id, fn: cloneFresh(t.fn, origin), arg: cloneFresh(t.arg, origin) };
+      break;
     case 'abs':
-      return { ...t, id, body: cloneFresh(t.body, origin) };
+      copy = { ...t, id, body: cloneFresh(t.body, origin) };
+      break;
   }
+  // A copy has the same free variables: reuse the cached set, if any.
+  const fv = fvCache.get(t);
+  if (fv) fvCache.set(copy, fv);
+  return copy;
 }
 
 // ------------------------------------------------------------------ variables
@@ -270,6 +280,37 @@ export function binderOf(root: Term, occurrence: NodeId): Abs | null {
     cur = children(cur)[i]!;
   }
   return binder;
+}
+
+/**
+ * For every variable occurrence, the abstraction that binds it (null if the occurrence is free).
+ * Keys and values are node ids.
+ */
+export function binderMap(t: Term): Map<NodeId, NodeId | null> {
+  const out = new Map<NodeId, NodeId | null>();
+  const env = new Map<string, NodeId[]>();
+  const go = (s: Term) => {
+    switch (s.k) {
+      case 'var': {
+        const st = env.get(s.name);
+        out.set(s.id, st && st.length ? st[st.length - 1]! : null);
+        return;
+      }
+      case 'app':
+        go(s.fn);
+        go(s.arg);
+        return;
+      case 'abs': {
+        let st = env.get(s.param);
+        if (!st) env.set(s.param, (st = []));
+        st.push(s.id);
+        go(s.body);
+        st.pop();
+      }
+    }
+  };
+  go(t);
+  return out;
 }
 
 export const VAR_NAME = /^[a-z][a-z0-9_']*$/;

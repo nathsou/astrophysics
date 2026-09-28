@@ -1,0 +1,10 @@
+import { PrfPanel } from '../../../workbench/lambda/Definability';
+import { LambdaLab } from '../../../workbench/lambda/LambdaLab';
+
+The constructions of the three lemmas, built by the engine exactly as in the proofs and applied to Church numerals.
+
+<PrfPanel />
+
+To follow a composition step by step, here is $H \equiv \lambda x_0 x_1.\,\mathrm{Succ}\,(\mathrm{Add}\,x_0\,x_1)$ applied to $\overline 1$ and $\overline 2$:
+
+<LambdaLab initial="(λx_0 x_1. Succ (Add x_0 x_1)) 1 2" />

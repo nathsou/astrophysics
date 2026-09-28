@@ -1,0 +1,33 @@
+import { ExLamNormalForm } from '../../../workbench/lambda/exercises';
+
+<Added label="Added for this edition">
+
+A term can usually be reduced in many ways. The **Church–Rosser theorem** says the choices never lead irreversibly apart: whatever $N_1$ and $N_2$ a term reduces to, both reduce further to some common $P$. Consequently a term has at most one normal form, and it makes sense to call it *the* value of the term.
+
+</Added>
+
+## The picture
+
+$$
+\begin{array}{ccc}
+ & M & \\
+ \swarrow\!\!\!\swarrow & & \searrow\!\!\!\searrow \\
+ N_1 & & N_2 \\
+ \searrow\!\!\!\searrow & & \swarrow\!\!\!\swarrow \\
+ & P &
+\end{array}
+$$
+
+The double-headed arrows are $\twoheadrightarrow$: any number of steps. The book’s example is $(\lambda x.\,(\lambda y.\,yx)z)v$: contracting the outer redex gives $(\lambda y.\,yv)z$, the inner one gives $(\lambda x.\,zx)v$, and both reduce to $zv$. Explore mode draws the **reduction graph** of a small term — every term reachable from it, and every one-step reduction between them — so you can see the diamonds.
+
+## Unique normal forms
+
+If $M$ reduces to normal forms $N_1$ and $N_2$, the theorem gives a $P$ that both reduce to. A normal form has no redex, so it only “reduces” to itself in zero steps: $N_1 \equiv P \equiv N_2$. (Up to α-equivalence, as always.)
+
+Uniqueness is not the same as *reaching* the normal form. $(\lambda x.\,y)\,\Omega$ has the normal form $y$, one step away, but it also reduces to itself forever if you keep contracting $\Omega$. Church–Rosser guarantees that the normal form stays *reachable* from every reduct; which strategy actually gets there is a separate question — the one that the strategies in the Lambda Lab illustrate.
+
+## β-equivalence
+
+$M =_\beta N$ if $M$ and $N$ reduce to a common term. Church–Rosser is what makes this an equivalence relation: transitivity needs the diamond. The book states the theorem without proof in this chapter.
+
+<ExLamNormalForm />

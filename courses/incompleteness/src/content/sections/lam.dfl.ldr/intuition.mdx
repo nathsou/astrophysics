@@ -1,0 +1,24 @@
+<Added label="Added for this edition">
+
+Every λ-definable function is partial recursive. The idea of the proof sketch: Gödel-number the λ-terms; then “reduce to normal form” is a partial recursive function of Gödel numbers, and so is translating between numbers and Church numerals. Together with the previous sections, the λ-definable functions are exactly the partial recursive ones.
+
+</Added>
+
+## The pipeline
+
+To compute $f(n_1, \ldots, n_k)$ from a term $F$ that λ-defines $f$:
+
+1. **toChurch**: turn each $n_i$ into (the Gödel number of) $\overline{n_i}$;
+2. build (the Gödel number of) the term $F\,\overline{n_1}\ldots\overline{n_k}$;
+3. **normalize** it — defined exactly when the term has a normal form;
+4. **fromChurch**: read the number off the resulting numeral.
+
+Steps 1, 2 and 4 are primitive recursive manipulations of codes, like those in the arithmetization of syntax. Step 3 is where partiality comes in.
+
+## Why normalize is partial recursive
+
+The proof sketch does not say how to compute the normal form. One way: a single reduction step (with renaming) is a primitive recursive operation on codes, and so is checking whether a term is normal. Then search, by unbounded minimization, for the least $s$ such that $s$ steps of *normal order* reach a normal form. Normal order finds the normal form whenever one exists (a standard theorem, not proved in the book); and by the Church–Rosser theorem that normal form is the only one, so it is the right answer. If there is no normal form the search never ends and normalize is undefined, as it should be.
+
+## What Explore shows
+
+Explore mode runs the same pipeline directly on terms instead of Gödel numbers, with normal order and a step limit. When the limit is reached it reports just that — the real normalize would simply keep going.
