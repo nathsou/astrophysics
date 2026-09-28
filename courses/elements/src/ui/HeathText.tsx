@@ -45,6 +45,8 @@ export function HeathText({ paras, bus, byrne, hoverKey, onHover, step, onStep, 
 
 interface Ctx {
   next: () => Target | null;
+  /** Render citations as plain text (inside a link). */
+  noLinks?: boolean;
   bus?: Bus | null;
   byrne?: boolean;
   hoverKey?: string | null;
@@ -60,7 +62,7 @@ export function renderInlines(c: Inline[], ctx: Ctx): ReactNode[] {
         return <Label key={i} v={x.v} target={t} ctx={ctx} />;
       }
       case 'ref':
-        return <Cite key={i} id={x.to.split(' ')[0]} text={x.text} />;
+        return ctx.noLinks ? <span key={i} className="cite-plain">{x.text}</span> : <Cite key={i} id={x.to.split(' ')[0]} text={x.text} />;
       case 'em':
         return <em key={i}>{renderInlines(x.c, ctx)}</em>;
       case 'strong':

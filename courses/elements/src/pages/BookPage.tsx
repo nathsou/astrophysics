@@ -53,7 +53,7 @@ export function BookPage({ n }: { n: number }) {
                     <span className="n">{s.kind === 'prop' ? citeLabel(it.id) : it.n}</span>
                     <span className="body">
                       {title && <span className="t">{title}</span>}
-                      <span className="enun">{first ? renderInlines(first.c, { next: () => null }) : null}</span>
+                      <span className="enun">{first ? renderInlines(first.c, { next: () => null, noLinks: true }) : null}</span>
                     </span>
                     <span className="marks">
                       {s.kind === 'prop' && <span className={`mini ${e.problem ? 'problem' : 'theorem'}`} title={e.problem ? 'Construction' : 'Theorem'}>{e.problem ? 'C' : 'T'}</span>}
