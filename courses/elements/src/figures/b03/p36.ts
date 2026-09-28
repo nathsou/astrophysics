@@ -11,7 +11,7 @@ export default figure({
     const k = g.circle(E, r);
     const D = g.free('D', 4.2, 0.9);
     need(dist(D, E) > r * 1.12, 'D outside the circle');
-    const A = g.glider('A', k, (203 * Math.PI) / 180);
+    const A = g.glider('A', k, (140 * Math.PI) / 180);
     const [x, y] = lc(D, A, k);
     need(dist(y, A) < 1e-6 && dist(x, y) > 0.05, 'the line DA cuts the circle, A being the far point');
     const C = g.point('C', x);

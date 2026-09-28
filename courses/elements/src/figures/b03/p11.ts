@@ -17,7 +17,7 @@ export default figure({
     need(dist(G, F) > 0.15, 'G not at F');
     const ra = dist(G, A);
     need(ra < 1.9 * R, 'the circle ADE not too large');
-    const k2 = g.circle(G, ra, { dashed: true });
+    const k2 = g.circle(G, ra, { dashed: true, name: 'ADE' });
     const u = unit(sub(G, F));
     const D = g.point('D', add(G, mul(u, ra)));
     const H = g.point('H', along(F, G, R));

@@ -12,7 +12,7 @@ export default figure({
     const A = g.glider('A', k, 160 * rad);
     const B = g.glider('B', k, 25 * rad);
     need(dist(A, B) > 0.3, 'A and B apart');
-    g.arc(O, B, A);
+    g.arc(O, B, A, { name: 'ADB' });
     const C = g.point('C', mid(A, B));
     const [p, q] = lc(C, add(C, perp(sub(B, A))), k);
     const D = g.point('D', onArc(O, B, A, p) ? p : q);

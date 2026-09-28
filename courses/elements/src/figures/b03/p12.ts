@@ -9,13 +9,13 @@ export default figure({
   build(g) {
     const r1 = 1.6;
     const F = g.point('F', v(0, 0));
-    const k1 = g.circle(F, r1);
+    const k1 = g.circle(F, r1, { name: 'ABC' });
     const A = g.point('A', onC(k1, 0));
     g.point('B', onC(k1, (130 * Math.PI) / 180));
     const G = g.free('G', 2.6, 1.0);
     const r2 = dist(G, A);
     need(dist(F, G) > r1 + 0.1 && dist(F, G) > r2 + 0.1, 'G well away from F');
-    const k2 = g.circle(G, r2, { dashed: true });
+    const k2 = g.circle(G, r2, { dashed: true, name: 'ADE' });
     g.point('E', onC(k2, (-40 * Math.PI) / 180));
     const C = g.point('C', along(F, G, r1));
     const D = g.point('D', along(G, F, r2));

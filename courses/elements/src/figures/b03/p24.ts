@@ -18,8 +18,8 @@ export default figure({
     const apex = (P: V, Q: V) => add(mid(P, Q), mul(unit(perp(sub(Q, P))), (dist(P, Q) / 2) / Math.tan((th * Math.PI) / 360)));
     const E = g.point('E', apex(A, B));
     const F = g.point('F', apex(C, D));
-    const k1 = arc3(g, A, E, B);
-    const k2 = arc3(g, C, F, D);
+    const k1 = arc3(g, A, E, B, { name: 'AEB' });
+    const k2 = arc3(g, C, F, D, { name: 'CFD' });
     g.segment(A, B);
     g.segment(C, D);
     // the awry curve: the arc CFD pushed out and in radially
@@ -32,7 +32,7 @@ export default figure({
       return v(k2.c.x + rr * Math.cos(t), k2.c.y + rr * Math.sin(t));
     };
     const ss = [...Array.from({ length: 61 }, (_, i) => i / 60), 0.25].sort((p, q) => p - q);
-    g.curve(ss.map(at), { dashed: true });
+    g.curve(ss.map(at), { dashed: true, name: 'CGD' });
     g.point('G', at(0.25));
     g.equal('AB = CD', L, dist(C, D));
     g.equal('radius of AEB = radius of CFD', k1.r, k2.r);

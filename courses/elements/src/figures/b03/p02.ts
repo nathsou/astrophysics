@@ -7,7 +7,7 @@ import { arc3, need } from './lib';
 export default figure({
   build(g) {
     const D = g.point('D', v(0, 0));
-    const k = g.circle(D, 2);
+    const k = g.circle(D, 2, { name: 'ABC' });
     const A = g.glider('A', k, (200 * Math.PI) / 180);
     const B = g.glider('B', k, (300 * Math.PI) / 180);
     need(dist(A, B) > 0.4 && dist(A, B) < 3.9, 'A, B neither too close nor opposite');
@@ -16,7 +16,7 @@ export default figure({
     const m = mid(A, B);
     const out = unit(sub(m, D));
     const E = g.point('E', add(m, mul(out, 2 - dist(D, m) + 0.45)));
-    arc3(g, A, E, B, { dashed: true });
+    arc3(g, A, E, B, { dashed: true, name: 'AEB' });
     const F = g.point('F', add(D, mul(unit(sub(E, D)), 2)));
     g.segment(A, B);
     g.segment(D, A);

@@ -7,7 +7,7 @@ import { need } from './lib';
 export default figure({
   build(g) {
     const D = g.point('D', v(0, 0));
-    const k = g.circle(D, 2);
+    const k = g.circle(D, 2, { name: 'ABC' });
     const rad = Math.PI / 180;
     const A = g.glider('A', k, 165 * rad);
     const B = g.glider('B', k, 75 * rad);

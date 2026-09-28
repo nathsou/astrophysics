@@ -14,7 +14,7 @@ export default figure({
     const h = dist(A, D);
     const B = g.glider('B', [D, add(D, mul(n, h))], 0.6, { line: true });
     need(dist(B, D) > 0.05 * h, 'B off AC');
-    arc3(g, A, B, C);
+    arc3(g, A, B, C, { name: 'ABC' });
     const a = (degAt(A, B, D) * Math.PI) / 180;
     const s = Math.sign(cross2(sub(B, A), sub(D, A)));
     const E = g.point('E', ll(A, add(A, rot(sub(B, A), s * a)), D, B));

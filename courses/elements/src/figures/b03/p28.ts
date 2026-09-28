@@ -10,8 +10,8 @@ export default figure({
     const K = g.free('K', -2.1, 0);
     const L = g.free('L', 2.1, 0);
     need(dist(K, L) > 2 * r + 0.1, 'the circles apart');
-    const k1 = g.circle(K, r);
-    const k2 = g.circle(L, r);
+    const k1 = g.circle(K, r, { name: 'ABC' });
+    const k2 = g.circle(L, r, { name: 'DEF' });
     const rad = Math.PI / 180;
     const A = g.glider('A', k1, 205 * rad);
     const B = g.glider('B', k1, 325 * rad);
@@ -25,6 +25,10 @@ export default figure({
     g.point('C', onC(k1, dirOf(K, A) + th / 2 + Math.PI));
     g.point('H', onC(k2, dirOf(L, D) + th / 2));
     g.point('F', onC(k2, dirOf(L, D) + th / 2 + Math.PI));
+    g.arc(K, B, A, { name: 'ACB' });
+    g.arc(K, A, B, { name: 'AGB' });
+    g.arc(L, E, D, { name: 'DFE' });
+    g.arc(L, D, E, { name: 'DHE' });
     g.segment(A, B);
     g.segment(D, E);
     g.path(A, K, B, { aux: true });

@@ -28,7 +28,7 @@ export default figure({
     const h1 = add(G, mul(n, r));
     const h2 = sub(G, mul(n, r));
     const H = g.point('H', dist(h1, E) > dist(h2, E) ? h1 : h2);
-    g.circle(G, r);
+    g.circle(G, r, { name: 'ABE' });
     g.segment(A, B);
     g.segment(A, D);
     g.segment(A, E);

@@ -8,7 +8,7 @@ export default figure({
   build(g) {
     const F = g.point('F', v(0, 0));
     const r = 2;
-    const k = g.circle(F, r);
+    const k = g.circle(F, r, { name: 'ABCD' });
     const E = g.free('E', 0.85, -0.75);
     need(dist(E, F) < r * 0.93, 'E inside the circle');
     const rad = Math.PI / 180;

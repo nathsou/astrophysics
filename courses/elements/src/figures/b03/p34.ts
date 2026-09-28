@@ -9,7 +9,7 @@ export default figure({
     const th = g.param('D', 55, { min: 15, max: 165, step: 1, label: 'the given angle D (°)' });
     const a = (th * Math.PI) / 180;
     const O = v(0, 0);
-    const k = g.circle(O, 2);
+    const k = g.circle(O, 2, { name: 'ABC' });
     const D = g.free('D', -4.2, -2.2);
     const arm = 1.1;
     g.segment(D, add(D, v(arm, 0)));

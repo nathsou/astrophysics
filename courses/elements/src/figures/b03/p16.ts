@@ -8,7 +8,7 @@ import { degAt, need, onC } from './lib';
 export default figure({
   build(g) {
     const D = g.point('D', v(0, 0));
-    const k = g.circle(D, 2);
+    const k = g.circle(D, 2, { name: 'ABC' });
     const A = g.point('A', v(0, -2));
     const B = g.point('B', v(0, 2));
     const E = g.point('E', v(2.8, -2));

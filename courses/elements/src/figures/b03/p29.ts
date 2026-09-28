@@ -10,8 +10,8 @@ export default figure({
     const K = g.free('K', -2.1, 0);
     const L = g.free('L', 2.1, 0);
     need(dist(K, L) > 2 * r + 0.1, 'the circles apart');
-    const k1 = g.circle(K, r);
-    const k2 = g.circle(L, r);
+    const k1 = g.circle(K, r, { name: 'ABC' });
+    const k2 = g.circle(L, r, { name: 'DEF' });
     const rad = Math.PI / 180;
     const B = g.glider('B', k1, 215 * rad);
     const C = g.glider('C', k1, 330 * rad);

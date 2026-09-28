@@ -8,7 +8,7 @@ import { onC } from './lib';
 export default figure({
   build(g) {
     const E = g.point('E', v(0, 0));
-    const k = g.circle(E, 2);
+    const k = g.circle(E, 2, { name: 'ABCD' });
     const A = g.point('A', v(-2, 0));
     const D = g.point('D', v(2, 0));
     const F = g.glider('F', [lerp(E, D, 0.08), lerp(E, D, 0.92)], 0.45);

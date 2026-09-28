@@ -6,14 +6,14 @@ import { need } from './lib';
 export default figure({
   build(g) {
     const E = g.point('E', v(0, 0));
-    const k = g.circle(E, 2);
+    const k = g.circle(E, 2, { name: 'ABCD' });
     const A = g.point('A', v(-2, 0));
     const D = g.point('D', v(2, 0));
     const rad = Math.PI / 180;
     const B = g.glider('B', k, 78 * rad);
     const C = g.glider('C', k, -45 * rad);
-    const F = g.glider('F', k, 212 * rad);
-    const G = g.glider('G', k, 262 * rad);
+    const F = g.glider('F', k, 240 * rad);
+    const G = g.glider('G', k, 292 * rad);
     const H = g.point('H', foot(E, B, C));
     const K = g.point('K', foot(E, F, G));
     need(dist(E, K) > dist(E, H) + 0.02, 'FG more remote than BC');

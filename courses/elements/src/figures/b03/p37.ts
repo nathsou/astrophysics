@@ -8,7 +8,7 @@ export default figure({
   build(g) {
     const F = g.point('F', v(0, 0));
     const r = 2;
-    const k = g.circle(F, r);
+    const k = g.circle(F, r, { name: 'ABC' });
     const D = g.free('D', 4.2, 0.9);
     need(dist(D, F) > r * 1.12, 'D outside the circle');
     const A = g.glider('A', k, (165 * Math.PI) / 180);

@@ -8,7 +8,7 @@ export default figure({
   build(g) {
     const E = g.point('E', v(0, 0));
     const r = 1.3;
-    const k = g.circle(E, r);
+    const k = g.circle(E, r, { name: 'BCD' });
     const A = g.free('A', 3.1, 1.0);
     need(dist(A, E) > r * 1.15, 'A outside the circle');
     const big = g.circle(E, A, { aux: true });

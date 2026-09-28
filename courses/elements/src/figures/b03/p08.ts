@@ -9,7 +9,7 @@ export default figure({
   jitter: 0.04,
   build(g) {
     const M = g.point('M', v(0, 0));
-    const k = g.circle(M, 2);
+    const k = g.circle(M, 2, { name: 'ABC' });
     const D = g.free('D', 3.6, 0.25);
     need(dist(D, M) > 2.6, 'D well outside the circle');
     const [Gp, Ap] = lc(D, M, k);

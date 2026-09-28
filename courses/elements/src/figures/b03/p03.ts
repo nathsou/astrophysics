@@ -6,7 +6,7 @@ import { degAt, need } from './lib';
 export default figure({
   build(g) {
     const E = g.point('E', v(0, 0));
-    const k = g.circle(E, 2);
+    const k = g.circle(E, 2, { name: 'ABC' });
     const A = g.glider('A', k, (200 * Math.PI) / 180);
     const B = g.glider('B', k, (-25 * Math.PI) / 180);
     need(dist(A, B) > 0.3, 'A and B apart');
