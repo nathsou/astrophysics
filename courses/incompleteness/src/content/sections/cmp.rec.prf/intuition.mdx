@@ -1,0 +1,27 @@
+import { ExPrfStage } from '../../../workbench/recursion/exercises';
+
+<Added label="Added for this edition">
+
+The primitive recursive functions are the **smallest** set of functions that contains $\mathrm{zero}$, $\mathrm{succ}$ and the projections $P^n_i$, and is closed under composition and primitive recursion. To show a function is primitive recursive, show how it is built by these clauses.
+
+</Added>
+
+## An inductive definition
+
+The definition (<Ref k="cmp:rec:prf:defn:primitive-recursion" />, <Ref k="cmp:rec:prf:defn:composition" />, and the list of clauses after them) has five clauses: three give basic functions, two give ways of making new functions from old. “Smallest set” means nothing else gets in: a function is primitive recursive only if it can be obtained by finitely many applications of the clauses.
+
+The book also describes this in **stages**: $S_0$ holds the basic functions, and $S_{i+1}$ adds everything obtained by one composition or one primitive recursion from functions in $S_i$. The primitive recursive functions are $\bigcup_i S_i$.
+
+## Proofs are trees
+
+The proof that $\mathrm{add}$ is primitive recursive has a shape: $\mathrm{add}$ is $\mathrm{Rec}(f, g)$ with $f = P^1_0$ (clause 3) and $g = \mathrm{Comp}(\mathrm{succ}; P^3_2)$ (clause 4, from clauses 2 and 3). Every such proof is a tree whose leaves are basic functions — and checking the arities at each node is the whole work. Explore mode draws this tree for any definition.
+
+## Details that matter
+
+- **$k \ge 1$.** Primitive recursion needs at least one parameter. A one-place recursion like $h(0) = 1$, $h(y + 1) = 2h(y)$ is made official with a *dummy* argument: define $h'(x_0, y)$, then $h(y) = h'(P^1_0(y), P^1_0(y))$. The book’s example works this out in full.
+- **Constants** are not basic. $1$ is $\mathrm{succ}(\mathrm{zero}(x))$, a function of $x$ that ignores it.
+- The definition is about *definitions*: the same function has many. A function is primitive recursive if *some* definition of it is.
+
+<ExPrfStage />
+
+The book leaves <Ref k="cmp:rec:prf:prop:mult-pr" /> as an exercise. Explore mode will not do it for you — but it will check any definition of $\mathrm{mult}$ you build, clause by clause.

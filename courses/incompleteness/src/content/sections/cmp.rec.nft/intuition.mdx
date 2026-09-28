@@ -1,0 +1,23 @@
+import { ExNftBudget } from '../../../workbench/recursion/exercises';
+
+<Added label="Added for this edition">
+
+Kleene’s normal form theorem: every partial recursive function can be written as $f(x) \simeq U(\mu s\, T(e, x, s))$, with $T$ and $U$ primitive recursive and a single number $e$ — an **index** — depending on $f$. One unbounded search suffices for everything.
+
+</Added>
+
+## The idea
+
+A definition of a partial recursive function can be coded as a number $e$, as notations were in <Ref k="cmp:rec:npr:sec" />. When $f(x)$ is defined, its computation is a finite object — a record of all the sub-computations — and can be coded by a number $s$. Checking that $s$ codes a correct computation of the function with index $e$ on input $x$ involves only $e$, $x$ and $s$, and only bounded searches through them: $T(e, x, s)$ is primitive recursive. Reading the output off the record is primitive recursive too: that is $U$.
+
+All the unboundedness is concentrated in one place: the search $\mu s$ for a computation record. If there is none — the computation does not halt — the search never ends and $f(x)$ is undefined, as it should be.
+
+## Indices
+
+Writing $\varphi_e$ for the function with index $e$, the theorem says every partial recursive function is some $\varphi_e$. It is some $\varphi_e$ for infinitely many $e$: a definition can always be padded (compose with the identity, say) without changing the function.
+
+## In Explore mode
+
+The engine codes definitions by a numbering of its own and uses a simpler stand-in for $T$: “the computation finishes within $s$ steps”, which is decidable by running it for $s$ steps. The least such $s$ is found by one unbounded search. When no $s$ up to the budget works, the workbench says so — and cannot say more.
+
+<ExNftBudget />

@@ -1,0 +1,49 @@
+import { ExPreTable, ExPreStep } from '../../../workbench/recursion/exercises';
+
+<Added label="Added for this edition">
+
+Every natural number is $0$, or the successor of a natural number. So to define $h$ on all of $\mathbb N$, it is enough to say (a) what $h(0)$ is and (b) how to get $h(y + 1)$ from $h(y)$. Two such equations are a **definition by primitive recursion**.
+
+</Added>
+
+## Two equations, one function
+
+The book’s first example is
+
+$$
+h(0) = 1, \qquad h(y + 1) = 2 \cdot h(y).
+$$
+
+The first equation gives $h(0)$; the second, with $y = 0$, gives $h(1) = 2$; with $y = 1$, $h(2) = 4$; and so on. Since every number is reached from $0$ by adding $1$ finitely often, every $h(y)$ is reached this way — and there is only one function satisfying both equations: $h(y) = 2^y$.
+
+## Parameters
+
+Addition and multiplication have two arguments. Fix one of them, $x$, and recurse on the other:
+
+$$
+\mathrm{add}(x, 0) = x, \qquad \mathrm{add}(x, y + 1) = \mathrm{add}(x, y) + 1,
+$$
+$$
+\mathrm{mult}(x, 0) = 0, \qquad \mathrm{mult}(x, y + 1) = \mathrm{add}(\mathrm{mult}(x, y), x).
+$$
+
+The parameter $x$ rides along unchanged; the recursion happens in the last argument.
+
+## The general pattern
+
+Name the right-hand sides. A function $h$ is defined by primitive recursion from $f$ and $g$ if
+
+$$
+\begin{aligned}
+h(x_0, \ldots, x_{k-1}, 0) &= f(x_0, \ldots, x_{k-1}) \\
+h(x_0, \ldots, x_{k-1}, y + 1) &= g(x_0, \ldots, x_{k-1}, y, h(x_0, \ldots, x_{k-1}, y)).
+\end{aligned}
+$$
+
+The step function $g$ may use the parameters, the old argument $y$, and the **previous value** — but only that one previous value. That restriction is what “primitive” means. For $\mathrm{add}$, $f(x_0) = x_0$ and $g(x_0, y, z) = z + 1$; for $\mathrm{mult}$, $f(x_0) = 0$ and $g(x_0, y, z) = \mathrm{add}(z, x_0)$.
+
+<ExPreTable />
+
+<ExPreStep />
+
+In Explore mode, pick any of the book’s recursions — or build your own $f$ and $g$ — and step through the rows $h(\vec x, 0), h(\vec x, 1), \ldots$ as the equations produce them.

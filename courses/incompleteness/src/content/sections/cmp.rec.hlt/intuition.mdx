@@ -1,0 +1,30 @@
+import { ExHltBounded } from '../../../workbench/recursion/exercises';
+
+<Added label="Added for this edition">
+
+The halting function $h(e, x)$ is $1$ if $\varphi_e(x)$ is defined and $0$ otherwise. It is not partial recursive: no algorithm decides, for every program and input, whether the computation halts. The proof is one more diagonal argument.
+
+</Added>
+
+## The proof, in outline
+
+Suppose $h$ were partial recursive. Define
+
+$$
+d(y) = \begin{cases} 1 & \text{if } h(y, y) = 0 \\ \mu x\,(x \ne x) & \text{otherwise.} \end{cases}
+$$
+
+The search $\mu x\,(x \ne x)$ never succeeds, so $d(y)$ is undefined exactly when $h(y, y) = 1$, i.e. when $\varphi_y(y)$ is defined. Then $d$ would be partial recursive, so $d = \varphi_{e}$ for some index $e$. Look at $h(e, e)$:
+
+- if it is $1$, then $\varphi_e(e)$ is defined, but $d(e)$ is not;
+- if it is $0$, then $\varphi_e(e)$ is undefined, but $d(e) = 1$.
+
+Either way $d$ and $\varphi_e$ differ at $e$. So there is no such $e$, and $h$ is not partial recursive. The contradiction comes from running the index of $d$ on itself — the same diagonal as in <Ref k="cmp:rec:npr:sec" />, now with partial functions.
+
+## What a computer can do instead
+
+Running $\varphi_e(x)$ for $N$ steps decides the **bounded** question “does it halt within $N$ steps?”. That function $h_N$ is computable — Explore mode computes it for a window of the diagonal. But whenever the answer is “not yet”, the question of $h$ is left open, and there is no uniform way to choose $N$ large enough.
+
+<ExHltBounded />
+
+In Explore mode, pick any index and the proof’s two cases are laid next to what the budget found. For rows marked “?”, the budget cannot tell which case holds; the proof does not need to know.

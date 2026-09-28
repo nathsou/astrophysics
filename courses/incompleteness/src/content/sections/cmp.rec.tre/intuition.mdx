@@ -1,0 +1,35 @@
+import { ExTreCode } from '../../../workbench/recursion/exercises';
+
+<Added label="Added for this edition">
+
+A tree is a root with some immediate subtrees, each a tree. Code it as the sequence $\langle k, d_1, \ldots, d_k, l\rangle$: the number $k$ of immediate subtrees, their codes, and the root’s label. Codes of codes — and operations on trees become primitive recursive operations on numbers.
+
+</Added>
+
+## The coding
+
+A single node labelled $l$ is $\langle 0, l\rangle$. The book’s example, a root labelled $l_1$ with two leaves labelled $l_2$ and $l_3$, is
+
+$$
+\langle 2, \langle 0, l_2\rangle, \langle 0, l_3\rangle, l_1\rangle.
+$$
+
+Since the element $(t)_0$ says how many subtrees follow, the immediate subtrees are $\mathrm{ISubtrees}(t) = \mathrm{subseq}(t, 1, (t)_0)$ — a primitive recursive function of the code, using the sequence functions of <Ref k="cmp:rec:seq:sec" />.
+
+## Collecting all subtrees
+
+<Ref k="cmp:rec:tre:prop:subtreeseq" /> shows that the sequence of *all* subtrees is primitive recursive. The idea is breadth-first: start with $\langle t\rangle$; at each step, append the immediate subtrees of everything collected so far:
+
+$$
+\mathrm{hSubtreeSeq}(t, n + 1) = \mathrm{hSubtreeSeq}(t, n) \frown h(\mathrm{hSubtreeSeq}(t, n)).
+$$
+
+After as many steps as the tree is deep, every subtree has appeared. The depth is not directly available, but the code $t$ itself is at least as large, so $\mathrm{SubtreeSeq}(t) = \mathrm{hSubtreeSeq}(t, t)$ works — a typically generous bound, of the kind primitive recursive definitions need.
+
+## Where this is used
+
+Formulas and terms are trees; derivations are trees. Coding trees is how statements like “$d$ is the code of a correct derivation” become primitive recursive in the arithmetization of syntax.
+
+<ExTreCode />
+
+In Explore mode, build a small tree, see its (enormous) code, and watch $\mathrm{hSubtreeSeq}$ fill up — with repetitions, which the book’s exercise asks you to avoid.

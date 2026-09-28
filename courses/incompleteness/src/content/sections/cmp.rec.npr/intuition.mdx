@@ -1,0 +1,31 @@
+import { ExNprG3 } from '../../../workbench/recursion/exercises';
+
+<Added label="Added for this edition">
+
+Not every computable function is primitive recursive. List the unary primitive recursive functions $f_0, f_1, f_2, \ldots$ so that $f_x(y)$ is computable from $x$ and $y$; then $h(x) = f_x(x) + 1$ is computable, but differs from every $f_x$ at $x$. This is Cantor’s diagonal argument, made effective.
+
+</Added>
+
+## The diagonal argument
+
+Write the values $f_x(y)$ as an infinite table, row $x$ for $f_x$. The diagonal function changes every entry on the diagonal:
+
+$$
+h(x) = f_x(x) + 1 \ne f_x(x).
+$$
+
+If $h$ were primitive recursive it would be some row $f_e$ — but then $h(e) = f_e(e) + 1 \ne f_e(e)$. So $h$ is not primitive recursive. Yet it is computable: to find $h(x)$, decode $x$ into a notation, compute $f_x(x)$, add $1$.
+
+The listing uses the notations of <Ref k="cmp:rec:not:sec" />: number them, let $f_i$ be the function with notation number $i$, and the constant $0$ function when $i$ is not the number of a unary notation. Nothing about primitive recursion was used except that the list can be computed — which is why the next section can draw a much more general conclusion.
+
+## Growth: the $g_n$ hierarchy
+
+A more concrete example: $g_0(x) = x + 1$ and $g_{n+1}(x) = g_n^x(x)$, i.e. $g_n$ applied $x$ times. Then $g_1(x) = 2x$, $g_2(x) = 2^x \cdot x$, and $g_3$ grows roughly like a tower of $x$ 2’s. Each $g_n$ is primitive recursive — each level needs one more nested recursion — and the diagonal $G(x) = g_x(x)$, essentially the Ackermann–Péter function, grows faster than any primitive recursive function. (The book states this; it does not prove it.)
+
+Notice the diagonal again: $G$ runs down the diagonal of the table of $g_n(x)$.
+
+<ExNprG3 />
+
+## In Explore mode
+
+The diagonal argument is shown twice: on a short list of familiar functions, and on the enumeration of *all* unary primitive recursive definitions by index. The growth panels run $g_n(x)$ and the Ackermann–Péter function $A(m, n)$ with a budget; almost all entries beyond the first few exhaust any budget — which says only that they take long, not that they are undefined.

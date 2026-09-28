@@ -1,0 +1,33 @@
+import { ExOreHistory } from '../../../workbench/recursion/exercises';
+
+<Added label="Added for this edition">
+
+Primitive recursion may use only the immediately preceding value. More liberal recursions — using *all* earlier values, or defining several functions at once — reduce to it: pack the values you need into one **sequence code** and recurse on that.
+
+</Added>
+
+## Course-of-values recursion
+
+In a course-of-values recursion the step may consult the whole history:
+
+$$
+h(\vec x, y) = g(\vec x, y, \langle h(\vec x, 0), \ldots, h(\vec x, y - 1)\rangle).
+$$
+
+The Fibonacci numbers need the last *two* values, for instance. The reduction: let $H(\vec x, y)$ be the code of the history $\langle h(\vec x, 0), \ldots, h(\vec x, y - 1)\rangle$. Then
+
+$$
+H(\vec x, 0) = 0, \qquad H(\vec x, y + 1) = \mathrm{append}(H(\vec x, y),\, g(\vec x, y, H(\vec x, y)))
+$$
+
+uses only the previous value of $H$ — an ordinary primitive recursion — and $h(\vec x, y) = (H(\vec x, y + 1))_y$. This justifies definitions like “$h(y)$ in terms of $h(k(y))$ for any $k(y) < y$”.
+
+## Simultaneous recursion
+
+Two functions defined in terms of each other, $h_0$ and $h_1$, become one function with values $\langle h_0(\vec x, y), h_1(\vec x, y)\rangle$, which is defined by ordinary primitive recursion.
+
+## Changing parameters
+
+The book ends with a recursion in which the parameters change along the way, $h(\vec x, y + 1) = g(\vec x, y, h(k(\vec x), y))$, and says it can be simulated too, but that “doing so is tricky”. It is left as a puzzle here as well.
+
+<ExOreHistory />
