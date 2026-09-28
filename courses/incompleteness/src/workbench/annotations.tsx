@@ -59,7 +59,7 @@ export function V5Example() {
   return (
     <Frame title="The explanation’s numbers">
       <p>
-        <Tex tex={`c_{v_5} = \\langle 1, 5\\rangle = 2^2 \\cdot 3^6 = ${c}`} />, while <Tex tex={`\\#v_5\\# = \\langle ${c} \\rangle = 2^{${c + 1n}}`} />, a number with{' '}
+        <Tex tex={`\\mathrm{c}_{v_5} = \\langle 1, 5\\rangle = 2^2 \\cdot 3^6 = ${c}`} />, while <Tex tex={`\\#v_5\\# = \\langle ${c} \\rangle = 2^{${c + 1n}}`} />, a number with{' '}
         {formatMagnitude(magnitude(godel(A.v(5)).number))}.
       </p>
     </Frame>
@@ -75,7 +75,7 @@ export function YourGodelNumber() {
   return (
     <Frame title="The example, redone for your formula">
       <p>
-        <Tex tex={`\\#\\ldots\\# = ${syms.map((s, i) => `p_{${i}}^{c_{${symTex(s.sym)}}+1}`).join(' \\cdot ')}${enc.items.length > 6 ? ' \\cdots' : ''}`} />
+        <Tex tex={`\\#A\\# = ${syms.map((s, i) => `p_{${i}}^{\\mathrm{c}_{${symTex(s.sym)}}+1}`).join(' \\cdot ')}${enc.items.length > 6 ? ' \\cdots' : ''}`} />
       </p>
       <NatView n={enc.number} style="powers" maxItems={6} />
     </Frame>

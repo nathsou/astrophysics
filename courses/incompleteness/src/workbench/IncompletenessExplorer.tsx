@@ -15,7 +15,7 @@ type Hyp = 'extendsQ' | 'axiomatizable' | 'consistent' | 'omega';
 
 const HYPS: { id: Hyp; label: ReactNode; text: string }[] = [
   { id: 'extendsQ', label: <>T extends <Tex tex="\mathbf{Q}" /></>, text: 'T proves every axiom of Q, and so everything Q proves.' },
-  { id: 'axiomatizable', label: 'T is computably axiomatized', text: 'The set of axioms of T is decidable, so whether something is a T-derivation is decidable.' },
+  { id: 'axiomatizable', label: 'T is axiomatizable', text: 'The set of axioms of T is decidable, so whether something is a T-derivation is decidable.' },
   { id: 'consistent', label: 'T is consistent', text: 'T does not derive both a sentence and its negation.' },
   { id: 'omega', label: 'T is ω-consistent', text: 'If T derives ¬A(n̄) for every n, it does not derive ∃x A(x).' },
 ];
@@ -86,7 +86,7 @@ const RESULTS: Result[] = [
       { id: 'l2', claim: <>Then Prf<sub>T</sub>(m, #G<sub>T</sub>#) holds for some m.</>, why: 'A derivation exists; m is its Gödel number.', uses: [{ logic: 'definition of Prf_T' }] },
       { id: 'l3', claim: <>So Q ⊢ Prf<sub>T</sub>(m̄, ⌜G<sub>T</sub>⌝).</>, why: 'Prf_T is represented in Q.', uses: [{ result: 'repPrf' }] },
       { id: 'l4', claim: <>So Q ⊢ Prov<sub>T</sub>(⌜G<sub>T</sub>⌝).</>, why: '∃Intro.', uses: [{ logic: '∃Intro' }] },
-      { id: 'l5', claim: <>So Q ⊢ ¬G<sub>T</sub>.</>, why: 'By the fixed-point biconditional (5.3).', uses: [{ result: 'G' }] },
+      { id: 'l5', claim: <>So Q ⊢ ¬G<sub>T</sub>.</>, why: <>By the fixed-point biconditional <Ref k="inc:inp:1in:eqn:qpf" />.</>, uses: [{ result: 'G' }] },
       { id: 'l6', claim: <>So T ⊢ ¬G<sub>T</sub>.</>, why: 'T extends Q.', uses: [{ hyp: 'extendsQ' }] },
       { id: 'l7', claim: <>T derives G<sub>T</sub> and ¬G<sub>T</sub>: impossible.</>, why: 'This contradicts the consistency of T. (If T is only assumed ω-consistent, consistency follows: an inconsistent theory proves everything, so it is ω-inconsistent.)', uses: [consistentOrOmega] },
     ],
@@ -105,7 +105,7 @@ const RESULTS: Result[] = [
       { id: 'm2', claim: 'T is consistent.', why: 'Every ω-consistent theory is consistent.', uses: [consistentOrOmega] },
       { id: 'm3', claim: <>So T ⊬ G<sub>T</sub>.</>, why: 'The previous lemma.', uses: [{ result: 'L1' }] },
       { id: 'm4', claim: <>So for every n, Q ⊢ ¬Prf<sub>T</sub>(n̄, ⌜G<sub>T</sub>⌝), and so does T.</>, why: 'No n codes a derivation of G_T, and Prf_T is represented (the negative clause); T extends Q.', uses: [{ result: 'repPrf' }, { hyp: 'extendsQ' }] },
-      { id: 'm5', claim: <>But T ⊢ ∃x Prf<sub>T</sub>(x, ⌜G<sub>T</sub>⌝).</>, why: '¬G_T is equivalent to Prov_T(⌜G_T⌝) by (5.3), and T extends Q.', uses: [{ result: 'G' }, { hyp: 'extendsQ' }] },
+      { id: 'm5', claim: <>But T ⊢ ∃x Prf<sub>T</sub>(x, ⌜G<sub>T</sub>⌝).</>, why: <>¬G<sub>T</sub> is equivalent to Prov<sub>T</sub>(⌜G<sub>T</sub>⌝) by <Ref k="inc:inp:1in:eqn:qpf" />, and T extends Q.</>, uses: [{ result: 'G' }, { hyp: 'extendsQ' }] },
       { id: 'm6', claim: 'So T is ω-inconsistent: impossible.', why: 'Steps 4 and 5 are exactly what ω-consistency forbids.', uses: [{ hyp: 'omega' }] },
     ],
   },

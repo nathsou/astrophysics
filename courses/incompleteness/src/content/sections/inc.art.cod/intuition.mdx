@@ -6,21 +6,21 @@ To give each symbol a number we could simply list them: $\bot$ is 0, $\lnot$ is 
 
 ## The shape of a symbol code
 
-A symbol code is $\langle k, \ldots\rangle$, where the first entry says what **kind** of symbol it is:
+The symbol code $\mathrm{c}_s$ of a symbol $s$ is $\langle k, \ldots\rangle$, where the first entry says what **kind** of symbol it is:
 
 | kind | first entry | then | example |
 |---|---|---|---|
-| logical symbol | 0 | its position in the list $\bot, \lnot, \lor, \land, \rightarrow, \forall, \exists, =, (, ), ,$ | $c_= = \langle 0, 7\rangle = 2^1 \cdot 3^8 = 13122$ |
-| variable $v_i$ | 1 | $i$ | $c_{v_5} = \langle 1, 5\rangle = 2^2 \cdot 3^6 = 2916$ |
-| constant $c_i$ | 2 | $i$ | $c_{c_0} = \langle 2, 0\rangle = 2^3 \cdot 3 = 24$ |
-| function symbol $f^n_i$ | 3 | arity $n$, index $i$ | $c_{f^1_0} = \langle 3, 1, 0\rangle = 2^4\cdot 3^2 \cdot 5 = 720$ |
+| logical symbol | 0 | its position in the list $\bot, \lnot, \lor, \land, \rightarrow, \forall, \exists, =, (, ), ,$ | $\mathrm{c}_= = \langle 0, 7\rangle = 2^1 \cdot 3^8 = 13122$ |
+| variable $v_i$ | 1 | $i$ | $\mathrm{c}_{v_5} = \langle 1, 5\rangle = 2^2 \cdot 3^6 = 2916$ |
+| constant $c_i$ | 2 | $i$ | $\mathrm{c}_{c_0} = \langle 2, 0\rangle = 2^3 \cdot 3 = 24$ |
+| function symbol $f^n_i$ | 3 | arity $n$, index $i$ | $\mathrm{c}_{f^1_0} = \langle 3, 1, 0\rangle = 2^4\cdot 3^2 \cdot 5 = 720$ |
 | predicate symbol $P^n_i$ | 4 | arity $n$, index $i$ | |
 
-Because sequence codes can be decoded — factor the number, subtract one from each exponent — everything about a symbol can be *computed* from its code. That is Proposition 3.2: “is the code of an $n$-place function symbol” is primitive recursive.
+Because sequence codes can be decoded — factor the number, subtract one from each exponent — everything about a symbol can be *computed* from its code. That is what the proposition after the definition says, for two cases: $\mathrm{Fn}(x, n)$ (“$x$ is the code of an $n$-place function symbol”) and $\mathrm{Pred}(x, n)$ (“$x$ is the code of an $n$-place predicate symbol”, counting $=$ when $n = 2$) are primitive recursive.
 
 ## Codes are not Gödel numbers
 
-The code of a *symbol* and the Gödel number of a *string* are different things, even for a string of one symbol. The variable $v_5$ has code $c_{v_5} = 2916$; the term $v_5$ — a string of length one — has Gödel number $\langle 2916 \rangle = 2^{2917}$. The Explanation after Definition 3.3 makes exactly this point; switch to **Formal** to see it next to the computed numbers.
+The code of a *symbol* and the Gödel number of a *string* are different things, even for a string of one symbol. The variable $v_5$ has code $\mathrm{c}_{v_5} = 2916$; the term $v_5$ — a string of length one — has Gödel number $\langle 2916 \rangle = 2^{2917}$. The explanation after the definition of Gödel numbers makes exactly this point; switch to **Formal** to see it next to the computed numbers.
 
 <ExCodeVsNumber />
 

@@ -10,7 +10,7 @@ The second incompleteness theorem and Löb’s theorem use only three properties
 
 $\mathbf{PA}$ adds to $\mathbf Q$ every instance of the induction schema
 $$(A(0) \land \forall x\,(A(x) \to A(x'))) \to \forall x\,A(x).$$
-There are infinitely many axioms, but deciding whether a sentence is one is mechanical, so $\mathbf{PA}$ is computably axiomatized and $\mathsf{Prf}_{\mathbf{PA}}$ is represented in $\mathbf Q$. The first incompleteness theorem only needed $\mathbf Q$. The second needs the theory to *reason about* derivations — to verify, inside the theory, facts like “if there are derivations of $A \to B$ and of $A$, there is one of $B$” — and that requires induction.
+There are infinitely many axioms, but deciding whether a sentence is one is mechanical, so $\mathbf{PA}$ is axiomatizable and $\mathsf{Prf}_{\mathbf{PA}}$ is represented in $\mathbf Q$. The first incompleteness theorem only needed $\mathbf Q$. The second needs the theory to *reason about* derivations — to verify, inside the theory, facts like “if there are derivations of $A \to B$ and of $A$, there is one of $B$” — and that requires induction.
 
 ## The conditions
 
@@ -20,7 +20,15 @@ There are infinitely many axioms, but deciding whether a sentence is one is mech
 
 A fourth condition, **P4** (if $\mathbf{PA} \vdash \mathsf{Prov}(\ulcorner A\urcorner)$ then $\mathbf{PA} \vdash A$), holds for a reasonable choice of $\mathsf{Prov}$ but is not needed.
 
-<NotAProof>The conditions are not proved in the book or in this edition. Every “checked” proof in the next sections is checked *relative to* P1–P3.</NotAProof>
+<Callout title="Taken on faith">
+The conditions are not proved in the book or in this edition. Every “checked” proof in the next sections is checked *relative to* P1–P3.
+</Callout>
+
+<Added label="Added for this edition: a slip in the text">
+
+The book defines $\mathsf{Prov}_{\mathbf{PA}}(y)$ as “the formula $\exists x\,\mathrm{Prf}_{\mathbf{PA}}(x, y)$”, with the upright $\mathrm{Prf}$ that it uses for the *relation*. A formula can only contain the formula $\mathsf{Prf}_{\mathbf{PA}}(x, y)$ that represents the relation: read $\exists x\,\mathsf{Prf}_{\mathbf{PA}}(x, y)$.
+
+</Added>
 
 ## Rule versus theorem
 

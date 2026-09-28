@@ -57,7 +57,7 @@ export function symbolEntry(it: Extract<CodeItem, { k: 'sym' }>, pos: number | n
         <dl>
           <dt>code</dt>
           <dd>
-            <Tex tex={`c_{${symTex(it.sym)}} = ${codeSeqTex(it.sym)} = ${codePowersTex(it.sym)} = ${code}`} />
+            <Tex tex={`\\mathrm{c}_{${symTex(it.sym)}} = ${codeSeqTex(it.sym)} = ${codePowersTex(it.sym)} = ${code}`} />
           </dd>
           {pos !== null && (
             <>
@@ -138,7 +138,7 @@ export function numeralRunEntry(value: Nat) {
           <Tex tex="\;{}'\,(\;{}'\,(\;\cdots\;0\;)\;\cdots\;)" /> with <Tex tex="n" /> copies of <Tex tex="{}'(" />. Its Gödel number is
         </p>
         <p>
-          <Tex tex={`\\mathrm{num}(n) = \\langle \\underbrace{c_{'}, c_{(}, \\ldots, c_{'}, c_{(}}_{2n}, c_{0}, \\underbrace{c_{)}, \\ldots, c_{)}}_{n} \\rangle`} />
+          <Tex tex={`\\mathrm{num}(n) = \\langle \\underbrace{\\mathrm{c}_{'}, \\mathrm{c}_{(}, \\ldots, \\mathrm{c}_{'}, \\mathrm{c}_{(}}_{2n}, \\mathrm{c}_{0}, \\underbrace{\\mathrm{c}_{)}, \\ldots, \\mathrm{c}_{)}}_{n} \\rangle`} />
         </p>
         <p className="muted">
           It is kept as a repeated block because <Tex tex="n" /> has {formatMagnitude(magnitude(value, { lowerBound: true }))}; nobody could write the numeral out.
@@ -162,10 +162,10 @@ export function CodeTable({ enc, analysis, activePos, limit = 60 }: { enc: Encod
             <th scope="col">symbol</th>
             <th scope="col">code sequence</th>
             <th scope="col">
-              code <Tex tex="c_s" />
+              code <Tex tex="\mathrm{c}_s" />
             </th>
             <th scope="col">
-              factor <Tex tex="p_i^{c_s+1}" />
+              factor <Tex tex="p_i^{\mathrm{c}_s+1}" />
             </th>
           </tr>
         </thead>
@@ -184,7 +184,7 @@ export function CodeTable({ enc, analysis, activePos, limit = 60 }: { enc: Encod
                   <td colSpan={4} className="muted">
                     {it.k === 'numeral' ? (
                       <>
-                        numeral: <Tex tex={`c_{'}, c_{(}`} /> repeated <Tex tex={toTex(it.value, { maxItems: 3, maxDigits: 10 })} /> times, then <Tex tex="c_0" />, then <Tex tex="c_{)}" /> repeated as often
+                        numeral: <Tex tex={`\\mathrm{c}_{'}, \\mathrm{c}_{(}`} /> repeated <Tex tex={toTex(it.value, { maxItems: 3, maxDigits: 10 })} /> times, then <Tex tex="\mathrm{c}_{0}" />, then <Tex tex="\mathrm{c}_{)}" /> repeated as often
                       </>
                     ) : (
                       <>
@@ -282,8 +282,8 @@ export function EncodeStepper({ enc, analysis }: { enc: Encoding; analysis: Anal
 
 /** Decode a number: factor, read symbol codes, parse. */
 export function Decoder({ initial, onUseNumber }: { initial?: Nat; onUseNumber?: () => Nat }) {
-  const [text, setText] = useState('2^2 · 3^8 · 5^3 · 7^9 · 11^2 · 13^11');
-  const [target, setTarget] = useState<Nat | null>(initial ?? null);
+  const [text, setText] = useState(DECODER_EXAMPLES[0].text);
+  const [target, setTarget] = useState<Nat | null>(() => initial ?? lit(parseNumberExpr(DECODER_EXAMPLES[0].text)!));
   const [error, setError] = useState<string | null>(null);
   const outcome = useMemo(() => (target ? decode(target) : null), [target]);
   const run = (s: string) => {
@@ -320,9 +320,9 @@ export function Decoder({ initial, onUseNumber }: { initial?: Nat; onUseNumber?:
               use the Gödel number of your formula
             </button>
           )}
-          {['2^2 · 3^8 · 5^3 · 7^9 · 11^2 · 13^11', '10', '2^3 · 3^2 · 5^4', '2^2 · 3^5'].map((ex) => (
-            <button key={ex} className="chip-btn" onClick={() => run(ex)}>
-              {ex}
+          {DECODER_EXAMPLES.map((ex) => (
+            <button key={ex.text} className="chip-btn" onClick={() => run(ex.text)} title={ex.what}>
+              {ex.text}
             </button>
           ))}
         </div>
@@ -332,6 +332,16 @@ export function Decoder({ initial, onUseNumber }: { initial?: Nat; onUseNumber?:
     </div>
   );
 }
+
+// Small examples, one for each outcome: a term, a formula, and a failure at each stage.
+const DECODER_EXAMPLES = [
+  { text: '2^13', what: 'the term v₀' },
+  { text: '2^7', what: 'the formula ⊥' },
+  { text: '2^25', what: 'the term 0' },
+  { text: '2^13 · 3^13', what: 'two variables in a row: symbols, but not well formed' },
+  { text: '2^3 · 3^2 · 5^4', what: 'a sequence code whose elements are not symbol codes' },
+  { text: '10', what: 'not a sequence code' },
+];
 
 function DecodeTraceView({ outcome }: { outcome: ReturnType<typeof decode> }) {
   const factors = outcome.trace.filter((t) => t.k === 'factor');
@@ -403,7 +413,8 @@ export function parseNumberExpr(s: string): bigint | null {
     const m = /^(\d+)(?:\^\{?(\d+)\}?)?$/.exec(f);
     if (!m) return null;
     const e = BigInt(m[2] ?? '1');
-    if (e > 5_000_000n) return null;
+    // Refuse numbers of more than about 20 million bits, so that the page never hangs.
+    if (e > 5_000_000n || e * BigInt(m[1].length * 4) > 20_000_000n) return null;
     r *= BigInt(m[1]) ** e;
   }
   return r;

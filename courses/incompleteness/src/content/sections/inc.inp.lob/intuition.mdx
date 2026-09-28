@@ -14,7 +14,13 @@ The formal proof replaces “true” by “derivable” and uses the fixed point
 
 ## A slip in the last line
 
-The book’s last line reads “$A$ from (L-8) and (L-12)”. The checker rejects that step: from $\mathsf{Prov}(\ulcorner A\urcorner) \to A$ and $\mathsf{Prov}(\ulcorner D\urcorner)$ nothing follows by propositional logic (take $\mathsf{Prov}(\ulcorner A\urcorner)$ false and $A$ false). The step needs (L-9), $\mathsf{Prov}(\ulcorner D\urcorner) \to A$, and (L-12). Explore mode uses (L-9); tick “the book’s citations” there to see the checker’s counterexample.
+The book’s last line reads “$A$ from <Ref k="inc:inp:lob:L-8" /> and <Ref k="inc:inp:lob:L-12" />”. The checker rejects that step: from $\mathsf{Prov}(\ulcorner A\urcorner) \to A$ and $\mathsf{Prov}(\ulcorner D\urcorner)$ nothing follows by propositional logic (take $\mathsf{Prov}(\ulcorner D\urcorner)$ true, and $\mathsf{Prov}(\ulcorner A\urcorner)$ and $A$ false). The step needs <Ref k="inc:inp:lob:L-9" />, $\mathsf{Prov}(\ulcorner D\urcorner) \to A$, and <Ref k="inc:inp:lob:L-12" />. Explore mode uses <Ref k="inc:inp:lob:L-9" />; tick “the book’s citations” there to see the checker’s counterexample.
+
+<Added label="Added for this edition: a second slip">
+
+The statement of <Ref k="inc:inp:lob:thm:lob" /> refers to “conditions P1–P3 from <Ref k="inc:inp:2in:sec" />”. The conditions are stated in <Ref k="inc:inp:prc:sec" />.
+
+</Added>
 
 ## Consequences
 

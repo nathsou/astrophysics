@@ -5,6 +5,8 @@
 .intro-steps li:hover, .intro-steps li:focus-visible { background: var(--hl-2); outline: none; }
 .intro-steps li.ok > span { color: var(--checked); font-weight: 700; }
 .intro-steps li.bad { color: var(--danger); }
+.intro-steps li.info { color: var(--ink-2); }
+.intro-steps li.info > span { color: var(--muted); font-weight: 700; }
 .intro-verdict { font-family: var(--sans); font-size: 14px; padding: 8px 12px; border-radius: 8px; margin: 6px 0 0; }
 .intro-verdict.ok { background: var(--checked-soft); color: var(--checked); }
 .intro-verdict.bad { background: var(--paper-2); color: var(--ink-2); }
@@ -23,3 +25,6 @@
 .dg-d th { text-align: left; font-family: var(--sans); }
 .dg-d td { background: var(--accent-soft); }
 .dg-d td.one { color: var(--accent); }
+@media (max-width: 600px) {
+  .dg-formula { min-width: 230px; }
+}

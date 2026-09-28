@@ -153,7 +153,7 @@ function CodedPanels({ root, deriv, axioms, fromQ, overrides, setOverrides, sel,
           <TupleView node={root} overrides={overrides} sel={sel} onSelect={setSel} />
         </div>
         <p className="wb-note">
-          The whole number {overrides.size ? '(as changed)' : ''} has {sizeOf(code, root.formulaCode)}. Its end-formula alone, <span className="r2-gn">#A#</span>, has {sizeOf(root.formulaCode)}; the derivation’s code has <span className="r2-gn">#A#</span> + 1 as an exponent. It is an exact number, handled symbolically, and never written out.
+          The whole number {overrides.size ? '(as changed)' : ''} has {sizeOf(code, root.formulaCode)}. The Gödel number <span className="r2-gn">#A#</span> of its end-formula <Tex tex="A" /> alone has {sizeOf(root.formulaCode)}, and the derivation’s code has <span className="r2-gn">#A#</span> + 1 as an exponent. It is an exact number, handled symbolically, and never written out.
         </p>
         <div className="r2-rules" aria-label="The book's rule numbers; rules used here are highlighted">
           {Array.from({ length: 16 }, (_, i) => i + 1).map((k) => (
@@ -221,11 +221,16 @@ function CodedPanels({ root, deriv, axioms, fromQ, overrides, setOverrides, sel,
               title={<span>{overrides.size ? 'Decoded from the changed code' : 'Decoded from the code'}</span>}
             />
           )}
-          {decoded.ok && dchk && overrides.size > 0 && !dchk.valid && (
+          {decoded.ok && dchk && overrides.size > 0 && !dchk.valid && ([...dchk.steps.values()].every((st) => st.ok) ? (
+            <p className="wb-note">
+              Every inference of the changed code is still correct, so <Tex tex="\mathrm{Deriv}(d)" /> holds. But an assumption that was discharged is now undischarged: this is a derivation
+              from that assumption, and <Tex tex="\mathrm{Prf}_\Gamma(d, y)" /> fails unless the assumption is in <Tex tex="\Gamma" />.
+            </p>
+          ) : (
             <p className="wb-note">
               The changed number still decodes to a tree of sentences, but not to a correct derivation: <Tex tex="\mathrm{Correct}(d)" /> fails for some sub-derivation, so <Tex tex="\mathrm{Deriv}(d)" /> is false.
             </p>
-          )}
+          ))}
         </div>
       </Panel>
       <BookFunctions code={code} root={root} dchk={dchk} decoded={decoded.ok ? decoded.deriv : null} fromQ={fromQ} deriv={deriv} sel={sel} setSel={setSel} />
@@ -249,7 +254,7 @@ function TupleView({ node, overrides, sel, onSelect, suffix = '' }: { node: Code
   const fml = (
     <span className="r2-el fml">
       <span>
-        <Tex tex={`\\#${formulaTex(node.formula)}\\#`} />
+        <Tex tex={`\\#${formulaTex(node.formula, {}, false)}\\#`} />
       </span>
       <span className="r2-cap">{node.kind === 'assumption' ? (node.axiom ? `formula (axiom ${node.axiom})` : 'formula') : 'end-formula'}</span>
     </span>

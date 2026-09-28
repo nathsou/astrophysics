@@ -1,4 +1,4 @@
-// Quine's informal version of diagonalisation, next to the arithmetical one.
+// Quine's informal version of diagonalization, next to the arithmetical one.
 
 import { useState } from 'react';
 
@@ -16,13 +16,13 @@ export function QuineDiagonal() {
         <span className="quine-q">‘{phrase}’</span>
       </div>
       <div className="quine-row">
-        <span className="quine-tag">its diagonalisation</span>
+        <span className="quine-tag">its diagonalization</span>
         <span>
           <span className="quine-q">‘{phrase}’</span> <span className="quine-p">{phrase}</span>
         </span>
       </div>
       <p className="muted small sans">
-        The diagonalisation has {diag.length} characters. If the expression is “yields a falsehood when preceded by its own quotation”, the diagonalisation says of{' '}
+        The diagonalization has {diag.length} characters. If the expression is “yields a falsehood when preceded by its own quotation”, the diagonalization says of{' '}
         <em>itself</em> that it yields a falsehood: it is the liar, built without any word for “this sentence”.
       </p>
       <table className="quine-map sans small">

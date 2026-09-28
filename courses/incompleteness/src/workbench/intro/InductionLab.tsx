@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from 'react';
 import { tryParseFormula } from '../../engine/syntax/parse';
-import { freeVars } from '../../engine/syntax/ops';
+import { formulaEq, freeVars } from '../../engine/syntax/ops';
+import { Q } from '../../engine/proof/q';
 import { varName } from '../../engine/syntax/language';
 import { inductionInstance, recognizeInduction } from '../../engine/syntax/induction';
 import { formulaText } from '../../engine/syntax/print';
@@ -38,6 +39,8 @@ export function InductionLab() {
   const [cand, setCand] = useState(CANDIDATES[0].value);
   const cp = useMemo(() => tryParseFormula(cand), [cand]);
   const rec = useMemo(() => (cp.ok ? recognizeInduction(cp.value) : null), [cp]);
+  // The book's test first compares B with the eight axioms of Q, then tries the induction schema.
+  const qName = useMemo(() => (cp.ok ? ([...Q()].find(([, f]) => formulaEq(f, cp.value))?.[0] ?? null) : null), [cp]);
   const [hover, setHover] = useState<number | null>(null);
   const marked = rec && hover !== null ? rec.steps[hover]?.nodes : undefined;
 
@@ -70,8 +73,8 @@ export function InductionLab() {
       </Panel>
       <Panel n={2} title="Is it an axiom of PA?" prov={<Prov kind="computed">decided</Prov>}>
         <p className="wb-note">
-          PA has infinitely many axioms, but whether a sentence is one of them is decidable. The book describes the test; here it is, step by step, for any sentence. Hover a step to
-          see the part of the sentence it looks at.
+          PA has infinitely many axioms, but whether a sentence is one of them is decidable. The book describes the test: first compare B with the axioms of Q, then check whether it
+          is an instance of the induction schema. Here it is, step by step, for any sentence. Hover or focus a step to see the part of the sentence it looks at.
         </p>
         <FormulaInput value={cand} onChange={setCand} parsed={cp} label="A sentence B" examples={CANDIDATES} palette={false} />
         {cp.ok && rec && (
@@ -80,19 +83,24 @@ export function InductionLab() {
               <FormulaView node={cp.value} marked={marked} />
             </div>
             <ol className="intro-steps">
-              {rec.steps.map((s, i) => (
-                <li key={i} className={s.ok ? 'ok' : 'bad'} onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)} onFocus={() => setHover(i)} tabIndex={0}>
+              <li className={qName ? 'ok' : 'info'}>
+                <span aria-hidden>{qName ? '✓' : '·'}</span> {qName ? `B is the axiom ${qName} of Q.` : 'B is not one of the axioms Q1–Q8 of Q. Next: is it an instance of the induction schema?'}
+              </li>
+              {qName ? null : rec.steps.map((s, i) => (
+                <li key={i} className={s.ok ? 'ok' : 'bad'} onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)} onFocus={() => setHover(i)} onBlur={() => setHover(null)} tabIndex={0}>
                   <span aria-hidden>{s.ok ? '✓' : '✗'}</span> {s.text}
                 </li>
               ))}
             </ol>
-            <p className={`intro-verdict ${rec.instance ? 'ok' : 'bad'}`} aria-live="polite">
-              {rec.instance ? (
+            <p className={`intro-verdict ${qName || rec.instance ? 'ok' : 'bad'}`} aria-live="polite">
+              {qName ? (
+                <>B is an axiom of PA: it is {qName}, one of the axioms of Q.</>
+              ) : rec.instance ? (
                 <>
-                  B is an instance of the induction schema, for A = <code>{formulaText(rec.A)}</code>.
+                  B is an axiom of PA: an instance of the induction schema, for A = <code>{formulaText(rec.A)}</code>.
                 </>
               ) : (
-                <>B is not an instance of the induction schema. (It may still be an axiom of Q — the test checks that separately.)</>
+                <>B is not an axiom of PA: it is neither an axiom of Q nor an instance of the induction schema.</>
               )}
             </p>
           </>

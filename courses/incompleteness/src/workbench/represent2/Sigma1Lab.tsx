@@ -82,7 +82,7 @@ function Classified({ f }: { f: Formula }) {
         </ul>
       )}
       <p className="wb-note">
-        The book’s bounded quantifiers are the abbreviations of <Ref k="inc:inp:s1c:defn:bd-quant" />; this workbench recognises them literally and also requires that the quantified variable not occur in the bound <Tex tex="t" /> (otherwise the “bound” depends on the variable and bounds nothing). Underlined in the formula: the bounded quantifiers with their scopes (or, if there is one, the part that is in the way).
+        The book’s bounded quantifiers are the abbreviations of <Ref k="inc:inp:s1c:defn:bd-quant" />; this workbench recognizes them literally and also requires that the quantified variable not occur in the bound <Tex tex="t" /> (otherwise the “bound” depends on the variable and bounds nothing). Underlined in the formula: the bounded quantifiers with their scopes (or, if there is one, the part that is in the way).
       </p>
     </div>
   );

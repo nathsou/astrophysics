@@ -57,18 +57,18 @@ export function NumeralLab() {
         label="recursion"
         describe={(i) =>
           i === 0 ? (
-            <>num(0) is the Gödel number of the one-symbol term 0: ⟨{String(Z)}⟩.</>
+            <>num(0) is the Gödel number of the one-symbol term 0, that is ⟨{String(Z)}⟩.</>
           ) : (
             <>
-              num({i}) wraps num({i - 1}) in <Tex tex="{}'(" /> … <Tex tex=")" />: prepend the codes {String(S)}, {String(O)} and append {String(C)}.
+              num({i}) wraps num({i - 1}) in <Tex tex="{}'(" /> … <Tex tex=")" />: prepend the codes {String(S)}, {String(O)} and append {String(C)} (in bold).
             </>
           )
         }
       />
       <div className="num-codes">
-        <Tex tex={`\\mathrm{num}(${cur.k}) = \\langle ${cur.codes.map((c, i) => (i < 2 * cur.k && i % 2 === 0 && i === 0 ? `\\mathbf{${c}}` : c)).join(', ')} \\rangle`} />
+        <Tex tex={`\\mathrm{num}(${cur.k}) = \\langle ${cur.codes.map((c, i) => (cur.k > 0 && (i < 2 || i === cur.codes.length - 1) ? `\\mathbf{${c}}` : c)).join(', ')} \\rangle`} />
         <span className="nat-size">
-          the numeral <Tex tex={`\\overline{${cur.k}}`} /> has {2 * cur.k + 1 + cur.k} symbols; its Gödel number has {size}
+          the numeral <Tex tex={`\\overline{${cur.k}}`} /> has {3 * cur.k + 1} symbol{cur.k === 0 ? '' : 's'}; its Gödel number has {size}
         </span>
       </div>
     </Panel>

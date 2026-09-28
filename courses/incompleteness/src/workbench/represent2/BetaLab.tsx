@@ -321,7 +321,7 @@ function TryD({ enc }: { enc: BetaEncoding }) {
         </div>
       )}
       <p className="wb-note">
-        The construction gives some code, usually a large one. In the section <Ref k="inc:req:pri:sec" />, <Tex tex="\hat h" /> is defined by <em>minimization</em>, which returns the <em>least</em> code. Search for it:
+        The construction gives some code, usually a large one. In <Ref k="inc:req:pri:sec" />, <Tex tex="\hat h" /> is defined by <em>minimization</em>, which returns the <em>least</em> code. Search for it:
       </p>
       <div className="r2-row">
         <span className="seg" role="radiogroup" aria-label="Search limit" style={{ margin: 0 }}>

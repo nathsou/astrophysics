@@ -24,7 +24,7 @@ a regular minimization of a primitive recursive relation: $f$ is recursive.
 
 ## Beyond Q
 
-Nothing in the argument is special to $\mathbf Q$ except two facts: derivations from its axioms can be recognised mechanically, and it proves no false equation between numerals. Any consistent theory whose axioms form a decidable set works the same way — so no such theory, however strong, represents a non-computable function.
+The argument uses only these facts about $\mathbf Q$: derivations from its axioms can be recognized mechanically, it is consistent, and it proves $\overline l \neq \overline m$ whenever $l \neq m$ (<Ref k="inc:req:bre:lem:q-proves-neq" />). Any consistent extension of $\mathbf Q$ whose axioms form a decidable set works the same way — so no such theory, however strong, represents a non-computable function.
 
 <Callout title="In Explore mode">
 Choose $f$ and an input. The workbench builds a derivation $\delta$ of $A_f(\vec{\overline n}, \overline m)$ in $\mathbf Q$ (checked), codes it, and verifies $\mathrm{Prf}_{\mathbf Q}((s)_0, A(\vec n, (s)_1))$ for $s = \langle \#\delta\#, m\rangle$ on the codes. For a wrong value you choose, it derives the refutation the lemma uses.

@@ -26,6 +26,7 @@ import {
 import { Tex } from '../../ui/Tex';
 import { Prov } from '../../ui/Prov';
 import { persist, persisted } from '../../ui/store';
+import { labelText } from '../../content/source';
 import './provability.css';
 
 export type ProofName = 'g2' | 'lob' | 'tarski';
@@ -50,6 +51,16 @@ const PROOFS: Record<ProofName, { lines: () => Line[]; judgement: string; condit
     intro: <>Here the lines are claims about truth in the standard model 𝔑, not derivability. Truth in a structure obeys propositional logic, so the same truth-table check applies.</>,
   },
 };
+
+/** The engine tags lines with the book's label names (G2-5, L-8); show the book's equation numbers instead. */
+const BOOK_SECTION: Record<string, string> = { G2: '2in', L: 'lob' };
+function bookTag(tag: string): string {
+  const m = /^(G2|L)-(\d+)$/.exec(tag);
+  return m ? labelText(`inc:inp:${BOOK_SECTION[m[1]]}:${tag}`) : tag;
+}
+function relabel(text: string): string {
+  return text.replace(/\((G2|L)-(\d+)\)/g, (_m, p: string, n: string) => bookTag(`${p}-${n}`));
+}
 
 const COND_TEXT: Record<'P1' | 'P2' | 'P3', string> = {
   P1: 'If T ⊢ A, then T ⊢ Prov(⌜A⌝).',
@@ -93,9 +104,19 @@ export function ProvabilityProof({ which }: { which: ProofName }) {
   return (
     <div className="workbench pv">
       <p className="wb-note">
-        <Prov kind="checked">checked relative to the conditions</Prov> {spec.intro} Each step is verified mechanically: P1 applications and P2/P3 instances by their shape,
-        propositional steps by a truth table in which every <Tex tex="\mathsf{Prov}(\ulcorner\dots\urcorner)" /> is an atom. The conditions themselves are not checked — the book asks
-        us to take them on faith, and so does this workbench.
+        {spec.conditions ? (
+          <>
+            <Prov kind="checked">checked relative to the conditions</Prov> {spec.intro} Each step is verified mechanically: P1 applications and P2/P3 instances by their shape,
+            propositional steps by a truth table in which every <Tex tex="\mathsf{Prov}(\ulcorner\dots\urcorner)" /> is an atom. The conditions themselves are not checked — the
+            book asks us to take them on faith, and so does this workbench.
+          </>
+        ) : (
+          <>
+            <Prov kind="checked">checked relative to the hypotheses</Prov> {spec.intro} Each step is verified mechanically by a truth table in which{' '}
+            <Tex tex="A" /> and <Tex tex="D(\ulcorner A\urcorner)" /> are atoms. The two hypotheses are not checked: the first comes from the fixed-point lemma and the truth of Q in 𝔑,
+            the second is the assumption the proof refutes.
+          </>
+        )}
       </p>
       <fieldset className="hyp-toggles pv-toggles">
         <legend className="fi-label">{spec.conditions ? 'Conditions and hypotheses' : 'Hypotheses'}</legend>
@@ -134,9 +155,9 @@ export function ProvabilityProof({ which }: { which: ProofName }) {
           const c = checks.get(l.n)!;
           return (
             <li key={l.n} className={`pv-line ${c.ok ? 'ok' : 'bad'} ${sel === l.n ? 'sel' : ''} ${premises.has(l.n) ? 'premise' : ''}`}>
-              <button className="pv-row" onClick={() => setSel(l.n)} aria-pressed={sel === l.n} aria-label={`Line ${l.n}${l.book ? ` (${l.book})` : ''}: ${show(l.f)}. ${c.ok ? 'Justified' : 'Not justified'}.`}>
+              <button className="pv-row" onClick={() => setSel(l.n)} aria-pressed={sel === l.n} aria-label={`Line ${l.n}${l.book ? ` ${bookTag(l.book)}` : ''}: ${show(l.f)}. ${c.ok ? 'Justified' : 'Not justified'}.`}>
                 <span className="pv-n">{l.n}</span>
-                <span className="pv-book">{l.book ?? (l.just.r === 'P2' ? 'implicit' : '')}</span>
+                <span className="pv-book">{l.book ? bookTag(l.book) : l.just.r === 'P2' ? 'implicit' : ''}</span>
                 <span className="pv-f">
                   <Tex tex={`${spec.judgement} ${tex(l.f)}`} />
                 </span>
@@ -222,7 +243,7 @@ function LineDetail({ line, check, lines }: { line: Line; check: LineCheck; line
   return (
     <div className="pv-detail">
       {body}
-      {line.note && <p className="pv-note">{line.note}</p>}
+      {line.note && <p className="pv-note">{relabel(line.note)}</p>}
       {check.errors.map((e, i) => (
         <p key={i} className="pv-error">
           ✗ {e}

@@ -1,6 +1,6 @@
 <Added label="Added for this edition">
 
-This section fixes the vocabulary for the whole book. Two kinds of definition are worth telling apart: some are about **truth** in a structure ($\mathbf{TA}$), some about **derivability** from axioms ($\mathbf Q$, $\mathbf{PA}$), and some about **computation** (decidable, computably enumerable). The incompleteness theorems relate the three.
+This section fixes the vocabulary for the whole book. Three kinds of definition are worth telling apart: some are about **truth** in a structure ($\mathbf{TA}$), some about **derivability** from axioms ($\mathbf Q$, $\mathbf{PA}$), and some about **computation** (decidable, computably enumerable). The incompleteness theorems relate the three.
 
 </Added>
 
@@ -9,18 +9,18 @@ This section fixes the vocabulary for the whole book. Two kinds of definition ar
 A theory is a set of sentences closed under entailment. It can come from
 
 - a **structure**: $\mathbf{TA} = \{A : \mathfrak N \vDash A\}$, the true sentences of arithmetic — complete by construction, since every sentence is true or false in $\mathfrak N$;
-- a set of **axioms**: $\mathbf Q$ has eight, $\mathbf{PA}$ infinitely many (every instance of the induction schema).
+- a set of **axioms**: $\mathbf Q$ has eight, $\mathbf{PA}$ infinitely many (those of $\mathbf Q$ and every instance of the induction schema).
 
 The big question is whether some axiomatized theory like $\mathbf{PA}$ is equal to $\mathbf{TA}$.
 
 ## Infinitely many axioms, still axiomatizable
 
-For axioms to be useful we must be able to *recognize* them: a theory is axiomatizable if it is axiomatized by a **decidable** set. $\mathbf{PA}$ has infinitely many axioms, but the book gives a procedure that decides whether a sentence is an instance of induction. Explore mode runs that procedure on any sentence you type, and builds instances for you.
+For axioms to be useful we must be able to *recognize* them: a theory is axiomatizable if it is axiomatized by a **decidable** set. $\mathbf{PA}$ has infinitely many axioms, but the book gives a procedure that decides whether a sentence is one of them: compare it with the axioms of $\mathbf Q$, then check whether it is an instance of the induction schema. Explore mode runs that procedure on any sentence you type, and builds instances for you.
 
 ## Representing
 
-A formula $A_f(x, y)$ represents $f$ in $\Gamma$ when $\Gamma$ derives $A_f(\overline n, \overline m)$ whenever $f(n) = m$, **and** derives that $\overline m$ is the only such value. For relations, $\Gamma$ must derive $A(\overline n)$ when the relation holds and $\lnot A(\overline n)$ when it does not. Representability is about *derivability*, one instance at a time; <a href="#/s/inc.req.int?mode=explore">chapter 4</a> builds these derivations for $\mathbf Q$.
+A formula $A_f(x, y)$ represents $f$ in $\Gamma$ when $\Gamma$ derives $A_f(\overline n, \overline m)$ whenever $f(n) = m$, **and** derives that $\overline m$ is the only such value. For relations, $\Gamma$ must derive $A(\overline n)$ when the relation holds and $\lnot A(\overline n)$ when it does not. Representability is about *derivability*, one instance at a time; <Ref k="inc:req::chap" /> shows that $\mathbf Q$ represents every computable function, and this edition builds the derivations for particular arguments.
 
 <Callout title="Watch the notation">
-$\times$ is a *symbol* of $\mathcal L_A$ (officially $f^2_1$); $\cdot$ is multiplication of numbers. $+$ is used for both, and context decides. This edition colours formulas and numbers differently to help.
+$\times$ is a *symbol* of $\mathcal L_A$ (officially $f^2_1$); $\cdot$ is multiplication of numbers. $+$ is used for both, and context decides. This edition colors formulas and numbers differently to help.
 </Callout>

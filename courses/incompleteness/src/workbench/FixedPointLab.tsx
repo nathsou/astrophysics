@@ -57,7 +57,7 @@ export function FixedPointLab({ showDerivation = true }: { showDerivation?: bool
 
 const STAGE_TEXT: ReactNode[] = [
   'the formula B(x) you chose.',
-  'the formula E(x) = ∃y (D_diag(x, y) ∧ B(y)): “B holds of the Gödel number of my diagonalisation”.',
+  'the formula E(x) = ∃y (D_diag(x, y) ∧ B(y)): “B holds of diag(x)”, the Gödel number of the diagonalization of the formula with Gödel number x.',
   'the Gödel number of E(x): a natural number, outside the language.',
   'the numeral for that number: a term of arithmetic that denotes it.',
   'the sentence A = E(⌜E(x)⌝): the numeral put in place of x.',
@@ -132,7 +132,7 @@ function Stages({ c, upTo, showDerivation }: { c: FixedPointConstruction; upTo: 
         <Lane kind="formula" stage={5} title={<>The sentence <Tex tex="A = E(\ulcorner E(x) \urcorner)" /></>} active={upTo === 4}>
           <FormulaView node={c.fixed} analysis={aA} />
           <p className="fp-note">
-            The <b>diagonalisation</b> of <Tex tex="E(x)" />: the numeral of its own Gödel number substituted for <Tex tex="x" />. {freeVars(c.fixed).size === 0 ? 'A is a sentence.' : ''} Its
+            The <b>diagonalization</b> of <Tex tex="E(x)" />: the numeral of its own Gödel number substituted for <Tex tex="x" />. {freeVars(c.fixed).size === 0 ? 'A is a sentence.' : ''} Its
             own Gödel number <Tex tex="\#A\#" /> has {lowerA}.
           </p>
         </Lane>
@@ -260,7 +260,7 @@ export function ThreeThings() {
           </td>
           <td>{formatMagnitude(magnitude(c.encE.number, { lowerBound: true }))} (at least)</td>
           <td>
-            as many symbols as <Tex tex="\#E(x)\#" />, plus one
+            <Tex tex="3 \cdot \#E(x)\# + 1" /> symbols in official notation, <Tex tex="{}'({}'(\cdots 0 \cdots))" />
           </td>
         </tr>
       </tbody>

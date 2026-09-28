@@ -8,4 +8,10 @@ If $A_g(x, y)$ represents $g$ and $A_f(y, z)$ represents $f$, then “there is a
 
 To derive clause (a) for $h$ at $n$, $\mathbf Q$ needs to prove $\exists y\,(A_g(\overline n, y) \land A_f(y, \overline m))$. It does so by exhibiting a $y$: the numeral for $g(n)$, the intermediate value of the computation. The derivation is the computation, transcribed.
 
-Clause (b) runs the other way. Suppose $A_g(\overline n, b) \land A_f(b, a)$ for some $b$ and $a$. Clause (b) for $g$ says $b = \overline{g(n)}$; substituting, $A_f(\overline{g(n)}, a)$; clause (b) for $f$ says $a = \overline m$. This is the proof of <Ref k="inc:req:cmp:prop:rep2" />, and Explore mode shows it as a checked derivation for your function, with the two $\exists$-eliminations and the substitution steps in place.
+Clause (b) runs the other way. Suppose $A_g(\overline n, b) \land A_f(b, a)$ for some $b$ and $a$. Clause (b) for $g$ says $b = \overline{g(n)}$; substituting, $A_f(\overline{g(n)}, a)$; clause (b) for $f$ says $a = \overline m$. This is the proof of <Ref k="inc:req:cmp:prop:rep2" />, and Explore mode shows it as a checked derivation for your function, with the $\exists$-eliminations (one for each inner function) and the substitution steps in place.
+
+<Added label="Added for this edition: a slip in the text">
+
+The problem at the end of the section asks for the proof of <Ref k="inc:req:cmp:prop:rep-composition" /> “using the proofs of <Ref k="inc:req:cmp:prop:rep2" /> and <Ref k="inc:req:cmp:prop:rep2" /> as a guide”. The first reference should be to <Ref k="inc:req:cmp:prop:rep1" />: the two propositions for the one-place case, clause (a) and clause (b).
+
+</Added>

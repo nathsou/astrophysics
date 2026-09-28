@@ -6,13 +6,13 @@ Substitution — replacing the free occurrences of a variable by a term — is t
 
 ## Free and bound occurrences
 
-In $\exists y\,(x < y) \land x = 2$ the variable $x$ occurs twice, both times free; $y$ occurs once, bound by $\exists y$. Substituting $3$ for $x$ gives $\exists y\,(3 < y) \land 3 = 2$. Substituting for $y$ changes nothing: $y$ has no free occurrence.
+In $\exists y\,(x < y) \land x = \overline 2$ the variable $x$ occurs twice, both times free; $y$ occurs once, bound by $\exists y$. Substituting $\overline 3$ for $x$ gives $\exists y\,(\overline 3 < y) \land \overline 3 = \overline 2$. Substituting for $y$ changes nothing: $y$ has no free occurrence.
 
 ## Capture
 
 Now substitute the term $y'$ for $x$. The first $x$ lies inside the scope of $\exists y$, so the result contains $\exists y\,(y' < y)$ — and the $y$ of $y'$, which was meant to be a free variable, is now bound by the quantifier. The formula has changed its meaning. We say $y'$ is **not free for** $x$ in the formula.
 
-The book’s definition of $A[t/x]$ replaces free occurrences regardless, and places the condition “$t$ is free for $x$” on the rules that use substitution. The workbench shows both the book’s operation and the capture-avoiding version that renames the bound variable first.
+The book defines $A[t/x]$ only when $t$ is free for $x$ in $A$ (<Ref k="fol:syn:sub:sec" />). The function $\mathrm{Subst}$ on Gödel numbers below does not check this: it replaces the free occurrences whatever $t$ is, which is why “$t$ is free for $x$” gets its own primitive recursive relation, $\mathrm{FreeFor}$ (<Ref k="inc:art:sub:prop:free-for" />). The workbench shows the plain replacement and, for comparison, a capture-avoiding version that renames the bound variable first (not something the book does).
 
 <Callout title="Try it">
 Explore mode starts with this capture example; its menu has others.
@@ -20,7 +20,7 @@ Explore mode starts with this capture example; its menu has others.
 
 ## On Gödel numbers
 
-The substitution function on Gödel numbers, $\mathrm{Subst}(\#A\#, \#t\#, \#x\#) = \#A[t/x]\#$, is defined by a primitive recursion that walks along the symbol string of $A$: at each position it appends either the whole symbol string of $t$ (if the position is a free occurrence of $x$) or the symbol itself. Explore mode steps through it for your example and checks the equation exactly.
+The substitution function on Gödel numbers, $\mathrm{Subst}(\#A\#, \#t\#, \#x\#) = \#A[t/x]\#$, is defined from an auxiliary function $\mathrm{hSubst}$, by a primitive recursion that walks along the symbol string of $A$: at each position it appends either the whole symbol string of $t$ (if the position is a free occurrence of $x$, which $\mathrm{FreeOcc}$ decides) or the symbol itself. Explore mode steps through it for your example and checks the equation exactly.
 
 <ExNotFreeFor />
 

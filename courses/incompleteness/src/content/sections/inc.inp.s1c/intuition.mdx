@@ -16,9 +16,20 @@ A bounded quantifier looks only below a term: $\forall x < t\, A(x)$ abbreviates
 
 1. <Ref k="inc:inp:s1c:lem:q-proves-clterm-id" />: $\mathbf Q$ evaluates closed terms — $\mathbf Q \vdash t = \overline n$ where $n$ is the value of $t$.
 2. <Ref k="inc:inp:s1c:lem:atomic-completeness" />: so $\mathbf Q$ proves every true atomic sentence and the negation of every false one.
-3. <Ref k="inc:inp:s1c:lem:bounded-quant-equiv" />: a bounded quantifier with a closed bound is equivalent in $\mathbf Q$ to a finite conjunction or disjunction of instances.
+3. <Ref k="inc:inp:s1c:lem:bounded-quant-equiv" />: with a closed bound of value $k$, $\mathbf Q$ proves $\forall x < t\, A(x)$ iff it proves $A(\overline 0) \land \cdots \land A(\overline{k-1})$, and $\exists x < t\, A(x)$ iff it proves $A(\overline 0) \lor \cdots \lor A(\overline{k-1})$.
 4. <Ref k="inc:inp:s1c:lem:delta0-completeness" />: by induction on the sentence, $\mathbf Q$ proves every true $\Delta_0$ sentence (and refutes every false one — the induction needs both).
 5. <Ref k="inc:inp:s1c:thm:sigma1-completeness" />: if $\exists x\,A(x)$ is true, some $n$ makes $A(\overline n)$ true; it is $\Delta_0$, so $\mathbf Q$ proves it, and then $\exists x\,A(x)$ by ∃Intro.
+
+<Added label="Added for this edition: slips in the text">
+
+Some details of the printed proofs need repair; none affects the results.
+
+- Proof of <Ref k="inc:inp:s1c:lem:atomic-completeness" />, first case: it fixes $m = \mathrm{Val}(t_2)$ but then writes $\mathbf Q \vdash t_2 = \overline n$. Read $t_2 = \overline m$.
+- Same proof, the case $t_1 < t_2$ true: it derives $\overline n + \overline k' = \overline m$ and concludes $\overline k' + t_1 = t_2$ “by the transitivity of identity”. $\mathbf Q$ cannot swap the summands. What is needed, and what the first part of the lemma gives directly, is $\overline k' + \overline n = \overline m$ (both sides have the value $m$).
+- Same proof, the case $t_1 < t_2$ false: getting from $z' + \overline n = \overline m$ to $z' + \overline{n - m} = 0$ uses $Q_1$ as well as $Q_5$. If $m = n$, then $z' + 0 = 0$ gives $z' = 0$ by $Q_4$; if $m < n$, then $(z' + \overline{n-m-1})' = 0$ by $Q_5$. Either way the contradiction is with $Q_2$ ($0$ is not a successor), not with $Q_3$, which the book cites.
+- Proof of <Ref k="inc:inp:s1c:lem:bounded-quant-equiv" />, case $k = 0$: for the universal quantifier the right-hand side is an empty *conjunction*, which is taken to be $\top$; the book writes “empty disjunction”. (An empty disjunction is $\bot$, which is what the existential case needs.)
+
+</Added>
 
 The only non-constructive-looking step is “some $n$ makes $A(\overline n)$ true”. But that $n$ can be *found*: try $0, 1, 2, \ldots$ and decide each $A(\overline n)$ by computation. If the sentence is true, the search ends. If it is false, the search runs forever — and no finite amount of searching tells the two apart.
 
