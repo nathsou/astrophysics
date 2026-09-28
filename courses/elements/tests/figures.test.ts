@@ -8,7 +8,7 @@ import { trials } from '../src/geometry/jitter';
 import { mentions, resolve } from '../src/geometry/resolve';
 import { itemById } from '../src/text/load-node';
 
-const figures = import.meta.glob('../src/figures/b*/p*.ts', { eager: true, import: 'default' }) as Record<string, FigureDef>;
+const figures = import.meta.glob('../src/figures/b*/p[0-9]*.ts', { eager: true, import: 'default' }) as Record<string, FigureDef>;
 const only = process.env.BOOK ? Number(process.env.BOOK) : undefined;
 
 describe('figures', () => {

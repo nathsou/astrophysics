@@ -12,7 +12,7 @@ import { resolve, type Kind } from '../src/geometry/resolve';
 import { duplicateWidgets, widgets } from '../src/widgets/registry';
 
 const root = join(import.meta.dirname, '..');
-const figures = import.meta.glob('../src/figures/b*/p*.ts', { eager: true, import: 'default' }) as Record<string, FigureDef>;
+const figures = import.meta.glob('../src/figures/b*/p[0-9]*.ts', { eager: true, import: 'default' }) as Record<string, FigureDef>;
 const only = process.env.BOOK ? Number(process.env.BOOK) : undefined;
 const dir = join(root, 'content/modern');
 
