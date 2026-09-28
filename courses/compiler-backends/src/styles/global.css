@@ -227,6 +227,8 @@ button { font: inherit; color: inherit; }
   .article .lede { font-size: 17.5px; }
   .article h2 { font-size: 23px; }
   .article table { display: block; overflow-x: auto; }
+  /* a long inline formula scrolls inside its own box instead of the page */
+  .article p .katex, .article li .katex { display: inline-block; max-width: 100%; overflow-x: auto; overflow-y: hidden; vertical-align: bottom; }
 }
 
 .callout { font-family: var(--plex); font-size: 15px; line-height: 1.6; border-radius: var(--radius); padding: 0 18px 12px; margin: 22px 0; border: 1px solid var(--fg); background: var(--panel); overflow: hidden; }
