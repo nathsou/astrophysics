@@ -466,3 +466,4 @@ q { quotes: '“' '”' '‘' '’'; }
 .about h2 { font-size: 24px; margin-top: 30px; }
 .figure-svg .el-label { font-size: 16px; font-style: italic; fill: var(--ink-2); paint-order: stroke; stroke: var(--panel); stroke-width: 4px; }
 .badge.bracketed { color: var(--muted); border-style: dashed; }
+.figure-svg .shape, .figure-svg .tick, .ws-svg .obj, .layered .edge { vector-effect: non-scaling-stroke; }

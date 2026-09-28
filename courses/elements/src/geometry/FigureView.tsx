@@ -199,6 +199,18 @@ export function FigureView({ def, mentions, step = null, byrne = false, hoverKey
   }, [resolved, scene, S, onBus]);
 
   const svgRef = useRef<SVGSVGElement>(null);
+  // Screen pixels per SVG unit shrink on narrow screens; labels and handles are scaled back up by `ui`.
+  const [ui, setUi] = useState(1);
+  useEffect(() => {
+    const el = svgRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(() => {
+      const w = el.getBoundingClientRect().width;
+      if (w > 0) setUi(Math.max(1, Math.min(2.2, W / w)));
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   const drag = useRef<{ name: string; kind: 'free' | 'glider' | 'rotate'; x: number; y: number; cam: Camera } | null>(null);
 
   const toLocal = (e: RPE) => {
@@ -429,8 +441,8 @@ export function FigureView({ def, mentions, step = null, byrne = false, hoverKey
   });
   const pts = [...scene.points.values()].filter((p) => !p.hidden && visiblePt(p.name));
   const centroid = pts.length ? mul(pts.map((p) => S(p.p)).reduce(add, v(0, 0)), 1 / pts.length) : v(W / 2, H / 2);
-  const labelPos = (name: string, p: V, dir?: number): V => {
-    if (dir !== undefined) return add(p, v(15 * Math.cos((dir * Math.PI) / 180), -15 * Math.sin((dir * Math.PI) / 180)));
+  const labelPos = (name: string, p: V, dir?: number, scale = 1): V => {
+    if (dir !== undefined) return add(p, v(15 * scale * Math.cos((dir * Math.PI) / 180), -15 * scale * Math.sin((dir * Math.PI) / 180)));
     const ns = neighbours.get(name) ?? [];
     let d = v(0, 0);
     for (const q of ns) {
@@ -452,7 +464,7 @@ export function FigureView({ def, mentions, step = null, byrne = false, hoverKey
       const l = Math.hypot(u.x, u.y);
       away = l > 1e-6 ? mul(u, 1 / l) : v(0, -1);
     }
-    return add(p, mul(away, 14));
+    return add(p, mul(away, 14 * scale));
   };
 
   // painter's order for solids: far polygons first
@@ -525,7 +537,7 @@ export function FigureView({ def, mentions, step = null, byrne = false, hoverKey
           }
           if (!at) return null;
           return (
-            <text key={`t${i}`} x={at.x + off.x} y={at.y + off.y} dy="0.35em" textAnchor="middle" className="el-label" pointerEvents="none">
+            <text key={`t${i}`} x={at.x + off.x * ui} y={at.y + off.y * ui} dy="0.35em" textAnchor="middle" className="el-label" pointerEvents="none" style={{ fontSize: 16 * ui }}>
               {e.text}
             </text>
           );
@@ -551,12 +563,12 @@ export function FigureView({ def, mentions, step = null, byrne = false, hoverKey
           const key = `pt:${p.name}`;
           return (
             <g key={p.name} className={`pt ${p.kind} ${key === hoverKey ? 'hovered' : ''}`} onPointerEnter={() => onHover?.(key)} onPointerLeave={() => onHover?.(null)}>
-              {draggable && !is3 && <circle className="handle" cx={s.x} cy={s.y} r={14} onPointerDown={(e) => onDown(e, p.name, p.kind as 'free' | 'glider')} />}
-              <circle className="dot" cx={s.x} cy={s.y} r={draggable && !is3 ? 4.2 : 2.8} pointerEvents="none" />
+              {draggable && !is3 && <circle className="handle" cx={s.x} cy={s.y} r={14 * ui} onPointerDown={(e) => onDown(e, p.name, p.kind as 'free' | 'glider')} />}
+              <circle className="dot" cx={s.x} cy={s.y} r={(draggable && !is3 ? 4.2 : 2.8) * ui} pointerEvents="none" />
               {showLabels && (() => {
-                const lp = labelPos(p.name, s, p.labelDir);
+                const lp = labelPos(p.name, s, p.labelDir, ui);
                 return (
-                  <text className="lbl" x={lp.x} y={lp.y} dy="0.35em" textAnchor="middle" pointerEvents="none">
+                  <text className="lbl" x={lp.x} y={lp.y} dy="0.35em" textAnchor="middle" pointerEvents="none" style={{ fontSize: 19 * ui }}>
                     {p.name}
                   </text>
                 );

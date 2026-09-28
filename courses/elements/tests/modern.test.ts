@@ -9,7 +9,7 @@ import { splitFrontMatter } from '../src/content/modern';
 import { byId } from '../src/text';
 import { evaluate, type FigureDef } from '../src/geometry/figure';
 import { resolve, type Kind } from '../src/geometry/resolve';
-import { widgets } from '../src/widgets/registry';
+import { duplicateWidgets, widgets } from '../src/widgets/registry';
 
 const root = join(import.meta.dirname, '..');
 const figures = import.meta.glob('../src/figures/b*/p*.ts', { eager: true, import: 'default' }) as Record<string, FigureDef>;
@@ -23,6 +23,7 @@ for (const b of existsSync(dir) ? readdirSync(dir) : []) {
 }
 
 describe('modern versions', () => {
+  it('widget names are unique', () => expect(duplicateWidgets).toEqual([]));
   for (const { id, path } of files) {
     it(id, () => {
       const src = readFileSync(path, 'utf8');
