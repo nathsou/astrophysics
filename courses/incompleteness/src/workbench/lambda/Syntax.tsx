@@ -211,15 +211,15 @@ export function SubstPanel() {
       </select>
       <div className="lam-row" style={{ alignItems: 'flex-end' }}>
         <label style={{ flex: '2 1 180px', flexDirection: 'column', alignItems: 'stretch' }}>
-          <span className="fi-label">M</span>
+          <span className="fi-label lam-mathlabel">M</span>
           <input className={`lam-field ${pm.ok ? '' : 'invalid'}`} value={m} onChange={(e) => setM(e.target.value)} spellCheck={false} />
         </label>
         <label style={{ flex: '0 1 80px', flexDirection: 'column', alignItems: 'stretch' }}>
-          <span className="fi-label">x</span>
+          <span className="fi-label lam-mathlabel">x</span>
           <input className={`lam-field ${xOk ? '' : 'invalid'}`} value={x} onChange={(e) => setX(e.target.value.trim())} spellCheck={false} />
         </label>
         <label style={{ flex: '2 1 180px', flexDirection: 'column', alignItems: 'stretch' }}>
-          <span className="fi-label">N</span>
+          <span className="fi-label lam-mathlabel">N</span>
           <input className={`lam-field ${pn.ok ? '' : 'invalid'}`} value={n} onChange={(e) => setN(e.target.value)} spellCheck={false} />
         </label>
       </div>

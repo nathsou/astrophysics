@@ -31,7 +31,7 @@ interface Preset {
 }
 
 const pow2 = (): RF => {
-  // The book's first example, made official (section "Primitive Recursion Functions"):
+  // The book's first example, made official (section "Primitive Recursive Functions"):
   // h′(x₀, 0) = f(x₀) = succ(zero(x₀)),  h′(x₀, y + 1) = g(x₀, y, h′(x₀, y)) with
   // g(x₀, y, z) = g′(P³₂(x₀, y, z)), g′(z) = mult(g″(z), P¹₀(z)), g″(z) = succ(f(z)).
   const f = () => R.def('f', 'f', R.comp(R.succ(), [R.zero()]));
@@ -49,7 +49,7 @@ export const REC_PRESETS: Preset[] = [
   {
     id: 'fac',
     label: 'factorial’s h',
-    tex: 'h(x, 0) = \\mathrm{const}_1(x), \\quad h(x, y+1) = \\mathrm{mult}(P^3_2, \\mathrm{succ}(P^3_1)) = h(x, y) \\cdot (y + 1)',
+    tex: 'h(x, 0) = \\mathrm{const}_1(x), \\quad h(x, y+1) = \\mathrm{mult}(h(x, y), \\mathrm{succ}(y)) = h(x, y) \\cdot (y + 1)',
     build: () => {
       const f = unwrap(Lib.fac());
       return f.k === 'comp' ? f.f : f;
@@ -139,11 +139,11 @@ export function PrimRecStepper({ focus = 'pre' }: { focus?: 'pre' | 'prf' | 'cmp
           <div className="rc-split">
             <div className="rc-box">
               <span className="rc-kicker">base f(x⃗) — k-place, k ≥ 1</span>
-              <FunctionBuilder spec={st.custom.f} path="r.f" errors={errors} onChange={(f) => setSt({ ...st, custom: { ...st.custom, f } })} />
+              <FunctionBuilder palette="primitive" spec={st.custom.f} path="r.f" errors={errors} onChange={(f) => setSt({ ...st, custom: { ...st.custom, f } })} />
             </div>
             <div className="rc-box">
               <span className="rc-kicker">step g(x⃗, y, z) — (k + 2)-place</span>
-              <FunctionBuilder spec={st.custom.g} path="r.g" errors={errors} onChange={(g) => setSt({ ...st, custom: { ...st.custom, g } })} />
+              <FunctionBuilder palette="primitive" spec={st.custom.g} path="r.g" errors={errors} onChange={(g) => setSt({ ...st, custom: { ...st.custom, g } })} />
             </div>
           </div>
         )}
@@ -151,7 +151,7 @@ export function PrimRecStepper({ focus = 'pre' }: { focus?: 'pre' | 'prf' | 'cmp
         {!preset && cls.pr === false && <p className="wb-note danger">This uses unbounded search μ, which is not one of the ways of building primitive recursive functions. The stepper still runs it.</p>}
         {!preset && cls.pr && cls.usesBasic && (
           <p className="wb-note">
-            add, mult and <Tex tex="\chi_=" /> are offered by the builder as basic functions (they are basic in chapter 4); here they stand for their primitive recursive definitions.
+            add, mult and <Tex tex="\chi_=" /> are offered by the builder as basic functions (they are basic in <Ref k="inc:req::chap" />); here they stand for their primitive recursive definitions (<Ref k="cmp:rec:prf:sec" />, <Ref k="cmp:rec:prr:sec" />).
           </p>
         )}
         {rec.k === 'rec' && ar.ok && (
@@ -245,7 +245,7 @@ export function PrimRecStepper({ focus = 'pre' }: { focus?: 'pre' | 'prf' | 'cmp
           </div>
           {u.status === 'out-of-fuel' && (
             <p className="wb-note">
-              The budget of {fuel.toLocaleString('en-US')} function calls ran out at row {rows[rows.length - 1].y.toString()}. That is a fact about the budget, not about h: a
+              The budget of {fuel.toLocaleString('en-US')} steps (function calls) ran out at row {rows[rows.length - 1].y.toString()}. That is a fact about the budget, not about h: a
               function defined by primitive recursion from total functions has a value everywhere (<Ref k="cmp:rec:cmp:sec" />). Raise the budget or lower y.
             </p>
           )}

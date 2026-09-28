@@ -5,6 +5,7 @@ import katex from 'katex';
 import { convertAll } from '../scripts/convert.ts';
 import { assembleDisplay, splitRows } from '../scripts/latex/document.ts';
 import { expandMath } from '../scripts/latex/expand.ts';
+import { applyErrata } from '../scripts/latex/errata.ts';
 import { applyOverrides, emptyConfig, parseArgSpec, readConfig } from '../scripts/latex/macros.ts';
 import type { Block, Chapter, Inline, SourceIndex } from '../src/content/schema.ts';
 
@@ -43,15 +44,46 @@ describe('macro layer', () => {
   it('uses latin formula letters, as ic-config.sty asks', () => {
     expect(cfg.formulaLetters).toBeNull();
   });
+  it('drops the vertical alignment of gathered/aligned, which KaTeX would print', () => {
+    expect(expandMath('\\begin{gathered}[b] x \\end{gathered}', hooks)).not.toContain('[b]');
+  });
   it('never fuses a control word with a following letter', () => {
     expect(expandMath('\\lnot!A', hooks)).toBe('\\lnot A');
+  });
+  it('skips the tag list of probtag problems', () => {
+    expect(JSON.stringify(chapters)).not.toContain('probNot,probOr');
+  });
+  it('drops TeX spacing commands from terminology tokens (c.e.\\@)', () => {
+    expect(JSON.stringify(chapters)).not.toContain('c.e.\\\\@');
   });
   it('takes the book’s terminology tokens (enumerable → countable)', () => {
     expect(cfg.tokens.get('enumerable')!.s).toBe('countable');
   });
 });
 
+describe('errata', () => {
+  const errata = () => ({ entries: [{ repo: 'OpenLogic' as const, file: 'a.tex', find: 'L-8', replace: 'L-9', why: '', from: 't.json', applied: 0 }] });
+  it('applies a correction that matches exactly once', () => {
+    const d: never[] = [];
+    expect(applyErrata(errata(), 'OpenLogic', 'a.tex', 'from L-8 and L-12', d)).toBe('from L-9 and L-12');
+    expect(d).toEqual([]);
+  });
+  it('reports a correction that no longer matches, or matches twice', () => {
+    const d: { code: string }[] = [];
+    applyErrata(errata(), 'OpenLogic', 'a.tex', 'from L-9 and L-12', d as never);
+    applyErrata(errata(), 'OpenLogic', 'a.tex', 'L-8, L-8', d as never);
+    expect(d.map((x) => x.code)).toEqual(['erratum-unmatched', 'erratum-ambiguous']);
+  });
+  it('are all applied to the book', () => {
+    expect(diagnostics.filter((x) => x.code.startsWith('erratum'))).toEqual([]);
+  });
+});
+
 describe('display splitting', () => {
+  it('does not split inside a macro’s bracketed argument', () => {
+    expect(splitRows('\\lexists[u][(A \\\\ B)] \\\\ C')).toEqual(['\\lexists[u][(A \\\\ B)]', 'C']);
+    expect(splitRows('[0, 1) \\\\ x')).toEqual(['[0, 1)', 'x']);
+  });
   it('splits rows at top level only', () => {
     expect(splitRows('a & b \\\\ \\begin{cases} x \\\\ y \\end{cases} & c')).toHaveLength(2);
   });
@@ -63,6 +95,27 @@ describe('display splitting', () => {
 describe('conversion of the vendored chapters', () => {
   it('has no errors', () => {
     expect(diagnostics.filter((d) => d.level === 'error')).toEqual([]);
+  });
+
+  it('keeps inline \\iftag text inside list items (the connectives in B.1)', () => {
+    const fol = JSON.stringify(chapters.find((c) => c.id === 'ic.fol'));
+    expect(fol).toContain('universal quantifier');
+    expect(fol).toContain('existential quantifier');
+    expect(diagnostics.filter((d) => d.code === 'list-junk')).toEqual([]);
+  });
+
+  it('numbers every numbered block with its chapter (including text written in ic.tex)', () => {
+    const bad: string[] = [];
+    const walk = (x: unknown) => {
+      if (Array.isArray(x)) x.forEach(walk);
+      else if (x && typeof x === 'object') {
+        const o = x as { t?: string; number?: string; id?: string };
+        if (o.t === 'env' && o.number !== undefined && !/^[0-9A-Z]+\.\d+$/.test(o.number)) bad.push(`${o.id}: ${o.number}`);
+        Object.values(o).forEach(walk);
+      }
+    };
+    walk(chapters);
+    expect(bad).toEqual([]);
   });
 
   it('is committed and up to date (run npm run convert)', () => {

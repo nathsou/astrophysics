@@ -8,13 +8,13 @@ Before any coding of syntax, the book proves two facts and combines them. **(1)*
 
 List all formulas $A_0(x), A_1(x), \dots$ with one free variable, and let
 $$D = \{n : \Gamma \vdash \lnot A_n(\overline n)\}.$$
-If $\Gamma$ were decidable, so would $D$ be, so some $A_d$ would represent $D$. Ask whether $d \in D$: either answer makes $\Gamma$ derive both $A_d(\overline d)$ and $\lnot A_d(\overline d)$. This is the same diagonal pattern as the halting problem and as Cantor’s theorem: $D$ is built to disagree with row $n$ at column $n$. Explore mode lets you watch it disagree.
+If $\Gamma$ were decidable, so would $D$ be, so some $A_d$ would represent $D$. Ask whether $d \in D$. If $d \notin D$, representability gives $\Gamma \vdash \lnot A_d(\overline d)$, which puts $d$ in $D$ after all. So $d \in D$; then $\Gamma$ derives $\lnot A_d(\overline d)$ by the definition of $D$, and $A_d(\overline d)$ because $A_d$ represents $D$: $\Gamma$ is inconsistent. This is the same diagonal pattern as the halting problem and as Cantor’s theorem: $D$ is built to disagree with row $n$ at column $n$. Explore mode lets you watch it disagree.
 
 ## (2) Complete + axiomatizable ⇒ decidable
 
 The theorems of an axiomatizable theory can be listed by a program: generate all derivations and output their conclusions. To decide $A$, run the list until $A$ or $\lnot A$ appears. Completeness guarantees that one of them does — and consistency that only one does. (If the theory is inconsistent, it contains every sentence: decidable too.)
 
-<NotAProof>Without completeness the search might run forever: that is exactly what an independent sentence does to this procedure.</NotAProof>
+Without completeness the search might run forever: that is exactly what an independent sentence does to this procedure.
 
 ## What this does not give
 

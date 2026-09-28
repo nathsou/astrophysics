@@ -4835,7 +4835,16 @@
         },
         {
          "t": "text",
-         "v": " in the end-sequent, while "
+         "v": " at the end of the "
+        },
+        {
+         "t": "term",
+         "token": "derivation",
+         "v": "derivation"
+        },
+        {
+         "t": "text",
+         "v": ", while "
         },
         {
          "t": "math",
@@ -5647,8 +5656,8 @@
                 "right": [
                  {
                   "t": "math",
-                  "tex": "{\\bot}\\mathrm{Intro}",
-                  "src": "\\Intro{\\lfalse}"
+                  "tex": "{\\lnot}\\mathrm{Elim}",
+                  "src": "\\Elim{\\lnot}"
                  }
                 ]
                }
@@ -8213,8 +8222,8 @@
         },
         {
          "t": "math",
-         "tex": "\\exists x \\, A(x)",
-         "src": "\\lexists[x][!A(x)]"
+         "tex": "\\exists x \\, \\lnot A(x)",
+         "src": "\\lexists[x][\\lnot !A(x)]"
         },
         {
          "t": "text",
@@ -9070,8 +9079,8 @@
           "c": [
            {
             "t": "math",
-            "tex": "\\exists x \\, (A(x) \\land B(x) )",
-            "src": "\\lexists[x][(!A(x) \\land !B(x)])"
+            "tex": "\\exists x \\, (A(x) \\land B(x))",
+            "src": "\\lexists[x][(!A(x) \\land !B(x))]"
            }
           ],
           "line": "none",
@@ -11145,8 +11154,8 @@
                     "c": [
                      {
                       "t": "math",
-                      "tex": "[ \\forall y \\, (A(y) \\mathbin{\\rightarrow} y = c )]^{2}",
-                      "src": "\\Discharge{\\lforall[y][(!A(y) \\lif \\eq[y][c]])}{2}"
+                      "tex": "[ \\forall y \\, (A(y) \\mathbin{\\rightarrow} y = c ) ]^{2}",
+                      "src": "\\Discharge{\\lforall[y][(!A(y) \\lif \\eq[y][c])]}{2}"
                      }
                     ],
                     "line": "none",
@@ -11308,8 +11317,8 @@
             "c": [
              {
               "t": "math",
-              "tex": "[ \\forall y \\, (A(y) \\mathbin{\\rightarrow} y = c )]^{2}",
-              "src": "\\Discharge{\\lforall[y][(!A(y) \\lif \\eq[y][c]])}{2}"
+              "tex": "[ \\forall y \\, (A(y) \\mathbin{\\rightarrow} y = c ) ]^{2}",
+              "src": "\\Discharge{\\lforall[y][(!A(y) \\lif \\eq[y][c])]}{2}"
              }
             ],
             "line": "none",
@@ -17179,7 +17188,7 @@
     },
     {
      "t": "text",
-     "v": " in it consists of a tree of formulas. The topmost formula "
+     "v": " in it consists of a tree of formulas. The topmost formulas of "
     },
     {
      "t": "term",
@@ -17339,7 +17348,7 @@
     },
     {
      "t": "text",
-     "v": "leading to the premise "
+     "v": " leading to the premise "
     },
     {
      "t": "math",

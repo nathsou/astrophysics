@@ -109,7 +109,9 @@ describe('derivations of the representability clauses (checked instances)', () =
     expect(formulaEq(r.b.concl, target), formulaText(r.b.concl)).toBe(true);
   });
 
-  it('declines minimization honestly', () => {
-    expect(deriveClauses(R.min(R.basic('chareq')), [2n])).toHaveProperty('error');
+  it('minimization is derived now (see arith-derivations.test.ts), but only up to a size cap', () => {
+    expect(deriveClauses(R.min(R.basic('chareq')), [2n])).not.toHaveProperty('error');
+    const searchZ = R.min(R.comp(R.basic('chareq'), [R.basic('chareq'), R.comp(R.zero(), [R.proj(2, 0)])]));
+    expect(deriveClauses(searchZ, [9n])).toHaveProperty('error');
   });
 });

@@ -77,7 +77,6 @@ export function SoundnessLab({ initial = 'qrl-bad' }: { initial?: string }) {
               <option key={e.id} value={e.id}>
                 {e.title}
                 {e.incorrect ? ' — incorrect (as in the book)' : ''}
-                {e.discrepancy ? ' — book version' : ''}
               </option>
             ))}
           </select>
@@ -103,7 +102,7 @@ export function SoundnessLab({ initial = 'qrl-bad' }: { initial?: string }) {
               <span className="ndb-kicker">Domain</span>
               <span className="seg" role="radiogroup" aria-label="Domain size" style={{ margin: 0 }}>
                 {[1, 2, 3].map((n) => (
-                  <button key={n} type="button" className="chip-btn" role="radio" aria-checked={size === n} aria-pressed={size === n} onClick={() => { setSize(n); setFound(null); }}>
+                  <button key={n} type="button" className="chip-btn" role="radio" aria-checked={size === n} onClick={() => { setSize(n); setFound(null); }}>
                     <Tex tex={`\\{${domain.length && n ? Array.from({ length: n }, (_, i) => i).join(', ') : ''}\\}`} />
                   </button>
                 ))}
@@ -114,7 +113,7 @@ export function SoundnessLab({ initial = 'qrl-bad' }: { initial?: string }) {
                 {sig.constants.map((k) => (
                   <label key={k} className="ndb-row" style={{ gap: 4 }}>
                     <Tex tex={`${constName(k)}^M =`} />
-                    <select className="ndb-select" value={m.constants.get(k) ?? 0} onChange={(e) => setModel({ ...m, constants: new Map(m.constants).set(k, Number(e.target.value)) })}>
+                    <select className="ndb-select" aria-label={`Interpretation of ${constName(k)}`} value={m.constants.get(k) ?? 0} onChange={(e) => setModel({ ...m, constants: new Map(m.constants).set(k, Number(e.target.value)) })}>
                       {domain.map((x) => (
                         <option key={x} value={x}>
                           {x}

@@ -22,13 +22,13 @@ export function NumeralLemmas({ initial = 'add' }: { initial?: Which }) {
   }, [which, n, m]);
   const c = useMemo(() => (d ? check(d, { axioms: Q() }) : null), [d]);
   const label = { add: 'inc:req:bre:lem:q-proves-add', mult: 'inc:req:bre:lem:q-proves-mult', neq: 'inc:req:bre:lem:q-proves-neq' }[which];
-  const tex = which === 'add' ? `\\overline{${n}} + \\overline{${m}} = \\overline{${n + m}}` : which === 'mult' ? `\\overline{${n}} \\times \\overline{${m}} = \\overline{${n * m}}` : `\\overline{${n}} \\neq \\overline{${m}}`;
+  const tex = which === 'add' ? `(\\overline{${n}} + \\overline{${m}}) = \\overline{${n + m}}` : which === 'mult' ? `(\\overline{${n}} \\times \\overline{${m}}) = \\overline{${n * m}}` : `\\overline{${n}} \\neq \\overline{${m}}`;
   return (
     <Panel n="★" title="Q’s derivations about numerals" prov={<Prov kind="checked" />}>
       <div className="seg" role="radiogroup" aria-label="Lemma">
         {(['add', 'mult', 'neq'] as Which[]).map((w) => (
-          <button key={w} className="chip-btn" role="radio" aria-checked={which === w} aria-pressed={which === w} onClick={() => setWhich(w)}>
-            {w === 'add' ? 'n̄ + m̄ = n+m̄' : w === 'mult' ? 'n̄ × m̄ = n·m̄' : 'n̄ ≠ m̄'}
+          <button key={w} className="chip-btn" role="radio" aria-checked={which === w} onClick={() => setWhich(w)}>
+            <Tex tex={w === 'add' ? '(\\overline n + \\overline m) = \\overline{n + m}' : w === 'mult' ? '(\\overline n \\times \\overline m) = \\overline{n \\cdot m}' : '\\overline n \\neq \\overline m'} />
           </button>
         ))}
       </div>
@@ -49,8 +49,17 @@ export function NumeralLemmas({ initial = 'add' }: { initial?: Which }) {
           </p>
           <ProofDebugger deriv={d} check={c} title={<Tex tex={tex} />} expanded />
           <NotAProof>
-            The lemma is proved in the text by induction on {which === 'neq' ? 'n' : 'm'} — outside Q, which has no induction. This is the derivation that proof describes, for
-            n = {n} and m = {m}.
+            {which === 'mult' ? (
+              <>
+                The book leaves this lemma as an exercise; the proof is by induction on m, like the one for +, and it is outside Q, which has no induction. This is the
+                derivation such a proof describes, for n = {n} and m = {m}.
+              </>
+            ) : (
+              <>
+                The lemma is proved in the text by induction on {which === 'neq' ? 'n' : 'm'} — outside Q, which has no induction. This is the derivation that proof describes, for
+                n = {n} and m = {m}.
+              </>
+            )}
           </NotAProof>
         </>
       )}

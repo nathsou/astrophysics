@@ -1,4 +1,4 @@
-// The structures a reader can pick in the semantics workbenches, as serialisable choices, and
+// The structures a reader can pick in the semantics workbenches, as serializable choices, and
 // how to evaluate a formula in each (exactly for finite structures, by search for infinite ones).
 
 import type { Formula } from '../../engine/syntax/ast';
@@ -129,7 +129,7 @@ export function resolve(c: StructureChoice): Resolved {
 }
 
 const SUB = '₀₁₂₃₄₅₆₇₈₉';
-const sub = (n: number) => String(n).replace(/\d/g, (d) => SUB[Number(d)]);
+export const sub = (n: number) => String(n).replace(/\d/g, (d) => SUB[Number(d)]);
 
 export function choiceKey(c: StructureChoice): string {
   return JSON.stringify(c);

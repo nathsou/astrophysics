@@ -7,7 +7,7 @@ import { useStore, highlightStore, inspect } from '../ui/store';
 import { arity, evaluate, events, rfTex, type Call, type RF } from '../engine/recursive/rf';
 import { deriveClauses, instance, representing, type Representation } from '../engine/represent/represent';
 import { check } from '../engine/proof/nd';
-import { num, Q } from '../engine/proof/q';
+import { num } from '../engine/proof/q';
 import { analyze } from '../engine/syntax/analysis';
 import { formulaTex } from '../engine/syntax/print';
 import { FormulaView } from '../ui/FormulaView';
@@ -65,8 +65,8 @@ export function RepresentabilityLab({ derivations = true, focus }: { derivations
       </div>
       <Panel n={1} title="The function" prov={ar.ok ? <span className="muted small sans">{ar.arity}-place</span> : <Prov kind="failed">ill-formed</Prov>}>
         <p className="wb-note">
-          Chapter 4 uses the basic functions zero, succ, <Tex tex="P^n_i" />, add, mult and <Tex tex="\chi_=" />, with composition and regular minimization. Build a function
-          from them; hover a part to find it in the formula below.
+          <Ref k="inc:req::chap" /> uses the basic functions zero, succ, <Tex tex="P^n_i" />, add, mult and <Tex tex="\chi_=" />, with composition and regular minimization. Build a
+          function from them; hover a part to find it in the formula below.
         </p>
         <FunctionBuilder spec={state.spec} onChange={setSpec} errors={errors} onHover={hoverPath} />
         <label className="args-input sans">
@@ -136,7 +136,7 @@ function Computation({ rf, args, onHover }: { rf: RF; args: bigint[]; onHover: (
           </>
         )}
       />
-      <div className="call-stack" aria-label="Call stack">
+      <div className="call-stack" role="group" aria-label="Call stack">
         {stack.map((c, i) => (
           <div key={c.key} className="call-frame" style={{ marginLeft: i * 14 }} data-n={c.fn.id} onMouseEnter={() => onHover(c.fn.id)}>
             <Tex tex={callLabel(c)} />
@@ -213,7 +213,7 @@ function FormulaPanel({ rep, rf }: { rep: Representation; rf: RF }) {
         />
       </div>
       <p className="muted small sans">
-        Inputs are <Tex tex="x_0, x_1, \ldots" />, the output is <Tex tex="y" />; the other variables are bound. The formula has {countNodes(rep.formula)} symbols’ worth of structure.
+        Inputs are <Tex tex="x_0, x_1, \ldots" />, the output is <Tex tex="y" />; the other variables are bound. Its syntax tree has {countNodes(rep.formula)} nodes.
       </p>
     </Panel>
   );
@@ -227,7 +227,7 @@ function countNodes(f: A.Node): number {
 
 function DerivationPanel({ rf, rep, args }: { rf: RF; rep: Representation; args: bigint[] }) {
   const r = useMemo(() => deriveClauses(rf, args), [rf, args]);
-  const checks = useMemo(() => ('error' in r ? null : { a: check(r.a, { axioms: Q() }), b: check(r.b, { axioms: Q() }) }), [r]);
+  const checks = useMemo(() => ('error' in r ? null : { a: check(r.a, { axioms: r.axioms }), b: check(r.b, { axioms: r.axioms }) }), [r]);
   const [which, setWhich] = useState<'a' | 'b'>('a');
   if ('error' in r) {
     return (
@@ -240,7 +240,7 @@ function DerivationPanel({ rf, rep, args }: { rf: RF; rep: Representation; args:
   const inst = instance(rep, args, num(m));
   const target = A.forall(A.v(rep.output), A.imp(instance(rep, args, A.v(rep.output)), A.eq(A.v(rep.output), num(m))));
   return (
-    <Panel n={4} title={<>Q derives both clauses for this input</>} prov={<Prov kind="checked" />}>
+    <Panel n={4} title={<>Q derives both clauses for this input</>} prov={checks && checks.a.valid && checks.b.valid ? <Prov kind="checked" /> : <Prov kind="failed">not accepted</Prov>}>
       <p className="wb-note">
         <Ref k="inc:req:int:defn:representable-fn" /> asks for two things whenever <Tex tex={`f(${args.join(', ')}) = ${m}`} />:
       </p>
@@ -262,11 +262,17 @@ function DerivationPanel({ rf, rep, args }: { rf: RF; rep: Representation; args:
         Both derivations below were generated from the computation (it supplies the witnesses for <Tex tex="\exists" />) and then verified, inference by inference, by the
         natural deduction checker. Click a step to see what it claims, what it uses and which rule allows it.
       </p>
+      {r.minimization && (
+        <p className="wb-note">
+          A minimization: as in the proof of <Ref k="inc:req:min:prop:rep-minimization" />, the derivations use <Ref k="inc:req:min:lem:less-zero" />, <Ref k="inc:req:min:lem:less-nsucc" /> and{' '}
+          <Ref k="inc:req:min:lem:trichotomy" /> — their derivations, generated for the numbers needed, are part of these — and Q8, which the checker is given with ↔ written out as the book defines it.
+        </p>
+      )}
       <div className="seg" role="tablist" aria-label="Clause">
-        <button className="chip-btn" role="tab" aria-selected={which === 'a'} aria-pressed={which === 'a'} onClick={() => setWhich('a')}>
+        <button className="chip-btn" role="tab" aria-selected={which === 'a'} onClick={() => setWhich('a')}>
           clause (a)
         </button>
-        <button className="chip-btn" role="tab" aria-selected={which === 'b'} aria-pressed={which === 'b'} onClick={() => setWhich('b')}>
+        <button className="chip-btn" role="tab" aria-selected={which === 'b'} onClick={() => setWhich('b')}>
           clause (b)
         </button>
       </div>

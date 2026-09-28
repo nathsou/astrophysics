@@ -1,0 +1,128 @@
+[
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/recursive-functions/composition.tex",
+    "find": "$f$ to compute $h(x_0, \\dots, x_{k-1}) = f(y_0, \\dots, y_{k-1})$.",
+    "replace": "$f$ to compute $h(x_0, \\dots, x_{n-1}) = f(y_0, \\dots, y_{k-1})$.",
+    "why": "h is n-place: its arguments are x_0, ..., x_{n-1}; k is the number of inner functions."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/recursive-functions/pr-relations.tex",
+    "find": "\\item The less-than relation, $x \\leq y$",
+    "replace": "\\item The less-than-or-equal relation, $x \\leq y$",
+    "why": "The relation defined is x <= y, not strict less-than."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/recursive-functions/bounded-minimization.tex",
+    "find": "Note than there can be no~$z < 0$",
+    "replace": "Note that there can be no~$z < 0$",
+    "why": "Typo: 'than' for 'that'."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/recursive-functions/bounded-minimization.tex",
+    "find": "$m_R(\\vec{z}, y+1) = y+1$.",
+    "replace": "$m_R(\\vec{x}, y+1) = y+1$.",
+    "why": "The arguments of m_R are x-vector, not z-vector."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/recursive-functions/bounded-minimization.tex",
+    "find": "So we can define $m_R(\\vec x, 0)$ by primitive recursion",
+    "replace": "So we can define $m_R(\\vec x, y)$ by primitive recursion",
+    "why": "What is defined by primitive recursion is the function m_R(x, y), not its value at 0."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/recursive-functions/trees.tex",
+    "find": "$h(s) = g_{\\fn{ISubtrees}}(s, \\len{s})$ gives",
+    "replace": "$h(s) = g_{\\fn{ISubtrees}}(s, \\len{s} \\tsub 1)$ gives",
+    "why": "g_f(s, k) runs over (s)_0, ..., (s)_k, so the last index is len(s) - 1."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/recursive-functions/primitive-recursion.tex",
+    "find": "where we define\n$h(x)$ from $h(x+1)$",
+    "replace": "where we define\n$h(x+1)$ from $h(x)$",
+    "why": "Each step computes h(x+1) from h(x), not the other way round."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/recursive-functions/primitive-recursion.tex",
+    "find": "places, and use the other for the recursion. E.g, to",
+    "replace": "places, and use the other for the recursion. E.g., to",
+    "why": "Punctuation typo."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/recursive-functions/composition.tex",
+    "find": "The functions~$\\Proj{k}{i}$ are called",
+    "replace": "The functions~$\\Proj{n}{i}$ are called",
+    "why": "The projections were just introduced as P^n_i."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/recursive-functions/pr-functions.tex",
+    "find": "\\olsection{Primitive Recursion Functions}",
+    "replace": "\\olsection{Primitive Recursive Functions}",
+    "why": "Typo in the section title."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/recursive-functions/pr-functions.tex",
+    "find": "is the set of all primitive recursive functions\n",
+    "replace": "is the set of all primitive recursive functions.\n",
+    "why": "Missing full stop."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/recursive-functions/examples.tex",
+    "find": "$f(x) = 2 \\cdot x$ can obtain it",
+    "replace": "$f(x) = 2 \\cdot x$ we can obtain it",
+    "why": "Missing word 'we'."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/recursive-functions/bounded-minimization.tex",
+    "find": "\\bmin{z < y}{R(\\vec{x}, z)},\n\\]",
+    "replace": "\\bmin{z < y}{R(\\vec{x}, z)}.\n\\]",
+    "why": "The sentence ends here."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/recursive-functions/primes.tex",
+    "find": "the remainder\nwhen dividing $x$ by $y$",
+    "replace": "the remainder\nwhen dividing $y$ by $x$",
+    "why": "x | y is about dividing y by x."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/recursive-functions/primes.tex",
+    "find": "($p_0=2$, $p_1=3$, etc.)\n",
+    "replace": "($p_0=2$, $p_1=3$, etc.).)\n",
+    "why": "Close the parenthesis."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/recursive-functions/primes.tex",
+    "find": "This shows, that",
+    "replace": "This shows that",
+    "why": "Punctuation typo."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/recursive-functions/sequences.tex",
+    "find": "developed a adequate means",
+    "replace": "developed an adequate means",
+    "why": "Typo: 'a adequate'."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/recursive-functions/non-pr-functions.tex",
+    "find": "is that every code is assigned a natural number",
+    "replace": "is that every notation is assigned a natural number",
+    "why": "Numbers are assigned to notations."
+  }
+]

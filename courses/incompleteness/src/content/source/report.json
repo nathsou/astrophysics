@@ -155,17 +155,6 @@
    }
   },
   {
-   "level": "warning",
-   "code": "unbalanced-math",
-   "message": "a $ inside an unclosed brace group (upstream typo?)",
-   "loc": {
-    "repo": "OpenLogic",
-    "file": "content/second-order-logic/metatheory/undecidability-and-axiomatizability.tex",
-    "line": 33,
-    "endLine": 33
-   }
-  },
-  {
    "level": "info",
    "code": "multline",
    "message": "multline is typeset as gather (KaTeX has no multline)",
@@ -262,17 +251,6 @@
     "file": "content/lambda-calculus/lambda-definability/arithmetical-functions.tex",
     "line": 108,
     "endLine": 108
-   }
-  },
-  {
-   "level": "warning",
-   "code": "list-junk",
-   "message": "content before first \\item",
-   "loc": {
-    "repo": "OpenLogic",
-    "file": "content/first-order-logic/syntax-and-semantics/first-order-languages.tex",
-    "line": 36,
-    "endLine": 36
    }
   },
   {

@@ -1,5 +1,5 @@
 import { SubstitutionLab } from '../../../workbench/SubstitutionLab';
 
-Choose a formula, a variable and a term: the workbench marks the free occurrences, finds capture hazards, and performs the book’s substitution step by step (and, for comparison, the capture-avoiding one).
+Choose a formula, a variable and a term: the workbench marks the free occurrences, finds capture hazards, and replaces the free occurrences step by step — which is the book’s A[t/x] when t is free for x (the book defines it only then) — and, for comparison, performs the capture-avoiding substitution.
 
 <SubstitutionLab arithmetized={false} />

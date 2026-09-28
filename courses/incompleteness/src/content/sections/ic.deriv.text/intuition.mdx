@@ -16,6 +16,16 @@ The chapters on representability and incompleteness claim that many sentences ar
 
 Q8 says $\forall x\, \forall y\, (x < y \leftrightarrow \exists z\, (z' + x) = y)$. In this book $A \leftrightarrow B$ is short for $(A \rightarrow B) \land (B \rightarrow A)$, and the derivation applies $\land$Elim to an instance of Q8. The checker, which has rules for the primitive connectives only, is given Q8 written out that way.
 
-## Is this about $\mathbf{PA}$ too?
+## Rosser's proof, both halves
 
-Every axiom of $\mathbf Q$ is a theorem of $\mathbf{PA}$, so each derivation here also shows the corresponding fact for $\mathbf{PA}$. The appendix does not write out a derivation that uses $\mathbf{PA}$'s induction schema, and neither does this edition.
+The appendix writes out both halves of Rosser's proof as derivations from hypotheses. The second half needs more about $<$: $\lambda_2$ turns $\mathrm{Prf}(a, \ulcorner R \urcorner)$ into $\overline m < a$ by cases, using <Ref k="inc:req:min:lem:trichotomy" /> ($\lambda_3$) and <Ref k="inc:req:min:lem:less-nsucc" /> ($\lambda_1$). Explore mode checks both halves for a chosen number, and can replace those two lemmas by their derivations in $\mathbf Q$, so that only the facts about $\mathrm{Prf}$ and $\mathrm{Refut}$ remain as hypotheses. The book ends the second half with an unexplained step from $\forall x\,(\mathrm{Prf}(x, \ulcorner R \urcorner) \rightarrow \exists z\,(z < x \land \mathrm{Refut}(z, \ulcorner R \urcorner)))$ to $\lnot \mathrm{RProv}(\ulcorner R \urcorner)$; here it is written out.
+
+## Derivations in $\mathbf{PA}$
+
+Every axiom of $\mathbf Q$ is an axiom of $\mathbf{PA}$, so each derivation in $\mathbf Q$ is also one in $\mathbf{PA}$. What $\mathbf{PA}$ adds are the instances of the induction schema (<Ref k="inc:int:def:sec" />):
+$$
+\forall y_1 \ldots \forall y_n\,((A(0) \land \forall x\,(A(x) \rightarrow A(x'))) \rightarrow \forall x\, A(x)).
+$$
+A derivation uses one like any other axiom: prove the base case $A(0)$, prove the inductive step $\forall x\,(A(x) \rightarrow A(x'))$ — by $\to$Intro and $\forall$Intro, with an eigenvariable $a$ and the inductive hypothesis $A(a)$ as an assumption — and apply $\to$Elim. The appendix does not write out such a derivation; Explore mode has a few: $\forall x\, (0 + x) = x$, $\forall x\, \forall y\, (x' + y) = (x + y)'$ (compare <Ref k="inc:req:min:lem:succ" />, which $\mathbf Q$ only proves numeral by numeral), commutativity of $+$ from these two, $\forall x\, \lnot x = x'$ and $\forall x\, \lnot x < x$.
+
+$\mathbf{PA}$ has infinitely many axioms, so the checker cannot be handed a list. It is handed what makes $\mathbf{PA}$ axiomatizable: the book's test for being an instance of the induction schema, which reads $A$ off the consequent and compares the antecedent with the one $A$ determines. An axiom of a derivation is accepted if it is one of Q1–Q8 or passes that test.

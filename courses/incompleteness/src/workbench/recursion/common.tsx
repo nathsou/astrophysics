@@ -8,6 +8,7 @@ import { arity } from '../../engine/recursive/rf';
 import type { PhiOutcome } from '../../engine/computability/indices';
 import { persist, persisted } from '../../ui/store';
 import { Tex } from '../../ui/Tex';
+import { Ref } from '../../formal/FormalText';
 import './recursion.css';
 
 /** Parse `k` natural numbers, each at most `max`. */
@@ -151,7 +152,11 @@ function DefNode({ f, depth, openNames, role }: { f: RF; depth: number; openName
         <span className="rc-toggle-space" aria-hidden="true" />
         <Tex tex={nameTex(f)} />
         {arTag}
-        {f.k === 'basic' && <span className="rc-hint">a basic function of chapter 4</span>}
+        {f.k === 'basic' && (
+          <span className="rc-hint">
+            a basic function of <Ref k="inc:req::chap" />
+          </span>
+        )}
       </div>
     </div>
   );

@@ -6,9 +6,7 @@ $\mathfrak N$ has two pleasant features: its domain is $\mathbb N$, and its oper
 
 ## For Q: yes
 
-The model $\mathbf K$ of $\mathbf Q$ has domain $\mathbb N \cup \{a\}$, which is countable. Relabel: let the number $0$ play the role of $a$ and $n + 1$ the role of $n$. The book spells out the resulting structure $\mathbf K'$ with domain $\mathbb N$ (<Ref k="mod:mar:cmp:ex:comp-model-q" />): $0^{\mathbf K'} = 1$, $0' = 0$, $n' = n + 1$ for $n > 0$, $x + y = x + y - 1$ for $x, y > 0$ (and $0$ otherwise), and so on. All of these are computable. So $\mathbf Q$ has a computable non-standard model; the relabelling is an isomorphism from $\mathbf K'$ to $\mathbf K$, so $\mathbf K'$ satisfies $\mathbf Q$ as well.
-
-(The book writes the relabelling as $g(0) = a$, $g(n) = n + 1$; for the interpretations it then gives, where $0^{\mathbf K'} = 1$, the map must send $n > 0$ to $n - 1$. Explore mode checks that version.)
+The model $\mathbf K$ of $\mathbf Q$ has domain $\mathbb N \cup \{a\}$, which is countable. Relabel: let the number $0$ play the role of $a$ and $n + 1$ the role of $n$. The book spells out the resulting structure $\mathbf K'$ with domain $\mathbb N$ (<Ref k="mod:mar:cmp:ex:comp-model-q" />): $0^{\mathbf K'} = 1$; ${}'^{\mathbf K'}$ sends $0$ to $0$ and $n > 0$ to $n + 1$; $+^{\mathbf K'}(x, y) = x + y - 1$ for $x, y > 0$ (and $0$ otherwise); and so on. All of these are computable. So $\mathbf Q$ has a computable non-standard model; the relabeling is an isomorphism from $\mathbf K'$ to $\mathbf K$, so $\mathbf K'$ satisfies $\mathbf Q$ as well.
 
 ## For PA: no
 
@@ -18,4 +16,4 @@ The book states the theorem without proof. The standard proof (not in this book)
 
 ## Why this matters
 
-It explains why the non-standard models in sections 7.6 and 7.8 are described through their order, and why the picture there can show $\prec$ but not $\oplus$ and $\otimes$: the order of a countable non-standard model can be computable, but its arithmetic cannot.
+This is why the non-standard models of <Ref k="mod:mar:nst:sec" /> and <Ref k="mod:mar:mpa:sec" /> are described rather than computed with, and why the picture in <Ref k="mod:mar:mpa:sec" /> shows $\prec$ but not $\oplus$ and $\otimes$: the order of a countable non-standard model of $\mathbf{PA}$ can be given by a decidable relation on $\mathbb N$, but its addition and multiplication cannot both be computable.

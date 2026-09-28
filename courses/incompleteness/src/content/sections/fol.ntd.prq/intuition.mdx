@@ -8,9 +8,9 @@ With quantifiers, the order of inferences matters. $\forall$Intro and $\exists$E
 
 ## Choosing the eigenvariable
 
-For $\exists x\, \lnot A(x) \rightarrow \lnot\forall x\, A(x)$, after $\rightarrow$Intro the book sets up $\exists$Elim with the assumption $[\lnot A(a)]^2$, choosing "a constant that does not appear in $\exists x\, A(x)$ or any assumptions that it depends on". Then $\forall$Elim — which has no condition — may use the *same* $a$: from $[\forall x\, A(x)]^3$ infer $A(a)$, and $\lnot A(a)$ with $A(a)$ gives $\bot$.
+For $\exists x\, \lnot A(x) \rightarrow \lnot\forall x\, A(x)$, after $\rightarrow$Intro the book sets up $\exists$Elim with the assumption $[\lnot A(a)]^2$, choosing "a constant that does not appear in $\exists x\, \lnot A(x)$ or any assumptions that it depends on". Then $\forall$Elim — which has no condition — may use the *same* $a$: from $[\forall x\, A(x)]^3$ infer $A(a)$, and $\lnot A(a)$ with $A(a)$ gives $\bot$.
 
-The final check the book recommends — "double check at this point that the eigenvariable condition has not been violated" — is what the checker does at every $\forall$Intro and $\exists$Elim: $a$ must not occur in the conclusion, in the existential premise, or in an undischarged assumption other than the one being discharged.
+The final check the book recommends — "double check at this point that the eigenvariable condition has not been violated" — is what the checker does at every $\forall$Intro and $\exists$Elim. For $\forall$Intro, $a$ must not occur in $\forall x\, A(x)$ or in any assumption undischarged above it; for $\exists$Elim, not in $\exists x\, A(x)$, in $C$, or in any undischarged assumption other than the $A(a)$ being discharged.
 
 ## Undischarged assumptions
 

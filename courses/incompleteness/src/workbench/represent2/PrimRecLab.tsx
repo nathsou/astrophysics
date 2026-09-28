@@ -27,11 +27,11 @@ const P = R.proj;
 
 export const H_LIBRARY: HEntry[] = [
   {
-    id: 'add', label: 'x + y', build: Lib.add, spec: (x, y) => x + y, x: 3, y: 4,
+    id: 'add', label: 'x + y', build: Lib.add, spec: (x, y) => x + y, x: 3, y: 3,
     equations: '\\mathrm{add}(x, 0) = x, \\quad \\mathrm{add}(x, y+1) = \\mathrm{succ}(\\mathrm{add}(x, y))',
   },
   {
-    id: 'mult', label: 'x \\cdot y', build: Lib.mult, spec: (x, y) => x * y, x: 3, y: 4,
+    id: 'mult', label: 'x \\cdot y', build: Lib.mult, spec: (x, y) => x * y, x: 2, y: 3,
     equations: '\\mathrm{mult}(x, 0) = 0, \\quad \\mathrm{mult}(x, y+1) = \\mathrm{add}(\\mathrm{mult}(x, y), x)',
   },
   {
@@ -49,7 +49,7 @@ export const H_LIBRARY: HEntry[] = [
     equations: 'h(x, 0) = 1, \\quad h(x, y+1) = \\mathrm{mult}(h(x, y), \\mathrm{succ}(y)) \\quad (\\text{the book’s } h \\text{ for } \\mathrm{fac}(y) = h(y, y))',
   },
   {
-    id: 'tri', label: 'x + (0 + 1 + \\cdots + (y-1))', x: 0, y: 6,
+    id: 'tri', label: 'x + (0 + 1 + \\cdots + (y-1))', x: 0, y: 4,
     build: () => R.def('tri', '\\mathrm{tri}', R.rec(P(1, 0), R.comp(Lib.add(), [P(3, 2), P(3, 1)]))),
     spec: (x, y) => x + (y * (y - 1n)) / 2n,
     equations: 'h(x, 0) = x, \\quad h(x, y+1) = \\mathrm{add}(h(x, y), y)',
@@ -91,7 +91,7 @@ export function PrimRecLab() {
       <Panel n={1} title="A function defined by primitive recursion" prov={<Prov kind="computed" />}>
         <div className="seg" role="radiogroup" aria-label="The function h">
           {H_LIBRARY.map((e) => (
-            <button key={e.id} className="chip-btn" role="radio" aria-checked={e.id === id} aria-pressed={e.id === id} onClick={() => choose(e)}>
+            <button key={e.id} className="chip-btn" role="radio" aria-checked={e.id === id} onClick={() => choose(e)}>
               <Tex tex={e.label} />
             </button>
           ))}

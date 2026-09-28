@@ -5,15 +5,14 @@ import { planOf, type Mode, type SectionPlan } from '../content/course';
 import { FormalBlocks, Inlines, anchor, type Annotations } from '../formal/FormalText';
 import { Inspector } from '../ui/Inspector';
 import { ObjectBar } from '../ui/ObjectBar';
-import { Prov } from '../ui/Prov';
 import { persist, persisted } from '../ui/store';
 import { Attribution } from './Attribution';
 import { ErrorBoundary } from '../ui/ErrorBoundary';
 
 const MODE_INFO: Record<Mode, { label: string; key: string; blurb: string }> = {
-  intuition: { label: 'Intuition', key: 'i', blurb: 'Motivation, concrete examples and the idea behind the formal development. Written for this edition.' },
+  intuition: { label: 'Intuition', key: 'i', blurb: 'Motivation, concrete examples and the idea behind the formal development.' },
   explore: { label: 'Explore', key: 'e', blurb: 'A workbench: construct the object, inspect it, step through what happens to it. Everything shown is computed for your input.' },
-  formal: { label: 'Formal', key: 'f', blurb: 'The book’s definitions, theorems and proofs, converted from its LaTeX source — with your object worked through where the text defines or uses it.' },
+  formal: { label: 'Formal', key: 'f', blurb: 'The definitions, theorems and proofs — with your object worked through where the text defines or uses it.' },
 };
 
 function useLazy<T>(loader: (() => Promise<T>) | undefined): T | null {
@@ -191,16 +190,9 @@ function LazyMdx({ loader }: { loader?: () => Promise<{ default: ComponentType }
 function Formal({ plan, sectionId, chapter }: { plan?: SectionPlan; sectionId: string; chapter: Chapter }) {
   const ann = useLazy(plan?.annotations);
   const section = chapter.sections.find((s) => s.id === sectionId)!;
-  const header = (
-    <p className="formal-note sans">
-      <Prov kind="book" /> The text below is from <em>Incompleteness and Computability</em> by Richard Zach (Open Logic Project, CC BY 4.0), converted from its LaTeX
-      source. Numbering follows the book. {plan?.annotations ? <>Panels marked <Prov kind="computed" /> or <Prov kind="checked" /> are additions that work through your object.</> : null}
-    </p>
-  );
   if (plan?.annotations && !ann) return <p className="muted sans">Loading…</p>;
   return (
     <div className="formal">
-      {header}
       {ann ? <AnnotatedBlocks sectionId={sectionId} blocks={section.blocks} useAnnotations={ann.useAnnotations} /> : <FormalBlocks blocks={section.blocks} ctx={{ sectionId }} />}
       {sectionId === chapter.sections[chapter.sections.length - 1].id && chapter.summary && (
         <section className="chapter-summary" id={anchor(`${chapter.id}.summary`)}>

@@ -99,6 +99,11 @@ describe('what makes a definition primitive recursive', () => {
 
   it('parses variants and reports mistakes', () => {
     expect(parseNotation('Rec[0, Comp[S, P^{3}_{2}]]').ok).toBe(true);
+    // subscripts without “_”, and the TeX spelling of the printed book
+    const bare = parseNotation('Rec1[zero, Comp2,3[Rec1[P^1_0, Comp1,3[succ, P^3_2]], P^3_2, P^3_0]]');
+    const tex = parseNotation('\\mathrm{Rec}_1[\\mathrm{zero}, \\mathrm{Comp}_{2,3}[\\mathrm{Rec}_1[P^1_0, \\mathrm{Comp}_{1,3}[\\mathrm{succ}, P^3_2]], P^3_2, P^3_0]]');
+    expect(bare.ok && sameDefinition(bare.rf, Lib.mult())).toBe(true);
+    expect(tex.ok && sameDefinition(tex.rf, Lib.mult())).toBe(true);
     expect(parseNotation('Rec_1[zero, Comp_2,3[add, P^3_2, P^3_0]]')).toMatchObject({ ok: true, abbreviations: ['add'] });
     expect(parseNotation('Comp_{2,3}[succ, P^3_2]')).toMatchObject({ ok: false });
     expect(parseNotation('Comp_{1,2}[succ, P^3_2]')).toMatchObject({ ok: false });

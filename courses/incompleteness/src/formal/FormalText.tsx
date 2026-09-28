@@ -28,6 +28,12 @@ export function annotationKeys(sectionId: string, blocks: Block[]): Map<Block, s
   const keys = new Map<Block, string>();
   const counts = new Map<string, number>();
   for (const b of blocks) {
+    // Paragraphs are keyed by their block id (e.g. `sol.set.crd/p12`), which is unique in the book.
+    if (b.t === 'p') {
+      keys.set(b, b.id);
+      continue;
+    }
+    // Environments by label, or by kind and position (`section:kind:n`).
     if (b.t !== 'env') continue;
     const n = (counts.get(b.kind) ?? 0) + 1;
     counts.set(b.kind, n);
@@ -204,13 +210,25 @@ function TreeNode({ n }: { n: ProofTreeNode }) {
 }
 
 export function Inlines({ c }: { c: Inline[] }): ReactNode {
-  return (
-    <>
-      {c.map((x, i) => (
-        <InlineView key={i} x={x} />
-      ))}
-    </>
-  );
+  const out: ReactNode[] = [];
+  for (let i = 0; i < c.length; i++) {
+    const x = c[i];
+    const next = c[i + 1];
+    // Keep math glued to a following hyphenated word ("λ-definable", "Σ1-complete"): the line
+    // must not break between the formula and the hyphen.
+    if (x.t === 'math' && next?.t === 'text' && /^[-‐–]\S/.test(next.v)) {
+      const m = /^(\S+)([\s\S]*)$/.exec(next.v)!;
+      out.push(
+        <span key={i} className="nowrap">
+          <InlineView x={x} />
+          {m[1]}
+        </span>,
+      );
+      if (m[2]) out.push(<Fragment key={`${i}+`}>{m[2]}</Fragment>);
+      i++;
+    } else out.push(<InlineView key={i} x={x} />);
+  }
+  return <>{out}</>;
 }
 
 function InlineView({ x }: { x: Inline }): ReactNode {

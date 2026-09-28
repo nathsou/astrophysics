@@ -200,7 +200,7 @@
       },
       {
        "t": "text",
-       "v": ", Frege set out to show that all of arithmetic could be derived in his Begriffsschrift from purely logical assumption. Unfortunately, these assumptions turned out to be inconsistent, as Russell showed in 1902. But setting aside the inconsistent axiom, Frege more or less invented modern logic singlehandedly, a startling achievement. Quantificational logic was also developed independently by algebraically-minded thinkers after Boole, including Peirce and Schröder."
+       "v": ", Frege set out to show that all of arithmetic could be derived in his Begriffsschrift from purely logical assumptions. Unfortunately, these assumptions turned out to be inconsistent, as Russell showed in 1902. But setting aside the inconsistent axiom, Frege more or less invented modern logic singlehandedly, a startling achievement. Quantificational logic was also developed independently by algebraically-minded thinkers after Boole, including Peirce and Schröder."
       }
      ],
      "loc": {
@@ -316,7 +316,7 @@
      "c": [
       {
        "t": "text",
-       "v": "In the nineteenth century, mathematicians tried to address Berkeley’s criticisms by putting calculus on a firmer foundation. Efforts by Cauchy, Weierstrass, Bolzano, and others led to our contemporary definitions of limits, continuity, differentiation, and integration in terms of “epsilons and deltas,” in other words, devoid of any reference to infinitesimals. Later in the century, mathematicians tried to push further, and explain all aspects of calculus, including the real numbers themselves, in terms of the natural numbers. (Kronecker: “God created the whole numbers, all else is the work of man.”) In 1872, Dedekind wrote “Continuity and the irrational numbers,” where he showed how to “construct” the real numbers as sets of rational numbers (which, as you know, can be viewed as pairs of natural numbers); in 1888 he wrote “Was sind und was sollen die Zahlen” (roughly, “What are the natural numbers, and what should they be?”) which aimed to explain the natural numbers in purely “logical” terms. In 1887 Kronecker wrote “Über den Zahlbegriff” (“On the concept of number”) where he spoke of representing all mathematical object in terms of the integers; in 1889 Giuseppe Peano gave formal, symbolic axioms for the natural numbers."
+       "v": "In the nineteenth century, mathematicians tried to address Berkeley’s criticisms by putting calculus on a firmer foundation. Efforts by Cauchy, Weierstrass, Bolzano, and others led to our contemporary definitions of limits, continuity, differentiation, and integration in terms of “epsilons and deltas,” in other words, devoid of any reference to infinitesimals. Later in the century, mathematicians tried to push further, and explain all aspects of calculus, including the real numbers themselves, in terms of the natural numbers. (Kronecker: “God created the whole numbers, all else is the work of man.”) In 1872, Dedekind wrote “Continuity and the irrational numbers,” where he showed how to “construct” the real numbers as sets of rational numbers (which, as you know, can be viewed as pairs of natural numbers); in 1888 he wrote “Was sind und was sollen die Zahlen” (roughly, “What are the natural numbers, and what should they be?”) which aimed to explain the natural numbers in purely “logical” terms. In 1887 Kronecker wrote “Über den Zahlbegriff” (“On the concept of number”) where he spoke of representing all mathematical objects in terms of the integers; in 1889 Giuseppe Peano gave formal, symbolic axioms for the natural numbers."
       }
      ],
      "loc": {
@@ -332,7 +332,7 @@
      "c": [
       {
        "t": "text",
-       "v": "The end of the nineteenth century also brought a new boldness in dealing with the infinite. Before then, infinitary objects and structures (like the set of natural numbers) were treated gingerly; “infinitely many” was understood as “as many as you want,” and “approaches in the limit” was understood as “gets as close as you want.” But Georg Cantor showed that it was possible to take the infinite at face value. Work by Cantor, Dedekind, and others help to introduce the general set-theoretic understanding of mathematics that is now widely accepted."
+       "v": "The end of the nineteenth century also brought a new boldness in dealing with the infinite. Before then, infinitary objects and structures (like the set of natural numbers) were treated gingerly; “infinitely many” was understood as “as many as you want,” and “approaches in the limit” was understood as “gets as close as you want.” But Georg Cantor showed that it was possible to take the infinite at face value. Work by Cantor, Dedekind, and others helped to introduce the general set-theoretic understanding of mathematics that is now widely accepted."
       }
      ],
      "loc": {
@@ -3570,7 +3570,16 @@
         },
         {
          "t": "text",
-         "v": " (c.e.\\@ for short) iff it is empty or it has a computable enumeration."
+         "v": " ("
+        },
+        {
+         "t": "term",
+         "token": "c.e.",
+         "v": "c.e."
+        },
+        {
+         "t": "text",
+         "v": " for short) iff it is empty or it has a computable enumeration."
         }
        ],
        "loc": {
@@ -4072,6 +4081,15 @@
         },
         {
          "t": "text",
+         "v": " in "
+        },
+        {
+         "t": "math",
+         "tex": "\\Gamma",
+         "src": "\\Gamma"
+        },
+        {
+         "t": "text",
          "v": " iff,"
         }
        ],
@@ -4422,7 +4440,7 @@
       },
       {
        "t": "text",
-       "v": " acceptable theory does. It took a while to isolate the features of theories that suffice for the incompleteness theorems to apply, and to generalize Gödel’s proof to apply make it depend only on these features. But we are now in a position to state a very general version of the first incompleteness theorem for theories in the language "
+       "v": " acceptable theory does. It took a while to isolate the features of theories that suffice for the incompleteness theorems to apply, and to generalize Gödel’s proof to make it depend only on these features. But we are now in a position to state a very general version of the first incompleteness theorem for theories in the language "
       },
       {
        "t": "math",
@@ -5098,8 +5116,8 @@
       },
       {
        "t": "math",
-       "tex": "\\Gamma \\vdash \\mathrm{Prov}_{\\Gamma}(\\overline{n})",
-       "src": "\\Gamma \\Proves \\Prov[\\Gamma](\\num{n})"
+       "tex": "\\Gamma \\vdash \\mathsf{Prov}_{\\Gamma}(\\overline{n})",
+       "src": "\\Gamma \\Proves \\OProv[\\Gamma](\\num{n})"
       },
       {
        "t": "text",
@@ -5161,8 +5179,8 @@
       },
       {
        "t": "math",
-       "tex": "\\lnot \\mathrm{Prov}_{\\Gamma}(\\overline{n})",
-       "src": "\\lnot \\Prov[\\Gamma](\\num{n})"
+       "tex": "\\lnot \\mathsf{Prov}_{\\Gamma}(\\overline{n})",
+       "src": "\\lnot \\OProv[\\Gamma](\\num{n})"
       },
       {
        "t": "text",
@@ -5246,7 +5264,7 @@
      "c": [
       {
        "t": "text",
-       "v": "Gödel’s proof of the incompleteness theorems require arithmetization of syntax. But even without that we can obtain some nice results just on the assumption that a theory "
+       "v": "Gödel’s proof of the incompleteness theorems requires arithmetization of syntax. But even without that we can obtain some nice results just on the assumption that a theory "
       },
       {
        "t": "term",
@@ -5580,8 +5598,8 @@
         },
         {
          "t": "math",
-         "tex": "A(\\overline{n})",
-         "src": "!A(\\num{n})"
+         "tex": "A_n(\\overline{n})",
+         "src": "!A_n(\\num{n})"
         },
         {
          "t": "text",
@@ -5616,8 +5634,8 @@
         },
         {
          "t": "math",
-         "tex": "\\lnot A(\\overline{n}) \\in \\Gamma",
-         "src": "\\lnot !A(\\num{n}) \\in \\Gamma"
+         "tex": "\\lnot A_n(\\overline{n}) \\in \\Gamma",
+         "src": "\\lnot !A_n(\\num{n}) \\in \\Gamma"
         },
         {
          "t": "text",
@@ -6933,7 +6951,7 @@
       },
       {
        "t": "text",
-       "v": " theory is incomplete or undecidable. There are many theories that are sufficiently strong to describe interesting mathematical facts that do not satisify the conditions of Gödel’s result. For instance, "
+       "v": " theory is incomplete or undecidable. There are many theories that are sufficiently strong to describe interesting mathematical facts that do not satisfy the conditions of Gödel’s result. For instance, "
       },
       {
        "t": "math",
@@ -7130,7 +7148,7 @@
     },
     {
      "t": "text",
-     "v": " (in which it is a theorem) or "
+     "v": " (in which case it is a theorem) or "
     },
     {
      "t": "math",
@@ -7215,7 +7233,7 @@
     },
     {
      "t": "text",
-     "v": ". Note that although axomatizability and completeness implies decidability, incompleteness does not imply undecidability. So this result shows that the second of Hilbert’s goals, namely that there be a procedure that decides if "
+     "v": ". Note that although axiomatizability and completeness implies decidability, incompleteness does not imply undecidability. So this result shows that the second of Hilbert’s goals, namely that there be a procedure that decides if "
     },
     {
      "t": "math",

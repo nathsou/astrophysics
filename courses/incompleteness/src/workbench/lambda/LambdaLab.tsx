@@ -227,6 +227,7 @@ export function LambdaLab({ initial = 'K I Ω', id = 'lambda-lab', graph = true,
             <input type="checkbox" checked={full} onChange={(e) => setFull(e.target.checked)} /> official syntax (all parentheses)
           </label>
         </div>
+        {numerals && <p className="lam-steps-inline">Any subterm α-equivalent to a numeral is shown as one: λy.λx.x, for instance (what K I reduces to), appears as 0̄, which is also the term false.</p>}
       </Panel>
 
       {term && (
@@ -316,7 +317,7 @@ export function LambdaLab({ initial = 'K I Ω', id = 'lambda-lab', graph = true,
 
           <div className="seg" role="radiogroup" aria-label="Strategy">
             {(['normal', 'applicative', 'cbn', 'cbv'] as Strategy[]).map((s) => (
-              <button key={s} type="button" role="radio" aria-checked={strategy === s} className="chip-btn" aria-pressed={strategy === s} onClick={() => setStrategy(s)}>
+              <button key={s} type="button" role="radio" aria-checked={strategy === s} className="chip-btn" onClick={() => setStrategy(s)}>
                 {s === 'normal' ? 'Normal order' : s === 'applicative' ? 'Applicative order' : s === 'cbn' ? 'Call by name' : 'Call by value'}
               </button>
             ))}
@@ -505,7 +506,7 @@ export function ContractionDetail({ c, opts }: { c: Contraction; opts: LambdaPri
         </>
       )}
       {naive && (
-        <div className="lam-erratum" style={{ borderLeftColor: 'var(--danger)', background: 'var(--danger-soft)' }}>
+        <div className="lam-aside" style={{ borderLeftColor: 'var(--danger)', background: 'var(--danger-soft)' }}>
           <b>Why rename?</b> Replacing blindly would give <TermTex term={naive.result} opts={{ ...opts, labels: false }} />, where the{' '}
           {[...new Set(naive.captures.map((x) => x.variable))].map((v) => (
             <i key={v}>{v} </i>

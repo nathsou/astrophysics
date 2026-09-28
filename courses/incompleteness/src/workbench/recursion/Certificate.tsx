@@ -11,7 +11,7 @@ import { Ref } from '../../formal/FormalText';
 import { nameTex } from './common';
 
 const CLAUSE: Record<number, string> = {
-  0: 'basic function of chapter 4',
+  0: 'abbreviation',
   1: 'clause 1: zero',
   2: 'clause 2: succ',
   3: 'clause 3: projection',
@@ -38,7 +38,7 @@ function condition(c: Certificate): ReactNode {
       </>
     );
   }
-  if (n.k === 'basic') return <>primitive recursive by the definitions in <Ref k="cmp:rec:exa:sec" /> (it abbreviates one)</>;
+  if (n.k === 'basic') return <>stands for its primitive recursive definition (<Ref k="cmp:rec:pre:sec" />, <Ref k="cmp:rec:prr:sec" />)</>;
   return null;
 }
 
@@ -59,7 +59,7 @@ export function CertificateView({ f }: { f: RF }) {
         justified by one clause of the definition from the nodes below it.{' '}
         {s !== null && (
           <>
-            The definition appears at stage <Tex tex={`S_{${s}}`} /> (a basic function is at stage 0; each composition or recursion adds one).
+            The definition appears at stage <Tex tex={`S_{${s}}`} /> (zero, succ and the projections are at stage 0; a composition or recursion is one stage above the highest of its parts).
           </>
         )}
       </p>

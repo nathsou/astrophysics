@@ -11,10 +11,11 @@ import { ExFiniteCheck } from '../../../workbench/nd/exercises';
 A derivation with no inferences is a single assumption $A$, and $\{A\} \vDash A$. Otherwise, look at the **last** inference. Its premises are the conclusions of smaller sub-derivations, which by the induction hypothesis are sound. The step to the conclusion depends on the rule:
 
 - **$\land$Elim, $\lor$Intro, $\land$Intro, $\rightarrow$Elim** — immediate from the definition of satisfaction.
+- **$\bot_I$** — no structure satisfies $\bot$, so $\Gamma \vDash \bot$ means no structure satisfies $\Gamma$, and then $\Gamma \vDash A$ for every $A$.
 - **$\rightarrow$Intro, $\lnot$Intro** — the discharged assumption $A$ was among the sub-derivation's assumptions: $\Gamma \cup \{A\} \vDash B$, hence $\Gamma \vDash A \rightarrow B$.
 - **$\forall$Intro** — the delicate case. From $\Gamma \vDash A(a)$ one needs $\Gamma \vDash \forall x\, A(x)$. Given $\mathfrak M \vDash \Gamma$ and any assignment $s$, change $\mathfrak M$ only in what it assigns to $a$, making $a^{\mathfrak M'} = s(x)$. Because $a$ does not occur in $\Gamma$, still $\mathfrak M' \vDash \Gamma$, so $\mathfrak M' \vDash A(a)$; because $a$ does not occur in $A(x)$, this means $\mathfrak M \vDash A(x)[s]$. Both uses are the **eigenvariable condition**.
 
-The book leaves $\bot_C$, $\exists$Intro, $\forall$Elim, $\lor$Elim, $\lnot$Elim and $\exists$Elim as exercises.
+The book leaves $\bot_C$, $\exists$Intro, $\forall$Elim, $\lor$Elim, $\lnot$Elim and $\exists$Elim as exercises. The identity rules of <Ref k="fol:ntd:ide:sec" /> do not appear among its cases.
 
 ## Every step, not just the last
 

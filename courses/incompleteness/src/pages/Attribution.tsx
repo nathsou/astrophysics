@@ -22,7 +22,7 @@ export function Attribution({ section }: { section?: { loc: SourceLoc; title: st
       <a href={upstreamInfo.license.url} target="_blank" rel="noreferrer">
         CC BY 4.0
       </a>
-      . This edition converts the LaTeX source, rearranges it into modes, and adds explanations, workbenches and exercises; changes are listed on the{' '}
+      . This edition converts the LaTeX source, corrects small slips, rearranges it into modes, and adds explanations, workbenches and exercises; see the{' '}
       <a href="#/about">About page</a>.
       {section && (
         <>

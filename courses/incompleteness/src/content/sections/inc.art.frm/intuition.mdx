@@ -1,19 +1,19 @@
 <Added label="Added for this edition">
 
-Once terms can be recognised by a primitive recursive computation, formulas follow the same pattern: atomic formulas are predicate symbols applied to terms, and every other formula is built from earlier ones by a connective or a quantifier. So $\mathrm{Frm}(x)$ — “$x$ is the Gödel number of a formula” — is primitive recursive too.
+Once terms can be recognized by a primitive recursive computation, formulas follow the same pattern: atomic formulas are predicate symbols applied to terms, and every other formula is built from earlier ones by a connective or a quantifier. So $\mathrm{Frm}(x)$ — “$x$ is the Gödel number of a formula” — is primitive recursive too.
 
 </Added>
 
 ## Encoding and decoding are both computations
 
-Going from a formula to its number is mechanical: write the formula in official notation, look up each symbol’s code, and multiply the prime powers. Going back is also mechanical: factor the number, check that the primes $2, 3, 5, \ldots$ appear without gaps, subtract one from each exponent, look each result up as a symbol code, and parse the symbols. Each step can fail, and each failure means the number is not the Gödel number of a formula. That is the content of <Ref k="inc:art:frm:prop:frm-primrec" />, and the Explore workbench lets you run both directions.
+Going from a formula to its number is mechanical: write the formula in official notation, look up each symbol’s code, and multiply the prime powers. Going back is also mechanical: factor the number, check that the primes $2, 3, 5, \ldots$ appear without gaps, subtract one from each exponent, look each result up as a symbol code, and parse the symbols. Each step can fail, and each failure means the number is not the Gödel number of a formula. <Ref k="inc:art:frm:prop:frm-primrec" /> says more: this question can be decided by a *primitive recursive* function, because a formation sequence for a formula, if there is one, has a code below a bound computed from the number. The Explore workbench lets you run both directions.
 
 ## Official notation
 
-The book writes $x = 0$ and $(x + y)$, but these are abbreviations. The official formula is $=(v_0, c_0)$ and the official term is $f^2_0(v_0, v_1)$, prefix notation with parentheses and commas. The Gödel number is computed from the official string; so is every question about positions, such as “is the $i$-th symbol a free occurrence of $x$?” (<Ref k="inc:art:frm:prop:freeocc-primrec" />).
+We write $x = 0$ and $(x + y)$, but these are abbreviations. The official formula is $=(v_0, c_0)$ (the book’s own example) and the official term is $f^2_0(v_0, v_1)$ (with this edition’s choice of $f^2_0$ for $+$): prefix notation with parentheses and commas. The Gödel number is computed from the official string; so is every question about positions, such as “is the $i$-th symbol a free occurrence of $x$?” (<Ref k="inc:art:frm:prop:freeocc-primrec" />).
 
 One more thing is expanded before coding: in this book $\leftrightarrow$ and $\top$ are *defined* symbols, so $A \leftrightarrow B$ is coded as $(A \rightarrow B) \land (B \rightarrow A)$. Try <Try formula="x < y ↔ ∃z (z′ + x) = y">a biconditional</Try> in Explore mode.
 
 <Callout title="Big, but exact">
-Your formula <YourFormula /> has a Gödel number with hundreds of thousands of digits. The workbench never expands it unless asked; it keeps the number as an exact product of prime powers, and compares such numbers structurally.
+Even a short formula has a Gödel number with hundreds of thousands of digits: the codes of $($, $)$ and the comma alone are 39366, 118098 and 354294, and they appear as exponents. Your formula is <YourFormula />. The workbench never expands it unless asked; it keeps the number as an exact product of prime powers, and compares such numbers structurally.
 </Callout>

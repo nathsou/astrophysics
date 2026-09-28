@@ -13,7 +13,7 @@ import { evaluateTerm, extension, isModelOf, missingSymbols, satisfies, trueIn }
 import { checkQ, finiteQ1Q2Failure, qSentences } from '../src/engine/semantics/arithmetic.ts';
 import { classify, delta0, evaluateInN, evaluateTermInN } from '../src/engine/semantics/standard.ts';
 import {
-  atLeast, solInfSetAsPrinted, solCountSet, solCountSetAsPrinted, solEquinumerous, solInduction, solInfSet, solLeq, solNoLarger, solSchroederBernstein, solSubset,
+  atLeast, solAleph1Set, solAleph1SetAsPrinted, solInfSetAsPrinted, solCountSet, solCountSetAsPrinted, solEquinumerous, solInduction, solInfSet, solLeq, solNoLarger, solSchroederBernstein, solSubset,
   dedekindInfinityFO, S, solAssignment, solCount, solFin, solIdentity, solIdentityImp, solInf, solSatisfies, solTransitiveClosure, solTrueIn, fromFirstOrder,
 } from '../src/engine/semantics/sol.ts';
 
@@ -612,17 +612,23 @@ describe('comparing sets in second-order logic', () => {
       expect(solSatisfies(M, withSets(a, b), solInfSet()).truth).toBe(false);
     }
   });
-  it('Inf(X) as printed is satisfied by a finite set; with X(x) → X(u(x)) added it is not', () => {
+  it('without ∀x (X(x) → X(u(x))), Inf(X) would be satisfied by a finite set', () => {
     const t = solSatisfies(M, withSets([0], []), solInfSetAsPrinted());
     expect(t.truth).toBe(true);
     expect(t.quantifier?.witness?.kind).toBe('function');
   });
-  it('Count(X) as printed holds only for X = |M|; with X ⊆ Y it holds for every non-empty X', () => {
+  it('Count(X) holds for every non-empty X; with X = Y in place of X ⊆ Y only for X = |M|', () => {
     for (const a of [[0], [0, 1], [0, 1, 2]] as Elem[][]) {
       expect(solSatisfies(M, withSets(a, []), solCountSetAsPrinted()).truth).toBe(a.length === 3);
       expect(solSatisfies(M, withSets(a, []), solCountSet()).truth).toBe(true);
     }
     expect(solSatisfies(M, withSets([], []), solCountSet()).truth).toBe(false);
+  });
+  it('Aleph₁(X) is false for finite sets; without Y ≈ X and Inf(X) it would hold of them (X is one of its own subsets)', () => {
+    for (const a of [[], [0], [0, 1, 2]] as Elem[][]) {
+      expect(solSatisfies(M, withSets(a, []), solAleph1SetAsPrinted()).truth).toBe(true);
+      expect(solSatisfies(M, withSets(a, []), solAleph1Set()).truth).toBe(false);
+    }
   });
   it('the Schröder–Bernstein sentence is true in small domains', () => {
     for (let n = 1; n <= 3; n++) expect(solTrueIn(pureStructure(Array.from({ length: n }, (_, i) => i)), solSchroederBernstein()).truth).toBe(true);

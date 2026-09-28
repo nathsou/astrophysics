@@ -1,0 +1,51 @@
+[
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/arithmetization-syntax/introduction.tex",
+    "find": "functions----are",
+    "replace": "functions---are",
+    "why": "One dash too many."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/arithmetization-syntax/introduction.tex",
+    "find": "the arithmetized substitution functions maps",
+    "replace": "the arithmetized substitution function maps",
+    "why": "Singular."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/arithmetization-syntax/coding-formulas.tex",
+    "find": "iff there is formation\nsequence~$s_0$, \\dots, $s_{k-1} = s$ of !!{formula} which records",
+    "replace": "iff there is a formation\nsequence~$s_0$, \\dots, $s_{k-1} = s$ of !!{formula}s which records",
+    "why": "Missing article and plural."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/arithmetization-syntax/coding-formulas.tex",
+    "find": "formation rules.  The code for each $s_i$ (and indeed of the code of\nthe sequence $\\tuple{s_0, \\dots, s_{k-1}}$) is less than the code~$x$\nof~$s$.",
+    "replace": "formation rules.  The code for each $s_i$ is at most the code~$x$\nof~$s$, and the code of the sequence $\\tuple{\\Gn{s_0}, \\dots, \\Gn{s_{k-1}}}$ is\nbounded as in the proof of \\olref[inc][art][trm]{prop:term-primrec}.",
+    "why": "The code of the formation sequence is not less than x; it is bounded as for terms."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/arithmetization-syntax/substitution.tex",
+    "find": "Prove \\olref[inc][art][sub]{prop:free-for}\n",
+    "replace": "Prove \\olref[inc][art][sub]{prop:free-for}.\n",
+    "why": "Missing period."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/arithmetization-syntax/proofs-in-nd.tex",
+    "find": "\\bexists{j<(d')_0}{d = (d')_j}",
+    "replace": "\\bexists{j<(d')_0}{d = (d')_{j+1}}",
+    "why": "(d')_0 is the number of premises; the sub-derivations are (d')_1, ..., (d')_{(d')_0}."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/summary-3.tex",
+    "find": "If a theory~$\\Th{T}$ is\n!!{decidable}, then we can use",
+    "replace": "If a theory~$\\Th{T}$ is\n!!{axiomatizable}, then we can use",
+    "why": "What is needed is a decidable set of axioms, as the next sentence says."
+  }
+]

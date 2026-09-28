@@ -5,8 +5,6 @@ import { parseFormula } from '../../engine/syntax/parse';
 import { satisfies } from '../../engine/semantics/satisfaction';
 import { assignment } from '../../engine/semantics/assignment';
 import { bookSatisfactionExample } from '../../engine/semantics/examples';
-import { pureStructure } from '../../engine/semantics/structure';
-import { S, showSolValue, solAssignment, solCountSet, solCountSetAsPrinted, solInfSet, solInfSetAsPrinted, solSatisfies } from '../../engine/semantics/sol';
 import { Prov } from '../../ui/Prov';
 import { TruthBadge } from './TraceTree';
 import './sem.css';
@@ -58,37 +56,6 @@ export function BookExampleClaims() {
         </tbody>
       </table>
       <p className="small muted sans">Explore mode shows the full trace for each, with the x-variants the text discusses.</p>
-    </div>
-  );
-}
-
-/** The formulas Inf(X) and Count(X) as printed, evaluated on a three-element domain. */
-export function PrintedFormulaCheck({ which }: { which: 'inf' | 'count' }) {
-  const r = useMemo(() => {
-    const M = pureStructure([0, 1, 2]);
-    const X = S.X(0, 1);
-    const set = which === 'inf' ? [0] : [0, 1];
-    const s = solAssignment({ rel: [{ X, tuples: set.map((e) => [e]) }] });
-    const printed = solSatisfies(M, s, which === 'inf' ? solInfSetAsPrinted(X) : solCountSetAsPrinted(X));
-    const fixed = solSatisfies(M, s, which === 'inf' ? solInfSet(X) : solCountSet(X));
-    return { set, printed, fixed };
-  }, [which]);
-  const setText = `{${r.set.join(', ')}}`;
-  return (
-    <div>
-      <div className="ann-title sans">
-        <b>{which === 'inf' ? 'Inf(X) as printed, on a finite set' : 'Count(X) as printed, on a proper subset'}</b> <Prov kind="computed" />
-      </div>
-      {which === 'inf' ? (
-        <p className="small">
-          On the domain {'{'}0, 1, 2{'}'} with s(X) = {setText} (finite), the formula as printed is <TruthBadge t={r.printed.truth} />
-          {r.printed.quantifier?.witness && <> — witness u = {showSolValue(r.printed.quantifier.witness)}</>}. It does not require u to map X into X. With the conjunct ∀x (X(x) → X(u(x))) added, it is <TruthBadge t={r.fixed.truth} /> (all 27 functions u tried).
-        </p>
-      ) : (
-        <p className="small">
-          On the domain {'{'}0, 1, 2{'}'} with s(X) = {setText} (enumerable), the formula as printed is <TruthBadge t={r.printed.truth} />: Y may be the whole domain, which contains z and is closed under u, so “X = Y” forces X to be everything. With X ⊆ Y in place of X = Y it is <TruthBadge t={r.fixed.truth} />.
-        </p>
-      )}
     </div>
   );
 }

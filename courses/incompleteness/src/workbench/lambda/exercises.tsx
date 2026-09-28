@@ -64,7 +64,7 @@ export function ExLamFree() {
       placeholder="e.g. x, y"
       check={(a) => {
         const got = a
-          .split(/[\s,]+/)
+          .split(/[\s,{}]+/)
           .filter(Boolean)
           .sort()
           .join(',');
@@ -198,7 +198,7 @@ export function ExLamOr() {
   return (
     <Exercise
       id="lam.tvr.or"
-      title="Or (Problem 9.4)"
+      title="Or"
       placeholder="λx y. …"
       check={(a) =>
         checkFunction(
@@ -206,7 +206,7 @@ export function ExLamOr() {
           [true, false].flatMap((x) => [true, false].map((y) => ({ args: [B(x), B(y)], want: x || y, show: `\\mathrm{Or}\\,\\mathrm{${x}}\\,\\mathrm{${y}}` }))),
         )
       }
-      hint="A truth value selects one of its two arguments. If x is true, the answer is true; otherwise it is y."
+      hint="Let x do the choosing, as in And: what should Or x y be when x is true, and what when x is false?"
     >
       <p>
         Define a term <Tex tex="\mathrm{Or}" /> representing inclusive disjunction: <Tex tex="\mathrm{Or}\,x\,y" /> must reduce to <Tex tex="\mathrm{true}" /> iff <i>x</i> or <i>y</i> is <Tex tex="\mathrm{true}" />.
@@ -219,7 +219,7 @@ export function ExLamXor() {
   return (
     <Exercise
       id="lam.tvr.xor"
-      title="Xor (Problem 9.4)"
+      title="Xor"
       placeholder="λx y. …"
       check={(a) =>
         checkFunction(
@@ -227,7 +227,7 @@ export function ExLamXor() {
           [true, false].flatMap((x) => [true, false].map((y) => ({ args: [B(x), B(y)], want: x !== y, show: `\\mathrm{Xor}\\,\\mathrm{${x}}\\,\\mathrm{${y}}` }))),
         )
       }
-      hint="If x is true, the answer is Not y; otherwise it is y."
+      hint="Again let x choose: when x is true, how does the answer depend on y? And when x is false?"
     >
       <p>
         Now exclusive disjunction: <Tex tex="\mathrm{Xor}\,x\,y" /> reduces to <Tex tex="\mathrm{true}" /> iff exactly one of <i>x</i>, <i>y</i> is <Tex tex="\mathrm{true}" />.
@@ -278,22 +278,22 @@ export function ExLamEven() {
 export function ExLamSum() {
   return (
     <Exercise
-      id="lam.fp.sum"
+      id="lam.fp.pow2"
       title="Recursion with Y"
       placeholder="λg n. …"
       check={(a) => {
         const p = parseAnswer(a);
         if (!p.ok) return p.v;
-        return checkTerm(apps(parseLambda('Y'), p.t), [0, 1, 2, 3].map((n) => ({ args: [N(n)], want: (n * (n + 1)) / 2, show: `Y\\,S'\\,\\overline{${n}}` })));
+        return checkTerm(apps(parseLambda('Y'), p.t), [0, 1, 2, 3].map((n) => ({ args: [N(n)], want: 2 ** n, show: `Y\\,P'\\,\\overline{${n}}` })));
       }}
       hint={
         <>
-          Follow <Tex tex="\mathrm{Fac}'" />: test with IsZero, and call <i>g</i> on <Tex tex="\mathrm{Pred}\,n" />.
+          Follow <Tex tex="\mathrm{Fac}'" />: test <i>n</i> with IsZero, and call <i>g</i> on <Tex tex="\mathrm{Pred}\,n" />.
         </>
       }
     >
       <p>
-        Write a term <Tex tex="S'" /> such that <Tex tex="Y\,S'" /> λ-defines <Tex tex="s(n) = 0 + 1 + \cdots + n" />, via the recursion <Tex tex="s(0) = 0" />, <Tex tex="s(n) = n + s(n - 1)" />.
+        Write a term <Tex tex="P'" /> such that <Tex tex="Y\,P'" /> λ-defines <Tex tex="p(n) = 2^n" />, via the recursion <Tex tex="p(0) = 1" />, <Tex tex="p(n) = 2 \cdot p(n - 1)" /> for <Tex tex="n > 0" />. You may use the book’s terms (IsZero, Pred, Mult, …).
       </p>
     </Exercise>
   );

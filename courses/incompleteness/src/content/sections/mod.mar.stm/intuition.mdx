@@ -2,7 +2,7 @@ import { ExStandardDomain } from '../../../workbench/semantics/exercises';
 
 <Added label="Added for this edition">
 
-A structure for $\mathcal L_A$ is **standard** if it is isomorphic to $\mathfrak N$. The strings of $a$’s from the introduction form a standard model; so does any structure obtained from $\mathfrak N$ by renaming its elements.
+A structure for $\mathcal L_A$ is **standard** if it is isomorphic to $\mathfrak N$. The strings of $a$’s from the introduction form a standard model (once $<$, which the book leaves out there, is interpreted by comparing lengths); so does any structure obtained from $\mathfrak N$ by renaming its elements.
 
 </Added>
 
@@ -18,6 +18,6 @@ Add the axioms of $\mathbf Q$ and the converse holds (<Ref k="mod:mar:stm:prop:t
 
 ## The domain is not the point
 
-Any countably infinite set can be the domain of a standard model. Pick a starting element $z$ and a bijection $s$ from the set onto the set minus $z$; the interpretations of $+$, $\times$, $<$ are then forced.
+Any countably infinite set $M$ can be the domain of a standard model. Once $z \in M$ and a function $s$ are chosen as the interpretations of $0$ and $'$, the interpretations of $+$, $\times$ and $<$ are forced. The book shows what $s$ must be like: a bijection from $M$ onto $M \setminus \{z\}$, because sentences true in $\mathfrak N$ say that $'$ is injective, that $0$ is not a successor, and that everything else is. These conditions are necessary, not sufficient: $s$ must also reach every element of $M$ from $z$ in finitely many steps. (On $\mathbb N \cup \mathbb Z$ with $z = 0$ and $s(x) = x + 1$ on both parts, $s$ is a bijection onto the set minus $z$, but the copy of $\mathbb Z$ is never reached.)
 
 <ExStandardDomain />

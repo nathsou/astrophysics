@@ -151,7 +151,7 @@ export function RecursionPanel() {
       <p className="wb-note">
         Write the recursive equation <Tex tex="g\,x = N" /> as the term <Tex tex="\lambda g.\lambda x.\,N" />; then <Tex tex="G \equiv Y\,(\lambda g.\lambda x.\,N)" /> satisfies it.
       </p>
-      <label className="fi-label" htmlFor="lam-rec-in">
+      <label className="fi-label lam-mathlabel" htmlFor="lam-rec-in">
         λg.λx.N
       </label>
       <input id="lam-rec-in" className={`lam-field ${parsed.ok ? '' : 'invalid'}`} value={src} onChange={(e) => setSrc(e.target.value)} spellCheck={false} autoCapitalize="off" />

@@ -42,10 +42,10 @@ export function BetaLab() {
         </p>
         {!parsed.ok && <p className="r2-err">{parsed.error}</p>}
         <div className="seg" role="radiogroup" aria-label="Choice of d₁">
-          <button className="chip-btn" role="radio" aria-checked={rule === 'lcm'} aria-pressed={rule === 'lcm'} onClick={() => setRule('lcm')}>
+          <button className="chip-btn" role="radio" aria-checked={rule === 'lcm'} onClick={() => setRule('lcm')}>
             d₁ = lcm(1, …, j) (the book)
           </button>
-          <button className="chip-btn" role="radio" aria-checked={rule === 'factorial'} aria-pressed={rule === 'factorial'} onClick={() => setRule('factorial')}>
+          <button className="chip-btn" role="radio" aria-checked={rule === 'factorial'} onClick={() => setRule('factorial')}>
             d₁ = j! (Gödel’s original)
           </button>
         </div>
@@ -321,12 +321,12 @@ function TryD({ enc }: { enc: BetaEncoding }) {
         </div>
       )}
       <p className="wb-note">
-        The construction gives some code, usually a large one. In the section <Ref k="inc:req:pri:sec" />, <Tex tex="\hat h" /> is defined by <em>minimization</em>, which returns the <em>least</em> code. Search for it:
+        The construction gives some code, usually a large one. In <Ref k="inc:req:pri:sec" />, <Tex tex="\hat h" /> is defined by <em>minimization</em>, which returns the <em>least</em> code. Search for it:
       </p>
       <div className="r2-row">
         <span className="seg" role="radiogroup" aria-label="Search limit" style={{ margin: 0 }}>
           {limits.map((l, i) => (
-            <button key={i} className="chip-btn" role="radio" aria-checked={limitIdx === i} aria-pressed={limitIdx === i} onClick={() => setLimitIdx(i)}>
+            <button key={i} className="chip-btn" role="radio" aria-checked={limitIdx === i} onClick={() => setLimitIdx(i)}>
               below {l.toLocaleString('en-US')}
             </button>
           ))}

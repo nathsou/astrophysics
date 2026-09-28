@@ -67,7 +67,7 @@ export function DerivationBuilder({ example, fromGoal, examples, goal = '(¬A �
   const initialEx = example ? exampleById(example) : undefined;
   const [goalText, setGoalText] = useState(initialEx ? ndText(initialEx.goal) : goal);
   const [gammaText, setGammaText] = useState(initialEx ? initialEx.gamma.map(ndText).join('; ') : gamma.join('; '));
-  const [loaded, setLoaded] = useState<{ ex: NDExample; adapted: boolean } | null>(initialEx && !fromGoal ? { ex: initialEx, adapted: false } : null);
+  const [loaded, setLoaded] = useState<NDExample | null>(initialEx && !fromGoal ? initialEx : null);
   const [hist, setHist] = useState<History>(() => initHistory(initialEx, fromGoal, goalText, gammaText, axioms));
   const [sel, setSel] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
@@ -116,13 +116,13 @@ export function DerivationBuilder({ example, fromGoal, examples, goal = '(¬A �
     setSel(null);
     setMsg(null);
   };
-  const load = (ex: NDExample, mode: 'finished' | 'goal' | 'adapted') => {
+  const load = (ex: NDExample, mode: 'finished' | 'goal') => {
     setGoalText(ndText(ex.goal));
     setGammaText(ex.gamma.map(ndText).join('; '));
-    setLoaded(mode === 'goal' ? null : { ex, adapted: mode === 'adapted' });
+    setLoaded(mode === 'goal' ? null : ex);
     if (mode === 'goal') setHist({ past: [], present: start(ex.goal, ex.gamma, axioms), future: [] });
     else {
-      const states = constructionOf(mode === 'adapted' ? ex.adapted!.build() : ex.build(), ex.gamma, axioms);
+      const states = constructionOf(ex.build(), ex.gamma, axioms);
       setHist({ past: states.slice(0, -1), present: states[states.length - 1], future: [] });
     }
     setSel(null);
@@ -176,7 +176,7 @@ export function DerivationBuilder({ example, fromGoal, examples, goal = '(¬A �
         </div>
       )}
 
-      {loaded && <ExampleNote ex={loaded.ex} adapted={loaded.adapted} valid={bc.check.valid} onAdapted={() => load(loaded.ex, 'adapted')} onBook={() => load(loaded.ex, 'finished')} />}
+      {loaded && <ExampleNote ex={loaded} valid={bc.check.valid} />}
 
       <div className="ndb-toolbar" role="toolbar" aria-label="Derivation">
         <button type="button" className="chip-btn" onClick={undo} disabled={!hist.past.length} aria-label="Undo">
@@ -190,10 +190,10 @@ export function DerivationBuilder({ example, fromGoal, examples, goal = '(¬A �
         </button>
         <span className="spacer" />
         <span className="seg" role="radiogroup" aria-label="View" style={{ margin: 0 }}>
-          <button type="button" role="radio" aria-checked={view === 'tree'} aria-pressed={view === 'tree'} className="chip-btn" onClick={() => setView('tree')}>
+          <button type="button" role="radio" aria-checked={view === 'tree'} className="chip-btn" onClick={() => setView('tree')}>
             tree
           </button>
-          <button type="button" role="radio" aria-checked={view === 'list'} aria-pressed={view === 'list'} className="chip-btn" onClick={() => setView('list')}>
+          <button type="button" role="radio" aria-checked={view === 'list'} className="chip-btn" onClick={() => setView('list')}>
             steps
           </button>
         </span>
@@ -241,32 +241,14 @@ function initHistory(ex: NDExample | undefined, fromGoal: boolean | undefined, g
   return { past: [], present: start(g.ok ? g.value : nd('A → A'), gl.ok ? gl.value : [], axioms), future: [] };
 }
 
-function ExampleNote({ ex, adapted, valid, onAdapted, onBook }: { ex: NDExample; adapted: boolean; valid: boolean; onAdapted: () => void; onBook: () => void }) {
+function ExampleNote({ ex, valid }: { ex: NDExample; valid: boolean }) {
   return (
-    <div className="ndb-discrepancy" role="note">
+    <div className="ndb-note" role="note">
       <div>
-        <b>{adapted ? 'Adapted from the book' : 'The book’s derivation'}</b> — {ex.where}.{' '}
+        <b>The book’s derivation</b> — {ex.where}.{' '}
         {valid ? <Prov kind="checked">accepted by the checker</Prov> : <Prov kind="failed">rejected by the checker</Prov>}
       </div>
       {ex.incorrect && <p style={{ margin: '4px 0 0' }}>The book gives this derivation as an example of what the rules do <em>not</em> allow.</p>}
-      {ex.discrepancy && !adapted && (
-        <p style={{ margin: '4px 0 0' }}>
-          <b>Book and checker differ.</b> {ex.discrepancy}{' '}
-          {ex.adapted && (
-            <button type="button" className="linklike" onClick={onAdapted}>
-              Load the version with {ex.adapted.change}
-            </button>
-          )}
-        </p>
-      )}
-      {adapted && ex.adapted && (
-        <p style={{ margin: '4px 0 0' }}>
-          Changed: {ex.adapted.change}.{' '}
-          <button type="button" className="linklike" onClick={onBook}>
-            Back to the book’s version
-          </button>
-        </p>
-      )}
       {ex.note && <p style={{ margin: '4px 0 0' }}>{ex.note}</p>}
       <p className="ndb-hint" style={{ margin: '4px 0 0' }}>
         Undo takes the derivation apart goal by goal, back to the bare goal.
@@ -656,7 +638,7 @@ function RuleForm({ s, goal, rule, onApply, axioms }: { s: BState; goal: Deriv; 
           <span className="lab">{need.side.label}</span>
           <div className="seg" role="radiogroup" aria-label={need.side.label}>
             {need.side.options.map((o, i) => (
-              <button key={o} type="button" className="chip-btn" role="radio" aria-checked={side === i} aria-pressed={side === i} onClick={() => setSide(i as 0 | 1)}>
+              <button key={o} type="button" className="chip-btn" role="radio" aria-checked={side === i} onClick={() => setSide(i as 0 | 1)}>
                 {o}
               </button>
             ))}
@@ -803,8 +785,8 @@ function Pieces({ s, onApply, selectedGoal, axioms }: { s: BState; onApply: (r: 
       )}
       {s.pieces.length === 0 && (
         <p className="ndb-hint">
-          No pieces yet. (=Intro needs no premises:{' '}
-          <ForwardForm s={s} rule="eqI" picked={[]} onApply={onApply} inline />)
+          No pieces yet. =Intro needs no premises:{' '}
+          <ForwardForm s={s} rule="eqI" picked={[]} onApply={onApply} inline />
         </p>
       )}
     </div>
@@ -867,7 +849,7 @@ function ForwardForm({ s, rule, picked, onApply, inline }: { s: BState; rule: Fo
           <span className="lab">{need.side.label}</span>
           <div className="seg" role="radiogroup" aria-label={need.side.label}>
             {need.side.options.map((o, i) => (
-              <button key={o} type="button" className="chip-btn" role="radio" aria-checked={side === i} aria-pressed={side === i} onClick={() => setSide(i as 0 | 1)}>
+              <button key={o} type="button" className="chip-btn" role="radio" aria-checked={side === i} onClick={() => setSide(i as 0 | 1)}>
                 {o}
               </button>
             ))}

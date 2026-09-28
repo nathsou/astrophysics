@@ -18,7 +18,7 @@ Because application associates to the left, $F\,M\,N$ *means* $(F\,M)\,N$: “ap
 
 ## Several arguments
 
-In general $\lambda x_1.\ldots\lambda x_n.\,N$ applied to $M_1 \ldots M_n$ reduces in $n$ steps to $N[M_1/x_1]\ldots[M_n/x_n]$: the arguments are substituted one at a time, from the outside in. Partial application comes for free: $(\lambda x.\lambda y.\,x)\,M$ is a perfectly good term, a function of one argument.
+In general $\lambda x_1.\ldots\lambda x_n.\,N$ applied to $M_1 \ldots M_n$ reduces in $n$ steps to $N[M_1/x_1]\ldots[M_n/x_n]$: the arguments are substituted one at a time, from the outside in. (<Prov kind="added" /> The last line of the book's general computation writes $P[M_1/x_1]\ldots[M_n/x_n]$; the body of the function is $N$, so it should read $N[M_1/x_1]\ldots[M_n/x_n]$, as the sentence after it says.) Partial application comes for free: $(\lambda x.\lambda y.\,x)\,M$ is a perfectly good term, a function of one argument.
 
 ## A hidden subtlety
 

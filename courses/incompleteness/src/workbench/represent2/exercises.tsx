@@ -20,7 +20,8 @@ export function ExBetaByHand() {
       title="Decode by hand"
       placeholder="β(d, 0), β(d, 1)"
       check={(a) => {
-        const ok = clean(a) === want;
+        // Accept "2, 0", "2 0", "⟨2, 0⟩", "(2,0)" …
+        const ok = a.replace(/[⟨⟩()]/g, ' ').trim().split(/[\s,;]+/).join(',') === want;
         return { ok, message: ok ? <>Right: <Tex tex="\mathrm{rem}(3, 5) = 2" /> and <Tex tex="\mathrm{rem}(5, 5) = 0" />, so <Tex tex="d" /> codes the sequence 2, 0.</> : <>Use <Tex tex="\beta(d, i) = \mathrm{rem}(1 + (i+1)\,d_1, d_0)" />: the remainder when <Tex tex="d_0 = 5" /> is divided by <Tex tex="1 + (i+1)\cdot 2" />.</> };
       }}
       hint={<>Here <Tex tex="K(d) = 5" /> and <Tex tex="L(d) = 2" />. The moduli are <Tex tex="1 + 1\cdot 2 = 3" /> and <Tex tex="1 + 2\cdot 2 = 5" />.</>}

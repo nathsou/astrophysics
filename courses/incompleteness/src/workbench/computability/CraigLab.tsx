@@ -27,7 +27,7 @@ export function CraigLab() {
       <Panel n={1} title="An enumeration of a theory, and Γ" prov={<Prov kind="computed" />}>
         <p className="wb-note">
           Suppose <Tex tex="A_0, A_1, A_2, \ldots" /> lists the theorems of T (the first few are editable here — any sentences will do for the trick). Craig’s set puts{' '}
-          <Tex tex="n + 1" /> copies of <Tex tex="A_n" /> into its n-th axiom:
+          <Tex tex="n + 1" /> copies of <Tex tex="A_n" /> into its axiom number n (counting from 0; the book’s “(n + 1)-st element”):
         </p>
         <ol className="ct-formula-list" start={0}>
           {list.map((s, n) => (
@@ -35,7 +35,7 @@ export function CraigLab() {
               <label className="sans small" htmlFor={`ct-craig-${n}`}>
                 <Tex tex={`A_{${n}} =`} />
               </label>
-              <input id={`ct-craig-${n}`} className={`fi-field ${parsed[n].ok ? '' : 'invalid'}`} value={s} onChange={(ev) => setList(list.map((x, j) => (j === n ? ev.target.value : x)))} spellCheck={false} />
+              <input id={`ct-craig-${n}`} aria-label={`Formula A${n}`} className={`fi-field ${parsed[n].ok ? '' : 'invalid'}`} value={s} onChange={(ev) => setList(list.map((x, j) => (j === n ? ev.target.value : x)))} spellCheck={false} />
               {!parsed[n].ok && <span className="fi-error">{(parsed[n] as { error: string }).error}</span>}
             </li>
           ))}
@@ -99,8 +99,8 @@ export function CraigLab() {
           </div>
         )}
         <p className="wb-note">
-          <Prov kind="added" /> Two details are made explicit here: k copies go with <Tex tex="A_{k-1}" />, and a sentence can be read both as one copy of itself and as k
-          copies of its left conjunct, so both readings are tried (an <Tex tex="A_0" /> such as <Tex tex="B \land B" /> is one copy of itself).
+          As in the proof, k copies go with <Tex tex="A_{k-1}" />, and a sentence is read both as one copy of itself and as k copies of its left conjunct, so both
+          readings are tried (an <Tex tex="A_0" /> such as <Tex tex="B \land B" /> is one copy of itself).
         </p>
       </Panel>
     </div>

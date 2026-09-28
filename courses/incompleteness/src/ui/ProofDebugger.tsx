@@ -22,6 +22,8 @@ export interface ProofDebuggerProps {
   hypotheses?: Record<string, ReactNode>;
   /** Start with every group expanded. */
   expanded?: boolean;
+  /** The theory whose axioms appear in the derivation, for labels ("axiom Q4 of Q"). */
+  theory?: string;
 }
 
 interface Row {
@@ -29,7 +31,7 @@ interface Row {
   n: number;
 }
 
-export function ProofDebugger({ deriv, check, title, hypotheses, expanded = false }: ProofDebuggerProps) {
+export function ProofDebugger({ deriv, check, title, hypotheses, expanded = false, theory = 'Q' }: ProofDebuggerProps) {
   const rows: Row[] = useMemo(() => linearize(deriv).map((d, i) => ({ d, n: i + 1 })), [deriv]);
   const num = useMemo(() => new Map(rows.map((r) => [r.d.id, r.n])), [rows]);
   const byId = useMemo(() => new Map(rows.map((r) => [r.d.id, r.d])), [rows]);
@@ -52,7 +54,7 @@ export function ProofDebugger({ deriv, check, title, hypotheses, expanded = fals
     setSel(id);
     const d = byId.get(id)!;
     highlightStore.set({ primary: [id], secondary: d.premises.map((p) => p.id), binder: check.steps.get(id)?.discharged.map((a) => a.id) ?? [] });
-    inspect(stepEntry(d, num, check, hypotheses, (x) => select(x)), pin);
+    inspect(stepEntry(d, num, check, hypotheses, (x) => select(x), theory), pin);
   };
 
   const visible: Row[] = [];
@@ -83,10 +85,10 @@ export function ProofDebugger({ deriv, check, title, hypotheses, expanded = fals
             {check.open.some((o) => o.kind === 'assume') ? `${check.open.filter((o) => o.kind === 'assume').length} undischarged assumption(s)` : 'no undischarged assumptions'}
           </span>
           <span className="pd-views" role="radiogroup" aria-label="View">
-            <button role="radio" aria-checked={view === 'steps'} className="chip-btn" aria-pressed={view === 'steps'} onClick={() => setView('steps')}>
+            <button role="radio" aria-checked={view === 'steps'} className="chip-btn" onClick={() => setView('steps')}>
               steps
             </button>
-            <button role="radio" aria-checked={view === 'tree'} className="chip-btn" aria-pressed={view === 'tree'} onClick={() => setView('tree')} disabled={rows.length > 60} title={rows.length > 60 ? 'Too large to draw as a tree' : 'Natural deduction tree'}>
+            <button role="radio" aria-checked={view === 'tree'} className="chip-btn" onClick={() => setView('tree')} disabled={rows.length > 60} title={rows.length > 60 ? 'Too large to draw as a tree' : 'Natural deduction tree'}>
               tree
             </button>
             <button className="chip-btn" onClick={() => setOpen(new Set(open.size === groups.length ? [] : groups.map((_, i) => i)))}>
@@ -99,8 +101,7 @@ export function ProofDebugger({ deriv, check, title, hypotheses, expanded = fals
       {view === 'steps' ? (
         <ol
           className="pd-steps"
-          role="listbox"
-          aria-label="Steps of the derivation"
+          aria-label="Steps of the derivation (arrow keys move between steps)"
           tabIndex={0}
           onKeyDown={(e) => {
             const i = visible.findIndex((r) => r.d.id === sel);
@@ -119,7 +120,7 @@ export function ProofDebugger({ deriv, check, title, hypotheses, expanded = fals
             return (
               <Fragment key={gi}>
                 {g.name && g.rows.length > 1 && (
-                  <li className="pd-group" role="presentation">
+                  <li className="pd-group">
                     <button
                       aria-expanded={isOpen}
                       onClick={() => {
@@ -169,8 +170,7 @@ function StepRow({ r, num, check, selected, onSelect, indent }: { r: Row; num: M
   return (
     <li
       className={`pd-step ${selected ? 'selected' : ''} ${bad ? 'bad' : ''} ${indent ? 'indent' : ''}`}
-      role="option"
-      aria-selected={selected}
+      aria-current={selected ? 'step' : undefined}
       data-n={d.id}
       onClick={() => onSelect(d.id)}
       onMouseEnter={() => highlightStore.set({ primary: [d.id], secondary: d.premises.map((p) => p.id), binder: st?.discharged.map((a) => a.id) ?? [] })}
@@ -229,19 +229,19 @@ function TreeNode({ d, check, sel, onSelect, num }: { d: Deriv; check: CheckResu
   );
 }
 
-function assumptionLine(o: OpenAssumption, hypotheses?: Record<string, ReactNode>) {
+function assumptionLine(o: OpenAssumption, hypotheses?: Record<string, ReactNode>, theory = 'Q') {
   return (
     <li key={o.id}>
       <Tex tex={formulaTex(o.formula)} />{' '}
       <span className="muted">
-        {o.kind === 'axiom' ? `— axiom ${o.name} of Q` : o.kind === 'hyp' ? `— hypothesis ${o.name}` : `— assumption${o.label !== undefined ? ` labelled ${o.label}` : ''}`}
+        {o.kind === 'axiom' ? `— axiom ${o.name} of ${theory}` : o.kind === 'hyp' ? `— hypothesis ${o.name}` : `— assumption${o.label !== undefined ? ` labelled ${o.label}` : ''}`}
       </span>
       {o.kind === 'hyp' && o.name && hypotheses?.[o.name] && <div className="small">{hypotheses[o.name]}</div>}
     </li>
   );
 }
 
-function stepEntry(d: Deriv, num: Map<string, number>, check: CheckResult, hypotheses: Record<string, ReactNode> | undefined, go: (id: string) => void) {
+function stepEntry(d: Deriv, num: Map<string, number>, check: CheckResult, hypotheses: Record<string, ReactNode> | undefined, go: (id: string) => void, theory = 'Q') {
   const st = check.steps.get(d.id)!;
   const n = num.get(d.id);
   const eigen = d.eigen !== undefined ? constName(d.eigen) : null;
@@ -257,7 +257,7 @@ function stepEntry(d: Deriv, num: Map<string, number>, check: CheckResult, hypot
             {d.rule === 'assume'
               ? 'This sentence is assumed.'
               : d.rule === 'axiom'
-                ? `This is axiom ${d.name} of Q.`
+                ? `This is axiom ${d.name} of ${theory}.`
                 : d.rule === 'hyp'
                   ? `This is taken from elsewhere in the text (${d.name}).`
                   : 'This sentence follows from the premises by the rule below.'}
@@ -298,12 +298,12 @@ function stepEntry(d: Deriv, num: Map<string, number>, check: CheckResult, hypot
         {st.discharged.length > 0 && (
           <div className="sec">
             <div className="sec-title">Discharges</div>
-            <ul>{st.discharged.map((o) => assumptionLine(o, hypotheses))}</ul>
+            <ul>{st.discharged.map((o) => assumptionLine(o, hypotheses, theory))}</ul>
           </div>
         )}
         <div className="sec">
           <div className="sec-title">Depends on</div>
-          {st.open.length === 0 ? <p className="muted">Nothing: it holds outright.</p> : <ul>{st.open.map((o) => assumptionLine(o, hypotheses))}</ul>}
+          {st.open.length === 0 ? <p className="muted">Nothing: it holds outright.</p> : <ul>{st.open.map((o) => assumptionLine(o, hypotheses, theory))}</ul>}
         </div>
         {d.note && (
           <div className="sec">

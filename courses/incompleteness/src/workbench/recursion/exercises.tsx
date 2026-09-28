@@ -12,6 +12,7 @@ import { COV_PRESETS, runCourseOfValues } from '../../engine/computability/recur
 import { Exercise } from '../../ui/Exercise';
 import { Tex } from '../../ui/Tex';
 import { nextPrime } from './entries';
+import { decodeSeq } from '../../engine/numbers/nat';
 
 const digits = (s: string) => s.replace(/[\s,_]/g, '');
 const numeric = (want: bigint, right: ReactNode, wrong: ReactNode) => (a: string) => {
@@ -213,10 +214,45 @@ export function ExBmiNone() {
 export function ExPriNext() {
   const want = nextPrime(13n);
   return (
-    <Exercise id="rec.pri.next" title="The next prime" placeholder="a number" check={numeric(want, <>17. The bound 13! + 1 = 6,227,020,801 is far away.</>, 'The least prime larger than 13.')}>
+    <Exercise
+      id="rec.pri.next"
+      title="The next prime"
+      placeholder="a number"
+      check={numeric(
+        want,
+        <>{String(want)} — far below the bound 13! + 1 = 6,227,020,801, so the bounded search finds it; the official definition still computes a row for every y up to the bound.</>,
+        'The least prime larger than 13.',
+      )}
+    >
       <p>
-        What is <Tex tex="\mathrm{nextPrime}(13)" />, and would bounded minimization with the bound <Tex tex="13! + 1" /> find it?
+        What is <Tex tex="\mathrm{nextPrime}(13)" />? (The book’s bound for this search is <Tex tex="13! + 1" />.)
       </p>
+    </Exercise>
+  );
+}
+
+export function ExSeqDecode() {
+  const d = decodeSeq(360n);
+  const want = d.ok ? d.items : [2n, 1n, 0n];
+  const wantText = want.join(', ');
+  return (
+    <Exercise
+      id="rec.seq.decode"
+      title="Reading a code"
+      placeholder="e.g. 4, 0, 7"
+      check={(a) => {
+        const t = a.trim().replace(/^[⟨<(\[]\s*|\s*[⟩>)\]]$/g, '');
+        const parts = t.split(/[\s,;]+/).filter(Boolean);
+        if (!parts.length || !parts.every((p) => /^\d+$/.test(p))) return { ok: false, message: 'Write the elements as numbers separated by commas.' };
+        const xs = parts.map(BigInt);
+        const ok = xs.length === want.length && xs.every((x, i) => x === want[i]);
+        if (ok) return { ok, message: <>360 = 2³ · 3² · 5¹, so the elements are the exponents minus one: ⟨{wantText}⟩.</> };
+        if (xs.length === want.length && xs.every((x, i) => x === want[i] + 1n)) return { ok: false, message: 'Those are the exponents. Each exponent is one more than the element.' };
+        return { ok: false, message: 'Factor 360 into powers of 2, 3, 5, … first.' };
+      }}
+      hint="Divide by 2 as often as you can, then by 3, then by 5."
+    >
+      <p>Which sequence does the number 360 code?</p>
     </Exercise>
   );
 }

@@ -23,30 +23,28 @@ The whole book — chapters 1–9 and appendices A–D — is converted from its
 | 1 Introduction | the book’s test for induction axioms, step by step; a Δ0 toy version of the diagonal argument for undecidability |
 | 2 Recursive functions | primitive recursion stepped row by row, composition, the book’s notations and their numbers, the library of official definitions down to zero/succ/projections, bounded minimization, primes, trees, course-of-values recursion, the g_n hierarchy and Ackermann, diagonalization, unbounded search, the halting diagonal |
 | 3 Arithmetization of syntax | formula ⇄ symbols ⇄ codes ⇄ Gödel number with traces; substitution and capture; `hSubst` on Gödel numbers; derivations coded exactly as the book defines them, and decoded |
-| 4 Representability in Q | a recursive-function builder; representing formulas linked to the computation; **checked** derivations in Q of both clauses; the β-function via Sunzi’s theorem; primitive recursion simulated with β; relations; Σ1 formulas and the Σ1-completeness argument |
+| 4 Representability in Q | a recursive-function builder; representing formulas linked to the computation; **checked** derivations in Q of both clauses, minimization included (with Q’s lemmas about `<` derived for the numbers needed); the β-function via Sunzi’s theorem; primitive recursion simulated with β; relations; Σ1 formulas and the Σ1-completeness argument |
 | 5 Incompleteness | the fixed-point construction keeping formula / Gödel number / numeral apart, with a **checked** derivation; a dependency explorer for the first theorem; Rosser’s race; the second incompleteness theorem, Löb and Tarski **checked** line by line from P1–P3, and a proof editor for the book’s problems |
 | 6 Computability and incompleteness | computation records with a decidable T and U (this edition’s coding), the normal-form search, s-m-n, the universal function, c.e. sets enumerated in stages, the race between a set and its complement, Craig’s trick, incompleteness via halting |
 | 7 Models of arithmetic | satisfaction traces, models of Q (why no finite structure satisfies Q1 and Q2), isomorphism search, reducts, non-standard order types (illustration), computable models |
 | 8 Second-order logic | second-order satisfaction on small domains (Inf, Fin, Count, identity, transitive closure), failure of compactness |
 | 9 λ-calculus | the Lambda Lab: clickable redexes, four strategies with fuel-bounded status, capture-avoiding substitution with its trace, α-renaming, reduction graphs, Church encodings, λ-definability, fixpoints |
-| A, C Derivations | an interactive natural deduction builder with the checker after every change, the book’s examples checked, a finite soundness lab, checked derivations in Q |
+| A, C Derivations | an interactive natural deduction builder with the checker after every change, the book’s examples checked, a finite soundness lab, checked derivations in Q (both halves of Rosser’s argument) and in PA with induction axioms recognised by the book’s test |
 | B First-order logic | formula anatomy, structures, assignments and x-variants, extensionality, countermodel search |
 
 The object a section works with persists across modes (and visits), so the same formula can be followed from intuition to workbench to the formal definition where the text uses it: Formal mode attaches computed panels to specific definitions and proofs.
 
-Where a checker or an evaluator found a slip in the printed text, the page shows both versions; the list is on the About page.
+Small slips in the printed text are corrected in place (see *Corrections* below).
 
-## Provenance
+## What is computed, checked and proved
 
-Every piece of content says what it is:
+The course is explicit about how each claim is established:
 
-- **Open Logic text** — converted from the upstream LaTeX; each theorem-like block links to its exact source lines at the pinned commit.
-- **Added** — written for this edition.
 - **Computed** — produced by the engine for the reader’s input. A computed example illustrates, it does not prove.
 - **Checked** — every inference verified by a checker (natural deduction, or — for chapter 5’s metatheorems — the derivability conditions plus truth tables). A checked derivation is about one sentence, not the general theorem; the course says so wherever one appears.
 - **Theorem** — a general result, proved in the text.
 
-The incompleteness dependency explorer is an *authored* analysis of the proofs and is labelled as such.
+Every theorem-like block of the text links to its exact source lines at the pinned upstream commit.
 
 ## Architecture
 
@@ -84,17 +82,21 @@ Design rules:
 - The engine never depends on the UI. Operations return structured results and traces (substitution steps, decoding stages, evaluation call trees, derivation checks); the UI renders them.
 - Formulas are typed trees, never strings of rendered LaTeX. Every node has an id; views mark elements with `data-n` so that hovering one occurrence highlights it — and its binder, and its symbols, codes and prime factors — in every view.
 - Huge numbers are exact but symbolic: a Gödel number is a sequence code whose elements may be runs (numerals of huge numbers) or named numbers (such as the code of `D_diag(x, y)`). Equality is structural and sound; digits are computed only on request.
-- Derivations are generated for concrete inputs and then *independently* checked; nothing is displayed as checked unless the checker accepted it. Where derivations are not generated (minimization), the course says so.
+- Derivations are generated for concrete inputs and then *independently* checked; nothing is displayed as checked unless the checker accepted it. Derivations are generated for every basic function, composition and minimization (with Q's lemmas about `<` derived for the numbers needed); where the course shows something unchecked, it says so.
 
 ## The conversion pipeline
 
 The converter follows the book’s driver `ic.tex` as LaTeX would: chapter and section imports, the book’s tags (`\iftag`, `\tagitem`), label qualification (`\olfileid`, `\ollabel`, `\olref`), and numbering per chapter. Macros are read from the upstream `.sty` files, so a notation change upstream flows through. A handful of macros defined with TeX primitives (`\gn`, `\pto`, `\mathbi`, …) are replaced explicitly in `scripts/latex/macros.ts`, each with its reason. Anything else unknown is an error in `src/content/source/report.json`, rendered visibly in the text, and fails `npm run build`.
 
+### Corrections
+
+Obvious slips in the book (a wrong index or equation reference, a misnamed function, a formula that does not say what the text means, typos) are corrected in the rendered text without comment. The corrections are applied to the LaTeX before conversion by `scripts/latex/errata.ts`, from `errata/<chapter>.json`: each entry gives the file, the exact passage, its replacement and a one-line reason. A passage must match exactly once; if an upstream change alters it (for instance because the slip was fixed there), conversion fails with `erratum-unmatched` and the entry can simply be deleted.
+
 ### Updating from upstream
 
 1. `npm run upstream:sync -- --openlogic <OpenLogic checkout> --ic <incompleteness-computability checkout>`
 2. `npm run convert` and review the diff of `src/content/source/` and `report.json`.
-3. Annotations attach to blocks by label, or by kind and position within a section (`inc.art.cod:defn:1`); check that they still sit where intended.
+3. Annotations attach to blocks by label, by kind and position within a section (`inc.art.cod:defn:1`), or, for plain paragraphs, by block id (`sol.set.crd/p12`); check that they still sit where intended.
 
 ## Conventions added by this edition
 
@@ -106,6 +108,5 @@ The book leaves some choices open; this edition fixes them and says so on the Ab
 
 ## Roadmap
 
-- Mechanise more of Q’s reasoning about `<` (so that minimization gets checked derivations, not only its computation).
-- Derivations in PA with induction instances.
+- The Rosser derivations still take the facts about Prf and Ref as hypotheses; deriving them from a concrete theory's proof predicate is out of reach at this size.
 - A universal function written as a partial recursive definition, so that its index can be shown.

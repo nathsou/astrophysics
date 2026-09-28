@@ -67,16 +67,25 @@ export function CountermodelLab({ initial = 0 }: { initial?: number }) {
         <label className="fi-label" htmlFor="cm-gamma">
           Γ (one sentence per line; may be empty)
         </label>
-        <textarea id="cm-gamma" className="sem-sentences" value={gamma} onChange={(e) => setGamma(e.target.value)} spellCheck={false} />
+        <textarea id="cm-gamma" className="sem-sentences" value={gamma} onChange={(e) => {
+            setGamma(e.target.value);
+            setResult(null);
+          }} spellCheck={false} />
         <label className="fi-label" htmlFor="cm-a">
           A
         </label>
-        <input id="cm-a" className="fi-field" value={a} onChange={(e) => setA(e.target.value)} spellCheck={false} />
+        <input id="cm-a" className="fi-field" value={a} onChange={(e) => {
+            setA(e.target.value);
+            setResult(null);
+          }} spellCheck={false} />
         {errors.length > 0 && <p className="fi-error">{errors.join('; ')}</p>}
         <div className="sem-options">
           <label className="sem-inline">
             domains of size 1 to
-            <input type="number" min={1} max={5} value={maxSize} onChange={(e) => setMaxSize(Math.max(1, Math.min(5, Number(e.target.value) || 3)))} />
+            <input type="number" min={1} max={5} value={maxSize} onChange={(e) => {
+                setMaxSize(Math.max(1, Math.min(5, Number(e.target.value) || 3)));
+                setResult(null);
+              }} />
           </label>
           <span className="wb-note">
             Structures to try for these symbols: {counts.map((c, i) => `size ${i + 1}: ${c.toLocaleString('en-US')}`).join(', ')} (at most 300,000 in all).

@@ -313,7 +313,9 @@ export type ParsedNotation = { ok: true; rf: RF; abbreviations: string[] } | { o
  * they must be right. The names add and mult may be used as abbreviations of the book's
  * definitions; they are reported in `abbreviations`.
  */
-export function parseNotation(src: string): ParsedNotation {
+export function parseNotation(input: string): ParsedNotation {
+  // TeX spellings as the book prints them: \mathrm{Comp}_{1,3}, \mathrm{succ}, …
+  const src = input.replace(/\\(?:mathrm|operatorname|text|fn)\s*\{\s*([A-Za-z]+)\s*\}/g, '$1');
   let i = 0;
   const abbreviations: string[] = [];
   class Fail extends Error {
@@ -345,8 +347,10 @@ export function parseNotation(src: string): ParsedNotation {
   /** _k, _{k}, _{k,n}, _k,n — returns the numbers given */
   const subscripts = (): number[] => {
     ws();
-    if (!peek('_')) return [];
-    expect('_');
+    // Comp2,3[ … ] and Rec1[ … ]: subscripts typed without “_”
+    const bare = /^\d/.test(src.slice(i));
+    if (!bare && !peek('_')) return [];
+    if (!bare) expect('_');
     if (peek('{')) {
       expect('{');
       const out = [num()];

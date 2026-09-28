@@ -1,0 +1,65 @@
+[
+  {
+    "repo": "OpenLogic",
+    "file": "content/second-order-logic/metatheory/second-order-arithmetic.tex",
+    "find": "\\lforall[w][u(x')=u\n (x)']",
+    "replace": "\\lforall[w][u(w')=u\n (w)']",
+    "why": "The recursion clause must hold for all w (u(n′) = u(n)′ for all n), not only at the free variable x."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/second-order-logic/metatheory/undecidability-and-axiomatizability.tex",
+    "find": "i.e., $\\Sat{M}{!P \\lif !A$}. Now consider",
+    "replace": "i.e., $\\Sat{M}{!P \\lif !A}$ for every~$\\Struct{M}$. Now consider",
+    "why": "Validity of P → A means truth in every structure M (and the closing $ was inside the braces)."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/second-order-logic/metatheory/compactness.tex",
+    "find": "there is some $k$ so that $!A^{\\ge k} \\in \\Gamma$ but no $!A^{\\ge n}\n\\in \\Gamma$ for $n>k$.",
+    "replace": "there is some $k$ so that $!A^{\\ge k} \\in \\Gamma_0$ but no $!A^{\\ge n}\n\\in \\Gamma_0$ for $n>k$.",
+    "why": "The claim is about the finite subset Γ₀; every A^{≥n} is in Γ."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/second-order-logic/sol-and-set-theory/cardinalities.tex",
+    "find": "\\eq[x][y])]] \\land {} \\\\\\lexists[y][(X(y) \\land \\lforall[x][(X(x)",
+    "replace": "\\eq[x][y])]] \\land \\lforall[x][(X(x) \\lif X(u(x)))] \\land {} \\\\\\lexists[y][(X(y) \\land \\lforall[x][(X(x)",
+    "why": "u must map X into X; otherwise finite sets satisfy Inf(X) (X = {0}, u swapping 0 and 1)."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/second-order-logic/sol-and-set-theory/cardinalities.tex",
+    "find": "\\lforall[x][(Y(x) \\lif Y(u(x)))]) \\lif X = Y])]])",
+    "replace": "\\lforall[x][(Y(x) \\lif Y(u(x)))]) \\lif X \\subseteq Y])]])",
+    "why": "X must be the smallest u-closed set containing z; with X = Y, taking Y = the domain forces X to be the whole domain."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/second-order-logic/sol-and-set-theory/cardinalities.tex",
+    "find": "is satisfied with respect to a variable assignment~$s$ iff $s(X)$ is\n!!{enumerable}.",
+    "replace": "is satisfied with respect to a variable assignment~$s$ iff $s(X)$ is\nnon-empty and !!{enumerable}.",
+    "why": "Count(X) requires X(z), so it is false for the empty set, which is enumerable."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/second-order-logic/sol-and-set-theory/cardinalities.tex",
+    "find": "$\\aleph_1$ iff all its subsets are finite or have size~$\\aleph_0$, but\nis not itself of size~$\\aleph_0$. Hence we can express this by the\nformula $\\fn{Aleph_1}(X) \\ident \\lforall[Y][(Y \\subseteq X \\lif\n  (\\lnot\\fn{Inf}(Y) \\lor \\fn{Aleph}_0(Y)))] \\land \\lnot\n\\fn{Aleph}_0(X)$.",
+    "replace": "$\\aleph_1$ iff it is infinite but not of size~$\\aleph_0$, and all its subsets are finite,\nhave size~$\\aleph_0$, or are of the same size as~$X$. Hence we can express this by the\nformula $\\fn{Aleph_1}(X) \\ident \\lforall[Y][(Y \\subseteq X \\lif\n  (\\lnot\\fn{Inf}(Y) \\lor \\fn{Aleph}_0(Y) \\lor \\cardeq{Y}{X}))] \\land \\fn{Inf}(X) \\land \\lnot\n\\fn{Aleph}_0(X)$.",
+    "why": "X is one of its own subsets, so as printed Aleph₁(X) holds exactly of the finite sets."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/second-order-logic/sol-and-set-theory/power-of-continuum.tex",
+    "find": "association between elements of $s(Y)$ and subsets of $s(Z)$ via",
+    "replace": "association between elements of $s(Y)$ and subsets of $s(X)$ via",
+    "why": "The coded subsets are subsets of s(X); there is no Z in Cont(Y)."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/second-order-logic/sol-and-set-theory/power-of-continuum.tex",
+    "find": "This is ruled out be the last conjunct",
+    "replace": "This is ruled out by the last conjunct",
+    "why": "Typo."
+  }
+]

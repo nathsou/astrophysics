@@ -9,7 +9,7 @@ import { tryParseFormula } from '../../engine/syntax/parse';
 import { freeVars } from '../../engine/syntax/ops';
 import { formulaText } from '../../engine/syntax/print';
 import { and, eq, numeral, not, or, v, type Formula } from '../../engine/syntax/ast';
-import { evaluateInN } from '../../engine/semantics/standard';
+import { classify, evaluateInN } from '../../engine/semantics/standard';
 import { lit } from '../../engine/numbers/nat';
 import { Prov } from '../../ui/Prov';
 import { Tex } from '../../ui/Tex';
@@ -45,6 +45,7 @@ export function DiagonalLab() {
     const problems = parsed.map((p) => {
       if (!p.ok) return p.error;
       if ([...freeVars(p.value)].some((i) => i !== 0)) return 'use x as the only free variable';
+      if (classify(p.value).level !== 'Δ0') return 'not Δ0: bound every quantifier, as in ∀y (y < t → …) or ∃y (y < t ∧ …)';
       return null;
     });
     const k = rows.length;

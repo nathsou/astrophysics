@@ -1,0 +1,121 @@
+[
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/representability-in-q/introduction.tex",
+    "find": "\\num{n_k}, y) \\lif \\num{m} = y)]$.",
+    "replace": "\\num{n_k}, y) \\lif \\eq[y][\\num{m}])]$.",
+    "why": "Clause (b) is used as y = m̄ everywhere else (next paragraph, all proofs)."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/representability-in-q/basic-representable.tex",
+    "find": "represented by the !!{formula} $x_0' = y$, and addition is represented\nby the !!{formula} $(x_0 + x_1) = y$.",
+    "replace": "represented by the !!{formula} $y = x_0'$, and addition is represented\nby the !!{formula} $y = (x_0 + x_1)$.",
+    "why": "The propositions state the formulas as y = x' and y = (x0 + x1)."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/representability-in-q/basic-representable.tex",
+    "find": "\\lforall[y][(\\eq[(\\num n + \\num m)][y] \\lif",
+    "replace": "\\lforall[y][(\\eq[y][(\\num n + \\num m)] \\lif",
+    "why": "The representing formula is y = (x0 + x1)."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/representability-in-q/basic-representable.tex",
+    "find": "Suppose we have $\\eq[(\\num{n} + \\num{m})][y]$. Since",
+    "replace": "Suppose we have $\\eq[y][(\\num{n} + \\num{m})]$. Since",
+    "why": "The representing formula is y = (x0 + x1)."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/representability-in-q/basic-representable.tex",
+    "find": "we can replace the left side with $\\num{n+m}$ and get\n$\\eq[\\num{n+m}][y]$, for arbitrary~$y$.",
+    "replace": "we can replace the right side with $\\num{n+m}$ and get\n$\\eq[y][\\num{n+m}]$, for arbitrary~$y$.",
+    "why": "Follows the orientation y = (n̄ + m̄) of the representing formula."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/representability-in-q/composition-representable.tex",
+    "find": "Using the proofs of \\olref[inc][req][cmp]{prop:rep2} and",
+    "replace": "Using the proofs of \\olref[inc][req][cmp]{prop:rep1} and",
+    "why": "The two propositions to follow are rep1 and rep2."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/representability-in-q/prim-rec.tex",
+    "find": "the function~$h(x,\\vec\nz)$ defined",
+    "replace": "the function~$h(\\vec x,\ny)$ defined",
+    "why": "The equations that follow define h(x⃗, y)."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/representability-in-q/comp-representable.tex",
+    "find": "that can be defined from $f$ and~$g$ can also be defined using",
+    "replace": "that can be defined from $f$ and~$g$ by primitive recursion can also be defined using",
+    "why": "The lemma is about definition by primitive recursion."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/representability-in-q/minimization-representable.tex",
+    "find": "  \\Th{Q} & \\Proves \\eq[(a' + \\num n')][(a' + \\num n)'] \\quad\n  \\text{by axiom $!Q_5$} \\ollabel{step5}\\\\\n  \\Th{Q} & \\Proves \\eq[(a' + \\num n')][(a + \\num n')'] \\quad\n  \\text{inductive hypothesis} \\ollabel{step6}\\\\\n  \\Th{Q} & \\Proves \\eq[(a' + \\num n)'][(a + \\num n')'] \\quad\n  \\text{by \\olref{step5} and \\olref{step6}.} \\notag",
+    "replace": "  \\Th{Q} & \\Proves \\eq[(a' + \\num n')][(a' + \\num n)'] \\quad \\text{by axiom $!Q_5$} \\ollabel{step5}\\\\\n  \\Th{Q} & \\Proves \\eq[(a' + \\num n)'][(a + \\num n)''] \\quad\n  \\text{inductive hypothesis} \\ollabel{step6}\\\\\n  \\Th{Q} & \\Proves \\eq[(a + \\num n')'][(a + \\num n)''] \\quad \\text{by axiom $!Q_5$} \\notag\\\\\n  \\Th{Q} & \\Proves \\eq[(a' + \\num n')][(a + \\num n')'] \\quad\n  \\text{by \\olref{step5}, \\olref{step6}, and~$!Q_5$.} \\notag",
+    "why": "The inductive hypothesis gives (a' + n̄)' = (a + n̄)'', and the goal is (a' + n̄') = (a + n̄')'; Q5 closes the gap."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/representability-in-q/minimization-representable.tex",
+    "find": "< b$ leads to a contradiction.",
+    "replace": "< b$ lead to a contradiction.",
+    "why": "Plural subject."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/representability-in-q/representable-comp.tex",
+    "find": "!!a{formula}~$!A(x_0, \\dots, x_k, y)$ such that",
+    "replace": "!!a{formula}~$!A_f(x_0, \\dots, x_k, y)$ such that",
+    "why": "The formula is called A_f in the display."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/representability-in-q/representable-comp.tex",
+    "find": "\\lif \\num{l} =\ny)]$.",
+    "replace": "\\lif\n\\eq[y][\\num{l}])]$.",
+    "why": "Clause (b) of the definition reads y = m̄."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/representability-in-q/representable-comp.tex",
+    "find": "\\num{n_k}, (s)_1)$. So looking",
+    "replace": "\\num{n_k}, \\num{(s)_1})$. So looking",
+    "why": "The argument is the numeral of (s)_1, as in the definition of R."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/representability-in-q/sigma1-completeness.tex",
+    "find": "\\eq[t_2][\\num n]$.",
+    "replace": "\\eq[t_2][\\num m]$.",
+    "why": "m is the value of t2."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/representability-in-q/sigma1-completeness.tex",
+    "find": "$\\Th{Q} \\Proves \\eq[\\num n + {\\num k}'][\\num m]$.",
+    "replace": "$\\Th{Q} \\Proves \\eq[{\\num k}' + \\num n][\\num m]$.",
+    "why": "Q cannot commute the summands; the first part of the lemma gives k̄' + n̄ = m̄ directly, which is what Q8 needs."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/representability-in-q/sigma1-completeness.tex",
+    "find": "By an external induction on~$m$ using~$!Q_5$,\n$\\eq[z' + \\num{n - m}][\\Obj 0]$.\nIf $m = n$ then $\\eq/[z'][\\Obj 0]$, giving a contradiction via~$!Q_3$.\nIf $m < n$ then $\\eq[(z' + \\num{n - m - 1})'][\\Obj 0]$ by~$!Q_5$ again,\ngiving a contradiction via~$!Q_3$.",
+    "replace": "By an external induction on~$m$ using~$!Q_5$ and~$!Q_1$,\n$\\eq[z' + \\num{n - m}][\\Obj 0]$.\nIf $m = n$ then $\\eq[z'][\\Obj 0]$ by~$!Q_4$, giving a contradiction via~$!Q_2$.\nIf $m < n$ then $\\eq[(z' + \\num{n - m - 1})'][\\Obj 0]$ by~$!Q_5$ again,\ngiving a contradiction via~$!Q_2$.",
+    "why": "Stripping successors needs Q1; z' + 0 = 0 gives z' = 0 by Q4; 0 is not a successor is Q2, not Q3."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/representability-in-q/sigma1-completeness.tex",
+    "find": "we can take an empty disjunction to be simply",
+    "replace": "we can take an empty conjunction to be simply",
+    "why": "The universal case is a conjunction; the empty conjunction is ⊤."
+  }
+]

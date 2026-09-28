@@ -1,0 +1,13 @@
+/* Appendix A, more derivations (MoreDerivations). Prefix: mdv- */
+.mdv .seg { margin-bottom: 10px; }
+.mdv .ndb-row .seg { margin-bottom: 0; }
+.mdv-field { display: inline-flex; align-items: center; gap: 6px; font-family: var(--sans); font-size: 14px; }
+.mdv-size { font-family: var(--sans); font-size: 12.5px; color: var(--muted); }
+.mdv-ind { border: 1px solid var(--rule); border-radius: 10px; background: var(--paper); padding: 8px 12px; margin: 10px 0; font-size: 13.5px; }
+.mdv-ind-title { font-weight: 700; font-size: 12.5px; margin-bottom: 4px; }
+.mdv-ind > ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.mdv-ind-f { overflow-x: auto; max-width: 100%; padding: 2px 0; }
+.mdv-ind-ok { color: var(--checked); font-weight: 600; font-size: 12.5px; }
+.mdv-ind-bad { color: var(--danger); font-weight: 600; font-size: 12.5px; }
+.mdv-ind-steps { margin: 4px 0 0; padding-left: 1.3em; color: var(--ink-2); font-size: 12.5px; line-height: 1.45; }
+.mdv-ind-steps li.bad { color: var(--danger); }

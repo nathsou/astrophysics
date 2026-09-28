@@ -99,11 +99,11 @@ export function TermView({ term, opts = {}, redexes, onContract, onBinder, next,
           const enter = () => setHover({ kind: 'bind', binder: t.id });
           return onBinder ? (
             <button key={i} type="button" className={`${cls} lam-binder-btn`} onMouseEnter={enter} onFocus={enter} onBlur={leave} onClick={() => onBinder(t.id)} aria-label={`Bound variable ${t.text}: rename it`} title="Hover: see what this λ binds. Click: rename it (α-conversion).">
-              {t.text}
+              <VarName name={t.text} />
             </button>
           ) : (
             <span key={i} className={cls} onMouseEnter={enter}>
-              {t.text}
+              <VarName name={t.text} />
             </span>
           );
         }
@@ -111,7 +111,7 @@ export function TermView({ term, opts = {}, redexes, onContract, onBinder, next,
           const b = binders.get(t.id) ?? null;
           return (
             <span key={i} className={`${cls} ${b ? 'lam-bound' : 'lam-free'}`} onMouseEnter={() => setHover(b ? { kind: 'bind', binder: b } : { kind: 'free', name: t.text })} title={b ? 'bound' : 'free'}>
-              {t.text}
+              <VarName name={t.text} />
             </span>
           );
         }
@@ -139,10 +139,23 @@ export function TermInline({ term, opts = {}, max = 160 }: { term: Term; opts?: 
     <span className="lam-inline">
       {out.map((t, i) => (
         <span key={i} className={`lam-t-${t.kind}`}>
-          {tokenText(t)}
+          {t.kind === 'var' || t.kind === 'binder' ? <VarName name={t.text} /> : tokenText(t)}
         </span>
       ))}
       {out.length < toks.length && '…'}
     </span>
+  );
+}
+
+/** A variable name as typed (x_1, x1, y'), with a trailing index drawn as a subscript: x₁. */
+export function VarName({ name }: { name: string }) {
+  const m = name.match(/^([a-z]+?)_?([0-9]+)(['′]*)$/);
+  if (!m) return <>{name}</>;
+  return (
+    <>
+      {m[1]}
+      <sub>{m[2]}</sub>
+      {m[3]}
+    </>
   );
 }

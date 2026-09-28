@@ -1,13 +1,25 @@
+import { ExSeqDecode } from '../../../workbench/recursion/exercises';
+
 <Added label="Added for this edition">
 
-Every Gödel number in this book is a *sequence code*. A finite sequence of numbers $\langle a_0, \ldots, a_k\rangle$ becomes the single number $2^{a_0+1} \cdot 3^{a_1 + 1} \cdots p_k^{a_k+1}$. Because factorisation into primes is unique, the sequence can be recovered from the number — and, crucially, by primitive recursive functions.
+The arithmetization of syntax codes formulas and derivations by *sequence codes*. A finite sequence $\langle a_0, \ldots, a_k\rangle$ becomes the single number $p_0^{a_0+1} \cdot p_1^{a_1 + 1} \cdots p_k^{a_k+1}$, with $p_0 = 2$, $p_1 = 3$, … the primes of <Ref k="cmp:rec:pri:sec" />. Because factorization into primes is unique, the sequence can be recovered from the number — and, crucially, by primitive recursive functions.
 
 </Added>
 
 ## Why add one?
 
-If the exponents were $a_i$ instead of $a_i + 1$, a zero entry would leave no trace: $\langle 2, 7, 3\rangle$ and $\langle 2, 7, 3, 0, 0\rangle$ would get the same number. With the $+1$, every entry — including $0$ — shows up as a prime that divides the code, and the length of the sequence is the number of consecutive primes that do.
+If the exponents were $a_i$ instead of $a_i + 1$, a zero entry would leave no trace: $\langle 2, 7, 3\rangle$ and $\langle 2, 7, 3, 0, 0\rangle$ would get the same number. With the $+1$, every entry — including $0$ — shows up as a prime that divides the code, and the length of the sequence is the number of consecutive primes, from $p_0$ on, that do. The empty sequence has no primes at all; the book lets both $0$ and $1$ code it, and writes $\Lambda$ for the first of these.
+
+Not every number is a code: $10 = 2 \cdot 5$ skips $p_1 = 3$. That does no harm — the functions below are only ever applied to codes, and on other numbers their values are simply meaningless.
 
 ## The operations
 
-The section shows four functions to be primitive recursive: $\mathrm{len}(s)$, the element $(s)_i$, $\mathrm{append}(s, a)$ and concatenation $s \frown t$. They are all the arithmetization of syntax needs: a formula’s Gödel number is a sequence code, its length is its number of symbols, and $(s)_i$ is the code of its $i$-th symbol. Try them in Explore mode on your own sequence.
+The section shows four functions to be primitive recursive: $\mathrm{len}(s)$, the element $(s)_i$, $\mathrm{append}(s, a)$ and concatenation $s \frown t$. Each is a bounded search or a primitive recursion over divisibility facts such as $p_i \mid s$ and $p_i^{a+1} \mid s$. For example, $(s)_i$ is the least $a$ such that $p_i^{a+2} \nmid s$: the exponent of $p_i$, minus one.
+
+These functions are what the arithmetization of syntax builds on: a formula’s Gödel number is the sequence code of the codes of its symbols, its length is its number of symbols, and $(s)_i$ is the code of its $i$-th symbol.
+
+## A bound on codes
+
+A sequence of length $k$ whose elements are all at most $x$ has a code at most $\mathrm{sequenceBound}(x, k) = p_{k-1}^{k \cdot (x+1)}$: at most $k$ prime factors, each at most $p_{k-1}$, each with exponent at most $x + 1$. With such a bound, a sequence can be *searched for* by bounded minimization, given a primitive recursive description of it — the book defines $s \frown t$ a second time this way.
+
+<ExSeqDecode />

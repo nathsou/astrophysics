@@ -6,13 +6,13 @@ Logic talks about formulas. Arithmetic talks about numbers. Gödel’s idea was 
 
 ## The plan of the chapter
 
-The construction comes in layers, and each layer is something you can take apart in this edition:
+The construction comes in layers, and each layer is something you can take apart in the workbenches:
 
-1. **Symbols get codes.** Every symbol — logical symbols, variables, constants, function and predicate symbols — gets a number, in such a way that the kind of symbol and its index can be read back from the number (Coding Symbols).
-2. **Strings get Gödel numbers.** A term or formula is a finite string of symbols; its Gödel number codes the sequence of the symbols’ codes (Coding Terms, Coding Formulas).
-3. **Properties become computations.** “Is the Gödel number of a formula”, “is a free occurrence of”, “is the result of substituting” all become *primitive recursive* relations and functions on these numbers.
+1. **Symbols get codes.** Every symbol — logical symbols, variables, constants, function and predicate symbols — gets a number, in such a way that the kind of symbol and its index can be read back from the number (<Ref k="inc:art:cod:sec" />).
+2. **Strings get Gödel numbers.** A term or formula is a finite string of symbols; its Gödel number codes the sequence of the symbols’ codes (<Ref k="inc:art:trm:sec" />, <Ref k="inc:art:frm:sec" />).
+3. **Properties become computations.** “Is the Gödel number of a formula”, “is a free occurrence of”, “is the result of substituting” all become *primitive recursive* relations and functions on these numbers (<Ref k="inc:art:frm:sec" />, <Ref k="inc:art:sub:sec" />), and so does “this is a derivation of that” (<Ref k="inc:art:pnd:sec" />).
 
-The third layer is the point. Primitive recursive functions are, as the next chapter shows, *representable* in very weak arithmetic. That is what lets arithmetic speak about its own syntax.
+The third layer is the point. Primitive recursive functions are, as <Ref k="inc:req::chap" /> shows, *representable* in the very weak theory $\mathbf Q$. That is what lets arithmetic speak about its own syntax.
 
 <Callout title="Your object">
 Throughout this chapter you work with one formula, shown at the top of the page. Right now it is <YourFormula />. Switch to **Explore** to see it become a number, or pick another:
@@ -24,5 +24,5 @@ Throughout this chapter you work with one formula, shown at the top of the page.
 We could study computable functions on strings directly. But the language of arithmetic has no names for strings — only $0$, successor, $+$, $\times$ and $<$. To have a theory of arithmetic like $\mathbf Q$ or $\mathbf{PA}$ reason about formulas, formulas have to be *made into* numbers. Nothing about this is deep in itself; what is striking is how much follows once it is done carefully.
 
 <Callout title="Three things to keep apart">
-In what follows there are **formulas** (strings of symbols), their **Gödel numbers** (natural numbers, usually astronomically large), and later **numerals** (terms like $0'''$ that *denote* numbers inside the language). This edition colours them differently: <span className="lane-chip formula">formula</span> <span className="lane-chip number">number</span> <span className="lane-chip numeral">numeral</span>.
+In what follows there are **formulas** (strings of symbols), their **Gödel numbers** (natural numbers, usually astronomically large), and later **numerals** (terms like $0'''$ that *denote* numbers inside the language). This edition colors them differently: <span className="lane-chip formula">formula</span> <span className="lane-chip number">number</span> <span className="lane-chip numeral">numeral</span>.
 </Callout>

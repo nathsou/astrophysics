@@ -3,6 +3,6 @@ import { SatisfactionLab } from '../../../workbench/semantics/SatisfactionLab';
 
 <VariantsTable />
 
-Evaluate a formula with free variables and change the values of *other* variables: nothing changes. For a sentence, the assignment makes no difference at all.
+The lab below asks only for the values of the free variables of your formula: by <Ref k="fol:syn:ass:prop:satindep" /> nothing else can make a difference. Put $\exists x$ in front of the formula and the assignment disappears: a sentence is true or false in the structure outright.
 
 <SatisfactionLab id="fol.syn.ass" formula="∃y R(x, y)" assign={{ x: '2' }} />

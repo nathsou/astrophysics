@@ -769,8 +769,8 @@
            "c": [
             {
              "t": "math",
-             "tex": "\\forall y \\, (A_f(\\overline{n_0}, \\dots, \\overline{n_k}, y) \\mathbin{\\rightarrow} \\overline{m} = y)",
-             "src": "\\lforall[y][(!A_f(\\num{n_0}, \\dots,\n\\num{n_k}, y) \\lif \\num{m} = y)]"
+             "tex": "\\forall y \\, (A_f(\\overline{n_0}, \\dots, \\overline{n_k}, y) \\mathbin{\\rightarrow} y = \\overline{m} )",
+             "src": "\\lforall[y][(!A_f(\\num{n_0}, \\dots,\n\\num{n_k}, y) \\lif \\eq[y][\\num{m}])]"
             },
             {
              "t": "text",
@@ -1091,8 +1091,8 @@
         },
         {
          "t": "math",
-         "tex": "A(x_0, \\dots, x_k, y)",
-         "src": "!A(x_0, \\dots, x_k, y)"
+         "tex": "A_f(x_0, \\dots, x_k, y)",
+         "src": "!A_f(x_0, \\dots, x_k, y)"
         },
         {
          "t": "text",
@@ -1220,8 +1220,8 @@
         },
         {
          "t": "math",
-         "tex": "\\forall y \\, (A_f(\\overline{n_0}, \\dots, \\overline{n_k}, y) \\mathbin{\\rightarrow} \\overline{l} = y)",
-         "src": "\\lforall[y][(!A_f(\\num{n_0}, \\dots, \\num{n_k}, y) \\lif \\num{l} =\ny)]"
+         "tex": "\\forall y \\, (A_f(\\overline{n_0}, \\dots, \\overline{n_k}, y) \\mathbin{\\rightarrow} y = \\overline{l} )",
+         "src": "\\lforall[y][(!A_f(\\num{n_0}, \\dots, \\num{n_k}, y) \\lif\n\\eq[y][\\num{l}])]"
         },
         {
          "t": "text",
@@ -1887,8 +1887,8 @@
         },
         {
          "t": "math",
-         "tex": "A_f(\\overline{n_0}, \\dots, \\overline{n_k}, (s)_1)",
-         "src": "A_f(\\num{n_0}, \\dots,\n\\num{n_k}, (s)_1)"
+         "tex": "A_f(\\overline{n_0}, \\dots, \\overline{n_k}, \\overline{(s)_1})",
+         "src": "A_f(\\num{n_0}, \\dots,\n\\num{n_k}, \\num{(s)_1})"
         },
         {
          "t": "text",
@@ -3920,8 +3920,8 @@
       },
       {
        "t": "math",
-       "tex": "h(x,\\vec z)",
-       "src": "h(x,\\vec\nz)"
+       "tex": "h(\\vec x, y)",
+       "src": "h(\\vec x,\ny)"
       },
       {
        "t": "text",
@@ -4562,8 +4562,8 @@
       },
       {
        "t": "math",
-       "tex": "x_0' = y",
-       "src": "x_0' = y"
+       "tex": "y = x_0'",
+       "src": "y = x_0'"
       },
       {
        "t": "text",
@@ -4580,8 +4580,8 @@
       },
       {
        "t": "math",
-       "tex": "(x_0 + x_1) = y",
-       "src": "(x_0 + x_1) = y"
+       "tex": "y = (x_0 + x_1)",
+       "src": "y = (x_0 + x_1)"
       },
       {
        "t": "text",
@@ -4658,10 +4658,10 @@
        "tex": "& \\overline{n} + \\overline{m} = \\overline{n+m} \\text{ and}"
       },
       {
-       "tex": "& \\forall y \\, ( (\\overline{n} + \\overline{m}) = y \\mathbin{\\rightarrow} y = \\overline{n+m} ) ."
+       "tex": "& \\forall y \\, ( y = (\\overline{n} + \\overline{m}) \\mathbin{\\rightarrow} y = \\overline{n+m} ) ."
       }
      ],
-     "src": "& \\eq[\\num n + \\num m][\\num {n+m}] \\text{ and}\\\\\n& \\lforall[y][(\\eq[(\\num n + \\num m)][y] \\lif \\eq[y][\\num{n+m}])].",
+     "src": "& \\eq[\\num n + \\num m][\\num {n+m}] \\text{ and}\\\\\n& \\lforall[y][(\\eq[y][(\\num n + \\num m)] \\lif \\eq[y][\\num{n+m}])].",
      "loc": {
       "repo": "OpenLogic",
       "file": "content/incompleteness/representability-in-q/basic-representable.tex",
@@ -6329,8 +6329,8 @@
         },
         {
          "t": "math",
-         "tex": "(\\overline{n} + \\overline{m}) = y",
-         "src": "\\eq[(\\num{n} + \\num{m})][y]"
+         "tex": "y = (\\overline{n} + \\overline{m})",
+         "src": "\\eq[y][(\\num{n} + \\num{m})]"
         },
         {
          "t": "text",
@@ -6367,7 +6367,7 @@
        "c": [
         {
          "t": "text",
-         "v": "we can replace the left side with "
+         "v": "we can replace the right side with "
         },
         {
          "t": "math",
@@ -6380,8 +6380,8 @@
         },
         {
          "t": "math",
-         "tex": "\\overline{n+m} = y",
-         "src": "\\eq[\\num{n+m}][y]"
+         "tex": "y = \\overline{n+m}",
+         "src": "\\eq[y][\\num{n+m}]"
         },
         {
          "t": "text",
@@ -7960,7 +7960,7 @@
         },
         {
          "t": "ref",
-         "key": "inc:req:cmp:prop:rep2"
+         "key": "inc:req:cmp:prop:rep1"
         },
         {
          "t": "text",
@@ -8486,15 +8486,18 @@
          "label": "inc:req:min:step5"
         },
         {
-         "tex": "\\mathbf{Q} & \\vdash (a' + \\overline{n}') = (a + \\overline{n}')' \\quad \\text{inductive hypothesis}",
+         "tex": "\\mathbf{Q} & \\vdash (a' + \\overline{n})' = (a + \\overline{n})'' \\quad \\text{inductive hypothesis}",
          "tag": "4.5",
          "label": "inc:req:min:step6"
         },
         {
-         "tex": "\\mathbf{Q} & \\vdash (a' + \\overline{n})' = (a + \\overline{n}')' \\quad \\text{by (4.4) and (4.5).}"
+         "tex": "\\mathbf{Q} & \\vdash (a + \\overline{n}')' = (a + \\overline{n})'' \\quad \\text{by axiom $Q_5$}"
+        },
+        {
+         "tex": "\\mathbf{Q} & \\vdash (a' + \\overline{n}') = (a + \\overline{n}')' \\quad \\text{by (4.4), (4.5), and $Q_5$.}"
         }
        ],
-       "src": "\\Th{Q} & \\Proves \\eq[(a' + \\num n')][(a' + \\num n)'] \\quad\n  \\text{by axiom $!Q_5$} \\ollabel{step5}\\\\\n  \\Th{Q} & \\Proves \\eq[(a' + \\num n')][(a + \\num n')'] \\quad\n  \\text{inductive hypothesis} \\ollabel{step6}\\\\\n  \\Th{Q} & \\Proves \\eq[(a' + \\num n)'][(a + \\num n')'] \\quad\n  \\text{by \\olref{step5} and \\olref{step6}.} \\notag",
+       "src": "\\Th{Q} & \\Proves \\eq[(a' + \\num n')][(a' + \\num n)'] \\quad \\text{by axiom $!Q_5$} \\ollabel{step5}\\\\\n  \\Th{Q} & \\Proves \\eq[(a' + \\num n)'][(a + \\num n)''] \\quad\n  \\text{inductive hypothesis} \\ollabel{step6}\\\\\n  \\Th{Q} & \\Proves \\eq[(a + \\num n')'][(a + \\num n)''] \\quad \\text{by axiom $!Q_5$} \\notag\\\\\n  \\Th{Q} & \\Proves \\eq[(a' + \\num n')][(a + \\num n')'] \\quad\n  \\text{by \\olref{step5}, \\olref{step6}, and~$!Q_5$.} \\notag",
        "loc": {
         "repo": "OpenLogic",
         "file": "content/incompleteness/representability-in-q/minimization-representable.tex",
@@ -10772,7 +10775,7 @@
         },
         {
          "t": "text",
-         "v": " leads to a contradiction."
+         "v": " lead to a contradiction."
         }
        ],
        "loc": {
@@ -11056,7 +11059,7 @@
         },
         {
          "t": "text",
-         "v": " can also be defined using composition and regular minimization from "
+         "v": " by primitive recursion can also be defined using composition and regular minimization from "
         },
         {
          "t": "math",
@@ -12727,7 +12730,7 @@
      "v": " completeness"
     }
    ],
-   "titleText": "Σ_1 completeness",
+   "titleText": "Σ1 completeness",
    "loc": {
     "repo": "OpenLogic",
     "file": "content/incompleteness/representability-in-q/sigma1-completeness.tex",
@@ -13948,8 +13951,8 @@
         },
         {
          "t": "math",
-         "tex": "\\mathbf{Q} \\vdash t_2 = \\overline{n}",
-         "src": "\\Th{Q} \\Proves \\eq[t_2][\\num n]"
+         "tex": "\\mathbf{Q} \\vdash t_2 = \\overline{m}",
+         "src": "\\Th{Q} \\Proves \\eq[t_2][\\num m]"
         },
         {
          "t": "text",
@@ -14132,8 +14135,8 @@
         },
         {
          "t": "math",
-         "tex": "\\mathbf{Q} \\vdash \\overline{n} + {\\overline{k}}' = \\overline{m}",
-         "src": "\\Th{Q} \\Proves \\eq[\\num n + {\\num k}'][\\num m]"
+         "tex": "\\mathbf{Q} \\vdash {\\overline{k}}' + \\overline{n} = \\overline{m}",
+         "src": "\\Th{Q} \\Proves \\eq[{\\num k}' + \\num n][\\num m]"
         },
         {
          "t": "text",
@@ -14297,6 +14300,15 @@
         },
         {
          "t": "text",
+         "v": " and "
+        },
+        {
+         "t": "math",
+         "tex": "Q_1",
+         "src": "!Q_1"
+        },
+        {
+         "t": "text",
          "v": ", "
         },
         {
@@ -14319,8 +14331,17 @@
         },
         {
          "t": "math",
-         "tex": "z' \\neq \\mathsfit{0}",
-         "src": "\\eq/[z'][\\Obj 0]"
+         "tex": "z' = \\mathsfit{0}",
+         "src": "\\eq[z'][\\Obj 0]"
+        },
+        {
+         "t": "text",
+         "v": " by "
+        },
+        {
+         "t": "math",
+         "tex": "Q_4",
+         "src": "!Q_4"
         },
         {
          "t": "text",
@@ -14328,8 +14349,8 @@
         },
         {
          "t": "math",
-         "tex": "Q_3",
-         "src": "!Q_3"
+         "tex": "Q_2",
+         "src": "!Q_2"
         },
         {
          "t": "text",
@@ -14364,8 +14385,8 @@
         },
         {
          "t": "math",
-         "tex": "Q_3",
-         "src": "!Q_3"
+         "tex": "Q_2",
+         "src": "!Q_2"
         },
         {
          "t": "text",
@@ -14592,7 +14613,7 @@
         },
         {
          "t": "text",
-         "v": ". Similarly, we can take an empty disjunction to be simply "
+         "v": ". Similarly, we can take an empty conjunction to be simply "
         },
         {
          "t": "math",

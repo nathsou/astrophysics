@@ -8,7 +8,7 @@ import { ExComSwap } from '../../../workbench/recursion/exercises';
 
 ## The rigid pattern
 
-In the book’s definition, $f$ is $k$-place and the inner functions $g_0, \ldots, g_{k-1}$ are all $n$-place, with the *same* arguments $x_0, \ldots, x_{n-1}$. To compute $h(\vec x)$: compute each $y_i = g_i(\vec x)$, then $f(y_0, \ldots, y_{k-1})$. If $f$ and the $g_i$ are computable, so is $h$.
+In the book’s definition, $f$ is $k$-place and the inner functions $g_0, \ldots, g_{k-1}$ are all $n$-place, with the *same* arguments $x_0, \ldots, x_{n-1}$. To compute $h(x_0, \ldots, x_{n-1})$: compute each $y_i = g_i(x_0, \ldots, x_{n-1})$, then $f(y_0, \ldots, y_{k-1})$. If $f$ and the $g_i$ are computable, so is $h$.
 
 ## Projections do the rearranging
 
@@ -17,9 +17,9 @@ Ordinary mathematical notation lets us ignore, repeat and reorder arguments free
 - **Ignoring** arguments: the step function of $\mathrm{add}$, $g(x, y, z) = \mathrm{succ}(z)$, is officially $\mathrm{succ}(P^3_2(x, y, z))$.
 - **Repeating** an argument: $h(x) = \mathrm{add}(x, x)$ is $\mathrm{add}(P^1_0(x), P^1_0(x))$.
 - **Reordering**: $h(x_0, x_1) = f(x_1, x_0)$ is $f(P^2_1(x_0, x_1), P^2_0(x_0, x_1))$.
-- **Mixing arities**: in $h(x, y) = f(x, g(x, x, y), y)$ the arguments of $f$ are built by different means; the book introduces an auxiliary $l(x, y) = g(P^2_0, P^2_0, P^2_1)(x, y)$ so that every inner function of the outer composition is 2-place.
+- **Mixing arities**: in $h(x, y) = f(x, g(x, x, y), y)$ the arguments of $f$ are built by different means; the book introduces an auxiliary $l(x, y) = g(P^2_0(x, y), P^2_0(x, y), P^2_1(x, y))$, so that $h$ is the composition of $f$ with the 2-place functions $P^2_0$, $l$ and $P^2_1$.
 
-The price is verbosity; the gain is that there is exactly one way of combining functions to reason about, which is what makes proofs *about all* primitive recursive functions short.
+The price is verbosity; the gain is a single, rigid form of composition to reason about, which is what keeps proofs *about all* primitive recursive functions short.
 
 <ExComSwap />
 

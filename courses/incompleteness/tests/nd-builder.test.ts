@@ -37,7 +37,7 @@ describe('the book’s derivations, as transcribed', () => {
     const e = exampleById(id)!;
     return check(e.build());
   };
-  it.each(ND_EXAMPLES.filter((e) => !e.incorrect && !e.discrepancy).map((e) => [e.id]))('%s is accepted by the checker', (id) => {
+  it.each(ND_EXAMPLES.filter((e) => !e.incorrect).map((e) => [e.id]))('%s is accepted by the checker', (id) => {
     const e = exampleById(id)!;
     const d = e.build();
     const r = check(d);
@@ -46,11 +46,10 @@ describe('the book’s derivations, as transcribed', () => {
     // every undischarged assumption is in Γ
     for (const o of r.open) expect(e.gamma.some((g) => formulaEq(g, o.formula))).toBe(true);
   });
-  it('the finished tree of Example “(¬A ∨ B) → (A → B)” has an unlabelled →Intro, which the checker rejects', () => {
+  it('the finished tree of Example “(¬A ∨ B) → (A → B)” has an unlabelled →Intro discharging nothing, which the book’s rules allow', () => {
     const r = verdict('pro-2');
-    expect(r.valid).toBe(false);
-    expect(r.errors.map((e) => e.message)).toEqual(['→Intro must name the label of the assumptions it discharges']);
-    expect(check(exampleById('pro-2')!.adapted!.build()).valid).toBe(true);
+    expect(r.errors.map((e) => e.message)).toEqual([]);
+    expect(r.valid).toBe(true);
   });
   it('the incorrect derivations are rejected with the eigenvariable condition', () => {
     expect(verdict('qrl-bad').errors.map((e) => ndMessage(e.message))).toEqual(['eigenvariable condition: a occurs in the undischarged assumption A(a)']);

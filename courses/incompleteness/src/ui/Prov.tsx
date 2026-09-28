@@ -34,7 +34,7 @@ export function Prov({ kind, children, title }: { kind: ProvKind; children?: Rea
 export function ProvLegend() {
   return (
     <ul className="legend sans">
-      {(['book', 'added', 'computed', 'checked', 'theorem'] as ProvKind[]).map((k) => (
+      {(['computed', 'checked', 'theorem'] as ProvKind[]).map((k) => (
         <li key={k}>
           <Prov kind={k} /> <span>{TITLE[k]}</span>
         </li>
@@ -43,11 +43,13 @@ export function ProvLegend() {
   );
 }
 
-/** A block of material written for this edition. */
+/** A set-off block: a section's summary, or a panel attached to the text. A generic label
+ *  (“Added for this edition”) is not shown; a descriptive one becomes the block's heading. */
 export function Added({ children, label }: { children: React.ReactNode; label?: string }) {
+  const heading = label?.replace(/^(a note )?added for this edition(:\s*)?/i, '').trim();
   return (
     <div className="added-block">
-      <Prov kind="added">{label}</Prov>
+      {heading && <div className="added-kicker">{heading.charAt(0).toUpperCase() + heading.slice(1)}</div>}
       {children}
     </div>
   );

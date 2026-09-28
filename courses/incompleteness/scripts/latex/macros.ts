@@ -48,6 +48,11 @@ export const OVERRIDES: Record<string, { args: string; body: string; why: string
   iddots: { args: '', body: '\\mathinner{\\kern1mu\\raisebox{0.1em}{.}\\kern2mu\\raisebox{0.4em}{.}\\kern2mu\\raisebox{0.7em}{.}}', why: 'from the mathdots package, unknown to KaTeX' },
   VDash: { args: '', body: '\\mathrel{|}\\!\\vDash', why: 'defined in assignments.tex with \\joinrel and \\Relbar, which KaTeX lacks' },
   nsless: { args: '', body: '\\mathbin{\\ominus}', why: '\\varolessthan comes from the stmaryrd font' },
+  xrightarrowdbl: {
+    args: 'o m',
+    body: '\\IfNoValueTF{#1}{\\mathrel{\\overset{#2}{\\twoheadrightarrow}}}{\\mathrel{\\underset{#1}{\\overset{#2}{\\twoheadrightarrow}}}}',
+    why: 'upstream overlaps \\xrightarrow{} and \\rightarrow with \\mkern; KaTeX gives \\xrightarrow a minimum width, so the arrow came out long enough to overflow narrow screens',
+  },
 };
 
 /** TeX/LaTeX commands with a direct KaTeX equivalent, applied while expanding. */

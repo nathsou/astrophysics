@@ -12,6 +12,8 @@
 //   ⟨M, N⟩ or <M, N>: the pair λf.f M N (section "Pairs and Predecessor");
 //   Uppercase names (K, Y, Succ, IsZero, Ω, …): expanded from `defs` (default: BOOK_DEFS). An
 //     exact match is tried first, then a case-insensitive one (so SUCC and TRUE work too).
+//   The words true and false, written in lowercase as the book writes them, are the truth values
+//     (when `defs` define True/False), not variables.
 // Each expansion is a fresh copy (fresh ids), labelled with its name.
 
 import type { Term } from './term.ts';
@@ -62,7 +64,11 @@ function lex(src: string, singleLetter: boolean): Tok[] {
     else if (ch === '(' || ch === ')' || ch === ',') toks.push({ k: ch, text: ch, pos: i++ });
     else if (ch === '⟨' || ch === '<') toks.push({ k: '<', text: ch, pos: i++ });
     else if (ch === '⟩' || ch === '>') toks.push({ k: '>', text: ch, pos: i++ });
-    else if ((m = rest.match(singleLetter ? /^[a-z](?:_?[0-9]+)?['′]*/ : /^[a-z][a-z0-9_'′]*/))) {
+    else if ((m = rest.match(/^(?:true|false)(?![A-Za-z0-9_'′])/))) {
+      // the book's truth values, written in lowercase as the book writes them
+      toks.push({ k: 'name', text: m[0], pos: i });
+      i += m[0].length;
+    } else if ((m = rest.match(singleLetter ? /^[a-z](?:_?[0-9]+)?['′]*/ : /^[a-z][a-z0-9_'′]*/))) {
       toks.push({ k: 'var', text: primes(m[0]), pos: i });
       i += m[0].length;
     } else if ((m = rest.match(/^[A-ZΑ-Ω][A-Za-z0-9_'′]*/))) {
@@ -131,7 +137,10 @@ class Parser {
     while (this.peek.k === 'var') params.push(this.next().text);
     if (params.length === 0) {
       const t = this.peek;
-      throw new LambdaParseError(t.k === 'name' ? `a bound variable must be lowercase, not “${t.text}”` : 'expected a variable after λ', t.pos);
+      throw new LambdaParseError(
+        t.k === 'name' ? (/^(true|false)$/.test(t.text) ? `“${t.text}” is the truth value, not a variable` : `a bound variable must be lowercase, not “${t.text}”`) : 'expected a variable after λ',
+        t.pos,
+      );
     }
     this.expect('dot', '“.” after the bound variables');
     const body = this.term();
@@ -150,6 +159,8 @@ class Parser {
         return churchNumeral(n);
       }
       case 'name':
+        // lowercase true/false without a definition to expand: an ordinary variable
+        if (/^[a-z]/.test(t.text) && !Object.keys(this.defs).some((k) => k.toLowerCase() === t.text)) return variable(t.text);
         return this.named(t);
       case '(': {
         const m = this.term();

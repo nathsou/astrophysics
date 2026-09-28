@@ -59,7 +59,7 @@
       },
       {
        "t": "text",
-       "v": " sets of symbols, this is possible for some models of computation. But other models of computation—such as the recursive functions—-are restricted to numbers, their relations and functions. Moreover, ultimately we also want to be able to deal with syntax within certain theories, specifically, in theories formulated in the language of arithmetic. In these cases it is necessary to "
+       "v": " sets of symbols, this is possible for some models of computation. But other models of computation—such as the recursive functions—are restricted to numbers, their relations and functions. Moreover, ultimately we also want to be able to deal with syntax within certain theories, specifically, in theories formulated in the language of arithmetic. In these cases it is necessary to "
       },
       {
        "t": "em",
@@ -507,7 +507,7 @@
       },
       {
        "t": "text",
-       "v": ", the arithmetized substitution functions maps the Gödel numbers "
+       "v": ", the arithmetized substitution function maps the Gödel numbers "
       },
       {
        "t": "math",
@@ -3614,7 +3614,7 @@
         },
         {
          "t": "text",
-         "v": " iff there is formation sequence "
+         "v": " iff there is a formation sequence "
         },
         {
          "t": "math",
@@ -3637,7 +3637,7 @@
         {
          "t": "term",
          "token": "formula",
-         "v": "formula"
+         "v": "formulas"
         },
         {
          "t": "text",
@@ -3668,16 +3668,7 @@
         },
         {
          "t": "text",
-         "v": " (and indeed of the code of the sequence "
-        },
-        {
-         "t": "math",
-         "tex": "\\langle s_0, \\dots, s_{k-1} \\rangle",
-         "src": "\\tuple{s_0, \\dots, s_{k-1}}"
-        },
-        {
-         "t": "text",
-         "v": ") is less than the code "
+         "v": " is at most the code "
         },
         {
          "t": "math",
@@ -3692,6 +3683,23 @@
          "t": "math",
          "tex": "s",
          "src": "s"
+        },
+        {
+         "t": "text",
+         "v": ", and the code of the sequence "
+        },
+        {
+         "t": "math",
+         "tex": "\\langle {^{\\reflectbox{\\tiny\\#}}}{s_0}{^{\\text{\\tiny\\#}}}, \\dots, {^{\\reflectbox{\\tiny\\#}}}{s_{k-1}}{^{\\text{\\tiny\\#}}} \\rangle",
+         "src": "\\tuple{\\Gn{s_0}, \\dots, \\Gn{s_{k-1}}}"
+        },
+        {
+         "t": "text",
+         "v": " is bounded as in the proof of "
+        },
+        {
+         "t": "ref",
+         "key": "inc:art:trm:prop:term-primrec"
         },
         {
          "t": "text",
@@ -4435,6 +4443,10 @@
         {
          "t": "ref",
          "key": "inc:art:sub:prop:free-for"
+        },
+        {
+         "t": "text",
+         "v": "."
         }
        ],
        "loc": {
@@ -7889,8 +7901,8 @@
         },
         {
          "t": "math",
-         "tex": "(\\exists j<(d')_0)\\; d = (d')_j",
-         "src": "\\bexists{j<(d')_0}{d = (d')_j}"
+         "tex": "(\\exists j<(d')_0)\\; d = (d')_{j+1}",
+         "src": "\\bexists{j<(d')_0}{d = (d')_{j+1}}"
         },
         {
          "t": "text",
@@ -8546,8 +8558,8 @@
     },
     {
      "t": "term",
-     "token": "decidable",
-     "v": "decidable"
+     "token": "axiomatizable",
+     "v": "axiomatizable"
     },
     {
      "t": "text",

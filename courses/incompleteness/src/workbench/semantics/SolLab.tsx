@@ -4,8 +4,8 @@
 
 import { useMemo, useState } from 'react';
 import {
-  S, showSolValue, solAssignment, solCount, solCountSet, solCountSetAsPrinted, solEquinumerous, solFin, solIdentity, solIdentityImp, solInduction, solInf,
-  solInfSet, solInfSetAsPrinted, solLeq, solNoLarger, solSatisfies, solSchroederBernstein, solSubset, solText, solTransitiveClosure, relVarName,
+  S, showSolValue, solAssignment, solAleph0Set, solAleph1Set, solCount, solCountSet, solEquinumerous, solFin, solIdentity, solIdentityImp, solInduction, solInf,
+  solInfSet, solLeq, solNoLarger, solSatisfies, solSchroederBernstein, solSubset, solText, solTransitiveClosure, relVarName,
   type RelVar, type SolFormula, type SolTrace,
 } from '../../engine/semantics/sol';
 import { GENERIC, showElem, tuples, type Elem, type Structure } from '../../engine/semantics/structure';
@@ -41,7 +41,7 @@ export const SOL_PRESETS: Preset[] = [
 
   { id: 'inf', label: 'Inf: the domain is infinite', note: 'An injective function u that is not surjective exists iff the domain is (Dedekind) infinite.', build: solInf },
   { id: 'fin', label: 'Fin ≡ ¬Inf: the domain is finite', note: 'The negation of Inf.', build: solFin },
-  { id: 'count', label: 'Count: the domain is enumerable', note: 'Some z and u such that z, u(z), u(u(z)), … exhaust the domain: every u-closed set containing z is everything.', build: solCount },
+  { id: 'count', label: 'Count: the domain is countable', note: 'Some z and u such that z, u(z), u(u(z)), … exhaust the domain: every u-closed set containing z is everything.', build: solCount },
   { id: 'id', label: '∀X (X(x) ↔ X(y)): identity without =', note: 'x and y are elements of the same subsets iff they are the same element.', build: solIdentity, obj: ['x', 'y'] },
   { id: 'idimp', label: '∀X (X(x) → X(y)): also identity', note: 'The book’s problem: → suffices, because X may be {x}.', build: solIdentityImp, obj: ['x', 'y'] },
   { id: 'tc', label: 'R*(X): X is the transitive closure of R', note: 'X is transitive, includes R, and is included in every transitive relation Y that includes R.', build: () => solTransitiveClosure(GENERIC.R(2), X2), rel: [X2], needs: 'R' },
@@ -49,11 +49,11 @@ export const SOL_PRESETS: Preset[] = [
   { id: 'le', label: 'X ≼ Y: X is no larger than Y', note: 'Some injective u maps X into Y.', build: () => solNoLarger(X1, Y1), rel: [X1, Y1] },
   { id: 'eqn', label: 'X ≈ Y: X and Y are equinumerous', note: 'Some injective u maps X onto Y.', build: () => solEquinumerous(X1, Y1), rel: [X1, Y1] },
   { id: 'sb', label: 'Schröder–Bernstein: ∀X ∀Y ((X ≼ Y ∧ Y ≼ X) → X ≈ Y)', note: 'A valid sentence; here it is checked on one small domain.', build: solSchroederBernstein },
-  { id: 'infX', label: 'Inf(X), as printed in the book', note: 'As printed, u is not required to map X into X — see what happens with a finite X.', build: () => solInfSetAsPrinted(X1), rel: [X1] },
-  { id: 'infXfixed', label: 'Inf(X), with ∀x (X(x) → X(u(x))) added', note: 'u must map X injectively into X, missing some element of X.', build: () => solInfSet(X1), rel: [X1] },
-  { id: 'countX', label: 'Count(X), as printed in the book', note: 'As printed the last conjunct is X = Y — and Y may be the whole domain.', build: () => solCountSetAsPrinted(X1), rel: [X1] },
-  { id: 'countXfixed', label: 'Count(X), with X ⊆ Y in place of X = Y', note: 'X is the smallest u-closed set containing z.', build: () => solCountSet(X1), rel: [X1] },
-  { id: 'ind', label: 'The induction axiom of PA²', note: '∀X ((X(0) ∧ ∀x (X(x) → X(x′))) → ∀x X(x)).', build: solInduction, needs: 'arith' },
+  { id: 'infX', label: 'Inf(X): s(X) is infinite', note: 'u maps X injectively into X and misses some element of X — impossible for a finite X.', build: () => solInfSet(X1), rel: [X1] },
+  { id: 'countX', label: 'Count(X): s(X) is countable', note: 'X contains z and is included in every u-closed set containing z, so X is z, u(z), u(u(z)), …', build: () => solCountSet(X1), rel: [X1] },
+  { id: 'aleph0', label: 'Aleph₀(X) ≡ Inf(X) ∧ Count(X)', note: 's(X) is countably infinite — false for every set on a finite domain.', build: () => solAleph0Set(X1), rel: [X1] },
+  { id: 'aleph1', label: 'Aleph₁(X): s(X) has size ℵ₁', note: 'X is infinite but not of size ℵ₀, and each subset is finite, of size ℵ₀ or as large as X (the quantifier is written Z here, since Inf and Count use Y). No finite set satisfies it.', build: () => solAleph1Set(X1), rel: [X1] },
+  { id: 'ind', label: 'The induction axiom of PA²', note: 'Every set containing 0 and closed under successor is the whole domain.', build: solInduction, needs: 'arith' },
   { id: 'leq', label: 'A≤(x, y): x ≤ y in PA²†', note: 'Every set containing x and closed under successor contains y (bound variable renamed z).', build: solLeq, obj: ['x', 'y'], needs: 'arith' },
 ];
 
@@ -76,7 +76,7 @@ export function SolLab({ id = 'sol', presets, initial = 'inf', structure = { kin
     const ok = v && v.length === n && (X.arity === 1 ? typeof v[0] === 'boolean' || n === 0 : Array.isArray(v[0]));
     if (ok) return v;
     if (X.arity === 1) return Array.from({ length: n }, (_, i) => i === 0);
-    // transitive closure default: the true closure of R if there is one, else empty
+    // two-place (the transitive closure preset): start from the empty relation
     return Array.from({ length: n }, () => Array.from({ length: n }, () => false));
   };
   const s = useMemo(() => {
@@ -90,7 +90,7 @@ export function SolLab({ id = 'sol', presets, initial = 'inf', structure = { kin
       }),
     });
   }, [M, preset, obj, rels, n]);
-  const trace = useMemo(() => (M && s ? solSatisfies(M, s, F, { maxSteps: 1_500_000 }) : null), [M, s, F]);
+  const trace = useMemo(() => (M && s ? solSatisfies(M, s, F, { maxSteps: 1_500_000, maxCandidates: 20_000 }) : null), [M, s, F]);
   const setPreset = (pid: string) => store.set({ ...st, formula: pid });
 
   return (
@@ -201,11 +201,11 @@ function SolResult({ trace, M }: { trace: SolTrace; M: Structure }) {
         <span>
           {trace.truth === 'unknown' ? (
             <>
-              <b>Not evaluated.</b> {trace.reason}
+              <b>Not evaluated.</b> {trace.reason}. Choose a smaller domain.
             </>
           ) : (
             <>
-              <b>{trace.truth ? 'Satisfied.' : 'Not satisfied.'}</b> {trace.detail}
+              <b>{trace.truth ? 'Satisfied.' : 'Not satisfied.'}</b> {q ? trace.detail : `${trace.clause} — ${trace.detail}`}
             </>
           )}
         </span>

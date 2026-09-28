@@ -7,9 +7,12 @@ import { mdxComponents } from './ui/mdx';
 import { SectionPage } from './pages/SectionPage';
 import { Home } from './pages/Home';
 import { About } from './pages/About';
+import { SearchDialog } from './ui/Search';
+import { IndexPage } from './pages/IndexPage';
+import { installScrollFocus } from './ui/scrollFocus';
 
 export interface Route {
-  page: 'home' | 'about' | 'section';
+  page: 'home' | 'about' | 'index' | 'section';
   section?: string;
   params: URLSearchParams;
 }
@@ -20,6 +23,7 @@ function parseRoute(): Route {
   const params = new URLSearchParams(query ?? '');
   if (path.startsWith('s/')) return { page: 'section', section: path.slice(2), params };
   if (path === 'about') return { page: 'about', params };
+  if (path === 'index') return { page: 'index', params };
   return { page: 'home', params };
 }
 
@@ -33,7 +37,7 @@ function useRoute(): Route {
   return r;
 }
 
-function Sidebar({ route, open, onNav }: { route: Route; open: boolean; onNav: () => void }) {
+function Sidebar({ route, open, onNav, onSearch }: { route: Route; open: boolean; onNav: () => void; onSearch: () => void }) {
   const theme = useStore(themeStore);
   const cycle = () => {
     const next: Theme = theme === 'system' ? 'light' : theme === 'light' ? 'dark' : 'system';
@@ -50,6 +54,10 @@ function Sidebar({ route, open, onNav }: { route: Route; open: boolean; onNav: (
         </span>
       </a>
       <div className="sidebar-tools">
+        <button className="chip-btn search-btn" onClick={onSearch} title="Search (/ or Ctrl+K)">
+          ⌕ Search <kbd>/</kbd>
+        </button>
+        <a className="chip-btn" href="#/index">Index</a>
         <a className="chip-btn" href="#/about">About &amp; sources</a>
         <button className="chip-btn" onClick={cycle} title={`Theme: ${theme}`}>
           {theme === 'system' ? '◐ system' : theme === 'dark' ? '☾ dark' : '☀ light'}
@@ -68,7 +76,7 @@ function Sidebar({ route, open, onNav }: { route: Route; open: boolean; onNav: (
               {c.sections.map((s) => {
                 const interactive = isInteractive(s.id);
                 return (
-                  <a key={s.id} href={`#/s/${s.id}`} className={`${route.section === s.id ? 'active' : ''} ${interactive ? '' : 'text-only'}`} title={planOf(s.id)?.blurb ?? 'Book text (Formal mode only, for now)'}>
+                  <a key={s.id} href={`#/s/${s.id}`} className={`${route.section === s.id ? 'active' : ''} ${interactive ? '' : 'text-only'}`} title={planOf(s.id)?.blurb ?? 'The book’s text (Formal mode)'}>
                     <span className="num">{s.number}</span>
                     <span>{s.title}</span>
                     {interactive && <span className="dot" aria-label="interactive" />}
@@ -89,26 +97,48 @@ function Sidebar({ route, open, onNav }: { route: Route; open: boolean; onNav: (
 export function App() {
   const route = useRoute();
   const [open, setOpen] = useState(false);
+  const [searching, setSearching] = useState(false);
   useEffect(() => applyTheme(themeStore.get(), false), []);
+  useEffect(() => {
+    const main = document.getElementById('main');
+    return main ? installScrollFocus(main) : undefined;
+  }, []);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      const typing = !!t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable);
+      if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) || (e.key === '/' && !typing && !e.metaKey && !e.ctrlKey && !e.altKey)) {
+        e.preventDefault();
+        setSearching(true);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
   let page;
   if (route.page === 'section' && route.section) page = <SectionPage key={route.section} id={route.section} params={route.params} />;
   else if (route.page === 'about') page = <About />;
+  else if (route.page === 'index') page = <IndexPage />;
   else page = <Home />;
   return (
     <MDXProvider components={mdxComponents}>
       <a className="skip" href="#main">Skip to content</a>
       <div className="app">
-        <Sidebar route={route} open={open} onNav={() => setOpen(false)} />
+        <Sidebar route={route} open={open} onNav={() => setOpen(false)} onSearch={() => setSearching(true)} />
         <main className="main" id="main">
           <div className="mobile-bar">
             <button className="chip-btn" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
               ☰ Contents
             </button>
             <span>Incompleteness and Computability</span>
+            <button className="chip-btn" onClick={() => setSearching(true)} aria-label="Search">
+              ⌕ Search
+            </button>
           </div>
           {page}
         </main>
       </div>
+      <SearchDialog open={searching} onClose={() => setSearching(false)} />
     </MDXProvider>
   );
 }

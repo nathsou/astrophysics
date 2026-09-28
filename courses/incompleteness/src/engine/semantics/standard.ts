@@ -8,7 +8,7 @@
 //   is ∀x B(x) with B Δ0.
 //
 // Conventions of this implementation:
-//   – the shapes are recognised literally in the AST: ∀x (x < t → B) and ∃x (x < t ∧ B), with
+//   – the shapes are recognized literally in the AST: ∀x (x < t → B) and ∃x (x < t ∧ B), with
 //     x itself on the left of <; the book says "t is any term", but x must not occur in t (so
 //     that the bound does not depend on x) for the quantifier to be bounded — otherwise, e.g.
 //     ∀x (x < x′ → B) quantifies over all of ℕ;

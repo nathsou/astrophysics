@@ -22,9 +22,9 @@ $$
 
 $\mathrm{Not}$ lets $x$ choose between $\mathrm{false}$ and $\mathrm{true}$. $\mathrm{And}$ lets $x$ choose between $y$ (if $x$ is true, the answer is whatever $y$ is) and $\mathrm{false}$.
 
-These terms are only meant for truth values. Nothing stops us from writing $\mathrm{And}\,\overline 2\,\overline 3$; it has a normal form, but not a truth value. There are no types to rule it out — try it in Explore mode.
+These terms are only meant for truth values. Nothing stops us from writing $\mathrm{Not}\,\overline 2$: it reduces to $\lambda y.\,y$, the identity — a normal form, but not a truth value. ($\mathrm{And}\,\overline 2\,\overline 3$ happens to reduce to $\mathrm{false}$, which is the same term as $\overline 0$.) There are no types to rule such terms out; try them in the Lab in Explore mode.
 
-Problem 9.4 of the book asks for $\mathrm{Or}$ and $\mathrm{Xor}$. Here you can check your answers: they are reduced on all four combinations of arguments.
+The section's problem asks for $\mathrm{Or}$ and $\mathrm{Xor}$. Here you can check your answers: they are reduced on all four combinations of arguments.
 
 <ExLamOr />
 

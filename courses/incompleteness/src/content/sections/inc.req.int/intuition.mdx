@@ -10,7 +10,7 @@ $\mathbf Q$ has eight axioms: successor is injective and never $0$, every number
 
 ## What representing means
 
-A formula $A_f(x_0, \ldots, x_k, y)$ represents $f$ if, whenever $f(n_0, \ldots, n_k) = m$, $\mathbf Q$ proves
+A formula $A_f(x_0, \ldots, x_k, y)$ represents $f$ in $\mathbf Q$ (<Ref k="inc:req:int:defn:representable-fn" />) if, whenever $f(n_0, \ldots, n_k) = m$, $\mathbf Q$ proves
 
 - (a) $A_f(\overline{n_0}, \ldots, \overline{n_k}, \overline m)$ — the formula holds of the right value, and
 - (b) $\forall y\,(A_f(\overline{n_0}, \ldots, \overline{n_k}, y) \rightarrow y = \overline m)$ — and of no other.
@@ -19,7 +19,7 @@ So inside $\mathbf Q$, the formula behaves exactly like the graph of $f$ — one
 
 ## The strategy
 
-The book shows every computable function is representable by building formulas for a small set of basic functions (zero, successor, projections, addition, multiplication, $\chi_=$) and showing composition and minimization preserve representability. Primitive recursion is avoided: the β-function shows it can be replaced by minimization.
+The book shows every computable function is representable (the harder half of <Ref k="inc:req:int:thm:representable-iff-comp" />) by building formulas for a small set of basic functions (zero, successor, projections, addition, multiplication, $\chi_=$) and showing composition and minimization preserve representability. Primitive recursion is avoided: the β-function shows it can be replaced by regular minimization (<Ref k="inc:req:pri:sec" />).
 
 In Explore mode you build a function from those pieces, compute it, and see its representing formula grow part by part — and the derivations in $\mathbf Q$ of both clauses for your input, generated from the computation and checked step by step.
 

@@ -30,7 +30,7 @@ export function ConditionInstances() {
     { name: 'P2', kind: 'derivable', body: A && B && `T \\vdash ${tex(imp(P(imp(A, B)), imp(P(A), P(B))))}` },
     { name: 'P3', kind: 'derivable', body: A && `T \\vdash ${tex(imp(P(A), P(P(A))))}` },
     { name: 'P4', kind: 'rule, not needed', body: A && `\\text{if } T \\vdash ${tex(P(A))} \\text{ then } T \\vdash ${tex(A)}` },
-    { name: 'reflection', kind: 'derivable only if T ⊢ A (Löb)', body: A && `T \\vdash ${tex(imp(P(A), A))}\;?` },
+    { name: 'reflection', kind: 'derivable exactly when T ⊢ A (Löb)', body: A && `T \\vdash ${tex(imp(P(A), A))}\\;?` },
   ];
   return (
     <div className="workbench pv">

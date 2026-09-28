@@ -29,9 +29,8 @@ export function termTex(t: Term, o: PrintOptions = {}): string {
     }
     case 'app': {
       if (t.arity === 1 && t.index === 0) {
-        const a = t.args[0];
-        const inner = termTex(a, o);
-        return a.k === 'app' && a.arity === 2 ? `(${inner})'` : `${inner}'`;
+        // Sums and products already print with their parentheses: (x + y)′, not ((x + y))′.
+        return `${termTex(t.args[0], o)}'`;
       }
       if (t.arity === 2 && (t.index === 0 || t.index === 1)) return `(${termTex(t.args[0], o)} ${fnTex(2, t.index)} ${termTex(t.args[1], o)})`;
       return `${fnTex(t.arity, t.index)}(${t.args.map((a) => termTex(a, o)).join(', ')})`;
@@ -86,9 +85,7 @@ export function termText(t: Term): string {
       return t.value.k === 'lit' ? t.value.v.toString() : `#${show(t.value)}`;
     case 'app': {
       if (t.arity === 1 && t.index === 0) {
-        const a = t.args[0];
-        const inner = termText(a);
-        return a.k === 'app' && a.arity === 2 ? `(${inner})'` : `${inner}'`;
+        return `${termText(t.args[0])}'`;
       }
       if (t.arity === 2 && (t.index === 0 || t.index === 1)) return `(${termText(t.args[0])} ${fnName(2, t.index)} ${termText(t.args[1])})`;
       return `${fnName(t.arity, t.index)}(${t.args.map(termText).join(', ')})`;

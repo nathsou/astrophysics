@@ -2,7 +2,7 @@ import { ExAnotherIndex } from '../../../workbench/computability/exercises';
 
 <Added label="Added for this edition">
 
-If you can recognise a correct record of a computation, you can find the value of any computable function by *searching for its record*: test $s = 0, 1, 2, \ldots$ until $T(e, x, s)$ holds, then read off $U(s)$. Kleene’s normal form theorem says exactly this: $f(x) \simeq U(\mu s\, T(e, x, s))$, with $T$ and $U$ primitive recursive. From now on the book takes this equation as the *definition* of $\varphi_e$.
+If you can recognize a correct record of a computation, you can find the value of any computable function by *searching for its record*: test $s = 0, 1, 2, \ldots$ until $T(e, x, s)$ holds, then read off $U(s)$. Kleene’s normal form theorem says exactly this: $f(x) \simeq U(\mu s\, T(e, x, s))$, with $T$ and $U$ primitive recursive. From now on the book takes this equation as the *definition* of $\varphi_e$.
 
 </Added>
 
@@ -20,6 +20,6 @@ The literal search is hopeless in practice — records are enormous numbers — 
 
 ## Infinitely many indices
 
-Every partial computable function has infinitely many indices: add a step that does nothing. In this edition’s coding, $\mathrm{Comp}(P^1_0; f)$ computes the same function as $f$ and has a larger index; do it again, and again. The book’s examples — “test if $0 = 0$, or count to $5$” — are the same idea.
+Every partial computable function has infinitely many indices: add a step that does nothing. In this edition’s coding, for a one-place $f$, $\mathrm{Comp}(P^1_0; f)$ computes the same function as $f$ and has a larger index; do it again, and again. The book’s examples — “test if $0 = 0$, or count to $5$” — are the same idea.
 
 <ExAnotherIndex />

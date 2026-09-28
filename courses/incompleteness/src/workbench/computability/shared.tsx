@@ -146,14 +146,29 @@ export function FuelControl({ fuel, setFuel, max = 20_000, min = 10 }: { fuel: n
 }
 
 /** Picks an index: typed, stepped, or chosen from examples. */
-export function IndexPicker({ value, onChange, label = 'index e', examples = 'unary', id }: { value: string; onChange: (s: string) => void; label?: ReactNode; examples?: 'unary' | 'multi' | 'all' | 'none'; id?: string }) {
+export function IndexPicker({
+  value,
+  onChange,
+  label = 'index e',
+  examples = 'unary',
+  id,
+  next = 'unary',
+}: {
+  value: string;
+  onChange: (s: string) => void;
+  label?: ReactNode;
+  examples?: 'unary' | 'multi' | 'all' | 'none';
+  id?: string;
+  /** what the "next" button looks for: a one-place definition, or one of two or more places */
+  next?: 'unary' | 'multi';
+}) {
   const e = parseNat(value);
   const exs = examples === 'unary' ? UNARY_EXAMPLES : examples === 'multi' ? MULTI_EXAMPLES : examples === 'all' ? [...UNARY_EXAMPLES, ...MULTI_EXAMPLES] : [];
   const inputId = id ?? 'ct-index';
   const nextUnary = (from: bigint, dir: 1n | -1n) => {
     for (let k = from + dir, n = 0; k >= 0n && n < 20_000; k += dir, n++) {
       const d = decodeIndex(k);
-      if (d.ok && d.arity === 1) return k;
+      if (d.ok && (next === 'unary' ? d.arity === 1 : d.arity >= 2)) return k;
     }
     return null;
   };
@@ -178,9 +193,9 @@ export function IndexPicker({ value, onChange, label = 'index e', examples = 'un
             const k = nextUnary(e, 1n);
             if (k !== null) onChange(k.toString());
           }}
-          title="the next index of a well-formed one-place definition"
+          title={next === 'unary' ? 'the next index of a well-formed one-place definition' : 'the next index of a well-formed definition with two or more places'}
         >
-          next unary →
+          {next === 'unary' ? 'next unary →' : 'next with ≥ 2 places →'}
         </button>
         {exs.length > 0 && (
           <select

@@ -34,6 +34,4 @@ That discarding is why some reduction sequences end and others do not. Normal or
 
 For any equation $g\,x_1 \ldots x_n = N$, where $N$ may mention $g$, the term $G \equiv Y\,(\lambda g.\lambda x_1\ldots x_n.\,N)$ satisfies it up to β-equivalence. Church’s own combinator $Y_C \equiv \lambda g.\,(\lambda x.\,g(xx))(\lambda x.\,g(xx))$ also works, in the weaker sense that $Y_C\,g$ and $g(Y_C\,g)$ reduce to a common term, $g(VV)$ with $V \equiv \lambda x.\,g(xx)$.
 
-(The section’s side remark uses $\mathrm{Mult} \equiv \lambda ab.\,a(\mathrm{Add}\,a)\,0$ as an example of a definition in terms of earlier ones. As in Problem 9.2, the term as printed computes $a \cdot a$; see <Ref k="lam:rep:arf:sec" />. The point made there is unaffected.)
-
 <ExLamSum />

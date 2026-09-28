@@ -65,7 +65,7 @@ export function ExDecodeBook() {
         const ok = natEq(godel(p.value).number, target) === 'equal';
         return { ok, message: ok ? 'Its six symbols are =, (, v₀, the comma, c₀ and ), with codes 13122, 39366, 12, 354294, 24 and 118098.' : 'That formula has a different Gödel number. Decode the exponents one at a time.' };
       }}
-      hint="Subtract 1 from each exponent to get the symbol codes, and look them up in the table of Definition 3.1."
+      hint={<>Subtract 1 from each exponent to get the symbol codes, and look them up in the table of symbol codes (<Ref k="inc:art:cod:sec" />).</>}
       solution={<>The formula <Tex tex="v_0 = 0" />, officially <Tex tex="=(v_0, c_0)" /> — the book’s own example.</>}
     >
       <p>
@@ -150,7 +150,7 @@ export function ExBuildDouble() {
         }
         return { ok: true, message: <>It agrees with 3x at 0, 1, …, 8. (A finite test: to know it computes 3x everywhere, read your definition — which is exactly what its representing formula does.)</> };
       }}
-      hint="add(x, add(x, x)) — composition, twice, with projections P¹₀ for x."
+      hint={<>3x = x + 2x, and 2x is itself a sum. Composition with add, used twice; the projection <Tex tex="P^1_0" /> supplies x wherever it is needed.</>}
     >
       <p>Use the workbench above to build a one-place function equal to 3x from the basic functions and composition, then check it.</p>
     </Exercise>
@@ -219,7 +219,7 @@ export function ExWhereOmega() {
       id="inp.1in.omega"
       title="Where is ω-consistency used?"
       choices={[
-        { label: <>To show <Tex tex="T \nvdash G_T" /></>, why: 'Plain consistency suffices for that (Lemma 5.3). Switch ω-consistency off in the explorer and see.' },
+        { label: <>To show <Tex tex="T \nvdash G_T" /></>, why: <>Plain consistency suffices for that (<Ref k="inc:inp:1in:lem:cons-G-unprov" />). Switch ω-consistency off in the explorer and see.</> },
         { label: <>To show <Tex tex="T \nvdash \lnot G_T" /></>, correct: true, why: 'Only the second lemma needs it: if T derived ¬G_T it would derive ∃x Prf(x, ⌜G_T⌝) while refuting every instance.' },
         { label: 'To construct G_T', why: 'The fixed-point lemma works for any formula, in Q; no consistency is needed to construct G_T.' },
       ]}

@@ -62,7 +62,8 @@ export function SearchLab() {
     return { m, deriv: cl.a, chk, code: enc.root.code, y, s, r, target };
   }, [f, rep, args]);
   const nums = typeof args === 'string' ? '' : args.map((a) => `\\overline{${a}}`).join(', ');
-  const wrong = /^\d+$/.test(wrongText) && Number(wrongText) <= 12 ? BigInt(wrongText) : null;
+  // An empty field means the suggested wrong value f(n⃗) + 1, shown as the placeholder.
+  const wrong = wrongText.trim() === '' ? (data && !('error' in data) ? data.m + 1n : null) : /^\d+$/.test(wrongText.trim()) && Number(wrongText) <= 12 ? BigInt(wrongText.trim()) : null;
   const neg = useMemo(() => {
     if (wrong === null || typeof args === 'string' || !data || 'error' in data || wrong === data.m) return null;
     const r = deriveNotValue(f, args, wrong);
@@ -100,7 +101,7 @@ export function SearchLab() {
       <Panel n={2} title="A pair s that passes the test" prov={data && !('error' in data) && data.r.holds ? <Prov kind="checked" /> : <Prov kind="computed" />}>
         <div className="seg" role="radiogroup" aria-label="Function">
           {FUNCTIONS.map((x) => (
-            <button key={x.id} className="chip-btn" role="radio" aria-checked={x.id === id} aria-pressed={x.id === id} onClick={() => choose(x.id)}>
+            <button key={x.id} className="chip-btn" role="radio" aria-checked={x.id === id} onClick={() => choose(x.id)}>
               <Tex tex={`f = ${x.label}`} />
             </button>
           ))}
@@ -167,7 +168,7 @@ export function SearchLab() {
               <Tex tex="m' =" />
               <input className="r2-input num" value={wrongText} onChange={(e) => setWrong(e.target.value)} placeholder={String(data.m + 1n)} aria-label="a wrong value m′" inputMode="numeric" />
             </label>
-            {wrongText && wrong === null && <span className="r2-err">a number up to 12</span>}
+            {wrongText.trim() !== '' && wrong === null && <span className="r2-err">a number up to 12</span>}
             {wrong !== null && wrong === data.m && <span className="r2-muted r2-small">that is the right value</span>}
           </div>
           <div aria-live="polite">

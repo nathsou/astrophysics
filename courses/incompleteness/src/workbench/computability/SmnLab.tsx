@@ -48,7 +48,7 @@ export function SmnLab() {
   return (
     <div className="workbench">
       <Panel n={1} title={<>A program e for an (m + n)-place function</>} prov={<Prov kind="computed" />}>
-        <IndexPicker value={text} onChange={smnIndexStore.set} examples="multi" id="ct-smn-index" />
+        <IndexPicker value={text} onChange={smnIndexStore.set} examples="multi" id="ct-smn-index" next="multi" />
         {d?.ok ? (
           <>
             <p className="ct-scroll">
@@ -117,10 +117,13 @@ export function SmnLab() {
             Nothing here looks inside e: <Tex tex="s^m_n" /> would transform any number, well-formed or not. That, and the fact that the index of <Tex tex="c_a" /> is
             defined by primitive recursion on a (<Tex tex="\#c_0 = 0" />, <Tex tex="\#c_{a+1} = 3 + 4J(1, J(\#c_a, 0))" />), is why <Tex tex="s^m_n" /> is primitive recursive.
           </p>
-          {newDef.ok && (
+          {newDef.ok ? (
             <p className="ct-scroll">
+              <span className="sans small muted">Decoded, the new index is the definition </span>
               <DefinitionView rf={newDef.rf} />
             </p>
+          ) : (
+            <p className="wb-note">Decoded, the new index is not a well-formed definition — as expected when e is not an (m + n)-place definition.</p>
           )}
         </Panel>
       )}

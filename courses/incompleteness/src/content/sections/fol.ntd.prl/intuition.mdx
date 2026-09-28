@@ -18,10 +18,10 @@ Each connective has an introduction rule, saying how to *establish* a sentence w
 
 ## Two rules for $\bot$
 
-$\bot_I$ infers *any* sentence from $\bot$. $\bot_C$ is stronger: if $\bot$ follows from the assumption $\lnot A$, infer $A$, discharging $\lnot A$. The book notes the similarity with $\lnot$Intro: "$\lnot$Intro derives a negated sentence $\lnot A$ but $\bot_C$ a positive sentence $A$." Logic with $\bot_I$ but without $\bot_C$ is intuitionistic logic; $\bot_C$ is what makes $A \lor \lnot A$ derivable (Section C.6).
+$\bot_I$ infers *any* sentence from $\bot$. $\bot_C$ is stronger: if $\bot$ follows from the assumption $\lnot A$, infer $A$, discharging $\lnot A$. The book notes the similarity with $\lnot$Intro: "$\lnot$Intro derives a negated sentence $\lnot A$ but $\bot_C$ a positive sentence $A$." Logic with $\bot_I$ but without $\bot_C$ is intuitionistic logic; $\bot_C$ is what makes $A \lor \lnot A$ derivable (<Ref k="fol:ntd:pro:sec" />).
 
 <ExNegVsBotC />
 
 ## Discharge is a permission
 
-"Whenever a rule indicates that some assumption may be discharged, we take this to be a permission, but not a requirement." An $\rightarrow$Intro may discharge several assumptions $[A]^n$, one, or none. The checker follows this, with one convention the book leaves implicit: a discharging inference always carries a label, even if nothing above it bears that label.
+"Whenever a rule indicates that some assumption may be discharged, we take this to be a permission, but not a requirement." An $\rightarrow$Intro may discharge several assumptions $[A]^n$, one, or none — "including zero", as the book puts it. <Ref k="fol:ntd:der:sec" /> has an example, and the second example of <Ref k="fol:ntd:pro:sec" /> uses it in a finished derivation.

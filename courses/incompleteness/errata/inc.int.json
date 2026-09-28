@@ -1,0 +1,93 @@
+[
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/introduction/definitions.tex",
+    "find": "relation $R \\subseteq \\Nat^k$ iff,",
+    "replace": "relation $R \\subseteq \\Nat^k$ in~$\\Gamma$ iff,",
+    "why": "The clauses speak of Γ, which the definition did not introduce."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/introduction/undecidability.tex",
+    "find": "G\\\"odel's proof of the incompleteness theorems require arithmetization",
+    "replace": "G\\\"odel's proof of the incompleteness theorems requires arithmetization",
+    "why": "Subject-verb agreement."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/introduction/undecidability.tex",
+    "find": "prefixing $!A(\\num{n})$ by",
+    "replace": "prefixing $!A_n(\\num{n})$ by",
+    "why": "The formula is A_n, as in the definition of D."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/introduction/undecidability.tex",
+    "find": "$\\lnot !A(\\num{n}) \\in \\Gamma$",
+    "replace": "$\\lnot !A_n(\\num{n}) \\in \\Gamma$",
+    "why": "The formula is A_n, as in the definition of D."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/introduction/undecidability.tex",
+    "find": "satisify",
+    "replace": "satisfy",
+    "why": "Typo."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/introduction/overview.tex",
+    "find": "generalize G\\\"odel's proof to\napply make it depend",
+    "replace": "generalize G\\\"odel's proof to\nmake it depend",
+    "why": "Stray word."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/introduction/overview.tex",
+    "find": "\\Gamma \\Proves \\Prov[\\Gamma](\\num{n})$",
+    "replace": "\\Gamma \\Proves \\OProv[\\Gamma](\\num{n})$",
+    "why": "What Γ derives is the formula OProv, not the relation Prov."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/introduction/overview.tex",
+    "find": "$\\lnot \\Prov[\\Gamma](\\num{n})$, where",
+    "replace": "$\\lnot \\OProv[\\Gamma](\\num{n})$, where",
+    "why": "The consistency statement is a sentence, built from the formula OProv."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/introduction/historical-background.tex",
+    "find": "from purely logical\nassumption.",
+    "replace": "from purely logical\nassumptions.",
+    "why": "Plural, as in the next sentence."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/introduction/historical-background.tex",
+    "find": "mathematical object in terms",
+    "replace": "mathematical objects in terms",
+    "why": "Plural."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/introduction/historical-background.tex",
+    "find": "and others help to introduce",
+    "replace": "and others helped to introduce",
+    "why": "Tense."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/summary-1.tex",
+    "find": "(in which it is a theorem)",
+    "replace": "(in which case it is a theorem)",
+    "why": "Missing word."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/summary-1.tex",
+    "find": "axomatizability",
+    "replace": "axiomatizability",
+    "why": "Typo."
+  }
+]

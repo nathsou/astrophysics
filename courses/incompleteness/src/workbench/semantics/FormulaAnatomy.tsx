@@ -106,7 +106,7 @@ export function FormulaAnatomy({ focus = 'all' }: { focus?: 'all' | 'free' | 'sy
     }
     return [...m.values()];
   }, [nodes]);
-  const fv = F ? [...freeVars(F)] : [];
+  const fv = F ? [...freeVars(F)].sort((a, b) => a - b) : [];
   return (
     <div className="workbench sem-lab">
       <Panel n={1} title="A formula" prov={<Prov kind="computed" />}>
@@ -157,7 +157,7 @@ export function FormulaAnatomy({ focus = 'all' }: { focus?: 'all' | 'free' | 'sy
                         <span data-n={n.id}>{nodeText(n)}</span>
                       </td>
                       <td className="small sans">{clause(n)}</td>
-                      <td className="f">{isTerm(n) && n.k !== 'var' && f.size === 0 ? '— (closed term)' : f.size === 0 ? (isTerm(n) ? '' : '— (sentence)') : [...f].map(varName).join(', ')}</td>
+                      <td className="f">{isTerm(n) && n.k !== 'var' && f.size === 0 ? '— (closed term)' : f.size === 0 ? (isTerm(n) ? '' : '— (sentence)') : [...f].sort((a, b) => a - b).map(varName).join(', ')}</td>
                     </tr>
                   );
                 })}
@@ -168,7 +168,7 @@ export function FormulaAnatomy({ focus = 'all' }: { focus?: 'all' | 'free' | 'sy
       )}
       {F && focus !== 'free' && symbols.length > 0 && (
         <Panel n={4} title="Its non-logical symbols and variables, officially" prov={<Prov kind="computed" />}>
-          <p className="wb-note">In this edition the conventional names are aliases for official symbols (the book writes A for predicate symbols; this edition writes P): &lt; is P²₀, 0 is c₀, ′ is f¹₀, + is f²₀, × is f²₁; the letters x, y, z, u, w are v₀ … v₄.</p>
+          <p className="wb-note">The conventional names are aliases for official symbols (predicate symbols are written P here; the book writes A): &lt; is P²₀, 0 is c₀, ′ is f¹₀, + is f²₀, × is f²₁; the letters x, y, z, u, w are v₀ … v₄.</p>
           <div className="sem-map">
             {symbols.map((s) => (
               <span key={s.official}>

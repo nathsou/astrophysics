@@ -1,0 +1,9 @@
+/* SequenceLab (section "Sequences"). Class names start with seq-. */
+.seq-math { overflow-x: auto; overflow-y: hidden; max-width: 100%; padding: 6px 0; }
+.seq-code { font-size: 13px; overflow-wrap: anywhere; background: var(--paper-2); color: var(--number); border-radius: 6px; padding: 6px 10px; margin: 6px 0 10px; }
+.seq-scroll { overflow-x: auto; max-width: 100%; }
+.seq-scroll .code-table td.small { white-space: normal; }
+.seq-small { width: 90px; padding: 4px 8px; border: 1px solid var(--rule-2); border-radius: 6px; background: var(--panel); color: var(--ink); font-size: 13px; }
+.seq-small:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.seq-gap { margin-top: 14px; }
+.seq-scroll .code-table td.small .katex { font-size: 1.15em; }

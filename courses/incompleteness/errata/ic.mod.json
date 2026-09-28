@@ -1,0 +1,51 @@
+[
+  {
+    "repo": "OpenLogic",
+    "file": "content/model-theory/models-of-arithmetic/introduction.tex",
+    "find": "$\\lexists[x][\\OPrf[\\Th{PA}](\\gn{\\lfalse})]$ true",
+    "replace": "$\\lexists[x][\\OPrf[\\Th{PA}](x, \\gn{\\lfalse})]$ true",
+    "why": "The quantified variable x is missing from Prf_PA(x, ⌜⊥⌝), as in Con_PA just above."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/model-theory/models-of-arithmetic/standard-models.tex",
+    "find": "not in the domain\nof~$s$",
+    "replace": "not in the range\nof~$s$",
+    "why": "The domain of s is all of M; surjectivity fails if some x ≠ z is not in the range of s."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/model-theory/models-of-arithmetic/models-of-q.tex",
+    "find": "n$ is standard or $y = b$:}",
+    "replace": "n$ is standard or $y = a$:}",
+    "why": "K has no element b; the case computed is y = a."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/model-theory/models-of-arithmetic/models-of-q.tex",
+    "find": "b \\nsplus a^\\nssucc  = b = b^\\nssucc = (b \\nsplus y)^\\nssucc",
+    "replace": "b \\nsplus a^\\nssucc  = b = b^\\nssucc = (b \\nsplus a)^\\nssucc",
+    "why": "The case is x = b, y = a, so the last term is (b ⊕ a)*."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/model-theory/models-of-arithmetic/models-of-pa.tex",
+    "find": "For any $x$, there is a unique $y$ such that",
+    "replace": "For any $x \\neq \\nszero$, there is a unique $y$ such that",
+    "why": "0 has no predecessor (Q2); Q3 and Q1 give existence and uniqueness for x ≠ 0 only."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/model-theory/models-of-arithmetic/computable-models.tex",
+    "find": "\\Setabs{\\tuple{x,a}}{n \\in \\Domain{K}}",
+    "replace": "\\Setabs{\\tuple{x,a}}{x \\in \\Domain{K}}",
+    "why": "The bound variable is x, as in the original definition of K."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/model-theory/models-of-arithmetic/computable-models.tex",
+    "find": "a$ and $g(n) = n+1$ for $n>0$ is !!a{bijection}.",
+    "replace": "a$ and $g(n) = n-1$ for $n>0$ is !!a{bijection}.",
+    "why": "With 0^{K'} = 1 playing the role of 0, the bijection must send n > 0 to n − 1 (n + 1 misses 0 and 1)."
+  }
+]

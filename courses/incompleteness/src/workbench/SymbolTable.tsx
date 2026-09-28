@@ -10,10 +10,10 @@ import { codePowersTex, codeSeqTex, Panel } from './coding';
 
 const GROUPS: { title: string; note: string; syms: Sym[] }[] = [
   { title: 'Logical symbols', note: '⟨0, k⟩ for the k-th logical symbol', syms: LOGICAL.map((name) => ({ k: 'logical', name })) },
-  { title: 'Variables', note: '⟨1, i⟩ for v_i', syms: [0, 1, 2, 3, 4, 5, 6].map((index) => ({ k: 'var', index })) },
-  { title: 'Constant symbols', note: '⟨2, i⟩ for c_i', syms: [0, 1, 2].map((index) => ({ k: 'const', index })) },
-  { title: 'Function symbols', note: '⟨3, n, i⟩ for f^n_i', syms: [{ k: 'fn', arity: 1, index: 0 }, { k: 'fn', arity: 2, index: 0 }, { k: 'fn', arity: 2, index: 1 }, { k: 'fn', arity: 2, index: 10 }] },
-  { title: 'Predicate symbols', note: '⟨4, n, i⟩ for P^n_i', syms: [{ k: 'pred', arity: 2, index: 0 }, { k: 'pred', arity: 1, index: 10 }, { k: 'pred', arity: 3, index: 11 }] },
+  { title: 'Variables', note: '⟨1, i⟩ for vᵢ', syms: [0, 1, 2, 3, 4, 5, 6].map((index) => ({ k: 'var', index })) },
+  { title: 'Constant symbols', note: '⟨2, i⟩ for cᵢ', syms: [0, 1, 2].map((index) => ({ k: 'const', index })) },
+  { title: 'Function symbols', note: '⟨3, n, i⟩ for fⁿᵢ', syms: [{ k: 'fn', arity: 1, index: 0 }, { k: 'fn', arity: 2, index: 0 }, { k: 'fn', arity: 2, index: 1 }, { k: 'fn', arity: 2, index: 10 }] },
+  { title: 'Predicate symbols', note: '⟨4, n, i⟩ for Pⁿᵢ', syms: [{ k: 'pred', arity: 2, index: 0 }, { k: 'pred', arity: 1, index: 10 }, { k: 'pred', arity: 3, index: 11 }] },
 ];
 
 function entry(s: Sym) {
@@ -26,7 +26,7 @@ function entry(s: Sym) {
       <>
         <p>{describeSym(s).replace(/^./, (c) => c.toUpperCase())}. Officially <Tex tex={officialTex(s)} />.</p>
         <p>
-          <Tex tex={`c_{${symTex(s)}} = ${codeSeqTex(s)} = ${codePowersTex(s)} = ${code}`} />
+          <Tex tex={`\\mathrm{c}_{${symTex(s)}} = ${codeSeqTex(s)} = ${codePowersTex(s)} = ${code}`} />
         </p>
         <p className="muted">
           The first component says what kind of symbol it is; the others say which one. So the kind, the arity and the index can be read back off the code — by a primitive
@@ -79,6 +79,8 @@ function CodeReader() {
     if (!/^\d+$/.test(text.trim())) return { error: 'Enter a natural number.' };
     const n = BigInt(text.trim());
     if (n.toString().length > 40) return { error: 'That is larger than any symbol code shown here.' };
+    // The book lets ⟨⟩ be 0; every non-empty sequence code is even, so 1 codes nothing.
+    if (n === 1n) return { error: '1 is not the code of a sequence: the book lets ⟨⟩ be 0, and every non-empty sequence code is divisible by 2.' };
     const d = decodeSeq(n);
     if (!d.ok) return { error: d.reason, steps: d.steps };
     const s = symbolFromCodeSeq(d.items);
@@ -116,7 +118,7 @@ function CodeReader() {
             )}
           </p>
           <p className="muted sans small">
-            Proposition 3.2: <Tex tex={`\\mathrm{Fn}(${n}, n)`} /> holds {fnArity ? <>exactly for n = {fnArity}</> : 'for no n'}; <Tex tex={`\\mathrm{Pred}(${n}, n)`} /> holds{' '}
+            The relations of the proposition after the definition: <Tex tex={`\\mathrm{Fn}(${n}, n)`} /> holds {fnArity ? <>exactly for n = {fnArity}</> : 'for no n'}; <Tex tex={`\\mathrm{Pred}(${n}, n)`} /> holds{' '}
             {predArity ? <>exactly for n = {predArity}</> : 'for no n'}.
           </p>
         </div>

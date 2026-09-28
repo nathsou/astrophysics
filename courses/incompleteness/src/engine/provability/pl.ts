@@ -159,8 +159,6 @@ export interface Line {
   /** the book's label (e.g. "G2-5"), if the line is in the book */
   book?: string;
   note?: string;
-  /** where the book cites different premises for a logic step than the checked version uses */
-  bookFrom?: number[];
 }
 
 export interface LineCheck {
@@ -291,7 +289,7 @@ export function lob(): Line[] {
     { n: 12, f: imp(imp(PD, A), D), just: { r: 'logic', from: [1] }, book: 'L-10' },
     { n: 13, f: D, just: { r: 'logic', from: [11, 12] }, book: 'L-11' },
     { n: 14, f: PD, just: { r: 'P1', from: 13 }, book: 'L-12' },
-    { n: 15, f: A, just: { r: 'logic', from: [11, 14] }, book: '(last line)', bookFrom: [10, 14], note: 'the book cites (L-8) and (L-12); the step needs (L-9) and (L-12)' },
+    { n: 15, f: A, just: { r: 'logic', from: [11, 14] }, book: '(last line)' },
   ];
 }
 

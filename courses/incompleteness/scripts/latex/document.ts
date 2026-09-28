@@ -7,6 +7,7 @@
 // defn share a counter; problems have their own).
 
 import { existsSync, readFileSync } from 'node:fs';
+import { applyErrata, type Errata } from './errata.ts';
 import { join } from 'node:path';
 import katex from 'katex';
 import type { Block, Chapter, Diagnostic, DisplayRow, EnvKind, Inline, LabelTarget, ListItem, ProofTreeNode, Section, SourceLoc } from '../../src/content/schema.ts';
@@ -30,6 +31,8 @@ export interface ConvertContext {
   olsectionSuppressed?: boolean;
   /** Environments switched off by the book (\\let\\intro\\comment in the appendices). */
   suppressedEnvs: Set<string>;
+  /** Corrections applied to the source before conversion (scripts/latex/errata.ts). */
+  errata?: Errata;
 }
 
 export interface BookHandler {
@@ -89,7 +92,11 @@ export class FileParser {
   readonly ctx: ConvertContext;
   readonly repo: Repo;
   readonly file: string;
-  readonly chapter: ChapterState;
+  /** The numbering state of the current chapter (for the driver file, whichever chapter is open). */
+  private chapterState: () => ChapterState;
+  get chapter(): ChapterState {
+    return this.chapterState();
+  }
   private sectionId: () => string;
   /** Called for \olimport in driver files. */
   private onImport?: (path: string | undefined, name: string) => void;
@@ -98,17 +105,17 @@ export class FileParser {
     ctx: ConvertContext,
     repo: Repo,
     file: string,
-    chapter: ChapterState,
+    chapter: ChapterState | (() => ChapterState),
     sectionId: () => string,
     onImport?: (path: string | undefined, name: string) => void,
   ) {
     this.ctx = ctx;
     this.repo = repo;
     this.file = file;
-    this.chapter = chapter;
+    this.chapterState = typeof chapter === 'function' ? chapter : () => chapter;
     this.sectionId = sectionId;
     this.onImport = onImport;
-    this.src = readFileSync(join(ctx.upstreamDir, repo, file), 'utf8');
+    this.src = applyErrata(ctx.errata, repo, file, readFileSync(join(ctx.upstreamDir, repo, file), 'utf8'), ctx.diagnostics);
     this.end = this.src.length;
     for (let i = 0; i < this.src.length; i++) if (this.src[i] === '\n') this.lineStarts.push(i + 1);
   }
@@ -1167,6 +1174,8 @@ export class FileParser {
       return;
     }
     this.flush();
+    // \begin{probtag}{tags} is a problem whose tags the book's style ignores; skip the tag list.
+    if (env === 'probtag') this.group();
     const titleRange = this.optRange();
     const title = titleRange ? this.parseInlineRange(titleRange.start, titleRange.end) : undefined;
     let number: string | undefined;
@@ -1217,9 +1226,14 @@ export class FileParser {
     const no = this.groupRange();
     this.pos = save;
     if (!yes || !no) return null;
-    const chosen = this.tagOn(tags) ? yes : no;
-    const body = this.src.slice(chosen.start, chosen.end).replace(/%[^\n]*/g, '').trim();
-    return body === '' || body.startsWith('\\item') || body.startsWith('\\tagitem') ? { tags, yes, no } : null;
+    const on = this.tagOn(tags);
+    const text = (r: { start: number; end: number }) => this.src.slice(r.start, r.end).replace(/%[^\n]*/g, '').trim();
+    const isItems = (b: string) => b.startsWith('\\item') || b.startsWith('\\tagitem');
+    const body = text(on ? yes : no);
+    const other = text(on ? no : yes);
+    // An empty branch is item-level only if the other branch holds items; otherwise it is an
+    // inline \iftag inside an item's text (as in the list of connectives in fol.syn.fol).
+    return isItems(body) || (body === '' && isItems(other)) ? { tags, yes, no } : null;
   }
 
   private collectItems(endPos: number, items: ListItem[], at: number) {
@@ -1452,14 +1466,22 @@ export function plain(c: Inline[]): string {
 }
 
 const TEX_PLAIN: Record<string, string> = {
-  lambda: 'λ', mu: 'μ', omega: 'ω', alpha: 'α', beta: 'β', Sigma: 'Σ', Delta: 'Δ', Pi: 'Π', forall: '∀', exists: '∃', lnot: '¬', to: '→', rightarrow: '→', leq: '≤', geq: '≥', neq: '≠', in: '∈', times: '×', cdot: '·',
+  alpha: 'α', beta: 'β', gamma: 'γ', delta: 'δ', epsilon: 'ε', varepsilon: 'ε', eta: 'η', theta: 'θ', iota: 'ι', kappa: 'κ', lambda: 'λ', mu: 'μ', nu: 'ν', xi: 'ξ', pi: 'π',
+  rho: 'ρ', sigma: 'σ', tau: 'τ', phi: 'φ', varphi: 'φ', chi: 'χ', psi: 'ψ', omega: 'ω', Gamma: 'Γ', Delta: 'Δ', Theta: 'Θ', Lambda: 'Λ', Pi: 'Π', Sigma: 'Σ', Phi: 'Φ', Psi: 'Ψ', Omega: 'Ω',
+  forall: '∀', exists: '∃', lnot: '¬', neg: '¬', land: '∧', wedge: '∧', lor: '∨', vee: '∨', to: '→', rightarrow: '→', leftrightarrow: '↔', Rightarrow: '⇒', bot: '⊥', top: '⊤',
+  vDash: '⊨', models: '⊨', vdash: '⊢', nvdash: '⊬', nvDash: '⊭', leq: '≤', le: '≤', geq: '≥', ge: '≥', neq: '≠', ne: '≠', in: '∈', notin: '∉', subseteq: '⊆', subset: '⊂', cup: '∪', cap: '∩', emptyset: '∅',
+  times: '×', cdot: '·', circ: '∘', langle: '⟨', rangle: '⟩', ulcorner: '⌜', urcorner: '⌝', ldots: '…', dots: '…', cdots: '⋯', infty: '∞', mid: '|', setminus: '∖', dotminus: '∸', equiv: '≡', frown: '⌢',
 };
 
 /** A plain-text rendering of simple TeX, for titles and the table of contents. */
 export function texToPlain(tex: string): string {
   return tex
+    .replace(/\\([{}|])/g, '$1\u0000')
     .replace(/\\([a-zA-Z]+)/g, (m, n: string) => TEX_PLAIN[n] ?? '')
-    .replace(/[{}]/g, '')
+    .replace(/\\[,;:!]/g, ' ')
+    .replace(/([{}])(?!\u0000)/g, '')
+    .replace(/\u0000/g, '')
+    .replace(/[_^]/g, '')
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -1469,13 +1491,26 @@ export function splitRows(s: string): string[] {
   const rows: string[] = [];
   let depth = 0;
   let envDepth = 0;
+  // Optional-argument brackets of macros (\lexists[u][ … ]): a \\ inside one is a line break
+  // within that argument, not a new row (as in the multline for Inf(X) in 8.12). A bracket counts
+  // as an argument bracket when it follows a control word or another argument's closing bracket,
+  // so literal brackets such as [0, 1) are unaffected.
+  let bracket = 0;
   let start = 0;
   for (let i = 0; i < s.length; i++) {
     const c = s[i];
+    if (c === '[' && /(\\[a-zA-Z]+\*?|\])\s*$/.test(s.slice(Math.max(0, i - 40), i))) {
+      bracket++;
+      continue;
+    }
+    if (c === ']' && bracket > 0) {
+      bracket--;
+      continue;
+    }
     if (c === '\\') {
       if (s.startsWith('\\begin{', i)) envDepth++;
       else if (s.startsWith('\\end{', i)) envDepth--;
-      else if (s[i + 1] === '\\' && depth === 0 && envDepth === 0) {
+      else if (s[i + 1] === '\\' && depth === 0 && envDepth === 0 && bracket === 0) {
         rows.push(s.slice(start, i));
         i++;
         // optional [len] after \\
@@ -1525,7 +1560,10 @@ export class BookWalker implements BookHandler {
   }
 
   run() {
-    const root = new FileParser(this.ctx, 'incompleteness-computability', 'ic.tex', this.freshState(''), () => this.sectionId());
+    const front = this.freshState('');
+    // Text written directly in the driver (e.g. the Theories section of appendix B) is numbered
+    // in whichever chapter is open at that point.
+    const root = new FileParser(this.ctx, 'incompleteness-computability', 'ic.tex', () => this.cur?.state ?? front, () => this.sectionId());
     root.book = this;
     const start = root.src.indexOf('\\frontmatter');
     const end = root.src.indexOf('\\backmatter');

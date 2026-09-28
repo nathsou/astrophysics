@@ -696,8 +696,8 @@
       },
       {
        "t": "math",
-       "tex": "\\exists x \\, \\mathsf{Prf}_{\\mathbf{PA}}(\\ulcorner \\bot \\urcorner)",
-       "src": "\\lexists[x][\\OPrf[\\Th{PA}](\\gn{\\lfalse})]"
+       "tex": "\\exists x \\, \\mathsf{Prf}_{\\mathbf{PA}}(x, \\ulcorner \\bot \\urcorner)",
+       "src": "\\lexists[x][\\OPrf[\\Th{PA}](x, \\gn{\\lfalse})]"
       },
       {
        "t": "text",
@@ -6094,7 +6094,7 @@
         },
         {
          "t": "text",
-         "v": " not in the domain of "
+         "v": " not in the range of "
         },
         {
          "t": "math",
@@ -8524,8 +8524,8 @@
         },
         {
          "t": "math",
-         "tex": "y = b",
-         "src": "y = b"
+         "tex": "y = a",
+         "src": "y = a"
         },
         {
          "t": "text",
@@ -9175,13 +9175,13 @@
          "tex": "& b \\oplus b^* = a = a^* = (b \\oplus b)^*"
         },
         {
-         "tex": "& b \\oplus a^* = b = b^* = (b \\oplus y)^*"
+         "tex": "& b \\oplus a^* = b = b^* = (b \\oplus a)^*"
         },
         {
          "tex": "& a \\oplus b^* = a = a^* = (a \\oplus b)^*"
         }
        ],
-       "src": "&  a \\nsplus a^\\nssucc  = b = b^\\nssucc = (a \\nsplus a)^\\nssucc\\\\\n&  b \\nsplus b^\\nssucc  = a = a^\\nssucc = (b \\nsplus b)^\\nssucc\\\\\n&  b \\nsplus a^\\nssucc  = b = b^\\nssucc = (b \\nsplus y)^\\nssucc\\\\\n&  a \\nsplus b^\\nssucc  = a = a^\\nssucc = (a \\nsplus b)^\\nssucc\\\\",
+       "src": "&  a \\nsplus a^\\nssucc  = b = b^\\nssucc = (a \\nsplus a)^\\nssucc\\\\\n&  b \\nsplus b^\\nssucc  = a = a^\\nssucc = (b \\nsplus b)^\\nssucc\\\\\n&  b \\nsplus a^\\nssucc  = b = b^\\nssucc = (b \\nsplus a)^\\nssucc\\\\\n&  a \\nsplus b^\\nssucc  = a = a^\\nssucc = (a \\nsplus b)^\\nssucc\\\\",
        "loc": {
         "repo": "OpenLogic",
         "file": "content/model-theory/models-of-arithmetic/models-of-q.tex",
@@ -10510,8 +10510,8 @@
         },
         {
          "t": "math",
-         "tex": "x",
-         "src": "x"
+         "tex": "x \\neq \\mathbf{z}",
+         "src": "x \\neq \\nszero"
         },
         {
          "t": "text",
@@ -13587,10 +13587,10 @@
          "tex": "\\mathord{\\times^{{\\boldsymbol{\\mathit{K}}}}}(x, y) & = \\begin{cases} xy & \\text{if $x$, $y \\in\\mathbb{N}$}\\\\ 0 & \\text{if $x=0$ or $y=0$}\\\\ a & \\text{otherwise}\\\\ \\end{cases}"
         },
         {
-         "tex": "\\mathord{<^{{\\boldsymbol{\\mathit{K}}}}} & = \\{ \\langle x,y \\rangle : x, y \\in \\mathbb{N} \\text{ and } x<y \\} \\cup \\{ \\langle x,a \\rangle : n \\in \\left| {\\boldsymbol{\\mathit{K}}} \\right| \\}"
+         "tex": "\\mathord{<^{{\\boldsymbol{\\mathit{K}}}}} & = \\{ \\langle x,y \\rangle : x, y \\in \\mathbb{N} \\text{ and } x<y \\} \\cup \\{ \\langle x,a \\rangle : x \\in \\left| {\\boldsymbol{\\mathit{K}}} \\right| \\}"
         }
        ],
-       "src": "\\Assign{\\Obj{0}}{K} & = 0\\\\\n  \\Assign{\\prime}{K}(x) & =\n  \\begin{cases}\n    x+1 & \\text{if $x\\in \\Nat$}\\\\\n    a & \\text{if $x = a$}\n  \\end{cases}\\\\\n  \\Assign{+}{K}(x, y) & =\n  \\begin{cases}\n    x+y & \\text{if $x$, $y \\in\\Nat$}\\\\\n    a & \\text{otherwise}\n  \\end{cases}\\\\\n  \\Assign{\\times}{K}(x, y) & =\n  \\begin{cases}\n    xy & \\text{if $x$, $y \\in\\Nat$}\\\\\n    0 & \\text{if $x=0$ or $y=0$}\\\\\n    a & \\text{otherwise}\\\\\n  \\end{cases}\\\\\n  \\Assign{<}{K} & =\n  \\Setabs{\\tuple{x,y}}{x, y \\in \\Nat \\text{ and } x<y} \\cup\n  \\Setabs{\\tuple{x,a}}{n \\in \\Domain{K}}",
+       "src": "\\Assign{\\Obj{0}}{K} & = 0\\\\\n  \\Assign{\\prime}{K}(x) & =\n  \\begin{cases}\n    x+1 & \\text{if $x\\in \\Nat$}\\\\\n    a & \\text{if $x = a$}\n  \\end{cases}\\\\\n  \\Assign{+}{K}(x, y) & =\n  \\begin{cases}\n    x+y & \\text{if $x$, $y \\in\\Nat$}\\\\\n    a & \\text{otherwise}\n  \\end{cases}\\\\\n  \\Assign{\\times}{K}(x, y) & =\n  \\begin{cases}\n    xy & \\text{if $x$, $y \\in\\Nat$}\\\\\n    0 & \\text{if $x=0$ or $y=0$}\\\\\n    a & \\text{otherwise}\\\\\n  \\end{cases}\\\\\n  \\Assign{<}{K} & =\n  \\Setabs{\\tuple{x,y}}{x, y \\in \\Nat \\text{ and } x<y} \\cup\n  \\Setabs{\\tuple{x,a}}{x \\in \\Domain{K}}",
        "loc": {
         "repo": "OpenLogic",
         "file": "content/model-theory/models-of-arithmetic/computable-models.tex",
@@ -13653,8 +13653,8 @@
         },
         {
          "t": "math",
-         "tex": "g(n) = n+1",
-         "src": "g(n) = n+1"
+         "tex": "g(n) = n-1",
+         "src": "g(n) = n-1"
         },
         {
          "t": "text",

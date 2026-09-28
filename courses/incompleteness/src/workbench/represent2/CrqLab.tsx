@@ -52,11 +52,11 @@ export function CrqLab() {
       </Panel>
       <Panel n={2} title="Primitive recursion eliminated, definition by definition" prov={<Prov kind="computed" />}>
         <p className="wb-note">
-          Pick a function defined in the chapter on recursive functions. Every definition by primitive recursion in it is replaced by a search for the β-code of its history, as in <Ref k="inc:req:pri:lem:prim-rec" />; everything else stays.
+          Pick a function defined in <Ref k="cmp:rec::chap" />. Every definition by primitive recursion in it is replaced by a search for the β-code of its history, as in <Ref k="inc:req:pri:lem:prim-rec" />; everything else stays.
         </p>
         <div className="seg" role="radiogroup" aria-label="Function">
           {DEFS.map((d) => (
-            <button key={d.id} className="chip-btn" role="radio" aria-checked={d.id === id} aria-pressed={d.id === id} onClick={() => setId(d.id)}>
+            <button key={d.id} className="chip-btn" role="radio" aria-checked={d.id === id} onClick={() => setId(d.id)}>
               {d.label}
             </button>
           ))}
@@ -85,7 +85,7 @@ export function CrqLab() {
           </table>
         </div>
         <p className="wb-note">
-          The rewritten definitions use β, which is defined from <Tex tex="+" />, <Tex tex="\times" /> and <Tex tex="\chi_=" /> by composition and regular minimization (via <Tex tex="J" />, <Tex tex="K" />, <Tex tex="L" /> and <Tex tex="\mathrm{rem}" />), and the bounded quantifier <Tex tex="\forall i < y" />, which the section on the β-function shows can be expressed the same way. Each rewritten line has a representing formula by the constructions of <Ref k="inc:req:bre:sec" />–<Ref k="inc:req:min:sec" /> — far too long to display, but built the same way as in the Representability workbench.
+          The rewritten definitions use β, which is defined from <Tex tex="+" />, <Tex tex="\times" /> and <Tex tex="\chi_=" /> by composition and regular minimization (via <Tex tex="J" />, <Tex tex="K" />, <Tex tex="L" /> and <Tex tex="\mathrm{rem}" />), and the bounded quantifier <Tex tex="\forall i < y" />, which <Ref k="inc:req:bet:sec" /> shows can be expressed the same way. Each rewritten line has a representing formula by the constructions of <Ref k="inc:req:bre:sec" />–<Ref k="inc:req:min:sec" /> — far too long to display, but built the same way as in the Representability workbench.
         </p>
       </Panel>
     </div>

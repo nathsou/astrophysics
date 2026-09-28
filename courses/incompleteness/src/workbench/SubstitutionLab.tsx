@@ -107,12 +107,12 @@ function Lab({ A, t, u, mode, setMode, arithmetized }: { A: Formula; t: Term; u:
 
       <Panel n={2} title={<>Is <Tex tex="t" /> free for {un} in A?</>} prov={<Prov kind="computed" />}>
         {ff.ok ? (
-          <p>
+          <p className="wb-note">
             <b>Yes.</b> No free occurrence of {un} lies in the scope of a quantifier binding a variable of <Tex tex="t" />, so substituting cannot change what those variables refer to.
           </p>
         ) : (
           <>
-            <p>
+            <p className="wb-note">
               <b>No.</b> {ff.hazards.length === 1 ? 'A free occurrence' : `${ff.hazards.length} free occurrences`} of {un} lie
               {ff.hazards.length === 1 ? 's' : ''} in the scope of a quantifier binding{' '}
               {[...new Set(ff.hazards.map((h) => varName(h.variable)))].join(', ')}, a variable of <Tex tex="t" />. After substitution that variable would be <b>captured</b>:
@@ -124,7 +124,10 @@ function Lab({ A, t, u, mode, setMode, arithmetized }: { A: Formula; t: Term; u:
                   key={i}
                   className="chip-btn"
                   onMouseEnter={() => highlightStore.set({ primary: [h.occurrence], binder: [h.binder] })}
+                  onFocus={() => highlightStore.set({ primary: [h.occurrence], binder: [h.binder] })}
+                  onClick={() => highlightStore.set({ primary: [h.occurrence], binder: [h.binder] })}
                   onMouseLeave={() => highlightStore.set(null)}
+                  onBlur={() => highlightStore.set(null)}
                 >
                   hazard {i + 1}: show the occurrence and the capturing quantifier
                 </button>
@@ -144,10 +147,10 @@ function Lab({ A, t, u, mode, setMode, arithmetized }: { A: Formula; t: Term; u:
         prov={<Prov kind="computed" />}
       >
         <div className="seg" role="radiogroup" aria-label="Substitution">
-          <button className="chip-btn" role="radio" aria-checked={mode === 'naive'} aria-pressed={mode === 'naive'} onClick={() => setMode('naive')}>
-            as the book defines it
+          <button className="chip-btn" role="radio" aria-checked={mode === 'naive'} onClick={() => setMode('naive')}>
+            replace the free occurrences
           </button>
-          <button className="chip-btn" role="radio" aria-checked={mode === 'avoid'} aria-pressed={mode === 'avoid'} onClick={() => setMode('avoid')}>
+          <button className="chip-btn" role="radio" aria-checked={mode === 'avoid'} onClick={() => setMode('avoid')}>
             capture-avoiding (rename first)
           </button>
         </div>
@@ -156,14 +159,14 @@ function Lab({ A, t, u, mode, setMode, arithmetized }: { A: Formula; t: Term; u:
         </div>
         {mode === 'naive' && res.captures.length > 0 && (
           <p className="wb-note danger">
-            The book’s substitution replaces every free occurrence regardless — that is why its rules require “<Tex tex="t" /> is free for <Tex tex="x" />”. Here the result
-            says something different from what was intended: the variable of <Tex tex="t" /> is now bound.
+            <Tex tex="t" /> is not free for {un} here, so the book leaves <Tex tex={`A[t/${un}]`} /> undefined (<Ref k="fol:syn:sub:sec" />). Replacing the free occurrences anyway
+            gives a formula that says something different from what was intended: the variable of <Tex tex="t" /> is now bound.
           </p>
         )}
         {mode === 'avoid' && res.renamed.length > 0 && (
           <p className="wb-note">
             First the bound variable {res.renamed.map((r) => `${varName(r.from)} → ${varName(r.to)}`).join(', ')} is renamed (α-conversion: renaming a bound variable does not change
-            the meaning); then the substitution is safe.
+            the meaning); then the substitution is safe. The book does not rename; it only substitutes terms that are free for the variable.
           </p>
         )}
         {steps.length > 0 && (
@@ -201,6 +204,7 @@ export function ArithPanel({ A, t, u }: { A: Formula; t: Term; u: number }) {
   // The output built so far: the result items up to shown.length.
   const out = r.result.slice(0, shown.length);
   const agree = natEq(r.resultNumber, r.expected);
+  const notFree = !freeFor(t, u, A).ok;
   return (
     <Panel n={4} title="The same substitution, on Gödel numbers" prov={<Prov kind="computed" />}>
       <p className="wb-note">
@@ -259,6 +263,12 @@ export function ArithPanel({ A, t, u }: { A: Formula; t: Term; u: number }) {
         <Tex tex={`\\mathrm{Subst}(\\#A\\#, \\#t\\#, \\#${varName(u)}\\#) ${agree === 'equal' ? '=' : '\\neq'} \\#A[t/${varName(u)}]\\#`} />{' '}
         {agree === 'equal' ? <Prov kind="computed">equal, compared exactly</Prov> : <Prov kind="failed">{agree}</Prov>}
       </p>
+      {notFree && (
+        <p className="wb-note">
+          Here <Tex tex="t" /> is not free for <Tex tex={varName(u)} /> in A. hSubst does not look at that: it replaces the free occurrences anyway, and the right-hand side above is that
+          replacement. Whether a substitution is legitimate is the separate relation <Tex tex="\mathrm{FreeFor}" /> of <Ref k="inc:art:sub:prop:free-for" />.
+        </p>
+      )}
       <NotAProof>
         This compares the two numbers for your A and t. <Ref k="inc:art:sub:prop:subst-primrec" /> says the equation holds for every formula, term and variable.
       </NotAProof>

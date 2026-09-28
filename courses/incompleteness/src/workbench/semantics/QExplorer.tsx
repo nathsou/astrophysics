@@ -104,7 +104,12 @@ export function QExplorer({ id = 'q', structure = { kind: 'mod', n: 5, mode: 'wr
                     <b>{rows[firstFalse].name} is refuted.</b>
                   </>
                 ) : (
-                  <>No counterexample was found among the first {limit} elements; for K and K′ the book shows that all axioms are in fact true (for L, the ones that do not use × or &lt;).</>
+                  <>
+                    No counterexample was found among the first {limit} elements; that alone does not show the axioms true.
+                    {r.kind === 'search' && r.S.id === 'K' && ' The book verifies Q1–Q5 in K and leaves Q6–Q8 as a problem.'}
+                    {r.kind === 'search' && r.S.id === "K'" && ' K′ satisfies Q because it is isomorphic to K, which does.'}
+                    {r.kind === 'search' && r.S.id === 'L' && ' The book verifies Q1–Q5 in L; it does not interpret × and <, so Q6–Q8 cannot be evaluated.'}
+                  </>
                 )}{' '}
                 <label className="sem-inline">
                   search the first

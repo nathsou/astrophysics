@@ -60,7 +60,7 @@ export function GodelWorkbench({ kind = 'formula', decoder = true }: { kind?: 'f
           </Panel>
           <Panel n={4} title="The Gödel number" prov={<Prov kind="computed" />}>
             <p className="wb-note">
-              The Gödel number is the code of the sequence of symbol codes: <Tex tex="\#s_0\cdots s_{n-1}\# = \langle c_{s_0}, \ldots, c_{s_{n-1}}\rangle = p_0^{c_{s_0}+1}\cdots p_{n-1}^{c_{s_{n-1}}+1}" />. It is
+              The Gödel number is the code of the sequence of symbol codes: <Tex tex="\#s_0\cdots s_{n-1}\# = \langle \mathrm{c}_{s_0}, \ldots, \mathrm{c}_{s_{n-1}}\rangle = p_0^{\mathrm{c}_{s_0}+1}\cdots p_{n-1}^{\mathrm{c}_{s_{n-1}}+1}" />. It is
               kept in exact symbolic form; its digits are computed only on request.
             </p>
             <GodelNumberView enc={enc} />

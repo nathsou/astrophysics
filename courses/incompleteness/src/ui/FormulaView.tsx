@@ -231,13 +231,10 @@ function Render({ n, neq, focus, marked, outer }: RP): ReactNode {
     }
     case 'app': {
       if (n.arity === 1 && n.index === 0) {
-        const a = n.args[0];
-        const wrap = a.k === 'app' && a.arity === 2;
+        // Sums and products render with their own parentheses: (x + y)′.
         return (
           <span className={cls('fv fv-term', id, focus, marked)} data-n={id}>
-            {wrap && <Sym c="paren">(</Sym>}
-            <Render n={a} {...p} />
-            {wrap && <Sym c="paren">)</Sym>}
+            <Render n={n.args[0]} {...p} />
             <Sym c="prime">′</Sym>
           </span>
         );

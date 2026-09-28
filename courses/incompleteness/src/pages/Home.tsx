@@ -69,7 +69,7 @@ export function Home() {
         <h2>Contents of this edition</h2>
         <p>
           The whole book — nine chapters and four appendices — is converted from its LaTeX source and can be read in Formal mode. Sections with Intuition and Explore modes are
-          listed below; the others are marked as text-only in the table of contents.
+          listed below; the others are marked as text-only in the table of contents. To find a definition or theorem, use search (<kbd>/</kbd>) or the <a href="#/index">index of defined terms</a>.
         </p>
         {sourceIndex.chapters.map((c) => {
           const plans = PLANS.filter((p) => c.sections.some((s) => s.id === p.id));

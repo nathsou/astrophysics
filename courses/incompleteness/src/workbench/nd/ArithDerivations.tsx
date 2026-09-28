@@ -28,7 +28,7 @@ export function ArithDerivations({ initial = 'add' }: { initial?: Which }) {
             ['rosser', 'Rosser: RProv(⌜R⌝)'],
           ] as [Which, string][]
         ).map(([w, l]) => (
-          <button key={w} type="button" className="chip-btn" role="radio" aria-checked={which === w} aria-pressed={which === w} onClick={() => setWhich(w)}>
+          <button key={w} type="button" className="chip-btn" role="radio" aria-checked={which === w} onClick={() => setWhich(w)}>
             {l}
           </button>
         ))}
@@ -77,10 +77,9 @@ function LessZeroPanel() {
         The complete derivation of <Ref k="inc:req:min:lem:less-zero" /> from the appendix, assembled from its pieces δ₁ (from Q8), δ₂ (∃Elim with eigenvariable b), δ₃ (the case a = 0), δ₄ and δ₅ (the case
         ∃y a = y′, ∃Elim with eigenvariable c), and the final ∀Intro with eigenvariable a. The book’s double line (from (b′ + 0) = 0 to 0 = (b′ + 0)) is written out as two steps: =Intro and =Elim.
       </p>
-      <div className="ndb-discrepancy">
+      <div className="ndb-note">
         <b>Q8 is written out.</b> Q8 is ∀x ∀y (x &lt; y ↔ ∃z (z′ + x) = y), and the book applies ∧Elim to its instance, “recall that A ↔ B is short for (A → B) ∧ (B → A)”. The checker has rules for the
-        primitive connectives only, so here the axiom Q8 is the sentence with ↔ replaced by its definition. The book also cites “Q5” for x + 0 = x in case 1 and “Q6” for (x + y′) = (x + y)′ in case 2; these
-        are Q4 and Q5 in its list of axioms, which is what the derivation uses.
+        primitive connectives only, so here the axiom Q8 is the sentence with ↔ replaced by its definition.
       </div>
       <ProofDebugger deriv={d} check={c} title={<Tex tex="\mathbf{Q} \vdash \forall x\, \lnot x < 0" />} />
       <p className="wb-note">

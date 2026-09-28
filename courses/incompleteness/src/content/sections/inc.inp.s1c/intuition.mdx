@@ -16,7 +16,7 @@ A bounded quantifier looks only below a term: $\forall x < t\, A(x)$ abbreviates
 
 1. <Ref k="inc:inp:s1c:lem:q-proves-clterm-id" />: $\mathbf Q$ evaluates closed terms — $\mathbf Q \vdash t = \overline n$ where $n$ is the value of $t$.
 2. <Ref k="inc:inp:s1c:lem:atomic-completeness" />: so $\mathbf Q$ proves every true atomic sentence and the negation of every false one.
-3. <Ref k="inc:inp:s1c:lem:bounded-quant-equiv" />: a bounded quantifier with a closed bound is equivalent in $\mathbf Q$ to a finite conjunction or disjunction of instances.
+3. <Ref k="inc:inp:s1c:lem:bounded-quant-equiv" />: with a closed bound of value $k$, $\mathbf Q$ proves $\forall x < t\, A(x)$ iff it proves $A(\overline 0) \land \cdots \land A(\overline{k-1})$, and $\exists x < t\, A(x)$ iff it proves $A(\overline 0) \lor \cdots \lor A(\overline{k-1})$.
 4. <Ref k="inc:inp:s1c:lem:delta0-completeness" />: by induction on the sentence, $\mathbf Q$ proves every true $\Delta_0$ sentence (and refutes every false one — the induction needs both).
 5. <Ref k="inc:inp:s1c:thm:sigma1-completeness" />: if $\exists x\,A(x)$ is true, some $n$ makes $A(\overline n)$ true; it is $\Delta_0$, so $\mathbf Q$ proves it, and then $\exists x\,A(x)$ by ∃Intro.
 

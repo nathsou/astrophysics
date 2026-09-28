@@ -168,7 +168,7 @@ export function RecordLab() {
             </div>
           )}
           <p aria-live="polite">
-            <Tex tex={`T(e, ${x}, s)`} />:{' '}
+            <Tex tex={`T(${e !== null && e.toString().length <= 12 ? e : 'e'}, ${x}, s)`} />:{' '}
             {check.holds ? <span className="ct-verdict yes">holds</span> : <span className="ct-verdict no">fails</span>}{' '}
             {isTampered && <span className="sans small muted">(on the altered record)</span>}
           </p>

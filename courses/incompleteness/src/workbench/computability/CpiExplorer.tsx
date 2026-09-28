@@ -50,10 +50,10 @@ const RESULTS: Result[] = [
     statement: <>If T is ω-consistent and represents all primitive recursive relations, T is undecidable.</>,
     steps: [
       { id: 'u1', claim: <>There is a formula <Tex tex={TT('e', 'x', 's')} /> representing Kleene’s T in T.</>, uses: [{ hyp: 'rep' }] },
-      { id: 'u2', claim: <>If <Tex tex="\varphi_e(e)\downarrow" />, then <Tex tex={`T \\vdash ${TT('\\bar e', '\\bar e', '\\bar k')}`} /> for some k, so <Tex tex={`T \\vdash \\exists z\\, ${TT('\\bar e', '\\bar e', 'z')}`} />.</>, uses: [{ hyp: 'rep' }, { logic: '∃Intro' }] },
-      { id: 'u3', claim: <>If <Tex tex="\varphi_e(e)\uparrow" />, then <Tex tex={`T \\vdash \\lnot ${TT('\\bar e', '\\bar e', '\\bar k')}`} /> for every k.</>, uses: [{ hyp: 'rep' }] },
-      { id: 'u4', claim: <>So if <Tex tex="\varphi_e(e)\uparrow" />, then <Tex tex={`T \\nvdash \\exists z\\, ${TT('\\bar e', '\\bar e', 'z')}`} />.</>, uses: [{ hyp: 'omega' }] },
-      { id: 'u5', claim: <><Tex tex="e \in K" /> iff <Tex tex={`T \\vdash \\exists z\\, ${TT('\\bar e', '\\bar e', 'z')}`} />: a decision procedure for T would decide K.</>, uses: [{ logic: 'steps 2 and 4' }] },
+      { id: 'u2', claim: <>If <Tex tex="\varphi_e(e)\downarrow" />, then <Tex tex={`\\mathbf{T} \\vdash ${TT('\\bar e', '\\bar e', '\\bar k')}`} /> for some k, so <Tex tex={`\\mathbf{T} \\vdash \\exists z\\, ${TT('\\bar e', '\\bar e', 'z')}`} />.</>, uses: [{ hyp: 'rep' }, { logic: '∃Intro' }] },
+      { id: 'u3', claim: <>If <Tex tex="\varphi_e(e)\uparrow" />, then <Tex tex={`\\mathbf{T} \\vdash \\lnot ${TT('\\bar e', '\\bar e', '\\bar k')}`} /> for every k.</>, uses: [{ hyp: 'rep' }] },
+      { id: 'u4', claim: <>So if <Tex tex="\varphi_e(e)\uparrow" />, then <Tex tex={`\\mathbf{T} \\nvdash \\exists z\\, ${TT('\\bar e', '\\bar e', 'z')}`} />.</>, uses: [{ hyp: 'omega' }] },
+      { id: 'u5', claim: <><Tex tex="e \in K" /> iff <Tex tex={`\\mathbf{T} \\vdash \\exists z\\, ${TT('\\bar e', '\\bar e', 'z')}`} />: a decision procedure for T would decide K.</>, uses: [{ logic: 'steps 2 and 4' }] },
       { id: 'u6', claim: <>But K is not decidable.</>, uses: [{ result: 'K' }] },
     ],
   },
@@ -92,11 +92,11 @@ const RESULTS: Result[] = [
       </>
     ),
     steps: [
-      { id: 'g1', claim: <>g is partial computable, so it has an index k; <Tex tex="g(e)\downarrow" /> iff <Tex tex={`T \\vdash \\lnot\\exists z\\, ${TT('\\bar e', '\\bar e', 'z')}`} />.</>, uses: [{ hyp: 'ce' }] },
+      { id: 'g1', claim: <>g is partial computable, so it has an index k; <Tex tex="g(e)\downarrow" /> iff <Tex tex={`\\mathbf{T} \\vdash \\lnot\\exists z\\, ${TT('\\bar e', '\\bar e', 'z')}`} />.</>, uses: [{ hyp: 'ce' }] },
       { id: 'g2', claim: <>If <Tex tex="g(k)\downarrow" />: T proves G, and (representing T) also <Tex tex={`\\exists z\\, ${TT('\\bar k', '\\bar k', 'z')}`} />.</>, uses: [{ hyp: 'rep' }] },
-      { id: 'g3', claim: <>That is a contradiction, so <Tex tex="g(k)\uparrow" /> and <Tex tex="T \nvdash G" />.</>, uses: [consistentOrOmega] },
+      { id: 'g3', claim: <>That is a contradiction, so <Tex tex="g(k)\uparrow" /> and <Tex tex="\mathbf{T} \nvdash G" />.</>, uses: [consistentOrOmega] },
       { id: 'g4', claim: <>Since <Tex tex="g(k)\uparrow" />, T refutes every instance <Tex tex={TT('\\bar k', '\\bar k', '\\bar m')} />.</>, uses: [{ hyp: 'rep' }] },
-      { id: 'g5', claim: <>So <Tex tex={`T \\nvdash \\exists z\\, ${TT('\\bar k', '\\bar k', 'z')}`} />, and T does not prove ¬G either.</>, uses: [{ hyp: 'omega' }] },
+      { id: 'g5', claim: <>So <Tex tex={`\\mathbf{T} \\nvdash \\exists z\\, ${TT('\\bar k', '\\bar k', 'z')}`} />, and T does not prove ¬G either.</>, uses: [{ hyp: 'omega' }] },
     ],
   },
 ];
@@ -263,11 +263,11 @@ export function KSentencesTable() {
                 <td className="wrap sans">
                   {m.kind === 'in' ? (
                     <>
-                      <Tex tex={`T \\vdash \\mathsf{T}(\\bar ${e}, \\bar ${e}, \\bar s)`} /> for the record s <Witness e={BigInt(e)} />, hence <Tex tex="\exists z\,\mathsf{T}" />
+                      <Tex tex={`\\mathbf{T} \\vdash \\mathsf{T}(\\overline{${e}}, \\overline{${e}}, \\bar s)`} /> for the record s <Witness e={BigInt(e)} />, hence <Tex tex="\exists z\,\mathsf{T}" />
                     </>
                   ) : m.kind === 'out' ? (
                     <>
-                      <Tex tex={`T \\vdash \\lnot\\mathsf{T}(\\bar ${e}, \\bar ${e}, \\bar s)`} /> for every s; if T is ω-consistent, <Tex tex="T \nvdash \exists z\,\mathsf{T}" />
+                      <Tex tex={`\\mathbf{T} \\vdash \\lnot\\mathsf{T}(\\overline{${e}}, \\overline{${e}}, \\bar s)`} /> for every s; if T is ω-consistent, <Tex tex="\mathbf{T} \nvdash \exists z\,\mathsf{T}" />
                     </>
                   ) : (
                     'not known from this run'

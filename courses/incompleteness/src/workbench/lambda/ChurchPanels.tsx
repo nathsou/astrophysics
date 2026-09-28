@@ -228,33 +228,20 @@ const OPS: Op[] = [
   { key: 'Add', label: 'Add', src: 'Add', arity: 2, f: (a, b) => a + b, cap: (a, b) => a + b <= 40 },
   { key: "Add'", label: 'Add′', src: "Add'", arity: 2, f: (a, b) => a + b, cap: (a, b) => a + b <= 40 },
   { key: 'Mult', label: 'Mult', src: 'Mult', arity: 2, f: (a, b) => a * b, cap: (a, b) => a * b <= 64 },
+  { key: "Mult'", label: 'Mult′', src: "Mult'", arity: 2, f: (a, b) => a * b, cap: (a, b) => a * b <= 36 && a <= 8 },
   {
-    key: "Mult'",
-    label: 'Mult′ (corrected: a (Add b) 0̄)',
-    src: "Mult'",
+    key: 'Exp',
+    label: 'Exp',
+    src: 'Exp',
     arity: 2,
-    f: (a, b) => a * b,
-    cap: (a, b) => a * b <= 36 && a <= 8,
+    f: (a, b) => a ** b,
+    cap: (a, b) => a ** b <= 128,
     note: (
-      <div className="lam-erratum">
-        <Prov kind="added" /> The book prints <Tex tex="\mathrm{Mult}' \equiv \lambda ab.\, a(\mathrm{Add}\, a)\overline{0}" />. That adds <i>a</i> to <Tex tex="\overline 0" />, <i>a</i> times, and so computes <Tex tex="a\cdot a" />: try the next entry. This edition uses <Tex tex="\lambda ab.\, a(\mathrm{Add}\, b)\overline{0}" />, which adds <i>b</i>, <i>a</i> times.
+      <div className="lam-aside">
+        <Prov kind="added" /> The exponent (the second argument) must be at least 1: <Tex tex="\mathrm{Exp}\,\overline a\,\overline 0 \twoheadrightarrow \overline 0\,\overline a \twoheadrightarrow \lambda x.\,x" />, which is not the numeral <Tex tex="\overline 1 \equiv \lambda f x.\,f x" /> (it is only η-equivalent to it). <Tex tex="\mathrm{Exp}'" /> gives <Tex tex="\overline 1" />.
       </div>
     ),
   },
-  {
-    key: 'book-mult',
-    label: 'Mult′ as printed in the book: a (Add a) 0̄',
-    src: 'λa b. a (Add a) 0',
-    arity: 2,
-    f: (a, b) => a * b,
-    cap: (a, b) => a * a <= 36 && b <= 12,
-    note: (
-      <div className="lam-erratum">
-        <Prov kind="added" /> This is the term exactly as the book prints it. Its result does not depend on <i>b</i> at all: it is <Tex tex="\overline{a\cdot a}" />, so it λ-defines multiplication only when <i>a</i> = <i>b</i> (or <i>a</i> = 0).
-      </div>
-    ),
-  },
-  { key: 'Exp', label: 'Exp', src: 'Exp', arity: 2, f: (a, b) => a ** b, cap: (a, b) => a ** b <= 128 },
   { key: "Exp'", label: 'Exp′', src: "Exp'", arity: 2, f: (a, b) => a ** b, cap: (a, b) => a ** b <= 64 },
   { key: 'Pred', label: 'Pred', src: 'Pred', arity: 1, f: (a) => Math.max(0, a - 1), cap: (a) => a <= 12 },
   { key: 'Sub', label: 'Sub', src: 'Sub', arity: 2, f: (a, b) => Math.max(0, a - b), cap: (a, b) => a <= 12 && b <= 8 },

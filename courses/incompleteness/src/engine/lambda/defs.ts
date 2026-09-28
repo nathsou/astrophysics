@@ -32,11 +32,8 @@ export const BOOK_DEFS: Record<string, Definition> = {
   Add: { src: 'λa b f x. a f (b f x)', note: ARF },
   "Add'": { src: 'λa b. a Succ b', note: ARF },
   Mult: { src: 'λa b f x. a (b f) x', note: ARF },
-  "Mult'": {
-    src: 'λa b. a (Add b) 0',
-    note: `${ARF}, exercise: b added a times to 0̄ (the book prints a (Add a) 0̄, which computes a·a)`,
-  },
-  Exp: { src: 'λb e. e b', note: ARF },
+  "Mult'": { src: 'λa b. a (Add b) 0', note: `${ARF}, exercise: b added a times to 0̄` },
+  Exp: { src: 'λb e. e b', note: `${ARF}: for exponents e ≥ 1` },
   "Exp'": { src: 'λb e. e (Mult b) 1', note: ARF },
 
   Pair: { src: 'λm n f. f m n', note: PAI },
@@ -58,8 +55,5 @@ export const BOOK_DEFS: Record<string, Definition> = {
   Y_C: { src: 'λg. (λx. g (x x)) (λx. g (x x))', note: `${FP}: Church’s fixpoint combinator, Y_C g =β g (Y_C g)` },
   "Fac'": { src: 'λg n. IsZero n 1 (Mult n (g (Pred n)))', note: FP },
   Fac: { src: "Y Fac'", note: `${FP}: the factorial, a fixpoint of Fac′` },
-  Search: {
-    src: 'λg f x y. IsZero (f x y) y (g f x (Succ y))',
-    note: 'section “Minimization”, for one argument x (the book’s recursive call omits f; it must be g f x (Succ y))',
-  },
+  Search: { src: 'λg f x y. IsZero (f x y) y (g f x (Succ y))', note: 'section “Minimization”, for one argument x' },
 };

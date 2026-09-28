@@ -44,7 +44,7 @@ export function NonstandardOrder() {
   return (
     <Panel title={<>How a non-standard model of PA is ordered</>} prov={<span className="sem-illustration">Illustration — not a model</span>}>
       <p className="wb-note">
-        The picture shows only the <em>order</em> ≺ of the elements. The labels 2a, a/2, 3a/2 name elements by the book’s constructions (a ⊕ a; an element whose double is a, possibly plus one; an “average”). + and × are not drawn: by Tennenbaum’s theorem a non-standard model of PA cannot be given with domain ℕ and computable + and ×.
+        The picture shows only the <em>order</em> ≺ of the elements. The labels 2a, a/2, 3a/2 name elements by the book’s constructions (a ⊕ a; an element whose double is a, possibly plus one; an “average”). ⊕ and ⊗ are not drawn: by Tennenbaum’s theorem no non-standard model of PA is computable (domain ℕ, computable ′, + and ×, decidable &lt;).
       </p>
       <div className="sem-ns" role="img" aria-label={`The standard numbers, then ${sorted.length} block${sorted.length === 1 ? '' : 's'}: ${sorted.map((b) => `[${show(b)}]`).join(', ')}, each ordered like the integers.`}>
         <svg width={width} height={96} viewBox={`0 0 ${width} 96`}>
