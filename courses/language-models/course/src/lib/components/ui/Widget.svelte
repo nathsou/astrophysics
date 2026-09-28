@@ -122,6 +122,9 @@
     font-family: var(--font-ui);
     font-size: 0.9rem;
     min-width: 0;
+    /* a figure wider than the column scrolls inside its cell instead of widening the page */
+    overflow-x: auto;
+    overflow-y: hidden;
   }
   figcaption {
     padding: 0.5rem 0 0;

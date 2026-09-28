@@ -451,7 +451,7 @@
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
     gap: 0.9rem 1.1rem;
     grid-column: 2;
   }
@@ -492,7 +492,7 @@
     display: flex;
     gap: 0.6rem;
     align-items: flex-end;
-    height: 170px;
+    height: 150px;
     border-bottom: 1px solid var(--mute);
   }
   .bars {
