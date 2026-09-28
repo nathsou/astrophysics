@@ -1,8 +1,8 @@
 import { useParams, useLocation, A } from '@solidjs/router';
 import { For, Show, Suspense, createEffect, createResource, createSignal, onCleanup, ErrorBoundary } from 'solid-js';
-import { chapterBySlug, neighbours, parts } from '../content/chapters.ts';
+import { chapterBySlug, neighbours, parts, fileName, chapters } from '../content/chapters.ts';
 import { mdxComponents } from '../content/mdx-components.tsx';
-import { markVisited } from './progress.ts';
+import { markVisited, isVisited } from './progress.ts';
 
 interface TocItem {
   id: string;
@@ -59,6 +59,7 @@ export function ChapterPage() {
         <Show when={info()} fallback={<p>Unknown chapter.</p>}>
           <header class="chapter-head">
             <div class="chapter-kicker">
+              {'-- '}
               {info()!.num > 0 ? `Chapter ${info()!.num}` : 'Prologue'}
               {info()!.part > 0 ? ` · Part ${['', 'I', 'II', 'III', 'IV', 'V'][info()!.part]}: ${parts[info()!.part].title}` : ''}
             </div>
@@ -82,7 +83,7 @@ export function ChapterPage() {
             <Show when={neighbours(params.slug!).prev}>
               {(p) => (
                 <A href={`/ch/${p().slug}`}>
-                  <span class="dir">← Previous</span>
+                  <span class="dir">← {fileName(p())}</span>
                   {p().title}
                 </A>
               )}
@@ -90,7 +91,7 @@ export function ChapterPage() {
             <Show when={neighbours(params.slug!).next}>
               {(n) => (
                 <A href={`/ch/${n().slug}`} class="next">
-                  <span class="dir">Next →</span>
+                  <span class="dir">{fileName(n())} →</span>
                   {n().title}
                 </A>
               )}
@@ -99,23 +100,29 @@ export function ChapterPage() {
         </Show>
       </article>
       <aside class="page-toc" aria-label="On this page">
-        <div class="label" style={{ 'margin-bottom': '0.5rem' }}>
-          On this page
+        <div class="goals-label" aria-hidden="true">
+          GOALS
         </div>
-        <For each={toc()}>
-          {(t) => (
-            <a
-              href={`#/ch/${params.slug}?s=${t.id}`}
-              class={`${t.level === 3 ? 'h3' : ''} ${currentId() === t.id ? 'current' : ''}`}
-              onClick={(e) => {
-                e.preventDefault();
-                jump(t.id);
-              }}
-            >
-              {t.text}
-            </a>
-          )}
-        </For>
+        <div class="goals-list">
+          <For each={toc()}>
+            {(t) => (
+              <a
+                href={`#/ch/${params.slug}?s=${t.id}`}
+                class={`${t.level === 3 ? 'h3' : ''} ${currentId() === t.id ? 'current' : ''}`}
+                aria-current={currentId() === t.id ? 'location' : undefined}
+                onClick={(e) => {
+                  e.preventDefault();
+                  jump(t.id);
+                }}
+              >
+                {t.text}
+              </a>
+            )}
+          </For>
+        </div>
+        <div class="goals-status">
+          ✓ {chapters.filter((c) => isVisited(c.slug)).length} / {chapters.length} files read
+        </div>
       </aside>
     </div>
   );

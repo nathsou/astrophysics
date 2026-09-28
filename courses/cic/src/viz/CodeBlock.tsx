@@ -1,7 +1,7 @@
-import { For, Show, createSignal } from 'solid-js';
+import { For, Show, createSignal, type JSX } from 'solid-js';
 import { highlight } from '../app/highlight.ts';
 
-export function CodeBlock(props: { code: string; lang?: string; title?: string }) {
+export function CodeBlock(props: { code: string; lang?: string; title?: string; /** inline marker after the last line, e.g. a ✓ */ mark?: JSX.Element }) {
   const toks = () => highlight(props.code.replace(/\n$/, ''), props.lang ?? '');
   const [copied, setCopied] = createSignal(false);
   const copy = () => {
@@ -15,6 +15,7 @@ export function CodeBlock(props: { code: string; lang?: string; title?: string }
       <pre>
         <code>
           <For each={toks()}>{(t) => (t.cls ? <span class={t.cls}>{t.text}</span> : t.text)}</For>
+          {props.mark}
         </code>
       </pre>
       <div class="cb-actions">

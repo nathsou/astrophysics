@@ -1,24 +1,57 @@
 import { A } from '@solidjs/router';
-import { For } from 'solid-js';
-import { chapters, parts } from '../content/chapters.ts';
+import { For, Show, createSignal, onMount } from 'solid-js';
+import { chapters, parts, fileName, baseFileName } from '../content/chapters.ts';
 import { CourseMap } from '../viz/CourseMap.tsx';
+import { CodeBlock } from '../viz/CodeBlock.tsx';
+
+const WELCOME = `theorem and_swap (p q : Prop) :
+  p ∧ q → q ∧ p :=
+  fun h => ⟨h.right, h.left⟩`;
 
 export function Home() {
+  // the snippet above is checked by the course kernel (loaded lazily, after first paint)
+  const [checked, setChecked] = createSignal(false);
+  onMount(() => {
+    const run = async () => {
+      try {
+        const { envFor, check } = await import('./kernel.ts');
+        const r = check(WELCOME, envFor('cic'));
+        setChecked(!r.messages.some((m) => m.severity === 'error'));
+      } catch {
+        /* the mark is decoration; ignore failures */
+      }
+    };
+    const w = window as Window & { requestIdleCallback?: (cb: () => void) => number };
+    if (w.requestIdleCallback) w.requestIdleCallback(() => void run());
+    else setTimeout(() => void run(), 200);
+  });
+  const first = chapters[0];
   return (
     <div class="home">
       <section class="hero">
         <div class="hero-inner">
-          <div class="chapter-kicker">An interactive course</div>
-          <h1>The Calculus of Inductive Constructions</h1>
+          <div class="chapter-kicker">-- Welcome</div>
+          <h1>Calculus of Inductive Constructions</h1>
           <p class="hero-lead">
-            From the untyped λ-calculus to the type theory at the heart of Lean&nbsp;4 — built up one idea at a time, with a real kernel running in your browser.
+            From the untyped λ-calculus to the type theory at the heart of Lean&nbsp;4, built up one idea at a time, with a real type-checking kernel running in your browser.
           </p>
-          <div class="row" style={{ 'margin-top': '1.6rem' }}>
-            <A href="/ch/intro" class="btn primary">
-              Start reading →
+          <CodeBlock
+            code={WELCOME}
+            lang="lean"
+            mark={
+              <Show when={checked()}>
+                <span class="ok-tick" title="checked by the course kernel" role="img" aria-label="checked by the course kernel">
+                  ✓
+                </span>
+              </Show>
+            }
+          />
+          <div class="row">
+            <A href={`/ch/${first.slug}`} class="btn primary">
+              ▶ open {fileName(first)}
             </A>
             <A href="/playground" class="btn">
-              Open the playground
+              open playground.lean
             </A>
           </div>
         </div>
@@ -31,13 +64,15 @@ export function Home() {
         <For each={parts}>
           {(p) => (
             <div class="home-part">
-              <div class="label">{p.num === 0 ? 'Prologue' : `Part ${['', 'I', 'II', 'III', 'IV', 'V'][p.num]}`}</div>
-              <h2>{p.title}</h2>
+              <h2 class="home-part-title">{p.num === 0 ? '-- Prologue' : `-- Part ${['', 'I', 'II', 'III', 'IV', 'V'][p.num]} · ${p.title}`}</h2>
               <div class="home-cards">
                 <For each={chapters.filter((c) => c.part === p.num)}>
                   {(c) => (
                     <A href={`/ch/${c.slug}`} class="home-card">
-                      <span class="hc-num">{c.num === 0 ? '0' : c.num}</span>
+                      <span class="hc-file">
+                        <span class="hc-num">{String(c.num).padStart(2, '0')}</span>
+                        {baseFileName(c)}
+                      </span>
                       <span class="hc-title">{c.title}</span>
                       <span class="hc-blurb">{c.blurb}</span>
                     </A>

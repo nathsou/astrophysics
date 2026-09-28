@@ -20,6 +20,7 @@ function RuleIndex() {
   const inGroup = (id: string, prefix: string) => (prefix ? id.startsWith(prefix) : !id.includes('.'));
   return (
     <>
+      <div class="chapter-kicker">-- reference · inference rules</div>
       <h1>Rule index</h1>
       <p>Every inference rule displayed in the course. The kernel’s derivation trees refer to the rules in the fourth group.</p>
       <For each={groups}>
@@ -59,6 +60,7 @@ function Timeline() {
   const e = () => timeline[sel()];
   return (
     <>
+      <div class="chapter-kicker">-- reference · history</div>
       <h1>Timeline</h1>
       <p>A century of ideas behind the Calculus of Inductive Constructions. Click an event.</p>
       <div class="widget wide timeline">
@@ -134,6 +136,7 @@ function Glossary() {
   const items = () => glossary.filter((g) => (g.term + g.def).toLowerCase().includes(q().toLowerCase())).sort((a, b) => a.term.localeCompare(b.term));
   return (
     <>
+      <div class="chapter-kicker">-- reference · terms</div>
       <h1>Glossary</h1>
       <input class="input" placeholder="search…" value={q()} onInput={(e) => setQ(e.currentTarget.value)} style={{ width: '100%', 'margin-bottom': '1rem' }} />
       <dl class="glossary">
@@ -158,6 +161,7 @@ function Glossary() {
 function Bibliography() {
   return (
     <>
+      <div class="chapter-kicker">-- reference · bibliography</div>
       <h1>Further reading</h1>
       <p>Classic papers and books behind each chapter.</p>
       <For each={bibliography}>
@@ -179,7 +183,7 @@ function Bibliography() {
 export default function ReferencePage() {
   const params = useParams();
   return (
-    <div class="page" style={{ 'grid-template-columns': 'minmax(0, 1fr)' }}>
+    <div class="page ref" style={{ 'grid-template-columns': 'minmax(0, 1fr)' }}>
       <article class="prose">
         <Switch fallback={<p>Unknown page.</p>}>
           <Match when={params.page === 'rules'}>
