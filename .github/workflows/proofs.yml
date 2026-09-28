@@ -1,0 +1,37 @@
+name: Proofcraft — checks
+
+# Tests, type checks and a build for courses/proofs. (Deployment is in deploy.yml.)
+on:
+  push:
+    branches: [main]
+    paths: ['courses/proofs/**', '.github/workflows/proofs.yml']
+  pull_request:
+    paths: ['courses/proofs/**', '.github/workflows/proofs.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: courses/proofs
+
+jobs:
+  site:
+    runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: --experimental-strip-types
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: courses/proofs/package-lock.json
+      - run: npm ci
+      - name: CAS, logic, number-theory and content tests
+        run: npm test
+      - name: Type-check (svelte-check)
+        run: npm run check
+      - name: Build
+        run: npm run build

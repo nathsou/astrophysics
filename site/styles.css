@@ -19,6 +19,7 @@
   --violet-ink: #5b4497;
   --copper-ink: #9a4e14;
   --teal-ink: #16705f;
+  --rose-ink: #8c2a3c;
   --font-sans: 'DM Sans', system-ui, sans-serif;
   --font-serif: Newsreader, Georgia, serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
@@ -41,6 +42,7 @@
   --violet-ink: #c7b3f0;
   --copper-ink: #f0b36e;
   --teal-ink: #7fd6c2;
+  --rose-ink: #ec8f9e;
 }
 
 * {
@@ -389,6 +391,7 @@ h1 em {
 .cic { --card-ink: var(--violet-ink); }
 .compiler { --card-ink: var(--copper-ink); }
 .lm { --card-ink: var(--teal-ink); }
+.proofs { --card-ink: var(--rose-ink); }
 
 .body {
   display: flex;
@@ -742,6 +745,42 @@ h1 em {
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+}
+
+.art-proofs {
+  background: radial-gradient(90% 90% at 80% 10%, #8c2a3c66, transparent 60%), #2a1a1e;
+}
+.proofs-svg {
+  width: 100%;
+  height: 100%;
+}
+.proofs-svg .frame {
+  fill: #f3ead9;
+  stroke: #1a1917;
+  stroke-width: 2;
+}
+.proofs-svg .t1 { fill: #d0312d; stroke: #1a1917; stroke-width: 1.5; }
+.proofs-svg .t2 { fill: #1f5aa6; stroke: #1a1917; stroke-width: 1.5; }
+.proofs-svg .t3 { fill: #e9a91b; stroke: #1a1917; stroke-width: 1.5; }
+.proofs-svg .c2 {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 24px;
+  fill: #1a1917;
+  text-anchor: middle;
+}
+.proofs-svg .line {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 18px;
+  fill: #f3e3e6;
+}
+.proofs-svg .line.dim {
+  fill: #c9a2aa;
+}
+.proofs-svg .qed {
+  font-size: 26px;
+  fill: #ec8f9e;
 }
 
 /* ───────── How it works ───────── */

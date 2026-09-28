@@ -1,0 +1,422 @@
+# Timeline: list of { year, title, people, chapter, text }. Negative years are BC.
+
+- year: -1800
+  title: Plimpton 322
+  people: Old Babylonian scribes
+  chapter: what-is-a-proof
+  text: A clay tablet from Larsa lists Pythagorean triples such as (119, 120, 169), centuries before Pythagoras.
+- year: -300
+  title: Euclid’s Elements
+  people: Euclid
+  chapter: what-is-a-proof
+  text: Thirteen books deriving 465 propositions from a few postulates — the model of proof for two thousand years.
+- year: 1150
+  title: “Behold!”
+  people: Bhāskara II
+  chapter: what-is-a-proof
+  text: A proof of Pythagoras’ theorem by a single figure.
+- year: 1772
+  title: A prime-producing polynomial
+  people: Leonhard Euler
+  chapter: what-is-a-proof
+  text: n² + n + 41 is prime for n = 0, …, 39 — and then fails.
+- year: 1876
+  title: A president’s proof
+  people: James A. Garfield
+  chapter: what-is-a-proof
+  text: A proof of Pythagoras’ theorem using a trapezoid.
+- year: 1945
+  title: How to Solve It
+  people: George Pólya
+  chapter: what-is-a-proof
+  text: Pólya describes the four phases of problem solving.
+- year: -310
+  title: The truth-functional conditional
+  people: Philo of Megara
+  chapter: truth-and-consequence
+  text: '“If P then Q” is false only when P is true and Q false.'
+- year: 1854
+  title: The Laws of Thought
+  people: George Boole
+  chapter: truth-and-consequence
+  text: Logic becomes algebra.
+- year: 1913
+  title: The Sheffer stroke
+  people: Henry Sheffer
+  chapter: truth-and-consequence
+  text: A single connective is enough to express every truth table.
+- year: 1921
+  title: Truth tables
+  people: Emil Post, Ludwig Wittgenstein
+  chapter: truth-and-consequence
+  text: Truth tables become a standard tool; Post proves functional completeness in general.
+- year: 1937
+  title: Logic in circuits
+  people: Claude Shannon
+  chapter: truth-and-consequence
+  text: Boolean algebra describes switching circuits, founding digital design.
+- year: 1966
+  title: The selection task
+  people: Peter Wason
+  chapter: truth-and-consequence
+  text: Most people misread “if … then”.
+- year: 1742
+  title: Goldbach’s conjecture
+  people: Christian Goldbach, Leonhard Euler
+  chapter: for-all-there-exists
+  text: Every even number greater than 2 is the sum of two primes? Still open.
+- year: 1879
+  title: Begriffsschrift
+  people: Gottlob Frege
+  chapter: for-all-there-exists
+  text: Nested quantifiers and modern logic.
+- year: -1700
+  title: YBC 7289
+  people: Old Babylonian scribes
+  chapter: root-two
+  text: A tablet gives √2 to about six decimal places.
+- year: -450
+  title: Incommensurable magnitudes
+  people: The Pythagoreans (Hippasus?)
+  chapter: root-two
+  text: The diagonal of a square is not a rational multiple of its side.
+- year: -370
+  title: Eudoxus’ theory of proportion
+  people: Eudoxus of Cnidus
+  chapter: root-two
+  text: Ratios of incommensurable magnitudes put on a firm footing (Elements, Book V).
+- year: -250
+  title: The sieve
+  people: Eratosthenes of Cyrene
+  chapter: infinitely-many-primes
+  text: A method for listing all primes up to a bound.
+- year: 1737
+  title: The Euler product
+  people: Leonhard Euler
+  chapter: infinitely-many-primes
+  text: The sum of the reciprocals of the primes diverges — the birth of analytic number theory.
+- year: 1837
+  title: Primes in arithmetic progressions
+  people: Peter Gustav Lejeune Dirichlet
+  chapter: infinitely-many-primes
+  text: Every progression a, a + d, a + 2d, … with gcd(a, d) = 1 contains infinitely many primes.
+- year: 1896
+  title: The prime number theorem
+  people: Jacques Hadamard, Charles de la Vallée Poussin
+  chapter: infinitely-many-primes
+  text: The number of primes up to x is asymptotic to x / ln x.
+- year: 2013
+  title: Bounded gaps between primes
+  people: Yitang Zhang
+  chapter: infinitely-many-primes
+  text: Some gap below 70 million occurs infinitely often.
+- year: 1575
+  title: Induction appears
+  people: Francesco Maurolico
+  chapter: induction
+  text: The sum of the first n odd numbers is n², proved step by step.
+- year: 1654
+  title: The arithmetical triangle
+  people: Blaise Pascal
+  chapter: induction
+  text: Induction used systematically to prove properties of Pascal’s triangle.
+- year: 1883
+  title: The Tower of Hanoi
+  people: Édouard Lucas
+  chapter: induction
+  text: A puzzle whose solution is a recursion.
+- year: 1889
+  title: Peano’s axioms
+  people: Richard Dedekind, Giuseppe Peano
+  chapter: induction
+  text: Induction becomes an axiom defining the natural numbers.
+- year: 1954
+  title: Polyominoes
+  people: Solomon Golomb
+  chapter: induction
+  text: Deficient 2ⁿ × 2ⁿ boards can be tiled by L-trominoes.
+- year: 1801
+  title: Disquisitiones Arithmeticae
+  people: Carl Friedrich Gauss
+  chapter: unique-factorisation
+  text: Modern number theory begins, with the first clear proof of unique factorisation.
+- year: 1844
+  title: The speed of Euclid’s algorithm
+  people: Gabriel Lamé
+  chapter: unique-factorisation
+  text: At most five steps per decimal digit — an early analysis of an algorithm.
+- year: 1847
+  title: Unique factorisation fails
+  people: Gabriel Lamé, Ernst Kummer
+  chapter: unique-factorisation
+  text: Lamé’s proof of Fermat’s Last Theorem collapses; Kummer’s ideal numbers are born.
+- year: 1958
+  title: Pólya’s conjecture disproved
+  people: Brian Haselgrove
+  chapter: unique-factorisation
+  text: The smallest counterexample, 906,150,257, is found in 1980.
+- year: 1637
+  title: A margin too narrow
+  people: Pierre de Fermat
+  chapter: fermats-descent
+  text: Fermat claims that xⁿ + yⁿ = zⁿ has no solutions for n ≥ 3.
+- year: 1640
+  title: Infinite descent
+  people: Pierre de Fermat
+  chapter: fermats-descent
+  text: No right triangle with whole-number sides has square area — the only complete proof Fermat left.
+- year: 1995
+  title: Fermat’s Last Theorem proved
+  people: Andrew Wiles, Richard Taylor
+  chapter: fermats-descent
+  text: Via the modularity of semistable elliptic curves.
+- year: 1640
+  title: Fermat’s little theorem
+  people: Pierre de Fermat
+  chapter: fermats-little-theorem
+  text: Stated in a letter to Frénicle, without proof.
+- year: 1736
+  title: The first published proof
+  people: Leonhard Euler
+  chapter: fermats-little-theorem
+  text: By induction and the binomial theorem; generalised in 1763 to aᵠ⁽ⁿ⁾ ≡ 1 (mod n).
+- year: 1910
+  title: Carmichael numbers
+  people: Robert Carmichael
+  chapter: fermats-little-theorem
+  text: Composite numbers that pass Fermat’s test for every coprime base.
+- year: 1977
+  title: RSA
+  people: Rivest, Shamir, Adleman (and, secretly, Cocks in 1973)
+  chapter: fermats-little-theorem
+  text: Public-key encryption from Euler’s theorem.
+- year: 628
+  title: Products of sums of squares
+  people: Brahmagupta
+  chapter: two-squares
+  text: (a² + b²)(c² + d²) = (ac − bd)² + (ad + bc)².
+- year: 1747
+  title: Euler proves the two-squares theorem
+  people: Leonhard Euler
+  chapter: two-squares
+  text: After seven years, a proof by descent of Fermat’s Christmas theorem.
+- year: 1990
+  title: A one-sentence proof
+  people: Don Zagier
+  chapter: two-squares
+  text: An involution with one fixed point proves Fermat’s two-squares theorem.
+- year: 1796
+  title: The golden theorem
+  people: Carl Friedrich Gauss
+  chapter: quadratic-reciprocity
+  text: At eighteen, Gauss proves the law of quadratic reciprocity conjectured by Euler.
+- year: 1844
+  title: Counting lattice points
+  people: Gotthold Eisenstein
+  chapter: quadratic-reciprocity
+  text: A geometric proof of quadratic reciprocity.
+- year: 1638
+  title: Galileo’s paradox
+  people: Galileo Galilei
+  chapter: sizes-of-infinity
+  text: As many squares as whole numbers — yet fewer?
+- year: 1874
+  title: The reals are uncountable
+  people: Georg Cantor
+  chapter: sizes-of-infinity
+  text: Algebraic numbers can be listed, real numbers cannot — so transcendental numbers exist.
+- year: 1891
+  title: The diagonal argument
+  people: Georg Cantor
+  chapter: sizes-of-infinity
+  text: No set is as large as its power set.
+- year: 1963
+  title: The continuum hypothesis is independent
+  people: Kurt Gödel (1940), Paul Cohen (1963)
+  chapter: sizes-of-infinity
+  text: The standard axioms can neither prove nor disprove it.
+- year: 1902
+  title: Russell’s letter to Frege
+  people: Bertrand Russell, Gottlob Frege
+  chapter: limits-of-proof
+  text: The set of all sets that are not members of themselves cannot exist.
+- year: 1931
+  title: Incompleteness
+  people: Kurt Gödel
+  chapter: limits-of-proof
+  text: Every consistent formal system for arithmetic has true but unprovable statements.
+- year: 1936
+  title: The halting problem
+  people: Alan Turing, Alonzo Church
+  chapter: limits-of-proof
+  text: No program decides whether an arbitrary program halts.
+- year: 1734
+  title: The Analyst
+  people: George Berkeley
+  chapter: epsilon-delta
+  text: Infinitesimals mocked as “ghosts of departed quantities”.
+- year: 1821
+  title: Cours d’analyse
+  people: Augustin-Louis Cauchy
+  chapter: epsilon-delta
+  text: Limits become the foundation of calculus.
+- year: 1861
+  title: ε and δ
+  people: Karl Weierstrass
+  chapter: epsilon-delta
+  text: Weierstrass’s Berlin lectures give limits and continuity their modern quantified form.
+- year: 1817
+  title: A purely analytic proof
+  people: Bernard Bolzano
+  chapter: completeness
+  text: The intermediate value theorem proved without appeal to geometry.
+- year: 1872
+  title: Constructing the real numbers
+  people: Richard Dedekind, Georg Cantor
+  chapter: completeness
+  text: Cuts and Cauchy sequences give ℝ a foundation in ℚ.
+- year: 1670
+  title: The fundamental theorem, geometrically
+  people: Isaac Barrow
+  chapter: fundamental-theorem
+  text: Tangents and areas are inverse problems.
+- year: 1684
+  title: Calculus published
+  people: Gottfried Wilhelm Leibniz (Newton’s work, from 1666, appeared later)
+  chapter: fundamental-theorem
+  text: The first published account of the differential calculus.
+- year: 1691
+  title: Rolle’s theorem
+  people: Michel Rolle
+  chapter: fundamental-theorem
+  text: Between two roots of a polynomial lies a root of its derivative.
+- year: 1823
+  title: A rigorous fundamental theorem
+  people: Augustin-Louis Cauchy
+  chapter: fundamental-theorem
+  text: The first proof for continuous functions, from a definition of the integral.
+- year: -450
+  title: Zeno’s paradoxes
+  people: Zeno of Elea
+  chapter: infinite-series
+  text: Can infinitely many steps be completed?
+- year: 1350
+  title: The harmonic series diverges
+  people: Nicole Oresme
+  chapter: infinite-series
+  text: Grouping the terms into blocks each worth at least ½.
+- year: 1734
+  title: The Basel problem
+  people: Leonhard Euler
+  chapter: infinite-series
+  text: 1 + 1/4 + 1/9 + ⋯ = π²/6, by an audacious infinite product.
+- year: 1854
+  title: Rearranging series
+  people: Bernhard Riemann
+  chapter: infinite-series
+  text: A conditionally convergent series can be reordered to converge to any number.
+- year: 1978
+  title: ζ(3) is irrational
+  people: Roger Apéry
+  chapter: infinite-series
+  text: The first result on the sum of the reciprocals of the cubes.
+- year: 1737
+  title: e is irrational
+  people: Leonhard Euler
+  chapter: e-and-pi
+  text: Via its continued fraction; Fourier’s short proof by series followed in 1815.
+- year: 1761
+  title: π is irrational
+  people: Johann Heinrich Lambert
+  chapter: e-and-pi
+  text: Proved with a continued fraction for tan x.
+- year: 1844
+  title: Transcendental numbers exist
+  people: Joseph Liouville
+  chapter: e-and-pi
+  text: Numbers too well approximated by fractions cannot be algebraic.
+- year: 1882
+  title: π is transcendental
+  people: Charles Hermite (e, 1873), Ferdinand von Lindemann (π, 1882)
+  chapter: e-and-pi
+  text: The circle cannot be squared with ruler and compass.
+- year: 1947
+  title: A one-page proof
+  people: Ivan Niven
+  chapter: e-and-pi
+  text: π is irrational, by an integral that must be an integer between 0 and 1.
+- year: 1826
+  title: Exceptions to Cauchy’s theorem
+  people: Niels Henrik Abel
+  chapter: monsters
+  text: A convergent series of continuous functions can have a discontinuous sum.
+- year: 1872
+  title: A continuous nowhere-differentiable function
+  people: Karl Weierstrass
+  chapter: monsters
+  text: Presented to the Berlin Academy on 18 July.
+- year: 1890
+  title: A curve that fills a square
+  people: Giuseppe Peano, David Hilbert (1891)
+  chapter: monsters
+  text: A continuous surjection from an interval onto a square.
+- year: 1842
+  title: Approximation by pigeonholes
+  people: Peter Gustav Lejeune Dirichlet
+  chapter: pigeonholes
+  text: Every irrational has infinitely many approximations p/q within 1/q².
+- year: 1930
+  title: Ramsey’s theorem
+  people: Frank Ramsey
+  chapter: pigeonholes
+  text: Complete disorder is impossible; a party of six has three mutual friends or three mutual strangers.
+- year: 1935
+  title: Monotone subsequences
+  people: Paul Erdős, George Szekeres
+  chapter: pigeonholes
+  text: Any n² + 1 distinct numbers contain a monotone run of length n + 1.
+- year: 1736
+  title: The bridges of Königsberg
+  people: Leonhard Euler
+  chapter: invariants
+  text: The first theorem of graph theory.
+- year: 1880
+  title: The 15 puzzle craze
+  people: Noyes Chapman, Sam Loyd; W. W. Johnson and W. E. Story (1879)
+  chapter: invariants
+  text: Half of all positions are unreachable, by a parity invariant.
+- year: 1961
+  title: Conway’s soldiers
+  people: John Horton Conway
+  chapter: invariants
+  text: A weighting by the golden ratio shows row 5 is out of reach.
+- year: 1750
+  title: V − E + F = 2
+  people: Leonhard Euler (and Descartes, c. 1630)
+  chapter: five-colours
+  text: The polyhedron formula, stated in a letter to Goldbach.
+- year: 1852
+  title: The four-colour problem
+  people: Francis Guthrie, Augustus De Morgan
+  chapter: five-colours
+  text: Do four colours suffice for every map?
+- year: 1890
+  title: Five colours suffice
+  people: Percy Heawood (refuting Kempe’s 1879 proof)
+  chapter: five-colours
+  text: Kempe chains prove five colours are always enough.
+- year: 1976
+  title: Four colours suffice
+  people: Kenneth Appel, Wolfgang Haken
+  chapter: five-colours
+  text: The first major theorem proved with essential help from a computer; formally verified in Coq in 2005.
+- year: 1998
+  title: The Kepler conjecture
+  people: Thomas Hales (formal proof, Flyspeck, 2014)
+  chapter: how-to-find-proofs
+  text: A computer-assisted proof, later checked completely in formal logic.
+- year: 2024
+  title: Machines at the Olympiad
+  people: Google DeepMind (AlphaProof, AlphaGeometry)
+  chapter: how-to-find-proofs
+  text: Silver-medal standard at the International Mathematical Olympiad, with proofs checked in Lean.
