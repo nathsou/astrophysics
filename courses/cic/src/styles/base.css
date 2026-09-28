@@ -143,8 +143,8 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-prose);
-  font-size: 1.1rem;
-  line-height: 1.68;
+  font-size: 1.05rem;
+  line-height: 1.7;
   font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -179,17 +179,17 @@ kbd,
 pre,
 .mono {
   font-family: var(--font-mono);
-  font-size: 0.86em;
+  font-size: 0.84em;
   font-variant-ligatures: none;
 }
 
 kbd {
   border: 1px solid var(--rule-strong);
   border-bottom-width: 2px;
-  border-radius: 4px;
+  border-radius: 3px;
   padding: 0.05em 0.35em;
   font-size: 0.78em;
-  background: var(--card);
+  background: var(--bg);
 }
 
 hr {
@@ -208,13 +208,13 @@ hr {
   gap: 0.4em;
   text-decoration: none;
   font-family: var(--font-ui);
-  font-size: 0.82rem;
+  font-size: 0.76rem;
   font-weight: 500;
   line-height: 1;
-  padding: 0.5em 0.8em;
+  padding: 0.55em 0.95em;
   border-radius: var(--radius-sm);
   border: 1px solid var(--rule-strong);
-  background: var(--card);
+  background: var(--bg);
   color: var(--ink);
   cursor: pointer;
   transition:
@@ -225,7 +225,7 @@ hr {
   user-select: none;
 }
 .btn:hover {
-  background: var(--paper-2);
+  background: var(--paper-3);
 }
 .btn:active {
   transform: translateY(1px);
@@ -236,29 +236,23 @@ hr {
   transform: none;
 }
 .btn.primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-}
-:root[data-theme='dark'] .btn.primary {
-  color: #10132a;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) .btn.primary { color: #10132a; }
+  background: transparent;
+  border-color: var(--ac);
+  color: var(--ac);
 }
 .btn.primary:hover {
-  filter: brightness(1.07);
+  background: var(--accent-soft);
 }
 .btn.ghost {
   border-color: transparent;
   background: transparent;
 }
 .btn.ghost:hover {
-  background: var(--paper-3);
+  background: var(--pn);
 }
 .btn.small {
-  font-size: 0.75rem;
-  padding: 0.38em 0.6em;
+  font-size: 0.7rem;
+  padding: 0.4em 0.65em;
 }
 .btn.active {
   background: var(--accent-soft);
@@ -271,11 +265,11 @@ hr {
   border: 1px solid var(--rule-strong);
   border-radius: var(--radius-sm);
   overflow: hidden;
-  background: var(--card);
+  background: var(--bg);
 }
 .seg button {
   font-family: var(--font-ui);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 500;
   padding: 0.42em 0.7em;
   border: 0;
@@ -302,7 +296,7 @@ input.input {
   padding: 0.45em 0.6em;
   border: 1px solid var(--rule-strong);
   border-radius: var(--radius-sm);
-  background: var(--card);
+  background: var(--bg);
   color: var(--ink);
   min-width: 0;
 }
@@ -312,9 +306,9 @@ select.input {
 
 .label {
   font-family: var(--font-ui);
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
@@ -323,11 +317,11 @@ select.input {
   display: inline-flex;
   align-items: center;
   font-family: var(--font-ui);
-  font-size: 0.68rem;
-  font-weight: 600;
+  font-size: 0.66rem;
+  font-weight: 500;
   letter-spacing: 0.02em;
-  padding: 0.18em 0.5em;
-  border-radius: 999px;
+  padding: 0.2em 0.55em;
+  border-radius: 3px;
   background: var(--paper-3);
   color: var(--ink-2);
   white-space: nowrap;
@@ -477,12 +471,12 @@ select.input {
   max-width: min(36rem, 90vw);
   padding: 0.5rem 0.7rem;
   border-radius: var(--radius-sm);
-  background: var(--card);
+  background: var(--bg);
   border: 1px solid var(--rule-strong);
   box-shadow: var(--shadow-lg);
   font-family: var(--font-ui);
-  font-size: 0.8rem;
-  line-height: 1.45;
+  font-size: 0.76rem;
+  line-height: 1.5;
   pointer-events: none;
 }
 .tooltip .term {
