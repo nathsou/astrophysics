@@ -156,7 +156,7 @@ export function IncompletenessExplorer() {
   return (
     <div className="workbench g1">
       <p className="wb-note">
-        <Prov kind="added">authored analysis</Prov> The steps below paraphrase the proofs in <Ref k="inc:inp:1in:sec" />. The dependencies are this edition’s reading of those
+        <Prov kind="added">authored analysis</Prov> The steps below paraphrase the proofs in <Ref k="inc:inp:1in:sec" />. The dependencies are a reading of those
         proofs, not a mechanical check. Switch a hypothesis off to see which steps lose their justification.
       </p>
       <fieldset className="hyp-toggles">
@@ -279,7 +279,7 @@ function stepEntry(s: Step, justOk: (j: Just) => boolean) {
             ))}
           </ul>
         </div>
-        <p className="muted small">This dependency analysis was written for this edition by reading the proof; it is not machine-checked.</p>
+        <p className="muted small">This dependency analysis is a reading of the proof; it is not machine-checked.</p>
       </>
     ),
   };

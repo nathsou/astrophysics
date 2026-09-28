@@ -85,12 +85,7 @@ function justText(j: Just): string {
 
 export function ProvabilityProof({ which }: { which: ProofName }) {
   const spec = PROOFS[which];
-  const [bookCites, setBookCites] = useState(false);
-  const lines = useMemo(
-    () => spec.lines().map((l) => (bookCites && l.bookFrom && l.just.r === 'logic' ? { ...l, just: { r: 'logic' as const, from: l.bookFrom } } : l)),
-    [spec, bookCites],
-  );
-  const hasBookCites = useMemo(() => spec.lines().some((l) => l.bookFrom), [spec]);
+  const lines = useMemo(() => spec.lines(), [spec]);
   const hyps = useMemo(() => [...new Set(lines.flatMap((l) => (l.just.r === 'hyp' ? [l.just.name] : [])))], [lines]);
   const [cond, setCond] = useState({ P1: true, P2: true, P3: true });
   const [offHyps, setOffHyps] = useState<Set<string>>(new Set());
@@ -127,12 +122,6 @@ export function ProvabilityProof({ which }: { which: ProofName }) {
               {c}
             </label>
           ))}
-        {hasBookCites && (
-          <label className="hyp on" title="Use the premises the book cites, where they differ from the checked version">
-            <input type="checkbox" checked={bookCites} onChange={(e) => setBookCites(e.target.checked)} />
-            the book’s citations
-          </label>
-        )}
         {hyps.map((h) => (
           <label key={h} className={`hyp ${offHyps.has(h) ? 'off' : 'on'}`}>
             <input

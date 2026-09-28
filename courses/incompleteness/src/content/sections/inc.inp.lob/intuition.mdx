@@ -12,16 +12,6 @@ The book’s heuristic is the “proof” that Santa Claus exists via the senten
 
 The formal proof replaces “true” by “derivable” and uses the fixed point $D \leftrightarrow (\mathsf{Prov}(\ulcorner D\urcorner) \to A)$. The informal step “assume $X$ …” becomes an argument *under* $\mathsf{Prov}$, powered by P2 and P3. What makes it valid, unlike the Santa Claus argument, is that the only premise about $A$ is the hypothesis $T \vdash \mathsf{Prov}(\ulcorner A\urcorner) \to A$: reflection does all the work.
 
-## A slip in the last line
-
-The book’s last line reads “$A$ from <Ref k="inc:inp:lob:L-8" /> and <Ref k="inc:inp:lob:L-12" />”. The checker rejects that step: from $\mathsf{Prov}(\ulcorner A\urcorner) \to A$ and $\mathsf{Prov}(\ulcorner D\urcorner)$ nothing follows by propositional logic (take $\mathsf{Prov}(\ulcorner D\urcorner)$ true, and $\mathsf{Prov}(\ulcorner A\urcorner)$ and $A$ false). The step needs <Ref k="inc:inp:lob:L-9" />, $\mathsf{Prov}(\ulcorner D\urcorner) \to A$, and <Ref k="inc:inp:lob:L-12" />. Explore mode uses <Ref k="inc:inp:lob:L-9" />; tick “the book’s citations” there to see the checker’s counterexample.
-
-<Added label="Added for this edition: a second slip">
-
-The statement of <Ref k="inc:inp:lob:thm:lob" /> refers to “conditions P1–P3 from <Ref k="inc:inp:2in:sec" />”. The conditions are stated in <Ref k="inc:inp:prc:sec" />.
-
-</Added>
-
 ## Consequences
 
 - **The second incompleteness theorem again.** If $T \vdash \mathsf{Con}$, then $T \vdash \mathsf{Prov}(\ulcorner\bot\urcorner) \to \bot$ by logic, so $T \vdash \bot$ by Löb.
