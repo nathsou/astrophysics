@@ -27,13 +27,13 @@
   /* status and semantic colours (light) */
   --ok: #16703f;
   --warn: #8f5500;
-  --err: #c0362c;
+  --err: #b02d24;
   --c-sort: #b0306a;
   --c-type: #1e5fb0;
   --c-proof: #16703f;
   --c-ctor: #8f4f06;
   --c-var: #3b3852;
-  --c-mvar: #c0362c;
+  --c-mvar: #b02d24;
   --hl-redex: rgb(255 196 0 / 0.32);
   --hl-redex-border: #d19b00;
 
@@ -86,7 +86,7 @@
 :root {
   --paper: var(--bg);
   --paper-2: var(--pn);
-  --paper-3: color-mix(in srgb, var(--pn) 82%, var(--fg));
+  --paper-3: color-mix(in srgb, var(--pn) 88%, var(--fg));
   --card: var(--pn);
   --ink: var(--fg);
   --ink-2: color-mix(in srgb, var(--fg) 78%, var(--mute));
@@ -95,7 +95,7 @@
   --rule-strong: color-mix(in srgb, var(--pn) 68%, var(--fg));
   --accent: var(--ac);
   --accent-ink: var(--ac);
-  --accent-soft: color-mix(in srgb, var(--ac) 16%, var(--bg));
+  --accent-soft: color-mix(in srgb, var(--ac) 12%, var(--bg));
   --focus: var(--ac);
   --ok-soft: color-mix(in srgb, var(--ok) 14%, var(--bg));
   --warn-soft: color-mix(in srgb, var(--warn) 14%, var(--bg));
@@ -292,7 +292,7 @@ hr {
 select.input,
 input.input {
   font-family: var(--font-mono);
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   padding: 0.45em 0.6em;
   border: 1px solid var(--rule-strong);
   border-radius: var(--radius-sm);

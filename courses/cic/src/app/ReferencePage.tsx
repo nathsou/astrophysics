@@ -32,7 +32,7 @@ function RuleIndex() {
                 {(r) => (
                   <div class="rule-card">
                     <div class="rule-card-formula">
-                      <RawHtml html={tex(`\\dfrac{${r.premises.join('\\qquad ') || '\\vphantom{\\vdash}'}}{${r.conclusion}}${r.side ? `\;\; ${r.side}` : ''}`)} />
+                      <RawHtml html={tex(`\\dfrac{${r.premises.join('\\qquad ') || '\\vphantom{\\vdash}'}}{${r.conclusion}}${r.side ? `\\;\\; ${r.side}` : ''}`)} />
                     </div>
                     <div class="rule-card-text">
                       <b>{r.name}</b> — {r.blurb}
