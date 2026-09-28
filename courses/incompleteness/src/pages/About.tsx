@@ -80,6 +80,18 @@ export function About() {
         </p>
         <ul className="corrections">
           <li>
+            <a href="#/s/cmp.rec.com?mode=intuition">2.3</a>: the explanation after the definition of composition writes h(x₀, …, x<sub>k−1</sub>) where h is n-place: x<sub>n−1</sub> is meant.
+          </li>
+          <li>
+            <a href="#/s/cmp.rec.prr?mode=intuition">2.8</a>: x ≤ y is called “the less-than relation”; it is less-than-or-equal.
+          </li>
+          <li>
+            <a href="#/s/cmp.rec.bmi?mode=intuition">2.9</a>: in the proof, case 3 writes m<sub>R</sub>(z⃗, y + 1) where x⃗ is meant, and “define m<sub>R</sub>(x⃗, 0)” should be m<sub>R</sub>(x⃗, y).
+          </li>
+          <li>
+            <a href="#/s/cmp.rec.tre?mode=intuition">2.12</a>: the proof that SubtreeSeq is primitive recursive runs one index past the end of the sequence (harmless: that element is 0).
+          </li>
+          <li>
             <a href="#/s/inc.req.pri?mode=explore">4.4</a>: the text introduces “the function h(x, z⃗)” but its equations and proof use h(x⃗, y).
           </li>
           <li>
@@ -96,6 +108,12 @@ export function About() {
           </li>
           <li>
             <a href="#/s/inc.inp.lob?mode=explore">5.8</a>: the theorem refers to the conditions P1–P3 “from” 5.7, where they are stated in 5.6; and the last line of the proof cites (5.21) and (5.25), where propositional logic needs (5.22) and (5.25).
+          </li>
+          <li>
+            <a href="#/s/cmp.thy.smn?mode=intuition">6.4</a>: the explanation writes s<sup>m</sup><sub>n</sub>(x, a₀, …) and speaks of x as a machine description where e is meant.
+          </li>
+          <li>
+            <a href="#/s/cmp.thy.nou?mode=intuition">6.6</a>: the opening sentence says a partial computable function is “total for” the partial computable functions; “universal for” is meant.
           </li>
           <li>
             <a href="#/s/cmp.thy.cmp?mode=formal">6.12</a>: in the proof, T(e, x, h(x)) should be T(d, x, h(x)) (A is the domain of φ<sub>d</sub>). The chapter also notes a numeral n̄ written for ē, and an off-by-one in the count of conjuncts in Craig’s trick.

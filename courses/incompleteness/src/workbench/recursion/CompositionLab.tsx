@@ -108,7 +108,7 @@ export function CompositionLab() {
               numbers of arguments to see what the definition forbids.
             </p>
             <div className="rc-builder">
-              <FunctionBuilder spec={st.custom} onChange={(custom) => setSt({ ...st, custom })} errors={errors} />
+              <FunctionBuilder palette="primitive" spec={st.custom} onChange={(custom) => setSt({ ...st, custom })} errors={errors} />
             </div>
           </>
         )}

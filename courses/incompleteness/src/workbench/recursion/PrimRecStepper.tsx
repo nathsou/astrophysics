@@ -139,11 +139,11 @@ export function PrimRecStepper({ focus = 'pre' }: { focus?: 'pre' | 'prf' | 'cmp
           <div className="rc-split">
             <div className="rc-box">
               <span className="rc-kicker">base f(x⃗) — k-place, k ≥ 1</span>
-              <FunctionBuilder spec={st.custom.f} path="r.f" errors={errors} onChange={(f) => setSt({ ...st, custom: { ...st.custom, f } })} />
+              <FunctionBuilder palette="primitive" spec={st.custom.f} path="r.f" errors={errors} onChange={(f) => setSt({ ...st, custom: { ...st.custom, f } })} />
             </div>
             <div className="rc-box">
               <span className="rc-kicker">step g(x⃗, y, z) — (k + 2)-place</span>
-              <FunctionBuilder spec={st.custom.g} path="r.g" errors={errors} onChange={(g) => setSt({ ...st, custom: { ...st.custom, g } })} />
+              <FunctionBuilder palette="primitive" spec={st.custom.g} path="r.g" errors={errors} onChange={(g) => setSt({ ...st, custom: { ...st.custom, g } })} />
             </div>
           </div>
         )}

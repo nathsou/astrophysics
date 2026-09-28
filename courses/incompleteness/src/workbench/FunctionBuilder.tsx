@@ -85,7 +85,12 @@ export interface BuilderProps {
   onHover?: (path: string | null) => void;
   path?: string;
   role?: ReactNode;
+  /** 'primitive': only zero, succ, projections, composition and primitive recursion (chapter 2's
+   *  primitive recursive functions); 'all' (default) also offers add, mult, χ= and μ. */
+  palette?: 'primitive' | 'all';
 }
+
+const PRIMITIVE = new Set<Kind>(['zero', 'succ', 'proj', 'comp', 'rec']);
 
 export function FunctionBuilder(props: BuilderProps) {
   return (
@@ -95,7 +100,7 @@ export function FunctionBuilder(props: BuilderProps) {
   );
 }
 
-function NodeEditor({ spec, onChange, errors, onHover, path = 'r', role }: BuilderProps) {
+function NodeEditor({ spec, onChange, errors, onHover, path = 'r', role, palette = 'all' }: BuilderProps) {
   const err = errors.get(path);
   const k = kindOf(spec);
   const compound = spec.k === 'comp' || spec.k === 'min' || spec.k === 'rec';
@@ -107,7 +112,7 @@ function NodeEditor({ spec, onChange, errors, onHover, path = 'r', role }: Build
           function
         </label>
         <select id={`k-${path}`} value={k} onChange={(e) => onChange(fresh(e.target.value as Kind))} className="fb-kind">
-          {KINDS.map((x) => (
+          {KINDS.filter((x) => palette === 'all' || PRIMITIVE.has(x.k) || x.k === k).map((x) => (
             <option key={x.k} value={x.k}>
               {x.label}
             </option>
@@ -134,7 +139,7 @@ function NodeEditor({ spec, onChange, errors, onHover, path = 'r', role }: Build
       </div>
       {spec.k === 'comp' && (
         <div className="fb-children">
-          <NodeEditor spec={spec.f} onChange={(f) => onChange({ ...spec, f })} errors={errors} onHover={onHover} path={`${path}.f`} role="outer f" />
+          <NodeEditor spec={spec.f} onChange={(f) => onChange({ ...spec, f })} errors={errors} onHover={onHover} path={`${path}.f`} role="outer f" palette={palette} />
           {spec.gs.map((g, i) => (
             <div key={i} className="fb-inner">
               <NodeEditor
@@ -144,6 +149,7 @@ function NodeEditor({ spec, onChange, errors, onHover, path = 'r', role }: Build
                 onHover={onHover}
                 path={`${path}.g${i}`}
                 role={`inner g${sub(i)}`}
+                palette={palette}
               />
               {spec.gs.length > 1 && (
                 <button className="icon-btn" aria-label={`remove g${i}`} onClick={() => onChange({ ...spec, gs: spec.gs.filter((_, j) => j !== i) })}>
@@ -159,13 +165,13 @@ function NodeEditor({ spec, onChange, errors, onHover, path = 'r', role }: Build
       )}
       {spec.k === 'min' && (
         <div className="fb-children">
-          <NodeEditor spec={spec.f} onChange={(f) => onChange({ ...spec, f })} errors={errors} onHover={onHover} path={`${path}.f`} role="search in f(x, z⃗) = 0" />
+          <NodeEditor spec={spec.f} onChange={(f) => onChange({ ...spec, f })} errors={errors} onHover={onHover} path={`${path}.f`} role="search in f(x, z⃗) = 0" palette={palette} />
         </div>
       )}
       {spec.k === 'rec' && (
         <div className="fb-children">
-          <NodeEditor spec={spec.f} onChange={(f) => onChange({ ...spec, f })} errors={errors} onHover={onHover} path={`${path}.f`} role="base f" />
-          <NodeEditor spec={spec.g} onChange={(g) => onChange({ ...spec, g })} errors={errors} onHover={onHover} path={`${path}.g`} role="step g" />
+          <NodeEditor spec={spec.f} onChange={(f) => onChange({ ...spec, f })} errors={errors} onHover={onHover} path={`${path}.f`} role="base f" palette={palette} />
+          <NodeEditor spec={spec.g} onChange={(g) => onChange({ ...spec, g })} errors={errors} onHover={onHover} path={`${path}.g`} role="step g" palette={palette} />
         </div>
       )}
     </div>

@@ -158,6 +158,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .sidebar { position: fixed; inset: 0 auto 0 0; width: min(320px, 88vw); z-index: 50; transform: translateX(-102%); transition: transform 0.2s; box-shadow: var(--shadow-lg); }
   .sidebar.open { transform: none; }
   .mobile-bar { display: flex; gap: 10px; align-items: center; position: sticky; top: 0; z-index: 30; background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: blur(6px); border-bottom: 1px solid var(--rule); padding: 8px 16px; font-family: var(--sans); font-size: 14px; }
+  .mobile-bar .chip-btn { white-space: nowrap; flex: none; }
+  .mobile-bar > span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .page { padding: 20px 16px 120px; }
   body { font-size: 17px; }
 }
@@ -202,7 +204,7 @@ table { border-collapse: collapse; }
 
 /* ------------------------------------------------------------ provenance */
 
-.prov { display: inline-flex; align-items: center; gap: 5px; font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0.02em; border-radius: 999px; padding: 1px 8px; white-space: nowrap; vertical-align: 2px; line-height: 1.6; }
+.prov { display: inline-flex; align-items: center; gap: 5px; font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0.02em; border-radius: 10px; padding: 1px 8px; max-width: 100%; text-wrap: balance; vertical-align: 2px; line-height: 1.6; }
 .prov.book { color: var(--book); background: var(--book-soft); }
 .prov.added { color: var(--added); background: var(--added-soft); }
 .prov.computed { color: var(--computed); background: var(--number-soft); }
@@ -235,6 +237,10 @@ table { border-collapse: collapse; }
   .inspector { position: static; max-height: 55vh; }
   .inspector.collapsed .inspector-body, .inspector.collapsed .inspector-empty { display: none; }
   .inspector-toggle { display: inline-flex; }
+  /* Collapsed, it is a small pill in the corner rather than a bar across the page. */
+  .inspector-col:has(.inspector.collapsed) { width: auto; }
+  .inspector.collapsed { border-radius: 999px; }
+  .inspector.collapsed .inspector-head { border-bottom: none; padding: 6px 8px 6px 14px; }
 }
 .icon-btn { border: none; background: none; cursor: pointer; color: var(--muted); padding: 2px 6px; border-radius: 6px; font-size: 13px; }
 .icon-btn:hover { background: var(--paper-2); color: var(--ink); }

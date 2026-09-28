@@ -127,7 +127,7 @@ export function App() {
             </button>
             <span>Incompleteness and Computability</span>
             <button className="chip-btn" onClick={() => setSearching(true)} aria-label="Search">
-              ⌕
+              ⌕ Search
             </button>
           </div>
           {page}
