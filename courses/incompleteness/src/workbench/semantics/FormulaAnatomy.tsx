@@ -106,7 +106,7 @@ export function FormulaAnatomy({ focus = 'all' }: { focus?: 'all' | 'free' | 'sy
     }
     return [...m.values()];
   }, [nodes]);
-  const fv = F ? [...freeVars(F)] : [];
+  const fv = F ? [...freeVars(F)].sort((a, b) => a - b) : [];
   return (
     <div className="workbench sem-lab">
       <Panel n={1} title="A formula" prov={<Prov kind="computed" />}>
@@ -157,7 +157,7 @@ export function FormulaAnatomy({ focus = 'all' }: { focus?: 'all' | 'free' | 'sy
                         <span data-n={n.id}>{nodeText(n)}</span>
                       </td>
                       <td className="small sans">{clause(n)}</td>
-                      <td className="f">{isTerm(n) && n.k !== 'var' && f.size === 0 ? '— (closed term)' : f.size === 0 ? (isTerm(n) ? '' : '— (sentence)') : [...f].map(varName).join(', ')}</td>
+                      <td className="f">{isTerm(n) && n.k !== 'var' && f.size === 0 ? '— (closed term)' : f.size === 0 ? (isTerm(n) ? '' : '— (sentence)') : [...f].sort((a, b) => a - b).map(varName).join(', ')}</td>
                     </tr>
                   );
                 })}

@@ -18,10 +18,11 @@ import * as A from '../../engine/syntax/ast';
 import { lit } from '../../engine/numbers/nat';
 import { FormulaInput } from '../../ui/FormulaInput';
 import { NotAProof, Prov } from '../../ui/Prov';
+import { Ref } from '../../formal/FormalText';
 import { Panel } from '../coding';
 import { FiniteTables, StructurePicker, StructureView } from './StructurePicker';
 import { TruthBadge } from './TraceTree';
-import { resolve, type StructureChoice } from './model';
+import { resolve, sub, type StructureChoice } from './model';
 import './sem.css';
 
 // ------------------------------------------------------------------ reducts and expansions
@@ -41,7 +42,7 @@ export function ReductLab() {
         1,
         GENERIC.P(1).index,
         red.domain.filter((_, i) => evens[i]).map((e) => [e]),
-        'M^P',
+        'Mᴾ',
       ),
     [red, evens],
   );
@@ -71,11 +72,11 @@ export function ReductLab() {
         </div>
         <div className="sem-two">
           <div>
-            <b className="sans small">ℤ{n} (0, ′, +, ×, &lt;)</b>
+            <b className="sans small">ℤ{sub(n)} (0, ′, +, ×, &lt;)</b>
             <FiniteTables M={{ ...full, description: undefined }} compact />
           </div>
           <div>
-            <b className="sans small">M<sup>P</sup> (0, ′, P)</b>
+            <b className="sans small">the expansion M<sup>P</sup> (0, ′, P) of the reduct M (0, ′)</b>
             <FiniteTables M={exp} compact />
           </div>
         </div>
@@ -87,7 +88,7 @@ export function ReductLab() {
             <thead>
               <tr>
                 <th scope="col">sentence</th>
-                <th scope="col">ℤ{n}</th>
+                <th scope="col">ℤ{sub(n)}</th>
                 <th scope="col">reduct M</th>
                 <th scope="col">
                   expansion M<sup>P</sup>
@@ -117,7 +118,7 @@ export function ReductLab() {
             </tbody>
           </table>
         </div>
-        <p className="wb-note">Whenever a sentence belongs to the smaller language, the structure and its reduct (or expansion) agree on it — the book’s Proposition on reducts.</p>
+        <p className="wb-note">Whenever a sentence belongs to the smaller language, the structure and its reduct (or expansion) agree on it (<Ref k="mod:bas:red:prop:reduct" />).</p>
         <NotAProof>These rows are instances; the proposition holds for every sentence, by extensionality.</NotAProof>
       </Panel>
     </div>
@@ -125,6 +126,15 @@ export function ReductLab() {
 }
 
 // ------------------------------------------------------------------ values of numerals
+
+/** A numeral n̄, with the bar drawn by CSS (combining overlines sit badly on digits). */
+function Numeral({ n }: { n: number | string }) {
+  return (
+    <span className="sem-numeral">
+      {n}
+    </span>
+  );
+}
 
 export function NumeralNames({ initial = { kind: 'search', id: 'K' } as StructureChoice }: { initial?: StructureChoice }) {
   const [choice, setChoice] = useState<StructureChoice>(initial);
@@ -151,13 +161,13 @@ export function NumeralNames({ initial = { kind: 'search', id: 'K' } as Structur
       <StructurePicker value={choice} onChange={setChoice} scope="arith" />
       <StructureView r={r} compact />
       <label className="sem-inline">
-        numerals 0̄, 1̄, …, up to n̄ with n &lt;
+        show the numerals <Numeral n="n" /> for n &lt;
         <input type="number" min={1} max={60} value={N} onChange={(e) => setN(Math.max(1, Math.min(60, Number(e.target.value) || 10)))} />
       </label>
       <p className="sem-map">
         {rows.map((x) => (
           <span key={x.n}>
-            Val({x.n}̄) = {x.v}
+            Val(<Numeral n={x.n} />) = {x.v}
           </span>
         ))}
       </p>
@@ -167,15 +177,15 @@ export function NumeralNames({ initial = { kind: 'search', id: 'K' } as Structur
             <>Every element of the domain is the value of some numeral.{r.M.domain.length < N ? ' But the values repeat, so different numerals name the same element: the structure is not standard.' : ''}</>
           ) : (
             <>
-              Not the value of any numeral: <b>{unnamed.join(', ')}</b> (the values of n̄ repeat after at most |M| steps, so no later numeral names them either).
+              Not the value of any numeral: <b>{unnamed.join(', ')}</b> (the values of <Numeral n="n" /> repeat after at most |M| steps, so no later numeral names them either).
             </>
           )
         ) : unnamed.length === 0 ? (
           <>Among the first {domain.length} elements, each is the value of one of these numerals.</>
         ) : (
           <>
-            Among the first {domain.length} elements, not the value of n̄ for n &lt; {N}: <b>{unnamed.slice(0, 8).join(', ')}</b>
-            {r.kind === 'search' && (r.S.id === 'K' || r.S.id === 'L' || r.S.id === 'Z') ? ' — and, as the successors of 0 are 0, 1, 2, … in this structure, not of any numeral: these are non-standard elements.' : '.'}
+            Among the first {domain.length} elements, not the value of <Numeral n="n" /> for n &lt; {N}: <b>{unnamed.slice(0, 8).join(', ')}</b>
+            {r.kind === 'search' && (r.S.id === 'K' || r.S.id === 'L' || r.S.id === 'Z') ? ' — and since in this structure the numerals denote 0, 1, 2, … and nothing else, these are the value of no numeral at all: they are non-standard elements.' : '.'}
           </>
         )}
       </p>
@@ -362,7 +372,7 @@ export function ExtensionalityLab() {
         {formulaLemma && pb.ok && (
           <p className="sem-line">
             B[t′/x] = <span className="sem-ftext">{formulaText(formulaLemma.res.result)}</span>: <TruthBadge t={formulaLemma.lhs} /> and B under s[{String(formulaLemma.m)}/x]: <TruthBadge t={formulaLemma.rhs} />
-            {!formulaLemma.free && <span className="sem-viol"> — t′ is not free for x in A (a variable of t′ is captured), so the proposition does not apply.</span>}
+            {!formulaLemma.free && <span className="sem-viol"> — t′ is not free for x in B (a variable of t′ is captured), so the proposition does not apply.</span>}
             {[...freeVars(pb.value)].includes(0) ? '' : <span className="small muted sans"> (x is not free in B, so both sides just evaluate B.)</span>}
           </p>
         )}

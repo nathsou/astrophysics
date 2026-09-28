@@ -130,3 +130,5 @@
 
 .sem-line { font-family: var(--sans); font-size: 14px; line-height: 1.7; }
 .sem-lab .fi-examples, .sem-lab select { max-width: 100%; min-width: 0; }
+
+.sem-numeral { text-decoration: overline; text-decoration-thickness: 1px; text-underline-offset: 2px; }

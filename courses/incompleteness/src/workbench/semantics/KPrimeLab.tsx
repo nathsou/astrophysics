@@ -1,4 +1,4 @@
-// The book's computable model K′ of Q with domain ℕ, side by side with K: the relabelling
+// The book's computable model K′ of Q with domain ℕ, side by side with K: the relabeling
 // g(0) = a, g(n) = n − 1 turns one into the other. The conditions on g are checked on samples.
 
 import { useMemo, useState } from 'react';

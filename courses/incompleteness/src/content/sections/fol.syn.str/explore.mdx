@@ -1,5 +1,5 @@
 import { SatisfactionLab } from '../../../workbench/semantics/SatisfactionLab';
 
-Build a structure of your own: choose the size of the domain and the symbols to interpret, and fill in the tables. The workbench checks that it is a structure — and then evaluates formulas in it.
+Build a structure of your own: choose the size of the domain and the symbols to interpret, and fill in the tables. Every choice the editor allows is a structure in the book’s sense (non-empty domain, total functions, every constant symbol naming an element). Then evaluate formulas in it; a formula with a symbol your structure does not interpret is flagged.
 
 <SatisfactionLab id="fol.syn.str" structure={{ kind: 'custom', spec: { n: 3, on: { a: 0, succ: [1, 2, 2], R: [[false, true, false], [false, false, true], [false, false, false]] } } }} formula="∀x (R(x, x′) ∨ x = x′)" assign={{}} />

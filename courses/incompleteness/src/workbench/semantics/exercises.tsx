@@ -12,6 +12,14 @@ import { assignment } from '../../engine/semantics/assignment';
 import { modArithmetic } from '../../engine/semantics/structure';
 import { Exercise } from '../../ui/Exercise';
 import { Tex } from '../../ui/Tex';
+import { Ref } from '../../formal/FormalText';
+
+const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
+/** Whether the answer is the number n, as digits or as a word. */
+const isNumber = (a: string, n: number) => {
+  const t = a.trim().toLowerCase().replace(/\.$/, '');
+  return t === String(n) || t === WORDS[n];
+};
 
 /** The book's problem (a): is M, s ⊨ ∃x (R(f(z), c) → ∀y (R(y, x) ∨ R(f(y), x)))? */
 export function ExBookProblemSat() {
@@ -40,7 +48,7 @@ export function ExCountVariants() {
     <Exercise
       id="sem.ass.count"
       title="Counting x-variants"
-      check={(a) => ({ ok: a.trim() === '4', message: a.trim() === '4' ? 'One for each element: s[1/x], s[2/x], s[3/x], s[4/x] — and s itself is one of them.' : 'An x-variant may differ from s only at x. How many choices are there for the value of x?' })}
+      check={(a) => ({ ok: isNumber(a, 4), message: isNumber(a, 4) ? 'One for each element: s[1/x], s[2/x], s[3/x], s[4/x] — and s itself is one of them.' : 'An x-variant may differ from s only at x. How many choices are there for the value of x?' })}
       placeholder="a number"
     >
       <p>
@@ -59,7 +67,7 @@ export function ExFreeVars() {
       title="Free variables"
       placeholder="variables separated by commas, e.g. x, y"
       check={(a) => {
-        const got = a.split(/[\s,]+/).filter(Boolean).sort();
+        const got = [...new Set(a.replace(/[{}]/g, ' ').split(/[\s,;]+|\band\b/).filter(Boolean))].sort();
         const bad = got.find((v) => varIndex(v) === null);
         if (bad) return { ok: false, message: `${bad} is not a variable.` };
         const ok = got.join(',') === want.join(',');
@@ -99,7 +107,7 @@ export function ExSentenceOnlySucc() {
       solution={<>For instance ∀x ¬x = x′: in K, a′ = a. (Another: ∀x ∀y (x′ = y → ¬y = x).)</>}
     >
       <p>
-        The book asks: find a sentence only involving ′ true in ℕ but false in the model K of Q (Example <em>model-K-of-Q</em>).
+        The book asks: find a sentence only involving ′ true in ℕ but false in the model K of Q (<Ref k="mod:mar:mdq:ex:model-K-of-Q" />).
       </p>
     </Exercise>
   );
@@ -112,7 +120,7 @@ export function ExAutomorphismsZ5() {
       id="sem.iso.autos"
       title="Automorphisms"
       placeholder="a number"
-      check={(a) => ({ ok: a.trim() === String(n), message: a.trim() === String(n) ? 'Only the identity: h(0) = 0 because 0 is a constant, and then h(x′) = h(x)′ forces h(1) = 1, h(2) = 2, …' : 'An automorphism must send 0 to 0 and commute with ′. What does that force?' })}
+      check={(a) => ({ ok: isNumber(a, n), message: isNumber(a, n) ? 'Only the identity: h(0) = 0 because 0 is a constant, and then h(x′) = h(x)′ forces h(1) = 1, h(2) = 2, …' : 'An automorphism must send 0 to 0 and commute with ′. What does that force?' })}
     >
       <p>How many automorphisms does ℤ₅ (0, successor, + and × mod 5, the usual &lt;) have?</p>
     </Exercise>

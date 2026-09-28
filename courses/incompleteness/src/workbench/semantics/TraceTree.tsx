@@ -13,6 +13,20 @@ import { highlightNode, clearHighlight } from '../../ui/FormulaView';
 import { highlightStore } from '../../ui/store';
 import './sem.css';
 
+/**
+ * Plain engine text with superscripts: the engine writes interpretations as `+^M`, `0^ℤ₅` or
+ * `a^13`; this renders the part after `^` (up to a space, bracket or comma) raised.
+ */
+export function Sup({ text }: { text: string }) {
+  if (!text.includes('^')) return <>{text}</>;
+  const parts = text.split(/\^(\{[^}]*\}|[^\s(),\]⟩;:.]+)/);
+  return (
+    <>
+      {parts.map((p, i) => (i % 2 === 1 ? <sup key={i}>{p.replace(/^\{|\}$/g, '')}</sup> : p))}
+    </>
+  );
+}
+
 export function TruthBadge({ t, structure }: { t: Truth; structure?: string }) {
   const cls = t === 'unknown' ? 'unk' : t ? 'yes' : 'no';
   const sym = t === 'unknown' ? '?' : t ? '⊨' : '⊭';
@@ -80,11 +94,19 @@ function Row<E>({ t, show, analysis, open, depth, parent, structureName, label }
         <span className="sem-ftext" data-n={t.node}>
           {t.text}
         </span>
-        {asg && <span className="sem-asg">[{asg}]</span>}
+        {asg && (
+          <span className="sem-asg">
+            [<Sup text={asg} />]
+          </span>
+        )}
       </div>
       <div className="sem-row-why">
-        <span className="sem-clause">{t.clause}</span>
-        <span className="sem-detail">{t.detail}</span>
+        <span className="sem-clause">
+          <Sup text={t.clause} />
+        </span>
+        <span className="sem-detail">
+          <Sup text={t.detail} />
+        </span>
       </div>
       {expanded && (
         <div className="sem-kids" role="group">
@@ -113,13 +135,17 @@ function Row<E>({ t, show, analysis, open, depth, parent, structureName, label }
                       onClick={() => setVariant(i)}
                       title={isDec ? (q.kind === 'forall' ? 'counterexample' : 'witness') : undefined}
                     >
-                      {varName(q.variable)} = {show(v.element)} {mark}
+                      {varName(q.variable)} = <Sup text={show(v.element)} /> {mark}
                       {isDec && <span className="sem-dec">{q.kind === 'forall' ? ' counterexample' : ' witness'}</span>}
                     </button>
                   );
                 })}
               </div>
-              {vt && <Row key={variant} t={vt} show={show} analysis={analysis} open={open} depth={depth + 1} parent={t} label={<>{varName(q.variable)} = {show(q.variants[variant].element)}:</>} />}
+              {vt && <Row key={variant} t={vt} show={show} analysis={analysis} open={open} depth={depth + 1} parent={t} label={
+                    <>
+                      {varName(q.variable)} = <Sup text={show(q.variants[variant].element)} />:
+                    </>
+                  } />}
             </>
           ) : (
             t.children.map((c, i) => <Row key={i} t={c} show={show} analysis={analysis} open={open} depth={depth + 1} parent={t} />)
@@ -145,8 +171,10 @@ function TermRow<E>({ t, show, analysis }: { t: TermTrace<E>; show: (e: E) => st
         <span className="sem-ttext" data-n={t.node}>
           {t.text}
         </span>
-        <span className="sem-tval">= {t.value === null ? '—' : show(t.value)}</span>
-        <span className="sem-detail">{t.detail}</span>
+        <span className="sem-tval">= {t.value === null ? '—' : <Sup text={show(t.value)} />}</span>
+        <span className="sem-detail">
+          <Sup text={t.detail} />
+        </span>
       </div>
       {open && (
         <div className="sem-kids">

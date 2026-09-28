@@ -13,8 +13,8 @@ The **standard model** $\mathfrak N$ of arithmetic interprets $0, {}', +, \times
 - **Domains are non-empty.** So $\exists x\,(A(x) \lor \lnot A(x))$ is valid: there is always something for $x$ to be.
 - **Functions are total, and constants always denote.** $f^{\mathfrak M}$ must give a value for every argument in the domain, and every constant names some element. This is what makes “from $A(a)$ infer $\exists x\, A(x)$” sound.
 
-Explore mode enforces exactly these conditions when you build a structure: an empty domain, a missing table entry, or a value outside the domain is reported, and the structure is not accepted.
+The structure editor in Explore mode can only produce structures in this sense: the domain has at least one element, every constant symbol gets an element, and every entry of a function table is an element of the domain.
 
 <Callout title="Finite tables">
-A finite structure can be written down completely: the domain, and a table for each symbol. The workbenches in this appendix and in chapters 7 and 8 compute with such tables. Infinite structures like $\mathfrak N$ can only be *computed with* (if their operations are computable), never listed.
+A finite structure can be written down completely: the domain, and a table for each symbol. The workbenches in this appendix and in <Ref k="mod:chap" /> and <Ref k="sol:chap" /> compute with such tables. Infinite structures like $\mathfrak N$ can only be *computed with* (if their operations are computable), never listed.
 </Callout>

@@ -13,7 +13,7 @@ import { evaluateTerm, extension, isModelOf, missingSymbols, satisfies, trueIn }
 import { checkQ, finiteQ1Q2Failure, qSentences } from '../src/engine/semantics/arithmetic.ts';
 import { classify, delta0, evaluateInN, evaluateTermInN } from '../src/engine/semantics/standard.ts';
 import {
-  atLeast, solInfSetAsPrinted, solCountSet, solCountSetAsPrinted, solEquinumerous, solInduction, solInfSet, solLeq, solNoLarger, solSchroederBernstein, solSubset,
+  atLeast, solAleph1SetAsPrinted, solInfSetAsPrinted, solCountSet, solCountSetAsPrinted, solEquinumerous, solInduction, solInfSet, solLeq, solNoLarger, solSchroederBernstein, solSubset,
   dedekindInfinityFO, S, solAssignment, solCount, solFin, solIdentity, solIdentityImp, solInf, solSatisfies, solTransitiveClosure, solTrueIn, fromFirstOrder,
 } from '../src/engine/semantics/sol.ts';
 
@@ -623,6 +623,9 @@ describe('comparing sets in second-order logic', () => {
       expect(solSatisfies(M, withSets(a, []), solCountSet()).truth).toBe(true);
     }
     expect(solSatisfies(M, withSets([], []), solCountSet()).truth).toBe(false);
+  });
+  it('Aleph₁(X) as printed is satisfied by finite sets (X is one of its own subsets)', () => {
+    for (const a of [[], [0], [0, 1, 2]] as Elem[][]) expect(solSatisfies(M, withSets(a, []), solAleph1SetAsPrinted()).truth).toBe(true);
   });
   it('the Schröder–Bernstein sentence is true in small domains', () => {
     for (let n = 1; n <= 3; n++) expect(solTrueIn(pureStructure(Array.from({ length: n }, (_, i) => i)), solSchroederBernstein()).truth).toBe(true);

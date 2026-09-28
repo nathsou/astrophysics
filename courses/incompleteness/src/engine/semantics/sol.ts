@@ -497,7 +497,7 @@ export function solFin(): SolFormula {
 
 /**
  * Count ≡ ∃z ∃u ∀X ((X(z) ∧ ∀x (X(x) → X(u(x)))) → ∀x X(x)): the domain is z, u(z), u(u(z)), …
- * — it is enumerable. True in every finite structure.
+ * — it is countable. True in every finite structure.
  */
 export function solCount(): SolFormula {
   return S.ex('z', S.exF(u1, S.allR(X1, S.imp(
@@ -631,9 +631,25 @@ export function solCountSetAsPrinted(X: RelVar = X1b): SolFormula {
   return countSet(X, S.all('x', S.iff(S.rel(X, xx), S.rel(S.X(1, 1), xx))));
 }
 
-/** Count(X) with X ⊆ Y in place of X = Y: X is the smallest u-closed set containing z, so s(X) is enumerable (and non-empty). */
+/** Count(X) with X ⊆ Y in place of X = Y: X is the smallest u-closed set containing z, so s(X) is countable (and non-empty). */
 export function solCountSet(X: RelVar = X1b): SolFormula {
   return countSet(X, S.all('x', S.imp(S.rel(X, xx), S.rel(S.X(1, 1), xx))));
+}
+
+/** Aleph₀(X) ≡ Inf(X) ∧ Count(X), with the repaired Inf(X) and Count(X): s(X) is countably infinite. */
+export function solAleph0Set(X: RelVar = X1b): SolFormula {
+  return S.and(solInfSet(X), solCountSet(X));
+}
+
+/**
+ * Aleph₁(X) as printed in the book: ∀Y (Y ⊆ X → (¬Inf(Y) ∨ Aleph₀(Y))) ∧ ¬Aleph₀(X) (here with the
+ * repaired Inf and Count). Since X ⊆ X, the first conjunct makes X finite or countably infinite,
+ * and the second rules out the latter: as printed it is satisfied exactly by the finite sets.
+ * The quantified variable is Z (index 2), since Inf and Count use u, z and Y internally.
+ */
+export function solAleph1SetAsPrinted(X: RelVar = X1b): SolFormula {
+  const Z = S.X(2, 1);
+  return S.and(S.allR(Z, S.imp(solSubset(Z, X), S.or(S.not(solInfSet(Z)), solAleph0Set(Z)))), S.not(solAleph0Set(X)));
 }
 
 /** The second-order induction axiom ∀X ((X(0) ∧ ∀x (X(x) → X(x′))) → ∀x X(x)) of PA². */

@@ -11,10 +11,11 @@ import { ABBREVIATIONS } from '../../content/objects';
 import { FormulaInput } from '../../ui/FormulaInput';
 import { FormulaView, useAnalysis } from '../../ui/FormulaView';
 import { Prov } from '../../ui/Prov';
+import { Ref } from '../../formal/FormalText';
 import { useStore } from '../../ui/store';
 import { Panel } from '../coding';
 import { StructurePicker, StructureView, type PickerScope } from './StructurePicker';
-import { TraceTree, TruthBadge } from './TraceTree';
+import { Sup, TraceTree, TruthBadge } from './TraceTree';
 import { elementChoices, evaluateIn, labStore, resolve, showAny, type AnyElem, type LabState, type Resolved, type StructureChoice } from './model';
 import './sem.css';
 
@@ -98,7 +99,7 @@ export function SatisfactionLab({ id, structure = { kind: 'preset', id: 'book-sa
                 </>
               ) : (
                 <>
-                  <b>{trace.truth ? 'Satisfied.' : 'Not satisfied.'}</b> {trace.detail}
+                  <b>{trace.truth ? 'Satisfied.' : 'Not satisfied.'}</b> <Sup text={trace.detail} />
                 </>
               )}
             </span>
@@ -109,7 +110,7 @@ export function SatisfactionLab({ id, structure = { kind: 'preset', id: 'book-sa
               {trace.truth === false ? 'The counterexample, read off the trace: ' : 'The witnesses, read off the trace: '}
               {path.bindings.map((b, i) => (
                 <span key={i} className={`sem-binding ${b.role}`}>
-                  {varName(b.variable)} = {show(b.element)} ({b.role})
+                  {varName(b.variable)} = <Sup text={show(b.element)} /> ({b.role})
                 </span>
               ))}
             </p>
@@ -117,7 +118,7 @@ export function SatisfactionLab({ id, structure = { kind: 'preset', id: 'book-sa
           <div className="sem-options">
             <label className="sem-check">
               <input type="checkbox" checked={exhaustive} onChange={(e) => setExhaustive(e.target.checked)} />
-              try every x-variant (the letter of the definition), not just until a witness or counterexample is found
+              try every variant s[m/x] (as the definition does), not only until a witness or counterexample is found
             </label>
             {r.kind === 'search' && (
               <label className="sem-inline">
@@ -144,7 +145,7 @@ function AssignmentEditor({ r, free, value, choices, onChange }: { r: Resolved; 
   if (free.length === 0)
     return (
       <p className="wb-note">
-        A is a <b>sentence</b>: whether it is satisfied does not depend on the assignment (the book’s Proposition on sentences), so any assignment gives the same answer.
+        A is a <b>sentence</b>: whether it is satisfied does not depend on the assignment (<Ref k="fol:syn:ass:cor:sat-sentence" />), so any assignment gives the same answer.
       </p>
     );
   return (

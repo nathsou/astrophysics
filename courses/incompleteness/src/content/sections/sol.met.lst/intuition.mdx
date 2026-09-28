@@ -6,7 +6,7 @@ The downward Löwenheim–Skolem theorem says that a first-order theory with an 
 
 ## Downward fails
 
-$\mathrm{Count}$ (section 8.6) is true in a structure iff its domain is countable, so $\lnot\mathrm{Count}$ is true iff the domain is uncountable. Take any structure whose domain is uncountable, such as $\mathbb R$ or $\wp(\mathbb N)$: it satisfies $\lnot\mathrm{Count}$. So $\lnot\mathrm{Count}$ has infinite models but no countable ones.
+$\mathrm{Count}$ (<Ref k="sol:syn:siz:sec" />) is true in a structure iff its domain is countable, so $\lnot\mathrm{Count}$ is true iff the domain is uncountable. Take any structure whose domain is uncountable, such as $\mathbb R$ or $\wp(\mathbb N)$: it satisfies $\lnot\mathrm{Count}$. So $\lnot\mathrm{Count}$ has infinite models but no countable ones.
 
 ## Upward fails
 
@@ -14,6 +14,6 @@ $\mathrm{Count} \land \mathrm{Inf}$ is true in exactly the countably infinite st
 
 ## Why first-order logic behaves differently
 
-In first-order logic both theorems follow from the proof of the completeness theorem (which builds countable models) and from compactness (which can add as many new elements as we like). Second-order logic has neither. The book’s comparison in section 7.4, where $\langle\mathbb R, <\rangle$ and a countable structure are elementarily equivalent but not isomorphic, is exactly what second-order logic rules out.
+In first-order logic both theorems are consequences of the completeness theorem, as the book notes: its proof builds a countable model of any consistent set of sentences. Second-order logic has no completeness theorem. The book’s example in <Ref k="mod:bas:thm:sec" />, where $\langle\mathbb R, <\rangle$ and a countable structure make the same first-order sentences true, has no second-order counterpart: $\lnot\mathrm{Count}$ is true in the first and false in the second.
 
 This section is about infinite domains only; there is nothing a finite computation could illustrate honestly, so it has no Explore mode.

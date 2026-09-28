@@ -86,7 +86,7 @@ export function PrintedFormulaCheck({ which }: { which: 'inf' | 'count' }) {
         </p>
       ) : (
         <p className="small">
-          On the domain {'{'}0, 1, 2{'}'} with s(X) = {setText} (enumerable), the formula as printed is <TruthBadge t={r.printed.truth} />: Y may be the whole domain, which contains z and is closed under u, so “X = Y” forces X to be everything. With X ⊆ Y in place of X = Y it is <TruthBadge t={r.fixed.truth} />.
+          On the domain {'{'}0, 1, 2{'}'} with s(X) = {setText} (countable), the formula as printed is <TruthBadge t={r.printed.truth} />: Y may be the whole domain, which contains z and is closed under u, so “X = Y” forces X to be everything. With X ⊆ Y in place of X = Y it is <TruthBadge t={r.fixed.truth} />.
         </p>
       )}
     </div>

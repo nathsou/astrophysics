@@ -8,7 +8,7 @@ A variable can occur in a formula in two ways. An occurrence is **bound** if it 
 
 ## Occurrences, not variables
 
-Freedom is a property of *occurrences*. In $x = 0 \land \forall x\, x = x$ the first $x$ is free and the others are bound: the same variable can be both free and bound in one formula. The variable written right after a quantifier is not an occurrence at all; it just says which variable the quantifier binds.
+Freedom is a property of *occurrences*. In $x = 0 \land \forall x\, x = x$ the first $x$ is free and the others are bound: the same variable can be both free and bound in one formula. The variable written right after a quantifier is not counted by the book’s definition: it just says which variable the quantifier binds.
 
 ## Scope
 
@@ -16,6 +16,6 @@ If $\forall x\, B$ is a subformula of $A$, then $B$ is the **scope** of that occ
 
 ## Why it matters
 
-Free variables are the “inputs” of a formula: satisfaction depends on what the assignment gives them and on nothing else (the book proves this in the section on variable assignments). They are also what substitution replaces. In the incompleteness chapters, a formula with one free variable $x$ expresses a *property of numbers*, and substituting a numeral for $x$ produces a sentence about a particular number.
+Free variables are the “inputs” of a formula: satisfaction depends on what the assignment gives them and on nothing else (<Ref k="fol:syn:ass:prop:satindep" />). They are also what substitution replaces. In the incompleteness chapters, a formula with one free variable $x$ expresses a *property of numbers*, and substituting a numeral for $x$ produces a sentence about a particular number.
 
 <ExFreeVars />

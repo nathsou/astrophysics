@@ -7,10 +7,11 @@ import { automorphisms, checkIsomorphism, findIsomorphism, relabel } from '../..
 import { trueIn } from '../../engine/semantics/satisfaction';
 import { showElem, type Elem, type Structure } from '../../engine/semantics/structure';
 import { NotAProof, Prov } from '../../ui/Prov';
+import { Ref } from '../../formal/FormalText';
 import { useStore } from '../../ui/store';
 import { Panel } from '../coding';
 import { FiniteTables, StructurePicker } from './StructurePicker';
-import { TruthBadge } from './TraceTree';
+import { Sup, TruthBadge } from './TraceTree';
 import { labStore, resolve, type StructureChoice } from './model';
 import './sem.css';
 
@@ -26,13 +27,14 @@ const DEFAULT_SENTENCES = [
   '∀x ¬x < x',
 ].join('\n');
 
-export function IsoLab({ id = 'iso', left = { kind: 'mod', n: 4, mode: 'wrap' } as StructureChoice }: { id?: string; left?: StructureChoice }) {
+export function IsoLab({ id = 'iso', left = { kind: 'mod', n: 4, mode: 'wrap' } as StructureChoice, right = 'copy' }: { id?: string; left?: StructureChoice; right?: 'copy' | 'other' }) {
   const store = labStore(`${id}.iso`, { structure: left, formula: DEFAULT_SENTENCES, assign: {} });
   const st = useStore(store);
-  const [rightKind, setRightKind] = useState<'copy' | 'other'>('copy');
-  const [rightChoice, setRightChoice] = useState<StructureChoice>({ kind: 'mod', n: 4, mode: 'saturate' });
+  const [rightKind, setRightKind] = useState<'copy' | 'other'>(right);
+  const [rightChoice, setRightChoice] = useState<StructureChoice>({ kind: 'mod', n: 5, mode: 'saturate' });
   const rl = useMemo(() => resolve(st.structure), [st.structure]);
-  const M = rl.kind === 'finite' ? rl.M : null;
+  // Shown and reported as M, whatever the chosen structure is called elsewhere.
+  const M = useMemo(() => (rl.kind === 'finite' ? { ...rl.M, name: 'M' } : null), [rl]);
   const N: Structure | null = useMemo(() => {
     if (!M) return null;
     if (rightKind === 'copy') {
@@ -50,7 +52,7 @@ export function IsoLab({ id = 'iso', left = { kind: 'mod', n: 4, mode: 'wrap' } 
         <div className="sem-two">
           <div>
             <StructurePicker value={st.structure} onChange={(s) => store.set({ ...st, structure: s })} scope="finite" label="M" />
-            {M && <FiniteTables M={{ ...M, name: 'M' }} compact />}
+            {M && <FiniteTables M={M} compact />}
           </div>
           <div>
             <div className="seg" role="group" aria-label="The second structure">
@@ -143,7 +145,7 @@ function MapChecker({ M, N }: { M: Structure; N: Structure }) {
           <ul className="sem-viol">
             {viol.map((v, i) => (
               <li key={i}>
-                condition ({v.clause}) — {['', 'injective', 'surjective', 'constants', 'predicates', 'functions'][v.clause]}: {v.detail}
+                condition ({v.clause}) — {['', 'injective', 'surjective', 'constants', 'predicates', 'functions'][v.clause]}: <Sup text={v.detail} />
               </li>
             ))}
           </ul>
@@ -200,11 +202,17 @@ function Sentences({ M, N, iso, text, setText }: { M: Structure; N: Structure; i
         </table>
       </div>
       <p className="wb-note" aria-live="polite">
-        {differ.length > 0
-          ? `${differ.length} sentence${differ.length === 1 ? '' : 's'} tell${differ.length === 1 ? 's' : ''} M and N apart, so M ≢ N — and so they cannot be isomorphic (Theorem: isomorphic structures are elementarily equivalent).`
-          : iso
-            ? 'The structures are isomorphic, so no sentence can tell them apart (Theorem: isomorphic structures are elementarily equivalent).'
-            : 'None of these sentences tells M and N apart. That does not make them elementarily equivalent: that is a claim about every sentence.'}
+        {differ.length > 0 ? (
+          <>
+            {differ.length} sentence{differ.length === 1 ? '' : 's'} tell{differ.length === 1 ? 's' : ''} M and N apart, so M ≢ N — and so they cannot be isomorphic (<Ref k="mod:bas:iso:thm:isom" />: isomorphic structures are elementarily equivalent).
+          </>
+        ) : iso ? (
+          <>
+            The structures are isomorphic, so no sentence can tell them apart (<Ref k="mod:bas:iso:thm:isom" />).
+          </>
+        ) : (
+          'None of these sentences tells M and N apart. That does not make them elementarily equivalent: that is a claim about every sentence.'
+        )}
       </p>
       {iso && <NotAProof>The table checks the sentences listed; the theorem covers all sentences, by induction on formulas.</NotAProof>}
     </Panel>

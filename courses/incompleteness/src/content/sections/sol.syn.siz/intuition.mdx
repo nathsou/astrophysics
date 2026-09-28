@@ -16,10 +16,10 @@ On a finite set, an injective function hits as many values as there are elements
 
 ## Countability
 
-A set is **enumerable** iff there are an element $z$ and a function $f$ such that $z, f(z), f(f(z)), \ldots$ are all its elements. “All” is again the second-order move: every set containing $z$ and closed under $f$ is the whole domain.
+A set is **countable** iff there are an element $z$ and a function $f$ such that $z, f(z), f(f(z)), \ldots$ are all its elements. “All” is again the second-order move: every set containing $z$ and closed under $f$ is the whole domain.
 
 $$\mathrm{Count} \equiv \exists z\,\exists u\,\forall X\,((X(z) \land \forall x\,(X(x) \rightarrow X(u(x)))) \rightarrow \forall x\, X(x))$$
 
-$\mathfrak M \vDash \mathrm{Count}$ iff $|\mathfrak M|$ is enumerable. Every finite domain is: in Explore mode the workbench finds $z$ and $u$, and then runs through all $2^n$ sets $X$ to confirm that the only one closed under $u$ and containing $z$ is the whole domain.
+$\mathfrak M \vDash \mathrm{Count}$ iff $|\mathfrak M|$ is countable. Every finite domain is: in Explore mode the workbench finds $z$ and $u$, and then runs through all $2^n$ sets $X$ to confirm that the only one closed under $u$ and containing $z$ is the whole domain.
 
 <ExInfFinite />

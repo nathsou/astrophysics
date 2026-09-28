@@ -274,8 +274,10 @@ export function searchInterpretation(S: SearchStructure, opts: SearchOptions = {
         }
       }
       const els = S.enumerate(limit);
-      const shown = els.slice(0, 4).map(S.show).join(', ');
-      return { elements: els, count: els.length, partial: true, description: `the first ${els.length} elements of ${S.domainText} (${shown}, …)` };
+      // The order of the search, unless the domain's description already lists it in that order.
+      const first = els.slice(0, 4).map(S.show).join(', ');
+      const shown = S.domainText.includes(first) ? '' : ` (in the order ${first}, …)`;
+      return { elements: els, count: els.length, partial: true, description: `the first ${els.length} elements of ${S.domainText}${shown}` };
     },
   };
 }
@@ -342,7 +344,7 @@ export function checkMapOnSamples(
   return { checked, failures };
 }
 
-/** The relabelling g : K′ → K from the book's example: 0 ↦ a, n ↦ n − 1 for n > 0. */
+/** The relabeling g : K′ → K from the book's example: 0 ↦ a, n ↦ n − 1 for n > 0. */
 export const kPrimeToK = (e: IElem): IElem => (e === 0n ? A : (e as bigint) - 1n);
 /** The isomorphism ℕ → {a}*, n ↦ aⁿ. */
 export const natToAStrings = (e: IElem): IElem => aStr(e as bigint);
