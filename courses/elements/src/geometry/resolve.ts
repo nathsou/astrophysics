@@ -67,9 +67,19 @@ export function mentions(c: Inline[]): Mention[] {
   const out: Mention[] = [];
   let prevText = '';
   let prevKind: Kind = null;
+  // "Let ABC be a circle": the kind can also follow the label.
+  let pending: number | null = null;
   const walk = (xs: Inline[]) => {
     for (const x of xs) {
       if (typeof x === 'string') {
+        if (pending !== null) {
+          const m = /^\s*(?:be|is)\s+(?:a|an|the|the given|any)\s+(?:given\s+)?(\w+(?: \w+)?)/.exec(x);
+          if (m) {
+            const k = kindBefore(m[1]);
+            if (k) out[pending].kind = k;
+          }
+          pending = null;
+        }
         prevText += x;
         continue;
       }
@@ -79,6 +89,7 @@ export function mentions(c: Inline[]): Mention[] {
         const listSep = /^(,|,? and|,? or)\s*$/.test(prevText.trim()) || /^\s*(,|and|or|, and)\s*$/.test(prevText);
         const kind: Kind = k !== undefined ? k : listSep ? prevKind : null;
         out.push({ label: x.v, kind });
+        pending = kind === null ? out.length - 1 : null;
         prevKind = kind;
         prevText = '';
         continue;
