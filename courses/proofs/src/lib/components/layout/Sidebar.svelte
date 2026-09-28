@@ -148,10 +148,10 @@
       background: var(--bg);
       transform: translateX(-100%);
       transition: transform 200ms ease;
-      box-shadow: var(--shadow-lg);
     }
     .sidebar.open {
       transform: none;
+      box-shadow: var(--shadow-lg);
     }
     .scrim.open {
       display: block;
