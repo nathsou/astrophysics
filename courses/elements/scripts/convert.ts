@@ -320,6 +320,15 @@ function main() {
     file: 'upstream/heath/tlg1799.tlg001.perseus-eng2.xml',
     sha256: createHash('sha256').update(src).digest('hex'),
   };
+  const index = books.flatMap((b) =>
+    b.sections.flatMap((sec) =>
+      sec.items.map((it) => {
+        const first = it.paras.find((p) => p.role === 'enunciation') ?? it.paras[0];
+        return { id: it.id, book: it.book, kind: it.kind, n: it.n, ...(it.group ? { group: it.group } : {}), ...(it.problem !== undefined ? { problem: it.problem } : {}), cites: it.cites, text: first ? plainOf(first.c).trim() : '' };
+      }),
+    ),
+  );
+  files['index.json'] = JSON.stringify(index) + '\n';
   files['report.json'] = JSON.stringify({ upstream, unknown }, null, 2) + '\n';
   if (unknown.length) console.warn(`Unknown markup: ${unknown.join(', ')}`);
   if (check) {

@@ -80,3 +80,16 @@ export interface UpstreamInfo {
   source: string;
   licence: string;
 }
+
+/** One entry of index.json: enough to list, preview and link every item without loading its book. */
+export interface IndexEntry {
+  id: string;
+  book: number;
+  kind: ItemKind;
+  n: number;
+  group?: number;
+  problem?: boolean;
+  cites: string[];
+  /** The enunciation (or the definition) as plain text. */
+  text: string;
+}

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // The theme preference is shared by every course in the collection.
+      try {
+        const saved = localStorage.getItem('theme');
+        document.documentElement.dataset.theme = saved === 'light' || saved === 'dark'
+          ? saved
+          : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      } catch {}
+    </script>
+    <meta name="description" content="Euclid's Elements, all thirteen books: Heath's translation word for word, a modern version of every proposition, and live figures you can drag, step through, or read in Byrne's colours." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23b8322a'/%3E%3Cpath d='M7 24 L16 8 L25 24 Z' fill='%23f2c230' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E" />
+    <title>Euclid’s Elements — an interactive edition</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

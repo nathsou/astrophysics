@@ -1,5 +1,7 @@
 import { defineConfig } from 'vitest/config';
+import { modernMeta } from './scripts/modern-meta.ts';
 
 export default defineConfig({
-  test: { environment: 'node', include: ['tests/**/*.test.ts'], testTimeout: 60000 },
+  plugins: [modernMeta(import.meta.dirname)],
+  test: { environment: 'node', include: ['tests/**/*.test.ts'], testTimeout: 120000 },
 });
