@@ -1693,7 +1693,7 @@
       },
       {
        "t": "math",
-       "tex": "P \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow P'",
+       "tex": "P \\mathrel{\\overset{}{\\twoheadrightarrow}} P'",
        "src": "P \\red P'"
       },
       {
@@ -2090,7 +2090,7 @@
         },
         {
          "t": "math",
-         "tex": "M \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow N_1",
+         "tex": "M \\mathrel{\\overset{}{\\twoheadrightarrow}} N_1",
          "src": "M \\red N_1"
         },
         {
@@ -2099,7 +2099,7 @@
         },
         {
          "t": "math",
-         "tex": "M \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow N_2",
+         "tex": "M \\mathrel{\\overset{}{\\twoheadrightarrow}} N_2",
          "src": "M \\red\nN_2"
         },
         {
@@ -2117,7 +2117,7 @@
         },
         {
          "t": "math",
-         "tex": "N_1 \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow P",
+         "tex": "N_1 \\mathrel{\\overset{}{\\twoheadrightarrow}} P",
          "src": "N_1 \\red P"
         },
         {
@@ -2126,7 +2126,7 @@
         },
         {
          "t": "math",
-         "tex": "N_2 \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow P",
+         "tex": "N_2 \\mathrel{\\overset{}{\\twoheadrightarrow}} P",
          "src": "N_2 \\red P"
         },
         {
@@ -2205,7 +2205,7 @@
         },
         {
          "t": "math",
-         "tex": "M \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow N_1",
+         "tex": "M \\mathrel{\\overset{}{\\twoheadrightarrow}} N_1",
          "src": "M \\red N_1"
         },
         {
@@ -2214,7 +2214,7 @@
         },
         {
          "t": "math",
-         "tex": "M \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow N_2",
+         "tex": "M \\mathrel{\\overset{}{\\twoheadrightarrow}} N_2",
          "src": "M \\red N_2"
         },
         {
@@ -2368,7 +2368,7 @@
       },
       {
        "t": "math",
-       "tex": "M \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow P",
+       "tex": "M \\mathrel{\\overset{}{\\twoheadrightarrow}} P",
        "src": "M\n\\red P"
       },
       {
@@ -2377,7 +2377,7 @@
       },
       {
        "t": "math",
-       "tex": "N \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow P",
+       "tex": "N \\mathrel{\\overset{}{\\twoheadrightarrow}} P",
        "src": "N \\red P"
       },
       {
@@ -2430,7 +2430,7 @@
       },
       {
        "t": "math",
-       "tex": "M \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow N",
+       "tex": "M \\mathrel{\\overset{}{\\twoheadrightarrow}} N",
        "src": "M \\red N"
       },
       {
@@ -2439,7 +2439,7 @@
       },
       {
        "t": "math",
-       "tex": "N \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow M",
+       "tex": "N \\mathrel{\\overset{}{\\twoheadrightarrow}} M",
        "src": "N \\red M"
       },
       {
@@ -3415,7 +3415,7 @@
       },
       {
        "t": "math",
-       "tex": "F\\, \\overline{n} \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\overline{m}",
+       "tex": "F\\, \\overline{n} \\mathrel{\\overset{}{\\twoheadrightarrow}} \\overline{m}",
        "src": "F\\, \\num n \\red \\num m"
       },
       {
@@ -3424,7 +3424,7 @@
       },
       {
        "t": "math",
-       "tex": "F\\, \\overline{n} \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\overline{m}",
+       "tex": "F\\, \\overline{n} \\mathrel{\\overset{}{\\twoheadrightarrow}} \\overline{m}",
        "src": "F\\, \\num n \\red \\num m"
       },
       {
@@ -3635,7 +3635,7 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "F \\, \\overline{n_0} \\, \\overline{n_1} \\dots \\overline{n_{k-1}} \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\overline{f(n_0, n_1, \\dots, n_{k-1})}"
+         "tex": "F \\, \\overline{n_0} \\, \\overline{n_1} \\dots \\overline{n_{k-1}} \\mathrel{\\overset{}{\\twoheadrightarrow}} \\overline{f(n_0, n_1, \\dots, n_{k-1})}"
         }
        ],
        "src": "F \\, \\num{n_0} \\, \\num{n_1} \\dots \\num{n_{k-1}} \\red \\num{f(n_0, n_1, \\dots,\n  n_{k-1})}",
@@ -4071,7 +4071,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "\\mathrm{Succ}\\, \\overline{n} & \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\lambda fx .\\, f(f^n(x)) ,"
+         "tex": "\\mathrm{Succ}\\, \\overline{n} & \\mathrel{\\overset{}{\\twoheadrightarrow}} \\lambda fx .\\, f(f^n(x)) ,"
         }
        ],
        "src": "\\fn{Succ}\\, \\num n & \\red \\lambd[fx][f(f^n(x))],",
@@ -4642,7 +4642,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "\\overline{n}\\, \\mathrm{Succ}\\, \\overline{m} & \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\mathrm{Succ}^n(\\overline{m})."
+         "tex": "\\overline{n}\\, \\mathrm{Succ}\\, \\overline{m} & \\mathrel{\\overset{}{\\twoheadrightarrow}} \\mathrm{Succ}^n(\\overline{m})."
         }
        ],
        "src": "\\num{n}\\,  \\fn{Succ}\\, \\num{m} & \\red \\fn{Succ}^n(\\num{m}).",
@@ -5788,7 +5788,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "R\\, \\overline{n_1} \\dots \\overline{n_k} & \\xrightarrow{\\beta} \\mathrel{\\mkern-14mu}\\rightarrow \\mathrm{true}"
+         "tex": "R\\, \\overline{n_1} \\dots \\overline{n_k} & \\mathrel{\\overset{\\beta}{\\twoheadrightarrow}} \\mathrm{true}"
         }
        ],
        "src": "R\\, \\num{n_1} \\dots \\num{n_k} & \\bred \\fn{true}",
@@ -5830,7 +5830,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "R\\, \\overline{n_1} \\dots \\overline{n_k} & \\xrightarrow{\\beta} \\mathrel{\\mkern-14mu}\\rightarrow \\mathrm{false}"
+         "tex": "R\\, \\overline{n_1} \\dots \\overline{n_k} & \\mathrel{\\overset{\\beta}{\\twoheadrightarrow}} \\mathrm{false}"
         }
        ],
        "src": "R\\, \\num{n_1} \\dots \\num{n_k} & \\bred \\fn{false}",
@@ -6783,7 +6783,7 @@
         },
         {
          "t": "math",
-         "tex": "H\\overline{n_0}\\dots\\overline{n_{n-1}} \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\overline{h(n_0, \\dots, n_{n-1})}",
+         "tex": "H\\overline{n_0}\\dots\\overline{n_{n-1}} \\mathrel{\\overset{}{\\twoheadrightarrow}} \\overline{h(n_0, \\dots, n_{n-1})}",
          "src": "H\\num{n_0}\\dots\\num{n_{n-1}} \\red \\num{h(n_0, \\dots,\n    n_{n-1})}"
         },
         {
@@ -7281,7 +7281,7 @@
         },
         {
          "t": "math",
-         "tex": "H\\,\\overline{n}\\,\\overline{m} \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\overline{h(n,m)}",
+         "tex": "H\\,\\overline{n}\\,\\overline{m} \\mathrel{\\overset{}{\\twoheadrightarrow}} \\overline{h(n,m)}",
          "src": "H\\,\\num{n}\\,\\num{m} \\red\n  \\num{h(n,m)}"
         },
         {
@@ -7299,7 +7299,7 @@
         },
         {
          "t": "math",
-         "tex": "D_n^m \\langle \\overline{0}, F\\, \\overline{n} \\rangle \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\langle \\overline{m}, \\overline{h(n, m)} \\rangle",
+         "tex": "D_n^m \\langle \\overline{0}, F\\, \\overline{n} \\rangle \\mathrel{\\overset{}{\\twoheadrightarrow}} \\langle \\overline{m}, \\overline{h(n, m)} \\rangle",
          "src": "D_n^m \\tuple{\\num{0}, F\\, \\num{n}} \\red\n  \\tuple{\\num{m}, \\num{h(n, m)}}"
         },
         {
@@ -7342,7 +7342,7 @@
         },
         {
          "t": "math",
-         "tex": "D_n^0 \\langle \\overline{0}, F\\, \\overline{n} \\rangle \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\langle \\overline{0}, \\overline{h(n, 0)} \\rangle",
+         "tex": "D_n^0 \\langle \\overline{0}, F\\, \\overline{n} \\rangle \\mathrel{\\overset{}{\\twoheadrightarrow}} \\langle \\overline{0}, \\overline{h(n, 0)} \\rangle",
          "src": "D_n^0 \\tuple{\\num{0}, F\\, \\num{n}} \\red\n  \\tuple{\\num{0}, \\num{h(n, 0)}}"
         },
         {
@@ -7435,7 +7435,7 @@
         },
         {
          "t": "math",
-         "tex": "D_n^m \\langle \\overline{0}, F\\, \\overline{n} \\rangle \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\langle \\overline{m}, \\overline{h(n, m)} \\rangle",
+         "tex": "D_n^m \\langle \\overline{0}, F\\, \\overline{n} \\rangle \\mathrel{\\overset{}{\\twoheadrightarrow}} \\langle \\overline{m}, \\overline{h(n, m)} \\rangle",
          "src": "D_n^m \\tuple{\\num{0}, F\\, \\num{n}} \\red\n  \\tuple{\\num{m}, \\num{h(n, m)}}"
         },
         {
@@ -7444,7 +7444,7 @@
         },
         {
          "t": "math",
-         "tex": "D_n^{m+1} \\langle \\overline{0}, F\\, \\overline{n} \\rangle \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\langle \\overline{m+1}, \\overline{h(n, m+1)} \\rangle",
+         "tex": "D_n^{m+1} \\langle \\overline{0}, F\\, \\overline{n} \\rangle \\mathrel{\\overset{}{\\twoheadrightarrow}} \\langle \\overline{m+1}, \\overline{h(n, m+1)} \\rangle",
          "src": "D_n^{m+1} \\tuple{\\num{0}, F\\, \\num{n}} \\red\n  \\tuple{\\num{m+1}, \\num{h(n, m+1)}}"
         },
         {
@@ -7468,7 +7468,7 @@
          "tex": "D_n^{m+1} \\langle \\overline{0}, F\\, \\overline{n} \\rangle & \\equiv D_n(D_n^{m} \\langle \\overline{0}, F\\, \\overline{n} \\rangle)"
         },
         {
-         "tex": "& \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow D_n\\,\\langle \\overline{m}, \\overline{h(n, m)} \\rangle \\text{\\qquad (by IH)}"
+         "tex": "& \\mathrel{\\overset{}{\\twoheadrightarrow}} D_n\\,\\langle \\overline{m}, \\overline{h(n, m)} \\rangle \\text{\\qquad (by IH)}"
         },
         {
          "tex": "& \\equiv ( \\lambda p .\\, \\langle \\mathrm{Succ} (\\mathrm{Fst}\\, p), (G \\, \\overline{n} (\\mathrm{Fst}\\, p) (\\mathrm{Snd}\\, p)) \\rangle ) \\langle \\overline{m}, \\overline{h(n,m)} \\rangle"
@@ -7477,10 +7477,10 @@
          "tex": "& \\xrightarrow{} \\langle \\mathrm{Succ} (\\mathrm{Fst}\\, \\langle \\overline{m}, \\overline{h(n,m)} \\rangle),\\\\ & \\qquad (G \\, \\overline{n} (\\mathrm{Fst}\\, \\langle \\overline{m}, \\overline{h(n,m)} \\rangle) (\\mathrm{Snd}\\, \\langle \\overline{m}, \\overline{h(n,m)} \\rangle)) \\rangle"
         },
         {
-         "tex": "& \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\langle \\mathrm{Succ}\\, \\overline{m}, (G \\, \\overline{n} \\,\\overline{m} \\, \\overline{h(n,m)}) \\rangle"
+         "tex": "& \\mathrel{\\overset{}{\\twoheadrightarrow}} \\langle \\mathrm{Succ}\\, \\overline{m}, (G \\, \\overline{n} \\,\\overline{m} \\, \\overline{h(n,m)}) \\rangle"
         },
         {
-         "tex": "& \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\langle \\overline{m+1}, \\overline{g(n, m, h(n, m))} \\rangle"
+         "tex": "& \\mathrel{\\overset{}{\\twoheadrightarrow}} \\langle \\overline{m+1}, \\overline{g(n, m, h(n, m))} \\rangle"
         }
        ],
        "src": "D_n^{m+1} \\tuple{\\num{0}, F\\, \\num{n}}\n    & \\ident D_n(D_n^{m} \\tuple{\\num{0}, F\\, \\num{n}})\\\\\n    & \\red D_n\\,\\tuple{\\num{m}, \\num{h(n, m)}} \\text{\\qquad (by IH)}\\\\\n    & \\ident (\\lambd[p][\n      \\tuple{\n        \\fn{Succ} (\\fn{Fst}\\, p), (G \\, \\num{n} (\\fn{Fst}\\, p) (\\fn{Snd}\\, p))\n    }]) \\tuple{\\num{m}, \\num{h(n,m)}}\\\\\n    & \\redone\n    \\tuple{\\fn{Succ} (\\fn{Fst}\\, \\tuple{\\num{m}, \\num{h(n,m)}}),\\\\\n      & \\qquad (G \\, \\num{n} (\\fn{Fst}\\, \\tuple{\\num{m}, \\num{h(n,m)}}) (\\fn{Snd}\\, \\tuple{\\num{m}, \\num{h(n,m)}}))}\\\\\n    & \\red \n    \\tuple{\\fn{Succ}\\, \\num{m}, (G \\, \\num{n} \\,\\num{m} \\, \\num{h(n,m)})}\\\\\n    & \\red \\tuple{\\num{m+1}, \\num{g(n, m, h(n, m))}}",
@@ -7544,19 +7544,19 @@
          "tex": "& \\qquad\\,\\overline{n}\\, \\overline{m}"
         },
         {
-         "tex": "& \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\mathrm{Snd} (\\overline{m} \\, \\underbrace{( \\lambda p .\\langle \\mathrm{Succ} (\\mathrm{Fst}\\, p), (G \\,\\overline{n}\\, (\\mathrm{Fst}\\, p) (\\mathrm{Snd}\\, p)) \\rangle)}_{D_n} \\langle \\overline{0}, F \\overline{n} \\rangle)"
+         "tex": "& \\mathrel{\\overset{}{\\twoheadrightarrow}} \\mathrm{Snd} (\\overline{m} \\, \\underbrace{( \\lambda p .\\langle \\mathrm{Succ} (\\mathrm{Fst}\\, p), (G \\,\\overline{n}\\, (\\mathrm{Fst}\\, p) (\\mathrm{Snd}\\, p)) \\rangle)}_{D_n} \\langle \\overline{0}, F \\overline{n} \\rangle)"
         },
         {
          "tex": "& \\equiv \\mathrm{Snd} (\\overline{m} \\, D_n\\, \\langle \\overline{0}, F \\overline{n} \\rangle)"
         },
         {
-         "tex": "& \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\mathrm{Snd} \\,(D_n^m \\langle \\overline{0}, F \\overline{n} \\rangle)"
+         "tex": "& \\mathrel{\\overset{}{\\twoheadrightarrow}} \\mathrm{Snd} \\,(D_n^m \\langle \\overline{0}, F \\overline{n} \\rangle)"
         },
         {
-         "tex": "& \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\mathrm{Snd} \\,\\langle \\overline{m}, \\overline{h(n, m)} \\rangle"
+         "tex": "& \\mathrel{\\overset{}{\\twoheadrightarrow}} \\mathrm{Snd} \\,\\langle \\overline{m}, \\overline{h(n, m)} \\rangle"
         },
         {
-         "tex": "& \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\overline{h(n,m)}."
+         "tex": "& \\mathrel{\\overset{}{\\twoheadrightarrow}} \\overline{h(n,m)}."
         }
        ],
        "src": "H\\,\\num n\\,\\num m &\\ident \\lambd[x][\\lambd[y][\\fn{Snd} (y\n        (\\lambd[p].\\tuple{\\fn{Succ} (\\fn{Fst}\\, p), (G\\, x\\,\n          (\\fn{Fst}\\, p)\\, (\\fn{Snd}\\, p))}) \\tuple{\\num{0}, F x})]]\\\\\n    & \\qquad\\,\\num n\\, \\num m\\\\\n    & \\red \\fn{Snd} (\\num m \\,\n    \\underbrace{(\\lambd[p].\\tuple{\\fn{Succ} (\\fn{Fst}\\, p), (G \\,\\num n\\,\n      (\\fn{Fst}\\, p) (\\fn{Snd}\\, p))})}_{D_n} \\tuple{\\num{0}, F \\num n})\\\\\n    & \\ident \\fn{Snd} (\\num m \\, D_n\\, \\tuple{\\num{0}, F \\num n})\\\\\n    & \\red \\fn{Snd} \\,(D_n^m  \\tuple{\\num{0}, F \\num n})\\\\\n    & \\red \\fn{Snd} \\,\\tuple{\\num{m}, \\num{h(n, m)}} \\\\\n    & \\red \\num{h(n,m)}.",
@@ -8258,7 +8258,7 @@
         },
         {
          "t": "math",
-         "tex": "Yg \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow g(Yg)",
+         "tex": "Yg \\mathrel{\\overset{}{\\twoheadrightarrow}} g(Yg)",
          "src": "Yg \\red g(Yg)"
         },
         {
@@ -8366,10 +8366,10 @@
          "tex": "Y g &\\equiv ( \\lambda ux .\\, x(uux) )U\\,g"
         },
         {
-         "tex": "&\\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow ( \\lambda x .\\, x(UUx) )g"
+         "tex": "&\\mathrel{\\overset{}{\\twoheadrightarrow}} ( \\lambda x .\\, x(UUx) )g"
         },
         {
-         "tex": "& \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow g(UUg) \\equiv g(Yg)."
+         "tex": "& \\mathrel{\\overset{}{\\twoheadrightarrow}} g(UUg) \\equiv g(Yg)."
         }
        ],
        "src": "Y g &\\ident (\\lambd[ux][x(uux)])U\\,g \\\\\n    &\\red (\\lambd[x][x(UUx)])g\\\\\n    & \\red g(UUg) \\ident g(Yg).",
@@ -8489,13 +8489,13 @@
      "env": "align",
      "rows": [
       {
-       "tex": "Y g &\\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow g (Y g)"
+       "tex": "Y g &\\mathrel{\\overset{}{\\twoheadrightarrow}} g (Y g)"
       },
       {
-       "tex": "&\\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow g (g (Y g))"
+       "tex": "&\\mathrel{\\overset{}{\\twoheadrightarrow}} g (g (Y g))"
       },
       {
-       "tex": "&\\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow g(g (g (Y g)))"
+       "tex": "&\\mathrel{\\overset{}{\\twoheadrightarrow}} g(g (g (Y g)))"
       },
       {
        "tex": "&\\ldots"
@@ -8729,19 +8729,19 @@
      "env": "align",
      "rows": [
       {
-       "tex": "\\mathrm{Fac}\\,\\overline{3} &\\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow Y\\, \\mathrm{Fac}' \\, \\overline{3}"
+       "tex": "\\mathrm{Fac}\\,\\overline{3} &\\mathrel{\\overset{}{\\twoheadrightarrow}} Y\\, \\mathrm{Fac}' \\, \\overline{3}"
       },
       {
-       "tex": "&\\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\mathrm{Fac}' (Y \\,\\mathrm{Fac}') \\, \\overline{3}"
+       "tex": "&\\mathrel{\\overset{}{\\twoheadrightarrow}} \\mathrm{Fac}' (Y \\,\\mathrm{Fac}') \\, \\overline{3}"
       },
       {
        "tex": "&\\equiv ( \\lambda x .\\, \\lambda n .\\, \\mathrm{IsZero} \\, n\\, \\overline{1}\\, (\\mathrm{Mult}\\, n\\, (x (\\mathrm{Pred}\\, n))) ) \\, \\mathrm{Fac} \\, \\overline{3}"
       },
       {
-       "tex": "& \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\mathrm{IsZero} \\, \\overline{3}\\, \\overline{1}\\, (\\mathrm{Mult}\\, \\overline{3}\\, (\\mathrm{Fac} (\\mathrm{Pred}\\, \\overline{3})))"
+       "tex": "& \\mathrel{\\overset{}{\\twoheadrightarrow}} \\mathrm{IsZero} \\, \\overline{3}\\, \\overline{1}\\, (\\mathrm{Mult}\\, \\overline{3}\\, (\\mathrm{Fac} (\\mathrm{Pred}\\, \\overline{3})))"
       },
       {
-       "tex": "&\\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\mathrm{Mult}\\, \\overline{3} \\, (\\mathrm{Fac} \\, \\overline{2})."
+       "tex": "&\\mathrel{\\overset{}{\\twoheadrightarrow}} \\mathrm{Mult}\\, \\overline{3} \\, (\\mathrm{Fac} \\, \\overline{2})."
       }
      ],
      "src": "\\fn{Fac}\\,\\num 3\n  &\\red Y\\, \\fn{Fac}' \\, \\num 3 \\\\\n  &\\red \\fn{Fac}' (Y \\,\\fn{Fac}') \\, \\num 3 \\\\\n  &\\ident (\\lambd[x][\\lambd[n][\\fn{IsZero} \\, n\\, \\num 1\\,\n      (\\fn{Mult}\\, n\\, (x (\\fn{Pred}\\, n)))]]) \\, \\fn{Fac} \\, \\num 3\\\\\n  & \\red \\fn{IsZero} \\, \\num 3\\, \\num 1\\,\n      (\\fn{Mult}\\, \\num 3\\, (\\fn{Fac} (\\fn{Pred}\\, \\num 3))) \\\\\n  &\\red  \\fn{Mult}\\, \\num 3 \\, (\\fn{Fac} \\, \\num 2).",
@@ -8774,10 +8774,10 @@
      "env": "align",
      "rows": [
       {
-       "tex": "\\mathrm{Fac}\\,\\overline{2} &\\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\mathrm{Mult}\\, \\overline{2} \\, (\\mathrm{Fac} \\, \\overline{1})"
+       "tex": "\\mathrm{Fac}\\,\\overline{2} &\\mathrel{\\overset{}{\\twoheadrightarrow}} \\mathrm{Mult}\\, \\overline{2} \\, (\\mathrm{Fac} \\, \\overline{1})"
       },
       {
-       "tex": "\\mathrm{Fac}\\,\\overline{1} &\\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\mathrm{Mult}\\, \\overline{1} \\, (\\mathrm{Fac} \\, \\overline{0})"
+       "tex": "\\mathrm{Fac}\\,\\overline{1} &\\mathrel{\\overset{}{\\twoheadrightarrow}} \\mathrm{Mult}\\, \\overline{1} \\, (\\mathrm{Fac} \\, \\overline{0})"
       }
      ],
      "src": "\\fn{Fac}\\,\\num 2\n  &\\red  \\fn{Mult}\\, \\num 2 \\, (\\fn{Fac} \\, \\num 1) \\\\\n  \\fn{Fac}\\,\\num 1\n  &\\red  \\fn{Mult}\\, \\num 1 \\, (\\fn{Fac} \\, \\num 0)",
@@ -8810,16 +8810,16 @@
      "env": "align",
      "rows": [
       {
-       "tex": "\\mathrm{Fac}\\,\\overline{0} &\\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\mathrm{Fac}' (Y \\,\\mathrm{Fac}') \\, \\overline{0}"
+       "tex": "\\mathrm{Fac}\\,\\overline{0} &\\mathrel{\\overset{}{\\twoheadrightarrow}} \\mathrm{Fac}' (Y \\,\\mathrm{Fac}') \\, \\overline{0}"
       },
       {
        "tex": "&\\equiv ( \\lambda x .\\, \\lambda n .\\, \\mathrm{IsZero} \\, n\\, \\overline{1}\\, (\\mathrm{Mult}\\, n\\, (x (\\mathrm{Pred}\\, n))) ) \\, \\mathrm{Fac} \\, \\overline{0}"
       },
       {
-       "tex": "& \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\mathrm{IsZero} \\, \\overline{0}\\, \\overline{1}\\, (\\mathrm{Mult}\\, \\overline{0}\\, (\\mathrm{Fac} (\\mathrm{Pred}\\, \\overline{0})))."
+       "tex": "& \\mathrel{\\overset{}{\\twoheadrightarrow}} \\mathrm{IsZero} \\, \\overline{0}\\, \\overline{1}\\, (\\mathrm{Mult}\\, \\overline{0}\\, (\\mathrm{Fac} (\\mathrm{Pred}\\, \\overline{0})))."
       },
       {
-       "tex": "&\\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\overline{1}."
+       "tex": "&\\mathrel{\\overset{}{\\twoheadrightarrow}} \\overline{1}."
       }
      ],
      "src": "\\fn{Fac}\\,\\num 0\n  &\\red \\fn{Fac}' (Y \\,\\fn{Fac}') \\, \\num 0 \\\\\n  &\\ident (\\lambd[x][\\lambd[n][\\fn{IsZero} \\, n\\, \\num 1\\,\n      (\\fn{Mult}\\, n\\, (x (\\fn{Pred}\\, n)))]]) \\, \\fn{Fac} \\, \\num 0\\\\\n  & \\red \\fn{IsZero} \\, \\num 0\\, \\num 1\\,\n      (\\fn{Mult}\\, \\num 0\\, (\\fn{Fac} (\\fn{Pred}\\, \\num 0))).\\\\\n  &\\red \\num 1.",
@@ -8852,7 +8852,7 @@
      "env": "align",
      "rows": [
       {
-       "tex": "\\mathrm{Fac}\\,\\overline{3} &\\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\mathrm{Mult}\\, \\overline{3} \\, (\\mathrm{Mult} \\, \\overline{2}\\, (\\mathrm{Mult} \\, \\overline{1}\\, \\overline{1}))."
+       "tex": "\\mathrm{Fac}\\,\\overline{3} &\\mathrel{\\overset{}{\\twoheadrightarrow}} \\mathrm{Mult}\\, \\overline{3} \\, (\\mathrm{Mult} \\, \\overline{2}\\, (\\mathrm{Mult} \\, \\overline{1}\\, \\overline{1}))."
       }
      ],
      "src": "\\fn{Fac}\\,\\num 3\n  &\\red  \\fn{Mult}\\, \\num 3 \\,\n  (\\fn{Mult} \\, \\num 2\\, (\\fn{Mult} \\, \\num 1\\, \\num 1)).",
@@ -9005,7 +9005,7 @@
      "env": "align",
      "rows": [
       {
-       "tex": "G \\equiv (Y \\lambda g .\\, \\lambda x_1\\dots x_n .\\, N ) & \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\lambda g .\\, \\lambda x_1\\dots x_n .\\, N (Y \\lambda g .\\, \\lambda x_1\\dots x_n .\\, N )"
+       "tex": "G \\equiv (Y \\lambda g .\\, \\lambda x_1\\dots x_n .\\, N ) & \\mathrel{\\overset{}{\\twoheadrightarrow}} \\lambda g .\\, \\lambda x_1\\dots x_n .\\, N (Y \\lambda g .\\, \\lambda x_1\\dots x_n .\\, N )"
       },
       {
        "tex": "& \\equiv ( \\lambda g .\\, \\lambda x_1\\dots x_n .\\, N )\\,G"
@@ -9041,13 +9041,13 @@
      "env": "align",
      "rows": [
       {
-       "tex": "G\\,x_1 \\dots x_n & \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow ( \\lambda g .\\, \\lambda x_1\\dots x_n .\\, N )\\,G\\,x_1\\dots x_n"
+       "tex": "G\\,x_1 \\dots x_n & \\mathrel{\\overset{}{\\twoheadrightarrow}} ( \\lambda g .\\, \\lambda x_1\\dots x_n .\\, N )\\,G\\,x_1\\dots x_n"
       },
       {
-       "tex": "& \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow ( \\lambda x_1\\dots x_n .\\, N[G/g] )\\,x_1\\dots x_n"
+       "tex": "& \\mathrel{\\overset{}{\\twoheadrightarrow}} ( \\lambda x_1\\dots x_n .\\, N[G/g] )\\,x_1\\dots x_n"
       },
       {
-       "tex": "& \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow N[G/g]."
+       "tex": "& \\mathrel{\\overset{}{\\twoheadrightarrow}} N[G/g]."
       }
      ],
      "src": "G\\,x_1 \\dots x_n \n& \\red (\\lambd[g][\\lambd[x_1\\dots x_n][N]])\\,G\\,x_1\\dots x_n\\\\\n& \\red (\\lambd[x_1\\dots x_n][\\Subst{N}{G}{g}])\\,x_1\\dots x_n\\\\\n  & \\red \\Subst{N}{G}{g}.",
@@ -9136,7 +9136,7 @@
       },
       {
        "t": "math",
-       "tex": "Yg \\xrightarrow{\\beta} \\mathrel{\\mkern-14mu}\\rightarrow g(Yg)",
+       "tex": "Yg \\mathrel{\\overset{\\beta}{\\twoheadrightarrow}} g(Yg)",
        "src": "Yg \\bred g(Yg)"
       },
       {
@@ -9184,13 +9184,13 @@
      "env": "align",
      "rows": [
       {
-       "tex": "VV & \\equiv ( \\lambda x .\\, g(xx) )V \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow g(VV) \\text{ and thus}"
+       "tex": "VV & \\equiv ( \\lambda x .\\, g(xx) )V \\mathrel{\\overset{}{\\twoheadrightarrow}} g(VV) \\text{ and thus}"
       },
       {
-       "tex": "Y_C g & \\equiv ( \\lambda g .\\, VV )g \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow VV \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow g(VV), \\text{ but also}"
+       "tex": "Y_C g & \\equiv ( \\lambda g .\\, VV )g \\mathrel{\\overset{}{\\twoheadrightarrow}} VV \\mathrel{\\overset{}{\\twoheadrightarrow}} g(VV), \\text{ but also}"
       },
       {
-       "tex": "g(Y_C g) & \\equiv g(( \\lambda g .\\, VV )g) \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow g(VV)."
+       "tex": "g(Y_C g) & \\equiv g(( \\lambda g .\\, VV )g) \\mathrel{\\overset{}{\\twoheadrightarrow}} g(VV)."
       }
      ],
      "src": "VV & \\ident (\\lambd[x][g(xx)])V \\red g(VV)\n  \\text{ and thus}\\\\\n  Y_C g & \\ident (\\lambd[g][VV])g \\red VV \\red g(VV), \\text{ but also}\\\\\n  g(Y_C g) & \\ident g((\\lambd[g][VV])g) \\red g(VV).",
@@ -9647,7 +9647,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "(Y \\, \\mathrm{Search}) F \\overline{n_1} \\dots\\overline{n_k}\\, \\overline{m} & \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\overline{m}"
+         "tex": "(Y \\, \\mathrm{Search}) F \\overline{n_1} \\dots\\overline{n_k}\\, \\overline{m} & \\mathrel{\\overset{}{\\twoheadrightarrow}} \\overline{m}"
         }
        ],
        "src": "(Y \\, \\fn{Search}) F \\num{n_1}\n    \\dots\\num{n_k}\\, \\num{m} & \\red \\num{m}",
@@ -9689,7 +9689,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "& \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow (Y \\, \\mathrm{Search}) F\\, \\overline{n_1} \\dots\\overline{n_k}\\, \\overline{m+1}"
+         "tex": "& \\mathrel{\\overset{}{\\twoheadrightarrow}} (Y \\, \\mathrm{Search}) F\\, \\overline{n_1} \\dots\\overline{n_k}\\, \\overline{m+1}"
         }
        ],
        "src": "& \\red (Y \\, \\fn{Search}) F\\, \\num{n_1} \\dots\\num{n_k}\\, \\num{m+1}",
@@ -9749,7 +9749,7 @@
        "env": "align",
        "rows": [
         {
-         "tex": "(Y \\, \\mathrm{Search}) F \\overline{n_1} \\dots\\overline{n_k}\\,\\overline{0} & \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow \\overline{h(n_1, \\dots, n_k)}."
+         "tex": "(Y \\, \\mathrm{Search}) F \\overline{n_1} \\dots\\overline{n_k}\\,\\overline{0} & \\mathrel{\\overset{}{\\twoheadrightarrow}} \\overline{h(n_1, \\dots, n_k)}."
         }
        ],
        "src": "(Y \\, \\fn{Search}) F \\num{n_1} \\dots\\num{n_k}\\,\\num{0}\n    & \\red \\num{h(n_1, \\dots, n_k)}.",
@@ -10885,7 +10885,7 @@
     },
     {
      "t": "math",
-     "tex": "M \\xrightarrow{} \\mathrel{\\mkern-14mu}\\rightarrow N",
+     "tex": "M \\mathrel{\\overset{}{\\twoheadrightarrow}} N",
      "src": "M \\red N"
     },
     {

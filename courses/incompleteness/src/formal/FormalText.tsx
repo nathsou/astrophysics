@@ -204,13 +204,25 @@ function TreeNode({ n }: { n: ProofTreeNode }) {
 }
 
 export function Inlines({ c }: { c: Inline[] }): ReactNode {
-  return (
-    <>
-      {c.map((x, i) => (
-        <InlineView key={i} x={x} />
-      ))}
-    </>
-  );
+  const out: ReactNode[] = [];
+  for (let i = 0; i < c.length; i++) {
+    const x = c[i];
+    const next = c[i + 1];
+    // Keep math glued to a following hyphenated word ("λ-definable", "Σ1-complete"): the line
+    // must not break between the formula and the hyphen.
+    if (x.t === 'math' && next?.t === 'text' && /^[-‐–]\S/.test(next.v)) {
+      const m = /^(\S+)([\s\S]*)$/.exec(next.v)!;
+      out.push(
+        <span key={i} className="nowrap">
+          <InlineView x={x} />
+          {m[1]}
+        </span>,
+      );
+      if (m[2]) out.push(<Fragment key={`${i}+`}>{m[2]}</Fragment>);
+      i++;
+    } else out.push(<InlineView key={i} x={x} />);
+  }
+  return <>{out}</>;
 }
 
 function InlineView({ x }: { x: Inline }): ReactNode {

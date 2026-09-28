@@ -94,12 +94,22 @@ export function About() {
             X ⊆ Y is needed. Both are refuted on small domains by the evaluator.
           </li>
           <li>
-            <a href="#/s/lam.rep.arf?mode=intuition">9.7</a> and <a href="#/s/lam.ldf.min?mode=intuition">9.12</a>: Mult′ as printed computes a·a, and the recursive call in Search
-            drops f. Both are run as printed and as corrected.
+            <a href="#/s/lam.rep.cur?mode=intuition">9.5</a>: the last line of the general computation substitutes into P, which is never defined; N is meant.
           </li>
           <li>
-            <a href="#/s/fol.ntd.pro?mode=explore">C.6</a>: one →Intro in the finished tree has no discharge label, which the checker requires; one intermediate tree names ¬Elim
-            “⊥Intro”.
+            <a href="#/s/lam.rep.arf?mode=intuition">9.7</a>: Mult′ as printed computes a·a; and Exp b̄ 0̄ reduces to λx.x, which is only η-equivalent to 1̄, so Exp
+            λ-defines exponentiation only for exponents ≥ 1 (Exp′ has no exception).
+          </li>
+          <li>
+            <a href="#/s/lam.ldf.prf?mode=formal">9.10</a>: the recursion equation in the proof of the primitive-recursion lemma has h where g is meant; the composition lemma
+            writes G₀, …, G<sub>k</sub> for G<sub>k−1</sub>.
+          </li>
+          <li>
+            <a href="#/s/lam.ldf.min?mode=intuition">9.12</a>: the recursive call in Search drops f, and the proof λ-defines “h” where the lemma calls the function g.
+          </li>
+          <li>
+            <a href="#/s/fol.ntd.pro?mode=explore">C.6</a>: one intermediate tree names ¬Elim “⊥Intro”. (Its finished tree has an →Intro without a label; that is licensed by the
+            book’s rules, since it discharges nothing, and the checker accepts it.)
           </li>
           <li>
             <a href="#/s/ic.deriv.text?mode=explore">Appendix A</a>: the derivation of ∀x ¬x &lt; 0 cites Q5 and Q6 where it uses Q4 and Q5.

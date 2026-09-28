@@ -142,10 +142,9 @@ export function check(root: Deriv, opt: CheckOptions = {}): CheckResult {
       return d.premises.length === n;
     };
     const discharge = (from: OpenAssumption[], f: Formula): OpenAssumption[] => {
-      if (d.label === undefined) {
-        fail(`${RULE_NAMES[d.rule]} must name the label of the assumptions it discharges`);
-        return from;
-      }
+      // Labels only show which inference discharges which assumptions (C.2), and discharging is a
+      // permission, not a requirement (C.3): an unlabelled inference discharges nothing.
+      if (d.label === undefined) return from;
       const keep: OpenAssumption[] = [];
       for (const a of from) {
         if (a.kind === 'assume' && a.label === d.label && formulaEq(a.formula, f)) discharged.push(a);

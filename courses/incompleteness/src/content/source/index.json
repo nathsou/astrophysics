@@ -2736,11 +2736,6 @@
    "origin": "katex"
   },
   {
-   "name": "rightarrow",
-   "count": 512,
-   "origin": "katex"
-  },
-  {
    "name": "lforall",
    "count": 503,
    "origin": "upstream"
@@ -2754,6 +2749,11 @@
    "name": "lif",
    "count": 452,
    "origin": "upstream"
+  },
+  {
+   "name": "rightarrow",
+   "count": 452,
+   "origin": "katex"
   },
   {
    "name": "eq",
@@ -3031,11 +3031,6 @@
    "origin": "katex"
   },
   {
-   "name": "xrightarrow",
-   "count": 86,
-   "origin": "katex"
-  },
-  {
    "name": "mathrel",
    "count": 81,
    "origin": "katex"
@@ -3096,7 +3091,7 @@
    "origin": "upstream"
   },
   {
-   "name": "mkern",
+   "name": "overset",
    "count": 60,
    "origin": "katex"
   },
@@ -3106,9 +3101,14 @@
    "origin": "upstream"
   },
   {
+   "name": "twoheadrightarrow",
+   "count": 60,
+   "origin": "katex"
+  },
+  {
    "name": "xrightarrowdbl",
    "count": 60,
-   "origin": "upstream"
+   "origin": "override"
   },
   {
    "name": "begin",
@@ -3279,6 +3279,11 @@
    "name": "redone",
    "count": 26,
    "origin": "upstream"
+  },
+  {
+   "name": "xrightarrow",
+   "count": 26,
+   "origin": "katex"
   },
   {
    "name": "bforall",
