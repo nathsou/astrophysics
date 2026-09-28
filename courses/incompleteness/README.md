@@ -34,19 +34,17 @@ The whole book — chapters 1–9 and appendices A–D — is converted from its
 
 The object a section works with persists across modes (and visits), so the same formula can be followed from intuition to workbench to the formal definition where the text uses it: Formal mode attaches computed panels to specific definitions and proofs.
 
-Where a checker or an evaluator found a slip in the printed text, the page shows both versions; the list is on the About page.
+Small slips in the printed text are corrected in place (see *Corrections* below).
 
-## Provenance
+## What is computed, checked and proved
 
-Every piece of content says what it is:
+The course is explicit about how each claim is established:
 
-- **Open Logic text** — converted from the upstream LaTeX; each theorem-like block links to its exact source lines at the pinned commit.
-- **Added** — written for this edition.
 - **Computed** — produced by the engine for the reader’s input. A computed example illustrates, it does not prove.
 - **Checked** — every inference verified by a checker (natural deduction, or — for chapter 5’s metatheorems — the derivability conditions plus truth tables). A checked derivation is about one sentence, not the general theorem; the course says so wherever one appears.
 - **Theorem** — a general result, proved in the text.
 
-The incompleteness dependency explorer is an *authored* analysis of the proofs and is labelled as such.
+Every theorem-like block of the text links to its exact source lines at the pinned upstream commit.
 
 ## Architecture
 
@@ -89,6 +87,10 @@ Design rules:
 ## The conversion pipeline
 
 The converter follows the book’s driver `ic.tex` as LaTeX would: chapter and section imports, the book’s tags (`\iftag`, `\tagitem`), label qualification (`\olfileid`, `\ollabel`, `\olref`), and numbering per chapter. Macros are read from the upstream `.sty` files, so a notation change upstream flows through. A handful of macros defined with TeX primitives (`\gn`, `\pto`, `\mathbi`, …) are replaced explicitly in `scripts/latex/macros.ts`, each with its reason. Anything else unknown is an error in `src/content/source/report.json`, rendered visibly in the text, and fails `npm run build`.
+
+### Corrections
+
+Obvious slips in the book (a wrong index or equation reference, a misnamed function, a formula that does not say what the text means, typos) are corrected in the rendered text without comment. The corrections are applied to the LaTeX before conversion by `scripts/latex/errata.ts`, from `errata/<chapter>.json`: each entry gives the file, the exact passage, its replacement and a one-line reason. A passage must match exactly once; if an upstream change alters it (for instance because the slip was fixed there), conversion fails with `erratum-unmatched` and the entry can simply be deleted.
 
 ### Updating from upstream
 
