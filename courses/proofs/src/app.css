@@ -278,8 +278,8 @@ body {
   background: var(--page);
   color: var(--ink);
   font-family: var(--font-body);
-  font-size: 1.125rem;
-  line-height: 1.65;
+  font-size: 1.1875rem;
+  line-height: 1.62;
   font-optical-sizing: auto;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -292,12 +292,13 @@ a {
 }
 a:hover {
   text-decoration-thickness: 2px;
+  opacity: 0.8;
 }
 
 :focus-visible {
-  outline: 2px solid var(--focus);
+  outline: 3px solid var(--focus);
   outline-offset: 2px;
-  border-radius: 3px;
+  border-radius: 2px;
 }
 
 button {
@@ -353,26 +354,42 @@ button {
 .article h2,
 .article h3,
 .article h4 {
-  font-family: var(--font-ui);
-  letter-spacing: -0.015em;
-  line-height: 1.25;
   color: var(--ink);
 }
 .article h2 {
-  font-size: 1.6rem;
-  font-weight: 650;
-  margin: 3.5rem 0 1rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--rule);
+  position: relative;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(1.6rem, 3.4vw, 2rem);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin: 4rem 0 1.1rem;
+  padding-top: 1.2rem;
+  border-top: 2px solid var(--fg);
+}
+/* A short primary-red block sits on the rule, like the ruled colour bars of Byrne's plates. */
+.article h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -2px;
+  width: 3.25rem;
+  height: 0.5rem;
+  background: var(--fx-red);
 }
 .article h3 {
-  font-size: 1.2rem;
-  font-weight: 620;
-  margin: 2.25rem 0 0.6rem;
+  font-family: var(--font-ui);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.012em;
+  line-height: 1.2;
+  margin: 2.5rem 0 0.6rem;
 }
 .article h4 {
-  font-size: 1rem;
-  font-weight: 620;
+  font-family: var(--font-ui);
+  font-size: 1.02rem;
+  font-weight: 700;
+  line-height: 1.25;
   margin: 1.75rem 0 0.4rem;
 }
 .article p,
@@ -387,26 +404,67 @@ button {
   margin-bottom: 0.4rem;
 }
 .article strong {
-  font-weight: 650;
+  font-weight: 700;
 }
 .article hr {
   border: 0;
-  border-top: 1px solid var(--rule);
-  margin: 2.5rem 0;
+  border-top: 2px solid var(--fg);
+  margin: 2.75rem 0;
 }
 .article blockquote {
   margin: 1.5rem 0;
   padding: 0.2rem 0 0.2rem 1.25rem;
-  border-left: 3px solid var(--rule-strong);
+  border-left: 6px solid var(--fx-blue);
   color: var(--ink-2);
   font-style: italic;
+}
+/* Byrne-style lists (markdown lists only, so widget and exercise lists are left alone):
+   red DM Sans numerals, small blue squares for bullets. */
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level) > ol {
+  list-style: none;
+  counter-reset: item;
+  padding-left: 2rem;
+}
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level) > ol > li {
+  counter-increment: item;
+  position: relative;
+}
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level) > ol > li::before {
+  content: counter(item);
+  position: absolute;
+  left: -2rem;
+  width: 1.5rem;
+  text-align: right;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 0.86em;
+  line-height: inherit;
+  padding-top: 0.06em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level) > ul {
+  list-style: none;
+  padding-left: 1.4rem;
+}
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level) > ul > li {
+  position: relative;
+}
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level) > ul > li::before {
+  content: '';
+  position: absolute;
+  left: -1.15rem;
+  top: 0.62em;
+  width: 0.42rem;
+  height: 0.42rem;
+  background: var(--fx-blue);
 }
 .article table {
   border-collapse: collapse;
   width: 100%;
   margin: 1.5rem 0;
   font-family: var(--font-ui);
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   line-height: 1.45;
   font-variant-numeric: tabular-nums;
 }
@@ -418,17 +476,16 @@ button {
   vertical-align: top;
 }
 .article th {
-  font-weight: 600;
-  color: var(--ink-2);
-  border-bottom-color: var(--rule-strong);
+  font-weight: 700;
+  color: var(--ink);
+  border-bottom: 2px solid var(--fg);
 }
 .article :not(pre) > code {
   font-family: var(--font-mono);
-  font-size: 0.84em;
+  font-size: 0.82em;
   background: var(--surface-2);
-  border: 1px solid var(--border);
-  padding: 0.08em 0.35em;
-  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  border-radius: var(--radius-sm);
 }
 .article img {
   max-width: 100%;
@@ -438,18 +495,20 @@ button {
 /* Code blocks (Shiki dual theme). */
 figure.code-block {
   margin: 1.5rem 0;
-  border: 1px solid var(--border);
+  border: 2px solid var(--fg);
   border-radius: var(--radius);
-  background: var(--surface);
+  background: var(--surface-2);
   overflow: hidden;
 }
 figure.code-block figcaption {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--ink-2);
   padding: 0.45rem 1rem;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface-2);
+  border-bottom: 2px solid var(--fg);
+  background: var(--surface);
 }
 figure.code-block pre {
   margin: 0;
@@ -489,10 +548,10 @@ figure.code-block pre {
   font-size: 1.2em;
 }
 [data-term] {
-  border-radius: 4px;
+  border-radius: 2px;
   cursor: help;
   transition: background-color 120ms ease;
-  box-shadow: inset 0 -1px 0 0 color-mix(in srgb, var(--accent-2) 55%, transparent);
+  box-shadow: inset 0 -2px 0 0 var(--fx-yellow);
 }
 [data-term]:hover,
 [data-term]:focus-visible,
@@ -518,6 +577,7 @@ figure.code-block pre {
 
 /* Footnotes (GFM). */
 .article .footnotes {
+  font-family: var(--font-ui);
   font-size: 0.92rem;
   color: var(--ink-2);
 }

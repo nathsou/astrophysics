@@ -56,23 +56,28 @@
     height: calc(100vh - 3.25rem);
     overflow-y: auto;
     padding: 1.25rem 0.75rem 3rem 1rem;
-    border-right: 1px solid var(--rule);
-    font-size: 0.84rem;
+    border-right: 2px solid var(--fg);
+    font-size: 0.88rem;
     scrollbar-width: thin;
   }
   section + section {
-    margin-top: 1.25rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 2px solid var(--fg);
   }
   h2 {
-    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 650;
-    color: var(--ink-3);
-    margin: 0 0 0.35rem 0.5rem;
+    letter-spacing: 0.13em;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--mute);
+    margin: 0 0 0.4rem 0.5rem;
   }
   .part {
     color: var(--accent);
+    font-weight: 700;
   }
   ul {
     list-style: none;
@@ -82,49 +87,52 @@
   li a,
   .row {
     display: grid;
-    grid-template-columns: 1.6rem 1fr;
-    padding: 0.28rem 0.5rem;
-    border-radius: 6px;
+    grid-template-columns: 1.7rem 1fr;
+    padding: 0.3rem 0.5rem;
+    border-left: 4px solid transparent;
     color: var(--ink);
     text-decoration: none;
+    font-weight: 500;
     line-height: 1.35;
   }
   li a:hover {
-    background: var(--surface-2);
+    background: var(--pn);
+    opacity: 1;
   }
   .n {
-    color: var(--ink-3);
+    color: var(--accent);
+    font-weight: 700;
     font-variant-numeric: tabular-nums;
   }
   .here > a {
-    background: var(--accent-soft);
-    color: var(--accent-ink);
-    font-weight: 600;
-  }
-  .here > a .n {
-    color: var(--accent);
+    background: var(--pn);
+    border-left-color: var(--fx-red);
+    font-weight: 700;
   }
   .planned .row {
     color: var(--ink-3);
     cursor: default;
   }
+  .planned .n {
+    color: var(--ink-3);
+  }
   .toc {
-    margin: 0.2rem 0 0.4rem 2.1rem;
-    border-left: 1px solid var(--rule);
+    margin: 0.2rem 0 0.4rem 2.2rem;
+    border-left: 2px solid var(--fg);
   }
   .toc a {
     display: block;
-    padding: 0.2rem 0.6rem;
-    font-size: 0.8rem;
+    padding: 0.22rem 0.6rem;
+    font-size: 0.82rem;
+    font-weight: 400;
     color: var(--ink-2);
-    border-radius: 0 6px 6px 0;
-    margin-left: -1px;
-    border-left: 2px solid transparent;
+    margin-left: -2px;
+    border-left: 4px solid transparent;
   }
   .toc .active a {
     color: var(--ink);
-    border-left-color: var(--accent-2);
-    font-weight: 560;
+    border-left-color: var(--fx-yellow);
+    font-weight: 700;
   }
   .scrim {
     display: none;
@@ -136,7 +144,7 @@
       left: 0;
       z-index: 45;
       width: min(20rem, 88vw);
-      background: var(--page);
+      background: var(--bg);
       transform: translateX(-100%);
       transition: transform 200ms ease;
       box-shadow: var(--shadow-lg);
@@ -149,7 +157,7 @@
       position: fixed;
       inset: 3.25rem 0 0 0;
       z-index: 44;
-      background: rgba(0, 0, 0, 0.25);
+      background: rgba(26, 25, 23, 0.4);
     }
   }
 </style>

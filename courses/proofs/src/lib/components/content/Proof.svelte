@@ -13,13 +13,13 @@
 
 <style>
   .proof {
-    margin: 1.25rem 0 1.75rem;
-    padding: 0 0 0 1.2rem;
-    border-left: 1px solid var(--rule-strong);
+    margin: 1.4rem 0 2rem;
+    padding: 0 0 0 1.3rem;
+    border-left: 2px solid var(--fg);
   }
   .head {
     margin: 0 0 0.4rem !important;
-    font-weight: 600;
+    font-weight: 700;
   }
   .body :global(p) {
     margin: 0 0 0.8rem;
@@ -27,7 +27,7 @@
   .qed {
     margin: -0.6rem 0 0 !important;
     text-align: right;
-    color: var(--ink-2);
+    color: var(--byrne-blue);
     line-height: 1;
   }
 </style>
