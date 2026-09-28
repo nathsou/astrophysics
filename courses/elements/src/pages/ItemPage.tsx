@@ -123,6 +123,7 @@ export function ItemPage({ id }: { id: string }) {
           ) : e.book === 1 ? (
             <span className="badge neutral" title="Proved without the parallel postulate: true in hyperbolic geometry too">Neutral geometry</span>
           ) : null)}
+          {e.bracketed && <span className="badge bracketed" title="Heath prints this proposition in square brackets: Heiberg judged it a later interpolation">Bracketed: possibly not Euclid’s</span>}
           {isProp && <a className="badge" href={`#/graph?focus=${id}`} title="Longest chain of propositions below this one">Depth {depth(id)}</a>}
         </div>
         {enunciation && isProp && (

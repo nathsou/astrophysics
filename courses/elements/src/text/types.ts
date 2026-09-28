@@ -59,6 +59,8 @@ export interface Item {
   labels: string[];
   /** Constructions (problems) end "what it was required to do"; theorems "what it was required to prove". */
   problem?: boolean;
+  /** Heath prints the whole item in square brackets: Heiberg judged it an interpolation. */
+  bracketed?: boolean;
 }
 
 export interface Section {
@@ -89,6 +91,7 @@ export interface IndexEntry {
   n: number;
   group?: number;
   problem?: boolean;
+  bracketed?: boolean;
   cites: string[];
   /** The enunciation (or the definition) as plain text. */
   text: string;

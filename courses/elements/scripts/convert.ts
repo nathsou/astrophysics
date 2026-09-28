@@ -274,6 +274,8 @@ function convertItem(div: XmlElement, book: number, kind: ItemKind, group: numbe
   const all = paras.map((p) => plainOf(p.c)).join(' ');
   const item: Item = { id, book, kind, n, ...(group ? { group } : {}), paras, notes: ctx.notes, cites, labels: [...ctx.labels] };
   if (kind === 'prop') item.problem = /Q\. ?E\. ?F|required to do/.test(all);
+  // Heath prints propositions that Heiberg judged interpolated in square brackets.
+  if (head && /^\s*\[/.test(textOf(head))) item.bracketed = true;
   return item;
 }
 
@@ -324,7 +326,7 @@ function main() {
     b.sections.flatMap((sec) =>
       sec.items.map((it) => {
         const first = it.paras.find((p) => p.role === 'enunciation') ?? it.paras[0];
-        return { id: it.id, book: it.book, kind: it.kind, n: it.n, ...(it.group ? { group: it.group } : {}), ...(it.problem !== undefined ? { problem: it.problem } : {}), cites: it.cites, text: first ? plainOf(first.c).trim() : '' };
+        return { id: it.id, book: it.book, kind: it.kind, n: it.n, ...(it.group ? { group: it.group } : {}), ...(it.problem !== undefined ? { problem: it.problem } : {}), ...(it.bracketed ? { bracketed: true } : {}), cites: it.cites, text: first ? plainOf(first.c).trim() : '' };
       }),
     ),
   );

@@ -34,7 +34,7 @@ export type Element =
   | ({ kind: 'circle'; c: V; r: number; centre?: string; names: string[] } & Style)
   | ({ kind: 'arc'; c: V; r: number; a0: number; a1: number; names: string[] } & Style)
   | ({ kind: 'polygon'; pts: V[]; names: string[] } & Style)
-  | ({ kind: 'angle'; a: V; b: V; c: V; names: string[]; right?: boolean } & Style)
+  | ({ kind: 'angle'; a: V; b: V; c: V; names: string[]; right?: boolean; r?: number } & Style)
   | ({ kind: 'text'; at: V; names: string[] } & Style)
   /** A polyline (closed or not): a conic, a spiral, or a circle in space seen obliquely. */
   | ({ kind: 'curve'; pts: V[]; closed: boolean; names: string[] } & Style)
@@ -235,7 +235,8 @@ export class G {
     return pts;
   }
   /** Mark the angle ABC (at B). */
-  angle(a: V, b: V, c: V, s: Style & { right?: boolean } = {}): void {
+  /** `r` is the radius of the mark in screen pixels (by default it adapts, and marks at one vertex are staggered). */
+  angle(a: V, b: V, c: V, s: Style & { right?: boolean; r?: number } = {}): void {
     this.scene.elements.push({ kind: 'angle', a, b, c, names: this.names(a, b, c), ...s });
   }
   /** A polyline through the given points; closed if `closed`. */

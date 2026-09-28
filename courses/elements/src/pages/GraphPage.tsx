@@ -49,6 +49,7 @@ export default function GraphPage({ params }: { params: URLSearchParams }) {
               <span key={a + b}>
                 {i > 0 && ', '}
                 <a href={hrefOf(a)}>{citeLabel(a)}</a> cites <a href={hrefOf(b)}>{citeLabel(b)}</a>
+                {byId.get(a)?.bracketed && ' (and Heath brackets ' + citeLabel(a) + ' as a probable interpolation)'}
               </span>
             ))}
             , which comes after it.

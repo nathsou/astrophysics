@@ -272,6 +272,31 @@ export function FigureView({ def, mentions, step = null, byrne = false, hoverKey
   const hoverTarget = hoverKey ? resolved.targets.flat().find((t) => t?.key === hoverKey) ?? null : null;
 
   const angleRadius = (A: V, B: V, C: V) => Math.max(9, Math.min(26, 0.32 * Math.min(dist(A, B), dist(C, B))));
+  // several marks at one vertex are drawn at increasing radii, so they do not pile up
+  const angleRank = new Map<number, number>();
+  {
+    const byVertex = new Map<string, number[]>();
+    scene.elements.forEach((e, i) => {
+      if (e.kind !== 'angle' || e.right) return;
+      const b = S(e.b);
+      const key = `${Math.round(b.x)},${Math.round(b.y)}`;
+      (byVertex.get(key) ?? byVertex.set(key, []).get(key)!).push(i);
+    });
+    for (const list of byVertex.values()) {
+      // smaller angles get the smaller radius
+      const sized = list.map((i) => {
+        const e = scene.elements[i] as Extract<Element, { kind: 'angle' }>;
+        let a = 0;
+        try {
+          a = angleAt(S(e.a), S(e.b), S(e.c));
+        } catch {
+          a = 0;
+        }
+        return { i, a };
+      });
+      sized.sort((x, y) => x.a - y.a).forEach(({ i }, rank) => angleRank.set(i, rank));
+    }
+  }
 
   const shapeSvg = (s: Shape, cls: string, style: React.CSSProperties = {}, key?: string): ReactNode => {
     switch (s.t) {
@@ -352,7 +377,8 @@ export function FigureView({ def, mentions, step = null, byrne = false, hoverKey
         const A = S(e.a);
         const B = S(e.b);
         const C = S(e.c);
-        return <path key={key} {...common} d={angleMark(A, B, C, angleRadius(A, B, C), !!e.right, false)} style={{ ...style, fill: 'none' }} />;
+        const rad = e.r ?? angleRadius(A, B, C) + 7 * (angleRank.get(i) ?? 0);
+        return <path key={key} {...common} d={angleMark(A, B, C, rad, !!e.right, false)} style={{ ...style, fill: 'none' }} />;
       }
       case 'curve':
         return e.closed ? (
@@ -471,6 +497,37 @@ export function FigureView({ def, mentions, step = null, byrne = false, hoverKey
             >
               {elementSvg(e, i, 'shape', style)}
             </g>
+          );
+        })}
+        {scene.elements.map((e, i) => {
+          if (!e.text || e.kind === 'text' || !visibleEl(i)) return null;
+          let at: V | null = null;
+          let off = v(0, 0);
+          if (e.kind === 'segment' || e.kind === 'line' || e.kind === 'ray') {
+            const a = S(e.a);
+            const b = S(e.b);
+            at = v((a.x + b.x) / 2, (a.y + b.y) / 2);
+            const d = sub(b, a);
+            const l = Math.hypot(d.x, d.y) || 1;
+            off = v((d.y / l) * 13, (-d.x / l) * 13);
+            if (off.y > 0) off = v(-off.x, -off.y);
+          } else if (e.kind === 'polygon' || e.kind === 'curve') {
+            const ps = e.pts.map(S);
+            at = v(ps.reduce((s2, p) => s2 + p.x, 0) / ps.length, ps.reduce((s2, p) => s2 + p.y, 0) / ps.length);
+          } else if (e.kind === 'circle' || e.kind === 'sphere') {
+            const c = S(e.c);
+            at = v(c.x + e.r * k * 0.72, c.y - e.r * k * 0.72);
+            off = v(8, -8);
+          } else if (e.kind === 'angle') {
+            const B = S(e.b);
+            const m = add(unit(sub(S(e.a), B)), unit(sub(S(e.c), B)));
+            at = add(B, mul(m, 24 / (Math.hypot(m.x, m.y) || 1)));
+          }
+          if (!at) return null;
+          return (
+            <text key={`t${i}`} x={at.x + off.x} y={at.y + off.y} dy="0.35em" textAnchor="middle" className="el-label" pointerEvents="none">
+              {e.text}
+            </text>
           );
         })}
         {overlayTargets.map((t) => {
