@@ -1,0 +1,15 @@
+{
+  "text": "Euclid, The Thirteen Books of Euclid's Elements, translated by Thomas Little Heath, Cambridge University Press, 1908. Public domain.",
+  "encoding": {
+    "file": "heath/tlg1799.tlg001.perseus-eng2.xml",
+    "source": "https://github.com/PerseusDL/canonical-greekLit/blob/master/data/tlg1799/tlg001/tlg1799.tlg001.perseus-eng2.xml",
+    "publisher": "Perseus Digital Library, Tufts University",
+    "licence": "CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)",
+    "retrieved": "2026-09-28"
+  },
+  "scans": {
+    "volume 1 (Introduction, Books I–II)": "https://hdl.handle.net/2027/uva.x001426155",
+    "volume 2 (Books III–IX)": "https://hdl.handle.net/2027/uva.x001671689",
+    "volume 3 (Books X–XIII)": "https://hdl.handle.net/2027/uva.x001866313"
+  }
+}

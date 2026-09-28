@@ -1,0 +1,7 @@
+{
+  "upstream": {
+    "file": "upstream/heath/tlg1799.tlg001.perseus-eng2.xml",
+    "sha256": "b41068f265202520a6c3dccb512b258a01b298be6004763cb92057ccd50802a8"
+  },
+  "unknown": []
+}
