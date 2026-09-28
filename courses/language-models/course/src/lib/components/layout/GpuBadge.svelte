@@ -29,13 +29,12 @@
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    font-size: 0.72rem;
-    font-weight: 560;
+    font: 400 0.7rem var(--font-mono);
     color: var(--ink-2);
     padding: 0.2rem 0.55rem;
     border: 1px solid var(--border);
-    border-radius: 99px;
-    background: var(--surface);
+    border-radius: var(--radius);
+    background: var(--pn);
     cursor: help;
   }
   .dot {

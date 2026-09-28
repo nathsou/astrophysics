@@ -54,20 +54,20 @@
       const tsCompartment = new Compartment();
 
       const theme = EditorView.theme({
-        '&': { fontSize: '0.84rem', backgroundColor: 'var(--surface)', color: 'var(--ink)' },
-        '.cm-content': { fontFamily: 'var(--font-mono)', padding: '0.6rem 0', caretColor: 'var(--accent-2)' },
-        '.cm-scroller': { fontFamily: 'var(--font-mono)', lineHeight: '1.6', minHeight: `${minLines * 1.6 * 0.84 + 1.2}rem` },
-        '.cm-gutters': { backgroundColor: 'var(--surface-2)', color: 'var(--ink-3)', border: 'none', borderRight: '1px solid var(--border)' },
-        '.cm-activeLine': { backgroundColor: 'color-mix(in srgb, var(--accent-2) 5%, transparent)' },
-        '.cm-activeLineGutter': { backgroundColor: 'color-mix(in srgb, var(--accent-2) 10%, transparent)', color: 'var(--ink)' },
+        '&': { fontSize: '0.8125rem', backgroundColor: 'transparent', color: 'var(--fg)' },
+        '.cm-content': { fontFamily: 'var(--font-mono)', padding: '0.6rem 0', caretColor: 'var(--ac)' },
+        '.cm-scroller': { fontFamily: 'var(--font-mono)', lineHeight: '1.7', minHeight: `${minLines * 1.7 * 0.8125 + 1.2}rem` },
+        '.cm-gutters': { backgroundColor: 'transparent', color: 'var(--ink-3)', border: 'none' },
+        '.cm-activeLine': { backgroundColor: 'color-mix(in srgb, var(--ac) 7%, transparent)' },
+        '.cm-activeLineGutter': { backgroundColor: 'color-mix(in srgb, var(--ac) 12%, transparent)', color: 'var(--fg)' },
         '&.cm-focused': { outline: 'none' },
         '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, ::selection': { backgroundColor: 'var(--term-hl-strong) !important' },
-        '.cm-cursor': { borderLeftColor: 'var(--accent-2)', borderLeftWidth: '2px' },
-        '.cm-tooltip': { backgroundColor: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: 'var(--shadow-lg)', fontFamily: 'var(--font-mono)', fontSize: '0.8rem' },
-        '.cm-tooltip-autocomplete ul li[aria-selected]': { backgroundColor: 'var(--accent-soft)', color: 'var(--ink)' },
+        '.cm-cursor': { borderLeftColor: 'var(--ac)', borderLeftWidth: '2px' },
+        '.cm-tooltip': { backgroundColor: 'var(--bg)', color: 'var(--fg)', border: '1px solid var(--border)', borderRadius: '4px', boxShadow: 'var(--shadow-lg)', fontFamily: 'var(--font-mono)', fontSize: '0.8rem' },
+        '.cm-tooltip-autocomplete ul li[aria-selected]': { backgroundColor: 'var(--accent-soft)', color: 'var(--fg)' },
         '.cm-tooltip-hover': { padding: '0.4rem 0.6rem', maxWidth: '36rem' },
         '.cm-diagnostic': { fontFamily: 'var(--font-ui)', fontSize: '0.8rem' },
-        '.cm-matchingBracket': { backgroundColor: 'var(--surface-3)', outline: 'none' },
+        '.cm-matchingBracket': { backgroundColor: 'color-mix(in srgb, var(--ac) 22%, transparent)', outline: 'none' },
       });
 
       view = new EditorView({
@@ -147,16 +147,14 @@
 <style>
   .editor {
     position: relative;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
+    background: var(--pn);
   }
   .fallback {
     margin: 0;
     padding: 0.6rem 1rem 0.6rem 3rem;
     font-family: var(--font-mono);
-    font-size: 0.84rem;
-    line-height: 1.6;
+    font-size: 0.8125rem;
+    line-height: 1.7;
     white-space: pre;
     overflow-x: auto;
     color: var(--ink-2);
@@ -165,11 +163,10 @@
     position: absolute;
     right: 0.5rem;
     bottom: 0.35rem;
+    font-family: var(--font-mono);
     font-size: 0.66rem;
     color: var(--ink-3);
-    background: var(--surface-2);
     padding: 0.05rem 0.4rem;
-    border-radius: 4px;
     pointer-events: none;
   }
   .readonly {

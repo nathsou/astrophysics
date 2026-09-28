@@ -72,11 +72,10 @@
     padding: 0.4rem 0;
   }
   .title {
-    font-size: 0.72rem;
+    font: 500 0.68rem var(--font-mono);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     color: var(--ink-3);
-    font-weight: 600;
   }
   .row {
     display: flex;
@@ -92,7 +91,7 @@
   }
   .num {
     color: var(--ink-3);
-    font-size: 0.85rem;
+    font: 400 0.78rem var(--font-mono);
   }
   .controls {
     display: flex;
@@ -100,8 +99,9 @@
     gap: 0.75rem 1.5rem;
     padding: 0.65rem 0.9rem;
     margin-top: 0.25rem;
-    background: var(--surface-2);
-    border-radius: var(--radius-sm);
+    background: var(--pn);
+    border-left: 3px solid var(--ac);
+    border-radius: 0 var(--radius) var(--radius) 0;
   }
   .ctl {
     flex: 1 1 12rem;

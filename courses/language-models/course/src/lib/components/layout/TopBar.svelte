@@ -37,39 +37,35 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0 1rem;
-    background: color-mix(in srgb, var(--page) 85%, transparent);
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
     backdrop-filter: saturate(1.4) blur(10px);
     -webkit-backdrop-filter: saturate(1.4) blur(10px);
-    border-bottom: 1px solid transparent;
-    transition: border-color 150ms;
-  }
-  .scrolled {
-    border-bottom-color: var(--rule);
+    border-bottom: 1px solid var(--rule);
   }
   .brand {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.65rem;
     color: var(--ink);
     text-decoration: none;
-    font-weight: 650;
-    font-size: 0.92rem;
-    letter-spacing: -0.01em;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: -0.02em;
   }
   .mark {
     display: grid;
     place-items: center;
-    width: 1.75rem;
-    height: 1.75rem;
-    border-radius: 7px;
-    background: var(--accent);
-    color: var(--on-accent);
-    font-size: 0.72rem;
-    font-weight: 750;
+    height: 1.6rem;
+    padding: 0 0.5rem 0 0.45rem;
+    border-left: 3px solid var(--ac);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    background: var(--pn);
+    color: var(--accent);
+    font: 500 0.7rem var(--font-mono);
     letter-spacing: 0.02em;
   }
   .page-title {
-    font-size: 0.86rem;
+    font: 400 0.78rem var(--font-mono);
     color: var(--ink-2);
     opacity: 0;
     transform: translateY(4px);
@@ -96,12 +92,12 @@
     border: 0;
     background: none;
     padding: 0.4rem;
-    border-radius: 7px;
+    border-radius: var(--radius);
     color: var(--ink-2);
     cursor: pointer;
   }
   .icon-btn:hover {
-    background: var(--surface-2);
+    background: var(--pn);
     color: var(--ink);
   }
   .menu {

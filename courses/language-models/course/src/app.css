@@ -477,10 +477,6 @@ figure.code-block pre {
   background: transparent !important;
 }
 /* Token colours come from the same --code-* variables as the exercise editor (see tools/markdown/render.ts). */
-.shiki,
-.shiki span {
-  color: inherit;
-}
 
 /* Maths. */
 .math-display {

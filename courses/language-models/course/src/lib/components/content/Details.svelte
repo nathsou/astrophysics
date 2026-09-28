@@ -12,16 +12,16 @@
 <style>
   .details {
     margin: 1.5rem 0;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: var(--surface);
+    border-left: 3px solid var(--rule-strong);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    background: color-mix(in srgb, var(--pn) 55%, var(--bg));
   }
   summary {
     list-style: none;
     cursor: pointer;
     padding: 0.65rem 1rem;
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 0.92rem;
+    font-weight: 700;
     display: flex;
     align-items: center;
     gap: 0.5rem;

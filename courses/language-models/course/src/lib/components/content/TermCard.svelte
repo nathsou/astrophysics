@@ -132,7 +132,7 @@
     margin-bottom: 0.4rem;
   }
   .label {
-    font-weight: 620;
+    font-weight: 700;
     font-size: 0.95rem;
   }
   .hint {
@@ -156,10 +156,9 @@
     margin: 0;
   }
   dt {
-    font-size: 0.68rem;
+    font: 500 0.66rem var(--font-mono);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 650;
+    letter-spacing: 0.1em;
     color: var(--ink-3);
     margin-top: 0.5rem;
   }
