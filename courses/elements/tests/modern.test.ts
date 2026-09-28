@@ -10,7 +10,6 @@ import { byId } from '../src/text';
 import { evaluate, type FigureDef } from '../src/geometry/figure';
 import { resolve, type Kind } from '../src/geometry/resolve';
 import { widgets } from '../src/widgets/registry';
-import '../src/widgets';
 
 const root = join(import.meta.dirname, '..');
 const figures = import.meta.glob('../src/figures/b*/p*.ts', { eager: true, import: 'default' }) as Record<string, FigureDef>;
