@@ -40,8 +40,8 @@
 .ol-proof { margin: 0.6em 0 1.8em; position: relative; }
 .ol-proof > p:first-of-type { display: inline; }
 .ol-proof-head { font-style: italic; }
-.ol-proof .qed { float: right; color: var(--fg); margin-top: -1.7em; }
-.ol-proof::after { content: ''; display: block; clear: both; }
+.ol-proof .qed { display: block; text-align: right; margin-top: -0.9em; height: 1.1em; line-height: 1; font-size: 0; }
+.ol-proof .qed::before { content: ''; display: inline-block; width: 0.55rem; height: 0.55rem; background: var(--fg); }
 .ol-proof .source-tag { position: absolute; right: 0; top: -1.3em; }
 blockquote.ol-quote { margin: 1em 0; padding-left: 18px; border-left: 2px solid var(--rule-2); color: var(--ink-2); font-style: italic; }
 blockquote.ol-center { text-align: center; margin: 1em 0; }

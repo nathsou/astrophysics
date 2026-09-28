@@ -37,13 +37,35 @@ function useRoute(): Route {
   return r;
 }
 
-function Sidebar({ route, open, onNav, onSearch }: { route: Route; open: boolean; onNav: () => void; onSearch: () => void }) {
+function ThemeButton() {
   const theme = useStore(themeStore);
   const cycle = () => {
     const next: Theme = theme === 'system' ? 'light' : theme === 'light' ? 'dark' : 'system';
     themeStore.set(next);
     applyTheme(next);
   };
+  return (
+    <button className="chip-btn" onClick={cycle} title={`Theme: ${theme}`}>
+      {theme === 'system' ? '◐ system' : theme === 'dark' ? '☾ dark' : '☀ light'}
+    </button>
+  );
+}
+
+/** The tools of the title page, which has no sidebar. */
+function Topbar({ onSearch }: { onSearch: () => void }) {
+  return (
+    <div className="topbar">
+      <button className="chip-btn search-btn" onClick={onSearch} title="Search (/ or Ctrl+K)">
+        ⌕ Search <kbd>/</kbd>
+      </button>
+      <a className="chip-btn" href="#/index">Index</a>
+      <a className="chip-btn" href="#/about">About &amp; sources</a>
+      <ThemeButton />
+    </div>
+  );
+}
+
+function Sidebar({ route, open, onNav, onSearch }: { route: Route; open: boolean; onNav: () => void; onSearch: () => void }) {
   return (
     <nav className={`sidebar ${open ? 'open' : ''}`} aria-label="Contents" onClick={(e) => (e.target as HTMLElement).closest('a') && onNav()}>
       <a className="brand" href="#/">
@@ -59,9 +81,7 @@ function Sidebar({ route, open, onNav, onSearch }: { route: Route; open: boolean
         </button>
         <a className="chip-btn" href="#/index">Index</a>
         <a className="chip-btn" href="#/about">About &amp; sources</a>
-        <button className="chip-btn" onClick={cycle} title={`Theme: ${theme}`}>
-          {theme === 'system' ? '◐ system' : theme === 'dark' ? '☾ dark' : '☀ light'}
-        </button>
+        <ThemeButton />
       </div>
       <div className="toc">
         {sourceIndex.chapters.map((c) => {
@@ -120,13 +140,15 @@ export function App() {
   else if (route.page === 'about') page = <About />;
   else if (route.page === 'index') page = <IndexPage />;
   else page = <Home />;
+  const landing = route.page === 'home';
   return (
     <MDXProvider components={mdxComponents}>
       <a className="skip" href="#main">Skip to content</a>
-      <div className="app">
-        <Sidebar route={route} open={open} onNav={() => setOpen(false)} onSearch={() => setSearching(true)} />
+      <div className={`app${landing ? ' landing' : ''}`}>
+        {!landing && <Sidebar route={route} open={open} onNav={() => setOpen(false)} onSearch={() => setSearching(true)} />}
         <main className="main" id="main">
-          <div className="mobile-bar">
+          {landing && <Topbar onSearch={() => setSearching(true)} />}
+          {!landing && <div className="mobile-bar">
             <button className="chip-btn" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
               ☰ Contents
             </button>
@@ -134,7 +156,7 @@ export function App() {
             <button className="chip-btn" onClick={() => setSearching(true)} aria-label="Search">
               ⌕ Search
             </button>
-          </div>
+          </div>}
           {page}
         </main>
       </div>

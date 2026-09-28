@@ -18,14 +18,37 @@ export function Home() {
   }, []);
   const titles = new Map(sourceIndex.chapters.flatMap((c) => c.sections.map((s) => [s.id, { ...s, chapter: c }] as const)));
   return (
-    <div className="page no-inspector">
+    <div className="page no-inspector home-page">
       <div className="column home">
-        <p className="kicker">An executable edition of the Open Logic text</p>
-        <h1 className="home-title">Incompleteness and Computability</h1>
-        <p className="lede">
-          Gödel’s theorems rest on a few precise constructions: codes for symbols, numbers for formulas, formulas that represent computations, and a sentence that
-          talks about its own number. Here you build those objects, watch them behave, and follow each one into the proof where it is used.
-        </p>
+        <header className="home-hero">
+          <p className="kicker">An executable edition of Richard Zach’s textbook</p>
+          <h1 className="home-title">
+            Incompleteness
+            <br />
+            and Computability
+          </h1>
+          <p className="home-formula" aria-label="G if and only if not Prov of the code of G">
+            G ↔ ¬Prov(<span className="corner">⌜</span>G<span className="corner">⌝</span>)
+          </p>
+          <p className="lede">
+            Gödel’s theorems rest on a few precise constructions: codes for symbols, numbers for formulas, formulas that represent computations, and a sentence that
+            talks about its own number. Here you build those objects, watch them behave, and follow each one into the proof where it is used.
+          </p>
+          <hr className="rule-short" />
+        </header>
+        <nav aria-label="Chapters">
+          <ol className="home-chapters">
+            {sourceIndex.chapters.map((c) => (
+              <li key={c.id}>
+                <a href={`#/s/${c.sections[0].id}`}>
+                  <span className="num">{c.number}</span>
+                  <span>{c.title}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+        <hr className="rule-short rule-long" />
         <figure className="home-demo" aria-label="A formula, its symbols, and its Gödel number">
           <div className="demo-row">
             <span className="demo-tag formula">formula</span>
@@ -39,7 +62,7 @@ export function Home() {
             <span className="demo-tag number">Gödel number</span>
             <NatView n={demo.g.number} style="powers" maxItems={6} expandable={false} />
           </div>
-          <figcaption className="muted sans small">The book’s example: the formula v₀ = 0, officially the six symbols =(v₀,c₀). Computed live.</figcaption>
+          <figcaption className="muted">The book’s example: the formula v₀ = 0, officially the six symbols =(v₀,c₀). Computed live.</figcaption>
         </figure>
 
         <h2>Three ways into every section</h2>
