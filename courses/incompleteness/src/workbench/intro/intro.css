@@ -1,17 +1,17 @@
 /* Chapter 1 workbenches: induction schema, diagonal table. */
 .intro-row { margin: 8px 0; }
 .intro-steps { font-family: var(--sans); font-size: 13.5px; padding-left: 1.4em; margin: 8px 0; }
-.intro-steps li { padding: 4px 8px; border-radius: 6px; cursor: default; }
+.intro-steps li { padding: 4px 8px; border-radius: 3px; cursor: default; }
 .intro-steps li:hover, .intro-steps li:focus-visible { background: var(--hl-2); outline: none; }
 .intro-steps li.ok > span { color: var(--checked); font-weight: 700; }
 .intro-steps li.bad { color: var(--danger); }
 .intro-steps li.info { color: var(--ink-2); }
 .intro-steps li.info > span { color: var(--muted); font-weight: 700; }
-.intro-verdict { font-family: var(--sans); font-size: 14px; padding: 8px 12px; border-radius: 8px; margin: 6px 0 0; }
+.intro-verdict { font-family: var(--sans); font-size: 14px; padding: 8px 12px; border-radius: 4px; margin: 6px 0 0; }
 .intro-verdict.ok { background: var(--checked-soft); color: var(--checked); }
 .intro-verdict.bad { background: var(--paper-2); color: var(--ink-2); }
 
-.dg-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 12px; background: var(--panel); }
+.dg-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 4px; background: var(--panel); }
 .dg-table { border-collapse: collapse; font-family: var(--mono); font-size: 13px; }
 .dg-table th, .dg-table td { border-bottom: 1px solid var(--rule); padding: 4px 8px; text-align: center; }
 .dg-table thead th { color: var(--muted); font-weight: 400; }

@@ -53,18 +53,18 @@
 
 .lam-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-family: var(--sans); font-size: 13px; margin: 6px 0; }
 .lam-controls label { display: inline-flex; align-items: center; gap: 5px; }
-.lam-controls input[type='number'] { width: 80px; padding: 4px 6px; border: 1px solid var(--rule-2); border-radius: 6px; background: var(--panel); color: var(--ink); font-family: var(--mono); }
-.lam-controls select, .lam-select { font-family: var(--sans); font-size: 13px; padding: 5px 8px; border-radius: 8px; border: 1px solid var(--rule-2); background: var(--panel); color: var(--ink); max-width: 100%; }
-.lam-status { font-family: var(--sans); font-size: 13.5px; padding: 8px 10px; border-radius: 8px; background: var(--paper-2); margin: 8px 0; line-height: 1.5; }
+.lam-controls input[type='number'] { width: 80px; padding: 4px 6px; border: 1px solid var(--rule-2); border-radius: 3px; background: var(--panel); color: var(--ink); font-family: var(--mono); }
+.lam-controls select, .lam-select { font-family: var(--sans); font-size: 13px; padding: 5px 8px; border-radius: 4px; border: 1px solid var(--rule-2); background: var(--panel); color: var(--ink); max-width: 100%; }
+.lam-status { font-family: var(--sans); font-size: 13.5px; padding: 8px 10px; border-radius: 4px; background: var(--paper-2); margin: 8px 0; line-height: 1.5; }
 .lam-status.ok { background: var(--checked-soft); color: var(--checked); }
 .lam-status.warn { background: var(--number-soft); color: var(--number); }
 .lam-status.running { color: var(--muted); }
 
 .lam-redexes { list-style: none; padding: 0; margin: 6px 0; display: flex; flex-direction: column; gap: 4px; }
 .lam-redexes li { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
-.lam-redex-btn { font-family: var(--math); font-size: 14px; text-align: left; background: var(--paper); border: 1px solid var(--rule); border-radius: 7px; padding: 2px 8px; cursor: pointer; color: var(--ink); max-width: 100%; overflow-wrap: anywhere; }
+.lam-redex-btn { font-family: var(--math); font-size: 14px; text-align: left; background: var(--paper); border: 1px solid var(--rule); border-radius: 3px; padding: 2px 8px; cursor: pointer; color: var(--ink); max-width: 100%; overflow-wrap: anywhere; }
 .lam-redex-btn:hover, .lam-redex-btn:focus-visible { border-color: var(--accent); background: var(--hl-2); }
-.lam-tag { font-family: var(--sans); font-size: 11px; color: var(--muted); border: 1px solid var(--rule); border-radius: 999px; padding: 0 7px; white-space: nowrap; }
+.lam-tag { font-family: var(--sans); font-size: 11px; color: var(--muted); border: 1px solid var(--rule); border-radius: 4px; padding: 0 7px; white-space: nowrap; }
 .lam-tag.strong { color: var(--accent); border-color: var(--accent); }
 
 .lam-trace { list-style: none; padding: 0; margin: 6px 0; font-family: var(--sans); font-size: 13px; display: flex; flex-direction: column; gap: 4px; }
@@ -74,7 +74,7 @@
 .lam-trace li.k-binder-stop { border-left-color: var(--formula); }
 .lam-trace li.k-capture { border-left-color: var(--danger); color: var(--danger); }
 
-.lam-history { list-style: none; padding: 0; margin: 0; max-height: 320px; overflow-y: auto; font-size: 13px; border: 1px solid var(--rule); border-radius: 8px; }
+.lam-history { list-style: none; padding: 0; margin: 0; max-height: 320px; overflow-y: auto; font-size: 13px; border: 1px solid var(--rule); border-radius: 4px; }
 .lam-history li { border-bottom: 1px solid var(--rule); }
 .lam-history li:last-child { border-bottom: none; }
 .lam-history button { display: grid; grid-template-columns: 3.2em minmax(0, 1fr); gap: 8px; width: 100%; text-align: left; background: none; border: none; padding: 4px 8px; cursor: pointer; color: var(--ink); font: inherit; }
@@ -84,8 +84,8 @@
 .lam-history .h-t { font-family: var(--math); overflow-wrap: anywhere; }
 .lam-history .h-why { display: block; font-family: var(--sans); font-size: 11.5px; color: var(--muted); }
 
-.lam-rename { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 10px; border: 1px dashed var(--added); border-radius: 8px; margin: 8px 0; font-family: var(--sans); font-size: 13px; }
-.lam-rename input { width: 90px; padding: 4px 8px; border: 1px solid var(--rule-2); border-radius: 6px; background: var(--panel); color: var(--ink); font-family: var(--math-it); font-style: italic; font-size: 15px; }
+.lam-rename { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 10px; border: 1px dashed var(--added); border-radius: 4px; margin: 8px 0; font-family: var(--sans); font-size: 13px; }
+.lam-rename input { width: 90px; padding: 4px 8px; border: 1px solid var(--rule-2); border-radius: 3px; background: var(--panel); color: var(--ink); font-family: var(--math-it); font-style: italic; font-size: 15px; }
 
 .lam-graph svg { height: auto; max-height: 460px; display: block; margin: 0 auto; }
 .lam-graph .g-edge { stroke: var(--ink-2); stroke-width: 1.4; fill: none; }
@@ -116,8 +116,8 @@
 .lam-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-family: var(--sans); font-size: 13px; margin: 6px 0; }
 .lam-row .fi-field { min-width: 0; }
 .lam-row label { display: inline-flex; gap: 6px; align-items: center; }
-.lam-num-input { width: 64px; padding: 4px 8px; border: 1px solid var(--rule-2); border-radius: 6px; background: var(--panel); color: var(--ink); font-family: var(--mono); }
-.lam-field { width: 100%; font-family: var(--math); font-size: 16px; padding: 7px 10px; border: 1px solid var(--rule-2); border-radius: 8px; background: var(--panel); color: var(--ink); box-sizing: border-box; }
+.lam-num-input { width: 64px; padding: 4px 8px; border: 1px solid var(--rule-2); border-radius: 3px; background: var(--panel); color: var(--ink); font-family: var(--mono); }
+.lam-field { width: 100%; font-family: var(--math); font-size: 16px; padding: 7px 10px; border: 1px solid var(--rule-2); border-radius: 4px; background: var(--panel); color: var(--ink); box-sizing: border-box; }
 .lam-field:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: transparent; }
 .lam-field.invalid { border-color: var(--danger); }
 .lam-small-field { width: 70px; }
@@ -125,7 +125,7 @@
 .lam-kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 12px; align-items: baseline; font-size: 14px; margin: 6px 0; }
 .lam-kv > dt { font-family: var(--sans); font-size: 12px; color: var(--muted); }
 .lam-kv > dd { margin: 0; min-width: 0; overflow-x: auto; }
-.lam-aside { border-left: 3px solid var(--added); background: var(--added-soft); padding: 8px 12px; border-radius: 0 8px 8px 0; font-family: var(--sans); font-size: 13.5px; line-height: 1.55; margin: 8px 0; }
+.lam-aside { border-left: 3px solid var(--added); background: var(--added-soft); padding: 8px 12px; border-radius: 0 3px 3px 0; font-family: var(--sans); font-size: 13.5px; line-height: 1.55; margin: 8px 0; }
 .lam-steps-inline { font-family: var(--sans); font-size: 12px; color: var(--muted); }
 
 .lam-inline { font-family: var(--math); }

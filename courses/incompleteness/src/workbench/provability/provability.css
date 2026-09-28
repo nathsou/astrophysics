@@ -1,6 +1,6 @@
 /* Proofs from the derivability conditions (ProvabilityLab). */
 
-.pv-lines { list-style: none; margin: 0; padding: 0; border: 1px solid var(--rule); border-radius: 12px; background: var(--panel); overflow: hidden; }
+.pv-lines { list-style: none; margin: 0; padding: 0; border: 1px solid var(--rule); border-radius: 4px; background: var(--panel); overflow: hidden; }
 .pv-line { border-top: 1px solid var(--rule); }
 .pv-line:first-child { border-top: none; }
 .pv-row { display: grid; grid-template-columns: 2em 4.2em minmax(0, 1fr) auto 1.4em; gap: 8px; align-items: center; width: 100%; text-align: left; background: none; border: none; padding: 7px 12px; cursor: pointer; font: inherit; color: inherit; }
@@ -24,8 +24,8 @@ button.pv-row:focus-visible { outline: 2px solid var(--accent); outline-offset: 
 .pv-error { color: var(--danger); font-family: var(--sans); font-size: 13px; }
 .pv-okmsg { color: var(--checked); font-family: var(--sans); font-size: 13px; }
 .pv-uses { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.pv-chip { border: 1px solid var(--rule-2); border-radius: 999px; padding: 0 8px; font-size: 12px; }
-.pv-verdict { font-family: var(--sans); font-size: 14px; margin: 0; padding: 10px 14px; border-radius: 10px; background: var(--paper-2); }
+.pv-chip { border: 1px solid var(--rule-2); border-radius: 4px; padding: 0 8px; font-size: 12px; }
+.pv-verdict { font-family: var(--sans); font-size: 14px; margin: 0; padding: 10px 14px; border-radius: 4px; background: var(--paper-2); }
 .pv-verdict.ok { background: var(--checked-soft); color: var(--checked); }
 .pv-verdict.bad { background: var(--danger-soft); color: var(--danger); }
 .pv-tt-wrap { overflow-x: auto; max-height: 320px; overflow-y: auto; margin-top: 6px; }
@@ -36,7 +36,7 @@ button.pv-row:focus-visible { outline: 2px solid var(--accent); outline-offset: 
 .pv-edit { display: flex; gap: 6px; align-items: center; padding: 6px 12px; flex-wrap: wrap; }
 .pv-input { flex: 1 1 220px; font-size: 15px; padding: 4px 8px; }
 .pv-from { flex: 0 0 5.5em; min-width: 0; font-size: 14px; padding: 4px 8px; }
-.pv-edit select { font-family: var(--sans); font-size: 13px; padding: 4px; border-radius: 6px; border: 1px solid var(--rule-2); background: var(--panel); color: var(--ink); }
+.pv-edit select { font-family: var(--sans); font-size: 13px; padding: 4px; border-radius: 3px; border: 1px solid var(--rule-2); background: var(--panel); color: var(--ink); }
 .pv-edit-status { padding: 0 12px 8px 3.4em; }
 
 @media (max-width: 560px) {
@@ -48,7 +48,7 @@ button.pv-row:focus-visible { outline: 2px solid var(--accent); outline-offset: 
 }
 
 .rr-track { display: flex; flex-wrap: wrap; gap: 4px; align-items: stretch; }
-.rr-cell { width: 44px; height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 4px 0; border-radius: 8px; border: 1px solid var(--rule-2); background: var(--panel); color: var(--ink); cursor: pointer; font-family: var(--sans); }
+.rr-cell { width: 44px; height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 4px 0; border-radius: 4px; border: 1px solid var(--rule-2); background: var(--panel); color: var(--ink); cursor: pointer; font-family: var(--sans); }
 .rr-cell:hover { border-color: var(--accent); }
 .rr-cell:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .rr-cell.proof { background: var(--checked-soft); border-color: var(--checked); color: var(--checked); }
