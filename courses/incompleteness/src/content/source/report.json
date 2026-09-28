@@ -265,17 +265,6 @@
    }
   },
   {
-   "level": "warning",
-   "code": "list-junk",
-   "message": "content before first \\item",
-   "loc": {
-    "repo": "OpenLogic",
-    "file": "content/first-order-logic/syntax-and-semantics/first-order-languages.tex",
-    "line": 36,
-    "endLine": 36
-   }
-  },
-  {
    "level": "info",
    "code": "editorial-omitted",
    "message": "intro note omitted (not printed in the book)",

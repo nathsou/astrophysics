@@ -65,6 +65,13 @@ describe('conversion of the vendored chapters', () => {
     expect(diagnostics.filter((d) => d.level === 'error')).toEqual([]);
   });
 
+  it('keeps inline \\iftag text inside list items (the connectives in B.1)', () => {
+    const fol = JSON.stringify(chapters.find((c) => c.id === 'ic.fol'));
+    expect(fol).toContain('universal quantifier');
+    expect(fol).toContain('existential quantifier');
+    expect(diagnostics.filter((d) => d.code === 'list-junk')).toEqual([]);
+  });
+
   it('is committed and up to date (run npm run convert)', () => {
     for (const [name, content] of files) expect(readFileSync(join(root, 'src/content/source', name), 'utf8') === content, name).toBe(true);
   });

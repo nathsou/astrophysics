@@ -1217,9 +1217,14 @@ export class FileParser {
     const no = this.groupRange();
     this.pos = save;
     if (!yes || !no) return null;
-    const chosen = this.tagOn(tags) ? yes : no;
-    const body = this.src.slice(chosen.start, chosen.end).replace(/%[^\n]*/g, '').trim();
-    return body === '' || body.startsWith('\\item') || body.startsWith('\\tagitem') ? { tags, yes, no } : null;
+    const on = this.tagOn(tags);
+    const text = (r: { start: number; end: number }) => this.src.slice(r.start, r.end).replace(/%[^\n]*/g, '').trim();
+    const isItems = (b: string) => b.startsWith('\\item') || b.startsWith('\\tagitem');
+    const body = text(on ? yes : no);
+    const other = text(on ? no : yes);
+    // An empty branch is item-level only if the other branch holds items; otherwise it is an
+    // inline \iftag inside an item's text (as in the list of connectives in fol.syn.fol).
+    return isItems(body) || (body === '' && isItems(other)) ? { tags, yes, no } : null;
   }
 
   private collectItems(endPos: number, items: ListItem[], at: number) {

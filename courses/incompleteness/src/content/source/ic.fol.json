@@ -248,7 +248,7 @@
     },
     {
      "t": "list",
-     "id": "fol.syn.fol/l37",
+     "id": "fol.syn.fol/l36",
      "ordered": true,
      "items": [
       {
@@ -272,7 +272,7 @@
         },
         {
          "t": "list",
-         "id": "fol.syn.fol/l24",
+         "id": "fol.syn.fol/l23",
          "ordered": true,
          "items": [
           {
@@ -329,24 +329,42 @@
               },
               {
                "t": "text",
-               "v": ")"
+               "v": "),  "
+              },
+              {
+               "t": "math",
+               "tex": "\\forall",
+               "src": "\\lforall"
+              },
+              {
+               "t": "text",
+               "v": " (universal quantifier),  "
+              },
+              {
+               "t": "math",
+               "tex": "\\exists",
+               "src": "\\lexists"
+              },
+              {
+               "t": "text",
+               "v": " (existential quantifier)."
               }
              ],
              "loc": {
               "repo": "OpenLogic",
               "file": "content/first-order-logic/syntax-and-semantics/first-order-languages.tex",
               "line": 37,
-              "endLine": 43
+              "endLine": 45
              }
             }
            ]
           },
           {
-           "id": "fol.syn.fol/i18",
+           "id": "fol.syn.fol/i17",
            "c": [
             {
              "t": "p",
-             "id": "fol.syn.fol/p19",
+             "id": "fol.syn.fol/p18",
              "c": [
               {
                "t": "text",
@@ -381,11 +399,11 @@
            ]
           },
           {
-           "id": "fol.syn.fol/i20",
+           "id": "fol.syn.fol/i19",
            "c": [
             {
              "t": "p",
-             "id": "fol.syn.fol/p21",
+             "id": "fol.syn.fol/p20",
              "c": [
               {
                "t": "text",
@@ -420,11 +438,11 @@
            ]
           },
           {
-           "id": "fol.syn.fol/i22",
+           "id": "fol.syn.fol/i21",
            "c": [
             {
              "t": "p",
-             "id": "fol.syn.fol/p23",
+             "id": "fol.syn.fol/p22",
              "c": [
               {
                "t": "text",
@@ -496,11 +514,11 @@
        ]
       },
       {
-       "id": "fol.syn.fol/i25",
+       "id": "fol.syn.fol/i24",
        "c": [
         {
          "t": "p",
-         "id": "fol.syn.fol/p27",
+         "id": "fol.syn.fol/p26",
          "c": [
           {
            "t": "text",
@@ -529,15 +547,15 @@
         },
         {
          "t": "list",
-         "id": "fol.syn.fol/l34",
+         "id": "fol.syn.fol/l33",
          "ordered": true,
          "items": [
           {
-           "id": "fol.syn.fol/i28",
+           "id": "fol.syn.fol/i27",
            "c": [
             {
              "t": "p",
-             "id": "fol.syn.fol/p29",
+             "id": "fol.syn.fol/p28",
              "c": [
               {
                "t": "text",
@@ -617,11 +635,11 @@
            ]
           },
           {
-           "id": "fol.syn.fol/i30",
+           "id": "fol.syn.fol/i29",
            "c": [
             {
              "t": "p",
-             "id": "fol.syn.fol/p31",
+             "id": "fol.syn.fol/p30",
              "c": [
               {
                "t": "text",
@@ -683,11 +701,11 @@
            ]
           },
           {
-           "id": "fol.syn.fol/i32",
+           "id": "fol.syn.fol/i31",
            "c": [
             {
              "t": "p",
-             "id": "fol.syn.fol/p33",
+             "id": "fol.syn.fol/p32",
              "c": [
               {
                "t": "text",
@@ -777,11 +795,11 @@
        ]
       },
       {
-       "id": "fol.syn.fol/i35",
+       "id": "fol.syn.fol/i34",
        "c": [
         {
          "t": "p",
-         "id": "fol.syn.fol/p36",
+         "id": "fol.syn.fol/p35",
          "c": [
           {
            "t": "text",
@@ -807,7 +825,7 @@
     },
     {
      "t": "p",
-     "id": "fol.syn.fol/p38",
+     "id": "fol.syn.fol/p37",
      "c": [
       {
        "t": "text",
@@ -850,12 +868,12 @@
     },
     {
      "t": "env",
-     "id": "fol.syn.fol/ex39",
+     "id": "fol.syn.fol/ex38",
      "kind": "ex",
      "c": [
       {
        "t": "p",
-       "id": "fol.syn.fol/p40",
+       "id": "fol.syn.fol/p39",
        "c": [
         {
          "t": "text",
@@ -970,12 +988,12 @@
     },
     {
      "t": "env",
-     "id": "fol.syn.fol/ex41",
+     "id": "fol.syn.fol/ex40",
      "kind": "ex",
      "c": [
       {
        "t": "p",
-       "id": "fol.syn.fol/p42",
+       "id": "fol.syn.fol/p41",
        "c": [
         {
          "t": "text",
@@ -1027,12 +1045,12 @@
     },
     {
      "t": "env",
-     "id": "fol.syn.fol/ex43",
+     "id": "fol.syn.fol/ex42",
      "kind": "ex",
      "c": [
       {
        "t": "p",
-       "id": "fol.syn.fol/p44",
+       "id": "fol.syn.fol/p43",
        "c": [
         {
          "t": "text",
@@ -1084,7 +1102,7 @@
     },
     {
      "t": "p",
-     "id": "fol.syn.fol/p45",
+     "id": "fol.syn.fol/p44",
      "c": [
       {
        "t": "text",
@@ -1208,7 +1226,7 @@
     },
     {
      "t": "p",
-     "id": "fol.syn.fol/p47",
+     "id": "fol.syn.fol/p46",
      "c": [
       {
        "t": "text",
@@ -1273,12 +1291,12 @@
     },
     {
      "t": "env",
-     "id": "fol.syn.fol/explain48",
+     "id": "fol.syn.fol/explain47",
      "kind": "explain",
      "c": [
       {
        "t": "p",
-       "id": "fol.syn.fol/p49",
+       "id": "fol.syn.fol/p48",
        "c": [
         {
          "t": "text",
@@ -1302,12 +1320,12 @@
     },
     {
      "t": "env",
-     "id": "fol.syn.fol/explain50",
+     "id": "fol.syn.fol/explain49",
      "kind": "explain",
      "c": [
       {
        "t": "p",
-       "id": "fol.syn.fol/p51",
+       "id": "fol.syn.fol/p50",
        "c": [
         {
          "t": "text",
@@ -1359,7 +1377,7 @@
       },
       {
        "t": "p",
-       "id": "fol.syn.fol/p52",
+       "id": "fol.syn.fol/p51",
        "c": [
         {
          "t": "text",
