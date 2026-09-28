@@ -10,6 +10,12 @@ A relation is primitive recursive when its **characteristic function** — $1$ w
 
 $\chi_{\mathrm{IsZero}}(0) = 1$, $\chi_{\mathrm{IsZero}}(x + 1) = 0$ is a primitive recursion. Composing it with functions already available gives $x = y$ as $\mathrm{IsZero}(|x - y|)$ and $x \le y$ as $\mathrm{IsZero}(x \dot- y)$.
 
+<Added label="Added for this edition: a note on the text">
+
+The book calls $x \le y$ “the less-than relation”; it is *less than or equal*. Strict $x < y$ is then $x + 1 \le y$, which is how the workbenches define $\chi_<$.
+
+</Added>
+
 ## Boolean combinations
 
 If $\chi_P$ and $\chi_Q$ are 0–1 valued, then $1 \dot- \chi_P$ swaps $0$ and $1$; $\chi_P \cdot \chi_Q$ is $1$ only when both are; $\max(\chi_P, \chi_Q)$ is $1$ when either is. Explore mode builds these from the official characteristic functions and tabulates them.
@@ -22,7 +28,7 @@ $$
 \chi_P(\vec x, 0) = 1, \qquad \chi_P(\vec x, y + 1) = \min(\chi_P(\vec x, y), \chi_R(\vec x, y)).
 $$
 
-The *bound* is essential: an unbounded $\forall z$ would be an infinite conjunction, and no recursion computes it. Bounded $\exists$ uses $\max$, and $(\exists z \le y)$ is $(\exists z < y + 1)$.
+The *bound* is essential: an unbounded $\forall z$ is an infinite conjunction, with no bound to recurse on — and in general the result is not even computable (the complement of the self-halting set $K$ of <Ref k="cmp:thy:ncp:sec" /> is $\{e : \forall s\, \lnot T(e, e, s)\}$ with $T$ primitive recursive). Bounded $\exists$ uses $\max$, and $(\exists z \le y)$ is $(\exists z < y + 1)$.
 
 ## Definition by cases
 

@@ -107,7 +107,9 @@ export function CompositionLab() {
               Build a composition: an outer <Tex tex="k" />-place function and <Tex tex="k" /> inner functions, all <Tex tex="n" />-place. Try giving the inner functions different
               numbers of arguments to see what the definition forbids.
             </p>
-            <FunctionBuilder spec={st.custom} onChange={(custom) => setSt({ ...st, custom })} errors={errors} />
+            <div className="rc-builder">
+              <FunctionBuilder spec={st.custom} onChange={(custom) => setSt({ ...st, custom })} errors={errors} />
+            </div>
           </>
         )}
         {ar.ok && top.k === 'comp' && (

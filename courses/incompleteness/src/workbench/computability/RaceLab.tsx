@@ -111,8 +111,8 @@ export function RaceLab() {
               {rows.map((r) => (
                 <tr key={r.x.toString()}>
                   <td>{r.x.toString()}</td>
-                  <td>{r.d !== null ? <span className="ct-o value">halts after {r.d}</span> : <span className="ct-o fuel">…</span>}</td>
-                  <td>{r.e !== null ? <span className="ct-o value">halts after {r.e}</span> : <span className="ct-o fuel">…</span>}</td>
+                  <td>{r.d !== null ? <span className="ct-o value">halts after {r.d} calls</span> : <span className="ct-o fuel">…</span>}</td>
+                  <td>{r.e !== null ? <span className="ct-o value">halts after {r.e} calls</span> : <span className="ct-o fuel">…</span>}</td>
                   <td>
                     <Verdict r={r} aName={aName} />
                   </td>

@@ -96,8 +96,8 @@ function ShortList() {
         </table>
       </div>
       <p className="wb-note">
-        <Tex tex="h" /> is computable — you just watched it being computed — and it is not any row of this list. The argument works for <em>every</em> list whose entries can be
-        computed from their position: in particular for a list of all unary primitive recursive functions.
+        <Tex tex="h" /> is computable — its values here were computed from the rows — and it is not any row of this list. The argument works for <em>every</em> list of total
+        functions whose values <Tex tex="f_x(y)" /> can be computed from <Tex tex="x" /> and <Tex tex="y" />: in particular for a list of all unary primitive recursive functions.
       </p>
     </Panel>
   );

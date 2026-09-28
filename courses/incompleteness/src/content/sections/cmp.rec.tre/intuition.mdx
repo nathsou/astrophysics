@@ -24,11 +24,17 @@ $$
 \mathrm{hSubtreeSeq}(t, n + 1) = \mathrm{hSubtreeSeq}(t, n) \frown h(\mathrm{hSubtreeSeq}(t, n)).
 $$
 
-After as many steps as the tree is deep, every subtree has appeared. The depth is not directly available, but the code $t$ itself is at least as large, so $\mathrm{SubtreeSeq}(t) = \mathrm{hSubtreeSeq}(t, t)$ works — a typically generous bound, of the kind primitive recursive definitions need.
+Here $h(s)$ concatenates $\mathrm{ISubtrees}((s)_0), \mathrm{ISubtrees}((s)_1), \ldots$ for the elements of $s$. After as many steps as the tree is deep, every subtree has appeared. The depth is not directly available, but the code $t$ itself is at least as large, so $\mathrm{SubtreeSeq}(t) = \mathrm{hSubtreeSeq}(t, t)$ works — a typically generous bound, of the kind primitive recursive definitions need.
+
+<Added label="Added for this edition: a note on the text">
+
+The book defines $h(s) = g_{\mathrm{ISubtrees}}(s, \mathrm{len}(s))$, where $g_f(s, k) = f((s)_0) \frown \cdots \frown f((s)_k)$. That takes one element too many: the last index of $s$ is $\mathrm{len}(s) - 1$. The extra term is harmless — $(s)_{\mathrm{len}(s)} = 0$, and $\mathrm{ISubtrees}(0)$ is the empty sequence — and the workbench uses the indices $0, \ldots, \mathrm{len}(s) - 1$.
+
+</Added>
 
 ## Where this is used
 
-Formulas and terms are trees; derivations are trees. Coding trees is how statements like “$d$ is the code of a correct derivation” become primitive recursive in the arithmetization of syntax.
+Derivations in natural deduction are trees, and <Ref k="inc:art:pnd:sec" /> codes them exactly this way: $\mathrm{SubtreeSeq}(d)$ lists all sub-derivations of $d$, so “every inference in $d$ is correct” becomes a bounded quantifier over that list — one step towards showing that “$d$ is the code of a derivation” is primitive recursive.
 
 <ExTreCode />
 

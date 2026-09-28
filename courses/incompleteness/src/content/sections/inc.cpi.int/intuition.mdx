@@ -18,6 +18,12 @@ $$
 $$
 Each axiom is equivalent to a theorem, so $\Gamma$ axiomatizes $\mathbf T$. And $\Gamma$ is decidable: given a sentence, count how many copies of the same conjunct it is made of. That count tells you *which* element of the enumeration to compare with, so a single, finite computation of the enumeration settles the question — no open-ended search.
 
-The trick is almost a joke — the axioms are padded to carry their own position in the list — but it shows that “axiomatizable” adds nothing beyond “c.e.”. The workbench makes two small details of the proof explicit: $k$ copies go with $A_{k-1}$, and a sentence that happens to be a conjunction of identical conjuncts must also be tried as a single copy of itself.
+The trick is almost a joke — the axioms are padded to carry their own position in the list — but it shows that “axiomatizable” adds nothing beyond “c.e.”. The workbench makes two small details of the proof explicit.
+
+<Added label="Added for this edition: a slip in the text">
+
+The book lets $n$ be the number of conjuncts and tests $B \equiv A_n$. But $A_n$ occurs with $n + 1$ copies, so a sentence of $k$ copies of $B$ is in $\Gamma$ iff $B \equiv A_{k-1}$ (and a sentence that is not such a conjunction is in $\Gamma$ iff it is $A_0$). Also, a sentence that happens to be a conjunction of identical conjuncts must be tried as a single copy of itself too, in case it is $A_0$.
+
+</Added>
 
 <ExCraig />

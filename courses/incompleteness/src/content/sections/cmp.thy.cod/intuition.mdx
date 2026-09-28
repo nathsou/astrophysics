@@ -23,7 +23,7 @@ What is *not* decidable is whether some record exists. That question — $\exist
 $U(s)$ reads the value recorded at the root. It is defined for every $s$ (it just reads a component of a number), and it gives $\varphi_e(x)$ when $T(e, x, s)$ holds.
 
 <Callout title="How large is s?">
-In this edition’s coding (built on the pairing function $J$), each level of nesting in a record roughly squares the number, so the code of the record of $x + x$ at $x = 3$ already has, by estimate, millions of digits. The book’s coding with prime powers grows similarly. Nothing in the theory needs these numbers written in decimal: $T$ checks structure, and $U$ reads one component.
+In this edition’s coding (built on the pairing function $J$), each level of nesting in a record roughly squares the number, so the code of the record of $x + x$ at $x = 3$ already has, by estimate, millions of digits. A coding with prime powers, like the book’s sequence codes, grows even faster, since the codes of parts sit in exponents. Nothing in the theory needs these numbers written in decimal: $T$ checks structure, and $U$ reads one component.
 </Callout>
 
 <ExRecordCode />

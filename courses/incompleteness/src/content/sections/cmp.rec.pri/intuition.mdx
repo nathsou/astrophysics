@@ -24,6 +24,6 @@ $$
 
 $\mathrm{nextPrime}(x)$, the least prime above $x$, is found by searching upwards. To stay primitive recursive the search needs a bound, and Euclid’s argument supplies one: there is always a prime above $x$ and at most $x! + 1$. Then $p(0) = 2$, $p(x + 1) = \mathrm{nextPrime}(p(x))$ is a primitive recursion. These $p_x$ are the primes of the sequence codes in <Ref k="cmp:rec:seq:sec" />.
 
-The bound is wildly generous — the next prime is never far — but a primitive recursive definition must run to its bound regardless. Explore mode shows both: the direct search, and the official definition, which is only practical for tiny $x$.
+The bound is wildly generous — the next prime above $x \ge 2$ is always below $2x$ (Bertrand’s postulate, which the book does not need) — but a primitive recursive definition must run to its bound regardless. Explore mode shows both: the direct search, and the official definition, which is only practical for tiny $x$.
 
 <ExPriNext />

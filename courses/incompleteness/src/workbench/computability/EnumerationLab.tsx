@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react';
 import { Panel } from '../coding';
 import { Prov } from '../../ui/Prov';
 import { Tex } from '../../ui/Tex';
+import { Ref } from '../../formal/FormalText';
 import { Stepper } from '../../ui/Stepper';
 import { useStore } from '../../ui/store';
 import { R } from '../../engine/recursive/rf';
@@ -316,7 +317,9 @@ export function EquivalenceLab() {
         {w && (
           <>
             <p className="sans small">
-              <b>(4) the domain:</b> by stage 60, <Tex tex="W_e" /> ⊇ {'{'}
+              <b>
+                <Ref k="cmp:thy:eqc:case:ce-domain" /> the domain:
+              </b> by stage 60, <Tex tex="W_e" /> ⊇ {'{'}
               {(() => {
                 const all = w.byStage.flat().sort((p, q) => (p < q ? -1 : 1));
                 return all.length ? all.slice(0, 20).join(', ') + (all.length > 20 ? `, … (${all.length} in all)` : '') : '∅';
@@ -329,7 +332,11 @@ export function EquivalenceLab() {
       </Panel>
 
       {range && (
-        <Panel n={2} title={<>(2) ⇒ (3): the range as the range of a total function</>} prov={<Prov kind="computed" />}>
+        <Panel n={2} title={
+            <>
+              <Ref k="cmp:thy:eqc:case:ran-pc" /> ⇒ <Ref k="cmp:thy:eqc:case:ran-prim" />: the range as the range of a total function
+            </>
+          } prov={<Prov kind="computed" />}>
           {range.a === null ? (
             <p className="wb-note">No value of φₑ found yet, so no element a to fall back on. (If the range is empty, the set is c.e. by definition.)</p>
           ) : (
@@ -358,9 +365,9 @@ export function EquivalenceLab() {
               </p>
               {bookF && book?.pair && (
                 <p className="wb-note">
-                  The book’s version at one z that works: <Tex tex={`z = J(${book.x}, s)`} /> with s the record of <Tex tex={`\\varphi_e(${book.x})`} /> (z ={' '}
-                  <Big n={book.pair.z} max={24} />
-                  ): <Tex tex={`T(e, ${bookF.x}, s)`} /> {bookF.holds ? 'holds' : 'fails'}, so <Tex tex={`f(z) = U(s) = ${bookF.out}`} />.
+                  The book’s version at one z that works, with the pair <Tex tex="((z)_0, (z)_1)" /> coded here by <Tex tex="J" /> (this edition’s choice):{' '}
+                  <Tex tex={`z = J(${book.x}, s)`} /> with s the record of <Tex tex={`\\varphi_e(${book.x})`} />, that is z = <Big n={book.pair.z} max={24} />. Then{' '}
+                  <Tex tex={`T(e, ${bookF.x}, s)`} /> {bookF.holds ? 'holds' : 'fails'}, so <Tex tex={`f(z) = U(s) = ${bookF.out}`} />.
                 </p>
               )}
             </>
@@ -384,7 +391,11 @@ export function EquivalenceLab() {
         </p>
       </Panel>
 
-      <Panel n={4} title={<>(1) ⇒ (4): the range of f as the domain of g(y) = μx (f(x) = y)</>} prov={<Prov kind="computed" />}>
+      <Panel n={4} title={
+          <>
+            <Ref k="cmp:thy:eqc:case:ce" /> ⇒ <Ref k="cmp:thy:eqc:case:ce-domain" />: the range of f as the domain of g(y) = μx (f(x) = y)
+          </>
+        } prov={<Prov kind="computed" />}>
         <div className="seg" role="radiogroup" aria-label="total function f">
           {['double', 'square', 'plus2', 'sqrt'].map((id) => {
             const u = UNARY_EXAMPLES.find((q) => q.id === id)!;

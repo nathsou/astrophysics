@@ -10,7 +10,7 @@ This chapter studies computability without committing to a model of computation.
 
 A partial computable function is computed by a procedure that may never finish on some inputs. $f(x)\downarrow$ says the computation of $f(x)$ ends with a value; $f(x)\uparrow$ says it does not. The book writes $f(x) \simeq g(x)$ for “both undefined, or both defined and equal”: this is the right notion of equality once functions may be partial, and it is how every equation in the chapter should be read.
 
-For example, $\mu z\,P^2_1(z, x)$ looks for the least $z$ with $P^2_1(z, x) = x = 0$. At $x = 0$ it succeeds at once; at any other $x$ the search goes on forever. So this function is defined at $0$ only.
+For example, $\mu z\,P^2_1(z, x)$ looks for the least $z$ with $P^2_1(z, x) = x = 0$. At $x = 0$ it succeeds at once; at any other $x$ the search goes on forever. So this function is defined at $0$ only. (The workbenches search over the *first* argument, as the definition of the partial recursive functions in <Ref k="cmp:rec:par:sec" /> does; this chapter writes the search variable last. Nothing depends on the choice.)
 
 ## An enumeration of all of them
 
@@ -20,7 +20,7 @@ Not every tree is a sensible definition — $\mathrm{Rec}(\mathrm{zero}, \mathrm
 
 ## Three answers, not two
 
-Running $\varphi_e(x)$ with a budget of $N$ function calls has three possible outcomes: a value; *no answer within $N$ calls*; or, before anything runs, the discovery that $e$ is not a one-place definition. “No answer yet” is **not** “undefined”: a computation that has not finished may finish later. Sometimes a simple argument shows that it never will (the workbenches mark those cases, with the reason), but no method settles all cases — that is the undecidability of the halting problem, later in this chapter.
+Running $\varphi_e(x)$ with a budget of $N$ steps — here a step is one function call — has three possible outcomes: a value; *no answer within $N$ steps*; or, before anything runs, the discovery that $e$ is not a one-place definition. “No answer yet” is **not** “undefined”: a computation that has not finished may finish later. Sometimes a simple argument shows that it never will (the workbenches mark those cases, with the reason), but no method settles all cases — that is the undecidability of the halting problem, later in this chapter.
 
 ## Unbounded search
 

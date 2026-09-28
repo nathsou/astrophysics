@@ -150,7 +150,7 @@ export function DiagonalLab({ mode }: { mode: Mode }) {
       {mode === 'nou' && (
         <p className="wb-note">
           <Prov kind="added" /> Here is a total computable function that tries to be universal: <Tex tex="\mathrm{Un}'_N(e, x) = \varphi_e(x)" /> if that computation halts within
-          N calls, and <Tex tex="0" /> otherwise (marked *). The budget below is N. Its diagonal gives <Tex tex="d(x) = \mathrm{Un}'_N(x, x) + 1" />.
+          N calls, and <Tex tex="0" /> otherwise (marked *). The budget below is N. Number the rows of the table <Tex tex="f_0, f_1, \ldots" />; the diagonal function is <Tex tex="d(x) = f_x(x) + 1" /> (with every index listed from 0, row x is <Tex tex="\mathrm{Un}'_N(x, \cdot)" /> and <Tex tex="d(x) = \mathrm{Un}'_N(x, x) + 1" />, as in the proof).
         </p>
       )}
       {mode === 'halting' && (

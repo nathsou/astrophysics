@@ -8,6 +8,7 @@ import { R, type RF } from '../../engine/recursive/rf';
 import { arity } from '../../engine/recursive/rf';
 import * as Lib from '../../engine/computability/library';
 import { unboundedSearch, type SearchResult } from '../../engine/computability/search';
+import { Ref } from '../../formal/FormalText';
 import type { RFSpec } from '../../content/objects';
 import { buildWithPaths, FunctionBuilder } from '../FunctionBuilder';
 import { Panel } from '../coding';
@@ -83,16 +84,42 @@ interface State {
   z: string;
 }
 
-function describe(r: SearchResult, fuel: number): ReactNode {
+/** Does the builder's spec use add, mult or χ= (basic functions of the representability chapter)? */
+function usesBasic(s: RFSpec): boolean {
+  switch (s.k) {
+    case 'basic':
+      return true;
+    case 'comp':
+      return usesBasic(s.f) || s.gs.some(usesBasic);
+    case 'rec':
+      return usesBasic(s.f) || usesBasic(s.g);
+    case 'min':
+      return usesBasic(s.f);
+    default:
+      return false;
+  }
+}
+
+function describe(r: SearchResult, fuel: number, zs: bigint[]): ReactNode {
+  const at = (x: bigint | string) => `f(${[String(x), ...zs.map(String)].join(', ')})`;
   if (r.kind === 'found') return <>the least zero is at <Tex tex={`x = ${r.value}`} /></>;
   if (r.kind === 'stuck')
     return (
       <>
-        no answer within {fuel.toLocaleString('en-US')} steps — the budget ran out while <Tex tex={`f(${r.at}, \\vec z)`} /> was being computed
-        {r.at > 0n ? <> (<Tex tex={`f(0, \\vec z), \\ldots, f(${r.at - 1n}, \\vec z)`} /> were all nonzero)</> : null}
+        no answer within {fuel.toLocaleString('en-US')} steps: the budget ran out while <Tex tex={at(r.at)} /> was being computed
+        {r.at > 0n ? (
+          <>
+            , after <Tex tex={`${at(0n)}, \\ldots, ${at(r.at - 1n)}`} /> were all computed and nonzero
+          </>
+        ) : null}
       </>
     );
-  return <>no answer within the budget — <Tex tex={`f(0, \\vec z), \\ldots, f(${r.searchedBelow - 1n}, \\vec z)`} /> were all computed and nonzero; the search would go on with <Tex tex={`x = ${r.searchedBelow}`} /></>;
+  return (
+    <>
+      no answer within the budget: <Tex tex={`${at(0n)}, \\ldots, ${at(r.searchedBelow - 1n)}`} /> were all computed and nonzero; the search would go on with{' '}
+      <Tex tex={`x = ${r.searchedBelow}`} />
+    </>
+  );
 }
 
 export function SearchLab({ focus = 'par' }: { focus?: 'par' | 'gen' }) {
@@ -131,7 +158,15 @@ export function SearchLab({ focus = 'par' }: { focus?: 'par' | 'gen' }) {
             <p className="wb-note">
               Build <Tex tex="f(x, \vec z)" />: its first argument is the one searched over. (The default, <Tex tex="\chi_=(x, z)" />, is 0 at every <Tex tex="x \ne z" />.)
             </p>
-            <FunctionBuilder spec={st.custom} onChange={(custom) => setSt({ ...st, custom })} errors={errors} />
+            <div className="rc-builder">
+              <FunctionBuilder spec={st.custom} onChange={(custom) => setSt({ ...st, custom })} errors={errors} />
+            </div>
+            {usesBasic(st.custom) && (
+              <p className="wb-note">
+                add, mult and <Tex tex="\chi_=" /> are offered by the builder as basic functions (they are basic in <Ref k="inc:req::chap" />); here they stand for their
+                primitive recursive definitions (<Ref k="cmp:rec:prf:sec" />, <Ref k="cmp:rec:prr:sec" />).
+              </p>
+            )}
           </>
         )}
         <div className="rc-row">
@@ -153,11 +188,11 @@ export function SearchLab({ focus = 'par' }: { focus?: 'par' | 'gen' }) {
           </div>
           <p className="wb-result" aria-live="polite">
             {r.kind === 'found' ? (
-              <Tex tex={`\\mu x\\, f(x, ${zs.join(', ')}) = ${r.value}`} />
+              <Tex tex={`\\mu x\\, f(${['x', ...zs].join(', ')}) = ${r.value}`} />
             ) : (
-              <span className="rc-unknown">{describe(r, fuel)}</span>
+              <span className="rc-unknown">{describe(r, fuel, zs)}</span>
             )}{' '}
-            <span className="small muted sans">({r.calls.toLocaleString('en-US')} function calls)</span>
+            <span className="rc-hint">({r.calls.toLocaleString('en-US')} steps used)</span>
           </p>
           {r.kind !== 'found' && (
             <p className="wb-note">
@@ -211,7 +246,7 @@ export function SearchLab({ focus = 'par' }: { focus?: 'par' | 'gen' }) {
               </>
             )}
           </p>
-          {preset && (
+          {preset && focus === 'gen' && (
             <p className="small sans">
               {preset.regular ? <span className="rc-ok">This f is regular (by the argument above).</span> : <span className="rc-bad">This f is not regular (by the argument above).</span>}
             </p>

@@ -96,3 +96,4 @@
 .ct-table .ct-deftext { white-space: nowrap; overflow-wrap: normal; }
 .ct-table td.wrap { white-space: normal; min-width: 240px; text-align: left; }
 .ct-wide { width: 100%; }
+.ct-table td.wrap .ct-big, .ct-table td.wrap .ct-num { white-space: normal; overflow-wrap: anywhere; }

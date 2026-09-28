@@ -16,7 +16,7 @@ $$
 
 If $h$ were primitive recursive it would be some row $f_e$ — but then $h(e) = f_e(e) + 1 \ne f_e(e)$. So $h$ is not primitive recursive. Yet it is computable: to find $h(x)$, decode $x$ into a notation, compute $f_x(x)$, add $1$.
 
-The listing uses the notations of <Ref k="cmp:rec:not:sec" />: number them, let $f_i$ be the function with notation number $i$, and the constant $0$ function when $i$ is not the number of a unary notation. Nothing about primitive recursion was used except that the list can be computed — which is why the next section can draw a much more general conclusion.
+The listing uses the notations of <Ref k="cmp:rec:not:sec" />: number them, let $f_i$ be the function with notation number $i$, and the constant $0$ function when $i$ is not the number of a unary notation. Nothing about primitive recursion was used except that the listed functions are total and that $f_x(y)$ can be computed from $x$ and $y$ — which is why <Ref k="cmp:rec:par:sec" /> can draw a much more general conclusion.
 
 ## Growth: the $g_n$ hierarchy
 
@@ -28,4 +28,4 @@ Notice the diagonal again: $G$ runs down the diagonal of the table of $g_n(x)$.
 
 ## In Explore mode
 
-The diagonal argument is shown twice: on a short list of familiar functions, and on the enumeration of *all* unary primitive recursive definitions by index. The growth panels run $g_n(x)$ and the Ackermann–Péter function $A(m, n)$ with a budget; almost all entries beyond the first few exhaust any budget — which says only that they take long, not that they are undefined.
+The diagonal argument is shown twice: on a short list of familiar functions, and on the enumeration of *all* unary primitive recursive definitions, numbered by this edition’s coding of definitions rather than the book’s $\#(F)$. The growth panels run $g_n(x)$ and the Ackermann–Péter function $A(m, n)$ with a budget; beyond the first few entries the budget runs out — which says only that they take long, not that they are undefined: each $g_n$, and $A$, is total.

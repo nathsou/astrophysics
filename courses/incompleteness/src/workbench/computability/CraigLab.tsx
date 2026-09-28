@@ -27,7 +27,7 @@ export function CraigLab() {
       <Panel n={1} title="An enumeration of a theory, and Γ" prov={<Prov kind="computed" />}>
         <p className="wb-note">
           Suppose <Tex tex="A_0, A_1, A_2, \ldots" /> lists the theorems of T (the first few are editable here — any sentences will do for the trick). Craig’s set puts{' '}
-          <Tex tex="n + 1" /> copies of <Tex tex="A_n" /> into its n-th axiom:
+          <Tex tex="n + 1" /> copies of <Tex tex="A_n" /> into its axiom number n (counting from 0; the book’s “(n + 1)-st element”):
         </p>
         <ol className="ct-formula-list" start={0}>
           {list.map((s, n) => (
