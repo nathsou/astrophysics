@@ -36,6 +36,7 @@ jobs:
             courses/cic/package-lock.json
             courses/compiler-backends/package-lock.json
             courses/incompleteness/package-lock.json
+            courses/elements/package-lock.json
             courses/proofs/package-lock.json
 
       - name: Install dependencies
@@ -44,6 +45,7 @@ jobs:
           npm ci --prefix courses/cic
           npm ci --prefix courses/compiler-backends
           npm ci --prefix courses/incompleteness
+          npm ci --prefix courses/elements
           npm ci --prefix courses/proofs
           pnpm --dir courses/language-models install --frozen-lockfile
 

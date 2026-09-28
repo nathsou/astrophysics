@@ -783,6 +783,20 @@ h1 em {
   fill: #ec8f9e;
 }
 
+.art-elements {
+  background: radial-gradient(90% 90% at 20% 10%, #d0312d33, transparent 60%), #f3ead9;
+}
+.elements-svg {
+  width: 100%;
+  height: 100%;
+}
+.elements-svg .k { fill: none; stroke: #8a8172; stroke-width: 1.2; stroke-dasharray: 3 4; }
+.elements-svg .tri { fill: #e9a91b; }
+.elements-svg .ab { stroke: #d0312d; stroke-width: 4; }
+.elements-svg .ac { stroke: #1f5aa6; stroke-width: 4; }
+.elements-svg .bc { stroke: #1a1917; stroke-width: 4; }
+.elements-svg .lt { font-family: var(--font-serif); font-style: italic; font-size: 18px; fill: #1a1917; }
+
 /* ───────── How it works ───────── */
 .how {
   margin-top: 96px;
