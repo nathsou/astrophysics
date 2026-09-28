@@ -132,7 +132,7 @@ function arcThrough(k: Circle, ps: V[]): Shape {
  */
 export function resolve(scene: Scene, label: string, kind: Kind, project: (p: V) => V = (p) => p): Target | null {
   const els = scene.elements;
-  const byName = els.findIndex((e) => e.name === label);
+  const byName = els.findIndex((e) => (Array.isArray(e.name) ? e.name.includes(label) : e.name === label));
   const ls = letters(label);
   const pt = (n: string) => scene.points.get(n);
   const P = (n: string) => project(pt(n)!.p);

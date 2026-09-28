@@ -12,8 +12,8 @@ import { add, Degenerate, dist, lc, mul, perp, sub, unit, v, type Circle, type V
 export type ByrneColour = 'red' | 'blue' | 'yellow' | 'black';
 
 export interface Style {
-  /** Name the text uses for this object when it is not named by its points (e.g. the parallelogram BL, the magnitude A). */
-  name?: string;
+  /** Name(s) the text uses for this object when it is not named by its points (e.g. the parallelogram BL, the magnitude A, a gnomon named two ways). */
+  name?: string | string[];
   /** A thin line: construction lines, circles used only to find a point. */
   aux?: boolean;
   dashed?: boolean;

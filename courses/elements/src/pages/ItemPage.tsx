@@ -145,7 +145,7 @@ export function ItemPage({ id }: { id: string }) {
           {(mode === 'heath' || mode === 'both') && (
             <section className="heath-section" aria-label="Heath's translation">
               {mode === 'both' && <h2 className="section-label">Euclid, in Heath’s translation</h2>}
-              {item ? heath : <p className="muted">Loading…</p>}
+              {item ? (item.paras.length ? heath : <p className="muted">The source text has nothing here: this definition is not in Heath’s text. See the modern version.</p>) : <p className="muted">Loading…</p>}
             </section>
           )}
           {(mode === 'modern' || mode === 'both') && (

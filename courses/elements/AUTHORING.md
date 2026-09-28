@@ -58,7 +58,7 @@ A figure is `export default figure({ build(g) { … } })`. `build` runs on every
 | `g.circle3(c, normal, r)`, `g.sphere(c, r)` | circles and spheres in space (`dim: 3`) |
 | `g.text(at, 'label')` | free text |
 
-The style options are `{ name, aux, dashed, fill, colour: 'red'|'blue'|'yellow'|'black', from, text }`. `aux: true` draws a thin construction line. `name` is the name the text uses for an object that is not named by its points (see below).
+The style options are `{ name, aux, dashed, fill, colour: 'red'|'blue'|'yellow'|'black', from, text }`. `aux: true` draws a thin construction line. `name` is the name the text uses for an object that is not named by its points (see below); it may be an array when the text names one object in several ways.
 
 ### Geometry helpers
 
