@@ -56,7 +56,7 @@ export function CrqLab() {
         </p>
         <div className="seg" role="radiogroup" aria-label="Function">
           {DEFS.map((d) => (
-            <button key={d.id} className="chip-btn" role="radio" aria-checked={d.id === id} aria-pressed={d.id === id} onClick={() => setId(d.id)}>
+            <button key={d.id} className="chip-btn" role="radio" aria-checked={d.id === id} onClick={() => setId(d.id)}>
               {d.label}
             </button>
           ))}

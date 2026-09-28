@@ -28,7 +28,7 @@ export function ArithDerivations({ initial = 'add' }: { initial?: Which }) {
             ['rosser', 'Rosser: RProv(⌜R⌝)'],
           ] as [Which, string][]
         ).map(([w, l]) => (
-          <button key={w} type="button" className="chip-btn" role="radio" aria-checked={which === w} aria-pressed={which === w} onClick={() => setWhich(w)}>
+          <button key={w} type="button" className="chip-btn" role="radio" aria-checked={which === w} onClick={() => setWhich(w)}>
             {l}
           </button>
         ))}

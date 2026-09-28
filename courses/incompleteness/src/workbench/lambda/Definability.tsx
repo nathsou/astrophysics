@@ -31,7 +31,7 @@ function Tabs<T extends string>({ value, onChange, items, label }: { value: T; o
   return (
     <div className="seg" role="radiogroup" aria-label={label}>
       {items.map(([k, l]) => (
-        <button key={k} type="button" role="radio" aria-checked={value === k} aria-pressed={value === k} className="chip-btn" onClick={() => onChange(k)}>
+        <button key={k} type="button" role="radio" aria-checked={value === k} className="chip-btn" onClick={() => onChange(k)}>
           {l}
         </button>
       ))}

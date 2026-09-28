@@ -269,10 +269,10 @@ function DerivationPanel({ rf, rep, args }: { rf: RF; rep: Representation; args:
         </p>
       )}
       <div className="seg" role="tablist" aria-label="Clause">
-        <button className="chip-btn" role="tab" aria-selected={which === 'a'} aria-pressed={which === 'a'} onClick={() => setWhich('a')}>
+        <button className="chip-btn" role="tab" aria-selected={which === 'a'} onClick={() => setWhich('a')}>
           clause (a)
         </button>
-        <button className="chip-btn" role="tab" aria-selected={which === 'b'} aria-pressed={which === 'b'} onClick={() => setWhich('b')}>
+        <button className="chip-btn" role="tab" aria-selected={which === 'b'} onClick={() => setWhich('b')}>
           clause (b)
         </button>
       </div>

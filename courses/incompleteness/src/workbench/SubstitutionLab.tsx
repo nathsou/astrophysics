@@ -147,10 +147,10 @@ function Lab({ A, t, u, mode, setMode, arithmetized }: { A: Formula; t: Term; u:
         prov={<Prov kind="computed" />}
       >
         <div className="seg" role="radiogroup" aria-label="Substitution">
-          <button className="chip-btn" role="radio" aria-checked={mode === 'naive'} aria-pressed={mode === 'naive'} onClick={() => setMode('naive')}>
+          <button className="chip-btn" role="radio" aria-checked={mode === 'naive'} onClick={() => setMode('naive')}>
             replace the free occurrences
           </button>
-          <button className="chip-btn" role="radio" aria-checked={mode === 'avoid'} aria-pressed={mode === 'avoid'} onClick={() => setMode('avoid')}>
+          <button className="chip-btn" role="radio" aria-checked={mode === 'avoid'} onClick={() => setMode('avoid')}>
             capture-avoiding (rename first)
           </button>
         </div>

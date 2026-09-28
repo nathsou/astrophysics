@@ -75,7 +75,7 @@ export function DerivationCodeLab() {
       <Panel n={1} title="A derivation" prov={built?.enc.ok ? <Prov kind="checked" /> : undefined}>
         <div className="seg" role="radiogroup" aria-label="Derivation">
           {DERIVATION_EXAMPLES.map((e) => (
-            <button key={e.id} className="chip-btn" role="radio" aria-checked={e.id === ex.id} aria-pressed={e.id === ex.id} onClick={() => pick(e.id)}>
+            <button key={e.id} className="chip-btn" role="radio" aria-checked={e.id === ex.id} onClick={() => pick(e.id)}>
               {e.title}
             </button>
           ))}

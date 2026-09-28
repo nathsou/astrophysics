@@ -317,7 +317,7 @@ export function LambdaLab({ initial = 'K I Ω', id = 'lambda-lab', graph = true,
 
           <div className="seg" role="radiogroup" aria-label="Strategy">
             {(['normal', 'applicative', 'cbn', 'cbv'] as Strategy[]).map((s) => (
-              <button key={s} type="button" role="radio" aria-checked={strategy === s} className="chip-btn" aria-pressed={strategy === s} onClick={() => setStrategy(s)}>
+              <button key={s} type="button" role="radio" aria-checked={strategy === s} className="chip-btn" onClick={() => setStrategy(s)}>
                 {s === 'normal' ? 'Normal order' : s === 'applicative' ? 'Applicative order' : s === 'cbn' ? 'Call by name' : 'Call by value'}
               </button>
             ))}

@@ -190,10 +190,10 @@ export function DerivationBuilder({ example, fromGoal, examples, goal = '(Â¬A âˆ
         </button>
         <span className="spacer" />
         <span className="seg" role="radiogroup" aria-label="View" style={{ margin: 0 }}>
-          <button type="button" role="radio" aria-checked={view === 'tree'} aria-pressed={view === 'tree'} className="chip-btn" onClick={() => setView('tree')}>
+          <button type="button" role="radio" aria-checked={view === 'tree'} className="chip-btn" onClick={() => setView('tree')}>
             tree
           </button>
-          <button type="button" role="radio" aria-checked={view === 'list'} aria-pressed={view === 'list'} className="chip-btn" onClick={() => setView('list')}>
+          <button type="button" role="radio" aria-checked={view === 'list'} className="chip-btn" onClick={() => setView('list')}>
             steps
           </button>
         </span>
@@ -638,7 +638,7 @@ function RuleForm({ s, goal, rule, onApply, axioms }: { s: BState; goal: Deriv; 
           <span className="lab">{need.side.label}</span>
           <div className="seg" role="radiogroup" aria-label={need.side.label}>
             {need.side.options.map((o, i) => (
-              <button key={o} type="button" className="chip-btn" role="radio" aria-checked={side === i} aria-pressed={side === i} onClick={() => setSide(i as 0 | 1)}>
+              <button key={o} type="button" className="chip-btn" role="radio" aria-checked={side === i} onClick={() => setSide(i as 0 | 1)}>
                 {o}
               </button>
             ))}
@@ -849,7 +849,7 @@ function ForwardForm({ s, rule, picked, onApply, inline }: { s: BState; rule: Fo
           <span className="lab">{need.side.label}</span>
           <div className="seg" role="radiogroup" aria-label={need.side.label}>
             {need.side.options.map((o, i) => (
-              <button key={o} type="button" className="chip-btn" role="radio" aria-checked={side === i} aria-pressed={side === i} onClick={() => setSide(i as 0 | 1)}>
+              <button key={o} type="button" className="chip-btn" role="radio" aria-checked={side === i} onClick={() => setSide(i as 0 | 1)}>
                 {o}
               </button>
             ))}

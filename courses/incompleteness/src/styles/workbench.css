@@ -39,7 +39,7 @@
 .wb-check { font-family: var(--sans); font-size: 14px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .seg { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
 .linklike { background: none; border: none; color: var(--accent); cursor: pointer; padding: 0; font: inherit; text-decoration: underline; text-underline-offset: 2px; }
-.linklike[aria-pressed='true'] { font-weight: 700; }
+.linklike[aria-pressed='true'], .linklike[aria-checked='true'], .linklike[aria-selected='true'] { font-weight: 700; }
 
 /* ------------------------------------------------------------ formula input */
 

@@ -35,7 +35,7 @@ export function CraigLab() {
               <label className="sans small" htmlFor={`ct-craig-${n}`}>
                 <Tex tex={`A_{${n}} =`} />
               </label>
-              <input id={`ct-craig-${n}`} className={`fi-field ${parsed[n].ok ? '' : 'invalid'}`} value={s} onChange={(ev) => setList(list.map((x, j) => (j === n ? ev.target.value : x)))} spellCheck={false} />
+              <input id={`ct-craig-${n}`} aria-label={`Formula A${n}`} className={`fi-field ${parsed[n].ok ? '' : 'invalid'}`} value={s} onChange={(ev) => setList(list.map((x, j) => (j === n ? ev.target.value : x)))} spellCheck={false} />
               {!parsed[n].ok && <span className="fi-error">{(parsed[n] as { error: string }).error}</span>}
             </li>
           ))}

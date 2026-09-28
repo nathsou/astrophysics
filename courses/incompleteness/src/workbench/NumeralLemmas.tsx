@@ -27,7 +27,7 @@ export function NumeralLemmas({ initial = 'add' }: { initial?: Which }) {
     <Panel n="★" title="Q’s derivations about numerals" prov={<Prov kind="checked" />}>
       <div className="seg" role="radiogroup" aria-label="Lemma">
         {(['add', 'mult', 'neq'] as Which[]).map((w) => (
-          <button key={w} className="chip-btn" role="radio" aria-checked={which === w} aria-pressed={which === w} onClick={() => setWhich(w)}>
+          <button key={w} className="chip-btn" role="radio" aria-checked={which === w} onClick={() => setWhich(w)}>
             <Tex tex={w === 'add' ? '(\\overline n + \\overline m) = \\overline{n + m}' : w === 'mult' ? '(\\overline n \\times \\overline m) = \\overline{n \\cdot m}' : '\\overline n \\neq \\overline m'} />
           </button>
         ))}

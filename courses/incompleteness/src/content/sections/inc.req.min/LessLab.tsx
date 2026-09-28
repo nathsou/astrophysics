@@ -60,7 +60,6 @@ export function LessLab({
               className="chip-btn"
               role="radio"
               aria-checked={tab === t}
-              aria-pressed={tab === t}
               onClick={() => setTab(t)}
             >
               {l}
@@ -336,7 +335,6 @@ function MinPanel() {
             className="chip-btn"
             role="radio"
             aria-checked={ex === x.id}
-            aria-pressed={ex === x.id}
             onClick={() => setEx(x.id)}
           >
             {x.label}
@@ -370,7 +368,6 @@ function MinPanel() {
               className="chip-btn"
               role="tab"
               aria-selected={which === "a"}
-              aria-pressed={which === "a"}
               onClick={() => setWhich("a")}
             >
               clause (a)
@@ -379,7 +376,6 @@ function MinPanel() {
               className="chip-btn"
               role="tab"
               aria-selected={which === "b"}
-              aria-pressed={which === "b"}
               onClick={() => setWhich("b")}
             >
               clause (b)

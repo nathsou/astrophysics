@@ -101,7 +101,7 @@ export function SearchLab() {
       <Panel n={2} title="A pair s that passes the test" prov={data && !('error' in data) && data.r.holds ? <Prov kind="checked" /> : <Prov kind="computed" />}>
         <div className="seg" role="radiogroup" aria-label="Function">
           {FUNCTIONS.map((x) => (
-            <button key={x.id} className="chip-btn" role="radio" aria-checked={x.id === id} aria-pressed={x.id === id} onClick={() => choose(x.id)}>
+            <button key={x.id} className="chip-btn" role="radio" aria-checked={x.id === id} onClick={() => choose(x.id)}>
               <Tex tex={`f = ${x.label}`} />
             </button>
           ))}

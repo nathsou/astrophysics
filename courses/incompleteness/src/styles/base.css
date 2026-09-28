@@ -147,7 +147,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .chip-btn:hover { border-color: var(--accent); color: var(--accent); }
 .chip-btn.primary { background: var(--accent); border-color: var(--accent); color: var(--paper); }
-.chip-btn[aria-pressed='true'] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.chip-btn[aria-pressed='true'], .chip-btn[aria-checked='true'], .chip-btn[aria-selected='true'] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
 
 @media (max-width: 1260px) {
   .page { grid-template-columns: minmax(0, var(--col)); }

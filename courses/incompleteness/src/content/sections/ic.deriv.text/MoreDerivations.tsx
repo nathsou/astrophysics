@@ -48,7 +48,6 @@ export function MoreDerivations({
               className="chip-btn"
               role="radio"
               aria-checked={which === w}
-              aria-pressed={which === w}
               onClick={() => setWhich(w)}
             >
               {l}
@@ -137,7 +136,6 @@ function Rosser2Panel() {
             className="chip-btn"
             role="radio"
             aria-checked={lemmas === "hypotheses"}
-            aria-pressed={lemmas === "hypotheses"}
             onClick={() => setLemmas("hypotheses")}
           >
             lemmas as hypotheses (as the book)
@@ -147,7 +145,6 @@ function Rosser2Panel() {
             className="chip-btn"
             role="radio"
             aria-checked={lemmas === "derived"}
-            aria-pressed={lemmas === "derived"}
             onClick={() => setLemmas("derived")}
           >
             lemmas derived in Q
@@ -278,7 +275,6 @@ function PAPanel() {
             className="chip-btn"
             role="radio"
             aria-checked={id === x.id}
-            aria-pressed={id === x.id}
             onClick={() => setId(x.id)}
           >
             {x.text}

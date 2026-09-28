@@ -85,10 +85,10 @@ export function ProofDebugger({ deriv, check, title, hypotheses, expanded = fals
             {check.open.some((o) => o.kind === 'assume') ? `${check.open.filter((o) => o.kind === 'assume').length} undischarged assumption(s)` : 'no undischarged assumptions'}
           </span>
           <span className="pd-views" role="radiogroup" aria-label="View">
-            <button role="radio" aria-checked={view === 'steps'} className="chip-btn" aria-pressed={view === 'steps'} onClick={() => setView('steps')}>
+            <button role="radio" aria-checked={view === 'steps'} className="chip-btn" onClick={() => setView('steps')}>
               steps
             </button>
-            <button role="radio" aria-checked={view === 'tree'} className="chip-btn" aria-pressed={view === 'tree'} onClick={() => setView('tree')} disabled={rows.length > 60} title={rows.length > 60 ? 'Too large to draw as a tree' : 'Natural deduction tree'}>
+            <button role="radio" aria-checked={view === 'tree'} className="chip-btn" onClick={() => setView('tree')} disabled={rows.length > 60} title={rows.length > 60 ? 'Too large to draw as a tree' : 'Natural deduction tree'}>
               tree
             </button>
             <button className="chip-btn" onClick={() => setOpen(new Set(open.size === groups.length ? [] : groups.map((_, i) => i)))}>

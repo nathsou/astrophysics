@@ -228,10 +228,10 @@ export function GodelNumberView({ enc }: { enc: Encoding }) {
   return (
     <div className="godel-number">
       <div className="gn-forms" role="radiogroup" aria-label="Form">
-        <button className="chip-btn" role="radio" aria-checked={form === 'seq'} aria-pressed={form === 'seq'} onClick={() => setForm('seq')}>
+        <button className="chip-btn" role="radio" aria-checked={form === 'seq'} onClick={() => setForm('seq')}>
           ⟨codes⟩
         </button>
-        <button className="chip-btn" role="radio" aria-checked={form === 'powers'} aria-pressed={form === 'powers'} onClick={() => setForm('powers')}>
+        <button className="chip-btn" role="radio" aria-checked={form === 'powers'} onClick={() => setForm('powers')}>
           prime powers
         </button>
       </div>

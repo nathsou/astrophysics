@@ -91,7 +91,7 @@ export function PrimRecLab() {
       <Panel n={1} title="A function defined by primitive recursion" prov={<Prov kind="computed" />}>
         <div className="seg" role="radiogroup" aria-label="The function h">
           {H_LIBRARY.map((e) => (
-            <button key={e.id} className="chip-btn" role="radio" aria-checked={e.id === id} aria-pressed={e.id === id} onClick={() => choose(e)}>
+            <button key={e.id} className="chip-btn" role="radio" aria-checked={e.id === id} onClick={() => choose(e)}>
               <Tex tex={e.label} />
             </button>
           ))}

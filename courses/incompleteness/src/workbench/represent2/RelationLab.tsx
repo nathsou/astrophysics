@@ -32,7 +32,7 @@ export function RelationLab() {
       <Panel n={1} title="A relation and the formula representing it" prov={<Prov kind="computed" />}>
         <div className="seg" role="radiogroup" aria-label="Relation">
           {RELATIONS.map((r) => (
-            <button key={r.id} className="chip-btn" role="radio" aria-checked={r.id === id} aria-pressed={r.id === id} onClick={() => choose(r.id)}>
+            <button key={r.id} className="chip-btn" role="radio" aria-checked={r.id === id} onClick={() => choose(r.id)}>
               <Tex tex={r.label} />
             </button>
           ))}

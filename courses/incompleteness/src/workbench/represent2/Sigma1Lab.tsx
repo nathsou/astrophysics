@@ -105,7 +105,7 @@ function Search({ f, limit, setLimit }: { f: Formula; limit: number; setLimit: (
             <span>Search limit:</span>
             <span className="seg" role="radiogroup" aria-label="Search limit" style={{ margin: 0 }}>
               {[100, 1000, 10000].map((l) => (
-                <button key={l} className="chip-btn" role="radio" aria-checked={limit === l} aria-pressed={limit === l} onClick={() => setLimit(l)}>
+                <button key={l} className="chip-btn" role="radio" aria-checked={limit === l} onClick={() => setLimit(l)}>
                   {l.toLocaleString('en-US')}
                 </button>
               ))}
