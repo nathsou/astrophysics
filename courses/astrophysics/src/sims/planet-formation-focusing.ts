@@ -93,7 +93,7 @@ export default defineSim({
       // capture cross-section
       ctx.strokeStyle = pal.accent; ctx.setLineDash([4, 4]); ctx.lineWidth = 1;
       ctx.beginPath(); ctx.arc(cx, cy, bc * sc, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
-      ctx.fillStyle = pal.accent; ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.fillStyle = pal.accent; ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       const lbl = 'focused cross-section', lx = cx + bc * sc * 0.72 + 4;
       const fits = lx + ctx.measureText(lbl).width < W - 4;
       ctx.textAlign = fits ? 'left' : 'right';

@@ -81,11 +81,11 @@ export default defineSim({
         sctx.setLineDash([]);
       }
       sctx.fillStyle = pal.fg;
-      sctx.font = '12px Inter, system-ui, sans-serif';
+      sctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       sctx.textAlign = 'center';
       sctx.fillText('p_F', cx, cy - rr - 8);
       sctx.fillStyle = pal.muted;
-      sctx.font = '11px Inter, system-ui, sans-serif';
+      sctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       sctx.fillText('filled Fermi sphere', cx, H - 14);
       sctx.fillText('(dashed = thermal smearing kT/E_F)', cx, H - 2);
 

@@ -122,7 +122,7 @@ export default defineSim({
       }
 
       // branch and cycle labels
-      ctx.font = `600 ${fs}px Inter, system-ui, sans-serif`;
+      ctx.font = `600 ${fs}px JetBrains Mono, ui-monospace, monospace`;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
       const label = (text: string, x: number, y: number, color: string, align: CanvasTextAlign = 'left') => {
@@ -134,7 +134,7 @@ export default defineSim({
       label('pp-II ≈ 17%', 780, 420, pal.series[1]);
       label('pp-III ≈ 0.02%', 380, 540, pal.series[3], 'center');
       label('CNO cycle', CX, CY, pal.series[2], 'center');
-      ctx.font = `${Math.max(8, fs - 2)}px Inter, system-ui, sans-serif`;
+      ctx.font = `${Math.max(8, fs - 2)}px JetBrains Mono, ui-monospace, monospace`;
       label('(¹²C is a catalyst)', CX, CY + 20, pal.muted, 'center');
 
       // nodes
@@ -151,12 +151,12 @@ export default defineSim({
         ctx.stroke();
         if (s.neutrino) { // a small ν tag on neutrino-emitting steps
           ctx.fillStyle = pal.accent2;
-          ctx.font = `600 ${Math.max(8, fs - 3)}px Inter, system-ui, sans-serif`;
+          ctx.font = `600 ${Math.max(8, fs - 3)}px JetBrains Mono, ui-monospace, monospace`;
           ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
           ctx.fillText('ν', x + nodeR + 3, y);
         }
         ctx.fillStyle = isSel ? pal.fg : pal.muted;
-        ctx.font = `${fs}px Inter, system-ui, sans-serif`;
+        ctx.font = `${fs}px JetBrains Mono, ui-monospace, monospace`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
         ctx.fillText(s.from.join(' + '), x, y - nodeR - 4);

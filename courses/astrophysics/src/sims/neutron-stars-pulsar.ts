@@ -277,7 +277,7 @@ export default defineSim({
       const [lx0, ly0] = proj(nx * 1.1, ny * 1.1, nz * 1.1);
       const [lx1, ly1] = proj(nx * visualLC * 1.5, ny * visualLC * 1.5, nz * visualLC * 1.5);
       ctx.beginPath(); ctx.moveTo(lx0, ly0); ctx.lineTo(lx1, ly1); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1;
-      ctx.fillStyle = pal.good; ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.fillStyle = pal.good; ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.fillText('to observer', lx1 - 60, ly1 - 6);
 
       // flash the star when the beam sweeps across the observer
@@ -286,7 +286,7 @@ export default defineSim({
         ctx.beginPath(); ctx.arc(sx, sy, 20, 0, Math.PI * 2); ctx.stroke(); ctx.globalAlpha = 1;
       }
 
-      ctx.fillStyle = pal.muted; ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.fillStyle = pal.muted; ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.fillText(`light cylinder R_LC (schematic, not to scale) · α=${Math.round(alphaDeg)}° ζ=${Math.round(zetaDeg)}°`, 10, H - 10);
 
       // --- side panel: profile or waterfall ---
@@ -319,9 +319,9 @@ export default defineSim({
         const m = { l: 48, r: 10, t: 24, b: 30 };
         sctx.imageSmoothingEnabled = false;
         sctx.drawImage(wfCanvas, 0, 0, WF_W, WF_H, m.l, m.t, SW - m.l - m.r, SH - m.t - m.b);
-        sctx.fillStyle = pal.fg; sctx.font = '12px Inter, system-ui, sans-serif';
+        sctx.fillStyle = pal.fg; sctx.font = '12px JetBrains Mono, ui-monospace, monospace';
         sctx.fillText('Dispersion waterfall', m.l, 14);
-        sctx.fillStyle = pal.muted; sctx.font = '11px Inter, system-ui, sans-serif';
+        sctx.fillStyle = pal.muted; sctx.font = '11px JetBrains Mono, ui-monospace, monospace';
         sctx.save(); sctx.translate(14, m.t + (SH - m.t - m.b) / 2); sctx.rotate(-Math.PI / 2);
         sctx.textAlign = 'center'; sctx.fillText(`frequency  (${F_LO}–${F_HI} MHz)`, 0, 0); sctx.restore();
         sctx.textAlign = 'center'; sctx.fillText('time →', m.l + (SW - m.l - m.r) / 2, SH - 6);

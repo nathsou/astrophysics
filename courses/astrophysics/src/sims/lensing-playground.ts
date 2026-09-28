@@ -137,7 +137,7 @@ export default defineSim({
       const dpr = stage.dpr;
       g2.setTransform(dpr, 0, 0, dpr, 0, 0);
       g2.clearRect(0, 0, stage.width, stage.height);
-      g2.font = '11px Inter, system-ui, sans-serif';
+      g2.font = '11px JetBrains Mono, ui-monospace, monospace';
       // lens centre
       const [lx, ly] = toCss(s.lens[0], s.lens[1]);
       g2.strokeStyle = 'rgba(255,220,150,0.8)'; g2.lineWidth = 1.2;

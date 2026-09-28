@@ -59,7 +59,7 @@ export default defineSim({
         if (px < 10 || px > W - 10) return;
         ctx.fillStyle = color;
         ctx.beginPath(); ctx.arc(px, y, r, 0, Math.PI * 2); ctx.fill();
-        ctx.font = '12px Inter, system-ui, sans-serif';
+        ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
         ctx.textAlign = 'center';
         ctx.fillText(label, px, below ? y + r + 16 : y - r - 8);
       };
@@ -68,7 +68,7 @@ export default defineSim({
       mark(L.L2[0], pal.series[1], 'L2');
 
       // distances of L1 and L2 from the secondary, under the axis
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.fillStyle = pal.muted;
       ctx.textAlign = 'center';
       const dist = (x: number) => `${fmt(sys.toUnit(Math.abs(x - secX) * sys.a), 3)} ${sys.unit}`;

@@ -237,21 +237,21 @@ export default defineSim({
       }
 
       ctx.fillStyle = pal.fg;
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       ctx.textAlign = 'left';
       ctx.fillText(clockLabel(), 12, 20);
       ctx.fillStyle = pal.muted;
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       const phaseLabel = { collapse: 'iron core collapsing', stalled: 'shock stalled — SASI sloshing', exploding: 'shock revived — blasting through the star', failed: 'shock failed — forming a black hole' }[phase];
       ctx.fillText(phaseLabel, 12, 36);
       if (outcome) {
         ctx.fillStyle = phase === 'failed' ? pal.bad : pal.good;
-        ctx.font = '12px Inter, system-ui, sans-serif';
+        ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
         ctx.fillText(outcome, 12, H - 14, W - 24);
       }
       // legend
       let ly = H - 14 - (outcome ? 18 : 0) - layers.length * 15;
-      ctx.font = '10.5px Inter, system-ui, sans-serif';
+      ctx.font = '10.5px JetBrains Mono, ui-monospace, monospace';
       const legend = layers.map((layer) => `${layer.name} (R ≈ ${fmt(layer.outerKm, 2)} km)`);
       const lx = W - 8 - 14 - Math.max(...legend.map((t) => ctx.measureText(t).width));
       layers.forEach((layer, i) => {

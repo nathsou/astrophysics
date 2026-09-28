@@ -229,7 +229,7 @@ export default defineSim({
       ctx.fill();
 
       ctx.fillStyle = pal.muted;
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.fillText(`a = ${fmt(aNow, 3)}`, 8, 14);
     }
 

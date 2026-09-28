@@ -144,7 +144,7 @@ export default defineSim({
         i ? ctx.lineTo(X(x), yy) : ctx.moveTo(X(x), yy);
       }
       ctx.strokeStyle = pal.accent2; ctx.lineWidth = 1.2; ctx.globalAlpha = 0.85; ctx.stroke(); ctx.globalAlpha = 1;
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.fillStyle = pal.muted; ctx.textAlign = 'left';
       // Energy label under the dashed line on the transmitted side, where |ψ| ≤ 1 keeps it clear of the wave.
       ctx.textAlign = 'right';

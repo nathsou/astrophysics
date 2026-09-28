@@ -46,12 +46,12 @@ export default defineSim({
           ctx.fillRect(x0, Math.min(y0, y1), x1 - x0, Math.abs(y1 - y0));
           ctx.globalAlpha = 1;
           ctx.fillStyle = pal.fg;
-          ctx.font = '12px Inter, system-ui, sans-serif';
+          ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
           ctx.textBaseline = 'middle';
           ctx.fillText(`${st.fuel} → ${st.product}  (T ≈ ${fmt(st.T_GK, 2)} GK)`, x0 + 8, (y0 + y1) / 2);
           ctx.textAlign = 'left';
           ctx.fillStyle = pal.fg;
-          ctx.font = '600 12px Inter, system-ui, sans-serif';
+          ctx.font = '600 12px JetBrains Mono, ui-monospace, monospace';
           const label = durLabel(st.duration_yr);
           const lw = ctx.measureText(`${st.fuel} → ${st.product}  (T ≈ ${fmt(st.T_GK, 2)} GK)`).width;
           // duration just past the end of the bar (or past the stage label when the bar is short)

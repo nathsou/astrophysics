@@ -80,7 +80,7 @@ export default defineSim({
       ctx.fillStyle = `rgb(${(rr * 255) | 0},${(gg * 255) | 0},${(bb * 255) | 0})`;
       ctx.beginPath(); ctx.arc(W * 0.68, H * 0.42, r, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = pal.muted;
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       ctx.textAlign = 'center';
       ctx.fillText('true colour', W * 0.3, H * 0.42 + r + 18);
       ctx.fillText('as observed', W * 0.68, H * 0.42 + r + 18);

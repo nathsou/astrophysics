@@ -38,7 +38,7 @@ export default defineSim({
       const left = 60, right = w - 170, top = 20, bot = h - 30;
 
       ctx.strokeStyle = pal.grid;
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       for (let n = 1; n <= N_MAX; n++) {
         const y = yFor(n, h, top, bot);
         ctx.beginPath();
@@ -73,7 +73,7 @@ export default defineSim({
       }
       ctx.textAlign = 'left';
       ctx.fillStyle = pal.faint;
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.fillText('energy axis stretched near 0 eV so the upper levels stay apart · click a level', left, bot + 20);
     }
 

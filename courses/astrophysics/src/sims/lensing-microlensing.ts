@@ -134,7 +134,7 @@ export default defineSim({
       // moving source
       const [qx, qy] = toPx(...track(tNow));
       mctx.strokeStyle = '#fff'; mctx.beginPath(); mctx.arc(qx, qy, 4, 0, Math.PI * 2); mctx.stroke();
-      mctx.font = '11px Inter, system-ui, sans-serif'; mctx.fillStyle = 'rgba(255,255,255,0.85)';
+      mctx.font = '11px JetBrains Mono, ui-monospace, monospace'; mctx.fillStyle = 'rgba(255,255,255,0.85)';
       mctx.fillText('source-plane magnification', 8, 16);
       mctx.fillText('drag to move the track', 8, Hm - 8);
 

@@ -95,7 +95,7 @@ export default defineSim({
       ctx.beginPath(); ctx.arc(cx, cy, R * sc, 0, Math.PI * 2); ctx.stroke();
       ctx.setLineDash([]);
       ctx.fillStyle = pal.fg; ctx.beginPath(); ctx.arc(cx, cy, 3, 0, Math.PI * 2); ctx.fill();
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       ctx.fillStyle = pal.accent2;
       ctx.fillText('rms radius', cx + R * sc * 0.72 + 6, cy - R * sc * 0.72);
       ctx.fillStyle = pal.muted;

@@ -181,7 +181,7 @@ export default defineSim({
         starCtx.beginPath(); starCtx.arc(cx, cy, Math.max(2, pxR), 0, Math.PI * 2); starCtx.stroke();
       }
       starCtx.fillStyle = '#b9b6ae';
-      starCtx.font = '12px Inter, system-ui, sans-serif';
+      starCtx.font = '12px JetBrains Mono, ui-monospace, monospace';
       starCtx.fillText(`T_eff ≈ ${fmt(Teff, 3)} K`, 10, H - 12);
       starCtx.fillText(`R ≈ ${fmt(st.R, 3)} R☉`, 10, H - 28);
 
@@ -205,7 +205,7 @@ export default defineSim({
       crossCtx.strokeStyle = pal.grid; crossCtx.lineWidth = 1;
       crossCtx.beginPath(); crossCtx.moveTo(ccx - Rmax - 6, ccy); crossCtx.lineTo(ccx + Rmax + 6, ccy); crossCtx.stroke();
       // legend, innermost first, to the right of the cutaway
-      crossCtx.font = '12px Inter, system-ui, sans-serif';
+      crossCtx.font = '12px JetBrains Mono, ui-monospace, monospace';
       crossCtx.textAlign = 'left'; crossCtx.textBaseline = 'middle';
       const lx = narrow ? 14 : ccx + Rmax + 28;
       let ly = narrow ? ccy + 20 : Math.max(24, ccy - layers.length * 20 - 6);

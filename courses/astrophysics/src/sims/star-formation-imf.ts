@@ -67,7 +67,7 @@ export default defineSim({
         void scale;
       });
       const { ctx } = plot;
-      ctx.font = '11px Inter, system-ui, sans-serif'; ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace'; ctx.textAlign = 'right'; ctx.textBaseline = 'top';
       const xr = plot.m.l + plot.pw - 8;
       [[pal.accent, 'Kroupa (2001)'], [pal.series[2], 'Salpeter (1955), α = 2.35'], [pal.series[1], 'Chabrier (2003)'], [pal.series[3], 'brown dwarfs (sampled)']].forEach(([c, t], i) => {
         ctx.fillStyle = c; ctx.fillRect(xr - ctx.measureText(t).width - 16, plot.m.t + 30 + i * 15 + 4, 10, 3);

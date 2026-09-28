@@ -66,7 +66,7 @@ export default defineSim({
         // label: horizontal if it fits, otherwise rotated to run up the band
         ctx.save();
         ctx.fillStyle = pal.bg;
-        ctx.font = '11px Inter, system-ui, sans-serif';
+        ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         const midY = barY + barH / 2, bw = x1 - x0, tw = ctx.measureText(b.label).width;
@@ -81,7 +81,7 @@ export default defineSim({
       // tick marks
       ctx.strokeStyle = pal.axis;
       ctx.fillStyle = pal.muted;
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.textAlign = 'center';
       for (const t of [0.1, 1, 8, 25, 90, 140, 260]) {
         const x = xOf(t);

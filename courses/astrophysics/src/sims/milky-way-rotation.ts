@@ -181,7 +181,7 @@ export default defineSim({
       dctx.fillStyle = pal.accent2;
       dctx.beginPath(); dctx.arc(cx, cy, 3.5, 0, 2 * Math.PI); dctx.fill();
       dctx.fillStyle = pal.muted;
-      dctx.font = '11px Inter, system-ui, sans-serif';
+      dctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       dctx.fillText(solidBody ? 'illustration: solid-body rotation' : 'rotating per current model', 10, H - 10);
 
       chi2Readout.set(fmt(chi2(), 4));

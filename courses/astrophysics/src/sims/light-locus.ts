@@ -54,7 +54,7 @@ export default defineSim({
       ctx.strokeRect(marL + 0.5, stripY + 0.5, pw - 1, stripH - 1);
 
       // ticks
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.fillStyle = pal.muted;
       ctx.textAlign = 'center';
       for (const Tv of [1000, 2000, 4000, 6000, 10000, 20000, 40000]) {

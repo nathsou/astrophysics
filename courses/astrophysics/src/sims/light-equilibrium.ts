@@ -69,7 +69,7 @@ export default defineSim({
       ctx.setLineDash([3, 4]);
       ctx.beginPath(); ctx.moveTo(starX, cy); ctx.lineTo(x1 + 20, cy); ctx.stroke();
       ctx.setLineDash([]);
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.textAlign = 'center';
       // names on up to three staggered rows, so close ticks (narrow screens) never collide
       const rowEnd = [-1e9, -1e9, -1e9];
@@ -91,9 +91,9 @@ export default defineSim({
       ctx.strokeStyle = sky.rule; ctx.stroke();
 
       ctx.fillStyle = sky.fg;
-      ctx.font = '600 12px Inter, system-ui, sans-serif';
+      ctx.font = '600 12px JetBrains Mono, ui-monospace, monospace';
       ctx.fillText(`T_eq ≈ ${Math.round(teq)} K`, orbitX, cy + 30);
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.fillStyle = sky.muted;
       ctx.fillText(`a = ${fmt(aAU, 3)} AU`, orbitX, cy + 46);
       ctx.textAlign = 'left';

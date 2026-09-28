@@ -39,7 +39,7 @@ export default defineSim({
       const b = beta(), th = (thetaDeg * Math.PI) / 180;
       // Observer is far to the right; line of sight = +x. Core at left.
       const S = Math.min(W, H) * 0.62, ox = W * 0.14, oy = H * 0.62;
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       // line of sight
       ctx.strokeStyle = pal.faint; ctx.setLineDash([4, 4]);
       ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(W - 8, oy); ctx.stroke(); ctx.setLineDash([]);

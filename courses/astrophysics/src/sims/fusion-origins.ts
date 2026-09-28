@@ -151,12 +151,12 @@ export default defineSim({
         ctx.globalAlpha = 1;
         if (e === selected) { ctx.strokeStyle = pal.fg; ctx.lineWidth = 2; ctx.strokeRect(c.x - 1, c.y - 1, c.w + 2, c.h + 2); }
         ctx.fillStyle = o.ink;
-        ctx.font = `600 ${fs}px Inter, system-ui, sans-serif`;
+        ctx.font = `600 ${fs}px JetBrains Mono, ui-monospace, monospace`;
         ctx.fillText(e.sym, c.x + c.w / 2, c.y + c.h / 2 + 1);
       }
       // f-block placeholders in the main table
       ctx.fillStyle = pal.faint;
-      ctx.font = `${Math.max(7, fs * 0.7)}px Inter, system-ui, sans-serif`;
+      ctx.font = `${Math.max(7, fs * 0.7)}px JetBrains Mono, ui-monospace, monospace`;
       for (const [row, label] of [[6, '57–71'], [7, '89–']] as const) {
         const c = cell({ row, col: 3 });
         ctx.fillText(label, c.x + c.w / 2, c.y + c.h / 2);

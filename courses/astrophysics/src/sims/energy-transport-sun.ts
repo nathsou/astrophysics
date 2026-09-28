@@ -78,7 +78,7 @@ export default defineSim({
       ctx.restore();
 
       // outline rings + labels
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.fillStyle = pal.fg;
       for (let i = 0; i < ZONES.length; i++) {
         const z = ZONES[i];

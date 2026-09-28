@@ -96,7 +96,7 @@ export default defineSim({
       ctx.fillStyle = pal.fg;
       ctx.beginPath(); ctx.arc(cx + s[0] * sc, cy - s[1] * sc, 4 + Math.log10(M / 1e8), 0, 2 * Math.PI); ctx.fill();
       ctx.fillStyle = pal.accent; ctx.beginPath(); ctx.arc(cx, cy, 3, 0, 2 * Math.PI); ctx.fill();
-      ctx.font = '11px Inter, system-ui, sans-serif'; ctx.fillStyle = pal.muted; ctx.textBaseline = 'bottom';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace'; ctx.fillStyle = pal.muted; ctx.textBaseline = 'bottom';
       ctx.fillText(`halo: v_c = ${VC} km/s (isothermal)`, 10, H - 8);
 
       const tf = tfric() * TU;

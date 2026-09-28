@@ -82,7 +82,7 @@ export default defineSim({
         if (i === hoverIdx) { ctx.strokeStyle = pal.fg; ctx.lineWidth = 1.5; ctx.stroke(); }
       });
       // name labels under the stars that are small enough to leave room, without collisions
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.fillStyle = pal.muted;
       const rowRight = [-Infinity, -Infinity, -Infinity]; // up to three staggered label rows
       STARS.forEach((s, i) => {
@@ -96,7 +96,7 @@ export default defineSim({
       });
       ctx.restore();
       ctx.fillStyle = pal.muted;
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       if (hoverIdx >= 0) {
         const s = STARS[hoverIdx];
         ctx.fillStyle = pal.fg;

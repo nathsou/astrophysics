@@ -108,7 +108,7 @@ export default defineSim({
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.imageSmoothingEnabled = true;
       ctx.drawImage(off, 0, 0, W, H);
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       const lbl = shape === 'power' ? `P(k) ∝ k^${fmt(n, 3)}` : `ΛCDM-like, box ${BOX} Mpc/h`;
       ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillRect(4, 4, ctx.measureText(lbl).width + 12, 20);
       ctx.fillStyle = 'rgba(255,255,255,.92)';

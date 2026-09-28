@@ -113,7 +113,7 @@ export default defineSim({
       const sCol = pal.series[0], pCol = pal.series[1];
       drawGrid(0, sCol, 0.22, 12);
       drawGrid(beta, pCol, 0.28, 12);
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       label('ct', 0, 5.2, sCol, 'left');
       label('x', 4.0, 0, sCol, 'center');
       const gg = g();
@@ -184,7 +184,7 @@ export default defineSim({
       const xa = ta <= tHalf ? b * ta : b * (T - ta);
       dot(0, ta, homeCol, 5.5);
       dot(xa, ta, travCol, 5.5);
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       label(`home: ${fmt(ta, 3)} yr`, 0, ta, homeCol, 'right', 4);
       label(`traveller: ${fmt(ta / gg, 3)} yr`, xa, ta, travCol, 'left', 4);
       label('turnaround', D_TWIN, tHalf, pal.muted, 'left', -8);
@@ -200,7 +200,7 @@ export default defineSim({
       const { width: W, height: H, dpr } = stage;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, W, H);
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       if (mode === 'frames') drawFrames(); else drawTwins(frameDt);
       ctx.fillStyle = pal.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
       ctx.fillText(inPrime ? 'drawn in frame S′ (moving at β relative to S)' : 'drawn in frame S', 10, 8);

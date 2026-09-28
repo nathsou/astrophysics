@@ -250,6 +250,21 @@ function layoutAllTiers() {
 }
 layoutAllTiers();
 window.addEventListener('depth:change', layoutAllTiers);
+
+// ---------- Drop cap ----------
+// The first visible body paragraph of a chapter opens with an accent drop cap (see .dropcap in global.css).
+function markDropCap() {
+  document.querySelectorAll('.dropcap').forEach((el) => el.classList.remove('dropcap'));
+  for (const p of document.querySelectorAll<HTMLElement>('.article p')) {
+    if (p.closest('.chapter-head, .aside, .box, details, figure, .lvl-pill, .lvl-tag, .tier-more')) continue;
+    if (!p.offsetParent) continue; // hidden at this depth
+    if (!/^\p{L}/u.test(p.textContent ?? '') || p.firstChild?.nodeType !== Node.TEXT_NODE) continue;
+    if ((p.textContent ?? '').length > 80) { p.classList.add('dropcap'); }
+    break;
+  }
+}
+markDropCap();
+window.addEventListener('depth:change', markDropCap);
 document.addEventListener('click', (e) => {
   const more = (e.target as HTMLElement).closest('.tier-more');
   if (!more) return;

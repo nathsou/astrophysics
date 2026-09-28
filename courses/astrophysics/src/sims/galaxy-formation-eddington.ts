@@ -75,7 +75,7 @@ export default defineSim({
         plot.text(`z=${z}`, X, plot.m.t - 8, { align: 'center', color: pal.muted, size: 10 });
       }
       const c = plot.ctx;
-      c.font = '11px Inter, system-ui, sans-serif'; c.textAlign = 'left';
+      c.font = '11px JetBrains Mono, ui-monospace, monospace'; c.textAlign = 'left';
       // legend in the empty lower-right corner
       const labels = [`your black hole (ε = ${eps.toFixed(2)}, f_Edd = ${fmt(fEdd, 2)})`, 'same, but ε = 0.3 (spinning BH)', `same, but ${fmt(Math.min(fEdd * 3, 10), 2)}× Eddington`];
       const lw = Math.max(...labels.map((t) => c.measureText(t).width)) + 24;

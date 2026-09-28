@@ -99,7 +99,7 @@ export default defineSim({
       const y0 = H - 46;
       // decade ticks
       const span = hi - lo, stepD = span > 40 ? 5 : span > 16 ? 2 : 1;
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.textAlign = 'center';
       for (let d = Math.ceil(lo); d <= hi; d++) {
         const x = X(d);

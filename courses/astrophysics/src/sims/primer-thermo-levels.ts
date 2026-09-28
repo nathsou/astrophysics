@@ -71,7 +71,7 @@ export default defineSim({
       const { width: W, height: H, dpr } = stage;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, W, H);
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       const n = L.E.length;
       counts.fill(0);
       for (let a = 0; a < NATOMS; a++) counts[state[a]]++;

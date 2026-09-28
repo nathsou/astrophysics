@@ -127,7 +127,7 @@ export default defineSim({
         diskCtx.fill();
       }
       // isotherms
-      diskCtx.font = '10px Inter, system-ui, sans-serif';
+      diskCtx.font = '10px JetBrains Mono, ui-monospace, monospace';
       diskCtx.textAlign = 'left';
       for (const Tiso of [1e5, 1e6, 1e7]) {
         if (Tiso >= star.Tc) continue;
@@ -148,7 +148,7 @@ export default defineSim({
       diskCtx.fillStyle = grad;
       diskCtx.fill();
       diskCtx.fillStyle = pal.muted;
-      diskCtx.font = '11px Inter, system-ui, sans-serif';
+      diskCtx.font = '11px JetBrains Mono, ui-monospace, monospace';
       diskCtx.textAlign = 'center';
       diskCtx.fillText(`${fmt(R, 3)} R☉ · centre ${fmt(star.Tc, 2)} K`, cx, h - 8);
     }

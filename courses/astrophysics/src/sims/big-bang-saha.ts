@@ -50,7 +50,7 @@ export default defineSim({
         plot.hline(0.5, { color: pal.muted, label: 'xₑ = 1/2' });
       });
       const { ctx } = plot;
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.fillStyle = pal.series[0];
       ctx.fillText(`η = ${fmt(eta * 1e10, 2)}×10⁻¹⁰ (real universe)`, plot.m.l + 6, plot.m.t + 14);
       ctx.fillStyle = pal.series[2];
@@ -62,7 +62,7 @@ export default defineSim({
         if (!Number.isFinite(z)) return;
         plot.vline(z, { color });
         const txt = `${plot.pw > 420 ? 'xₑ = ½ at ' : ''}z ≈ ${Math.round(z)}, T ≈ ${fmt(TforZ(z) * MEV_TO_KELVIN, 2)} K`;
-        ctx.font = '11px Inter, system-ui, sans-serif';
+        ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
         const w = ctx.measureText(txt).width;
         const X = plot.px(z) + 6 + w > plot.m.l + plot.pw ? plot.px(z) - 6 - w : plot.px(z) + 6;
         ctx.fillStyle = color; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';

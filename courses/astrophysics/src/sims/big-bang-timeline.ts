@@ -83,7 +83,7 @@ export default defineSim({
       const pad = 10; // keep labels off the canvas edges
 
       // era bands
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.textBaseline = 'top';
       for (const [a, b, name, k] of ERAS) {
         const x0 = Math.max(0, logtToX(a, W)), x1 = Math.min(W, logtToX(b, W));
@@ -107,7 +107,7 @@ export default defineSim({
       // decade ticks: every decade gets a tick, labels thinned to stay ≥ 48 px apart
       const pxPerDec = W / (viewMax - viewMin);
       const every = [1, 2, 3, 5, 10, 20].find((k) => k * pxPerDec >= 48) ?? 20;
-      ctx.font = '10px Inter, system-ui, sans-serif';
+      ctx.font = '10px JetBrains Mono, ui-monospace, monospace';
       ctx.lineWidth = 1;
       ctx.textAlign = 'center'; ctx.textBaseline = 'top';
       for (let d = Math.ceil(viewMin); d <= Math.floor(viewMax); d++) {
@@ -132,7 +132,7 @@ export default defineSim({
       }
 
       // events: greedy row assignment so labels never overlap each other or other leaders
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       const placed: { row: number; x0: number; x1: number }[] = [];
       for (const e of EVENTS) {
         const x = logtToX(e.logt, W);
@@ -170,14 +170,14 @@ export default defineSim({
       }
 
       ctx.fillStyle = pal.muted;
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.textAlign = 'left'; ctx.textBaseline = 'top';
       ctx.fillText(W < 640 ? 'Time since the Big Bang (s, log) · drag to pan, tap an event' : 'Time since the Big Bang (seconds, log scale) · scroll or drag to zoom and pan · hover an event', 8, 8);
 
       const hx = hoverEvent?.__x;
       if (hoverEvent && hx !== undefined) {
         const e = hoverEvent;
-        ctx.font = '11px Inter, system-ui, sans-serif';
+        ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
         const bw = Math.min(360, W - 16);
         const bx = Math.max(8, Math.min(W - bw - 8, hx - bw / 2));
         const lines = wrapLines(ctx, e.detail, bw - 16);
@@ -190,9 +190,9 @@ export default defineSim({
         ctx.strokeStyle = pal.axis; ctx.lineWidth = 1; ctx.strokeRect(bx + 0.5, by + 0.5, bw - 1, bh - 1);
         ctx.fillStyle = pal.fg;
         ctx.textAlign = 'left'; ctx.textBaseline = 'top';
-        ctx.font = '600 11px Inter, system-ui, sans-serif';
+        ctx.font = '600 11px JetBrains Mono, ui-monospace, monospace';
         ctx.fillText(`${e.label} · t ≈ ${timeLabel(e.logt)}${tempLabel(e.logt) ? ' · ' + tempLabel(e.logt) : ''}`, bx + 8, by + 7);
-        ctx.font = '11px Inter, system-ui, sans-serif';
+        ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
         ctx.fillStyle = pal.muted;
         lines.forEach((l, i) => ctx.fillText(l, bx + 8, by + 24 + i * 14));
       }

@@ -75,7 +75,7 @@ export default defineSim({
       ctx.fillStyle = g;
       ctx.beginPath(); ctx.arc(cx, cy, R_pc * scale, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = pal.fg;
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       ctx.textAlign = 'left';
       ctx.fillText(`R = ${fmt(R_pc, 3)} pc  at  t = ${fmt(tMyr, 3)} Myr`, 12, H - 32);
       ctx.fillStyle = radiative ? pal.bad : pal.muted;

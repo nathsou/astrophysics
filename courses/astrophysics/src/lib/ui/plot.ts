@@ -125,7 +125,7 @@ export class Plot {
 
   axes() {
     const { ctx, pal, m } = this;
-    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
     ctx.lineWidth = 1;
     const xt = Plot.ticks(this.o.x), yt = Plot.ticks(this.o.y);
     if (this.o.grid !== false) {
@@ -224,7 +224,7 @@ export class Plot {
     ctx.fill();
     if (o.stroke) { ctx.strokeStyle = o.stroke; ctx.lineWidth = 1.5; ctx.stroke(); }
     if (o.label) {
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.fillStyle = this.pal.fg;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'bottom';
@@ -269,7 +269,7 @@ export class Plot {
   /** Text at CSS pixel coords. */
   text(s: string, X: number, Y: number, o: { color?: string; align?: CanvasTextAlign; baseline?: CanvasTextBaseline; size?: number } = {}) {
     const { ctx } = this;
-    ctx.font = `${o.size ?? 11}px Inter, system-ui, sans-serif`;
+    ctx.font = `${o.size ?? 11}px JetBrains Mono, ui-monospace, monospace`;
     ctx.fillStyle = o.color ?? this.pal.fg;
     ctx.textAlign = o.align ?? 'left';
     ctx.textBaseline = o.baseline ?? 'alphabetic';
