@@ -24,8 +24,8 @@ import {
   type Parts,
 } from './kinds';
 import { Lines } from './lib';
-import { area, line, lineText, Rat, Surd } from './ring';
-import { lemmaSquare, strip } from './strips';
+import { area, isSquareInt, line, lineText, need, Rat, Surd } from './ring';
+import { lemmaSquare, numberRod, numberRow, strip } from './strips';
 
 const an = (s: string) => (/^[aeiou]/.test(s) ? `an ${s}` : `a ${s}`);
 
@@ -100,7 +100,7 @@ export function sideOfArea(order: number): FigureDef {
       const ad = x.value + y.value;
       const L = Lines.fit(g, ad, 10);
       strip(L, 0, 0, 1, ['A', 'G', 'E', 'F', 'D'], ['B', 'H', 'K', 'L', 'C'], [u.value, w.value, y.value / 2, y.value / 2], [[0, 4], [0, 1], [1, 2], [2, 3], [0, 2]]);
-      lemmaSquare(L, L.x(mn) + 0.2 * L.x(ad), -1.2 - L.x(mn), mn, no);
+      lemmaSquare(L, L.x(mn) + 0.2 * L.x(ad), -2 - L.x(mn), mn, no);
       g.show('AE, ED', `${x}, ${y}`);
       g.show('AG, GE', `${u}, ${w}`);
       g.show('MN, NO', `${lineText(u)}, ${lineText(w)}`);
@@ -295,6 +295,168 @@ export function uniqueAnnex(kind: number, o: { strip?: boolean } = {}): FigureDe
         g.claim('EH an apotome with annex HM', pairKind({ u: EM, w: MH, P: S.mul(P).scale(2) }) === 1);
       }
       g.claim(`AB is ${an(SUBTRACTIVE[kind])}`, pairKind(parts) === kind);
+    },
+  });
+}
+
+// ------------------------------------------------------------------ X.48–53
+
+const squareRatio = (p: number, q: number) => new Rat(p, q).square;
+
+/**
+ * X.48–53: find the binomial of the given order from numbers, as Euclid does. AC, CB are numbers
+ * (rods of units), AB their sum. In X.48, 49, 51, 52 the rational line is D and the binomial is EG,
+ * cut at F, with H the side of the difference of the squares; in X.50 and 53, D is a number, E the
+ * rational line, FH the binomial cut at G, and K the side of the difference.
+ */
+export function findBinomial(order: number): FigureDef {
+  const withD = order === 3 || order === 6;
+  return figure({
+    caption: withD
+      ? `AC, CB and D are numbers; E is the rational line (length 1). The binomial FH is cut at G.`
+      : `AC and CB are numbers; D is the rational line (length 1) and EF = f·D. The binomial EG is cut at F.`,
+    build(g) {
+      let ac: number;
+      let cb: number;
+      if (order <= 3) {
+        const m = g.param('m', 3, { min: 2, max: 6, label: 'AB = m²: m' });
+        const n = g.param('n', 2, { min: 1, max: 5, label: 'BC = n²: n' });
+        need(n < m && !isSquareInt(m * m - n * n), 'n < m and m² − n² not a square');
+        ac = m * m - n * n;
+        cb = n * n;
+      } else {
+        ac = g.param('ac', 3, { min: 1, max: 12, label: 'AC' });
+        cb = g.param('cb', 2, { min: 1, max: 12, label: 'CB' });
+        need(!squareRatio(ac + cb, cb) && !squareRatio(ac + cb, ac), 'AB : BC and AB : AC not ratios of squares');
+      }
+      const ab = ac + cb;
+      let d = 1;
+      if (withD) {
+        d = g.param('d', 2, { min: 2, max: 12, label: 'D' });
+        need(!isSquareInt(d) && !squareRatio(d, ab) && !squareRatio(d, ac), 'D not square, nor in a ratio of squares to AB or AC');
+      }
+      const f = withD ? 1 : g.param('f', 1, { min: 0.5, max: 2, step: 0.5, label: 'f = EF : D' });
+      const f2 = Rat.of(f).mul(Rat.of(f));
+      // squares of the two segments of the binomial, in drawing order, and of the side of their difference
+      let s1: Rat;
+      let s2: Rat;
+      let sh: Rat;
+      if (withD) {
+        s1 = new Rat(ab, d); // FG²  (E² : FG² = D : AB, with E = 1)
+        s2 = new Rat(ac, d); // GH²  (FG² : GH² = BA : AC)
+        sh = new Rat(cb, d); // K²
+      } else if (order === 1 || order === 4) {
+        s1 = f2; // EF²
+        s2 = f2.mul(new Rat(ac, ab)); // FG²  (BA : AC = EF² : FG²)
+        sh = f2.mul(new Rat(cb, ab)); // H² = EF² − FG²
+      } else {
+        s1 = f2; // EF²
+        s2 = f2.mul(new Rat(ab, ac)); // FG²  (CA : AB = EF² : FG²)
+        sh = f2.mul(new Rat(cb, ac)); // H² = FG² − EF²
+      }
+      const S1 = Surd.rat(s1);
+      const S2 = Surd.rat(s2);
+      const SH = Surd.rat(sh);
+      const l1 = sq(s1.value);
+      const l2 = sq(s2.value);
+      const lh = sq(sh.value);
+      const N = Lines.fit(g, Math.max(ab, withD ? d : 0), 7);
+      numberRow(N, ['A', 'C', 'B'], [ac, cb], 0, 4.2);
+      if (withD) numberRod(N, 'D', d, 0, 3.2);
+      const L = Lines.fit(g, l1 + l2, 7);
+      const [r, a, b, c, h] = withD ? ['E', 'F', 'G', 'H', 'K'] : ['D', 'E', 'F', 'G', 'H'];
+      L.mag(r, 1, 0, 2.2);
+      L.row([a, b, c], [l1, l2], 0, 1.1);
+      L.mag(h, lh, 0, 0);
+      const big = order === 1 || order === 3 || order === 4 || order === 6 ? `${a}${b}` : `${b}${c}`;
+      const G2 = s1.value > s2.value ? S1 : S2;
+      const L2 = s1.value > s2.value ? S2 : S1;
+      g.show(`${a}${b}, ${b}${c}`, `${lineText(S1)}, ${lineText(S2)}`);
+      g.show(h, lineText(SH));
+      if (order <= 3) g.claim('AB : BC is a ratio of square numbers, AB : AC is not', squareRatio(ab, cb) && !squareRatio(ab, ac));
+      else g.claim('AB has to neither BC nor AC the ratio of square numbers', !squareRatio(ab, cb) && !squareRatio(ab, ac));
+      if (withD) g.equal(`${r}² : ${a}${b}² = D : AB`, 1 / s1.value, d / ab);
+      else if (order === 1 || order === 4) g.equal('EF² : FG² = BA : AC', s1.value / s2.value, ab / ac);
+      else g.equal('EF² : FG² = CA : AB', s1.value / s2.value, ac / ab);
+      if (withD) g.equal(`${a}${b}² : ${b}${c}² = BA : AC`, s1.value / s2.value, ab / ac);
+      g.claim(`${a}${b}, ${b}${c} rational, commensurable in square only`, line.rational(S1) && line.rational(S2) && line.commSqOnly(S1, S2));
+      const other = big === `${a}${b}` ? `${b}${c}` : `${a}${b}`;
+      g.equal(`${big}² = ${other}² + ${h}²`, G2.value, L2.value + sh.value);
+      g.claim(order <= 3 ? `${h} commensurable in length with ${big}` : `${h} incommensurable in length with ${big}`, line.comm(SH, G2) === order <= 3);
+      g.claim(`${a}${c} is a ${ORDINAL[order]} binomial`, binomialOrder(G2, L2) === order);
+    },
+  });
+}
+
+// ------------------------------------------------------------------ X.71–72
+
+/**
+ * X.71 (`medials: false`): AB is a rational area r, CD a medial area s·√k. X.72 (`medials: true`):
+ * AB = s₁√k₁ and CD = s₂√k₂ are medial areas, incommensurable with each other. Both are drawn as
+ * rectangles side by side making AD, and applied to the rational line EF = 1 as EG and HI.
+ */
+export function sumOfAreas(medials: boolean): FigureDef {
+  return figure({
+    caption: medials
+      ? 'AB = s₁√k₁ and CD = s₂√k₂ are medial areas, incommensurable with each other (k₁k₂ not a square). The readout says which irrational the side of AD is.'
+      : 'AB = r is a rational area and CD = s√k a medial one. The readout says which of the four irrationals the side of AD is.',
+    build(g) {
+      let AB: Surd;
+      let CD: Surd;
+      if (medials) {
+        const s1 = g.param('s1', 3, { min: 1, max: 3, label: 's₁' });
+        const k1 = g.param('k1', 2, { min: 2, max: 11, label: 'k₁' });
+        const s2 = g.param('s2', 1, { min: 1, max: 3, label: 's₂' });
+        const k2 = g.param('k2', 10, { min: 2, max: 11, label: 'k₂' });
+        need(!isSquareInt(k1) && !isSquareInt(k2) && !isSquareInt(k1 * k2), 'k₁, k₂, k₁k₂ not squares');
+        AB = Surd.root(s1 * s1 * k1);
+        CD = Surd.root(s2 * s2 * k2);
+      } else {
+        const r = g.param('r', 3, { min: 1, max: 6, label: 'r' });
+        const s = g.param('s', 1, { min: 1, max: 4, label: 's' });
+        const k = g.param('k', 2, { min: 2, max: 7, label: 'k' });
+        need(!isSquareInt(k), 'k not a square');
+        AB = Surd.rat(r);
+        CD = Surd.root(s * s * k);
+      }
+      const eh = AB.value;
+      const hk = CD.value;
+      const EH2 = AB.mul(AB);
+      const HK2 = CD.mul(CD);
+      const [X, Y] = eh > hk ? [EH2, HK2] : [HK2, EH2];
+      const order = binomialOrder(X, Y);
+      const parts = sideParts({ X: X.rational!, Y: Y.rational! });
+      const kind = pairKind(parts);
+      const L = Lines.fit(g, eh + hk, 8);
+      // the given areas, as rectangles of height 1.6 side by side
+      const h = 1.6;
+      const y0 = L.x(1) + 1.2;
+      const w1 = eh / h;
+      const w2 = hk / h;
+      const A = L.pt('A', v(0, y0 + L.x(h)), { labelDir: 135 });
+      const C = L.pt('C', v(L.x(w1), y0 + L.x(h)), { labelDir: 90 });
+      const B = L.pt('B', v(L.x(w1), y0), { labelDir: 270 });
+      const D = L.pt('D', v(L.x(w1 + w2), y0), { labelDir: 315 });
+      const X0 = v(0, y0);
+      const Y0 = v(L.x(w1 + w2), y0 + L.x(h));
+      g.polygon([X0, B, C, A], { name: 'AB', fill: true });
+      g.polygon([B, D, Y0, C], { name: 'CD', fill: true });
+      g.polygon([X0, D, Y0, A]);
+      strip(L, 0, 0, 1, ['E', 'H', 'K'], ['F', 'G', 'I'], [eh, hk], [[0, 1], [1, 2], [0, 2]]);
+      g.show('AB, CD', `${AB}, ${CD}`);
+      g.show('EK', `${AB} + ${CD}`);
+      g.show('side of AD', ADDITIVE[kind] || '—');
+      if (medials) {
+        g.claim('AB, CD medial and incommensurable', area.medial(AB) && area.medial(CD) && !area.comm(AB, CD));
+        g.claim('EH, HK rational, incommensurable in length with EF', line.rational(EH2) && line.rational(HK2) && !line.comm(EH2, Surd.rat(1)) && !line.comm(HK2, Surd.rat(1)));
+      } else {
+        g.claim('AB rational, CD medial', area.rational(AB) && area.medial(CD));
+        g.claim('EH commensurable with EF, HK not', line.comm(EH2, Surd.rat(1)) && !line.comm(HK2, Surd.rat(1)));
+      }
+      g.equal('EG = AB, HI = CD (EF = 1)', eh + hk, AB.value + CD.value);
+      g.claim(`EK is a ${ORDINAL[order]} binomial`, order > 0);
+      g.claim(medials ? 'the side of AD is a second bimedial or the side of two medial areas' : 'the side of AD is a binomial, first bimedial, major, or side of a rational plus a medial area', kind === order && (medials ? [3, 6] : [1, 2, 4, 5]).includes(kind));
+      g.equal('(side of AD)² = AD', parts.u.value + parts.w.value + 2 * parts.P.value, AB.value + CD.value);
     },
   });
 }

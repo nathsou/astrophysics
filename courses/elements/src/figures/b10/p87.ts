@@ -1,5 +1,5 @@
 import { figure } from '../../geometry/figure';
-import { choose, drawFind3, order, rootText } from './apotome';
+import { choose, drawFind3, apotomeOrder, rootText } from './apotome';
 import { line, Rat, Surd } from './ring';
 
 // A = 1. Numbers E, BC, CD, no two of them in the ratio of square numbers, but CB : BD is
@@ -33,6 +33,6 @@ export default figure({
     g.claim('neither FG nor GH is commensurable in length with A', !line.comm(FG2, A2) && !line.comm(GH2, A2));
     g.equal('FG² : K² = BC : BD', fg2.value / k2.value, bc / bd);
     g.claim('CB : BD is a ratio of squares, so FG is commensurable with K', line.comm(FG2, K2));
-    g.claim('FH is a third apotome', order(FG2, GH2) === 3);
+    g.claim('FH is a third apotome', apotomeOrder(FG2, GH2) === 3);
   },
 });

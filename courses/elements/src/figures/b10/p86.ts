@@ -1,5 +1,5 @@
 import { figure } from '../../geometry/figure';
-import { choose, drawFind, order, rat, rootText, SQUARE_PAIRS } from './apotome';
+import { choose, drawFind, apotomeOrder, rat, rootText, SQUARE_PAIRS } from './apotome';
 import { line, Rat, Surd } from './ring';
 
 // A = 1, the annex CG = r·A. DE = m², EF = n², DF = m² − n² not a square; GB is found from
@@ -25,6 +25,6 @@ export default figure({
     g.equal('BG : H = √DE : √EF', bg / h, m / n);
     g.claim('BG is commensurable in length with H', line.comm(BG2, H2));
     g.claim('the annex CG is commensurable in length with A', line.comm(GC2, Surd.rat(1)));
-    g.claim('BC is a second apotome', order(BG2, GC2) === 2);
+    g.claim('BC is a second apotome', apotomeOrder(BG2, GC2) === 2);
   },
 });

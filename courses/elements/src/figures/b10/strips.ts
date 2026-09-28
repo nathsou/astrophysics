@@ -1,6 +1,6 @@
 // Drawing helpers for X.41–84: areas applied to a rational line, and the square of X.54–59.
 
-import type { G, P, Style } from '../../geometry/figure';
+import type { P, Style } from '../../geometry/figure';
 import { v } from '../../geometry/vec';
 import type { Lines } from './lib';
 
@@ -60,4 +60,22 @@ export function lemmaSquare(L: Lines, x: number, y: number, a: number, c: number
   g.polygon([M, sw, R, N], s); // MR
   g.polygon([Pp, N, O, ne], s); // PO
   g.polygon([S, sw, Q, ne], s); // SQ
+}
+
+/** A number drawn as a rod of units (ticks every unit), named by its points. */
+export function numberRow(L: Lines, names: string[], parts: number[], x: number, y: number): P[] {
+  let at = x;
+  const ps: P[] = [L.pt(names[0], v(at, y), { labelDir: 90 })];
+  parts.forEach((p, k) => {
+    at += L.x(p);
+    ps.push(L.pt(names[k + 1], v(at, y), { labelDir: 90 }));
+  });
+  L.g.segment(ps[0], ps[ps.length - 1], { ticks: L.x(1) });
+  return ps;
+}
+
+/** A number named by one letter, drawn as a rod of units. */
+export function numberRod(L: Lines, name: string, n: number, x: number, y: number): void {
+  const a = L.g.point(name, v(x, y), { labelDir: 180 });
+  L.g.segment(a, v(x + L.x(n), y), { ticks: L.x(1), name });
 }

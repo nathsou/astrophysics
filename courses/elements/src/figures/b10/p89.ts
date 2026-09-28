@@ -1,5 +1,5 @@
 import { figure } from '../../geometry/figure';
-import { choose, drawFind, NONSQUARE_PAIRS, order, rat, rootText } from './apotome';
+import { choose, drawFind, NONSQUARE_PAIRS, apotomeOrder, rat, rootText } from './apotome';
 import { line, Rat, Surd } from './ring';
 
 // A = 1, the annex CG = r·A. DF, FE are numbers such that DE has to neither the ratio of square
@@ -23,6 +23,6 @@ export default figure({
     g.equal('BG² : H² = ED : DF', bg2.value / h2.value, de / df);
     g.claim('BG is incommensurable in length with H', !line.comm(BG2, H2));
     g.claim('the annex CG is commensurable in length with A', line.comm(GC2, Surd.rat(1)));
-    g.claim('BC is a fifth apotome', order(BG2, GC2) === 5);
+    g.claim('BC is a fifth apotome', apotomeOrder(BG2, GC2) === 5);
   },
 });

@@ -1,5 +1,5 @@
 import { figure } from '../../geometry/figure';
-import { choose, drawFind, NONSQUARE_PAIRS, order, rat, rootText } from './apotome';
+import { choose, drawFind, NONSQUARE_PAIRS, apotomeOrder, rat, rootText } from './apotome';
 import { line, Rat, Surd } from './ring';
 
 // A = 1, BG = r·A. DF, FE are numbers such that DE has to neither of them the ratio of square
@@ -22,6 +22,6 @@ export default figure({
     g.claim('BG, GC are commensurable in square only (X.9)', line.commSqOnly(BG2, GC2));
     g.equal('BG² : H² = ED : DF', bg2.value / h2.value, de / df);
     g.claim('ED : DF is not a ratio of squares, so BG is incommensurable in length with H', !new Rat(de, df).square && !line.comm(BG2, H2));
-    g.claim('BC is a fourth apotome', order(BG2, GC2) === 4);
+    g.claim('BC is a fourth apotome', apotomeOrder(BG2, GC2) === 4);
   },
 });

@@ -1,5 +1,5 @@
 import { figure } from '../../geometry/figure';
-import { choose, drawFind, order, rat, rootText, SQUARE_PAIRS } from './apotome';
+import { choose, drawFind, apotomeOrder, rat, rootText, SQUARE_PAIRS } from './apotome';
 import { line, Rat, Surd } from './ring';
 
 // A = 1 is the rational line set out, BG = r·A. DE = m², EF = n² are square numbers whose
@@ -24,6 +24,6 @@ export default figure({
     g.equal('BG² − GC² = H²', bg * bg - gc * gc, h * h);
     g.equal('BG : H = √DE : √EF', bg / h, m / n);
     g.claim('BG is commensurable in length with H and with A', line.comm(BG2, H2) && line.comm(BG2, Surd.rat(1)));
-    g.claim('BC is a first apotome', order(BG2, GC2) === 1);
+    g.claim('BC is a first apotome', apotomeOrder(BG2, GC2) === 1);
   },
 });
