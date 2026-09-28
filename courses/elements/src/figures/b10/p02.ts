@@ -29,5 +29,4 @@ export default figure({
     g.claim('AG < CF', ag < cf && ag > 0);
     g.claim('n is not a square: the quotients repeat for ever', !Number.isInteger(Math.sqrt(n)));
   },
-  unresolved: {},
 });

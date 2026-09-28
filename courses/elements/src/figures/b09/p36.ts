@@ -28,7 +28,7 @@ export default figure({
       x += s;
       g.segment({ x: R.x(x), y: -9.45 }, { x: R.x(x), y: -8.95 }, { aux: true });
     }
-    S.num('P', 3, 0, -10.6, { dashed: true });
+    S.num('P', 3, 0, -10.6, { dashed: true, ticks: false });
     R.num('Q', fg / 3, 5, -10.6, { dashed: true, ticks: false });
     const ps = parts(fg);
     g.show('parts of FG', ps.join(' + '));

@@ -13,8 +13,8 @@ export default figure({
     const xs = [0, ...ps.map((p) => (acc += p))];
     R.seg('A', 'E', total, 0, 0);
     ['B', 'C', 'D'].forEach((n, i) => R.mark(n, 0, 0, xs[i + 1]));
-    // the unit at the end of each
-    for (let i = 0; i < 4; i++) g.segment({ x: R.x(xs[i + 1] - 1), y: 0 }, { x: R.x(xs[i + 1]), y: 0 }, { colour: 'red' });
+    // the unit at the end of each, below the rod
+    for (let i = 0; i < 4; i++) R.bare(1, R.x(xs[i + 1] - 1), -0.6, undefined, { aux: true });
     g.show('AB, BC, CD, DE', ps.join(', '));
     g.claim('each is odd, four of them', ps.every(isOdd));
     g.claim('each less a unit is even', ps.every((p) => isEven(p - 1)));

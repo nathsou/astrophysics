@@ -151,11 +151,13 @@ export class Lines {
 
   /**
    * A rectangle with its lower-left corner at (x, y), width w and height h (raw lengths).
-   * Corners are named counter-clockwise from the lower left; null leaves a corner unnamed.
+   * Corners are named counter-clockwise from the lower left; null leaves a corner unnamed, and a
+   * name starting with '~' is a hidden point (so that "the rectangle AC" finds the polygon by its
+   * diagonal without a fourth label in the figure).
    */
   rect(names: (string | null)[], x: number, y: number, w: number, h: number, s: Style = {}, dirs: (number | undefined)[] = [225, 315, 45, 135]): V[] {
     const cs = [v(x, y), v(x + w * this.u, y), v(x + w * this.u, y + h * this.u), v(x, y + h * this.u)];
-    const ps = cs.map((c, i) => (names[i] ? this.pt(names[i]!, c, { labelDir: dirs[i] }) : c));
+    const ps = cs.map((c, i) => (names[i] ? this.pt(names[i]!, c, { labelDir: dirs[i], hidden: names[i]!.startsWith('~') }) : c));
     this.g.polygon(ps, s);
     return ps;
   }
@@ -197,4 +199,17 @@ export function convergents(cf: number[]): [number, number][] {
 export function looksCommensurable(x: number, y: number, limit = 200): boolean {
   for (let m = 1; m <= limit; m++) if (Math.abs((m * x) / y - Math.round((m * x) / y)) < 1e-9) return true;
   return false;
+}
+
+/**
+ * X.17–18 (and later uses): BC with a rectangle BD·DC applied to it, falling short by the square
+ * on DC. E bisects BC and EF = DE, so BF = DC and DF = BD − DC. Draws the line B F E D C at
+ * height y, the applied rectangle and the square above it; returns the points.
+ */
+export function deficientApplication(L: Lines, bd: number, dc: number, y: number) {
+  const bc = bd + dc;
+  const [B, F, E, D, C] = L.row(['B', 'F', 'E', 'D', 'C'], [dc, bc / 2 - dc, bd - bc / 2, dc], 0, y, { below: true });
+  L.rect([null, null, null, null], 0, y, bd, dc, { fill: true, aux: true });
+  L.rect([null, null, null, null], bd, y, dc, dc, { dashed: true, aux: true });
+  return { B, F, E, D, C };
 }

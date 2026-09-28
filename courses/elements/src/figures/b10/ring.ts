@@ -177,7 +177,8 @@ export class Surd {
   }
   toString(): string {
     if (this.zero) return '0';
-    const keys = [...this.t.keys()].sort((a, b) => Number(a) - Number(b));
+    // rational part first, then the roots; positive terms before negative ones
+    const keys = [...this.t.keys()].sort((a, b) => Number(this.t.get(a)!.p < 0n) - Number(this.t.get(b)!.p < 0n) || Number(a) - Number(b));
     let s = '';
     keys.forEach((k, i) => {
       const c = this.t.get(k)!;
