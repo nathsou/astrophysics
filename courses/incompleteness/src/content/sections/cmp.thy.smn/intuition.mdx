@@ -10,12 +10,6 @@ The $s$-$m$-$n$ theorem says that fixing some of a program’s inputs can be don
 
 The book advises thinking of $s^m_n$ as acting on programs. It does not compute $\varphi_e(\vec a, \vec y)$ — it cannot, since it gets no $\vec y$, and $\varphi_e$ might not halt anyway. It produces a new program that, *when run on $\vec y$*, does what $e$ would do on $\vec a, \vec y$. A Turing machine version prepends $\vec a$ to the input tape; a programmer would call it partial application.
 
-<Added label="Added for this edition: a slip in the text">
-
-In the explanation after the theorem, the book writes that $s^m_n$ “returns a program $s^m_n(x, a_0, \dots, a_{m-1})$” and continues “if you think of $x$ as the description of a Turing machine”. The program is $e$ throughout: read $s^m_n(e, a_0, \dots, a_{m-1})$ and “think of $e$”.
-
-</Added>
-
 ## How to build one
 
 For the partial recursive functions there is a direct construction. Let $E$ be the definition with index $e$. The $n$-place function

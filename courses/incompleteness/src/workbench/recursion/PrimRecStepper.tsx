@@ -31,7 +31,7 @@ interface Preset {
 }
 
 const pow2 = (): RF => {
-  // The book's first example, made official (section "Primitive Recursion Functions"):
+  // The book's first example, made official (section "Primitive Recursive Functions"):
   // h′(x₀, 0) = f(x₀) = succ(zero(x₀)),  h′(x₀, y + 1) = g(x₀, y, h′(x₀, y)) with
   // g(x₀, y, z) = g′(P³₂(x₀, y, z)), g′(z) = mult(g″(z), P¹₀(z)), g″(z) = succ(f(z)).
   const f = () => R.def('f', 'f', R.comp(R.succ(), [R.zero()]));

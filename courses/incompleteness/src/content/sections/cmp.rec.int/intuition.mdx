@@ -21,6 +21,6 @@ The chapter takes this pattern, *primitive recursion*, as the backbone of a defi
 - Then the limits. A **diagonal argument** (<Ref k="cmp:rec:npr:sec" />) produces a computable function that is not primitive recursive, and the Ackermann–Péter function is a natural example. In fact *no* list of total functions that can be effectively enumerated contains all computable functions.
 - The way out is to admit **partial** functions and **unbounded search** $\mu x$ (<Ref k="cmp:rec:par:sec" />). A search may never end; the price of capturing all computable functions is that some computations do not halt — and, by the **halting problem** (<Ref k="cmp:rec:hlt:sec" />), there is no computable way to tell which.
 
-## How this edition treats it
+## How the workbenches treat it
 
 Every definition in the workbenches is a real term built from $\mathrm{zero}$, $\mathrm{succ}$, projections, composition, primitive recursion and $\mu$, and every value shown is computed from it by the engine. Computations are run with a **budget** of steps. When the budget runs out, the workbench says “no answer within $N$ steps” — never “undefined”. The difference between the two is the subject of the last sections of the chapter.

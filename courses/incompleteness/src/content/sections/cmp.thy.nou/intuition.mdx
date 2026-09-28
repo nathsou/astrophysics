@@ -6,12 +6,6 @@ Suppose a *total* computable $\mathrm{Un}'(k, x)$ listed every total computable 
 
 </Added>
 
-<Added label="Added for this edition: a slip in the text">
-
-The section opens: “there is a partial computable function that is total for the partial computable functions”. It means *universal* for them: $\mathrm{Un}$ is partial, and universal for the partial computable functions (<Ref k="cmp:thy:uni:thm:univ-comp" />).
-
-</Added>
-
 ## The diagonal
 
 Write the values $\mathrm{Un}'(k, x)$ in a table, row $k$, column $x$. The function $d$ walks down the diagonal and changes every entry: $d(k) = \mathrm{Un}'(k, k) + 1 \neq \mathrm{Un}'(k, k)$. So $d$ is not row $k$, for any $k$. If $\mathrm{Un}'$ is total and computable, $d$ is total and computable too — so the rows do not contain every total computable function. This is Cantor’s argument, made effective; the book used it before to show that some computable functions are not primitive recursive (<Ref k="cmp:rec:npr:sec" />).

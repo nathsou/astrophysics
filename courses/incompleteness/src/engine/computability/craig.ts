@@ -7,10 +7,9 @@
 // formula F is made of, and compare with that element of the enumeration — one enumeration step,
 // no search.
 //
-// Two details the book's proof sketch leaves implicit are made explicit here: k copies go with
-// the element Aₖ₋₁ (k = n + 1), and a formula F can be read in two ways — as one copy of F, and,
-// if it has the right shape, as k ≥ 2 copies of its left conjunct — so both readings are tested
-// (Aₙ may itself be a conjunction of identical conjuncts).
+// As in the proof, k copies go with the element Aₖ₋₁ (k = n + 1), and a formula F can be read in
+// two ways — as one copy of F, and, if it has the right shape, as k ≥ 2 copies of its left
+// conjunct — so both readings are tested (A₀ may itself be a conjunction of identical conjuncts).
 
 import type { Formula } from '../syntax/ast.ts';
 import { freshId } from '../syntax/ast.ts';

@@ -10,12 +10,6 @@ import { ExComSwap } from '../../../workbench/recursion/exercises';
 
 In the book’s definition, $f$ is $k$-place and the inner functions $g_0, \ldots, g_{k-1}$ are all $n$-place, with the *same* arguments $x_0, \ldots, x_{n-1}$. To compute $h(x_0, \ldots, x_{n-1})$: compute each $y_i = g_i(x_0, \ldots, x_{n-1})$, then $f(y_0, \ldots, y_{k-1})$. If $f$ and the $g_i$ are computable, so is $h$.
 
-<Added label="Added for this edition: a slip in the text">
-
-The book’s sentence reads “feed these values into $f$ to compute $h(x_0, \dots, x_{k-1}) = f(y_0, \dots, y_{k-1})$”. Since $h$ is $n$-place, the left-hand side should be $h(x_0, \dots, x_{n-1})$; $k$ is the number of inner functions, not of arguments.
-
-</Added>
-
 ## Projections do the rearranging
 
 Ordinary mathematical notation lets us ignore, repeat and reorder arguments freely. The official pattern does not — but projections make up for it:

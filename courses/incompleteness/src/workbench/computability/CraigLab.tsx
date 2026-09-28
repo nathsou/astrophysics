@@ -99,8 +99,8 @@ export function CraigLab() {
           </div>
         )}
         <p className="wb-note">
-          <Prov kind="added" /> Two details are made explicit here: k copies go with <Tex tex="A_{k-1}" />, and a sentence can be read both as one copy of itself and as k
-          copies of its left conjunct, so both readings are tried (an <Tex tex="A_0" /> such as <Tex tex="B \land B" /> is one copy of itself).
+          As in the proof, k copies go with <Tex tex="A_{k-1}" />, and a sentence is read both as one copy of itself and as k copies of its left conjunct, so both
+          readings are tried (an <Tex tex="A_0" /> such as <Tex tex="B \land B" /> is one copy of itself).
         </p>
       </Panel>
     </div>
