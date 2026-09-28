@@ -5,6 +5,7 @@ import katex from 'katex';
 import { convertAll } from '../scripts/convert.ts';
 import { assembleDisplay, splitRows } from '../scripts/latex/document.ts';
 import { expandMath } from '../scripts/latex/expand.ts';
+import { applyErrata } from '../scripts/latex/errata.ts';
 import { applyOverrides, emptyConfig, parseArgSpec, readConfig } from '../scripts/latex/macros.ts';
 import type { Block, Chapter, Inline, SourceIndex } from '../src/content/schema.ts';
 
@@ -48,6 +49,24 @@ describe('macro layer', () => {
   });
   it('takes the book’s terminology tokens (enumerable → countable)', () => {
     expect(cfg.tokens.get('enumerable')!.s).toBe('countable');
+  });
+});
+
+describe('errata', () => {
+  const errata = () => ({ entries: [{ repo: 'OpenLogic' as const, file: 'a.tex', find: 'L-8', replace: 'L-9', why: '', from: 't.json', applied: 0 }] });
+  it('applies a correction that matches exactly once', () => {
+    const d: never[] = [];
+    expect(applyErrata(errata(), 'OpenLogic', 'a.tex', 'from L-8 and L-12', d)).toBe('from L-9 and L-12');
+    expect(d).toEqual([]);
+  });
+  it('reports a correction that no longer matches, or matches twice', () => {
+    const d: { code: string }[] = [];
+    applyErrata(errata(), 'OpenLogic', 'a.tex', 'from L-9 and L-12', d as never);
+    applyErrata(errata(), 'OpenLogic', 'a.tex', 'L-8, L-8', d as never);
+    expect(d.map((x) => x.code)).toEqual(['erratum-unmatched', 'erratum-ambiguous']);
+  });
+  it('are all applied to the book', () => {
+    expect(diagnostics.filter((x) => x.code.startsWith('erratum'))).toEqual([]);
   });
 });
 

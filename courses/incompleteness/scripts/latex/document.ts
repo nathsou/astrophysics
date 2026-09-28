@@ -7,6 +7,7 @@
 // defn share a counter; problems have their own).
 
 import { existsSync, readFileSync } from 'node:fs';
+import { applyErrata, type Errata } from './errata.ts';
 import { join } from 'node:path';
 import katex from 'katex';
 import type { Block, Chapter, Diagnostic, DisplayRow, EnvKind, Inline, LabelTarget, ListItem, ProofTreeNode, Section, SourceLoc } from '../../src/content/schema.ts';
@@ -30,6 +31,8 @@ export interface ConvertContext {
   olsectionSuppressed?: boolean;
   /** Environments switched off by the book (\\let\\intro\\comment in the appendices). */
   suppressedEnvs: Set<string>;
+  /** Corrections applied to the source before conversion (scripts/latex/errata.ts). */
+  errata?: Errata;
 }
 
 export interface BookHandler {
@@ -112,7 +115,7 @@ export class FileParser {
     this.chapterState = typeof chapter === 'function' ? chapter : () => chapter;
     this.sectionId = sectionId;
     this.onImport = onImport;
-    this.src = readFileSync(join(ctx.upstreamDir, repo, file), 'utf8');
+    this.src = applyErrata(ctx.errata, repo, file, readFileSync(join(ctx.upstreamDir, repo, file), 'utf8'), ctx.diagnostics);
     this.end = this.src.length;
     for (let i = 0; i < this.src.length; i++) if (this.src[i] === '\n') this.lineStarts.push(i + 1);
   }

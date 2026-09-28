@@ -10,6 +10,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { applyOverrides, emptyConfig, readConfig } from './latex/macros.ts';
 import { convertBook, plain, type ConvertContext } from './latex/document.ts';
+import { loadErrata, unusedErrata } from './latex/errata.ts';
 import type { Block, Chapter, Inline, LabelTarget, SearchEntry, SourceIndex } from '../src/content/schema.ts';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -27,12 +28,14 @@ export function convertAll() {
   let result: { chapters: Chapter[]; ctx: ConvertContext } | null = null;
   // Two passes: the first collects labels so that forward references resolve in the second.
   for (let pass = 0; pass < 2; pass++) {
-    const ctx: ConvertContext = { upstreamDir, config, diagnostics: [], used: new Map(), labels: new Map(), knownLabels: known, suppressedEnvs: new Set() };
+    const errata = loadErrata(join(root, 'errata'));
+    const ctx: ConvertContext = { upstreamDir, config, diagnostics: [], used: new Map(), labels: new Map(), knownLabels: known, suppressedEnvs: new Set(), errata };
     const chapters = convertBook(ctx);
     known = ctx.labels;
     result = { chapters, ctx };
   }
   const { chapters, ctx } = result!;
+  unusedErrata(ctx.errata!, ctx.diagnostics);
 
   // Unresolved references.
   const refs = new Set<string>();

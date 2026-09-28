@@ -1,0 +1,9 @@
+[
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/incompleteness-provability/lob-thm.tex",
+    "find": "\\text{from \\olref{L-8} and \\olref{L-12}}",
+    "replace": "\\text{from \\olref{L-9} and \\olref{L-12}}",
+    "why": "A follows from Prov(⌜D⌝) → A (L-9) and Prov(⌜D⌝) (L-12); from L-8 and L-12 nothing follows."
+  }
+]

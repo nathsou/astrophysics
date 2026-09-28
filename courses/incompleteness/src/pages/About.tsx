@@ -60,8 +60,8 @@ export function About() {
 
         <h2>What is changed</h2>
         <ul>
-          <li>The LaTeX is converted to structured content by a converter written for this edition (see “Conversion” below). The wording of the converted text is not edited.</li>
-          <li>Each section is presented in three modes. Intuition and Explore modes, the workbenches, exercises and all panels marked “Added”, “Computed” or “Checked” are new.</li>
+          <li>The LaTeX is converted to structured content by a converter written for this edition (see “Conversion” below). Apart from small corrections (below), the wording of the converted text is not edited.</li>
+          <li>Each section is presented in three modes. Intuition and Explore modes, the workbenches, exercises, and the computed and checked panels in Formal mode are new.</li>
           <li>
             Formal mode keeps the book’s numbering: chapters 1–9 and appendices A–D, as in the book. References to parts of the Open Logic Project outside this book are shown
             as such.
@@ -71,85 +71,9 @@ export function About() {
             ′ = f¹₀, + = f²₀, × = f²₁ and &lt; = P²₀; variables v₀, v₁, … are displayed x, y, z, u, w, x₀, y₀, …
           </li>
           <li>End-of-chapter problems are shown where they occur in the source rather than collected at the end of the chapter.</li>
-        </ul>
-
-        <h2>Where this edition departs from the printed text</h2>
-        <p>
-          The converted text is never edited. Where a checker, an evaluator or a close reading found a slip, the page concerned shows the book’s version next to a corrected one and says
-          which is which. So far:
-        </p>
-        <ul className="corrections">
           <li>
-            <a href="#/s/cmp.rec.com?mode=intuition">2.3</a>: the explanation after the definition of composition writes h(x₀, …, x<sub>k−1</sub>) where h is n-place: x<sub>n−1</sub> is meant.
-          </li>
-          <li>
-            <a href="#/s/cmp.rec.prr?mode=intuition">2.8</a>: x ≤ y is called “the less-than relation”; it is less-than-or-equal.
-          </li>
-          <li>
-            <a href="#/s/cmp.rec.bmi?mode=intuition">2.9</a>: in the proof, case 3 writes m<sub>R</sub>(z⃗, y + 1) where x⃗ is meant, and “define m<sub>R</sub>(x⃗, 0)” should be m<sub>R</sub>(x⃗, y).
-          </li>
-          <li>
-            <a href="#/s/cmp.rec.tre?mode=intuition">2.12</a>: the proof that SubtreeSeq is primitive recursive runs one index past the end of the sequence (harmless: that element is 0).
-          </li>
-          <li>
-            <a href="#/s/inc.req.pri?mode=explore">4.4</a>: the text introduces “the function h(x, z⃗)” but its equations and proof use h(x⃗, y).
-          </li>
-          <li>
-            <a href="#/s/inc.req.bre?mode=intuition">4.5</a>: the introduction writes the representing formulas as x₀′ = y and (x₀ + x₁) = y, and the proof for addition argues from (n̄ + m̄) = y, while the propositions state y = x₀′ and y = (x₀ + x₁).
-          </li>
-          <li>
-            <a href="#/s/inc.req.cmp?mode=intuition">4.6</a>: the problem cites the proof of the same proposition twice; the first reference should be to the one-variable case.
-          </li>
-          <li>
-            <a href="#/s/inc.inp.s1c?mode=intuition">4.11</a>: in the proof of the lemma on atomic sentences, m is fixed as the value of t₂ but Q ⊢ t₂ = n̄ is written; the step “by transitivity” to k̄′ + t₁ = t₂ needs k̄′ + n̄ = m̄ (Q cannot commute); the false-&lt; case also needs Q1 and Q4 and contradicts Q2, not Q3; and in the next lemma the case k = 0 of the bounded universal quantifier is an empty conjunction, not an empty disjunction.
-          </li>
-          <li>
-            <a href="#/s/inc.inp.prc?mode=intuition">5.6</a>: Prov(y) is defined with the relation Prf rather than the formula representing it.
-          </li>
-          <li>
-            <a href="#/s/inc.inp.lob?mode=explore">5.8</a>: the theorem refers to the conditions P1–P3 “from” 5.7, where they are stated in 5.6; and the last line of the proof cites (5.21) and (5.25), where propositional logic needs (5.22) and (5.25).
-          </li>
-          <li>
-            <a href="#/s/cmp.thy.smn?mode=intuition">6.4</a>: the explanation writes s<sup>m</sup><sub>n</sub>(x, a₀, …) and speaks of x as a machine description where e is meant.
-          </li>
-          <li>
-            <a href="#/s/cmp.thy.nou?mode=intuition">6.6</a>: the opening sentence says a partial computable function is “total for” the partial computable functions; “universal for” is meant.
-          </li>
-          <li>
-            <a href="#/s/cmp.thy.cmp?mode=formal">6.12</a>: in the proof, T(e, x, h(x)) should be T(d, x, h(x)) (A is the domain of φ<sub>d</sub>). The chapter also notes a numeral n̄ written for ē, and an off-by-one in the count of conjuncts in Craig’s trick.
-          </li>
-          <li>
-            <a href="#/s/mod.mar.stm?mode=intuition">7.5</a>: “not in the domain of s” should be “not in the range of s”.
-          </li>
-          <li>
-            <a href="#/s/mod.mar.mpa?mode=intuition">7.8</a>: the proposition that every x has a unique predecessor fails for x = 0; it needs x ≠ 0.
-          </li>
-          <li>
-            <a href="#/s/mod.mar.cmp?mode=intuition">7.9</a>: the bijection g with g(n) = n + 1 for n &gt; 0 should have g(n) = n − 1. Smaller misprints are noted in 7.1 and 7.7.
-          </li>
-          <li>
-            <a href="#/s/sol.met.spa?mode=intuition">8.7</a>: the formula A₊ quantifies ∀w but constrains u only at x; the recursion clause should be ∀w u(w′) = u(w)′.
-          </li>
-          <li>
-            <a href="#/s/sol.set.crd?mode=explore">8.12</a>: Inf(X) as printed does not require u to map X into X, so finite sets satisfy it; Count(X) ends with X = Y where X ⊆ Y is needed; and Aleph₁(X) as printed holds exactly for finite X (X is one of its own subsets), so the continuum hypothesis as written in 8.13 is false in every structure. All are refuted on small domains by the evaluator, and repaired versions are given.
-          </li>
-          <li>
-            <a href="#/s/lam.rep.cur?mode=intuition">9.5</a>: the last line of the general computation substitutes into P, which is never defined; N is meant.
-          </li>
-          <li>
-            <a href="#/s/lam.rep.arf?mode=intuition">9.7</a>: Mult′ as printed computes a·a; and Exp b̄ 0̄ reduces to λx.x, which is only η-equivalent to 1̄, so Exp λ-defines exponentiation only for exponents ≥ 1 (Exp′ has no exception).
-          </li>
-          <li>
-            <a href="#/s/lam.ldf.prf?mode=formal">9.10</a>: the recursion equation in the proof of the primitive-recursion lemma has h where g is meant; the composition lemma writes G₀, …, G<sub>k</sub> for G<sub>k−1</sub>.
-          </li>
-          <li>
-            <a href="#/s/lam.ldf.min?mode=intuition">9.12</a>: the recursive call in Search drops f, and the proof λ-defines “h” where the lemma calls the function g.
-          </li>
-          <li>
-            <a href="#/s/ic.deriv.text?mode=explore">Appendix A</a>: the derivation of ∀x ¬x &lt; 0 cites Q5 and Q6 where it uses Q4 and Q5, and λ₃ lists the cases of trichotomy in a different order from the lemma it cites.
-          </li>
-          <li>
-            <a href="#/s/fol.ntd.pro?mode=explore">C.6</a>: one intermediate tree names ¬Elim “⊥Intro”. (Its finished tree has an →Intro without a label; the book’s rules allow that, since it discharges nothing, and the checker accepts it.)
+            Small slips in the printed text — a wrong index or equation reference, a misnamed function, a formula that does not say what the text means — are corrected in
+            place. The corrections are applied to the LaTeX during conversion and kept, with their reasons, in <code>errata/</code> in the repository.
           </li>
         </ul>
 
