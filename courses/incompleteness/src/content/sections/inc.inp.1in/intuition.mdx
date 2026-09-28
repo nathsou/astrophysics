@@ -1,0 +1,20 @@
+<Added label="Added for this edition">
+
+Apply the fixed-point lemma to $\lnot\mathsf{Prov}_T(x)$, where $\mathsf{Prov}_T(y)$ says “some number codes a $T$-derivation of the sentence with Gödel number $y$”. The result is a sentence $G_T$ with $\mathbf Q \vdash G_T \leftrightarrow \lnot\mathsf{Prov}_T(\ulcorner G_T\urcorner)$: $G_T$ says of itself that it is not provable in $T$.
+
+</Added>
+
+## Two halves, two hypotheses
+
+- **If $T$ proved $G_T$**, a particular number $m$ would code the derivation, and — because the proof relation is represented in $\mathbf Q$ — $\mathbf Q$ would prove $\mathsf{Prf}_T(\overline m, \ulcorner G_T \urcorner)$, hence $\mathsf{Prov}_T(\ulcorner G_T\urcorner)$, hence $\lnot G_T$. So $T$ would be inconsistent. **Consistency** rules this out.
+- **If $T$ proved $\lnot G_T$**, it would prove $\exists x\,\mathsf{Prf}_T(x, \ulcorner G_T\urcorner)$. But since $T$ does not prove $G_T$, no number codes a derivation, and $\mathbf Q$ refutes $\mathsf{Prf}_T(\overline n, \ulcorner G_T\urcorner)$ for each $n$ separately. That is not a contradiction — only an **ω-inconsistency**. Gödel needed ω-consistency here; Rosser later found a sentence for which consistency suffices.
+
+The other hypotheses enter elsewhere: **computable axiomatization** makes the proof relation decidable, hence representable; **extending Q** transfers what $\mathbf Q$ proves to $T$.
+
+Explore mode lays the two lemmas out step by step, with what justifies each step. Switch a hypothesis off and watch which steps — and which conclusions — lose their support.
+
+<ExWhereOmega />
+
+<Callout title="The sentence itself">
+$G_T$ is the fixed point of $B(x) = \lnot\mathsf{Prov}(x)$. You can build it — up to the formula $\mathsf{Prov}$, which appears by name — in <a href="#/s/inc.inp.fix?mode=explore">the fixed-point workbench</a>.
+</Callout>

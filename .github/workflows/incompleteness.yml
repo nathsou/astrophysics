@@ -1,0 +1,35 @@
+name: Incompleteness — checks
+
+# Conversion check, type check and tests for courses/incompleteness. (Deployment is in deploy.yml.)
+on:
+  push:
+    branches: [main]
+    paths: ['courses/incompleteness/**', '.github/workflows/incompleteness.yml']
+  pull_request:
+    paths: ['courses/incompleteness/**', '.github/workflows/incompleteness.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: courses/incompleteness
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: courses/incompleteness/package-lock.json
+      - run: npm ci
+      - name: The committed conversion of the upstream LaTeX is up to date and error-free
+        run: npm run convert:check
+      - name: Type-check
+        run: npm run typecheck
+      - name: Engine, conversion and property tests
+        run: npm test

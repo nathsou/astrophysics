@@ -1,0 +1,23 @@
+<Added label="Added for this edition">
+
+Four descriptions of the same class of sets: $S$ is c.e.; the range of a *partial* computable function; empty or the range of a *primitive recursive* function; the *domain* of a partial computable function. And one more: $S = \{x : \exists y\, R(x, y)\}$ for a computable relation $R$. The proofs all use the normal form: $\varphi_e(x)\downarrow = y$ iff some $s$ has $T(e, x, s)$ and $U(s) = y$.
+
+</Added>
+
+## From partial to primitive recursive
+
+The surprising direction is (2) ⇒ (3): the range of a partial function — computed by searches that may never end — is also the range of a primitive recursive function. The trick is to move the search *out of* the function and *into* its argument. Take $z$ to code a pair: an input $(z)_0$ and a candidate record $(z)_1$. Let $f(z) = U((z)_1)$ if $T(e, (z)_0, (z)_1)$, and some fixed $a \in S$ otherwise. Checking $T$ never runs forever, so $f$ is total — primitive recursive, even — and as $z$ runs through all numbers, it eventually pairs every input with its record. The same trick with $(z)_0$ in place of $U((z)_1)$ turns a *domain* into a range, (4) ⇒ (1).
+
+In the workbench, records are too large for $f(0), f(1), \ldots$ to hit one in any reasonable time, so a second version replaces “$(z)_1$ is the record” by “the computation halts within $(z)_1$ steps”. It is the same idea, and also total and computable.
+
+## From range to domain
+
+For (1) ⇒ (4), turn a list into a test that halts on members: $g(y) = \mu x\,(f(x) = y)$ searches the list for $y$. It halts exactly when $y$ is in the range of $f$.
+
+## Semi-decidable
+
+Clause (4) gives the c.e. sets an index: $W_e = \{x : \varphi_e(x)\downarrow\}$ is the $e$-th c.e. set, and every c.e. set is some $W_e$. It also explains the name *semi-decidable*: run $\varphi_e(x)$; if $x \in W_e$ you eventually hear “yes”, and if not, you hear nothing.
+
+## Existential form
+
+$x \in W_e$ iff $\exists s\, T(e, x, s)$ — a computable relation under one unbounded existential quantifier. Conversely, if $S = \{x : \exists y\, R(x, y)\}$ with $R$ computable, then $S$ is the domain of $\mu y\, R(x, y)$. The existential quantifier is the logical form of “search until found”.

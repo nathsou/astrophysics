@@ -1,0 +1,25 @@
+import { ExCompleteDecidable } from '../../../workbench/computability/exercises';
+
+<Added label="Added for this edition">
+
+If $\mathbf T$ represents Kleene’s $T$ predicate and is ω-consistent, then $\mathbf T$ proves $\exists z\, \mathsf T(\bar e, \bar e, z)$ exactly when $\varphi_e(e)$ halts. So deciding $\mathbf T$ would decide $K$ — impossible. But a complete, consistent, c.e. theory is decidable: list its theorems until $A$ or $\lnot A$ appears. Hence an ω-consistent c.e. theory representing the primitive recursive relations is incomplete. This is Gödel’s first theorem, without the fixed-point lemma.
+
+</Added>
+
+## The theory knows the halting computations
+
+Representing $T$ means: if $\varphi_e(n)\downarrow$, some record $k$ makes $\mathbf T \vdash \mathsf T(\bar e, \bar n, \bar k)$, and then $\mathbf T \vdash \exists z\, \mathsf T(\bar e, \bar n, z)$; if $\varphi_e(n)\uparrow$, then $\mathbf T \vdash \lnot\mathsf T(\bar e, \bar n, \bar k)$ for *every* $k$. In the second case ω-consistency forbids $\mathbf T \vdash \exists z\, \mathsf T(\bar e, \bar n, z)$. So $\varphi_e(e)\downarrow$ iff $\mathbf T \vdash \exists z\, \mathsf T(\bar e, \bar e, z)$: the theorems of $\mathbf T$ encode $K$. (The book’s text has $\bar n$ in two places where, with $n = e$, it means $\bar e$.)
+
+## Complete theories are decidable
+
+If $\mathbf T$ is c.e., its theorems can be listed. If it is also complete, then for any sentence $A$ one of $A$, $\lnot A$ appears on the list eventually; if it is consistent, only one does. Search the list until one of them shows up: a decision procedure. The book also gives the formal version: the non-theorems are c.e. (a non-sentence, or a sentence whose negation is listed), and a c.e. set with c.e. complement is computable (<Ref k="cmp:thy:cmp:thm:ce-comp" />).
+
+## Putting them together
+
+An ω-consistent c.e. theory representing the primitive recursive relations is undecidable (by the first argument) — so it cannot be complete (by the second). Compare the diagonal proof (<Ref k="inc:inp:1in:sec" />): there, the unprovable sentence was built explicitly. Here the argument only shows that *some* sentence $\exists z\, \mathsf T(\bar e, \bar e, z)$ is undecided, without saying which.
+
+## An explicit sentence after all
+
+The book’s last theorem recovers one. Let $g(e)$ search the enumeration of $\mathbf T$ for a proof of $\lnot\exists z\,\mathsf T(\bar e, \bar e, z)$, halting if one is found, and let $k$ be an index of $g$. Then $G = \lnot\exists z\, \mathsf T(\bar k, \bar k, z)$ says “$g$ does not halt on its own index” — and $g$ halts on $k$ exactly if $\mathbf T$ proves $G$. As in Gödel’s proof, consistency rules out $\mathbf T \vdash G$, and ω-consistency rules out $\mathbf T \vdash \lnot G$. The self-reference now comes from $g$ looking for proofs about its own index, in place of the fixed-point lemma.
+
+<ExCompleteDecidable />

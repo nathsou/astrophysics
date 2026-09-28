@@ -1,0 +1,30 @@
+import { ExSmnBlind } from '../../../workbench/computability/exercises';
+
+<Added label="Added for this edition">
+
+The $s$-$m$-$n$ theorem says that fixing some of a program’s inputs can be done *to the program*, computably: from $e$ and fixed values $a_0, \ldots, a_{m-1}$ one computes an index $s^m_n(e, \vec a)$ of the function $\vec y \mapsto \varphi^{m+n}_e(\vec a, \vec y)$. The name records the numbers: $m$ inputs are fixed, $n$ remain.
+
+</Added>
+
+## Programs, not values
+
+The book advises thinking of $s^m_n$ as acting on programs. It does not compute $\varphi_e(\vec a, \vec y)$ — it cannot, since it gets no $\vec y$, and $\varphi_e$ might not halt anyway. It produces a new program that, *when run on $\vec y$*, does what $e$ would do on $\vec a, \vec y$. A Turing machine version prepends $\vec a$ to the input tape; a programmer would call it partial application.
+
+## How to build one
+
+For the partial recursive functions there is a direct construction. Let $E$ be the definition with index $e$. The $n$-place function
+$$
+\vec y \;\mapsto\; E(c_{a_0}(\vec y), \ldots, c_{a_{m-1}}(\vec y),\; P^n_0(\vec y), \ldots, P^n_{n-1}(\vec y)),
+$$
+where $c_a$ is the constant function with value $a$, is a composition. So its index is the index of a composition with outer function $e$ — which, in this edition’s coding, is computed from $e$ and the indices of the parts by the pairing function alone. The index of $c_a = \mathrm{succ}(\cdots\mathrm{succ}(\mathrm{zero})\cdots)$ is defined by primitive recursion on $a$. Hence $s^m_n$ is primitive recursive.
+
+Two consequences of “it never looks inside $e$”:
+
+- $s^m_n$ is total, even though $\varphi_e$ is partial.
+- If $e$ is not a definition of an $(m+n)$-place function, $s^m_n(e, \vec a)$ is not a definition of an $n$-place function either, and both sides of the theorem are undefined — exactly what $\simeq$ allows.
+
+## Is this the book’s $s^m_n$?
+
+The theorem only claims that *some* primitive recursive $s^m_n$ exists, for whatever coding was fixed. The construction here works for this edition’s indices; the same idea (compose with constants) works for any reasonable coding of partial recursive definitions.
+
+<ExSmnBlind />

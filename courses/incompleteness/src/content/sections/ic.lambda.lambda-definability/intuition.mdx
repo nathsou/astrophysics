@@ -1,0 +1,28 @@
+<Added label="Added for this edition">
+
+The pure lambda calculus has no numbers, so we encode them: the **Church numeral** $\overline n \equiv \lambda f x.\,f^n(x)$ is “apply $f$ to $x$, $n$ times”. A term $F$ **λ-defines** $f$ if $F\,\overline{n_0}\ldots\overline{n_{k-1}}$ reduces to the numeral of $f(n_0, \ldots, n_{k-1})$ whenever that is defined, and has no normal form when it is not.
+
+</Added>
+
+## Numbers as iterators
+
+$$
+\overline 0 \equiv \lambda f x.\,x,\qquad \overline 1 \equiv \lambda f x.\,f x,\qquad \overline 3 \equiv \lambda f x.\,f(f(f x)).
+$$
+
+A numeral does not *contain* a number; it *does* something $n$ times. That is the whole trick behind the arithmetic in the next sections: to add, iterate the successor; to multiply, iterate an addition; for primitive recursion, iterate a step function. Numerals are in normal form, so they are finished values.
+
+## Defining a function
+
+The definition asks that $F\,\overline n \twoheadrightarrow \overline{f(n)}$. Two facts make this a sound notion:
+
+- By the Church–Rosser theorem (<Ref k="lam:int:cr:thm:church-rosser" />), a term has at most one normal form. So if $F\,\overline n$ reduces to a numeral at all, that numeral is determined: $F$ cannot define two different functions.
+- For a partial $f$, “undefined” must show up as “no normal form”. Reducing to some *other* term that is not a numeral does not count as undefined.
+
+The simplest examples: the constant function $c_k$ is λ-defined by $C_k \equiv \lambda x.\,\overline k$, since $C_k\,\overline n \to \overline k$ in one step for every $n$, and the identity function by $\lambda x.\,x$.
+
+## One caution
+
+Terms have no types, so the same term can play several roles. $\overline 0 \equiv \lambda f x.\,x$ and the truth value $\mathrm{false} \equiv \lambda x.\lambda y.\,y$ of a later section are α-equivalent: the *same* term. Which one we “mean” depends only on how we use it.
+
+Explore mode builds numerals and lets you test which function a term defines on small inputs.

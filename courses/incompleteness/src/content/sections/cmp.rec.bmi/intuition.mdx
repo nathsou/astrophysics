@@ -1,0 +1,23 @@
+import { ExBmiNone } from '../../../workbench/recursion/exercises';
+
+<Added label="Added for this edition">
+
+“The least $z$ with $R(\vec x, z)$” can be computed by trying $z = 0, 1, 2, \ldots$ — but that search may run forever, and it is not primitive recursive. With an independently given **bound** $y$, “the least $z < y$ with $R(\vec x, z)$, or $y$ if there is none” is primitive recursive.
+
+</Added>
+
+## The recursion on the bound
+
+Write $m_R(\vec x, y)$ for $(\min z < y)\, R(\vec x, z)$. There is no $z < 0$, so $m_R(\vec x, 0) = 0$ (the “none found” answer for bound $0$). Going from bound $y$ to $y + 1$ there are three cases:
+
+1. a witness below $y$ was already found — i.e. $m_R(\vec x, y) \ne y$ — keep it;
+2. none was found, but $R(\vec x, y)$ holds — the answer is $y$;
+3. neither — the answer is the new bound, $y + 1$.
+
+This is a definition by cases from $m_R(\vec x, y)$ and $\chi_R(\vec x, y)$, so a primitive recursion. The trick of returning the bound when nothing is found is what makes the test “was a witness found?” expressible: it is $m_R(\vec x, y) \ne y$.
+
+## Bounded versus unbounded
+
+A primitive recursion always runs its full course: the table in Explore mode has a row for every bound, even after the witness has been found. Unbounded search stops at the first witness, but may never stop at all. The difference between the two is the difference between the primitive recursive and the partial recursive functions (<Ref k="cmp:rec:par:sec" />).
+
+<ExBmiNone />

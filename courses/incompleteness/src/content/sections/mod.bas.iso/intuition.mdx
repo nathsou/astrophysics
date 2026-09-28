@@ -1,0 +1,23 @@
+import { ExAutomorphismsZ5 } from '../../../workbench/semantics/exercises';
+
+<Added label="Added for this edition">
+
+Two structures can be alike in two ways. They are **elementarily equivalent**, $\mathfrak M \equiv \mathfrak M'$, if they make the same sentences true (<Ref k="mod:bas:iso:defn:elem-equiv" />). They are **isomorphic**, $\mathfrak M \simeq \mathfrak M'$, if a bijection $h$ between their domains translates one structure exactly into the other (<Ref k="mod:bas:iso:defn:isomorphism" />).
+
+</Added>
+
+## The five conditions
+
+$h\colon |\mathfrak M| \to |\mathfrak M'|$ is an isomorphism if (1) it is injective, (2) surjective, (3) it maps each $c^{\mathfrak M}$ to $c^{\mathfrak M'}$, (4) $\langle a_1, \ldots, a_n\rangle \in P^{\mathfrak M}$ iff $\langle h(a_1), \ldots, h(a_n)\rangle \in P^{\mathfrak M'}$, and (5) $h(f^{\mathfrak M}(a_1, \ldots, a_n)) = f^{\mathfrak M'}(h(a_1), \ldots, h(a_n))$. In words: rename every element by $h$, and every table of $\mathfrak M$ becomes the corresponding table of $\mathfrak M'$.
+
+## Isomorphic implies elementarily equivalent
+
+If $h$ is an isomorphism, then for every term and assignment, $h$ maps the value of the term in $\mathfrak M$ to its value in $\mathfrak M'$ under the renamed assignment $h \circ s$; and $\mathfrak M, s \vDash A$ iff $\mathfrak M', h \circ s \vDash A$. Both are proved by induction (<Ref k="mod:bas:iso:thm:isom" />). For sentences the assignment does not matter, so $\mathfrak M \equiv \mathfrak M'$.
+
+The converse fails in general: first-order sentences cannot pin down, for instance, the size of an infinite structure (section 7.4). For *finite* structures it holds — but that takes an argument.
+
+## Automorphisms
+
+An isomorphism of $\mathfrak M$ onto itself is an **automorphism**. Definable sets are fixed by all automorphisms: if $X$ is defined by a formula and $h$ is an automorphism, then $h$ maps $X$ onto itself. Automorphisms are therefore a way of showing that a set is *not* definable.
+
+<ExAutomorphismsZ5 />

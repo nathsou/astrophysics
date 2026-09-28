@@ -1,0 +1,33 @@
+import { ExampleCheck } from '../../../workbench/nd/ExampleCheck';
+
+<Added label="Added for this edition">
+
+Natural deduction writes a proof as a **tree of sentences**. The conclusion stands at the root, at the bottom; the leaves at the top are **assumptions**. Each inference introduces or eliminates one connective or quantifier. The distinctive feature is that some assumptions are only *temporary*: an inference further down may **discharge** them, and then the conclusion no longer depends on them.
+
+</Added>
+
+## Assumptions that get used up
+
+Ordinary proofs do this all the time. To prove "if $A$ then $B$", you *suppose* $A$ and argue for $B$; once you have $B$, the supposition has done its job, and what you have shown, $A \rightarrow B$, no longer depends on it. Natural deduction's $\rightarrow$Intro rule is exactly this conditional proof. Proof by cases ($\lor$Elim) and indirect proof ($\lnot$Intro, $\bot_C$) discharge assumptions in the same way.
+
+To keep track of which assumption is discharged where, the book gives both the assumption and the discharging inference the same **label**: the assumption is written $[A]^1$, and the inference carries the label $1$ at its side.
+
+## The first derivation
+
+Here is the book's first example, $\vdash (A \land B) \rightarrow A$, handed to the checker:
+
+<ExampleCheck id="ntd-and-imp" />
+
+Read it from the top. The assumption $[A \land B]^1$; by $\land$Elim, $A$; by $\rightarrow$Intro labelled $1$, $(A \land B) \rightarrow A$ — and at that inference the assumption labelled $1$ is discharged. Nothing is left undischarged, so the conclusion is a **theorem**: $\vdash (A \land B) \rightarrow A$.
+
+## What $\Gamma \vdash A$ means
+
+$\Gamma \vdash A$ holds iff there is a derivation whose last sentence is $A$ and whose *undischarged* assumptions are all in $\Gamma$. Discharged assumptions do not count. A set $\Gamma$ is **inconsistent** iff $\Gamma \vdash \bot$ — and then, by the rule $\bot_I$ ("from $\bot$ infer anything"), $\Gamma$ derives every sentence.
+
+## How this edition checks derivations
+
+Every derivation in these sections is checked by the course's natural deduction checker, which implements the book's rules: the shapes of the inferences, discharge labels, and the eigenvariable conditions of $\forall$Intro and $\exists$Elim. As in the book, derivations contain **sentences only**, and eigenvariables are constant symbols $a, b, c, \dots$. The letters $A, B, C, D$ are **formula letters**: $A$ stands for a sentence, $A(x)$ for a formula with the free variable $x$.
+
+A derivation marked <Prov kind="checked" /> is one the checker accepted, inference by inference. It is a derivation of *this* sentence; it proves nothing beyond that.
+
+Explore mode is a **derivation builder**: start from a goal and build the tree bottom-up or top-down, with the checker judging every step.

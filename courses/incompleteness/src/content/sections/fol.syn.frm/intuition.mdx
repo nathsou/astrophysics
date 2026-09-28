@@ -1,0 +1,23 @@
+<Added label="Added for this edition">
+
+Terms name objects; formulas say things. Both are defined **inductively**: a few basic cases, and rules that build bigger expressions from smaller ones. Anything built by finitely many applications of the rules is a term (or formula), and nothing else is.
+
+</Added>
+
+## Terms
+
+A term is a variable, a constant symbol, or $f(t_1, \ldots, t_n)$ for an $n$-place function symbol $f$ and terms $t_1, \ldots, t_n$ (<Ref k="fol:syn:frm:defn:terms" />). In arithmetic, $(x + 0'')'$ is a term: $0$ is a term, so $0'$ and $0''$ are, so is $x + 0''$, and so its successor. A term without variables is **closed**.
+
+## Formulas
+
+The atomic formulas are $\bot$, $R(t_1, \ldots, t_n)$ and $t_1 = t_2$. From formulas $A$ and $B$ we build $\lnot A$, $(A \land B)$, $(A \lor B)$, $(A \rightarrow B)$, $\forall x\, A$ and $\exists x\, A$ (<Ref k="fol:syn:frm:defn:formulas" />). The book writes $=$ between its arguments and drops outer parentheses; officially $x = 0$ is $=(v_0, c_0)$.
+
+Because every formula has exactly one last construction step, the *main connective* of a formula is determined — the syntax tree in Explore mode is unique. (The book proves this “unique readability” for terms and formulas.)
+
+## Induction on terms and formulas
+
+An inductive definition comes with an induction principle (<Ref k="fol:syn:frm:thm:frmind" />): to show that every formula has a property, show it for atomic formulas, and show that the rules preserve it. Almost every result about formulas in the book — about free variables, substitution, satisfaction, coding — is proved this way, and almost every function on formulas (like the value of a term or the satisfaction relation) is defined by recursion along the same clauses.
+
+<Callout title="Try it">
+In Explore mode, the table lists every part of your formula with the clause of the definition that builds it. Hover a row to see the part in the formula and in the tree.
+</Callout>

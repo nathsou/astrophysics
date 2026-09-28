@@ -1,0 +1,5 @@
+import { DerivationBuilder } from '../../../workbench/nd/DerivationBuilder';
+
+The status line under the tree is the definition at work: goals still to derive (condition 3 is not met yet), inferences the checker rejects, and the undischarged assumptions — which must all be in $\Gamma$ for the tree to show $\Gamma \vdash A$. Close a goal by an assumption that is not in $\Gamma$ and see what changes.
+
+<DerivationBuilder example="der-andI" examples={['der-andI', 'der-C-imp', 'der-D-imp', 'der-vacuous']} />

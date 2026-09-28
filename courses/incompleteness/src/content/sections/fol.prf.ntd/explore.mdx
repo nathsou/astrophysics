@@ -1,0 +1,14 @@
+import { DerivationBuilder } from '../../../workbench/nd/DerivationBuilder';
+import { RulePalette } from '../../../workbench/nd/RulePalette';
+
+Build a derivation the way the book develops its examples: write the goal at the bottom, then choose, for a goal, the rule that could have produced it. Its premises become new goals. Close a goal by an assumption — labelled, if an inference below will discharge it. You can also work **top-down**: assume sentences as *pieces*, apply rules to them, and use a finished piece for a goal.
+
+After every change the whole tree goes to the checker. Its messages appear exactly as it states them; <Prov kind="checked" /> appears only when it accepts every inference and every undischarged assumption is in $\Gamma$. Undo walks back through every change — for a loaded book example, back through its construction, goal by goal.
+
+<DerivationBuilder example="ntd-and-imp" />
+
+## The rules
+
+The rules as the book displays them, with the checker's statement of each.
+
+<RulePalette />

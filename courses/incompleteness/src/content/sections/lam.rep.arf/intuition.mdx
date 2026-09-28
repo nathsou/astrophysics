@@ -1,0 +1,31 @@
+import { ExLamTwiceSucc } from '../../../workbench/lambda/exercises';
+
+<Added label="Added for this edition">
+
+Since $\overline n$ applies its first argument $n$ times, arithmetic is iteration. $\mathrm{Succ}$ adds one more application of $f$; $\mathrm{Add}$ runs $b$’s applications and then $a$’s; $\mathrm{Mult}$ iterates “apply $f$ $b$ times”, $a$ times; and $\mathrm{Exp} \equiv \lambda b e.\,e\,b$ just applies the exponent to the base.
+
+</Added>
+
+## Successor
+
+$$
+\mathrm{Succ} \equiv \lambda a.\lambda f x.\,f(a f x).
+$$
+
+Given $\overline n$, the body $\overline n f x$ reduces to $f^n x$, and one more $f$ in front gives $f^{n+1}x$: the numeral $\overline{n+1}$. Note that $\mathrm{Succ}\,\overline n$ first reduces to $\lambda f x.\,f(\overline n f x)$, which is *not* a numeral — the redex $\overline n f x$ sits under the λ. That is why the book uses reduction to normal form, not just “one step”, and why a strategy that never reduces under λ would stop too early here.
+
+## Addition, multiplication, exponentiation
+
+$$
+\mathrm{Add} \equiv \lambda a b.\lambda f x.\,a f (b f x),\qquad \mathrm{Mult} \equiv \lambda a b.\lambda f x.\,a (b f) x,\qquad \mathrm{Exp} \equiv \lambda b e.\,e\,b .
+$$
+
+$\mathrm{Add}\,\overline n\,\overline m$ gives $f^n(f^m x)$. In $\mathrm{Mult}$, $b f$ is the function “apply $f$ $m$ times”, and $a$ iterates it $n$ times: $n \cdot m$ applications of $f$. $\mathrm{Exp}$ is the most surprising: $\overline e\,\overline b$ composes “apply $b$ times” with itself $e$ times, which applies its argument $b^e$ times. The alternative $\mathrm{Add}' \equiv \lambda ab.\,a\,\mathrm{Succ}\,b$ says “apply $\mathrm{Succ}$ to $b$, $a$ times” — addition as iterated successor.
+
+<Callout title="A correction to Problem 9.2">
+
+<Prov kind="added" /> The book asks why $\mathrm{Mult}' \equiv \lambda ab.\,a(\mathrm{Add}\,a)\overline 0$ defines multiplication. As printed it does not: it adds $a$ to $\overline 0$, $a$ times, so $\mathrm{Mult}'\,\overline 2\,\overline 3 \twoheadrightarrow \overline 4$ (computed in Explore mode). The intended term is $\lambda ab.\,a(\mathrm{Add}\,b)\overline 0$ — add $b$, $a$ times — and this edition’s $\mathrm{Mult}'$ is that term. The book’s text is left as it is; Explore mode can run both.
+
+</Callout>
+
+<ExLamTwiceSucc />

@@ -1,0 +1,31 @@
+import { ExLamOr, ExLamXor } from '../../../workbench/lambda/exercises';
+
+<Added label="Added for this edition">
+
+Truth values are **selectors**: $\mathrm{true} \equiv \lambda x.\lambda y.\,x$ picks the first of two arguments and $\mathrm{false} \equiv \lambda x.\lambda y.\,y$ the second. So “if $B$ then $M$ else $N$” is just $B\,M\,N$. A relation is λ-definable if a term reduces to $\mathrm{true}$ on the tuples in the relation and to $\mathrm{false}$ on the others.
+
+</Added>
+
+## Deciding with a numeral
+
+$$
+\mathrm{IsZero} \equiv \lambda n.\,n\,(\lambda x.\,\mathrm{false})\,\mathrm{true}.
+$$
+
+The numeral $\overline n$ applies the step $\lambda x.\,\mathrm{false}$ to the start value $\mathrm{true}$, $n$ times. If $n = 0$ nothing happens and the answer is $\mathrm{true}$; after one or more steps it is $\mathrm{false}$, whatever came before.
+
+## Truth functions
+
+$$
+\mathrm{Not} \equiv \lambda x.\,x\,\mathrm{false}\,\mathrm{true},\qquad \mathrm{And} \equiv \lambda x.\lambda y.\,x\,y\,\mathrm{false}.
+$$
+
+$\mathrm{Not}$ lets $x$ choose between $\mathrm{false}$ and $\mathrm{true}$. $\mathrm{And}$ lets $x$ choose between $y$ (if $x$ is true, the answer is whatever $y$ is) and $\mathrm{false}$.
+
+These terms are only meant for truth values. Nothing stops us from writing $\mathrm{And}\,\overline 2\,\overline 3$; it has a normal form, but not a truth value. There are no types to rule it out — try it in Explore mode.
+
+Problem 9.4 of the book asks for $\mathrm{Or}$ and $\mathrm{Xor}$. Here you can check your answers: they are reduced on all four combinations of arguments.
+
+<ExLamOr />
+
+<ExLamXor />

@@ -1,0 +1,30 @@
+import { ExParStuck } from '../../../workbench/recursion/exercises';
+
+<Added label="Added for this edition">
+
+The diagonal argument applies to *any* effectively listed class of total computable functions. The way out is to allow **partial** functions — functions that may be undefined for some arguments — and to add **unbounded search**: $\mu x\, f(x, \vec z)$, the least $x$ with $f(x, \vec z) = 0$.
+
+</Added>
+
+## Why partial functions
+
+If all functions in a list are total and the list is computable, diagonalize: $f_x(x) + 1$ is total, computable, and not on the list. With partial functions the argument stalls: if $f_x(x)$ is undefined, so is $f_x(x) + 1$, and “differs from $f_x$ at $x$” fails. The book returns to this later; the upshot is that the partial computable functions *can* be listed.
+
+## Unbounded search
+
+$\mu x\, f(x, \vec z)$ is the least $x$ such that $f(0, \vec z), \ldots, f(x, \vec z)$ are all **defined** and $f(x, \vec z) = 0$ — undefined if there is no such $x$. The procedure: compute $f(0, \vec z)$, $f(1, \vec z)$, … until a value $0$ appears. Two things can go wrong, and both mean “undefined”:
+
+1. every value is defined, but none is $0$ — the search runs forever;
+2. some $f(x, \vec z)$ on the way is undefined — its computation never ends, so the search never gets further, *even if* $f$ is $0$ at a larger argument.
+
+For a relation, $\mu x\, R(x, \vec z)$ is $\mu x\,(1 \dot- \chi_R(x, \vec z))$.
+
+## Partial and total recursive functions
+
+The **partial recursive functions** are generated from $\mathrm{zero}$, $\mathrm{succ}$ and projections by composition, primitive recursion and unbounded search, with $=$ replaced by $\simeq$ (“both undefined, or both defined and equal”). Those that happen to be total are the **recursive functions** (<Ref k="cmp:rec:par:defn:recursive-fn" />).
+
+## What running can and cannot show
+
+When a search ends, the answer is certain. When it has not ended yet, nothing follows: it may end later, or never. The workbench therefore reports “no answer within $N$ steps”, and gives the *reasons* a search is undefined separately, as arguments.
+
+<ExParStuck />

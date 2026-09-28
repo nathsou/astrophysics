@@ -1,0 +1,24 @@
+<Added label="Added for this edition">
+
+Second-order logic quantifies over subsets of the domain, but not over sets of subsets — that would be third-order logic. Yet statements about the power set, such as Cantor’s theorem or the continuum hypothesis, need exactly that. The section shows how to **simulate** sets of sets with a relation, provided the domain is large enough.
+
+</Added>
+
+## Coding sets by elements
+
+Given a two-place relation $R$, an element $x$ **$R$-codes** the set $\{y : R(x, y)\}$. A set $Y$ then codes a collection of sets: those coded by its elements. $Y$ $R$-codes the power set of $X$ iff every subset of $X$ is coded by some element of $Y$, and every element of $Y$ codes a subset of $X$:
+
+$$\mathrm{Codes}(x, R, Z) \equiv \forall y\,(Z(y) \leftrightarrow R(x, y))$$
+$$\mathrm{Pow}(Y, R, X) \equiv \forall Z\,(Z \subseteq X \rightarrow \exists x\,(Y(x) \land \mathrm{Codes}(x, R, Z))) \land \forall x\,(Y(x) \rightarrow \forall Z\,(\mathrm{Codes}(x, R, Z) \rightarrow Z \subseteq X))$$
+
+Now quantify over $R$ and $Y$ instead of over sets of sets. Cantor’s theorem becomes a valid second-order sentence: whenever $Y$ codes the power set of $X$, there is no injection from $Y$ into $X$.
+
+## The continuum
+
+With $\mathrm{Aleph}_0$ from section 8.12 and $\mathrm{Pow}$, $\mathrm{Cont}(Y)$ says that $Y$ codes, one element per set, the power set of a countably infinite set — so $Y$ has the size of $\mathbb R$ (in domains large enough to contain such codes). Then the **continuum hypothesis** — that the continuum has the first uncountable size — holds iff the second-order sentence $\mathrm{CH} \equiv \forall X\,(\mathrm{Aleph}_1(X) \leftrightarrow \mathrm{Cont}(X))$ is valid.
+
+## Why this is remarkable
+
+CH is independent of the usual axioms of set theory: they neither prove nor refute it. Yet whether the sentence $\mathrm{CH}$ is *valid* in second-order logic is a definite question — it is settled by the truth of CH itself. The standard semantics builds set-theoretic truth into logical validity. (The book notes a subtlety: $\lnot\mathrm{CH}$ is not the right sentence for the failure of CH, since CH is trivially true in countable domains; a different sentence is needed.)
+
+These statements are about infinite sets of the size of the continuum; there is no finite computation that would illustrate them honestly, so this section has no Explore mode.

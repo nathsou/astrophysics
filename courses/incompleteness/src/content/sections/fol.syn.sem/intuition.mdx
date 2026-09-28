@@ -1,0 +1,21 @@
+<Added label="Added for this edition">
+
+Three notions, all defined by quantifying over **all** structures. A sentence $A$ is **valid**, $\vDash A$, if it is true in every structure. A set $\Gamma$ **entails** $A$, $\Gamma \vDash A$, if every structure that makes all of $\Gamma$ true makes $A$ true. $\Gamma$ is **satisfiable** if some structure makes all of it true.
+
+</Added>
+
+## One structure refutes, no number of structures confirms
+
+These definitions are lopsided in a way that matters. To show $\Gamma \nvDash A$, one structure suffices: a **countermodel**, true for $\Gamma$ and false for $A$. To show $\Gamma \vDash A$, you have to reason about all structures — of every size, including infinite ones. Checking the structures with at most three elements, say, proves nothing: $\Gamma$ might have countermodels only with four elements, or only infinite ones. The axioms Q1 and Q2 of Robinson arithmetic, for example, have models, but no finite ones.
+
+## Entailment and unsatisfiability
+
+$\Gamma \vDash A$ iff $\Gamma \cup \{\lnot A\}$ is unsatisfiable (<Ref k="fol:syn:sem:prop:entails-unsat" />): a countermodel to the entailment is exactly a model of $\Gamma \cup \{\lnot A\}$. The semantic deduction theorem (<Ref k="fol:syn:sem:thm:sem-deduction" />) says $\Gamma \cup \{A\} \vDash B$ iff $\Gamma \vDash A \rightarrow B$. And validity is entailment from nothing.
+
+## Where this is going
+
+By the completeness theorem, $\Gamma \vDash A$ iff $\Gamma \vdash A$: every entailment has a derivation. Derivations can be listed, so the valid sentences can be computably enumerated — but, as the incompleteness chapters show, not decided, and truth in $\mathfrak N$ cannot even be enumerated.
+
+<Callout title="Try it">
+Explore mode searches all structures with small domains for a countermodel. When it finds one, you have a proof that the entailment fails. When it finds none, you have learned only that there is no small one.
+</Callout>

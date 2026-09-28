@@ -1,0 +1,27 @@
+<Added label="Added for this edition">
+
+With one-place relation variables standing for subsets of the domain, second-order formulas can express relations between sets — without any membership symbol.
+
+</Added>
+
+## Inclusion, identity, non-emptiness
+
+$\forall x\,(X(x) \rightarrow Y(x))$ says $s(X) \subseteq s(Y)$; $\forall x\,(X(x) \leftrightarrow Y(x))$ says $s(X) = s(Y)$; $\exists x\, X(x)$ says $s(X) \neq \emptyset$.
+
+## Size
+
+$X$ is **no larger than** $Y$, $X \preceq Y$, iff there is an injective function from $X$ into $Y$. Function variables let us say so:
+
+$$\exists u\,(\forall x\,(X(x) \rightarrow Y(u(x))) \land \forall x\,\forall y\,(u(x) = u(y) \rightarrow x = y)).$$
+
+Adding that every element of $Y$ is a value of $u$ on $X$ gives **equinumerosity**, $X \approx Y$. (As in the book, $u$ is a function on the whole domain, required to be injective everywhere.)
+
+## A valid sentence with content
+
+$$\forall X\,\forall Y\,((X \preceq Y \land Y \preceq X) \rightarrow X \approx Y)$$
+
+is valid: it is the Schröder–Bernstein theorem. Its validity is a mathematical fact about sets, not a matter of logical form — a sign of how much set theory second-order logic has absorbed.
+
+<Callout title="Explore">
+On a small domain, pick $X$ and $Y$: the workbench searches all $n^n$ functions $u$ for an injection. For finite sets, $X \preceq Y$ iff $|X| \le |Y|$, which you can check against the answers. The Schröder–Bernstein sentence can be evaluated on domains of up to about three elements.
+</Callout>

@@ -1,0 +1,23 @@
+import { ExComplementK } from '../../../workbench/computability/exercises';
+
+<Added label="Added for this edition">
+
+A set $A$ is computable if and only if both $A$ and its complement $\overline A$ are c.e. Since $K_0$ is c.e. but not computable, its complement is not c.e.: the c.e. sets are not closed under complement.
+
+</Added>
+
+## Two half-procedures make a whole one
+
+If $A$ is computable, so is $\overline A$ ($\chi_{\overline A} = 1 \mathbin{\dot-} \chi_A$), and computable sets are c.e. For the converse, let $A = W_d$ and $\overline A = W_e$. Every $x$ is in exactly one of them, so exactly one of $\varphi_d(x)$ and $\varphi_e(x)$ halts. Run both side by side: $h(x) = \mu s\,(T(d, x, s) \lor T(e, x, s))$ searches for a halting computation of either. It always finds one, so $h$ is total, and $x \in A$ iff $T(d, x, h(x))$ — the one that halted is $\varphi_d$.
+
+(The book’s text writes $T(e, x, h(x))$ here, “if $\varphi_e$ is the one that is defined”; with $A$ the domain of $\varphi_d$ as set up in the proof, the test for $x \in A$ is $T(d, x, h(x))$. The argument is the same.)
+
+## Running side by side matters
+
+Running $\varphi_d(x)$ to the end first, and $\varphi_e(x)$ afterwards, would not work: if $x \notin A$ the first computation never ends. Interleaving — a step of one, a step of the other, or a search through $s$ testing both — is the same dovetailing that enumerates c.e. sets.
+
+## The complement of the halting set
+
+$\overline{K_0}$ is not c.e. — no procedure confirms “$\varphi_e(x)$ never halts” for all the pairs where that is true. The same holds for $\overline K$. The workbench lets you pit $K$ against a candidate index for $\overline K$; the corollary guarantees that every candidate fails somewhere, either by halting on a member of $K$ or by not halting on some non-member.
+
+<ExComplementK />

@@ -1,0 +1,5 @@
+import { SatisfactionLab } from '../../../workbench/semantics/SatisfactionLab';
+
+The structure $\mathfrak M$ of strings of $a$’s from the introduction. Switch to $\mathfrak N$ and evaluate the same formula: isomorphic structures agree on every formula (under corresponding assignments).
+
+<SatisfactionLab id="mod.mar.int" structure={{ kind: 'search', id: 'a*' }} formula="∃y (y + y) = x" assign={{ x: 'aaaa' }} scope="arith" examples={[{ label: 'x is even: ∃y (y + y) = x', value: '∃y (y + y) = x' }, { label: '(0′′ × 0′′′) = (0′′′ + 0′′′)', value: '(2 × 3) = (3 + 3)' }, { label: 'x is a square: ∃y (y × y) = x', value: '∃y (y × y) = x' }, { label: 'successor is injective (can only be refuted by search)', value: '∀x ∀y (x′ = y′ → x = y)' }]} />

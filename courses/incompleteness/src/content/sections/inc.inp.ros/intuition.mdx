@@ -1,0 +1,30 @@
+import { RosserExercise } from '../../../workbench/provability/exercises';
+
+<Added label="Added for this edition">
+
+Gödel’s proof needed **ω-consistency** to show that $T$ does not derive $\lnot G_T$. Rosser replaced the Gödel sentence by a fixed point of a slightly different predicate, and plain **consistency** suffices for both halves.
+
+</Added>
+
+## Where Gödel’s argument needed more
+
+If $T \vdash \lnot G_T$, then $T \vdash \exists x\, \mathsf{Prf}_T(x, \ulcorner G_T\urcorner)$, while (by consistency) no actual number is a proof, so $T \vdash \lnot\mathsf{Prf}_T(\overline n, \ulcorner G_T\urcorner)$ for each $n$. That is not a contradiction, only an ω-inconsistency: $T$ claims a witness exists but refutes each candidate.
+
+## A race between proof and refutation
+
+Rosser’s predicate says “there is a proof of $y$, and no *smaller* refutation of $y$”:
+
+$$\mathsf{RProv}_T(y) \equiv \exists x\,(\mathsf{Prf}_T(x,y) \land \forall z\,(z < x \to \lnot\mathsf{Ref}_T(z,y))).$$
+
+The Rosser sentence $R_T$ is the fixed point of $\lnot\mathsf{RProv}_T(x)$: “for every proof of me there is a smaller refutation.” Now both cases are *finite* comparisons:
+
+- a proof of $R_T$ with code $n$: only the finitely many codes $k < n$ need to be checked for refutations, and $\mathbf Q$ can do that ($\forall z\,(z<\overline n \to \dots)$ follows from finitely many instances);
+- a refutation with code $n$: any putative proof $x$ must be different from $0, \dots, n$ — again finitely many facts — so $\overline n < x$, and $\overline n$ is a smaller refutation.
+
+Either way $T$ would derive both $R_T$ and $\lnot R_T$. The two facts about $\mathbf Q$ that make these finite comparisons work are <Ref k="inc:req:min:lem:less-nsucc" /> and <Ref k="inc:req:min:lem:trichotomy" />.
+
+## Shmovability
+
+In a consistent theory, $\mathsf{RProv}_T$ and $\mathsf{Prov}_T$ are true of the same numbers. They differ in what $T$ can *derive* about them, and in an inconsistent theory they are true of different numbers. That is why the book suggests reading $\mathsf{RProv}_T$ as “shmovable”. Explore mode lets you place the first proof and the first refutation and see each case of the proof.
+
+<RosserExercise />

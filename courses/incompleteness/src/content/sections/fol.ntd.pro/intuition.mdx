@@ -1,0 +1,22 @@
+import { ExNotNot, ExNotAndNot } from '../../../workbench/nd/exercises';
+
+<Added label="Added for this edition">
+
+The book develops its derivations **backwards**: write the goal at the bottom, look at its main connective, and ask which rule could have produced it. The premises of that rule are the new goals. When the goal's shape suggests nothing, look at the assumptions and use an elimination rule; and when nothing else works, use $\bot_C$.
+
+</Added>
+
+## Strategy, in the book's order
+
+1. **Introduce the main connective.** For $(A \land B) \rightarrow A$ the main connective is $\rightarrow$, so the last inference is $\rightarrow$Intro, discharging $[A \land B]^1$.
+2. **Use the assumptions.** For $(\lnot A \lor B) \rightarrow (A \rightarrow B)$, after $\rightarrow$Intro the assumption $\lnot A \lor B$ is a disjunction, so reason by cases ($\lor$Elim): derive $A \rightarrow B$ from $\lnot A$ and from $B$.
+3. **Remember that discharging is optional.** In the case $B$, the derivation of $B$ from $B$ is just $B$ itself; the assumption $A$ need not be used.
+4. **$\bot_C$ as a last resort.** $A \lor \lnot A$ cannot be obtained by $\lor$Intro — neither $A$ nor $\lnot A$ is derivable on its own. Instead, assume $\lnot(A \lor \lnot A)$ and derive $\bot$.
+
+Formal mode shows each of the book's finished trees as the checker sees it. One of them differs from the checker's conventions: the finished tree of the second example has an $\rightarrow$Intro **without a label**, since it discharges nothing. The checker requires a label on every discharging inference (as the book itself writes it in Section C.5 and in an earlier stage of this very example), so it rejects the book's tree as drawn. The workbench shows the book's version with the rejection, and the version with the label restored.
+
+## Try the problems
+
+<ExNotNot />
+
+<ExNotAndNot />

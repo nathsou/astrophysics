@@ -1,0 +1,132 @@
+/* Semantics workbenches: structures, satisfaction traces, models of Q, second-order logic. */
+
+.sem-picker { display: flex; flex-direction: column; gap: 6px; font-family: var(--sans); margin-bottom: 10px; }
+.sem-picker-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.sem-select { max-width: 100%; min-width: 0; flex: 1 1 260px; }
+.sem-inline { display: inline-flex; gap: 6px; align-items: center; font-family: var(--sans); font-size: 13.5px; flex-wrap: wrap; }
+.sem-inline input[type='number'] { width: 4.2em; padding: 3px 6px; border: 1px solid var(--rule-2); border-radius: 6px; background: var(--panel); }
+.sem-inline select, .sem-table select { padding: 2px 4px; border: 1px solid var(--rule-2); border-radius: 6px; background: var(--panel); font-family: var(--math); }
+.sem-elem-input { width: 6em; padding: 3px 6px; border: 1px solid var(--rule-2); border-radius: 6px; background: var(--panel); font-family: var(--math); }
+.sem-check { display: inline-flex; gap: 5px; align-items: center; font-family: var(--sans); font-size: 13px; }
+.sem-check input { accent-color: var(--accent); }
+.sem-k { font-family: var(--math); font-style: italic; }
+.sem-elem { font-family: var(--math); color: var(--number); }
+.sem-domain { font-family: var(--math); margin: 4px 0 8px; overflow-wrap: anywhere; }
+.sem-structure { min-width: 0; }
+.sem-tables { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; }
+.sem-table-box { border: 1px solid var(--rule); border-radius: 8px; padding: 6px 8px; background: var(--paper); min-width: 0; max-width: 100%; font-family: var(--math); }
+.sem-table-title { font-family: var(--math); font-style: italic; font-size: 14px; margin-bottom: 3px; }
+.sem-scroll { overflow-x: auto; max-width: 100%; }
+.sem-table { border-collapse: collapse; font-family: var(--math); font-size: 14px; }
+.sem-table th, .sem-table td { padding: 2px 7px; text-align: center; border: 1px solid var(--rule); }
+.sem-table th { color: var(--muted); font-weight: 500; background: var(--paper-2); }
+.sem-table td.sem-val { color: var(--number); }
+.sem-table td.sem-on { color: var(--checked); font-weight: 700; }
+.sem-table td.sem-off { color: var(--muted); }
+.sem-set { margin: 0; color: var(--number); overflow-wrap: anywhere; }
+.sem-errors { color: var(--danger); background: var(--danger-soft); border-radius: 8px; padding: 6px 12px; font-family: var(--sans); font-size: 13px; }
+.sem-errors ul { margin: 4px 0; padding-left: 1.2em; }
+.sem-editor { border: 1px dashed var(--rule-2); border-radius: 10px; padding: 8px 12px 12px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.sem-editor legend { padding: 0 4px; }
+.sem-symbols { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.sem-assign { margin-top: 8px; }
+.sem-assign-row { display: flex; flex-wrap: wrap; gap: 14px; }
+.sem-result { display: flex; gap: 10px; align-items: flex-start; font-family: var(--sans); font-size: 14.5px; margin-bottom: 8px; }
+.sem-options { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 6px 0 10px; }
+.sem-binding { display: inline-block; font-family: var(--math); border-radius: 999px; padding: 0 8px; margin: 0 4px 2px 0; }
+.sem-binding.witness { background: var(--checked-soft); color: var(--checked); }
+.sem-binding.counterexample { background: var(--danger-soft); color: var(--danger); }
+
+/* truth badges */
+.sem-badge { display: inline-flex; align-items: center; justify-content: center; gap: 3px; min-width: 22px; height: 20px; padding: 0 5px; border-radius: 6px; font-family: var(--math); font-weight: 700; font-size: 14px; flex: none; }
+.sem-badge.yes { background: var(--checked-soft); color: var(--checked); }
+.sem-badge.no { background: var(--danger-soft); color: var(--danger); }
+.sem-badge.unk { background: var(--paper-2); color: var(--muted); border: 1px dashed var(--rule-2); }
+.sem-badge-s { font-weight: 500; font-size: 12px; font-style: italic; }
+
+/* trace tree */
+.sem-trace { font-family: var(--sans); font-size: 13.5px; overflow-x: auto; }
+.sem-row { border-left: 2px solid var(--rule); padding-left: 8px; margin: 2px 0 2px 2px; min-width: 0; }
+.sem-row.depth-0 { border-left: none; padding-left: 0; margin-left: 0; }
+.sem-row-head { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; border-radius: 6px; padding: 2px 2px; }
+.sem-row-head:hover { background: var(--paper-2); }
+.sem-twisty { width: 22px; height: 22px; border: 1px solid var(--rule); border-radius: 5px; background: var(--panel); cursor: pointer; line-height: 1; padding: 0; flex: none; color: var(--ink-2); }
+.sem-twisty:focus-visible { outline: 2px solid var(--accent); }
+.sem-twisty-sp { width: 22px; flex: none; }
+.sem-ftext, .sem-ttext { font-family: var(--math); font-size: 15px; border-radius: 3px; overflow-wrap: anywhere; }
+.sem-asg { font-family: var(--math); color: var(--number); font-size: 13.5px; }
+.sem-row-label { font-family: var(--math); color: var(--muted); font-size: 13px; }
+.sem-row-why { display: flex; flex-direction: column; gap: 1px; margin: 0 0 4px 30px; }
+.sem-clause { color: var(--formula); font-size: 12.5px; }
+.sem-detail { color: var(--ink-2); font-size: 12.5px; overflow-wrap: anywhere; }
+.sem-kids { margin-left: 12px; }
+.sem-terms { margin: 2px 0 4px 30px; display: flex; flex-direction: column; gap: 1px; }
+.sem-term-head { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.sem-tval { font-family: var(--math); color: var(--number); }
+.sem-variants { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin: 2px 0 6px 30px; }
+.sem-vlabel { font-size: 12px; color: var(--muted); flex-basis: 100%; }
+.sem-variant { font-family: var(--math); font-size: 13px; border: 1px solid var(--rule-2); background: var(--panel); border-radius: 999px; padding: 1px 9px; cursor: pointer; color: var(--ink); }
+.sem-variant.yes { border-color: color-mix(in srgb, var(--checked) 45%, var(--rule)); }
+.sem-variant.no { border-color: color-mix(in srgb, var(--danger) 45%, var(--rule)); }
+.sem-variant.decisive { font-weight: 700; }
+.sem-variant.decisive.yes { background: var(--checked-soft); }
+.sem-variant.decisive.no { background: var(--danger-soft); }
+.sem-variant[aria-pressed='true'] { box-shadow: 0 0 0 2px var(--accent); }
+.sem-variant:disabled { cursor: default; opacity: 0.75; }
+.sem-dec { font-family: var(--sans); font-size: 11px; }
+
+/* Q explorer */
+.sem-qtable { border-collapse: collapse; width: 100%; font-size: 14px; }
+.sem-qtable th, .sem-qtable td { text-align: left; padding: 4px 8px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+.sem-qtable th { font-family: var(--sans); font-size: 12px; color: var(--muted); font-weight: 600; }
+.sem-qtable tr.active td { background: var(--accent-soft); }
+.sem-qtable button.linklike { font-family: var(--sans); font-size: 12.5px; }
+.sem-qname { font-family: var(--sans); font-weight: 700; }
+.sem-orbit { overflow-x: auto; }
+.sem-orbit svg { display: block; max-width: none; }
+.sem-orbit text { font-family: var(--math); fill: var(--ink); }
+.sem-orbit .node circle { fill: var(--panel); stroke: var(--rule-2); stroke-width: 1.5; }
+.sem-orbit .node.zero circle { stroke: var(--accent); stroke-width: 2.5; }
+.sem-orbit .node.hit circle { stroke: var(--danger); stroke-width: 2.5; }
+.sem-orbit .edge { stroke: var(--ink-2); stroke-width: 1.4; fill: none; }
+.sem-orbit .edge.back { stroke: var(--danger); stroke-width: 2; }
+.sem-orbit .lbl { font-family: var(--sans); font-size: 11px; fill: var(--muted); }
+
+/* non-standard order illustration */
+.sem-ns { overflow-x: auto; }
+.sem-ns svg { display: block; }
+.sem-ns text { font-family: var(--math); fill: var(--ink); font-size: 12px; }
+.sem-ns .tick { stroke: var(--ink-2); }
+.sem-ns .std .tick { stroke: var(--accent); }
+.sem-ns .block rect { fill: var(--number-soft); stroke: var(--number); stroke-width: 1; }
+.sem-ns .block.sel rect { stroke-width: 2.5; }
+.sem-ns .axis { stroke: var(--rule-2); stroke-width: 1; }
+.sem-ns .cap { font-family: var(--sans); font-size: 11px; fill: var(--muted); }
+.sem-illustration { font-family: var(--sans); font-size: 12px; font-weight: 700; color: var(--added); background: var(--added-soft); border-radius: 999px; padding: 1px 9px; }
+
+/* comparison tables */
+.sem-compare { border-collapse: collapse; font-size: 14px; }
+.sem-compare th, .sem-compare td { padding: 3px 8px; border-bottom: 1px solid var(--rule); text-align: left; }
+.sem-compare td.c { text-align: center; }
+.sem-compare tr.differs td { background: var(--number-soft); }
+.sem-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+.sem-map { display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--math); }
+.sem-map span { border: 1px solid var(--rule); border-radius: 999px; padding: 0 8px; background: var(--paper); }
+.sem-viol { color: var(--danger); font-family: var(--sans); font-size: 13px; }
+.sem-ok { color: var(--checked); font-family: var(--sans); font-size: 13px; }
+.sem-sentences { width: 100%; min-height: 90px; font-family: var(--math); font-size: 15px; padding: 6px 10px; border: 1px solid var(--rule-2); border-radius: 8px; background: var(--panel); color: var(--ink); resize: vertical; }
+.sem-sol-text { font-family: var(--math); font-size: 15px; overflow-wrap: anywhere; }
+.sem-value { font-family: var(--math); color: var(--number); overflow-wrap: anywhere; }
+.sem-anatomy td { vertical-align: top; }
+.sem-anatomy td.f { font-family: var(--math); font-size: 14.5px; }
+
+@media (max-width: 640px) {
+  .sem-row-why { margin-left: 8px; }
+  .sem-terms, .sem-variants { margin-left: 8px; }
+  .sem-kids { margin-left: 4px; }
+  .sem-row { padding-left: 5px; }
+}
+
+.sem-line { font-family: var(--sans); font-size: 14px; line-height: 1.7; }
+.sem-lab .fi-examples, .sem-lab select { max-width: 100%; min-width: 0; }

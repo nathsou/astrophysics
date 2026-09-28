@@ -1,0 +1,27 @@
+import { ExRelNegative } from '../../../workbench/represent2/exercises';
+
+<Added label="Added for this edition">
+
+For relations, representability is symmetric: $\mathbf Q$ must prove $A_R(\vec{\overline n})$ when $R(\vec n)$ holds **and** prove $\lnot A_R(\vec{\overline n})$ when it does not (<Ref k="inc:req:rel:defn:representing-relations" />). The theorem says this is possible exactly for the computable relations.
+
+</Added>
+
+## From functions to relations
+
+A relation is computable when its characteristic function $\chi_R$ is. That function is representable, by some $A_{\chi_R}(\vec x, y)$. Take
+
+$$
+A_R(\vec x) \;\equiv\; A_{\chi_R}(\vec x, \overline 1).
+$$
+
+If $R(\vec n)$ holds, $\chi_R(\vec n) = 1$, and clause (a) is literally a derivation of $A_R(\vec{\overline n})$. If not, $\chi_R(\vec n) = 0$ and clause (b) says $\forall y\,(A_{\chi_R}(\vec{\overline n}, y) \to y = \overline 0)$. Instantiating $y$ with $\overline 1$ and using $\overline 1 \neq \overline 0$, $\mathbf Q$ refutes $A_R(\vec{\overline n})$. It is the uniqueness clause (b) that makes the negative case work.
+
+<ExRelNegative />
+
+## And back
+
+Conversely, if $A_R$ represents $R$, decide $R(\vec n)$ by searching through all derivations at once for one of $A_R(\vec{\overline n})$ and one of $\lnot A_R(\vec{\overline n})$. One of them exists, so the search stops; and since $\mathbf Q$ is consistent, only the right one exists. This is the same idea as in <Ref k="inc:req:rpc:sec" />.
+
+<Callout title="Representing is more than defining">
+Being *true* in the standard model is not enough: a representing formula must be *provable* or *refutable* in $\mathbf Q$ on every input. This two-sidedness is what the next section exploits — a relation whose positive instances are all provable but whose negative ones need not be refutable can be undecidable.
+</Callout>

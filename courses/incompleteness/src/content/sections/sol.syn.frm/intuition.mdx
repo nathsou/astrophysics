@@ -1,0 +1,23 @@
+<Added label="Added for this edition">
+
+Second-order syntax extends first-order syntax by two kinds of variables: for each $n$, **relation variables** $V^n_0, V^n_1, \ldots$ (written $X$, $Y$, $Z$) and **function variables** $u^n_0, u^n_1, \ldots$ (written $u$, $v$). Everything else is as before.
+
+</Added>
+
+## New terms, new atomic formulas, new quantifiers
+
+- If $u$ is an $n$-place function variable and $t_1, \ldots, t_n$ are terms, then $u(t_1, \ldots, t_n)$ is a term. A second-order term looks like a first-order one, with a function variable where a function symbol would be.
+- If $X$ is an $n$-place relation variable, then $X(t_1, \ldots, t_n)$ is an atomic formula.
+- If $A$ is a formula, so are $\forall X\, A$, $\exists X\, A$, $\forall u\, A$ and $\exists u\, A$.
+
+Relation variables play the role of predicate symbols, and function variables the role of function symbols — except that their meaning comes from the assignment, not the structure, and they can be quantified.
+
+## A pure language suffices
+
+In first-order logic, a language with no non-logical symbols (only $=$) can say very little. In second-order logic even the pure language is rich: with quantifiable relation and function variables, “there is an injective function that is not surjective” (the domain is infinite) needs no symbols at all. The book notes that anything a first-order language can say, second-order logic can say without special non-logical vocabulary: replace each symbol by a variable and quantify. Section 8.8 uses exactly this trick.
+
+## Free and bound, sentences
+
+Free and bound occurrences are defined as before, now for all three kinds of variables. A **sentence** has no free variables of any kind. $\forall z\,(X(z) \leftrightarrow \lnot Y(z))$ has no second-order quantifier but two free relation variables; it is satisfied or not only relative to an assignment of sets to $X$ and $Y$ (section 8.3).
+
+Explore mode of section 8.3 evaluates such formulas; this section has no workbench of its own.

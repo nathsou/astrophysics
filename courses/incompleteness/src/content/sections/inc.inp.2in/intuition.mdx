@@ -1,0 +1,27 @@
+import { GImpliesCon } from '../../../workbench/provability/exercises';
+
+<Added label="Added for this edition">
+
+The first incompleteness theorem says: *if* $T$ is consistent, $T \nvdash G$. The second theorem comes from proving this implication **inside** $T$. If $T \vdash \mathsf{Con} \to G$ and $T \vdash \mathsf{Con}$, then $T \vdash G$ — which a consistent $T$ cannot do. So a consistent $T$ does not derive $\mathsf{Con}$.
+
+</Added>
+
+## The consistency statement
+
+$\mathsf{Con}_{\mathbf{PA}}$ is $\lnot\mathsf{Prov}_{\mathbf{PA}}(\ulcorner 0 = 1\urcorner)$: “$0=1$ is not derivable”. The proof uses $\lnot\mathsf{Prov}(\ulcorner\bot\urcorner)$ instead; the two are equivalent in $\mathbf{PA}$ by P1 and P2, since $\mathbf{PA}$ derives $0 = 1 \leftrightarrow \bot$. This edition writes $\mathsf{Con}$ for $\lnot\mathsf{Prov}(\ulcorner\bot\urcorner)$.
+
+## Formalizing the first theorem
+
+The first half of the first incompleteness theorem goes: if $T \vdash G$, then $T \vdash \mathsf{Prov}(\ulcorner G\urcorner)$ (by P1), and also $T \vdash \lnot\mathsf{Prov}(\ulcorner G\urcorner)$ (by the fixed point), so $T$ is inconsistent. The formal proof replays this *inside* $T$:
+
+1. $\mathsf{Prov}(\ulcorner G\urcorner) \to \mathsf{Prov}(\ulcorner\mathsf{Prov}(\ulcorner G\urcorner)\urcorner)$ — P3 is P1 inside $T$;
+2. $\mathsf{Prov}(\ulcorner G\urcorner) \to \mathsf{Prov}(\ulcorner\lnot\mathsf{Prov}(\ulcorner G\urcorner)\urcorner)$ — the fixed point, pushed under $\mathsf{Prov}$ by P1 and P2;
+3. together: $\mathsf{Prov}(\ulcorner G\urcorner) \to \mathsf{Prov}(\ulcorner\bot\urcorner)$, i.e. $\mathsf{Con} \to \lnot\mathsf{Prov}(\ulcorner G\urcorner)$, i.e. $\mathsf{Con} \to G$.
+
+Explore mode has the book’s ten lines, each checked. Two of the steps silently use instances of P2; the book names them in the text after the proof, and the checker makes them explicit lines. Switch P3 off and watch which lines lose their support: it is exactly the step that formalizes P1.
+
+## What the theorem depends on
+
+The theorem is about a particular formula $\mathsf{Prov}$. All that is used is P1–P3, so it holds for any theory and derivability predicate satisfying them. A contrived $\mathsf{Prov}$ that violates P3 can make “consistency” derivable (Feferman gave such examples) — the theorem is not about any sentence that happens to be *true* iff $T$ is consistent.
+
+<GImpliesCon />

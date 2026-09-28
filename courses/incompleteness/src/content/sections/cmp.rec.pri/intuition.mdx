@@ -1,0 +1,29 @@
+import { ExPriNext } from '../../../workbench/recursion/exercises';
+
+<Added label="Added for this edition">
+
+With bounded quantifiers and bounded minimization, familiar number theory becomes primitive recursive: divisibility, primality, the next prime, and the $x$-th prime $p_x$. The only care needed is to find a **bound** for every search.
+
+</Added>
+
+## Divisibility and primality
+
+$x \mid y$ means $x \cdot z = y$ for some $z$ — and such a $z$ can be at most $y$. So
+
+$$
+x \mid y \iff (\exists z \le y)\,(x \cdot z = y).
+$$
+
+A prime is a number $x \ge 2$ whose only divisors are $1$ and $x$; divisors of $x$ are at most $x$, so again the quantifier is bounded:
+
+$$
+\mathrm{Prime}(x) \iff x \ge 2 \land (\forall y \le x)\,(y \mid x \rightarrow y = 1 \lor y = x).
+$$
+
+## The next prime, and a bound from Euclid
+
+$\mathrm{nextPrime}(x)$, the least prime above $x$, is found by searching upwards. To stay primitive recursive the search needs a bound, and Euclid’s argument supplies one: there is always a prime above $x$ and at most $x! + 1$. Then $p(0) = 2$, $p(x + 1) = \mathrm{nextPrime}(p(x))$ is a primitive recursion. These $p_x$ are the primes of the sequence codes in <Ref k="cmp:rec:seq:sec" />.
+
+The bound is wildly generous — the next prime is never far — but a primitive recursive definition must run to its bound regardless. Explore mode shows both: the direct search, and the official definition, which is only practical for tiny $x$.
+
+<ExPriNext />

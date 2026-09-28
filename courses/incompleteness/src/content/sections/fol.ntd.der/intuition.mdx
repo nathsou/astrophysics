@@ -1,0 +1,29 @@
+import { ExampleCheck } from '../../../workbench/nd/ExampleCheck';
+
+<Added label="Added for this edition">
+
+A derivation is built inductively: an assumption on its own is a derivation, and one, two or three derivations followed by a correct inference form a bigger one. $\Gamma \vdash A$ means some derivation ends in $A$ and all its undischarged assumptions are in $\Gamma$.
+
+</Added>
+
+## The three conditions
+
+The book's definition asks of a finite tree of sentences that (1) its topmost sentences are in $\Gamma$ or discharged by an inference in the tree, (2) its bottom sentence is $A$, and (3) every other sentence is a premise of a correct inference whose conclusion stands directly below it. The checker tests exactly these: (3) inference by inference, (1) by computing, for every step, the undischarged assumptions it depends on — and the builder then compares those at the root with $\Gamma$.
+
+## Schemas, instances, and discharge
+
+The rules are *schemas*: $\land$Intro applies with any sentences in place of $A$ and $B$, in either order. Both of these are derivations, showing $D \vdash C \rightarrow (C \land D)$ and $C \vdash D \rightarrow (C \land D)$:
+
+<ExampleCheck id="der-C-imp" />
+
+<ExampleCheck id="der-D-imp" />
+
+The undischarged assumption ($D$, respectively $C$) is what the conclusion still depends on.
+
+## Discharging nothing
+
+A rule may discharge assumptions; it need not. The book: "we can apply a rule even if the assumptions are not present in the derivation."
+
+<ExampleCheck id="der-vacuous" />
+
+Here $\rightarrow$Intro carries the label $1$ though no assumption $[A]^1$ exists. The checker accepts it: the inference is correct, and it discharges nothing, so $B \vdash A \rightarrow B$.

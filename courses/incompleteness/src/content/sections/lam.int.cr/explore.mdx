@@ -1,0 +1,10 @@
+import { GraphPanel } from '../../../workbench/lambda/GraphView';
+import { LambdaLab } from '../../../workbench/lambda/LambdaLab';
+
+The reduction graph of a term: all terms it reduces to, one step at a time, identified up to α-equivalence. The start is ringed, normal forms are green, and the step normal order would take is drawn in blue. The graph is bounded, and it says so when a term has more reducts than it can draw.
+
+<GraphPanel />
+
+Follow any path in the Lambda Lab — its panel 5 draws the graph of whatever term you have reached.
+
+<LambdaLab initial="(λx.(λy.y x) z) v" />

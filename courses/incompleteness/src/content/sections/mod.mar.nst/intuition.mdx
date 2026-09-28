@@ -1,0 +1,25 @@
+<Added label="Added for this edition">
+
+A structure for $\mathcal L_A$ is **non-standard** if it is not isomorphic to $\mathfrak N$. Its elements that are values of numerals are its **standard numbers**; the others are **non-standard**. A structure with a non-standard number is non-standard, since an isomorphism with $\mathfrak N$ would map the numbers of $\mathfrak N$ onto the standard numbers only.
+
+</Added>
+
+## Easy examples, hard examples
+
+The integers $\mathbb Z$ with the usual operations are non-standard: $-1$ is not the value of any numeral. But $\mathbb Z$ is a poor imitation of $\mathbb N$ — $\forall x\, 0 \neq x'$ is false in it ($(-1)' = 0$). The interesting question is whether there are non-standard structures that make **every** sentence true in $\mathfrak N$ true.
+
+## Compactness gives them
+
+Add a new constant $c$ and take
+
+$$\Gamma = \mathbf{TA} \cup \{c \neq \overline 0,\ c \neq \overline 1,\ c \neq \overline 2, \ldots\}.$$
+
+A finite part of $\Gamma$ mentions only finitely many of the new sentences, say none beyond $c \neq \overline k$. Then $\mathfrak N$ with $c$ interpreted as $k + 1$ satisfies that finite part. So every finite part of $\Gamma$ is satisfiable, and by compactness $\Gamma$ has a model $\mathfrak M^c$. There, $c$ denotes an element different from every $\mathrm{Val}(\overline n)$. Forget $c$ (take the reduct to $\mathcal L_A$): the element is still there, and the structure still satisfies $\mathbf{TA}$. It is a non-standard model of true arithmetic — elementarily equivalent to $\mathfrak N$, but not isomorphic to it.
+
+## What first-order logic cannot say
+
+So no set of first-order sentences — not even all the true ones — characterises $\mathfrak N$ up to isomorphism. “Every element is reached from 0 by finitely many successors” is not expressible in first-order logic. In second-order logic it is (chapter 8), and there $\mathfrak N$ *is* characterised — at the price of losing compactness and a complete proof system.
+
+<Callout title="Explore">
+Look at numerals in $\mathbb Z$ and in the model $\mathbf K$ of $\mathbf Q$ from section 7.7: the workbench lists the values of the numerals and the elements they miss.
+</Callout>

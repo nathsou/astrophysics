@@ -1,0 +1,9 @@
+import { DerivationBuilder } from '../../../workbench/nd/DerivationBuilder';
+
+Transitivity, done by hand: the goal is $B$ from $\Gamma = \{A,\ A \rightarrow B\}$ — but pretend you only have a derivation of $B$ from the assumption $A$, and one of $A$ from $\Gamma$. Build the tree of the book's proof: $\rightarrow$Elim with premises $A \rightarrow B$ (by $\rightarrow$Intro, discharging $[A]^1$) and $A$. Watch the undischarged assumptions in the status line.
+
+<DerivationBuilder goal="B" gamma={['A', 'A → B']} examples={[]} />
+
+And one step of the exercise on inconsistency: from $\Gamma = \{A, \lnot A\}$ derive an arbitrary sentence $C$ ($\lnot$Elim, then $\bot_I$).
+
+<DerivationBuilder goal="C" gamma={['A', '¬A']} examples={[]} />

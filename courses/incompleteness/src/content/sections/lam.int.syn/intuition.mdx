@@ -1,0 +1,35 @@
+import { ExLamFree, ExLamAlpha } from '../../../workbench/lambda/exercises';
+
+<Added label="Added for this edition">
+
+A λ-term is a variable, an application $(MN)$, or an abstraction $(\lambda x.\,M)$. Everything else in this section is about reading terms: which parentheses may be dropped, which λ an occurrence of a variable belongs to, and when two terms count as the same.
+
+</Added>
+
+## Three clauses
+
+Officially every application and every abstraction carries its own parentheses: $(MN)$ and $(\lambda x.\,M)$. Nothing else is a term. There are no numbers or operations; in the *pure* calculus, which is what the rest of the chapter uses, lowercase letters are variables and uppercase letters stand for terms.
+
+## Leaving out parentheses
+
+The book’s conventions:
+
+- **Application associates to the left.** $MNPQ$ is $(((MN)P)Q)$: first $M$ is applied to $N$, and the result to $P$, and so on.
+- **λ reaches as far to the right as possible.** $\lambda x.\,MNP$ is $\lambda x.\,((MN)P)$, not $((\lambda x.\,M)N)P$.
+- **One λ for several variables.** $\lambda xyz.\,M$ is $\lambda x.\lambda y.\lambda z.\,M$.
+
+So $\lambda xy.\,xxyx\,\lambda z.\,xz$ is $\lambda x.\,(\lambda y.\,((((xx)y)x)(\lambda z.\,(xz))))$. Explore mode shows both forms of any term you type. (In this edition’s input, variables may have several letters, so separate them with spaces — `λx y. x x y x λz. x z` — or tick “single-letter variables” to type the book’s notation.)
+
+## Free and bound
+
+In $\lambda x.\,M$, the λ **binds** the free occurrences of $x$ in $M$; $M$ is its scope. An occurrence not bound by any λ is **free**. In $(\lambda z.\,yz)x$, $z$ is bound and $y$, $x$ are free. The same letter can occur both ways: in $x\,(\lambda x.\,x)$ the first $x$ is free and the second is bound.
+
+## α-equivalence
+
+Terms that differ only in the names of bound variables are **α-equivalent**, and the book treats them as the same term: $\lambda x.\,x$ and $\lambda y.\,y$ are both the identity function.
+
+Renaming is not arbitrary, though. In $\lambda x.\lambda y.\,x$ (“return the first argument”) the outer $x$ cannot be renamed to $y$: that gives $\lambda y.\lambda y.\,y$, which returns the *second* argument, because the inner λy now captures the occurrence. A new name must not occur free in the scope, and must not be bound by an inner λ around an occurrence being renamed. The Explore mode’s renaming tool checks exactly these two conditions.
+
+<ExLamFree />
+
+<ExLamAlpha />

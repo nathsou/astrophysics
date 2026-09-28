@@ -1,0 +1,21 @@
+<Added label="Added for this edition">
+
+A first-order language is fixed by its **non-logical symbols**: constant symbols (names for objects), function symbols (names for operations) and predicate symbols (names for properties and relations). Everything else — variables, $\bot$, $\lnot$, $\land$, $\lor$, $\rightarrow$, $\forall$, $\exists$, $=$ and the punctuation — is logical, and the same in every language.
+
+</Added>
+
+## Official symbols and their aliases
+
+The book works with an infinite stock of official symbols: variables $v_0, v_1, \ldots$, constants $c_0, c_1, \ldots$, $n$-place function symbols $f^n_0, f^n_1, \ldots$ and $n$-place predicate symbols $A^n_0, A^n_1, \ldots$ (this edition writes $P^n_i$). The familiar notations are aliases. In the language of arithmetic $\mathcal L_A$, $<$ is $A^2_0$, $0$ is $c_0$, $'$ is $f^1_0$, $+$ is $f^2_0$ and $\times$ is $f^2_1$. The language of set theory has only the two-place predicate $\in$; the language of orders only $\le$.
+
+This matters for the incompleteness theorems: to code formulas by numbers (the arithmetization of syntax) we need a fixed alphabet, and each official symbol gets its own code.
+
+## Primitive and defined symbols
+
+This book takes $\bot$, $\lnot$, $\land$, $\lor$, $\rightarrow$, $\forall$ and $\exists$ as primitive, and **defines** $\leftrightarrow$ and $\top$: $A \leftrightarrow B$ abbreviates $(A \rightarrow B) \land (B \rightarrow A)$, and $\top$ abbreviates $\lnot\bot$. A defined symbol is not part of the language; it saves writing — and, more importantly, saves cases in proofs, since every primitive symbol needs its own case in every induction on formulas.
+
+<Callout title="In this edition">
+The satisfaction workbenches treat $\leftrightarrow$ and $\top$ exactly by these definitions. Explore mode shows, for any formula you type, which official symbol each alias stands for.
+</Callout>
+
+Fewer primitives would also do: $\lnot$ and $\lor$ together are truth-functionally complete, as are $\lnot, \land$ and $\lnot, \rightarrow$, and one quantifier can be defined from the other. The book keeps a generous stock so that formulas stay readable.

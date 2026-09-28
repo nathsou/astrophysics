@@ -1,0 +1,23 @@
+import { ExCraig } from '../../../workbench/computability/exercises';
+
+<Added label="Added for this edition">
+
+Two hypotheses of the incompleteness theorems are about computability: that $\mathbf T$ is axiomatizable (it has a *decidable* set of axioms), and that it extends $\mathbf Q$ (so it represents the primitive recursive relations). With computability theory in hand, “axiomatizable” can be replaced by the more natural “the theorems of $\mathbf T$ are c.e.” — and the two turn out to be equivalent.
+
+</Added>
+
+## Axiomatizable ⇒ c.e.
+
+With a decidable set of axioms $\Gamma$, whether a given object is a correct derivation from $\Gamma$ is decidable: check every inference, and check that every open assumption is in $\Gamma$. The book showed this relation, $\mathrm{Prf}_\Gamma(x, y)$, to be primitive recursive when $\Gamma$ is (<Ref k="inc:art:pnd:prop:prf-prim-rec" />); the same proof gives computable from computable. Then the theorems are the domain of $\mu x\, \mathrm{Prf}_\Gamma(x, y)$: search for a derivation of $y$. A domain of a partial computable function is c.e.
+
+## c.e. ⇒ axiomatizable: Craig’s trick
+
+The converse is surprising: if you can only *list* the theorems $A_0, A_1, A_2, \ldots$, you can still write down a decidable axiom set. Take
+$$
+\Gamma = \{A_0,\; A_1 \land A_1,\; A_2 \land (A_2 \land A_2),\; \ldots\}.
+$$
+Each axiom is equivalent to a theorem, so $\Gamma$ axiomatizes $\mathbf T$. And $\Gamma$ is decidable: given a sentence, count how many copies of the same conjunct it is made of. That count tells you *which* element of the enumeration to compare with, so a single, finite computation of the enumeration settles the question — no open-ended search.
+
+The trick is almost a joke — the axioms are padded to carry their own position in the list — but it shows that “axiomatizable” adds nothing beyond “c.e.”. The workbench makes two small details of the proof explicit: $k$ copies go with $A_{k-1}$, and a sentence that happens to be a conjunction of identical conjuncts must also be tried as a single copy of itself.
+
+<ExCraig />

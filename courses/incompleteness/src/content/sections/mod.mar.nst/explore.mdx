@@ -1,0 +1,8 @@
+import { NumeralNames } from '../../../workbench/semantics/SmallLabs';
+import { SatisfactionLab } from '../../../workbench/semantics/SatisfactionLab';
+
+<NumeralNames initial={{ kind: 'search', id: 'Z' }} />
+
+$\mathbb Z$ is non-standard, but it is not a model of true arithmetic: search finds the counterexample $-1$ to $\forall x\, 0 \neq x'$.
+
+<SatisfactionLab id="mod.mar.nst" structure={{ kind: 'search', id: 'Z' }} formula="∀x ¬0 = x′" assign={{}} scope="arith" tables={false} />

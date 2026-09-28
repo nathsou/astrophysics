@@ -1,0 +1,31 @@
+import { ExPrrVacuous } from '../../../workbench/recursion/exercises';
+
+<Added label="Added for this edition">
+
+A relation is primitive recursive when its **characteristic function** — $1$ where it holds, $0$ where it does not — is. Then logic becomes arithmetic: $\lnot$, $\land$, $\lor$, $\to$ are $1 \dot- \chi$, multiplication, $\max$ and $\max(1 \dot- \chi_P, \chi_Q)$, and bounded quantifiers are primitive recursions on the bound.
+
+</Added>
+
+## Relations as 0–1 functions
+
+$\chi_{\mathrm{IsZero}}(0) = 1$, $\chi_{\mathrm{IsZero}}(x + 1) = 0$ is a primitive recursion. Composing it with functions already available gives $x = y$ as $\mathrm{IsZero}(|x - y|)$ and $x \le y$ as $\mathrm{IsZero}(x \dot- y)$.
+
+## Boolean combinations
+
+If $\chi_P$ and $\chi_Q$ are 0–1 valued, then $1 \dot- \chi_P$ swaps $0$ and $1$; $\chi_P \cdot \chi_Q$ is $1$ only when both are; $\max(\chi_P, \chi_Q)$ is $1$ when either is. Explore mode builds these from the official characteristic functions and tabulates them.
+
+## Bounded quantifiers
+
+$(\forall z < y)\, R(\vec x, z)$ is a finite conjunction, so a primitive recursion on $y$ computes it:
+
+$$
+\chi_P(\vec x, 0) = 1, \qquad \chi_P(\vec x, y + 1) = \min(\chi_P(\vec x, y), \chi_R(\vec x, y)).
+$$
+
+The *bound* is essential: an unbounded $\forall z$ would be an infinite conjunction, and no recursion computes it. Bounded $\exists$ uses $\max$, and $(\exists z \le y)$ is $(\exists z < y + 1)$.
+
+## Definition by cases
+
+$\mathrm{cond}(x, y, z)$ is $y$ if $x = 0$ and $z$ otherwise. With it, “$g_0(\vec x)$ if $R_0(\vec x)$, else $g_1(\vec x)$” is $\mathrm{cond}(\chi_{\lnot R_0}(\vec x), g_0(\vec x), g_1(\vec x))$, and longer case distinctions nest. Note that the composition computes *both* branches; only the choice depends on $R_0$. That is harmless here, because every primitive recursive function is total.
+
+<ExPrrVacuous />

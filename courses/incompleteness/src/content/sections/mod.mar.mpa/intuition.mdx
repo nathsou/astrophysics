@@ -1,0 +1,25 @@
+<Added label="Added for this edition">
+
+$\mathbf{PA}$ proves far more than $\mathbf Q$, and that constrains its models. The simple models of $\mathbf Q$ — $\mathbf K$, with a single element $a$ that is its own successor — are ruled out: $\mathbf{PA}$ proves $\forall x\, x \neq x'$ and that addition is commutative. What does a non-standard model of $\mathbf{PA}$ look like? The section answers for the order $\prec$ (the interpretation of $<$).
+
+</Added>
+
+## The standard part comes first
+
+$\prec$ is a strict linear order, $0$ is its least element, every $x$ is immediately followed by $x^*$ (the successor), and every $x \neq 0$ has a unique predecessor (<Ref k="mod:mar:mpa:prop:M-discrete" />). Every standard element is below every non-standard one: $\mathbf Q$ already proves that everything below $\overline{n}'$ is one of $\overline 0, \ldots, \overline n$.
+
+## Blocks
+
+Take a non-standard $x$ and go up and down by successors and predecessors: $\ldots, {}^{**}x, {}^{*}x, x, x^*, x^{**}, \ldots$. This is the **block** $[x]$ — ordered like the integers, without a least or greatest element. Different blocks do not overlap, and they are ordered: every element of one block is below every element of the other.
+
+## The blocks are ordered like the rationals
+
+- **No largest block.** For non-standard $x$, $x \oplus x$ lies above $x$ and outside $[x]$ (cancellation for addition).
+- **No least non-standard block.** $\mathbf{PA}$ proves every $x$ is $y \oplus y$ or $(y \oplus y)^*$. For non-standard $x$, $y$ is non-standard and lies in a lower block.
+- **Dense** (<Ref k="mod:mar:mpa:prop:blocks-dense" />). Between blocks $[x] \prec [y]$ lies the block of their “average” $z$, where $x \oplus y$ is $z \oplus z$ or $(z \oplus z)^*$.
+
+So the blocks form a dense linear order without endpoints. For a **countable** non-standard model that order is countable, and every countable dense linear order without endpoints is isomorphic to $\mathbb Q$. Hence the order of every countable non-standard model of $\mathbf{TA}$ (or $\mathbf{PA}$) is the same: a copy of $\mathbb N$ followed by $\mathbb Q$ many copies of $\mathbb Z$. The orders are isomorphic; the models themselves are not all alike.
+
+<Callout title="Explore">
+The picture in Explore mode builds blocks with the three operations of these proofs. It shows the order only, and is an illustration, not a model.
+</Callout>

@@ -1,0 +1,33 @@
+import { Exercise } from '../../../ui/Exercise';
+
+<Added label="Added for this edition">
+
+A derivation is a tree. Its topmost sentences are **assumptions**; every other sentence stands below one, two or three sentences — its **premises** — and follows from them by a rule of inference. Some rules may **discharge** assumptions, and a shared **label** records which.
+
+</Added>
+
+## Assumptions
+
+The book's definition is purely positional: an assumption is any sentence in the topmost position of a branch. Nothing is said about *which* sentences may be assumed — any sentence may. What matters is whether the assumption is still **undischarged** at the end: the undischarged assumptions are what the conclusion depends on.
+
+## Inferences, premises, conclusions
+
+An inference has one, two or three premises above a line and one conclusion below it. The rules come in pairs: an **introduction** rule puts a connective or quantifier into the conclusion ($A$ and $B$ give $A \land B$), an **elimination** rule takes one out of a premise ($A \land B$ gives $A$). There is also =Intro, which has no premises at all: $t = t$ follows outright.
+
+## Labels
+
+Four propositional rules and one quantifier rule may discharge assumptions: $\lnot$Intro, $\rightarrow$Intro, $\lor$Elim, $\bot_C$ and $\exists$Elim. The discharged assumption is written $[A]^n$ and the discharging inference carries the same number $n$. The label is bookkeeping — it says *which* assumptions a given inference uses up — so a derivation with several assumptions of the same sentence can discharge some of them and not others.
+
+In this edition's checker, every discharging inference names a label (possibly one that discharges nothing), and a labelled assumption that no inference below discharges is reported as an error: its label promises a discharge that never happens.
+
+<Exercise
+  id="ntd.rul.which"
+  title="Which rules discharge?"
+  choices={[
+    { label: '∧Intro and ∨Intro', why: 'They have no assumptions to discharge: they only combine or weaken what is derived.' },
+    { label: '→Intro, ¬Intro, ∨Elim, ⊥C and ∃Elim', correct: true, why: 'These five: conditional proof, reductio, proof by cases, classical reductio, and reasoning from an arbitrary witness.' },
+    { label: 'Every elimination rule', why: '∧Elim, →Elim, ¬Elim and ∀Elim discharge nothing.' },
+  ]}
+>
+  Which inferences may discharge assumptions?
+</Exercise>

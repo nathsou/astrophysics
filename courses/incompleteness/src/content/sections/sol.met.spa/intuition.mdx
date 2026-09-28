@@ -1,0 +1,27 @@
+<Added label="Added for this edition">
+
+First-order $\mathbf{PA}$ has an induction *schema*: one axiom for each formula $A(x)$. Second-order $\mathbf{PA}^2$ replaces it by one sentence quantifying over all sets:
+
+$$\forall X\,((X(0) \land \forall x\,(X(x) \rightarrow X(x'))) \rightarrow \forall x\, X(x)).$$
+
+Every set containing $0$ and closed under successor is the whole domain.
+
+</Added>
+
+## No non-standard numbers
+
+The schema only covers sets defined by formulas; the second-order axiom covers every set. Take $N$ to be the set of values of the numerals, $\{\mathrm{Val}^{\mathfrak M}(\overline n) : n \in \mathbb N\}$. It contains $0^{\mathfrak M}$ and is closed under successor, so the induction axiom forces $N = |\mathfrak M|$ (<Ref k="sol:met:spa:thm:sol-pa-standard" />). A model of $\mathbf{PA}^2$ has no non-standard elements, and since it satisfies $\mathbf Q$, it is standard: **any two models of $\mathbf{PA}^2$ are isomorphic** (<Ref k="sol:met:spa:cor:sol-pa-categorical" />).
+
+The first-order argument breaks down exactly here: in a non-standard model of $\mathbf{PA}$, the set of standard elements is not definable by a formula, so the induction schema says nothing about it.
+
+## Less is enough
+
+With second-order quantifiers, $\le$, $+$ and $\times$ can be defined from $0$ and $'$ (<Ref k="sol:met:spa:prop:sol-pa-definable" />). For instance $x \le y$ iff every set containing $x$ and closed under successor contains $y$:
+
+$$A_\le(x, y) \equiv \forall Y\,((Y(x) \land \forall z\,(Y(z) \rightarrow Y(z'))) \rightarrow Y(y)),$$
+
+and $k + l = m$ iff some function $u$ with $u(0) = k$ and $u(n') = u(n)'$ has $u(l) = m$.
+
+<Callout title="Explore">
+Finite structures cannot be models of $\mathbf{PA}^2$ (they fail $\mathbf Q_1$ or $\mathbf Q_2$), but the induction axiom can be evaluated in them. In the structure with a 3-cycle and a stray element $a$, the counterexample the workbench finds is the set of values of the numerals — the $N$ of the proof.
+</Callout>

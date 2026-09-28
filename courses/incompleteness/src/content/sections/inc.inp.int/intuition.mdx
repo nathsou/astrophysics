@@ -1,0 +1,28 @@
+<Added label="Added for this edition">
+
+This chapter turns the tools of the previous two — Gödel numbering and representability in $\mathbf Q$ — into the incompleteness theorems. Its engine is one lemma: for any property $B(x)$ there is a sentence $A$ that the theory knows is equivalent to “$B$ holds of my own Gödel number”.
+
+</Added>
+
+## Two theorems against Hilbert’s hopes
+
+Hilbert wanted formal theories of arithmetic to be **complete** (every sentence or its negation derivable) and wanted **finitary consistency proofs** for them. The chapter proves that neither is available for any consistent, computably axiomatizable theory that is strong enough:
+
+- the **first incompleteness theorem**: such a theory derives neither $G_T$ nor $\lnot G_T$ for a suitable sentence $G_T$ (Gödel needed ω-consistency for the second half; Rosser removed that assumption);
+- the **second incompleteness theorem**: such a theory, if it also satisfies the derivability conditions, does not derive its own consistency statement.
+
+## Self-reference without “this sentence”
+
+The liar sentence says “this sentence is false”. A formula cannot literally point at itself, but it can mention a *name* of a formula: the numeral $\ulcorner A\urcorner$ of its Gödel number. Keep three things apart, as the book does:
+
+| | what it is | example |
+|---|---|---|
+| $A$ | a formula | <F f="∀x x = x" /> |
+| $\#A\#$ | a natural number | its Gödel number |
+| $\ulcorner A \urcorner$ | a term (a numeral) | $0'''\cdots'$ with $\#A\#$ primes |
+
+Quine’s version of the paradox shows how a sentence can talk about itself by talking about a *description* of itself: “yields falsehood when preceded by its quotation” yields falsehood when preceded by its quotation. The fixed-point lemma formalizes exactly this trick, with “preceded by its quotation” becoming the diagonal function $\mathrm{diag}$ on Gödel numbers. You can try the trick on phrases of your own in <a href="#/s/inc.inp.fix?mode=intuition">the next section</a>.
+
+## What comes next
+
+<Ref k="inc:inp:fix:sec" /> proves the fixed-point lemma; <Ref k="inc:inp:1in:sec" /> and <Ref k="inc:inp:ros:sec" /> prove the first incompleteness theorem in Gödel’s and Rosser’s forms; <Ref k="inc:inp:2in:sec" /> and <Ref k="inc:inp:lob:sec" /> derive the second theorem and Löb’s theorem from three *derivability conditions*; <Ref k="inc:inp:tar:sec" /> shows that truth, unlike derivability, cannot even be defined in arithmetic.

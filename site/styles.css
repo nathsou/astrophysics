@@ -602,6 +602,57 @@ h1 em {
   color: #c7b3f0;
 }
 
+.art-incompleteness {
+  background: radial-gradient(90% 90% at 15% 10%, #3f5fa855, transparent 60%), #1c2233;
+  color: #dfe6f7;
+}
+.art-incompleteness .corners {
+  position: absolute;
+  right: 26px;
+  top: 4px;
+  font-family: var(--font-serif);
+  font-size: 120px;
+  line-height: 1;
+  color: #9fb4e8;
+  opacity: 0.35;
+}
+.art-incompleteness .fixed {
+  position: absolute;
+  left: 26px;
+  top: 30px;
+  font-family: var(--font-serif);
+  font-size: 26px;
+  color: #f1e6cf;
+}
+.art-incompleteness .gn {
+  position: absolute;
+  left: 26px;
+  bottom: 24px;
+  right: 18px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: #f0b45c;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.art-incompleteness .derive {
+  position: absolute;
+  left: 26px;
+  top: 84px;
+  display: inline-grid;
+  gap: 5px;
+  justify-items: center;
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: #cbd6f2;
+}
+.art-incompleteness .derive .bar {
+  width: 100%;
+  height: 1px;
+  background: #cbd6f2aa;
+}
+
 .art-compiler {
   background: radial-gradient(90% 90% at 85% 15%, #a46e4255, transparent 60%), #2b2825;
 }

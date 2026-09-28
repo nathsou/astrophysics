@@ -1,0 +1,26 @@
+<Added label="Added for this edition">
+
+What does it mean for a function on the natural numbers to be *computable*? This chapter gives one precise answer, built up in two stages: first the **primitive recursive** functions, obtained from a few trivial functions by composition and by recursion on one argument; then the **partial recursive** functions, which add one more operation — unbounded search.
+
+</Added>
+
+## Why numbers, and why recursion
+
+Before there were computers, the model case of computation was arithmetic: addition, multiplication, exponentiation. These share a feature — each can be defined *recursively*, by saying what the value is at $0$ and how to get the value at $y + 1$ from the value at $y$:
+
+$$
+x \cdot 0 = 0, \qquad x \cdot (y + 1) = x \cdot y + x.
+$$
+
+The chapter takes this pattern, *primitive recursion*, as the backbone of a definition of computability. Sets and relations come along for free: a relation is computable when its *characteristic function* — $1$ where the relation holds, $0$ where it does not — is.
+
+## The road through the chapter
+
+- **Primitive recursion and composition** (<Ref k="cmp:rec:pre:sec" />, <Ref k="cmp:rec:com:sec" />) are the two ways of making new functions; with $\mathrm{zero}$, $\mathrm{succ}$ and the projections they define the primitive recursive functions (<Ref k="cmp:rec:prf:sec" />).
+- A long list of examples — exponentiation, subtraction, primality, bounded search, sequence codes, trees — shows how much is primitive recursive. Almost everything the incompleteness theorems need about Gödel numbers is.
+- Then the limits. A **diagonal argument** (<Ref k="cmp:rec:npr:sec" />) produces a computable function that is not primitive recursive, and the Ackermann–Péter function is a natural example. In fact *no* list of total functions that can be effectively enumerated contains all computable functions.
+- The way out is to admit **partial** functions and **unbounded search** $\mu x$ (<Ref k="cmp:rec:par:sec" />). A search may never end; the price of capturing all computable functions is that some computations do not halt — and, by the **halting problem** (<Ref k="cmp:rec:hlt:sec" />), there is no computable way to tell which.
+
+## How this edition treats it
+
+Every definition in the workbenches is a real term built from $\mathrm{zero}$, $\mathrm{succ}$, projections, composition, primitive recursion and $\mu$, and every value shown is computed from it by the engine. Computations are run with a **budget** of steps. When the budget runs out, the workbench says “no answer within $N$ steps” — never “undefined”. The difference between the two is the subject of the last sections of the chapter.

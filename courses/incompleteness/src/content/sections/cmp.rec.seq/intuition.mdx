@@ -1,0 +1,13 @@
+<Added label="Added for this edition">
+
+Every Gödel number in this book is a *sequence code*. A finite sequence of numbers $\langle a_0, \ldots, a_k\rangle$ becomes the single number $2^{a_0+1} \cdot 3^{a_1 + 1} \cdots p_k^{a_k+1}$. Because factorisation into primes is unique, the sequence can be recovered from the number — and, crucially, by primitive recursive functions.
+
+</Added>
+
+## Why add one?
+
+If the exponents were $a_i$ instead of $a_i + 1$, a zero entry would leave no trace: $\langle 2, 7, 3\rangle$ and $\langle 2, 7, 3, 0, 0\rangle$ would get the same number. With the $+1$, every entry — including $0$ — shows up as a prime that divides the code, and the length of the sequence is the number of consecutive primes that do.
+
+## The operations
+
+The section shows four functions to be primitive recursive: $\mathrm{len}(s)$, the element $(s)_i$, $\mathrm{append}(s, a)$ and concatenation $s \frown t$. They are all the arithmetization of syntax needs: a formula’s Gödel number is a sequence code, its length is its number of symbols, and $(s)_i$ is the code of its $i$-th symbol. Try them in Explore mode on your own sequence.

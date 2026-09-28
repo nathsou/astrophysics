@@ -1,0 +1,37 @@
+import { ExPriRegular } from '../../../workbench/represent2/exercises';
+
+<Added label="Added for this edition">
+
+A definition by primitive recursion, $h(\vec x, 0) = f(\vec x)$ and $h(\vec x, y+1) = g(\vec x, y, h(\vec x, y))$, computes $h(\vec x, y)$ by building the whole history $h(\vec x, 0), h(\vec x, 1), \ldots, h(\vec x, y)$. Minimization cannot build anything — it can only search. So search for the history: a number $d$ that codes it, in the β-coding of the previous section.
+
+</Added>
+
+## Searching for the history
+
+A number $d$ is the code of the right history exactly when it passes finitely many tests, each using only $f$, $g$ and $\beta$:
+
+$$
+\beta(d, 0) = f(\vec x) \quad\text{and}\quad \beta(d, i+1) = g(\vec x, i, \beta(d, i)) \text{ for every } i < y.
+$$
+
+The first test fixes $\beta(d, 0)$; then each test fixes the next entry from the one before. So any $d$ passing them all has $\beta(d, y) = h(\vec x, y)$. The book lets $\hat h(\vec x, y)$ be the *least* such $d$ and reads off the answer:
+
+$$
+\hat h(\vec x, y) = \mu d\,\bigl(\beta(d, 0) = f(\vec x) \land \forall i < y\ \beta(d, i+1) = g(\vec x, i, \beta(d, i))\bigr), \qquad h(\vec x, y) = \beta(\hat h(\vec x, y), y).
+$$
+
+The bounded quantifier $\forall i < y$ is harmless: the previous section showed that relations definable without primitive recursion are closed under it.
+
+## Why the search succeeds
+
+Minimization is allowed only if it is *regular*: for every input some $d$ must pass the tests. This is exactly what the β-function lemma provides — the history is a finite sequence, so it has a code.
+
+<ExPriRegular />
+
+## What changed, and what did not
+
+Nothing about $h$ changed: the same values, now reached by a search instead of a recursion. What changed is the basis of the definition. Every primitive recursion in the definition of a recursive function can be replaced this way, so every recursive function is definable from zero, successor, projections, $+$, $\times$ and $\chi_=$ by composition and regular minimization — the basis for which <Ref k="inc:req:bre:sec" />–<Ref k="inc:req:min:sec" /> construct representing formulas.
+
+<Callout title="In Explore mode">
+Pick $h$, see its history, a β-code for it, and the tests the minimization performs. Search for the least code $\hat h(\vec x, y)$ (usually far smaller than the constructed one), or type your own $d$ and see which test fails.
+</Callout>

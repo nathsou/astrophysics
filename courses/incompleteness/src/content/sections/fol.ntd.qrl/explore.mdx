@@ -1,0 +1,7 @@
+import { DerivationBuilder } from '../../../workbench/nd/DerivationBuilder';
+
+The builder starts with the book's incorrect derivation, with the checker's verdict on its $\forall$Intro. Undo it step by step, or select the $\forall$Intro and retract it, and try to do better — you will find that no choice of eigenvariable satisfies the condition, as soundness predicts.
+
+When applying $\forall$Intro or $\exists$Elim, the builder proposes a fresh constant; choosing one that already occurs lets you see the eigenvariable condition fail.
+
+<DerivationBuilder example="qrl-bad" examples={['qrl-bad', 'qrl-bad-2', 'qrl-exI', 'prq-1', 'prq-2', 'prq-3']} />

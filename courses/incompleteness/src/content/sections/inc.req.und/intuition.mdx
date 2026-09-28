@@ -1,0 +1,30 @@
+import { ExUndTruth } from '../../../workbench/represent2/exercises';
+
+<Added label="Added for this edition">
+
+The theorems of $\mathbf Q$ can be listed by a machine: run through all numbers and output those that code derivations. But no machine can decide, for an arbitrary sentence, whether it will ever be listed. $\mathbf Q$ is *undecidable*, and since $\mathbf Q$ has finitely many axioms, so is first-order logic itself.
+
+</Added>
+
+## Halting questions become provability questions
+
+Kleene's predicate $T(e, n, s)$ holds when $s$ codes a halting computation of program $e$ on input $n$; it is primitive recursive, so $\mathbf Q$ represents it by a formula $B_T$. Now ask $\mathbf Q$ about the sentence $\exists y\, B_T(\overline e, \overline n, y)$:
+
+* If $\varphi_e(n)$ halts, with computation $s$, then $\mathbf Q \vdash B_T(\overline e, \overline n, \overline s)$ and so $\mathbf Q \vdash \exists y\, B_T(\overline e, \overline n, y)$.
+* If it does not halt, $\mathbf Q$ refutes $B_T(\overline e, \overline n, \overline s)$ for each $s$ separately. To conclude that $\mathbf Q$ does not prove $\exists y\, B_T(\overline e, \overline n, y)$ the proof uses more than consistency: $\mathbf Q$ is *ω-consistent*, because its axioms are true in the standard model.
+
+So $\varphi_e(n)$ halts iff $\mathbf Q \vdash \exists y\, B_T(\overline e, \overline n, y)$. The sentence is computed from $e$ and $n$ by a primitive recursive $g$. A decision procedure for provability in $\mathbf Q$ would therefore decide the halting problem, which is impossible (<Ref k="cmp:rec:hlt:thm:halting-problem" />).
+
+<ExUndTruth />
+
+## Listing versus deciding
+
+Undecidable does not mean mysterious. Provability in $\mathbf Q$ is $\exists x\,\mathrm{Prf}_{\mathbf Q}(x, y)$: an unbounded search over a primitive recursive relation, like halting itself. When the answer is “yes” a search finds it. When it is “no”, nothing ever says so.
+
+## First-order logic
+
+$\mathbf Q$ has eight axioms. With $T$ their conjunction, $\mathbf Q \vdash A$ iff $\vdash T \to A$. A procedure deciding which sentences are derivable in pure first-order logic would decide provability in $\mathbf Q$. So there is none: this is the negative answer to Hilbert's *Entscheidungsproblem*, due to Church and Turing.
+
+<Callout title="In Explore mode">
+The reduction as a diagram, the sentence $\exists y\, B_T(\overline e, \overline n, y)$ and its Gödel number for your $e$ and $n$ (with $B_T$ kept by name), and the first-order sentence $T \to A$ whose validity a decision procedure would have to settle.
+</Callout>

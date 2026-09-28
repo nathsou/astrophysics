@@ -1,0 +1,34 @@
+import { ExLamCapture } from '../../../workbench/lambda/exercises';
+
+<Added label="Added for this edition">
+
+The only computation rule: a **redex** $(\lambda x.\,M)N$ may be replaced by its **contractum** $M[N/x]$, anywhere inside a term. The substitution has to rename bound variables of $M$ that would capture free variables of $N$. A term with no redex left is in **normal form**.
+
+</Added>
+
+## Substitution, carefully
+
+$M[N/x]$ replaces the free occurrences of $x$ in $M$ by $N$. The book’s definition includes a proviso: first rename “any bound variables of $M$ that would interfere with the free variables of $N$”. Without it, reduction would give wrong answers. Take the constant-function maker $\lambda x.\lambda y.\,x$ and apply it to the variable $y$:
+
+$$
+(\lambda x.\lambda y.\,x)\,y \;\to\; (\lambda y.\,x)[y/x].
+$$
+
+Replacing blindly gives $\lambda y.\,y$ — the identity — although we asked for the function that always returns $y$. The $y$ we substituted was **captured** by λy. Renaming the bound $y$ to a fresh $y'$ first gives $\lambda y'.\,y$, which is right. (This is the same hazard as substituting a term for a variable in a first-order formula, where the book requires the term to be *free for* the variable instead of renaming.)
+
+## One step, many steps, normal forms
+
+$P \to P'$ (**one-step reduction**) if $P'$ comes from $P$ by contracting one redex, which may sit anywhere, even under a λ. $P \twoheadrightarrow P'$ if a sequence of zero or more such steps leads from $P$ to $P'$. The book’s four examples show the range of behaviour:
+
+1. $(\lambda x.\,xxy)\,\lambda z.\,z$ reaches the normal form $y$ in three steps.
+2. $(\lambda x.\,xxy)(\lambda x.\,xxy)$ grows at every step.
+3. $(\lambda x.\,xx)(\lambda x.\,xx)$ reduces to itself.
+4. $(\lambda x.\,(\lambda y.\,yx)z)v$ can be reduced in two ways, both ending at $zv$.
+
+## Strategies
+
+The book allows *any* redex to be contracted. A **strategy** fixes a choice; the Lab offers four common ones, which are not part of the book: *normal order* (the leftmost-outermost redex), *applicative order* (the leftmost-innermost one), *call by name* and *call by value* (which never reduce under a λ). The choice matters. In $K\,I\,\Omega$, with $K \equiv \lambda x.\lambda y.\,x$, $I \equiv \lambda x.\,x$ and $\Omega \equiv (\lambda x.\,xx)(\lambda x.\,xx)$, normal order discards $\Omega$ and reaches $I$ in two steps, while applicative order insists on reducing $\Omega$ first and never finishes.
+
+“Never finishes” is something we know from an argument — $\Omega$ has only itself as a reduct — not from running it. A run that stops after its step budget has shown only that no normal form turned up in that many steps; the Lab says exactly that.
+
+<ExLamCapture />

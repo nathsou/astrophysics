@@ -1,0 +1,25 @@
+<Added label="Added for this edition">
+
+For partial functions, “undefined” must be represented by “no normal form”. Unbounded search gets this right on its own: when no $y$ is found, the search never ends. Composition does not: normal order may discard an argument whose computation would never end, and so produce a value where the composed function is undefined. The book states that all partial recursive functions are nevertheless λ-definable, and omits the proof.
+
+</Added>
+
+## Search without regularity
+
+Drop the regularity assumption from the previous section. If $f(\vec n, y) \ne 0$ for every $y$, then $(Y\,\mathrm{Search})\,F\,\vec{\overline n}\,\overline 0$ keeps unfolding: it has no normal form, as it should.
+
+## Where composition goes wrong
+
+Composition of $f$ and $g$ is λ-defined by $\lambda x.\,F(G x)$ when both are total. Now let $g$ be undefined at $x$, so $G\,\overline x$ has no normal form. Usually $F(G\,\overline x)$ then has none either — but not always. The book’s example: $F \equiv \lambda x.\lambda y.\,y$ ignores its argument, and
+
+$$
+F(G\,\overline x) \to \lambda y.\,y ,
+$$
+
+a normal form, even though $f(g(x))$ is undefined. In a strict mathematical sense $f \circ g$ is undefined wherever $g$ is, so this term does not λ-define the composition.
+
+One way to repair this (the book does not describe one) is to make every term that uses an argument first *check* that the argument has a normal form of the right kind — for numerals, by running $\overline n$ on something that forces it — so that an undefined argument poisons the whole computation. That is why the book calls these methods “somewhat more complicated and less intuitive”.
+
+## Why running cannot tell
+
+In Explore mode, terms that have no normal form show up as “no normal form within N steps”. That is all a finite computation can show. Whether a term has a normal form is not decidable in general — a λ-version of the halting problem — so no step budget would be enough in every case.

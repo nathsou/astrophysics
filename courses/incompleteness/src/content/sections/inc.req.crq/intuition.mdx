@@ -1,0 +1,26 @@
+<Added label="Added for this edition">
+
+This short section puts the chapter together. Every computable function is general recursive (the Church–Turing thesis, used here as a definition). Primitive recursion is eliminated with the β-function. What remains is built from representable basic functions by operations that preserve representability. Together with <Ref k="inc:req:rpc:sec" />, this gives <Ref k="inc:req:int:thm:representable-iff-comp" />: the functions representable in $\mathbf Q$ are exactly the computable ones.
+
+</Added>
+
+## An induction on definitions
+
+The proof is an induction, not on numbers but on the way a function is defined. It has to use a basis in which every clause is covered by an earlier section:
+
+| clause | covered by |
+|---|---|
+| $\mathrm{zero}$, $\mathrm{succ}$, $P^n_i$, $+$, $\times$, $\chi_=$ | <Ref k="inc:req:bre:sec" /> |
+| composition | <Ref k="inc:req:cmp:prop:rep-composition" /> |
+| regular minimization | <Ref k="inc:req:min:prop:rep-minimization" /> |
+| primitive recursion | eliminated: <Ref k="inc:req:pri:lem:prim-rec" /> |
+
+Primitive recursion has no clause of its own. A direct representing formula for $\mathrm{Rec}(f, g)$ would have to say “there is a sequence of values, each obtained from the previous one by $g$”, and the language of arithmetic has no sequences — until the β-function supplies them. The book's route rewrites the definition first, so that only composition and minimization remain; the representing formula is then built from the rewritten definition.
+
+## What it means
+
+Representability is a statement about *every* computable function and about a *very weak* theory. Anything that extends $\mathbf Q$ inherits it: Peano arithmetic, set theory. Conversely, by the argument of <Ref k="inc:req:rpc:sec" />, a consistent theory whose derivations can be checked mechanically represents only computable functions. So across all these theories the representable functions are the same — the computable ones — even though what the theories can *prove* differs enormously.
+
+<Callout title="In Explore mode">
+A map of the proof, and a function such as $\mathrm{mult}$ or $\mathrm{fac}$ with every primitive recursion in its definition replaced by a β-minimization, equation by equation.
+</Callout>

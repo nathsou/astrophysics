@@ -1,0 +1,23 @@
+<Added label="Added for this edition">
+
+First-order logic quantifies over the objects of the domain. **Second-order logic** also quantifies over relations and functions on the domain. Alongside $\forall x$ it has $\forall X$, where $X$ is a relation variable ranging over all subsets of $|\mathfrak M|$ (or all $n$-place relations), and $\forall u$, where $u$ is a function variable ranging over all functions on $|\mathfrak M|$.
+
+</Added>
+
+## The same structures, more to say
+
+The structures are the same as in first-order logic. What changes is the language and what satisfaction does with it. In the **standard semantics** used throughout this chapter, $\forall X$ ranges over *every* subset of the domain — not just the ones some formula happens to define.
+
+The book’s first example: $\forall X\, \forall x\,(X(x) \lor \lnot X(x))$ and $\exists X\, \forall x\,(X(x) \lor \lnot X(x))$ are sentences of second-order logic, and both are true in every structure — every set either contains a given object or not.
+
+## What it buys
+
+With quantifiers over sets and functions, second-order logic can say things no first-order sentence can: that the domain is infinite, that it is countable, that one relation is the transitive closure of another, and — crucially for arithmetic — the induction axiom as a single sentence, which pins down $\mathfrak N$ up to isomorphism (section 8.7). It can express a good deal of set theory without a membership symbol (sections 8.11–8.13).
+
+## What it costs
+
+That power has a price, shown in sections 8.8–8.10: second-order logic has no sound and complete proof system, it is not compact, and the Löwenheim–Skolem theorem fails. The categorical characterisation of $\mathfrak N$ does not escape incompleteness; it relocates it into the logic.
+
+<Callout title="Explore">
+On a finite domain, $\forall X$ has finitely many values — $2^n$ subsets of an $n$-element domain — and $\forall u$ has $n^n$. The workbench evaluates second-order sentences by running through all of them, which is only feasible for tiny domains.
+</Callout>

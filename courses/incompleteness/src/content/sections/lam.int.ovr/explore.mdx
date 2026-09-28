@@ -1,0 +1,5 @@
+import { LambdaLab } from '../../../workbench/lambda/LambdaLab';
+
+The Lambda Lab, used throughout this chapter. It starts with a self-application, $(\lambda x.\,xx)(\lambda y.\,y)$: the function “apply the argument to itself”, applied to the identity. Click the highlighted λ to contract the redex it begins, or press **Step**. Then choose $(\lambda x.\,xx)(\lambda x.\,xx)$ from the examples: it reduces to itself, so a run only stops because it has used up its steps.
+
+<LambdaLab initial="(λx.x x) (λy.y)" />

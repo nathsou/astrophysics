@@ -1,0 +1,21 @@
+import { ExTheoryComplete } from '../../../workbench/semantics/exercises';
+
+<Added label="Added for this edition">
+
+Every structure divides the sentences into those it makes true and those it makes false. The set of true ones is its **theory**, $\mathrm{Th}(\mathfrak M) = \{A : \mathfrak M \vDash A\}$. For the standard model this is **true arithmetic**, $\mathbf{TA} = \mathrm{Th}(\mathfrak N)$.
+
+</Added>
+
+## Always complete
+
+For every sentence $A$, either $\mathfrak M \vDash A$ or $\mathfrak M \vDash \lnot A$. So $\mathrm{Th}(\mathfrak M)$ contains $A$ or $\lnot A$: it is **complete**. It is also closed under entailment — anything it entails is true in $\mathfrak M$. So $\mathbf{TA}$ is a complete theory. The first incompleteness theorem does not contradict this: it says that $\mathbf{TA}$ is not *axiomatizable* — no decidable set of axioms has exactly the true sentences as consequences.
+
+## Theories and elementary equivalence
+
+If $\mathfrak N'$ makes every sentence of $\mathrm{Th}(\mathfrak M)$ true, then $\mathfrak M \equiv \mathfrak N'$ (<Ref k="mod:bas:thm:prop:equiv" />): completeness leaves no room for a sentence true in $\mathfrak N'$ but false in $\mathfrak M$. So the models of $\mathbf{TA}$ are exactly the structures elementarily equivalent to $\mathfrak N$ — including the non-standard ones of section 7.6.
+
+## Equivalent but not isomorphic
+
+The book’s example (<Ref k="mod:bas:thm:remark:R" />): the real numbers with $<$ form an uncountable structure $\mathfrak R$. By the Löwenheim–Skolem theorem, the consistent theory $\mathrm{Th}(\mathfrak R)$ has a countable model $\mathfrak S$, and $\mathfrak S \equiv \mathfrak R$. But a countable and an uncountable structure cannot be isomorphic. First-order sentences cannot tell them apart.
+
+<ExTheoryComplete />

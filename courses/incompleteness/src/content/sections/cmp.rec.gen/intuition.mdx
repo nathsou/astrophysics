@@ -1,0 +1,22 @@
+import { ExGenRegular } from '../../../workbench/recursion/exercises';
+
+<Added label="Added for this edition">
+
+Another route to total functions: allow unbounded search only in **regular** functions — total functions $f(x, \vec z)$ such that for every $\vec z$ some $x$ has $f(x, \vec z) = 0$. Then every search ends, and every function defined is total. These are the **general recursive functions**, and they turn out to be exactly the recursive (total partial recursive) functions.
+
+</Added>
+
+## Two definitions of “total computable”
+
+- **Recursive** (<Ref k="cmp:rec:par:defn:recursive-fn" />): build freely with partial functions and unbounded search; keep the functions that happen to be total at the end.
+- **General recursive** (<Ref k="cmp:rec:gen:defn:general-recursive" />): every function used along the way is total, and $\mu$ is applied only to regular functions.
+
+The second looks more restrictive — the word “general” is a historical relic — but the two classes are the same. (The book states this without proof.)
+
+## Regularity is not something you can test
+
+Regularity is a $\forall\exists$ statement: for *every* $\vec z$ there *exists* an $x$. A finite table of searches, each of which stopped, is consistent with regularity but does not establish it; a search that has not yet stopped does not refute it. Whether a given definition is regular is, in general, undecidable — so the definition of the general recursive functions, unlike that of the primitive recursive ones, does not give an effective way to recognize its definitions.
+
+<ExGenRegular />
+
+Explore mode runs searches in regular and non-regular functions over a range of parameters, and says, separately and as an argument, which ones are regular.

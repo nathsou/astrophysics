@@ -1,0 +1,5 @@
+import { SolLab } from '../../../workbench/semantics/SolLab';
+
+For the transitive closure, choose “Your own finite structure” with the predicate R (the default has $R = \{\langle 0,1\rangle, \langle 1,2\rangle\}$), then tick the pairs of X.
+
+<SolLab id="sol.syn.exp" presets={['id', 'idimp', 'tc']} initial="tc" structure={{ kind: 'custom', spec: { n: 3, on: { R: [[false, true, false], [false, false, true], [false, false, false]] } } }} />

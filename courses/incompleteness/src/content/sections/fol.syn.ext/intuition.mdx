@@ -1,0 +1,21 @@
+<Added label="Added for this edition">
+
+**Extensionality**: whether $\mathfrak M, s \vDash A$ depends only on the domain, on $s$, and on how $\mathfrak M$ interprets the symbols that actually occur in $A$ (<Ref k="fol:syn:ext:prop:extensionality" />). Two structures with the same domain that agree on those symbols agree on $A$, however they differ elsewhere.
+
+</Added>
+
+## Why it holds
+
+By induction. First, the value of a term only uses the interpretations of its symbols and the values of its variables. Then satisfaction of an atomic formula only uses the values of its terms and the interpretation of its predicate symbol; the connectives and quantifiers only combine results for subformulas (quantifiers over the same domain). Nothing ever looks at other symbols.
+
+Extensionality is why reducts and expansions (chapter 7) agree on the sentences of the smaller language, and why it is harmless to add new constants in proofs.
+
+## Substitution versus assignment
+
+The second half of the section relates syntax and semantics. To evaluate $A[t'/x]$ under $s$, you may either substitute and then evaluate, or evaluate $t'$ first — getting $m = \mathrm{Val}^{\mathfrak M}_s(t')$ — and evaluate $A$ under $s[m/x]$:
+
+$$\mathrm{Val}^{\mathfrak M}_s(t[t'/x]) = \mathrm{Val}^{\mathfrak M}_{s[m/x]}(t), \qquad \mathfrak M, s \vDash A[t'/x] \iff \mathfrak M, s[m/x] \vDash A$$
+
+(<Ref k="fol:syn:ext:prop:ext-terms" />, <Ref k="fol:syn:ext:prop:ext-formulas" />; $A[t'/x]$ is only defined when $t'$ is free for $x$ in $A$). This is the fact behind the soundness of the quantifier rules: from $\forall x\, A$ we may infer $A[t/x]$ because $A[t/x]$ says about the value of $t$ what $A$ says about $x$.
+
+Explore mode lets you change a symbol a formula does not use and watch nothing happen, and compare both sides of the substitution equations for terms and formulas you choose.

@@ -1,0 +1,21 @@
+import { ExBoundedHalting } from '../../../workbench/computability/exercises';
+
+<Added label="Added for this edition">
+
+$\mathrm{Un}(e, x)$ is defined exactly when the computation of $\varphi_e$ on $x$ produces a value. Can that be decided? The halting function $h(e, x)$ — $1$ if $\mathrm{Un}(e, x)$ is defined, $0$ otherwise — is not computable. The book gives two proofs: one reduces to the previous section, the other diagonalizes directly.
+
+</Added>
+
+## First proof: halting would make Un total
+
+If $h$ were computable, $\mathrm{Un}'(e, x) = \mathrm{Un}(e, x)$ when $h(e, x) = 1$, and $0$ otherwise, would be total and computable (the book writes it with primitive recursion on the value of $h$, so that $\mathrm{Un}$ is only called when it halts). It agrees with $\mathrm{Un}$ wherever $\mathrm{Un}$ is defined, so it is universal for the total functions — which the previous section ruled out.
+
+## Second proof: do the opposite
+
+If $h$ were computable, so would be $g(x) = 0$ if $h(x, x) = 0$, undefined otherwise. Let $e$ be an index of $g$ and ask whether $g(e)$ is defined. If it is, then $h(e, e) = 0$, so $\varphi_e(e) = g(e)$ is undefined. If it is not, then $h(e, e) = 1$, so $g(e) = \varphi_e(e)$ is defined. Either way, a contradiction. In machine terms: a machine that halts on its own code exactly when the supposed decider says it does not.
+
+## What is and is not decidable
+
+The theorem does not say that no halting question can be answered. Many can: if $\varphi_e(x)$ halts, running it long enough shows so; some divergent computations are easy to recognise (a search for a $0$ among values of $\mathrm{succ}$). The workbench marks both kinds. What is impossible is one procedure that answers *every* instance correctly. Any total computable test — for instance “did it halt within $N$ steps?” — is wrong somewhere, and the second proof, run with that test in place of $h$, shows exactly where.
+
+<ExBoundedHalting />

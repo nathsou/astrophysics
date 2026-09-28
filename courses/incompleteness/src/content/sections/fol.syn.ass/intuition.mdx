@@ -1,0 +1,21 @@
+import { ExCountVariants } from '../../../workbench/semantics/exercises';
+
+<Added label="Added for this edition">
+
+An assignment gives a value to *every* variable, but a formula only mentions finitely many. The section proves the obvious-sounding but essential fact that only the **free** variables matter: if $s_1$ and $s_2$ agree on the free variables of $A$, then $\mathfrak M, s_1 \vDash A$ iff $\mathfrak M, s_2 \vDash A$ (<Ref k="fol:syn:ass:prop:satindep" />; for terms, <Ref k="fol:syn:ass:prop:valindep" />).
+
+</Added>
+
+## Sentences are true or false
+
+A sentence has no free variables, so any two assignments agree on all of them (there are none). Hence a sentence is satisfied by every assignment or by none (<Ref k="fol:syn:ass:cor:sat-sentence" />). This justifies dropping the assignment: $\mathfrak M \vDash A$ means $\mathfrak M, s \vDash A$ for all $s$ — equivalently, for any one $s$ (<Ref k="fol:syn:ass:prop:sentence-sat-true" />). We say $A$ is **true** in $\mathfrak M$.
+
+## Quantifiers without assignments
+
+For a formula $A(x)$ with only $x$ free, the quantifier clauses become: $\mathfrak M \vDash \exists x\, A(x)$ iff $\mathfrak M, s \vDash A(x)$ for at least one assignment $s$, and $\mathfrak M \vDash \forall x\, A(x)$ iff for all of them (<Ref k="fol:syn:ass:prop:sat-quant" />). Only $s(x)$ matters, so running through assignments amounts to running through the elements of the domain.
+
+## $x$-variants, once more
+
+An $x$-variant of $s$ may differ from $s$ only at $x$ — and need not differ at all: $s$ is an $x$-variant of itself. In a domain with $n$ elements, $s$ has exactly $n$ $x$-variants, $s[m/x]$ for each $m$.
+
+<ExCountVariants />

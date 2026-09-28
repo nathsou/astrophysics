@@ -1,0 +1,31 @@
+import { ExCmpHalts } from '../../../workbench/recursion/exercises';
+
+<Added label="Added for this edition">
+
+Every primitive recursive function is computable, and its computation always halts. The reason is visible in the equations: to get $h(\vec x, y)$, compute $h(\vec x, 0)$, then $h(\vec x, 1)$, …, up to $h(\vec x, y)$ — exactly $y$ steps of $g$ after one of $f$.
+
+</Added>
+
+## Unfolding
+
+Substituting each equation into the next gives the book’s picture:
+
+$$
+h(\vec x, 3) = g(\vec x, 2, g(\vec x, 1, g(\vec x, 0, f(\vec x)))).
+$$
+
+In programming terms, primitive recursion is a **for-loop** whose number of iterations is known before it starts:
+
+```
+v := f(x⃗)
+for i := 0 to y − 1:  v := g(x⃗, i, v)
+return v
+```
+
+and composition is doing one computation after another. A language with only such loops — no `while`, no unbounded jumps back — computes exactly the primitive recursive functions.
+
+## The argument
+
+The basic functions are computable. If $f$ and the $g_i$ are, so is their composition; if $f$ and $g$ are, so is the function defined by primitive recursion from them. So, by induction on the construction, every primitive recursive function is computable — and every computation of one terminates. Later in the chapter, unbounded search breaks precisely this: a `while`-loop need not end.
+
+<ExCmpHalts />

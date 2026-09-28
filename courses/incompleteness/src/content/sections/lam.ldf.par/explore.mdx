@@ -1,0 +1,8 @@
+import { PartialPanel } from '../../../workbench/lambda/Definability';
+import { LambdaLab } from '../../../workbench/lambda/LambdaLab';
+
+<PartialPanel />
+
+The book’s example in the Lab: normal order discards the argument that applicative order gets stuck on.
+
+<LambdaLab initial="(λx. λy. y) ((λx. Ω) 2)" />

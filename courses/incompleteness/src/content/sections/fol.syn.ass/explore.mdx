@@ -1,0 +1,8 @@
+import { VariantsTable } from '../../../workbench/semantics/SmallLabs';
+import { SatisfactionLab } from '../../../workbench/semantics/SatisfactionLab';
+
+<VariantsTable />
+
+Evaluate a formula with free variables and change the values of *other* variables: nothing changes. For a sentence, the assignment makes no difference at all.
+
+<SatisfactionLab id="fol.syn.ass" formula="∃y R(x, y)" assign={{ x: '2' }} />

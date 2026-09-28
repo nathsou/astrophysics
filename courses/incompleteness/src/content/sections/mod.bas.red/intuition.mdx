@@ -1,0 +1,19 @@
+<Added label="Added for this edition">
+
+If $\mathcal L \subseteq \mathcal L'$, an $\mathcal L'$-structure can be turned into an $\mathcal L$-structure by **forgetting** the interpretations of the extra symbols: that is its **reduct**. Conversely, an $\mathcal L$-structure is **expanded** to $\mathcal L'$ by adding interpretations for the new symbols, leaving everything else alone (<Ref k="mod:bas:red:defn:reduct" />).
+
+</Added>
+
+## Nothing old changes
+
+A reduct and its expansion have the same domain and interpret the common symbols the same way. By extensionality (section B.8), a sentence of the smaller language — which uses only common symbols — is true in one iff it is true in the other (<Ref k="mod:bas:red:prop:reduct" />).
+
+## Where the book uses it
+
+The non-standard model proof in section 7.6 expands $\mathcal L_A$ by a new constant $c$ and finds a model $\mathfrak M^c$ of $\mathbf{TA} \cup \{c \neq \overline 0, c \neq \overline 1, \ldots\}$. Its reduct $\mathfrak M$ to $\mathcal L_A$ still contains the element that $c$ denoted — no longer named, but still there, and still different from every $\overline n$ — and still satisfies $\mathbf{TA}$, because $\mathbf{TA}$ does not mention $c$. Forgetting a symbol does not remove elements.
+
+The notation $\mathfrak M^R$ is used for the expansion of $\mathfrak M$ by one new predicate symbol interpreted as the relation $R$.
+
+<Callout title="Explore">
+Start from $\mathbb Z_n$ (arithmetic mod $n$), forget $+$, $\times$ and $<$, and add a predicate $P$ for a set you choose. The table evaluates sentences in all three structures; where a sentence belongs to a language, the answers agree.
+</Callout>

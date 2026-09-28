@@ -1,0 +1,23 @@
+import { ExExaRecursions } from '../../../workbench/recursion/exercises';
+
+<Added label="Added for this edition">
+
+The book now builds a stock of primitive recursive functions — constants, exponentiation, predecessor, factorial, truncated subtraction, distance, maximum — each by an official definition from $\mathrm{zero}$, $\mathrm{succ}$ and projections. After $\mathrm{fac}$, it stops writing the official forms out. This edition keeps them: Explore mode has every one, unfoldable down to the basic functions.
+
+</Added>
+
+## Tricks that recur
+
+- **Constants.** $\mathrm{const}_n(x) = \mathrm{succ}(\cdots\mathrm{succ}(\mathrm{zero}(x))\cdots)$, $n$ times. They let definitions mention numbers, e.g. $2 \cdot x = \mathrm{mult}(\mathrm{const}_2(x), P^1_0(x))$.
+- **Dummy parameters.** $\mathrm{pred}(0) = 0$, $\mathrm{pred}(y + 1) = y$ has no parameter, which primitive recursion requires; so define $\mathrm{pred}'(x, y)$ and set $\mathrm{pred}(y) = \mathrm{pred}'(\mathrm{zero}(y), P^1_0(y))$.
+- **Diagonal use of a two-place function.** $\mathrm{fac}(y) = h(y, y)$, where $h(x, y)$ ignores $x$.
+- **Truncation.** On natural numbers, $x - y$ is not always defined; $x \dot- y$ is $0$ when $x < y$, and it is defined by recursion with $\mathrm{pred}$. With it, $|x - y| = (x \dot- y) + (y \dot- x)$ and $\max(x, y) = x + (y \dot- x)$.
+- **Finite sums and products** $\sum_{z \le y} f(\vec x, z)$ are primitive recursions on $y$ with $+$ or $\cdot$ in the step.
+
+## How big the official definitions are
+
+Writing out the official definition shows what “laissez-faire” saves: $\mathrm{mult}$ contains $\mathrm{add}$, $\mathrm{exp}$ contains $\mathrm{mult}$, and so on — and evaluating them by their definitions is slow (multiplication by repeated addition, addition by repeated successor). Primitive recursiveness is a statement about the *form* of a definition, not about efficiency.
+
+<ExExaRecursions />
+
+The book leaves the minimum function (<Ref k="cmp:rec:exa:prop:min-pr" />) and integer division as exercises; they are not in the workbench, so as not to give them away.
