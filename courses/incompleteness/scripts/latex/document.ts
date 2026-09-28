@@ -89,7 +89,11 @@ export class FileParser {
   readonly ctx: ConvertContext;
   readonly repo: Repo;
   readonly file: string;
-  readonly chapter: ChapterState;
+  /** The numbering state of the current chapter (for the driver file, whichever chapter is open). */
+  private chapterState: () => ChapterState;
+  get chapter(): ChapterState {
+    return this.chapterState();
+  }
   private sectionId: () => string;
   /** Called for \olimport in driver files. */
   private onImport?: (path: string | undefined, name: string) => void;
@@ -98,14 +102,14 @@ export class FileParser {
     ctx: ConvertContext,
     repo: Repo,
     file: string,
-    chapter: ChapterState,
+    chapter: ChapterState | (() => ChapterState),
     sectionId: () => string,
     onImport?: (path: string | undefined, name: string) => void,
   ) {
     this.ctx = ctx;
     this.repo = repo;
     this.file = file;
-    this.chapter = chapter;
+    this.chapterState = typeof chapter === 'function' ? chapter : () => chapter;
     this.sectionId = sectionId;
     this.onImport = onImport;
     this.src = readFileSync(join(ctx.upstreamDir, repo, file), 'utf8');
@@ -1538,7 +1542,10 @@ export class BookWalker implements BookHandler {
   }
 
   run() {
-    const root = new FileParser(this.ctx, 'incompleteness-computability', 'ic.tex', this.freshState(''), () => this.sectionId());
+    const front = this.freshState('');
+    // Text written directly in the driver (e.g. the Theories section of appendix B) is numbered
+    // in whichever chapter is open at that point.
+    const root = new FileParser(this.ctx, 'incompleteness-computability', 'ic.tex', () => this.cur?.state ?? front, () => this.sectionId());
     root.book = this;
     const start = root.src.indexOf('\\frontmatter');
     const end = root.src.indexOf('\\backmatter');

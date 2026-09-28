@@ -8,9 +8,10 @@ import { SectionPage } from './pages/SectionPage';
 import { Home } from './pages/Home';
 import { About } from './pages/About';
 import { SearchDialog } from './ui/Search';
+import { IndexPage } from './pages/IndexPage';
 
 export interface Route {
-  page: 'home' | 'about' | 'section';
+  page: 'home' | 'about' | 'index' | 'section';
   section?: string;
   params: URLSearchParams;
 }
@@ -21,6 +22,7 @@ function parseRoute(): Route {
   const params = new URLSearchParams(query ?? '');
   if (path.startsWith('s/')) return { page: 'section', section: path.slice(2), params };
   if (path === 'about') return { page: 'about', params };
+  if (path === 'index') return { page: 'index', params };
   return { page: 'home', params };
 }
 
@@ -54,6 +56,7 @@ function Sidebar({ route, open, onNav, onSearch }: { route: Route; open: boolean
         <button className="chip-btn search-btn" onClick={onSearch} title="Search (/ or Ctrl+K)">
           ⌕ Search <kbd>/</kbd>
         </button>
+        <a className="chip-btn" href="#/index">Index</a>
         <a className="chip-btn" href="#/about">About &amp; sources</a>
         <button className="chip-btn" onClick={cycle} title={`Theme: ${theme}`}>
           {theme === 'system' ? '◐ system' : theme === 'dark' ? '☾ dark' : '☀ light'}
@@ -110,6 +113,7 @@ export function App() {
   let page;
   if (route.page === 'section' && route.section) page = <SectionPage key={route.section} id={route.section} params={route.params} />;
   else if (route.page === 'about') page = <About />;
+  else if (route.page === 'index') page = <IndexPage />;
   else page = <Home />;
   return (
     <MDXProvider components={mdxComponents}>

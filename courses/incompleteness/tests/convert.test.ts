@@ -72,6 +72,20 @@ describe('conversion of the vendored chapters', () => {
     expect(diagnostics.filter((d) => d.code === 'list-junk')).toEqual([]);
   });
 
+  it('numbers every numbered block with its chapter (including text written in ic.tex)', () => {
+    const bad: string[] = [];
+    const walk = (x: unknown) => {
+      if (Array.isArray(x)) x.forEach(walk);
+      else if (x && typeof x === 'object') {
+        const o = x as { t?: string; number?: string; id?: string };
+        if (o.t === 'env' && o.number !== undefined && !/^[0-9A-Z]+\.\d+$/.test(o.number)) bad.push(`${o.id}: ${o.number}`);
+        Object.values(o).forEach(walk);
+      }
+    };
+    walk(chapters);
+    expect(bad).toEqual([]);
+  });
+
   it('is committed and up to date (run npm run convert)', () => {
     for (const [name, content] of files) expect(readFileSync(join(root, 'src/content/source', name), 'utf8') === content, name).toBe(true);
   });

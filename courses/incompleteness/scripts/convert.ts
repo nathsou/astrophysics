@@ -100,7 +100,8 @@ function searchIndex(chapters: Chapter[]): SearchEntry[] {
           emphs(b.c, ems);
           for (const e of ems) {
             const term = plain(e);
-            if (term.length > 1 && term.length < 60) out.push({ kind: 'term', head: term, text: `${ENV_NAME.defn} ${b.number}${b.title ? ` (${plain(b.title)})` : ''}`, sectionId: s.id, anchor: a });
+            // Skip list lead-ins such as "Domain:" that are emphasized but are not terms.
+            if (term.length > 1 && term.length < 50 && !/[:.]$/.test(term)) out.push({ kind: 'term', head: term, text: `${ENV_NAME.defn} ${b.number}${b.title ? ` (${plain(b.title)})` : ''}`, sectionId: s.id, anchor: a });
           }
         }
       }
