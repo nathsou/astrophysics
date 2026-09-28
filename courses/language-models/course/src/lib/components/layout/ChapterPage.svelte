@@ -147,10 +147,7 @@
     gap: 0.35rem;
   }
   .builds {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.4rem;
+    display: block;
     margin-top: 1rem;
     font: 400 0.78rem var(--font-mono);
     padding: 0.55rem 0.9rem;
@@ -166,11 +163,10 @@
     color: var(--accent-ink);
     font-weight: 500;
   }
-  .chip + .chip::before {
+  .chip:not(:last-child)::after {
     content: ',';
     color: var(--ink-3);
     margin-right: 0.4rem;
-    margin-left: -0.3rem;
   }
   .references {
     margin-top: 3rem;

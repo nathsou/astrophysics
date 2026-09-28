@@ -396,10 +396,18 @@ button {
   border-collapse: collapse;
   width: 100%;
   margin: 1.5rem 0;
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
   line-height: 1.5;
   font-variant-numeric: tabular-nums;
+}
+@media (max-width: 759px) {
+  /* wide tables scroll inside their own box rather than widening the page */
+  .article table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
 }
 .article th,
 .article td {
@@ -409,7 +417,8 @@ button {
   vertical-align: top;
 }
 .article th {
-  font-weight: 500;
+  font: 500 0.72rem var(--font-mono);
+  letter-spacing: 0.04em;
   color: var(--ink-3);
   background: var(--pn);
   border-bottom-color: var(--rule-strong);

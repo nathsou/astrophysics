@@ -6,15 +6,18 @@
   import Icon from '../ui/Icon.svelte';
   import GpuBadge from './GpuBadge.svelte';
 
+  let { menu = true }: { menu?: boolean } = $props();
   let scrolled = $state(false);
 </script>
 
 <svelte:window onscroll={() => (scrolled = scrollY > 160)} />
 
 <header class="topbar ui" class:scrolled>
-  <button class="icon-btn menu" onclick={() => (nav.sidebarOpen = !nav.sidebarOpen)} aria-label="Open navigation" aria-expanded={nav.sidebarOpen}>
-    <Icon name="menu" />
-  </button>
+  {#if menu}
+    <button class="icon-btn menu" onclick={() => (nav.sidebarOpen = !nav.sidebarOpen)} aria-label="Open navigation" aria-expanded={nav.sidebarOpen}>
+      <Icon name="menu" />
+    </button>
+  {/if}
   <a class="brand" href="{base}/">
     <span class="mark" aria-hidden="true">LM</span>
     <span class="name">{COURSE_TITLE}</span>
@@ -37,7 +40,7 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0 1rem;
-    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    background: color-mix(in srgb, var(--bg) 96%, transparent);
     backdrop-filter: saturate(1.4) blur(10px);
     -webkit-backdrop-filter: saturate(1.4) blur(10px);
     border-bottom: 1px solid var(--rule);
