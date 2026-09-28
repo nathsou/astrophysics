@@ -49,6 +49,6 @@ export default figure({
     g.claim('O : M = C : D', same(O, M, c, d));
     g.claim('M : P = E : F', same(M, P, e, f));
     g.equal('gcd(N, O, M, P) = 1 (least)', gcdAll(N, O, M, P), 1);
-    g.claim('first case: N, O, M, P = H, G, K, L', !case1 || (N === H && O === G && M === K && P === L));
+    g.claim('if E measures K: N, O, M, P = H, G, K, L', !case1 || (N === H && O === G && M === K && P === L));
   },
 });
