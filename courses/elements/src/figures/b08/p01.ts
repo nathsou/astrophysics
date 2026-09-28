@@ -13,7 +13,7 @@ export default figure({
     const ys = [0, -1.1, -2.2, -3.3];
     (['A', 'B', 'C', 'D'] as const).forEach((n, i) => R.num(n, [A, B, C, D][i], 0, ys[i]));
     // the supposed smaller numbers: drawn at three quarters, dashed, without unit marks
-    (['E', 'F', 'G', 'H'] as const).forEach((n, i) => R.num(n, 0.75 * [A, B, C, D][i], 0, ys[i] - 4.8, { dashed: true, ticks: false, value: '?' }));
+    (['E', 'F', 'G', 'H'] as const).forEach((n, i) => R.num(n, 0.75 * [A, B, C, D][i], 0, ys[i] - 4.6, { dashed: true, ticks: false, value: '?' }));
     g.show('A, B, C, D', list(A, B, C, D));
     g.show('common ratio', ratio(A, B));
     g.claim('A, B, C, D in continued proportion', continued([A, B, C, D]));

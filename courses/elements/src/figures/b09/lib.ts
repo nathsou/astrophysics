@@ -220,3 +220,15 @@ export class LogRods {
     }
   }
 }
+
+/** Measured by an even number according to an even number (VII Def. 8). */
+export function evenTimesEven(n: number): boolean {
+  for (let e = 2; e < n; e += 2) if (n % e === 0 && isEven(n / e)) return true;
+  return false;
+}
+
+/** Measured by an even number according to an odd number (VII Def. 9); the unit is not a number. */
+export function evenTimesOdd(n: number): boolean {
+  for (let e = 2; e < n; e += 2) if (n % e === 0 && isOdd(n / e) && n / e >= 3) return true;
+  return false;
+}

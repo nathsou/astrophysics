@@ -103,7 +103,7 @@ export class Nums {
     const { ticks, value, ...style } = o;
     const a = this.g.point(name, v(x, y), { labelDir: 180, from: o.from });
     const end = x + n * this.u;
-    const tk = (ticks ?? true) && this.u >= 0.06 && n <= 120 && Number.isInteger(n) ? { ticks: this.u } : {};
+    const tk = (ticks ?? true) && this.u >= 0.14 && n <= 120 && Number.isInteger(n) ? { ticks: this.u } : {};
     this.g.segment(a, v(end, y), { name, ...tk, ...style });
     if (value !== false) {
       const text = typeof value === 'string' ? value : String(n);
@@ -125,7 +125,7 @@ export class Nums {
   bare(n: number, x: number, y: number, text: string, o: NumOpts = {}): void {
     const { ticks, value, ...style } = o;
     void value;
-    const tk = (ticks ?? true) && this.u >= 0.06 && n <= 120 ? { ticks: this.u } : {};
+    const tk = (ticks ?? true) && this.u >= 0.14 && n <= 120 ? { ticks: this.u } : {};
     this.g.segment(v(x, y), v(x + n * this.u, y), { ...tk, ...style });
     this.g.text(v(x + n * this.u + 0.18, y - 0.14), text, { from: o.from });
   }
