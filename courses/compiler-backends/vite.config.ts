@@ -4,11 +4,12 @@ import mdx from '@mdx-js/rollup';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import remarkXref from './tools/remark-xref.ts';
 
 export default defineConfig({
   base: './',
   plugins: [
-    { enforce: 'pre', ...mdx({ remarkPlugins: [remarkGfm, remarkMath], rehypePlugins: [rehypeKatex], providerImportSource: '@mdx-js/react' }) },
+    { enforce: 'pre', ...mdx({ remarkPlugins: [remarkGfm, remarkMath, remarkXref], rehypePlugins: [rehypeKatex], providerImportSource: '@mdx-js/react' }) },
     react({ include: /\.(mdx|tsx|ts)$/ }),
   ],
   build: { chunkSizeWarningLimit: 1600 },

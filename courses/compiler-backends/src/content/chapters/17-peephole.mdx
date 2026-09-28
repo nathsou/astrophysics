@@ -1,6 +1,6 @@
-<p className="lede">
+<div className="lede">
 After allocation and frame lowering the code is correct, and a little clumsy: moves from a register to itself, jumps to the very next instruction, reloads of values that are still in a register. Peephole optimisation cleans this up by looking at a few instructions at a time.
-</p>
+</div>
 
 ## Looking through a peephole
 
@@ -36,7 +36,7 @@ Kiln keeps the front end’s block order, which follows the source and puts loop
 
 Between selection and emission, production compilers run a long list of passes on machine IR. A few that would visibly improve kiln’s output:
 
-- **Machine LICM** hoists loop-invariant machine instructions out of loops. Kiln rematerialises the constant bound of a `while` loop (`li a2, 10`) in every iteration because selection works per block; Machine LICM would hoist it to the preheader, if a register is free.
+- **Machine LICM** hoists loop-invariant machine instructions out of loops. Kiln recomputes the constant bound of a `while` loop (`li a2, 10`) in every iteration because selection works per block; Machine LICM would hoist it to the preheader, if a register is free.
 - **Machine CSE** and **MachineSink**: redundancy elimination and code sinking after selection has exposed new opportunities, such as two `lla` of the same global.
 - **Branch folding** and **tail duplication** merge identical block tails, or duplicate small blocks into their predecessors to remove jumps.
 - **Early and late if-conversion** turn diamonds into conditional selects when the target’s cost model says so.

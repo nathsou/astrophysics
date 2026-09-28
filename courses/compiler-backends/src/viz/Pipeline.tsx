@@ -12,6 +12,7 @@ import { parseElf } from '../compiler/obj/elf';
 import { CodeView } from '../ui/CodeView';
 import { Editor } from '../ui/Editor';
 import { Seg, Select } from '../ui/controls';
+import type { Store } from '../ui/store';
 import { useCompile, useDebounced } from '../ui/useCompile';
 import { GraphView } from './Graph';
 import { irCFG, mirCFG } from './cfgdata';
@@ -20,7 +21,7 @@ import { listingLines } from './asmtok';
 export type StageId = 'ir' | 'ssa' | 'opt' | 'legal' | 'isel' | 'destroy' | 'sched' | 'ra' | 'frame' | 'asm' | 'mc' | 'obj' | 'run' | 'wat' | 'wasmbin';
 export type TargetSel = 'rv64' | 'aarch64' | 'x86_64' | 'wasm';
 
-interface StageDef {
+export interface StageDef {
   id: StageId;
   label: string;
   hint: string;
@@ -189,7 +190,45 @@ export function PipelineExplorer({ example = 'fib', src: srcProp, stage: stage0 
 
 export type WasmState = ReturnType<typeof lowerModule> | { error: string } | undefined;
 
-export function StageView({ r, def, mode, fn, target, height, wasm, wasmOut }: { r: CompileResult; def: StageDef; mode: 'text' | 'cfg'; fn?: string; target: TargetSel; height: number; wasm: WasmState; wasmOut: { output: string; exitCode: bigint; error?: string } | null }) {
+/** The listing a stage shows in text mode, if it has one. */
+export function stageLines(r: CompileResult, def: StageDef, target: TargetSel, wasm: WasmState): Line[] | undefined {
+  if (def.ir) { const m = def.ir(r); return m ? printModule(m) : undefined; }
+  if (def.mir) return r.funcs.length ? mirStageLines(r, def.mir, !!def.post) : undefined;
+  if (def.id === 'asm') return r.asm;
+  if (def.id === 'mc') return r.obj ? listingLines(r.obj, target) : undefined;
+  if (def.id === 'wat') return wasm && !('error' in wasm) ? wasm.wat : undefined;
+  return undefined;
+}
+
+/** Stages whose listings are comparable line by line: the IR stages, and machine IR through to assembly. */
+const family = (d: StageDef) => (d.ir ? 'ir' : d.mir || d.id === 'asm' ? 'mir' : undefined);
+
+/** The stage a diff of `def` compares against: the nearest earlier stage of the same family that is enabled. */
+export function diffBase(defs: StageDef[], def: StageDef, r: CompileResult, target: TargetSel): StageDef | undefined {
+  const fam = family(def);
+  if (!fam) return undefined;
+  for (let k = defs.indexOf(def) - 1; k >= 0; k--) {
+    if (family(defs[k]) !== fam) return undefined;
+    if (stageLines(r, defs[k], target, undefined)?.length) return defs[k];
+  }
+  return undefined;
+}
+
+export interface StageViewProps {
+  r: CompileResult;
+  def: StageDef;
+  mode: 'text' | 'cfg';
+  fn?: string;
+  target: TargetSel;
+  height: number;
+  wasm: WasmState;
+  wasmOut: { output: string; exitCode: bigint; error?: string } | null;
+  /** show these lines instead of the stage's own listing (e.g. a diff) */
+  lines?: Line[];
+  noteStore?: Store<Line | null>;
+}
+
+export function StageView({ r, def, mode, fn, target, height, wasm, wasmOut, lines, noteStore }: StageViewProps) {
   const canCFG = !!(def.ir || def.mir);
   let body: ReactNode = null;
   if (!r.ok && r.error && (!def.ir || !def.ir(r))) {
@@ -199,23 +238,30 @@ export function StageView({ r, def, mode, fn, target, height, wasm, wasmOut }: {
     if (def.ir) { const m = def.ir(r); const f = m?.funcs.find((x) => x.name === fn); if (f) g = irCFG(f); }
     else { const fs = r.funcs.find((x) => x.name === fn); const mf = fs && def.mir!(fs); if (mf) g = mirCFG(mf, { post: def.post }); }
     body = g ? <GraphView nodes={g.nodes} edges={g.edges} target={target} maxHeight={height} /> : <div className="output-box muted">Not available.</div>;
-  } else if (def.ir) {
-    const m = def.ir(r);
-    body = m ? <CodeView lines={printModule(m)} gutter="num" notes maxHeight={height} target={target} /> : null;
-  } else if (def.mir) {
-    body = r.funcs.length ? <CodeView lines={mirStageLines(r, def.mir, !!def.post)} notes maxHeight={height} target={target} empty={<div className="muted" style={{ padding: 12 }}>Stage disabled.</div>} /> : null;
-  } else if (def.id === 'asm') {
-    body = <CodeView lines={r.asm} notes maxHeight={height} target={target} />;
-  } else if (def.id === 'mc') {
-    body = r.obj ? <CodeView lines={listingLines(r.obj, target)} gutter="addr" bytes notes maxHeight={height} target={target} /> : null;
   } else if (def.id === 'obj') {
     body = <div style={{ maxHeight: height, overflow: 'auto' }}><ObjSummary r={r} /></div>;
   } else if (def.id === 'run') {
     body = <RunPanel r={r} target={target} wasmOut={wasmOut} />;
-  } else if (def.id === 'wat') {
-    body = wasm && !('error' in wasm) ? <CodeView lines={wasm.wat} notes maxHeight={height} target="wasm" /> : <div className="error-box">{wasm && 'error' in wasm ? wasm.error : ''}</div>;
   } else if (def.id === 'wasmbin') {
     body = wasm && !('error' in wasm) ? <WasmHex bytes={wasm.bytes} height={height} /> : null;
+  } else if (def.id === 'wat' && wasm && 'error' in wasm) {
+    body = <div className="error-box">{wasm.error}</div>;
+  } else {
+    const ls = lines ?? stageLines(r, def, target, wasm);
+    if (ls) {
+      body = (
+        <CodeView
+          lines={ls}
+          gutter={def.ir ? 'num' : def.id === 'mc' ? 'addr' : 'none'}
+          bytes={def.id === 'mc'}
+          notes
+          noteStore={noteStore}
+          maxHeight={height}
+          target={def.id === 'wat' ? 'wasm' : target}
+          empty={def.mir ? <div className="muted" style={{ padding: 12 }}>Stage disabled.</div> : undefined}
+        />
+      );
+    }
   }
 
   return <>{body}</>;

@@ -16,6 +16,8 @@ export interface CodeViewProps {
   scrollTo?: number;
   style?: CSSProperties;
   empty?: ReactNode;
+  /** publish the hovered line here instead of showing a note bar under the view */
+  noteStore?: Store<Line | null>;
 }
 
 const TAG_LABEL: Record<string, string> = {
@@ -43,9 +45,9 @@ const LineRow = memo(function LineRow({ l, i, gutter, bytes, mark }: { l: Line; 
   );
 });
 
-function NoteBar({ store, lines }: { store: Store<number | null>; lines: Line[] }) {
-  const i = useStore(store);
-  const l = i !== null ? lines[i] : undefined;
+/** The "why is this instruction here" bar, for the line hovered in any view that publishes to `store`. */
+export function NoteBar({ store }: { store: Store<Line | null> }) {
+  const l = useStore(store);
   return (
     <div className="code-note">
       {l?.note ? (
@@ -60,9 +62,10 @@ function NoteBar({ store, lines }: { store: Store<number | null>; lines: Line[] 
   );
 }
 
-export function CodeView({ lines, target, gutter = 'none', bytes, maxHeight, minHeight, onLineClick, mark, notes, className, scrollTo, style, empty }: CodeViewProps) {
+export function CodeView({ lines, target, gutter = 'none', bytes, maxHeight, minHeight, onLineClick, mark, notes, className, scrollTo, style, empty, noteStore }: CodeViewProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const hovered = useMemo(() => new Store<number | null>(null), []);
+  const ownNotes = useMemo(() => new Store<Line | null>(null), []);
+  const hovered = noteStore ?? ownNotes;
   const lastKey = useRef<string>('');
 
   useEffect(() => {
@@ -81,7 +84,7 @@ export function CodeView({ lines, target, gutter = 'none', bytes, maxHeight, min
     const i = Number(lnEl.dataset.i);
     const line = lines[i];
     if (!line) return;
-    hovered.set(i);
+    hovered.set(line);
     const tokEl = t.closest('[data-ti]') as HTMLElement | null;
     if (tokEl) {
       const tk = line.toks[Number(tokEl.dataset.ti)];
@@ -127,7 +130,7 @@ export function CodeView({ lines, target, gutter = 'none', bytes, maxHeight, min
           <LineRow key={i} l={l} i={i} gutter={gutter} bytes={bytes} mark={mark?.(l, i)} />
         ))}
       </div>
-      {notes && <NoteBar store={hovered} lines={lines} />}
+      {notes && !noteStore && <NoteBar store={hovered} />}
     </div>
   );
 }

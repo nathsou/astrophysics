@@ -1,6 +1,6 @@
-<p className="lede">
+<div className="lede">
 Before selecting instructions we need to know what we are selecting from. This chapter introduces the three instruction set architectures kiln targets, and how a backend describes a target to itself.
-</p>
+</div>
 
 ## Three architectures, three philosophies
 
@@ -95,7 +95,7 @@ interface Target {
 }
 ```
 
-Everything else — SSA destruction, liveness, both register allocators, the scheduler and the pass pipeline — is written once and shared by all three targets. Each target file (`riscv.ts`, `aarch64.ts`, `x86_64.ts`) is 500–650 lines, most of it the instruction-selection grammar and tooltip documentation.
+Everything else — SSA destruction, liveness, both register allocators, the scheduler and the pass pipeline — is written once and shared by all three targets. Each target file (`riscv.ts`, `aarch64.ts`, `x86_64.ts`) is roughly 500 to 650 lines, most of it the instruction-selection grammar and tooltip documentation.
 
 <TargetCompare example="gcd" fn="gcd" caption="The same KIR function compiled for three targets. Note RISC-V’s compare-and-branch, AArch64’s cbz and flags, and x86’s cqo/idiv pinned to rax and rdx. Hover the instructions: each explains itself. The byte counts come from the real encoders." />
 

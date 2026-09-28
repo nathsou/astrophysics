@@ -1,6 +1,6 @@
-<p className="lede">
+<div className="lede">
 Graph colouring builds a graph that can have quadratically many edges, then iterates. When compile time is part of run time — in a JIT — that is too slow. Linear scan allocates registers in a single sweep over live intervals.
-</p>
+</div>
 
 ## The idea
 
@@ -52,9 +52,9 @@ The interesting history of linear scan is a series of fixes for its weaknesses:
 
 ## Comparing the two allocators
 
-Run the same programs through both allocators in the pipeline explorer below: switch the *Allocated* stage between the two using the playground’s allocator option, or compare them with the spill explorer in the next chapter. On most of our examples they produce identical register counts. Linear scan pays extra in functions with many copies (x86 two-address code) and under high pressure, where its conservative intervals spill values that graph colouring keeps in registers.
+The figure below shows linear scan’s result. To compare the two allocators on the same program, [open it in the playground](#/playground?ex=collatz&regalloc=linear&left=ra&right=asm) and switch *Register allocation* between graph colouring and linear scan: the *Result* bar shows how many instructions and moves each one costs. The spill explorer in the next chapter compares them under pressure. On most of our examples they produce identical register counts. Linear scan pays extra in functions with many copies (x86 two-address code) and under high pressure, where its conservative intervals spill values that graph colouring keeps in registers.
 
-<Pipeline example="collatz" stage="ra" stages={['destroy', 'ra', 'asm']} options={{ regalloc: 'linear' }} height={360} caption="The collatz program allocated by linear scan. Hover values to follow their registers; compare with graph colouring in the playground (Allocator: graph colouring / linear scan)." />
+<Pipeline example="collatz" stage="ra" stages={['destroy', 'ra', 'asm']} options={{ regalloc: 'linear' }} height={360} caption="The collatz program allocated by linear scan. Hover values to follow their registers; compare with graph colouring in the playground (Register allocation: graph colouring / linear scan)." />
 
 <Callout kind="key">
 Linear scan approximates live ranges by intervals over a linear instruction order, sweeps once, and spills the interval that ends furthest away. It is fast enough for JITs; lifetime holes, interval splitting and eviction bring its quality close to graph colouring.

@@ -6,6 +6,7 @@ import { applyTheme, themeStore, useStore, type Theme } from './ui/store';
 import { mdxComponents } from './ui/mdx';
 import { Home } from './Home';
 import { ErrorBoundary } from './ui/ErrorBoundary';
+import { Logo } from './ui/Logo';
 
 const Playground = lazy(() => import('./viz/Playground').then((m) => ({ default: m.Playground })));
 
@@ -74,7 +75,7 @@ function Sidebar({ route, open, onNav }: { route: string; open: boolean; onNav: 
   return (
     <nav className={`sidebar ${open ? 'open' : ''}`} onClick={(e) => (e.target as HTMLElement).closest('a') && onNav()}>
       <a className="brand" href="#/">
-        <span className="brand-mark">φ</span>
+        <Logo className="brand-mark" size={34} />
         <span>
           <div className="brand-title">SSA to Silicon</div>
           <div className="brand-sub">building a compiler backend</div>
@@ -123,7 +124,7 @@ export function App() {
         <main className="main">
           <div className="mobile-bar">
             <button className="chip-btn" onClick={() => setOpen((o) => !o)} aria-label="Open contents">☰ Contents</button>
-            <span style={{ fontWeight: 600 }}>SSA to Silicon</span>
+            <a href="#/" className="mobile-brand"><Logo size={22} />SSA to Silicon</a>
           </div>
           {page}
         </main>

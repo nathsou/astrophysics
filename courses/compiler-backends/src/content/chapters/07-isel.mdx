@@ -1,6 +1,6 @@
-<p className="lede">
+<div className="lede">
 Instruction selection turns IR operations into target instructions. Done naively it is a lookup table; done well it is a tiling problem with an elegant dynamic-programming solution — and the first place where the three targets visibly diverge.
-</p>
+</div>
 
 ## From operations to instructions
 
@@ -21,7 +21,7 @@ SSA IR is a DAG, not a forest: a value can have several uses. Kiln builds trees 
 
 Everything else is a tree **root**, whose value lives in its own virtual register. Leaves are then of four kinds: constants, stack-slot addresses (`frame`), global addresses, and values already in registers (`reg`).
 
-This is how LLVM’s older selectors, `lcc`, and many textbook compilers work. It is not optimal: a value used twice gets a register even if both users could have folded it. Covering a DAG optimally is NP-complete, though, so every practical selector makes a compromise like this.
+This is how `lcc` and many textbook compilers work; LLVM’s SelectionDAG keeps the DAG instead (see below). It is not optimal: a value used twice gets a register even if both users could have folded it. Covering a DAG optimally is NP-complete, though, so every practical selector makes a compromise like this.
 
 ## A tree grammar
 

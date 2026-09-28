@@ -24,9 +24,9 @@ export function Check({ checked, onChange, children, title }: { checked: boolean
   );
 }
 
-export function Select<T extends string>({ value, options, onChange }: { value: T; options: [T, string][]; onChange: (v: T) => void }) {
+export function Select<T extends string>({ value, options, onChange, className, title }: { value: T; options: [T, string][]; onChange: (v: T) => void; className?: string; title?: string }) {
   return (
-    <select className="select" value={value} onChange={(e) => onChange(e.target.value as T)}>
+    <select className={`select ${className ?? ''}`} value={value} title={title} onChange={(e) => onChange(e.target.value as T)}>
       {options.map(([v, l]) => (
         <option key={v} value={v}>{l}</option>
       ))}
@@ -117,5 +117,48 @@ export function Stepper({ s, label, children }: { s: StepperState; label?: React
       {label}
       {children}
     </div>
+  );
+}
+
+// ------------------------------------------------------------ layout
+
+/** A draggable divider. Reports the pointer's position as a fraction of its parent's width. */
+export function Splitter({ onDrag, label }: { onDrag: (fraction: number) => void; label: string }) {
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    const box = el.parentElement!.getBoundingClientRect();
+    el.setPointerCapture(e.pointerId);
+    document.body.classList.add('dragging-col');
+    const move = (ev: PointerEvent) => onDrag((ev.clientX - box.left) / box.width);
+    const up = () => {
+      el.removeEventListener('pointermove', move);
+      el.removeEventListener('pointerup', up);
+      document.body.classList.remove('dragging-col');
+    };
+    el.addEventListener('pointermove', move);
+    el.addEventListener('pointerup', up);
+    e.preventDefault();
+  };
+  return <div className="splitter" role="separator" aria-orientation="vertical" aria-label={label} title="Drag to resize" onPointerDown={onPointerDown} />;
+}
+
+/** A button that opens a small list of actions; closes on choice, outside click or Escape. */
+export function Menu({ label, title, children }: { label: ReactNode; title?: string; children: ReactNode }) {
+  const ref = useRef<HTMLDetailsElement>(null);
+  useEffect(() => {
+    const close = (e: Event) => {
+      const d = ref.current;
+      if (!d?.open) return;
+      if (e instanceof KeyboardEvent ? e.key === 'Escape' : !d.contains(e.target as Node)) d.open = false;
+    };
+    document.addEventListener('pointerdown', close);
+    document.addEventListener('keydown', close);
+    return () => { document.removeEventListener('pointerdown', close); document.removeEventListener('keydown', close); };
+  }, []);
+  return (
+    <details className="menu" ref={ref} onClick={(e) => { if ((e.target as HTMLElement).closest('.menu-list button')) ref.current!.open = false; }}>
+      <summary className="chip-btn" title={title}>{label}</summary>
+      <div className="menu-list">{children}</div>
+    </details>
   );
 }

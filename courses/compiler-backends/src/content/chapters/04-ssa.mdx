@@ -1,6 +1,6 @@
-<p className="lede">
+<div className="lede">
 Static single assignment form gives every value exactly one definition. It turns data flow into explicit edges between instructions — and it is what makes a modern backend’s analyses simple and fast. This chapter builds it: mem2reg, the pass that turns the front end’s stack slots into SSA values.
-</p>
+</div>
 
 ## Why SSA?
 
@@ -69,7 +69,7 @@ Only some stack slots can be promoted. A slot qualifies only if it is used exclu
 <Mem2RegStepper example="gcd" fn="gcd" caption="mem2reg on Euclid’s algorithm. Phase 1 places φs: teal blocks store the variable, orange is the block whose frontier is being processed, red is where a φ goes (or would go, but is pruned). Phase 2 renames: follow the definition stacks as the walk descends the dominator tree, and watch each load vanish into the current top of stack." />
 
 <Callout kind="try">
-Switch the figure to `@main` (no loops, just calls) and see that no φ is needed at all. Then look at `sort` in the figure below: the inner `while` loop’s condition block collects φs for both `j` and the short-circuit `&&` value.
+Switch the figure to `@main` (no loops, just calls) and see that no φ is needed at all. Then look at `sort` in the figure below: the inner `while` loop’s condition block needs a φ only for `j`. The short-circuit `&&` in its condition never becomes a value, because it was lowered as jumping code (Chapter 1), so there is nothing to merge.
 </Callout>
 
 ## The result

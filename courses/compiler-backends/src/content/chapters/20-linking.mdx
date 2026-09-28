@@ -1,6 +1,6 @@
-<p className="lede">
+<div className="lede">
 The last step turns object files into a program: lay out every section in memory, resolve every symbol, patch every relocation, and write an executable the operating system can load. Then we run it.
-</p>
+</div>
 
 ## The runtime
 
@@ -65,7 +65,7 @@ This is the machine at the end of the pipeline: it runs the bytes kiln encoded, 
 <EmulatorView example="fib" caption="The linked Fibonacci program running on the emulator. Step one instruction at a time from _start into main and fib, step over calls, or run to exit. Changed registers are highlighted; the stack view shows the frame (look for saved ra values pointing back into .text); counts next to instructions show how often each has executed." />
 
 <Callout kind="try">
-Step through the first few instructions of `fib`: the `addi sp, sp, -…` of its prologue moves `sp`, then `sd ra` writes the return address into the new frame (it lights up in the stack view). Later, `run to exit` shows the total instruction count — compare it at `-O0` and `-O2` in the playground.
+Step through the first few instructions of `fib`: the `addi sp, sp, -…` of its prologue moves `sp`, then `sd ra` writes the return address into the new frame (it lights up in the stack view). Later, `run to exit` shows the total instruction count — compare it at `-O0` and `-O2` in the [playground](#/playground?ex=fib&opt=0&right=run), where the *Result* bar reports the same count.
 </Callout>
 
 <Callout kind="key">

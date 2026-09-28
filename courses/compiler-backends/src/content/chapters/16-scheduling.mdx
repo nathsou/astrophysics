@@ -1,6 +1,6 @@
-<p className="lede">
+<div className="lede">
 A processor overlaps the execution of many instructions, but a result is not available the moment its instruction starts. Instruction scheduling reorders code so that the machine has independent work to do while it waits.
-</p>
+</div>
 
 ## Why order matters
 
@@ -67,7 +67,7 @@ This is the classic phase-ordering tension.
 - **Before allocation**, virtual registers are in SSA form, so there are almost no false dependences, and the scheduler has maximum freedom. But moving loads earlier and uses later **lengthens live ranges**, which can raise register pressure and cause spills — which cost more than the stalls saved.
 - **After allocation**, register reuse has introduced WAR and WAW dependences that pin instructions in place, but spill code is known and can be scheduled too.
 
-Kiln can run either (the playground’s *Scheduler* option). The default is pre-RA, with calls and ABI copies treated as region boundaries. LLVM’s default pre-RA `MachineScheduler` tracks register pressure explicitly, and switches from latency to pressure as its priority when pressure nears the register limit. Many targets also run a lighter post-RA pass.
+Kiln can run either (the *Scheduling* option in the [playground](#/playground?ex=collatz&left=destroy&right=sched&rightDiff=1)). The default is pre-RA, with calls and ABI copies treated as region boundaries. LLVM’s default pre-RA `MachineScheduler` tracks register pressure explicitly, and switches from latency to pressure as its priority when pressure nears the register limit. Many targets also run a lighter post-RA pass.
 
 ## Beyond basic blocks
 
