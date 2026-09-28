@@ -80,39 +80,58 @@ export function About() {
         </p>
         <ul className="corrections">
           <li>
-            <a href="#/s/inc.inp.lob?mode=explore">5.8 Löb’s theorem</a>: the last line cites (L-8) and (L-12); propositional logic needs (L-9) and (L-12).
+            <a href="#/s/inc.req.pri?mode=explore">4.4</a>: the text introduces “the function h(x, z⃗)” but its equations and proof use h(x⃗, y).
           </li>
           <li>
-            <a href="#/s/cmp.thy.cmp?mode=formal">6.12</a>: in the proof, <i>T</i>(<i>e</i>, <i>x</i>, <i>h</i>(<i>x</i>)) should be <i>T</i>(<i>d</i>, <i>x</i>, <i>h</i>(<i>x</i>)) (A is the
-            domain of φ<sub>d</sub>). Chapter 6 also notes a numeral n̄ written for ē, and an off-by-one in the count of conjuncts in Craig’s trick.
+            <a href="#/s/inc.req.bre?mode=intuition">4.5</a>: the introduction writes the representing formulas as x₀′ = y and (x₀ + x₁) = y, and the proof for addition argues from (n̄ + m̄) = y, while the propositions state y = x₀′ and y = (x₀ + x₁).
           </li>
           <li>
-            <a href="#/s/mod.mar.cmp?mode=intuition">7.9</a>: the bijection g with g(n) = n + 1 for n &gt; 0 should have g(n) = n − 1.
+            <a href="#/s/inc.req.cmp?mode=intuition">4.6</a>: the problem cites the proof of the same proposition twice; the first reference should be to the one-variable case.
           </li>
           <li>
-            <a href="#/s/sol.set.crd?mode=explore">8.12</a>: Inf(X) as printed does not require u to map X into X, so finite sets satisfy it; Count(X) as printed ends with X = Y where
-            X ⊆ Y is needed. Both are refuted on small domains by the evaluator.
+            <a href="#/s/inc.inp.s1c?mode=intuition">4.11</a>: in the proof of the lemma on atomic sentences, m is fixed as the value of t₂ but Q ⊢ t₂ = n̄ is written; the step “by transitivity” to k̄′ + t₁ = t₂ needs k̄′ + n̄ = m̄ (Q cannot commute); the false-&lt; case also needs Q1 and Q4 and contradicts Q2, not Q3; and in the next lemma the case k = 0 of the bounded universal quantifier is an empty conjunction, not an empty disjunction.
+          </li>
+          <li>
+            <a href="#/s/inc.inp.prc?mode=intuition">5.6</a>: Prov(y) is defined with the relation Prf rather than the formula representing it.
+          </li>
+          <li>
+            <a href="#/s/inc.inp.lob?mode=explore">5.8</a>: the theorem refers to the conditions P1–P3 “from” 5.7, where they are stated in 5.6; and the last line of the proof cites (5.21) and (5.25), where propositional logic needs (5.22) and (5.25).
+          </li>
+          <li>
+            <a href="#/s/cmp.thy.cmp?mode=formal">6.12</a>: in the proof, T(e, x, h(x)) should be T(d, x, h(x)) (A is the domain of φ<sub>d</sub>). The chapter also notes a numeral n̄ written for ē, and an off-by-one in the count of conjuncts in Craig’s trick.
+          </li>
+          <li>
+            <a href="#/s/mod.mar.stm?mode=intuition">7.5</a>: “not in the domain of s” should be “not in the range of s”.
+          </li>
+          <li>
+            <a href="#/s/mod.mar.mpa?mode=intuition">7.8</a>: the proposition that every x has a unique predecessor fails for x = 0; it needs x ≠ 0.
+          </li>
+          <li>
+            <a href="#/s/mod.mar.cmp?mode=intuition">7.9</a>: the bijection g with g(n) = n + 1 for n &gt; 0 should have g(n) = n − 1. Smaller misprints are noted in 7.1 and 7.7.
+          </li>
+          <li>
+            <a href="#/s/sol.met.spa?mode=intuition">8.7</a>: the formula A₊ quantifies ∀w but constrains u only at x; the recursion clause should be ∀w u(w′) = u(w)′.
+          </li>
+          <li>
+            <a href="#/s/sol.set.crd?mode=explore">8.12</a>: Inf(X) as printed does not require u to map X into X, so finite sets satisfy it; Count(X) ends with X = Y where X ⊆ Y is needed; and Aleph₁(X) as printed holds exactly for finite X (X is one of its own subsets), so the continuum hypothesis as written in 8.13 is false in every structure. All are refuted on small domains by the evaluator, and repaired versions are given.
           </li>
           <li>
             <a href="#/s/lam.rep.cur?mode=intuition">9.5</a>: the last line of the general computation substitutes into P, which is never defined; N is meant.
           </li>
           <li>
-            <a href="#/s/lam.rep.arf?mode=intuition">9.7</a>: Mult′ as printed computes a·a; and Exp b̄ 0̄ reduces to λx.x, which is only η-equivalent to 1̄, so Exp
-            λ-defines exponentiation only for exponents ≥ 1 (Exp′ has no exception).
+            <a href="#/s/lam.rep.arf?mode=intuition">9.7</a>: Mult′ as printed computes a·a; and Exp b̄ 0̄ reduces to λx.x, which is only η-equivalent to 1̄, so Exp λ-defines exponentiation only for exponents ≥ 1 (Exp′ has no exception).
           </li>
           <li>
-            <a href="#/s/lam.ldf.prf?mode=formal">9.10</a>: the recursion equation in the proof of the primitive-recursion lemma has h where g is meant; the composition lemma
-            writes G₀, …, G<sub>k</sub> for G<sub>k−1</sub>.
+            <a href="#/s/lam.ldf.prf?mode=formal">9.10</a>: the recursion equation in the proof of the primitive-recursion lemma has h where g is meant; the composition lemma writes G₀, …, G<sub>k</sub> for G<sub>k−1</sub>.
           </li>
           <li>
             <a href="#/s/lam.ldf.min?mode=intuition">9.12</a>: the recursive call in Search drops f, and the proof λ-defines “h” where the lemma calls the function g.
           </li>
           <li>
-            <a href="#/s/fol.ntd.pro?mode=explore">C.6</a>: one intermediate tree names ¬Elim “⊥Intro”. (Its finished tree has an →Intro without a label; that is licensed by the
-            book’s rules, since it discharges nothing, and the checker accepts it.)
+            <a href="#/s/ic.deriv.text?mode=explore">Appendix A</a>: the derivation of ∀x ¬x &lt; 0 cites Q5 and Q6 where it uses Q4 and Q5, and λ₃ lists the cases of trichotomy in a different order from the lemma it cites.
           </li>
           <li>
-            <a href="#/s/ic.deriv.text?mode=explore">Appendix A</a>: the derivation of ∀x ¬x &lt; 0 cites Q5 and Q6 where it uses Q4 and Q5.
+            <a href="#/s/fol.ntd.pro?mode=explore">C.6</a>: one intermediate tree names ¬Elim “⊥Intro”. (Its finished tree has an →Intro without a label; the book’s rules allow that, since it discharges nothing, and the checker accepts it.)
           </li>
         </ul>
 
