@@ -1,0 +1,27 @@
+import { RulePalette } from '../../../workbench/nd/RulePalette';
+import { ExNegVsBotC } from '../../../workbench/nd/exercises';
+
+<Added label="Added for this edition">
+
+Each connective has an introduction rule, saying how to *establish* a sentence with that main connective, and an elimination rule, saying how to *use* one. Read as schemas, they apply to any sentences $A$, $B$, $C$ put in place of the letters.
+
+</Added>
+
+## Introductions and eliminations
+
+- **$\land$**: from $A$ and $B$ infer $A \land B$; from $A \land B$ infer either conjunct.
+- **$\lor$**: from either disjunct infer $A \lor B$. To *use* $A \lor B$, reason by cases: if $C$ follows from the assumption $A$ and also from the assumption $B$, then $C$ follows from $A \lor B$, and both case assumptions are discharged.
+- **$\rightarrow$**: conditional proof — derive $B$ from the assumption $A$, then infer $A \rightarrow B$, discharging $A$. *Modus ponens* uses it: from $A \rightarrow B$ and $A$ infer $B$.
+- **$\lnot$**: derive $\bot$ from the assumption $A$, then infer $\lnot A$, discharging $A$. And $\lnot A$ with $A$ gives $\bot$.
+
+<RulePalette rules={['andI', 'andE', 'orI', 'orE', 'impI', 'impE', 'notI', 'notE', 'botI', 'botC']} />
+
+## Two rules for $\bot$
+
+$\bot_I$ infers *any* sentence from $\bot$. $\bot_C$ is stronger: if $\bot$ follows from the assumption $\lnot A$, infer $A$, discharging $\lnot A$. The book notes the similarity with $\lnot$Intro: "$\lnot$Intro derives a negated sentence $\lnot A$ but $\bot_C$ a positive sentence $A$." Logic with $\bot_I$ but without $\bot_C$ is intuitionistic logic; $\bot_C$ is what makes $A \lor \lnot A$ derivable (Section C.6).
+
+<ExNegVsBotC />
+
+## Discharge is a permission
+
+"Whenever a rule indicates that some assumption may be discharged, we take this to be a permission, but not a requirement." An $\rightarrow$Intro may discharge several assumptions $[A]^n$, one, or none. The checker follows this, with one convention the book leaves implicit: a discharging inference always carries a label, even if nothing above it bears that label.

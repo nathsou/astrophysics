@@ -1,0 +1,24 @@
+import { ExInconsistent } from '../../../workbench/nd/exercises';
+
+<Added label="Added for this edition">
+
+The proof-theoretic notions are defined by derivations, not by structures: $A$ is a **theorem** if some derivation of $A$ has every assumption discharged; $\Gamma \vdash A$ if some derivation of $A$ has all its undischarged assumptions in $\Gamma$; $\Gamma$ is **inconsistent** if $\Gamma \vdash \bot$. That these coincide with validity, entailment and unsatisfiability is the content of soundness and completeness.
+
+</Added>
+
+## Four properties read off the definition
+
+Each of the section's propositions is proved by looking at derivations, not by any clever argument:
+
+- **Reflexivity.** If $A \in \Gamma$, the one-sentence tree $A$ is a derivation of $A$ whose only undischarged assumption is in $\Gamma$.
+- **Monotonicity.** A derivation from $\Gamma$ is also one from any $\Delta \supseteq \Gamma$: the condition only asks that undischarged assumptions lie *in* the set.
+- **Transitivity.** Given $\delta_0$ deriving $A$ from $\Gamma$ and $\delta_1$ deriving $B$ from $\{A\} \cup \Delta$: discharge $A$ in $\delta_1$ by $\rightarrow$Intro, then apply $\rightarrow$Elim with $\delta_0$. The result derives $B$ from $\Gamma \cup \Delta$.
+- **Compactness.** A derivation is a finite tree, so its undischarged assumptions form a finite set $\Gamma_0 \subseteq \Gamma$, and $\Gamma_0 \vdash A$.
+
+The builder in Explore mode shows these sets: the status line lists the undischarged assumptions of the tree built so far — the finite $\Gamma_0$ of the compactness proof — and compares them with $\Gamma$.
+
+## Inconsistency
+
+<ExInconsistent />
+
+The section leaves the equivalence of "$\Gamma$ is inconsistent", "$\Gamma \vdash A$ for every $A$" and "$\Gamma \vdash A$ and $\Gamma \vdash \lnot A$ for some $A$" as an exercise. Two of the three steps are single inferences: $\bot_I$, and $\lnot$Elim.

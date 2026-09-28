@@ -1,0 +1,27 @@
+import { ExFiniteCheck } from '../../../workbench/nd/exercises';
+
+<Added label="Added for this edition">
+
+**Soundness**: if $A$ is derivable from the undischarged assumptions $\Gamma$, then $\Gamma \vDash A$ — every structure that makes all of $\Gamma$ true makes $A$ true. The proof is an induction on the number of inferences: each rule, applied to premises that follow from their assumptions, yields a conclusion that follows from its own.
+
+</Added>
+
+## The shape of the induction
+
+A derivation with no inferences is a single assumption $A$, and $\{A\} \vDash A$. Otherwise, look at the **last** inference. Its premises are the conclusions of smaller sub-derivations, which by the induction hypothesis are sound. The step to the conclusion depends on the rule:
+
+- **$\land$Elim, $\lor$Intro, $\land$Intro, $\rightarrow$Elim** — immediate from the definition of satisfaction.
+- **$\rightarrow$Intro, $\lnot$Intro** — the discharged assumption $A$ was among the sub-derivation's assumptions: $\Gamma \cup \{A\} \vDash B$, hence $\Gamma \vDash A \rightarrow B$.
+- **$\forall$Intro** — the delicate case. From $\Gamma \vDash A(a)$ one needs $\Gamma \vDash \forall x\, A(x)$. Given $\mathfrak M \vDash \Gamma$ and any assignment $s$, change $\mathfrak M$ only in what it assigns to $a$, making $a^{\mathfrak M'} = s(x)$. Because $a$ does not occur in $\Gamma$, still $\mathfrak M' \vDash \Gamma$, so $\mathfrak M' \vDash A(a)$; because $a$ does not occur in $A(x)$, this means $\mathfrak M \vDash A(x)[s]$. Both uses are the **eigenvariable condition**.
+
+The book leaves $\bot_C$, $\exists$Intro, $\forall$Elim, $\lor$Elim, $\lnot$Elim and $\exists$Elim as exercises.
+
+## Every step, not just the last
+
+Every step of a derivation is the conclusion of a sub-derivation. So soundness says something about each step $s$: if a structure makes the undischarged assumptions $\Gamma_s$ of that step true, it makes the step's sentence true. The lab in Explore mode checks this, step by step, in a structure you choose — and searches all structures with one, two or three elements for a step where it fails.
+
+For a derivation the checker accepts, the search never finds one: that is the theorem at work. For the book's incorrect derivation of $\forall x\, A(x)$ from $\exists x\, A(x)$ it does, and the first failing step is the $\forall$Intro that violates the eigenvariable condition — the inference where the proof above needs the condition.
+
+<NotAProof>Checking every structure with up to three elements proves neither the soundness theorem nor that a particular derivation's conclusion follows from its assumptions: entailment is about all structures, of every size, and soundness about all derivations. The theorem is proved in the text.</NotAProof>
+
+<ExFiniteCheck />

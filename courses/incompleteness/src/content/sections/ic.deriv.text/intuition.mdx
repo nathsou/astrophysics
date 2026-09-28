@@ -1,0 +1,21 @@
+<Added label="Added for this edition">
+
+The chapters on representability and incompleteness claim that many sentences are provable in $\mathbf Q$ and $\mathbf{PA}$, but argue informally. This appendix writes out some of the derivations in natural deduction. They are long — which is why the book usually doesn't — but every step is an instance of one of the rules, and here every step is checked.
+
+</Added>
+
+## Three kinds of result
+
+**A family of derivations.** The lemma $\mathbf Q \vdash \overline n + \overline m = \overline{n+m}$ is proved by induction on $m$ — in the *metalanguage*: the induction shows how to build a derivation $\delta_{n,m}$ for every $n$ and $m$. The base case is one $\forall$Elim from Q4; the step extends $\delta_{n,m}$ by two $\forall$Elims from Q5 and one =Elim. For particular numbers the derivation can be written out, and Explore mode does so. $\mathbf Q$ has no induction axiom, so there is no single derivation of $\forall x\, \forall y\, \ldots$ here.
+
+**One derivation of a universal sentence.** $\mathbf Q \vdash \forall x\, \lnot x < 0$ is different: it is a single derivation, ending in $\forall$Intro with eigenvariable $a$. Its pieces reason by cases on Q3 — $a = 0$, or $a = c'$ for some $c$ — and in both cases turn $(b' + a) = 0$ into an instance of $0 = t'$, which Q2 refutes. Two $\exists$Elims (eigenvariables $b$ and $c$) and the final $\forall$Intro each carry an eigenvariable condition, all satisfied because every assumption mentioning $a$, $b$ or $c$ is discharged before the inference that generalises over it.
+
+**A derivation from hypotheses.** In Rosser's proof, the derivation of $\mathrm{RProv}(\ulcorner R \urcorner)$ uses facts established elsewhere: that $\mathrm{Prf}$ and $\mathrm{Refut}$ represent the proof and refutation relations, and Lemma "less-nsucc". The checker treats them as **hypotheses** — undischarged assumptions, named — and verifies that the conclusion follows from them.
+
+## ↔ is an abbreviation
+
+Q8 says $\forall x\, \forall y\, (x < y \leftrightarrow \exists z\, (z' + x) = y)$. In this book $A \leftrightarrow B$ is short for $(A \rightarrow B) \land (B \rightarrow A)$, and the derivation applies $\land$Elim to an instance of Q8. The checker, which has rules for the primitive connectives only, is given Q8 written out that way.
+
+## Is this about $\mathbf{PA}$ too?
+
+Every axiom of $\mathbf Q$ is a theorem of $\mathbf{PA}$, so each derivation here also shows the corresponding fact for $\mathbf{PA}$. The appendix does not write out a derivation that uses $\mathbf{PA}$'s induction schema, and neither does this edition.

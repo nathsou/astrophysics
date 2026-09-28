@@ -1,0 +1,19 @@
+import { ExAllNotNotEx } from '../../../workbench/nd/exercises';
+
+<Added label="Added for this edition">
+
+With quantifiers, the order of inferences matters. $\forall$Intro and $\exists$Elim carry the eigenvariable condition, so the book's advice is to "take care of rules subject to the eigenvariable condition first": working backwards, they come early, which puts them *low* in the finished tree, where fewer assumptions are still open.
+
+</Added>
+
+## Choosing the eigenvariable
+
+For $\exists x\, \lnot A(x) \rightarrow \lnot\forall x\, A(x)$, after $\rightarrow$Intro the book sets up $\exists$Elim with the assumption $[\lnot A(a)]^2$, choosing "a constant that does not appear in $\exists x\, A(x)$ or any assumptions that it depends on". Then $\forall$Elim — which has no condition — may use the *same* $a$: from $[\forall x\, A(x)]^3$ infer $A(a)$, and $\lnot A(a)$ with $A(a)$ gives $\bot$.
+
+The final check the book recommends — "double check at this point that the eigenvariable condition has not been violated" — is what the checker does at every $\forall$Intro and $\exists$Elim: $a$ must not occur in the conclusion, in the existential premise, or in an undischarged assumption other than the one being discharged.
+
+## Undischarged assumptions
+
+The second and third examples derive a sentence from assumptions that stay undischarged: $\exists x\,(A(x) \land B(x))$ and $\forall x\,(B(x) \rightarrow C(x, b))$ give $\exists x\, C(x, b)$. Here $b$ is a constant that occurs in an assumption, so it could *not* serve as the eigenvariable of the $\exists$Elim; the book uses $a$.
+
+<ExAllNotNotEx />

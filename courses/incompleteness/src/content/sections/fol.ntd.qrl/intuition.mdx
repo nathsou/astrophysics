@@ -1,0 +1,27 @@
+import { RulePalette } from '../../../workbench/nd/RulePalette';
+import { ExampleCheck } from '../../../workbench/nd/ExampleCheck';
+import { ExEigenChoice } from '../../../workbench/nd/exercises';
+
+<Added label="Added for this edition">
+
+$\forall$Elim and $\exists$Intro are unrestricted: any closed term will do. $\forall$Intro and $\exists$Elim reason about an *arbitrary* object, named by a constant $a$ — the **eigenvariable** — and they are only correct if $a$ really is arbitrary: it must not occur in the conclusion or in any undischarged assumption.
+
+</Added>
+
+<RulePalette rules={['allI', 'allE', 'exI', 'exE']} />
+
+## Why constants, and why closed terms
+
+Derivations in this book contain sentences only. So the instance $A(t)$ in $\forall$Elim must be a sentence, which is why $t$ is a *closed* term; and $\forall$Intro generalises on a *constant* $a$, not a free variable. $A(t)$ is short for $A(x)[t/x]$. In $\exists$Intro the premise $A(t)$ may contain $t$ in places that stay in the conclusion: from $P(a, a)$ one may infer $\exists x\, P(a, x)$, replacing only some occurrences of $a$.
+
+## The eigenvariable condition
+
+If $a$ occurs in an undischarged assumption, a proof of $A(a)$ may rely on what that assumption says about $a$ in particular, and generalising to $\forall x\, A(x)$ is unjustified. The book's example:
+
+<ExampleCheck id="qrl-bad" />
+
+The $\forall$Intro inference is wrong: at that point $A(a)$ is an undischarged assumption (it is discharged only by the $\exists$Elim below). The checker reports exactly that. Without the condition this tree would "derive" $\forall x\, A(x)$ from $\exists x\, A(x)$ — but $\exists x\, A(x) \nvDash \forall x\, A(x)$: take a structure in which $A$ is true of some elements and not others. (Section C.10's lab finds such a structure and points to the step where truth is lost.)
+
+For $\exists$Elim the condition is similar: $a$ must not occur in $\exists x\, A(x)$, in the conclusion $C$, or in any undischarged assumption other than the $A(a)$ being discharged.
+
+<ExEigenChoice />

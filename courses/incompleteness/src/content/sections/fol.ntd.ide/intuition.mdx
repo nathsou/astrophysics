@@ -1,0 +1,23 @@
+import { RulePalette } from '../../../workbench/nd/RulePalette';
+import { ExampleCheck } from '../../../workbench/nd/ExampleCheck';
+import { ExSymmetry } from '../../../workbench/nd/exercises';
+
+<Added label="Added for this edition">
+
+Identity has two rules. $t = t$ may be written down at any time (=Intro). And if $t_1 = t_2$, then anything true of $t_1$ is true of $t_2$ and vice versa (=Elim, Leibniz' law): from $t_1 = t_2$ and $A(t_1)$ infer $A(t_2)$.
+
+</Added>
+
+<RulePalette rules={['eqI', 'eqE']} />
+
+## Replacing some occurrences
+
+In =Elim, $A(t_1)$ and $A(t_2)$ are instances of one formula $A(x)$; since $A(x)$ may also contain $t_1$ in places that are not $x$, the rule replaces **some** occurrences of $t_1$ by $t_2$ — not necessarily all. The checker tests exactly this: the conclusion must be the second premise with some occurrences of one side of the identity replaced by the other. With $A(x)$ as $x = a$, from $a = b$ and $a = a$ =Elim gives $b = a$: that is how symmetry of identity is derived.
+
+<ExampleCheck id="ide-1" />
+
+## A longer example
+
+From "there is at most one $A$, namely $c$" the book derives that any two $A$s are identical. Formal mode shows the complete derivation. The book writes out the part leading to $a = c$ and says that $b = c$ is similar and that $a = b$ then follows by =Elim; the edition fills in these steps. The last =Elim has the identity $b = c$ as its first premise, as the rule's schema requires.
+
+<ExSymmetry />

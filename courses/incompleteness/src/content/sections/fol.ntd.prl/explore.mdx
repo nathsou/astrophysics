@@ -1,0 +1,5 @@
+import { DerivationBuilder } from '../../../workbench/nd/DerivationBuilder';
+
+Try each propositional rule on a goal. A rule that fits the goal's main connective is marked in the palette; the others can be applied too, with premises you supply — the checker will say whether the result is an instance of the rule. The default goal is from the section's problems.
+
+<DerivationBuilder goal="(A → C) ∧ (B → C) → ((A ∨ B) → C)" examples={['pro-1', 'pro-2', 'pro-3']} />

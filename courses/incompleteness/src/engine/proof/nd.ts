@@ -106,6 +106,8 @@ export interface CheckResult {
   /** Errors anywhere, with the step id. */
   errors: { id: string; message: string }[];
   size: number;
+  /** Ids of the leaves that are goals not yet derived (see CheckOptions.goals). */
+  goals: string[];
 }
 
 let dcounter = 0;
@@ -116,11 +118,18 @@ export const did = () => `d${++dcounter}`;
 export interface CheckOptions {
   /** The axioms of Γ, by name. `axiom` leaves must match one of them. */
   axioms?: Map<string, Formula>;
+  /**
+   * Ids of `hyp` leaves that stand for goals not yet derived (a derivation under construction).
+   * A goal is not an assumption: it adds nothing to the undischarged assumptions (so it cannot
+   * trip an eigenvariable condition), and a derivation with goals is not valid.
+   */
+  goals?: ReadonlySet<string>;
 }
 
 export function check(root: Deriv, opt: CheckOptions = {}): CheckResult {
   const steps = new Map<string, StepCheck>();
   const errors: { id: string; message: string }[] = [];
+  const goals: string[] = [];
   const go = (d: Deriv): StepCheck => {
     const prem = d.premises.map(go);
     const errs: string[] = [];
@@ -163,7 +172,10 @@ export function check(root: Deriv, opt: CheckOptions = {}): CheckResult {
       }
       case 'hyp':
         arity(0);
-        open = [{ id: d.id, formula: d.concl, kind: 'hyp', name: d.name }];
+        if (opt.goals?.has(d.id)) {
+          goals.push(d.id);
+          open = [];
+        } else open = [{ id: d.id, formula: d.concl, kind: 'hyp', name: d.name }];
         break;
       case 'andI':
         if (arity(2) && !(d.concl.k === 'and' && formulaEq(d.concl.a, P[0]) && formulaEq(d.concl.b, P[1]))) fail('the conclusion must be the conjunction of the premises, in order');
@@ -316,13 +328,14 @@ export function check(root: Deriv, opt: CheckOptions = {}): CheckResult {
   }
   const uniq = (xs: string[]) => [...new Set(xs)];
   return {
-    valid: errors.length === 0,
+    valid: errors.length === 0 && goals.length === 0,
     steps,
     open: r.open,
     axioms: uniq(r.open.filter((o) => o.kind === 'axiom').map((o) => o.name!)).sort(),
     hypotheses: uniq(r.open.filter((o) => o.kind === 'hyp').map((o) => o.name!)),
     errors,
     size: steps.size,
+    goals,
   };
 }
 
@@ -467,6 +480,7 @@ export const D = {
   notI: (p: Deriv, negated: Formula, label: number, x: Extra = {}) => mk('notI', A.not(negated), [p], { label, ...x }),
   notE: (pNot: Deriv, pA: Deriv, x: Extra = {}) => mk('notE', A.bot(), [pNot, pA], x),
   botI: (p: Deriv, concl: Formula, x: Extra = {}) => mk('botI', concl, [p], x),
+  botC: (p: Deriv, concl: Formula, label: number, x: Extra = {}) => mk('botC', concl, [p], { label, ...x }),
   allE: (p: Deriv, t: Term, x: Extra = {}) => {
     const c = p.concl;
     if (c.k !== 'forall') throw new Error('allE of a non-universal');
