@@ -73,6 +73,39 @@ export function About() {
           <li>End-of-chapter problems are shown where they occur in the source rather than collected at the end of the chapter.</li>
         </ul>
 
+        <h2>Where this edition departs from the printed text</h2>
+        <p>
+          The converted text is never edited. Where a checker, an evaluator or a close reading found a slip, the page concerned shows the book’s version next to a corrected one and says
+          which is which. So far:
+        </p>
+        <ul className="corrections">
+          <li>
+            <a href="#/s/inc.inp.lob?mode=explore">5.8 Löb’s theorem</a>: the last line cites (L-8) and (L-12); propositional logic needs (L-9) and (L-12).
+          </li>
+          <li>
+            <a href="#/s/cmp.thy.cmp?mode=formal">6.12</a>: in the proof, <i>T</i>(<i>e</i>, <i>x</i>, <i>h</i>(<i>x</i>)) should be <i>T</i>(<i>d</i>, <i>x</i>, <i>h</i>(<i>x</i>)) (A is the
+            domain of φ<sub>d</sub>). Chapter 6 also notes a numeral n̄ written for ē, and an off-by-one in the count of conjuncts in Craig’s trick.
+          </li>
+          <li>
+            <a href="#/s/mod.mar.cmp?mode=intuition">7.9</a>: the bijection g with g(n) = n + 1 for n &gt; 0 should have g(n) = n − 1.
+          </li>
+          <li>
+            <a href="#/s/sol.set.crd?mode=explore">8.12</a>: Inf(X) as printed does not require u to map X into X, so finite sets satisfy it; Count(X) as printed ends with X = Y where
+            X ⊆ Y is needed. Both are refuted on small domains by the evaluator.
+          </li>
+          <li>
+            <a href="#/s/lam.rep.arf?mode=intuition">9.7</a> and <a href="#/s/lam.ldf.min?mode=intuition">9.12</a>: Mult′ as printed computes a·a, and the recursive call in Search
+            drops f. Both are run as printed and as corrected.
+          </li>
+          <li>
+            <a href="#/s/fol.ntd.pro?mode=explore">C.6</a>: one →Intro in the finished tree has no discharge label, which the checker requires; one intermediate tree names ¬Elim
+            “⊥Intro”.
+          </li>
+          <li>
+            <a href="#/s/ic.deriv.text?mode=explore">Appendix A</a>: the derivation of ∀x ¬x &lt; 0 cites Q5 and Q6 where it uses Q4 and Q5.
+          </li>
+        </ul>
+
         <h2>What everything is</h2>
         <ProvLegend />
 
