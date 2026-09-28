@@ -366,3 +366,4 @@ textarea.fi-field { font-family: var(--mono); font-size: 13px; width: 100%; resi
 .syntax-tree .tn text { font-family: var(--math); font-size: 14px; fill: var(--ink); pointer-events: none; }
 .syntax-tree .tn { cursor: pointer; }
 .syntax-tree .tn:hover .tn-box { stroke-width: 2.2; }
+.three-things-wrap { overflow-x: auto; }

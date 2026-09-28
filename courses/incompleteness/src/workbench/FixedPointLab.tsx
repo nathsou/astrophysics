@@ -210,6 +210,7 @@ export function ThreeThings() {
   const c = useFixedPoint(parsed.ok ? parsed.value : null);
   if (!c || 'error' in c) return null;
   return (
+    <div className="three-things-wrap">
     <table className="three-things sans">
       <thead>
         <tr>
@@ -264,6 +265,7 @@ export function ThreeThings() {
         </tr>
       </tbody>
     </table>
+    </div>
   );
 }
 
