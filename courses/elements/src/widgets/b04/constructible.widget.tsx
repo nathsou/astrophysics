@@ -77,7 +77,7 @@ export default function Constructible({ max = '100' }: Record<string, string>) {
         })}
       </svg>
       <p>
-        <strong>{sel}</strong> = {factors.join(' · ')}.{' '}
+        <strong>{sel}</strong> {factors.length === 1 && !factors[0].includes('^') ? 'is prime' : `= ${factors.join(' · ')}`}.{' '}
         {st === 'euclid' && 'Constructible with the tools of Book IV.'}
         {st === 'gauss' && `Constructible, because ${a.primes.filter((p) => p > 5).join(' and ')} ${a.primes.filter((p) => p > 5).length > 1 ? 'are Fermat primes' : 'is a Fermat prime'}; Euclid had no way to do it.`}
         {st === 'no' && 'Not constructible: its odd part is not a product of distinct Fermat primes.'}
