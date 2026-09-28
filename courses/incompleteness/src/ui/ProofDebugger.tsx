@@ -101,8 +101,7 @@ export function ProofDebugger({ deriv, check, title, hypotheses, expanded = fals
       {view === 'steps' ? (
         <ol
           className="pd-steps"
-          role="listbox"
-          aria-label="Steps of the derivation"
+          aria-label="Steps of the derivation (arrow keys move between steps)"
           tabIndex={0}
           onKeyDown={(e) => {
             const i = visible.findIndex((r) => r.d.id === sel);
@@ -121,7 +120,7 @@ export function ProofDebugger({ deriv, check, title, hypotheses, expanded = fals
             return (
               <Fragment key={gi}>
                 {g.name && g.rows.length > 1 && (
-                  <li className="pd-group" role="presentation">
+                  <li className="pd-group">
                     <button
                       aria-expanded={isOpen}
                       onClick={() => {
@@ -171,8 +170,7 @@ function StepRow({ r, num, check, selected, onSelect, indent }: { r: Row; num: M
   return (
     <li
       className={`pd-step ${selected ? 'selected' : ''} ${bad ? 'bad' : ''} ${indent ? 'indent' : ''}`}
-      role="option"
-      aria-selected={selected}
+      aria-current={selected ? 'step' : undefined}
       data-n={d.id}
       onClick={() => onSelect(d.id)}
       onMouseEnter={() => highlightStore.set({ primary: [d.id], secondary: d.premises.map((p) => p.id), binder: st?.discharged.map((a) => a.id) ?? [] })}

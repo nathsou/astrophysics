@@ -9,6 +9,7 @@ import { Home } from './pages/Home';
 import { About } from './pages/About';
 import { SearchDialog } from './ui/Search';
 import { IndexPage } from './pages/IndexPage';
+import { installScrollFocus } from './ui/scrollFocus';
 
 export interface Route {
   page: 'home' | 'about' | 'index' | 'section';
@@ -98,6 +99,10 @@ export function App() {
   const [open, setOpen] = useState(false);
   const [searching, setSearching] = useState(false);
   useEffect(() => applyTheme(themeStore.get(), false), []);
+  useEffect(() => {
+    const main = document.getElementById('main');
+    return main ? installScrollFocus(main) : undefined;
+  }, []);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement | null;

@@ -136,7 +136,7 @@ function Computation({ rf, args, onHover }: { rf: RF; args: bigint[]; onHover: (
           </>
         )}
       />
-      <div className="call-stack" aria-label="Call stack">
+      <div className="call-stack" role="group" aria-label="Call stack">
         {stack.map((c, i) => (
           <div key={c.key} className="call-frame" style={{ marginLeft: i * 14 }} data-n={c.fn.id} onMouseEnter={() => onHover(c.fn.id)}>
             <Tex tex={callLabel(c)} />
