@@ -22,10 +22,10 @@ button.pv-row:focus-visible { outline: 2px solid var(--accent); outline-offset: 
 .pv-detail p { margin: 6px 0; }
 .pv-note { color: var(--added); }
 .pv-error { color: var(--danger); font-family: var(--sans); font-size: 13px; }
-.pv-okmsg { color: var(--checked); font-family: var(--sans); font-size: 13px; }
+.pv-okmsg { color: var(--checked); font-family: var(--ui); font-size: 15px; }
 .pv-uses { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .pv-chip { border: 1px solid var(--rule-2); border-radius: 4px; padding: 0 8px; font-size: 12px; }
-.pv-verdict { font-family: var(--sans); font-size: 14px; margin: 0; padding: 10px 14px; border-radius: 4px; background: var(--paper-2); }
+.pv-verdict { font-family: var(--ui); font-size: 16px; margin: 0; padding: 10px 14px; border-radius: 4px; background: var(--paper-2); }
 .pv-verdict.ok { background: var(--checked-soft); color: var(--checked); }
 .pv-verdict.bad { background: var(--danger-soft); color: var(--danger); }
 .pv-tt-wrap { overflow-x: auto; max-height: 320px; overflow-y: auto; margin-top: 6px; }

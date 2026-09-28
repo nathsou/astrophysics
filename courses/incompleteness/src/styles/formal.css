@@ -24,7 +24,7 @@
 .ol-ex.numbered { background: transparent; box-shadow: inset 0 0 0 1px var(--rule); }
 .ol-prob.numbered { background: transparent; box-shadow: inset 0 0 0 1px var(--rule-2); border-radius: 3px; border-left: 0; }
 .ol-prob.numbered .ol-env-name { color: var(--number); }
-.ol-env-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin-bottom: 4px; }
+.ol-env-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin-bottom: 0; }
 .ol-env-name { font-family: var(--serif); font-weight: 700; font-size: 1em; }
 .ol-env-title { font-style: italic; color: var(--ink-2); }
 .ol-env-body > p:last-child, .ol-env-body > .ol-list:last-child { margin-bottom: 0.5em; }

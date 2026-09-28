@@ -327,7 +327,7 @@ textarea.fi-field { font-family: var(--mono); font-size: 13px; width: 100%; resi
 .demo-tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; color: var(--muted); font-weight: 400; }
 .demo-tag.formula { color: var(--formula); }
 .demo-tag.number { color: var(--number); }
-.mode-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.mode-cards { margin-bottom: 1.2em; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
 .mode-cards > div { background: var(--pn); border-radius: 3px; padding: 4px 16px 8px; }
 .mode-cards h3 { margin-top: 0.8em; font-size: 1.2rem; font-style: italic; font-weight: 400; color: var(--accent); }
 .mode-cards p { font-size: 0.93em; color: var(--ink-2); }

@@ -55,7 +55,7 @@
 .lam-controls label { display: inline-flex; align-items: center; gap: 5px; }
 .lam-controls input[type='number'] { width: 80px; padding: 4px 6px; border: 1px solid var(--rule-2); border-radius: 3px; background: var(--panel); color: var(--ink); font-family: var(--mono); }
 .lam-controls select, .lam-select { font-family: var(--sans); font-size: 13px; padding: 5px 8px; border-radius: 4px; border: 1px solid var(--rule-2); background: var(--panel); color: var(--ink); max-width: 100%; }
-.lam-status { font-family: var(--sans); font-size: 13.5px; padding: 8px 10px; border-radius: 4px; background: var(--paper-2); margin: 8px 0; line-height: 1.5; }
+.lam-status { font-family: var(--ui); font-size: 15.5px; padding: 8px 10px; border-radius: 4px; background: var(--paper-2); margin: 8px 0; line-height: 1.5; }
 .lam-status.ok { background: var(--checked-soft); color: var(--checked); }
 .lam-status.warn { background: var(--number-soft); color: var(--number); }
 .lam-status.running { color: var(--muted); }

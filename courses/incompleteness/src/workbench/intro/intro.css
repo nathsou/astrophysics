@@ -7,7 +7,7 @@
 .intro-steps li.bad { color: var(--danger); }
 .intro-steps li.info { color: var(--ink-2); }
 .intro-steps li.info > span { color: var(--muted); font-weight: 700; }
-.intro-verdict { font-family: var(--sans); font-size: 14px; padding: 8px 12px; border-radius: 4px; margin: 6px 0 0; }
+.intro-verdict { font-family: var(--ui); font-size: 16px; padding: 8px 12px; border-radius: 4px; margin: 6px 0 0; }
 .intro-verdict.ok { background: var(--checked-soft); color: var(--checked); }
 .intro-verdict.bad { background: var(--paper-2); color: var(--ink-2); }
 

@@ -26,7 +26,7 @@
   --ink: var(--fg);
   --ink-2: color-mix(in srgb, var(--fg) 84%, var(--bg));
   /* Secondary text also sits on the panel tint, so it is a shade darker than --mute in light mode. */
-  --muted: #5f677b;
+  --muted: #596177;
   --rule: color-mix(in srgb, var(--fg) 12%, var(--bg));
   --rule-2: color-mix(in srgb, var(--fg) 42%, var(--bg));
   --accent: var(--ac);
@@ -41,12 +41,12 @@
   --numeral-soft: color-mix(in srgb, var(--numeral) 13%, var(--bg));
 
   /* provenance */
-  --book: #5f677b;
+  --book: #596177;
   --book-soft: var(--pn);
   --added: #6a45b8;
   --added-soft: color-mix(in srgb, var(--added) 11%, var(--bg));
   --computed: var(--number);
-  --checked: #1f7a3f;
+  --checked: #1a6c37;
   --checked-soft: color-mix(in srgb, var(--checked) 12%, var(--bg));
   --danger: #b42318;
   --danger-soft: color-mix(in srgb, var(--danger) 10%, var(--bg));
@@ -68,7 +68,7 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     --bg: #1c2233; --fg: #e6ecfa; --mute: #95a0bd; --ac: #9fb4e8; --pn: #252d44;
-    --muted: #95a0bd;
+    --muted: #a2acc8;
     --accent-soft: color-mix(in srgb, var(--ac) 17%, var(--bg));
     --number: #f0b45c; --numeral: #5fd0bf; --added: #b99cf2; --checked: #6cd48e; --danger: #f28b82; --book: #a4aec8;
     --number-soft: color-mix(in srgb, var(--number) 16%, var(--bg));
@@ -83,7 +83,7 @@
 }
 :root[data-theme='dark'] {
   --bg: #1c2233; --fg: #e6ecfa; --mute: #95a0bd; --ac: #9fb4e8; --pn: #252d44;
-  --muted: #95a0bd;
+  --muted: #a2acc8;
   --accent-soft: color-mix(in srgb, var(--ac) 17%, var(--bg));
   --number: #f0b45c; --numeral: #5fd0bf; --added: #b99cf2; --checked: #6cd48e; --danger: #f28b82; --book: #a4aec8;
   --number-soft: color-mix(in srgb, var(--number) 16%, var(--bg));
