@@ -1,0 +1,23 @@
+import { ExFiniteCe } from '../../../workbench/computability/exercises';
+
+<Added label="Added for this edition">
+
+A set is *computably enumerable* (c.e.; also *recursively enumerable*) if it is empty or the range of a computable function $f$: then $S = \{f(0), f(1), f(2), \ldots\}$, and $f$ lists the elements of $S$. The list may be in any order and may repeat itself. Every computable set is c.e.; the converse fails, as a later section shows.
+
+</Added>
+
+## What a list gives you
+
+If $x \in S$, going through $f(0), f(1), \ldots$ will eventually find it. If $x \notin S$, the search never ends: no finite part of the list tells you that $x$ will not appear later. So an enumeration gives half of a decision procedure — a way to confirm membership, never a way to refute it.
+
+The definition allows repetitions and any order. The constant function $f(x) = 0$ enumerates $\{0\}$. The empty set is added by hand, because the range of a total function is never empty.
+
+## Computable sets are c.e.
+
+Let $S$ be computable and nonempty, and $a \in S$. Put $f(x) = x$ if $\chi_S(x) = 1$, and $f(x) = a$ otherwise. Then $f$ is computable, and its range is exactly $S$: every member $x$ is $f(x)$, and nothing else is ever output except $a$, which is in $S$. The workbench carries this out for a few decidable sets.
+
+## Listing without deciding
+
+The second workbench lists $W_e = \{x : \varphi_e(x)\downarrow\}$ by *dovetailing*: at stage $s$, run each of $\varphi_e(0), \ldots, \varphi_e(s-1)$ for $s$ steps. Every $x$ whose computation halts is listed at some stage, and no single divergent computation can block the rest. The next section shows that these domains are exactly the c.e. sets.
+
+<ExFiniteCe />

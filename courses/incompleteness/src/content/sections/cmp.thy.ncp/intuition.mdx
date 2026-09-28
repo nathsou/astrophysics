@@ -1,0 +1,17 @@
+<Added label="Added for this edition">
+
+Every computable set is c.e. The converse fails: the *halting set* $K_0 = \{\langle e, x\rangle : \varphi_e(x)\downarrow\}$ and the *self-halting set* $K = \{e : \varphi_e(e)\downarrow\}$ are c.e., but not computable. $K$ is the standard example of an undecidable set.
+
+</Added>
+
+## Why they are c.e.
+
+$K_0$ is the domain of $f(z) = \mu y\,(\mathrm{len}(z) = 2 \land T((z)_0, (z)_1, y))$: the search finds a record exactly when $z$ codes a pair $\langle e, x\rangle$ with $\varphi_e(x)\downarrow$. $K$ is the domain of $\mu y\, T(x, x, y)$. In the workbench both are listed by stages: at stage $s$, every computation with small enough index and input is run for $s$ steps.
+
+## Why they are not computable
+
+For $K_0$ this is the halting problem restated: its characteristic function is $h$ (up to coding pairs). For $K$ the book diagonalizes once more. If $\chi_K$ were computable, so would be $d(e) = 1$ if $\chi_K(e) = 0$ and undefined otherwise. With $k$ an index of $d$: $d(k)\downarrow$ iff $k \notin K$ iff $\varphi_k(k)\uparrow$ iff $d(k)\uparrow$.
+
+## What the pictures show, and what they cannot
+
+Watch the enumeration of $K$: numbers turn up at irregular stages, some late. At no stage can you tell which of the remaining numbers will still come. The grey cells are exactly the undecided ones — some of them will turn green with more stages, and some never will, and no computation tells the two kinds apart. A few cells can be ruled out for simple reasons (they are shown, dashed); the theorem says that no method rules out all of them.

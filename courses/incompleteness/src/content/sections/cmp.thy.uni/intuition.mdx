@@ -1,0 +1,19 @@
+<Added label="Added for this edition">
+
+Put $\mathrm{Un}(e, x) \simeq U(\mu s\, T(e, x, s))$. By the normal form theorem, every partial computable $f$ is $\mathrm{Un}(e, \cdot)$ for some $e$. So one partial computable function of two arguments contains all partial computable functions of one argument, as its rows.
+
+</Added>
+
+## One program for all programs
+
+$\mathrm{Un}$ is an *interpreter*: given (the code of) a program and an input, it runs the program on the input. The point of the theorem is that the interpreter is itself one of the programs — it is partial computable. The rows $f_e(x) = \mathrm{Un}(e, x)$ form an effective enumeration: $f_e(x)$ can be computed “uniformly” in $e$ and $x$, by the same procedure for all $e$.
+
+The workbench of this section fills in the table of $\mathrm{Un}$ with one procedure, which decodes $e$ and runs the definition. That procedure is written in TypeScript. The theorem says more: it can be written as a partial recursive definition, and then it has an index of its own.
+
+## Why it must be partial
+
+$\mathrm{Un}(e, x)$ is undefined whenever $\varphi_e(x)$ is — the interpreter cannot finish a computation that never finishes. Could some cleverer *total* function do the same job for the total functions? The next section shows it cannot.
+
+## More arguments
+
+$\mathrm{Un}$ is universal for one-place functions. Functions of several arguments reduce to these by coding tuples: if $f(x, y, z)$ is partial recursive, so is $g(x) \simeq f((x)_0, (x)_1, (x)_2)$, and $g$ has an index.

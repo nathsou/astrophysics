@@ -1,0 +1,29 @@
+import { ExRecordCode } from '../../../workbench/computability/exercises';
+
+<Added label="Added for this edition">
+
+Every model of computation lets you (1) write definitions down systematically, (2) write down the complete record of a computation, (3) *check* whether something is a correct record, and (4) read the result off a record. Coding definitions and records as numbers turns (3) into a relation $T(e, x, s)$ and (4) into a function $U(s)$ — both computable, in fact primitive recursive. The rest of the chapter is built on this.
+
+</Added>
+
+## Definitions and records
+
+In this edition a definition is coded by its **index** (see the previous section). A **record** of the computation of $\varphi_e(x)$ is a tree with one node per function call: which part of the definition was called, on which arguments, with which value, and the records of the calls it made in turn. A composition $f(g_0(\vec x), \ldots)$ calls the $g_i$ and then $f$; a primitive recursion calls its base function and then its step function once per step; a search $\mu z\, f(z, \vec x)$ calls $f(0, \vec x)$, $f(1, \vec x)$, … until one gives $0$.
+
+The record is a finite object only when the computation ends. If $\varphi_e(x)\uparrow$, there is no record at all.
+
+## Checking is easy, searching is not
+
+Given $e$, $x$ and a candidate record $s$, deciding whether $s$ is a correct record is a matter of checking every node against the rule of its part of the definition: zero gave $0$, succ added one, a composition called the right functions on the right arguments, a search stopped at its first $0$. Each check is local, and all the numbers involved are parts of $s$. So $T(e, x, s)$ is decidable — the book adds that with care it is primitive recursive.
+
+What is *not* decidable is whether some record exists. That question — $\exists s\, T(e, x, s)$ — is the halting problem.
+
+## Reading off the value
+
+$U(s)$ reads the value recorded at the root. It is defined for every $s$ (it just reads a component of a number), and it gives $\varphi_e(x)$ when $T(e, x, s)$ holds.
+
+<Callout title="How large is s?">
+In this edition’s coding (built on the pairing function $J$), each level of nesting in a record roughly squares the number, so the code of the record of $x + x$ at $x = 3$ already has, by estimate, millions of digits. The book’s coding with prime powers grows similarly. Nothing in the theory needs these numbers written in decimal: $T$ checks structure, and $U$ reads one component.
+</Callout>
+
+<ExRecordCode />

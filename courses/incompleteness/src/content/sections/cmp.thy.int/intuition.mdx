@@ -1,0 +1,29 @@
+import { ExReadIndex } from '../../../workbench/computability/exercises';
+
+<Added label="Added for this edition">
+
+This chapter studies computability without committing to a model of computation. It needs three things: partial functions and a notation for them ($f(x)\downarrow$, $f(x)\uparrow$, $f(x) \simeq g(x)$); an *enumeration* $\varphi_0, \varphi_1, \varphi_2, \ldots$ of all partial computable one-place functions; and the unbounded search $\mu$. This edition makes the enumeration concrete, so that every $\varphi_e$ can be run.
+
+</Added>
+
+## Partial functions
+
+A partial computable function is computed by a procedure that may never finish on some inputs. $f(x)\downarrow$ says the computation of $f(x)$ ends with a value; $f(x)\uparrow$ says it does not. The book writes $f(x) \simeq g(x)$ for “both undefined, or both defined and equal”: this is the right notion of equality once functions may be partial, and it is how every equation in the chapter should be read.
+
+For example, $\mu z\,P^2_1(z, x)$ looks for the least $z$ with $P^2_1(z, x) = x = 0$. At $x = 0$ it succeeds at once; at any other $x$ the search goes on forever. So this function is defined at $0$ only.
+
+## An enumeration of all of them
+
+The book writes $\varphi_k$ for “the $k$-th unary partial computable function”, $\varphi_k(x) \simeq \mathrm{Un}(k, x)$, and leaves open how the functions are numbered: any systematic coding of definitions, programs or machines will do. To make $\varphi_e$ something you can run, this edition fixes one coding of the definitions of the recursive-functions chapter (zero, succ, projections, composition, primitive recursion, unbounded search). It is **this edition’s coding, not the book’s**: it is chosen so that every natural number codes exactly one definition tree.
+
+Not every tree is a sensible definition — $\mathrm{Rec}(\mathrm{zero}, \mathrm{zero})$ has the wrong number of arguments — and some definitions are of functions of two or more places. For such an $e$ there is nothing to compute, and $\varphi_e$ is undefined everywhere. The list $\varphi_0, \varphi_1, \ldots$ therefore contains the nowhere-defined function many times, and every other function many times too.
+
+## Three answers, not two
+
+Running $\varphi_e(x)$ with a budget of $N$ function calls has three possible outcomes: a value; *no answer within $N$ calls*; or, before anything runs, the discovery that $e$ is not a one-place definition. “No answer yet” is **not** “undefined”: a computation that has not finished may finish later. Sometimes a simple argument shows that it never will (the workbenches mark those cases, with the reason), but no method settles all cases — that is the undecidability of the halting problem, later in this chapter.
+
+## Unbounded search
+
+$\mu y\, f(\vec x, y)$ is the least $y$ with $f(\vec x, y) = 0$, *provided* $f(\vec x, 0), \ldots, f(\vec x, y-1)$ are all defined. If an earlier value is undefined, the search is stuck there, even if a later $y$ would give $0$: the procedure tests $y = 0, 1, 2, \ldots$ in order and cannot skip a test that never returns.
+
+<ExReadIndex />

@@ -1,0 +1,21 @@
+import { ExPartialDiagonal } from '../../../workbench/computability/exercises';
+
+<Added label="Added for this edition">
+
+Suppose a *total* computable $\mathrm{Un}'(k, x)$ listed every total computable function as one of its rows. Then $d(x) = \mathrm{Un}'(x, x) + 1$ would be total and computable, so it would be some row $k$ — yet it differs from row $k$ at the argument $k$. So there is no such $\mathrm{Un}'$. The universal function of the previous section escapes only because it is partial.
+
+</Added>
+
+## The diagonal
+
+Write the values $\mathrm{Un}'(k, x)$ in a table, row $k$, column $x$. The function $d$ walks down the diagonal and changes every entry: $d(k) = \mathrm{Un}'(k, k) + 1 \neq \mathrm{Un}'(k, k)$. So $d$ is not row $k$, for any $k$. If $\mathrm{Un}'$ is total and computable, $d$ is total and computable too — so the rows do not contain every total computable function. This is Cantor’s argument, made effective; the book used it before to show that some computable functions are not primitive recursive (<Ref k="cmp:rec:npr:sec" />).
+
+## Where the partial universal function escapes
+
+Run the same argument with the partial $\mathrm{Un}$. $f(x) \simeq \mathrm{Un}(x, x) + 1$ is partial computable, so it is a row: $f = \mathrm{Un}(e, \cdot)$ for some $e$. At $x = e$ we get $f(e) \simeq f(e) + 1$. For numbers this is impossible — so $f(e)$ is undefined, and $\simeq$ is satisfied with both sides undefined. The diagonal row passes through a cell where nothing is written.
+
+## A total candidate, and why it fails
+
+It is easy to write down total computable functions that *try* to be universal. In the workbench, $\mathrm{Un}'_N(e, x)$ runs $\varphi_e(x)$ for at most $N$ calls and answers $0$ if nothing came out. It is total and computable, and its diagonal $d$ differs from every row. The theorem predicts that $\mathrm{Un}'_N$ is not universal, and the workbench finds the cells where it is wrong: computations that halt, but need more than $N$ calls.
+
+<ExPartialDiagonal />
