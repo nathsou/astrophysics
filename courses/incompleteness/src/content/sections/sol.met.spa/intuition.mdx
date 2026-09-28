@@ -20,13 +20,9 @@ With second-order quantifiers, $\le$, $+$ and $\times$ can be defined from $0$ a
 
 $$A_\le(x, y) \equiv \forall Y\,((Y(x) \land \forall z\,(Y(z) \rightarrow Y(z'))) \rightarrow Y(y)),$$
 
-and $k + l = m$ iff some function $u$ with $u(0) = k$ and $u(n') = u(n)'$ for all $n$ has $u(l) = m$.
+and $k + l = m$ iff some function $u$ with $u(0) = k$ and $u(n') = u(n)'$ for all $n$ has $u(l) = m$:
 
-<Added label="A slip in the printed text">
-
-The book’s formula for addition reads $A_+(x, y, z) \equiv \exists u\,(u(0) = x \land \forall w\, u(x') = u(x)' \land u(y) = z)$. The quantifier $\forall w$ binds nothing, and the recursion clause constrains $u$ only at the free variable $x$. It should be $\forall w\, u(w') = u(w)'$, matching the description “$u(n') = u(n)'$ for all $n$” just before it.
-
-</Added>
+$$A_+(x, y, z) \equiv \exists u\,(u(0) = x \land \forall w\, u(w') = u(w)' \land u(y) = z).$$
 
 <Callout title="Explore">
 Finite structures cannot be models of $\mathbf{PA}^2$ (they fail $\mathbf Q_1$ or $\mathbf Q_2$), but the induction axiom can be evaluated in them. In the structure with a 3-cycle and a stray element $a$, the counterexample the workbench finds is the set of values of the numerals — the $N$ of the proof.

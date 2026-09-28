@@ -587,10 +587,9 @@ export function solSchroederBernstein(): SolFormula {
 }
 
 /**
- * Inf(X) as printed in the book (section "Cardinalities of Sets"):
- * ∃u (∀x ∀y (u(x) = u(y) → x = y) ∧ ∃y (X(y) ∧ ∀x (X(x) → y ≠ u(x)))).
- * As printed it does not require u to map X into X, and then it is satisfied by finite sets too:
- * on {0, 1, 2}, X = {0} and u swapping 0 and 1 satisfy it. See `solInfSet` for the repaired formula.
+ * ∃u (∀x ∀y (u(x) = u(y) → x = y) ∧ ∃y (X(y) ∧ ∀x (X(x) → y ≠ u(x)))): `solInfSet` without the
+ * conjunct ∀x (X(x) → X(u(x))). Kept for the tests, which show why that conjunct is needed: without
+ * it finite sets satisfy the formula too (on {0, 1, 2}, X = {0} and u swapping 0 and 1).
  */
 export function solInfSetAsPrinted(X: RelVar = X1b): SolFormula {
   return S.exF(u, S.and(
@@ -600,8 +599,9 @@ export function solInfSetAsPrinted(X: RelVar = X1b): SolFormula {
 }
 
 /**
- * Inf(X) with the conjunct ∀x (X(x) → X(u(x))) added: u maps X injectively into X, and some
- * element of X is not a value of u on X. Satisfied iff s(X) is (Dedekind) infinite.
+ * Inf(X) ≡ ∃u (∀x ∀y (u(x) = u(y) → x = y) ∧ ∀x (X(x) → X(u(x))) ∧ ∃y (X(y) ∧ ∀x (X(x) → y ≠ u(x))))
+ * (section "Cardinalities of Sets"): u maps X injectively into X, and some element of X is not a
+ * value of u on X. Satisfied iff s(X) is (Dedekind) infinite.
  */
 export function solInfSet(X: RelVar = X1b): SolFormula {
   return S.exF(u, S.and(
@@ -623,33 +623,50 @@ function countSet(X: RelVar, last: SolFormula): SolFormula {
 }
 
 /**
- * Count(X) as printed in the book: ∃z ∃u (X(z) ∧ ∀x (X(x) → X(u(x))) ∧ ∀Y ((Y(z) ∧ ∀x (Y(x) →
- * Y(u(x)))) → X = Y)). Since Y may be the whole domain (which contains z and is closed under u),
- * as printed it forces X to be the whole domain: on {0, 1, 2} it is false for X = {0, 1}.
+ * `solCountSet` with X = Y in place of X ⊆ Y. Kept for the tests, which show why ⊆ is needed: Y may be
+ * the whole domain (which contains z and is closed under u), so with X = Y the formula forces X to be
+ * the whole domain; on {0, 1, 2} it is false for X = {0, 1}.
  */
 export function solCountSetAsPrinted(X: RelVar = X1b): SolFormula {
   return countSet(X, S.all('x', S.iff(S.rel(X, xx), S.rel(S.X(1, 1), xx))));
 }
 
-/** Count(X) with X ⊆ Y in place of X = Y: X is the smallest u-closed set containing z, so s(X) is countable (and non-empty). */
+/**
+ * Count(X) ≡ ∃z ∃u (X(z) ∧ ∀x (X(x) → X(u(x))) ∧ ∀Y ((Y(z) ∧ ∀x (Y(x) → Y(u(x)))) → X ⊆ Y)):
+ * X is the smallest u-closed set containing z, so s(X) is countable (and non-empty).
+ */
 export function solCountSet(X: RelVar = X1b): SolFormula {
   return countSet(X, S.all('x', S.imp(S.rel(X, xx), S.rel(S.X(1, 1), xx))));
 }
 
-/** Aleph₀(X) ≡ Inf(X) ∧ Count(X), with the repaired Inf(X) and Count(X): s(X) is countably infinite. */
+/** Aleph₀(X) ≡ Inf(X) ∧ Count(X): s(X) is countably infinite. */
 export function solAleph0Set(X: RelVar = X1b): SolFormula {
   return S.and(solInfSet(X), solCountSet(X));
 }
 
 /**
- * Aleph₁(X) as printed in the book: ∀Y (Y ⊆ X → (¬Inf(Y) ∨ Aleph₀(Y))) ∧ ¬Aleph₀(X) (here with the
- * repaired Inf and Count). Since X ⊆ X, the first conjunct makes X finite or countably infinite,
- * and the second rules out the latter: as printed it is satisfied exactly by the finite sets.
+ * `solAleph1Set` without the disjunct Y ≈ X and the conjunct Inf(X). Kept for the tests, which show
+ * why they are needed: since X ⊆ X, the first conjunct makes X finite or countably infinite, and the
+ * second rules out the latter, so this formula is satisfied exactly by the finite sets.
  * The quantified variable is Z (index 2), since Inf and Count use u, z and Y internally.
  */
 export function solAleph1SetAsPrinted(X: RelVar = X1b): SolFormula {
   const Z = S.X(2, 1);
   return S.and(S.allR(Z, S.imp(solSubset(Z, X), S.or(S.not(solInfSet(Z)), solAleph0Set(Z)))), S.not(solAleph0Set(X)));
+}
+
+/**
+ * Aleph₁(X) ≡ ∀Y (Y ⊆ X → (¬Inf(Y) ∨ Aleph₀(Y) ∨ Y ≈ X)) ∧ Inf(X) ∧ ¬Aleph₀(X): s(X) is
+ * uncountable, and each of its subsets is finite, countably infinite or as large as s(X) — with the
+ * axiom of choice, s(X) has size ℵ₁. No finite set satisfies it.
+ * The quantified variable is Z (index 2), since Inf, Count and ≈ use u, z and Y internally.
+ */
+export function solAleph1Set(X: RelVar = X1b): SolFormula {
+  const Z = S.X(2, 1);
+  return S.and(
+    S.and(S.allR(Z, S.imp(solSubset(Z, X), S.or(S.or(S.not(solInfSet(Z)), solAleph0Set(Z)), solEquinumerous(Z, X)))), solInfSet(X)),
+    S.not(solAleph0Set(X)),
+  );
 }
 
 /** The second-order induction axiom ∀X ((X(0) ∧ ∀x (X(x) → X(x′))) → ∀x X(x)) of PA². */

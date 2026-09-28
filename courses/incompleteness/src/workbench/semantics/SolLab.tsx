@@ -4,8 +4,8 @@
 
 import { useMemo, useState } from 'react';
 import {
-  S, showSolValue, solAssignment, solCount, solCountSet, solCountSetAsPrinted, solEquinumerous, solFin, solIdentity, solIdentityImp, solInduction, solInf,
-  solInfSet, solInfSetAsPrinted, solAleph1SetAsPrinted, solLeq, solNoLarger, solSatisfies, solSchroederBernstein, solSubset, solText, solTransitiveClosure, relVarName,
+  S, showSolValue, solAssignment, solAleph0Set, solAleph1Set, solCount, solCountSet, solEquinumerous, solFin, solIdentity, solIdentityImp, solInduction, solInf,
+  solInfSet, solLeq, solNoLarger, solSatisfies, solSchroederBernstein, solSubset, solText, solTransitiveClosure, relVarName,
   type RelVar, type SolFormula, type SolTrace,
 } from '../../engine/semantics/sol';
 import { GENERIC, showElem, tuples, type Elem, type Structure } from '../../engine/semantics/structure';
@@ -49,11 +49,10 @@ export const SOL_PRESETS: Preset[] = [
   { id: 'le', label: 'X ≼ Y: X is no larger than Y', note: 'Some injective u maps X into Y.', build: () => solNoLarger(X1, Y1), rel: [X1, Y1] },
   { id: 'eqn', label: 'X ≈ Y: X and Y are equinumerous', note: 'Some injective u maps X onto Y.', build: () => solEquinumerous(X1, Y1), rel: [X1, Y1] },
   { id: 'sb', label: 'Schröder–Bernstein: ∀X ∀Y ((X ≼ Y ∧ Y ≼ X) → X ≈ Y)', note: 'A valid sentence; here it is checked on one small domain.', build: solSchroederBernstein },
-  { id: 'infX', label: 'Inf(X), as printed in the book', note: 'As printed, u is not required to map X into X — see what happens with a finite X.', build: () => solInfSetAsPrinted(X1), rel: [X1] },
-  { id: 'infXfixed', label: 'Inf(X), with ∀x (X(x) → X(u(x))) added', note: 'u must map X injectively into X, missing some element of X.', build: () => solInfSet(X1), rel: [X1] },
-  { id: 'countX', label: 'Count(X), as printed in the book', note: 'As printed the last conjunct is X = Y — and Y may be the whole domain.', build: () => solCountSetAsPrinted(X1), rel: [X1] },
-  { id: 'countXfixed', label: 'Count(X), with X ⊆ Y in place of X = Y', note: 'X is the smallest u-closed set containing z.', build: () => solCountSet(X1), rel: [X1] },
-  { id: 'aleph1', label: 'Aleph₁(X), as printed in the book', note: 'With the repaired Inf and Count. As printed, Y may be X itself — try a finite X (the quantifier is written Z here, since Inf and Count use Y).', build: () => solAleph1SetAsPrinted(X1), rel: [X1] },
+  { id: 'infX', label: 'Inf(X): s(X) is infinite', note: 'u maps X injectively into X and misses some element of X — impossible for a finite X.', build: () => solInfSet(X1), rel: [X1] },
+  { id: 'countX', label: 'Count(X): s(X) is countable', note: 'X contains z and is included in every u-closed set containing z, so X is z, u(z), u(u(z)), …', build: () => solCountSet(X1), rel: [X1] },
+  { id: 'aleph0', label: 'Aleph₀(X) ≡ Inf(X) ∧ Count(X)', note: 's(X) is countably infinite — false for every set on a finite domain.', build: () => solAleph0Set(X1), rel: [X1] },
+  { id: 'aleph1', label: 'Aleph₁(X): s(X) has size ℵ₁', note: 'X is infinite but not of size ℵ₀, and each subset is finite, of size ℵ₀ or as large as X (the quantifier is written Z here, since Inf and Count use Y). No finite set satisfies it.', build: () => solAleph1Set(X1), rel: [X1] },
   { id: 'ind', label: 'The induction axiom of PA²', note: 'Every set containing 0 and closed under successor is the whole domain.', build: solInduction, needs: 'arith' },
   { id: 'leq', label: 'A≤(x, y): x ≤ y in PA²†', note: 'Every set containing x and closed under successor contains y (bound variable renamed z).', build: solLeq, obj: ['x', 'y'], needs: 'arith' },
 ];

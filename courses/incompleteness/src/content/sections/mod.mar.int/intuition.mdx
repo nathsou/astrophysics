@@ -16,12 +16,6 @@ By the compactness theorem, every theory true in $\mathfrak N$ also has models t
 
 Take $\mathrm{Con}_{\mathbf{PA}}$, which says that no number codes a derivation of $\bot$ from $\mathbf{PA}$. By the second incompleteness theorem $\mathbf{PA}$ does not prove it, so $\mathbf{PA} \cup \{\lnot\mathrm{Con}_{\mathbf{PA}}\}$ is consistent and has a model. That model is not $\mathfrak N$ (where $\mathrm{Con}_{\mathbf{PA}}$ is true). In it, something satisfies “codes a derivation of $\bot$” — and since $\mathbf{PA}$ proves, of each standard $n$, that it does *not* code one, that something must be non-standard. So $\mathrm{Con}_{\mathbf{PA}}$ can fail only in a model with non-standard elements.
 
-<Added label="A slip in the printed text">
-
-The book writes the existential sentence as $\exists x\, \mathrm{Prf}_{\mathbf{PA}}(\ulcorner\bot\urcorner)$; the variable $x$ is missing from the formula. It should read $\exists x\, \mathrm{Prf}_{\mathbf{PA}}(x, \ulcorner\bot\urcorner)$, as in the definition of $\mathrm{Con}_{\mathbf{PA}}$ a few lines earlier.
-
-</Added>
-
 <Callout title="Explore">
 Evaluate formulas in the structure of strings and compare with $\mathfrak N$: the answers agree. The workbench computes in infinite structures by exact term evaluation, and handles quantifiers by searching (it says so when a search cannot settle an answer).
 </Callout>

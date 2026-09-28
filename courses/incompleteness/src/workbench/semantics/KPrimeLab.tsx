@@ -114,9 +114,6 @@ export function KPrimeLab() {
           Conditions (3)–(5) of the definition of isomorphism, for 0, ′, +, × and &lt; on all arguments below {n}: <b>{res.checked.toLocaleString('en-US')} instances checked</b>,{' '}
           {res.failures.length === 0 ? <span className="sem-ok">none fails.</span> : <span className="sem-viol">{res.failures.length} fail, e.g. {res.failures[0].detail}.</span>}
         </p>
-        <p className="wb-note">
-          The book writes this bijection as g(0) = a and g(n) = n + 1 for n &gt; 0; for the interpretations of K′ given there (0<sup>K′</sup> = 1 plays the role of 0) the map has to send n &gt; 0 to n − 1, which is what is checked here.
-        </p>
         <NotAProof>Finitely many instances illustrate the claim; that g is an isomorphism for all arguments follows from the definitions of K′ by a short calculation (try it for + and ×).</NotAProof>
       </Panel>
     </div>

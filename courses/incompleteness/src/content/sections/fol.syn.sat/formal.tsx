@@ -5,7 +5,7 @@ import { BookExampleClaims } from '../../../workbench/semantics/annotations';
 export function useAnnotations(): Annotations {
   return {
     'fol.syn.sat:ex:1': (
-      <Added label="Computed for this edition">
+      <Added>
         <BookExampleClaims />
       </Added>
     ),

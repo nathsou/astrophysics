@@ -8,12 +8,6 @@ $\mathfrak N$ has two pleasant features: its domain is $\mathbb N$, and its oper
 
 The model $\mathbf K$ of $\mathbf Q$ has domain $\mathbb N \cup \{a\}$, which is countable. Relabel: let the number $0$ play the role of $a$ and $n + 1$ the role of $n$. The book spells out the resulting structure $\mathbf K'$ with domain $\mathbb N$ (<Ref k="mod:mar:cmp:ex:comp-model-q" />): $0^{\mathbf K'} = 1$; ${}'^{\mathbf K'}$ sends $0$ to $0$ and $n > 0$ to $n + 1$; $+^{\mathbf K'}(x, y) = x + y - 1$ for $x, y > 0$ (and $0$ otherwise); and so on. All of these are computable. So $\mathbf Q$ has a computable non-standard model; the relabeling is an isomorphism from $\mathbf K'$ to $\mathbf K$, so $\mathbf K'$ satisfies $\mathbf Q$ as well.
 
-<Added label="Corrections to the printed text">
-
-The book writes the relabeling as $g(0) = a$ and $g(n) = n + 1$ for $n > 0$. That map is not a bijection onto $|\mathbf K|$ (nothing is sent to $0$ or $1$), and for the interpretations the book then gives, where $0^{\mathbf K'} = 1$, the map must send $n > 0$ to $n - 1$. Explore mode checks that version. (In the same example the book’s repeated definition of $<^{\mathbf K}$ reads $\{\langle x, a\rangle : n \in |\mathbf K|\}$; the variable should be $x$, as in <Ref k="mod:mar:mdq:ex:model-K-of-Q" />.)
-
-</Added>
-
 ## For PA: no
 
 **Tennenbaum’s theorem**: $\mathfrak N$ is the only computable model of $\mathbf{PA}$. A countable non-standard model of $\mathbf{PA}$ can be given the domain $\mathbb N$, just as $\mathbf K$ was — but then its interpretations of $+$ and $\times$ cannot be computable functions (together with a decidable $<$ and computable $'$). Non-standard models of $\mathbf{PA}$ exist, but no algorithm can calculate in one.

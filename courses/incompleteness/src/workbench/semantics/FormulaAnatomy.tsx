@@ -168,7 +168,7 @@ export function FormulaAnatomy({ focus = 'all' }: { focus?: 'all' | 'free' | 'sy
       )}
       {F && focus !== 'free' && symbols.length > 0 && (
         <Panel n={4} title="Its non-logical symbols and variables, officially" prov={<Prov kind="computed" />}>
-          <p className="wb-note">In this edition the conventional names are aliases for official symbols (the book writes A for predicate symbols; this edition writes P): &lt; is P²₀, 0 is c₀, ′ is f¹₀, + is f²₀, × is f²₁; the letters x, y, z, u, w are v₀ … v₄.</p>
+          <p className="wb-note">The conventional names are aliases for official symbols (predicate symbols are written P here; the book writes A): &lt; is P²₀, 0 is c₀, ′ is f¹₀, + is f²₀, × is f²₁; the letters x, y, z, u, w are v₀ … v₄.</p>
           <div className="sem-map">
             {symbols.map((s) => (
               <span key={s.official}>

@@ -1,1 +1,1 @@
-export const blurb = 'Finite, infinite and countable subsets — and three formulas as printed that need repair.';
+export const blurb = 'Second-order formulas saying that a subset is infinite, countable, of size ℵ₀ or of size ℵ₁.';
