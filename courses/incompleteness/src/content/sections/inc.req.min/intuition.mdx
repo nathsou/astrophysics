@@ -13,5 +13,5 @@ $$
 Clause (b) now has to exclude every other candidate value. That requires $\mathbf Q$ to reason about $<$: that nothing is below $0$ (<Ref k="inc:req:min:lem:less-zero" />), that anything below $\overline{n+1}$ is one of $\overline 0, \ldots, \overline n$ (<Ref k="inc:req:min:lem:less-nsucc" />), and a form of trichotomy. The book argues these informally, giving hints for the formal derivations.
 
 <Callout title="What this edition does and does not check">
-Explore mode builds the representing formula of a minimization and computes the search. It does **not** generate derivations for minimization: the lemmas about $<$ would have to be mechanised first. That is honest work left for later, and the workbench says so rather than showing something unchecked.
+Explore mode builds the representing formula of a minimization and computes the search. It does **not** generate derivations for minimization: the lemmas about $<$ would have to be mechanised first. The first of them, $\mathbf Q \vdash \forall x\,\lnot x < 0$, is derived and checked in full in <a href="#/s/ic.deriv.text?mode=explore">appendix A</a>; the others, and derivations for minimization in general, are not mechanised yet.
 </Callout>
