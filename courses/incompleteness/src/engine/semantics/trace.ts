@@ -89,6 +89,12 @@ export interface QuantRange<E> {
   /** What holds of the remaining x-variants (for bounded quantifiers). */
   rest?: string;
   bound?: TermTrace<E>;
+  /**
+   * The elements are only some of the x-variants (an infinite domain searched up to a limit).
+   * A witness (∃) or counterexample (∀) among them still decides the quantifier; not finding
+   * one decides nothing, and the result is then 'unknown'.
+   */
+  partial?: boolean;
 }
 
 /** How a structure interprets the symbols, and which x-variants a quantifier runs through. */
@@ -301,10 +307,18 @@ export function evalFormulaIn<E>(ctx: Ctx<E>, A: Formula, s: Assignment<E>): For
       }
       const unk = variants.find((v) => v.truth === 'unknown');
       if (exhausted || unk) {
-        const reason = exhausted ? `gave up after ${variants.length} ${xn}-variants: the evaluation budget of ${ctx.maxSteps} steps is exhausted` : `B is unknown for ${xn} = ${I.show(unk!.element)}${unk!.trace?.reason ? `: ${unk!.trace.reason}` : ''}`;
+        const reason = exhausted
+          ? `gave up after ${variants.length} ${xn}-variants: the evaluation budget of ${ctx.maxSteps} steps is exhausted`
+          : r.partial
+            ? `no ${all ? 'counterexample' : 'witness'} among ${r.description}, and for some of them (first ${xn} = ${I.show(unk!.element)}) B itself could not be settled; the domain has further elements`
+            : `B is unknown for ${xn} = ${I.show(unk!.element)}${unk!.trace?.reason ? `: ${unk!.trace.reason}` : ''}`;
         return { ...base, terms, children, quantifier: q, truth: 'unknown', clause, detail: reason, reason };
       }
       const n = variants.length;
+      if (r.partial) {
+        const reason = `no ${all ? 'counterexample' : 'witness'} among ${r.description}; the domain has further elements, so this does not settle the quantifier`;
+        return { ...base, terms, children, quantifier: q, truth: 'unknown', clause, detail: reason, reason };
+      }
       const rest = r.rest ? `; ${r.rest}` : '';
       return {
         ...base, terms, children, quantifier: q, truth: all, clause,

@@ -1,0 +1,23 @@
+<Added label="Added for this edition">
+
+First-order logic has a sound and complete derivation system: the valid sentences are exactly the derivable ones, and so they can be computably enumerated. Second-order logic has no such system (<Ref k="sol:met:nax:cor:sol-not-axiomatizable" />).
+
+</Added>
+
+## Undecidable
+
+First, second-order logic is undecidable (<Ref k="sol:met:nax:thm:sol-undecidable" />): a first-order sentence is valid in first-order logic iff it is valid as a second-order sentence, and first-order validity is already undecidable.
+
+## Not axiomatizable
+
+The stronger claim uses the categoricity of $\mathbf{PA}^2$ from section 8.7. Let $P$ be the conjunction of its nine axioms. Since every model of $\mathbf{PA}^2$ is isomorphic to $\mathfrak N$,
+
+$$\mathfrak N \vDash A \quad\text{iff}\quad \mathbf{PA}^2 \vDash A \quad\text{iff}\quad \vDash P \rightarrow A.$$
+
+Now replace $0$ by an object variable $z$, $'$ by a function variable $u$, $+$ and $\times$ by two-place function variables, $<$ by a relation variable $L$, and quantify all of them universally. The result is a sentence of **pure** second-order logic, valid iff $P \rightarrow A$ is valid, iff $A$ is true in $\mathfrak N$.
+
+So a sound and complete proof system for second-order logic would give a way to computably enumerate the true sentences of arithmetic — which the incompleteness chapters showed to be impossible (truth in $\mathfrak N$ is not even computably enumerable).
+
+## What this means
+
+The incompleteness phenomenon has not been escaped. First-order $\mathbf{PA}$ is incomplete, and its models include non-standard ones. $\mathbf{PA}^2$ has only standard models — but its consequence relation cannot be captured by any proof system. The price of categoricity is paid in the logic.

@@ -1,0 +1,26 @@
+import { ExBookProblemSat } from '../../../workbench/semantics/exercises';
+
+<Added label="Added for this edition">
+
+Two definitions connect language and structures. The **value** $\mathrm{Val}^{\mathfrak M}_s(t)$ of a term is computed bottom-up: a constant denotes $c^{\mathfrak M}$, a variable denotes $s(x)$, and $f(t_1, \ldots, t_n)$ denotes $f^{\mathfrak M}$ applied to the values of the $t_i$. **Satisfaction** $\mathfrak M, s \vDash A$ is defined by recursion on $A$, one clause per way of building a formula (<Ref k="fol:syn:sat:defn:satisfaction" />).
+
+</Added>
+
+## Why assignments?
+
+A structure interprets the non-logical symbols, but not variables. And the subformula of $\exists x\, R(b, x)$ is $R(b, x)$, which has $x$ free: whether it is satisfied depends on what $x$ stands for. So satisfaction is defined relative to a **variable assignment** $s$, which gives every variable a value.
+
+One might try to define $\exists x\, B(x)$ as “$B(m)$ holds for some $m$” — but an element $m$ of the domain is not a symbol, so $B(m)$ is not a formula. Nor can we count on having a name for every element. The book’s solution: change the assignment instead. $s[m/x]$ is the assignment that gives $x$ the value $m$ and agrees with $s$ everywhere else, and
+
+- $\mathfrak M, s \vDash \exists x\, B$ iff $\mathfrak M, s[m/x] \vDash B$ for at least one $m \in |\mathfrak M|$;
+- $\mathfrak M, s \vDash \forall x\, B$ iff $\mathfrak M, s[m/x] \vDash B$ for every $m \in |\mathfrak M|$.
+
+The assignments $s[m/x]$ are the **$x$-variants** of $s$.
+
+## Following the definition
+
+To decide $\mathfrak M, s \vDash A$, find the main connective of $A$ and apply its clause; it reduces the question to questions about the immediate subformulas, perhaps under $x$-variants of $s$. Repeat until you reach atomic formulas, where the question is whether the values of the terms stand in the relation. The book works through its example $\mathfrak M$ with domain $\{1, 2, 3, 4\}$ this way — for instance $\mathfrak M, s \nvDash \forall x\,(R(a, x) \rightarrow R(x, a))$ because the $x$-variant $s[2/x]$ fails the conditional.
+
+Explore mode does exactly this, for any finite structure and formula: every row of the trace is one application of a clause, and quantifier rows list the $x$-variants tried, with the witness or counterexample marked.
+
+<ExBookProblemSat />

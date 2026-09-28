@@ -13,6 +13,7 @@ import { evaluateTerm, extension, isModelOf, missingSymbols, satisfies, trueIn }
 import { checkQ, finiteQ1Q2Failure, qSentences } from '../src/engine/semantics/arithmetic.ts';
 import { classify, delta0, evaluateInN, evaluateTermInN } from '../src/engine/semantics/standard.ts';
 import {
+  atLeast, solInfSetAsPrinted, solCountSet, solCountSetAsPrinted, solEquinumerous, solInduction, solInfSet, solLeq, solNoLarger, solSchroederBernstein, solSubset,
   dedekindInfinityFO, S, solAssignment, solCount, solFin, solIdentity, solIdentityImp, solInf, solSatisfies, solTransitiveClosure, solTrueIn, fromFirstOrder,
 } from '../src/engine/semantics/sol.ts';
 
@@ -456,3 +457,184 @@ describe('second-order logic on finite domains', () => {
   });
 });
 
+
+// ------------------------------------------------------------------ infinite structures, isomorphisms, small-model search
+
+import {
+  A_STRINGS, INTEGERS, MODEL_K, MODEL_K_PRIME, MODEL_L, STANDARD, checkMapOnSamples, kPrimeToK, natToAStrings, satisfiesSearch,
+} from '../src/engine/semantics/infinite.ts';
+import { automorphisms, checkIsomorphism, expandWithRelation, findIsomorphism, reduct, relabel } from '../src/engine/semantics/iso.ts';
+import { countStructures, findCountermodel, findModel, signatureOf } from '../src/engine/semantics/countermodel.ts';
+import { bookSatisfactionExample, bookSatisfactionProblem, cycleWithStray, linearOrder } from '../src/engine/semantics/examples.ts';
+
+describe('the book’s worked example of satisfaction', () => {
+  const M = bookSatisfactionExample();
+  const s = assignment({ x: 1, y: 1, z: 1 });
+  it('computes values of terms as in the text', () => {
+    expect(evaluateTerm(M, s, parseTerm('f(a, b)')).value).toBe(3);
+    expect(evaluateTerm(M, s, parseTerm('f(f(a, b), a)')).value).toBe(3);
+    expect(evaluateTerm(M, s, parseTerm('f(f(a, b), x)')).value).toBe(3);
+  });
+  it('agrees with every claim of the text', () => {
+    const sat = (f: string) => satisfies(M, s, P(f)).truth;
+    expect(sat('R(b, f(a, b))')).toBe(true);
+    expect(sat('R(x, f(a, b))')).toBe(false);
+    expect(sat('R(a, a) → (R(b, x) ∨ R(x, b))')).toBe(true);
+    expect(sat('∃x (R(b, x) ∨ R(x, b))')).toBe(true);
+    expect(sat('∃x (R(b, x) ∧ R(x, b))')).toBe(false);
+    expect(sat('∀x (R(x, a) → R(a, x))')).toBe(true);
+    const t = satisfies(M, s, P('∀x (R(a, x) → R(x, a))'));
+    expect(t.quantifier?.counterexample).toBe(2);
+    expect(sat('∀x (R(a, x) → ∃y R(x, y))')).toBe(true);
+    expect(sat('∃x (R(a, x) ∧ ∀y R(x, y))')).toBe(false);
+  });
+  it('builds the structure of the problem', () => {
+    const N = bookSatisfactionProblem();
+    const r = satisfies(N, assignment({ x: 1, y: 1, z: 1 }), P('∃x (R(f(z), c) → ∀y (R(y, x) ∨ R(f(y), x)))'));
+    expect(typeof r.truth).toBe('boolean');
+  });
+});
+
+describe('infinite structures, evaluated by search', () => {
+  it('K: finds a witness for ∃x x < x and a counterexample to ∀x ¬x < x, as in the text', () => {
+    const e = satisfiesSearch(MODEL_K, new Map(), P('∃x x < x'));
+    expect(e).toMatchObject({ truth: true, quantifier: { witness: 'a' } });
+    const f = satisfiesSearch(MODEL_K, new Map(), P('∀x ¬x < x'));
+    expect(f).toMatchObject({ truth: false, quantifier: { counterexample: 'a' } });
+  });
+  it('never claims a universal sentence true on an infinite domain', () => {
+    for (const { formula } of qSentences()) {
+      const t = satisfiesSearch(MODEL_K, new Map(), formula, { limit: 12 });
+      expect(t.truth).toBe('unknown');
+      expect(t.reason).toMatch(/no (counterexample|witness) among the first 12 elements/);
+    }
+    expect(satisfiesSearch(MODEL_K, new Map(), P('∀x ∀y (x + y) = (y + x)'), { limit: 10 }).truth).toBe('unknown');
+  });
+  it('L: addition is not commutative', () => {
+    const t = satisfiesSearch(MODEL_L, new Map(), P('∀x ∀y (x + y) = (y + x)'));
+    expect(t.truth).toBe(false);
+    const p = decisivePath(t).bindings.map((b) => b.element);
+    expect(p).toEqual(['a', 'b']);
+    expect(satisfiesSearch(MODEL_L, new Map(), P('0 < 1')).reason).toMatch(/only 0, ′ and \+/);
+  });
+  it('ℤ is not a model of Q2; ℕ decides bounded formulas exactly', () => {
+    expect(satisfiesSearch(INTEGERS, new Map(), P("∀x ¬0 = x′"))).toMatchObject({ truth: false, quantifier: { counterexample: -1n } });
+    expect(satisfiesSearch(STANDARD, new Map(), P('∃x (x × x) = 49'))).toMatchObject({ truth: true, quantifier: { witness: 7n } });
+    expect(satisfiesSearch(STANDARD, new Map(), P('∀x ∃y x < y')).truth).toBe('unknown');
+    expect(satisfiesSearch(STANDARD, new Map(), P('∀x (x < 100 → ¬(x × x) = 50)')).truth).toBe(true);
+  });
+  it('K′ is a relabelling of K, and {a}* of ℕ (on samples)', () => {
+    const LA = { constants: [0], functions: [[1, 0], [2, 0], [2, 1]] as [number, number][], predicates: [[2, 0]] as [number, number][] };
+    const k = checkMapOnSamples(MODEL_K_PRIME, MODEL_K, kPrimeToK, Array.from({ length: 14 }, (_, i) => BigInt(i)), LA);
+    expect(k.failures).toEqual([]);
+    expect(k.checked).toBeGreaterThan(500);
+    const a = checkMapOnSamples(STANDARD, A_STRINGS, natToAStrings, Array.from({ length: 10 }, (_, i) => BigInt(i)), { constants: [0], functions: LA.functions });
+    expect(a.failures).toEqual([]);
+    // the map n ↦ n is not an isomorphism from K′ to K
+    expect(checkMapOnSamples(MODEL_K_PRIME, MODEL_K, (e) => e, [0n, 1n, 2n], LA).failures.length).toBeGreaterThan(0);
+  });
+});
+
+describe('isomorphisms of finite structures', () => {
+  it('finds isomorphisms and checks the book’s five conditions', () => {
+    const Z4 = modArithmetic(4);
+    const letters = ['p', 'q', 'r', 's'];
+    const W = relabel(Z4, (e) => letters[e as number], 'W');
+    const r = findIsomorphism(Z4, W);
+    expect(r.ok).toBe(true);
+    if (r.ok) expect([...r.h.entries()]).toEqual([[0, 'p'], [1, 'q'], [2, 'r'], [3, 's']]);
+    expect(checkIsomorphism(Z4, W, new Map([[0, 'q'], [1, 'p'], [2, 'r'], [3, 's']])).map((v) => v.clause)).toContain(3);
+    expect(checkIsomorphism(Z4, W, new Map([[0, 'p'], [1, 'p'], [2, 'r'], [3, 's']])).map((v) => v.clause)).toEqual(expect.arrayContaining([1, 2]));
+    const no = findIsomorphism(Z4, modArithmetic(4, 'saturate'));
+    expect(no.ok).toBe(false);
+    expect(findIsomorphism(Z4, modArithmetic(5)).ok).toBe(false);
+  });
+  it('counts automorphisms', () => {
+    expect(automorphisms(pureStructure([0, 1, 2]))).toHaveLength(6);
+    expect(automorphisms(linearOrder(4))).toHaveLength(1);
+    expect(automorphisms(modArithmetic(5))).toHaveLength(1);
+    const R = makeStructure({ domain: [0, 1, 2, 3], relations: [{ ...R2, def: { tuples: [[0, 1], [1, 0], [2, 3], [3, 2]] } }] });
+    expect(automorphisms(R)).toHaveLength(8);
+  });
+  it('forms reducts and expansions, which agree on the old sentences', () => {
+    const Z5 = modArithmetic(5);
+    const Rd = reduct(Z5, { constants: [0], functions: [[1, 0]] });
+    expect(missingSymbols(Rd, P('∀x x < x′'))).toHaveLength(1);
+    const f = P("∀x ∃y y′ = x");
+    expect(trueIn(Rd, f).truth).toBe(trueIn(Z5, f).truth);
+    const E = expandWithRelation(Rd, 1, 10, [[0], [2], [4]]);
+    expect(trueIn(E, P("∃x (P(x) ∧ P(x′′))")).truth).toBe(true);
+  });
+});
+
+describe('searching small structures', () => {
+  it('finds countermodels to invalid entailments', () => {
+    const r = findCountermodel([P('∀x ∃y R(x, y)')], P('∃y ∀x R(x, y)'));
+    expect(r.found).toBe(true);
+    if (r.found) {
+      expect(r.size).toBe(2);
+      expect(trueIn(r.structure, P('∀x ∃y R(x, y)')).truth).toBe(true);
+      expect(trueIn(r.structure, P('∃y ∀x R(x, y)')).truth).toBe(false);
+    }
+    const v = findCountermodel([], P('∀x R(x, x) → ∃x R(x, x)'), { maxSize: 3 });
+    expect(v).toMatchObject({ found: false, sizes: [1, 2, 3] });
+  });
+  it('finds models, counts structures, and respects the budget', () => {
+    const order = ['∀x ¬x < x', '∀x ∀y ((x < y ∨ y < x) ∨ x = y)', '∀x ∀y ∀z ((x < y ∧ y < z) → x < z)'].map(P);
+    const m = findModel([...order, P('∃x ∃y ∃z (x < y ∧ y < z)')]);
+    expect(m).toMatchObject({ found: true, size: 3 });
+    expect(countStructures(signatureOf([P('∀x R(x, f(x))')]), 3)).toBe(512 * 27);
+    const big = findModel([P('∀x ∃y R(x, f(y, y))')], { maxSize: 4, budget: 1000 });
+    expect(big.found).toBe(true);
+    const none = findModel([P('∃x ∃y ¬x = y'), P('∀x ∀y x = y')], { maxSize: 3 });
+    expect(none).toMatchObject({ found: false, sizes: [1, 2, 3] });
+  });
+  it('the cycle example fails SOL induction with X = the values of the numerals', () => {
+    const C = cycleWithStray();
+    const ind = S.allR(S.X(0, 1), S.imp(S.and(S.rel(S.X(0, 1), S.c(0)), S.all('x', S.imp(S.rel(S.X(0, 1), S.v('x')), S.rel(S.X(0, 1), S.app(1, 0, [S.v('x')]))))), S.all('x', S.rel(S.X(0, 1), S.v('x')))));
+    const t = solTrueIn(C, ind);
+    expect(t.truth).toBe(false);
+    expect(t.quantifier?.counterexample).toEqual({ kind: 'relation', tuples: [[0], [1], [2]] });
+  });
+});
+
+describe('comparing sets in second-order logic', () => {
+  const M = pureStructure([0, 1, 2]);
+  const X = S.X(0, 1);
+  const Y = S.X(1, 1);
+  const withSets = (a: Elem[], b: Elem[]) => solAssignment({ rel: [{ X, tuples: a.map((e) => [e]) }, { X: Y, tuples: b.map((e) => [e]) }] });
+  it('X ≼ Y, X ≈ Y and X ⊆ Y agree with sizes and inclusion', () => {
+    const subsets: Elem[][] = [[], [0], [1, 2], [0, 1, 2], [2]];
+    for (const a of subsets) for (const b of subsets) {
+      expect(solSatisfies(M, withSets(a, b), solNoLarger()).truth).toBe(a.length <= b.length);
+      expect(solSatisfies(M, withSets(a, b), solEquinumerous()).truth).toBe(a.length === b.length);
+      expect(solSatisfies(M, withSets(a, b), solSubset()).truth).toBe(a.every((e) => b.includes(e)));
+      expect(solSatisfies(M, withSets(a, b), solInfSet()).truth).toBe(false);
+    }
+  });
+  it('Inf(X) as printed is satisfied by a finite set; with X(x) → X(u(x)) added it is not', () => {
+    const t = solSatisfies(M, withSets([0], []), solInfSetAsPrinted());
+    expect(t.truth).toBe(true);
+    expect(t.quantifier?.witness?.kind).toBe('function');
+  });
+  it('Count(X) as printed holds only for X = |M|; with X ⊆ Y it holds for every non-empty X', () => {
+    for (const a of [[0], [0, 1], [0, 1, 2]] as Elem[][]) {
+      expect(solSatisfies(M, withSets(a, []), solCountSetAsPrinted()).truth).toBe(a.length === 3);
+      expect(solSatisfies(M, withSets(a, []), solCountSet()).truth).toBe(true);
+    }
+    expect(solSatisfies(M, withSets([], []), solCountSet()).truth).toBe(false);
+  });
+  it('the Schröder–Bernstein sentence is true in small domains', () => {
+    for (let n = 1; n <= 3; n++) expect(solTrueIn(pureStructure(Array.from({ length: n }, (_, i) => i)), solSchroederBernstein()).truth).toBe(true);
+  });
+  it('induction holds in ℤ_n and fails where an element is not reached from 0', () => {
+    expect(solTrueIn(modArithmetic(4), solInduction()).truth).toBe(true);
+    expect(solTrueIn(cycleWithStray(), solInduction()).truth).toBe(false);
+    // A_≤ in the saturating structure: x ≤ y iff y is reachable from x by successors
+    const N4 = modArithmetic(4, 'saturate');
+    for (const a of [0, 1, 2, 3]) for (const b of [0, 1, 2, 3]) expect(solSatisfies(N4, solAssignment({ obj: { x: a, y: b } }), solLeq()).truth).toBe(a <= b);
+  });
+  it('A≥n says there are at least n elements', () => {
+    for (let n = 1; n <= 4; n++) for (let k = 1; k <= 4; k++) expect(trueIn(pureStructure(Array.from({ length: k }, (_, i) => i)), atLeast(n)).truth).toBe(k >= n);
+  });
+});

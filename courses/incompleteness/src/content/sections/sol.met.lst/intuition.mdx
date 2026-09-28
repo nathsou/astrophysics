@@ -1,0 +1,19 @@
+<Added label="Added for this edition">
+
+The downward Löwenheim–Skolem theorem says that a first-order theory with an infinite model has a countable one; the upward theorem, that a theory with a countably infinite model has an uncountable one. First-order logic cannot control the size of infinite models. Second-order logic can (<Ref k="sol:met:lst:thm:sol-no-ls" />).
+
+</Added>
+
+## Downward fails
+
+$\mathrm{Count}$ (section 8.6) is true in a structure iff its domain is countable, so $\lnot\mathrm{Count}$ is true iff the domain is uncountable. Take any structure whose domain is uncountable, such as $\mathbb R$ or $\wp(\mathbb N)$: it satisfies $\lnot\mathrm{Count}$. So $\lnot\mathrm{Count}$ has infinite models but no countable ones.
+
+## Upward fails
+
+$\mathrm{Count} \land \mathrm{Inf}$ is true in exactly the countably infinite structures, such as $\mathbb N$ with no symbols interpreted. It has a countably infinite model and no uncountable one. So does $\mathbf{PA}^2$: all its models are isomorphic to $\mathfrak N$.
+
+## Why first-order logic behaves differently
+
+In first-order logic both theorems follow from the proof of the completeness theorem (which builds countable models) and from compactness (which can add as many new elements as we like). Second-order logic has neither. The book’s comparison in section 7.4, where $\langle\mathbb R, <\rangle$ and a countable structure are elementarily equivalent but not isomorphic, is exactly what second-order logic rules out.
+
+This section is about infinite domains only; there is nothing a finite computation could illustrate honestly, so it has no Explore mode.

@@ -1,0 +1,17 @@
+<Added label="Added for this edition">
+
+A set of sentences $\Gamma$ is **closed** if it contains everything it entails. The closure of $\Gamma$ is $\{A : \Gamma \vDash A\}$, and a theory is **axiomatized by** $\Delta$ if it is the closure of $\Delta$. The incompleteness theorems are about such theories — especially those, like $\mathbf Q$ and $\mathbf{PA}$, whose axioms can be listed by a computer.
+
+</Added>
+
+## Example: strict linear orders
+
+The theory of strict linear orders in the language with $<$ is axiomatized by three sentences: irreflexivity $\forall x\, \lnot x < x$, connectedness $\forall x\,\forall y\,((x < y \lor y < x) \lor x = y)$, and transitivity. Its models are exactly the strict linear orders: $\mathbb N$, $\mathbb Z$, $\mathbb Q$, $\mathbb R$ with their usual orders, and every finite linear order.
+
+The theory contains every sentence true in all of them: for instance, asymmetry $\forall x\,\forall y\,(x < y \rightarrow \lnot y < x)$. It does *not* contain “there is a least element” (false in $\mathbb Z$), nor its negation (false in $\mathbb N$): a theory need not be complete. Compare the **theory of a structure** in chapter 7, $\{A : \mathfrak M \vDash A\}$, which is always complete.
+
+## Axioms and theorems
+
+Axiomatizing is a way of describing an infinite set by a small, often finite, one. For $\mathbf Q$ the axioms are eight sentences; for $\mathbf{PA}$ they are infinitely many, but decidable. What makes theories interesting for this book is the gap between the axioms and the closure: the closure is what follows, and the incompleteness theorems show that for arithmetic it can never be all of the truth.
+
+Explore mode looks for small models of an axiom system and small countermodels to a claimed consequence. Every finite linear order is a countermodel to “every element has something above it”, and the search finds the smallest one. But it finds no countermodel to “there is a least element”: every *finite* linear order has one. The countermodel $\mathbb Z$ is infinite — a reminder that a fruitless search of small structures proves nothing.

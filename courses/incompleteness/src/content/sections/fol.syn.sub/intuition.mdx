@@ -1,0 +1,21 @@
+<Added label="Added for this edition">
+
+$A[t/x]$ is the result of replacing every **free** occurrence of $x$ in $A$ by the term $t$. Bound occurrences are left alone: they belong to a quantifier, not to the “input” $x$.
+
+</Added>
+
+## Free for
+
+Substitution can go wrong. In $\exists y\, x < y$ (“something is larger than $x$”), substituting $y$ for $x$ gives $\exists y\, y < y$ — “something is larger than itself”. The $y$ we put in has been **captured** by the quantifier $\exists y$: it now refers to whatever $\exists y$ ranges over, not to the value we meant. The book says $t$ is **free for** $x$ in $A$ if no free occurrence of $x$ in $A$ lies in the scope of a quantifier binding a variable of $t$.
+
+So the book defines $A[t/x]$ **only** when $t$ is free for $x$ in $A$: then the replacement, carried out clause by clause (and stopping at a quantifier $\forall x$ or $\exists x$, which binds the occurrences below it), cannot change what the variables of $t$ refer to. With that proviso substitution does what it should semantically:
+
+$$\mathfrak M, s \vDash A[t/x] \quad\text{iff}\quad \mathfrak M, s[m/x] \vDash A \quad\text{where } m = \mathrm{Val}^{\mathfrak M}_s(t)$$
+
+(section Extensionality). Capture is exactly what would break it: Explore mode shows the blind replacement next to a capture-avoiding one, so you can see the difference.
+
+## Substituting closed terms
+
+Closed terms, and in particular numerals $\overline n$, contain no variables, so they are free for any variable in any formula. That is why the incompleteness chapters can substitute numerals for variables without worrying: $A(\overline n)$ always means what it should.
+
+<ExNotFreeFor />

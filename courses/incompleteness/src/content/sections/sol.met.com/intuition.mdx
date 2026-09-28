@@ -1,0 +1,18 @@
+<Added label="Added for this edition">
+
+A set of sentences is **finitely satisfiable** if each of its finite subsets is satisfiable. First-order logic is **compact**: finitely satisfiable sets are satisfiable. It is what produced non-standard models of arithmetic in chapter 7. Second-order logic is not compact (<Ref k="sol:met:com:thm:sol-undecidable" />).
+
+</Added>
+
+## The counterexample
+
+Let $A^{\ge n}$ be the first-order sentence “there are at least $n$ elements”: $\exists x_1 \ldots \exists x_n$ with all $x_i$ pairwise distinct. Take
+
+$$\Gamma = \{\lnot\mathrm{Inf}, A^{\ge 1}, A^{\ge 2}, A^{\ge 3}, \ldots\}.$$
+
+- **Finitely satisfiable.** A finite $\Gamma_0 \subseteq \Gamma$ contains $A^{\ge n}$ only for $n$ up to some $k$. A domain with exactly $k$ elements satisfies all of them, and $\lnot\mathrm{Inf}$ because it is finite.
+- **Not satisfiable.** A model of $\lnot \mathrm{Inf}$ is finite, of some size $k$, and then $A^{\ge k+1}$ is false.
+
+## The entailment version
+
+Equivalently: there are $\Gamma$ and $A$ with $\Gamma \vDash A$ but no finite $\Gamma_0 \subseteq \Gamma$ with $\Gamma_0 \vDash A$ (the book asks for an example). In first-order logic this cannot happen, because $\Gamma \vDash A$ gives a derivation, and a derivation uses finitely many premises. Non-compactness is another way of seeing that second-order logic has no complete proof system.

@@ -1,0 +1,27 @@
+<Added label="Added for this edition">
+
+Section 8.6 expressed that the *domain* is infinite or countable. This section does the same for a subset $s(X)$, and uses it to express that a set has size $\aleph_0$ or $\aleph_1$. Checking the two formulas on small domains turns up a problem with each as printed.
+
+</Added>
+
+## Inf(X), as printed
+
+The book’s formula is
+
+$$\exists u\,(\forall x\,\forall y\,(u(x) = u(y) \rightarrow x = y) \land \exists y\,(X(y) \land \forall x\,(X(x) \rightarrow y \neq u(x)))).$$
+
+It asks for an injective $u$ and an element $y$ of $X$ that is not $u(x)$ for any $x \in X$. But it does not ask $u$ to map $X$ **into** $X$, and then finite sets satisfy it. On $\{0, 1, 2\}$ take $X = \{0\}$ and let $u$ swap $0$ and $1$: $u$ is injective, $0 \in X$, and $0 \neq u(0) = 1$. The intended formula adds $\forall x\,(X(x) \rightarrow X(u(x)))$; with it, $u$ restricted to $X$ is an injection of $X$ into itself that misses $y$, which exists iff $X$ is infinite.
+
+## Count(X), as printed
+
+$$\exists z\,\exists u\,(X(z) \land \forall x\,(X(x) \rightarrow X(u(x))) \land \forall Y\,((Y(z) \land \forall x\,(Y(x) \rightarrow Y(u(x)))) \rightarrow X = Y))$$
+
+The last conjunct is meant to say that $X$ is the *smallest* set containing $z$ and closed under $u$. But $Y$ may be the whole domain, which always contains $z$ and is closed under $u$ — so as printed, the formula forces $X = |\mathfrak M|$. Replacing $X = Y$ by $X \subseteq Y$ gives the intended meaning: $s(X)$ is $\{z, u(z), u(u(z)), \ldots\}$, i.e., enumerable (and non-empty).
+
+## Sizes
+
+With the repaired formulas, $\mathrm{Aleph}_0(X) \equiv \mathrm{Inf}(X) \land \mathrm{Count}(X)$, and $X$ has size $\aleph_1$ iff it is not of size $\aleph_0$ but every subset is finite or of size $\aleph_0$. The same pattern defines $\aleph_2$ and beyond.
+
+<Callout title="Explore">
+Explore mode has both versions of each formula. The counterexamples above are computed, not asserted: pick $X = \{0\}$ for Inf(X), or $X = \{0, 1\}$ for Count(X), on a three-element domain.
+</Callout>

@@ -15,8 +15,9 @@
 //
 // This is a small AST of its own; first-order formulas can be imported with `fromFirstOrder`.
 
+import * as A from '../syntax/ast.ts';
 import type { Formula, Term } from '../syntax/ast.ts';
-import { constName, fnName, predName, sub, varIndex, varName } from '../syntax/language.ts';
+import { constName, fnName, predName, sub, sup, varIndex, varName } from '../syntax/language.ts';
 import { parseFormula } from '../syntax/parse.ts';
 import { evaluate } from '../numbers/nat.ts';
 import { applyFn, holdsRel, lookupConst, numeralIn, showElem, showTuple, tupleKey, tuples, type Elem, type Structure } from './structure.ts';
@@ -403,7 +404,7 @@ export function solSatisfies(M: Structure, s: SolAssignment, A: SolFormula, opts
       const X = A.X;
       name = relVarName(X);
       const ts = tuples(D, X.arity);
-      what = `relation R ⊆ |M|^${X.arity}`;
+      what = `relation R ⊆ |M|${X.arity === 1 ? '' : sup(X.arity)}`;
       total = 2 ** ts.length;
       candidates = (function* () {
         for (let mask = 0; mask < total; mask++) {
@@ -415,7 +416,7 @@ export function solSatisfies(M: Structure, s: SolAssignment, A: SolFormula, opts
       const u = A.u;
       name = fnVarName(u);
       const ts = tuples(D, u.arity);
-      what = `function f: |M|^${u.arity} → |M|`;
+      what = `function f: |M|${u.arity === 1 ? '' : sup(u.arity)} → |M|`;
       total = D.length ** ts.length;
       candidates = (function* () {
         const digits = ts.map(() => 0);
@@ -541,4 +542,121 @@ export function solTransitiveClosure(R: { arity: number; index: number }, X: Rel
  */
 export function dedekindInfinityFO(): Formula {
   return parseFormula('∀x ∀y (f(x) = f(y) → x = y) ∧ ∃y ∀x ¬y = f(x)');
+}
+
+// ------------------------------------------------------------------ comparing sets (section "Comparing Sets") and arithmetic
+
+const X1b = S.X(0, 1);
+const Y1b = S.X(1, 1);
+const u = S.U(0, 1);
+const xx = S.v('x');
+const yy = S.v('y');
+
+/** ∀x (X(x) → Y(x)): s(X) ⊆ s(Y). */
+export function solSubset(X: RelVar = X1b, Y: RelVar = Y1b): SolFormula {
+  return S.all('x', S.imp(S.rel(X, xx), S.rel(Y, xx)));
+}
+
+/** ∃x X(x): s(X) is non-empty. */
+export function solNonEmpty(X: RelVar = X1b): SolFormula {
+  return S.ex('x', S.rel(X, xx));
+}
+
+/** X ≼ Y ≡ ∃u (∀x (X(x) → Y(u(x))) ∧ ∀x ∀y (u(x) = u(y) → x = y)). */
+export function solNoLarger(X: RelVar = X1b, Y: RelVar = Y1b): SolFormula {
+  return S.exF(u, S.and(
+    S.all('x', S.imp(S.rel(X, xx), S.rel(Y, S.fv(u, xx)))),
+    S.all('x', S.all('y', S.imp(S.eq(S.fv(u, xx), S.fv(u, yy)), S.eq(xx, yy)))),
+  ));
+}
+
+/** X ≈ Y: as X ≼ Y, and every element of Y is u(x) for some x in X. */
+export function solEquinumerous(X: RelVar = X1b, Y: RelVar = Y1b): SolFormula {
+  return S.exF(u, S.and(
+    S.and(
+      S.all('x', S.imp(S.rel(X, xx), S.rel(Y, S.fv(u, xx)))),
+      S.all('x', S.all('y', S.imp(S.eq(S.fv(u, xx), S.fv(u, yy)), S.eq(xx, yy)))),
+    ),
+    S.all('y', S.imp(S.rel(Y, yy), S.ex('x', S.and(S.rel(X, xx), S.eq(yy, S.fv(u, xx)))))),
+  ));
+}
+
+/** ∀X ∀Y ((X ≼ Y ∧ Y ≼ X) → X ≈ Y): the Schröder–Bernstein sentence (valid). */
+export function solSchroederBernstein(): SolFormula {
+  return S.allR(X1b, S.allR(Y1b, S.imp(S.and(solNoLarger(X1b, Y1b), solNoLarger(Y1b, X1b)), solEquinumerous(X1b, Y1b))));
+}
+
+/**
+ * Inf(X) as printed in the book (section "Cardinalities of Sets"):
+ * ∃u (∀x ∀y (u(x) = u(y) → x = y) ∧ ∃y (X(y) ∧ ∀x (X(x) → y ≠ u(x)))).
+ * As printed it does not require u to map X into X, and then it is satisfied by finite sets too:
+ * on {0, 1, 2}, X = {0} and u swapping 0 and 1 satisfy it. See `solInfSet` for the repaired formula.
+ */
+export function solInfSetAsPrinted(X: RelVar = X1b): SolFormula {
+  return S.exF(u, S.and(
+    S.all('x', S.all('y', S.imp(S.eq(S.fv(u, xx), S.fv(u, yy)), S.eq(xx, yy)))),
+    S.ex('y', S.and(S.rel(X, yy), S.all('x', S.imp(S.rel(X, xx), S.not(S.eq(yy, S.fv(u, xx))))))),
+  ));
+}
+
+/**
+ * Inf(X) with the conjunct ∀x (X(x) → X(u(x))) added: u maps X injectively into X, and some
+ * element of X is not a value of u on X. Satisfied iff s(X) is (Dedekind) infinite.
+ */
+export function solInfSet(X: RelVar = X1b): SolFormula {
+  return S.exF(u, S.and(
+    S.and(
+      S.all('x', S.all('y', S.imp(S.eq(S.fv(u, xx), S.fv(u, yy)), S.eq(xx, yy)))),
+      S.all('x', S.imp(S.rel(X, xx), S.rel(X, S.fv(u, xx)))),
+    ),
+    S.ex('y', S.and(S.rel(X, yy), S.all('x', S.imp(S.rel(X, xx), S.not(S.eq(yy, S.fv(u, xx))))))),
+  ));
+}
+
+function countSet(X: RelVar, last: SolFormula): SolFormula {
+  const Y = S.X(1, 1);
+  const zz = S.v('z');
+  return S.ex('z', S.exF(u, S.and(
+    S.and(S.rel(X, zz), S.all('x', S.imp(S.rel(X, xx), S.rel(X, S.fv(u, xx))))),
+    S.allR(Y, S.imp(S.and(S.rel(Y, zz), S.all('x', S.imp(S.rel(Y, xx), S.rel(Y, S.fv(u, xx))))), last)),
+  )));
+}
+
+/**
+ * Count(X) as printed in the book: ∃z ∃u (X(z) ∧ ∀x (X(x) → X(u(x))) ∧ ∀Y ((Y(z) ∧ ∀x (Y(x) →
+ * Y(u(x)))) → X = Y)). Since Y may be the whole domain (which contains z and is closed under u),
+ * as printed it forces X to be the whole domain: on {0, 1, 2} it is false for X = {0, 1}.
+ */
+export function solCountSetAsPrinted(X: RelVar = X1b): SolFormula {
+  return countSet(X, S.all('x', S.iff(S.rel(X, xx), S.rel(S.X(1, 1), xx))));
+}
+
+/** Count(X) with X ⊆ Y in place of X = Y: X is the smallest u-closed set containing z, so s(X) is enumerable (and non-empty). */
+export function solCountSet(X: RelVar = X1b): SolFormula {
+  return countSet(X, S.all('x', S.imp(S.rel(X, xx), S.rel(S.X(1, 1), xx))));
+}
+
+/** The second-order induction axiom ∀X ((X(0) ∧ ∀x (X(x) → X(x′))) → ∀x X(x)) of PA². */
+export function solInduction(): SolFormula {
+  const succ = (t: SolTerm) => S.app(1, 0, [t]);
+  return S.allR(X1b, S.imp(S.and(S.rel(X1b, S.c(0)), S.all('x', S.imp(S.rel(X1b, xx), S.rel(X1b, succ(xx))))), S.all('x', S.rel(X1b, xx))));
+}
+
+/** A_≤(x, y) ≡ ∀Y ((Y(x) ∧ ∀y (Y(y) → Y(y′))) → Y(y)) — the book's definition of ≤ in PA^{2†}, with the bound y renamed z. */
+export function solLeq(): SolFormula {
+  const z = S.v('z');
+  return S.allR(Y1b, S.imp(S.and(S.rel(Y1b, xx), S.all('z', S.imp(S.rel(Y1b, z), S.rel(Y1b, S.app(1, 0, [z]))))), S.rel(Y1b, yy)));
+}
+
+/**
+ * A^{≥n} ≡ ∃x₁ … ∃xₙ (x₁ ≠ x₂ ∧ … ∧ x_{n−1} ≠ xₙ): the domain has at least n elements
+ * (a first-order sentence; for n = 1, ∃x₁ x₁ = x₁).
+ */
+export function atLeast(n: number): Formula {
+  const vars = Array.from({ length: n }, (_, i) => 5 + 5 * i); // x_0, x_1, …
+  const diffs: Formula[] = [];
+  for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) diffs.push(A.not(A.eq(A.v(vars[i]), A.v(vars[j]))));
+  let body: Formula = diffs.length ? diffs.reduce((a, b) => A.and(a, b)) : A.eq(A.v(vars[0]), A.v(vars[0]));
+  for (let i = n - 1; i >= 0; i--) body = A.exists(A.v(vars[i]), body);
+  return body;
 }

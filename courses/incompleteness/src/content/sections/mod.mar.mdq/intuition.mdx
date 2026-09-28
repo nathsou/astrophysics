@@ -1,0 +1,27 @@
+import { ExSentenceOnlySucc } from '../../../workbench/semantics/exercises';
+
+<Added label="Added for this edition">
+
+$\mathbf Q$ is much weaker than true arithmetic, so it has many more models — and simple ones, which can be written down explicitly. The book gives two (<Ref k="mod:mar:mdq:ex:model-K-of-Q" />, <Ref k="mod:mar:mdq:ex:model-L-of-Q" />).
+
+</Added>
+
+## The model K
+
+Add a single new element $a$ to $\mathbb N$. Let $a' = a$; let $x + y = a$ whenever $x$ or $y$ is $a$; let $x \times y$ be $0$ if either factor is $0$ and $a$ otherwise when $a$ is involved; and let every element be $< a$ — including $a$ itself. The book checks each axiom of $\mathbf Q$: successor is still injective and never $0$, every element other than $0$ is a successor ($a$ is its own), and the recursion equations for $+$ and $\times$ hold in each case.
+
+But $\mathbf K$ is not $\mathfrak N$. In $\mathbf K$, $a < a$, so $\exists x\, x < x$ is true. Since $\mathbf K \vDash \mathbf Q$, this shows $\mathbf Q \nvdash \forall x\, \lnot x < x$: a sentence true in $\mathfrak N$ that $\mathbf Q$ does not prove, established by exhibiting a model.
+
+## The model L
+
+The book’s $\mathbf L$ adds two elements $a$ and $b$, each its own successor, with an addition table in which $a + 0 = a$ but $0 + a = b$. It satisfies $\mathbf Q_1$–$\mathbf Q_5$ (the book leaves $\times$ and $<$ as an exercise), and addition is not commutative: $\mathbf Q \nvdash \forall x\,\forall y\,(x + y) = (y + x)$.
+
+## Where the non-standard elements live
+
+In any model of $\mathbf Q$, non-standard elements are not below any standard number: $\mathbf Q$ proves $\forall x\, \lnot x < 0$ (<Ref k="inc:req:min:lem:less-zero" />) and, for each $n$, that everything below $\overline{n}'$ is one of $\overline 0, \ldots, \overline n$. In $\mathbf K$ and $\mathbf L$ the new elements sit “beyond” $\mathbb N$.
+
+## No finite models
+
+Every model of $\mathbf Q$ is infinite. In a finite structure, follow $0, 0', 0'', \ldots$: some element repeats. If the first repetition returns to $0$, then $0$ is a successor and $\mathbf Q_2$ fails; otherwise two different elements have the same successor and $\mathbf Q_1$ fails. Explore mode carries out this argument for any finite structure you choose.
+
+<ExSentenceOnlySucc />

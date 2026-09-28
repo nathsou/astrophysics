@@ -1,0 +1,20 @@
+<Added label="Added for this edition">
+
+A first-order language by itself means nothing: $R(a, x)$ is just a string of symbols. A **structure** $\mathfrak M$ gives it meaning. It consists of a non-empty set $|\mathfrak M|$, the **domain**, and an interpretation of every non-logical symbol: an element $c^{\mathfrak M} \in |\mathfrak M|$ for each constant symbol, a function $f^{\mathfrak M}\colon |\mathfrak M|^n \to |\mathfrak M|$ for each $n$-place function symbol, and a relation $R^{\mathfrak M} \subseteq |\mathfrak M|^n$ for each $n$-place predicate symbol. The identity symbol $=$ is not interpreted by the structure: it always means identity.
+
+</Added>
+
+## Many structures for one language
+
+The **standard model** $\mathfrak N$ of arithmetic interprets $0, {}', +, \times, <$ as zero, successor, addition, multiplication and less-than on $\mathbb N$. But nothing forces that. The same symbols can be interpreted on the integers, on $\{0, 1, 2, 3, 4\}$ with arithmetic mod 5, or on something that has nothing to do with numbers. Each such choice is a structure for $\mathcal L_A$, and each makes different sentences true. The book’s set-theoretic example, the hereditarily finite sets with $\in$, is a structure whose elements happen to be sets.
+
+## Two stipulations with consequences
+
+- **Domains are non-empty.** So $\exists x\,(A(x) \lor \lnot A(x))$ is valid: there is always something for $x$ to be.
+- **Functions are total, and constants always denote.** $f^{\mathfrak M}$ must give a value for every argument in the domain, and every constant names some element. This is what makes “from $A(a)$ infer $\exists x\, A(x)$” sound.
+
+Explore mode enforces exactly these conditions when you build a structure: an empty domain, a missing table entry, or a value outside the domain is reported, and the structure is not accepted.
+
+<Callout title="Finite tables">
+A finite structure can be written down completely: the domain, and a table for each symbol. The workbenches in this appendix and in chapters 7 and 8 compute with such tables. Infinite structures like $\mathfrak N$ can only be *computed with* (if their operations are computable), never listed.
+</Callout>

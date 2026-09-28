@@ -8,3 +8,7 @@ export * from './satisfaction.ts';
 export * from './arithmetic.ts';
 export * from './standard.ts';
 export * from './sol.ts';
+export * from './infinite.ts';
+export * from './iso.ts';
+export * from './countermodel.ts';
+export * from './examples.ts';

@@ -1,0 +1,22 @@
+<Added label="Added for this edition">
+
+Structures are unchanged. **Assignments** now also give each $n$-place relation variable a relation $s(X) \subseteq |\mathfrak M|^n$, and each $n$-place function variable a function $s(u)\colon |\mathfrak M|^n \to |\mathfrak M|$. The value of $u(t_1, \ldots, t_n)$ is $s(u)$ applied to the values of the $t_i$, and $X(t_1, \ldots, t_n)$ is satisfied iff the values are in $s(X)$.
+
+</Added>
+
+## The quantifier clauses
+
+$X$-variants and $u$-variants are defined as for object variables: $s[R/X]$ assigns $R$ to $X$ and agrees with $s$ elsewhere. Then
+
+- $\mathfrak M, s \vDash \forall X\, B$ iff $\mathfrak M, s[R/X] \vDash B$ for **every** $R \subseteq |\mathfrak M|^n$;
+- $\mathfrak M, s \vDash \exists X\, B$ iff for at least one such $R$;
+
+and likewise for $\forall u$, $\exists u$ with all functions $|\mathfrak M|^n \to |\mathfrak M|$. This is the **standard** (or “full”) semantics: the quantifiers range over all relations and functions, whether or not any formula defines them.
+
+## An example
+
+The book’s example: $\forall z\,(X(z) \leftrightarrow \lnot Y(z))$ is satisfied relative to $s$ iff $s(X)$ and $s(Y)$ are complements of each other. The first-order counterpart $\forall z\,(P(z) \leftrightarrow \lnot R(z))$ says the same about the interpretations $P^{\mathfrak M}$ and $R^{\mathfrak M}$; the difference is only where the sets come from — structure or assignment.
+
+## Counting cases
+
+On a domain with $n$ elements, $\forall X$ for a one-place $X$ has $2^n$ cases, a two-place $X$ has $2^{n^2}$, and a one-place $u$ has $n^n$. Satisfaction on finite domains is therefore computable, but quickly expensive: a two-place relation variable on 5 elements already has $2^{25}$ values. On infinite domains there are uncountably many subsets, and no computation can run through them.

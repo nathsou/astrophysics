@@ -1,0 +1,23 @@
+import { ExStandardDomain } from '../../../workbench/semantics/exercises';
+
+<Added label="Added for this edition">
+
+A structure for $\mathcal L_A$ is **standard** if it is isomorphic to $\mathfrak N$. The strings of $a$’s from the introduction form a standard model; so does any structure obtained from $\mathfrak N$ by renaming its elements.
+
+</Added>
+
+## Every element has a name
+
+In a standard model $\mathfrak M$, every element is the value of a numeral: $|\mathfrak M| = \{\mathrm{Val}^{\mathfrak M}(\overline n) : n \in \mathbb N\}$ (<Ref k="mod:mar:stm:prop:standard-domain" />). The reason: an isomorphism $g\colon \mathfrak N \to \mathfrak M$ must send $n = \mathrm{Val}^{\mathfrak N}(\overline n)$ to $\mathrm{Val}^{\mathfrak M}(\overline n)$, and it is surjective.
+
+The converse is false (the book asks you to show this): $\mathbb Z_5$ has every element named by a numeral, but it is finite, so it is not isomorphic to $\mathfrak N$. What goes wrong is that different numerals name the same element — $\overline 0$ and $\overline 5$ both denote $0$.
+
+## Named and distinct: standard
+
+Add the axioms of $\mathbf Q$ and the converse holds (<Ref k="mod:mar:stm:prop:thq-standard" />): if $\mathfrak M \vDash \mathbf Q$ and every element is the value of a numeral, then $g(n) = \mathrm{Val}^{\mathfrak M}(\overline n)$ is an isomorphism. $\mathbf Q$ proves $\overline n \neq \overline m$ for $n \neq m$, so $g$ is injective; it is surjective by assumption; and $\mathbf Q$ proves the basic facts about sums, products and $<$ of numerals that make $g$ respect the operations. Moreover $g$ is the *only* isomorphism (<Ref k="mod:mar:stm:prop:thq-unique-iso" />): any isomorphism must send $0$ to $0^{\mathfrak M}$ and commute with successor.
+
+## The domain is not the point
+
+Any countably infinite set can be the domain of a standard model. Pick a starting element $z$ and a bijection $s$ from the set onto the set minus $z$; the interpretations of $+$, $\times$, $<$ are then forced.
+
+<ExStandardDomain />

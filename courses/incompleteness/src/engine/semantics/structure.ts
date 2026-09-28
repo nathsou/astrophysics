@@ -9,7 +9,7 @@
 //
 //   0 = c_0      ′ = f^1_0      + = f^2_0      × = f^2_1      < = P^2_0.
 
-import { constName, fnName, GENERIC_OFFSET, predName } from '../syntax/language.ts';
+import { constName, fnName, GENERIC_OFFSET, predName, sub } from '../syntax/language.ts';
 
 /** An element of a finite domain: a number or a string label. */
 export type Elem = number | string;
@@ -344,7 +344,7 @@ export function modArithmetic(n: number, mode: ModMode = 'wrap'): Structure {
   const cut = (x: number) => (mode === 'wrap' ? x % n : Math.min(x, n - 1));
   const num = (e: Elem) => e as number;
   return arithmeticStructure({
-    name: mode === 'wrap' ? `ℤ_${n}` : `ℕ_{≤${n - 1}}`,
+    name: mode === 'wrap' ? `ℤ${sub(n)}` : `ℕ≤${n - 1}`,
     description:
       mode === 'wrap'
         ? `The numbers 0, …, ${n - 1} with successor, addition and multiplication mod ${n}, and the usual order <.`
