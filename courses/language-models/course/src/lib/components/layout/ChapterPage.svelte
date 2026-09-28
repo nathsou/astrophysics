@@ -141,10 +141,13 @@
     font: 400 0.78rem var(--font-mono);
     color: var(--ink-2);
   }
-  .meta span {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
+  .meta > span {
+    display: block;
+    min-width: 0;
+  }
+  .meta :global(svg) {
+    vertical-align: -2px;
+    margin-right: 0.35rem;
   }
   .builds {
     display: block;

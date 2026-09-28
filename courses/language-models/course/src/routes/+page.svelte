@@ -257,7 +257,6 @@
   .cellrow.head {
     margin-bottom: 1.1rem;
   }
-  .cellrow > section,
   .cellrow > :not(.nb):not(.cellcol) {
     min-width: 0;
   }
