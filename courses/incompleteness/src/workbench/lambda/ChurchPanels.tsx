@@ -254,7 +254,19 @@ const OPS: Op[] = [
       </div>
     ),
   },
-  { key: 'Exp', label: 'Exp', src: 'Exp', arity: 2, f: (a, b) => a ** b, cap: (a, b) => a ** b <= 128 },
+  {
+    key: 'Exp',
+    label: 'Exp',
+    src: 'Exp',
+    arity: 2,
+    f: (a, b) => a ** b,
+    cap: (a, b) => a ** b <= 128,
+    note: (
+      <div className="lam-erratum">
+        <Prov kind="added" /> Try the exponent (the second argument) 0: <Tex tex="\mathrm{Exp}\,\overline a\,\overline 0 \twoheadrightarrow \overline 0\,\overline a \twoheadrightarrow \lambda x.\,x" />, which is not the numeral <Tex tex="\overline 1 \equiv \lambda f x.\,f x" /> (it is only η-equivalent to it). So Exp λ-defines exponentiation for exponents ≥ 1; the book does not mention the exception. <Tex tex="\mathrm{Exp}'" /> gives <Tex tex="\overline 1" />.
+      </div>
+    ),
+  },
   { key: "Exp'", label: 'Exp′', src: "Exp'", arity: 2, f: (a, b) => a ** b, cap: (a, b) => a ** b <= 64 },
   { key: 'Pred', label: 'Pred', src: 'Pred', arity: 1, f: (a) => Math.max(0, a - 1), cap: (a) => a <= 12 },
   { key: 'Sub', label: 'Sub', src: 'Sub', arity: 2, f: (a, b) => Math.max(0, a - b), cap: (a, b) => a <= 12 && b <= 8 },

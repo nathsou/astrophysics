@@ -227,6 +227,7 @@ export function LambdaLab({ initial = 'K I Ω', id = 'lambda-lab', graph = true,
             <input type="checkbox" checked={full} onChange={(e) => setFull(e.target.checked)} /> official syntax (all parentheses)
           </label>
         </div>
+        {numerals && <p className="lam-steps-inline">Any subterm α-equivalent to a numeral is shown as one: λy.λx.x, for instance (what K I reduces to), appears as 0̄, which is also the term false.</p>}
       </Panel>
 
       {term && (

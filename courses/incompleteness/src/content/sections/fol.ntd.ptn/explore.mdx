@@ -1,6 +1,6 @@
 import { DerivationBuilder } from '../../../workbench/nd/DerivationBuilder';
 
-Transitivity, done by hand: the goal is $B$ from $\Gamma = \{A,\ A \rightarrow B\}$ — but pretend you only have a derivation of $B$ from the assumption $A$, and one of $A$ from $\Gamma$. Build the tree of the book's proof: $\rightarrow$Elim with premises $A \rightarrow B$ (by $\rightarrow$Intro, discharging $[A]^1$) and $A$. Watch the undischarged assumptions in the status line.
+Transitivity, done by hand, with $\Gamma = \{A\}$ and $\Delta = \{A \rightarrow B\}$: $\delta_0$ is the assumption $A$ on its own, and $\delta_1$ derives $B$ from $A$ and $A \rightarrow B$ by $\rightarrow$Elim. The book's proof puts them together: in $\delta_1$ label the assumption $A$ with $1$, discharge $[A]^1$ by $\rightarrow$Intro to get $A \rightarrow B$, and apply $\rightarrow$Elim to that and $\delta_0$. Build this tree for the goal $B$ below and watch the status line: the undischarged assumptions end up in $\Gamma \cup \Delta$. (A shorter derivation exists, of course; the point is the shape of the proof.)
 
 <DerivationBuilder goal="B" gamma={['A', 'A → B']} examples={[]} />
 

@@ -18,7 +18,7 @@ export function useAnnotations(): Annotations {
     'lam:ldf:min:lem:min': (
       <Added label="A correction, added for this edition">
         <p className="sans small">
-          <Prov kind="added" /> The recursive call in <Tex tex="\mathrm{Search}" /> should read <Tex tex="g\,f\,\vec x\,(\mathrm{Succ}\,y)" />: <i>g</i> stands for <Tex tex="Y\,\mathrm{Search}" />, whose first argument is <i>f</i>. As printed, <Tex tex="g\,\vec x\,(\mathrm{Succ}\,y)" /> passes <Tex tex="\vec x" /> in place of <i>f</i>. Computed for <Tex tex="f(x, y) = x \mathbin{\dot-} y" /> (so <Tex tex="\mu y\,[f(2, y) = 0] = 2" />) and <Tex tex="x = 2" />:
+          <Prov kind="added" /> The recursive call in <Tex tex="\mathrm{Search}" /> should read <Tex tex="g\,f\,\vec x\,(\mathrm{Succ}\,y)" />: <i>g</i> stands for <Tex tex="Y\,\mathrm{Search}" />, whose first argument is <i>f</i>. As printed, <Tex tex="g\,\vec x\,(\mathrm{Succ}\,y)" /> passes <Tex tex="\vec x" /> in place of <i>f</i>. (The proof also calls the function being defined <i>h</i>; the lemma calls it <i>g</i>, a name the proof uses for the bound variable of <Tex tex="\mathrm{Search}" />.) Computed for <Tex tex="f(x, y) = x \mathbin{\dot-} y" /> (so <Tex tex="\mu y\,[f(2, y) = 0] = 2" />) and <Tex tex="x = 2" />:
         </p>
         <dl className="lam-kv">
           <dt>corrected</dt>

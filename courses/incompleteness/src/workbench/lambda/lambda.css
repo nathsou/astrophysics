@@ -131,3 +131,4 @@
 .lam-inline { font-family: var(--math); }
 .lam-inline .lam-t-var, .lam-inline .lam-t-binder { font-family: var(--math-it); font-style: italic; }
 .lam-graph-list .lam-tag { margin-left: 6px; }
+.fi-label.lam-mathlabel { text-transform: none; letter-spacing: 0; font-family: var(--math); font-style: italic; font-size: 14px; font-weight: 400; color: var(--ink-2); }

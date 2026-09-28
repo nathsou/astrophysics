@@ -181,6 +181,24 @@ describe('parsing and printing', () => {
   });
 });
 
+describe('the book’s lowercase true and false', () => {
+  it('are read as the truth values, as the book writes them', () => {
+    expect(alphaEq(P('true'), churchBoolean(true))).toBe(true);
+    expect(alphaEq(P('false'), churchBoolean(false))).toBe(true);
+    // an answer to the book's problem on Or, written with the book's names
+    for (const [x, y] of [[true, true], [true, false], [false, true], [false, false]] as const) {
+      const r = nf(app(app(P('λx y. x true y'), churchBoolean(x)), churchBoolean(y)));
+      expect(alphaEq(r.final, churchBoolean(x || y))).toBe(true);
+    }
+  });
+  it('do not swallow longer variable names, and are variables when no definitions are given', () => {
+    expect(print(P('λtruth. truth'))).toBe('λtruth.truth');
+    expect(freeVars(parseLambda('true', { defs: {} }))).toEqual(new Set(['true']));
+    const r = tryParseLambda('λtrue. true');
+    expect(r.ok).toBe(false);
+  });
+});
+
 describe('variables and α-equivalence', () => {
   it('computes free variables: in (λz.yz)x, y and x are free and z is bound', () => {
     expect([...freeVars(P('(λz.y z) x'))].sort()).toEqual(['x', 'y']);

@@ -15,6 +15,8 @@ export function ExampleCheck({ id }: { id: string }) {
   const [adapted, setAdapted] = useState(false);
   const d = useMemo(() => (adapted && ex.adapted ? ex.adapted.build() : ex.build()), [ex, adapted]);
   const c = useMemo(() => check(d), [d]);
+  // The discrepancy note describes a rejection; it is shown only while the checker rejects the book's tree.
+  const bookRejected = useMemo(() => !!ex.discrepancy && !check(ex.build()).valid, [ex]);
   const numbers = useMemo(() => new Map(linearize(d).map((x, i) => [x.id, i + 1])), [d]);
   const [sel, setSel] = useState<string | null>(null);
   const st = sel ? c.steps.get(sel) : null;
@@ -42,9 +44,9 @@ export function ExampleCheck({ id }: { id: string }) {
           ))}
         </ul>
       )}
-      {ex.discrepancy && (
+      {bookRejected && (
         <div className="ndb-discrepancy">
-          <b>Book and checker differ.</b> {ex.discrepancy}{' '}
+          <b>The checker is stricter than the book.</b> {ex.discrepancy}{' '}
           {ex.adapted && (
             <button type="button" className="linklike" onClick={() => setAdapted(!adapted)}>
               {adapted ? 'Show the book’s version' : `Show the version with ${ex.adapted.change}`}

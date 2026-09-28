@@ -24,7 +24,7 @@ export interface NDExample {
   gamma: Formula[];
   goal: Formula;
   build: () => Deriv;
-  /** Where the book's tree differs from the checker's conventions. */
+  /** Where the book's tree differs from the checker's conventions (shown only while the checker rejects the book's version). */
   discrepancy?: string;
   /** A version adapted to the checker, if the book's is rejected (shown only alongside it). */
   adapted?: { build: () => Deriv; change: string };
@@ -108,7 +108,7 @@ export const ND_EXAMPLES: NDExample[] = [
       return D.impI(D.orE(D.assume(nd('¬A ∨ B'), 1), middle, right, 2), nd('¬A ∨ B'), 1);
     },
     discrepancy:
-      'In the finished tree the rightmost →Intro has no label (the book: "the rightmost →Intro inference does not actually discharge any assumptions"). The checker requires every →Intro to name a label, even when it discharges nothing, as the book itself does in Section C.5 (B ⊢ A → B, labelled 1). In an earlier stage of the same example the book labels this inference 4.',
+      'The rightmost →Intro carries no label: it discharges nothing (the book: “the rightmost →Intro inference does not actually discharge any assumptions”). The book’s rules allow this: discharging is “a permission, but not a requirement”, →Intro may discharge “any number of assumptions … including zero”, and labels only mark which inference discharges which assumption. So this is a correct derivation by the book’s definition. The checker asks every →Intro to name a label; its rejection reflects that convention, not a slip in the book.',
     adapted: {
       change: 'the rightmost →Intro labelled 4, as in the book’s earlier stage (it still discharges nothing)',
       build: () => {
@@ -117,7 +117,7 @@ export const ND_EXAMPLES: NDExample[] = [
         return D.impI(D.orE(D.assume(nd('¬A ∨ B'), 1), middle, right, 2), nd('¬A ∨ B'), 1);
       },
     },
-    note: 'In one intermediate tree of this example the book labels the ¬Elim inference "⊥Intro"; the finished tree has ¬Elim, as transcribed.',
+    note: 'In one intermediate tree of this example the book names the ¬Elim inference “⊥Intro”, a rule the system does not have; the finished tree has ¬Elim, as transcribed.',
   },
   {
     id: 'pro-3',

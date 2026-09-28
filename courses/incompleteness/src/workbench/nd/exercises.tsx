@@ -32,7 +32,7 @@ function NDExercise({ id, title, goal, gamma = [], children, hint }: { id: strin
 
 export function ExNotNot() {
   return (
-    <NDExercise id="ntd.pro.notnot" title="A ⊢ ¬¬A" goal="¬¬A" gamma={['A']} hint={<>¬Intro, discharging ¬A: from ¬A and A, ¬Elim gives ⊥.</>}>
+    <NDExercise id="ntd.pro.notnot" title="A ⊢ ¬¬A" goal="¬¬A" gamma={['A']} hint={<>The goal is a negation: which assumption would you need to refute?</>}>
       <p>
         Derive <Tex tex="\lnot\lnot A" /> from <Tex tex="A" /> (a problem of the section). Start with the goal, choose a rule, and close the goals by assumptions.
       </p>
@@ -42,7 +42,7 @@ export function ExNotNot() {
 
 export function ExNotAndNot() {
   return (
-    <NDExercise id="ntd.pro.noncontra" title="⊢ ¬(A ∧ ¬A)" goal="¬(A ∧ ¬A)" hint={<>¬Intro with label 1, then ¬Elim with the sentence A; both premises come from [A ∧ ¬A]¹ by ∧Elim.</>}>
+    <NDExercise id="ntd.pro.noncontra" title="⊢ ¬(A ∧ ¬A)" goal="¬(A ∧ ¬A)" hint={<>The goal is a negation, so assume A ∧ ¬A and aim for ⊥. What can you get out of that one assumption?</>}>
       <p>
         Derive <Tex tex="\lnot(A \land \lnot A)" /> with every assumption discharged.
       </p>
@@ -52,7 +52,7 @@ export function ExNotAndNot() {
 
 export function ExAllNotNotEx() {
   return (
-    <NDExercise id="ntd.prq.allnot" title="∀x ¬A(x) ⊢ ¬∃x A(x)" goal="¬∃x A(x)" gamma={['∀x ¬A(x)']} hint={<>¬Intro (label 1), then ∃Elim on [∃x A(x)]¹ with a fresh eigenvariable a and label 2; inside, ¬Elim with ¬A(a) (by ∀Elim) and [A(a)]².</>}>
+    <NDExercise id="ntd.prq.allnot" title="∀x ¬A(x) ⊢ ¬∃x A(x)" goal="¬∃x A(x)" gamma={['∀x ¬A(x)']} hint={<>Assume ∃x A(x) and aim for ⊥. To use an existential assumption you need ∃Elim, and its eigenvariable may be instantiated by ∀Elim too.</>}>
       <p>
         Derive <Tex tex="\lnot\exists x\, A(x)" /> from <Tex tex="\forall x\, \lnot A(x)" />. Watch the eigenvariable condition: the checker will tell you if it is violated.
       </p>
@@ -62,7 +62,7 @@ export function ExAllNotNotEx() {
 
 export function ExSymmetry() {
   return (
-    <NDExercise id="ntd.ide.symm" title="= is symmetric" goal="∀x ∀y (x = y → y = x)" hint={<>Two ∀Intros (eigenvariables a, b), →Intro labelled 1, then =Elim with the identity a = b: the other premise is a = a, by =Intro.</>}>
+    <NDExercise id="ntd.ide.symm" title="= is symmetric" goal="∀x ∀y (x = y → y = x)" hint={<>Do the ∀Intros last (lowest in the tree), with fresh constants a and b. For b = a from a = b, read b = a as A(b) with A(x) the formula x = a: what is A(a)?</>}>
       <p>
         Derive <Tex tex="\forall x\, \forall y\, (x = y \rightarrow y = x)" /> (a problem of the section).
       </p>
@@ -115,7 +115,7 @@ export function ExInconsistent() {
       choices={[
         { label: 'By ⊥I: add one inference below the derivation of ⊥.', correct: true, why: 'Γ ⊢ ⊥ gives a derivation of ⊥ whose undischarged assumptions are in Γ; ⊥I infers any A from it and discharges nothing.' },
         { label: 'By ¬Intro.', why: '¬Intro concludes a negation ¬B, not an arbitrary A.' },
-        { label: 'It does not follow.', why: 'It does — the book: “The rule ⊥I makes it so that from an inconsistent set, any sentence can be derived.”' },
+        { label: 'It does not follow.', why: 'It does: ⊥I infers any sentence from ⊥, so one more inference below the derivation of ⊥ gives a derivation of A from Γ.' },
       ]}
     >
       <p>

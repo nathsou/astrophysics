@@ -23,7 +23,7 @@ export const BOOK_EXAMPLES: Preset[] = [
   { src: '(λx.λy.x) y', label: '(λx.λy.x)y — a capture hazard' },
   { src: '(λx.λy.x) m n', label: '(λx.λy.x)MN — currying' },
   { src: 'K I Ω', label: 'K I Ω — the order of reduction matters' },
-  { src: 'Succ 0', label: 'Succ 0̄ — example in §“Arithmetical functions”' },
+  { src: 'Succ 0', label: 'Succ 0̄ — the book’s example of the successor' },
   { src: 'Add 2 3', label: 'Add 2̄ 3̄' },
   { src: 'Mult 2 2', label: 'Mult 2̄ 2̄' },
   { src: 'Exp 2 2', label: 'Exp 2̄ 2̄' },
@@ -38,7 +38,7 @@ export const BOOK_EXAMPLES: Preset[] = [
 
 export const NAMED_PRESETS: Preset[] = Object.entries(BOOK_DEFS)
   .filter(([k]) => k !== 'Omega')
-  .map(([k, d]) => ({ src: k, label: `${d.label ?? k}${typeof d.src === 'string' ? ` ≡ ${d.src}` : ''}` }));
+  .map(([k, d]) => ({ src: k, label: `${d.label ?? k}${typeof d.src === 'string' ? ` ≡ ${d.src}` : ''}${k === "Mult'" || k === 'Search' ? ' (corrected)' : ''}` }));
 
 // ------------------------------------------------------------------ send to the lab
 

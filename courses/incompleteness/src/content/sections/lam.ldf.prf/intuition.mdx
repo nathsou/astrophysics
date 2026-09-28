@@ -20,11 +20,11 @@ $$
 H \equiv \lambda x_0 \ldots x_{n-1}.\,F\,(G_0\,x_0\ldots x_{n-1})\ldots(G_{k-1}\,x_0\ldots x_{n-1})
 $$
 
-defines their composition: substitute the numerals for the $x_i$, let each $G_j$ term reduce to its numeral, and let $F$ finish. (Problem 9.5 asks you to write this out.) The argument uses that the $g_j$ are *total*: section 9.13 explains what goes wrong otherwise.
+defines their composition: substitute the numerals for the $x_i$, let each $G_j$ term reduce to its numeral, and let $F$ finish. (The section's problem asks you to write this out.) The argument uses that the $g_j$ are *total*: <Ref k="lam:ldf:par:sec" /> explains what goes wrong otherwise.
 
 ## Primitive recursion
 
-$h(x, 0) = f(x)$ and $h(x, y+1) = g(x, y, h(x, y))$. A numeral $\overline y$ can iterate a step $y$ times, but the step needs to know *which* stage it is at, and the previous value. So iterate on pairs $\langle \text{stage}, \text{value}\rangle$:
+$h(x, 0) = f(x)$ and $h(x, y+1) = g(x, y, h(x, y))$. (The book's statement of these equations has $h$ in place of the $g$ on the right; Formal mode notes the slip.) A numeral $\overline y$ can iterate a step $y$ times, but the step needs to know *which* stage it is at, and the previous value. So iterate on pairs $\langle \text{stage}, \text{value}\rangle$:
 
 $$
 D \equiv \lambda p.\,\langle \mathrm{Succ}(\mathrm{Fst}\,p),\ G\,x\,(\mathrm{Fst}\,p)\,(\mathrm{Snd}\,p)\rangle,\qquad H \equiv \lambda x.\lambda y.\,\mathrm{Snd}(y\,D\,\langle\overline 0, F x\rangle).

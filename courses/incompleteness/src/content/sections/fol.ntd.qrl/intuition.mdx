@@ -20,7 +20,7 @@ If $a$ occurs in an undischarged assumption, a proof of $A(a)$ may rely on what 
 
 <ExampleCheck id="qrl-bad" />
 
-The $\forall$Intro inference is wrong: at that point $A(a)$ is an undischarged assumption (it is discharged only by the $\exists$Elim below). The checker reports exactly that. Without the condition this tree would "derive" $\forall x\, A(x)$ from $\exists x\, A(x)$ — but $\exists x\, A(x) \nvDash \forall x\, A(x)$: take a structure in which $A$ is true of some elements and not others. (Section C.10's lab finds such a structure and points to the step where truth is lost.)
+The $\forall$Intro inference is wrong: at that point $A(a)$ is an undischarged assumption (it is discharged only by the $\exists$Elim below). The checker reports exactly that. Without the condition this tree would "derive" $\forall x\, A(x)$ from $\exists x\, A(x)$ — but $\exists x\, A(x) \nvDash \forall x\, A(x)$: take a structure in which $A$ is true of some elements and not others. (The lab of <Ref k="fol:ntd:sou:sec" /> finds such a structure and points to the step where truth is lost.)
 
 For $\exists$Elim the condition is similar: $a$ must not occur in $\exists x\, A(x)$, in the conclusion $C$, or in any undischarged assumption other than the $A(a)$ being discharged.
 

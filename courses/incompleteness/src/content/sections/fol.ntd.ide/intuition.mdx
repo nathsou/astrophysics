@@ -18,6 +18,6 @@ In =Elim, $A(t_1)$ and $A(t_2)$ are instances of one formula $A(x)$; since $A(x)
 
 ## A longer example
 
-From "there is at most one $A$, namely $c$" the book derives that any two $A$s are identical. Formal mode shows the complete derivation. The book writes out the part leading to $a = c$ and says that $b = c$ is similar and that $a = b$ then follows by =Elim; the edition fills in these steps. The last =Elim has the identity $b = c$ as its first premise, as the rule's schema requires.
+From $\exists x\, \forall y\, (A(y) \rightarrow y = x)$ — some $x$ is the only thing that can be an $A$ — the book derives that any two $A$s are identical. The $\exists$Elim names that $x$ by the eigenvariable $c$. Formal mode shows the complete derivation. The book writes out the part leading to $a = c$ and says that $b = c$ is similar and that $a = b$ then follows by =Elim; the edition fills in these steps. The last =Elim has the identity $b = c$ as its first premise, as the rule's schema requires.
 
 <ExSymmetry />

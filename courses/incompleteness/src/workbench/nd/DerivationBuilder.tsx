@@ -11,7 +11,7 @@ import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'rea
 import type { Formula, Term } from '../../engine/syntax/ast';
 import { formulaEq, constants, isSentence, termEq } from '../../engine/syntax/ops';
 import { constName } from '../../engine/syntax/language';
-import { linearize, RULE_NAMES, type Deriv, type Rule } from '../../engine/proof/nd';
+import { check, linearize, RULE_NAMES, type Deriv, type Rule } from '../../engine/proof/nd';
 import { nd, ndMessage, ndTex, ndText, parseND, parseNDTerm } from '../../engine/proof/ndlang';
 import {
   addAssumption, availableAt, checkState, constructionOf, dropPiece, findNode, forward, FORWARD_ARITY, FORWARD_NEEDS, freshEigen, freshLabel, NEEDS, plug, refine, retract, setLabel, start, suggest,
@@ -242,6 +242,8 @@ function initHistory(ex: NDExample | undefined, fromGoal: boolean | undefined, g
 }
 
 function ExampleNote({ ex, adapted, valid, onAdapted, onBook }: { ex: NDExample; adapted: boolean; valid: boolean; onAdapted: () => void; onBook: () => void }) {
+  // The discrepancy note describes a rejection; it is shown only while the checker rejects the book's tree.
+  const bookRejected = useMemo(() => !!ex.discrepancy && !check(ex.build()).valid, [ex]);
   return (
     <div className="ndb-discrepancy" role="note">
       <div>
@@ -249,9 +251,9 @@ function ExampleNote({ ex, adapted, valid, onAdapted, onBook }: { ex: NDExample;
         {valid ? <Prov kind="checked">accepted by the checker</Prov> : <Prov kind="failed">rejected by the checker</Prov>}
       </div>
       {ex.incorrect && <p style={{ margin: '4px 0 0' }}>The book gives this derivation as an example of what the rules do <em>not</em> allow.</p>}
-      {ex.discrepancy && !adapted && (
+      {bookRejected && !adapted && (
         <p style={{ margin: '4px 0 0' }}>
-          <b>Book and checker differ.</b> {ex.discrepancy}{' '}
+          <b>The checker is stricter than the book.</b> {ex.discrepancy}{' '}
           {ex.adapted && (
             <button type="button" className="linklike" onClick={onAdapted}>
               Load the version with {ex.adapted.change}
@@ -803,8 +805,8 @@ function Pieces({ s, onApply, selectedGoal, axioms }: { s: BState; onApply: (r: 
       )}
       {s.pieces.length === 0 && (
         <p className="ndb-hint">
-          No pieces yet. (=Intro needs no premises:{' '}
-          <ForwardForm s={s} rule="eqI" picked={[]} onApply={onApply} inline />)
+          No pieces yet. =Intro needs no premises:{' '}
+          <ForwardForm s={s} rule="eqI" picked={[]} onApply={onApply} inline />
         </p>
       )}
     </div>
