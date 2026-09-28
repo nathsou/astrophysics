@@ -28,6 +28,12 @@ export function annotationKeys(sectionId: string, blocks: Block[]): Map<Block, s
   const keys = new Map<Block, string>();
   const counts = new Map<string, number>();
   for (const b of blocks) {
+    // Paragraphs are keyed by their block id (e.g. `sol.set.crd/p12`), which is unique in the book.
+    if (b.t === 'p') {
+      keys.set(b, b.id);
+      continue;
+    }
+    // Environments by label, or by kind and position (`section:kind:n`).
     if (b.t !== 'env') continue;
     const n = (counts.get(b.kind) ?? 0) + 1;
     counts.set(b.kind, n);

@@ -52,6 +52,10 @@ describe('macro layer', () => {
 });
 
 describe('display splitting', () => {
+  it('does not split inside a macro’s bracketed argument', () => {
+    expect(splitRows('\\lexists[u][(A \\\\ B)] \\\\ C')).toEqual(['\\lexists[u][(A \\\\ B)]', 'C']);
+    expect(splitRows('[0, 1) \\\\ x')).toEqual(['[0, 1)', 'x']);
+  });
   it('splits rows at top level only', () => {
     expect(splitRows('a & b \\\\ \\begin{cases} x \\\\ y \\end{cases} & c')).toHaveLength(2);
   });

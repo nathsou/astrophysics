@@ -94,7 +94,7 @@ The converter follows the book’s driver `ic.tex` as LaTeX would: chapter and s
 
 1. `npm run upstream:sync -- --openlogic <OpenLogic checkout> --ic <incompleteness-computability checkout>`
 2. `npm run convert` and review the diff of `src/content/source/` and `report.json`.
-3. Annotations attach to blocks by label, or by kind and position within a section (`inc.art.cod:defn:1`); check that they still sit where intended.
+3. Annotations attach to blocks by label, by kind and position within a section (`inc.art.cod:defn:1`), or, for plain paragraphs, by block id (`sol.set.crd/p12`); check that they still sit where intended.
 
 ## Conventions added by this edition
 

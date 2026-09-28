@@ -1486,13 +1486,26 @@ export function splitRows(s: string): string[] {
   const rows: string[] = [];
   let depth = 0;
   let envDepth = 0;
+  // Optional-argument brackets of macros (\lexists[u][ … ]): a \\ inside one is a line break
+  // within that argument, not a new row (as in the multline for Inf(X) in 8.12). A bracket counts
+  // as an argument bracket when it follows a control word or another argument's closing bracket,
+  // so literal brackets such as [0, 1) are unaffected.
+  let bracket = 0;
   let start = 0;
   for (let i = 0; i < s.length; i++) {
     const c = s[i];
+    if (c === '[' && /(\\[a-zA-Z]+\*?|\])\s*$/.test(s.slice(Math.max(0, i - 40), i))) {
+      bracket++;
+      continue;
+    }
+    if (c === ']' && bracket > 0) {
+      bracket--;
+      continue;
+    }
     if (c === '\\') {
       if (s.startsWith('\\begin{', i)) envDepth++;
       else if (s.startsWith('\\end{', i)) envDepth--;
-      else if (s[i + 1] === '\\' && depth === 0 && envDepth === 0) {
+      else if (s[i + 1] === '\\' && depth === 0 && envDepth === 0 && bracket === 0) {
         rows.push(s.slice(start, i));
         i++;
         // optional [len] after \\
