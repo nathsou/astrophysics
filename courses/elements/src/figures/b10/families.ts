@@ -319,8 +319,8 @@ export function findBinomial(order: number): FigureDef {
       let ac: number;
       let cb: number;
       if (order <= 3) {
-        const m = g.param('m', 3, { min: 2, max: 6, label: 'AB = m²: m' });
-        const n = g.param('n', 2, { min: 1, max: 5, label: 'BC = n²: n' });
+        const m = g.param('m', 3, { min: 2, max: 6, label: 'm (AB = m²)' });
+        const n = g.param('n', 2, { min: 1, max: 5, label: 'n (BC = n²)' });
         need(n < m && !isSquareInt(m * m - n * n), 'n < m and m² − n² not a square');
         ac = m * m - n * n;
         cb = n * n;

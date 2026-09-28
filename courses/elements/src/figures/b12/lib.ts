@@ -3,7 +3,7 @@
 // latitude–longitude polyhedron of XII.17.
 
 import type { G, Style } from '../../geometry/figure';
-import { add, cross, dot, len, mul, sub, v, type V } from '../../geometry/vec';
+import { add, cross, dot, len, mid, mul, sub, v, type V } from '../../geometry/vec';
 
 export const v3 = (x: number, y: number, z: number): V => v(x, y, z);
 
@@ -164,4 +164,67 @@ export function globe(c: V, r: number, k: number) {
       vol += tetra(c, a, b, cc) + (j + 1 < k ? tetra(c, a, cc, d) : 0);
     }
   return { P, m, vol: 2 * vol };
+}
+
+/** Volume of a convex solid given by its vertices and faces: pyramids from an inner point. */
+export function convexVol(pts: V[], faces: number[][]): number {
+  const o = centroid(pts);
+  return faces.reduce((s, f) => s + pyramidVol(f.map((i) => pts[i]), o), 0);
+}
+
+export type Tet = [V, V, V, V];
+
+/**
+ * XII.3: the pyramid with base abc and vertex d, cut at the midpoints of its edges. Returns the two
+ * small pyramids (the one at the base corner a, and the one at the vertex d, each with its base
+ * first) and the two prisms, as vertex lists with faces.
+ */
+export function divide([a, b, c, d]: Tet) {
+  const e = mid(a, b);
+  const f = mid(b, c);
+  const gg = mid(c, a);
+  const h = mid(a, d);
+  const k = mid(d, b);
+  const l = mid(d, c);
+  return {
+    pyramids: [
+      [a, e, gg, h],
+      [h, k, l, d],
+    ] as Tet[],
+    prisms: [
+      { pts: [e, b, f, gg, h, k], faces: [[0, 1, 2, 3], [1, 5, 2], [0, 4, 3], [0, 1, 5, 4], [4, 5, 2, 3]] },
+      { pts: [gg, f, c, h, k, l], faces: [[0, 1, 2], [3, 4, 5], [4, 1, 2, 5], [5, 2, 0, 3], [3, 4, 1, 0]] },
+    ],
+    mids: { e, f, g: gg, h, k, l },
+  };
+}
+
+/** After n divisions: the total volume of the prisms, and the pyramids that are left. */
+export function exhaust(t: Tet, n: number): { prisms: number; left: Tet[] } {
+  let left: Tet[] = [t];
+  let prisms = 0;
+  for (let i = 0; i < n; i++) {
+    const next: Tet[] = [];
+    for (const p of left) {
+      const d = divide(p);
+      prisms += d.prisms.reduce((s, q) => s + convexVol(q.pts, q.faces), 0);
+      next.push(...d.pyramids);
+    }
+    left = next;
+  }
+  return { prisms, left };
+}
+
+/**
+ * A cone with a horizontal base (centre c, radius r) and a vertex: the base circle, two generators
+ * through the ends of a diameter (a, and the point opposite), and a wireframe named `name` that
+ * highlights the whole cone.
+ */
+export function cone(g: G, c: V, r: number, apex: V, a: V, name?: string, s: Style = {}): void {
+  g.circle3(c, v(0, 0, 1), r, s);
+  const t = Math.atan2(a.y - c.y, a.x - c.x);
+  const b = onCircle(c, r, t + Math.PI);
+  g.segment(a, apex, { aux: true, ...s });
+  g.segment(b, apex, { aux: true, ...s });
+  if (name) g.curve([...arcPts(c, r, t, t + 2 * Math.PI, 72), apex, b], { aux: true, name, ...s });
 }

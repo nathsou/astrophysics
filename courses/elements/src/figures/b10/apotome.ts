@@ -11,7 +11,7 @@ import type { G } from '../../geometry/figure';
 import { v } from '../../geometry/vec';
 import { BINOMIAL_FORMULA, binomialOrder, binomialPreset, binomialSliders, kindHypothesis, ORDINAL, pairKind, partsFormula, partsSliders, sideParts, SUBTRACTIVE, type Parts } from './kinds';
 import { Lines } from './lib';
-import { line, Rat, Surd } from './ring';
+import { area, isSquareInt, line, need, Rat, Surd } from './ring';
 import { strip } from './strips';
 
 /** "a first apotome of a medial straight line", "minor" … as Euclid names the subtractive kinds. */
@@ -265,4 +265,74 @@ export function drawComm(g: G, kind: number, o: { choose?: number[]; apotome?: b
     g.claim(h, ok);
     g.claim(`CD is ${noun(k)}`, pairKind(scaled) === k);
   }
+}
+
+// ------------------------------------------------------------------ X.108–110: taking areas away
+
+/**
+ * From the area BC (B, C opposite corners) the area BD is taken away, leaving EC. The same areas
+ * are applied to the rational line FG = 1: GH = BC, GK = BD, so LH = EC and KH = FH − FK. The
+ * breadths are FH = √X and FK = √Y, so X, Y (rational) are what the sliders choose.
+ * X.108: BC rational, BD medial; X.109: BC medial, BD rational; X.110: both medial, incommensurable.
+ */
+export function drawRemainder(g: G, prop: 108 | 109 | 110): void {
+  let X: Rat;
+  let Y: Rat;
+  if (prop === 108) {
+    const a = g.param('a', 3, { min: 3, max: 5, step: 0.5, label: 'BC = a' });
+    const m = g.param('m', 5, { min: 2, max: 8, label: 'BD = √m' });
+    need(!isSquareInt(m), 'm is not a square');
+    X = rat(a).mul(rat(a));
+    Y = new Rat(m);
+  } else if (prop === 109) {
+    const m = g.param('m', 3, { min: 2, max: 15, label: 'BC = √m' });
+    const b = g.param('b', 1.5, { min: 0.25, max: 3, step: 0.25, label: 'BD = b' });
+    need(!isSquareInt(m) && b * b < m, 'm is not a square, and b² < m');
+    X = new Rat(m);
+    Y = rat(b).mul(rat(b));
+  } else {
+    const m = g.param('m', 12, { min: 3, max: 15, label: 'BC = √m' });
+    const n = g.param('n', 5, { min: 2, max: 14, label: 'BD = √n' });
+    need(n < m && !isSquareInt(m) && !isSquareInt(n) && !isSquareInt(m * n), 'n < m; m, n, mn not squares');
+    X = new Rat(m);
+    Y = new Rat(n);
+  }
+  const bc = Surd.root(X);
+  const bd = Surd.root(Y);
+  const fh = bc.value;
+  const fk = bd.value;
+  const hl = 1.3; // the height of BC: any shape will do
+  const L = Lines.fit(g, fh / hl + 0.8 + fh, 10);
+  const x = (k: number) => L.x(k);
+  const pt = (n: string, px: number, py: number, dir: number) => L.pt(n, v(px, py), { labelDir: dir });
+  const B = pt('B', 0, x(hl), 135);
+  const E = pt('E', x(fk / hl), x(hl), 90);
+  const D = pt('D', x(fk / hl), 0, 270);
+  const C = pt('C', x(fh / hl), 0, 315);
+  const bl = v(0, 0);
+  const tr = v(C.x, B.y);
+  g.polygon([bl, C, tr, B]);
+  g.polygon([bl, D, E, B]);
+  g.polygon([D, C, tr, E], { fill: true });
+  strip(L, x(fh / hl + 0.8), 0, 1, ['G', 'L', null], ['F', 'K', 'H'], [fk, fh - fk], [[0, 2], [0, 1], [1, 2, { fill: true }]]);
+
+  const X2 = Surd.rat(X);
+  const Y2 = Surd.rat(Y);
+  const one = Surd.rat(1);
+  const ord = apotomeOrder(X2, Y2);
+  const parts = sideParts({ X, Y });
+  const k = pairKind(parts);
+  const an = (r: boolean) => (r ? 'rational' : 'medial');
+  g.show('BC, BD', `${bc}, ${bd}`);
+  g.show('KH = FH − FK', `${bc} − ${bd}`);
+  g.show('side of EC', `${lineOf(parts.u)} − ${lineOf(parts.w)}`);
+  g.claim(`BC is ${an(prop === 108)}, BD is ${an(prop === 109)}`, (prop === 108 ? area.rational(bc) : area.medial(bc)) && (prop === 109 ? area.rational(bd) : area.medial(bd)));
+  if (prop === 110) g.claim('BC, BD incommensurable', !area.comm(bc, bd));
+  g.equal('LH = EC', fh - fk, ((C.x - D.x) / L.u) * hl);
+  g.claim(`FH ${prop === 108 ? 'commensurable' : 'incommensurable'} in length with FG`, line.comm(X2, one) === (prop === 108));
+  g.claim(`FK ${prop === 109 ? 'commensurable' : 'incommensurable'} in length with FG`, line.comm(Y2, one) === (prop === 109));
+  const cases = prop === 108 ? [1, 4] : prop === 109 ? [2, 5] : [3, 6];
+  g.claim(`KH is a ${ORDINAL[cases[0]]} or a ${ORDINAL[cases[1]]} apotome: here ${ORDINAL[ord] || 'none'}`, cases.includes(ord));
+  g.equal('(side of EC)² = EC', (Math.sqrt(parts.u.value) - Math.sqrt(parts.w.value)) ** 2, fh - fk);
+  g.claim(`the side of EC is ${KIND[k] || 'none of the six'}`, k === ord && cases.includes(k));
 }

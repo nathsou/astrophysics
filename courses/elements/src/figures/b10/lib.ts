@@ -129,7 +129,7 @@ export class Lines {
    * A line named by its points: names[0] at (x, y), then one point after each part. Returns the
    * points. `hide` lists names that exist only to be named; `below` puts the labels underneath.
    */
-  row(names: string[], parts: number[], x: number, y: number, o: { below?: boolean; hide?: string[]; style?: Style; dirs?: Record<string, number> } = {}): P[] {
+  row(names: string[], parts: number[], x: number, y: number, o: { below?: boolean; hide?: string[]; style?: Style & { ticks?: number }; dirs?: Record<string, number> } = {}): P[] {
     let at = x;
     const dir = (n: string) => o.dirs?.[n] ?? (o.below ? 270 : 90);
     const ps: P[] = [this.pt(names[0], v(at, y), { labelDir: dir(names[0]), hidden: o.hide?.includes(names[0]) })];
@@ -150,13 +150,15 @@ export class Lines {
   }
 
   /**
-   * A rectangle with its lower-left corner at (x, y), width w and height h (raw lengths).
+   * A rectangle with its lower-left corner at (x, y), width w and height h (all raw lengths,
+   * scaled by u).
    * Corners are named counter-clockwise from the lower left; null leaves a corner unnamed, and a
    * name starting with '~' is a hidden point (so that "the rectangle AC" finds the polygon by its
    * diagonal without a fourth label in the figure).
    */
   rect(names: (string | null)[], x: number, y: number, w: number, h: number, s: Style = {}, dirs: (number | undefined)[] = [225, 315, 45, 135]): V[] {
-    const cs = [v(x, y), v(x + w * this.u, y), v(x + w * this.u, y + h * this.u), v(x, y + h * this.u)];
+    const u = this.u;
+    const cs = [v(x * u, y * u), v((x + w) * u, y * u), v((x + w) * u, (y + h) * u), v(x * u, (y + h) * u)];
     const ps = cs.map((c, i) => (names[i] ? this.pt(names[i]!, c, { labelDir: dirs[i], hidden: names[i]!.startsWith('~') }) : c));
     this.g.polygon(ps, s);
     return ps;
@@ -209,7 +211,65 @@ export function looksCommensurable(x: number, y: number, limit = 200): boolean {
 export function deficientApplication(L: Lines, bd: number, dc: number, y: number) {
   const bc = bd + dc;
   const [B, F, E, D, C] = L.row(['B', 'F', 'E', 'D', 'C'], [dc, bc / 2 - dc, bd - bc / 2, dc], 0, y, { below: true });
-  L.rect([null, null, null, null], 0, y, bd, dc, { fill: true, aux: true });
-  L.rect([null, null, null, null], bd, y, dc, dc, { dashed: true, aux: true });
+  L.rect([null, null, null, null], 0, y / L.u, bd, dc, { fill: true, aux: true });
+  L.rect([null, null, null, null], bd, y / L.u, dc, dc, { dashed: true, aux: true });
   return { B, F, E, D, C };
+}
+
+/**
+ * X.33–35: on the diameter AB (A at the origin, B to the right) a semicircle; BC drawn down from B
+ * with midpoint `half`; the rectangle AE·EB = (BC/2)² applied to AB falling short by a square, `foot`
+ * its dividing point, and `top` the point of the semicircle above it. Names are [A, B, C, half,
+ * foot, top]. Needs BC < AB. Returns the points and the lengths of the two chords.
+ */
+export function semicircleSplit(L: Lines, ab: number, bc: number, names: [string, string, string, string, string, string]) {
+  const [nA, nB, nC, nHalf, nFoot, nTop] = names;
+  const ae = (ab + Math.sqrt(ab * ab - bc * bc)) / 2;
+  const A = L.pt(nA, v(0, 0), { labelDir: 180 });
+  const B = L.pt(nB, v(L.x(ab), 0), { labelDir: 0 });
+  const C = L.pt(nC, v(L.x(ab), -L.x(bc)), { labelDir: 0 });
+  const H = L.pt(nHalf, v(L.x(ab), -L.x(bc / 2)), { labelDir: 0 });
+  const Ft = L.pt(nFoot, v(L.x(ae), 0), { labelDir: 270 });
+  const T = L.pt(nTop, v(L.x(ae), L.x(Math.sqrt(ae * (ab - ae)))), { labelDir: 90 });
+  L.g.arc(v(L.x(ab / 2), 0), B, A, { aux: true });
+  L.g.segment(A, B);
+  L.g.segment(B, C);
+  L.g.segment(Ft, T);
+  L.g.segment(A, T);
+  L.g.segment(T, B);
+  L.g.angle(A, Ft, T, { right: true });
+  const d = (P: V, Q: V) => Math.hypot(P.x - Q.x, P.y - Q.y) / L.u;
+  return { A, B, C, H, Ft, T, ae, eb: ab - ae, at: d(A, T), tb: d(T, B), ft: d(Ft, T) };
+}
+
+/**
+ * The order (1–6) of the binomial √a + √b or the apotome √a − √b (a > b > 0 rational, a : b not a
+ * ratio of squares), following X. Deff. II and III: orders 1–3 when √(a − b) is commensurable in
+ * length with √a, 4–6 otherwise; then 1, 4 when the greater term √a is commensurable in length with
+ * the rational line ρ = 1, 2, 5 when the lesser term √b is, and 3, 6 when neither is.
+ * a, b are given as fractions [numerator, denominator] of positive integers.
+ */
+export function binomialOrder(a: [number, number], b: [number, number]): number {
+  const sq = ([n, d]: [number, number]) => isSquare(n / gcd(n, d)) && isSquare(d / gcd(n, d));
+  // (a − b)/a
+  const diff: [number, number] = [a[0] * b[1] - b[0] * a[1], a[1] * b[1]];
+  const ratio: [number, number] = [diff[0] * a[1], diff[1] * a[0]];
+  const comm = sq(ratio);
+  const k = sq(a) ? 1 : sq(b) ? 2 : 3;
+  return comm ? k : k + 3;
+}
+
+/**
+ * Proposition II.4 below a line A—B—C: the square on AC (from the point `at`, downwards) cut into
+ * the squares on AB and BC and two rectangles AB·BC. Unnamed; returns nothing.
+ */
+export function sumSquare(L: Lines, ab: number, bc: number, at: V) {
+  const ac = ab + bc;
+  const P = (x: number, y: number) => v(at.x + L.x(x), at.y - L.x(y));
+  const g = L.g;
+  g.polygon([P(0, 0), P(ac, 0), P(ac, ac), P(0, ac)], { aux: true });
+  g.polygon([P(0, 0), P(ab, 0), P(ab, ab), P(0, ab)], { fill: true, aux: true, text: 'AB²' });
+  g.polygon([P(ab, ab), P(ac, ab), P(ac, ac), P(ab, ac)], { fill: true, aux: true, text: 'BC²' });
+  g.polygon([P(ab, 0), P(ac, 0), P(ac, ab), P(ab, ab)], { aux: true, text: 'AB·BC' });
+  g.polygon([P(0, ab), P(ab, ab), P(ab, ac), P(0, ac)], { aux: true, text: 'AB·BC' });
 }
