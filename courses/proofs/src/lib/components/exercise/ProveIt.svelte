@@ -105,25 +105,26 @@
     font-size: 1rem;
     line-height: 1.55;
     padding: 0.6rem 0.75rem;
-    border: 1px solid var(--rule-strong);
+    border: 2px solid var(--fg);
     border-radius: var(--radius-sm);
-    background: var(--page);
+    background: var(--bg);
     color: var(--ink);
     resize: vertical;
   }
   .rubric {
     margin: 0.75rem 0 0;
-    border: 1px solid var(--rule);
+    border: 2px solid var(--fg);
     border-radius: var(--radius-sm);
     padding: 0.4rem 0.8rem 0.6rem;
     font-size: 0.85rem;
   }
   legend {
-    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-weight: 650;
-    color: var(--ink-3);
+    letter-spacing: 0.13em;
+    font-weight: 700;
+    color: var(--ink-2);
     padding: 0 0.3rem;
   }
   .rubric label {
@@ -148,17 +149,23 @@
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    border: 1px solid var(--border);
-    background: var(--surface-2);
-    border-radius: 6px;
-    padding: 0.25rem 0.65rem;
+    border: 2px solid var(--fg);
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    padding: 0.2rem 0.7rem;
     cursor: pointer;
+    font-weight: 700;
+  }
+  .tutor button:hover:not(:disabled) {
+    background: var(--fx-yellow);
+    color: var(--fx-ink);
   }
   .tutor button:disabled {
     opacity: 0.5;
     cursor: default;
   }
-  .tutor .link {
+  .tutor .link,
+  .tutor .link:hover:not(:disabled) {
     border: 0;
     background: none;
     color: var(--accent);
@@ -176,16 +183,18 @@
     padding: 0.6rem 0.9rem 0.2rem;
     border-radius: var(--radius-sm);
     background: var(--accent-soft);
+    border-left: 6px solid var(--fx-yellow);
     font-size: 1rem;
   }
   .reply :global(p) {
     margin: 0 0 0.6rem;
   }
   .who {
-    font-size: 0.7rem !important;
+    font-family: var(--font-mono);
+    font-size: 0.68rem !important;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 650;
+    letter-spacing: 0.13em;
+    font-weight: 700;
     color: var(--accent);
     margin-bottom: 0.2rem !important;
   }

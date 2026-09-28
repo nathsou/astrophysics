@@ -55,11 +55,11 @@
     z-index: 60;
     max-width: calc(100vw - 16px);
     background: var(--surface);
-    border: 1px solid var(--border);
+    border: 2px solid var(--fg);
     border-radius: var(--radius);
     box-shadow: var(--shadow-lg);
     padding: 0.7rem 0.9rem;
-    font-size: 0.85rem;
+    font-size: 0.86rem;
     line-height: 1.5;
     color: var(--ink);
     animation: pop 110ms ease-out;

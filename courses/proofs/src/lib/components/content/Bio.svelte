@@ -13,7 +13,11 @@
     children,
   }: { name: string; born?: string | number; died?: string | number; place?: string; title?: string; children?: Snippet } = $props();
 
-  const HUES = ['var(--byrne-red)', 'var(--byrne-blue)', 'var(--byrne-yellow)', 'var(--accent)', 'var(--history)'];
+  const HUES = [
+    ['var(--fx-red)', 'var(--fx-cream)'],
+    ['var(--fx-blue)', 'var(--fx-cream)'],
+    ['var(--fx-yellow)', 'var(--fx-ink)'],
+  ] as const;
   const initials = $derived(
     name
       .replace(/\(.*?\)/g, '')
@@ -28,7 +32,7 @@
 </script>
 
 <aside class="bio" aria-label="Biography: {name}">
-  <div class="mono ui" style:--hue={hue} aria-hidden="true">{initials}</div>
+  <div class="mono ui" style:--hue={hue[0]} style:--on={hue[1]} aria-hidden="true">{initials}</div>
   <div class="text">
     <p class="who ui">
       <span class="name">{name}</span>
@@ -42,27 +46,26 @@
 <style>
   .bio {
     display: grid;
-    grid-template-columns: 3.4rem 1fr;
-    gap: 1rem;
-    margin: 2rem 0;
-    padding: 1.1rem 1.2rem 0.4rem;
-    border: 1px solid var(--border);
+    grid-template-columns: 3.6rem 1fr;
+    gap: 1.1rem;
+    margin: 2.25rem 0;
+    padding: 1.15rem 1.3rem 0.4rem;
+    border: 2px solid var(--fg);
     border-radius: var(--radius);
     background: var(--surface);
   }
   .mono {
-    width: 3.4rem;
-    height: 3.4rem;
-    border-radius: 50%;
+    width: 3.6rem;
+    height: 3.6rem;
+    border-radius: 0;
     display: grid;
     place-items: center;
-    font-family: var(--font-body);
-    font-size: 1.35rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    color: var(--hue);
-    background: color-mix(in srgb, var(--hue) 12%, var(--surface));
-    border: 2px solid color-mix(in srgb, var(--hue) 55%, transparent);
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: var(--on);
+    background: var(--hue);
   }
   .who {
     margin: 0 !important;
@@ -72,21 +75,24 @@
     align-items: baseline;
   }
   .name {
-    font-weight: 650;
-    font-size: 1.02rem;
+    font-family: var(--font-display);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    font-size: 1.2rem;
   }
   .life {
+    font-family: var(--font-mono);
     color: var(--ink-3);
-    font-size: 0.85rem;
+    font-size: 0.78rem;
     font-variant-numeric: tabular-nums;
   }
   .place {
     margin: 0.1rem 0 0.5rem !important;
-    font-size: 0.8rem;
+    font-size: 0.84rem;
     color: var(--ink-2);
   }
   .body {
-    font-size: 0.98rem;
+    font-size: 1rem;
   }
   .body :global(p) {
     margin: 0 0 0.75rem;

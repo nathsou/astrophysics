@@ -54,7 +54,7 @@
   dialog {
     max-width: 32rem;
     width: calc(100vw - 2rem);
-    border: 1px solid var(--border);
+    border: 2px solid var(--fg);
     border-radius: var(--radius);
     background: var(--surface);
     color: var(--ink);
@@ -64,11 +64,14 @@
     line-height: 1.5;
   }
   dialog::backdrop {
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(26, 25, 23, 0.55);
   }
   h2 {
     margin: 0 0 0.6rem;
-    font-size: 1.1rem;
+    font-family: var(--font-display);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    font-size: 1.4rem;
   }
   p {
     color: var(--ink-2);
@@ -86,9 +89,9 @@
     font: inherit;
     font-weight: 400;
     padding: 0.4rem 0.55rem;
-    border: 1px solid var(--rule-strong);
-    border-radius: 6px;
-    background: var(--page);
+    border: 2px solid var(--fg);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
     color: var(--ink);
   }
   .buttons {
@@ -100,17 +103,18 @@
     flex: 1;
   }
   button {
-    border: 1px solid var(--border);
-    background: var(--surface-2);
-    border-radius: 6px;
-    padding: 0.35rem 0.9rem;
+    border: 2px solid var(--fg);
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    padding: 0.3rem 0.9rem;
     cursor: pointer;
+    font-weight: 700;
   }
   .primary {
     background: var(--accent);
     border-color: var(--accent);
     color: var(--on-accent);
-    font-weight: 600;
+    font-weight: 700;
   }
   .danger {
     color: var(--bad);

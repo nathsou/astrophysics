@@ -29,63 +29,65 @@
 
 <style>
   .quiz {
-    margin: 2rem 0;
-    padding: 1rem 1.2rem 1.1rem;
-    border: 1px solid var(--border);
+    margin: 2.25rem 0;
+    padding: 1rem 1.2rem 1.15rem;
+    border: 2px solid var(--fg);
+    border-left: 8px solid var(--fx-blue);
     border-radius: var(--radius);
     background: var(--surface);
-    font-size: 0.92rem;
+    font-size: 0.94rem;
   }
   legend {
     display: flex;
     align-items: center;
     gap: 0.35rem;
     padding: 0 0.4rem;
-    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 650;
-    color: var(--ink-2);
+    letter-spacing: 0.14em;
+    font-weight: 700;
+    color: var(--ink);
   }
   .q {
     font-family: var(--font-body);
-    font-size: 1.05rem;
-    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
   }
   .opts {
     display: grid;
-    gap: 0.4rem;
+    gap: 0.45rem;
   }
   .opt {
     display: flex;
     gap: 0.6rem;
     align-items: flex-start;
     padding: 0.5rem 0.75rem;
-    border: 1px solid var(--border);
+    border: 2px solid var(--border);
     border-radius: var(--radius-sm);
     cursor: pointer;
     transition: border-color 120ms, background-color 120ms;
   }
   .opt:hover {
-    border-color: var(--rule-strong);
+    border-color: var(--fg);
   }
   .opt input {
     margin-top: 0.3rem;
-    accent-color: var(--accent-2);
+    accent-color: var(--fx-blue);
   }
   .opt.right {
     border-color: var(--good);
-    background: color-mix(in srgb, var(--good) 8%, var(--surface));
+    background: color-mix(in srgb, var(--good) 12%, var(--surface));
   }
   .opt.wrong {
     border-color: var(--critical);
-    background: color-mix(in srgb, var(--critical) 7%, var(--surface));
+    background: color-mix(in srgb, var(--critical) 10%, var(--surface));
   }
   .feedback {
     margin-top: 0.8rem;
     padding: 0.6rem 0.8rem;
     border-radius: var(--radius-sm);
-    background: var(--surface-2);
+    background: var(--pn);
     line-height: 1.5;
   }
 </style>

@@ -59,7 +59,7 @@
     const d = img.data;
     const wall = (p: number) => d[p * 4 + 3]! > 40;
     const inside = (x: number, y: number) => (x - SIZE / 2) ** 2 + (y - SIZE / 2) ** 2 < (R - 1) ** 2;
-    const palette = ['#d0312d', '#1f5aa6', '#e9a91b', '#1baf7a', '#8c2a3c', '#4a3aa7', '#eb6834', '#008300'];
+    const palette = ['#d0312d', '#1f5aa6', '#e9a91b', '#2f7d5f', '#c9578a', '#6a4c93', '#d9761f', '#2a8496'];
     let k = 0;
     const seen = new Uint8Array(SIZE * SIZE);
     for (let y = 0; y < SIZE; y++)

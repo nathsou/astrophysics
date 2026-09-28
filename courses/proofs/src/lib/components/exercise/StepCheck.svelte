@@ -141,7 +141,7 @@
     {#if result.error}
       <p class="error ui">⚠ {result.error}</p>
     {:else}
-      <div class="steps" aria-live="polite">
+      <div class="steps" class:pending={result.steps.some((s) => !s.verdict.ok)} aria-live="polite">
         {#each result.steps as s, i (i)}
           <div class="lhs" class:newchain={s.first && i > 0}>{#if s.first}<Tex tex={toTex(s.from)} />{/if}</div>
           <div class="rel"><Tex tex={REL_TEX[s.rel]} /></div>
@@ -163,14 +163,14 @@
     font-size: 0.9rem;
     line-height: 1.6;
     padding: 0.6rem 0.75rem;
-    border: 1px solid var(--rule-strong);
+    border: 2px solid var(--fg);
     border-radius: var(--radius-sm);
-    background: var(--page);
+    background: var(--bg);
     color: var(--ink);
     resize: vertical;
   }
   .input:focus {
-    outline: 2px solid var(--focus);
+    outline: 3px solid var(--focus);
     outline-offset: 0;
   }
   .help {
@@ -186,10 +186,14 @@
     grid-template-columns: auto auto 1fr auto;
     align-items: center;
     gap: 0.35rem 0.5rem;
-    padding: 0.6rem 0.75rem;
-    background: var(--surface-2);
-    border-radius: var(--radius-sm);
+    padding: 0.7rem 0.85rem;
+    background: var(--pn);
+    border-left: 6px solid var(--fx-blue);
+    border-radius: 0;
     overflow-x: auto;
+  }
+  .steps.pending {
+    border-left-color: var(--fx-red);
   }
   .lhs {
     text-align: right;
@@ -205,7 +209,7 @@
   }
   .note {
     font-family: var(--font-ui);
-    font-size: 0.75rem;
+    font-size: 0.78rem;
     color: var(--ink-3);
     font-style: italic;
   }
@@ -221,9 +225,15 @@
     font-size: 0.85rem;
     color: var(--ink-2);
   }
+  .msg {
+    font-weight: 500;
+  }
+  .msg:not(.ok) {
+    color: var(--bad);
+  }
   .msg.ok {
     color: var(--ok);
-    font-weight: 600;
+    font-weight: 700;
   }
   @media (max-width: 560px) {
     .steps {

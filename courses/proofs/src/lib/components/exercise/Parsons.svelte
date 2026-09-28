@@ -178,16 +178,17 @@
     font-size: 0.95rem;
     line-height: 1.45;
     padding: 0.4rem 0.6rem;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--page);
+    border: 2px solid var(--fg);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
     cursor: pointer;
   }
   .line :global(p) {
     margin: 0;
   }
   button.line:hover {
-    border-color: var(--lab);
+    background: var(--pn);
+    border-color: var(--fx-blue);
   }
   .proof li {
     display: grid;
@@ -213,9 +214,9 @@
     gap: 0.15rem;
   }
   .tools button {
-    border: 1px solid var(--border);
+    border: 2px solid var(--fg);
     background: var(--surface);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     width: 1.5rem;
     height: 1.5rem;
     cursor: pointer;
@@ -232,8 +233,8 @@
     font-size: 0.8rem;
     color: var(--ink-3);
     padding: 0.6rem;
-    border: 1px dashed var(--rule-strong);
-    border-radius: 6px;
+    border: 2px dashed var(--rule-strong);
+    border-radius: var(--radius-sm);
   }
   .row {
     display: flex;
@@ -244,13 +245,13 @@
     font-size: 0.85rem;
   }
   .check {
-    border: 1px solid var(--lab);
-    background: var(--lab);
-    color: white;
-    border-radius: 6px;
-    padding: 0.3rem 0.9rem;
+    border: 2px solid var(--fx-blue);
+    background: var(--fx-blue);
+    color: var(--fx-cream);
+    border-radius: var(--radius-sm);
+    padding: 0.26rem 0.9rem;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 700;
   }
   .check:disabled {
     opacity: 0.5;
@@ -267,6 +268,7 @@
     padding: 0.6rem 0.9rem 0.1rem;
     border-radius: var(--radius-sm);
     background: var(--ok-soft);
+    border-left: 4px solid var(--fx-blue);
   }
   .explain :global(p) {
     margin: 0 0 0.6rem;

@@ -74,13 +74,11 @@
   }
   .foot {
     border-top: 2px solid var(--fg);
-    padding: 1.5rem 1rem 2rem;
+    padding: 1.5rem max(1rem, calc((100% - 72rem) / 2 + 1rem)) 2rem;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.9rem 1.5rem;
-    max-width: 72rem;
-    margin: 0 auto;
   }
   .bars {
     display: flex;

@@ -46,7 +46,7 @@
     {#each PARTS as part (part.id)}
       <div class="part">
         <div class="part-head">
-          <span class="pid">{part.id === '0' ? 'Prologue' : part.id === 'E' ? 'Epilogue' : `Part ${part.id}`}</span>
+          {#if part.id !== '0' && part.id !== 'E'}<span class="pid">Part {part.id}</span>{/if}
           <h3>{part.title}</h3>
           <p>{part.blurb}</p>
         </div>
@@ -225,14 +225,17 @@
     -webkit-background-clip: text;
     background-clip: text;
     background-image:
-      linear-gradient(var(--fx-cream), var(--fx-cream)), linear-gradient(var(--fx-ink), var(--fx-ink)), linear-gradient(var(--fg), var(--fg));
+      linear-gradient(var(--fx-cream), var(--fx-cream)), linear-gradient(var(--fx-cream), var(--fx-cream)),
+      linear-gradient(var(--fx-ink), var(--fx-ink)), linear-gradient(var(--fg), var(--fg));
     background-repeat: no-repeat;
     background-position:
       calc(-32 * var(--u)) calc(-32 * var(--u)),
+      calc(-32 * var(--u)) calc(95 * var(--u)),
       calc(308 * var(--u)) calc(-32 * var(--u)),
       0 0;
     background-size:
-      calc(340 * var(--u)) calc(340 * var(--u)),
+      calc(372 * var(--u)) calc(159 * var(--u)),
+      calc(340 * var(--u)) calc(245 * var(--u)),
       calc(170 * var(--u)) calc(170 * var(--u)),
       100% 100%;
   }
@@ -317,10 +320,6 @@
   }
   .part {
     padding: 2rem 0 0.75rem;
-  }
-  .part + .part {
-    border-top: 2px solid var(--fg);
-    margin-top: 1.25rem;
   }
   .part-head {
     display: grid;

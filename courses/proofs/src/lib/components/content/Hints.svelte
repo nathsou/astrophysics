@@ -40,49 +40,56 @@
 
 <style>
   .hints {
-    margin: 1.75rem 0;
-    padding: 0.75rem 1rem 0.85rem;
-    border: 1px dashed color-mix(in srgb, var(--tip) 50%, var(--border));
+    margin: 1.9rem 0;
+    padding: 0.8rem 1.1rem 0.9rem;
+    border: 2px dashed var(--fg);
     border-radius: var(--radius-sm);
-    background: color-mix(in srgb, var(--tip) 4%, var(--surface));
-    font-size: 0.9rem;
+    background: transparent;
+    font-size: 0.92rem;
   }
   header {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
-    color: var(--tip);
+    gap: 0.45rem;
+    color: var(--ink);
   }
   .kind {
+    font-family: var(--font-mono);
     font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 650;
+    letter-spacing: 0.13em;
+    font-weight: 700;
   }
   .title {
     color: var(--ink);
-    font-weight: 600;
+    font-weight: 700;
   }
   ol {
-    margin: 0.5rem 0 0.4rem;
+    margin: 0.5rem 0 0.5rem;
     padding-left: 1.4rem;
   }
   button {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    border: 1px solid var(--border);
+    border: 2px solid var(--fg);
     background: var(--surface);
-    border-radius: 6px;
-    padding: 0.3rem 0.7rem;
+    color: var(--ink);
+    font-weight: 700;
+    border-radius: var(--radius-sm);
+    padding: 0.28rem 0.75rem;
     cursor: pointer;
-    font-size: 0.82rem;
+    font-size: 0.84rem;
   }
   button:hover {
-    border-color: var(--tip);
+    background: var(--fx-yellow);
+    color: var(--fx-ink);
   }
   .count {
-    color: var(--ink-3);
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 0.75rem;
+    opacity: 0.75;
     font-variant-numeric: tabular-nums;
   }
   .hide {

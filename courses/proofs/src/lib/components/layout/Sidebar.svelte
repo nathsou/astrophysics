@@ -78,6 +78,7 @@
   .part {
     color: var(--accent);
     font-weight: 700;
+    margin-right: 0.6em;
   }
   ul {
     list-style: none;

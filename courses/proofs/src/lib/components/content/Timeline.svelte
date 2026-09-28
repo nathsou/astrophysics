@@ -37,39 +37,45 @@
   ol::before {
     content: '';
     position: absolute;
-    left: 4.6rem;
+    left: 4.75rem;
     top: 0.4rem;
     bottom: 0.4rem;
     width: 2px;
-    background: var(--rule-strong);
+    background: var(--fg);
   }
   li {
     display: grid;
     grid-template-columns: 4rem 1.2rem 1fr;
-    gap: 0 0.3rem;
-    padding: 0.45rem 0;
+    gap: 0 0.4rem;
+    padding: 0.5rem 0;
     margin: 0 !important;
   }
   .year {
     text-align: right;
-    font-weight: 650;
-    color: var(--history);
-    font-size: 0.95rem;
+    font-family: var(--font-display);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    font-size: 0.98rem;
     padding-top: 0.05rem;
   }
   .dot {
-    width: 10px;
-    height: 10px;
+    width: 11px;
+    height: 11px;
     margin: 0.4rem 0 0 0.4rem;
-    border-radius: 50%;
-    background: var(--surface);
-    border: 2px solid var(--history);
+    background: var(--fx-red);
     position: relative;
     z-index: 1;
   }
+  li:nth-child(3n + 2) .dot {
+    background: var(--fx-blue);
+  }
+  li:nth-child(3n) .dot {
+    background: var(--fx-yellow);
+  }
   .title {
-    font-weight: 620;
-    font-size: 0.92rem;
+    font-weight: 700;
+    font-size: 0.95rem;
   }
   .where {
     font-size: 0.75rem;
@@ -77,11 +83,11 @@
     margin-left: 0.3rem;
   }
   .people {
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     color: var(--ink-2);
   }
   .text {
-    font-size: 0.84rem;
+    font-size: 0.86rem;
     color: var(--ink-2);
     line-height: 1.5;
     margin-top: 0.1rem;

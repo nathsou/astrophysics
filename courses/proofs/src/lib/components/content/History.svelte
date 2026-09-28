@@ -27,49 +27,50 @@
     display: grid;
     grid-template-columns: 6.5rem 1fr;
     gap: 1.25rem;
-    margin: 2rem 0;
+    margin: 2.25rem 0;
     padding: 1.2rem 1.3rem 0.5rem;
     background: var(--history-soft);
-    border: 1px solid color-mix(in srgb, var(--history) 25%, var(--border));
-    border-radius: var(--radius);
+    border-top: 2px solid var(--fg);
+    border-bottom: 2px solid var(--fg);
     position: relative;
   }
   .rail {
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
-    border-right: 1px solid color-mix(in srgb, var(--history) 30%, transparent);
+    border-right: 2px solid var(--fg);
     padding-right: 1rem;
   }
   .tag {
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;
-    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-weight: 650;
+    letter-spacing: 0.14em;
+    font-weight: 700;
     color: var(--history);
   }
   .year {
-    font-family: var(--font-body);
-    font-size: 2rem;
-    font-weight: 500;
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
     line-height: 1;
-    color: var(--history);
-    font-variant-numeric: oldstyle-nums;
+    color: var(--ink);
   }
   h4 {
     margin: 0 0 0.2rem !important;
-    font-size: 1.05rem !important;
+    font-size: 1.1rem !important;
   }
   .people {
     margin: 0 0 0.7rem !important;
-    font-size: 0.82rem;
+    font-size: 0.84rem;
     color: var(--ink-2);
   }
   .content {
-    font-size: 1rem;
+    font-size: 1.02rem;
     min-width: 0;
   }
   .content :global(p) {
