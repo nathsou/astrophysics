@@ -44,6 +44,9 @@ describe('macro layer', () => {
   it('uses latin formula letters, as ic-config.sty asks', () => {
     expect(cfg.formulaLetters).toBeNull();
   });
+  it('drops the vertical alignment of gathered/aligned, which KaTeX would print', () => {
+    expect(expandMath('\\begin{gathered}[b] x \\end{gathered}', hooks)).not.toContain('[b]');
+  });
   it('never fuses a control word with a following letter', () => {
     expect(expandMath('\\lnot!A', hooks)).toBe('\\lnot A');
   });

@@ -228,32 +228,7 @@ const OPS: Op[] = [
   { key: 'Add', label: 'Add', src: 'Add', arity: 2, f: (a, b) => a + b, cap: (a, b) => a + b <= 40 },
   { key: "Add'", label: 'Add′', src: "Add'", arity: 2, f: (a, b) => a + b, cap: (a, b) => a + b <= 40 },
   { key: 'Mult', label: 'Mult', src: 'Mult', arity: 2, f: (a, b) => a * b, cap: (a, b) => a * b <= 64 },
-  {
-    key: "Mult'",
-    label: 'Mult′ (corrected: a (Add b) 0̄)',
-    src: "Mult'",
-    arity: 2,
-    f: (a, b) => a * b,
-    cap: (a, b) => a * b <= 36 && a <= 8,
-    note: (
-      <div className="lam-erratum">
-        <Prov kind="added" /> The book prints <Tex tex="\mathrm{Mult}' \equiv \lambda ab.\, a(\mathrm{Add}\, a)\overline{0}" />. That adds <i>a</i> to <Tex tex="\overline 0" />, <i>a</i> times, and so computes <Tex tex="a\cdot a" />: try the next entry. This edition uses <Tex tex="\lambda ab.\, a(\mathrm{Add}\, b)\overline{0}" />, which adds <i>b</i>, <i>a</i> times.
-      </div>
-    ),
-  },
-  {
-    key: 'book-mult',
-    label: 'Mult′ as printed in the book: a (Add a) 0̄',
-    src: 'λa b. a (Add a) 0',
-    arity: 2,
-    f: (a, b) => a * b,
-    cap: (a, b) => a * a <= 36 && b <= 12,
-    note: (
-      <div className="lam-erratum">
-        <Prov kind="added" /> This is the term exactly as the book prints it. Its result does not depend on <i>b</i> at all: it is <Tex tex="\overline{a\cdot a}" />, so it λ-defines multiplication only when <i>a</i> = <i>b</i> (or <i>a</i> = 0).
-      </div>
-    ),
-  },
+  { key: "Mult'", label: 'Mult′', src: "Mult'", arity: 2, f: (a, b) => a * b, cap: (a, b) => a * b <= 36 && a <= 8 },
   {
     key: 'Exp',
     label: 'Exp',
@@ -262,8 +237,8 @@ const OPS: Op[] = [
     f: (a, b) => a ** b,
     cap: (a, b) => a ** b <= 128,
     note: (
-      <div className="lam-erratum">
-        <Prov kind="added" /> Try the exponent (the second argument) 0: <Tex tex="\mathrm{Exp}\,\overline a\,\overline 0 \twoheadrightarrow \overline 0\,\overline a \twoheadrightarrow \lambda x.\,x" />, which is not the numeral <Tex tex="\overline 1 \equiv \lambda f x.\,f x" /> (it is only η-equivalent to it). So Exp λ-defines exponentiation for exponents ≥ 1; the book does not mention the exception. <Tex tex="\mathrm{Exp}'" /> gives <Tex tex="\overline 1" />.
+      <div className="lam-aside">
+        <Prov kind="added" /> The exponent (the second argument) must be at least 1: <Tex tex="\mathrm{Exp}\,\overline a\,\overline 0 \twoheadrightarrow \overline 0\,\overline a \twoheadrightarrow \lambda x.\,x" />, which is not the numeral <Tex tex="\overline 1 \equiv \lambda f x.\,f x" /> (it is only η-equivalent to it). <Tex tex="\mathrm{Exp}'" /> gives <Tex tex="\overline 1" />.
       </div>
     ),
   },

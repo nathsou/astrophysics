@@ -995,7 +995,7 @@
            "c": [
             {
              "t": "text",
-             "v": "Again, when parentheses are left out, lambda abstraction is to be given the widest scope possible. From example, "
+             "v": "Again, when parentheses are left out, lambda abstraction is to be given the widest scope possible. For example, "
             },
             {
              "t": "math",
@@ -2958,13 +2958,13 @@
      "env": "gather",
      "rows": [
       {
-       "tex": "( \\lambda x_1 .\\, \\lambda x_2 .\\, \\ldots \\lambda x_n .\\, N ) M_1 \\dots M_n \\xrightarrow{\\beta}"
+       "tex": "( \\lambda x_1 .\\, \\lambda x_2 .\\, \\ldots \\lambda x_n .\\, N ) M_1 \\dots M_n"
       },
       {
-       "tex": "\\begin{aligned} \\xrightarrow{\\beta} {} & (( \\lambda x_2 .\\, \\ldots \\lambda x_n .\\, N )[M_1/x_1]) M_2 \\dots M_n\\\\ \\equiv {} & ( \\lambda x_2 .\\, \\ldots \\lambda x_n .\\, N[M_1/x_1] ) M_2 \\dots M_n \\\\ \\vdots & \\\\ \\xrightarrow{\\beta} {} &P[M_1/x_1]\\ldots[M_n/x_n] \\end{aligned}"
+       "tex": "\\begin{aligned} \\xrightarrow{\\beta} {} & (( \\lambda x_2 .\\, \\ldots \\lambda x_n .\\, N )[M_1/x_1]) M_2 \\dots M_n\\\\ \\equiv {} & ( \\lambda x_2 .\\, \\ldots \\lambda x_n .\\, N[M_1/x_1] ) M_2 \\dots M_n \\\\ \\vdots & \\\\ \\xrightarrow{\\beta} {} &N[M_1/x_1]\\ldots[M_n/x_n] \\end{aligned}"
       }
      ],
-     "src": "(\\lambd[x_1][\\lambd[x_2][\\ldots\\lambd[x_n][N]]]) M_1 \\dots M_n \\bredone\\\\\n  \\begin{aligned}\n  \\bredone {} & (\\Subst{(\\lambd[x_2][\\ldots\\lambd[x_n][N]])}{M_1}{x_1}) M_2\n  \\dots M_n\\\\\n   \\eqs {} & (\\lambd[x_2][\\ldots\\lambd[x_n][\\Subst{N}{M_1}{x_1}]]) M_2\n            \\dots M_n \\\\\n  \\vdots & \\\\\n  \\bredone {} &\\Subst{\\Subst{P}{M_1}{x_1}\\ldots}{M_n}{x_n}\n  \\end{aligned}",
+     "src": "(\\lambd[x_1][\\lambd[x_2][\\ldots\\lambd[x_n][N]]]) M_1 \\dots M_n\\\\\n  \\begin{aligned}\n  \\bredone {} & (\\Subst{(\\lambd[x_2][\\ldots\\lambd[x_n][N]])}{M_1}{x_1}) M_2\n  \\dots M_n\\\\\n   \\eqs {} & (\\lambd[x_2][\\ldots\\lambd[x_n][\\Subst{N}{M_1}{x_1}]]) M_2\n            \\dots M_n \\\\\n  \\vdots & \\\\\n  \\bredone {} &\\Subst{\\Subst{N}{M_1}{x_1}\\ldots}{M_n}{x_n}\n  \\end{aligned}",
      "loc": {
       "repo": "OpenLogic",
       "file": "content/lambda-calculus/introduction/currying.tex",
@@ -3726,8 +3726,8 @@
       },
       {
        "t": "math",
-       "tex": "c(n) = k",
-       "src": "c(n) = k"
+       "tex": "c_k(n) = k",
+       "src": "c_k(n) = k"
       },
       {
        "t": "text",
@@ -5006,10 +5006,10 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "\\mathrm{Mult}' \\equiv \\lambda ab .\\, a (\\mathrm{Add}\\, a) \\overline{0} ."
+         "tex": "\\mathrm{Mult}' \\equiv \\lambda ab .\\, a (\\mathrm{Add}\\, b) \\overline{0} ."
         }
        ],
-       "src": "\\fn{Mult}' \\ident \\lambd[ab][a (\\fn{Add}\\, a) \\num{0}].",
+       "src": "\\fn{Mult}' \\ident \\lambd[ab][a (\\fn{Add}\\, b) \\num{0}].",
        "loc": {
         "repo": "OpenLogic",
         "file": "content/lambda-calculus/lambda-definability/arithmetical-functions.tex",
@@ -5108,7 +5108,43 @@
       },
       {
        "t": "text",
-       "v": " is the exponent. Intuitively, "
+       "v": " is the exponent, which must be at least "
+      },
+      {
+       "t": "math",
+       "tex": "1",
+       "src": "1"
+      },
+      {
+       "t": "text",
+       "v": " (for "
+      },
+      {
+       "t": "math",
+       "tex": "e = 0",
+       "src": "e = 0"
+      },
+      {
+       "t": "text",
+       "v": " the term reduces to "
+      },
+      {
+       "t": "math",
+       "tex": "\\lambda x .\\, x",
+       "src": "\\lambd[x][x]"
+      },
+      {
+       "t": "text",
+       "v": ", not to "
+      },
+      {
+       "t": "math",
+       "tex": "\\overline{1}",
+       "src": "\\num{1}"
+      },
+      {
+       "t": "text",
+       "v": "). Intuitively, "
       },
       {
        "t": "math",
@@ -5485,8 +5521,8 @@
       },
       {
        "t": "math",
-       "tex": "\\langle 0,0 \\rangle",
-       "src": "\\tuple{0,0}"
+       "tex": "\\langle \\overline{0},\\overline{0} \\rangle",
+       "src": "\\tuple{\\num 0,\\num 0}"
       },
       {
        "t": "text",
@@ -5494,8 +5530,8 @@
       },
       {
        "t": "math",
-       "tex": "\\langle 0,0 \\rangle",
-       "src": "\\tuple{0,0}"
+       "tex": "\\langle \\overline{0},\\overline{0} \\rangle",
+       "src": "\\tuple{\\num 0,\\num 0}"
       },
       {
        "t": "text",
@@ -5670,7 +5706,7 @@
       },
       {
        "t": "text",
-       "v": ", i.e., functions that accept two arguments and returning one of them. The truth value "
+       "v": ", i.e., functions that accept two arguments and return one of them. The truth value "
       },
       {
        "t": "math",
@@ -5749,8 +5785,8 @@
         },
         {
          "t": "math",
-         "tex": "R \\subseteq \\mathbb{N}^n",
-         "src": "R \\subseteq \\Nat^n"
+         "tex": "R \\subseteq \\mathbb{N}^k",
+         "src": "R \\subseteq \\Nat^k"
         },
         {
          "t": "text",
@@ -5890,16 +5926,7 @@
       },
       {
        "t": "text",
-       "v": " and "
-      },
-      {
-       "t": "math",
-       "tex": "0",
-       "src": "0"
-      },
-      {
-       "t": "text",
-       "v": " only, is "
+       "v": " and of nothing else, is "
       },
       {
        "t": "math",
@@ -6632,8 +6659,8 @@
         },
         {
          "t": "math",
-         "tex": "G_k",
-         "src": "G_k"
+         "tex": "G_{k-1}",
+         "src": "G_{k-1}"
         },
         {
          "t": "text",
@@ -6650,8 +6677,8 @@
         },
         {
          "t": "math",
-         "tex": "H",
-         "src": "H"
+         "tex": "h",
+         "src": "h"
         },
         {
          "t": "text",
@@ -7045,10 +7072,10 @@
          "tex": "h(x_1, \\dots, x_n, 0) &= f(x_1, \\dots, x_n)"
         },
         {
-         "tex": "h(x_1, \\dots, x_n, y+1) & = h(x_1, \\dots, x_n, y, h(x_1, \\dots, x_n, y))."
+         "tex": "h(x_1, \\dots, x_n, y+1) & = g(x_1, \\dots, x_n, y, h(x_1, \\dots, x_n, y))."
         }
        ],
-       "src": "h(x_1, \\dots, x_n, 0) &= f(x_1, \\dots, x_n)\\\\\n    h(x_1, \\dots, x_n, y+1) & = h(x_1, \\dots, x_n, y, h(x_1, \\dots, x_n, y)).",
+       "src": "h(x_1, \\dots, x_n, 0) &= f(x_1, \\dots, x_n)\\\\\n    h(x_1, \\dots, x_n, y+1) & = g(x_1, \\dots, x_n, y, h(x_1, \\dots, x_n, y)).",
        "loc": {
         "repo": "OpenLogic",
         "file": "content/lambda-calculus/lambda-definability/primitive-recursive-functions.tex",
@@ -7066,8 +7093,8 @@
         },
         {
          "t": "math",
-         "tex": "h",
-         "src": "h"
+         "tex": "g",
+         "src": "g"
         },
         {
          "t": "text",
@@ -7089,7 +7116,7 @@
         },
         {
          "t": "text",
-         "v": ". This is reminiscent of the definition of Church numerals, which is also defined as a iterator."
+         "v": ". This is reminiscent of the definition of Church numerals, which is also defined as an iterator."
         }
        ],
        "loc": {
@@ -7304,7 +7331,7 @@
         },
         {
          "t": "text",
-         "v": " We proceed by induction on "
+         "v": ". We proceed by induction on "
         },
         {
          "t": "math",
@@ -7416,6 +7443,10 @@
          "t": "math",
          "tex": "\\langle \\overline{0}, \\overline{h(n,0)} \\rangle",
          "src": "\\tuple{\\num{0},\n    \\num{h(n,0)}}"
+        },
+        {
+         "t": "text",
+         "v": "."
         }
        ],
        "loc": {
@@ -7831,10 +7862,10 @@
      "env": "equation",
      "rows": [
       {
-       "tex": "\\mathrm{Mult} \\equiv \\lambda ab .\\, a (\\mathrm{Add}\\, a) 0"
+       "tex": "\\mathrm{Mult} \\equiv \\lambda ab .\\, a (\\mathrm{Add}\\, b) \\overline{0}"
       }
      ],
-     "src": "\\fn{Mult} \\ident \\lambd[ab][a (\\fn{Add}\\, a) 0]",
+     "src": "\\fn{Mult} \\ident \\lambd[ab][a (\\fn{Add}\\, b) \\num 0]",
      "loc": {
       "repo": "OpenLogic",
       "file": "content/lambda-calculus/lambda-definability/fixpoints.tex",
@@ -8816,13 +8847,13 @@
        "tex": "&\\equiv ( \\lambda x .\\, \\lambda n .\\, \\mathrm{IsZero} \\, n\\, \\overline{1}\\, (\\mathrm{Mult}\\, n\\, (x (\\mathrm{Pred}\\, n))) ) \\, \\mathrm{Fac} \\, \\overline{0}"
       },
       {
-       "tex": "& \\mathrel{\\overset{}{\\twoheadrightarrow}} \\mathrm{IsZero} \\, \\overline{0}\\, \\overline{1}\\, (\\mathrm{Mult}\\, \\overline{0}\\, (\\mathrm{Fac} (\\mathrm{Pred}\\, \\overline{0})))."
+       "tex": "& \\mathrel{\\overset{}{\\twoheadrightarrow}} \\mathrm{IsZero} \\, \\overline{0}\\, \\overline{1}\\, (\\mathrm{Mult}\\, \\overline{0}\\, (\\mathrm{Fac} (\\mathrm{Pred}\\, \\overline{0})))"
       },
       {
        "tex": "&\\mathrel{\\overset{}{\\twoheadrightarrow}} \\overline{1}."
       }
      ],
-     "src": "\\fn{Fac}\\,\\num 0\n  &\\red \\fn{Fac}' (Y \\,\\fn{Fac}') \\, \\num 0 \\\\\n  &\\ident (\\lambd[x][\\lambd[n][\\fn{IsZero} \\, n\\, \\num 1\\,\n      (\\fn{Mult}\\, n\\, (x (\\fn{Pred}\\, n)))]]) \\, \\fn{Fac} \\, \\num 0\\\\\n  & \\red \\fn{IsZero} \\, \\num 0\\, \\num 1\\,\n      (\\fn{Mult}\\, \\num 0\\, (\\fn{Fac} (\\fn{Pred}\\, \\num 0))).\\\\\n  &\\red \\num 1.",
+     "src": "\\fn{Fac}\\,\\num 0\n  &\\red \\fn{Fac}' (Y \\,\\fn{Fac}') \\, \\num 0 \\\\\n  &\\ident (\\lambd[x][\\lambd[n][\\fn{IsZero} \\, n\\, \\num 1\\,\n      (\\fn{Mult}\\, n\\, (x (\\fn{Pred}\\, n)))]]) \\, \\fn{Fac} \\, \\num 0\\\\\n  & \\red \\fn{IsZero} \\, \\num 0\\, \\num 1\\,\n      (\\fn{Mult}\\, \\num 0\\, (\\fn{Fac} (\\fn{Pred}\\, \\num 0)))\\\\\n  &\\red \\num 1.",
      "loc": {
       "repo": "OpenLogic",
       "file": "content/lambda-calculus/lambda-definability/fixpoints.tex",
@@ -9127,8 +9158,8 @@
       },
       {
        "t": "math",
-       "tex": "Yg \\stackrel{\\beta}{ = } g(Yg)",
-       "src": "Yg\n\\equal[\\beta] g(Yg)"
+       "tex": "Y_Cg \\stackrel{\\beta}{ = } g(Y_Cg)",
+       "src": "Y_Cg\n\\equal[\\beta] g(Y_Cg)"
       },
       {
        "t": "text",
@@ -9136,8 +9167,8 @@
       },
       {
        "t": "math",
-       "tex": "Yg \\mathrel{\\overset{\\beta}{\\twoheadrightarrow}} g(Yg)",
-       "src": "Yg \\bred g(Yg)"
+       "tex": "Y_Cg \\mathrel{\\overset{\\beta}{\\twoheadrightarrow}} g(Y_Cg)",
+       "src": "Y_Cg \\bred g(Y_Cg)"
       },
       {
        "t": "text",
@@ -9375,8 +9406,8 @@
         },
         {
          "t": "math",
-         "tex": "g",
-         "src": "g"
+         "tex": "h",
+         "src": "h"
         },
         {
          "t": "text",
@@ -9396,10 +9427,10 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "g(x_1, \\dots, x_k) = \\mu y \\; f(x_1,\\dots,x_k, y) = 0"
+         "tex": "h(x_1, \\dots, x_k) = \\mu y \\; f(x_1,\\dots,x_k, y) = 0"
         }
        ],
-       "src": "g(x_1, \\dots, x_k) = \\umin{y}{f(x_1,\\dots,x_k, y) = 0}",
+       "src": "h(x_1, \\dots, x_k) = \\umin{y}{f(x_1,\\dots,x_k, y) = 0}",
        "loc": {
         "repo": "OpenLogic",
         "file": "content/lambda-calculus/lambda-definability/minimization.tex",
@@ -9514,13 +9545,13 @@
        "env": "align",
        "rows": [
         {
-         "tex": "\\mathrm{Search} & \\equiv \\lambda g .\\, \\lambda f\\,\\vec{x}\\,y .\\, \\mathrm{IsZero} (f\\, \\vec{x}\\, y)\\, y\\, (g\\, \\vec{x} (\\mathrm{Succ}\\, y)"
+         "tex": "\\mathrm{Search} & \\equiv \\lambda g .\\, \\lambda f\\,\\vec{x}\\,y .\\, \\mathrm{IsZero} (f\\, \\vec{x}\\, y)\\, y\\, (g\\, f\\, \\vec{x} (\\mathrm{Succ}\\, y))"
         },
         {
          "tex": "H & \\equiv \\lambda \\vec x .\\, (Y \\, \\mathrm{Search}) F\\, \\vec{x}\\, \\overline{0} ,"
         }
        ],
-       "src": "\\fn{Search} & \\ident \\lambd[g][\\lambd[f\\,\\vec{x}\\,y][\n        \\fn{IsZero} (f\\, \\vec{x}\\, y)\\, y\\, (g\\, \\vec{x} (\\fn{Succ}\\, y)]]\\\\\n    H & \\ident \\lambd[\\vec x][(Y \\, \\fn{Search}) F\\, \\vec{x}\\, \\num{0}],",
+       "src": "\\fn{Search} & \\ident \\lambd[g][\\lambd[f\\,\\vec{x}\\,y][\n        \\fn{IsZero} (f\\, \\vec{x}\\, y)\\, y\\, (g\\, f\\, \\vec{x} (\\fn{Succ}\\, y))]]\\\\\n    H & \\ident \\lambd[\\vec x][(Y \\, \\fn{Search}) F\\, \\vec{x}\\, \\num{0}],",
        "loc": {
         "repo": "OpenLogic",
         "file": "content/lambda-calculus/lambda-definability/minimization.tex",
@@ -9920,7 +9951,7 @@
      "c": [
       {
        "t": "text",
-       "v": "Partial recursive functions are those obtained from the basic functions by composition, primitive recursion, and unbounded minimization. They differ from general recursive function in that the functions used in unbounded search are not required to be regular. Not requiring regularity means that functions defined by minimization may sometimes not be defined."
+       "v": "Partial recursive functions are those obtained from the basic functions by composition, primitive recursion, and unbounded minimization. They differ from general recursive functions in that the functions used in unbounded search are not required to be regular. Not requiring regularity means that functions defined by minimization may sometimes not be defined."
       }
      ],
      "loc": {
@@ -10299,7 +10330,7 @@
         },
         {
          "t": "text",
-         "v": "-terms, i.e., systematially assign Gödel numbers to "
+         "v": "-terms, i.e., systematically assign Gödel numbers to "
         },
         {
          "t": "math",
@@ -10344,7 +10375,7 @@
         },
         {
          "t": "text",
-         "v": " that maps natural numbers to and from the Gödel numbers of the corresponding Church numeral."
+         "v": " that map natural numbers to and from the Gödel numbers of the corresponding Church numeral."
         }
        ],
        "loc": {
@@ -10680,8 +10711,8 @@
     },
     {
      "t": "math",
-     "tex": "N",
-     "src": "N"
+     "tex": "M",
+     "src": "M"
     },
     {
      "t": "text",
@@ -10703,12 +10734,12 @@
     },
     {
      "t": "text",
-     "v": " is a term. Intuitively, terms of the lambda calculus stand for functions. An application term ("
+     "v": " is a term. Intuitively, terms of the lambda calculus stand for functions. An application term "
     },
     {
      "t": "math",
-     "tex": "MN)",
-     "src": "MN)"
+     "tex": "(MN)",
+     "src": "(MN)"
     },
     {
      "t": "text",
@@ -11016,8 +11047,8 @@
     },
     {
      "t": "math",
-     "tex": "\\lambda x .\\, f^n(x)",
-     "src": "\\lambd[x][f^n(x)]"
+     "tex": "\\lambda fx .\\, f^n(x)",
+     "src": "\\lambd[fx][f^n(x)]"
     },
     {
      "t": "text",
@@ -11203,7 +11234,7 @@
     },
     {
      "t": "text",
-     "v": "-definable, and that moreover that the "
+     "v": "-definable, and moreover that the "
     },
     {
      "t": "math",

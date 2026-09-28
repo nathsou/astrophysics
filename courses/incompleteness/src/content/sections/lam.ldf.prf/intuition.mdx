@@ -24,7 +24,7 @@ defines their composition: substitute the numerals for the $x_i$, let each $G_j$
 
 ## Primitive recursion
 
-$h(x, 0) = f(x)$ and $h(x, y+1) = g(x, y, h(x, y))$. (The book's statement of these equations has $h$ in place of the $g$ on the right; Formal mode notes the slip.) A numeral $\overline y$ can iterate a step $y$ times, but the step needs to know *which* stage it is at, and the previous value. So iterate on pairs $\langle \text{stage}, \text{value}\rangle$:
+$h(x, 0) = f(x)$ and $h(x, y+1) = g(x, y, h(x, y))$. A numeral $\overline y$ can iterate a step $y$ times, but the step needs to know *which* stage it is at, and the previous value. So iterate on pairs $\langle \text{stage}, \text{value}\rangle$:
 
 $$
 D \equiv \lambda p.\,\langle \mathrm{Succ}(\mathrm{Fst}\,p),\ G\,x\,(\mathrm{Fst}\,p)\,(\mathrm{Snd}\,p)\rangle,\qquad H \equiv \lambda x.\lambda y.\,\mathrm{Snd}(y\,D\,\langle\overline 0, F x\rangle).

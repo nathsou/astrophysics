@@ -10,7 +10,7 @@ export function useAnnotations(): Annotations {
       </Added>
     ),
     'fol.ntd.pro:ex:2': (
-      <Added label="The book’s tree, given to the checker">
+      <Added label="The finished derivation, checked">
         <ExampleCheck id="pro-2" />
       </Added>
     ),

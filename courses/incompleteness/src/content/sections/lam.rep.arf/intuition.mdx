@@ -20,12 +20,6 @@ $$
 \mathrm{Add} \equiv \lambda a b.\lambda f x.\,a f (b f x),\qquad \mathrm{Mult} \equiv \lambda a b.\lambda f x.\,a (b f) x,\qquad \mathrm{Exp} \equiv \lambda b e.\,e\,b .
 $$
 
-$\mathrm{Add}\,\overline n\,\overline m$ gives $f^n(f^m x)$. In $\mathrm{Mult}$, $b f$ is the function “apply $f$ $m$ times”, and $a$ iterates it $n$ times: $n \cdot m$ applications of $f$. $\mathrm{Exp}$ is the most surprising: $\overline e\,\overline b$ composes “apply $b$ times” with itself $e$ times, which applies its argument $b^e$ times. (<Prov kind="added" /> One exception the book does not mention: for $e = 0$, $\mathrm{Exp}\,\overline b\,\overline 0 \twoheadrightarrow \overline 0\,\overline b \twoheadrightarrow \lambda x.\,x$, which is not the numeral $\overline 1 \equiv \lambda f x.\,f x$ but only η-equivalent to it. So $\mathrm{Exp}$ λ-defines $b^e$ for $e \ge 1$; the book's alternative $\mathrm{Exp}' \equiv \lambda b e.\,e(\mathrm{Mult}\,b)\overline 1$ has no exception.) The alternative $\mathrm{Add}' \equiv \lambda ab.\,a\,\mathrm{Succ}\,b$ says “apply $\mathrm{Succ}$ to $b$, $a$ times” — addition as iterated successor.
-
-<Callout title="A correction to the problem on Mult′">
-
-<Prov kind="added" /> The book asks why $\mathrm{Mult}' \equiv \lambda ab.\,a(\mathrm{Add}\,a)\overline 0$ defines multiplication. As printed it does not: it adds $a$ to $\overline 0$, $a$ times, so $\mathrm{Mult}'\,\overline 2\,\overline 3 \twoheadrightarrow \overline 4$ (computed in Explore mode). The intended term is $\lambda ab.\,a(\mathrm{Add}\,b)\overline 0$ — add $b$, $a$ times — and this edition’s $\mathrm{Mult}'$ is that term. The book’s text is left as it is; Explore mode can run both.
-
-</Callout>
+$\mathrm{Add}\,\overline n\,\overline m$ gives $f^n(f^m x)$. In $\mathrm{Mult}$, $b f$ is the function “apply $f$ $m$ times”, and $a$ iterates it $n$ times: $n \cdot m$ applications of $f$. $\mathrm{Exp}$ is the most surprising: $\overline e\,\overline b$ composes “apply $b$ times” with itself $e$ times, which applies its argument $b^e$ times. This needs $e \ge 1$: $\mathrm{Exp}\,\overline b\,\overline 0 \twoheadrightarrow \overline 0\,\overline b \twoheadrightarrow \lambda x.\,x$, which is not the numeral $\overline 1 \equiv \lambda f x.\,f x$ but only η-equivalent to it. The alternative $\mathrm{Exp}' \equiv \lambda b e.\,e(\mathrm{Mult}\,b)\overline 1$ works for every $e$. The alternative $\mathrm{Add}' \equiv \lambda ab.\,a\,\mathrm{Succ}\,b$ says “apply $\mathrm{Succ}$ to $b$, $a$ times” — addition as iterated successor — and $\mathrm{Mult}' \equiv \lambda ab.\,a(\mathrm{Add}\,b)\overline 0$ does the same one level up: add $b$ to $\overline 0$, $a$ times.
 
 <ExLamTwiceSucc />

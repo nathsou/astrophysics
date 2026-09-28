@@ -13,7 +13,7 @@ The book develops its derivations **backwards**: write the goal at the bottom, l
 3. **Remember that discharging is optional.** In the case $B$, the derivation of $B$ from $B$ is just $B$ itself; the assumption $A$ need not be used.
 4. **$\bot_C$ as a last resort.** $A \lor \lnot A$ cannot be obtained by $\lor$Intro — neither $A$ nor $\lnot A$ is derivable on its own. Instead, assume $\lnot(A \lor \lnot A)$ and derive $\bot$.
 
-Formal mode hands each of the book's finished trees to the checker. In the finished tree of the second example the rightmost $\rightarrow$Intro has **no label**: it discharges nothing, so there is nothing for a label to point to. The book's rules allow this — discharging is "a permission, but not a requirement", and $\rightarrow$Intro may discharge "any number of assumptions … including zero" (<Ref k="fol:ntd:prl:sec" />) — so the tree is a correct derivation. Where the checker asks for a label on every discharging inference, Formal mode says so and offers the tree with the label $4$ of the book's earlier stage restored; that is the checker's convention, not a slip in the book.
+Formal mode hands each of the book's finished trees to the checker. In the finished tree of the second example the rightmost $\rightarrow$Intro has **no label**: it discharges nothing, so there is nothing for a label to point to. The rules allow this — discharging is "a permission, but not a requirement", and $\rightarrow$Intro may discharge "any number of assumptions … including zero" (<Ref k="fol:ntd:prl:sec" />).
 
 ## Try the problems
 

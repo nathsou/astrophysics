@@ -24,7 +24,7 @@ Read it from the top. The assumption $[A \land B]^1$; by $\land$Elim, $A$; by $\
 
 $\Gamma \vdash A$ holds iff there is a derivation whose last sentence is $A$ and whose *undischarged* assumptions are all in $\Gamma$. Discharged assumptions do not count. A set $\Gamma$ is **inconsistent** iff $\Gamma \vdash \bot$ — and then, by the rule $\bot_I$ ("from $\bot$ infer anything"), $\Gamma$ derives every sentence.
 
-## How this edition checks derivations
+## How the derivations are checked
 
 Every derivation in these sections is checked by the course's natural deduction checker, which implements the book's rules: the shapes of the inferences, discharge labels, and the eigenvariable conditions of $\forall$Intro and $\exists$Elim. As in the book, derivations contain **sentences only**, and eigenvariables are constant symbols $a, b, c, \dots$. The letters $A, B, C, D$ are **formula letters**: $A$ stands for a sentence, $A(x)$ for a formula with the free variable $x$.
 

@@ -11,7 +11,7 @@ import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'rea
 import type { Formula, Term } from '../../engine/syntax/ast';
 import { formulaEq, constants, isSentence, termEq } from '../../engine/syntax/ops';
 import { constName } from '../../engine/syntax/language';
-import { check, linearize, RULE_NAMES, type Deriv, type Rule } from '../../engine/proof/nd';
+import { linearize, RULE_NAMES, type Deriv, type Rule } from '../../engine/proof/nd';
 import { nd, ndMessage, ndTex, ndText, parseND, parseNDTerm } from '../../engine/proof/ndlang';
 import {
   addAssumption, availableAt, checkState, constructionOf, dropPiece, findNode, forward, FORWARD_ARITY, FORWARD_NEEDS, freshEigen, freshLabel, NEEDS, plug, refine, retract, setLabel, start, suggest,
@@ -67,7 +67,7 @@ export function DerivationBuilder({ example, fromGoal, examples, goal = '(¬A �
   const initialEx = example ? exampleById(example) : undefined;
   const [goalText, setGoalText] = useState(initialEx ? ndText(initialEx.goal) : goal);
   const [gammaText, setGammaText] = useState(initialEx ? initialEx.gamma.map(ndText).join('; ') : gamma.join('; '));
-  const [loaded, setLoaded] = useState<{ ex: NDExample; adapted: boolean } | null>(initialEx && !fromGoal ? { ex: initialEx, adapted: false } : null);
+  const [loaded, setLoaded] = useState<NDExample | null>(initialEx && !fromGoal ? initialEx : null);
   const [hist, setHist] = useState<History>(() => initHistory(initialEx, fromGoal, goalText, gammaText, axioms));
   const [sel, setSel] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
@@ -116,13 +116,13 @@ export function DerivationBuilder({ example, fromGoal, examples, goal = '(¬A �
     setSel(null);
     setMsg(null);
   };
-  const load = (ex: NDExample, mode: 'finished' | 'goal' | 'adapted') => {
+  const load = (ex: NDExample, mode: 'finished' | 'goal') => {
     setGoalText(ndText(ex.goal));
     setGammaText(ex.gamma.map(ndText).join('; '));
-    setLoaded(mode === 'goal' ? null : { ex, adapted: mode === 'adapted' });
+    setLoaded(mode === 'goal' ? null : ex);
     if (mode === 'goal') setHist({ past: [], present: start(ex.goal, ex.gamma, axioms), future: [] });
     else {
-      const states = constructionOf(mode === 'adapted' ? ex.adapted!.build() : ex.build(), ex.gamma, axioms);
+      const states = constructionOf(ex.build(), ex.gamma, axioms);
       setHist({ past: states.slice(0, -1), present: states[states.length - 1], future: [] });
     }
     setSel(null);
@@ -176,7 +176,7 @@ export function DerivationBuilder({ example, fromGoal, examples, goal = '(¬A �
         </div>
       )}
 
-      {loaded && <ExampleNote ex={loaded.ex} adapted={loaded.adapted} valid={bc.check.valid} onAdapted={() => load(loaded.ex, 'adapted')} onBook={() => load(loaded.ex, 'finished')} />}
+      {loaded && <ExampleNote ex={loaded} valid={bc.check.valid} />}
 
       <div className="ndb-toolbar" role="toolbar" aria-label="Derivation">
         <button type="button" className="chip-btn" onClick={undo} disabled={!hist.past.length} aria-label="Undo">
@@ -241,34 +241,14 @@ function initHistory(ex: NDExample | undefined, fromGoal: boolean | undefined, g
   return { past: [], present: start(g.ok ? g.value : nd('A → A'), gl.ok ? gl.value : [], axioms), future: [] };
 }
 
-function ExampleNote({ ex, adapted, valid, onAdapted, onBook }: { ex: NDExample; adapted: boolean; valid: boolean; onAdapted: () => void; onBook: () => void }) {
-  // The discrepancy note describes a rejection; it is shown only while the checker rejects the book's tree.
-  const bookRejected = useMemo(() => !!ex.discrepancy && !check(ex.build()).valid, [ex]);
+function ExampleNote({ ex, valid }: { ex: NDExample; valid: boolean }) {
   return (
-    <div className="ndb-discrepancy" role="note">
+    <div className="ndb-note" role="note">
       <div>
-        <b>{adapted ? 'Adapted from the book' : 'The book’s derivation'}</b> — {ex.where}.{' '}
+        <b>The book’s derivation</b> — {ex.where}.{' '}
         {valid ? <Prov kind="checked">accepted by the checker</Prov> : <Prov kind="failed">rejected by the checker</Prov>}
       </div>
       {ex.incorrect && <p style={{ margin: '4px 0 0' }}>The book gives this derivation as an example of what the rules do <em>not</em> allow.</p>}
-      {bookRejected && !adapted && (
-        <p style={{ margin: '4px 0 0' }}>
-          <b>The checker is stricter than the book.</b> {ex.discrepancy}{' '}
-          {ex.adapted && (
-            <button type="button" className="linklike" onClick={onAdapted}>
-              Load the version with {ex.adapted.change}
-            </button>
-          )}
-        </p>
-      )}
-      {adapted && ex.adapted && (
-        <p style={{ margin: '4px 0 0' }}>
-          Changed: {ex.adapted.change}.{' '}
-          <button type="button" className="linklike" onClick={onBook}>
-            Back to the book’s version
-          </button>
-        </p>
-      )}
       {ex.note && <p style={{ margin: '4px 0 0' }}>{ex.note}</p>}
       <p className="ndb-hint" style={{ margin: '4px 0 0' }}>
         Undo takes the derivation apart goal by goal, back to the bare goal.

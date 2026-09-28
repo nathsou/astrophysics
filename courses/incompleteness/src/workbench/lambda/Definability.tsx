@@ -215,23 +215,17 @@ interface MinPreset {
 }
 
 const MIN: MinPreset[] = [
-  { label: 'μy [x ∸ y = 0] = x', tex: 'f(x, y) = x \\mathbin{\\dot-} y,\\quad g(x) = \\mu y\\,[x \\mathbin{\\dot-} y = 0] = x', F: 'Sub', f: (x) => x },
-  { label: 'μy [x ∸ 2y = 0] = ⌈x/2⌉', tex: 'f(x, y) = x \\mathbin{\\dot-} (y + y),\\quad g(x) = \\lceil x/2 \\rceil', F: 'λx y. Sub x (Add y y)', f: (x) => Math.ceil(x / 2) },
-  { label: 'μy [x ∸ y² = 0] = ⌈√x⌉', tex: 'f(x, y) = x \\mathbin{\\dot-} y\\cdot y,\\quad g(x) = \\lceil \\sqrt x\\, \\rceil', F: 'λx y. Sub x (Mult y y)', f: (x) => Math.ceil(Math.sqrt(x)) },
+  { label: 'μy [x ∸ y = 0] = x', tex: 'f(x, y) = x \\mathbin{\\dot-} y,\\quad h(x) = \\mu y\\,[x \\mathbin{\\dot-} y = 0] = x', F: 'Sub', f: (x) => x },
+  { label: 'μy [x ∸ 2y = 0] = ⌈x/2⌉', tex: 'f(x, y) = x \\mathbin{\\dot-} (y + y),\\quad h(x) = \\lceil x/2 \\rceil', F: 'λx y. Sub x (Add y y)', f: (x) => Math.ceil(x / 2) },
+  { label: 'μy [x ∸ y² = 0] = ⌈√x⌉', tex: 'f(x, y) = x \\mathbin{\\dot-} y\\cdot y,\\quad h(x) = \\lceil \\sqrt x\\, \\rceil', F: 'λx y. Sub x (Mult y y)', f: (x) => Math.ceil(Math.sqrt(x)) },
 ];
 
-const BOOK_SEARCH = 'λg f x y. IsZero (f x y) y (g x (Succ y))';
-
-/** H ≡ λx.(Y Search) F x 0̄ for a few regular F, and the book's Search as printed. */
+/** H ≡ λx.(Y Search) F x 0̄ for a few regular F. */
 export function MinPanel() {
   const [k, setK] = useState(0);
-  const [asPrinted, setAsPrinted] = useState(false);
   const p = MIN[k]!;
-  const h = useMemo(() => {
-    if (!asPrinted) return minimization(P(p.F), 1);
-    return parseLambda('λx_1. Y SearchAsPrinted F x_1 0', { defs: { ...BOOK_DEFS, SearchAsPrinted: { src: BOOK_SEARCH, label: 'Search' }, F: { src: P(p.F), label: 'F' } } });
-  }, [p, asPrinted]);
-  const search = useMemo(() => P(asPrinted ? BOOK_SEARCH : 'λg f x y. IsZero (f x y) y (g f x (Succ y))'), [asPrinted]);
+  const h = useMemo(() => minimization(P(p.F), 1), [p]);
+  const search = useMemo(() => P(BOOK_DEFS.Search!.src as string), []);
   return (
     <Panel n="μ" title="Minimization with a fixpoint combinator" prov={<Prov kind="computed" />}>
       <select className="lam-select" value={k} onChange={(e) => setK(Number(e.target.value))} aria-label="Example">
@@ -244,23 +238,6 @@ export function MinPanel() {
       <p>
         <Tex tex={p.tex} />
       </p>
-      <div className="lam-controls">
-        <label>
-          <input type="checkbox" checked={asPrinted} onChange={(e) => setAsPrinted(e.target.checked)} /> use Search exactly as printed in the book
-        </label>
-      </div>
-      <div className="lam-erratum">
-        <Prov kind="added" />{' '}
-        {asPrinted ? (
-          <>
-            As printed, the recursive call is <Tex tex="g\,\vec x\,(\mathrm{Succ}\,y)" />: it passes <Tex tex="\vec x" /> where <Tex tex="(Y\,\mathrm{Search})" /> expects <i>F</i>. When the very first test succeeds the answer is still right; otherwise the next call receives shifted arguments, and in these examples no normal form appears within the step limit.
-          </>
-        ) : (
-          <>
-            This edition corrects <Tex tex="\mathrm{Search}" />: the book prints the recursive call as <Tex tex="g\,\vec x\,(\mathrm{Succ}\,y)" />, which drops <i>f</i>; it must be <Tex tex="g\,f\,\vec x\,(\mathrm{Succ}\,y)" />. Tick the box to run the term as printed.
-          </>
-        )}
-      </div>
       <dl className="lam-kv">
         <dt>Search</dt>
         <dd>
@@ -275,8 +252,8 @@ export function MinPanel() {
           <TermTex term={h} opts={LABELS} />
         </dd>
       </dl>
-      <ValuesTable f={h} rows={[[0], [1], [2], [3], [4]]} expect={([x]) => p.f(x!)} fuel={asPrinted ? 3000 : 30_000} />
-      <NotAProof>The rows check five inputs. The lemma shows H λ-defines g for every input, using that f is regular.</NotAProof>
+      <ValuesTable f={h} rows={[[0], [1], [2], [3], [4]]} expect={([x]) => p.f(x!)} fuel={30_000} />
+      <NotAProof>The rows check five inputs. The lemma shows H λ-defines h for every input, using that f is regular.</NotAProof>
     </Panel>
   );
 }

@@ -1,0 +1,58 @@
+[
+  {
+    "repo": "OpenLogic",
+    "file": "content/first-order-logic/natural-deduction/proving-things.tex",
+    "find": "!!{sentence} in the end-sequent,",
+    "replace": "!!{sentence} at the end of the !!{derivation},",
+    "why": "A derivation ends in a sentence, not a sequent."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/first-order-logic/natural-deduction/proving-things.tex",
+    "find": "\\AxiomC{$\\Discharge{!A}{3}$}\n\\RightLabel{\\Intro{\\lfalse}}",
+    "replace": "\\AxiomC{$\\Discharge{!A}{3}$}\n\\RightLabel{\\Elim{\\lnot}}",
+    "why": "The inference from ¬A and A to ⊥ is ¬Elim; there is no ⊥Intro rule."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/first-order-logic/natural-deduction/proving-things-quant.tex",
+    "find": "condition, and choose a constant that does not appear in\n$\\lexists[x][!A(x)]$",
+    "replace": "condition, and choose a constant that does not appear in\n$\\lexists[x][\\lnot !A(x)]$",
+    "why": "The existential premise is ∃x ¬A(x)."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/first-order-logic/natural-deduction/proving-things-quant.tex",
+    "find": "\\AxiomC{$\\lexists[x][(!A(x) \\land !B(x)])$}",
+    "replace": "\\AxiomC{$\\lexists[x][(!A(x) \\land !B(x))]$}",
+    "why": "Stray bracket."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/first-order-logic/natural-deduction/identity.tex",
+    "find": "\\AxiomC{$\\Discharge{\\lforall[y][(!A(y) \\lif \\eq[y][c]])}{2}$}\n\\noLine",
+    "replace": "\\AxiomC{$\\Discharge{\\lforall[y][(!A(y) \\lif \\eq[y][c])]}{2}$}\n\\noLine",
+    "why": "Misplaced bracket."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/first-order-logic/natural-deduction/identity.tex",
+    "find": "\\AxiomC{$\\Discharge{\\lforall[y][(!A(y) \\lif \\eq[y][c]])}{2}$}\n\\RightLabel",
+    "replace": "\\AxiomC{$\\Discharge{\\lforall[y][(!A(y) \\lif \\eq[y][c])]}{2}$}\n\\RightLabel",
+    "why": "Misplaced bracket."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/summary-C.tex",
+    "find": "The topmost formula !!a{derivation}\nare",
+    "replace": "The topmost formulas of !!a{derivation}\nare",
+    "why": "Grammar."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/summary-C.tex",
+    "find": "!!{derivation}leading",
+    "replace": "!!{derivation} leading",
+    "why": "Missing space."
+  }
+]

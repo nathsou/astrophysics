@@ -125,13 +125,9 @@ function Rosser2Panel() {
         passes to ¬RProv(⌜R⌝) without detail; here that step is written out (two
         ∃Elims and ¬Intro).
       </p>
-      <div className="ndb-discrepancy">
-        <b>λ₃.</b> The appendix writes λ₃ as (a &lt; m̄ ∨ a = m̄) ∨ m̄ &lt; a and
-        says it exists by <Ref k="inc:req:min:lem:trichotomy" />, whose
-        statement is (a &lt; m̄ ∨ m̄ &lt; a) ∨ a = m̄. The derivation uses the
-        lemma’s own order; λ₂ takes every disjunct apart anyway, so nothing else
-        changes. For m = 0 there is no λ₁ (nothing is below 0): the case a &lt;
-        0 is refuted by <Ref k="inc:req:min:lem:less-zero" />.
+      <div className="ndb-note">
+        For m = 0 there is no λ₁ (nothing is below 0): the case a &lt; 0 is
+        refuted by <Ref k="inc:req:min:lem:less-zero" />.
       </div>
       <div className="ndb-row">
         <NField label="m" value={m} min={0} max={ROSSER_MAX} onChange={setM} />

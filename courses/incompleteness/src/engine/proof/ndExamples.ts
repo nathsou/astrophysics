@@ -1,9 +1,8 @@
 // The derivations of the natural deduction appendix, transcribed from the book's trees.
 //
 // Each example is the book's finished derivation, inference by inference, with the book's
-// discharge labels and eigenvariables. Nothing is repaired: where the book's tree does not meet
-// the checker's conventions, the transcription keeps the book's version and `discrepancy`
-// says what differs (tests/nd-builder.test.ts records the checker's verdict on each).
+// discharge labels and eigenvariables (tests/nd-builder.test.ts records the checker's verdict on
+// each).
 //
 // Letters: A, B, C, D are formula letters (see ndlang.ts): A is a sentence letter, A(x) a
 // one-place formula letter; a, b, c are constant symbols, used as eigenvariables.
@@ -24,10 +23,6 @@ export interface NDExample {
   gamma: Formula[];
   goal: Formula;
   build: () => Deriv;
-  /** Where the book's tree differs from the checker's conventions (shown only while the checker rejects the book's version). */
-  discrepancy?: string;
-  /** A version adapted to the checker, if the book's is rejected (shown only alongside it). */
-  adapted?: { build: () => Deriv; change: string };
   /** An example the book gives as incorrect. */
   incorrect?: boolean;
   note?: string;
@@ -107,17 +102,6 @@ export const ND_EXAMPLES: NDExample[] = [
       const right = impINoLabel(D.assume(nd('B'), 2), nd('A'));
       return D.impI(D.orE(D.assume(nd('¬A ∨ B'), 1), middle, right, 2), nd('¬A ∨ B'), 1);
     },
-    discrepancy:
-      'The rightmost →Intro carries no label: it discharges nothing (the book: “the rightmost →Intro inference does not actually discharge any assumptions”). The book’s rules allow this: discharging is “a permission, but not a requirement”, →Intro may discharge “any number of assumptions … including zero”, and labels only mark which inference discharges which assumption. So this is a correct derivation by the book’s definition. The checker asks every →Intro to name a label; its rejection reflects that convention, not a slip in the book.',
-    adapted: {
-      change: 'the rightmost →Intro labelled 4, as in the book’s earlier stage (it still discharges nothing)',
-      build: () => {
-        const middle = D.impI(D.botI(D.notE(D.assume(nd('¬A'), 2), D.assume(nd('A'), 3)), nd('B')), nd('A'), 3);
-        const right = D.impI(D.assume(nd('B'), 2), nd('A'), 4);
-        return D.impI(D.orE(D.assume(nd('¬A ∨ B'), 1), middle, right, 2), nd('¬A ∨ B'), 1);
-      },
-    },
-    note: 'In one intermediate tree of this example the book names the ¬Elim inference “⊥Intro”, a rule the system does not have; the finished tree has ¬Elim, as transcribed.',
   },
   {
     id: 'pro-3',

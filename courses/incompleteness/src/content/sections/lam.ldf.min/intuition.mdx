@@ -2,7 +2,7 @@ import { ExLamRegular } from '../../../workbench/lambda/exercises';
 
 <Added label="Added for this edition">
 
-Minimization $g(\vec x) = \mu y\,[f(\vec x, y) = 0]$ is a search: try $y = 0, 1, 2, \ldots$ until $f$ gives $0$. A search is a recursion — “if $f(\vec x, y) = 0$ return $y$, else search from $y + 1$” — so the fixpoint combinator turns it into a term. With the previous section this shows that every general recursive function is λ-definable.
+Minimization $h(\vec x) = \mu y\,[f(\vec x, y) = 0]$ is a search: try $y = 0, 1, 2, \ldots$ until $f$ gives $0$. A search is a recursion — “if $f(\vec x, y) = 0$ return $y$, else search from $y + 1$” — so the fixpoint combinator turns it into a term. With the previous section this shows that every general recursive function is λ-definable.
 
 </Added>
 
@@ -20,15 +20,11 @@ $$
 \mathrm{Search} \equiv \lambda g.\lambda f\,\vec x\,y.\,\mathrm{IsZero}(f\,\vec x\,y)\,y\,(g\,f\,\vec x\,(\mathrm{Succ}\,y)),\qquad H \equiv \lambda \vec x.\,(Y\,\mathrm{Search})\,F\,\vec x\,\overline 0 .
 $$
 
-<Callout title="A correction to the book’s Search">
-
-<Prov kind="added" /> The book prints the recursive call as $g\,\vec x\,(\mathrm{Succ}\,y)$, without $f$. Since $g$ stands for $Y\,\mathrm{Search}$, whose first argument is $f$, that call would pass $\vec x$ where $f$ belongs and shift every argument. The call must be $g\,f\,\vec x\,(\mathrm{Succ}\,y)$, as above and in this edition’s term. Explore mode can run the term exactly as printed: in its examples it gives the right answer only when the very first test succeeds. The book’s text is left unchanged.
-
-</Callout>
+Since $g$ stands for $Y\,\mathrm{Search}$, whose first argument is $f$, the recursive call passes $f$ along before $\vec x$ and the new $y$.
 
 ## Why regularity
 
-Each unfolding tests one more $y$. If $f(\vec x, y) = 0$ for some $y$, the least such $y$ is found and $\mathrm{IsZero}$ throws away the rest of the recursion, as in the factorial. For a *regular* $f$ — one with such a $y$ for every $\vec x$ — the search always ends, so $H$ λ-defines the total function $g$. Normal order matters again: the unevaluated recursive call must not be reduced before it is needed.
+Each unfolding tests one more $y$. If $f(\vec x, y) = 0$ for some $y$, the least such $y$ is found and $\mathrm{IsZero}$ throws away the rest of the recursion, as in the factorial. For a *regular* $f$ — one with such a $y$ for every $\vec x$ — the search always ends, so $H$ λ-defines the total function $h$. Normal order matters again: the unevaluated recursive call must not be reduced before it is needed.
 
 What if no $y$ exists? Then the search unfolds forever and $H\,\vec{\overline n}$ has no normal form — exactly what an undefined value should look like. That is the subject of the next section.
 

@@ -18,7 +18,7 @@ An inference has one, two or three premises above a line and one conclusion belo
 
 Four propositional rules and one quantifier rule may discharge assumptions: $\lnot$Intro, $\rightarrow$Intro, $\lor$Elim, $\bot_C$ and $\exists$Elim. The discharged assumption is written $[A]^n$ and the discharging inference carries the same number $n$. The label is bookkeeping — it says *which* assumptions a given inference uses up — so a derivation with several assumptions of the same sentence can discharge some of them and not others.
 
-Labels are notation, not part of the definition of a derivation (<Ref k="fol:ntd:der:sec" />): a derivation is a tree of sentences, and the labels only make visible which inference discharges which assumption. An inference that discharges nothing needs no label, though the book sometimes writes one. This edition's checker adds one convention of its own: an assumption *with* a label that no inference below discharges is reported as an error, since its label promises a discharge that never happens.
+Labels are notation, not part of the definition of a derivation (<Ref k="fol:ntd:der:sec" />): a derivation is a tree of sentences, and the labels only make visible which inference discharges which assumption. An inference that discharges nothing needs no label, though the book sometimes writes one. The checker adds one convention of its own: an assumption *with* a label that no inference below discharges is reported as an error, since its label promises a discharge that never happens.
 
 <Exercise
   id="ntd.rul.which"

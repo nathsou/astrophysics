@@ -38,7 +38,7 @@ export const BOOK_EXAMPLES: Preset[] = [
 
 export const NAMED_PRESETS: Preset[] = Object.entries(BOOK_DEFS)
   .filter(([k]) => k !== 'Omega')
-  .map(([k, d]) => ({ src: k, label: `${d.label ?? k}${typeof d.src === 'string' ? ` ≡ ${d.src}` : ''}${k === "Mult'" || k === 'Search' ? ' (corrected)' : ''}` }));
+  .map(([k, d]) => ({ src: k, label: `${d.label ?? k}${typeof d.src === 'string' ? ` ≡ ${d.src}` : ''}` }));
 
 // ------------------------------------------------------------------ send to the lab
 

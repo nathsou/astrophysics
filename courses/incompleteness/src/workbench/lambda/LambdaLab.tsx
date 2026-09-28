@@ -506,7 +506,7 @@ export function ContractionDetail({ c, opts }: { c: Contraction; opts: LambdaPri
         </>
       )}
       {naive && (
-        <div className="lam-erratum" style={{ borderLeftColor: 'var(--danger)', background: 'var(--danger-soft)' }}>
+        <div className="lam-aside" style={{ borderLeftColor: 'var(--danger)', background: 'var(--danger-soft)' }}>
           <b>Why rename?</b> Replacing blindly would give <TermTex term={naive.result} opts={{ ...opts, labels: false }} />, where the{' '}
           {[...new Set(naive.captures.map((x) => x.variable))].map((v) => (
             <i key={v}>{v} </i>

@@ -63,7 +63,7 @@ export function deriveRosserSecondHalf(m: number, opt: RosserSecondOptions = {})
   const triLemma = derived
     ? deriveTrichotomy(m, L)
     : D.hyp('trichotomy', trichotomyStatement(m), { group: g2, note: `Lemma trichotomy for m = ${m}: Q derives it; used here as a hypothesis (the book’s λ₃).` });
-  const lambda3 = D.allE(triLemma, a(), { group: g2, note: `λ₃: trichotomy for ${m}̄, for a. (The book writes λ₃ as (a < m̄ ∨ a = m̄) ∨ m̄ < a; the lemma’s own order is used here.)` });
+  const lambda3 = D.allE(triLemma, a(), { group: g2, note: `λ₃: trichotomy for ${m}̄, for a.` });
   const lambda2 = orCases(
     lambda3,
     (f, hyp) => {

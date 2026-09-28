@@ -2712,12 +2712,12 @@
   },
   {
    "name": "overline",
-   "count": 953,
+   "count": 958,
    "origin": "katex"
   },
   {
    "name": "num",
-   "count": 939,
+   "count": 944,
    "origin": "upstream"
   },
   {
@@ -2742,7 +2742,7 @@
   },
   {
    "name": "lnot",
-   "count": 457,
+   "count": 459,
    "origin": "katex"
   },
   {
@@ -2762,12 +2762,12 @@
   },
   {
    "name": "mathsfit",
-   "count": 419,
+   "count": 418,
    "origin": "katex"
   },
   {
    "name": "Obj",
-   "count": 419,
+   "count": 418,
    "origin": "upstream"
   },
   {
@@ -2817,12 +2817,12 @@
   },
   {
    "name": "lambda",
-   "count": 287,
+   "count": 288,
    "origin": "katex"
   },
   {
    "name": "lambd",
-   "count": 279,
+   "count": 280,
    "origin": "upstream"
   },
   {
@@ -2937,7 +2937,7 @@
   },
   {
    "name": "Elim",
-   "count": 147,
+   "count": 148,
    "origin": "upstream"
   },
   {
@@ -2952,7 +2952,7 @@
   },
   {
    "name": "Intro",
-   "count": 136,
+   "count": 135,
    "origin": "upstream"
   },
   {
@@ -2962,12 +2962,12 @@
   },
   {
    "name": "bot",
-   "count": 129,
+   "count": 128,
    "origin": "katex"
   },
   {
    "name": "lfalse",
-   "count": 127,
+   "count": 126,
    "origin": "upstream"
   },
   {
@@ -3152,7 +3152,7 @@
   },
   {
    "name": "beta",
-   "count": 51,
+   "count": 50,
    "origin": "katex"
   },
   {
@@ -3271,16 +3271,6 @@
    "origin": "upstream"
   },
   {
-   "name": "redone",
-   "count": 26,
-   "origin": "upstream"
-  },
-  {
-   "name": "xrightarrow",
-   "count": 26,
-   "origin": "katex"
-  },
-  {
    "name": "bforall",
    "count": 25,
    "origin": "upstream"
@@ -3296,9 +3286,19 @@
    "origin": "upstream"
   },
   {
+   "name": "redone",
+   "count": 25,
+   "origin": "upstream"
+  },
+  {
    "name": "scode",
    "count": 25,
    "origin": "upstream"
+  },
+  {
+   "name": "xrightarrow",
+   "count": 25,
+   "origin": "katex"
   },
   {
    "name": "Prf",
@@ -3506,11 +3506,6 @@
    "origin": "katex"
   },
   {
-   "name": "bredone",
-   "count": 5,
-   "origin": "upstream"
-  },
-  {
    "name": "defis",
    "count": 5,
    "origin": "upstream"
@@ -3559,6 +3554,11 @@
    "name": "ast",
    "count": 4,
    "origin": "katex"
+  },
+  {
+   "name": "bredone",
+   "count": 4,
+   "origin": "upstream"
   },
   {
    "name": "emptyseq",

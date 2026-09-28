@@ -125,7 +125,7 @@
 .lam-kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 12px; align-items: baseline; font-size: 14px; margin: 6px 0; }
 .lam-kv > dt { font-family: var(--sans); font-size: 12px; color: var(--muted); }
 .lam-kv > dd { margin: 0; min-width: 0; overflow-x: auto; }
-.lam-erratum { border-left: 3px solid var(--added); background: var(--added-soft); padding: 8px 12px; border-radius: 0 8px 8px 0; font-family: var(--sans); font-size: 13.5px; line-height: 1.55; margin: 8px 0; }
+.lam-aside { border-left: 3px solid var(--added); background: var(--added-soft); padding: 8px 12px; border-radius: 0 8px 8px 0; font-family: var(--sans); font-size: 13.5px; line-height: 1.55; margin: 8px 0; }
 .lam-steps-inline { font-family: var(--sans); font-size: 12px; color: var(--muted); }
 
 .lam-inline { font-family: var(--math); }

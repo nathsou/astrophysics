@@ -77,7 +77,7 @@
       },
       {
        "t": "text",
-       "v": " in this capter."
+       "v": " in this chapter."
       }
      ],
      "loc": {
@@ -433,7 +433,7 @@
         },
         {
          "t": "text",
-         "v": "may use the "
+         "v": " may use the "
         },
         {
          "t": "term",
@@ -1320,8 +1320,8 @@
         },
         {
          "t": "math",
-         "tex": "Q_5",
-         "src": "Q_5"
+         "tex": "Q_4",
+         "src": "Q_4"
         },
         {
          "t": "text",
@@ -1401,8 +1401,8 @@
         },
         {
          "t": "math",
-         "tex": "Q_6",
-         "src": "Q_6"
+         "tex": "Q_5",
+         "src": "Q_5"
         },
         {
          "t": "text",
@@ -1516,8 +1516,8 @@
         },
         {
          "t": "math",
-         "tex": "Q_5",
-         "src": "Q_5"
+         "tex": "Q_4",
+         "src": "Q_4"
         },
         {
          "t": "text",
@@ -1799,8 +1799,8 @@
         },
         {
          "t": "math",
-         "tex": "Q_6",
-         "src": "Q_6"
+         "tex": "Q_5",
+         "src": "Q_5"
         },
         {
          "t": "text",
@@ -1898,8 +1898,8 @@
             "c": [
              {
               "t": "math",
-              "tex": "\\mathsfit{(}b'+c') = \\mathsfit{0}",
-              "src": "\\Obj (b'+c') = \\Obj 0"
+              "tex": "(b'+c') = \\mathsfit{0}",
+              "src": "(b'+c') = \\Obj 0"
              }
             ],
             "line": "single",
@@ -2240,8 +2240,8 @@
                     "c": [
                      {
                       "t": "math",
-                      "tex": "\\begin{gathered} \\forall x \\, (x = 0 \\lor {} \\\\ \\exists y \\, (a = y') ) \\end{gathered}",
-                      "src": "\\begin{gathered}\n  \\lforall[x][(x = 0 \\lor {}]\\\\\n  \\lexists[y][(a = y')])\n  \\end{gathered}"
+                      "tex": "\\begin{gathered} \\forall x \\, (x = 0 \\lor {} \\\\ \\exists y \\, (x = y') ) \\end{gathered}",
+                      "src": "\\begin{gathered}\n  \\lforall[x][(x = 0 \\lor {}]\\\\\n  \\lexists[y][(x = y')])\n  \\end{gathered}"
                      }
                     ],
                     "line": "none",
@@ -2270,7 +2270,7 @@
                     "c": [
                      {
                       "t": "math",
-                      "tex": "\\begin{gathered}[b] [a = \\mathsfit{0}]^{7} \\\\ [(b'+a) = \\mathsfit{0}]^{3} \\end{gathered}",
+                      "tex": "\\begin{gathered} [a = \\mathsfit{0}]^{7} \\\\ [(b'+a) = \\mathsfit{0}]^{3} \\end{gathered}",
                       "src": "\\begin{gathered}[b]\n      \\Discharge{a = \\Obj 0}{7} \\\\\n      \\Discharge{(b'+a) = \\Obj 0}{3}\n      \\end{gathered}"
                      }
                     ],
@@ -2300,7 +2300,7 @@
                     "c": [
                      {
                       "t": "math",
-                      "tex": "\\begin{gathered}[b] [\\exists y \\, a=y' ]^{7} \\\\ [(b'+a) = \\mathsfit{0}]^{3} \\end{gathered}",
+                      "tex": "\\begin{gathered} [\\exists y \\, a=y' ]^{7} \\\\ [(b'+a) = \\mathsfit{0}]^{3} \\end{gathered}",
                       "src": "\\begin{gathered}[b]\n        \\Discharge{\\lexists[y][a=y']}{7} \\\\\n        \\Discharge{(b'+a) = \\Obj 0}{3}\n        \\end{gathered}"
                      }
                     ],
@@ -2667,7 +2667,7 @@
        "c": [
         {
          "t": "text",
-         "v": "First we prove something things about "
+         "v": "First we prove some things about "
         },
         {
          "t": "math",
@@ -3080,8 +3080,8 @@
           "c": [
            {
             "t": "math",
-            "tex": "\\mathsf{Prf}(\\overline{n}, \\ulcorner R \\urcorner) \\land \\forall z \\, (z < \\overline{n} \\mathbin{\\rightarrow} \\lnot \\mathsf{Ref}(\\overline{z}, \\ulcorner R \\urcorner))",
-            "src": "\\OPrf(\\num{n}, \\gn{!R}) \\land \\lforall[z][(z < \\num{n} \\lif \\lnot \\ORefut(\\num{z}, \\gn{!R}))]"
+            "tex": "\\mathsf{Prf}(\\overline{n}, \\ulcorner R \\urcorner) \\land \\forall z \\, (z < \\overline{n} \\mathbin{\\rightarrow} \\lnot \\mathsf{Ref}(z, \\ulcorner R \\urcorner))",
+            "src": "\\OPrf(\\num{n}, \\gn{!R}) \\land \\lforall[z][(z < \\num{n} \\lif \\lnot \\ORefut(z, \\gn{!R}))]"
            }
           ],
           "line": "single",
@@ -3144,7 +3144,7 @@
                   "c": [
                    {
                     "t": "math",
-                    "tex": "\\begin{gathered}[b] a= \\overline{0} \\lor \\dots {} \\\\ {} \\lor a = \\overline{n-1} \\end{gathered}",
+                    "tex": "\\begin{gathered} a= \\overline{0} \\lor \\dots {} \\\\ {} \\lor a = \\overline{n-1} \\end{gathered}",
                     "src": "\\begin{gathered}[b]\n      a= \\num{0} \\lor \\dots {} \\\\\n      {} \\lor a = \\num{n-1}\n      \\end{gathered}"
                    }
                   ],
@@ -3652,7 +3652,7 @@
                     "c": [
                      {
                       "t": "math",
-                      "tex": "\\begin{gathered}[b] a = \\overline{0} \\lor \\dots \\lor\\\\ a = \\overline{m} \\lor \\overline{m} < a\\end{gathered}",
+                      "tex": "\\begin{gathered} a = \\overline{0} \\lor \\dots \\lor\\\\ a = \\overline{m} \\lor \\overline{m} < a\\end{gathered}",
                       "src": "\\begin{gathered}[b] a = \\num{0} \\lor \\dots \\lor\\\\\n      a = \\num{m} \\lor \\num{m} < a\\end{gathered}"
                      }
                     ],
@@ -4010,8 +4010,8 @@
           "c": [
            {
             "t": "math",
-            "tex": "\\begin{gathered}[b](a < \\overline{m} \\lor {}\\\\a = \\overline{m}) \\lor {}\\\\ \\overline{m} < a\\end{gathered}",
-            "src": "\\begin{gathered}[b](a < \\num{m} \\lor {}\\\\a = \\num{m}) \\lor {}\\\\ \\num{m} < a\\end{gathered}"
+            "tex": "\\begin{gathered}(a < \\overline{m} \\lor {}\\\\\\overline{m} < a) \\lor {}\\\\ a = \\overline{m}\\end{gathered}",
+            "src": "\\begin{gathered}[b](a < \\num{m} \\lor {}\\\\\\num{m} < a) \\lor {}\\\\ a = \\num{m}\\end{gathered}"
            }
           ],
           "line": "dots",
@@ -4034,7 +4034,7 @@
           "c": [
            {
             "t": "math",
-            "tex": "\\begin{gathered}[b] a = \\overline{0} \\lor \\dots \\lor \\\\ a = \\overline{m} \\lor \\overline{m} < a \\end{gathered}",
+            "tex": "\\begin{gathered} a = \\overline{0} \\lor \\dots \\lor \\\\ a = \\overline{m} \\lor \\overline{m} < a \\end{gathered}",
             "src": "\\begin{gathered}[b]\n      a = \\num{0} \\lor \\dots \\lor \\\\\n      a = \\num{m} \\lor \\num{m} < a\n    \\end{gathered}"
            }
           ],
@@ -4044,7 +4044,7 @@
             "c": [
              {
               "t": "math",
-              "tex": "\\begin{gathered}[b]a = \\overline{0} \\lor \\dots \\lor {}\\\\ a = \\overline{m-1}\\end{gathered}",
+              "tex": "\\begin{gathered}a = \\overline{0} \\lor \\dots \\lor {}\\\\ a = \\overline{m-1}\\end{gathered}",
               "src": "\\begin{gathered}[b]a = \\num{0} \\lor \\dots \\lor {}\\\\\n  a = \\num{m-1}\\end{gathered}"
              }
             ],
@@ -4076,30 +4076,7 @@
           "c": [
            {
             "t": "math",
-            "tex": "\\begin{gathered}[b] a = \\overline{0} \\lor \\dots \\lor \\\\ a = \\overline{m} \\lor \\overline{m} < a \\end{gathered}",
-            "src": "\\begin{gathered}[b]\n      a = \\num{0} \\lor \\dots \\lor \\\\\n      a = \\num{m} \\lor \\num{m} < a\n    \\end{gathered}"
-           }
-          ],
-          "line": "double",
-          "premises": [
-           {
-            "c": [
-             {
-              "t": "math",
-              "tex": "[a = \\overline{m}]^{3}",
-              "src": "\\Discharge{a = \\num{m}}{3}"
-             }
-            ],
-            "line": "none",
-            "premises": []
-           }
-          ]
-         },
-         {
-          "c": [
-           {
-            "t": "math",
-            "tex": "\\begin{gathered}[b] a = \\overline{0} \\lor \\dots \\lor \\\\ a = \\overline{m} \\lor \\overline{m} < a \\end{gathered}",
+            "tex": "\\begin{gathered} a = \\overline{0} \\lor \\dots \\lor \\\\ a = \\overline{m} \\lor \\overline{m} < a \\end{gathered}",
             "src": "\\begin{gathered}[b]\n      a = \\num{0} \\lor \\dots \\lor \\\\\n      a = \\num{m} \\lor \\num{m} < a\n    \\end{gathered}"
            }
           ],
@@ -4111,6 +4088,29 @@
               "t": "math",
               "tex": "[\\overline{m} < a]^{3}",
               "src": "\\Discharge{\\num{m} < a}{3}"
+             }
+            ],
+            "line": "none",
+            "premises": []
+           }
+          ]
+         },
+         {
+          "c": [
+           {
+            "t": "math",
+            "tex": "\\begin{gathered} a = \\overline{0} \\lor \\dots \\lor \\\\ a = \\overline{m} \\lor \\overline{m} < a \\end{gathered}",
+            "src": "\\begin{gathered}[b]\n      a = \\num{0} \\lor \\dots \\lor \\\\\n      a = \\num{m} \\lor \\num{m} < a\n    \\end{gathered}"
+           }
+          ],
+          "line": "double",
+          "premises": [
+           {
+            "c": [
+             {
+              "t": "math",
+              "tex": "[a = \\overline{m}]^{3}",
+              "src": "\\Discharge{a = \\num{m}}{3}"
              }
             ],
             "line": "none",
@@ -4219,8 +4219,8 @@
         },
         {
          "t": "math",
-         "tex": "(a < \\overline{m} \\lor a = \\overline{m}) \\lor \\overline{m} < a",
-         "src": "(a < \\num{m} \\lor a = \\num{m}) \\lor \\num{m} < a"
+         "tex": "(a < \\overline{m} \\lor \\overline{m} < a) \\lor a = \\overline{m}",
+         "src": "(a < \\num{m} \\lor \\num{m} < a) \\lor a = \\num{m}"
         },
         {
          "t": "text",

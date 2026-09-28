@@ -1,0 +1,205 @@
+[
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/introduction/syntax.tex",
+    "find": "possible. From example,",
+    "replace": "possible. For example,",
+    "why": "Typo: “From example”."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/introduction/currying.tex",
+    "find": "M_1 \\dots M_n \\bredone\\\\",
+    "replace": "M_1 \\dots M_n\\\\",
+    "why": "The first reduction arrow was doubled across the line break."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/introduction/currying.tex",
+    "find": "\\bredone {} &\\Subst{\\Subst{P}{M_1}{x_1}",
+    "replace": "\\bredone {} &\\Subst{\\Subst{N}{M_1}{x_1}",
+    "why": "The body of the abstraction is N, not P."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/lambda-definability/introduction.tex",
+    "find": "\\Nat$ such that $c(n) = k$.",
+    "replace": "\\Nat$ such that $c_k(n) = k$.",
+    "why": "The constant function is c_k."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/lambda-definability/arithmetical-functions.tex",
+    "find": "The first argument $b$ is the base and the second~$e$ is the exponent.",
+    "replace": "The first argument $b$ is the base and the second~$e$ is the exponent, which must be at least~$1$ (for $e = 0$ the term reduces to $\\lambd[x][x]$, not to~$\\num{1}$).",
+    "why": "Exp b 0̄ ↠ 0̄ b ↠ λx.x, which is not the numeral 1̄."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/lambda-definability/arithmetical-functions.tex",
+    "find": "\\fn{Mult}' \\ident \\lambd[ab][a (\\fn{Add}\\, a) \\num{0}].",
+    "replace": "\\fn{Mult}' \\ident \\lambd[ab][a (\\fn{Add}\\, b) \\num{0}].",
+    "why": "a(Add a)0̄ computes a·a; b must be added a times."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/lambda-definability/pairs.tex",
+    "find": "$x$ is the pair $\\tuple{0,0}$.",
+    "replace": "$x$ is the pair $\\tuple{\\num 0,\\num 0}$.",
+    "why": "The initial pair is of numerals."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/lambda-definability/pairs.tex",
+    "find": "result is $\\tuple{0,0}$ for $n=0$",
+    "replace": "result is $\\tuple{\\num 0,\\num 0}$ for $n=0$",
+    "why": "The initial pair is of numerals."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/lambda-definability/truth-values.tex",
+    "find": "accept two arguments and returning one of them.",
+    "replace": "accept two arguments and return one of them.",
+    "why": "Grammar."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/lambda-definability/truth-values.tex",
+    "find": "a relation $R \\subseteq \\Nat^n$",
+    "replace": "a relation $R \\subseteq \\Nat^k$",
+    "why": "R is applied to k numerals."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/lambda-definability/truth-values.tex",
+    "find": "which holds of $0$\nand $0$ only,",
+    "replace": "which holds of $0$\nand of nothing else,",
+    "why": "“holds of 0 and 0 only” is garbled."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/lambda-definability/primitive-recursive-functions.tex",
+    "find": "$F$, $G_0$, \\dots, $G_k$, and $h$ is defined from them by composition.\n  Then $H$ is",
+    "replace": "$F$, $G_0$, \\dots, $G_{k-1}$, and $h$ is defined from them by composition.\n  Then $h$ is",
+    "why": "There are k functions g_0, …, g_{k−1}, and the claim is about h."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/lambda-definability/primitive-recursive-functions.tex",
+    "find": "& = h(x_1, \\dots, x_n, y, h(x_1, \\dots, x_n, y)).",
+    "replace": "& = g(x_1, \\dots, x_n, y, h(x_1, \\dots, x_n, y)).",
+    "why": "The step function of the recursion is g."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/lambda-definability/primitive-recursive-functions.tex",
+    "find": "application of the function $h$ $y$ times",
+    "replace": "application of the function $g$ $y$ times",
+    "why": "It is g that is iterated."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/lambda-definability/primitive-recursive-functions.tex",
+    "find": "also defined as a iterator.",
+    "replace": "also defined as an iterator.",
+    "why": "Article."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/lambda-definability/primitive-recursive-functions.tex",
+    "find": "\\tuple{\\num{m}, \\num{h(n, m)}}$ We proceed",
+    "replace": "\\tuple{\\num{m}, \\num{h(n, m)}}$. We proceed",
+    "why": "Missing full stop."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/lambda-definability/primitive-recursive-functions.tex",
+    "find": "\\num{h(n,0)}}$\n",
+    "replace": "\\num{h(n,0)}}$.\n",
+    "why": "Missing full stop."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/lambda-definability/fixpoints.tex",
+    "find": "\\fn{Mult} \\ident \\lambd[ab][a (\\fn{Add}\\, a) 0]",
+    "replace": "\\fn{Mult} \\ident \\lambd[ab][a (\\fn{Add}\\, b) \\num 0]",
+    "why": "a(Add a)0 computes a·a; b must be added a times (to the numeral 0̄)."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/lambda-definability/fixpoints.tex",
+    "find": "(\\fn{Mult}\\, \\num 0\\, (\\fn{Fac} (\\fn{Pred}\\, \\num 0))).\\\\",
+    "replace": "(\\fn{Mult}\\, \\num 0\\, (\\fn{Fac} (\\fn{Pred}\\, \\num 0)))\\\\",
+    "why": "Stray full stop inside the chain of reductions."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/lambda-definability/fixpoints.tex",
+    "find": "Turing's in that $Yg\n\\equal[\\beta] g(Yg)$ but not $Yg \\bred g(Yg)$.",
+    "replace": "Turing's in that $Y_Cg\n\\equal[\\beta] g(Y_Cg)$ but not $Y_Cg \\bred g(Y_Cg)$.",
+    "why": "The remark is about Church’s Y_C, not Turing’s Y."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/lambda-definability/minimization.tex",
+    "find": "definable}, then $g$~defined by\n  \\[\n  g(x_1, \\dots, x_k) =",
+    "replace": "definable}, then $h$~defined by\n  \\[\n  h(x_1, \\dots, x_k) =",
+    "why": "The proof calls the function h (g is the bound variable of Search)."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/lambda-definability/minimization.tex",
+    "find": "\\fn{IsZero} (f\\, \\vec{x}\\, y)\\, y\\, (g\\, \\vec{x} (\\fn{Succ}\\, y)]]",
+    "replace": "\\fn{IsZero} (f\\, \\vec{x}\\, y)\\, y\\, (g\\, f\\, \\vec{x} (\\fn{Succ}\\, y))]]",
+    "why": "g stands for Y Search, whose first argument is f; closing parenthesis."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/lambda-definability/partial-recursive-functions.tex",
+    "find": "differ from general recursive function in",
+    "replace": "differ from general recursive functions in",
+    "why": "Plural."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/lambda-definability/lambda-definable-recursive.tex",
+    "find": "systematially",
+    "replace": "systematically",
+    "why": "Typo."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/lambda-calculus/lambda-definability/lambda-definable-recursive.tex",
+    "find": "$\\fn{toChurch}$ and $\\fn{fromChurch}$ that maps",
+    "replace": "$\\fn{toChurch}$ and $\\fn{fromChurch}$ that map",
+    "why": "Agreement."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/summary-9.tex",
+    "find": "if $N$ is a term and $x$ a variable",
+    "replace": "if $M$ is a term and $x$ a variable",
+    "why": "The abstraction is λx.M."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/summary-9.tex",
+    "find": "An application term ($MN)$",
+    "replace": "An application term $(MN)$",
+    "why": "Misplaced dollar sign."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/summary-9.tex",
+    "find": "$\\lambd[x][f^n(x)]$, where",
+    "replace": "$\\lambd[fx][f^n(x)]$, where",
+    "why": "The Church numeral abstracts f as well."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/summary-9.tex",
+    "find": "and that moreover that",
+    "replace": "and moreover that",
+    "why": "Doubled “that”."
+  }
+]

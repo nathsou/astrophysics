@@ -77,7 +77,6 @@ export function SoundnessLab({ initial = 'qrl-bad' }: { initial?: string }) {
               <option key={e.id} value={e.id}>
                 {e.title}
                 {e.incorrect ? ' — incorrect (as in the book)' : ''}
-                {e.discrepancy ? ' — book version' : ''}
               </option>
             ))}
           </select>

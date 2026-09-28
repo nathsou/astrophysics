@@ -1,0 +1,93 @@
+[
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/ic-derivations.tex",
+    "find": "in this capter.",
+    "replace": "in this chapter.",
+    "why": "Typo."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/ic-derivations.tex",
+    "find": "!!{derivation}may use",
+    "replace": "!!{derivation} may use",
+    "why": "Missing space."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/ic-derivations.tex",
+    "find": "If $\\eq[a][\\Obj 0]$, $Q_5$ would tell us",
+    "replace": "If $\\eq[a][\\Obj 0]$, $Q_4$ would tell us",
+    "why": "x + 0 = x is Q4."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/ic-derivations.tex",
+    "find": "by~$Q_6$. So again,",
+    "replace": "by~$Q_5$. So again,",
+    "why": "x + y′ = (x + y)′ is Q5."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/ic-derivations.tex",
+    "find": "(and axioms $Q_2$, $Q_5$):",
+    "replace": "(and axioms $Q_2$, $Q_4$):",
+    "why": "Case 1 uses Q2 and Q4."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/ic-derivations.tex",
+    "find": "(and axioms $Q_2$, $Q_6$).",
+    "replace": "(and axioms $Q_2$, $Q_5$).",
+    "why": "Case 2 uses Q2 and Q5."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/ic-derivations.tex",
+    "find": "\\BinaryInfC{$\\Obj (b'+c') = \\Obj 0$}",
+    "replace": "\\BinaryInfC{$(b'+c') = \\Obj 0$}",
+    "why": "Stray \\Obj before the parenthesis."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/ic-derivations.tex",
+    "find": "\\lexists[y][(a = y')])\n  \\end{gathered}$}\n  \\RightLabel{\\Elim\\lforall}",
+    "replace": "\\lexists[y][(x = y')])\n  \\end{gathered}$}\n  \\RightLabel{\\Elim\\lforall}",
+    "why": "Q3 is ∀x (x = 0 ∨ ∃y (x = y′))."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/ic-derivations.tex",
+    "find": "First we prove something things about~$<$.",
+    "replace": "First we prove some things about~$<$.",
+    "why": "Typo."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/ic-derivations.tex",
+    "find": "\\lnot \\ORefut(\\num{z}, \\gn{!R}))]$}",
+    "replace": "\\lnot \\ORefut(z, \\gn{!R}))]$}",
+    "why": "z is a variable, not a numeral."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/ic-derivations.tex",
+    "find": "\\DeduceC{$\\begin{gathered}[b](a < \\num{m} \\lor {}\\\\a = \\num{m}) \\lor {}\\\\ \\num{m} < a\\end{gathered}$}",
+    "replace": "\\DeduceC{$\\begin{gathered}[b](a < \\num{m} \\lor {}\\\\\\num{m} < a) \\lor {}\\\\ a = \\num{m}\\end{gathered}$}",
+    "why": "λ₃ is the trichotomy lemma, (a < m̄ ∨ m̄ < a) ∨ a = m̄."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/ic-derivations.tex",
+    "find": "  \\AxiomC{$\\Discharge{a = \\num{m}}{3}$}\n  %\\RightLabel{\\Intro\\lor}\n  \\doubleLine\n  \\UnaryInfC{$\\begin{gathered}[b]\n      a = \\num{0} \\lor \\dots \\lor \\\\\n      a = \\num{m} \\lor \\num{m} < a\n    \\end{gathered}$}\n  \n  \\AxiomC{$\\Discharge{\\num{m} < a}{3}$}\n  \\doubleLine\n  \\RightLabel{$\\Intro\\lor^*$}",
+    "replace": "  \\AxiomC{$\\Discharge{\\num{m} < a}{3}$}\n  %\\RightLabel{\\Intro\\lor}\n  \\doubleLine\n  \\UnaryInfC{$\\begin{gathered}[b]\n      a = \\num{0} \\lor \\dots \\lor \\\\\n      a = \\num{m} \\lor \\num{m} < a\n    \\end{gathered}$}\n  \n  \\AxiomC{$\\Discharge{a = \\num{m}}{3}$}\n  \\doubleLine\n  \\RightLabel{$\\Intro\\lor^*$}",
+    "why": "The cases of ∨Elim follow the disjuncts of λ₃ in order: a < m̄, m̄ < a, a = m̄."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/ic-derivations.tex",
+    "find": "from\n$(a < \\num{m} \\lor a = \\num{m}) \\lor \\num{m} < a$ as",
+    "replace": "from\n$(a < \\num{m} \\lor \\num{m} < a) \\lor a = \\num{m}$ as",
+    "why": "λ₃ is the trichotomy lemma."
+  }
+]

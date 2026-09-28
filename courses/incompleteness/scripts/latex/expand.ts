@@ -229,6 +229,9 @@ const TEXT_IN_MATH = new Set(['text', 'mbox', 'textrm', 'textit', 'textbf', 'tex
 /** Expands Open Logic macros in a piece of mathematics. */
 export function expandMath(src: string, hooks: ExpandHooks, depth = 0): string {
   if (depth > 60) throw new Error(`macro expansion too deep: ${src.slice(0, 80)}`);
+  // KaTeX has no vertical-alignment option for gathered/aligned/array: \begin{gathered}[b] would
+  // print a literal “[b]”. The alignment only affects placement, so it is dropped.
+  src = src.replace(/\\begin\{(gathered|aligned|alignedat|array)\}\s*\[[tbc]\]/g, '\\begin{$1}');
   const { config } = hooks;
   let out = '';
   // Never let a control word fuse with a following letter (\lnot + A ≠ \lnotA).
