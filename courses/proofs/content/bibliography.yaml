@@ -1,0 +1,364 @@
+# Bibliography: key → { authors, year, title, venue, url, note }
+
+euclid:
+  authors: Euclid (tr. T. L. Heath)
+  year: c. 300 BC
+  title: The Elements
+  venue: Heath’s translation, Cambridge University Press (1908); online edition by David Joyce
+  url: https://mathcs.clarku.edu/~djoyce/elements/elements.html
+euler1772:
+  authors: Leonhard Euler
+  year: 1772
+  title: Extrait d’une lettre de M. Euler le père à M. Bernoulli
+  venue: Nouveaux Mémoires de l’Académie royale des sciences et belles-lettres de Berlin
+  note: The letter in which Euler remarks on the primes produced by n² + n + 41.
+garfield1876:
+  authors: James A. Garfield
+  year: 1876
+  title: Pons Asinorum
+  venue: New-England Journal of Education 3(14), 161
+guy1988:
+  authors: Richard K. Guy
+  year: 1988
+  title: The strong law of small numbers
+  venue: American Mathematical Monthly 95(8), 697–712
+loomis:
+  authors: Elisha S. Loomis
+  year: 1940
+  title: The Pythagorean Proposition
+  venue: 2nd edition; reissued by the National Council of Teachers of Mathematics (1968)
+maor:
+  authors: Eli Maor
+  year: 2007
+  title: 'The Pythagorean Theorem: A 4,000-Year History'
+  venue: Princeton University Press
+polya1945:
+  authors: George Pólya
+  year: 1945
+  title: How to Solve It
+  venue: Princeton University Press
+robson2002:
+  authors: Eleanor Robson
+  year: 2002
+  title: 'Words and pictures: new light on Plimpton 322'
+  venue: American Mathematical Monthly 109(2), 105–120
+kneale:
+  authors: William Kneale and Martha Kneale
+  year: 1962
+  title: The Development of Logic
+  venue: Clarendon Press, Oxford
+post1921:
+  authors: Emil L. Post
+  year: 1921
+  title: Introduction to a general theory of elementary propositions
+  venue: American Journal of Mathematics 43(3), 163–185
+shannon1938:
+  authors: Claude E. Shannon
+  year: 1938
+  title: A symbolic analysis of relay and switching circuits
+  venue: Transactions of the American Institute of Electrical Engineers 57(12), 713–723
+sheffer1913:
+  authors: Henry M. Sheffer
+  year: 1913
+  title: A set of five independent postulates for Boolean algebras, with application to logical constants
+  venue: Transactions of the American Mathematical Society 14(4), 481–488
+smullyan1978:
+  authors: Raymond Smullyan
+  year: 1978
+  title: What Is the Name of This Book? The Riddle of Dracula and Other Logical Puzzles
+  venue: Prentice-Hall
+wason1966:
+  authors: Peter C. Wason
+  year: 1966
+  title: Reasoning
+  venue: In B. M. Foss (ed.), New Horizons in Psychology, Penguin, 135–151
+frege1879:
+  authors: Gottlob Frege
+  year: 1879
+  title: 'Begriffsschrift, eine der arithmetischen nachgebildete Formelsprache des reinen Denkens'
+  venue: Louis Nebert, Halle; English translation in van Heijenoort (ed.), From Frege to Gödel (1967)
+hintikka:
+  authors: Jaakko Hintikka
+  year: 1996
+  title: The Principles of Mathematics Revisited
+  venue: Cambridge University Press
+velleman:
+  authors: Daniel J. Velleman
+  year: 2019
+  title: 'How to Prove It: A Structured Approach'
+  venue: 3rd edition, Cambridge University Press
+conway-shipman:
+  authors: John H. Conway and Joseph Shipman
+  year: 2013
+  title: 'Extreme proofs I: the irrationality of √2'
+  venue: The Mathematical Intelligencer 35(3), 2–7
+fowler1998:
+  authors: David Fowler
+  year: 1999
+  title: 'The Mathematics of Plato’s Academy: A New Reconstruction'
+  venue: 2nd edition, Oxford University Press
+heath1921:
+  authors: Thomas L. Heath
+  year: 1921
+  title: A History of Greek Mathematics
+  venue: 2 volumes, Clarendon Press, Oxford
+aigner-ziegler:
+  authors: Martin Aigner and Günter M. Ziegler
+  year: 2018
+  title: Proofs from THE BOOK
+  venue: 6th edition, Springer
+furstenberg1955:
+  authors: Harry Furstenberg
+  year: 1955
+  title: On the infinitude of primes
+  venue: American Mathematical Monthly 62(5), 353
+hardy-woodgold:
+  authors: Michael Hardy and Catherine Woodgold
+  year: 2009
+  title: Prime simplicity
+  venue: The Mathematical Intelligencer 31(4), 44–52
+cajori-induction:
+  authors: Florian Cajori
+  year: 1918
+  title: Origin of the name “mathematical induction”
+  venue: American Mathematical Monthly 25(5), 197–201
+golomb1954:
+  authors: Solomon W. Golomb
+  year: 1954
+  title: Checker boards and polyominoes
+  venue: American Mathematical Monthly 61(10), 675–682
+hayes-gauss:
+  authors: Brian Hayes
+  year: 2006
+  title: Gauss’s day of reckoning
+  venue: American Scientist 94(3), 200–205
+  note: Traces the many versions of the story of the schoolboy Gauss summing 1 to 100.
+polya1954:
+  authors: George Pólya
+  year: 1954
+  title: Induction and Analogy in Mathematics
+  venue: Volume I of Mathematics and Plausible Reasoning, Princeton University Press
+edwards-flt:
+  authors: Harold M. Edwards
+  year: 1977
+  title: 'Fermat’s Last Theorem: A Genetic Introduction to Algebraic Number Theory'
+  venue: Springer
+hardy-wright:
+  authors: G. H. Hardy and E. M. Wright
+  year: 2008
+  title: An Introduction to the Theory of Numbers
+  venue: 6th edition (revised by D. R. Heath-Brown and J. H. Silverman), Oxford University Press
+haselgrove1958:
+  authors: C. Brian Haselgrove
+  year: 1958
+  title: A disproof of a conjecture of Pólya
+  venue: Mathematika 5(2), 141–145
+  note: The smallest counterexample, 906,150,257, was found by Minoru Tanaka in 1980.
+singh-flt:
+  authors: Simon Singh
+  year: 1997
+  title: Fermat’s Last Theorem
+  venue: Fourth Estate, London (published in the US as Fermat’s Enigma)
+weil-nt:
+  authors: André Weil
+  year: 1984
+  title: 'Number Theory: An Approach Through History from Hammurapi to Legendre'
+  venue: Birkhäuser
+agp1994:
+  authors: W. R. Alford, Andrew Granville and Carl Pomerance
+  year: 1994
+  title: There are infinitely many Carmichael numbers
+  venue: Annals of Mathematics 139(3), 703–722
+golomb1956:
+  authors: Solomon W. Golomb
+  year: 1956
+  title: Combinatorial proof of Fermat’s “little” theorem
+  venue: American Mathematical Monthly 63(10), 718
+rsa1977:
+  authors: Ronald L. Rivest, Adi Shamir and Leonard Adleman
+  year: 1978
+  title: A method for obtaining digital signatures and public-key cryptosystems
+  venue: Communications of the ACM 21(2), 120–126
+singh-code:
+  authors: Simon Singh
+  year: 1999
+  title: The Code Book
+  venue: Fourth Estate, London
+zagier1990:
+  authors: Don Zagier
+  year: 1990
+  title: A one-sentence proof that every prime p ≡ 1 (mod 4) is a sum of two squares
+  venue: American Mathematical Monthly 97(2), 144
+ireland-rosen:
+  authors: Kenneth Ireland and Michael Rosen
+  year: 1990
+  title: A Classical Introduction to Modern Number Theory
+  venue: 2nd edition, Springer (Graduate Texts in Mathematics 84)
+lemmermeyer:
+  authors: Franz Lemmermeyer
+  year: 2000
+  title: 'Reciprocity Laws: From Euler to Eisenstein'
+  venue: Springer
+calkin-wilf:
+  authors: Neil Calkin and Herbert S. Wilf
+  year: 2000
+  title: Recounting the rationals
+  venue: American Mathematical Monthly 107(4), 360–363
+cantor1891:
+  authors: Georg Cantor
+  year: 1891
+  title: Über eine elementare Frage der Mannigfaltigkeitslehre
+  venue: Jahresbericht der Deutschen Mathematiker-Vereinigung 1, 75–78
+  note: The paper introducing the diagonal argument.
+dauben:
+  authors: Joseph W. Dauben
+  year: 1979
+  title: 'Georg Cantor: His Mathematics and Philosophy of the Infinite'
+  venue: Harvard University Press (reprinted by Princeton University Press, 1990)
+galileo1638:
+  authors: Galileo Galilei
+  year: 1638
+  title: Dialogues Concerning Two New Sciences
+  venue: Elsevier, Leiden; English translation by H. Crew and A. de Salvio (1914)
+dawson-godel:
+  authors: John W. Dawson Jr.
+  year: 1997
+  title: 'Logical Dilemmas: The Life and Work of Kurt Gödel'
+  venue: A K Peters
+geb:
+  authors: Douglas R. Hofstadter
+  year: 1979
+  title: 'Gödel, Escher, Bach: An Eternal Golden Braid'
+  venue: Basic Books
+godel1931:
+  authors: Kurt Gödel
+  year: 1931
+  title: Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I
+  venue: Monatshefte für Mathematik und Physik 38, 173–198
+nagel-newman:
+  authors: Ernest Nagel and James R. Newman
+  year: 2001
+  title: Gödel’s Proof
+  venue: Revised edition, edited by Douglas R. Hofstadter, New York University Press
+turing1936:
+  authors: Alan M. Turing
+  year: 1936
+  title: On computable numbers, with an application to the Entscheidungsproblem
+  venue: Proceedings of the London Mathematical Society (2) 42, 230–265
+van-heijenoort:
+  authors: Jean van Heijenoort (ed.)
+  year: 1967
+  title: 'From Frege to Gödel: A Source Book in Mathematical Logic, 1879–1931'
+  venue: Harvard University Press
+abbott:
+  authors: Stephen Abbott
+  year: 2015
+  title: Understanding Analysis
+  venue: 2nd edition, Springer
+berkeley1734:
+  authors: George Berkeley
+  year: 1734
+  title: 'The Analyst; or, a Discourse Addressed to an Infidel Mathematician'
+  venue: J. Tonson, London
+grabiner:
+  authors: Judith V. Grabiner
+  year: 1981
+  title: The Origins of Cauchy’s Rigorous Calculus
+  venue: MIT Press (Dover reprint 2005)
+dedekind1872:
+  authors: Richard Dedekind
+  year: 1872
+  title: Stetigkeit und irrationale Zahlen (Continuity and Irrational Numbers)
+  venue: Vieweg, Braunschweig; English translation in Essays on the Theory of Numbers (Dover)
+dunham-euler:
+  authors: William Dunham
+  year: 1999
+  title: 'Euler: The Master of Us All'
+  venue: Mathematical Association of America
+niven-irrational:
+  authors: Ivan Niven
+  year: 1956
+  title: Irrational Numbers
+  venue: Carus Mathematical Monographs 11, Mathematical Association of America
+niven1947:
+  authors: Ivan Niven
+  year: 1947
+  title: A simple proof that π is irrational
+  venue: Bulletin of the American Mathematical Society 53(6), 509
+gelbaum-olmsted:
+  authors: Bernard R. Gelbaum and John M. H. Olmsted
+  year: 1964
+  title: Counterexamples in Analysis
+  venue: Holden-Day (Dover reprint 2003)
+hermite-stieltjes:
+  authors: Charles Hermite and Thomas Stieltjes
+  year: 1905
+  title: Correspondance d’Hermite et de Stieltjes
+  venue: 2 volumes, Gauthier-Villars, Paris
+  note: Hermite’s letter of 20 May 1893 contains the remark about functions without derivatives.
+lakatos:
+  authors: Imre Lakatos
+  year: 1976
+  title: 'Proofs and Refutations: The Logic of Mathematical Discovery'
+  venue: Cambridge University Press
+weierstrass1872:
+  authors: Karl Weierstrass
+  year: 1872
+  title: Über continuirliche Functionen eines reellen Arguments, die für keinen Werth des letzteren einen bestimmten Differentialquotienten besitzen
+  venue: Read to the Royal Prussian Academy of Sciences, 18 July 1872; Mathematische Werke II (1895), 71–74
+erdos-szekeres:
+  authors: Paul Erdős and George Szekeres
+  year: 1935
+  title: A combinatorial problem in geometry
+  venue: Compositio Mathematica 2, 463–470
+grs-ramsey:
+  authors: Ronald L. Graham, Bruce L. Rothschild and Joel H. Spencer
+  year: 1990
+  title: Ramsey Theory
+  venue: 2nd edition, Wiley
+hoffman-erdos:
+  authors: Paul Hoffman
+  year: 1998
+  title: 'The Man Who Loved Only Numbers: The Story of Paul Erdős and the Search for Mathematical Truth'
+  venue: Hyperion, New York
+berlekamp-winning:
+  authors: Elwyn R. Berlekamp, John H. Conway and Richard K. Guy
+  year: 1982
+  title: Winning Ways for Your Mathematical Plays
+  venue: Academic Press (2nd edition, A K Peters, 2001–2004)
+engel:
+  authors: Arthur Engel
+  year: 1998
+  title: Problem-Solving Strategies
+  venue: Springer
+euler1736:
+  authors: Leonhard Euler
+  year: 1736
+  title: Solutio problematis ad geometriam situs pertinentis
+  venue: Commentarii academiae scientiarum Petropolitanae 8 (1741), 128–140
+johnson-story:
+  authors: William W. Johnson and William E. Story
+  year: 1879
+  title: Notes on the “15” puzzle
+  venue: American Journal of Mathematics 2(4), 397–404
+richeson:
+  authors: David S. Richeson
+  year: 2008
+  title: 'Euler’s Gem: The Polyhedron Formula and the Birth of Topology'
+  venue: Princeton University Press
+wilson-four-colours:
+  authors: Robin Wilson
+  year: 2002
+  title: 'Four Colors Suffice: How the Map Problem Was Solved'
+  venue: Princeton University Press
+mil:
+  authors: Jeremy Avigad and Patrick Massot
+  year: 2020
+  title: Mathematics in Lean
+  venue: Online book, with the Lean community
+  url: https://leanprover-community.github.io/mathematics_in_lean/
+zeitz:
+  authors: Paul Zeitz
+  year: 2017
+  title: The Art and Craft of Problem Solving
+  venue: 3rd edition, Wiley

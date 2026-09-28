@@ -8,7 +8,8 @@ const output = join(root, 'dist');
 /**
  * Each course builds into its own output directory. Most are npm projects built with
  * `npm run build` into `dist/`; language-models is a pnpm workspace (site + library + Python
- * training) whose SvelteKit site builds into `course/build/` and takes its base path from BASE_PATH.
+ * training) whose SvelteKit site builds into `course/build/` and takes its base path from BASE_PATH,
+ * and proofs is a SvelteKit site that builds into `dist/` and also takes BASE_PATH.
  */
 const courses = [
   { name: 'astrophysics' },
@@ -21,6 +22,14 @@ const courses = [
     env: (base) => ({
       BASE_PATH: `${base}/language-models`,
       // Its SvelteKit config imports TypeScript directly; Node 22 needs type stripping switched on.
+      NODE_OPTIONS: `${process.env.NODE_OPTIONS ?? ''} --experimental-strip-types`.trim(),
+    }),
+  },
+  {
+    // Proofcraft is a single-package SvelteKit site that builds into dist/ with BASE_PATH.
+    name: 'proofs',
+    env: (base) => ({
+      BASE_PATH: `${base}/proofs`,
       NODE_OPTIONS: `${process.env.NODE_OPTIONS ?? ''} --experimental-strip-types`.trim(),
     }),
   },

@@ -1,0 +1,495 @@
+@import '@fontsource-variable/source-serif-4';
+@import '@fontsource-variable/source-serif-4/wght-italic.css';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/jetbrains-mono';
+@import 'katex/dist/katex.min.css';
+
+/* ───────────────────────── Design tokens ───────────────────────── */
+
+:root {
+  color-scheme: light;
+  --font-body: 'Source Serif 4 Variable', 'Iowan Old Style', Georgia, serif;
+  --font-ui: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --page: #f7f6f2;
+  --surface: #fcfcfb;
+  --surface-2: #f0efea;
+  --surface-3: #e7e5de;
+  --ink: #1a1917;
+  --ink-2: #52514e;
+  --ink-3: #898781;
+  --rule: #e1e0d9;
+  --rule-strong: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.1);
+  --shadow: 0 1px 2px rgba(20, 18, 10, 0.06), 0 4px 16px rgba(20, 18, 10, 0.06);
+  --shadow-lg: 0 2px 6px rgba(20, 18, 10, 0.08), 0 16px 40px rgba(20, 18, 10, 0.12);
+
+  --accent: #8c2a3c;
+  --accent-2: #b03a4f;
+  --accent-soft: #f6e6e8;
+  --accent-ink: #6e1c2c;
+  --on-accent: #ffffff;
+  --focus: #b03a4f;
+
+  /* Exercise feedback. */
+  --ok: #1a7f45;
+  --ok-soft: #e4f4ea;
+  --bad: #c2410c;
+  --bad-soft: #fcebe1;
+  --maybe: #a16207;
+  --maybe-soft: #fbf1dc;
+
+  /* Oliver Byrne's Euclid (1847): the primaries used in the course's geometric figures. */
+  --byrne-red: #d0312d;
+  --byrne-blue: #1f5aa6;
+  --byrne-yellow: #e9a91b;
+  --byrne-ink: #1a1917;
+
+  /* Callout hues (tinted surfaces; text stays in ink tokens). */
+  --note: #2a78d6;
+  --tip: #1baf7a;
+  --warn: #eda100;
+  --lab: #4a3aa7;
+  --break: #e34948;
+  --challenge: #eb6834;
+  --history: #8a6b3f;
+  --history-soft: #f3ede2;
+
+  /* Chart palette — validated categorical order (dataviz reference palette). */
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-5: #e87ba4;
+  --series-6: #008300;
+  --series-7: #4a3aa7;
+  --series-8: #e34948;
+  --chart-surface: #fcfcfb;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --good: #0ca30c;
+  --critical: #d03b3b;
+
+  --term-hl: rgba(176, 58, 79, 0.1);
+  --term-hl-strong: rgba(176, 58, 79, 0.22);
+
+  --code-keyword: #cf222e;
+  --code-string: #0a3069;
+  --code-number: #0550ae;
+  --code-comment: #6e7781;
+  --code-fn: #8250df;
+  --code-type: #953800;
+  --code-def: #1a1917;
+  --code-prop: #0550ae;
+  --code-punct: #52514e;
+
+  --radius: 10px;
+  --radius-sm: 6px;
+  --sidebar-w: 18rem;
+  --main-w: 42rem;
+  --margin-w: 17rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme='light'])) {
+    color-scheme: dark;
+    --page: #111110;
+    --surface: #1a1a19;
+    --surface-2: #232321;
+    --surface-3: #2c2c2a;
+    --ink: #ecebe6;
+    --ink-2: #c3c2b7;
+    --ink-3: #898781;
+    --rule: #2c2c2a;
+    --rule-strong: #383835;
+    --border: rgba(255, 255, 255, 0.1);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.5), 0 16px 40px rgba(0, 0, 0, 0.5);
+    --accent: #ec8f9e;
+    --accent-2: #d9667a;
+    --accent-soft: #3a1c22;
+    --accent-ink: #f5b8c2;
+    --on-accent: #0b0b0b;
+    --focus: #ec8f9e;
+    --ok: #4cc27f;
+    --ok-soft: #14291c;
+    --bad: #f0844f;
+    --bad-soft: #33200f;
+    --maybe: #e0b04a;
+    --maybe-soft: #30260f;
+    --byrne-red: #ef5a4f;
+    --byrne-blue: #5b91e0;
+    --byrne-yellow: #f2bd45;
+    --byrne-ink: #ecebe6;
+    --history: #c9a978;
+    --lab: #9085e9;
+    --history-soft: #26221b;
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --series-4: #c98500;
+    --series-5: #d55181;
+    --series-6: #008300;
+    --series-7: #9085e9;
+    --series-8: #e66767;
+    --chart-surface: #1a1a19;
+    --grid: #2c2c2a;
+    --axis: #383835;
+    --term-hl: rgba(236, 143, 158, 0.16);
+    --term-hl-strong: rgba(236, 143, 158, 0.3);
+
+    --code-keyword: #ff7b72;
+    --code-string: #a5d6ff;
+    --code-number: #79c0ff;
+    --code-comment: #8b949e;
+    --code-fn: #d2a8ff;
+    --code-type: #ffa657;
+    --code-def: #ecebe6;
+    --code-prop: #79c0ff;
+    --code-punct: #c3c2b7;
+  }
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --page: #111110;
+  --surface: #1a1a19;
+  --surface-2: #232321;
+  --surface-3: #2c2c2a;
+  --ink: #ecebe6;
+  --ink-2: #c3c2b7;
+  --ink-3: #898781;
+  --rule: #2c2c2a;
+  --rule-strong: #383835;
+  --border: rgba(255, 255, 255, 0.1);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.5), 0 16px 40px rgba(0, 0, 0, 0.5);
+  --accent: #ec8f9e;
+  --accent-2: #d9667a;
+  --accent-soft: #3a1c22;
+  --accent-ink: #f5b8c2;
+  --on-accent: #0b0b0b;
+  --focus: #ec8f9e;
+  --ok: #4cc27f;
+  --ok-soft: #14291c;
+  --bad: #f0844f;
+  --bad-soft: #33200f;
+  --maybe: #e0b04a;
+  --maybe-soft: #30260f;
+  --byrne-red: #ef5a4f;
+  --byrne-blue: #5b91e0;
+  --byrne-yellow: #f2bd45;
+  --byrne-ink: #ecebe6;
+  --history: #c9a978;
+  --lab: #9085e9;
+  --history-soft: #26221b;
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --series-4: #c98500;
+  --series-5: #d55181;
+  --series-6: #008300;
+  --series-7: #9085e9;
+  --series-8: #e66767;
+  --chart-surface: #1a1a19;
+  --grid: #2c2c2a;
+  --axis: #383835;
+  --term-hl: rgba(236, 143, 158, 0.16);
+  --term-hl-strong: rgba(236, 143, 158, 0.3);
+
+  --code-keyword: #ff7b72;
+  --code-string: #a5d6ff;
+  --code-number: #79c0ff;
+  --code-comment: #8b949e;
+  --code-fn: #d2a8ff;
+  --code-type: #ffa657;
+  --code-def: #ecebe6;
+  --code-prop: #79c0ff;
+  --code-punct: #c3c2b7;
+}
+
+/* ───────────────────────── Base ───────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  line-height: 1.65;
+  font-optical-sizing: auto;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: var(--term-hl-strong);
+}
+
+.ui {
+  font-family: var(--font-ui);
+}
+
+/* ───────────────────────── Article grid ─────────────────────────
+   main column for prose; `wide` spans into the right margin; `full` spans the viewport.
+   Sidenotes float into the margin on wide screens. */
+
+.article {
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(1rem, 1fr)
+    [wide-start main-start] minmax(0, var(--main-w))
+    [main-end] minmax(0, calc(var(--margin-w) + 2.5rem))
+    [wide-end] minmax(1rem, 1fr) [full-end];
+  counter-reset: sidenote;
+}
+.article > *,
+.article > .term-layer > * {
+  grid-column: main;
+  min-width: 0;
+}
+.article > .term-layer {
+  display: contents;
+}
+.article > .wide,
+.article > .term-layer > .wide {
+  grid-column: wide;
+}
+.article > .full,
+.article > .term-layer > .full {
+  grid-column: full;
+}
+@media (max-width: 1279px) {
+  .article {
+    grid-template-columns: [full-start] minmax(1rem, 1fr) [wide-start main-start] minmax(0, 46rem) [main-end wide-end] minmax(1rem, 1fr) [full-end];
+  }
+}
+
+/* ───────────────────────── Prose ───────────────────────── */
+
+.article h2,
+.article h3,
+.article h4 {
+  font-family: var(--font-ui);
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  color: var(--ink);
+}
+.article h2 {
+  font-size: 1.6rem;
+  font-weight: 650;
+  margin: 3.5rem 0 1rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--rule);
+}
+.article h3 {
+  font-size: 1.2rem;
+  font-weight: 620;
+  margin: 2.25rem 0 0.6rem;
+}
+.article h4 {
+  font-size: 1rem;
+  font-weight: 620;
+  margin: 1.75rem 0 0.4rem;
+}
+.article p,
+.article ul,
+.article ol {
+  margin: 0 0 1.1rem;
+}
+.article li + li {
+  margin-top: 0.3rem;
+}
+.article li > p {
+  margin-bottom: 0.4rem;
+}
+.article strong {
+  font-weight: 650;
+}
+.article hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 2.5rem 0;
+}
+.article blockquote {
+  margin: 1.5rem 0;
+  padding: 0.2rem 0 0.2rem 1.25rem;
+  border-left: 3px solid var(--rule-strong);
+  color: var(--ink-2);
+  font-style: italic;
+}
+.article table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5rem 0;
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums;
+}
+.article th,
+.article td {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.article th {
+  font-weight: 600;
+  color: var(--ink-2);
+  border-bottom-color: var(--rule-strong);
+}
+.article :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.84em;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 0.08em 0.35em;
+  border-radius: 4px;
+}
+.article img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Code blocks (Shiki dual theme). */
+figure.code-block {
+  margin: 1.5rem 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+figure.code-block figcaption {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-2);
+  padding: 0.45rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+figure.code-block pre {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  line-height: 1.6;
+  background: transparent !important;
+}
+.shiki,
+.shiki span {
+  color: var(--shiki-light);
+}
+:root[data-theme='dark'] .shiki,
+:root[data-theme='dark'] .shiki span {
+  color: var(--shiki-dark);
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme='light'])) .shiki,
+  :root:where(:not([data-theme='light'])) .shiki span {
+    color: var(--shiki-dark);
+  }
+}
+
+/* Maths. */
+.math-display {
+  margin: 1.4rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0;
+}
+.katex {
+  font-size: 1.08em;
+}
+.math-display .katex {
+  font-size: 1.2em;
+}
+[data-term] {
+  border-radius: 4px;
+  cursor: help;
+  transition: background-color 120ms ease;
+  box-shadow: inset 0 -1px 0 0 color-mix(in srgb, var(--accent-2) 55%, transparent);
+}
+[data-term]:hover,
+[data-term]:focus-visible,
+[data-term].term-active {
+  background: var(--term-hl-strong);
+  box-shadow: none;
+}
+[data-term]:focus-visible {
+  outline-offset: 1px;
+}
+/* KaTeX lays out sub/superscripts with empty positioning spans that sit on top of the glyphs;
+   let pointer events fall through them so hoverable terms can be hit. */
+.katex:has([data-term]) .vlist-t,
+.katex:has([data-term]) .vlist-r,
+.katex:has([data-term]) .vlist,
+.katex:has([data-term]) .vlist > span {
+  pointer-events: none;
+}
+.katex [data-term],
+.katex [data-term] * {
+  pointer-events: auto;
+}
+
+/* Footnotes (GFM). */
+.article .footnotes {
+  font-size: 0.92rem;
+  color: var(--ink-2);
+}
+
+/* ───────────────────────── Utility ───────────────────────── */
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

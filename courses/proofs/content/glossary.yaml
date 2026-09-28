@@ -1,0 +1,374 @@
+# Glossary: id → { term, definition (Markdown), chapter (slug) }
+
+proof:
+  term: proof
+  definition: A finite sequence of statements, each an axiom, an earlier result or a logical consequence of earlier statements, ending with the statement to be proved.
+  chapter: what-is-a-proof
+theorem:
+  term: theorem
+  definition: A statement that has been proved. Smaller results used on the way are **lemmas**; immediate consequences are **corollaries**.
+  chapter: what-is-a-proof
+axiom:
+  term: axiom
+  definition: A statement accepted without proof as a starting point, such as Euclid’s postulates.
+  chapter: what-is-a-proof
+conjecture:
+  term: conjecture
+  definition: A statement believed to be true, but not yet proved (or disproved).
+  chapter: what-is-a-proof
+counterexample:
+  term: counterexample
+  definition: A single case in which a general statement fails, which is enough to show that the statement is false.
+  chapter: what-is-a-proof
+converse:
+  term: converse
+  definition: The converse of “if $P$ then $Q$” is “if $Q$ then $P$”. It is a different statement and needs its own proof.
+  chapter: what-is-a-proof
+contrapositive:
+  term: contrapositive
+  definition: The contrapositive of “if $P$ then $Q$” is “if not $Q$ then not $P$”. It is logically equivalent to the original statement.
+  chapter: truth-and-consequence
+statement:
+  term: statement (proposition)
+  definition: A sentence that is either true or false.
+  chapter: truth-and-consequence
+tautology:
+  term: tautology
+  definition: A formula that is true in every row of its truth table, such as $P \lor \lnot P$.
+  chapter: truth-and-consequence
+equivalent:
+  term: logically equivalent
+  definition: Two statements are logically equivalent if they have the same truth value in every possible situation (their truth tables agree row by row).
+  chapter: truth-and-consequence
+vacuous:
+  term: vacuous truth
+  definition: A conditional $P \to Q$ whose hypothesis $P$ is false is true, whatever $Q$ is.
+  chapter: truth-and-consequence
+dnf:
+  term: disjunctive normal form
+  definition: An “or” of “ands” of variables and negated variables. Every truth table has one.
+  chapter: truth-and-consequence
+functional-completeness:
+  term: functionally complete
+  definition: A set of connectives is functionally complete if every truth table can be expressed using only those connectives. $\{\lnot, \land\}$ and $\{\uparrow\}$ (NAND) are; $\{\land, \lor\}$ is not.
+  chapter: truth-and-consequence
+modus-ponens:
+  term: modus ponens
+  definition: 'The rule of inference: from $P$ and $P \to Q$, conclude $Q$.'
+  chapter: truth-and-consequence
+predicate:
+  term: predicate
+  definition: A sentence containing variables, such as “$n$ is prime”, which becomes a statement once the variables are given values or quantified.
+  chapter: for-all-there-exists
+quantifier:
+  term: quantifier
+  definition: '$\forall$ (“for all”) or $\exists$ (“there exists”), turning a predicate into a statement about every, or some, element of a domain.'
+  chapter: for-all-there-exists
+witness:
+  term: witness
+  definition: An object exhibited to prove an existence statement $\exists x\, P(x)$.
+  chapter: for-all-there-exists
+dense:
+  term: dense
+  definition: A set $D \subseteq \mathbb{R}$ is dense if every interval $(a, b)$ with $a < b$ contains an element of $D$. Both $\mathbb{Q}$ and the irrationals are dense.
+  chapter: for-all-there-exists
+archimedean:
+  term: Archimedean property
+  definition: For every real $x$ there is a natural number $n > x$; equivalently, for every $\varepsilon > 0$ there is $n$ with $1/n < \varepsilon$.
+  chapter: for-all-there-exists
+non-constructive:
+  term: non-constructive proof
+  definition: A proof that something exists which does not show how to find it.
+  chapter: for-all-there-exists
+irrational:
+  term: irrational number
+  definition: A real number that is not a ratio $p/q$ of integers, such as $\sqrt2$, $e$ and $\pi$.
+  chapter: root-two
+contradiction:
+  term: proof by contradiction
+  definition: To prove $P$, assume $\lnot P$ and deduce a contradiction; then $P$ must be true.
+  chapter: root-two
+well-ordering:
+  term: well-ordering principle
+  definition: Every non-empty set of natural numbers has a smallest element. Equivalently, there is no infinite strictly decreasing sequence of natural numbers.
+  chapter: root-two
+descent:
+  term: infinite descent
+  definition: Showing that any solution (or counterexample) produces a smaller one, which is impossible for positive integers.
+  chapter: root-two
+commensurable:
+  term: commensurable
+  definition: Two lengths are commensurable if they are both whole-number multiples of a common unit, i.e. their ratio is rational.
+  chapter: root-two
+pell:
+  term: Pell’s equation
+  definition: An equation $x^2 - dy^2 = \pm 1$ in integers, for a non-square positive integer $d$.
+  chapter: root-two
+prime:
+  term: prime number
+  definition: A whole number greater than $1$ whose only positive divisors are $1$ and itself. Other whole numbers greater than $1$ are **composite**.
+  chapter: infinitely-many-primes
+coprime:
+  term: coprime
+  definition: Two integers are coprime if their only common positive divisor is $1$, i.e. $\gcd(a, b) = 1$.
+  chapter: infinitely-many-primes
+fermat-number:
+  term: Fermat number
+  definition: '$F_n = 2^{2^n} + 1$. The first five are prime; $F_5 = 641 \cdot 6700417$.'
+  chapter: infinitely-many-primes
+squarefree:
+  term: squarefree
+  definition: A whole number not divisible by the square of any prime, i.e. a product of distinct primes.
+  chapter: infinitely-many-primes
+induction:
+  term: mathematical induction
+  definition: To prove $P(n)$ for all $n \ge n_0$, prove $P(n_0)$ (the base case) and that $P(k)$ implies $P(k+1)$ for every $k \ge n_0$ (the inductive step).
+  chapter: induction
+inductive-hypothesis:
+  term: inductive hypothesis
+  definition: In the inductive step, the assumption $P(k)$ from which $P(k+1)$ is to be proved.
+  chapter: induction
+strengthening:
+  term: strengthening the hypothesis
+  definition: Proving a stronger statement than required, so that the inductive hypothesis is strong enough to carry the step (Pólya’s “inventor’s paradox”).
+  chapter: induction
+polyomino:
+  term: polyomino
+  definition: A shape made of unit squares joined edge to edge, such as the L-tromino (three squares).
+  chapter: induction
+fta:
+  term: fundamental theorem of arithmetic
+  definition: Every integer $n \ge 2$ is a product of primes, uniquely up to the order of the factors.
+  chapter: unique-factorisation
+strong-induction:
+  term: strong induction
+  definition: To prove $P(n)$ for all $n$, prove $P(n)$ assuming $P(k)$ for **all** $k < n$.
+  chapter: unique-factorisation
+gcd:
+  term: greatest common divisor
+  definition: '$\gcd(a, b)$, the largest integer dividing both $a$ and $b$; computed by Euclid’s algorithm.'
+  chapter: unique-factorisation
+bezout:
+  term: Bézout’s identity
+  definition: '$\gcd(a, b) = ax + by$ for some integers $x, y$; the gcd is the smallest positive such combination.'
+  chapter: unique-factorisation
+euclids-lemma:
+  term: Euclid’s lemma
+  definition: If a prime divides a product, it divides one of the factors.
+  chapter: unique-factorisation
+pythagorean-triple:
+  term: Pythagorean triple
+  definition: 'Positive integers $(a, b, c)$ with $a^2 + b^2 = c^2$. It is **primitive** if $\gcd(a, b, c) = 1$; all primitive triples are $(m^2 - n^2, 2mn, m^2 + n^2)$.'
+  chapter: fermats-descent
+flt:
+  term: Fermat’s Last Theorem
+  definition: '$x^n + y^n = z^n$ has no solutions in positive integers for $n \ge 3$. Claimed by Fermat around 1637, proved by Andrew Wiles in 1994–95.'
+  chapter: fermats-descent
+congruent-number:
+  term: congruent number
+  definition: A positive integer that is the area of a right triangle with rational sides, such as $5$ and $6$ (but not $1$, $2$ or $3$).
+  chapter: fermats-descent
+congruence:
+  term: congruence
+  definition: '$a \equiv b \pmod n$ means that $n$ divides $a - b$: $a$ and $b$ leave the same remainder on division by $n$.'
+  chapter: fermats-little-theorem
+totient:
+  term: Euler’s totient function
+  definition: '$\varphi(n)$, the number of integers in $1, \ldots, n$ coprime to $n$. For a prime, $\varphi(p) = p - 1$.'
+  chapter: fermats-little-theorem
+carmichael:
+  term: Carmichael number
+  definition: 'A composite $n$ with $a^{n-1} \equiv 1 \pmod n$ for every $a$ coprime to $n$, such as $561 = 3 \cdot 11 \cdot 17$.'
+  chapter: fermats-little-theorem
+pseudoprime:
+  term: pseudoprime
+  definition: 'A composite $n$ that passes Fermat’s test for some base $a$, i.e. $a^{n-1} \equiv 1 \pmod n$. $341$ is a pseudoprime to base $2$.'
+  chapter: fermats-little-theorem
+involution:
+  term: involution
+  definition: A map $f$ with $f(f(s)) = s$ for all $s$. It pairs up the elements of a set, apart from its **fixed points** ($f(s) = s$).
+  chapter: two-squares
+quadratic-residue:
+  term: quadratic residue
+  definition: 'An integer $a$ with $p \nmid a$ is a quadratic residue modulo $p$ if $a \equiv x^2 \pmod p$ for some $x$; otherwise it is a non-residue.'
+  chapter: quadratic-reciprocity
+legendre-symbol:
+  term: Legendre symbol
+  definition: '$\left(\frac ap\right)$ is $+1$ if $a$ is a quadratic residue mod $p$, $-1$ if a non-residue, $0$ if $p \mid a$.'
+  chapter: quadratic-reciprocity
+wilson:
+  term: Wilson’s theorem
+  definition: '$(p-1)! \equiv -1 \pmod p$ for every prime $p$ (and for no composite number).'
+  chapter: quadratic-reciprocity
+bijection:
+  term: bijection
+  definition: A function that is injective (one-to-one) and surjective (onto). Two sets have the same cardinality exactly when there is a bijection between them.
+  chapter: sizes-of-infinity
+countable:
+  term: countable
+  definition: A set is countable if it is finite or in bijection with $\mathbb{N}$, i.e. its elements can be listed $a_0, a_1, a_2, \ldots$
+  chapter: sizes-of-infinity
+diagonal:
+  term: diagonal argument
+  definition: Given a list (or a function), build an object that differs from the $n$th item in the $n$th place, so it is not in the list.
+  chapter: sizes-of-infinity
+power-set:
+  term: power set
+  definition: '$\mathcal{P}(A)$, the set of all subsets of $A$. Cantor’s theorem: $|\mathcal{P}(A)| > |A|$.'
+  chapter: sizes-of-infinity
+algebraic:
+  term: algebraic number
+  definition: A root of a non-zero polynomial with integer coefficients. Numbers that are not algebraic are **transcendental**.
+  chapter: sizes-of-infinity
+continuum-hypothesis:
+  term: continuum hypothesis
+  definition: There is no set whose cardinality is strictly between those of $\mathbb{N}$ and $\mathbb{R}$. Independent of the usual axioms of set theory (Gödel 1940, Cohen 1963).
+  chapter: sizes-of-infinity
+russell-paradox:
+  term: Russell’s paradox
+  definition: 'The “set” $R = \{x : x \notin x\}$ would satisfy $R \in R \leftrightarrow R \notin R$; so not every property defines a set.'
+  chapter: limits-of-proof
+halting-problem:
+  term: halting problem
+  definition: Deciding, for a program and an input, whether the program eventually stops. Turing proved in 1936 that no program can do this correctly for all cases.
+  chapter: limits-of-proof
+formal-system:
+  term: formal system
+  definition: A precise language, axioms and rules of inference, arranged so that checking a proof is a mechanical task. It is **sound** if it proves only true statements, **consistent** if it proves no contradiction, **complete** if it proves or refutes every statement.
+  chapter: limits-of-proof
+incompleteness:
+  term: incompleteness theorem
+  definition: Gödel (1931) — every consistent, effectively axiomatised system containing basic arithmetic leaves some arithmetical statement undecided; and cannot prove its own consistency.
+  chapter: limits-of-proof
+godel-numbering:
+  term: Gödel numbering
+  definition: An encoding of formulas (and proofs) as natural numbers, for example via prime-power factorisations, so that arithmetic can talk about formulas.
+  chapter: limits-of-proof
+limit:
+  term: limit of a sequence
+  definition: '$a_n \to L$ means $\forall \varepsilon > 0\ \exists N\ \forall n \ge N: |a_n - L| < \varepsilon$.'
+  chapter: epsilon-delta
+continuity:
+  term: continuity
+  definition: '$f$ is continuous at $a$ if $\forall \varepsilon > 0\ \exists \delta > 0\ \forall x: |x - a| < \delta \to |f(x) - f(a)| < \varepsilon$.'
+  chapter: epsilon-delta
+triangle-inequality:
+  term: triangle inequality
+  definition: '$|x + y| \le |x| + |y|$ for all real $x, y$; equivalently $|a - c| \le |a - b| + |b - c|$.'
+  chapter: epsilon-delta
+bounded:
+  term: bounded sequence
+  definition: A sequence $(a_n)$ is bounded if there is $K$ with $|a_n| \le K$ for all $n$. Convergent sequences are bounded.
+  chapter: epsilon-delta
+supremum:
+  term: supremum (least upper bound)
+  definition: The smallest number that is $\ge$ every element of a set. The **infimum** (greatest lower bound) is defined dually.
+  chapter: completeness
+completeness:
+  term: completeness axiom
+  definition: Every non-empty set of real numbers that is bounded above has a least upper bound. It distinguishes $\mathbb{R}$ from $\mathbb{Q}$.
+  chapter: completeness
+ivt:
+  term: intermediate value theorem
+  definition: A continuous function on $[a, b]$ takes every value between $f(a)$ and $f(b)$.
+  chapter: completeness
+bolzano-weierstrass:
+  term: Bolzano–Weierstrass theorem
+  definition: Every bounded sequence of real numbers has a convergent subsequence.
+  chapter: completeness
+dedekind-cut:
+  term: Dedekind cut
+  definition: A partition of the rationals into a lower set with no largest element and an upper set; Dedekind (1872) defined real numbers to be such cuts.
+  chapter: completeness
+derivative:
+  term: derivative
+  definition: '$f''(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}$, when the limit exists.'
+  chapter: fundamental-theorem
+mvt:
+  term: mean value theorem
+  definition: 'If $f$ is continuous on $[a, b]$ and differentiable on $(a, b)$, then $f''(c) = \frac{f(b) - f(a)}{b - a}$ for some $c \in (a, b)$.'
+  chapter: fundamental-theorem
+integral:
+  term: Riemann integral
+  definition: The common limit of lower and upper sums as the partition of $[a, b]$ is refined; it exists for every continuous function.
+  chapter: fundamental-theorem
+ftc:
+  term: fundamental theorem of calculus
+  definition: 'For continuous $f$: $\frac{d}{dx}\int_a^x f = f(x)$, and $\int_a^b f = G(b) - G(a)$ for any antiderivative $G$.'
+  chapter: fundamental-theorem
+series:
+  term: series
+  definition: 'An infinite sum $\sum a_n$, defined as the limit of its partial sums $s_N = a_1 + \cdots + a_N$ (if the limit exists).'
+  chapter: infinite-series
+harmonic-series:
+  term: harmonic series
+  definition: '$1 + \frac12 + \frac13 + \cdots$, which diverges although its terms tend to $0$.'
+  chapter: infinite-series
+conditional:
+  term: conditionally convergent
+  definition: A series that converges, although the series of absolute values diverges. By Riemann’s theorem it can be rearranged to have any sum. If $\sum |a_n|$ converges, the series is **absolutely convergent** and every rearrangement has the same sum.
+  chapter: infinite-series
+telescoping:
+  term: telescoping sum
+  definition: 'A sum in which consecutive terms cancel, such as $\sum_{n=2}^N \left(\frac1{n-1} - \frac1n\right) = 1 - \frac1N$.'
+  chapter: infinite-series
+transcendental:
+  term: transcendental number
+  definition: A real (or complex) number that is not a root of any non-zero polynomial with integer coefficients, such as $e$, $\pi$ and Liouville’s constant.
+  chapter: e-and-pi
+liouville-number:
+  term: Liouville number
+  definition: A number $x$ such that for every $n$ there is a fraction $p/q$ with $0 < |x - p/q| < q^{-n}$. Every Liouville number is transcendental.
+  chapter: e-and-pi
+uniform-convergence:
+  term: uniform convergence
+  definition: '$f_n \to f$ uniformly if $\forall \varepsilon > 0\ \exists N\ \forall n \ge N\ \forall x: |f_n(x) - f(x)| < \varepsilon$ — one $N$ for all $x$. Uniform limits of continuous functions are continuous.'
+  chapter: monsters
+pointwise:
+  term: pointwise convergence
+  definition: '$f_n(x) \to f(x)$ for each $x$ separately; the $N$ may depend on $x$.'
+  chapter: monsters
+m-test:
+  term: Weierstrass M-test
+  definition: 'If $|f_n(x)| \le M_n$ for all $x$ and $\sum M_n$ converges, then $\sum f_n$ converges uniformly.'
+  chapter: monsters
+pigeonhole:
+  term: pigeonhole principle
+  definition: If more than $kn$ objects are placed in $n$ boxes, some box contains at least $k + 1$ of them.
+  chapter: pigeonholes
+ramsey-number:
+  term: Ramsey number
+  definition: '$R(k, k)$, the least $n$ such that every red/blue colouring of the lines between $n$ points has $k$ points joined entirely in one colour. $R(3,3) = 6$, $R(4,4) = 18$.'
+  chapter: pigeonholes
+invariant:
+  term: invariant
+  definition: A quantity that no allowed move changes. If it differs between two positions, neither can be reached from the other. A **monovariant** only ever increases (or decreases).
+  chapter: invariants
+graph:
+  term: graph
+  definition: A set of vertices joined by edges. The **degree** of a vertex is the number of edge-ends at it.
+  chapter: invariants
+handshake:
+  term: handshake lemma
+  definition: The degrees of a graph add up to twice the number of edges, so the number of odd-degree vertices is even.
+  chapter: invariants
+parity-permutation:
+  term: parity of a permutation
+  definition: A permutation is even or odd according to whether it is a product of an even or odd number of transpositions; every transposition changes the parity.
+  chapter: invariants
+euler-formula:
+  term: Euler’s formula
+  definition: 'For a connected plane graph, $V - E + F = 2$. On a surface with $g$ holes, $V - E + F = 2 - 2g$ (the Euler characteristic).'
+  chapter: five-colours
+planar:
+  term: planar graph
+  definition: A graph that can be drawn in the plane without crossing edges. $K_5$ and $K_{3,3}$ are not planar.
+  chapter: five-colours
+kempe-chain:
+  term: Kempe chain
+  definition: In a coloured graph, a maximal connected set of vertices using only two given colours. Swapping the two colours on it keeps the colouring proper.
+  chapter: five-colours
+platonic:
+  term: Platonic solid
+  definition: A convex polyhedron with congruent regular faces and the same number of faces at every vertex. There are exactly five.
+  chapter: five-colours
