@@ -467,3 +467,9 @@ q { quotes: '“' '”' '‘' '’'; }
 .figure-svg .el-label { font-size: 16px; font-style: italic; fill: var(--ink-2); paint-order: stroke; stroke: var(--panel); stroke-width: 4px; }
 .badge.bracketed { color: var(--muted); border-style: dashed; }
 .figure-svg .shape, .figure-svg .tick, .ws-svg .obj, .layered .edge { vector-effect: non-scaling-stroke; }
+.search-results { margin: -2px 0 10px; background: var(--panel); border: 1px solid var(--rule-2); border-radius: 8px; box-shadow: var(--shadow); max-height: 50vh; overflow-y: auto; padding: 4px; }
+.search-results a { display: flex; gap: 8px; padding: 5px 6px; border-radius: 5px; color: var(--ink); }
+.search-results a:hover { background: var(--accent-soft); text-decoration: none; }
+.search-results .num { flex: 0 0 auto; min-width: 3.4em; color: var(--accent); font-weight: 600; }
+.search-results .t { overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.search-results .muted { padding: 6px; }

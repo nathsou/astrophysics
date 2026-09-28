@@ -88,9 +88,10 @@ function Sidebar({ route, open, onNav }: { route: Route; open: boolean; onNav: (
           }
         }}
       >
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Go to… (e.g. I.47)" aria-label="Go to a proposition" />
+        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Go to I.47, or search…" aria-label="Go to a proposition, or search the enunciations" />
         {jump && <button type="submit">{citeLabel(jump)} →</button>}
       </form>
+      {!jump && q.trim().length >= 3 && <SearchResults q={q} onPick={() => (setQ(''), onNav())} />}
       <div className="sidebar-tools">
         <a className={`chip-btn ${route.page === 'workshop' ? 'on' : ''}`} href="#/workshop">Workshop</a>
         <a className={`chip-btn ${route.page === 'graph' ? 'on' : ''}`} href="#/graph">Graph</a>
@@ -131,6 +132,29 @@ function Sidebar({ route, open, onNav }: { route: Route; open: boolean; onNav: (
         })}
       </div>
     </nav>
+  );
+}
+
+function SearchResults({ q, onPick }: { q: string; onPick: () => void }) {
+  const words = q.toLowerCase().split(/\s+/).filter(Boolean);
+  const hits = index
+    .map((e) => {
+      const hay = `${modernTitle(e.id) ?? ''} ${e.text}`.toLowerCase();
+      return { e, ok: words.every((w) => hay.includes(w)), title: (modernTitle(e.id) ?? '').toLowerCase().includes(words[0]) };
+    })
+    .filter((x) => x.ok)
+    .sort((a, b) => Number(b.title) - Number(a.title))
+    .slice(0, 12);
+  return (
+    <div className="search-results" role="listbox" aria-label="Search results">
+      {hits.length === 0 && <div className="muted">No match.</div>}
+      {hits.map(({ e }) => (
+        <a key={e.id} href={`#/${e.id}`} onClick={onPick} role="option">
+          <span className="num">{citeLabel(e.id)}</span>
+          <span className="t">{modernTitle(e.id) ?? e.text}</span>
+        </a>
+      ))}
+    </div>
   );
 }
 
