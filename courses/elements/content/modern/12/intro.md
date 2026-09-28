@@ -1,0 +1,11 @@
+---
+---
+Book XII measures curved figures and solids by comparing them, and it does so with a single technique, the *method of exhaustion*. Euclid never computes an area or a volume. He proves proportions: two circles are as the squares on their diameters, two spheres as the cubes of their diameters. Each proportion is proved by squeezing the curved figure between polygons or polyhedra that can be compared directly, and then ruling out every alternative by a double reductio. The lemma that makes the squeeze work is [[10.1]]: if you keep removing more than half of a magnitude, what is left eventually becomes smaller than any magnitude you name.
+
+The book has three parts.
+
+- **Circles** ([[12.1]], [[12.2]]). Similar polygons inscribed in circles are as the squares on the diameters, and so, by exhaustion, are the circles themselves. [[12.2]] is the model for everything that follows, and the ancestor of the limit.
+- **Pyramids** ([[12.3]]–[[12.9]]). A pyramid can be cut into two small pyramids and two prisms that fill more than half of it ([[12.3]]). Repeating the cut exhausts the pyramid and shows that pyramids of equal height are as their bases ([[12.5]], [[12.6]]). The landmark is [[12.7]]: a prism splits into three pyramids of equal volume, so every pyramid is a third of the prism on the same base and height. Here exhaustion is not a convenience but a necessity, as Dehn showed in 1900.
+- **Cones, cylinders and spheres** ([[12.10]]–[[12.18]]). A cone is a third of its cylinder ([[12.10]]); cones and cylinders compare by their bases and heights ([[12.11]]–[[12.15]]); and after two constructions that fit polygons and polyhedra between concentric circles and spheres ([[12.16]], [[12.17]]), [[12.18]] proves that spheres are as the cubes of their diameters.
+
+The book relies on Book V's theory of proportion and on the solid geometry of Book XI, particularly the parallelepipeds of [[11.28]]–[[11.34]]. Archimedes credits Eudoxus with the proofs about cones and pyramids, and most historians attribute the method of the whole book to him. What Book XII never finds is a constant: it shows that the ratio of a circle to the square on its diameter is the same for every circle, but not what that ratio is. Archimedes found it, to within bounds, in his *Measurement of a Circle*.

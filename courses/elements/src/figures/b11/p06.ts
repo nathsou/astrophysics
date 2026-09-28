@@ -1,6 +1,6 @@
 import { figure } from '../../geometry/figure';
 import { angle, deg, dist } from '../../geometry/vec';
-import { add, coplanar, cross, ground, isParallel, mul, sph, sub, unit, v3, Z3 } from './lib';
+import { add, coplanar, cross, ground, isParallel, mul, sph, sub, unit, Z3 } from './lib';
 
 // Two lines perpendicular to the same plane are parallel.
 export default figure({

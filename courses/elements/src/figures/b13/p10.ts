@@ -9,7 +9,7 @@ export default figure({
   build(g) {
     const F = g.point('F', v(0, 0));
     const k = g.circle(F, 2);
-    const A = g.glider('A', k, Math.PI / 2 + 0.1);
+    const A = g.glider('A', k, (234 * Math.PI) / 180);
     const t = Math.atan2(A.y, A.x);
     const [, B, C, D, E] = regular(F, 2, 5, t);
     const P = g.points({ B, C, D, E });

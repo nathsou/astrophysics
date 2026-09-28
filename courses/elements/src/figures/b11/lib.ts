@@ -190,3 +190,4 @@ export function named(g: G, names: string[], ps: V[], o?: { hidden?: boolean }):
 }
 
 export { add, sub, mul, dot, cross, len, unit, v };
+export type { V };

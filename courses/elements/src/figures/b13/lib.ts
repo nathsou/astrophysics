@@ -83,3 +83,27 @@ export function hullFaces(ps: V[]): number[][] {
       }
   return faces;
 }
+
+/**
+ * The diameter AB of the given sphere set out as a line in space, starting at `left` and running
+ * along x, cut at C with AC = frac·AB; the semicircle ADB above it (in the plane y = left.y) with D
+ * over C (below AB if dir = -1). Returns the points (named A, B, C, D) and DC, DB, DA.
+ */
+export function diameter(g: G, left: V, d: number, frac: number, o: { from?: number } = {}, dir: 1 | -1 = 1) {
+  const at = (x: number, z: number) => v3(left.x + x, left.y, (left.z ?? 0) + dir * z);
+  const A = g.point('A', at(0, 0));
+  const B = g.point('B', at(d, 0));
+  const C = g.point('C', at(frac * d, 0));
+  const h = Math.sqrt(frac * (1 - frac)) * d;
+  const D = g.point('D', at(frac * d, h));
+  // the semicircle, with D among its vertices so that "the semicircle ADB" finds it
+  const tD = Math.atan2(h, frac * d - d / 2);
+  const ts = [...Array.from({ length: 49 }, (_, i) => Math.PI - (Math.PI * i) / 48), tD].sort((a, b) => b - a);
+  g.curve(
+    ts.map((t) => (t === tD ? D : at(d / 2 + (d / 2) * Math.cos(t), (d / 2) * Math.sin(t)))),
+    { ...o },
+  );
+  g.segment(A, B, o);
+  g.segment(C, D, { aux: true, ...o });
+  return { A, B, C, D, at, DC: h, DB: dist(D, B), DA: dist(D, A) };
+}

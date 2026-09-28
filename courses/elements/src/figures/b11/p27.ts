@@ -1,6 +1,6 @@
 import { figure } from '../../geometry/figure';
 import { angle, deg, dist } from '../../geometry/vec';
-import { add, box, boxVolume, drawBox, mul, named, rotZ, sph, v3, type V } from './lib';
+import { box, boxVolume, drawBox, mul, named, rotZ, sph, v3, type V } from './lib';
 
 // On a given line AB, describe a parallelepiped similar and similarly situated to a given one CD.
 // The solid angle at A is made equal to the one at C (XI.26), and the edges are made proportional:

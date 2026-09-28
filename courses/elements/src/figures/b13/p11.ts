@@ -15,7 +15,7 @@ export default figure({
     const G = g.point('G', sub(mul(F, 2), A));
     const H = g.point('H', sub(mul(F, 2), P.B));
     const K = g.point('K', add(F, mul(unit(sub(H, F)), k.r / 4)));
-    const L = g.point('L', ll(A, G, P.C, P.D));
+    g.point('L', ll(A, G, P.C, P.D));
     const M = g.point('M', ll(P.B, H, A, P.C));
     g.polygon([A, P.B, P.C, P.D, P.E]);
     g.segment(A, G, { aux: true });
