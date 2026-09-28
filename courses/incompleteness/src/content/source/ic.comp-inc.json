@@ -1862,7 +1862,7 @@
         },
         {
          "t": "text",
-         "v": " ,…, "
+         "v": ", …, "
         },
         {
          "t": "math",
@@ -1990,8 +1990,8 @@
         },
         {
          "t": "math",
-         "tex": "s^m_n(x, a_0, \\dots, a_{m-1})",
-         "src": "s^m_n(x, a_0, \\dots, a_{m-1})"
+         "tex": "s^m_n(e, a_0, \\dots, a_{m-1})",
+         "src": "s^m_n(e, a_0, \\dots, a_{m-1})"
         },
         {
          "t": "text",
@@ -2004,12 +2004,12 @@
         },
         {
          "t": "text",
-         "v": "-ary function of the remaining arguments. It you think of "
+         "v": "-ary function of the remaining arguments. If you think of "
         },
         {
          "t": "math",
-         "tex": "x",
-         "src": "x"
+         "tex": "e",
+         "src": "e"
         },
         {
          "t": "text",
@@ -2475,7 +2475,7 @@
      "c": [
       {
        "t": "text",
-       "v": "Although there is a partial computable function that is total for the partial computable functions, there is no total computable function that is universal for the total computable functions."
+       "v": "Although there is a partial computable function that is universal for the partial computable functions, there is no total computable function that is universal for the total computable functions."
       }
      ],
      "loc": {
@@ -3617,7 +3617,7 @@
         },
         {
          "t": "text",
-         "v": " halt on its own index as input? The argument above shows that it does if and only if it doesn’t—a contradiction. So our supposition that there is a such Turing machine "
+         "v": " halt on its own index as input? The argument above shows that it does if and only if it doesn’t—a contradiction. So our supposition that there is such a Turing machine "
         },
         {
          "t": "math",
@@ -4279,10 +4279,10 @@
    "title": [
     {
      "t": "text",
-     "v": "Equivalent Defininitions of Computably Enumerable Sets"
+     "v": "Equivalent Definitions of Computably Enumerable Sets"
     }
    ],
-   "titleText": "Equivalent Defininitions of Computably Enumerable Sets",
+   "titleText": "Equivalent Definitions of Computably Enumerable Sets",
    "loc": {
     "repo": "OpenLogic",
     "file": "content/computability/computability-theory/equiv-ce-defs.tex",
@@ -4564,7 +4564,7 @@
         },
         {
          "t": "text",
-         "v": " is the set of inputs on for which the computation of "
+         "v": " is the set of inputs on which the computation of "
         },
         {
          "t": "math",
@@ -5127,8 +5127,8 @@
         },
         {
          "t": "math",
-         "tex": "\\varphi_{e} (x) \\downarrow = y",
-         "src": "\\cfind{e}(x) \\fdefined =\ny"
+         "tex": "\\varphi_{e} ((z)_0) \\downarrow = y",
+         "src": "\\cfind{e}((z)_0) \\fdefined =\ny"
         },
         {
          "t": "text",
@@ -6419,7 +6419,16 @@
         },
         {
          "t": "text",
-         "v": " is c.e.\\@ but not decidable."
+         "v": " is "
+        },
+        {
+         "t": "term",
+         "token": "c.e.",
+         "v": "c.e."
+        },
+        {
+         "t": "text",
+         "v": " but not decidable."
         }
        ],
        "loc": {
@@ -6594,7 +6603,12 @@
         },
         {
          "t": "text",
-         "v": " and so is c.e.\\@"
+         "v": " and so is "
+        },
+        {
+         "t": "term",
+         "token": "c.e.",
+         "v": "c.e."
         }
        ],
        "loc": {
@@ -6976,8 +6990,8 @@
         },
         {
          "t": "math",
-         "tex": "T(e, x, h(x))",
-         "src": "T(e, x, h(x))"
+         "tex": "T(d, x, h(x))",
+         "src": "T(d, x, h(x))"
         },
         {
          "t": "text",
@@ -6985,8 +6999,8 @@
         },
         {
          "t": "math",
-         "tex": "\\varphi_{e}",
-         "src": "\\cfind{e}"
+         "tex": "\\varphi_{d}",
+         "src": "\\cfind{d}"
         },
         {
          "t": "text",
@@ -6994,8 +7008,8 @@
         },
         {
          "t": "math",
-         "tex": "T(e, x, h(x))",
-         "src": "T(e, x, h(x))"
+         "tex": "T(d, x, h(x))",
+         "src": "T(d, x, h(x))"
         },
         {
          "t": "text",
@@ -7059,8 +7073,8 @@
         },
         {
          "t": "math",
-         "tex": "\\varphi_{e}",
-         "src": "\\cfind{e}"
+         "tex": "\\varphi_{d}",
+         "src": "\\cfind{d}"
         },
         {
          "t": "text",
@@ -7068,8 +7082,8 @@
         },
         {
          "t": "math",
-         "tex": "\\varphi_{f}",
-         "src": "\\cfind{f}"
+         "tex": "\\varphi_{e}",
+         "src": "\\cfind{e}"
         },
         {
          "t": "text",
@@ -7077,8 +7091,8 @@
         },
         {
          "t": "math",
-         "tex": "\\varphi_{e}",
-         "src": "\\cfind{e}"
+         "tex": "\\varphi_{d}",
+         "src": "\\cfind{d}"
         },
         {
          "t": "text",
@@ -7540,7 +7554,16 @@
      "c": [
       {
        "t": "text",
-       "v": "is c.e.\\@ This is implied by the assumption that "
+       "v": "is "
+      },
+      {
+       "t": "term",
+       "token": "c.e.",
+       "v": "c.e."
+      },
+      {
+       "t": "text",
+       "v": " This is implied by the assumption that "
       },
       {
        "t": "math",
@@ -7597,7 +7620,12 @@
         },
         {
          "t": "text",
-         "v": " is c.e.\\@"
+         "v": " is "
+        },
+        {
+         "t": "term",
+         "token": "c.e.",
+         "v": "c.e."
         }
        ],
        "loc": {
@@ -7646,7 +7674,7 @@
         },
         {
          "t": "text",
-         "v": " in whatever proof system we prefer. Acceptable proof systems have the property that it can be decided if an arrangements of symbols and "
+         "v": " in whatever proof system we prefer. Acceptable proof systems have the property that it can be decided if an arrangement of symbols and "
         },
         {
          "t": "term",
@@ -7854,7 +7882,16 @@
         },
         {
          "t": "text",
-         "v": " is the domain of a partial computable function and so c.e.\\@ by "
+         "v": " is the domain of a partial computable function and so "
+        },
+        {
+         "t": "term",
+         "token": "c.e.",
+         "v": "c.e."
+        },
+        {
+         "t": "text",
+         "v": " by "
         },
         {
          "t": "ref",
@@ -7894,7 +7931,16 @@
       },
       {
        "t": "text",
-       "v": " is also true: every c.e.\\@ theory is axiomatizable. This is proved using what’s known as “Craig’s trick.”"
+       "v": " is also true: every "
+      },
+      {
+       "t": "term",
+       "token": "c.e.",
+       "v": "c.e."
+      },
+      {
+       "t": "text",
+       "v": " theory is axiomatizable. This is proved using what’s known as “Craig’s trick.”"
       }
      ],
      "loc": {
@@ -7924,7 +7970,16 @@
         },
         {
          "t": "text",
-         "v": " is a c.e.\\@ theory, then "
+         "v": " is "
+        },
+        {
+         "t": "term",
+         "token": "c.e.",
+         "v": "a c.e."
+        },
+        {
+         "t": "text",
+         "v": " theory, then "
         },
         {
          "t": "math",
@@ -7973,7 +8028,16 @@
         },
         {
          "t": "text",
-         "v": " is c.e.\\@, there is a computable enumeration "
+         "v": " is "
+        },
+        {
+         "t": "term",
+         "token": "c.e.",
+         "v": "c.e."
+        },
+        {
+         "t": "text",
+         "v": ", there is a computable enumeration "
         },
         {
          "t": "math",
@@ -8148,8 +8212,8 @@
         },
         {
          "t": "math",
-         "tex": "B \\land (B \\land \\dots \\land B)\\dots)",
-         "src": "!B \\land\n  (!B \\land \\dots \\land !B)\\dots)"
+         "tex": "B \\land (B \\land (\\dots \\land B)\\dots)",
+         "src": "!B \\land\n  (!B \\land (\\dots \\land !B)\\dots)"
         },
         {
          "t": "text",
@@ -8166,8 +8230,8 @@
         },
         {
          "t": "math",
-         "tex": "n",
-         "src": "n"
+         "tex": "n+1",
+         "src": "n+1"
         },
         {
          "t": "text",
@@ -8211,8 +8275,21 @@
         },
         {
          "t": "math",
+         "tex": "A \\equiv A_0",
+         "src": "!A \\ident !A_0"
+        },
+        {
+         "t": "text",
+         "v": " or "
+        },
+        {
+         "t": "math",
          "tex": "B \\equiv A_{n}",
          "src": "!B \\ident !A_{n}"
+        },
+        {
+         "t": "text",
+         "v": "."
         }
        ],
        "loc": {
@@ -8292,6 +8369,15 @@
         {
          "t": "text",
          "v": " iff "
+        },
+        {
+         "t": "math",
+         "tex": "{^{\\reflectbox{\\tiny\\#}}}{A}{^{\\text{\\tiny\\#}}} = f(0)",
+         "src": "\\Gn{A} = f(0)"
+        },
+        {
+         "t": "text",
+         "v": " or "
         },
         {
          "t": "math",
@@ -8814,8 +8900,8 @@
         },
         {
          "t": "math",
-         "tex": "\\mathbf{T} \\nvdash \\exists z \\, T(\\overline{e}, \\overline{n}, z)",
-         "src": "\\Th{T} \\Proves/\n  \\lexists[z][!T(\\num{e}, \\num{n}, z)]"
+         "tex": "\\mathbf{T} \\nvdash \\exists z \\, T(\\overline{e}, \\overline{e}, z)",
+         "src": "\\Th{T} \\Proves/\n  \\lexists[z][!T(\\num{e}, \\num{e}, z)]"
         },
         {
          "t": "text",
@@ -8832,8 +8918,8 @@
         },
         {
          "t": "math",
-         "tex": "\\mathbf{T} \\vdash \\exists z \\, T(\\overline{e}, \\overline{n}, z)",
-         "src": "\\Th{T} \\Proves \\lexists[z][!T(\\num{e},\n  \\num{n}, z)]"
+         "tex": "\\mathbf{T} \\vdash \\exists z \\, T(\\overline{e}, \\overline{e}, z)",
+         "src": "\\Th{T} \\Proves \\lexists[z][!T(\\num{e},\n  \\num{e}, z)]"
         },
         {
          "t": "text",
@@ -8953,7 +9039,16 @@
         },
         {
          "t": "text",
-         "v": " consistent c.e.\\@ theory, then "
+         "v": " consistent "
+        },
+        {
+         "t": "term",
+         "token": "c.e.",
+         "v": "c.e."
+        },
+        {
+         "t": "text",
+         "v": " theory, then "
         },
         {
          "t": "math",
@@ -8993,7 +9088,16 @@
        "c": [
         {
          "t": "text",
-         "v": "Informally, we can computably enumerate all theorems of a c.e.\\@ theory. To decide if "
+         "v": "Informally, we can computably enumerate all theorems of "
+        },
+        {
+         "t": "term",
+         "token": "c.e.",
+         "v": "a c.e."
+        },
+        {
+         "t": "text",
+         "v": " theory. To decide if "
         },
         {
          "t": "math",
@@ -9083,7 +9187,7 @@
         },
         {
          "t": "text",
-         "v": " is a theorem. This, when "
+         "v": " is a theorem. Thus, when "
         },
         {
          "t": "math",
@@ -9160,10 +9264,10 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "\\overline{{^{\\reflectbox{\\tiny\\#}}}{\\mathbf{T}}{^{\\text{\\tiny\\#}}}} = \\{ n : \\exists k \\, (\\lnot \\mathrm{Sent}(n) \\lor ({^{\\reflectbox{\\tiny\\#}}}{\\lnot}{^{\\text{\\tiny\\#}}} \\frown f(k)) = n) \\},"
+         "tex": "\\overline{{^{\\reflectbox{\\tiny\\#}}}{\\mathbf{T}}{^{\\text{\\tiny\\#}}}} = \\{ n : \\exists k \\, (\\lnot \\mathrm{Sent}(n) \\lor ({^{\\reflectbox{\\tiny\\#}}}{\\lnot}{^{\\text{\\tiny\\#}}} \\frown n) = f(k)) \\},"
         }
        ],
-       "src": "\\Complement{\\Gn{\\Th{T}}} = \\Setabs{n}{\\lexists[k][(\\lnot\n  \\fn{Sent}(n) \\lor (\\Gn{\\lnot} \\concat f(k)) = n)]},",
+       "src": "\\Complement{\\Gn{\\Th{T}}} = \\Setabs{n}{\\lexists[k][(\\lnot\n  \\fn{Sent}(n) \\lor (\\Gn{\\lnot} \\concat n) = f(k))]},",
        "loc": {
         "repo": "incompleteness-computability",
         "file": "include/g1-halting-problem.tex",
@@ -9204,7 +9308,7 @@
         },
         {
          "t": "text",
-         "v": ". By "
+         "v": "). By "
         },
         {
          "t": "ref",
@@ -9221,7 +9325,16 @@
         },
         {
          "t": "text",
-         "v": " is c.e.\\@, and so by "
+         "v": " is "
+        },
+        {
+         "t": "term",
+         "token": "c.e.",
+         "v": "c.e."
+        },
+        {
+         "t": "text",
+         "v": ", and so by "
         },
         {
          "t": "ref",
@@ -9285,7 +9398,16 @@
         },
         {
          "t": "text",
-         "v": "-consistent, c.e.\\@ and represents all primitive recursive relations, it is incomplete."
+         "v": "-consistent, "
+        },
+        {
+         "t": "term",
+         "token": "c.e.",
+         "v": "c.e."
+        },
+        {
+         "t": "text",
+         "v": " and represents all primitive recursive relations, it is incomplete."
         }
        ],
        "loc": {
@@ -9429,7 +9551,16 @@
         },
         {
          "t": "text",
-         "v": "-consistent c.e.\\@ theory that represents all primitive recursive relations. Then there is "
+         "v": "-consistent "
+        },
+        {
+         "t": "term",
+         "token": "c.e.",
+         "v": "c.e."
+        },
+        {
+         "t": "text",
+         "v": " theory that represents all primitive recursive relations. Then there is "
         },
         {
          "t": "term",
@@ -9931,7 +10062,7 @@
        "c": [
         {
          "t": "text",
-         "v": "We’ve shown that we can the sentence "
+         "v": "We’ve shown that we can take the sentence "
         },
         {
          "t": "math",

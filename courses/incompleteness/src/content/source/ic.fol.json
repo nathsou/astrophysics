@@ -14681,7 +14681,7 @@
        "c": [
         {
          "t": "text",
-         "v": "probNot,probOr,probAnd,probIf,probIff,probEx,probAll Complete the proof of "
+         "v": "Complete the proof of "
         },
         {
          "t": "ref",
@@ -14695,7 +14695,7 @@
        "loc": {
         "repo": "OpenLogic",
         "file": "content/first-order-logic/syntax-and-semantics/assignments.tex",
-        "line": 198,
+        "line": 199,
         "endLine": 200
        }
       }
@@ -20080,7 +20080,7 @@
        "c": [
         {
          "t": "text",
-         "v": "probEx,probAll Complete the proof of "
+         "v": "Complete the proof of "
         },
         {
          "t": "ref",
@@ -20094,7 +20094,7 @@
        "loc": {
         "repo": "OpenLogic",
         "file": "content/first-order-logic/syntax-and-semantics/semantic-notions.tex",
-        "line": 153,
+        "line": 154,
         "endLine": 155
        }
       }

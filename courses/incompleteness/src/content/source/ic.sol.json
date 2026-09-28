@@ -8523,10 +8523,10 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "A_+(x,y,z) \\equiv \\exists u \\, (u(\\mathsfit{0})=x \\land \\forall w \\, u(x')=u (x)' \\land u(y)=z)"
+         "tex": "A_+(x,y,z) \\equiv \\exists u \\, (u(\\mathsfit{0})=x \\land \\forall w \\, u(w')=u (w)' \\land u(y)=z)"
         }
        ],
-       "src": "!A_+(x,y,z) \\ident \\lexists[u][(u(\\Obj 0)=x \\land \\lforall[w][u(x')=u\n (x)'] \\land u(y)=z)]",
+       "src": "!A_+(x,y,z) \\ident \\lexists[u][(u(\\Obj 0)=x \\land \\lforall[w][u(w')=u\n (w)'] \\land u(y)=z)]",
        "loc": {
         "repo": "OpenLogic",
         "file": "content/second-order-logic/metatheory/second-order-arithmetic.tex",
@@ -8830,7 +8830,16 @@
         {
          "t": "math",
          "tex": "{\\boldsymbol{\\mathit{M}}} \\vDash P \\mathbin{\\rightarrow} A",
-         "src": "\\Sat{M}{!P \\lif !A"
+         "src": "\\Sat{M}{!P \\lif !A}"
+        },
+        {
+         "t": "text",
+         "v": " for every "
+        },
+        {
+         "t": "math",
+         "tex": "{\\boldsymbol{\\mathit{M}}}",
+         "src": "\\Struct{M}"
         },
         {
          "t": "text",
@@ -9479,8 +9488,8 @@
         },
         {
          "t": "math",
-         "tex": "A^{\\ge k} \\in \\Gamma",
-         "src": "!A^{\\ge k} \\in \\Gamma"
+         "tex": "A^{\\ge k} \\in \\Gamma_0",
+         "src": "!A^{\\ge k} \\in \\Gamma_0"
         },
         {
          "t": "text",
@@ -9488,8 +9497,8 @@
         },
         {
          "t": "math",
-         "tex": "A^{\\ge n} \\in \\Gamma",
-         "src": "!A^{\\ge n}\n\\in \\Gamma"
+         "tex": "A^{\\ge n} \\in \\Gamma_0",
+         "src": "!A^{\\ge n}\n\\in \\Gamma_0"
         },
         {
          "t": "text",
@@ -11063,10 +11072,10 @@
        "env": "gather",
        "rows": [
         {
-         "tex": "\\exists u \\, ( \\forall x \\, \\forall y \\, ( u(x) = u(y) \\mathbin{\\rightarrow} x = y ) \\land {} \\\\\\exists y \\, (X(y) \\land \\forall x \\, (X(x) \\mathbin{\\rightarrow} y \\neq u(x) ) )"
+         "tex": "\\exists u \\, ( \\forall x \\, \\forall y \\, ( u(x) = u(y) \\mathbin{\\rightarrow} x = y ) \\land \\forall x \\, (X(x) \\mathbin{\\rightarrow} X(u(x))) \\land {} \\\\\\exists y \\, (X(y) \\land \\forall x \\, (X(x) \\mathbin{\\rightarrow} y \\neq u(x) ) )"
         }
        ],
-       "src": "\\lexists[u][(\\lforall[x][\\lforall[y][(\\eq[u(x)][u(y)] \\lif \n      \\eq[x][y])]] \\land {} \\\\\\lexists[y][(X(y) \\land \\lforall[x][(X(x)\n      \\lif \\eq/[y][u(x)])]])]",
+       "src": "\\lexists[u][(\\lforall[x][\\lforall[y][(\\eq[u(x)][u(y)] \\lif \n      \\eq[x][y])]] \\land \\lforall[x][(X(x) \\lif X(u(x)))] \\land {} \\\\\\lexists[y][(X(y) \\land \\lforall[x][(X(x)\n      \\lif \\eq/[y][u(x)])]])]",
        "loc": {
         "repo": "OpenLogic",
         "file": "content/second-order-logic/sol-and-set-theory/cardinalities.tex",
@@ -11149,10 +11158,10 @@
        "env": "gather",
        "rows": [
         {
-         "tex": "\\exists z \\, \\exists u \\, (X(z) \\land \\forall x \\, (X(x) \\mathbin{\\rightarrow} X(u(x))) \\land {} \\\\ \\forall Y \\, ((Y(z) \\land \\forall x \\, (Y(x) \\mathbin{\\rightarrow} Y(u(x))) ) \\mathbin{\\rightarrow} X = Y ) )"
+         "tex": "\\exists z \\, \\exists u \\, (X(z) \\land \\forall x \\, (X(x) \\mathbin{\\rightarrow} X(u(x))) \\land {} \\\\ \\forall Y \\, ((Y(z) \\land \\forall x \\, (Y(x) \\mathbin{\\rightarrow} Y(u(x))) ) \\mathbin{\\rightarrow} X \\subseteq Y ) )"
         }
        ],
-       "src": "\\lexists[z][\\lexists[u][(X(z) \\land \n    \\lforall[x][(X(x) \\lif X(u(x)))] \\land {} \\\\ \\lforall[Y][((Y(z) \\land\n      \\lforall[x][(Y(x) \\lif Y(u(x)))]) \\lif X = Y])]])",
+       "src": "\\lexists[z][\\lexists[u][(X(z) \\land \n    \\lforall[x][(X(x) \\lif X(u(x)))] \\land {} \\\\ \\lforall[Y][((Y(z) \\land\n      \\lforall[x][(Y(x) \\lif Y(u(x)))]) \\lif X \\subseteq Y])]])",
        "loc": {
         "repo": "OpenLogic",
         "file": "content/second-order-logic/sol-and-set-theory/cardinalities.tex",
@@ -11184,7 +11193,7 @@
         },
         {
          "t": "text",
-         "v": " is "
+         "v": " is non-empty and "
         },
         {
          "t": "term",
@@ -11308,7 +11317,7 @@
       },
       {
        "t": "text",
-       "v": " iff all its subsets are finite or have size "
+       "v": " iff it is infinite but not of size "
       },
       {
        "t": "math",
@@ -11317,12 +11326,21 @@
       },
       {
        "t": "text",
-       "v": ", but is not itself of size "
+       "v": ", and all its subsets are finite, have size "
       },
       {
        "t": "math",
        "tex": "\\aleph_0",
        "src": "\\aleph_0"
+      },
+      {
+       "t": "text",
+       "v": ", or are of the same size as "
+      },
+      {
+       "t": "math",
+       "tex": "X",
+       "src": "X"
       },
       {
        "t": "text",
@@ -11330,8 +11348,8 @@
       },
       {
        "t": "math",
-       "tex": "\\mathrm{Aleph_1}(X) \\equiv \\forall Y \\, (Y \\subseteq X \\mathbin{\\rightarrow} (\\lnot\\mathrm{Inf}(Y) \\lor \\mathrm{Aleph}_0(Y))) \\land \\lnot \\mathrm{Aleph}_0(X)",
-       "src": "\\fn{Aleph_1}(X) \\ident \\lforall[Y][(Y \\subseteq X \\lif\n  (\\lnot\\fn{Inf}(Y) \\lor \\fn{Aleph}_0(Y)))] \\land \\lnot\n\\fn{Aleph}_0(X)"
+       "tex": "\\mathrm{Aleph_1}(X) \\equiv \\forall Y \\, (Y \\subseteq X \\mathbin{\\rightarrow} (\\lnot\\mathrm{Inf}(Y) \\lor \\mathrm{Aleph}_0(Y) \\lor Y \\approx X)) \\land \\mathrm{Inf}(X) \\land \\lnot \\mathrm{Aleph}_0(X)",
+       "src": "\\fn{Aleph_1}(X) \\ident \\lforall[Y][(Y \\subseteq X \\lif\n  (\\lnot\\fn{Inf}(Y) \\lor \\fn{Aleph}_0(Y) \\lor \\cardeq{Y}{X}))] \\land \\fn{Inf}(X) \\land \\lnot\n\\fn{Aleph}_0(X)"
       },
       {
        "t": "text",
@@ -12678,7 +12696,7 @@
         },
         {
          "t": "text",
-         "v": "). This is ruled out be the last conjunct, which requires the association between elements of "
+         "v": "). This is ruled out by the last conjunct, which requires the association between elements of "
         },
         {
          "t": "math",
@@ -12691,8 +12709,8 @@
         },
         {
          "t": "math",
-         "tex": "s(Z)",
-         "src": "s(Z)"
+         "tex": "s(X)",
+         "src": "s(X)"
         },
         {
          "t": "text",

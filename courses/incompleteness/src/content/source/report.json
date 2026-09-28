@@ -155,17 +155,6 @@
    }
   },
   {
-   "level": "warning",
-   "code": "unbalanced-math",
-   "message": "a $ inside an unclosed brace group (upstream typo?)",
-   "loc": {
-    "repo": "OpenLogic",
-    "file": "content/second-order-logic/metatheory/undecidability-and-axiomatizability.tex",
-    "line": 33,
-    "endLine": 33
-   }
-  },
-  {
    "level": "info",
    "code": "multline",
    "message": "multline is typeset as gather (KaTeX has no multline)",

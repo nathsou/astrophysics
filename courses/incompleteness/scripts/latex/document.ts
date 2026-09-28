@@ -1174,6 +1174,8 @@ export class FileParser {
       return;
     }
     this.flush();
+    // \begin{probtag}{tags} is a problem whose tags the book's style ignores; skip the tag list.
+    if (env === 'probtag') this.group();
     const titleRange = this.optRange();
     const title = titleRange ? this.parseInlineRange(titleRange.start, titleRange.end) : undefined;
     let number: string | undefined;

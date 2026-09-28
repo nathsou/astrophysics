@@ -85,7 +85,7 @@
     {
      "id": "cmp.rec.prf",
      "number": "2.4",
-     "title": "Primitive Recursion Functions"
+     "title": "Primitive Recursive Functions"
     },
     {
      "id": "cmp.rec.not",
@@ -367,7 +367,7 @@
     {
      "id": "cmp.thy.eqc",
      "number": "6.10",
-     "title": "Equivalent Defininitions of Computably Enumerable Sets"
+     "title": "Equivalent Definitions of Computably Enumerable Sets"
     },
     {
      "id": "cmp.thy.ncp",
@@ -2677,67 +2677,67 @@
  "macros": [
   {
    "name": "mathrm",
-   "count": 1328,
+   "count": 1323,
    "origin": "katex"
   },
   {
    "name": "boldsymbol",
-   "count": 1281,
+   "count": 1282,
    "origin": "katex"
   },
   {
    "name": "mathbi",
-   "count": 1281,
+   "count": 1282,
    "origin": "override"
   },
   {
    "name": "mathit",
-   "count": 1281,
+   "count": 1282,
    "origin": "katex"
   },
   {
    "name": "Struct",
-   "count": 1281,
+   "count": 1282,
    "origin": "upstream"
   },
   {
    "name": "mathbf",
-   "count": 1072,
+   "count": 1077,
    "origin": "katex"
   },
   {
    "name": "Th",
-   "count": 1066,
+   "count": 1070,
    "origin": "upstream"
   },
   {
    "name": "overline",
-   "count": 950,
+   "count": 953,
    "origin": "katex"
   },
   {
    "name": "num",
-   "count": 936,
+   "count": 939,
    "origin": "upstream"
   },
   {
    "name": "fn",
-   "count": 783,
+   "count": 784,
    "origin": "upstream"
   },
   {
    "name": "mathbin",
-   "count": 611,
+   "count": 613,
    "origin": "katex"
   },
   {
    "name": "forall",
-   "count": 533,
+   "count": 534,
    "origin": "katex"
   },
   {
    "name": "lforall",
-   "count": 503,
+   "count": 504,
    "origin": "upstream"
   },
   {
@@ -2747,17 +2747,17 @@
   },
   {
    "name": "lif",
-   "count": 452,
+   "count": 453,
    "origin": "upstream"
   },
   {
    "name": "rightarrow",
-   "count": 452,
+   "count": 453,
    "origin": "katex"
   },
   {
    "name": "eq",
-   "count": 422,
+   "count": 423,
    "origin": "upstream"
   },
   {
@@ -2777,12 +2777,12 @@
   },
   {
    "name": "Proves",
-   "count": 377,
+   "count": 378,
    "origin": "upstream"
   },
   {
    "name": "Gamma",
-   "count": 366,
+   "count": 367,
    "origin": "katex"
   },
   {
@@ -2802,7 +2802,7 @@
   },
   {
    "name": "vdash",
-   "count": 340,
+   "count": 341,
    "origin": "katex"
   },
   {
@@ -2812,7 +2812,7 @@
   },
   {
    "name": "land",
-   "count": 304,
+   "count": 306,
    "origin": "katex"
   },
   {
@@ -2837,17 +2837,17 @@
   },
   {
    "name": "lor",
-   "count": 239,
+   "count": 240,
+   "origin": "katex"
+  },
+  {
+   "name": "mathsf",
+   "count": 221,
    "origin": "katex"
   },
   {
    "name": "in",
    "count": 219,
-   "origin": "katex"
-  },
-  {
-   "name": "mathsf",
-   "count": 215,
    "origin": "katex"
   },
   {
@@ -2887,7 +2887,7 @@
   },
   {
    "name": "equiv",
-   "count": 191,
+   "count": 192,
    "origin": "katex"
   },
   {
@@ -2897,7 +2897,7 @@
   },
   {
    "name": "ident",
-   "count": 179,
+   "count": 180,
    "origin": "upstream"
   },
   {
@@ -2942,7 +2942,7 @@
   },
   {
    "name": "text",
-   "count": 146,
+   "count": 147,
    "origin": "katex"
   },
   {
@@ -2962,12 +2962,12 @@
   },
   {
    "name": "bot",
-   "count": 127,
+   "count": 129,
    "origin": "katex"
   },
   {
    "name": "lfalse",
-   "count": 125,
+   "count": 127,
    "origin": "upstream"
   },
   {
@@ -2981,33 +2981,33 @@
    "origin": "katex"
   },
   {
+   "name": "mbox",
+   "count": 116,
+   "origin": "katex"
+  },
+  {
    "name": "delta",
    "count": 115,
    "origin": "katex"
   },
   {
-   "name": "mbox",
-   "count": 113,
-   "origin": "katex"
-  },
-  {
    "name": "Gn",
-   "count": 109,
+   "count": 112,
    "origin": "upstream"
   },
   {
    "name": "reflectbox",
-   "count": 109,
+   "count": 112,
    "origin": "katex"
   },
   {
    "name": "tiny",
-   "count": 109,
+   "count": 112,
    "origin": "katex"
   },
   {
    "name": "OProv",
-   "count": 101,
+   "count": 105,
    "origin": "upstream"
   },
   {
@@ -3147,7 +3147,7 @@
   },
   {
    "name": "subseteq",
-   "count": 53,
+   "count": 54,
    "origin": "katex"
   },
   {
@@ -3182,7 +3182,7 @@
   },
   {
    "name": "OPrf",
-   "count": 42,
+   "count": 44,
    "origin": "upstream"
   },
   {
@@ -3256,6 +3256,11 @@
    "origin": "katex"
   },
   {
+   "name": "quad",
+   "count": 28,
+   "origin": "katex"
+  },
+  {
    "name": "umin",
    "count": 28,
    "origin": "upstream"
@@ -3263,16 +3268,6 @@
   {
    "name": "Zero",
    "count": 28,
-   "origin": "upstream"
-  },
-  {
-   "name": "quad",
-   "count": 27,
-   "origin": "katex"
-  },
-  {
-   "name": "Prf",
-   "count": 26,
    "origin": "upstream"
   },
   {
@@ -3306,14 +3301,24 @@
    "origin": "upstream"
   },
   {
+   "name": "Prf",
+   "count": 24,
+   "origin": "upstream"
+  },
+  {
+   "name": "dot",
+   "count": 23,
+   "origin": "katex"
+  },
+  {
    "name": "OCon",
    "count": 23,
    "origin": "upstream"
   },
   {
-   "name": "dot",
-   "count": 22,
-   "origin": "katex"
+   "name": "tsub",
+   "count": 23,
+   "origin": "upstream"
   },
   {
    "name": "ldots",
@@ -3324,11 +3329,6 @@
    "name": "mid",
    "count": 22,
    "origin": "katex"
-  },
-  {
-   "name": "tsub",
-   "count": 22,
-   "origin": "upstream"
   },
   {
    "name": "VDash",
@@ -3436,11 +3436,6 @@
    "origin": "katex"
   },
   {
-   "name": "Prov",
-   "count": 10,
-   "origin": "upstream"
-  },
-  {
    "name": "stackrel",
    "count": 10,
    "origin": "katex"
@@ -3453,6 +3448,16 @@
   {
    "name": "Real",
    "count": 9,
+   "origin": "upstream"
+  },
+  {
+   "name": "approx",
+   "count": 8,
+   "origin": "katex"
+  },
+  {
+   "name": "cardeq",
+   "count": 8,
    "origin": "upstream"
   },
   {
@@ -3471,12 +3476,7 @@
    "origin": "katex"
   },
   {
-   "name": "approx",
-   "count": 7,
-   "origin": "katex"
-  },
-  {
-   "name": "cardeq",
+   "name": "nszero",
    "count": 7,
    "origin": "upstream"
   },
@@ -3496,7 +3496,7 @@
    "origin": "katex"
   },
   {
-   "name": "nszero",
+   "name": "Prov",
    "count": 6,
    "origin": "upstream"
   },

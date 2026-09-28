@@ -32,7 +32,7 @@
      "c": [
       {
        "t": "text",
-       "v": "Hilbert thought that a system of axioms for a mathematical structure, such as the natural numbers, is inadequate unless it allows one to derive all true statements about the structure. Combined with his later interest in formal systems of deduction, this suggests that he thought that we should guarantee that, say, the formal systems we are using to reason about the natural numbers is not only consistent, but also "
+       "v": "Hilbert thought that a system of axioms for a mathematical structure, such as the natural numbers, is inadequate unless it allows one to derive all true statements about the structure. Combined with his later interest in formal systems of deduction, this suggests that he thought that we should guarantee that, say, the formal system we are using to reason about the natural numbers is not only consistent, but also "
       },
       {
        "t": "em",
@@ -988,7 +988,7 @@
         },
         {
          "t": "text",
-         "v": " with one free variable by computing its Gödel numbers and then substituting the standard numeral for that Gödel number into the free variable. The diagonalization of "
+         "v": " with one free variable by computing its Gödel number and then substituting the standard numeral for that Gödel number into the free variable. The diagonalization of "
         },
         {
          "t": "math",
@@ -3949,8 +3949,8 @@
       },
       {
        "t": "math",
-       "tex": "\\mathsf{RProv}_T(y)",
-       "src": "\\ORProv_T(y)"
+       "tex": "\\mathsf{RProv}_{\\mathbf{T}}(y)",
+       "src": "\\ORProv[\\Th{T}](y)"
       },
       {
        "t": "text",
@@ -4656,8 +4656,8 @@
         },
         {
          "t": "math",
-         "tex": "T",
-         "src": "T"
+         "tex": "\\mathbf{T}",
+         "src": "\\Th{T}"
         },
         {
          "t": "text",
@@ -5964,8 +5964,8 @@
       },
       {
        "t": "math",
-       "tex": "\\exists x \\, \\mathrm{Prf}_{\\mathbf{PA}}(x,y)",
-       "src": "\\lexists[x][\\Prf[\\Th{PA}](x,y)]"
+       "tex": "\\exists x \\, \\mathsf{Prf}_{\\mathbf{PA}}(x,y)",
+       "src": "\\lexists[x][\\OPrf[\\Th{PA}](x,y)]"
       },
       {
        "t": "text",
@@ -6266,7 +6266,7 @@
       },
       {
        "t": "text",
-       "v": ". Conditions (1) and (2) are easy; it is really condition (3) that requires work. (Think about what kind of work it entails …) Carrying out the details would be tedious and uninteresting, so here we will ask you to take it on faith that "
+       "v": ". Conditions P1 and P2 are easy; it is really condition P3 that requires work. (Think about what kind of work it entails …) Carrying out the details would be tedious and uninteresting, so here we will ask you to take it on faith that "
       },
       {
        "t": "math",
@@ -6379,7 +6379,7 @@
        "c": [
         {
          "t": "text",
-         "v": "Incidentally, Gödel was lazy in the same way we are being now. At the end of the 1931 paper, he sketches the proof of the second incompleteness theorem, and promises the details in a later paper. He never got around to it; since everyone who understood the argument believed that it could be carried out (he did not need to fill in the details.)"
+         "v": "Incidentally, Gödel was lazy in the same way we are being now. At the end of the 1931 paper, he sketches the proof of the second incompleteness theorem, and promises the details in a later paper. He never got around to it; since everyone who understood the argument believed that it could be carried out, he did not need to fill in the details."
         }
        ],
        "loc": {
@@ -6444,8 +6444,8 @@
       },
       {
        "t": "math",
-       "tex": "\\mathbf{PA} \\vdash 0 = 1",
-       "src": "\\Th{PA} \\Proves \\eq[0][1]"
+       "tex": "\\mathbf{PA} \\vdash \\bot",
+       "src": "\\Th{PA} \\Proves \\lfalse"
       },
       {
        "t": "text",
@@ -6471,8 +6471,8 @@
       },
       {
        "t": "math",
-       "tex": "\\lnot \\mathsf{Prov}_{\\mathbf{PA}}(\\ulcorner 0 = 1 \\urcorner)",
-       "src": "\\lnot\n\\OProv[\\Th{PA}](\\gn{\\eq[0][1]})"
+       "tex": "\\lnot \\mathsf{Prov}_{\\mathbf{PA}}(\\ulcorner \\bot \\urcorner)",
+       "src": "\\lnot\n\\OProv[\\Th{PA}](\\gn{\\lfalse})"
       },
       {
        "t": "text",
@@ -6768,8 +6768,8 @@
       },
       {
        "t": "math",
-       "tex": "\\lnot \\mathrm{Prov}_{\\mathbf{PA}}(\\ulcorner G_\\mathbf{PA} \\urcorner)",
-       "src": "\\lnot\n\\Prov[\\Th{PA}](\\gn{!G_\\Th{PA}})"
+       "tex": "\\lnot \\mathsf{Prov}_{\\mathbf{PA}}(\\ulcorner G_\\mathbf{PA} \\urcorner)",
+       "src": "\\lnot\n\\OProv[\\Th{PA}](\\gn{!G_\\Th{PA}})"
       },
       {
        "t": "text",
@@ -7048,7 +7048,7 @@
        "label": "inc:inp:2in:G2-4"
       },
       {
-       "tex": "& \\qquad\\text{by from (5.7) by condition P1}"
+       "tex": "& \\qquad\\text{from (5.7) by condition P1}"
       },
       {
        "tex": "& \\mathsf{Prov}(\\ulcorner G \\urcorner) \\mathbin{\\rightarrow} \\mathsf{Prov}(\\ulcorner (\\mathsf{Prov}(\\ulcorner G \\urcorner) \\mathbin{\\rightarrow} \\bot) \\urcorner)",
@@ -7097,7 +7097,7 @@
        "tex": "& \\qquad\\text{from (5.5) and (5.13) by logic}"
       }
      ],
-     "src": "& !G \\liff \\lnot \\OProv(\\gn{!G}) \\ollabel{G2-1}\\\\\n& \\qquad\\text{$!G$ is a G\\\"odel sentence}\\notag \\\\\n& !G \\lif \\lnot \\OProv(\\gn{!G}) \\ollabel{G2-2}\\\\\n  & \\qquad\\text{from \\olref{G2-1}} \\notag\\\\\n& !G \\lif\n  (\\OProv(\\gn{!G}) \\lif \\lfalse) \\ollabel{G2-3}\\\\\n  & \\qquad\\text{from \\olref{G2-2} by logic}\\notag\\\\\n& \\OProv(\\gn{\n    !G \\lif\n    (\\OProv(\\gn{!G}) \\lif \\lfalse)\n  }) \\ollabel{G2-4}\\\\\n  & \\qquad\\text{by from \\olref{G2-3} by condition P1} \\notag\\\\\n& \\OProv(\\gn{!G}) \\lif\n  \\OProv(\\gn{\n    (\\OProv(\\gn{!G}) \\lif \\lfalse)\n    }) \\ollabel{G2-5}\\\\\n  & \\qquad\\text{from \\olref{G2-4} by condition P2} \\notag\\\\\n& \\OProv(\\gn{!G}) \\lif (\\OProv(\\gn{\\OProv(\\gn{!G})}) \\lif \\OProv(\\gn{\\lfalse})) \\ollabel{G2-6}\\\\\n  & \\qquad\\text{from \\olref{G2-5} by condition P2 and logic} \\notag\\\\\n& \\OProv(\\gn{!G}) \\lif \n  \\OProv(\\gn{\\OProv(\\gn{!G})}) \\ollabel{G2-7}\\\\\n   & \\qquad\\text{by P3} \\notag\\\\\n& \\OProv(\\gn{!G}) \\lif \\OProv(\\gn{\\lfalse}) \\ollabel{G2-8}\\\\\n  & \\qquad \\text{from \\olref{G2-6} and \\olref{G2-7} by logic}\\notag\\\\\n& \\OCon \\lif \\lnot \\OProv(\\gn{!G}) \\ollabel{G2-9}\\\\\n  & \\qquad\\text{contraposition of \\olref{G2-8} and $\\OCon \\ident \\lnot \\OProv(\\gn{\\lfalse})$}\\notag \\\\\n& \\OCon \\lif !G \\notag\\\\\n  & \\qquad\\text{from \\olref{G2-1} and \\olref{G2-9} by logic}\\notag",
+     "src": "& !G \\liff \\lnot \\OProv(\\gn{!G}) \\ollabel{G2-1}\\\\\n& \\qquad\\text{$!G$ is a G\\\"odel sentence}\\notag \\\\\n& !G \\lif \\lnot \\OProv(\\gn{!G}) \\ollabel{G2-2}\\\\\n  & \\qquad\\text{from \\olref{G2-1}} \\notag\\\\\n& !G \\lif\n  (\\OProv(\\gn{!G}) \\lif \\lfalse) \\ollabel{G2-3}\\\\\n  & \\qquad\\text{from \\olref{G2-2} by logic}\\notag\\\\\n& \\OProv(\\gn{\n    !G \\lif\n    (\\OProv(\\gn{!G}) \\lif \\lfalse)\n  }) \\ollabel{G2-4}\\\\\n  & \\qquad\\text{from \\olref{G2-3} by condition P1} \\notag\\\\\n& \\OProv(\\gn{!G}) \\lif\n  \\OProv(\\gn{\n    (\\OProv(\\gn{!G}) \\lif \\lfalse)\n    }) \\ollabel{G2-5}\\\\\n  & \\qquad\\text{from \\olref{G2-4} by condition P2} \\notag\\\\\n& \\OProv(\\gn{!G}) \\lif (\\OProv(\\gn{\\OProv(\\gn{!G})}) \\lif \\OProv(\\gn{\\lfalse})) \\ollabel{G2-6}\\\\\n  & \\qquad\\text{from \\olref{G2-5} by condition P2 and logic} \\notag\\\\\n& \\OProv(\\gn{!G}) \\lif \n  \\OProv(\\gn{\\OProv(\\gn{!G})}) \\ollabel{G2-7}\\\\\n   & \\qquad\\text{by P3} \\notag\\\\\n& \\OProv(\\gn{!G}) \\lif \\OProv(\\gn{\\lfalse}) \\ollabel{G2-8}\\\\\n  & \\qquad \\text{from \\olref{G2-6} and \\olref{G2-7} by logic}\\notag\\\\\n& \\OCon \\lif \\lnot \\OProv(\\gn{!G}) \\ollabel{G2-9}\\\\\n  & \\qquad\\text{contraposition of \\olref{G2-8} and $\\OCon \\ident \\lnot \\OProv(\\gn{\\lfalse})$}\\notag \\\\\n& \\OCon \\lif !G \\notag\\\\\n  & \\qquad\\text{from \\olref{G2-1} and \\olref{G2-9} by logic}\\notag",
      "loc": {
       "repo": "OpenLogic",
       "file": "content/incompleteness/incompleteness-provability/second-incompleteness-thm.tex",
@@ -7111,7 +7111,7 @@
      "c": [
       {
        "t": "text",
-       "v": "The use of logic in the above just elementary facts from propositional logic, e.g., "
+       "v": "The use of logic in the above involves just elementary facts from propositional logic, e.g., "
       },
       {
        "t": "ref",
@@ -7193,7 +7193,7 @@
       {
        "t": "math",
        "tex": "A \\equiv \\mathsf{Prov}(\\ulcorner G \\urcorner)",
-       "src": "!A\n\\ident \\OProv(\\gn{G})"
+       "src": "!A\n\\ident \\OProv(\\gn{!G})"
       },
       {
        "t": "text",
@@ -7319,8 +7319,8 @@
         },
         {
          "t": "math",
-         "tex": "\\mathsf{Con}_{T}",
-         "src": "\\OCon[T]"
+         "tex": "\\mathsf{Con}_{\\mathbf{T}}",
+         "src": "\\OCon[\\Th{T}]"
         },
         {
          "t": "text",
@@ -7648,7 +7648,7 @@
       },
       {
        "t": "text",
-       "v": " condition (1), "
+       "v": " condition P1, "
       },
       {
        "t": "math",
@@ -7771,7 +7771,7 @@
       },
       {
        "t": "text",
-       "v": " by condition (1), but the same conclusion follows if we apply modus ponens to the equivalence above. Hence, we don’t get that "
+       "v": " by condition P1, but the same conclusion follows if we apply modus ponens to the equivalence above. Hence, we don’t get that "
       },
       {
        "t": "math",
@@ -8036,7 +8036,7 @@
         },
         {
          "t": "ref",
-         "key": "inc:inp:2in:sec"
+         "key": "inc:inp:prc:sec"
         },
         {
          "t": "text",
@@ -10207,7 +10207,7 @@
       },
       {
        "t": "text",
-       "v": ".” Given that we do not want a truth predicate to declare some sentences to be both true and false, Tarski concluded that one cannot specify a truth predicate for all sentences in a language without, somehow, stepping outside the bounds of the language. In other words, a the truth predicate for a language cannot be defined in the language itself."
+       "v": ".” Given that we do not want a truth predicate to declare some sentences to be both true and false, Tarski concluded that one cannot specify a truth predicate for all sentences in a language without, somehow, stepping outside the bounds of the language. In other words, a truth predicate for a language cannot be defined in the language itself."
       }
      ],
      "loc": {
@@ -10455,7 +10455,7 @@
     },
     {
      "t": "text",
-     "v": " with is neither provable nor refutable in "
+     "v": " which is neither provable nor refutable in "
     },
     {
      "t": "math",
@@ -10785,25 +10785,25 @@
     },
     {
      "t": "text",
-     "v": " is "
+     "v": ", "
     },
     {
      "t": "math",
-     "tex": "\\mathrm{Prov}_{\\mathbf{T}}(y)",
-     "src": "\\Prov[\\Th{T}](y)"
+     "tex": "\\mathsf{Prov}_{\\mathbf{T}}(y)",
+     "src": "\\OProv[\\Th{T}](y)"
     },
     {
      "t": "text",
-     "v": " is "
+     "v": ", which is "
     },
     {
      "t": "math",
-     "tex": "\\exists x \\, \\mathrm{Prf}_{\\mathbf{T}}(x, y)",
-     "src": "\\lexists[x][\\Prf[\\Th{T}](x, y)]"
+     "tex": "\\exists x \\, \\mathsf{Prf}_{\\mathbf{T}}(x, y)",
+     "src": "\\lexists[x][\\OPrf[\\Th{T}](x, y)]"
     },
     {
      "t": "text",
-     "v": " then expresses provability in "
+     "v": ", expresses provability in "
     },
     {
      "t": "math",

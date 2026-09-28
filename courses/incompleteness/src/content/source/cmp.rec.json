@@ -432,8 +432,8 @@
       },
       {
        "t": "math",
-       "tex": "h(x)",
-       "src": "h(x)"
+       "tex": "h(x+1)",
+       "src": "h(x+1)"
       },
       {
        "t": "text",
@@ -441,8 +441,8 @@
       },
       {
        "t": "math",
-       "tex": "h(x+1)",
-       "src": "h(x+1)"
+       "tex": "h(x)",
+       "src": "h(x)"
       },
       {
        "t": "text",
@@ -702,7 +702,7 @@
       },
       {
        "t": "text",
-       "v": "-place. We fix one of the argument places, and use the other for the recursion. E.g, to define "
+       "v": "-place. We fix one of the argument places, and use the other for the recursion. E.g., to define "
       },
       {
        "t": "math",
@@ -1749,8 +1749,8 @@
       },
       {
        "t": "math",
-       "tex": "h(x_0, \\dots, x_{k-1}) = f(y_0, \\dots, y_{k-1})",
-       "src": "h(x_0, \\dots, x_{k-1}) = f(y_0, \\dots, y_{k-1})"
+       "tex": "h(x_0, \\dots, x_{n-1}) = f(y_0, \\dots, y_{k-1})",
+       "src": "h(x_0, \\dots, x_{n-1}) = f(y_0, \\dots, y_{k-1})"
       },
       {
        "t": "text",
@@ -1825,8 +1825,8 @@
       },
       {
        "t": "math",
-       "tex": "P^{k}_{i}",
-       "src": "\\Proj{k}{i}"
+       "tex": "P^{n}_{i}",
+       "src": "\\Proj{n}{i}"
       },
       {
        "t": "text",
@@ -2552,10 +2552,10 @@
    "title": [
     {
      "t": "text",
-     "v": "Primitive Recursion Functions"
+     "v": "Primitive Recursive Functions"
     }
    ],
-   "titleText": "Primitive Recursion Functions",
+   "titleText": "Primitive Recursive Functions",
    "loc": {
     "repo": "OpenLogic",
     "file": "content/computability/recursive-functions/pr-functions.tex",
@@ -3422,7 +3422,7 @@
        "c": [
         {
          "t": "text",
-         "v": "is the set of all primitive recursive functions"
+         "v": "is the set of all primitive recursive functions."
         }
        ],
        "loc": {
@@ -5290,7 +5290,7 @@
       },
       {
        "t": "text",
-       "v": " can obtain it by composition from "
+       "v": " we can obtain it by composition from "
       },
       {
        "t": "math",
@@ -7064,7 +7064,7 @@
          "c": [
           {
            "t": "text",
-           "v": "The less-than relation, "
+           "v": "The less-than-or-equal relation, "
           },
           {
            "t": "math",
@@ -8357,10 +8357,10 @@
        "env": "equation",
        "rows": [
         {
-         "tex": "(\\mathrm{min} \\; z < y)\\, R(\\vec{x}, z),"
+         "tex": "(\\mathrm{min} \\; z < y)\\, R(\\vec{x}, z)."
         }
        ],
-       "src": "\\bmin{z < y}{R(\\vec{x}, z)},",
+       "src": "\\bmin{z < y}{R(\\vec{x}, z)}.",
        "loc": {
         "repo": "OpenLogic",
         "file": "content/computability/recursive-functions/bounded-minimization.tex",
@@ -8388,7 +8388,7 @@
        "c": [
         {
          "t": "text",
-         "v": "Note than there can be no "
+         "v": "Note that there can be no "
         },
         {
          "t": "math",
@@ -8591,8 +8591,8 @@
             },
             {
              "t": "math",
-             "tex": "m_R(\\vec{z}, y+1) = y+1",
-             "src": "m_R(\\vec{z}, y+1) = y+1"
+             "tex": "m_R(\\vec{x}, y+1) = y+1",
+             "src": "m_R(\\vec{x}, y+1) = y+1"
             },
             {
              "t": "text",
@@ -8626,8 +8626,8 @@
         },
         {
          "t": "math",
-         "tex": "m_R(\\vec x, 0)",
-         "src": "m_R(\\vec x, 0)"
+         "tex": "m_R(\\vec x, y)",
+         "src": "m_R(\\vec x, y)"
         },
         {
          "t": "text",
@@ -8906,8 +8906,8 @@
       },
       {
        "t": "math",
-       "tex": "x",
-       "src": "x"
+       "tex": "y",
+       "src": "y"
       },
       {
        "t": "text",
@@ -8915,8 +8915,8 @@
       },
       {
        "t": "math",
-       "tex": "y",
-       "src": "y"
+       "tex": "x",
+       "src": "x"
       },
       {
        "t": "text",
@@ -9400,7 +9400,7 @@
       },
       {
        "t": "text",
-       "v": ", etc.)"
+       "v": ", etc.).)"
       }
      ],
      "loc": {
@@ -9566,7 +9566,7 @@
      "c": [
       {
        "t": "text",
-       "v": "This shows, that "
+       "v": "This shows that "
       },
       {
        "t": "math",
@@ -9908,7 +9908,7 @@
      "c": [
       {
        "t": "text",
-       "v": "The set of primitive recursive functions is remarkably robust. But we will be able to do even more once we have developed a adequate means of handling "
+       "v": "The set of primitive recursive functions is remarkably robust. But we will be able to do even more once we have developed an adequate means of handling "
       },
       {
        "t": "em",
@@ -11973,8 +11973,8 @@
         },
         {
          "t": "math",
-         "tex": "h(s) = g_{\\mathrm{ISubtrees}}(s, \\mathrm{len}(s))",
-         "src": "h(s) = g_{\\fn{ISubtrees}}(s, \\len{s})"
+         "tex": "h(s) = g_{\\mathrm{ISubtrees}}(s, \\mathrm{len}(s) \\mathbin{\\dot-} 1)",
+         "src": "h(s) = g_{\\fn{ISubtrees}}(s, \\len{s} \\tsub 1)"
         },
         {
          "t": "text",
@@ -13107,7 +13107,7 @@
      "c": [
       {
        "t": "text",
-       "v": "Here we are using the fact that every sequence of numbers can be viewed as a natural number, using the codes from the last section. The upshot is that every code is assigned a natural number. Of course, some sequences (and hence some numbers) do not correspond to notations; but we can let "
+       "v": "Here we are using the fact that every sequence of numbers can be viewed as a natural number, using the codes from the last section. The upshot is that every notation is assigned a natural number. Of course, some sequences (and hence some numbers) do not correspond to notations; but we can let "
       },
       {
        "t": "math",

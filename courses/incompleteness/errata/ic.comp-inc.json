@@ -1,0 +1,149 @@
+[
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/computability-theory/s-m-n.tex",
+    "find": "$s^m_n(x, a_0, \\dots, a_{m-1})$ for the $n$-ary function",
+    "replace": "$s^m_n(e, a_0, \\dots, a_{m-1})$ for the $n$-ary function",
+    "why": "The program is called e, not x."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/computability-theory/s-m-n.tex",
+    "find": "\\iftag{TMs}{It you think of $x$ as the description",
+    "replace": "\\iftag{TMs}{If you think of $e$ as the description",
+    "why": "Typo 'It' for 'If', and the program is e."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/computability-theory/no-universal-function.tex",
+    "find": "partial computable function that is total for the",
+    "replace": "partial computable function that is universal for the",
+    "why": "Un is universal (not total) for the partial computable functions."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/computability-theory/equiv-ce-defs.tex",
+    "find": "{Equivalent Defininitions of",
+    "replace": "{Equivalent Definitions of",
+    "why": "Typo in the section title."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/computability-theory/equiv-ce-defs.tex",
+    "find": "set of inputs on for which the computation",
+    "replace": "set of inputs on which the computation",
+    "why": "Typo: 'on for which'."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/computability-theory/complement-ce.tex",
+    "find": "A$ if and only if $T(e, x, h(x))$, i.e., if $\\cfind{e}$ is the one\nthat is defined. Since $T(e, x, h(x))$ is",
+    "replace": "A$ if and only if $T(d, x, h(x))$, i.e., if $\\cfind{d}$ is the one\nthat is defined. Since $T(d, x, h(x))$ is",
+    "why": "A is the domain of phi_d, so membership in A is tested with T(d, x, h(x))."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/computability-theory/complement-ce.tex",
+    "find": "$\\cfind{e}$ and $\\cfind{f}$. One of them is bound to halt; if it is $\\cfind{e}$,",
+    "replace": "$\\cfind{d}$ and $\\cfind{e}$. One of them is bound to halt; if it is $\\cfind{d}$,",
+    "why": "The two semi-deciders in the proof are phi_d (for A) and phi_e (for the complement)."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/ce-theories.tex",
+    "find": "of~$!B$ it contains. Let $n$ be that number.",
+    "replace": "of~$!B$ it contains. Let $n+1$ be that number.",
+    "why": "A_n occurs with n+1 copies, so a sentence of n+1 copies of B is compared with A_n."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/ce-theories.tex",
+    "find": "  Then $!A \\in \\Gamma$ iff $!B \\ident !A_{n}$\n",
+    "replace": "  Then $!A \\in \\Gamma$ iff $!A \\ident !A_0$ or $!B \\ident !A_{n}$.\n",
+    "why": "A_0 may itself be a conjunction of identical conjuncts, so the one-copy reading must be tested too."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/ce-theories.tex",
+    "find": "$!A \\in \\Gamma$ iff $b(\\Gn{A}) =\n  f(i(\\Gn{A}))$.",
+    "replace": "$!A \\in \\Gamma$ iff $\\Gn{A} = f(0)$ or $b(\\Gn{A}) =\n  f(i(\\Gn{A}))$.",
+    "why": "Same as the informal test: the one-copy reading (A = A_0) must be allowed."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/ce-theories.tex",
+    "find": "(!B \\land \\dots \\land !B)\\dots)$",
+    "replace": "(!B \\land (\\dots \\land !B)\\dots)$",
+    "why": "Unbalanced parentheses in the nested conjunction."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/g1-halting-problem.tex",
+    "find": "  \\lexists[z][!T(\\num{e}, \\num{n}, z)]$. Together, we have that",
+    "replace": "  \\lexists[z][!T(\\num{e}, \\num{e}, z)]$. Together, we have that",
+    "why": "The argument is about the diagonal instance n = e."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/g1-halting-problem.tex",
+    "find": "\\Proves \\lexists[z][!T(\\num{e},\n  \\num{n}, z)]$.",
+    "replace": "\\Proves \\lexists[z][!T(\\num{e},\n  \\num{e}, z)]$.",
+    "why": "The argument is about the diagonal instance n = e."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/g1-halting-problem.tex",
+    "find": "This, when $\\lnot !A$ shows up",
+    "replace": "Thus, when $\\lnot !A$ shows up",
+    "why": "Typo: 'This' for 'Thus'."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/g1-halting-problem.tex",
+    "find": "(\\Gn{\\lnot} \\concat f(k)) = n)]},\\]",
+    "replace": "(\\Gn{\\lnot} \\concat n) = f(k))]},\\]",
+    "why": "n is outside the theorems iff it is not a sentence or its negation is a theorem f(k), not iff n is the negation of a theorem."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/g1-halting-problem.tex",
+    "find": "negation is a theorem of~$\\Th{T}$. By",
+    "replace": "negation is a theorem of~$\\Th{T}$). By",
+    "why": "Close the parenthesis opened before the remark."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/g1-halting-problem.tex",
+    "find": "We've shown that we can the sentence $G$",
+    "replace": "We've shown that we can take the sentence $G$",
+    "why": "Missing word 'take'."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/computability-theory/s-m-n.tex",
+    "find": "$y_0$ ,\\dots, $y_{n-1}$, we have",
+    "replace": "$y_0$, \\dots, $y_{n-1}$, we have",
+    "why": "Misplaced comma."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/computability-theory/halting-problem.tex",
+    "find": "there is a such\nTuring",
+    "replace": "there is such a\nTuring",
+    "why": "Word order typo."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/computability/computability-theory/equiv-ce-defs.tex",
+    "find": "Since, in the latter case, $\\cfind{e}(x) \\fdefined =",
+    "replace": "Since, in the latter case, $\\cfind{e}((z)_0) \\fdefined =",
+    "why": "The input in question is (z)_0; x is not bound here."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/ce-theories.tex",
+    "find": "be decided if an arrangements",
+    "replace": "be decided if an arrangement",
+    "why": "Typo: 'an arrangements'."
+  }
+]

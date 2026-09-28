@@ -47,6 +47,12 @@ describe('macro layer', () => {
   it('never fuses a control word with a following letter', () => {
     expect(expandMath('\\lnot!A', hooks)).toBe('\\lnot A');
   });
+  it('skips the tag list of probtag problems', () => {
+    expect(JSON.stringify(chapters)).not.toContain('probNot,probOr');
+  });
+  it('drops TeX spacing commands from terminology tokens (c.e.\\@)', () => {
+    expect(JSON.stringify(chapters)).not.toContain('c.e.\\\\@');
+  });
   it('takes the book’s terminology tokens (enumerable → countable)', () => {
     expect(cfg.tokens.get('enumerable')!.s).toBe('countable');
   });

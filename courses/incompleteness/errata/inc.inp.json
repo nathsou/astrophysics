@@ -5,5 +5,145 @@
     "find": "\\text{from \\olref{L-8} and \\olref{L-12}}",
     "replace": "\\text{from \\olref{L-9} and \\olref{L-12}}",
     "why": "A follows from Prov(⌜D⌝) → A (L-9) and Prov(⌜D⌝) (L-12); from L-8 and L-12 nothing follows."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/incompleteness-provability/provability-conditions.tex",
+    "find": "$\\lexists[x][\\Prf[\\Th{PA}](x,y)]$, which",
+    "replace": "$\\lexists[x][\\OPrf[\\Th{PA}](x,y)]$, which",
+    "why": "A formula contains the representing formula OPrf, not the relation Prf."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/incompleteness-provability/provability-conditions.tex",
+    "find": "Conditions (1)\nand~(2) are easy; it is really condition~(3) that requires",
+    "replace": "Conditions P1\nand~P2 are easy; it is really condition~P3 that requires",
+    "why": "The conditions are named P1–P3."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/incompleteness-provability/provability-conditions.tex",
+    "find": "argument believed that it could be carried out (he did not need to\nfill in the details.)",
+    "replace": "argument believed that it could be carried out, he did not need to\nfill in the details.",
+    "why": "Broken sentence."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/incompleteness-provability/second-incompleteness-thm.tex",
+    "find": "$\\Th{PA} \\Proves \\eq[0][1]$. So",
+    "replace": "$\\Th{PA} \\Proves \\lfalse$. So",
+    "why": "The proof (G2-9) and Löb's section take Con to be ¬Prov(⌜⊥⌝)."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/incompleteness-provability/second-incompleteness-thm.tex",
+    "find": "\\OProv[\\Th{PA}](\\gn{\\eq[0][1]})$, and then",
+    "replace": "\\OProv[\\Th{PA}](\\gn{\\lfalse})$, and then",
+    "why": "The proof (G2-9) and Löb's section take Con to be ¬Prov(⌜⊥⌝)."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/incompleteness-provability/second-incompleteness-thm.tex",
+    "find": "\\text{by from \\olref{G2-3} by condition P1}",
+    "replace": "\\text{from \\olref{G2-3} by condition P1}",
+    "why": "Stray word."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/incompleteness-provability/second-incompleteness-thm.tex",
+    "find": "\\ident \\OProv(\\gn{G})$",
+    "replace": "\\ident \\OProv(\\gn{!G})$",
+    "why": "G is the Gödel sentence !G."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/incompleteness-provability/second-incompleteness-thm.tex",
+    "find": "\\Prov[\\Th{PA}](\\gn{!G_\\Th{PA}})$. But since",
+    "replace": "\\OProv[\\Th{PA}](\\gn{!G_\\Th{PA}})$. But since",
+    "why": "What PA derives is the formula OProv."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/incompleteness-provability/second-incompleteness-thm.tex",
+    "find": "The use of logic in the above just elementary facts",
+    "replace": "The use of logic in the above involves just elementary facts",
+    "why": "Missing verb."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/incompleteness-provability/second-incompleteness-thm.tex",
+    "find": "\\OCon[T]$.",
+    "replace": "\\OCon[\\Th{T}]$.",
+    "why": "The theory is written \\Th{T}."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/incompleteness-provability/lob-thm.tex",
+    "find": "\\olref[2in]{sec}. If",
+    "replace": "\\olref[prc]{sec}. If",
+    "why": "P1–P3 are stated in the section on the derivability conditions."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/incompleteness-provability/lob-thm.tex",
+    "find": "condition~(1), $\\Th{T} \\Proves \\OProv[\\Th{T}](\\gn{!G})$, and (b)",
+    "replace": "condition~P1, $\\Th{T} \\Proves \\OProv[\\Th{T}](\\gn{!G})$, and (b)",
+    "why": "The condition is named P1."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/incompleteness-provability/lob-thm.tex",
+    "find": "condition~(1), but the same",
+    "replace": "condition~P1, but the same",
+    "why": "The condition is named P1."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/incompleteness-provability/tarski-thm.tex",
+    "find": "In other words, a the\ntruth predicate",
+    "replace": "In other words, a\ntruth predicate",
+    "why": "Stray article."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/incompleteness-provability/introduction.tex",
+    "find": "say, the formal systems we are",
+    "replace": "say, the formal system we are",
+    "why": "Agreement with “is”."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/incompleteness-provability/fixed-point-lemma.tex",
+    "find": "computing its G\\\"odel numbers and then",
+    "replace": "computing its G\\\"odel number and then",
+    "why": "Singular."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/incompleteness-provability/rosser-thm.tex",
+    "find": "$\\ORProv_T(y)$ instead of",
+    "replace": "$\\ORProv[\\Th{T}](y)$ instead of",
+    "why": "Same notation as in the rest of the section."
+  },
+  {
+    "repo": "OpenLogic",
+    "file": "content/incompleteness/incompleteness-provability/rosser-thm.tex",
+    "find": "from~$T$; let",
+    "replace": "from~$\\Th{T}$; let",
+    "why": "The theory is written \\Th{T}."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/summary-5.tex",
+    "find": "sentence~$!R_\\Th{T}$ with\nis neither",
+    "replace": "sentence~$!R_\\Th{T}$ which\nis neither",
+    "why": "Typo."
+  },
+  {
+    "repo": "incompleteness-computability",
+    "file": "include/summary-5.tex",
+    "find": "The \\textbf{provability predicate} for $\\Th{T}$ is\n$\\Prov[\\Th{T}](y)$ is $\\lexists[x][\\Prf[\\Th{T}](x, y)]$ then expresses",
+    "replace": "The \\textbf{provability predicate} for $\\Th{T}$,\n$\\OProv[\\Th{T}](y)$, which is $\\lexists[x][\\OPrf[\\Th{T}](x, y)]$, expresses",
+    "why": "Garbled sentence; the predicate is the formula OProv, built from OPrf."
   }
 ]

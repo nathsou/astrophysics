@@ -114,7 +114,8 @@ export function textSymbol(name: string): string | undefined {
 export function tokenText(config: ConfigState, token: string, caps: boolean, article: boolean, plural: boolean): string {
   const t = config.tokens.get(token);
   if (!t) return token;
-  const word = plural ? (caps && !article ? t.P : t.p) : caps && !article ? t.S : t.s;
+  // Token texts may carry TeX spacing commands (\@ after an abbreviation such as “c.e.\@”, \/).
+  const word = (plural ? (caps && !article ? t.P : t.p) : caps && !article ? t.S : t.s).replace(/\\[@/]/g, '');
   if (!article) return word;
   const art = t.an ? 'an' : 'a';
   return `${caps ? art.charAt(0).toUpperCase() + art.slice(1) : art} ${word}`;
