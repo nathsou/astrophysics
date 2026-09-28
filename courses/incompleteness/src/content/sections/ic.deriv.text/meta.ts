@@ -1,1 +1,1 @@
-export const blurb = 'Actual derivations in Q: numeral addition, ∀x ¬x < 0, and the first half of Rosser’s proof — checked.';
+export const blurb = 'Actual derivations: numeral addition and ∀x ¬x < 0 in Q, both halves of Rosser’s proof, and induction in PA — checked.';

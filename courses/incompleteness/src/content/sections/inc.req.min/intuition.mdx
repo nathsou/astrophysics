@@ -10,8 +10,14 @@ $$
 
 ## Why this needs more lemmas
 
-Clause (b) now has to exclude every other candidate value. That requires $\mathbf Q$ to reason about $<$: that nothing is below $0$ (<Ref k="inc:req:min:lem:less-zero" />), that anything below $\overline{n+1}$ is one of $\overline 0, \ldots, \overline n$ (<Ref k="inc:req:min:lem:less-nsucc" />), and a form of trichotomy. The book argues these informally, giving hints for the formal derivations.
+Clause (a) is the easy half. If $f(n) = m$, then $g(m, n) = 0$, so clause (a) for $g$ gives the first conjunct; and $g(k, n) \neq 0$ for each $k < m$, so clause (b) for $g$ refutes $A_g(\overline k, \overline n, 0)$ for each of them. To pass from "each $\overline k$ with $k < m$" to "every $w < \overline m$", $\mathbf Q$ must know that anything below $\overline m$ is one of $\overline 0, \ldots, \overline{m-1}$ (<Ref k="inc:req:min:lem:less-nsucc" />), or, when $m = 0$, that nothing is below $0$ (<Ref k="inc:req:min:lem:less-zero" />).
 
-<Callout title="What this edition does and does not check">
-Explore mode builds the representing formula of a minimization and computes the search. It does **not** generate derivations for minimization: the lemmas about $<$ would have to be mechanised first. The first of them, $\mathbf Q \vdash \forall x\,\lnot x < 0$, is derived and checked in full in <a href="#/s/ic.deriv.text?mode=explore">appendix A</a>; the others, and derivations for minimization in general, are not mechanised yet.
+Clause (b) has to exclude every other candidate value $b$, including non-numerals: $\mathbf Q$ cannot look at $b$ and compare. <Ref k="inc:req:min:lem:trichotomy" /> does the comparison inside $\mathbf Q$: $b < \overline m$, or $\overline m < b$, or $b = \overline m$. The first contradicts the first conjunct of $A_f(\overline n, b)$ (by the fact just derived for clause (a)); the second, instantiated at $\overline m$, contradicts clause (a) for $g$; only the third is left.
+
+## Induction outside Q
+
+$\mathbf Q$ has no induction axiom, and it cannot prove $\forall x\, \forall y\,(x' + y) = (x + y)'$. The lemmas are proved *by induction on $n$ in the metalanguage*: for each particular $n$ there is a derivation, and the induction says how to build the one for $n + 1$ from the one for $n$. Following that recipe for a particular $n$ gives an actual derivation — and Explore mode does exactly this.
+
+<Callout title="What this edition checks">
+For a number you choose, Explore mode generates the derivations of <Ref k="inc:req:min:lem:less-nsucc" /> and <Ref k="inc:req:min:lem:trichotomy" /> (the one for $n$ contains the one for $n - 1$ as its inductive hypothesis), of $\overline k < \overline n$ or $\lnot\,\overline k < \overline n$, and of **both representability clauses for a minimization** at an input you choose, with the lemma derivations inside them. Every step is verified by the natural deduction checker; Q8's $\leftrightarrow$ is given to it written out, as in <a href="#/s/ic.deriv.text?mode=explore">appendix A</a>. Each is a derivation for particular numbers: that the lemmas hold for every $n$, and that every regular minimization of a representable function is representable, is what the text proves.
 </Callout>

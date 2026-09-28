@@ -1,0 +1,4 @@
+/* Section 4.7 derivations (LessLab). Prefix: lsl- */
+.lsl .seg { margin-bottom: 10px; }
+.lsl-field { display: inline-flex; align-items: center; gap: 6px; font-family: var(--sans); font-size: 14px; }
+.lsl-size { font-family: var(--sans); font-size: 12.5px; color: var(--muted); }

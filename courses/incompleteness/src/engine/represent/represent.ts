@@ -8,8 +8,11 @@
 // For a particular input, `deriveClauseA` / `deriveClauseB` build derivations in Q of
 //   (a)  A_f(n̄_0, …, n̄_{k-1}, m̄)                   where m = f(n_0, …, n_{k-1})
 //   (b)  ∀y (A_f(n̄_0, …, n̄_{k-1}, y) → y = m̄)
-// using the computation of f as the source of witnesses. Minimization is not covered: its
-// proof needs Lemmas about < in Q which are argued informally in the book.
+// using the computation of f as the source of witnesses. For a minimization the derivations
+// follow the book's proof (Proposition rep-minimization): they use the lemmas about < —
+// less-zero, less-nsucc and trichotomy — whose derivations are generated in proof/less.ts, and
+// Q8, which the checker gets with ↔ written out (qUnfolded); `axioms` says which theory to check
+// against.
 
 import * as A from '../syntax/ast.ts';
 import type { Formula, NodeId, Term } from '../syntax/ast.ts';
@@ -17,7 +20,11 @@ import { freshConstIndex } from '../syntax/ops.ts';
 import { subst } from '../syntax/subst.ts';
 import { arity, evaluate, type RF } from '../recursive/rf.ts';
 import { D, symm, type Deriv } from '../proof/nd.ts';
-import { deriveAdd, deriveMult, deriveNeq, num } from '../proof/q.ts';
+import { deriveAdd, deriveMult, deriveNeq, num, Q } from '../proof/q.ts';
+import { deriveLessZero, qUnfolded } from '../proof/arith.ts';
+import { deriveLessNSucc, deriveTrichotomy, LESS_MAX, orCases } from '../proof/less.ts';
+import { numeralValue } from '../syntax/ops.ts';
+import { constName } from '../syntax/language.ts';
 import { varIndex } from '../syntax/language.ts';
 
 export interface Representation {
@@ -103,9 +110,20 @@ export function representing(f: RF): Representation | RepresentError {
       }
       case 'min': {
         // A_g(y, z⃗, 0) ∧ ∀w (w < y → ¬ A_g(w, z⃗, 0))
+        // The same A_g twice (the same bound variables too — the proof needs ¬A_g(t, …) and
+        // A_g(t, …) to be the same sentence): the second copy has w in place of the output.
         const w = pool.fresh('w');
         const first = build(g.f, [out, ...ins], A.zero());
-        const below = build(g.f, [A.v(w), ...ins.map((t) => A.cloneFresh(t))], A.zero());
+        const copied = new Map<NodeId, NodeId>();
+        const below = A.cloneFresh(first, copied);
+        for (const [nid, oid] of copied) {
+          const o = origin.get(oid);
+          if (o !== undefined) origin.set(nid, o);
+        }
+        if (out.k !== 'var') throw new Error('min: the output must be a variable');
+        A.walk(below, (n) => {
+          if (n.k === 'var' && n.index === out.index) (n as A.Var).index = w;
+        });
         r = A.and(first, A.forall(A.v(w), A.imp(A.less(A.v(w), A.cloneFresh(out)), A.not(below))));
         break;
       }
@@ -153,6 +171,10 @@ export function instance(rep: Representation, args: bigint[], out: Term): Formul
 
 export interface ClauseDerivations {
   value: bigint;
+  /** The theory to check against: Q, or Q with Q8 written out (when < is used, for minimization). */
+  axioms: Map<string, Formula>;
+  /** f contains a minimization: the derivations use the lemmas about < and Q8. */
+  minimization: boolean;
   /** Q ⊢ A_f(n̄⃗, m̄) */
   a: Deriv;
   /** Q ⊢ ∀y (A_f(n̄⃗, y) → y = m̄) */
@@ -175,22 +197,32 @@ interface Ctx {
 export function deriveClauses(f: RF, args: bigint[]): DeriveResult {
   const rep = representing(f);
   if ('error' in rep) return { error: rep.error };
-  if (containsMin(f)) return { error: 'minimization: the derivations need lemmas about < in Q that the book argues informally; they are not generated here' };
   const ev = evaluate(f, args);
   if (ev.status !== 'ok' || ev.value === undefined) return { error: 'the computation did not finish' };
   const m = ev.value;
   const ctx: Ctx = { labels: { next: 1 }, consts: new Set() };
-  const a = clauseA(f, instance(rep, args, num(m)), args, m, ctx);
-  const eig = freshConstIndex([rep.formula]);
-  ctx.consts.add(eig);
-  const e = A.c(eig);
-  const S = instance(rep, args, e);
-  const u = uniqueness(f, S, args, m, ctx);
-  const target = A.forall(A.v(rep.output), A.imp(instance(rep, args, A.v(rep.output)), A.eq(A.v(rep.output), num(m))));
-  const imp = D.impI(u.deriv, S, u.label, { note: 'Discharge the assumption: we have shown A_f(n̄⃗, a) → a = m̄.', group: 'clause (b)' });
-  const b = D.allI(imp, target, eig, { note: 'a was arbitrary (it occurs in no undischarged assumption), so generalise.', group: 'clause (b)' });
-  return { value: m, a, b };
+  try {
+    const a = clauseA(f, instance(rep, args, num(m)), args, m, ctx);
+    const eig = freshConstIndex([rep.formula]);
+    ctx.consts.add(eig);
+    const e = A.c(eig);
+    const S = instance(rep, args, e);
+    const u = uniqueness(f, S, args, m, ctx);
+    const target = A.forall(A.v(rep.output), A.imp(instance(rep, args, A.v(rep.output)), A.eq(A.v(rep.output), num(m))));
+    const imp = D.impI(u.deriv, S, u.label, { note: `Discharge the assumption: we have shown A_f(n̄⃗, ${constName(eig)}) → ${constName(eig)} = m̄.`, group: 'clause (b)' });
+    const b = D.allI(imp, target, eig, { note: `${constName(eig)} was arbitrary (it occurs in no undischarged assumption), so generalise.`, group: 'clause (b)' });
+    const minimization = containsMin(f);
+    return { value: m, a, b, axioms: minimization ? qUnfolded() : Q(), minimization };
+  } catch (err) {
+    if (err instanceof TooLarge) return { error: err.message };
+    throw err;
+  }
 }
+
+/** Largest value of a minimization for which derivations are generated. */
+export const MIN_VALUE_MAX = 8;
+
+class TooLarge extends Error {}
 
 function containsMin(f: RF): boolean {
   switch (f.k) {
@@ -298,9 +330,80 @@ function clauseA(g0: RF, target: Formula, vals: bigint[], m: bigint, ctx: Ctx): 
       }
       return d;
     }
+    case 'min': {
+      // A_g(m̄, n̄⃗, 0) ∧ ∀w (w < m̄ → ¬A_g(w, n̄⃗, 0)): the book's (a) for g, and (4.6).
+      if (target.k !== 'and' || target.b.k !== 'forall') throw new Error('min formula');
+      checkMin(m);
+      const first = clauseA(g.f, target.a, [m, ...vals], 0n, ctx);
+      const less = repLess(g.f, target.b, vals, Number(m), ctx);
+      return D.andI(first, less, { note: `Both conjuncts: g(${[m, ...vals].join(', ')}) = 0, and no smaller w is a zero of g.`, group });
+    }
     default:
       throw new Error('not supported');
   }
+}
+
+function checkMin(m: bigint) {
+  if (m > BigInt(Math.min(MIN_VALUE_MAX, LESS_MAX))) throw new TooLarge(`the search ends at ${m}; derivations are generated for values up to ${MIN_VALUE_MAX} (they grow with the value)`);
+}
+
+const numVal = (t: Term): number => {
+  const v = numeralValue(t);
+  if (!v || v.k !== 'lit') throw new Error('not a numeral');
+  return Number(v.v);
+};
+
+/**
+ * Q ⊢ ∀w (w < m̄ → ¬A_g(w, n̄⃗, 0)) — equation (4.6) in the proof of Proposition
+ * rep-minimization — where g(k, n⃗) ≠ 0 for every k < m. By Lemma less-zero if m = 0, and by
+ * Lemma less-nsucc otherwise; each case w = k̄ is refuted using clause (b) for g at (k, n⃗).
+ */
+function repLess(gf: RF, T: Formula, vals: bigint[], m: number, ctx: Ctx): Deriv {
+  const group = `(4.6): ∀w (w < ${m}̄ → ¬A_g(w, …, 0))`;
+  if (T.k !== 'forall') throw new Error('rep-less');
+  const e = freshConst(ctx);
+  const body = subst(T.body, T.v.index, A.c(e));
+  if (body.k !== 'imp') throw new Error('rep-less');
+  const lab = ctx.labels.next++;
+  const h = D.assume(body.a, lab, { group, note: `Suppose ${constName(e)} < ${m}̄.` });
+  let concl: Deriv;
+  if (m === 0) {
+    const lz = D.allE({ ...deriveLessZero(), group }, A.c(e), { group, note: `Lemma less-zero, for ${constName(e)}.` });
+    concl = D.botI(D.notE(lz, h, { group }), body.b, { group, note: 'Nothing is below 0.' });
+  } else {
+    const lemma = deriveLessNSucc(m - 1, ctx.labels);
+    const cases = D.impE(D.allE(lemma, A.c(e), { group, note: `Lemma less-nsucc for n = ${m - 1}, for ${constName(e)}.` }), h, { group });
+    concl = orCases(
+      cases,
+      (f, hyp) => {
+        if (f.k !== 'eq') throw new Error('disjunct');
+        const k = numVal(f.r);
+        const inst = subst(T.body, T.v.index, num(k));
+        if (inst.k !== 'imp') throw new Error('rep-less');
+        const notK = refuteZero(gf, inst.b, [BigInt(k), ...vals], ctx);
+        return D.eqE(hyp(), notK, body.b, { group, note: `Replace ${k}̄ by ${constName(e)}.` });
+      },
+      ctx.labels,
+      group,
+      `Every case ${constName(e)} = k̄ with k < ${m} (∨Elim*).`,
+    );
+  }
+  const imp = D.impI(concl, body.a, lab, { group });
+  return D.allI(imp, T, e, { group, note: `Eigenvariable ${constName(e)}: only axioms remain undischarged.` });
+}
+
+/** Q ⊢ ¬A_g(k̄, n̄⃗, 0) when g(k, n⃗) = v ≠ 0: clause (b) for g gives 0 = v̄, which Q refutes. */
+function refuteZero(gf: RF, N: Formula, args: bigint[], ctx: Ctx): Deriv {
+  const group = `¬A_g(${args.join(', ')}, 0): g(${args.join(', ')}) ≠ 0`;
+  if (N.k !== 'not') throw new Error('refuteZero');
+  const ev = evaluate(gf, args);
+  if (ev.status !== 'ok' || ev.value === undefined) throw new TooLarge('the computation did not finish');
+  const v = ev.value;
+  if (v === 0n) throw new Error('refuteZero: g is 0 here');
+  const u = uniqueness(gf, N.a, args, v, ctx);
+  const neq = deriveNeq(0n, v, ctx.labels, group);
+  const bot = D.notE(neq, u.deriv, { group, note: `Clause (b) for g says the value would be ${v}, but 0 ≠ ${v}̄.` });
+  return D.notI(bot, N.a, u.label, { group, note: `So ¬A_g(${args.map((x) => `${x}̄`).join(', ')}, 0).` });
 }
 
 interface Uniq {
@@ -386,6 +489,38 @@ function uniqueness(g0: RF, S: Formula, vals: bigint[], m: bigint, ctx: Ctx): Un
       return D.exE(D.assume(T, lab, { group }), d, eig[i], innerLab, { note: `Let ${'abcd'[eig[i] - 1] ?? 'b'} be such a y (∃Elim).`, group });
     };
     return { deriv: chain(S, 0, label), label };
+  }
+  if (g.k === 'min') {
+    // The book's argument: from (a) A_g(t, n̄⃗, 0) and (b) ∀w (w < t → ¬A_g(w, n̄⃗, 0)), and
+    // trichotomy, t = m̄: both t < m̄ and m̄ < t lead to a contradiction.
+    if (S.k !== 'and' || S.b.k !== 'forall' || S.b.body.k !== 'imp' || S.b.body.a.k !== 'pred') throw new Error('min');
+    checkMin(m);
+    const gm = 'clause (b): minimization';
+    const t = S.b.body.a.args[1];
+    const tName = t.k === 'const' && t.index > 0 ? constName(t.index) : 't';
+    const goal = () => A.eq(A.cloneFresh(t), num(m));
+    const Sa = () => D.andE(hyp(), 'left', { group: gm, note: `(a) A_g(${tName}, n̄⃗, 0).` });
+    const Sb = () => D.andE(hyp(), 'right', { group: gm, note: `(b) ∀w (w < ${tName} → ¬A_g(w, n̄⃗, 0)).` });
+    const tri = D.allE(deriveTrichotomy(Number(m), ctx.labels), t, { group: gm, note: `Lemma trichotomy for m = ${m}, for ${tName}.` });
+    if (tri.concl.k !== 'or' || tri.concl.a.k !== 'or') throw new Error('trichotomy');
+    const [lt, gt] = [tri.concl.a.a, tri.concl.a.b];
+    const l1 = ctx.labels.next++;
+    const l2 = ctx.labels.next++;
+    // t < m̄: (4.6) gives ¬A_g(t, n̄⃗, 0), against (a)
+    const T = A.forall(A.v(S.b.v.index), A.imp(A.less(A.v(S.b.v.index), num(m)), S.b.body.b));
+    const rl = repLess(unwrap(g.f), T, vals, Number(m), ctx);
+    const notT = D.impE(D.allE(rl, t, { group: gm, note: `(4.6), for ${tName}.` }), D.assume(lt, l2, { group: gm, note: `Case ${tName} < ${m}̄.` }), { group: gm });
+    const c1 = D.botI(D.notE(notT, Sa(), { group: gm, note: 'This contradicts (a).' }), goal(), { group: gm });
+    // m̄ < t: (b) gives ¬A_g(m̄, n̄⃗, 0), against clause (a) for g
+    const bm = D.allE(Sb(), num(m), { group: gm, note: `(b) for w := ${m}̄.` });
+    const notM = D.impE(bm, D.assume(gt, l2, { group: gm, note: `Case ${m}̄ < ${tName}.` }), { group: gm });
+    if (notM.concl.k !== 'not') throw new Error('min');
+    const vals0 = [m, ...vals];
+    const agm = clauseA(g.f, notM.concl.a, vals0, 0n, ctx);
+    const c2 = D.botI(D.notE(notM, agm, { group: gm, note: `g(${vals0.join(', ')}) = 0, so Q ⊢ A_g(${m}̄, n̄⃗, 0) (clause (a) for g): a contradiction.` }), goal(), { group: gm });
+    const inner = D.orE(D.assume(tri.concl.a, l1, { group: gm }), c1, c2, l2, { group: gm, note: `Both ${tName} < ${m}̄ and ${m}̄ < ${tName} are impossible.` });
+    const c3 = D.assume(tri.concl.b, l1, { group: gm, note: `Case ${tName} = ${m}̄: what we want.` });
+    return { deriv: D.orE(tri, inner, c3, l1, { group: gm, note: `So ${tName} = ${m}̄.` }), label };
   }
   throw new Error('not supported');
 }

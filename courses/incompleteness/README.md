@@ -23,13 +23,13 @@ The whole book — chapters 1–9 and appendices A–D — is converted from its
 | 1 Introduction | the book’s test for induction axioms, step by step; a Δ0 toy version of the diagonal argument for undecidability |
 | 2 Recursive functions | primitive recursion stepped row by row, composition, the book’s notations and their numbers, the library of official definitions down to zero/succ/projections, bounded minimization, primes, trees, course-of-values recursion, the g_n hierarchy and Ackermann, diagonalization, unbounded search, the halting diagonal |
 | 3 Arithmetization of syntax | formula ⇄ symbols ⇄ codes ⇄ Gödel number with traces; substitution and capture; `hSubst` on Gödel numbers; derivations coded exactly as the book defines them, and decoded |
-| 4 Representability in Q | a recursive-function builder; representing formulas linked to the computation; **checked** derivations in Q of both clauses; the β-function via Sunzi’s theorem; primitive recursion simulated with β; relations; Σ1 formulas and the Σ1-completeness argument |
+| 4 Representability in Q | a recursive-function builder; representing formulas linked to the computation; **checked** derivations in Q of both clauses, minimization included (with Q’s lemmas about `<` derived for the numbers needed); the β-function via Sunzi’s theorem; primitive recursion simulated with β; relations; Σ1 formulas and the Σ1-completeness argument |
 | 5 Incompleteness | the fixed-point construction keeping formula / Gödel number / numeral apart, with a **checked** derivation; a dependency explorer for the first theorem; Rosser’s race; the second incompleteness theorem, Löb and Tarski **checked** line by line from P1–P3, and a proof editor for the book’s problems |
 | 6 Computability and incompleteness | computation records with a decidable T and U (this edition’s coding), the normal-form search, s-m-n, the universal function, c.e. sets enumerated in stages, the race between a set and its complement, Craig’s trick, incompleteness via halting |
 | 7 Models of arithmetic | satisfaction traces, models of Q (why no finite structure satisfies Q1 and Q2), isomorphism search, reducts, non-standard order types (illustration), computable models |
 | 8 Second-order logic | second-order satisfaction on small domains (Inf, Fin, Count, identity, transitive closure), failure of compactness |
 | 9 λ-calculus | the Lambda Lab: clickable redexes, four strategies with fuel-bounded status, capture-avoiding substitution with its trace, α-renaming, reduction graphs, Church encodings, λ-definability, fixpoints |
-| A, C Derivations | an interactive natural deduction builder with the checker after every change, the book’s examples checked, a finite soundness lab, checked derivations in Q |
+| A, C Derivations | an interactive natural deduction builder with the checker after every change, the book’s examples checked, a finite soundness lab, checked derivations in Q (both halves of Rosser’s argument) and in PA with induction axioms recognised by the book’s test |
 | B First-order logic | formula anatomy, structures, assignments and x-variants, extensionality, countermodel search |
 
 The object a section works with persists across modes (and visits), so the same formula can be followed from intuition to workbench to the formal definition where the text uses it: Formal mode attaches computed panels to specific definitions and proofs.
@@ -84,7 +84,7 @@ Design rules:
 - The engine never depends on the UI. Operations return structured results and traces (substitution steps, decoding stages, evaluation call trees, derivation checks); the UI renders them.
 - Formulas are typed trees, never strings of rendered LaTeX. Every node has an id; views mark elements with `data-n` so that hovering one occurrence highlights it — and its binder, and its symbols, codes and prime factors — in every view.
 - Huge numbers are exact but symbolic: a Gödel number is a sequence code whose elements may be runs (numerals of huge numbers) or named numbers (such as the code of `D_diag(x, y)`). Equality is structural and sound; digits are computed only on request.
-- Derivations are generated for concrete inputs and then *independently* checked; nothing is displayed as checked unless the checker accepted it. Where derivations are not generated (minimization), the course says so.
+- Derivations are generated for concrete inputs and then *independently* checked; nothing is displayed as checked unless the checker accepted it. Derivations are generated for every basic function, composition and minimization (with Q's lemmas about `<` derived for the numbers needed); where the course shows something unchecked, it says so.
 
 ## The conversion pipeline
 
@@ -106,6 +106,5 @@ The book leaves some choices open; this edition fixes them and says so on the Ab
 
 ## Roadmap
 
-- Mechanise more of Q’s reasoning about `<` (so that minimization gets checked derivations, not only its computation).
-- Derivations in PA with induction instances.
+- The Rosser derivations still take the facts about Prf and Ref as hypotheses; deriving them from a concrete theory's proof predicate is out of reach at this size.
 - A universal function written as a partial recursive definition, so that its index can be shown.

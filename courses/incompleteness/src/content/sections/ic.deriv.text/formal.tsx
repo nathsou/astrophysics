@@ -1,6 +1,7 @@
 import type { Annotations } from '../../../formal/FormalText';
 import { Added } from '../../../ui/Prov';
 import { ArithDerivations } from '../../../workbench/nd/ArithDerivations';
+import { MoreDerivations } from './MoreDerivations';
 
 export function useAnnotations(): Annotations {
   return {
@@ -15,9 +16,14 @@ export function useAnnotations(): Annotations {
       </Added>
     ),
     'ic.deriv.text:proof:3': (
-      <Added label="The first half, checked for a chosen n">
-        <ArithDerivations initial="rosser" />
-      </Added>
+      <>
+        <Added label="The first half, checked for a chosen n">
+          <ArithDerivations initial="rosser" />
+        </Added>
+        <Added label="The second half, checked for a chosen m">
+          <MoreDerivations only="rosser2" />
+        </Added>
+      </>
     ),
   };
 }
