@@ -27,7 +27,7 @@
       .filter((_, i, a) => i === 0 || i === a.length - 1)
       .join(''),
   );
-  const hue = $derived(HUES[[...name].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % HUES.length]);
+  const hue = $derived(HUES[[...name].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % HUES.length] ?? HUES[0]);
   const life = $derived(born || died ? `${born ?? '?'}–${died ?? ''}` : '');
 </script>
 
