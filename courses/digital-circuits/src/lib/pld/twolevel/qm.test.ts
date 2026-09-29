@@ -131,6 +131,29 @@ describe('Quine–McCluskey', () => {
     expect(JSON.parse(JSON.stringify(t))).toEqual(t);
   });
 
+  test('the trace is plain data: it survives a JSON round trip unchanged', () => {
+    for (const [n, on, dc] of [
+      [4, [0, 1, 2, 5, 6, 7, 8, 9, 10, 14], []],
+      [3, [0, 1, 2, 5, 6, 7], []], // cyclic: has a Petrick section
+      [4, [4, 8, 10, 11, 12, 15], [9, 14]],
+    ] as [number, number[], number[]][]) {
+      const t = quineMcCluskey(n, on, dc).trace;
+      const back = JSON.parse(JSON.stringify(t));
+      expect(back).toEqual(JSON.parse(JSON.stringify(back)));
+      expect(JSON.stringify(back)).toBe(JSON.stringify(t));
+      // No functions, no bigints, no typed arrays.
+      const walk = (v: unknown): void => {
+        expect(typeof v).not.toBe('function');
+        expect(typeof v).not.toBe('bigint');
+        if (v && typeof v === 'object') {
+          expect(ArrayBuffer.isView(v)).toBe(false);
+          Object.values(v).forEach(walk);
+        }
+      };
+      walk(t);
+    }
+  });
+
   test('essential primes are recorded with the minterms that make them essential', () => {
     const r = quineMcCluskey(4, [4, 8, 10, 11, 12, 15], [9, 14]);
     const ess = r.trace.steps.filter((s) => s.kind === 'essential');

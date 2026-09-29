@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { coverFromStrings, coverTruthTable, cubeHasMinterm, cubeMinterms, cubeToString, type Cube } from './cube';
+import { contains, coverFromStrings, coverTruthTable, cubeHasMinterm, cubeMinterms, cubeToString, type Cube } from './cube';
 import { mulberry32, type Rng } from './random';
 import { complement, coveredBy, equivalent, supercubeOfComplement, tautology } from './unate';
 
@@ -47,6 +47,16 @@ describe('unate recursive paradigm', () => {
       const t = table(F, n);
       const tc = table(C, n);
       for (let m = 0; m < t.length; m++) expect(tc[m]).toBe(1 - t[m]!);
+    }
+  });
+
+  test('the complement has no cube contained in another', () => {
+    const rng = mulberry32(22);
+    for (let trial = 0; trial < 200; trial++) {
+      const n = 3 + rng.int(8);
+      const C = complement(randomCover(rng, n, 1 + rng.int(12), 0.4), n);
+      for (let i = 0; i < C.length; i++)
+        for (let j = 0; j < C.length; j++) if (i !== j) expect(contains(C[i]!, C[j]!)).toBe(false);
     }
   });
 

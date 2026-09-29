@@ -108,6 +108,28 @@ describe('Espresso', () => {
     expect(ratio).toBeLessThanOrEqual(1.3);
   });
 
+  test('8-variable random functions: close to the exact minimum', () => {
+    const rng = mulberry32(88);
+    let exactTerms = 0;
+    let espressoTerms = 0;
+    let optimal = 0;
+    const trials = 8;
+    for (let trial = 0; trial < trials; trial++) {
+      const n = 8;
+      const { on, dc } = randomTable(rng, n, 0.25 + rng.next() * 0.3, 0.08);
+      const onC = mintermCover(n, on);
+      const dcC = mintermCover(n, dc);
+      const F = espresso(onC, dcC);
+      expect(implementsFunction(F, onC, dcC)).toBe(true);
+      const q = quineMcCluskey(n, on, dc, { traceLimit: 0 }).cover;
+      exactTerms += q.cubes.length;
+      espressoTerms += F.cubes.length;
+      if (F.cubes.length === q.cubes.length) optimal++;
+    }
+    console.log(`Espresso vs exact on ${trials} random 8-variable functions: ${espressoTerms} vs ${exactTerms} terms (ratio ${(espressoTerms / exactTerms).toFixed(3)}), optimal in ${optimal}/${trials}`);
+    expect(espressoTerms / exactTerms).toBeLessThanOrEqual(1.3);
+  });
+
   test('22 inputs × 10 outputs, per output', () => {
     // Each output is a random compact SOP whose cubes are then split into fragments (a cube split
     // on 1–3 extra variables), with a few don't-care cubes. Espresso must recover a cover no

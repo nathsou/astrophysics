@@ -32,15 +32,20 @@
  * A row of all 1s is therefore the constant 1, and a row with both columns of any signal at 0 is
  * the constant 0 (unused rows are all 0).
  *
- * Sources: galette (Simon Frankau's Rust port of GALasm, github.com/simon-frankau/galette):
- * `chips.rs` (OLMC start rows 122, 111, 98, 83, 66, 49, 34, 21, 10, 1 for pins 14…23, AR row 0,
- * SP row 131, 5,892 fuses), `gal.rs` (the pin-to-column table and the registered-feedback
- * inversion) and `writer.rs` (S0/S1 interleaved from pin 23, then the signature). galette's
- * reference JEDEC files, produced by the assembler people use to program real parts, are in
- * `gal22v10-fixtures/galette/` and are reproduced byte for byte by `gal22v10-pld.ts`. The layout
- * also matches the fuse numbers printed on the logic diagram of the Lattice GAL22V10 datasheet
- * (AR at 0000, pin 23's OE row at 0044, SP at 5764, S0/S1 of pin 23 at 5808/5809); that check
- * was made from memory of the datasheet, not against a copy, so galette is the primary source.
+ * Sources and checks: the layout is galette's (Simon Frankau's Rust port of GALasm,
+ * github.com/simon-frankau/galette, MIT): `chips.rs` has the OLMC start rows 122, 111, 98, 83, 66,
+ * 49, 34, 21, 10, 1 for pins 14…23 with 9, 11, 13, 15, 17, 17, 15, 13, 11, 9 rows each (an OE row
+ * plus 8, 10, 12, 14, 16, 16, 14, 12, 10, 8 product terms; this is the 8-10-12-14-16-16-14-12-10-8
+ * pattern of the datasheets, which I recalled rather than re-read), AR at row 0, SP at row 131, and 5,892 fuses
+ * in all; `gal.rs` has the pin-to-column table and the inverted registered feedback; `writer.rs`
+ * writes S0/S1 interleaved from pin 23, then the signature. `gal22v10-pld.ts` assembles `.pld`
+ * files the way galette does and `gal22v10-galette.test.ts` (run with GALETTE_DIR set) checks
+ * that the JEDEC files are identical to galette's byte for byte, for galette's own test cases;
+ * the frozen copies of some of them in `gal22v10-galette-cases.ts` run in the normal tests.
+ * That establishes that this fuse map programs a part the way the assembler people use to program
+ * real GAL22V10s does. What the map does once programmed (the simulator below) follows the
+ * datasheet's macrocell description as galette's `needs_flip` comment states it; it has not been
+ * compared with a physical part.
  *
  * Macrocell behaviour (simulated below):
  * - Combinational (S1 = 1): pin = sum when active high, ¬sum when active low. The feedback into
@@ -424,4 +429,61 @@ export class Gal22v10 {
     if (!before.ar) this.q.set(next);
     return this.evaluate(inputs);
   }
+}
+
+// ---------------------------------------------------------------------------------------------
+// Fuse map for the renderer
+
+export interface GalFuseMapRow {
+  row: number;
+  kind: RowKind;
+  /** The macrocell pin, for OE and product-term rows. */
+  pin?: number;
+  /** Product-term number within the macrocell (0-based), for product-term rows. */
+  term?: number;
+  /** 44 characters, column 0 first: '1' = fuse blown (input not connected), '0' = intact (connected). */
+  bits: string;
+}
+
+export interface GalFuseMap {
+  device: 'GAL22V10';
+  version: 1;
+  fuseCount: number;
+  rows: GalFuseMapRow[];
+  /** Per macrocell, pin 23 first. */
+  olmcs: { pin: number; s0: 0 | 1; s1: 0 | 1; activeHigh: boolean; registered: boolean; oeRow: number; firstTermRow: number; terms: number; s0Fuse: number; s1Fuse: number }[];
+  /** For each of the 44 columns: the pin and whether it is the complement. */
+  columns: { column: number; pin: number; complement: boolean }[];
+  signature: string;
+  /** Fuses at 1 (blown) and at 0. */
+  blown: number;
+}
+
+/** The fuse map as JSON-friendly data, for drawing and hovering. */
+export function toFuseMap(fuses: ArrayLike<number>): GalFuseMap {
+  if (fuses.length !== FUSE_COUNT) throw new Error(`A GAL22V10 has ${FUSE_COUNT} fuses, not ${fuses.length}`);
+  const rows: GalFuseMapRow[] = [];
+  for (let r = 0; r < ROWS; r++) {
+    let bits = '';
+    for (let c = 0; c < COLUMNS; c++) bits += fuses[r * COLUMNS + c] ? '1' : '0';
+    rows.push({ row: r, ...rowInfo(r), bits });
+  }
+  let blown = 0;
+  for (let i = 0; i < FUSE_COUNT; i++) if (fuses[i]) blown++;
+  const sig = getSignature(Uint8Array.from(fuses));
+  return {
+    device: 'GAL22V10',
+    version: 1,
+    fuseCount: FUSE_COUNT,
+    rows,
+    olmcs: OLMC_PINS.map((pin) => {
+      const r = olmcRows(pin);
+      const s0 = fuses[s0Fuse(pin)] ? 1 : 0;
+      const s1 = fuses[s1Fuse(pin)] ? 1 : 0;
+      return { pin, s0, s1, activeHigh: s0 === 1, registered: s1 === 0, oeRow: r.oeRow, firstTermRow: r.firstTermRow, terms: r.terms, s0Fuse: s0Fuse(pin), s1Fuse: s1Fuse(pin) };
+    }),
+    columns: Array.from({ length: COLUMNS }, (_, column) => ({ column, ...columnSignal(column) })),
+    signature: String.fromCharCode(...sig.map((b) => (b >= 0x20 && b < 0x7f ? b : 0x2e))),
+    blown,
+  };
 }

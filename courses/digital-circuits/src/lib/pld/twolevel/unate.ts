@@ -216,7 +216,10 @@ function mergeHalves(C0: Cube[], C1: Cube[], x: number, n: number): Cube[] {
   const rest0 = C0.filter((_, i) => !used0[i]);
   for (const c of rest1) out.push(rest0.some((d) => contains(d, c)) ? c : withVar(c, x, ONE));
   for (const c of rest0) out.push(rest1.some((d) => contains(d, c)) ? c : withVar(c, x, ZERO));
-  return scc(out, n);
+  // If C0 and C1 are free of single-cube containment, so is the result (a cube raised only where
+  // no cube of the other half contains it cannot be contained in another output cube), so no
+  // further scc pass is needed.
+  return out;
 }
 
 /**

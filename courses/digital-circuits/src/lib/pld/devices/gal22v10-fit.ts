@@ -45,6 +45,7 @@ import {
   ONE,
   ZERO,
   coverCost,
+  cubeToString,
   getVar,
   type Cover,
   type Cube,
@@ -91,7 +92,11 @@ export interface GalOutputSpec {
   oe?: string | Expr;
   /** Force a pin (14–23). */
   pin?: number;
-  /** 'auto' (default) picks the polarity with fewer product terms; 'high' or 'low' force it. */
+  /**
+   * 'auto' picks the polarity with fewer product terms; 'high' or 'low' force it. The default is
+   * 'auto' for combinational outputs and 'high' for registered ones, whose power-up and reset
+   * state (register = 0) is then the all-zero state of the equations.
+   */
   polarity?: 'auto' | 'high' | 'low';
 }
 
@@ -194,6 +199,12 @@ function describePins(pins: number[]): string {
   return pins.map((p) => `${p} (${capacityOf(p)} terms)`).join(', ');
 }
 
+/** A stable order for printing: true literals before complemented ones, variables from the left. */
+function canonical(cubes: Cube[], n: number): Cube[] {
+  const key = (c: Cube) => cubeToString(c, n).replace(/1/g, 'a').replace(/0/g, 'b').replace(/-/g, 'c');
+  return cubes.slice().sort((x, y) => (key(x) < key(y) ? -1 : key(x) > key(y) ? 1 : 0));
+}
+
 /** The cubes as a sum over pin numbers. */
 function sumOf(cubes: Cube[], pinOfVar: number[], n: number): GalSum {
   return cubes.map((c) => {
@@ -249,6 +260,7 @@ export function fitGal22v10(design: GalDesign, opts: GalFitOptions = {}): GalFit
   // -- Variables and covers -----------------------------------------------------------------
   const variables = [...inputs.map((i) => i.name), ...outputs.map((o) => o.name)];
   const n = variables.length;
+  if (outputs.length > 10) throw new GalFitError('too-many-signals', `${outputs.length} outputs, but the GAL22V10 has only 10 output macrocells (pins 14–23)`);
   if (n > 22) throw new GalFitError('too-many-signals', `${n} signals (${inputs.length} inputs and ${outputs.length} outputs), but the GAL22V10 has 22 signal pins`);
   const cover = (e: string | Expr, what: string): Cover => {
     const x = asExpr(e, what);
@@ -268,9 +280,9 @@ export function fitGal22v10(design: GalDesign, opts: GalFitOptions = {}): GalFit
   const work: Work[] = outputs.map((spec) => {
     const on = cover(spec.expr, `Equation for ${spec.name}`);
     const dc = spec.dc !== undefined ? cover(spec.dc, `Don't-care set of ${spec.name}`) : undefined;
-    const high = minimise(on, dc, opts).cubes;
-    const low = minimiseComplement(on, dc, opts).cubes;
-    const pol = spec.polarity ?? 'auto';
+    const high = canonical(minimise(on, dc, opts).cubes, n);
+    const low = canonical(minimiseComplement(on, dc, opts).cubes, n);
+    const pol = spec.polarity ?? (spec.registered ? 'high' : 'auto');
     const cost = (c: Cube[]) => coverCost({ n, cubes: c });
     const lowCheaper = (() => {
       const a = cost(low);
@@ -458,7 +470,7 @@ function pldText(fit: GalFit): string {
   if (bad) throw new GalFitError('bad-name', `The name ${bad.name} (pin ${bad.pin}) cannot appear in a galette .pld file: names start with a letter and contain letters and digits only`);
   if (!SIGNATURE_OK.test(fit.signature)) throw new GalFitError('bad-name', 'The signature must be printable ASCII');
   const row = (from: number) => fit.pins.slice(from, from + 12).map((p) => p.name.padEnd(6)).join(' ').trimEnd();
-  const lines = ['GAL22V10', fit.signature || 'NoName', ''];
+  const lines = ['GAL22V10', fit.signature, ''];
   if (fit.design.title) lines.push(`; ${fit.design.title.replace(/[^\x20-\x7e]+/g, ' ')}`, '');
   lines.push(row(0), row(12), '');
   const eq = (lhs: string, rhs: string) => {
@@ -482,11 +494,11 @@ function reportText(fit: GalFit): string {
   lines.push(`GAL22V10  signature "${fit.signature}"  ${fit.termsUsed} product terms used`);
   lines.push('', 'Pin  Role     Name');
   for (const p of fit.pins) lines.push(`${String(p.pin).padStart(3)}  ${p.role.padEnd(8)} ${p.name}`);
-  lines.push('', 'Output  Pin  Kind        Polarity  Terms  Sum');
+  lines.push('', `${'Output'.padEnd(8)}${'Pin'.padStart(3)}  ${'Kind'.padEnd(13)}${'Polarity'.padEnd(10)}${'Terms'.padEnd(8)}Equation`);
   for (const o of [...fit.outputs].sort((a, b) => b.pin - a.pin)) {
+    const note = o.polarity === 'low' || o.highTerms !== o.terms ? `   (active high: ${o.highTerms} terms, active low: ${o.lowTerms})` : '';
     lines.push(
-      `${o.name.padEnd(7)} ${String(o.pin).padStart(3)}  ${(o.registered ? 'registered' : 'combinational').padEnd(11)} ${(o.polarity === 'low' ? 'low' : 'high').padEnd(8)}  ${String(o.terms).padStart(2)}/${String(o.capacity).padEnd(2)}  ${o.polarity === 'low' ? '/' : ''}${o.name} = ${o.sum}` +
-        (o.polarity === 'low' || o.highTerms !== o.terms ? `   (active high would need ${o.highTerms}, active low ${o.lowTerms})` : ''),
+      `${o.name.padEnd(8)}${String(o.pin).padStart(3)}  ${(o.registered ? 'registered' : 'combinational').padEnd(13)}${(o.polarity === 'low' ? 'active low' : 'active high').padEnd(10)}${`${o.terms}/${o.capacity}`.padEnd(8)}${o.polarity === 'low' ? '/' : ''}${o.name} = ${o.sum}${note}`,
     );
   }
   return lines.join('\n');
