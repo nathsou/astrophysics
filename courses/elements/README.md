@@ -17,8 +17,8 @@ npm run convert        # regenerate src/text/data/ from upstream/
 - **Modern versions.** Written for this edition, for readers with a programming background. Each gives the statement in current notation and a faithful account of Euclid’s argument. Callouts cover gaps in rigour (and how Hilbert and others repaired them), a programmer’s view, and where the result leads.
 - **Figures.** Each proposition’s figure is a small program that builds the construction from the given data. Drag the points, move the sliders, or turn a solid. The figure is linked to Heath’s text:
   - hovering a label highlights the object, and hovering an object highlights its label;
-  - “Step through” builds the figure paragraph by paragraph;
-  - **Byrne mode** colours the objects the text mentions and replaces the letters with small drawings, as in Oliver Byrne’s 1847 edition.
+  - the play button (or ← →, or a click on a paragraph or a bar of the step track) builds the figure paragraph by paragraph;
+  - **Byrne colours** (on by default) colour the objects the text mentions and replace the letters with small drawings, as in Oliver Byrne’s 1847 edition; switch them off to see the lettered figure.
 - **The workshop** (`#/workshop`). Compass-and-straightedge puzzles from I.1 to VI.13. You start with Postulates 1–3, and each construction you solve unlocks a tool for later levels. A solution passes only if it still works after the givens are moved at random, and the construction is also shown as a program.
 - **The dependency graph** (`#/graph`). Every citation Heath prints: what a proposition rests on, what rests on it, longest chains, and everything that depends on the parallel postulate.
 - **Explorations** (`#/explore`):
@@ -29,6 +29,7 @@ npm run convert        # regenerate src/text/data/ from upstream/
   - exhaustion;
   - why there are only five regular solids.
 - **Glossary** of Heath’s terms.
+- **Navigation.** A top bar with a search field that opens a command palette (⌘K or Ctrl+K): type “I.47” to jump, or words to search the enunciations.
 
 ## Architecture
 
@@ -74,3 +75,7 @@ tests/                   vitest: every figure, every modern text, every workshop
 - Heath, *The Thirteen Books of Euclid’s Elements* (Cambridge University Press, 1908): public domain.
 - TEI encoding: Perseus Digital Library, Tufts University, CC BY-SA 4.0 (see `upstream/UPSTREAM.json`).
 - Everything else (modern versions, figures, workshop, explorations) was written for this edition.
+
+## Design
+
+The look follows the “Byrne redrawn” mockups: tokens in `src/styles/base.css` (`--paper`, `--panel`, `--ink`, `--red`, `--blue`, `--yellow`, in light and dark under `html[data-theme]`; older names such as `--accent` are aliases of them), DM Serif Display for display type, Newsreader for reading and DM Sans for the interface. Depth comes from panels with hairline borders rather than shadows, and springy or drawing transitions are wrapped in `prefers-reduced-motion: no-preference`.

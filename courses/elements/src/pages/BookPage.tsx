@@ -29,6 +29,12 @@ export function BookPage({ n }: { n: number }) {
         <p className="kicker">Book {ROMAN[n]}</p>
         <h1>{info.title}</h1>
         <p className="lede">{info.blurb}</p>
+        <p className="legend" aria-label="Marks in the lists below">
+          <span><i className="sh diamond blue" /> construction</span>
+          <span><i className="sh diamond red" /> theorem</span>
+          {n <= 6 && <span><i className="sh tri" style={{ ['--c' as string]: 'var(--amber)' }} /> uses the parallel postulate</span>}
+          <span><i className="sh dot yellow" /> interactive figure</span>
+        </p>
       </header>
       {intro && (
         <Suspense fallback={null}>
