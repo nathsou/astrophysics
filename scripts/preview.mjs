@@ -4,11 +4,12 @@
 //   npm run preview -- --skip-install   reuse existing node_modules
 //   npm run preview -- --skip-build     only serve an existing dist/
 //   npm run preview -- --port 3000
-import { createReadStream, existsSync, statSync } from 'node:fs';
+import { chmodSync, createReadStream, existsSync, mkdtempSync, statSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { createServer } from 'node:http';
 import { fileURLToPath } from 'node:url';
-import { dirname, extname, join, normalize, sep } from 'node:path';
+import { delimiter, dirname, extname, join, normalize, sep } from 'node:path';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = join(root, 'dist');
@@ -16,6 +17,24 @@ const args = process.argv.slice(2);
 const flag = (name) => args.includes(`--${name}`);
 const portIndex = args.indexOf('--port');
 const port = Number(portIndex >= 0 ? args[portIndex + 1] : process.env.PORT ?? 8000);
+
+// language-models is a pnpm workspace. If pnpm is not installed, borrow the version pinned in its
+// package.json through Corepack (bundled with Node 22) by putting a `pnpm` shim first on PATH; the
+// shim is inherited by scripts/build.mjs too.
+if (spawnSync('pnpm', ['--version'], { stdio: 'ignore' }).status !== 0) {
+  if (spawnSync('corepack', ['--version'], { stdio: 'ignore' }).status !== 0) {
+    console.error('pnpm is required for courses/language-models, and neither pnpm nor corepack was found.\nInstall pnpm (https://pnpm.io/installation) or use a Node.js version that bundles Corepack.');
+    process.exit(1);
+  }
+  console.log('pnpm not found; using it through Corepack.');
+  const shims = mkdtempSync(join(tmpdir(), 'pnpm-shim-'));
+  const windows = process.platform === 'win32';
+  const shim = join(shims, windows ? 'pnpm.cmd' : 'pnpm');
+  writeFileSync(shim, windows ? '@corepack pnpm %*\r\n' : '#!/bin/sh\nexec corepack pnpm "$@"\n');
+  if (!windows) chmodSync(shim, 0o755);
+  process.env.PATH = `${shims}${delimiter}${process.env.PATH}`;
+  process.env.COREPACK_ENABLE_DOWNLOAD_PROMPT = '0';
+}
 
 function run(command, commandArgs, options = {}) {
   console.log(`\n$ ${[command, ...commandArgs].join(' ')}`);
