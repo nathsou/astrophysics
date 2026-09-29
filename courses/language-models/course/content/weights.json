@@ -2,6 +2,7 @@
   "release": "https://github.com/nathsou/courses/releases/download/coursegpt-v1",
   "files": [
     { "name": "coursegpt.safetensors", "bytes": 59386240, "sha256": "021c248408ae8bc39b953bae07638eb6796c06df451f44f5cc686326fc8127eb" },
-    { "name": "coursegpt-draft.safetensors", "bytes": 7709328, "sha256": "d8b9b1e3cea7fe5d70cbc35c4d159b0d23027e8e648ef9b5ca7989c9914a078b" }
+    { "name": "coursegpt-draft.safetensors", "bytes": 7709328, "sha256": "d8b9b1e3cea7fe5d70cbc35c4d159b0d23027e8e648ef9b5ca7989c9914a078b" },
+    { "name": "coursegpt-instruct.safetensors", "bytes": 59286264, "sha256": "6db76ead2414de06814992c0069899d6d01687725baae466d181c91a31ab912d" }
   ]
 }
