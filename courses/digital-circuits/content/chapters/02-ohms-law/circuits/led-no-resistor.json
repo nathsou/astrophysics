@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "title": "An LED straight on a battery",
+  "engine": "analog",
+  "components": [
+    {"id": "B1", "type": "battery", "x": 4, "y": 12, "rot": 270, "params": {"voltage": 9}},
+    {"id": "S1", "type": "switch", "x": 8, "y": 4, "params": {"closed": false}},
+    {"id": "A1", "type": "ammeter", "x": 16, "y": 4},
+    {"id": "D1", "type": "led", "x": 26, "y": 6, "rot": 90, "params": {"color": "red"}},
+    {"id": "G1", "type": "ground", "x": 4, "y": 16}
+  ],
+  "wires": [
+    {"points": [[4, 8], [4, 4], [8, 4]]},
+    {"points": [[12, 4], [16, 4]]},
+    {"points": [[20, 4], [26, 4], [26, 6]]},
+    {"points": [[26, 10], [26, 16], [4, 16], [4, 12]]}
+  ],
+  "notes": [{"x": 8, "y": 0, "text": "no resistor!"}]
+}

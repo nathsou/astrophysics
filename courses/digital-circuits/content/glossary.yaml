@@ -104,3 +104,187 @@ drift-speed:
   term: drift speed
   definition: "The average speed at which charge carriers make progress along a wire, which is tiny: 0.07 mm/s for 1 A in 1 mm² of copper. It is *I*/(*n A e*). The signal that starts them all moving travels at a large fraction of the speed of light."
   chapter: charge-voltage-current
+electromagnet:
+  term: electromagnet
+  definition: A coil of wire, usually wound round an iron core, that is a magnet while current flows in it. The turns add their fields, and the iron multiplies the total by hundreds.
+  chapter: relays
+inductance:
+  term: inductance
+  definition: How strongly a coil resists changes in its own current, measured in henries (H). The voltage across it is V = L·ΔI/Δt, so a current in a coil cannot jump, like the speed of a flywheel.
+  chapter: relays
+armature:
+  term: armature
+  definition: The hinged iron plate of a relay. The electromagnet pulls it against the core, against a spring, and it carries the moving contact.
+  chapter: relays
+hysteresis:
+  term: hysteresis
+  definition: A threshold that depends on history. A relay pulls in at about 70 % of its rated coil current but lets go only below about 30 %, so between the two it is in whichever state it was already in.
+  chapter: relays
+signal-restoration:
+  term: signal restoration
+  definition: Reading a weakened or noisy signal and sending out a fresh, full-strength copy. A telegraph relay does it for a fading line current, and a logic gate does it for a slightly degraded 0 or 1.
+  chapter: relays
+contacts:
+  term: contacts (COM, NO, NC)
+  definition: The switch part of a relay. COM (common) is the moving contact; NC (normally closed) is joined to COM when the coil is off; NO (normally open) is joined to COM when the coil is on.
+  chapter: relays
+multimeter:
+  term: multimeter
+  definition: "An instrument with a dial that makes it a voltmeter (across the part), an ammeter (in series, in the path of the current) or an ohmmeter (across an unpowered part). A typical one presents about 10 MΩ to a circuit when measuring voltage."
+  chapter: the-bench
+bench-supply:
+  term: bench power supply
+  definition: "An adjustable voltage source with a second knob for a current limit. It holds the voltage you set (constant-voltage mode) until the load draws the limit, and then holds the current instead (constant-current mode)."
+  chapter: the-bench
+current-limit:
+  term: current limit
+  definition: "The most current a bench supply will deliver. Above it the supply stops holding its voltage and lets it fall so that the current stays at the limit. Set it before connecting a load, and a fault costs you a lit lamp rather than a burnt part."
+  chapter: the-bench
+continuity:
+  term: continuity
+  definition: "A test of whether two points are joined by a low resistance (a wire, a closed switch, a good fuse). A multimeter’s continuity range is the ohms range with a beeper that sounds below some tens of ohms."
+  chapter: the-bench
+oscilloscope:
+  term: oscilloscope
+  definition: "An instrument that draws voltage against time: the horizontal axis is time (set in seconds per division), the vertical axis is voltage (volts per division). A trigger starts each sweep at the same point of a repeating signal so that the picture stands still."
+  chapter: the-bench
+timebase:
+  term: timebase
+  definition: "The horizontal scale of an oscilloscope, in seconds per division. The screen has ten divisions across, so at 1 ms/div it shows 10 ms."
+  chapter: the-bench
+trigger:
+  term: trigger
+  definition: "The part of an oscilloscope that decides when a sweep starts: when a chosen signal crosses a chosen level in a chosen direction. Without it, successive sweeps start at different phases of a repeating signal and the display smears. Like a conditional breakpoint."
+  chapter: the-bench
+function-generator:
+  term: function generator
+  definition: "A source of a periodic voltage with controls for the waveform (square, sine, triangle), frequency, amplitude and offset. It supplies the test signals for an oscilloscope."
+  chapter: the-bench
+capacitor:
+  term: capacitor
+  definition: "Two conductors separated by an insulator. Charge *Q* on the plates and voltage *V* across them are proportional, *Q* = *CV*. Its voltage cannot jump: it changes only as fast as current can move charge on or off the plates, *I* = *C* Δ*V*/Δ*t*."
+  chapter: capacitors-and-time
+farad:
+  term: farad (F)
+  definition: "The unit of capacitance: one coulomb of stored charge per volt. A farad is enormous; real capacitors are µF (10⁻⁶), nF (10⁻⁹) or pF (10⁻¹²)."
+  chapter: capacitors-and-time
+time-constant:
+  term: time constant (τ)
+  definition: "For a resistor charging or discharging a capacitor, τ = *RC*. In each time constant the voltage closes 63 % of the gap between where it is and where it is heading; after 5τ it is within 1 %. The time to a level *V* is τ ln(*V*ₛ/(*V*ₛ − *V*))."
+  chapter: capacitors-and-time
+pull-up:
+  term: pull-up resistor
+  definition: "A resistor from a signal wire to the supply that pulls the wire high when nothing pulls it low. Together with the wire’s capacitance it makes the rising edge an exponential with τ = *RC*, which is what limits the speed of I²C."
+  chapter: capacitors-and-time
+open-drain:
+  term: open-drain output
+  definition: "An output that can only pull its wire down to ground (with a transistor) and never push it up. Several can share one wire, with a pull-up resistor supplying the high level. I²C and 1-Wire work this way."
+  chapter: capacitors-and-time
+schmitt-trigger:
+  term: Schmitt trigger
+  definition: "A gate input with two thresholds, a higher one for a rising input and a lower one for a falling input, so that it switches once and cleanly on a slow or noisy signal. It is what follows an RC debouncing filter."
+  chapter: capacitors-and-time
+companion-model:
+  term: companion model
+  definition: "How a circuit simulator handles a capacitor: over each time step it is replaced by a resistor in parallel with a current source that depends on the previous step, so that the circuit can be solved as an ordinary resistor network, once per step."
+  chapter: capacitors-and-time
+contact-bounce:
+  term: contact bounce
+  definition: "The rattle of a mechanical switch’s contacts as they meet: they touch, spring apart and touch again for a fraction of a millisecond to several milliseconds. A fast circuit sees several presses instead of one, unless the signal is filtered or debounced."
+  chapter: capacitors-and-time
+resistance:
+  term: resistance
+  definition: "How strongly a component opposes current: the voltage across it divided by the current through it, *R* = *V*/*I*. Measured in ohms (Ω)."
+  chapter: ohms-law
+ohms-law:
+  term: Ohm’s law
+  definition: "For a resistor, the current is proportional to the voltage across it: *V* = *I R*. It holds for metals and carbon but not for lamps (whose resistance rises as they heat), diodes or LEDs."
+  chapter: ohms-law
+power:
+  term: power
+  definition: "Energy per second, in watts (W). Electrical power is voltage times current, *P* = *V I*; in a resistor it is also *I*²*R* = *V*²/*R*, and all of it becomes heat."
+  chapter: ohms-law
+conductance:
+  term: conductance
+  definition: "The reciprocal of resistance, *G* = 1/*R*, in siemens (S). Conductances add in parallel; the simulator’s equations are written in them."
+  chapter: ohms-law
+voltage-divider:
+  term: voltage divider
+  definition: "Two resistors in series across a voltage. The voltage at their junction is the input times the lower resistor’s share of the total, *V*out = *V*in *R*₂/(*R*₁ + *R*₂), provided nothing else loads it."
+  chapter: ohms-law
+kcl:
+  term: Kirchhoff’s current law
+  definition: "The currents flowing into a junction add up to the currents flowing out: charge does not pile up or vanish there."
+  chapter: ohms-law
+kvl:
+  term: Kirchhoff’s voltage law
+  definition: "Going round any closed loop, the voltage rises and drops add up to zero: a charge that returns to its starting point has the energy it started with."
+  chapter: ohms-law
+transfer-curve:
+  term: voltage transfer curve (VTC)
+  definition: "A gate’s output voltage plotted against its input voltage, with the input swept slowly from 0 V to the supply. A good inverter’s curve is flat near both rails and steep in the middle; the steepness is gain, and the flat ends are what make noise disappear from gate to gate."
+  chapter: real-gates
+voh:
+  term: VOH
+  definition: "The lowest voltage that a gate guarantees at its output when it is sending a 1. It sags below the supply as the load current grows."
+  chapter: real-gates
+vol:
+  term: VOL
+  definition: "The highest voltage that a gate may have at its output when it is sending a 0. It rises above 0 V as the load current grows."
+  chapter: real-gates
+vih:
+  term: VIH
+  definition: "The lowest input voltage that a gate is guaranteed to read as a 1. For 74HC gates it is 0.7 of the supply, 3.5 V at 5 V."
+  chapter: real-gates
+vil:
+  term: VIL
+  definition: "The highest input voltage that a gate is guaranteed to read as a 0. For 74HC gates it is 0.3 of the supply, 1.5 V at 5 V."
+  chapter: real-gates
+noise-margin:
+  term: noise margin
+  definition: "How much interference a logic level can pick up between two gates and still be read correctly: NMH = VOH − VIH for a 1 and NML = VIL − VOL for a 0. About 1.4 V each for 74HC on 5 V, and 0.4 V for TTL."
+  chapter: real-gates
+fan-out:
+  term: fan-out
+  definition: "The number of gate inputs that one output drives. In TTL it is limited by current (about ten); in CMOS by time, since every input is a capacitor that the output has to charge."
+  chapter: real-gates
+rise-time:
+  term: rise time
+  definition: "How long an edge takes to travel from 10 % to 90 % of its swing. For an RC edge it is 2.2 *RC*; the fall time is defined in the same way."
+  chapter: real-gates
+propagation-delay:
+  term: propagation delay
+  definition: "The time from the input of a gate crossing half the supply to the output crossing half the supply, given separately for a rising output (*t*ₚLH) and a falling one (*t*ₚHL). It depends on what the gate drives."
+  chapter: real-gates
+leakage:
+  term: leakage current
+  definition: "The small current that a transistor passes when it is supposed to be off. Below the threshold voltage it falls by a factor of ten for each 80–100 mV or so, so a low threshold makes a fast transistor that leaks. It is why a chip uses power even when the clock stops."
+  chapter: real-gates
+wired-and:
+  term: wired-AND
+  definition: "Several open-drain outputs on one wire with a pull-up resistor. The wire is high only if every output has let go, so the wiring itself computes the AND of the outputs."
+  chapter: real-gates
+tri-state:
+  term: tri-state output
+  definition: "An output with an enable input. Enabled, it drives 0 or 1; disabled, it lets go of the wire (high impedance, Z), so that many of them can share a bus if at most one is enabled at a time."
+  chapter: real-gates
+bus:
+  term: bus
+  definition: "A set of wires shared by several devices, each of which may drive it in turn. Its outputs are tri-state or open-drain, so that the ones not speaking are not fighting."
+  chapter: real-gates
+bus-contention:
+  term: bus contention
+  definition: "Two enabled outputs driving one wire to different levels. In the digital engine the wire becomes X; on a real board a large current flows from the supply through both output stages, which heats and can destroy them."
+  chapter: real-gates
+key-matrix:
+  term: key matrix
+  definition: Keys wired as a grid of rows and columns, with a switch at each crossing that can join one row wire to one column wire. A controller drives the rows one at a time and reads the columns, so that r rows and c columns need only r + c wires for r × c keys.
+  chapter: press-a-key
+digital-abstraction:
+  term: digital abstraction
+  definition: The agreement to treat a wire as carrying only a 0 or a 1, whatever its exact voltage. For 5 V logic, above 3.5 V is a 1, below 1.5 V is a 0, and gates are built to send out only voltages well clear of the gap between them, so that noise does not accumulate.
+  chapter: press-a-key
+parts-bin:
+  term: parts bin
+  definition: The collection of parts you have built in this course. A part that passes its checker goes into the bin as a black box with fixed pins, and later chapters build from it.
+  chapter: press-a-key

@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "title": "The circuit behind the landscape",
+  "engine": "analog",
+  "components": [
+    {"id": "B1", "type": "battery", "x": 4, "y": 12, "rot": 270, "params": {"voltage": 9, "resistance": 0.01}},
+    {"id": "R1", "type": "resistor", "x": 8, "y": 4, "params": {"resistance": 1000}},
+    {"id": "R2", "type": "resistor", "x": 16, "y": 6, "rot": 90, "params": {"resistance": 2000}},
+    {"id": "R3", "type": "resistor", "x": 20, "y": 4, "params": {"resistance": 1000}},
+    {"id": "R4", "type": "resistor", "x": 28, "y": 6, "rot": 90, "params": {"resistance": 1000}},
+    {"id": "G1", "type": "ground", "x": 4, "y": 16}
+  ],
+  "wires": [
+    {"points": [[4, 8], [4, 4], [8, 4]]},
+    {"points": [[12, 4], [20, 4]]},
+    {"points": [[16, 4], [16, 6]]},
+    {"points": [[24, 4], [28, 4], [28, 6]]},
+    {"points": [[16, 10], [16, 16]]},
+    {"points": [[28, 10], [28, 16], [4, 16], [4, 12]]}
+  ],
+  "notes": [
+    {"x": 5, "y": 2, "text": "P"},
+    {"x": 15, "y": 2, "text": "A"},
+    {"x": 27, "y": 2, "text": "B"}
+  ]
+}

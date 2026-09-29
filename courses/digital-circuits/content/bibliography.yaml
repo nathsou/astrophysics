@@ -91,3 +91,228 @@ ashcroft1976:
   title: Solid State Physics
   venue: Holt, Rinehart and Winston
   note: Table 1.1 gives the density of conduction electrons in copper (8.47 × 10²⁸ m⁻³) and Table 2.1 its Fermi velocity (1.57 × 10⁶ m/s).
+oersted1820:
+  authors: Hans Christian Ørsted
+  year: 1820
+  title: Experimenta circa effectum conflictus electrici in acum magneticam
+  venue: Pamphlet, Copenhagen, dated 21 July 1820 (four pages, in Latin)
+  url: https://www.aps.org/apsnews/2008/07/1820-oersted-electromagnetism
+  note: The announcement that an electric current deflects a compass needle. Link is the American Physical Society’s account of it.
+aps-oersted:
+  authors: American Physical Society
+  year: 2008
+  title: 'This Month in Physics History: July 1820, Oersted and electromagnetism'
+  venue: APS News 17(7)
+  url: https://www.aps.org/apsnews/2008/07/1820-oersted-electromagnetism
+sturgeon-britannica:
+  authors: Encyclopaedia Britannica
+  year: 2024
+  title: William Sturgeon
+  venue: Encyclopaedia Britannica online
+  url: https://www.britannica.com/biography/William-Sturgeon
+  note: Sturgeon’s electromagnet of 1824, with about 18 turns of bare copper wire, and the seven-ounce piece of iron that lifted nine pounds.
+henry-albany:
+  authors: Princeton University Library
+  year: 2020
+  title: The Albany electromagnet
+  venue: The Joseph Henry Project, Princeton University
+  url: https://commons.princeton.edu/josephhenry/albany-electromagnet/
+  note: Henry’s electromagnet at the Albany Academy, which lifted 750 pounds in 1831.
+hochfelder-henry:
+  authors: David Hochfelder
+  year: 2003
+  title: 'Joseph Henry: inventor of the telegraph?'
+  venue: Joseph Henry Papers Project, Smithsonian Institution Archives
+  url: https://siarchives.si.edu/sites/default/files/pdfs/jhpp/JHP_Inventor_of_the_Telegraph.pdf
+  note: Henry’s intensity and quantity magnets, his 1835 relay, and Leonard Gale’s help to Morse.
+nmah-wwgw:
+  authors: Smithsonian National Museum of American History
+  year: 2024
+  title: '“What hath God wrought” telegraph message'
+  venue: National Museum of American History collections, object nmah_713485
+  url: https://www.si.edu/object/what-hath-god-wrought-telegraph-message:nmah_713485
+  note: Morse’s message of 24 May 1844 from Washington to Alfred Vail in Baltimore.
+loc-morse:
+  authors: Library of Congress
+  year: 2024
+  title: 'The invention of the telegraph'
+  venue: Samuel F. B. Morse Papers at the Library of Congress, articles and essays
+  url: https://www.loc.gov/static/collections/samuel-morse-papers/articles-and-essays/invention-of-the-telegraph/
+  note: Morse and Alfred Vail’s work on the electromagnetic telegraph.
+faraday1832:
+  authors: Michael Faraday
+  year: 1832
+  title: Experimental researches in electricity, first series
+  venue: Philosophical Transactions of the Royal Society 122, 125–162 (read 24 November 1831)
+  url: https://doi.org/10.1098/rstl.1832.0006
+  note: The discovery of electromagnetic induction, including the ring experiment of 29 August 1831.
+aps-faraday:
+  authors: American Physical Society
+  year: 2001
+  title: 'This Month in Physics History: September 4, 1821 and August 29, 1831, Faraday and electromagnetism'
+  venue: APS News 10(8)
+  url: https://www.aps.org/apsnews/2001/08/faraday-electromagnetism
+songle-srd:
+  authors: Songle Relay
+  year: 2010
+  title: SRD series (SRD-05VDC-SL-C) datasheet
+  venue: Manufacturer’s datasheet, widely mirrored
+  note: 5 V coil, 70 Ω, 70 mA; must-operate at 75 % or less and must-release at 10 % or more of the rated voltage; operate time up to 10 ms, release time up to 5 ms.
+braun1897:
+  authors: Ferdinand Braun
+  year: 1897
+  title: Ueber ein Verfahren zur Demonstration und zum Studium des zeitlichen Verlaufes variabler Ströme
+  venue: Annalen der Physik und Chemie, new series, 60, 552–559
+  note: 'Braun’s description of the cathode-ray tube that bears his name: a narrow electron beam deflected by the current under study and watched in a rotating mirror.'
+nobel-braun:
+  authors: NobelPrize.org
+  year: 1909
+  title: Ferdinand Braun, biographical
+  venue: NobelPrize.org, Nobel Prize in Physics 1909
+  url: https://www.nobelprize.org/prizes/physics/1909/braun/biographical/
+  note: The 1909 prize was shared by Marconi and Braun for their contributions to the development of wireless telegraphy.
+fluke-87v:
+  authors: Fluke
+  year: 2000
+  title: 83V and 87V Digital Multimeters, Users Manual
+  venue: Fluke Corporation
+  url: https://assets.fluke.com/manuals/87______umeng0800.pdf
+  note: A typical bench multimeter. Its current inputs are protected by a 440 mA fuse (mA range) and an 11 A fuse (A range), and its voltage ranges present about 10 MΩ.
+horowitz-hill2015:
+  authors: Paul Horowitz and Winfield Hill
+  year: 2015
+  title: The Art of Electronics, 3rd edition
+  venue: Cambridge University Press
+  note: The standard practical text. Chapter 1 and the appendix on scope probes cover 10× probes (10 MΩ in parallel with about 10–15 pF) and the loading of a circuit by its instruments.
+heilbron1979:
+  authors: J. L. Heilbron
+  year: 1979
+  title: 'Electricity in the 17th and 18th Centuries: A Study of Early Modern Physics'
+  venue: University of California Press
+  note: The invention of the Leyden jar by von Kleist (October 1745) and by Musschenbroek and Cunaeus (January 1746), and Nollet’s demonstrations.
+nexperia-74hc04:
+  authors: Nexperia
+  year: 2024
+  title: 74HC04; 74HCT04 Hex inverter, product data sheet (Rev. 10)
+  venue: Nexperia B.V.
+  url: https://assets.nexperia.com/documents/data-sheet/74HC_HCT04.pdf
+  note: The input capacitance of a 74HC gate is a few picofarads (3.5 pF typical).
+nxp-i2c:
+  authors: NXP
+  year: 2021
+  title: UM10204, I²C-bus specification and user manual, Rev. 7.0
+  venue: NXP Semiconductors, 1 October 2021
+  url: https://www.nxp.com/docs/en/user-guide/UM10204.pdf
+  note: Maximum rise time (from 0.3 to 0.7 of the supply) 1000 ns at 100 kHz, 300 ns at 400 kHz and 120 ns at 1 MHz; at most 400 pF on the bus; 3 mA at 0.4 V from a pulling-down device; and the equations for the pull-up resistor.
+ganssle-debounce:
+  authors: Jack G. Ganssle
+  year: 2004
+  title: A guide to debouncing
+  venue: The Ganssle Group
+  url: http://www.ganssle.com/debouncing.htm
+  note: Measurements of the bounce of many kinds of switch, and hardware and software cures.
+nagel1975:
+  authors: Laurence W. Nagel
+  year: 1975
+  title: 'SPICE2: A computer program to simulate semiconductor circuits'
+  venue: Memorandum ERL-M520, Electronics Research Laboratory, University of California, Berkeley
+  note: The design of the program that made companion models, backward Euler and the trapezoidal rule, and local-truncation-error step control the standard way to simulate circuits.
+pillage1995:
+  authors: Lawrence T. Pillage, Ronald A. Rohrer and Chandramouli Visweswariah
+  year: 1995
+  title: Electronic Circuit and System Simulation Methods
+  venue: McGraw-Hill
+  note: The companion-model treatment of capacitors and inductors, and the stability of numerical integration methods (A-stability and stiff decay).
+ohm1827:
+  authors: Georg Simon Ohm
+  year: 1827
+  title: Die galvanische Kette, mathematisch bearbeitet
+  venue: Berlin, T. H. Riemann
+  note: Ohm’s book, in which the relation between voltage, current and resistance is derived by analogy with Fourier’s theory of heat.
+caneva1978:
+  authors: Kenneth L. Caneva
+  year: 1978
+  title: 'From galvanism to electrodynamics: the transformation of German physics and its social context'
+  venue: Historical Studies in the Physical Sciences 9, 63–159
+  note: Includes the German reception of Ohm’s work in the late 1820s, among them the reviews of Schweigger, Kämtz and Pohl.
+kirchhoff1847:
+  authors: Gustav Kirchhoff
+  year: 1847
+  title: Ueber die Auflösung der Gleichungen, auf welche man bei der Untersuchung der linearen Vertheilung galvanischer Ströme geführt wird
+  venue: Annalen der Physik und Chemie 72, 497–508
+  note: Kirchhoff’s laws for networks and the spanning-tree method of choosing independent loops.
+britannica-kirchhoff:
+  authors: Encyclopaedia Britannica
+  year: 2024
+  title: Gustav Kirchhoff
+  url: https://www.britannica.com/biography/Gustav-Robert-Kirchhoff
+  note: Biography, including his studies under Franz Neumann at Königsberg and his work with Bunsen on spectroscopy.
+ti-sn74hc04:
+  authors: Texas Instruments
+  year: 2003
+  title: SN54HC04, SN74HC04 hex inverters, data sheet SCLS078 (first issued December 1982)
+  venue: Texas Instruments Incorporated
+  url: https://www.ti.com/lit/ds/symlink/sn74hc04.pdf
+  note: Input thresholds of 0.7 and 0.3 of the supply (3.15 V and 1.35 V at 4.5 V, 4.2 V and 1.8 V at 6 V), outputs within 0.1 V of the rails at light load, and an absolute maximum of ±25 mA through an output pin and ±50 mA through VCC or ground.
+ti-sn74hc03:
+  authors: Texas Instruments
+  year: 2021
+  title: SNx4HC03 quadruple 2-input NAND gates with open-drain outputs, data sheet (Rev. F)
+  venue: Texas Instruments Incorporated
+  url: https://www.ti.com/lit/ds/symlink/sn74hc03.pdf
+  note: "The open-drain member of the 74HC family: its outputs need pull-up resistors and can be joined to give a wired-AND."
+dennard1974:
+  authors: Robert H. Dennard, Fritz H. Gaensslen, Hwa-Nien Yu, V. Leo Rideout, Ernest Bassous and Andre R. LeBlanc
+  year: 1974
+  title: Design of ion-implanted MOSFET’s with very small physical dimensions
+  venue: IEEE Journal of Solid-State Circuits 9(5), 256–268
+  url: https://doi.org/10.1109/JSSC.1974.1050511
+  note: "The scaling rules: divide dimensions, voltage and oxide thickness by κ, multiply the doping by κ, and the fields stay the same, the delay falls by κ and the power per circuit by κ²."
+bohr2007:
+  authors: Mark Bohr
+  year: 2007
+  title: A 30 year retrospective on Dennard’s MOSFET scaling paper
+  venue: IEEE Solid-State Circuits Society Newsletter 12(1), 11–13
+  url: https://ieeexplore.ieee.org/document/4785534/
+  note: How the paper became the industry’s roadmap, and why classical scaling of the voltage and threshold stopped when subthreshold leakage grew.
+sutter2005:
+  authors: Herb Sutter
+  year: 2005
+  title: 'The free lunch is over: a fundamental turn toward concurrency in software'
+  venue: Dr. Dobb’s Journal 30(3), March 2005
+  url: http://www.gotw.ca/publications/concurrency-ddj.htm
+  note: The article that told programmers that clock speeds had stopped rising and that concurrency would be needed to use more transistors.
+eetimes-tejas:
+  authors: EE Times
+  year: 2004
+  title: Intel cancels Tejas, moves to dual-core designs
+  venue: EE Times, May 2004
+  url: https://www.eetimes.com/intel-cancels-tejas-moves-to-dual-core-designs/
+  note: Intel’s cancellation, in May 2004, of the planned successor to the Pentium 4, and its turn to multi-core chips.
+chm-standard-logic:
+  authors: Computer History Museum
+  year: 2007
+  title: 1963, Standard logic IC families introduced
+  venue: Computer History Museum, “The Silicon Engine”
+  url: https://www.computerhistory.org/siliconengine/standard-logic-ic-families-introduced/
+  note: Sylvania’s SUHL (1963), Texas Instruments’ SN5400 series (1964) and the plastic SN7400 series (1966), which took more than half of the logic market.
+weik1961:
+  authors: Martin H. Weik
+  year: 1961
+  title: The ENIAC story
+  venue: Ordnance (Journal of the American Ordnance Association), January–February 1961, 3–7
+  url: https://ftp.arl.army.mil/~mike/comphist/eniac-story.html
+  note: A history by an engineer of the Ballistic Research Laboratories, with ENIAC’s component counts (17,468 vacuum tubes, 7,200 crystal diodes, 1,500 relays, 70,000 resistors, 10,000 capacitors, about five million soldered joints), its size, weight and power, and its speed of 5,000 additions a second.
+apple-m2-ultra:
+  authors: Apple Inc.
+  year: 2023
+  title: Apple introduces M2 Ultra
+  venue: Apple Newsroom, 5 June 2023
+  url: https://www.apple.com/newsroom/2023/06/apple-introduces-m2-ultra/
+  note: 134 billion transistors, two M2 Max dies joined in one package.
+sze2007:
+  authors: Simon M. Sze and Kwok K. Ng
+  year: 2007
+  title: Physics of Semiconductor Devices, third edition
+  venue: John Wiley & Sons
+  note: The properties of silicon (lattice constant 0.543 nm, 5.0 × 10²² atoms per cm³) and doping levels from 10¹⁵ to 10²⁰ per cm³; at 10²⁰ about one atom in 500 is a dopant.

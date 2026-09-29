@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "title": "A pull-up resistor",
+  "engine": "analog",
+  "components": [
+    {"id": "B1", "type": "battery", "x": 4, "y": 14, "rot": 270, "params": {"voltage": 5, "resistance": 0.01}, "label": "5 V"},
+    {"id": "R1", "type": "resistor", "x": 14, "y": 4, "rot": 90, "params": {"resistance": 10000}, "label": "R1 10 kΩ"},
+    {"id": "SW", "type": "pushbutton", "x": 14, "y": 12, "rot": 90, "label": "button"},
+    {"id": "V1", "type": "voltmeter", "x": 22, "y": 16, "rot": 270, "label": "input"},
+    {"id": "G1", "type": "ground", "x": 4, "y": 20}
+  ],
+  "wires": [
+    {"points": [[4, 10], [4, 4], [14, 4]]},
+    {"points": [[14, 8], [14, 12]]},
+    {"points": [[14, 10], [22, 10], [22, 12]]},
+    {"points": [[14, 16], [14, 20]]},
+    {"points": [[22, 16], [22, 20], [4, 20], [4, 14]]}
+  ],
+  "notes": [{"x": 15.5, "y": 9, "text": "input pin"}]
+}

@@ -30,3 +30,68 @@
   people: Luigi Galvani, Alessandro Volta
   chapter: charge-voltage-current
   text: Volta announces the first battery, a pile of zinc and silver discs with brine-soaked card between them, in a letter to the Royal Society dated 20 March. Cells in series add their voltages.
+- year: 1820
+  title: Ørsted’s compass
+  people: Hans Christian Ørsted
+  chapter: relays
+  text: A compass needle beside a wire swings when the current starts, and shows that electricity and magnetism are linked. The pamphlet announcing it is dated 21 July.
+- year: 1831
+  title: Faraday’s induction ring
+  people: Michael Faraday
+  chapter: relays
+  text: On 29 August, two coils on an iron ring show that a changing current in one makes a voltage in the other.
+- year: 1831
+  title: Henry’s Albany magnet
+  people: Joseph Henry
+  chapter: relays
+  text: An electromagnet wound with many turns of silk-insulated wire lifts 750 pounds.
+- year: 1835
+  title: Henry’s relay
+  people: Joseph Henry
+  chapter: relays
+  text: A small, sensitive electromagnet on a long wire switches the circuit of a large one with its own battery, the first relay.
+- year: 1844
+  title: “What hath God wrought”
+  people: Samuel Morse, Alfred Vail
+  chapter: relays
+  text: On 24 May, Morse sends the first message over the 40-mile Washington to Baltimore telegraph line.
+- year: 1745
+  title: The Leyden jar
+  people: Ewald Georg von Kleist, Pieter van Musschenbroek
+  chapter: capacitors-and-time
+  text: "A glass jar with water and a nail stores enough charge to give a memorable shock: on 11 October 1745 at Cammin, and again at Leiden in January 1746. The first capacitor."
+- year: 1897
+  title: Braun’s cathode-ray tube
+  people: Karl Ferdinand Braun
+  chapter: the-bench
+  text: "A tube with a narrow electron beam, steered by the current under study, draws the time course of fast currents on a fluorescent screen: the ancestor of the oscilloscope."
+- year: 1827
+  title: Ohm’s Die galvanische Kette
+  people: Georg Simon Ohm
+  chapter: ohms-law
+  text: A schoolteacher’s book derives the relation between voltage, current and resistance. It is received with incomprehension, and the Royal Society honours Ohm only in 1841.
+- year: 1845
+  title: Kirchhoff’s laws
+  people: Gustav Kirchhoff
+  chapter: ohms-law
+  text: A 21-year-old student at Königsberg finds the two rules, the current law and the voltage law, that let any network of resistors be solved.
+- year: 1964
+  title: The 7400 series
+  people: Texas Instruments, Sylvania
+  chapter: real-gates
+  text: Texas Instruments introduces the SN5400 family of TTL gates for military use, after Sylvania’s SUHL of 1963; the plastic SN7400 series of 1966 becomes the standard logic catalogue for a generation.
+- year: 1974
+  title: Dennard scaling
+  people: Robert Dennard, Fritz Gaensslen, Hwa-Nien Yu, V. Leo Rideout, Ernest Bassous, Andre LeBlanc
+  chapter: real-gates
+  text: A paper from IBM shows that a MOSFET whose dimensions, voltage and oxide thickness are divided by the same factor keeps working, faster and at constant power per unit area. It becomes the roadmap of chip design for thirty years.
+- year: 2004
+  title: The end of Dennard scaling
+  people: Intel, Herb Sutter
+  chapter: real-gates
+  text: Leakage stops the supply voltage falling, chips reach about 100 W, and in May Intel cancels its 7 GHz Tejas. Clock speeds stop rising, and Sutter’s 2005 article tells programmers that the free lunch is over.
+- year: 1945
+  title: ENIAC
+  people: J. Presper Eckert, John Mauchly
+  chapter: press-a-key
+  text: The first general-purpose electronic computer, with 17,468 vacuum tubes and 5,000 additions a second, is finished at the University of Pennsylvania.

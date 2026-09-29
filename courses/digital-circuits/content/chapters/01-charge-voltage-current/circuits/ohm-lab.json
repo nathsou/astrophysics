@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "title": "Voltage in, current out",
+  "engine": "analog",
+  "components": [
+    {"id": "B1", "type": "battery", "x": 4, "y": 12, "rot": 270, "params": {"voltage": 6}},
+    {"id": "A1", "type": "ammeter", "x": 10, "y": 4},
+    {"id": "R1", "type": "resistor", "x": 24, "y": 6, "rot": 90, "params": {"resistance": 1000}},
+    {"id": "V1", "type": "voltmeter", "x": 32, "y": 10, "rot": 270},
+    {"id": "G1", "type": "ground", "x": 4, "y": 16}
+  ],
+  "wires": [
+    {"points": [[4, 8], [4, 4], [10, 4]]},
+    {"points": [[14, 4], [32, 4], [32, 6]]},
+    {"points": [[24, 4], [24, 6]]},
+    {"points": [[24, 10], [24, 16]]},
+    {"points": [[32, 10], [32, 16], [4, 16], [4, 12]]}
+  ],
+  "notes": [{"x": 8, "y": 0, "text": "ammeter: in series"}, {"x": 26, "y": 0, "text": "voltmeter: across"}]
+}

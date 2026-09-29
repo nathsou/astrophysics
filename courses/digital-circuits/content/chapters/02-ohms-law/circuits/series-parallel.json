@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "title": "Two lamps: in series, and in parallel",
+  "engine": "analog",
+  "components": [
+    {"id": "B1", "type": "battery", "x": 4, "y": 10, "rot": 270, "params": {"voltage": 6}},
+    {"id": "A1", "type": "ammeter", "x": 6, "y": 2},
+    {"id": "L1", "type": "lamp", "x": 12, "y": 2, "params": {"ratedVoltage": 6, "ratedPower": 0.3}, "label": "L1"},
+    {"id": "L2", "type": "lamp", "x": 20, "y": 2, "params": {"ratedVoltage": 6, "ratedPower": 0.3}, "label": "L2"},
+    {"id": "G1", "type": "ground", "x": 4, "y": 14},
+    {"id": "B2", "type": "battery", "x": 4, "y": 28, "rot": 270, "params": {"voltage": 6}},
+    {"id": "A2", "type": "ammeter", "x": 6, "y": 20},
+    {"id": "L3", "type": "lamp", "x": 14, "y": 22, "rot": 90, "params": {"ratedVoltage": 6, "ratedPower": 0.3}, "label": "L3"},
+    {"id": "L4", "type": "lamp", "x": 22, "y": 22, "rot": 90, "params": {"ratedVoltage": 6, "ratedPower": 0.3}, "label": "L4"},
+    {"id": "G2", "type": "ground", "x": 4, "y": 32}
+  ],
+  "wires": [
+    {"points": [[4, 6], [4, 2], [6, 2]]},
+    {"points": [[10, 2], [12, 2]]},
+    {"points": [[16, 2], [20, 2]]},
+    {"points": [[24, 2], [28, 2], [28, 14], [4, 14], [4, 10]]},
+    {"points": [[4, 24], [4, 20], [6, 20]]},
+    {"points": [[10, 20], [22, 20], [22, 22]]},
+    {"points": [[14, 20], [14, 22]]},
+    {"points": [[14, 26], [14, 32]]},
+    {"points": [[22, 26], [22, 32], [4, 32], [4, 28]]}
+  ],
+  "notes": [
+    {"x": 13, "y": -1, "text": "in series"},
+    {"x": 13, "y": 18, "text": "in parallel"}
+  ]
+}
