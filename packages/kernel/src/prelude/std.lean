@@ -193,6 +193,10 @@ instance instDecidableIff {p q : Prop} [dp : Decidable p] [dq : Decidable q] : D
 -- ---------------------------------------------------------------------------
 -- booleans
 
+infixl:35 " && " => and
+infixl:30 " || " => or
+prefix:max "!" => not
+
 def Bool.decEq : (a b : Bool) → Decidable (a = b)
   | Bool.false, Bool.false => Decidable.isTrue rfl
   | Bool.false, Bool.true => Decidable.isFalse (fun h => nomatch h)
@@ -427,3 +431,203 @@ namespace List
   | cons a as ih => simp [ih]
 
 end List
+
+-- ---------------------------------------------------------------------------
+-- more order lemmas (used by omega)
+
+namespace Nat
+
+theorem le_of_eq {n m : Nat} (h : n = m) : n ≤ m := h ▸ Nat.le.refl
+
+theorem add_le_add_left {n m : Nat} (h : n ≤ m) (k : Nat) : k + n ≤ k + m := by
+  induction h with
+  | refl => exact Nat.le.refl
+  | step _ ih => exact Nat.le.step ih
+
+theorem add_le_add_right {n m : Nat} (h : n ≤ m) (k : Nat) : n + k ≤ m + k := by
+  rw [add_comm n k, add_comm m k]
+  exact add_le_add_left h k
+
+theorem add_le_add {a b c d : Nat} (h₁ : a ≤ b) (h₂ : c ≤ d) : a + c ≤ b + d :=
+  le_trans (add_le_add_right h₁ c) (add_le_add_left h₂ b)
+
+theorem mul_le_mul_left {n m : Nat} (k : Nat) (h : n ≤ m) : k * n ≤ k * m := by
+  induction k with
+  | zero => rw [zero_mul, zero_mul]; exact Nat.le.refl
+  | succ k ih => rw [succ_mul, succ_mul]; exact add_le_add ih h
+
+theorem lt_or_ge (n m : Nat) : n < m ∨ n ≥ m := by
+  induction m with
+  | zero => exact Or.inr (zero_le n)
+  | succ m ih =>
+    cases ih with
+    | inl h => exact Or.inl (le_step h)
+    | inr h =>
+      cases h with
+      | refl => exact Or.inl Nat.le.refl
+      | step h' => exact Or.inr (succ_le_succ h')
+
+theorem lt_of_not_le {n m : Nat} (h : ¬(n ≤ m)) : m < n := by
+  cases lt_or_ge m n with
+  | inl h' => exact h'
+  | inr h' => exact absurd h' h
+
+theorem le_of_not_lt {n m : Nat} (h : ¬(n < m)) : m ≤ n := by
+  cases lt_or_ge n m with
+  | inl h' => exact absurd h' h
+  | inr h' => exact h'
+
+theorem lt_or_gt_of_ne {n m : Nat} (h : n ≠ m) : n < m ∨ m < n := by
+  cases lt_or_ge n m with
+  | inl h' => exact Or.inl h'
+  | inr h' =>
+    cases h' with
+    | refl => exact absurd rfl h
+    | step h'' => exact Or.inr (succ_le_succ h'')
+
+theorem not_add_one_le_self (n : Nat) : ¬(n + 1 ≤ n) := lt_irrefl n
+
+end Nat
+
+-- ---------------------------------------------------------------------------
+-- linear arithmetic by reflection (the `omega` tactic builds proofs from these)
+
+namespace Omega
+
+/-- `dot cs xs` = c₁·x₁ + c₂·x₂ + … -/
+def dot : List Nat → List Nat → Nat
+  | c :: cs, x :: xs => c * x + dot cs xs
+  | _, _ => 0
+
+/-- A linear form `[c, a₁, …, aₙ]` denotes `c + a₁·x₁ + … + aₙ·xₙ`. -/
+def eval : List Nat → List Nat → Nat
+  | [], _ => 0
+  | c :: cs, ρ => c + dot cs ρ
+
+def add : List Nat → List Nat → List Nat
+  | a :: as, b :: bs => (a + b) :: add as bs
+  | [], bs => bs
+  | as, [] => as
+
+def scale (k : Nat) : List Nat → List Nat
+  | [] => []
+  | a :: as => (k * a) :: scale k as
+
+theorem dot_add (a b ρ : List Nat) : dot (add a b) ρ = dot a ρ + dot b ρ := by
+  induction a generalizing b ρ with
+  | nil => cases b with
+    | nil => rfl
+    | cons b bs => simp [add]
+  | cons a as ih =>
+    cases b with
+    | nil => cases ρ with
+      | nil => rfl
+      | cons x xs => simp [add, dot]
+    | cons b bs =>
+      cases ρ with
+      | nil => rfl
+      | cons x xs =>
+        simp [add, dot, ih, Nat.add_mul]
+        rw [Nat.add_assoc, Nat.add_assoc, Nat.add_left_comm (b * x) (dot as xs) (dot bs xs)]
+
+theorem eval_add (a b ρ : List Nat) : eval (add a b) ρ = eval a ρ + eval b ρ := by
+  cases a with
+  | nil => cases b with
+    | nil => rfl
+    | cons b bs => simp [add, eval]
+  | cons a as =>
+    cases b with
+    | nil => simp [add, eval]
+    | cons b bs =>
+      simp [add, eval, dot_add]
+      rw [Nat.add_assoc, Nat.add_assoc, Nat.add_left_comm b (dot as ρ) (dot bs ρ)]
+
+theorem dot_scale (k : Nat) (a ρ : List Nat) : dot (scale k a) ρ = k * dot a ρ := by
+  induction a generalizing ρ with
+  | nil => simp [scale, dot]
+  | cons a as ih =>
+    cases ρ with
+    | nil => simp [scale, dot]
+    | cons x xs => simp [scale, dot, ih, Nat.mul_add, Nat.mul_assoc]
+
+theorem eval_scale (k : Nat) (a ρ : List Nat) : eval (scale k a) ρ = k * eval a ρ := by
+  cases a with
+  | nil => simp [scale, eval]
+  | cons a as => simp [scale, eval, dot_scale, Nat.mul_add]
+
+/-- The i-th variable: `[0, …, 0, 1]` with i zeros before the 1. -/
+def unit : Nat → List Nat
+  | 0 => [1]
+  | i + 1 => 0 :: unit i
+
+/-- `nth ρ i`, with 0 past the end. -/
+def nth : List Nat → Nat → Nat
+  | [], _ => 0
+  | x :: _, 0 => x
+  | _ :: xs, i + 1 => nth xs i
+
+theorem dot_unit (i : Nat) (ρ : List Nat) : dot (unit i) ρ = nth ρ i := by
+  induction i generalizing ρ with
+  | zero => cases ρ with
+    | nil => rfl
+    | cons x xs => simp [unit, dot, nth]
+  | succ i ih => cases ρ with
+    | nil => rfl
+    | cons x xs => simp [unit, dot, nth, ih]
+
+/-- Terms of linear arithmetic, read off the goal by the tactic. -/
+inductive Term where
+  | num (n : Nat)
+  | atom (i : Nat)
+  | add (a b : Term)
+  | smul (k : Nat) (a : Term)
+  | mulr (a : Term) (k : Nat)
+
+def Term.denote (ρ : List Nat) : Term → Nat
+  | Term.num n => n
+  | Term.atom i => nth ρ i
+  | Term.add a b => Term.denote ρ a + Term.denote ρ b
+  | Term.smul k a => k * Term.denote ρ a
+  | Term.mulr a k => Term.denote ρ a * k
+
+def Term.toForm : Term → List Nat
+  | Term.num n => [n]
+  | Term.atom i => 0 :: unit i
+  | Term.add a b => add (Term.toForm a) (Term.toForm b)
+  | Term.smul k a => scale k (Term.toForm a)
+  | Term.mulr a k => scale k (Term.toForm a)
+
+theorem Term.sound (ρ : List Nat) (t : Term) : Term.denote ρ t = eval (Term.toForm t) ρ := by
+  induction t with
+  | num n => simp [Term.denote, Term.toForm, eval, dot]
+  | atom i => simp [Term.denote, Term.toForm, eval, dot_unit]
+  | add a b iha ihb => simp [Term.denote, Term.toForm, eval_add, iha, ihb]
+  | smul k a ih => simp [Term.denote, Term.toForm, eval_scale, ih]
+  | mulr a k ih => simp [Term.denote, Term.toForm, eval_scale, ih, Nat.mul_comm]
+
+theorem lift (ρ : List Nat) (l r : Term) (h : Term.denote ρ l ≤ Term.denote ρ r) :
+    eval (Term.toForm l) ρ ≤ eval (Term.toForm r) ρ := by
+  rw [← Term.sound, ← Term.sound]
+  exact h
+
+theorem le_add {a b c d ρ : List Nat} (h₁ : eval a ρ ≤ eval b ρ) (h₂ : eval c ρ ≤ eval d ρ) :
+    eval (add a c) ρ ≤ eval (add b d) ρ := by
+  rw [eval_add, eval_add]
+  exact Nat.add_le_add h₁ h₂
+
+theorem le_scale {a b ρ : List Nat} (k : Nat) (h : eval a ρ ≤ eval b ρ) : eval (scale k a) ρ ≤ eval (scale k b) ρ := by
+  rw [eval_scale, eval_scale]
+  exact Nat.mul_le_mul_left k h
+
+theorem atom_nonneg (ρ : List Nat) (i : Nat) : eval [0] ρ ≤ eval (0 :: unit i) ρ := Nat.zero_le _
+
+/-- every coefficient of `a` is at least that of `b` -/
+def geq : List Nat → List Nat → Bool
+  | a :: as, b :: bs => Nat.ble b a && geq as bs
+  | _, [] => Bool.true
+  | [], b :: bs => Nat.ble b 0 && geq [] bs
+
+/-- `a` dominates `b`: its constant is larger, and every coefficient at least as large -/
+def dominates : List Nat → List Nat → Bool
+  | a :: as, b :: bs => Nat.ble (b + 1) a && geq as bs
+  | _, _ => Bool.false

@@ -41,6 +41,20 @@ export class Parser {
   private stopIdents = new Set<string>();
   /** inside `calc`, a new line starting with `_` begins the next step */
   private calcDepth = 0;
+  /** columns of the `|` of the alternatives being parsed (innermost last) */
+  private altCols: number[] = [];
+
+  /** may this `|` begin (or continue) a list of alternatives whose first `|` was `first`? */
+  private altAllowed(first: Token | undefined): boolean {
+    const t = this.peek();
+    if (!(t.kind === 'sym' && t.text === '|')) return false;
+    if (!t.nl) return true;
+    if (first) return first.nl ? t.col === first.col : t.col > (this.altCols.length ? this.altCols[this.altCols.length - 1] : -1);
+    // the first alternative on its own line: right of the enclosing alternative, or not left of the block
+    if (this.altCols.length) return t.col > this.altCols[this.altCols.length - 1];
+    const c = this.curLayout();
+    return c < 0 || t.col >= c;
+  }
 
   constructor(
     readonly src: string,
@@ -446,16 +460,23 @@ export class Parser {
 
   private alts(): SAlt[] {
     const alts: SAlt[] = [];
-    // when the alternatives start on their own lines, they must stay at (or right of) the first one's column:
-    // this is how a nested match ends
-    const first = this.peek();
-    const minCol = first.nl ? first.col : -1;
-    while (this.is('|') && !this.atLayoutEnd() && !(this.peek().nl && this.peek().col < minCol)) {
+    // alternatives on their own lines are aligned with the first one; a nested match ends at a
+    // `|` to its left
+    let first: Token | undefined;
+    while (this.altAllowed(first)) {
+      const bar = this.peek();
+      first ??= bar;
       const from = this.next().from;
       const pats: STerm[] = [this.term()];
       while (this.accept(',')) pats.push(this.term());
       this.expect('=>');
-      const rhs = this.term();
+      this.altCols.push(bar.col);
+      let rhs: STerm;
+      try {
+        rhs = this.term();
+      } finally {
+        this.altCols.pop();
+      }
       alts.push({ pats, rhs, span: this.span(from) });
     }
     return alts;
@@ -1264,8 +1285,10 @@ export class Parser {
 
   private tacAlts(): TacAlt[] {
     const alts: TacAlt[] = [];
-    const col = this.curLayout();
-    while (this.is('|') && !(this.peek().nl && this.peek().col < col)) {
+    let first: Token | undefined;
+    while (this.altAllowed(first)) {
+      const bar = this.peek();
+      first ??= bar;
       const from = this.next().from;
       const ct = this.peek();
       let ctor: string;
@@ -1279,7 +1302,13 @@ export class Parser {
       } else throw new ParseError(`expected a constructor name, found ${describe(ct)}`, { from: ct.from, to: Math.max(ct.to, ct.from + 1) });
       const names = this.names((t) => t.kind === 'sym' && t.text === '=>');
       this.expect('=>');
-      const tac = this.tacticBlock();
+      this.altCols.push(bar.col);
+      let tac: Tactic;
+      try {
+        tac = this.tacticBlock();
+      } finally {
+        this.altCols.pop();
+      }
       alts.push({ ctor, names, tac, span: this.span(from) });
     }
     return alts;

@@ -1443,7 +1443,8 @@ export class TacticRunner {
       extra.push(...r.newGoals);
     }
     this.replaceMain([g, ...extra]);
-    if (t.loc.goal && !this.assigned(g)) {
+    const gh = getAppFn(this.type(g));
+    if (t.loc.goal && !this.assigned(g) && gh.k === 'const' && (gh.name === 'Eq' || gh.name === 'Iff')) {
       // like Lean, try to close the goal with rfl
       const st = this.save();
       try {
