@@ -4,7 +4,7 @@ import { Dynamic } from 'solid-js/web';
 import { For, Show, type JSX, children as resolveChildren } from 'solid-js';
 import { CodeBlock } from '../viz/CodeBlock.tsx';
 import { Playground } from '../viz/Playground.tsx';
-import { rules } from '../kernel/core/rules.ts';
+import { rules } from '@kernel/core/rules.ts';
 import katex from 'katex';
 import { widgets } from '../viz/registry.ts';
 

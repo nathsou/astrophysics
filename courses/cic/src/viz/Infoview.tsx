@@ -1,17 +1,17 @@
 // Rendering of frontend results: outputs, messages and goals.
 
 import { For, Show, createSignal } from 'solid-js';
-import type { CommandResult, Goal, Message } from '../kernel/frontend.ts';
-import type { Environment } from '../kernel/core/env.ts';
-import { LocalContext } from '../kernel/core/env.ts';
-import type { Msg } from '../kernel/core/typechecker.ts';
-import { TypeChecker, type Deriv } from '../kernel/core/typechecker.ts';
+import type { CommandResult, Goal, Message } from '@kernel/frontend.ts';
+import type { Environment } from '@kernel/core/env.ts';
+import { LocalContext } from '@kernel/core/env.ts';
+import type { Msg } from '@kernel/core/typechecker.ts';
+import { TypeChecker, type Deriv } from '@kernel/core/typechecker.ts';
 import { Term } from './Term.tsx';
 import { DerivationTree } from './DerivationTree.tsx';
 import { TypedStepper } from './TypedStepper.tsx';
-import { mkConst } from '../kernel/core/expr.ts';
-import { lparam } from '../kernel/core/level.ts';
-import type { Expr } from '../kernel/core/expr.ts';
+import { mkConst } from '@kernel/core/expr.ts';
+import { lparam } from '@kernel/core/level.ts';
+import type { Expr } from '@kernel/core/expr.ts';
 
 export function MsgView(props: { env: Environment; msg: Msg }) {
   return (
@@ -207,7 +207,7 @@ export function ResultView(props: {
   );
 }
 
-export function PrintView(props: { env: Environment; decl: import('../kernel/core/env.ts').Decl; axioms?: string[] }) {
+export function PrintView(props: { env: Environment; decl: import('@kernel/core/env.ts').Decl; axioms?: string[] }) {
   const d = props.decl;
   const kindName: Record<string, string> = { def: 'def', theorem: 'theorem', axiom: 'axiom', inductive: 'inductive', ctor: 'constructor', rec: 'recursor', quot: 'quotient primitive', opaque: 'opaque' };
   return (

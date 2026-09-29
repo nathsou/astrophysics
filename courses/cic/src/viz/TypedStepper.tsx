@@ -1,9 +1,9 @@
 // Step-by-step reduction of core terms (β, δ, ζ, ι).
 
 import { For, Show, createMemo, createSignal, onCleanup } from 'solid-js';
-import type { Expr } from '../kernel/core/expr.ts';
-import { LocalContext, type Environment } from '../kernel/core/env.ts';
-import { Stepper, stepKindInfo, type TStep } from '../kernel/core/steps.ts';
+import type { Expr } from '@kernel/core/expr.ts';
+import { LocalContext, type Environment } from '@kernel/core/env.ts';
+import { Stepper, stepKindInfo, type TStep } from '@kernel/core/steps.ts';
 import { Term } from './Term.tsx';
 
 export interface TypedStepperProps {

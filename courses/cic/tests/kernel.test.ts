@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { run } from './util.ts';
-import { pp } from '../src/kernel/core/pretty.ts';
+import { pp } from '@kernel/core/pretty.ts';
 
 function outputs(r: ReturnType<typeof run>): string[] {
   return r.results

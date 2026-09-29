@@ -1,6 +1,6 @@
 import { useParams, A } from '@solidjs/router';
 import { For, Show, Switch, Match, createSignal } from 'solid-js';
-import { rules } from '../kernel/core/rules.ts';
+import { rules } from '@kernel/core/rules.ts';
 import { RawHtml } from '../content/mdx-components.tsx';
 import katex from 'katex';
 import { timeline, glossary, bibliography } from '../content/reference.ts';

@@ -1,0 +1,33 @@
+name: CIC — checks
+
+# Type check, kernel tests and chapter snippets for courses/cic, which also exercise the shared kernel.
+on:
+  push:
+    branches: [main]
+    paths: ['courses/cic/**', 'packages/kernel/**', '.github/workflows/cic.yml']
+  pull_request:
+    paths: ['courses/cic/**', 'packages/kernel/**', '.github/workflows/cic.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: courses/cic
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: courses/cic/package-lock.json
+      - run: npm ci
+      - name: Type-check
+        run: npm run typecheck
+      - name: Kernel tests and chapter snippets
+        run: npm test

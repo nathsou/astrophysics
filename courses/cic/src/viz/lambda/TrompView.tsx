@@ -6,7 +6,7 @@
 // continues downwards.
 
 import { createEffect, onCleanup, onMount } from 'solid-js';
-import type { Path, Redex, U } from '../../kernel/untyped/lambda.ts';
+import type { Path, Redex, U } from '@kernel/untyped/lambda.ts';
 import { isDark } from '../../app/theme.ts';
 
 interface Seg {

@@ -1,7 +1,7 @@
 // The untyped λ-calculus laboratory.
 
 import { For, Show, Switch, Match, createMemo, createSignal, onCleanup } from 'solid-js';
-import * as L from '../../kernel/untyped/lambda.ts';
+import * as L from '@kernel/untyped/lambda.ts';
 import { Editor } from '../Editor.tsx';
 import { UTermView } from './UTermView.tsx';
 import { SyntaxTreeView } from './SyntaxTreeView.tsx';

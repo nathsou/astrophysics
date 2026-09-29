@@ -5,8 +5,8 @@ import { envFor, check } from '../../app/kernel.ts';
 import { Editor } from '../Editor.tsx';
 import { Term } from '../Term.tsx';
 import { MessageView } from '../Infoview.tsx';
-import type { Decl } from '../../kernel/core/env.ts';
-import { forEachExpr } from '../../kernel/core/expr.ts';
+import type { Decl } from '@kernel/core/env.ts';
+import { forEachExpr } from '@kernel/core/expr.ts';
 
 export function CompileView(props: { code: string; title?: string }) {
   const [src, setSrc] = createSignal(props.code.trim());
