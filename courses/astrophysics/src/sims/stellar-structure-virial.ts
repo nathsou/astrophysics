@@ -65,7 +65,7 @@ export default defineSim({
       ballCtx.beginPath(); ballCtx.arc(cx, cy, Math.max(rad, 2), 0, Math.PI * 2); ballCtx.fillStyle = grad; ballCtx.fill();
       // K / |U| bars
       const barY = h * 0.82, barH = 14, maxBar = w * 0.38, x0 = w * 0.08;
-      ballCtx.font = '11px Inter, system-ui, sans-serif';
+      ballCtx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ballCtx.fillStyle = pal.series[0];
       const kw = Math.min(maxBar, (K / 5) * maxBar);
       ballCtx.fillRect(x0, barY, kw, barH);

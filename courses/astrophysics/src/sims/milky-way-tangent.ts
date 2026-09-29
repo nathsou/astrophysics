@@ -78,7 +78,7 @@ export default defineSim({
       const sunX = cx + R0 * scale, sunY = cy;
       gctx.fillStyle = pal.fg;
       gctx.beginPath(); gctx.arc(sunX, sunY, 5, 0, 2 * Math.PI); gctx.fill();
-      gctx.fillStyle = pal.muted; gctx.font = '11px Inter, system-ui, sans-serif';
+      gctx.fillStyle = pal.muted; gctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       gctx.fillText('Sun', sunX + 8, sunY + 4);
       gctx.fillText('GC', cx + 8, cy - 8);
       // line of sight: direction from Sun at angle (180 - l) measured so l=0 points at GC

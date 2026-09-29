@@ -179,7 +179,7 @@ export default defineSim({
       ctx.clearRect(0, 0, W, H);
       const scale = (Math.min(W, H) / 2 - 14) / (aJ * (1 + eJ));
       const cx = W / 2, cy = H / 2;
-      const font = '11px Inter, system-ui, sans-serif';
+      const font = '11px JetBrains Mono, ui-monospace, monospace';
 
       // reference circles: Mars, resonances, Jupiter's orbit
       ctx.lineWidth = 1;

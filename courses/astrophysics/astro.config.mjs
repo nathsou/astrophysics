@@ -3,6 +3,7 @@ import mdx from '@astrojs/mdx';
 import { unified } from '@astrojs/markdown-remark';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import { almanacLight, almanacDark } from './src/styles/shiki-almanac.mjs';
 
 export default defineConfig({
   site: 'https://nathsou.github.io',
@@ -21,7 +22,8 @@ export default defineConfig({
         macros: { '\\term': '\\htmlData{term=#1}{#2}' },
       }]],
     }),
-    shikiConfig: { themes: { light: 'github-light', dark: 'github-dark-dimmed' } },
+    // Custom themes tinted to the Almanac palette (src/styles/shiki-almanac.mjs); global.css picks the dark one.
+    shikiConfig: { themes: { light: almanacLight, dark: almanacDark } },
   },
   vite: { build: { target: 'es2022' } },
 });

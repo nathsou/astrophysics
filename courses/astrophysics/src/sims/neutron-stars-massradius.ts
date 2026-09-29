@@ -117,7 +117,7 @@ export default defineSim({
       cctx.closePath();
       cctx.fillStyle = 'rgba(20,24,32,0.55)'; cctx.fill();
       cctx.strokeStyle = '#ffffff'; cctx.lineWidth = 1.2; cctx.stroke();
-      cctx.font = '12px Inter, system-ui, sans-serif'; cctx.textAlign = 'left'; cctx.textBaseline = 'top';
+      cctx.font = '12px JetBrains Mono, ui-monospace, monospace'; cctx.textAlign = 'left'; cctx.textBaseline = 'top';
       cctx.fillStyle = pal.fg;
       cctx.fillText(`Neutron star: R ≈ ${fmt(Rkm, 3)} km, M ≈ ${fmt(M, 3)} M☉`, 10, 8);
       cctx.fillStyle = pal.muted;

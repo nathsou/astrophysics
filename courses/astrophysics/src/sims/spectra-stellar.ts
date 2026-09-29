@@ -40,8 +40,8 @@ export default defineSim({
 
     const tooltip = document.createElement('div');
     Object.assign(tooltip.style, {
-      position: 'absolute', pointerEvents: 'none', font: '11px Inter, system-ui, sans-serif',
-      background: 'var(--bg-raised)', border: '1px solid var(--rule)', borderRadius: '4px',
+      position: 'absolute', pointerEvents: 'none', font: '11px JetBrains Mono, ui-monospace, monospace',
+      background: 'var(--card)', border: '1px solid var(--line)', color: 'var(--fg)', borderRadius: '4px',
       padding: '3px 7px', display: 'none', zIndex: '5', whiteSpace: 'nowrap',
     });
     stage.overlay.style.pointerEvents = 'none';

@@ -151,7 +151,7 @@ export default defineSim({
       ctx.strokeStyle = pal.fg; ctx.lineWidth = 1.5; ctx.fillStyle = dark ? '#fff6d8' : pal.fg;
       ctx.beginPath(); ctx.arc(sx, sy, 3.5, 0, 2 * Math.PI); ctx.fill();
       ctx.beginPath(); ctx.arc(sx, sy, 7, 0, 2 * Math.PI); ctx.stroke();
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       ctx.textBaseline = 'middle';
       const label = (t: string, x: number, y: number, col = pal.fg, align: CanvasTextAlign = 'left') => {
         ctx.textAlign = align; ctx.fillStyle = col;

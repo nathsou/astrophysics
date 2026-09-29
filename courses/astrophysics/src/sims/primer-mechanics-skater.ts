@@ -101,7 +101,7 @@ export default defineSim({
       ctx.strokeStyle = pal.accent2; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.arc(W - 36, 36, Ls, 0, Math.PI * 2); ctx.stroke();
       ctx.fillStyle = pal.accent2; ctx.beginPath(); ctx.arc(W - 36, 36, 3, 0, Math.PI * 2); ctx.fill();
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       ctx.fillStyle = pal.muted; ctx.textAlign = 'right';
       ctx.fillText('L (out of screen)', W - 64 - Math.max(0, Ls - 12), 40);
       ctx.textAlign = 'left';

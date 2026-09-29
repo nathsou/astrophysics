@@ -81,7 +81,7 @@ export default defineSim({
         cctx.beginPath(); cctx.arc(x, y, 4, 0, 2 * Math.PI); cctx.fill();
       }
       cctx.fillStyle = pal.muted;
-      cctx.font = '11px Inter, system-ui, sans-serif';
+      cctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       cctx.fillText(`${NG} galaxies · blue approaching, red receding`, 10, H - 12);
       cctx.fillText(`R ≈ ${fmt(Rmpc, 2)} Mpc`, 10, 18);
 

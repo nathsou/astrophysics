@@ -66,7 +66,7 @@ export default defineSim({
       ctx.beginPath(); ctx.arc(0, 0, scale, 0, Math.PI * 2); ctx.fill();
       ctx.restore();
       ctx.fillStyle = pal.muted;
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.textAlign = 'center';
       ctx.fillText('bulges point toward and away from the perturber', cx, cy - scale - 14);
 
@@ -75,7 +75,7 @@ export default defineSim({
       ctx.fillStyle = pal.series[3];
       ctx.beginPath(); ctx.arc(px, py, 8 + 2 * Math.sqrt(s.M), 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = pal.fg;
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.textAlign = 'center';
       ctx.fillText('perturber', px, py - 16);
       ctx.setLineDash([3, 3]);

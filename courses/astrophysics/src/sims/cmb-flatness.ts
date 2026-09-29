@@ -65,7 +65,7 @@ export default defineSim({
       ctx.beginPath(); ctx.moveTo(ox - w, top); ctx.lineTo(ox + w, top); ctx.stroke();
       ctx.fillStyle = pal.fg;
       ctx.beginPath(); ctx.arc(ox, oy, 5, 0, Math.PI * 2); ctx.fill();
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       ctx.textAlign = 'center';
       ctx.fillText(`sound horizon r_s ≈ ${fmt(d.rs, 3)} Mpc (z* ≈ 1090)`, ox, top - 12);
       ctx.textAlign = 'left'; ctx.fillText('us', ox + 10, oy + 4); ctx.textAlign = 'center';

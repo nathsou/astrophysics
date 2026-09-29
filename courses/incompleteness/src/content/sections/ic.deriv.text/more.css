@@ -3,7 +3,7 @@
 .mdv .ndb-row .seg { margin-bottom: 0; }
 .mdv-field { display: inline-flex; align-items: center; gap: 6px; font-family: var(--sans); font-size: 14px; }
 .mdv-size { font-family: var(--sans); font-size: 12.5px; color: var(--muted); }
-.mdv-ind { border: 1px solid var(--rule); border-radius: 10px; background: var(--paper); padding: 8px 12px; margin: 10px 0; font-size: 13.5px; }
+.mdv-ind { border: 1px solid var(--rule); border-radius: 4px; background: var(--paper); padding: 8px 12px; margin: 10px 0; font-size: 13.5px; }
 .mdv-ind-title { font-weight: 700; font-size: 12.5px; margin-bottom: 4px; }
 .mdv-ind > ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
 .mdv-ind-f { overflow-x: auto; max-width: 100%; padding: 2px 0; }

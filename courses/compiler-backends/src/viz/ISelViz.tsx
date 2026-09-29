@@ -14,7 +14,7 @@ import { GraphView, type GEdge, type GNode } from './Graph';
 import { FnPicker, useExample } from './common';
 import type { Line } from '../compiler/listing';
 
-const TILE_COLORS = ['#e8590c', '#1c7ed6', '#2f9e44', '#9c36b5', '#e67700', '#0c8599', '#c2255c', '#5f3dc4', '#66a80f', '#d9480f'];
+const TILE_COLORS = Array.from({ length: 10 }, (_, i) => `var(--tile-${i})`);
 
 function nodeLabel(n: INode, vname: (id: number) => string): string {
   switch (n.op) {

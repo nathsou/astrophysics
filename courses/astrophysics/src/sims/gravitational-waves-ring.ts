@@ -71,7 +71,7 @@ export default defineSim({
       ctx.stroke(); ctx.globalAlpha = 1;
       // centre + label
       ctx.fillStyle = pal.muted; ctx.beginPath(); ctx.arc(cx, cy, 2, 0, 2 * Math.PI); ctx.fill();
-      ctx.font = '12px Inter, system-ui, sans-serif'; ctx.textAlign = 'center';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace'; ctx.textAlign = 'center';
       ctx.fillText('wave travels out of the screen (⊙ z)', cx, H - 12);
       // side meter: h+ and h× bars
       const bx = W * 0.8, bh = H * 0.32;

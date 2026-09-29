@@ -17,20 +17,19 @@
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    border-radius: 7px;
-    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--fg);
     background: var(--surface);
     color: var(--ink);
-    font-size: 0.82rem;
-    font-weight: 560;
-    padding: 0.38rem 0.75rem;
+    font-size: 0.84rem;
+    font-weight: 700;
+    padding: 0.32rem 0.8rem;
     cursor: pointer;
-    transition: background-color 120ms, border-color 120ms, transform 60ms;
+    transition: background-color 120ms, color 120ms, transform 60ms;
     white-space: nowrap;
   }
   .btn:hover:not(:disabled) {
-    background: var(--surface-2);
-    border-color: var(--rule-strong);
+    background: var(--pn);
   }
   .btn:active:not(:disabled) {
     transform: translateY(1px);
@@ -53,8 +52,11 @@
     background: transparent;
     color: var(--ink-2);
   }
+  .ghost:hover:not(:disabled) {
+    border-color: var(--fg);
+  }
   .sm {
-    font-size: 0.76rem;
-    padding: 0.25rem 0.55rem;
+    font-size: 0.78rem;
+    padding: 0.2rem 0.55rem;
   }
 </style>

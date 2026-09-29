@@ -115,7 +115,7 @@ export default defineSim({
       circle(3, pal.accent3, [4, 4]);
       circle(1.5, pal.accent, [2, 3]);
       circle(1, pal.fg, [], '#000');
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.fillStyle = pal.accent3; ctx.fillText('ISCO', cx + 3 * sc * 0.72 + 3, cy - 3 * sc * 0.72);
       ctx.fillStyle = pal.accent; ctx.fillText('photon sphere', cx + 1.5 * sc * 0.72 + 3, cy + 1.5 * sc * 0.72 + 10);
 

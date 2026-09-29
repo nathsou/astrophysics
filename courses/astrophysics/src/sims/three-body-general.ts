@@ -189,7 +189,7 @@ export default defineSim({
         }
       });
       ctx.fillStyle = pal.muted;
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       ctx.fillText(`t = ${fmt(t, 3)}`, 10, H - 10);
       if (showShadow) ctx.fillText(`ring = shadow copy (Δx₀ = 10⁻⁹)`, 10, H - 26);
 

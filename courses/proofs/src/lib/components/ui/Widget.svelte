@@ -45,11 +45,11 @@
 
 <style>
   .widget {
-    margin: 2rem 0;
+    margin: 2.25rem 0;
     background: var(--chart-surface);
-    border: 1px solid var(--border);
+    border: 2px solid var(--fg);
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
+    box-shadow: 6px 6px 0 var(--pn);
     overflow: hidden;
   }
   header {
@@ -57,58 +57,75 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: 1rem;
-    padding: 0.85rem 1.1rem 0.5rem;
+    padding: 0.85rem 1.15rem 0.6rem;
+    background: var(--pn);
+    border-bottom: 2px solid var(--fg);
   }
   .kind {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: var(--font-mono);
     font-size: 0.66rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-weight: 650;
-    color: var(--accent);
+    letter-spacing: 0.14em;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+  .kind::before {
+    content: '';
+    width: 0.6rem;
+    height: 0.6rem;
+    background: var(--fx-red);
+    flex: none;
   }
   h4 {
-    margin: 0.1rem 0 0 !important;
+    margin: 0.2rem 0 0 !important;
     padding: 0 !important;
     border: 0 !important;
-    font-size: 1.02rem !important;
-    font-weight: 620;
+    font-family: var(--font-display) !important;
+    font-size: 1.2rem !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.02em !important;
+    line-height: 1.1 !important;
   }
   .sub {
-    margin: 0.2rem 0 0 !important;
-    font-size: 0.82rem;
+    margin: 0.3rem 0 0 !important;
+    font-size: 0.86rem;
     color: var(--ink-2);
     line-height: 1.45;
   }
   .reset {
-    border: 1px solid var(--border);
+    border: 2px solid var(--fg);
     background: var(--surface);
-    color: var(--ink-2);
-    border-radius: 6px;
-    padding: 0.3rem;
+    color: var(--ink);
+    border-radius: var(--radius-sm);
+    padding: 0.28rem;
     cursor: pointer;
     display: inline-flex;
+    flex: none;
   }
   .reset:hover {
-    color: var(--ink);
-    background: var(--surface-2);
+    background: var(--fx-yellow);
+    color: var(--fx-ink);
   }
   .controls {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
     gap: 0.75rem 1.5rem;
-    padding: 0.5rem 1.1rem 0.75rem;
+    padding: 0.7rem 1.15rem 0.8rem;
     border-bottom: 1px solid var(--rule);
   }
   .body {
-    padding: 0.9rem 1.1rem 1rem;
+    padding: 1rem 1.15rem 1.1rem;
     font-family: var(--font-ui);
-    font-size: 0.9rem;
+    font-size: 0.92rem;
   }
   figcaption {
-    padding: 0.6rem 1.1rem 0.8rem;
-    border-top: 1px solid var(--rule);
-    font-size: 0.8rem;
+    padding: 0.65rem 1.15rem 0.85rem;
+    border-top: 1px solid var(--rule-strong);
+    font-size: 0.84rem;
     color: var(--ink-2);
     line-height: 1.5;
   }

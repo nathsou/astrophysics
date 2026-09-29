@@ -107,7 +107,7 @@
     z-index: 50;
     width: min(24rem, calc(100vw - 16px));
     background: var(--surface);
-    border: 1px solid var(--border);
+    border: 2px solid var(--fg);
     border-radius: var(--radius);
     box-shadow: var(--shadow-lg);
     padding: 0.8rem 1rem 0.6rem;
@@ -116,7 +116,7 @@
     animation: pop 120ms ease-out;
   }
   .pinned {
-    border-color: color-mix(in srgb, var(--accent-2) 55%, var(--border));
+    border-top: 6px solid var(--fx-yellow);
   }
   @keyframes pop {
     from {
@@ -132,8 +132,8 @@
     margin-bottom: 0.4rem;
   }
   .label {
-    font-weight: 620;
-    font-size: 0.95rem;
+    font-weight: 700;
+    font-size: 0.98rem;
   }
   .hint {
     font-size: 0.7rem;
@@ -146,7 +146,7 @@
     padding: 2px;
     cursor: pointer;
     color: var(--ink-3);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
   }
   .close:hover {
     color: var(--ink);
@@ -156,10 +156,11 @@
     margin: 0;
   }
   dt {
-    font-size: 0.68rem;
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 650;
+    letter-spacing: 0.13em;
+    font-weight: 500;
     color: var(--ink-3);
     margin-top: 0.5rem;
   }

@@ -8,6 +8,7 @@ import { ObjectBar } from '../ui/ObjectBar';
 import { persist, persisted } from '../ui/store';
 import { Attribution } from './Attribution';
 import { ErrorBoundary } from '../ui/ErrorBoundary';
+import { recordVisit } from '../ui/progress';
 
 const MODE_INFO: Record<Mode, { label: string; key: string; blurb: string }> = {
   intuition: { label: 'Intuition', key: 'i', blurb: 'Motivation, concrete examples and the idea behind the formal development.' },
@@ -76,6 +77,10 @@ export function SectionPage({ id, params }: { id: string; params: URLSearchParam
       });
     } else window.scrollTo({ top: 0 });
   }, [section, at, mode]);
+
+  useEffect(() => {
+    if (meta) recordVisit(id);
+  }, [id, meta]);
 
   useEffect(() => {
     if (section) document.title = `${section.number} ${section.titleText} · Incompleteness and Computability`;

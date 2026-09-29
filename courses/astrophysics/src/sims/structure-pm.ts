@@ -46,6 +46,9 @@ export default defineSim({
   async mount({ host, onDestroy }) {
     const device = await requireDevice();
     const stage = createStage(host, { aspect: 16 / 9 });
+    // The scene is always black space (the render pass clears to opaque black); paint the canvas black
+    // up front too, so the light HUD text stays readable before the first GPU frame lands.
+    stage.canvas.style.background = '#000';
     if (host.clientWidth < 560) stage.el.style.aspectRatio = '1'; // taller on phones
     const { ctx, format } = configureCanvas(stage.canvas, device);
     const G = growth(Om, OL);
@@ -243,7 +246,7 @@ export default defineSim({
     }
 
     const label = document.createElement('div');
-    label.style.cssText = 'position:absolute;left:12px;top:10px;font:13px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;color:#dfe6f5;text-shadow:0 1px 3px #000;';
+    label.style.cssText = 'position:absolute;left:12px;top:10px;font:13px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;color:#dfe6f5;text-shadow:0 1px 3px #000;background:rgba(4,5,10,.72);padding:3px 7px;border-radius:3px';
     stage.overlay.append(label);
 
     let done = false;

@@ -95,7 +95,7 @@ export default defineSim({
         ['behind', 22, cy, -1],
         ['side', W / 2, 22, 0],
       ];
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       for (const [name, X, Y, cosT] of obs) {
         const r = ratio(cosT);
         let col = pal.fg;

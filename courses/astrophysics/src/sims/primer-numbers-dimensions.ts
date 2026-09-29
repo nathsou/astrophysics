@@ -98,7 +98,7 @@ export default defineSim({
         const b = document.createElement('button');
         b.className = 'btn';
         b.textContent = label;
-        b.style.cssText = 'min-width:2rem;padding:0.15rem 0.4rem';
+        b.style.cssText = 'display:grid;place-items:center;width:32px;height:32px;padding:0;font-size:1rem;letter-spacing:0';
         b.setAttribute('aria-label', `${d > 0 ? 'Increase' : 'Decrease'} the power of ${q.sym}`);
         b.addEventListener('click', () => { exps[i] = Math.max(-3, Math.min(5, exps[i] + d)); update(); });
         return b;
@@ -111,7 +111,7 @@ export default defineSim({
     });
 
     const result = document.createElement('div');
-    result.style.cssText = 'grid-column:1/-1;margin-top:0.5rem;padding:0.7rem 0.9rem;border-radius:8px;background:var(--bg-sunk);line-height:1.5';
+    result.style.cssText = 'grid-column:1/-1;margin-top:0.5rem;padding:0.7rem 0.9rem;border-radius:var(--radius);background:var(--card);border:1px solid var(--line);line-height:1.5';
     box.append(result);
 
     function update() {

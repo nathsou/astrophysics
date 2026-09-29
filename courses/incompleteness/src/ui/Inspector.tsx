@@ -1,18 +1,21 @@
-import { useEffect, useState } from 'react';
-import { inspect, inspectorPinned, inspectorStore, useStore } from './store';
+import { useEffect } from 'react';
+import { inspect, inspectorCollapsed, inspectorNarrow, inspectorPinned, inspectorStore, useStore } from './store';
 
 /** The contextual inspector: explains whatever is hovered, focused or selected. */
 export function Inspector() {
   const entry = useStore(inspectorStore);
   const pinned = useStore(inspectorPinned);
   // On narrow screens the inspector floats over the page: start collapsed, open when something is pinned.
-  const narrow = () => typeof matchMedia !== 'undefined' && matchMedia('(max-width: 1260px)').matches;
-  const [collapsed, setCollapsed] = useState(narrow);
+  const collapsed = useStore(inspectorCollapsed);
+  const setCollapsed = (f: (c: boolean) => boolean) => inspectorCollapsed.set(f(inspectorCollapsed.get()));
   useEffect(() => {
-    if (pinned && entry && narrow()) setCollapsed(false);
+    if (inspectorNarrow()) inspectorCollapsed.set(true);
+  }, []);
+  useEffect(() => {
+    if (pinned && entry && inspectorNarrow()) inspectorCollapsed.set(false);
   }, [pinned, entry]);
   return (
-    <aside className={`inspector ${collapsed ? 'collapsed' : ''}`} aria-label="Inspector" aria-live="polite">
+    <aside id="inspector" className={`inspector ${collapsed ? 'collapsed' : ''}`} aria-label="Inspector" aria-live="polite">
       <div className="inspector-head">
         <span>{entry?.kicker ?? 'Inspector'}</span>
         <span>
@@ -33,7 +36,7 @@ export function Inspector() {
         </div>
       ) : (
         <div className="inspector-empty">
-          Hover, focus or tap anything with a dotted outline — a symbol, a code, a proof step — to see what it is and where it comes from. Click to pin.
+          Hover, focus or tap anything underlined with dots — a symbol, a code, a proof step, the label of a theorem — to see what it is and where it comes from. Click to pin.
         </div>
       )}
     </aside>

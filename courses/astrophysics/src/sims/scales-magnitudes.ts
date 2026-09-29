@@ -43,7 +43,7 @@ export default defineSim({
       ctx.fillStyle = g; ctx.globalAlpha = 0.25;
       ctx.fillRect(X(lo), y0 - 3, X(hi) - X(lo), 6);
       ctx.globalAlpha = 1;
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.textAlign = 'center';
       for (let m = -25; m <= 30; m += 5) {
         ctx.strokeStyle = pal.axis;
@@ -87,9 +87,9 @@ export default defineSim({
       drawStar(ma, mb, OBJ[a], pal.series[0], `A: ${OBJ[a][0]} (m = ${ma.toFixed(2).replace('-', '−')})`, true);
       drawStar(mb, ma, OBJ[b], pal.series[1], `B: ${OBJ[b][0]} (m = ${mb.toFixed(2).replace('-', '−')})`, false);
       const dm = mb - ma;
-      ctx.fillStyle = pal.fg; ctx.font = '13px Inter, system-ui, sans-serif';
+      ctx.fillStyle = pal.fg; ctx.font = '13px JetBrains Mono, ui-monospace, monospace';
       ctx.fillText(`Δm = ${Math.abs(dm).toFixed(2)}  ⇒  ${dm >= 0 ? 'A' : 'B'} is ${fmt(10 ** (0.4 * Math.abs(dm)), 3)}× brighter${narrow ? '' : ` than ${dm >= 0 ? 'B' : 'A'}`}`, 14, 22);
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.fillStyle = pal.muted;
       const MA = M(OBJ[a]), MB = M(OBJ[b]);
       const mm = (v: number) => v.toFixed(2).replace('-', '−');

@@ -1,6 +1,6 @@
 // The pipeline explorer: edit a program, watch it flow through every stage.
 
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { exampleById, EXAMPLES } from '../examples';
 import { printModule } from '../compiler/ir/print';
 import { printMFunc } from '../compiler/codegen/printmir';
@@ -16,41 +16,142 @@ import { useCompile, useDebounced } from '../ui/useCompile';
 import { GraphView } from './Graph';
 import { irCFG, mirCFG } from './cfgdata';
 import { listingLines } from './asmtok';
+import { AstView } from './AstView';
+import { astTree, tacModule, tokenLines } from '../compiler/frontend/views';
 
-export type StageId = 'ir' | 'ssa' | 'opt' | 'legal' | 'isel' | 'destroy' | 'sched' | 'ra' | 'frame' | 'asm' | 'mc' | 'obj' | 'run' | 'wat' | 'wasmbin';
+export type StageId = 'tokens' | 'ast' | 'tac' | 'ir' | 'ssa' | 'opt' | 'legal' | 'isel' | 'destroy' | 'sched' | 'ra' | 'frame' | 'asm' | 'mc' | 'obj' | 'run' | 'wat' | 'wasmbin';
 export type TargetSel = 'rv64' | 'aarch64' | 'x86_64' | 'wasm';
 
-interface StageDef {
+export type Phase = 'front' | 'middle' | 'back' | 'emit';
+export const PHASE_LABEL: Record<Phase, string> = { front: 'Front end', middle: 'Middle end', back: 'Back end', emit: 'Output' };
+
+export interface StageDef {
   id: StageId;
   label: string;
   hint: string;
+  phase: Phase;
+  /** a front-end view (tokens, AST, three-address code): shown in the playground, and in chapter figures only when listed in `stages` */
+  frontEnd?: boolean;
   mir?: (f: FuncStages) => MFunc | undefined;
   post?: boolean;
   ir?: (r: CompileResult) => import('../compiler/ir/ir').Module | undefined;
 }
 
-export const NATIVE_STAGES: StageDef[] = [
-  { id: 'ir', label: 'IR', hint: 'KIR straight out of the front end: every variable in a stack slot', ir: (r) => r.lowered },
-  { id: 'ssa', label: 'SSA', hint: 'after mem2reg: stack slots promoted to SSA values and phis', ir: (r) => r.ssa },
-  { id: 'opt', label: 'Optimised', hint: 'after folding, DCE, CFG simplification, CSE, if-conversion', ir: (r) => r.optimized },
-  { id: 'legal', label: 'Legalised', hint: 'IR rewritten into operations the target can select', ir: (r) => r.legalized },
-  { id: 'isel', label: 'ISel', hint: 'machine IR in SSA form: target instructions over virtual registers', mir: (f) => f.isel },
-  { id: 'destroy', label: 'Out of SSA', hint: 'phis replaced by copies on incoming edges', mir: (f) => f.ssaDestroyed },
-  { id: 'sched', label: 'Scheduled', hint: 'list-scheduled for an in-order dual-issue core', mir: (f) => f.scheduled },
-  { id: 'ra', label: 'Allocated', hint: 'virtual registers mapped to physical ones; spill code inserted', mir: (f) => f.allocated, post: true },
-  { id: 'frame', label: 'Frame', hint: 'prologue/epilogue inserted, stack slots resolved to sp offsets', mir: (f) => f.framed, post: true },
-  { id: 'asm', label: 'Assembly', hint: 'after peephole optimisation: the final assembly' },
-  { id: 'mc', label: 'Machine code', hint: 'encoded bytes, with pseudo-instructions expanded and relocations noted' },
-  { id: 'obj', label: 'Object file', hint: 'the ELF relocatable object: sections, symbols, relocations' },
-  { id: 'run', label: 'Run', hint: 'linked with the runtime and executed' },
+export const FRONT_STAGES: StageDef[] = [
+  { id: 'tokens', label: 'Tokens', phase: 'front', frontEnd: true, hint: 'the lexer’s output: keywords, identifiers, numbers and operators; whitespace and comments are gone' },
+  { id: 'ast', label: 'AST', phase: 'front', frontEnd: true, hint: 'the parse tree: nested statements and expressions, still shaped like the source; no control-flow graph yet' },
+  { id: 'tac', label: 'Three-address', phase: 'front', frontEnd: true, hint: 'flattened into basic blocks and gotos; one operator per line; variables are still named and assigned many times (no φ)' },
 ];
 
-export const WASM_STAGES: StageDef[] = [
-  NATIVE_STAGES[0], NATIVE_STAGES[1], NATIVE_STAGES[2],
-  { id: 'wat', label: 'WebAssembly', hint: 'structured control flow, stackified expressions (WAT text format)' },
-  { id: 'wasmbin', label: 'Wasm binary', hint: 'the binary module, section by section' },
-  { id: 'run', label: 'Run', hint: 'instantiated and executed by your browser’s Wasm engine' },
+export const NATIVE_STAGES: StageDef[] = [
+  ...FRONT_STAGES,
+  { id: 'ir', label: 'Pre-SSA IR', phase: 'front', hint: 'KIR straight out of the front end: each variable gets a stack slot (alloca), every read is a load and every write a store', ir: (r) => r.lowered },
+  { id: 'ssa', label: 'SSA', phase: 'middle', hint: 'after mem2reg: stack slots promoted to SSA values, with φ where control flow merges', ir: (r) => r.ssa },
+  { id: 'opt', label: 'Optimised', phase: 'middle', hint: 'after folding, DCE, CFG simplification, CSE, if-conversion', ir: (r) => r.optimized },
+  { id: 'legal', label: 'Legalised', phase: 'back', hint: 'IR rewritten into operations the target can select', ir: (r) => r.legalized },
+  { id: 'isel', label: 'ISel', phase: 'back', hint: 'machine IR in SSA form: target instructions over virtual registers', mir: (f) => f.isel },
+  { id: 'destroy', label: 'Out of SSA', phase: 'back', hint: 'phis replaced by copies on incoming edges', mir: (f) => f.ssaDestroyed },
+  { id: 'sched', label: 'Scheduled', phase: 'back', hint: 'list-scheduled for an in-order dual-issue core', mir: (f) => f.scheduled },
+  { id: 'ra', label: 'Allocated', phase: 'back', hint: 'virtual registers mapped to physical ones; spill code inserted', mir: (f) => f.allocated, post: true },
+  { id: 'frame', label: 'Frame', phase: 'back', hint: 'prologue/epilogue inserted, stack slots resolved to sp offsets', mir: (f) => f.framed, post: true },
+  { id: 'asm', label: 'Assembly', phase: 'emit', hint: 'after peephole optimisation: the final assembly' },
+  { id: 'mc', label: 'Machine code', phase: 'emit', hint: 'encoded bytes, with pseudo-instructions expanded and relocations noted' },
+  { id: 'obj', label: 'Object file', phase: 'emit', hint: 'the ELF relocatable object: sections, symbols, relocations' },
+  { id: 'run', label: 'Run', phase: 'emit', hint: 'linked with the runtime and executed' },
 ];
+
+const nativeStage = (id: StageId) => NATIVE_STAGES.find((d) => d.id === id)!;
+export const WASM_STAGES: StageDef[] = [
+  ...FRONT_STAGES, nativeStage('ir'), nativeStage('ssa'), nativeStage('opt'),
+  { id: 'wat', label: 'WebAssembly', phase: 'back', hint: 'structured control flow, stackified expressions (WAT text format)' },
+  { id: 'wasmbin', label: 'Wasm binary', phase: 'emit', hint: 'the binary module, section by section' },
+  { id: 'run', label: 'Run', phase: 'emit', hint: 'instantiated and executed by your browser’s Wasm engine' },
+];
+
+/**
+ * The ordered list of stages as tabs (a breadcrumb of the pipeline), grouped by
+ * phase. When every name fits, every name is shown; otherwise the strip goes
+ * compact: the current stage keeps its name and the others show only their
+ * number (the name is in the tooltip and the accessible name), so most of the
+ * pipeline stays visible. The current stage is scrolled to the centre whenever
+ * it changes. Arrow keys / Home / End move between stages.
+ *
+ * Stage numbers are positions in the *whole* pipeline (`all`), so a chapter
+ * figure that shows a subset numbers its stages the same way the playground does.
+ */
+export function StageNav({ defs, value, onChange, label = 'Pipeline stage', phases, all }: { defs: StageDef[]; value: StageId; onChange: (id: StageId) => void; label?: string; phases?: boolean; all?: StageDef[] }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const cur = Math.max(0, defs.findIndex((d) => d.id === value));
+  const sig = defs.map((d) => d.id).join(' ');
+  const [compact, setCompact] = useState(false);
+  const [fade, setFade] = useState({ l: false, r: false });
+  /** scrollWidth of the strip with every name shown (0 = not measured yet) */
+  const fullW = useRef(0);
+  const moved = useRef(false);
+  const num = (d: StageDef) => (all ?? defs).findIndex((x) => x.id === d.id) + 1;
+
+  const edges = () => {
+    const s = ref.current;
+    if (!s) return;
+    const l = s.scrollLeft > 1, r = s.scrollLeft + s.clientWidth < s.scrollWidth - 1;
+    setFade((f) => (f.l === l && f.r === r ? f : { l, r }));
+  };
+  // a different set of stages: measure again from the full names
+  useLayoutEffect(() => { fullW.current = 0; setCompact(false); }, [sig]);
+  useLayoutEffect(() => {
+    const s = ref.current;
+    if (!s) return;
+    const fit = () => {
+      if (!compact) {
+        if (s.scrollWidth > s.clientWidth + 1) { fullW.current = s.scrollWidth; setCompact(true); }
+      } else if (fullW.current && s.clientWidth >= fullW.current) setCompact(false);
+      edges();
+    };
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(s);
+    return () => ro.disconnect();
+  }, [compact, sig]);
+  useEffect(() => {
+    const s = ref.current;
+    const el = s?.querySelector<HTMLElement>('[aria-selected="true"]');
+    if (!s || !el) return;
+    const sr = s.getBoundingClientRect(), er = el.getBoundingClientRect();
+    const left = s.scrollLeft + er.left - sr.left - (sr.width - er.width) / 2;
+    const smooth = moved.current && !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    s.scrollTo({ left: Math.max(0, left), behavior: smooth ? 'smooth' : 'auto' });
+    moved.current = true;
+    edges();
+  }, [value, compact, sig]);
+
+  const onKey = (e: React.KeyboardEvent) => {
+    const k = e.key === 'ArrowRight' ? cur + 1 : e.key === 'ArrowLeft' ? cur - 1 : e.key === 'Home' ? 0 : e.key === 'End' ? defs.length - 1 : -2;
+    if (k === -2) return;
+    e.preventDefault();
+    const n = Math.max(0, Math.min(defs.length - 1, k));
+    onChange(defs[n].id);
+    ref.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[n]?.focus();
+  };
+  const cls = `stage-tabs${compact ? ' compact' : ''}${fade.l ? ' fade-l' : ''}${fade.r ? ' fade-r' : ''}`;
+  return (
+    <div className={cls} role="tablist" aria-label={label} ref={ref} onKeyDown={onKey} onScroll={edges}>
+      {defs.map((d, k) => {
+        const n = num(d);
+        const newPhase = k > 0 && defs[k - 1].phase !== d.phase;
+        return (
+          <span key={d.id} style={{ display: 'contents' }}>
+            {k > 0 && (phases && newPhase ? <span className="stage-sep" aria-hidden="true" /> : <span className="stage-arrow" aria-hidden="true">›</span>)}
+            <button type="button" className={`stage-tab ${k === cur ? 'on' : ''}`} data-phase={d.phase} onClick={() => onChange(d.id)}
+              title={`${n}. ${d.label}${phases ? ` (${PHASE_LABEL[d.phase].toLowerCase()})` : ''}: ${d.hint}`}
+              aria-label={`${n}. ${d.label}`} role="tab" aria-selected={k === cur} tabIndex={k === cur ? 0 : -1}>
+              <span className="n">{n}</span><span className="lbl">{d.label}</span>
+            </button>
+          </span>
+        );
+      })}
+    </div>
+  );
+}
 
 export function mirStageLines(r: CompileResult, get: (f: FuncStages) => MFunc | undefined, post: boolean): Line[] {
   const out: Line[] = [];
@@ -143,7 +244,7 @@ export function PipelineExplorer({ example = 'fib', src: srcProp, stage: stage0 
     return () => { live = false; };
   }, [wasm]);
 
-  const defs = (target === 'wasm' ? WASM_STAGES : NATIVE_STAGES).filter((s) => !stages || stages.includes(s.id));
+  const defs = (target === 'wasm' ? WASM_STAGES : NATIVE_STAGES).filter((s) => (stages ? stages.includes(s.id) : !s.frontEnd));
   const def = defs.find((d) => d.id === stage) ?? defs[defs.length - 1];
   const fnNames = r.optimized?.funcs.map((f) => f.name) ?? [];
   const fn = fnNames.includes(fnSel) ? fnSel : fnNames[0];
@@ -159,7 +260,7 @@ export function PipelineExplorer({ example = 'fib', src: srcProp, stage: stage0 
           <span className="spacer" />
           <Select value={EXAMPLES.find((e) => e.src === src)?.id ?? ''} options={[['', 'examples…'], ...EXAMPLES.map((e) => [e.id, e.title] as [string, string])]} onChange={(id) => id && setSrc(exampleById(id).src)} />
         </div>
-        {editable ? <Editor value={src} onChange={setSrc} error={r.error?.line ? r.error : null} minHeight={height} /> : <pre className="code" style={{ margin: 0, padding: 12 }}>{src}</pre>}
+        {editable ? <Editor value={src} onChange={setSrc} error={r.error?.line ? r.error : null} minHeight={height} /> : <pre className="code inv" style={{ margin: 0, padding: 12 }}>{src}</pre>}
         {r.error && <div className="error-box">{r.error.line ? `line ${r.error.line}: ` : ''}{r.error.msg}</div>}
       </div>
       <div className="pipe-right">
@@ -169,16 +270,7 @@ export function PipelineExplorer({ example = 'fib', src: srcProp, stage: stage0 
           {canCFG && <Seg value={mode} onChange={setMode} options={[['text', 'Text'], ['cfg', 'CFG']]} />}
           {canCFG && mode === 'cfg' && fnNames.length > 1 && <Select value={fn ?? ''} options={fnNames.map((n) => [n, `@${n}`] as [string, string])} onChange={setFnSel} />}
         </div>
-        <div className="stage-tabs" role="tablist">
-          {defs.map((d, k) => (
-            <span key={d.id} style={{ display: 'contents' }}>
-              {k > 0 && <span className="stage-arrow">›</span>}
-              <button className={`stage-tab ${d.id === def.id ? 'on' : ''}`} onClick={() => setStage(d.id)} title={d.hint} role="tab" aria-selected={d.id === def.id}>
-                <span className="n">{k + 1}</span>{d.label}
-              </button>
-            </span>
-          ))}
-        </div>
+        <StageNav defs={defs} value={def.id} onChange={setStage} all={target === 'wasm' ? WASM_STAGES : NATIVE_STAGES} />
         <div className="muted sans" style={{ fontSize: 12, padding: '6px 12px', borderBottom: '1px solid var(--rule)' }}>{def.hint}</div>
         <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>{body}</div>
       </div>
@@ -189,10 +281,18 @@ export function PipelineExplorer({ example = 'fib', src: srcProp, stage: stage0 
 
 export type WasmState = ReturnType<typeof lowerModule> | { error: string } | undefined;
 
-export function StageView({ r, def, mode, fn, target, height, wasm, wasmOut }: { r: CompileResult; def: StageDef; mode: 'text' | 'cfg'; fn?: string; target: TargetSel; height: number; wasm: WasmState; wasmOut: { output: string; exitCode: bigint; error?: string } | null }) {
+export function StageView({ r, def, mode, fn, target, height, wasm, wasmOut, hints }: { r: CompileResult; def: StageDef; mode: 'text' | 'cfg'; fn?: string; target: TargetSel; height: number; wasm: WasmState; wasmOut: { output: string; exitCode: bigint; error?: string } | null; hints?: boolean }) {
   const canCFG = !!(def.ir || def.mir);
+  const notes = true;
+  const ast = useMemo(() => (r.ast ? astTree(r.ast) : undefined), [r.ast]);
+  const front = def.id === 'tokens' ? r.tokens : def.id === 'ast' ? r.ast : def.id === 'tac' ? r.lowered : undefined;
   let body: ReactNode = null;
-  if (!r.ok && r.error && (!def.ir || !def.ir(r))) {
+  if (def.frontEnd) {
+    if (!front) body = <div className="error-box">{r.error ? `${r.error.stage}: ${r.error.line ? `line ${r.error.line}: ` : ''}${r.error.msg}` : 'Not available.'}</div>;
+    else if (def.id === 'tokens') body = <CodeView lines={tokenLines(r.tokens!)} notes={notes} hints={hints} maxHeight={height} target={target} className="tok-view" />;
+    else if (def.id === 'ast') body = <AstView root={ast!} height={height} />;
+    else body = <CodeView lines={tacModule(r.lowered!)} gutter="num" notes={notes} hints={hints} maxHeight={height} target={target} />;
+  } else if (!r.ok && r.error && (!def.ir || !def.ir(r))) {
     body = <div className="error-box">{r.error.stage}: {r.error.line ? `line ${r.error.line}: ` : ''}{r.error.msg}</div>;
   } else if (mode === 'cfg' && canCFG) {
     let g: ReturnType<typeof irCFG> | undefined;
@@ -201,19 +301,19 @@ export function StageView({ r, def, mode, fn, target, height, wasm, wasmOut }: {
     body = g ? <GraphView nodes={g.nodes} edges={g.edges} target={target} maxHeight={height} /> : <div className="output-box muted">Not available.</div>;
   } else if (def.ir) {
     const m = def.ir(r);
-    body = m ? <CodeView lines={printModule(m)} gutter="num" notes maxHeight={height} target={target} /> : null;
+    body = m ? <CodeView lines={printModule(m)} gutter="num" notes={notes} hints={hints} maxHeight={height} target={target} /> : null;
   } else if (def.mir) {
-    body = r.funcs.length ? <CodeView lines={mirStageLines(r, def.mir, !!def.post)} notes maxHeight={height} target={target} empty={<div className="muted" style={{ padding: 12 }}>Stage disabled.</div>} /> : null;
+    body = r.funcs.length ? <CodeView lines={mirStageLines(r, def.mir, !!def.post)} notes={notes} hints={hints} maxHeight={height} target={target} empty={<div className="muted" style={{ padding: 12 }}>Stage disabled.</div>} /> : null;
   } else if (def.id === 'asm') {
-    body = <CodeView lines={r.asm} notes maxHeight={height} target={target} />;
+    body = <CodeView lines={r.asm} notes={notes} hints={hints} maxHeight={height} target={target} />;
   } else if (def.id === 'mc') {
-    body = r.obj ? <CodeView lines={listingLines(r.obj, target)} gutter="addr" bytes notes maxHeight={height} target={target} /> : null;
+    body = r.obj ? <CodeView lines={listingLines(r.obj, target)} gutter="addr" bytes notes={notes} hints={hints} maxHeight={height} target={target} /> : null;
   } else if (def.id === 'obj') {
     body = <div style={{ maxHeight: height, overflow: 'auto' }}><ObjSummary r={r} /></div>;
   } else if (def.id === 'run') {
     body = <RunPanel r={r} target={target} wasmOut={wasmOut} />;
   } else if (def.id === 'wat') {
-    body = wasm && !('error' in wasm) ? <CodeView lines={wasm.wat} notes maxHeight={height} target="wasm" /> : <div className="error-box">{wasm && 'error' in wasm ? wasm.error : ''}</div>;
+    body = wasm && !('error' in wasm) ? <CodeView lines={wasm.wat} notes={notes} hints={hints} maxHeight={height} target="wasm" /> : <div className="error-box">{wasm && 'error' in wasm ? wasm.error : ''}</div>;
   } else if (def.id === 'wasmbin') {
     body = wasm && !('error' in wasm) ? <WasmHex bytes={wasm.bytes} height={height} /> : null;
   }
@@ -225,7 +325,7 @@ export function safe<T>(f: () => T): T | { error: string } {
   try { return f(); } catch (e) { return { error: (e as Error).message }; }
 }
 
-export function WasmHex({ bytes, height }: { bytes: Uint8Array; height?: number }) {
+export function WasmHex({ bytes, height }: { bytes: Uint8Array; height?: number | string }) {
   const rows: string[] = [];
   for (let i = 0; i < bytes.length; i += 16) {
     rows.push(`${i.toString(16).padStart(6, '0')}  ${[...bytes.subarray(i, i + 16)].map((b) => b.toString(16).padStart(2, '0')).join(' ')}`);
@@ -246,7 +346,7 @@ export function WasmHex({ bytes, height }: { bytes: Uint8Array; height?: number 
         {secs.map((s) => <span key={s.off} className="pill accent">{names[s.id] ?? `#${s.id}`} · {s.size} B</span>)}
         <span className="badge">{bytes.length} bytes total</span>
       </div>
-      <pre className="code" style={{ margin: 0, padding: '8px 14px' }}>{rows.join('\n')}</pre>
+      <pre className="code inv" style={{ margin: 0, padding: '8px 14px' }}>{rows.join('\n')}</pre>
     </div>
   );
 }

@@ -42,11 +42,11 @@
 
 <style>
   .zoom {
-    margin: 2rem 0;
-    border: 1px solid var(--border);
+    margin: 2.25rem 0;
+    border: 2px solid var(--fg);
     border-radius: var(--radius);
     background: var(--surface);
-    box-shadow: var(--shadow);
+    box-shadow: 6px 6px 0 var(--pn);
   }
   header {
     display: flex;
@@ -54,50 +54,58 @@
     align-items: center;
     gap: 0.5rem 0.75rem;
     padding: 0.6rem 0.9rem;
-    border-bottom: 1px solid var(--rule);
-    font-size: 0.8rem;
+    background: var(--pn);
+    border-bottom: 2px solid var(--fg);
+    font-size: 0.82rem;
   }
   .kind {
-    font-size: 0.66rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-weight: 650;
+    letter-spacing: 0.14em;
+    font-weight: 700;
     color: var(--accent);
   }
   .title {
-    font-weight: 600;
+    font-weight: 700;
   }
   .spacer {
     flex: 1;
   }
   .levels {
     display: flex;
-    gap: 0.2rem;
-    background: var(--surface-2);
-    padding: 0.2rem;
-    border-radius: 8px;
+    gap: 0;
+    border: 2px solid var(--fg);
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
   }
   .levels button {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
+    gap: 0.4rem;
     border: 0;
     background: none;
-    padding: 0.25rem 0.6rem;
-    border-radius: 6px;
+    padding: 0.25rem 0.65rem;
     cursor: pointer;
-    color: var(--ink-2);
-    font-size: 0.8rem;
+    color: var(--ink);
+    font-size: 0.82rem;
+    font-weight: 500;
+  }
+  .levels button + button {
+    border-left: 2px solid var(--fg);
   }
   .levels button.on {
-    background: var(--surface);
-    color: var(--ink);
-    font-weight: 600;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    background: var(--fg);
+    color: var(--bg);
+    font-weight: 700;
+  }
+  .levels button:hover:not(.on):not(:disabled) {
+    background: var(--pn);
   }
   .levels .step {
     font-weight: 700;
-    padding: 0.25rem 0.5rem;
+    padding: 0.25rem 0.55rem;
   }
   .levels .step:disabled {
     opacity: 0.35;
@@ -106,10 +114,10 @@
   .dot {
     width: 0.5rem;
     height: 0.5rem;
-    border-radius: 50%;
-    background: color-mix(in srgb, var(--accent) calc(25% + var(--k) * 75%), transparent);
+    background: color-mix(in srgb, var(--fx-red) calc(25% + var(--k) * 75%), transparent);
+    outline: 1px solid currentColor;
   }
   .body {
-    padding: 0.9rem 1.2rem 0.3rem;
+    padding: 1rem 1.3rem 0.35rem;
   }
 </style>

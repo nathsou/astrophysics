@@ -7,7 +7,8 @@
 //     plot.point(x0, y0, { r: 4 });
 //   });
 
-import { palette, onThemeChange, type Palette } from './theme';
+import { palette, onThemeChange, haloText, type Palette } from './theme';
+export { haloText };
 import { fmt, superscript } from './controls';
 
 export interface AxisOpts {
@@ -125,7 +126,7 @@ export class Plot {
 
   axes() {
     const { ctx, pal, m } = this;
-    ctx.font = '11px Inter, system-ui, sans-serif';
+    ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
     ctx.lineWidth = 1;
     const xt = Plot.ticks(this.o.x), yt = Plot.ticks(this.o.y);
     if (this.o.grid !== false) {
@@ -224,10 +225,11 @@ export class Plot {
     ctx.fill();
     if (o.stroke) { ctx.strokeStyle = o.stroke; ctx.lineWidth = 1.5; ctx.stroke(); }
     if (o.label) {
-      ctx.font = '11px Inter, system-ui, sans-serif';
-      ctx.fillStyle = this.pal.fg;
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.textAlign = 'left';
       ctx.textBaseline = 'bottom';
+      haloText(ctx, o.label, X + 6, Y - 4, this.pal.bg);
+      ctx.fillStyle = this.pal.fg;
       ctx.fillText(o.label, X + 6, Y - 4);
     }
   }
@@ -266,13 +268,14 @@ export class Plot {
     if (o.label) this.text(o.label, this.m.l + this.pw - 4, Y - 3, { align: 'right', baseline: 'bottom', color: o.color });
   }
 
-  /** Text at CSS pixel coords. */
-  text(s: string, X: number, Y: number, o: { color?: string; align?: CanvasTextAlign; baseline?: CanvasTextBaseline; size?: number } = {}) {
+  /** Text at CSS pixel coords, on a thin halo of the panel colour so it stays legible over curves and tinted bands. */
+  text(s: string, X: number, Y: number, o: { color?: string; align?: CanvasTextAlign; baseline?: CanvasTextBaseline; size?: number; halo?: boolean } = {}) {
     const { ctx } = this;
-    ctx.font = `${o.size ?? 11}px Inter, system-ui, sans-serif`;
-    ctx.fillStyle = o.color ?? this.pal.fg;
+    ctx.font = `${o.size ?? 11}px JetBrains Mono, ui-monospace, monospace`;
     ctx.textAlign = o.align ?? 'left';
     ctx.textBaseline = o.baseline ?? 'alphabetic';
+    if (o.halo !== false) haloText(ctx, s, X, Y, this.pal.bg);
+    ctx.fillStyle = o.color ?? this.pal.fg;
     ctx.fillText(s, X, Y);
   }
 }

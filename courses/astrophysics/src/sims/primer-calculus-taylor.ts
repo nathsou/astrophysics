@@ -71,7 +71,7 @@ const FNS: Fn[] = [
 /** Translucent backdrop so legend text stays readable over curves. */
 function backdrop(ctx: CanvasRenderingContext2D, bg: string, x: number, y: number, lines: string[], lh: number, extra = 0) {
   ctx.save();
-  ctx.font = '11px Inter, system-ui, sans-serif';
+  ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
   const w = Math.max(...lines.map((s) => ctx.measureText(s).width)) + extra;
   ctx.globalAlpha = 0.82;
   ctx.fillStyle = bg;

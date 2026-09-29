@@ -70,7 +70,7 @@ export default defineSim({
       ctx.stroke();
       ctx.strokeStyle = pal.axis;
       ctx.beginPath(); ctx.moveTo(0, oy + 0.5); ctx.lineTo(W, oy + 0.5); ctx.moveTo(ox + 0.5, 0); ctx.lineTo(ox + 0.5, H); ctx.stroke();
-      ctx.font = '11px Inter, system-ui, sans-serif'; ctx.fillStyle = pal.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace'; ctx.fillStyle = pal.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
       ctx.fillText('x', W - 12, oy + 4); ctx.fillText('y', ox + 6, 4);
 
       const O: V = [0, 0];
@@ -103,7 +103,7 @@ export default defineSim({
         ctx.strokeStyle = dot >= 0 ? pal.good : pal.bad; ctx.lineWidth = 6; ctx.globalAlpha = 0.6;
         const [ox2, oy2] = toPx(O);
         ctx.beginPath(); ctx.moveTo(ox2, oy2); ctx.lineTo(fx, fy); ctx.stroke(); ctx.globalAlpha = 1;
-        ctx.fillStyle = dot >= 0 ? pal.good : pal.bad; ctx.font = '12px Inter, system-ui, sans-serif';
+        ctx.fillStyle = dot >= 0 ? pal.good : pal.bad; ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
         ctx.textAlign = 'left'; ctx.textBaseline = 'top';
         ctx.fillText(`|b| cos θ = ${fmt(lb * Math.cos(ang), 3)}`, fx + 6, fy + 6);
         rRes.set(`a · b = ${fmt(a[0], 3)}×${fmt(b[0], 3)} + ${fmt(a[1], 3)}×${fmt(b[1], 3)} = ${fmt(dot, 3)} = |a||b| cos θ`);
@@ -120,7 +120,7 @@ export default defineSim({
         ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
         if (cross >= 0) { ctx.fillStyle = ctx.strokeStyle; ctx.beginPath(); ctx.arc(cx, cy, 3, 0, Math.PI * 2); ctx.fill(); }
         else { ctx.beginPath(); ctx.moveTo(cx - 7, cy - 7); ctx.lineTo(cx + 7, cy + 7); ctx.moveTo(cx + 7, cy - 7); ctx.lineTo(cx - 7, cy + 7); ctx.stroke(); }
-        ctx.font = '12px Inter, system-ui, sans-serif'; ctx.fillStyle = pal.fg; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+        ctx.font = '12px JetBrains Mono, ui-monospace, monospace'; ctx.fillStyle = pal.fg; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
         ctx.fillText(cross >= 0 ? 'out of screen' : 'into screen', cx, cy + r + 4);
         rRes.set(`(a × b)_z = ${fmt(a[0], 3)}×${fmt(b[1], 3)} − ${fmt(a[1], 3)}×${fmt(b[0], 3)} = ${fmt(cross, 3)} = |a||b| sin θ (area)`);
       }

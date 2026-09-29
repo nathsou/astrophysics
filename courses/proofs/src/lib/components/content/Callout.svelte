@@ -1,19 +1,19 @@
 <script lang="ts" module>
   import type { IconName } from '../ui/Icon.svelte';
 
-  const KINDS: Record<string, { label: string; icon: IconName; hue: string }> = {
-    note: { label: 'Note', icon: 'note', hue: 'var(--note)' },
-    info: { label: 'Info', icon: 'info', hue: 'var(--note)' },
-    tip: { label: 'Tip', icon: 'tip', hue: 'var(--tip)' },
-    warning: { label: 'Caution', icon: 'warning', hue: 'var(--warn)' },
-    lab: { label: 'Lab', icon: 'lab', hue: 'var(--lab)' },
-    breakit: { label: 'Break it', icon: 'breakit', hue: 'var(--break)' },
-    challenge: { label: 'Challenge', icon: 'challenge', hue: 'var(--challenge)' },
-    exercises: { label: 'Exercises', icon: 'exercises', hue: 'var(--lab)' },
-    definition: { label: 'Definition', icon: 'definition', hue: 'var(--ink-3)' },
-    key: { label: 'Key idea', icon: 'key', hue: 'var(--accent-2)' },
-    question: { label: 'Think about it', icon: 'question', hue: 'var(--tip)' },
-    aside: { label: 'Aside', icon: 'aside', hue: 'var(--ink-3)' },
+  const KINDS: Record<string, { label: string; icon: IconName; hue: string; on: string }> = {
+    note: { label: 'Note', icon: 'note', hue: 'var(--fx-blue)', on: 'var(--fx-cream)' },
+    info: { label: 'Info', icon: 'info', hue: 'var(--fx-blue)', on: 'var(--fx-cream)' },
+    tip: { label: 'Tip', icon: 'tip', hue: 'var(--fx-yellow)', on: 'var(--fx-ink)' },
+    warning: { label: 'Caution', icon: 'warning', hue: 'var(--fx-red)', on: 'var(--fx-cream)' },
+    lab: { label: 'Lab', icon: 'lab', hue: 'var(--fx-blue)', on: 'var(--fx-cream)' },
+    breakit: { label: 'Break it', icon: 'breakit', hue: 'var(--fx-red)', on: 'var(--fx-cream)' },
+    challenge: { label: 'Challenge', icon: 'challenge', hue: 'var(--fx-yellow)', on: 'var(--fx-ink)' },
+    exercises: { label: 'Exercises', icon: 'exercises', hue: 'var(--fx-blue)', on: 'var(--fx-cream)' },
+    definition: { label: 'Definition', icon: 'definition', hue: 'var(--fg)', on: 'var(--bg)' },
+    key: { label: 'Key idea', icon: 'key', hue: 'var(--fx-red)', on: 'var(--fx-cream)' },
+    question: { label: 'Think about it', icon: 'question', hue: 'var(--fx-yellow)', on: 'var(--fx-ink)' },
+    aside: { label: 'Aside', icon: 'aside', hue: 'var(--mute)', on: 'var(--bg)' },
   };
 </script>
 
@@ -25,7 +25,7 @@
   const k = $derived(KINDS[kind] ?? KINDS.note!);
 </script>
 
-<aside class="callout" data-kind={kind} style:--hue={k.hue}>
+<aside class="callout" data-kind={kind} style:--hue={k.hue} style:--on-hue={k.on}>
   <header class="ui">
     <span class="icon"><Icon name={k.icon} size={16} /></span>
     <span class="label">{k.label}</span>
@@ -36,33 +36,36 @@
 
 <style>
   .callout {
-    margin: 1.75rem 0;
-    padding: 0.9rem 1.15rem 0.3rem;
-    background: color-mix(in srgb, var(--hue) 6%, var(--surface));
-    border: 1px solid color-mix(in srgb, var(--hue) 22%, var(--border));
-    border-left: 3px solid var(--hue);
-    border-radius: var(--radius-sm);
+    margin: 1.9rem 0;
+    padding: 0.9rem 1.2rem 0.3rem;
+    background: var(--pn);
+    border-left: 6px solid var(--hue);
+    border-radius: 0;
   }
   header {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.78rem;
-    margin-bottom: 0.45rem;
+    gap: 0.55rem;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
   }
   .icon {
     display: inline-flex;
-    color: var(--hue);
+    padding: 0.2rem;
+    background: var(--hue);
+    color: var(--on-hue);
   }
   .label {
+    font-family: var(--font-mono);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 650;
-    color: var(--ink-2);
+    letter-spacing: 0.13em;
+    font-weight: 700;
+    font-size: 0.72rem;
+    color: var(--ink);
   }
   .title {
-    font-weight: 600;
-    font-size: 0.9rem;
+    font-weight: 700;
+    font-size: 0.95rem;
     color: var(--ink);
   }
   .title::before {
@@ -71,7 +74,7 @@
     color: var(--ink-3);
   }
   .body {
-    font-size: 1.02rem;
+    font-size: 1.04rem;
   }
   .body :global(p) {
     margin: 0 0 0.75rem;

@@ -53,3 +53,13 @@ export function neighbours(slug: string): { prev?: ChapterInfo; next?: ChapterIn
   const i = chapters.findIndex((c) => c.slug === slug);
   return { prev: chapters[i - 1], next: chapters[i + 1] };
 }
+
+/** the chapter as an editor file name, e.g. `03_stlc.lean` */
+export function fileName(c: ChapterInfo): string {
+  return `${String(c.num).padStart(2, '0')}_${c.slug.replace(/-/g, '_')}.lean`;
+}
+
+/** the file name without its number prefix, e.g. `stlc.lean` */
+export function baseFileName(c: ChapterInfo): string {
+  return fileName(c).replace(/^\d+_/, '');
+}

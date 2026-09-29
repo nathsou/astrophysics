@@ -127,7 +127,7 @@
     font-size: 0.8rem;
     background: var(--surface);
     color: var(--ink);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-control);
     border-radius: 4px;
     padding: 0 0.2rem;
   }

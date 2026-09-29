@@ -46,6 +46,9 @@ export default defineSim({
   async mount({ host, params, onDestroy }) {
     const device = await requireDevice();
     const stage = createStage(host, { aspect: 16 / 9 });
+    // The scene is always black space (the render pass clears to opaque black); paint the canvas black
+    // up front too, so the light HUD text stays readable before the first GPU frame lands.
+    stage.canvas.style.background = '#000';
     if (host.clientWidth < 560) stage.el.style.aspectRatio = '1'; // taller on phones
     const { ctx, format } = configureCanvas(stage.canvas, device, 'opaque');
     const eng = new NBodyEngine(device, format);
@@ -112,7 +115,7 @@ export default defineSim({
 
     // ---------------------------------------------------------------- rendering
     const hud = document.createElement('div');
-    hud.style.cssText = 'position:absolute;left:12px;top:10px;font:500 12px/1.5 var(--font-ui,system-ui);color:#cfd6e4;text-shadow:0 1px 2px #000;';
+    hud.style.cssText = 'position:absolute;left:12px;top:10px;font:500 12px/1.5 var(--font-ui,system-ui);color:#cfd6e4;text-shadow:0 1px 2px #000;background:rgba(4,5,10,.72);padding:3px 7px;border-radius:3px';
     stage.overlay.append(hud);
 
     let fpsAvg = 60;

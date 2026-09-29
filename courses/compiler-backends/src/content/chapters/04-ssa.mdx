@@ -66,7 +66,7 @@ Why the dominator tree? When we are in block *b*, the stacks hold exactly the de
 
 Only some stack slots can be promoted. A slot qualifies only if it is used exclusively as the address of `load`s and `store`s. Arrays fail this test: their address is used in arithmetic to index them, so they stay in memory. So does any variable whose address escapes into a call.
 
-<Mem2RegStepper example="gcd" fn="gcd" caption="mem2reg on Euclid’s algorithm. Phase 1 places φs: teal blocks store the variable, orange is the block whose frontier is being processed, red is where a φ goes (or would go, but is pruned). Phase 2 renames: follow the definition stacks as the walk descends the dominator tree, and watch each load vanish into the current top of stack." />
+<Mem2RegStepper example="gcd" fn="gcd" caption="mem2reg on Euclid’s algorithm. Phase 1 places φs: teal blocks store the variable, green is the block whose frontier is being processed, red is where a φ goes (or would go, but is pruned). Phase 2 renames: follow the definition stacks as the walk descends the dominator tree, and watch each load vanish into the current top of stack." />
 
 <Callout kind="try">
 Switch the figure to `@main` (no loops, just calls) and see that no φ is needed at all. Then look at `sort` in the figure below: the inner `while` loop’s condition block collects φs for both `j` and the short-circuit `&&` value.

@@ -99,7 +99,7 @@ export default defineSim({
         ctx.fillStyle = disk;
         ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fill();
         ctx.fillStyle = SKY_TEXT;
-        ctx.font = '11px Inter, system-ui, sans-serif';
+        ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
         ctx.textAlign = 'center';
         ctx.fillText(`L / L☉ (same R) ≈ ${fmt(relL, 3)}×`, cx, H - 10);
       }

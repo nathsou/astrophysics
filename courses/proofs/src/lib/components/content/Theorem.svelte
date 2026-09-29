@@ -28,44 +28,50 @@
 
 <style>
   .thm {
-    margin: 1.75rem 0;
-    padding: 0.85rem 1.2rem 0.2rem;
-    border-left: 3px solid var(--accent);
-    background: color-mix(in srgb, var(--accent) 4%, var(--surface));
-    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin: 1.9rem 0;
+    padding: 0.95rem 1.3rem 0.25rem;
+    border-left: 8px solid var(--fx-red);
+    background: var(--pn);
+    border-radius: 0;
   }
   .thm[data-kind='lemma'],
   .thm[data-kind='claim'] {
-    border-left-color: color-mix(in srgb, var(--accent) 55%, var(--rule-strong));
-    background: var(--surface);
+    border-left-color: var(--fx-blue);
   }
   .thm[data-kind='corollary'] {
-    border-left-style: double;
-    border-left-width: 4px;
+    border-left-color: var(--fx-yellow);
   }
   .thm[data-kind='conjecture'] {
-    border-left: 3px dashed var(--history);
-    background: var(--history-soft);
+    border: 2px dashed var(--fg);
+    background: transparent;
   }
   .head {
-    margin: 0 0 0.35rem !important;
+    margin: 0 0 0.4rem !important;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.2rem 0.5rem;
+    gap: 0.2rem 0.6rem;
     align-items: baseline;
   }
   .label {
+    font-family: var(--font-mono);
     font-weight: 700;
-    font-size: 0.8rem;
-    letter-spacing: 0.06em;
+    font-size: 0.74rem;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--accent);
   }
+  .thm[data-kind='lemma'] .label,
+  .thm[data-kind='claim'] .label {
+    color: var(--ok);
+  }
+  .thm[data-kind='corollary'] .label,
   .thm[data-kind='conjecture'] .label {
     color: var(--history);
   }
   .attr {
-    font-size: 0.95rem;
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    font-weight: 500;
     color: var(--ink-2);
   }
   .body {

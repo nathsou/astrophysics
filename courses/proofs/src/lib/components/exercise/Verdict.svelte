@@ -27,31 +27,28 @@
 <style>
   .v {
     display: inline-block;
-    font-family: var(--font-ui);
+    font-family: var(--font-mono);
     font-size: 0.74rem;
-    font-weight: 600;
-    padding: 0.1rem 0.5rem;
-    border-radius: 99px;
+    font-weight: 700;
+    padding: 0.1rem 0.15rem;
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
   }
+  /* Accepted = blue, pending / wrong = red, as in the printed plates. */
   .ok {
     color: var(--ok);
-    background: var(--ok-soft);
   }
   .tested {
     color: var(--ok);
-    background: transparent;
-    border: 1px dashed color-mix(in srgb, var(--ok) 60%, transparent);
+    font-weight: 500;
+    border-bottom: 2px dashed currentColor;
   }
   .bad {
     color: var(--bad);
-    background: var(--bad-soft);
     white-space: normal;
   }
   .err {
     color: var(--maybe);
-    background: var(--maybe-soft);
     white-space: normal;
   }
 </style>

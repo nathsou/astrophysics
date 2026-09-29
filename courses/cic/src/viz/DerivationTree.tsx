@@ -1,6 +1,7 @@
 // Proof trees of typing judgements, as produced by the kernel.
 
-import { For, Show, createMemo, createSignal } from 'solid-js';
+import { For, Show, createMemo, createSignal, untrack } from 'solid-js';
+import { initialRevealDepth } from './derivationDepth.ts';
 import type { Deriv, SideCond } from '../kernel/core/typechecker.ts';
 import { TypeChecker } from '../kernel/core/typechecker.ts';
 import type { Environment, LocalContext } from '../kernel/core/env.ts';
@@ -16,7 +17,7 @@ export interface DerivationTreeProps {
   deriv: Deriv;
   /** hide premises that only check that a type is well formed */
   hideTypeFormation?: boolean;
-  /** start fully collapsed and reveal step by step */
+  /** open only the first few levels (see derivationDepth.ts) and reveal the rest step by step */
   stepwise?: boolean;
   opts?: PrettyOptions;
   title?: string;
@@ -151,12 +152,12 @@ export function DerivationTree(props: DerivationTreeProps) {
   const root = createMemo(() => build(props.deriv));
   const [hideForm, setHideForm] = createSignal(props.hideTypeFormation ?? false);
   const [collapsed, setCollapsed] = createSignal<Set<number>>(new Set());
-  const [revealDepth, setRevealDepth] = createSignal(props.stepwise ? 0 : Infinity);
-  const [zoom, setZoom] = createSignal(1);
   const maxDepth = createMemo(() => {
     const go = (n: N): number => Math.max(n.depth, ...n.children.map(go));
     return go(root());
   });
+  const [revealDepth, setRevealDepth] = createSignal(initialRevealDepth(props.stepwise, untrack(maxDepth)));
+  const [zoom, setZoom] = createSignal(1);
   const base = () => props.deriv.lctx;
 
   const toggle = (id: number) => {

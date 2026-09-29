@@ -113,7 +113,7 @@ export default defineSim({
       const { ctx } = plot;
       const tot = f.inputs.reduce((s, i) => s + (i.n * i.sigma) ** 2, 0) || 1;
       const X0 = plot.m.l + plot.pw * 0.55, BW = plot.pw * 0.43, Y0 = plot.m.t + 6;
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.textBaseline = 'bottom';
       ctx.textAlign = 'left';
       ctx.fillStyle = pal.muted;

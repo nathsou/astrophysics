@@ -4,7 +4,7 @@
 import { Show, createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js';
 import { type RGraph, type U, type Strategy, reductionGraph, normalize, dbKey, toDB, print, expandDefs } from '../../kernel/untyped/lambda.ts';
 import { showTooltip, hideTooltip } from '../tooltip.ts';
-import { isDark, theme } from '../../app/theme.ts';
+import { isDark, palette, theme } from '../../app/theme.ts';
 
 interface Sim {
   x: Float32Array;
@@ -321,6 +321,7 @@ export function ReductionGraphView(props: { term: U; defs?: Map<string, U>; stra
   createEffect(() => {
     void theme();
     void isDark();
+    void palette();
   });
 
   // interaction

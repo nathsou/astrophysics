@@ -14,7 +14,7 @@ const ORIGINS: { id: Origin; label: string; color: string; ink: string }[] = [
   { id: 'massive', label: 'Exploding massive stars', color: '#f0b35a', ink: '#0b0d12' },
   { id: 'wd', label: 'Exploding white dwarfs (Type Ia)', color: '#6fd0cf', ink: '#0b0d12' },
   { id: 'ns', label: 'Merging neutron stars (r-process)', color: '#e68aab', ink: '#0b0d12' },
-  { id: 'decay', label: 'Only as decay products of U/Th', color: '#77746d', ink: '#f2f0ea' },
+  { id: 'decay', label: 'Only as decay products of U/Th', color: '#57544e', ink: '#f2f0ea' },
   { id: 'human', label: 'Made by humans (traces natural)', color: '#d9d6cf', ink: '#0b0d12' },
 ];
 const ORIGIN = Object.fromEntries(ORIGINS.map((o) => [o.id, o])) as Record<Origin, (typeof ORIGINS)[number]>;
@@ -151,12 +151,12 @@ export default defineSim({
         ctx.globalAlpha = 1;
         if (e === selected) { ctx.strokeStyle = pal.fg; ctx.lineWidth = 2; ctx.strokeRect(c.x - 1, c.y - 1, c.w + 2, c.h + 2); }
         ctx.fillStyle = o.ink;
-        ctx.font = `600 ${fs}px Inter, system-ui, sans-serif`;
+        ctx.font = `600 ${fs}px JetBrains Mono, ui-monospace, monospace`;
         ctx.fillText(e.sym, c.x + c.w / 2, c.y + c.h / 2 + 1);
       }
       // f-block placeholders in the main table
       ctx.fillStyle = pal.faint;
-      ctx.font = `${Math.max(7, fs * 0.7)}px Inter, system-ui, sans-serif`;
+      ctx.font = `${Math.max(7, fs * 0.7)}px JetBrains Mono, ui-monospace, monospace`;
       for (const [row, label] of [[6, '57–71'], [7, '89–']] as const) {
         const c = cell({ row, col: 3 });
         ctx.fillText(label, c.x + c.w / 2, c.y + c.h / 2);

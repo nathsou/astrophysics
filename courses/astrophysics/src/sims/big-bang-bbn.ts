@@ -20,7 +20,7 @@ const SP_DASH: (number[] | undefined)[] = [[5, 3], undefined, undefined, undefin
 
 /** Horizontal legend under a plot title; wraps to more rows when narrow. Returns the rows used. */
 function legendRow(ctx: CanvasRenderingContext2D, items: [string, string, number[]?][], x0: number, y0: number, maxX: number, fg: string): number {
-  ctx.font = '11px Inter, system-ui, sans-serif';
+  ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
   ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
   let x = x0, y = y0, rows = 1;
   for (const [label, color, dash] of items) {

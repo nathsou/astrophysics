@@ -74,7 +74,7 @@ export default defineSim({
       const { cx, cy, R } = geom();
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, W, H);
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       // axes and circle
       ctx.strokeStyle = pal.grid; ctx.lineWidth = 1;
       ctx.beginPath(); ctx.moveTo(cx - R * 1.15, cy); ctx.lineTo(W - 4, cy); ctx.moveTo(cx, cy + R * 1.15); ctx.lineTo(cx, 4); ctx.stroke();
