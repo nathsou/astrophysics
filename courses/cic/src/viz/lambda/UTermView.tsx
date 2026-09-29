@@ -1,7 +1,7 @@
 // Text rendering of untyped λ-terms with redex highlighting.
 
 import { For, createMemo } from 'solid-js';
-import { type Path, type U, type Redex, printTokens, at } from '../../kernel/untyped/lambda.ts';
+import { type Path, type U, type Redex, printTokens, at } from '@kernel/untyped/lambda.ts';
 
 export interface UTermViewProps {
   term: U;

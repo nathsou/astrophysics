@@ -5,11 +5,11 @@ import { envFor, check } from '../../app/kernel.ts';
 import { Editor } from '../Editor.tsx';
 import { Term } from '../Term.tsx';
 import { MessageView } from '../Infoview.tsx';
-import { TypeChecker } from '../../kernel/core/typechecker.ts';
-import { type Expr, type FVar, mkApps, mkConst, getAppArgs, instantiate1 } from '../../kernel/core/expr.ts';
-import { lparam } from '../../kernel/core/level.ts';
-import { LocalContext, type Decl } from '../../kernel/core/env.ts';
-import { Stepper } from '../../kernel/core/steps.ts';
+import { TypeChecker } from '@kernel/core/typechecker.ts';
+import { type Expr, type FVar, mkApps, mkConst, getAppArgs, instantiate1 } from '@kernel/core/expr.ts';
+import { lparam } from '@kernel/core/level.ts';
+import { LocalContext, type Decl } from '@kernel/core/env.ts';
+import { Stepper } from '@kernel/core/steps.ts';
 
 interface Binder {
   name: string;
@@ -26,7 +26,7 @@ interface Minor {
   lctx: LocalContext;
 }
 
-function analyse(env: import('../../kernel/core/env.ts').Environment, indName: string) {
+function analyse(env: import('@kernel/core/env.ts').Environment, indName: string) {
   const rec = env.get(indName + '.rec') as Extract<Decl, { kind: 'rec' }> | undefined;
   if (!rec) return undefined;
   const tc = new TypeChecker(env);

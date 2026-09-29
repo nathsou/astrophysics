@@ -109,7 +109,7 @@ end
 The course kernel supports mutual declarations (with one motive per type in the generated recursors) but not the automatic translation of nested ones; we come back to both in Chapter 16.
 
 <Engineer title="The check in the kernel">
-The kernel's positivity check walks each field type: it opens the leading Π-binders (after reducing to weak head normal form, so that definitions can't hide an occurrence), checks that the type being defined does not occur in any binder domain, and checks that the final codomain is the type applied to exactly the declared parameters, with indices that don't mention it. Anything else containing the type is rejected. See `checkPositivity` in `src/kernel/core/inductive.ts`.
+The kernel's positivity check walks each field type: it opens the leading Π-binders (after reducing to weak head normal form, so that definitions can't hide an occurrence), checks that the type being defined does not occur in any binder domain, and checks that the final codomain is the type applied to exactly the declared parameters, with indices that don't mention it. Anything else containing the type is rejected. See `checkPositivity` in `packages/kernel/src/core/inductive.ts`.
 </Engineer>
 
 ## Summary

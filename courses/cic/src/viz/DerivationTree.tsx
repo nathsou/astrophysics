@@ -2,13 +2,13 @@
 
 import { For, Show, createMemo, createSignal, untrack } from 'solid-js';
 import { initialRevealDepth } from './derivationDepth.ts';
-import type { Deriv, SideCond } from '../kernel/core/typechecker.ts';
-import { TypeChecker } from '../kernel/core/typechecker.ts';
-import type { Environment, LocalContext } from '../kernel/core/env.ts';
-import { ruleName, rules } from '../kernel/core/rules.ts';
+import type { Deriv, SideCond } from '@kernel/core/typechecker.ts';
+import { TypeChecker } from '@kernel/core/typechecker.ts';
+import type { Environment, LocalContext } from '@kernel/core/env.ts';
+import { ruleName, rules } from '@kernel/core/rules.ts';
 import { Term } from './Term.tsx';
-import type { PrettyOptions } from '../kernel/core/pretty.ts';
-import { Printer } from '../kernel/core/pretty.ts';
+import type { PrettyOptions } from '@kernel/core/pretty.ts';
+import { Printer } from '@kernel/core/pretty.ts';
 import { showTooltip, hideTooltip } from './tooltip.ts';
 import katex from 'katex';
 

@@ -1,0 +1,268 @@
+Chapter 2 promised that a type could say "this function sorts", and that any program of that type would be a correct sorting function. This chapter keeps the promise. We write the specification, test two sorting algorithms against it, and prove one of them correct: the result is a program whose type is its specification.
+
+## What "sorts" means
+
+A sorting function must do two things, and forgetting either one gives a wrong specification:
+
+1. its output is **sorted** (the `Sorted` predicate of Chapter 13);
+2. its output is a **permutation** of its input: the same elements, in some order.
+
+The first alone is not enough: the function that always returns `[]` produces sorted lists. The second alone is not enough either: the identity function returns a permutation. Together they pin down the output exactly: for a given input, there is only one sorted permutation.
+
+We need a definition of permutations. Here is one as an inductive predicate, with four rules: the empty list is a permutation of itself; adding the same element in front preserves permutations; swapping the first two elements gives a permutation; and permutations compose.
+
+```lean
+inductive Sorted : List Nat → Prop where
+  | nil : Sorted []
+  | single (x : Nat) : Sorted [x]
+  | cons (x y : Nat) (rest : List Nat) (hxy : x ≤ y) (h : Sorted (y :: rest)) : Sorted (x :: y :: rest)
+
+inductive Perm {α : Type} : List α → List α → Prop where
+  | nil : Perm [] []
+  | cons (x : α) {l₁ l₂ : List α} (h : Perm l₁ l₂) : Perm (x :: l₁) (x :: l₂)
+  | swap (x y : α) (l : List α) : Perm (y :: x :: l) (x :: y :: l)
+  | trans {l₁ l₂ l₃ : List α} (h₁ : Perm l₁ l₂) (h₂ : Perm l₂ l₃) : Perm l₁ l₃
+
+theorem Perm.refl {α : Type} : (l : List α) → Perm l l
+  | [] => .nil
+  | x :: xs => .cons x (Perm.refl xs)
+```
+
+<Engineer title="Specifications are code too">
+A specification can have bugs. `Perm` with only the first three rules would be too weak (no way to move an element more than one position), and a `Sorted` that forgot the `≤` would accept anything. A good habit is to test the specification itself on examples you know: prove `Perm [1, 2, 3] [3, 1, 2]` and `¬Sorted [2, 1]` before relying on the definitions.
+</Engineer>
+
+## Insertion sort
+
+Insertion sort builds the result one element at a time, inserting each into an already sorted list:
+
+```lean
+def insert (x : Nat) : List Nat → List Nat
+  | [] => [x]
+  | y :: ys => if x ≤ y then x :: y :: ys else y :: insert x ys
+
+def isort : List Nat → List Nat
+  | [] => []
+  | x :: xs => insert x (isort xs)
+
+#eval isort [5, 2, 9, 1, 5, 6]
+```
+
+Test first. `Sorted` has no decision procedure yet, so we write a boolean check for the test:
+
+```lean
+def sortedB : List Nat → Bool
+  | x :: y :: rest => x ≤ y && sortedB (y :: rest)
+  | _ => true
+
+#test ∀ (xs : List Nat), sortedB (isort xs) = true
+#test ∀ (xs : List Nat), (isort xs).length = xs.length
+```
+
+## It is a permutation
+
+The proof follows the program: first a lemma about `insert`, by induction on the list it inserts into, then the theorem about `isort`, by induction on its input. Step through them in the lens.
+
+```lean playground lens title="Permutation"
+theorem insert_perm (x : Nat) (l : List Nat) : Perm (insert x l) (x :: l) := by
+  induction l with
+  | nil => exact Perm.refl _
+  | cons y ys ih =>
+    simp only [insert]
+    split
+    · exact Perm.refl _
+    · -- y :: insert x ys  ~  y :: x :: ys  ~  x :: y :: ys
+      exact Perm.trans (Perm.cons y ih) (Perm.swap x y ys)
+
+theorem isort_perm (l : List Nat) : Perm (isort l) l := by
+  induction l with
+  | nil => exact .nil
+  | cons x xs ih => exact Perm.trans (insert_perm x (isort xs)) (Perm.cons x ih)
+```
+
+`split` splits the goal on the `if` inside it, giving one goal where the condition holds and one where it does not. In the second case, `insert` put `y` in front and inserted `x` further down; the permutation moves `x` back to the front with one `swap`.
+
+## It is sorted
+
+The sortedness lemma is the heart of insertion sort: inserting into a sorted list gives a sorted list. The induction is on the *evidence* that the list is sorted (Chapter 13), which gives exactly the cases the proof needs: the empty list, a single element, and at least two elements.
+
+```lean playground lens title="Sortedness"
+theorem insert_sorted (x : Nat) (l : List Nat) (h : Sorted l) : Sorted (insert x l) := by
+  induction h with
+  | nil => exact .single x
+  | single y =>
+    simp only [insert]
+    split
+    · exact .cons x y [] (by assumption) (.single y)
+    · exact .cons y x [] (by omega) (.single x)
+  | cons y z rest hyz hs ih =>
+    by_cases hxy : x ≤ y
+    · simp [insert, hxy]
+      exact .cons x y (z :: rest) hxy (.cons y z rest hyz hs)
+    · simp [insert, hxy]
+      by_cases hxz : x ≤ z
+      · simp [insert, hxz] at ih ⊢
+        exact .cons y x (z :: rest) (by omega) ih
+      · simp [insert, hxz] at ih ⊢
+        exact .cons y z _ hyz ih
+
+theorem isort_sorted (l : List Nat) : Sorted (isort l) := by
+  induction l with
+  | nil => exact .nil
+  | cons x xs ih => exact insert_sorted x (isort xs) ih
+```
+
+The interesting case is the last one, inserting `x` into `y :: z :: rest`. If `x ≤ y`, `x` goes in front, and the result is sorted because the original list was. Otherwise `y` stays in front, and `x` is inserted into `z :: rest`. The induction hypothesis says that result is sorted, but to put `y` in front of it we need `y` to be at most its first element, which is either `x` (then `y < x`) or `z` (then `y ≤ z`). The `by_cases hxz` looks at which one it is.
+
+## A verified sort
+
+We can now write the function that Chapter 2 promised, with the specification in its type:
+
+```lean
+def sort (xs : List Nat) : { ys : List Nat // Sorted ys ∧ Perm ys xs } :=
+  ⟨isort xs, isort_sorted xs, isort_perm xs⟩
+
+#eval (sort [3, 1, 2]).val
+```
+
+Anyone who uses `sort` gets the guarantee in the type, and the proofs are erased at run time: `sort` runs exactly as fast as `isort`.
+
+## Merge sort
+
+Insertion sort is quadratic. Merge sort splits the list in two halves, sorts each, and merges the results. Splitting deals the elements alternately into two piles:
+
+```lean
+def merge : List Nat → List Nat → List Nat
+  | [], ys => ys
+  | xs, [] => xs
+  | x :: xs, y :: ys => if x ≤ y then x :: merge xs (y :: ys) else y :: merge (x :: xs) ys
+termination_by xs ys => xs.length + ys.length
+
+def split : List Nat → List Nat × List Nat
+  | [] => ([], [])
+  | x :: rest => ((split rest).2, x :: (split rest).1)
+```
+
+`msort` calls itself on the two halves, which are not structurally smaller than the input, so it needs a measure (Chapter 12). The obligations say that each half is shorter than the whole list. That is only true for lists of at least two elements, which is why the definition treats `[]` and `[x]` separately, and why the proof needs a lemma about the lengths of the halves:
+
+<TerminationView code={`def split : List Nat → List Nat × List Nat
+  | [] => ([], [])
+  | x :: rest => ((split rest).2, x :: (split rest).1)
+
+def merge : List Nat → List Nat → List Nat
+  | [], ys => ys
+  | xs, [] => xs
+  | x :: xs, y :: ys => if x ≤ y then x :: merge xs (y :: ys) else y :: merge (x :: xs) ys
+termination_by xs ys => xs.length + ys.length
+
+theorem split_length (l : List Nat) :
+    (split l).1.length ≤ (split l).2.length ∧ (split l).2.length ≤ (split l).1.length + 1 ∧
+    (split l).1.length + (split l).2.length = l.length := by
+  induction l with
+  | nil => simp [split]
+  | cons x rest ih =>
+    simp [split]
+    omega
+
+def msort (l : List Nat) : List Nat :=
+  match l with
+  | [] => []
+  | [x] => [x]
+  | a :: b :: rest => merge (msort (split (a :: b :: rest)).1) (msort (split (a :: b :: rest)).2)
+termination_by l.length
+decreasing_by
+  all_goals
+    have := split_length (a :: b :: rest)
+    simp at *
+    omega
+
+#eval msort [5, 2, 9, 1, 5, 6, 3, 8]`} />
+
+Testing against insertion sort, which we have proved correct, is a cheap way to gain confidence in merge sort:
+
+```lean
+theorem split_length (l : List Nat) :
+    (split l).1.length ≤ (split l).2.length ∧ (split l).2.length ≤ (split l).1.length + 1 ∧
+    (split l).1.length + (split l).2.length = l.length := by
+  induction l with
+  | nil => simp [split]
+  | cons x rest ih =>
+    simp [split]
+    omega
+
+def msort (l : List Nat) : List Nat :=
+  match l with
+  | [] => []
+  | [x] => [x]
+  | a :: b :: rest => merge (msort (split (a :: b :: rest)).1) (msort (split (a :: b :: rest)).2)
+termination_by l.length
+decreasing_by
+  all_goals
+    have := split_length (a :: b :: rest)
+    simp at *
+    omega
+
+#test ∀ (xs : List Nat), msort xs = isort xs
+```
+
+The proofs for merge sort follow the same plan as for insertion sort. The key lemma is that `merge` preserves permutations, and it is a nice example of a *nested* induction: one induction on each list, following the two recursive calls of `merge`.
+
+```lean
+theorem Perm.middle {α : Type} (a : α) (l₁ l₂ : List α) : Perm (a :: (l₁ ++ l₂)) (l₁ ++ a :: l₂) := by
+  induction l₁ with
+  | nil => exact Perm.refl _
+  | cons b l₁ ih => exact Perm.trans (Perm.swap b a (l₁ ++ l₂)) (Perm.cons b ih)
+
+theorem merge_perm (xs ys : List Nat) : Perm (merge xs ys) (xs ++ ys) := by
+  induction xs generalizing ys with
+  | nil =>
+    simp [merge]
+    exact Perm.refl _
+  | cons x xs ihx =>
+    induction ys with
+    | nil =>
+      simp [merge]
+      exact Perm.refl _
+    | cons y ys ihy =>
+      by_cases h : x ≤ y
+      · simp [merge, h]
+        exact Perm.cons x (ihx (y :: ys))
+      · simp [merge, h]
+        exact Perm.trans (Perm.cons y ihy) (Perm.middle y (x :: xs) ys)
+```
+
+In the first recursive call, `merge xs (y :: ys)`, the first list gets shorter: that is the outer hypothesis `ihx`, generalised over the second list. In the second, `merge (x :: xs) ys`, the second list gets shorter with the first one fixed: that is the inner hypothesis `ihy`. The rest of merge sort's proof (that `msort` returns a sorted permutation) is an induction on the length of the list, following `msort`'s measure, and is left as a project.
+
+## Exercises
+
+<Exercise id="sorting:perm-example" title="A specific permutation" setup={`inductive Perm {α : Type} : List α → List α → Prop where
+  | nil : Perm [] []
+  | cons (x : α) {l₁ l₂ : List α} (h : Perm l₁ l₂) : Perm (x :: l₁) (x :: l₂)
+  | swap (x y : α) (l : List α) : Perm (y :: x :: l) (x :: y :: l)
+  | trans {l₁ l₂ l₃ : List α} (h₁ : Perm l₁ l₂) (h₂ : Perm l₂ l₃) : Perm l₁ l₃
+
+theorem Perm.refl {α : Type} : (l : List α) → Perm l l
+  | [] => .nil
+  | x :: xs => .cons x (Perm.refl xs)`} code={`theorem perm_rotate : Perm [1, 2, 3] [2, 3, 1] := by
+  sorry`} must="perm_rotate" hint="[1, 2, 3] ~ [2, 1, 3] (swap), then [2, 1, 3] ~ [2, 3, 1] (cons 2 of a swap). Combine with Perm.trans." solution={`theorem perm_rotate : Perm [1, 2, 3] [2, 3, 1] :=
+  Perm.trans (Perm.swap 2 1 [3]) (Perm.cons 2 (Perm.swap 3 1 []))`}>
+Test the specification: build a proof that `[2, 3, 1]` is a permutation of `[1, 2, 3]` from the rules. Mind the order of the lists in `swap`.
+</Exercise>
+
+<Exercise id="sorting:perm-symm" title="Permutations are symmetric" lens setup={`inductive Perm {α : Type} : List α → List α → Prop where
+  | nil : Perm [] []
+  | cons (x : α) {l₁ l₂ : List α} (h : Perm l₁ l₂) : Perm (x :: l₁) (x :: l₂)
+  | swap (x y : α) (l : List α) : Perm (y :: x :: l) (x :: y :: l)
+  | trans {l₁ l₂ l₃ : List α} (h₁ : Perm l₁ l₂) (h₂ : Perm l₂ l₃) : Perm l₁ l₃`} code={`theorem Perm.symm' {α : Type} {l₁ l₂ : List α} (h : Perm l₁ l₂) : Perm l₂ l₁ := by
+  induction h with
+  | nil => sorry
+  | cons x h ih => sorry
+  | swap x y l => sorry
+  | trans h₁ h₂ ih₁ ih₂ => sorry`} must="Perm.symm'" hint="nil: Perm.nil. cons: Perm.cons x ih. swap: Perm.swap y x l. trans: Perm.trans ih₂ ih₁ (note the order)." solution={`theorem Perm.symm' {α : Type} {l₁ l₂ : List α} (h : Perm l₁ l₂) : Perm l₂ l₁ := by
+  induction h with
+  | nil => exact Perm.nil
+  | cons x h ih => exact Perm.cons x ih
+  | swap x y l => exact Perm.swap y x l
+  | trans h₁ h₂ ih₁ ih₂ => exact Perm.trans ih₂ ih₁`}>
+Induction on the evidence: each rule has a mirror image.
+</Exercise>

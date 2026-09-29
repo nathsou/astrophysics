@@ -6,6 +6,7 @@ A collection of interactive textbooks. The [course index](site/index.html) links
 | --- | --- | --- |
 | The Cosmos, Computed | `courses/astrophysics/` | `/astrophysics/` |
 | The Calculus of Inductive Constructions | `courses/cic/` | `/cic/` |
+| Proofs Are Programs *(in progress)* | `courses/proofs-are-programs/` | `/proofs-are-programs/` |
 | SSA to Silicon | `courses/compiler-backends/` | `/compiler-backends/` |
 | Language Models from Scratch *(in progress)* | `courses/language-models/` | `/language-models/` |
 | Incompleteness and Computability *(in progress)* | `courses/incompleteness/` | `/incompleteness/` |
@@ -19,6 +20,7 @@ Node.js 22 or later is required. Each course keeps its own dependencies and lock
 ```sh
 npm ci --prefix courses/astrophysics
 npm ci --prefix courses/cic
+npm ci --prefix courses/proofs-are-programs
 npm ci --prefix courses/compiler-backends
 npm ci --prefix courses/incompleteness
 npm ci --prefix courses/elements
@@ -27,12 +29,13 @@ pnpm --dir courses/language-models install --frozen-lockfile
 npm run build
 ```
 
-The build creates `dist/index.html` and the seven course directories in `dist/`. For a local preview, serve `dist/` as the web root, for example with `python3 -m http.server 8000 -d dist`.
+The build creates `dist/index.html` and the eight course directories in `dist/`. The CIC course and Proofs Are Programs share their language implementation, `packages/kernel/`. For a local preview, serve `dist/` as the web root, for example with `python3 -m http.server 8000 -d dist`.
 
 On GitHub Actions, the build derives the Pages project path from `GITHUB_REPOSITORY`. If hosting under a different path, set `COURSES_BASE_PATH` to that path (or to an empty string for a domain root). Relative links on the index and the two Vite courses adapt automatically; Astro uses this value for astrophysics links and assets, and the build passes `<base>/language-models` and `<base>/proofs` to the two SvelteKit courses as `BASE_PATH`.
 
 Pushes that touch `courses/language-models/` also run its tests, type checks and Python lab checks (`.github/workflows/language-models.yml`); pushes that touch `courses/incompleteness/` run its conversion check, type check and tests (`.github/workflows/incompleteness.yml`).
 Pushes that touch `courses/language-models/` also run its tests, type checks and Python lab checks (`.github/workflows/language-models.yml`); pushes that touch `courses/proofs/` run its tests, type checks and build (`.github/workflows/proofs.yml`); pushes that touch `courses/elements/` run its conversion check, type check and tests (`.github/workflows/elements.yml`).
+Pushes that touch `packages/kernel/` (the language shared by the CIC course and Proofs Are Programs) run the checks of both courses (`.github/workflows/cic.yml` and `.github/workflows/proofs-are-programs.yml`).
 
 To install, build and preview everything locally in one step, run `npm run preview` (serves `dist/` at <http://localhost:8000>). It accepts `--skip-install`, `--skip-build` and `--port <n>`, for example `npm run preview -- --skip-install --port 3000`. If pnpm isn't installed, it runs the version pinned by language-models through `npx`.
 

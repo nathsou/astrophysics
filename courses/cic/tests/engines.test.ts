@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import * as L from '../src/kernel/untyped/lambda.ts';
-import { Stepper } from '../src/kernel/core/steps.ts';
-import { pp } from '../src/kernel/core/pretty.ts';
+import * as L from '@kernel/untyped/lambda.ts';
+import { Stepper } from '@kernel/core/steps.ts';
+import { pp } from '@kernel/core/pretty.ts';
 import { run } from './util.ts';
-import * as ND from '../src/kernel/logic/nd.ts';
+import * as ND from '@kernel/logic/nd.ts';
 
 describe('untyped', () => {
   it('parses, reduces arithmetic', () => {

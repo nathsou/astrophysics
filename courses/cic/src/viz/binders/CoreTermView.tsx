@@ -1,10 +1,10 @@
 // Show how the kernel represents a term: locally nameless core expressions.
 
 import { For, Show, createMemo, createSignal } from 'solid-js';
-import type { Expr } from '../../kernel/core/expr.ts';
-import { levelToString } from '../../kernel/core/level.ts';
+import type { Expr } from '@kernel/core/expr.ts';
+import { levelToString } from '@kernel/core/level.ts';
 import { envFor, check } from '../../app/kernel.ts';
-import type { CalculusId } from '../../kernel/core/calculus.ts';
+import type { CalculusId } from '@kernel/core/calculus.ts';
 import { Term } from '../Term.tsx';
 
 function Node(props: { e: Expr; depth: number; names: string[] }) {

@@ -2,7 +2,7 @@
 
 import { For } from 'solid-js';
 
-const files = import.meta.glob('../../kernel/**/*.ts', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+const files = import.meta.glob('@kernel/**/*.ts', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
 
 const role = (path: string): { trusted: boolean; what: string } => {
   if (path.includes('/core/level')) return { trusted: true, what: 'universe levels and their comparison' };
@@ -26,7 +26,7 @@ const role = (path: string): { trusted: boolean; what: string } => {
 
 export function CodeSize() {
   const rows = Object.entries(files)
-    .map(([p, src]) => ({ path: p.replace('../../kernel/', 'src/kernel/'), lines: src.split('\n').filter((l) => l.trim() && !l.trim().startsWith('//')).length, ...role(p) }))
+    .map(([p, src]) => ({ path: p.replace(/^.*?kernel\/src\//, 'packages/kernel/src/'), lines: src.split('\n').filter((l) => l.trim() && !l.trim().startsWith('//')).length, ...role(p) }))
     .filter((r) => r.what)
     .sort((a, b) => Number(b.trusted) - Number(a.trusted) || b.lines - a.lines);
   const total = (t: boolean) => rows.filter((r) => r.trusted === t).reduce((a, r) => a + r.lines, 0);

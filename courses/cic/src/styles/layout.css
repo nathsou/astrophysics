@@ -2495,3 +2495,8 @@
   margin: 0.15rem 0 0 1rem;
   color: var(--ink-2);
 }
+
+/* links to the companion course */
+.callout.pap-bridge { margin-top: 2.5rem; }
+.callout.pap-bridge ul { margin: 0.3rem 0 0; }
+.home-companion { max-width: var(--measure, 44rem); margin: 2rem auto 3rem; padding: 0 1rem; }

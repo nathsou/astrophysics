@@ -4,11 +4,11 @@ import { For, Show, createMemo, createSignal } from 'solid-js';
 import { envFor, check } from '../../app/kernel.ts';
 import { Editor } from '../Editor.tsx';
 import { Term } from '../Term.tsx';
-import { TypeChecker } from '../../kernel/core/typechecker.ts';
-import { classifyOccurrences, type OccurrenceKind } from '../../kernel/core/inductive.ts';
-import { LocalContext, type Decl } from '../../kernel/core/env.ts';
-import { formatMsg } from '../../kernel/format.ts';
-import type { Expr } from '../../kernel/core/expr.ts';
+import { TypeChecker } from '@kernel/core/typechecker.ts';
+import { classifyOccurrences, type OccurrenceKind } from '@kernel/core/inductive.ts';
+import { LocalContext, type Decl } from '@kernel/core/env.ts';
+import { formatMsg } from '@kernel/format.ts';
+import type { Expr } from '@kernel/core/expr.ts';
 
 const kindInfo: Record<OccurrenceKind, { label: string; cls: string; blurb: string }> = {
   strict: { label: 'strictly positive', cls: 'occ-strict', blurb: 'allowed: the field is an element of the type (possibly behind arguments that do not mention it)' },

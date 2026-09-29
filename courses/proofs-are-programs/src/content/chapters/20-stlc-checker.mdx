@@ -1,0 +1,258 @@
+Every program in this course has been checked by a type checker, the course's own kernel. This last part builds one. We start small: the **simply typed λ-calculus**, functions and numbers, which is the core of every typed functional language and the fragment of the course language without dependent types. We write its type checker as an ordinary function, and prove it **sound** (what it accepts is well typed) and **complete** (it accepts everything well typed). Together these make typability decidable: the checker *is* the type system.
+
+## Terms without names
+
+Types are numbers and functions. Terms are variables, numerals, addition, functions (λ-abstractions, with the type of their argument) and applications:
+
+```lean
+inductive Ty where
+  | nat
+  | arrow (A B : Ty)
+deriving DecidableEq
+
+inductive Term where
+  | var (i : Nat)
+  | lit (n : Nat)
+  | add (a b : Term)
+  | lam (A : Ty) (body : Term)
+  | app (f a : Term)
+```
+
+Variables have no names. `var i` refers to the variable bound by the `i`-th enclosing `lam`, counting outwards from 0: these are **de Bruijn indices**. The function `fun (x : nat) => fun (y : nat) => x` becomes `lam .nat (lam .nat (var 1))`, since from the body, `y`'s binder is the nearest (0) and `x`'s the next (1).
+
+Names are for people. For a program that manipulates programs they are a source of bugs: `fun x => x` and `fun y => y` are the same function but different trees, and substituting under a binder can *capture* a variable by accident. With indices, equal functions are equal trees, and there is nothing to capture. The course's own kernel represents bound variables this way (`bvar i` in its source); the names you see are only kept for printing.
+
+## Contexts and typing rules
+
+A term with free variables can only be typed if we know their types. A **context** `Γ` lists them, the type of `var 0` first:
+
+```lean
+def lookup : List Ty → Nat → Option Ty
+  | [], _ => none
+  | A :: _, 0 => some A
+  | _ :: Γ, i + 1 => lookup Γ i
+```
+
+The typing rules, with the judgement `Γ ⊢ t : T`, "in context Γ, t has type T":
+
+<RuleRow>
+  <Rule name="var" premises="\mathsf{lookup}\ \Gamma\ i = \mathsf{some}\ A" conclusion="\Gamma \vdash \#i : A" />
+  <Rule name="lit" conclusion="\Gamma \vdash n : \mathsf{nat}" />
+  <Rule name="add" premises="\Gamma \vdash a : \mathsf{nat} || \Gamma \vdash b : \mathsf{nat}" conclusion="\Gamma \vdash a + b : \mathsf{nat}" />
+  <Rule name="lam" premises="A, \Gamma \vdash b : B" conclusion="\Gamma \vdash \lambda A.\, b : A \to B" />
+  <Rule name="app" premises="\Gamma \vdash f : A \to B || \Gamma \vdash a : A" conclusion="\Gamma \vdash f\ a : B" />
+</RuleRow>
+
+The `lam` rule is the one that changes the context: the body is checked with the argument's type pushed in front, where `var 0` will find it. As in Chapters 13 and 18, the rules become an inductive predicate:
+
+```lean
+inductive HasType : List Ty → Term → Ty → Prop where
+  | var : lookup Γ i = some A → HasType Γ (.var i) A
+  | lit : HasType Γ (.lit n) .nat
+  | add : HasType Γ a .nat → HasType Γ b .nat → HasType Γ (.add a b) .nat
+  | lam : HasType (A :: Γ) b B → HasType Γ (.lam A b) (.arrow A B)
+  | app : HasType Γ f (.arrow A B) → HasType Γ a A → HasType Γ (.app f a) B
+
+-- fun (x : nat) => x + 1  :  nat → nat
+example : HasType [] (.lam .nat (.add (.var 0) (.lit 1))) (.arrow .nat .nat) :=
+  .lam (.add (.var rfl) .lit)
+```
+
+In the example, `.var rfl` proves `lookup [.nat] 0 = some .nat` by computation.
+
+## A type checker
+
+The rules are syntax-directed: for each form of term exactly one rule applies, and its premises are about the subterms. So they can be read as a recursive function that computes the type, or fails:
+
+```lean
+def infer (Γ : List Ty) : Term → Option Ty
+  | .var i => lookup Γ i
+  | .lit _ => some .nat
+  | .add a b =>
+    match infer Γ a, infer Γ b with
+    | some .nat, some .nat => some .nat
+    | _, _ => none
+  | .lam A b =>
+    match infer (A :: Γ) b with
+    | some B => some (.arrow A B)
+    | none => none
+  | .app f a =>
+    match infer Γ f, infer Γ a with
+    | some (.arrow A B), some A' => if A = A' then some B else none
+    | _, _ => none
+
+#eval infer [] (.lam .nat (.add (.var 0) (.lit 1)))
+#eval infer [] (.app (.lam .nat (.var 0)) (.lit 3))
+#eval infer [] (.app (.lit 3) (.lit 3))
+```
+
+The `app` case is where a checker earns its keep: the function must have a function type, and its argument must have exactly the type the function expects; `A = A'` is decided by the `DecidableEq` instance of `Ty`.
+
+## Complete: every well-typed term is accepted
+
+The easier direction is by induction on the derivation. In each case the induction hypotheses say what `infer` returns on the parts, and `simp` rewrites with them and computes the rest.
+
+```lean
+theorem infer_complete (h : HasType Γ t T) : infer Γ t = some T := by
+  induction h with
+  | var hl => simp [infer, hl]
+  | lit => rfl
+  | add _ _ iha ihb => simp [infer, iha, ihb]
+  | lam _ ih => simp [infer, ih]
+  | app _ _ ihf iha => simp [infer, ihf, iha]
+```
+
+In the `app` case, after rewriting, the goal contains `if A = A then some B else none`, which `simp` reduces.
+
+## Sound: every accepted term is well typed
+
+The other direction goes by induction on the *term*: we know `infer Γ t = some T` and must build a derivation. In each case, the hypothesis `h` is a `match` on the results of the recursive calls, and we do not know them yet. `cases ha : infer Γ a` splits on the result of a recursive call and remembers which it was in `ha`; `simp [ha] at h` then computes the `match`. The impossible cases end with `h : none = some T`, which `simp` turns into `False`.
+
+```lean
+theorem infer_sound (Γ : List Ty) (t : Term) (T : Ty) (h : infer Γ t = some T) : HasType Γ t T := by
+  induction t generalizing Γ T with
+  | var i => exact .var h
+  | lit n =>
+    simp [infer] at h
+    rw [← h]
+    exact .lit
+  | add a b iha ihb =>
+    simp only [infer] at h
+    cases ha : infer Γ a with
+    | none => simp [ha] at h
+    | some A =>
+      cases hb : infer Γ b with
+      | none => cases A <;> simp [ha, hb] at h
+      | some B =>
+        cases A with
+        | arrow _ _ => simp [ha, hb] at h
+        | nat =>
+          cases B with
+          | arrow _ _ => simp [ha, hb] at h
+          | nat =>
+            simp [ha, hb] at h
+            rw [← h]
+            exact .add (iha Γ .nat ha) (ihb Γ .nat hb)
+  | lam A b ih =>
+    simp only [infer] at h
+    cases hb : infer (A :: Γ) b with
+    | none => simp [hb] at h
+    | some B =>
+      simp [hb] at h
+      rw [← h]
+      exact .lam (ih (A :: Γ) B hb)
+  | app f a ihf iha =>
+    simp only [infer] at h
+    cases hf : infer Γ f with
+    | none => simp [hf] at h
+    | some F =>
+      cases ha : infer Γ a with
+      | none => cases F <;> simp [hf, ha] at h
+      | some A' =>
+        cases F with
+        | nat => simp [hf, ha] at h
+        | arrow A B =>
+          by_cases e : A = A'
+          · simp [hf, ha, e] at h
+            rw [← h]
+            rw [← e] at ha
+            exact .app (ihf Γ _ hf) (iha Γ _ ha)
+          · simp [hf, ha, e] at h
+```
+
+The proof is longer than the checker, and that is typical: the checker only looks at the cases that succeed, the proof must also dismiss every way of failing. Its shape still follows the checker's, one case per equation of `infer` and one split per `match`.
+
+<Key>
+Soundness says the checker never lies; completeness says it never gives up on a good term. Together they make the function `infer` and the relation `HasType` two presentations of the same thing: the relation is the specification, the function the implementation, and the two theorems the bridge.
+</Key>
+
+## Typability is decidable
+
+With both directions, deciding whether a term has a type is running `infer`. `match h : infer Γ t with` names the equation `h : infer Γ t = …` in each branch, which is what the two proofs need:
+
+```lean
+instance typable (Γ : List Ty) (t : Term) : Decidable (∃ T, HasType Γ t T) :=
+  match h : infer Γ t with
+  | some T => isTrue ⟨T, infer_sound Γ t T h⟩
+  | none => isFalse (fun ⟨T, hT⟩ => by rw [infer_complete hT] at h; cases h)
+
+example : ∃ T, HasType [] (.lam .nat (.add (.var 0) (.lit 1))) T := by decide
+example : ¬ ∃ T, HasType [] (.lam .nat (.app (.var 0) (.var 0))) T := by decide
+```
+
+The second example is a proof that a term has *no* type, obtained by computation. And soundness alone turns the checker into a proof procedure, exactly as in Chapter 19: for a closed term, `infer_sound _ _ _ rfl` is a typing derivation, found by running `infer` in the kernel.
+
+```lean
+example : HasType [] (.app (.lam .nat (.var 0)) (.lit 3)) .nat := infer_sound _ _ _ rfl
+```
+
+Completeness has a pleasant corollary: a term has at most one type, since `infer` returns at most one.
+
+```lean
+theorem type_unique (h₁ : HasType Γ t A) (h₂ : HasType Γ t B) : A = B := by
+  have e := infer_complete h₁
+  rw [infer_complete h₂] at e
+  injection e with e
+  exact e.symm
+```
+
+`injection` turns `some B = some A` into `B = A`: constructors are injective.
+
+## Try it
+
+Type a closed term in a readable syntax (`fun (x : nat) => …`, application by juxtaposition, `+`). The lab translates it to de Bruijn indices, draws the derivation that `infer` follows (or says where it fails), and hands the verdict to the kernel: a derivation obtained from `infer_sound … rfl`, or a refutation by `decide`, both checked with the definitions of this chapter.
+
+<TypingLab chapter />
+
+<UnderTheHood title="The same checker, bigger">
+The kernel checking these pages works the same way: a function `infer` over terms with de Bruijn indices, a context of types, one case per form of term. What it adds is dependent types (a type can mention a term, so checking needs *computation*: `Vec Nat (2 + 1)` and `Vec Nat 3` must be recognised as the same type), universes, and inductive types. The next chapter builds a small version of that.
+</UnderTheHood>
+
+## Exercises
+
+A lemma for the first exercise: no type is a function type from itself, `A ≠ A → B`, by induction on `A`.
+
+```lean
+theorem arrow_ne (A B : Ty) : A ≠ .arrow A B := by
+  induction A generalizing B with
+  | nat => intro h; cases h
+  | arrow A₁ A₂ ih₁ _ =>
+    intro h
+    injection h with h₁ h₂
+    exact ih₁ A₂ h₁
+```
+
+<Exercise id="stlc:self-app" title="Self-application has no type" chapter code={`theorem no_self_app (A : Ty) : ¬ ∃ T, HasType [] (.lam A (.app (.var 0) (.var 0))) T := by
+  sorry`} must="no_self_app" hint="intro ⟨T, h⟩, then take the derivation apart with cases: h is a lam, its premise an app, whose premises are two vars. You end with e₁ : lookup [A] 0 = some (A' → B) and e₂ : lookup [A] 0 = some A'; simp [lookup] at e₁ e₂, rewrite, and use arrow_ne." solution={`theorem no_self_app (A : Ty) : ¬ ∃ T, HasType [] (.lam A (.app (.var 0) (.var 0))) T := by
+  intro ⟨T, h⟩
+  cases h with
+  | lam hb =>
+    cases hb with
+    | app hf ha =>
+      cases hf with
+      | var e₁ =>
+        cases ha with
+        | var e₂ =>
+          simp [lookup] at e₁ e₂
+          rw [e₂] at e₁
+          exact arrow_ne _ _ e₁`}>
+`decide` showed that `fun (x : nat) => x x` has no type. Prove it for every annotation `A` at once: `x x` would need `x` to be a function taking itself as argument, of a type `A = A → B`. (Untyped, `(fun x => x x) (fun x => x x)` runs forever: this is how simple types rule out non-termination.)
+</Exercise>
+
+<Exercise id="stlc:weaken" title="Adding an unused variable" chapter code={`-- lookup in a context with an extra type at the end
+theorem lookup_append (Γ Δ : List Ty) (i : Nat) (A : Ty) (h : lookup Γ i = some A) :
+    lookup (Γ ++ Δ) i = some A := by
+  sorry`} must="lookup_append" hint="induction Γ generalizing i. For the cons case, cases i: at 0 the lookup is immediate (simp [lookup] at h ⊢ and use h), at i + 1 it is the induction hypothesis." solution={`theorem lookup_append (Γ Δ : List Ty) (i : Nat) (A : Ty) (h : lookup Γ i = some A) :
+    lookup (Γ ++ Δ) i = some A := by
+  induction Γ generalizing i with
+  | nil => simp [lookup] at h
+  | cons B Γ ih =>
+    cases i with
+    | zero =>
+      simp [lookup] at h ⊢
+      exact h
+    | succ i =>
+      simp [lookup] at h ⊢
+      exact ih i h`}>
+A lemma of the kind every type system needs: extending the context at the end does not change the variables already bound. (From it, one proves that a term typed in `Γ` stays typed in `Γ ++ Δ`.)
+</Exercise>

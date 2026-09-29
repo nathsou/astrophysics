@@ -1,0 +1,260 @@
+Programs that manipulate programs (interpreters, optimisers, compilers) are where proofs pay off most. Their bugs are subtle, their inputs are infinite, and a test suite rarely covers the combination that breaks them. This chapter and the next build a tiny language, an interpreter for it, an optimiser, and then a compiler, and prove each one correct.
+
+## A small language
+
+Our language has numbers, variables, addition, multiplication and `let`. Its syntax is an inductive type: each constructor is one kind of expression, and a program is a tree.
+
+```lean
+inductive Expr where
+  | num (n : Nat)
+  | var (x : Nat)
+  | add (a b : Expr)
+  | mul (a b : Expr)
+  | let_ (x : Nat) (e body : Expr)
+deriving DecidableEq
+```
+
+Variables are numbered: `var 0`, `var 1`, … (names would work the same, but the course language has no strings). `let_ x e body` means `let x := e in body`. The `deriving DecidableEq` line asks the checker to generate a decision procedure for equality of expressions, which the tests below need.
+
+## An interpreter
+
+The meaning of an expression is a number, which depends on the values of its variables. An **environment** gives those values, as a function from variable numbers to values:
+
+```lean
+def Env := Nat → Nat
+
+def Env.set (env : Env) (x v : Nat) : Env := fun y => if y = x then v else env y
+
+def eval (env : Env) : Expr → Nat
+  | .num n => n
+  | .var x => env x
+  | .add a b => eval env a + eval env b
+  | .mul a b => eval env a * eval env b
+  | .let_ x e body => eval (env.set x (eval env e)) body
+
+-- let x₀ := 3 in x₀ * (x₀ + 1)
+def example₁ : Expr := .let_ 0 (.num 3) (.mul (.var 0) (.add (.var 0) (.num 1)))
+
+#eval eval (fun _ => 0) example₁
+```
+
+`eval` is the **semantics** of the language: the reference for what every program means. It is written to be obviously right rather than fast, and everything else will be proved correct *with respect to it*.
+
+Notice the `let_` case: the body is evaluated in a *different* environment, with `x` set to the value of `e`. The recursive call changes the `env` argument, and the course language accepts that: arguments before the colon can change in recursive calls. It will matter for the proofs.
+
+## An optimiser
+
+**Constant folding** replaces operations on known numbers by their results: `2 + 3` becomes `5`, before the program ever runs. We write it with two *smart constructors*, which build an addition or a multiplication but compute it on the spot when both sides are numbers:
+
+```lean
+def mkAdd : Expr → Expr → Expr
+  | .num n, .num m => .num (n + m)
+  | a, b => .add a b
+
+def mkMul : Expr → Expr → Expr
+  | .num n, .num m => .num (n * m)
+  | a, b => .mul a b
+
+def fold : Expr → Expr
+  | .num n => .num n
+  | .var x => .var x
+  | .add a b => mkAdd (fold a) (fold b)
+  | .mul a b => mkMul (fold a) (fold b)
+  | .let_ x e body => .let_ x (fold e) (fold body)
+
+#eval fold (.add (.num 2) (.mul (.num 3) (.num 4)))
+#eval fold (.add (.num 2) (.mul (.num 3) (.var 1)))
+```
+
+The first expression folds to a single number. In the second, `3 * x₁` cannot be computed, so the addition stays too.
+
+## Test before you prove
+
+The correctness statement for an optimiser is always the same: **the optimised program means the same as the original**, in every environment. Before proving it, test it. `#test` generates random environments and random expressions:
+
+```lean
+#test ∀ (env : Nat → Nat) (e : Expr), eval env (fold e) = eval env e
+```
+
+Tests are especially valuable for optimisers, because optimisation rules are easy to get subtly wrong. Here is a buggy one: it "simplifies" `a * 1` to `1` instead of `a`. The test finds a counterexample, then *shrinks* it: it keeps replacing parts of the failing input by smaller ones for as long as the test still fails, and reports the smallest version it finds, here `x₀ * 1` in an environment where every variable is 0:
+
+<Playground errors title="Break the optimiser" code={`inductive Expr where
+  | num (n : Nat)
+  | var (x : Nat)
+  | add (a b : Expr)
+  | mul (a b : Expr)
+deriving DecidableEq
+
+def eval (env : Nat → Nat) : Expr → Nat
+  | .num n => n
+  | .var x => env x
+  | .add a b => eval env a + eval env b
+  | .mul a b => eval env a * eval env b
+
+def mkMul : Expr → Expr → Expr
+  | _, .num 1 => .num 1         -- bug: should be the left side
+  | a, b => .mul a b
+
+def opt : Expr → Expr
+  | .add a b => .add (opt a) (opt b)
+  | .mul a b => mkMul (opt a) (opt b)
+  | e => e
+
+#test ∀ (env : Nat → Nat) (e : Expr), eval env (opt e) = eval env e`} />
+
+Fix the bug (replace `.num 1` on the right of `=>` by the left operand) and the test passes. A proof would also have failed, at exactly the `mul` case, but the counterexample says *what* is wrong, which a stuck proof does not.
+
+## The proof
+
+The smart constructors first: `mkAdd` must add. There are 25 combinations of the two arguments' constructors, and `cases a <;> cases b` produces all of them; `simp [mkAdd, eval]` computes each one:
+
+```lean
+theorem eval_mkAdd (env : Env) (a b : Expr) : eval env (mkAdd a b) = eval env a + eval env b := by
+  cases a <;> cases b <;> simp [mkAdd, eval]
+
+theorem eval_mkMul (env : Env) (a b : Expr) : eval env (mkMul a b) = eval env a * eval env b := by
+  cases a <;> cases b <;> simp [mkMul, eval]
+```
+
+Then the optimiser, by induction on the expression, one case per constructor. The grid below the editor shows the state of each case; try replacing one of them by `sorry`, or breaking one:
+
+<ObligationGrid lens code={`theorem fold_correct (env : Env) (e : Expr) : eval env (fold e) = eval env e := by
+  induction e generalizing env with
+  | num n => rfl
+  | var x => rfl
+  | add a b iha ihb => simp [fold, eval, eval_mkAdd, iha, ihb]
+  | mul a b iha ihb => simp [fold, eval, eval_mkMul, iha, ihb]
+  | let_ x e body ihe ihb => simp [fold, eval, ihe, ihb]`} setup={`inductive Expr where
+  | num (n : Nat)
+  | var (x : Nat)
+  | add (a b : Expr)
+  | mul (a b : Expr)
+  | let_ (x : Nat) (e body : Expr)
+deriving DecidableEq
+
+def Env := Nat → Nat
+
+def Env.set (env : Env) (x v : Nat) : Env := fun y => if y = x then v else env y
+
+def eval (env : Env) : Expr → Nat
+  | .num n => n
+  | .var x => env x
+  | .add a b => eval env a + eval env b
+  | .mul a b => eval env a * eval env b
+  | .let_ x e body => eval (env.set x (eval env e)) body
+
+def mkAdd : Expr → Expr → Expr
+  | .num n, .num m => .num (n + m)
+  | a, b => .add a b
+
+def mkMul : Expr → Expr → Expr
+  | .num n, .num m => .num (n * m)
+  | a, b => .mul a b
+
+def fold : Expr → Expr
+  | .num n => .num n
+  | .var x => .var x
+  | .add a b => mkAdd (fold a) (fold b)
+  | .mul a b => mkMul (fold a) (fold b)
+  | .let_ x e body => .let_ x (fold e) (fold body)
+
+theorem eval_mkAdd (env : Env) (a b : Expr) : eval env (mkAdd a b) = eval env a + eval env b := by
+  cases a <;> cases b <;> simp [mkAdd, eval]
+
+theorem eval_mkMul (env : Env) (a b : Expr) : eval env (mkMul a b) = eval env a * eval env b := by
+  cases a <;> cases b <;> simp [mkMul, eval]`} />
+
+Two details matter.
+
+- **`generalizing env`**. In the `let_` case, the body is evaluated in the environment `env.set x …`, not in `env`. The induction hypothesis for the body must therefore hold for *every* environment, which is what `generalizing env` gives. This is Chapter 14's lesson again: the statement must be as general as the recursion, and `eval` changes the environment.
+- **The `let_` case uses `ihe` inside the environment.** After unfolding, the goal is `eval (env.set x (eval env (fold e))) (fold body) = eval (env.set x (eval env e)) body`. `ihb` (at the environment `env.set x …`) turns the left side into `eval (env.set x (eval env (fold e))) body`, and `ihe` rewrites `eval env (fold e)` to `eval env e` inside it.
+
+<Key>
+Correctness of a program transformation is an equation between meanings: `eval env (transform e) = eval env e` for all `env` and `e`. The proof is an induction on the program, with one case per construct of the language, and the grid of cases is the checklist of everything the transformation must get right.
+</Key>
+
+## Exercises
+
+<Exercise id="interpreter:mkadd-zero" title="Adding zero" setup={`inductive Expr where
+  | num (n : Nat)
+  | var (x : Nat)
+  | add (a b : Expr)
+  | mul (a b : Expr)
+
+def eval (env : Nat → Nat) : Expr → Nat
+  | .num n => n
+  | .var x => env x
+  | .add a b => eval env a + eval env b
+  | .mul a b => eval env a * eval env b`} code={`-- simplify x + 0 to x
+def addZero : Expr → Expr → Expr
+  | a, .num 0 => a
+  | a, b => .add a b
+
+theorem eval_addZero (env : Nat → Nat) (a b : Expr) : eval env (addZero a b) = eval env a + eval env b := by
+  sorry`} must="eval_addZero" hint="cases b; for the num n case, also cases n (0 or k + 1). Then simp [addZero, eval] in each case: cases b <;> (try cases ‹Nat›) <;> simp [addZero, eval] is one way; writing the cases out is another." solution={`def addZero : Expr → Expr → Expr
+  | a, .num 0 => a
+  | a, b => .add a b
+
+theorem eval_addZero (env : Nat → Nat) (a b : Expr) : eval env (addZero a b) = eval env a + eval env b := by
+  cases b with
+  | num n =>
+    cases n with
+    | zero => simp [addZero, eval]
+    | succ k => simp [addZero, eval]
+  | var x => simp [addZero, eval]
+  | add c d => simp [addZero, eval]
+  | mul c d => simp [addZero, eval]`}>
+The pattern `.num 0` only applies when the number is literally zero, so the proof must look inside the number too.
+</Exercise>
+
+<Exercise id="interpreter:count" title="Folding never grows a program" setup={`inductive Expr where
+  | num (n : Nat)
+  | var (x : Nat)
+  | add (a b : Expr)
+  | mul (a b : Expr)
+
+def mkAdd : Expr → Expr → Expr
+  | .num n, .num m => .num (n + m)
+  | a, b => .add a b
+
+def mkMul : Expr → Expr → Expr
+  | .num n, .num m => .num (n * m)
+  | a, b => .mul a b
+
+def fold : Expr → Expr
+  | .num n => .num n
+  | .var x => .var x
+  | .add a b => mkAdd (fold a) (fold b)
+  | .mul a b => mkMul (fold a) (fold b)
+
+def size : Expr → Nat
+  | .num _ => 1
+  | .var _ => 1
+  | .add a b => size a + size b + 1
+  | .mul a b => size a + size b + 1`} code={`theorem size_mkAdd (a b : Expr) : size (mkAdd a b) ≤ size a + size b + 1 := by
+  sorry
+
+theorem size_mkMul (a b : Expr) : size (mkMul a b) ≤ size a + size b + 1 := by
+  sorry
+
+theorem size_fold (e : Expr) : size (fold e) ≤ size e := by
+  sorry`} must="size_mkAdd size_mkMul size_fold" hint="The two lemmas: cases a <;> cases b <;> simp [mkAdd, size] (then omega if needed). The theorem: induction e, and in the add case have := size_mkAdd (fold a) (fold b), then simp [fold, size] and omega." solution={`theorem size_mkAdd (a b : Expr) : size (mkAdd a b) ≤ size a + size b + 1 := by
+  cases a <;> cases b <;> simp [mkAdd, size] <;> omega
+
+theorem size_mkMul (a b : Expr) : size (mkMul a b) ≤ size a + size b + 1 := by
+  cases a <;> cases b <;> simp [mkMul, size] <;> omega
+
+theorem size_fold (e : Expr) : size (fold e) ≤ size e := by
+  induction e with
+  | num n => simp [fold, size]
+  | var x => simp [fold, size]
+  | add a b iha ihb =>
+    have := size_mkAdd (fold a) (fold b)
+    simp [fold, size]
+    omega
+  | mul a b iha ihb =>
+    have := size_mkMul (fold a) (fold b)
+    simp [fold, size]
+    omega`}>
+An optimiser should not make programs bigger. Prove it for constant folding.
+</Exercise>

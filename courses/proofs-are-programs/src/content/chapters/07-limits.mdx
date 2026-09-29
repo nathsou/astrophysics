@@ -1,0 +1,128 @@
+In Chapter 4 a proof-search machine refused to prove `p ∨ ¬p`, "every proposition is true or false", even though it is true in every row of its truth table. This chapter explains that refusal. The short version: a proof is a program, and there is no program that decides every proposition. The longer version involves a new way of reading logic, where truth is something you *establish* rather than something that *is*, and a precise way to show that a statement has no proof. At the end we add excluded middle back, as an axiom, and see what it costs.
+
+## A program that decides everything
+
+Read `p ∨ ¬p` as a type. A value of it is evidence for `p`, or evidence against `p`, *together with which one*. So a proof of `∀ p : Prop, p ∨ ¬p` would be a function that takes any proposition and tells you whether it holds, with evidence. Apply it to "this program halts" or to an open problem in mathematics, and it would answer. No such program exists (for halting, this is Turing's theorem), so no such proof exists in a language where proofs are programs.
+
+That is not a defect. The course language proves exactly the statements for which evidence can be *constructed*. `p ∨ ¬p` is not false (Chapter 4's oracle found `¬¬(p ∨ ¬p)` provable: excluded middle cannot be refuted). It is just not *constructively* provable in general. Logic with this reading is called **intuitionistic** or **constructive** logic; the everyday logic with truth tables is **classical**.
+
+<PropOracle presets="p ∨ ¬p;¬¬(p ∨ ¬p);¬¬p → p;p → ¬¬p;¬(p ∧ q) → ¬p ∨ ¬q;¬(p ∨ q) → ¬p ∧ ¬q;((p → q) → p) → p;(p → q) ∨ (q → p)" />
+
+The oracle sorts statements into three kinds: provable (with a program), false (with a row of the truth table), and the interesting kind in between, true in every row but not provable. For those it draws a picture. The next section explains how to read it.
+
+## Truth that grows
+
+A truth table assigns every statement a fixed value. Constructive logic needs a finer picture: at any moment you have evidence for some statements, and as time passes you may find more, but never lose any. A **Kripke model** draws this: dots are *stages of knowledge*, lines going up lead to later stages, and each stage lists the atoms that have evidence there.
+
+A statement **holds** at a stage when:
+
+- an atom holds if it has evidence there;
+- `A ∧ B` holds if both hold there, and `A ∨ B` if one of them *already* holds there;
+- `A → B` holds if at this stage *and every later one*, whenever `A` holds, `B` holds too;
+- `¬A` (that is, `A → False`) holds if `A` holds at no later stage: `A` has been ruled out for good.
+
+Now look at `p ∨ ¬p` in the model with two stages, where `p` gets evidence only at the second one. At the first stage, `p` does not hold (no evidence yet), and `¬p` does not hold either (`p` will hold later, so it has not been ruled out). So `p ∨ ¬p` fails at the first stage. Try it:
+
+<KripkeLab formula="p ∨ ¬p" frame={1} />
+
+Toggle the evidence and the frame to see what changes. With a single stage, a Kripke model is just a row of a truth table, and every classical tautology holds. The failures need at least two stages: situations where the question is not settled yet.
+
+<Theorem title="Soundness and completeness">
+A propositional statement is provable in the course language (without axioms) **exactly when** it holds at the first stage of every Kripke model. So a model where it fails is a certificate that no proof exists, and when no such model exists, a proof does. This is what lets the oracle answer every question: it searches for a proof and, failing that, for a small model.
+</Theorem>
+
+<Engineer title="Why not just trust truth tables?">
+Truth tables are exactly right for questions that have a known answer: booleans. Constructive logic is what you get when the answer might have to be *computed*, and a proof must contain the computation. That is the logic of programs, and it is why the course language uses it. When you do want classical reasoning, the next section shows how to have it, at a price.
+</Engineer>
+
+## Classical logic as an axiom
+
+An **axiom** is a declaration without a proof: the checker is told to accept it. The library declares three, and nothing else in the library is assumed:
+
+- `propext`: propositions that imply each other are equal;
+- `Quot.sound`: the rule that makes quotient types work (it gives `funext` from Chapter 6);
+- `Classical.choice`: from evidence that a type is not empty, *choose* an element.
+
+`Classical.choice` is the interesting one. It hands out an element without a program to compute it, and from it excluded middle can be *proved*. The proof is a clever argument due to Radu Diaconescu, and it is in the library as `Classical.em`:
+
+```lean
+#check @Classical.choice
+#check Classical.em
+#check @Classical.byContradiction
+
+theorem dne (p : Prop) : ¬¬p → p :=
+  fun h => Classical.byContradiction h
+
+#print axioms dne
+```
+
+`#print axioms` lists the axioms a declaration depends on, directly or through the lemmas it uses. Nothing in Chapters 1 to 6 used any. `dne` uses all three, through `Classical.em`.
+
+With excluded middle, the classical laws that the oracle refused become theorems. Here is the one from Chapter 5: if not everything satisfies `p`, then something fails `p`. The proof never says *which* `x`; it only shows that "no such `x`" leads to a contradiction.
+
+```lean
+theorem exists_counterexample {α : Type} (p : α → Prop) (h : ¬∀ x, p x) : ∃ x, ¬p x :=
+  Classical.byContradiction fun hne =>
+    h fun x => Classical.byContradiction fun hpx => hne ⟨x, hpx⟩
+```
+
+## The price: programs that cannot run
+
+A proof that uses `Classical.choice` is still a perfectly good proof: the statement is true, in the classical sense. But the proof is no longer a program you can run, because `choice` has no code behind it. Proofs are erased when programs run (Chapter 3), so classical *proofs* never cause trouble. Classical *data* does:
+
+<Playground errors title="Choice cannot run" code={`noncomputable def someNumber : Nat :=
+  Classical.choose (⟨3, rfl⟩ : ∃ n : Nat, n = 3)
+
+#eval someNumber`} />
+
+`Classical.choose` extracts a witness from `∃`, which Chapter 5 said a program cannot do. Now it can, but only in declarations marked `noncomputable`, which the evaluator refuses to run. The value exists, in the sense that the checker agrees there is one and can prove things about it, but no program computes it.
+
+<Note title="How much classical logic?">
+Lean's mathematics library uses classical logic freely: mathematicians mostly care that statements are true, not that proofs compute. In this course we mostly avoid it, for a practical reason: the programs of Part V must run, and a constructive proof of "there is a sorted permutation" contains the sorting function.
+</Note>
+
+## Could the checker be wrong?
+
+One last limit, the most important one. Can the course language prove `False`? If it could, then every statement would be provable (Chapter 3: `False` implies anything), and every proof would be worthless.
+
+For the core language, the answer is no, and the reason is computational. Every program terminates, so every proof of `False` could be run to a value built from a constructor of `False`, and `False` has no constructors. The rules we met on the way (functions must terminate, proofs cannot be inspected by programs, inductive types must be well-formed) exist to keep this argument valid.
+
+Axioms are different: they are programs without code, and a bad one breaks everything:
+
+<Playground errors title="A bad axiom" code={`axiom oops : False
+
+theorem one_eq_two : 1 = 2 := oops.elim
+
+#print axioms one_eq_two`} />
+
+The checker accepts `one_eq_two`, because the axiom told it to. This is why `#print axioms` matters: a proof is only as trustworthy as the axioms it rests on. For the three axioms of the library, it is known that they are consistent with the rest of the rules (there is a mathematical model of the whole system in which they are true).
+
+<UnderTheHood ch="lean" s="the-three-axioms">
+CIC Chapter 19 looks at Lean's three axioms in detail: what each one is for, why they do not interact badly with computation, and why Lean's kernel trusts exactly these.
+</UnderTheHood>
+
+## Exercises
+
+<Exercise id="limits:constructive" title="Constructive after all" code={`theorem not_not_em (p : Prop) : ¬¬(p ∨ ¬p) :=
+  sorry`} must="not_not_em" hint="You get h : ¬(p ∨ ¬p) and need False. Apply h to Or.inr of a function hp ↦ h (Or.inl hp)." solution={`theorem not_not_em (p : Prop) : ¬¬(p ∨ ¬p) :=
+  fun h => h (Or.inr (fun hp => h (Or.inl hp)))`}>
+Excluded middle cannot be refuted. Prove it without axioms: you can check with `#print axioms` that none are used.
+</Exercise>
+
+<Exercise id="limits:classical" title="De Morgan, the classical half" code={`theorem not_and_or (p q : Prop) : ¬(p ∧ q) → ¬p ∨ ¬q :=
+  sorry`} must="not_and_or" hint="Case on Classical.em p. If p holds, then ¬q (since q would give p ∧ q). If ¬p, you are done." solution={`theorem not_and_or (p q : Prop) : ¬(p ∧ q) → ¬p ∨ ¬q :=
+  fun h =>
+    match Classical.em p with
+    | Or.inl hp => Or.inr (fun hq => h ⟨hp, hq⟩)
+    | Or.inr hnp => Or.inl hnp`}>
+The oracle says this one has no constructive proof. Use `Classical.em p` to split into cases.
+</Exercise>
+
+<Exercise id="limits:decidable" title="Excluded middle for numbers" code={`-- No axioms needed: equality of numbers can be decided by a program.
+theorem nat_em (n m : Nat) : n = m ∨ n ≠ m :=
+  sorry`} must="nat_em" hint="match Nat.decEq n m with | isTrue h => Or.inl h | isFalse h => Or.inr h" solution={`theorem nat_em (n m : Nat) : n = m ∨ n ≠ m :=
+  match Nat.decEq n m with
+  | isTrue h => Or.inl h
+  | isFalse h => Or.inr h`}>
+Excluded middle is fine for statements that a program can decide. `Nat.decEq n m` is a program that returns either `isTrue h` with `h : n = m` or `isFalse h` with `h : n ≠ m`. Use it. (Chapter 13 is about such programs.)
+</Exercise>

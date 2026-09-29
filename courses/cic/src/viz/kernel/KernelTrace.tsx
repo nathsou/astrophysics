@@ -3,10 +3,10 @@
 
 import { For, Show, createMemo, createSignal } from 'solid-js';
 import { envFor, check } from '../../app/kernel.ts';
-import { TypeChecker, type TraceEvent } from '../../kernel/core/typechecker.ts';
+import { TypeChecker, type TraceEvent } from '@kernel/core/typechecker.ts';
 import { Term } from '../Term.tsx';
 import { Editor } from '../Editor.tsx';
-import type { Decl } from '../../kernel/core/env.ts';
+import type { Decl } from '@kernel/core/env.ts';
 
 const kindLabel: Record<TraceEvent['kind'], string> = {
   infer: 'infer',
@@ -82,7 +82,7 @@ export function KernelTrace(props: { code: string; name?: string; title?: string
                 </Show>
                 <Show when={e.kind === 'infer' && e.result && typeof e.result !== 'boolean'}>
                   <span class="kt-op"> : </span>
-                  <Term env={res().env} expr={e.result as import('../../kernel/core/expr.ts').Expr} lctx={e.lctx} opts={{ maxDepth: 12 }} hoverTypes={false} />
+                  <Term env={res().env} expr={e.result as import('@kernel/core/expr.ts').Expr} lctx={e.lctx} opts={{ maxDepth: 12 }} hoverTypes={false} />
                 </Show>
               </div>
             )}

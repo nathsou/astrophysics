@@ -2,10 +2,10 @@
 
 import { Show, createMemo, createSignal } from 'solid-js';
 import { envFor, check } from '../app/kernel.ts';
-import type { CalculusId } from '../kernel/core/calculus.ts';
-import { TypeChecker, type Deriv } from '../kernel/core/typechecker.ts';
+import type { CalculusId } from '@kernel/core/calculus.ts';
+import { TypeChecker, type Deriv } from '@kernel/core/typechecker.ts';
 import { DerivationTree } from './DerivationTree.tsx';
-import { formatMsg } from '../kernel/format.ts';
+import { formatMsg } from '@kernel/format.ts';
 
 export interface DerivationViewProps {
   term: string;

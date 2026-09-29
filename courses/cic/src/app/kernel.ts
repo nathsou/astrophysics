@@ -1,8 +1,8 @@
 // Shared access to kernel environments for the widgets.
-import coreSrc from '../kernel/prelude/core.lean?raw';
-import { makeEnv, processSource, type ProcessResult, type Message } from '../kernel/frontend.ts';
-import type { CalculusId } from '../kernel/core/calculus.ts';
-import type { Environment } from '../kernel/core/env.ts';
+import coreSrc from '@kernel/prelude/core.lean?raw';
+import { makeEnv, processSource, type ProcessResult, type Message } from '@kernel/frontend.ts';
+import type { CalculusId } from '@kernel/core/calculus.ts';
+import type { Environment } from '@kernel/core/env.ts';
 
 export type PreludeId = 'core' | 'none';
 

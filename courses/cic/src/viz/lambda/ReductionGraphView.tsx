@@ -2,7 +2,7 @@
 // and rendered with WebGL2 (falling back to Canvas 2D).
 
 import { Show, createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js';
-import { type RGraph, type U, type Strategy, reductionGraph, normalize, dbKey, toDB, print, expandDefs } from '../../kernel/untyped/lambda.ts';
+import { type RGraph, type U, type Strategy, reductionGraph, normalize, dbKey, toDB, print, expandDefs } from '@kernel/untyped/lambda.ts';
 import { showTooltip, hideTooltip } from '../tooltip.ts';
 import { isDark, palette, theme } from '../../app/theme.ts';
 

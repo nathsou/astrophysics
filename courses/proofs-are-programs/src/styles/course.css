@@ -1,0 +1,583 @@
+/* Styles specific to Proofs Are Programs (on top of the shared base and layout). */
+
+/* ---- tactic state ---- */
+.tactic-state {
+  border-bottom: 1px solid var(--rule);
+  padding: 0.55rem 0.7rem 0.6rem;
+  background: color-mix(in srgb, var(--accent) 4%, transparent);
+}
+.ts-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-bottom: 0.25rem;
+}
+.ts-where,
+.ts-count {
+  font-size: 0.72rem;
+}
+.ts-done {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--ok);
+  padding: 0.2rem 0;
+}
+.goal-name {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  color: var(--ink-3);
+}
+
+/* ---- lens ---- */
+.lens {
+  border-top: 1px solid var(--rule);
+  padding: 0.65rem 0.8rem 0.7rem;
+  background: var(--paper-2);
+}
+.lens-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.35rem;
+}
+.lens-slider {
+  width: min(16rem, 40vw);
+  accent-color: var(--accent);
+}
+.lens-step {
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+}
+.lens-tactic {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--ink-2);
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+.lens-term {
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  line-height: 1.7;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.7rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+.lens-term .filled {
+  background: var(--hl-new);
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ok) 50%, transparent);
+}
+.lens-term .hole,
+.term .hole {
+  color: var(--c-mvar);
+  font-weight: 600;
+  background: var(--err-soft);
+  border-radius: 3px;
+  padding: 0 0.15em;
+}
+.lens-legend {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.4rem;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  color: var(--ink-3);
+}
+.lens-legend .lg-filled::before,
+.lens-legend .lg-hole::before {
+  content: '';
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  border-radius: 2px;
+  margin-right: 0.35em;
+  vertical-align: -0.1em;
+}
+.lens-legend .lg-filled::before {
+  background: var(--hl-new);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ok) 50%, transparent);
+}
+.lens-legend .lg-hole::before {
+  background: var(--err-soft);
+  box-shadow: 0 0 0 1px var(--c-mvar);
+}
+
+/* ---- outputs ---- */
+.out.eval .eval-value {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--ink);
+}
+.out.eval .eval-meta {
+  color: var(--ink-3);
+}
+.out.test {
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+}
+.out.test.failed {
+  color: var(--err);
+}
+.err-mark {
+  color: var(--err);
+  font-weight: 700;
+  margin-right: 0.3rem;
+}
+
+/* ---- bridges ---- */
+.bridge-box {
+  margin: 2.5rem 0 1rem;
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--c-type);
+  border-radius: var(--radius-sm);
+  padding: 0.8rem 1rem;
+  background: var(--paper-2);
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+}
+.bridge-title {
+  font-weight: 650;
+  color: var(--c-type);
+  margin-bottom: 0.2rem;
+}
+.bridge-lead {
+  margin: 0 0 0.4rem;
+  color: var(--ink-2);
+}
+.bridge-box ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+.callout.under-the-hood {
+  border-left-color: var(--c-type);
+}
+.callout.under-the-hood .callout-title {
+  color: var(--c-type);
+}
+
+/* ---- home ---- */
+.home-teaser {
+  max-width: var(--wide);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+.home-paths {
+  max-width: var(--wide);
+  margin: 2rem auto 0;
+  padding: 0 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 1rem;
+}
+.path-card {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 1rem 1.2rem;
+  background: var(--card);
+}
+.path-card h3 {
+  margin: 0.2rem 0 0.4rem;
+  font-family: var(--font-serif);
+}
+.path-card p {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 0.95rem;
+}
+
+/* ---- reference ---- */
+.reference .ref-search {
+  width: 100%;
+  max-width: 24rem;
+  margin: 0.5rem 0 1rem;
+}
+.ref-list {
+  display: grid;
+  gap: 0.9rem;
+}
+.ref-card {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 0.8rem 1rem;
+  background: var(--card);
+}
+.ref-card p {
+  margin: 0.4rem 0;
+}
+.ref-card-head {
+  display: flex;
+  align-items: baseline;
+}
+.ref-syntax {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.3rem;
+}
+.ref-syntax code {
+  white-space: pre;
+  background: var(--paper-2);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.82rem;
+}
+.ref-term {
+  font-size: 0.85rem;
+}
+.ref-ch {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+}
+table.dict {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+table.dict th,
+table.dict td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.45rem 0.6rem;
+  border-bottom: 1px solid var(--rule);
+}
+table.dict th {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+dl.glossary dt {
+  font-weight: 650;
+  margin-top: 0.9rem;
+}
+dl.glossary dd {
+  margin: 0.2rem 0 0;
+}
+ul.reading li {
+  margin-bottom: 0.6rem;
+}
+.hl-tac {
+  color: var(--accent);
+  font-weight: 550;
+}
+
+/* ---- inhabitants ---- */
+.inh-input {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0.7rem 0 0.5rem;
+}
+.inh-input input {
+  flex: 1;
+  font-size: 0.95rem;
+}
+.inh-verdict {
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin: 0.4rem 0;
+}
+.inh-verdict.none {
+  color: var(--err);
+}
+.inh-verdict.some {
+  color: var(--ok);
+}
+.inh-verdict.many {
+  color: var(--c-ctor);
+}
+.inh-list {
+  margin: 0.3rem 0 0.4rem;
+  padding-left: 1.6rem;
+}
+.inh-list li {
+  margin: 0.15rem 0;
+}
+.inh-list li code {
+  font-size: 0.88rem;
+}
+.inh-size {
+  font-size: 0.7rem;
+  margin: 0 0.5rem;
+}
+
+/* two blocks side by side */
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.25rem 1rem;
+  margin: 1rem 0;
+}
+.columns > pre,
+.columns > div:not(.columns-caption) {
+  margin: 0;
+}
+.columns-caption {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+}
+@media (max-width: 720px) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .columns-caption:nth-child(2) {
+    display: none;
+  }
+}
+
+/* ---- provability oracle and Kripke models ---- */
+.oracle .small {
+  font-size: 0.8rem;
+}
+.kripke {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-top: 0.75rem;
+}
+.kripke svg {
+  flex: none;
+  max-width: 100%;
+  height: auto;
+}
+.kr-edge {
+  stroke: var(--ink-3);
+  stroke-width: 1.5;
+}
+.kr-world {
+  fill: var(--card);
+  stroke: var(--c-type);
+  stroke-width: 1.5;
+}
+.kr-world.root {
+  stroke-width: 2.5;
+}
+.kr-label {
+  font-size: 11px;
+  fill: var(--ink);
+  font-family: var(--font-mono);
+}
+.kr-atoms {
+  font-size: 12px;
+  fill: var(--c-prop);
+  font-family: var(--font-mono);
+}
+.kr-explain {
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+.kr-explain p {
+  margin: 0.25rem 0;
+}
+.kr-table {
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  margin: 0.4rem 0;
+}
+.kr-table th,
+.kr-table td {
+  padding: 0.15rem 0.5rem;
+  border-bottom: 1px solid var(--rule);
+  text-align: center;
+}
+.kr-table td:first-child {
+  text-align: left;
+}
+.kr-table td.yes {
+  color: var(--ok);
+}
+.kr-table td.no {
+  color: var(--ink-3);
+}
+.kr-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+.kr-toggle-row {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+/* ---- termination view ---- */
+.term-panel {
+  margin: -0.5rem 0 1.25rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--rule);
+  border-top: 0;
+  border-radius: 0 0 var(--radius) var(--radius);
+  background: var(--paper-2);
+  font-size: 0.9rem;
+}
+.term-decl + .term-decl {
+  margin-top: 0.5rem;
+}
+.term-obligations {
+  margin: 0.3rem 0 0;
+  padding-left: 1rem;
+  list-style: none;
+}
+.term-obligations li {
+  margin: 0.2rem 0;
+}
+
+/* ---- proof-obligation grid ---- */
+.og-group + .og-group {
+  margin-top: 0.5rem;
+}
+.og-cells {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.3rem;
+}
+.og-cell {
+  padding: 0.15rem 0.55rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--rule);
+  font-size: 0.85rem;
+}
+.og-cell.ok {
+  background: var(--ok-soft);
+  color: var(--ok);
+  border-color: color-mix(in srgb, var(--ok) 35%, transparent);
+}
+.og-cell.sorry {
+  background: var(--warn-soft);
+  color: var(--warn);
+  border-color: color-mix(in srgb, var(--warn) 35%, transparent);
+}
+.og-cell.error {
+  background: var(--err-soft);
+  color: var(--err);
+  border-color: color-mix(in srgb, var(--err) 35%, transparent);
+}
+
+/* ---- simulation square ---- */
+.sim-var {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+}
+.sim-var input.input {
+  width: 4rem;
+}
+.sim-square {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 0.4rem 0.8rem;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+.sim-cell {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.7rem;
+  background: var(--card);
+  min-height: 3.2rem;
+  align-self: stretch;
+}
+.sim-arrow {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--ink-3);
+}
+.sim-arrow .ok {
+  color: var(--ok);
+  font-weight: 600;
+}
+.sim-arrow .bad {
+  color: var(--err);
+  font-weight: 600;
+}
+.sim-expr mark {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  border-radius: 3px;
+}
+.sim-big {
+  font-size: 1.4rem;
+}
+.sim-code {
+  margin: 0.2rem 0 0;
+  padding-left: 1.6rem;
+  font-size: 0.85rem;
+}
+.sim-code li {
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 0 0.3rem;
+}
+.sim-code li.current {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+.sim-code li.done {
+  color: var(--ink-3);
+}
+.sim-stack {
+  list-style: none;
+  margin: 0.2rem 0 0;
+  padding: 0;
+  font-size: 0.85rem;
+}
+@media (max-width: 640px) {
+  .sim-square {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sim-arrow {
+    text-align: left;
+  }
+}
+.erase-row {
+  font-size: 0.85rem;
+  margin: 0.2rem 0;
+  word-break: break-word;
+}
+.erase-eqn { padding-left: 1.2rem; }
+
+/* proof by reflection */
+.reflect-steps { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 0.8rem; margin-top: 0.6rem; }
+@media (max-width: 720px) { .reflect-steps { grid-template-columns: minmax(0, 1fr); } }
+.reflect-step { border: 1px solid var(--rule); border-radius: 8px; padding: 0.5rem 0.7rem; min-width: 0; }
+.reflect-atom { margin-right: 0.9rem; white-space: nowrap; }
+.reflect-term { white-space: pre-wrap; word-break: break-word; margin: 0.4rem 0 0; background: none; padding: 0; }
+.reflect-table-wrap { max-height: 16rem; overflow: auto; }
+.reflect-table { border-collapse: collapse; margin: 0.3rem 0; }
+.reflect-table th, .reflect-table td { padding: 0.1rem 0.55rem; text-align: center; border-bottom: 1px solid var(--rule); }
+.reflect-table tr.bad td { color: var(--err); font-weight: 600; }
+
+/* typing lab */
+.typing-row { margin: 0.6rem 0 0.3rem; }
+.typing-tree { overflow-x: auto; padding: 0.4rem 0; }
+.typing-tree .katex-display { margin: 0.4rem 0; }
+.typing-tree, .typing-tree ul { list-style: none; margin: 0; padding-left: 0; }
+.typing-tree ul { padding-left: 1.3rem; border-left: 1px solid var(--rule); margin-left: 0.4rem; }
+.typing-tree li { padding: 0.15rem 0; }
+.typing-rule { display: inline-block; min-width: 2.6rem; margin-right: 0.4rem; padding: 0 0.3rem; border-radius: 4px; background: var(--accent-soft); color: var(--accent-ink); font-size: 0.75rem; text-align: center; }
+.typing-ctx { color: var(--c-var); }
+
+/* kernel lab */
+.kernel-breaks { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; align-items: center; margin: 0.6rem 0; font-size: 0.9rem; }
+.kernel-trace, .kernel-trace ul { list-style: none; margin: 0; padding-left: 0; }
+.kernel-trace ul { padding-left: 1.2rem; border-left: 1px solid var(--rule); margin-left: 0.35rem; }
+.kernel-trace li { padding: 0.12rem 0; }
+.kernel-mode { color: var(--accent); font-weight: 700; }
+.kernel-conv { color: var(--c-kw); padding-left: 1.2rem; }
+.kernel-err { color: var(--err); padding-left: 1.2rem; }
+.kernel-trace .ok { color: var(--ok); }

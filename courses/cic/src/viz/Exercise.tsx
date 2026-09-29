@@ -3,10 +3,10 @@
 import { Show, createMemo, createSignal, type JSX } from 'solid-js';
 import { Playground } from './Playground.tsx';
 import { Editor } from './Editor.tsx';
-import * as L from '../kernel/untyped/lambda.ts';
+import * as L from '@kernel/untyped/lambda.ts';
 import { isExerciseDone, markExercise } from '../app/progress.ts';
 import { CodeBlock } from './CodeBlock.tsx';
-import type { CalculusId } from '../kernel/core/calculus.ts';
+import type { CalculusId } from '@kernel/core/calculus.ts';
 
 export interface ExerciseProps {
   id: string;
