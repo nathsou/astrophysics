@@ -877,8 +877,14 @@ export function elabMatch(el: Elaborator, s: Extract<STerm, { k: 'match' }>, exp
     }
     const used = s.alts.map(() => ({ v: false }));
     const rows: Row[] = s.alts.map((a, k) => ({ pats: a.pats, binds: new Map(), alt: a, used: used[k] }));
-    // like Lean, generalise local hypotheses whose types mention a discriminant
+    // like Lean, generalise local hypotheses whose types mention a discriminant (or one of its index variables)
     const colIds = new Set(cols.map((c) => (c as FVar).id));
+    for (const c of [...cols]) {
+      const ct = el.whnf(el.instantiate(el.inferType(c)));
+      const ch = getAppFn(ct);
+      const cd = ch.k === 'const' ? el.env.get(ch.name) : undefined;
+      if (cd?.kind === 'inductive') for (const ix of getAppArgs(ct).slice(cd.numParams)) if (ix.k === 'fvar' && !el.lctx.get(ix.id)?.value) colIds.add(ix.id);
+    }
     const deps: FVar[] = [];
     for (const d of el.lctx.decls) {
       if (d.value || colIds.has(d.id) || (el.rec && d.id === el.rec.fn.id)) continue;

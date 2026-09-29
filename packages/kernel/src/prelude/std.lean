@@ -212,3 +212,216 @@ def Nat.decEq : (n m : Nat) → Decidable (n = m)
     | Decidable.isFalse h => Decidable.isFalse (fun h' => h (congrArg Nat.pred h'))
 
 instance instDecidableEqNat : DecidableEq Nat := Nat.decEq
+
+-- ---------------------------------------------------------------------------
+-- arithmetic
+
+namespace Nat
+
+@[simp] theorem add_zero (n : Nat) : n + 0 = n := rfl
+theorem add_succ (n m : Nat) : n + succ m = succ (n + m) := rfl
+theorem add_one (n : Nat) : n + 1 = succ n := rfl
+/-- simp writes successors as `n + 1` -/
+@[simp] theorem succ_eq_add_one (n : Nat) : succ n = n + 1 := rfl
+
+@[simp] theorem zero_add (n : Nat) : 0 + n = n := by
+  induction n with
+  | zero => rfl
+  | succ n ih => rw [add_succ, ih]
+
+theorem succ_add (n m : Nat) : succ n + m = succ (n + m) := by
+  induction m with
+  | zero => rfl
+  | succ m ih => rw [add_succ, add_succ, ih]
+
+theorem add_comm (n m : Nat) : n + m = m + n := by
+  induction m with
+  | zero => rw [zero_add]
+  | succ m ih => rw [add_succ, succ_add, ih]
+
+theorem add_assoc (n m k : Nat) : n + m + k = n + (m + k) := by
+  induction k with
+  | zero => rfl
+  | succ k ih => rw [add_succ, add_succ, add_succ, ih]
+
+theorem add_left_comm (n m k : Nat) : n + (m + k) = m + (n + k) := by
+  rw [← add_assoc, ← add_assoc, add_comm n m]
+
+theorem add_right_comm (n m k : Nat) : n + m + k = n + k + m := by
+  rw [add_assoc, add_assoc, add_comm m k]
+
+theorem succ_inj {n m : Nat} (h : succ n = succ m) : n = m := congrArg pred h
+
+theorem succ_ne_zero (n : Nat) : succ n ≠ 0 := fun h => nomatch h
+
+theorem add_right_cancel {n m k : Nat} : n + k = m + k → n = m := by
+  induction k with
+  | zero => intro h; exact h
+  | succ k ih => intro h; exact ih (succ_inj h)
+
+theorem add_left_cancel {n m k : Nat} : k + n = k + m → n = m := by
+  intro h
+  rw [add_comm k n, add_comm k m] at h
+  exact add_right_cancel h
+
+@[simp] theorem add_right_cancel_iff (n m k : Nat) : (n + k = m + k) = (n = m) :=
+  propext ⟨add_right_cancel, fun h => h ▸ rfl⟩
+
+@[simp] theorem add_left_cancel_iff (n m k : Nat) : (k + n = k + m) = (n = m) :=
+  propext ⟨add_left_cancel, fun h => h ▸ rfl⟩
+
+theorem eq_zero_of_add_eq_zero_left {n m : Nat} (h : n + m = 0) : m = 0 := by
+  cases m with
+  | zero => rfl
+  | succ m => cases h
+
+@[simp] theorem mul_zero (n : Nat) : n * 0 = 0 := rfl
+theorem mul_succ (n m : Nat) : n * succ m = n * m + n := rfl
+
+@[simp] theorem zero_mul (n : Nat) : 0 * n = 0 := by
+  induction n with
+  | zero => rfl
+  | succ n ih => rw [mul_succ, ih]
+
+@[simp] theorem mul_one (n : Nat) : n * 1 = n := by
+  rw [mul_succ, mul_zero, zero_add]
+
+theorem succ_mul (n m : Nat) : succ n * m = n * m + m := by
+  induction m with
+  | zero => rfl
+  | succ m ih => rw [mul_succ, mul_succ, ih, add_succ, add_succ, add_right_comm]
+
+@[simp] theorem one_mul (n : Nat) : 1 * n = n := by
+  rw [succ_mul, zero_mul, zero_add]
+
+theorem mul_comm (n m : Nat) : n * m = m * n := by
+  induction m with
+  | zero => rw [zero_mul]
+  | succ m ih => rw [mul_succ, succ_mul, ih]
+
+theorem left_distrib (n m k : Nat) : n * (m + k) = n * m + n * k := by
+  induction k with
+  | zero => rfl
+  | succ k ih => rw [add_succ, mul_succ, mul_succ, ih, add_assoc]
+
+theorem mul_add (n m k : Nat) : n * (m + k) = n * m + n * k := left_distrib n m k
+
+theorem right_distrib (n m k : Nat) : (n + m) * k = n * k + m * k := by
+  rw [mul_comm, left_distrib, mul_comm k n, mul_comm k m]
+
+theorem add_mul (n m k : Nat) : (n + m) * k = n * k + m * k := right_distrib n m k
+
+theorem mul_assoc (n m k : Nat) : n * m * k = n * (m * k) := by
+  induction k with
+  | zero => rfl
+  | succ k ih => rw [mul_succ, mul_succ, ih, left_distrib]
+
+-- ---------------------------------------------------------------------------
+-- order
+
+theorem le_refl (n : Nat) : n ≤ n := Nat.le.refl
+theorem le_succ (n : Nat) : n ≤ n + 1 := Nat.le.step Nat.le.refl
+theorem le_step {n m : Nat} (h : n ≤ m) : n ≤ m + 1 := Nat.le.step h
+theorem lt_succ_self (n : Nat) : n < n + 1 := Nat.le.refl
+
+theorem le_trans {n m k : Nat} (h₁ : n ≤ m) (h₂ : m ≤ k) : n ≤ k := by
+  induction h₂ with
+  | refl => exact h₁
+  | step _ ih => exact Nat.le.step ih
+
+theorem zero_le (n : Nat) : 0 ≤ n := by
+  induction n with
+  | zero => exact Nat.le.refl
+  | succ n ih => exact Nat.le.step ih
+
+theorem succ_le_succ {n m : Nat} (h : n ≤ m) : n + 1 ≤ m + 1 := by
+  induction h with
+  | refl => exact Nat.le.refl
+  | step _ ih => exact Nat.le.step ih
+
+theorem not_succ_le_zero (n : Nat) : ¬(n + 1 ≤ 0) := fun h => nomatch h
+
+theorem le_of_succ_le_succ {n m : Nat} (h : n + 1 ≤ m + 1) : n ≤ m := by
+  cases h with
+  | refl => exact Nat.le.refl
+  | step h' => exact le_trans (le_succ n) h'
+
+theorem le_of_lt {n m : Nat} (h : n < m) : n ≤ m := le_trans (le_succ n) h
+theorem lt_of_lt_of_le {n m k : Nat} (h₁ : n < m) (h₂ : m ≤ k) : n < k := le_trans h₁ h₂
+theorem lt_of_le_of_lt {n m k : Nat} (h₁ : n ≤ m) (h₂ : m < k) : n < k := le_trans (succ_le_succ h₁) h₂
+theorem lt_trans {n m k : Nat} (h₁ : n < m) (h₂ : m < k) : n < k := le_trans h₁ (le_of_lt h₂)
+theorem lt_irrefl (n : Nat) : ¬(n < n) := by
+  induction n with
+  | zero => exact not_succ_le_zero 0
+  | succ n ih => exact fun h => ih (le_of_succ_le_succ h)
+
+theorem le_antisymm {n m : Nat} (h₁ : n ≤ m) (h₂ : m ≤ n) : n = m := by
+  cases h₁ with
+  | refl => rfl
+  | step h => exact absurd (lt_of_le_of_lt h h₂) (lt_irrefl n)
+
+theorem le_add_right (n k : Nat) : n ≤ n + k := by
+  induction k with
+  | zero => exact Nat.le.refl
+  | succ k ih => exact Nat.le.step ih
+
+theorem le_add_left (n k : Nat) : n ≤ k + n := by
+  rw [add_comm]
+  exact le_add_right n k
+
+theorem lt_succ_of_le {n m : Nat} (h : n ≤ m) : n < m + 1 := succ_le_succ h
+theorem le_of_lt_succ {n m : Nat} (h : n < m + 1) : n ≤ m := le_of_succ_le_succ h
+
+def ble : Nat → Nat → Bool
+  | 0, _ => Bool.true
+  | _ + 1, 0 => Bool.false
+  | n + 1, m + 1 => ble n m
+
+def decLe : (n m : Nat) → Decidable (n ≤ m)
+  | 0, m => Decidable.isTrue (zero_le m)
+  | n + 1, 0 => Decidable.isFalse (not_succ_le_zero n)
+  | n + 1, m + 1 =>
+    match decLe n m with
+    | Decidable.isTrue h => Decidable.isTrue (succ_le_succ h)
+    | Decidable.isFalse h => Decidable.isFalse (fun h' => h (le_of_succ_le_succ h'))
+
+end Nat
+
+instance instDecidableLeNat (n m : Nat) : Decidable (n ≤ m) := Nat.decLe n m
+instance instDecidableLtNat (n m : Nat) : Decidable (n < m) := Nat.decLe (n + 1) m
+
+-- ---------------------------------------------------------------------------
+-- lists
+
+namespace List
+
+@[simp] theorem nil_append {α : Type u} (as : List α) : [] ++ as = as := rfl
+@[simp] theorem cons_append {α : Type u} (a : α) (as bs : List α) : (a :: as) ++ bs = a :: (as ++ bs) := rfl
+
+@[simp] theorem append_nil {α : Type u} (as : List α) : as ++ [] = as := by
+  induction as with
+  | nil => rfl
+  | cons a as ih => simp [ih]
+
+@[simp] theorem append_assoc {α : Type u} (as bs cs : List α) : (as ++ bs) ++ cs = as ++ (bs ++ cs) := by
+  induction as with
+  | nil => rfl
+  | cons a as ih => simp [ih]
+
+@[simp] theorem length_nil {α : Type u} : length ([] : List α) = 0 := rfl
+@[simp] theorem length_cons {α : Type u} (a : α) (as : List α) : length (a :: as) = length as + 1 := rfl
+
+@[simp] theorem length_append {α : Type u} (as bs : List α) : length (as ++ bs) = length as + length bs := by
+  induction as with
+  | nil => simp
+  | cons a as ih => simp [ih, Nat.succ_add]
+
+@[simp] theorem map_nil {α : Type u} {β : Type v} (f : α → β) : map f [] = [] := rfl
+@[simp] theorem map_cons {α : Type u} {β : Type v} (f : α → β) (a : α) (as : List α) : map f (a :: as) = f a :: map f as := rfl
+
+@[simp] theorem map_append {α : Type u} {β : Type v} (f : α → β) (as bs : List α) : map f (as ++ bs) = map f as ++ map f bs := by
+  induction as with
+  | nil => rfl
+  | cons a as ih => simp [ih]
+
+end List

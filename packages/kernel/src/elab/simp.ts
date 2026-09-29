@@ -214,10 +214,18 @@ class Matcher {
         if (pa.every((x, i) => this.match(x, ta[i], depth + 1))) return true;
         this.vals = snapshot;
       }
-      // a constructor pattern against a term that computes to a constructor
+      // Nat.succ ?n  against  t + k  (k a numeral ≥ 1): t + k = succ (t + (k - 1))
+      if (pf.k === 'const' && pf.name === 'Nat.succ' && tf.k === 'const' && tf.name === 'Nat.add' && ta.length === 2) {
+        const k = numeral(ta[1]);
+        if (k !== undefined && k > 0) {
+          const inner = k === 1 ? ta[0] : mkApps(tf, [ta[0], mkNumeral(k - 1)]);
+          return this.match(pa[0], inner, depth + 1);
+        }
+      }
+      // a constructor pattern against a term that computes to a constructor (only if the result stays readable)
       if (pf.k === 'const' && this.el.env.get(pf.name)?.kind === 'ctor' && tf.k === 'const' && this.el.env.get(tf.name)?.kind !== 'ctor' && t.lb === 0) {
         const w = whnfBounded(this.el, t);
-        if (w && !exprEq(w, t) && getAppFn(w).k === 'const' && this.el.env.get((getAppFn(w) as { name: string }).name)?.kind === 'ctor') return this.match(p, w, depth + 1);
+        if (w && !exprEq(w, t) && getAppFn(w).k === 'const' && this.el.env.get((getAppFn(w) as { name: string }).name)?.kind === 'ctor' && readable(this.el, w)) return this.match(p, w, depth + 1);
       }
       return false;
     }
@@ -249,12 +257,40 @@ class Matcher {
   }
 
   subst(e: Expr): Expr {
-    const r = replaceExpr(e, (x) => {
+    // the rule's own universe parameters first: the values may mention parameters with the same names
+    const l = this.levelVars.length ? instantiateLevelParamsExpr(e, this.levelVars, this.levelVars.map((n) => this.levels.get(n) ?? lparam(n))) : e;
+    return replaceExpr(l, (x) => {
       if (x.k === 'fvar' && this.pvs.has(x.id)) return this.vals.get(x.id) ?? x;
       return undefined;
     });
-    return this.levelVars.length ? instantiateLevelParamsExpr(r, this.levelVars, this.levelVars.map((n) => this.levels.get(n) ?? lparam(n))) : r;
   }
+}
+
+function numeral(e: Expr): number | undefined {
+  let n = 0;
+  while (e.k === 'app' && e.fn.k === 'const' && e.fn.name === 'Nat.succ') {
+    n++;
+    e = e.arg;
+  }
+  return e.k === 'const' && e.name === 'Nat.zero' ? n : undefined;
+}
+
+function mkNumeral(n: number): Expr {
+  let e: Expr = mkConst('Nat.zero');
+  for (let i = 0; i < n; i++) e = mkApp(mkConst('Nat.succ'), e);
+  return e;
+}
+
+/** no recursor or casesOn inside: the term is fit to show to the reader */
+function readable(el: Elaborator, e: Expr): boolean {
+  let ok = true;
+  replaceExpr(e, (x) => {
+    if (!ok) return x;
+    if (x.k === 'const' && (x.name.endsWith('.rec') || x.name.endsWith('.casesOn'))) ok = false;
+    return undefined;
+  });
+  void el;
+  return ok;
 }
 
 function whnfBounded(el: Elaborator, t: Expr): Expr | undefined {
@@ -352,6 +388,8 @@ export class Simplifier {
   simp(e: Expr): Result {
     const c = this.cache.get(e);
     if (c) return c;
+    // numerals are values: never rewritten
+    if (numeral(e) !== undefined) return { expr: e };
     if (++this.steps > this.cfg.maxSteps) throw new ElabError(['simp failed: maximum number of steps exceeded (a rewrite rule may be looping)'], this.span);
     const inner = this.congr(e);
     let r: Result = inner;
@@ -1086,21 +1124,24 @@ export function rewriteTarget(runner: TacticRunner, g: number, rule: RwRule, loc
       const d = full ? el.env.get(full) : undefined;
       if (d?.kind === 'def') eqns = el.env.equations.get(full!) ?? [];
     }
-    const candidates: Expr[] = [];
+    const candidates: { e: Expr; levels: string[] }[] = [];
+    const constOf = (n: string) => {
+      const d = el.env.get(n)!;
+      return { e: mkConst(n, d.levelParams.map(lparam)), levels: d.levelParams };
+    };
     if (eqns) {
       if (eqns.length === 0) throw new ElabError([`rw: '${(rule.term as { name: string }).name}' has no equation lemmas; use unfold`], rule.term.span);
-      for (const n of eqns) {
-        const d = el.env.get(n)!;
-        candidates.push(mkConst(n, d.levelParams.map(() => el.mctx.newLevel())));
-      }
+      for (const n of eqns) candidates.push(constOf(n));
+    } else if (rule.term.k === 'ident' && !el.lctx.findByName(rule.term.name) && el.resolveGlobal(rule.term.name)) {
+      candidates.push(constOf(el.resolveGlobal(rule.term.name)!));
     } else {
-      candidates.push(runner.elabTerm(rule.term, undefined, { allowNatural: true, span }).e);
+      candidates.push({ e: runner.elabTerm(rule.term, undefined, { allowNatural: true, span }).e, levels: [] });
     }
     let lastErr: ElabError | undefined;
     for (const cand of candidates) {
       const cp = el.mctx.checkpoint();
       try {
-        return rewriteWith(runner, g, cand, rule.rev, loc, rule.term.span);
+        return rewriteWith(runner, g, cand.e, rule.rev, loc, rule.term.span, cand.levels);
       } catch (e) {
         if (!(e instanceof ElabError)) throw e;
         el.mctx.rollback(cp);
@@ -1111,51 +1152,44 @@ export function rewriteTarget(runner: TacticRunner, g: number, rule: RwRule, loc
   });
 }
 
-function rewriteWith(runner: TacticRunner, g: number, eqProof: Expr, rev: boolean, loc: Location, span: Span): { goal: number; newGoals: number[] } {
+function rewriteWith(runner: TacticRunner, g: number, eqProof: Expr, rev: boolean, loc: Location, span: Span, levelVars: string[] = []): { goal: number; newGoals: number[] } {
   const el = runner.el;
-  let pf = eqProof;
-  let ty = el.instantiate(el.inferType(pf));
-  const opened: number[] = [];
-  for (let i = 0; i < 32; i++) {
-    if (ty.k !== 'pi') {
-      const w = el.whnf(ty);
-      if (w.k !== 'pi' || getAppFn(ty).k === 'const' && ['Eq', 'Iff'].includes((getAppFn(ty) as { name: string }).name)) break;
-      ty = w;
-    }
-    const m = ty.binfo === 'inst' ? el.newInstMVar(ty.type, span) : el.newMVar(ty.type, 'natural', { name: ty.name, what: `argument '${ty.name}'` });
-    opened.push((getAppFn(m) as { id: number }).id);
-    pf = mkApp(pf, m);
-    ty = instantiate1(ty.body, m);
-  }
-  const h = getAppFn(ty);
-  const args = getAppArgs(ty);
-  let lhs: Expr;
-  let rhs: Expr;
-  if (h.k === 'const' && h.name === 'Eq' && args.length === 3) {
-    [, lhs, rhs] = args;
-  } else if (h.k === 'const' && h.name === 'Iff' && args.length === 2) {
-    [lhs, rhs] = args;
-    pf = el.elab({ k: 'app', fn: { k: 'ident', name: 'propext', explicit: false, span }, args: [{ arg: { k: 'elaborated', e: pf, span } }], span });
-  } else {
-    throw new ElabError(['rw: the rule must be an equation or an iff, but it has type\n  ', { e: ty, lctx: el.lctx }], span);
-  }
-  if (rev) {
-    [lhs, rhs] = [rhs, lhs];
-    pf = el.elab({ k: 'app', fn: { k: 'ident', name: 'Eq.symm', explicit: false, span }, args: [{ arg: { k: 'elaborated', e: pf, span } }], span });
+  const rule = mkRule(el, 'rw', eqProof, levelVars, rev);
+  if (!rule || (rule.kind !== 'eq' && rule.kind !== 'iff')) {
+    throw new ElabError(['rw: the rule must be an equation or an iff, but it proves\n  ', { e: el.instantiate(el.inferType(eqProof)), lctx: el.lctx }], span);
   }
   const E = (e: Expr): STerm => ({ k: 'elaborated', e, span });
   const app = (fn: string, as: Expr[]) => el.elab({ k: 'app', fn: { k: 'ident', name: fn, explicit: false, span }, args: as.map((a) => ({ arg: E(a) })), span });
+  const newGoals: number[] = [];
 
   const rewriteIn = (T: Expr): { newT: Expr; eq: Expr } => {
-    const pat = el.instantiate(lhs);
-    const inst = findInstance(el, T, pat);
-    if (!inst) throw new ElabError(['rw: did not find an instance of the pattern\n  ', { e: el.instantiate(lhs), lctx: el.lctx }, '\nin\n  ', { e: T, lctx: el.lctx }], span);
-    el.synthesizeInstances(true);
-    const l = el.instantiate(lhs);
-    const r = el.instantiate(rhs);
+    const found = findInstance(el, T, rule);
+    if (!found) throw new ElabError(['rw: did not find an instance of the pattern\n  ', { e: rule.lhs, lctx: el.lctx }, '\nin\n  ', { e: T, lctx: el.lctx }], span);
+    const m = found.m;
+    // arguments that the match did not determine: instances are synthesized, propositions become new goals
+    for (const v of rule.vars) {
+      if (m.vals.has(v.id)) continue;
+      const ty = m.subst(v.type);
+      if (v.binfo === 'inst') {
+        const inst = synthInstance(el, ty);
+        if (inst) {
+          m.vals.set(v.id, inst);
+          continue;
+        }
+      }
+      if (!v.isProp) throw new ElabError(['rw: could not determine the argument of type\n  ', { e: ty, lctx: el.lctx }, '\n(give it explicitly)'], span);
+      const ng = runner.mkGoal(ty);
+      newGoals.push(ng);
+      m.vals.set(v.id, runner.goalTerm(ng));
+    }
+    const l = m.subst(rule.lhs);
+    const r = m.subst(rule.rhs);
+    let pf = m.subst(rule.proof);
+    if (rule.kind === 'iff') pf = app('propext', [rule.rev ? app('Iff.symm', [pf]) : pf]);
+    else if (rule.rev) pf = app('Eq.symm', [pf]);
     const motive = el.withSavedLctx(() => {
       const x = el.pushLocal('x', el.inferType(l));
-      const body = kabstract(el, T, l, x);
+      const body = replaceExpr(T, (e) => (e.lb === 0 && exprEq(e, l) ? x : undefined));
       return el.mkBinding('lam', [x], body);
     });
     try {
@@ -1164,8 +1198,7 @@ function rewriteWith(runner: TacticRunner, g: number, eqProof: Expr, rev: boolea
       throw new ElabError(['rw: motive is not type correct (the term to rewrite appears in a position where the other side would not typecheck)'], span);
     }
     const newT = el.instantiate(headBeta(mkApp(motive, r)));
-    const eq = app('congrArg', [motive, el.instantiate(pf)]);
-    return { newT, eq };
+    return { newT, eq: app('congrArg', [motive, pf]) };
   };
 
   let cur = g;
@@ -1186,22 +1219,22 @@ function rewriteWith(runner: TacticRunner, g: number, eqProof: Expr, rev: boolea
       return ng;
     });
   }
-  const newGoals = opened.filter((id) => !el.mctx.isAssigned(id) && el.mctx.get(id)!.kind !== 'instance');
-  for (const id of newGoals) el.mctx.get(id)!.kind = 'synthetic';
   return { goal: cur, newGoals };
 }
 
-/** the first subterm of T (in traversal order) that unifies with the pattern */
-function findInstance(el: Elaborator, T: Expr, pat: Expr): Expr | undefined {
-  const pk = keyOf(pat);
-  const pn = getAppArgs(pat).length;
-  let found: Expr | undefined;
+/** the first subterm of T (in traversal order) that matches the rule's left-hand side */
+function findInstance(el: Elaborator, T: Expr, rule: Rule): { e: Expr; m: Matcher } | undefined {
+  const pk = rule.key;
+  const pn = getAppArgs(rule.lhs).length;
+  const pvs = new Set(rule.vars.map((v) => v.id));
+  let found: { e: Expr; m: Matcher } | undefined;
   const visit = (e: Expr): void => {
     if (found) return;
-    if (e.lb === 0 && (pk === '*' || keyOf(e) === pk) && getAppArgs(e).length === pn) {
+    if (e.lb === 0 && (pk === '*' || keyOf(e) === pk) && (pk === '*' || getAppArgs(e).length === pn)) {
       const cp = el.mctx.checkpoint();
-      if (el.isDefEq(pat, e)) {
-        found = e;
+      const m = new Matcher(el, pvs, rule.levelVars);
+      if (m.match(rule.lhs, e)) {
+        found = { e, m };
         return;
       }
       el.mctx.rollback(cp);
@@ -1225,20 +1258,4 @@ function findInstance(el: Elaborator, T: Expr, pat: Expr): Expr | undefined {
   };
   visit(T);
   return found;
-}
-
-/** abstract the occurrences of t in e (syntactically, or with the same head and definitionally equal) */
-function kabstract(el: Elaborator, e: Expr, t: Expr, x: Expr): Expr {
-  const tk = keyOf(t);
-  const tn = getAppArgs(t).length;
-  return replaceExpr(e, (s) => {
-    if (s.lb > 0) return undefined;
-    if (exprEq(s, t)) return x;
-    if (keyOf(s) === tk && getAppArgs(s).length === tn && tk !== '*') {
-      const cp = el.mctx.checkpoint();
-      if (el.isDefEq(s, t)) return x;
-      el.mctx.rollback(cp);
-    }
-    return undefined;
-  });
 }

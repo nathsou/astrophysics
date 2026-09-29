@@ -118,6 +118,11 @@ export class TacticRunner {
   private admitAll(): void {
     for (const g of this.goals) if (!this.assigned(g)) this.admit(g);
     this.goals = [];
+    // goals created by a step that failed half-way are not in the list: close whatever is left
+    for (const id of this.el.mctx.collectMVars(this.el.instantiate(this.block.m))) {
+      const d = this.decl(id);
+      if (!this.assigned(id) && d) this.admit(id);
+    }
   }
 
   private admit(g: number): void {
@@ -1128,7 +1133,13 @@ export class TacticRunner {
       const alts = ind.ctors.map((c, k) => {
         const cd = el.env.get(c) as { numFields: number };
         const user = names.get(short(c)) ?? names.get(c) ?? [];
-        const fieldNames = Array.from({ length: cd.numFields }, (_, i) => (user[i] && user[i] !== '_' ? user[i] : `__f${k}_${i}`));
+        // user names go to the explicit fields, in order
+        const explicit = explicitFields(el, c);
+        let u = 0;
+        const fieldNames = Array.from({ length: cd.numFields }, (_, i) => {
+          const n = explicit[i] ? user[u++] : undefined;
+          return n && n !== '_' ? n : `__f${k}_${i}`;
+        });
         const tag = `__case${k}`;
         holes.push({ tag, ctor: c, fieldNames });
         const pat: STerm = { k: 'app', fn: this.id(c, span, true), args: fieldNames.map((n) => ({ arg: this.id(n, span) })), span };
@@ -1375,15 +1386,18 @@ export class TacticRunner {
           const pi = el.whnf(rt) as Extract<Expr, { k: 'pi' }>;
           const cd = el.env.get(c) as { numFields: number };
           const user = altNames.get(short(c)) ?? [];
+          const explicit = explicitFields(el, c);
           const minor = el.withSavedLctx(() => {
             let mt = pi.type;
             const opened: FVar[] = [];
             let k = 0;
-            while (true) {
-              const w = el.whnf(mt);
-              if (w.k !== 'pi') break;
+            let u = 0;
+            // the minor premise is Π fields, Π induction hypotheses, motive …: open exactly those binders
+            while (mt.k === 'pi') {
+              const w = mt;
               const isField = k < cd.numFields;
-              const given = user[k];
+              // names go to explicit fields, then to the induction hypotheses
+              const given = !isField || explicit[k] ? user[u++] : undefined;
               const nm = given && given !== '_' ? given : isField ? inaccessibleName(w.name) : 'ih✝';
               const fv = el.pushLocal(nm, betaAll(el.instantiate(w.type)));
               opened.push(fv);
@@ -1633,6 +1647,20 @@ function inaccessibleName(n: string): string {
   if (n.endsWith('✝')) return n;
   if (n === '_' || n === 'x✝') return 'a✝';
   return `${n}✝`;
+}
+
+/** for each field of constructor c: is it explicit? */
+function explicitFields(el: Elaborator, c: string): boolean[] {
+  const cd = el.env.get(c) as { numParams: number; numFields: number; type: Expr };
+  const out: boolean[] = [];
+  let t = cd.type;
+  let i = 0;
+  while (t.k === 'pi') {
+    if (i >= cd.numParams) out.push(t.binfo === 'default');
+    t = t.body;
+    i++;
+  }
+  return out;
 }
 
 /** β-reduce the motive applications that appear in recursor minor premises */
