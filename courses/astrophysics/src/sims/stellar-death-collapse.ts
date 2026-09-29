@@ -236,17 +236,21 @@ export default defineSim({
         ctx.beginPath(); ctx.arc(cx, cy, pnsPix * 2.4, 0, Math.PI * 2); ctx.fill();
       }
 
-      ctx.fillStyle = pal.fg;
+      // status text can sit over the star's coloured shells on narrow screens: halo it
       ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       ctx.textAlign = 'left';
+      haloText(ctx, clockLabel(), 12, 20, pal.bg, 4);
+      ctx.fillStyle = pal.fg;
       ctx.fillText(clockLabel(), 12, 20);
-      ctx.fillStyle = pal.muted;
       ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       const phaseLabel = { collapse: 'iron core collapsing', stalled: 'shock stalled — SASI sloshing', exploding: 'shock revived — blasting through the star', failed: 'shock failed — forming a black hole' }[phase];
+      haloText(ctx, phaseLabel, 12, 36, pal.bg, 4);
+      ctx.fillStyle = pal.muted;
       ctx.fillText(phaseLabel, 12, 36);
       if (outcome) {
-        ctx.fillStyle = phase === 'failed' ? pal.bad : pal.good;
         ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
+        haloText(ctx, outcome, 12, H - 14, pal.bg, 4, W - 24);
+        ctx.fillStyle = phase === 'failed' ? pal.bad : pal.good;
         ctx.fillText(outcome, 12, H - 14, W - 24);
       }
       // legend

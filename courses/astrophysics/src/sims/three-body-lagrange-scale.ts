@@ -4,7 +4,7 @@
 
 import { defineSim, Loop, createStage } from '../lib/runtime/sim';
 import { Panel, fmt } from '../lib/ui/controls';
-import { palette, onThemeChange } from '../lib/ui/theme';
+import { palette, onThemeChange, haloText } from '../lib/ui/theme';
 import { lagrangePoints } from './three-body/cr3bp';
 import { AU } from '../lib/physics/constants';
 
@@ -54,16 +54,21 @@ export default defineSim({
       ctx.fillRect(toPx(secX - rh), y - 22, toPx(secX + rh) - toPx(secX - rh), 44);
       ctx.globalAlpha = 1;
 
-      const mark = (x: number, color: string, label: string, r = 5, below = false) => {
+      const mark = (x: number, color: string, label: string, r = 5, below = false, ink?: string) => {
         const px = toPx(x);
         if (px < 10 || px > W - 10) return;
         ctx.fillStyle = color;
         ctx.beginPath(); ctx.arc(px, y, r, 0, Math.PI * 2); ctx.fill();
+        if (ink) { ctx.strokeStyle = pal.muted; ctx.lineWidth = 1; ctx.stroke(); } // pale dot: an ink rim keeps it visible on paper
         ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
         ctx.textAlign = 'center';
-        ctx.fillText(label, px, below ? y + r + 16 : y - r - 8);
+        const ly = below ? y + r + 16 : y - r - 8;
+        haloText(ctx, label, px, ly, pal.bg);
+        ctx.fillStyle = ink ?? color;
+        ctx.fillText(label, px, ly);
       };
-      mark(secX, 'rgba(140,190,255,0.95)', sys.label.split('–')[1] ?? 'secondary', 9, true); // below: L1/L2 labels sit above
+      // the planet's pale blue is for the dot only; its name is set in ink
+      mark(secX, 'rgba(140,190,255,0.95)', sys.label.split('–')[1] ?? 'secondary', 9, true, pal.fg); // below: L1/L2 labels sit above
       mark(L.L1[0], pal.series[0], 'L1');
       mark(L.L2[0], pal.series[1], 'L2');
 

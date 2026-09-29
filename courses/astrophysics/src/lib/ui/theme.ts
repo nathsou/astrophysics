@@ -48,14 +48,14 @@ export type Palette = ReturnType<typeof palette>;
  * alignment and baseline, so text over a curve, grid or tinted band keeps its full contrast.
  * Call it right before `fillText` with the same arguments.
  */
-export function haloText(ctx: CanvasRenderingContext2D, s: string, x: number, y: number, bg: string, width = 3) {
+export function haloText(ctx: CanvasRenderingContext2D, s: string, x: number, y: number, bg: string, width = 3, maxWidth?: number) {
   ctx.save();
   ctx.strokeStyle = bg;
   ctx.lineWidth = width;
   ctx.lineJoin = 'round';
   ctx.setLineDash([]);
   ctx.globalAlpha = 1;
-  ctx.strokeText(s, x, y);
+  if (maxWidth === undefined) ctx.strokeText(s, x, y); else ctx.strokeText(s, x, y, maxWidth);
   ctx.restore();
 }
 
