@@ -12,11 +12,14 @@ export interface Span {
 
 /** A source text with a line table, for turning offsets into lines and columns. */
 export class SourceFile {
+  readonly name: string;
+  readonly text: string;
   readonly lineStarts: number[];
-  constructor(
-    readonly name: string,
-    readonly text: string,
-  ) {
+  // Plain fields rather than parameter properties: Node's strip-only TypeScript mode (used when the
+  // Markdown compiler highlights DCL at build time) cannot load parameter properties.
+  constructor(name: string, text: string) {
+    this.name = name;
+    this.text = text;
     const starts = [0];
     for (let i = 0; i < text.length; i++) if (text.charCodeAt(i) === 10) starts.push(i + 1);
     this.lineStarts = starts;

@@ -3,6 +3,7 @@
  */
 import katex from 'katex';
 import { createHighlighter, type Highlighter, type ThemeRegistration } from 'shiki';
+import { dclHighlighter } from './dcl.ts';
 
 /**
  * Macros available in every equation.
@@ -70,6 +71,8 @@ const LANGS = ['ts', 'typescript', 'js', 'javascript', 'python', 'bash', 'sh', '
 let highlighter: Promise<Highlighter> | undefined;
 
 export async function highlight(code: string, lang: string | null | undefined): Promise<string> {
+  // DCL is highlighted by the compiler's own lexer, not by a TextMate grammar (HDL.md, Highlighting).
+  if (lang === 'dcl') return (await dclHighlighter())(code);
   highlighter ??= createHighlighter({ themes: [THEME_LIGHT, THEME_DARK], langs: LANGS });
   const h = await highlighter;
   const l = lang && LANGS.includes(lang) ? lang : 'text';
