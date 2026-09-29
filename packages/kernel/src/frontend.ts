@@ -105,6 +105,24 @@ interface Scope {
 }
 
 
+/** the measures to try when structural recursion fails: each argument, as a natural number */
+function wfCandidates(cmd: Extract<Command, { k: 'def' }>): NonNullable<Extract<Command, { k: 'def' }>['termination']>[] {
+  const span = cmd.nameSpan;
+  const out: NonNullable<Extract<Command, { k: 'def' }>['termination']>[] = [];
+  if (cmd.body.k === 'equations' && cmd.body.alts.length) {
+    const n = cmd.body.alts[0].pats.length;
+    for (let k = 0; k < n; k++) {
+      const names = Array.from({ length: n }, (_, i) => ({ name: i === k ? `__auto${k}` : '_', span }));
+      out.push({ names, by: { k: 'ident', name: `__auto${k}`, explicit: false, span } });
+    }
+  }
+  for (const b of cmd.binders) {
+    if (b.binfo !== 'default') continue;
+    for (const x of b.names) if (x.name !== '_') out.push({ by: { k: 'ident', name: x.name, explicit: false, span } });
+  }
+  return out;
+}
+
 /** reduction budget for the kernel's check of one declaration */
 const KERNEL_FUEL = 5_000_000;
 
@@ -644,8 +662,34 @@ export class Processor {
     const name = cmd.kind === 'example' ? '_example' : this.fullName(cmd.name);
     const savedNs = this.resolveNs;
     if (name.includes('.') && cmd.kind !== 'example') this.resolveNs = name.slice(0, name.lastIndexOf('.'));
+    const snap = { infos: this.infos.length, tactics: this.tactics.length, warns: this.pendingWarnings.length, msgs: res.messages.length };
     try {
       this.defCommandCore(cmd, res, name, forceRecursive);
+    } catch (e) {
+      if (!(e instanceof ElabError) || cmd.termination || cmd.kind === 'example' || !/^structural recursion failed/.test(e.message)) throw e;
+      // as Lean does: when structural recursion fails, try well-founded recursion on each
+      // natural-number argument in turn (`isEven n` from `isEven (n + 2)`)
+      const failed = { infos: this.infos.slice(snap.infos), tactics: this.tactics.slice(snap.tactics), warns: this.pendingWarnings.slice(snap.warns) };
+      const reset = () => {
+        this.infos.length = snap.infos;
+        this.tactics.length = snap.tactics;
+        this.pendingWarnings.length = snap.warns;
+        res.messages.length = snap.msgs;
+      };
+      for (const termination of wfCandidates(cmd)) {
+        reset();
+        try {
+          this.wfDef({ ...cmd, termination }, res, name);
+          return;
+        } catch (e2) {
+          if (!(e2 instanceof ElabError)) throw e2;
+        }
+      }
+      reset();
+      this.infos.push(...failed.infos);
+      this.tactics.push(...failed.tactics);
+      this.pendingWarnings.push(...failed.warns);
+      throw e;
     } finally {
       this.resolveNs = savedNs;
     }
@@ -778,7 +822,7 @@ export class Processor {
    * patterns. The equation lemmas are proved with WellFounded.fix_eq.
    */
   private wfDef(cmd: Extract<Command, { k: 'def' }>, res: CommandResult, name: string): void {
-    if (cmd.kind === 'theorem' || cmd.kind === 'example') throw new ElabError(['termination_by is only supported on definitions'], cmd.nameSpan);
+    if (cmd.kind === 'example') throw new ElabError(['termination_by is not supported on examples'], cmd.nameSpan);
     if (!this.env.has('WellFounded.fix') || !this.env.has('Nat.lt_wf')) throw new ElabError(['termination_by needs WellFounded.fix and Nat.lt_wf from the standard library'], cmd.nameSpan);
     const { el, fvars, type: typeH } = this.elabHeader(cmd.binders, cmd.type, cmd.levelParams);
     this.infosFrom(el, () => {
@@ -802,7 +846,10 @@ export class Processor {
           const w = el.whnf(R);
           if (w.k !== 'pi') throw new ElabError([`too many patterns: the type has only ${explicitSeen} explicit argument(s)`], alts[0].span);
           const nm = term.names?.[explicitSeen]?.name;
-          const fv = el.pushLocal(w.binfo === 'default' && nm && nm !== '_' ? nm : columnName(el, w.name, w.type, cols.length), w.type, w.binfo);
+          const auto = nm?.startsWith('__auto');
+          const fv = el.pushLocal(w.binfo === 'default' && nm && nm !== '_' && !auto ? nm : columnName(el, w.name, w.type, cols.length), w.type, w.binfo);
+          // an automatically chosen measure refers to the column by a hidden name
+          if (w.binfo === 'default' && auto) el.aliases.set(nm!, fv);
           if (w.binfo !== 'default') padded.push(cols.length);
           else explicitSeen++;
           cols.push(fv);
@@ -943,6 +990,12 @@ export class Processor {
       ({ type: vT, value: vV } = this.closeOverSection(el, vT, vV) as { type: Expr; value: Expr });
       const params = usedLevelParams(g.params, [vT, vV], cmd.levelParams);
       if (el.usesSorry) res.messages.push({ severity: 'warning', span: cmd.nameSpan, msg: [`declaration uses 'sorry'`] });
+      if (cmd.kind === 'theorem') {
+        this.addDecl({ kind: 'theorem', name, levelParams: params, type: vT, value: vV, doc: cmd.doc }, res, cmd.nameSpan);
+        if (res.output?.k === 'decl') res.output.termination = { kind: 'wf', measure: m, lctx: hideLocals(measureLctx, [f.id, n.id, rec.id, hx.id]), obligations };
+        if (cmd.attrs) this.applyAttrs(name, cmd.attrs, cmd.nameSpan);
+        return;
+      }
       this.addDecl({ kind: 'def', name, levelParams: params, type: vT, value: vV, height: defHeight(this.env, vV), doc: cmd.doc, compiled: { recursive: true } }, res, cmd.nameSpan);
       if (res.output?.k === 'decl') res.output.termination = { kind: 'wf', measure: m, lctx: hideLocals(measureLctx, [f.id, n.id, rec.id, hx.id]), obligations };
       if (cmd.attrs) this.applyAttrs(name, cmd.attrs, cmd.nameSpan);
@@ -1547,71 +1600,16 @@ function mentionsName(cmd: Extract<Command, { k: 'def' }>, short: string, full: 
   let found = false;
   // inside `def List.f`, `f` refers to the function being defined
   const last = short.includes('.') ? short.slice(short.lastIndexOf('.') + 1) : short;
-  const visit = (t: STerm | undefined): void => {
-    if (!t || found) return;
-    switch (t.k) {
-      case 'ident':
-        if (t.name === short || t.name === full || t.name === last) found = true;
-        return;
-      case 'app':
-        visit(t.fn);
-        t.args.forEach((a) => visit(a.arg));
-        return;
-      case 'lam':
-      case 'pi':
-      case 'exists':
-        t.binders.forEach((b) => visit(b.type));
-        visit(t.body);
-        return;
-      case 'arrow':
-        visit(t.dom);
-        visit(t.cod);
-        return;
-      case 'let':
-        visit(t.type);
-        visit(t.value);
-        visit(t.body);
-        return;
-      case 'anon':
-        t.args.forEach(visit);
-        return;
-      case 'ascribe':
-        visit(t.term);
-        visit(t.type);
-        return;
-      case 'match':
-        t.discrs.forEach(visit);
-        t.alts.forEach((a) => visit(a.rhs));
-        return;
-      case 'proj':
-      case 'paren':
-        visit(t.term);
-        return;
-      case 'show':
-        visit(t.type);
-        visit(t.term);
-        return;
-      case 'if':
-        visit(t.cond);
-        visit(t.then);
-        visit(t.else);
-        return;
-      case 'have':
-        visit(t.type);
-        visit(t.value);
-        visit(t.body);
-        return;
-      case 'calc':
-        t.steps.forEach((st) => {
-          visit(st.rel);
-          visit(st.proof);
-        });
-        return;
-      case 'subst':
-        visit(t.eq);
-        visit(t.term);
-        return;
+  // every identifier of the body, tactic blocks included (`by exact f n`)
+  const visit = (x: unknown): void => {
+    if (found || !x || typeof x !== 'object') return;
+    if (Array.isArray(x)) return x.forEach(visit);
+    const o = x as Record<string, unknown>;
+    if (o.k === 'ident' && (o.name === short || o.name === full || o.name === last)) {
+      found = true;
+      return;
     }
+    for (const [k, v] of Object.entries(o)) if (k !== 'span') visit(v);
   };
   if (cmd.body.k === 'term') visit(cmd.body.term);
   else cmd.body.alts.forEach((a) => visit(a.rhs));

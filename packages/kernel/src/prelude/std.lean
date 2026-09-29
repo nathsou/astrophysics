@@ -212,6 +212,18 @@ def Bool.decEq : (a b : Bool) → Decidable (a = b)
 
 instance instDecidableEqBool : DecidableEq Bool := Bool.decEq
 
+@[simp] theorem Bool.and_eq_true (a b : Bool) : ((a && b) = true) = (a = true ∧ b = true) := by
+  cases a <;> cases b <;> simp
+
+@[simp] theorem Bool.or_eq_true (a b : Bool) : ((a || b) = true) = (a = true ∨ b = true) := by
+  cases a <;> cases b <;> simp
+
+@[simp] theorem Bool.not_eq_true' (a : Bool) : ((!a) = true) = (a = false) := by
+  cases a <;> simp
+
+@[simp] theorem Bool.not_eq_true (a : Bool) : (¬ a = true) = (a = false) := by
+  cases a <;> simp
+
 -- ---------------------------------------------------------------------------
 -- natural numbers
 
@@ -342,17 +354,17 @@ theorem mul_assoc (n m k : Nat) : n * m * k = n * (m * k) := by
 -- ---------------------------------------------------------------------------
 -- order
 
-theorem le_refl (n : Nat) : n ≤ n := Nat.le.refl
-theorem le_succ (n : Nat) : n ≤ n + 1 := Nat.le.step Nat.le.refl
+@[simp] theorem le_refl (n : Nat) : n ≤ n := Nat.le.refl
+@[simp] theorem le_succ (n : Nat) : n ≤ n + 1 := Nat.le.step Nat.le.refl
 theorem le_step {n m : Nat} (h : n ≤ m) : n ≤ m + 1 := Nat.le.step h
-theorem lt_succ_self (n : Nat) : n < n + 1 := Nat.le.refl
+@[simp] theorem lt_succ_self (n : Nat) : n < n + 1 := Nat.le.refl
 
 theorem le_trans {n m k : Nat} (h₁ : n ≤ m) (h₂ : m ≤ k) : n ≤ k := by
   induction h₂ with
   | refl => exact h₁
   | step _ ih => exact Nat.le.step ih
 
-theorem zero_le (n : Nat) : 0 ≤ n := by
+@[simp] theorem zero_le (n : Nat) : 0 ≤ n := by
   induction n with
   | zero => exact Nat.le.refl
   | succ n ih => exact Nat.le.step ih
@@ -548,6 +560,11 @@ def Option.bind {α : Type u} {β : Type v} : Option α → (α → Option β) �
 def Option.getD {α : Type u} : Option α → α → α
   | none, d => d
   | some a, _ => a
+
+/-- Whether an option holds a value. -/
+def Option.isSome {α : Type u} : Option α → Bool
+  | some _ => true
+  | none => false
 
 @[simp] theorem Option.map_none {α : Type u} {β : Type v} (f : α → β) : Option.map f none = none := rfl
 @[simp] theorem Option.map_some {α : Type u} {β : Type v} (f : α → β) (a : α) : Option.map f (some a) = some (f a) := rfl
@@ -905,6 +922,16 @@ theorem Nat.sub_cases (a b : Nat) : (b ≤ a ∧ a - b + b = a) ∨ (a < b ∧ a
   match Nat.decLe b a with
   | isTrue h => Or.inl ⟨h, Nat.sub_add_cancel h⟩
   | isFalse h => Or.inr ⟨by omega, Nat.sub_eq_zero_of_le (by omega)⟩
+
+theorem Nat.max_cases (a b : Nat) : (a ≤ b ∧ Nat.max a b = b) ∨ (b < a ∧ Nat.max a b = a) := by
+  by_cases h : a ≤ b
+  · left; exact ⟨h, by simp [Nat.max, h]⟩
+  · right; exact ⟨by omega, by simp [Nat.max, h]⟩
+
+theorem Nat.min_cases (a b : Nat) : (a ≤ b ∧ Nat.min a b = a) ∨ (b < a ∧ Nat.min a b = b) := by
+  by_cases h : a ≤ b
+  · left; exact ⟨h, by simp [Nat.min, h]⟩
+  · right; exact ⟨by omega, by simp [Nat.min, h]⟩
 
 /-- `∀ n, n < k → p n` is decidable when each `p n` is: check 0, 1, …, k - 1. -/
 def Nat.decBallLT (p : Nat → Prop) [inst : ∀ n, Decidable (p n)] : (k : Nat) → Decidable (∀ n, n < k → p n)

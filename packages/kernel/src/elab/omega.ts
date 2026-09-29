@@ -274,7 +274,7 @@ function proveGoal(runner: TacticRunner, el: Elaborator, goal: Expr, span: Span)
   }
 }
 
-type Split = { kind: 'ne'; h: Expr; a: Expr; b: Expr } | { kind: 'sub'; a: Expr; b: Expr };
+type Split = { kind: 'ne'; h: Expr; a: Expr; b: Expr } | { kind: 'sub' | 'max' | 'min'; a: Expr; b: Expr };
 
 /** read a hypothesis as linear facts (and disequalities to split on) */
 function addHyp(el: Elaborator, span: Span, facts: Fact[], splits: Split[], t: Expr, h: Expr, depth = 0): void {
@@ -314,12 +314,12 @@ function addHyp(el: Elaborator, span: Span, facts: Fact[], splits: Split[], t: E
   }
 }
 
-/** the truncated subtractions a - b occurring in the facts */
-function subtractions(el: Elaborator, facts: Fact[]): { a: Expr; b: Expr }[] {
+/** the applications `op a b` occurring in the facts (truncated subtractions, max, min) */
+function occurrences(el: Elaborator, facts: Fact[], op: string): { a: Expr; b: Expr }[] {
   const out: { a: Expr; b: Expr }[] = [];
   const visit = (e: Expr) =>
     replaceExpr(e, (x) => {
-      if (x.k === 'app' && getAppFn(x).k === 'const' && (getAppFn(x) as { name: string }).name === 'Nat.sub' && getAppArgs(x).length === 2 && x.lb === 0) {
+      if (x.k === 'app' && getAppFn(x).k === 'const' && (getAppFn(x) as { name: string }).name === op && getAppArgs(x).length === 2 && x.lb === 0) {
         const [a, b] = getAppArgs(x);
         if (!out.some((s) => exprEq(s.a, a) && exprEq(s.b, b))) out.push({ a, b });
       }
@@ -331,6 +331,12 @@ function subtractions(el: Elaborator, facts: Fact[]): { a: Expr; b: Expr }[] {
   }
   return out;
 }
+
+const SPLIT_OPS = [
+  { kind: 'sub', op: 'Nat.sub', lemma: 'Nat.sub_cases' },
+  { kind: 'max', op: 'Nat.max', lemma: 'Nat.max_cases' },
+  { kind: 'min', op: 'Nat.min', lemma: 'Nat.min_cases' },
+] as const;
 
 /** prove False from the hypotheses in the local context */
 function refute(runner: TacticRunner, el: Elaborator, span: Span): Expr {
@@ -344,8 +350,8 @@ function refute(runner: TacticRunner, el: Elaborator, span: Span): Expr {
       if (!(e instanceof ElabError)) throw e;
     }
   }
-  // a - b: either b ≤ a and a - b + b = a, or a < b and a - b = 0
-  if (el.env.has('Nat.sub_cases')) for (const s of subtractions(el, facts)) splits.push({ kind: 'sub', a: s.a, b: s.b });
+  // a - b: either b ≤ a and a - b + b = a, or a < b and a - b = 0 (and similarly for max and min)
+  for (const o of SPLIT_OPS) if (el.env.has(o.lemma)) for (const s of occurrences(el, facts, o.op)) splits.push({ kind: o.kind, a: s.a, b: s.b });
   return refuteWith(runner, el, facts, splits, span);
 }
 
@@ -365,12 +371,20 @@ function refuteWith(runner: TacticRunner, el: Elaborator, facts: Fact[], splits:
     );
   }
   const [s, ...rest] = splits;
-  if (s.kind === 'sub') {
-    const sub = mkApps(mkConst('Nat.sub'), [s.a, s.b]);
+  if (s.kind !== 'ne') {
+    const o = SPLIT_OPS.find((x) => x.kind === s.kind)!;
+    const t = mkApps(mkConst(o.op), [s.a, s.b]);
     const eqN = (x: Expr, y: Expr) => mkApps(mkConst('Eq', [one]), [mkConst('Nat'), x, y]);
     const and = (x: Expr, y: Expr) => mkApps(mkConst('And'), [x, y]);
-    const leftT = and(mkApps(mkConst('Nat.le'), [s.b, s.a]), eqN(mkApps(mkConst('Nat.add'), [sub, s.b]), s.a));
-    const rightT = and(mkApps(mkConst('Nat.lt'), [s.a, s.b]), eqN(sub, natNum(0n)));
+    const le = (x: Expr, y: Expr) => mkApps(mkConst('Nat.le'), [x, y]);
+    const lt = (x: Expr, y: Expr) => mkApps(mkConst('Nat.lt'), [x, y]);
+    // the two branches of the lemma `o.lemma a b`
+    const [leftT, rightT] =
+      s.kind === 'sub'
+        ? [and(le(s.b, s.a), eqN(mkApps(mkConst('Nat.add'), [t, s.b]), s.a)), and(lt(s.a, s.b), eqN(t, natNum(0n)))]
+        : s.kind === 'max'
+          ? [and(le(s.a, s.b), eqN(t, s.b)), and(lt(s.b, s.a), eqN(t, s.a))]
+          : [and(le(s.a, s.b), eqN(t, s.a)), and(lt(s.b, s.a), eqN(t, s.b))];
     const branch = (T: Expr) =>
       el.withSavedLctx(() => {
         const h = el.pushLocal('h✝', T);
@@ -382,7 +396,7 @@ function refuteWith(runner: TacticRunner, el: Elaborator, facts: Fact[], splits:
       });
     const left = branch(leftT);
     const right = branch(rightT);
-    return app(el, 'Or.elim', [app(el, 'Nat.sub_cases', [s.a, s.b], span), left, right], span, mkConst('False'));
+    return app(el, 'Or.elim', [app(el, o.lemma, [s.a, s.b], span), left, right], span, mkConst('False'));
   }
   // a ≠ b: a < b or b < a
   const succ = (x: Expr) => mkApps(mkConst('Nat.add'), [x, natNum(1n)]);

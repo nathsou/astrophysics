@@ -303,7 +303,12 @@ function leaf(el: Elaborator, st: State, row: Row, colTypes: Expr[]): Expr {
       el.eqnLeaves.push({ lctx: el.lctx, vals: [...st.argVals.values()], rhs: el.instantiate(rhs), fn: st.rec?.fn ?? el.wfFn });
     }
     if (st.rec) rhs = replaceRecCalls(el, el.instantiate(rhs), st, row.alt.rhs.span);
-    else if (el.leafHook) rhs = el.leafHook(el.instantiate(rhs));
+    else if (el.leafHook) {
+      // tactic blocks may call the function being defined: run them before its calls are replaced
+      el.synthesizePending(false);
+      el.runTacticBlocks(false);
+      rhs = el.leafHook(el.instantiate(rhs));
+    }
     return rhs;
   });
 }

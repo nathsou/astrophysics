@@ -681,7 +681,7 @@ export class Parser {
         const opTok = this.next();
         const rp = n.kind === 'infixr' ? n.prec : n.prec + 1;
         const rhs = this.term(rp);
-        const fn: STerm = { k: 'ident', name: n.target, explicit: false, span: { from: opTok.from, to: opTok.to } };
+        const fn: STerm = { k: 'ident', name: n.target, explicit: false, root: true, span: { from: opTok.from, to: opTok.to } };
         left = { k: 'app', fn, args: [{ arg: left }, { arg: rhs }], span: this.span(from) };
         lastWasApp = false;
         continue;
@@ -922,7 +922,7 @@ export class Parser {
       const n = this.prefix.get(t.text)!;
       const opTok = this.next();
       const arg = this.term(n.prec === APP_PREC ? APP_PREC : n.prec);
-      const fn: STerm = { k: 'ident', name: n.target, explicit: false, span: { from: opTok.from, to: opTok.to } };
+      const fn: STerm = { k: 'ident', name: n.target, explicit: false, root: true, span: { from: opTok.from, to: opTok.to } };
       return { k: 'app', fn, args: [{ arg }], span: this.span(from) };
     }
     // dependent arrow  (x : A) → B

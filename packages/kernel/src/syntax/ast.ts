@@ -34,7 +34,7 @@ export interface SAlt {
 }
 
 export type STerm = { span: Span } & (
-  | { k: 'ident'; name: string; levels?: SLevel[]; explicit: boolean }
+  | { k: 'ident'; name: string; levels?: SLevel[]; explicit: boolean; /** a notation's target: a global name, never a local or a namespace member */ root?: boolean }
   | { k: 'dotIdent'; name: string }
   | { k: 'sort'; sort: 'Prop' | 'Type' | 'Sort' | 'star' | 'box'; level?: SLevel }
   | { k: 'app'; fn: STerm; args: SArg[] }

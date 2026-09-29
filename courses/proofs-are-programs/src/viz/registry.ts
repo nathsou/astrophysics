@@ -14,4 +14,5 @@ export const widgets: Record<string, unknown> = {
   ObligationGrid: lz(() => import('./labs/ObligationGrid.tsx'), 'ObligationGrid'),
   SimulationLab: lz(() => import('./labs/SimulationLab.tsx'), 'SimulationLab'),
   ErasureView: lz(() => import('./labs/ErasureView.tsx'), 'ErasureView'),
+  ReflectionLab: lz(() => import('./labs/ReflectionLab.tsx'), 'ReflectionLab'),
 };

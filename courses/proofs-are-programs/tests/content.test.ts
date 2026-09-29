@@ -4,6 +4,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { run } from './util.ts';
 import { judge, parseF, theoremDecl } from '../src/engines/props.ts';
+import { reflectionProof } from '../src/engines/reflect.ts';
 
 interface Snippet {
   line: number;
@@ -50,6 +51,9 @@ export function extract(src: string): Snippet[] {
     const code = attr(tag, 'code');
     const allowErrors = /\berrors\b/.test(tag) || m[1] === 'Exercise';
     if (code !== undefined) out.push({ line: lineOf(m.index!), code: setup + '\n' + code, allowErrors, what: m[1] });
+    // the reflection lab builds its proof from a formula
+    const formula = attr(tag, 'formula');
+    if (m[1] === 'ReflectionLab' && formula !== undefined) out.push({ line: lineOf(m.index!), code: setup + '\n' + reflectionProof(formula).code, allowErrors, what: m[1] });
     const sol = attr(tag, 'solution');
     if (sol !== undefined) out.push({ line: lineOf(m.index!), code: setup + '\n' + sol, allowErrors: false, what: `${m[1]} solution` });
   }

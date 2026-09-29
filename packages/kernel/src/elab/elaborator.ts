@@ -13,6 +13,8 @@ import {
   mkFVar,
   mkLet,
   mkSort,
+  mkPi,
+  liftLooseBVars,
 } from '../core/expr.ts';
 import { type Level, lofNat, lparam, lsucc, lzero, lmax, limax, toNat } from '../core/level.ts';
 import { Environment, LocalContext, type LocalDecl, freshFVarId } from '../core/env.ts';
@@ -232,6 +234,7 @@ export class Elaborator {
   /** resolve an identifier to a head expression, without inserting implicit arguments */
   private resolveIdent(s: Extract<STerm, { k: 'ident' }>): Resolved {
     const name = s.name;
+    if (s.root && this.env.has(name)) return this.constExpr(name, s.levels, s.span);
     // pattern aliases
     const al = this.aliases.get(name);
     if (al) return { e: al, type: this.inferType(al, s.span) };
@@ -1015,6 +1018,14 @@ export class Elaborator {
           flush(true);
           w = this.whnf(ft);
         }
+      }
+      if (w.k !== 'pi' && i < positional.length && getAppFn(this.instantiate(w)).k === 'mvar') {
+        // a function of a type not yet known (`∀ w, … w y …`): it is some function type α → β
+        // (α and β live in the context of the unknown type, not in the current one)
+        const md = this.mctx.get((getAppFn(this.instantiate(w)) as { id: number }).id)!;
+        const A = this.mctx.newMVar(md.lctx, mkSort(this.mctx.newLevel()), 'natural', { span });
+        const B = this.mctx.newMVar(md.lctx, mkSort(this.mctx.newLevel()), 'natural', { span });
+        if (this.isDefEq(w, mkPi('x', A, liftLooseBVars(B, 0, 1)))) w = this.whnf(ft);
       }
       if (w.k !== 'pi') {
         if (i < positional.length) {

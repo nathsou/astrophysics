@@ -1225,11 +1225,17 @@ export class TacticRunner {
   }
 
   private cases(t: Extract<Tactic, { k: 'cases' }>): void {
-    const g = this.mainGoal(t.span);
-    if (t.hname) this.fail(t.span, '`cases h : e` is not supported; use `generalize h : e = x` first');
-    const target = this.withGoal(g, () => this.elabTerm(t.target, undefined, { span: t.span }).e);
+    let g = this.mainGoal(t.span);
     const names = new Map<string, string[]>();
     for (const a of t.alts ?? []) names.set(a.ctor.replace(/^\./, ''), a.names.map((n) => n.name));
+    let target: Expr;
+    if (t.hname) {
+      // `cases h : e`: generalize e to a variable x, remembering h : e = x, then case on x
+      this.generalize({ k: 'generalize', name: t.hname, term: t.target, var: 'x✝', span: t.span } as Extract<Tactic, { k: 'generalize' }>);
+      g = this.mainGoal(t.span);
+      const decls = this.decl(g).lctx.decls;
+      target = mkFVar(decls[decls.length - 2].id);
+    } else target = this.withGoal(g, () => this.elabTerm(t.target, undefined, { span: t.span }).e);
     const res = this.casesCore(g, target, t.span, names);
     this.runAlts(res, t.alts, t.span);
   }

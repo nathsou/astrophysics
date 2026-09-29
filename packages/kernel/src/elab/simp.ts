@@ -619,6 +619,22 @@ export class Simplifier {
       el.mctx.rollback(cp);
       return undefined;
     }
+    // universe variables that occur only in the types of the pattern variables (`α : Sort u`)
+    if (rule.levelVars.some((n) => !m.levels.has(n))) {
+      for (const v of rule.vars) {
+        const val = m.vals.get(v.id);
+        if (val === undefined) continue;
+        try {
+          m.match(v.type, el.whnf(el.instantiate(el.inferType(val))));
+        } catch {
+          /* ignore */
+        }
+      }
+      if (rule.levelVars.some((n) => !m.levels.has(n))) {
+        el.mctx.rollback(cp);
+        return undefined;
+      }
+    }
     // discharge the hypotheses of conditional rules
     for (const v of rule.vars) {
       if (m.vals.has(v.id)) continue;
