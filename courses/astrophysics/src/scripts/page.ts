@@ -253,13 +253,20 @@ window.addEventListener('depth:change', layoutAllTiers);
 
 // ---------- Drop cap ----------
 // The first visible body paragraph of a chapter opens with an accent drop cap (see .dropcap in global.css).
+// Only that paragraph: if it cannot take one (it opens with maths, say), the chapter gets none, rather
+// than a cap landing on a later paragraph, mid-section, where it reads as a new beginning.
 function markDropCap() {
   document.querySelectorAll('.dropcap').forEach((el) => el.classList.remove('dropcap'));
   for (const p of document.querySelectorAll<HTMLElement>('.article p')) {
     if (p.closest('.chapter-head, .aside, .box, details, figure, .lvl-pill, .lvl-tag, .tier-more')) continue;
     if (!p.offsetParent) continue; // hidden at this depth
-    if (!/^\p{L}/u.test(p.textContent ?? '') || p.firstChild?.nodeType !== Node.TEXT_NODE) continue;
-    if ((p.textContent ?? '').length > 80) { p.classList.add('dropcap'); }
+    const text = (p.textContent ?? '').trimStart();
+    let first: Node | null = p.firstChild;
+    while (first && first.nodeType === Node.TEXT_NODE && !first.textContent!.trim()) first = first.nextSibling;
+    // ::first-letter reaches through leading inline markup: a link to an earlier chapter, bold or italics.
+    const opensWithText = first?.nodeType === Node.TEXT_NODE
+      || (first instanceof HTMLElement && /^(A|STRONG|EM|B|I)$/.test(first.tagName) && first.firstChild?.nodeType === Node.TEXT_NODE);
+    if (opensWithText && /^\p{L}/u.test(text) && text.length > 80) p.classList.add('dropcap');
     break;
   }
 }
@@ -358,3 +365,66 @@ document.addEventListener('focusin', (e) => { const el = tipTarget(e.target); if
 document.addEventListener('focusout', (e) => { if (e.target === tipFor) hideTip(); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && tipFor) hideTip(); });
 window.addEventListener('scroll', () => { if (tipFor) hideTip(); }, { passive: true });
+
+// ---------- In-chapter wayfinding ----------
+// The current chapter's sections are listed under it in the sidebar, the one being read is marked
+// (aria-current="location"), and a hairline along the top shows how far through the chapter you are.
+{
+  const current = document.querySelector<HTMLElement>('.sidebar li > a[aria-current="page"]');
+  const article = document.querySelector<HTMLElement>('.article');
+  const sidebar = document.querySelector<HTMLElement>('.sidebar');
+  if (current && article && sidebar) {
+    const bar = document.createElement('div');
+    bar.className = 'progress';
+    bar.setAttribute('aria-hidden', 'true');
+    document.body.prepend(bar);
+    const list = document.createElement('ol');
+    list.className = 'sections';
+    list.setAttribute('aria-label', 'Sections in this chapter');
+    current.after(list);
+    let heads: HTMLElement[] = [];
+    let links: HTMLAnchorElement[] = [];
+    let active = -2;
+    const update = () => {
+      const r = article.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, -r.top / Math.max(1, r.height - innerHeight)));
+      bar.style.transform = `scaleX(${p})`;
+      let i = -1;
+      for (let k = 0; k < heads.length; k++) if (heads[k].getBoundingClientRect().top < innerHeight * 0.3) i = k;
+      if (i === active) return;
+      active = i;
+      links.forEach((a, k) => (k === i ? a.setAttribute('aria-current', 'location') : a.removeAttribute('aria-current')));
+      // keep the marked section visible in the (scrollable) sidebar without moving the page
+      const a = links[i];
+      if (a) {
+        const ar = a.getBoundingClientRect(), sr = sidebar.getBoundingClientRect();
+        if (ar.bottom > sr.bottom - 24 || ar.top < sr.top + 24) sidebar.scrollTop += ar.top - sr.top - sr.height / 2;
+      }
+    };
+    const build = () => {
+      heads = [...article.querySelectorAll<HTMLElement>('h2[id]')].filter((h) => h.offsetParent && !h.closest('.chapter-head, .box, details, figure'));
+      list.replaceChildren(...heads.map((h) => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = `#${h.id}`;
+        a.append(...[...h.childNodes].map((n) => n.cloneNode(true)));
+        a.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
+        a.querySelectorAll('a').forEach((el) => el.replaceWith(...el.childNodes));
+        li.append(a);
+        return li;
+      }));
+      links = [...list.querySelectorAll('a')];
+      active = -2;
+      update();
+    };
+    build();
+    let queued = false;
+    const schedule = () => { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; update(); }); } };
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    window.addEventListener('depth:change', () => requestAnimationFrame(build));
+    document.addEventListener('click', (e) => {
+      if ((e.target as Element).closest?.('.lvl-pill, .lvl-hide, .tier-more')) requestAnimationFrame(build);
+    });
+  }
+}

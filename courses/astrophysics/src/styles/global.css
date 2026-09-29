@@ -41,7 +41,9 @@
   /* Labels, controls and figure furniture are set in the mono face. */
   --font-ui: var(--font-mono);
 
-  --text-w: 40rem;
+  /* 36rem of 19px Newsreader ≈ 70–75 characters per line (40rem at 18px measured 88). */
+  --text-w: 36rem;
+  --text-size: 1.1875rem;
   --margin-w: 190px;
   --gap: 44px;
   --sidebar-w: 17rem;
@@ -127,9 +129,9 @@ main:focus { outline: none; }
 .label, .kicker, .part-label { font-family: var(--font-mono); font-weight: 500; font-size: 0.625rem; letter-spacing: 0.2em; text-transform: uppercase; }
 
 h1, h2, h3, h4 { font-weight: 400; line-height: 1.15; letter-spacing: -0.015em; }
-h2 { font-size: 2.1rem; font-style: italic; margin: 3.6rem 0 1rem; letter-spacing: -0.02em; }
+h2 { font-size: 2.1rem; font-style: italic; margin: 3.2rem 0 1.1rem; letter-spacing: -0.02em; }
 h2::before { content: ''; display: block; width: 2.6rem; border-top: 2px solid var(--ac); margin-bottom: 0.9rem; }
-h3 { font-size: 1.4rem; font-weight: 600; margin: 2.5rem 0 0.75rem; }
+h3 { font-size: 1.4rem; font-weight: 600; margin: 2.3rem 0 0.8rem; }
 h4 { font-size: 1.1rem; font-weight: 600; font-style: italic; }
 h2 a.anchor, h3 a.anchor { color: inherit; text-decoration: none; }
 strong, b { font-weight: 600; }
@@ -138,6 +140,12 @@ li::marker { color: var(--ac); }
 code { font-family: var(--font-mono); font-size: 0.8em; background: var(--code-bg); padding: 0.1em 0.35em; border-radius: 3px; }
 pre { font-size: 0.8rem; line-height: 1.6; padding: 1rem 1.2rem; border-radius: var(--radius); overflow-x: auto; background: var(--code-bg) !important; border: 1px solid var(--rule); }
 pre code { background: none; padding: 0; font-size: inherit; }
+/* Code soft-wraps instead of hiding its right half behind a scrollbar (36 of 44 blocks overflowed
+   at 1280px). Shiki emits one span.line per source line: each becomes a full-width box whose wrapped
+   continuation hangs 2ch in from its first line. */
+.article pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.article pre .line { display: inline-block; width: 100%; padding-left: 2ch; text-indent: -2ch; vertical-align: top; }
+.article pre .line:empty::after { content: '\200b'; }
 /* Shiki emits both themes as CSS variables; pick the dark one when the page is dark. */
 :root[data-theme='dark'] .astro-code,
 :root[data-theme='dark'] .astro-code span { color: var(--shiki-dark) !important; }
@@ -178,6 +186,16 @@ body.landing .shell { grid-template-columns: minmax(0, 1fr); }
 .sidebar .num { flex: none; width: 1.6rem; text-align: left; color: var(--ac); font-family: var(--font-mono); font-weight: 500; font-style: normal; font-size: 0.6875rem; font-variant-numeric: tabular-nums; }
 .sidebar li > span .num { color: var(--fg-faint); }
 .sidebar .tools { display: flex; gap: 0.5rem; margin-top: 2rem; }
+/* The current chapter's sections (built by scripts/page.ts), with the one being read marked. */
+.sidebar .sections { list-style: none; margin: 0.15rem 0 0.5rem 1.05rem; padding: 0 0 0 1.1rem; border-left: 1px solid var(--line); font-size: 0.85rem; line-height: 1.3; }
+.sidebar .sections a { display: block; padding: 0.22rem 0.5rem 0.22rem 0; color: var(--fg-muted); text-decoration: none; }
+.sidebar .sections a:hover { color: var(--fg); }
+.sidebar .sections a { position: relative; }
+.sidebar .sections a[aria-current='location'] { color: var(--fg); }
+.sidebar .sections a[aria-current='location']::before { content: ''; position: absolute; left: calc(-1.1rem - 1px); top: 0.2rem; bottom: 0.2rem; width: 2px; background: var(--ac); }
+
+/* Reading progress through the chapter: a hairline along the top edge. */
+.progress { position: fixed; top: 0; left: 0; right: 0; z-index: 70; height: 3px; pointer-events: none; transform-origin: 0 50%; transform: scaleX(0); background: var(--ac); }
 
 .btn {
   font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg); background: transparent;
@@ -195,8 +213,14 @@ body.landing .shell { grid-template-columns: minmax(0, 1fr); }
   display: grid;
   grid-template-columns: [full-start] minmax(1.25rem, 1fr) [text-start] minmax(0, var(--text-w)) [text-end] var(--gap) [margin-start] var(--margin-w) [margin-end] minmax(1.25rem, 1fr) [full-end];
   padding-bottom: 8rem;
+  font-size: var(--text-size);
 }
 .article > * { grid-column: text; }
+/* Grid items do not collapse margins, so paragraph-to-paragraph gaps doubled (36px, more than a
+   whole line). Running text keeps only a bottom margin; figures and boxes keep their own. */
+.article > :is(p, ul, ol),
+.article :is(.lvl, .lvl-body, .tiers, .tier) > :is(p, ul, ol) { margin-top: 0; margin-bottom: 0.9em; }
+.article > :is(ul, ol) > li + li { margin-top: 0.3em; }
 .article > .wide { grid-column: text-start / margin-end; }
 .article > .full { grid-column: full; }
 
@@ -223,7 +247,7 @@ body.landing .shell { grid-template-columns: minmax(0, 1fr); }
 /* Boxes */
 .box {
   border-radius: var(--radius); background: var(--pn);
-  padding: 1rem 1.3rem; margin: 1.8rem 0; font-size: 1.02rem; line-height: 1.6;
+  padding: 1rem 1.3rem; margin: 1.6rem 0; font-size: 1.02rem; line-height: 1.6;
 }
 .box > .box-label { font-family: var(--font-mono); font-weight: 500; font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem; display: flex; gap: 0.5rem; align-items: center; }
 .box > :last-child { margin-bottom: 0; }
@@ -246,12 +270,18 @@ body.landing .shell { grid-template-columns: minmax(0, 1fr); }
 .box.predict .reveal { display: none; }
 .box.predict.answered .reveal { display: block; }
 
-details.hood { border: 1px dashed var(--mute); border-radius: var(--radius); margin: 1.8rem 0; background: transparent; }
-details.hood > summary { cursor: pointer; padding: 0.8rem 1.2rem; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.04em; color: var(--fg-muted); list-style: none; display: flex; gap: 0.6rem; align-items: baseline; flex-wrap: wrap; }
+/* "Under the hood": a solid ink-edged drawer (the dashed style is kept for depth pills, so the two
+   no longer look alike), with an explicit Open/Close action. */
+details.hood { border: 1px solid var(--mute); border-left: 3px solid var(--accent-2); border-radius: var(--radius); margin: 1.6rem 0; background: transparent; }
+details.hood > summary { cursor: pointer; padding: 0.75rem 1.1rem; min-height: 2.75rem; font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.04em; color: var(--fg-muted); list-style: none; display: flex; gap: 0.35rem 0.6rem; align-items: baseline; flex-wrap: wrap; }
 details.hood > summary::-webkit-details-marker { display: none; }
-details.hood > summary::before { content: '▸'; color: var(--ac); transition: transform 0.2s; }
+details.hood > summary::before { content: '▸'; color: var(--accent-2); transition: transform 0.2s; }
 details.hood[open] > summary::before { transform: rotate(90deg); }
 details.hood > summary b { color: var(--fg); font-weight: 500; }
+details.hood > summary::after { content: 'Open'; content: 'Open' / ''; margin-left: auto; padding-left: 0.6rem; color: var(--accent-2); font-size: 0.625rem; letter-spacing: 0.14em; text-transform: uppercase; }
+details.hood[open] > summary::after { content: 'Close'; content: 'Close' / ''; }
+details.hood > summary:hover { color: var(--fg); }
+details.hood > summary:hover b { color: var(--accent-2); }
 details.hood[open] > summary { border-bottom: 1px dotted var(--mute); }
 details.hood > .hood-body { padding: 1rem 1.2rem 1rem; font-size: 1rem; }
 
@@ -272,7 +302,9 @@ details.hood > .hood-body { padding: 1rem 1.2rem 1rem; font-size: 1rem; }
 .out { color: var(--accent-2); font-variant-numeric: tabular-nums; }
 
 /* ---------- Figures / sims ---------- */
-figure.sim { margin: 2.2rem 0; }
+figure.sim { margin: 2rem 0; }
+/* A prediction is answered by the figure right after it: keep the pair together. */
+.box.predict + figure.sim { margin-top: 1.1rem; }
 figure.sim .sim-host {
   position: relative; background: var(--pn); border: 1px solid var(--rule); border-radius: var(--radius);
   overflow: hidden; min-height: 120px;
@@ -310,7 +342,7 @@ input[type='range']:disabled { cursor: default; }
 input[type='range']:disabled::-webkit-slider-thumb { background: var(--mute); }
 input[type='range']:disabled::-moz-range-thumb { background: var(--mute); }
 
-input[type='range'] { -webkit-appearance: none; appearance: none; width: 8.5rem; height: 18px; background: transparent; cursor: pointer; accent-color: var(--ac); }
+input[type='range'] { -webkit-appearance: none; appearance: none; width: 8.5rem; height: 24px; background: transparent; cursor: pointer; accent-color: var(--ac); }
 input[type='range']::-webkit-slider-runnable-track { height: 3px; background: color-mix(in srgb, var(--mute) 55%, transparent); border-radius: 2px; }
 input[type='range']::-moz-range-track { height: 3px; background: color-mix(in srgb, var(--mute) 55%, transparent); border-radius: 2px; }
 input[type='range']::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: var(--ac); margin-top: -5px; border: 2px solid var(--bg-elev); }
@@ -318,6 +350,14 @@ input[type='range']::-moz-range-thumb { width: 11px; height: 11px; border-radius
 input[type='range']:focus-visible { outline: none; }
 input[type='range']:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px color-mix(in srgb, var(--ac) 45%, transparent); }
 input[type='range']:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px color-mix(in srgb, var(--ac) 45%, transparent); }
+/* Touch: a 36px-tall hit area and a thumb big enough for a fingertip (was 18px / 13px). */
+@media (pointer: coarse), (max-width: 560px) {
+  input[type='range'] { height: 36px; }
+  input[type='range']::-webkit-slider-runnable-track { height: 4px; }
+  input[type='range']::-moz-range-track { height: 4px; }
+  input[type='range']::-webkit-slider-thumb { width: 22px; height: 22px; margin-top: -9px; }
+  input[type='range']::-moz-range-thumb { width: 18px; height: 18px; }
+}
 
 /* Dimensional-analysis workbench (sims/scales-dimensions.ts): constant chips with ± power steps. */
 .dimlab { padding: 14px 16px 8px; font-family: var(--font-ui); font-size: 0.8rem; color: var(--fg); }
@@ -361,6 +401,7 @@ input[type='range']:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px colo
 }
 @media (max-width: 860px) {
   body { font-size: 1.0625rem; }
+  :root { --text-size: 1.0625rem; }
   .shell { grid-template-columns: minmax(0, 1fr); }
   /* Off-canvas drawer; `visibility` keeps its links out of the tab order while closed. */
   .sidebar {
@@ -455,7 +496,7 @@ input[type='range']:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px colo
 .depth.compact .depth-seg button { flex: 1; justify-content: center; padding: 0.35rem 0.3rem; flex-direction: column; gap: 0.1rem; font-size: 0.6rem; }
 
 /* ---------- Photos ---------- */
-figure.photo { margin: 2.2rem 0; }
+figure.photo { margin: 2rem 0; }
 figure.photo .photo-frame { display: block; border-radius: var(--radius); overflow: hidden; background: #000; border: 1px solid var(--rule); }
 figure.photo img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
 figure.photo .photo-frame:hover img { transform: scale(1.015); }
@@ -542,6 +583,12 @@ body.landing .page { max-width: 1000px; margin: 0 auto; padding: 0 40px 60px; }
 .hero .ring.r1 { right: 0; top: 40px; width: 260px; height: 260px; }
 .hero .ring.r2 { right: 60px; top: 100px; width: 140px; height: 140px; }
 .hero .ring.dot { right: 124px; top: 164px; width: 12px; height: 12px; background: var(--ac); opacity: 1; }
+/* Two planets on the rings. Periods follow Kepler's third law, T ∝ a^1.5: (260/140)^1.5 ≈ 2.53. */
+.hero .orbit { position: absolute; inset: -1px; border-radius: 50%; transform: rotate(70deg); animation: orbit 14s linear -2.7s infinite; }
+.hero .r1 .orbit { transform: rotate(-35deg); animation-duration: 35.4s; animation-delay: -31s; }
+.hero .planet { position: absolute; left: 50%; top: -4px; width: 7px; height: 7px; margin-left: -3.5px; border-radius: 50%; background: var(--ac); }
+.hero .r1 .planet { width: 9px; height: 9px; top: -5px; margin-left: -4.5px; background: var(--fg); }
+@keyframes orbit { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 .hero h1 { position: relative; margin: 0; max-width: 640px; font-size: clamp(3.4rem, 10.5vw, 6rem); line-height: 0.92; font-style: italic; letter-spacing: -0.035em; font-weight: 400; }
 .hero .lede { position: relative; max-width: 520px; margin: 22px 0 0; font-size: 1.25rem; line-height: 1.55; color: var(--fg-muted); }
 @media (max-width: 760px) {
@@ -558,4 +605,6 @@ body.landing .page { max-width: 1000px; margin: 0 auto; padding: 0 40px 60px; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: 0.001ms !important; animation-duration: 0.001ms !important; scroll-behavior: auto !important; }
   figure.photo .photo-frame:hover img { transform: none; }
+  /* The global rule above would spin an infinite animation near-instantly: stop the planets instead. */
+  .hero .orbit { animation: none !important; }
 }

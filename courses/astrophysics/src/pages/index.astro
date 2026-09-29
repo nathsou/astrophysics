@@ -24,7 +24,9 @@ const firstPrimer = appendix[0]?.chapters.find((c) => published.has(c.slug));
     </div>
 
     <header class="hero">
-      <div class="ring r1" aria-hidden="true"></div><div class="ring r2" aria-hidden="true"></div><div class="ring dot" aria-hidden="true"></div>
+      <div class="ring r1" aria-hidden="true"><i class="orbit"><i class="planet"></i></i></div>
+      <div class="ring r2" aria-hidden="true"><i class="orbit"><i class="planet"></i></i></div>
+      <div class="ring dot" aria-hidden="true"></div>
       <h1>The Cosmos, Computed</h1>
       <p class="lede">From orbits to the cosmic web: the physics of the universe, the equations behind it, and live simulations running on your GPU.</p>
     </header>
@@ -35,8 +37,8 @@ const firstPrimer = appendix[0]?.chapters.find((c) => published.has(c.slug));
         <p>Choose how much mathematics you want. Every chapter reads top to bottom at each depth, and you can switch at any time from the chapter header or the sidebar.</p>
         <DepthControl />
         <div class="home-links">
-          {first && <a class="btn primary" href={`${base}/ch/${first.slug}/`}>Start with Chapter {first.n}: {first.title} →</a>}
-          {firstPrimer && <a class="btn" href="#appendix">Brush up first: the primers ↓</a>}
+          {first && <a class="btn primary" href={`${base}/ch/${first.slug}/`}>Start with Chapter {first.n}: {first.title}&nbsp;→</a>}
+          {firstPrimer && <a class="btn" href="#appendix">Brush up first: the primers&nbsp;↓</a>}
         </div>
       </div>
     </section>
@@ -100,7 +102,7 @@ const firstPrimer = appendix[0]?.chapters.find((c) => published.has(c.slug));
   .home-links { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.1rem; }
   .home-links .btn { text-decoration: none; padding: 0.5rem 0.8rem; }
 
-  .toc { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0 48px; border-top: 2px solid var(--fg); margin-top: 0; padding-top: 6px; }
+  .toc { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0 36px; border-top: 2px solid var(--fg); margin-top: 0; padding-top: 6px; }
   .part-label { color: var(--ac); margin: 0; padding: 18px 0 6px; font-style: normal; font-size: 0.625rem; line-height: 1.5; }
   .part-label::before { display: none; }
   .toc ol, .toc-list { list-style: none; padding: 0; margin: 0; }
@@ -110,17 +112,19 @@ const firstPrimer = appendix[0]?.chapters.find((c) => published.has(c.slug));
   .row { display: flex; gap: 10px; align-items: baseline; font-size: 1.125rem; line-height: 1.3; }
   .row .n { flex: none; min-width: 22px; font-family: var(--font-mono); font-weight: 500; font-size: 0.6875rem; color: var(--ac); font-variant-numeric: tabular-nums; }
   .row b { font-weight: 400; min-width: 0; }
-  .row .leader { flex: 1; min-width: 12px; border-bottom: 1px dotted var(--mute); transform: translateY(-4px); }
+  .row .leader { flex: 1; min-width: 0; border-bottom: 1px dotted var(--mute); transform: translateY(-4px); }
   .row .meta { flex: none; font-family: var(--font-mono); font-size: 0.6875rem; color: var(--fg-muted); white-space: nowrap; }
   .blurb { display: block; margin: 2px 0 0 32px; font-size: 0.875rem; line-height: 1.45; color: var(--fg-muted); }
   li.soon b, li.soon .n { color: var(--fg-faint); }
 
   .appendix { margin-top: 60px; border-top: 2px solid var(--fg); padding-top: 6px; scroll-margin-top: 1.5rem; }
   .appendix-intro { margin: 0 0 14px; max-width: 40rem; font-size: 1rem; line-height: 1.55; color: var(--fg-muted); }
-  .toc-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0 48px; }
+  .toc-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0 36px; }
   .toc-list .row .n { min-width: 26px; }
 
   @media (max-width: 760px) {
-    .intro { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .intro { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    /* On a phone the way in (depth + start) comes before the longer pitch, so it sits in the first screen. */
+    .home-start { order: -1; }
   }
 </style>
