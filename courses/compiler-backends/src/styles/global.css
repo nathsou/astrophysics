@@ -38,7 +38,7 @@
   --t-kw: #2a5db0; --t-op: #6b4fb8; --t-vreg: #93560a; --t-preg: #0b6f7d; --t-imm: #7a5e00; --t-label: #a0336b; --t-sym: #8a4a1c;
   --t-comment: #55645a; --t-frame: #6b4fb8; --t-punct: #4d5e53; --t-dir: #526478;
   --tile-0: #b7480a; --tile-1: #1f5f9e; --tile-2: #52617a; --tile-3: #7b3fa0; --tile-4: #93560a; --tile-5: #0b6f7d; --tile-6: #a8285c; --tile-7: #4c3bb0; --tile-8: #4f7a0a; --tile-9: #a83a0c;
-  --hl: rgba(190, 135, 10, 0.30); --hl-line: rgba(190, 135, 10, 0.16);
+  --hl: rgba(190, 135, 10, 0.30); --hl-hue: #be870a; --pole: #fff;
   --shadow-lg: 0 10px 34px rgba(23, 35, 27, 0.22);
   color-scheme: light;
 }
@@ -50,7 +50,7 @@
   --t-kw: #8fb4f5; --t-op: #c3aef5; --t-vreg: #f0b565; --t-preg: #58d0dc; --t-imm: #e0c050; --t-label: #f39ac4; --t-sym: #e3a878;
   --t-comment: #8ea395; --t-frame: #b7a0f2; --t-punct: #a6b7ab; --t-dir: #98acc4;
   --tile-0: #f0884a; --tile-1: #6fb0f0; --tile-2: #a3b3cc; --tile-3: #c79bee; --tile-4: #e6b04a; --tile-5: #4cc3d0; --tile-6: #f08fb4; --tile-7: #a49af2; --tile-8: #a6d44a; --tile-9: #f29a6a;
-  --hl: rgba(250, 200, 60, 0.26); --hl-line: rgba(250, 200, 60, 0.13);
+  --hl: rgba(250, 200, 60, 0.26); --hl-hue: #fac83c; --pole: #000;
   --shadow-lg: 0 10px 34px rgba(0, 0, 0, 0.6);
   color-scheme: dark;
 }
@@ -62,7 +62,7 @@
     --t-kw: #8fb4f5; --t-op: #c3aef5; --t-vreg: #f0b565; --t-preg: #58d0dc; --t-imm: #e0c050; --t-label: #f39ac4; --t-sym: #e3a878;
     --t-comment: #8ea395; --t-frame: #b7a0f2; --t-punct: #a6b7ab; --t-dir: #98acc4;
     --tile-0: #f0884a; --tile-1: #6fb0f0; --tile-2: #a3b3cc; --tile-3: #c79bee; --tile-4: #e6b04a; --tile-5: #4cc3d0; --tile-6: #f08fb4; --tile-7: #a49af2; --tile-8: #a6d44a; --tile-9: #f29a6a;
-    --hl: rgba(250, 200, 60, 0.26); --hl-line: rgba(250, 200, 60, 0.13);
+    --hl: rgba(250, 200, 60, 0.26); --hl-hue: #fac83c; --pole: #000;
     --shadow-lg: 0 10px 34px rgba(0, 0, 0, 0.6);
     color-scheme: dark;
   }
@@ -73,7 +73,7 @@
     --t-kw: #2a5db0; --t-op: #6b4fb8; --t-vreg: #93560a; --t-preg: #0b6f7d; --t-imm: #7a5e00; --t-label: #a0336b; --t-sym: #8a4a1c;
     --t-comment: #55645a; --t-frame: #6b4fb8; --t-punct: #4d5e53; --t-dir: #526478;
     --tile-0: #b7480a; --tile-1: #1f5f9e; --tile-2: #52617a; --tile-3: #7b3fa0; --tile-4: #93560a; --tile-5: #0b6f7d; --tile-6: #a8285c; --tile-7: #4c3bb0; --tile-8: #4f7a0a; --tile-9: #a83a0c;
-    --hl: rgba(190, 135, 10, 0.30); --hl-line: rgba(190, 135, 10, 0.16);
+    --hl: rgba(190, 135, 10, 0.30); --hl-hue: #be870a; --pole: #fff;
     color-scheme: light;
   }
 }
@@ -108,6 +108,13 @@
   --code-bg: var(--pn);
   --code-bg-2: color-mix(in srgb, var(--pn) 80%, var(--fg));
   --shadow: none;
+  /* Line highlights (current / changed / linked lines) sit on --mark-base: the
+     surface pushed halfway *away* from the text (toward white on a light
+     surface, black on a dark one), plus a 10% hue. A tint that darkens a light
+     listing pulls every token below 4.5:1; this keeps all of them >=4.6:1, and
+     the 3px left bar carries the state. */
+  --mark-base: color-mix(in srgb, var(--bg) 50%, var(--pole));
+  --hl-line: color-mix(in srgb, var(--hl-hue) 10%, var(--mark-base));
 }
 :root:root:root .inv { --code-bg: var(--inv-surface); }
 
@@ -302,12 +309,12 @@ button { font: inherit; color: inherit; }
    stay ≥4.5:1 on the tinted chip, in both themes and inside inverted blocks */
 .code .ln .tag { --tc: var(--muted); margin-left: 16px; font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 0 6px; border-radius: 2px; align-self: center; line-height: 1.6; color: color-mix(in srgb, var(--tc) 78%, var(--fg)); background: color-mix(in srgb, var(--tc) 13%, var(--bg)); }
 .code .ln.k-label .txt { font-weight: 600; }
-.code .ln.m-changed { background: color-mix(in srgb, var(--blue) 14%, transparent); border-left-color: var(--blue); }
-.code .ln.m-added { background: color-mix(in srgb, var(--green) 16%, transparent); border-left-color: var(--green); }
-.code .ln.m-removed { background: color-mix(in srgb, var(--red) 14%, transparent); border-left-color: var(--red); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--red) 55%, transparent); }
-.code .ln.m-current { background: color-mix(in srgb, var(--ac) 20%, transparent); border-left-color: var(--ac); }
+.code .ln.m-changed { background: color-mix(in srgb, var(--blue) 10%, var(--mark-base)); border-left-color: var(--blue); }
+.code .ln.m-added { background: color-mix(in srgb, var(--green) 10%, var(--mark-base)); border-left-color: var(--green); }
+.code .ln.m-removed { background: color-mix(in srgb, var(--red) 10%, var(--mark-base)); border-left-color: var(--red); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--red) 55%, transparent); }
+.code .ln.m-current { background: color-mix(in srgb, var(--ac) 10%, var(--mark-base)); border-left-color: var(--ac); }
 .code .ln.m-dim { opacity: 0.45; }
-.code .ln.m-focus { background: color-mix(in srgb, var(--violet) 16%, transparent); border-left-color: var(--violet); }
+.code .ln.m-focus { background: color-mix(in srgb, var(--violet) 10%, var(--mark-base)); border-left-color: var(--violet); }
 /* remat recomputes a constant, so it takes the immediate hue (green means "ok") */
 .code .ln .tag-spill, .code .ln .tag-reload { --tc: var(--red); }
 .code .ln .tag-remat { --tc: var(--t-imm); }
