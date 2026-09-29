@@ -58,3 +58,46 @@ export function isDark(): boolean {
 }
 
 export { theme };
+
+/* ------------------------------------------------------------------------
+   CIC-only palette: 'lilac' (default) or 'paper' (white page, neutral greys,
+   violet only as an accent).  Kept apart from the shared `theme` key, whose
+   values are shared with the other courses and must not change.  index.html
+   applies it before first paint.
+   ------------------------------------------------------------------------ */
+
+export type Palette = 'lilac' | 'paper';
+const PALETTE_KEY = 'cic-palette';
+
+function loadPalette(): Palette {
+  try {
+    return localStorage.getItem(PALETTE_KEY) === 'paper' ? 'paper' : 'lilac';
+  } catch {
+    return 'lilac';
+  }
+}
+
+const [palette, setPaletteSignal] = createSignal<Palette>(loadPalette());
+
+function applyPalette(p: Palette) {
+  document.documentElement.setAttribute('data-palette', p);
+}
+applyPalette(palette());
+window.addEventListener('storage', (event) => {
+  if (event.key !== PALETTE_KEY) return;
+  const next = loadPalette();
+  setPaletteSignal(next);
+  applyPalette(next);
+});
+
+export function setPalette(p: Palette) {
+  setPaletteSignal(p);
+  applyPalette(p);
+  try {
+    localStorage.setItem(PALETTE_KEY, p);
+  } catch {
+    /* ignore */
+  }
+}
+
+export { palette };

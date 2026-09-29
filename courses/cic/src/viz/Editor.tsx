@@ -9,8 +9,10 @@ import { closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete';
 import { setDiagnostics, lintGutter, type Diagnostic } from '@codemirror/lint';
 import { tags as t } from '@lezer/highlight';
 import { ABBREVIATIONS } from './abbrev.ts';
+import { LEAN_KEYWORDS } from '../app/highlight.ts';
 
-const KEYWORDS = /^(def|theorem|lemma|example|abbrev|opaque|axiom|inductive|structure|where|fun|let|in|match|nomatch|with|show|from|namespace|section|end|open|variable|universe|mutual|set_option|infixl|infixr|infix|prefix|init_quot|noncomputable)\b/;
+// same keyword set as the static code blocks, so the two always agree
+const KEYWORDS = new RegExp(`^(${[...LEAN_KEYWORDS].sort((a, b) => b.length - a.length).join('|')})(?![\\p{L}\\p{N}_'!?])`, 'u');
 
 const leanLang = StreamLanguage.define<{ comment: number }>({
   startState: () => ({ comment: 0 }),
@@ -37,6 +39,7 @@ const leanLang = StreamLanguage.define<{ comment: number }>({
     if (stream.match(/^#[a-z]+/)) return 'processingInstruction';
     if (stream.match(KEYWORDS)) return 'keyword';
     if (stream.match(/^(Prop|Type|Sort)\b/) || stream.match('□') || stream.match(/^\*(?![\w])/)) return 'typeName';
+    if (stream.match(/^[λΠΣ∀∃]/)) return 'operatorKeyword';
     if (stream.match(/^\d+/)) return 'number';
     if (stream.match(/^"[^"]*"/)) return 'string';
     if (stream.match(/^\?[\p{L}_][\p{L}\p{N}_']*/u)) return 'invalid';
@@ -66,29 +69,29 @@ const lambdaLang = StreamLanguage.define<null>({
 });
 
 const highlightStyle = HighlightStyle.define([
-  { tag: t.keyword, color: 'var(--ac)' },
+  { tag: t.keyword, color: 'var(--c-key)' },
   { tag: t.processingInstruction, color: 'var(--c-sort)', fontWeight: '600' },
   { tag: t.typeName, color: 'var(--c-sort)', fontWeight: '600' },
   { tag: t.className, color: 'var(--c-type)' },
   { tag: t.variableName, color: 'var(--ink)' },
   { tag: t.number, color: 'var(--c-num)' },
-  { tag: t.string, color: 'var(--c-proof)' },
-  { tag: t.comment, color: 'var(--mute)', fontStyle: 'italic' },
-  { tag: t.operatorKeyword, color: 'var(--ac)' },
-  { tag: t.operator, color: 'var(--c-kw)' },
+  { tag: t.string, color: 'var(--c-str)' },
+  { tag: t.comment, color: 'var(--c-com)', fontStyle: 'italic' },
+  { tag: t.operatorKeyword, color: 'var(--c-key)' },
+  { tag: t.operator, color: 'var(--c-op)' },
   { tag: t.invalid, color: 'var(--c-mvar)', fontWeight: '600' },
 ]);
 
 const theme = EditorView.theme({
-  '&': { fontSize: '0.8rem', backgroundColor: 'var(--pn)', color: 'var(--fg)' },
+  '&': { fontSize: '0.82rem', backgroundColor: 'var(--code-bg)', color: 'var(--fg)' },
   '.cm-content': { fontFamily: 'var(--font-mono)', padding: '0.6rem 0', caretColor: 'var(--accent)', fontVariantLigatures: 'none' },
-  '.cm-gutters': { backgroundColor: 'var(--pn)', color: 'var(--mute)', border: 'none', borderRight: '1px solid var(--rule)' },
-  '.cm-activeLine': { backgroundColor: 'color-mix(in srgb, var(--ac) 7%, transparent)' },
+  '.cm-gutters': { backgroundColor: 'var(--code-bg)', color: 'var(--mute)', border: 'none', borderRight: '1px solid var(--code-border)' },
+  '.cm-activeLine': { backgroundColor: 'color-mix(in srgb, var(--ac) 6%, transparent)' },
   '.cm-activeLineGutter': { backgroundColor: 'transparent', color: 'var(--ink)' },
   '.cm-selectionBackground, &.cm-focused .cm-selectionBackground, ::selection': { backgroundColor: 'var(--accent-soft) !important' },
   '&.cm-focused': { outline: 'none' },
   '.cm-cursor': { borderLeftColor: 'var(--accent)', borderLeftWidth: '2px' },
-  '.cm-tooltip': { border: '1px solid var(--rule-strong)', backgroundColor: 'var(--bg)', color: 'var(--fg)', borderRadius: '3px', boxShadow: 'var(--shadow-lg)' },
+  '.cm-tooltip': { border: '1px solid var(--rule-strong)', backgroundColor: 'var(--code-bg)', color: 'var(--fg)', borderRadius: '3px', boxShadow: 'var(--shadow-lg)' },
   '.cm-tooltip-hover': { padding: '0.45rem 0.65rem', fontFamily: 'var(--font-ui)', fontSize: '0.76rem', maxWidth: '36rem' },
   '.cm-diagnostic': { fontFamily: 'var(--font-ui)', whiteSpace: 'pre-wrap' },
   '.cm-lintRange-error': { backgroundImage: 'none', textDecoration: 'underline wavy var(--err)', textUnderlineOffset: '3px' },

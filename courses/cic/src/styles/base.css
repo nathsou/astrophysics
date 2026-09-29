@@ -6,9 +6,15 @@
 /* ------------------------------------------------------------------------
    Design tokens — "Editor" theme.
 
-   The five palette tokens (--bg --fg --mute --ac --pn) are set per theme;
-   everything else (the older --paper/--ink/--card/... names used by the
-   components) is derived from them, so light and dark stay in sync.
+   Two palettes × two themes.  The shared `data-theme` attribute (light |
+   dark, shared with the other courses) picks the theme; the CIC-only
+   `data-palette` attribute (lilac | paper) picks the palette.  Lilac is the
+   default; paper swaps the lilac surfaces for white / neutral grey and keeps
+   violet only as an accent.
+
+   Every text colour below is checked for WCAG AA (≥ 4.5:1) against every
+   surface it can sit on (page, panel, code, widget head, soft tints) — the
+   `-- palette: …` markers are read by the contrast script.
    ------------------------------------------------------------------------ */
 
 :root {
@@ -17,46 +23,75 @@
   --font-mono: var(--font-ui);
   --font-prose: 'DM Sans Variable', 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-  /* palette (light) */
+  /* palette: lilac light */
   --bg: #f6f5fa;
-  --fg: #22202e;
-  --mute: #625d78; /* design value #7a758c, darkened to keep WCAG AA on --pn */
-  --ac: #6a4cc4;
-  --pn: #e8e5f1;
-
-  /* status and semantic colours (light) */
-  --ok: #16703f;
-  --warn: #8f5500;
-  --err: #b02d24;
-  --c-sort: #b0306a;
-  --c-type: #1e5fb0;
-  --c-proof: #16703f;
-  --c-ctor: #8f4f06;
-  --c-var: #3b3852;
-  --c-mvar: #b02d24;
-  --hl-redex: rgb(255 196 0 / 0.32);
-  --hl-redex-border: #d19b00;
+  --fg: #221f2e;
+  --mute: #5c5872;
+  --ac: #5a3bc0;
+  --pn: #e9e6f2;
+  --code-bg: #fdfcff;
+  --code-border: #dcd6ea;
+  --head-bg: #efecf7;
+  --ok: #17703f;
+  --warn: #8a5000;
+  --err: #b0271f;
+  --c-key: #6427c9;
+  --c-sort: #a11d86;
+  --c-type: #2446ae;
+  --c-proof: #196b3d;
+  --c-ctor: #0b6b64;
+  --c-var: #3a3650;
+  --c-mvar: #b0271f;
+  --c-str: #1b6a3b;
+  --c-com: #615d79;
+  --c-fn: #9b2c6a;
+  --c-op: #5c5872;
+  --hl-redex: rgb(255 196 0 / 0.3);
+  --hl-redex-border: #c99400;
 
   color-scheme: light;
 }
 
+:root[data-palette='paper'] {
+  /* palette: paper light */
+  --bg: #ffffff;
+  --fg: #1d1d22;
+  --mute: #5d5d68;
+  --pn: #f3f3f5;
+  --code-bg: #f9f9fa;
+  --code-border: #e2e2e7;
+  --head-bg: #f5f5f7;
+  --c-var: #36363f;
+  --c-com: #63636e;
+  --c-op: #5d5d68;
+}
+
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
+    /* palette: lilac dark */
     --bg: #15131d;
     --fg: #e6e2f2;
-    --mute: #9a94b1;
-    --ac: #b79cff;
+    --mute: #a29cb9;
+    --ac: #b9a0ff;
     --pn: #1d1a29;
-    --ok: #4bb37a;
-    --warn: #e7a74a;
-    --err: #ff7b70;
-    --c-sort: #f27ab0;
-    --c-type: #6fb1ff;
-    --c-proof: #6ed696;
-    --c-ctor: #f0b35a;
-    --c-var: #d4d2e4;
-    --c-mvar: #ff7b70;
-    --hl-redex: rgb(255 196 0 / 0.22);
+    --code-bg: #1b1926;
+    --code-border: #2e2a3f;
+    --head-bg: #1f1c2c;
+    --ok: #5cc58a;
+    --warn: #e8ae55;
+    --err: #ff867b;
+    --c-key: #c3a6ff;
+    --c-sort: #f28bd0;
+    --c-type: #8db6ff;
+    --c-proof: #7fd99c;
+    --c-ctor: #5fd0c2;
+    --c-var: #d6d3e6;
+    --c-mvar: #ff867b;
+    --c-str: #9ad89a;
+    --c-com: #9f99b6;
+    --c-fn: #f5a3c7;
+    --c-op: #aaa4c0;
+    --hl-redex: rgb(255 196 0 / 0.2);
     --hl-redex-border: #d19b00;
     color-scheme: dark;
   }
@@ -65,48 +100,89 @@
 :root[data-theme='dark'] {
   --bg: #15131d;
   --fg: #e6e2f2;
-  --mute: #9a94b1;
-  --ac: #b79cff;
+  --mute: #a29cb9;
+  --ac: #b9a0ff;
   --pn: #1d1a29;
-  --ok: #4bb37a;
-  --warn: #e7a74a;
-  --err: #ff7b70;
-  --c-sort: #f27ab0;
-  --c-type: #6fb1ff;
-  --c-proof: #6ed696;
-  --c-ctor: #f0b35a;
-  --c-var: #d4d2e4;
-  --c-mvar: #ff7b70;
-  --hl-redex: rgb(255 196 0 / 0.22);
+  --code-bg: #1b1926;
+  --code-border: #2e2a3f;
+  --head-bg: #1f1c2c;
+  --ok: #5cc58a;
+  --warn: #e8ae55;
+  --err: #ff867b;
+  --c-key: #c3a6ff;
+  --c-sort: #f28bd0;
+  --c-type: #8db6ff;
+  --c-proof: #7fd99c;
+  --c-ctor: #5fd0c2;
+  --c-var: #d6d3e6;
+  --c-mvar: #ff867b;
+  --c-str: #9ad89a;
+  --c-com: #9f99b6;
+  --c-fn: #f5a3c7;
+  --c-op: #aaa4c0;
+  --hl-redex: rgb(255 196 0 / 0.2);
   --hl-redex-border: #d19b00;
   color-scheme: dark;
 }
 
-/* derived tokens (same in both themes) */
+/* paper, dark: neutral greys instead of the violet-tinted night */
+@media (prefers-color-scheme: dark) {
+  :root[data-palette='paper']:not([data-theme='light']) {
+    --bg: #161618;
+    --fg: #e7e7ea;
+    --mute: #a3a3ad;
+    --pn: #1e1e22;
+    --code-bg: #1c1c20;
+    --code-border: #303036;
+    --head-bg: #202024;
+    --c-var: #d8d8de;
+    --c-com: #a0a0aa;
+    --c-op: #a8a8b2;
+  }
+}
+:root[data-palette='paper'][data-theme='dark'] {
+  /* palette: paper dark */
+  --bg: #161618;
+  --fg: #e7e7ea;
+  --mute: #a3a3ad;
+  --pn: #1e1e22;
+  --code-bg: #1c1c20;
+  --code-border: #303036;
+  --head-bg: #202024;
+  --c-var: #d8d8de;
+  --c-com: #a0a0aa;
+  --c-op: #a8a8b2;
+}
+
+/* derived tokens (same in every palette) */
 :root {
   --paper: var(--bg);
   --paper-2: var(--pn);
   --paper-3: color-mix(in srgb, var(--pn) 88%, var(--fg));
-  --card: var(--pn);
+  --card: var(--code-bg);
   --ink: var(--fg);
   --ink-2: color-mix(in srgb, var(--fg) 78%, var(--mute));
   --ink-3: var(--mute);
   --rule: color-mix(in srgb, var(--pn) 88%, var(--fg));
-  --rule-strong: color-mix(in srgb, var(--pn) 68%, var(--fg));
+  --rule-strong: color-mix(in srgb, var(--pn) 70%, var(--fg));
   --accent: var(--ac);
   --accent-ink: var(--ac);
   --accent-soft: color-mix(in srgb, var(--ac) 12%, var(--bg));
+  --accent-line: color-mix(in srgb, var(--ac) 45%, var(--bg));
   --focus: var(--ac);
   --ok-soft: color-mix(in srgb, var(--ok) 14%, var(--bg));
   --warn-soft: color-mix(in srgb, var(--warn) 14%, var(--bg));
   --err-soft: color-mix(in srgb, var(--err) 12%, var(--bg));
+  --chip-bg: color-mix(in srgb, var(--ac) 10%, var(--code-bg));
+  --chip-border: color-mix(in srgb, var(--ac) 28%, var(--code-bg));
   --shadow: none;
+  --shadow-sm: 0 1px 2px color-mix(in srgb, var(--fg) 6%, transparent);
   --shadow-lg: 0 6px 24px color-mix(in srgb, var(--fg) 18%, transparent);
 
-  /* semantic colours for terms, by "level"; keywords take the accent */
+  /* semantic colours for terms; propositions take the accent */
   --c-prop: var(--ac);
   --c-term: var(--fg);
-  --c-kw: var(--mute);
+  --c-kw: var(--c-op);
   --c-num: var(--c-ctor);
   --c-level: var(--c-sort);
 
@@ -114,12 +190,11 @@
   --hl-hover: color-mix(in srgb, var(--ac) 12%, transparent);
   --hl-new: color-mix(in srgb, var(--ok) 18%, transparent);
 
-  --radius: 4px;
+  --radius: 5px;
   --radius-sm: 3px;
-  --measure: 42rem;
-  --wide: 66rem;
-  --sidebar: 230px;
-  --goals: 260px;
+  --measure: 40rem;
+  --wide: 60rem;
+  --sidebar: 236px;
 }
 
 /* ------------------------------------------------------------------------
@@ -143,8 +218,8 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-prose);
-  font-size: 1.05rem;
-  line-height: 1.7;
+  font-size: 1.0625rem;
+  line-height: 1.68;
   font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -156,11 +231,14 @@ body {
 
 a {
   color: var(--accent-ink);
-  text-decoration-thickness: 0.06em;
-  text-underline-offset: 0.18em;
+  text-decoration-color: var(--accent-line);
+  text-decoration-thickness: 0.07em;
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color 0.12s;
 }
 a:hover {
-  text-decoration-thickness: 0.12em;
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 0.1em;
 }
 
 :focus-visible {
@@ -214,7 +292,7 @@ hr {
   padding: 0.55em 0.95em;
   border-radius: var(--radius-sm);
   border: 1px solid var(--rule-strong);
-  background: var(--bg);
+  background: var(--code-bg);
   color: var(--ink);
   cursor: pointer;
   transition:
@@ -225,7 +303,8 @@ hr {
   user-select: none;
 }
 .btn:hover {
-  background: var(--paper-3);
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
 }
 .btn:active {
   transform: translateY(1px);
@@ -248,7 +327,8 @@ hr {
   background: transparent;
 }
 .btn.ghost:hover {
-  background: var(--pn);
+  background: var(--accent-soft);
+  border-color: transparent;
 }
 .btn.small {
   font-size: 0.7rem;
@@ -265,7 +345,7 @@ hr {
   border: 1px solid var(--rule-strong);
   border-radius: var(--radius-sm);
   overflow: hidden;
-  background: var(--bg);
+  background: var(--code-bg);
 }
 .seg button {
   font-family: var(--font-ui);
@@ -282,7 +362,7 @@ hr {
   border-right: 0;
 }
 .seg button:hover {
-  background: var(--paper-2);
+  background: var(--accent-soft);
 }
 .seg button.on {
   background: var(--accent-soft);
@@ -296,9 +376,13 @@ input.input {
   padding: 0.45em 0.6em;
   border: 1px solid var(--rule-strong);
   border-radius: var(--radius-sm);
-  background: var(--bg);
+  background: var(--code-bg);
   color: var(--ink);
   min-width: 0;
+}
+select.input:hover,
+input.input:hover {
+  border-color: var(--accent-line);
 }
 select.input {
   font-family: var(--font-ui);
@@ -322,7 +406,8 @@ select.input {
   letter-spacing: 0.02em;
   padding: 0.2em 0.55em;
   border-radius: 3px;
-  background: var(--paper-3);
+  background: var(--chip-bg);
+  box-shadow: inset 0 0 0 1px var(--chip-border);
   color: var(--ink-2);
   white-space: nowrap;
 }
@@ -395,6 +480,9 @@ select.input {
 }
 .term .t-kw {
   color: var(--c-kw);
+}
+.term .t-kw.w {
+  color: var(--c-key);
 }
 .term .t-op {
   color: var(--c-kw);
@@ -471,7 +559,7 @@ select.input {
   max-width: min(36rem, 90vw);
   padding: 0.5rem 0.7rem;
   border-radius: var(--radius-sm);
-  background: var(--bg);
+  background: var(--code-bg);
   border: 1px solid var(--rule-strong);
   box-shadow: var(--shadow-lg);
   font-family: var(--font-ui);

@@ -1,14 +1,8 @@
 import { useParams, useLocation, A } from '@solidjs/router';
-import { For, Show, Suspense, createEffect, createResource, createSignal, onCleanup, ErrorBoundary } from 'solid-js';
-import { chapterBySlug, neighbours, parts, fileName, chapters } from '../content/chapters.ts';
+import { Show, Suspense, createEffect, createResource, ErrorBoundary } from 'solid-js';
+import { chapterBySlug, neighbours, parts, fileName } from '../content/chapters.ts';
 import { mdxComponents } from '../content/mdx-components.tsx';
-import { markVisited, isVisited } from './progress.ts';
-
-interface TocItem {
-  id: string;
-  text: string;
-  level: number;
-}
+import { markVisited } from './progress.ts';
 
 export function ChapterPage() {
   const params = useParams();
@@ -19,43 +13,23 @@ export function ChapterPage() {
     if (!c) return undefined;
     return (await c.load()).default;
   });
-  const [toc, setToc] = createSignal<TocItem[]>([]);
-  const [currentId, setCurrentId] = createSignal<string>();
-  let article!: HTMLElement;
-  let observer: IntersectionObserver | undefined;
 
   createEffect(() => {
     const m = mod();
     const slug = params.slug;
     if (!m || !slug) return;
     markVisited(slug);
-    // collect headings once rendered
+    // once rendered, jump to the requested section (…?s=heading-id), or to the top
     requestAnimationFrame(() => {
-      const hs = [...article.querySelectorAll('h2[id], h3[id]')] as HTMLElement[];
-      setToc(hs.map((h) => ({ id: h.id, text: (h.textContent ?? '').replace(/#$/, ''), level: h.tagName === 'H2' ? 2 : 3 })));
-      observer?.disconnect();
-      observer = new IntersectionObserver(
-        (entries) => {
-          for (const e of entries) if (e.isIntersecting) setCurrentId(e.target.id);
-        },
-        { rootMargin: '-80px 0px -70% 0px' },
-      );
-      hs.forEach((h) => observer!.observe(h));
       const s = new URLSearchParams(loc.search).get('s');
       if (s) document.getElementById(s)?.scrollIntoView();
       else window.scrollTo(0, 0);
     });
   });
-  onCleanup(() => observer?.disconnect());
-
-  const jump = (id: string) => {
-    history.replaceState(null, '', `#/ch/${params.slug}?s=${id}`);
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   return (
     <div class="page">
-      <article class="prose" ref={article}>
+      <article class="prose">
         <Show when={info()} fallback={<p>Unknown chapter.</p>}>
           <header class="chapter-head">
             <div class="chapter-kicker">
@@ -99,31 +73,6 @@ export function ChapterPage() {
           </nav>
         </Show>
       </article>
-      <aside class="page-toc" aria-label="On this page">
-        <div class="goals-label" aria-hidden="true">
-          GOALS
-        </div>
-        <div class="goals-list">
-          <For each={toc()}>
-            {(t) => (
-              <a
-                href={`#/ch/${params.slug}?s=${t.id}`}
-                class={`${t.level === 3 ? 'h3' : ''} ${currentId() === t.id ? 'current' : ''}`}
-                aria-current={currentId() === t.id ? 'location' : undefined}
-                onClick={(e) => {
-                  e.preventDefault();
-                  jump(t.id);
-                }}
-              >
-                {t.text}
-              </a>
-            )}
-          </For>
-        </div>
-        <div class="goals-status">
-          ✓ {chapters.filter((c) => isVisited(c.slug)).length} / {chapters.length} files read
-        </div>
-      </aside>
     </div>
   );
 }

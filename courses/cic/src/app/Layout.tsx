@@ -1,7 +1,7 @@
 import { A, useLocation, type RouteSectionProps } from '@solidjs/router';
 import { For, Show, createSignal, createEffect, onCleanup, onMount } from 'solid-js';
 import { chapters, parts, chapterBySlug, fileName, baseFileName } from '../content/chapters.ts';
-import { cycleTheme, theme } from './theme.ts';
+import { cycleTheme, theme, palette, setPalette } from './theme.ts';
 import { isVisited } from './progress.ts';
 
 const REFERENCE_FILES: Record<string, string> = { rules: 'rule_index.md', timeline: 'timeline.md', glossary: 'glossary.md', bibliography: 'further_reading.md' };
@@ -122,6 +122,15 @@ export function Layout(props: RouteSectionProps) {
               <span aria-hidden="true">⌨</span>
               <span class="btn-text">playground</span>
             </A>
+            <button
+              class="btn small ghost palette-btn"
+              onClick={() => setPalette(palette() === 'paper' ? 'lilac' : 'paper')}
+              aria-pressed={palette() === 'paper'}
+              aria-label="Paper background"
+              title={palette() === 'paper' ? 'background: paper (click for lilac)' : 'background: lilac (click for paper)'}
+            >
+              <span class="palette-swatch" aria-hidden="true" />
+            </button>
             <button class="btn small ghost" onClick={cycleTheme} title={`theme: ${theme()}`} aria-label={`Colour theme: ${theme()}. Click to change.`}>
               {themeIcon()}
             </button>

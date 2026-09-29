@@ -11,6 +11,10 @@
           ? preference
           : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       } catch {}
+      // CIC-only palette (lilac | paper), separate from the shared theme key
+      try {
+        document.documentElement.dataset.palette = localStorage.getItem('cic-palette') === 'paper' ? 'paper' : 'lilac';
+      } catch {}
     </script>
     <meta name="description" content="An interactive course on the Calculus of Inductive Constructions — from the untyped λ-calculus to the type theory of Lean 4, with a real kernel running in the browser." />
     <meta name="theme-color" content="#f6f5fa" media="(prefers-color-scheme: light)" />
