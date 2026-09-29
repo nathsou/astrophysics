@@ -44,3 +44,53 @@ describe('inhabitant enumeration', () => {
     }
   });
 });
+
+import { judge, parseF, theoremDecl, forces, showF } from '../src/engines/props.ts';
+
+describe('propositional oracle', () => {
+  const provable = [
+    'p → p',
+    'p ∧ q → q ∧ p',
+    'p ∨ q → q ∨ p',
+    '(p → q) → ¬q → ¬p',
+    '¬(p ∨ q) ↔ ¬p ∧ ¬q',
+    '¬¬(p ∨ ¬p)',
+    '(p → q → r) ↔ (p ∧ q → r)',
+    '((p → q) → p) → ¬¬p',
+    '¬¬¬p → ¬p',
+    'p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r)',
+    '(p ∨ q → r) → (p → r) ∧ (q → r)',
+    '((p ∨ ¬p) → False) → False',
+    'False → p',
+    'p → True',
+    '(p ↔ q) → (q ↔ p)',
+  ];
+  it('proves intuitionistic tautologies, with terms the kernel accepts', () => {
+    const src: string[] = [];
+    provable.forEach((s, i) => {
+      const f = parseF(s);
+      const v = judge(f);
+      expect(v.kind, s).toBe('provable');
+      if (v.kind === 'provable') src.push(theoremDecl(f, v.term, `t${i}`));
+    });
+    const r = run(src.join('\n\n'));
+    if (r.errors.length) console.log(src.join('\n\n'), r.errors);
+    expect(r.errors).toEqual([]);
+  });
+  it('finds Kripke countermodels for classical-only laws', () => {
+    for (const s of ['p ∨ ¬p', '¬¬p → p', '((p → q) → p) → p', '(p → q) ∨ (q → p)', '¬(p ∧ q) → ¬p ∨ ¬q', '(¬p → ¬q) → q → p']) {
+      const f = parseF(s);
+      const v = judge(f);
+      expect(v.kind, s).toBe('classical');
+      if (v.kind === 'classical') {
+        expect(v.model, s).toBeDefined();
+        expect(forces(v.model!, 0, f)).toBe(false);
+      }
+    }
+  });
+  it('finds falsifying valuations', () => {
+    const v = judge(parseF('p → q'));
+    expect(v.kind).toBe('false');
+    expect(showF(parseF('¬¬p → p ∧ q'))).toBe('¬¬p → p ∧ q');
+  });
+});

@@ -1,1 +1,146 @@
-This chapter is being written.
+Chapter 3 wrote proofs that fit on one line. Longer proofs need a method, and the method is the same one you use for writing a tricky program in a typed language: let the types guide you. Write the parts you know, leave a hole where you are stuck, ask the checker what type the hole must have, and repeat. This chapter is about that loop, and about reading what the checker tells you.
+
+## Holes and goals
+
+Suppose we want to prove that implication is transitive: if `p` implies `q` and `q` implies `r`, then `p` implies `r`. The statement is a function type, so the proof starts with `fun`, and the body is still unknown. Write `_` for it:
+
+<Playground errors title="A hole" code={`theorem trans_imp (p q r : Prop) (hpq : p → q) (hqr : q → r) : p → r :=
+  fun hp => _`} />
+
+The checker cannot guess what to put in place of `_`, and its error message is the most useful thing it can tell us. It lists everything available at the hole, one per line, then the type the hole must have after the turnstile `⊢`:
+
+```text
+p q r : Prop
+hpq : p → q
+hqr : q → r
+hp : p
+⊢ r
+```
+
+This is called a **goal**. The lines above `⊢` are the **context**: the names in scope and their types. Everything you need to finish a proof is in the goal; you never need to hold the whole proof in your head.
+
+To produce an `r`, the only thing that returns an `r` is `hqr`, which needs a `q`. So write `hqr` applied to a new hole. `?_` is a hole that you promise to fill later; the checker reports the goal it leaves:
+
+<Playground errors title="Refining" code={`theorem trans_imp (p q r : Prop) (hpq : p → q) (hqr : q → r) : p → r :=
+  fun hp => hqr ?_`} />
+
+The goal is now `q`, with the same context. And `hpq hp` has type `q`:
+
+```lean
+theorem trans_imp (p q r : Prop) (hpq : p → q) (hqr : q → r) : p → r :=
+  fun hp => hqr (hpq hp)
+```
+
+This is exactly how you might complete a program with a type-directed editor. Hover over any name in the final version to check its type.
+
+There are three ways to leave a hole, and they behave differently:
+
+| Hole | Meaning | Result |
+|---|---|---|
+| `_` | "you work it out" | the checker tries to infer the value from the types; error if it cannot |
+| `?_` | "I will fill this in" | always an error, which shows the goal |
+| `sorry` | "trust me" | accepted with a warning; the declaration is marked as unfinished |
+
+`_` is useful when the value is forced by the types, as with the implicit arguments below. `?_` is for exploring. `sorry` lets you skip one part of a proof while you work on another, and still check the rest.
+
+## Working backwards and forwards
+
+The proof of `trans_imp` worked **backwards**: from the goal `r` to the thing that produces it (`hqr`), then to its argument. You can also work **forwards**: from the hypotheses to new facts. `have` names an intermediate fact:
+
+```lean
+theorem forwards (p q r : Prop) (hp : p) (hpq : p → q) (hqr : q → r) : r ∧ q :=
+  have hq : q := hpq hp
+  have hr : r := hqr hq
+  ⟨hr, hq⟩
+```
+
+`have name : type := proof` followed by the rest is a local definition, like `let` in a program. (The difference between `have` and `let` is that `have` forgets the value and keeps only the type, which is all a proof needs.)
+
+Here is a puzzle where the forward style helps. A proposition can never be equivalent to its own negation:
+
+```lean
+theorem not_iff_not_self (p : Prop) : ¬(p ↔ ¬p) :=
+  fun h =>
+    -- if p held, then ¬p would hold too (h.1), a contradiction; so ¬p
+    have hnp : ¬p := fun hp => h.1 hp hp
+    -- but then p holds (h.2), contradicting ¬p
+    hnp (h.2 hnp)
+```
+
+Put your cursor on `h.1 hp hp`: `h.1 : p → ¬p`, so `h.1 hp : ¬p`, which is a function from `p` to `False`, so `h.1 hp hp : False`.
+
+<Engineer title="Comments are for why">
+In a proof, as in a program, the code says *what* and the comments say *why*. The type annotations on `have` are a second kind of documentation: they state what each step establishes, and the checker makes sure they stay true.
+</Engineer>
+
+## Implicit arguments
+
+Library lemmas take arguments that the checker infers. `And.intro` builds a conjunction, and its type shows the propositions in braces:
+
+```lean
+#check @And.intro
+#check @Or.elim
+#check @absurd
+```
+
+Braces mean **implicit**: when you write `And.intro hp hq`, the checker infers `a` and `b` from the types of `hp` and `hq`. The `@` in front of a name turns all arguments explicit, which is useful to see a lemma's full type or to supply an argument that cannot be inferred:
+
+```lean
+theorem both (p q : Prop) (hp : p) (hq : q) : p ∧ q := @And.intro p q hp hq
+
+theorem cases_on (p q r : Prop) (h : p ∨ q) (hpr : p → r) (hqr : q → r) : r :=
+  Or.elim h hpr hqr
+
+theorem anything (p q : Prop) (hp : p) (hnp : ¬p) : q := absurd hp hnp
+```
+
+A good way to find out how to use an unfamiliar lemma: `#check` it, and read its type as a rule. `Or.elim : a ∨ b → (a → c) → (b → c) → c` says: to use `a ∨ b` to prove `c`, show `c` from `a` and `c` from `b`.
+
+## Annotations
+
+When a proof gets long, it helps to say which statement a subterm proves. `show t from e` checks that `e` has type `t` and returns it; it changes nothing but documents the step, and gives a better error message if you get it wrong:
+
+```lean
+theorem and_right (p q : Prop) : p ∧ q → q :=
+  fun h => show q from h.2
+```
+
+## Could a machine do this?
+
+The proofs in this chapter follow a recipe: introduce what the goal lets you introduce, take apart hypotheses, then use the functions available. For statements built only from `∧`, `∨`, `→`, `¬` and `↔`, the recipe can be carried out mechanically, and a program can decide whether a proof exists. The widget below runs such a program. When it finds a proof, it prints the proof term, which you can check in the playground.
+
+<PropOracle presets="p ∧ q → q ∧ p;(p → q) → (q → r) → p → r;p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r);¬(p ↔ ¬p);(p → q) → ¬q → ¬p;¬¬(p ∨ ¬p);p → q;p ∨ ¬p" />
+
+Try the last two presets. `p → q` is simply false (when `p` is true and `q` is false), so of course it has no proof. But `p ∨ ¬p`, "every proposition is true or false", is true in every row of its truth table, and yet the machine says it has **no proof**. This is not a limitation of the machine: there really is no program of type `p ∨ ¬p` in the course language. Chapter 7 explains why, what the picture at the bottom means, and what to do about it.
+
+<UnderTheHood ch="curry-howard" s="proof-simplification-is-computation">
+The proof search procedure used here works on *normal* proofs, the ones without detours. That every proof can be simplified into a normal one is the logical side of a fact about programs: every program of the simply typed λ-calculus terminates. The CIC course shows the correspondence between the two.
+</UnderTheHood>
+
+## Exercises
+
+<Exercise id="proof-terms:curry" title="Fill the holes" code={`theorem swap_args (p q r : Prop) : (p → q → r) → (q → p → r) :=
+  fun f hq hp => ?_`} must="swap_args" hint="The goal is r; f gives an r from a p and a q, in that order." solution={`theorem swap_args (p q r : Prop) : (p → q → r) → (q → p → r) :=
+  fun f hq hp => f hp hq`}>
+Replace the hole. Look at the goal in the error message first.
+</Exercise>
+
+<Exercise id="proof-terms:distrib" title="Distributivity, backwards" code={`theorem or_and (p q r : Prop) : (p ∨ q) ∧ r → (p ∧ r) ∨ (q ∧ r) :=
+  fun ⟨hpq, hr⟩ => sorry`} must="or_and" hint="Use Or.elim on hpq, with one function for each case: Or.elim hpq (fun hp => …) (fun hq => …)." solution={`theorem or_and (p q r : Prop) : (p ∨ q) ∧ r → (p ∧ r) ∨ (q ∧ r) :=
+  fun ⟨hpq, hr⟩ => Or.elim hpq (fun hp => Or.inl ⟨hp, hr⟩) (fun hq => Or.inr ⟨hq, hr⟩)`}>
+The pattern `⟨hpq, hr⟩` takes the pair apart. Finish the proof.
+</Exercise>
+
+<Exercise id="proof-terms:have" title="Forwards" code={`theorem chain (p q r s : Prop) (hp : p) (h1 : p → q) (h2 : q → r ∧ s) : s ∧ q :=
+  sorry`} must="chain" hint="have hq : q := h1 hp, then have hrs := h2 hq, and build ⟨hrs.2, hq⟩." solution={`theorem chain (p q r s : Prop) (hp : p) (h1 : p → q) (h2 : q → r ∧ s) : s ∧ q :=
+  have hq : q := h1 hp
+  have hrs : r ∧ s := h2 hq
+  ⟨hrs.2, hq⟩`}>
+Write this one forwards, with `have`.
+</Exercise>
+
+<Exercise id="proof-terms:dne3" title="Three negations are one" code={`theorem not_not_not (p : Prop) : ¬¬¬p → ¬p :=
+  sorry`} must="not_not_not" hint="You get h : ¬¬¬p and hp : p, and need False. Apply h to a proof of ¬¬p, which is fun hnp => hnp hp." solution={`theorem not_not_not (p : Prop) : ¬¬¬p → ¬p :=
+  fun h hp => h (fun hnp => hnp hp)`}>
+Unlike `¬¬p → p`, this one is provable. Unfold the negations and follow the types. (You can ask the oracle above, but try first.)
+</Exercise>

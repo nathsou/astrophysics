@@ -8,4 +8,5 @@ const lz = <T,>(f: () => Promise<Record<string, T>>, name: string) => lazy(() =>
 export const widgets: Record<string, unknown> = {
   Exercise,
   InhabitantLab: lz(() => import('./labs/InhabitantLab.tsx'), 'InhabitantLab'),
+  PropOracle: lz(() => import('./labs/PropOracle.tsx'), 'PropOracle'),
 };

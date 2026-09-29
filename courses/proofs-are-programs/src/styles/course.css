@@ -324,7 +324,7 @@ ul.reading li {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--muted);
+  color: var(--ink-3);
 }
 @media (max-width: 720px) {
   .columns {
@@ -333,4 +333,70 @@ ul.reading li {
   .columns-caption:nth-child(2) {
     display: none;
   }
+}
+
+/* ---- provability oracle and Kripke models ---- */
+.oracle .small {
+  font-size: 0.8rem;
+}
+.kripke {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-top: 0.75rem;
+}
+.kripke svg {
+  flex: none;
+  max-width: 100%;
+  height: auto;
+}
+.kr-edge {
+  stroke: var(--ink-3);
+  stroke-width: 1.5;
+}
+.kr-world {
+  fill: var(--card);
+  stroke: var(--c-type);
+  stroke-width: 1.5;
+}
+.kr-world.root {
+  stroke-width: 2.5;
+}
+.kr-label {
+  font-size: 11px;
+  fill: var(--ink);
+  font-family: var(--font-mono);
+}
+.kr-atoms {
+  font-size: 12px;
+  fill: var(--c-prop);
+  font-family: var(--font-mono);
+}
+.kr-explain {
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+.kr-explain p {
+  margin: 0.25rem 0;
+}
+.kr-table {
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  margin: 0.4rem 0;
+}
+.kr-table th,
+.kr-table td {
+  padding: 0.15rem 0.5rem;
+  border-bottom: 1px solid var(--rule);
+  text-align: center;
+}
+.kr-table td:first-child {
+  text-align: left;
+}
+.kr-table td.yes {
+  color: var(--ok);
+}
+.kr-table td.no {
+  color: var(--ink-3);
 }

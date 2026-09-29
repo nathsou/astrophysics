@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { run } from './util.ts';
+import { judge, parseF, theoremDecl } from '../src/engines/props.ts';
 
 interface Snippet {
   line: number;
@@ -51,6 +52,15 @@ export function extract(src: string): Snippet[] {
     if (code !== undefined) out.push({ line: lineOf(m.index!), code: setup + '\n' + code, allowErrors, what: m[1] });
     const sol = attr(tag, 'solution');
     if (sol !== undefined) out.push({ line: lineOf(m.index!), code: setup + '\n' + sol, allowErrors: false, what: `${m[1]} solution` });
+  }
+  // the provable presets of the provability oracle come with proof terms: check them
+  for (const m of src.matchAll(/<PropOracle\b[^>]*presets="([^"]*)"/g)) {
+    const decls = m[1].split(';').flatMap((p, i) => {
+      const f = parseF(p);
+      const v = judge(f);
+      return v.kind === 'provable' ? [theoremDecl(f, v.term, `oracle${i}`)] : [];
+    });
+    out.push({ line: lineOf(m.index!), code: decls.join('\n\n'), allowErrors: false, what: 'PropOracle proofs' });
   }
   return out;
 }

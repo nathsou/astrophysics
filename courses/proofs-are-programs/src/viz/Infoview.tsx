@@ -7,6 +7,7 @@ import { LocalContext } from '@kernel/core/env.ts';
 import type { Msg } from '@kernel/core/typechecker.ts';
 import { TypeChecker, type Deriv } from '@kernel/core/typechecker.ts';
 import { Term } from './Term.tsx';
+import { groupHyps } from '@kernel/format.ts';
 import { DerivationTree } from './DerivationTree.tsx';
 import { TypedStepper } from './TypedStepper.tsx';
 import { mkConst } from '@kernel/core/expr.ts';
@@ -29,10 +30,11 @@ export function GoalView(props: { env: Environment; goal: Goal }) {
       <Show when={g.name}>
         <div class="goal-name">case {g.name}</div>
       </Show>
-      <For each={g.lctx.decls.filter((d) => !d.name.endsWith('✝') || true)}>
-        {(d, i) => (
+      <For each={groupHyps(g.lctx.decls)}>
+        {(grp) => (
           <div class="goal-hyp">
-            <span class="t-var">{d.name}</span> <span class="t-punct">:</span> <Term env={props.env} expr={d.type} lctx={before(i())} />
+            <span class="t-var">{grp.map((d) => d.name).join(' ')}</span> <span class="t-punct">:</span>{' '}
+            <Term env={props.env} expr={grp[0].type} lctx={before(g.lctx.decls.indexOf(grp[0]))} />
           </div>
         )}
       </For>
