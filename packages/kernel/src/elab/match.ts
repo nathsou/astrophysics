@@ -35,7 +35,10 @@ import type { SAlt, STerm, Span } from '../syntax/ast.ts';
 import { type Elaborator, popLocal } from './elaborator.ts';
 import { ElabError } from './errors.ts';
 
-export class NonStructural extends ElabError {}
+export class NonStructural extends ElabError {
+  /** the position of an argument that the recursion changes although it was taken as fixed */
+  varying?: number;
+}
 
 interface Row {
   pats: STerm[];
@@ -818,10 +821,12 @@ function replaceRecCalls(el: Elaborator, e: Expr, st: State, span: Span): Expr {
       }
       for (const [k, val] of rec.fixed) {
         if (!exprEq(el.instantiate(args[k]), val) && !el.isDefEq(args[k], val)) {
-          throw new NonStructural(
+          const err = new NonStructural(
             [`argument #${k + 1} of the recursive call to '${rec.name}' must be passed unchanged (it is a fixed parameter), but got\n  `, el.term(args[k])],
             span,
           );
+          err.varying = k;
+          throw err;
         }
       }
       const a = expand(el.instantiate(args[rec.j]), st.exp);
@@ -970,6 +975,22 @@ export function compileEquations(el: Elaborator, opts: EquationsInput): { body: 
   // indices of matched arguments that are themselves arguments (`{n} … (xs : Vec α n)`) change in
   // recursive calls: match on them too (with `_`), so they are not fixed parameters
   opts = addIndexColumns(el, opts);
+  // arguments before the colon that the recursive calls change (`eval (env.set x v) body`) are
+  // generalised too, as in Lean: they become extra columns matched by `_`
+  for (let attempt = 0; attempt < 8; attempt++) {
+    try {
+      return compileRecursive(el, opts);
+    } catch (err) {
+      if (!(err instanceof NonStructural) || err.varying === undefined || opts.colIdx.includes(err.varying)) throw err;
+      const k = err.varying;
+      opts = { ...opts, colIdx: [k, ...opts.colIdx], alts: opts.alts.map((a) => ({ ...a, pats: [{ k: 'hole', span: a.span } as STerm, ...a.pats] })) };
+    }
+  }
+  return compileRecursive(el, opts);
+}
+
+function compileRecursive(el: Elaborator, opts: EquationsInput): { body: Expr; decreasing?: number } {
+  const cols: FVar[] = [];
   const cols2 = opts.colIdx.map((i) => opts.args[i]);
   cols.length = 0;
   cols.push(...cols2);

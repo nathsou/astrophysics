@@ -270,7 +270,10 @@ export class Elaborator {
 
   /** generalized field notation: `e.f` where e : I … resolves to I.f with e as the first explicit argument of type I */
   fieldAccess(base: Expr, baseType: Expr, field: string, span: Span): Resolved {
-    const t = this.whnf(this.instantiate(baseType));
+    // the type's own name first (`env.set` with `env : Env`, where Env unfolds to a function type)
+    const t0 = this.instantiate(baseType);
+    const h0 = getAppFn(t0);
+    const t = h0.k === 'const' && this.env.has(`${h0.name}.${field}`) ? t0 : this.whnf(t0);
     const head = getAppFn(t);
     if (head.k !== 'const') {
       if (t.k === 'pi') this.err(span, `invalid field notation '.${field}': the value is a function`);
@@ -298,7 +301,8 @@ export class Elaborator {
     for (let guard = 0; guard < 64; guard++) {
       const w = this.whnf(ft);
       if (w.k !== 'pi') break;
-      const dh = getAppFn(this.whnf(w.type));
+      const d0 = getAppFn(this.instantiate(w.type));
+      const dh = d0.k === 'const' && d0.name === I ? d0 : getAppFn(this.whnf(w.type));
       if (w.binfo === 'default' && dh.k === 'const' && dh.name === I) {
         if (!this.isDefEq(w.type, baseType)) this.err(span, `type mismatch in field notation: '${fname}' expects a value of type\n  `, this.term(w.type), '\nbut the value has type\n  ', this.term(baseType));
         e = mkApp(e, base);
