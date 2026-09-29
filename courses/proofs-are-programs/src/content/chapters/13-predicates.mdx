@@ -1,1 +1,191 @@
-This chapter is being written.
+So far our propositions were built from the connectives of Chapter 3, from `∀` and `∃`, and from equality. This chapter adds the tool that most specifications in Part V are written with: **inductive predicates**, propositions defined by rules, the way `List` is defined by constructors. Then it turns to the question that connects propositions back to programs: when can a program *decide* whether a proposition holds?
+
+## Propositions defined by rules
+
+Here is a definition of the even numbers, as two rules: 0 is even, and if `n` is even, so is `n + 2`.
+
+<RuleRow>
+  <Rule name="zero" conclusion="\mathsf{Even}\ 0" />
+  <Rule name="add_two" premises="\mathsf{Even}\ n" conclusion="\mathsf{Even}\ (n + 2)" />
+</RuleRow>
+
+In the course language, the rules become the constructors of an inductive type in `Prop`, indexed by a number:
+
+```lean
+inductive Even : Nat → Prop where
+  | zero : Even 0
+  | add_two (n : Nat) (h : Even n) : Even (n + 2)
+```
+
+A proof that 4 is even is a tree of rule applications, built with the constructors:
+
+```lean
+theorem even_four : Even 4 := .add_two 2 (.add_two 0 .zero)
+
+theorem even_four' : Even 4 := by
+  apply Even.add_two
+  apply Even.add_two
+  exact Even.zero
+```
+
+Compare this with the definition `def Even (n : Nat) : Prop := ∃ k, n = 2 * k` from Chapter 5. Both describe the same numbers, but they are different kinds of definitions. The existential says what an even number *is*; the inductive predicate says how evidence of evenness is *built*. The inductive version is often more convenient in proofs, because its evidence has a shape you can take apart and do induction on.
+
+## Taking evidence apart
+
+Since evidence of `Even n` was built by one of the two rules, `cases` can ask which one. That is enough to prove that 1 is not even: neither rule can conclude `Even 1` (the first concludes `Even 0`, the second `Even (n + 2)`, and neither `0` nor `n + 2` is `1`), so `cases` finds no cases at all:
+
+<Playground lens title="Inversion" setup={`inductive Even : Nat → Prop where
+  | zero : Even 0
+  | add_two (n : Nat) (h : Even n) : Even (n + 2)`} code={`theorem not_even_one : ¬Even 1 := by
+  intro h
+  cases h
+
+theorem even_inv (n : Nat) (h : Even (n + 2)) : Even n := by
+  cases h with
+  | add_two _ h' => exact h'`} />
+
+In `even_inv`, `cases` knows that the only rule that can conclude `Even (n + 2)` is `add_two`, and that its premise is then `Even n`. This kind of reasoning is called **inversion**: from a conclusion, recover the premises that must have led to it.
+
+<UnderTheHood ch="families" s="impossible-cases">
+How does `cases` know that `Even 1` has no cases? It unifies the index `1` with the index of each constructor's conclusion and finds a clash. The CIC course shows the proof term it writes, built from the equality between the indices.
+</UnderTheHood>
+
+## Induction on evidence
+
+Evidence of an inductive predicate is a tree, so it supports induction, like a list or a `Tree`: prove the property for the conclusion of each rule, assuming it for the premises. Here is the proof that the two definitions of evenness agree, in one direction:
+
+<Playground lens title="Induction on evidence" setup={`inductive Even : Nat → Prop where
+  | zero : Even 0
+  | add_two (n : Nat) (h : Even n) : Even (n + 2)`} code={`theorem even_double (n : Nat) (h : Even n) : ∃ k, n = 2 * k := by
+  induction h with
+  | zero => exact ⟨0, rfl⟩
+  | add_two n h ih =>
+    obtain ⟨k, hk⟩ := ih
+    exact ⟨k + 1, by omega⟩`} />
+
+The induction follows the rules, not the numbers: there is no case for odd numbers, because no evidence is built for them.
+
+## Two predicates for Part V
+
+Inductive predicates are how specifications are written in the rest of the course. Here are two we will use.
+
+**Sorted lists.** A list is sorted if it is empty, a single element, or two elements in order followed by a sorted list:
+
+```lean
+inductive Sorted : List Nat → Prop where
+  | nil : Sorted []
+  | single (x : Nat) : Sorted [x]
+  | cons (x y : Nat) (rest : List Nat) (hxy : x ≤ y) (h : Sorted (y :: rest)) : Sorted (x :: y :: rest)
+
+example : Sorted [1, 2, 5] :=
+  .cons 1 2 [5] (by decide) (.cons 2 5 [] (by decide) (.single 5))
+```
+
+**Reachability.** Given any relation `r` ("one step"), `Star r a b` says that `b` can be reached from `a` in zero or more steps. It will describe running a program for several steps in Chapter 18:
+
+```lean
+inductive Star {α : Type} (r : α → α → Prop) : α → α → Prop where
+  | refl (a : α) : Star r a a
+  | step (a b c : α) (hab : r a b) (hbc : Star r b c) : Star r a c
+
+theorem Star.trans {α : Type} {r : α → α → Prop} {a b c : α}
+    (h₁ : Star r a b) (h₂ : Star r b c) : Star r a c := by
+  induction h₁ with
+  | refl => exact h₂
+  | step a b' c' hab _ ih => exact Star.step a b' c hab (ih h₂)
+```
+
+## Deciding a proposition
+
+`Even 4` is a proposition; `4 % 2 == 0` is a boolean. The first can be proved, the second can be computed. How are they related?
+
+A program that decides a proposition `p` must return more than a boolean: it must return *evidence* for `p` or *evidence against* it. The library's type for such a result is `Decidable p`, with two constructors:
+
+```lean nocheck
+class inductive Decidable (p : Prop) : Type where
+  | isFalse (h : ¬p) : Decidable p
+  | isTrue (h : p) : Decidable p
+```
+
+It lives in `Type`, not `Prop`: a value of `Decidable p` is data, and a program can look at which constructor it got (Chapter 3 said it could not do that with evidence). Here is a decision procedure for `Even`, written by recursion, returning evidence in each case:
+
+<Playground lens title="A decision procedure" setup={`inductive Even : Nat → Prop where
+  | zero : Even 0
+  | add_two (n : Nat) (h : Even n) : Even (n + 2)
+
+theorem even_inv (n : Nat) (h : Even (n + 2)) : Even n := by
+  cases h with
+  | add_two _ h' => exact h'`} code={`def decEven : (n : Nat) → Decidable (Even n)
+  | 0 => isTrue .zero
+  | 1 => isFalse (by intro h; cases h)
+  | n + 2 =>
+    match decEven n with
+    | isTrue h => isTrue (.add_two n h)
+    | isFalse h => isFalse (fun h' => h (even_inv n h'))
+termination_by n => n
+
+instance (n : Nat) : Decidable (Even n) := decEven n
+
+-- decide runs the procedure (Chapter 10)
+example : Even 10 := by decide
+example : ¬Even 7 := by decide
+
+-- and programs can branch on the proposition
+def describe (n : Nat) : Nat := if Even n then n / 2 else n
+
+#eval describe 10
+#eval describe 7`} />
+
+The `instance` line registers `decEven` as *the* way to decide `Even n`. From then on, `decide` can prove `Even 10`, and `if Even n then … else …` works in programs: behind the scenes, `if` asks for a `Decidable` instance of its condition, runs it, and looks at the constructor. When the condition has no instance (for example, a statement quantifying over all numbers), `if` is refused.
+
+<Key>
+`Decidable p` is the bridge between propositions and programs: a program that answers the question "does `p` hold?" together with the evidence for its answer. A proposition with a `Decidable` instance can be used as a boolean, and a boolean check with evidence can be used as a proof.
+</Key>
+
+The library provides instances for equality of numbers, lists and other data (`DecidableEq`), for `<` and `≤`, for the connectives (`p ∧ q` is decidable when `p` and `q` are), and for bounded quantifiers (`∀ n, n < 10 → p n`). They are all ordinary programs.
+
+<Engineer title="Bool or Prop?">
+In the course language, write specifications as propositions and executable checks as `Bool` or `Decidable`. A proposition can say more (it can quantify over infinitely many things, like `∀ xs, …`), and inductive predicates are easy to reason about. A boolean function runs. When you need both, prove they agree, as in the exercise below: then you can test with the function and prove with the predicate.
+</Engineer>
+
+## Exercises
+
+<Exercise id="predicates:even-plus" title="Even plus even" lens setup={`inductive Even : Nat → Prop where
+  | zero : Even 0
+  | add_two (n : Nat) (h : Even n) : Even (n + 2)`} code={`theorem even_add (m n : Nat) (hm : Even m) (hn : Even n) : Even (m + n) := by
+  induction hn with
+  | zero => sorry
+  | add_two n h ih => sorry`} must="even_add" hint="zero: m + 0 is m, so exact hm. add_two: the goal is Even (m + (n + 2)), which is Even ((m + n) + 2) by computation: exact Even.add_two _ ih." solution={`theorem even_add (m n : Nat) (hm : Even m) (hn : Even n) : Even (m + n) := by
+  induction hn with
+  | zero => exact hm
+  | add_two n h ih => exact Even.add_two _ ih`}>
+Do induction on the evidence for `n`.
+</Exercise>
+
+<Exercise id="predicates:not-even-three" title="Inversion twice" setup={`inductive Even : Nat → Prop where
+  | zero : Even 0
+  | add_two (n : Nat) (h : Even n) : Even (n + 2)`} code={`theorem not_even_three : ¬Even 3 := by
+  sorry`} must="not_even_three" hint="intro h; cases h with | add_two _ h' => cases h'" solution={`theorem not_even_three : ¬Even 3 := by
+  intro h
+  cases h with
+  | add_two _ h' => cases h'`}>
+`Even 3` could only come from `add_two` with `Even 1`, which has no cases.
+</Exercise>
+
+<Exercise id="predicates:reflect" title="The boolean agrees" setup={`inductive Even : Nat → Prop where
+  | zero : Even 0
+  | add_two (n : Nat) (h : Even n) : Even (n + 2)
+
+def isEven : Nat → Bool
+  | 0 => true
+  | 1 => false
+  | n + 2 => isEven n
+termination_by n => n`} code={`theorem isEven_of_even (n : Nat) (h : Even n) : isEven n = true := by
+  sorry`} must="isEven_of_even" hint="induction h with | zero => rfl | add_two n h ih => simp [isEven, ih] (or rw [isEven]; exact ih)." solution={`theorem isEven_of_even (n : Nat) (h : Even n) : isEven n = true := by
+  induction h with
+  | zero => rfl
+  | add_two n h ih =>
+    rw [isEven]
+    exact ih`}>
+One direction of "the boolean function agrees with the predicate". Induction on the evidence, and the equations of `isEven`.
+</Exercise>

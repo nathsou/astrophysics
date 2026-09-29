@@ -117,7 +117,7 @@ example : halve 10 = 5 := by simp [halve]
 
 ```
 
-The difference is in the kernel: it can no longer run the function by itself. `rfl` and `decide` rely on the kernel computing, and the kernel cannot unfold the proof of termination that `WellFounded.fix` runs on. So `halve 10 = 5` needs `simp [halve]` (which uses the equations) rather than `rfl`. Prefer structural recursion when it works, and use `termination_by` when it does not.
+The difference is in the kernel. To compute `halve 10` by itself, for `rfl` or `decide`, it must now run `WellFounded.fix`, which recurses on the *proof* that the measure decreases. The course's kernel does this (it unfolds the proofs of `Nat.lt_wf`, which is slow but works on small inputs). Lean's kernel refuses: it treats definitions by well-founded recursion as opaque, precisely because computing with proofs is slow and fragile, and asks you to use their equations (`simp [halve]`, `rw [halve]`, `unfold halve`) instead. That is a good habit in any case: prefer structural recursion when it works, use `termination_by` when it does not, and reason about the result through its equations.
 
 <Note title="Is there a function nobody can define?">
 Here is a famous one:
