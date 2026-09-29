@@ -248,14 +248,14 @@ britannica-kirchhoff:
   url: https://www.britannica.com/biography/Gustav-Robert-Kirchhoff
   note: Biography, including his studies under Franz Neumann at Königsberg and his work with Bunsen on spectroscopy.
 ti-sn74hc04:
-  authors: Texas Instruments
+  authors: TI
   year: 2003
   title: SN54HC04, SN74HC04 hex inverters, data sheet SCLS078 (first issued December 1982)
   venue: Texas Instruments Incorporated
   url: https://www.ti.com/lit/ds/symlink/sn74hc04.pdf
   note: Input thresholds of 0.7 and 0.3 of the supply (3.15 V and 1.35 V at 4.5 V, 4.2 V and 1.8 V at 6 V), outputs within 0.1 V of the rails at light load, and an absolute maximum of ±25 mA through an output pin and ±50 mA through VCC or ground.
 ti-sn74hc03:
-  authors: Texas Instruments
+  authors: TI
   year: 2021
   title: SNx4HC03 quadruple 2-input NAND gates with open-drain outputs, data sheet (Rev. F)
   venue: Texas Instruments Incorporated
@@ -283,14 +283,14 @@ sutter2005:
   url: http://www.gotw.ca/publications/concurrency-ddj.htm
   note: The article that told programmers that clock speeds had stopped rising and that concurrency would be needed to use more transistors.
 eetimes-tejas:
-  authors: EE Times
+  authors: EETimes
   year: 2004
   title: Intel cancels Tejas, moves to dual-core designs
   venue: EE Times, May 2004
   url: https://www.eetimes.com/intel-cancels-tejas-moves-to-dual-core-designs/
   note: Intel’s cancellation, in May 2004, of the planned successor to the Pentium 4, and its turn to multi-core chips.
 chm-standard-logic:
-  authors: Computer History Museum
+  authors: CHM
   year: 2007
   title: 1963, Standard logic IC families introduced
   venue: Computer History Museum, “The Silicon Engine”
@@ -316,3 +316,99 @@ sze2007:
   title: Physics of Semiconductor Devices, third edition
   venue: John Wiley & Sons
   note: The properties of silicon (lattice constant 0.543 nm, 5.0 × 10²² atoms per cm³) and doping levels from 10¹⁵ to 10²⁰ per cm³; at 10²⁰ about one atom in 500 is a dopant.
+braun1875:
+  authors: Ferdinand Braun
+  year: 1875
+  title: Ueber die Stromleitung durch Schwefelmetalle
+  venue: Annalen der Physik und Chemie 153 (series 2, vol. 229), 556–563. Submitted 23 November 1874
+  url: https://doi.org/10.1002/andp.18752291207
+  note: 'The first report of a rectifying contact between a metal point and a semiconducting crystal: the resistance of metal sulphides depended on the direction of the current.'
+chm-braun-rectifier:
+  authors: Computer History Museum
+  year: 2007
+  title: '1874: Semiconductor point-contact rectifier effect is discovered'
+  venue: Computer History Museum, The Silicon Engine
+  url: https://www.computerhistory.org/siliconengine/semiconductor-point-contact-rectifier-effect-is-discovered/
+  note: Braun’s discovery and its later use in cat’s-whisker radio detectors.
+fleming-patent:
+  authors: John Ambrose Fleming
+  year: 1905
+  title: Improvements in instruments for detecting and measuring alternating electric currents
+  venue: British patent 24,850. Provisional specification 16 November 1904, granted 21 September 1905
+  url: https://g3ynh.info/valves/old/history/flem.html
+  note: The patent for the thermionic diode, which Fleming called the oscillation valve. The URL is a transcription of the specification.
+fleming-milestone:
+  authors: IEEE History Center
+  year: 2004
+  title: 'Milestones: Fleming Valve, 1904'
+  venue: Engineering and Technology History Wiki
+  url: https://ethw.org/Milestones:Fleming_Valve,_1904
+  note: The IEEE milestone plaque at University College London.
+round1907:
+  authors: H. J. Round
+  year: 1907
+  title: A note on carborundum
+  venue: Electrical World 49, 309. Dated 9 February 1907
+  note: “On applying a potential of 10 volts between two points on a crystal of carborundum, the crystal gave out a yellowish light.” The first report of electroluminescence from a solid-state diode.
+chm-ohl:
+  authors: Computer History Museum
+  year: 2007
+  title: '1940: Discovery of the p–n junction'
+  venue: Computer History Museum, The Silicon Engine
+  url: https://www.computerhistory.org/siliconengine/discovery-of-the-p-n-junction/
+  note: Russell Ohl’s cracked silicon rod of 23 February 1940 and the two kinds of impurity on either side of the crack.
+riordan1997:
+  authors: Michael Riordan and Lillian Hoddeson
+  year: 1997
+  title: 'Crystal Fire: The Invention of the Transistor and the Birth of the Information Age'
+  venue: W. W. Norton
+  note: The standard history of the transistor at Bell Labs, from Ohl’s junction and the band theory of the 1930s to the point-contact and junction transistors.
+ohl-patent:
+  authors: Russell S. Ohl
+  year: 1946
+  title: Light-sensitive electric device
+  venue: US Patent 2,402,662. Filed 27 May 1941, granted 25 June 1946
+  url: https://patents.google.com/patent/US2402662A/en
+  note: The silicon pn junction as a photocell.
+holonyak1962:
+  authors: Nick Holonyak Jr. and S. F. Bevacqua
+  year: 1962
+  title: Coherent (visible) light emission from Ga(As1−xPx) junctions
+  venue: Applied Physics Letters 1(4), 82–83 (1 December 1962)
+  url: https://doi.org/10.1063/1.1753706
+  note: The GaAsP junction at General Electric that emitted visible red light (about 710 nm at 77 K as a laser diode) and worked as an LED at room temperature.
+physicstoday-holonyak:
+  authors: Physics Today
+  year: 2022
+  title: Nick Holonyak Jr
+  venue: Physics Today 75(12), 61
+  url: https://pubs.aip.org/physicstoday/article/75/12/61/2848592/Nick-Holonyak-Jr
+  note: An obituary that recounts the October 1962 demonstration of the red GaAsP diode.
+amano1989:
+  authors: H. Amano, M. Kito, K. Hiramatsu and I. Akasaki
+  year: 1989
+  title: P-type conduction in Mg-doped GaN treated with low-energy electron beam irradiation (LEEBI)
+  venue: Japanese Journal of Applied Physics 28, L2112–L2114
+  url: https://doi.org/10.1143/JJAP.28.L2112
+  note: The first p-type gallium nitride, and the first GaN pn-junction LED.
+nakamura1992:
+  authors: S. Nakamura, T. Mukai, M. Senoh and N. Iwasa
+  year: 1992
+  title: Thermal annealing effects on p-type Mg-doped GaN films
+  venue: Japanese Journal of Applied Physics 31, L139–L142
+  url: https://doi.org/10.1143/JJAP.31.L139
+  note: Heating in nitrogen above 700 °C makes magnesium-doped GaN p-type without an electron beam.
+nakamura1994:
+  authors: S. Nakamura, T. Mukai and M. Senoh
+  year: 1994
+  title: Candela-class high-brightness InGaN/AlGaN double-heterostructure blue-light-emitting diodes
+  venue: Applied Physics Letters 64(13), 1687–1689
+  url: https://doi.org/10.1063/1.111832
+  note: The first bright blue LED, made at Nichia.
+nobel2014:
+  authors: The Royal Swedish Academy of Sciences
+  year: 2014
+  title: 'The Nobel Prize in Physics 2014: press release'
+  venue: NobelPrize.org
+  url: https://www.nobelprize.org/prizes/physics/2014/press-release/
+  note: Awarded to Isamu Akasaki, Hiroshi Amano and Shuji Nakamura “for the invention of efficient blue light-emitting diodes which has enabled bright and energy-saving white light sources”.

@@ -288,3 +288,56 @@ parts-bin:
   term: parts bin
   definition: The collection of parts you have built in this course. A part that passes its checker goes into the bin as a black box with fixed pins, and later chapters build from it.
   chapter: press-a-key
+
+semiconductor:
+  term: semiconductor
+  definition: A material whose electrons need a modest amount of energy (a bandgap of about 0.5 to 3 eV) to become free to carry current. Pure, it conducts hardly at all; doped, it conducts well, and in a way that can be controlled.
+  chapter: diodes-and-leds
+energy-band:
+  term: energy band
+  definition: In a crystal the energies an electron may have come in broad ranges, called bands, separated by forbidden gaps. The valence band is full of bonding electrons; the conduction band above it is where electrons are free to move.
+  chapter: diodes-and-leds
+bandgap:
+  term: bandgap
+  definition: The energy between the top of the valence band and the bottom of the conduction band, the minimum an electron needs to become a carrier. Silicon 1.12 eV, gallium arsenide 1.42 eV, diamond 5.5 eV. An LED’s photons carry about this energy, so it sets the colour.
+  chapter: diodes-and-leds
+hole:
+  term: hole
+  definition: A bond with an electron missing. A neighbouring electron can step into it, so the hole moves the other way, and behaves as a mobile positive charge.
+  chapter: diodes-and-leds
+doping:
+  term: doping
+  definition: Adding a small, chosen amount of another element to a pure crystal, typically one atom in 10⁶ to 10⁸, to fix which carriers it has. Phosphorus (five outer electrons) makes silicon n-type; boron (three) makes it p-type.
+  chapter: diodes-and-leds
+pn-junction:
+  term: pn junction
+  definition: The boundary between p-type and n-type material in one crystal. Around it is a depletion region with a built-in voltage of about 0.7 V in silicon; it passes current from p to n and blocks it from n to p.
+  chapter: diodes-and-leds
+depletion-region:
+  term: depletion region
+  definition: The strip around a pn junction that the carriers have left, exposing the fixed ions of the dopants. It is a few tenths of a micrometre wide, it widens under reverse bias, and it narrows under forward bias.
+  chapter: diodes-and-leds
+forward-bias:
+  term: forward bias
+  definition: 'A voltage applied to a diode with + on the p side (the anode), which lowers the barrier. The current grows exponentially: a factor of ten for every 60 mV.'
+  chapter: diodes-and-leds
+reverse-bias:
+  term: reverse bias
+  definition: A voltage applied to a diode with + on the n side (the cathode), which raises the barrier and widens the depletion region. Only a tiny leakage current flows.
+  chapter: diodes-and-leds
+diode:
+  term: diode
+  definition: A two-terminal part that passes current from its anode to its cathode and blocks it the other way. In silicon a conducting diode has about 0.6 to 0.7 V across it at a few milliamps.
+  chapter: diodes-and-leds
+led:
+  term: light-emitting diode (LED)
+  definition: A diode whose electrons and holes recombine by emitting a photon of about the bandgap energy. The material sets the colour (GaAs infrared, GaAsP red, GaP green, InGaN blue), and it needs a series resistor because its current grows exponentially with voltage.
+  chapter: diodes-and-leds
+recombination:
+  term: recombination
+  definition: An electron in the conduction band falling into a hole. The energy it gives up becomes heat in silicon, and light in an LED.
+  chapter: diodes-and-leds
+diode-logic:
+  term: diode logic
+  definition: AND and OR gates made from diodes and a resistor. They work, but they have no gain and lose about a diode drop (0.65 V) per stage, and they cannot make NOT, so they cannot be cascaded far.
+  chapter: diodes-and-leds

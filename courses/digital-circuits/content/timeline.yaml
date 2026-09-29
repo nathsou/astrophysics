@@ -95,3 +95,33 @@
   people: J. Presper Eckert, John Mauchly
   chapter: press-a-key
   text: The first general-purpose electronic computer, with 17,468 vacuum tubes and 5,000 additions a second, is finished at the University of Pennsylvania.
+- year: 1874
+  title: Braun’s crystal rectifier
+  people: Ferdinand Braun
+  chapter: diodes-and-leds
+  text: A metal point on a lead-sulphide crystal conducts better one way than the other, the first semiconductor diode. The paper reached Annalen der Physik und Chemie on 23 November.
+- year: 1904
+  title: Fleming’s valve
+  people: John Ambrose Fleming
+  chapter: diodes-and-leds
+  text: A hot filament and a cold plate in a glass bulb pass current one way only; Fleming applies for the patent on 16 November and uses it to detect radio waves.
+- year: 1907
+  title: Round’s glowing crystal
+  people: H. J. Round
+  chapter: diodes-and-leds
+  text: 'A carborundum detector gives a yellowish light when 10 volts are put across it: the first electroluminescence from a solid-state diode.'
+- year: 1940
+  title: Ohl’s pn junction
+  people: Russell Ohl
+  chapter: diodes-and-leds
+  text: 'On 23 February a cracked silicon rod at Bell Labs generates a voltage in the light. The crack separates a p-type region from an n-type one: the first pn junction.'
+- year: 1962
+  title: Holonyak’s red LED
+  people: Nick Holonyak Jr.
+  chapter: diodes-and-leds
+  text: 'A gallium arsenide phosphide diode at General Electric emits visible red light: the first LED to give visible light.'
+- year: 1993
+  title: The bright blue LED
+  people: Isamu Akasaki, Hiroshi Amano, Shuji Nakamura
+  chapter: diodes-and-leds
+  text: Efficient blue LEDs of gallium nitride and indium gallium nitride make white LED lighting possible. Nobel Prize in Physics, 2014.
