@@ -697,6 +697,80 @@ h1 em {
   color: var(--mute);
 }
 
+/* 8 · Digital Circuits: the Bench */
+.digital {
+  --cbg: #f6f2ea;
+  --cfg: #1c2127;
+  --cmute: #5c636b;
+  --cac: #9c4f1c;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  background-image: linear-gradient(rgba(28, 33, 39, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(28, 33, 39, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+:root[data-theme='dark'] .digital {
+  --cbg: #0a0f17;
+  --cfg: #e2e8ef;
+  --cmute: #94a0ad;
+  --cac: #6ee7a4;
+  background-image: linear-gradient(rgba(226, 232, 239, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(226, 232, 239, 0.05) 1px, transparent 1px);
+}
+.digital .scope {
+  height: 64px;
+  margin: 0 0 18px;
+  border-radius: 8px;
+  background: #0b1210;
+  box-shadow: inset 0 0 0 1px rgba(110, 231, 164, 0.25);
+  overflow: hidden;
+}
+.digital .scope svg {
+  width: 100%;
+  height: 100%;
+}
+.digital .scope .grid {
+  stroke: rgba(110, 231, 164, 0.14);
+  stroke-width: 1;
+  fill: none;
+}
+.digital .scope .trace {
+  stroke: #6ee7a4;
+  stroke-width: 2;
+  fill: none;
+  filter: drop-shadow(0 0 3px rgba(110, 231, 164, 0.8));
+}
+.digital h2 {
+  margin: 6px 0 10px;
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.digital .desc {
+  color: var(--cmute);
+  line-height: 1.5;
+}
+.digital .leds {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0 0;
+  font: 500 11px var(--font-mono);
+  color: var(--cmute);
+}
+.digital .leds i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #3a2a1c;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+}
+.digital .leds i.on {
+  background: #f2a33a;
+  box-shadow: 0 0 8px #f2a33a;
+}
+.digital .leds span {
+  margin-left: 6px;
+  letter-spacing: 0.15em;
+}
+
 @media (max-width: 560px) {
   .wordmark {
     white-space: nowrap;
