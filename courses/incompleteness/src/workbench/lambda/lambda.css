@@ -62,7 +62,7 @@
 
 .lam-redexes { list-style: none; padding: 0; margin: 6px 0; display: flex; flex-direction: column; gap: 4px; }
 .lam-redexes li { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
-.lam-redex-btn { font-family: var(--math); font-size: 14px; text-align: left; background: var(--paper); border: 1px solid var(--rule); border-radius: 3px; padding: 2px 8px; cursor: pointer; color: var(--ink); max-width: 100%; overflow-wrap: anywhere; }
+.lam-redex-btn { font-family: var(--math); font-size: 14px; text-align: left; background: var(--paper); border: 1px solid var(--rule-2); border-radius: 3px; padding: 2px 8px; cursor: pointer; color: var(--ink); max-width: 100%; overflow-wrap: anywhere; }
 .lam-redex-btn:hover, .lam-redex-btn:focus-visible { border-color: var(--accent); background: var(--hl-2); }
 .lam-tag { font-family: var(--sans); font-size: 11px; color: var(--muted); border: 1px solid var(--rule); border-radius: 4px; padding: 0 7px; white-space: nowrap; }
 .lam-tag.strong { color: var(--accent); border-color: var(--accent); }

@@ -4,13 +4,16 @@
 @import 'katex/dist/katex.min.css';
 
 /* The "Textbook" design. The five tokens below (page, text, secondary text, accent, panel tint)
-   are the whole palette; every other colour is derived from them or is one of the object colours. */
+   are the whole palette; every other colour is derived from them or is one of the object colours.
+   Contrast targets (checked in both themes): body and secondary text >= 4.5:1 on every surface,
+   control borders (--rule-2) >= 3:1 on the page, the card and the panel tint, and each surface
+   (page / card / panel tint) visibly separated from the one it sits on. */
 :root {
   --bg: #fbfaf6;
   --fg: #1a2033;
-  --mute: #6b7285;
+  --mute: #535b70;
   --ac: #2c4a94;
-  --pn: #eceff6;
+  --pn: #e4e9f3;
 
   --serif: 'Newsreader Variable', 'Iowan Old Style', Georgia, serif;
   --ui: var(--serif);
@@ -20,28 +23,31 @@
   --math: KaTeX_Main, 'Times New Roman', serif;
   --math-it: KaTeX_Math, 'Times New Roman', serif;
 
-  --paper: var(--bg);
+  /* Cards (workbench panels, the inspector, exercises, inputs) are lifted off the page: white on
+     the off-white page, with a real border; their headers use the panel tint. */
+  --card: #ffffff;
+  --paper: var(--card);
   --paper-2: var(--pn);
-  --panel: var(--bg);
+  --panel: var(--card);
   --ink: var(--fg);
   --ink-2: color-mix(in srgb, var(--fg) 84%, var(--bg));
-  /* Secondary text also sits on the panel tint, so it is a shade darker than --mute in light mode. */
-  --muted: #596177;
-  --rule: color-mix(in srgb, var(--fg) 12%, var(--bg));
-  --rule-2: color-mix(in srgb, var(--fg) 42%, var(--bg));
+  --muted: var(--mute);
+  /* --rule: hairlines and card edges; --rule-2: control borders (inputs, keys, chips), >= 3:1. */
+  --rule: color-mix(in srgb, var(--fg) 20%, var(--bg));
+  --rule-2: color-mix(in srgb, var(--fg) 56%, var(--bg));
   --accent: var(--ac);
   --accent-soft: color-mix(in srgb, var(--ac) 11%, var(--bg));
 
   /* the three kinds of object, kept visually distinct */
   --formula: var(--ac);
   --formula-soft: var(--accent-soft);
-  --number: #8a5200;
+  --number: #7d4a00;
   --number-soft: color-mix(in srgb, var(--number) 13%, var(--bg));
   --numeral: #0b6b60;
   --numeral-soft: color-mix(in srgb, var(--numeral) 13%, var(--bg));
 
   /* provenance */
-  --book: #596177;
+  --book: var(--mute);
   --book-soft: var(--pn);
   --added: #6a45b8;
   --added-soft: color-mix(in srgb, var(--added) 11%, var(--bg));
@@ -52,7 +58,7 @@
   --danger-soft: color-mix(in srgb, var(--danger) 10%, var(--bg));
 
   --hl: rgba(236, 178, 26, 0.36);
-  --hl-2: rgba(236, 178, 26, 0.16);
+  --hl-2: rgba(236, 178, 26, 0.2);
   --hl-binder: rgba(44, 74, 148, 0.13);
   --hl-binder-ring: rgba(44, 74, 148, 0.45);
   --shadow: none;
@@ -67,31 +73,33 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --bg: #1c2233; --fg: #e6ecfa; --mute: #95a0bd; --ac: #9fb4e8; --pn: #252d44;
-    --muted: #a2acc8;
+    --bg: #1c2233; --fg: #e6ecfa; --mute: #a9b3cd; --ac: #9fb4e8; --pn: #2c3552;
+    --card: #20283c;
+    --rule: color-mix(in srgb, var(--fg) 20%, var(--bg)); --rule-2: color-mix(in srgb, var(--fg) 50%, var(--bg));
     --accent-soft: color-mix(in srgb, var(--ac) 17%, var(--bg));
-    --number: #f0b45c; --numeral: #5fd0bf; --added: #b99cf2; --checked: #6cd48e; --danger: #f28b82; --book: #a4aec8;
+    --number: #f0b45c; --numeral: #5fd0bf; --added: #b99cf2; --checked: #6cd48e; --danger: #f28b82; --book: var(--mute);
     --number-soft: color-mix(in srgb, var(--number) 16%, var(--bg));
     --numeral-soft: color-mix(in srgb, var(--numeral) 16%, var(--bg));
     --added-soft: color-mix(in srgb, var(--added) 18%, var(--bg));
     --checked-soft: color-mix(in srgb, var(--checked) 16%, var(--bg));
     --danger-soft: color-mix(in srgb, var(--danger) 16%, var(--bg));
-    --hl: rgba(250, 200, 60, 0.30); --hl-2: rgba(250, 200, 60, 0.13); --hl-binder: rgba(159, 180, 232, 0.17); --hl-binder-ring: rgba(159, 180, 232, 0.55);
+    --hl: rgba(250, 200, 60, 0.30); --hl-2: rgba(250, 200, 60, 0.16); --hl-binder: rgba(159, 180, 232, 0.17); --hl-binder-ring: rgba(159, 180, 232, 0.55);
     --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.55);
     color-scheme: dark;
   }
 }
 :root[data-theme='dark'] {
-  --bg: #1c2233; --fg: #e6ecfa; --mute: #95a0bd; --ac: #9fb4e8; --pn: #252d44;
-  --muted: #a2acc8;
+  --bg: #1c2233; --fg: #e6ecfa; --mute: #a9b3cd; --ac: #9fb4e8; --pn: #2c3552;
+  --card: #20283c;
+  --rule: color-mix(in srgb, var(--fg) 20%, var(--bg)); --rule-2: color-mix(in srgb, var(--fg) 50%, var(--bg));
   --accent-soft: color-mix(in srgb, var(--ac) 17%, var(--bg));
-  --number: #f0b45c; --numeral: #5fd0bf; --added: #b99cf2; --checked: #6cd48e; --danger: #f28b82; --book: #a4aec8;
+  --number: #f0b45c; --numeral: #5fd0bf; --added: #b99cf2; --checked: #6cd48e; --danger: #f28b82; --book: var(--mute);
   --number-soft: color-mix(in srgb, var(--number) 16%, var(--bg));
   --numeral-soft: color-mix(in srgb, var(--numeral) 16%, var(--bg));
   --added-soft: color-mix(in srgb, var(--added) 18%, var(--bg));
   --checked-soft: color-mix(in srgb, var(--checked) 16%, var(--bg));
   --danger-soft: color-mix(in srgb, var(--danger) 16%, var(--bg));
-  --hl: rgba(250, 200, 60, 0.30); --hl-2: rgba(250, 200, 60, 0.13); --hl-binder: rgba(159, 180, 232, 0.17); --hl-binder-ring: rgba(159, 180, 232, 0.55);
+  --hl: rgba(250, 200, 60, 0.30); --hl-2: rgba(250, 200, 60, 0.16); --hl-binder: rgba(159, 180, 232, 0.17); --hl-binder-ring: rgba(159, 180, 232, 0.55);
   --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.55);
   color-scheme: dark;
 }
@@ -134,7 +142,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .app.landing { grid-template-columns: minmax(0, 1fr); }
 .sidebar {
   position: sticky; top: 0; height: 100vh; overflow-y: auto;
-  border-right: 1px solid var(--pn); background: var(--bg);
+  border-right: 1px solid var(--rule); background: var(--bg);
   font-family: var(--ui); font-size: 15.5px; line-height: 1.4; padding: 26px 16px 40px 20px;
 }
 .brand { display: block; text-decoration: none; color: var(--fg); margin-bottom: 16px; }
@@ -167,7 +175,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .inspector-col { position: relative; }
 
 .chip-btn {
-  font-family: var(--sans); font-size: 12px; border: 1px solid var(--rule-2); background: var(--bg);
+  font-family: var(--sans); font-size: 12px; border: 1px solid var(--rule-2); background: var(--card);
   border-radius: 3px; padding: 3px 10px; cursor: pointer; color: var(--ink-2); text-decoration: none; display: inline-flex; gap: 6px; align-items: center; line-height: 1.5;
 }
 .chip-btn:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
@@ -215,25 +223,27 @@ table { border-collapse: collapse; }
 
 .section-head { margin-bottom: 30px; }
 .section-head::after { content: ''; display: block; width: 70px; height: 1px; background: var(--fg); margin: 26px 0 0; }
-.modes { display: inline-flex; font-family: var(--ui); font-size: 16px; gap: 22px; border-bottom: 1px solid var(--pn); }
+.modes { display: inline-flex; font-family: var(--ui); font-size: 16px; gap: 22px; border-bottom: 1px solid var(--rule); }
 .modes button { border: none; border-bottom: 2px solid transparent; margin-bottom: -1px; background: none; padding: 4px 0 5px; border-radius: 0; cursor: pointer; color: var(--ink-2); display: inline-flex; gap: 7px; align-items: baseline; font-style: italic; }
 .modes button:hover:not(:disabled) { color: var(--accent); }
 .modes button[aria-selected='true'] { border-bottom-color: var(--accent); color: var(--accent); font-style: normal; font-weight: 600; }
-.modes button:disabled { color: var(--muted); opacity: 0.6; cursor: not-allowed; }
-.modes kbd { background: transparent; border-color: currentColor; opacity: 0.7; font-style: normal; font-weight: 400; }
+.modes button:disabled { color: var(--muted); opacity: 0.75; cursor: not-allowed; }
+.modes kbd { background: transparent; border-color: var(--rule-2); color: var(--muted); font-style: normal; font-weight: 400; }
+.modes button[aria-selected='true'] kbd { border-color: currentColor; color: inherit; }
 .mode-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-top: 14px; }
 .mode-blurb { font-family: var(--ui); font-size: 15.5px; font-style: italic; color: var(--muted); margin: 12px 0 0; }
 
 /* the object that persists across modes */
 .object-bar {
   display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 10px 14px; margin: 18px 0 8px;
-  border: 1px solid var(--rule); border-radius: var(--radius); background: var(--bg); font-family: var(--sans); font-size: 12.5px;
+  border: 1px solid var(--rule); border-radius: var(--radius); background: var(--card); font-family: var(--sans); font-size: 12.5px;
 }
 .object-bar .label { color: var(--muted); }
 
 /* ------------------------------------------------------------ provenance */
 
-.prov { display: inline-flex; align-items: center; gap: 5px; font-family: var(--sans); font-size: 10.5px; font-weight: 500; letter-spacing: 0.04em; border-radius: 3px; padding: 1px 7px; max-width: 100%; text-wrap: balance; vertical-align: 2px; line-height: 1.6; }
+/* A chip's text is its own colour on a light wash of it, edged in the same colour so it reads as a label. */
+.prov { display: inline-flex; align-items: center; gap: 5px; font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0.03em; border-radius: 3px; padding: 0 7px; border: 1px solid color-mix(in srgb, currentColor 30%, transparent); max-width: 100%; text-wrap: balance; vertical-align: 2px; line-height: 1.6; }
 .prov.book { color: var(--book); background: var(--book-soft); }
 .prov.added { color: var(--added); background: var(--added-soft); }
 .prov.computed { color: var(--computed); background: var(--number-soft); }
@@ -249,10 +259,10 @@ table { border-collapse: collapse; }
 
 .inspector {
   position: sticky; top: 24px; max-height: calc(100vh - 48px); overflow-y: auto;
-  border: 1px solid var(--rule); border-radius: var(--radius); background: var(--bg); box-shadow: var(--shadow);
+  border: 1px solid var(--rule); border-radius: var(--radius); background: var(--card); box-shadow: var(--shadow);
   font-family: var(--ui); font-size: 15px; line-height: 1.5;
 }
-.inspector-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 14px; border-bottom: 1px solid var(--rule); background: var(--pn); color: var(--muted); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.16em; font-weight: 400; }
+.inspector-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 14px; border-bottom: 1px solid var(--rule); background: var(--pn); color: var(--ink-2); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.16em; font-weight: 400; }
 .inspector-body { padding: 14px; }
 .inspector-body h4 { margin: 0 0 8px; font-size: 17px; font-family: var(--serif); font-weight: 600; color: var(--fg); text-transform: none; letter-spacing: 0; }
 .inspector-empty { color: var(--muted); padding: 14px; font-style: italic; }
@@ -280,7 +290,7 @@ table { border-collapse: collapse; }
 .footer::before { content: ''; display: block; width: 70px; height: 1px; background: var(--fg); margin: 0 auto 28px; }
 .footer a { color: var(--ink-2); }
 .pager { display: flex; justify-content: space-between; gap: 16px; margin-top: 56px; font-family: var(--ui); }
-.pager a { flex: 1; border: 1px solid var(--pn); border-radius: var(--radius); padding: 12px 16px; text-decoration: none; color: var(--fg); background: var(--bg); font-size: 16.5px; line-height: 1.4; }
+.pager a { flex: 1; border: 1px solid var(--rule); border-radius: var(--radius); padding: 12px 16px; text-decoration: none; color: var(--fg); background: var(--card); font-size: 16.5px; line-height: 1.4; }
 .pager a:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
 .pager .dir { font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
 .error-box { border: 1px solid var(--danger); background: var(--danger-soft); color: var(--danger); border-radius: var(--radius); padding: 10px 14px; font-family: var(--ui); font-size: 16px; }
@@ -289,7 +299,7 @@ table { border-collapse: collapse; }
 .search-btn kbd, .search-foot kbd { font-family: var(--mono); font-size: 10.5px; border: 1px solid var(--rule-2); border-radius: 3px; padding: 0 4px; color: var(--muted); background: var(--bg); }
 .search-dialog { border: none; padding: 0; background: transparent; width: min(680px, calc(100vw - 24px)); max-height: min(78vh, 720px); margin: 10vh auto auto; overflow: visible; color: var(--fg); }
 .search-dialog::backdrop { background: rgba(14, 18, 30, 0.42); }
-.search-box { background: var(--bg); border: 1px solid var(--rule-2); border-radius: var(--radius); box-shadow: var(--shadow-lg); display: flex; flex-direction: column; max-height: min(78vh, 720px); overflow: hidden; }
+.search-box { background: var(--card); border: 1px solid var(--rule-2); border-radius: var(--radius); box-shadow: var(--shadow-lg); display: flex; flex-direction: column; max-height: min(78vh, 720px); overflow: hidden; }
 .search-input { font-family: var(--serif); font-size: 20px; padding: 14px 18px; border: none; border-bottom: 1px solid var(--rule); background: transparent; color: var(--fg); outline: none; }
 .search-results { list-style: none; margin: 0; padding: 6px; overflow-y: auto; }
 .search-results li { padding: 8px 12px; border-radius: 3px; cursor: pointer; font-family: var(--ui); }

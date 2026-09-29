@@ -25,10 +25,10 @@
 /* ------------------------------------------------------------ workbench frame */
 
 .workbench { display: flex; flex-direction: column; gap: 18px; margin: 10px 0 24px; }
-.wb-panel { border: 1px solid var(--rule); border-radius: var(--radius); background: var(--bg); overflow: hidden; }
+.wb-panel { border: 1px solid var(--rule); border-radius: var(--radius); background: var(--card); overflow: hidden; }
 .wb-panel-head { display: flex; align-items: center; gap: 10px; padding: 9px 16px; border-bottom: 1px solid var(--rule); font-family: var(--ui); font-size: 16px; background: var(--pn); }
 .wb-n { min-width: 1em; color: var(--accent); font-family: var(--serif); font-style: italic; font-size: 18px; line-height: 1; flex: none; }
-.wb-title { font-weight: 500; flex: 1; }
+.wb-title { font-weight: 600; flex: 1; color: var(--fg); }
 .wb-panel-body { padding: 14px 16px 16px; min-width: 0; }
 .wb-note { font-family: var(--ui); font-size: 16px; color: var(--ink-2); line-height: 1.55; margin: 0 0 10px; }
 .wb-note.danger { color: var(--danger); }
@@ -46,15 +46,18 @@
 .formula-input { font-family: var(--sans); }
 .fi-label { display: block; font-size: 11px; font-weight: 400; color: var(--muted); text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 4px; font-family: var(--sans); }
 .fi-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.fi-field { flex: 1; min-width: 180px; font-family: var(--mono); font-size: 14px; padding: 7px 12px; border: 1px solid var(--rule-2); border-radius: 3px; background: var(--bg); color: var(--ink); }
+.fi-field { flex: 1; min-width: 180px; font-family: var(--mono); font-size: 14px; padding: 7px 12px; border: 1px solid var(--rule-2); border-radius: 3px; background: var(--card); color: var(--ink); }
 textarea.fi-field { font-family: var(--mono); font-size: 13px; width: 100%; resize: vertical; }
 .fi-field:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: transparent; }
 .fi-field.invalid { border-color: var(--danger); }
 .fi-examples { font-size: 13px; padding: 7px 8px; border-radius: 4px; border: 1px solid var(--rule-2); background: var(--panel); }
 .fi-palette { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; align-items: center; }
-.fi-palette button { font-family: var(--math); font-size: 15px; min-width: 30px; height: 28px; border: 1px solid var(--rule); background: var(--paper-2); border-radius: 3px; cursor: pointer; }
-.fi-palette button:hover { border-color: var(--accent); color: var(--accent); }
-.fi-hint { font-size: 11.5px; color: var(--muted); margin-left: 6px; }
+/* Symbol keys: ink glyphs on the card, a 3:1 edge, and distinct hover / pressed / focus states. */
+.fi-palette button { font-family: var(--math); font-size: 16px; min-width: 32px; height: 30px; border: 1px solid var(--rule-2); border-bottom-width: 2px; background: var(--card); color: var(--fg); border-radius: 3px; cursor: pointer; transition: background 0.08s, border-color 0.08s; }
+.fi-palette button:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.fi-palette button:active { background: color-mix(in srgb, var(--ac) 24%, var(--card)); border-bottom-width: 1px; margin-top: 1px; height: 29px; }
+.fi-palette button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+.fi-hint { font-size: 12px; color: var(--muted); margin-left: 6px; }
 .fi-error { color: var(--danger); font-size: 13px; margin-top: 6px; display: flex; flex-direction: column; gap: 2px; font-family: var(--sans); }
 .fi-caret { background: var(--danger-soft); padding: 2px 6px; border-radius: 4px; white-space: pre-wrap; }
 .fi-caret mark { background: var(--danger); color: white; border-radius: 2px; }
@@ -78,13 +81,14 @@ textarea.fi-field { font-family: var(--mono); font-size: 13px; width: 100%; resi
 /* ------------------------------------------------------------ symbols, codes, numbers */
 
 .symbol-strip { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px 0; }
-.chip { display: inline-flex; flex-direction: column; align-items: center; min-width: 30px; padding: 3px 5px 1px; border: 1px solid var(--rule); border-radius: 3px; background: var(--paper); cursor: default; font-size: 16px; line-height: 1.25; }
+.chip { display: inline-flex; flex-direction: column; align-items: center; min-width: 30px; padding: 3px 5px 1px; border: 1px solid var(--rule-2); border-radius: 3px; background: var(--paper); color: var(--fg); cursor: default; font-size: 16px; line-height: 1.25; }
 .chip:focus-visible { outline: 2px solid var(--accent); }
 .chip.active { border-color: var(--number); box-shadow: 0 0 0 2px var(--number-soft); }
-.chip-pos { font-family: var(--mono); font-size: 9.5px; color: var(--muted); }
-.sym-chip.role-open, .sym-chip.role-close, .sym-chip.role-comma { opacity: 0.8; }
+.chip-pos { font-family: var(--mono); font-size: 10px; color: var(--muted); font-variant-numeric: tabular-nums; }
+/* punctuation is quieter than the symbols it groups, but still ink-legible */
+.sym-chip.role-open, .sym-chip.role-close, .sym-chip.role-comma { color: var(--ink-2); border-color: color-mix(in srgb, var(--rule-2) 80%, var(--card)); }
 .sym-chip.role-binder-var { border-style: dashed; }
-.sym-chip.role-numeral-tick { border-color: color-mix(in srgb, var(--numeral) 40%, var(--rule)); }
+.sym-chip.role-numeral-tick { border-color: color-mix(in srgb, var(--numeral) 75%, var(--rule-2)); }
 .run-chip, .abbr-chip { border-style: dashed; border-color: var(--numeral); }
 .code-table-wrap { overflow-x: auto; }
 .code-table { border-collapse: collapse; font-family: var(--sans); font-size: 13px; width: 100%; }
@@ -109,14 +113,14 @@ textarea.fi-field { font-family: var(--mono); font-size: 13px; width: 100%; resi
 .decode-trace { margin-top: 12px; display: flex; flex-direction: column; gap: 12px; }
 .dt-title { font-family: var(--sans); font-size: 12.5px; font-weight: 600; margin-bottom: 6px; display: flex; gap: 8px; align-items: center; }
 .dt-factors, .dt-symbols { display: flex; flex-wrap: wrap; gap: 6px; }
-.dt-factor, .dt-sym { display: inline-flex; flex-direction: column; align-items: center; border: 1px solid var(--rule); border-radius: 3px; padding: 2px 8px; background: var(--paper); }
+.dt-factor, .dt-sym { display: inline-flex; flex-direction: column; align-items: center; border: 1px solid var(--rule-2); border-radius: 3px; padding: 2px 8px; background: var(--paper); }
 .dt-factor.bad, .dt-sym.bad { border-color: var(--danger); background: var(--danger-soft); }
 .bad { color: var(--danger); }
 
 .symtab-group { margin-bottom: 14px; }
 .symtab-head { font-family: var(--sans); font-size: 13px; margin-bottom: 6px; }
 .symtab-row { display: flex; flex-wrap: wrap; gap: 6px; }
-.symtab-cell { display: inline-flex; flex-direction: column; align-items: center; gap: 1px; padding: 6px 10px; border: 1px solid var(--rule); border-radius: 4px; background: var(--paper); cursor: pointer; min-width: 64px; }
+.symtab-cell { display: inline-flex; flex-direction: column; align-items: center; gap: 1px; padding: 6px 10px; border: 1px solid var(--rule-2); border-radius: 4px; background: var(--paper); cursor: pointer; min-width: 64px; }
 .symtab-cell:hover, .symtab-cell:focus-visible { border-color: var(--accent); }
 .symtab-sym { font-size: 18px; }
 .symtab-seq { font-size: 12px; color: var(--muted); }
@@ -143,10 +147,12 @@ textarea.fi-field { font-family: var(--mono); font-size: 13px; width: 100%; resi
 .hs-row { display: flex; gap: 8px; align-items: center; }
 .hs-label { font-family: var(--sans); font-size: 11.5px; color: var(--muted); min-width: 64px; }
 .hs-strip { display: flex; gap: 2px; flex-wrap: wrap; }
-.hs-cell { min-width: 22px; text-align: center; border: 1px solid var(--rule); border-radius: 3px; padding: 0 3px; font-size: 14px; background: var(--paper); }
+.hs-cell { min-width: 22px; text-align: center; border: 1px solid var(--rule-2); border-radius: 3px; padding: 0 3px; font-size: 14px; background: var(--paper); }
 .hs-cell.current { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
 .hs-cell.free { border-color: var(--number); }
-.hs-cell.future { opacity: 0.4; }
+/* not yet reached: quieter (muted glyph, dashed edge) but still readable */
+.hs-cell.future { color: var(--muted); border-style: dashed; }
+.hs-cell.future .katex { color: var(--muted); }
 .hs-cell.inserted { background: var(--numeral-soft); border-color: var(--numeral); }
 
 /* ------------------------------------------------------------ recursive functions */
@@ -175,7 +181,7 @@ textarea.fi-field { font-family: var(--mono); font-size: 13px; width: 100%; resi
 
 /* ------------------------------------------------------------ proof debugger */
 
-.proof-debugger { border: 1px solid var(--rule); border-radius: var(--radius); background: var(--bg); margin: 10px 0; }
+.proof-debugger { border: 1px solid var(--rule); border-radius: var(--radius); background: var(--card); margin: 10px 0; }
 .pd-head { padding: 10px 12px; border-bottom: 1px solid var(--rule); display: flex; flex-direction: column; gap: 6px; }
 .pd-title { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-weight: 600; }
 .pd-meta { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); align-items: center; }
@@ -217,7 +223,7 @@ textarea.fi-field { font-family: var(--mono); font-size: 13px; width: 100%; resi
 .lane-chip.numeral { color: var(--numeral); background: var(--numeral-soft); }
 .lane-chip.check { color: var(--checked); background: var(--checked-soft); }
 .fp-stages { display: flex; flex-direction: column; gap: 12px; }
-.fp-stage { border: 1px solid var(--rule); border-left-width: 3px; border-radius: 3px; background: var(--bg); padding: 10px 14px; transition: box-shadow 0.2s; }
+.fp-stage { border: 1px solid var(--rule); border-left-width: 3px; border-radius: 3px; background: var(--card); padding: 10px 14px; transition: box-shadow 0.2s; }
 .fp-stage.lane-formula { border-left-color: var(--formula); }
 .fp-stage.lane-number { border-left-color: var(--number); }
 .fp-stage.lane-numeral { border-left-color: var(--numeral); }
@@ -246,12 +252,12 @@ textarea.fi-field { font-family: var(--mono); font-size: 13px; width: 100%; resi
 
 /* ------------------------------------------------------------ incompleteness explorer */
 
-.hyp-toggles { border: 1px solid var(--rule); border-radius: var(--radius); padding: 8px 14px 12px; display: flex; flex-wrap: wrap; gap: 8px 18px; font-family: var(--sans); font-size: 12.5px; background: var(--bg); }
+.hyp-toggles { border: 1px solid var(--rule); border-radius: var(--radius); padding: 8px 14px 12px; display: flex; flex-wrap: wrap; gap: 8px 18px; font-family: var(--sans); font-size: 12.5px; background: var(--card); }
 .hyp { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; border-radius: 3px; padding: 2px 6px; }
 .hyp.off { color: var(--muted); text-decoration: line-through; }
 .hyp input { accent-color: var(--accent); }
 .g1-graph { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 8px; }
-.g1-node { text-align: left; border: 1px solid var(--rule); border-radius: 4px; background: var(--panel); padding: 8px 12px; cursor: pointer; font-family: var(--sans); font-size: 13px; display: flex; flex-direction: column; gap: 3px; }
+.g1-node { text-align: left; border: 1px solid var(--rule-2); border-radius: 4px; background: var(--panel); padding: 8px 12px; cursor: pointer; font-family: var(--sans); font-size: 13px; display: flex; flex-direction: column; gap: 3px; }
 .g1-node.ok .g1-status { color: var(--checked); }
 .g1-node.broken { border-color: var(--danger); background: var(--danger-soft); }
 .g1-node.broken .g1-status { color: var(--danger); }
@@ -274,7 +280,7 @@ textarea.fi-field { font-family: var(--mono); font-size: 13px; width: 100%; resi
 
 /* ------------------------------------------------------------ exercises */
 
-.exercise { border: 1px solid var(--rule); border-left: 3px solid var(--number); border-radius: 3px; padding: 12px 18px; margin: 1.6em 0; background: var(--bg); }
+.exercise { border: 1px solid var(--rule); border-left: 3px solid var(--number); border-radius: 3px; padding: 12px 18px; margin: 1.6em 0; background: var(--card); }
 .exercise.done { border-color: color-mix(in srgb, var(--checked) 50%, var(--rule)); }
 .ex-head { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; font-family: var(--ui); font-size: 16px; margin-bottom: 6px; }
 .ex-kicker { font-weight: 400; text-transform: uppercase; letter-spacing: 0.16em; font-size: 12.5px; color: var(--number); }
@@ -320,7 +326,7 @@ textarea.fi-field { font-family: var(--mono); font-size: 13px; width: 100%; resi
 .home-chapters a { display: flex; gap: 16px; padding: 7px 0; color: var(--fg); text-decoration: none; }
 .home-chapters a:hover { color: var(--accent); opacity: 1; }
 .home-chapters .num { width: 22px; flex: none; color: var(--accent); font-style: italic; }
-.home-demo { border: 1px solid var(--pn); border-radius: 3px; background: var(--bg); padding: 12px 16px; margin: 28px 0; display: flex; flex-direction: column; gap: 8px; font-family: var(--mono); font-size: 13px; line-height: 1.8; }
+.home-demo { border: 1px solid var(--rule); border-radius: 3px; background: var(--card); padding: 12px 16px; margin: 28px 0; display: flex; flex-direction: column; gap: 8px; font-family: var(--mono); font-size: 13px; line-height: 1.8; }
 .home-demo figcaption { font-family: var(--ui); font-size: 15px; font-style: italic; line-height: 1.5; }
 .demo-row { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 12px; align-items: center; }
 .demo-row > :last-child { overflow-x: auto; }

@@ -51,7 +51,7 @@
 .sem-row.depth-0 { border-left: none; padding-left: 0; margin-left: 0; }
 .sem-row-head { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; border-radius: 3px; padding: 2px 2px; }
 .sem-row-head:hover { background: var(--paper-2); }
-.sem-twisty { width: 22px; height: 22px; border: 1px solid var(--rule); border-radius: 3px; background: var(--panel); cursor: pointer; line-height: 1; padding: 0; flex: none; color: var(--ink-2); }
+.sem-twisty { width: 22px; height: 22px; border: 1px solid var(--rule-2); border-radius: 3px; background: var(--panel); cursor: pointer; line-height: 1; padding: 0; flex: none; color: var(--ink-2); }
 .sem-twisty:focus-visible { outline: 2px solid var(--accent); }
 .sem-twisty-sp { width: 22px; flex: none; }
 .sem-ftext, .sem-ttext { font-family: var(--math); font-size: 15px; border-radius: 3px; overflow-wrap: anywhere; }
@@ -67,8 +67,8 @@
 .sem-variants { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin: 2px 0 6px 30px; }
 .sem-vlabel { font-size: 12px; color: var(--muted); flex-basis: 100%; }
 .sem-variant { font-family: var(--math); font-size: 13px; border: 1px solid var(--rule-2); background: var(--panel); border-radius: 4px; padding: 1px 9px; cursor: pointer; color: var(--ink); }
-.sem-variant.yes { border-color: color-mix(in srgb, var(--checked) 45%, var(--rule)); }
-.sem-variant.no { border-color: color-mix(in srgb, var(--danger) 45%, var(--rule)); }
+.sem-variant.yes { border-color: color-mix(in srgb, var(--checked) 75%, var(--rule-2)); }
+.sem-variant.no { border-color: color-mix(in srgb, var(--danger) 75%, var(--rule-2)); }
 .sem-variant.decisive { font-weight: 700; }
 .sem-variant.decisive.yes { background: var(--checked-soft); }
 .sem-variant.decisive.no { background: var(--danger-soft); }

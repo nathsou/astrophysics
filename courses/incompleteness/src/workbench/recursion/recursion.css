@@ -46,7 +46,8 @@
 .rc-table th { font-size: 11.5px; color: var(--muted); font-weight: 600; }
 .rc-table td.num, .rc-table th.num { text-align: right; font-family: var(--mono); font-size: 12.5px; }
 .rc-table tr.current td { background: var(--accent-soft); }
-.rc-table tr.future td { opacity: 0.35; }
+/* rows not yet computed: muted text rather than faded, so they stay legible */
+.rc-table tr.future td, .rc-table tr.future td * { color: var(--muted); }
 .rc-table td.diag, .rc-table th.diag { background: var(--hl-2); box-shadow: inset 0 0 0 1.5px var(--hl); }
 .rc-table td.wrap { white-space: normal; min-width: 180px; }
 .rc-grid td { text-align: center; min-width: 30px; font-family: var(--mono); font-size: 12.5px; }

@@ -30,12 +30,12 @@
 /* ---------------------------------------------------------------- rule palette */
 
 .ndb-palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
-.ndb-rulecard { border: 1px solid var(--rule); border-radius: 4px; background: var(--panel); padding: 8px 8px 6px; display: flex; flex-direction: column; gap: 6px; text-align: left; font: inherit; color: inherit; min-width: 0; }
+.ndb-rulecard { border: 1px solid var(--rule-2); border-radius: 4px; background: var(--panel); padding: 8px 8px 6px; display: flex; flex-direction: column; gap: 6px; text-align: left; font: inherit; color: inherit; min-width: 0; }
 button.ndb-rulecard { cursor: pointer; }
 button.ndb-rulecard:hover { border-color: var(--accent); }
 button.ndb-rulecard:focus-visible { outline: 2px solid var(--accent); }
 .ndb-rulecard[aria-pressed='true'] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); background: var(--accent-soft); }
-.ndb-rulecard.fits { border-color: color-mix(in srgb, var(--checked) 55%, var(--rule)); }
+.ndb-rulecard.fits { border-color: var(--checked); }
 .ndb-rulecard.dim { opacity: 0.62; }
 .ndb-rulecard-name { font-weight: 700; font-size: 12.5px; display: flex; justify-content: space-between; gap: 6px; }
 .ndb-rulecard-name .fit { color: var(--checked); font-weight: 600; font-size: 11px; }
