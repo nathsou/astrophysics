@@ -151,7 +151,7 @@ export default defineSim({
     }
 
     const tip = document.createElement('div');
-    tip.style.cssText = 'position:absolute;top:6px;width:260px;padding:6px 8px;border-radius:6px;background:var(--bg-elev);border:1px solid var(--rule);color:var(--fg);font-size:.72rem;line-height:1.35;display:none;box-shadow:0 4px 14px rgba(0,0,0,.25)';
+    tip.style.cssText = 'position:absolute;top:6px;width:260px;padding:6px 8px;border-radius:6px;background:var(--card);border:1px solid var(--line);color:var(--fg);font-size:.72rem;line-height:1.35;display:none;box-shadow:0 4px 14px rgba(0,0,0,.25)';
     stage.overlay.append(tip);
 
     const loop = new Loop(null, render);

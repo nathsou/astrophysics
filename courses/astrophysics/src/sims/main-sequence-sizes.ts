@@ -59,7 +59,6 @@ export default defineSim({
       const gap = 16;
       let x = gap;
       centers = [];
-      ctx.textAlign = 'center';
       for (const s of STARS) {
         const r = Math.max(1.5, s.R * pxPerRsun);
         centers.push(x + r);
@@ -81,28 +80,67 @@ export default defineSim({
         ctx.fill();
         if (i === hoverIdx) { ctx.strokeStyle = pal.fg; ctx.lineWidth = 1.5; ctx.stroke(); }
       });
-      // name labels under the stars that are small enough to leave room, without collisions
+      // Name labels under the stars small enough to leave room. One straight row when they fit;
+      // on narrow screens they would collide, so they are set on a slant (like a crowded chart axis),
+      // each starting right under its own star so the pairing stays unambiguous.
       ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.fillStyle = pal.muted;
-      const rowRight = [-Infinity, -Infinity, -Infinity]; // up to three staggered label rows
-      STARS.forEach((s, i) => {
-        const r = Math.max(1.5, s.R * pxPerRsun);
-        if (baseline + r + 44 > H || centers[i] < 0 || centers[i] > W) return;
-        const w = ctx.measureText(s.short).width;
-        const row = rowRight.findIndex((x) => centers[i] - w / 2 > x + 6);
-        if (row < 0) return;
-        rowRight[row] = centers[i] + w / 2;
-        ctx.fillText(s.short, centers[i], baseline + r + 16 + row * 13);
-      });
+      const shown = STARS.map((s, i) => ({ s, i, r: Math.max(1.5, s.R * pxPerRsun), w: ctx.measureText(s.short).width }))
+        .filter((o) => baseline + o.r + 30 <= H && centers[o.i] >= 0 && centers[o.i] <= W);
+      let right = -Infinity, straight = true;
+      for (const o of shown) {
+        if (centers[o.i] - o.w / 2 <= right + 8 || centers[o.i] + o.w / 2 > W - 2) { straight = false; break; }
+        right = centers[o.i] + o.w / 2;
+      }
+      // does a slanted label starting at (x0, y0) run into another star's disc?
+      const hits = (o: typeof shown[number], x0: number, y0: number, a: number) => {
+        for (let t = 0; t <= o.w; t += 4) {
+          const x = x0 + t * Math.cos(a), y = y0 + t * Math.sin(a);
+          if (y > H - 2 || x > W - 2) return true;
+          for (let j = 0; j < STARS.length; j++) {
+            if (j === o.i) continue;
+            const rj = Math.max(1.5, STARS[j].R * pxPerRsun) + 3;
+            if ((x - centers[j]) ** 2 + (y - baseline) ** 2 < rj * rj) return true;
+          }
+        }
+        return false;
+      };
+      for (const o of shown) {
+        const cx = centers[o.i];
+        if (straight) {
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'alphabetic';
+          ctx.fillText(o.s.short, cx, baseline + o.r + 16);
+          continue;
+        }
+        const x0 = cx - 3, y0 = baseline + o.r + 7;
+        const a = [Math.PI / 4, Math.PI / 3, (5 * Math.PI) / 12].find((ang) => !hits(o, x0, y0, ang));
+        if (a === undefined) continue;
+        ctx.save();
+        ctx.translate(x0, y0);
+        ctx.rotate(a);
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(o.s.short, 0, 0);
+        ctx.restore();
+      }
       ctx.restore();
-      ctx.fillStyle = pal.muted;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'alphabetic';
       ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       if (hoverIdx >= 0) {
         const s = STARS[hoverIdx];
         ctx.fillStyle = pal.fg;
-        ctx.fillText(`${s.name}: ${fmt(s.R, 3)} R☉, ${Math.round(s.T)} K`, W / 2, 20);
+        const line = `${s.name}: ${fmt(s.R, 3)} R☉, ${Math.round(s.T)} K`;
+        if (ctx.measureText(line).width <= W - 16) ctx.fillText(line, W / 2, 20);
+        else {
+          // too long for a phone: name on one line, numbers on the next
+          ctx.fillText(s.name, W / 2, 20);
+          ctx.fillText(`${fmt(s.R, 3)} R☉ · ${Math.round(s.T)} K`, W / 2, 36);
+        }
       } else {
-        ctx.fillText('Hover a star for its radius and temperature.', W / 2, 20);
+        ctx.fillStyle = pal.muted;
+        ctx.fillText(W < 420 ? 'Tap a star for its radius and temperature.' : 'Hover a star for its radius and temperature.', W / 2, 20);
       }
     }
     const loop = new Loop(null, render);
