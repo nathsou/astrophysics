@@ -227,8 +227,7 @@ namespace Nat
 @[simp] theorem add_zero (n : Nat) : n + 0 = n := rfl
 theorem add_succ (n m : Nat) : n + succ m = succ (n + m) := rfl
 theorem add_one (n : Nat) : n + 1 = succ n := rfl
-/-- simp writes successors as `n + 1` -/
-@[simp] theorem succ_eq_add_one (n : Nat) : succ n = n + 1 := rfl
+theorem succ_eq_add_one (n : Nat) : succ n = n + 1 := rfl
 
 @[simp] theorem zero_add (n : Nat) : 0 + n = n := by
   induction n with
@@ -456,6 +455,10 @@ theorem mul_le_mul_left {n m : Nat} (k : Nat) (h : n ≤ m) : k * n ≤ k * m :=
   | zero => rw [zero_mul, zero_mul]; exact Nat.le.refl
   | succ k ih => rw [succ_mul, succ_mul]; exact add_le_add ih h
 
+theorem mul_le_mul_right' {n m : Nat} (k : Nat) (h : n ≤ m) : n * k ≤ m * k := by
+  rw [mul_comm n k, mul_comm m k]
+  exact mul_le_mul_left k h
+
 theorem lt_or_ge (n m : Nat) : n < m ∨ n ≥ m := by
   induction m with
   | zero => exact Or.inr (zero_le n)
@@ -631,3 +634,65 @@ def geq : List Nat → List Nat → Bool
 def dominates : List Nat → List Nat → Bool
   | a :: as, b :: bs => Nat.ble (b + 1) a && geq as bs
   | _, _ => Bool.false
+
+theorem ble_true {n m : Nat} (h : Nat.ble n m = Bool.true) : n ≤ m := by
+  induction n generalizing m with
+  | zero => exact Nat.zero_le m
+  | succ n ih =>
+    cases m with
+    | zero => cases h
+    | succ m => exact Nat.succ_le_succ (ih h)
+
+theorem and_true_left {a b : Bool} (h : (a && b) = Bool.true) : a = Bool.true := by
+  cases a with
+  | false => cases h
+  | true => rfl
+
+theorem and_true_right {a b : Bool} (h : (a && b) = Bool.true) : b = Bool.true := by
+  cases a with
+  | false => cases h
+  | true => exact h
+
+theorem geq_dot (a b ρ : List Nat) (h : geq a b = Bool.true) : dot b ρ ≤ dot a ρ := by
+  induction b generalizing a ρ with
+  | nil => cases ρ with
+    | nil => exact Nat.zero_le _
+    | cons x xs => exact Nat.zero_le _
+  | cons b bs ih =>
+    cases ρ with
+    | nil => cases a with
+      | nil => exact Nat.le.refl
+      | cons a as => exact Nat.le.refl
+    | cons x xs =>
+      cases a with
+      | nil =>
+        have hb : b ≤ 0 := ble_true (and_true_left h)
+        have hb0 : b = 0 := Nat.le_antisymm hb (Nat.zero_le b)
+        have hr := ih [] xs (and_true_right h)
+        simp [dot, hb0]
+        exact hr
+      | cons a as =>
+        have hab : b ≤ a := ble_true (and_true_left h)
+        have hr := ih as xs (and_true_right h)
+        simp [dot]
+        exact Nat.add_le_add (Nat.mul_le_mul_right' x hab) hr
+
+theorem contra (a b ρ : List Nat) (hd : dominates a b = Bool.true) (h : eval a ρ ≤ eval b ρ) : False := by
+  cases a with
+  | nil => cases b with
+    | nil => cases hd
+    | cons b bs => cases hd
+  | cons a as =>
+    cases b with
+    | nil => cases hd
+    | cons b bs =>
+      have hc : b + 1 ≤ a := ble_true (and_true_left hd)
+      have hg : dot bs ρ ≤ dot as ρ := geq_dot as bs ρ (and_true_right hd)
+      have h2 : b + 1 + dot bs ρ ≤ a + dot as ρ := Nat.add_le_add hc hg
+      have h3 : a + dot as ρ ≤ b + dot bs ρ := h
+      have h4 : b + dot bs ρ + 1 ≤ b + dot bs ρ := by
+        rw [Nat.add_right_comm]
+        exact Nat.le_trans h2 h3
+      exact Nat.not_add_one_le_self _ h4
+
+end Omega

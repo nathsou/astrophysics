@@ -293,6 +293,16 @@ function readable(el: Elaborator, e: Expr): boolean {
   return ok;
 }
 
+function cheapDefEq(el: Elaborator, a: Expr, b: Expr): boolean {
+  const tc = el.u.makeTC(el.lctx);
+  tc.setFuel(3000);
+  try {
+    return tc.isDefEq(el.instantiate(a), el.instantiate(b));
+  } catch {
+    return false;
+  }
+}
+
 function whnfBounded(el: Elaborator, t: Expr): Expr | undefined {
   const tc = el.u.makeTC(el.lctx);
   tc.setFuel(5000);
@@ -739,6 +749,8 @@ export class Simplifier {
     if (args.length !== 3) return undefined;
     const [T, a, b] = args;
     if (exprEq(a, b)) return { expr: mkConst('True'), proof: this.app('eq_self', [a]) };
+    // sides that are equal by a short computation (like n + 1 and Nat.succ n)
+    if (!a.mv && !b.mv && cheapDefEq(el, a, b)) return { expr: mkConst('True'), proof: this.app('eq_true', [mkApps(mkConst('Eq.refl', getAppFn(e).k === 'const' ? (getAppFn(e) as { levels: readonly Level[] }).levels : []), [T, a])]) };
     const ca = ctorOf(el, a);
     const cb = ctorOf(el, b);
     if (!ca || !cb) return undefined;
