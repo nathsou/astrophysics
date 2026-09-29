@@ -25,13 +25,16 @@ export function BookPage({ n }: { n: number }) {
   return (
     <div className="page book-page">
       <header className="book-head">
-        <div className="crumbs">
-          <a href="#/">The Elements</a>
-        </div>
-        <h1>
-          <span className="book-num">Book {ROMAN[n]}</span> {info.title}
-        </h1>
+        <span className={`book-shape ${info.theme}`} style={info.theme === 'plane' ? { ['--c' as string]: ['var(--red)', 'var(--yellow)', 'var(--blue)'][(n - 1) % 3] } : undefined} aria-hidden="true" />
+        <p className="kicker">Book {ROMAN[n]}</p>
+        <h1>{info.title}</h1>
         <p className="lede">{info.blurb}</p>
+        <p className="legend" aria-label="Marks in the lists below">
+          <span><i className="sh diamond blue" /> construction</span>
+          <span><i className="sh diamond red" /> theorem</span>
+          {n <= 6 && <span><i className="sh tri" style={{ ['--c' as string]: 'var(--amber)' }} /> uses the parallel postulate</span>}
+          <span><i className="sh dot yellow" /> interactive figure</span>
+        </p>
       </header>
       {intro && (
         <Suspense fallback={null}>
@@ -56,9 +59,9 @@ export function BookPage({ n }: { n: number }) {
                       <span className="enun">{first ? renderInlines(first.c, { next: () => null, noLinks: true }) : null}</span>
                     </span>
                     <span className="marks">
-                      {s.kind === 'prop' && <span className={`mini ${e.problem ? 'problem' : 'theorem'}`} title={e.problem ? 'Construction' : 'Theorem'}>{e.problem ? 'C' : 'T'}</span>}
-                      {s.kind === 'prop' && n <= 6 && usesParallelPostulate(it.id) && <span className="mini p5" title="Uses the parallel postulate">∥</span>}
-                      {hasFigure(it.id) && <span className="mini fig" title="Interactive figure">◇</span>}
+                      {s.kind === 'prop' && <span className={`sh diamond ${e.problem ? 'blue' : 'red'}`} title={e.problem ? 'Construction' : 'Theorem'} />}
+                      {s.kind === 'prop' && n <= 6 && usesParallelPostulate(it.id) && <span className="sh tri" style={{ ['--c' as string]: 'var(--amber)' }} title="Uses the parallel postulate" />}
+                      {hasFigure(it.id) && <span className="sh dot yellow" title="Interactive figure" />}
                     </span>
                   </a>
                 </li>

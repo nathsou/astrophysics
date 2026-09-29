@@ -4,14 +4,14 @@ import { useState } from 'react';
 import { byId, citeLabel, hrefOf, longLabel } from '../text';
 import { modernTitle } from '../content/modern';
 
-export function Cite({ id, text }: { id: string; text?: string }) {
+export function Cite({ id, text, chip }: { id: string; text?: string; chip?: boolean }) {
   const [open, setOpen] = useState(false);
   const e = byId.get(id);
   if (!e) return <span className="cite missing">{text ?? id}</span>;
   const title = modernTitle(id);
   return (
     <span className="cite-wrap" onPointerEnter={() => setOpen(true)} onPointerLeave={() => setOpen(false)}>
-      <a className={`cite k-${e.kind}`} href={hrefOf(id)} onFocus={() => setOpen(true)} onBlur={() => setOpen(false)}>
+      <a className={`cite k-${e.kind}${chip ? ' chip' : ''}`} href={hrefOf(id)} onFocus={() => setOpen(true)} onBlur={() => setOpen(false)}>
         {text ?? citeLabel(id)}
       </a>
       {open && (

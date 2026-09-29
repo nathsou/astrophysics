@@ -26,7 +26,7 @@ To look at a page, use the dev server running at `http://localhost:5199` (it hot
 PW=$(npm root -g)/playwright node /tmp/claude-0/-home-user-courses/19936190-2873-5684-99d1-f9b3781b39d9/scratchpad/shot.mjs "http://localhost:5199/#/3.20" /tmp/claude-0/-home-user-courses/19936190-2873-5684-99d1-f9b3781b39d9/scratchpad/<name>.png 1400 1000
 ```
 
-Then open the PNG with the Read tool. Look at the figure: does it look like Heath's diagram, are the labels legible, is it in proportion? Look at Byrne mode too: add a fifth argument `"p.click('text=Byrne')"`.
+Then open the PNG with the Read tool. Look at the figure: does it look like Heath's diagram, are the labels legible, is it in proportion? Byrne colours are on by default; to see the lettered figure too, add a fifth argument `"p.click('text=Byrne colours')"`.
 
 ## Figures
 
@@ -88,7 +88,7 @@ Some labels have nothing to draw: a hypothetical object in a reductio that canno
 
 ### The step-through
 
-Clicking a paragraph (or "Step through") builds the figure up paragraph by paragraph. An object appears at the first paragraph that mentions it. An unmentioned element appears when all its named points have appeared. Use `from: k` (a paragraph index) to override this when it goes wrong.
+Clicking a paragraph (or the play button, or a bar of the step track) builds the figure up paragraph by paragraph. An object appears at the first paragraph that mentions it. An unmentioned element appears when all its named points have appeared. Use `from: k` (a paragraph index) to override this when it goes wrong.
 
 ### Good figures
 

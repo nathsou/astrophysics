@@ -255,6 +255,8 @@ export const BYRNE: { colour: string; dash?: string }[] = [
 ];
 
 const COLOUR_INDEX: Record<string, number> = { red: 0, blue: 1, yellow: 2, black: 3 };
+const LINE_ORDER = [0, 1, 2, 3];
+const POLY_ORDER = [2, 0, 1, 3];
 
 /**
  * Assigns Byrne colours to the objects of a proposition in order of first mention. Objects of
@@ -274,7 +276,9 @@ export function byrneColours(targets: Target[], scene: Scene): Map<string, { col
     }
     const i = counters.get(family) ?? 0;
     counters.set(family, i + 1);
-    out.set(t.key, BYRNE[i % BYRNE.length]);
+    // Byrne's polygons are yellow first; everything else starts with red
+    const order = family === 'poly' ? POLY_ORDER : LINE_ORDER;
+    out.set(t.key, BYRNE[(Math.floor(i / 4) % 3) * 4 + order[i % 4]]);
   }
   return out;
 }
