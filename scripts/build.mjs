@@ -16,6 +16,7 @@ const courses = [
   { name: 'cic' },
   { name: 'compiler-backends' },
   { name: 'incompleteness' },
+  { name: 'elements' },
   {
     name: 'language-models',
     command: ['pnpm', ['--filter', 'course', 'build']],
