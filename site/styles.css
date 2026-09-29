@@ -610,6 +610,17 @@ h1 em {
 }
 
 @media (max-width: 560px) {
+  .wordmark {
+    white-space: nowrap;
+  }
+  .theme button {
+    padding: 8px 6px;
+  }
+}
+@media (max-width: 359px) {
+  .wordmark {
+    white-space: normal;
+  }
   .shell {
     padding: 0 20px 40px;
   }
