@@ -357,6 +357,10 @@ export class Unifier {
       if (this.solve(b, a, depth)) return true;
     }
     if (aFlex && this.solve(a, b, depth)) return true;
+    // first-order approximation: ?m c₁ … cₖ t =?= f u₁ … uⱼ v  ⟶  ?m c₁ … cₖ =?= f u₁ … uⱼ,  t =?= v
+    // (the context arguments cᵢ make ?m's own application a pattern; the tail t is not a variable)
+    if (aFlex && this.firstOrderTail(a, b, depth)) return true;
+    if (bFlex && this.firstOrderTail(b, a, depth)) return true;
 
     // structural cases
     if (a.k === 'sort' && b.k === 'sort') return this.unifyLevel(a.level, b.level);
@@ -479,6 +483,23 @@ export class Unifier {
     const head = mkApps(getAppFn(r), rargs.slice(0, k));
     if (this.defEq(getAppFn(f), head, depth + 1) && fargs.every((x, i) => this.defEq(x, rargs[k + i], depth + 1))) return true;
     this.mctx.rollback(cp);
+    return false;
+  }
+
+  private firstOrderTail(flex: Expr, rigid: Expr, depth: number): boolean {
+    const fargs = getAppArgs(flex);
+    const rargs = getAppArgs(rigid);
+    const rf = getAppFn(rigid);
+    if (rf.k === 'mvar' || rargs.length === 0 || fargs.length === 0) return false;
+    // only when the tail is not a pattern (otherwise solve would have handled it)
+    if (fargs.every((x) => this.instHead(x).k === 'fvar')) return false;
+    for (let e = 1; e <= Math.min(fargs.length, rargs.length); e++) {
+      const cp = this.mctx.checkpoint();
+      const fh = mkApps(getAppFn(flex), fargs.slice(0, fargs.length - e));
+      const rh = mkApps(rf, rargs.slice(0, rargs.length - e));
+      if (this.defEq(fh, rh, depth + 1) && fargs.slice(fargs.length - e).every((x, i) => this.defEq(x, rargs[rargs.length - e + i], depth + 1))) return true;
+      this.mctx.rollback(cp);
+    }
     return false;
   }
 

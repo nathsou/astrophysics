@@ -1,1 +1,214 @@
-This chapter is being written.
+Part III gave us a way to write proofs. Part IV is about the most important proof technique for programs: **induction**. You may have met it in a mathematics course as a principle about natural numbers ("prove it for 0, prove that it passes from `n` to `n + 1`, conclude it for all `n`"). Here it will not be a new principle at all. A proof by induction is a recursive function, and the rule that makes it valid is the same rule that makes recursive functions terminate.
+
+## A proof that calls itself
+
+Here is a recursive function on natural numbers, and a proof, side by side:
+
+<Columns left="A recursive program" right="A proof by induction">
+
+```lean
+def double : Nat → Nat
+  | 0 => 0
+  | n + 1 => double n + 2
+```
+
+```lean
+theorem zero_add' : ∀ n : Nat, 0 + n = n
+  | 0 => rfl
+  | n + 1 => congrArg (· + 1) (zero_add' n)
+```
+
+</Columns>
+
+The proof on the right is written as a function, by pattern matching, exactly like `double`. For `0`, it returns a proof of `0 + 0 = 0`, which is `rfl`. For `n + 1`, it must return a proof of `0 + (n + 1) = n + 1`. It calls itself on `n` to get a proof of `0 + n = n`, and adds one to both sides with `congrArg` (Chapter 6). Since `0 + (n + 1)` computes to `(0 + n) + 1`, that is what was needed.
+
+Read the proof as an argument, and it is the familiar induction: the statement holds for 0; if it holds for `n`, it holds for `n + 1`. The recursive call *is* the induction hypothesis. And the proof is valid for the same reason that `double` terminates: each call is on a smaller number, so for any given `n`, following the calls down reaches `0` after `n` steps. A proof by induction that called itself on `n + 1` would be circular, and would be rejected just like a recursive function that loops (Chapter 12 shows what goes wrong if it were not).
+
+## One principle for both
+
+Both definitions above are compiled by the checker into uses of a single function, the **recursor** of `Nat`. Here it is, written by hand:
+
+```lean
+def natRec {motive : Nat → Sort u} (zero : motive 0) (succ : ∀ n, motive n → motive (n + 1)) :
+    ∀ n, motive n
+  | 0 => zero
+  | n + 1 => succ n (natRec zero succ n)
+```
+
+Look at its type in two ways.
+
+- **As a program**, it is a loop: start from `zero`, and apply `succ` once for each step up to `n`. With `motive := fun _ => Nat`, `zero := 0` and `succ := fun _ d => d + 2`, it computes `double`.
+- **As a statement**, with `motive` a predicate: if `motive 0` holds, and `motive n` implies `motive (n + 1)` for every `n`, then `motive n` holds for every `n`. That is the principle of induction.
+
+```lean
+def double' (n : Nat) : Nat := natRec (motive := fun _ => Nat) 0 (fun _ d => d + 2) n
+
+theorem zero_add'' (n : Nat) : 0 + n = n :=
+  natRec (motive := fun n => 0 + n = n) rfl (fun _ ih => congrArg (· + 1) ih) n
+
+#eval double' 21
+```
+
+The library's version is `Nat.rec`. Every inductive type comes with one, generated from its constructors, and every recursive definition in the course language is compiled to it.
+
+<UnderTheHood ch="recursion" s="recursion-becomes-induction">
+CIC Chapter 15 shows the translation from pattern matching to recursors, step by step, and how the same recursor gives both structural recursion and induction proofs.
+</UnderTheHood>
+
+## The induction tactic
+
+Writing proofs as recursive functions works, but the `induction` tactic is usually more convenient: it applies the recursor and gives you one goal per constructor, with the induction hypothesis in the context. Put your cursor in each case below:
+
+<Playground lens title="Induction on lists" code={`def sum : List Nat → Nat
+  | [] => 0
+  | x :: xs => x + sum xs
+
+theorem sum_append (xs ys : List Nat) : sum (xs ++ ys) = sum xs + sum ys := by
+  induction xs with
+  | nil => simp [sum]
+  | cons x xs ih =>
+    simp [sum, ih]
+    omega`} />
+
+In the `cons` case, the goal is about `x :: xs`, and `ih` is the statement for the shorter list `xs`:
+
+```text
+ih : sum (xs ++ ys) = sum xs + sum ys
+⊢ sum (x :: xs ++ ys) = sum (x :: xs) + sum ys
+```
+
+`simp [sum, ih]` unfolds `sum` on `x :: …` (possible because the list starts with a known constructor), and uses `ih`. What remains is `x + (sum xs + sum ys) = x + sum xs + sum ys`, which is arithmetic.
+
+The proof term, visible in the lens, is a call to `List.rec` with one function per constructor. It has the same shape as `sum` itself: one case for `[]`, and one for `x :: xs` that uses the result for `xs`. **To prove a property of a recursive function, do induction following the same recursion.** Most proofs in Part V start this way.
+
+## Structures with more branches
+
+Induction works on any inductive type, with one hypothesis per recursive argument. For a binary tree, the `node` case has two:
+
+<Playground lens title="Induction on trees" code={`inductive Tree where
+  | leaf
+  | node (l : Tree) (v : Nat) (r : Tree)
+
+def Tree.size : Tree → Nat
+  | .leaf => 0
+  | .node l _ r => l.size + 1 + r.size
+
+def Tree.mirror : Tree → Tree
+  | .leaf => .leaf
+  | .node l v r => .node r.mirror v l.mirror
+
+theorem Tree.size_mirror (t : Tree) : t.mirror.size = t.size := by
+  induction t with
+  | leaf => rfl
+  | node l v r ihl ihr =>
+    simp [Tree.mirror, Tree.size, ihl, ihr]
+    omega
+
+theorem Tree.mirror_mirror (t : Tree) : t.mirror.mirror = t := by
+  induction t with
+  | leaf => rfl
+  | node l v r ihl ihr => simp [Tree.mirror, ihl, ihr]`} />
+
+## When the induction hypothesis is not enough
+
+Here is a classic. Reverse a list, the simple way:
+
+```lean
+def rev {α : Type} : List α → List α
+  | [] => []
+  | x :: xs => rev xs ++ [x]
+```
+
+Reversing twice should give the list back. Try induction directly:
+
+<Playground errors lens title="Stuck" setup={`def rev {α : Type} : List α → List α
+  | [] => []
+  | x :: xs => rev xs ++ [x]`} code={`theorem rev_rev {α : Type} (xs : List α) : rev (rev xs) = xs := by
+  induction xs with
+  | nil => rfl
+  | cons x xs ih =>
+    simp [rev]
+    sorry`} />
+
+After unfolding, the goal is `rev (rev xs ++ [x]) = x :: xs`, and `ih : rev (rev xs) = xs` does not apply: the goal has `rev` of an *append*, and the hypothesis knows nothing about appends. The fix is to prove a more general fact first, about `rev (as ++ bs)`, and use it as a lemma:
+
+```lean
+theorem rev_append {α : Type} (as bs : List α) : rev (as ++ bs) = rev bs ++ rev as := by
+  induction as with
+  | nil => simp [rev]
+  | cons a as ih => simp [rev, ih]
+
+theorem rev_rev {α : Type} (xs : List α) : rev (rev xs) = xs := by
+  induction xs with
+  | nil => rfl
+  | cons x xs ih => simp [rev, rev_append, ih]
+```
+
+This happens constantly: the statement you want is not the one that has a working induction. Finding the right generalisation is the creative part of proving things about programs. Chapter 14 is devoted to a common case, where the missing generality is an extra argument of the function.
+
+<Engineer title="Tests and induction">
+A property that holds for `[]` and survives `x :: _` holds for every list. Compare that with a test suite: it checks some lists, and says nothing about the others. An induction proof is a test that covers the base case and "every way to extend a passing input", which covers everything. The `#test` command of Chapter 2 is still useful before a proof: if the statement is false, it finds a counterexample faster than a failed induction does.
+</Engineer>
+
+## Induction with extra variables
+
+Sometimes a statement has other variables, and the induction hypothesis must hold for *all* their values, not just the current one. `induction n generalizing m` makes `m` part of the statement being proved by induction, so `ih` becomes `∀ m, …`:
+
+```lean
+def addTo : Nat → Nat → Nat
+  | 0, m => m
+  | n + 1, m => addTo n (m + 1)
+
+theorem addTo_eq (n m : Nat) : addTo n m = n + m := by
+  induction n generalizing m with
+  | zero => simp [addTo]
+  | succ n ih =>
+    simp [addTo, ih]
+    omega
+```
+
+In the `succ` case, the recursive call is `addTo n (m + 1)`, with a *different* second argument. Without `generalizing m`, the hypothesis would only speak about `addTo n m` and could not be used. Chapter 14 returns to this.
+
+## Exercises
+
+<Exercise id="induction:length-append" title="Length of an append" lens code={`theorem length_append' {α : Type} (xs ys : List α) : (xs ++ ys).length = xs.length + ys.length := by
+  induction xs with
+  | nil => sorry
+  | cons x xs ih => sorry`} must="length_append'" hint="nil: simp. cons: simp [ih] (simp unfolds length on x :: _ and finishes the arithmetic)." solution={`theorem length_append' {α : Type} (xs ys : List α) : (xs ++ ys).length = xs.length + ys.length := by
+  induction xs with
+  | nil => simp
+  | cons x xs ih =>
+    simp [ih]`}>
+The library has this as a simp lemma, so avoid using it directly: prove it by induction, using only `ih` and arithmetic.
+</Exercise>
+
+<Exercise id="induction:double" title="Double" lens setup={`def double : Nat → Nat
+  | 0 => 0
+  | n + 1 => double n + 2`} code={`theorem double_eq (n : Nat) : double n = 2 * n := by
+  sorry`} must="double_eq" hint="induction n with | zero => rfl | succ n ih => then rw [double, ih] and omega." solution={`theorem double_eq (n : Nat) : double n = 2 * n := by
+  induction n with
+  | zero => rfl
+  | succ n ih =>
+    rw [double, ih]
+    omega`}>
+Prove that `double` doubles.
+</Exercise>
+
+<Exercise id="induction:map-map" title="Map fusion" lens code={`theorem map_map' {α β γ : Type} (f : α → β) (g : β → γ) (xs : List α) :
+    (xs.map f).map g = xs.map (fun x => g (f x)) := by
+  sorry`} must="map_map'" hint="Induction on xs; in the cons case simp [ih]." solution={`theorem map_map' {α β γ : Type} (f : α → β) (g : β → γ) (xs : List α) :
+    (xs.map f).map g = xs.map (fun x => g (f x)) := by
+  induction xs with
+  | nil => rfl
+  | cons x xs ih => simp [ih]`}>
+Mapping twice is mapping once with the composition. (A compiler that fuses loops relies on exactly this fact.)
+</Exercise>
+
+<Exercise id="induction:by-recursion" title="Induction as recursion" code={`-- write the proof as a recursive function, without tactics
+theorem add_zero_rec : ∀ n : Nat, n + 0 = n
+  | 0 => sorry
+  | n + 1 => sorry`} must="add_zero_rec" hint="Both cases are rfl: n + 0 computes to n. (Try to see why no recursive call is needed.)" solution={`theorem add_zero_rec : ∀ n : Nat, n + 0 = n
+  | 0 => rfl
+  | n + 1 => rfl`}>
+Fill in both cases. Is the recursive call needed? Why is it needed for `zero_add'` but not here?
+</Exercise>
