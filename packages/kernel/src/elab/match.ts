@@ -920,19 +920,23 @@ export function elabMatch(el: Elaborator, s: Extract<STerm, { k: 'match' }>, exp
   try {
     const cols: Expr[] = [];
     const generalized: { y: FVar; d: Expr }[] = [];
+    const equations: { h: FVar; d: Expr }[] = [];
     let target = target0;
-    for (const ds of s.discrs) {
+    s.discrs.forEach((ds, k) => {
       const d = el.instantiate(el.elab(ds));
-      if (d.k === 'fvar' && !el.lctx.get(d.id)?.value) {
+      const hname = s.discrNames?.[k];
+      if (d.k === 'fvar' && !el.lctx.get(d.id)?.value && !hname) {
         cols.push(d);
-        continue;
+        return;
       }
       const dt = el.inferType(d, ds.span);
       const y = el.pushLocal('x✝', el.instantiate(dt));
       target = kabstract(el.instantiate(target), d, y);
       generalized.push({ y, d });
       cols.push(y);
-    }
+      // h : d = y, reverted with y: each alternative sees h : d = its pattern
+      if (hname) equations.push({ h: el.pushLocal(hname, mkEq(el, d, y)), d });
+    });
     const used = s.alts.map(() => ({ v: false }));
     const rows: Row[] = s.alts.map((a, k) => ({ pats: a.pats, binds: new Map(), alt: a, used: used[k] }));
     // like Lean, generalise local hypotheses whose types mention a discriminant (or one of its index variables)
@@ -951,6 +955,7 @@ export function elabMatch(el: Elaborator, s: Extract<STerm, { k: 'match' }>, exp
     }
     let r = compile(el, { cols, rows, target, deps, ih: new Map(), exp: new Map(), span: s.span, path: [] });
     reportUnused(el, rows);
+    for (const q of equations) r = replaceFVars(el.instantiate(r), new Map([[q.h.id, mkEqRefl(el, q.d)]]));
     for (const g of generalized) r = replaceFVars(el.instantiate(r), new Map([[g.y.id, g.d]]));
     el.lctx = saved;
     return el.ensureHasType(r, target0, expected, s.span);

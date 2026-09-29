@@ -49,7 +49,7 @@ export interface RecInfo {
   name: string;
 }
 
-const AUTO_BOUND_RE = /^[a-zA-Zα-κμ-ω][0-9₀-₉']*$/;
+const AUTO_BOUND_RE = /^[a-zA-Zα-κμ-ωΑ-Ω][0-9₀-₉']*$/;
 
 export class Elaborator {
   readonly mctx = new MetaCtx();

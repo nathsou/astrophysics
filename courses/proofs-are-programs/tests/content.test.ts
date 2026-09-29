@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { run } from './util.ts';
 import { judge, parseF, theoremDecl } from '../src/engines/props.ts';
 import { reflectionProof } from '../src/engines/reflect.ts';
+import { certificate, TYPING_PRESETS } from '../src/engines/stlc.ts';
 
 interface Snippet {
   line: number;
@@ -59,6 +60,11 @@ export function extract(src: string): Snippet[] {
     // the reflection lab builds its proof from a formula
     const formula = attr(tag, 'formula');
     if (m[1] === 'ReflectionLab' && formula !== undefined) out.push({ line: lineOf(m.index!), code: setup + '\n' + reflectionProof(formula).code, allowErrors, what: m[1] });
+    // the typing lab's certificates, for its term and its presets
+    if (m[1] === 'TypingLab') {
+      const terms = [attr(tag, 'term'), ...TYPING_PRESETS].filter((x): x is string => x !== undefined);
+      out.push({ line: lineOf(m.index!), code: setup + '\n' + terms.map((x) => certificate(x).code).join('\n\n'), allowErrors, what: m[1] });
+    }
     const sol = attr(tag, 'solution');
     if (sol !== undefined) out.push({ line: lineOf(m.index!), code: setup + '\n' + sol, allowErrors: false, what: `${m[1]} solution` });
   }

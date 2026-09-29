@@ -36,6 +36,7 @@ import { ElabError } from './errors.ts';
 import { synthInstance } from './instances.ts';
 import { simpTactic, unfoldTactic, rewriteTarget } from './simp.ts';
 import { omegaTactic } from './omega.ts';
+import { mkNoConfusion } from './match.ts';
 
 export interface GoalSnap {
   id: number;
@@ -687,7 +688,7 @@ export class TacticRunner {
       case 'names':
         return this.namesTactic(t);
       case 'injection':
-        this.fail(t.span, '`injection` is not available in this course; use `cases h` (it performs injection and substitution)');
+        return this.step(t, () => this.injection(t));
       // eslint-disable-next-line no-fallthrough
       case 'by_cases':
         return this.byCases(t);
@@ -1216,7 +1217,11 @@ export class TacticRunner {
         const superseded = fresh
           .filter((d, i) => !gNames.has(d.name) || fresh.slice(i + 1).some((y) => y.name === d.name) || (t0.k === 'fvar' && d.name === this.decl(g).lctx.get(t0.id)?.name))
           .map((d) => d.id);
-        goal = this.clearStale(goal, [...stale, ...shadowed, ...superseded].filter((id) => !fields.some((f) => f.id === id)));
+        // a hypothesis that depended on the target or its indices is stale only if the match
+        // re-introduced it (an index that survived the unification keeps its hypotheses)
+        const primary = new Set<number>(t0.k === 'fvar' ? [t0.id, ...getAppArgs(tt).slice(ind.numParams).flatMap((ix) => (ix.k === 'fvar' ? [ix.id] : []))] : []);
+        const staleHere = stale.filter((id) => primary.has(id) || fresh.some((d) => d.name === this.decl(g).lctx.get(id)?.name));
+        goal = this.clearStale(goal, [...staleHere, ...shadowed, ...superseded].filter((id) => !fields.some((f) => f.id === id)));
         this.succToAdd(goal);
         out.push({ goal, ctor: hole.ctor, fields });
       }
@@ -1590,6 +1595,50 @@ export class TacticRunner {
       case 'injection_names':
         return;
     }
+  }
+
+  /** `injection h with h₁ h₂`: from h : c a₁ a₂ = c b₁ b₂, the equations a₁ = b₁ and a₂ = b₂ */
+  private injection(t: Extract<Tactic, { k: 'injection' }>): void {
+    const g = this.mainGoal(t.span);
+    const el = this.el;
+    const ng = this.withGoal(g, () => {
+      const h = this.elabTerm(t.term, undefined, { span: t.span }).e;
+      const ht = el.whnf(el.instantiate(el.inferType(h)));
+      const [T, l, r] = getAppArgs(ht);
+      if (getAppFn(ht).k !== 'const' || (getAppFn(ht) as { name: string }).name !== 'Eq' || !T) this.fail(t.span, 'injection: expected an equation between constructor applications');
+      const ctor = (e: Expr) => {
+        const f = getAppFn(el.whnf(el.instantiate(e)));
+        return f.k === 'const' && el.env.get(f.name)?.kind === 'ctor' ? f.name : undefined;
+      };
+      const cl = ctor(l);
+      const cr = ctor(r);
+      if (!cl || !cr) this.fail(t.span, 'injection: both sides must be constructor applications:\n  ', { e: l, lctx: el.lctx }, '\nand\n  ', { e: r, lctx: el.lctx });
+      const goal = this.type(g);
+      const nc = mkNoConfusion(el, T, goal, el.whnf(l), el.whnf(r), h, t.span);
+      if (cl !== cr) {
+        // different constructors: the equation is impossible, and the goal follows
+        this.assign(g, nc);
+        return undefined;
+      }
+      const k = el.whnf(el.inferType(nc));
+      if (k.k !== 'pi') this.fail(t.span, 'injection: internal error');
+      const ng = this.mkGoal(el.instantiate((k as Extract<Expr, { k: 'pi' }>).type), this.decl(g).name);
+      this.assign(g, mkApp(nc, this.goalTerm(ng)));
+      return ng;
+    });
+    if (ng === undefined) return this.replaceMain([]);
+    let cur = ng;
+    // introduce the equations, named as asked
+    let w = this.el.whnf(this.type(cur));
+    let i = 0;
+    while (w.k === 'pi' && !(this.el.whnf(w.type).k === 'sort')) {
+      const eqHead = getAppFn(this.el.whnf(w.type));
+      if (eqHead.k !== 'const' || eqHead.name !== 'Eq') break;
+      cur = this.introOne(cur, t.names[i]?.name ?? 'h✝', t.span).goal;
+      i++;
+      w = this.el.whnf(this.type(cur));
+    }
+    this.replaceMain([cur]);
   }
 
   private byCases(t: Extract<Tactic, { k: 'by_cases' }>): void {

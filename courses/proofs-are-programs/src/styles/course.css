@@ -561,3 +561,13 @@ ul.reading li {
 .reflect-table { border-collapse: collapse; margin: 0.3rem 0; }
 .reflect-table th, .reflect-table td { padding: 0.1rem 0.55rem; text-align: center; border-bottom: 1px solid var(--rule); }
 .reflect-table tr.bad td { color: var(--err); font-weight: 600; }
+
+/* typing lab */
+.typing-row { margin: 0.6rem 0 0.3rem; }
+.typing-tree { overflow-x: auto; padding: 0.4rem 0; }
+.typing-tree .katex-display { margin: 0.4rem 0; }
+.typing-tree, .typing-tree ul { list-style: none; margin: 0; padding-left: 0; }
+.typing-tree ul { padding-left: 1.3rem; border-left: 1px solid var(--rule); margin-left: 0.4rem; }
+.typing-tree li { padding: 0.15rem 0; }
+.typing-rule { display: inline-block; min-width: 2.6rem; margin-right: 0.4rem; padding: 0 0.3rem; border-radius: 4px; background: var(--accent-soft); color: var(--accent-ink); font-size: 0.75rem; text-align: center; }
+.typing-ctx { color: var(--c-var); }

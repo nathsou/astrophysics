@@ -904,12 +904,20 @@ export class Parser {
         motive = this.term();
         this.expect(')');
       }
-      const discrs = [this.term()];
-      while (this.accept(',')) discrs.push(this.term());
+      const discrs: STerm[] = [];
+      const discrNames: (string | undefined)[] = [];
+      do {
+        // `h : e` remembers the equation e = pattern in each alternative
+        if (this.peek().kind === 'ident' && this.peekAt(1).text === ':') {
+          discrNames.push(this.next().text);
+          this.next();
+        } else discrNames.push(undefined);
+        discrs.push(this.term());
+      } while (this.accept(','));
       this.expect('with');
       const alts = this.alts();
       if (alts.length === 0) throw new ParseError('expected at least one alternative `| pattern => term`', this.span(from));
-      return { k: 'match', discrs, motive, alts, span: this.span(from) };
+      return { k: 'match', discrs, motive, alts, span: this.span(from), ...(discrNames.some((n) => n) ? { discrNames } : {}) };
     }
     if (t.kind === 'kw' && (t.text === 'Type' || t.text === 'Sort')) {
       this.nextTracked();

@@ -110,3 +110,21 @@ describe('stack machine mirror', () => {
     expect(bad[bad.length - 1].stack[0].v).not.toBe(evalEx([9, 2, 0], e));
   });
 });
+
+import { parseTm, infer as inferStlc, showTy as showStlcTy, showDeBruijn, toCourse } from '../src/engines/stlc.ts';
+
+describe('typing lab engine (simply typed λ-calculus)', () => {
+  it('parses, translates to de Bruijn indices and infers', () => {
+    const t = parseTm('fun (f : nat → nat) => fun (x : nat) => f (f x)');
+    expect(showDeBruijn(t)).toBe('λ (nat → nat). λ nat. #1 (#1 #0)');
+    expect(toCourse(t)).toBe('(.lam (.arrow .nat .nat) (.lam .nat (.app (.var 1) (.app (.var 1) (.var 0)))))');
+    const r = inferStlc(t);
+    expect(r.ok && showStlcTy(r.d.ty)).toBe('(nat → nat) → nat → nat');
+  });
+  it('reports ill-typed terms', () => {
+    const r = inferStlc(parseTm('fun (x : nat) => x x'));
+    expect(r.ok).toBe(false);
+    const r2 = inferStlc(parseTm('(fun (x : nat) => x) (fun (y : nat) => y)'));
+    expect(!r2.ok && r2.error).toMatch(/expects an argument of type nat/);
+  });
+});

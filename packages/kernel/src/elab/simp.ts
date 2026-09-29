@@ -16,6 +16,7 @@ import {
   getAppFn,
   hasLooseBVar,
   headBeta,
+  mkBinder,
   instantiate1,
   instantiateLevelParamsExpr,
   mkApp,
@@ -458,6 +459,23 @@ export class Simplifier {
     }
   }
 
+  /** `I.casesOn … (c xs) …` with a constructor as major premise, reduced; undefined otherwise */
+  private casesOnIota(e: Expr): Expr | undefined {
+    const el = this.el;
+    const fn = getAppFn(e);
+    if (fn.k !== 'const' || !fn.name.endsWith('.casesOn')) return undefined;
+    const ind = el.env.get(fn.name.slice(0, -'.casesOn'.length));
+    const d = el.env.get(fn.name);
+    if (!ind || ind.kind !== 'inductive' || !d || d.kind !== 'def') return undefined;
+    const args = getAppArgs(e);
+    const majorIdx = ind.numParams + 1 + ind.numIndices;
+    if (args.length <= majorIdx + ind.ctors.length) return undefined;
+    if (!ctorOf(el, el.instantiate(args[majorIdx]))) return undefined;
+    const v = instantiateLevelParamsExpr(d.value, d.levelParams, fn.levels);
+    const r = el.u.whnfCore(mkApps(v, args));
+    return exprEq(r, e) ? undefined : r;
+  }
+
   private congr(e: Expr): Result {
     const el = this.el;
     switch (e.k) {
@@ -480,6 +498,11 @@ export class Simplifier {
         let changed = false;
         for (const a of args) {
           ft = el.whnf(ft);
+          // a constant motive (`fun _ => Option Ty`) makes a casesOn non-dependent in its major premise
+          if (ft.k === 'pi' && hasLooseBVar(ft.body, 0)) {
+            const nb = headBetaDeep(ft.body);
+            if (!hasLooseBVar(nb, 0)) ft = mkBinder('pi', ft.name, ft.type, nb, ft.binfo);
+          }
           const dependent = ft.k !== 'pi' || hasLooseBVar(ft.body, 0);
           const rewritable = !dependent && ft.k === 'pi' && ft.binfo !== 'inst' && !this.isTypeLike(a) && !this.isProof(a);
           let na = a;
@@ -495,6 +518,12 @@ export class Simplifier {
           else if (pa) proof = this.app('congrArg', [cur, pa]);
           cur = mkApp(cur, na);
           ft = ft.k === 'pi' ? instantiate1(ft.body, a) : ft;
+        }
+        // a match on a constructor computes (`casesOn (some A) n s` is `s A`): iota, a definitional step
+        const iota = this.casesOnIota(cur);
+        if (iota) {
+          const r = this.simp(iota);
+          return { expr: r.expr, proof: proof && r.proof ? this.app('Eq.trans', [proof, r.proof]) : (proof ?? r.proof) };
         }
         return changed ? { expr: cur, proof } : { expr: e };
       }

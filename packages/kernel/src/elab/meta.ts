@@ -537,11 +537,16 @@ export class Unifier {
           r = replaceExpr(r, (x) => (x.k === 'fvar' && x.id === id ? d.value : undefined));
           continue;
         }
-        // try pruning via reduction
+        // try pruning via reduction: at the head, then of every β-redex (`(fun _ => B) x` inside a Π)
         const r2 = this.mctx.instantiate(this.tc.whnf(r));
         const fvs2 = collectFVars(r2);
         if ([...fvs2].every((x) => ids.includes(x))) {
           r = r2;
+          break;
+        }
+        const r3 = betaAll(r);
+        if ([...collectFVars(r3)].every((x) => ids.includes(x))) {
+          r = r3;
           break;
         }
         return false;
@@ -636,3 +641,8 @@ function predLevel(l: Level): Level | undefined {
 }
 
 export { lsucc, mkBinder };
+
+/** reduce every β-redex */
+function betaAll(e: Expr): Expr {
+  return replaceExpr(e, (x) => (x.k === 'app' && getAppFn(x).k === 'lam' ? betaAll(headBeta(x)) : undefined));
+}

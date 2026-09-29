@@ -50,7 +50,7 @@ export type STerm = { span: Span } & (
   | { k: 'anon'; args: STerm[] }
   | { k: 'structInst'; fields: { name: string; nameSpan: Span; value: STerm }[] }
   | { k: 'ascribe'; term: STerm; type: STerm }
-  | { k: 'match'; discrs: STerm[]; motive?: STerm; alts: SAlt[] }
+  | { k: 'match'; discrs: STerm[]; motive?: STerm; alts: SAlt[]; /** `match h : e with`: h names the equation e = pattern */ discrNames?: (string | undefined)[] }
   | { k: 'proj'; term: STerm; field: string; fieldSpan: Span }
   | { k: 'paren'; term: STerm }
   | { k: 'show'; type: STerm; term: STerm }

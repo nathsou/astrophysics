@@ -15,4 +15,5 @@ export const widgets: Record<string, unknown> = {
   SimulationLab: lz(() => import('./labs/SimulationLab.tsx'), 'SimulationLab'),
   ErasureView: lz(() => import('./labs/ErasureView.tsx'), 'ErasureView'),
   ReflectionLab: lz(() => import('./labs/ReflectionLab.tsx'), 'ReflectionLab'),
+  TypingLab: lz(() => import('./labs/TypingLab.tsx'), 'TypingLab'),
 };
