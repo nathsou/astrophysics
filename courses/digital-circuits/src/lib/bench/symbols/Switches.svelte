@@ -1,8 +1,9 @@
 <!-- SPST switch, changeover switch, pushbutton and relay. Moving parts follow params/state. -->
 <script lang="ts">
   import type { SymbolProps } from './types';
+  import { uprightAt } from '../geometry';
 
-  let { type, params, state }: SymbolProps = $props();
+  let { type, params, state, rot, flip: flipped }: SymbolProps = $props();
 
   const closed = $derived(state.closed ?? !!params.closed);
   const pressed = $derived(state.closed ?? !!params.pressed);
@@ -19,16 +20,16 @@
   <line class="ln moving" x1="12" y1="0" x2="37.5" y2="0" style="transform-origin: 12px 0px" style:transform={closed ? 'rotate(-3deg)' : 'rotate(-27deg)'} />
   <circle class="ink" cx="12" cy="0" r="2.6" />
 {:else if type === 'spdt'}
-  <!-- Pivot at (8, 0); contacts on a circle of radius 30: "0" at (38, 0), "1" at (26, −24). -->
-  <path class="stub" data-pin="0" d="M0 0 H8" />
-  <path class="stub" data-pin="1" d="M48 0 H40.5" />
-  <path class="stub" data-pin="2" d="M48 -24 H28.5" />
-  <circle class="body thin" cx="38" cy="0" r="2.5" />
-  <circle class="body thin" cx="26" cy="-24" r="2.5" />
-  <line class="ln moving" x1="8" y1="0" x2="38" y2="0" style="transform-origin: 8px 0px" style:transform={thrown ? 'rotate(-50deg)' : 'rotate(-3.5deg)'} />
-  <circle class="ink" cx="8" cy="0" r="2.6" />
-  <text class="txt small" x="42" y="-6">0</text>
-  <text class="txt small" x="36" y="-29">1</text>
+  <!-- Pivot at (10, 0); contact "0" at (36, 0), contact "1" at (36, −24), level with its pin. -->
+  <path class="stub" data-pin="0" d="M0 0 H10" />
+  <path class="stub" data-pin="1" d="M48 0 H38.5" />
+  <path class="stub" data-pin="2" d="M48 -24 H38.5" />
+  <circle class="body thin" cx="36" cy="0" r="2.5" />
+  <circle class="body thin" cx="36" cy="-24" r="2.5" />
+  <path class="ln" d={thrown ? 'M10 0 L35.2 -21.8' : 'M10 0 L36.5 -1.6'} />
+  <circle class="ink" cx="10" cy="0" r="2.6" />
+  <text class="txt small" x="43" y="-5.5" transform={uprightAt(43, -5.5, rot, flipped)}>0</text>
+  <text class="txt small" x="43" y="-18.5" transform={uprightAt(43, -18.5, rot, flipped)}>1</text>
 {:else if type === 'pushbutton'}
   <path class="stub" data-pin="0" d="M0 0 H9.5" />
   <path class="stub" data-pin="1" d="M48 0 H38.5" />
@@ -64,7 +65,7 @@
     style:transform={energised ? `rotate(${RELAY_ANGLE + 1.5}deg)` : `rotate(${-RELAY_ANGLE - 1.5}deg)`}
   />
   <circle class="ink" cx="80" cy="24" r="2.6" />
-  <text class="txt small start" x="84" y="-4.5">NO</text>
-  <text class="txt small start" x="84" y="19.5">COM</text>
-  <text class="txt small start" x="84" y="43.5">NC</text>
+  <text class="txt small start" x="84" y="-4.5" transform={uprightAt(84, -4.5, rot, flipped)}>NO</text>
+  <text class="txt small start" x="84" y="19.5" transform={uprightAt(84, 19.5, rot, flipped)}>COM</text>
+  <text class="txt small start" x="84" y="43.5" transform={uprightAt(84, 43.5, rot, flipped)}>NC</text>
 {/if}

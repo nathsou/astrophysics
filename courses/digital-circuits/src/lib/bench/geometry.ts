@@ -169,6 +169,8 @@ export function placeLabel(
   obstacles: Box[],
   segments: [[number, number], [number, number]][],
   gap = 3,
+  /** Try above the part first even when it is taller than wide (blocks: pins run down both sides). */
+  aboveFirst = false,
 ): LabelPlacement {
   const cx = (target.x0 + target.x1) / 2;
   const cy = (target.y0 + target.y1) / 2;
@@ -181,7 +183,7 @@ export function placeLabel(
   const rightHigh: Box = { ...right, y0: target.y0, y1: target.y0 + h };
   const rightLow: Box = { ...right, y0: target.y1 - h, y1: target.y1 };
   const leftHigh: Box = { ...left, y0: target.y0, y1: target.y0 + h };
-  const candidates = wide ? [above, below, right, left] : [right, rightHigh, rightLow, left, leftHigh, above, below];
+  const candidates = wide || aboveFirst ? [above, below, right, left] : [right, rightHigh, rightLow, left, leftHigh, above, below];
   let best = candidates[0]!;
   let bestScore = Infinity;
   for (const [i, c] of candidates.entries()) {

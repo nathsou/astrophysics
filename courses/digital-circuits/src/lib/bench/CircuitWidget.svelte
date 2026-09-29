@@ -24,6 +24,7 @@
   import { createEngine } from './engines';
   import { resolveTraces } from './traces';
   import { formatSI, formatSpeed } from './format';
+  import { describeOutputs } from './summary';
 
   let {
     src,
@@ -31,13 +32,14 @@
     title,
     subtitle,
     caption,
+    n,
     mode: initialMode,
     speed: initialSpeed = 1,
     current = false,
     traces,
     window: traceWindow,
     autoplay = true,
-    controls = true,
+    toolbar = true,
     scale = 1.5,
     highlight,
     parts,
@@ -49,6 +51,8 @@
     title?: string;
     subtitle?: string;
     caption?: string;
+    /** Figure number shown in the frame, e.g. "6.2". */
+    n?: string | number;
     /** Wire colouring; default: logic for digital circuits, voltage for analog ones. */
     mode?: SchematicMode;
     /** Simulated seconds per real second (1e-8 for nanosecond logic, 1 for relays and lamps). */
@@ -60,7 +64,8 @@
     /** Simulated seconds shown in the timing diagram (default: 4 real seconds' worth). */
     window?: number;
     autoplay?: boolean;
-    controls?: boolean;
+    /** Show the play/step/speed bar. */
+    toolbar?: boolean;
     scale?: number;
     /** Component ids or net names to highlight, comma-separated. */
     highlight?: string;
@@ -68,8 +73,12 @@
   } = $props();
 
   const files = import.meta.glob<Circuit>('/content/chapters/*/circuits/*.json', { import: 'default' });
+  // While prerendering the circuits are imported eagerly (so the page carries the static schematic);
+  // the browser bundle loads them lazily, each when its widget mounts.
+  const eagerFiles: Record<string, Circuit> = import.meta.env.SSR ? import.meta.glob<Circuit>('/content/chapters/*/circuits/*.json', { import: 'default', eager: true }) : {};
+  const fileKey = (path: string) => `/content/chapters/${path.replace(/^\/+/, '')}`;
 
-  let loaded: Circuit | undefined = $state();
+  let loaded: Circuit | undefined = $state(untrack(() => (src ? eagerFiles[fileKey(src)] : undefined)));
   let loadError = $state('');
   const circuit = $derived(inline ?? loaded);
   const kind = $derived(circuit?.engine ?? 'digital');
@@ -107,8 +116,7 @@
   // Load a circuit file (browser only; the glob is lazy).
   $effect(() => {
     if (inline || !src) return;
-    const key = `/content/chapters/${src.replace(/^\/+/, '')}`;
-    const load = files[key];
+    const load = files[fileKey(src)];
     if (!load) {
       loadError = `Circuit not found: ${src}`;
       return;
@@ -207,7 +215,14 @@
     }
     schematic?.frame(0);
     timing?.frame();
+    // Announce the outputs once the circuit has had time to react (a relay takes a few ms to move).
+    clearTimeout(announceTimer);
+    announceTimer = setTimeout(() => {
+      if (engine && circuit && conn) announcement = describeOutputs(circuit, conn, engine);
+    }, 700);
   }
+  let announceTimer: ReturnType<typeof setTimeout> | undefined;
+  let announcement = $state('');
 
   onMount(() => {
     let raf = 0;
@@ -236,6 +251,7 @@
     document.addEventListener('visibilitychange', vis);
     return () => {
       cancelAnimationFrame(raf);
+      clearTimeout(announceTimer);
       io.disconnect();
       document.removeEventListener('visibilitychange', vis);
     };
@@ -252,52 +268,54 @@
   const maxIndex = $derived(Math.max(3, speedIndex + 3));
 </script>
 
-<Widget title={title ?? circuit?.title ?? 'Circuit'} {subtitle} {caption} onreset={reset}>
-    <div class="cw" bind:this={root}>
-      {#if controls}
-        <div class="bar ui" role="toolbar" aria-label="Simulation controls">
-          <button class="icon" type="button" onclick={() => (playing = !playing)} aria-label={playing ? 'Pause' : 'Run'} title={playing ? 'Pause' : 'Run'} disabled={!engine}>
-            {#if playing}
-              <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M7 5h3v14H7zM14 5h3v14h-3z" fill="currentColor" /></svg>
-            {:else}
-              <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="currentColor" /></svg>
-            {/if}
-          </button>
-          <button class="icon" type="button" onclick={step} aria-label="Step" title="Step (a tenth of a second at this speed)" disabled={!engine}>
-            <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 5l10 7-10 7zM17 5h3v14h-3z" fill="currentColor" /></svg>
-          </button>
-          <label class="speed">
-            <span>Speed</span>
-            <input
-              type="range"
-              min={minIndex}
-              max={maxIndex}
-              step="1"
-              value={speedIndex}
-              oninput={(ev) => setSpeedIndex(Number((ev.currentTarget as HTMLInputElement).value))}
-              aria-valuetext="{formatSpeed(speed)} (simulated time per second)"
-            />
-            <output>{formatSpeed(speed)}</output>
-          </label>
-          {#if analog}
-            <Segmented
-              size="sm"
-              label="Wire colours"
-              bind:value={mode}
-              options={[
-                { value: 'voltage', label: 'Volts', title: 'Colour wires by voltage' },
-                { value: 'logic', label: 'Logic', title: 'Colour wires by logic level' },
-                { value: 'plain', label: 'Ink', title: 'No colouring' },
-              ]}
-            />
-            <Toggle label="Current" bind:checked={showCurrent} />
+{#snippet bar()}
+    <div class="bar" role="toolbar" aria-label="Simulation controls">
+      <div class="btns">
+        <button class="ctl" type="button" onclick={() => (playing = !playing)} aria-label={playing ? 'Pause' : 'Run'} title={playing ? 'Pause' : 'Run'} disabled={!engine}>
+          {#if playing}
+            <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7 5h3v14H7zM14 5h3v14h-3z" fill="currentColor" /></svg>
+          {:else}
+            <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="currentColor" /></svg>
           {/if}
-          <span class="time" aria-label="Simulated time">t = {formatSI(simTime, 's', 3)}</span>
-        </div>
+        </button>
+        <button class="ctl" type="button" onclick={step} aria-label="Step" title="Step: a tenth of a second at this speed" disabled={!engine}>
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M5 5l10 7-10 7zM17 5h3v14h-3z" fill="currentColor" /></svg>
+        </button>
+      </div>
+      <label class="speed">
+        <span>Speed</span>
+        <input
+          type="range"
+          min={minIndex}
+          max={maxIndex}
+          step="1"
+          value={speedIndex}
+          oninput={(ev) => setSpeedIndex(Number((ev.currentTarget as HTMLInputElement).value))}
+          aria-valuetext="{formatSpeed(speed)} (simulated time per second)"
+        />
+        <output>{formatSpeed(speed)}</output>
+      </label>
+      {#if analog}
+        <Segmented
+          size="sm"
+          label="Wire colours"
+          bind:value={mode}
+          options={[
+            { value: 'voltage', label: 'Volts', title: 'Colour wires by voltage' },
+            { value: 'logic', label: 'Logic', title: 'Colour wires by logic level' },
+            { value: 'plain', label: 'Ink', title: 'No colouring' },
+          ]}
+        />
+        <Toggle label="Current" bind:checked={showCurrent} />
       {/if}
+      <span class="time" aria-hidden="true">t = {formatSI(simTime, 's', 3)}</span>
+    </div>
+{/snippet}
 
-      {#if circuit}
-        {#key generation}
+<Widget title={title ?? circuit?.title ?? 'Circuit'} {subtitle} {caption} {n} onreset={reset} fullscreen grid controls={toolbar ? bar : undefined}>
+  <div class="cw" bind:this={root}>
+    {#if circuit}
+      {#key generation}
         <Schematic
           bind:this={schematic}
           {circuit}
@@ -311,24 +329,23 @@
           live={false}
           {onparam}
         />
-        {/key}
-        {#if resolved.traces.length}
-          <div class="traces">
-            <TimingDiagram bind:this={timing} {engine} traces={resolved.traces} window={span} live={false} />
-          </div>
-        {/if}
-      {:else}
-        <div class="placeholder" aria-busy={!loadError}>{loadError || 'Loading circuit…'}</div>
+      {/key}
+      {#if resolved.traces.length}
+        <div class="traces">
+          <TimingDiagram bind:this={timing} {engine} traces={resolved.traces} window={span} live={false} />
+        </div>
       {/if}
+    {:else}
+      <div class="placeholder" aria-busy={!loadError}>{loadError || 'Loading circuit…'}</div>
+    {/if}
 
-      {#if engineError || status || resolved.missing.length}
-        <p class="status ui {engineError ? 'error' : statusLevel}" role="status" aria-live="polite">
-          {engineError || status || `Unknown traces: ${resolved.missing.join(', ')}`}
-        </p>
-      {:else}
-        <p class="status ui empty" role="status" aria-live="polite"></p>
-      {/if}
-    </div>
+    {#if engineError || status || resolved.missing.length}
+      <p class="status ui {engineError ? 'error' : statusLevel}" role="status">
+        {engineError || status || `Unknown traces: ${resolved.missing.join(', ')}`}
+      </p>
+    {/if}
+    <p class="sr-only" role="status" aria-live="polite">{announcement}</p>
+  </div>
 </Widget>
 
 <style>
@@ -340,85 +357,98 @@
   }
   .bar {
     display: flex;
+    flex: 1 1 100%;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.5rem 0.9rem;
+    gap: 0.5rem 1.1rem;
     font-size: 0.8rem;
-    color: var(--ink-2, #3f3b34);
+    color: var(--ink-2);
   }
-  .icon {
+  .btns {
+    display: inline-flex;
+    gap: 0.3rem;
+  }
+  .ctl {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 1.9rem;
     height: 1.9rem;
-    border: 2px solid var(--fg, #1a1917);
-    border-radius: var(--radius-sm, 3px);
-    background: var(--surface, #fff);
-    color: var(--ink, #1a1917);
+    border: 1px solid var(--line-strong);
+    border-radius: 6px;
+    background: var(--panel);
+    color: var(--fg);
     cursor: pointer;
+    transition:
+      border-color 120ms,
+      color 120ms;
   }
-  .icon:hover:not(:disabled) {
-    background: var(--pn, #eee);
+  .ctl:hover:not(:disabled) {
+    border-color: var(--copper);
+    color: var(--copper-ink);
   }
-  .icon:disabled {
+  .ctl:disabled {
     opacity: 0.45;
     cursor: default;
   }
-  .icon:focus-visible,
+  .ctl:focus-visible,
   .speed input:focus-visible {
-    outline: 3px solid var(--focus, #1f5aa6);
+    outline: 2px solid var(--focus);
     outline-offset: 2px;
-  }
-  .icon + .icon {
-    margin-left: -0.5rem;
   }
   .speed {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
+    gap: 0.5rem;
+    font-family: var(--font-ui);
   }
   .speed input {
-    width: 7.5rem;
-    accent-color: var(--accent, #b12520);
+    width: 7rem;
+    accent-color: var(--phosphor);
   }
   .speed output {
-    font-family: var(--font-mono, monospace);
-    font-size: 0.76rem;
-    min-width: 4.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    min-width: 4.2rem;
+    color: var(--fg);
   }
   .time {
     margin-left: auto;
-    font-family: var(--font-mono, monospace);
-    font-size: 0.76rem;
-    color: var(--ink-3, #635b4e);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: var(--mute);
     font-variant-numeric: tabular-nums;
   }
   .placeholder {
-    min-height: 10rem;
+    min-height: 12rem;
     display: grid;
     place-items: center;
-    color: var(--ink-3, #635b4e);
+    color: var(--mute);
     font-size: 0.85rem;
   }
   .traces {
-    border-top: 1px solid var(--rule, #ddd);
+    border-top: 1px solid var(--line);
     padding-top: 0.5rem;
   }
   .status {
     margin: 0;
-    min-height: 1.2em;
     font-size: 0.8rem;
-    color: var(--ink-2, #3f3b34);
-  }
-  .status.empty {
-    min-height: 0;
+    color: var(--ink-2);
   }
   .status.warning {
-    color: var(--maybe, #7d5200);
+    color: var(--maybe);
   }
   .status.error {
-    color: var(--bad, #b12520);
+    color: var(--bad);
     font-weight: 600;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 </style>

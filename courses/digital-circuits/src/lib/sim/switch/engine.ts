@@ -67,7 +67,7 @@ export interface SwitchEngineOptions extends EngineOptions {
   mode?: SwitchMode;
   /** Delay of one transistor stage in unit-delay mode, in seconds (default `step`, else 1 ns). */
   unitDelay?: number;
-  /** Rounds at one instant before the circuit is declared oscillating (default 1000). */
+  /** Rounds at one instant before the circuit is declared oscillating (default: 1000, or 4 × the number of nets if larger). */
   maxRounds?: number;
   /** 'random' (default): resolve X feedback loops at power-up; 'x': leave them X. */
   powerUp?: 'random' | 'x';
@@ -274,7 +274,9 @@ class SwitchEngineImpl implements SwitchEngine {
   constructor(netlist: FlatNetlist, options: SwitchEngineOptions) {
     this.netlist = netlist;
     this.mode = options.mode ?? 'settle';
-    this.maxRounds = Math.max(8, options.maxRounds ?? 1000);
+    // A change can legitimately ripple through every node in turn (a long inverter chain), so the
+    // default limit grows with the circuit.
+    this.maxRounds = Math.max(8, options.maxRounds ?? Math.max(1000, 4 * netlist.netCount));
     this.powerUp = options.powerUp ?? 'random';
     this.seed = options.seed ?? 1;
     this.rng = mulberry32(this.seed);

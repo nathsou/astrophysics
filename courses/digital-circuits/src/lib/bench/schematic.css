@@ -8,6 +8,10 @@
   --_body: var(--sch-body, var(--surface, #fbf8f1));
   --_wire: var(--wire, var(--_ink));
   --_hi: var(--sig-high, #f29e0c);
+  --_glow: var(--sig-high-glow, rgb(255 160 0 / 0.32));
+  --_ww: var(--wire-w, 2);
+  --_wwh: var(--wire-w-high, 3);
+  --_zdash: var(--sig-z-dash, 5 4);
   --_lo: var(--sig-low, #5d6b80);
   --_z: var(--sig-z, #9a9a9a);
   --_x: var(--sig-x, #d6332b);
@@ -25,14 +29,14 @@
 .sch .w .main {
   fill: none;
   stroke: var(--c, var(--_wire));
-  stroke-width: 2;
+  stroke-width: var(--_ww);
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 .sch .w .halo {
   fill: none;
-  stroke: var(--_hi);
-  stroke-width: 7;
+  stroke: var(--_glow);
+  stroke-width: 6;
   stroke-linecap: round;
   stroke-linejoin: round;
   opacity: 0;
@@ -55,10 +59,20 @@
 .sch .w[data-v='1'] .main,
 .sch .stub[data-v='1'] {
   stroke: var(--_hi);
-  stroke-width: 3;
+  stroke-width: var(--_wwh);
 }
 .sch .w[data-v='1'] .halo {
-  opacity: 0.26;
+  opacity: 0.8;
+}
+.sch .stub[data-v='1'] {
+  filter: drop-shadow(0 0 1.5px var(--_glow));
+}
+/* X: a red hatched band under a red dash-dot line (the pattern is defined per schematic). */
+.sch .w[data-v='x'] .halo {
+  stroke: var(--_xhatch, var(--_x));
+  stroke-width: 8;
+  stroke-linecap: butt;
+  opacity: 0.9;
 }
 .sch .w[data-v='0'] .main,
 .sch .stub[data-v='0'] {
@@ -67,7 +81,7 @@
 .sch .w[data-v='z'] .main,
 .sch .stub[data-v='z'] {
   stroke: var(--_z);
-  stroke-dasharray: 4 3.5;
+  stroke-dasharray: var(--_zdash);
 }
 .sch .w[data-v='x'] .main,
 .sch .stub[data-v='x'] {

@@ -57,3 +57,14 @@ export function voltageColour(v: number, range: number): string {
   if (pct === 100) return t > 0 ? 'var(--_vp)' : 'var(--_vn)';
   return `color-mix(in oklab, ${t > 0 ? 'var(--_vp)' : 'var(--_vn)'} ${pct}%, var(--_v0))`;
 }
+
+/** Does any source in the circuit produce a negative voltage (so the scale needs its negative half)? */
+export function hasNegativeSource(circuit: Circuit): boolean {
+  const neg = circuit.components.some((c) => {
+    const p = c.params ?? {};
+    if (c.type === 'rail' || c.type === 'battery' || c.type === 'supply') return Number(p.voltage ?? 0) < 0;
+    if (c.type === 'siggen') return Number(p.offset ?? 2.5) - Number(p.amplitude ?? 2.5) < 0;
+    return false;
+  });
+  return neg || Object.values(circuit.subcircuits ?? {}).some(hasNegativeSource);
+}

@@ -94,6 +94,72 @@
     notes: [{ x: 0, y: 20, text: 'Rotations, flips, labels (upright text)' }],
   };
 
+  // No resistor: the LED burns out after a moment (scorch and smoke).
+  const burnt: Circuit = {
+    version: 1,
+    title: 'No resistor',
+    engine: 'analog',
+    components: [
+      { id: 'B1', type: 'battery', x: 4, y: 10, rot: 270, params: { voltage: 9 } },
+      { id: 'D1', type: 'led', x: 12, y: 4, rot: 90, params: { color: 'green' } },
+      { id: 'G1', type: 'ground', x: 4, y: 12 },
+    ],
+    wires: [
+      { points: [[4, 6], [4, 2], [12, 2], [12, 4]] },
+      { points: [[12, 8], [12, 12], [4, 12], [4, 10]] },
+    ],
+  };
+
+  // The four signal values side by side: HIGH, LOW, Z (a disabled tri-state buffer) and X (contention).
+  const levels: Circuit = {
+    version: 1,
+    title: 'Signal values',
+    engine: 'digital',
+    components: [
+      { id: 'H', type: 'const', x: 0, y: 0, params: { value: 1 } },
+      { id: 'PH', type: 'probe', x: 10, y: 0, label: '' },
+      { id: 'L', type: 'const', x: 0, y: 4, params: { value: 0 } },
+      { id: 'PL', type: 'probe', x: 10, y: 4, label: '' },
+      { id: 'D', type: 'const', x: 0, y: 12, params: { value: 1 } },
+      { id: 'E', type: 'const', x: 5, y: 8, params: { value: 0 } },
+      { id: 'T1', type: 'tristate', x: 5, y: 12 },
+      { id: 'PZ', type: 'probe', x: 12, y: 12, label: '' },
+      { id: 'X1', type: 'const', x: 0, y: 20, params: { value: 1 } },
+      { id: 'X0', type: 'const', x: 0, y: 22, params: { value: 0 } },
+      { id: 'PX', type: 'probe', x: 10, y: 20, label: '' },
+    ],
+    wires: [
+      { points: [[2, 0], [10, 0]] },
+      { points: [[2, 4], [10, 4]] },
+      { points: [[2, 12], [5, 12]] },
+      { points: [[7, 8], [7, 10]] },
+      { points: [[10, 12], [12, 12]] },
+      { points: [[2, 20], [10, 20]] },
+      { points: [[2, 22], [6, 22], [6, 20]] },
+    ],
+    notes: [
+      { x: 14, y: 0.3, text: 'HIGH: amber, thick' },
+      { x: 14, y: 4.3, text: 'LOW: slate' },
+      { x: 17, y: 12.3, text: 'Z (nothing drives it): dashed grey' },
+      { x: 14, y: 20.3, text: 'X (a 1 and a 0 fight): red, hatched' },
+    ],
+  };
+
+  // Stress test: 25 three-inverter rings with a probe each (100 components, all animating).
+  const stress: Circuit = { version: 1, engine: 'digital', components: [], wires: [] };
+  for (let r = 0; r < 25; r++) {
+    const ox = (r % 5) * 28;
+    const oy = Math.floor(r / 5) * 10;
+    for (let k = 0; k < 3; k++) stress.components.push({ id: `U${r}_${k}`, type: 'not', x: ox + 2 + 7 * k, y: oy + 2, params: { delay: 1 + (r % 7) * 0.13 } });
+    stress.components.push({ id: `P${r}`, type: 'probe', x: ox + 23, y: oy, rot: 270, label: '' });
+    stress.wires.push(
+      { points: [[ox + 7, oy + 2], [ox + 9, oy + 2]] },
+      { points: [[ox + 14, oy + 2], [ox + 16, oy + 2]] },
+      { points: [[ox + 21, oy + 2], [ox + 23, oy + 2], [ox + 23, oy + 6], [ox, oy + 6], [ox, oy + 2], [ox + 2, oy + 2]] },
+      { points: [[ox + 23, oy], [ox + 23, oy + 2]] },
+    );
+  }
+
   let checks: string[] = $state([]);
   let engines = $state('');
   onMount(async () => {
@@ -129,7 +195,11 @@
   <CircuitWidget circuit={asCircuit(relayLamp)} title="A relay switches a lamp" subtitle="Close S1: the coil pulls the contact over to NO." speed={1} current={true} />
   <CircuitWidget circuit={asCircuit(led)} title="An LED and its resistor" speed={1} current={true} />
   <CircuitWidget circuit={asCircuit(halfAdder)} title="Half adder" subtitle="Click A and B (or Tab to them and press Space)." speed={1e-6} />
-  <CircuitWidget circuit={asCircuit(ring)} title="Ring oscillator" speed={2e-9} traces="U1.Y,U2.Y,U3.Y" window={30e-9} />
+  <CircuitWidget circuit={asCircuit(ring)} title="Ring oscillator" speed={4e-9} traces="U1.Y,U2.Y,U3.Y" window={24e-9} />
+
+  <CircuitWidget circuit={burnt} title="An LED without a resistor" subtitle="Watch it for a moment." speed={1} current={true} />
+  <CircuitWidget circuit={levels} title="Signal values" subtitle="Logic mode: the colour is never the only cue." speed={1e-9} />
+  <CircuitWidget circuit={stress} title="Stress: 100 components" speed={1e-9} scale={1} />
 
   <h2>Symbol sheet</h2>
   <p class="ui">Every catalog type at rotation 0; pink dots mark the pins.</p>

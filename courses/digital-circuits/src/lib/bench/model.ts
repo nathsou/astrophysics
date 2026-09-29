@@ -8,9 +8,9 @@ import type { FlatNetlist } from '../sim/netlist/types';
 import { connect, defOf, globalName, placedPins, subResolver, type SubResolver } from '../sim/netlist/connect';
 import { boundsOf, pinsOf, withDefaults } from '../sim/netlist/catalog';
 import { buildWireGraph, type WireGraph } from './currents';
-import { componentTransform, G, placeLabel, polylineMidpoint, roundedPath, scaleBox, textWidth, transformBox, unionBox, type Box } from './geometry';
+import { componentTransform, G, growBox, placeLabel, polylineMidpoint, roundedPath, scaleBox, textWidth, transformBox, unionBox, type Box } from './geometry';
 import { mainValue } from './format';
-import { voltageRange } from './colour';
+import { hasNegativeSource, voltageRange } from './colour';
 
 /** Wire colouring: logic levels, voltage (diverging scale), or plain ink. */
 export type SchematicMode = 'logic' | 'voltage' | 'plain';
@@ -29,6 +29,7 @@ export const INTERACTIONS: Record<string, Interaction> = {
 /** Components drawn without a default label (they carry their own text, or gates in logic diagrams). */
 const UNLABELLED_CATEGORIES = new Set(['wiring', 'gate']);
 const WIRING = new Set(['ground', 'label', 'port']);
+const BLOCKISH = new Set(['sequential', 'block']);
 
 export const LABEL_SIZE = 10;
 const LINE = LABEL_SIZE * 1.25;
@@ -87,6 +88,8 @@ export interface SchematicModel {
   edges: ModelEdge[];
   viewBox: Box;
   voltageRange: number;
+  /** The voltage legend shows the negative half of the scale. */
+  negative: boolean;
   resolve: SubResolver;
 }
 
@@ -103,6 +106,12 @@ export function buildModel(circuit: Circuit, parts?: SubResolver): SchematicMode
     const pp = placedPins(c, resolve);
     const b = boundsOf(def, params);
     const local = scaleBox(b, G);
+    let box = scaleBox(transformBox(b, c), G);
+    // Blocks draw a title band 4 px above their catalog bounds.
+    if (BLOCKISH.has(def.category) || c.type.startsWith('sub:') || c.type.startsWith('part:')) box = growBox(box, 4);
+    // Upright meters put their readout beside the circle.
+    if (def.category === 'meter' && c.rot === 270) box.x0 -= 30;
+    if (def.category === 'meter' && c.rot === 90) box.x1 += 30;
     return {
       c,
       def,
@@ -111,7 +120,7 @@ export function buildModel(circuit: Circuit, parts?: SubResolver): SchematicMode
       pinNets: pp.map((p) => conn.pinNet.get(`${c.id}.${p.pin}`) ?? -1),
       pinPos: pp.map((p) => [p.x, p.y] as [number, number]),
       local,
-      box: scaleBox(transformBox(b, c), G),
+      box,
       transform: componentTransform(c),
       interaction: INTERACTIONS[c.type],
       isSub: c.type.startsWith('sub:') || c.type.startsWith('part:'),
@@ -157,7 +166,7 @@ export function buildModel(circuit: Circuit, parts?: SubResolver): SchematicMode
     const w = stacked ? Math.max(textWidth(text.id, LABEL_SIZE), textWidth(text.value!, LABEL_SIZE)) : textWidth(text.value ? `${text.id} ${text.value}` : text.id, LABEL_SIZE);
     const h = stacked ? LINE * 2 : LINE;
     const obstacles = [...comps.filter((o) => o !== m).map((o) => o.box), ...placed, ...noteBoxes];
-    const at = placeLabel(m.box, w, h, obstacles, segments);
+    const at = placeLabel(m.box, w, h, obstacles, segments, 3, BLOCKISH.has(m.def.category) || m.isSub);
     placed.push(at.box);
     m.label = { ...text, x: at.box.x0, y: at.box.y0 + LINE * 0.78, stacked, box: at.box };
   }
@@ -183,7 +192,7 @@ export function buildModel(circuit: Circuit, parts?: SubResolver): SchematicMode
   const pad = G;
   const viewBox = { x0: Math.floor(u.x0 - pad), y0: Math.floor(u.y0 - pad), x1: Math.ceil(u.x1 + pad), y1: Math.ceil(u.y1 + pad) };
 
-  return { conn, comps, wires, junctions, open, notes, graph, edges, viewBox, voltageRange: voltageRange(circuit), resolve };
+  return { conn, comps, wires, junctions, open, notes, graph, edges, viewBox, voltageRange: voltageRange(circuit), negative: hasNegativeSource(circuit), resolve };
 }
 
 function labelText(m: ModelComponent): { id: string; value?: string } | undefined {
@@ -205,7 +214,8 @@ export function pinCurrentSources(model: SchematicModel, flat: FlatNetlist): { i
     const hit = byKey.get(gp.key);
     if (!hit || WIRING.has(hit.m.c.type)) return [];
     if (!hit.m.isSub) return [{ id: hit.m.c.id, pin: hit.k }];
-    const net = hit.m.pinNets[hit.k]!;
+    const top = hit.m.pinNets[hit.k]!;
+    const net = flat.alias?.[top] ?? top;
     const prefix = `${hit.m.c.id}/`;
     const out: { id: string; pin: number }[] = [];
     for (const e of flat.elements) if (e.id.startsWith(prefix)) e.pins.forEach((n, k) => n === net && out.push({ id: e.id, pin: k }));

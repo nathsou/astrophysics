@@ -84,4 +84,11 @@ describe('label placement', () => {
     expect(l.box.x0).toBeGreaterThan(12);
     expect(l.box.y1 < 24 || l.box.y0 > 24).toBe(true);
   });
+  test('blocks put their label above even when taller than wide', () => {
+    const block = { x0: 0, y0: -12, x1: 72, y1: 120 };
+    const tall = { x0: 0, y0: -12, x1: 40, y1: 120 };
+    expect(placeLabel(tall, 20, 12, [], [], 3, true).box.y1).toBeLessThanOrEqual(tall.y0);
+    expect(placeLabel(tall, 20, 12, [], []).box.x0).toBeGreaterThan(tall.x1);
+    expect(placeLabel(block, 20, 12, [], [], 3, true).box.y1).toBeLessThanOrEqual(block.y0);
+  });
 });

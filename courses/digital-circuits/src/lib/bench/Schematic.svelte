@@ -147,12 +147,12 @@
         s = {};
       }
     }
-    const logic = (k: number) => (m.pinNets[k]! >= 0 ? e.logic(m.pinNets[k]!) : 3);
+    const logic = (k: number) => (m.pinNets[k]! >= 0 ? e.logic(netOf(m.pinNets[k]!)) : 3);
     switch (m.c.type) {
       case 'probe':
         return { ...s, logic: logic(0) };
       case 'voltmeter':
-        return s.value !== undefined ? s : { ...s, reading: e.voltage(m.pinNets[1]!) - e.voltage(m.pinNets[0]!) };
+        return s.value !== undefined ? s : { ...s, reading: e.voltage(netOf(m.pinNets[1]!)) - e.voltage(netOf(m.pinNets[0]!)) };
       case 'ammeter':
         return s.value !== undefined ? s : { ...s, reading: e.current(m.c.id, 0) };
       case 'indicator':
@@ -168,6 +168,9 @@
     return s;
   }
 
+  /** Engine net of a top-level net (flatten() may merge nets tied together inside subcircuits). */
+  const netOf = (n: number): number => engine?.netlist.alias?.[n] ?? n;
+
   /** Update the drawing from the engine. `dt`: real seconds since the last frame (moves the dots). */
   export function frame(dt = 0): void {
     const e = engine;
@@ -177,7 +180,7 @@
     if (mode !== 'plain') {
       const range = m.voltageRange;
       for (let n = 0; n < m.conn.netCount; n++) {
-        const v = mode === 'logic' ? logicAttr(e.logic(n)) : voltageColour(e.voltage(n), range);
+        const v = mode === 'logic' ? logicAttr(e.logic(netOf(n))) : voltageColour(e.voltage(netOf(n)), range);
         if (v === prevNet[n]) continue;
         prevNet[n] = v;
         for (const el of netEls[n] ?? []) {
@@ -383,8 +386,8 @@
     if (h.kind === 'net') {
       const lines: string[] = [];
       if (e) {
-        const l = e.logic(h.net);
-        if (e.kind === 'analog') lines.push(`${formatReadout(e.voltage(h.net), 'V')} · logic ${logicChar(l)}`);
+        const l = e.logic(netOf(h.net));
+        if (e.kind === 'analog') lines.push(`${formatReadout(e.voltage(netOf(h.net)), 'V')} · logic ${logicChar(l)}`);
         else lines.push(`logic ${logicChar(l)} (${LEVEL[l]})`);
       }
       return { title: netTitle(h.net), lines };
@@ -396,7 +399,7 @@
     if (value) lines.push(value);
     if (l.state.burned) lines.push('Burned out');
     if (e && e.kind === 'analog' && !WIRING.has(comp.c.type) && !comp.isSub) {
-      const v = comp.pinNets.map((n) => (n >= 0 ? e.voltage(n) : NaN));
+      const v = comp.pinNets.map((n) => (n >= 0 ? e.voltage(netOf(n)) : NaN));
       const cur = comp.pins.map((_, k) => e.current(comp.c.id, k));
       if (comp.pins.length === 2) {
         lines.push(`${formatReadout(v[0]! - v[1]!, 'V')} across`);
@@ -407,7 +410,7 @@
       const power = v.reduce((s, vk, k) => s + (Number.isFinite(vk) ? vk * cur[k]! : 0), 0);
       if (Math.abs(power) > 1e-9) lines.push(`${formatSI(power, 'W')} ${power >= 0 ? 'dissipated' : 'delivered'}`);
     } else if (e && comp.def.category !== 'wiring') {
-      const outs = comp.pins.map((p, k) => (p.dir === 'out' && comp.pinNets[k]! >= 0 ? `${p.name} = ${logicChar(e.logic(comp.pinNets[k]!))}` : '')).filter(Boolean);
+      const outs = comp.pins.map((p, k) => (p.dir === 'out' && comp.pinNets[k]! >= 0 ? `${p.name} = ${logicChar(e.logic(netOf(comp.pinNets[k]!)))}` : '')).filter(Boolean);
       if (outs.length) lines.push(outs.join(', '));
     }
     return { title: `${comp.c.id} · ${comp.def.name}`, lines };
@@ -450,6 +453,7 @@
     height={height * scale}
     role="group"
     aria-label={label ?? circuit.title ?? 'Circuit schematic'}
+    style="--_xhatch: url(#{uid}-xhatch)"
   >
     <defs>
       <radialGradient id="{uid}-glow-warm">
@@ -469,6 +473,10 @@
         <stop offset="0.6" stop-color="#3a2414" stop-opacity="0.45" />
         <stop offset="1" stop-color="#3a2414" stop-opacity="0" />
       </radialGradient>
+      <pattern id="{uid}-xhatch" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <rect width="4" height="4" fill="var(--_x)" opacity="0.14" />
+        <rect width="1.6" height="4" fill="var(--_x)" opacity="0.75" />
+      </pattern>
       <filter id="{uid}-seg-glow" x="-50%" y="-50%" width="200%" height="200%">
         <feGaussianBlur stdDeviation="2" result="b" />
         <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
@@ -597,6 +605,14 @@
     {/each}
   </svg>
 
+  {#if mode === 'voltage' && engine}
+    <div class="legend ui" aria-hidden="true">
+      <span>{model.negative ? formatSI(-model.voltageRange, 'V') : '0 V'}</span>
+      <span class="ramp" class:neg={model.negative}></span>
+      <span>{formatSI(model.voltageRange, 'V')}</span>
+    </div>
+  {/if}
+
   {#if hover && interactive}
     <div class="tip ui" style:left="{tipX}px" style:top="{tipY}px" role="tooltip">
       <strong>{tip.title}</strong>
@@ -619,6 +635,25 @@
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
+  }
+  .legend {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.4rem;
+    margin-top: 0.2rem;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.68rem;
+    color: var(--ink-3, #635b4e);
+  }
+  .ramp {
+    width: 5.5rem;
+    height: 0.45rem;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--volt-zero, #8c8c8c), var(--volt-pos, #e0482e));
+  }
+  .ramp.neg {
+    background: linear-gradient(90deg, var(--volt-neg, #2f6fd6), var(--volt-zero, #8c8c8c), var(--volt-pos, #e0482e));
   }
   .tip {
     position: absolute;

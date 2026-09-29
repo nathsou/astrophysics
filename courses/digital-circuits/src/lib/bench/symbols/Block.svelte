@@ -5,7 +5,7 @@
 -->
 <script lang="ts">
   import type { SymbolProps } from './types';
-  import { G, textWidth, uprightAt } from '../geometry';
+  import { G, uprightAt } from '../geometry';
   import { boundsOf } from '../../sim/netlist/catalog';
   import { activeLow, isClock } from './draw';
 
@@ -17,10 +17,34 @@
   const box = $derived({
     x0: b.x0 * G + (sides.includes('l') ? G : 2),
     x1: b.x1 * G - (sides.includes('r') ? G : 2),
-    y0: b.y0 * G + (sides.includes('t') ? G : 2),
+    y0: b.y0 * G + (sides.includes('t') ? G : -4),
     y1: b.y1 * G - (sides.includes('b') ? G : 2),
   });
-  const title = $derived(def.name);
+  // Short names inside the box, as on a block diagram; anything else shrinks to fit.
+  const SHORT: Record<string, string> = {
+    srlatch: 'SR',
+    dlatch: 'D LATCH',
+    dff: 'D FF',
+    dffr: 'D FF',
+    dffe: 'D FF',
+    jkff: 'JK FF',
+    tff: 'T FF',
+    mux: 'MUX',
+    demux: 'DEMUX',
+    decoder: 'DEC',
+    encoder: 'ENC',
+    'priority-encoder': 'PRI ENC',
+    adder: 'ADD',
+    'magnitude-comparator': 'CMP',
+    register: 'REG',
+    counter: 'COUNT',
+    'shift-register': 'SHIFT',
+    lfsr: 'LFSR',
+    ram: 'RAM',
+    rom: 'ROM',
+  };
+  const title = $derived(SHORT[def.type] ?? def.name);
+  const titleSize = $derived(Math.max(5.5, Math.min(8.5, (box.x1 - box.x0 - 6) / (Math.max(1, [...title].length) * 0.6))));
   const value = $derived(state.value !== undefined ? String(state.value) : undefined);
   // Mirrored or upside down: text anchors swap so names stay inside the box.
   const swap = $derived(!!flip !== (rot === 180));
@@ -30,6 +54,7 @@
     bubble?: [number, number];
     clock?: string;
     name: string;
+    low: boolean;
     tx: number;
     ty: number;
     anchor: 'start' | 'end' | 'middle';
@@ -53,6 +78,7 @@
           bubble: low ? [edge - dir * R, py] : undefined,
           clock: clk ? `M${edge} ${py - 4.5} L${edge + dir * 6.5} ${py} L${edge} ${py + 4.5}` : undefined,
           name,
+          low,
           tx: edge + dir * inset,
           ty: py,
           anchor: (s === 'l') !== swap ? 'start' : 'end',
@@ -66,6 +92,7 @@
         bubble: low ? [px, edge - dir * R] : undefined,
         clock: clk ? `M${px - 4.5} ${edge} L${px} ${edge + dir * 6.5} L${px + 4.5} ${edge}` : undefined,
         name,
+        low,
         tx: px,
         ty: edge + dir * (clk ? 12 : 7),
         anchor: 'middle',
@@ -73,10 +100,8 @@
     }),
   );
   const cx = $derived((box.x0 + box.x1) / 2);
-  // Title inside when it fits between the left and right pin names, else above the box.
-  const longest = (s: 'l' | 'r') => Math.max(0, ...pins.filter((_, i) => sides[i] === s).map((p) => textWidth(p.name, 7) + 6));
-  const inside = $derived(textWidth(title, 8.5) + longest('l') + longest('r') + 8 <= box.x1 - box.x0);
-  const titleY = $derived(inside ? (box.y0 + box.y1) / 2 : box.y0 - 7);
+  // The title sits in the band above the first pin row.
+  const titleY = $derived(box.y0 + (sides.includes('t') ? 8 : 6.5));
 </script>
 
 {#each draws as d, i (i)}
@@ -86,20 +111,11 @@
 {#each draws as d, i (i)}
   {#if d.bubble}<circle class="body thin" cx={d.bubble[0]} cy={d.bubble[1]} r={R} />{/if}
   {#if d.clock}<path class="ln thin" d={d.clock} />{/if}
-  <text class="txt" style="font-size: 7px" style:text-anchor={d.anchor} x={d.tx} y={d.ty} transform={uprightAt(d.tx, d.ty, rot, flip)}
+  <text class="txt" style="font-size: 7px" style:text-decoration={d.low ? 'overline' : undefined} style:text-anchor={d.anchor} x={d.tx} y={d.ty} transform={uprightAt(d.tx, d.ty, rot, flip)}
     >{d.name}</text
   >
-  {#if activeLow(pins[i]!.name)}
-    <!-- Overbar for active-low names. -->
-    <path
-      class="ln"
-      style="stroke-width: 0.8"
-      transform={uprightAt(d.tx, d.ty, rot, flip)}
-      d="M{d.anchor === 'end' ? d.tx - textWidth(d.name, 7) : d.anchor === 'middle' ? d.tx - textWidth(d.name, 7) / 2 : d.tx} {d.ty - 4.8} h{textWidth(d.name, 7)}"
-    />
-  {/if}
 {/each}
-<text class="txt bold" style="font-size: 8.5px" x={cx} y={titleY} transform={uprightAt(cx, titleY, rot, flip)}>{title}</text>
+<text class="txt bold" style="font-size: {titleSize}px" x={cx} y={titleY} transform={uprightAt(cx, titleY, rot, flip)}>{title}</text>
 {#if value !== undefined}
-  <text class="txt" style="font-size: 8px; fill: var(--_hi)" x={cx} y={titleY + 11} transform={uprightAt(cx, titleY + 11, rot, flip)}>{value}</text>
+  <text class="txt" style="font-size: 9px; fill: var(--_hi); font-weight: 700" x={cx} y={(box.y0 + box.y1) / 2 + 4} transform={uprightAt(cx, (box.y0 + box.y1) / 2 + 4, rot, flip)}>{value}</text>
 {/if}

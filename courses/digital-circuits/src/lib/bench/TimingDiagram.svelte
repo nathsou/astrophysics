@@ -11,6 +11,7 @@
   import type { Trace } from './traces';
   import { spans, ticks } from './waves';
   import { formatSI } from './format';
+  import { FALLBACK, onThemeChange, readSignals, type Signals } from '../theme/signals';
 
   let {
     engine,
@@ -49,34 +50,17 @@
     };
   });
 
-  let colours = { hi: '#f29e0c', lo: '#5d6b80', z: '#9a9a9a', x: '#d6332b', ink: '#1a1917', grid: '#ccc', muted: '#6b6459', bg: 'transparent' };
-  let coloursAt = 0;
-  function readColours() {
-    if (!canvas) return;
-    const cs = getComputedStyle(canvas);
-    const v = (name: string, fallback: string) => cs.getPropertyValue(name).trim() || fallback;
-    colours = {
-      hi: v('--sig-high', '#f29e0c'),
-      lo: v('--sig-low', '#5d6b80'),
-      z: v('--sig-z', '#9a9a9a'),
-      x: v('--sig-x', '#d6332b'),
-      ink: v('--ink', '#1a1917'),
-      grid: v('--grid', '#d8d2c4'),
-      muted: v('--ink-3', '#6b6459'),
-      bg: v('--chart-surface', 'transparent'),
-    };
-  }
+  // Canvas cannot resolve var(): read the signal tokens (resolved for this element's theme).
+  let colours: Signals = FALLBACK.light;
+  const readColours = () => {
+    if (canvas) colours = readSignals(canvas);
+  };
 
   /** Redraw from the recorder. */
   export function frame(): void {
     const c = canvas;
     const e = engine;
     if (!c) return;
-    const now = performance.now();
-    if (now - coloursAt > 500) {
-      readColours();
-      coloursAt = now;
-    }
     const dpr = window.devicePixelRatio || 1;
     const w = Math.max(100, width);
     const h = height;
@@ -90,8 +74,10 @@
     ctx.clearRect(0, 0, w, h);
     const x0 = NAMES;
     const x1 = w - 8;
-    const t1 = e ? e.time : 0;
-    const t0 = t1 - span;
+    // Sweeps in from the left until a full window has elapsed, then scrolls.
+    const now = e ? e.time : 0;
+    const t0 = Math.max(0, now - span);
+    const t1 = t0 + span;
     const X = (t: number) => x0 + ((t - t0) / span) * (x1 - x0);
     const col = colours;
 
@@ -99,11 +85,11 @@
     ctx.font = '10px "JetBrains Mono Variable", ui-monospace, monospace';
     ctx.textBaseline = 'middle';
     const axisY = traces.length * rowHeight + 4;
-    ctx.strokeStyle = col.grid;
+    ctx.strokeStyle = col.line;
     ctx.lineWidth = 1;
-    ctx.fillStyle = col.muted;
+    ctx.fillStyle = col.mute;
     ctx.textAlign = 'center';
-    for (const t of ticks(Math.max(0, t0), t1, Math.max(2, Math.floor((x1 - x0) / 90)))) {
+    for (const t of ticks(t0, t1, Math.max(2, Math.floor((x1 - x0) / 90))).filter((t) => t >= 0)) {
       const x = Math.round(X(t)) + 0.5;
       ctx.beginPath();
       ctx.moveTo(x, 2);
@@ -111,7 +97,7 @@
       ctx.stroke();
       ctx.fillText(formatSI(t, 's', 3), x, axisY + 11);
     }
-    ctx.strokeStyle = col.muted;
+    ctx.strokeStyle = col.mute;
     ctx.beginPath();
     ctx.moveTo(x0, axisY + 0.5);
     ctx.lineTo(x1, axisY + 0.5);
@@ -126,19 +112,19 @@
       const yHi = top + 3;
       const yLo = top + rowHeight - 9;
       const yMid = (yHi + yLo) / 2;
-      ctx.fillStyle = col.ink;
+      ctx.fillStyle = col.fg;
       ctx.textAlign = 'left';
       ctx.font = '600 11px "JetBrains Mono Variable", ui-monospace, monospace';
       ctx.fillText(tr.name, 4, yMid);
       if (!times || !values?.[row]) return;
-      const ss = spans(times, values[row]!, t0, t1, analog);
+      const ss = spans(times, values[row]!, t0, now, analog);
       const slant = Math.min(3, (x1 - x0) / 200);
       // Fills first (HIGH tint, X hatching), then lines.
       for (const s of ss) {
         const a = X(s.t0);
         const b = X(s.t1);
         if (s.v === 1) {
-          ctx.fillStyle = col.hi;
+          ctx.fillStyle = col.high;
           ctx.globalAlpha = 0.16;
           ctx.fillRect(a, yHi, b - a, yLo - yHi);
           ctx.globalAlpha = 1;
@@ -168,7 +154,7 @@
         const b = X(s.t1);
         const y = s.v === 1 ? yHi : s.v === 0 ? yLo : yMid;
         ctx.lineWidth = s.v === 1 ? 2.5 : 1.8;
-        ctx.strokeStyle = s.v === 1 ? col.hi : s.v === 0 ? col.lo : s.v === 3 ? col.z : col.x;
+        ctx.strokeStyle = s.v === 1 ? col.high : s.v === 0 ? col.low : s.v === 3 ? col.z : col.x;
         ctx.setLineDash(s.v === 3 ? [4, 3] : []);
         ctx.beginPath();
         if (s.v === 2) {
@@ -193,6 +179,11 @@
   }
 
   onMount(() => {
+    readColours();
+    const stopTheme = onThemeChange(() => {
+      readColours();
+      frame();
+    });
     const ro = new ResizeObserver(([entry]) => {
       if (entry) width = entry.contentRect.width;
       frame();
@@ -205,6 +196,7 @@
     };
     if (live) raf = requestAnimationFrame(loop);
     return () => {
+      stopTheme();
       ro.disconnect();
       cancelAnimationFrame(raf);
     };

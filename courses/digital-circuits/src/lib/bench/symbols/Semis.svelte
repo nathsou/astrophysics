@@ -3,8 +3,9 @@
   import type { SymbolProps } from './types';
   import { arrowHead } from './draw';
   import { LED_COLOURS } from './colours';
+  import { uprightAt } from '../geometry';
 
-  let { type, params, state, uid }: SymbolProps = $props();
+  let { type, params, state, uid, rot, flip }: SymbolProps = $props();
 
   const colour = $derived(String(params.color ?? 'red'));
   const led = $derived(LED_COLOURS[colour] ?? LED_COLOURS.red!);
@@ -37,7 +38,7 @@
     <polygon fill="currentColor" points={arrowHead(36.1, -18, 0.6, -0.8, 5, 2.3)} />
   </g>
 {:else if type === 'npn' || type === 'pnp'}
-  <circle class="body thin" cx="24" cy="0" r="16" />
+  <circle class="body thin" cx="23" cy="0" r="14.5" />
   <path class="stub" data-pin="0" d="M0 0 H14" />
   <path class="ln thick" style="stroke-linecap: butt" d="M14 -10 V10" />
   <path class="stub" data-pin="1" d={type === 'npn' ? 'M36 -24 V-15' : 'M36 24 V15'} />
@@ -71,5 +72,6 @@
   <path class="stub" data-pin="1" d="M0 24 H12" />
   <path class="stub" data-pin="2" d="M72 12 H60" />
   <path class="body" d="M12 -10 L60 12 L12 34 Z" />
-  <path class="ln thin" d="M16 0 h7 M19.5 -3.5 v7 M16 24 h7" />
+  <path class="ln thin" d="M16 0 h7 M19.5 -3.5 v7" />
+  <path class="ln thin" d="M16 24 h7" transform={uprightAt(19.5, 24, rot, flip)} />
 {/if}

@@ -411,6 +411,23 @@ describe('timing', () => {
     expect([e.logic(a), e.logic(bb), e.logic(c)]).toEqual([LX, LX, LX]);
   });
 
+  test('a long inverter chain settles in many rounds and is not mistaken for an oscillation', () => {
+    const b = new SwitchBuilder();
+    let x = b.input('A');
+    const stages = 2500; // more rounds than the 1000 that a small circuit is allowed
+    for (let i = 0; i < stages; i++) {
+      const y = b.net();
+      b.inv(`I${i}`, x, y);
+      x = y;
+    }
+    const e = createSwitchEngine(b.build());
+    expect(e.messages).toEqual([]);
+    expect(e.logic(x)).toBe(0); // 2500 inversions of 0 is 0
+    e.setParam('A', 'on', true);
+    expect(e.logic(x)).toBe(1);
+    expect(e.messages).toEqual([]);
+  });
+
   test('an inverter chain: unit delay per stage', () => {
     const b = new SwitchBuilder();
     const a = b.input('A');
