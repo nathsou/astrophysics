@@ -1,1 +1,206 @@
-This chapter is being written.
+Chapter 8 introduced the idea of tactics with a handful of examples. This chapter is the toolbox: the tactics you will use in almost every proof, grouped by what they do to the goal. Each group ends with a small example; the [tactic reference](#/reference/tactics) lists all of them with the term each one writes.
+
+A useful way to organise the toolbox is by the direction of reasoning:
+
+- **introduction** tactics look at the *goal* and break it into simpler goals (to prove `A ∧ B`, prove `A` and prove `B`);
+- **elimination** tactics look at a *hypothesis* and take it apart (from `A ∧ B`, get `A` and `B`);
+- **structural** tactics organise the proof: which goal you are working on, and what to do with all of them.
+
+## Introducing: intro and rintro
+
+`intro` moves the premises of an implication or the variables of a `∀` into the context. It takes several names at once:
+
+```lean
+theorem three (p q r : Prop) : p → q → r → p ∧ r := by
+  intro hp hq hr
+  exact ⟨hp, hr⟩
+```
+
+`rintro` does the same, but also takes the hypotheses apart as they come in, with a pattern. `⟨a, b⟩` splits a pair (a conjunction or an existential), and `a | b` splits a disjunction into two goals:
+
+<Playground lens title="rintro patterns" code={`theorem chain (p q r : Prop) : (p → q) ∧ (q → r) → p → r := by
+  rintro ⟨hpq, hqr⟩ hp
+  exact hqr (hpq hp)
+
+theorem distrib (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) := by
+  rintro ⟨hp, hq | hr⟩
+  · left; exact ⟨hp, hq⟩
+  · right; exact ⟨hp, hr⟩`} />
+
+## Taking apart: cases, rcases, obtain
+
+To take apart a hypothesis that is already in the context, use `cases` (Chapter 8), or its pattern-based cousins:
+
+- `rcases h with pattern` takes `h` apart with the same patterns as `rintro`;
+- `obtain pattern := term` is the same, but for any term, and reads well for existentials: "obtain a `k` such that…".
+
+```lean
+def Divides (d n : Nat) : Prop := ∃ k, n = d * k
+
+theorem divides_trans {a b c : Nat} (hab : Divides a b) (hbc : Divides b c) : Divides a c := by
+  obtain ⟨k, hk⟩ := hab
+  obtain ⟨l, hl⟩ := hbc
+  exists k * l
+  rw [hl, hk, Nat.mul_assoc]
+```
+
+Put your cursor after each line to see the context grow. After the two `obtain`s you have `hk : b = a * k` and `hl : c = b * l`, and the goal is `∃ k, c = a * k`. `exists k * l` supplies the witness, and the rest is rewriting, which we come to below.
+
+A special pattern: `rfl` in place of a name *substitutes* an equation instead of naming it. From `⟨k, rfl⟩ : ∃ k, b = a * k`, `b` is replaced by `a * k` everywhere:
+
+```lean
+theorem divides_add {a b c : Nat} (hb : Divides a b) (hc : Divides a c) : Divides a (b + c) := by
+  rcases hb with ⟨k, rfl⟩
+  rcases hc with ⟨l, rfl⟩
+  exact ⟨k + l, (Nat.mul_add a k l).symm⟩
+```
+
+## Building: constructor, left, right, exists, refine
+
+For goals that are inductive types, the introduction tactics apply a constructor:
+
+- `constructor` applies the (first) constructor, with one new goal per argument: two for `∧` and `↔`;
+- `left` and `right` choose a side of `∨`;
+- `exists w` gives the witness of `∃`.
+
+`refine` is the general form: give a term with holes `?_`, and each hole becomes a goal. `constructor` is `refine ⟨?_, ?_⟩`:
+
+<Playground lens title="refine" code={`theorem nested (p q : Prop) (hp : p) (hq : q) : p ∧ (q ∧ p) := by
+  refine ⟨hp, ?_, ?_⟩
+  · exact hq
+  · exact hp`} />
+
+## Backwards: apply, exact, exfalso
+
+`exact e` closes the goal with a term. `apply f` works backwards: when `f` proves the goal from some premises, the premises become the new goals. `apply` figures out how many arguments `f` needs:
+
+```lean
+theorem mt' (p q : Prop) (hpq : p → q) (hnq : ¬q) : ¬p := by
+  intro hp
+  apply hnq
+  apply hpq
+  exact hp
+```
+
+`exfalso` changes any goal to `False` (you are going to prove it by contradiction from the hypotheses). `contradiction` closes a goal when the context is obviously contradictory: it contains `False`, both `p` and `¬p`, or an equation between different constructors.
+
+```lean
+theorem from_both (p q : Prop) (hp : p) (hnp : ¬p) : q := by
+  contradiction
+
+theorem from_ctor (n : Nat) (h : n + 1 = 0) : n = 42 := by
+  contradiction
+```
+
+## Forwards: have, specialize
+
+`have name : type := proof` adds a fact to the context. Without `:= proof`, it adds a new goal for the fact first, so you can prove it with tactics:
+
+```lean
+theorem forwards (p q r : Prop) (hp : p) (hpq : p → q) (hqr : q → r) : r := by
+  have hq : q := hpq hp
+  have hr : r := by
+    apply hqr
+    exact hq
+  exact hr
+```
+
+`specialize h a` replaces a `∀` hypothesis `h` by its instance at `a`:
+
+```lean
+theorem at_two (f : Nat → Nat) (h : ∀ x, f x = x + 1) : f 2 = 3 := by
+  specialize h 2
+  exact h
+```
+
+## Equations: rfl, rw, subst, symm, calc
+
+- `rfl` closes `a = a`, up to computation (Chapter 6);
+- `symm` turns the goal `a = b` into `b = a`;
+- `subst h` substitutes a variable using `h : x = e` (or `e = x`) everywhere, and removes it;
+- `rw [h]` rewrites with `h : a = b`: every `a` in the goal becomes `b`. `rw [← h]` goes the other way. `rw [h] at h'` rewrites in a hypothesis. After rewriting, `rw` tries `rfl`.
+
+`rw` takes a list of equations and uses them in order. It also takes library lemmas, including ones with arguments: `rw [Nat.mul_assoc]` rewrites the first instance of the pattern `?a * ?b * ?c` that it finds, figuring out `?a`, `?b` and `?c`.
+
+<Playground lens title="Rewriting" code={`theorem rw_demo (a b c : Nat) (h₁ : a = b + 1) (h₂ : b = c) : a = c + 1 := by
+  rw [h₁, h₂]
+
+theorem rw_at (a b : Nat) (h : a = b) (h₂ : a + 1 = 5) : b + 1 = 5 := by
+  rw [h] at h₂
+  exact h₂
+
+theorem rw_back (f : Nat → Nat) (a b : Nat) (h : a = b) : f b = f a := by
+  rw [← h]`} />
+
+Put your cursor on each rewrite in the lens. `rw` writes a transport (`▸`, via `Eq.mpr`) with the motive it found: the goal with the rewritten term abstracted, as in Chapter 6. When the motive does not type-check, `rw` says so and shows it.
+
+For longer chains, `calc` (Chapter 6) works inside tactic proofs too, and each step can be proved by tactics:
+
+```lean
+theorem calc_demo (a b : Nat) (h : a = 2 * b) : a + a = 4 * b := by
+  calc a + a = 2 * b + 2 * b := by rw [h]
+    _ = 4 * b := by omega
+```
+
+## Structure: focusing and combining
+
+When there are several goals, tactics act on the first one. Several tools organise the rest:
+
+| Tactic | Effect |
+|---|---|
+| `· tacs` | focus on the first goal; it must be closed by the end of the block |
+| `case tag => tacs` | focus on the goal with that tag (`inl`, `succ`, `left`…) |
+| `next => tacs` | focus on the next goal, whatever its tag |
+| `t <;> s` | run `t`, then `s` on *every* goal `t` produced |
+| `all_goals t` | run `t` on every goal |
+| `any_goals t` | run `t` on every goal where it succeeds |
+| `try t` | run `t`; if it fails, do nothing |
+| `repeat t` | run `t` until it fails |
+| `first \| t \| s` | run `t`; if it fails, run `s` |
+
+```lean
+theorem both_twice (p q : Prop) (hp : p) (hq : q) : (p ∧ q) ∧ (p ∧ q) := by
+  constructor <;> constructor <;> assumption
+```
+
+Bullets are the most important of these for readability. A proof with one bullet per goal shows its structure at a glance, and if a case is not finished, the error is reported at the bullet that left it open.
+
+## Annotating: show and change
+
+`show t` checks that the goal is `t` (up to computation) and displays it that way. It is useful to document what is being proved at a point in a long proof, and to unfold a definition: if the goal is `Divides 3 12`, then `show ∃ k, 12 = 3 * k` exposes the existential. `change t at h` does the same for a hypothesis.
+
+```lean
+theorem three_twelve : Divides 3 12 := by
+  show ∃ k, 12 = 3 * k
+  exists 4
+```
+
+## Exercises
+
+<Exercise id="toolbox:rintro" title="Patterns" lens code={`theorem or_and_elim (p q r : Prop) : (p ∨ q) ∧ (p → r) ∧ (q → r) → r := by
+  sorry`} must="or_and_elim" hint="rintro ⟨hp | hq, hpr, hqr⟩ gives two goals; close each with exact." solution={`theorem or_and_elim (p q r : Prop) : (p ∨ q) ∧ (p → r) ∧ (q → r) → r := by
+  rintro ⟨hp | hq, hpr, hqr⟩
+  · exact hpr hp
+  · exact hqr hq`}>
+Use one `rintro` with a nested pattern.
+</Exercise>
+
+<Exercise id="toolbox:divides-mul" title="Divisibility again" setup={`def Divides (d n : Nat) : Prop := ∃ k, n = d * k`} lens code={`theorem divides_mul_right {a b : Nat} (c : Nat) (h : Divides a b) : Divides a (b * c) := by
+  sorry`} must="divides_mul_right" hint="obtain ⟨k, hk⟩ := h, then exists k * c, then rw [hk, Nat.mul_assoc]." solution={`theorem divides_mul_right {a b : Nat} (c : Nat) (h : Divides a b) : Divides a (b * c) := by
+  obtain ⟨k, hk⟩ := h
+  exists k * c
+  rw [hk, Nat.mul_assoc]`}>
+If `a` divides `b`, it divides every multiple of `b`. The library lemma `Nat.mul_assoc : a * b * c = a * (b * c)` will help.
+</Exercise>
+
+<Exercise id="toolbox:rewrite" title="Rewriting in both directions" lens code={`theorem rewrite_both (f : Nat → Nat) (a b c : Nat) (h₁ : f a = b) (h₂ : f b = c) : f (f a) = c := by
+  sorry`} must="rewrite_both" hint="rw [h₁, h₂]: first f a becomes b, then f b becomes c." solution={`theorem rewrite_both (f : Nat → Nat) (a b c : Nat) (h₁ : f a = b) (h₂ : f b = c) : f (f a) = c := by
+  rw [h₁, h₂]`}>
+One `rw` with two equations.
+</Exercise>
+
+<Exercise id="toolbox:structure" title="One line" code={`theorem all_four (p q : Prop) (hp : p) (hq : q) : (p ∨ q) ∧ (q ∨ p) := by
+  sorry`} must="all_four" hint="constructor <;> left <;> assumption." solution={`theorem all_four (p q : Prop) (hp : p) (hq : q) : (p ∨ q) ∧ (q ∨ p) := by
+  constructor <;> left <;> assumption`}>
+Prove it with a single line, using `<;>`.
+</Exercise>
