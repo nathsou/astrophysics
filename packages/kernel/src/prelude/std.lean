@@ -828,3 +828,57 @@ theorem contra (a b ρ : List Nat) (hd : dominates a b = Bool.true) (h : eval a 
       exact Nat.not_add_one_le_self _ h4
 
 end Omega
+
+-- ---------------------------------------------------------------------------
+-- classical logic: excluded middle from the axiom of choice (Diaconescu's theorem)
+
+namespace Classical
+
+noncomputable def choose {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : α :=
+  (Classical.choice (match h with | ⟨x, px⟩ => ⟨⟨x, px⟩⟩ : Nonempty { x // p x })).val
+
+theorem choose_spec {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : p (choose h) :=
+  (Classical.choice (match h with | ⟨x, px⟩ => ⟨⟨x, px⟩⟩ : Nonempty { x // p x })).property
+
+theorem em (p : Prop) : p ∨ ¬p :=
+  let U (x : Prop) : Prop := x = True ∨ p
+  let V (x : Prop) : Prop := x = False ∨ p
+  have exU : ∃ x, U x := ⟨True, Or.inl rfl⟩
+  have exV : ∃ x, V x := ⟨False, Or.inl rfl⟩
+  have u_def : U (choose exU) := choose_spec exU
+  have v_def : V (choose exV) := choose_spec exV
+  have not_uv_or_p : choose exU ≠ choose exV ∨ p :=
+    match u_def, v_def with
+    | Or.inr h, _ => Or.inr h
+    | _, Or.inr h => Or.inr h
+    | Or.inl hut, Or.inl hvf => Or.inl (fun hne => (hvf ▸ hut ▸ hne : True = False) ▸ trivial)
+  have p_implies_uv : p → choose exU = choose exV := fun hp =>
+    have hpred : U = V := funext fun x => propext ⟨fun _ => Or.inr hp, fun _ => Or.inr hp⟩
+    have h₀ : ∀ (eu : ∃ x, U x) (ev : ∃ x, V x), choose eu = choose ev := hpred ▸ fun _ _ => rfl
+    h₀ exU exV
+  match not_uv_or_p with
+  | Or.inl hne => Or.inr (fun hp => hne (p_implies_uv hp))
+  | Or.inr h => Or.inl h
+
+theorem byContradiction {p : Prop} (h : ¬p → False) : p :=
+  match em p with
+  | Or.inl hp => hp
+  | Or.inr hnp => absurd hnp h
+
+
+/-- Double negation elimination: a classical principle. -/
+theorem not_not {p : Prop} : ¬¬p ↔ p :=
+  ⟨fun h => byContradiction h, fun hp hnp => hnp hp⟩
+
+/-- If not everything satisfies p, something fails it (classically). -/
+theorem not_forall {α : Sort u} {p : α → Prop} : (¬∀ x, p x) ↔ ∃ x, ¬p x :=
+  ⟨fun h => byContradiction (fun hne => h (fun x => byContradiction (fun hpx => hne ⟨x, hpx⟩))),
+   fun ⟨x, hx⟩ h => hx (h x)⟩
+
+/-- Every proposition is decidable, classically (noncomputable: there is no program behind it). -/
+noncomputable def propDecidable (p : Prop) : Decidable p :=
+  Classical.choice (match em p with
+    | Or.inl h => ⟨isTrue h⟩
+    | Or.inr h => ⟨isFalse h⟩)
+
+end Classical

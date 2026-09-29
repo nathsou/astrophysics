@@ -159,7 +159,8 @@ export function KripkeView(props: { model: Kripke; formula: F }) {
           </tbody>
         </table>
         <p class="muted">
-          ✓: the statement holds at that stage. An implication (and a negation) holds at a stage only if it holds at every later stage too; a disjunction only if one side already holds. So at <b>w0</b>, the whole statement fails.
+          ✓: the statement holds at that stage. An implication (and a negation) holds at a stage only if it holds at every later stage too; a disjunction only if one side already holds.{' '}
+          {forces(m(), 0, props.formula) ? 'Here the whole statement holds at w0.' : 'So at w0, the whole statement fails.'}
         </p>
       </div>
     </div>

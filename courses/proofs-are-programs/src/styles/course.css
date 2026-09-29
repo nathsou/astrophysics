@@ -400,3 +400,15 @@ ul.reading li {
 .kr-table td.no {
   color: var(--ink-3);
 }
+.kr-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+.kr-toggle-row {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
