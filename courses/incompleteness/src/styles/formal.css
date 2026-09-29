@@ -39,7 +39,7 @@
 .ol-env-name { font-family: var(--serif); font-weight: 700; font-size: 1em; color: var(--fg); }
 .ol-thm .ol-env-name { font-size: 1.06em; letter-spacing: 0.005em; }
 .ol-lem .ol-env-name, .ol-cor .ol-env-name { font-weight: 600; font-size: 0.94em; }
-.ol-ex.numbered .ol-env-name, .ol-rem .ol-env-name { font-weight: 500; font-variant-caps: all-small-caps; letter-spacing: 0.07em; font-size: 1.08em; color: var(--ink-2); }
+.ol-ex.numbered .ol-env-name, .ol-rem .ol-env-name { font-weight: 500; font-variant-caps: small-caps; letter-spacing: 0.05em; font-size: 1.05em; color: var(--ink-2); }
 .ol-env-title { font-style: italic; color: var(--ink-2); }
 .ol-env-body > p:last-child, .ol-env-body > .ol-list:last-child { margin-bottom: 0.5em; }
 .ol-defn .ol-env-body > p:last-child, .ol-ex .ol-env-body > p:last-child, .ol-rem .ol-env-body > p:last-child { margin-bottom: 0; }
@@ -52,7 +52,7 @@
 .ol-env.aside { border-left: 2px solid var(--rule-2); padding: 2px 0 2px 18px; color: var(--ink-2); }
 .ol-env.aside > .ol-env-head .ol-env-name { font-family: var(--serif); font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--muted); font-weight: 400; }
 .ol-env.aside.ol-rem { border-left: 0; padding: 0; color: inherit; }
-.ol-env.aside.ol-rem > .ol-env-head .ol-env-name { font-size: 1.08em; text-transform: none; font-variant-caps: all-small-caps; letter-spacing: 0.07em; color: var(--ink-2); font-weight: 500; }
+.ol-env.aside.ol-rem > .ol-env-head .ol-env-name { font-size: 1.05em; text-transform: none; font-variant-caps: small-caps; letter-spacing: 0.05em; color: var(--ink-2); font-weight: 500; }
 .ol-digress { font-size: 0.95em; }
 
 
