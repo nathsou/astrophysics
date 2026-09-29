@@ -17,7 +17,37 @@ defaults:
     working-directory: courses/language-models
 
 jobs:
+  # Which parts of the course changed, so each job runs only when its own files did. A manual run checks everything.
+  changes:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      site: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.site == 'true' }}
+      python: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.python == 'true' }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            site:
+              - 'courses/language-models/course/**'
+              - 'courses/language-models/packages/**'
+              - 'courses/language-models/scripts/**'
+              - 'courses/language-models/*.json'
+              - 'courses/language-models/*.yaml'
+              - 'courses/language-models/*.ts'
+              - 'courses/language-models/training/fixtures/**'
+              - '.github/workflows/language-models.yml'
+            python:
+              - 'courses/language-models/training/**'
+              - '.github/workflows/language-models.yml'
+
   site:
+    needs: changes
+    if: needs.changes.outputs.site == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -36,6 +66,8 @@ jobs:
         run: pnpm typecheck
 
   python:
+    needs: changes
+    if: needs.changes.outputs.python == 'true'
     runs-on: ubuntu-latest
     defaults:
       run:
