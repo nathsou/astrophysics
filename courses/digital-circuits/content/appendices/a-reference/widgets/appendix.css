@@ -1,0 +1,51 @@
+/* Shared by the widgets of the appendices (imported by each of them; class names are prefixed ap-). */
+.ap-input {
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 0.42rem 0.6rem;
+  min-height: 2.1rem;
+  min-width: 0;
+}
+.ap-input:hover {
+  border-color: var(--copper);
+}
+.ap-input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+.ap-input[aria-invalid='true'] {
+  border-color: var(--bad);
+  background: var(--bad-soft);
+}
+.ap-label {
+  display: grid;
+  gap: 0.25rem;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.ap-label > .ap-input {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+.ap-note {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.ap-bad {
+  color: var(--bad);
+}
+.ap-ok {
+  color: var(--ok);
+}
