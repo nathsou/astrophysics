@@ -17,6 +17,7 @@ import {
   hasLooseBVar,
   headBeta,
   mkBinder,
+  mkSort,
   instantiate1,
   instantiateLevelParamsExpr,
   mkApp,
@@ -26,7 +27,7 @@ import {
   replaceExpr,
   forEachExpr,
 } from '../core/expr.ts';
-import { type Level, levelEq, toNat, lparam } from '../core/level.ts';
+import { type Level, hasLevelMVar, levelEq, toNat, lparam } from '../core/level.ts';
 import { LocalContext } from '../core/env.ts';
 import type { Location, RwRule, STerm, SimpArg, Span, Tactic } from '../syntax/ast.ts';
 import type { Elaborator } from './elaborator.ts';
@@ -177,11 +178,24 @@ class Matcher {
       return levelEq(prev, t);
     }
     if (p.k === 'succ' && t.k === 'succ') return this.level(p.l, t.l);
-    return levelEq(p, this.el.mctx.instantiateLevel(t));
+    // a universe metavariable of an elaborated rule (`rw [if_neg h]`): unify
+    const pi = this.el.mctx.instantiateLevel(p);
+    if (hasLevelMVar(pi)) return this.el.isDefEq(mkSort(pi), mkSort(this.el.mctx.instantiateLevel(t)));
+    return levelEq(pi, this.el.mctx.instantiateLevel(t));
   }
 
   match(p: Expr, t: Expr, depth = 0): boolean {
     if (depth > 200) return false;
+    // metavariables of an elaborated rule (the implicit arguments of `if_neg h`): unify
+    if (p.mv && getAppFn(p).k === 'mvar') {
+      const pi = this.el.instantiate(p);
+      if (getAppFn(pi).k !== 'mvar') return this.match(pi, t, depth + 1);
+      if (t.lb > 0) return false;
+      const cp = this.el.mctx.checkpoint();
+      if (this.el.isDefEq(pi, t)) return true;
+      this.el.mctx.rollback(cp);
+      return false;
+    }
     if (p.k === 'fvar' && this.pvs.has(p.id)) {
       const prev = this.vals.get(p.id);
       if (prev === undefined) {
@@ -485,7 +499,8 @@ export class Simplifier {
         if (fn.k === 'lam') return { expr: headBeta(e) };
         if (fn.k === 'const' && (fn.name === 'ite' || fn.name === 'dite') && args.length >= 5) {
           const r = this.simpIte(e, fn.name);
-          if (r) return r;
+          // the chosen branch may simplify further (a nested if, say)
+          if (r) return this.trans(r, this.simp(r.expr));
         }
         let ft: Expr;
         try {
