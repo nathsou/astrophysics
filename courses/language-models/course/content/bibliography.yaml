@@ -1380,3 +1380,63 @@ openai2023:
   title: GPT-4 Technical Report
   venue: arXiv:2303.08774
   url: https://arxiv.org/abs/2303.08774
+zhang2019rms:
+  authors: Biao Zhang and Rico Sennrich
+  year: 2019
+  title: Root Mean Square Layer Normalization
+  venue: NeurIPS 2019
+  url: https://arxiv.org/abs/1910.07467
+shazeer2020:
+  authors: Noam Shazeer
+  year: 2020
+  title: GLU Variants Improve Transformer
+  venue: arXiv:2002.05202
+  url: https://arxiv.org/abs/2002.05202
+dauphin2017:
+  authors: Yann N. Dauphin, Angela Fan, Michael Auli and David Grangier
+  year: 2017
+  title: Language Modeling with Gated Convolutional Networks
+  venue: ICML 2017
+  url: https://arxiv.org/abs/1612.08083
+ramachandran2017:
+  authors: Prajit Ramachandran, Barret Zoph and Quoc V. Le
+  year: 2017
+  title: Searching for Activation Functions
+  venue: arXiv:1710.05941
+  url: https://arxiv.org/abs/1710.05941
+su2021:
+  authors: Jianlin Su, Yu Lu, Shengfeng Pan, Ahmed Murtadha, Bo Wen and Yunfeng Liu
+  year: 2021
+  title: "RoFormer: Enhanced Transformer with Rotary Position Embedding"
+  venue: arXiv:2104.09864 (Neurocomputing, 2024)
+  url: https://arxiv.org/abs/2104.09864
+press2022:
+  authors: Ofir Press, Noah A. Smith and Mike Lewis
+  year: 2022
+  title: "Train Short, Test Long: Attention with Linear Biases Enables Input Length Extrapolation"
+  venue: ICLR 2022
+  url: https://arxiv.org/abs/2108.12409
+chen2023pi:
+  authors: Shouyuan Chen, Sherman Wong, Liangjian Chen and Yuandong Tian
+  year: 2023
+  title: Extending Context Window of Large Language Models via Positional Interpolation
+  venue: arXiv:2306.15595
+  url: https://arxiv.org/abs/2306.15595
+peng2023yarn:
+  authors: Bowen Peng, Jeffrey Quesnelle, Honglu Fan and Enrico Shippole
+  year: 2023
+  title: "YaRN: Efficient Context Window Extension of Large Language Models"
+  venue: ICLR 2024
+  url: https://arxiv.org/abs/2309.00071
+jiang2023:
+  authors: Albert Q. Jiang, Alexandre Sablayrolles, Arthur Mensch and others
+  year: 2023
+  title: Mistral 7B
+  venue: arXiv:2310.06825
+  url: https://arxiv.org/abs/2310.06825
+wortsman2023:
+  authors: Mitchell Wortsman, Peter J. Liu, Lechao Xiao and others
+  year: 2023
+  title: Small-scale proxies for large-scale Transformer training instabilities
+  venue: ICLR 2024
+  url: https://arxiv.org/abs/2309.14322

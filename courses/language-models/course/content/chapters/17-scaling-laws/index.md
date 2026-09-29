@@ -22,7 +22,7 @@ A power law cannot go on forever: loss cannot fall below the entropy of the text
 
 :::equation{#scaling-law caption="The Chinchilla form of the scaling law: an irreducible loss, plus terms that shrink as the model grows and as the data grows."}
 $$
-L(N, D) \;=\; \term{E}{E} \;+\; \frac{\term{A}{A}}{N^{\term{alpha}{\alpha}}} \;+\; \frac{B}{D^{\term{beta}{\beta}}}
+L(N, D) \;=\; \term{E}{E} \;+\; \frac{\term{A}{A}}{N^{\term{alpha}{\alpha}}} \;+\; \frac{B}{D^{\beta}}
 $$
 :::
 

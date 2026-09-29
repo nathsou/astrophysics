@@ -371,3 +371,19 @@ isoflop:
   term: IsoFLOP curve
   definition: Final loss against model size for runs that all use the same training compute; its minimum gives the compute-optimal size.
   chapter: scaling-laws
+rmsnorm:
+  term: RMSNorm
+  definition: Normalisation that divides a vector by its root mean square and scales it by a learned gain — LayerNorm without the mean subtraction and the bias.
+  chapter: modern-architecture
+swiglu:
+  term: SwiGLU
+  definition: A gated MLP, W₂(SiLU(W_g x) ⊙ W₁ x), in which one projection decides, element by element, how much of another passes through.
+  chapter: modern-architecture
+rope:
+  term: Rotary position embedding (RoPE)
+  definition: Encoding positions by rotating pairs of query and key coordinates by angles proportional to the position, so that attention scores depend only on relative offsets.
+  chapter: modern-architecture
+gqa:
+  term: Grouped-query attention (GQA)
+  definition: Attention in which groups of query heads share one key and value head, shrinking the KV cache; multi-query attention is the extreme of one shared head.
+  chapter: modern-architecture

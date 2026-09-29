@@ -53,6 +53,11 @@ class TrainConfig:
     eval_tokens: int = 0
     """Evaluate on the first eval_tokens of the validation split (0: all of it)."""
     compile: bool = False
+    # Chapter 18's architecture options (see GPTConfig).
+    norm_type: str = "layer"
+    mlp_type: str = "gelu"
+    pos: str = "learned"
+    kv_heads: int = 0
     seed: int = 1
     notes: dict = field(default_factory=dict)
 
@@ -113,7 +118,8 @@ def flops_per_token(n_params: int, cfg) -> float:
     """Training FLOPs per token: 6 per parameter used in a matmul, plus causal attention's 6·L·T·C.
     Position embeddings are only added, so they do not count; the token embedding is only looked up
     on the way in, but as the tied output layer it is a full (C × V) matmul, so it does."""
-    return 6 * (n_params - cfg.context * cfg.width) + 6 * cfg.layers * cfg.context * cfg.width
+    pos = cfg.context * cfg.width if getattr(cfg, "pos", "learned") == "learned" else 0
+    return 6 * (n_params - pos) + 6 * cfg.layers * cfg.context * cfg.width
 
 
 class Dataset:
@@ -189,6 +195,10 @@ def main(
         layers=cfg.layers,
         heads=cfg.heads,
         dropout=cfg.dropout,
+        norm_type=cfg.norm_type,
+        mlp_type=cfg.mlp_type,
+        pos=cfg.pos,
+        kv_heads=cfg.kv_heads,
     )
     model = GPT(mcfg).to(dev)
     if cfg.optimizer == "muon":
