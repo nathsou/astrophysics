@@ -104,7 +104,7 @@ export const horizontal: MapLayout = {
     l: hNode(40, 150, 'λ'),
     stlc: hNode(148, 150, 'λ→'),
     f: hNode(280, 65, 'λ2', true),
-    w: hNode(440, 65, 'λω', true),
+    w: hNode(452, 65, 'λω', true),
     p: hNode(280, 245, 'λP'),
     c: hNode(572, 150, 'λC'),
     ecc: hNode(697, 150, 'ECC'),
@@ -114,9 +114,9 @@ export const horizontal: MapLayout = {
   edgeLabels: {
     'l-stlc': { x: 94, y: 131, anchor: 'middle' },
     // the two branches: labels sit inside the fork, clear of the arrows
-    'stlc-f': { x: 212, y: 131, anchor: 'start' },
-    'stlc-p': { x: 212, y: 180, anchor: 'start' },
-    'f-w': { x: 360, y: 51, anchor: 'middle' },
+    'stlc-f': { x: 222, y: 124, anchor: 'start' },
+    'stlc-p': { x: 222, y: 187, anchor: 'start' },
+    'f-w': { x: 366, y: 46, anchor: 'middle' },
     'c-ecc': { x: 634.5, y: 131, anchor: 'middle' },
     'ecc-cic': { x: 759.5, y: 131, anchor: 'middle' },
     'cic-lean': { x: 897, y: 131, anchor: 'middle' },
