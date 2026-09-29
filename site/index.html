@@ -48,8 +48,9 @@
           </a>
 
           <a class="card cic" href="./cic/">
-            <p class="kicker">Logic · 21 ch</p>
+            <p class="kicker">The Editor · Logic · 21 ch</p>
             <h2>Calculus of Inductive Constructions</h2>
+            <p class="desc">-- From the λ-calculus to Lean 4, on a real kernel.</p>
             <p class="code"><span class="kw">theorem</span> welcome : ∀ n : Nat,<br>&nbsp;&nbsp;n + 0 = n := <span class="kw">by</span> rfl</p>
             <p class="ok">✓ no errors</p>
           </a>
@@ -62,6 +63,7 @@
               </div>
               <i class="chip" aria-hidden="true"></i>
             </div>
+            <p class="desc">A real backend, from SSA IR down to RISC-V, AArch64, x86-64 and Wasm machine code.</p>
             <ul class="pins" aria-label="Sample chapters">
               <li><span>01</span><span>SSA &amp; dominance</span><span>IR</span></li>
               <li><span>04</span><span>Register allocation</span><span>RegAlloc</span></li>
@@ -70,26 +72,32 @@
           </a>
 
           <a class="card lm" href="./language-models/">
-            <span class="lbl">[md]</span>
-            <h2>Language Models from Scratch</h2>
-            <span class="lbl in">In [1]:</span>
-            <p class="cell">for chapter in course:<br>&nbsp;&nbsp;print(chapter.title)</p>
-            <span class="lbl">Out:</span>
-            <p class="out">18 of 30 chapters · in progress</p>
+            <p class="kicker"><span class="mark" aria-hidden="true">LM</span> From scratch · Machine learning · 18&nbsp;of&nbsp;30&nbsp;ch</p>
+            <div class="split">
+              <h2>Language Models from Scratch</h2>
+              <div class="predict" aria-hidden="true">
+                <p class="prompt">The cat sat on the <span class="cursor">▍</span></p>
+                <p class="row"><span>mat</span><i style="--w: 100%"></i><span>41%</span></p>
+                <p class="row"><span>floor</span><i style="--w: 41%"></i><span>17%</span></p>
+                <p class="row"><span>sofa</span><i style="--w: 27%"></i><span>11%</span></p>
+              </div>
+            </div>
+            <p class="desc">Build a GPT from nothing, then take it through scaling, fine-tuning and reasoning.</p>
           </a>
 
           <a class="card incompleteness" href="./incompleteness/">
-            <p class="kicker">Logic · 9 ch · Open Logic Project</p>
+            <p class="kicker">The Textbook · Logic · 9 ch</p>
             <h2>Incompleteness<br>and Computability</h2>
             <p class="formula">G ↔ ¬Prov(⌜G⌝)</p>
             <i class="rule" aria-hidden="true"></i>
+            <p class="desc">Richard Zach’s Open Logic text, made executable: build the objects, then find them in the proofs.</p>
           </a>
 
           <a class="card proofs" href="./proofs/">
             <i class="blk red" aria-hidden="true"></i><i class="blk yellow" aria-hidden="true"></i><i class="blk blue" aria-hidden="true"></i>
             <h2><span class="sr-only">Proofcraft</span><span aria-hidden="true">PROOF<br>CRAFT</span></h2>
             <p class="desc">Rebuild great theorems, with a step checker and an optional Socratic tutor.</p>
-            <p class="kicker">Mathematics · 23 ch</p>
+            <p class="kicker">Byrne · Mathematics · 23 ch</p>
           </a>
         </section>
       </main>
