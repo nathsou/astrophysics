@@ -3,4 +3,6 @@ import './wiring';
 import './io';
 import './logic';
 import './analog';
+import './sequential';
+import './blocks';
 export { defineComponents, getDef, allDefs, withDefaults, pinsOf, boundsOf, transformPoint } from './registry';

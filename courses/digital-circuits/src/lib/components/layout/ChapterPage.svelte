@@ -225,16 +225,16 @@
     stroke-width: 1;
   }
   .pkg {
-    fill: light-dark(#22272e, #161e2a);
-    stroke: light-dark(#11151a, #2f3d52);
+    fill: light-dark(#22272e, #243044);
+    stroke: light-dark(#11151a, #4a5b73);
     stroke-width: 1;
     filter: drop-shadow(0 6px 10px light-dark(rgb(40 30 10 / 0.18), rgb(0 0 0 / 0.5)));
   }
   .notch {
-    fill: light-dark(#161a1f, #0d131c);
+    fill: light-dark(#161a1f, #172131);
   }
   .dot {
-    fill: light-dark(#161a1f, #0d131c);
+    fill: light-dark(#161a1f, #172131);
   }
   .dip text {
     font-family: var(--font-mono);

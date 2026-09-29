@@ -173,6 +173,8 @@
 }
 .sch .smoke circle {
   fill: #8d8a86;
+  transform-box: fill-box;
+  transform-origin: center;
   opacity: 0;
   animation: sch-smoke 2.6s ease-out infinite;
 }

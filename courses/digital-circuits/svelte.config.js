@@ -15,7 +15,8 @@ export default {
   kit: {
     adapter: adapter({ pages: 'dist', assets: 'dist', fallback: '404.html', strict: true }),
     paths: { base },
-    prerender: { handleHttpError: 'warn', handleMissingId: 'warn', handleUnseenRoutes: 'ignore' },
+    // /styleguide/ is not linked from the navigation, so it is listed here to be prerendered.
+    prerender: { entries: ['*', '/styleguide/'], handleHttpError: 'warn', handleMissingId: 'warn', handleUnseenRoutes: 'ignore' },
     alias: {
       $content: 'content',
       $tools: 'tools',

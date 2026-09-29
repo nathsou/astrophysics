@@ -79,7 +79,7 @@
   .callout {
     --tint: color-mix(in srgb, var(--hue) 6%, var(--panel));
     position: relative;
-    margin: 2rem 0;
+    margin: 1.75rem 0;
     padding: 0.85rem 1.25rem 0.35rem 1.25rem;
     background: var(--tint);
     border: 1px solid color-mix(in srgb, var(--hue) 22%, var(--line));

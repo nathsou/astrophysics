@@ -724,14 +724,14 @@
     flex: none;
   }
   .ic-body {
-    fill: light-dark(#22272e, #161e2a);
-    stroke: light-dark(#11151a, #34445a);
+    fill: light-dark(#22272e, #243044);
+    stroke: light-dark(#11151a, #4a5b73);
   }
   .ic-pin {
     fill: light-dark(#c3c7cd, #7d8795);
   }
   .ic-notch {
-    fill: light-dark(#161a1f, #0d131c);
+    fill: light-dark(#161a1f, #172131);
   }
   .ic text {
     font-family: var(--font-mono);
@@ -1061,6 +1061,20 @@
     }
     .part-head {
       position: static;
+    }
+  }
+  @media (max-width: 560px) {
+    .how-grid li {
+      display: grid;
+      grid-template-columns: 2.6rem minmax(0, 1fr);
+      gap: 0.2rem 0.9rem;
+      padding: 1rem;
+    }
+    .how-icon {
+      grid-row: span 2;
+    }
+    .how-grid h3 {
+      margin: 0.35rem 0 0.2rem;
     }
   }
   @media (max-width: 480px) {

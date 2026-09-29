@@ -12,6 +12,9 @@ import { componentTransform, G, placeLabel, polylineMidpoint, roundedPath, scale
 import { mainValue } from './format';
 import { voltageRange } from './colour';
 
+/** Wire colouring: logic levels, voltage (diverging scale), or plain ink. */
+export type SchematicMode = 'logic' | 'voltage' | 'plain';
+
 /** How a part reacts to the reader: a click flips it, or it is held down. */
 export type Interaction = { kind: 'toggle'; key: string } | { kind: 'hold'; key: string } | { kind: 'throw'; key: string };
 

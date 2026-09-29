@@ -102,7 +102,7 @@
   .trace::before {
     content: '';
     position: absolute;
-    left: 0.7rem;
+    left: calc(1.45rem / 2 - 0.75px);
     top: 0.6rem;
     bottom: 0.6rem;
     width: 1.5px;
@@ -136,7 +136,6 @@
     background: var(--bg);
     box-sizing: border-box;
     position: relative;
-    left: -0.02rem;
   }
   .trace > li > a:hover {
     background: color-mix(in srgb, var(--pn) 80%, transparent);

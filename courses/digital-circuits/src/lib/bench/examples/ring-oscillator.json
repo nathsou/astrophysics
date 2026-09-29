@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "title": "Ring oscillator",
+  "engine": "digital",
+  "components": [
+    { "id": "U1", "type": "not", "x": 2, "y": 2 },
+    { "id": "U2", "type": "not", "x": 9, "y": 2 },
+    { "id": "U3", "type": "not", "x": 16, "y": 2 },
+    { "id": "P1", "type": "probe", "x": 23, "y": 0, "rot": 270, "label": "" }
+  ],
+  "wires": [
+    { "points": [[7, 2], [9, 2]] },
+    { "points": [[14, 2], [16, 2]] },
+    { "points": [[21, 2], [23, 2], [23, 6], [0, 6], [0, 2], [2, 2]] },
+    { "points": [[23, 0], [23, 2]] }
+  ],
+  "notes": [{ "x": 2, "y": 8.5, "text": "An odd number of inverters cannot settle." }]
+}

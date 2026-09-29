@@ -14,6 +14,7 @@
   import Segmented from '$lib/components/ui/Segmented.svelte';
   import Icon from '$lib/components/ui/Icon.svelte';
   import { onMount } from 'svelte';
+  import { base } from '$app/paths';
   import { readSignals, onThemeChange, type Signals } from '$lib/theme/signals';
 
   const SURFACES = ['--bg', '--panel', '--pn', '--surface-3', '--line', '--line-strong', '--fg', '--ink-2', '--mute'];
@@ -122,6 +123,7 @@
       A lab notebook by day, the lab at night. Warm paper with an engineering grid, ink and copper; a blue-black room with phosphor
       traces. Signal colours mean the same thing everywhere.
     </p>
+    <p class="ui sg-links"><a href="{base}/styleguide/chapter/">A sample chapter page</a> · <a href="{base}/">The home page</a></p>
   </header>
 
   <!-- ─────────── Palette ─────────── -->
@@ -285,7 +287,7 @@
       <line x1="44" y1="72" x2="76" y2="72" class="sym" /><line x1="52" y1="82" x2="68" y2="82" class="sym thick" /><line x1="44" y1="92" x2="76" y2="92" class="sym" /><line x1="52" y1="100" x2="68" y2="100" class="sym thick" />
       <!-- switch -->
       <circle cx="150" cy="40" r="3.5" class="node" /><circle cx="210" cy="40" r="3.5" class="node" />
-      <line x1="150" y1="40" x2={on ? 210 : 203} y2={on ? 40 : 14} class="sym" />
+      <line x1="150" y1="40" x2={on ? 210 : 203} y2={on ? 40 : 14} class="wire {on ? 'sig-high' : 'sig-low'}" />
       <!-- lamp -->
       <circle cx="300" cy="90" r="20" class="lamp" class:lit={on} /><path d="M286 76l28 28M314 76l-28 28" class="sym" />
       <text x="150" y="70" class="lbl">S1</text><text x="84" y="90" class="lbl">{slider.toFixed(1)} V</text><text x="328" y="94" class="lbl">L1</text>
@@ -345,6 +347,9 @@
     font-size: clamp(2.3rem, 6vw, 3.4rem);
     letter-spacing: -0.035em;
     line-height: 1;
+  }
+  .sg-links {
+    font-size: 0.9rem;
   }
   .summary {
     font-size: 1.2rem;
