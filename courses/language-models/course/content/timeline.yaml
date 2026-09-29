@@ -327,3 +327,38 @@
   people: Haotian Liu, Chunyuan Li, Qingyang Wu and Yong Jae Lee
   chapter: multimodality
   text: LLaVA connected a CLIP image encoder to a language model with one projection layer and fine-tuned on instructions about images.
+- year: 2020
+  title: MMLU
+  people: Dan Hendrycks and colleagues
+  chapter: evaluation
+  text: 57 subjects of multiple-choice exam questions, which became the standard measure of a language model's knowledge until models saturated it.
+- year: 2023
+  title: Chatbot Arena
+  people: Lianmin Zheng, Wei-Lin Chiang and colleagues (LMSYS)
+  chapter: evaluation
+  text: Anonymous pairwise votes from the public ranked chat models with Bradley–Terry ratings.
+- year: 2023
+  title: Dictionary learning on language models
+  people: Trenton Bricken and colleagues (Anthropic); Hoagy Cunningham and colleagues
+  chapter: interpretability
+  text: Sparse autoencoders decomposed a transformer's activations into thousands of features, many of them interpretable on their own.
+- year: 2019
+  title: Megatron-LM and GPipe
+  people: Mohammad Shoeybi and colleagues (NVIDIA); Yanping Huang and colleagues (Google)
+  chapter: efficiency
+  text: Splitting a model's matrices, and its layers, across GPUs made it possible to train models far larger than one device's memory.
+- year: 2023
+  title: PagedAttention (vLLM)
+  people: Woosuk Kwon and colleagues (UC Berkeley)
+  chapter: efficiency
+  text: Managing the KV cache in pages, as operating systems manage memory, let servers batch several times more requests.
+- year: 2016
+  title: Concrete problems in AI safety
+  people: Dario Amodei, Chris Olah, Jacob Steinhardt, Paul Christiano, John Schulman and Dan Mané
+  chapter: safety
+  text: Reward hacking, negative side effects, safe exploration, scalable oversight and distributional shift, stated as research problems for machine learning.
+- year: 2023
+  title: Universal adversarial suffixes
+  people: Andy Zou, Zifan Wang, Nicholas Carlini, Milad Nasr, J. Zico Kolter and Matt Fredrikson
+  chapter: safety
+  text: Gradient-guided search found strings that, appended to a request, jailbroke many aligned models at once, including ones the attack never saw.

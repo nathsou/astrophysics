@@ -479,3 +479,75 @@ diffusion:
   term: Diffusion model
   definition: A generative model trained to remove noise; it generates by starting from pure noise and denoising step by step.
   chapter: multimodality
+benchmark:
+  term: Benchmark
+  definition: A fixed set of test items with a scoring rule, used to compare models. Its score is an estimate, with sampling error that shrinks as the square root of the number of items.
+  chapter: evaluation
+contamination:
+  term: Contamination
+  definition: Test items (or close copies) appearing in a model's training data, which inflates its score without improving its ability.
+  chapter: evaluation
+calibration:
+  term: Calibration
+  definition: Agreement between a model's confidence and its accuracy — a calibrated model is right 70% of the time when it says 70%.
+  chapter: evaluation
+llm-judge:
+  term: LLM judge
+  definition: A language model asked to grade or compare other models' answers, used where no exact answer exists; cheap, but biased towards length, position and its own style.
+  chapter: evaluation
+logit-lens:
+  term: Logit lens
+  definition: Reading an intermediate layer's residual stream through the model's final normalisation and output layer, to see what it would predict if the network stopped there.
+  chapter: interpretability
+probe:
+  term: Probe
+  definition: A small classifier, usually linear, trained on a model's internal activations to test whether some property can be read from them.
+  chapter: interpretability
+superposition:
+  term: Superposition
+  definition: A network representing more features than it has dimensions, as nearly orthogonal directions, relying on the features rarely being active together.
+  chapter: interpretability
+sparse-autoencoder:
+  term: Sparse autoencoder (SAE)
+  definition: An autoencoder trained to reconstruct a model's activations from a much larger set of features of which only a few are active at a time, to find interpretable directions.
+  chapter: interpretability
+data-parallelism:
+  term: Data parallelism
+  definition: Every GPU holds a copy of the model and processes a different part of the batch; gradients are averaged across GPUs after each step.
+  chapter: efficiency
+tensor-parallelism:
+  term: Tensor parallelism
+  definition: Splitting each weight matrix across GPUs so that every layer's matrix multiplications are computed jointly, with communication inside every layer.
+  chapter: efficiency
+pipeline-parallelism:
+  term: Pipeline parallelism
+  definition: Placing consecutive groups of layers on different GPUs and streaming micro-batches through them, at the cost of idle time while the pipeline fills and drains.
+  chapter: efficiency
+zero:
+  term: ZeRO / FSDP
+  definition: Data parallelism in which the optimiser state, gradients and even the weights are sharded across GPUs rather than replicated, and gathered when needed.
+  chapter: efficiency
+paged-attention:
+  term: Paged attention
+  definition: Storing each sequence's KV cache in fixed-size blocks allocated on demand, like virtual-memory pages, so that memory is not reserved for tokens that never come.
+  chapter: efficiency
+continuous-batching:
+  term: Continuous batching
+  definition: Serving requests by adding and removing sequences from the running batch at every decoding step, rather than waiting for a whole batch to finish.
+  chapter: efficiency
+jailbreak:
+  term: Jailbreak
+  definition: An input that gets a model to do what its safety training was meant to prevent, such as a role-play framing or an optimised adversarial suffix.
+  chapter: safety
+backdoor:
+  term: Backdoor
+  definition: Hidden behaviour planted in a model — typically through poisoned training data — that appears only when a specific trigger is present.
+  chapter: safety
+reward-hacking:
+  term: Reward hacking
+  definition: A trained system scoring highly on its reward by exploiting flaws in how the reward is measured, rather than by doing what the reward was meant to encourage.
+  chapter: safety
+red-teaming:
+  term: Red teaming
+  definition: Deliberately searching for inputs that make a model behave badly, by people or by other models, before (and after) it is deployed.
+  chapter: safety

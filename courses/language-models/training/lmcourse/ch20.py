@@ -121,7 +121,7 @@ SETTINGS = {
 }
 
 
-def finetune(steps: int = 600, batch: int = 32) -> None:
+def finetune(steps: int = 3000, batch: int = 32) -> None:
     import numpy as np
     import torch
     import torch.nn.functional as F

@@ -211,7 +211,7 @@ def vote(n: int = 400, ks: tuple[int, ...] = (1, 2, 4, 8, 16, 32)) -> None:
     (OUT / "vote.json").write_text(json.dumps(out))
 
 
-def grpo(steps: int = 300, prompts_per_step: int = 32, group: int = 8, lr: float = 2e-5, beta: float = 0.02) -> None:
+def grpo(steps: int = 900, prompts_per_step: int = 32, group: int = 8, lr: float = 2e-5, beta: float = 0.02, tag: str = "") -> None:
     """Group Relative Policy Optimisation (Shao et al., 2024) on the under-trained direct model. For each prompt,
     sample a group of answers; reward 1 if correct; advantage = (r − group mean) / (group std + ε); maximise
     Σ advantage · log π(answer) with a KL penalty towards the starting model."""
@@ -227,8 +227,23 @@ def grpo(steps: int = 300, prompts_per_step: int = 32, group: int = 8, lr: float
     rng = random.Random(5)
     g = torch.Generator(device=dev).manual_seed(5)
     test = [problem(random.Random(30_000 + i)) for i in range(1000)]
-    curve = [[0, accuracy(policy, test, "direct", dev), 0.0]]
-    print("GRPO start: accuracy", curve[0][1])
+    eval_g = torch.Generator(device=dev).manual_seed(99)
+
+    def sampled(k: int = 1, n: int = 500) -> float:
+        """Fraction of the first n test problems with a correct answer among k samples at temperature 1."""
+        probs = test[:n]
+        prompts = [f"{a}+{b}=" for a, b in probs]
+        hit = [False] * n
+        for _ in range(k):
+            outs = []
+            for i in range(0, n, 250):
+                outs += complete(policy, prompts[i : i + 250], dev, temperature=1.0, generator=eval_g)
+            hit = [h or answer(o) == a + b for h, o, (a, b) in zip(hit, outs, probs, strict=True)]
+        return sum(hit) / n
+
+    curve = [[0, accuracy(policy, test, "direct", dev), 0.0, sampled()]]
+    before = {"greedy": curve[0][1], "pass1": curve[0][3], "pass8": sampled(8)}
+    print("GRPO start:", before)
     for step in range(1, steps + 1):
         probs = [problem(rng) for _ in range(prompts_per_step)]
         prompts = [f"{a}+{b}=" for a, b in probs for _ in range(group)]
@@ -258,11 +273,14 @@ def grpo(steps: int = 300, prompts_per_step: int = 32, group: int = 8, lr: float
         torch.nn.utils.clip_grad_norm_(policy.parameters(), 1.0)
         opt.step()
         opt.zero_grad(set_to_none=True)
-        if step % 25 == 0:
-            acc = accuracy(policy, test, "direct", dev)
-            curve.append([step, acc, float(rewards.mean())])
-            print(f"  GRPO step {step}: sample reward {rewards.mean():.2f}, greedy accuracy {acc:.1%}")
-    (OUT / "grpo.json").write_text(json.dumps({"curve": curve, "group": group, "prompts": prompts_per_step, "beta": beta}))
+        if step % 50 == 0:
+            acc, s1 = accuracy(policy, test, "direct", dev), sampled()
+            curve.append([step, acc, float(rewards.mean()), s1])
+            print(f"  GRPO step {step}: batch reward {rewards.mean():.2f}, greedy {acc:.1%}, one sample {s1:.1%}")
+    after = {"greedy": curve[-1][1], "pass1": curve[-1][3], "pass8": sampled(8)}
+    print("GRPO end:", after)
+    (OUT / f"grpo{tag}.json").write_text(json.dumps({"curve": curve, "group": group, "prompts": prompts_per_step, "beta": beta, "lr": lr,
+                                                     "before": before, "after": after}))
 
 
 def summary() -> None:
@@ -270,6 +288,10 @@ def summary() -> None:
     for name in ("train", "vote", "grpo"):
         if (OUT / f"{name}.json").exists():
             out[name] = json.loads((OUT / f"{name}.json").read_text())
+    # A learning-rate sweep, if one was run (`grpo(lr=…, tag="-lr…")`).
+    sweep = [json.loads(p.read_text()) for p in sorted(OUT.glob("grpo-lr*.json"))]
+    if sweep:
+        out["grpo_sweep"] = sorted(sweep, key=lambda r: r["lr"])
     CHAPTER.mkdir(parents=True, exist_ok=True)
     (CHAPTER / "data.json").write_text(json.dumps(out) + "\n")
     print(f"wrote {CHAPTER / 'data.json'}")

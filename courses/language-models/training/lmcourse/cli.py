@@ -103,6 +103,8 @@ def main() -> None:
     c25.add_argument("what", choices=["benchmark", "calibration", "contaminate", "summary"])
     c26 = sub.add_parser("ch26", help="Chapter 26: lens | heads | probe | sae | summary")
     c26.add_argument("what", choices=["lens", "heads", "probe", "sae", "summary"])
+    c28 = sub.add_parser("ch28", help="Chapter 28: poison | summary")
+    c28.add_argument("what", choices=["poison", "summary"])
     tr = sub.add_parser("train", help="Chapter 12+: train a GPT (presets: quick, chargpt, chargpt-big, smoke, coursegpt, draft)")
     tr.add_argument("--preset", default="chargpt")
     tr.add_argument("--steps", type=int, default=None)
@@ -252,6 +254,10 @@ def main() -> None:
         from . import ch26
 
         getattr(ch26, args.what)()
+    elif args.cmd == "ch28":
+        from . import ch28
+
+        getattr(ch28, args.what)()
     elif args.cmd == "train":
         from . import train
 
