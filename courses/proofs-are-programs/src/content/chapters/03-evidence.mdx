@@ -1,1 +1,224 @@
-This chapter is being written.
+In the last chapter, a value of type `{ n : Nat // n % 2 = 0 }` was a pair of a number and *evidence* that the number is even, and `rfl` was a piece of evidence. This chapter is about evidence: what `n % 2 = 0` is as a type, what its values are, and how the whole of everyday logic (and, or, not, implies) can be built as ordinary inductive types, the same way we built `Weekday` and `Tree`.
+
+## Statements are types
+
+`2 + 2 = 4` is a type. Its type is `Prop`, the type of **propositions**:
+
+```lean
+#check 2 + 2 = 4
+#check 2 + 2 = 5
+#check ∀ n : Nat, n + 0 = n
+```
+
+A proposition is a type whose values are **proofs**, or evidence, of the statement. `2 + 2 = 4` has a value, `rfl`; `2 + 2 = 5` is a perfectly good type too, but it has no values at all. So "the statement is true" means "the type has a value", and "proving it" means writing a program of that type:
+
+```lean
+theorem two_plus_two : 2 + 2 = 4 := rfl
+
+#check two_plus_two
+```
+
+`theorem` is the same as `def`, except that it is meant for propositions. That is the whole mechanism. There is no separate proof language and no separate proof checker: a proof is a program, and the type checker checks it.
+
+## Build your own logic
+
+To see that nothing is hidden, let us build the logical connectives from scratch, as inductive types in `Prop`. The rule for each is simple: **the constructors say what counts as evidence**.
+
+**Truth.** A true statement is one for which evidence is available with nothing to check. So `MyTrue` has one constructor with no arguments:
+
+```lean
+inductive MyTrue : Prop where
+  | intro
+```
+
+**Falsity.** A false statement is one for which there is no evidence at all. So `MyFalse` has *no* constructors:
+
+```lean
+inductive MyFalse : Prop where
+```
+
+**And.** Evidence for "p and q" is evidence for `p` together with evidence for `q`: a pair. A structure with two fields:
+
+```lean
+structure MyAnd (p q : Prop) : Prop where
+  left : p
+  right : q
+```
+
+**Or.** Evidence for "p or q" is evidence for one of them, *together with which one*: two constructors.
+
+```lean
+inductive MyOr (p q : Prop) : Prop where
+  | inl (hp : p)
+  | inr (hq : q)
+```
+
+**Implies.** Evidence for "if p then q" is a way to turn evidence for `p` into evidence for `q`. That is a function, and the type `p → q` is already in the language. No new definition is needed.
+
+**Not.** "Not p" means that evidence for `p` would lead to a contradiction: a function from `p` to `MyFalse`.
+
+```lean
+def MyNot (p : Prop) : Prop := p → MyFalse
+```
+
+With these definitions, proofs are the programs we already know how to write. Compare a program and a proof side by side:
+
+<Columns left="A program" right="A proof">
+
+```lean
+def swap {α β : Type} : α × β → β × α :=
+  fun pair => (pair.2, pair.1)
+```
+
+```lean
+theorem and_swap {p q : Prop} : MyAnd p q → MyAnd q p :=
+  fun h => ⟨h.right, h.left⟩
+```
+
+</Columns>
+
+They are the same program. The one on the right swaps the two pieces of evidence in a pair, just as the one on the left swaps the two values. The prologue's claim that `α × β → β × α` has exactly one program now reads: there is essentially one proof that "p and q" implies "q and p".
+
+Here is a longer example. Each proof is a small function; read them as programs first, then as arguments.
+
+<Playground title="Logic by hand" setup={`inductive MyFalse : Prop where
+
+structure MyAnd (p q : Prop) : Prop where
+  left : p
+  right : q
+
+inductive MyOr (p q : Prop) : Prop where
+  | inl (hp : p)
+  | inr (hq : q)
+
+def MyNot (p : Prop) : Prop := p → MyFalse`} code={`-- "p or q" implies "q or p": look at which side the evidence is for
+theorem or_swap {p q : Prop} : MyOr p q → MyOr q p
+  | .inl hp => .inr hp
+  | .inr hq => .inl hq
+
+-- from a contradiction, anything follows: there is no case to handle
+theorem explode {p : Prop} : MyFalse → p :=
+  fun h => nomatch h
+
+-- modus ponens is function application
+theorem modus_ponens {p q : Prop} (hp : p) (hpq : p → q) : q :=
+  hpq hp
+
+-- if p implies q, and q is false, then p is false: composition
+theorem contrapositive {p q : Prop} (hpq : p → q) (hnq : MyNot q) : MyNot p :=
+  fun hp => hnq (hpq hp)`} />
+
+Two of these deserve a comment.
+
+- `explode` proves *any* proposition from `MyFalse`. Pattern matching on a value of `MyFalse` needs one case per constructor, and there are none, so `nomatch h` is a complete program. If `MyFalse` ever had a value, every statement would be provable: this is why the checker must make sure it has none.
+- `contrapositive` is function composition. Evidence for `MyNot q` is a function from `q` to `MyFalse`; composing it with `hpq : p → q` gives a function from `p` to `MyFalse`.
+
+<UnderTheHood ch="curry-howard">
+The correspondence between logical rules and typing rules, and why implication is exactly the function type, is the subject of CIC Chapter 4. It starts from natural deduction, the proof system logicians designed in the 1930s, and shows that its rules are the typing rules of the λ-calculus.
+</UnderTheHood>
+
+## The library's logic
+
+The standard library defines the same types, with notation:
+
+| Statement | Library type | Evidence is built with | Evidence is used with |
+|---|---|---|---|
+| true | `True` | `trivial` | (nothing to use) |
+| false | `False` | (no way) | `nomatch h`, `h.elim`, `absurd` |
+| p and q | `p ∧ q` | `⟨hp, hq⟩` | `h.1`, `h.2`, or matching `⟨hp, hq⟩` |
+| p or q | `p ∨ q` | `.inl hp`, `.inr hq` | matching on the two cases |
+| if p then q | `p → q` | `fun hp => …` | application `h hp` |
+| not p | `¬p` | `fun hp => …` (reaching `False`) | application `h hp` |
+| p iff q | `p ↔ q` | `⟨fun hp => …, fun hq => …⟩` | `h.1`, `h.2` |
+
+The last column is worth remembering: for each connective there is a way to **build** evidence and a way to **use** it. Logicians call them *introduction* and *elimination* rules; for a programmer they are constructors and pattern matching.
+
+<Playground title="The library versions" code={`theorem and_intro (p q : Prop) (hp : p) (hq : q) : p ∧ q := ⟨hp, hq⟩
+
+theorem or_comm' (p q : Prop) : p ∨ q → q ∨ p
+  | .inl hp => .inr hp
+  | .inr hq => .inl hq
+
+-- a pattern in a fun: take the pair apart
+theorem not_both (p : Prop) : ¬(p ∧ ¬p) :=
+  fun ⟨hp, hnp⟩ => hnp hp
+
+theorem de_morgan (p q : Prop) : ¬(p ∨ q) → ¬p ∧ ¬q :=
+  fun h => ⟨fun hp => h (.inl hp), fun hq => h (.inr hq)⟩
+
+theorem iff_symm' (p q : Prop) : (p ↔ q) → (q ↔ p) :=
+  fun ⟨pq, qp⟩ => ⟨qp, pq⟩`} />
+
+Put your cursor on a name like `hp` or `h` to see its type. Reading a proof mostly means knowing, at each point, what evidence you have and what evidence you need.
+
+## Why a separate sort?
+
+If propositions are types, why have `Prop` at all? Why not put `MyAnd` in `Type` next to `Prod`? The difference is in how the language treats values of a proposition.
+
+**Proofs are irrelevant.** The checker considers any two proofs of the same proposition equal. Once you know that `2 + 2 = 4`, it does not matter which proof you had:
+
+```lean
+example (h₁ h₂ : 2 + 2 = 4) : h₁ = h₂ := rfl
+```
+
+This makes a value of `{ n : Nat // n % 2 = 0 }` behave like a number with a guarantee attached: two values with the same number are equal, whatever evidence they carry.
+
+**Proofs are erased.** Because nobody can tell proofs apart, compiled programs do not need them. When `#eval` runs a function on `{ n : Nat // n % 2 = 0 }`, it passes the number and nothing else. Evidence costs nothing at run time.
+
+**Proofs cannot be looked at by programs.** The price of irrelevance: a program that computes data must not depend on *which* proof it received, since proofs can be swapped at will and are gone at run time. So you cannot pattern match on evidence to produce data:
+
+<Playground errors title="Evidence does not become data" setup={`inductive MyOr (p q : Prop) : Prop where
+  | inl (hp : p)
+  | inr (hq : q)`} code={`-- which side was proved? not something a program may ask
+def whichSide {p q : Prop} : MyOr p q → Bool
+  | .inl _ => true
+  | .inr _ => false`} />
+
+If you want a program that tells you which side holds, you need data, not evidence: a `Bool`, or the type `Decidable p` that Chapter 13 introduces. The same restriction appears in the next chapters in a more surprising form: from a proof that *there exists* a number with some property, a program cannot extract the number.
+
+<UnderTheHood ch="prop" s="why-proofs-must-not-compute-data">
+CIC Chapter 14 explains exactly which eliminations out of `Prop` are allowed (it is not quite "none": `False`, `Eq` and `And` are special), and why allowing more would break both erasure and consistency.
+</UnderTheHood>
+
+## The dictionary so far
+
+| Logic | Programs |
+|---|---|
+| proposition | type (in `Prop`) |
+| proof | program of that type |
+| p is true | the type p has a value |
+| p ∧ q | pair |
+| p ∨ q | tagged union with two cases |
+| p → q | function |
+| True | type with one value |
+| False | type with no values |
+| ¬p | function into the empty type |
+
+The full dictionary, which grows with the course, is on its own [reference page](#/reference/dictionary).
+
+## Exercises
+
+<Exercise id="evidence:and-assoc" title="Regrouping" code={`theorem and_assoc' (p q r : Prop) : (p ∧ q) ∧ r → p ∧ (q ∧ r) :=
+  sorry`} must="and_assoc'" hint="Take the evidence apart with a pattern: fun ⟨⟨hp, hq⟩, hr⟩ => …, then build the new nesting with angle brackets." solution={`theorem and_assoc' (p q r : Prop) : (p ∧ q) ∧ r → p ∧ (q ∧ r) :=
+  fun ⟨⟨hp, hq⟩, hr⟩ => ⟨hp, ⟨hq, hr⟩⟩`}>
+Evidence for `(p ∧ q) ∧ r` is a pair whose first component is itself a pair. Rearrange it.
+</Exercise>
+
+<Exercise id="evidence:or-elim" title="Using a disjunction" code={`theorem or_to (p q r : Prop) (hpr : p → r) (hqr : q → r) : p ∨ q → r :=
+  sorry`} must="or_to" hint="Match on the two cases of the disjunction: | .inl hp => … | .inr hq => …, and use the right function in each." solution={`theorem or_to (p q r : Prop) (hpr : p → r) (hqr : q → r) : p ∨ q → r
+  | .inl hp => hpr hp
+  | .inr hq => hqr hq`}>
+If `p` implies `r` and `q` implies `r`, then `p ∨ q` implies `r`. This is how you use an "or": by handling both cases.
+</Exercise>
+
+<Exercise id="evidence:not-not" title="Double negation, one way" code={`theorem not_not_intro (p : Prop) : p → ¬¬p :=
+  sorry`} must="not_not_intro" hint="¬¬p is (p → False) → False. So you receive hp : p, then hnp : p → False, and must produce False." solution={`theorem not_not_intro (p : Prop) : p → ¬¬p :=
+  fun hp hnp => hnp hp`}>
+Unfold the definitions: `¬¬p` is `(p → False) → False`. (The other direction, `¬¬p → p`, is a different story: Chapter 7.)
+</Exercise>
+
+<Exercise id="evidence:iff" title="Currying is a logical law" code={`theorem curry_iff (p q r : Prop) : (p ∧ q → r) ↔ (p → q → r) :=
+  sorry`} must="curry_iff" hint="Build ⟨forward, backward⟩. Forward: fun h hp hq => h ⟨hp, hq⟩. Backward: take the pair apart." solution={`theorem curry_iff (p q r : Prop) : (p ∧ q → r) ↔ (p → q → r) :=
+  ⟨fun h hp hq => h ⟨hp, hq⟩, fun h ⟨hp, hq⟩ => h hp hq⟩`}>
+The inhabitant widget of Chapter 2 found exactly one program of type `(α × β → γ) → α → β → γ`. Here is the same program, as a proof, in both directions.
+</Exercise>

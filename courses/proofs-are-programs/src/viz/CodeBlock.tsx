@@ -1,7 +1,7 @@
 import { For, Show, createSignal } from 'solid-js';
 import { highlight } from '../app/highlight.ts';
 
-export function CodeBlock(props: { code: string; lang?: string; title?: string }) {
+export function CodeBlock(props: { code: string; lang?: string; title?: string; context?: string }) {
   const toks = () => highlight(props.code.replace(/\n$/, ''), props.lang ?? '');
   const [copied, setCopied] = createSignal(false);
   const copy = () => {
@@ -19,7 +19,7 @@ export function CodeBlock(props: { code: string; lang?: string; title?: string }
       </pre>
       <div class="cb-actions">
         <Show when={props.lang === 'lean'}>
-          <a class="btn small" href={`#/playground?code=${btoa(unescape(encodeURIComponent(props.code)))}`} title="open in the playground">
+          <a class="btn small" href={`#/playground?code=${btoa(unescape(encodeURIComponent(props.context ? `-- (earlier in the chapter)\n${props.context}-- (this block)\n${props.code}` : props.code)))}`} title="open in the playground">
             try it
           </a>
         </Show>

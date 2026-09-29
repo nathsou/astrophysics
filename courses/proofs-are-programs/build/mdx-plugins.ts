@@ -53,6 +53,10 @@ export function rehypeRawKatex() {
 
 export function remarkCodeBlocks() {
   return (tree: Node) => {
+    // the lean code blocks of a chapter form one file: each block may use the definitions of the
+    // blocks before it (except those marked `nocheck`, `errors` or `alone`), which travel with it
+    // to the playground as `context`
+    let context = '';
     visit(tree as any, 'code', (node: any, index: number | undefined, parent: any) => {
       if (!parent || index === undefined) return;
       const meta: string = node.meta ?? '';
@@ -63,6 +67,10 @@ export function remarkCodeBlocks() {
       const isPlayground = opts.playground === true;
       const attributes = [attr('code', node.value), attr('lang', node.lang ?? '')];
       for (const [k, v] of Object.entries(opts)) if (k !== 'playground') attributes.push(attr(k, v));
+      if (node.lang === 'lean' && !opts.nocheck && !opts.alone) {
+        if (context) attributes.push(attr('context', context));
+        if (!opts.errors) context += node.value + '\n\n';
+      }
       parent.children[index] = {
         type: 'mdxJsxFlowElement',
         name: isPlayground ? 'Playground' : 'CodeBlock',

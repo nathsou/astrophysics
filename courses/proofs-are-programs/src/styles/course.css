@@ -308,3 +308,29 @@ ul.reading li {
   font-size: 0.7rem;
   margin: 0 0.5rem;
 }
+
+/* two blocks side by side */
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.25rem 1rem;
+  margin: 1rem 0;
+}
+.columns > pre,
+.columns > div:not(.columns-caption) {
+  margin: 0;
+}
+.columns-caption {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+@media (max-width: 720px) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .columns-caption:nth-child(2) {
+    display: none;
+  }
+}

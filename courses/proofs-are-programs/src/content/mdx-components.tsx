@@ -90,6 +90,19 @@ export function UnderTheHood(props: { ch: string; s?: string; children?: JSX.Ele
   );
 }
 
+/** two blocks side by side (stacked on narrow screens), with optional captions */
+export function Columns(props: { left?: string; right?: string; children?: JSX.Element }) {
+  return (
+    <div class="columns wide">
+      <Show when={props.left || props.right}>
+        <div class="columns-caption">{props.left}</div>
+        <div class="columns-caption">{props.right}</div>
+      </Show>
+      {props.children}
+    </div>
+  );
+}
+
 export function Sidenote(props: { children?: JSX.Element }) {
   return <span class="sidenote">{props.children}</span>;
 }
@@ -179,6 +192,7 @@ export const mdxComponents: Record<string, unknown> = {
   Problem: Callout('problem', 'The problem'),
   Key: Callout('theorem', 'The key idea'),
   UnderTheHood,
+  Columns,
   Sidenote,
   Tex,
   Rules,

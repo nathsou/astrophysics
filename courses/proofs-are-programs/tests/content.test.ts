@@ -19,10 +19,15 @@ function attr(tag: string, name: string): string | undefined {
 export function extract(src: string): Snippet[] {
   const out: Snippet[] = [];
   const lineOf = (i: number) => src.slice(0, i).split('\n').length;
+  // the code blocks of a chapter form one file (see build/mdx-plugins.ts)
+  let context = '';
   for (const m of src.matchAll(/```(\w+)([^\n]*)\n([\s\S]*?)```/g)) {
     const meta = m[2];
     if (m[1] !== 'lean' || /\bnocheck\b/.test(meta)) continue;
-    out.push({ line: lineOf(m.index!), code: m[3], allowErrors: /\berrors\b/.test(meta), what: 'code block' });
+    const alone = /\balone\b/.test(meta);
+    const errors = /\berrors\b/.test(meta);
+    out.push({ line: lineOf(m.index!), code: (alone ? '' : context) + m[3], allowErrors: errors, what: 'code block' });
+    if (!alone && !errors) context += m[3] + '\n\n';
   }
   for (const m of src.matchAll(/<(Playground|Exercise|[A-Z][A-Za-z]+Lab|[A-Z][A-Za-z]+View)\b/g)) {
     let i = m.index! + m[0].length;
