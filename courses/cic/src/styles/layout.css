@@ -872,6 +872,15 @@
 .exercise.done {
   border-left-color: var(--ok);
 }
+.exercise .callout-title .badge.ok {
+  animation: pop-in 0.35s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+@keyframes pop-in {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+}
 
 /* loading */
 .loading {
