@@ -13,4 +13,5 @@ export const widgets: Record<string, unknown> = {
   TerminationView: lz(() => import('./labs/TerminationView.tsx'), 'TerminationView'),
   ObligationGrid: lz(() => import('./labs/ObligationGrid.tsx'), 'ObligationGrid'),
   SimulationLab: lz(() => import('./labs/SimulationLab.tsx'), 'SimulationLab'),
+  ErasureView: lz(() => import('./labs/ErasureView.tsx'), 'ErasureView'),
 };
