@@ -1,6 +1,6 @@
 // The pipeline explorer: edit a program, watch it flow through every stage.
 
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { exampleById, EXAMPLES } from '../examples';
 import { printModule } from '../compiler/ir/print';
 import { printMFunc } from '../compiler/codegen/printmir';
@@ -69,21 +69,61 @@ export const WASM_STAGES: StageDef[] = [
 ];
 
 /**
- * The ordered list of stages as tabs, with › between them (a breadcrumb of the
- * pipeline). Arrow keys / Home / End move between stages; the selected tab is
- * kept scrolled into view when the strip overflows.
+ * The ordered list of stages as tabs (a breadcrumb of the pipeline), grouped by
+ * phase. When every name fits, every name is shown; otherwise the strip goes
+ * compact: the current stage keeps its name and the others show only their
+ * number (the name is in the tooltip and the accessible name), so most of the
+ * pipeline stays visible. The current stage is scrolled to the centre whenever
+ * it changes. Arrow keys / Home / End move between stages.
+ *
+ * Stage numbers are positions in the *whole* pipeline (`all`), so a chapter
+ * figure that shows a subset numbers its stages the same way the playground does.
  */
-export function StageNav({ defs, value, onChange, label = 'Pipeline stage', phases }: { defs: StageDef[]; value: StageId; onChange: (id: StageId) => void; label?: string; phases?: boolean }) {
+export function StageNav({ defs, value, onChange, label = 'Pipeline stage', phases, all }: { defs: StageDef[]; value: StageId; onChange: (id: StageId) => void; label?: string; phases?: boolean; all?: StageDef[] }) {
   const ref = useRef<HTMLDivElement>(null);
   const cur = Math.max(0, defs.findIndex((d) => d.id === value));
+  const sig = defs.map((d) => d.id).join(' ');
+  const [compact, setCompact] = useState(false);
+  const [fade, setFade] = useState({ l: false, r: false });
+  /** scrollWidth of the strip with every name shown (0 = not measured yet) */
+  const fullW = useRef(0);
+  const moved = useRef(false);
+  const num = (d: StageDef) => (all ?? defs).findIndex((x) => x.id === d.id) + 1;
+
+  const edges = () => {
+    const s = ref.current;
+    if (!s) return;
+    const l = s.scrollLeft > 1, r = s.scrollLeft + s.clientWidth < s.scrollWidth - 1;
+    setFade((f) => (f.l === l && f.r === r ? f : { l, r }));
+  };
+  // a different set of stages: measure again from the full names
+  useLayoutEffect(() => { fullW.current = 0; setCompact(false); }, [sig]);
+  useLayoutEffect(() => {
+    const s = ref.current;
+    if (!s) return;
+    const fit = () => {
+      if (!compact) {
+        if (s.scrollWidth > s.clientWidth + 1) { fullW.current = s.scrollWidth; setCompact(true); }
+      } else if (fullW.current && s.clientWidth >= fullW.current) setCompact(false);
+      edges();
+    };
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(s);
+    return () => ro.disconnect();
+  }, [compact, sig]);
   useEffect(() => {
-    const strip = ref.current;
-    const el = strip?.querySelector<HTMLElement>('[aria-selected="true"]');
-    if (!strip || !el) return;
-    const l = el.offsetLeft - strip.offsetLeft, r = l + el.offsetWidth;
-    if (l < strip.scrollLeft + 24) strip.scrollTo({ left: Math.max(0, l - 48) });
-    else if (r > strip.scrollLeft + strip.clientWidth - 24) strip.scrollTo({ left: r - strip.clientWidth + 48 });
-  }, [value, defs.length]);
+    const s = ref.current;
+    const el = s?.querySelector<HTMLElement>('[aria-selected="true"]');
+    if (!s || !el) return;
+    const sr = s.getBoundingClientRect(), er = el.getBoundingClientRect();
+    const left = s.scrollLeft + er.left - sr.left - (sr.width - er.width) / 2;
+    const smooth = moved.current && !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    s.scrollTo({ left: Math.max(0, left), behavior: smooth ? 'smooth' : 'auto' });
+    moved.current = true;
+    edges();
+  }, [value, compact, sig]);
+
   const onKey = (e: React.KeyboardEvent) => {
     const k = e.key === 'ArrowRight' ? cur + 1 : e.key === 'ArrowLeft' ? cur - 1 : e.key === 'Home' ? 0 : e.key === 'End' ? defs.length - 1 : -2;
     if (k === -2) return;
@@ -92,16 +132,23 @@ export function StageNav({ defs, value, onChange, label = 'Pipeline stage', phas
     onChange(defs[n].id);
     ref.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[n]?.focus();
   };
+  const cls = `stage-tabs${compact ? ' compact' : ''}${fade.l ? ' fade-l' : ''}${fade.r ? ' fade-r' : ''}`;
   return (
-    <div className="stage-tabs" role="tablist" aria-label={label} ref={ref} onKeyDown={onKey}>
-      {defs.map((d, k) => (
-        <span key={d.id} style={{ display: 'contents' }}>
-          {k > 0 && (phases && defs[k - 1].phase !== d.phase ? <span className="stage-sep" aria-hidden="true" /> : <span className="stage-arrow" aria-hidden="true">›</span>)}
-          <button type="button" className={`stage-tab ${k === cur ? 'on' : ''}`} onClick={() => onChange(d.id)} title={phases ? `${PHASE_LABEL[d.phase]} · ${d.hint}` : d.hint} role="tab" aria-selected={k === cur} tabIndex={k === cur ? 0 : -1}>
-            <span className="n">{k + 1}</span>{d.label}
-          </button>
-        </span>
-      ))}
+    <div className={cls} role="tablist" aria-label={label} ref={ref} onKeyDown={onKey} onScroll={edges}>
+      {defs.map((d, k) => {
+        const n = num(d);
+        const newPhase = k > 0 && defs[k - 1].phase !== d.phase;
+        return (
+          <span key={d.id} style={{ display: 'contents' }}>
+            {k > 0 && (phases && newPhase ? <span className="stage-sep" aria-hidden="true" /> : <span className="stage-arrow" aria-hidden="true">›</span>)}
+            <button type="button" className={`stage-tab ${k === cur ? 'on' : ''}`} data-phase={d.phase} onClick={() => onChange(d.id)}
+              title={`${n}. ${d.label}${phases ? ` (${PHASE_LABEL[d.phase].toLowerCase()})` : ''}: ${d.hint}`}
+              aria-label={`${n}. ${d.label}`} role="tab" aria-selected={k === cur} tabIndex={k === cur ? 0 : -1}>
+              <span className="n">{n}</span><span className="lbl">{d.label}</span>
+            </button>
+          </span>
+        );
+      })}
     </div>
   );
 }
@@ -223,7 +270,7 @@ export function PipelineExplorer({ example = 'fib', src: srcProp, stage: stage0 
           {canCFG && <Seg value={mode} onChange={setMode} options={[['text', 'Text'], ['cfg', 'CFG']]} />}
           {canCFG && mode === 'cfg' && fnNames.length > 1 && <Select value={fn ?? ''} options={fnNames.map((n) => [n, `@${n}`] as [string, string])} onChange={setFnSel} />}
         </div>
-        <StageNav defs={defs} value={def.id} onChange={setStage} />
+        <StageNav defs={defs} value={def.id} onChange={setStage} all={target === 'wasm' ? WASM_STAGES : NATIVE_STAGES} />
         <div className="muted sans" style={{ fontSize: 12, padding: '6px 12px', borderBottom: '1px solid var(--rule)' }}>{def.hint}</div>
         <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>{body}</div>
       </div>

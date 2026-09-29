@@ -137,7 +137,7 @@ export function Playground() {
         <div className="pg-grp pg-end">
           <span className={`pg-status ${r.error ? 'bad' : 'ok'}`} role="status" title={r.error ? r.error.msg : `compiled in ${ms.toFixed(1)} ms`} aria-label={r.error ? undefined : `compiled in ${ms.toFixed(0)} ms`}>
             <span className="dot" aria-hidden="true" />
-            {r.error ? <>{r.error.stage} error{r.error.line ? ` · line ${r.error.line}` : ''}</> : <span className="pg-stxt">compiled <span className="pg-ms">· {ms.toFixed(0)} ms</span></span>}
+            {r.error ? <>{r.error.stage} error{r.error.line ? ` · line ${r.error.line}` : ''}</> : <><span className="pg-stxt">compiled · </span><span className="pg-ms">{ms.toFixed(0)} ms</span></>}
           </span>
           <ThemeToggle className="pg-btn" />
         </div>

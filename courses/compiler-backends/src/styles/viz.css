@@ -38,6 +38,18 @@
 .stage-tab .n { font-family: var(--mono); font-size: 10px; color: var(--muted); }
 .stage-tab.on .n { color: var(--bg); opacity: 0.75; }
 .stage-arrow { color: var(--rule-2); align-self: center; font-size: 11px; }
+/* compact strip: the current stage keeps its name, the others show a number */
+.stage-tabs.compact { gap: 0; }
+.stage-tabs.compact .stage-arrow { display: none; }
+.stage-tabs.compact .stage-tab { padding: 5px 7px; }
+.stage-tabs.compact .stage-tab:not(.on) { padding: 5px 0; min-width: 19px; justify-content: center; }
+.stage-tabs.compact .stage-tab:not(.on) .lbl { display: none; }
+.stage-tabs.compact .stage-tab:not(.on) .n { font-size: 11px; color: var(--ink-2); }
+.stage-tabs.compact .stage-tab:not(.on):hover .n { color: var(--fg); }
+/* when the strip overflows, fade only the side that has more to scroll to */
+.stage-tabs.fade-l { -webkit-mask-image: linear-gradient(to right, transparent 0, #000 18px); mask-image: linear-gradient(to right, transparent 0, #000 18px); }
+.stage-tabs.fade-r { -webkit-mask-image: linear-gradient(to left, transparent 0, #000 18px); mask-image: linear-gradient(to left, transparent 0, #000 18px); }
+.stage-tabs.fade-l.fade-r { -webkit-mask-image: linear-gradient(to right, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%); mask-image: linear-gradient(to right, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%); }
 @media (max-width: 860px) { .pipe { grid-template-columns: 1fr; } .pipe-left { border-right: none; border-bottom: 1px solid var(--fg); } }
 
 .stat-row { display: flex; gap: 14px; flex-wrap: wrap; padding: 8px 14px; font-family: var(--plex); font-size: 12px; color: var(--ink-2); border-top: 1px solid var(--fg); background: var(--pn); }
@@ -102,14 +114,15 @@
 .pg-nav { display: flex; align-items: stretch; border-bottom: 1px solid var(--fg); background: var(--pn); flex: none; min-width: 0; }
 .pg-nav .stage-tabs { flex: 1; min-width: 0; border-bottom: none; padding: 5px 4px; scrollbar-width: none; }
 .pg-nav .stage-tabs::-webkit-scrollbar { display: none; }
-.nav-step { flex: none; width: 26px; border: none; background: transparent; color: var(--ink-2); font-size: 16px; line-height: 1; cursor: pointer; padding: 0; }
+.nav-step { flex: none; width: 24px; border: none; background: transparent; color: var(--ink-2); font-size: 16px; line-height: 1; cursor: pointer; padding: 0; }
 .nav-step:first-child { border-right: 1px solid var(--rule-2); }
 .nav-step:last-child { border-left: 1px solid var(--rule-2); }
 .nav-step:hover:not(:disabled) { background: color-mix(in srgb, var(--fg) 8%, transparent); color: var(--fg); }
 .nav-step:disabled { opacity: 0.3; cursor: default; }
 .nav-step:focus-visible { outline-offset: -3px; }
 .stage-sep { flex: none; align-self: stretch; width: 1px; margin: 2px 7px; background: var(--rule-2); }
-.pg-nav .stage-tabs { -webkit-mask-image: linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%); mask-image: linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%); padding-left: 10px; padding-right: 10px; }
+.stage-tabs.compact .stage-sep { margin: 3px 4px; }
+.pg-nav .stage-tabs { padding-left: 4px; padding-right: 4px; }
 .pg-phase { font-family: var(--mono); font-size: 9.5px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-ink); margin-right: 8px; }
 .pg-cap { display: flex; align-items: center; gap: 8px; min-height: 38px; padding: 4px 8px 4px 12px; border-bottom: 1px solid var(--fg); background: var(--panel); flex: none; }
 .pg-cap-text { flex: 1; min-width: 0; border: none; background: none; padding: 2px 0; margin: 0; text-align: left; color: var(--ink-2); font-family: var(--plex); font-size: 12.5px; line-height: 1.45; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
@@ -165,15 +178,18 @@
 .ast-pos { margin-left: auto; padding-left: 16px; color: var(--muted); font-size: 10.5px; }
 .editor .cm-srcSpan { background: var(--hl); box-shadow: 0 0 0 1px color-mix(in srgb, var(--amber) 55%, transparent); border-radius: 2px; }
 
-@media (max-width: 1240px) {
-  .pg-title { display: none; }
+/* the bar stays one row down to 1280px: labels go first, then the status
+   chip shrinks to its dot and time (the full text is its title/aria-label) */
+@media (max-width: 1439px) {
+  .pg-title, .pg-lbl { display: none; }
   .pg-bar { gap: 8px 12px; }
+  .pg-status.ok .pg-stxt { display: none; }
+  .pg-status { padding: 0 9px; }
 }
 @media (max-width: 1100px) {
-  .pg-lbl, .pg-phase { display: none; }
+  .pg-phase { display: none; }
   .pg-bar { gap: 8px 10px; }
-  .pg-status.ok .pg-stxt { display: none; }
-  .pg-status.ok { padding: 0 10px; }
+  .pg .pg-bar .seg button { padding: 0 8px; }
   .pg-prog .select { max-width: 160px; }
   .pg-main { grid-template-columns: minmax(260px, 0.75fr) minmax(0, 1fr) minmax(0, 1fr); }
 }
@@ -234,16 +250,50 @@
 .frame-slot .off { color: var(--muted); font-size: 11px; padding: 4px 8px; text-align: right; border-right: 1px solid var(--rule-2); }
 .frame-slot .obj { padding: 4px 10px; display: flex; align-items: center; gap: 8px; }
 
-/* encoding bitfields */
-.bits { display: flex; font-family: var(--mono); font-size: 11px; border: 1px solid var(--fg); border-radius: var(--radius); overflow: hidden; margin: 10px 0; }
-.bits .fld { border-right: 1px solid var(--rule-2); display: flex; flex-direction: column; min-width: 0; }
+/* encoding bitfields: fields keep their bit-proportional widths, except that
+   no field gets narrower than its bits (and a 1-bit "imm[12]" is widened to
+   fit its name, or shows "i12" when the figure is narrow). A 3px bar colour-codes
+   what each field holds, with the same hues as the listings. */
+.bits-wrap { container-type: inline-size; margin: 10px 0; }
+.bits { display: flex; font-family: var(--mono); font-size: 11px; border: 1px solid var(--fg); border-radius: var(--radius); overflow: hidden; }
+.bits .fld { --kc: var(--t-kw); border-right: 1px solid var(--rule-2); border-top: 3px solid var(--kc); display: flex; flex-direction: column; min-width: 0; }
+.bits .fk-reg, .bits-key .fk-reg { --kc: var(--t-preg); }
+.bits .fk-imm, .bits-key .fk-imm { --kc: var(--t-imm); }
+.bits .fk-mod, .bits-key .fk-mod { --kc: var(--t-op); }
+.bits-key .fk-op { --kc: var(--t-kw); }
 .bits .fld:last-child { border-right: none; }
-.bits .fld .nm { font-family: var(--mono); font-size: 10.5px; font-weight: 500; padding: 3px 4px; text-align: center; background: var(--pn); border-bottom: 1px solid var(--rule-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bits .fld .nm { font-family: var(--mono); font-size: 10.5px; font-weight: 500; padding: 3px 4px; text-align: center; background: color-mix(in srgb, var(--kc) 12%, var(--pn)); border-bottom: 1px solid var(--rule-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bits .fld[style*='--n'] { min-width: calc(var(--n) * 9px + 8px); }
+.bits .fld.narrow { min-width: 58px; }
+.bits .fld .nm .short { display: none; text-decoration: none; cursor: help; }
 .bits .fld .bv { display: flex; justify-content: center; padding: 4px 2px; letter-spacing: 0.5px; }
 .bits .fld .bv span { width: 9px; text-align: center; }
+.bits .fld .bv .b1 { color: var(--ink); }
+.bits .fld .bv .b0 { color: var(--muted); }
 .bits .fld .mn { font-family: var(--plex); font-size: 10.5px; text-align: center; padding: 2px 4px 4px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .bits .fld .rg { font-size: 9.5px; color: var(--muted); text-align: center; padding-bottom: 2px; }
 .bits .fld:hover { background: var(--hl-line); }
+.bits-key { display: flex; flex-wrap: wrap; gap: 2px 14px; margin-top: 6px; font-family: var(--plex); font-size: 11.5px; color: var(--muted); }
+.bits-key span { display: inline-flex; align-items: center; gap: 5px; }
+.bits-key i { width: 12px; height: 3px; background: var(--kc); display: inline-block; }
+@container (max-width: 620px) {
+  .bits { font-size: 10px; }
+  .bits .fld[style*='--n'] { min-width: calc(var(--n) * 7px + 4px); }
+  .bits .fld .bv { padding: 4px 1px; letter-spacing: 0; }
+  .bits .fld .bv span { width: 7px; }
+  .bits .fld.narrow { min-width: 28px; }
+  .bits .fld .nm { padding: 3px 2px; font-size: 10px; }
+  .bits .fld .nm .long { display: none; }
+  .bits .fld .nm .short { display: inline; }
+  .bits .fld .mn { font-size: 9.5px; padding: 2px 1px 4px; }
+}
+
+/* "machine code, three ways": each listing fills its column, and long
+   operands (branch targets) wrap with a hanging indent instead of clipping */
+.mc3 .code .ln { white-space: pre-wrap; }
+.mc3 .code .ln .bytes { min-width: 0; width: calc(8ch + 10px); padding-right: 10px; white-space: pre-wrap; }
+.mc3 .code .ln .t-comment { white-space: nowrap; }
+.mc3 .code .ln .txt { min-width: 0; overflow-wrap: anywhere; padding-left: calc(8px + 4ch); text-indent: -4ch; }
 
 /* hex view */
 .hex { font-family: var(--mono); font-size: 11.5px; line-height: 1.55; }

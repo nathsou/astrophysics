@@ -31,13 +31,13 @@
    DARK applies to :root in the dark theme and to `.inv` in the light theme. */
 :root,
 :root[data-theme='light'],
-:root[data-theme='dark'] .inv {
+:root[data-theme='dark'] .inv:not(.pg .inv) {
   --bg: #f1f3ee; --fg: #17231b; --mute: #5d6c61; --ac: #1f7a4d; --pn: #e2e8df; --panel: #f8faf6;
   --accent-ink: #1a6d43;
   --blue: #2a5db0; --teal: #0b6f7d; --violet: #6b4fb8; --green: #4a690a; --red: #b3372f; --amber: #93560a;
-  --t-kw: #2a5db0; --t-op: #6b4fb8; --t-vreg: #93560a; --t-preg: #0b6f7d; --t-imm: #1a6f44; --t-label: #a0336b; --t-sym: #8a4a1c;
+  --t-kw: #2a5db0; --t-op: #6b4fb8; --t-vreg: #93560a; --t-preg: #0b6f7d; --t-imm: #7a5e00; --t-label: #a0336b; --t-sym: #8a4a1c;
   --t-comment: #55645a; --t-frame: #6b4fb8; --t-punct: #4d5e53; --t-dir: #526478;
-  --tile-0: #b7480a; --tile-1: #1f5f9e; --tile-2: #1a6f44; --tile-3: #7b3fa0; --tile-4: #93560a; --tile-5: #0b6f7d; --tile-6: #a8285c; --tile-7: #4c3bb0; --tile-8: #4f7a0a; --tile-9: #a83a0c;
+  --tile-0: #b7480a; --tile-1: #1f5f9e; --tile-2: #52617a; --tile-3: #7b3fa0; --tile-4: #93560a; --tile-5: #0b6f7d; --tile-6: #a8285c; --tile-7: #4c3bb0; --tile-8: #4f7a0a; --tile-9: #a83a0c;
   --hl: rgba(190, 135, 10, 0.30); --hl-line: rgba(190, 135, 10, 0.16);
   --shadow-lg: 0 10px 34px rgba(23, 35, 27, 0.22);
   color-scheme: light;
@@ -47,9 +47,9 @@
   --bg: #0f1a14; --fg: #e3ede6; --mute: #8ea395; --ac: #4fd08c; --pn: #172a20; --panel: #13211a;
   --accent-ink: #4fd08c;
   --blue: #7ea9f0; --teal: #4cc3d0; --violet: #b7a0f2; --green: #a5d65a; --red: #f27b72; --amber: #e0ac4a;
-  --t-kw: #8fb4f5; --t-op: #c3aef5; --t-vreg: #f0b565; --t-preg: #58d0dc; --t-imm: #6fdc9c; --t-label: #f39ac4; --t-sym: #e3a878;
+  --t-kw: #8fb4f5; --t-op: #c3aef5; --t-vreg: #f0b565; --t-preg: #58d0dc; --t-imm: #e0c050; --t-label: #f39ac4; --t-sym: #e3a878;
   --t-comment: #8ea395; --t-frame: #b7a0f2; --t-punct: #a6b7ab; --t-dir: #98acc4;
-  --tile-0: #f0884a; --tile-1: #6fb0f0; --tile-2: #5fd08a; --tile-3: #c79bee; --tile-4: #e6b04a; --tile-5: #4cc3d0; --tile-6: #f08fb4; --tile-7: #a49af2; --tile-8: #a6d44a; --tile-9: #f29a6a;
+  --tile-0: #f0884a; --tile-1: #6fb0f0; --tile-2: #a3b3cc; --tile-3: #c79bee; --tile-4: #e6b04a; --tile-5: #4cc3d0; --tile-6: #f08fb4; --tile-7: #a49af2; --tile-8: #a6d44a; --tile-9: #f29a6a;
   --hl: rgba(250, 200, 60, 0.26); --hl-line: rgba(250, 200, 60, 0.13);
   --shadow-lg: 0 10px 34px rgba(0, 0, 0, 0.6);
   color-scheme: dark;
@@ -59,20 +59,20 @@
     --bg: #0f1a14; --fg: #e3ede6; --mute: #8ea395; --ac: #4fd08c; --pn: #172a20; --panel: #13211a;
     --accent-ink: #4fd08c;
     --blue: #7ea9f0; --teal: #4cc3d0; --violet: #b7a0f2; --green: #a5d65a; --red: #f27b72; --amber: #e0ac4a;
-    --t-kw: #8fb4f5; --t-op: #c3aef5; --t-vreg: #f0b565; --t-preg: #58d0dc; --t-imm: #6fdc9c; --t-label: #f39ac4; --t-sym: #e3a878;
+    --t-kw: #8fb4f5; --t-op: #c3aef5; --t-vreg: #f0b565; --t-preg: #58d0dc; --t-imm: #e0c050; --t-label: #f39ac4; --t-sym: #e3a878;
     --t-comment: #8ea395; --t-frame: #b7a0f2; --t-punct: #a6b7ab; --t-dir: #98acc4;
-    --tile-0: #f0884a; --tile-1: #6fb0f0; --tile-2: #5fd08a; --tile-3: #c79bee; --tile-4: #e6b04a; --tile-5: #4cc3d0; --tile-6: #f08fb4; --tile-7: #a49af2; --tile-8: #a6d44a; --tile-9: #f29a6a;
+    --tile-0: #f0884a; --tile-1: #6fb0f0; --tile-2: #a3b3cc; --tile-3: #c79bee; --tile-4: #e6b04a; --tile-5: #4cc3d0; --tile-6: #f08fb4; --tile-7: #a49af2; --tile-8: #a6d44a; --tile-9: #f29a6a;
     --hl: rgba(250, 200, 60, 0.26); --hl-line: rgba(250, 200, 60, 0.13);
     --shadow-lg: 0 10px 34px rgba(0, 0, 0, 0.6);
     color-scheme: dark;
   }
-  :root:not([data-theme='light']):not([data-theme='dark']) .inv {
+  :root:not([data-theme='light']):not([data-theme='dark']) .inv:not(.pg .inv) {
     --bg: #f1f3ee; --fg: #17231b; --mute: #5d6c61; --ac: #1f7a4d; --pn: #e2e8df; --panel: #f8faf6;
     --accent-ink: #1a6d43;
     --blue: #2a5db0; --teal: #0b6f7d; --violet: #6b4fb8; --green: #4a690a; --red: #b3372f; --amber: #93560a;
-    --t-kw: #2a5db0; --t-op: #6b4fb8; --t-vreg: #93560a; --t-preg: #0b6f7d; --t-imm: #1a6f44; --t-label: #a0336b; --t-sym: #8a4a1c;
+    --t-kw: #2a5db0; --t-op: #6b4fb8; --t-vreg: #93560a; --t-preg: #0b6f7d; --t-imm: #7a5e00; --t-label: #a0336b; --t-sym: #8a4a1c;
     --t-comment: #55645a; --t-frame: #6b4fb8; --t-punct: #4d5e53; --t-dir: #526478;
-    --tile-0: #b7480a; --tile-1: #1f5f9e; --tile-2: #1a6f44; --tile-3: #7b3fa0; --tile-4: #93560a; --tile-5: #0b6f7d; --tile-6: #a8285c; --tile-7: #4c3bb0; --tile-8: #4f7a0a; --tile-9: #a83a0c;
+    --tile-0: #b7480a; --tile-1: #1f5f9e; --tile-2: #52617a; --tile-3: #7b3fa0; --tile-4: #93560a; --tile-5: #0b6f7d; --tile-6: #a8285c; --tile-7: #4c3bb0; --tile-8: #4f7a0a; --tile-9: #a83a0c;
     --hl: rgba(190, 135, 10, 0.30); --hl-line: rgba(190, 135, 10, 0.16);
     color-scheme: light;
   }
@@ -80,6 +80,13 @@
 
 /* the surface an inverted block sits on: the page's text colour */
 :root { --inv-surface: var(--fg); }
+/* The playground is a workbench, not a page: in the dark theme its editor and
+   listings do not flip to light (the `:not(.pg .inv)` above) and sit on a
+   slightly raised dark surface instead. Chapter code still inverts. */
+:root[data-theme='dark'] .pg { --inv-surface: color-mix(in srgb, var(--pn) 55%, var(--bg)); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']):not([data-theme='dark']) .pg { --inv-surface: color-mix(in srgb, var(--pn) 55%, var(--bg)); }
+}
 :root:root:root .inv { --bg: var(--inv-surface); --panel: var(--inv-surface); background: var(--inv-surface); color: var(--fg); }
 
 /* ---- derived tokens (recomputed inside `.inv` from its swapped set) ---- */
@@ -287,11 +294,13 @@ button { font: inherit; color: inherit; }
 }
 .code .ln { display: flex; white-space: pre; padding: 0 12px 0 0; min-height: 1.62em; border-left: 3px solid transparent; }
 .code .ln:hover { background: var(--hl-line); }
-.code .ln .gut { color: var(--muted); opacity: 0.8; min-width: 3.4em; text-align: right; padding-right: 12px; user-select: none; flex-shrink: 0; font-size: 11px; }
+.code .ln .gut { color: var(--muted); min-width: 3.4em; text-align: right; padding-right: 12px; user-select: none; flex-shrink: 0; font-size: 11px; }
 .code .ln .addr { color: var(--t-dir); min-width: 5.5em; padding: 0 10px 0 6px; user-select: none; flex-shrink: 0; font-size: 11.5px; }
 .code .ln .bytes { color: var(--muted); min-width: 10em; padding-right: 12px; user-select: none; flex-shrink: 0; font-size: 11.5px; }
 .code .ln .txt { flex: 1; padding-left: 8px; }
-.code .ln .tag { margin-left: 16px; font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 0 6px; border-radius: 2px; align-self: center; line-height: 1.6; }
+/* tags: one hue each (--tc); text is pulled 22% toward the ink so 10px caps
+   stay ≥4.5:1 on the tinted chip, in both themes and inside inverted blocks */
+.code .ln .tag { --tc: var(--muted); margin-left: 16px; font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 0 6px; border-radius: 2px; align-self: center; line-height: 1.6; color: color-mix(in srgb, var(--tc) 78%, var(--fg)); background: color-mix(in srgb, var(--tc) 13%, var(--bg)); }
 .code .ln.k-label .txt { font-weight: 600; }
 .code .ln.m-changed { background: color-mix(in srgb, var(--blue) 14%, transparent); border-left-color: var(--blue); }
 .code .ln.m-added { background: color-mix(in srgb, var(--green) 16%, transparent); border-left-color: var(--green); }
@@ -299,12 +308,13 @@ button { font: inherit; color: inherit; }
 .code .ln.m-current { background: color-mix(in srgb, var(--ac) 20%, transparent); border-left-color: var(--ac); }
 .code .ln.m-dim { opacity: 0.45; }
 .code .ln.m-focus { background: color-mix(in srgb, var(--violet) 16%, transparent); border-left-color: var(--violet); }
-.tag-spill, .tag-reload { background: var(--red-soft); color: var(--red); }
-.tag-remat { background: var(--green-soft); color: var(--green); }
-.tag-prologue, .tag-epilogue { background: var(--violet-soft); color: var(--violet); }
-.tag-copy, .tag-phi-copy, .tag-phi-const { background: var(--amber-soft); color: var(--amber); }
-.tag-abi { background: var(--teal-soft); color: var(--teal); }
-.tag-split { background: var(--blue-soft); color: var(--blue); }
+/* remat recomputes a constant, so it takes the immediate hue (green means "ok") */
+.code .ln .tag-spill, .code .ln .tag-reload { --tc: var(--red); }
+.code .ln .tag-remat { --tc: var(--t-imm); }
+.code .ln .tag-prologue, .code .ln .tag-epilogue { --tc: var(--violet); }
+.code .ln .tag-copy, .code .ln .tag-phi-copy, .code .ln .tag-phi-const { --tc: var(--amber); }
+.code .ln .tag-abi { --tc: var(--teal); }
+.code .ln .tag-split { --tc: var(--blue); }
 .t-kw { color: var(--t-kw); } .t-op { color: var(--t-op); }
 .t-vreg { color: var(--t-vreg); } .t-preg { color: var(--t-preg); font-weight: 500; } .t-imm { color: var(--t-imm); }
 .t-label { color: var(--t-label); } .t-sym { color: var(--t-sym); } .t-comment { color: var(--t-comment); font-style: italic; }
