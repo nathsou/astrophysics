@@ -942,9 +942,51 @@ export class Processor {
       this.addDecl({ kind: 'def', name, levelParams: params, type: vT, value: vV, height: defHeight(this.env, vV), doc: cmd.doc, compiled: { recursive: true } }, res, cmd.nameSpan);
       if (res.output?.k === 'decl') res.output.termination = { kind: 'wf', measure: m, lctx: hideLocals(measureLctx, [f.id, n.id, rec.id, hx.id]), obligations };
       if (cmd.attrs) this.applyAttrs(name, cmd.attrs, cmd.nameSpan);
-      // equation lemmas, by WellFounded.fix_eq
-      if (el.eqnLeaves && el.eqnLeaves.length) {
-        const fc = mkConst(name, params.map(lparam));
+      // equation lemmas: first f.eq_def (f x⃗ = the body, by WellFounded.fix_eq), then one equation
+      // per case of the match, each proved from eq_def by computation (the match reduces)
+      const fc = mkConst(name, params.map(lparam));
+      let eqDef: Expr | undefined;
+      try {
+        const natRefl = (x: Expr) => mkApps(mkConst('Eq.refl', [lone]), [natT, x]);
+        const bodyDef = replaceExpr(el.instantiate(body), (x) => {
+          if (x.k === 'fvar' && x.id === n.id) return m;
+          if (x.k === 'fvar' && x.id === hx.id) return natRefl(m);
+          if (x.k === 'app' && getAppFn(x).k === 'fvar' && (getAppFn(x) as FVar).id === rec.id) {
+            const as = getAppArgs(x);
+            if (as.length >= all.length + 3) return mkApps(fc, [...as.slice(2, 2 + all.length), ...as.slice(3 + all.length)]);
+          }
+          return undefined;
+        });
+        const T = R;
+        const sort = el.whnf(el.inferType(T));
+        const lvl = sort.k === 'sort' ? el.mctx.instantiateLevel(sort.level) : lone;
+        const stmt = el.instantiate(el.mkBinding('pi', all, mkApps(mkConst('Eq', [lvl]), [T, mkApps(fc, all), bodyDef])));
+        const fixConst = getAppFn(el.instantiate(fixApp)) as Extract<Expr, { k: 'const' }>;
+        const fixHead = getAppArgs(el.instantiate(fixApp)).slice(0, -1);
+        const eqFix = mkApps(mkConst('WellFounded.fix_eq', fixConst.levels), [...fixHead, m]);
+        const motive = el.withSavedLctx(() => {
+          const gg = el.pushLocal('g', el.instantiate(mkApps(Cfun, [m])));
+          return el.mkBinding('lam', [gg], mkApps(gg, [...all, natRefl(m)]));
+        });
+        const pf = el.elab({ k: 'app', fn: id('congrArg'), args: [{ arg: E(motive) }, { arg: E(eqFix) }], span });
+        const proof = el.instantiate(el.mkBinding('lam', all, pf));
+        const sg = this.generalizeLevels(el, [stmt, proof], params);
+        const [stmt2, proof2] = sg.exprs;
+        if (el.mctx.collectMVars(stmt2).size === 0 && !stmt2.fv && !proof2.fv) {
+          const tc = new TypeChecker(this.env, LocalContext.empty, { fuel: 20_000_000 });
+          const t0 = Date.now();
+          try {
+            tc.check(proof2, stmt2);
+          } finally {
+            if (typeof process !== 'undefined' && process.env?.DBG_WF) console.log('eq_def check', Date.now() - t0, 'ms, fuel used', 20_000_000 - tc.fuelLeft);
+          }
+          this.env.add({ kind: 'theorem', name: `${name}.eq_def`, levelParams: params, type: stmt2, value: proof2, doc: `The unfolding equation of '${name}' (well-founded recursion).` });
+          eqDef = mkConst(`${name}.eq_def`, params.map(lparam));
+        }
+      } catch (err) {
+        if (typeof process !== 'undefined' && process.env?.DBG_WF) console.log('wf eq_def', err);
+      }
+      if (eqDef && el.eqnLeaves && el.eqnLeaves.length) {
         const names: string[] = [];
         const saved = el.lctx;
         el.eqnLeaves.forEach((leaf, i) => {
@@ -965,26 +1007,12 @@ export class Processor {
             if (sort.k !== 'sort') return;
             const lvl = el.mctx.instantiateLevel(sort.level);
             const stmt = el.instantiate(el.mkBinding('pi', vars, mkApps(mkConst('Eq', [lvl]), [T, lhs, rhs])));
-            // fix_eq, applied to the arguments: fix F (m v⃗) v⃗ rfl = F (m v⃗) (fun y _ => fix F y) v⃗ rfl
-            const mv = replaceFVarsBy(m, all, vals);
-            const fixF = el.instantiate(fixApp).k === 'app' ? getAppFn(el.instantiate(fixApp)) : fixApp;
-            void fixF;
-            const fixHead = getAppArgs(el.instantiate(fixApp)).slice(0, -1);
-            const fixConst = getAppFn(el.instantiate(fixApp));
-            const eqFix = mkApps(mkConst('WellFounded.fix_eq', (fixConst as unknown as { levels: Level[] }).levels), [...fixHead, mv]);
-            const motive = el.withSavedLctx(() => {
-              const gg = el.pushLocal('g', el.instantiate(mkApps(Cfun, [mv])));
-              return el.mkBinding('lam', [gg], mkApps(gg, [...vals, mkApps(mkConst('Eq.refl', [lone]), [natT, mv])]));
-            });
-            const pf = el.elab({ k: 'app', fn: id('congrArg'), args: [{ arg: E(motive) }, { arg: E(eqFix) }], span });
-            const proof = el.instantiate(el.mkBinding('lam', vars, pf));
-            const sg = this.generalizeLevels(el, [stmt, proof], params);
-            const [stmt2, proof2] = sg.exprs;
-            if (el.mctx.collectMVars(stmt2).size > 0 || stmt2.fv || proof2.fv) return;
-            new TypeChecker(this.env).check(proof2, stmt2);
+            const proof = el.instantiate(el.mkBinding('lam', vars, mkApps(eqDef!, vals)));
+            if (el.mctx.collectMVars(stmt).size > 0 || stmt.fv || proof.fv) return;
+            new TypeChecker(this.env).check(proof, stmt);
             const en = `${name}.eq_${i + 1}`;
             if (this.env.has(en)) return;
-            this.env.add({ kind: 'theorem', name: en, levelParams: params, type: stmt2, value: proof2, doc: `An equation of '${name}' (well-founded recursion).` });
+            this.env.add({ kind: 'theorem', name: en, levelParams: params, type: stmt, value: proof, doc: `An equation of '${name}' (well-founded recursion).` });
             names.push(en);
           } catch (err) {
             if (typeof process !== 'undefined' && process.env?.DBG_WF) console.log('wf eqn', i, err);

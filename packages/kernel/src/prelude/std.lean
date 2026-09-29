@@ -490,6 +490,11 @@ def drop {α : Type u} : Nat → List α → List α
   | _ + 1, [] => []
   | n + 1, _ :: as => drop n as
 
+theorem length_drop_le {α : Type u} : (n : Nat) → (l : List α) → length (drop n l) ≤ length l
+  | 0, _ => Nat.le_refl _
+  | _ + 1, [] => Nat.le_refl _
+  | n + 1, _ :: l => Nat.le.step (length_drop_le n l)
+
 /-- `n` copies of `a`. -/
 def replicate {α : Type u} : Nat → α → List α
   | 0, _ => []

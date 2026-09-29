@@ -94,3 +94,19 @@ describe('propositional oracle', () => {
     expect(showF(parseF('¬¬p → p ∧ q'))).toBe('¬¬p → p ∧ q');
   });
 });
+
+import { parseEx, evalEx, compileEx, trace } from '../src/engines/stackmachine.ts';
+
+describe('stack machine mirror', () => {
+  it('compiles correctly, and the buggy compiler differs on subtraction', () => {
+    const env = [4, 5, 1];
+    for (const src of ['2 * (x + 3) - y', 'x - y - z', '(x + y) * (z + 2)', '7']) {
+      const e = parseEx(src);
+      const fr = trace(env, compileEx(e));
+      expect(fr[fr.length - 1].stack.map((s) => s.v)).toEqual([evalEx(env, e)]);
+    }
+    const e = parseEx('x - y + 10');
+    const bad = trace([9, 2, 0], compileEx(e, true));
+    expect(bad[bad.length - 1].stack[0].v).not.toBe(evalEx([9, 2, 0], e));
+  });
+});

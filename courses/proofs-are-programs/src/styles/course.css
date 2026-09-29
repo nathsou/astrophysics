@@ -466,3 +466,81 @@ ul.reading li {
   color: var(--err);
   border-color: color-mix(in srgb, var(--err) 35%, transparent);
 }
+
+/* ---- simulation square ---- */
+.sim-var {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+}
+.sim-var input.input {
+  width: 4rem;
+}
+.sim-square {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 0.4rem 0.8rem;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+.sim-cell {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.7rem;
+  background: var(--card);
+  min-height: 3.2rem;
+  align-self: stretch;
+}
+.sim-arrow {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--ink-3);
+}
+.sim-arrow .ok {
+  color: var(--ok);
+  font-weight: 600;
+}
+.sim-arrow .bad {
+  color: var(--err);
+  font-weight: 600;
+}
+.sim-expr mark {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  border-radius: 3px;
+}
+.sim-big {
+  font-size: 1.4rem;
+}
+.sim-code {
+  margin: 0.2rem 0 0;
+  padding-left: 1.6rem;
+  font-size: 0.85rem;
+}
+.sim-code li {
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 0 0.3rem;
+}
+.sim-code li.current {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+.sim-code li.done {
+  color: var(--ink-3);
+}
+.sim-stack {
+  list-style: none;
+  margin: 0.2rem 0 0;
+  padding: 0;
+  font-size: 0.85rem;
+}
+@media (max-width: 640px) {
+  .sim-square {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sim-arrow {
+    text-align: left;
+  }
+}

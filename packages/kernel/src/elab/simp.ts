@@ -23,6 +23,7 @@ import {
   mkConst,
   mkFVar,
   replaceExpr,
+  forEachExpr,
 } from '../core/expr.ts';
 import { type Level, levelEq, toNat, lparam } from '../core/level.ts';
 import { LocalContext } from '../core/env.ts';
@@ -979,7 +980,13 @@ function collectArgs(runner: TacticRunner, g: number, args: SimpArg[], span: Spa
       const d = g2 ? el.env.get(g2) : undefined;
       if (d && g2) {
         if (d.kind === 'def') {
-          out.unfold.add(g2);
+          // definitions by well-founded recursion are used through their equations only:
+          // unfolding them exposes WellFounded.fix
+          let wf = false;
+          forEachExpr(d.value, (x) => {
+            if (x.k === 'const' && x.name === 'WellFounded.fix') wf = true;
+          });
+          if (!wf) out.unfold.add(g2);
           for (const n of el.env.equations.get(g2) ?? []) {
             const r = ruleForConst(el, n, a.rev);
             if (r) out.rules.push(r);

@@ -264,8 +264,9 @@ export class TypeChecker {
 
   private inferCore(e: Expr, check: boolean): { type: Expr; deriv?: Deriv } {
     if (!check && !this.derive) {
+      // free variables have unique ids and fixed types, so open terms can be cached too
       const c = this.inferCache.get(e);
-      if (c && !e.fv && !e.mv) return { type: c };
+      if (c && !e.mv) return { type: c };
     }
     this.tick();
     const ev = this.trace({ kind: 'infer', e });
@@ -273,7 +274,7 @@ export class TypeChecker {
     try {
       const r = this.inferInner(e, check);
       if (ev) ev.result = r.type;
-      if (!check && !this.derive && !e.fv && !e.mv) this.inferCache.set(e, r.type);
+      if (!check && !this.derive && !e.mv) this.inferCache.set(e, r.type);
       return r;
     } finally {
       this.depth--;
