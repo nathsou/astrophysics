@@ -96,9 +96,23 @@ const BUILTIN_BLOCKS: Record<string, string> = {
   hint: 'Hint',
 };
 const THEOREM_KINDS = new Set(['theorem', 'lemma', 'corollary', 'proposition', 'conjecture', 'claim']);
-const EXERCISE_BLOCKS: Record<string, string> = { parsons: 'Parsons', bug: 'SpotBug' };
+const EXERCISE_BLOCKS: Record<string, string> = { parsons: 'Parsons', bug: 'SpotBug', build: 'Build', debug: 'Debug', measure: 'Measure', golf: 'Golf', asm: 'Asm' };
+/**
+ * Fields of the circuit and program exercises that are data, not Markdown: circuits, specifications, tests,
+ * source code. They are passed through untouched. Circuits may be written as a path relative to
+ * content/chapters/ (`circuits/x.json` files, as for `::circuit src`), which is read and inlined here.
+ */
+const RAW_FIELDS: Record<string, string[]> = {
+  build: ['spec', 'start', 'solution', 'budget', 'allowed', 'part'],
+  debug: ['spec', 'start', 'solution', 'budget', 'allowed', 'part'],
+  golf: ['spec', 'start', 'solution', 'budget', 'allowed', 'part'],
+  measure: ['circuit', 'src', 'probe', 'tolerance', 'answer'],
+  asm: ['start', 'solution', 'tests'],
+};
+/** Raw fields that hold a circuit (or, under `spec`, a `reference`) and may be a JSON file path. */
+const CIRCUIT_FIELDS = new Set(['start', 'solution', 'circuit']);
 /** YAML fields of exercise blocks that hold Markdown (rendered at build time). */
-const MARKDOWN_FIELDS = new Set(['prompt', 'text', 'solution', 'why', 'explain', 'hint', 'hints', 'lines', 'distractors', 'rubric', 'feedback', 'note', 'success', 'options', 'label']);
+const MARKDOWN_FIELDS = new Set(['prompt', 'question', 'text', 'solution', 'why', 'explain', 'hint', 'hints', 'lines', 'distractors', 'rubric', 'feedback', 'note', 'success', 'options', 'label']);
 
 const pascal = (s: string) => s.replace(/(^|[-_])(\w)/g, (_, __, c: string) => c.toUpperCase());
 const camel = (s: string) => s.replace(/[-_](\w)/g, (_, c: string) => c.toUpperCase());
@@ -187,10 +201,29 @@ async function renderInline(md: string | undefined): Promise<string | undefined>
 }
 
 /** Render the Markdown fields of an exercise spec (recursively through arrays and objects). */
-async function renderFields(data: Record<string, unknown>, inMarkdown = false): Promise<Record<string, unknown>> {
+async function renderFields(data: Record<string, unknown>, inMarkdown = false, raw: string[] = []): Promise<Record<string, unknown>> {
   const out: Record<string, unknown> = {};
-  for (const [k, v] of Object.entries(data)) out[k] = await renderValue(v, inMarkdown || MARKDOWN_FIELDS.has(k));
+  for (const [k, v] of Object.entries(data)) out[k] = raw.includes(k) ? v : await renderValue(v, inMarkdown || MARKDOWN_FIELDS.has(k));
   return out;
+}
+
+/** Replace circuit file paths in an exercise block by the circuits themselves. */
+function inlineCircuits(ctx: Ctx, kind: string, data: Record<string, unknown>): void {
+  const load = (ref: string, field: string): unknown => {
+    const file = path.join(ctx.contentRoot, 'chapters', ref);
+    if (!existsSync(file)) throw new Error(`${path.relative(ctx.contentRoot, ctx.file)}: the \`${field}\` of a \`\`\`${kind} block names ${ref}, which does not exist under content/chapters/`);
+    ctx.deps.add(file);
+    return JSON.parse(readFileSync(file, 'utf8'));
+  };
+  const isPath = (v: unknown): v is string => typeof v === 'string' && /\.json$/.test(v);
+  for (const f of CIRCUIT_FIELDS) if (isPath(data[f])) data[f] = load(data[f] as string, f);
+  const spec = data.spec as Record<string, unknown> | undefined;
+  if (spec && isPath(spec.reference)) spec.reference = load(spec.reference, 'spec.reference');
+  // A measure block may name its circuit with `src`, as ::circuit does; the answer's probe needs the circuit itself.
+  if (kind === 'measure' && isPath(data.src) && data.circuit === undefined) {
+    data.circuit = load(data.src, 'src');
+    delete data.src;
+  }
 }
 
 async function renderValue(v: unknown, md: boolean): Promise<unknown> {
@@ -386,10 +419,11 @@ async function transform(tree: Root, ctx: Ctx): Promise<void> {
           const kind = code.lang;
           const data = parseYamlBlock<Record<string, unknown>>(ctx, code.value, kind);
           const id = String(data.id ?? `${ctx.slug}/${kind}-${++ctx.exercises}`);
+          inlineCircuits(ctx, kind, data);
           const i = ctx.components.push({ tag: `B.${EXERCISE_BLOCKS[kind]}`, props: '' }) - 1;
           ctx.asyncJobs.push(
             (async () => {
-              const rendered = await renderFields(data);
+              const rendered = await renderFields(data, false, RAW_FIELDS[kind]);
               ctx.components[i]!.props = `spec={${JSON.stringify({ ...rendered, id })}}`;
             })(),
           );

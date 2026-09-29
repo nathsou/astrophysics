@@ -22,3 +22,8 @@ export { default as Hints } from './Hints.svelte';
 export { default as Hint } from './Hint.svelte';
 export { default as Parsons } from '../exercise/Parsons.svelte';
 export { default as SpotBug } from '../exercise/SpotBug.svelte';
+export { default as Build } from '../exercise/Build.svelte';
+export { default as Debug } from '../exercise/Debug.svelte';
+export { default as Golf } from '../exercise/Golf.svelte';
+export { default as Measure } from '../exercise/Measure.svelte';
+export { default as Asm } from '../exercise/Asm.svelte';
