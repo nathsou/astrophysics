@@ -553,6 +553,8 @@ export class TacticRunner {
 
   /** run f as one recorded step */
   private step(t: Tactic, f: () => void): void {
+    // the reduction budget guards against a runaway tactic, not against long proofs: refill it
+    this.el.u.tc.setFuel(Math.max(this.el.u.tc.fuelLeft, 400_000));
     const before = this.snap();
     const beforeIds = this.goals.filter((g) => !this.assigned(g));
     const idx = this.el.tacticSteps.length;

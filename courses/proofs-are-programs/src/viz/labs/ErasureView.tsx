@@ -4,7 +4,7 @@
 import { For, Show, createSignal } from 'solid-js';
 import { Playground } from '../Playground.tsx';
 import type { CheckResult } from '../../app/kernel.ts';
-import { eraseEquation, eraseToString } from '@kernel/eval/erase.ts';
+import { computesType, eraseEquation, eraseToString } from '@kernel/eval/erase.ts';
 import type { Expr } from '@kernel/core/expr.ts';
 
 export function ErasureView(props: { code: string; setup?: string; title?: string; lens?: boolean }) {
@@ -18,6 +18,10 @@ export function ErasureView(props: { code: string; setup?: string; title?: strin
       if (d.kind === 'theorem') out.push({ name: d.name, text: '(a proof: erased entirely)' });
       else if (d.kind === 'def') {
         try {
+          if (computesType(r.env, d.type)) {
+            out.push({ name: d.name, text: '(computes a type: erased entirely)' });
+            continue;
+          }
           // a definition by pattern matching reads best as its erased equations
           const eqNames = r.env.equations.get(d.name) ?? [];
           const eqns = eqNames.map((n) => {

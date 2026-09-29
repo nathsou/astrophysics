@@ -104,6 +104,10 @@ interface Scope {
   varBinfos: Map<number, LocalDecl['binfo']>;
 }
 
+
+/** reduction budget for the kernel's check of one declaration */
+const KERNEL_FUEL = 5_000_000;
+
 export class Processor {
   env: Environment;
   results: CommandResult[] = [];
@@ -621,8 +625,8 @@ export class Processor {
   // declarations
 
   private addDecl(d: Decl, res: CommandResult, span: Span): void {
-    // the kernel re-checks everything
-    const tc = new TypeChecker(this.env);
+    // the kernel re-checks everything (big proofs of many cases need a generous budget)
+    const tc = new TypeChecker(this.env, LocalContext.empty, { fuel: KERNEL_FUEL });
     const s = tc.infer(d.type);
     tc.ensureSort(s);
     if (d.kind === 'def' || d.kind === 'theorem' || d.kind === 'opaque') tc.check(d.value, d.type);
@@ -746,7 +750,7 @@ export class Processor {
       const params = usedLevelParams(g.params, [vT, vV], cmd.levelParams);
       if (el.usesSorry) res.messages.push({ severity: 'warning', span: cmd.nameSpan, msg: [`declaration uses 'sorry'`] });
       if (cmd.kind === 'example') {
-        const tc = new TypeChecker(this.env);
+        const tc = new TypeChecker(this.env, LocalContext.empty, { fuel: KERNEL_FUEL });
         tc.check(vV, vT);
         res.output = { k: 'check', expr: vV, type: vT, lctx: LocalContext.empty };
         return;

@@ -5,7 +5,7 @@
 //   * numerals are shown as numbers;
 //   * the recursors and casesOn of the compiled pattern matching are shown as they are.
 
-import { type Expr, getAppArgs, getAppFn, instantiate1, mkFVar } from '../core/expr.ts';
+import { type Expr, getAppArgs, getAppFn, hasLooseBVar, instantiate1, mkFVar } from '../core/expr.ts';
 import { toNat } from '../core/level.ts';
 import { type Environment, LocalContext, freshFVarId } from '../core/env.ts';
 import { TypeChecker } from '../core/typechecker.ts';
@@ -34,6 +34,30 @@ function relevance(tc: TypeChecker, e: Expr): Rel {
     /* ignore */
   }
   return 'data';
+}
+
+/** `fun x => f x` is `f` (when x does not occur in f) */
+function etaReduce(e: Expr): Expr {
+  if (e.k !== 'lam') return e;
+  const body = etaReduce(e.body);
+  if (body.k === 'app' && body.arg.k === 'bvar' && body.arg.i === 0 && !hasLooseBVar(body.fn, 0)) {
+    return instantiate1(body.fn, mkFVar(-1)); // x does not occur: this only shifts the other variables
+  }
+  return e;
+}
+
+/** a definition whose type is a type former (`Ty → Type`): it computes types, and is erased entirely */
+export function computesType(env: Environment, type: Expr): boolean {
+  const tc = new TypeChecker(env, LocalContext.empty, { fuel: 50_000 });
+  let t = tc.whnf(type);
+  let lctx = LocalContext.empty;
+  while (t.k === 'pi') {
+    const id = freshFVarId();
+    lctx = lctx.push({ id, name: t.name, type: t.type });
+    tc.lctx = lctx;
+    t = tc.whnf(instantiate1(t.body, mkFVar(id)));
+  }
+  return t.k === 'sort';
 }
 
 function numeral(e: Expr): number | undefined {
@@ -102,6 +126,8 @@ function eraser(env: Environment): (e: Expr, prec: number, eqn?: boolean) => str
       case 'sort':
         return '□';
       case 'lam': {
+        const eta = etaReduce(e);
+        if (eta !== e) return go(eta, prec);
         const binders: string[] = [];
         let body: Expr = e;
         const saved = tc.lctx;
