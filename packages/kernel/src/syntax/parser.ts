@@ -446,10 +446,22 @@ export class Parser {
     return { k: 'def', kind, name, nameSpan, levelParams, binders, type, body: { k: 'term', term }, termination, span: this.span(from) };
   }
 
-  private terminationHints(): { by?: STerm; decreasing?: Tactic } | undefined {
-    let r: { by?: STerm; decreasing?: Tactic } | undefined;
+  private terminationHints(): { by?: STerm; names?: { name: string; span: Span }[]; decreasing?: Tactic } | undefined {
+    let r: { by?: STerm; names?: { name: string; span: Span }[]; decreasing?: Tactic } | undefined;
     if (this.accept('termination_by')) {
-      r = { by: this.term() };
+      // `termination_by x y => e` names the arguments matched by the equations
+      let k = 0;
+      while (this.peekAt(k).kind === 'ident' || (this.peekAt(k).kind === 'sym' && this.peekAt(k).text === '_')) k++;
+      let names: { name: string; span: Span }[] | undefined;
+      if (k > 0 && this.peekAt(k).kind === 'sym' && this.peekAt(k).text === '=>') {
+        names = [];
+        for (let i = 0; i < k; i++) {
+          const t = this.next();
+          names.push({ name: t.text, span: { from: t.from, to: t.to } });
+        }
+        this.next();
+      }
+      r = { by: this.term(), names };
     }
     if (this.is('decreasing_by')) {
       this.next();

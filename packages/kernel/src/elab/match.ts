@@ -290,12 +290,17 @@ function leaf(el: Elaborator, st: State, row: Row, colTypes: Expr[]): Expr {
     for (const [n, v] of st.renames ?? []) el.aliases.set(n, el.instantiate(v));
     for (const [n, v] of binds) el.aliases.set(n, el.instantiate(v));
     let rhs = el.elab(row.alt.rhs, st.target);
-    if (st.rec) el.synthesizePending(false);
+    if (st.rec) {
+      el.synthesizePending(false);
+      // tactic blocks see the recursive function in their context: run those that are ready now
+      el.runTacticBlocks(false);
+    }
     if (st.argVals && el.eqnLeaves) {
       el.synthesizePending(false);
-      el.eqnLeaves.push({ lctx: el.lctx, vals: [...st.argVals.values()], rhs: el.instantiate(rhs), fn: st.rec?.fn });
+      el.eqnLeaves.push({ lctx: el.lctx, vals: [...st.argVals.values()], rhs: el.instantiate(rhs), fn: st.rec?.fn ?? el.wfFn });
     }
     if (st.rec) rhs = replaceRecCalls(el, el.instantiate(rhs), st, row.alt.rhs.span);
+    else if (el.leafHook) rhs = el.leafHook(el.instantiate(rhs));
     return rhs;
   });
 }
@@ -945,11 +950,18 @@ export function compileEquations(el: Elaborator, opts: EquationsInput): { body: 
     const argVals = new Map<number, Expr>(opts.args.map((a) => [a.id, a]));
     // like `match`, generalise the other arguments whose types mention a matched one
     const colIds = new Set(cols.map((c) => c.id));
+    // the index variables of the matched arguments' types are refined by the match too
+    const idxIds = new Set<number>();
+    for (const c of cols) {
+      const t = el.whnf(el.instantiate(el.inferType(c)));
+      const ind = getAppFn(t).k === 'const' ? el.env.get((getAppFn(t) as { name: string }).name) : undefined;
+      if (ind?.kind === 'inductive') for (const x of getAppArgs(t).slice(ind.numParams)) if (x.k === 'fvar') idxIds.add(x.id);
+    }
     const deps: FVar[] = [];
     for (const a of opts.args) {
-      if (colIds.has(a.id)) continue;
+      if (colIds.has(a.id) || idxIds.has(a.id)) continue;
       const ty = el.instantiate(el.lctx.get(a.id)!.type);
-      if ([...colIds].some((id) => hasFVar(ty, id)) || deps.some((x) => hasFVar(ty, x.id))) deps.push(a);
+      if ([...colIds, ...idxIds].some((id) => hasFVar(ty, id)) || deps.some((x) => hasFVar(ty, x.id))) deps.push(a);
     }
     const body = compile(el, { cols, rows, target, deps, ih: new Map(), exp: new Map(), span: opts.span, path: [], argVals });
     reportUnused(el, rows);

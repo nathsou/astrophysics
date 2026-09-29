@@ -13,7 +13,7 @@
 // purely integer facts such as "2x = 1 is impossible" are out of reach; `-`,
 // `/` and `%` are treated as opaque atoms.
 
-import { type Expr, exprEq, getAppArgs, getAppFn, mkApp, mkApps, mkConst, replaceExpr } from '../core/expr.ts';
+import { type Expr, exprEq, getAppArgs, getAppFn, headBeta, mkApp, mkApps, mkConst, replaceExpr } from '../core/expr.ts';
 import type { Level } from '../core/level.ts';
 import type { STerm, Span } from '../syntax/ast.ts';
 import type { Elaborator } from './elaborator.ts';
@@ -229,6 +229,7 @@ function relOf(el: Elaborator, t: Expr): { kind: 'le' | 'lt' | 'eq' | 'ne' | 'nl
 }
 
 function proveGoal(runner: TacticRunner, el: Elaborator, goal: Expr, span: Span): Expr {
+  while (goal.k === 'app' && getAppFn(goal).k === 'lam') goal = headBeta(goal);
   const rel = relOf(el, goal);
   const succ = (x: Expr) => mkApps(mkConst('Nat.add'), [x, natNum(1n)]);
   const byContra = (hypType: Expr, wrap: (lam: Expr) => Expr): Expr =>
@@ -273,6 +274,8 @@ type Split = { kind: 'ne'; h: Expr; a: Expr; b: Expr } | { kind: 'sub'; a: Expr;
 /** read a hypothesis as linear facts (and disequalities to split on) */
 function addHyp(el: Elaborator, span: Span, facts: Fact[], splits: Split[], t: Expr, h: Expr, depth = 0): void {
   if (depth > 4) return;
+  // (fun a b => a < b) x y, as produced by relations passed as arguments
+  while (t.k === 'app' && getAppFn(t).k === 'lam') t = headBeta(t);
   const succ = (x: Expr) => mkApps(mkConst('Nat.add'), [x, natNum(1n)]);
   const rel = relOf(el, t);
   if (!rel) return;

@@ -12,11 +12,14 @@ import {
   abstractFVars,
   collectFVars,
   getAppFn,
+  getAppArgs,
   instantiate1,
   mkApps,
   mkConst,
   mkFVar,
   mkPi,
+  mkLam,
+  mkLet,
   mkSort,
   forEachExpr,
   replaceExpr,
@@ -29,6 +32,7 @@ import { type CalculusId, type Features, calculi } from './core/calculus.ts';
 import type { Command, SAlt, SBinder, STerm, Span } from './syntax/ast.ts';
 import { ParseError, Parser } from './syntax/parser.ts';
 import { AutoBound, ElabError, Elaborator, type InfoItem, popLocal } from './elab/elaborator.ts';
+import { runTacticBlock as runTacticBlockOf } from './elab/tactics.ts';
 import { compileEquations } from './elab/match.ts';
 import type { TacticStep, GoalSnap } from './elab/tactics.ts';
 import { classOf } from './elab/instances.ts';
@@ -615,7 +619,8 @@ export class Processor {
 
   private defCommandCore(cmd: Extract<Command, { k: 'def' }>, res: CommandResult, name: string, forceRecursive?: boolean): void {
     if (cmd.kind !== 'example' && this.env.has(name)) throw new ElabError([`'${name}' has already been declared`], cmd.nameSpan);
-    if (cmd.termination) throw new ElabError(['termination_by / decreasing_by are not supported: use structural recursion (or an explicit fuel argument)'], cmd.span);
+    if (cmd.termination && !cmd.termination.by) throw new ElabError(['decreasing_by needs termination_by (a measure that decreases at each recursive call)'], cmd.span);
+    if (cmd.termination?.by) return this.wfDef(cmd, res, name);
     const { el, fvars, type: typeH } = this.elabHeader(cmd.binders, cmd.type, cmd.levelParams);
     this.infosFrom(el, () => {
       const recursive = forceRecursive ?? (cmd.kind !== 'example' && mentionsName(cmd, cmd.name, name));
@@ -724,6 +729,236 @@ export class Processor {
       this.addDecl(decl, res, cmd.nameSpan);
       if (cmd.attrs) this.applyAttrs(name, cmd.attrs, cmd.nameSpan);
       if (el.eqnLeaves && el.eqnLeaves.length > 0 && kind === 'def') this.addEquationLemmas(el, name, params, el.eqnLeaves);
+    });
+  }
+
+  /**
+   * A definition by well-founded recursion, `termination_by m`:
+   *
+   *   f x⃗ := WellFounded.fix Nat.lt_wf (C := fun n => ∀ x⃗, m x⃗ = n → R x⃗) F (m x⃗) x⃗ rfl
+   *   F n rec x⃗ (hx : m x⃗ = n) := body, where each call f a⃗ becomes rec (m a⃗) p a⃗ rfl
+   *
+   * and p : m a⃗ < n is proved at the call site (from m a⃗ < m x⃗ and hx) by `decreasing_by`
+   * or a default tactic. Pattern matching refines hx in each case, so the proof sees the
+   * patterns. The equation lemmas are proved with WellFounded.fix_eq.
+   */
+  private wfDef(cmd: Extract<Command, { k: 'def' }>, res: CommandResult, name: string): void {
+    if (cmd.kind === 'theorem' || cmd.kind === 'example') throw new ElabError(['termination_by is only supported on definitions'], cmd.nameSpan);
+    if (!this.env.has('WellFounded.fix') || !this.env.has('Nat.lt_wf')) throw new ElabError(['termination_by needs WellFounded.fix and Nat.lt_wf from the standard library'], cmd.nameSpan);
+    const { el, fvars, type: typeH } = this.elabHeader(cmd.binders, cmd.type, cmd.levelParams);
+    this.infosFrom(el, () => {
+      if (!typeH) throw new ElabError(['recursive definitions need a type signature'], cmd.nameSpan);
+      const term = cmd.termination!;
+      const span = cmd.nameSpan;
+      const E = (e: Expr): STerm => ({ k: 'elaborated', e, span });
+      const id = (n: string): STerm => ({ k: 'ident', name: n, explicit: false, span });
+      const natT = mkConst('Nat');
+      const eqNat = (a: Expr, b: Expr) => mkApps(mkConst('Eq', [lone]), [natT, a, b]);
+      // the arguments: the header's, then those matched by the equations (or by a match on arguments)
+      const bodyTerm = cmd.body.k === 'term' ? unparen(cmd.body.term) : undefined;
+      let alts: SAlt[] | undefined = cmd.body.k === 'equations' ? cmd.body.alts : undefined;
+      const cols: FVar[] = [];
+      let R = typeH;
+      const padded: number[] = [];
+      if (alts) {
+        const nPats = alts[0].pats.length;
+        let explicitSeen = 0;
+        while (explicitSeen < nPats) {
+          const w = el.whnf(R);
+          if (w.k !== 'pi') throw new ElabError([`too many patterns: the type has only ${explicitSeen} explicit argument(s)`], alts[0].span);
+          const nm = term.names?.[explicitSeen]?.name;
+          const fv = el.pushLocal(w.binfo === 'default' && nm && nm !== '_' ? nm : columnName(el, w.name, w.type, cols.length), w.type, w.binfo);
+          if (w.binfo !== 'default') padded.push(cols.length);
+          else explicitSeen++;
+          cols.push(fv);
+          R = instantiate1(w.body, fv);
+        }
+        alts = alts.map((a) => {
+          const pats: STerm[] = [];
+          let k = 0;
+          for (let c = 0; c < cols.length; c++) pats.push(padded.includes(c) ? { k: 'hole', span: a.span } : a.pats[k++]);
+          return { ...a, pats };
+        });
+      }
+      const all = [...fvars, ...cols];
+      // the measure, over the arguments
+      const m = el.instantiate(el.elab(term.by!, natT));
+      el.synthesizePending(false);
+      // the recursive function, as a local
+      const fullType = el.mkBinding('pi', all, R);
+      const f = el.pushLocal(cmd.name, fullType);
+      el.wfFn = f;
+      el.rec = { fn: f, name: cmd.name };
+      const n = el.pushLocal('n✝', natT);
+      const Cfun = el.withSavedLctx(() => {
+        const y = el.pushLocal('y', natT);
+        const body = el.mkBinding('pi', all, mkPi('h', eqNat(m, y), R));
+        return el.mkBinding('lam', [y], body);
+      });
+      const recType = el.withSavedLctx(() => {
+        const y = el.pushLocal('y', natT);
+        const lt = mkApps(mkConst('Nat.lt'), [y, n]);
+        return el.mkBinding('pi', [y], mkPi('h', lt, mkApps(Cfun, [y])));
+      });
+      const rec = el.pushLocal('rec✝', el.instantiate(recType));
+      const hx = el.pushLocal('__wf_h', eqNat(m, n));
+      // the decreasing tactic
+      const tacSrc = 'first | omega | (simp_all; omega) | simp_all | decide';
+      const defaultTac = new Parser(tacSrc, this.env.notations).tacticBlock();
+      const nSteps = () => el.tacticSteps.length;
+      const replaceCalls = (e: Expr): Expr => {
+        e = el.instantiate(e);
+        if (!hasFVarId(e, f.id)) return e;
+        switch (e.k) {
+          case 'app': {
+            const fn = getAppFn(e);
+            // if c then t else e: turn it into `if h : c then t else e`, so that the termination proofs see c
+            if (fn.k === 'const' && fn.name === 'ite' && getAppArgs(e).length === 5 && this.env.has('dite')) {
+              const [A, c, inst, t, el2] = getAppArgs(e);
+              const d = mkApps(mkConst('dite', fn.levels), [A, c, inst, mkLam('h', c, t), mkLam('h', mkApps(mkConst('Not'), [c]), el2)]);
+              return replaceCalls(d);
+            }
+            const args = getAppArgs(e).map(replaceCalls);
+            if (fn.k === 'fvar' && fn.id === f.id) {
+              if (args.length < all.length) throw new ElabError([`the recursive function '${cmd.name}' must be applied to all its arguments (${all.length}) in a definition by well-founded recursion`], span);
+              const a = args.slice(0, all.length);
+              const ma = replaceFVarsBy(m, all, a);
+              // the pattern-refined hypothesis m x⃗ = n
+              const hxd = el.lctx.findByName('__wf_h');
+              if (!hxd) throw new ElabError(['internal error: lost the measure hypothesis'], span);
+              const hxT = el.whnf(el.instantiate(hxd.type));
+              const mx = getAppArgs(hxT)[1];
+              const goalT = mkApps(mkConst('Nat.lt'), [ma, mx]);
+              const g = el.newMVar(goalT, 'synthetic', { span, what: 'termination proof' });
+              const before = nSteps();
+              const nErr = el.errors.length;
+              runTacticBlockOf(el, { m: g, tac: term.decreasing ?? defaultTac, lctx: el.lctx, aliases: new Map(el.aliases), span: term.decreasing ? term.decreasing.span : term.by!.span });
+              if (!term.decreasing) el.tacticSteps.length = before;
+              const proved = el.instantiate(g);
+              if (el.errors.length > nErr || el.mctx.collectMVars(proved).size > 0) {
+                el.errors.length = nErr;
+                throw new GoalsError(
+                  ['failed to prove termination: could not show that the measure decreases at the recursive call\n  ', { e: el.instantiate(e), lctx: el.lctx }, '\nThe goal was:'],
+                  term.by!.span,
+                  [{ lctx: hideLocals(el.lctx, [f.id, n.id, rec.id, hxd.id]), type: el.instantiate(goalT), span: term.by!.span }],
+                );
+              }
+              const lt = el.elab({ k: 'app', fn: id('Nat.lt_of_lt_of_eq'), args: [{ arg: E(proved) }, { arg: E(mkFVar(hxd.id)) }], span });
+              const call = mkApps(rec, [ma, lt, ...a, mkApps(mkConst('Eq.refl', [lone]), [natT, ma])]);
+              return mkApps(call, args.slice(all.length));
+            }
+            return mkApps(replaceCalls(fn), args);
+          }
+          case 'lam':
+          case 'pi':
+            return el.withSavedLctx(() => {
+              const x = el.pushLocal(e.name, el.instantiate(e.type), e.binfo);
+              const body = replaceCalls(instantiate1(e.body, x));
+              return el.mkBinding(e.k, [x], body);
+            });
+          case 'let':
+            return el.withSavedLctx(() => {
+              const x = el.pushLocal(e.name, el.instantiate(e.type), 'default', el.instantiate(e.value));
+              const body = replaceCalls(instantiate1(e.body, x));
+              return mkLet(e.name, el.instantiate(e.type), el.instantiate(e.value), abstractFVars(body, [x.id]));
+            });
+          default:
+            return e;
+        }
+      };
+      el.leafHook = replaceCalls;
+      if (cmd.kind === 'def' && this.sectionCtx.size === 0) el.eqnLeaves = [];
+      let body: Expr;
+      try {
+        if (alts) {
+          const r = compileEquations(el, { name: cmd.name, args: [...all, hx], colIdx: cols.map((_, i) => fvars.length + i), alts, target: R, recursive: false, span, fullType });
+          body = r.body;
+        } else if (bodyTerm?.k === 'match' && bodyTerm.discrs.every((d) => unparen(d).k === 'ident' && all.some((x) => el.lctx.get(x.id)?.name === (unparen(d) as { name: string }).name))) {
+          const mcols = bodyTerm.discrs.map((d) => all.find((x) => el.lctx.get(x.id)?.name === (unparen(d) as { name: string }).name)!);
+          const r = compileEquations(el, { name: cmd.name, args: [...all, hx], colIdx: mcols.map((c) => all.indexOf(c)), alts: bodyTerm.alts, target: R, recursive: false, span, fullType });
+          body = r.body;
+        } else {
+          const v = el.elab(cmd.body.k === 'term' ? cmd.body.term : (undefined as never), R);
+          el.synthesizePending(true);
+          if (el.eqnLeaves) el.eqnLeaves.push({ lctx: el.lctx, vals: [...all, hx], rhs: el.instantiate(v), fn: f });
+          body = replaceCalls(v);
+        }
+        el.synthesizePending(true);
+      } finally {
+        el.leafHook = undefined;
+      }
+      body = el.instantiate(body);
+      if (hasFVarId(body, f.id)) throw new ElabError([`could not eliminate the recursive calls to '${cmd.name}'`], span);
+      const F = el.mkBinding('lam', [n, rec, ...all, hx], body);
+      const fixApp = el.elab(
+        { k: 'app', fn: id('WellFounded.fix'), args: [{ named: 'C', arg: E(Cfun) }, { arg: id('Nat.lt_wf') }, { arg: E(F) }, { arg: E(m) }], span },
+      );
+      const value = mkApps(fixApp, [...all, mkApps(mkConst('Eq.refl', [lone]), [natT, m])]);
+      let vT = el.mkBinding('pi', fvars, el.mkBinding('pi', cols, R));
+      let vV = el.mkBinding('lam', fvars, el.mkBinding('lam', cols, value));
+      this.checkNoMVars(el, [vT, vV], cmd.span);
+      const g = this.generalizeLevels(el, [vT, vV], [...(cmd.levelParams ?? []), ...el.newLevelParams]);
+      [vT, vV] = g.exprs;
+      ({ type: vT, value: vV } = this.closeOverSection(el, vT, vV) as { type: Expr; value: Expr });
+      const params = usedLevelParams(g.params, [vT, vV], cmd.levelParams);
+      if (el.usesSorry) res.messages.push({ severity: 'warning', span: cmd.nameSpan, msg: [`declaration uses 'sorry'`] });
+      this.addDecl({ kind: 'def', name, levelParams: params, type: vT, value: vV, height: defHeight(this.env, vV), doc: cmd.doc, compiled: { recursive: true } }, res, cmd.nameSpan);
+      if (cmd.attrs) this.applyAttrs(name, cmd.attrs, cmd.nameSpan);
+      // equation lemmas, by WellFounded.fix_eq
+      if (el.eqnLeaves && el.eqnLeaves.length) {
+        const fc = mkConst(name, params.map(lparam));
+        const names: string[] = [];
+        const saved = el.lctx;
+        el.eqnLeaves.forEach((leaf, i) => {
+          try {
+            el.lctx = leaf.lctx;
+            const sub = (e: Expr) => el.instantiate(replaceExpr(el.instantiate(e), (x) => (x.k === 'fvar' && x.id === f.id ? fc : undefined)));
+            const vals = leaf.vals.slice(0, all.length).map((v) => el.instantiate(v));
+            const lhs = sub(mkApps(fc, vals));
+            const rhs = sub(leaf.rhs);
+            const used = new Set<number>();
+            collectFVars(lhs, used);
+            collectFVars(rhs, used);
+            const decls = leaf.lctx.decls;
+            for (let k = decls.length - 1; k >= 0; k--) if (used.has(decls[k].id)) collectFVars(el.instantiate(decls[k].type), used);
+            const vars = decls.filter((d) => used.has(d.id)).map((d) => mkFVar(d.id));
+            const T = el.instantiate(el.inferType(lhs));
+            const sort = el.whnf(el.inferType(T));
+            if (sort.k !== 'sort') return;
+            const lvl = el.mctx.instantiateLevel(sort.level);
+            const stmt = el.instantiate(el.mkBinding('pi', vars, mkApps(mkConst('Eq', [lvl]), [T, lhs, rhs])));
+            // fix_eq, applied to the arguments: fix F (m v⃗) v⃗ rfl = F (m v⃗) (fun y _ => fix F y) v⃗ rfl
+            const mv = replaceFVarsBy(m, all, vals);
+            const fixF = el.instantiate(fixApp).k === 'app' ? getAppFn(el.instantiate(fixApp)) : fixApp;
+            void fixF;
+            const fixHead = getAppArgs(el.instantiate(fixApp)).slice(0, -1);
+            const fixConst = getAppFn(el.instantiate(fixApp));
+            const eqFix = mkApps(mkConst('WellFounded.fix_eq', (fixConst as unknown as { levels: Level[] }).levels), [...fixHead, mv]);
+            const motive = el.withSavedLctx(() => {
+              const gg = el.pushLocal('g', el.instantiate(mkApps(Cfun, [mv])));
+              return el.mkBinding('lam', [gg], mkApps(gg, [...vals, mkApps(mkConst('Eq.refl', [lone]), [natT, mv])]));
+            });
+            const pf = el.elab({ k: 'app', fn: id('congrArg'), args: [{ arg: E(motive) }, { arg: E(eqFix) }], span });
+            const proof = el.instantiate(el.mkBinding('lam', vars, pf));
+            const sg = this.generalizeLevels(el, [stmt, proof], params);
+            const [stmt2, proof2] = sg.exprs;
+            if (el.mctx.collectMVars(stmt2).size > 0 || stmt2.fv || proof2.fv) return;
+            new TypeChecker(this.env).check(proof2, stmt2);
+            const en = `${name}.eq_${i + 1}`;
+            if (this.env.has(en)) return;
+            this.env.add({ kind: 'theorem', name: en, levelParams: params, type: stmt2, value: proof2, doc: `An equation of '${name}' (well-founded recursion).` });
+            names.push(en);
+          } catch (err) {
+            if (typeof process !== 'undefined' && process.env?.DBG_WF) console.log('wf eqn', i, err);
+          } finally {
+            el.lctx = saved;
+          }
+        });
+        if (names.length) {
+          this.env.equations = new Map(this.env.equations);
+          this.env.equations.set(name, names);
+        }
+      }
     });
   }
 
@@ -1392,3 +1627,26 @@ export function processSource(src: string, base: Environment): ProcessResult & {
 }
 
 export { abstractFVars, getAppFn, popLocal };
+
+function hasFVarId(e: Expr, id: number): boolean {
+  let found = false;
+  forEachExpr(e, (x) => {
+    if (x.k === 'fvar' && x.id === id) found = true;
+  });
+  return found;
+}
+
+function replaceFVarsBy(e: Expr, from: FVar[], to: Expr[]): Expr {
+  return replaceExpr(e, (x) => {
+    if (x.k !== 'fvar') return undefined;
+    const i = from.findIndex((f) => f.id === x.id);
+    return i >= 0 ? to[i] : undefined;
+  });
+}
+
+/** the context without the internal locals of a construction (for display) */
+function hideLocals(l: LocalContext, ids: number[]): LocalContext {
+  let r = LocalContext.empty;
+  for (const d of l.decls) if (!ids.includes(d.id)) r = r.push(d);
+  return r;
+}

@@ -172,7 +172,7 @@ export type Command = { span: Span; doc?: string; attrs?: string[] } & (
       binders: SBinder[];
       type?: STerm;
       body: { k: 'term'; term: STerm } | { k: 'equations'; alts: SAlt[] };
-      termination?: { by?: STerm; decreasing?: Tactic };
+      termination?: { by?: STerm; names?: { name: string; span: Span }[]; decreasing?: Tactic };
     }
   | { k: 'axiom'; name: string; nameSpan: Span; levelParams?: string[]; binders: SBinder[]; type: STerm }
   | { k: 'inductive'; types: SInductive[]; isClass?: boolean }

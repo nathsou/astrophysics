@@ -65,6 +65,10 @@ export class Elaborator {
   aliases = new Map<string, Expr>();
   usesSorry = false;
   rec?: RecInfo;
+  /** well-founded recursion: rewrites the recursive calls of each leaf of a match, in the leaf's context */
+  leafHook?: (rhs: Expr) => Expr;
+  /** the local standing for a function defined by well-founded recursion (for its equation lemmas) */
+  wfFn?: FVar;
   /** elaboration problems postponed until their expected type is known */
   pending: { m: Expr; s: STerm; lctx: LocalContext; aliases: Map<string, Expr>; type: Expr }[] = [];
   /** instance arguments still to be synthesized */
@@ -538,7 +542,9 @@ export class Elaborator {
         const type = expected ?? this.newTypeMVar(s.span, 'the type of a tactic block');
         const m = this.newMVar(type, 'synthetic', { span: s.span, what: 'tactic block' });
         const block = { m, tac: s.tac, lctx: this.lctx, aliases: new Map(this.aliases), span: s.span };
-        if (this.mctx.collectMVars(this.instantiate(type)).size === 0) runTacticBlock(this, block);
+        // run now when everything the tactics can see is known; otherwise at the end, like Lean
+        const known = (t: Expr) => this.mctx.collectMVars(this.instantiate(t)).size === 0;
+        if (known(type) && this.lctx.decls.every((d) => known(d.type))) runTacticBlock(this, block);
         else this.tacticBlocks.push(block);
         return m;
       }
@@ -729,7 +735,7 @@ export class Elaborator {
       for (const b of list) {
         const id = (getAppFn(b.m) as { id: number }).id;
         const type = this.instantiate(this.mctx.get(id)!.localType);
-        if (!force && this.mctx.collectMVars(type).size > 0) {
+        if (!force && (this.mctx.collectMVars(type).size > 0 || b.lctx.decls.some((d) => this.mctx.collectMVars(this.instantiate(d.type)).size > 0))) {
           this.tacticBlocks.push(b);
           continue;
         }

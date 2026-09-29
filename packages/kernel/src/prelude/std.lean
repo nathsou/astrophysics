@@ -901,6 +901,52 @@ instance Nat.instDecidableBallLT (k : Nat) (p : Nat → Prop) [∀ n, Decidable 
   Nat.decBallLT p k
 
 -- ---------------------------------------------------------------------------
+-- well-founded recursion (used by `termination_by`)
+
+theorem Acc.inv {α : Sort u} {r : α → α → Prop} {x y : α} (h₁ : Acc r x) (h₂ : r y x) : Acc r y :=
+  match h₁ with
+  | Acc.intro _ h => h y h₂
+
+namespace WellFounded
+
+theorem apply {α : Sort u} {r : α → α → Prop} (wf : WellFounded r) (a : α) : Acc r a :=
+  match wf with
+  | WellFounded.intro h => h a
+
+/-- Recursion on a proof of accessibility. -/
+def fixF {α : Sort u} {r : α → α → Prop} {C : α → Sort v} (F : (x : α) → ((y : α) → r y x → C y) → C x)
+    (x : α) (a : Acc r x) : C x :=
+  Acc.rec (motive := fun x _ => C x) (fun x₁ _ ih => F x₁ ih) a
+
+theorem fixF_eq {α : Sort u} {r : α → α → Prop} {C : α → Sort v} (F : (x : α) → ((y : α) → r y x → C y) → C x)
+    (x : α) (acx : Acc r x) : fixF F x acx = F x (fun y p => fixF F y (Acc.inv acx p)) := by
+  cases acx
+  rfl
+
+/-- Well-founded recursion: define `f x` using `f y` for every `y` smaller than `x`. -/
+def fix {α : Sort u} {r : α → α → Prop} {C : α → Sort v} (hwf : WellFounded r)
+    (F : (x : α) → ((y : α) → r y x → C y) → C x) (x : α) : C x :=
+  fixF F x (apply hwf x)
+
+/-- The unfolding equation of `fix` (it holds by proof irrelevance). -/
+theorem fix_eq {α : Sort u} {r : α → α → Prop} {C : α → Sort v} (hwf : WellFounded r)
+    (F : (x : α) → ((y : α) → r y x → C y) → C x) (x : α) :
+    fix hwf F x = F x (fun y _ => fix hwf F y) :=
+  fixF_eq F x (apply hwf x)
+
+end WellFounded
+
+theorem Nat.acc_lt : (n m : Nat) → m < n → Acc (fun a b : Nat => a < b) m
+  | 0, m, h => absurd h (by omega)
+  | n + 1, m, h => Acc.intro m (fun k hk => Nat.acc_lt n k (by omega))
+
+/-- `<` on natural numbers is well-founded: there is no infinite descending chain. -/
+theorem Nat.lt_wf : WellFounded (fun a b : Nat => a < b) :=
+  WellFounded.intro (fun n => Nat.acc_lt (n + 1) n (by omega))
+
+theorem Nat.lt_of_lt_of_eq {a b c : Nat} (h₁ : a < b) (h₂ : b = c) : a < c := h₂ ▸ h₁
+
+-- ---------------------------------------------------------------------------
 -- classical logic: excluded middle from the axiom of choice (Diaconescu's theorem)
 
 namespace Classical

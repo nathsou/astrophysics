@@ -223,7 +223,21 @@ export class Evaluator {
           const ind = this.env.get(d.induct);
           if (ind?.kind === 'inductive' && ind.ctors.length === 1) {
             const c = this.env.get(ind.ctors[0]);
-            if (c?.kind === 'ctor') cv = { c: c.name, f: Array.from({ length: c.numFields }, () => null) };
+            if (c?.kind === 'ctor') {
+              const f: Value[] = Array.from({ length: c.numFields }, () => null);
+              // fields that are the indices of the type (x in Acc.intro x h : Acc r x) are known: they are
+              // the recursor's index arguments
+              let t = c.type;
+              for (let i = 0; i < c.numParams + c.numFields && t.k === 'pi'; i++) t = t.body;
+              const idxArgs = getAppArgs(t).slice(ind.numParams);
+              const recIdx = args.slice(d.majorIdx - idxArgs.length, d.majorIdx);
+              idxArgs.forEach((x, k) => {
+                if (x.k !== 'bvar') return;
+                const pos = c.numParams + c.numFields - 1 - x.i;
+                if (pos >= c.numParams) f[pos - c.numParams] = recIdx[k];
+              });
+              cv = { c: c.name, f };
+            }
           }
         }
         if (!cv) throw new EvalError(`cannot evaluate: '${d.name}' applied to a value that is not a constructor`);
