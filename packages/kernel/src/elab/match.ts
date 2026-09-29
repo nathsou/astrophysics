@@ -812,7 +812,7 @@ function replaceRecCalls(el: Elaborator, e: Expr, st: State, span: Span): Expr {
         throw new NonStructural([`the recursive function '${rec.name}' must be applied at least up to its decreasing argument (argument #${rec.j + 1})`], span);
       }
       for (const [k, val] of rec.fixed) {
-        if (!exprEq(el.instantiate(args[k]), val)) {
+        if (!exprEq(el.instantiate(args[k]), val) && !el.isDefEq(args[k], val)) {
           throw new NonStructural(
             [`argument #${k + 1} of the recursive call to '${rec.name}' must be passed unchanged (it is a fixed parameter), but got\n  `, el.term(args[k])],
             span,
@@ -830,9 +830,9 @@ function replaceRecCalls(el: Elaborator, e: Expr, st: State, span: Span): Expr {
       if (!ih) {
         throw new NonStructural(
           [
-            `structural recursion failed: in the recursive call '${rec.name} … `,
-            el.term(args[rec.j]),
-            ` …', argument #${rec.j + 1} is not an immediate structural subterm (a constructor field) of the value being matched`,
+            `structural recursion failed: in the recursive call '`,
+            el.term(mkApps(mkConst(rec.name), args)),
+            `', argument #${rec.j + 1} is not smaller than the value being matched: it must be one of its constructor fields (like n in n + 1, or xs in x :: xs)`,
           ],
           span,
         );
@@ -935,6 +935,7 @@ export interface EquationsInput {
 /** Compile a definition given by equations; returns the body in terms of `args`. */
 export function compileEquations(el: Elaborator, opts: EquationsInput): { body: Expr; decreasing?: number } {
   const { alts, target } = opts;
+  void target;
   const cols = opts.colIdx.map((i) => opts.args[i]);
   for (const a of alts) {
     if (a.pats.length !== cols.length) el.err(a.span, `expected ${cols.length} pattern(s), got ${a.pats.length}`);
@@ -954,6 +955,12 @@ export function compileEquations(el: Elaborator, opts: EquationsInput): { body: 
     reportUnused(el, rows);
     return { body };
   }
+  // indices of matched arguments that are themselves arguments (`{n} … (xs : Vec α n)`) change in
+  // recursive calls: match on them too (with `_`), so they are not fixed parameters
+  opts = addIndexColumns(el, opts);
+  const cols2 = opts.colIdx.map((i) => opts.args[i]);
+  cols.length = 0;
+  cols.push(...cols2);
   // try each matched argument as the decreasing one
   let firstErr: ElabError | undefined;
   let otherErr: ElabError | undefined;
@@ -983,6 +990,28 @@ export function compileEquations(el: Elaborator, opts: EquationsInput): { body: 
   if (otherErr) throw otherErr;
   if (firstErr) throw firstErr;
   el.err(opts.span, `'${opts.name}' is recursive, but none of its matched arguments has a recursive inductive type, so structural recursion is impossible`);
+}
+
+function addIndexColumns(el: Elaborator, opts: EquationsInput): EquationsInput {
+  const extra: number[] = [];
+  for (const i of opts.colIdx) {
+    const t = el.whnf(el.inferType(opts.args[i]));
+    const h = getAppFn(t);
+    const ind = h.k === 'const' ? el.env.get(h.name) : undefined;
+    if (!ind || ind.kind !== 'inductive' || ind.numIndices === 0) continue;
+    for (const x of getAppArgs(t).slice(ind.numParams)) {
+      if (x.k !== 'fvar') continue;
+      const pos = opts.args.findIndex((a) => a.id === x.id);
+      if (pos >= 0 && !opts.colIdx.includes(pos) && !extra.includes(pos)) extra.push(pos);
+    }
+  }
+  if (!extra.length) return opts;
+  extra.sort((a, b) => a - b);
+  return {
+    ...opts,
+    colIdx: [...extra, ...opts.colIdx],
+    alts: opts.alts.map((a) => ({ ...a, pats: [...extra.map((): STerm => ({ k: 'hole', span: a.span })), ...a.pats] })),
+  };
 }
 
 function compileRec(el: Elaborator, opts: EquationsInput, jj: number): Expr {

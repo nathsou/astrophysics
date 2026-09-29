@@ -233,6 +233,8 @@ export class Elaborator {
     // locals
     const local = this.lctx.findByName(name);
     if (local) return { e: mkFVar(local.id), type: local.type };
+    // the function being defined, by its short name (`hasDecEq` inside `def List.hasDecEq`)
+    if (this.rec && this.namespace && `${this.namespace}.${name}` === this.rec.name) return { e: this.rec.fn, type: this.lctx.get(this.rec.fn.id)!.type };
     // globals
     const g = this.resolveGlobal(name);
     if (g) return this.constExpr(g, s.levels, s.span);
@@ -267,6 +269,7 @@ export class Elaborator {
     const head = getAppFn(t);
     if (head.k !== 'const') {
       if (t.k === 'pi') this.err(span, `invalid field notation '.${field}': the value is a function`);
+      if (t.k === 'sort' && base.k === 'const') this.err(span, `unknown identifier '${base.name}.${field}'`);
       this.err(span, `invalid field notation '.${field}': the type of the value is not known yet (`, this.term(baseType), `)`);
     }
     const I = head.name;
@@ -292,7 +295,7 @@ export class Elaborator {
       if (w.k !== 'pi') break;
       const dh = getAppFn(this.whnf(w.type));
       if (w.binfo === 'default' && dh.k === 'const' && dh.name === I) {
-        if (!this.isDefEq(w.type, baseType)) this.err(span, 'type mismatch in field notation');
+        if (!this.isDefEq(w.type, baseType)) this.err(span, `type mismatch in field notation: '${fname}' expects a value of type\n  `, this.term(w.type), '\nbut the value has type\n  ', this.term(baseType));
         e = mkApp(e, base);
         ft = instantiate1(w.body, base);
         this.record(span, e, 'const');
@@ -393,7 +396,26 @@ export class Elaborator {
   ensureHasType(e: Expr, eType: Expr, expected: Expr | undefined, span: Span): Expr {
     if (!expected) return e;
     if (this.isDefEq(eType, expected)) return e;
+    const c = this.coerce(e, eType, expected, span);
+    if (c) return c;
     this.err(span, 'type mismatch: the term\n  ', this.term(e), '\nhas type\n  ', this.term(eType), '\nbut is expected to have type\n  ', this.term(expected));
+  }
+
+  /** the two coercions of Lean's core: a decidable proposition where a Bool is expected (`decide p`), and a Bool where a proposition is expected (`b = true`) */
+  private coerce(e: Expr, eType: Expr, expected: Expr, span: Span): Expr | undefined {
+    if (!this.env.has('Decidable.decide')) return undefined;
+    const t = this.whnf(this.instantiate(eType));
+    const x = this.whnf(this.instantiate(expected));
+    const isBool = (y: Expr) => y.k === 'const' && y.name === 'Bool';
+    const isProp = (y: Expr) => y.k === 'sort' && toNat(this.mctx.instantiateLevel(y.level)) === 0;
+    if (isProp(t) && isBool(x)) {
+      const inst = this.newInstMVar(mkApp(mkConst('Decidable'), e), span);
+      return mkApp(mkApp(mkConst('Decidable.decide'), e), inst);
+    }
+    if (isBool(t) && isProp(x)) {
+      return mkApp(mkApp(mkApp(mkConst('Eq', [lsucc(lzero)]), mkConst('Bool')), e), mkConst('Bool.true'));
+    }
+    return undefined;
   }
 
   private elabCore(s: STerm, expected: Expr | undefined, noPostpone = false): Expr {
@@ -935,7 +957,7 @@ export class Elaborator {
     const named = new Map(args.filter((a) => a.named).map((a) => [a.named!, a.arg]));
     // explicit arguments are first represented by placeholders, so that the
     // expected type can be propagated before they are elaborated
-    const pending: { m: Expr; s: STerm; type: Expr; late: boolean; done?: boolean }[] = [];
+    const pending: { m: Expr; s: STerm; type: Expr; late: boolean; num?: boolean; done?: boolean }[] = [];
     const elabPending = (p: (typeof pending)[number]) => {
       p.done = true;
       const a = this.elab(p.s, this.instantiate(p.type));
@@ -943,8 +965,10 @@ export class Elaborator {
         this.err(p.s.span, 'type mismatch: the argument\n  ', this.term(a), '\nhas type\n  ', this.term(this.inferType(a)), '\nbut is expected to have type\n  ', this.term(p.type));
       }
     };
+    // numerals whose type is known by now are elaborated early: `⟨10, rfl⟩` needs the 10 before the rfl
+    const isLate = (p: (typeof pending)[number]) => p.late && !(p.num && !this.unknownType(this.instantiate(p.type)));
     const flush = (late: boolean) => {
-      for (const p of pending) if (!p.done && (late || !p.late)) elabPending(p);
+      for (const p of pending) if (!p.done && (late || !isLate(p))) elabPending(p);
     };
     let i = 0;
     const fnName = head.name ?? 'function';
@@ -994,7 +1018,7 @@ export class Elaborator {
         explicitSeen++;
         baseDone = true;
         arg = head.base!.e;
-        if (!this.isDefEq(w.type, head.base!.type)) this.err(span, 'type mismatch in field notation');
+        if (!this.isDefEq(w.type, head.base!.type)) this.err(span, `type mismatch in field notation: '${fnName}' expects a value of type\n  `, this.term(w.type), '\nbut the value has type\n  ', this.term(head.base!.type));
       } else {
         explicitSeen++;
         if (i >= positional.length) {
@@ -1008,7 +1032,8 @@ export class Elaborator {
           this.record(s.span, arg, 'term', w.type);
         } else {
           arg = this.newMVar(w.type, 'postponed', { span: s.span });
-          pending.push({ m: arg, s, type: w.type, late: shouldPostpone(s) });
+          // numerals of a known type are elaborated early: `⟨10, rfl⟩` needs the 10 before the rfl
+          pending.push({ m: arg, s, type: w.type, late: shouldPostpone(s), num: s.k === 'num' });
         }
       }
       e = mkApp(e, arg);

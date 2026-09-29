@@ -1,1 +1,252 @@
-This chapter is being written.
+Before we use programs as proofs, we need to write programs. This chapter is a quick tour of the course language for someone who already programs. It is close to Lean 4, and in turn Lean 4 feels like a mix of Haskell, OCaml and Rust with a lighter syntax. If you know one of those, most of this chapter will look familiar. Two features will look new: **every function is total**, and **types are ordinary values**. Both matter a lot later.
+
+## Definitions and evaluation
+
+A definition gives a name to a value. Its type comes after a colon, and the value after `:=`. `#eval` runs an expression and shows the result; `#check` shows the type of an expression without running it.
+
+<Playground title="First definitions" code={`def answer : Nat := 42
+
+def double (n : Nat) : Nat := n + n
+
+def area (width height : Nat) : Nat := width * height
+
+#eval double answer
+#eval area 3 4
+#check area
+#check area 3`} />
+
+A few things to notice:
+
+- Arguments are written next to the function, separated by spaces: `area 3 4`, not `area(3, 4)`. Parentheses are only for grouping: `double (double 3)`.
+- `area` has type `Nat → Nat → Nat`: a function that takes a width and returns *a function* waiting for the height. So `area 3` is a perfectly good value, of type `Nat → Nat`.
+- `Nat` is the type of natural numbers: 0, 1, 2, … with no upper bound and no negative numbers. Subtraction stops at zero, so `3 - 5` is `0`, and division rounds down, so `7 / 2` is `3`.
+
+Anonymous functions are written with `fun`. A short form is `(· + 1)`, where the dot stands for the argument.
+
+```lean
+def twice (f : Nat → Nat) (x : Nat) : Nat := f (f x)
+
+#eval twice (fun n => n * 3) 5
+#eval twice (· + 10) 1
+```
+
+## Types you define
+
+New types are introduced with `inductive`: you list the ways to build a value of the type. Each is a **constructor**. The simplest types have constructors without arguments, like an enumeration:
+
+```lean
+inductive Weekday where
+  | monday | tuesday | wednesday | thursday | friday | saturday | sunday
+
+def Weekday.isWeekend : Weekday → Bool
+  | .saturday | .sunday => true
+  | _ => false
+
+#eval Weekday.saturday.isWeekend
+```
+
+A function on an inductive type is defined by **pattern matching**: one equation per shape of input. `.saturday` is short for `Weekday.saturday`, because the expected type is known. `_` matches anything. The name `Weekday.isWeekend` puts the function in the `Weekday` namespace, which makes the **dot notation** `d.isWeekend` available for any `d : Weekday`.
+
+Constructors can carry data. A shape is a circle with a radius or a rectangle with a width and a height:
+
+```lean
+inductive Shape where
+  | circle (radius : Nat)
+  | rect (width height : Nat)
+
+def Shape.perimeter : Shape → Nat
+  | .circle r => 6 * r         -- close enough to 2π
+  | .rect w h => 2 * (w + h)
+
+#eval (Shape.rect 3 4).perimeter
+```
+
+<Engineer title="Algebraic data types">
+If you write TypeScript, an inductive type is a discriminated union: `{ kind: 'circle', radius: number } | { kind: 'rect', width: number, height: number }`, and pattern matching is a `switch` on `kind` that the compiler checks for completeness. In Rust it is an `enum` with data and `match`. In Haskell and OCaml it is a data type, with the same name for the same idea.
+</Engineer>
+
+Types can be **recursive**: a constructor can take arguments of the type being defined. Here is a binary tree whose nodes hold values of any type `α`:
+
+```lean
+inductive Tree (α : Type) where
+  | leaf
+  | node (left : Tree α) (value : α) (right : Tree α)
+
+def Tree.size {α : Type} : Tree α → Nat
+  | .leaf => 0
+  | .node l _ r => l.size + 1 + r.size
+
+def Tree.mirror {α : Type} : Tree α → Tree α
+  | .leaf => .leaf
+  | .node l v r => .node r.mirror v l.mirror
+
+def example_tree : Tree Nat := .node (.node .leaf 1 .leaf) 2 (.node .leaf 3 .leaf)
+
+#eval example_tree.size
+#eval example_tree.mirror
+```
+
+Recursive functions call themselves on the parts of their argument, here `l` and `r`. Keep that sentence in mind: it is why these functions always stop, and in Part IV it becomes the principle of proof by induction.
+
+## Natural numbers and lists are defined the same way
+
+`Nat` is not built in. It is an inductive type with two constructors: `Nat.zero` and `Nat.succ n`, "the successor of `n`", that is `n + 1`. The numeral `3` is shorthand for `Nat.succ (Nat.succ (Nat.succ Nat.zero))`. When you match on a number, the patterns `0` and `n + 1` are the two constructors:
+
+```lean
+def factorial : Nat → Nat
+  | 0 => 1
+  | n + 1 => (n + 1) * factorial n
+
+#eval factorial 20
+```
+
+(Internally, `#eval` computes with machine integers, so `factorial 20` returns immediately. Proofs see the unary definition.)
+
+Lists are the same: a list is either empty, `[]`, or an element in front of a list, `x :: xs`. The notation `[1, 2, 3]` is shorthand for `1 :: 2 :: 3 :: []`. The standard library defines `List.length`, `List.map` and `++` (append); here are two more, written by hand:
+
+<Playground title="Lists by hand" code={`def sum : List Nat → Nat
+  | [] => 0
+  | x :: xs => x + sum xs
+
+def filter {α : Type} (keep : α → Bool) : List α → List α
+  | [] => []
+  | x :: xs => if keep x then x :: filter keep xs else filter keep xs
+
+#eval sum [1, 2, 3, 4]
+#eval filter (fun n => n % 2 == 0) [1, 2, 3, 4, 5, 6]
+#eval [1, 2, 3].map (· * 10) ++ [0]`} />
+
+## Structures
+
+A `structure` is an inductive type with exactly one constructor, whose fields have names. Each field gets an accessor function:
+
+```lean
+structure Point where
+  x : Nat
+  y : Nat
+
+def origin : Point := { x := 0, y := 0 }
+
+def Point.add (p q : Point) : Point := ⟨p.x + q.x, p.y + q.y⟩
+
+#eval (origin.add ⟨2, 3⟩).add { x := 10, y := 20 }
+```
+
+There are two ways to build a structure: by field name, `{ x := 0, y := 0 }`, or by position with angle brackets, `⟨2, 3⟩`. The angle brackets work for any type with a single constructor, and we will use them constantly for proofs.
+
+## Generic code
+
+`{α : Type}` in `filter` above is a type parameter, like `<T>` in TypeScript or Rust. The braces make it **implicit**: you never pass it, the type checker infers it from the other arguments. The library's `Option α` is either `none` or `some a`:
+
+```lean
+def head? {α : Type} : List α → Option α
+  | [] => none
+  | x :: _ => some x
+
+#eval head? [5, 6, 7]
+#eval head? ([] : List Nat)
+```
+
+The last line needs a type annotation, `([] : List Nat)`: an empty list alone does not say what its elements are.
+
+## Every function is total
+
+In most languages the type `Nat → Nat` promises "if this function returns, it returns a `Nat`". In the course language it promises more: **the function returns, for every input**. The checker enforces this in two ways.
+
+**Pattern matching must be exhaustive.** A missing case is an error, not a warning:
+
+<Playground errors title="A missing case" code={`def predecessor : Nat → Nat
+  | n + 1 => n`} />
+
+To fix it, decide what `predecessor 0` should be, or change the type to `Nat → Option Nat` and return `none`.
+
+**Recursion must terminate.** By default, a recursive call must be on a strictly smaller part of the argument being matched: `xs` inside `x :: xs`, `n` inside `n + 1`, `l` inside `node l v r`. Since values are finite, such a function cannot loop forever:
+
+<Playground errors title="A loop" code={`def countdown : Nat → List Nat
+  | 0 => [0]
+  | n + 1 => (n + 1) :: countdown n       -- fine: n is smaller than n + 1
+
+def forever : Nat → Nat
+  | n => forever (n + 1)                  -- rejected: n + 1 is bigger`} />
+
+This restriction rules out a few programs that you might want: an interpreter for a language with `while` loops, or a function that searches for a value that may not exist. Chapter 12 shows how to write those anyway, and explains why the restriction is there. In short, a program that never returns can claim any type, including types that stand for false statements.
+
+<UnderTheHood ch="recursion" s="pattern-matching-is-notation">
+Behind the equations, the checker compiles each definition to a single primitive, the *recursor* of the inductive type, which can only call itself on constructor arguments. The CIC course shows how that translation works.
+</UnderTheHood>
+
+## Types are values
+
+In the course language, types are values like any other. `Nat` is a value of type `Type`, and `List` is a function from types to types:
+
+```lean
+#check Nat
+#check List
+#check List Nat
+#check Nat → Bool
+```
+
+So a function can compute a type. The function `Answer` below returns `Nat` or `Bool` depending on its argument. The function `answer` then has a return type that **depends on the value of the argument**:
+
+<Playground title="A type that depends on a value" code={`def Answer : Bool → Type
+  | true => Nat
+  | false => Bool
+
+def answer : (b : Bool) → Answer b
+  | true => (42 : Nat)
+  | false => false
+
+#eval answer true
+#eval answer false
+#check answer true`} />
+
+`(b : Bool) → Answer b` is a **dependent function type**: the name `b` of the argument appears in the result type. Most typed languages cannot express this type. Here it comes for free, because `Answer b` is an ordinary function call. This feature is what the rest of the course runs on: it lets types talk about values, and so state things like "this list is sorted" or "this result equals `n + 1`".
+
+<Note title="What is missing">
+The course language has no strings, no arrays, no mutable state and no input/output: nothing in the course needs them, and leaving them out keeps the checker small. Lean 4 has all of them, and they are built from the same pieces you see here.
+</Note>
+
+## Exercises
+
+<Exercise id="programs:tree" title="Trees" setup={`inductive Tree (α : Type) where
+  | leaf
+  | node (left : Tree α) (value : α) (right : Tree α)`} code={`-- the list of values, left to right
+def Tree.toList {α : Type} : Tree α → List α
+  | .leaf => []
+  | .node l v r => sorry
+
+-- the length of the longest path from the root to a leaf
+def Tree.height {α : Type} : Tree α → Nat
+  | .leaf => 0
+  | .node l _ r => sorry
+
+def t : Tree Nat := .node (.node .leaf 1 .leaf) 2 (.node (.node .leaf 3 .leaf) 4 .leaf)
+example : t.toList = [1, 2, 3, 4] := rfl
+example : t.height = 3 := rfl`} must="Tree.toList Tree.height" hint="toList: the values of l, then v, then the values of r (use ++). height: one more than the larger of the two heights; Nat.max a b is the larger of a and b." solution={`def Tree.toList {α : Type} : Tree α → List α
+  | .leaf => []
+  | .node l v r => l.toList ++ [v] ++ r.toList
+
+def Tree.height {α : Type} : Tree α → Nat
+  | .leaf => 0
+  | .node l _ r => Nat.max l.height r.height + 1
+
+def t : Tree Nat := .node (.node .leaf 1 .leaf) 2 (.node (.node .leaf 3 .leaf) 4 .leaf)
+example : t.toList = [1, 2, 3, 4] := rfl
+example : t.height = 3 := rfl`}>
+Replace each `sorry`. The two `example`s at the end are checks: `rfl` succeeds only if both sides compute to the same value, so the exercise is solved when they have no errors.
+</Exercise>
+
+<Exercise id="programs:zip" title="Zipping two lists" code={`-- pair up the elements of two lists; stop at the end of the shorter one
+def zip {α β : Type} : List α → List β → List (α × β)
+  | _, _ => sorry
+
+example : zip [1, 2, 3] [true, false] = [(1, true), (2, false)] := rfl
+example : zip ([] : List Nat) [1, 2] = [] := rfl`} must="zip" hint="Match on both lists at once. Three cases are enough: x :: xs, y :: ys; [], _; and _ :: _, []." solution={`def zip {α β : Type} : List α → List β → List (α × β)
+  | x :: xs, y :: ys => (x, y) :: zip xs ys
+  | [], _ => []
+  | _ :: _, [] => []
+
+example : zip [1, 2, 3] [true, false] = [(1, true), (2, false)] := rfl
+example : zip ([] : List Nat) [1, 2] = [] := rfl`}>
+A function can match on several arguments at once: write the patterns separated by commas. `α × β` is the type of pairs, and `(a, b)` builds one.
+</Exercise>

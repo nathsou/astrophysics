@@ -481,7 +481,8 @@ export class Processor {
       const fvars: FVar[] = [];
       try {
         for (const n of autoNames) {
-          fvars.push(el.pushLocal(n, mkSort(el.mctx.newLevel()), 'implicit'));
+          // the type is inferred from the uses: `α` in `(x : α)` is a type, `n` in `Vec α n` a number
+          fvars.push(el.pushLocal(n, el.newTypeMVar(undefined, `type of '${n}'`), 'implicit'));
         }
         for (const b of binders) {
           const ty = b.type ? el.elabType(b.type).e : undefined;
@@ -951,18 +952,37 @@ export class Processor {
           const list: { name: string; type: Expr; doc?: string }[] = [];
           for (const c of t.ctors) {
             const saved = el.lctx;
-            const cfv: FVar[] = [];
-            for (const b of c.binders) {
-              const ty = b.type ? el.elabType(b.type).e : el.newTypeMVar(b.span);
-              for (const nm of b.names) {
-                const fv = el.pushLocal(nm.name, ty, b.binfo);
-                cfv.push(fv);
-                el.record(nm.span, fv, 'binder');
+            // unknown single-letter names in a constructor's type are auto-bound implicits, as in Lean:
+            // `cons (x : α) (xs : Vec α n) : Vec α (n + 1)`
+            const autoNames: string[] = [];
+            let cfv: FVar[] = [];
+            let ct: Expr | undefined;
+            for (let attempt = 0; attempt < 16 && !ct; attempt++) {
+              el.lctx = saved;
+              cfv = autoNames.map((n) => el.pushLocal(n, el.newTypeMVar(undefined, `type of '${n}'`), 'implicit'));
+              el.autoBoundImplicits = !el.cube;
+              try {
+                for (const b of c.binders) {
+                  const ty = b.type ? el.elabType(b.type).e : el.newTypeMVar(b.span);
+                  for (const nm of b.names) {
+                    const fv = el.pushLocal(nm.name, ty, b.binfo);
+                    cfv.push(fv);
+                    el.record(nm.span, fv, 'binder');
+                  }
+                }
+                if (c.type) ct = el.elabType(c.type).e;
+                else ct = el.instantiate(mkAppsConst(names[i], levelParamsSoFar, params));
+              } catch (e) {
+                if (e instanceof AutoBound && !autoNames.includes(e.name)) {
+                  autoNames.push(e.name);
+                  continue;
+                }
+                throw e;
+              } finally {
+                el.autoBoundImplicits = false;
               }
             }
-            let ct: Expr;
-            if (c.type) ct = el.elabType(c.type).e;
-            else ct = el.instantiate(mkAppsConst(names[i], levelParamsSoFar, params));
+            if (!ct) throw new ElabError(['too many auto-bound implicits'], c.nameSpan);
             const full = el.mkBinding('pi', cfv, ct);
             el.lctx = saved;
             list.push({ name: `${names[i]}.${c.name}`, type: full, doc: c.doc });
@@ -1203,11 +1223,13 @@ function defHeight(env: Environment, v: Expr): number {
 
 function mentionsName(cmd: Extract<Command, { k: 'def' }>, short: string, full: string): boolean {
   let found = false;
+  // inside `def List.f`, `f` refers to the function being defined
+  const last = short.includes('.') ? short.slice(short.lastIndexOf('.') + 1) : short;
   const visit = (t: STerm | undefined): void => {
     if (!t || found) return;
     switch (t.k) {
       case 'ident':
-        if (t.name === short || t.name === full) found = true;
+        if (t.name === short || t.name === full || t.name === last) found = true;
         return;
       case 'app':
         visit(t.fn);

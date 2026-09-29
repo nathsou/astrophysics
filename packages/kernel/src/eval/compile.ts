@@ -217,7 +217,15 @@ export class Evaluator {
       n,
       (args) => {
         const major = args[d.majorIdx];
-        const cv = ctorView(major, d.induct, this.env);
+        let cv = ctorView(major, d.induct, this.env);
+        if (!cv && major === null) {
+          // an erased proof of a proposition with one constructor (Eq, And, Acc …): its fields are erased too
+          const ind = this.env.get(d.induct);
+          if (ind?.kind === 'inductive' && ind.ctors.length === 1) {
+            const c = this.env.get(ind.ctors[0]);
+            if (c?.kind === 'ctor') cv = { c: c.name, f: Array.from({ length: c.numFields }, () => null) };
+          }
+        }
         if (!cv) throw new EvalError(`cannot evaluate: '${d.name}' applied to a value that is not a constructor`);
         let f = ruleFor(cv.c);
         for (const a of args.slice(0, nPMM)) f = apply(f, a, this);

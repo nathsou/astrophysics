@@ -40,6 +40,14 @@ function synth(el: Elaborator, type: Expr, depth: number): Expr | undefined {
     head = getAppFn(t);
   }
   if (t.k === 'pi') {
+    // a local instance of exactly this type (`[DecidableEq α]` for `DecidableEq α`)
+    for (let i = el.lctx.decls.length - 1; i >= 0; i--) {
+      const d = el.lctx.decls[i];
+      if (d.binfo !== 'inst') continue;
+      const cp = el.mctx.checkpoint();
+      if (el.isDefEq(d.type, type)) return mkFVar(d.id);
+      el.mctx.rollback(cp);
+    }
     return el.withSavedLctx(() => {
       const fv = el.pushLocal(t.k === 'pi' ? t.name : 'x', (t as Extract<Expr, { k: 'pi' }>).type, 'default');
       const body = synth(el, instantiate1((t as Extract<Expr, { k: 'pi' }>).body, fv), depth + 1);

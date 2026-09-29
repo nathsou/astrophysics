@@ -57,7 +57,14 @@ export class Generator {
       };
       const f: Fn = (v: Value) => outs[key(v)].value;
       const isNat = getAppFn(this.tc.whnf(dom)).k === 'const' && (getAppFn(this.tc.whnf(dom)) as { name: string }).name === 'Nat';
-      const show = isNat ? `fun x => [${outs.map((o) => o.show ?? '?').join(', ')}][x % ${k}]` : `fun ⋯`;
+      const shown = outs.map((o) => o.show ?? '?');
+      const show = shown.every((x) => x === shown[0])
+        ? `fun _ => ${shown[0]}`
+        : !isNat
+          ? `fun ⋯`
+          : k === 2
+            ? `fun x => if x % 2 = 0 then ${shown[0]} else ${shown[1]}`
+            : `fun x => [${shown.join(', ')}][x % ${k}]`;
       return { value: f, show };
     }
     const h = getAppFn(w);

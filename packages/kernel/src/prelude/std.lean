@@ -413,6 +413,12 @@ end Nat
 instance instDecidableLeNat (n m : Nat) : Decidable (n ≤ m) := Nat.decLe n m
 instance instDecidableLtNat (n m : Nat) : Decidable (n < m) := Nat.decLe (n + 1) m
 
+/-- The larger of two numbers. -/
+def Nat.max (n m : Nat) : Nat := if n ≤ m then m else n
+
+/-- The smaller of two numbers. -/
+def Nat.min (n m : Nat) : Nat := if n ≤ m then n else m
+
 -- ---------------------------------------------------------------------------
 -- lists
 
@@ -447,7 +453,95 @@ namespace List
   | nil => rfl
   | cons a as ih => simp [ih]
 
+/-- The elements for which `p` returns `true`, in order. -/
+def filter {α : Type u} (p : α → Bool) : List α → List α
+  | [] => []
+  | a :: as => if p a then a :: filter p as else filter p as
+
+/-- `foldr f init [a, b, c] = f a (f b (f c init))` -/
+def foldr {α : Type u} {β : Type v} (f : α → β → β) (init : β) : List α → β
+  | [] => init
+  | a :: as => f a (foldr f init as)
+
+/-- `foldl f init [a, b, c] = f (f (f init a) b) c` -/
+def foldl {α : Type u} {β : Type v} (f : β → α → β) : β → List α → β
+  | init, [] => init
+  | init, a :: as => foldl f (f init a) as
+
+/-- The first `n` elements. -/
+def take {α : Type u} : Nat → List α → List α
+  | 0, _ => []
+  | _ + 1, [] => []
+  | n + 1, a :: as => a :: take n as
+
+/-- All but the first `n` elements. -/
+def drop {α : Type u} : Nat → List α → List α
+  | 0, as => as
+  | _ + 1, [] => []
+  | n + 1, _ :: as => drop n as
+
+/-- `n` copies of `a`. -/
+def replicate {α : Type u} : Nat → α → List α
+  | 0, _ => []
+  | n + 1, a => a :: replicate n a
+
+/-- Does every element satisfy `p`? -/
+def all {α : Type u} (p : α → Bool) : List α → Bool
+  | [] => true
+  | a :: as => p a && all p as
+
+/-- Does some element satisfy `p`? -/
+def any {α : Type u} (p : α → Bool) : List α → Bool
+  | [] => false
+  | a :: as => p a || any p as
+
+/-- The first element, if any. -/
+def head? {α : Type u} : List α → Option α
+  | [] => none
+  | a :: _ => some a
+
+@[simp] theorem filter_nil {α : Type u} (p : α → Bool) : filter p [] = [] := rfl
+
 end List
+
+/-- Equality of lists is decidable when equality of their elements is. -/
+def List.hasDecEq {α : Type u} [DecidableEq α] : (as bs : List α) → Decidable (as = bs)
+  | [], [] => isTrue rfl
+  | [], _ :: _ => isFalse (fun h => nomatch h)
+  | _ :: _, [] => isFalse (fun h => nomatch h)
+  | a :: as, b :: bs =>
+    match decEq a b with
+    | isFalse hab => isFalse (fun h => by cases h; exact hab rfl)
+    | isTrue hab =>
+      match hasDecEq as bs with
+      | isFalse h' => isFalse (fun h => by cases h; exact h' rfl)
+      | isTrue h' => isTrue (by rw [hab, h'])
+
+instance instDecidableEqList {α : Type u} [DecidableEq α] : DecidableEq (List α) := List.hasDecEq
+
+/-- Equality of options is decidable when equality of their contents is. -/
+def Option.hasDecEq {α : Type u} [DecidableEq α] : (a b : Option α) → Decidable (a = b)
+  | none, none => isTrue rfl
+  | none, some _ => isFalse (fun h => nomatch h)
+  | some _, none => isFalse (fun h => nomatch h)
+  | some a, some b =>
+    match decEq a b with
+    | isTrue h => isTrue (by rw [h])
+    | isFalse h => isFalse (fun e => by cases e; exact h rfl)
+
+instance instDecidableEqOption {α : Type u} [DecidableEq α] : DecidableEq (Option α) := Option.hasDecEq
+
+/-- Equality of pairs is decidable when equality of both components is. -/
+def Prod.hasDecEq {α : Type u} {β : Type v} [DecidableEq α] [DecidableEq β] : (p q : α × β) → Decidable (p = q)
+  | (a, b), (a', b') =>
+    match decEq a a' with
+    | isFalse h => isFalse (fun e => by cases e; exact h rfl)
+    | isTrue h =>
+      match decEq b b' with
+      | isFalse h' => isFalse (fun e => by cases e; exact h' rfl)
+      | isTrue h' => isTrue (by rw [h, h'])
+
+instance instDecidableEqProd {α : Type u} {β : Type v} [DecidableEq α] [DecidableEq β] : DecidableEq (α × β) := Prod.hasDecEq
 
 -- ---------------------------------------------------------------------------
 -- more order lemmas (used by omega)

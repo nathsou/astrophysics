@@ -24,7 +24,7 @@ export function derivingDecidableEq(env: Environment, name: string): string {
   }
   const binders = params.map((p) => `{${p} : Type} [DecidableEq ${p}]`).join(' ');
   const self = params.length ? `(${name} ${params.join(' ')})` : name;
-  const fn = `${name}.decEq`;
+  const fn = `${name}.hasDecEq`;
   const ctors = ind.ctors.map((c) => {
     const cd = env.get(c) as { numParams: number; numFields: number; type: import('../core/expr.ts').Expr };
     // which fields are recursive occurrences of the type
