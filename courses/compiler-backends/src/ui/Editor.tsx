@@ -8,7 +8,7 @@ import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirro
 import { StreamLanguage, syntaxHighlighting, HighlightStyle, bracketMatching, indentOnInput } from '@codemirror/language';
 import { setDiagnostics, lintGutter } from '@codemirror/lint';
 import { tags } from '@lezer/highlight';
-import { setHighlight } from './store';
+import { setHighlight, srcSpanStore } from './store';
 
 const kiln = StreamLanguage.define({
   token(stream) {
@@ -57,6 +57,19 @@ const lineKeys = ViewPlugin.fromClass(class {
   }
 }, { decorations: (v) => v.decorations });
 
+/** The source span of whatever is hovered elsewhere (an AST node), marked in the text. */
+const setSpan = StateEffect.define<{ from: number; to: number } | null>();
+const spanMark = Decoration.mark({ class: 'cm-srcSpan' });
+const spanField = StateField.define<DecorationSet>({
+  create: () => Decoration.none,
+  update(d, tr) {
+    d = d.map(tr.changes);
+    for (const e of tr.effects) if (e.is(setSpan)) d = e.value && e.value.to > e.value.from ? Decoration.set([spanMark.range(e.value.from, e.value.to)]) : Decoration.none;
+    return d;
+  },
+  provide: (f) => EditorView.decorations.from(f),
+});
+
 const setError = StateEffect.define<{ line: number; col: number; msg: string } | null>();
 const errorField = StateField.define<null>({ create: () => null, update: (v) => v });
 
@@ -81,7 +94,7 @@ export function Editor({ value, onChange, error, minHeight = 200 }: EditorProps)
         extensions: [
           lineNumbers(), highlightActiveLine(), highlightActiveLineGutter(), history(), bracketMatching(), indentOnInput(),
           keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
-          kiln, syntaxHighlighting(hl), lineKeys, lintGutter(), errorField,
+          kiln, syntaxHighlighting(hl), lineKeys, lintGutter(), errorField, spanField,
           EditorState.tabSize.of(2),
           EditorView.updateListener.of((u) => { if (u.docChanged) cb.current(u.state.doc.toString()); }),
           EditorView.domEventHandlers({
@@ -97,7 +110,18 @@ export function Editor({ value, onChange, error, minHeight = 200 }: EditorProps)
       }),
     });
     view.current = v;
-    return () => v.destroy();
+    const unsub = srcSpanStore.subscribe(() => {
+      const sp = srcSpanStore.get();
+      if (!sp) { v.dispatch({ effects: setSpan.of(null) }); return; }
+      const doc = v.state.doc;
+      const off = (p: { line: number; col: number }) => {
+        const l = doc.line(Math.max(1, Math.min(p.line, doc.lines)));
+        return Math.min(l.from + Math.max(0, p.col - 1), l.to);
+      };
+      const from = off(sp.from), to = off(sp.to);
+      v.dispatch({ effects: [setSpan.of({ from, to }), EditorView.scrollIntoView(from, { y: 'nearest' })] });
+    });
+    return () => { unsub(); v.destroy(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

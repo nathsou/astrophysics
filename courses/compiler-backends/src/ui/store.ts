@@ -58,6 +58,16 @@ export function setHighlight(h: HighlightSpec | null) {
     `.ln${sel.map((s) => s).join(',.ln')}{background:var(--hl-line)!important;border-left-color:var(--amber)!important}`;
 }
 
+// ------------------------------------------------------------ source spans & hints
+
+/** A source range (1-based line/col, `to` exclusive) to mark in the editor, e.g. the AST node under the mouse. */
+export interface SrcSpan { from: { line: number; col: number }; to: { line: number; col: number } }
+export const srcSpanStore = new Store<SrcSpan | null>(null);
+
+/** The single hint line of a page (the playground's footer): what the hovered thing is, and why. */
+export interface Hint { why?: string; text: string }
+export const hintStore = new Store<Hint | null>(null);
+
 // ------------------------------------------------------------ tooltip
 
 export interface TipState {

@@ -1,6 +1,6 @@
 import { memo, useEffect, useMemo, useRef, type CSSProperties, type ReactNode } from 'react';
 import type { Line } from '../compiler/listing';
-import { hideTip, setHighlight, showTip, Store, useStore } from './store';
+import { hideTip, hintStore, setHighlight, showTip, Store, useStore } from './store';
 
 export interface CodeViewProps {
   lines: Line[];
@@ -12,6 +12,8 @@ export interface CodeViewProps {
   onLineClick?: (index: number, line: Line) => void;
   mark?: (line: Line, index: number) => string | undefined;
   notes?: boolean;
+  /** send the hovered line's note to the page's shared hint line (hintStore) instead of a bar under the listing */
+  hints?: boolean;
   className?: string;
   scrollTo?: number;
   style?: CSSProperties;
@@ -60,7 +62,7 @@ function NoteBar({ store, lines }: { store: Store<number | null>; lines: Line[] 
   );
 }
 
-export function CodeView({ lines, target, gutter = 'none', bytes, maxHeight, minHeight, onLineClick, mark, notes, className, scrollTo, style, empty }: CodeViewProps) {
+export function CodeView({ lines, target, gutter = 'none', bytes, maxHeight, minHeight, onLineClick, mark, notes, hints, className, scrollTo, style, empty }: CodeViewProps) {
   const ref = useRef<HTMLDivElement>(null);
   const hovered = useMemo(() => new Store<number | null>(null), []);
   const lastKey = useRef<string>('');
@@ -82,6 +84,7 @@ export function CodeView({ lines, target, gutter = 'none', bytes, maxHeight, min
     const line = lines[i];
     if (!line) return;
     hovered.set(i);
+    if (hints) hintStore.set(line.note ? { why: 'why', text: line.note } : null);
     const tokEl = t.closest('[data-ti]') as HTMLElement | null;
     if (tokEl) {
       const tk = line.toks[Number(tokEl.dataset.ti)];
@@ -103,6 +106,7 @@ export function CodeView({ lines, target, gutter = 'none', bytes, maxHeight, min
   const onLeave = () => {
     lastKey.current = '';
     hovered.set(null);
+    if (hints) hintStore.set(null);
     hideTip();
     setHighlight(null);
   };
@@ -127,7 +131,7 @@ export function CodeView({ lines, target, gutter = 'none', bytes, maxHeight, min
           <LineRow key={i} l={l} i={i} gutter={gutter} bytes={bytes} mark={mark?.(l, i)} />
         ))}
       </div>
-      {notes && <NoteBar store={hovered} lines={lines} />}
+      {notes && !hints && <NoteBar store={hovered} lines={lines} />}
     </div>
   );
 }
