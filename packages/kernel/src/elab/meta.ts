@@ -356,7 +356,7 @@ export class Unifier {
     if (bFlex) {
       if (this.solve(b, a, depth)) return true;
     }
-    if (aFlex && !bFlex && this.solve(a, b, depth)) return true;
+    if (aFlex && this.solve(a, b, depth)) return true;
 
     // structural cases
     if (a.k === 'sort' && b.k === 'sort') return this.unifyLevel(a.level, b.level);
@@ -487,6 +487,8 @@ export class Unifier {
     const m = getAppFn(lhs) as Extract<Expr, { k: 'mvar' }>;
     const decl = this.mctx.get(m.id);
     if (!decl || decl.value) return false;
+    // holes the user (or a tactic) asked for are goals: unification never fills them
+    if (decl.kind === 'synthetic') return false;
     const args = getAppArgs(lhs).map((x) => this.instHead(x));
     // Miller patterns need distinct variables; we approximate slightly beyond
     // that: a repeated variable is abstracted at its last occurrence.

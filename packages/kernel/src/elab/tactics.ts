@@ -18,6 +18,7 @@ import {
   getAppArgs,
   getAppFn,
   hasFVar,
+  headBeta,
   instantiate1,
   mkApp,
   mkApps,
@@ -1384,7 +1385,7 @@ export class TacticRunner {
               const isField = k < cd.numFields;
               const given = user[k];
               const nm = given && given !== '_' ? given : isField ? inaccessibleName(w.name) : 'ih✝';
-              const fv = el.pushLocal(nm, w.type);
+              const fv = el.pushLocal(nm, betaAll(el.instantiate(w.type)));
               opened.push(fv);
               mt = instantiate1(w.body, fv);
               k++;
@@ -1632,6 +1633,11 @@ function inaccessibleName(n: string): string {
   if (n.endsWith('✝')) return n;
   if (n === '_' || n === 'x✝') return 'a✝';
   return `${n}✝`;
+}
+
+/** β-reduce the motive applications that appear in recursor minor premises */
+function betaAll(e: Expr): Expr {
+  return replaceExpr(e, (x) => (x.k === 'app' && getAppFn(x).k === 'lam' ? betaAll(headBeta(x)) : undefined));
 }
 
 function substFVars(e: Expr, m: Map<number, Expr>): Expr {
