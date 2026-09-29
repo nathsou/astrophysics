@@ -143,7 +143,7 @@
     gap: 0.3rem;
   }
   .chip {
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-control);
     background: var(--surface);
     border-radius: 99px;
     padding: 0.2rem 0.6rem;
@@ -158,7 +158,7 @@
   }
   .seg {
     display: inline-flex;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-control);
     border-radius: 7px;
     overflow: hidden;
   }

@@ -18,7 +18,7 @@
     align-items: center;
     gap: 0.4rem;
     border-radius: 7px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-control);
     background: var(--surface);
     color: var(--ink);
     font-size: 0.82rem;
@@ -30,7 +30,7 @@
   }
   .btn:hover:not(:disabled) {
     background: var(--surface-2);
-    border-color: var(--rule-strong);
+    border-color: var(--ink-3);
   }
   .btn:active:not(:disabled) {
     transform: translateY(1px);

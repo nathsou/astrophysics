@@ -138,11 +138,13 @@
       width: min(20rem, 88vw);
       background: var(--page);
       transform: translateX(-100%);
-      transition: transform 200ms ease;
-      box-shadow: var(--shadow-lg);
+      transition:
+        transform 200ms ease,
+        box-shadow 200ms ease;
     }
     .sidebar.open {
       transform: none;
+      box-shadow: var(--shadow-lg); /* only when open: closed, it would bleed onto the page's left edge */
     }
     .scrim.open {
       display: block;

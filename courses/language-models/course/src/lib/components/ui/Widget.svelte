@@ -47,7 +47,7 @@
   .widget {
     margin: 2rem 0;
     background: var(--chart-surface);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-control);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     overflow: hidden;
@@ -80,7 +80,7 @@
     line-height: 1.45;
   }
   .reset {
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-control);
     background: var(--surface);
     color: var(--ink-2);
     border-radius: 6px;

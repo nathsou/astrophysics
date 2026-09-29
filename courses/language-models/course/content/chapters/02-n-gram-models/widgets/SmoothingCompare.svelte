@@ -131,7 +131,7 @@
     flex-wrap: wrap;
   }
   .chip {
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-control);
     background: var(--surface);
     border-radius: 99px;
     padding: 0.15rem 0.55rem;

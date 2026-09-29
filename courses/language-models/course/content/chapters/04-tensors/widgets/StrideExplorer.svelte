@@ -122,7 +122,7 @@
     gap: 0.3rem;
   }
   .ops button {
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-control);
     background: var(--surface);
     border-radius: 6px;
     padding: 0.25rem 0.6rem;

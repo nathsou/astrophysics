@@ -38,10 +38,17 @@
     gap: 0.75rem;
     padding: 0 1rem;
     background: color-mix(in srgb, var(--page) 85%, transparent);
-    backdrop-filter: saturate(1.4) blur(10px);
+    /* Prefixed first: Lightning CSS (Vite's minifier) drops an unprefixed declaration that is followed by its
+       prefixed twin, which left Chrome and Firefox with no blur at all. */
     -webkit-backdrop-filter: saturate(1.4) blur(10px);
+    backdrop-filter: saturate(1.4) blur(10px);
     border-bottom: 1px solid transparent;
     transition: border-color 150ms;
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .topbar {
+      background: var(--page);
+    }
   }
   .scrolled {
     border-bottom-color: var(--rule);

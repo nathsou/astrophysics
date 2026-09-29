@@ -214,7 +214,7 @@
     background: var(--accent-ink);
   }
   .secondary {
-    border: 1px solid var(--rule-strong);
+    border: 1px solid var(--border-control);
     color: var(--ink);
   }
   .secondary:hover {
@@ -355,9 +355,20 @@
 
   .features {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* 4 or 2×2, never 3 + an orphan */
     gap: 1rem;
     padding: 0 0 3rem;
+  }
+  /* Four across when the column is wide enough (the sidebar takes 18rem from 1100px up). */
+  @media (min-width: 1240px), (min-width: 860px) and (max-width: 1099px) {
+    .features {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 560px) {
+    .features {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
   .features div {
     padding: 1.1rem 1.2rem;
