@@ -129,7 +129,7 @@ export default defineSim({
     const panel = new Panel(host);
     const slope = panel.slider('Spectral index n', { min: -3, max: 1, value: n, step: 0.05 }, (v) => { n = v; build(); });
     panel.select<Shape>('Spectrum', [{ value: 'power', label: 'Power law kⁿ' }, { value: 'lcdm', label: 'ΛCDM-shaped (BBKS)' }], shape, (v) => {
-      shape = v; slope.el.style.opacity = v === 'power' ? '1' : '0.4'; build();
+      shape = v; slope.el.classList.toggle('is-off', v !== 'power'); slope.el.querySelector('input')!.disabled = v !== 'power'; build();
     });
     panel.button('New seed', () => { seed = (seed * 48271) % 2147483647; noise(); build(); });
 

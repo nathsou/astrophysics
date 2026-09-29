@@ -14,22 +14,22 @@
   --pn: #ebe2cd;
 
   --fg-muted: #6a5f4b;      /* secondary TEXT: --mute darkened to reach 4.5:1 on --bg and --pn */
-  --fg-faint: #746850;
+  --fg-faint: #6f634c;      /* tertiary text (canvas captions): still ≥4.5:1 on --pn */
   --bg-elev: #efe7d4;
   --bg-raised: #efe7d4;
   --bg-sunk: #ebe2cd;
-  --rule: #d3c9b2;
+  --rule: #c9bda2;          /* hairlines & sim dividers (a touch stronger so nested surfaces separate) */
   --card: #faf6ec;          /* a surface raised ON a panel (chips, cards inside a sim) */
   --line: #b3a68a;          /* visible 1px edge for nested surfaces (≈2:1 on --pn) */
   --accent: #a3491f;
   --accent-2: #2d6a8f;      /* ink blue: computed outputs, secondary series */
   --accent-3: #8e3b63;      /* plum: history, third series */
-  --good: #2c7a3f;
+  --good: #25703a;
   --bad: #b0392a;
   --hl: rgba(163, 73, 31, 0.15);
   --code-bg: #ebe2cd;
   --plot-grid: rgba(42, 36, 24, 0.1);
-  --plot-axis: rgba(42, 36, 24, 0.5);
+  --plot-axis: rgba(42, 36, 24, 0.56); /* axis lines: ≥3:1 on --pn (WCAG 1.4.11) */
   --series-1: #a3491f;
   --series-2: #2d6a8f;
   --series-3: #8e3b63;
@@ -61,7 +61,7 @@
   --bg-elev: #1d1a13;
   --bg-raised: #1d1a13;
   --bg-sunk: #221f16;
-  --rule: #3a3528;
+  --rule: #463f2f;
   --card: #2c281e;
   --line: #5c5442;
   --accent: #e0a15c;
@@ -86,7 +86,7 @@
     color-scheme: dark;
     --bg: #17150f; --fg: #efe6d0; --mute: #a89d84; --ac: #e0a15c; --pn: #221f16;
     --fg-muted: #a89d84; --fg-faint: #8f8570; --bg-elev: #1d1a13; --bg-raised: #1d1a13; --bg-sunk: #221f16;
-    --rule: #3a3528; --card: #2c281e; --line: #5c5442; --accent: #e0a15c; --accent-2: #7fb4d6; --accent-3: #d98aa8; --good: #7fc28a; --bad: #ff8a78;
+    --rule: #463f2f; --card: #2c281e; --line: #5c5442; --accent: #e0a15c; --accent-2: #7fb4d6; --accent-3: #d98aa8; --good: #7fc28a; --bad: #ff8a78;
     --hl: rgba(224, 161, 92, 0.2); --code-bg: #221f16;
     --plot-grid: rgba(239, 230, 208, 0.09); --plot-axis: rgba(239, 230, 208, 0.42);
     --series-1: #e0a15c; --series-2: #7fb4d6; --series-3: #d98aa8; --series-4: #a9c774; --series-5: #b9a6ee;
@@ -112,7 +112,7 @@ body {
 }
 
 a { color: var(--ac); text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
-a:hover { opacity: 0.75; }
+a:hover { text-decoration-thickness: 2px; }
 ::selection { background: var(--hl); }
 :focus-visible { outline: 2px solid var(--ac); outline-offset: 2px; border-radius: 3px; }
 
@@ -186,7 +186,7 @@ body.landing .shell { grid-template-columns: minmax(0, 1fr); }
 .btn:hover { border-color: var(--ac); color: var(--ac); }
 .btn.primary { background: var(--ac); color: var(--bg); border-color: var(--ac); }
 .btn.primary:hover { color: var(--bg); filter: brightness(1.08); }
-.btn:disabled { opacity: 0.5; cursor: default; }
+.btn:disabled, .btn:disabled:hover { cursor: default; color: var(--fg-muted); border-color: var(--mute); border-style: dashed; }
 
 .menu-toggle { display: none; }
 
@@ -298,6 +298,13 @@ figure.sim figcaption b { color: var(--fg); font-weight: 600; font-style: normal
 .panel .spacer { flex: 1; }
 .panel select { font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--mute); border-radius: 3px; padding: 0.2rem 0.4rem; min-width: 0; max-width: 100%; }
 .panel input[type='checkbox'] { accent-color: var(--ac); }
+/* A control that does not apply in the current mode: muted but still readable (no opacity fades). */
+.panel .ctl.is-off { color: var(--fg-muted); }
+.panel .ctl.is-off label::after { content: ' (n/a)'; }
+.panel .ctl.is-off output { color: var(--fg-muted); font-weight: 400; }
+input[type='range']:disabled { cursor: default; }
+input[type='range']:disabled::-webkit-slider-thumb { background: var(--mute); }
+input[type='range']:disabled::-moz-range-thumb { background: var(--mute); }
 
 input[type='range'] { -webkit-appearance: none; appearance: none; width: 8.5rem; height: 18px; background: transparent; cursor: pointer; accent-color: var(--ac); }
 input[type='range']::-webkit-slider-runnable-track { height: 3px; background: color-mix(in srgb, var(--mute) 55%, transparent); border-radius: 2px; }
@@ -322,10 +329,10 @@ input[type='range']:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px colo
 }
 .dimlab-step:hover { color: var(--ac); border-color: var(--ac); }
 .dimlab-step:active { background: var(--hl); }
-.dimlab-mid { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; line-height: 1.15; }
-.dimlab-sym { font-family: var(--font-body); font-style: italic; font-size: 1.1rem; color: var(--fg-muted); white-space: nowrap; }
+.dimlab-mid { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 1px; }
+.dimlab-sym { font-family: var(--font-body); font-style: italic; font-size: 1.1rem; line-height: 1.45; color: var(--fg-muted); white-space: nowrap; }
 .dimlab-sym sup, .dimlab-sym sub { font-size: 0.68em; line-height: 0; }
-.dimlab-pow { font-size: 0.66rem; letter-spacing: 0.02em; color: var(--fg-muted); font-variant-numeric: tabular-nums; }
+.dimlab-pow { font-size: 0.66rem; line-height: 1.2; letter-spacing: 0.02em; color: var(--fg-muted); font-variant-numeric: tabular-nums; }
 .dimlab-chip.on .dimlab-sym { color: var(--fg); }
 .dimlab-chip.on .dimlab-pow { color: var(--ac); font-weight: 500; }
 .dimlab-out { margin: 12px 0 4px; font-size: 0.95rem; line-height: 1.6; }

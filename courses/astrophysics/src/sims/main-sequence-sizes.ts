@@ -81,6 +81,11 @@ export default defineSim({
         ctx.arc(cx, baseline, r, 0, Math.PI * 2);
         ctx.fill();
         if (i === hoverIdx) { ctx.strokeStyle = pal.fg; ctx.lineWidth = 1.5; ctx.stroke(); }
+        else if (r < 12) {
+          // pale blue-white dots vanish on the cream paper: give small stars a thin ink rim
+          ctx.beginPath(); ctx.arc(cx, baseline, r + 1.5, 0, Math.PI * 2);
+          ctx.strokeStyle = pal.muted; ctx.lineWidth = 1; ctx.stroke();
+        }
       });
       // Name labels under the stars small enough to leave room. One straight row when they fit;
       // on narrow screens they would collide, so they are set on a slant (like a crowded chart axis),
