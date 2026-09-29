@@ -33,6 +33,9 @@ import { compileEquations } from './elab/match.ts';
 import type { TacticStep, GoalSnap } from './elab/tactics.ts';
 import { classOf } from './elab/instances.ts';
 import { derivingDecidableEq } from './elab/deriving.ts';
+import { synthInstance } from './elab/instances.ts';
+import { Evaluator, EvalError, type Value, apply as applyValue, showValue } from './eval/compile.ts';
+import { Generator, rng } from './eval/random.ts';
 
 export type Severity = 'error' | 'warning' | 'info';
 
@@ -54,7 +57,9 @@ export type Output =
   | { k: 'check'; expr: Expr; type: Expr; lctx: LocalContext; constName?: string }
   | { k: 'reduce'; input: Expr; result: Expr; lctx: LocalContext; mode: 'reduce' | 'whnf' | 'eval' }
   | { k: 'decl'; names: string[]; main: string }
-  | { k: 'print'; decl: Decl; axioms?: string[] };
+  | { k: 'print'; decl: Decl; axioms?: string[] }
+  | { k: 'eval'; input: Expr; type: Expr; value: string; lctx: LocalContext; steps: number; ms: number }
+  | { k: 'test'; statement: Expr; samples: number; passed: number; counterexample?: { name: string; value: string }[]; lctx: LocalContext };
 
 export interface CommandResult {
   cmd: Command;
@@ -328,9 +333,57 @@ export class Processor {
     }
   }
 
+  /** #test ∀ x y, P x y: evaluate the decidable statement on random inputs */
   private testCommand(cmd: Extract<Command, { k: 'test' }>, res: CommandResult): void {
-    void cmd;
-    res.messages.push({ severity: 'info', span: cmd.span, msg: ['#test is not available yet'] });
+    const el = this.newElaborator();
+    this.infosFrom(el, () => {
+      let p = el.elabType(cmd.term).e;
+      el.synthesizePending(true);
+      p = el.instantiate(p);
+      this.checkNoMVars(el, [p], cmd.term.span);
+      // open the data binders; the rest (including hypotheses) is the proposition to decide
+      const xs: FVar[] = [];
+      let body = p;
+      for (;;) {
+        const w = body.k === 'pi' ? body : el.whnf(body);
+        if (w.k !== 'pi') break;
+        const s = el.whnf(el.inferType(w.type));
+        if (s.k === 'sort' && toNat(el.mctx.instantiateLevel(s.level)) === 0) break;
+        const fv = el.pushLocal(w.name, w.type);
+        xs.push(fv);
+        body = instantiate1(w.body, fv);
+      }
+      const inst = synthInstance(el, mkApps(mkConst('Decidable'), [body]));
+      if (!inst) throw new ElabError(['#test needs a decidable statement: no Decidable instance for\n  ', { e: body, lctx: el.lctx }], cmd.term.span);
+      const fn = el.instantiate(el.mkBinding('lam', xs, mkApps(mkConst('Decidable.decide'), [body, inst])));
+      const ev = new Evaluator(this.env);
+      const gen = new Generator(this.env, rng(0x5eed + cmd.span.from));
+      const types = xs.map((x) => el.lctx.get(x.id)!.type);
+      if (types.some((t) => xs.some((y) => hasFVarIn(t, y.id)))) throw new ElabError(['#test: the types of the variables must not depend on each other'], cmd.term.span);
+      const samples = cmd.samples ?? 100;
+      let passed = 0;
+      try {
+        const f = ev.run(fn);
+        for (let i = 0; i < samples; i++) {
+          const size = 1 + Math.floor((i * 8) / samples);
+          const vals = types.map((t) => gen.gen(t, size));
+          let r: Value = f;
+          for (const v of vals) r = applyValue(r, v.value, ev);
+          const ok = r && typeof r === 'object' && r.c === 'Bool.true';
+          if (!ok) {
+            const counterexample = xs.map((x, k) => ({ name: el.lctx.get(x.id)!.name, value: vals[k].show ?? showValue(this.env, vals[k].value, types[k]) }));
+            res.output = { k: 'test', statement: p, samples, passed, counterexample, lctx: this.sectionCtx };
+            res.messages.push({ severity: 'error', span: cmd.term.span, msg: [`counterexample found after ${passed} passing test${passed === 1 ? '' : 's'}: ${counterexample.map((c) => `${c.name} := ${c.value}`).join(', ')}`] });
+            return;
+          }
+          passed++;
+        }
+      } catch (err) {
+        if (err instanceof EvalError) throw new ElabError([err.message], cmd.term.span);
+        throw err;
+      }
+      res.output = { k: 'test', statement: p, samples, passed, lctx: this.sectionCtx };
+    });
   }
 
   private setOption(name: string, value: string, span: Span, res: CommandResult): void {
@@ -774,7 +827,21 @@ export class Processor {
       this.checkNoMVars(el, [e], term.span);
       e = el.instantiate(e);
       const tc = new TypeChecker(this.env, this.sectionCtx, { fuel: 300_000 });
-      tc.infer(e);
+      const type = tc.infer(e);
+      if (mode === 'eval') {
+        // run the compiled program (types and proofs erased)
+        const ev = new Evaluator(this.env);
+        const t0 = performance.now();
+        try {
+          const v = ev.run(e, this.sectionCtx);
+          res.output = { k: 'eval', input: e, type, value: showValue(this.env, v, type), lctx: this.sectionCtx, steps: ev.steps, ms: performance.now() - t0 };
+        } catch (err) {
+          if (err instanceof EvalError) throw new ElabError([err.message], term.span);
+          if (err instanceof RangeError) throw new ElabError(['evaluation overflowed the stack (the recursion is too deep for this evaluator)'], term.span);
+          throw err;
+        }
+        return;
+      }
       const r = mode === 'whnf' ? tc.whnf(e) : tc.normalize(e);
       res.output = { k: 'reduce', input: e, result: r, lctx: this.sectionCtx, mode };
     });
@@ -997,6 +1064,10 @@ class GoalsError extends ElabError {
   ) {
     super(msg, span);
   }
+}
+
+function hasFVarIn(e: Expr, id: number): boolean {
+  return collectFVars(e).has(id);
 }
 
 function snapToGoal(g: GoalSnap, span: Span): Goal {

@@ -736,7 +736,8 @@ function solveEqs(
       const deps: FVar[] = [];
       const depIds = new Set<number>([x.id]);
       for (const id of order) {
-        if (id === e.id || id === x.id || !locals.has(id) || order.indexOf(id) < order.indexOf(x.id)) continue;
+        // every later hypothesis that mentions x (as Lean's `cases` does), not only this match's own locals
+        if (id === e.id || id === x.id || order.indexOf(id) < order.indexOf(x.id) || el.lctx.get(id)!.value) continue;
         const ty = el.instantiate(el.lctx.get(id)!.type);
         if ([...depIds].some((d) => hasFVar(ty, d))) {
           deps.push(mkFVar(id) as FVar);

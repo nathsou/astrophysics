@@ -1182,7 +1182,10 @@ export class TacticRunner {
         if (el.mctx.isAssigned(goal)) continue;
         const fields = hole.fieldNames.map((n) => el.instantiate(hole.aliases!.get(n)!) as FVar).filter((f) => f && f.k === 'fvar');
         this.decl(goal).name = tagPrefix ?? short(hole.ctor);
-        goal = this.clearStale(goal, stale.filter((id) => !fields.some((f) => f.id === id)));
+        // hypotheses that the match reverted and reintroduced: the originals are shadowed and stale
+        const gl = this.decl(goal).lctx.decls;
+        const shadowed = this.decl(g).lctx.decls.filter((d) => gl.some((x, i) => x.id !== d.id && x.name === d.name && i > gl.findIndex((y) => y.id === d.id))).map((d) => d.id);
+        goal = this.clearStale(goal, [...stale, ...shadowed].filter((id) => !fields.some((f) => f.id === id)));
         out.push({ goal, ctor: hole.ctor, fields });
       }
       return out;

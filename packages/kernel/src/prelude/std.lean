@@ -87,6 +87,8 @@ def Decidable.decide (p : Prop) [h : Decidable p] : Bool :=
   | Decidable.isFalse _ => Bool.false
   | Decidable.isTrue _ => Bool.true
 
+open Decidable
+
 /-- Types with a decision procedure for equality. -/
 abbrev DecidableEq (α : Sort u) : Sort (max 1 u) := (a b : α) → Decidable (a = b)
 

@@ -954,6 +954,16 @@ export class Parser {
           if (this.is(')')) throw new ParseError('empty parentheses', { from, to: this.peek().to });
           result = this.withLayout(-1, (): STerm => {
             const inner = this.inBrackets(() => this.term());
+            if (this.is(',')) {
+              // a tuple (a, b, c) = Prod.mk a (Prod.mk b c)
+              const items = [inner];
+              while (this.accept(',')) items.push(this.inBrackets(() => this.term()));
+              this.lastEnd = this.expect(')').to;
+              const sp = this.span(from);
+              let r = items[items.length - 1];
+              for (let i = items.length - 2; i >= 0; i--) r = { k: 'app', fn: { k: 'ident', name: 'Prod.mk', explicit: false, span: sp }, args: [{ arg: items[i] }, { arg: r }], span: sp };
+              return { ...r, span: sp };
+            }
             if (this.accept(':')) {
               const ty = this.inBrackets(() => this.term());
               this.lastEnd = this.expect(')').to;
