@@ -15,8 +15,10 @@
   const part = $derived(PARTS.find((p) => p.id === entry.part));
   const around = $derived(neighbours(entry.kind, entry.slug));
   const eyebrow = $derived(entry.kind === 'appendix' ? `Appendix ${entry.number}` : `Chapter ${entry.number}${part ? (part.id === '0' || part.id === 'E' ? ` · ${part.title}` : ` · Part ${part.id} — ${part.title}`) : ''}`);
-  // A little overlapped-primaries figure whose arrangement varies from chapter to chapter.
-  const variant = $derived([...entry.slug].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % 4);
+  // The header's DIP package: the chapter is a part on the board, its number printed on the package.
+  const chipLabel = $derived(entry.kind === 'appendix' ? `APP-${entry.number}` : `CH-${entry.number.padStart(2, '0')}`);
+  const chipSub = $derived(entry.kind === 'appendix' ? 'REFERENCE' : part ? (part.id === '0' ? 'PROLOGUE' : part.id === 'E' ? 'EPILOGUE' : `PART ${part.id}`) : '');
+  const PINS = [0, 1, 2, 3, 4, 5, 6];
   const prereqs = $derived((meta.prerequisites ?? []).map((s) => findEntry('chapter', s) ?? findEntry('appendix', s)).filter((e) => e !== undefined));
 
   $effect(() => {
@@ -55,7 +57,17 @@
 
 <article class="article">
   <header class="chapter-head wide">
-    <div class="plate v{variant}" aria-hidden="true"><i></i><i></i><i></i></div>
+    <svg class="dip" viewBox="0 0 176 116" aria-hidden="true">
+      {#each PINS as i (i)}
+        <rect class="pin" x={21 + i * 21} y="4" width="9" height="16" rx="1.5" />
+        <rect class="pin" x={21 + i * 21} y="96" width="9" height="16" rx="1.5" />
+      {/each}
+      <rect class="pkg" x="6" y="16" width="164" height="84" rx="5" />
+      <path class="notch" d="M6 48a10 10 0 0 1 0 20" />
+      <circle class="dot" cx="20" cy="86" r="3.2" />
+      <text class="ref" x="92" y="56" text-anchor="middle">{chipLabel}</text>
+      <text class="sub" x="92" y="76" text-anchor="middle">{chipSub}</text>
+    </svg>
     <div class="head-text">
     <p class="eyebrow">{eyebrow}</p>
     <h1>{meta.title}</h1>
@@ -117,12 +129,12 @@
   }
   .chapter-head {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 11rem;
+    grid-template-columns: minmax(0, 1fr) 10.5rem;
     gap: 2rem;
     align-items: start;
-    padding: 3.25rem 0 2rem;
+    padding: 3.5rem 0 2.1rem;
     margin-bottom: 0.5rem;
-    border-bottom: 2px solid var(--fg);
+    border-bottom: 1px solid var(--line);
   }
   .head-text {
     grid-column: 1;
@@ -134,25 +146,26 @@
     font-family: var(--font-mono);
     font-size: 0.72rem;
     text-transform: uppercase;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.1em;
     font-weight: 500;
-    color: var(--accent);
+    color: var(--copper-ink);
   }
   h1 {
     font-family: var(--font-display);
-    font-size: clamp(2.1rem, 5.4vw, 3.05rem);
-    line-height: 1;
-    letter-spacing: -0.035em;
-    font-weight: 900;
-    margin: 0 0 1.1rem;
+    font-size: clamp(2.15rem, 5.4vw, 3.2rem);
+    line-height: 1.04;
+    letter-spacing: -0.032em;
+    font-weight: 600;
+    margin: 0 0 1rem;
     overflow-wrap: break-word;
-    hyphens: auto;
+    text-wrap: balance;
   }
   .summary {
-    font-size: 1.32rem;
+    font-size: 1.28rem;
     line-height: 1.5;
     color: var(--ink-2);
-    margin: 0 0 1.4rem;
+    margin: 0 0 1.3rem;
+    text-wrap: pretty;
   }
   .meta {
     display: flex;
@@ -178,63 +191,77 @@
     font-family: var(--font-mono);
     font-size: 0.66rem;
     text-transform: uppercase;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     color: var(--mute);
     margin-right: 0.3rem;
     min-width: 5.5rem;
   }
   .chip {
-    padding: 0.12rem 0.6rem;
-    border-radius: var(--radius-sm);
-    background: var(--pn);
-    color: var(--ink);
+    padding: 0.1rem 0.6rem;
+    border-radius: 99px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--fg);
     font-weight: 500;
   }
   .chip.thm {
-    background: var(--fx-yellow);
-    color: var(--fx-ink);
-    font-weight: 700;
+    border-color: color-mix(in srgb, var(--sig-high) 50%, var(--line));
+    background: color-mix(in srgb, var(--sig-high) 12%, var(--panel));
   }
 
-  /* Overlapped primaries, in the spirit of the mockup's figure. */
-  .plate {
+  /* The DIP package. */
+  .dip {
     grid-column: 2;
     grid-row: 1;
-    position: relative;
-    font-size: 1rem;
-    height: 11em;
-    width: 11em;
     justify-self: end;
-    margin-top: 0.4em;
+    width: 10.5rem;
+    height: auto;
+    margin-top: 0.6rem;
+    overflow: visible;
   }
-  .plate i {
-    position: absolute;
-    display: block;
+  .pin {
+    fill: light-dark(#c9ccd1, #8a939f);
+    stroke: light-dark(#8d939b, #5c6673);
+    stroke-width: 1;
   }
-  .plate.v0 i:nth-child(1) { left: 0; top: 0; width: 6.5em; height: 6.5em; background: var(--fx-yellow); }
-  .plate.v0 i:nth-child(2) { left: 4.4em; top: 3.8em; width: 6.5em; height: 6.5em; background: var(--fx-red); opacity: 0.9; }
-  .plate.v0 i:nth-child(3) { left: 1.4em; top: 6em; width: 4.3em; height: 4.3em; background: var(--fx-blue); }
-  .plate.v1 i:nth-child(1) { left: 4.5em; top: 0; width: 6.5em; height: 6.5em; background: var(--fx-blue); }
-  .plate.v1 i:nth-child(2) { left: 0; top: 3.6em; width: 6.5em; height: 6.5em; background: var(--fx-yellow); opacity: 0.92; }
-  .plate.v1 i:nth-child(3) { left: 5.7em; top: 6.6em; width: 4.3em; height: 4.3em; background: var(--fx-red); }
-  .plate.v2 i:nth-child(1) { left: 0; top: 4.5em; width: 6.5em; height: 6.5em; background: var(--fx-red); }
-  .plate.v2 i:nth-child(2) { left: 3.8em; top: 0; width: 6.5em; height: 6.5em; background: var(--fx-blue); opacity: 0.9; }
-  .plate.v2 i:nth-child(3) { left: 6.6em; top: 6.4em; width: 4.3em; height: 4.3em; background: var(--fx-yellow); }
-  .plate.v3 i:nth-child(1) { left: 0; top: 0; width: 6.5em; height: 6.5em; background: var(--fx-blue); }
-  .plate.v3 i:nth-child(2) { left: 3.6em; top: 4.2em; width: 6.5em; height: 6.5em; background: var(--fx-red); opacity: 0.9; }
-  .plate.v3 i:nth-child(3) { left: 6.8em; top: 0.4em; width: 4.2em; height: 4.2em; background: var(--fx-yellow); }
+  .pkg {
+    fill: light-dark(#22272e, #161e2a);
+    stroke: light-dark(#11151a, #2f3d52);
+    stroke-width: 1;
+    filter: drop-shadow(0 6px 10px light-dark(rgb(40 30 10 / 0.18), rgb(0 0 0 / 0.5)));
+  }
+  .notch {
+    fill: light-dark(#161a1f, #0d131c);
+  }
+  .dot {
+    fill: light-dark(#161a1f, #0d131c);
+  }
+  .dip text {
+    font-family: var(--font-mono);
+    fill: light-dark(#e9e4da, #c9d2dd);
+  }
+  .ref {
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+  .sub {
+    font-size: 9.5px;
+    letter-spacing: 0.24em;
+    fill: light-dark(#a9a398, #7f8b9b) !important;
+  }
   @media (max-width: 720px) {
     .chapter-head {
       grid-template-columns: minmax(0, 1fr);
       gap: 1.25rem;
       padding-top: 1.75rem;
     }
-    .plate {
+    .dip {
       grid-column: 1;
       grid-row: 1;
       justify-self: start;
       margin: 0;
-      font-size: 0.5rem;
+      width: 6.5rem;
     }
     .head-text {
       grid-row: 2;
@@ -266,26 +293,27 @@
   .pager {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1.25rem;
+    gap: 1rem;
     margin-top: 4rem;
   }
   .pager a {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: 0.25rem;
     padding: 0.9rem 1.1rem;
-    border-top: 2px solid var(--fg);
-    border-bottom: 2px solid var(--fg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
     text-decoration: none;
-    color: var(--ink);
-    transition: background-color 120ms;
+    color: var(--fg);
+    box-shadow: var(--shadow);
+    transition: border-color 120ms, transform 120ms;
   }
   .pager a:hover {
-    background: var(--pn);
-    opacity: 1;
+    border-color: var(--copper);
   }
   .pager a:hover .t {
-    color: var(--accent);
+    color: var(--copper-ink);
   }
   .next {
     text-align: right;
@@ -295,11 +323,11 @@
     font-family: var(--font-mono);
     font-size: 0.68rem;
     text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--accent);
+    letter-spacing: 0.1em;
+    color: var(--mute);
   }
   .t {
-    font-weight: 700;
+    font-weight: 600;
     font-size: 1.02rem;
   }
   @media (max-width: 560px) {

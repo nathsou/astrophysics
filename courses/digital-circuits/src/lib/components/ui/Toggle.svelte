@@ -9,11 +9,12 @@
 </label>
 
 <style>
+  /* A slide switch: on is HIGH (amber), off is LOW (slate). */
   .toggle {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.84rem;
+    gap: 0.55rem;
+    font-size: 0.86rem;
     color: var(--ink-2);
     cursor: pointer;
     user-select: none;
@@ -25,34 +26,40 @@
     height: 1px;
   }
   .track {
-    width: 32px;
-    height: 18px;
-    border-radius: 0;
-    background: var(--surface);
-    border: 2px solid var(--fg);
+    width: 36px;
+    height: 20px;
+    border-radius: 99px;
+    background: var(--surface-3);
+    border: 1px solid var(--line-strong);
     position: relative;
-    transition: background-color 150ms;
+    transition: background-color 150ms, border-color 150ms, box-shadow 150ms;
     flex: none;
   }
   .thumb {
     position: absolute;
-    top: 1px;
-    left: 1px;
-    width: 10px;
-    height: 10px;
-    border-radius: 0;
-    background: var(--fg);
-    transition: transform 150ms;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--sig-low);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.25);
+    transition: transform 150ms, background-color 150ms;
   }
   input:checked + .track {
-    background: var(--fx-yellow);
+    background: color-mix(in srgb, var(--sig-high) 22%, var(--panel));
+    border-color: var(--sig-high);
+    box-shadow: 0 0 8px -2px var(--sig-high-glow);
   }
   input:checked + .track .thumb {
-    transform: translateX(14px);
-    background: var(--fx-ink);
+    transform: translateX(16px);
+    background: var(--sig-high);
+  }
+  input:checked ~ .text {
+    color: var(--fg);
   }
   input:focus-visible + .track {
-    outline: 3px solid var(--focus);
+    outline: 2px solid var(--focus);
     outline-offset: 2px;
   }
   .disabled {

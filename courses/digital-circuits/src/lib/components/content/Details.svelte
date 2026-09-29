@@ -12,7 +12,7 @@
 <style>
   .details {
     margin: 1.6rem 0;
-    border: 2px solid var(--fg);
+    border: 1px solid var(--line);
     border-radius: var(--radius-sm);
     background: var(--surface);
   }
@@ -43,6 +43,6 @@
   .body {
     padding: 0.3rem 1.1rem 0.3rem;
     font-size: 1.02rem;
-    border-top: 2px solid var(--fg);
+    border-top: 1px solid var(--line);
   }
 </style>

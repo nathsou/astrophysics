@@ -30,19 +30,19 @@
   .thm {
     margin: 1.9rem 0;
     padding: 0.95rem 1.3rem 0.25rem;
-    border-left: 8px solid var(--fx-red);
+    border-left: 3px solid var(--copper);
     background: var(--pn);
     border-radius: 0;
   }
   .thm[data-kind='lemma'],
   .thm[data-kind='claim'] {
-    border-left-color: var(--fx-blue);
+    border-left-color: var(--c-programmer);
   }
   .thm[data-kind='corollary'] {
-    border-left-color: var(--fx-yellow);
+    border-left-color: var(--sig-high);
   }
   .thm[data-kind='conjecture'] {
-    border: 2px dashed var(--fg);
+    border: 1px dashed var(--line-strong);
     background: transparent;
   }
   .head {

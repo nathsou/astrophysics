@@ -40,8 +40,8 @@
     left: 4.75rem;
     top: 0.4rem;
     bottom: 0.4rem;
-    width: 2px;
-    background: var(--fg);
+    width: 1.5px;
+    background: color-mix(in srgb, var(--copper) 45%, var(--line));
   }
   li {
     display: grid;
@@ -53,7 +53,7 @@
   .year {
     text-align: right;
     font-family: var(--font-display);
-    font-weight: 900;
+    font-weight: 600;
     letter-spacing: -0.02em;
     color: var(--ink);
     font-size: 0.98rem;
@@ -62,16 +62,18 @@
   .dot {
     width: 11px;
     height: 11px;
-    margin: 0.4rem 0 0 0.4rem;
-    background: var(--fx-red);
+    margin: 0.45rem 0 0 0.33rem;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px var(--bg);
+    background: var(--copper);
     position: relative;
     z-index: 1;
   }
   li:nth-child(3n + 2) .dot {
-    background: var(--fx-blue);
+    background: var(--c-lab);
   }
   li:nth-child(3n) .dot {
-    background: var(--fx-yellow);
+    background: var(--sig-high);
   }
   .title {
     font-weight: 700;

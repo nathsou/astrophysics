@@ -28,8 +28,11 @@
   </main>
 </div>
 <footer class="foot ui">
-  <div class="bars" aria-hidden="true"><span></span><span></span><span></span></div>
-  <p>{COURSE_TITLE} · {COURSE_SUBTITLE}</p>
+  <svg class="trace" viewBox="0 0 120 12" aria-hidden="true">
+    <path d="M0 9h14V3h14v6h14V3h14v6h64" />
+  </svg>
+  <p class="t">{COURSE_TITLE}</p>
+  <p class="s">{COURSE_SUBTITLE}</p>
 </footer>
 
 <style>
@@ -38,11 +41,12 @@
     left: -999px;
     top: 0.5rem;
     z-index: 100;
-    background: var(--fx-yellow);
-    color: var(--fx-ink);
-    font-weight: 700;
-    border: 2px solid var(--fx-ink);
-    padding: 0.4rem 0.8rem;
+    background: var(--fg);
+    color: var(--bg);
+    font-weight: 600;
+    border-radius: 6px;
+    padding: 0.45rem 0.9rem;
+    text-decoration: none;
   }
   .skip:focus {
     left: 0.5rem;
@@ -50,7 +54,7 @@
   .shell {
     display: grid;
     grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
-    min-height: calc(100vh - 3.25rem);
+    min-height: calc(100vh - 3.5rem);
   }
   main {
     min-width: 0;
@@ -71,37 +75,36 @@
     }
   }
   .foot {
-    border-top: 2px solid var(--fg);
-    padding: 1.5rem max(1rem, calc((100% - 72rem) / 2 + 1rem)) 2rem;
+    border-top: 1px solid var(--line);
+    background: color-mix(in srgb, var(--pn) 55%, transparent);
+    padding: 1.6rem max(1rem, calc((100% - 72rem) / 2 + 1rem)) 2.2rem;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.9rem 1.5rem;
+    gap: 0.4rem 1rem;
   }
-  .bars {
-    display: flex;
+  .trace {
+    width: 5.5rem;
     height: 0.8rem;
-    width: 5rem;
     flex: none;
   }
-  .bars span {
-    flex: 1;
-  }
-  .bars span:nth-child(1) {
-    background: var(--fx-red);
-  }
-  .bars span:nth-child(2) {
-    background: var(--fx-yellow);
-  }
-  .bars span:nth-child(3) {
-    background: var(--fx-blue);
+  .trace path {
+    fill: none;
+    stroke: var(--copper);
+    stroke-width: 1.6;
+    stroke-linejoin: round;
   }
   .foot p {
     margin: 0;
+  }
+  .t {
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+  .s {
     font-family: var(--font-mono);
     font-size: 0.72rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    letter-spacing: 0.04em;
     color: var(--mute);
   }
 </style>

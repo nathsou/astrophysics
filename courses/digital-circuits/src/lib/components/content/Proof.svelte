@@ -15,7 +15,7 @@
   .proof {
     margin: 1.4rem 0 2rem;
     padding: 0 0 0 1.3rem;
-    border-left: 2px solid var(--fg);
+    border-left: 1px solid var(--line);
   }
   .head {
     margin: 0 0 0.4rem !important;
@@ -27,7 +27,7 @@
   .qed {
     margin: -0.6rem 0 0 !important;
     text-align: right;
-    color: var(--byrne-blue);
+    color: var(--copper);
     line-height: 1;
   }
 </style>

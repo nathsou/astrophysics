@@ -31,6 +31,19 @@
     table: 'M3 5h18v14H3zM3 10h18M3 15h18M9 5v14',
     book: 'M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14z',
     external: 'M14 4h6v6M20 4l-9 9M18 14v6H4V6h6',
+    programmer: 'M8 7l-5 5 5 5M16 7l5 5-5 5M13.5 4l-3 16',
+    hood: 'M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 2.5v3M12 18.5v3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M2.5 12h3M18.5 12h3M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1',
+    deeper: 'M18 4H6l6.5 8L6 20h12',
+    real: 'M7 4h10v16H7zM4 7.5h3M4 12h3M4 16.5h3M17 7.5h3M17 12h3M17 16.5h3M10.5 4a1.5 1.5 0 0 0 3 0',
+    fullscreen: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5',
+    bench: 'M3 4h18v13H3zM8 21h8M12 17v4M6 13h2.5l1.5-5 3 8 1.5-5H18',
+    flip: 'M4 11a8 8 0 0 1 14-4.7M20 13a8 8 0 0 1-14 4.7M18 2.5v4h-4M6 21.5v-4h4',
+    wave: 'M2 16h4V8h6v8h6V8h4',
+    bolt: 'M13 2 4 14h7l-1 8 9-12h-7l1-8z',
+    bin: 'M3 8h18v12H3zM3 8l2.5-4h13L21 8M9 12.5h6',
+    studio: 'M4 4h16v16H4zM9.3 4v16M14.7 4v16M4 9.3h16M4 14.7h16',
+    probe: 'M3 21l5-5M8 16l2 2 9-9-2-2zM14 5l5 5M17 3l4 4',
+    arrow: 'M5 12h14M13 6l6 6-6 6',
   } as const;
   export type IconName = keyof typeof ICONS;
 </script>

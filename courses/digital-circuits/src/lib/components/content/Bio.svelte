@@ -14,9 +14,9 @@
   }: { name: string; born?: string | number; died?: string | number; place?: string; title?: string; children?: Snippet } = $props();
 
   const HUES = [
-    ['var(--fx-red)', 'var(--fx-cream)'],
-    ['var(--fx-blue)', 'var(--fx-cream)'],
-    ['var(--fx-yellow)', 'var(--fx-ink)'],
+    ['var(--copper)', 'var(--on-accent)'],
+    ['var(--c-programmer)', 'var(--on-accent)'],
+    ['var(--c-lab)', 'var(--on-accent)'],
   ] as const;
   const initials = $derived(
     name
@@ -50,7 +50,7 @@
     gap: 1.1rem;
     margin: 2.25rem 0;
     padding: 1.15rem 1.3rem 0.4rem;
-    border: 2px solid var(--fg);
+    border: 1px solid var(--line);
     border-radius: var(--radius);
     background: var(--surface);
   }
@@ -62,7 +62,7 @@
     place-items: center;
     font-family: var(--font-display);
     font-size: 1.5rem;
-    font-weight: 900;
+    font-weight: 600;
     letter-spacing: -0.02em;
     color: var(--on);
     background: var(--hue);
@@ -76,7 +76,7 @@
   }
   .name {
     font-family: var(--font-display);
-    font-weight: 900;
+    font-weight: 600;
     letter-spacing: -0.02em;
     font-size: 1.2rem;
   }

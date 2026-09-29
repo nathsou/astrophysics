@@ -1,0 +1,213 @@
+/*
+ * Schematic colours and live-signal styling. The renderer sets data-v ("0", "1", "x", "z") on wires,
+ * pin stubs and junctions in logic mode, and --c (a CSS colour) in voltage mode.
+ */
+.sch {
+  --_ink: var(--sch-ink, var(--ink, #1a1917));
+  --_ink2: var(--ink-3, #6b6459);
+  --_body: var(--sch-body, var(--surface, #fbf8f1));
+  --_wire: var(--wire, var(--_ink));
+  --_hi: var(--sig-high, #f29e0c);
+  --_lo: var(--sig-low, #5d6b80);
+  --_z: var(--sig-z, #9a9a9a);
+  --_x: var(--sig-x, #d6332b);
+  --_cur: var(--sig-current, #ffc400);
+  --_vn: var(--volt-neg, #2f6fd6);
+  --_v0: var(--volt-zero, #8c8c8c);
+  --_vp: var(--volt-pos, #e0482e);
+  --_copper: var(--copper, #b86b2e);
+  --_screen: #14201a;
+  --_phosphor: #86f7a4;
+  --_accent: var(--accent, #1f5aa6);
+  --_focus: var(--focus, #1f5aa6);
+}
+
+.sch .w .main {
+  fill: none;
+  stroke: var(--c, var(--_wire));
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.sch .w .halo {
+  fill: none;
+  stroke: var(--_hi);
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  pointer-events: none;
+}
+.sch .w .hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 10;
+  pointer-events: stroke;
+}
+.sch .stub {
+  stroke: var(--c, var(--_wire));
+}
+.sch .junction {
+  fill: var(--c, var(--_wire));
+}
+
+/* Logic values: HIGH amber and thicker with a glow; LOW slate; Z dashed grey; X red, dash-dot, flickering. */
+.sch .w[data-v='1'] .main,
+.sch .stub[data-v='1'] {
+  stroke: var(--_hi);
+  stroke-width: 3;
+}
+.sch .w[data-v='1'] .halo {
+  opacity: 0.26;
+}
+.sch .w[data-v='0'] .main,
+.sch .stub[data-v='0'] {
+  stroke: var(--_lo);
+}
+.sch .w[data-v='z'] .main,
+.sch .stub[data-v='z'] {
+  stroke: var(--_z);
+  stroke-dasharray: 4 3.5;
+}
+.sch .w[data-v='x'] .main,
+.sch .stub[data-v='x'] {
+  stroke: var(--_x);
+  stroke-dasharray: 7 2.5 1.5 2.5;
+  animation: sch-flicker 0.8s steps(2, jump-none) infinite;
+}
+.sch .junction[data-v='1'] {
+  fill: var(--_hi);
+}
+.sch .junction[data-v='0'] {
+  fill: var(--_lo);
+}
+.sch .junction[data-v='z'] {
+  fill: var(--_z);
+}
+.sch .junction[data-v='x'] {
+  fill: var(--_x);
+}
+@keyframes sch-flicker {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.45;
+  }
+}
+
+.sch .open-pin {
+  fill: var(--_body);
+  stroke: var(--_ink);
+  stroke-width: 1.4;
+}
+
+/* Current: dots along wires (Falstad), or static arrows under reduced motion. */
+.sch .dots {
+  fill: none;
+  stroke: var(--_cur);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 0 16;
+  pointer-events: none;
+}
+.sch .arrow {
+  fill: var(--_cur);
+  stroke: var(--_ink);
+  stroke-width: 0.8;
+  pointer-events: none;
+}
+
+.sch .lbl {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 10px;
+  fill: var(--_ink);
+}
+.sch .lbl .id {
+  font-weight: 700;
+}
+.sch .lbl .val {
+  fill: var(--_ink2);
+}
+.sch .note {
+  font-family: var(--font-ui, system-ui, sans-serif);
+  font-size: 11px;
+  font-style: italic;
+  fill: var(--_ink2);
+}
+
+.sch .comp .hit {
+  fill: transparent;
+}
+.sch .comp.act {
+  cursor: pointer;
+}
+.sch .comp:focus {
+  outline: none;
+}
+.sch .comp .focus-ring {
+  fill: none;
+  stroke: var(--_focus);
+  stroke-width: 2;
+  opacity: 0;
+}
+.sch .comp:focus-visible .focus-ring {
+  opacity: 1;
+}
+.sch .comp.act:hover .focus-ring {
+  opacity: 0.35;
+}
+.sch .hl {
+  fill: color-mix(in srgb, var(--_accent) 12%, transparent);
+  stroke: var(--_accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 3;
+}
+.sch .w.hl-net .main {
+  stroke-width: 3.5;
+}
+
+/* A burned part: scorch mark and a rising puff of smoke. */
+.sch .scorch {
+  pointer-events: none;
+}
+.sch .smoke circle {
+  fill: #8d8a86;
+  opacity: 0;
+  animation: sch-smoke 2.6s ease-out infinite;
+}
+.sch .smoke circle:nth-child(2) {
+  animation-delay: 0.85s;
+}
+.sch .smoke circle:nth-child(3) {
+  animation-delay: 1.7s;
+}
+@keyframes sch-smoke {
+  0% {
+    transform: translate(0, 0) scale(0.5);
+    opacity: 0.55;
+  }
+  100% {
+    transform: translate(6px, -26px) scale(1.8);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sch .w[data-v='x'] .main,
+  .sch .stub[data-v='x'] {
+    animation: none;
+  }
+  .sch .smoke circle {
+    animation: none;
+    opacity: 0.35;
+  }
+  .sch .smoke circle:nth-child(2) {
+    transform: translate(3px, -9px) scale(1.2);
+    opacity: 0.25;
+  }
+  .sch .smoke circle:nth-child(3) {
+    transform: translate(6px, -18px) scale(1.6);
+    opacity: 0.15;
+  }
+}

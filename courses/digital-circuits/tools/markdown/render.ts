@@ -36,11 +36,12 @@ export function termRefs(tex: string): string[] {
 }
 
 /**
- * Byrne-tinted code themes: the same token roles as GitHub's (keyword, string, number, comment,
- * function, type), re-coloured to sit on the cream / dark-umber pages. Every role keeps its own hue
- * and at least 4.5:1 contrast on the code panel (--pn), so tokens stay distinct in both themes.
+ * "Bench" code themes: the same token roles as GitHub's (keyword, string, number, comment, function,
+ * type), coloured to sit on the code panel (--pn in app.css: notebook paper / night-lab blue-black).
+ * Every role keeps its own hue and at least 4.5:1 contrast on the panel in both themes; the values match
+ * the --code-* tokens in app.css so other highlighters (the DCL lexer) can use the same colours.
  */
-function byrneTheme(name: string, type: 'light' | 'dark', c: Record<'fg' | 'bg' | 'keyword' | 'string' | 'number' | 'comment' | 'fn' | 'type' | 'prop' | 'punct', string>): ThemeRegistration {
+function benchTheme(name: string, type: 'light' | 'dark', c: Record<'fg' | 'bg' | 'keyword' | 'string' | 'number' | 'comment' | 'fn' | 'type' | 'prop' | 'punct', string>): ThemeRegistration {
   return {
     name,
     type,
@@ -62,8 +63,8 @@ function byrneTheme(name: string, type: 'light' | 'dark', c: Record<'fg' | 'bg' 
     ],
   };
 }
-const THEME_LIGHT = byrneTheme('byrne-light', 'light', { fg: '#1a1917', bg: '#e8ddc7', keyword: '#a3211c', string: '#1f5aa6', number: '#7d5200', comment: '#5f574b', fn: '#6a3f8f', type: '#1d6470', prop: '#1f5aa6', punct: '#3f3b34' });
-const THEME_DARK = byrneTheme('byrne-dark', 'dark', { fg: '#f3ead9', bg: '#2b2521', keyword: '#ff7a6b', string: '#7aa9ec', number: '#e9a91b', comment: '#a89d8a', fn: '#c3a3f0', type: '#62c2cf', prop: '#7aa9ec', punct: '#d9cfbb' });
+const THEME_LIGHT = benchTheme('bench-light', 'light', { fg: '#1c2127', bg: '#eee8dc', keyword: '#8a3f86', string: '#0b6e44', number: '#9c4f1c', comment: '#5d646d', fn: '#1f5fbf', type: '#0c6e69', prop: '#3654b8', punct: '#4a525d' });
+const THEME_DARK = benchTheme('bench-dark', 'dark', { fg: '#e2e8ef', bg: '#111a26', keyword: '#e29ad6', string: '#7fe0a8', number: '#f0a870', comment: '#7f8b9b', fn: '#7fb6ff', type: '#5fd6c8', prop: '#9fb0ff', punct: '#aab4c0' });
 
 const LANGS = ['ts', 'typescript', 'js', 'javascript', 'python', 'bash', 'sh', 'json', 'wgsl', 'yaml', 'text', 'svelte', 'html', 'css', 'diff', 'toml'];
 let highlighter: Promise<Highlighter> | undefined;
@@ -76,7 +77,7 @@ export async function highlight(code: string, lang: string | null | undefined): 
   // which is right for accessibility, but trips Svelte's generic a11y lint.
   const html = h.codeToHtml(code, {
     lang: l,
-    themes: { light: 'byrne-light', dark: 'byrne-dark' },
+    themes: { light: 'bench-light', dark: 'bench-dark' },
     defaultColor: false,
   });
   return `<!-- svelte-ignore a11y_no_noninteractive_tabindex -->${html}`;

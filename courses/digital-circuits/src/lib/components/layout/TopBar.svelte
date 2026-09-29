@@ -15,12 +15,16 @@
     <Icon name="menu" />
   </button>
   <a class="brand" href="{base}/">
-    <span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <rect width="32" height="32" rx="7" class="tile" />
+      <path d="M4.5 24.5h23" class="base" />
+      <path d="M5 21h5.5V11h6v10h6V11H27" class="wave" />
+    </svg>
     <span class="name">{COURSE_TITLE}</span>
   </a>
   <span class="page-title" aria-hidden={!scrolled}>{nav.pageTitle ?? ''}</span>
   <span class="spacer"></span>
-  <button class="icon-btn" onclick={() => theme.set(theme.resolved === 'dark' ? 'light' : 'dark')} aria-label="Switch to {theme.resolved === 'dark' ? 'light' : 'dark'} theme">
+  <button class="icon-btn" onclick={() => theme.set(theme.resolved === 'dark' ? 'light' : 'dark')} aria-label="Switch to {theme.resolved === 'dark' ? 'light' : 'dark'} theme" title="Switch to {theme.resolved === 'dark' ? 'light' : 'dark'} theme">
     <Icon name={theme.resolved === 'dark' ? 'sun' : 'moon'} />
   </button>
 </header>
@@ -30,65 +34,53 @@
     position: sticky;
     top: 0;
     z-index: 40;
-    height: 3.25rem;
+    height: 3.5rem;
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0 1rem;
-    background: var(--bg);
-    border-bottom: 2px solid var(--fg);
+    padding: 0 max(1rem, env(safe-area-inset-left));
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px) saturate(1.2);
+    -webkit-backdrop-filter: blur(10px) saturate(1.2);
+    border-bottom: 1px solid var(--line);
   }
   .brand {
     display: flex;
     align-items: center;
-    gap: 0.65rem;
-    color: var(--ink);
+    gap: 0.6rem;
+    color: var(--fg);
     text-decoration: none;
     font-family: var(--font-display);
-    font-weight: 900;
-    font-size: 1.02rem;
-    letter-spacing: -0.02em;
-    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 1.05rem;
+    letter-spacing: -0.015em;
+    white-space: nowrap;
   }
-  .brand:hover {
-    opacity: 1;
-    color: var(--accent);
+  .brand:hover .name {
+    color: var(--copper-ink);
   }
-  /* Three overlapping primaries. */
   .mark {
-    position: relative;
-    width: 1.7rem;
-    height: 1.5rem;
+    width: 1.75rem;
+    height: 1.75rem;
     flex: none;
   }
-  .mark i {
-    position: absolute;
-    display: block;
+  .tile {
+    fill: light-dark(#1c2127, #1a2433);
   }
-  .mark i:nth-child(1) {
-    left: 0;
-    top: 0;
-    width: 1rem;
-    height: 1rem;
-    background: var(--fx-yellow);
+  .base {
+    stroke: light-dark(#4b5563, #35465d);
+    stroke-width: 1.2;
   }
-  .mark i:nth-child(2) {
-    left: 0.55rem;
-    top: 0.4rem;
-    width: 1rem;
-    height: 1rem;
-    background: var(--fx-red);
-    opacity: 0.92;
-  }
-  .mark i:nth-child(3) {
-    left: 0.15rem;
-    top: 0.75rem;
-    width: 0.7rem;
-    height: 0.7rem;
-    background: var(--fx-blue);
+  .wave {
+    fill: none;
+    stroke: var(--sig-high);
+    stroke-width: 2.6;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 1.5px rgb(255 178 62 / 0.6));
   }
   .page-title {
-    font-size: 0.86rem;
+    font-size: 0.88rem;
     font-weight: 500;
     color: var(--ink-2);
     opacity: 0;
@@ -102,7 +94,7 @@
   .page-title::before {
     content: '/';
     margin-right: 0.6rem;
-    color: var(--ink-3);
+    color: var(--line-strong);
   }
   .scrolled .page-title {
     opacity: 1;
@@ -112,24 +104,29 @@
     flex: 1;
   }
   .icon-btn {
-    display: inline-flex;
-    border: 2px solid transparent;
+    display: inline-grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 1px solid transparent;
     background: none;
-    padding: 0.35rem;
-    border-radius: var(--radius);
-    color: var(--ink);
+    border-radius: 8px;
+    color: var(--ink-2);
     cursor: pointer;
+    transition: background-color 120ms, border-color 120ms, color 120ms;
   }
   .icon-btn:hover {
-    border-color: var(--fg);
-    background: var(--pn);
+    border-color: var(--line);
+    background: var(--panel);
+    color: var(--fg);
   }
   .menu {
     display: none;
+    margin-left: -0.4rem;
   }
   @media (max-width: 1099px) {
     .menu {
-      display: inline-flex;
+      display: inline-grid;
     }
   }
   @media (max-width: 640px) {

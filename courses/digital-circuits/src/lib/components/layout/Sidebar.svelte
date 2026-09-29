@@ -35,105 +35,185 @@
 <nav class="sidebar ui" class:open={nav.sidebarOpen} aria-label="Course contents">
   {#each PARTS as part (part.id)}
     <section>
-      <h2>{#if part.id !== '0' && part.id !== 'E'}<span class="part">Part {part.id}</span> {/if}{part.title}</h2>
-      <ul>
+      <h2>
+        {#if part.id !== '0' && part.id !== 'E'}<span class="part">Part {part.id}</span>{/if}
+        <span class="ptitle">{part.title}</span>
+      </h2>
+      <ul class="trace">
         {#each part.chapters as c (c.slug)}{@render item(`chapter:${c.slug}`)}{/each}
       </ul>
     </section>
   {/each}
   <section>
-    <h2>Appendices</h2>
-    <ul>
+    <h2><span class="ptitle">Appendices</span></h2>
+    <ul class="trace">
       {#each appendices as a (a.slug)}{@render item(`appendix:${a.slug}`)}{/each}
     </ul>
   </section>
+  <p class="legend" aria-hidden="true"><span class="pad on"></span> ready <span class="pad"></span> planned</p>
 </nav>
 
 <style>
   .sidebar {
     position: sticky;
-    top: 3.25rem;
-    height: calc(100vh - 3.25rem);
+    top: 3.5rem;
+    height: calc(100vh - 3.5rem);
     overflow-y: auto;
-    padding: 1.25rem 0.75rem 3rem 1rem;
-    border-right: 2px solid var(--fg);
+    padding: 1.4rem 0.9rem 3rem 1rem;
+    border-right: 1px solid var(--line);
+    background: color-mix(in srgb, var(--bg) 70%, transparent);
     font-size: 0.88rem;
     scrollbar-width: thin;
+    scrollbar-color: var(--line-strong) transparent;
   }
   section + section {
-    margin-top: 1.5rem;
-    padding-top: 1rem;
-    border-top: 2px solid var(--fg);
+    margin-top: 1.35rem;
   }
   h2 {
-    font-family: var(--font-mono);
-    font-size: 0.66rem;
-    text-transform: uppercase;
-    letter-spacing: 0.13em;
-    font-weight: 500;
-    line-height: 1.5;
-    color: var(--mute);
-    margin: 0 0 0.4rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.05rem;
+    margin: 0 0 0.35rem 0;
+    padding-left: 0.2rem;
+    line-height: 1.3;
   }
   .part {
-    color: var(--accent);
-    font-weight: 700;
-    margin-right: 0.6em;
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    color: var(--copper-ink);
+  }
+  .ptitle {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--fg);
   }
   ul {
     list-style: none;
     margin: 0;
     padding: 0;
   }
-  li a,
+  /* The part's chapters sit on a copper trace; each chapter is a pad on it. */
+  .trace {
+    position: relative;
+  }
+  .trace::before {
+    content: '';
+    position: absolute;
+    left: 0.7rem;
+    top: 0.6rem;
+    bottom: 0.6rem;
+    width: 1.5px;
+    background: color-mix(in srgb, var(--copper) 45%, var(--line));
+  }
+  li {
+    position: relative;
+  }
+  .trace > li > a,
   .row {
+    position: relative;
     display: grid;
-    grid-template-columns: 1.7rem 1fr;
-    padding: 0.3rem 0.5rem;
-    border-left: 4px solid transparent;
-    color: var(--ink);
+    grid-template-columns: 1.45rem 1.6rem 1fr;
+    align-items: baseline;
+    padding: 0.28rem 0.5rem 0.28rem 0;
+    border-radius: 6px;
+    color: var(--fg);
     text-decoration: none;
-    font-weight: 500;
     line-height: 1.35;
   }
-  li a:hover {
-    background: var(--pn);
-    opacity: 1;
+  .trace > li > a::before,
+  .row::before {
+    content: '';
+    grid-column: 1;
+    justify-self: center;
+    align-self: center;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 1.5px solid var(--copper);
+    background: var(--bg);
+    box-sizing: border-box;
+    position: relative;
+    left: -0.02rem;
+  }
+  .trace > li > a:hover {
+    background: color-mix(in srgb, var(--pn) 80%, transparent);
+  }
+  .trace > li > a:hover::before {
+    background: var(--copper);
   }
   .n {
-    color: var(--accent);
-    font-weight: 700;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: var(--copper-ink);
+    font-weight: 500;
     font-variant-numeric: tabular-nums;
   }
+  /* You are here: the pad is driven HIGH. */
   .here > a {
     background: var(--pn);
-    border-left-color: var(--fx-red);
-    font-weight: 700;
+    font-weight: 600;
   }
+  .here > a::before {
+    background: var(--sig-high);
+    border-color: var(--sig-high);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--sig-high) 22%, transparent), 0 0 8px var(--sig-high-glow);
+  }
+  /* Planned chapters are floating (Z): a dashed grey pad. */
   .planned .row {
-    color: var(--ink-3);
+    color: var(--mute);
     cursor: default;
   }
+  .planned .row::before {
+    border: 1.5px dashed var(--sig-z);
+  }
   .planned .n {
-    color: var(--ink-3);
+    color: var(--mute);
   }
   .toc {
-    margin: 0.2rem 0 0.4rem 2.2rem;
-    border-left: 2px solid var(--fg);
+    margin: 0.15rem 0 0.4rem 2.1rem;
+    border-left: 1px solid var(--line);
   }
   .toc a {
     display: block;
-    padding: 0.22rem 0.6rem;
-    font-size: 0.82rem;
-    font-weight: 400;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.8rem;
     color: var(--ink-2);
-    margin-left: -2px;
-    border-left: 4px solid transparent;
+    margin-left: -1px;
+    border-left: 2px solid transparent;
+    text-decoration: none;
+  }
+  .toc a:hover {
+    color: var(--fg);
   }
   .toc .active a {
-    color: var(--ink);
-    border-left-color: var(--fx-yellow);
-    font-weight: 700;
+    color: var(--fg);
+    border-left-color: var(--sig-high);
+    font-weight: 600;
+  }
+  .legend {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 1.75rem 0 0 0.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    color: var(--mute);
+  }
+  .legend .pad {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 1.5px dashed var(--sig-z);
+  }
+  .legend .pad.on {
+    border: 1.5px solid var(--copper);
+  }
+  .legend .pad:not(.on) {
+    margin-left: 0.6rem;
   }
   .scrim {
     display: none;
@@ -141,24 +221,26 @@
   @media (max-width: 1099px) {
     .sidebar {
       position: fixed;
-      top: 3.25rem;
+      top: 3.5rem;
       left: 0;
       z-index: 45;
       width: min(20rem, 88vw);
       background: var(--bg);
       transform: translateX(-100%);
-      transition: transform 200ms ease;
+      visibility: hidden;
+      transition: transform 200ms ease, visibility 200ms;
     }
     .sidebar.open {
       transform: none;
+      visibility: visible;
       box-shadow: var(--shadow-lg);
     }
     .scrim.open {
       display: block;
       position: fixed;
-      inset: 3.25rem 0 0 0;
+      inset: 3.5rem 0 0 0;
       z-index: 44;
-      background: rgba(26, 25, 23, 0.4);
+      background: light-dark(rgb(28 33 39 / 0.35), rgb(0 0 0 / 0.55));
     }
   }
 </style>

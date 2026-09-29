@@ -72,15 +72,15 @@
 <style>
   .exercise {
     margin: 2.25rem 0;
-    border: 2px solid var(--fg);
-    border-left: 8px solid var(--fx-red);
+    border: 1px solid var(--line);
+    box-shadow: inset 3px 0 0 var(--copper), var(--shadow);
     border-radius: var(--radius-sm);
     background: var(--surface);
     padding: 0.85rem 1.15rem 1rem;
   }
-  /* Pending work is red; once accepted it turns blue. */
+  /* Pending work is copper; once accepted it turns green. */
   .exercise.solved {
-    border-left-color: var(--fx-blue);
+    box-shadow: inset 3px 0 0 var(--ok), var(--shadow);
   }
   header {
     display: flex;
@@ -116,7 +116,7 @@
     gap: 0.25rem;
     color: var(--ok);
     background: var(--ok-soft);
-    border: 2px solid var(--ok);
+    border: 1px solid var(--ok);
     border-radius: var(--radius-sm);
     padding: 0.05rem 0.5rem;
     font-family: var(--font-mono);
@@ -139,7 +139,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    border: 2px solid var(--fg);
+    border: 1px solid var(--line);
     background: var(--surface);
     border-radius: var(--radius-sm);
     padding: 0.2rem 0.7rem;
@@ -148,8 +148,8 @@
     font-weight: 700;
   }
   .help button:hover {
-    background: var(--fx-yellow);
-    color: var(--fx-ink);
+    border-color: var(--copper);
+    color: var(--copper-ink);
   }
   .n {
     color: var(--ink-3);
@@ -168,7 +168,7 @@
     margin-top: 0.75rem;
     padding: 0.7rem 0.9rem 0.1rem;
     border-radius: var(--radius-sm);
-    border-left: 4px solid var(--fx-blue);
+    border-left: 3px solid var(--ok);
     background: var(--surface-2);
     font-family: var(--font-body);
     font-size: 1rem;

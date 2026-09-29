@@ -43,10 +43,10 @@
 <style>
   .zoom {
     margin: 2.25rem 0;
-    border: 2px solid var(--fg);
+    border: 1px solid var(--line);
     border-radius: var(--radius);
     background: var(--surface);
-    box-shadow: 6px 6px 0 var(--pn);
+    box-shadow: var(--shadow);
   }
   header {
     display: flex;
@@ -55,7 +55,7 @@
     gap: 0.5rem 0.75rem;
     padding: 0.6rem 0.9rem;
     background: var(--pn);
-    border-bottom: 2px solid var(--fg);
+    border-bottom: 1px solid var(--line);
     font-size: 0.82rem;
   }
   .kind {
@@ -75,7 +75,7 @@
   .levels {
     display: flex;
     gap: 0;
-    border: 2px solid var(--fg);
+    border: 1px solid var(--line);
     background: var(--surface);
     border-radius: var(--radius-sm);
     overflow: hidden;
@@ -93,7 +93,7 @@
     font-weight: 500;
   }
   .levels button + button {
-    border-left: 2px solid var(--fg);
+    border-left: 1px solid var(--line);
   }
   .levels button.on {
     background: var(--fg);
@@ -114,7 +114,7 @@
   .dot {
     width: 0.5rem;
     height: 0.5rem;
-    background: color-mix(in srgb, var(--fx-red) calc(25% + var(--k) * 75%), transparent);
+    background: color-mix(in srgb, var(--copper) calc(25% + var(--k) * 75%), transparent);
     outline: 1px solid currentColor;
   }
   .body {

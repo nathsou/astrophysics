@@ -107,7 +107,7 @@
     z-index: 50;
     width: min(24rem, calc(100vw - 16px));
     background: var(--surface);
-    border: 2px solid var(--fg);
+    border: 1px solid var(--line);
     border-radius: var(--radius);
     box-shadow: var(--shadow-lg);
     padding: 0.8rem 1rem 0.6rem;
@@ -116,7 +116,7 @@
     animation: pop 120ms ease-out;
   }
   .pinned {
-    border-top: 6px solid var(--fx-yellow);
+    box-shadow: inset 0 3px 0 var(--sig-high), var(--shadow-lg);
   }
   @keyframes pop {
     from {

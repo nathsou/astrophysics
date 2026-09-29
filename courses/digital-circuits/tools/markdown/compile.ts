@@ -80,7 +80,7 @@ interface Ctx {
   asyncJobs: Promise<void>[];
 }
 
-const CALLOUTS = new Set(['note', 'tip', 'warning', 'info', 'lab', 'breakit', 'challenge', 'exercises', 'definition', 'key', 'question', 'aside']);
+const CALLOUTS = new Set(['note', 'tip', 'warning', 'info', 'lab', 'breakit', 'challenge', 'exercises', 'definition', 'key', 'question', 'aside', 'programmer', 'hood', 'deeper', 'real']);
 const TEXT_DIRECTIVES = new Set(['sidenote', 'cite', 'term', 'kbd']);
 const BUILTIN_BLOCKS: Record<string, string> = {
   history: 'History',

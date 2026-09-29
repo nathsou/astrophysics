@@ -67,9 +67,9 @@
   .slider {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: 0.15rem;
     min-width: 9rem;
-    font-size: 0.84rem;
+    font-size: 0.86rem;
   }
   label {
     display: flex;
@@ -84,49 +84,65 @@
     font-family: var(--font-mono);
     font-size: 0.78rem;
     font-weight: 500;
-    color: var(--ink);
+    color: var(--fg);
     background: var(--pn);
-    padding: 0 0.35rem;
-    border-radius: var(--radius-sm);
-    min-width: 3.2rem;
+    border: 1px solid var(--line);
+    padding: 0 0.4rem;
+    border-radius: 4px;
+    min-width: 3.4rem;
     text-align: right;
   }
   input[type='range'] {
     -webkit-appearance: none;
     appearance: none;
     width: 100%;
-    height: 22px;
+    height: 24px;
     background: transparent;
     margin: 0;
     cursor: pointer;
   }
   input[type='range']::-webkit-slider-runnable-track {
-    height: 6px;
-    border-radius: 0;
-    background: linear-gradient(to right, var(--fx-red) var(--fill), var(--surface-3) var(--fill));
-    border: 1px solid var(--fg);
+    height: 4px;
+    border-radius: 99px;
+    background: linear-gradient(to right, var(--copper) var(--fill), var(--surface-3) var(--fill));
   }
   input[type='range']::-moz-range-track {
     height: 4px;
-    border-radius: 0;
-    background: linear-gradient(to right, var(--fx-red) var(--fill), var(--surface-3) var(--fill));
-    border: 1px solid var(--fg);
+    border-radius: 99px;
+    background: linear-gradient(to right, var(--copper) var(--fill), var(--surface-3) var(--fill));
   }
   input[type='range']::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 16px;
-    height: 16px;
-    margin-top: -6px;
-    border-radius: 0;
-    background: var(--fx-yellow);
-    border: 2px solid var(--fg);
+    width: 18px;
+    height: 18px;
+    margin-top: -7px;
+    border-radius: 50%;
+    background: var(--panel);
+    border: 2px solid var(--copper);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
+    transition: transform 100ms;
   }
   input[type='range']::-moz-range-thumb {
-    width: 12px;
-    height: 12px;
-    border-radius: 0;
-    background: var(--fx-yellow);
-    border: 2px solid var(--fg);
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--panel);
+    border: 2px solid var(--copper);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
+  }
+  input[type='range']:active::-webkit-slider-thumb {
+    transform: scale(1.12);
+  }
+  input[type='range']:focus-visible {
+    outline: none;
+  }
+  input[type='range']:focus-visible::-webkit-slider-thumb {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  input[type='range']:focus-visible::-moz-range-thumb {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
   }
   .compact {
     min-width: 7rem;

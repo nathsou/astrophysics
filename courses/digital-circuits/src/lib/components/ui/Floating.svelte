@@ -55,7 +55,7 @@
     z-index: 60;
     max-width: calc(100vw - 16px);
     background: var(--surface);
-    border: 2px solid var(--fg);
+    border: 1px solid var(--line-strong);
     border-radius: var(--radius);
     box-shadow: var(--shadow-lg);
     padding: 0.7rem 0.9rem;

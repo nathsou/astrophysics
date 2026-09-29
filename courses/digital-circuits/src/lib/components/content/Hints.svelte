@@ -42,8 +42,8 @@
   .hints {
     margin: 1.9rem 0;
     padding: 0.8rem 1.1rem 0.9rem;
-    border: 2px dashed var(--fg);
-    border-radius: var(--radius-sm);
+    border: 1px dashed var(--line-strong);
+    border-radius: var(--radius);
     background: transparent;
     font-size: 0.92rem;
   }
@@ -72,7 +72,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    border: 2px solid var(--fg);
+    border: 1px solid var(--line);
     background: var(--surface);
     color: var(--ink);
     font-weight: 700;
@@ -82,8 +82,8 @@
     font-size: 0.84rem;
   }
   button:hover {
-    background: var(--fx-yellow);
-    color: var(--fx-ink);
+    border-color: var(--copper);
+    color: var(--copper-ink);
   }
   .count {
     font-family: var(--font-mono);

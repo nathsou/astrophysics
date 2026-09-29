@@ -178,7 +178,7 @@
     font-size: 0.95rem;
     line-height: 1.45;
     padding: 0.4rem 0.6rem;
-    border: 2px solid var(--fg);
+    border: 1px solid var(--line);
     border-radius: var(--radius-sm);
     background: var(--bg);
     cursor: pointer;
@@ -188,7 +188,7 @@
   }
   button.line:hover {
     background: var(--pn);
-    border-color: var(--fx-blue);
+    border-color: var(--copper);
   }
   .proof li {
     display: grid;
@@ -214,7 +214,7 @@
     gap: 0.15rem;
   }
   .tools button {
-    border: 2px solid var(--fg);
+    border: 1px solid var(--line);
     background: var(--surface);
     border-radius: var(--radius-sm);
     width: 1.5rem;
@@ -245,9 +245,9 @@
     font-size: 0.85rem;
   }
   .check {
-    border: 2px solid var(--fx-blue);
-    background: var(--fx-blue);
-    color: var(--fx-cream);
+    border: 1px solid var(--ok);
+    background: var(--ok);
+    color: var(--on-accent);
     border-radius: var(--radius-sm);
     padding: 0.26rem 0.9rem;
     cursor: pointer;
@@ -268,7 +268,7 @@
     padding: 0.6rem 0.9rem 0.1rem;
     border-radius: var(--radius-sm);
     background: var(--ok-soft);
-    border-left: 4px solid var(--fx-blue);
+    border-left: 3px solid var(--ok);
   }
   .explain :global(p) {
     margin: 0 0 0.6rem;

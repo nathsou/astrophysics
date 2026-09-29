@@ -29,7 +29,7 @@
     width: 100%;
     max-width: 24rem;
     padding: 0.4rem 0.6rem;
-    border: 2px solid var(--fg);
+    border: 1px solid var(--line);
     border-radius: var(--radius-sm);
     background: var(--surface);
     color: var(--ink);

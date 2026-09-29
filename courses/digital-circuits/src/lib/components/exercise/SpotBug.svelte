@@ -66,7 +66,7 @@
     text-align: left;
     align-items: baseline;
     padding: 0.35rem 0.6rem;
-    border: 2px solid var(--fg);
+    border: 1px solid var(--line);
     border-radius: var(--radius-sm);
     background: var(--bg);
     cursor: pointer;
@@ -75,7 +75,7 @@
   }
   .line:hover:not(:disabled) {
     background: var(--pn);
-    border-color: var(--fx-red);
+    border-color: var(--bad);
   }
   .line:disabled {
     cursor: default;
@@ -86,7 +86,7 @@
     background: var(--bad-soft);
   }
   .line.fine {
-    border-color: var(--fx-blue);
+    border-color: var(--ok);
   }
   .t :global(p) {
     margin: 0;
@@ -99,7 +99,7 @@
     padding: 0.6rem 0.9rem 0.1rem;
     border-radius: var(--radius-sm);
     background: var(--ok-soft);
-    border-left: 4px solid var(--fx-blue);
+    border-left: 3px solid var(--ok);
   }
   .why :global(p) {
     margin: 0 0 0.6rem;
