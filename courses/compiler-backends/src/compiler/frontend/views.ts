@@ -56,6 +56,8 @@ export interface AstNode {
   label: Tok[];
   /** the node's role in its parent: cond, then, body, init, ... */
   field?: string;
+  /** what the node is: an expression, a statement, a declaration, or a list of statements (body/then/else) */
+  kind: 'expr' | 'stmt' | 'decl' | 'group';
   /** a list of statements (body/then/else): no node of its own */
   group?: boolean;
   span?: Span;
@@ -74,7 +76,7 @@ const K = (s: string) => tok(s, 'kw');
 const V = (s: string) => tok(s, 'frame');
 
 function exprNode(e: Expr, field?: string): AstNode {
-  const n = (label: Tok[], children: AstNode[] = []): AstNode => ({ label, field, span: spanOf(e), children });
+  const n = (label: Tok[], children: AstNode[] = []): AstNode => ({ label, field, kind: 'expr', span: spanOf(e), children });
   switch (e.k) {
     case 'num': return n([K('Num'), sp, tok(e.v.toString(), 'imm')]);
     case 'var': return n([K('Var'), sp, V(e.name)]);
@@ -88,11 +90,11 @@ function exprNode(e: Expr, field?: string): AstNode {
 function group(field: string, stmts: Stmt[]): AstNode {
   const first = stmts[0], last = stmts[stmts.length - 1];
   const span = first && last?.end ? { from: startOf(first), to: last.end } : undefined;
-  return { label: [], field, group: true, span, children: stmts.map((s) => stmtNode(s)) };
+  return { label: [], field, kind: 'group', group: true, span, children: stmts.map((s) => stmtNode(s)) };
 }
 
 function stmtNode(s: Stmt, field?: string): AstNode {
-  const n = (label: Tok[], children: AstNode[] = []): AstNode => ({ label, field, span: spanOf(s), children });
+  const n = (label: Tok[], children: AstNode[] = []): AstNode => ({ label, field, kind: 'stmt', span: spanOf(s), children });
   switch (s.k) {
     case 'let': return n([K('Let'), sp, V(s.name), ...(s.size !== undefined ? [tok(`[${s.size}]`, 'imm')] : [])], s.init ? [exprNode(s.init, 'init')] : []);
     case 'assign': return n([K('Assign')], [exprNode(s.target, 'target'), exprNode(s.value, 'value')]);
@@ -109,15 +111,16 @@ function stmtNode(s: Stmt, field?: string): AstNode {
 export function astTree(p: Program): AstNode {
   const globals: AstNode[] = p.globals.map((g) => ({
     label: [K('Global'), sp, V(g.name), ...(g.isArray ? [tok(`[${g.size}]`, 'imm')] : []), ...(g.init.length ? [tok(' = ', 'punct'), tok(g.init.join(', '), 'imm')] : [])],
+    kind: 'decl',
     span: spanOf(g),
     children: [],
   }));
   const funcs: AstNode[] = p.funcs.map((f) => {
     const params: Tok[] = [];
     f.params.forEach((x, k) => { if (k) params.push(tok(', ', 'punct')); params.push(V(x)); });
-    return { label: [K('Fn'), sp, tok(f.name, 'sym'), tok('(', 'punct'), ...params, tok(')', 'punct')], span: spanOf(f), children: [group('body', f.body)] };
+    return { label: [K('Fn'), sp, tok(f.name, 'sym'), tok('(', 'punct'), ...params, tok(')', 'punct')], kind: 'decl', span: spanOf(f), children: [group('body', f.body)] };
   });
-  return { label: [K('Program')], children: [...globals, ...funcs] };
+  return { label: [K('Program')], kind: 'decl', children: [...globals, ...funcs] };
 }
 
 /** Plain-text rendering of the tree, two spaces per level (used by tests and "copy"). */

@@ -28,8 +28,8 @@ export function AstView({ root, height }: { root: AstNode; height?: number | str
   const [closed, setClosed] = useState<Set<string>>(() => new Set());
   const paths = useMemo(() => {
     const all: string[] = [];
-    const walk = (n: AstNode, p: string, d: number) => { if (n.children.length && d >= 2) all.push(p); n.children.forEach((c, k) => walk(c, `${p}.${k}`, d + 1)); };
-    walk(root, '0', 0);
+    const walk = (n: AstNode, p: string) => { if (n.children.length && n.kind === 'expr') all.push(p); n.children.forEach((c, k) => walk(c, `${p}.${k}`)); };
+    walk(root, '0');
     return all;
   }, [root]);
   const toggle = (p: string) => setClosed((s) => { const n = new Set(s); if (n.has(p)) n.delete(p); else n.add(p); return n; });
@@ -39,9 +39,9 @@ export function AstView({ root, height }: { root: AstNode; height?: number | str
     const open = !closed.has(p);
     const kids = n.children.length > 0;
     rows.push(
-      <div key={p} className={`ast-row${n.group ? ' grp' : ''}`} style={{ paddingLeft: 10 + d * 16 }} onMouseEnter={() => light(n)} role="treeitem" aria-level={d + 1} aria-expanded={kids ? open : undefined}>
+      <div key={p} className={`ast-row${n.group ? ' grp' : ''}`} style={{ paddingLeft: 10 + d * 16 }} onMouseEnter={() => light(n)} role="listitem">
         {kids ? (
-          <button type="button" className="ast-tog" onClick={() => toggle(p)} onFocus={() => light(n)} onBlur={() => light(null)} aria-label={`${open ? 'Collapse' : 'Expand'} ${describe(n)}`}>
+          <button type="button" className="ast-tog" onClick={() => toggle(p)} onFocus={() => light(n)} onBlur={() => light(null)} aria-expanded={open} aria-label={`${open ? 'Collapse' : 'Expand'} ${describe(n)}`}>
             {open ? '▾' : '▸'}
           </button>
         ) : <span className="ast-tog leaf" aria-hidden="true">·</span>}
@@ -61,10 +61,10 @@ export function AstView({ root, height }: { root: AstNode; height?: number | str
     <div className="ast-wrap" style={{ maxHeight: height }}>
       <div className="ast-bar">
         <button type="button" className="mini-btn" onClick={() => setClosed(new Set())}>Expand all</button>
-        <button type="button" className="mini-btn" onClick={() => setClosed(new Set(paths))}>Collapse to statements</button>
+        <button type="button" className="mini-btn" onClick={() => setClosed(new Set(paths))}>Fold expressions</button>
         <span className="muted">hover a node to see its source span</span>
       </div>
-      <div className="code inv ast" role="tree" aria-label="Abstract syntax tree" onMouseLeave={() => light(null)}>
+      <div className="code inv ast" role="list" aria-label="Abstract syntax tree" onMouseLeave={() => light(null)}>
         {rows}
       </div>
     </div>
