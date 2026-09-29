@@ -88,6 +88,7 @@ def Decidable.decide (p : Prop) [h : Decidable p] : Bool :=
   | Decidable.isTrue _ => Bool.true
 
 open Decidable
+open Bool Option
 
 /-- Types with a decision procedure for equality. -/
 abbrev DecidableEq (α : Sort u) : Sort (max 1 u) := (a b : α) → Decidable (a = b)
@@ -490,7 +491,21 @@ theorem lt_or_gt_of_ne {n m : Nat} (h : n ≠ m) : n < m ∨ m < n := by
 
 theorem not_add_one_le_self (n : Nat) : ¬(n + 1 ≤ n) := lt_irrefl n
 
+/-- Division by repeated subtraction; `fuel` bounds the number of subtractions. -/
+def divAux : Nat → Nat → Nat → Nat
+  | 0, _, _ => 0
+  | fuel + 1, n, d => if 0 < d ∧ d ≤ n then divAux fuel (n - d) d + 1 else 0
+
+/-- Integer division, rounding down; `n / 0 = 0`. -/
+def div (n d : Nat) : Nat := divAux n n d
+
+/-- The remainder of `n / d`; `n % 0 = n`. -/
+def mod (n d : Nat) : Nat := n - d * div n d
+
 end Nat
+
+infixl:70 " / " => Nat.div
+infixl:70 " % " => Nat.mod
 
 -- ---------------------------------------------------------------------------
 -- linear arithmetic by reflection (the `omega` tactic builds proofs from these)

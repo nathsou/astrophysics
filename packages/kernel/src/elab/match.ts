@@ -26,6 +26,7 @@ import {
   abstractFVars,
   replaceExpr,
   liftLooseBVars,
+  instantiateLevelParamsExpr,
 } from '../core/expr.ts';
 import { toNat } from '../core/level.ts';
 import type { Decl, LocalDecl } from '../core/env.ts';
@@ -600,7 +601,7 @@ function mkNoConfusionType(el: Elaborator, T: Expr, P: Expr, a: Expr, b: Expr, s
     ind.ctors.map((cname) =>
       el.withSavedLctx(() => {
         const cd = el.env.get(cname) as Extract<Decl, { kind: 'ctor' }>;
-        let ct = cd.type;
+        let ct = instantiateLevelParamsExpr(cd.type, cd.levelParams, h.levels);
         for (let k = 0; k < cd.numParams; k++) ct = instantiate1((el.whnf(ct) as Extract<Expr, { k: 'pi' }>).body, params[k]);
         const fields: FVar[] = [];
         for (let k = 0; k < cd.numFields; k++) {

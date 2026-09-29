@@ -26,7 +26,7 @@ import {
 } from '../core/expr.ts';
 import { toNat } from '../core/level.ts';
 import { type Decl, type Environment, LocalContext, type LocalDecl, freshFVarId } from '../core/env.ts';
-import { TypeChecker } from '../core/typechecker.ts';
+import { TypeChecker, structureProjections } from '../core/typechecker.ts';
 
 export type Value = null | bigint | CtorVal | Fn;
 export interface CtorVal {
@@ -353,7 +353,10 @@ export function showValue(env: Environment, v: Value, type: Expr, opts: ShowOpti
     // generic constructor application
     const d = env.get(v.c);
     if (!d || d.kind !== 'ctor') return '?';
-    const short = v.c.startsWith('Nat.') || v.c.startsWith('Bool.') ? v.c : v.c;
+    let short = v.c;
+    for (const ns of env.opened) if (short.startsWith(ns + '.') && !short.slice(ns.length + 1).includes('.')) short = short.slice(ns.length + 1);
+    if (h.k === 'const' && h.name === 'Subtype' && typeof v === 'object') return go(v.f[0], targs[0], depth, atom);
+    const isStruct = h.k === 'const' && structureProjections(env, h.name) !== undefined;
     if (v.f.length === 0) return short;
     // field types: instantiate the constructor's type with the type's parameters
     let ct = instantiateLevelParamsExpr(d.type, d.levelParams, h.k === 'const' ? h.levels : []);
@@ -370,9 +373,10 @@ export function showValue(env: Environment, v: Value, type: Expr, opts: ShowOpti
       const explicit = ct.binfo === 'default';
       const fv = v.f[i];
       // erased fields (types, proofs) are not shown
-      if (explicit && fv !== null) parts.push(go(fv, ft, depth + 1, true));
+      if (explicit && fv !== null) parts.push(isStruct ? `${ct.name} := ${go(fv, ft, depth + 1, false)}` : go(fv, ft, depth + 1, true));
       ct = instantiate1(ct.body, mkConst('Unit.unit'));
     }
+    if (isStruct) return `{ ${parts.join(', ')} }`;
     const s = [short, ...parts].join(' ');
     return atom && parts.length > 0 ? `(${s})` : s;
   };

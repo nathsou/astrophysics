@@ -48,6 +48,7 @@ export type STerm = { span: Span } & (
   | { k: 'sorry' }
   | { k: 'num'; value: number }
   | { k: 'anon'; args: STerm[] }
+  | { k: 'structInst'; fields: { name: string; nameSpan: Span; value: STerm }[] }
   | { k: 'ascribe'; term: STerm; type: STerm }
   | { k: 'match'; discrs: STerm[]; motive?: STerm; alts: SAlt[] }
   | { k: 'proj'; term: STerm; field: string; fieldSpan: Span }

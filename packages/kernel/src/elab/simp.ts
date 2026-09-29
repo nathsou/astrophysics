@@ -436,6 +436,8 @@ export class Simplifier {
   private isTypeLike(e: Expr): boolean {
     try {
       const t = this.el.whnf(this.el.inferType(e));
+      // propositions are rewritten like terms
+      if (t.k === 'sort' && toNat(this.el.mctx.instantiateLevel(t.level)) === 0) return false;
       let x: Expr = t;
       while (x.k === 'pi') x = x.body;
       return x.k === 'sort';

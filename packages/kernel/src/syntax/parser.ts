@@ -923,6 +923,30 @@ export class Parser {
     return bs;
   }
 
+  /** `{ x := …` (structure instance) or `{ x // …` / `{ x : α // …` (subtype) */
+  private isStructInstOrSubtype(): boolean {
+    const a = this.peekAt(1);
+    const b = this.peekAt(2);
+    if (a.kind === 'sym' && a.text === '}') return false;
+    if (a.kind !== 'ident') return false;
+    if (b.kind === 'sym' && (b.text === ':=' || b.text === '//')) return true;
+    if (b.kind === 'sym' && b.text === ':') {
+      // scan to the matching close brace for '//'
+      let depth = 0;
+      for (let i = 3; i < 200; i++) {
+        const t = this.peekAt(i);
+        if (t.kind === 'eof') return false;
+        if (t.kind === 'sym' && (t.text === '(' || t.text === '{' || t.text === '[' || t.text === '⟨')) depth++;
+        if (t.kind === 'sym' && (t.text === ')' || t.text === '}' || t.text === ']' || t.text === '⟩')) {
+          if (depth === 0) return false;
+          depth--;
+        }
+        if (depth === 0 && t.kind === 'sym' && t.text === '//') return true;
+      }
+    }
+    return false;
+  }
+
   private atom(): STerm {
     const t = this.peek();
     const from = t.from;
@@ -1008,6 +1032,36 @@ export class Parser {
           );
           this.lastEnd = this.expect('⟩').to;
           result = { k: 'anon', args, span: this.span(from) };
+          break;
+        }
+        if (t.text === '{' && this.isStructInstOrSubtype()) {
+          this.next();
+          result = this.withLayout(-1, (): STerm =>
+            this.inBrackets((): STerm => {
+              if (this.peekAt(1).kind === 'sym' && this.peekAt(1).text === ':=') {
+                // structure instance  { x := 1, y := 2 }
+                const fields: { name: string; nameSpan: Span; value: STerm }[] = [];
+                do {
+                  if (this.is('}')) break;
+                  const id = this.ident();
+                  this.expect(':=');
+                  fields.push({ name: id.text, nameSpan: { from: id.from, to: id.to }, value: this.term() });
+                } while (this.accept(','));
+                this.lastEnd = this.expect('}').to;
+                return { k: 'structInst', fields, span: this.span(from) };
+              }
+              // subtype  { x // p }  or  { x : α // p }
+              const id = this.ident();
+              let type: STerm | undefined;
+              if (this.accept(':')) type = this.term();
+              this.expect('//');
+              const body = this.term();
+              this.lastEnd = this.expect('}').to;
+              const sp = this.span(from);
+              const lam: STerm = { k: 'lam', binders: [{ names: [{ name: id.text, span: { from: id.from, to: id.to } }], type, binfo: 'default', span: { from: id.from, to: id.to } }], body, span: sp };
+              return { k: 'app', fn: { k: 'ident', name: 'Subtype', explicit: false, span: sp }, args: [{ arg: lam }], span: sp };
+            }),
+          );
           break;
         }
         if (t.text === '[') {

@@ -106,6 +106,7 @@ export const COMMAND_KEYWORDS = new Set([
 ]);
 
 const BASE_SYMBOLS = [
+  '//',
   '<;>',
   '@[',
   '·',

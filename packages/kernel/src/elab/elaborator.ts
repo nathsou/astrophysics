@@ -225,7 +225,7 @@ export class Elaborator {
   }
 
   /** resolve an identifier to a head expression, without inserting implicit arguments */
-  private resolveIdent(s: Extract<STerm, { k: 'ident' }>): { e: Expr; type: Expr } {
+  private resolveIdent(s: Extract<STerm, { k: 'ident' }>): Resolved {
     const name = s.name;
     // pattern aliases
     const al = this.aliases.get(name);
@@ -248,11 +248,13 @@ export class Elaborator {
         const ins = this.insertImplicits(r.e, r.type);
         let cur = ins;
         let off = s.span.from + prefix.length + 1;
+        let res: Resolved = cur;
         for (const field of parts.slice(k)) {
-          cur = this.fieldAccess(cur.e, cur.type, field, { from: s.span.from, to: off + field.length });
+          if (res.base) this.err(s.span, `field notation '.${field}' applied to a partial application; add parentheses and arguments`);
+          res = this.fieldAccess(res.e, res.type, field, { from: s.span.from, to: off + field.length });
           off += field.length + 1;
         }
-        return cur;
+        return res;
       }
     }
     if (this.autoBoundImplicits && AUTO_BOUND_RE.test(name)) throw new AutoBound(name);
@@ -260,7 +262,7 @@ export class Elaborator {
   }
 
   /** generalized field notation: `e.f` where e : I … resolves to I.f with e as the first explicit argument of type I */
-  fieldAccess(base: Expr, baseType: Expr, field: string, span: Span): { e: Expr; type: Expr } {
+  fieldAccess(base: Expr, baseType: Expr, field: string, span: Span): Resolved {
     const t = this.whnf(this.instantiate(baseType));
     const head = getAppFn(t);
     if (head.k !== 'const') {
@@ -290,7 +292,14 @@ export class Elaborator {
         this.record(span, e, 'const');
         return { e, type: ft };
       }
-      if (w.binfo === 'default') this.err(span, `invalid field notation: '${fname}' does not take an explicit argument of type ${I}`);
+      if (w.binfo === 'default') {
+        // the value goes to the first explicit argument of type I, as in Lean 4:
+        // `xs.map f` is `List.map f xs`
+        const idx = explicitIndexOfType(ft, I);
+        if (idx === undefined) this.err(span, `invalid field notation: '${fname}' does not take an explicit argument of type ${I}`);
+        this.record(span, fc.e, 'const');
+        return { e: fc.e, type: fc.type, base: { idx, e: base, type: baseType } };
+      }
       const m = this.newMVar(w.type, 'implicit', { span, what: `implicit argument '${w.name}' of '${fname}'` });
       e = mkApp(e, m);
       ft = instantiate1(w.body, m);
@@ -387,6 +396,7 @@ export class Elaborator {
         return this.elab(s.term, expected);
       case 'ident': {
         const r = this.resolveIdent(s);
+        if (r.base) return this.elabApp(s, [], expected, s.span);
         const ins = s.explicit ? r : this.insertImplicits(r.e, r.type, s.span);
         this.record(s.span, ins.e, r.e.k === 'const' ? 'const' : 'term', expected);
         return this.ensureHasType(ins.e, ins.type, expected, s.span);
@@ -465,6 +475,8 @@ export class Elaborator {
         return this.elabNum(s.value, expected, s.span);
       case 'anon':
         return this.elabAnon(s, expected, noPostpone);
+      case 'structInst':
+        return this.elabStructInst(s, expected, noPostpone);
       case 'ascribe': {
         const t = this.elabType(s.type);
         const e = this.elab(s.term, t.e);
@@ -479,6 +491,7 @@ export class Elaborator {
         const base = this.elab(s.term);
         const bt = this.inferType(base, s.term.span);
         const r = this.fieldAccess(base, bt, s.field, s.fieldSpan);
+        if (r.base) return this.elabApp(s, [], expected, s.span);
         const ins = this.insertImplicits(r.e, r.type, s.span);
         return this.ensureHasType(ins.e, ins.type, expected, s.span);
       }
@@ -761,6 +774,29 @@ export class Elaborator {
     return this.elabApp(fn, args.map((a) => ({ arg: a })), expected, s.span);
   }
 
+  /** `{ x := a, y := b }`: the constructor of the expected structure, with arguments by field name */
+  private elabStructInst(s: Extract<STerm, { k: 'structInst' }>, expected: Expr | undefined, noPostpone = false): Expr {
+    if (!noPostpone && this.unknownType(expected)) return this.postpone(s, expected);
+    if (!expected) this.err(s.span, 'invalid structure instance: the expected type is not known');
+    const t = this.whnf(this.instantiate(expected));
+    const h = getAppFn(t);
+    const ind = h.k === 'const' ? this.env.get(h.name) : undefined;
+    if (!ind || ind.kind !== 'inductive' || ind.ctors.length !== 1) {
+      this.err(s.span, 'invalid structure instance: the expected type\n  ', this.term(expected), '\nis not a structure');
+    }
+    const ctorName = ind.ctors[0];
+    const fieldNames: string[] = [];
+    let ct = this.env.get(ctorName)!.type;
+    for (let i = 0; ct.k === 'pi'; i++, ct = ct.body) if (i >= ind.numParams) fieldNames.push(ct.name);
+    for (const f of s.fields) {
+      if (!fieldNames.includes(f.name)) this.err(f.nameSpan, `'${f.name}' is not a field of '${h.k === 'const' ? h.name : ''}' (fields: ${fieldNames.join(', ')})`);
+    }
+    const missing = fieldNames.filter((n) => !s.fields.some((f) => f.name === n));
+    if (missing.length) this.err(s.span, `missing field${missing.length > 1 ? 's' : ''}: ${missing.join(', ')}`);
+    const fn: STerm = { k: 'ident', name: ctorName, explicit: false, span: { from: s.span.from, to: s.span.from + 1 } };
+    return this.elabApp(fn, s.fields.map((f) => ({ named: f.name, arg: f.value })), expected, s.span);
+  }
+
   private elabLet(s: Extract<STerm, { k: 'let' }>, expected: Expr | undefined): Expr {
     // let f (x : A) : B := v; body   ⟶   let f : (x : A) → B := λ x, v; body
     let typeS = s.type;
@@ -862,7 +898,7 @@ export class Elaborator {
   // -------------------------------------------------------------------------
   // applications
 
-  private elabHead(s: STerm, expected: Expr | undefined): { e: Expr; type: Expr; explicit: boolean; name?: string } {
+  private elabHead(s: STerm, expected: Expr | undefined): Resolved & { explicit: boolean; name?: string } {
     if (s.k === 'ident') {
       const r = this.resolveIdent(s);
       this.record(s.span, r.e, r.e.k === 'const' ? 'const' : 'term');
@@ -906,8 +942,11 @@ export class Elaborator {
     };
     let i = 0;
     const fnName = head.name ?? 'function';
+    // generalized field notation with the value at a later explicit position
+    let explicitSeen = 0;
+    let baseDone = !head.base;
     for (let guard = 0; guard < 512; guard++) {
-      if (i >= positional.length && named.size === 0) {
+      if (i >= positional.length && named.size === 0 && baseDone) {
         // trailing implicit arguments
         if (head.explicit) break;
         const w = this.whnf(ft);
@@ -945,8 +984,15 @@ export class Elaborator {
         pending.push({ m: arg, s, type: w.type, late: false });
       } else if (w.binfo !== 'default' && !head.explicit) {
         arg = w.binfo === 'inst' ? this.newInstMVar(w.type, span) : this.newMVar(w.type, 'implicit', { span, what: `implicit argument '${w.name}' of '${fnName}'` });
+      } else if (!baseDone && explicitSeen === head.base!.idx) {
+        explicitSeen++;
+        baseDone = true;
+        arg = head.base!.e;
+        if (!this.isDefEq(w.type, head.base!.type)) this.err(span, 'type mismatch in field notation');
       } else {
+        explicitSeen++;
         if (i >= positional.length) {
+          if (!baseDone) this.err(span, `missing arguments: with field notation, the arguments of '${fnName}' before the value must be given`);
           const [n] = named.keys();
           this.err(span, `named argument '${n}' refers to a parameter after the missing explicit arguments`);
         }
@@ -985,11 +1031,29 @@ export class Elaborator {
   }
 }
 
+/** a resolved head; `base` is set when field notation places the value at explicit argument `idx` > 0 */
+type Resolved = { e: Expr; type: Expr; base?: { idx: number; e: Expr; type: Expr } };
+
+/** the index, among explicit binders, of the first explicit binder whose type is headed by `I` */
+function explicitIndexOfType(t: Expr, I: string): number | undefined {
+  let idx = 0;
+  while (t.k === 'pi') {
+    if (t.binfo === 'default') {
+      const h = getAppFn(t.type);
+      if (h.k === 'const' && h.name === I) return idx;
+      idx++;
+    }
+    t = t.body;
+  }
+  return undefined;
+}
+
 function shouldPostpone(s: STerm): boolean {
   switch (s.k) {
     case 'lam':
       return s.binders.some((b) => !b.type);
     case 'anon':
+    case 'structInst':
     case 'dotIdent':
     case 'match':
     case 'num':
