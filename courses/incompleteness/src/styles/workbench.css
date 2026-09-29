@@ -86,7 +86,7 @@ textarea.fi-field { font-family: var(--mono); font-size: 13px; width: 100%; resi
 .chip.active { border-color: var(--number); box-shadow: 0 0 0 2px var(--number-soft); }
 .chip-pos { font-family: var(--mono); font-size: 10px; color: var(--muted); font-variant-numeric: tabular-nums; }
 /* punctuation is quieter than the symbols it groups, but still ink-legible */
-.sym-chip.role-open, .sym-chip.role-close, .sym-chip.role-comma { color: var(--ink-2); border-color: color-mix(in srgb, var(--rule-2) 80%, var(--card)); }
+.sym-chip.role-open, .sym-chip.role-close, .sym-chip.role-comma { color: var(--ink-2); }
 .sym-chip.role-binder-var { border-style: dashed; }
 .sym-chip.role-numeral-tick { border-color: color-mix(in srgb, var(--numeral) 75%, var(--rule-2)); }
 .run-chip, .abbr-chip { border-style: dashed; border-color: var(--numeral); }

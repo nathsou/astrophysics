@@ -103,7 +103,7 @@
 .sem-ns .block.sel rect { stroke-width: 2.5; }
 .sem-ns .axis { stroke: var(--rule-2); stroke-width: 1; }
 .sem-ns .cap { font-family: var(--sans); font-size: 11px; fill: var(--muted); }
-.sem-illustration { font-family: var(--sans); font-size: 12px; font-weight: 700; color: var(--added); background: var(--added-soft); border-radius: 4px; padding: 1px 9px; }
+.sem-illustration { font-family: var(--sans); font-size: 12px; font-weight: 700; color: var(--added); background: var(--added-soft); border: 1px solid color-mix(in srgb, currentColor 30%, transparent); border-radius: 4px; padding: 0 9px; }
 
 /* comparison tables */
 .sem-compare { border-collapse: collapse; font-size: 14px; }

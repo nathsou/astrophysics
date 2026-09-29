@@ -75,7 +75,7 @@
   :root:not([data-theme='light']) {
     --bg: #1c2233; --fg: #e6ecfa; --mute: #a9b3cd; --ac: #9fb4e8; --pn: #2c3552;
     --card: #20283c;
-    --rule: color-mix(in srgb, var(--fg) 20%, var(--bg)); --rule-2: color-mix(in srgb, var(--fg) 50%, var(--bg));
+    --rule: color-mix(in srgb, var(--fg) 20%, var(--bg)); --rule-2: color-mix(in srgb, var(--fg) 56%, var(--bg));
     --accent-soft: color-mix(in srgb, var(--ac) 17%, var(--bg));
     --number: #f0b45c; --numeral: #5fd0bf; --added: #b99cf2; --checked: #6cd48e; --danger: #f28b82; --book: var(--mute);
     --number-soft: color-mix(in srgb, var(--number) 16%, var(--bg));
@@ -91,7 +91,7 @@
 :root[data-theme='dark'] {
   --bg: #1c2233; --fg: #e6ecfa; --mute: #a9b3cd; --ac: #9fb4e8; --pn: #2c3552;
   --card: #20283c;
-  --rule: color-mix(in srgb, var(--fg) 20%, var(--bg)); --rule-2: color-mix(in srgb, var(--fg) 50%, var(--bg));
+  --rule: color-mix(in srgb, var(--fg) 20%, var(--bg)); --rule-2: color-mix(in srgb, var(--fg) 56%, var(--bg));
   --accent-soft: color-mix(in srgb, var(--ac) 17%, var(--bg));
   --number: #f0b45c; --numeral: #5fd0bf; --added: #b99cf2; --checked: #6cd48e; --danger: #f28b82; --book: var(--mute);
   --number-soft: color-mix(in srgb, var(--number) 16%, var(--bg));
