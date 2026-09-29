@@ -55,7 +55,7 @@ export function fieldKind(name: string): FieldKind {
   return 'op';
 }
 /** a short label for a field too narrow for its name: "imm[12]" → "i12" */
-const shortName = (name: string) => name.replace(/^imm\[(\d+)(?::(\d+))?\]$/, (_, a: string, b?: string) => (b ? `i${a}:${b}` : `i${a}`));
+const shortName = (name: string) => name.replace(/^imm\[(\d+)(?::(\d+))?\]$/, (_, a: string, b?: string) => (b ? `i${a}:${b}` : `i${a}`)).replace(/^funct(\d+)$/, 'f$1').replace(/^opcode$/, 'opc');
 
 export function BitFields({ fields, bytes }: { fields: EncField[]; bytes?: boolean }) {
   const sorted = [...fields].sort((a, b) => b.hi - a.hi);
@@ -68,12 +68,12 @@ export function BitFields({ fields, bytes }: { fields: EncField[]; bytes?: boole
           const bitsStr = bytes ? [] : f.value.toString(2).padStart(n, '0').slice(-n).split('');
           const k = fieldKind(f.name);
           const full = `${f.name} [${f.hi}:${f.lo}]${f.meaning ? ' = ' + f.meaning : ''} (${KIND_LABEL[k]})`;
-          // a 1- or 2-bit field is too narrow for "imm[12]": it is widened to fit, and
-          // in a narrow figure (container query) shows a short label instead
+          // a 1- or 2-bit field is too narrow for "imm[12]": it is widened to fit; in a
+          // narrow figure (container query) fields show short labels ("i12", "f3") instead
           const narrow = !bytes && n <= 2 && f.name.length > 3;
           return (
             <div key={i} className={`fld fk-${k}${narrow ? ' narrow' : ''}`} style={{ flex: `${n} 1 0`, ...(bytes ? {} : { '--n': n }) } as CSSProperties} title={full}>
-              <div className="nm">{narrow ? <><span className="long">{f.name}</span><abbr className="short" title={f.name}>{shortName(f.name)}</abbr></> : f.name}</div>
+              <div className="nm">{!bytes && shortName(f.name) !== f.name ? <><span className="long">{f.name}</span><abbr className="short" title={f.name}>{shortName(f.name)}</abbr></> : f.name}</div>
               {bytes
                 ? <div className="bv" style={{ fontSize: 11.5 }}>{Array.from({ length: n / 8 }, (_, k) => ((f.value >>> (8 * k)) & 0xff).toString(16).padStart(2, '0')).join(' ')}</div>
                 : <div className="bv">{bitsStr.map((b, k) => <span key={k} className={b === '1' ? 'b1' : 'b0'}>{b}</span>)}</div>}
