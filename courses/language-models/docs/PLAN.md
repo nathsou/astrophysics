@@ -176,4 +176,12 @@ the files and SHA-256 hashes; `scripts/weights.mjs` (run by the course build) do
   checkpoints. `lmcourse/ch18.py`: 6×384 at 6.25e15 FLOPs, 7 runs. Seed noise 0.008; RMSNorm +0.001, SwiGLU −0.003,
   RoPE −0.029 (the only clear win), GQA(2 KV) +0.020, all four +0.021 bits/token. RoPE collapses past ≈ 600
   positions when trained at 512 (no interpolation). The browser engine does not implement these yet (a challenge).
-- Next: Chapter 19 (mixture-of-experts).
+- **Chapter 19 (mixture-of-experts)** ✅ 2026-09-29. `GPTConfig` gained `experts`, `top_k`, `expert_hidden`, `aux_coef`,
+  `gate`. Same setting as Ch18 (dense 2.064): 8 experts top-2 2.005, no balancing loss 2.010 (one expert takes 43% of a
+  layer's slots), 32 experts top-2 1.977 (120 M total / 14 M active). A first top-1 run renormalised the single gate to 1,
+  so the router got no LM gradient: 2.161, worse than dense; kept as `e8k1-renorm` (`gate=renorm`) and discussed in the
+  chapter. The corrected top-1 run (raw probability gate, as in Switch) is queued; add its number to the chapter.
+  MoE throughput ≈ 116k tokens/s vs 255k dense (Python loop over experts).
+- **Chapter 24 (multimodality, survey)** ✅ 2026-09-29. Browser only: patchify, CLIP loss, a contrastive toy with zero-shot.
+- Chapters 20–23, 25, 26: code and drafts written; their runs are queued on the GPU (`runs/ch2*.log`); results
+  placeholders (⟪…⟫) in their index.md are filled once the data is in.

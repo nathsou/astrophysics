@@ -387,3 +387,95 @@ gqa:
   term: Grouped-query attention (GQA)
   definition: Attention in which groups of query heads share one key and value head, shrinking the KV cache; multi-query attention is the extreme of one shared head.
   chapter: modern-architecture
+mixture-of-experts:
+  term: Mixture of experts (MoE)
+  definition: A layer made of many expert networks, of which a learned router activates only a few for each token, so the parameter count grows without the compute per token growing with it.
+  chapter: mixture-of-experts
+router:
+  term: Router
+  definition: The small learned layer in a mixture of experts that scores the experts for each token and selects the top k.
+  chapter: mixture-of-experts
+load-balancing:
+  term: Load-balancing loss
+  definition: An auxiliary loss that penalises routers for sending most tokens to a few experts, keeping every expert trained and the work spread across devices.
+  chapter: mixture-of-experts
+fine-tuning:
+  term: Fine-tuning
+  definition: Continuing the training of a pre-trained model on a smaller, task-specific dataset, starting from its weights.
+  chapter: fine-tuning
+sft:
+  term: Supervised fine-tuning (SFT)
+  definition: Fine-tuning on examples of the desired behaviour — for example instructions and good responses — with the loss computed only on the responses.
+  chapter: fine-tuning
+lora:
+  term: LoRA
+  definition: Low-rank adaptation — freezing a weight matrix W and training only a low-rank update A·B added to it, with a tiny fraction of W's parameters.
+  chapter: fine-tuning
+catastrophic-forgetting:
+  term: Catastrophic forgetting
+  definition: The loss of previously learned abilities when a network is trained further on a new task.
+  chapter: fine-tuning
+reward-model:
+  term: Reward model
+  definition: A model trained on human (or AI) preference comparisons to score responses, used to train or select a language model's outputs.
+  chapter: preference-learning
+rlhf:
+  term: RLHF
+  definition: Reinforcement learning from human feedback — training a language model to maximise a learned reward model's score, with a penalty for drifting from the original model.
+  chapter: preference-learning
+dpo:
+  term: DPO
+  definition: Direct Preference Optimization — training a language model directly on preference pairs with a classification-style loss, without a separate reward model or reinforcement learning.
+  chapter: preference-learning
+chain-of-thought:
+  term: Chain of thought
+  definition: Intermediate reasoning written out as text before a final answer, which gives the model more computation per answer and a form it can learn to check.
+  chapter: reasoning
+grpo:
+  term: GRPO
+  definition: Group Relative Policy Optimisation — policy-gradient training in which each prompt's sampled answers are scored and compared with the group's mean reward, without a learned value function.
+  chapter: reasoning
+test-time-compute:
+  term: Test-time compute
+  definition: Spending more computation when answering — longer reasoning, many samples with voting or verification — to get better answers from the same model.
+  chapter: reasoning
+tool-use:
+  term: Tool use
+  definition: A model writing requests in a format a program can execute — a calculation, a search, a function call — with the program's result written back into the model's context.
+  chapter: tool-use
+function-calling:
+  term: Function calling
+  definition: Tool use through a fixed, structured format — typically JSON naming a function and its arguments, validated against a schema the prompt supplies.
+  chapter: tool-use
+rag:
+  term: Retrieval-augmented generation
+  definition: Retrieving the passages most relevant to a question from a document collection and adding them to the prompt, so the model answers from them rather than from its weights alone.
+  chapter: tool-use
+tf-idf:
+  term: TF-IDF
+  definition: A word's weight in a document — its frequency there, times the logarithm of how rare it is across documents — used to represent documents for search.
+  chapter: tool-use
+agent:
+  term: Agent
+  definition: A model that uses tools in a loop, choosing each action from the results of the previous ones, until a task is done.
+  chapter: tool-use
+prompt-injection:
+  term: Prompt injection
+  definition: Instructions hidden in content a model reads — a web page, an email, a tool result — that hijack it into doing what their author, not its user, wants.
+  chapter: tool-use
+vision-transformer:
+  term: Vision transformer (ViT)
+  definition: A Transformer that reads an image as a sequence of patches, each flattened and linearly projected to a token embedding.
+  chapter: multimodality
+contrastive-learning:
+  term: Contrastive learning
+  definition: Training embeddings so that matching pairs (an image and its caption) are closer than mismatched ones, with each pair's partners in the batch as the negatives.
+  chapter: multimodality
+zero-shot:
+  term: Zero-shot
+  definition: Performing a task with no examples of it in training or in the prompt — for CLIP, classifying images into categories named only by text.
+  chapter: multimodality
+diffusion:
+  term: Diffusion model
+  definition: A generative model trained to remove noise; it generates by starting from pure noise and denoising step by step.
+  chapter: multimodality

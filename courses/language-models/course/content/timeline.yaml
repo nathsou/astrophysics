@@ -272,3 +272,58 @@
   people: Hugo Touvron and colleagues (Meta)
   chapter: modern-architecture
   text: Openly released models whose block — pre-RMSNorm, SwiGLU, RoPE, later grouped-query attention — became the default design of open language models.
+- year: 2017
+  title: Sparsely gated mixture of experts
+  people: Noam Shazeer, Azalia Mirhoseini and colleagues (Google)
+  chapter: mixture-of-experts
+  text: Thousands of expert networks between LSTM layers, a few selected per token by a learned gate, gave language models of 137 billion parameters at modest compute.
+- year: 2021
+  title: LoRA
+  people: Edward Hu, Yelong Shen and colleagues (Microsoft)
+  chapter: fine-tuning
+  text: Fine-tuning a frozen model through low-rank updates to its weight matrices matched full fine-tuning of GPT-3 with ten thousand times fewer trainable parameters.
+- year: 2017
+  title: Learning from human preferences
+  people: Paul Christiano, Jan Leike and colleagues (OpenAI and DeepMind)
+  chapter: preference-learning
+  text: Agents trained with a reward model learned from human comparisons of short clips — the method later applied to language models as RLHF.
+- year: 2023
+  title: Direct Preference Optimization
+  people: Rafael Rafailov, Archit Sharma, Eric Mitchell and colleagues (Stanford)
+  chapter: preference-learning
+  text: The RLHF objective rewritten as a classification loss on preference pairs, removing the reward model and the reinforcement-learning loop.
+- year: 2022
+  title: Chain-of-thought prompting
+  people: Jason Wei and colleagues (Google)
+  chapter: reasoning
+  text: Showing a model worked examples with intermediate steps made large models far better at arithmetic and multi-step reasoning.
+- year: 2025
+  title: Reasoning from reinforcement learning
+  people: DeepSeek-AI
+  chapter: reasoning
+  text: DeepSeek-R1-Zero learned long chains of thought, self-checking included, from reinforcement learning with only rule-based rewards for correct answers.
+- year: 1972
+  title: Inverse document frequency
+  people: Karen Spärck Jones
+  chapter: tool-use
+  text: Weighting search terms by how rare they are across documents, the idea behind TF-IDF and still at the heart of keyword search.
+- year: 2021
+  title: WebGPT
+  people: Reiichiro Nakano, Jacob Hilton and colleagues (OpenAI)
+  chapter: tool-use
+  text: GPT-3 trained to answer questions by issuing commands to a text browser and citing what it found.
+- year: 2023
+  title: Toolformer and ReAct
+  people: Timo Schick and colleagues (Meta); Shunyu Yao and colleagues
+  chapter: tool-use
+  text: Language models that decide for themselves when to call tools, and that interleave reasoning with actions in a loop.
+- year: 2021
+  title: CLIP and the Vision Transformer
+  people: Alec Radford and colleagues (OpenAI); Alexey Dosovitskiy and colleagues (Google)
+  chapter: multimodality
+  text: Transformers read images as sequences of patches, and contrastive training on 400 million captioned images gave image encoders that classify zero-shot.
+- year: 2023
+  title: Visual instruction tuning
+  people: Haotian Liu, Chunyuan Li, Qingyang Wu and Yong Jae Lee
+  chapter: multimodality
+  text: LLaVA connected a CLIP image encoder to a language model with one projection layer and fine-tuned on instructions about images.

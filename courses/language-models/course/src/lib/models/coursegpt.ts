@@ -54,6 +54,11 @@ export function loadDraftModel(onprogress?: (fraction: number) => void): Promise
   return loadWeights('coursegpt-draft', onprogress);
 }
 
+/** CourseGPT fine-tuned to follow instructions (Chapter 20: LoRA, rank 16, merged). */
+export function loadInstructModel(onprogress?: (fraction: number) => void): Promise<CourseGpt> {
+  return loadWeights('coursegpt-instruct', onprogress);
+}
+
 function loadWeights(name: string, onprogress?: (fraction: number) => void): Promise<CourseGpt> {
   let p = loaded.get(name);
   if (!p) {
@@ -73,22 +78,54 @@ function loadWeights(name: string, onprogress?: (fraction: number) => void): Pro
   return p;
 }
 
-const runners = new Map<string, Promise<GptRunner>>();
+/** A small character-level model with its own alphabet (stored in the file's metadata). */
+export interface CharModel {
+  model: Gpt;
+  cfg: CourseGptConfig;
+  chars: string;
+}
+
+const charModels = new Map<string, Promise<CharModel>>();
+
+/** The calculator-calling model of Chapter 23 (4 × 256, characters). */
+export function loadCalculatorModel(onprogress?: (fraction: number) => void): Promise<CharModel> {
+  const name = 'calculator';
+  let p = charModels.get(name);
+  if (!p) {
+    p = (async () => {
+      const gpu = await getGpu();
+      if (!gpu) throw new Error('This model needs WebGPU, which this browser does not provide.');
+      const { tensors, metadata } = decodeSafetensors(await download(`${base}/weights/${name}.safetensors`, onprogress));
+      const cfg = JSON.parse(metadata.config ?? '{}') as CourseGptConfig;
+      const model = new Gpt(gpu, { V: cfg.vocab, T: cfg.context, C: cfg.width, layers: cfg.layers, heads: cfg.heads }, mulberry32(0));
+      model.load(tensors);
+      return { model, cfg, chars: metadata.chars ?? '' };
+    })();
+    p.catch(() => charModels.delete(name));
+    charModels.set(name, p);
+  }
+  return p;
+}
+
+const runners = new WeakMap<Gpt, Map<string, Promise<GptRunner>>>();
 
 /** A KV-cached runner for a loaded model, with float32 or int8 weights (built once, then shared). */
-export function runnerFor(m: CourseGpt, opts: { int8?: boolean } = {}): Promise<GptRunner> {
-  const key = `${m.cfg.layers}x${m.cfg.width}:${opts.int8 ? 'int8' : 'f32'}`;
-  let r = runners.get(key);
+export function runnerFor(m: { model: Gpt; cfg: CourseGptConfig }, opts: { int8?: boolean } = {}): Promise<GptRunner> {
+  // One runner per model and precision (keyed by the model itself: several models share a shape).
+  let byModel = runners.get(m.model);
+  if (!byModel) runners.set(m.model, (byModel = new Map()));
+  const key = opts.int8 ? 'int8' : 'f32';
+  let r = byModel.get(key);
   if (!r) {
     r = GptRunner.create(m.model, opts);
-    runners.set(key, r);
+    byModel.set(key, r);
   }
   return r;
 }
 
 async function download(url: string, onprogress?: (fraction: number) => void): Promise<Uint8Array> {
   const r = await fetch(url);
-  if (!r.ok) throw new Error(r.status === 404 ? 'CourseGPT’s weights are not included in this build of the course.' : `Could not download CourseGPT (${r.status})`);
+  if (!r.ok) throw new Error(r.status === 404 ? 'These weights are not included in this build of the course.' : `Could not download the weights (${r.status})`);
   // Don't size the buffer from Content-Length: it counts the bytes on the wire, and a server that
   // compresses the file (GitHub Pages gzips it) sends fewer than the stream delivers. The manifest
   // records the real size, for the progress bar.
