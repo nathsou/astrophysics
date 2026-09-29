@@ -35,6 +35,14 @@ const courses = [
       NODE_OPTIONS: `${process.env.NODE_OPTIONS ?? ''} --experimental-strip-types`.trim(),
     }),
   },
+  {
+    // Digital Circuits: the same single-package SvelteKit setup as Proofcraft.
+    name: 'digital-circuits',
+    env: (base) => ({
+      BASE_PATH: `${base}/digital-circuits`,
+      NODE_OPTIONS: `${process.env.NODE_OPTIONS ?? ''} --experimental-strip-types`.trim(),
+    }),
+  },
 ];
 const repository = process.env.GITHUB_REPOSITORY?.split('/')[1];
 const basePath = (process.env.COURSES_BASE_PATH ?? (repository ? `/${repository}` : '')).replace(/\/$/, '');
