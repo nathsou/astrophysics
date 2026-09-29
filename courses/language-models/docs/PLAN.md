@@ -183,5 +183,14 @@ the files and SHA-256 hashes; `scripts/weights.mjs` (run by the course build) do
   chapter. The corrected top-1 run (raw probability gate, as in Switch) is queued; add its number to the chapter.
   MoE throughput ≈ 116k tokens/s vs 255k dense (Python loop over experts).
 - **Chapter 24 (multimodality, survey)** ✅ 2026-09-29. Browser only: patchify, CLIP loss, a contrastive toy with zero-shot.
-- Chapters 20–23, 25, 26: code and drafts written; their runs are queued on the GPU (`runs/ch2*.log`); results
-  placeholders (⟪…⟫) in their index.md are filled once the data is in.
+- **Chapter 22 (reasoning)** ✅ 2026-09-29. 4×256 RoPE GPT on 6-digit addition, 3,000 steps: scratchpad 97.4%,
+  direct 85.8%. Voting adds nothing to trained models (systematic errors); under-trained direct: one sample 46%, vote@32
+  70% (= greedy), pass@32 79%. GRPO (lr 2e-5, 900 steps, group 8 × 32 prompts, β 0.02): one sample 50→63%, greedy
+  72.5→75.6%, pass@8 77→78% — sharpening, as Yue et al. (2025) report; lr ≥ 1e-4 degrades, 3e-4 collapses.
+- **Chapters 25 (evaluation), 26 (interpretability), 27 (efficiency, survey), 28 (safety), 29 (epilogue), Appendix D**
+  written 2026-09-29; 27 and D need no GPU. 25, 26 and 28 have experiments (`lmcourse/ch25.py`, `ch26.py`, `ch28.py`).
+- Chapter 20 is rerun at 3,000 fine-tuning steps (600 gave only 35% of required words used; the 600-step results are
+  kept in `runs/ch20-600/`). Chapter 21 builds on its LoRA r = 16 model.
+- Results placeholders (⟪…⟫) in a chapter's index.md are filled once its data is in; `scripts/cdp.mjs` crawls report them.
+- **Workflow change (2026-09-29):** commit to a branch and open a PR; do not push to main. CI installs no PyTorch, so
+  torch-dependent tests must skip without it. Book work is on `language-models/finish-book` (PR #10).

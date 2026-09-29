@@ -18,6 +18,9 @@ theme preference is the `theme` localStorage key shared by all courses (`light` 
   `.svelte`/`.svelte.ts` by svelte-check (course/tsconfig.json includes `content/` explicitly — keep it that way).
 - Declare nullable/union state as `$state<T | null>(null)`, not `let x: T | null = $state(null)` (the latter narrows to `never`).
 - Checks before finishing: `pnpm test`, `pnpm typecheck`, `pnpm build`, and `cd training && uv run pytest && uv run ruff check`.
+  CI has no PyTorch: tests that need it must skip without it (`pytest.importorskip("torch")`); check with
+  `uv run python -c "import sys; sys.modules['torch']=None; import pytest; sys.exit(pytest.main(['-q']))"`.
+- Commit to a branch and open a PR (`gh pr create -R nathsou/courses`); do not push to main.
 - Parity tests: Python writes fixtures to `training/fixtures/`; Vitest compares the TypeScript results.
 - British English in all prose. Charts use the palette tokens in course/src/app.css (--series-1…8).
 - Dev server: run `npx vite dev --port 5199` in `course/` (the preview launcher cannot access ~/Documents).
