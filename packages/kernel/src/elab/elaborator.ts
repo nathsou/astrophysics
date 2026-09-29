@@ -277,8 +277,14 @@ export class Elaborator {
       if (!projs || idx < 0 || idx >= projs.length) this.err(span, `invalid projection '.${field}' for a value of type `, this.term(t));
       fname = projs[idx];
     } else if (this.env.has(`${I}.${field}`)) fname = `${I}.${field}`;
+    // the function being defined, called through field notation (`t.size` inside `Tree.size`)
+    let fc: { e: Expr; type: Expr } | undefined;
+    if (!fname && this.rec && (this.namespace && !this.rec.name.startsWith(this.namespace + '.') && !this.rec.name.includes('.') ? `${this.namespace}.${this.rec.name}` : this.rec.name) === `${I}.${field}`) {
+      fname = this.rec.name;
+      fc = { e: this.rec.fn, type: this.lctx.get(this.rec.fn.id)!.type };
+    }
     if (!fname) this.err(span, `invalid field '${field}': the environment does not contain '${I}.${field}'`);
-    const fc = this.constExpr(fname, undefined, span);
+    fc ??= this.constExpr(fname, undefined, span);
     let e = fc.e;
     let ft = fc.type;
     for (let guard = 0; guard < 64; guard++) {

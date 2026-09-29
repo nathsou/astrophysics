@@ -116,6 +116,12 @@ theorem decide_eq_false {p : Prop} [inst : Decidable p] (hp : ¬p) : Decidable.d
   | Decidable.isFalse _ => rfl
   | Decidable.isTrue h => absurd h hp
 
+@[simp] theorem decide_eq_true_eq {p : Prop} [inst : Decidable p] : (decide p = true) = p :=
+  propext ⟨of_decide_eq_true, decide_eq_true⟩
+
+@[simp] theorem decide_eq_false_eq {p : Prop} [inst : Decidable p] : (decide p = false) = ¬p :=
+  propext ⟨of_decide_eq_false, decide_eq_false⟩
+
 /-- `if c then t else e` -/
 def ite {α : Sort u} (c : Prop) [h : Decidable c] (t e : α) : α :=
   match h with
@@ -219,6 +225,17 @@ def Nat.decEq : (n m : Nat) → Decidable (n = m)
     | Decidable.isFalse h => Decidable.isFalse (fun h' => h (congrArg Nat.pred h'))
 
 instance instDecidableEqNat : DecidableEq Nat := Nat.decEq
+
+/-- Boolean equality tests, written `a == b`. -/
+class BEq (α : Type u) where
+  beq : α → α → Bool
+
+infix:50 " == " => BEq.beq
+
+/-- Every type with decidable equality has a boolean equality test. -/
+instance instBEqOfDecidableEq {α : Type u} [DecidableEq α] : BEq α := ⟨fun a b => decide (a = b)⟩
+
+@[simp] theorem beq_eq_decide {α : Type u} [DecidableEq α] (a b : α) : (a == b) = decide (a = b) := rfl
 
 -- ---------------------------------------------------------------------------
 -- arithmetic
@@ -502,10 +519,16 @@ def div (n d : Nat) : Nat := divAux n n d
 /-- The remainder of `n / d`; `n % 0 = n`. -/
 def mod (n d : Nat) : Nat := n - d * div n d
 
+/-- Exponentiation. -/
+def pow (b : Nat) : Nat → Nat
+  | 0 => 1
+  | n + 1 => pow b n * b
+
 end Nat
 
 infixl:70 " / " => Nat.div
 infixl:70 " % " => Nat.mod
+infixr:75 " ^ " => Nat.pow
 
 -- ---------------------------------------------------------------------------
 -- linear arithmetic by reflection (the `omega` tactic builds proofs from these)
@@ -611,7 +634,7 @@ def Term.denote (ρ : List Nat) : Term → Nat
 def Term.toForm : Term → List Nat
   | Term.num n => [n]
   | Term.atom i => 0 :: unit i
-  | Term.add a b => add (Term.toForm a) (Term.toForm b)
+  | Term.add a b => Omega.add (Term.toForm a) (Term.toForm b)
   | Term.smul k a => scale k (Term.toForm a)
   | Term.mulr a k => scale k (Term.toForm a)
 

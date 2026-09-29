@@ -155,14 +155,43 @@ export class Processor {
     const el = new Elaborator(env);
     el.lctx = this.sectionCtx;
     el.levelNames = [...this.levelNames];
-    el.namespace = this.namespace;
+    el.namespace = this.resolveNs ?? this.namespace;
     return el;
+  }
+
+  /** while elaborating `def A.B.f`, names resolve in namespace `A.B` too (as in Lean 4) */
+  private resolveNs: string | undefined;
+
+  /** a definition that may call itself through field notation (`t.size` inside `Tree.size`) */
+  private defOrFieldRecursive(cmd: Extract<Command, { k: 'def' }>, res: CommandResult): void {
+    const name = this.fullName(cmd.name);
+    const last = name.slice(name.lastIndexOf('.') + 1);
+    if (cmd.kind === 'example' || !name.includes('.') || mentionsName(cmd, cmd.name, name) || !mentionsField(cmd, last)) return this.defCommand(cmd, res);
+    const snap = { infos: this.infos.length, warnings: this.pendingWarnings.length, tactics: this.tactics.length, messages: res.messages.length };
+    try {
+      return this.defCommand(cmd, res, true);
+    } catch (err) {
+      if (!(err instanceof ElabError)) throw err;
+      this.infos.length = snap.infos;
+      this.pendingWarnings.length = snap.warnings;
+      this.tactics.length = snap.tactics;
+      res.messages.length = snap.messages;
+      try {
+        return this.defCommand(cmd, res, false);
+      } catch {
+        this.infos.length = snap.infos;
+        this.pendingWarnings.length = snap.warnings;
+        this.tactics.length = snap.tactics;
+        res.messages.length = snap.messages;
+        throw err;
+      }
+    }
   }
 
   private command(cmd: Command, res: CommandResult): void {
     switch (cmd.k) {
       case 'def':
-        return this.defCommand(cmd, res);
+        return this.defOrFieldRecursive(cmd, res);
       case 'axiom':
         return this.axiomCommand(cmd, res);
       case 'inductive':
@@ -242,6 +271,21 @@ export class Processor {
     if (isClass) {
       this.env.classes = new Set(this.env.classes);
       for (const n of names) this.env.classes.add(n);
+      // the methods of a class take the instance as an instance argument: `BEq.beq : [self : BEq α] → α → α → Bool`
+      for (const n of names) {
+        const ind = this.env.get(n);
+        if (ind?.kind !== 'inductive') continue;
+        for (const pn of ind.projs ?? []) {
+          const pd = this.env.get(pn);
+          if (pd?.kind !== 'def') continue;
+          const mark = (e: Expr, k: number): Expr => {
+            if ((e.k !== 'pi' && e.k !== 'lam') || k < 0) return e;
+            if (k === 0) return { ...e, binfo: 'inst' };
+            return { ...e, body: mark(e.body, k - 1) };
+          };
+          this.env.update({ ...pd, type: mark(pd.type, ind.numParams), value: mark(pd.value, ind.numParams) });
+        }
+      }
     }
     for (const d of deriving ?? []) {
       if (d === 'DecidableEq') {
@@ -557,13 +601,23 @@ export class Processor {
     res.output = { k: 'decl', names: [d.name], main: d.name };
   }
 
-  private defCommand(cmd: Extract<Command, { k: 'def' }>, res: CommandResult): void {
+  private defCommand(cmd: Extract<Command, { k: 'def' }>, res: CommandResult, forceRecursive?: boolean): void {
     const name = cmd.kind === 'example' ? '_example' : this.fullName(cmd.name);
+    const savedNs = this.resolveNs;
+    if (name.includes('.') && cmd.kind !== 'example') this.resolveNs = name.slice(0, name.lastIndexOf('.'));
+    try {
+      this.defCommandCore(cmd, res, name, forceRecursive);
+    } finally {
+      this.resolveNs = savedNs;
+    }
+  }
+
+  private defCommandCore(cmd: Extract<Command, { k: 'def' }>, res: CommandResult, name: string, forceRecursive?: boolean): void {
     if (cmd.kind !== 'example' && this.env.has(name)) throw new ElabError([`'${name}' has already been declared`], cmd.nameSpan);
     if (cmd.termination) throw new ElabError(['termination_by / decreasing_by are not supported: use structural recursion (or an explicit fuel argument)'], cmd.span);
     const { el, fvars, type: typeH } = this.elabHeader(cmd.binders, cmd.type, cmd.levelParams);
     this.infosFrom(el, () => {
-      const recursive = cmd.kind !== 'example' && mentionsName(cmd, cmd.name, name);
+      const recursive = forceRecursive ?? (cmd.kind !== 'example' && mentionsName(cmd, cmd.name, name));
       // equation lemmas are generated for definitions by pattern matching (outside sections)
       const bodyTerm = cmd.body.k === 'term' ? unparen(cmd.body.term) : undefined;
       const matchesArgs =
@@ -1217,6 +1271,21 @@ function mentionsName(cmd: Extract<Command, { k: 'def' }>, short: string, full: 
   };
   if (cmd.body.k === 'term') visit(cmd.body.term);
   else cmd.body.alts.forEach((a) => visit(a.rhs));
+  return found;
+}
+
+/** does the body use field notation `.field` (x.field, or (e).field)? */
+function mentionsField(cmd: Extract<Command, { k: 'def' }>, field: string): boolean {
+  let found = false;
+  const visit = (x: unknown): void => {
+    if (found || !x || typeof x !== 'object') return;
+    if (Array.isArray(x)) return x.forEach(visit);
+    const o = x as Record<string, unknown>;
+    if (o.k === 'ident' && typeof o.name === 'string' && o.name.endsWith('.' + field)) found = true;
+    if (o.k === 'proj' && o.field === field) found = true;
+    for (const [k, v] of Object.entries(o)) if (k !== 'span') visit(v);
+  };
+  visit(cmd.body);
   return found;
 }
 

@@ -467,8 +467,14 @@ export class Parser {
       const bar = this.peek();
       first ??= bar;
       const from = this.next().from;
-      const pats: STerm[] = [this.term()];
-      while (this.accept(',')) pats.push(this.term());
+      // `| p₁ | p₂ => rhs` shares one right-hand side between several patterns
+      const groups: STerm[][] = [];
+      for (;;) {
+        const pats: STerm[] = [this.term()];
+        while (this.accept(',')) pats.push(this.term());
+        groups.push(pats);
+        if (!this.accept('|')) break;
+      }
       this.expect('=>');
       this.altCols.push(bar.col);
       let rhs: STerm;
@@ -477,7 +483,7 @@ export class Parser {
       } finally {
         this.altCols.pop();
       }
-      alts.push({ pats, rhs, span: this.span(from) });
+      for (const pats of groups) alts.push({ pats, rhs, span: this.span(from) });
     }
     return alts;
   }
@@ -580,7 +586,15 @@ export class Parser {
         // a parenthesised group must look like `( ident+ :`
         const close = t.text === '(' ? ')' : t.text === '{' ? '}' : t.text === '⦃' ? '⦄' : ']';
         const binfo = t.text === '(' ? 'default' : t.text === '{' ? 'implicit' : t.text === '⦃' ? 'strictImplicit' : 'inst';
-        if (!this.looksLikeBinderGroup(close)) break;
+        if (!this.looksLikeBinderGroup(close)) {
+          if (close !== ']') break;
+          // an anonymous instance binder `[C α]`
+          const from = this.next().from;
+          const type = this.inBrackets(() => this.term());
+          this.lastEnd = this.expect(']').to;
+          out.push({ names: [{ name: 'inst✝', span: { from, to: from } }], type, binfo: 'inst', span: this.span(from) });
+          continue;
+        }
         const from = this.next().from;
         const names: { name: string; span: Span }[] = [];
         while (this.peek().kind === 'ident' || this.is('_')) {
@@ -616,7 +630,7 @@ export class Parser {
       }
       if (!sawName) return false;
       if (t.kind === 'sym' && t.text === ':') return true;
-      if (t.kind === 'sym' && t.text === close && close !== ')') return true;
+      if (t.kind === 'sym' && t.text === close && close !== ')' && close !== ']') return true;
       return false;
     }
   }
@@ -688,6 +702,8 @@ export class Parser {
     if (t.kind === 'sym') {
       if (this.infix.has(t.text)) return false;
       if (this.prefix.has(t.text)) return true;
+      if (t.text === '·') return !t.nl;
+      if (t.text === '{') return this.isStructInstOrSubtype();
       return ['(', '⟨', '[', '_', '@', '*', '□', 'λ'].includes(t.text);
     }
     return false;
@@ -1015,7 +1031,16 @@ export class Parser {
               return { k: 'ascribe', term: inner, type: ty, span: this.span(from) };
             }
             this.lastEnd = this.expect(')', 'to close the parenthesis').to;
-            return { k: 'paren', term: inner, span: this.span(from) };
+            // `(· + 1)` is `fun x => x + 1`
+            const sp = this.span(from);
+            const names: { name: string; span: Span }[] = [];
+            const body = replaceCdots(inner, (span) => {
+              const name = `x✝${names.length + 1}`;
+              names.push({ name, span });
+              return { k: 'ident', name, explicit: false, span };
+            });
+            if (names.length) return { k: 'lam', binders: [{ names, binfo: 'default', span: sp }], body, span: sp };
+            return { k: 'paren', term: inner, span: sp };
           });
           break;
         }
@@ -1089,6 +1114,11 @@ export class Parser {
         if (t.text === '_') {
           this.nextTracked();
           result = { k: 'hole', span: { from: t.from, to: t.to } };
+          break;
+        }
+        if (t.text === '·') {
+          this.nextTracked();
+          result = { k: 'ident', name: '·', explicit: false, span: { from: t.from, to: t.to } };
           break;
         }
         if (t.text === '@') {
@@ -1724,4 +1754,20 @@ export class Parser {
 function describe(t: Token): string {
   if (t.kind === 'eof') return 'end of input';
   return `'${t.text}'`;
+}
+
+/** replace the `·` placeholders of a term (not those inside nested parentheses, already handled) */
+function replaceCdots(t: STerm, mk: (span: Span) => STerm): STerm {
+  const go = (x: unknown): unknown => {
+    if (Array.isArray(x)) return x.map(go);
+    if (x && typeof x === 'object') {
+      const o = x as Record<string, unknown>;
+      if (o.k === 'ident' && o.name === '·') return mk(o.span as Span);
+      const out: Record<string, unknown> = {};
+      for (const [k, v] of Object.entries(o)) out[k] = k === 'span' ? v : go(v);
+      return out;
+    }
+    return x;
+  };
+  return go(t) as STerm;
 }
