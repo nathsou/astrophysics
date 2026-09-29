@@ -10,6 +10,8 @@
 -->
 <script lang="ts">
   import { onMount, untrack } from 'svelte';
+  import { base } from '$app/paths';
+  import { goto } from '$app/navigation';
   import Widget from '../components/ui/Widget.svelte';
   import Segmented from '../components/ui/Segmented.svelte';
   import Toggle from '../components/ui/Toggle.svelte';
@@ -25,6 +27,8 @@
   import { resolveTraces } from './traces';
   import { formatSI, formatSpeed } from './format';
   import { describeOutputs } from './summary';
+  import { encodeCircuit, shareHash } from './share';
+  import Icon from '../components/ui/Icon.svelte';
 
   let {
     src,
@@ -257,6 +261,26 @@
     };
   });
 
+  // "Open on the bench": the circuit travels in the link (compressed, in the hash), so the bench needs no server.
+  let benchHref = $state(`${base}/bench/`);
+  $effect(() => {
+    const c = circuit;
+    if (!c) return;
+    let stale = false;
+    encodeCircuit(c).then(
+      (payload) => !stale && (benchHref = `${base}/bench/${shareHash(payload)}`),
+      () => {},
+    );
+    return () => {
+      stale = true;
+    };
+  });
+  function openOnBench(ev: MouseEvent) {
+    if (ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return; // let the browser open a new tab
+    ev.preventDefault();
+    void goto(benchHref);
+  }
+
   // Speed: a log slider in thirds of a decade (1, 2, 5 × 10ⁿ).
   const STEPS = [1, 2, 5];
   const speedIndex = $derived(Math.round(Math.log10(speed) * 3));
@@ -312,7 +336,15 @@
     </div>
 {/snippet}
 
-<Widget title={title ?? circuit?.title ?? 'Circuit'} {subtitle} {caption} {n} onreset={reset} fullscreen grid controls={toolbar ? bar : undefined}>
+{#snippet benchAction()}
+  {#if circuit}
+    <a class="w-action" href={benchHref} onclick={openOnBench} title="Open this circuit on the bench: change it, and measure it with instruments">
+      <Icon name="bench" size={15} />Open on the bench
+    </a>
+  {/if}
+{/snippet}
+
+<Widget title={title ?? circuit?.title ?? 'Circuit'} {subtitle} {caption} {n} onreset={reset} fullscreen grid controls={toolbar ? bar : undefined} actions={benchAction}>
   <div class="cw" bind:this={root}>
     {#if circuit}
       {#key generation}

@@ -3,9 +3,11 @@
   import { COURSE_TITLE } from '$content/outline';
   import { theme } from '$lib/state/theme.svelte';
   import { nav } from '$lib/state/nav.svelte';
+  import { page } from '$app/state';
   import Icon from '../ui/Icon.svelte';
 
   let scrolled = $state(false);
+  const onBench = $derived(page.url.pathname.startsWith(`${base}/bench`));
 </script>
 
 <svelte:window onscroll={() => (scrolled = scrollY > 160)} />
@@ -24,6 +26,9 @@
   </a>
   <span class="page-title" aria-hidden={!scrolled}>{nav.pageTitle ?? ''}</span>
   <span class="spacer"></span>
+  <a class="icon-btn" class:current={onBench} href="{base}/bench/" aria-label="The bench" aria-current={onBench ? 'page' : undefined} title="The bench: draw and measure circuits">
+    <Icon name="bench" />
+  </a>
   <button class="icon-btn" onclick={() => theme.set(theme.resolved === 'dark' ? 'light' : 'dark')} aria-label="Switch to {theme.resolved === 'dark' ? 'light' : 'dark'} theme" title="Switch to {theme.resolved === 'dark' ? 'light' : 'dark'} theme">
     <Icon name={theme.resolved === 'dark' ? 'sun' : 'moon'} />
   </button>
@@ -119,6 +124,14 @@
     border-color: var(--line);
     background: var(--panel);
     color: var(--fg);
+  }
+  a.icon-btn {
+    text-decoration: none;
+  }
+  .icon-btn.current {
+    color: var(--copper-ink);
+    border-color: var(--line);
+    background: var(--panel);
   }
   .menu {
     display: none;

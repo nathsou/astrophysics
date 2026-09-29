@@ -37,6 +37,8 @@
     onparam,
     staticState,
     pinMarks = false,
+    viewBox,
+    fill = false,
   }: {
     circuit: Circuit;
     engine?: Engine | null;
@@ -63,6 +65,10 @@
     staticState?: Record<string, ElementState>;
     /** Mark every pin position (symbol reviews). */
     pinMarks?: boolean;
+    /** Show this part of the drawing (schematic px) instead of fitting the circuit: for a pannable canvas. */
+    viewBox?: { x0: number; y0: number; x1: number; y1: number };
+    /** Fill the container (position: absolute; inset: 0) instead of sizing to the circuit. Use with `viewBox`. */
+    fill?: boolean;
   } = $props();
 
   const uid = $props.id();
@@ -432,7 +438,7 @@
     hover = null;
   }
 
-  const vb = $derived(model.viewBox);
+  const vb = $derived(viewBox ?? model.viewBox);
   const width = $derived(vb.x1 - vb.x0);
   const height = $derived(vb.y1 - vb.y0);
   const hlNets = $derived.by(() => {
@@ -444,13 +450,14 @@
   const burned = $derived(model.comps.map((_, i) => !!lives[i]?.state.burned));
 </script>
 
-<div class="sch-wrap" bind:this={container}>
+<div class="sch-wrap" class:fill bind:this={container}>
   <svg
     bind:this={svg}
     class="sch"
+    class:fill
     viewBox="{vb.x0} {vb.y0} {width} {height}"
-    width={width * scale}
-    height={height * scale}
+    width={fill ? '100%' : width * scale}
+    height={fill ? '100%' : height * scale}
     role="group"
     aria-label={label ?? circuit.title ?? 'Circuit schematic'}
     style="--_xhatch: url(#{uid}-xhatch)"
@@ -625,6 +632,17 @@
   .sch-wrap {
     position: relative;
     max-width: 100%;
+  }
+  .sch-wrap.fill {
+    position: absolute;
+    inset: 0;
+    max-width: none;
+    overflow: hidden;
+  }
+  .sch.fill {
+    max-width: none;
+    height: 100%;
+    margin: 0;
   }
   .sch {
     display: block;
