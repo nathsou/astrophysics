@@ -21,6 +21,16 @@ describe('inhabitant enumeration', () => {
     expect(e.terms.map(showTm)).toEqual(['fun f x => x', 'fun f x => f x', 'fun f x => f (f x)', 'fun f x => f (f (f x))']);
     expect(e.truncated).toBe(true);
   });
+  it('counts the programs of the chapter 2 presets', () => {
+    const count = (ty: string) => {
+      const e = enumerate(parseTy(ty), 12);
+      return e.truncated ? Infinity : e.terms.length;
+    };
+    for (const ty of ['α → β → α', '(α → β) → α → β', '(α → β → γ) → β → α → γ', '(α × β → γ) → α → β → γ', '(α → β → γ) → α × β → γ']) expect(count(ty)).toBe(1);
+    expect(count('(α → γ) → (β → γ) → α → β → γ')).toBe(2);
+    expect(count('α → (α → α) → α')).toBe(Infinity);
+    expect(count('((α → β) → α) → α')).toBe(0);
+  });
   it('swaps pairs', () => {
     expect(progs('α × β → β × α')).toEqual(['fun p => (p.2, p.1)']);
   });

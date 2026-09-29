@@ -105,7 +105,8 @@ export class Elaborator {
   }
 
   term(e: Expr): { e: Expr; lctx: LocalContext } {
-    return { e: this.mctx.instantiate(e), lctx: this.lctx };
+    // pattern variables are shown under the names the user gave them
+    return { e: this.mctx.instantiate(e), lctx: this.lctxWithAliases() };
   }
 
   instantiate(e: Expr): Expr {

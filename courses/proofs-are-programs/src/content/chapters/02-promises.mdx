@@ -1,1 +1,214 @@
-This chapter is being written.
+The prologue made a claim: a type is a promise, and some promises are strong enough to determine the program. This chapter looks at where the strength of a promise comes from. There are three sources: how many values the types involved have, how little a polymorphic function is allowed to know, and, most powerful of all, types that mention values.
+
+## Counting with finite types
+
+Start with types that have finitely many values. `Bool` has two. A pair of booleans, `Bool × Bool`, has 2 × 2 = 4. And a function `Bool → Bool` is determined by its two outputs, one for `true` and one for `false`, so there are 2 × 2 = 4 of those as well:
+
+```lean
+def allBoolFunctions : List (Bool → Bool) :=
+  [fun _ => true, fun _ => false, fun b => b, fun b => !b]
+
+-- each function, shown as the pair (f true, f false)
+#eval allBoolFunctions.map (fun f => (f true, f false))
+```
+
+In general, if `A` has *a* values and `B` has *b* values, then `A × B` has *a* × *b* values and `A → B` has *b*<sup>*a*</sup> values: one choice of output for each input. This is why the notation for function types is sometimes written as a power, *B*<sup>*A*</sup>. Function types grow fast. `Bool → Bool` is a weak promise, with 4 programs to choose from. `Nat → Nat` is weaker still: it has infinitely many programs, and the type says nothing about which one you get.
+
+<Engineer title="Why this matters for API design">
+The fewer values a type has, the fewer ways there are to misuse it. A function taking `(isAdmin : Bool) (isGuest : Bool)` accepts four combinations, one of which (admin *and* guest) is probably meaningless. An enumeration `inductive Role | admin | member | guest` has exactly the three values you meant. "Make illegal states unrepresentable" is the same idea as counting the values of a type.
+</Engineer>
+
+## Polymorphism takes choices away
+
+Now compare `Nat → Nat` with `α → α`, where `α` is a type parameter. The first has infinitely many programs; the second has one. The difference is not the number of values of `α` (the caller chooses it, and it could be `Nat`). It is that the function must work **in the same way for every `α`**. It cannot test whether `α` is `Nat`, it cannot add one to its argument, it cannot pick a default value of type `α`. All it can do with its argument is move it around.
+
+The widget from the prologue makes this precise for types built from type parameters, functions and pairs. Try these:
+
+<InhabitantLab type="α → β → α" presets="α → β → α;(α → β) → α → β;(α → β → γ) → β → α → γ;(α × β → γ) → α → β → γ;(α → β → γ) → α × β → γ;(α → γ) → (β → γ) → α → β → γ;α → (α → α) → α" />
+
+Each of the first five types has exactly one program, and each of them is a useful function: `const`, application, `flip`, `curry` and `uncurry`. The type is a complete specification. The sixth, with two functions to choose from, has two; the last one is the natural numbers again.
+
+For data structures, the argument gives weaker but still useful promises. A function `f : List α → List α` cannot look at the elements, so it can only drop, duplicate and rearrange them, and the way it does that can only depend on the length of the list. A consequence is that applying `f` commutes with changing the elements:
+
+<Key>
+For every `f : List α → List α` and every `g`, `f (xs.map g) = (f xs).map g`.
+</Key>
+
+Philip Wadler called facts like this one *theorems for free*: they follow from the type alone. We cannot prove this one in the course language (it is a statement about all possible programs, which the language cannot quantify over), but we can test it. `#test` evaluates a statement on random inputs, including random functions, and reports a counterexample if it finds one:
+
+<Playground errors title="Theorems for free, tested" code={`def rev {α : Type} : List α → List α
+  | [] => []
+  | x :: xs => rev xs ++ [x]
+
+def dropLast {α : Type} : List α → List α
+  | [] => []
+  | [_] => []
+  | x :: xs => x :: dropLast xs
+
+-- polymorphic: the free theorem holds
+#test ∀ (g : Nat → Nat) (xs : List Nat), rev (xs.map g) = (rev xs).map g
+#test ∀ (g : Nat → Nat) (xs : List Nat), dropLast (xs.map g) = (dropLast xs).map g
+
+-- only for Nat: it can look at the elements, and the "theorem" fails
+def bigOnes (xs : List Nat) : List Nat := xs.filter (fun x => 2 < x)
+#test ∀ (g : Nat → Nat) (xs : List Nat), bigOnes (xs.map g) = (bigOnes xs).map g`} />
+
+The last test fails: `bigOnes` has type `List Nat → List Nat`, which allows it to inspect the numbers, so the free theorem does not apply.
+
+<UnderTheHood ch="system-f" s="parametricity-theorems-for-free">
+Why polymorphic functions cannot inspect their arguments, and how to derive a free theorem from any type, is the subject of the parametricity section of the CIC course.
+</UnderTheHood>
+
+## Types that mention values
+
+Polymorphism constrains a function by hiding information from it. The other way to strengthen a promise is to put more information into the type. In the course language a type can mention values, as we saw with `Answer b` in Chapter 1.
+
+A classic example is the list whose type records its length. A `Vec α n` is a list of exactly `n` elements of type `α`:
+
+```lean
+inductive Vec (α : Type) : Nat → Type where
+  | nil : Vec α 0
+  | cons (x : α) (xs : Vec α n) : Vec α (n + 1)
+```
+
+The part after the colon, `Nat → Type`, says that `Vec α` is not one type but a family of types, one for each number. The constructors say which member of the family they build: `nil` is in `Vec α 0`, and `cons` adds one to the length. The number `n` is called an **index** of the family. (In `cons`, `n` is not declared anywhere: as in Lean, a single-letter name that is not in scope becomes an implicit argument automatically.)
+
+Now the type of a function can say things about lengths. Taking the first element of a list is normally partial: `List.head?` has to return an `Option`, because the list might be empty. On vectors, the type can simply rule that case out:
+
+<Playground title="Vectors" setup={`inductive Vec (α : Type) : Nat → Type where
+  | nil : Vec α 0
+  | cons (x : α) (xs : Vec α n) : Vec α (n + 1)`} code={`-- only accepts vectors of length at least one
+def Vec.head {α : Type} {n : Nat} : Vec α (n + 1) → α
+  | .cons x _ => x
+
+-- both arguments have the same length n
+def Vec.zip {α β : Type} {n : Nat} : Vec α n → Vec β n → Vec (α × β) n
+  | .nil, .nil => .nil
+  | .cons x xs, .cons y ys => .cons (x, y) (xs.zip ys)
+
+def Vec.toList {α : Type} {n : Nat} : Vec α n → List α
+  | .nil => []
+  | .cons x xs => x :: xs.toList
+
+def v : Vec Nat 3 := .cons 1 (.cons 2 (.cons 3 .nil))
+def w : Vec Bool 3 := .cons true (.cons false (.cons true .nil))
+
+#eval v.head
+#eval (v.zip w).toList
+
+-- rejected: the empty vector has length 0, not n + 1
+#eval (Vec.nil : Vec Nat 0).head`} errors />
+
+Look at what is *missing* from these definitions. `Vec.head` has no case for `nil`, and yet the checker does not complain that the match is incomplete: a `nil` would have length `0`, and `0` can never equal `n + 1`, so the case cannot happen. `Vec.zip` has no case for a `nil` next to a `cons`, for the same reason. A `zip` on ordinary lists has to decide what to do with lists of different lengths (drop the extra elements? fail?). This one cannot be called with such lists at all.
+
+<Pitfall title="Where the indices must line up">
+The checker compares indices by computing with them. That works when the computation follows the definitions, and fails otherwise. Appending two vectors gives a vector whose length is the sum, but the order of the sum matters:
+
+<Playground errors title="The order of a sum" setup={`inductive Vec (α : Type) : Nat → Type where
+  | nil : Vec α 0
+  | cons (x : α) (xs : Vec α n) : Vec α (n + 1)`} code={`-- accepted: n + 0 computes to n, and n + (m + 1) to (n + m) + 1
+def Vec.append {α : Type} {m n : Nat} : Vec α m → Vec α n → Vec α (n + m)
+  | .nil, ys => ys
+  | .cons x xs, ys => .cons x (xs.append ys)
+
+-- rejected: 0 + n does not compute to n
+def Vec.append' {α : Type} {m n : Nat} : Vec α m → Vec α n → Vec α (m + n)
+  | .nil, ys => ys
+  | .cons x xs, ys => .cons x (xs.append' ys)`} />
+
+Addition is defined by recursion on its *second* argument, so `n + 0` reduces to `n` by computation, but `0 + n` does not: `n` is a variable, and there is nothing to compute with. `0 + n = n` is still true, but it takes a proof by induction (Chapter 11), and the type checker does not look for proofs on its own. Part II shows how to supply one.
+</Pitfall>
+
+<UnderTheHood ch="families" s="programming-with-vectors">
+How the checker knows that the `nil` case of `Vec.head` is impossible, and what term it builds for it, is explained in the CIC chapter on inductive families.
+</UnderTheHood>
+
+## A value with a certificate
+
+A second way to put information in a type is to attach a condition to a value. The type `{ n : Nat // n % 2 = 0 }` (read: the `n : Nat` *such that* `n % 2 = 0`) contains the even numbers. A value of it is a pair: a number, and **evidence** that the number is even.
+
+```lean
+def four : { n : Nat // n % 2 = 0 } := ⟨4, rfl⟩
+
+def half (n : { k : Nat // k % 2 = 0 }) : Nat := n.val / 2
+
+#eval half four
+#eval half ⟨10, rfl⟩
+```
+
+The evidence here is `rfl`, which you can read as "compute both sides and compare them". It works because `4 % 2` computes to `0`. Try to build the odd number 3 the same way and the checker refuses, because `3 % 2` computes to `1`:
+
+<Playground errors title="Three is not even" code={`def three : { n : Nat // n % 2 = 0 } := ⟨3, rfl⟩`} />
+
+Now a function whose result type carries a condition makes a promise about its output. The type of `next` below does not just say that it returns a number, but that it returns `n + 1`:
+
+```lean
+def next (n : Nat) : { m : Nat // m = n + 1 } := ⟨n + 1, rfl⟩
+```
+
+Any program of this type returns exactly `n + 1`: the type pins down the output completely, as `α → α` did. The pieces of evidence, `rfl` and friends, are the subject of the next chapter. For now, notice where this is going: in Part V we will write a sorting function with the type
+
+```lean nocheck
+def sort (xs : List Nat) : { ys : List Nat // Sorted ys ∧ Permutation xs ys }
+```
+
+and any program of that type is a correct sorting function. The type is the specification, and the checker checks the implementation against it.
+
+## A spectrum of promises
+
+Here is the same idea, "a function that increments a number", at different strengths:
+
+| Type | What it promises | Programs |
+|---|---|---|
+| `Nat → Nat` | returns some number | infinitely many |
+| `(n : Nat) → { m : Nat // n < m }` | returns a bigger number | infinitely many, all increasing |
+| `(n : Nat) → { m : Nat // m = n + 1 }` | returns `n + 1` | one output for each input |
+
+Going down the table, the types say more and admit fewer programs, and it becomes harder to write a program that type-checks. In the last row, writing the program *is* stating why it is right. The rest of the course is about writing that last kind of type, and the evidence it asks for.
+
+## Exercises
+
+<Exercise id="promises:replicate" title="A vector of copies" setup={`inductive Vec (α : Type) : Nat → Type where
+  | nil : Vec α 0
+  | cons (x : α) (xs : Vec α n) : Vec α (n + 1)
+
+def Vec.toList {α : Type} {n : Nat} : Vec α n → List α
+  | .nil => []
+  | .cons x xs => x :: xs.toList`} code={`-- n copies of a: the length is in the type
+def Vec.replicate {α : Type} : (n : Nat) → α → Vec α n
+  | 0, _ => sorry
+  | n + 1, a => sorry
+
+example : (Vec.replicate 3 true).toList = [true, true, true] := rfl`} must="Vec.replicate" hint="For 0 the only vector of length 0 is .nil. For n + 1, put a in front of a vector of length n." solution={`def Vec.replicate {α : Type} : (n : Nat) → α → Vec α n
+  | 0, _ => .nil
+  | n + 1, a => .cons a (Vec.replicate n a)
+
+example : (Vec.replicate 3 true).toList = [true, true, true] := rfl`}>
+The result type `Vec α n` mentions the argument `n`. Fill in both cases; the checker will tell you if a vector has the wrong length.
+</Exercise>
+
+<Exercise id="promises:map" title="Mapping keeps the length" setup={`inductive Vec (α : Type) : Nat → Type where
+  | nil : Vec α 0
+  | cons (x : α) (xs : Vec α n) : Vec α (n + 1)
+
+def Vec.toList {α : Type} {n : Nat} : Vec α n → List α
+  | .nil => []
+  | .cons x xs => x :: xs.toList`} code={`def Vec.map {α β : Type} {n : Nat} (f : α → β) : Vec α n → Vec β n
+  | .nil => sorry
+  | .cons x xs => sorry
+
+def v : Vec Nat 2 := .cons 1 (.cons 2 .nil)
+example : (v.map (· * 10)).toList = [10, 20] := rfl`} must="Vec.map" hint="Mirror List.map: .nil goes to .nil, and .cons x xs to .cons (f x) (xs.map f)." solution={`def Vec.map {α β : Type} {n : Nat} (f : α → β) : Vec α n → Vec β n
+  | .nil => .nil
+  | .cons x xs => .cons (f x) (xs.map f)
+
+def v : Vec Nat 2 := .cons 1 (.cons 2 .nil)
+example : (v.map (· * 10)).toList = [10, 20] := rfl`}>
+The type `Vec α n → Vec β n` promises that `map` does not change the length. Write it. Could a program of this type drop an element, or duplicate one?
+</Exercise>
+
+<Exercise id="promises:pinned" title="A pinned-down result" code={`def triple (n : Nat) : { m : Nat // m = 3 * n } :=
+  sorry`} must="triple" hint="Build the pair with ⟨…, rfl⟩: the first component must compute to the same thing as 3 * n." solution={`def triple (n : Nat) : { m : Nat // m = 3 * n } :=
+  ⟨3 * n, rfl⟩`}>
+Write the only possible function of this type. (The evidence `rfl` works when both sides compute to the same value.)
+</Exercise>
