@@ -1,7 +1,7 @@
 import { BUILTINS, CompileError, type BinOp, type Expr, type FuncDecl, type GlobalDecl, type Pos, type Program, type Stmt } from './ast';
 
-type TokKind = 'num' | 'id' | 'kw' | 'op' | 'eof';
-interface Tok {
+export type TokKind = 'num' | 'id' | 'kw' | 'op' | 'eof';
+export interface Token {
   k: TokKind;
   s: string;
   v?: bigint;
@@ -12,8 +12,8 @@ const KEYWORDS = new Set(['fn', 'let', 'if', 'else', 'while', 'for', 'in', 'retu
 const OPS = ['<<=', '>>=', '..', '<<', '>>', '<=', '>=', '==', '!=', '&&', '||', '+=', '-=', '*=', '/=', '%=', '&=', '|=', '^=',
   '+', '-', '*', '/', '%', '&', '|', '^', '<', '>', '=', '!', '~', '(', ')', '{', '}', '[', ']', ',', ';'];
 
-export function lex(src: string): Tok[] {
-  const toks: Tok[] = [];
+export function lex(src: string): Token[] {
+  const toks: Token[] = [];
   let i = 0, line = 1, col = 1;
   const adv = (n: number) => {
     for (let j = 0; j < n; j++) {
@@ -71,8 +71,18 @@ const PREC: Record<string, number> = {
 
 class Parser {
   i = 0;
-  constructor(private toks: Tok[]) {}
+  constructor(private toks: Token[]) {}
   get t() { return this.toks[this.i]; }
+  /** position just past the last consumed token */
+  get end(): Pos {
+    const t = this.toks[Math.max(0, this.i - 1)];
+    return { line: t.pos.line, col: t.pos.col + t.s.length };
+  }
+  /** stamp a freshly built node with its end position */
+  fin<T extends Expr | Stmt | FuncDecl | GlobalDecl>(n: T): T {
+    n.end = this.end;
+    return n;
+  }
   next() { return this.toks[this.i++]; }
   is(s: string) { return (this.t.k === 'op' || this.t.k === 'kw') && this.t.s === s; }
   eat(s: string) { if (this.is(s)) { this.i++; return true; } return false; }
@@ -119,7 +129,7 @@ class Parser {
     }
     if (init.length > size) throw new CompileError(`too many initialisers for '${name}'`, pos);
     this.expect(';');
-    return { name, size, isArray, init, pos };
+    return this.fin({ name, size, isArray, init, pos });
   }
 
   constExpr(): bigint {
@@ -140,7 +150,7 @@ class Parser {
     }
     this.expect(')');
     const body = this.block();
-    return { name, params, body, pos, endLine: this.toks[this.i - 1].pos.line };
+    return this.fin({ name, params, body, pos, endLine: this.toks[this.i - 1].pos.line });
   }
 
   block(): Stmt[] {
@@ -169,12 +179,13 @@ class Parser {
       const init = this.eat('=') ? this.expr() : undefined;
       if (init && size !== undefined) throw new CompileError('local arrays cannot have initialisers', pos);
       this.expect(';');
-      return { k: 'let', name, size, init, pos };
+      return this.fin({ k: 'let', name, size, init, pos });
     }
     if (this.eat('if')) return this.ifRest(pos);
     if (this.eat('while')) {
       const cond = this.expr();
-      return { k: 'while', cond, body: this.block(), pos };
+      const body = this.block();
+      return this.fin({ k: 'while', cond, body, pos });
     }
     if (this.eat('for')) {
       const name = this.ident().s;
@@ -182,21 +193,22 @@ class Parser {
       const from = this.expr();
       this.expect('..');
       const to = this.expr();
-      return { k: 'for', name, from, to, body: this.block(), pos };
+      const body = this.block();
+      return this.fin({ k: 'for', name, from, to, body, pos });
     }
     if (this.eat('return')) {
       const e = this.is(';') ? undefined : this.expr();
       this.expect(';');
-      return { k: 'return', e, pos };
+      return this.fin({ k: 'return', e, pos });
     }
-    if (this.eat('break')) { this.expect(';'); return { k: 'break', pos }; }
-    if (this.eat('continue')) { this.expect(';'); return { k: 'continue', pos }; }
+    if (this.eat('break')) { this.expect(';'); return this.fin({ k: 'break', pos }); }
+    if (this.eat('continue')) { this.expect(';'); return this.fin({ k: 'continue', pos }); }
     const e = this.expr();
     if (this.eat('=')) {
       if (e.k !== 'var' && e.k !== 'index') throw new CompileError('left side of assignment must be a variable or element', pos);
       const value = this.expr();
       this.expect(';');
-      return { k: 'assign', target: e, value, pos };
+      return this.fin({ k: 'assign', target: e, value, pos });
     }
     const compound = ['+=', '-=', '*=', '/=', '%=', '&=', '|=', '^=', '<<=', '>>='].find((o) => this.is(o));
     if (compound) {
@@ -204,10 +216,10 @@ class Parser {
       if (e.k !== 'var' && e.k !== 'index') throw new CompileError('left side of assignment must be a variable or element', pos);
       const r = this.expr();
       this.expect(';');
-      return { k: 'assign', target: e, value: { k: 'bin', op: compound.slice(0, -1) as BinOp, l: e, r, pos }, pos };
+      return this.fin({ k: 'assign', target: e, value: this.fin({ k: 'bin', op: compound.slice(0, -1) as BinOp, l: e, r, pos }), pos });
     }
     this.expect(';');
-    return { k: 'expr', e, pos };
+    return this.fin({ k: 'expr', e, pos });
   }
 
   ifRest(pos: Pos): Stmt {
@@ -218,7 +230,7 @@ class Parser {
       const p2 = this.t.pos;
       els = this.eat('if') ? [this.ifRest(p2)] : this.block();
     }
-    return { k: 'if', cond, then, else: els, pos };
+    return this.fin({ k: 'if', cond, then, else: els, pos });
   }
 
   expr(minPrec = 1): Expr {
@@ -229,7 +241,7 @@ class Parser {
       if (p === undefined || p < minPrec) return l;
       this.next();
       const r = this.expr(p + 1);
-      l = { k: 'bin', op: t.s as BinOp, l, r, pos: t.pos };
+      l = this.fin({ k: 'bin', op: t.s as BinOp, l, r, pos: t.pos });
     }
   }
 
@@ -237,8 +249,8 @@ class Parser {
     const t = this.t;
     if (this.eat('-') || this.eat('!') || this.eat('~')) {
       const e = this.unary();
-      if (t.s === '-' && e.k === 'num') return { k: 'num', v: -e.v, pos: t.pos };
-      return { k: 'un', op: t.s as '-' | '!' | '~', e, pos: t.pos };
+      if (t.s === '-' && e.k === 'num') return this.fin({ k: 'num', v: -e.v, pos: t.pos });
+      return this.fin({ k: 'un', op: t.s as '-' | '!' | '~', e, pos: t.pos });
     }
     return this.postfix();
   }
@@ -249,14 +261,14 @@ class Parser {
       const pos = this.next().pos;
       const idx = this.expr();
       this.expect(']');
-      e = { k: 'index', base: e, idx, pos };
+      e = this.fin({ k: 'index', base: e, idx, pos });
     }
     return e;
   }
 
   primary(): Expr {
     const t = this.next();
-    if (t.k === 'num') return { k: 'num', v: t.v!, pos: t.pos };
+    if (t.k === 'num') return this.fin({ k: 'num', v: t.v!, pos: t.pos });
     if (t.k === 'id') {
       if (this.eat('(')) {
         const args: Expr[] = [];
@@ -265,9 +277,9 @@ class Parser {
           if (!this.eat(',')) break;
         }
         this.expect(')');
-        return { k: 'call', name: t.s, args, pos: t.pos };
+        return this.fin({ k: 'call', name: t.s, args, pos: t.pos });
       }
-      return { k: 'var', name: t.s, pos: t.pos };
+      return this.fin({ k: 'var', name: t.s, pos: t.pos });
     }
     if (t.k === 'op' && t.s === '(') {
       const e = this.expr();
@@ -279,7 +291,12 @@ class Parser {
 }
 
 export function parse(src: string): Program {
-  const prog = new Parser(lex(src)).program();
+  return parseTokens(lex(src));
+}
+
+/** Parse an already-lexed token stream (the pipeline keeps the tokens as a stage of their own). */
+export function parseTokens(toks: Token[]): Program {
+  const prog = new Parser(toks).program();
   check(prog);
   return prog;
 }

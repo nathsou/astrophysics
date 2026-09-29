@@ -6,6 +6,9 @@ export interface Pos {
   col: number;
 }
 
+/** Just past the last character of a node (same line/col scheme as Pos). Set by the parser. */
+export type End = { end?: Pos };
+
 export type BinOp =
   | '+' | '-' | '*' | '/' | '%'
   | '&' | '|' | '^' | '<<' | '>>'
@@ -14,15 +17,15 @@ export type BinOp =
 
 export type UnOp = '-' | '!' | '~';
 
-export type Expr =
+export type Expr = End & (
   | { k: 'num'; v: bigint; pos: Pos }
   | { k: 'var'; name: string; pos: Pos }
   | { k: 'bin'; op: BinOp; l: Expr; r: Expr; pos: Pos }
   | { k: 'un'; op: UnOp; e: Expr; pos: Pos }
   | { k: 'call'; name: string; args: Expr[]; pos: Pos }
-  | { k: 'index'; base: Expr; idx: Expr; pos: Pos };
+  | { k: 'index'; base: Expr; idx: Expr; pos: Pos });
 
-export type Stmt =
+export type Stmt = End & (
   | { k: 'let'; name: string; size?: number; init?: Expr; pos: Pos }
   | { k: 'assign'; target: Expr; value: Expr; pos: Pos }
   | { k: 'if'; cond: Expr; then: Stmt[]; else?: Stmt[]; pos: Pos }
@@ -31,9 +34,9 @@ export type Stmt =
   | { k: 'return'; e?: Expr; pos: Pos }
   | { k: 'break'; pos: Pos }
   | { k: 'continue'; pos: Pos }
-  | { k: 'expr'; e: Expr; pos: Pos };
+  | { k: 'expr'; e: Expr; pos: Pos });
 
-export interface FuncDecl {
+export interface FuncDecl extends End {
   name: string;
   params: string[];
   body: Stmt[];
@@ -41,7 +44,7 @@ export interface FuncDecl {
   endLine: number;
 }
 
-export interface GlobalDecl {
+export interface GlobalDecl extends End {
   name: string;
   /** number of 64-bit words; scalars have size 1 */
   size: number;
