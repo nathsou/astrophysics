@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { applyTheme, themeStore, useStore, type Theme } from './ui/store';
 import { byId, citeLabel, index, parseRef, ROMAN } from './text';
 import { Home } from './pages/Home';
@@ -51,116 +51,220 @@ function useRoute(): Route {
   return r;
 }
 
-function Sidebar({ route, open, onNav }: { route: Route; open: boolean; onNav: () => void }) {
+const nextTheme = (t: Theme): Theme => (t === 'system' ? 'light' : t === 'light' ? 'dark' : 'system');
+
+function TopBar({ route, onSearch }: { route: Route; onSearch: () => void }) {
   const theme = useStore(themeStore);
-  const read = useStore(readStore);
+  const [menu, setMenu] = useState(false);
+  useEffect(() => setMenu(false), [route]);
   const cycle = () => {
-    const next: Theme = theme === 'system' ? 'light' : theme === 'light' ? 'dark' : 'system';
+    const next = nextTheme(theme);
     themeStore.set(next);
     applyTheme(next);
   };
-  const currentBook = route.page === 'book' ? route.n : route.page === 'item' ? byId.get(route.id)!.book : 0;
-  const [q, setQ] = useState('');
-  const jump = parseRef(q);
+  const book = route.page === 'book' ? route.n : route.page === 'item' ? byId.get(route.id)!.book : 0;
+  const nav = (page: Route['page'], href: string, label: string) => (
+    <a className={route.page === page ? 'on' : ''} href={href}>
+      {label}
+    </a>
+  );
   return (
-    <nav className={`sidebar ${open ? 'open' : ''}`} aria-label="Contents" onClick={(e) => (e.target as HTMLElement).closest('a') && onNav()}>
+    <header className="topbar">
       <a className="brand" href="#/">
-        <span className="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 32 32" width="30" height="30">
-            <path d="M5 26 L16 7 L27 26 Z" fill="var(--byrne-yellow)" stroke="var(--byrne-black)" strokeWidth="1.4" />
-            <path d="M5 26 L16 7" stroke="var(--byrne-red)" strokeWidth="2.6" />
-            <path d="M16 7 L27 26" stroke="var(--byrne-blue)" strokeWidth="2.6" />
-          </svg>
-        </span>
-        <span>
-          <div className="brand-title">Euclid’s Elements</div>
-          <div className="brand-sub">Heath’s text, modern versions, live figures</div>
-        </span>
+        <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true">
+          <path d="M5 26 L16 7 L27 26 Z" fill="var(--yellow)" stroke="var(--ink)" strokeWidth="1.4" />
+          <path d="M5 26 L16 7" stroke="var(--red)" strokeWidth="2.6" />
+          <path d="M16 7 L27 26" stroke="var(--blue)" strokeWidth="2.6" />
+        </svg>
+        <span className="brand-title">Elements</span>
       </a>
-      <form
-        className="jump"
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (jump) {
-            window.location.hash = `#/${jump}`;
-            setQ('');
-            onNav();
-          }
-        }}
-      >
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Go to I.47, or search…" aria-label="Go to a proposition, or search the enunciations" />
-        {jump && <button type="submit">{citeLabel(jump)} →</button>}
-      </form>
-      {!jump && q.trim().length >= 3 && <SearchResults q={q} onPick={() => (setQ(''), onNav())} />}
-      <div className="sidebar-tools">
-        <a className={`chip-btn ${route.page === 'workshop' ? 'on' : ''}`} href="#/workshop">Workshop</a>
-        <a className={`chip-btn ${route.page === 'graph' ? 'on' : ''}`} href="#/graph">Graph</a>
-        <a className={`chip-btn ${route.page === 'explore' ? 'on' : ''}`} href="#/explore">Explore</a>
-        <a className={`chip-btn ${route.page === 'glossary' ? 'on' : ''}`} href="#/glossary">Glossary</a>
-        <a className={`chip-btn ${route.page === 'about' ? 'on' : ''}`} href="#/about">About</a>
-        <button className="chip-btn" onClick={cycle} title={`Theme: ${theme}`}>
-          {theme === 'system' ? '◐' : theme === 'dark' ? '☾' : '☀'}
-        </button>
-      </div>
-      <div className="toc">
-        {BOOKS.map((b, i) => {
-          const n = i + 1;
-          const props = currentBook === n ? index.filter((e) => e.book === n && e.kind === 'prop') : [];
-          return (
-            <div key={n} className={`toc-book ${currentBook === n ? 'current' : ''}`}>
-              <a href={`#/book/${n}`} className={`toc-book-link ${route.page === 'book' && route.n === n ? 'active' : ''}`}>
-                <span className="num">{ROMAN[n]}</span>
-                <span>{b.title}</span>
-              </a>
-              {props.length > 0 && (
-                <div className="toc-props">
-                  {props.map((e) => (
-                    <a
-                      key={e.id}
-                      href={`#/${e.id}`}
-                      className={`${route.page === 'item' && route.id === e.id ? 'active' : ''} ${read[e.id] ? 'read' : ''}`}
-                      title={modernTitle(e.id) ?? e.text}
-                    >
-                      <span className="num">{e.n}</span>
-                      <span className="t">{modernTitle(e.id) ?? e.text}</span>
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    </nav>
+      {book > 0 && (
+        <nav className="crumbs" aria-label="Breadcrumb">
+          <span>/</span>
+          {route.page === 'book' ? (
+            <span className="here">Book {ROMAN[book]}</span>
+          ) : (
+            <>
+              <a className="lvl" href={`#/book/${book}`}>Book {ROMAN[book]}</a>
+              <span className="lvl">/</span>
+              <span className="here">{citeLabel((route as { id: string }).id)}</span>
+            </>
+          )}
+        </nav>
+      )}
+      <span className="spacer" />
+      <button className="search-pill" onClick={onSearch} aria-label="Jump to a proposition, or search">
+        <span className="txt">Jump to I.47, or search</span>
+        <span className="grow" />
+        <span className="kbd" aria-hidden="true">{/Mac|iPhone|iPad/.test(navigator.platform) ? '⌘K' : 'Ctrl K'}</span>
+        <span className="mag" aria-hidden="true" />
+      </button>
+      <nav className={`topnav ${menu ? 'open' : ''}`} aria-label="Sections">
+        {nav('workshop', '#/workshop', 'Workshop')}
+        {nav('graph', '#/graph', 'Graph')}
+        {nav('explore', '#/explore', 'Explore')}
+        {menu && nav('glossary', '#/glossary', 'Glossary')}
+        {menu && nav('about', '#/about', 'About')}
+      </nav>
+      <button className="round-btn" onClick={cycle} title={`Theme: ${theme}`} aria-label={`Theme: ${theme}. Click to change.`}>
+        <span className={`theme-icon ${theme}`} />
+      </button>
+      <button className="round-btn menu-btn" onClick={() => setMenu(!menu)} aria-label="Menu" aria-expanded={menu}>
+        <span className="menu-icon" />
+      </button>
+    </header>
   );
 }
 
-function SearchResults({ q, onPick }: { q: string; onPick: () => void }) {
+interface Entry {
+  key: string;
+  href: string;
+  num: string;
+  title: string;
+  go?: string;
+}
+
+const PAGES: Entry[] = [
+  { key: 'workshop', href: '#/workshop', num: '', title: 'Workshop', go: 'compass and straightedge' },
+  { key: 'graph', href: '#/graph', num: '', title: 'Dependency graph', go: 'what rests on what' },
+  { key: 'explore', href: '#/explore', num: '', title: 'Explorations', go: 'other geometries, solids' },
+  { key: 'glossary', href: '#/glossary', num: '', title: 'Glossary', go: 'Heath’s vocabulary' },
+  { key: 'about', href: '#/about', num: '', title: 'About', go: 'sources and method' },
+];
+
+function search(q: string): Entry[] {
   const words = q.toLowerCase().split(/\s+/).filter(Boolean);
-  const hits = index
+  if (!words.length) return [];
+  return index
     .map((e) => {
-      const hay = `${modernTitle(e.id) ?? ''} ${e.text}`.toLowerCase();
-      return { e, ok: words.every((w) => hay.includes(w)), title: (modernTitle(e.id) ?? '').toLowerCase().includes(words[0]) };
+      const title = modernTitle(e.id) ?? '';
+      const hay = `${title} ${e.text}`.toLowerCase();
+      return { e, title, ok: words.every((w) => hay.includes(w)), inTitle: title.toLowerCase().includes(words[0]) };
     })
     .filter((x) => x.ok)
-    .sort((a, b) => Number(b.title) - Number(a.title))
-    .slice(0, 12);
+    .sort((a, b) => Number(b.inTitle) - Number(a.inTitle))
+    .slice(0, 12)
+    .map(({ e, title }) => ({ key: e.id, href: `#/${e.id}`, num: citeLabel(e.id), title: title || e.text }));
+}
+
+function Palette({ route, onClose }: { route: Route; onClose: () => void }) {
+  const [q, setQ] = useState('');
+  const [sel, setSel] = useState(0);
+  const read = useStore(readStore);
+  const input = useRef<HTMLInputElement>(null);
+  const list = useRef<HTMLDivElement>(null);
+  useEffect(() => input.current?.focus(), []);
+
+  const book = route.page === 'book' ? route.n : route.page === 'item' ? byId.get(route.id)!.book : 0;
+  const groups = useMemo(() => {
+    const t = q.trim();
+    const out: { title: string; items: Entry[] }[] = [];
+    const ref = parseRef(t);
+    if (ref) out.push({ title: 'Go to', items: [{ key: `go:${ref}`, href: `#/${ref}`, num: citeLabel(ref), title: modernTitle(ref) ?? byId.get(ref)!.text }] });
+    if (t.length === 0) {
+      if (book) {
+        const props = index.filter((e) => e.book === book && e.kind === 'prop');
+        out.push({
+          title: `Book ${ROMAN[book]}: propositions`,
+          items: props.map((e) => ({ key: `p:${e.id}`, href: `#/${e.id}`, num: citeLabel(e.id), title: modernTitle(e.id) ?? e.text, go: read[e.id] ? 'visited' : undefined })),
+        });
+      }
+      out.push({ title: 'Books', items: BOOKS.map((b, i) => ({ key: `b:${i}`, href: `#/book/${i + 1}`, num: ROMAN[i + 1], title: b.title })) });
+      out.push({ title: 'Pages', items: PAGES });
+    } else {
+      const pages = PAGES.filter((p) => p.title.toLowerCase().includes(t.toLowerCase()));
+      if (pages.length) out.push({ title: 'Pages', items: pages });
+      const hits = t.length >= 2 ? search(t).filter((h) => h.key !== ref) : [];
+      if (hits.length) out.push({ title: 'Propositions and definitions', items: hits });
+    }
+    return out;
+  }, [q, book, read]);
+  const flat = groups.flatMap((g) => g.items);
+
+  useEffect(() => setSel(0), [q]);
+  useEffect(() => {
+    list.current?.querySelector('.sel')?.scrollIntoView({ block: 'nearest' });
+  }, [sel, groups]);
+
+  const open = (e: Entry | undefined) => {
+    if (!e) return;
+    window.location.hash = e.href;
+    onClose();
+  };
+  const onKey = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSel((s) => Math.min(flat.length - 1, s + 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setSel((s) => Math.max(0, s - 1));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      open(flat[sel]);
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      onClose();
+    }
+  };
+
+  let k = -1;
   return (
-    <div className="search-results" role="listbox" aria-label="Search results">
-      {hits.length === 0 && <div className="muted">No match.</div>}
-      {hits.map(({ e }) => (
-        <a key={e.id} href={`#/${e.id}`} onClick={onPick} role="option">
-          <span className="num">{citeLabel(e.id)}</span>
-          <span className="t">{modernTitle(e.id) ?? e.text}</span>
-        </a>
-      ))}
+    <div className="palette-back" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="palette" role="dialog" aria-modal="true" aria-label="Jump to a proposition, or search" onKeyDown={onKey}>
+        <input
+          ref={input}
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Jump to I.47, or search the enunciations…"
+          role="combobox"
+          aria-expanded="true"
+          aria-controls="palette-list"
+          aria-activedescendant={flat[sel] ? `pal-${flat[sel].key}` : undefined}
+          aria-label="Go to a proposition, or search the enunciations"
+        />
+        <div className="palette-list" id="palette-list" role="listbox" ref={list}>
+          {flat.length === 0 && <div className="palette-none">No match.</div>}
+          {groups.map((g) => (
+            <div key={g.title}>
+              <div className="palette-h">{g.title}</div>
+              {g.items.map((e) => {
+                const i = ++k;
+                return (
+                  <a
+                    key={e.key}
+                    id={`pal-${e.key}`}
+                    href={e.href}
+                    role="option"
+                    aria-selected={i === sel}
+                    className={`palette-item ${i === sel ? 'sel' : ''}`}
+                    onMouseMove={() => setSel(i)}
+                    onClick={(ev) => {
+                      ev.preventDefault();
+                      open(e);
+                    }}
+                  >
+                    <span className="num">{e.num}</span>
+                    <span className="t">{e.title}</span>
+                    {e.go && <span className="go">{e.go}</span>}
+                  </a>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+        <div className="palette-foot">
+          <span>↑↓ to move</span>
+          <span>↵ to open</span>
+          <span>esc to close</span>
+        </div>
+      </div>
     </div>
   );
 }
 
 export function App() {
   const route = useRoute();
-  const [open, setOpen] = useState(false);
+  const [palette, setPalette] = useState(false);
   useEffect(() => {
     const t = route.page === 'item' ? `${citeLabel(route.id)}${modernTitle(route.id) ? ' · ' + modernTitle(route.id) : ''} — Euclid’s Elements` : route.page === 'book' ? `Book ${ROMAN[route.n]} — Euclid’s Elements` : 'Euclid’s Elements — an interactive edition';
     document.title = t;
@@ -171,12 +275,19 @@ export function App() {
     mq.addEventListener('change', on);
     return () => mq.removeEventListener('change', on);
   }, []);
+  useEffect(() => {
+    const on = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setPalette((p) => !p);
+      }
+    };
+    window.addEventListener('keydown', on);
+    return () => window.removeEventListener('keydown', on);
+  }, []);
   return (
     <div className="app">
-      <button className="menu-btn" onClick={() => setOpen(!open)} aria-label="Contents" aria-expanded={open}>
-        ☰
-      </button>
-      <Sidebar route={route} open={open} onNav={() => setOpen(false)} />
+      <TopBar route={route} onSearch={() => setPalette(true)} />
       <main className="main">
         <Suspense fallback={<div className="page muted">Loading…</div>}>
           {route.page === 'home' && <Home />}
@@ -189,6 +300,12 @@ export function App() {
           {route.page === 'about' && <About />}
         </Suspense>
       </main>
+      <footer className="footer">
+        <span>Heath’s 1908 translation, with modern versions and live figures.</span>
+        <a href="#/glossary">Glossary</a>
+        <a href="#/about">About</a>
+      </footer>
+      {palette && <Palette route={route} onClose={() => setPalette(false)} />}
     </div>
   );
 }

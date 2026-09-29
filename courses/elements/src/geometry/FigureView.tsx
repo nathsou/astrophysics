@@ -23,10 +23,15 @@ interface Props {
   onHover?: (key: string | null) => void;
   /** Called whenever the scene changes, so the text can colour and link its labels. */
   onBus?: (bus: Bus) => void;
-  /** Labels are hidden in Byrne mode unless this is set. */
+  /** Labels are hidden in Byrne mode (until hovered) unless this is set. */
   labels?: boolean;
   compact?: boolean;
   className?: string;
+  /** The step-through controls, shown at the top of the tools under the figure. */
+  stepper?: ReactNode;
+  /** Extra words for the hint under the controls ("← → to step."). */
+  hint?: string;
+  /** Extra controls, shown before the Reset button. */
   children?: ReactNode;
 }
 
@@ -172,7 +177,7 @@ export function useFigure(def: FigureDef) {
   return { state, setState: trySet, scene, camera, setCamera, reset };
 }
 
-export function FigureView({ def, mentions, step = null, byrne = false, hoverKey = null, onHover, onBus, labels, compact, className, children }: Props) {
+export function FigureView({ def, mentions, step = null, byrne = false, hoverKey = null, onHover, onBus, labels, compact, className, stepper, hint, children }: Props) {
   const { state, setState, scene, camera, setCamera, reset } = useFigure(def);
   const is3 = scene.dim === 3;
   const proj = useCallback((p: V): V => (is3 ? project3(p, camera) : p), [is3, camera]);
@@ -212,6 +217,7 @@ export function FigureView({ def, mentions, step = null, byrne = false, hoverKey
     return () => ro.disconnect();
   }, []);
   const drag = useRef<{ name: string; kind: 'free' | 'glider' | 'rotate'; x: number; y: number; cam: Camera } | null>(null);
+  const [dragging, setDragging] = useState<string | null>(null);
 
   const toLocal = (e: RPE) => {
     const r = svgRef.current!.getBoundingClientRect();
@@ -222,6 +228,7 @@ export function FigureView({ def, mentions, step = null, byrne = false, hoverKey
     e.stopPropagation();
     (e.target as SVGElement).setPointerCapture?.(e.pointerId);
     drag.current = { name, kind, x: e.clientX, y: e.clientY, cam: camera };
+    setDragging(name);
   };
   const onBgDown = (e: RPE) => {
     if (!is3) return;
@@ -255,6 +262,7 @@ export function FigureView({ def, mentions, step = null, byrne = false, hoverKey
   };
   const onUp = () => {
     drag.current = null;
+    setDragging(null);
   };
 
   const visibleEl = (i: number) => step === null || resolved.elementFrom[i] <= step;
@@ -282,6 +290,10 @@ export function FigureView({ def, mentions, step = null, byrne = false, hoverKey
     });
   }
   const hoverTarget = hoverKey ? resolved.targets.flat().find((t) => t?.key === hoverKey) ?? null : null;
+  // Elements are highlighted through their own class; the underlay is for objects that are not elements (angles, polygons the figure does not draw)
+  const hoverUnderlay = hoverTarget && hoverTarget.element === undefined && hoverTarget.shape.t !== 'point' && hoverTarget.shape.t !== 'element' ? hoverTarget : null;
+  const polyOverlays = overlayTargets.filter((t) => t.shape.t === 'poly');
+  const otherOverlays = overlayTargets.filter((t) => t.shape.t !== 'poly');
 
   const angleRadius = (A: V, B: V, C: V) => Math.max(9, Math.min(26, 0.32 * Math.min(dist(A, B), dist(C, B))));
   // several marks at one vertex are drawn at increasing radii, so they do not pile up
@@ -344,8 +356,14 @@ export function FigureView({ def, mentions, step = null, byrne = false, hoverKey
     }
   };
 
-  const elementSvg = (e: Element, i: number, cls: string, style: React.CSSProperties = {}, key?: string | number): ReactNode => {
-    const common = { className: `${cls} el-${e.kind}${e.aux ? ' aux' : ''}${e.dashed ? ' dashed' : ''}`, style };
+  const elementSvg = (e: Element, i: number, cls: string, style: React.CSSProperties = {}, key?: string | number, draw = false): ReactNode => {
+    // A drawn element traces itself when it first appears; dashed ones fade in (their dashes would not survive pathLength).
+    const traces = draw && !e.dashed && !style.strokeDasharray;
+    const common = {
+      className: `${cls} el-${e.kind}${e.aux ? ' aux' : ''}${e.dashed ? ' dashed' : ''}${draw ? (traces ? ' draw' : ' fade') : ''}`,
+      style,
+      ...(traces ? { pathLength: 100 } : {}),
+    };
     switch (e.kind) {
       case 'segment': {
         const a = S(e.a);
@@ -442,7 +460,7 @@ export function FigureView({ def, mentions, step = null, byrne = false, hoverKey
   const pts = [...scene.points.values()].filter((p) => !p.hidden && visiblePt(p.name));
   const centroid = pts.length ? mul(pts.map((p) => S(p.p)).reduce(add, v(0, 0)), 1 / pts.length) : v(W / 2, H / 2);
   const labelPos = (name: string, p: V, dir?: number, scale = 1): V => {
-    if (dir !== undefined) return add(p, v(15 * scale * Math.cos((dir * Math.PI) / 180), -15 * scale * Math.sin((dir * Math.PI) / 180)));
+    if (dir !== undefined) return add(p, v(17 * scale * Math.cos((dir * Math.PI) / 180), -17 * scale * Math.sin((dir * Math.PI) / 180)));
     const ns = neighbours.get(name) ?? [];
     let d = v(0, 0);
     for (const q of ns) {
@@ -464,7 +482,7 @@ export function FigureView({ def, mentions, step = null, byrne = false, hoverKey
       const l = Math.hypot(u.x, u.y);
       away = l > 1e-6 ? mul(u, 1 / l) : v(0, -1);
     }
-    return add(p, mul(away, 14 * scale));
+    return add(p, mul(away, 17 * scale));
   };
 
   // painter's order for solids: far polygons first
@@ -478,10 +496,19 @@ export function FigureView({ def, mentions, step = null, byrne = false, hoverKey
     order.sort((a, b) => depthOf(scene.elements[b]) - depthOf(scene.elements[a]) || a - b);
   }
 
-  const showLabels = labels ?? !byrne;
+  const overlaySvg = (t: Target): ReactNode => {
+    const c = resolved.colours.get(t.key);
+    if (!c) return null;
+    const style = { '--c': c.colour, strokeDasharray: c.dash } as React.CSSProperties;
+    return (
+      <g key={t.key} className={`overlay coloured ${t.key === hoverKey ? 'hovered' : ''}`} onPointerEnter={() => onHover?.(t.key)} onPointerLeave={() => onHover?.(null)}>
+        {shapeSvg(t.shape, t.shape.t === 'angle' ? 'shape fill' : 'shape', style)}
+      </g>
+    );
+  };
 
   return (
-    <div className={`figure ${compact ? 'compact' : ''} ${byrne ? 'byrne' : ''} ${className ?? ''}`}>
+    <div className={`figure ${compact ? 'compact' : ''} ${byrne ? 'byrne' : ''} ${labels ? 'force-labels' : ''} ${className ?? ''}`}>
       <svg
         ref={svgRef}
         viewBox={`0 0 ${W} ${fmt(H)}`}
@@ -493,6 +520,7 @@ export function FigureView({ def, mentions, step = null, byrne = false, hoverKey
         role="img"
         aria-label="Figure; drag the highlighted points"
       >
+        {polyOverlays.map((t) => overlaySvg(t))}
         {order.map((i) => {
           const e = scene.elements[i];
           if (!visibleEl(i)) return null;
@@ -507,7 +535,7 @@ export function FigureView({ def, mentions, step = null, byrne = false, hoverKey
               onPointerEnter={() => key && onHover?.(key)}
               onPointerLeave={() => key && onHover?.(null)}
             >
-              {elementSvg(e, i, 'shape', style)}
+              {elementSvg(e, i, 'shape', style, undefined, step !== null)}
             </g>
           );
         })}
@@ -542,43 +570,32 @@ export function FigureView({ def, mentions, step = null, byrne = false, hoverKey
             </text>
           );
         })}
-        {overlayTargets.map((t) => {
-          const c = resolved.colours.get(t.key);
-          if (!c) return null;
-          const style = { '--c': c.colour, strokeDasharray: c.dash } as React.CSSProperties;
-          return (
-            <g key={t.key} className={`overlay coloured ${t.key === hoverKey ? 'hovered' : ''}`} onPointerEnter={() => onHover?.(t.key)} onPointerLeave={() => onHover?.(null)}>
-              {shapeSvg(t.shape, t.shape.t === 'angle' ? 'shape fill' : 'shape', style)}
-            </g>
-          );
-        })}
+        {otherOverlays.map((t) => overlaySvg(t))}
         {step !== null &&
           (resolved.targets[step] ?? []).map((t, j) =>
             t && t.shape.t !== 'element' ? <g key={`s${j}`} className="step-hl">{shapeSvg(t.shape, t.shape.t === 'angle' ? 'shape fill' : 'shape')}</g> : null,
           )}
-        {hoverTarget && <g className="hover-hl">{shapeSvg(hoverTarget.shape, hoverTarget.shape.t === 'angle' ? 'shape fill' : 'shape')}</g>}
+        {hoverUnderlay && <g className="hover-hl">{shapeSvg(hoverUnderlay.shape, hoverUnderlay.shape.t === 'angle' ? 'shape fill' : 'shape')}</g>}
         {pts.map((p) => {
           const s = S(p.p);
-          const draggable = p.kind === 'free' || p.kind === 'glider';
+          const draggable = (p.kind === 'free' || p.kind === 'glider') && !is3;
           const key = `pt:${p.name}`;
+          const r = (draggable ? 6.5 : 3) * ui;
+          const lp = labelPos(p.name, s, p.labelDir, ui);
           return (
             <g key={p.name} className={`pt ${p.kind} ${key === hoverKey ? 'hovered' : ''}`} onPointerEnter={() => onHover?.(key)} onPointerLeave={() => onHover?.(null)}>
-              {draggable && !is3 && <circle className="handle" cx={s.x} cy={s.y} r={14 * ui} onPointerDown={(e) => onDown(e, p.name, p.kind as 'free' | 'glider')} />}
-              <circle className="dot" cx={s.x} cy={s.y} r={(draggable && !is3 ? 4.2 : 2.8) * ui} pointerEvents="none" />
-              {showLabels && (() => {
-                const lp = labelPos(p.name, s, p.labelDir, ui);
-                return (
-                  <text className="lbl" x={lp.x} y={lp.y} dy="0.35em" textAnchor="middle" pointerEvents="none" style={{ fontSize: 19 * ui }}>
-                    {p.name}
-                  </text>
-                );
-              })()}
+              {draggable && <circle className={`handle ${dragging === p.name ? 'dragging' : ''}`} cx={s.x} cy={s.y} r={18 * ui} onPointerDown={(e) => onDown(e, p.name, p.kind as 'free' | 'glider')} />}
+              <circle className="dot" cx={s.x} cy={s.y} r={r} style={{ '--r': `${r}px`, '--rh': `${9 * ui}px` } as React.CSSProperties} pointerEvents="none" />
+              <text className="lbl" x={lp.x} y={lp.y} dy="0.35em" textAnchor="middle" pointerEvents="none" style={{ fontSize: 21 * ui }}>
+                {p.name}
+              </text>
             </g>
           );
         })}
       </svg>
       {!compact && (
         <div className="figure-tools">
+          {stepper}
           {scene.params.map((prm) => (
             <label key={prm.name} className="param">
               <span>{prm.label}</span>
@@ -586,40 +603,49 @@ export function FigureView({ def, mentions, step = null, byrne = false, hoverKey
               <output>{Number.isInteger(prm.step) ? prm.value : prm.value.toFixed(2)}</output>
             </label>
           ))}
-          {(scene.claims.length > 0 || scene.readouts.length > 0) && (
+          <div className="fig-row2">
+            {children}
+            <button className="chip-btn" onClick={() => { reset(); setBox(sceneBox(evaluate(def), proj)); }} title="Reset the figure">
+              ↺ Reset
+            </button>
+            <span className="grow" />
+            {scene.claims.map((c) => (
+              <span key={c.label} className={`claim ${c.ok ? '' : 'bad'}`} title={c.lhs !== undefined ? `${fmtNum(c.lhs)} ${c.ok ? '=' : '≠'} ${fmtNum(c.rhs!)} (checked in the current configuration)` : 'Checked in the current configuration'} role="status">
+                <i>{c.label}</i>
+                {!c.ok && c.lhs !== undefined && (
+                  <span>
+                    {fmtNum(c.lhs)} ≠ {fmtNum(c.rhs!)}
+                  </span>
+                )}
+                <span className="mark">{c.ok ? '✓' : '✗'}</span>
+              </span>
+            ))}
+          </div>
+          {scene.readouts.length > 0 && (
             <ul className="readouts" aria-live="polite">
               {scene.readouts.map((r) => (
                 <li key={r.label}>
                   <span className="rl">{r.label}</span> <span className="rv">{typeof r.value === 'number' ? fmtNum(r.value) : r.value}</span>
                 </li>
               ))}
-              {scene.claims.map((c) => (
-                <li key={c.label} className={c.ok ? 'ok' : 'bad'} title="Checked numerically in the current configuration">
-                  <span className="rl">{c.label}</span>
-                  {c.lhs !== undefined && (
-                    <span className="rv">
-                      {fmtNum(c.lhs)} {c.ok ? '=' : '≠'} {fmtNum(c.rhs!)}
-                    </span>
-                  )}
-                  <span className="mark">{c.ok ? '✓' : '✗'}</span>
-                </li>
-              ))}
             </ul>
           )}
-          <div className="figure-buttons">
-            {children}
-            <button className="chip-btn" onClick={() => { reset(); setBox(sceneBox(evaluate(def), proj)); }} title="Reset the figure">
-              ↺ Reset
-            </button>
-          </div>
           {def.caption && <p className="figure-caption">{def.caption}</p>}
           {(scene.gliders.size > 0 || [...scene.points.values()].some((p) => p.kind === 'free') || is3) && (
-            <p className="figure-hint">{is3 ? 'Drag to turn the figure.' : 'Drag the larger points.'}</p>
+            <p className="figure-hint">{[is3 ? 'Drag to turn the figure.' : dragHint(scene), hint].filter(Boolean).join(' ')}</p>
           )}
         </div>
       )}
     </div>
   );
+}
+
+/** "Drag A or B." for the points the reader can move. */
+function dragHint(scene: Scene): string {
+  const names = [...scene.points.values()].filter((p) => !p.hidden && (p.kind === 'free' || p.kind === 'glider')).map((p) => p.name);
+  if (names.length === 0) return '';
+  if (names.length > 4) return 'Drag the coloured points.';
+  return `Drag ${names.length === 1 ? names[0] : names.slice(0, -1).join(', ') + ' or ' + names[names.length - 1]}.`;
 }
 
 export function fmtNum(x: number): string {
