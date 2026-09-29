@@ -1,0 +1,233 @@
+# Proofs Are Programs — plan
+
+*The Curry–Howard correspondence, written as programs in a Lean-inspired language, for programmers.*
+
+This document is the working plan for the course: what it teaches, in which order, which interactive
+components it needs, how the language is extended, and how it connects to the CIC course. It is updated
+as the course is built.
+
+## 1. Positioning
+
+The repository already has two neighbours:
+
+| Course | Question it answers |
+|---|---|
+| `courses/cic` — *The Calculus of Inductive Constructions* | How does a Lean-style kernel decide that a proof is correct? (the theory inside the checker) |
+| `courses/proofs` — *Proofcraft* | How do mathematicians find and write proofs? (techniques, on paper) |
+| **`courses/proofs-are-programs`** | **What does it mean that proofs are programs, and how do I use that to write programs that are correct?** |
+
+The new course is practice-first. Readers write, run and erase proofs; they prove programs correct; at the
+end they build a small kernel of their own. It links to the CIC course whenever the theory behind a feature
+matters, instead of re-explaining it.
+
+It is an independent course. It is not an adaptation of any textbook: the arc (types as promises → logic as
+a library → tactics as programs → recursion as induction → verified programs → your own kernel), the running
+examples, exercises and widgets are original. Standard ideas (the Curry–Howard correspondence, natural
+deduction, bidirectional type checking, normalisation by evaluation, the classic compiler-correctness
+theorem) are credited to their original authors in the text and in the reading list.
+
+### Audience
+
+Programmers comfortable with a typed language (TypeScript, Rust, OCaml, Haskell, Java…). No prior logic or
+type theory. Mathematics at the level of "induction on the natural numbers, seen once".
+
+### Principles
+
+1. **Every snippet runs.** Each code block is checked by the kernel at build time (tests fail otherwise),
+   and runs in the reader's browser.
+2. **Show the program inside the proof.** Wherever a tactic proof appears, the term it builds can be shown.
+3. **Test before you prove.** A statement can be tried on random inputs before any proof is attempted.
+4. **Bugs are part of the lesson.** Readers break programs and watch proofs fail at exactly the right place.
+5. **No magic automation.** Every tactic produces a term that the small trusted kernel re-checks; the course
+   says what each tactic does and does not do.
+
+## 2. The language
+
+The course reuses the Lean-inspired language of the CIC course — same syntax, same kernel — moved into a
+shared package, `packages/kernel`, which both courses import (`@kernel/...`). The trusted core
+(`packages/kernel/src/core`) stays small; every extension below lives in the elaborator and produces
+ordinary terms that the core re-checks (the de Bruijn criterion).
+
+### Extensions (in the order they are needed)
+
+| Extension | Needed by | Notes |
+|---|---|---|
+| `by` tactic blocks, goals, goal snapshots | Part III onwards | layout-sensitive tactic sequences, `·` bullets, `<;>`, `case`, `next`, `all_goals`, `any_goals`, `try`, `repeat`, `first` |
+| Core tactics | Part III | `intro`, `intros`, `rintro`, `exact`, `apply`, `refine` with `?_`, `rfl`, `constructor`, `left`, `right`, `exists`, `exfalso`, `contradiction`, `assumption`, `trivial`, `cases`, `rcases`, `obtain`, `induction … generalizing … with`, `have`, `show`, `calc`, `unfold`, `specialize`, `rw [h, ← h] at …`, `subst`, `injection`, `exact?`-free |
+| Proof-term recording | Part III | each tactic step records its goals and the part of the term it assigned (the tactic ↔ term lens) |
+| Equation lemmas | Parts III–VI | `f.eq_1 … f.eq_n` generated from the equations of a definition and checked by `rfl`; `simp [f]`, `rw [f]`, `unfold f` use them |
+| `simp`, `simp only`, `simp at`, `simp_all` | Part III onwards | rewriting with congruence proofs, hypotheses, `@[simp]` lemmas; closes goals rewritten to `True` |
+| `class` / `instance` / instance arguments | Part IV onwards | a small resolution procedure (depth-bounded, first match), enough for `Decidable`, `DecidableEq`, `Inhabited` |
+| `if … then … else`, `if h : … then … else` | Part IV onwards | `ite` / `dite` over `Decidable` |
+| `deriving DecidableEq` | Part V | generated instance for enumerations and simple inductive types |
+| `decide` | Part III onwards | proof by evaluation (`of_decide_eq_true rfl`) |
+| `omega`-lite | Part V | linear arithmetic over `Nat` for the goals the course needs, producing checked proof terms |
+| compiled `#eval` with erasure | Parts I, V, VI | types and proofs are erased, the rest is compiled to JavaScript closures; `Nat` is a `BigInt`. Also the **erasure view** |
+| random testing (`#test`) | Part V | evaluates a decidable statement on random inputs; shows counterexamples |
+| `termination_by` / well-founded recursion | Part IV–V | `WellFounded.fix` generated by the elaborator for measures on `Nat` |
+
+**Performance fallback.** If the TypeScript kernel is too slow for the Part V proofs or the Part VI
+self-hosted type checker, the kernel core (not the elaborator) will be rewritten in Rust and compiled to
+WebAssembly, behind the same interface. The decision point is the compiler-correctness chapter: if its
+proofs cannot be re-checked interactively (< 1 s per declaration on a laptop), we switch.
+
+## 3. Curriculum
+
+**Prologue — A function you cannot write.** `α → β` has no total implementation; `α → α` has exactly one.
+Types constrain programs, and that constraint is the whole course. (Bridge: CIC 5, parametricity.)
+
+### Part I · Types as promises
+
+1. **Programs in the course language.** `def`, `structure`, `inductive`, `match`, recursion, `#eval`.
+   A quick tour for programmers.
+2. **What a type can promise.** Inhabitation puzzles; how polymorphism limits implementations; the
+   **inhabitant enumerator** (`(α → α) → α → α` lists the Church numerals).
+3. **Evidence: the sort `Prop`.** Readers define `MyAnd`, `MyOr`, `MyFalse`, `MyNot` themselves as
+   inductive types, then meet the library's. Implication is a function type. (Bridge: CIC 4, 14.)
+
+### Part II · Logic is a library
+
+4. **Proofs as terms.** Anonymous constructors, `match`, `fun`, holes `_` and `sorry`, reading goals.
+5. **Quantifiers.** `∀` is a dependent function, `∃` is a pair whose witness cannot be extracted into data.
+   (Bridge: CIC 7, CIC 14.)
+6. **Equality.** `Eq` as an inductive type, `rfl` by computation, rewriting as transport (`▸`, `Eq.subst`),
+   and why `rw` sometimes cannot abstract. (Bridge: CIC 13.)
+7. **What you cannot prove.** Countermodels (Kripke frames) for excluded middle and Peirce's law; `Classical`;
+   `#print axioms` and the **axiom badge**; `noncomputable`. (Bridge: CIC 14, CIC 19.)
+
+### Part III · Tactics are programs that write programs
+
+8. **From terms to tactics.** `by`, goals, each tactic fills a hole — the **tactic ↔ term lens**.
+   (Bridge: CIC 0, the de Bruijn criterion; CIC 17, watching the kernel.)
+9. **The toolbox.** `intro`, `apply`, `exact`, `constructor`, `cases`, `rcases`, `obtain`, `left`/`right`,
+   `exfalso`, `calc`, `rw`, `have`, `show`; bullets and structure.
+10. **Automation that leaves a proof behind.** `simp`, `decide`, `omega`; what they do, the terms they
+    produce, and how to read their failures.
+
+### Part IV · Recursion is induction
+
+11. **Induction.** The recursor; an induction proof *is* a recursive function; `induction … with`.
+    (Bridge: CIC 11, CIC 15.)
+12. **Termination and consistency.** Why `theorem bad : False := bad` must be rejected; structural recursion,
+    fuel, `termination_by`. (Bridge: CIC 15, CIC 16, CIC 18.)
+13. **Inductive predicates and decidability.** Evenness, reachability, `Sorted`; `cases` on evidence;
+    `Decidable`, `if … then … else`, `decide`. (Bridge: CIC 13.)
+
+### Part V · Verified programs
+
+14. **Fast = correct.** Tail-recursive `reverse` and `sum` with accumulators equal their specifications; the
+    first proof attempt fails, generalising the accumulator fixes it.
+15. **Sorting.** Insertion sort returns a sorted permutation; merge sort with `termination_by`.
+16. **An interpreter and an optimiser.** Arithmetic expressions with variables and `let`; constant folding
+    proved correct; **test before you prove**.
+17. **A compiler to a stack machine.** `compile`, `exec`, and the theorem
+    `exec (compile e ++ rest) s = exec rest (eval env e :: s)`; **break the compiler**, the **simulation
+    square** and the **proof-obligation grid**. Extension: conditionals and jumps with a program-counter
+    invariant.
+18. **A typed language.** Extrinsic typing (`HasType`), small-step semantics, progress and preservation;
+    then intrinsic typing (`Term : Ty → Type`) with a total evaluator; `Fin` and `Subtype`; erasure.
+    (Bridge: CIC 13, CIC 14.)
+19. **Reflection.** A tautology checker for propositional formulas, proved sound; it becomes a tactic.
+    (Bridge: CIC 17, definitional equality.)
+
+### Part VI · Build your own kernel
+
+20. **A verified checker for simple types.** `infer : Ctx → Term → Option Ty`, proved sound and complete
+    against `HasType`; a version that returns the typing derivation. (Bridge: CIC 3.)
+21. **A dependent type checker.** de Bruijn syntax, normalisation by evaluation, bidirectional checking,
+    `Type : Type` and Girard's paradox (fuel), universe levels, `Nat` and its recursor; your kernel checks
+    your Part II proofs; side-by-side with the real kernel; the **differential fuzzer**.
+    (Bridges: CIC 2, 10, 11, 17, 18, 19.)
+
+**Epilogue — Where to go next.** Lean 4 and Mathlib, the CIC course, Proofcraft, further reading.
+
+**Reference pages.** Tactic reference, language reference, glossary, the Curry–Howard dictionary (grows
+with the chapters), the CIC bridge map, reading list.
+
+## 4. Interactive components
+
+| Component | Where | What it does |
+|---|---|---|
+| Playground | everywhere | CodeMirror editor, live checking, hover types, goal view, `#eval` results |
+| Infoview with tactic states | Part III+ | goals before/after the tactic under the cursor |
+| **Tactic ↔ term lens** | 8, then everywhere | the proof term being built, the part filled by each tactic highlighted; replay slider |
+| **Inhabitant enumerator** | Prologue, 2 | lists the normal inhabitants of a simple type, by size |
+| **Provability oracle** | 4, 7, 9 | for propositional goals: provable / only classically (with a Kripke countermodel) / false (with a valuation) |
+| **Kripke frame explorer** | 7 | draggable worlds, forcing computed live |
+| **Axiom badge** | 7, then everywhere | which axioms a declaration depends on |
+| **Erasure view** | 1, 18 | a program next to the code that runs, with types and proofs gone |
+| **Induction ↔ recursion view** | 11 | one `match` tree read as a program and as a proof |
+| **Rewrite motive view** | 6, 9 | which occurrences `rw` abstracts, and why abstraction can fail |
+| **Termination view** | 12 | recursive calls and the decreasing argument |
+| **Test before you prove** | 16, 17, 18 | random testing of decidable statements with counterexamples |
+| **Break the compiler** | 17 | inject a bug; random tests fail and the proof breaks at the right case |
+| **Simulation square** | 17 | interpreter and stack machine stepped side by side |
+| **Proof-obligation grid** | 16, 17, 18 | one cell per induction case, green when proved |
+| **Derivation viewer** | 18, 20 | typing derivations as trees (shared design with the CIC course) |
+| **NbE stepper** | 21 | term → value → normal form |
+| **Bidirectional view** | 21 | check/infer modes on the syntax tree |
+| **Differential fuzzer** | 21 | the reader's kernel against the course kernel on generated terms |
+| Exercises | everywhere | checked by the kernel (no `sorry`, expected statement), progress saved locally |
+
+## 5. Bridges with the CIC course
+
+1. **One language, one kernel.** Both courses import `packages/kernel`. A snippet can be opened in the other
+   course's playground (`#/playground?code=…`).
+2. **Callouts.** *Under the hood → CIC §n* boxes in this course, *In practice → Proofs Are Programs §n* boxes
+   in the CIC course.
+3. **Term-level links.** From the lens, "see how the kernel checks this" opens the CIC kernel trace for the
+   same term.
+4. **Shared progress.** Both courses are served from the same origin; progress is read across courses so a
+   callout can say "you've read CIC 13".
+5. **Reading paths.** Practice first (this course, dipping into CIC) or theory first (CIC, then Parts V–VI
+   here), on both home pages.
+6. **The bridge map**, a reference page listing every correspondence:
+
+| Proofs Are Programs | CIC course |
+|---|---|
+| Prologue — `α → α` has one inhabitant | 5 Parametricity |
+| 3 `Prop` and hand-made connectives | 4 Curry–Howard, 14 Prop |
+| 5 Quantifiers; `Exists` hides its witness | 7 Dependent types, 14 Why proofs must not compute data |
+| 6 Equality, `rw` | 13 Equality as an inductive family |
+| 7 Classical logic, axioms | 14 Classical logic, 19 The three axioms |
+| 8 Tactics produce terms re-checked by the kernel | 0 de Bruijn criterion, 17 Watching the kernel |
+| 11–12 Recursion = induction, termination | 11, 15, 16 |
+| 18 Dependent data, intrinsic typing | 13 Vectors, 14 Σ and subtypes |
+| 19 Reflection, `decide` | 17 Definitional equality |
+| 20–21 Build your own kernel | 2, 3, 10, 17, 18, 19 |
+
+## 6. Architecture
+
+```
+packages/kernel/          shared by courses/cic and courses/proofs-are-programs
+  src/core/               TRUSTED: levels, terms, environment, type checker, inductive types
+  src/elab/               elaborator: metavariables, unification, pattern matching, tactics, simp, instances
+  src/syntax/             lexer and parser
+  src/eval/               erasure and compilation of #eval to JavaScript
+  src/frontend.ts         command processing; every declaration is re-checked by the kernel
+  src/prelude/core.lean   the core prelude (shared)
+courses/proofs-are-programs/
+  src/lean/               the course's standard library (Nat, List, Bool, Decidable, lemmas), checked at startup
+  src/content/chapters/   one MDX file per chapter
+  src/viz/                interactive components (SolidJS)
+  src/app/                application shell
+  tests/                  every snippet, exercise solution and widget input is checked
+```
+
+Built with TypeScript, Vite, SolidJS, MDX, KaTeX and CodeMirror 6, like the CIC course.
+
+## 7. Quality gates
+
+* `npm test` in both courses: kernel tests, tactic tests, and every snippet in every chapter.
+* `npm run build` type-checks with TypeScript and builds the static site.
+* A GitHub Actions workflow runs both courses' checks whenever `packages/kernel/**` or either course changes.
+
+## 8. Milestones
+
+1. Plan (this document); shared kernel package; CIC course still green.
+2. Course scaffold (app shell, playground, content tests, CI, root build and index page).
+3. Tactic engine and lens; equation lemmas; `simp`.
+4. Instances, `Decidable`, `if`, `decide`, compiled `#eval`, random testing.
+5. Chapters 17 (compiler) first as the benchmark, then Parts I–IV, V, VI in order.
+6. Widgets per chapter; reference pages; bridges in the CIC course.
+7. Polish: navigation, search, glossary, accessibility, mobile layout.
