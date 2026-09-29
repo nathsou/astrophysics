@@ -118,6 +118,9 @@ export default defineSim({
   async mount({ host, onDestroy }) {
     const device = await requireDevice();
     const stage = createStage(host, { aspect: 16 / 9, maxDpr: 1.5 });
+    // The scene is always black space (the render pass clears to opaque black); paint the canvas black
+    // up front too, so the light HUD text stays readable before the first GPU frame lands.
+    stage.canvas.style.background = '#000';
     const { ctx, format } = configureCanvas(stage.canvas, device);
 
     const check = (mod: GPUShaderModule, name: string) => {

@@ -13,8 +13,8 @@
   --ac: #a3491f;
   --pn: #ebe2cd;
 
-  --fg-muted: #6a5f4b;      /* secondary TEXT: --mute darkened to reach 4.5:1 on --bg and --pn */
-  --fg-faint: #6f634c;      /* tertiary text (canvas captions): still ≥4.5:1 on --pn */
+  --fg-muted: #5e533f;      /* secondary TEXT: ≥4.5:1 on --bg, --pn and the light tints sims lay under labels */
+  --fg-faint: #675b45;      /* tertiary text (canvas captions): still ≥4.5:1 on --pn */
   --bg-elev: #efe7d4;
   --bg-raised: #efe7d4;
   --bg-sunk: #ebe2cd;
@@ -56,8 +56,8 @@
   --ac: #e0a15c;
   --pn: #221f16;
 
-  --fg-muted: #a89d84;
-  --fg-faint: #8f8570;
+  --fg-muted: #b8ad94;      /* brighter than --mute so labels on the sims' dark tints stay ≥4.5:1 */
+  --fg-faint: #9e947d;
   --bg-elev: #1d1a13;
   --bg-raised: #1d1a13;
   --bg-sunk: #221f16;
@@ -85,7 +85,7 @@
   :root:not([data-theme]) {
     color-scheme: dark;
     --bg: #17150f; --fg: #efe6d0; --mute: #a89d84; --ac: #e0a15c; --pn: #221f16;
-    --fg-muted: #a89d84; --fg-faint: #8f8570; --bg-elev: #1d1a13; --bg-raised: #1d1a13; --bg-sunk: #221f16;
+    --fg-muted: #b8ad94; --fg-faint: #9e947d; --bg-elev: #1d1a13; --bg-raised: #1d1a13; --bg-sunk: #221f16;
     --rule: #463f2f; --card: #2c281e; --line: #5c5442; --accent: #e0a15c; --accent-2: #7fb4d6; --accent-3: #d98aa8; --good: #7fc28a; --bad: #ff8a78;
     --hl: rgba(224, 161, 92, 0.2); --code-bg: #221f16;
     --plot-grid: rgba(239, 230, 208, 0.09); --plot-axis: rgba(239, 230, 208, 0.42);

@@ -41,10 +41,14 @@ export default defineSim({
         STAGES.forEach((st, i) => {
           const y0 = plot.py(i - 0.32), y1 = plot.py(i + 0.32);
           const x0 = plot.px(plot.o.x.min), x1 = plot.px(st.duration_yr);
+          // a tint of the stage colour with a solid edge: the ink label on top keeps full contrast
           ctx.fillStyle = pal.series[st.color];
-          ctx.globalAlpha = i === hover ? 1 : 0.85;
+          ctx.globalAlpha = i === hover ? 0.5 : 0.3;
           ctx.fillRect(x0, Math.min(y0, y1), x1 - x0, Math.abs(y1 - y0));
           ctx.globalAlpha = 1;
+          ctx.strokeStyle = pal.series[st.color];
+          ctx.lineWidth = i === hover ? 2.5 : 1.5;
+          ctx.strokeRect(x0 + 0.75, Math.min(y0, y1) + 0.75, x1 - x0 - 1.5, Math.abs(y1 - y0) - 1.5);
           ctx.fillStyle = pal.fg;
           ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
           ctx.textBaseline = 'middle';

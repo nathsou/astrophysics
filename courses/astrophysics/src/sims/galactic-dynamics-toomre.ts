@@ -21,6 +21,9 @@ export default defineSim({
   async mount({ host, params, onDestroy }) {
     const device = await requireDevice();
     const stage = createStage(host, { aspect: 4 / 3 });
+    // The scene is always black space (the render pass clears to opaque black); paint the canvas black
+    // up front too, so the light HUD text stays readable before the first GPU frame lands.
+    stage.canvas.style.background = '#000';
     const { ctx, format } = configureCanvas(stage.canvas, device, 'opaque');
     const eng = new NBodyEngine(device, format);
     onDestroy(() => eng.destroy());

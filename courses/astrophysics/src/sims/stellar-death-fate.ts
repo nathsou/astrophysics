@@ -59,13 +59,17 @@ export default defineSim({
 
       for (const b of bs) {
         const x0 = xOf(b.lo), x1 = xOf(Math.min(b.hi, MMAX));
+        // a tint of the band colour with solid edges; the ink label on top keeps full contrast
         ctx.fillStyle = pal[b.color];
-        ctx.globalAlpha = 0.75;
+        ctx.globalAlpha = 0.3;
         ctx.fillRect(x0, barY, x1 - x0, barH);
         ctx.globalAlpha = 1;
+        ctx.strokeStyle = pal[b.color];
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(x0 + 0.75, barY + 0.75, x1 - x0 - 1.5, barH - 1.5);
         // label: horizontal if it fits, otherwise rotated to run up the band
         ctx.save();
-        ctx.fillStyle = pal.bg;
+        ctx.fillStyle = pal.fg;
         ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';

@@ -225,9 +225,10 @@ export class Plot {
     if (o.stroke) { ctx.strokeStyle = o.stroke; ctx.lineWidth = 1.5; ctx.stroke(); }
     if (o.label) {
       ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
-      ctx.fillStyle = this.pal.fg;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'bottom';
+      haloText(ctx, o.label, X + 6, Y - 4, this.pal.bg);
+      ctx.fillStyle = this.pal.fg;
       ctx.fillText(o.label, X + 6, Y - 4);
     }
   }
@@ -266,15 +267,32 @@ export class Plot {
     if (o.label) this.text(o.label, this.m.l + this.pw - 4, Y - 3, { align: 'right', baseline: 'bottom', color: o.color });
   }
 
-  /** Text at CSS pixel coords. */
-  text(s: string, X: number, Y: number, o: { color?: string; align?: CanvasTextAlign; baseline?: CanvasTextBaseline; size?: number } = {}) {
+  /** Text at CSS pixel coords, on a thin halo of the panel colour so it stays legible over curves and tinted bands. */
+  text(s: string, X: number, Y: number, o: { color?: string; align?: CanvasTextAlign; baseline?: CanvasTextBaseline; size?: number; halo?: boolean } = {}) {
     const { ctx } = this;
     ctx.font = `${o.size ?? 11}px JetBrains Mono, ui-monospace, monospace`;
-    ctx.fillStyle = o.color ?? this.pal.fg;
     ctx.textAlign = o.align ?? 'left';
     ctx.textBaseline = o.baseline ?? 'alphabetic';
+    if (o.halo !== false) haloText(ctx, s, X, Y, this.pal.bg);
+    ctx.fillStyle = o.color ?? this.pal.fg;
     ctx.fillText(s, X, Y);
   }
+}
+
+/**
+ * Paint a soft halo of `bg` (the panel colour) under a label about to be drawn with the current font,
+ * alignment and baseline, so text over a curve, grid or tinted band keeps its full contrast.
+ * Call it right before `fillText` with the same arguments.
+ */
+export function haloText(ctx: CanvasRenderingContext2D, s: string, x: number, y: number, bg: string, width = 3) {
+  ctx.save();
+  ctx.strokeStyle = bg;
+  ctx.lineWidth = width;
+  ctx.lineJoin = 'round';
+  ctx.setLineDash([]);
+  ctx.globalAlpha = 0.9;
+  ctx.strokeText(s, x, y);
+  ctx.restore();
 }
 
 /** Fixed-capacity ring buffer for time series; `linear()` returns ordered copies for plotting. */

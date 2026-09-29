@@ -136,8 +136,13 @@ export default defineSim({
         diskCtx.strokeStyle = 'rgba(0,0,0,0.45)'; diskCtx.lineWidth = 1; diskCtx.setLineDash([3, 3]);
         diskCtx.beginPath(); diskCtx.arc(cx, cy, rad * lo, 0, Math.PI * 2); diskCtx.stroke();
         diskCtx.setLineDash([]);
-        diskCtx.fillStyle = 'rgba(0,0,0,0.7)';
-        diskCtx.fillText(`10${['⁵', '⁶', '⁷'][Math.round(Math.log10(Tiso)) - 5]} K`, cx + rad * lo * 0.7071 + 3, cy - rad * lo * 0.7071 - 3);
+        // dark ink on a pale halo: readable on the white-hot core and on the dim outer layers alike
+        const isoLabel = `10${['⁵', '⁶', '⁷'][Math.round(Math.log10(Tiso)) - 5]} K`;
+        const lx = cx + rad * lo * 0.7071 + 3, ly = cy - rad * lo * 0.7071 - 3;
+        diskCtx.strokeStyle = 'rgba(255,250,240,0.85)'; diskCtx.lineWidth = 3; diskCtx.lineJoin = 'round';
+        diskCtx.strokeText(isoLabel, lx, ly);
+        diskCtx.fillStyle = '#1a1510';
+        diskCtx.fillText(isoLabel, lx, ly);
       }
       // vignette rim
       const grad = diskCtx.createRadialGradient(cx, cy, rad * 0.85, cx, cy, rad * 1.02);

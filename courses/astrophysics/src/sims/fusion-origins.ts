@@ -14,7 +14,7 @@ const ORIGINS: { id: Origin; label: string; color: string; ink: string }[] = [
   { id: 'massive', label: 'Exploding massive stars', color: '#f0b35a', ink: '#0b0d12' },
   { id: 'wd', label: 'Exploding white dwarfs (Type Ia)', color: '#6fd0cf', ink: '#0b0d12' },
   { id: 'ns', label: 'Merging neutron stars (r-process)', color: '#e68aab', ink: '#0b0d12' },
-  { id: 'decay', label: 'Only as decay products of U/Th', color: '#77746d', ink: '#f2f0ea' },
+  { id: 'decay', label: 'Only as decay products of U/Th', color: '#57544e', ink: '#f2f0ea' },
   { id: 'human', label: 'Made by humans (traces natural)', color: '#d9d6cf', ink: '#0b0d12' },
 ];
 const ORIGIN = Object.fromEntries(ORIGINS.map((o) => [o.id, o])) as Record<Origin, (typeof ORIGINS)[number]>;
