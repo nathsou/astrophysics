@@ -54,7 +54,7 @@ def _load(name: str):
     dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     ckpt = torch.load(TRAINING / "runs" / name / "ckpt.pt", map_location=dev, weights_only=False)
     c = ckpt["config"]
-    keys = ("context", "width", "layers", "heads", "norm_type", "mlp_type", "pos", "kv_heads", "experts", "top_k", "expert_hidden", "aux_coef")
+    keys = ("context", "width", "layers", "heads", "norm_type", "mlp_type", "pos", "kv_heads", "experts", "top_k", "expert_hidden", "aux_coef", "gate")
     model = GPT(GPTConfig(vocab=8192, **{k: c[k] for k in keys if k in c})).to(dev)
     model.load_state_dict(ckpt["model"])
     return model.eval(), dev

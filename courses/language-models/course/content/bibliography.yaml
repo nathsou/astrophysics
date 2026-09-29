@@ -2146,3 +2146,9 @@ hastie2009:
   title: "The Elements of Statistical Learning (2nd edition)"
   venue: Springer
   url: https://hastie.su.domains/ElemStatLearn/
+yue2025:
+  authors: Yang Yue, Zhiqi Chen, Rui Lu and others
+  year: 2025
+  title: Does Reinforcement Learning Really Incentivize Reasoning Capacity in LLMs Beyond the Base Model?
+  venue: arXiv
+  url: https://arxiv.org/abs/2504.13837

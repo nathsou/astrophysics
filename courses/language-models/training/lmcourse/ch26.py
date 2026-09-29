@@ -120,33 +120,51 @@ def lens() -> None:
     print("agreement with the final layer:", [round(v, 3) for v in mean(agree)])
 
 
-def heads(T: int = 128, batch: int = 32) -> None:
-    """Scores on sequences of random tokens repeated twice: attention from each position of the second copy to
-    the token *after* its earlier occurrence (induction), and to the previous position (previous-token)."""
+def _head_scores(model, ids, T: int):
+    """Per-head induction and previous-token scores, and per-position loss (bits), on sequences made of a start
+    token and a segment of T tokens repeated twice."""
     import torch
     import torch.nn.functional as F
+
+    dev = ids.device
+    L, H = model.cfg.layers, model.cfg.heads
+    induction = [[0.0] * H for _ in range(L)]
+    previous = [[0.0] * H for _ in range(L)]
+    rs = residuals(model, ids)
+    for layer in range(L):
+        a = attention(model, rs[layer], layer)  # (B, H, 2T+1, 2T+1)
+        second = torch.arange(T + 1, 2 * T + 1, device=dev)
+        ind = a[:, :, second, second - T + 1].mean((0, 2))
+        prev = a[:, :, torch.arange(2, 2 * T + 1, device=dev), torch.arange(1, 2 * T, device=dev)].mean((0, 2))
+        for hd in range(H):
+            induction[layer][hd] = round(ind[hd].item(), 4)
+            previous[layer][hd] = round(prev[hd].item(), 4)
+    logits = model(ids[:, :-1])[0].float()
+    loss = F.cross_entropy(logits.transpose(1, 2), ids[:, 1:], reduction="none").mean(0) / math.log(2)
+    return induction, previous, [round(v, 3) for v in loss.tolist()]
+
+
+def heads(T: int = 128, batch: int = 32) -> None:
+    """Scores on sequences whose second half repeats the first: attention from each position of the second copy to
+    the token *after* its earlier occurrence (induction), and to the previous position (previous-token). Two kinds of
+    segment: windows of real validation text, and random tokens (which a model of stories has never seen)."""
+    import torch
 
     model, tok, dev = _setup()
     g = torch.Generator(device="cpu").manual_seed(0)
     eot = tok.special["<|endoftext|>"]
-    rand = torch.randint(300, 8000, (batch, T), generator=g)
-    ids = torch.cat([torch.full((batch, 1), eot), rand, rand], 1).to(dev)
-    L, H = model.cfg.layers, model.cfg.heads
-    induction = [[0.0] * H for _ in range(L)]
-    previous = [[0.0] * H for _ in range(L)]
+    val = _val(1 << 20, torch.device("cpu"))
+    starts = torch.randint(0, (1 << 20) - T, (batch,), generator=g)
+    segments = {"text": torch.stack([val[s : s + T] for s in starts]), "random": torch.randint(300, 8000, (batch, T), generator=g)}
+    out = {}
     with torch.no_grad():
-        rs = residuals(model, ids)
-        for layer in range(L):
-            a = attention(model, rs[layer], layer)  # (B, H, 2T+1, 2T+1)
-            second = torch.arange(T + 1, 2 * T + 1, device=dev)
-            ind = a[:, :, second, second - T + 1].mean((0, 2))
-            prev = a[:, :, torch.arange(2, 2 * T + 1, device=dev), torch.arange(1, 2 * T, device=dev)].mean((0, 2))
-            for hd in range(H):
-                induction[layer][hd] = round(ind[hd].item(), 4)
-                previous[layer][hd] = round(prev[hd].item(), 4)
-        # Loss per position: high on the first copy (random tokens), low on the second if the model copies.
-        logits = model(ids[:, :-1])[0].float()
-        loss = F.cross_entropy(logits.transpose(1, 2), ids[:, 1:], reduction="none").mean(0) / math.log(2)
+        for name, seg in segments.items():
+            ids = torch.cat([torch.full((batch, 1), eot), seg, seg], 1).to(dev)
+            out[name] = dict(zip(("induction", "previous", "loss"), _head_scores(model, ids, T), strict=True))
+            first, second = out[name]["loss"][:T], out[name]["loss"][T:]
+            print(f"{name}: loss {sum(first) / len(first):.2f} bits on the first copy, {sum(second) / len(second):.2f} on the second")
+        induction, previous = out["text"]["induction"], out["text"]["previous"]
+        L, H = model.cfg.layers, model.cfg.heads
         # Attention patterns of the strongest heads on a short repeated sentence.
         text = " The old owl sat on a red branch and sang to the moon."
         s = tok.encode(text)
@@ -157,7 +175,7 @@ def heads(T: int = 128, batch: int = 32) -> None:
         patterns = {name: {"layer": li, "head": hd, "attn": [[round(v, 3) for v in row] for row in attention(model, rs[li], li)[0, hd].tolist()]}
                     for name, (li, hd) in (("induction", best_ind), ("previous", best_prev))}
     (OUT / "heads.json").write_text(json.dumps({"induction": induction, "previous": previous, "T": T,
-                                                "loss": [round(v, 3) for v in loss.tolist()],
+                                                "loss": out["text"]["loss"], "random": out["random"],
                                                 "example": {"tokens": [tok.decode([int(i)]) for i in ex[0]], **patterns}}, ensure_ascii=False))
     print("best induction head", best_ind, induction[best_ind[0]][best_ind[1]], "best previous-token head", best_prev)
 
