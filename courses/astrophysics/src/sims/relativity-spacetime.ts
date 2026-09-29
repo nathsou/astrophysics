@@ -6,7 +6,7 @@
 
 import { defineSim, Loop, createStage } from '../lib/runtime/sim';
 import { Panel, fmt } from '../lib/ui/controls';
-import { palette, onThemeChange } from '../lib/ui/theme';
+import { palette, onThemeChange, haloText } from '../lib/ui/theme';
 
 type Mode = 'frames' | 'twins';
 const D_TWIN = 3; // ly to the turnaround star
@@ -58,8 +58,11 @@ export default defineSim({
     }
     function label(s: string, x: number, t: number, col: string, align: CanvasTextAlign = 'left', dy = -4) {
       const [vx, vt] = toView(x, t);
-      ctx.fillStyle = col; ctx.textAlign = align; ctx.textBaseline = 'bottom';
-      ctx.fillText(s, X(vx) + (align === 'left' ? 5 : align === 'right' ? -5 : 0), Y(vt) + dy);
+      ctx.textAlign = align; ctx.textBaseline = 'bottom';
+      const lx = X(vx) + (align === 'left' ? 5 : align === 'right' ? -5 : 0), ly = Y(vt) + dy;
+      haloText(ctx, s, lx, ly, pal.bg);
+      ctx.fillStyle = col;
+      ctx.fillText(s, lx, ly);
     }
     function dot(x: number, t: number, col: string, r = 4) {
       const [vx, vt] = toView(x, t);
@@ -202,8 +205,11 @@ export default defineSim({
       ctx.clearRect(0, 0, W, H);
       ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       if (mode === 'frames') drawFrames(); else drawTwins(frameDt);
-      ctx.fillStyle = pal.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
-      ctx.fillText(inPrime ? 'drawn in frame S′ (moving at β relative to S)' : 'drawn in frame S', 10, 8);
+      ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+      const frameNote = inPrime ? 'drawn in frame S′ (moving at β relative to S)' : 'drawn in frame S';
+      haloText(ctx, frameNote, 10, 8, pal.bg);
+      ctx.fillStyle = pal.muted;
+      ctx.fillText(frameNote, 10, 8);
     }
 
     const loop = new Loop(null, render);

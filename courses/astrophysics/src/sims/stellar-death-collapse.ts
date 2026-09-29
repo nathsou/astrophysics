@@ -13,7 +13,7 @@
 import { defineSim, Loop, createStage } from '../lib/runtime/sim';
 import { Panel, fmt } from '../lib/ui/controls';
 import { Plot, Series } from '../lib/ui/plot';
-import { palette, onThemeChange, type Palette } from '../lib/ui/theme';
+import { palette, onThemeChange, haloText, type Palette } from '../lib/ui/theme';
 
 type Phase = 'collapse' | 'stalled' | 'exploding' | 'failed';
 
@@ -257,6 +257,7 @@ export default defineSim({
       layers.forEach((layer, i) => {
         ctx.fillStyle = layer.colorOf(pal);
         ctx.fillRect(lx, ly, 10, 10);
+        haloText(ctx, legend[i], lx + 14, ly + 9, pal.bg, 4);
         ctx.fillStyle = pal.muted;
         ctx.fillText(legend[i], lx + 14, ly + 9);
         ly += 15;

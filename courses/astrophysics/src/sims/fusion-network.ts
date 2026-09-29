@@ -5,7 +5,7 @@
 
 import { defineSim, Loop, createStage } from '../lib/runtime/sim';
 import { Panel } from '../lib/ui/controls';
-import { palette, onThemeChange } from '../lib/ui/theme';
+import { palette, onThemeChange, haloText } from '../lib/ui/theme';
 
 type Branch = 'common' | 'pp1' | 'pp2' | 'pp3' | 'cno';
 interface Step {
@@ -127,7 +127,8 @@ export default defineSim({
       ctx.textBaseline = 'middle';
       const label = (text: string, x: number, y: number, color: string, align: CanvasTextAlign = 'left') => {
         const p = nodePx({ x, y });
-        ctx.fillStyle = color; ctx.textAlign = align; ctx.fillText(text, p.x, p.y);
+        ctx.textAlign = align; haloText(ctx, text, p.x, p.y, pal.bg);
+        ctx.fillStyle = color; ctx.fillText(text, p.x, p.y);
       };
       label('pp-chain', 70, 250, pal.series[0], 'center');
       label('pp-I ≈ 83%', 380, 95, pal.series[0], 'center');
@@ -153,6 +154,7 @@ export default defineSim({
           ctx.fillStyle = pal.accent2;
           ctx.font = `600 ${Math.max(8, fs - 3)}px JetBrains Mono, ui-monospace, monospace`;
           ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+          haloText(ctx, 'ν', x + nodeR + 3, y, pal.bg);
           ctx.fillText('ν', x + nodeR + 3, y);
         }
         ctx.fillStyle = isSel ? pal.fg : pal.muted;

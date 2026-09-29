@@ -7,7 +7,8 @@
 //     plot.point(x0, y0, { r: 4 });
 //   });
 
-import { palette, onThemeChange, type Palette } from './theme';
+import { palette, onThemeChange, haloText, type Palette } from './theme';
+export { haloText };
 import { fmt, superscript } from './controls';
 
 export interface AxisOpts {
@@ -277,22 +278,6 @@ export class Plot {
     ctx.fillStyle = o.color ?? this.pal.fg;
     ctx.fillText(s, X, Y);
   }
-}
-
-/**
- * Paint a soft halo of `bg` (the panel colour) under a label about to be drawn with the current font,
- * alignment and baseline, so text over a curve, grid or tinted band keeps its full contrast.
- * Call it right before `fillText` with the same arguments.
- */
-export function haloText(ctx: CanvasRenderingContext2D, s: string, x: number, y: number, bg: string, width = 3) {
-  ctx.save();
-  ctx.strokeStyle = bg;
-  ctx.lineWidth = width;
-  ctx.lineJoin = 'round';
-  ctx.setLineDash([]);
-  ctx.globalAlpha = 0.9;
-  ctx.strokeText(s, x, y);
-  ctx.restore();
 }
 
 /** Fixed-capacity ring buffer for time series; `linear()` returns ordered copies for plotting. */
