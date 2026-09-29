@@ -794,6 +794,20 @@ export class Parser {
       const body = this.term();
       return { k: 'exists', binders, body, span: this.span(from) };
     }
+    if (t.kind === 'kw' && (t.text === 'let' || t.text === 'have') && this.peekAt(1).kind === 'sym' && this.peekAt(1).text === '⟨') {
+      // let ⟨x, hx⟩ := v; body   ⟶   match v with | ⟨x, hx⟩ => body
+      this.next();
+      const pat = this.atom();
+      let type: STerm | undefined;
+      if (this.accept(':')) type = this.term();
+      this.expect(':=');
+      let value = this.withLayout(t.col, () => this.term());
+      if (type) value = { k: 'ascribe', term: value, type, span: value.span };
+      if (!this.accept(';') && !this.accept('in') && !this.peek().nl) this.expect(';');
+      const body = this.term();
+      const sp = this.span(from);
+      return { k: 'match', discrs: [value], alts: [{ pats: [pat], rhs: body, span: sp }], span: sp };
+    }
     if (t.kind === 'kw' && t.text === 'let') {
       this.next();
       const nm = this.ident('a name');

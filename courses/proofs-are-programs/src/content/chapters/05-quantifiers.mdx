@@ -1,1 +1,178 @@
-This chapter is being written.
+So far our propositions were built from letters `p`, `q`, `r` that stood for any statement. Real statements are about things: *every* natural number is even or odd, *some* list is empty, *for all* inputs the function returns a sorted list. This chapter adds the two quantifiers, "for all" and "there exists". Neither needs anything new: `∀` is the dependent function type from Chapter 1, and `∃` is a pair.
+
+## Predicates are functions
+
+A statement about a number `n` is a function from numbers to propositions. Such a function is called a **predicate**:
+
+```lean
+def IsZero (n : Nat) : Prop := n = 0
+
+def Even (n : Nat) : Prop := ∃ k, n = 2 * k
+
+def Divides (d n : Nat) : Prop := ∃ k, n = d * k
+
+#check IsZero
+#check Even 10
+#check Divides 3
+```
+
+`IsZero` has type `Nat → Prop`. `Even 10` is a proposition, and `Divides 3` is a predicate (the numbers that 3 divides). A predicate with two arguments, like `Divides`, is also called a **relation**.
+
+## For all
+
+A proof of "for every `n`, `n + 0 = n`" must work for any `n` you give it. In other words, it is a function that takes a number `n` and returns a proof of `n + 0 = n`. Its type is a dependent function type: the type of the result mentions the argument.
+
+```lean
+theorem add_zero_all : ∀ n : Nat, n + 0 = n :=
+  fun n => rfl
+
+#check add_zero_all
+#check add_zero_all 3
+```
+
+`∀ n : Nat, n + 0 = n` is only notation for `(n : Nat) → n + 0 = n`. To *prove* a `∀`, write a function. To *use* one, apply it: `add_zero_all 3` is a proof of `3 + 0 = 3`. Logicians call this step *instantiation*; for us it is a function call.
+
+The same goes for statements about any predicate. Here `p` and `q` are arbitrary predicates on some type `α`:
+
+```lean
+theorem forall_and {α : Type} (p q : α → Prop) :
+    (∀ x, p x ∧ q x) → (∀ x, p x) ∧ (∀ x, q x) :=
+  fun h => ⟨fun x => (h x).1, fun x => (h x).2⟩
+```
+
+Read it as a program: `h` is a function that, for each `x`, returns a pair; the result is a pair of functions. The proof converts a function returning pairs into a pair of functions.
+
+Since `→` is a special case of `∀` in which the result does not mention the argument, everything you learned about implication applies: `fun` to prove, application to use.
+
+## There exists
+
+What is evidence that *some* number is even? A number, together with evidence that this number is even. A pair:
+
+```lean
+theorem ten_even : Even 10 := ⟨5, rfl⟩
+
+theorem sixteen_square : ∃ x : Nat, x * x = 16 := ⟨4, rfl⟩
+```
+
+The first component of the pair, `5`, is called the **witness**. The second, `rfl`, is evidence for the statement *about the witness*: `10 = 2 * 5`. The type of the second component depends on the value of the first, which is what makes `∃` a dependent pair.
+
+To use an existential, take the pair apart with a pattern. You do not know which witness you will get, only that it satisfies the property:
+
+```lean
+theorem exists_weaken {α : Type} (p q : α → Prop) : (∃ x, p x ∧ q x) → ∃ x, p x
+  | ⟨w, hp, _⟩ => ⟨w, hp⟩
+```
+
+A `let` with a pattern does the same inside a longer proof:
+
+```lean
+theorem even_add_two (n : Nat) (h : Even n) : Even (n + 2) :=
+  let ⟨k, hk⟩ := h
+  ⟨k + 1, by omega⟩
+```
+
+The `by omega` at the end proves `n + 2 = 2 * (k + 1)` from `hk : n = 2 * k`, by arithmetic. It is a tactic, which Chapter 10 explains; for now read it as "the checker does the algebra".
+
+## The order of quantifiers
+
+"For every `y` there is an `x`" and "there is an `x` for every `y`" are different statements. The first lets `x` depend on `y`; the second asks for one `x` that works for all `y`. The second implies the first, and the proof shows why: the same `x` works for every `y`.
+
+```lean
+theorem exists_forall {α β : Type} (r : α → β → Prop) :
+    (∃ x, ∀ y, r x y) → ∀ y, ∃ x, r x y :=
+  fun ⟨x, hx⟩ y => ⟨x, hx y⟩
+```
+
+The converse fails. Every number has a bigger one, but no number is bigger than all numbers:
+
+```lean
+theorem always_bigger : ∀ n : Nat, ∃ m, n < m :=
+  fun n => ⟨n + 1, Nat.le.refl⟩
+```
+
+Look at the proof as a program: it is a function that computes the witness `n + 1` from `n`. When the witness depends on the input, the order of the quantifiers says so.
+
+## Negation and quantifiers
+
+"No `x` satisfies `p`" means the same as "every `x` fails `p`", and both directions have a proof:
+
+```lean
+theorem not_exists_iff {α : Type} (p : α → Prop) : (¬∃ x, p x) ↔ ∀ x, ¬p x :=
+  ⟨fun h x hx => h ⟨x, hx⟩, fun h ⟨x, hx⟩ => h x hx⟩
+```
+
+The other combination is different. From "not every `x` satisfies `p`", can you conclude "some `x` fails `p`"? To prove the existential you would have to produce a witness, but knowing that `∀ x, p x` leads to a contradiction does not tell you *which* `x` fails. We will see in Chapter 7 that this is one of the statements the course language cannot prove without extra axioms.
+
+## Evidence that hides its witness
+
+Here is the most surprising consequence of the rule from Chapter 3 (programs cannot look inside proofs). A proof of `∃ n, 0 < n` is a pair containing a number, but a program cannot take that number out:
+
+<Playground errors title="The witness stays inside" code={`def witness (h : ∃ n : Nat, 0 < n) : Nat :=
+  match h with
+  | ⟨w, _⟩ => w`} />
+
+Inside a proof you can open the pair, as `exists_weaken` did, because the result is again a proposition and nobody can observe which witness was used. A program returning a `Nat` could observe it, so it is not allowed.
+
+If you need the witness as data, ask for data. The subtype from Chapter 2 is a pair of a value and a proof that lives in `Type`, so its first component can be taken out:
+
+```lean
+def witness' (h : { n : Nat // 0 < n }) : Nat := h.val
+```
+
+The two types say different things. `{ n : Nat // 0 < n }` is "a positive number" (you get the number). `∃ n : Nat, 0 < n` is "there is a positive number" (a fact, with no number attached as far as programs are concerned).
+
+| Type | Lives in | First component | Use it for |
+|---|---|---|---|
+| `∃ x, p x` | `Prop` | hidden from programs | stating that something exists |
+| `{ x // p x }` | `Type` | `.val` | returning a value with a guarantee |
+
+<UnderTheHood ch="prop" s="why-proofs-must-not-compute-data">
+Why must the witness stay hidden? If programs could extract witnesses, two proofs of the same `∃` with different witnesses could be told apart, which contradicts proof irrelevance; and erasing proofs at run time would lose data. The CIC course shows the precise rule and the one exception it allows.
+</UnderTheHood>
+
+## The dictionary, continued
+
+| Logic | Programs |
+|---|---|
+| ∀ x : α, p x | dependent function `(x : α) → p x` |
+| proving ∀ | writing a function |
+| using ∀ | calling it |
+| ∃ x : α, p x | dependent pair (witness, evidence) |
+| proving ∃ | building the pair `⟨w, h⟩` |
+| using ∃ | pattern matching (only to prove propositions) |
+| predicate | function into `Prop` |
+
+<UnderTheHood ch="dependent" s="first-order-logic">
+In the CIC course, first-order logic appears the same way: the dependent function type covers ∀ and implication at once, and ∃ is a dependent pair.
+</UnderTheHood>
+
+## Exercises
+
+<Exercise id="quantifiers:divides" title="Divisibility" setup={`def Divides (d n : Nat) : Prop := ∃ k, n = d * k`} code={`theorem three_divides_twelve : Divides 3 12 := sorry
+
+theorem divides_refl (n : Nat) : Divides n n := sorry`} must="three_divides_twelve divides_refl" hint="Give the witness: ⟨4, rfl⟩ for the first. For the second, n = n * 1: the witness is 1 and the evidence is (Nat.mul_one n).symm." solution={`theorem three_divides_twelve : Divides 3 12 := ⟨4, rfl⟩
+
+theorem divides_refl (n : Nat) : Divides n n := ⟨1, (Nat.mul_one n).symm⟩`}>
+`Divides d n` holds when `n = d * k` for some `k`. Prove both statements by giving a witness. For the second, the library has `Nat.mul_one : n * 1 = n`, and `.symm` turns an equation around.
+</Exercise>
+
+<Exercise id="quantifiers:forall-imp" title="Moving an implication" code={`theorem forall_imp {α : Type} (p q : α → Prop) (h : ∀ x, p x → q x) :
+    (∀ x, p x) → ∀ x, q x :=
+  sorry`} must="forall_imp" hint="fun hp x => h x (hp x)" solution={`theorem forall_imp {α : Type} (p q : α → Prop) (h : ∀ x, p x → q x) :
+    (∀ x, p x) → ∀ x, q x :=
+  fun hp x => h x (hp x)`}>
+If every `p` is a `q`, and everything is a `p`, then everything is a `q`.
+</Exercise>
+
+<Exercise id="quantifiers:exists-or" title="Exists distributes over or" code={`theorem exists_or {α : Type} (p q : α → Prop) : (∃ x, p x ∨ q x) → (∃ x, p x) ∨ (∃ x, q x) :=
+  sorry`} must="exists_or" hint="Take the pair apart: fun ⟨x, h⟩ => …, then look at h with Or.elim or match." solution={`theorem exists_or {α : Type} (p q : α → Prop) : (∃ x, p x ∨ q x) → (∃ x, p x) ∨ (∃ x, q x)
+  | ⟨x, .inl hp⟩ => .inl ⟨x, hp⟩
+  | ⟨x, .inr hq⟩ => .inr ⟨x, hq⟩`}>
+Prove it. (Patterns can be nested: `⟨x, .inl hp⟩` matches a pair whose second component was built with `.inl`.)
+</Exercise>
+
+<Exercise id="quantifiers:not-forall" title="The easy direction" code={`theorem exists_not {α : Type} (p : α → Prop) : (∃ x, ¬p x) → ¬∀ x, p x :=
+  sorry`} must="exists_not" hint="You receive ⟨x, hnx⟩ and h : ∀ x, p x, and must produce False: hnx (h x)." solution={`theorem exists_not {α : Type} (p : α → Prop) : (∃ x, ¬p x) → ¬∀ x, p x :=
+  fun ⟨x, hnx⟩ h => hnx (h x)`}>
+If some `x` fails `p`, then not every `x` satisfies `p`. (The converse is the one that needs Chapter 7.)
+</Exercise>
