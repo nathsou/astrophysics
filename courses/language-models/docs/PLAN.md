@@ -117,7 +117,8 @@ F optimisation · G neural networks · H GPU/WGSL · I PyTorch · J glossary, ti
 - **M2** — Part II + appendices A, B, C, G, H. ✅ built 2026-09-27
 - **M3** — Part III. ✅ built 2026-09-27 (Chapters 9–11)
 - **M4** — Part IV (CourseGPT trained and running in the browser). ✅ built 2026-09-27: Chapters 0 and 12–16, appendices F and I. Weights hosting needs the `coursegpt-v1` release uploaded (see below).
-- **M5–M7** — Part V in three batches; remaining appendices. Chapters 17–18 ✅ built 2026-09-29.
+- **M5–M7** — Part V and Appendix D. ✅ built 2026-09-29: Chapters 17–29 and Appendix D. The book is complete;
+  remaining work is review and polish (see Known loose ends).
 
 ## Follow-ups noted during M0
 
@@ -187,8 +188,23 @@ the files and SHA-256 hashes; `scripts/weights.mjs` (run by the course build) do
   direct 85.8%. Voting adds nothing to trained models (systematic errors); under-trained direct: one sample 46%, vote@32
   70% (= greedy), pass@32 79%. GRPO (lr 2e-5, 900 steps, group 8 × 32 prompts, β 0.02): one sample 50→63%, greedy
   72.5→75.6%, pass@8 77→78% — sharpening, as Yue et al. (2025) report; lr ≥ 1e-4 degrades, 3e-4 collapses.
-- **Chapters 25 (evaluation), 26 (interpretability), 27 (efficiency, survey), 28 (safety), 29 (epilogue), Appendix D**
-  written 2026-09-29; 27 and D need no GPU. 25, 26 and 28 have experiments (`lmcourse/ch25.py`, `ch26.py`, `ch28.py`).
+- **Chapter 20** ✅ 3,000 steps: words used 23% (base) → 46% full, 41/36/34% LoRA r16/4/1; plain-story loss +0.09 full,
+  +0.05–0.07 LoRA. ΔW of the full fine-tune is not strongly low-rank (top 16 of 512 directions: 19–54% of energy).
+  `coursegpt-instruct.safetensors` (merged r16) is in the release.
+- **Chapter 21** ✅ 3,671 pairs; Bradley–Terry RM 94% held-out (4 epochs, lr 3e-5; 1 epoch at 1e-5 stalled at 55%);
+  best-of-16 20% all-constraints vs 30.5% oracle; DPO all-constraints 8.5% → 44.5% (β 0.1) / 24.5% (β 0.5), fluency
+  1.08 → 1.54 / 1.25 bits.
+- **Chapter 23** ✅ calculator tool model 99.8% (direct 4.8%), 93/84/56% at 7/8/9 digits, 0% without the tool;
+  `calculator.safetensors` (4×256, learned positions, trained with random left padding) is in the release.
+- **Chapter 24 (survey)** ✅, **27 (survey)** ✅, **Appendix D** ✅ — browser only.
+- **Chapter 25** ✅ benchmark accuracy tracks val loss (64% → 90.5%); next-token ECE 0.016, four-way choice ECE 0.08;
+  one pass over leaked test stories: 90.5 → 94.7% on test, fresh unchanged.
+- **Chapter 26** ✅ logit lens agreement 15% (layer 1) → 77% (layer 7); CourseGPT has an induction head (L2H4, 0.60 on a
+  short repeat) but does not copy repeated passages (2.18 → 2.01 bits); name-gender probe 98–99% from the embeddings,
+  97% at a later word after block 1; top-k SAE (4,096, k 32, layer 4) FVU 0.116, 98% loss recovered, no dead features.
+- **Chapter 28** ✅ backdoor: 0/10/40 poisoned → no payload; 160 (0.4%) → 12% with the trigger, 0% without; clean
+  fine-tuning → 1%.
+- **Chapter 29** ✅ epilogue.
 - Chapter 20 is rerun at 3,000 fine-tuning steps (600 gave only 35% of required words used; the 600-step results are
   kept in `runs/ch20-600/`). Chapter 21 builds on its LoRA r = 16 model.
 - Results placeholders (⟪…⟫) in a chapter's index.md are filled once its data is in; `scripts/cdp.mjs` crawls report them.

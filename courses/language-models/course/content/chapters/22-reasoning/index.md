@@ -66,7 +66,7 @@ Snell and colleagues studied how best to spend a fixed test-time budget — more
 
 pass@k is much higher than accuracy: the model can often find the right answer, just not reliably. That suggests a way to improve it using only its own outputs. Sample several answers, check which are right, and adjust the model to make the right ones more likely. No human labels and no reward model are needed — only a way to check answers, a **verifiable reward**.
 
-This is reinforcement learning, in the simplest form of Chapter 21’s policy gradient. The model is the **policy**; a sampled answer $y$ to a prompt $x$ earns a reward $r(x, y)$; and the gradient of the expected reward is
+This is reinforcement learning, and the tool is the **policy gradient** that Chapter 21 mentioned for RLHF. The model is the **policy**; a sampled answer $y$ to a prompt $x$ earns a reward $r(x, y)$; and the gradient of the expected reward is
 
 :::equation{#policy-gradient caption="The policy gradient (REINFORCE): raise the log-probability of answers in proportion to how much better than expected they did."}
 $$
