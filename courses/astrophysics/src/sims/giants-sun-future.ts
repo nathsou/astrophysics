@@ -107,7 +107,7 @@ export default defineSim({
       g.addColorStop(0, '#fff'); g.addColorStop(0.25, col); g.addColorStop(0.87, col); g.addColorStop(1, colFade);
       ctx.fillStyle = g;
       ctx.beginPath(); ctx.arc(cx, cy, pxR * 1.15, 0, Math.PI * 2); ctx.fill();
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.textBaseline = 'alphabetic';
       const engulfed: string[] = [];
       PLANETS.forEach((p, i) => {

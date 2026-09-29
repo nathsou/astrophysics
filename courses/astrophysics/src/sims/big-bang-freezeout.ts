@@ -72,7 +72,7 @@ export default defineSim({
         plotGH.vline(Tf, { color: pal.accent, label: `T_f ≈ ${fmt(Tf, 2)} MeV` });
       });
       const { ctx } = plotGH;
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.fillStyle = pal.series[1]; ctx.fillText('H(T)', plotGH.m.l + 6, plotGH.m.t + 14);
       ctx.fillStyle = pal.series[0]; ctx.fillText('Γ(T) (weak n↔p)', plotGH.m.l + 6, plotGH.m.t + 30);
 
@@ -88,7 +88,7 @@ export default defineSim({
         plotNP.text('BBN starts', plotNP.px(0.07) + 4, plotNP.py(0.5), { color: pal.muted });
       });
       const { ctx: c2 } = plotNP;
-      c2.fillStyle = pal.muted; c2.font = '11px Inter, system-ui, sans-serif';
+      c2.fillStyle = pal.muted; c2.font = '11px JetBrains Mono, ui-monospace, monospace';
       c2.fillText('dashed: equilibrium n/p = e^(−Δm/T)', plotNP.m.l + 6, plotNP.m.t + 14);
     }
 

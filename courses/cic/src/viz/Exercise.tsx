@@ -78,7 +78,7 @@ export function Exercise(props: ExerciseProps) {
       <div class="ex-prompt">{props.children}</div>
       <Show
         when={kind() === 'lambda'}
-        fallback={<Playground code={props.code} calculus={props.calculus} prelude={props.prelude} title="Your solution" onResult={onLeanResult} derivations={true} />}
+        fallback={<Playground code={props.code} calculus={props.calculus} prelude={props.prelude} title="Your solution" onResult={onLeanResult} derivations={true} wrap={true} />}
       >
         <div class="widget" style={{ margin: '0.8rem 0' }}>
           <Editor value={lsrc()} onChange={setLsrc} lang="lambda" minHeight="3rem" lineNumbers={false} />

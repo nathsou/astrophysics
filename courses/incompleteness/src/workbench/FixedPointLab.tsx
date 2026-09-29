@@ -7,7 +7,6 @@ import { analyze } from '../engine/syntax/analysis';
 import { freeVars } from '../engine/syntax/ops';
 import { formatMagnitude, magnitude, natEq } from '../engine/numbers/nat';
 import type { Formula } from '../engine/syntax/ast';
-import { FormulaInput } from '../ui/FormulaInput';
 import { FormulaView } from '../ui/FormulaView';
 import { NatView } from '../ui/NatView';
 import { ProofDebugger } from '../ui/ProofDebugger';
@@ -15,7 +14,6 @@ import { Stepper } from '../ui/Stepper';
 import { Prov, NotAProof } from '../ui/Prov';
 import { Tex } from '../ui/Tex';
 import { Ref } from '../formal/FormalText';
-import { B_EXAMPLES } from '../ui/examples';
 import { inspect } from '../ui/store';
 
 const STAGES = ['B(x)', 'E(x)', '#E(x)#', '⌜E(x)⌝', 'A', 'diag', 'Q ⊢ A ↔ B(⌜A⌝)'];
@@ -29,16 +27,20 @@ export function useFixedPoint(B: Formula | null): FixedPointConstruction | { err
   }, [B]);
 }
 
+/**
+ * The construction, one stage at a time, starting from B(x) itself. B(x) is the section's object:
+ * it is edited in the object bar above, not here.
+ */
 export function FixedPointLab({ showDerivation = true }: { showDerivation?: boolean }) {
-  const [text, set, parsed] = useParsedFormula(bStore);
+  const [, , parsed] = useParsedFormula(bStore);
   const B = parsed.ok ? parsed.value : null;
   const c = useFixedPoint(B);
-  const [stage, setStage] = useState(STAGES.length - 1);
+  const [stage, setStage] = useState(0);
   return (
     <div className="workbench fixed-point">
-      <FormulaInput value={text} onChange={set} parsed={parsed} label="B(x): any formula whose only free variable is x" examples={B_EXAMPLES} />
       <LaneLegend />
-      {c && 'error' in c && <p className="fi-error">{c.error}.</p>}
+      {!parsed.ok && <p className="fi-error">B(x) does not parse: {parsed.error}. Edit it in the bar above.</p>}
+      {c && 'error' in c && <p className="fi-error">{c.error}. Edit B(x) in the bar above.</p>}
       {c && !('error' in c) && (
         <>
           <Stepper

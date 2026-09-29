@@ -70,7 +70,7 @@ export default defineSim({
       const x0 = 64, x1 = w - 24;
       // log distance axis, so a red dwarf's HZ (a few hundredths of an AU) and a bright star's both fit
       const toPx = (au: number) => x0 + ((Math.log(au) - Math.log(AU_MIN)) / (Math.log(AU_MAX) - Math.log(AU_MIN))) * (x1 - x0);
-      const font = (px: number) => `${px}px Inter, system-ui, sans-serif`;
+      const font = (px: number) => `${px}px JetBrains Mono, ui-monospace, monospace`;
 
       ctx.strokeStyle = pal.grid; ctx.lineWidth = 1;
       ctx.beginPath(); ctx.moveTo(x0 - 20, cy); ctx.lineTo(x1, cy); ctx.stroke();

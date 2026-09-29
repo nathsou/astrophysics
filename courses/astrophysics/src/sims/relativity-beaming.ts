@@ -39,7 +39,7 @@ export default defineSim({
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, W, H);
       const cx = W * 0.5, cy = H * 0.52, R = Math.min(W, H) * 0.4;
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       // reference circle
       ctx.strokeStyle = pal.grid; ctx.lineWidth = 1;
       ctx.beginPath(); ctx.arc(cx, cy, R, 0, 2 * Math.PI); ctx.stroke();

@@ -29,7 +29,7 @@
     height: 18px;
     border-radius: 9px;
     background: var(--surface-3);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-control);
     position: relative;
     transition: background-color 150ms;
     flex: none;

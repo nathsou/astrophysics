@@ -121,7 +121,7 @@
   .ex button {
     min-width: 2.1rem;
     height: 2.1rem;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-control);
     background: var(--surface);
     border-radius: 6px;
     font-size: 1rem;

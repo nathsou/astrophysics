@@ -31,7 +31,7 @@ export function HeathText({ paras, bus, byrne, hoverKey, onHover, step, onStep, 
         return (
           <p
             key={p.id}
-            className={`hp role-${p.role} ${step === i ? 'stepping' : ''}`}
+            className={`hp role-${p.role} ${step === i ? 'stepping' : ''} ${step != null && i > step ? 'later' : ''}`}
             onClick={onStep && p.role !== 'enunciation' ? (e) => !(e.target as HTMLElement).closest('a') && onStep(i) : undefined}
           >
             {p.role === 'porism' && null}
@@ -53,7 +53,32 @@ interface Ctx {
   onHover?: (k: string | null) => void;
 }
 
+/**
+ * Heath prints his citations in square brackets. They are shown as small pills, which need no
+ * brackets: "described; [Post. 3] again" becomes "described; Post. 3 again" with Post. 3 as a pill, and the brackets
+ * gone (plain-text renderings keep them).
+ */
+function withoutCiteBrackets(c: Inline[]): Inline[] {
+  let open = false;
+  return c.map((x, k) => {
+    if (typeof x !== 'string') return x;
+    if (open) {
+      if (/^\s*\]/.test(x)) {
+        open = false;
+        x = x.replace(/^\s*\]/, '');
+      } else if (!/^[\s,]*$/.test(x) && !/^\s*(and|or)\s*$/.test(x)) open = false;
+    }
+    const nxt = c[k + 1];
+    if (!open && /\[\s*$/.test(x) && typeof nxt === 'object' && nxt.t === 'ref') {
+      open = true;
+      x = x.replace(/\s*\[\s*$/, ' ');
+    }
+    return x;
+  });
+}
+
 export function renderInlines(c: Inline[], ctx: Ctx): ReactNode[] {
+  if (!ctx.noLinks) c = withoutCiteBrackets(c);
   return c.map((x, i) => {
     if (typeof x === 'string') return x;
     switch (x.t) {
@@ -120,13 +145,21 @@ export function Glyph({ shape, bus, colour, dash }: { shape: Shape; bus: Bus; co
   } else if (shape.t === 'point') return null;
 
   const H = 18;
+  if (kind === 'line' && pts.length === 2) {
+    // a segment is a short horizontal bar, as in Byrne
+    return (
+      <svg className="glyph g-line" width={24} height={H} viewBox={`0 0 24 ${H}`} aria-hidden="true">
+        <line x1={dash ? 0 : 2.5} y1={H / 2} x2={dash ? 24 : 21.5} y2={H / 2} stroke={colour} strokeWidth={5} strokeDasharray={dash} strokeLinecap={dash ? 'butt' : 'round'} />
+      </svg>
+    );
+  }
   if (kind === 'circle' || kind === 'arc') {
     const r = H / 2 - 1.5;
     const c = v(H / 2, H / 2);
     return (
       <svg className="glyph" width={H} height={H} viewBox={`0 0 ${H} ${H}`} aria-hidden="true">
         {kind === 'circle' ? (
-          <circle cx={c.x} cy={c.y} r={r} fill="none" stroke={colour} strokeWidth={2} strokeDasharray={dash} />
+          <circle cx={c.x} cy={c.y} r={r - 0.5} fill="none" stroke={colour} strokeWidth={2.5} strokeDasharray={dash} />
         ) : (
           <path d={arcPath(c, r, circle!.a0!, circle!.a1!)} fill="none" stroke={colour} strokeWidth={2.2} strokeDasharray={dash} />
         )}

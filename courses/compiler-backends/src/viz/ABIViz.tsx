@@ -58,7 +58,7 @@ export function CallLowering({ example = 'fib', fn, target: t0 = 'rv64', caption
         <div className="pane"><div className="pane-head">after instruction selection (virtual registers)</div>{fs && <CodeView lines={printMFunc(fs.isel)} target={target} maxHeight={440} notes mark={mark} />}</div>
         <div className="pane"><div className="pane-head">after register allocation</div>{fs && <CodeView lines={printMFunc(fs.allocated, { post: true })} target={target} maxHeight={440} notes mark={mark} />}</div>
       </div>
-      <div className="stat-row"><span><span className="pill teal">teal</span> copies into/out of ABI registers</span><span><span className="pill accent">orange</span> the call, with its implicit uses and clobbers</span></div>
+      <div className="stat-row"><span><span className="pill teal">teal</span> copies into/out of ABI registers</span><span><span className="pill accent">green</span> the call, with its implicit uses and clobbers</span></div>
     </Figure>
   );
 }

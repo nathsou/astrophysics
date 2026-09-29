@@ -102,7 +102,7 @@ export default defineSim({
         ctx.strokeStyle = pal.accent2; ctx.lineWidth = 1.5;
         ctx.beginPath(); ctx.moveTo(cx + Rg * sc - 5, cy); ctx.lineTo(cx + Rg * sc + 5, cy); ctx.moveTo(cx + Rg * sc, cy - 5); ctx.lineTo(cx + Rg * sc, cy + 5); ctx.stroke();
       }
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       ctx.fillStyle = pal.fg; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
       ctx.fillText(title, 12, 10);
     }
@@ -118,7 +118,7 @@ export default defineSim({
     }
     function ctx2Label() {
       const { width: W, height: H } = left;
-      lctx.fillStyle = pal.muted; lctx.font = '11px Inter, system-ui, sans-serif'; lctx.textBaseline = 'bottom';
+      lctx.fillStyle = pal.muted; lctx.font = '11px JetBrains Mono, ui-monospace, monospace'; lctx.textBaseline = 'bottom';
       lctx.fillText(beta === 0 ? 'flat rotation curve' : beta <= -0.49 ? 'Kepler (point mass)' : beta >= 0.99 ? 'solid body (uniform sphere)' : `v_c ∝ R^${fmt(beta, 2)}`, 12, H - 10);
       void W;
     }

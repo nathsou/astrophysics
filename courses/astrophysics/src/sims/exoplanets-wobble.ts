@@ -91,7 +91,7 @@ export default defineSim({
       octx.fillStyle = pal.series[0];
       octx.beginPath(); octx.arc(px2, py2, 4, 0, 7); octx.fill();
       octx.fillStyle = pal.muted;
-      octx.font = '11px Inter, system-ui, sans-serif';
+      octx.font = '11px JetBrains Mono, ui-monospace, monospace';
       octx.fillText('star wobble ×12 (true amplitude is far smaller)', 8, h - 8);
 
       // --- RV curve --- RV(theta) ∝ cos(theta+omega) + e cos(omega); take omega = 0 here.
@@ -125,7 +125,7 @@ export default defineSim({
       lctx.fillRect(cxl - 30, 4, 60, lh - 8);
       lctx.fillStyle = pal.fg;
       lctx.fillRect(cxl - 2, 2, 4, lh - 4);
-      lctx.font = '10px Inter, system-ui, sans-serif';
+      lctx.font = '10px JetBrains Mono, ui-monospace, monospace';
       lctx.fillStyle = pal.muted;
       lctx.fillText(rvSimple > 0 ? 'redshifted (receding)' : 'blueshifted (approaching)', 4, 12);
     }, 1 / 60);

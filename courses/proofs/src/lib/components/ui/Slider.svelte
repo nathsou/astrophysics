@@ -69,7 +69,7 @@
     flex-direction: column;
     gap: 0.2rem;
     min-width: 9rem;
-    font-size: 0.82rem;
+    font-size: 0.84rem;
   }
   label {
     display: flex;
@@ -82,11 +82,12 @@
   }
   output {
     font-family: var(--font-mono);
-    font-size: 0.8rem;
+    font-size: 0.78rem;
+    font-weight: 500;
     color: var(--ink);
-    background: var(--surface-2);
+    background: var(--pn);
     padding: 0 0.35rem;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     min-width: 3.2rem;
     text-align: right;
   }
@@ -94,37 +95,38 @@
     -webkit-appearance: none;
     appearance: none;
     width: 100%;
-    height: 20px;
+    height: 22px;
     background: transparent;
     margin: 0;
     cursor: pointer;
   }
   input[type='range']::-webkit-slider-runnable-track {
-    height: 4px;
-    border-radius: 2px;
-    background: linear-gradient(to right, var(--accent-2) var(--fill), var(--surface-3) var(--fill));
+    height: 6px;
+    border-radius: 0;
+    background: linear-gradient(to right, var(--fx-red) var(--fill), var(--surface-3) var(--fill));
+    border: 1px solid var(--fg);
   }
   input[type='range']::-moz-range-track {
     height: 4px;
-    border-radius: 2px;
-    background: linear-gradient(to right, var(--accent-2) var(--fill), var(--surface-3) var(--fill));
+    border-radius: 0;
+    background: linear-gradient(to right, var(--fx-red) var(--fill), var(--surface-3) var(--fill));
+    border: 1px solid var(--fg);
   }
   input[type='range']::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 16px;
     height: 16px;
     margin-top: -6px;
-    border-radius: 50%;
-    background: var(--surface);
-    border: 2px solid var(--accent-2);
-    box-shadow: var(--shadow);
+    border-radius: 0;
+    background: var(--fx-yellow);
+    border: 2px solid var(--fg);
   }
   input[type='range']::-moz-range-thumb {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: var(--surface);
-    border: 2px solid var(--accent-2);
+    width: 12px;
+    height: 12px;
+    border-radius: 0;
+    background: var(--fx-yellow);
+    border: 2px solid var(--fg);
   }
   .compact {
     min-width: 7rem;

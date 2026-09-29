@@ -27,7 +27,7 @@ export function Pre(p: { children?: ReactNode }) {
   const lang = child?.props?.className?.replace('language-', '');
   const text = typeof child?.props?.children === 'string' ? child.props.children : undefined;
   if (text !== undefined && lang && ['ts', 'typescript', 'js', 'c', 'rust'].includes(lang)) {
-    return <pre className="wide" style={{ maxWidth: 'var(--col)' }}><code>{highlightTS(text.replace(/\n$/, ''))}</code></pre>;
+    return <pre className="wide inv" style={{ maxWidth: 'var(--col)' }}><code>{highlightTS(text.replace(/\n$/, ''))}</code></pre>;
   }
-  return <pre>{p.children}</pre>;
+  return <pre className="inv">{p.children}</pre>;
 }

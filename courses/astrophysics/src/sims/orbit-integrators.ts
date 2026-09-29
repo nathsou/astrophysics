@@ -156,7 +156,7 @@ export default defineSim({
         ctx.beginPath(); ctx.arc(cx + s[0] * scale, cy - s[1] * scale, 4.5, 0, Math.PI * 2); ctx.fill();
       });
       // legend
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       METHODS.forEach((m, i) => {
         ctx.fillStyle = pal.series[m.color];
         ctx.fillRect(14, 16 + i * 18, 10, 3);

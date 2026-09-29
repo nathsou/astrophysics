@@ -84,7 +84,7 @@ export default defineSim({
       const { width: W, height: H, dpr } = stage;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, W, H);
-      ctx.font = `${W < 560 ? 10 : 12}px Inter, system-ui, sans-serif`;
+      ctx.font = `${W < 560 ? 10 : 12}px JetBrains Mono, ui-monospace, monospace`;
       const x0 = W * 0.16, x1 = W * (mode === 'fill' ? 0.56 : 0.7), yb = H - 34, yt = 26;
       drawBox(x0, x1, yt, yb);
       ctx.fillStyle = pal.muted; ctx.textAlign = 'center';

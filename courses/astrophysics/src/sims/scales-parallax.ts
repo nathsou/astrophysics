@@ -49,7 +49,7 @@ export default defineSim({
       c.beginPath(); c.arc(cx, Math.max(8, sy), 4, 0, 7); c.fill();
       c.fillStyle = pal.series[0];
       c.beginPath(); c.arc(ex, ey, 5, 0, 7); c.fill();
-      c.font = '11px Inter, system-ui, sans-serif';
+      c.font = '11px JetBrains Mono, ui-monospace, monospace';
       c.fillStyle = pal.muted;
       c.fillText('Earth', ex + 8, ey + 4);
       c.fillText('Sun', cx + 12, cy + 16);
@@ -92,7 +92,7 @@ export default defineSim({
       c.strokeStyle = pal.series[1];
       c.beginPath(); c.moveTo(cx, cy); c.lineTo(cx + p * s, cy); c.stroke();
       c.fillStyle = pal.series[1];
-      c.font = '11px Inter, system-ui, sans-serif';
+      c.font = '11px JetBrains Mono, ui-monospace, monospace';
       c.fillText(`p = ${p >= 0.1 ? fmt(p, 3) + '″' : fmt(p * 1000, 3) + ' mas'}`, cx + 4, cy - 6);
       c.fillStyle = pal.muted;
       c.fillText(`sky view, ${fmt(2 * field, 2)}″ across`, 10, 18);

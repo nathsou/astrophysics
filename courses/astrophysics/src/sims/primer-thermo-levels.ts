@@ -6,7 +6,7 @@
 import { defineSim, Loop, createStage } from '../lib/runtime/sim';
 import { narrowAspect } from './primer-common/stack';
 import { Panel, fmt } from '../lib/ui/controls';
-import { palette, onThemeChange } from '../lib/ui/theme';
+import { palette, onThemeChange, haloText } from '../lib/ui/theme';
 
 const KB_EV = 8.617333e-5; // eV/K
 const NATOMS = 400;
@@ -71,7 +71,7 @@ export default defineSim({
       const { width: W, height: H, dpr } = stage;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, W, H);
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       const n = L.E.length;
       counts.fill(0);
       for (let a = 0; a < NATOMS; a++) counts[state[a]]++;
@@ -127,8 +127,9 @@ export default defineSim({
         ctx.globalAlpha = 1;
         ctx.strokeStyle = pal.accent; ctx.lineWidth = 2;
         ctx.strokeRect(bx0, y - bh, Math.max(0.5, len(p[i])), bh);
-        ctx.fillStyle = pal.fg;
         const lab = p[i] < 1e-3 ? fmt(p[i], 2) : `${fmt(100 * p[i], 3)}%`;
+        haloText(ctx, lab, Math.min(bx0 + len(p[i]) + 5, W - 46), y - 3, pal.bg);
+        ctx.fillStyle = pal.fg;
         ctx.fillText(lab, Math.min(bx0 + len(p[i]) + 5, W - 46), y - 3);
       }
       ctx.fillStyle = pal.muted;

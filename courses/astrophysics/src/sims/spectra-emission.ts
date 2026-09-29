@@ -49,7 +49,7 @@ export default defineSim({
       const row = document.createElement('div');
       const label = document.createElement('div');
       label.textContent = lamp.name;
-      label.style.font = '12px Inter, system-ui, sans-serif';
+      label.style.font = '12px JetBrains Mono, ui-monospace, monospace';
       label.style.marginBottom = '2px';
       label.style.color = 'var(--fg-muted)';
       const canvas = document.createElement('canvas');
@@ -81,7 +81,7 @@ export default defineSim({
       axis.width = Math.round(w * dpr); axis.height = Math.round(h * dpr);
       const ctx = axis.getContext('2d')!;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.textAlign = 'center';
       for (let nm = 400; nm <= 750; nm += w < 500 ? 100 : 50) {
         const x = ((nm - LAM_MIN) / (LAM_MAX - LAM_MIN)) * w;

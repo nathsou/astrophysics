@@ -66,15 +66,16 @@
     text-align: left;
     align-items: baseline;
     padding: 0.35rem 0.6rem;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--page);
+    border: 2px solid var(--fg);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
     cursor: pointer;
     font-family: var(--font-body);
     font-size: 0.98rem;
   }
   .line:hover:not(:disabled) {
-    border-color: var(--lab);
+    background: var(--pn);
+    border-color: var(--fx-red);
   }
   .line:disabled {
     cursor: default;
@@ -85,7 +86,7 @@
     background: var(--bad-soft);
   }
   .line.fine {
-    border-color: var(--ok);
+    border-color: var(--fx-blue);
   }
   .t :global(p) {
     margin: 0;
@@ -98,6 +99,7 @@
     padding: 0.6rem 0.9rem 0.1rem;
     border-radius: var(--radius-sm);
     background: var(--ok-soft);
+    border-left: 4px solid var(--fx-blue);
   }
   .why :global(p) {
     margin: 0 0 0.6rem;

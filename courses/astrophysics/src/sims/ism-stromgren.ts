@@ -68,7 +68,7 @@ export default defineSim({
       ctx.strokeStyle = pal.muted; ctx.lineWidth = 1;
       const bx = 20, by = H - 24;
       ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx + barPc * scale, by); ctx.stroke();
-      ctx.fillStyle = pal.muted; ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.fillStyle = pal.muted; ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.fillText(`${fmt(barPc, 2)} pc`, bx, by - 6);
 
       // Orion Nebula comparison (R ≈ 1.2 pc, roughly), drawn as a dashed reference circle
@@ -90,10 +90,10 @@ export default defineSim({
 
       ctx.textAlign = 'right';
       ctx.fillStyle = pal.fg;
-      ctx.font = '13px Inter, system-ui, sans-serif';
+      ctx.font = '13px JetBrains Mono, ui-monospace, monospace';
       ctx.fillText(`${star.label}:  Q = ${fmt(star.Q, 2)} photons/s`, W - 14, 22);
       ctx.fillStyle = pal.muted;
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       ctx.fillText(`n = ${fmt(10 ** logN, 3)} cm⁻³   R_S = ${fmt(R, 3)} pc`, W - 14, 40);
       ctx.textAlign = 'left';
     }

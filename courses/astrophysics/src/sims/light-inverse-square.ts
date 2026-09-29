@@ -75,12 +75,12 @@ export default defineSim({
         ctx.beginPath(); ctx.moveTo(detX - detW / 2, cy - detH / 2 + k * cell); ctx.lineTo(detX + detW / 2, cy - detH / 2 + k * cell); ctx.stroke();
       }
       ctx.globalAlpha = 1;
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.fillStyle = sky.muted;
       ctx.textAlign = 'center';
       ctx.fillText(`brightest pixel: ${fmt(peak * 100, 3)}% of the surface brightness`, detX, cy + detH / 2 + 18);
       const resolvedDet = Rdet >= cell * 0.5;
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.fillStyle = sky.muted;
       ctx.textAlign = 'center';
       ctx.fillText(resolvedDet ? 'detector (×4 zoom): resolved disk' : 'detector (×4 zoom): unresolved point source', detX, cy - detH / 2 - 8);

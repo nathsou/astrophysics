@@ -43,6 +43,22 @@ export function palette() {
 }
 export type Palette = ReturnType<typeof palette>;
 
+/**
+ * Paint a soft halo of `bg` (the panel colour) under a label about to be drawn with the current font,
+ * alignment and baseline, so text over a curve, grid or tinted band keeps its full contrast.
+ * Call it right before `fillText` with the same arguments.
+ */
+export function haloText(ctx: CanvasRenderingContext2D, s: string, x: number, y: number, bg: string, width = 3, maxWidth?: number) {
+  ctx.save();
+  ctx.strokeStyle = bg;
+  ctx.lineWidth = width;
+  ctx.lineJoin = 'round';
+  ctx.setLineDash([]);
+  ctx.globalAlpha = 1;
+  if (maxWidth === undefined) ctx.strokeText(s, x, y); else ctx.strokeText(s, x, y, maxWidth);
+  ctx.restore();
+}
+
 const listeners = new Set<(t: ThemeName) => void>();
 let observing = false;
 

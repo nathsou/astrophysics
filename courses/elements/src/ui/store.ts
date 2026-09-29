@@ -75,9 +75,10 @@ export function applyTheme(t: Theme) {
 
 // ------------------------------------------------------------------ reading preferences
 
-export type TextMode = 'heath' | 'modern' | 'both';
-export const textModeStore = persistentStore<TextMode>('elements.textMode', 'both');
-export const byrneStore = persistentStore<boolean>('elements.byrne', false);
+export type TextMode = 'heath' | 'modern';
+// A new key: the old one could hold 'both', which no longer exists.
+export const textModeStore = persistentStore<TextMode>('elements.textMode.v2', 'heath');
+export const byrneStore = persistentStore<boolean>('elements.byrne.v2', true);
 
 // ------------------------------------------------------------------ hover linking between text and figure
 

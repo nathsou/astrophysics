@@ -15,7 +15,7 @@ import { useExample, FnPicker } from './common';
 
 export function regColor(r: number) {
   const h = (r * 137.508) % 360;
-  return `hsl(${h} 62% 52%)`;
+  return `hsl(${h} 55% 42%)`;
 }
 
 interface Pos { x: number; y: number }
@@ -151,7 +151,7 @@ export function IRCStepper({ example = 'pressure', fn, caption, maxRegs: k0, tar
         </div>
       </div>
       <div className="step-desc">
-        {cur ? describe(cur, name, regName, K) : <>The interference graph of <b>@{ctx.fn}</b>: an edge joins two values that are live at the same time; dashed orange edges are copies we would like to eliminate by <i>coalescing</i> their endpoints. We have K = {K} registers.</>}
+        {cur ? describe(cur, name, regName, K) : <>The interference graph of <b>@{ctx.fn}</b>: an edge joins two values that are live at the same time; dashed green edges are copies we would like to eliminate by <i>coalescing</i> their endpoints. We have K = {K} registers.</>}
         {s.i === s.n - 1 && (round.spilled.length ? <> Round {roundSel + 1} ends with {round.spilled.length} spill(s): {round.spilled.map((v) => f.vregName(v)).join(', ')}.{!finalRound && ' See the next round.'}</> : <> Every node has a register. Done.</>)}
       </div>
       <Stepper s={s} />

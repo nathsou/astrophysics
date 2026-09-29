@@ -15,6 +15,8 @@
   const part = $derived(PARTS.find((p) => p.id === entry.part));
   const around = $derived(neighbours(entry.kind, entry.slug));
   const eyebrow = $derived(entry.kind === 'appendix' ? `Appendix ${entry.number}` : `Chapter ${entry.number}${part ? (part.id === '0' || part.id === 'E' ? ` · ${part.title}` : ` · Part ${part.id} — ${part.title}`) : ''}`);
+  // A little overlapped-primaries figure whose arrangement varies from chapter to chapter.
+  const variant = $derived([...entry.slug].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % 4);
   const prereqs = $derived((meta.prerequisites ?? []).map((s) => findEntry('chapter', s) ?? findEntry('appendix', s)).filter((e) => e !== undefined));
 
   $effect(() => {
@@ -52,8 +54,10 @@
 </svelte:head>
 
 <article class="article">
-  <header class="chapter-head">
-    <p class="eyebrow ui">{eyebrow}</p>
+  <header class="chapter-head wide">
+    <div class="plate v{variant}" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="head-text">
+    <p class="eyebrow">{eyebrow}</p>
     <h1>{meta.title}</h1>
     <p class="summary">{meta.summary}</p>
     <div class="meta ui">
@@ -76,6 +80,7 @@
         {#each meta.techniques as b (b)}<span class="chip">{b}</span>{/each}
       </div>
     {/if}
+    </div>
   </header>
 
   <TermLayer docs={{ terms: mod.terms, references: mod.references, glossary: mod.glossary }}>
@@ -108,38 +113,52 @@
 
 <style>
   .article {
-    padding-bottom: 6rem;
+    padding-bottom: 5rem;
   }
   .chapter-head {
-    padding: 3.5rem 0 1.5rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 11rem;
+    gap: 2rem;
+    align-items: start;
+    padding: 3.25rem 0 2rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 2px solid var(--fg);
+  }
+  .head-text {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
   }
   .eyebrow {
-    margin: 0 0 0.6rem;
-    font-size: 0.78rem;
+    margin: 0 0 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
     text-transform: uppercase;
-    letter-spacing: 0.09em;
-    font-weight: 650;
+    letter-spacing: 0.14em;
+    font-weight: 500;
     color: var(--accent);
   }
   h1 {
-    font-family: var(--font-body);
-    font-size: clamp(2.3rem, 5.5vw, 3.4rem);
-    line-height: 1.08;
-    letter-spacing: -0.02em;
-    font-weight: 600;
-    margin: 0 0 0.9rem;
+    font-family: var(--font-display);
+    font-size: clamp(2.1rem, 5.4vw, 3.05rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    font-weight: 900;
+    margin: 0 0 1.1rem;
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
   .summary {
-    font-size: 1.3rem;
+    font-size: 1.32rem;
     line-height: 1.5;
     color: var(--ink-2);
-    margin: 0 0 1.25rem;
+    margin: 0 0 1.4rem;
   }
   .meta {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem 1.5rem;
-    font-size: 0.82rem;
+    font-size: 0.86rem;
     color: var(--ink-2);
   }
   .meta span {
@@ -153,30 +172,78 @@
     align-items: center;
     gap: 0.4rem;
     margin-top: 1rem;
-    font-size: 0.8rem;
+    font-size: 0.82rem;
   }
   .builds .label {
-    color: var(--ink-3);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--mute);
     margin-right: 0.3rem;
-  }
-  .chip {
-    padding: 0.15rem 0.6rem;
-    border-radius: 99px;
-    background: var(--accent-soft);
-    color: var(--accent-ink);
-    font-weight: 560;
-  }
-  .chip.thm {
-    background: var(--history-soft);
-    color: var(--ink);
-    border: 1px solid color-mix(in srgb, var(--history) 30%, transparent);
-  }
-  .builds .label {
     min-width: 5.5rem;
   }
+  .chip {
+    padding: 0.12rem 0.6rem;
+    border-radius: var(--radius-sm);
+    background: var(--pn);
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .chip.thm {
+    background: var(--fx-yellow);
+    color: var(--fx-ink);
+    font-weight: 700;
+  }
+
+  /* Overlapped primaries, in the spirit of the mockup's figure. */
+  .plate {
+    grid-column: 2;
+    grid-row: 1;
+    position: relative;
+    font-size: 1rem;
+    height: 11em;
+    width: 11em;
+    justify-self: end;
+    margin-top: 0.4em;
+  }
+  .plate i {
+    position: absolute;
+    display: block;
+  }
+  .plate.v0 i:nth-child(1) { left: 0; top: 0; width: 6.5em; height: 6.5em; background: var(--fx-yellow); }
+  .plate.v0 i:nth-child(2) { left: 4.4em; top: 3.8em; width: 6.5em; height: 6.5em; background: var(--fx-red); opacity: 0.9; }
+  .plate.v0 i:nth-child(3) { left: 1.4em; top: 6em; width: 4.3em; height: 4.3em; background: var(--fx-blue); }
+  .plate.v1 i:nth-child(1) { left: 4.5em; top: 0; width: 6.5em; height: 6.5em; background: var(--fx-blue); }
+  .plate.v1 i:nth-child(2) { left: 0; top: 3.6em; width: 6.5em; height: 6.5em; background: var(--fx-yellow); opacity: 0.92; }
+  .plate.v1 i:nth-child(3) { left: 5.7em; top: 6.6em; width: 4.3em; height: 4.3em; background: var(--fx-red); }
+  .plate.v2 i:nth-child(1) { left: 0; top: 4.5em; width: 6.5em; height: 6.5em; background: var(--fx-red); }
+  .plate.v2 i:nth-child(2) { left: 3.8em; top: 0; width: 6.5em; height: 6.5em; background: var(--fx-blue); opacity: 0.9; }
+  .plate.v2 i:nth-child(3) { left: 6.6em; top: 6.4em; width: 4.3em; height: 4.3em; background: var(--fx-yellow); }
+  .plate.v3 i:nth-child(1) { left: 0; top: 0; width: 6.5em; height: 6.5em; background: var(--fx-blue); }
+  .plate.v3 i:nth-child(2) { left: 3.6em; top: 4.2em; width: 6.5em; height: 6.5em; background: var(--fx-red); opacity: 0.9; }
+  .plate.v3 i:nth-child(3) { left: 6.8em; top: 0.4em; width: 4.2em; height: 4.2em; background: var(--fx-yellow); }
+  @media (max-width: 720px) {
+    .chapter-head {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.25rem;
+      padding-top: 1.75rem;
+    }
+    .plate {
+      grid-column: 1;
+      grid-row: 1;
+      justify-self: start;
+      margin: 0;
+      font-size: 0.5rem;
+    }
+    .head-text {
+      grid-row: 2;
+    }
+  }
+
   .references {
     margin-top: 3rem;
-    font-size: 0.92rem;
+    font-size: 0.95rem;
   }
   .references ol {
     padding-left: 1.4rem;
@@ -186,7 +253,7 @@
   }
   .references li:target {
     background: var(--term-hl);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
   }
   .authors {
     font-weight: 600;
@@ -194,12 +261,12 @@
   .note {
     display: block;
     color: var(--ink-2);
-    font-size: 0.86rem;
+    font-size: 0.88rem;
   }
   .pager {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    gap: 1.25rem;
     margin-top: 4rem;
   }
   .pager a {
@@ -207,24 +274,40 @@
     flex-direction: column;
     gap: 0.2rem;
     padding: 0.9rem 1.1rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--surface);
+    border-top: 2px solid var(--fg);
+    border-bottom: 2px solid var(--fg);
     text-decoration: none;
     color: var(--ink);
+    transition: background-color 120ms;
   }
   .pager a:hover {
-    border-color: var(--accent-2);
+    background: var(--pn);
+    opacity: 1;
+  }
+  .pager a:hover .t {
+    color: var(--accent);
   }
   .next {
     text-align: right;
     grid-column: 2;
   }
   .dir {
-    font-size: 0.75rem;
-    color: var(--ink-3);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
   }
   .t {
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 1.02rem;
+  }
+  @media (max-width: 560px) {
+    .pager {
+      grid-template-columns: 1fr;
+    }
+    .next {
+      grid-column: 1;
+    }
   }
 </style>

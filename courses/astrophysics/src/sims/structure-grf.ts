@@ -108,7 +108,7 @@ export default defineSim({
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.imageSmoothingEnabled = true;
       ctx.drawImage(off, 0, 0, W, H);
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       const lbl = shape === 'power' ? `P(k) ∝ k^${fmt(n, 3)}` : `ΛCDM-like, box ${BOX} Mpc/h`;
       ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillRect(4, 4, ctx.measureText(lbl).width + 12, 20);
       ctx.fillStyle = 'rgba(255,255,255,.92)';
@@ -129,7 +129,7 @@ export default defineSim({
     const panel = new Panel(host);
     const slope = panel.slider('Spectral index n', { min: -3, max: 1, value: n, step: 0.05 }, (v) => { n = v; build(); });
     panel.select<Shape>('Spectrum', [{ value: 'power', label: 'Power law kⁿ' }, { value: 'lcdm', label: 'ΛCDM-shaped (BBKS)' }], shape, (v) => {
-      shape = v; slope.el.style.opacity = v === 'power' ? '1' : '0.4'; build();
+      shape = v; slope.el.classList.toggle('is-off', v !== 'power'); slope.el.querySelector('input')!.disabled = v !== 'power'; build();
     });
     panel.button('New seed', () => { seed = (seed * 48271) % 2147483647; noise(); build(); });
 

@@ -18,10 +18,11 @@
   --surface-3: #e7e5de;
   --ink: #1a1917;
   --ink-2: #52514e;
-  --ink-3: #898781;
+  --ink-3: #6e6c66; /* ≥ 4.5:1 on page, surface and surface-2 */
   --rule: #e1e0d9;
   --rule-strong: #c3c2b7;
   --border: rgba(11, 11, 11, 0.1);
+  --border-control: #8f8d86; /* ≥ 3:1 on page and surface: widget frames and secondary controls */
   --shadow: 0 1px 2px rgba(20, 18, 10, 0.06), 0 4px 16px rgba(20, 18, 10, 0.06);
   --shadow-lg: 0 2px 6px rgba(20, 18, 10, 0.08), 0 16px 40px rgba(20, 18, 10, 0.12);
 
@@ -86,10 +87,11 @@
     --surface-3: #2c2c2a;
     --ink: #ecebe6;
     --ink-2: #c3c2b7;
-    --ink-3: #898781;
+    --ink-3: #94928b;
     --rule: #2c2c2a;
     --rule-strong: #383835;
     --border: rgba(255, 255, 255, 0.1);
+    --border-control: #6b6a64;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.3);
     --shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.5), 0 16px 40px rgba(0, 0, 0, 0.5);
     --accent: #6da7ec;
@@ -133,10 +135,11 @@
   --surface-3: #2c2c2a;
   --ink: #ecebe6;
   --ink-2: #c3c2b7;
-  --ink-3: #898781;
+  --ink-3: #94928b;
   --rule: #2c2c2a;
   --rule-strong: #383835;
   --border: rgba(255, 255, 255, 0.1);
+  --border-control: #6b6a64;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.5), 0 16px 40px rgba(0, 0, 0, 0.5);
   --accent: #6da7ec;
@@ -313,10 +316,14 @@ button {
   color: var(--ink-2);
   font-style: italic;
 }
+.article .table-scroll {
+  margin: 1.5rem 0;
+  overflow-x: auto;
+}
 .article table {
   border-collapse: collapse;
   width: 100%;
-  margin: 1.5rem 0;
+  margin: 0;
   font-family: var(--font-ui);
   font-size: 0.9rem;
   line-height: 1.45;
@@ -397,6 +404,44 @@ figure.code-block pre {
 }
 .katex {
   font-size: 1.08em;
+}
+
+/* Wide equations and tables scroll sideways; the edge that has more content fades out as a cue.
+   The fade is driven by the element's own scroll position, so nothing fades when nothing overflows. */
+@property --fade-start {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+@property --fade-end {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+@keyframes scroll-fade {
+  from {
+    --fade-start: 0px;
+    --fade-end: 2.5rem;
+  }
+  8% {
+    --fade-start: 2.5rem;
+  }
+  92% {
+    --fade-end: 2.5rem;
+  }
+  to {
+    --fade-start: 2.5rem;
+    --fade-end: 0px;
+  }
+}
+@supports (animation-timeline: scroll()) {
+  .math-display,
+  .article .table-scroll {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--fade-start), #000 calc(100% - var(--fade-end)), transparent);
+    mask-image: linear-gradient(to right, transparent, #000 var(--fade-start), #000 calc(100% - var(--fade-end)), transparent);
+    animation: scroll-fade linear both;
+    animation-timeline: scroll(self inline);
+  }
 }
 .math-display .katex {
   font-size: 1.2em;

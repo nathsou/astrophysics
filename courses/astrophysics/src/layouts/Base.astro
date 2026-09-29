@@ -8,8 +8,8 @@ import '../../node_modules/rehype-katex/node_modules/katex/dist/katex.min.css';
 import { parts } from '../course';
 import DepthControl from '../components/DepthControl.astro';
 
-interface Props { title: string; description?: string; current?: string }
-const { title, description = 'An interactive astrophysics course with live simulations.', current } = Astro.props;
+interface Props { title: string; description?: string; current?: string; landing?: boolean }
+const { title, description = 'An interactive astrophysics course with live simulations.', current, landing = false } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const published = new Set(
   Object.keys(import.meta.glob('../pages/ch/*.mdx')).map((p) => p.split('/').pop()!.replace('.mdx', '')),
@@ -39,12 +39,13 @@ const published = new Set(
     <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   </head>
-  <body data-chapter={current}>
-    <button class="btn menu-toggle" aria-label="Menu" aria-controls="site-nav" aria-expanded="false">☰</button>
+  <body data-chapter={current} class:list={[landing && 'landing']}>
+    <a class="skip" href="#main">Skip to content</a>
+    {!landing && <button class="btn menu-toggle" aria-label="Menu" aria-controls="site-nav" aria-expanded="false">☰</button>}
     <div class="shell">
-      <nav class="sidebar" id="site-nav" aria-label="Course contents">
+      {!landing && <nav class="sidebar" id="site-nav" aria-label="Course contents">
         <a class="brand" href={`${base}/`}>The <span>Cosmos</span>, Computed</a>
         {parts.map((p) => (
           <>
@@ -67,8 +68,8 @@ const published = new Set(
         <div class="part">Depth of explanation</div>
         <DepthControl compact />
         <div class="tools"><button class="btn" data-action="theme">◐ System</button></div>
-      </nav>
-      <main><slot /></main>
+      </nav>}
+      <main id="main" tabindex="-1"><slot /></main>
     </div>
     <script>
       import '../scripts/page.ts';

@@ -2,7 +2,7 @@
 // the course can show (and diff) every intermediate form.
 
 import { CompileError, type Program } from './frontend/ast';
-import { parse } from './frontend/parser';
+import { lex, parseTokens, type Token } from './frontend/parser';
 import { lowerProgram } from './frontend/lower';
 import { cloneModule, type Module } from './ir/ir';
 import { verifyModule } from './ir/verify';
@@ -66,6 +66,7 @@ export interface CompileResult {
   error?: { msg: string; line?: number; col?: number; stage: string };
   opts: PipelineOptions;
   target?: Target;
+  tokens?: Token[];
   ast?: Program;
   lowered?: Module;
   ssa?: Module;
@@ -96,7 +97,8 @@ export function compile(source: string, o: Partial<PipelineOptions> = {}): Compi
     return r;
   };
   try {
-    res.ast = time('parse', () => parse(source));
+    res.tokens = time('lex', () => lex(source));
+    res.ast = time('parse', () => parseTokens(res.tokens!));
     const lowered = time('lower', () => lowerProgram(res.ast!, source));
     verifyModule(lowered, false);
     res.lowered = cloneModule(lowered);

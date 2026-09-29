@@ -99,7 +99,7 @@ export default defineSim({
           ctx.lineTo(X + dx, Y + dy);
         }
       ctx.stroke();
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       ctx.fillStyle = pal.fg;
       ctx.fillText(bfrac < 0.02 ? 'pure E-mode' : bfrac > 0.98 ? 'pure B-mode' : `E + B mix (B power fraction ${(bfrac * 100).toFixed(0)}%)`, 10, 18);
     }

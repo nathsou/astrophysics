@@ -5,6 +5,7 @@ import { ancestors, cites, citedBy, depth, descendants, forwardCitations, longes
 import { byId, citeLabel, hrefOf, index, longLabel, parseRef, ROMAN } from '../text';
 import { modernTitle } from '../content/modern';
 import { BOOKS } from '../content/books';
+import { Switch } from '../ui/Switch';
 
 type Colouring = 'p5' | 'depth' | 'book';
 
@@ -69,15 +70,8 @@ export default function GraphPage({ params }: { params: URLSearchParams }) {
           </label>
           {jump && <button className="chip-btn">{citeLabel(jump)}</button>}
         </form>
-        <div className="seg">
-          <button className={dir === 'down' ? 'on' : ''} onClick={() => setDir('down')}>What it rests on</button>
-          <button className={dir === 'up' ? 'on' : ''} onClick={() => setDir('up')}>What rests on it</button>
-        </div>
-        <div className="seg">
-          <button className={colouring === 'p5' ? 'on' : ''} onClick={() => setColouring('p5')}>Parallel postulate</button>
-          <button className={colouring === 'depth' ? 'on' : ''} onClick={() => setColouring('depth')}>Depth</button>
-          <button className={colouring === 'book' ? 'on' : ''} onClick={() => setColouring('book')}>Subject</button>
-        </div>
+        <Switch small label="Direction" value={dir} onChange={setDir} options={[{ value: 'down', label: 'What it rests on' }, { value: 'up', label: 'What rests on it' }]} />
+        <Switch small label="Colouring" value={colouring} onChange={setColouring} options={[{ value: 'p5', label: 'Parallel postulate' }, { value: 'depth', label: 'Depth' }, { value: 'book', label: 'Subject' }]} />
       </section>
 
       <div className="graph-focus">

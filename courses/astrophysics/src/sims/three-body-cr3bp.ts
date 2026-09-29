@@ -235,7 +235,7 @@ export default defineSim({
       const [px, py] = toPx(x, y);
       ctx.fillStyle = pal.muted;
       ctx.beginPath(); ctx.arc(px, py, 2.6, 0, Math.PI * 2); ctx.fill();
-      if (showLabels) { ctx.font = '11px Inter, system-ui, sans-serif'; ctx.fillText(text, px + 6, py - 6); }
+      if (showLabels) { ctx.font = '11px JetBrains Mono, ui-monospace, monospace'; ctx.fillText(text, px + 6, py - 6); }
     }
 
     function render() {
@@ -254,7 +254,7 @@ export default defineSim({
       drawBody(p2[0], p2[1], Math.max(2.5, 8 * Math.cbrt(mu)), 'rgba(140,190,255,0.95)');
 
       // Lagrange points
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       (['L1', 'L2', 'L3', 'L4', 'L5'] as const).forEach((k) => {
         const [x, y] = rot(L[k][0], L[k][1], th);
         labelPoint(x, y, k);
@@ -294,7 +294,7 @@ export default defineSim({
 
       // frame label
       ctx.fillStyle = pal.muted;
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.fillText(showInertial ? 'inertial frame' : 'rotating frame', 10, H - 10);
 
       updateReadout();

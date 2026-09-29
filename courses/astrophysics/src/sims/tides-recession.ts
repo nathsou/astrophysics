@@ -34,7 +34,7 @@ export default defineSim({
       const cx = W * 0.3, cy = H / 2;
       const R = Math.min(W, H) * 0.2;
       const lag = (s.lagDeg * Math.PI) / 180;
-      const font = '11px Inter, system-ui, sans-serif';
+      const font = '11px JetBrains Mono, ui-monospace, monospace';
 
       // Ocean bulge, dragged ahead of the Earth–Moon line (+x) by the lag angle, in the direction
       // of Earth's spin (clockwise on screen, like the Moon's orbit).

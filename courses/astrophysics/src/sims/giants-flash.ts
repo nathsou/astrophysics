@@ -79,7 +79,7 @@ export default defineSim({
         plot.hline(1, { color: pal.faint, dash: [3, 4] });
       });
       const ctx = plot.ctx;
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
       ctx.fillStyle = pal.series[2]; ctx.fillText('— T / T₀', 60, 36);
       ctx.fillStyle = pal.series[0]; ctx.fillText('— ρ / ρ₀', 130, 36);

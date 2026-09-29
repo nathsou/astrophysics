@@ -36,6 +36,13 @@ const SUPS = (n: number) => {
   const s = Number.isInteger(n) ? String(n) : `${n * 2}/2`;
   return `<sup>${s.replace('-', '−')}</sup>`;
 };
+// The exponent as a readable label: 0, +1, −3/2 …
+const POW = (n: number) => {
+  const s = Number.isInteger(n) ? String(Math.abs(n)) : `${Math.abs(n * 2)}/2`;
+  return n === 0 ? '0' : `${n < 0 ? '−' : '+'}${s}`;
+};
+// What a screen reader should call each symbol (the button labels are "Raise G's power" etc.).
+const SPOKEN: Record<string, string> = { 'ħ': 'h-bar', 'mₚ': 'the proton mass', 'mₑ': 'the electron mass', 'e²/4πε₀': 'the electric coupling', M: 'the solar mass', R: 'the solar radius', 'ρ': 'the solar density' };
 
 export default defineSim({
   mount({ host }) {
@@ -43,40 +50,58 @@ export default defineSim({
     QS.forEach((q) => (exps[q[0]] = 0));
 
     const box = document.createElement('div');
-    box.style.cssText = 'padding:14px 16px 6px;font-family:var(--font-ui);font-size:.8rem;color:var(--fg)';
+    box.className = 'dimlab';
     host.append(box);
     const grid = document.createElement('div');
-    grid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px';
+    grid.className = 'dimlab-grid';
+    grid.setAttribute('role', 'group');
+    grid.setAttribute('aria-label', 'Constants and their powers');
     box.append(grid);
-    const chips = QS.map((q) => {
+    const chips = QS.map((q, i) => {
+      const spoken = SPOKEN[q[0]] ?? q[0];
       const d = document.createElement('div');
-      d.style.cssText = 'display:flex;align-items:center;gap:6px;border:1px solid var(--rule);border-radius:6px;padding:4px 6px;background:var(--bg-elev)';
+      d.className = 'dimlab-chip';
       d.title = `${q[1]} = ${fmt(q[2], 4)} (SI)`;
-      const minus = document.createElement('button'); minus.className = 'btn'; minus.textContent = '−';
-      const plus = document.createElement('button'); plus.className = 'btn'; plus.textContent = '+';
-      for (const b of [minus, plus]) b.style.cssText = 'padding:0 .5em;min-width:0';
+      const minus = document.createElement('button');
+      const plus = document.createElement('button');
+      minus.className = plus.className = 'dimlab-step';
+      minus.type = plus.type = 'button';
+      minus.textContent = '−';
+      plus.textContent = '+';
+      minus.setAttribute('aria-label', `Lower ${spoken}'s power`);
+      plus.setAttribute('aria-label', `Raise ${spoken}'s power`);
+      const mid = document.createElement('div');
+      mid.className = 'dimlab-mid';
       const lab = document.createElement('span');
-      lab.style.cssText = 'flex:1;text-align:center;font-family:var(--font-body);font-style:italic;font-size:1.05rem;line-height:1.2';
+      lab.className = 'dimlab-sym';
+      const pow = document.createElement('span');
+      pow.className = 'dimlab-pow';
+      pow.id = `dimlab-pow-${Math.random().toString(36).slice(2, 8)}-${i}`;
+      mid.append(lab, pow);
+      minus.setAttribute('aria-describedby', pow.id);
+      plus.setAttribute('aria-describedby', pow.id);
       minus.onclick = () => { exps[q[0]] -= 0.5; update(); };
       plus.onclick = () => { exps[q[0]] += 0.5; update(); };
-      d.append(minus, lab, plus);
+      d.append(minus, mid, plus);
       grid.append(d);
-      return { q, lab, d };
+      return { q, lab, pow, d };
     });
     const out = document.createElement('div');
-    out.style.cssText = 'margin:12px 0 4px;font-size:.95rem;line-height:1.6';
+    out.className = 'dimlab-out';
+    out.setAttribute('aria-live', 'polite');
     const note = document.createElement('div');
-    note.style.cssText = 'color:var(--fg-muted);font-size:.78rem;min-height:1.2em';
+    note.className = 'dimlab-note';
     box.append(out, note);
 
     function update() {
       const dim = [0, 0, 0];
       let logv = 0;
       const parts: string[] = [];
-      for (const { q, lab, d } of chips) {
+      for (const { q, lab, pow, d } of chips) {
         const e = exps[q[0]];
-        lab.innerHTML = e ? `${sym(q[0])}${SUPS(e)}` : `<span style="opacity:.55">${sym(q[0])}</span>`;
-        d.style.borderColor = e ? 'var(--accent)' : 'var(--rule)';
+        lab.innerHTML = `${sym(q[0])}${e ? SUPS(e) : ''}`;
+        pow.textContent = `power ${POW(e)}`;
+        d.classList.toggle('on', e !== 0);
         if (!e) continue;
         for (let k = 0; k < 3; k++) dim[k] += e * q[3][k];
         logv += e * Math.log10(q[2]);
@@ -93,7 +118,7 @@ export default defineSim({
         '0,0,-1': `${fmt(v, 3)} Hz`,
       };
       out.innerHTML = parts.length
-        ? `<b>${parts.join(' ')}</b> has dimensions <b>[${dimStr}]</b> and value <b>${fmt(v, 3)}</b> SI${nice[key] ? ` = <b style="color:var(--accent)">${nice[key]}</b>` : ''}`
+        ? `<b>${parts.join(' ')}</b> has dimensions <b>[${dimStr}]</b> and value <b>${fmt(v, 3)}</b> SI${nice[key] ? ` = <b class="dimlab-hit">${nice[key]}</b>` : ''}`
         : 'Press + and − to raise the constants to powers. Try to build a length, a mass or a time.';
     }
 

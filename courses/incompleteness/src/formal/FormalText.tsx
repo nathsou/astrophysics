@@ -42,16 +42,17 @@ export function annotationKeys(sectionId: string, blocks: Block[]): Map<Block, s
   return keys;
 }
 
-export function FormalBlocks({ blocks, ctx }: { blocks: Block[]; ctx: FormalContext }) {
+/** `qed`: set the end-of-proof mark at the end of the last line of the last block. */
+export function FormalBlocks({ blocks, ctx, qed = false }: { blocks: Block[]; ctx: FormalContext; qed?: boolean }) {
   const keys = annotationKeys(ctx.sectionId, blocks);
   return (
     <>
-      {blocks.map((b) => {
+      {blocks.map((b, i) => {
         const key = keys.get(b);
         const note = key ? ctx.annotations?.[key] : undefined;
         return (
           <Fragment key={b.id}>
-            <BlockView b={b} ctx={ctx} />
+            <BlockView b={b} ctx={ctx} qed={qed && i === blocks.length - 1} />
             {note && <div className="annotation">{note}</div>}
           </Fragment>
         );
@@ -60,33 +61,45 @@ export function FormalBlocks({ blocks, ctx }: { blocks: Block[]; ctx: FormalCont
   );
 }
 
-function BlockView({ b, ctx }: { b: Block; ctx: FormalContext }): ReactNode {
+/** The end-of-proof mark (∎), placed by CSS at the right edge of the line it ends. */
+function Qed() {
+  return (
+    <span className="qed" role="img" aria-label="end of proof">
+      ∎
+    </span>
+  );
+}
+
+function BlockView({ b, ctx, qed = false }: { b: Block; ctx: FormalContext; qed?: boolean }): ReactNode {
+  const q = qed ? ' has-qed' : '';
   switch (b.t) {
     case 'p':
       return (
-        <p className="ol-p" id={anchor(b.id)}>
+        <p className={`ol-p${q}`} id={anchor(b.id)}>
           <Inlines c={b.c} />
+          {qed && <Qed />}
         </p>
       );
     case 'display':
       return (
-        <div className="ol-display" id={anchor(b.id)}>
+        <div className={`ol-display${q}`} id={anchor(b.id)}>
           {b.rows.filter((r) => r.label).map((r) => <span key={r.label} id={anchor(r.label!)} />)}
           {b.error ? <span className="tex-error" title={b.error}>{b.src}</span> : <Tex tex={assembleDisplay(b.env, b.rows)} display />}
+          {qed && <Qed />}
         </div>
       );
     case 'list': {
       const Tag = b.ordered ? 'ol' : 'ul';
       return (
         <Tag className="ol-list" id={anchor(b.id)}>
-          {b.items.map((it) => (
+          {b.items.map((it, i) => (
             <li key={it.id} id={it.label ? anchor(it.label) : undefined} className={it.marker ? 'has-marker' : undefined}>
               {it.marker && (
                 <span className="ol-marker">
                   <Inlines c={it.marker} />
                 </span>
               )}
-              <FormalBlocks blocks={it.c} ctx={ctx} />
+              <FormalBlocks blocks={it.c} ctx={ctx} qed={qed && i === b.items.length - 1} />
             </li>
           ))}
         </Tag>
@@ -94,7 +107,7 @@ function BlockView({ b, ctx }: { b: Block; ctx: FormalContext }): ReactNode {
     }
     case 'table':
       return (
-        <div className="ol-table-wrap" id={anchor(b.id)}>
+        <div className={`ol-table-wrap${q}`} id={anchor(b.id)}>
           <table className="ol-table">
             <tbody>
               {b.rows.map((row, i) => (
@@ -108,63 +121,69 @@ function BlockView({ b, ctx }: { b: Block; ctx: FormalContext }): ReactNode {
               ))}
             </tbody>
           </table>
+          {qed && <Qed />}
         </div>
       );
     case 'heading': {
       const H = b.level === 3 ? 'h3' : 'h4';
       return (
-        <H className="ol-heading" id={anchor(b.id)}>
+        <H className={`ol-heading${q}`} id={anchor(b.id)}>
           <Inlines c={b.c} />
+          {qed && <Qed />}
         </H>
       );
     }
     case 'prooftree':
       return (
-        <div className="ol-tree" id={anchor(b.id)}>
+        <div className={`ol-tree${q}`} id={anchor(b.id)}>
           <TreeNode n={b.root} />
+          {qed && <Qed />}
         </div>
       );
     case 'env':
-      return <EnvView b={b} ctx={ctx} />;
+      return <EnvView b={b} ctx={ctx} qed={qed} />;
   }
 }
 
-function EnvView({ b, ctx }: { b: Extract<Block, { t: 'env' }>; ctx: FormalContext }) {
+function EnvView({ b, ctx, qed = false }: { b: Extract<Block, { t: 'env' }>; ctx: FormalContext; qed?: boolean }) {
   const name = ENV_LABEL[b.kind];
   const id = anchor(b.label ?? b.id);
   if (b.kind === 'proof') {
+    // A proof ending a proof (rare) keeps one mark: the inner one.
+    const head = b.title ? <Inlines c={b.title} /> : 'Proof';
     return (
       <div className="ol-proof" id={id}>
-        <span className="ol-proof-head">
-          {b.title ? <Inlines c={b.title} /> : 'Proof'}.
-        </span>{' '}
-        <FormalBlocks blocks={b.c} ctx={ctx} />
-        <span className="qed" aria-label="end of proof">∎</span>
+        <SourceLabel loc={b.loc} className="ol-proof-head" name="Proof">
+          {head}.
+        </SourceLabel>{' '}
+        <FormalBlocks blocks={b.c} ctx={ctx} qed />
         <SourceTag loc={b.loc} />
       </div>
     );
   }
   if (b.kind === 'defish') {
     return (
-      <div className="ol-defish" id={id}>
+      <div className={`ol-defish${qed ? ' has-qed' : ''}`} id={id}>
         <FormalBlocks blocks={b.c} ctx={ctx} />
+        {qed && <Qed />}
       </div>
     );
   }
   if (b.kind === 'quote' || b.kind === 'center') {
     return (
       <blockquote className={`ol-${b.kind}`} id={id}>
-        <FormalBlocks blocks={b.c} ctx={ctx} />
+        <FormalBlocks blocks={b.c} ctx={ctx} qed={qed} />
       </blockquote>
     );
   }
   const numbered = b.number !== undefined;
+  const heading = `${name ?? b.kind}${b.number !== undefined ? ` ${b.number}` : ''}`;
   return (
-    <section className={`ol-env ol-${b.kind} ${numbered ? 'numbered' : 'aside'}`} id={id} aria-label={`${name ?? b.kind} ${b.number ?? ''}`}>
+    <section className={`ol-env ol-${b.kind} ${numbered ? 'numbered' : 'aside'}`} id={id} aria-label={heading}>
       <header className="ol-env-head">
-        <span className="ol-env-name">
+        <SourceLabel loc={b.loc} className="ol-env-name" name={heading}>
           {name} {b.number}
-        </span>
+        </SourceLabel>
         {b.title && (
           <span className="ol-env-title">
             (<Inlines c={b.title} />)
@@ -174,7 +193,7 @@ function EnvView({ b, ctx }: { b: Extract<Block, { t: 'env' }>; ctx: FormalConte
         <SourceTag loc={b.loc} />
       </header>
       <div className="ol-env-body">
-        <FormalBlocks blocks={b.c} ctx={ctx} />
+        <FormalBlocks blocks={b.c} ctx={ctx} qed={qed} />
       </div>
     </section>
   );
@@ -324,36 +343,52 @@ export function anchor(id: string): string {
   return id.replace(/[^a-zA-Z0-9_-]+/g, '-');
 }
 
+function sourceWhere(loc: SourceLoc): string {
+  return `${loc.file.split('/').pop()}:${loc.line}${loc.endLine !== loc.line ? `–${loc.endLine}` : ''}`;
+}
+
+/** Show the exact lines of the upstream LaTeX in the inspector (pinned). */
+async function showSource(loc: SourceLoc) {
+  const url = sourceUrl(loc);
+  const where = sourceWhere(loc);
+  inspect({ key: `src:${where}`, kicker: 'LaTeX source', title: where, body: <p className="muted">Loading…</p> }, true);
+  const lines = await loadUpstreamLines(loc);
+  inspect(
+    {
+      key: `src:${where}:loaded`,
+      kicker: 'LaTeX source',
+      title: where,
+      body: (
+        <>
+          <p className="muted">
+            {loc.repo} · pinned commit · <a href={url} target="_blank" rel="noreferrer">open on GitHub ↗</a>
+          </p>
+          <pre className="latex-src">{lines}</pre>
+        </>
+      ),
+    },
+    true,
+  );
+}
+
+/**
+ * The label of a theorem, definition or proof ("Lemma 5.3", "Proof."), which also opens its
+ * LaTeX source in the inspector — the way to it on touch screens, where the source tag is hidden.
+ */
+function SourceLabel({ loc, className, name, children }: { loc: SourceLoc; className: string; name: string; children: ReactNode }) {
+  return (
+    <button type="button" className={`${className} ol-label-btn`} onClick={() => showSource(loc)} title={`${name}: view its LaTeX source (${sourceWhere(loc)})`} aria-label={`${name}: view its LaTeX source`}>
+      {children}
+    </button>
+  );
+}
+
 /** A small link to the exact lines of the upstream LaTeX, and a way to view them. */
 export function SourceTag({ loc }: { loc: SourceLoc }) {
-  const url = sourceUrl(loc);
-  const where = `${loc.file.split('/').pop()}:${loc.line}${loc.endLine !== loc.line ? `–${loc.endLine}` : ''}`;
+  const where = sourceWhere(loc);
   return (
     <span className="source-tag">
-      <button
-        className="source-btn"
-        title={`View the LaTeX source (${where})`}
-        onClick={async () => {
-          inspect({ key: `src:${where}`, kicker: 'LaTeX source', title: where, body: <p className="muted">Loading…</p> }, true);
-          const lines = await loadUpstreamLines(loc);
-          inspect(
-            {
-              key: `src:${where}:loaded`,
-              kicker: 'LaTeX source',
-              title: where,
-              body: (
-                <>
-                  <p className="muted">
-                    {loc.repo} · pinned commit · <a href={url} target="_blank" rel="noreferrer">open on GitHub ↗</a>
-                  </p>
-                  <pre className="latex-src">{lines}</pre>
-                </>
-              ),
-            },
-            true,
-          );
-        }}
-      >
+      <button className="source-btn" title={`View the LaTeX source (${where})`} onClick={() => showSource(loc)}>
         ¶ {where}
       </button>
     </span>

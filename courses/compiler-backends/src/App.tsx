@@ -2,7 +2,8 @@ import { lazy, Suspense, useEffect, useState, type ComponentType } from 'react';
 import { MDXProvider } from '@mdx-js/react';
 import { CHAPTERS, PARTS, chapterBySlug } from './content/course';
 import { Tooltip } from './ui/Tooltip';
-import { applyTheme, themeStore, useStore, type Theme } from './ui/store';
+import { applyTheme, themeStore } from './ui/store';
+import { ThemeToggle } from './ui/ThemeToggle';
 import { mdxComponents } from './ui/mdx';
 import { Home } from './Home';
 import { ErrorBoundary } from './ui/ErrorBoundary';
@@ -51,7 +52,7 @@ function Chapter({ slug, anchor }: { slug: string; anchor?: string }) {
   const prev = CHAPTERS[idx - 1], next = CHAPTERS[idx + 1];
   return (
     <article className="article">
-      <div className="kicker">{meta.part === 'Appendices' ? `Appendix ${meta.num}` : `Chapter ${meta.num}`} · {meta.part}</div>
+      <div className="kicker">{meta.part === 'Appendices' ? `Appendix ${meta.num}` : `Ch ${meta.num.padStart(2, '0')}`} · {meta.stage} · {meta.part}</div>
       <h1>{meta.title}</h1>
       {err && <p className="error-box">Failed to load chapter: {err}</p>}
       {Comp ? <ErrorBoundary label="chapter"><Comp /></ErrorBoundary> : !err && <p className="muted sans">Loading…</p>}
@@ -64,25 +65,19 @@ function Chapter({ slug, anchor }: { slug: string; anchor?: string }) {
 }
 
 function Sidebar({ route, open, onNav }: { route: string; open: boolean; onNav: () => void }) {
-  const theme = useStore(themeStore);
-  const cycle = () => {
-    const next: Theme = theme === 'system' ? 'light' : theme === 'light' ? 'dark' : 'system';
-    themeStore.set(next);
-    applyTheme(next);
-  };
   const cur = route.startsWith('ch/') ? route.slice(3).split('#')[0] : '';
   return (
     <nav className={`sidebar ${open ? 'open' : ''}`} onClick={(e) => (e.target as HTMLElement).closest('a') && onNav()}>
       <a className="brand" href="#/">
-        <span className="brand-mark">φ</span>
+        <span className="logo-mark" aria-hidden="true" />
         <span>
           <div className="brand-title">SSA to Silicon</div>
-          <div className="brand-sub">building a compiler backend</div>
+          <div className="brand-sub">Datasheet · Rev 1.0</div>
         </span>
       </a>
       <div className="sidebar-tools">
-        <a className="chip-btn primary" href="#/playground" style={{ textDecoration: 'none' }}>▶ Playground</a>
-        <button className="chip-btn" onClick={cycle} title={`Theme: ${theme}`}>{theme === 'system' ? '◐ system' : theme === 'dark' ? '☾ dark' : '☀ light'}</button>
+        <a className="chip-btn primary" href="#/playground">▶ Playground</a>
+        <ThemeToggle />
       </div>
       <div className="toc">
         {PARTS.map((p) => (
@@ -118,12 +113,14 @@ export function App() {
   }
   return (
     <MDXProvider components={mdxComponents}>
-      <div className={`app ${route.startsWith('playground') ? 'wide-mode' : ''}`}>
+      <div className={`app ${route.startsWith('playground') ? 'wide-mode' : route.startsWith('ch/') ? '' : 'home-mode'}`}>
+        <a className="skip-link" href="#/" onClick={(e) => { e.preventDefault(); document.getElementById('main')?.focus(); }}>Skip to content</a>
         <Sidebar route={route} open={open} onNav={() => setOpen(false)} />
-        <main className="main">
+        <main className="main" id="main" tabIndex={-1} style={{ outline: 'none' }}>
           <div className="mobile-bar">
-            <button className="chip-btn" onClick={() => setOpen((o) => !o)} aria-label="Open contents">☰ Contents</button>
-            <span style={{ fontWeight: 600 }}>SSA to Silicon</span>
+            <button className="chip-btn" onClick={() => setOpen((o) => !o)} aria-label="Open contents" aria-expanded={open}>☰ Contents</button>
+            <span className="logo-mark" aria-hidden="true" />
+            <span style={{ fontWeight: 700, letterSpacing: '-0.02em' }}>SSA to Silicon</span>
           </div>
           {page}
         </main>

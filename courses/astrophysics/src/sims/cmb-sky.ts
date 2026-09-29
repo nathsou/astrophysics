@@ -70,7 +70,7 @@ export default defineSim({
 
     // legend overlay
     const legend = document.createElement('div');
-    legend.style.cssText = 'position:absolute;left:10px;bottom:8px;font:11px Inter,system-ui,sans-serif;color:var(--fg-muted);display:flex;align-items:center;gap:6px;';
+    legend.style.cssText = 'position:absolute;left:10px;bottom:8px;font:11px JetBrains Mono, ui-monospace, monospace;color:var(--fg-muted);display:flex;align-items:center;gap:6px;';
     const bar = document.createElement('span');
     bar.style.cssText = 'display:inline-block;width:110px;height:8px;border-radius:2px;background:linear-gradient(90deg,#0000ff,#0070ff,#00ddff,#ffedd9,#ffb500,#ff4a00,#640000)';
     const lo = document.createElement('span'), hi = document.createElement('span');

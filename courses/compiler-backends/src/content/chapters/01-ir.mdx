@@ -64,9 +64,9 @@ How does a front end produce SSA? The trick every production front end uses is: 
 
 This IR is trivially correct and trivially in SSA form, because the only values are the loads, computations and addresses. Nothing is ever assigned twice. The hard work of turning stack slots into proper SSA values with phis is left to a dedicated pass, *mem2reg*, which we build in Chapter 4.
 
-Here is what that looks like. The left pane is editable; the right pane shows the IR at three levels. **IR** is the raw lowering, **SSA** is after mem2reg, and **Optimised** is after the clean-up passes of Chapter 5.
+Here is what that looks like. The left pane is editable; the right pane shows the IR at three levels. **Pre-SSA IR** is the raw lowering, **SSA** is after mem2reg, and **Optimised** is after the clean-up passes of Chapter 5.
 
-<Pipeline example="sum" stage="ir" opt={1} stages={['ir', 'ssa', 'opt']} height={380} caption="Source-to-IR lowering. Hover a source line to see the IR it produced (and vice versa). At the IR stage every use of `s` and `i` is a load from a stack slot; after mem2reg they are values joined by phis in the loop header." />
+<Pipeline example="sum" stage="ir" opt={1} stages={['ir', 'ssa', 'opt']} height={380} caption="Source-to-IR lowering. Hover a source line to see the IR it produced (and vice versa). At the Pre-SSA IR stage every use of `s` and `i` is a load from a stack slot; after mem2reg they are values joined by phis in the loop header." />
 
 ### Expressions
 

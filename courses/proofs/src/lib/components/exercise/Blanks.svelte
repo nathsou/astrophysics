@@ -155,9 +155,9 @@
     font-family: var(--font-mono);
     font-size: 0.85rem;
     padding: 0.1rem 0.35rem;
-    border: 1px solid var(--rule-strong);
-    border-radius: 5px;
-    background: var(--page);
+    border: 2px solid var(--fg);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
     color: var(--ink);
     min-width: 3ch;
   }
@@ -185,13 +185,13 @@
     font-size: 0.85rem;
   }
   .check {
-    border: 1px solid var(--lab);
-    background: var(--lab);
-    color: white;
-    border-radius: 6px;
-    padding: 0.3rem 0.9rem;
+    border: 2px solid var(--fx-blue);
+    background: var(--fx-blue);
+    color: var(--fx-cream);
+    border-radius: var(--radius-sm);
+    padding: 0.26rem 0.9rem;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 700;
   }
   .ok {
     color: var(--ok);
@@ -205,6 +205,7 @@
     padding: 0.6rem 0.9rem 0.1rem;
     border-radius: var(--radius-sm);
     background: var(--ok-soft);
+    border-left: 4px solid var(--fx-blue);
   }
   .explain :global(p) {
     margin: 0 0 0.6rem;

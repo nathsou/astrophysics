@@ -5,7 +5,7 @@
 import { defineSim, Loop, createStage } from '../lib/runtime/sim';
 import { Panel, fmt } from '../lib/ui/controls';
 import { Plot } from '../lib/ui/plot';
-import { palette, onThemeChange } from '../lib/ui/theme';
+import { palette, onThemeChange, haloText } from '../lib/ui/theme';
 import { vars } from '../lib/runtime/vars';
 import { jeans } from './star-formation/physics';
 
@@ -71,11 +71,11 @@ export default defineSim({
         plot.point(n, T, { r: 7, color: pal.accent2, stroke: pal.fg });
       });
       const j = jeans(n, T);
-      ctx.font = `${narrow ? 11 : 12}px Inter, system-ui, sans-serif`;
+      ctx.font = `${narrow ? 11 : 12}px JetBrains Mono, ui-monospace, monospace`;
       ctx.fillStyle = pal.fg; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
       const x0 = plot.px(narrow ? 1e5 : 3e4), y0 = plot.m.t + 8; // top middle: clear of the labelled phases
       [`n = ${fmt(n, 2)} cm⁻³, T = ${fmt(T, 3)} K`, `M_J = ${fmt(j.MJ, 3)} M☉`, `λ_J = ${fmt(j.lambdaPc, 3)} pc`, `t_ff = ${fmt(j.tffMyr, 3)} Myr`,
-        Mclump > j.MJ ? `${fmt(Mclump, 3)} M☉ clump: collapses` : `${fmt(Mclump, 3)} M☉ clump: supported`].forEach((s, i) => ctx.fillText(s, x0, y0 + i * (narrow ? 14 : 16)));
+        Mclump > j.MJ ? `${fmt(Mclump, 3)} M☉ clump: collapses` : `${fmt(Mclump, 3)} M☉ clump: supported`].forEach((s, i) => { haloText(ctx, s, x0, y0 + i * (narrow ? 14 : 16), pal.bg); ctx.fillStyle = pal.fg; ctx.fillText(s, x0, y0 + i * (narrow ? 14 : 16)); });
     }
 
     const loop = new Loop(null, render);

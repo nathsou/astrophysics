@@ -33,32 +33,33 @@
 <style>
   .seg {
     display: inline-flex;
-    border: 1px solid var(--border);
-    border-radius: 7px;
+    border: 2px solid var(--fg);
+    border-radius: var(--radius-sm);
     overflow: hidden;
     flex-wrap: wrap;
   }
   button {
     border: 0;
     background: var(--surface);
-    padding: 0.35rem 0.75rem;
-    font-size: 0.8rem;
+    padding: 0.32rem 0.75rem;
+    font-size: 0.82rem;
+    font-weight: 500;
     cursor: pointer;
-    color: var(--ink-2);
+    color: var(--ink);
   }
   .sm button {
-    padding: 0.25rem 0.55rem;
-    font-size: 0.74rem;
+    padding: 0.22rem 0.55rem;
+    font-size: 0.76rem;
   }
   button + button {
-    border-left: 1px solid var(--border);
+    border-left: 2px solid var(--fg);
   }
   button.on {
-    background: var(--accent-soft);
-    color: var(--accent-ink);
-    font-weight: 600;
+    background: var(--fg);
+    color: var(--bg);
+    font-weight: 700;
   }
   button:hover:not(.on) {
-    background: var(--surface-2);
+    background: var(--pn);
   }
 </style>

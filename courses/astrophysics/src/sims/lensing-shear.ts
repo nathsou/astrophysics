@@ -87,7 +87,7 @@ export default defineSim({
       ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(lx, ly, 40, 0, 7); ctx.fill();
       ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.setLineDash([3, 4]);
       ctx.beginPath(); ctx.arc(lx, ly, st.thetaE * k, 0, 7); ctx.stroke(); ctx.setLineDash([]);
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       const title = `${FIELD}′ × ${FIELD}′ field — drag the mass`;
       ctx.fillStyle = 'rgba(0,0,0,0.6)'; ctx.fillRect(4, 4, ctx.measureText(title).width + 10, 18);
       ctx.fillStyle = 'rgba(255,255,255,0.9)';

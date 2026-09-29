@@ -43,7 +43,8 @@ export function renderPNode(root: PNode, subs: Map<string, HTMLElement>, nodes: 
       }
       if (!n.cls) return document.createTextNode(n.text);
       const s = document.createElement('span');
-      s.className = `t-${n.cls}`;
+      // word-like keywords (fun, λ, ∀, let …) take the keyword colour; arrows and := stay quiet
+      s.className = n.cls === 'kw' && /^[\p{L}λΠ∀∃]/u.test(n.text) ? 't-kw w' : `t-${n.cls}`;
       s.textContent = n.text;
       return s;
     }

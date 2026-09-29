@@ -13,7 +13,7 @@
 import { defineSim, Loop, createStage } from '../lib/runtime/sim';
 import { Panel, fmt } from '../lib/ui/controls';
 import { Plot, Series } from '../lib/ui/plot';
-import { palette, onThemeChange, type Palette } from '../lib/ui/theme';
+import { palette, onThemeChange, haloText, type Palette } from '../lib/ui/theme';
 
 type Phase = 'collapse' | 'stalled' | 'exploding' | 'failed';
 
@@ -236,27 +236,32 @@ export default defineSim({
         ctx.beginPath(); ctx.arc(cx, cy, pnsPix * 2.4, 0, Math.PI * 2); ctx.fill();
       }
 
-      ctx.fillStyle = pal.fg;
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      // status text can sit over the star's coloured shells on narrow screens: halo it
+      ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
       ctx.textAlign = 'left';
+      haloText(ctx, clockLabel(), 12, 20, pal.bg, 4);
+      ctx.fillStyle = pal.fg;
       ctx.fillText(clockLabel(), 12, 20);
-      ctx.fillStyle = pal.muted;
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       const phaseLabel = { collapse: 'iron core collapsing', stalled: 'shock stalled — SASI sloshing', exploding: 'shock revived — blasting through the star', failed: 'shock failed — forming a black hole' }[phase];
+      haloText(ctx, phaseLabel, 12, 36, pal.bg, 4);
+      ctx.fillStyle = pal.muted;
       ctx.fillText(phaseLabel, 12, 36);
       if (outcome) {
+        ctx.font = '12px JetBrains Mono, ui-monospace, monospace';
+        haloText(ctx, outcome, 12, H - 14, pal.bg, 4, W - 24);
         ctx.fillStyle = phase === 'failed' ? pal.bad : pal.good;
-        ctx.font = '12px Inter, system-ui, sans-serif';
         ctx.fillText(outcome, 12, H - 14, W - 24);
       }
       // legend
       let ly = H - 14 - (outcome ? 18 : 0) - layers.length * 15;
-      ctx.font = '10.5px Inter, system-ui, sans-serif';
+      ctx.font = '10.5px JetBrains Mono, ui-monospace, monospace';
       const legend = layers.map((layer) => `${layer.name} (R ≈ ${fmt(layer.outerKm, 2)} km)`);
       const lx = W - 8 - 14 - Math.max(...legend.map((t) => ctx.measureText(t).width));
       layers.forEach((layer, i) => {
         ctx.fillStyle = layer.colorOf(pal);
         ctx.fillRect(lx, ly, 10, 10);
+        haloText(ctx, legend[i], lx + 14, ly + 9, pal.bg, 4);
         ctx.fillStyle = pal.muted;
         ctx.fillText(legend[i], lx + 14, ly + 9);
         ly += 15;

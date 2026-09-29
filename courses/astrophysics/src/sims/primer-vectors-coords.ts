@@ -72,7 +72,7 @@ export default defineSim({
     }
     function label(p: V3, text: string, color: string, dx = 6, dy = -6) {
       const q = proj(p);
-      ctx.fillStyle = color; ctx.font = '12px Inter, system-ui, sans-serif'; ctx.textBaseline = 'bottom';
+      ctx.fillStyle = color; ctx.font = '12px JetBrains Mono, ui-monospace, monospace'; ctx.textBaseline = 'bottom';
       // keep labels inside the canvas: flip to the left of the point near the right edge
       const flip = q[0] + dx + ctx.measureText(text).width > stage.width - 4;
       ctx.textAlign = flip ? 'right' : 'left';
@@ -131,7 +131,7 @@ export default defineSim({
         const sepRobust = Math.atan2(norm(cross(a, b)), c) / D;
         rOut.set(`a · b = ${fmt(c, 6)}  →  separation = arccos(a · b) = ${fmt(sepDot, 4)}°   (atan2 form: ${fmt(sepRobust, 4)}°)`);
       }
-      ctx.fillStyle = pal.muted; ctx.font = '11px Inter, system-ui, sans-serif'; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
+      ctx.fillStyle = pal.muted; ctx.font = '11px JetBrains Mono, ui-monospace, monospace'; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
       ctx.fillText('drag to rotate', W - 8, H - 6);
     }
 

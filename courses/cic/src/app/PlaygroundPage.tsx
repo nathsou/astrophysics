@@ -28,9 +28,10 @@ export default function PlaygroundPage() {
     /* ignore malformed links */
   }
   return (
-    <div class="page" style={{ 'grid-template-columns': 'minmax(0, 1fr)', 'max-width': '90rem' }}>
+    <div class="page ref" style={{ 'grid-template-columns': 'minmax(0, 1fr)', 'max-width': '90rem' }}>
       <div class="prose" style={{ 'max-width': 'none' }}>
-        <h1 style={{ 'font-size': '2rem', 'max-width': 'none' }}>Playground</h1>
+        <div class="chapter-kicker">-- scratchpad</div>
+        <h1 style={{ 'max-width': 'none' }}>Playground</h1>
         <p style={{ 'max-width': '50rem', margin: '0 0 1rem' }}>
           A scratchpad connected to the course kernel. Choose a calculus — from the simply typed λ-calculus up to the full Calculus of Inductive Constructions — and experiment.
         </p>

@@ -390,6 +390,24 @@ async function renderTerms(ctx: Ctx): Promise<Record<string, unknown>> {
   return out;
 }
 
+/**
+ * Put every GFM table in a horizontal scroller so wide tables scroll instead of widening the page on phones.
+ * Like Shiki's <pre>, the scroller is focusable so it can be scrolled from the keyboard.
+ */
+function wrapTables(hast: Parent): void {
+  visit(hast as never, 'element', (node: { tagName: string }, index: number | undefined, parent: Parent | undefined) => {
+    if (node.tagName !== 'table' || index === undefined || !parent) return;
+    const wrapper = {
+      type: 'element',
+      tagName: 'div',
+      properties: { className: ['table-scroll'], tabIndex: 0, role: 'region', ariaLabel: 'Table' },
+      children: [node],
+    };
+    parent.children.splice(index, 1, { type: 'comment', value: ' svelte-ignore a11y_no_noninteractive_tabindex ' } as never, wrapper as never);
+    return index + 2;
+  });
+}
+
 export interface CompileResult {
   code: string;
   dependencies: string[];
@@ -434,6 +452,7 @@ export async function compileMarkdown(source: string, file: string): Promise<Com
   const tree = unified().use(remarkParse).use(remarkGfm).use(remarkMath).use(remarkDirective).parse(body) as Root;
   await transform(tree, ctx);
   const hast = await unified().use(remarkRehype, { allowDangerousHtml: true }).run(tree);
+  wrapTables(hast as unknown as Parent);
   let html = unified().use(rehypeStringify, { allowDangerousHtml: true }).stringify(hast as never);
 
   // Everything that is still HTML is static: neutralise Svelte's { } before inserting components.

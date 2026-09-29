@@ -56,7 +56,7 @@ Four details make this work:
 - **Stack arguments.** Arguments beyond the register ones are stored at fixed offsets from `sp` in an *outgoing argument area* at the bottom of the caller’s frame. Its size is the maximum over all calls in the function, and it is allocated once in the prologue rather than pushed and popped around each call.
 - **Parameters** are the mirror image. The entry block begins with `COPY %param, a0` and so on, and parameters beyond the register ones are loaded from the caller’s outgoing area, just above our frame.
 
-<CallLowering example="fib" fn="fib" target="rv64" caption="Calls in machine IR, before and after register allocation. Teal lines are ABI copies, orange lines are calls. After allocation, most copies have vanished (source and destination got the same register), and the value that must survive the recursive call sits in a callee-saved s-register." />
+<CallLowering example="fib" fn="fib" target="rv64" caption="Calls in machine IR, before and after register allocation. Teal lines are ABI copies, green lines are calls. After allocation, most copies have vanished (source and destination got the same register), and the value that must survive the recursive call sits in a callee-saved s-register." />
 
 <Callout kind="try">
 Switch the figure to x86-64 and to `@weighted` in the “many arguments” example (via the playground). Arguments 6 and up are passed on the stack, and the callee loads them from above its return address.

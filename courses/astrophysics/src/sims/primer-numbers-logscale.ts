@@ -116,7 +116,7 @@ export default defineSim({
       const pw = W - M.l - M.r;
       const y0 = axisY();
       const xs = positions(ds, W);
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
 
       // Decade ticks (fade in as s → 1) and linear ticks (fade out).
       const map = (v: number) => M.l + ((1 - s) * (v / vmax) + s * ((Math.log10(v) - lmin) / (lmax - lmin))) * pw;

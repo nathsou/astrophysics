@@ -1,92 +1,86 @@
 // The road from the untyped λ-calculus to CIC, as a clickable map.
+//
+// Two layouts of the same graph (see courseMapData.ts): a horizontal one for
+// wide containers and a vertical one for narrow ones.  A container query in
+// layout.css shows exactly one of them (the other is display:none, so it is
+// also out of the accessibility tree).
 
 import { For } from 'solid-js';
+import { edgeSegment, horizontal, mapEdges, mapNodes, vertical, type MapLayout } from './courseMapData.ts';
 
-interface MapNode {
-  id: string;
-  label: string;
-  sub: string;
-  x: number;
-  y: number;
-  ch: string;
+function go(ch: string) {
+  location.hash = `#/ch/${ch}`;
 }
 
-const nodes: MapNode[] = [
-  { id: 'l', label: 'λ', sub: 'untyped', x: 60, y: 150, ch: 'lambda' },
-  { id: 'stlc', label: 'λ→', sub: 'simple types', x: 190, y: 150, ch: 'stlc' },
-  { id: 'f', label: 'λ2', sub: 'System F', x: 330, y: 70, ch: 'system-f' },
-  { id: 'w', label: 'λω', sub: 'Fω', x: 470, y: 70, ch: 'fomega' },
-  { id: 'p', label: 'λP', sub: 'LF', x: 330, y: 230, ch: 'dependent' },
-  { id: 'c', label: 'λC', sub: 'CoC', x: 610, y: 150, ch: 'coc' },
-  { id: 'ecc', label: 'ECC', sub: '+ universes', x: 740, y: 150, ch: 'universes' },
-  { id: 'cic', label: 'CIC', sub: '+ inductives', x: 870, y: 150, ch: 'inductive' },
-  { id: 'lean', label: 'Lean 4', sub: 'the real thing', x: 1000, y: 150, ch: 'lean' },
-];
-
-const edges: [string, string, string][] = [
-  ['l', 'stlc', 'types'],
-  ['stlc', 'f', 'polymorphism'],
-  ['f', 'w', 'type operators'],
-  ['stlc', 'p', 'dependency'],
-  ['w', 'c', ''],
-  ['p', 'c', ''],
-  ['c', 'ecc', 'universes'],
-  ['ecc', 'cic', 'inductives'],
-  ['cic', 'lean', 'quotients, …'],
-];
-
-export function CourseMap() {
-  const byId = new Map(nodes.map((n) => [n.id, n]));
+function MapSvg(props: { layout: MapLayout }) {
+  const L = props.layout;
+  const arrow = `cm-arrow-${L.name}`;
   return (
-    <div class="coursemap wide">
-      <svg viewBox="0 0 1060 300" role="img" aria-label="Map of the calculi in this course">
-        <defs>
-          <marker id="cm-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--rule-strong)" />
-          </marker>
-        </defs>
-        <For each={edges}>
-          {([a, b, label]) => {
-            const A1 = byId.get(a)!;
-            const B1 = byId.get(b)!;
-            const dx = B1.x - A1.x;
-            const dy = B1.y - A1.y;
-            const d = Math.hypot(dx, dy);
-            const r = 34;
-            const x1 = A1.x + (dx / d) * r;
-            const y1 = A1.y + (dy / d) * r;
-            const x2 = B1.x - (dx / d) * (r + 4);
-            const y2 = B1.y - (dy / d) * (r + 4);
-            return (
-              <g>
-                <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="var(--rule-strong)" stroke-width="1.6" marker-end="url(#cm-arrow)" />
-                <text x={(x1 + x2) / 2} y={(y1 + y2) / 2 - 8} text-anchor="middle" class="cm-edge">
-                  {label}
-                </text>
-              </g>
-            );
-          }}
-        </For>
-        <For each={nodes}>
-          {(n) => (
+    <svg
+      class={`cm-svg cm-${L.name}`}
+      viewBox={`0 0 ${L.width} ${L.height}`}
+      role="group"
+      aria-label="Map of the calculi in this course"
+      style={{ '--cm-label': `${L.labelSize}px`, '--cm-text': `${L.textSize}px` }}
+    >
+      <defs>
+        <marker id={arrow} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" class="cm-arrowhead" />
+        </marker>
+      </defs>
+      <For each={mapEdges}>
+        {([a, b]) => {
+          const s = edgeSegment(L, a, b);
+          return <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} class="cm-line" marker-end={`url(#${arrow})`} />;
+        }}
+      </For>
+      <For each={mapEdges.filter(([, , label]) => label)}>
+        {([a, b, label]) => {
+          const p = L.edgeLabels[`${a}-${b}`];
+          return (
+            <text x={p.x} y={p.y} text-anchor={p.anchor} class="cm-edge">
+              {label}
+            </text>
+          );
+        }}
+      </For>
+      <For each={mapNodes}>
+        {(n) => {
+          const p = L.nodes[n.id];
+          return (
             <g
               class={`cm-node ${n.id === 'cic' ? 'goal' : ''}`}
               role="link"
               tabindex="0"
-              onClick={() => (location.hash = `#/ch/${n.ch}`)}
-              onKeyDown={(e) => e.key === 'Enter' && (location.hash = `#/ch/${n.ch}`)}
+              aria-label={`${n.label}, ${n.sub}: open the chapter`}
+              onClick={() => go(n.ch)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  go(n.ch);
+                }
+              }}
             >
-                <circle cx={n.x} cy={n.y} r={32} />
-                <text x={n.x} y={n.y + 1} text-anchor="middle" dominant-baseline="central" class="cm-label">
-                  {n.label}
-                </text>
-                <text x={n.x} y={n.y + 50} text-anchor="middle" class="cm-sub">
-                  {n.sub}
-                </text>
+              <circle cx={p.x} cy={p.y} r={p.r} />
+              <text x={p.x} y={p.y + 1} text-anchor="middle" dominant-baseline="central" class="cm-label">
+                {n.label}
+              </text>
+              <text x={p.sub.x} y={p.sub.y} text-anchor={p.sub.anchor} class="cm-sub">
+                {n.sub}
+              </text>
             </g>
-          )}
-        </For>
-      </svg>
+          );
+        }}
+      </For>
+    </svg>
+  );
+}
+
+export function CourseMap() {
+  return (
+    <div class="coursemap wide">
+      <MapSvg layout={horizontal} />
+      <MapSvg layout={vertical} />
     </div>
   );
 }

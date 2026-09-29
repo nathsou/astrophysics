@@ -66,10 +66,10 @@ export default defineSim({
           const a = php[i] + Omega(Rp[i]) * tMyr;
           lc.beginPath(); lc.arc(cx + Rp[i] * Math.cos(a) * sc, cy - Rp[i] * Math.sin(a) * sc, 1.8, 0, 2 * Math.PI); lc.fill();
         }
-        lc.font = '12px Inter, system-ui, sans-serif'; lc.fillStyle = pal.fg; lc.textAlign = 'left'; lc.textBaseline = 'top';
+        lc.font = '12px JetBrains Mono, ui-monospace, monospace'; lc.fillStyle = pal.fg; lc.textAlign = 'left'; lc.textBaseline = 'top';
         lc.fillText('Material arm (painted stars)', 10, 8);
         const turns = ((Omega(RMIN) - Omega(RMAX)) * tMyr) / (2 * Math.PI);
-        lc.fillStyle = pal.muted; lc.font = '11px Inter, system-ui, sans-serif'; lc.textBaseline = 'bottom';
+        lc.fillStyle = pal.muted; lc.font = '11px JetBrains Mono, ui-monospace, monospace'; lc.textBaseline = 'bottom';
         lc.fillText(`inner edge ahead by ${fmt(turns, 2)} turns`, 10, L.height - 8);
       }
       // ---------------- right: density wave
@@ -93,9 +93,9 @@ export default defineSim({
         // corotation circle
         rc.strokeStyle = pal.accent2; rc.setLineDash([4, 4]); rc.lineWidth = 1;
         rc.beginPath(); rc.arc(cx, cy, RCR * sc, 0, 2 * Math.PI); rc.stroke(); rc.setLineDash([]);
-        rc.font = '12px Inter, system-ui, sans-serif'; rc.fillStyle = pal.fg; rc.textAlign = 'left'; rc.textBaseline = 'top';
+        rc.font = '12px JetBrains Mono, ui-monospace, monospace'; rc.fillStyle = pal.fg; rc.textAlign = 'left'; rc.textBaseline = 'top';
         rc.fillText('Density wave (pattern at Ω_p)', 10, 8);
-        rc.fillStyle = pal.accent2; rc.font = '11px Inter, system-ui, sans-serif'; rc.textBaseline = 'bottom';
+        rc.fillStyle = pal.accent2; rc.font = '11px JetBrains Mono, ui-monospace, monospace'; rc.textBaseline = 'bottom';
         rc.fillText('corotation', cx + RCR * sc * 0.72 + 4, cy - RCR * sc * 0.72);
         rc.fillStyle = pal.muted;
         rc.fillText(`Ω_p = ${fmt(Op * 977.8, 3)} km/s/kpc`, 10, Rt.height - 8);

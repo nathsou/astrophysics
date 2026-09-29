@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Interactive textbooks on astrophysics, type theory, proofs as programs, compiler backends, language models, Gödel’s incompleteness theorems, mathematical proof and Euclid’s Elements. Read, experiment and build — everything runs in your browser.">
+    <meta name="description" content="Interactive textbooks on astrophysics, type theory, compiler backends, language models, Gödel’s incompleteness theorems, mathematical proof and Euclid’s Elements. Read, experiment and build — everything runs in your browser.">
     <meta name="theme-color" content="#f5f1e8" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#0e1320" media="(prefers-color-scheme: dark)">
     <title>Interactive Courses</title>
@@ -26,238 +26,111 @@
       <header class="topbar">
         <a class="wordmark" href="./"><span class="mark" aria-hidden="true">✳</span> Interactive Courses</a>
         <div class="theme" role="radiogroup" aria-label="Colour theme">
-          <button type="button" role="radio" data-choice="system" aria-label="Follow system theme" title="System">
-            <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="10" rx="1.5"/><path d="M7 16.5h6M10 13.5v3"/></svg>
-          </button>
-          <button type="button" role="radio" data-choice="light" aria-label="Light theme" title="Light">
-            <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.5"/><path d="M10 1.5v2M10 16.5v2M1.5 10h2M16.5 10h2M4 4l1.4 1.4M14.6 14.6 16 16M4 16l1.4-1.4M14.6 5.4 16 4"/></svg>
-          </button>
-          <button type="button" role="radio" data-choice="dark" aria-label="Dark theme" title="Dark">
-            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M16.5 12.2A7 7 0 0 1 7.8 3.5a7 7 0 1 0 8.7 8.7Z"/></svg>
-          </button>
+          <button type="button" role="radio" data-choice="system" title="Follow the system theme">system</button>
+          <button type="button" role="radio" data-choice="light" title="Light theme">light</button>
+          <button type="button" role="radio" data-choice="dark" title="Dark theme">dark</button>
         </div>
       </header>
 
       <main>
         <section class="hero" aria-labelledby="title">
-          <div class="hero-text">
-            <p class="eyebrow">A library of interactive textbooks</p>
-            <h1 id="title">Ideas you can <em>take&nbsp;apart.</em></h1>
-            <p class="lede">Eight deep dives — the universe, the logic of proofs, proofs as programs, the machinery of compilers, the making of a language model, the limits of formal proof, the art of proving great theorems and the book that started it all. Read the explanation, then change the inputs and watch the idea work.</p>
-            <ul class="facts" aria-label="About these courses">
-              <li><strong>8</strong> courses</li>
-              <li><strong>140+</strong> chapters</li>
-              <li>Everything runs <strong>in your browser</strong></li>
+          <p class="eyebrow">A library of interactive textbooks</p>
+          <h1 id="title">Ideas you can <em>take&nbsp;apart.</em></h1>
+          <p class="lede">Eight deep dives, each with its own visual language. Read the explanation, then change the inputs and watch the idea work.</p>
+        </section>
+
+        <section class="grid" id="courses" aria-label="The courses">
+          <a class="card cosmos" href="./astrophysics/">
+            <i class="ring r1" aria-hidden="true"></i><i class="ring r2" aria-hidden="true"></i>
+            <p class="kicker">The Almanac · Physics · 37 ch</p>
+            <h2>The Cosmos, Computed</h2>
+            <p class="desc">Kepler’s orbits to the cosmic microwave background, with live simulations.</p>
+          </a>
+
+          <a class="card cic" href="./cic/">
+            <p class="kicker">The Editor · Logic · 21 ch</p>
+            <h2>Calculus of Inductive Constructions</h2>
+            <p class="desc">-- From the λ-calculus to Lean 4, on a real kernel.</p>
+            <p class="code"><span class="kw">theorem</span> welcome : ∀ n : Nat,<br>&nbsp;&nbsp;n + 0 = n := <span class="kw">by</span> rfl</p>
+            <p class="ok">✓ no errors</p>
+          </a>
+
+          <a class="card pap" href="./proofs-are-programs/">
+            <p class="kicker">The Twin · Logic · 23 ch · in progress</p>
+            <h2>Proofs Are Programs</h2>
+            <div class="twins" aria-hidden="true">
+              <p><span class="kw">def</span> swap :<br>α × β → β × α</p>
+              <p class="eq">≡</p>
+              <p><span class="kw">theorem</span> comm :<br>p ∧ q → q ∧ p</p>
+            </div>
+            <p class="body mono">:= fun ⟨a, b⟩ =&gt; ⟨b, a⟩</p>
+            <p class="desc">Curry–Howard for programmers: write proofs as programs, then prove a compiler correct and build your own kernel.</p>
+          </a>
+
+          <a class="card compiler" href="./compiler-backends/">
+            <div class="head">
+              <div>
+                <p class="kicker">Datasheet · Systems · 23 ch</p>
+                <h2>SSA to Silicon</h2>
+              </div>
+              <i class="chip" aria-hidden="true"></i>
+            </div>
+            <p class="desc">A real backend, from SSA IR down to RISC-V, AArch64, x86-64 and Wasm machine code.</p>
+            <ul class="pins" aria-label="Sample chapters">
+              <li><span>01</span><span>SSA &amp; dominance</span><span>IR</span></li>
+              <li><span>04</span><span>Register allocation</span><span>RegAlloc</span></li>
+              <li><span>06</span><span>Linking &amp; running</span><span>Link</span></li>
             </ul>
-          </div>
-          <figure class="hero-demo" aria-hidden="true">
-            <div class="demo-card">
-              <div class="demo-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="demo-title">Interactive</span></div>
-              <p class="demo-eq">softmax(<span class="term">z</span> / <span class="term hl">T</span>)</p>
-              <div class="demo-bars">
-                <span style="--h: 88%"></span><span style="--h: 46%"></span><span style="--h: 30%"></span><span style="--h: 18%"></span><span style="--h: 11%"></span><span style="--h: 7%"></span>
+          </a>
+
+          <a class="card lm" href="./language-models/">
+            <p class="kicker"><span class="mark" aria-hidden="true">LM</span> From scratch · Machine learning · 18&nbsp;of&nbsp;30&nbsp;ch</p>
+            <div class="split">
+              <h2>Language Models from Scratch</h2>
+              <div class="predict" aria-hidden="true">
+                <p class="prompt">The cat sat on the <span class="cursor">▍</span></p>
+                <p class="row"><span>mat</span><i style="--w: 100%"></i><span>41%</span></p>
+                <p class="row"><span>floor</span><i style="--w: 41%"></i><span>17%</span></p>
+                <p class="row"><span>sofa</span><i style="--w: 27%"></i><span>11%</span></p>
               </div>
-              <div class="demo-slider"><span class="demo-label">temperature T</span><span class="track"><span class="fill"></span><span class="knob"></span></span></div>
-              <div class="demo-tip"><strong>T</strong> — temperature. Divides every score: low values sharpen the distribution, high values flatten it.</div>
             </div>
-          </figure>
-        </section>
+            <p class="desc">Build a GPT from nothing, then take it through scaling, fine-tuning and reasoning.</p>
+          </a>
 
-        <section class="courses" id="courses" aria-labelledby="courses-title">
-          <div class="section-head">
-            <h2 id="courses-title">The courses</h2>
-            <p>Each is a complete textbook: prose, equations you can hover, simulations you can drive and exercises you can run.</p>
-          </div>
+          <a class="card incompleteness" href="./incompleteness/">
+            <p class="kicker">The Textbook · Logic · 9 ch</p>
+            <h2>Incompleteness<br>and Computability</h2>
+            <p class="formula">G ↔ ¬Prov(⌜G⌝)</p>
+            <i class="rule" aria-hidden="true"></i>
+            <p class="desc">Richard Zach’s Open Logic text, made executable: build the objects, then find them in the proofs.</p>
+          </a>
 
-          <div class="grid">
-            <a class="card cosmos" href="./astrophysics/">
-              <div class="art art-cosmos" aria-hidden="true">
-                <span class="glow"></span>
-                <span class="orbit o1"></span><span class="orbit o2"></span><span class="orbit o3"></span>
-                <span class="sun"></span><span class="planet p1"></span><span class="planet p2"></span>
-                <span class="star s1"></span><span class="star s2"></span><span class="star s3"></span><span class="star s4"></span><span class="star s5"></span>
-              </div>
-              <div class="body">
-                <p class="kicker"><span>Physics</span><span>37 chapters</span></p>
-                <h3>The Cosmos, Computed</h3>
-                <p class="desc">From Kepler’s orbits to the cosmic microwave background: the physics of planets, stars, black holes and the expanding universe, with live simulations of each.</p>
-                <ul class="tags"><li>Orbits &amp; chaos</li><li>Stellar structure</li><li>Cosmology</li></ul>
-                <p class="foot"><span class="status done">Complete</span><span class="go">Start reading <span aria-hidden="true">→</span></span></p>
-              </div>
-            </a>
+          <a class="card proofs" href="./proofs/">
+            <i class="blk red" aria-hidden="true"></i><i class="blk yellow" aria-hidden="true"></i><i class="blk blue" aria-hidden="true"></i>
+            <h2><span class="sr-only">Proofcraft</span><span aria-hidden="true">PROOF<br>CRAFT</span></h2>
+            <p class="desc">Rebuild great theorems, with a step checker and an optional Socratic tutor.</p>
+            <p class="kicker">Byrne · Mathematics · 23 ch</p>
+          </a>
 
-            <a class="card cic" href="./cic/">
-              <div class="art art-cic" aria-hidden="true">
-                <span class="lambda">λ</span>
-                <span class="rule"><span class="prem">Γ ⊢ A : Type</span><span class="prem">Γ, x : A ⊢ B : Type</span><span class="bar"></span><span class="concl">Γ ⊢ Π (x : A), B : Type</span></span>
-                <span class="judg">⊢ proof : theorem</span>
-              </div>
-              <div class="body">
-                <p class="kicker"><span>Logic</span><span>21 chapters</span></p>
-                <h3>The Calculus of Inductive Constructions</h3>
-                <p class="desc">From the untyped λ-calculus to the type theory behind Lean 4, one idea at a time — with a real type-checking kernel running in your browser.</p>
-                <ul class="tags"><li>λ-calculus</li><li>Dependent types</li><li>Inductive families</li></ul>
-                <p class="foot"><span class="status done">Complete</span><span class="go">Start reading <span aria-hidden="true">→</span></span></p>
-              </div>
-            </a>
-
-            <a class="card pap" href="./proofs-are-programs/">
-              <div class="art art-pap" aria-hidden="true">
-                <span class="pap-col pap-tac"><span class="pap-kw">theorem</span> swap : p ∧ q → q ∧ p := <span class="pap-kw">by</span><br>&nbsp;&nbsp;intro ⟨hp, hq⟩<br>&nbsp;&nbsp;exact ⟨hq, hp⟩</span>
-                <span class="pap-arrow">⇅</span>
-                <span class="pap-col pap-term"><span class="pap-kw">fun</span> ⟨hp, hq⟩ => ⟨hq, hp⟩</span>
-                <span class="pap-turnstile">⊢</span>
-              </div>
-              <div class="body">
-                <p class="kicker"><span>Logic · Programming</span><span>23 chapters</span></p>
-                <h3>Proofs Are Programs</h3>
-                <p class="desc">The Curry–Howard correspondence for programmers: write proofs as programs, prove an interpreter, a compiler and a type checker correct, and build a small kernel of your own — in a Lean-style language running in your browser.</p>
-                <ul class="tags"><li>Curry–Howard</li><li>Tactics</li><li>Verified programs</li></ul>
-                <p class="foot"><span class="status">In progress</span><span class="go">Start reading <span aria-hidden="true">→</span></span></p>
-              </div>
-            </a>
-
-            <a class="card compiler" href="./compiler-backends/">
-              <div class="art art-compiler" aria-hidden="true">
-                <svg class="cfg" viewBox="0 0 320 200">
-                  <path class="edge" d="M112 58 C 112 72, 150 72, 150 84"/>
-                  <path class="edge" d="M150 122 C 150 134, 190 134, 190 146"/>
-                  <path class="edge back" d="M214 104 C 262 104, 262 66, 214 66 L 196 66 C 186 66, 186 84, 176 84"/>
-                  <g class="blk"><rect x="44" y="18" width="136" height="40" rx="6"/><text x="56" y="34">entry:</text><text x="56" y="50" class="op">v1 = load x</text></g>
-                  <g class="blk"><rect x="84" y="84" width="130" height="38" rx="6"/><text x="96" y="100">loop:</text><text x="96" y="115" class="op">v2 = φ(v1, v3)</text></g>
-                  <g class="blk"><rect x="126" y="146" width="116" height="38" rx="6"/><text x="138" y="162">exit:</text><text x="138" y="177" class="op">ret v2</text></g>
-                </svg>
-                <span class="asm">addi a0, a0, 1<br>bne  a0, a1, .loop<br>ret</span>
-              </div>
-              <div class="body">
-                <p class="kicker"><span>Systems</span><span>23 chapters · 7 primers</span></p>
-                <h3>SSA to Silicon</h3>
-                <p class="desc">Follow a real compiler backend from an SSA intermediate representation through instruction selection and register allocation to object files you can link and run.</p>
-                <ul class="tags"><li>SSA &amp; dominance</li><li>Register allocation</li><li>RISC-V, AArch64, x86-64</li></ul>
-                <p class="foot"><span class="status done">Complete</span><span class="go">Start reading <span aria-hidden="true">→</span></span></p>
-              </div>
-            </a>
-
-            <a class="card lm" href="./language-models/">
-              <div class="art art-lm" aria-hidden="true">
-                <svg viewBox="14 22 296 172" class="lm-svg">
-                  <g class="arcs">
-                    <path d="M252 98 C 240 34, 60 34, 48 98" style="opacity:.3"/>
-                    <path d="M252 98 C 244 48, 108 48, 100 98" style="opacity:.95"/>
-                    <path d="M252 98 C 246 62, 158 62, 152 98" style="opacity:.4"/>
-                    <path d="M252 98 C 248 72, 206 72, 202 98" style="opacity:.65"/>
-                  </g>
-                  <g class="tokens">
-                    <rect x="24" y="100" width="48" height="26" rx="6"/><text x="48" y="117">To</text>
-                    <rect x="76" y="100" width="48" height="26" rx="6"/><text x="100" y="117">␣be</text>
-                    <rect x="128" y="100" width="48" height="26" rx="6"/><text x="152" y="117">,</text>
-                    <rect x="180" y="100" width="44" height="26" rx="6"/><text x="202" y="117">␣or</text>
-                    <rect x="228" y="100" width="48" height="26" rx="6" class="q"/><text x="252" y="117" class="q">␣not</text>
-                  </g>
-                  <g class="probs">
-                    <text x="24" y="154" class="lbl">next</text>
-                    <rect x="64" y="145" width="150" height="10" rx="2"/><text x="222" y="154">␣to · 0.71</text>
-                    <rect x="64" y="161" width="30" height="10" rx="2" class="dim"/><text x="102" y="170">␣a · 0.09</text>
-                    <rect x="64" y="177" width="16" height="10" rx="2" class="dim"/><text x="88" y="186">␣so · 0.05</text>
-                  </g>
-                </svg>
-              </div>
-              <div class="body">
-                <p class="kicker"><span>Machine learning</span><span>13 of 29 chapters</span></p>
-                <h3>Language Models from Scratch</h3>
-                <p class="desc">Build a GPT from nothing: text statistics, tokenisers, tensors and autograd, GPU kernels in WebGPU, attention and the Transformer — trained on your own GPU, in the page.</p>
-                <ul class="tags"><li>Autograd</li><li>WebGPU kernels</li><li>Transformers</li></ul>
-                <p class="foot"><span class="status wip">In progress</span><span class="go">Start reading <span aria-hidden="true">→</span></span></p>
-              </div>
-            </a>
-
-            <a class="card incompleteness" href="./incompleteness/">
-              <div class="art art-incompleteness" aria-hidden="true">
-                <span class="corners">⌜ ⌝</span>
-                <span class="fixed"><i>G</i> ↔ ¬Prov(⌜<i>G</i>⌝)</span>
-                <span class="gn">#<i>x</i> = 0# = 2<sup>13123</sup> · 3<sup>39367</sup> · 5<sup>13</sup> · 7<sup>354295</sup> · 11<sup>25</sup> · 13<sup>118099</sup></span>
-                <span class="derive"><span>∃<i>y</i> (D<sub>diag</sub>(⌜<i>E</i>⌝, <i>y</i>) ∧ <i>B</i>(<i>y</i>))</span><span class="bar"></span><span><i>A</i> ↔ <i>B</i>(⌜<i>A</i>⌝)</span></span>
-              </div>
-              <div class="body">
-                <p class="kicker"><span>Logic</span><span>9 chapters · text from the Open Logic Project</span></p>
-                <h3>Incompleteness and Computability</h3>
-                <p class="desc">An executable edition of Richard Zach’s textbook: recursive functions, Gödel numbering, representability, the incompleteness theorems, models of arithmetic and the lambda calculus, with objects you build, inspect and follow into the proofs.</p>
-                <ul class="tags"><li>Gödel numbering</li><li>Incompleteness</li><li>λ-calculus</li></ul>
-                <p class="foot"><span class="status done">Complete</span><span class="go">Start reading <span aria-hidden="true">→</span></span></p>
-              </div>
-            </a>
-
-            <a class="card proofs" href="./proofs/">
-              <div class="art art-proofs" aria-hidden="true">
-                <svg viewBox="0 0 320 200" class="proofs-svg">
-                  <g transform="translate(30 30) rotate(0)">
-                    <rect x="0" y="0" width="140" height="140" class="frame"/>
-                    <polygon points="0,0 60,0 0,80" class="t1"/>
-                    <polygon points="140,0 140,60 60,0" class="t2"/>
-                    <polygon points="140,140 80,140 140,60" class="t3"/>
-                    <polygon points="0,140 0,80 80,140" class="t1"/>
-                    <text x="70" y="76" class="c2">c²</text>
-                  </g>
-                  <text x="200" y="62" class="line">√2 = p/q ?</text>
-                  <text x="200" y="88" class="line">p² = 2q²</text>
-                  <text x="200" y="114" class="line dim">⇒ p, q even</text>
-                  <text x="200" y="140" class="line dim">contradiction.</text>
-                  <text x="276" y="178" class="qed">∎</text>
-                </svg>
-              </div>
-              <div class="body">
-                <p class="kicker"><span>Mathematics</span><span>23 chapters</span></p>
-                <h3>Proofcraft</h3>
-                <p class="desc">Learn to find and write proofs by rebuilding great theorems — Euclid’s primes, √2, Fermat, Gauss’s golden theorem, Cantor’s diagonal, Gödel and the ε–δ foundations of calculus — with a step checker and an optional Socratic tutor.</p>
-                <ul class="tags"><li>Logic</li><li>Number theory</li><li>Analysis</li></ul>
-                <p class="foot"><span class="status done">Complete</span><span class="go">Start reading <span aria-hidden="true">→</span></span></p>
-              </div>
-            </a>
-
-            <a class="card elements" href="./elements/">
-              <div class="art art-elements" aria-hidden="true">
-                <svg viewBox="0 0 320 200" class="elements-svg">
-                  <circle cx="130" cy="130" r="70" class="k"/>
-                  <circle cx="200" cy="130" r="70" class="k"/>
-                  <polygon points="130,130 200,130 165,69.4" class="tri"/>
-                  <line x1="130" y1="130" x2="200" y2="130" class="ab"/>
-                  <line x1="130" y1="130" x2="165" y2="69.4" class="ac"/>
-                  <line x1="200" y1="130" x2="165" y2="69.4" class="bc"/>
-                  <text x="118" y="150" class="lt">A</text>
-                  <text x="204" y="150" class="lt">B</text>
-                  <text x="160" y="58" class="lt">C</text>
-                </svg>
-              </div>
-              <div class="body">
-                <p class="kicker"><span>Mathematics</span><span>13 books · 465 propositions</span></p>
-                <h3>Euclid’s Elements</h3>
-                <p class="desc">All thirteen books in Heath’s translation, word for word, with a modern version of every proposition and live figures you can drag, step through, or read in Byrne’s colours. Also a construction workshop and the dependency graph of the whole book.</p>
-                <ul class="tags"><li>Geometry</li><li>Number theory</li><li>Proof</li></ul>
-                <p class="foot"><span class="status done">Complete</span><span class="go">Start reading <span aria-hidden="true">→</span></span></p>
-              </div>
-            </a>
-          </div>
-        </section>
-
-        <section class="how" aria-labelledby="how-title">
-          <h2 id="how-title">How these courses work</h2>
-          <div class="how-grid">
-            <div class="how-item">
-              <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 7h9a3 3 0 0 1 3 3v15a2.5 2.5 0 0 0-2.5-2.5H5z"/><path d="M27 7h-7a3 3 0 0 0-3 3v15a2.5 2.5 0 0 1 2.5-2.5H27z"/></svg>
-              <h3>Read</h3>
-              <p>Careful explanations with the history behind each idea. Hover a symbol in an equation to see what it means and why it is there.</p>
+          <a class="card elements" href="./elements/">
+            <svg class="fig" viewBox="0 0 220 170" aria-hidden="true">
+              <circle cx="80" cy="105" r="60" class="k"/>
+              <circle cx="140" cy="105" r="60" class="k"/>
+              <polygon points="80,105 140,105 110,53" class="tri"/>
+              <line x1="80" y1="105" x2="140" y2="105" class="ab"/>
+              <line x1="80" y1="105" x2="110" y2="53" class="ac"/>
+              <line x1="140" y1="105" x2="110" y2="53" class="bc"/>
+              <text x="66" y="124" class="lt">A</text>
+              <text x="144" y="124" class="lt">B</text>
+              <text x="105" y="43" class="lt">C</text>
+            </svg>
+            <div class="text">
+              <p class="kicker">Heath’s translation · Mathematics · 13 books</p>
+              <h2>Euclid’s Elements</h2>
+              <p class="prop"><span>Book I, Proposition 1.</span> On a given finite straight line to construct an equilateral triangle.</p>
+              <p class="desc">All 465 propositions word for word, each with a modern version and a live figure you can drag, step through, or read in Byrne’s colours.</p>
             </div>
-            <div class="how-item">
-              <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 22c4 0 5-12 9-12s5 8 8 8 4-6 7-6"/><path d="M4 27h24"/><circle cx="13" cy="10" r="2.2"/></svg>
-              <h3>Experiment</h3>
-              <p>Every concept comes with something to drive: sliders, simulations, visualisations and models that train while you watch.</p>
-            </div>
-            <div class="how-item">
-              <svg viewBox="0 0 32 32" aria-hidden="true"><path d="m11 9-7 7 7 7M21 9l7 7-7 7M18 6l-4 20"/></svg>
-              <h3>Build</h3>
-              <p>Exercises run in the page, and each course builds something real: a type checker, a compiler backend, a GPT.</p>
-            </div>
-          </div>
+          </a>
         </section>
       </main>
 

@@ -74,13 +74,13 @@ export default defineSim({
       ctx.beginPath(); ctx.arc(cx, cy, 0.38 * s, aIn, aOut, (b || 1) > 0); ctx.stroke();
       ctx.globalAlpha = 1;
       const aMid = Math.atan2(Math.sin(aIn) + Math.sin(aOut), Math.cos(aIn) + Math.cos(aOut));
-      ctx.fillStyle = pal.series[0]; ctx.font = '12px Inter, system-ui, sans-serif'; ctx.textAlign = 'center';
+      ctx.fillStyle = pal.series[0]; ctx.font = '12px JetBrains Mono, ui-monospace, monospace'; ctx.textAlign = 'center';
       ctx.fillText(`δ = ${Math.round((delta * 180) / Math.PI)}°`, cx + Math.cos(aMid) * 0.52 * s, cy + Math.sin(aMid) * 0.52 * s + 4);
 
       // planet marker
       ctx.fillStyle = 'rgba(140,190,255,0.95)';
       ctx.beginPath(); ctx.arc(cx, cy, 8, 0, Math.PI * 2); ctx.fill();
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.fillStyle = pal.muted; ctx.textAlign = 'right';
       ctx.fillText('planet', cx - 12, cy + 18);
 
@@ -103,7 +103,7 @@ export default defineSim({
       const [hx, hy] = toPx(vIn);
       ctx.strokeStyle = pal.series[0]; ctx.fillStyle = pal.bg; ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.arc(hx, hy, 7, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = pal.faint; ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.fillStyle = pal.faint; ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.fillText('drag the ring to change the approach', 12, H - 12);
 
       const dE = 0.5 * (mag(vOutHelio) ** 2 - mag(vInHelio) ** 2);

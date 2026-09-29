@@ -5,7 +5,7 @@
 
 import { defineSim, Loop, createStage } from '../lib/runtime/sim';
 import { Panel } from '../lib/ui/controls';
-import { palette, onThemeChange } from '../lib/ui/theme';
+import { palette, onThemeChange, haloText } from '../lib/ui/theme';
 
 type Branch = 'common' | 'pp1' | 'pp2' | 'pp3' | 'cno';
 interface Step {
@@ -122,19 +122,20 @@ export default defineSim({
       }
 
       // branch and cycle labels
-      ctx.font = `600 ${fs}px Inter, system-ui, sans-serif`;
+      ctx.font = `600 ${fs}px JetBrains Mono, ui-monospace, monospace`;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
       const label = (text: string, x: number, y: number, color: string, align: CanvasTextAlign = 'left') => {
         const p = nodePx({ x, y });
-        ctx.fillStyle = color; ctx.textAlign = align; ctx.fillText(text, p.x, p.y);
+        ctx.textAlign = align; haloText(ctx, text, p.x, p.y, pal.bg);
+        ctx.fillStyle = color; ctx.fillText(text, p.x, p.y);
       };
       label('pp-chain', 70, 250, pal.series[0], 'center');
       label('pp-I ≈ 83%', 380, 95, pal.series[0], 'center');
       label('pp-II ≈ 17%', 780, 420, pal.series[1]);
       label('pp-III ≈ 0.02%', 380, 540, pal.series[3], 'center');
       label('CNO cycle', CX, CY, pal.series[2], 'center');
-      ctx.font = `${Math.max(8, fs - 2)}px Inter, system-ui, sans-serif`;
+      ctx.font = `${Math.max(8, fs - 2)}px JetBrains Mono, ui-monospace, monospace`;
       label('(¹²C is a catalyst)', CX, CY + 20, pal.muted, 'center');
 
       // nodes
@@ -151,12 +152,13 @@ export default defineSim({
         ctx.stroke();
         if (s.neutrino) { // a small ν tag on neutrino-emitting steps
           ctx.fillStyle = pal.accent2;
-          ctx.font = `600 ${Math.max(8, fs - 3)}px Inter, system-ui, sans-serif`;
+          ctx.font = `600 ${Math.max(8, fs - 3)}px JetBrains Mono, ui-monospace, monospace`;
           ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+          haloText(ctx, 'ν', x + nodeR + 3, y, pal.bg);
           ctx.fillText('ν', x + nodeR + 3, y);
         }
         ctx.fillStyle = isSel ? pal.fg : pal.muted;
-        ctx.font = `${fs}px Inter, system-ui, sans-serif`;
+        ctx.font = `${fs}px JetBrains Mono, ui-monospace, monospace`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
         ctx.fillText(s.from.join(' + '), x, y - nodeR - 4);

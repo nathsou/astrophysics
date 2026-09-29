@@ -1,6 +1,6 @@
 // Chapters 17 & 18 widgets: peephole diff, instruction encoding, machine code, relaxation.
 
-import { useMemo, useState, type ReactNode } from 'react';
+import { useMemo, useState, type CSSProperties, type ReactNode } from 'react';
 import { printMFunc } from '../compiler/codegen/printmir';
 import { encodeRV, expandRV, parseRVAsm, disasmRV, assembleRV, RV_ENC } from '../compiler/emit/rv64asm';
 import { rvItems } from '../compiler/emit/emit';
@@ -44,25 +44,46 @@ export function PeepholeExplorer({ example = 'gcd', fn, target: t0 = 'rv64', cap
 
 // ------------------------------------------------------------------ bit fields
 
-export function BitFields({ fields, width = 32, bytes }: { fields: EncField[]; width?: number; bytes?: boolean }) {
+/** what a field holds, for colour-coding: the same four hues on every target */
+export type FieldKind = 'op' | 'reg' | 'imm' | 'mod';
+const KIND_LABEL: Record<FieldKind, string> = { op: 'opcode / function', reg: 'register', imm: 'immediate / offset', mod: 'modifier' };
+export function fieldKind(name: string): FieldKind {
+  const n = name.toLowerCase();
+  if (/^(imm|shamt|disp|rel|hw$|sh$)/.test(n)) return 'imm';
+  if (/^(rd|rs[12]|rn|rm|rt2?|modrm|sib)$/.test(n)) return 'reg';
+  if (/^(rex|cond|option|s|n)$/.test(n)) return 'mod';
+  return 'op';
+}
+/** a short label for a field too narrow for its name: "imm[12]" → "i12" */
+const shortName = (name: string) => name.replace(/^imm\[(\d+)(?::(\d+))?\]$/, (_, a: string, b?: string) => (b ? `i${a}:${b}` : `i${a}`)).replace(/^funct(\d+)$/, 'f$1').replace(/^opcode$/, 'opc');
+
+export function BitFields({ fields, bytes }: { fields: EncField[]; bytes?: boolean }) {
   const sorted = [...fields].sort((a, b) => b.hi - a.hi);
+  const kinds = [...new Set(sorted.map((f) => fieldKind(f.name)))];
   return (
-    <div className="bits">
-      {sorted.map((f, i) => {
-        const n = f.hi - f.lo + 1;
-        const bitsStr = bytes ? [] : f.value.toString(2).padStart(n, '0').slice(-n).split('');
-        return (
-          <div key={i} className="fld" style={{ flex: n }} title={`${f.name} [${f.hi}:${f.lo}]${f.meaning ? ' = ' + f.meaning : ''}`}>
-            <div className="nm">{f.name}</div>
-            {bytes
-              ? <div className="bv" style={{ fontSize: 11.5 }}>{Array.from({ length: n / 8 }, (_, k) => ((f.value >>> (8 * k)) & 0xff).toString(16).padStart(2, '0')).join(' ')}</div>
-              : <div className="bv">{bitsStr.map((b, k) => <span key={k} style={{ color: b === '1' ? 'var(--ink)' : 'var(--muted)' }}>{b}</span>)}</div>}
-            <div className="mn">{f.meaning ?? (bytes ? '' : `0x${f.value.toString(16)}`)}</div>
-            {!bytes && <div className="rg">{f.hi === f.lo ? f.hi : `${f.hi}:${f.lo}`}</div>}
-          </div>
-        );
-      })}
-      {void width}
+    <div className="bits-wrap">
+      <div className="bits">
+        {sorted.map((f, i) => {
+          const n = f.hi - f.lo + 1;
+          const bitsStr = bytes ? [] : f.value.toString(2).padStart(n, '0').slice(-n).split('');
+          const k = fieldKind(f.name);
+          const full = `${f.name} [${f.hi}:${f.lo}]${f.meaning ? ' = ' + f.meaning : ''} (${KIND_LABEL[k]})`;
+          // a 1- or 2-bit field is too narrow for "imm[12]": it is widened to fit; in a
+          // narrow figure (container query) fields show short labels ("i12", "f3") instead
+          const narrow = !bytes && n <= 2 && f.name.length > 3;
+          return (
+            <div key={i} className={`fld fk-${k}${narrow ? ' narrow' : ''}`} style={{ flex: `${n} 1 0`, ...(bytes ? {} : { '--n': n }) } as CSSProperties} title={full}>
+              <div className="nm">{!bytes && shortName(f.name) !== f.name ? <><span className="long">{f.name}</span><abbr className="short" title={f.name}>{shortName(f.name)}</abbr></> : f.name}</div>
+              {bytes
+                ? <div className="bv" style={{ fontSize: 11.5 }}>{Array.from({ length: n / 8 }, (_, k) => ((f.value >>> (8 * k)) & 0xff).toString(16).padStart(2, '0')).join(' ')}</div>
+                : <div className="bv">{bitsStr.map((b, k) => <span key={k} className={b === '1' ? 'b1' : 'b0'}>{b}</span>)}</div>}
+              <div className="mn">{f.meaning ?? (bytes ? '' : `0x${f.value.toString(16)}`)}</div>
+              {!bytes && <div className="rg">{f.hi === f.lo ? f.hi : `${f.hi}:${f.lo}`}</div>}
+            </div>
+          );
+        })}
+      </div>
+      <div className="bits-key" aria-hidden="true">{kinds.map((k) => <span key={k} className={`fk-${k}`}><i />{KIND_LABEL[k]}</span>)}</div>
     </div>
   );
 }
@@ -142,7 +163,7 @@ export function MachineCodeCompare({ example = 'gcd', fn, caption }: { example?:
           return (
             <div className="pane" key={t}>
               <div className="pane-head">{label}<span className="spacer" /><span className="pill">{instrs.length} instrs</span><span className="pill accent">{bytes} B</span></div>
-              <CodeView lines={lines} bytes target={t} maxHeight={420} onLineClick={(i) => { const k = entries.slice(0, i + 1).filter((e) => !e.label).length - 1; if (!entries[i].label) setSel({ t, i: k }); }}
+              <CodeView lines={lines} bytes target={t} maxHeight={420} className="mc3" style={{ flex: 1 }} onLineClick={(i) => { const k = entries.slice(0, i + 1).filter((e) => !e.label).length - 1; if (!entries[i].label) setSel({ t, i: k }); }}
                 mark={(_, i) => (sel?.t === t && !entries[i].label && entries.slice(0, i + 1).filter((e) => !e.label).length - 1 === sel.i ? 'current' : undefined)} />
             </div>
           );

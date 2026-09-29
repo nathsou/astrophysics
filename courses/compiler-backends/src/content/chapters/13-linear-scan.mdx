@@ -23,7 +23,7 @@ for (const cur of intervals.sortedByStart()) {
 
 Spilling the interval that **ends last** is Belady’s classic cache replacement idea (1966): evict whatever is needed furthest in the future. Everything is linear in the number of intervals, apart from keeping `active` sorted, and there is no graph and no iteration.
 
-<LinearScanStepper example="pressure" fn="mix" maxRegs={6} caption="Linear scan on the high-pressure function with K = 6. The orange line is the sweep position. Grey rows at the top are fixed intervals of physical registers (argument registers, call clobbers), where a register is unavailable. Coloured bars are assigned; dashed red bars are spilled. Rounds 2+ reallocate after spill code has been inserted." />
+<LinearScanStepper example="pressure" fn="mix" maxRegs={6} caption="Linear scan on the high-pressure function with K = 6. The green line is the sweep position. Grey rows at the top are fixed intervals of physical registers (argument registers, call clobbers), where a register is unavailable. Coloured bars are assigned; dashed red bars are spilled. Rounds 2+ reallocate after spill code has been inserted." />
 
 ## The price of speed
 

@@ -121,7 +121,7 @@ export default defineSim({
         n ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y);
       });
       ctx.strokeStyle = pal.accent; ctx.lineWidth = 1.5; ctx.stroke();
-      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.font = '11px JetBrains Mono, ui-monospace, monospace';
       ctx.fillStyle = pal.muted; ctx.textAlign = 'center';
       ctx.fillText('screen', fw + stripW / 2, 14);
       // scale bar: one wavelength

@@ -71,15 +71,16 @@
 
 <style>
   .exercise {
-    margin: 2rem 0;
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--lab);
+    margin: 2.25rem 0;
+    border: 2px solid var(--fg);
+    border-left: 8px solid var(--fx-red);
     border-radius: var(--radius-sm);
     background: var(--surface);
-    padding: 0.8rem 1.1rem 0.9rem;
+    padding: 0.85rem 1.15rem 1rem;
   }
+  /* Pending work is red; once accepted it turns blue. */
   .exercise.solved {
-    border-left-color: var(--ok);
+    border-left-color: var(--fx-blue);
   }
   header {
     display: flex;
@@ -92,15 +93,19 @@
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
+    font-family: var(--font-mono);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 650;
-    font-size: 0.7rem;
-    color: var(--lab);
+    letter-spacing: 0.13em;
+    font-weight: 700;
+    font-size: 0.68rem;
+    color: var(--accent);
+  }
+  .exercise.solved .kind {
+    color: var(--ok);
   }
   .title {
-    font-weight: 600;
-    font-size: 0.9rem;
+    font-weight: 700;
+    font-size: 0.95rem;
   }
   .spacer {
     flex: 1;
@@ -111,10 +116,12 @@
     gap: 0.25rem;
     color: var(--ok);
     background: var(--ok-soft);
-    border-radius: 99px;
-    padding: 0.1rem 0.55rem;
-    font-weight: 600;
-    font-size: 0.75rem;
+    border: 2px solid var(--ok);
+    border-radius: var(--radius-sm);
+    padding: 0.05rem 0.5rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.72rem;
   }
   .prompt :global(p) {
     margin: 0 0 0.75rem;
@@ -132,15 +139,17 @@
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    border: 1px solid var(--border);
-    background: var(--surface-2);
-    border-radius: 6px;
-    padding: 0.25rem 0.65rem;
+    border: 2px solid var(--fg);
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    padding: 0.2rem 0.7rem;
     cursor: pointer;
-    color: var(--ink-2);
+    color: var(--ink);
+    font-weight: 700;
   }
   .help button:hover {
-    color: var(--ink);
+    background: var(--fx-yellow);
+    color: var(--fx-ink);
   }
   .n {
     color: var(--ink-3);
@@ -159,6 +168,7 @@
     margin-top: 0.75rem;
     padding: 0.7rem 0.9rem 0.1rem;
     border-radius: var(--radius-sm);
+    border-left: 4px solid var(--fx-blue);
     background: var(--surface-2);
     font-family: var(--font-body);
     font-size: 1rem;

@@ -225,7 +225,7 @@ export default defineSim({
       gasCtx.fillStyle = 'rgba(0,0,0,0.55)';
       gasCtx.fillRect(0, H - 20, W, 20);
       gasCtx.fillStyle = '#e8e8ee';
-      gasCtx.font = '11px Inter, system-ui, sans-serif';
+      gasCtx.font = '11px JetBrains Mono, ui-monospace, monospace';
       gasCtx.fillText(`t = ${fmt(simMyr, 3)} Myr   cold ${fmt(frac.cold * 100, 2)}%  warm ${fmt(frac.warm * 100, 2)}%  hot ${fmt(frac.hot * 100, 2)}%   box ${L_PC} pc`, 8, H - 6);
     }
 

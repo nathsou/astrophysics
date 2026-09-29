@@ -7,7 +7,7 @@
 
 import { createEffect, onCleanup, onMount } from 'solid-js';
 import type { Path, Redex, U } from '@kernel/untyped/lambda.ts';
-import { isDark } from '../../app/theme.ts';
+import { isDark, palette } from '../../app/theme.ts';
 
 interface Seg {
   x1: number;
@@ -77,6 +77,7 @@ export function TrompView(props: { term: U; next?: Redex; height?: number }) {
     const ox = (W - (L.w - 1) * unit) / 2;
     const oy = unit * 0.5;
     const dark = isDark();
+    void palette(); // redraw when the palette changes
     const css = getComputedStyle(document.documentElement);
     const ink = css.getPropertyValue('--ink').trim() || (dark ? '#eee' : '#222');
     const hotC = css.getPropertyValue('--hl-redex-border').trim() || '#e0a800';
