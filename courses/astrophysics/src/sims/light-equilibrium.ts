@@ -50,7 +50,7 @@ export default defineSim({
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       // a night sky in both themes: the star is drawn in its physical colour
       ctx.fillStyle = '#05060c'; ctx.fillRect(0, 0, W, H);
-      const sky = { faint: 'rgba(200,210,235,0.4)', rule: 'rgba(200,210,235,0.5)', muted: 'rgba(220,226,240,0.75)', fg: '#eef0f6' };
+      const sky = { faint: 'rgba(200,210,235,0.5)', rule: 'rgba(200,210,235,0.5)', muted: 'rgba(220,226,240,0.75)', fg: '#eef0f6' };
       const cy = H / 2;
       const starX = W * 0.12, starR = 20 + 6 * Rstar;
       const [r, g, b] = blackbodyRGB(Tstar);
@@ -80,6 +80,7 @@ export default defineSim({
         let row = rowEnd.findIndex((e) => x - half > e);
         if (row < 0) row = 2;
         rowEnd[row] = x + half;
+        ctx.fillStyle = sky.muted;
         ctx.fillText(pl.name, x, cy - 36 - row * 12);
       }
       const orbitX = X(aAU);
