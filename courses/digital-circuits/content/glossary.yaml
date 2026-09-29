@@ -586,3 +586,95 @@ fowler-nordheim:
   term: tunnelling (Fowler–Nordheim)
   definition: Electrons crossing a very thin insulator that they lack the energy to climb over, in a strong electric field. It is how floating-gate cells are written and erased electrically.
   chapter: programmable-logic
+multiplexer:
+  term: multiplexer (mux)
+  definition: 'A circuit that copies one of several data inputs to its output, the one whose number is on the select inputs. A 2:1 multiplexer is Y = ¬S·D0 + S·D1. In software it is `s ? b : a` or `table[i]`.'
+  chapter: building-blocks
+lut:
+  term: lookup table (LUT)
+  definition: A multiplexer whose data inputs are stored constants. The select inputs are the inputs of a function and the stored bits are its truth table, so *k* inputs and 2^*k* bits make any of 2^(2^*k*) functions. An FPGA is built from them.
+  chapter: building-blocks
+decoder:
+  term: decoder
+  definition: A circuit with *n* address inputs and 2^*n* outputs, exactly one of which (the one whose number is on the inputs) is 1. Each output is one minterm. It is used for address decoding and, with OR gates, for any function.
+  chapter: building-blocks
+one-hot:
+  term: one-hot
+  definition: A pattern of bits with exactly one 1, such as the output of a decoder. The number of the 1 is the value.
+  chapter: building-blocks
+encoder:
+  term: encoder
+  definition: 'The inverse of a decoder: 2^*n* inputs, one of them expected to be 1, and *n* outputs that give its number. With two inputs at 1 it outputs the OR of their numbers, which is usually wrong.'
+  chapter: building-blocks
+priority-encoder:
+  term: priority encoder
+  definition: An encoder that reports the highest-numbered input that is 1 and ignores the others, with a valid output that says whether any input is 1. It is the circuit behind interrupt controllers, and an `if`–`else` chain in hardware.
+  chapter: building-blocks
+comparator:
+  term: comparator
+  definition: A circuit that compares two binary numbers. Equality is a row of XNORs and an AND; magnitude starts at the most significant bit, where the first difference decides.
+  chapter: building-blocks
+pal:
+  term: PAL (programmable array logic)
+  definition: A programmable logic device with a programmable AND plane feeding OR gates that are wired for good, each output owning a fixed group of product terms. Smaller and faster than a PLA, at the price of sharing terms.
+  chapter: pals-and-gals
+gal:
+  term: GAL (generic array logic)
+  definition: A PAL made with erasable EEPROM cells, and with output macrocells that can be configured, so that one part can replace several PAL types and be reprogrammed.
+  chapter: pals-and-gals
+macrocell:
+  term: output macrocell
+  definition: The logic around one output of a PAL or GAL. It can send the sum of products straight to the pin or through a flip-flop, invert it, drive the pin through a tri-state buffer and feed the result back into the array.
+  chapter: pals-and-gals
+fitter:
+  term: fitter
+  definition: The tool that turns equations into a fuse map for a programmable device. It minimises each output, chooses its polarity and assigns outputs to macrocells with enough product terms.
+  chapter: pals-and-gals
+jedec-file:
+  term: JEDEC file
+  definition: The standard text format for a fuse map (JESD3). It lists the fuse states in fields marked with a star, and ends with a fuse checksum and a transmission checksum that a programmer verifies before it burns anything.
+  chapter: pals-and-gals
+sign-magnitude:
+  term: sign–magnitude
+  definition: 'A way to write negative numbers: one bit is the sign and the rest are the size. It has two zeros (+0 and −0) and needs extra logic to add.'
+  chapter: arithmetic
+ones-complement:
+  term: ones’ complement
+  definition: A way to write negative numbers by inverting every bit of the positive number. It has two zeros (all zeros and all ones) and needs an end-around carry when adding.
+  chapter: arithmetic
+overflow:
+  term: overflow (V flag)
+  definition: 'The flag that says a two’s complement result does not fit: adding two numbers of the same sign gave a result of the other sign. In hardware it is the carry into the top bit XOR the carry out of it.'
+  chapter: arithmetic
+carry-flag:
+  term: carry flag (C)
+  definition: The flag that holds the carry out of the top bit of an addition. For unsigned numbers it means the sum did not fit; after a subtraction it is 1 when there was no borrow.
+  chapter: arithmetic
+full-adder:
+  term: full adder
+  definition: A circuit that adds three bits (A, B and a carry in) and gives a sum bit and a carry out. Two half adders and an OR make one; it counts the 1s among its inputs.
+  chapter: arithmetic
+ripple-carry:
+  term: ripple-carry adder
+  definition: An adder made of a chain of full adders, each carry out feeding the next column’s carry in. Its worst-case delay grows in proportion to its width.
+  chapter: arithmetic
+carry-lookahead:
+  term: carry lookahead
+  definition: A way to add faster by computing every carry directly from the generate and propagate signals of the columns below, in two levels of logic, or in a tree whose depth grows as the logarithm of the width.
+  chapter: arithmetic
+generate-propagate:
+  term: generate and propagate
+  definition: 'For one column of an adder: it generates a carry by itself when both bits are 1 (g = a·b), and propagates an incoming carry when exactly one is 1 (p = a ⊕ b). The carry out is g + p·(carry in).'
+  chapter: arithmetic
+barrel-shifter:
+  term: barrel shifter
+  definition: A shifter that moves a word by any number of places in a fixed time, with one layer of 2:1 multiplexers for each bit of the shift amount (shift by 1 or not, by 2 or not, by 4 or not, …).
+  chapter: arithmetic
+arithmetic-shift:
+  term: arithmetic shift
+  definition: A right shift that copies the sign bit into the empty places, so that a two’s complement number is divided by a power of two and stays negative. A logical shift puts in zeros.
+  chapter: arithmetic
+sign-extension:
+  term: sign extension
+  definition: Widening a two’s complement number by copying its top bit into the new upper bits, so that its value does not change.
+  chapter: arithmetic

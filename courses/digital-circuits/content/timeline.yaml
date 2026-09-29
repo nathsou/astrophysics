@@ -210,3 +210,28 @@
   people: Bill Sievers, Ron Cline, Intersil, Signetics
   chapter: programmable-logic
   text: Intersil introduces the IM5200 in June, and Signetics the faster 82S100 soon after, with 16 inputs, 48 product terms and 8 outputs.
+- year: 1955
+  title: The Nixie tube
+  people: Haydu Brothers, Burroughs Corporation
+  chapter: building-blocks
+  text: 'Burroughs introduces a neon tube with ten cathodes shaped as digits, developed from the Haydu Brothers’ design. Connecting one cathode to ground lights that digit: a decoder in glass.'
+- year: 1978
+  title: The PAL
+  people: John Birkner, H. T. Chua, Andy Chan, Monolithic Memories
+  chapter: pals-and-gals
+  text: Monolithic Memories introduces programmable array logic in March. A programmable AND plane feeds fixed OR gates, which makes the chip faster and cheaper than a PLA and the first widely used PLD.
+- year: 1985
+  title: The GAL
+  people: Lattice Semiconductor
+  chapter: pals-and-gals
+  text: Lattice makes the PAL erasable, with EEPROM cells and configurable output macrocells, so that a design can be tried, erased and tried again on a single chip.
+- year: 1703
+  title: Leibniz’s binary arithmetic
+  people: Gottfried Wilhelm Leibniz
+  chapter: arithmetic
+  text: 'Leibniz publishes Explication de l’Arithmétique Binaire in the Paris Academy’s memoirs (printed 1705): addition, subtraction, multiplication and division with only 0 and 1, and the hexagrams of the I Ching read as binary numbers.'
+- year: 1838
+  title: The anticipating carriage
+  people: Charles Babbage
+  chapter: arithmetic
+  text: 'Babbage’s design for the Analytical Engine includes a mechanism that carries in all the wheels of a register in a single operation instead of one after another: carry lookahead in brass.'

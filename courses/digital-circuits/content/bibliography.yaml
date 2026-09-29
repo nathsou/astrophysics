@@ -749,3 +749,142 @@ fowler1928:
   venue: Proceedings of the Royal Society of London A 119(781), 173–181
   url: https://doi.org/10.1098/rspa.1928.0091
   note: The theory of electrons tunnelling through a thin barrier in a strong field, which erases and programs EEPROM and flash cells.
+nexperia-74hc151:
+  authors: Nexperia
+  year: 2024
+  title: 74HC151; 74HCT151 8-input multiplexer, product data sheet (Rev. 11)
+  venue: Nexperia B.V.
+  url: https://assets.nexperia.com/documents/data-sheet/74HC_HCT151.pdf
+  note: One of eight binary inputs, chosen by three select inputs and an enable, routed to complementary outputs.
+nexperia-74hc138:
+  authors: Nexperia
+  year: 2024
+  title: 74HC138; 74HCT138 3-to-8 line decoder/demultiplexer; inverting, product data sheet
+  venue: Nexperia B.V.
+  url: https://assets.nexperia.com/documents/data-sheet/74HC_HCT138.pdf
+  note: Three address inputs, eight mutually exclusive active-low outputs, three enable inputs; usable as a demultiplexer by using one enable as the data input.
+ti-sn74hc148:
+  authors: TI
+  year: n.d.
+  title: SN54HC148, SN74HC148 8-line to 3-line priority encoders, product page and data sheet
+  venue: Texas Instruments Incorporated
+  url: https://www.ti.com/product/SN74HC148
+  note: Eight active-low inputs encoded to a three-bit binary output, the highest-numbered active input taking priority.
+nexperia-74hc85:
+  authors: Nexperia
+  year: 2024
+  title: 74HC85; 74HCT85 4-bit magnitude comparator, product data sheet (Rev. 5)
+  venue: Nexperia B.V.
+  url: https://www.mouser.com/datasheet/2/916/74HC_HCT85-1541793.pdf
+  note: Compares two 4-bit words and presents A > B, A = B and A < B; cascading inputs let several chips compare longer words.
+nexperia-74hc280:
+  authors: Nexperia
+  year: 2024
+  title: 74HC280; 74HCT280 9-bit odd/even parity generator/checker, product data sheet
+  venue: Nexperia B.V.
+  url: https://assets.nexperia.com/documents/data-sheet/74HC_HCT280.pdf
+  note: Nine data inputs with both an even-parity and an odd-parity output.
+nexperia-74hc4511:
+  authors: Nexperia
+  year: 2024
+  title: 74HC4511; 74HCT4511 BCD to 7-segment latch/decoder/driver, product data sheet
+  venue: Nexperia B.V.
+  url: https://assets.nexperia.com/documents/data-sheet/74HC_HCT4511.pdf
+  note: Four BCD inputs, latch enable, lamp test and blanking inputs, segment outputs a to g; the display is blank for every input code above 9.
+hamming1950:
+  authors: Richard W. Hamming
+  year: 1950
+  title: Error detecting and error correcting codes
+  venue: Bell System Technical Journal 29(2), 147–160
+  url: https://doi.org/10.1002/j.1538-7305.1950.tb00463.x
+  note: 'Hamming’s paper: parity checks over overlapping subsets of the bits, arranged so that the failing checks give the position of a single error.'
+boos2018:
+  authors: Jens Boos
+  year: 2018
+  title: 'The Nixie tube story: the neon display tech that engineers can’t quit'
+  venue: IEEE Spectrum, 25 June 2018
+  url: https://spectrum.ieee.org/nixie-tube
+  note: The history of the Nixie tube from the Haydu Brothers to Burroughs, and its revival by Dalibor Farny.
+wiki-nixie:
+  authors: Wikipedia
+  year: 'n.d.'
+  title: Nixie tube
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Nixie_tube
+  note: The name Nixie, usually explained as from NIX I, Numeric Indicator eXperimental No. 1, and Burroughs’s introduction of the tube in 1955.
+wood1908:
+  authors: Frank W. Wood
+  year: 1908
+  title: Illuminated announcement and display signal
+  venue: US patent 974,943, application filed 17 June 1908
+  url: https://patents.google.com/patent/US974943A/en
+  note: A signal that forms characters from electric lamps behind shaped openings, its object being to use as few lamps and circuits for each character as possible.
+wiki-pal:
+  authors: Wikipedia
+  year: n.d.
+  title: Programmable Array Logic
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Programmable_Array_Logic
+  note: The PAL introduced by Monolithic Memories in March 1978, by John Birkner and H. T. Chua working with Andy Chan; the 20-pin package against the PLAs’ 28 pins.
+us4124899:
+  authors: John M. Birkner and H. T. Chua
+  year: 1978
+  title: Programmable array logic circuit
+  venue: US patent 4,124,899, filed 23 May 1977, issued 7 November 1978
+  url: https://patentimages.storage.googleapis.com/08/ce/c7/a1158872bc9e61/US4124899.pdf
+  note: The patent for the PAL, whose programmable AND array feeds OR gates that are not programmable.
+wiki-gal:
+  authors: Wikipedia
+  year: n.d.
+  title: Generic Array Logic
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Generic_Array_Logic
+  note: The GAL, Lattice Semiconductor’s erasable, reprogrammable development of the PAL.
+galette:
+  authors: Simon Frankau
+  year: n.d.
+  title: galette, a GALasm-compatible assembler for GAL devices
+  venue: GitHub, MIT licence
+  url: https://github.com/simon-frankau/galette
+  note: A Rust port of GALasm. Its fuse layout and JEDEC output are the reference for the course’s GAL22V10 writer.
+jedec-jesd3:
+  authors: JEDEC
+  year: 1994
+  title: 'JESD3-C: Standard data transfer format between data preparation system and programmable logic device programmer'
+  venue: JEDEC Solid State Technology Association
+  url: https://www.jedec.org/
+  note: The text format of fuse files, with the fields QF, QP, F, G, L and C and the transmission checksum.
+leibniz1703:
+  authors: Gottfried Wilhelm Leibniz
+  year: 1703
+  title: Explication de l’Arithmétique Binaire, qui se sert des seuls caractères 0 et 1; avec des remarques sur son utilité, et sur ce qu’elle donne le sens des anciennes figures chinoises de Fohy
+  venue: 'Histoire de l’Académie Royale des Sciences, année MDCCIII, Mémoires, 85–89 (Paris: Jean Boudot, 1705)'
+  note: Leibniz’s account of binary arithmetic, with the rules of addition, subtraction, multiplication and division in base two and his reading of the hexagrams of the I Ching as binary numbers.
+norman-leibniz:
+  authors: Jeremy Norman
+  year: 'n.d.'
+  title: Leibniz expounds on binary arithmetic for computing
+  venue: From Cave Painting to the Internet, historyofinformation.com
+  url: https://www.historyofinformation.com/detail.php?id=395
+  note: Leibniz’s essay on binary arithmetic, sent to the Paris Academy after Bouvet’s letter about the hexagrams, and printed in 1705 in the volume for 1703.
+lions1996:
+  authors: J. L. Lions
+  year: 1996
+  title: 'Ariane 5 flight 501 failure: report by the inquiry board'
+  venue: European Space Agency, Paris, 19 July 1996
+  url: http://sunnyday.mit.edu/nasa-class/Ariane5-report.html
+  note: The maiden flight of Ariane 5 on 4 June 1996 ended about 37 seconds after lift-off, after the conversion of a 64-bit floating-point number to a 16-bit signed integer overflowed in the inertial reference system.
+bromley1982:
+  authors: Allan G. Bromley
+  year: 1982
+  title: Charles Babbage’s Analytical Engine, 1838
+  venue: Annals of the History of Computing 4(3), 196–217
+  url: https://doi.org/10.1109/MAHC.1982.10028
+  note: A study of the design of 1838, including the anticipating carriage, a mechanism that carries in all the wheels of a register in a single operation.
+nxp-74hc283:
+  authors: NXP
+  year: 'n.d.'
+  title: 74HC283; 74HCT283 4-bit binary full adder with fast carry, product data sheet
+  venue: NXP Semiconductors (now Nexperia)
+  url: https://www.mouser.com/datasheet/2/302/74HC283_3-39369.pdf
+  note: Two 4-bit words and a carry in are added with full carry lookahead across the four bits; the carry out can feed the carry in of the next chip.

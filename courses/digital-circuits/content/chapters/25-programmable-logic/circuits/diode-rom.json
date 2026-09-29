@@ -1,0 +1,321 @@
+{
+ "version": 1,
+ "title": "A diode-matrix ROM",
+ "engine": "analog",
+ "components": [
+  {
+   "id": "W0",
+   "type": "toggle",
+   "x": 2,
+   "y": 6,
+   "label": "Word 0"
+  },
+  {
+   "id": "W1",
+   "type": "toggle",
+   "x": 2,
+   "y": 14,
+   "label": "Word 1"
+  },
+  {
+   "id": "W2",
+   "type": "toggle",
+   "x": 2,
+   "y": 22,
+   "label": "Word 2"
+  },
+  {
+   "id": "W3",
+   "type": "toggle",
+   "x": 2,
+   "y": 30,
+   "label": "Word 3"
+  },
+  {
+   "id": "B3",
+   "type": "indicator",
+   "x": 16,
+   "y": 0,
+   "label": "bit 3",
+   "params": {
+    "color": "amber"
+   }
+  },
+  {
+   "id": "R3",
+   "type": "resistor",
+   "x": 16,
+   "y": 36,
+   "rot": 90,
+   "params": {
+    "resistance": 10000
+   },
+   "label": "10 kΩ"
+  },
+  {
+   "id": "G3",
+   "type": "ground",
+   "x": 16,
+   "y": 40
+  },
+  {
+   "id": "D33",
+   "type": "diode",
+   "x": 14,
+   "y": 30,
+   "rot": 90,
+   "label": ""
+  },
+  {
+   "id": "B2",
+   "type": "indicator",
+   "x": 24,
+   "y": 0,
+   "label": "bit 2",
+   "params": {
+    "color": "amber"
+   }
+  },
+  {
+   "id": "R2",
+   "type": "resistor",
+   "x": 24,
+   "y": 36,
+   "rot": 90,
+   "params": {
+    "resistance": 10000
+   },
+   "label": "10 kΩ"
+  },
+  {
+   "id": "G2",
+   "type": "ground",
+   "x": 24,
+   "y": 40
+  },
+  {
+   "id": "D22",
+   "type": "diode",
+   "x": 22,
+   "y": 22,
+   "rot": 90,
+   "label": ""
+  },
+  {
+   "id": "B1",
+   "type": "indicator",
+   "x": 32,
+   "y": 0,
+   "label": "bit 1",
+   "params": {
+    "color": "amber"
+   }
+  },
+  {
+   "id": "R1",
+   "type": "resistor",
+   "x": 32,
+   "y": 36,
+   "rot": 90,
+   "params": {
+    "resistance": 10000
+   },
+   "label": "10 kΩ"
+  },
+  {
+   "id": "G1",
+   "type": "ground",
+   "x": 32,
+   "y": 40
+  },
+  {
+   "id": "B0",
+   "type": "indicator",
+   "x": 40,
+   "y": 0,
+   "label": "bit 0",
+   "params": {
+    "color": "amber"
+   }
+  },
+  {
+   "id": "R0",
+   "type": "resistor",
+   "x": 40,
+   "y": 36,
+   "rot": 90,
+   "params": {
+    "resistance": 10000
+   },
+   "label": "10 kΩ"
+  },
+  {
+   "id": "G0",
+   "type": "ground",
+   "x": 40,
+   "y": 40
+  },
+  {
+   "id": "D10",
+   "type": "diode",
+   "x": 38,
+   "y": 14,
+   "rot": 90,
+   "label": ""
+  },
+  {
+   "id": "D30",
+   "type": "diode",
+   "x": 38,
+   "y": 30,
+   "rot": 90,
+   "label": ""
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     5,
+     6
+    ],
+    [
+     46,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     14
+    ],
+    [
+     46,
+     14
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     22
+    ],
+    [
+     46,
+     22
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     30
+    ],
+    [
+     46,
+     30
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     16,
+     0
+    ],
+    [
+     16,
+     36
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     14,
+     34
+    ],
+    [
+     16,
+     34
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     24,
+     0
+    ],
+    [
+     24,
+     36
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     22,
+     26
+    ],
+    [
+     24,
+     26
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     0
+    ],
+    [
+     32,
+     36
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     40,
+     0
+    ],
+    [
+     40,
+     36
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     38,
+     18
+    ],
+    [
+     40,
+     18
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     38,
+     34
+    ],
+    [
+     40,
+     34
+    ]
+   ]
+  }
+ ]
+}
