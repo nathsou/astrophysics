@@ -246,7 +246,7 @@ export default defineSim({
     }
 
     const label = document.createElement('div');
-    label.style.cssText = 'position:absolute;left:12px;top:10px;font:13px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;color:#dfe6f5;text-shadow:0 1px 3px #000;';
+    label.style.cssText = 'position:absolute;left:12px;top:10px;font:13px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;color:#dfe6f5;text-shadow:0 1px 3px #000;background:rgba(4,5,10,.72);padding:3px 7px;border-radius:3px';
     stage.overlay.append(label);
 
     let done = false;

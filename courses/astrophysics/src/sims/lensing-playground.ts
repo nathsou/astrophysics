@@ -160,10 +160,13 @@ export default defineSim({
       const [k, lab] = UNIT[s.model];
       const px = stage.height / viewH;
       g2.fillStyle = 'rgba(255,255,255,0.85)'; g2.fillRect(14, stage.height - 18, px, 2);
+      // white labels sit on the black sky but can cross bright arcs: give them a dark halo
+      g2.strokeStyle = 'rgba(0,0,0,0.85)'; g2.lineWidth = 3; g2.lineJoin = 'round';
+      g2.strokeText(`${k}${lab}`, 14, stage.height - 24);
       g2.fillText(`${k}${lab}`, 14, stage.height - 24);
       // legend
       let y = 18;
-      const leg = (on: boolean, c: string, t: string) => { if (!on) return; g2.fillStyle = c; g2.fillRect(14, y - 4, 10, 3); g2.fillStyle = 'rgba(255,255,255,0.85)'; g2.fillText(t, 30, y); y += 16; };
+      const leg = (on: boolean, c: string, t: string) => { if (!on) return; g2.fillStyle = c; g2.fillRect(14, y - 4, 10, 3); g2.strokeStyle = 'rgba(0,0,0,0.85)'; g2.lineWidth = 3; g2.lineJoin = 'round'; g2.strokeText(t, 30, y); g2.fillStyle = 'rgba(255,255,255,0.9)'; g2.fillText(t, 30, y); y += 16; };
       leg(s.crit, 'rgb(255,90,90)', 'critical curve (image plane)');
       leg(s.caus, 'rgb(90,255,150)', 'caustic (source plane)');
       if (s.mag) { leg(true, 'rgb(255,115,50)', 'μ > 0 (even parity)'); leg(true, 'rgb(64,140,255)', 'μ < 0 (odd parity)'); }

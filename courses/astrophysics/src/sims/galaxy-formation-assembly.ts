@@ -139,11 +139,11 @@ export default defineSim({
     cam.onChange = () => loop.invalidate();
 
     const hud = document.createElement('div');
-    hud.style.cssText = 'position:absolute;left:10px;top:8px;font:12px/1.45 JetBrains Mono, ui-monospace, monospace;color:#d8dcea;text-shadow:0 1px 2px #000;';
+    hud.style.cssText = 'position:absolute;left:10px;top:8px;font:12px/1.45 JetBrains Mono, ui-monospace, monospace;color:#d8dcea;text-shadow:0 1px 2px #000;background:rgba(4,5,10,.72);padding:3px 7px;border-radius:3px';
     const sfhCanvas = document.createElement('canvas');
     sfhCanvas.style.cssText = 'position:absolute;right:10px;bottom:10px;width:min(210px,40%);height:74px;';
     const legend = document.createElement('div');
-    legend.style.cssText = 'position:absolute;right:10px;top:8px;font:11px/1.5 JetBrains Mono, ui-monospace, monospace;color:#c8ccda;text-align:right;text-shadow:0 1px 2px #000;';
+    legend.style.cssText = 'position:absolute;right:10px;top:8px;font:11px/1.5 JetBrains Mono, ui-monospace, monospace;color:#c8ccda;text-align:right;text-shadow:0 1px 2px #000;background:rgba(4,5,10,.72);padding:3px 7px;border-radius:3px';
     legend.innerHTML = [
       ['#5a45b0', 'dark matter'], ['#3a9cff', 'cold gas'], ['#ff6a2a', 'hot gas'], ['#4dffc0', 'SN wind'], ['#ff45c0', 'AGN-heated'],
       ['#c8dcff', 'young stars'], ['#ffb46a', 'old stars'],

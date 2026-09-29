@@ -367,7 +367,7 @@ export default defineSim({
     onDestroy(onThemeChange(() => { setBg(); loop.invalidate(); }));
 
     const clock = document.createElement('div');
-    clock.style.cssText = 'position:absolute;left:12px;top:10px;color:#cfd6ea;font-family:var(--font-mono);font-size:0.75rem;line-height:1.5;text-shadow:0 1px 2px #000';
+    clock.style.cssText = 'position:absolute;left:12px;top:10px;color:#cfd6ea;font-family:var(--font-mono);font-size:0.75rem;line-height:1.5;text-shadow:0 1px 2px #000;background:rgba(4,5,10,.72);padding:3px 7px;border-radius:3px';
     stage.overlay.append(clock);
 
     const panel = new Panel(host);

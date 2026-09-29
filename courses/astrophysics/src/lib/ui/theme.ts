@@ -54,7 +54,7 @@ export function haloText(ctx: CanvasRenderingContext2D, s: string, x: number, y:
   ctx.lineWidth = width;
   ctx.lineJoin = 'round';
   ctx.setLineDash([]);
-  ctx.globalAlpha = 0.9;
+  ctx.globalAlpha = 1;
   ctx.strokeText(s, x, y);
   ctx.restore();
 }
