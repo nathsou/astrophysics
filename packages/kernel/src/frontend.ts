@@ -621,7 +621,7 @@ export class Processor {
         const body = unparen(cmd.body.term);
         if (!type) throw new ElabError(['recursive definitions need a type signature'], cmd.nameSpan);
         if (body.k !== 'match') {
-          throw new ElabError([`'${cmd.name}' is defined recursively; in this course recursion is compiled via pattern matching (use equations '| pattern => …' or 'match')`], cmd.nameSpan);
+          throw new ElabError([`'${cmd.name}' calls itself without pattern matching, so nothing shows that it terminates: a recursive definition must match on an argument and recurse on a smaller part of it (equations '| pattern => …' or 'match')`], cmd.nameSpan);
         }
         const cols: FVar[] = [];
         for (const d of body.discrs) {

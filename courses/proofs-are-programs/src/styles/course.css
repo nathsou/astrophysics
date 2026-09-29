@@ -267,3 +267,44 @@ ul.reading li {
   color: var(--accent);
   font-weight: 550;
 }
+
+/* ---- inhabitants ---- */
+.inh-input {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0.7rem 0 0.5rem;
+}
+.inh-input input {
+  flex: 1;
+  font-size: 0.95rem;
+}
+.inh-verdict {
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin: 0.4rem 0;
+}
+.inh-verdict.none {
+  color: var(--err);
+}
+.inh-verdict.some {
+  color: var(--ok);
+}
+.inh-verdict.many {
+  color: var(--c-ctor);
+}
+.inh-list {
+  margin: 0.3rem 0 0.4rem;
+  padding-left: 1.6rem;
+}
+.inh-list li {
+  margin: 0.15rem 0;
+}
+.inh-list li code {
+  font-size: 0.88rem;
+}
+.inh-size {
+  font-size: 0.7rem;
+  margin: 0 0.5rem;
+}

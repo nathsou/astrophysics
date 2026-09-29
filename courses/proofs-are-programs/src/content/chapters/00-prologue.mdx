@@ -1,1 +1,119 @@
-This chapter is being written.
+Here is a small programming puzzle. In TypeScript, write a function with this signature:
+
+```ts
+function convert<A, B>(a: A): B
+```
+
+It takes a value of *any* type `A` and must return a value of *any* type `B`, where the caller chooses both. You can make the compiler accept it: `return a as unknown as B`, `throw new Error()`, `while (true) {}`, or `return null!`. None of them does what the signature promises. The cast lies about the value, the exception and the infinite loop never return, and `null` is not a `B`. Remove those escape hatches and the puzzle has no solution. **No program keeps this promise.**
+
+Now try `function same<A>(a: A): A`. With the same restrictions there is exactly one answer, `return a`. The function knows nothing about `A`, so it cannot build a new value of that type or inspect the one it was given. All it can do is hand it back.
+
+So a type is a **promise** about what a program does, and some promises are strong enough to pin a program down entirely. This course is about that idea, taken as far as it goes.
+
+## An honest language
+
+This course uses a small programming language modelled on Lean 4 and running in your browser. It has none of the escape hatches:
+
+- no casts;
+- no exceptions;
+- no `null`;
+- no infinite loops: every function must visibly terminate.
+
+This is not an inconvenience made up for teaching: it is the price of making types mean something. Let's try `convert`. The block below is live: edit it, hover over names to see their types, and read the messages on the right.
+
+<Playground errors title="Trying to break a promise" code={`-- attempt 1: return the argument
+def convert₁ {α β : Type} (a : α) : β := a
+
+-- attempt 2: call yourself forever
+def convert₂ {α β : Type} (a : α) : β := convert₂ a
+
+-- attempt 3: give up, honestly
+def convert₃ {α β : Type} (a : α) : β := sorry`} />
+
+The first attempt is a plain type error: `a` has type `α`, not `β`. The second is refused because the recursive call is not on a smaller argument, so the checker cannot see that it terminates (Chapter 12 explains why that matters so much). The third is accepted, with a warning. `sorry` means "I haven't done this". The type checker believes it and marks the declaration as unfinished, and everything that depends on it inherits the mark. In this course, a declaration that uses `sorry` is not considered correct.
+
+## Counting programs
+
+Since the language is honest, we can ask a precise question: *how many programs does a type have?* For simple types built from type variables α, β, γ, functions `→` and pairs `×`, the answer can be computed. The widget below lists every program of a type, up to renaming and computation, smallest first. Try the presets, then type your own.
+
+<InhabitantLab />
+
+A few things stand out.
+
+- `α → β` has no programs: that is `convert` again.
+- `α → α` has exactly one, the identity. The type *is* the specification.
+- `α → α → α` has exactly two: return the first argument, or the second. The type describes a choice between two things and nothing else, which makes it a perfectly good type of booleans.
+- `(α → α) → α → α` has infinitely many: apply `f` zero times, once, twice, … These are the natural numbers, written as programs.
+- `α × β → β × α` has one program: swap.
+
+<Engineer title="Theorems for free">
+The reason `α → α` has a single program is that a polymorphic function must work the same way for every type, so it cannot look inside its argument. Philip Wadler called the consequences "theorems for free": from the type of a polymorphic function you can read off facts about its behaviour without looking at its code. For example, any function of type `List α → List α` commutes with `map`: it can only drop, duplicate and rearrange elements, never change them.
+</Engineer>
+
+<UnderTheHood ch="system-f" s="parametricity-theorems-for-free">
+The general principle is called parametricity. The CIC course derives it for the polymorphic λ-calculus, System F, where types can be passed as arguments like any other value.
+</UnderTheHood>
+
+## Promises you can check
+
+The types of everyday programming are weak promises. `List Int → List Int` has infinitely many programs, and a type checker that accepts `sort : List Int → List Int` tells you almost nothing about sorting. Tests help, but a test checks a handful of inputs and a type constrains every run.
+
+What if a type could say exactly what you mean: "returns a list that is sorted and has the same elements as the input"? Then a program of that type would be correct by definition, and the type checker would be checking correctness. To keep such a promise, a program has to carry an *argument* for why its output is sorted. That argument is a proof. And here is the observation that gives this course its title:
+
+<Key>
+**The proof is also a program**, and the type checker that checks programs checks proofs too. A proposition is a type; a proof of it is a program of that type; a proposition is true exactly when its type has a program.
+</Key>
+
+This observation is the **Curry–Howard correspondence**. Here is a first example: two facts about addition, stated as types and proved by programs. Put the cursor on the lines of the second proof to see the goal at each step, and click **proof term** to see the program the proof writes.
+
+<Playground lens title="Two proofs" code={`-- 0 + 0 = 0 … and n + 0 = n: true by computation
+theorem add_zero' (n : Nat) : n + 0 = n := rfl
+
+-- 0 + n = n needs an argument: induction on n
+theorem zero_add' (n : Nat) : 0 + n = n := by
+  induction n with
+  | zero => rfl
+  | succ n ih => rw [Nat.add_succ, ih]
+
+#check @zero_add'`} />
+
+In the proof term, `Nat.rec` is a loop over the natural numbers, and the proof of `0 + n = n` calls itself on `n - 1`. That is, the proof by induction *is* a recursive function. Chapter 11 is about exactly this.
+
+## How to read this course
+
+Every code block with a header is live, and runs on a real type checker:
+
+- **Hover** over a name to see its type.
+- In a proof, **put the cursor** on a line to see the goal at that point, in the panel on the right.
+- **proof term** shows the program your tactics are writing.
+- `#eval` runs a program and `#test` tries a statement on random inputs. The pale code blocks have a *try it* button that opens them in the [playground](#/playground).
+
+Exercises are checked by the type checker. An exercise is solved when your code has no errors and no `sorry`, and your progress is saved in your browser.
+
+<Note title="What you need to know">
+You should be comfortable programming in a typed language. You do not need any logic or type theory: the course builds both from scratch, by programming. Some mathematical induction helps in Part IV, but Chapter 11 explains it again, as recursion.
+</Note>
+
+The checker at the bottom of all this is small and separate from everything else: the parser, the tactics and the automation produce terms, and the checker re-checks every one. A bug in a tactic can make a proof fail, but it cannot make the checker accept a false statement. How that checker works is the subject of a companion course, [The Calculus of Inductive Constructions](../cic/). You can read the two in either order. Boxes like the one above (*Under the hood*) link to the relevant chapters, and [this map](#/reference/bridges) shows how the courses fit together.
+
+## The road ahead
+
+- **Part I, Types as promises**: the language, what types can express, and how logical statements become types.
+- **Part II, Logic is a library**: proofs written directly as programs, with quantifiers, equality, and the limits of what can be proved.
+- **Part III, Tactics**: the commands that build proofs for you, and why you do not have to trust them.
+- **Part IV, Recursion is induction**: the same principle defines recursive functions and proves things about them.
+- **Part V, Verified programs**: proofs about real programs, from fast list functions to sorting, an interpreter, a compiler to a stack machine, and a typed language that cannot go wrong.
+- **Part VI, Build your own kernel**: a verified type checker, then a type checker for dependent types, written in the language itself.
+
+<Exercise id="prologue:compose" title="Keep the promise" code={`-- Replace sorry with a program of each type.
+def compose {α β γ : Type} : (α → β) → (β → γ) → α → γ :=
+  sorry
+
+def swap {α β : Type} : α × β → β × α :=
+  sorry`} must="compose swap" hint="For compose: take the two functions and the argument (fun f g x => …), then feed x to f and the result to g. For swap: fun p => (…, …) with p.1 and p.2." solution={`def compose {α β γ : Type} : (α → β) → (β → γ) → α → γ :=
+  fun f g x => g (f x)
+
+def swap {α β : Type} : α × β → β × α :=
+  fun p => (p.2, p.1)`}>
+Each of these types has exactly one program. Write it (the widget above can check your answer, but try first).
+</Exercise>
