@@ -35,8 +35,12 @@ export class DiagnosticSink {
   /** When > 0, diagnostics are discarded (speculative checking). */
   muted = 0;
 
+  /** Errors reported so far, counting duplicates (a generic module reports the same error per use). */
+  errorsReported = 0;
+
   add(d: Diagnostic): void {
     if (this.muted > 0) return;
+    if (d.severity === 'error') this.errorsReported++;
     const key = `${d.severity}|${d.code}|${d.span.file}|${d.span.start}|${d.span.end}|${d.message}|${d.label ?? ''}`;
     if (this.seen.has(key)) return;
     this.seen.add(key);

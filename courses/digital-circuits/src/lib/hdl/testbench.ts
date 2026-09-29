@@ -153,7 +153,6 @@ class TestRun {
     name: string,
     span: Span,
     private opts: Required<Omit<RunTestsOptions, 'filter' | 'file' | 'mode'>> & { mode?: 'compiled' | 'interpreted' },
-    private texts: (span: Span) => string,
   ) {
     this.rng = new Random(opts.seed, name);
     this.result = { name, span, passed: true, skipped: false, failures: [], output: [], cycles: 0 };
@@ -204,7 +203,6 @@ class TestRun {
   private appendSample(f: TestFailure, sample: { cycle: number; values: bigint[] }): void {
     const w = f.waveform!;
     sample.values.forEach((v, i) => w.signals[i]!.values.push(v));
-    void w;
   }
 
   /** Flushes the final samples into pending failures at the end of the test. */
@@ -326,7 +324,6 @@ class TestRun {
       if (this.opts.after > 0) entry.pending.push({ failure, remaining: this.opts.after });
     }
     this.result.failures.push(failure);
-    void this.texts;
   }
 }
 
@@ -345,11 +342,10 @@ export function runTests(source: string, options: RunTestsOptions = {}): TestRun
     maxFailures: options.maxFailures ?? 10,
     mode: options.mode,
   };
-  const text = (span: Span) => program.source.text.slice(span.start, span.end);
   const results: TestResult[] = [];
   for (const plan of program.tests) {
     if (!wanted(plan.name)) continue;
-    const run = new TestRun(plan.name, plan.span, opts, text);
+    const run = new TestRun(plan.name, plan.span, opts);
     const specsOk = plan.body.every((s) => s.k !== 'sim' || !hasErrorsDeep(s.spec));
     if (!plan.ok || !specsOk || errors) {
       run.result.passed = false;
@@ -405,7 +401,7 @@ export function renderWaveform(w: Waveform): string {
 /** A test result as text: the failures as diagnostics, with their values and waveforms. */
 export function renderTestResult(source: string | SourceFile, r: TestResult): string {
   const src = typeof source === 'string' ? new SourceFile(r.span.file, source) : source;
-  const out = [`${r.passed ? 'PASS' : r.skipped ? 'SKIP' : 'FAIL'} ${r.name} (${r.cycles} cycles)`];
+  const out = [`${r.passed ? 'PASS' : r.skipped ? 'SKIP' : 'FAIL'} ${r.name} (${r.cycles} ${r.cycles === 1 ? 'cycle' : 'cycles'})`];
   for (const line of r.output) out.push(`  print: ${line}`);
   if (r.error) out.push(renderDiagnostic(src, { severity: 'error', code: 'test-error', message: r.error.message, span: r.error.span }));
   for (const f of r.failures) {

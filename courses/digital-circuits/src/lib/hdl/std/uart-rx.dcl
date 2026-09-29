@@ -2,8 +2,9 @@
 /// bit). The line is synchronised first, then sampled in the middle of each bit. `valid` pulses for one
 /// cycle when a byte with a correct stop bit has arrived; `data` keeps the last byte.
 module UartRx<CLKS_PER_BIT: int>(clk: clock, rx: bit) -> (data: bits<8>, valid: bit) {
-  inst sync: Synchronizer(clk: clk, d: rx)
-  let line: bit = sync.q
+  // The synchroniser holds the inverted line, so that its power-up value of 0 reads as an idle line.
+  inst sync: Synchronizer(clk: clk, d: !rx)
+  let line: bit = !sync.q
 
   reg receiving: bit = 0
   reg timer: bits<clog2(CLKS_PER_BIT)> = 0
@@ -15,7 +16,13 @@ module UartRx<CLKS_PER_BIT: int>(clk: clock, rx: bit) -> (data: bits<8>, valid: 
   let at_sample: bit = receiving && timer == 0
   let false_start: bit = bit_index == 0 && line
 
-  next receiving = if begin { 1 } else if at_sample && (bit_index == 9 || false_start) { 0 } else { receiving }
+  next receiving = if begin {
+    1
+  } else if at_sample && (bit_index == 9 || false_start) {
+    0
+  } else {
+    receiving
+  }
   // Half a bit to the middle of the start bit, then a whole bit to the middle of each next one.
   next timer = if begin {
     (CLKS_PER_BIT >> 1) - 1
@@ -27,7 +34,11 @@ module UartRx<CLKS_PER_BIT: int>(clk: clock, rx: bit) -> (data: bits<8>, valid: 
     timer
   }
   next bit_index = if begin { 0 } else if at_sample { bit_index + 1 } else { bit_index }
-  next shift = if at_sample && bit_index != 0 && bit_index != 9 { concat(line, shift[7:1]) } else { shift }
+  next shift = if at_sample && bit_index != 0 && bit_index != 9 {
+    concat(line, shift[7:1])
+  } else {
+    shift
+  }
   next done = at_sample && bit_index == 9 && line
   data = shift
   valid = done

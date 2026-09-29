@@ -172,11 +172,8 @@ class Formatter {
   item(item: Item): Doc {
     switch (item.kind) {
       case 'module': {
-        const inputsClose = item.outputs.length || item.hasOutputs ? (item.outputs[0]?.span.start ?? item.bodyEnd) : item.bodyEnd;
-        const inputs = this.list('(', ')', item.inputs, (p) => this.port(p), this.closeParen(item.inputs, inputsClose), item.inputsMultiline);
-        const outputs = item.hasOutputs
-          ? this.list('(', ')', item.outputs, (p) => this.port(p), this.closeParen(item.outputs, item.bodyEnd), item.outputsMultiline)
-          : '';
+        const inputs = this.list('(', ')', item.inputs, (p) => this.port(p), item.inputsEnd, item.inputsMultiline);
+        const outputs = item.hasOutputs ? this.list('(', ')', item.outputs, (p) => this.port(p), item.outputsEnd, item.outputsMultiline) : '';
         const name: Doc = [item.top ? 'top module ' : 'module ', item.name.name, this.generics(item.generics)];
         // The input list breaks first when the header is too long; then the output list, if still needed.
         const whole = flatWidth([name, inputs, item.hasOutputs ? ' -> ' : '', outputs, ' {']);
@@ -191,7 +188,7 @@ class Formatter {
       }
       case 'fn': {
         const head: Doc[] = ['fn ', item.name.name, this.generics(item.generics)];
-        head.push(this.list('(', ')', item.params, (p) => this.port(p), this.closeParen(item.params, item.ret.span.start), item.paramsMultiline));
+        head.push(this.list('(', ')', item.params, (p) => this.port(p), item.paramsEnd, item.paramsMultiline));
         head.push(' -> ', this.type(item.ret), ' {');
         return [...head, group([indent([line, this.expr(item.body)]), line, '}'], item.bodyMultiline)];
       }
@@ -214,15 +211,6 @@ class Formatter {
         return [...head, indent([hardline, ...body]), hardline, '}'];
       }
     }
-  }
-
-  /** The offset of the `)` closing a port list, approximated by searching back from the next token. */
-  private closeParen(ports: Port[], nextStart: number): number {
-    const text = this.src.text;
-    let i = nextStart - 1;
-    const floor = ports.length ? ports[ports.length - 1]!.span.end : 0;
-    while (i > floor && text[i] !== ')') i--;
-    return Math.max(i, floor);
   }
 
   generics(gs: GenericParam[]): Doc {

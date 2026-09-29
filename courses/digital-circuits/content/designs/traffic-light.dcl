@@ -4,7 +4,9 @@ enum Light { Red, RedAmber, Green, Amber }
 module TrafficLight(clk: clock, tick: bit) -> (red: bit, amber: bit, green: bit) {
   reg state: Light = Light.Red
 
-  next state = if !tick { state } else {
+  next state = if !tick {
+    state
+  } else {
     match state {
       Light.Red => Light.RedAmber,
       Light.RedAmber => Light.Green,

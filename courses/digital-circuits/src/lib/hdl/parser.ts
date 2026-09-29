@@ -178,7 +178,7 @@ class Parser {
     while (true) {
       const t = this.peek();
       if (t.kind === 'eof') return;
-      if (this.pos > start && t.lineStart && depth <= 0 && t.kind === 'keyword' && ITEM_KEYWORDS.has(t.text)) return;
+      if ((this.pos > start || keepNewline) && t.lineStart && depth <= 0 && t.kind === 'keyword' && ITEM_KEYWORDS.has(t.text)) return;
       if (t.kind === 'op') {
         if (t.text === '{' || t.text === '(' || t.text === '[') depth++;
         else if (t.text === '}' || t.text === ')' || t.text === ']') {
@@ -269,8 +269,8 @@ class Parser {
     return out;
   }
 
-  ports(what: string): { ports: Port[]; multiline: boolean } {
-    const open = this.expect('(', what);
+  ports(what: string): { ports: Port[]; multiline: boolean; close: number } {
+    this.expect('(', what);
     const multiline = this.peek().lineStart;
     const ports: Port[] = [];
     while (!this.at(')')) {
@@ -283,9 +283,8 @@ class Parser {
       if (!this.eat(',')) break;
     }
     if (!this.at(')')) this.fail(`expected \`,\` or \`)\` in the port list, found ${describe(this.peek())}`, this.peek().span, undefined);
-    this.next();
-    void open;
-    return { ports, multiline };
+    const close = this.next().span.start;
+    return { ports, multiline, close };
   }
 
   moduleDecl(doc: string | undefined): ModuleDecl {
@@ -294,8 +293,8 @@ class Parser {
     this.expect('module');
     const name = this.ident('a module name');
     let generics: GenericParam[] = [];
-    let inputs = { ports: [] as Port[], multiline: false };
-    let outputs = { ports: [] as Port[], multiline: false };
+    let inputs = { ports: [] as Port[], multiline: false, close: 0 };
+    let outputs = { ports: [] as Port[], multiline: false, close: 0 };
     let hasOutputs = false;
     let headerError = false;
     try {
@@ -323,6 +322,7 @@ class Parser {
     return {
       kind: 'module', top, name, generics, inputs: inputs.ports, outputs: outputs.ports, hasOutputs, body, doc,
       span: this.span(start), inputsMultiline: inputs.multiline, outputsMultiline: outputs.multiline, bodyEnd,
+      inputsEnd: inputs.close, outputsEnd: outputs.close,
       ...(headerError ? { headerError } : {}),
     };
   }
@@ -339,7 +339,10 @@ class Parser {
     const body = this.expr();
     this.skipNewlines();
     this.expect('}', 'to close the function body');
-    return { kind: 'fn', name, generics, params: params.ports, ret, body, doc, span: this.span(start), paramsMultiline: params.multiline, bodyMultiline };
+    return {
+      kind: 'fn', name, generics, params: params.ports, ret, body, doc, span: this.span(start), paramsMultiline: params.multiline,
+      paramsEnd: params.close, bodyMultiline,
+    };
   }
 
   structDecl(doc: string | undefined): StructDecl {
@@ -580,7 +583,7 @@ class Parser {
       }
     }
     if (t.kind === 'ident') {
-      const target = this.postfix(this.primary(true), true);
+      const target = this.postfix(this.primary(true));
       this.expect('=', 'to assign a value');
       const value = this.expr();
       return { kind: 'set', target, value, span: this.span(start) };
@@ -687,11 +690,10 @@ class Parser {
       const operand = this.unary(structs);
       return { kind: 'unary', op: t.text as UnaryOp, operand, span: joinSpans(t.span, operand.span) };
     }
-    return this.postfix(this.primary(structs), structs);
+    return this.postfix(this.primary(structs));
   }
 
-  postfix(e: Expr, structs: boolean): Expr {
-    void structs;
+  postfix(e: Expr): Expr {
     while (true) {
       if (this.at('.')) {
         this.next();

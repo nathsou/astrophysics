@@ -45,9 +45,21 @@ export interface RtlSim {
   reset(): void;
   readMem(name: string, addr: number): bigint;
   writeMem(name: string, addr: number, value: number | bigint): void;
+  /** A handle on a port or named signal, for fast repeated access (no name lookup). */
+  signal(name: string): RtlSignalHandle;
   /** Every named signal (ports, `let`s, registers, memory read ports), hierarchical. */
   names(): string[];
   width(name: string): number;
+}
+
+export interface RtlSignalHandle {
+  readonly name: string;
+  readonly width: number;
+  /** The value (settling the logic first); at most 32 bits. */
+  get(): number;
+  getBig(): bigint;
+  /** Sets an input port. */
+  set(value: number | bigint): void;
 }
 
 // ------------------------------------------------------------------------------------ word library
@@ -975,6 +987,29 @@ export function createRtlSim(design: RtlDesign | RtlModule, top?: string, option
       const i = memIndex.get(name);
       if (i === undefined) throw new Error(`no memory named \`${name}\``);
       be.memSet(i, addr, BigInt(value));
+    },
+    signal(name) {
+      const s = sigOf(name);
+      const width = mod.signals[s]!.width;
+      const input = inputs.get(name);
+      return {
+        name,
+        width,
+        get() {
+          if (width > 32) throw new Error(`\`${name}\` is wider than 32 bits: use getBig()`);
+          if (dirty) settle();
+          return be.readNum(s);
+        },
+        getBig() {
+          settle();
+          return be.read(s);
+        },
+        set(value) {
+          if (!input || input.clock) throw new Error(`\`${name}\` is not a data input`);
+          be.write(s, value);
+          dirty = true;
+        },
+      };
     },
     names: () => Object.keys(mod.names),
     width: (name) => mod.signals[sigOf(name)]!.width,

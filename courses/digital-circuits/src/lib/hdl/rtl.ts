@@ -7,48 +7,56 @@
  *
  * ## Design and modules
  *
- * An `RtlDesign` is a set of `RtlModule`s keyed by specialisation (`Counter`, `Fifo<8, 4>`), plus the name
- * of the top one. A module is a list of **signals**, **cells** and child **instances**; the hierarchy is
- * kept, and `flattenRtl()` inlines it into one module whose cells carry their full instance path.
+ * An `RtlDesign` is a set of `RtlModule`s keyed by specialisation (`Counter`, `Fifo<8, 4>`), plus the key
+ * of the top one. A module is a list of **signals**, **cells** and child **instances**. The hierarchy is
+ * kept; `flattenRtl()` inlines it into one module whose names and cell paths are hierarchical.
  *
- * ## Signals
+ * ## Signals and values
  *
- * `signals[id]` is a bit vector of `width` bits (1 ≤ width). Each signal is driven by exactly one cell
- * output, or is an input port. There are no multi-driver nets and no tri-states. `names` maps readable
- * names (ports, `let`s, registers, `x[3]` for register array elements, `m.read0` for memory read ports) to
- * signals; in a flattened module they are hierarchical (`register_file.x[3]`).
+ * `signals[id]` is a bit vector of `width` bits (width ≥ 1), unsigned; signedness lives in the cells that
+ * care (`shr`, comparisons, `sext`). Each signal is driven by exactly one cell output, or is an input port
+ * (clock inputs are 1-bit signals too). There are no multi-driver nets, no tri-states and no latches.
+ * Aggregates are flattened: an array value has element 0 in its least significant bits; a struct is the
+ * concatenation of its fields, the first field most significant; an enum is its encoding.
+ *
+ * `names` maps readable names to signals: ports, `let`s, registers, register-array elements (`x[3]`),
+ * memory read ports (`m.read0`). In a flattened module they are hierarchical (`register_file.x[3]`), and
+ * `let`s declared in `for` loops are named after their iteration (`t#2`).
  *
  * ## Cells
  *
- * Every cell has an output signal `y` (except `mem`, whose outputs are its read ports), a source span `src`
- * (the DCL expression it implements) and a hierarchical `path` (the module key, or the instance path such as
- * `riscv32.arithmetic` after flattening). Operand widths:
+ * Every cell has an output signal `y` (except `mem`, whose outputs are its read ports' `data`), a source
+ * span `src` (the DCL expression or declaration it implements, in its file) and a hierarchical `path` (the
+ * module key, or, after flattening, the instance path such as `riscv32.arithmetic`). Widths:
  *
  * | kind | operands | result |
  * |---|---|---|
- * | `const` | `value` (BigInt, the bit pattern) | width(y) |
- * | `add` `sub` `mul` `and` `or` `xor` | `a`, `b` of width(y) | wraps modulo 2^width |
- * | `not` `neg` | `a` of width(y) | |
- * | `shl` `shr` | `a` of width(y), amount `b` of any width; `shr` with `signed` is arithmetic | amounts ≥ width give 0 (or the sign) |
- * | `eq` `ne` `lt` `le` `gt` `ge` | `a`, `b` of equal width; `signed` for two's-complement order | 1 bit |
- * | `mux` | select `s` (1 bit), `a` when s = 0, `b` when s = 1 | |
- * | `pmux` | select `s`, `cases[i] = { match: values, data }`, `default` | the case containing s, else default (parallel: cases are disjoint) |
- * | `slice` | `a`, `lo` | bits [lo, lo + width(y)) of a |
- * | `concat` | `parts`, most significant first | sum of widths |
- * | `repeat` | `a`, `n` | n copies |
- * | `zext` `sext` | `a` narrower than y | |
- * | `reduce_and` `reduce_or` `reduce_xor` | `a` | 1 bit |
- * | `popcount` | `a` | ⌈log₂(width(a) + 1)⌉ bits |
- * | `reg` | `d`, clock `clk` (a clock input signal), `init` | y = the value latched at the previous rising edge of clk (init at power-up) |
- * | `mem` | `clk`, `depth`, `width`, `init[]`, `reads[] = { addr, data }`, `writes[] = { addr, data, en }` | synchronous: each read port's `data` is mem[addr] sampled at the edge (before the write); out-of-range reads give 0, writes are ignored |
+ * | `const` | `value`: the bit pattern (BigInt) | width(y) |
+ * | `add` `sub` `mul` | `a`, `b` of width(y) | wraps modulo 2^width |
+ * | `and` `or` `xor` | `a`, `b` of width(y) | bitwise |
+ * | `not` `neg` | `a` of width(y) | bitwise not; two's-complement negation |
+ * | `shl` | `a` of width(y); amount `b` of any width | amounts ≥ width give 0 |
+ * | `shr` | as `shl`; `signed` selects an arithmetic shift | amounts ≥ width give 0 (or all sign bits) |
+ * | `eq` `ne` | `a`, `b` of equal width | 1 bit |
+ * | `lt` `le` `gt` `ge` | `a`, `b` of equal width; `signed` for two's-complement order | 1 bit |
+ * | `mux` | select `s` (1 bit), `a`, `b` of width(y) | `a` when s = 0, `b` when s = 1 (`if s { b } else { a }`) |
+ * | `pmux` | select `s` (any width); `cases[i] = { match: values, data }`; `default` | the `data` of the case whose `match` contains s, else `default`; cases are disjoint, so it is one parallel multiplexer (a `match`, or a dynamic array index) |
+ * | `slice` | `a`, `lo` | bits [lo, lo + width(y)) of a; truncation is a slice with lo = 0 |
+ * | `concat` | `parts`, most significant first | the sum of the widths |
+ * | `repeat` | `a`, `n` | n copies of a |
+ * | `zext` `sext` | `a`, narrower than y | zero or sign extension |
+ * | `reduce_and` `reduce_or` `reduce_xor` | `a` | 1 bit (`all`, `any`, parity) |
+ * | `popcount` | `a` | the number of ones, on ⌈log₂(width(a) + 1)⌉ bits |
+ * | `reg` | `d` of width(y), clock `clk` (a clock input), `init` | y is the value of d latched at the previous rising edge of clk; `init` at power-up |
+ * | `mem` | `clk`, `width`, `depth`, `init[]`, `name`, `reads[] = { addr, data }`, `writes[] = { addr, data, en }` | synchronous: at each rising edge of clk, every read port's `data` becomes the word at `addr` (read before that edge's write), then the write is done if `en`; out-of-range reads give 0 and out-of-range writes are ignored |
  *
- * Truncation is a `slice` with `lo = 0`. `bits(x)`, `signed(x)` and enum values need no cell.
+ * `bits(x)`, `signed(x)`, enum values and struct fields need no cells of their own (fields are slices).
  *
  * ## Instances
  *
- * `instances[i] = { name, module, inputs, outputs }` connects the child's ports: `inputs[port]` is a signal
- * of this module driving the child's input (including clock ports), and `outputs[port]` is a signal of this
- * module driven by the child's output.
+ * `instances[i] = { name, module, inputs, outputs, src, path }` connects a child module: `inputs[port]` is
+ * the signal of this module driving the child's input (clock ports included), in the child's port order,
+ * and `outputs[port]` is the signal of this module that the child's output drives.
  */
 import type { Span } from './span';
 import type { Type } from './tir';
@@ -291,7 +299,8 @@ export function printRtl(mod: RtlModule): string {
     const args = cellInputs(c).map(sig).join(', ');
     const extra =
       c.kind === 'const' ? ` ${c.value}` : c.kind === 'slice' ? ` lo=${c.lo}` : c.kind === 'pmux' ? ` [${c.cases.map((x) => x.match.join('|')).join('; ')}]` : '';
-    lines.push(`  ${c.kind === 'mem' ? c.reads.map((r) => sig(r.data)).join(', ') : sig(c.y) + w} = ${c.kind}${extra}(${args})  @${c.src.line}:${c.src.col}`);
+    const call = c.kind === 'const' ? '' : `(${args})`;
+    lines.push(`  ${c.kind === 'mem' ? c.reads.map((r) => sig(r.data)).join(', ') : sig(c.y) + w} = ${c.kind}${extra}${call}  @${c.src.line}:${c.src.col}`);
   }
   for (const i of mod.instances) {
     lines.push(`  inst ${i.name}: ${i.module}(${Object.entries(i.inputs).map(([k, v]) => `${k}: ${sig(v)}`).join(', ')}) -> (${Object.entries(i.outputs).map(([k, v]) => `${k}: ${sig(v)}`).join(', ')})`);

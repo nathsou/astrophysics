@@ -31,8 +31,20 @@ module Fifo<WIDTH: int, DEPTH: int>(
   } else {
     write_index + 1
   }
-  next read_index = if !do_pop { read_index } else if read_index == DEPTH - 1 { 0 } else { read_index + 1 }
-  next used = if do_push && !do_pop { used + 1 } else if do_pop && !do_push { used - 1 } else { used }
+  next read_index = if !do_pop {
+    read_index
+  } else if read_index == DEPTH - 1 {
+    0
+  } else {
+    read_index + 1
+  }
+  next used = if do_push && !do_pop {
+    used + 1
+  } else if do_pop && !do_push {
+    used - 1
+  } else {
+    used
+  }
   data_out = slots[read_index]
   empty = is_empty
   full = is_full

@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { check } from './check';
 import { elaborate } from './elaborate';
-import { createRtlSim, type RtlSim } from './rtlsim';
+import { createRtlSim, type RtlSignalHandle, type RtlSim } from './rtlsim';
 
 const SOURCE = readFileSync(new URL('../../../content/designs/rv32i.dcl', import.meta.url), 'utf8');
 const checked = check(SOURCE, { file: 'rv32i.dcl' });
@@ -76,6 +76,11 @@ class Machine {
   cycles = 0;
   constructor(program: number[], mode: 'compiled' | 'interpreted' = 'compiled') {
     this.sim = createRtlSim(design, undefined, { mode });
+    const s = (name: string) => this.sim.signal(name);
+    this.ports = {
+      pc: s('pc_out'), address: s('memory_address'), write: s('memory_write'), data: s('memory_data'),
+      width: s('memory_width'), instruction: s('instruction'), value: s('memory_value'),
+    };
     program.forEach((w, i) => this.store(i * 4, w, 2));
   }
   load(addr: number): number {
@@ -89,14 +94,17 @@ class Machine {
   }
   /** One clock cycle with the memory model. */
   cycle(): void {
-    const sim = this.sim;
-    sim.set('instruction', this.load(sim.get('pc_out')));
-    const addr = sim.get('memory_address');
-    sim.set('memory_value', this.load(addr));
-    if (sim.get('memory_write')) this.store(addr, sim.get('memory_data'), sim.get('memory_width'));
-    sim.step();
+    // Outputs first (they depend only on registers), then inputs: the logic settles twice per cycle.
+    const p = this.ports;
+    const pc = p.pc.get();
+    const addr = p.address.get();
+    if (p.write.get()) this.store(addr, p.data.get(), p.width.get());
+    p.instruction.set(this.load(pc));
+    p.value.set(this.load(addr));
+    this.sim.step();
     this.cycles++;
   }
+  private readonly ports: Record<'pc' | 'address' | 'write' | 'data' | 'width' | 'instruction' | 'value', RtlSignalHandle>;
   /** Runs until a trap (ECALL, EBREAK or an illegal instruction) or the cycle limit; returns the trap code. */
   run(limit = 100_000): number {
     while (this.cycles < limit) {
@@ -390,7 +398,7 @@ describe('RV32I core (content/designs/rv32i.dcl)', () => {
     const bare = n / ((performance.now() - t1) / 1000);
     console.log(`RV32I RTL simulation: ${(withMemory / 1e6).toFixed(2)} M cycles/s with the memory model, ${(bare / 1e6).toFixed(2)} M cycles/s bare`);
     expect(sim.peek('register_file.x[1]')).toBe(BigInt(n / 2));
-    expect(m.x(1)).toBe(n / 2 - 2);
+    expect(m.x(1)).toBe((n - 4) / 4);
     // Generous bounds, so that a loaded CI machine does not fail the test; the log shows the real speed.
     expect(withMemory).toBeGreaterThan(2e5);
     expect(bare).toBeGreaterThan(2e5);

@@ -183,9 +183,14 @@ class ModuleBuilder {
       });
     }
     for (const inst of spec.insts.values()) {
+      // In the child's port order.
       const ins: Record<string, SigId> = {};
-      for (const [p, e] of inst.conns) ins[p] = this.flat(this.lower(e), e.span);
-      for (const [p, clk] of inst.clocks) ins[p] = this.inputs.get(clk)!;
+      for (const p of inst.spec.inputs) {
+        const e = inst.conns.get(p.name);
+        const clk = inst.clocks.get(p.name);
+        if (e) ins[p.name] = this.flat(this.lower(e), e.span);
+        else if (clk !== undefined) ins[p.name] = this.inputs.get(clk)!;
+      }
       const outs: Record<string, SigId> = {};
       for (const o of inst.spec.outputs) outs[o.name] = this.instOut.get(`${inst.name}.${o.name}`)!;
       this.instances.push({ name: inst.name, module: this.moduleKey(inst.spec), inputs: ins, outputs: outs, src: inst.span, path: `${this.path}.${inst.name}` });
@@ -223,6 +228,9 @@ class ModuleBuilder {
   }
 
   private lowerNode(e: TExpr): Value {
+    if (e.t.k === 'error' || e.t.k === 'int' || e.t.k === 'lit' || e.t.k === 'clock') {
+      throw new ElaborationError(`an expression at ${e.span.file}:${e.span.line}:${e.span.col} has no hardware type`);
+    }
     const w = Math.max(1, widthOf(e.t));
     const src = e.span;
     switch (e.k) {

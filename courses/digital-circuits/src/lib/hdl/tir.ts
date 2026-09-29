@@ -199,7 +199,7 @@ function signedOf(t: Type): boolean {
 }
 
 /** Evaluates a binary operator on bit patterns of operand type `t` (or unbounded integers for `int`). */
-export function evalBin(op: BinOp, a: bigint, b: bigint, t: Type, bt?: Type): bigint {
+export function evalBin(op: BinOp, a: bigint, b: bigint, t: Type): bigint {
   const isInt = t.k === 'int' || t.k === 'lit';
   const w = isInt ? 0 : widthOf(t);
   const s = signedOf(t);
@@ -223,7 +223,6 @@ export function evalBin(op: BinOp, a: bigint, b: bigint, t: Type, bt?: Type): bi
       if (isInt) return a << b;
       return b >= BigInt(w) ? 0n : r(a << b);
     case 'shr': {
-      void bt;
       if (isInt) return a >> b;
       if (s) return r(sa >> (b >= BigInt(w) ? BigInt(w) : b));
       return b >= BigInt(w) ? 0n : a >> b;
@@ -265,7 +264,7 @@ function evalNode(e: TExpr, env: EvalEnv, memo: Map<TExpr, bigint>): bigint {
       return e.op === 'not' ? ~a & mask(widthOf(e.t)) : -a & mask(widthOf(e.t));
     }
     case 'bin':
-      return evalBin(e.op, ev(e.a), ev(e.b), e.a.t, e.b.t);
+      return evalBin(e.op, ev(e.a), ev(e.b), e.a.t);
     case 'mux':
       return ev(e.c) ? ev(e.a) : ev(e.b);
     case 'match': {

@@ -78,7 +78,7 @@ function classify(t: Token, prev: Token | undefined, next: Token | undefined, pr
       if (prev?.text === ':' && prev2?.kind === 'ident' && prev3?.kind === 'keyword' && prev3.text === 'inst') return 'module';
       if (prev?.kind === 'keyword' && prev.text === 'fn') return 'function';
       if (next?.kind === 'op' && next.text === '(' && !typeLike(t.text)) return 'function';
-      if (typeLike(t.text)) return 'type';
+      if (typeLike(t.text) && (t.text.length > 1 || prev?.text === ':' || prev?.text === '->' || next?.text === '.' || next?.text === '{')) return 'type';
       return 'identifier';
     }
     default:

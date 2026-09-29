@@ -278,7 +278,7 @@ function suggest(name: string, candidates: Iterable<string>): string | undefined
   let best: string | undefined;
   let bestD = Infinity;
   for (const c of candidates) {
-    const d = editDistance(name, c);
+    const d = editDistance(name.toLowerCase(), c.toLowerCase());
     if (d < bestD && d <= Math.max(1, Math.floor(name.length / 3))) {
       best = c;
       bestD = d;
@@ -411,6 +411,13 @@ export class Checker {
         secondary: [{ span: tops[0]!.name.span, label: 'first `top` module' }],
         help: ['`top` marks the module bound to the virtual board; remove it from the others'],
       });
+    }
+    for (const t of tops) {
+      if (t.generics.length) {
+        this.sink.error('bad-generics', 'a `top` module cannot have generic parameters', t.name.span, undefined, {
+          help: ['wrap it in a module that instantiates it with fixed arguments'],
+        });
+      }
     }
     for (const item of this.program.items) {
       if (item.kind === 'module' && item.generics.length === 0 && !item.headerError) this.getSpec(item, [], item.name.span, this.currentFile);
@@ -645,9 +652,9 @@ export class Checker {
     this.building.add(key);
     const saved = this.currentFile;
     this.currentFile = file;
-    const errorsBefore = this.sink.errorCount;
+    const errorsBefore = this.sink.errorsReported;
     const spec = this.buildSpec(decl, generics, key, file);
-    spec.hasErrors ||= this.sink.errorCount > errorsBefore;
+    spec.hasErrors ||= this.sink.errorsReported > errorsBefore;
     this.currentFile = saved;
     this.building.delete(key);
     this.specs.set(key, spec);
@@ -860,7 +867,6 @@ export class Checker {
     e.expr = expr;
     e.state = 'done';
     ctx.mod?.spec.lets.set(e.uniq, { name: e.uniq, type: e.type, expr, span: e.item.name.span });
-    if (!ctx.mod) void 0;
     return { type: e.type };
   }
 
@@ -1286,7 +1292,7 @@ export class Checker {
       spec.combDeps.set(out.name, inputs);
     }
 
-    this.checkDomains(spec, mod);
+    this.checkDomains(spec);
   }
 
   private displayName(node: string): string {
@@ -1322,7 +1328,7 @@ export class Checker {
     });
   }
 
-  private checkDomains(spec: ModuleSpec, mod: ModState): void {
+  private checkDomains(spec: ModuleSpec): void {
     if (spec.clocks.length < 2) return;
     // The clock domains a value comes from: the clocks of the registers and memories it reads.
     const memo = new Map<TExpr, Set<string>>();
@@ -1362,10 +1368,12 @@ export class Checker {
       memo.set(root, out);
       return out;
     };
-    const check = (value: TExpr, clock: string, what: string, span: Span) => {
+    const check = (value: TExpr, clock: string, what: string, decl: Span) => {
       const foreign = [...domainOf(value)].filter((c) => c !== clock && c !== '');
       if (!foreign.length) return;
+      const span = value.span.file === decl.file && value.span.end > value.span.start ? value.span : decl;
       this.sink.error('clock-domain', `${what} is clocked by \`${clock}\` but reads a value clocked by ${foreign.map((c) => `\`${c}\``).join(' and ')}`, span, 'crosses clock domains', {
+        secondary: span === decl ? undefined : [{ span: decl, label: `clocked by \`${clock}\`` }],
         notes: ['a value from another clock domain can change just before the clock edge and make a flip-flop metastable'],
         help: [`pass it through the standard library's \`Synchronizer\` (clocked by \`${clock}\`) first`],
       });
@@ -1382,7 +1390,6 @@ export class Checker {
       const clock = [...inst.clocks.values()][0]!;
       for (const [port, v] of inst.conns) check(v, clock, `input \`${port}\` of \`${inst.name}\``, v.span);
     }
-    void mod;
   }
 
   // ------------------------------------------------------------------------------------ functions
@@ -1529,12 +1536,12 @@ export class Checker {
       if (te.t.k === 'lit') return this.err('not-constant', 'expected a compile-time integer', e.span);
       return this.err('type-mismatch', 'expected a compile-time integer', e.span, typeToString(te.t));
     }
-    // A compile-time integer expression (`WIDTH - 1`) is evaluated first, then checked to fit as a whole.
+    // An integer expression (`WIDTH - 1`, or `i + 1` in a test) is computed first, then checked to fit as a whole.
     if ((e.kind === 'binary' || e.kind === 'unary' || e.kind === 'paren') && this.constCandidate(e, ctx)) {
       const te = this.infer(e, ctx);
       if (te.t.k === 'int' && te.k === 'const') return this.literal(te.v, t, e);
       if (te.t.k === 'error') return te;
-      if (te.t.k !== 'lit' && te.t.k !== 'int') return this.coerce(te, t, e, ctx);
+      if (te.t.k !== 'lit') return this.coerce(te, t, e, ctx);
     }
     switch (e.kind) {
       case 'number':
@@ -1592,7 +1599,10 @@ export class Checker {
     return this.coerce(te, t, e, ctx);
   }
 
-  /** Whether an expression is built only from literals, constants, generic parameters and loop variables. */
+  /**
+   * Whether an expression is built only from literals, constants, generic parameters and loop variables
+   * (and, in tests, integer variables): it is then computed as an integer and converted as a whole.
+   */
   private constCandidate(e: Expr, ctx: Ctx): boolean {
     switch (e.kind) {
       case 'number':
@@ -1608,7 +1618,7 @@ export class Checker {
         return e.callee.name === 'clog2' && !ctx.scope.lookup('clog2');
       case 'name': {
         const b = ctx.scope.lookup(e.name);
-        if (b) return b.k === 'const' || (b.k === 'value' && b.value.k === 'const');
+        if (b) return b.k === 'const' || (b.k === 'value' && b.value.k === 'const') || (b.k === 'testvar' && b.type.k === 'int');
         return this.globals.get(e.name)?.item.kind === 'const';
       }
       default:
@@ -1647,6 +1657,11 @@ export class Checker {
     if (te.t.k === 'int') return { k: 'intcast', a: te, t: bits(32), span: e.span };
     if (te.t.k === 'lit') return this.noContext(e);
     if (te.t.k !== 'bits') return this.err('bad-operand', 'a shift amount must be `bits<M>`', e.span, typeToString(te.t));
+    if (te.t.signed) {
+      return this.err('bad-operand', 'a shift amount must be unsigned', e.span, typeToString(te.t), {
+        help: [`convert it explicitly: bits(${this.text(e.span)})`],
+      });
+    }
     return te;
   }
 
@@ -1659,7 +1674,7 @@ export class Checker {
     return this.err('bad-operand', `\`${op}\` needs \`bit\` operands`, e.span, typeToString(te.t), {
       help: te.t.k === 'bits'
         ? op === '!'
-          ? ['use `~` for a bitwise not, or compare explicitly: `x == 0`']
+          ? [`use \`~\` for a bitwise not, or compare explicitly: \`${this.text(e.span)} == 0\``]
           : [`compare explicitly (\`${this.text(e.span)} != 0\`), or use \`${op[0]}\` for a bitwise operation`]
         : undefined,
     });
@@ -2296,12 +2311,12 @@ export class Checker {
   // ------------------------------------------------------------------------------------------ tests
 
   private checkTest(test: TestDecl): TestPlan {
-    const before = this.sink.errorCount;
+    const before = this.sink.errorsReported;
     const scope = new Scope(null);
     const ctx: Ctx = { scope, mod: null, test: true, fnStack: [], file: test.span.file };
     const sims: string[] = [];
     const body = this.testStmts(test.body, ctx, sims);
-    return { name: test.name, span: test.span, body, ok: this.sink.errorCount === before };
+    return { name: test.name, span: test.span, body, ok: this.sink.errorsReported === before };
   }
 
   private testStmts(stmts: TestStmt[], ctx: Ctx, sims: string[]): TestPlanStmt[] {

@@ -141,6 +141,9 @@ export interface ModuleDecl {
   /** Layout hints for the formatter: the source had a line break inside the port lists. */
   inputsMultiline: boolean;
   outputsMultiline: boolean;
+  /** The offsets of the `)` closing the input and output lists (for comments before them). */
+  inputsEnd: number;
+  outputsEnd: number;
   /** The offset of the `}` closing the body. */
   bodyEnd: number;
   /** The header had a syntax error: the module is not checked, to avoid follow-up errors. */
@@ -157,6 +160,8 @@ export interface FnDecl {
   doc?: string;
   span: Span;
   paramsMultiline: boolean;
+  /** The offset of the `)` closing the parameters. */
+  paramsEnd: number;
   bodyMultiline: boolean;
 }
 
@@ -224,7 +229,7 @@ export function stripSpans(node: unknown): unknown {
       if (
         k === 'span' || k === 'opSpan' || k === 'keywordSpan' || k === 'nameSpan' || k === 'attrSpan' ||
         k === 'multiline' || k === 'inputsMultiline' || k === 'outputsMultiline' || k === 'paramsMultiline' ||
-        k === 'bodyMultiline' || k === 'bodyEnd' || k === 'headerError'
+        k === 'bodyMultiline' || k === 'bodyEnd' || k === 'headerError' || k === 'inputsEnd' || k === 'outputsEnd' || k === 'paramsEnd'
       )
         continue;
       out[k] = stripSpans(v);
