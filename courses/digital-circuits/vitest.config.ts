@@ -10,5 +10,9 @@ export default defineConfig({
   },
   test: {
     include: ['src/**/*.test.ts', 'content/**/*.test.ts', 'tools/**/*.test.ts'],
+    // Many suites simulate whole circuits or run the FPGA flow; on a busy machine the default 5 s
+    // limit fails them spuriously. Performance tests assert their own (conservative) rates.
+    testTimeout: 120_000,
+    hookTimeout: 120_000,
   },
 });
