@@ -1,6 +1,11 @@
+import importlib.util
 import random
 
+import pytest
+
 from lmcourse import ch23
+
+needs_torch = pytest.mark.skipif(importlib.util.find_spec("torch") is None, reason="PyTorch is not installed")
 
 
 def test_tool_format_and_spans():
@@ -12,12 +17,14 @@ def test_tool_format_and_spans():
     assert ch23.answer(c) == 7146
 
 
+@needs_torch
 def test_batch_masks_the_tool_output():
     _, y = ch23.batch(random.Random(0), 4, "tool")
     targets = "".join(ch23.CHARS[t] for t in y[0].tolist() if t != -100)
     assert "[" in targets and ">" in targets and "]" not in targets
 
 
+@needs_torch
 def test_complete_forces_tool_results():
     import torch
 
