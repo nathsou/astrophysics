@@ -529,6 +529,24 @@ def List.hasDecEq {α : Type u} [DecidableEq α] : (as bs : List α) → Decidab
 
 instance instDecidableEqList {α : Type u} [DecidableEq α] : DecidableEq (List α) := List.hasDecEq
 
+/-- Apply a function to the content of an option, if any. -/
+def Option.map {α : Type u} {β : Type v} (f : α → β) : Option α → Option β
+  | none => none
+  | some a => some (f a)
+
+/-- Chain computations that may fail. -/
+def Option.bind {α : Type u} {β : Type v} : Option α → (α → Option β) → Option β
+  | none, _ => none
+  | some a, f => f a
+
+/-- The content of an option, or a default. -/
+def Option.getD {α : Type u} : Option α → α → α
+  | none, d => d
+  | some a, _ => a
+
+@[simp] theorem Option.map_none {α : Type u} {β : Type v} (f : α → β) : Option.map f none = none := rfl
+@[simp] theorem Option.map_some {α : Type u} {β : Type v} (f : α → β) (a : α) : Option.map f (some a) = some (f a) := rfl
+
 /-- Equality of options is decidable when equality of their contents is. -/
 def Option.hasDecEq {α : Type u} [DecidableEq α] : (a b : Option α) → Decidable (a = b)
   | none, none => isTrue rfl

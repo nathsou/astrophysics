@@ -10,4 +10,5 @@ export const widgets: Record<string, unknown> = {
   InhabitantLab: lz(() => import('./labs/InhabitantLab.tsx'), 'InhabitantLab'),
   PropOracle: lz(() => import('./labs/PropOracle.tsx'), 'PropOracle'),
   KripkeLab: lz(() => import('./labs/KripkeLab.tsx'), 'KripkeLab'),
+  TerminationView: lz(() => import('./labs/TerminationView.tsx'), 'TerminationView'),
 };

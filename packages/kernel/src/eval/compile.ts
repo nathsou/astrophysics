@@ -145,6 +145,11 @@ export class Evaluator {
       case 'app': {
         const fn = getAppFn(e);
         const args = getAppArgs(e);
+        // branching is lazy: only the branch taken is evaluated
+        if (fn.k === 'const') {
+          const lazy = this.compileBranch(fn.name, args, tc, slots);
+          if (lazy) return lazy;
+        }
         // β-redexes are compiled as lets
         const fc = this.compile(fn, tc, slots);
         const acs = args.map((a) => (this.relevance(tc, a) === 'data' ? this.compile(a, tc, slots) : () => null));
@@ -155,6 +160,50 @@ export class Evaluator {
         };
       }
     }
+  }
+
+  /** ite, dite and I.casesOn, evaluating only the selected branch */
+  private compileBranch(name: string, args: Expr[], tc: TypeChecker, slots: Map<number, number>): ((env: Value[]) => Value) | undefined {
+    const comp = (a: Expr) => (this.relevance(tc, a) === 'data' ? this.compile(a, tc, slots) : () => null);
+    const applyRest = (f: Value, rest: ((env: Value[]) => Value)[], env: Value[]) => {
+      for (const a of rest) f = apply(f, a(env), this);
+      return f;
+    };
+    if ((name === 'ite' || name === 'dite') && args.length >= 5 && !externs[name]) {
+      const inst = comp(args[2]);
+      const t = comp(args[3]);
+      const e = comp(args[4]);
+      const rest = args.slice(5).map(comp);
+      const dep = name === 'dite';
+      return (env) => {
+        const d = inst(env);
+        const yes = typeof d === 'object' && d !== null && d.c === 'Decidable.isTrue';
+        let v = yes ? t(env) : e(env);
+        if (dep) v = apply(v, null, this);
+        return applyRest(v, rest, env);
+      };
+    }
+    if (name.endsWith('.casesOn')) {
+      const ind = this.env.get(name.slice(0, -'.casesOn'.length));
+      if (ind?.kind !== 'inductive' || externs[name]) return undefined;
+      const majorIdx = ind.numParams + 1 + ind.numIndices;
+      const n = majorIdx + 1 + ind.ctors.length;
+      if (args.length < n) return undefined;
+      const major = comp(args[majorIdx]);
+      const minors = args.slice(majorIdx + 1, n).map(comp);
+      const rest = args.slice(n).map(comp);
+      const indName = ind.name;
+      const ctors = ind.ctors;
+      return (env) => {
+        const cv = ctorView(major(env), indName, this.env);
+        if (!cv) throw new EvalError(`cannot evaluate: '${name}' applied to a value that is not a constructor`);
+        const k = ctors.indexOf(cv.c);
+        let f = minors[k](env);
+        for (const a of cv.f) f = apply(f, a, this);
+        return applyRest(f, rest, env);
+      };
+    }
+    return undefined;
   }
 
   // -------------------------------------------------------------------------

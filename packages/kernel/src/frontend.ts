@@ -60,10 +60,15 @@ export interface Message {
 export type Output =
   | { k: 'check'; expr: Expr; type: Expr; lctx: LocalContext; constName?: string }
   | { k: 'reduce'; input: Expr; result: Expr; lctx: LocalContext; mode: 'reduce' | 'whnf' | 'eval' }
-  | { k: 'decl'; names: string[]; main: string }
+  | { k: 'decl'; names: string[]; main: string; termination?: Termination }
   | { k: 'print'; decl: Decl; axioms?: string[] }
   | { k: 'eval'; input: Expr; type: Expr; value: string; lctx: LocalContext; steps: number; ms: number }
   | { k: 'test'; statement: Expr; samples: number; passed: number; counterexample?: { name: string; value: string }[]; lctx: LocalContext };
+
+/** how a recursive definition was shown to terminate (for the termination view) */
+export type Termination =
+  | { kind: 'structural'; arg: string }
+  | { kind: 'wf'; measure: Expr; lctx: LocalContext; obligations: { call: Expr; goal: Expr; lctx: LocalContext }[] };
 
 export interface CommandResult {
   cmd: Command;
@@ -727,6 +732,7 @@ export class Processor {
           ? { kind: 'theorem', name, levelParams: params, type: vT, value: vV, doc: cmd.doc }
           : { kind: 'def', name, levelParams: params, type: vT, value: vV, height: defHeight(this.env, vV), doc: cmd.doc, compiled };
       this.addDecl(decl, res, cmd.nameSpan);
+      if (compiled?.recursive && compiled.argName && res.output?.k === 'decl') res.output.termination = { kind: 'structural', arg: compiled.argName };
       if (cmd.attrs) this.applyAttrs(name, cmd.attrs, cmd.nameSpan);
       if (el.eqnLeaves && el.eqnLeaves.length > 0 && kind === 'def') this.addEquationLemmas(el, name, params, el.eqnLeaves);
     });
@@ -806,6 +812,8 @@ export class Processor {
       const tacSrc = 'first | omega | (simp_all; omega) | simp_all | decide';
       const defaultTac = new Parser(tacSrc, this.env.notations).tacticBlock();
       const nSteps = () => el.tacticSteps.length;
+      const obligations: { call: Expr; goal: Expr; lctx: LocalContext }[] = [];
+      const measureLctx = el.lctx;
       const replaceCalls = (e: Expr): Expr => {
         e = el.instantiate(e);
         if (!hasFVarId(e, f.id)) return e;
@@ -843,6 +851,7 @@ export class Processor {
                   [{ lctx: hideLocals(el.lctx, [f.id, n.id, rec.id, hxd.id]), type: el.instantiate(goalT), span: term.by!.span }],
                 );
               }
+              obligations.push({ call: el.instantiate(e), goal: el.instantiate(goalT), lctx: hideLocals(el.lctx, [f.id, n.id, rec.id, hxd.id]) });
               const lt = el.elab({ k: 'app', fn: id('Nat.lt_of_lt_of_eq'), args: [{ arg: E(proved) }, { arg: E(mkFVar(hxd.id)) }], span });
               const call = mkApps(rec, [ma, lt, ...a, mkApps(mkConst('Eq.refl', [lone]), [natT, ma])]);
               return mkApps(call, args.slice(all.length));
@@ -903,6 +912,7 @@ export class Processor {
       const params = usedLevelParams(g.params, [vT, vV], cmd.levelParams);
       if (el.usesSorry) res.messages.push({ severity: 'warning', span: cmd.nameSpan, msg: [`declaration uses 'sorry'`] });
       this.addDecl({ kind: 'def', name, levelParams: params, type: vT, value: vV, height: defHeight(this.env, vV), doc: cmd.doc, compiled: { recursive: true } }, res, cmd.nameSpan);
+      if (res.output?.k === 'decl') res.output.termination = { kind: 'wf', measure: m, lctx: hideLocals(measureLctx, [f.id, n.id, rec.id, hx.id]), obligations };
       if (cmd.attrs) this.applyAttrs(name, cmd.attrs, cmd.nameSpan);
       // equation lemmas, by WellFounded.fix_eq
       if (el.eqnLeaves && el.eqnLeaves.length) {

@@ -412,3 +412,25 @@ ul.reading li {
   gap: 0.25rem;
   align-items: center;
 }
+
+/* ---- termination view ---- */
+.term-panel {
+  margin: -0.5rem 0 1.25rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--rule);
+  border-top: 0;
+  border-radius: 0 0 var(--radius) var(--radius);
+  background: var(--paper-2);
+  font-size: 0.9rem;
+}
+.term-decl + .term-decl {
+  margin-top: 0.5rem;
+}
+.term-obligations {
+  margin: 0.3rem 0 0;
+  padding-left: 1rem;
+  list-style: none;
+}
+.term-obligations li {
+  margin: 0.2rem 0;
+}
