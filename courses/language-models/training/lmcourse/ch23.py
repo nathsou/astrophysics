@@ -200,7 +200,7 @@ def evaluate(n: int = 300) -> None:
 
 
 def export() -> None:
-    """The tool-using model as a browser safetensors file (float32 is small enough: 3 M parameters)."""
+    """The tool-using model as a browser safetensors file (bfloat16, about 6 MB)."""
     import torch
     from safetensors.torch import save_file
 
