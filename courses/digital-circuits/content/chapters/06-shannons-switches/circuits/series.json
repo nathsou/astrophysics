@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "title": "Two switches in series",
+  "engine": "analog",
+  "components": [
+    {"id": "B1", "type": "battery", "x": 4, "y": 12, "rot": 270, "params": {"voltage": 6}, "label": "6 V"},
+    {"id": "A", "type": "switch", "x": 10, "y": 4, "params": {"closed": false}},
+    {"id": "B", "type": "switch", "x": 18, "y": 4, "params": {"closed": false}},
+    {"id": "L1", "type": "lamp", "x": 28, "y": 6, "rot": 90, "params": {"ratedVoltage": 6, "ratedPower": 0.3}, "label": "Lamp"},
+    {"id": "G1", "type": "ground", "x": 4, "y": 16}
+  ],
+  "wires": [
+    {"points": [[4, 8], [4, 4], [10, 4]]},
+    {"points": [[14, 4], [18, 4]]},
+    {"points": [[22, 4], [28, 4], [28, 6]]},
+    {"points": [[28, 10], [28, 16], [4, 16], [4, 12]]}
+  ]
+}

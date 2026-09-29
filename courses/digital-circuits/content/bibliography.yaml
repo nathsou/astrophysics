@@ -1,1 +1,93 @@
-{}
+# Bibliography: key → { authors, year, title, venue, url, note }
+
+shannon1938:
+  authors: Claude E. Shannon
+  year: 1938
+  title: A symbolic analysis of relay and switching circuits
+  venue: Transactions of the American Institute of Electrical Engineers 57(12), 713–723. Based on his MIT master’s thesis, submitted 10 August 1937
+  url: https://dspace.mit.edu/handle/1721.1/11173
+  note: The thesis at DSpace@MIT. The quotation about it is from Howard Gardner, The Mind’s New Science (1985).
+peirce1886:
+  authors: Charles S. Peirce
+  year: 1886
+  title: Letter to Allan Marquand, 30 December 1886
+  venue: 'Discussed by Kenneth L. Ketner, “The early history of computer design: Charles Sanders Peirce and Marquand’s logical machines”, The Princeton University Library Chronicle 45(3), 186–211 (1984)'
+  note: The letter suggests that switches in series and in parallel could carry out logical operations in an electrical logic machine.
+chm-stibitz:
+  authors: Computer History Museum
+  year: 2006
+  title: George Stibitz, the Model K and the Complex Number Calculator
+  venue: 'Computer History Museum, “Revolution: The First 2000 Years of Computing”'
+  url: https://www.computerhistory.org/revolution/birth-of-the-computer/4/85
+  note: Stibitz’s November 1937 relay adder and the September 1940 remote demonstration at Dartmouth College.
+zuse-z3:
+  authors: Raúl Rojas
+  year: 1997
+  title: 'Konrad Zuse’s legacy: the architecture of the Z1 and Z3'
+  venue: IEEE Annals of the History of Computing 19(2), 5–16
+  url: https://doi.org/10.1109/85.586067
+  note: The Z3 of 1941 and its 2,600 relays.
+nmah-bug:
+  authors: National Museum of American History, Smithsonian Institution
+  year: 1947
+  title: Log book with computer bug (Harvard Mark II, 9 September 1947)
+  venue: Smithsonian Institution, catalogue number 1994.0191.01
+  url: https://americanhistory.si.edu/collections/object/nmah_334663
+  note: The logbook page with the moth found in relay 70, panel F.
+bipm2019:
+  authors: Bureau International des Poids et Mesures
+  year: 2019
+  title: The International System of Units (SI Brochure), 9th edition
+  url: https://www.bipm.org/en/publications/si-brochure
+  note: Since 20 May 2019 the elementary charge is fixed at exactly 1.602 176 634 × 10⁻¹⁹ C, which defines the ampere.
+galvani1791:
+  authors: Luigi Galvani
+  year: 1791
+  title: De viribus electricitatis in motu musculari commentarius
+  venue: De Bononiensi Scientiarum et Artium Instituto atque Academia Commentarii 7, 363–418
+  note: Galvani’s account of his experiments on frogs and of “animal electricity”.
+volta1800:
+  authors: Alessandro Volta
+  year: 1800
+  title: On the electricity excited by the mere contact of conducting substances of different kinds
+  venue: Philosophical Transactions of the Royal Society of London 90, 403–431. A letter to Sir Joseph Banks dated 20 March 1800.
+  url: https://doi.org/10.1098/rstl.1800.0018
+  note: Volta’s announcement of the pile of zinc and silver discs, the first battery.
+pancaldi2003:
+  authors: Giuliano Pancaldi
+  year: 2003
+  title: 'Volta: Science and Culture in the Age of Enlightenment'
+  venue: Princeton University Press
+  note: A biography of Volta, including his dispute with Galvani over animal electricity and the invention of the pile.
+nicholson1800:
+  authors: William Nicholson
+  year: 1800
+  title: Account of the new electrical or galvanic apparatus of Sig. Alex. Volta, and experiments performed with the same
+  venue: A Journal of Natural Philosophy, Chemistry, and the Arts 4 (1800)
+  note: Nicholson and Carlisle’s decomposition of water by a voltaic pile, in May 1800.
+hunt1994:
+  authors: Bruce J. Hunt
+  year: 1994
+  title: 'The ohm is where the art is: British telegraph engineers and the development of electrical standards'
+  venue: Osiris 9, 48–63
+  url: https://doi.org/10.1086/368729
+  note: How the units of electrical measurement, the volt and the ohm among them, were settled by the British Association and the 1881 International Electrical Congress in Paris.
+franklin1751:
+  authors: Benjamin Franklin
+  year: 1751
+  title: Experiments and Observations on Electricity, made at Philadelphia in America
+  venue: London, E. Cave
+  note: Franklin’s one-fluid theory of electricity and the plus and minus notation, developed in letters from 1747.
+thomson1897:
+  authors: J. J. Thomson
+  year: 1897
+  title: Cathode rays
+  venue: Philosophical Magazine, series 5, 44, 293–316
+  url: https://doi.org/10.1080/14786449708621070
+  note: The measurement of the charge-to-mass ratio of the particles of cathode rays, the electron.
+ashcroft1976:
+  authors: Neil W. Ashcroft and N. David Mermin
+  year: 1976
+  title: Solid State Physics
+  venue: Holt, Rinehart and Winston
+  note: Table 1.1 gives the density of conduction electrons in copper (8.47 × 10²⁸ m⁻³) and Table 2.1 its Fermi velocity (1.57 × 10⁶ m/s).

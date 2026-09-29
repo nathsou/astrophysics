@@ -1,1 +1,32 @@
-[]
+# Timeline: list of { year, title, people, chapter, text }. Negative years are BC.
+
+- year: 1886
+  title: A letter fifty years early
+  people: Charles Sanders Peirce, Allan Marquand
+  chapter: shannons-switches
+  text: Peirce writes to Marquand that electric switches, in series and in parallel, could carry out logical operations.
+- year: 1937
+  title: Shannon’s thesis
+  people: Claude Shannon
+  chapter: shannons-switches
+  text: A master’s thesis submitted to MIT on 10 August shows that Boolean algebra describes switching circuits, and that circuits can be designed and simplified on paper.
+- year: 1937
+  title: The Model K
+  people: George Stibitz
+  chapter: shannons-switches
+  text: A binary adder made on a kitchen table from relays, dry cells, torch bulbs and strips of tin.
+- year: 1941
+  title: The Z3
+  people: Konrad Zuse
+  chapter: shannons-switches
+  text: A programmable, fully automatic computer of about 2,600 relays, working in Berlin.
+- year: 1947
+  title: The first actual bug
+  people: The Harvard Mark II operators
+  chapter: shannons-switches
+  text: A moth found in relay 70 of panel F is taped into the logbook on 9 September.
+- year: 1800
+  title: Galvani’s frogs and Volta’s pile
+  people: Luigi Galvani, Alessandro Volta
+  chapter: charge-voltage-current
+  text: Volta announces the first battery, a pile of zinc and silver discs with brine-soaked card between them, in a letter to the Royal Society dated 20 March. Cells in series add their voltages.

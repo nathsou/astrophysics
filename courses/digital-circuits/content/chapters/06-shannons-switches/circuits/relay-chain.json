@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "title": "Three relays in a chain",
+  "engine": "analog",
+  "components": [
+    {"id": "V0", "type": "rail", "x": 4, "y": 4, "params": {"voltage": 6}},
+    {"id": "A", "type": "switch", "x": 8, "y": 4, "params": {"closed": false}},
+    {"id": "D1", "type": "diode", "x": 16, "y": 8, "rot": 270, "label": ""},
+    {"id": "K1", "type": "relay", "label": "K1", "x": 20, "y": 4, "params": {"coilVoltage": 6}},
+    {"id": "D2", "type": "diode", "x": 30, "y": 12, "rot": 270, "label": ""},
+    {"id": "K2", "type": "relay", "label": "K2", "x": 32, "y": 8, "params": {"coilVoltage": 6}},
+    {"id": "D3", "type": "diode", "x": 42, "y": 16, "rot": 270, "label": ""},
+    {"id": "K3", "type": "relay", "label": "K3", "x": 44, "y": 12, "params": {"coilVoltage": 6}},
+    {"id": "V1", "type": "rail", "x": 31, "y": 6, "params": {"voltage": 6}},
+    {"id": "V2", "type": "rail", "x": 43, "y": 10, "params": {"voltage": 6}},
+    {"id": "V3", "type": "rail", "x": 55, "y": 14, "params": {"voltage": 6}},
+    {"id": "L1", "type": "lamp", "x": 58, "y": 16, "rot": 90, "params": {"ratedVoltage": 6, "ratedPower": 0.3}, "label": "Lamp"},
+    {"id": "G1", "type": "ground", "x": 20, "y": 8},
+    {"id": "G2", "type": "ground", "x": 32, "y": 12},
+    {"id": "G3", "type": "ground", "x": 44, "y": 16},
+    {"id": "G4", "type": "ground", "x": 58, "y": 20}
+  ],
+  "wires": [
+    {"points": [[4, 4], [8, 4]]},
+    {"points": [[12, 4], [20, 4]]},
+    {"points": [[16, 8], [20, 8]]},
+    {"points": [[28, 6], [31, 6]]},
+    {"points": [[28, 8], [32, 8]]},
+    {"points": [[30, 12], [32, 12]]},
+    {"points": [[40, 10], [43, 10]]},
+    {"points": [[40, 12], [44, 12]]},
+    {"points": [[42, 16], [44, 16]]},
+    {"points": [[52, 14], [55, 14]]},
+    {"points": [[52, 16], [58, 16]]}
+  ]
+}

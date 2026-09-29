@@ -1,1 +1,106 @@
-{}
+# Glossary: id → { term, definition (Markdown), chapter (slug) }
+
+series:
+  term: series
+  definition: Components joined one after the other, so that the same current passes through all of them. Switches in series conduct only if *all* of them are closed, which makes them an AND.
+  chapter: shannons-switches
+parallel:
+  term: parallel
+  definition: Components joined side by side, each across the same two points, so that the current has a choice of paths. Switches in parallel conduct if *any* of them is closed, which makes them an OR.
+  chapter: shannons-switches
+truth-table:
+  term: truth table
+  definition: A list of every combination of the inputs of a logic function and the output each one gives. A function of *n* inputs has 2^*n* rows.
+  chapter: shannons-switches
+changeover-switch:
+  term: changeover switch (SPDT)
+  definition: A switch with a common terminal C and two others, 0 and 1. C is always connected to exactly one of them, and flipping the switch moves it to the other. “Single pole, double throw”.
+  chapter: shannons-switches
+traveller:
+  term: traveller
+  definition: One of the two wires that join a pair of changeover switches in a staircase circuit. Whichever traveller the first switch selects, the lamp is lit only if the second switch selects the same one.
+  chapter: shannons-switches
+relay:
+  term: relay
+  definition: A switch worked by an electromagnet. Current in the coil pulls an armature, which moves one or more contacts. Because the coil and the contacts are separate circuits, one circuit can control another.
+  chapter: relays
+normally-open:
+  term: normally open (NO)
+  definition: A relay contact that is open while the coil is off and closes when it is energised.
+  chapter: shannons-switches
+normally-closed:
+  term: normally closed (NC)
+  definition: A relay contact that is closed while the coil is off and opens when it is energised. It is what makes NOT possible with switches.
+  chapter: shannons-switches
+and:
+  term: AND
+  definition: True only when *both* inputs are true. Switches in series. Written A · B, or `a && b`.
+  chapter: shannons-switches
+or:
+  term: OR
+  definition: True when *at least one* input is true. Switches in parallel. Written A + B, or `a || b`.
+  chapter: shannons-switches
+not:
+  term: NOT
+  definition: True when the input is false. A normally-closed relay contact. Written ¬A, or `!a`.
+  chapter: shannons-switches
+xor:
+  term: XOR (exclusive or)
+  definition: True when the two inputs *differ*. Two changeover switches with their travellers crossed. Written A ⊕ B. It is the sum digit of a one-bit binary addition.
+  chapter: shannons-switches
+xnor:
+  term: XNOR
+  definition: True when the two inputs are *equal*, the negation of XOR. Two changeover switches with their travellers straight, as in the staircase light.
+  chapter: shannons-switches
+restoration:
+  term: restoration (gain)
+  definition: A stage that produces a clean output from a degraded input, because the output is driven from the stage’s own supply. Relays restore signals, and so do transistors; without it, no chain of logic could be more than a few stages deep.
+  chapter: shannons-switches
+hindrance:
+  term: hindrance
+  definition: Shannon’s 1937 measure of how much a switch opposes current, 0 when closed and 1 when open. With it, series connection is addition and parallel connection is multiplication. Modern notation counts 1 for “conducts” instead.
+  chapter: shannons-switches
+half-adder:
+  term: half adder
+  definition: A circuit that adds two one-bit numbers and produces a sum bit (XOR) and a carry bit (AND). Stibitz’s Model K was one. It has no input for a carry from a previous column, which a *full adder* has.
+  chapter: shannons-switches
+flyback-diode:
+  term: flyback diode
+  definition: A diode across a relay coil, wired so that it conducts only when the coil’s field collapses. It gives the coil’s current somewhere to go and prevents a spike of hundreds of volts.
+  chapter: relays
+charge:
+  term: charge
+  definition: "The property of matter that makes it feel electric and magnetic forces. It comes in two kinds, positive and negative, and is never created or destroyed, only moved. Measured in coulombs; an electron carries −1.602 × 10⁻¹⁹ C."
+  chapter: charge-voltage-current
+coulomb:
+  term: coulomb (C)
+  definition: "The unit of charge: the charge of 6.24 × 10¹⁸ electrons, or what a current of one ampere carries past a point in one second."
+  chapter: charge-voltage-current
+current:
+  term: current
+  definition: "The rate at which charge passes a point, in coulombs per second, or amperes. Written *I*, with *I* = *Q*/*t*. By convention it points the way positive charge would flow, from + round to −."
+  chapter: charge-voltage-current
+ampere:
+  term: ampere (A)
+  definition: "The unit of current: one coulomb per second, or 6.24 × 10¹⁸ electrons per second. Since 2019 it is defined by fixing the value of the electron’s charge."
+  chapter: charge-voltage-current
+voltage:
+  term: voltage
+  definition: "The energy each coulomb of charge gains or gives up in going between two points, in joules per coulomb, or volts. It is always a difference between two points; *V* = *E*/*Q*."
+  chapter: charge-voltage-current
+volt:
+  term: volt (V)
+  definition: "The unit of voltage: one joule per coulomb. Named after Alessandro Volta."
+  chapter: charge-voltage-current
+ground:
+  term: ground
+  definition: "The point in a circuit chosen as 0 V, from which every other voltage is measured. Only differences of voltage mean anything; ground is the choice of where to start counting."
+  chapter: charge-voltage-current
+conventional-current:
+  term: conventional current
+  definition: "The direction of current drawn in circuit diagrams and used throughout the course: from the + terminal, round the circuit, to the − terminal, the way positive charge would move. The electrons in a metal go the other way."
+  chapter: charge-voltage-current
+drift-speed:
+  term: drift speed
+  definition: "The average speed at which charge carriers make progress along a wire, which is tiny: 0.07 mm/s for 1 A in 1 mm² of copper. It is *I*/(*n A e*). The signal that starts them all moving travels at a large fraction of the speed of light."
+  chapter: charge-voltage-current
