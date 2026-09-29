@@ -10,7 +10,7 @@ const span = (n: AstNode) => (n.span ? `${n.span.from.line}:${n.span.from.col}` 
 
 function describe(n: AstNode) {
   const what = n.group ? `${n.field} (${n.children.length} statement${n.children.length === 1 ? '' : 's'})` : n.label.map((t) => t.t).join('');
-  const where = n.span ? (n.span.from.line === n.span.to.line ? `line ${n.span.from.line}, columns ${n.span.from.col}–${n.span.to.col - 1}` : `lines ${n.span.from.line}–${n.span.to.line}`) : '';
+  const where = n.span ? (n.span.from.line === n.span.to.line ? `line ${n.span.from.line}, ${n.span.to.col - 1 > n.span.from.col ? `columns ${n.span.from.col}–${n.span.to.col - 1}` : `column ${n.span.from.col}`}` : `lines ${n.span.from.line}–${n.span.to.line}`) : '';
   return `${what}${where ? ` · ${where}` : ''}`;
 }
 

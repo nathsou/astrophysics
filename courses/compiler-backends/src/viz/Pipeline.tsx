@@ -96,9 +96,8 @@ export function StageNav({ defs, value, onChange, label = 'Pipeline stage', phas
     <div className="stage-tabs" role="tablist" aria-label={label} ref={ref} onKeyDown={onKey}>
       {defs.map((d, k) => (
         <span key={d.id} style={{ display: 'contents' }}>
-          {phases && (k === 0 || defs[k - 1].phase !== d.phase) && <span className={`stage-phase${k ? '' : ' first'}`} aria-hidden="true">{PHASE_LABEL[d.phase]}</span>}
-          {k > 0 && !(phases && defs[k - 1].phase !== d.phase) && <span className="stage-arrow" aria-hidden="true">›</span>}
-          <button type="button" className={`stage-tab ${k === cur ? 'on' : ''}`} onClick={() => onChange(d.id)} title={d.hint} role="tab" aria-selected={k === cur} tabIndex={k === cur ? 0 : -1}>
+          {k > 0 && (phases && defs[k - 1].phase !== d.phase ? <span className="stage-sep" aria-hidden="true" /> : <span className="stage-arrow" aria-hidden="true">›</span>)}
+          <button type="button" className={`stage-tab ${k === cur ? 'on' : ''}`} onClick={() => onChange(d.id)} title={phases ? `${PHASE_LABEL[d.phase]} · ${d.hint}` : d.hint} role="tab" aria-selected={k === cur} tabIndex={k === cur ? 0 : -1}>
             <span className="n">{k + 1}</span>{d.label}
           </button>
         </span>

@@ -16,7 +16,7 @@ import { Check, Popover, Select, Seg } from '../ui/controls';
 import { hintStore, persist, persisted, useStore } from '../ui/store';
 import { ThemeToggle } from '../ui/ThemeToggle';
 import { useCompile, useDebounced } from '../ui/useCompile';
-import { NATIVE_STAGES, StageNav, StageView, WASM_STAGES, safe, type StageDef, type StageId, type TargetSel, type WasmState } from './Pipeline';
+import { NATIVE_STAGES, PHASE_LABEL, StageNav, StageView, WASM_STAGES, safe, type StageDef, type StageId, type TargetSel, type WasmState } from './Pipeline';
 
 interface Settings {
   target: TargetSel;
@@ -109,24 +109,24 @@ export function Playground() {
   return (
     <div className="pg">
       <header className="pg-bar">
-        <div className="pg-grp">
+        <div className="pg-grp pg-home">
           <a href="#/" className="pg-btn" title="Back to the course">← Course</a>
           <span className="pg-title">Playground</span>
         </div>
-        <div className="pg-grp">
+        <div className="pg-grp pg-prog">
           <label className="pg-lbl" htmlFor="pg-prog">Program</label>
           <Select id="pg-prog" value={example?.id ?? ''} options={[...(example ? [] : [['', 'your program'] as [string, string]]), ...EXAMPLES.map((e) => [e.id, e.title] as [string, string])]} onChange={(id) => id && setSrc(exampleById(id).src)} />
         </div>
-        <div className="pg-grp">
+        <div className="pg-grp pg-tgt">
           <span className="pg-lbl" aria-hidden="true">Target</span>
           <Seg label="Target" value={st.target} onChange={(v) => set('target', v)} options={TARGETS} />
         </div>
-        <div className="pg-grp">
+        <div className="pg-grp pg-opt">
           <span className="pg-lbl" aria-hidden="true">Opt</span>
           <Seg label="Optimisation level" value={st.opt} onChange={(v) => set('opt', v)} options={[[0, '-O0'], [1, '-O1'], [2, '-O2']]} />
         </div>
         <span className="pg-spacer" />
-        <div className="pg-grp">
+        <div className="pg-grp pg-menus">
           <Popover id="pg-options" label="Options" badge={changed || undefined} title="Back-end options: register allocation, scheduling, code generation, ISA extensions">
             <OptionsPanel st={st} set={set} changed={changed} reset={() => setSt((s) => { const n = { ...s }; for (const k of BACKEND_KEYS) (n as Record<string, unknown>)[k] = DEFAULTS[k]; return n; })} />
           </Popover>
@@ -135,9 +135,9 @@ export function Playground() {
           </Popover>
         </div>
         <div className="pg-grp pg-end">
-          <span className={`pg-status ${r.error ? 'bad' : 'ok'}`} role="status" title={r.error ? r.error.msg : `compiled in ${ms.toFixed(1)} ms`}>
+          <span className={`pg-status ${r.error ? 'bad' : 'ok'}`} role="status" title={r.error ? r.error.msg : `compiled in ${ms.toFixed(1)} ms`} aria-label={r.error ? undefined : `compiled in ${ms.toFixed(0)} ms`}>
             <span className="dot" aria-hidden="true" />
-            {r.error ? <>{r.error.stage} error{r.error.line ? ` · line ${r.error.line}` : ''}</> : <>compiled <span className="pg-ms">· {ms.toFixed(0)} ms</span></>}
+            {r.error ? <>{r.error.stage} error{r.error.line ? ` · line ${r.error.line}` : ''}</> : <span className="pg-stxt">compiled <span className="pg-ms">· {ms.toFixed(0)} ms</span></span>}
           </span>
           <ThemeToggle className="pg-btn" />
         </div>
@@ -187,7 +187,7 @@ function StagePane({ which, defs, id, mode, setId, setMode, r, fn, fnNames, setF
       </div>
       <div className="pg-cap">
         <button type="button" className={`pg-cap-text ${more ? 'open' : ''}`} onClick={() => setMore((m) => !m)} aria-expanded={more} title={def.hint}>
-          <b>{idx + 1}. {def.label}</b> <span>{def.hint}</span>
+          <span className="pg-phase">{PHASE_LABEL[def.phase]}</span><b>{idx + 1}. {def.label}</b> <span>{def.hint}</span>
         </button>
         {canCFG && <Seg label="View" value={mode} onChange={setMode} options={[['text', 'Text'], ['cfg', 'CFG']]} />}
         {canCFG && mode === 'cfg' && fnNames.length > 1 && <Select label="Function" value={fn ?? ''} options={fnNames.map((n) => [n, `@${n}`] as [string, string])} onChange={setFn} />}
@@ -237,7 +237,7 @@ function OptionsPanel({ st, set, changed, reset }: { st: Settings; set: <K exten
         </div>
       </fieldset>
       <div className="opt-foot">
-        <span className="muted">{changed ? `${changed} option${changed > 1 ? 's' : ''} changed from the defaults` : 'All defaults'}</span>
+        <span className="muted">{changed ? `${changed} changed from defaults` : 'All at defaults'}</span>
         <button type="button" className="pg-btn" onClick={reset} disabled={!changed}>Reset to defaults</button>
       </div>
     </div>

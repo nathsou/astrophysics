@@ -25,7 +25,7 @@ export function tokenLines(toks: Token[]): Line[] {
   }
   const out: Line[] = [{
     kind: 'comment',
-    toks: [tok('; ', 'comment'), tok('keyword', 'kw'), tok('  '), tok('identifier', 'frame'), tok('  '), tok('call', 'sym'), tok('  '), tok('number', 'imm'), tok('  '), tok('operator', 'op'), tok('  '), tok('punctuation', 'punct'), tok(`   · ${toks.length - 1} tokens`, 'comment')],
+    toks: [tok(`; ${toks.length - 1} tokens: `, 'comment'), tok('keyword', 'kw'), tok('  '), tok('identifier', 'frame'), tok('  '), tok('call', 'sym'), tok('  '), tok('number', 'imm'), tok('  '), tok('operator', 'op'), tok('  '), tok('punctuation', 'punct')],
   }];
   const lines = [...byLine.keys()].sort((a, b) => a - b);
   for (const ln of lines) {
