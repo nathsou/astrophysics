@@ -32,7 +32,7 @@ import { type CalculusId, type Features, calculi } from './core/calculus.ts';
 import type { Command, SAlt, SBinder, STerm, Span } from './syntax/ast.ts';
 import { ParseError, Parser } from './syntax/parser.ts';
 import { AutoBound, ElabError, Elaborator, type InfoItem, popLocal } from './elab/elaborator.ts';
-import { runTacticBlock as runTacticBlockOf } from './elab/tactics.ts';
+import { runTacticBlock as runTacticBlockOf, natSuccToAdd } from './elab/tactics.ts';
 import { compileEquations } from './elab/match.ts';
 import type { TacticStep, GoalSnap } from './elab/tactics.ts';
 import { classOf } from './elab/instances.ts';
@@ -67,7 +67,7 @@ export type Output =
 
 /** how a recursive definition was shown to terminate (for the termination view) */
 export type Termination =
-  | { kind: 'structural'; arg: string }
+  | { kind: 'structural'; arg: string; pos: number }
   | { kind: 'wf'; measure: Expr; lctx: LocalContext; obligations: { call: Expr; goal: Expr; lctx: LocalContext }[] };
 
 export interface CommandResult {
@@ -732,7 +732,7 @@ export class Processor {
           ? { kind: 'theorem', name, levelParams: params, type: vT, value: vV, doc: cmd.doc }
           : { kind: 'def', name, levelParams: params, type: vT, value: vV, height: defHeight(this.env, vV), doc: cmd.doc, compiled };
       this.addDecl(decl, res, cmd.nameSpan);
-      if (compiled?.recursive && compiled.argName && res.output?.k === 'decl') res.output.termination = { kind: 'structural', arg: compiled.argName };
+      if (compiled?.recursive && compiled.argName && res.output?.k === 'decl') res.output.termination = { kind: 'structural', arg: compiled.argName, pos: (compiled.decreasing ?? 0) + 1 };
       if (cmd.attrs) this.applyAttrs(name, cmd.attrs, cmd.nameSpan);
       if (el.eqnLeaves && el.eqnLeaves.length > 0 && kind === 'def') this.addEquationLemmas(el, name, params, el.eqnLeaves);
     });
@@ -848,10 +848,13 @@ export class Processor {
                 throw new GoalsError(
                   ['failed to prove termination: could not show that the measure decreases at the recursive call\n  ', { e: el.instantiate(e), lctx: el.lctx }, '\nThe goal was:'],
                   term.by!.span,
-                  [{ lctx: hideLocals(el.lctx, [f.id, n.id, rec.id, hxd.id]), type: el.instantiate(goalT), span: term.by!.span }],
+                  [{ lctx: hideLocals(el.lctxWithAliases(), [f.id, n.id, rec.id, hxd.id]), type: natSuccToAdd(el.instantiate(goalT)), span: term.by!.span }],
                 );
               }
-              obligations.push({ call: el.instantiate(e), goal: el.instantiate(goalT), lctx: hideLocals(el.lctx, [f.id, n.id, rec.id, hxd.id]) });
+              {
+                const show = (x: Expr) => natSuccToAdd(replaceExpr(el.instantiate(x), (y) => (y.k === 'fvar' && y.id === f.id ? mkConst(name) : undefined)));
+                obligations.push({ call: show(e), goal: show(goalT), lctx: hideLocals(el.lctxWithAliases(), [f.id, n.id, rec.id, hxd.id]) });
+              }
               const lt = el.elab({ k: 'app', fn: id('Nat.lt_of_lt_of_eq'), args: [{ arg: E(proved) }, { arg: E(mkFVar(hxd.id)) }], span });
               const call = mkApps(rec, [ma, lt, ...a, mkApps(mkConst('Eq.refl', [lone]), [natT, ma])]);
               return mkApps(call, args.slice(all.length));

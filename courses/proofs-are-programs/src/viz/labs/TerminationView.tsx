@@ -27,7 +27,7 @@ export function TerminationView(props: { code: string; setup?: string; title?: s
                     when={d.t.kind === 'wf'}
                     fallback={
                       <span>
-                        — structural recursion: every recursive call is on a part of the argument <code class="mono">{(d.t as { arg: string }).arg}</code>.
+                        — structural recursion on argument #{(d.t as { pos: number }).pos}: every recursive call is on a part of it (a field of the constructor it was matched with).
                       </span>
                     }
                   >

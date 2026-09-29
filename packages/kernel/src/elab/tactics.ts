@@ -152,20 +152,7 @@ export class TacticRunner {
   /** show `Nat.succ n` as `n + 1` in a goal and its hypotheses (the two are definitionally equal), as Lean does */
   succToAdd(g: number): void {
     const el = this.el;
-    const conv = (e: Expr): Expr =>
-      replaceExpr(el.instantiate(e), (x) => {
-        if (x.k !== 'app' || x.fn.k !== 'const' || x.fn.name !== 'Nat.succ') return undefined;
-        let n = 0;
-        let y: Expr = x;
-        while (y.k === 'app' && y.fn.k === 'const' && y.fn.name === 'Nat.succ') {
-          n++;
-          y = y.arg;
-        }
-        if (y.k === 'const' && y.name === 'Nat.zero') return x; // a numeral
-        let k: Expr = mkConst('Nat.zero');
-        for (let i = 0; i < n; i++) k = mkApp(mkConst('Nat.succ'), k);
-        return mkApps(mkConst('Nat.add'), [conv(y), k]);
-      });
+    const conv = (e: Expr): Expr => natSuccToAdd(el.instantiate(e));
     const d = this.decl(g);
     if (!d || this.assigned(g)) return;
     d.localType = conv(d.localType);
@@ -1715,5 +1702,22 @@ function substFVars(e: Expr, m: Map<number, Expr>): Expr {
     if (!x.fv) return x;
     if (x.k === 'fvar') return m.get(x.id) ?? x;
     return undefined;
+  });
+}
+
+/** `Nat.succ (Nat.succ n)` ⟶ `n + 2` (definitionally equal, and how Lean shows it) */
+export function natSuccToAdd(e: Expr): Expr {
+  return replaceExpr(e, (x) => {
+    if (x.k !== 'app' || x.fn.k !== 'const' || x.fn.name !== 'Nat.succ') return undefined;
+    let n = 0;
+    let y: Expr = x;
+    while (y.k === 'app' && y.fn.k === 'const' && y.fn.name === 'Nat.succ') {
+      n++;
+      y = y.arg;
+    }
+    if (y.k === 'const' && y.name === 'Nat.zero') return x; // a numeral
+    let k: Expr = mkConst('Nat.zero');
+    for (let i = 0; i < n; i++) k = mkApp(mkConst('Nat.succ'), k);
+    return mkApps(mkConst('Nat.add'), [natSuccToAdd(y), k]);
   });
 }
