@@ -266,6 +266,8 @@ class Matcher {
   }
 }
 
+const lsuccZero = { k: 'succ', l: { k: 'zero' } } as Level;
+
 function numeral(e: Expr): number | undefined {
   let n = 0;
   while (e.k === 'app' && e.fn.k === 'const' && e.fn.name === 'Nat.succ') {
@@ -573,6 +575,8 @@ export class Simplifier {
       if (g) return g;
       const b = this.builtinEq(e);
       if (b) return b;
+      const c = this.natAddEq(e);
+      if (c) return c;
     }
     // rules
     const cands = [...(this.index.get(keyOf(e)) ?? []), ...(this.index.get('*') ?? [])];
@@ -742,6 +746,32 @@ export class Simplifier {
     return undefined;
   }
 
+  /** x + k = m with numerals k, m:  x = m - k  (or False when m < k) */
+  private natAddEq(e: Expr): Result | undefined {
+    const el = this.el;
+    const h = getAppFn(e);
+    if (h.k !== 'const' || h.name !== 'Eq' || !el.env.has('Nat.add_eq_false_of_lt')) return undefined;
+    const [T, a, b] = getAppArgs(e);
+    if (!T || T.k !== 'const' || T.name !== 'Nat') return undefined;
+    const ah = getAppFn(a);
+    const aArgs = getAppArgs(a);
+    if (ah.k !== 'const' || ah.name !== 'Nat.add' || aArgs.length !== 2) return undefined;
+    const k = numeral(aArgs[1]);
+    const m = numeral(b);
+    if (k === undefined || m === undefined || k === 0 || numeral(aArgs[0]) !== undefined) return undefined;
+    const x = aArgs[0];
+    if (m >= k) {
+      const r = mkNumeral(m - k);
+      return { expr: mkApps(mkConst('Eq', [lsuccZero]), [T, x, r]), proof: this.app('Nat.add_right_cancel_iff', [x, r, aArgs[1]]) };
+    }
+    const lt = mkApps(mkConst('Nat.lt'), [b, aArgs[1]]);
+    const inst = synthInstance(el, mkApp(mkConst('Decidable'), lt));
+    if (!inst) return undefined;
+    const refl = mkApps(mkConst('Eq.refl', [lsuccZero]), [mkConst('Bool'), mkConst('Bool.true')]);
+    const hlt = mkApps(mkConst('of_decide_eq_true'), [lt, inst, refl]);
+    return { expr: mkConst('False'), proof: this.app('Nat.add_eq_false_of_lt', [x, hlt]) };
+  }
+
   /** a = a,  c₁ … = c₂ …,  c x = c y */
   private builtinEq(e: Expr): Result | undefined {
     const el = this.el;
@@ -753,9 +783,19 @@ export class Simplifier {
     if (exprEq(a, b)) return { expr: mkConst('True'), proof: this.app('eq_self', [a]) };
     // sides that are equal by a short computation (like n + 1 and Nat.succ n)
     if (!a.mv && !b.mv && cheapDefEq(el, a, b)) return { expr: mkConst('True'), proof: this.app('eq_true', [mkApps(mkConst('Eq.refl', getAppFn(e).k === 'const' ? (getAppFn(e) as { levels: readonly Level[] }).levels : []), [T, a])]) };
-    const ca = ctorOf(el, a);
-    const cb = ctorOf(el, b);
-    if (!ca || !cb) return undefined;
+    let ca = ctorOf(el, a);
+    let cb = ctorOf(el, b);
+    if (!ca || !cb) {
+      // sides that compute to different constructors (x + 1 and 0): the equation is False
+      if (a.mv || b.mv) return undefined;
+      const wa = ca ? a : whnfBounded(el, a);
+      const wb = cb ? b : whnfBounded(el, b);
+      const ca2 = wa && ctorOf(el, wa);
+      const cb2 = wb && ctorOf(el, wb);
+      if (!ca2 || !cb2 || ca2.name === cb2.name) return undefined;
+      ca = ca2;
+      cb = cb2;
+    }
     const Tw = el.whnf(T);
     const Ti = el.env.get((getAppFn(Tw) as { name: string }).name ?? '');
     if (!Ti || Ti.kind !== 'inductive' || Ti.numIndices > 0 || Ti.elimOnlyProp) return undefined;
@@ -936,9 +976,9 @@ function collectArgs(runner: TacticRunner, g: number, args: SimpArg[], span: Spa
       }
     }
     const e = runner.elabTerm(t, undefined, { allowNatural: true, span }).e;
-    const r = mkRule(el, pretty(t), e, [], a.rev);
-    if (!r) throw new ElabError(['simp: cannot use this term as a rewrite rule'], t.span);
-    out.rules.push(r);
+    const rs = mkRules(el, pretty(t), e, a.rev);
+    if (!rs.length) throw new ElabError(['simp: cannot use this term as a rewrite rule'], t.span);
+    out.rules.push(...rs);
   }
   void g;
   return out;
@@ -946,6 +986,21 @@ function collectArgs(runner: TacticRunner, g: number, args: SimpArg[], span: Spa
 
 function pretty(t: STerm): string {
   return t.k === 'ident' ? t.name : 'term';
+}
+
+/** rewrite rules from a proof; a conjunction gives one rule per conjunct */
+function mkRules(el: Elaborator, name: string, proof: Expr, rev = false): Rule[] {
+  const t = el.whnf(el.instantiate(el.inferType(proof)));
+  const h = getAppFn(t);
+  if (h.k === 'const' && h.name === 'And' && getAppArgs(t).length === 2 && el.env.has('And.left')) {
+    const [a, b] = getAppArgs(t);
+    return [
+      ...mkRules(el, name, mkApps(mkConst('And.left'), [a, b, proof]), rev),
+      ...mkRules(el, name, mkApps(mkConst('And.right'), [a, b, proof]), rev),
+    ];
+  }
+  const r = mkRule(el, name, proof, [], rev);
+  return r ? [r] : [];
 }
 
 function hypRules(el: Elaborator, exclude: number[] = []): Rule[] {
@@ -960,8 +1015,7 @@ function hypRules(el: Elaborator, exclude: number[] = []): Rule[] {
       isProp = false;
     }
     if (!isProp) continue;
-    const r = mkRule(el, d.name, mkFVar(d.id));
-    if (r && !(r.lhs.k === 'fvar' && r.vars.some((v) => v.id === (r.lhs as FVar).id))) out.push(r);
+    for (const r of mkRules(el, d.name, mkFVar(d.id))) if (!(r.lhs.k === 'fvar' && r.vars.some((v) => v.id === (r.lhs as FVar).id))) out.push(r);
   }
   return out;
 }

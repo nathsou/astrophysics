@@ -453,6 +453,16 @@ namespace List
   | nil => rfl
   | cons a as ih => simp [ih]
 
+@[simp] theorem length_map {α : Type u} {β : Type v} (f : α → β) (as : List α) : length (map f as) = length as := by
+  induction as with
+  | nil => rfl
+  | cons a as ih => simp [ih]
+
+@[simp] theorem append_eq_nil {α : Type u} (as bs : List α) : (as ++ bs = []) = (as = [] ∧ bs = []) := by
+  cases as with
+  | nil => simp
+  | cons a as => simp
+
 /-- The elements for which `p` returns `true`, in order. -/
 def filter {α : Type u} (p : α → Bool) : List α → List α
   | [] => []
@@ -828,6 +838,29 @@ theorem contra (a b ρ : List Nat) (hd : dominates a b = Bool.true) (h : eval a 
       exact Nat.not_add_one_le_self _ h4
 
 end Omega
+
+-- ---------------------------------------------------------------------------
+-- lemmas proved with omega (used by simp)
+
+theorem Nat.add_eq_false_of_lt (x : Nat) {k m : Nat} (h : m < k) : (x + k = m) = False :=
+  eq_false (fun e => by omega)
+
+/-- `∀ n, n < k → p n` is decidable when each `p n` is: check 0, 1, …, k - 1. -/
+def Nat.decBallLT (p : Nat → Prop) [inst : ∀ n, Decidable (p n)] : (k : Nat) → Decidable (∀ n, n < k → p n)
+  | 0 => isTrue (fun n h => absurd h (by omega))
+  | k + 1 =>
+    match Nat.decBallLT p k with
+    | isFalse h => isFalse (fun hall => h (fun n hn => hall n (by omega)))
+    | isTrue h =>
+      match inst k with
+      | isFalse hk => isFalse (fun hall => hk (hall k (by omega)))
+      | isTrue hk => isTrue (fun n hn =>
+          match Nat.decEq n k with
+          | isTrue e => e ▸ hk
+          | isFalse ne => h n (by omega))
+
+instance Nat.instDecidableBallLT (k : Nat) (p : Nat → Prop) [∀ n, Decidable (p n)] : Decidable (∀ n, n < k → p n) :=
+  Nat.decBallLT p k
 
 -- ---------------------------------------------------------------------------
 -- classical logic: excluded middle from the axiom of choice (Diaconescu's theorem)

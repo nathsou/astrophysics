@@ -321,11 +321,13 @@ function refuteWith(runner: TacticRunner, el: Elaborator, facts: Fact[], splits:
   const r = tryRefute(el, facts, span);
   if (r) return r;
   if (splits.length === 0) {
+    const cex = counterexample(el, facts);
     throw new ElabError(
       [
-        `omega could not prove the goal: no linear combination of the ${facts.length} fact${facts.length === 1 ? '' : 's'} it found gives a contradiction`,
+        `omega could not prove the goal: no linear combination of the ${facts.length} fact${facts.length === 1 ? '' : 's'} it found (the hypotheses, and the negated goal) gives a contradiction`,
         facts.length ? '\n' : '',
         ...facts.flatMap((f, i) => [i ? '\n' : '', '  ', { e: f.l, lctx: el.lctx }, ' ≤ ', { e: f.r, lctx: el.lctx }]),
+        ...(cex ? ['\nThey all hold when ', ...cex.flatMap((c, i) => [i ? ', ' : '', { e: c.atom, lctx: el.lctx }, ` = ${c.value}`]), ', so the goal may be false.'] : []),
       ],
       span,
     );
@@ -342,6 +344,32 @@ function refuteWith(runner: TacticRunner, el: Elaborator, facts: Fact[], splits:
   const left = branch(s.a, s.b, mkApps(mkConst('Nat.lt'), [s.a, s.b]));
   const right = branch(s.b, s.a, mkApps(mkConst('Nat.lt'), [s.b, s.a]));
   return app(el, 'Or.elim', [app(el, 'Nat.lt_or_gt_of_ne', [s.h], span), left, right], span, mkConst('False'));
+}
+
+/** small values of the atoms satisfying every fact (a hint that the goal is false) */
+function counterexample(el: Elaborator, facts: Fact[]): { atom: Expr; value: bigint }[] | undefined {
+  const atoms = new Atoms();
+  let lin: { l: Lin; r: Lin }[];
+  try {
+    lin = facts.map((f) => ({ l: linearize(el.instantiate(f.l), atoms).lin, r: linearize(el.instantiate(f.r), atoms).lin }));
+  } catch {
+    return undefined;
+  }
+  const n = atoms.list.length;
+  if (n === 0 || n > 4) return undefined;
+  const val = (x: Lin, v: bigint[]) => [...x.a].reduce((acc, [i, c]) => acc + c * v[i], x.c);
+  const max = n <= 2 ? 12 : 5;
+  const v: bigint[] = new Array(n).fill(0n);
+  const total = (max + 1) ** n;
+  for (let k = 0; k < total; k++) {
+    let x = k;
+    for (let i = 0; i < n; i++) {
+      v[i] = BigInt(x % (max + 1));
+      x = Math.floor(x / (max + 1));
+    }
+    if (lin.every((f) => val(f.l, v) <= val(f.r, v))) return atoms.list.map((atom, i) => ({ atom, value: v[i] }));
+  }
+  return undefined;
 }
 
 function tryRefute(el: Elaborator, facts: Fact[], span: Span): Expr | undefined {
