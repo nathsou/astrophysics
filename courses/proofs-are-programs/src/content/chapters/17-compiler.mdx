@@ -1,1 +1,341 @@
-This chapter is being written.
+This is the chapter the course has been building towards: a compiler, and a proof that it is correct. The source language is the expression language of Chapter 16. The target is a **stack machine**: a sequence of simple instructions that push numbers on a stack and combine the top two. Real virtual machines (the JVM, WebAssembly, Python's bytecode interpreter) are stack machines of this kind, and compiling expressions to them is the first thing a compiler course teaches.
+
+The theorem is short to state: **running the compiled code leaves the value of the expression on the stack.** The proof is an induction with one line per construct, once the statement is generalised in the right way, and finding that generalisation is the lesson of the chapter.
+
+## The machine
+
+The machine has five instructions. `push n` pushes a number, `load x` pushes the value of a variable, and `add`, `sub`, `mul` pop two numbers and push the result. The order matters for `sub`: the top of the stack is the *second* operand.
+
+```lean
+inductive Expr where
+  | num (n : Nat)
+  | var (x : Nat)
+  | add (a b : Expr)
+  | sub (a b : Expr)
+  | mul (a b : Expr)
+deriving DecidableEq
+
+def eval (env : Nat → Nat) : Expr → Nat
+  | .num n => n
+  | .var x => env x
+  | .add a b => eval env a + eval env b
+  | .sub a b => eval env a - eval env b
+  | .mul a b => eval env a * eval env b
+
+inductive Instr where
+  | push (n : Nat)
+  | load (x : Nat)
+  | add
+  | sub
+  | mul
+deriving DecidableEq
+
+def exec (env : Nat → Nat) : List Instr → List Nat → List Nat
+  | [], s => s
+  | .push n :: is, s => exec env is (n :: s)
+  | .load x :: is, s => exec env is (env x :: s)
+  | .add :: is, b :: a :: s => exec env is ((a + b) :: s)
+  | .sub :: is, b :: a :: s => exec env is ((a - b) :: s)
+  | .mul :: is, b :: a :: s => exec env is ((a * b) :: s)
+  | _ :: is, s => exec env is s
+```
+
+The last line handles an operation with fewer than two numbers on the stack: this machine silently skips it. Compiled code never does that, and part of what the proof shows is that it never needs to.
+
+## The compiler
+
+To compute `a + b`: compute `a` (its value ends up on the stack), compute `b` (its value ends up on top of it), then add.
+
+```lean
+def compile : Expr → List Instr
+  | .num n => [.push n]
+  | .var x => [.load x]
+  | .add a b => compile a ++ compile b ++ [.add]
+  | .sub a b => compile a ++ compile b ++ [.sub]
+  | .mul a b => compile a ++ compile b ++ [.mul]
+
+#eval compile (.sub (.mul (.num 2) (.add (.var 0) (.num 3))) (.var 1))
+#eval exec (fun _ => 4) (compile (.sub (.mul (.num 2) (.add (.var 0) (.num 3))) (.var 1))) []
+```
+
+Here is the same compiler on a picture. The top row is the interpreter: an expression and its value. The bottom row is the compiled code and the machine running it, one instruction at a time. As you step, each instruction highlights the part of the expression it comes from, and the stack shows which subexpression each value belongs to.
+
+<SimulationLab />
+
+The picture is a square: going right then down (evaluate) or down then right (compile, then run) should give the same number. When it does for every expression and every environment, we say the diagram **commutes**, and that is what compiler correctness means. The "buggy compiler" box switches to a compiler that compiles the operands of `-` in the wrong order. Try `x - y`: the square no longer commutes. Try `x + y`: it still does, because addition does not care about the order, which is exactly why a bug like this can hide for a long time.
+
+## Test before you prove
+
+```lean
+#test ∀ (env : Nat → Nat) (e : Expr), exec env (compile e) [] = [eval env e]
+```
+
+## The first attempt
+
+The statement we want is `exec env (compile e) [] = [eval env e]`. Try induction on `e` directly, and look at the `add` case: the goal is about `exec env (compile a ++ compile b ++ [.add]) []`, and the induction hypotheses are about `exec env (compile a) []` and `exec env (compile b) []`. They do not apply: the code of `a` is not run on its own, but followed by more code; and the code of `b` does not start from an empty stack, but from a stack that already holds the value of `a`.
+
+This is the situation of Chapter 14 once more. The recursion (here, the way the compiled code runs) uses the pieces in a more general context than the statement allows. So we generalise the statement to that context: **any code afterwards, any stack before**.
+
+<Key>
+`exec env (compile e ++ rest) s = exec env rest (eval env e :: s)`: running the code of `e` followed by `rest`, from any stack `s`, is the same as running `rest` from `s` with the value of `e` pushed on top. The code of an expression does exactly one thing: push its value.
+</Key>
+
+The original statement is the special case `rest = []` and `s = []`.
+
+## The proof
+
+<ObligationGrid lens code={`theorem compile_correct (env : Nat → Nat) (e : Expr) (rest : List Instr) (s : List Nat) :
+    exec env (compile e ++ rest) s = exec env rest (eval env e :: s) := by
+  induction e generalizing rest s with
+  | num n => rfl
+  | var x => rfl
+  | add a b iha ihb => simp [compile, List.append_assoc, iha, ihb, exec, eval]
+  | sub a b iha ihb => simp [compile, List.append_assoc, iha, ihb, exec, eval]
+  | mul a b iha ihb => simp [compile, List.append_assoc, iha, ihb, exec, eval]
+
+theorem compile_correct' (env : Nat → Nat) (e : Expr) : exec env (compile e) [] = [eval env e] := by
+  have := compile_correct env e [] []
+  simp at this
+  exact this`} setup={`inductive Expr where
+  | num (n : Nat)
+  | var (x : Nat)
+  | add (a b : Expr)
+  | sub (a b : Expr)
+  | mul (a b : Expr)
+deriving DecidableEq
+
+def eval (env : Nat → Nat) : Expr → Nat
+  | .num n => n
+  | .var x => env x
+  | .add a b => eval env a + eval env b
+  | .sub a b => eval env a - eval env b
+  | .mul a b => eval env a * eval env b
+
+inductive Instr where
+  | push (n : Nat)
+  | load (x : Nat)
+  | add
+  | sub
+  | mul
+deriving DecidableEq
+
+def exec (env : Nat → Nat) : List Instr → List Nat → List Nat
+  | [], s => s
+  | .push n :: is, s => exec env is (n :: s)
+  | .load x :: is, s => exec env is (env x :: s)
+  | .add :: is, b :: a :: s => exec env is ((a + b) :: s)
+  | .sub :: is, b :: a :: s => exec env is ((a - b) :: s)
+  | .mul :: is, b :: a :: s => exec env is ((a * b) :: s)
+  | _ :: is, s => exec env is s
+
+def compile : Expr → List Instr
+  | .num n => [.push n]
+  | .var x => [.load x]
+  | .add a b => compile a ++ compile b ++ [.add]
+  | .sub a b => compile a ++ compile b ++ [.sub]
+  | .mul a b => compile a ++ compile b ++ [.mul]`} />
+
+Step through the `add` case with the lens. After unfolding `compile` and reassociating the appends, the goal starts with `exec env (compile a ++ (compile b ++ (.add :: rest))) s`:
+
+1. `iha`, with `rest := compile b ++ (.add :: rest)`, runs the code of `a`: the stack becomes `eval env a :: s`;
+2. `ihb`, with `rest := .add :: rest` and the new stack, runs the code of `b`: the stack becomes `eval env b :: eval env a :: s`;
+3. one step of `exec` performs the addition.
+
+Each use of an induction hypothesis instantiates `rest` and `s` differently. Without `generalizing rest s`, neither would apply.
+
+## Break the compiler
+
+What does a wrong compiler look like to the proof? Below, `compile` evaluates the operands of `sub` in the wrong order. The tests find it, and the grid shows exactly which case of the proof breaks. Fix `compile` and watch both turn green.
+
+<ObligationGrid errors title="A buggy compiler" code={`def compile : Expr → List Instr
+  | .num n => [.push n]
+  | .var x => [.load x]
+  | .add a b => compile a ++ compile b ++ [.add]
+  | .sub a b => compile b ++ compile a ++ [.sub]      -- bug: operands swapped
+  | .mul a b => compile a ++ compile b ++ [.mul]
+
+#test ∀ (env : Nat → Nat) (e : Expr), exec env (compile e) [] = [eval env e]
+
+theorem compile_correct (env : Nat → Nat) (e : Expr) (rest : List Instr) (s : List Nat) :
+    exec env (compile e ++ rest) s = exec env rest (eval env e :: s) := by
+  induction e generalizing rest s with
+  | num n => rfl
+  | var x => rfl
+  | add a b iha ihb => simp [compile, List.append_assoc, iha, ihb, exec, eval]
+  | sub a b iha ihb => simp [compile, List.append_assoc, iha, ihb, exec, eval]
+  | mul a b iha ihb => simp [compile, List.append_assoc, iha, ihb, exec, eval]`} setup={`inductive Expr where
+  | num (n : Nat)
+  | var (x : Nat)
+  | add (a b : Expr)
+  | sub (a b : Expr)
+  | mul (a b : Expr)
+deriving DecidableEq
+
+def eval (env : Nat → Nat) : Expr → Nat
+  | .num n => n
+  | .var x => env x
+  | .add a b => eval env a + eval env b
+  | .sub a b => eval env a - eval env b
+  | .mul a b => eval env a * eval env b
+
+inductive Instr where
+  | push (n : Nat)
+  | load (x : Nat)
+  | add
+  | sub
+  | mul
+deriving DecidableEq
+
+def exec (env : Nat → Nat) : List Instr → List Nat → List Nat
+  | [], s => s
+  | .push n :: is, s => exec env is (n :: s)
+  | .load x :: is, s => exec env is (env x :: s)
+  | .add :: is, b :: a :: s => exec env is ((a + b) :: s)
+  | .sub :: is, b :: a :: s => exec env is ((a - b) :: s)
+  | .mul :: is, b :: a :: s => exec env is ((a * b) :: s)
+  | _ :: is, s => exec env is s`} />
+
+The failing case shows the goal that remains: it says `eval env b - eval env a` where `eval env a - eval env b` was needed. A failed proof is not just "no": it points at the case, and the remaining goal says what went wrong.
+
+## Extension: conditionals and jumps
+
+Real machines do not only compute; they jump. Add a conditional to the language, `ifz c t e` ("if `c` is zero then `t` else `e`"), and two jump instructions: `jnz n` pops a number and, if it is not zero, skips the next `n` instructions; `jmp n` always skips `n`. The compiled code of a conditional is laid out like this:
+
+```text
+code of c
+jnz (length of t's code + 1)     -- c ≠ 0: skip to the code of e
+code of t
+jmp (length of e's code)         -- after t, skip over e
+code of e
+```
+
+Now `exec` is no longer structurally recursive (a jump continues with `is.drop n`, which is not a part of the list), so it needs the measure of Chapter 12. The proof has the same shape as before, and the new case has to show that each jump lands exactly at the start of the right piece of code: that is what the lemmas about `drop` say. It is the simplest instance of a **program-counter invariant**, the fact that makes proofs about real compilers work.
+
+<ObligationGrid title="Conditionals and jumps" code={`inductive Expr where
+  | num (n : Nat)
+  | var (x : Nat)
+  | add (a b : Expr)
+  | sub (a b : Expr)
+  | mul (a b : Expr)
+  | ifz (c t e : Expr)
+deriving DecidableEq
+
+def eval (env : Nat → Nat) : Expr → Nat
+  | .num n => n
+  | .var x => env x
+  | .add a b => eval env a + eval env b
+  | .sub a b => eval env a - eval env b
+  | .mul a b => eval env a * eval env b
+  | .ifz c t e => if eval env c = 0 then eval env t else eval env e
+
+inductive Instr where
+  | push (n : Nat)
+  | load (x : Nat)
+  | add
+  | sub
+  | mul
+  | jnz (n : Nat)
+  | jmp (n : Nat)
+deriving DecidableEq
+
+def exec (env : Nat → Nat) : List Instr → List Nat → List Nat
+  | [], s => s
+  | .push n :: is, s => exec env is (n :: s)
+  | .load x :: is, s => exec env is (env x :: s)
+  | .add :: is, b :: a :: s => exec env is ((a + b) :: s)
+  | .sub :: is, b :: a :: s => exec env is ((a - b) :: s)
+  | .mul :: is, b :: a :: s => exec env is ((a * b) :: s)
+  | .jnz n :: is, v :: s => if v = 0 then exec env is s else exec env (is.drop n) s
+  | .jmp n :: is, s => exec env (is.drop n) s
+  | _ :: is, s => exec env is s
+termination_by is s => is.length
+decreasing_by
+  all_goals simp
+  all_goals (try have := List.length_drop_le n is)
+  all_goals omega
+
+def compile : Expr → List Instr
+  | .num n => [.push n]
+  | .var x => [.load x]
+  | .add a b => compile a ++ compile b ++ [.add]
+  | .sub a b => compile a ++ compile b ++ [.sub]
+  | .mul a b => compile a ++ compile b ++ [.mul]
+  | .ifz c t e => compile c ++ [.jnz ((compile t).length + 1)] ++ compile t ++ [.jmp (compile e).length] ++ compile e
+
+-- jumping over a piece of code lands just after it
+theorem drop_append_len {α : Type} (l r : List α) : (l ++ r).drop l.length = r := by
+  induction l with
+  | nil => simp [List.drop]
+  | cons x l ih => simp [List.drop, ih]
+
+theorem drop_append_len_succ {α : Type} (l r : List α) (x : α) : (l ++ x :: r).drop (l.length + 1) = r := by
+  induction l with
+  | nil => simp [List.drop]
+  | cons y l ih => simp [List.drop, ih]
+
+theorem compile_correct (env : Nat → Nat) (e : Expr) (rest : List Instr) (s : List Nat) :
+    exec env (compile e ++ rest) s = exec env rest (eval env e :: s) := by
+  induction e generalizing rest s with
+  | num n => simp [compile, exec]
+  | var x => simp [compile, exec]
+  | add a b iha ihb => simp [compile, List.append_assoc, iha, ihb, exec, eval]
+  | sub a b iha ihb => simp [compile, List.append_assoc, iha, ihb, exec, eval]
+  | mul a b iha ihb => simp [compile, List.append_assoc, iha, ihb, exec, eval]
+  | ifz c t e ihc iht ihe =>
+    simp [compile, List.append_assoc, ihc]
+    by_cases h : eval env c = 0
+    · simp [exec, h, iht, eval, drop_append_len, ihe]
+    · simp [exec, h, eval]
+      rw [drop_append_len_succ]
+      exact ihe rest s`} />
+
+<Engineer title="CompCert">
+This chapter's theorem is a toy version of the correctness theorem of CompCert, a C compiler written and proved correct in the Rocq (formerly Coq) proof assistant by Xavier Leroy and colleagues. Its statement has the same shape, "the compiled code behaves as the source program", for a realistic C subset and real assembly languages. When researchers tested many C compilers with randomly generated programs (the Csmith project, 2011), they found hundreds of bugs in GCC and LLVM, and none in the proved parts of CompCert.
+</Engineer>
+
+## Exercises
+
+<Exercise id="compiler:neg" title="A new instruction" setup={`inductive Expr where
+  | num (n : Nat)
+  | add (a b : Expr)
+  | double (a : Expr)
+
+def eval : Expr → Nat
+  | .num n => n
+  | .add a b => eval a + eval b
+  | .double a => eval a + eval a
+
+inductive Instr where
+  | push (n : Nat)
+  | add
+  | dup
+
+def exec : List Instr → List Nat → List Nat
+  | [], s => s
+  | .push n :: is, s => exec is (n :: s)
+  | .add :: is, b :: a :: s => exec is ((a + b) :: s)
+  | .dup :: is, a :: s => exec is (a :: a :: s)
+  | _ :: is, s => exec is s`} code={`-- double a: compute a, duplicate it, add the two copies
+def compile : Expr → List Instr
+  | .num n => [.push n]
+  | .add a b => compile a ++ compile b ++ [.add]
+  | .double a => sorry
+
+theorem compile_correct (e : Expr) (rest : List Instr) (s : List Nat) :
+    exec (compile e ++ rest) s = exec rest (eval e :: s) := by
+  induction e generalizing rest s with
+  | num n => rfl
+  | add a b iha ihb => simp [compile, List.append_assoc, iha, ihb, exec, eval]
+  | double a iha => sorry`} must="compile compile_correct" hint="compile a ++ [.dup, .add]. In the proof, the same simp call as for add, without ihb." solution={`def compile : Expr → List Instr
+  | .num n => [.push n]
+  | .add a b => compile a ++ compile b ++ [.add]
+  | .double a => compile a ++ [.dup, .add]
+
+theorem compile_correct (e : Expr) (rest : List Instr) (s : List Nat) :
+    exec (compile e ++ rest) s = exec rest (eval e :: s) := by
+  induction e generalizing rest s with
+  | num n => rfl
+  | add a b iha ihb => simp [compile, List.append_assoc, iha, ihb, exec, eval]
+  | double a iha => simp [compile, List.append_assoc, iha, exec, eval]`}>
+The language gains `double a`, and the machine gains `dup`, which duplicates the top of the stack. Compile `double` using `dup`, and extend the proof.
+</Exercise>
