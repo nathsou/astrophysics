@@ -30,13 +30,15 @@ export default defineSim({
     let hoverIdx = -1;
 
     stage.overlay.style.pointerEvents = 'auto';
-    stage.overlay.addEventListener('pointermove', (e) => {
+    const pick = (e: PointerEvent) => {
       const rect = stage.overlay.getBoundingClientRect();
       const mx = e.clientX - rect.left;
       hoverIdx = pickIdx(mx);
       loop.invalidate();
-    });
-    stage.overlay.addEventListener('pointerleave', () => { hoverIdx = -1; loop.invalidate(); });
+    };
+    stage.overlay.addEventListener('pointermove', pick);
+    stage.overlay.addEventListener('pointerdown', pick); // a tap on touch screens
+    stage.overlay.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') { hoverIdx = -1; loop.invalidate(); } });
 
     let centers: number[] = [];
     let pxPerRsun = 1;
@@ -140,7 +142,7 @@ export default defineSim({
         }
       } else {
         ctx.fillStyle = pal.muted;
-        ctx.fillText(W < 420 ? 'Tap a star for its radius and temperature.' : 'Hover a star for its radius and temperature.', W / 2, 20);
+        ctx.fillText(matchMedia('(hover: none)').matches ? 'Tap a star for its radius and temperature.' : 'Hover a star for its radius and temperature.', W / 2, 20);
       }
     }
     const loop = new Loop(null, render);
