@@ -1,0 +1,150 @@
+{
+ "version": 1,
+ "title": "A telegraph line without a repeater",
+ "engine": "analog",
+ "components": [
+  {
+   "id": "B1",
+   "type": "battery",
+   "x": 4,
+   "y": 12,
+   "rot": 270,
+   "params": {
+    "voltage": 12
+   },
+   "label": "Line battery"
+  },
+  {
+   "id": "G1",
+   "type": "ground",
+   "x": 4,
+   "y": 14
+  },
+  {
+   "id": "S1",
+   "type": "pushbutton",
+   "x": 10,
+   "y": 8,
+   "label": "Key"
+  },
+  {
+   "id": "R1",
+   "type": "resistor",
+   "x": 18,
+   "y": 8,
+   "params": {
+    "resistance": 600
+   },
+   "label": ""
+  },
+  {
+   "id": "R2",
+   "type": "resistor",
+   "x": 26,
+   "y": 8,
+   "params": {
+    "resistance": 600
+   },
+   "label": ""
+  },
+  {
+   "id": "L1",
+   "type": "lamp",
+   "x": 36,
+   "y": 8,
+   "rot": 90,
+   "params": {
+    "ratedVoltage": 12,
+    "ratedPower": 0.12
+   },
+   "label": "Lamp"
+  },
+  {
+   "id": "G2",
+   "type": "ground",
+   "x": 36,
+   "y": 14
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     4,
+     8
+    ],
+    [
+     10,
+     8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     14,
+     8
+    ],
+    [
+     18,
+     8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     22,
+     8
+    ],
+    [
+     26,
+     8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     30,
+     8
+    ],
+    [
+     36,
+     8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     36,
+     12
+    ],
+    [
+     36,
+     14
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     4,
+     12
+    ],
+    [
+     4,
+     14
+    ]
+   ]
+  }
+ ],
+ "notes": [
+  {
+   "x": 16,
+   "y": 4,
+   "text": "the line: 8 \u03a9 per km of iron wire"
+  }
+ ]
+}

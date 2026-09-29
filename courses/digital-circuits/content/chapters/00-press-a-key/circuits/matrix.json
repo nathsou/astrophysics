@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "title": "A keyboard matrix, scanned",
+  "engine": "digital",
+  "components": [
+    {"id": "KQ", "type": "button", "x": 8, "y": 2, "label": "Q"},
+    {"id": "RQ", "type": "label", "x": 13, "y": 0, "flip": true, "params": {"name": "R0"}},
+    {"id": "UQ", "type": "and", "x": 16, "y": 0, "label": ""},
+    {"id": "KA", "type": "button", "x": 8, "y": 8, "label": "A"},
+    {"id": "RA", "type": "label", "x": 13, "y": 6, "flip": true, "params": {"name": "R1"}},
+    {"id": "UA", "type": "and", "x": 16, "y": 6, "label": ""},
+    {"id": "C0", "type": "or", "x": 26, "y": 3, "label": "OR"},
+    {"id": "L0", "type": "indicator", "x": 35, "y": 4, "label": "col 0", "params": {"color": "green"}},
+
+    {"id": "KW", "type": "button", "x": 8, "y": 16, "label": "W"},
+    {"id": "RW", "type": "label", "x": 13, "y": 14, "flip": true, "params": {"name": "R0"}},
+    {"id": "UW", "type": "and", "x": 16, "y": 14, "label": ""},
+    {"id": "KS", "type": "button", "x": 8, "y": 22, "label": "S"},
+    {"id": "RS", "type": "label", "x": 13, "y": 20, "flip": true, "params": {"name": "R1"}},
+    {"id": "US", "type": "and", "x": 16, "y": 20, "label": ""},
+    {"id": "C1", "type": "or", "x": 26, "y": 17, "label": "OR"},
+    {"id": "L1", "type": "indicator", "x": 35, "y": 18, "label": "col 1", "params": {"color": "green"}},
+
+    {"id": "CLK", "type": "clock", "x": 4, "y": 32, "params": {"frequency": 2}, "label": "scan clock"},
+    {"id": "SR0", "type": "label", "x": 10, "y": 32, "params": {"name": "R0"}},
+    {"id": "INV", "type": "not", "x": 10, "y": 36, "label": ""},
+    {"id": "SR1", "type": "label", "x": 18, "y": 36, "params": {"name": "R1"}}
+  ],
+  "wires": [
+    {"points": [[11, 2], [16, 2]]},
+    {"points": [[13, 0], [16, 0]]},
+    {"points": [[11, 8], [16, 8]]},
+    {"points": [[13, 6], [16, 6]]},
+    {"points": [[22, 1], [24, 1], [24, 3], [26, 3]]},
+    {"points": [[22, 7], [24, 7], [24, 5], [26, 5]]},
+    {"points": [[32, 4], [35, 4]]},
+
+    {"points": [[11, 16], [16, 16]]},
+    {"points": [[13, 14], [16, 14]]},
+    {"points": [[11, 22], [16, 22]]},
+    {"points": [[13, 20], [16, 20]]},
+    {"points": [[22, 15], [24, 15], [24, 17], [26, 17]]},
+    {"points": [[22, 21], [24, 21], [24, 19], [26, 19]]},
+    {"points": [[32, 18], [35, 18]]},
+
+    {"points": [[7, 32], [10, 32]]},
+    {"points": [[7, 32], [7, 36], [10, 36]]},
+    {"points": [[15, 36], [18, 36]]}
+  ],
+  "notes": [
+    {"x": 8, "y": -3, "text": "column 0: keys Q and A"},
+    {"x": 8, "y": 11, "text": "column 1: keys W and S"},
+    {"x": 18, "y": 31, "text": "scanner: R0 and R1 take turns"}
+  ]
+}

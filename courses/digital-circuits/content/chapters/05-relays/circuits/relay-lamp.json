@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "title": "A relay switches a lamp",
+  "engine": "analog",
+  "components": [
+    {"id": "B1", "type": "battery", "x": 4, "y": 10, "rot": 270, "params": {"voltage": 5}, "label": "5 V"},
+    {"id": "S1", "type": "switch", "x": 8, "y": 4, "params": {"closed": false}, "label": "Switch"},
+    {"id": "K1", "type": "relay", "x": 20, "y": 4, "params": {"coilVoltage": 5}, "label": "Relay"},
+    {"id": "B2", "type": "battery", "x": 34, "y": 14, "rot": 270, "params": {"voltage": 6}, "label": "6 V"},
+    {"id": "L1", "type": "lamp", "x": 38, "y": 4, "params": {"ratedVoltage": 6, "ratedPower": 0.3}, "label": "Lamp"},
+    {"id": "G1", "type": "ground", "x": 4, "y": 12},
+    {"id": "G2", "type": "ground", "x": 20, "y": 12},
+    {"id": "G3", "type": "ground", "x": 34, "y": 16},
+    {"id": "G4", "type": "ground", "x": 46, "y": 16}
+  ],
+  "wires": [
+    {"points": [[4, 6], [4, 4], [8, 4]]},
+    {"points": [[12, 4], [20, 4]]},
+    {"points": [[20, 8], [20, 12]]},
+    {"points": [[4, 10], [4, 12]]},
+    {"points": [[28, 6], [34, 6], [34, 10]]},
+    {"points": [[28, 4], [38, 4]]},
+    {"points": [[34, 14], [34, 16]]},
+    {"points": [[42, 4], [46, 4], [46, 16]]}
+  ],
+  "notes": [
+    {"x": 4, "y": 0, "text": "control circuit: 70 mA"},
+    {"x": 30, "y": 0, "text": "load circuit: its own battery"}
+  ]
+}
