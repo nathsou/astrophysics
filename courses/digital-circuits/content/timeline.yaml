@@ -125,3 +125,18 @@
   people: Isamu Akasaki, Hiroshi Amano, Shuji Nakamura
   chapter: diodes-and-leds
   text: Efficient blue LEDs of gallium nitride and indium gallium nitride make white LED lighting possible. Nobel Prize in Physics, 2014.
+- year: 1906
+  title: De Forest’s Audion
+  people: Lee de Forest
+  chapter: the-transistor
+  text: 'A third electrode, a grid, in Fleming’s valve lets a small voltage control a large current: the first electrical amplifier. The patent application is dated 25 October.'
+- year: 1944
+  title: Colossus
+  people: Tommy Flowers
+  chapter: the-transistor
+  text: About 1,500 valves break the Lorenz cipher at Bletchley Park, from early February. A Mark 2 of 2,400 valves follows on 1 June.
+- year: 1947
+  title: The point-contact transistor
+  people: John Bardeen, Walter Brattain, William Shockley
+  chapter: the-transistor
+  text: On 16 December two gold contacts on germanium amplify a signal about a hundred times; it is shown to Bell Labs management on 23 December. Shockley conceives the junction transistor on 23 January 1948.

@@ -412,3 +412,89 @@ nobel2014:
   venue: NobelPrize.org
   url: https://www.nobelprize.org/prizes/physics/2014/press-release/
   note: Awarded to Isamu Akasaki, Hiroshi Amano and Shuji Nakamura “for the invention of efficient blue light-emitting diodes which has enabled bright and energy-saving white light sources”.
+deforest-patent:
+  authors: Lee de Forest
+  year: 1907
+  title: Device for amplifying feeble electrical currents
+  venue: US Patent 841,387. Filed 25 October 1906, granted 15 January 1907
+  url: https://patents.google.com/patent/US841387A/en
+  note: The Audion. The three-electrode (grid) form was the subject of a second application, filed 29 January 1907.
+nmah-audion:
+  authors: National Museum of American History, Smithsonian Institution
+  year: 1906
+  title: Experimental DeForest “Audion” tube
+  venue: Smithsonian Institution, object nmah_1289117
+  url: https://americanhistory.si.edu/collections/object/nmah_1289117
+  note: An early Audion, with its filament, grid and plate.
+copeland2006:
+  authors: B. Jack Copeland (ed.)
+  year: 2006
+  title: 'Colossus: The Secrets of Bletchley Park’s Codebreaking Computers'
+  venue: Oxford University Press
+  note: Tommy Flowers’s design of Colossus and its valves; the Mark 1 of about 1,500 valves and the Mark 2 of 2,400.
+tnmoc-colossus:
+  authors: The National Museum of Computing
+  year: 2020
+  title: Colossus
+  venue: The National Museum of Computing, Bletchley Park
+  url: https://www.tnmoc.org/colossus
+  note: The Mark 1 began operation at Bletchley Park in early February 1944; the first Mark 2 went into service on 1 June 1944.
+bardeen1948:
+  authors: J. Bardeen and W. H. Brattain
+  year: 1948
+  title: The transistor, a semi-conductor triode
+  venue: Physical Review 74(2), 230–231
+  url: https://doi.org/10.1103/PhysRev.74.230
+  note: The announcement of the point-contact transistor.
+ethw-transistor:
+  authors: IEEE History Center
+  year: 2012
+  title: Bell demonstrates transistor
+  venue: Engineering and Technology History Wiki
+  url: https://ethw.org/Bell_Demonstrates_Transistor
+  note: The amplification of 16 December 1947 and the demonstration to Bell Labs officials on 23 December.
+chm-transistor:
+  authors: Computer History Museum
+  year: 2007
+  title: '1947: Invention of the point-contact transistor'
+  venue: Computer History Museum, The Silicon Engine
+  url: https://www.computerhistory.org/siliconengine/invention-of-the-point-contact-transistor/
+chm-junction-transistor:
+  authors: Computer History Museum
+  year: 2007
+  title: '1948: Conception of the junction transistor'
+  venue: Computer History Museum, The Silicon Engine
+  url: https://www.computerhistory.org/siliconengine/conception-of-the-junction-transistor/
+  note: Shockley’s notebook of 23 January 1948.
+shockley1949:
+  authors: William Shockley
+  year: 1949
+  title: The theory of p-n junctions in semiconductors and p-n junction transistors
+  venue: Bell System Technical Journal 28(3), 435–489
+  url: https://doi.org/10.1002/j.1538-7305.1949.tb03645.x
+  note: The theory of the junction diode and of the junction transistor.
+shirriff2019:
+  authors: Ken Shirriff
+  year: 2019
+  title: 'A computer built from NOR gates: inside the Apollo Guidance Computer'
+  venue: righto.com, September 2019
+  url: http://www.righto.com/2019/09/a-computer-built-from-nor-gates-inside.html
+  note: The Fairchild RTL three-input NOR gates of the AGC, two to a package.
+hall1996:
+  authors: Eldon C. Hall
+  year: 1996
+  title: 'Journey to the Moon: The History of the Apollo Guidance Computer'
+  venue: American Institute of Aeronautics and Astronautics
+  note: The design of the AGC by one of its designers, including the choice of integrated NOR gates.
+ebers1954:
+  authors: J. J. Ebers and J. L. Moll
+  year: 1954
+  title: Large-signal behavior of junction transistors
+  venue: Proceedings of the IRE 42(12), 1761–1772
+  note: The two-diode transport model of the bipolar transistor that circuit simulators still use.
+shichman1968:
+  authors: H. Shichman and D. A. Hodges
+  year: 1968
+  title: Modeling and simulation of insulated-gate field-effect transistor switching circuits
+  venue: IEEE Journal of Solid-State Circuits 3(3), 285–289
+  note: 'The “level-1” MOSFET model: off, linear and saturation regions.'

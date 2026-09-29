@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "title": "A diode AND gate",
+  "engine": "analog",
+  "components": [
+    {"id": "P1", "type": "rail", "x": 16, "y": 2, "params": {"voltage": 5}},
+    {"id": "R1", "type": "resistor", "x": 16, "y": 4, "rot": 90, "params": {"resistance": 10000}, "label": "10 kΩ"},
+    {"id": "A", "type": "toggle", "x": 2, "y": 12, "label": "A"},
+    {"id": "B", "type": "toggle", "x": 2, "y": 18, "label": "B"},
+    {"id": "D1", "type": "diode", "x": 16, "y": 12, "rot": 180, "label": ""},
+    {"id": "D2", "type": "diode", "x": 16, "y": 18, "rot": 180, "label": ""},
+    {"id": "V1", "type": "voltmeter", "x": 26, "y": 14, "rot": 270},
+    {"id": "G1", "type": "ground", "x": 26, "y": 14}
+  ],
+  "wires": [
+    {"points": [[16, 2], [16, 4]]},
+    {"points": [[16, 8], [16, 18]]},
+    {"points": [[5, 12], [12, 12]]},
+    {"points": [[5, 18], [12, 18]]},
+    {"points": [[16, 10], [26, 10]]}
+  ],
+  "notes": [
+    {"x": 19, "y": 8, "text": "Y = A AND B"}
+  ]
+}

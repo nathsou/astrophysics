@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "title": "An LED's curve, with a potentiometer",
+  "engine": "analog",
+  "components": [
+    {"id": "P0", "type": "rail", "x": 4, "y": 6, "params": {"voltage": 5}},
+    {"id": "POT", "type": "potentiometer", "x": 6, "y": 6, "params": {"resistance": 100000, "position": 0.1}, "label": "100 kΩ pot"},
+    {"id": "R1", "type": "resistor", "x": 12, "y": 4, "params": {"resistance": 220}, "label": "220 Ω"},
+    {"id": "A1", "type": "ammeter", "x": 18, "y": 4},
+    {"id": "D1", "type": "led", "x": 24, "y": 4, "rot": 90, "params": {"color": "red"}, "label": "Red LED"},
+    {"id": "V1", "type": "voltmeter", "x": 30, "y": 8, "rot": 270},
+    {"id": "G1", "type": "ground", "x": 24, "y": 10}
+  ],
+  "wires": [
+    {"points": [[4, 6], [6, 6]]},
+    {"points": [[8, 4], [12, 4]]},
+    {"points": [[10, 6], [10, 4]]},
+    {"points": [[16, 4], [18, 4]]},
+    {"points": [[22, 4], [24, 4]]},
+    {"points": [[24, 8], [24, 10]]},
+    {"points": [[24, 4], [30, 4]]},
+    {"points": [[30, 8], [30, 10], [24, 10]]}
+  ]
+}

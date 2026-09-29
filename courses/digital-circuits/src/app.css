@@ -450,6 +450,8 @@ button {
   border: 1px solid var(--line);
   padding: 0.05em 0.35em;
   border-radius: 4px;
+  /* Long file paths must wrap on phones rather than widen the page. */
+  overflow-wrap: anywhere;
 }
 .article img {
   max-width: 100%;

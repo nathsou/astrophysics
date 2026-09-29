@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "title": "A transistor switch",
+  "engine": "analog",
+  "components": [
+    {"id": "P0", "type": "rail", "x": 4, "y": 12, "params": {"voltage": 5}},
+    {"id": "SW", "type": "switch", "x": 4, "y": 12, "params": {"closed": true}, "label": ""},
+    {"id": "RB", "type": "resistor", "x": 8, "y": 12, "params": {"resistance": 4700}, "label": "Rb"},
+    {"id": "A1", "type": "ammeter", "x": 14, "y": 12, "label": "Ib"},
+    {"id": "Q1", "type": "npn", "x": 20, "y": 12, "params": {"beta": 100}},
+    {"id": "G1", "type": "ground", "x": 23, "y": 16},
+    {"id": "P1", "type": "rail", "x": 23, "y": -6, "params": {"voltage": 5}},
+    {"id": "R1", "type": "resistor", "x": 23, "y": -6, "rot": 90, "params": {"resistance": 330}, "label": "330 Ω"},
+    {"id": "D1", "type": "led", "x": 23, "y": -2, "rot": 90, "params": {"color": "red"}, "label": ""},
+    {"id": "A2", "type": "ammeter", "x": 23, "y": 4, "rot": 90, "label": "Ic"}
+  ],
+  "wires": [
+    {"points": [[12, 12], [14, 12]]},
+    {"points": [[18, 12], [20, 12]]},
+    {"points": [[23, 2], [23, 4]]},
+    {"points": [[23, 8], [23, 10]]},
+    {"points": [[23, 14], [23, 16]]}
+  ]
+}

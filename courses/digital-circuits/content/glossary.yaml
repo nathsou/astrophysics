@@ -341,3 +341,52 @@ diode-logic:
   term: diode logic
   definition: AND and OR gates made from diodes and a resistor. They work, but they have no gain and lose about a diode drop (0.65 V) per stage, and they cannot make NOT, so they cannot be cascaded far.
   chapter: diodes-and-leds
+
+transistor:
+  term: transistor
+  definition: A three-terminal semiconductor switch in which a small current or voltage at the control terminal governs a much larger current between the other two, with gain and no moving parts. The bipolar transistor (1947) is controlled by a current, the MOSFET by a voltage.
+  chapter: the-transistor
+bjt:
+  term: bipolar junction transistor (BJT)
+  definition: 'A transistor made of three layers, n–p–n or p–n–p: emitter, thin base and collector. A small base current makes a collector current β times larger flow.'
+  chapter: the-transistor
+current-gain:
+  term: current gain (β)
+  definition: The ratio of collector current to base current of a bipolar transistor in its active region, about 100 for a small one. It varies from part to part, so switches are designed not to depend on it.
+  chapter: the-transistor
+cut-off:
+  term: cut-off
+  definition: 'The region of a transistor with no control input: a bipolar transistor with less than about 0.5 V across its base–emitter junction, or a MOSFET below its threshold voltage. It is an open switch.'
+  chapter: the-transistor
+active-region:
+  term: active region
+  definition: 'The region in which a bipolar transistor is an amplifier: the collector current is β times the base current and the collector voltage is high enough that the transistor is not saturated.'
+  chapter: the-transistor
+saturation:
+  term: saturation
+  definition: 'A bipolar transistor driven with more base current than its collector can use, so that the collector voltage falls to 0.1–0.2 V and the circuit, not the transistor, sets the current: a closed switch. (For a MOSFET, saturation means something different: the drain current stops depending on the drain voltage.)'
+  chapter: the-transistor
+mosfet:
+  term: MOSFET
+  definition: 'A metal–oxide–semiconductor field-effect transistor: a gate over an insulating oxide creates a conducting channel between a source and a drain when its voltage passes the threshold. It takes no steady gate current, which is why almost all logic uses it.'
+  chapter: the-transistor
+threshold-voltage:
+  term: threshold voltage
+  definition: 'The gate voltage at which a MOSFET’s channel forms and current starts to flow: about 1 V in the simulator, about 2 V for a 2N7000, a few tenths of a volt in a modern processor.'
+  chapter: the-transistor
+gain:
+  term: gain
+  definition: 'The ratio of a change at a circuit’s output to the change at its input that caused it: the slope of its transfer curve. A gate with gain above 1 in its middle region and flat ends turns any nearly-right level into a clean 0 or 1.'
+  chapter: the-transistor
+regeneration:
+  term: regeneration
+  definition: 'What a chain of logic stages with gain does to a signal: each stage pushes a level that is a little off back towards the nearest of two clean levels, so errors do not accumulate however long the chain.'
+  chapter: the-transistor
+rtl:
+  term: resistor–transistor logic (RTL)
+  definition: 'The simplest transistor logic: a NOT is one transistor with a pull-up resistor and a base resistor; a NOR is two or more transistors in parallel. The Apollo Guidance Computer used it. It wastes power whenever an output is low and its noise margins are poor.'
+  chapter: the-transistor
+nor:
+  term: NOR
+  definition: 'True only when *neither* input is. NOT-OR: transistors in parallel under a common pull-up. NOR alone can build any logic function.'
+  chapter: the-transistor
