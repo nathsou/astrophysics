@@ -62,7 +62,7 @@ The other two targets are here for contrast. **AArch64** looks like RISC-V at fi
 
 - **Hover everything.** In any code view, instructions explain themselves and say why they are there; registers show their role in the calling convention; values highlight all their uses; lines link back to the source. Dotted-underlined terms in the text, like <Term k="dominator" />, are glossary entries.
 - **Step through algorithms.** Figures with a transport bar replay an algorithm one step at a time: use the buttons, or <Kbd>←</Kbd> <Kbd>→</Kbd> and <Kbd>space</Kbd> once the figure has focus.
-- **Break things.** Most figures take a different example or function, a different target, or a smaller register file. The [playground](#/playground) has everything at once.
+- **Break things.** Most figures take a different example or function, a different target, or a smaller register file. The [playground](#/playground) has everything at once, including the front-end stages (tokens, AST, three-address code) that lead up to the IR.
 - **Use the appendices.** If assembly, pipelines or ELF are hazy, the primers at the end cover what you need.
 
 The chapters follow the pipeline. **Part I** builds the IR and the analyses everything else rests on: control-flow graphs, dominance and SSA. **Part II** selects instructions and deals with the target’s constraints and calling convention. **Part III** leaves SSA, computes liveness, allocates registers and lays out stack frames. **Part IV** schedules, cleans up, encodes, writes object files, links them, and finally runs the program. **Part V** leaves the world of registers for WebAssembly, then puts everything together.
