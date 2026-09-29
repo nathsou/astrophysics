@@ -36,7 +36,7 @@ describe('CIC basics', () => {
     expect(out[2]).toBe('t : 2 + 2 = 4');
   });
   it('rfl fails on false equations', () => {
-    fails(`theorem t : 2 + 2 = 5 := rfl`, /type mismatch/);
+    fails(`theorem t : 2 + 2 = 5 := rfl`, /rfl failed|type mismatch/);
   });
   it('implicit arguments and #check', () => {
     const { out } = ok(`#check id\n#check id 3\n#check @id Nat`);
