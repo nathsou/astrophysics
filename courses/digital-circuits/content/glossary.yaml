@@ -390,3 +390,151 @@ nor:
   term: NOR
   definition: 'True only when *neither* input is. NOT-OR: transistors in parallel under a common pull-up. NOR alone can build any logic function.'
   chapter: the-transistor
+twos-complement-ref:
+  term: two’s complement
+  definition: 'The way hardware stores signed integers: an *n*-bit pattern is read as an ordinary binary number except that the top bit has weight −2^(*n*−1). To negate a number, invert every bit and add one. The same adder works for signed and unsigned numbers.'
+  chapter: reference
+si-prefix:
+  term: SI prefix
+  definition: 'A letter that multiplies a unit by a power of ten: k (10³), M (10⁶), G (10⁹), m (10⁻³), µ (10⁻⁶), n (10⁻⁹), p (10⁻¹²). *M* is mega and *m* is milli.'
+  chapter: reference
+e-series:
+  term: E series
+  definition: 'The preferred values of resistors and capacitors: a geometric progression with 6, 12, 24, 96 … values per decade (E6, E12, E24, E96), spaced so that the tolerance ranges of neighbouring values touch. E12 goes 10, 12, 15, 18, 22, 27, 33, 39, 47, 56, 68, 82.'
+  chapter: reference
+hexadecimal:
+  term: hexadecimal (hex)
+  definition: 'Base 16, with digits 0–9 and A–F. One hex digit is exactly four bits, so a byte is two hex digits and conversion to binary needs no arithmetic. Written 0x1F in code.'
+  chapter: reference
+netlist:
+  term: netlist
+  definition: A list of components and the wires (nets) that join them, with no positions. It is what a schematic draws, what the simulator runs, and what a synthesis tool produces from a hardware description.
+  chapter: describing-hardware
+logic-synthesis:
+  term: logic synthesis
+  definition: Turning a description of what a circuit does, at the register-transfer level, into a netlist of gates chosen by a program. It made hardware descriptions, and not schematics, the way chips are designed.
+  chapter: describing-hardware
+register-transfer-level:
+  term: register-transfer level (RTL)
+  definition: A way of describing a circuit by its registers and by what is computed between them in each clock cycle, leaving the choice of gates to a synthesis tool. Not to be confused with resistor–transistor logic, which has the same abbreviation.
+  chapter: describing-hardware
+ssa:
+  term: static single assignment (SSA)
+  definition: A form of program in which every value is defined exactly once. A DCL module is written in this form; the φ-function that SSA uses to join two definitions is a multiplexer in hardware.
+  chapter: describing-hardware
+nand:
+  term: NAND
+  definition: 'NOT-AND, false only when *both* inputs are true. In CMOS it is four transistors, the cheapest two-input gate, and it is universal: NAND gates alone can build any logic function.'
+  chapter: boolean-algebra
+de-morgan:
+  term: De Morgan’s laws
+  definition: 'The negation of an AND is the OR of the negations, and the negation of an OR is the AND of the negations: ¬(A·B) = ¬A + ¬B and ¬(A+B) = ¬A·¬B. In a gate diagram, a bubble may be pushed through a gate if the gate changes from AND to OR (or back).'
+  chapter: boolean-algebra
+duality:
+  term: principle of duality
+  definition: Swapping AND with OR and 0 with 1 in a true Boolean identity gives another true identity, so every law comes in two forms.
+  chapter: boolean-algebra
+bubble-pushing:
+  term: bubble pushing
+  definition: 'Redrawing a gate circuit by moving inversion bubbles across gates: the gate turns into its dual (AND into OR), all its bubbles flip, and two bubbles on one wire cancel. A consequence of De Morgan’s laws.'
+  chapter: boolean-algebra
+literal:
+  term: literal
+  definition: A Boolean variable or its complement, such as A or ¬A. The size of an expression is often measured in literals.
+  chapter: boolean-algebra
+minterm:
+  term: minterm
+  definition: A product of literals, one for every variable, that is 1 in exactly one row of the truth table. Minterm *m*₅ of three variables is A·¬B·C (row 101).
+  chapter: boolean-algebra
+maxterm:
+  term: maxterm
+  definition: A sum of literals, one for every variable, that is 0 in exactly one row of the truth table. It is the complement of a minterm.
+  chapter: boolean-algebra
+sum-of-products:
+  term: sum of products (SOP)
+  definition: An OR of AND terms, such as A·B + ¬A·C. Every function has one, and the canonical one has a minterm for every row where the function is 1. It is a two-level circuit, and the shape of a PLA.
+  chapter: boolean-algebra
+product-of-sums:
+  term: product of sums (POS)
+  definition: An AND of OR terms, such as (A + B)·(¬A + C). The canonical one has a maxterm for every row where the function is 0. The dual of the sum of products.
+  chapter: boolean-algebra
+functionally-complete:
+  term: functionally complete
+  definition: A set of gates from which every Boolean function can be built. AND, OR and NOT are complete, and so are NAND alone and NOR alone.
+  chapter: boolean-algebra
+parity:
+  term: parity
+  definition: Whether the number of 1s among some bits is odd or even. The XOR of the bits is 1 when it is odd. A parity bit added to a byte makes the total even and detects any single-bit error.
+  chapter: boolean-algebra
+half-life:
+  term: half-life
+  definition: 'The time for a decaying quantity to fall to half: *t*½ = τ ln 2 = 0.693 τ. After *k* half-lives a fraction 2^(−*k*) is left.'
+  chapter: maths
+logarithm:
+  term: logarithm
+  definition: 'The inverse of the exponential: log_*b* *x* is the power to which *b* must be raised to give *x*. It turns multiplication into addition. Base 2 counts bits, base 10 decades, base *e* is the natural logarithm ln.'
+  chapter: maths
+decibel:
+  term: decibel (dB)
+  definition: 'A logarithmic unit for ratios: 10 log₁₀ of a power ratio, or 20 log₁₀ of a voltage ratio. 3 dB is a factor of 2 in power, 6 dB a factor of 2 in voltage, 20 dB a factor of 10 in voltage.'
+  chapter: maths
+gaussian-elimination:
+  term: Gaussian elimination
+  definition: 'Solving a system of linear equations by using one equation to remove an unknown from the others, over and over, until the system is triangular, then working back up (back substitution).'
+  chapter: maths
+pivot:
+  term: pivot
+  definition: 'The entry that Gaussian elimination divides by to make the multipliers for a column. A zero pivot means swapping rows; if no row will do, the system has no unique solution.'
+  chapter: maths
+lu-decomposition:
+  term: LU decomposition
+  definition: 'Writing a matrix as a product *A* = *L U* of a lower and an upper triangular matrix: the multipliers of Gaussian elimination and what it leaves behind. Once known, each new right-hand side costs only two quick triangular solves.'
+  chapter: maths
+big-o:
+  term: big-O notation
+  definition: 'How the work of an algorithm grows with the size *n* of its input, ignoring constant factors: *O*(*n*³) means doubling *n* multiplies the work by about eight.'
+  chapter: maths
+octet:
+  term: Octet
+  definition: 'The course’s CPU: 8-bit data and addresses, 256 bytes of memory, four registers R0–R3, 21 instructions and a multi-cycle datapath on one shared bus. Appendix E is its reference card.'
+  chapter: octet
+status-flags:
+  term: flags (status flags)
+  definition: 'One-bit registers set by the ALU and tested by conditional jumps. Octet has Z (zero), C (carry or borrow), N (negative) and V (signed overflow).'
+  chapter: octet
+von-neumann-architecture:
+  term: von Neumann architecture
+  definition: 'A computer whose instructions and data share one memory, so a program is just data. It needs one address space and one bus; the price is that an instruction fetch and a data access cannot overlap.'
+  chapter: octet
+memory-mapped-io:
+  term: memory-mapped I/O
+  definition: 'Devices appear as addresses in the memory map, so a program talks to them with ordinary loads and stores instead of special I/O instructions. In Octet the top 16 bytes, 0xF0–0xFF.'
+  chapter: octet
+gray-code:
+  term: Gray code
+  definition: 'A way of counting in binary in which each step changes exactly one bit (00, 01, 11, 10). It labels the sides of a Karnaugh map so that neighbouring cells differ in exactly one variable.'
+  chapter: simplifying-logic
+karnaugh-map:
+  term: Karnaugh map
+  definition: 'A truth table drawn as a grid with Gray-code labels, so that cells that differ in one variable are next to each other (the edges wrap round). Groups of 1, 2, 4, 8 or 16 cells with the same value are product terms, and finding the largest groups is simplification.'
+  chapter: simplifying-logic
+dont-care:
+  term: don’t-care
+  definition: An input combination that never occurs, or an output that does not matter, written x. A simplifier may treat it as 0 or as 1, whichever makes the circuit smaller.
+  chapter: simplifying-logic
+prime-implicant:
+  term: prime implicant
+  definition: A product term that makes the function 1 wherever it is 1 and cannot be made any larger (have any literal removed) without also covering a 0. The largest groups of a Karnaugh map. A minimal sum of products is made of prime implicants.
+  chapter: simplifying-logic
+essential-prime:
+  term: essential prime implicant
+  definition: A prime implicant that alone covers some minterm, so every cover of the function must include it. On a Karnaugh map, the group that contains a 1 that no other largest group contains.
+  chapter: simplifying-logic
+cyclic-core:
+  term: cyclic core
+  definition: What remains of the prime implicant chart when there are no essential primes and nothing can be dropped by dominance. Every minterm can be covered in more than one way, so the choice needs Petrick’s method.
+  chapter: simplifying-logic
+multi-level:
+  term: multi-level logic
+  definition: A circuit in which signals pass through more than two layers of gates, made by factoring and by sharing common sub-expressions. Usually smaller than the two-level form and slower.
+  chapter: simplifying-logic

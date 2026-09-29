@@ -140,3 +140,58 @@
   people: John Bardeen, Walter Brattain, William Shockley
   chapter: the-transistor
   text: On 16 December two gold contacts on germanium amplify a signal about a hundred times; it is shown to Bell Labs management on 23 December. Shockley conceives the junction transistor on 23 January 1948.
+- year: 1983
+  title: PALASM, ABEL and CUPL
+  people: John Birkner, Russell de Pina, Bob Osann
+  chapter: describing-hardware
+  text: Text languages for programmable logic turn Boolean equations into fuse maps. PALASM comes from Monolithic Memories, ABEL from Data I/O and CUPL from Assisted Technology.
+- year: 1984
+  title: Verilog
+  people: Phil Moorby, Prabhu Goel, Chi-Lai Huang
+  chapter: describing-hardware
+  text: Specified in December 1983 at Gateway Design Automation, with a simulator written in 1984; on sale in early 1985 and standardised as IEEE 1364 in 1995.
+- year: 1987
+  title: VHDL
+  people: US Department of Defense (VHSIC programme), Intermetrics, IBM, Texas Instruments
+  chapter: describing-hardware
+  text: A language for describing digital hardware, developed under the VHSIC programme from 1983 and adopted as IEEE Standard 1076 in December 1987.
+- year: 1987
+  title: Logic synthesis becomes a product
+  people: Aart de Geus, David Gregory, Bill Krieger
+  chapter: describing-hardware
+  text: Optimal Solutions, founded in 1986 by engineers from General Electric, becomes Synopsys, and turns logic synthesis into the tool that designs are written for.
+- year: 1847
+  title: De Morgan’s Formal Logic
+  people: Augustus De Morgan
+  chapter: boolean-algebra
+  text: De Morgan states in words the rules for the negation of a compound statement, which in the algebra of Boole become the laws that turn AND into OR.
+- year: 1854
+  title: The Laws of Thought
+  people: George Boole
+  chapter: boolean-algebra
+  text: Boole publishes An Investigation of the Laws of Thought, in which logic is an algebra of 0 and 1. Eighty-three years later Shannon finds it in relay circuits.
+- year: 1913
+  title: Sheffer’s stroke
+  people: Henry M. Sheffer, Charles Sanders Peirce
+  chapter: boolean-algebra
+  text: Sheffer shows that one binary operation, the stroke, is enough to define all of Boolean algebra. Peirce had found the same thing about 1880 and never published it.
+- year: 1969
+  title: The Moon computer made of NOR gates
+  people: Eldon Hall, MIT Instrumentation Laboratory
+  chapter: boolean-algebra
+  text: The Apollo Guidance Computer, whose Block II version has about 2,800 integrated circuits each holding two three-input NOR gates, guides the lunar module of Apollo 11 to the surface.
+- year: 1952
+  title: The Veitch chart and Quine’s prime implicants
+  people: Edward W. Veitch, Willard Van Orman Quine
+  chapter: simplifying-logic
+  text: In 1952 Veitch presents a chart method for simplifying truth functions at an ACM meeting in Pittsburgh, and Quine, a logician at Harvard, publishes the theory of prime implicants.
+- year: 1953
+  title: The Karnaugh map
+  people: Maurice Karnaugh
+  chapter: simplifying-logic
+  text: Karnaugh, at Bell Laboratories, publishes the map method, with the Gray-code labelling that makes neighbouring cells differ in one variable.
+- year: 1956
+  title: McCluskey’s tabular method
+  people: Edward J. McCluskey, Stanley R. Petrick
+  chapter: simplifying-logic
+  text: McCluskey turns Quine’s method into a procedure that a computer can run, and Petrick publishes the method for choosing among prime implicants.

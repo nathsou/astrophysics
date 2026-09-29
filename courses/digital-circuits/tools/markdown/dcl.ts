@@ -35,7 +35,7 @@ export function dclHighlighter(): Promise<(code: string) => string> {
       mkdirSync(path.dirname(file), { recursive: true });
       writeFileSync(file, o.js);
     }
-    const mod = (await import(pathToFileURL(path.join(dir, 'editor/highlightHtml.mjs')).href)) as { highlightDclHtml: (code: string) => string };
+    const mod = (await import(/* @vite-ignore */ pathToFileURL(path.join(dir, 'editor/highlightHtml.mjs')).href)) as { highlightDclHtml: (code: string) => string };
     return mod.highlightDclHtml;
   })();
   return loaded;

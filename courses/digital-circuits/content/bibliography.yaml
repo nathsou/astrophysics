@@ -498,3 +498,206 @@ shichman1968:
   title: Modeling and simulation of insulated-gate field-effect transistor switching circuits
   venue: IEEE Journal of Solid-State Circuits 3(3), 285–289
   note: 'The “level-1” MOSFET model: off, linear and saturation regions.'
+iec60062:
+  authors: International Electrotechnical Commission
+  year: 2016
+  title: 'IEC 60062: Marking codes for resistors and capacitors'
+  venue: IEC, Geneva (5th edition)
+  note: The colour code for resistors, and the letter-and-digit codes such as 4k7 and R47.
+iec60063:
+  authors: International Electrotechnical Commission
+  year: 2015
+  title: 'IEC 60063: Preferred number series for resistors and capacitors'
+  venue: IEC, Geneva
+  note: The E series (E3 to E192) of preferred values, and the tolerances they go with.
+jedec-jesd8c:
+  authors: JEDEC
+  year: 2007
+  title: 'JESD8C.01: Interface standard for nominal 3 V/3.3 V supply digital integrated circuits'
+  venue: JEDEC Solid State Technology Association
+  url: https://www.jedec.org/
+  note: The 3.3 V LVTTL and LVCMOS input and output levels (VIH 2.0 V, VIL 0.8 V).
+jedec-jesd8-7a:
+  authors: JEDEC
+  year: 2001
+  title: 'JESD8-7A: 1.8 V ± 0.15 V (normal range) and 1.2 V – 1.95 V (wide range) power supply voltage and interface standard for nonterminated digital integrated circuits'
+  venue: JEDEC Solid State Technology Association
+  url: https://www.jedec.org/
+  note: The 1.8 V LVCMOS levels (VIH 0.65 VDD, VIL 0.35 VDD).
+ti-sn74hc-family:
+  authors: Texas Instruments
+  year: n.d.
+  title: 'SN74HC00, SN74HC02, SN74HC08, SN74HC32, SN74HC74, SN74HC86, SN74HC161, SN74HC283 and SN74HC595 data sheets'
+  venue: Texas Instruments Incorporated
+  url: https://www.ti.com/lit/ds/symlink/sn74hc00.pdf
+  note: 'One data sheet per part at www.ti.com/lit/ds/symlink/<part>.pdf, for example sn74hc595.pdf. Pin assignments, function tables and limits; check the current revision.'
+ti-ne555:
+  authors: Texas Instruments
+  year: n.d.
+  title: NE555, SA555, SE555 precision timers, data sheet
+  venue: Texas Instruments Incorporated
+  url: https://www.ti.com/lit/ds/symlink/ne555.pdf
+  note: The 8-pin timer with its comparators, latch and discharge transistor.
+flake2020:
+  authors: Peter Flake, Phil Moorby, Steve Golson, Arturo Salz, Simon Davidmann
+  year: 2020
+  title: Verilog HDL and its ancestors and descendants
+  venue: Proceedings of the ACM on Programming Languages 4(HOPL), History of Programming Languages IV
+  url: https://doi.org/10.1145/3386337
+  note: The history of Verilog by its authors. Moorby and Chi-Lai Huang specified the language in December 1983 at Gateway Design Automation, the simulator followed in 1984 and was on sale by early 1985, and Verilog-XL in 1987.
+ieee1076-1987:
+  authors: IEEE
+  year: 1987
+  title: IEEE Standard VHDL Language Reference Manual, IEEE Std 1076-1987
+  venue: Institute of Electrical and Electronics Engineers, December 1987
+  note: The first standard of VHDL, adopted in December 1987 (ANSI approval followed in 1988).
+wiki-vhdl:
+  authors: Wikipedia
+  year: n.d.
+  title: VHDL
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/VHDL
+  note: The VHSIC programme, the Woods Hole workshop of June 1981, the July 1983 contract to Intermetrics, IBM and Texas Instruments, and version 7.2 of August 1985.
+wiki-palasm:
+  authors: Wikipedia
+  year: n.d.
+  title: PALASM
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/PALASM
+  note: PALASM by John Birkner of Monolithic Memories, written in FORTRAN IV, source available at no cost.
+wiki-abel:
+  authors: Wikipedia
+  year: n.d.
+  title: Advanced Boolean Expression Language
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Advanced_Boolean_Expression_Language
+  note: ABEL, created in 1983 by Data I/O; the concept and first compiler by Russell de Pina in 1981.
+holley-abel:
+  authors: Michael Holley
+  year: n.d.
+  title: History of the ABEL project at Data I/O
+  venue: Programmable-logic history archive
+  url: https://deramp.com/swtpc.com/PLD_History/ABEL_project/ABEL_Memos.htm
+  note: Memos and recollections from the ABEL development team.
+cupl-1983:
+  authors: Assisted Technology
+  year: 1983
+  title: CUPL, the universal language for programmable logic (data sheet)
+  venue: Assisted Technology
+  url: https://deramp.com/swtpc.com/PLD_History/ABEL_project/CUPL_Data_Sheet_1983_ocr.pdf
+  note: The 1983 data sheet of CUPL, a compiler that targets a chip named at compile time.
+ethw-degeus:
+  authors: ETHW
+  year: n.d.
+  title: Aart J. de Geus
+  venue: ETHW, IEEE History Center
+  url: https://ethw.org/Aart_J._de_Geus
+  note: De Geus led the team at General Electric that built the SOCRATES logic-synthesis system in the mid-1980s.
+fundinguniverse-synopsys:
+  authors: FundingUniverse
+  year: n.d.
+  title: History of Synopsys, Inc.
+  venue: International Directory of Company Histories, reproduced at FundingUniverse
+  url: https://www.fundinguniverse.com/company-histories/synopsys-inc-history/
+  note: Founded in 1986 as Optimal Solutions, renamed Synopsys in 1987; revenue of $130,000 in 1987 and $976,000 in 1988; Verilog chosen as an input language by 1988; more than 75 per cent of the synthesis market by 1992.
+boole1854:
+  authors: George Boole
+  year: 1854
+  title: An Investigation of the Laws of Thought, on Which Are Founded the Mathematical Theories of Logic and Probabilities
+  venue: London, Walton and Maberly
+  url: https://www.gutenberg.org/ebooks/15114
+  note: Boole’s book that treats logic as an algebra of 0 and 1. His shorter The Mathematical Analysis of Logic (1847) had announced the idea.
+demorgan1847:
+  authors: Augustus De Morgan
+  year: 1847
+  title: 'Formal Logic: or, The Calculus of Inference, Necessary and Probable'
+  venue: London, Taylor and Walton
+  url: https://zenodo.org/records/7530519
+  note: The book in which De Morgan states the laws for the negation of a compound and of an aggregate.
+sep-algebra-logic:
+  authors: Stanley Burris
+  year: 2022
+  title: The Algebra of Logic Tradition
+  venue: 'The Stanford Encyclopedia of Philosophy'
+  url: https://plato.stanford.edu/entries/algebra-logic-tradition/
+  note: The history from Boole and De Morgan through Jevons and Peirce, including the change from Boole’s exclusive to the inclusive ‘or’.
+sheffer1913:
+  authors: Henry M. Sheffer
+  year: 1913
+  title: A set of five independent postulates for Boolean algebras, with application to logical constants
+  venue: Transactions of the American Mathematical Society 14(4), 481–488
+  url: https://www.jstor.org/stable/1988701
+  note: Introduces the stroke, a single operation from which all of Boolean algebra can be defined.
+mactutor-sheffer:
+  authors: J. J. O’Connor and E. F. Robertson
+  year: 2010
+  title: Henry Maurice Sheffer (1882–1964)
+  venue: MacTutor History of Mathematics archive, University of St Andrews
+  url: https://mathshistory.st-andrews.ac.uk/Biographies/Sheffer/
+  note: Sheffer’s biography, with the 1913 paper, its interpretation of the stroke as NOR, and the remark about NAND.
+iep-sheffer:
+  authors: Internet Encyclopedia of Philosophy
+  year: 2020
+  title: The Sheffer Stroke
+  venue: Internet Encyclopedia of Philosophy
+  url: https://iep.utm.edu/sheffers/
+  note: The stroke and its history, including Peirce’s earlier, unpublished discovery of the same connectives.
+nasm-agc-ic:
+  authors: National Air and Space Museum, Smithsonian Institution
+  year: 2017
+  title: Integrated Circuit, Dual 3 Input, Apollo Guidance Computer
+  venue: Smithsonian Institution, National Air and Space Museum, catalogue number A20170004000
+  url: https://www.si.edu/object/integrated-circuit-dual-3-input-apollo-guidance-computer:nasm_A20170004000
+  note: One of the dual three-input NOR packages of the Apollo Guidance Computer.
+veitch1952:
+  authors: Edward W. Veitch
+  year: 1952
+  title: A chart method for simplifying truth functions
+  venue: 'Proceedings of the Association for Computing Machinery, Pittsburgh, Pa., May 2 and 3, 1952, 127–133'
+  url: https://dl.acm.org/doi/10.1145/609784.609801
+  note: The Veitch chart, the ancestor of the Karnaugh map.
+karnaugh1953:
+  authors: Maurice Karnaugh
+  year: 1953
+  title: The map method for synthesis of combinational logic circuits
+  venue: 'Transactions of the American Institute of Electrical Engineers, Part I: Communication and Electronics 72(9), 593–599. Presented at the AIEE Summer General Meeting, Atlantic City, June 1953'
+  note: Karnaugh’s paper, with the Gray-code labelling that every textbook uses.
+quine1952:
+  authors: Willard V. Quine
+  year: 1952
+  title: The problem of simplifying truth functions
+  venue: The American Mathematical Monthly 59(8), 521–531
+  note: 'Quine’s account of prime implicants and how to find the shortest form of a truth function. A sequel, “A way to simplify truth functions”, appeared in the same journal 62(9), 627–631 (1955).'
+mccluskey1956:
+  authors: Edward J. McCluskey Jr.
+  year: 1956
+  title: Minimization of Boolean functions
+  venue: The Bell System Technical Journal 35(6), 1417–1444
+  url: https://archive.org/details/bstj35-6-1417
+  note: The tabular procedure that bears his name with Quine’s, described as a simplification and extension of Quine’s method.
+petrick1956:
+  authors: Stanley R. Petrick
+  year: 1956
+  title: A direct determination of the irredundant forms of a Boolean function from the set of prime implicants
+  venue: 'Air Force Cambridge Research Center technical report AFCRC-TR-56-110, Cambridge, Massachusetts'
+  note: Petrick’s method for choosing among prime implicants.
+chandra1978:
+  authors: Ashok K. Chandra and George Markowsky
+  year: 1978
+  title: On the number of prime implicants
+  venue: Discrete Mathematics 24(1), 7–11
+  url: https://doi.org/10.1016/0012-365X(78)90168-1
+  note: A function of n variables has at most O(3ⁿ/√n) prime implicants, and some have Ω(3ⁿ/n).
+brayton1984:
+  authors: Robert K. Brayton, Gary D. Hachtel, Curtis McMullen and Alberto L. Sangiovanni-Vincentelli
+  year: 1984
+  title: Logic Minimization Algorithms for VLSI Synthesis
+  venue: Boston, Kluwer Academic Publishers
+  url: https://link.springer.com/book/10.1007/978-1-4613-2821-6
+  note: The book that describes Espresso, the heuristic two-level minimiser, and the work at IBM and Berkeley that led to it.
+brayton1987:
+  authors: Robert K. Brayton, Richard Rudell, Alberto Sangiovanni-Vincentelli and Albert R. Wang
+  year: 1987
+  title: 'MIS: a multiple-level logic optimization system'
+  venue: IEEE Transactions on Computer-Aided Design 6(6), 1062–1081
+  note: Factoring, kernel extraction and technology mapping for multi-level logic.
