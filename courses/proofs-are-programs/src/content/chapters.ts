@@ -271,7 +271,7 @@ export const chapters: ChapterInfo[] = [
     num: 21,
     title: 'A Dependent Type Checker',
     short: 'Your kernel',
-    blurb: 'Normalisation by evaluation, bidirectional checking and universes: a small kernel for dependent types, in the course language.',
+    blurb: 'Substitution, normalisation, bidirectional checking and universes: a small kernel for dependent types, in the course language.',
     cic: [
       { slug: 'binders', what: 'de Bruijn indices and binders' },
       { slug: 'universes', what: 'why Type : Type is inconsistent' },

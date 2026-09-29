@@ -571,3 +571,13 @@ ul.reading li {
 .typing-tree li { padding: 0.15rem 0; }
 .typing-rule { display: inline-block; min-width: 2.6rem; margin-right: 0.4rem; padding: 0 0.3rem; border-radius: 4px; background: var(--accent-soft); color: var(--accent-ink); font-size: 0.75rem; text-align: center; }
 .typing-ctx { color: var(--c-var); }
+
+/* kernel lab */
+.kernel-breaks { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; align-items: center; margin: 0.6rem 0; font-size: 0.9rem; }
+.kernel-trace, .kernel-trace ul { list-style: none; margin: 0; padding-left: 0; }
+.kernel-trace ul { padding-left: 1.2rem; border-left: 1px solid var(--rule); margin-left: 0.35rem; }
+.kernel-trace li { padding: 0.12rem 0; }
+.kernel-mode { color: var(--accent); font-weight: 700; }
+.kernel-conv { color: var(--c-kw); padding-left: 1.2rem; }
+.kernel-err { color: var(--err); padding-left: 1.2rem; }
+.kernel-trace .ok { color: var(--ok); }

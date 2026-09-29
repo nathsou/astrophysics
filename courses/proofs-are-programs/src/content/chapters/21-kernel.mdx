@@ -1,1 +1,243 @@
-This chapter is being written.
+The checker of the last chapter had one kind of thing, terms, and a separate, fixed language of types. In the course language, types *are* terms: `Vec Nat (2 + 1)` contains a computation, a function can return a type (Chapter 18's `Ty.denote`), and checking a program may require running part of it. This chapter builds a checker for such a language, a small **dependent type theory**, in about a hundred lines of the course language. It is a miniature of the kernel that has checked every snippet of this course.
+
+## One syntax for terms and types
+
+```lean
+inductive Tm where
+  | var (i : Nat)       -- a variable, as a de Bruijn index
+  | sort (l : Nat)      -- the universe Type l
+  | pi (A B : Tm)       -- (x : A) → B, where B may mention x (as var 0)
+  | lam (b : Tm)        -- fun x => b, without the type of x
+  | app (f a : Tm)
+  | ann (t T : Tm)      -- (t : T), a type annotation
+  | nat
+  | zero
+  | succ (n : Tm)
+deriving DecidableEq
+```
+
+There is no separate type of types: `nat` and `pi` are terms, and so are the universes `sort l`, the types of types. `pi A B` is the dependent function type: its codomain `B` is under a binder and may mention the argument. When it does not, it is an ordinary arrow `A → B`. For example, the type of the polymorphic identity, `(A : Type) → A → A`, is `pi (sort 0) (pi (var 0) (var 1))`: in the inner `pi`, `var 0` is `A`; in its codomain, one binder further in, `A` has become `var 1`.
+
+## Substitution
+
+Applying `fun x => b` to `a` replaces `x` by `a` in `b`. With de Bruijn indices, two operations do this. `shift d c` adds `d` to every variable at least `c` (the variables *free* in a term, when it is moved under `d` new binders); `subst` replaces variable `j` by a term `s`, lowering the variables above `j` because their binder disappears, and shifting `s` each time it goes under a binder.
+
+```lean
+def Tm.shift (d c : Nat) : Tm → Tm
+  | .var i => if i < c then .var i else .var (i + d)
+  | .sort l => .sort l
+  | .pi A B => .pi (A.shift d c) (B.shift d (c + 1))
+  | .lam b => .lam (b.shift d (c + 1))
+  | .app f a => .app (f.shift d c) (a.shift d c)
+  | .ann t T => .ann (t.shift d c) (T.shift d c)
+  | .nat => .nat
+  | .zero => .zero
+  | .succ n => .succ (n.shift d c)
+
+/-- replace variable j by s (and lower the variables above j, whose binder disappears) -/
+def Tm.subst : Tm → Nat → Tm → Tm
+  | .var i, j, s => if i = j then s else if j < i then .var (i - 1) else .var i
+  | .sort l, _, _ => .sort l
+  | .pi A B, j, s => .pi (A.subst j s) (B.subst (j + 1) (s.shift 1 0))
+  | .lam b, j, s => .lam (b.subst (j + 1) (s.shift 1 0))
+  | .app f a, j, s => .app (f.subst j s) (a.subst j s)
+  | .ann t T, j, s => .ann (t.subst j s) (T.subst j s)
+  | .nat, _, _ => .nat
+  | .zero, _, _ => .zero
+  | .succ n, j, s => .succ (n.subst j s)
+```
+
+Index arithmetic is notoriously easy to get wrong, so here is a first sanity theorem: substituting into a term that does not mention the variable (because it was shifted past it) gives the term back. It is used, silently, every time a non-dependent function is applied.
+
+```lean
+theorem subst_shift (t : Tm) (j : Nat) (s : Tm) : (t.shift 1 j).subst j s = t := by
+  induction t generalizing j s with
+  | var i =>
+    by_cases h : i < j
+    · have h₁ : i ≠ j := by omega
+      have h₂ : ¬ j < i := by omega
+      simp [Tm.shift, Tm.subst, h, h₁, h₂]
+    · have h₁ : i + 1 ≠ j := by omega
+      have h₂ : j < i + 1 := by omega
+      simp [Tm.shift, Tm.subst, h, h₁, h₂]
+  | sort l => rfl
+  | pi A B ihA ihB => simp [Tm.shift, Tm.subst, ihA, ihB]
+  | lam b ih => simp [Tm.shift, Tm.subst, ih]
+  | app f a ihf iha => simp [Tm.shift, Tm.subst, ihf, iha]
+  | ann t T iht ihT => simp [Tm.shift, Tm.subst, iht, ihT]
+  | nat => rfl
+  | zero => rfl
+  | succ n ih => simp [Tm.shift, Tm.subst, ih]
+```
+
+## Computation
+
+Two types must be recognised as equal when they compute to the same thing: `(fun T => T) nat` *is* `nat`. So the checker needs a normaliser, which performs every β-reduction it can find (and drops annotations):
+
+```lean
+def Tm.norm : Nat → Tm → Tm
+  | 0, t => t
+  | fuel + 1, .app f a =>
+    match f.norm fuel with
+    | .lam b => (b.subst 0 (a.norm fuel)).norm fuel
+    | f' => .app f' (a.norm fuel)
+  | fuel + 1, .ann t _ => t.norm fuel
+  | fuel + 1, .pi A B => .pi (A.norm fuel) (B.norm fuel)
+  | fuel + 1, .lam b => .lam (b.norm fuel)
+  | fuel + 1, .succ n => .succ (n.norm fuel)
+  | _ + 1, t => t
+
+def fuel : Nat := 100
+
+/-- two terms are convertible when they have the same normal form -/
+def conv (a b : Tm) : Bool := a.norm fuel == b.norm fuel
+```
+
+The first argument is **fuel**. Normalisation is not structurally recursive (the result of a substitution can be bigger than the term), and for arbitrary terms it does not terminate: `(fun x => x x) (fun x => x x)` reduces to itself. For *well-typed* terms it does terminate, but that theorem (strong normalisation) is one of the deep results of type theory, far beyond this chapter, so we bound the number of steps instead. Real kernels have the same issue in another form: the course kernel stops a computation after a budget, which is the "deterministic timeout" error you may have met.
+
+## Bidirectional checking
+
+The checker works in two **modes**. In *inference* mode (written ⇒), it is given a term and computes its type. In *checking* mode (⇐), it is given a term and a type, and verifies that the term has it. Some terms can only be checked: an unannotated `fun x => b` does not say what `x` is, but checked against `(x : A) → B` it can be, by checking `b` against `B` with `x : A` in the context. An annotation `(t : T)` goes the other way: it lets a term that can only be checked appear where a type must be inferred. This discipline is called **bidirectional type checking**, and it is how real checkers, the course's included, decide where types must be written.
+
+Contexts are lists of types, as in Chapter 20. A type in the context was written *before* the variables bound after it, so looking it up shifts it past them:
+
+```lean
+def lookup : List Tm → Nat → Option Tm
+  | [], _ => none
+  | A :: _, 0 => some (A.shift 1 0)
+  | _ :: Γ, i + 1 => (lookup Γ i).map (Tm.shift 1 0)
+
+/-- the result of inference, compared with the expected type if there is one -/
+def expect (r : Option Tm) : Option Tm → Option Tm
+  | none => r
+  | some E =>
+    match r with
+    | some T => if conv T E then some E else none
+    | none => none
+
+/-- the level of a universe, if T computes to one -/
+def sortOf (T : Tm) : Option Nat :=
+  match T.norm fuel with
+  | .sort l => some l
+  | _ => none
+```
+
+One function does both modes: `tc Γ t none` infers, `tc Γ t (some T)` checks. (Two mutually recursive functions, `infer` and `check`, would be more usual; one function with an optional expected type keeps the recursion structural.)
+
+```lean
+def tc (Γ : List Tm) : Tm → Option Tm → Option Tm
+  | .var i, E => expect (lookup Γ i) E
+  | .sort l, E => expect (some (.sort (l + 1))) E
+  | .pi A B, E =>
+    match (tc Γ A none).bind sortOf, (tc (A :: Γ) B none).bind sortOf with
+    | some l₁, some l₂ => expect (some (.sort (Nat.max l₁ l₂))) E
+    | _, _ => none
+  | .lam b, some E =>
+    match E.norm fuel with
+    | .pi A B =>
+      match tc (A :: Γ) b (some B) with
+      | some _ => some E
+      | none => none
+    | _ => none
+  | .lam _, none => none
+  | .app f a, E =>
+    match tc Γ f none with
+    | some F =>
+      match F.norm fuel with
+      | .pi A B =>
+        match tc Γ a (some A) with
+        | some _ => expect (some (B.subst 0 a)) E
+        | none => none
+      | _ => none
+    | none => none
+  | .ann t T, E =>
+    match (tc Γ T none).bind sortOf with
+    | some _ =>
+      match tc Γ t (some T) with
+      | some _ => expect (some T) E
+      | none => none
+    | none => none
+  | .nat, E => expect (some (.sort 0)) E
+  | .zero, E => expect (some .nat) E
+  | .succ n, E =>
+    match tc Γ n (some .nat) with
+    | some _ => expect (some .nat) E
+    | none => none
+```
+
+Four rules deserve a comment.
+
+- **Universes.** `sort l` has type `sort (l + 1)`: `Type : Type 1 : Type 2 : …`. A Π-type lives in the larger universe of its domain and codomain (`Nat.max`).
+- **Application is where types depend on terms.** If `f : (x : A) → B` and `a : A`, then `f a : B` with `x` replaced by `a`: `B.subst 0 a`. The type of the result can depend on the *value* of the argument.
+- **Conversion.** In checking mode, `expect` compares the inferred type with the expected one *up to computation*, with `conv`. This is the step that makes types that compute work.
+- **Checking a λ** normalises the expected type to find the Π-type, and checks the body in the extended context.
+
+## Running the checker
+
+```lean
+-- the polymorphic identity: fun A x => x  :  (A : Type) → A → A
+def idTy : Tm := .pi (.sort 0) (.pi (.var 0) (.var 1))
+def idTm : Tm := .ann (.lam (.lam (.var 0))) idTy
+
+#eval tc [] idTy none                                             -- Type 1
+#eval tc [] (.app idTm .nat) none                                 -- nat → nat
+#eval tc [] (.app (.app idTm .nat) (.succ .zero)) none            -- nat
+#eval tc [] (.app (.app idTm .nat) .nat) none                     -- rejected
+#eval tc [] (.ann (.sort 0) (.sort 0)) none                       -- rejected: Type : Type
+#eval tc [] (.ann .zero (.app (.ann (.lam (.var 0)) (.pi (.sort 0) (.sort 0))) .nat)) none
+
+example : tc [] idTm none = some idTy := by decide
+example : tc [] (.ann (.sort 0) (.sort 0)) none = none := by decide
+```
+
+The last `#eval` checks `0` against the type `(fun T => T) nat`, which is accepted because it normalises to `nat`. And the two `example`s are proofs by computation, in the sense of Chapter 19: the course's kernel runs *our* kernel to establish them.
+
+## A kernel at work
+
+The lab below runs a JavaScript copy of `tc`, rule for rule, and draws its trace: every judgement, with ⇒ for inference and ⇐ for checking, and every conversion check with the two normal forms it compares. Its input is a readable syntax (`fun x => …`, `(x : A) → B`, `(t : T)`, `Type`, `Nat`, numerals, `succ`), translated to de Bruijn indices. Under it, the same term goes to the course-language `tc` of this chapter, and a theorem checks that the two implementations agree: **differential testing**, the standard way of catching bugs in type checkers, by running two independent implementations on the same inputs.
+
+The switches break three rules of the kernel. Try each one with the preset that it affects.
+
+<KernelLab chapter />
+
+What each broken rule costs:
+
+- **`Type : Type`.** The lab now accepts `(Type : Type)`, and nothing visibly bad happens here. But a type theory with a type of all types is *inconsistent*: Girard showed (1972) how to write, in such a system, a term of every type, including the empty one. So every proposition gets a proof. This is why universes are stratified, and why the course language has `Prop`, `Type`, `Type 1`, … The CIC course walks through the paradox.
+- **Not checking arguments.** `(fun n => succ n : Nat → Nat) Type` is accepted, and computes to `succ Type`: a "number" that is not a number, stuck forever. This is Chapter 18's progress theorem failing: a well-typed term that cannot compute to a value.
+- **Skipping conversion.** Any term is accepted at any type: `(Nat : Nat)`. The type system no longer says anything, and neither do the proofs checked with it.
+
+<Key>
+A dependent type checker is a bidirectional checker over one syntax for terms and types, with universes, and a conversion check that compares types by computing them. Each of its rules protects something: remove one and the system accepts nonsense, or proves False.
+</Key>
+
+<UnderTheHood title="From this chapter to a real kernel">
+The course's kernel (and Lean's) follows the same plan, with more: inductive types and their recursors (with the rules of Chapter 11), definitions that unfold on demand (δ-reduction), universe polymorphism, η for functions and structures, proof irrelevance (any two proofs of a proposition are convertible), and let-bindings. It does not normalise whole terms to compare them: it reduces to *weak head normal form* and compares step by step, and caches results, because full normalisation is far too slow. Many kernels, including Coq's and Agda's, use **normalisation by evaluation**, which evaluates terms into values of the implementation language (closures for functions) and reads them back into terms; it is faster than repeated substitution, and it avoids most index arithmetic. Lean's kernel is a few thousand lines of C++, and independent re-implementations of it exist, so that a bug in one would be caught by another: differential testing at the scale of a whole proof assistant.
+</UnderTheHood>
+
+## Exercises
+
+<Exercise id="kernel:shift-zero" title="Shifting by zero" chapter code={`theorem shift_zero (t : Tm) (c : Nat) : t.shift 0 c = t := by
+  sorry`} must="shift_zero" hint="induction t generalizing c, with simp [Tm.shift, ih…] in each case. For var, split on i < c (by_cases h : i < c <;> simp [Tm.shift, h])." solution={`theorem shift_zero (t : Tm) (c : Nat) : t.shift 0 c = t := by
+  induction t generalizing c with
+  | var i => by_cases h : i < c <;> simp [Tm.shift, h]
+  | sort l => rfl
+  | pi A B ihA ihB => simp [Tm.shift, ihA, ihB]
+  | lam b ih => simp [Tm.shift, ih]
+  | app f a ihf iha => simp [Tm.shift, ihf, iha]
+  | ann t T iht ihT => simp [Tm.shift, iht, ihT]
+  | nat => rfl
+  | zero => rfl
+  | succ n ih => simp [Tm.shift, ih]`}>
+Another sanity theorem about de Bruijn indices: moving a term under zero binders changes nothing.
+</Exercise>
+
+<Exercise id="kernel:k" title="Write a type with indices" chapter code={`-- fun A B x y => x  :  (A : Type) → (B : Type) → A → B → A
+def kTy : Tm := sorry
+def kTm : Tm := .ann (.lam (.lam (.lam (.lam (.var 1))))) kTy
+
+example : tc [] kTm none = some kTy := by decide`} must="kTy" hint="Four nested pi. Count binders outwards from each position: in A → B → A, after binding A and B, A is var 1 and B is var 0; after also binding x, B is var 1; after binding y too, A is var 3." solution={`def kTy : Tm := .pi (.sort 0) (.pi (.sort 0) (.pi (.var 1) (.pi (.var 1) (.var 3))))
+def kTm : Tm := .ann (.lam (.lam (.lam (.lam (.var 1))))) kTy
+
+example : tc [] kTm none = some kTy := by decide`}>
+Write the type of the function that returns its first explicit argument, with de Bruijn indices, and let the checker confirm it. (The lab above prints indices as `#i` when a variable has no name: use it to check your counting.)
+</Exercise>
