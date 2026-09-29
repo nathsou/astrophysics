@@ -18,12 +18,17 @@ export function CodeBlock(props: { code: string; lang?: string; title?: string }
         </code>
       </pre>
       <div class="cb-actions">
+        <Show when={props.lang === 'lean'}>
+          <a class="btn small" href={`#/playground?code=${btoa(unescape(encodeURIComponent(props.code)))}`} title="open in the playground">
+            try it
+          </a>
+        </Show>
         <button class="btn small" onClick={copy}>
           {copied() ? 'copied' : 'copy'}
         </button>
       </div>
-      <Show when={props.lang}>
-        <span class="cb-lang">{props.lang === 'lean' ? 'Lean 4' : props.lang}</span>
+      <Show when={props.lang && props.lang !== 'lean'}>
+        <span class="cb-lang">{props.lang}</span>
       </Show>
     </div>
   );

@@ -166,7 +166,6 @@ function search(rows: Row[], nAtoms: number): bigint[] | undefined {
 // ---------------------------------------------------------------------------
 // the tactic
 
-type Rel = { l: Expr; r: Expr };
 
 export function omegaTactic(runner: TacticRunner, g: number, span: Span): void {
   const el = runner.el;

@@ -1,8 +1,9 @@
 import { useParams, useLocation, A } from '@solidjs/router';
 import { For, Show, Suspense, createEffect, createResource, createSignal, onCleanup, ErrorBoundary } from 'solid-js';
-import { chapterBySlug, neighbours, parts } from '../content/chapters.ts';
+import { chapterBySlug, neighbours, parts, romans, chapterLabel } from '../content/chapters.ts';
 import { mdxComponents } from '../content/mdx-components.tsx';
-import { markVisited } from './progress.ts';
+import { markVisited, cicVisited } from './progress.ts';
+import { cicHref } from '../content/bridges.ts';
 
 interface TocItem {
   id: string;
@@ -59,8 +60,8 @@ export function ChapterPage() {
         <Show when={info()} fallback={<p>Unknown chapter.</p>}>
           <header class="chapter-head">
             <div class="chapter-kicker">
-              {info()!.num > 0 ? `Chapter ${info()!.num}` : 'Prologue'}
-              {info()!.part > 0 ? ` · Part ${['', 'I', 'II', 'III', 'IV', 'V'][info()!.part]}: ${parts[info()!.part].title}` : ''}
+              {chapterLabel(info()!)}
+              {info()!.part > 0 && info()!.part < 7 ? ` · Part ${romans[info()!.part]}: ${parts[info()!.part].title}` : ''}
             </div>
             <h1>{info()!.title}</h1>
             <p class="chapter-blurb">{info()!.blurb}</p>
@@ -78,6 +79,26 @@ export function ChapterPage() {
               </Show>
             </Suspense>
           </ErrorBoundary>
+          <Show when={info()!.cic?.length}>
+            <aside class="bridge-box">
+              <div class="bridge-title">Under the hood · in the CIC course</div>
+              <p class="bridge-lead">This chapter uses the type checker; these chapters of <em>The Calculus of Inductive Constructions</em> explain how it works.</p>
+              <ul>
+                <For each={info()!.cic}>
+                  {(l) => (
+                    <li>
+                      <a href={cicHref(l.slug, l.s)}>{l.what}</a>
+                      <Show when={cicVisited(l.slug)}>
+                        <span class="badge ok" style={{ 'margin-left': '0.4rem' }}>
+                          read
+                        </span>
+                      </Show>
+                    </li>
+                  )}
+                </For>
+              </ul>
+            </aside>
+          </Show>
           <nav class="chapter-nav">
             <Show when={neighbours(params.slug!).prev}>
               {(p) => (

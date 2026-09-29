@@ -392,6 +392,7 @@ h1 em {
 .compiler { --card-ink: var(--copper-ink); }
 .lm { --card-ink: var(--teal-ink); }
 .proofs { --card-ink: var(--rose-ink); }
+.pap { --card-ink: var(--teal-ink); }
 
 .body {
   display: flex;
@@ -603,6 +604,46 @@ h1 em {
   font-family: var(--font-mono);
   font-size: 11px;
   color: #c7b3f0;
+}
+
+.art-pap {
+  background: radial-gradient(90% 90% at 15% 90%, #1f7a6e66, transparent 60%), #14292a;
+  color: #d4efe9;
+}
+.art-pap .pap-col {
+  position: absolute;
+  left: 26px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: #d4efe9;
+}
+.art-pap .pap-tac {
+  top: 26px;
+}
+.art-pap .pap-term {
+  bottom: 30px;
+  color: #9fe3d5;
+}
+.art-pap .pap-kw {
+  color: #f0c987;
+}
+.art-pap .pap-arrow {
+  position: absolute;
+  left: 30px;
+  top: 104px;
+  font-size: 22px;
+  color: #7fd6c2;
+}
+.art-pap .pap-turnstile {
+  position: absolute;
+  right: 26px;
+  top: 18px;
+  font-family: var(--font-serif);
+  font-size: 120px;
+  line-height: 1;
+  color: #7fd6c2;
+  opacity: 0.55;
 }
 
 .art-incompleteness {

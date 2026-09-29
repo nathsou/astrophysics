@@ -4,7 +4,7 @@ export type ThemePref = 'system' | 'light' | 'dark';
 
 function load(): ThemePref {
   try {
-    const v = localStorage.getItem('theme') ?? localStorage.getItem('cic-theme');
+    const v = localStorage.getItem('theme');
     if (v === 'light' || v === 'dark' || v === 'system') return v;
     if (v === 'auto') return 'system';
   } catch {
@@ -38,7 +38,6 @@ export function setTheme(t: ThemePref) {
   apply(t);
   try {
     localStorage.setItem('theme', t);
-    localStorage.removeItem('cic-theme');
   } catch {
     /* ignore */
   }

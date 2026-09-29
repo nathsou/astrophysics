@@ -62,9 +62,12 @@ export interface PrettyOptions {
   maxDepth?: number;
   /** names of metavariables */
   mvarName?: (id: number) => string;
+  /** print a hole `?m x₁ … xₙ` applied to its context as just `?m` */
+  hideMVarArgs?: boolean;
 }
 
-const defaults: Required<Omit<PrettyOptions, 'mvarName'>> = {
+const defaults: Required<Omit<PrettyOptions, 'mvarName' | 'hideMVarArgs'>> & { hideMVarArgs: boolean } = {
+  hideMVarArgs: false,
   explicit: false,
   universes: false,
   numerals: true,
@@ -294,6 +297,11 @@ export class Printer {
     const args = getAppArgs(e);
     const argPath = (i: number) => [...path, ...Array(args.length - 1 - i).fill(0), 1];
     const fnPath = [...path, ...Array(args.length).fill(0)];
+    if (fn.k === 'mvar' && this.opts.hideMVarArgs) return { ...this.ppCore(fn, lctx, used, ctxPrec, fnPath, depth), expr: e, path };
+    if (this.opts.notation && !this.opts.explicit && fn.k === 'const') {
+      const special = this.ppSpecial(fn.name, e, args, lctx, used, ctxPrec, path, argPath, depth);
+      if (special) return special;
+    }
     const infos = this.binderInfos(fn, lctx);
     const visible: number[] = [];
     args.forEach((_, i) => {
@@ -324,6 +332,77 @@ export class Printer {
     }
     if (visible.length === 0) return head.expr === e ? head : { children: [head] };
     return this.wrap({ children }, P_APP, ctxPrec);
+  }
+
+  /** list literals, tuples and if-then-else */
+  private ppSpecial(name: string, e: Expr, args: Expr[], lctx: LocalContext, used: Set<string>, ctxPrec: number, path: number[], argPath: (i: number) => number[], depth: number): PNode | undefined {
+    const P = (x: Expr, p: number[], prec = P_BINDER) => this.pp(x, lctx, used, prec, p, depth + 1);
+    if (name === 'List.nil' && args.length === 1) return { text: '[]', cls: 'ctor' };
+    if (name === 'List.cons' && args.length === 3) {
+      // [a, b, c] when the list ends in nil
+      const items: { e: Expr; path: number[] }[] = [];
+      let cur: Expr = e;
+      let p = path;
+      for (let guard = 0; guard < 500; guard++) {
+        const h = getAppFn(cur);
+        const as = getAppArgs(cur);
+        if (h.k === 'const' && h.name === 'List.cons' && as.length === 3) {
+          items.push({ e: as[1], path: [...p, 0, 1] });
+          cur = as[2];
+          p = [...p, 1];
+          continue;
+        }
+        if (h.k === 'const' && h.name === 'List.nil' && as.length === 1) {
+          const children: PNode[] = [{ text: '[', cls: 'punct' }];
+          items.forEach((it, i) => {
+            if (i) children.push({ text: ', ', cls: 'punct' });
+            children.push(P(it.e, it.path));
+          });
+          children.push({ text: ']', cls: 'punct' });
+          return { children };
+        }
+        return undefined;
+      }
+      return undefined;
+    }
+    if (name === 'Prod.mk' && args.length === 4) {
+      return { children: [{ text: '(', cls: 'punct' }, P(args[2], argPath(2)), { text: ', ', cls: 'punct' }, P(args[3], argPath(3)), { text: ')', cls: 'punct' }] };
+    }
+    if (name === 'ite' && args.length === 5) {
+      const node: PNode = {
+        children: [
+          { text: 'if ', cls: 'kw' },
+          P(args[1], argPath(1)),
+          { text: ' then ', cls: 'kw' },
+          P(args[3], argPath(3)),
+          { text: ' else ', cls: 'kw' },
+          P(args[4], argPath(4)),
+        ],
+      };
+      return this.wrap(node, P_BINDER, ctxPrec);
+    }
+    if (name === 'dite' && args.length === 5 && args[3].k === 'lam' && args[4].k === 'lam') {
+      const t = args[3];
+      const f = args[4];
+      const nm = this.fresh(t.name, used);
+      const dt = { id: freshFVarId(), name: nm, type: t.type };
+      const df = { id: freshFVarId(), name: nm, type: f.type };
+      const u2 = new Set(used).add(nm);
+      const node: PNode = {
+        children: [
+          { text: 'if ', cls: 'kw' },
+          { text: nm, cls: 'var' },
+          { text: ' : ', cls: 'punct' },
+          P(args[1], argPath(1)),
+          { text: ' then ', cls: 'kw' },
+          this.pp(instantiate1(t.body, mkFVar(dt.id)), lctx.push(dt), u2, P_BINDER, [...argPath(3), 1], depth + 1),
+          { text: ' else ', cls: 'kw' },
+          this.pp(instantiate1(f.body, mkFVar(df.id)), lctx.push(df), u2, P_BINDER, [...argPath(4), 1], depth + 1),
+        ],
+      };
+      return this.wrap(node, P_BINDER, ctxPrec);
+    }
+    return undefined;
   }
 
   private ppNotation(

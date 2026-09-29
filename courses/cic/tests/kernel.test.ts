@@ -59,7 +59,7 @@ def rev {α : Type} : List α → List α → List α
 #reduce rev (1 :: 2 :: 3 :: List.nil) List.nil
 `);
     expect(out[1]).toBe('120');
-    expect(out[3]).toBe('3 :: 2 :: 1 :: List.nil');
+    expect(out[3]).toBe('[3, 2, 1]');
   });
   it('recursion via match', () => {
     const { out } = ok(`

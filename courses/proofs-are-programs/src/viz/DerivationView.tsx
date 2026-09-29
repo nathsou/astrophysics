@@ -1,8 +1,7 @@
 // A standalone derivation tree for a term, optionally revealed step by step.
 
 import { Show, createMemo, createSignal } from 'solid-js';
-import { envFor, check } from '../app/kernel.ts';
-import type { CalculusId } from '@kernel/core/calculus.ts';
+import { baseEnv, check } from '../app/kernel.ts';
 import { TypeChecker, type Deriv } from '@kernel/core/typechecker.ts';
 import { DerivationTree } from './DerivationTree.tsx';
 import { formatMsg } from '@kernel/format.ts';
@@ -22,7 +21,7 @@ const bool = (v: boolean | string | undefined, d: boolean) => (v === undefined ?
 export function DerivationView(props: DerivationViewProps) {
   const [term, setTerm] = createSignal(props.term);
   const res = createMemo(() => {
-    const env = envFor((props.calculus as CalculusId) ?? 'cic');
+    const env = baseEnv();
     const src = `${props.setup ?? ''}\n#check ${term()}`;
     const r = check(src, env);
     const last = r.results[r.results.length - 1];

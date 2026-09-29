@@ -7,6 +7,7 @@ import { Playground } from '../viz/Playground.tsx';
 import { rules } from '@kernel/core/rules.ts';
 import katex from 'katex';
 import { widgets } from '../viz/registry.ts';
+import { CIC_TITLES, CIC_NUMBERS, cicHref } from './bridges.ts';
 
 type P = { children?: JSX.Element; [k: string]: unknown };
 
@@ -65,6 +66,24 @@ function Callout(kind: string, label: string) {
         <Show when={props.title}>
           <em>{props.title}</em>
         </Show>
+      </div>
+      {props.children}
+    </div>
+  );
+}
+
+/** a link to the chapter of the CIC course that explains the theory behind a passage */
+export function UnderTheHood(props: { ch: string; s?: string; children?: JSX.Element }) {
+  const title = () => CIC_TITLES[props.ch] ?? props.ch;
+  return (
+    <div class="callout under-the-hood">
+      <div class="callout-title">
+        Under the hood
+        <em>
+          <a href={cicHref(props.ch, props.s)}>
+            CIC course, Chapter {CIC_NUMBERS[props.ch] ?? '?'}: {title()}
+          </a>
+        </em>
       </div>
       {props.children}
     </div>
@@ -153,10 +172,13 @@ export const mdxComponents: Record<string, unknown> = {
   Theorem: Callout('theorem', 'Theorem'),
   Note: Callout('note', 'Note'),
   Warning: Callout('warning', 'Careful'),
+  Pitfall: Callout('warning', 'Pitfall'),
   History: Callout('history', 'History'),
-  Engineer: Callout('engineer', 'For the engineer'),
+  Engineer: Callout('engineer', 'For the programmer'),
   LeanNote: Callout('lean', 'In Lean 4'),
   Problem: Callout('problem', 'The problem'),
+  Key: Callout('theorem', 'The key idea'),
+  UnderTheHood,
   Sidenote,
   Tex,
   Rules,

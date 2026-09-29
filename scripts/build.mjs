@@ -14,6 +14,7 @@ const output = join(root, 'dist');
 const courses = [
   { name: 'astrophysics' },
   { name: 'cic' },
+  { name: 'proofs-are-programs' },
   { name: 'compiler-backends' },
   { name: 'incompleteness' },
   { name: 'elements' },

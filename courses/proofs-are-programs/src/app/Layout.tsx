@@ -1,6 +1,6 @@
 import { A, useLocation, type RouteSectionProps } from '@solidjs/router';
 import { For, Show, createSignal, createEffect, onCleanup, onMount } from 'solid-js';
-import { chapters, parts, chapterBySlug } from '../content/chapters.ts';
+import { chapters, parts, chapterBySlug, romans, chapterLabel } from '../content/chapters.ts';
 import { cycleTheme, theme } from './theme.ts';
 import { isVisited } from './progress.ts';
 
@@ -23,25 +23,26 @@ export function Layout(props: RouteSectionProps) {
     onCleanup(() => window.removeEventListener('scroll', on));
   });
   const themeIcon = () => (theme() === 'dark' ? '☾' : theme() === 'light' ? '☀' : '◐');
+  const partLabel = (n: number) => (n === 0 || n === 7 ? parts[n].title : `Part ${romans[n]} · ${parts[n].title}`);
 
   return (
     <div class="shell">
       <nav class={`sidebar ${open() ? 'open' : ''}`} aria-label="Course contents">
         <A href="/" class="brand">
-          <span class="brand-mark">λ</span>
+          <span class="brand-mark">⊢</span>
           <span class="brand-text">
-            <b>Calculus of Inductive Constructions</b>
-            <span>an interactive course</span>
+            <b>Proofs Are Programs</b>
+            <span>the Curry–Howard correspondence, for programmers</span>
           </span>
         </A>
         <For each={parts}>
           {(p) => (
             <div class="nav-part">
-              <span class="label">{p.num === 0 ? p.title : `Part ${['', 'I', 'II', 'III', 'IV', 'V'][p.num]} · ${p.title}`}</span>
+              <span class="label">{partLabel(p.num)}</span>
               <For each={chapters.filter((c) => c.part === p.num)}>
                 {(c) => (
                   <A href={`/ch/${c.slug}`} class="nav-link" activeClass="active" end>
-                    <span class="num">{c.num === 0 ? '' : c.num}</span>
+                    <span class="num">{c.part === 0 || c.part === 7 ? '' : c.num}</span>
                     <span>{c.title}</span>
                     <Show when={isVisited(c.slug)}>
                       <span class="dot" title="visited" />
@@ -59,16 +60,22 @@ export function Layout(props: RouteSectionProps) {
           <A href="/playground" class="nav-link" activeClass="active">
             <span class="num">⌨</span>Playground
           </A>
-          <A href="/reference/rules" class="nav-link" activeClass="active">
-            <span class="num">⊢</span>Rule index
+          <A href="/reference/tactics" class="nav-link" activeClass="active">
+            <span class="num">▸</span>Tactic reference
           </A>
-          <A href="/reference/timeline" class="nav-link" activeClass="active">
-            <span class="num">⌛</span>Timeline
+          <A href="/reference/language" class="nav-link" activeClass="active">
+            <span class="num">λ</span>Language reference
+          </A>
+          <A href="/reference/dictionary" class="nav-link" activeClass="active">
+            <span class="num">≅</span>Curry–Howard dictionary
+          </A>
+          <A href="/reference/bridges" class="nav-link" activeClass="active">
+            <span class="num">⇄</span>The CIC course, chapter by chapter
           </A>
           <A href="/reference/glossary" class="nav-link" activeClass="active">
             <span class="num">¶</span>Glossary
           </A>
-          <A href="/reference/bibliography" class="nav-link" activeClass="active">
+          <A href="/reference/reading" class="nav-link" activeClass="active">
             <span class="num">❡</span>Further reading
           </A>
         </div>
@@ -83,7 +90,7 @@ export function Layout(props: RouteSectionProps) {
           </button>
           <span class="crumb">
             <Show when={current()} fallback={<b>{loc.pathname.startsWith('/playground') ? 'Playground' : loc.pathname.startsWith('/reference') ? 'Reference' : 'Home'}</b>}>
-              {current()!.num > 0 ? `Chapter ${current()!.num} · ` : ''}
+              {current()!.part > 0 && current()!.part < 7 ? `${chapterLabel(current()!)} · ` : ''}
               <b>{current()!.title}</b>
             </Show>
           </span>

@@ -7,7 +7,7 @@ interface Progress {
 
 function load(): Progress {
   try {
-    const v = JSON.parse(localStorage.getItem('cic-progress') ?? 'null');
+    const v = JSON.parse(localStorage.getItem('pap-progress') ?? 'null');
     if (v && Array.isArray(v.visited)) return { visited: v.visited, exercises: v.exercises ?? {} };
   } catch {
     /* storage unavailable */
@@ -20,7 +20,7 @@ const [progress, setProgress] = createSignal<Progress>(load());
 function save(p: Progress) {
   setProgress(p);
   try {
-    localStorage.setItem('cic-progress', JSON.stringify(p));
+    localStorage.setItem('pap-progress', JSON.stringify(p));
   } catch {
     /* ignore */
   }
@@ -45,3 +45,13 @@ export function resetProgress() {
 }
 
 export { progress };
+
+/** chapters of the CIC course the reader has visited (both courses share the same origin) */
+export function cicVisited(slug: string): boolean {
+  try {
+    const v = JSON.parse(localStorage.getItem('cic-progress') ?? 'null');
+    return !!v && Array.isArray(v.visited) && v.visited.includes(slug);
+  } catch {
+    return false;
+  }
+}

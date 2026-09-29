@@ -10,7 +10,8 @@ import { setDiagnostics, lintGutter, type Diagnostic } from '@codemirror/lint';
 import { tags as t } from '@lezer/highlight';
 import { ABBREVIATIONS } from './abbrev.ts';
 
-const KEYWORDS = /^(def|theorem|lemma|example|abbrev|opaque|axiom|inductive|structure|where|fun|let|in|match|nomatch|with|show|from|namespace|section|end|open|variable|universe|mutual|set_option|infixl|infixr|infix|prefix|init_quot|noncomputable)\b/;
+const KEYWORDS = /^(def|theorem|lemma|example|abbrev|opaque|axiom|inductive|structure|class|instance|deriving|attribute|where|fun|let|have|in|match|nomatch|with|show|from|by|if|then|else|calc|namespace|section|end|open|variable|universe|mutual|set_option|infixl|infixr|infix|prefix|init_quot|noncomputable|termination_by|decreasing_by)\b/;
+const TACTICS = /^(intro|intros|rintro|exact|apply|refine|rfl|constructor|left|right|exists|use|exfalso|contradiction|assumption|trivial|decide|omega|simp|simp_all|dsimp|simp_arith|rw|rewrite|rwa|cases|induction|rcases|obtain|unfold|specialize|change|subst|revert|clear|funext|by_cases|split|generalize|suffices|next|case|all_goals|any_goals|try|repeat|first|focus|skip|done|sorry|nofun|injection|generalizing|at|only)\b/;
 
 const leanLang = StreamLanguage.define<{ comment: number }>({
   startState: () => ({ comment: 0 }),
@@ -36,13 +37,14 @@ const leanLang = StreamLanguage.define<{ comment: number }>({
     }
     if (stream.match(/^#[a-z]+/)) return 'processingInstruction';
     if (stream.match(KEYWORDS)) return 'keyword';
+    if (stream.match(TACTICS)) return 'macroName';
     if (stream.match(/^(Prop|Type|Sort)\b/) || stream.match('□') || stream.match(/^\*(?![\w])/)) return 'typeName';
     if (stream.match(/^\d+/)) return 'number';
     if (stream.match(/^"[^"]*"/)) return 'string';
     if (stream.match(/^\?[\p{L}_][\p{L}\p{N}_']*/u)) return 'invalid';
     if (stream.match(/^[A-Z][\p{L}\p{N}_'!?₀-₉.]*/u)) return 'className';
     if (stream.match(/^[\p{L}_][\p{L}\p{N}_'!?₀-₉.]*/u)) return 'variableName';
-    if (stream.match(/^(:=|=>|→|->|↦|λ|Π|∀|∃)/)) return 'operatorKeyword';
+    if (stream.match(/^(:=|=>|→|->|↦|λ|Π|∀|∃|<;>|·|▸|←)/)) return 'operatorKeyword';
     stream.next();
     return 'operator';
   },
@@ -67,6 +69,7 @@ const lambdaLang = StreamLanguage.define<null>({
 
 const highlightStyle = HighlightStyle.define([
   { tag: t.keyword, color: 'var(--c-prop)' },
+  { tag: t.macroName, color: 'var(--accent)', fontWeight: '550' },
   { tag: t.processingInstruction, color: 'var(--c-sort)', fontWeight: '600' },
   { tag: t.typeName, color: 'var(--c-sort)', fontWeight: '600' },
   { tag: t.className, color: 'var(--c-type)' },

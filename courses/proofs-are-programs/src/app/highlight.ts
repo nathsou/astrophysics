@@ -1,6 +1,7 @@
 // A small syntax highlighter for static code blocks.
 
-const KW = new Set(['def', 'theorem', 'lemma', 'example', 'abbrev', 'axiom', 'inductive', 'structure', 'where', 'fun', 'let', 'in', 'match', 'with', 'show', 'from', 'namespace', 'section', 'end', 'open', 'variable', 'universe', 'mutual', 'set_option', 'infixl', 'infixr', 'infix', 'prefix', 'init_quot', 'noncomputable', 'opaque', 'do', 'return', 'if', 'then', 'else', 'Fixpoint', 'Definition', 'Inductive', 'Theorem', 'Proof', 'Qed']);
+const KW = new Set(['def', 'theorem', 'lemma', 'example', 'abbrev', 'axiom', 'inductive', 'structure', 'class', 'instance', 'deriving', 'attribute', 'where', 'fun', 'let', 'have', 'in', 'match', 'nomatch', 'with', 'show', 'from', 'by', 'calc', 'namespace', 'section', 'end', 'open', 'variable', 'universe', 'mutual', 'set_option', 'infixl', 'infixr', 'infix', 'prefix', 'init_quot', 'noncomputable', 'opaque', 'do', 'return', 'if', 'then', 'else']);
+const TAC = new Set(['intro', 'intros', 'rintro', 'exact', 'apply', 'refine', 'rfl', 'constructor', 'left', 'right', 'exists', 'use', 'exfalso', 'contradiction', 'assumption', 'trivial', 'decide', 'omega', 'simp', 'simp_all', 'rw', 'rwa', 'cases', 'induction', 'rcases', 'obtain', 'unfold', 'specialize', 'change', 'subst', 'revert', 'clear', 'funext', 'by_cases', 'split', 'generalize', 'suffices', 'next', 'case', 'all_goals', 'any_goals', 'try', 'repeat', 'first', 'skip', 'done', 'sorry', 'generalizing', 'at', 'only']);
 const SORTS = new Set(['Prop', 'Type', 'Sort', '*', '□']);
 
 export interface HlTok {
@@ -30,6 +31,7 @@ export function highlight(code: string, lang: string): HlTok[] {
     else if (m[2]) out.push({ text, cls: 'hl-cmd' });
     else if (m[3]) {
       if (KW.has(text)) out.push({ text, cls: 'hl-kw' });
+      else if (TAC.has(text)) out.push({ text, cls: 'hl-tac' });
       else if (SORTS.has(text)) out.push({ text, cls: 'hl-sort' });
       else if (/^[A-Z]/.test(text)) out.push({ text, cls: 'hl-name' });
       else out.push({ text });

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Interactive textbooks on astrophysics, type theory, compiler backends, language models, Gödel’s incompleteness theorems, mathematical proof and Euclid’s Elements. Read, experiment and build — everything runs in your browser.">
+    <meta name="description" content="Interactive textbooks on astrophysics, type theory, proofs as programs, compiler backends, language models, Gödel’s incompleteness theorems, mathematical proof and Euclid’s Elements. Read, experiment and build — everything runs in your browser.">
     <meta name="theme-color" content="#f5f1e8" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#0e1320" media="(prefers-color-scheme: dark)">
     <title>Interactive Courses</title>
@@ -43,10 +43,10 @@
           <div class="hero-text">
             <p class="eyebrow">A library of interactive textbooks</p>
             <h1 id="title">Ideas you can <em>take&nbsp;apart.</em></h1>
-            <p class="lede">Seven deep dives — the universe, the logic of proofs, the machinery of compilers, the making of a language model, the limits of formal proof, the art of proving great theorems and the book that started it all. Read the explanation, then change the inputs and watch the idea work.</p>
+            <p class="lede">Eight deep dives — the universe, the logic of proofs, proofs as programs, the machinery of compilers, the making of a language model, the limits of formal proof, the art of proving great theorems and the book that started it all. Read the explanation, then change the inputs and watch the idea work.</p>
             <ul class="facts" aria-label="About these courses">
-              <li><strong>7</strong> courses</li>
-              <li><strong>120+</strong> chapters</li>
+              <li><strong>8</strong> courses</li>
+              <li><strong>140+</strong> chapters</li>
               <li>Everything runs <strong>in your browser</strong></li>
             </ul>
           </div>
@@ -98,6 +98,22 @@
                 <p class="desc">From the untyped λ-calculus to the type theory behind Lean 4, one idea at a time — with a real type-checking kernel running in your browser.</p>
                 <ul class="tags"><li>λ-calculus</li><li>Dependent types</li><li>Inductive families</li></ul>
                 <p class="foot"><span class="status done">Complete</span><span class="go">Start reading <span aria-hidden="true">→</span></span></p>
+              </div>
+            </a>
+
+            <a class="card pap" href="./proofs-are-programs/">
+              <div class="art art-pap" aria-hidden="true">
+                <span class="pap-col pap-tac"><span class="pap-kw">theorem</span> swap : p ∧ q → q ∧ p := <span class="pap-kw">by</span><br>&nbsp;&nbsp;intro ⟨hp, hq⟩<br>&nbsp;&nbsp;exact ⟨hq, hp⟩</span>
+                <span class="pap-arrow">⇅</span>
+                <span class="pap-col pap-term"><span class="pap-kw">fun</span> ⟨hp, hq⟩ => ⟨hq, hp⟩</span>
+                <span class="pap-turnstile">⊢</span>
+              </div>
+              <div class="body">
+                <p class="kicker"><span>Logic · Programming</span><span>23 chapters</span></p>
+                <h3>Proofs Are Programs</h3>
+                <p class="desc">The Curry–Howard correspondence for programmers: write proofs as programs, prove an interpreter, a compiler and a type checker correct, and build a small kernel of your own — in a Lean-style language running in your browser.</p>
+                <ul class="tags"><li>Curry–Howard</li><li>Tactics</li><li>Verified programs</li></ul>
+                <p class="foot"><span class="status">In progress</span><span class="go">Start reading <span aria-hidden="true">→</span></span></p>
               </div>
             </a>
 

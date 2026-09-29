@@ -27,7 +27,7 @@ export function GoalView(props: { env: Environment; goal: Goal }) {
   return (
     <div class="goal">
       <Show when={g.name}>
-        <div class="goal-name">?{g.name}</div>
+        <div class="goal-name">case {g.name}</div>
       </Show>
       <For each={g.lctx.decls.filter((d) => !d.name.endsWith('✝') || true)}>
         {(d, i) => (
@@ -182,6 +182,43 @@ export function ResultView(props: {
               }
               case 'print':
                 return <PrintView env={props.env} decl={out.decl} axioms={out.axioms} />;
+              case 'eval':
+                return (
+                  <div class="out eval">
+                    <span class="eval-value">{out.value}</span>
+                    <span class="eval-meta" title="steps of the compiled program">
+                      {' '}
+                      : <Term env={props.env} expr={out.type} lctx={out.lctx} />
+                    </span>
+                  </div>
+                );
+              case 'test':
+                return (
+                  <div class={`out test ${out.counterexample ? 'failed' : 'passed'}`}>
+                    <Show
+                      when={out.counterexample}
+                      fallback={
+                        <span>
+                          <span class="ok-mark">✓</span> passed {out.passed} random tests <span class="muted">(evidence, not a proof)</span>
+                        </span>
+                      }
+                    >
+                      <span>
+                        <span class="err-mark">✗</span> counterexample after {out.passed} passing test{out.passed === 1 ? '' : 's'}:{' '}
+                        <For each={out.counterexample}>
+                          {(c, i) => (
+                            <>
+                              {i() > 0 ? ', ' : ''}
+                              <code>
+                                {c.name} := {c.value}
+                              </code>
+                            </>
+                          )}
+                        </For>
+                      </span>
+                    </Show>
+                  </div>
+                );
             }
           })()}
         </Show>

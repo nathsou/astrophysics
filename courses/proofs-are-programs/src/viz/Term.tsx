@@ -97,7 +97,7 @@ export function Term(props: TermProps) {
   });
 
   const applyHighlights = () => {
-    for (const el of subs.values()) el.classList.remove('redex', 'fresh', 'occ-strict', 'occ-negative', 'occ-nonstrict', 'occ-nested', 'sel');
+    for (const el of subs.values()) el.classList.remove('redex', 'fresh', 'occ-strict', 'occ-negative', 'occ-nonstrict', 'occ-nested', 'sel', 'hole', 'filled');
     for (const h of props.highlights ?? []) {
       // find the closest printed ancestor of the path
       let p = [...h.path];

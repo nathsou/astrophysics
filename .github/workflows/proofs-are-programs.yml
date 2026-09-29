@@ -1,0 +1,36 @@
+name: Proofs Are Programs — checks
+
+# Type check, language regression tests and chapter snippets for courses/proofs-are-programs,
+# which also exercise the shared kernel. (Deployment is in deploy.yml.)
+on:
+  push:
+    branches: [main]
+    paths: ['courses/proofs-are-programs/**', 'packages/kernel/**', '.github/workflows/proofs-are-programs.yml']
+  pull_request:
+    paths: ['courses/proofs-are-programs/**', 'packages/kernel/**', '.github/workflows/proofs-are-programs.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: courses/proofs-are-programs
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: courses/proofs-are-programs/package-lock.json
+      - run: npm ci
+      - name: Type-check
+        run: npm run typecheck
+      - name: Prelude, language regression tests and chapter snippets
+        run: npm test
+      - name: Build
+        run: npm run build

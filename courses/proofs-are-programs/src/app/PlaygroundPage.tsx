@@ -1,21 +1,22 @@
 import { Playground } from '../viz/Playground.tsx';
 
-const START = `-- Welcome to the course playground.
--- Everything here is checked by the course kernel, a small
--- implementation of Lean 4's type theory written in TypeScript.
--- Hover over terms to see their types. Type \\lam then space for λ.
+const START = `-- Welcome to the playground of Proofs Are Programs.
+-- Everything is checked by the course kernel, running in your browser.
+-- Hover over a term to see its type; put the cursor in a proof to see its goals.
+-- Unicode: type \\to then space for →, \\and for ∧, \\forall for ∀, \\< for ⟨.
 
-def double : Nat → Nat
-  | 0 => 0
-  | n + 1 => double n + 2
+def sum : List Nat → Nat
+  | [] => 0
+  | x :: xs => x + sum xs
 
-#reduce double 21
+#eval sum [1, 2, 3, 4]
 
-theorem and_swap (p q : Prop) : p ∧ q → q ∧ p :=
-  fun h => ⟨h.right, h.left⟩
+theorem sum_append (xs ys : List Nat) : sum (xs ++ ys) = sum xs + sum ys := by
+  induction xs with
+  | nil => simp [sum]
+  | cons x xs ih => simp [sum, ih]; omega
 
-#check @and_swap
-#print Nat.rec
+#test ∀ (xs ys : List Nat), sum (xs ++ ys) = sum ys + sum xs
 `;
 
 export default function PlaygroundPage() {
@@ -32,9 +33,9 @@ export default function PlaygroundPage() {
       <div class="prose" style={{ 'max-width': 'none' }}>
         <h1 style={{ 'font-size': '2rem', 'max-width': 'none' }}>Playground</h1>
         <p style={{ 'max-width': '50rem', margin: '0 0 1rem' }}>
-          A scratchpad connected to the course kernel. Choose a calculus — from the simply typed λ-calculus up to the full Calculus of Inductive Constructions — and experiment.
+          A scratchpad connected to the course kernel, with the course's standard library loaded. Click <em>proof term</em> to see the program your tactics are writing.
         </p>
-        <Playground code={initial} selectable height="28rem" class="full" title="Scratchpad" />
+        <Playground code={initial} height="30rem" class="full" title="Scratchpad" lens />
       </div>
     </div>
   );
