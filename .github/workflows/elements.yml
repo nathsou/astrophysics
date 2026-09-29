@@ -1,0 +1,35 @@
+name: Elements — checks
+
+# Conversion check, type check and tests for courses/elements. (Deployment is in deploy.yml.)
+on:
+  push:
+    branches: [main]
+    paths: ['courses/elements/**', '.github/workflows/elements.yml']
+  pull_request:
+    paths: ['courses/elements/**', '.github/workflows/elements.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: courses/elements
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: courses/elements/package-lock.json
+      - run: npm ci
+      - name: The committed conversion of the Perseus TEI is up to date
+        run: npm run convert:check
+      - name: Type-check
+        run: npm run typecheck
+      - name: Figures (random configurations), modern texts and workshop
+        run: npm test

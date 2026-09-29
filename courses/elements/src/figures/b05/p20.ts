@@ -1,0 +1,22 @@
+import { figure } from '../../geometry/figure';
+import { cmp, rods, sym } from './lib';
+
+// A : B = D : E and B : C = E : F: then D, E, F = s·A, s·B, s·C for some s.
+export default figure({
+  build(g) {
+    const a = g.param('a', 1.6, { min: 0.4, max: 2, label: 'A' });
+    const b = g.param('b', 0.9, { min: 0.4, max: 2, label: 'B' });
+    const c = g.param('c', 1.2, { min: 0.4, max: 2, label: 'C' });
+    const s = g.param('s', 0.7, { min: 0.3, max: 1.5, label: 'D ÷ A' });
+    const [d, e, f] = [s * a, s * b, s * c];
+    rods(g, [
+      [{ name: 'A', parts: [a] }, { name: 'D', parts: [d] }],
+      [{ name: 'B', parts: [b] }, { name: 'E', parts: [e] }],
+      [{ name: 'C', parts: [c] }, { name: 'F', parts: [f] }],
+    ], { gap: 1.5 });
+    g.equal('A : B = D : E', a / b, d / e);
+    g.equal('B : C = E : F', b / c, e / f);
+    g.show('A ? C,  D ? F', `${sym(cmp(a, c))} and ${sym(cmp(d, f))}`);
+    g.claim('A ? C and D ? F alike', cmp(a, c) === cmp(d, f));
+  },
+});

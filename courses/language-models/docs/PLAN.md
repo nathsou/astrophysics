@@ -117,7 +117,7 @@ F optimisation · G neural networks · H GPU/WGSL · I PyTorch · J glossary, ti
 - **M2** — Part II + appendices A, B, C, G, H. ✅ built 2026-09-27
 - **M3** — Part III. ✅ built 2026-09-27 (Chapters 9–11)
 - **M4** — Part IV (CourseGPT trained and running in the browser). ✅ built 2026-09-27: Chapters 0 and 12–16, appendices F and I. Weights hosting needs the `coursegpt-v1` release uploaded (see below).
-- **M5–M7** — Part V in three batches; remaining appendices. Chapter 17 ✅ built 2026-09-29.
+- **M5–M7** — Part V in three batches; remaining appendices. Chapters 17–18 ✅ built 2026-09-29.
 
 ## Follow-ups noted during M0
 
@@ -171,5 +171,9 @@ the files and SHA-256 hashes; `scripts/weights.mjs` (run by the course build) do
   (9 → 6 tokens/parameter), N_opt ∝ C^0.60; L(N, D) = 1.69 + 5.2e4/N^0.77 + 1.3e5/D^0.73 bits/token; it predicts
   1.81 for CourseGPT (measured 1.647). A first sweep at 8,192 tokens/step (kept, shown in the chapter) gave
   N_opt ∝ C^0.75 and predicted 2.17: an untuned batch reproduced Kaplan's exponent (Porian et al., 2024).
-- Next: Chapter 18 (modern architecture: RMSNorm, SwiGLU, RoPE, GQA) — a good fit for ablations with `lmc train --set`
-  once the model gains those options.
+- **Chapter 18 (modern architecture)** ✅ 2026-09-29. `GPTConfig` gained `norm_type` (layer/rms), `mlp_type`
+  (gelu/swiglu, ⅔ hidden width), `pos` (learned/rope) and `kv_heads` (GQA); defaults keep the GPT-2 block and all
+  checkpoints. `lmcourse/ch18.py`: 6×384 at 6.25e15 FLOPs, 7 runs. Seed noise 0.008; RMSNorm +0.001, SwiGLU −0.003,
+  RoPE −0.029 (the only clear win), GQA(2 KV) +0.020, all four +0.021 bits/token. RoPE collapses past ≈ 600
+  positions when trained at 512 (no interpolation). The browser engine does not implement these yet (a challenge).
+- Next: Chapter 19 (mixture-of-experts).

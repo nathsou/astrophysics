@@ -262,3 +262,13 @@
   people: Jordan Hoffmann and colleagues (DeepMind)
   chapter: scaling-laws
   text: Compute-optimal training scales parameters and tokens equally, about 20 tokens per parameter; a 70-billion-parameter model beat the 280-billion-parameter Gopher on the same compute.
+- year: 2021
+  title: Rotary position embeddings
+  people: Jianlin Su and colleagues
+  chapter: modern-architecture
+  text: Positions encoded as rotations of queries and keys, so attention depends on relative offsets; adopted by PaLM, Llama and most later models.
+- year: 2023
+  title: Llama
+  people: Hugo Touvron and colleagues (Meta)
+  chapter: modern-architecture
+  text: Openly released models whose block — pre-RMSNorm, SwiGLU, RoPE, later grouped-query attention — became the default design of open language models.

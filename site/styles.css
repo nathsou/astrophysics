@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Sans:wght@400;700&family=Archivo:wght@900&family=Inter:wght@700&family=Source+Serif+4:opsz,wght@8..60,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Sans:wght@400;700&family=Archivo:wght@900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@700&family=Source+Serif+4:opsz,wght@8..60,400&display=swap');
 
 /* ───────── Page tokens: light (default) and dark, following the courses' shared `theme` choice ───────── */
 :root {
@@ -593,6 +593,94 @@ h1 em {
   }
   .proofs .kicker {
     left: 18px;
+  }
+}
+
+/* 7 · Elements: Heath's text with Byrne's figure (Book I, Proposition 1) */
+.elements {
+  --cbg: #fbf8f1;
+  --cfg: #1d1b17;
+  --cmute: #5f594e;
+  --cac: #9b2d20;
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
+  gap: 32px;
+  align-items: center;
+  min-height: 0;
+  font-family: 'EB Garamond', Garamond, Georgia, serif;
+}
+:root[data-theme='dark'] .elements {
+  --cbg: #15140f;
+  --cfg: #ece6d8;
+  --cmute: #a8a08c;
+  --cac: #e08a6f;
+}
+.elements .fig {
+  width: 100%;
+  height: auto;
+}
+.elements .k {
+  fill: none;
+  stroke: var(--cmute);
+  stroke-width: 1.2;
+  stroke-dasharray: 3 4;
+}
+.elements .tri {
+  fill: #efb90e;
+}
+.elements .ab,
+.elements .ac,
+.elements .bc {
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+.elements .ab {
+  stroke: #d23a25;
+}
+.elements .ac {
+  stroke: #1f4e9c;
+}
+.elements .bc {
+  stroke: var(--cfg);
+}
+.elements .lt {
+  font: italic 17px 'EB Garamond', Georgia, serif;
+  fill: var(--cfg);
+}
+.elements h2 {
+  margin: 10px 0 12px;
+  font-size: 42px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+.elements .prop {
+  max-width: 560px;
+  font-size: 19px;
+  font-style: italic;
+  line-height: 1.4;
+}
+.elements .prop span {
+  font-style: normal;
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+  color: var(--cac);
+}
+.elements .desc {
+  max-width: 560px;
+  margin-top: 10px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--cmute);
+}
+@media (max-width: 640px) {
+  .elements {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  .elements .fig {
+    max-width: 200px;
   }
 }
 
