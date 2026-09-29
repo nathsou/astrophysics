@@ -134,10 +134,16 @@ Types constrain programs, and that constraint is the whole course. (Bridge: CIC 
 
 20. **A verified checker for simple types.** `infer : Ctx → Term → Option Ty`, proved sound and complete
     against `HasType`; a version that returns the typing derivation. (Bridge: CIC 3.)
+    *As built:* soundness and completeness, a `Decidable` instance for typability, uniqueness of types,
+    and a typing lab whose derivations come from `infer_sound … rfl`.
 21. **A dependent type checker.** de Bruijn syntax, normalisation by evaluation, bidirectional checking,
     `Type : Type` and Girard's paradox (fuel), universe levels, `Nat` and its recursor; your kernel checks
     your Part II proofs; side-by-side with the real kernel; the **differential fuzzer**.
     (Bridges: CIC 2, 10, 11, 17, 18, 19.)
+
+    *As built:* substitution-based normalisation with fuel (NbE is explained, not implemented: it needs
+    nested inductive types), `Nat` without a recursor, and a lab that mirrors the checker in JavaScript,
+    traces every judgement, breaks three rules on demand, and is tested against the course-language checker.
 
 **Epilogue — Where to go next.** Lean 4 and Mathlib, the CIC course, Proofcraft, further reading.
 

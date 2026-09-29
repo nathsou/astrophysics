@@ -21,16 +21,18 @@ export const tactics: TacticDoc[] = [
   { name: 'left / right', syntax: ['left', 'right'], what: 'For a goal with two constructors (like p ∨ q): prove it with the first (left) or the second (right).', term: 'Or.inl ?h / Or.inr ?h', ch: 'tactics' },
   { name: 'exists', syntax: ['exists 3', 'exists a, b'], what: 'Provides the witnesses of an existential goal, then tries trivial on what remains.', term: '⟨3, ?h⟩', ch: 'toolbox' },
   { name: 'exfalso', syntax: ['exfalso'], what: 'Replaces the goal by False: from a contradiction, anything follows.', term: 'False.elim ?h', ch: 'toolbox' },
-  { name: 'cases', syntax: ['cases h', 'cases h with\n| inl hp => tac\n| inr hq => tac'], what: 'Case analysis on a value of an inductive type: one goal per constructor, with its fields as new hypotheses. On an equation between constructors it performs injection and substitution; impossible cases disappear.', term: 'match h with | … => ?goal₁ | … => ?goal₂', ch: 'toolbox' },
+  { name: 'cases', syntax: ['cases h', 'cases h with\n| inl hp => tac\n| inr hq => tac', 'cases h : f x with …'], what: 'Case analysis on a value of an inductive type: one goal per constructor, with its fields as new hypotheses. On an equation between constructors it performs injection and substitution; impossible cases disappear. cases h : e case-splits on the value of an expression and remembers h : e = … in each case.', term: 'match h with | … => ?goal₁ | … => ?goal₂', ch: 'toolbox' },
   { name: 'rcases / obtain', syntax: ['rcases h with ⟨x, hx⟩ | h', 'obtain ⟨x, hx⟩ := h'], what: 'Case analysis with nested patterns. obtain pattern := e is the same, for an arbitrary term e.', term: 'nested matches', ch: 'toolbox' },
   { name: 'induction', syntax: ['induction n with\n| zero => tac\n| succ n ih => tac', 'induction xs generalizing acc'], what: 'Proof by induction: one goal per constructor, with an induction hypothesis for each recursive field. generalizing reverts variables first, so that the hypothesis is about all their values.', term: 'T.rec ?zero ?succ n', ch: 'induction' },
+  { name: 'injection', syntax: ['injection h with h₁ h₂'], what: 'From h : c a₁ a₂ = c b₁ b₂ (the same constructor on both sides), the equations a₁ = b₁ and a₂ = b₂: constructors are injective. With different constructors, it closes the goal.', term: 'T.noConfusion h (fun h₁ h₂ => ?goal)', ch: 'stlc-checker' },
+  { name: 'symm', syntax: ['symm'], what: 'Turns a goal a = b into b = a.', term: 'Eq.symm ?goal', ch: 'equality' },
   { name: 'rfl', syntax: ['rfl'], what: 'Closes a goal a = a (also ↔ and ≤) when both sides compute to the same thing.', term: 'rfl', ch: 'equality' },
   { name: 'rw', syntax: ['rw [h]', 'rw [← h, foo] at h₂'], what: 'Rewrites with equations (and ↔), left to right (← for right to left), in the goal or at hypotheses; then tries rfl. A definition name rewrites with its equation lemmas.', term: 'Eq.mpr (congrArg (fun x => …) h) ?goal', ch: 'equality' },
   { name: 'simp', syntax: ['simp', 'simp [h, f]', 'simp only [h]', 'simp at h', 'simp [*] at *'], what: 'Rewrites to a normal form with the @[simp] lemmas, the given lemmas and definitions (their equations), until nothing applies; closes the goal if it becomes True. Also computes with numerals and decides small closed propositions.', term: 'Eq.mpr (a chain of congruence proofs) ?goal, or of_eq_true …', ch: 'automation' },
   { name: 'simp_all', syntax: ['simp_all'], what: 'Simplifies every hypothesis and the goal with each other.', term: 'as simp', ch: 'automation' },
   { name: 'unfold', syntax: ['unfold f', 'unfold f at h'], what: 'Unfolds a definition (using its equation lemmas when it is defined by pattern matching).', term: 'as simp only', ch: 'toolbox' },
   { name: 'decide', syntax: ['decide'], what: 'Proves a proposition that has a Decidable instance by running the decision procedure: the kernel checks that it returns true.', term: 'of_decide_eq_true rfl', ch: 'automation' },
-  { name: 'omega', syntax: ['omega'], what: 'Linear arithmetic over the natural numbers: combines hypotheses and the negated goal into a contradiction. The proof is built by reflection (Chapter 19). This version reasons over the rationals, so facts that need integrality (like 2x ≠ 1) are out of reach.', term: 'Omega.contra ρ A B rfl (…)', ch: 'automation' },
+  { name: 'omega', syntax: ['omega'], what: 'Linear arithmetic over the natural numbers: combines hypotheses and the negated goal into a contradiction. It understands truncated subtraction, Nat.max and Nat.min by case splits. The proof is built by reflection, from a certificate (Chapter 19). This version reasons over the rationals, so facts that need integrality (like 2x ≠ 1) are out of reach.', term: 'Omega.contra ρ A B rfl (…)', ch: 'automation' },
   { name: 'have', syntax: ['have h : T := e', 'have h : T := by tac', 'have h : T'], what: 'Adds a hypothesis. Without := the proof of T becomes the first goal.', term: '(fun h => ?goal) e', ch: 'toolbox' },
   { name: 'suffices', syntax: ['suffices h : T by tac', 'suffices h : T from e'], what: 'Reduces the goal to T: the original goal is proved using h : T, and T remains to be proved.', term: '(fun h => proof of goal) ?T', ch: 'toolbox' },
   { name: 'show / change', syntax: ['show T', 'change T at h'], what: 'Replaces the goal (or a hypothesis) by something definitionally equal — the same after computation.', term: '?goal (no proof needed: the kernel sees the same type)', ch: 'toolbox' },
@@ -58,12 +60,17 @@ export interface SyntaxDoc {
 }
 
 export const language: SyntaxDoc[] = [
-  { what: 'Definition', syntax: 'def f (x : Nat) : Nat := x + 1', note: 'A named term. Recursive definitions must use pattern matching and structural recursion.', ch: 'programs' },
+  { what: 'Definition', syntax: 'def f (x : Nat) : Nat := x + 1', note: 'A named term. Recursive definitions use structural recursion when they can, and otherwise well-founded recursion on a natural-number argument (or the measure given by termination_by).', ch: 'programs' },
+  { what: 'Well-founded recursion', syntax: 'def f (n : Nat) : Nat := …\ntermination_by n\ndecreasing_by omega', note: 'termination_by gives a natural-number measure that decreases at each recursive call; the proofs are found by a default tactic or given with decreasing_by.', ch: 'termination' },
   { what: 'Pattern matching', syntax: 'def f : Nat → Nat\n  | 0 => 1\n  | n + 1 => 2 * f n', note: 'Equations are compiled to recursors; each case gets an equation lemma f.eq_i, used by simp [f], rw [f] and unfold f.', ch: 'programs' },
   { what: 'Inductive type', syntax: 'inductive Tree where\n  | leaf\n  | node (l : Tree) (x : Nat) (r : Tree)', note: 'Constructors, recursor Tree.rec and Tree.casesOn are generated. Add deriving DecidableEq to be able to test equality.', ch: 'programs' },
   { what: 'Structure', syntax: 'structure Point where\n  x : Nat\n  y : Nat', note: 'An inductive type with one constructor (Point.mk) and projections p.x, p.y. Build with ⟨1, 2⟩.', ch: 'programs' },
   { what: 'Theorem', syntax: 'theorem t (n : Nat) : n + 0 = n := rfl', note: 'Like def, but the type must be a proposition. The value is the proof.', ch: 'evidence' },
   { what: 'Tactic block', syntax: 'theorem t : p ∧ q → q ∧ p := by\n  intro ⟨hp, hq⟩\n  exact ⟨hq, hp⟩', note: 'by starts a tactic block; tactics are separated by new lines at the same column, or by ;.', ch: 'tactics' },
+  { what: 'Match with an equation', syntax: 'match h : f x with\n| some y => …\n| none => …', note: 'In each branch, h : f x = the pattern.', ch: 'stlc-checker' },
+  { what: 'Subtype', syntax: '{ n : Nat // n > 0 }   ⟨5, by decide⟩   x.val   x.property', note: 'Values paired with a proof about them; the proof is erased at run time.', ch: 'promises' },
+  { what: 'Structure instance', syntax: '{ x := 1, y := 2 }', note: 'Builds a structure by field names.', ch: 'programs' },
+  { what: 'Anonymous function shorthand', syntax: '(· + 1)   fun ⟨a, b⟩ => a', note: '· stands for the argument; a pattern after fun destructures it.', ch: 'programs' },
   { what: 'Anonymous constructor', syntax: '⟨a, b⟩', note: 'Builds a value of the expected type, if it has exactly one constructor (∧, ∃, ↔, structures).', ch: 'proof-terms' },
   { what: 'if', syntax: 'if x ≤ y then a else b\nif h : x ≤ y then a else b', note: 'Needs a Decidable instance for the condition. The second form names the proof of the condition in each branch.', ch: 'predicates' },
   { what: 'Lists', syntax: '[1, 2, 3]   x :: xs   xs ++ ys', note: ':: is List.cons (it binds tighter than +: write (a + b) :: s).', ch: 'programs' },
@@ -75,6 +82,7 @@ export const language: SyntaxDoc[] = [
   { what: 'Axioms used', syntax: '#print axioms t', note: 'Lists the axioms a declaration depends on (propext, Quot.sound, Classical.choice, sorryAx).', ch: 'limits' },
   { what: 'Class and instance', syntax: 'class Size (α : Type) where\n  size : α → Nat\ninstance : Size Nat := ⟨fun n => n⟩', note: 'Instance arguments [inst : C α] are found by type-class resolution.', ch: 'predicates' },
   { what: 'Rewriting notation', syntax: 'h ▸ e', note: 'Rewrites the type of e with the equation h, in whichever direction makes it fit the expected type.', ch: 'equality' },
+  { what: 'Boolean equality', syntax: 'a == b', note: 'For types with DecidableEq, a == b is decide (a = b) (simp rewrites it so).', ch: 'predicates' },
   { what: 'Attribute', syntax: '@[simp] theorem …', note: 'Adds the theorem to the default simp set.', ch: 'automation' },
 ];
 
@@ -140,6 +148,10 @@ export const glossary: GlossaryEntry[] = [
   { term: 'progress and preservation', def: 'The two halves of type safety: a well-typed term is a value or can take a step, and a step preserves its type.', ch: 'typed-language' },
   { term: 'bidirectional type checking', def: 'Type checking with two modes: inferring the type of some terms, checking others against a known type.', ch: 'kernel' },
   { term: 'normalisation by evaluation', def: 'Deciding definitional equality by evaluating terms into a semantic domain (closures) and reading the values back as normal forms.', ch: 'kernel' },
+  { term: 'de Bruijn index', def: 'A variable written as a number: how many binders to cross, outwards, to reach its own. Names disappear, so terms equal up to renaming are equal trees.', ch: 'stlc-checker' },
+  { term: 'soundness and completeness', def: 'Of a checker, with respect to a specification: soundness, everything it accepts satisfies the specification; completeness, it accepts everything that does.', ch: 'stlc-checker' },
+  { term: 'certificate', def: 'Evidence produced by an untrusted search and checked cheaply by a verified checker, like the multipliers found by omega.', ch: 'reflection' },
+  { term: 'differential testing', def: 'Running two independent implementations of the same specification on the same inputs and comparing the results.', ch: 'kernel' },
   { term: 'universe', def: 'A type of types: Type, Type 1, … Type : Type is inconsistent (Girard’s paradox), hence the hierarchy.', ch: 'kernel' },
 ];
 
