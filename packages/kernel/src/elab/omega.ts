@@ -259,6 +259,11 @@ function proveGoal(runner: TacticRunner, el: Elaborator, goal: Expr, span: Span)
     }
     case 'ne':
       return byContra(mkApps(mkConst('Eq', [one]), [mkConst('Nat'), rel.a, rel.b]), (lam) => lam);
+    case 'and': {
+      const p1 = proveGoal(runner, el, rel.a, span);
+      const p2 = proveGoal(runner, el, rel.b, span);
+      return app(el, 'And.intro', [p1, p2], span, goal);
+    }
     case 'nle':
       return byContra(mkApps(mkConst('Nat.le'), [rel.a, rel.b]), (lam) => lam);
     case 'nlt':

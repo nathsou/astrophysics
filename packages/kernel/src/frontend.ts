@@ -1195,6 +1195,22 @@ export class Processor {
       (el.u.tc as unknown as { env: Environment }).env = tmpEnv;
       (el as unknown as { env: Environment }).env = tmpEnv;
       const ctorTypes: { name: string; type: Expr; doc?: string }[][] = [];
+      // in the constructors, the types' leading implicit parameters are fixed (as in Lean):
+      // `Perm [] []` means `@Perm α [] []`
+      const savedAliases = new Map(el.aliases);
+      const implicitPrefix: Expr[] = [];
+      for (const p of params) {
+        const d = el.lctx.get(p.id);
+        if (!d || d.binfo === 'default') break;
+        implicitPrefix.push(p);
+      }
+      if (implicitPrefix.length) {
+        types.forEach((t, i) => {
+          const e = mkApps(mkConst(names[i], levelParamsSoFar.map(lparam)), implicitPrefix);
+          el.aliases.set(t.name, e);
+          el.aliases.set(names[i], e);
+        });
+      }
       try {
         types.forEach((t, i) => {
           const list: { name: string; type: Expr; doc?: string }[] = [];
@@ -1239,6 +1255,7 @@ export class Processor {
           ctorTypes.push(list);
         });
       } finally {
+        el.aliases = savedAliases;
         (el.u as unknown as { env: Environment }).env = savedEnv;
         (el.u.tc as unknown as { env: Environment }).env = savedEnv;
         (el as unknown as { env: Environment }).env = savedEnv;

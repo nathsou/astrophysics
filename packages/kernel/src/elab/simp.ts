@@ -581,6 +581,15 @@ export class Simplifier {
       }
       const g = this.ground(e);
       if (g) return g;
+      // a projection of a constructor application: (a, b).1 = a
+      if (h.k === 'const') {
+        const pr = projOf(el, h.name);
+        const args = getAppArgs(e);
+        if (pr && args.length > pr.numParams) {
+          const c = ctorOf(el, el.instantiate(args[pr.numParams]));
+          if (c && c.fields.length > pr.idx) return { expr: mkApps(c.fields[pr.idx], args.slice(pr.numParams + 1)) };
+        }
+      }
       const b = this.builtinEq(e);
       if (b) return b;
       const c = this.natAddEq(e);
@@ -1349,4 +1358,14 @@ function findInstance(el: Elaborator, T: Expr, rule: Rule): { e: Expr; m: Matche
   };
   visit(T);
   return found;
+}
+
+/** a structure projection: its structure's parameter count and the field index */
+function projOf(el: Elaborator, name: string): { numParams: number; idx: number } | undefined {
+  const i = name.lastIndexOf('.');
+  if (i < 0) return undefined;
+  const d = el.env.get(name.slice(0, i));
+  if (!d || d.kind !== 'inductive' || !d.projs) return undefined;
+  const idx = d.projs.indexOf(name);
+  return idx < 0 ? undefined : { numParams: d.numParams, idx };
 }

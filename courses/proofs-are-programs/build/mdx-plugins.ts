@@ -68,7 +68,8 @@ export function remarkCodeBlocks() {
       const attributes = [attr('code', node.value), attr('lang', node.lang ?? '')];
       for (const [k, v] of Object.entries(opts)) if (k !== 'playground') attributes.push(attr(k, v));
       if (node.lang === 'lean' && !opts.nocheck && !opts.alone) {
-        if (context) attributes.push(attr('context', context));
+        // a live block gets the earlier blocks as hidden setup; a static one carries them for "try it"
+        if (context) attributes.push(attr(isPlayground ? 'setup' : 'context', context));
         if (!opts.errors) context += node.value + '\n\n';
       }
       parent.children[index] = {
