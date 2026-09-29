@@ -67,6 +67,18 @@ interface State {
   path: string[];
   /** user variables replaced by index unification (visible under their old names) */
   renames?: Map<string, Expr>;
+  /** for equation lemmas: the value of each argument of the function being defined, at this point of the case tree */
+  argVals?: Map<number, Expr>;
+}
+
+/** a leaf of the case tree of a definition by equations, from which an equation lemma is built */
+export interface EqnLeaf {
+  lctx: import('../core/env.ts').LocalContext;
+  /** values of the function's arguments (in order) */
+  vals: Expr[];
+  /** the right-hand side, with recursive calls still referring to `fn` */
+  rhs: Expr;
+  fn?: FVar;
 }
 
 type PatClass =
@@ -277,6 +289,11 @@ function leaf(el: Elaborator, st: State, row: Row, colTypes: Expr[]): Expr {
     for (const [n, v] of st.renames ?? []) el.aliases.set(n, el.instantiate(v));
     for (const [n, v] of binds) el.aliases.set(n, el.instantiate(v));
     let rhs = el.elab(row.alt.rhs, st.target);
+    if (st.rec) el.synthesizePending(false);
+    if (st.argVals && el.eqnLeaves) {
+      el.synthesizePending(false);
+      el.eqnLeaves.push({ lctx: el.lctx, vals: [...st.argVals.values()], rhs: el.instantiate(rhs), fn: st.rec?.fn });
+    }
     if (st.rec) rhs = replaceRecCalls(el, el.instantiate(rhs), st, row.alt.rhs.span);
     return rhs;
   });
@@ -487,6 +504,7 @@ function split(el: Elaborator, st: State, i: number, elim: 'casesOn' | 'rec', re
           ...st.deps.map((d) => (revIdList.includes(d.id) ? newRev[revIdList.indexOf(d.id)] : d)),
           ...ihs,
         ];
+        const argVals = st.argVals ? new Map([...st.argVals].map(([k, x]) => [k, replaceFVars(el.instantiate(x), sigma)])) : undefined;
         const vname = el.lctx.get(v.id)?.name?.replace(/✝$/, '') ?? 'x';
         const body = compile(el, {
           ...st,
@@ -498,6 +516,7 @@ function split(el: Elaborator, st: State, i: number, elim: 'casesOn' | 'rec', re
           exp,
           path: [...st.path, `${vname} = ${cname}${cd.numFields ? ' …' : ''}`],
           renames,
+          argVals,
         });
         return el.mkBinding('lam', newRev, body);
         };
@@ -631,7 +650,7 @@ function liftAll(b: Expr): Expr {
 }
 
 /** noConfusion: from h : a = b, a proof of noConfusionType P a b */
-function mkNoConfusion(el: Elaborator, T: Expr, P: Expr, a: Expr, b: Expr, h: Expr, span: Span): Expr {
+export function mkNoConfusion(el: Elaborator, T: Expr, P: Expr, a: Expr, b: Expr, h: Expr, span: Span): Expr {
   const ca = ctorApp(el, a)!;
   // diagonal case: noConfusionType P a a ≡ (a.fields = a.fields → P) → P
   const diagType = el.whnf(mkNoConfusionType(el, T, P, a, a, span));
@@ -831,6 +850,8 @@ function replaceRecCalls(el: Elaborator, e: Expr, st: State, span: Span): Expr {
 /** `match d₁, …, dₙ with | p₁, …, pₙ => e …` */
 export function elabMatch(el: Elaborator, s: Extract<STerm, { k: 'match' }>, expected: Expr | undefined): Expr {
   if (el.cube) el.err(s.span, 'pattern matching needs inductive types');
+  // instance arguments in the expected type must be known before generalising over the discriminants
+  el.synthesizeInstances(false);
   const target0 = expected ? el.instantiate(expected) : el.newTypeMVar(s.span, 'type of the match');
   for (const a of s.alts) {
     if (a.pats.length !== s.discrs.length) el.err(a.span, `expected ${s.discrs.length} pattern(s), got ${a.pats.length}`);
@@ -912,7 +933,16 @@ export function compileEquations(el: Elaborator, opts: EquationsInput): { body: 
   }
   if (!opts.recursive) {
     const rows: Row[] = alts.map((a) => ({ pats: a.pats, binds: new Map(), alt: a, used: { v: false } }));
-    const body = compile(el, { cols, rows, target, deps: [], ih: new Map(), exp: new Map(), span: opts.span, path: [] });
+    const argVals = new Map<number, Expr>(opts.args.map((a) => [a.id, a]));
+    // like `match`, generalise the other arguments whose types mention a matched one
+    const colIds = new Set(cols.map((c) => c.id));
+    const deps: FVar[] = [];
+    for (const a of opts.args) {
+      if (colIds.has(a.id)) continue;
+      const ty = el.instantiate(el.lctx.get(a.id)!.type);
+      if ([...colIds].some((id) => hasFVar(ty, id)) || deps.some((x) => hasFVar(ty, x.id))) deps.push(a);
+    }
+    const body = compile(el, { cols, rows, target, deps, ih: new Map(), exp: new Map(), span: opts.span, path: [], argVals });
     reportUnused(el, rows);
     return { body };
   }
@@ -927,6 +957,7 @@ export function compileEquations(el: Elaborator, opts: EquationsInput): { body: 
     const cp = el.mctx.checkpoint();
     const ninfos = el.infos.length;
     const nwarn = el.warnings.length;
+    const nleaves = el.eqnLeaves?.length ?? 0;
     const saved = el.lctx;
     try {
       return { body: compileRec(el, opts, j), decreasing: opts.colIdx[j] };
@@ -935,6 +966,7 @@ export function compileEquations(el: Elaborator, opts: EquationsInput): { body: 
       el.mctx.rollback(cp);
       el.infos.length = ninfos;
       el.warnings.length = nwarn;
+      if (el.eqnLeaves) el.eqnLeaves.length = nleaves;
       el.lctx = saved;
       if (err instanceof NonStructural) firstErr ??= err;
       else otherErr ??= err;
@@ -971,7 +1003,8 @@ function compileRec(el: Elaborator, opts: EquationsInput, jj: number): Expr {
   try {
     const rows: Row[] = opts.alts.map((a) => ({ pats: a.pats, binds: new Map(), alt: a, used: { v: false } }));
     const genFVars = gen.map((pos) => args[pos]);
-    const body = split(el, { cols, rows, target, deps: [], ih: new Map(), exp: new Map(), span: opts.span, path: [], rec }, jj, 'rec', genFVars);
+    const argVals = new Map<number, Expr>(args.map((a) => [a.id, a]));
+    const body = split(el, { cols, rows, target, deps: [], ih: new Map(), exp: new Map(), span: opts.span, path: [], rec, argVals }, jj, 'rec', genFVars);
     reportUnused(el, rows);
     const r = el.instantiate(body);
     if (hasFVar(r, fn.id)) throw new NonStructural([`could not eliminate all recursive calls to '${opts.name}'`], opts.span);

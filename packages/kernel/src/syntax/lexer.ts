@@ -55,6 +55,19 @@ export const KEYWORDS = new Set([
   '#eval',
   '#whnf',
   '#print',
+  '#test',
+  'by',
+  'if',
+  'then',
+  'else',
+  'have',
+  'calc',
+  'instance',
+  'class',
+  'deriving',
+  'termination_by',
+  'decreasing_by',
+  'attribute',
 ]);
 
 export const COMMAND_KEYWORDS = new Set([
@@ -86,9 +99,20 @@ export const COMMAND_KEYWORDS = new Set([
   '#eval',
   '#whnf',
   '#print',
+  '#test',
+  'instance',
+  'class',
+  'attribute',
 ]);
 
 const BASE_SYMBOLS = [
+  '<;>',
+  '@[',
+  '·',
+  '▸',
+  '←',
+  '<-',
+  '⊢',
   ':=',
   '=>',
   '->',

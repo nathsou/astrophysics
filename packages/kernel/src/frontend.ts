@@ -30,6 +30,9 @@ import type { Command, SAlt, SBinder, STerm, Span } from './syntax/ast.ts';
 import { ParseError, Parser } from './syntax/parser.ts';
 import { AutoBound, ElabError, Elaborator, type InfoItem, popLocal } from './elab/elaborator.ts';
 import { compileEquations } from './elab/match.ts';
+import type { TacticStep, GoalSnap } from './elab/tactics.ts';
+import { classOf } from './elab/instances.ts';
+import { derivingDecidableEq } from './elab/deriving.ts';
 
 export type Severity = 'error' | 'warning' | 'info';
 
@@ -65,6 +68,8 @@ export interface ProcessResult {
   results: CommandResult[];
   messages: Message[];
   infos: InfoItem[];
+  /** goals before/after every tactic step, for the infoview and the lens */
+  tactics: TacticStep[];
   /** section variables at the end of the file */
   sectionCtx: LocalContext;
 }
@@ -89,6 +94,8 @@ export class Processor {
   env: Environment;
   results: CommandResult[] = [];
   infos: InfoItem[] = [];
+  tactics: TacticStep[] = [];
+  private instCounter = 0;
   private scopes: Scope[] = [];
   private levelNames: string[] = [];
   sectionCtx = LocalContext.empty;
@@ -116,10 +123,12 @@ export class Processor {
           res.messages.push(this.errorMessage(e, cmd.span));
         }
       }
+      res.messages.push(...this.pendingWarnings.splice(0));
+      res.messages.sort((a, b) => a.span.from - b.span.from);
       this.results.push(res);
       allMessages.push(...res.messages);
     }
-    return { env: this.env, results: this.results, messages: allMessages, infos: this.infos, sectionCtx: this.sectionCtx };
+    return { env: this.env, results: this.results, messages: allMessages, infos: this.infos, tactics: this.tactics, sectionCtx: this.sectionCtx };
   }
 
   private errorMessage(e: unknown, span: Span): Message {
@@ -152,9 +161,11 @@ export class Processor {
       case 'axiom':
         return this.axiomCommand(cmd, res);
       case 'inductive':
-        return this.inductiveCommand(cmd.types, res, undefined, cmd.doc);
+        this.inductiveCommand(cmd.types, res, undefined, cmd.doc);
+        return this.afterInductive(cmd.types.map((t) => this.fullName(t.name)), !!cmd.isClass, cmd.types[0].deriving, res);
       case 'structure':
-        return this.structureCommand(cmd, res);
+        this.structureCommand(cmd, res);
+        return this.afterInductive([this.fullName(cmd.name)], !!cmd.isClass, cmd.deriving, res);
       case 'variable':
         return this.variableCommand(cmd.binders, res);
       case 'universe':
@@ -206,9 +217,120 @@ export class Processor {
         return this.setOption(cmd.name, cmd.value, cmd.span, res);
       case 'initQuot':
         return this.initQuot(res);
+      case 'instance':
+        return this.instanceCommand(cmd, res);
+      case 'attribute':
+        for (const n of cmd.names) {
+          const full = this.newElaborator().resolveGlobal(n.name);
+          if (!full) throw new ElabError([`unknown constant '${n.name}'`], n.span);
+          this.applyAttrs(full, cmd.attrs, n.span);
+        }
+        return;
+      case 'test':
+        return this.testCommand(cmd, res);
       case 'error':
         return;
     }
+  }
+
+  private afterInductive(names: string[], isClass: boolean, deriving: string[] | undefined, res: CommandResult): void {
+    if (isClass) {
+      this.env.classes = new Set(this.env.classes);
+      for (const n of names) this.env.classes.add(n);
+    }
+    for (const d of deriving ?? []) {
+      if (d === 'DecidableEq') {
+        for (const n of names) this.runGenerated(derivingDecidableEq(this.env, n), res);
+      } else if (['Repr', 'BEq', 'Inhabited', 'Hashable', 'Ord'].includes(d)) {
+        // not needed in this language: values are printed without Repr
+      } else throw new ElabError([`cannot derive '${d}' (only DecidableEq can be derived)`], res.span);
+    }
+  }
+
+  private applyAttrs(name: string, attrs: string[], span: Span): void {
+    for (const a of attrs) {
+      if (a === 'simp') {
+        if (!this.env.simpLemmas.includes(name)) this.env.simpLemmas = [...this.env.simpLemmas, name];
+      } else if (a === 'instance') {
+        this.registerInstance(name, span);
+      } else if (a === 'reducible' || a === 'inline' || a === 'specialize' || a === 'match_pattern') {
+        // accepted and ignored
+      } else throw new ElabError([`unknown attribute '${a}'`], span);
+    }
+  }
+
+  private registerInstance(name: string, span: Span): void {
+    const d = this.env.get(name)!;
+    const el = this.newElaborator();
+    const cls = el.withSavedLctx(() => {
+      let t = d.type;
+      // look through the instance's own arguments
+      for (let i = 0; i < 64; i++) {
+        const c = classOf(el, t);
+        if (c) return c;
+        const w = el.whnf(t);
+        if (w.k !== 'pi') return undefined;
+        t = instantiate1(w.body, el.pushLocal(w.name, w.type, w.binfo));
+      }
+      return undefined;
+    });
+    if (!cls) throw new ElabError([`'${name}' is not an instance: its type is not an application of a class`], span);
+    const list = this.env.instances.get(cls) ?? [];
+    this.env.instances = new Map(this.env.instances);
+    this.env.instances.set(cls, [...list, name]);
+  }
+
+  private instanceCommand(cmd: Extract<Command, { k: 'instance' }>, res: CommandResult): void {
+    const name = cmd.name ?? `inst${++this.instCounter}${instanceSuffix(cmd.type)}`;
+    const def: Extract<Command, { k: 'def' }> = {
+      k: 'def',
+      kind: 'def',
+      name,
+      nameSpan: cmd.nameSpan,
+      binders: cmd.binders,
+      type: cmd.type,
+      body: { k: 'term', term: cmd.body },
+      span: cmd.span,
+      doc: cmd.doc,
+    };
+    this.defCommand(def, res);
+    this.registerInstance(this.fullName(name), cmd.nameSpan);
+  }
+
+  /** run generated source (e.g. for `deriving`) as if it had been written at `span` */
+  private runGenerated(src: string, res: CommandResult): void {
+    const saved = this.parser;
+    const p = new Parser(src, this.env.notations);
+    this.parser = p;
+    try {
+      for (;;) {
+        const n = p.errors.length;
+        const c = p.nextCommand();
+        if (!c) break;
+        const sub: CommandResult = { cmd: c, span: c.span, messages: [] };
+        for (const pe of p.errors.slice(n)) sub.messages.push({ severity: 'error', span: pe.span, msg: [pe.message] });
+        if (c.k !== 'error') {
+          const ninfo = this.infos.length;
+          const ntac = this.tactics.length;
+          try {
+            this.command(c, sub);
+          } catch (e) {
+            sub.messages.push(this.errorMessage(e, c.span));
+          }
+          this.infos.length = ninfo;
+          this.tactics.length = ntac;
+        }
+        sub.messages.push(...this.pendingWarnings.splice(0));
+        for (const m of sub.messages) if (m.severity === 'error') res.messages.push({ severity: 'error', span: res.span, msg: ['(generated code) ', ...m.msg] });
+      }
+    } finally {
+      this.parser = saved;
+    }
+  }
+
+  private testCommand(cmd: Extract<Command, { k: 'test' }>, res: CommandResult): void {
+    void cmd;
+    res.messages.push({ severity: 'info', span: cmd.span, msg: ['#test is not available yet'] });
   }
 
   private setOption(name: string, value: string, span: Span, res: CommandResult): void {
@@ -266,6 +388,7 @@ export class Processor {
         }
         for (const b of binders) {
           const ty = b.type ? el.elabType(b.type).e : undefined;
+          el.synthesizeInstances(false);
           for (const nm of b.names) {
             const t = ty ?? el.newTypeMVar(nm.span, `type of '${nm.name}'`);
             const fv = el.pushLocal(nm.name === '_' ? 'x✝' : nm.name, t, b.binfo);
@@ -274,6 +397,7 @@ export class Processor {
           }
         }
         const type = typeS ? el.elabType(typeS).e : undefined;
+        el.synthesizeInstances(false);
         el.autoBoundImplicits = false;
         return { el, fvars, type };
       } catch (e) {
@@ -383,9 +507,20 @@ export class Processor {
   private defCommand(cmd: Extract<Command, { k: 'def' }>, res: CommandResult): void {
     const name = cmd.kind === 'example' ? '_example' : this.fullName(cmd.name);
     if (cmd.kind !== 'example' && this.env.has(name)) throw new ElabError([`'${name}' has already been declared`], cmd.nameSpan);
+    if (cmd.termination) throw new ElabError(['termination_by / decreasing_by are not supported: use structural recursion (or an explicit fuel argument)'], cmd.span);
     const { el, fvars, type: typeH } = this.elabHeader(cmd.binders, cmd.type, cmd.levelParams);
     this.infosFrom(el, () => {
       const recursive = cmd.kind !== 'example' && mentionsName(cmd, cmd.name, name);
+      // equation lemmas are generated for definitions by pattern matching (outside sections)
+      const bodyTerm = cmd.body.k === 'term' ? unparen(cmd.body.term) : undefined;
+      const matchesArgs =
+        bodyTerm?.k === 'match' &&
+        bodyTerm.alts.length > 0 &&
+        bodyTerm.discrs.every((d) => {
+          const u = unparen(d);
+          return u.k === 'ident' && fvars.some((f) => el.lctx.get(f.id)?.name === u.name);
+        });
+      if (cmd.kind === 'def' && this.sectionCtx.size === 0 && (cmd.body.k === 'equations' || matchesArgs)) el.eqnLeaves = [];
       let type = typeH;
       let value: Expr;
       let compiled: { recursive: boolean; decreasing?: number; argName?: string } | undefined;
@@ -429,7 +564,7 @@ export class Processor {
         compiled = { recursive, decreasing: r.decreasing, argName: r.decreasing !== undefined ? el.lctx.get(all[r.decreasing].id)?.name : undefined };
         value = el.mkBinding('lam', cols, r.body);
         el.lctx = saved;
-      } else if (recursive) {
+      } else if (recursive || (matchesArgs && type)) {
         const body = unparen(cmd.body.term);
         if (!type) throw new ElabError(['recursive definitions need a type signature'], cmd.nameSpan);
         if (body.k !== 'match') {
@@ -449,11 +584,11 @@ export class Processor {
           colIdx: cols.map((c) => fvars.indexOf(c)),
           alts: body.alts,
           target: type,
-          recursive: true,
+          recursive,
           span: cmd.nameSpan,
           fullType,
         });
-        compiled = { recursive: true, decreasing: r.decreasing, argName: r.decreasing !== undefined ? el.lctx.get(fvars[r.decreasing].id)?.name : undefined };
+        compiled = { recursive, decreasing: r.decreasing, argName: r.decreasing !== undefined ? el.lctx.get(fvars[r.decreasing].id)?.name : undefined };
         value = r.body;
       } else {
         value = el.elab(cmd.body.term, type);
@@ -479,7 +614,58 @@ export class Processor {
           ? { kind: 'theorem', name, levelParams: params, type: vT, value: vV, doc: cmd.doc }
           : { kind: 'def', name, levelParams: params, type: vT, value: vV, height: defHeight(this.env, vV), doc: cmd.doc, compiled };
       this.addDecl(decl, res, cmd.nameSpan);
+      if (cmd.attrs) this.applyAttrs(name, cmd.attrs, cmd.nameSpan);
+      if (el.eqnLeaves && el.eqnLeaves.length > 0 && kind === 'def') this.addEquationLemmas(el, name, params, el.eqnLeaves);
     });
+  }
+
+  /**
+   * f.eq_1, f.eq_2, …: one equation per leaf of the case tree, each proved by
+   * rfl (the kernel checks that both sides compute to the same thing).
+   */
+  private addEquationLemmas(el: Elaborator, name: string, params: string[], leaves: import('./elab/match.ts').EqnLeaf[]): void {
+    const f = mkConst(name, params.map(lparam));
+    const names: string[] = [];
+    const saved = el.lctx;
+    leaves.forEach((leaf, i) => {
+      try {
+        el.lctx = leaf.lctx;
+        const fnId = leaf.fn?.id;
+        const sub = (e: Expr) => el.instantiate(fnId === undefined ? e : replaceExpr(el.instantiate(e), (x) => (x.k === 'fvar' && x.id === fnId ? f : undefined)));
+        const lhs = sub(mkApps(f, leaf.vals));
+        const rhs = sub(leaf.rhs);
+        // the variables the equation mentions, closed under dependencies, in context order
+        const used = new Set<number>();
+        collectFVars(lhs, used);
+        collectFVars(rhs, used);
+        const decls = leaf.lctx.decls;
+        for (let k = decls.length - 1; k >= 0; k--) if (used.has(decls[k].id)) collectFVars(el.instantiate(decls[k].type), used);
+        if (fnId !== undefined) used.delete(fnId);
+        const vars = decls.filter((d) => used.has(d.id)).map((d) => mkFVar(d.id));
+        const T = el.instantiate(el.inferType(lhs));
+        const sort = el.whnf(el.inferType(T));
+        if (sort.k !== 'sort') return;
+        const lvl = el.mctx.instantiateLevel(sort.level);
+        const eq = mkApps(mkConst('Eq', [lvl]), [T, lhs, rhs]);
+        const stmt = el.instantiate(el.mkBinding('pi', vars, eq));
+        const proof = el.instantiate(el.mkBinding('lam', vars, mkApps(mkConst('Eq.refl', [lvl]), [T, lhs])));
+        if (el.mctx.collectMVars(stmt).size > 0 || stmt.fv) return;
+        const tc = new TypeChecker(this.env);
+        tc.check(proof, stmt);
+        const n = `${name}.eq_${i + 1}`;
+        if (this.env.has(n)) return;
+        this.env.add({ kind: 'theorem', name: n, levelParams: params, type: stmt, value: proof, doc: `An equation of '${name}', proved by rfl.` });
+        names.push(n);
+      } catch {
+        /* skip equations that do not hold by rfl */
+      } finally {
+        el.lctx = saved;
+      }
+    });
+    if (names.length) {
+      this.env.equations = new Map(this.env.equations);
+      this.env.equations.set(name, names);
+    }
   }
 
   private axiomCommand(cmd: Extract<Command, { k: 'axiom' }>, res: CommandResult): void {
@@ -789,10 +975,15 @@ export class Processor {
         this.infos.push({ ...i, expr: el.instantiate(i.expr), expected: i.expected ? el.instantiate(i.expected) : undefined, lctx: instLctx(el, i.lctx) });
       }
       for (const w of el.warnings) {
-        const r = this.results[this.results.length];
-        void r;
         this.pendingWarnings.push({ severity: 'warning', span: w.span, msg: w.msg });
       }
+      for (const e of el.errors) {
+        this.pendingWarnings.push({ severity: 'error', span: e.span, msg: e.msg, goals: e.goals?.map((g) => snapToGoal(g, e.span)) });
+      }
+      el.errors = [];
+      el.warnings = [];
+      this.tactics.push(...el.tacticSteps);
+      el.tacticSteps = [];
     }
   }
   pendingWarnings: Message[] = [];
@@ -806,6 +997,21 @@ class GoalsError extends ElabError {
   ) {
     super(msg, span);
   }
+}
+
+function snapToGoal(g: GoalSnap, span: Span): Goal {
+  return { name: g.tag, lctx: g.lctx, type: g.type, span };
+}
+
+function instanceSuffix(t: STerm): string {
+  const head = (x: STerm): string => {
+    if (x.k === 'app') return head(x.fn) + x.args.map((a) => (a.arg.k === 'ident' ? a.arg.name.split('.').pop() : a.arg.k === 'app' || a.arg.k === 'paren' ? head(a.arg) : '')).join('');
+    if (x.k === 'ident') return x.name.split('.').pop()!;
+    if (x.k === 'paren') return head(x.term);
+    if (x.k === 'pi' || x.k === 'arrow') return head(x.k === 'pi' ? x.body : x.cod);
+    return '';
+  };
+  return head(t);
 }
 
 function instLctx(el: Elaborator, l: LocalContext): LocalContext {
@@ -916,6 +1122,26 @@ function mentionsName(cmd: Extract<Command, { k: 'def' }>, short: string, full: 
         visit(t.type);
         visit(t.term);
         return;
+      case 'if':
+        visit(t.cond);
+        visit(t.then);
+        visit(t.else);
+        return;
+      case 'have':
+        visit(t.type);
+        visit(t.value);
+        visit(t.body);
+        return;
+      case 'calc':
+        t.steps.forEach((st) => {
+          visit(st.rel);
+          visit(st.proof);
+        });
+        return;
+      case 'subst':
+        visit(t.eq);
+        visit(t.term);
+        return;
     }
   };
   if (cmd.body.k === 'term') visit(cmd.body.term);
@@ -999,14 +1225,8 @@ export function processSource(src: string, base: Environment): ProcessResult & {
   const env = base.clone();
   const proc = new Processor(env);
   const r = proc.process(src);
-  // attach warnings to the results they belong to (by position)
-  for (const w of proc.pendingWarnings) {
-    const res = r.results.find((x) => x.span.from <= w.span.from && w.span.to <= x.span.to + 1);
-    if (res) res.messages.push(w);
-    r.messages.push(w);
-  }
   r.messages.sort((a, b) => a.span.from - b.span.from);
-  return { ...r, warnings: proc.pendingWarnings };
+  return { ...r, warnings: r.messages.filter((m) => m.severity === 'warning') };
 }
 
 export { abstractFVars, getAppFn, popLocal };

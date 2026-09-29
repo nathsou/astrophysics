@@ -4,7 +4,7 @@
 // parser works one command at a time: `nextCommand()` parses a single command
 // and the caller may register new notations before asking for the next one.
 
-import type { Command, SAlt, SArg, SBinder, SCtor, SInductive, SLevel, STerm, Span } from './ast.ts';
+import type { Command, Location, RPat, RwRule, SAlt, SArg, SBinder, SCalcStep, SCtor, SimpArg, SInductive, SLevel, STerm, Span, TacAlt, Tactic } from './ast.ts';
 import { COMMAND_KEYWORDS, Lexer, type Token } from './lexer.ts';
 import type { Notation } from '../core/env.ts';
 
@@ -31,6 +31,16 @@ export class Parser {
   private fieldMode = false;
   /** stop terms at a top-level `|` */
   readonly errors: { message: string; span: Span }[] = [];
+  /**
+   * Layout: inside a tactic block, a token that starts a new line at a column
+   * ≤ the top of this stack ends the current tactic (and the terms inside it).
+   * −1 suspends the rule (inside brackets).
+   */
+  private layout: number[] = [];
+  /** identifiers that end a term inside a tactic (`at`, `generalizing`, …) */
+  private stopIdents = new Set<string>();
+  /** inside `calc`, a new line starting with `_` begins the next step */
+  private calcDepth = 0;
 
   constructor(
     readonly src: string,
@@ -83,6 +93,34 @@ export class Parser {
     }
     this.pos = saved;
     return t;
+  }
+
+  /** does the next token end the current tactic because of the layout rule? */
+  private atLayoutEnd(t: Token = this.peek()): boolean {
+    if (this.layout.length === 0) return false;
+    const c = this.layout[this.layout.length - 1];
+    if (c < 0) return false;
+    return t.kind === 'eof' || (t.nl && t.col <= c);
+  }
+
+  /** inside brackets, the tactic stop words are ordinary identifiers again */
+  private inBrackets<T>(f: () => T): T {
+    const saved = this.stopIdents;
+    this.stopIdents = new Set();
+    try {
+      return f();
+    } finally {
+      this.stopIdents = saved;
+    }
+  }
+
+  private withLayout<T>(col: number, f: () => T): T {
+    this.layout.push(col);
+    try {
+      return f();
+    } finally {
+      this.layout.pop();
+    }
   }
 
   private next(): Token {
@@ -150,8 +188,23 @@ export class Parser {
     if (t.kind === 'eof') return undefined;
     const start = t.from;
     try {
+      let attrs: string[] | undefined;
+      if (this.is('@[')) {
+        this.next();
+        attrs = [];
+        do attrs.push(this.ident('an attribute name').text);
+        while (this.accept(','));
+        this.expect(']');
+        this.allowDoc = true;
+        while (this.peek().kind === 'doc') {
+          doc = this.peek().text;
+          this.pos = this.peek().to;
+        }
+        this.allowDoc = false;
+      }
       const c = this.command();
       c.doc = doc;
+      if (attrs) c.attrs = attrs;
       return c;
     } catch (e) {
       if (e instanceof ParseError) {
@@ -294,6 +347,50 @@ export class Parser {
       case 'init_quot':
         this.nextTracked();
         return { k: 'initQuot', span: this.span(from) };
+      case 'instance': {
+        const kwTok = this.nextTracked();
+        let name: string | undefined;
+        let nameSpan: Span = { from: kwTok.from, to: kwTok.to };
+        if (this.peek().kind === 'ident') {
+          const nm = this.next();
+          name = nm.text;
+          nameSpan = { from: nm.from, to: nm.to };
+        }
+        const binders = this.binders(false);
+        this.expect(':');
+        const type = this.term();
+        this.expect(':=');
+        const body = this.term();
+        return { k: 'instance', name, nameSpan, binders, type, body, span: this.span(from) };
+      }
+      case 'class': {
+        this.nextTracked();
+        if (this.is('inductive')) {
+          const ind = this.inductive();
+          return { k: 'inductive', types: [ind], isClass: true, span: this.span(from) };
+        }
+        const st = this.structure(true) as Extract<Command, { k: 'structure' }>;
+        st.isClass = true;
+        st.span = this.span(from);
+        return st;
+      }
+      case 'attribute': {
+        this.nextTracked();
+        this.expect('[');
+        const attrs: string[] = [];
+        do attrs.push(this.ident('an attribute name').text);
+        while (this.accept(','));
+        this.expect(']');
+        const names: { name: string; span: Span }[] = [];
+        while (this.peek().kind === 'ident' && !this.peek().nl) {
+          const n = this.nextTracked();
+          names.push({ name: n.text, span: { from: n.from, to: n.to } });
+        }
+        return { k: 'attribute', attrs, names, span: this.span(from) };
+      }
+      case '#test':
+        this.nextTracked();
+        return { k: 'test', term: this.term(), span: this.span(from) };
     }
     throw new ParseError(`expected a command (def, theorem, inductive, #check, …), found ${describe(t)}`, { from: t.from, to: Math.max(t.to, t.from + 1) });
   }
@@ -326,16 +423,34 @@ export class Parser {
     if (this.accept(':')) type = this.term();
     if (this.is('|')) {
       const alts = this.alts();
-      return { k: 'def', kind, name, nameSpan, levelParams, binders, type, body: { k: 'equations', alts }, span: this.span(from) };
+      const termination = this.terminationHints();
+      return { k: 'def', kind, name, nameSpan, levelParams, binders, type, body: { k: 'equations', alts }, termination, span: this.span(from) };
     }
     this.expect(':=', type ? 'or equations after the type' : 'after the signature');
     const term = this.term();
-    return { k: 'def', kind, name, nameSpan, levelParams, binders, type, body: { k: 'term', term }, span: this.span(from) };
+    const termination = this.terminationHints();
+    return { k: 'def', kind, name, nameSpan, levelParams, binders, type, body: { k: 'term', term }, termination, span: this.span(from) };
+  }
+
+  private terminationHints(): { by?: STerm; decreasing?: Tactic } | undefined {
+    let r: { by?: STerm; decreasing?: Tactic } | undefined;
+    if (this.accept('termination_by')) {
+      r = { by: this.term() };
+    }
+    if (this.is('decreasing_by')) {
+      this.next();
+      r = { ...r, decreasing: this.tacticBlock() };
+    }
+    return r;
   }
 
   private alts(): SAlt[] {
     const alts: SAlt[] = [];
-    while (this.is('|')) {
+    // when the alternatives start on their own lines, they must stay at (or right of) the first one's column:
+    // this is how a nested match ends
+    const first = this.peek();
+    const minCol = first.nl ? first.col : -1;
+    while (this.is('|') && !this.atLayoutEnd() && !(this.peek().nl && this.peek().col < minCol)) {
       const from = this.next().from;
       const pats: STerm[] = [this.term()];
       while (this.accept(',')) pats.push(this.term());
@@ -373,11 +488,23 @@ export class Parser {
       ctors.push({ name: cn.text, nameSpan: { from: cn.from, to: cn.to }, binders: cb, type: ct, doc });
     }
     this.lastEnd = Math.max(this.lastEnd, nm.to);
-    return { name: nm.text, nameSpan: { from: nm.from, to: nm.to }, levelParams, binders, type, ctors, span: this.span(from) };
+    const deriving = this.derivingClause();
+    return { name: nm.text, nameSpan: { from: nm.from, to: nm.to }, levelParams, binders, type, ctors, deriving, span: this.span(from) };
   }
 
-  private structure(): Command {
-    const from = this.nextTracked().from;
+  private derivingClause(): string[] | undefined {
+    if (!this.accept('deriving')) return undefined;
+    const names: string[] = [];
+    do {
+      const t = this.ident('a class name');
+      names.push(t.text);
+      this.lastEnd = t.to;
+    } while (this.accept(','));
+    return names;
+  }
+
+  private structure(isClass = false): Command {
+    const from = isClass ? this.peek().from : this.nextTracked().from;
     const nm = this.ident('the name of the structure');
     const levelParams = this.optLevelParams();
     const binders = this.binders(false);
@@ -413,7 +540,8 @@ export class Parser {
     } finally {
       this.fieldMode = saved;
     }
-    return { k: 'structure', name: nm.text, nameSpan: { from: nm.from, to: nm.to }, levelParams, binders, type, ctorName, fields, span: this.span(from) };
+    const deriving = this.derivingClause();
+    return { k: 'structure', name: nm.text, nameSpan: { from: nm.from, to: nm.to }, levelParams, binders, type, ctorName, fields, deriving, span: this.span(from) };
   }
 
   // -------------------------------------------------------------------------
@@ -481,7 +609,17 @@ export class Parser {
     let lastWasApp = false;
     for (;;) {
       const t = this.peek();
+      if (this.atLayoutEnd(t)) break;
+      if (this.calcDepth > 0 && t.nl && t.kind === 'sym' && t.text === '_') break;
       if (this.fieldMode && t.nl && t.kind === 'ident' && this.peekAt(1).text === ':') break;
+      if (t.kind === 'sym' && t.text === '▸') {
+        if (prec > 75) break;
+        this.next();
+        const rhs = this.term(75);
+        left = { k: 'subst', eq: left, term: rhs, span: this.span(from) };
+        lastWasApp = false;
+        continue;
+      }
       if (t.kind === 'sym' && (t.text === '→' || t.text === '->')) {
         if (prec > ARROW_PREC) break;
         this.next();
@@ -521,12 +659,15 @@ export class Parser {
   private startsArg(): boolean {
     const t = this.peek();
     if (t.kind === 'eof') return false;
+    if (this.atLayoutEnd(t)) return false;
+    if (t.kind === 'ident' && this.stopIdents.has(t.text)) return false;
+    if (this.calcDepth > 0 && t.nl && t.kind === 'sym' && t.text === '_') return false;
     if (t.kind === 'ident' || t.kind === 'num' || t.kind === 'dotIdent' || t.kind === 'hole') return true;
     if (t.kind === 'kw') return ['Prop', 'Type', 'Sort', 'sorry', 'fun', 'nomatch'].includes(t.text);
     if (t.kind === 'sym') {
       if (this.infix.has(t.text)) return false;
       if (this.prefix.has(t.text)) return true;
-      return ['(', '⟨', '_', '@', '*', '□', 'λ'].includes(t.text);
+      return ['(', '⟨', '[', '_', '@', '*', '□', 'λ'].includes(t.text);
     }
     return false;
   }
@@ -557,6 +698,41 @@ export class Parser {
     const from = t.from;
     if ((t.kind === 'kw' && t.text === 'fun') || (t.kind === 'sym' && t.text === 'λ')) {
       this.next();
+      // fun | pat => e | …   ⟶   fun x => match x with …
+      if (this.is('|')) {
+        const alts = this.alts();
+        const n = alts[0].pats.length;
+        const names = Array.from({ length: n }, (_, i) => `x✝${i + 1}`);
+        const sp = this.span(from);
+        return {
+          k: 'lam',
+          binders: names.map((name) => ({ names: [{ name, span: sp }], binfo: 'default' as const, span: sp })),
+          body: { k: 'match', discrs: names.map((name) => ({ k: 'ident' as const, name, explicit: false, span: sp })), alts, span: sp },
+          span: sp,
+        };
+      }
+      // fun ⟨a, b⟩ x => e   ⟶   fun y x => match y with | ⟨a, b⟩ => e
+      if (this.is('⟨') || (this.peek().kind === 'ident' && this.hasPatternBinderAhead())) {
+        const pats: STerm[] = [];
+        while (!this.is('=>') && !this.is('↦') && this.peek().kind !== 'eof') {
+          if (this.is('⟨')) pats.push(this.atom());
+          else if (this.peek().kind === 'ident' || this.is('_')) {
+            const tk = this.next();
+            pats.push(tk.text === '_' ? { k: 'hole', span: { from: tk.from, to: tk.to } } : { k: 'ident', name: tk.text, explicit: false, span: { from: tk.from, to: tk.to } });
+          } else throw new ParseError(`expected a pattern, found ${describe(this.peek())}`, { from: this.peek().from, to: this.peek().to });
+        }
+        if (!this.accept('=>') && !this.accept('↦')) this.expect('=>');
+        const body = this.term();
+        const sp = this.span(from);
+        const names = pats.map((p, i) => (p.k === 'ident' ? p.name : `x✝${i + 1}`));
+        const matched = pats.map((p, i) => ({ p, name: names[i] })).filter((x) => x.p.k !== 'ident');
+        return {
+          k: 'lam',
+          binders: names.map((name, i) => ({ names: [{ name, span: pats[i].span }], binfo: 'default' as const, span: pats[i].span })),
+          body: matched.length === 0 ? body : { k: 'match', discrs: matched.map((m) => ({ k: 'ident' as const, name: m.name, explicit: false, span: sp })), alts: [{ pats: matched.map((m) => m.p), rhs: body, span: sp }], span: sp },
+          span: sp,
+        };
+      }
       const binders = this.binders(true);
       if (binders.length === 0) throw new ParseError('expected binders after λ', { from: t.from, to: t.to });
       if (this.accept(':')) {
@@ -588,7 +764,8 @@ export class Parser {
       let type: STerm | undefined;
       if (this.accept(':')) type = this.term();
       this.expect(':=');
-      const value = this.term();
+      // the value ends at a new line that is not indented past the `let`
+      const value = this.withLayout(t.col, () => this.term());
       if (!this.accept(';') && !this.accept('in') && !this.peek().nl) this.expect(';');
       const body = this.term();
       return { k: 'let', name: nm.text, nameSpan: { from: nm.from, to: nm.to }, binders, type, value, body, span: this.span(from) };
@@ -596,9 +773,57 @@ export class Parser {
     if (t.kind === 'kw' && t.text === 'show') {
       this.next();
       const type = this.term();
+      if (this.is('by')) {
+        const term = this.leading();
+        return { k: 'show', type, term, span: this.span(from) };
+      }
       if (!this.accept('from')) this.expect(':=');
       const term = this.term();
       return { k: 'show', type, term, span: this.span(from) };
+    }
+    if (t.kind === 'kw' && t.text === 'by') {
+      this.next();
+      const tac = this.tacticBlock();
+      return { k: 'by', tac, span: this.span(from) };
+    }
+    if (t.kind === 'kw' && t.text === 'if') {
+      this.next();
+      let name: string | undefined;
+      let nameSpan: Span | undefined;
+      if (this.peek().kind === 'ident' && this.peekAt(1).text === ':') {
+        const nm = this.next();
+        name = nm.text;
+        nameSpan = { from: nm.from, to: nm.to };
+        this.next();
+      }
+      const cond = this.withLayout(-1, () => this.term());
+      this.expect('then');
+      const th = this.withLayout(-1, () => this.term());
+      this.expect('else');
+      const el = this.term();
+      return { k: 'if', name, nameSpan, cond, then: th, else: el, span: this.span(from) };
+    }
+    if (t.kind === 'kw' && t.text === 'have') {
+      this.next();
+      let name = 'this';
+      let nameSpan: Span = { from: t.from, to: t.to };
+      if (this.peek().kind === 'ident') {
+        const nm = this.next();
+        name = nm.text;
+        nameSpan = { from: nm.from, to: nm.to };
+      }
+      const binders = this.binders(false);
+      let type: STerm | undefined;
+      if (this.accept(':')) type = this.term();
+      this.expect(':=');
+      const value = this.withLayout(t.col, () => this.term());
+      if (!this.accept(';') && !this.accept('in') && !this.peek().nl) this.expect(';');
+      const body = this.term();
+      return { k: 'have', name, nameSpan, binders, type, value, body, span: this.span(from) };
+    }
+    if (t.kind === 'kw' && t.text === 'calc') {
+      this.next();
+      return { k: 'calc', steps: this.calcSteps(), span: this.span(from) };
     }
     if (t.kind === 'kw' && t.text === 'nomatch') {
       this.next();
@@ -727,26 +952,53 @@ export class Parser {
         if (t.text === '(') {
           this.next();
           if (this.is(')')) throw new ParseError('empty parentheses', { from, to: this.peek().to });
-          const inner = this.term();
-          if (this.accept(':')) {
-            const ty = this.term();
-            this.lastEnd = this.expect(')').to;
-            result = { k: 'ascribe', term: inner, type: ty, span: this.span(from) };
-            break;
-          }
-          this.lastEnd = this.expect(')', 'to close the parenthesis').to;
-          result = { k: 'paren', term: inner, span: this.span(from) };
+          result = this.withLayout(-1, (): STerm => {
+            const inner = this.inBrackets(() => this.term());
+            if (this.accept(':')) {
+              const ty = this.inBrackets(() => this.term());
+              this.lastEnd = this.expect(')').to;
+              return { k: 'ascribe', term: inner, type: ty, span: this.span(from) };
+            }
+            this.lastEnd = this.expect(')', 'to close the parenthesis').to;
+            return { k: 'paren', term: inner, span: this.span(from) };
+          });
           break;
         }
         if (t.text === '⟨') {
           this.next();
           const args: STerm[] = [];
-          if (!this.is('⟩')) {
-            args.push(this.term());
-            while (this.accept(',')) args.push(this.term());
-          }
+          this.withLayout(-1, () =>
+            this.inBrackets(() => {
+              if (!this.is('⟩')) {
+                args.push(this.term());
+                while (this.accept(',')) args.push(this.term());
+              }
+            }),
+          );
           this.lastEnd = this.expect('⟩').to;
           result = { k: 'anon', args, span: this.span(from) };
+          break;
+        }
+        if (t.text === '[') {
+          // list literal  [a, b, c]
+          this.next();
+          const elems: STerm[] = [];
+          this.withLayout(-1, () =>
+            this.inBrackets(() => {
+              if (!this.is(']')) {
+                elems.push(this.term());
+                while (this.accept(',')) elems.push(this.term());
+              }
+            }),
+          );
+          const close = this.expect(']');
+          this.lastEnd = close.to;
+          const sp = this.span(from);
+          let r: STerm = { k: 'ident', name: 'List.nil', explicit: false, span: { from: close.from, to: close.to } };
+          for (let i = elems.length - 1; i >= 0; i--) {
+            r = { k: 'app', fn: { k: 'ident', name: 'List.cons', explicit: false, span: sp }, args: [{ arg: elems[i] }, { arg: r }], span: { from: elems[i].span.from, to: sp.to } };
+          }
+          result = { ...r, span: sp };
           break;
         }
         if (t.text === '_') {
@@ -807,6 +1059,520 @@ export class Parser {
       break;
     }
     return result;
+  }
+
+
+  // -------------------------------------------------------------------------
+  // calc
+
+  private calcSteps(): SCalcStep[] {
+    const steps: SCalcStep[] = [];
+    this.calcDepth++;
+    try {
+      for (;;) {
+        const from = this.peek().from;
+        const rel = this.term();
+        this.expect(':=', 'after the calc step (write `_ = b := proof`)');
+        const proof = this.term();
+        steps.push({ rel, proof, span: this.span(from) });
+        const t = this.peek();
+        if (t.nl && t.kind === 'sym' && t.text === '_' && !this.atLayoutEnd(t)) continue;
+        break;
+      }
+    } finally {
+      this.calcDepth--;
+    }
+    return steps;
+  }
+
+  private hasPatternBinderAhead(): boolean {
+    for (let i = 0; i < 64; i++) {
+      const t = this.peekAt(i);
+      if (t.kind === 'eof') return false;
+      if (t.kind === 'sym' && (t.text === '=>' || t.text === '↦' || t.text === ':' || t.text === '(' || t.text === '{')) return false;
+      if (t.kind === 'sym' && t.text === '⟨') return true;
+    }
+    return false;
+  }
+
+  // -------------------------------------------------------------------------
+  // tactics
+
+  private curLayout(): number {
+    return this.layout.length ? this.layout[this.layout.length - 1] : -1;
+  }
+
+  /** a tactic sequence whose column is that of its first tactic */
+  tacticBlock(): Tactic {
+    const first = this.peek();
+    if (first.kind === 'eof' || this.atLayoutEnd(first) || (first.kind === 'kw' && COMMAND_KEYWORDS.has(first.text) && first.nl)) {
+      throw new ParseError('expected a tactic', { from: first.from, to: Math.max(first.to, first.from + 1) });
+    }
+    const col = first.col;
+    const savedStop = this.stopIdents;
+    this.stopIdents = new Set(['at', 'generalizing', 'using']);
+    try {
+      return this.withLayout(col, () => this.tacticSeqAt(col));
+    } finally {
+      this.stopIdents = savedStop;
+    }
+  }
+
+  private tacticSeqAt(col: number): Tactic {
+    const from = this.peek().from;
+    const tacs: Tactic[] = [];
+    for (;;) {
+      tacs.push(this.tacticRecovering(col));
+      if (this.accept(';')) {
+        if (this.atLayoutEnd() || this.peek().kind === 'eof' || this.is(')')) break;
+        continue;
+      }
+      const t = this.peek();
+      if (t.kind !== 'eof' && t.nl && t.col === col && !(t.kind === 'kw' && COMMAND_KEYWORDS.has(t.text)) && !this.is('|')) continue;
+      break;
+    }
+    return tacs.length === 1 ? tacs[0] : { k: 'seq', tacs, span: this.span(from) };
+  }
+
+  private tacticRecovering(col: number): Tactic {
+    const start = this.peek();
+    try {
+      return this.tactic();
+    } catch (e) {
+      if (!(e instanceof ParseError)) throw e;
+      this.errors.push({ message: e.message, span: e.span });
+      // skip to the next tactic of this block
+      if (this.pos <= start.from) this.next();
+      for (;;) {
+        const t = this.peek();
+        if (t.kind === 'eof' || (t.nl && t.col <= col)) break;
+        this.next();
+      }
+      return { k: 'error', span: { from: start.from, to: this.lastEnd } };
+    }
+  }
+
+  private tactic(): Tactic {
+    const from = this.peek().from;
+    let t = this.tactic1();
+    while (this.is('<;>')) {
+      this.next();
+      const rest = this.tactic1();
+      t = { k: 'then', first: t, rest, span: this.span(from) };
+    }
+    return t;
+  }
+
+  private names(stop: (t: Token) => boolean = () => false): { name: string; span: Span }[] {
+    const out: { name: string; span: Span }[] = [];
+    for (;;) {
+      const t = this.peek();
+      if (this.atLayoutEnd(t) || stop(t)) break;
+      if (t.kind === 'ident' || (t.kind === 'sym' && t.text === '_')) {
+        this.next();
+        out.push({ name: t.text, span: { from: t.from, to: t.to } });
+        continue;
+      }
+      break;
+    }
+    return out;
+  }
+
+  private location(): Location {
+    if (!(this.peek().kind === 'ident' && this.peek().text === 'at') || this.atLayoutEnd()) return { hyps: [], wildcard: false, goal: true };
+    this.next();
+    if (this.is('*')) {
+      this.lastEnd = this.next().to;
+      return { hyps: [], wildcard: true, goal: true };
+    }
+    const hyps = this.names();
+    let goal = false;
+    if (this.is('⊢')) {
+      this.lastEnd = this.next().to;
+      goal = true;
+    }
+    if (hyps.length === 0 && !goal) throw new ParseError('expected hypothesis names after `at`', this.span(this.peek().from));
+    return { hyps, wildcard: false, goal };
+  }
+
+  private rpat(): RPat {
+    const from = this.peek().from;
+    const first = this.rpat1();
+    if (!this.is('|')) return first;
+    const pats = [first];
+    while (this.accept('|')) pats.push(this.rpat1());
+    return { k: 'alts', pats, span: this.span(from) };
+  }
+
+  private rpat1(): RPat {
+    const t = this.peek();
+    const sp = { from: t.from, to: t.to };
+    if (t.kind === 'ident') {
+      this.next();
+      this.lastEnd = t.to;
+      if (t.text === 'rfl') return { k: 'rfl', span: sp };
+      return { k: 'var', name: t.text, span: sp };
+    }
+    if (this.is('_')) {
+      this.lastEnd = this.next().to;
+      return { k: 'wild', span: sp };
+    }
+    if (this.is('⟨')) {
+      this.next();
+      const pats: RPat[] = [];
+      this.withLayout(-1, () => {
+        if (!this.is('⟩')) {
+          pats.push(this.rpat());
+          while (this.accept(',')) pats.push(this.rpat());
+        }
+      });
+      this.lastEnd = this.expect('⟩').to;
+      return { k: 'tuple', pats, span: this.span(t.from) };
+    }
+    if (this.is('(')) {
+      this.next();
+      const p = this.withLayout(-1, (): RPat => {
+        const inner = this.rpat();
+        if (this.accept(':')) {
+          const type = this.inBrackets(() => this.term());
+          return { k: 'typed', pat: inner, type, span: this.span(t.from) };
+        }
+        return inner;
+      });
+      this.lastEnd = this.expect(')').to;
+      return p;
+    }
+    throw new ParseError(`expected a pattern, found ${describe(t)}`, { from: t.from, to: Math.max(t.to, t.from + 1) });
+  }
+
+  private startsRPat(): boolean {
+    const t = this.peek();
+    if (this.atLayoutEnd(t)) return false;
+    if (t.kind === 'ident') return !this.stopIdents.has(t.text);
+    return this.is('_') || this.is('⟨') || this.is('(');
+  }
+
+  private tacAlts(): TacAlt[] {
+    const alts: TacAlt[] = [];
+    const col = this.curLayout();
+    while (this.is('|') && !(this.peek().nl && this.peek().col < col)) {
+      const from = this.next().from;
+      const ct = this.peek();
+      let ctor: string;
+      if (ct.kind === 'ident' || ct.kind === 'dotIdent') ctor = this.next().text;
+      else if (this.is('_')) {
+        this.next();
+        ctor = '_';
+      } else if (this.is('@')) {
+        this.next();
+        ctor = this.ident('a constructor name').text;
+      } else throw new ParseError(`expected a constructor name, found ${describe(ct)}`, { from: ct.from, to: Math.max(ct.to, ct.from + 1) });
+      const names = this.names((t) => t.kind === 'sym' && t.text === '=>');
+      this.expect('=>');
+      const tac = this.tacticBlock();
+      alts.push({ ctor, names, tac, span: this.span(from) });
+    }
+    return alts;
+  }
+
+  private rwRules(): RwRule[] {
+    this.expect('[');
+    const rules: RwRule[] = [];
+    this.withLayout(-1, () =>
+      this.inBrackets(() => {
+        if (!this.is(']')) {
+          do {
+            const rev = !!(this.accept('←') ?? this.accept('<-'));
+            rules.push({ rev, term: this.term() });
+          } while (this.accept(','));
+        }
+      }),
+    );
+    this.lastEnd = this.expect(']').to;
+    return rules;
+  }
+
+  private simpArgs(): SimpArg[] {
+    if (!this.is('[')) return [];
+    this.next();
+    const args: SimpArg[] = [];
+    this.withLayout(-1, () =>
+      this.inBrackets(() => {
+        if (!this.is(']')) {
+          do {
+            if (this.is('*')) {
+              this.next();
+              args.push({ k: 'star' });
+            } else if (this.is('-') && this.peekAt(1).kind === 'ident') {
+              this.next();
+              args.push({ k: 'erase', name: this.next().text });
+            } else {
+              const rev = !!(this.accept('←') ?? this.accept('<-'));
+              args.push({ k: 'term', term: this.term(), rev });
+            }
+          } while (this.accept(','));
+        }
+      }),
+    );
+    this.lastEnd = this.expect(']').to;
+    return args;
+  }
+
+  private commaTerms(): STerm[] {
+    const ts = [this.term()];
+    while (this.accept(',')) ts.push(this.term());
+    return ts;
+  }
+
+  private tactic1(): Tactic {
+    const t = this.peek();
+    const from = t.from;
+    const sp = () => this.span(from);
+    if (t.kind === 'sym' && (t.text === '·' || t.text === '.')) {
+      this.next();
+      return { k: 'focus', tac: this.tacticBlock(), span: sp() };
+    }
+    if (t.kind === 'sym' && t.text === '(') {
+      this.next();
+      const inner = this.withLayout(-1, () => {
+        const tacs: Tactic[] = [this.tactic()];
+        while (this.accept(';')) tacs.push(this.tactic());
+        return tacs;
+      });
+      this.lastEnd = this.expect(')').to;
+      return inner.length === 1 ? inner[0] : { k: 'seq', tacs: inner, span: sp() };
+    }
+    if (t.kind === 'kw') {
+      switch (t.text) {
+        case 'sorry':
+          this.lastEnd = this.next().to;
+          return { k: 'atom', name: 'sorry', span: sp() };
+        case 'show': {
+          this.next();
+          return { k: 'term', name: 'show', term: this.term(), span: sp() };
+        }
+        case 'calc': {
+          this.next();
+          const steps = this.calcSteps();
+          return { k: 'calc', term: { k: 'calc', steps, span: sp() }, span: sp() };
+        }
+        case 'nomatch': {
+          const term = this.leading();
+          return { k: 'term', name: 'exact', term, span: sp() };
+        }
+        case 'have': {
+          this.next();
+          let name: string | undefined;
+          let nameSpan: Span | undefined;
+          let pat: RPat | undefined;
+          if (this.is('⟨')) pat = this.rpat1();
+          else if (this.peek().kind === 'ident') {
+            const nm = this.next();
+            name = nm.text;
+            nameSpan = { from: nm.from, to: nm.to };
+          }
+          let type: STerm | undefined;
+          let value: STerm | undefined;
+          if (this.accept(':')) type = this.term();
+          if (this.accept(':=')) value = this.term();
+          if (!type && !value) throw new ParseError('expected `: type` or `:= proof` after have', sp());
+          return { k: 'have', name, nameSpan, type, value, pat, span: sp() };
+        }
+        case 'exists': {
+          this.next();
+          return { k: 'exists', terms: this.commaTerms(), span: sp() };
+        }
+      }
+      throw new ParseError(`expected a tactic, found ${describe(t)}`, { from: t.from, to: Math.max(t.to, t.from + 1) });
+    }
+    if (t.kind !== 'ident') throw new ParseError(`expected a tactic, found ${describe(t)}`, { from: t.from, to: Math.max(t.to, t.from + 1) });
+    const name = t.text;
+    this.next();
+    this.lastEnd = t.to;
+    switch (name) {
+      case 'intro': {
+        const pats: RPat[] = [];
+        while (this.startsRPat()) pats.push(this.rpat1());
+        return { k: 'intro', pats, span: sp() };
+      }
+      case 'intros':
+        return { k: 'intros', names: this.names(), span: sp() };
+      case 'rintro': {
+        const pats: RPat[] = [];
+        while (this.startsRPat()) pats.push(this.rpat1());
+        if (pats.length === 0) throw new ParseError('rintro expects at least one pattern', sp());
+        return { k: 'rintro', pats, span: sp() };
+      }
+      case 'exact':
+      case 'apply':
+      case 'refine':
+      case 'specialize':
+        return { k: 'term', name, term: this.term(), span: sp() };
+      case 'change': {
+        const term = this.term();
+        return { k: 'term', name: 'change', term, loc: this.location(), span: sp() };
+      }
+      case 'exists':
+      case 'use':
+      case 'exists?':
+        return { k: 'exists', terms: this.commaTerms(), span: sp() };
+      case 'rfl':
+      case 'constructor':
+      case 'left':
+      case 'right':
+      case 'exfalso':
+      case 'contradiction':
+      case 'assumption':
+      case 'trivial':
+      case 'omega':
+      case 'skip':
+      case 'done':
+      case 'admit':
+      case 'split':
+      case 'nofun':
+      case 'rfl\'':
+      case 'ac_rfl':
+      case 'simp_arith_rfl':
+        return { k: 'atom', name: name === 'admit' ? 'sorry' : name, span: sp() };
+      case 'decide':
+        return { k: 'decide', span: sp() };
+      case 'cases': {
+        let hname: string | undefined;
+        if (this.peek().kind === 'ident' && this.peekAt(1).text === ':') {
+          hname = this.next().text;
+          this.next();
+        }
+        const target = this.term();
+        let alts: TacAlt[] | undefined;
+        if (this.accept('with')) alts = this.tacAlts();
+        return { k: 'cases', target, hname, alts, span: sp() };
+      }
+      case 'induction': {
+        const target = this.term();
+        let generalizing: { name: string; span: Span }[] = [];
+        if (this.peek().kind === 'ident' && this.peek().text === 'generalizing') {
+          this.next();
+          generalizing = this.names();
+        }
+        let alts: TacAlt[] | undefined;
+        if (this.accept('with')) alts = this.tacAlts();
+        return { k: 'induction', target, generalizing, alts, span: sp() };
+      }
+      case 'rcases': {
+        const target = this.term();
+        this.expect('with');
+        return { k: 'rcases', target, pat: this.rpat(), span: sp() };
+      }
+      case 'obtain': {
+        const pat = this.rpat();
+        let type: STerm | undefined;
+        let value: STerm | undefined;
+        if (this.accept(':')) type = this.term();
+        if (this.accept(':=')) value = this.term();
+        return { k: 'obtain', pat, type, value, span: sp() };
+      }
+      case 'rw':
+      case 'rewrite':
+      case 'rwa': {
+        const rules = this.rwRules();
+        return { k: 'rw', rules, loc: this.location(), rfl: name !== 'rewrite', assumption: name === 'rwa', span: sp() };
+      }
+      case 'simp':
+      case 'simp_all':
+      case 'dsimp':
+      case 'simp_arith': {
+        let only = false;
+        if (this.peek().kind === 'ident' && this.peek().text === 'only') {
+          this.next();
+          only = true;
+        }
+        const args = this.simpArgs();
+        const loc = this.location();
+        return { k: 'simp', only, args, loc, all: name === 'simp_all', arith: name === 'simp_arith', span: sp() };
+      }
+      case 'unfold': {
+        const names = this.names();
+        if (names.length === 0) throw new ParseError('unfold expects the names of definitions', sp());
+        return { k: 'unfold', names, loc: this.location(), span: sp() };
+      }
+      case 'subst':
+      case 'revert':
+      case 'clear':
+      case 'funext': {
+        const names = this.names();
+        if (names.length === 0 && name !== 'funext') throw new ParseError(`${name} expects names`, sp());
+        return { k: 'names', name, names, span: sp() };
+      }
+      case 'injection': {
+        const term = this.term();
+        let names: { name: string; span: Span }[] = [];
+        if (this.accept('with')) names = this.names();
+        return { k: 'injection', term, names, span: sp() };
+      }
+      case 'by_cases': {
+        let hname: string | undefined;
+        if (this.peek().kind === 'ident' && this.peekAt(1).text === ':') {
+          hname = this.next().text;
+          this.next();
+        }
+        return { k: 'by_cases', name: hname, prop: this.term(), span: sp() };
+      }
+      case 'generalize': {
+        let hname: string | undefined;
+        if (this.peek().kind === 'ident' && this.peekAt(1).text === ':') {
+          hname = this.next().text;
+          this.next();
+        }
+        const term = this.term(51);
+        this.expect('=');
+        const v = this.ident('a variable name');
+        this.lastEnd = v.to;
+        return { k: 'generalize', name: hname, term, var: v.text, span: sp() };
+      }
+      case 'suffices': {
+        let hname: string | undefined;
+        if (this.peek().kind === 'ident' && this.peekAt(1).text === ':') {
+          hname = this.next().text;
+          this.next();
+        }
+        const type = this.term();
+        if (this.accept('from')) return { k: 'suffices', name: hname, type, value: this.term(), span: sp() };
+        if (this.is('by')) {
+          this.next();
+          return { k: 'suffices', name: hname, type, tac: this.tacticBlock(), span: sp() };
+        }
+        return { k: 'suffices', name: hname, type, span: sp() };
+      }
+      case 'case': {
+        const tg = this.peek();
+        if (tg.kind !== 'ident' && !this.is('_')) throw new ParseError('expected a case tag', { from: tg.from, to: tg.to });
+        this.next();
+        const names = this.names((x) => x.kind === 'sym' && x.text === '=>');
+        this.expect('=>');
+        return { k: 'case', tag: tg.text, tagSpan: { from: tg.from, to: tg.to }, names, tac: this.tacticBlock(), span: sp() };
+      }
+      case 'next': {
+        const names = this.names((x) => x.kind === 'sym' && x.text === '=>');
+        this.expect('=>');
+        return { k: 'next', names, tac: this.tacticBlock(), span: sp() };
+      }
+      case 'all_goals':
+      case 'any_goals':
+      case 'try':
+      case 'repeat':
+      case 'focus':
+        return { k: 'combinator', name, tac: this.tacticBlock(), span: sp() };
+      case 'first': {
+        const alts: Tactic[] = [];
+        while (this.is('|') && !(this.peek().nl && this.peek().col < this.curLayout())) {
+          this.next();
+          alts.push(this.tacticBlock());
+        }
+        if (alts.length === 0) throw new ParseError('first expects alternatives `| tac`', sp());
+        return { k: 'first', alts, span: sp() };
+      }
+    }
+    throw new ParseError(`unknown tactic '${name}'`, { from: t.from, to: t.to });
   }
 
   // -------------------------------------------------------------------------

@@ -68,6 +68,15 @@ export class Environment {
   notations: Notation[] = [];
   /** namespaces opened with `open` */
   opened: string[] = [];
+  // Tables used by the (untrusted) elaborator. The kernel never reads them.
+  /** type-class instances, by class name (in declaration order) */
+  instances = new Map<string, string[]>();
+  /** lemmas tagged @[simp] */
+  simpLemmas: string[] = [];
+  /** equation lemmas generated for definitions by pattern matching */
+  equations = new Map<string, string[]>();
+  /** names of the structures and inductive types declared with `class` */
+  classes = new Set<string>();
 
   constructor(features: Features = defaultFeatures) {
     this.features = { ...features };
@@ -102,6 +111,10 @@ export class Environment {
     e.order = [...this.order];
     e.notations = [...this.notations];
     e.opened = [...this.opened];
+    e.instances = new Map([...this.instances].map(([k, v]) => [k, [...v]]));
+    e.simpLemmas = [...this.simpLemmas];
+    e.equations = new Map(this.equations);
+    e.classes = new Set(this.classes);
     return e;
   }
 }

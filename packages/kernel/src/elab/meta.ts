@@ -35,7 +35,7 @@ import { Environment, LocalContext, type LocalDecl, freshFVarId } from '../core/
 import { TypeChecker, structureProjections } from '../core/typechecker.ts';
 import type { Span } from '../syntax/ast.ts';
 
-export type MVarKind = 'natural' | 'synthetic' | 'implicit' | 'postponed';
+export type MVarKind = 'natural' | 'synthetic' | 'implicit' | 'postponed' | 'instance';
 
 export interface MVarDecl {
   id: number;
@@ -109,6 +109,16 @@ export class MetaCtx {
 
   get(id: number): MVarDecl | undefined {
     return this.mvars.get(id);
+  }
+
+  /** number of metavariables created so far (for `createdSince`) */
+  get count(): number {
+    return this.mvars.size;
+  }
+
+  /** ids of the metavariables created after `count` was `n` */
+  createdSince(n: number): number[] {
+    return [...this.mvars.keys()].slice(n);
   }
 
   instantiateLevel(l: Level): Level {
@@ -516,9 +526,11 @@ export class Unifier {
     }
     // build λ over the arguments, taking binder types from ?m's type
     let body = abstractFVars(r, ids);
-    let t = decl.type;
+    // the type may mention metavariables solved since ?m was created
+    let t = this.mctx.instantiate(decl.type);
     const doms: { name: string; type: Expr }[] = [];
     for (let i = 0; i < args.length; i++) {
+      if (t.k !== 'pi') t = this.tc.whnf(t);
       if (t.k !== 'pi') return false;
       doms.push({ name: t.name, type: t.type });
       t = t.body;
@@ -529,7 +541,7 @@ export class Unifier {
     this.mctx.assign(m.id, body);
     try {
       // the declared type of ?m, instantiated with the arguments
-      let tl = decl.type;
+      let tl = this.mctx.instantiate(decl.type);
       for (const a of args) {
         const w = tl.k === 'pi' ? tl : this.tc.whnf(tl);
         if (w.k !== 'pi') throw new Error('bad mvar type');

@@ -17,9 +17,13 @@ import {
 import { type Level, lofNat, lparam, lsucc, lzero, lmax, limax, toNat } from '../core/level.ts';
 import { Environment, LocalContext, type LocalDecl, freshFVarId } from '../core/env.ts';
 import { KernelError, type Msg, structureProjections } from '../core/typechecker.ts';
-import type { SArg, SBinder, SLevel, STerm, Span } from '../syntax/ast.ts';
+import type { SArg, SBinder, SLevel, STerm, Span, Tactic } from '../syntax/ast.ts';
+import type { TacticStep } from './tactics.ts';
 import { MetaCtx, Unifier, type MVarKind } from './meta.ts';
 import { elabMatch } from './match.ts';
+import { synthInstance } from './instances.ts';
+import { runTacticBlock } from './tactics.ts';
+import { elabCalc, elabSubst } from './calc.ts';
 import { ElabError, AutoBound } from './errors.ts';
 
 export { ElabError, AutoBound };
@@ -63,6 +67,20 @@ export class Elaborator {
   rec?: RecInfo;
   /** elaboration problems postponed until their expected type is known */
   pending: { m: Expr; s: STerm; lctx: LocalContext; aliases: Map<string, Expr>; type: Expr }[] = [];
+  /** instance arguments still to be synthesized */
+  instPending: { m: Expr; lctx: LocalContext; span: Span }[] = [];
+  /** tactic blocks still to be run */
+  tacticBlocks: { m: Expr; tac: Tactic; lctx: LocalContext; aliases: Map<string, Expr>; span: Span }[] = [];
+  /** the goals before and after each tactic, for the infoview and the lens */
+  tacticSteps: TacticStep[] = [];
+  /** errors that did not abort elaboration (failed tactics are reported and their goals admitted) */
+  errors: { span: Span; msg: Msg; goals?: import('./tactics.ts').GoalSnap[] }[] = [];
+  /** fuel for tactic blocks (reset per declaration) */
+  tacticDepth = 0;
+  /** leaves of the case tree of the definition being elaborated (for its equation lemmas) */
+  eqnLeaves?: import('./match.ts').EqnLeaf[];
+  /** called whenever a synthetic hole `?x` is elaborated (tactics use it to find the goals of a match) */
+  holeHook?: (name: string, m: Expr, aliases: Map<string, Expr>) => void;
 
   constructor(readonly env: Environment) {
     this.u = new Unifier(env, this.mctx);
@@ -140,7 +158,29 @@ export class Elaborator {
   }
 
   newMVar(type: Expr, kind: MVarKind = 'natural', extra: { span?: Span; what?: string; name?: string } = {}): Expr {
-    return this.mctx.newMVar(this.lctx, type, kind, extra);
+    return this.mctx.newMVar(kind === 'synthetic' ? this.lctxWithAliases() : this.lctx, type, kind, extra);
+  }
+
+  /** the local context with pattern variables shown under the names the user gave them */
+  lctxWithAliases(): LocalContext {
+    if (this.aliases.size === 0) return this.lctx;
+    const rename = new Map<number, string>();
+    for (const [n, e] of this.aliases) {
+      const v = this.instantiate(e);
+      if (v.k === 'fvar' && this.lctx.get(v.id) && !n.startsWith('__')) rename.set(v.id, n);
+    }
+    if (rename.size === 0) return this.lctx;
+    // a later local with the same name shadows the pattern variable: keep the original names then
+    let l = LocalContext.empty;
+    for (const d of this.lctx.decls) l = l.push(rename.has(d.id) ? { ...d, name: rename.get(d.id)! } : d);
+    return l;
+  }
+
+  /** a metavariable for an instance argument; it is solved by type-class resolution */
+  newInstMVar(type: Expr, span?: Span): Expr {
+    const m = this.newMVar(type, 'instance', { span, what: 'instance argument' });
+    this.instPending.push({ m, lctx: this.lctx, span: span ?? { from: 0, to: 0 } });
+    return m;
   }
 
   newTypeMVar(span?: Span, what?: string): Expr {
@@ -263,7 +303,7 @@ export class Elaborator {
     for (let guard = 0; guard < 256; guard++) {
       const w = this.whnf(type);
       if (w.k !== 'pi' || w.binfo === 'default') return { e, type };
-      const m = this.newMVar(w.type, 'implicit', { span, what: `implicit argument '${w.name}'` });
+      const m = w.binfo === 'inst' ? this.newInstMVar(w.type, span) : this.newMVar(w.type, 'implicit', { span, what: `implicit argument '${w.name}'` });
       e = mkApp(e, m);
       type = instantiate1(w.body, m);
     }
@@ -408,6 +448,7 @@ export class Elaborator {
         const t = expected ?? this.newTypeMVar(s.span);
         const m = this.newMVar(t, 'synthetic', { span: s.span, name: s.name });
         this.record(s.span, m, 'term', expected);
+        this.holeHook?.(s.name, m, this.aliases);
         return m;
       }
       case 'sorry': {
@@ -443,7 +484,74 @@ export class Elaborator {
       }
       case 'match':
         return elabMatch(this, s, expected);
+      case 'elaborated':
+        return this.ensureHasType(s.e, s.type ?? this.inferType(s.e, s.span), expected, s.span);
+      case 'by': {
+        const type = expected ?? this.newTypeMVar(s.span, 'the type of a tactic block');
+        const m = this.newMVar(type, 'synthetic', { span: s.span, what: 'tactic block' });
+        const block = { m, tac: s.tac, lctx: this.lctx, aliases: new Map(this.aliases), span: s.span };
+        if (this.mctx.collectMVars(this.instantiate(type)).size === 0) runTacticBlock(this, block);
+        else this.tacticBlocks.push(block);
+        return m;
+      }
+      case 'if':
+        return this.elabIf(s, expected);
+      case 'have': {
+        let typeS = s.type;
+        let valueS = s.value;
+        if (s.binders.length > 0) {
+          if (typeS) typeS = { k: 'pi', binders: s.binders, body: typeS, style: 'arrow', span: typeS.span };
+          valueS = { k: 'lam', binders: s.binders, body: valueS, span: valueS.span };
+        }
+        let type: Expr;
+        let value: Expr;
+        if (typeS) {
+          type = this.elabType(typeS).e;
+          value = this.elab(valueS, type);
+        } else {
+          value = this.elab(valueS);
+          type = this.inferType(value, valueS.span);
+        }
+        const fv = this.pushLocal(s.name, this.instantiate(type));
+        this.record(s.nameSpan, fv, 'binder');
+        try {
+          const body = this.elab(s.body, expected);
+          const lam = this.mkBinding('lam', [fv], body);
+          return mkApp(lam, value);
+        } finally {
+          this.lctx = popLocal(this.lctx, fv.id);
+        }
+      }
+      case 'calc':
+        return elabCalc(this, s, expected);
+      case 'subst':
+        return elabSubst(this, s, expected);
+      case 'lamPat':
+        this.err(s.span, 'internal error: unexpected pattern λ');
     }
+  }
+
+  private elabIf(s: Extract<STerm, { k: 'if' }>, expected: Expr | undefined): Expr {
+    let c = this.elab(s.cond);
+    this.synthesizePending(false);
+    const ct = this.whnf(this.inferType(c, s.cond.span));
+    const h = getAppFn(ct);
+    if (h.k === 'const' && h.name === 'Bool') {
+      // `if b then …` for a Boolean b means `if b = true then …`
+      c = mkApp(mkApp(mkApp(mkConst('Eq', [lsucc(lzero)]), mkConst('Bool')), c), mkConst('Bool.true'));
+    } else if (!(ct.k === 'sort' && toNat(this.mctx.instantiateLevel(ct.level)) === 0)) {
+      this.err(s.cond.span, 'the condition of `if` must be a proposition (with a Decidable instance) or a Bool, but it has type\n  ', this.term(ct));
+    }
+    const cS: STerm = { k: 'elaborated', e: c, span: s.cond.span };
+    const id = (name: string): STerm => ({ k: 'ident', name, explicit: false, span: s.span });
+    if (s.name === undefined) {
+      return this.elabApp(id('ite'), [{ arg: cS }, { arg: s.then }, { arg: s.else }], expected, s.span);
+    }
+    const nsp = s.nameSpan ?? s.span;
+    const notC: STerm = { k: 'app', fn: id('Not'), args: [{ arg: cS }], span: s.cond.span };
+    const thenF: STerm = { k: 'lam', binders: [{ names: [{ name: s.name, span: nsp }], type: cS, binfo: 'default', span: nsp }], body: s.then, span: s.then.span };
+    const elseF: STerm = { k: 'lam', binders: [{ names: [{ name: s.name, span: nsp }], type: notC, binfo: 'default', span: nsp }], body: s.else, span: s.else.span };
+    return this.elabApp(id('dite'), [{ arg: cS }, { arg: thenF }, { arg: elseF }], expected, s.span);
   }
 
   resolveDotIdent(name: string, expected: Expr | undefined, span: Span): string {
@@ -518,6 +626,73 @@ export class Elaborator {
 
   /** retry postponed problems; with `force`, elaborate them even without type information */
   synthesizePending(force: boolean): void {
+    this.synthesizePostponed(force);
+    this.synthesizeInstances(false);
+    if (force) {
+      this.synthesizePostponed(true);
+      this.synthesizeInstances(true);
+      this.runTacticBlocks(true);
+      this.synthesizeInstances(true);
+    }
+  }
+
+  /** try to solve the pending instance problems; with `force`, report the ones that fail */
+  synthesizeInstances(force: boolean): void {
+    for (let round = 0; round < 8 && this.instPending.length > 0; round++) {
+      let progress = false;
+      const list = this.instPending;
+      this.instPending = [];
+      for (const p of list) {
+        const id = (getAppFn(p.m) as { id: number }).id;
+        if (this.mctx.isAssigned(id)) {
+          progress = true;
+          continue;
+        }
+        const saved = this.lctx;
+        this.lctx = p.lctx;
+        try {
+          const type = this.instantiate(this.mctx.get(id)!.localType);
+          if (!force && this.mctx.collectMVars(type).size > 0) {
+            this.instPending.push(p);
+            continue;
+          }
+          const r = synthInstance(this, type);
+          if (r === undefined) {
+            if (force) this.err(p.span, 'failed to synthesize an instance of\n  ', this.term(type), '\n(no instance of this type class applies)');
+            this.instPending.push(p);
+            continue;
+          }
+          if (!this.isDefEq(p.m, r)) this.err(p.span, 'the synthesized instance\n  ', this.term(r), '\ndoes not match the expected one');
+          progress = true;
+        } finally {
+          this.lctx = saved;
+        }
+      }
+      if (!progress) break;
+    }
+  }
+
+  /** run the tactic blocks whose goal no longer contains metavariables (all of them with `force`) */
+  runTacticBlocks(force: boolean): void {
+    for (let round = 0; round < 16 && this.tacticBlocks.length > 0; round++) {
+      const list = this.tacticBlocks;
+      this.tacticBlocks = [];
+      let progress = false;
+      for (const b of list) {
+        const id = (getAppFn(b.m) as { id: number }).id;
+        const type = this.instantiate(this.mctx.get(id)!.localType);
+        if (!force && this.mctx.collectMVars(type).size > 0) {
+          this.tacticBlocks.push(b);
+          continue;
+        }
+        runTacticBlock(this, b);
+        progress = true;
+      }
+      if (!progress) break;
+    }
+  }
+
+  private synthesizePostponed(force: boolean): void {
     for (let round = 0; round < 32 && this.pending.length > 0; round++) {
       let progress = false;
       const list = this.pending;
@@ -737,7 +912,7 @@ export class Elaborator {
         if (head.explicit) break;
         const w = this.whnf(ft);
         if (w.k === 'pi' && w.binfo !== 'default' && !this.expectsImplicitPi(expected)) {
-          const m = this.newMVar(w.type, 'implicit', { span, what: `implicit argument '${w.name}' of '${fnName}'` });
+          const m = w.binfo === 'inst' ? this.newInstMVar(w.type, span) : this.newMVar(w.type, 'implicit', { span, what: `implicit argument '${w.name}' of '${fnName}'` });
           e = mkApp(e, m);
           ft = instantiate1(w.body, m);
           continue;
@@ -769,7 +944,7 @@ export class Elaborator {
         arg = this.newMVar(w.type, 'postponed', { span: s.span });
         pending.push({ m: arg, s, type: w.type, late: false });
       } else if (w.binfo !== 'default' && !head.explicit) {
-        arg = this.newMVar(w.type, 'implicit', { span, what: `implicit argument '${w.name}' of '${fnName}'` });
+        arg = w.binfo === 'inst' ? this.newInstMVar(w.type, span) : this.newMVar(w.type, 'implicit', { span, what: `implicit argument '${w.name}' of '${fnName}'` });
       } else {
         if (i >= positional.length) {
           const [n] = named.keys();
