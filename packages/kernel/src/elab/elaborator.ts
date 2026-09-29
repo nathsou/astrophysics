@@ -399,6 +399,12 @@ export class Elaborator {
     if (this.isDefEq(eType, expected)) return e;
     const c = this.coerce(e, eType, expected, span);
     if (c) return c;
+    const eh = getAppFn(e);
+    const xw = this.whnf(this.instantiate(expected));
+    if (eh.k === 'const' && (eh.name === 'rfl' || eh.name === 'Eq.refl') && getAppFn(xw).k === 'const' && (getAppFn(xw) as { name: string }).name === 'Eq') {
+      const [, l, r] = getAppArgs(xw);
+      this.err(span, 'rfl failed: the two sides are not equal by computation.\n  ', this.term(l), '\nand\n  ', this.term(r), '\ndo not compute to the same value');
+    }
     this.err(span, 'type mismatch: the term\n  ', this.term(e), '\nhas type\n  ', this.term(eType), '\nbut is expected to have type\n  ', this.term(expected));
   }
 

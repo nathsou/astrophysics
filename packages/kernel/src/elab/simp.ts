@@ -1207,9 +1207,21 @@ function rewriteWith(runner: TacticRunner, g: number, eqProof: Expr, rev: boolea
       return el.mkBinding('lam', [x], body);
     });
     try {
-      el.inferType(motive);
+      // a full check: abstracting the term can make an application ill-typed (a dependent argument)
+      let lc = LocalContext.empty;
+      for (const d of el.lctx.decls) lc = lc.push({ ...d, type: el.instantiate(d.type), value: d.value ? el.instantiate(d.value) : undefined });
+      el.u.makeTC(lc).infer(el.instantiate(motive));
     } catch {
-      throw new ElabError(['rw: motive is not type correct (the term to rewrite appears in a position where the other side would not typecheck)'], span);
+      throw new ElabError(
+        [
+          'rw: motive is not type correct. Replacing every occurrence of\n  ',
+          { e: el.instantiate(l), lctx: el.lctx },
+          '\nwith a variable gives\n  ',
+          { e: el.instantiate(motive), lctx: el.lctx, explicit: true },
+          '\n(shown with all implicit arguments) which does not type-check: some other part of the goal has a type that mentions the term, and would not follow the rewrite',
+        ],
+        span,
+      );
     }
     const newT = el.instantiate(headBeta(mkApp(motive, r)));
     return { newT, eq: app('congrArg', [motive, pf]) };

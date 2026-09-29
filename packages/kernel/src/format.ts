@@ -21,7 +21,7 @@ export function formatMsg(env: Environment, msg: Msg): string {
     .map((p) => {
       if (typeof p === 'string') return p;
       try {
-        return pp(env, p.e, p.lctx);
+        return pp(env, p.e, p.lctx, p.explicit ? { explicit: true } : {});
       } catch (e) {
         return `‹unprintable: ${(e as Error).message}›`;
       }

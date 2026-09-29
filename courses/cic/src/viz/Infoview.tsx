@@ -16,7 +16,7 @@ import type { Expr } from '@kernel/core/expr.ts';
 export function MsgView(props: { env: Environment; msg: Msg }) {
   return (
     <span class="msg-text">
-      <For each={props.msg}>{(p) => (typeof p === 'string' ? <span>{p}</span> : <Term env={props.env} expr={p.e} lctx={p.lctx} />)}</For>
+      <For each={props.msg}>{(p) => (typeof p === 'string' ? <span>{p}</span> : <Term env={props.env} expr={p.e} lctx={p.lctx} opts={p.explicit ? { explicit: true } : undefined} />)}</For>
     </span>
   );
 }

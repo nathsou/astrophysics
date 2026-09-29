@@ -30,7 +30,7 @@ import { cubeAllows } from './calculus.ts';
 // ---------------------------------------------------------------------------
 // messages and errors
 
-export type MsgPart = string | { e: Expr; lctx: LocalContext };
+export type MsgPart = string | { e: Expr; lctx: LocalContext; explicit?: boolean };
 export type Msg = MsgPart[];
 
 export class KernelError extends Error {
