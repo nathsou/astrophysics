@@ -195,3 +195,18 @@
   people: Edward J. McCluskey, Stanley R. Petrick
   chapter: simplifying-logic
   text: McCluskey turns Quine’s method into a procedure that a computer can run, and Petrick publishes the method for choosing among prime implicants.
+- year: 1956
+  title: Chow’s PROM
+  people: Wen Tsing Chow
+  chapter: programmable-logic
+  text: At the Arma Division of American Bosch Arma, Chow invents the programmable read-only memory, to hold the target constants of the Atlas E/F missile’s guidance computer. The patent is kept secret for years.
+- year: 1971
+  title: The EPROM
+  people: Dov Frohman-Bentchkowsky, Intel
+  chapter: programmable-logic
+  text: Intel announces the 1702, a 2,048-bit PROM that ultraviolet light through a quartz window can erase. The floating-gate cell inside it is the ancestor of EEPROM and flash.
+- year: 1975
+  title: The first field-programmable logic arrays
+  people: Bill Sievers, Ron Cline, Intersil, Signetics
+  chapter: programmable-logic
+  text: Intersil introduces the IM5200 in June, and Signetics the faster 82S100 soon after, with 16 inputs, 48 product terms and 8 outputs.

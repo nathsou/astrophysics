@@ -538,3 +538,51 @@ multi-level:
   term: multi-level logic
   definition: A circuit in which signals pass through more than two layers of gates, made by factoring and by sharing common sub-expressions. Usually smaller than the two-level form and slower.
   chapter: simplifying-logic
+rom:
+  term: ROM
+  definition: Read-only memory. Give it an address and it puts the stored word on its outputs. Seen as logic, it is a truth table, with the address as the inputs and the word as the outputs, and it can hold any function of its address lines.
+  chapter: programmable-logic
+mask-rom:
+  term: mask ROM
+  definition: A ROM whose contents are set by one layer of the chip, made while the chip is manufactured. Cheapest per part in large numbers, and fixed for ever.
+  chapter: programmable-logic
+prom:
+  term: PROM
+  definition: A programmable ROM. It leaves the factory with every fuse intact and is programmed once by the user, who blows the fuses of the bits that should read the other way.
+  chapter: programmable-logic
+pla:
+  term: PLA (programmable logic array)
+  definition: A chip with a programmable AND plane, which makes product terms from the inputs, and a programmable OR plane, which adds chosen terms into each output. All the outputs share the same product terms.
+  chapter: programmable-logic
+product-term:
+  term: product term
+  definition: An AND of some of the inputs, each true or complemented. In a programmable array it is one row of the AND plane, wired to just the literals it needs.
+  chapter: programmable-logic
+nre:
+  term: non-recurring engineering (NRE)
+  definition: The one-off cost of getting a chip made (design, verification and the masks), paid whether one part is made or a million. It is why custom chips only pay off at high volume.
+  chapter: programmable-logic
+pld:
+  term: programmable logic device (PLD)
+  definition: A chip made in bulk without a function, whose logic the customer fixes afterwards by programming it. PLAs, PALs, GALs, CPLDs and FPGAs are all PLDs.
+  chapter: programmable-logic
+antifuse:
+  term: antifuse
+  definition: 'The opposite of a fuse: two conductors separated by a thin insulator, open until a high voltage punches through it and leaves a small conducting filament. It can be programmed once.'
+  chapter: programmable-logic
+floating-gate:
+  term: floating gate
+  definition: A second gate in a transistor, between the control gate and the channel and surrounded by insulator, on which charge can be stored for years. The charge moves the transistor’s threshold voltage, which is how EPROM, EEPROM and flash cells hold a bit.
+  chapter: programmable-logic
+eprom:
+  term: EPROM
+  definition: Erasable programmable ROM. A floating-gate memory programmed electrically and erased by ultraviolet light through a quartz window in the package.
+  chapter: programmable-logic
+eeprom:
+  term: EEPROM
+  definition: Electrically erasable programmable ROM. A floating-gate memory that is both written and erased electrically, by tunnelling, with no lamp. Flash memory is the block-erased descendant.
+  chapter: programmable-logic
+fowler-nordheim:
+  term: tunnelling (Fowler–Nordheim)
+  definition: Electrons crossing a very thin insulator that they lack the energy to climb over, in a strong electric field. It is how floating-gate cells are written and erased electrically.
+  chapter: programmable-logic

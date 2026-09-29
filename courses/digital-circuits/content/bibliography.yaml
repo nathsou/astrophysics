@@ -701,3 +701,51 @@ brayton1987:
   title: 'MIS: a multiple-level logic optimization system'
   venue: IEEE Transactions on Computer-Aided Design 6(6), 1062–1081
   note: Factoring, kernel extraction and technology mapping for multi-level logic.
+wiki-prom:
+  authors: Wikipedia
+  year: n.d.
+  title: Programmable ROM
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Programmable_ROM
+  note: The PROM invented in 1956 by Wen Tsing Chow at the Arma Division of American Bosch Arma, for the Atlas E/F missile’s guidance computer; the patent’s secrecy order and the origin of the word “burn”.
+chm-eprom:
+  authors: CHM
+  year: 2007
+  title: '1971: Reusable semiconductor ROM introduced'
+  venue: Computer History Museum, The Storage Engine
+  url: https://www.computerhistory.org/storageengine/reusable-semiconductor-rom-introduced/
+  note: The Intel 1702, a 2,048-bit ultraviolet-erasable PROM designed by Dov Frohman, and the FAMOS floating-gate device.
+frohman1971:
+  authors: Dov Frohman-Bentchkowsky
+  year: 1971
+  title: A fully decoded 2048-bit electrically programmable FAMOS read-only memory
+  venue: IEEE Journal of Solid-State Circuits 6(5), 301–306
+  note: The paper on the 2,048-bit floating-gate avalanche-injection MOS memory behind the Intel 1702.
+wiki-pld:
+  authors: Wikipedia
+  year: n.d.
+  title: Programmable logic device
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Programmable_logic_device
+  note: The Intersil IM5200 (June 1975) and the Signetics 82S100, the first field-programmable logic arrays; the PAL of 1978 that followed them.
+signetics-82s100:
+  authors: Signetics
+  year: 1975
+  title: 82S100 bipolar field-programmable logic array (FPLA), data sheet
+  venue: Signetics, scanned at the Internet Archive
+  url: https://archive.org/details/82s100
+  note: 16 inputs, 48 product terms and 8 outputs in a 28-pin package.
+actel-act1:
+  authors: Actel
+  year: 1996
+  title: ACT 1 Series FPGAs, data sheet
+  venue: Actel Corporation
+  url: https://media.digikey.com/pdf/Data%20Sheets/Microsemi%20PDFs/ACT1_Family.pdf
+  note: 'FPGAs built on the PLICE antifuse: a dielectric between two layers of metal that a programming voltage turns into a conducting link.'
+fowler1928:
+  authors: Ralph H. Fowler and Lothar Nordheim
+  year: 1928
+  title: Electron emission in intense electric fields
+  venue: Proceedings of the Royal Society of London A 119(781), 173–181
+  url: https://doi.org/10.1098/rspa.1928.0091
+  note: The theory of electrons tunnelling through a thin barrier in a strong field, which erases and programs EEPROM and flash cells.
