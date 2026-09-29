@@ -1,0 +1,607 @@
+@import '@fontsource-variable/newsreader/opsz.css';
+@import '@fontsource-variable/newsreader/opsz-italic.css';
+@import '@fontsource-variable/dm-sans';
+@import '@fontsource-variable/jetbrains-mono';
+@import '@fontsource/archivo/900.css';
+@import 'katex/dist/katex.min.css';
+
+/* ───────────────────────── Design tokens ─────────────────────────
+   "Byrne" (after Oliver Byrne's 1847 Euclid): cream paper, ink, and three flat primaries.
+   Core tokens: --bg --fg --mute --ac --pn. The older names (--page, --ink, --accent, …) are kept
+   as aliases so every component and widget re-skins from here.
+   The illustration primaries (--byrne-*) are the same red / blue / yellow in both themes, except
+   that widgets' strokes and text get slightly lifted variants on the dark page so they stay legible. */
+
+:root {
+  color-scheme: light;
+  --font-display: 'Archivo', 'Arial Black', system-ui, sans-serif;
+  --font-body: 'Newsreader Variable', 'Iowan Old Style', Georgia, serif;
+  --font-ui: 'DM Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Core palette (light). */
+  --bg: #f3ead9;
+  --fg: #1a1917;
+  --mute: #6f675a;
+  --ac: #d0312d;
+  --pn: #e8ddc7;
+
+  /* Fixed illustration primaries. */
+  --fx-red: #d0312d;
+  --fx-blue: #1f5aa6;
+  --fx-yellow: #e9a91b;
+  --fx-ink: #1a1917;
+  --fx-cream: #f3ead9;
+
+  --page: var(--bg);
+  --surface: #f9f4e8;
+  --surface-2: var(--pn);
+  --surface-3: #dbcdb0;
+  --ink: var(--fg);
+  --ink-2: #3f3b34;
+  --ink-3: #635b4e;
+  --rule: #d6c9ac;
+  --rule-strong: #8f8571;
+  --border: #c9bc9f;
+  --shadow: none;
+  --shadow-lg: 5px 5px 0 rgba(26, 25, 23, 0.18);
+
+  /* Accent as text/links: an accessible red (the pure primary is 4.2:1 on the paper). */
+  --accent: #b12520;
+  --accent-2: #d0312d;
+  --accent-soft: color-mix(in srgb, #d0312d 13%, var(--bg));
+  --accent-ink: #8e1a16;
+  --on-accent: #fbf5e8;
+  --focus: #1f5aa6;
+
+  /* Exercise feedback: blue = accepted, red = pending / wrong, ochre = warning. */
+  --ok: #1f5aa6;
+  --ok-soft: color-mix(in srgb, #1f5aa6 12%, var(--bg));
+  --bad: #b12520;
+  --bad-soft: color-mix(in srgb, #d0312d 12%, var(--bg));
+  --maybe: #7d5200;
+  --maybe-soft: color-mix(in srgb, #e9a91b 22%, var(--bg));
+
+  /* Oliver Byrne's primaries, for figures and widgets. */
+  --byrne-red: #d0312d;
+  --byrne-blue: #1f5aa6;
+  --byrne-yellow: #e9a91b;
+  --byrne-ink: #1a1917;
+
+  /* Callout hues (fills; label text stays in ink tokens). */
+  --note: #1f5aa6;
+  --tip: #1f5aa6;
+  --warn: #d0312d;
+  --lab: #1f5aa6;
+  --break: #d0312d;
+  --challenge: #e9a91b;
+  --history: #7d5200;
+  --history-soft: color-mix(in srgb, #e9a91b 18%, var(--bg));
+
+  /* Chart palette: the primaries first, then muted companions from the same printing ink family. */
+  --series-1: #1f5aa6;
+  --series-2: #d0312d;
+  --series-3: #e9a91b;
+  --series-4: #2f7d5f;
+  --series-5: #c9578a;
+  --series-6: #2a8496;
+  --series-7: #6a4c93;
+  --series-8: #d9761f;
+  --chart-surface: var(--surface);
+  --grid: #ddd0b6;
+  --axis: #8f8571;
+  --good: #1f5aa6;
+  --critical: #b12520;
+
+  --term-hl: rgba(233, 169, 27, 0.26);
+  --term-hl-strong: rgba(233, 169, 27, 0.5);
+
+  --code-keyword: #b12520;
+  --code-string: #1f5aa6;
+  --code-number: #7d5200;
+  --code-comment: #6f675a;
+  --code-fn: #6a3f8f;
+  --code-type: #1d6f7a;
+  --code-def: #1a1917;
+  --code-prop: #1f5aa6;
+  --code-punct: #3f3b34;
+
+  --radius: 4px;
+  --radius-sm: 3px;
+  --sidebar-w: 18rem;
+  --main-w: 42rem;
+  --margin-w: 17rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme='light'])) {
+    color-scheme: dark;
+    --bg: #1f1a17;
+    --fg: #f3ead9;
+    --mute: #a89d8a;
+    --ac: #e9a91b;
+    --pn: #2b2521;
+
+    --surface: #251f1c;
+    --surface-3: #3a322b;
+    --ink-2: #d9cfbb;
+    --ink-3: #a89d8a;
+    --rule: #3a322b;
+    --rule-strong: #7d7261;
+    --border: #4a4037;
+    --shadow-lg: 5px 5px 0 rgba(0, 0, 0, 0.5);
+
+    --accent: #e9a91b;
+    --accent-2: #e9a91b;
+    --accent-soft: color-mix(in srgb, #e9a91b 16%, var(--bg));
+    --accent-ink: #f5cf6b;
+    --on-accent: #1a1917;
+    --focus: #e9a91b;
+
+    --ok: #7aa9ec;
+    --ok-soft: color-mix(in srgb, #5b91e0 18%, var(--bg));
+    --bad: #ff7a6b;
+    --bad-soft: color-mix(in srgb, #ef5a4f 16%, var(--bg));
+    --maybe: #e9a91b;
+    --maybe-soft: color-mix(in srgb, #e9a91b 16%, var(--bg));
+
+    --byrne-red: #e04a42;
+    --byrne-blue: #4b86d4;
+    --byrne-yellow: #e9a91b;
+    --byrne-ink: #f3ead9;
+
+    --note: #7aa9ec;
+    --tip: #7aa9ec;
+    --warn: #ff7a6b;
+    --lab: #7aa9ec;
+    --break: #ff7a6b;
+    --challenge: #e9a91b;
+    --history: #e9a91b;
+    --history-soft: color-mix(in srgb, #e9a91b 12%, var(--bg));
+
+    --series-1: #5b91e0;
+    --series-2: #e5544a;
+    --series-3: #e9a91b;
+    --series-4: #4cb886;
+    --series-5: #e07aab;
+    --series-6: #4fb5c4;
+    --series-7: #a58be0;
+    --series-8: #ef8a3a;
+    --chart-surface: var(--surface);
+    --grid: #3a322b;
+    --axis: #7d7261;
+    --good: #7aa9ec;
+    --critical: #ff7a6b;
+
+    --term-hl: rgba(233, 169, 27, 0.2);
+    --term-hl-strong: rgba(233, 169, 27, 0.4);
+
+    --code-keyword: #ff7a6b;
+    --code-string: #7aa9ec;
+    --code-number: #e9a91b;
+    --code-comment: #a89d8a;
+    --code-fn: #c3a3f0;
+    --code-type: #62c2cf;
+    --code-def: #f3ead9;
+    --code-prop: #7aa9ec;
+    --code-punct: #d9cfbb;
+  }
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #1f1a17;
+  --fg: #f3ead9;
+  --mute: #a89d8a;
+  --ac: #e9a91b;
+  --pn: #2b2521;
+
+  --surface: #251f1c;
+  --surface-3: #3a322b;
+  --ink-2: #d9cfbb;
+  --ink-3: #a89d8a;
+  --rule: #3a322b;
+  --rule-strong: #7d7261;
+  --border: #4a4037;
+  --shadow-lg: 5px 5px 0 rgba(0, 0, 0, 0.5);
+
+  --accent: #e9a91b;
+  --accent-2: #e9a91b;
+  --accent-soft: color-mix(in srgb, #e9a91b 16%, var(--bg));
+  --accent-ink: #f5cf6b;
+  --on-accent: #1a1917;
+  --focus: #e9a91b;
+
+  --ok: #7aa9ec;
+  --ok-soft: color-mix(in srgb, #5b91e0 18%, var(--bg));
+  --bad: #ff7a6b;
+  --bad-soft: color-mix(in srgb, #ef5a4f 16%, var(--bg));
+  --maybe: #e9a91b;
+  --maybe-soft: color-mix(in srgb, #e9a91b 16%, var(--bg));
+
+  --byrne-red: #e04a42;
+  --byrne-blue: #4b86d4;
+  --byrne-yellow: #e9a91b;
+  --byrne-ink: #f3ead9;
+
+  --note: #7aa9ec;
+  --tip: #7aa9ec;
+  --warn: #ff7a6b;
+  --lab: #7aa9ec;
+  --break: #ff7a6b;
+  --challenge: #e9a91b;
+  --history: #e9a91b;
+  --history-soft: color-mix(in srgb, #e9a91b 12%, var(--bg));
+
+  --series-1: #5b91e0;
+  --series-2: #e5544a;
+  --series-3: #e9a91b;
+  --series-4: #4cb886;
+  --series-5: #e07aab;
+  --series-6: #4fb5c4;
+  --series-7: #a58be0;
+  --series-8: #ef8a3a;
+  --chart-surface: var(--surface);
+  --grid: #3a322b;
+  --axis: #7d7261;
+  --good: #7aa9ec;
+  --critical: #ff7a6b;
+
+  --term-hl: rgba(233, 169, 27, 0.2);
+  --term-hl-strong: rgba(233, 169, 27, 0.4);
+
+  --code-keyword: #ff7a6b;
+  --code-string: #7aa9ec;
+  --code-number: #e9a91b;
+  --code-comment: #a89d8a;
+  --code-fn: #c3a3f0;
+  --code-type: #62c2cf;
+  --code-def: #f3ead9;
+  --code-prop: #7aa9ec;
+  --code-punct: #d9cfbb;
+}
+
+/* ───────────────────────── Base ───────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.1875rem;
+  line-height: 1.62;
+  font-optical-sizing: auto;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+a:hover {
+  text-decoration-thickness: 2px;
+  opacity: 0.8;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: var(--term-hl-strong);
+}
+
+.ui {
+  font-family: var(--font-ui);
+}
+
+/* ───────────────────────── Article grid ─────────────────────────
+   main column for prose; `wide` spans into the right margin; `full` spans the viewport.
+   Sidenotes float into the margin on wide screens. */
+
+.article {
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(1rem, 1fr)
+    [wide-start main-start] minmax(0, var(--main-w))
+    [main-end] minmax(0, calc(var(--margin-w) + 2.5rem))
+    [wide-end] minmax(1rem, 1fr) [full-end];
+  counter-reset: sidenote;
+}
+.article > *,
+.article > .term-layer > * {
+  grid-column: main;
+  min-width: 0;
+}
+.article > .term-layer {
+  display: contents;
+}
+.article > .wide,
+.article > .term-layer > .wide {
+  grid-column: wide;
+}
+.article > .full,
+.article > .term-layer > .full {
+  grid-column: full;
+}
+@media (max-width: 1279px) {
+  .article {
+    grid-template-columns: [full-start] minmax(1rem, 1fr) [wide-start main-start] minmax(0, 46rem) [main-end wide-end] minmax(1rem, 1fr) [full-end];
+  }
+}
+
+/* ───────────────────────── Prose ───────────────────────── */
+
+.article h2,
+.article h3,
+.article h4 {
+  color: var(--ink);
+}
+.article h2 {
+  position: relative;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(1.6rem, 3.4vw, 2rem);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin: 4rem 0 1.1rem;
+  padding-top: 1.2rem;
+  border-top: 2px solid var(--fg);
+}
+/* A short primary-red block sits on the rule, like the ruled colour bars of Byrne's plates. */
+.article h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -2px;
+  width: 3.25rem;
+  height: 0.5rem;
+  background: var(--fx-red);
+}
+.article h3 {
+  font-family: var(--font-ui);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.012em;
+  line-height: 1.2;
+  margin: 2.5rem 0 0.6rem;
+}
+.article h4 {
+  font-family: var(--font-ui);
+  font-size: 1.02rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 1.75rem 0 0.4rem;
+}
+.article p,
+.article ul,
+.article ol {
+  margin: 0 0 1.1rem;
+}
+.article li + li {
+  margin-top: 0.3rem;
+}
+.article li > p {
+  margin-bottom: 0.4rem;
+}
+.article strong {
+  font-weight: 700;
+}
+.article hr {
+  border: 0;
+  border-top: 2px solid var(--fg);
+  margin: 2.75rem 0;
+}
+.article blockquote {
+  margin: 1.5rem 0;
+  padding: 0.2rem 0 0.2rem 1.25rem;
+  border-left: 6px solid var(--fx-blue);
+  color: var(--ink-2);
+  font-style: italic;
+}
+/* Byrne-style lists (markdown lists only, so widget and exercise lists are left alone):
+   red DM Sans numerals, small blue squares for bullets. */
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level) > ol {
+  list-style: none;
+  counter-reset: item;
+  padding-left: 2rem;
+}
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level) > ol > li {
+  counter-increment: item;
+  position: relative;
+}
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level) > ol > li::before {
+  content: counter(item);
+  position: absolute;
+  left: -2rem;
+  width: 1.5rem;
+  text-align: right;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 0.86em;
+  line-height: inherit;
+  padding-top: 0.06em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level) > ul {
+  list-style: none;
+  padding-left: 1.4rem;
+}
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level) > ul > li {
+  position: relative;
+}
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level) > ul > li::before {
+  content: '';
+  position: absolute;
+  left: -1.15rem;
+  top: 0.62em;
+  width: 0.42rem;
+  height: 0.42rem;
+  background: var(--fx-blue);
+}
+.article table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5rem 0;
+  font-family: var(--font-ui);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums;
+}
+.article th,
+.article td {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.article th {
+  font-weight: 700;
+  color: var(--ink);
+  border-bottom: 2px solid var(--fg);
+}
+.article :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  background: var(--surface-2);
+  padding: 0.1em 0.35em;
+  border-radius: var(--radius-sm);
+}
+.article img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Code blocks (Shiki dual theme). */
+figure.code-block {
+  margin: 1.5rem 0;
+  border: 2px solid var(--fg);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  overflow: hidden;
+}
+figure.code-block figcaption {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  padding: 0.45rem 1rem;
+  border-bottom: 2px solid var(--fg);
+  background: var(--surface);
+}
+figure.code-block pre {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  line-height: 1.6;
+  background: transparent !important;
+}
+.shiki,
+.shiki span {
+  color: var(--shiki-light);
+}
+:root[data-theme='dark'] .shiki,
+:root[data-theme='dark'] .shiki span {
+  color: var(--shiki-dark);
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme='light'])) .shiki,
+  :root:where(:not([data-theme='light'])) .shiki span {
+    color: var(--shiki-dark);
+  }
+}
+
+/* Maths. */
+.math-display {
+  margin: 1.4rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0;
+}
+.katex {
+  font-size: 1.08em;
+}
+.math-display .katex {
+  font-size: 1.2em;
+}
+[data-term] {
+  border-radius: 2px;
+  cursor: help;
+  transition: background-color 120ms ease;
+  box-shadow: inset 0 -2px 0 0 var(--fx-yellow);
+}
+[data-term]:hover,
+[data-term]:focus-visible,
+[data-term].term-active {
+  background: var(--term-hl-strong);
+  box-shadow: none;
+}
+[data-term]:focus-visible {
+  outline-offset: 1px;
+}
+/* KaTeX lays out sub/superscripts with empty positioning spans that sit on top of the glyphs;
+   let pointer events fall through them so hoverable terms can be hit. */
+.katex:has([data-term]) .vlist-t,
+.katex:has([data-term]) .vlist-r,
+.katex:has([data-term]) .vlist,
+.katex:has([data-term]) .vlist > span {
+  pointer-events: none;
+}
+.katex [data-term],
+.katex [data-term] * {
+  pointer-events: auto;
+}
+
+/* Footnotes (GFM). */
+.article .footnotes {
+  font-family: var(--font-ui);
+  font-size: 0.92rem;
+  color: var(--ink-2);
+}
+
+/* ───────────────────────── Utility ───────────────────────── */
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
