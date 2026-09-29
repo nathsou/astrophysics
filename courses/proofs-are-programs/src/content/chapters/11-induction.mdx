@@ -174,23 +174,22 @@ In the `succ` case, the recursive call is `addTo n (m + 1)`, with a *different* 
 <Exercise id="induction:length-append" title="Length of an append" lens code={`theorem length_append' {α : Type} (xs ys : List α) : (xs ++ ys).length = xs.length + ys.length := by
   induction xs with
   | nil => sorry
-  | cons x xs ih => sorry`} must="length_append'" hint="nil: simp. cons: simp [ih] (simp unfolds length on x :: _ and finishes the arithmetic)." solution={`theorem length_append' {α : Type} (xs ys : List α) : (xs ++ ys).length = xs.length + ys.length := by
+  | cons x xs ih => sorry`} must="length_append'" hint="nil: simp. cons: simp [ih], then omega for the arithmetic that remains." solution={`theorem length_append' {α : Type} (xs ys : List α) : (xs ++ ys).length = xs.length + ys.length := by
   induction xs with
   | nil => simp
   | cons x xs ih =>
-    simp [ih]`}>
+    simp [ih]
+    omega`}>
 The library has this as a simp lemma, so avoid using it directly: prove it by induction, using only `ih` and arithmetic.
 </Exercise>
 
 <Exercise id="induction:double" title="Double" lens setup={`def double : Nat → Nat
   | 0 => 0
   | n + 1 => double n + 2`} code={`theorem double_eq (n : Nat) : double n = 2 * n := by
-  sorry`} must="double_eq" hint="induction n with | zero => rfl | succ n ih => then rw [double, ih] and omega." solution={`theorem double_eq (n : Nat) : double n = 2 * n := by
+  sorry`} must="double_eq" hint="induction n with | zero => rfl | succ n ih => rw [double, ih]. After the rewrites, both sides compute to the same number, and rw closes the goal with rfl." solution={`theorem double_eq (n : Nat) : double n = 2 * n := by
   induction n with
   | zero => rfl
-  | succ n ih =>
-    rw [double, ih]
-    omega`}>
+  | succ n ih => rw [double, ih]`}>
 Prove that `double` doubles.
 </Exercise>
 
