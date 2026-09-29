@@ -13,7 +13,7 @@
 // purely integer facts such as "2x = 1 is impossible" are out of reach; `-`,
 // `/` and `%` are treated as opaque atoms.
 
-import { type Expr, exprEq, getAppArgs, getAppFn, mkApp, mkApps, mkConst } from '../core/expr.ts';
+import { type Expr, exprEq, getAppArgs, getAppFn, mkApp, mkApps, mkConst, replaceExpr } from '../core/expr.ts';
 import type { Level } from '../core/level.ts';
 import type { STerm, Span } from '../syntax/ast.ts';
 import type { Elaborator } from './elaborator.ts';
@@ -268,56 +268,80 @@ function proveGoal(runner: TacticRunner, el: Elaborator, goal: Expr, span: Span)
   }
 }
 
+type Split = { kind: 'ne'; h: Expr; a: Expr; b: Expr } | { kind: 'sub'; a: Expr; b: Expr };
+
+/** read a hypothesis as linear facts (and disequalities to split on) */
+function addHyp(el: Elaborator, span: Span, facts: Fact[], splits: Split[], t: Expr, h: Expr, depth = 0): void {
+  if (depth > 4) return;
+  const succ = (x: Expr) => mkApps(mkConst('Nat.add'), [x, natNum(1n)]);
+  const rel = relOf(el, t);
+  if (!rel) return;
+  switch (rel.kind) {
+    case 'le':
+      facts.push({ l: rel.a, r: rel.b, proof: h });
+      return;
+    case 'lt':
+      facts.push({ l: succ(rel.a), r: rel.b, proof: h });
+      return;
+    case 'eq':
+      facts.push({ l: rel.a, r: rel.b, proof: app(el, 'Nat.le_of_eq', [h], span) });
+      facts.push({ l: rel.b, r: rel.a, proof: app(el, 'Nat.le_of_eq', [app(el, 'Eq.symm', [h], span)], span) });
+      return;
+    case 'nle':
+      facts.push({ l: succ(rel.b), r: rel.a, proof: app(el, 'Nat.lt_of_not_le', [h], span) });
+      return;
+    case 'nlt':
+      facts.push({ l: rel.b, r: rel.a, proof: app(el, 'Nat.le_of_not_lt', [h], span) });
+      return;
+    case 'ne':
+      splits.push({ kind: 'ne', h, a: rel.a, b: rel.b });
+      return;
+    case 'and':
+      addHyp(el, span, facts, splits, rel.a, app(el, 'And.left', [h], span), depth + 1);
+      addHyp(el, span, facts, splits, rel.b, app(el, 'And.right', [h], span), depth + 1);
+      return;
+    case 'false':
+      facts.push({ l: natNum(1n), r: natNum(0n), proof: app(el, 'False.elim', [h], span, mkApps(mkConst('Nat.le'), [natNum(1n), natNum(0n)])) });
+      return;
+  }
+}
+
+/** the truncated subtractions a - b occurring in the facts */
+function subtractions(el: Elaborator, facts: Fact[]): { a: Expr; b: Expr }[] {
+  const out: { a: Expr; b: Expr }[] = [];
+  const visit = (e: Expr) =>
+    replaceExpr(e, (x) => {
+      if (x.k === 'app' && getAppFn(x).k === 'const' && (getAppFn(x) as { name: string }).name === 'Nat.sub' && getAppArgs(x).length === 2 && x.lb === 0) {
+        const [a, b] = getAppArgs(x);
+        if (!out.some((s) => exprEq(s.a, a) && exprEq(s.b, b))) out.push({ a, b });
+      }
+      return undefined;
+    });
+  for (const f of facts) {
+    visit(el.instantiate(f.l));
+    visit(el.instantiate(f.r));
+  }
+  return out;
+}
+
 /** prove False from the hypotheses in the local context */
 function refute(runner: TacticRunner, el: Elaborator, span: Span): Expr {
   const facts: Fact[] = [];
-  const splits: { h: Expr; a: Expr; b: Expr }[] = [];
-  const succ = (x: Expr) => mkApps(mkConst('Nat.add'), [x, natNum(1n)]);
-  const addHyp = (t: Expr, h: Expr, depth = 0): void => {
-    if (depth > 4) return;
-    const rel = relOf(el, t);
-    if (!rel) return;
-    switch (rel.kind) {
-      case 'le':
-        facts.push({ l: rel.a, r: rel.b, proof: h });
-        return;
-      case 'lt':
-        facts.push({ l: succ(rel.a), r: rel.b, proof: h });
-        return;
-      case 'eq':
-        facts.push({ l: rel.a, r: rel.b, proof: app(el, 'Nat.le_of_eq', [h], span) });
-        facts.push({ l: rel.b, r: rel.a, proof: app(el, 'Nat.le_of_eq', [app(el, 'Eq.symm', [h], span)], span) });
-        return;
-      case 'nle':
-        facts.push({ l: succ(rel.b), r: rel.a, proof: app(el, 'Nat.lt_of_not_le', [h], span) });
-        return;
-      case 'nlt':
-        facts.push({ l: rel.b, r: rel.a, proof: app(el, 'Nat.le_of_not_lt', [h], span) });
-        return;
-      case 'ne':
-        splits.push({ h, a: rel.a, b: rel.b });
-        return;
-      case 'and':
-        addHyp(rel.a, app(el, 'And.left', [h], span), depth + 1);
-        addHyp(rel.b, app(el, 'And.right', [h], span), depth + 1);
-        return;
-      case 'false':
-        facts.push({ l: natNum(1n), r: natNum(0n), proof: app(el, 'False.elim', [h], span, mkApps(mkConst('Nat.le'), [natNum(1n), natNum(0n)])) });
-        return;
-    }
-  };
+  const splits: Split[] = [];
   for (const d of el.lctx.decls) {
     if (d.value) continue;
     try {
-      addHyp(el.instantiate(d.type), { k: 'fvar', id: d.id, lb: 0, fv: true, mv: false, lp: false } as Expr);
+      addHyp(el, span, facts, splits, el.instantiate(d.type), { k: 'fvar', id: d.id, lb: 0, fv: true, mv: false, lp: false } as Expr);
     } catch (e) {
       if (!(e instanceof ElabError)) throw e;
     }
   }
+  // a - b: either b ≤ a and a - b + b = a, or a < b and a - b = 0
+  if (el.env.has('Nat.sub_cases')) for (const s of subtractions(el, facts)) splits.push({ kind: 'sub', a: s.a, b: s.b });
   return refuteWith(runner, el, facts, splits, span);
 }
 
-function refuteWith(runner: TacticRunner, el: Elaborator, facts: Fact[], splits: { h: Expr; a: Expr; b: Expr }[], span: Span): Expr {
+function refuteWith(runner: TacticRunner, el: Elaborator, facts: Fact[], splits: Split[], span: Span): Expr {
   const r = tryRefute(el, facts, span);
   if (r) return r;
   if (splits.length === 0) {
@@ -332,8 +356,27 @@ function refuteWith(runner: TacticRunner, el: Elaborator, facts: Fact[], splits:
       span,
     );
   }
-  // a ≠ b: a < b or b < a
   const [s, ...rest] = splits;
+  if (s.kind === 'sub') {
+    const sub = mkApps(mkConst('Nat.sub'), [s.a, s.b]);
+    const eqN = (x: Expr, y: Expr) => mkApps(mkConst('Eq', [one]), [mkConst('Nat'), x, y]);
+    const and = (x: Expr, y: Expr) => mkApps(mkConst('And'), [x, y]);
+    const leftT = and(mkApps(mkConst('Nat.le'), [s.b, s.a]), eqN(mkApps(mkConst('Nat.add'), [sub, s.b]), s.a));
+    const rightT = and(mkApps(mkConst('Nat.lt'), [s.a, s.b]), eqN(sub, natNum(0n)));
+    const branch = (T: Expr) =>
+      el.withSavedLctx(() => {
+        const h = el.pushLocal('h✝', T);
+        const more = [...facts];
+        const moreSplits: Split[] = [];
+        addHyp(el, span, more, moreSplits, T, h);
+        const f = refuteWith(runner, el, more, [...moreSplits, ...rest], span);
+        return el.mkBinding('lam', [h], f);
+      });
+    const left = branch(leftT);
+    const right = branch(rightT);
+    return app(el, 'Or.elim', [app(el, 'Nat.sub_cases', [s.a, s.b], span), left, right], span, mkConst('False'));
+  }
+  // a ≠ b: a < b or b < a
   const succ = (x: Expr) => mkApps(mkConst('Nat.add'), [x, natNum(1n)]);
   const branch = (l: Expr, rr: Expr, lt: Expr) =>
     el.withSavedLctx(() => {

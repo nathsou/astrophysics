@@ -149,6 +149,32 @@ export class TacticRunner {
     return this.el.instantiate(this.decl(g).localType);
   }
 
+  /** show `Nat.succ n` as `n + 1` in a goal and its hypotheses (the two are definitionally equal), as Lean does */
+  succToAdd(g: number): void {
+    const el = this.el;
+    const conv = (e: Expr): Expr =>
+      replaceExpr(el.instantiate(e), (x) => {
+        if (x.k !== 'app' || x.fn.k !== 'const' || x.fn.name !== 'Nat.succ') return undefined;
+        let n = 0;
+        let y: Expr = x;
+        while (y.k === 'app' && y.fn.k === 'const' && y.fn.name === 'Nat.succ') {
+          n++;
+          y = y.arg;
+        }
+        if (y.k === 'const' && y.name === 'Nat.zero') return x; // a numeral
+        let k: Expr = mkConst('Nat.zero');
+        for (let i = 0; i < n; i++) k = mkApp(mkConst('Nat.succ'), k);
+        return mkApps(mkConst('Nat.add'), [conv(y), k]);
+      });
+    const d = this.decl(g);
+    if (!d || this.assigned(g)) return;
+    d.localType = conv(d.localType);
+    d.type = conv(d.type);
+    let l = LocalContext.empty;
+    for (const x of d.lctx.decls) l = l.push({ ...x, type: conv(x.type), value: x.value ? conv(x.value) : undefined });
+    d.lctx = l;
+  }
+
   tag(g: number): string | undefined {
     const n = this.decl(g).name;
     return n && n !== '_' && !n.startsWith('__') ? n : undefined;
@@ -1195,6 +1221,7 @@ export class TacticRunner {
         const gl = this.decl(goal).lctx.decls;
         const shadowed = this.decl(g).lctx.decls.filter((d) => gl.some((x, i) => x.id !== d.id && x.name === d.name && i > gl.findIndex((y) => y.id === d.id))).map((d) => d.id);
         goal = this.clearStale(goal, [...stale, ...shadowed].filter((id) => !fields.some((f) => f.id === id)));
+        this.succToAdd(goal);
         out.push({ goal, ctor: hole.ctor, fields });
       }
       return out;
@@ -1438,6 +1465,7 @@ export class TacticRunner {
       this.assign(g, proof);
       return produced;
     });
+    for (const r of res) this.succToAdd(r.goal);
     this.runAlts(res, t.alts, t.span);
   }
 

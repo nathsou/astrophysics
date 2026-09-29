@@ -1,1 +1,139 @@
-This chapter is being written.
+Many steps in a proof are routine: simplify `x + 0` to `x`, check that `2 ^ 10 = 1024`, notice that `a < b` implies `a + 1 ≤ b`. Writing these by hand is tedious and teaches nothing. This chapter introduces three tactics that do such steps for you: `simp`, `decide` and `omega`. Each is a decision procedure or a search, written in the untrusted part of the system. Following Chapter 8, none of them is trusted: each one produces a proof term that the kernel checks.
+
+For each tactic, we look at what it does, what term it leaves behind, and how to read its failures, since an automation tactic that fails silently or mysteriously is worse than none.
+
+## simp: rewriting until nothing changes
+
+`simp` rewrites the goal with a list of equations, called **simp lemmas**, over and over, until none applies. The library marks lemmas like `n + 0 = n`, `xs ++ [] = xs`, `(xs ++ ys).length = xs.length + ys.length` or `(True ∧ p) = p` with the attribute `@[simp]`. If the goal becomes `True`, `simp` closes it.
+
+<Playground lens title="simp at work" code={`theorem tidy (xs ys : List Nat) : (xs ++ []).length + 0 = xs.length := by
+  simp
+
+theorem with_hyp (a b : Nat) (h : a = b) : a + 0 = b := by
+  simp [h]
+
+theorem in_hyp (a : Nat) (h : a + 3 = 7) : a = 4 := by
+  simp at h
+  exact h`} />
+
+- `simp [h₁, h₂, f]` adds equations to the list: hypotheses, lemmas, or the name of a function, which adds the equations that define it (so `simp [f]` unfolds `f` when it can compute).
+- `simp at h` simplifies a hypothesis; `simp at *` everything.
+- `simp only [h₁, h₂]` uses *only* the given equations, which is predictable and fast.
+- `simp_all` simplifies every hypothesis and the goal, using each simplified hypothesis to rewrite the others.
+
+What term does `simp` leave behind? Put your cursor on the first `simp` and open the lens. It is not pretty:
+
+```text
+of_eq_true (Eq.trans (congrFun (congrArg Eq (Eq.trans (congrFun (congrArg Nat.add
+  (congrArg List.length (List.append_nil xs))) 0) (Nat.add_zero (List.length xs))))
+  (List.length xs)) (eq_self (List.length xs)))
+```
+
+But it is readable with some patience. `List.append_nil xs` proves `xs ++ [] = xs`. `congrArg` carries that equation inside `List.length` and then inside `· + 0` (Chapter 6: equal inputs give equal outputs). `Nat.add_zero` removes the `+ 0`. `Eq.trans` chains the steps, `eq_self` turns the final `a = a` into `True`, and `of_eq_true` concludes. Every rewrite `simp` performed appears as a lemma application, and the congruence lemmas say *where* in the term it happened.
+
+<Pitfall title="When simp makes no progress, or too much">
+`simp` fails with "simp made no progress" when no lemma applies: often a sign that the goal needs a definition unfolded (`simp [f]`) or a hypothesis (`simp [h]`). The opposite problem, a lemma that rewrites in circles, is prevented for the standard lemmas, but a hypothesis like `h : f x = f (f x)` in `simp [h]` would loop, and `simp` gives up after a fixed number of steps. When `simp` does something surprising, replace it by `simp only` with an explicit list.
+</Pitfall>
+
+## decide: proof by evaluation
+
+Some statements can be checked by running a program. Is `2 ^ 10 = 1024`? Is 97 prime? Do all numbers below 5 have squares below 25? For such statements, the library provides a **decision procedure**: a function that computes `true` or `false` and is proved to be correct. `decide` runs it:
+
+```lean
+theorem pow_ten : 2 ^ 10 = 1024 := by decide
+
+theorem small_squares : ∀ n, n < 5 → n * n < 25 := by decide
+
+theorem lists : [1, 2, 3].length = 3 ∧ 7 % 3 = 1 := by decide
+```
+
+The term is tiny: `of_decide_eq_true (Eq.refl true)`. It says: the decision procedure for this proposition returns `true`, by computation (`Eq.refl true`), and the procedure is correct (`of_decide_eq_true`). The work happens in the kernel, when it checks that `decide (2 ^ 10 = 1024)` computes to `true`. Chapter 13 shows how decision procedures are written, and Chapter 19 turns this idea into a technique for building your own automation.
+
+`decide` fails when there is no decision procedure for the statement (anything with a `∀` over all natural numbers, for instance: it would have to check infinitely many cases), or when the procedure says `false`, in which case the statement is false and there is nothing to prove.
+
+<Playground errors title="decide says no" code={`theorem wrong : 2 ^ 10 = 1000 := by decide
+
+theorem unbounded : ∀ n : Nat, n * 0 = 0 := by decide`} />
+
+## omega: linear arithmetic
+
+The third tactic handles a large class of arithmetic goals: anything built from `+`, `-`, multiplication by a constant, `<`, `≤`, `=`, `≠`, `∧`, `∨` and `¬` over natural numbers, with hypotheses of the same kind. It is named after the Omega test, William Pugh's decision procedure for linear integer arithmetic (1991), though the course's version is simpler.
+
+<Playground lens title="omega" code={`theorem succ_le (a b : Nat) (h : a < b) : a + 1 ≤ b := by
+  omega
+
+theorem sandwich (a b c : Nat) (h₁ : a ≤ b) (h₂ : b ≤ c) (h₃ : c ≤ a) : a = c := by
+  omega
+
+theorem budget (x y : Nat) (h : 2 * x + 3 * y ≤ 12) (hy : y ≥ 2) : x ≤ 3 := by
+  omega
+
+theorem sub_trick (n : Nat) (h : n ≥ 5) : n - 5 + 5 = n := by
+  omega`} />
+
+`omega` works by contradiction. It negates the goal, collects every hypothesis about numbers, and looks for a way to add up the inequalities (each multiplied by a positive constant) to get `0 < 0`, which is impossible. Here: from `b < a + 1` (the negated goal) and `a < b`, adding gives `a + b + 1 < a + b + 1`.
+
+The proof term is more interesting than `simp`'s. `omega` does not rewrite the goal step by step. It translates the hypotheses into *data*: a list of linear forms, each an ordinary inductive value, together with the coefficients it found. Then it applies a lemma from the library, `Omega.contra`, whose statement is roughly "if these forms, evaluated at these numbers, satisfy these inequalities, and the certificate checks, then `False`". The kernel runs the certificate checker, which is a small program, to verify the certificate. The lemmas that make this sound are proved once, in the library, by induction. Chapter 19 explains this technique, called **proof by reflection**, and builds a tactic with it.
+
+### Reading omega's failures
+
+When `omega` fails, it lists the facts it found (including the negated goal), and, when it can, values that satisfy all of them, which usually means the goal is false:
+
+<Playground errors title="omega explains itself" code={`theorem off_by_one (n : Nat) : n < n + 0 := by
+  omega
+
+theorem not_linear (a b : Nat) : a * b = b * a := by
+  omega`} />
+
+The first goal is false, and `omega` says so, with `n = 0`. The second is true, but not linear: `omega` treats `a * b` and `b * a` as two unrelated unknowns, and finds values for them that satisfy its facts. For such goals, use a lemma (`Nat.mul_comm a b`) or `simp [Nat.mul_comm]`.
+
+## Choosing a tactic
+
+| Goal looks like | Try |
+|---|---|
+| a statement about closed values (numbers, lists, booleans) | `decide` |
+| linear arithmetic over `Nat` | `omega` |
+| an expression to clean up with known identities | `simp`, `simp [h, f]` |
+| an equation after unfolding definitions | `simp [f]`, `rfl` |
+| propositional logic | the tactics of Chapter 9 (or `simp` for small cases) |
+
+These combine: `simp` to unfold and clean up, then `omega` to finish the arithmetic, is a common pattern in Part V.
+
+```lean
+def double (n : Nat) : Nat := n + n
+
+theorem double_eq (n : Nat) : double n = 2 * n := by
+  simp [double]
+  omega
+```
+
+<UnderTheHood ch="cic" s="watching-the-kernel">
+Whatever the tactic, the kernel sees only a term. The CIC course's summary chapter shows the kernel checking terms step by step, including the definitional unfolding that makes `decide` work.
+</UnderTheHood>
+
+## Exercises
+
+<Exercise id="automation:simp" title="simp with a definition" lens setup={`def area (w h : Nat) : Nat := w * h`} code={`theorem area_zero (w : Nat) : area w 0 + area 0 w = 0 := by
+  sorry`} must="area_zero" hint="simp [area]: it unfolds area, then uses Nat.mul_zero and Nat.zero_mul." solution={`theorem area_zero (w : Nat) : area w 0 + area 0 w = 0 := by
+  simp [area]`}>
+Prove it with one `simp` call, telling `simp` to unfold `area`.
+</Exercise>
+
+<Exercise id="automation:omega" title="Arithmetic facts" code={`theorem between (x : Nat) (h₁ : 3 < x) (h₂ : x < 5) : x = 4 := by
+  sorry
+
+theorem max_bound (a b : Nat) (h : a + b = 10) (ha : a ≥ 7) : b ≤ 3 := by
+  sorry`} must="between max_bound" hint="omega for both." solution={`theorem between (x : Nat) (h₁ : 3 < x) (h₂ : x < 5) : x = 4 := by
+  omega
+
+theorem max_bound (a b : Nat) (h : a + b = 10) (ha : a ≥ 7) : b ≤ 3 := by
+  omega`}>
+Both are linear arithmetic.
+</Exercise>
+
+<Exercise id="automation:decide" title="A bounded search" code={`-- every number below 10 is even or odd
+theorem even_or_odd_small : ∀ n, n < 10 → n % 2 = 0 ∨ n % 2 = 1 := by
+  sorry`} must="even_or_odd_small" hint="decide: the bound makes it a finite check." solution={`theorem even_or_odd_small : ∀ n, n < 10 → n % 2 = 0 ∨ n % 2 = 1 := by
+  decide`}>
+The bound `n < 10` makes this a finite check.
+</Exercise>

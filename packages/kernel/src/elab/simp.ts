@@ -222,6 +222,14 @@ class Matcher {
           return this.match(pa[0], inner, depth + 1);
         }
       }
+      // p + k  (k a numeral ≥ 1)  against  Nat.succ t
+      if (pf.k === 'const' && pf.name === 'Nat.add' && pa.length === 2 && tf.k === 'const' && tf.name === 'Nat.succ' && ta.length === 1) {
+        const k = numeral(pa[1]);
+        if (k !== undefined && k > 0) {
+          const inner = k === 1 ? pa[0] : mkApps(pf, [pa[0], mkNumeral(k - 1)]);
+          return this.match(inner, ta[0], depth + 1);
+        }
+      }
       // a constructor pattern against a term that computes to a constructor (only if the result stays readable)
       if (pf.k === 'const' && this.el.env.get(pf.name)?.kind === 'ctor' && tf.k === 'const' && this.el.env.get(tf.name)?.kind !== 'ctor' && t.lb === 0) {
         const w = whnfBounded(this.el, t);
@@ -1255,9 +1263,12 @@ function rewriteWith(runner: TacticRunner, g: number, eqProof: Expr, rev: boolea
     let pf = m.subst(rule.proof);
     if (rule.kind === 'iff') pf = app('propext', [rule.rev ? app('Iff.symm', [pf]) : pf]);
     else if (rule.rev) pf = app('Eq.symm', [pf]);
+    // abstract the instance as it appears in the goal (it may differ from l up to computation,
+    // like n + 1 matched by Nat.succ ?m), and every other occurrence of either form
+    const inst = el.instantiate(found.e);
     const motive = el.withSavedLctx(() => {
       const x = el.pushLocal('x', el.inferType(l));
-      const body = replaceExpr(T, (e) => (e.lb === 0 && exprEq(e, l) ? x : undefined));
+      const body = replaceExpr(T, (e) => (e.lb === 0 && (exprEq(e, l) || exprEq(e, inst)) ? x : undefined));
       return el.mkBinding('lam', [x], body);
     });
     try {

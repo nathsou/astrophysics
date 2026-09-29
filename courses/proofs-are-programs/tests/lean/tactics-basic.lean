@@ -55,3 +55,11 @@ theorem r14c (p q : Prop) (hnp : ¬p) (h : p ∨ q) : q := by
   cases h with
   | inl hp => contradiction
   | inr hq => exact hq
+theorem za' (n : Nat) : 0 + n = n := by
+  induction n with
+  | zero => rfl
+  | succ n ih => rw [Nat.add_succ, ih]
+theorem goal_shape (n : Nat) : n + 1 = Nat.succ n := by
+  cases n with
+  | zero => rfl
+  | succ m => rfl

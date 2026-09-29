@@ -255,7 +255,7 @@ theorem succ_eq_add_one (n : Nat) : succ n = n + 1 := rfl
 theorem succ_add (n m : Nat) : succ n + m = succ (n + m) := by
   induction m with
   | zero => rfl
-  | succ m ih => rw [add_succ, add_succ, ih]
+  | succ m ih => show succ (succ n + m) = succ (n + succ m); rw [ih]
 
 theorem add_comm (n m : Nat) : n + m = m + n := by
   induction m with
@@ -844,6 +844,44 @@ end Omega
 
 theorem Nat.add_eq_false_of_lt (x : Nat) {k m : Nat} (h : m < k) : (x + k = m) = False :=
   eq_false (fun e => by omega)
+
+-- truncated subtraction (omega splits a - b into the two cases of Nat.sub_cases)
+
+theorem Nat.zero_sub (b : Nat) : 0 - b = 0 := by
+  induction b with
+  | zero => rfl
+  | succ b ih => show Nat.pred (0 - b) = 0; rw [ih]
+
+theorem Nat.succ_sub_succ (a b : Nat) : (a + 1) - (b + 1) = a - b := by
+  induction b with
+  | zero => rfl
+  | succ b ih => show Nat.pred ((a + 1) - (b + 1)) = Nat.pred (a - b); rw [ih]
+
+theorem Nat.sub_add_cancel {a b : Nat} (h : b ≤ a) : a - b + b = a := by
+  induction b generalizing a with
+  | zero => rfl
+  | succ b ih =>
+    cases a with
+    | zero => omega
+    | succ a =>
+      rw [Nat.succ_sub_succ]
+      have := ih (a := a) (by omega)
+      omega
+
+theorem Nat.sub_eq_zero_of_le {a b : Nat} (h : a ≤ b) : a - b = 0 := by
+  induction b generalizing a with
+  | zero => show a = 0; omega
+  | succ b ih =>
+    cases a with
+    | zero => exact Nat.zero_sub (b + 1)
+    | succ a =>
+      rw [Nat.succ_sub_succ]
+      exact ih (by omega)
+
+theorem Nat.sub_cases (a b : Nat) : (b ≤ a ∧ a - b + b = a) ∨ (a < b ∧ a - b = 0) :=
+  match Nat.decLe b a with
+  | isTrue h => Or.inl ⟨h, Nat.sub_add_cancel h⟩
+  | isFalse h => Or.inr ⟨by omega, Nat.sub_eq_zero_of_le (by omega)⟩
 
 /-- `∀ n, n < k → p n` is decidable when each `p n` is: check 0, 1, …, k - 1. -/
 def Nat.decBallLT (p : Nat → Prop) [inst : ∀ n, Decidable (p n)] : (k : Nat) → Decidable (∀ n, n < k → p n)
