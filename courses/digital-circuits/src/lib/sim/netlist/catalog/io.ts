@@ -10,7 +10,7 @@ defineComponents([
     pins: [{ name: 'Y', x: 3, y: 0, dir: 'out' }],
     bounds: { x0: -1, y0: -1, x1: 3, y1: 1 },
     params: [{ key: 'on', label: 'On', kind: 'boolean', default: false }],
-    engines: ['digital', 'switch'],
+    engines: ['digital', 'switch', 'analog'],
   },
   {
     type: 'button',
@@ -20,7 +20,7 @@ defineComponents([
     pins: [{ name: 'Y', x: 3, y: 0, dir: 'out' }],
     bounds: { x0: -1, y0: -1, x1: 3, y1: 1 },
     params: [{ key: 'pressed', label: 'Pressed', kind: 'boolean', default: false }],
-    engines: ['digital', 'switch'],
+    engines: ['digital', 'switch', 'analog'],
   },
   {
     type: 'clock',
@@ -33,7 +33,7 @@ defineComponents([
       { key: 'frequency', label: 'Frequency', kind: 'number', default: 1, unit: 'Hz', min: 0.01, max: 1e9, log: true },
       { key: 'duty', label: 'Duty cycle', kind: 'number', default: 0.5, min: 0.01, max: 0.99, step: 0.01 },
     ],
-    engines: ['digital', 'switch'],
+    engines: ['digital', 'switch', 'analog'],
   },
   {
     type: 'const',
@@ -43,7 +43,7 @@ defineComponents([
     pins: [{ name: 'Y', x: 2, y: 0, dir: 'out' }],
     bounds: { x0: -1, y0: -1, x1: 2, y1: 1 },
     params: [{ key: 'value', label: 'Value', kind: 'number', default: 1, min: 0, max: 1, step: 1 }],
-    engines: ['digital', 'switch'],
+    engines: ['digital', 'switch', 'analog'],
   },
   {
     type: 'indicator',
@@ -53,7 +53,7 @@ defineComponents([
     pins: [{ name: 'A', x: 0, y: 0, dir: 'in' }],
     bounds: { x0: 0, y0: -1, x1: 3, y1: 1 },
     params: [{ key: 'color', label: 'Colour', kind: 'enum', default: 'red', options: ['red', 'amber', 'green', 'blue', 'white'] }],
-    engines: ['digital', 'switch'],
+    engines: ['digital', 'switch', 'analog'],
   },
   {
     type: 'probe',
@@ -63,7 +63,7 @@ defineComponents([
     pins: [{ name: 'A', x: 0, y: 0, dir: 'in' }],
     bounds: { x0: 0, y0: -1, x1: 3, y1: 1 },
     params: [{ key: 'name', label: 'Name', kind: 'string', default: '' }],
-    engines: ['digital', 'switch'],
+    engines: ['digital', 'switch', 'analog'],
   },
   {
     type: 'seven-seg',
