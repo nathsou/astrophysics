@@ -1076,6 +1076,8 @@ export class Elaborator {
       const cp = this.mctx.checkpoint();
       if (!this.isDefEq(ft, expected)) this.mctx.rollback(cp);
     }
+    // instances whose type is known by now: `of_decide_eq_true rfl` needs the instance before the rfl
+    if (this.instPending.length && pending.some((p) => !p.done)) this.synthesizeInstances(false);
     flush(false);
     flush(true);
     this.record(span, e, 'term', expected);

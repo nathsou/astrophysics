@@ -4,7 +4,8 @@
 //    rendered with innerHTML by a single <RawHtml> component, instead of
 //    thousands of tiny JSX elements.
 //  * remarkCodeBlocks: fenced code blocks become <CodeBlock> components;
-//    a `playground` meta turns them into live <Playground> widgets.
+//    a `playground` meta turns them into live <Playground> widgets; widgets
+//    marked `chapter` receive the chapter's earlier code as `setup`.
 
 import { toHtml } from 'hast-util-to-html';
 import { visit, SKIP } from 'unist-util-visit';
@@ -57,8 +58,17 @@ export function remarkCodeBlocks() {
     // blocks before it (except those marked `nocheck`, `errors` or `alone`), which travel with it
     // to the playground as `context`
     let context = '';
-    visit(tree as any, 'code', (node: any, index: number | undefined, parent: any) => {
+    const isTarget = (n: any) => n.type === 'code' || (n.type === 'mdxJsxFlowElement' && n.attributes?.some((a: any) => a.name === 'chapter'));
+    visit(tree as any, isTarget, (node: any, index: number | undefined, parent: any) => {
       if (!parent || index === undefined) return;
+      if (node.type === 'mdxJsxFlowElement') {
+        // a widget marked `chapter` gets the chapter's code so far as hidden setup (before its own)
+        const own = node.attributes.find((a: any) => a.name === 'setup');
+        const ownSetup = typeof own?.value === 'string' ? own.value : '';
+        node.attributes = node.attributes.filter((a: any) => a.name !== 'chapter' && a.name !== 'setup');
+        node.attributes.push(attr('setup', context + ownSetup));
+        return SKIP;
+      }
       const meta: string = node.meta ?? '';
       const opts: Record<string, string | boolean> = {};
       for (const m of meta.matchAll(/([\w-]+)(?:=("[^"]*"|\S+))?/g)) {

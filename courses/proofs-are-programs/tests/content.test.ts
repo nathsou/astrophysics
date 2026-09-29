@@ -23,6 +23,8 @@ export function extract(src: string): Snippet[] {
   const lineOf = (i: number) => src.slice(0, i).split('\n').length;
   // the code blocks of a chapter form one file (see build/mdx-plugins.ts)
   let context = '';
+  // the chapter context after each code block, for widgets marked `chapter`
+  const contexts: { at: number; context: string }[] = [];
   for (const m of src.matchAll(/```(\w+)([^\n]*)\n([\s\S]*?)```/g)) {
     const meta = m[2];
     if (m[1] !== 'lean' || /\bnocheck\b/.test(meta)) continue;
@@ -30,7 +32,9 @@ export function extract(src: string): Snippet[] {
     const errors = /\berrors\b/.test(meta);
     out.push({ line: lineOf(m.index!), code: (alone ? '' : context) + m[3], allowErrors: errors, what: 'code block' });
     if (!alone && !errors) context += m[3] + '\n\n';
+    contexts.push({ at: m.index!, context });
   }
+  const contextAt = (i: number) => contexts.filter((c) => c.at < i).pop()?.context ?? '';
   for (const m of src.matchAll(/<(Playground|Exercise|ObligationGrid|[A-Z][A-Za-z]+Lab|[A-Z][A-Za-z]+View)\b/g)) {
     let i = m.index! + m[0].length;
     let depth = 0;
@@ -47,7 +51,8 @@ export function extract(src: string): Snippet[] {
       else if (c === '>' && depth === 0) break;
     }
     const tag = src.slice(m.index! + m[0].length, i);
-    const setup = attr(tag, 'setup') ?? '';
+    const bare = tag.replace(/\{`[\s\S]*?`\}/g, '').replace(/"[^"]*"/g, '');
+    const setup = (/(^|\s)chapter(?=\s|$|\/)/.test(bare) ? contextAt(m.index!) : '') + (attr(tag, 'setup') ?? '');
     const code = attr(tag, 'code');
     const allowErrors = /\berrors\b/.test(tag) || m[1] === 'Exercise';
     if (code !== undefined) out.push({ line: lineOf(m.index!), code: setup + '\n' + code, allowErrors, what: m[1] });
