@@ -419,11 +419,36 @@ export class Processor {
         const f = ev.run(fn);
         for (let i = 0; i < samples; i++) {
           const size = 1 + Math.floor((i * 8) / samples);
-          const vals = types.map((t) => gen.gen(t, size));
-          let r: Value = f;
-          for (const v of vals) r = applyValue(r, v.value, ev);
-          const ok = r && typeof r === 'object' && r.c === 'Bool.true';
+          let vals = types.map((t) => gen.gen(t, size));
+          const holds = (vs: typeof vals): boolean => {
+            let r: Value = f;
+            for (const v of vs) r = applyValue(r, v.value, ev);
+            return !!r && typeof r === 'object' && r.c === 'Bool.true';
+          };
+          const ok = holds(vals);
           if (!ok) {
+            // shrink the counterexample: keep replacing a value by a smaller one that still fails
+            let budget = 400;
+            for (let progress = true; progress && budget > 0; ) {
+              progress = false;
+              for (let k = 0; k < vals.length && !progress; k++) {
+                for (const cand of gen.shrink(types[k], vals[k])) {
+                  if (--budget <= 0) break;
+                  const next = vals.map((v, j) => (j === k ? cand : v));
+                  let fails = false;
+                  try {
+                    fails = !holds(next);
+                  } catch (e) {
+                    if (!(e instanceof EvalError)) throw e;
+                  }
+                  if (fails) {
+                    vals = next;
+                    progress = true;
+                    break;
+                  }
+                }
+              }
+            }
             const counterexample = xs.map((x, k) => ({ name: el.lctx.get(x.id)!.name, value: vals[k].show ?? showValue(this.env, vals[k].value, types[k]) }));
             res.output = { k: 'test', statement: p, samples, passed, counterexample, lctx: this.sectionCtx };
             res.messages.push({ severity: 'error', span: cmd.term.span, msg: [`counterexample found after ${passed} passing test${passed === 1 ? '' : 's'}: ${counterexample.map((c) => `${c.name} := ${c.value}`).join(', ')}`] });

@@ -24,7 +24,8 @@ export interface PlaygroundProps {
   /** show the proof-term lens (open by default when true) */
   lens?: boolean | string;
   /** called after each check */
-  onResult?: (r: CheckResult) => void;
+  /** called after each check, with the checked source (setup + code) and the length of the setup */
+  onResult?: (r: CheckResult, src: string, offset: number) => void;
   /** extra element in the footer */
   extra?: JSX.Element;
   class?: string;
@@ -87,7 +88,7 @@ export function Playground(props: PlaygroundProps) {
   const offset = () => setup().length;
   const result = createMemo(() => {
     const r = check(setup() + debounced(), baseEnv());
-    props.onResult?.(r);
+    props.onResult?.(r, setup() + debounced(), setup().length);
     return r;
   });
   const inCode = (m: { span: { from: number; to: number } }) => m.span.to >= offset();

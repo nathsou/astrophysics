@@ -9,7 +9,7 @@ import { type Expr, getAppArgs, getAppFn, instantiate1, instantiateLevelParamsEx
 import { toNat } from '../core/level.ts';
 import { type Environment, LocalContext } from '../core/env.ts';
 import { TypeChecker } from '../core/typechecker.ts';
-import { type CtorVal, type Fn, type Value, EvalError } from './compile.ts';
+import { type CtorVal, type Fn, type Value, EvalError, showValue } from './compile.ts';
 
 /** a small deterministic PRNG (mulberry32) */
 export function rng(seed: number): () => number {
@@ -74,6 +74,88 @@ export class Generator {
       const n = r < 0.6 ? this.int(Math.min(6, size + 2)) : this.int(Math.max(1, size * 3));
       return { value: BigInt(n), show: String(n) };
     }
+    const ctors = this.ctorInfo(w);
+    const usable = ctors.filter((c) => c.fields.every((f) => f.relevant || f.type.k === 'sort'));
+    if (usable.length === 0) throw new EvalError(`#test: cannot generate values of '${h.name}' (its constructors need proofs)`);
+    const base = usable.filter((c) => !c.fields.some((f) => f.recursive));
+    const pool = size <= 0 && base.length > 0 ? base : usable;
+    // lists get more elements than a uniform choice would give
+    const pick = h.name === 'List' && size > 0 ? (this.rand() < 0.2 ? pool[0] : pool[pool.length - 1]) : pool[this.int(pool.length)];
+    const f: Value[] = pick.fields.map((fd) => (fd.relevant ? this.gen(fd.type, fd.recursive ? size - 1 : Math.floor(size / 2)).value : null));
+    const v: CtorVal = { c: pick.name, f };
+    return { value: v };
+  }
+
+  /** smaller values than g (of type t), most promising first: for shrinking counterexamples */
+  shrink(t: Expr, g: Generated): Generated[] {
+    const w = this.tc.whnf(t);
+    const v = g.value;
+    if (w.k === 'pi') {
+      // a function: try the constant functions returning one of its sample outputs (we only know a few)
+      const codom = instantiate1(w.body, w.type);
+      if (g.show?.startsWith('fun _ =>')) {
+        // a constant function: shrink the constant
+        let o: Value;
+        try {
+          o = (v as Fn)(0n);
+        } catch {
+          return [];
+        }
+        return this.shrink(codom, { value: o }).map((c) => ({ value: (() => c.value) as Fn, show: `fun _ => ${c.show ?? showValueShort(this.env, c.value, codom)}` }));
+      }
+      const outs: Generated[] = [];
+      for (const x of [0n, 1n, 2n, 3n]) {
+        try {
+          const o = (v as Fn)(x);
+          outs.push({ value: o });
+        } catch {
+          /* ignore */
+        }
+      }
+      return outs.map((o) => {
+        const sh = o.show ?? showValueShort(this.env, o.value, codom);
+        return { value: (() => o.value) as Fn, show: `fun _ => ${sh}` };
+      });
+    }
+    const h = getAppFn(w);
+    if (h.k !== 'const') return [];
+    if (typeof v === 'bigint') {
+      const out: bigint[] = [];
+      for (const c of [0n, v / 2n, v - 1n]) if (c >= 0n && c < v && !out.includes(c)) out.push(c);
+      return out.map((n) => ({ value: n, show: String(n) }));
+    }
+    if (!v || typeof v !== 'object') return [];
+    let ctors: ReturnType<Generator['ctorInfo']>;
+    try {
+      ctors = this.ctorInfo(w);
+    } catch {
+      return [];
+    }
+    const me = ctors.find((c) => c.name === v.c);
+    if (!me) return [];
+    const out: Generated[] = [];
+    // a recursive field: the value itself is smaller
+    me.fields.forEach((fd, i) => {
+      if (fd.recursive && v.f[i] !== null) out.push({ value: v.f[i] });
+    });
+    // a base constructor
+    if (me.fields.some((fd) => fd.recursive)) {
+      for (const c of ctors) if (!c.fields.some((fd) => fd.relevant)) out.push({ value: { c: c.name, f: c.fields.map(() => null) } as CtorVal });
+    }
+    // shrink one field
+    me.fields.forEach((fd, i) => {
+      if (!fd.relevant || v.f[i] === null) return;
+      for (const sub of this.shrink(fd.type, { value: v.f[i] })) {
+        const f = [...v.f];
+        f[i] = sub.value;
+        out.push({ value: { c: v.c, f } as CtorVal });
+      }
+    });
+    return out;
+  }
+
+  private ctorInfo(w: Expr) {
+    const h = getAppFn(w) as Extract<Expr, { k: 'const' }>;
     const d = this.env.get(h.name);
     if (!d || d.kind !== 'inductive') throw new EvalError(`#test: cannot generate values of type '${h.name}'`);
     if (d.numIndices > 0) throw new EvalError(`#test: cannot generate values of the inductive family '${h.name}'`);
@@ -104,15 +186,15 @@ export class Generator {
       }
       return { name: c, fields };
     });
-    const usable = ctors.filter((c) => c.fields.every((f) => f.relevant || f.type.k === 'sort'));
-    if (usable.length === 0) throw new EvalError(`#test: cannot generate values of '${h.name}' (its constructors need proofs)`);
-    const base = usable.filter((c) => !c.fields.some((f) => f.recursive));
-    const pool = size <= 0 && base.length > 0 ? base : usable;
-    // lists get more elements than a uniform choice would give
-    const pick = h.name === 'List' && size > 0 ? (this.rand() < 0.2 ? pool[0] : pool[pool.length - 1]) : pool[this.int(pool.length)];
-    const f: Value[] = pick.fields.map((fd) => (fd.relevant ? this.gen(fd.type, fd.recursive ? size - 1 : Math.floor(size / 2)).value : null));
-    const v: CtorVal = { c: pick.name, f };
-    return { value: v };
+    return ctors;
+  }
+}
+
+function showValueShort(env: Environment, v: Value, t: Expr): string {
+  try {
+    return showValue(env, v, t);
+  } catch {
+    return '?';
   }
 }
 

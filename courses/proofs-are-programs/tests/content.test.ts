@@ -30,7 +30,7 @@ export function extract(src: string): Snippet[] {
     out.push({ line: lineOf(m.index!), code: (alone ? '' : context) + m[3], allowErrors: errors, what: 'code block' });
     if (!alone && !errors) context += m[3] + '\n\n';
   }
-  for (const m of src.matchAll(/<(Playground|Exercise|[A-Z][A-Za-z]+Lab|[A-Z][A-Za-z]+View)\b/g)) {
+  for (const m of src.matchAll(/<(Playground|Exercise|ObligationGrid|[A-Z][A-Za-z]+Lab|[A-Z][A-Za-z]+View)\b/g)) {
     let i = m.index! + m[0].length;
     let depth = 0;
     let q: string | undefined;

@@ -434,3 +434,35 @@ ul.reading li {
 .term-obligations li {
   margin: 0.2rem 0;
 }
+
+/* ---- proof-obligation grid ---- */
+.og-group + .og-group {
+  margin-top: 0.5rem;
+}
+.og-cells {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.3rem;
+}
+.og-cell {
+  padding: 0.15rem 0.55rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--rule);
+  font-size: 0.85rem;
+}
+.og-cell.ok {
+  background: var(--ok-soft);
+  color: var(--ok);
+  border-color: color-mix(in srgb, var(--ok) 35%, transparent);
+}
+.og-cell.sorry {
+  background: var(--warn-soft);
+  color: var(--warn);
+  border-color: color-mix(in srgb, var(--warn) 35%, transparent);
+}
+.og-cell.error {
+  background: var(--err-soft);
+  color: var(--err);
+  border-color: color-mix(in srgb, var(--err) 35%, transparent);
+}
