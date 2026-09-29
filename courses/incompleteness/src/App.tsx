@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { MDXProvider } from '@mdx-js/react';
-import { applyTheme, themeStore, useStore, type Theme } from './ui/store';
+import { applyTheme, inspectorCollapsed, inspectorStore, reducedMotion, themeStore, useStore, type Theme } from './ui/store';
 import { sourceIndex } from './content/source';
 import { isInteractive, planOf } from './content/course';
 import { mdxComponents } from './ui/mdx';
@@ -10,6 +10,7 @@ import { About } from './pages/About';
 import { SearchDialog } from './ui/Search';
 import { IndexPage } from './pages/IndexPage';
 import { installScrollFocus } from './ui/scrollFocus';
+import { chapterStartsOpen, revealInContainer } from './ui/sidebar';
 
 export interface Route {
   page: 'home' | 'about' | 'index' | 'section';
@@ -66,8 +67,25 @@ function Topbar({ onSearch }: { onSearch: () => void }) {
 }
 
 function Sidebar({ route, open, onNav, onSearch }: { route: Route; open: boolean; onNav: () => void; onSearch: () => void }) {
+  const ref = useRef<HTMLElement>(null);
+  const loaded = useRef(false);
+  // Keep the current section in view: centred on load and whenever the drawer opens; after
+  // navigating, only if it is not already visible (so a clicked row does not jump away).
+  useEffect(() => {
+    const nav = ref.current;
+    const link = nav?.querySelector<HTMLAnchorElement>('.toc a.active');
+    if (!nav || !link) return;
+    const details = link.closest('details');
+    if (details && !details.open) details.open = true;
+    const first = !loaded.current;
+    loaded.current = true;
+    const reveal = (force: boolean, smooth: boolean) => revealInContainer(nav, link, { force, smooth });
+    reveal(first || open, !first && !reducedMotion());
+    // Web fonts can change the rows' heights after the first layout.
+    if (first) document.fonts?.ready.then(() => reveal(true, false));
+  }, [route.section, open]);
   return (
-    <nav className={`sidebar ${open ? 'open' : ''}`} aria-label="Contents" onClick={(e) => (e.target as HTMLElement).closest('a') && onNav()}>
+    <nav ref={ref} id="contents" className={`sidebar ${open ? 'open' : ''}`} aria-label="Contents" onClick={(e) => (e.target as HTMLElement).closest('a') && onNav()}>
       <a className="brand" href="#/">
         <span className="brand-mark" aria-hidden="true">⌜⌝</span>
         <span>
@@ -84,33 +102,52 @@ function Sidebar({ route, open, onNav, onSearch }: { route: Route; open: boolean
         <ThemeButton />
       </div>
       <div className="toc">
-        {sourceIndex.chapters.map((c) => {
-          const current = c.sections.some((s) => s.id === route.section);
-          const hasInteractive = c.sections.some((s) => isInteractive(s.id));
-          return (
-            <details key={c.id} open={current || hasInteractive}>
-              <summary className="toc-chapter">
-                <span className="num">{c.number}</span>
-                <span>{c.title}</span>
-              </summary>
-              {c.sections.map((s) => {
-                const interactive = isInteractive(s.id);
-                return (
-                  <a key={s.id} href={`#/s/${s.id}`} className={`${route.section === s.id ? 'active' : ''} ${interactive ? '' : 'text-only'}`} title={planOf(s.id)?.blurb ?? 'The book’s text (Formal mode)'}>
-                    <span className="num">{s.number}</span>
-                    <span>{s.title}</span>
-                    {interactive && <span className="dot" aria-label="interactive" />}
-                  </a>
-                );
-              })}
-            </details>
-          );
-        })}
+        {sourceIndex.chapters.map((c) => (
+          <details key={c.id} open={chapterStartsOpen(c.sections.map((s) => s.id), route.section)}>
+            <summary className="toc-chapter">
+              <span className="num">{c.number}</span>
+              <span>{c.title}</span>
+            </summary>
+            {c.sections.map((s) => {
+              const interactive = isInteractive(s.id);
+              const active = route.section === s.id;
+              return (
+                <a
+                  key={s.id}
+                  href={`#/s/${s.id}`}
+                  className={`${active ? 'active' : ''} ${interactive ? '' : 'text-only'}`}
+                  aria-current={active ? 'page' : undefined}
+                  title={planOf(s.id)?.blurb ?? 'The book’s text only (Formal mode)'}
+                >
+                  <span className="num">{s.number}</span>
+                  <span>{s.title}</span>
+                  {!interactive && (
+                    <span className="text-mark" aria-hidden="true">
+                      ¶
+                    </span>
+                  )}
+                  {!interactive && <span className="sr-only"> (the book’s text only)</span>}
+                </a>
+              );
+            })}
+          </details>
+        ))}
       </div>
       <p className="toc-note">
-        <span className="dot-inline" /> sections with intuition and workbench modes. The others show the book’s text.
+        <span aria-hidden="true">¶</span> marks the few sections that show only the book’s text; all the others also have Intuition and Explore modes.
       </p>
     </nav>
+  );
+}
+
+/** On narrow screens the inspector is opened from the top bar, so it never sits over the text. */
+function InspectorButton() {
+  const collapsed = useStore(inspectorCollapsed);
+  const entry = useStore(inspectorStore);
+  return (
+    <button className={`chip-btn inspector-bar-btn ${entry ? 'has-entry' : ''}`} onClick={() => inspectorCollapsed.set(!collapsed)} aria-expanded={!collapsed} aria-controls="inspector">
+      Inspector
+    </button>
   );
 }
 
@@ -149,13 +186,14 @@ export function App() {
         <main className="main" id="main">
           {landing && <Topbar onSearch={() => setSearching(true)} />}
           {!landing && <div className="mobile-bar">
-            <button className="chip-btn" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
+            <button className="chip-btn" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="contents">
               ☰ Contents
             </button>
             <span>Incompleteness and Computability</span>
             <button className="chip-btn" onClick={() => setSearching(true)} aria-label="Search">
               ⌕ Search
             </button>
+            {route.page === 'section' && <InspectorButton />}
           </div>}
           {page}
         </main>

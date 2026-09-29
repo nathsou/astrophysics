@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { PLANS } from '../content/course';
+import { planOf } from '../content/course';
 import { sourceIndex } from '../content/source';
 import { ProvLegend } from '../ui/Prov';
 import { parseFormula } from '../engine/syntax/parse';
@@ -9,6 +9,10 @@ import { NatView } from '../ui/NatView';
 import { Attribution } from './Attribution';
 import { symTex } from '../engine/syntax/language';
 import { Tex } from '../ui/Tex';
+import { lastVisited } from '../ui/progress';
+
+const FIRST_SECTION = 'inc.int.bgr';
+const chapterLabel = (n: string) => (/^[A-Z]$/.test(n) ? `Appendix ${n}` : `Chapter ${n}`);
 
 export function Home() {
   document.title = 'Incompleteness and Computability — an executable edition';
@@ -17,6 +21,8 @@ export function Home() {
     return { f, g: godel(f) };
   }, []);
   const titles = new Map(sourceIndex.chapters.flatMap((c) => c.sections.map((s) => [s.id, { ...s, chapter: c }] as const)));
+  const last = lastVisited((id) => titles.has(id));
+  const resume = last && last !== FIRST_SECTION ? titles.get(last)! : null;
   return (
     <div className="page no-inspector home-page">
       <div className="column home">
@@ -34,20 +40,35 @@ export function Home() {
             Gödel’s theorems rest on a few precise constructions: codes for symbols, numbers for formulas, formulas that represent computations, and a sentence that
             talks about its own number. Here you build those objects, watch them behave, and follow each one into the proof where it is used.
           </p>
-          <hr className="rule-short" />
+          <div className="home-cta">
+            <a className="chip-btn primary cta" href={`#/s/${FIRST_SECTION}`}>
+              Start reading →
+            </a>
+            {resume && (
+              <a className="chip-btn cta" href={`#/s/${resume.id}`}>
+                Continue: {resume.number} {resume.title}
+              </a>
+            )}
+            <a className="chip-btn cta" href="#/s/inc.inp.fix?mode=explore">
+              Try the fixed-point lab
+            </a>
+          </div>
+          <p className="home-cta-note">
+            Or jump to a chapter in the{' '}
+            <a
+              href="#/"
+              onClick={(e) => {
+                e.preventDefault();
+                const h = document.getElementById('home-contents');
+                h?.scrollIntoView({ block: 'start' });
+                h?.focus({ preventScroll: true });
+              }}
+            >
+              contents
+            </a>{' '}
+            below.
+          </p>
         </header>
-        <nav aria-label="Chapters">
-          <ol className="home-chapters">
-            {sourceIndex.chapters.map((c) => (
-              <li key={c.id}>
-                <a href={`#/s/${c.sections[0].id}`}>
-                  <span className="num">{c.number}</span>
-                  <span>{c.title}</span>
-                </a>
-              </li>
-            ))}
-          </ol>
-        </nav>
         <hr className="rule-short rule-long" />
         <figure className="home-demo" aria-label="A formula, its symbols, and its Gödel number">
           <div className="demo-row">
@@ -89,38 +110,49 @@ export function Home() {
           A computed example or a checked derivation is about <em>one</em> case. The general theorems are proved in the text; nothing here replaces those proofs.
         </p>
 
-        <h2>Contents of this edition</h2>
-        <p>
-          The whole book — nine chapters and four appendices — is converted from its LaTeX source and can be read in Formal mode. Sections with Intuition and Explore modes are
-          listed below; the others are marked as text-only in the table of contents. To find a definition or theorem, use search (<kbd>/</kbd>) or the <a href="#/index">index of defined terms</a>.
-        </p>
-        {sourceIndex.chapters.map((c) => {
-          const plans = PLANS.filter((p) => c.sections.some((s) => s.id === p.id));
-          if (plans.length === 0) return null;
-          return (
-            <section key={c.id} className="home-chapter">
-              <h3>
-                {c.number && <span className="num">{/^[A-Z]$/.test(c.number) ? `Appendix ${c.number}` : `Chapter ${c.number}`}</span>} {c.title}
+        <nav aria-labelledby="home-contents">
+          <h2 id="home-contents" tabIndex={-1}>
+            Contents
+          </h2>
+          <p>
+            The whole book — nine chapters and four appendices — is converted from its LaTeX source and can be read in Formal mode. Almost every section also has Intuition and
+            Explore modes; the few that show only the book’s text are marked <span aria-hidden="true">¶</span>
+            <span className="sr-only">“text only”</span>. To find a definition or theorem, use search (<kbd>/</kbd>) or the <a href="#/index">index of defined terms</a>.
+          </p>
+          {sourceIndex.chapters.map((c) => (
+            <section key={c.id} className="home-chapter" aria-labelledby={`ch-${c.id}`}>
+              <h3 id={`ch-${c.id}`}>
+                <a href={`#/s/${c.sections[0].id}`}>
+                  {c.number && <span className="num">{chapterLabel(c.number)}</span>} {c.title}
+                </a>
               </h3>
               <ol className="home-toc">
-                {plans.map((p) => {
-                  const s = titles.get(p.id)!;
+                {c.sections.map((s) => {
+                  const p = planOf(s.id);
+                  const interactive = !!(p && (p.intuition || p.explore));
                   return (
-                    <li key={p.id}>
-                      <a href={`#/s/${p.id}`}>
+                    <li key={s.id} className={interactive ? undefined : 'text-only'}>
+                      <a href={`#/s/${s.id}`}>
                         <span className="num">{s.number}</span> {s.title}
                       </a>
-                      <span className="muted"> — {p.blurb}</span>
+                      {interactive ? (
+                        <span className="muted"> — {p!.blurb}</span>
+                      ) : (
+                        <span className="muted">
+                          {' '}
+                          — <span aria-hidden="true">¶</span> the book’s text only
+                        </span>
+                      )}
                     </li>
                   );
                 })}
               </ol>
             </section>
-          );
-        })}
-        <p>
-          <a className="chip-btn primary" href="#/s/inc.int.bgr">
-            Start at the beginning →
+          ))}
+        </nav>
+        <p className="home-end">
+          <a className="chip-btn primary cta" href={`#/s/${FIRST_SECTION}`}>
+            Start reading →
           </a>
         </p>
         <Attribution />

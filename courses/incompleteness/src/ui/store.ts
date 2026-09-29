@@ -142,6 +142,11 @@ export const inspectorStore = new Store<InspectorEntry | null>(null);
 /** Whether the inspector is pinned (clicked) rather than showing the hovered item. */
 export const inspectorPinned = new Store<boolean>(false);
 
+/** Below this width the inspector floats over the page (or opens from the top bar) instead of sitting beside it. */
+export const inspectorNarrow = () => typeof matchMedia !== 'undefined' && matchMedia('(max-width: 1260px)').matches;
+/** Whether the floating inspector is collapsed; shared with the "Inspector" button of the mobile bar. */
+export const inspectorCollapsed = new Store<boolean>(inspectorNarrow());
+
 export function inspect(entry: InspectorEntry | null, pin = false) {
   if (!pin && inspectorPinned.get()) return;
   inspectorStore.set(entry);

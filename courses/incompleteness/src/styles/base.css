@@ -156,7 +156,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .toc a:hover { background: var(--pn); color: var(--ac); opacity: 1; }
 .toc a.active { background: var(--pn); color: var(--accent); font-weight: 600; }
 .toc a .num { color: var(--accent); font-style: italic; min-width: 2.3em; font-variant-numeric: tabular-nums; }
-.toc a .dot { margin-left: auto; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex: none; align-self: center; }
+.toc a .text-mark { margin-left: auto; padding-left: 4px; flex: none; color: var(--muted); font-size: 0.9em; font-weight: 400; }
 .toc a.text-only { color: var(--muted); }
 .toc a.text-only .num { color: var(--muted); }
 .toc-chapter { font-weight: 500; color: var(--fg); padding: 5px 8px; margin-top: 12px; display: flex; gap: 6px; align-items: baseline; border-top: 1px solid var(--pn); }
@@ -322,3 +322,36 @@ table { border-collapse: collapse; }
 .index-group li { margin: 6px 0; line-height: 1.5; }
 .index-term { font-weight: 600; }
 .nowrap { white-space: nowrap; }
+
+/* ------------------------------------------------------------ touch and narrow screens */
+
+/* The inspector never floats over the text column when collapsed: between 900 and 1260px its pill
+   sits in the corner of the sidebar; below 900px it is opened from the top bar. */
+.inspector-bar-btn { display: none; }
+@media (min-width: 901px) and (max-width: 1260px) {
+  .inspector-col:has(.inspector.collapsed) { right: auto; left: 16px; }
+  .sidebar { padding-bottom: 88px; }
+}
+@media (max-width: 900px) {
+  .inspector-bar-btn { display: inline-flex; }
+  .inspector-bar-btn.has-entry::after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .inspector-col:has(.inspector.collapsed) { display: none; }
+}
+@media (max-width: 480px) {
+  .mobile-bar { justify-content: space-between; }
+  .mobile-bar > span { display: none; }
+}
+/* Keyboard hints mean nothing without a keyboard. */
+@media (hover: none) {
+  .modes kbd, .search-btn kbd { display: none; }
+}
+/* Touch targets at least 40px tall. */
+@media (pointer: coarse) {
+  .chip-btn, .icon-btn, .source-btn, .modes button, .pager a { min-height: 40px; }
+  .chip-btn { padding-top: 6px; padding-bottom: 6px; }
+  .icon-btn { min-width: 40px; }
+  .modes button { align-items: center; }
+  select, input:not([type='checkbox']):not([type='radio']):not([type='range']), .fi-field, .fi-examples { min-height: 40px; }
+  .toc a { padding-top: 8px; padding-bottom: 8px; }
+  .toc-chapter { padding-top: 9px; padding-bottom: 9px; }
+}

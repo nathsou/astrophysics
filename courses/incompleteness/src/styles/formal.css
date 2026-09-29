@@ -17,38 +17,64 @@
 .ol-table tr:first-child td { font-weight: 600; }
 
 .ol-env { margin: 1.5em 0; position: relative; }
-/* Theorems, lemmas, propositions and corollaries sit on the panel tint; the proof that follows is set in running text. */
-.ol-env.numbered { background: var(--pn); border-radius: 3px; padding: 14px 18px 6px; }
-.ol-defn.numbered { background: var(--pn); box-shadow: inset 3px 0 0 var(--accent); }
-.ol-prop.numbered, .ol-thm.numbered, .ol-lem.numbered, .ol-cor.numbered { background: var(--pn); }
-.ol-ex.numbered { background: transparent; box-shadow: inset 0 0 0 1px var(--rule); }
+/* The label of a block is also the way to its LaTeX source (the source tag is hidden on touch).
+   Its type comes from the label rules below. */
+.ol-label-btn { font-family: inherit; font-size: inherit; line-height: inherit; font-style: inherit; font-weight: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; cursor: help; text-align: inherit; border-radius: 2px; }
+.ol-label-btn:hover { text-decoration: underline dotted; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+/* Each kind of block has its own calm treatment:
+   theorem, proposition   the panel tint, a bold label, statement in italics;
+   lemma, corollary       a lighter tint and a smaller semibold label (they serve a theorem);
+   definition             the plain page with an accent rule on the left, the defined term emphasised;
+   example, remark        no box, a small-caps label;
+   proof                  running text behind a hairline, "Proof." in italics, ∎ at the end of its last line. */
+.ol-env.numbered { border-radius: 3px; padding: 14px 18px 6px; }
+.ol-thm.numbered, .ol-prop.numbered { background: var(--pn); }
+.ol-lem.numbered, .ol-cor.numbered { background: color-mix(in srgb, var(--pn) 58%, var(--bg)); }
+.ol-defn.numbered { background: transparent; border-radius: 0; border-left: 2px solid var(--accent); padding: 2px 0 2px 16px; }
+.ol-defn .ol-env-body em { font-style: italic; font-weight: 650; color: var(--fg); }
+.ol-ex.numbered, .ol-rem { background: transparent; border: 0; border-radius: 0; padding: 0; color: inherit; }
 .ol-prob.numbered { background: transparent; box-shadow: inset 0 0 0 1px var(--rule-2); border-radius: 3px; border-left: 0; }
 .ol-prob.numbered .ol-env-name { color: var(--number); }
 .ol-env-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin-bottom: 0; }
-.ol-env-name { font-family: var(--serif); font-weight: 700; font-size: 1em; }
+.ol-env-name { font-family: var(--serif); font-weight: 700; font-size: 1em; color: var(--fg); }
+.ol-thm .ol-env-name { font-size: 1.06em; letter-spacing: 0.005em; }
+.ol-lem .ol-env-name, .ol-cor .ol-env-name { font-weight: 600; font-size: 0.94em; }
+.ol-ex.numbered .ol-env-name, .ol-rem .ol-env-name { font-weight: 500; font-variant-caps: all-small-caps; letter-spacing: 0.07em; font-size: 1.08em; color: var(--ink-2); }
 .ol-env-title { font-style: italic; color: var(--ink-2); }
 .ol-env-body > p:last-child, .ol-env-body > .ol-list:last-child { margin-bottom: 0.5em; }
+.ol-defn .ol-env-body > p:last-child, .ol-ex .ol-env-body > p:last-child, .ol-rem .ol-env-body > p:last-child { margin-bottom: 0; }
 .ol-prop .ol-env-body, .ol-thm .ol-env-body, .ol-lem .ol-env-body, .ol-cor .ol-env-body { font-style: italic; }
 .ol-prop .ol-env-body .katex, .ol-thm .ol-env-body .katex, .ol-lem .ol-env-body .katex, .ol-cor .ol-env-body .katex { font-style: normal; }
-.ol-prop .ol-env-body .ol-term, .ol-thm .ol-env-body .ol-term, .ol-lem .ol-env-body .ol-term, .ol-cor .ol-env-body .ol-term { font-style: normal; font-weight: 600; }
+/* In an italic statement, the book's emphasis is set upright. */
+.ol-prop .ol-env-body em, .ol-thm .ol-env-body em, .ol-lem .ol-env-body em, .ol-cor .ol-env-body em { font-style: normal; }
 .ol-env-head .prov { font-style: normal; }
 
 .ol-env.aside { border-left: 2px solid var(--rule-2); padding: 2px 0 2px 18px; color: var(--ink-2); }
 .ol-env.aside > .ol-env-head .ol-env-name { font-family: var(--serif); font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--muted); font-weight: 400; }
+.ol-env.aside.ol-rem { border-left: 0; padding: 0; color: inherit; }
+.ol-env.aside.ol-rem > .ol-env-head .ol-env-name { font-size: 1.08em; text-transform: none; font-variant-caps: all-small-caps; letter-spacing: 0.07em; color: var(--ink-2); font-weight: 500; }
 .ol-digress { font-size: 0.95em; }
 
-.ol-proof { margin: 0.6em 0 1.8em; position: relative; }
+
+.ol-proof { margin: 0.6em 0 1.8em; position: relative; border-left: 1px solid var(--rule); padding-left: 16px; }
 .ol-proof > p:first-of-type { display: inline; }
-.ol-proof-head { font-style: italic; }
-.ol-proof .qed { display: block; text-align: right; margin-top: -0.9em; height: 1.1em; line-height: 1; font-size: 0; }
-.ol-proof .qed::before { content: ''; display: inline-block; width: 0.55rem; height: 0.55rem; background: var(--fg); }
+.ol-proof-head { font-style: italic; font-weight: 400; }
+/* ∎ sits at the right edge of the last line: absolutely positioned with no top, so it stays on the
+   line where it occurs; the block it ends keeps room for it on the right. */
+.ol-proof .has-qed { padding-right: 1.5em; }
+.ol-proof .qed { position: absolute; right: 0; display: inline-block; width: 0.55rem; height: 0.55rem; margin-top: 0.6rem; background: var(--fg); font-size: 0; line-height: 0; overflow: hidden; }
+.ol-proof .ol-display.has-qed, .ol-proof .ol-tree.has-qed, .ol-proof .ol-table-wrap.has-qed, .ol-proof .ol-defish.has-qed { position: relative; }
+.ol-proof .ol-display.has-qed > .qed { margin-top: 0; bottom: 1.35rem; }
+.ol-proof .ol-tree.has-qed > .qed, .ol-proof .ol-table-wrap.has-qed > .qed, .ol-proof .ol-defish.has-qed > .qed { margin-top: 0; bottom: 1rem; }
 .ol-proof .source-tag { position: absolute; right: 0; top: -1.3em; }
 blockquote.ol-quote { margin: 1em 0; padding-left: 18px; border-left: 2px solid var(--rule-2); color: var(--ink-2); font-style: italic; }
 blockquote.ol-center { text-align: center; margin: 1em 0; }
 
 .source-tag { margin-left: auto; opacity: 0; transition: opacity 0.15s; }
 .ol-env:hover .source-tag, .ol-proof:hover .source-tag, .source-tag:focus-within { opacity: 1; }
-@media (hover: none) { .source-tag { opacity: 0.8; } }
+/* On touch screens and narrow ones the tag would only take room (and cannot be hovered): the
+   block's label opens the source instead. */
+@media (hover: none), (max-width: 600px) { .source-tag { display: none; } }
 .source-btn { font-family: var(--mono); font-size: 11px; color: var(--muted); background: none; border: 1px solid var(--rule-2); border-radius: 3px; padding: 0 8px; cursor: pointer; }
 .source-btn:hover { color: var(--accent); border-color: var(--accent); }
 pre.latex-src { font-family: var(--mono); font-size: 11.5px; line-height: 1.5; background: var(--pn); border-radius: 3px; padding: 10px; overflow-x: auto; white-space: pre; margin: 8px 0 0; }

@@ -46,11 +46,11 @@
 .formula-input { font-family: var(--sans); }
 .fi-label { display: block; font-size: 11px; font-weight: 400; color: var(--muted); text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 4px; font-family: var(--sans); }
 .fi-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.fi-field { flex: 1; min-width: 180px; font-family: var(--mono); font-size: 14px; padding: 7px 12px; border: 1px solid var(--rule-2); border-radius: 3px; background: var(--card); color: var(--ink); }
+.fi-field { flex: 1 1 22em; min-width: 180px; font-family: var(--mono); font-size: 14px; padding: 7px 12px; border: 1px solid var(--rule-2); border-radius: 3px; background: var(--card); color: var(--ink); }
 textarea.fi-field { font-family: var(--mono); font-size: 13px; width: 100%; resize: vertical; }
 .fi-field:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: transparent; }
 .fi-field.invalid { border-color: var(--danger); }
-.fi-examples { font-size: 13px; padding: 7px 8px; border-radius: 4px; border: 1px solid var(--rule-2); background: var(--panel); }
+.fi-examples { flex: 0 1 auto; width: 11em; max-width: 100%; font-size: 13px; padding: 7px 8px; border-radius: 4px; border: 1px solid var(--rule-2); background: var(--panel); }
 .fi-palette { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; align-items: center; }
 /* Symbol keys: ink glyphs on the card, a 3:1 edge, and distinct hover / pressed / focus states. */
 .fi-palette button { font-family: var(--math); font-size: 16px; min-width: 32px; height: 30px; border: 1px solid var(--rule-2); border-bottom-width: 2px; background: var(--card); color: var(--fg); border-radius: 3px; cursor: pointer; transition: background 0.08s, border-color 0.08s; }
@@ -61,7 +61,7 @@ textarea.fi-field { font-family: var(--mono); font-size: 13px; width: 100%; resi
 .fi-error { color: var(--danger); font-size: 13px; margin-top: 6px; display: flex; flex-direction: column; gap: 2px; font-family: var(--sans); }
 .fi-caret { background: var(--danger-soft); padding: 2px 6px; border-radius: 4px; white-space: pre-wrap; }
 .fi-caret mark { background: var(--danger); color: white; border-radius: 2px; }
-.formula-input.compact .fi-field { font-size: 13.5px; padding: 4px 8px; min-width: 140px; }
+.formula-input.compact .fi-field { flex: 1 1 140px; font-size: 13.5px; padding: 4px 8px; min-width: 140px; }
 .formula-input.compact .fi-label { display: inline; margin-right: 6px; }
 .formula-input.compact { display: inline-flex; align-items: center; gap: 4px; flex-wrap: wrap; }
 .formula-input.compact .fi-row { flex-wrap: nowrap; }
@@ -321,11 +321,11 @@ textarea.fi-field { font-family: var(--mono); font-size: 13px; width: 100%; resi
 .home-hero .lede { font-size: 18px; line-height: 1.6; color: var(--muted); max-width: 520px; margin: 22px auto 0; }
 .home-hero .rule-short { margin: 36px auto; }
 .rule-short.rule-long { margin: 56px auto 44px; }
-.home-chapters { list-style: none; padding: 0; margin: 0 auto; max-width: 440px; font-size: 19px; line-height: 1.4; }
-.home-chapters li { margin: 0; border-bottom: 1px solid var(--pn); }
-.home-chapters a { display: flex; gap: 16px; padding: 7px 0; color: var(--fg); text-decoration: none; }
-.home-chapters a:hover { color: var(--accent); opacity: 1; }
-.home-chapters .num { width: 22px; flex: none; color: var(--accent); font-style: italic; }
+.home-cta { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px auto 0; max-width: 560px; }
+.chip-btn.cta { font-family: var(--ui); font-size: 16.5px; padding: 8px 18px; min-height: 44px; }
+.chip-btn.cta:not(.primary) { color: var(--fg); }
+.home-cta-note { font-size: 15px; font-style: italic; color: var(--muted); margin: 14px 0 0; }
+.home-end { margin-top: 2em; }
 .home-demo { border: 1px solid var(--rule); border-radius: 3px; background: var(--card); padding: 12px 16px; margin: 28px 0; display: flex; flex-direction: column; gap: 8px; font-family: var(--mono); font-size: 13px; line-height: 1.8; }
 .home-demo figcaption { font-family: var(--ui); font-size: 15px; font-style: italic; line-height: 1.5; }
 .demo-row { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 12px; align-items: center; }
@@ -340,8 +340,11 @@ textarea.fi-field { font-family: var(--mono); font-size: 13px; width: 100%; resi
 .home-toc { padding-left: 0; list-style: none; }
 .home-toc li { margin: 8px 0; }
 .home-toc .num { color: var(--accent); font-style: italic; margin-right: 6px; }
+.home-toc li.text-only a, .home-toc li.text-only .num { color: var(--muted); }
+.home-chapter h3 a { color: var(--fg); text-decoration: none; }
+.home-chapter h3 a:hover { color: var(--accent); }
+#home-contents:focus { outline: none; }
 .toc-note { font-family: var(--ui); font-size: 14px; font-style: italic; color: var(--muted); margin-top: 18px; padding: 0 8px; }
-.dot-inline { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--added); margin-right: 4px; vertical-align: 1px; }
 .about-table { border-collapse: collapse; font-size: 13px; width: 100%; margin: 10px 0 18px; }
 .about-table th, .about-table td { text-align: left; border-bottom: 1px solid var(--rule); padding: 6px 8px; vertical-align: top; }
 .about-table code.path { display: inline-block; margin: 1px 4px 1px 0; font-size: 11px; }
@@ -388,3 +391,22 @@ textarea.fi-field { font-family: var(--mono); font-size: 13px; width: 100%; resi
 .syntax-tree .tn { cursor: pointer; }
 .syntax-tree .tn:hover .tn-box { stroke-width: 2.2; }
 .three-things-wrap { overflow-x: auto; }
+
+/* Touch targets at least 40px (the base rules are sized for a mouse). */
+@media (pointer: coarse) {
+  .fi-palette { gap: 6px; }
+  .fi-palette button { min-width: 40px; height: 40px; }
+  .fi-palette button:active { height: 39px; }
+  .stepper-buttons { gap: 4px; }
+  .stepper-buttons button { width: 40px; height: 40px; font-size: 13px; }
+  .stepper input[type='range'] { min-height: 40px; }
+  .symtab-cell, .ex-choice, .g1-node { min-height: 40px; }
+}
+
+/* What the inspector can explain is underlined with dots, and the pointer turns into a question
+   (the inspector's own hint says so). The title page has no inspector, so no affordance there. */
+.fv-root { text-decoration: underline dotted var(--rule-2); text-decoration-thickness: 1px; text-underline-offset: 0.3em; cursor: help; }
+.chip-sym, .symtab-sym, .pd-formula .katex { border-bottom: 1px dotted var(--rule-2); }
+.g1-claim { text-decoration: underline dotted var(--rule-2); text-decoration-thickness: 1px; text-underline-offset: 0.25em; }
+.sym-chip, .run-chip, .abbr-chip, .symtab-cell, .syntax-tree .tn, .pd-step, .g1-steps li { cursor: help; }
+.home-demo .fv-root { text-decoration: none; cursor: auto; }

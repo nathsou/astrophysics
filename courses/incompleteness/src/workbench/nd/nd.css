@@ -122,3 +122,8 @@ button.ndb-rulecard:focus-visible { outline: 2px solid var(--accent); }
   .ndb-steps li { grid-template-columns: 1.6em minmax(0, 1fr); }
   .ndb-steps .r { grid-column: 2; }
 }
+
+@media (pointer: coarse) {
+  .ndb-f { padding: 8px 6px; min-height: 40px; }
+  summary.ndb-kicker { padding: 11px 0; }
+}
