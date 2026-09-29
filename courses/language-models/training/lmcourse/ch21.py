@@ -128,7 +128,7 @@ class RewardModel:
         return self.head(h[torch.arange(len(seqs), device=dev), last].float())[:, 0]
 
 
-def reward(epochs: int = 1, batch: int = 16, lr: float = 1e-5) -> None:
+def reward(epochs: int = 4, batch: int = 16, lr: float = 3e-5) -> None:
     import torch
     import torch.nn.functional as F
 
