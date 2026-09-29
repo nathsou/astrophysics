@@ -25,28 +25,49 @@ export function ChapterPage() {
   let article!: HTMLElement;
   let observer: IntersectionObserver | undefined;
 
+  let mutations: MutationObserver | undefined;
   createEffect(() => {
     const m = mod();
     const slug = params.slug;
     if (!m || !slug) return;
     markVisited(slug);
-    // collect headings once rendered
-    requestAnimationFrame(() => {
+    // collect the headings once rendered, and again whenever the content changes
+    // (lazily loaded widgets suspend the chapter, so its headings may appear late)
+    let scrolled = false;
+    let pending = false;
+    const collect = () => {
+      pending = false;
       const hs = [...article.querySelectorAll('h2[id], h3[id]')] as HTMLElement[];
-      setToc(hs.map((h) => ({ id: h.id, text: (h.textContent ?? '').replace(/#$/, ''), level: h.tagName === 'H2' ? 2 : 3 })));
-      observer?.disconnect();
-      observer = new IntersectionObserver(
-        (entries) => {
-          for (const e of entries) if (e.isIntersecting) setCurrentId(e.target.id);
-        },
-        { rootMargin: '-80px 0px -70% 0px' },
-      );
-      hs.forEach((h) => observer!.observe(h));
-      const s = new URLSearchParams(loc.search).get('s');
-      if (s) document.getElementById(s)?.scrollIntoView();
-      else window.scrollTo(0, 0);
+      const items = hs.map((h) => ({ id: h.id, text: (h.textContent ?? '').replace(/#$/, ''), level: h.tagName === 'H2' ? 2 : 3 }));
+      if (JSON.stringify(items) !== JSON.stringify(toc())) {
+        setToc(items);
+        observer?.disconnect();
+        observer = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) if (e.isIntersecting) setCurrentId(e.target.id);
+          },
+          { rootMargin: '-80px 0px -70% 0px' },
+        );
+        hs.forEach((h) => observer!.observe(h));
+      }
+      if (!scrolled && hs.length) {
+        scrolled = true;
+        const s = new URLSearchParams(loc.search).get('s');
+        if (s) document.getElementById(s)?.scrollIntoView();
+        else window.scrollTo(0, 0);
+      }
+    };
+    mutations?.disconnect();
+    mutations = new MutationObserver(() => {
+      if (!pending) {
+        pending = true;
+        requestAnimationFrame(collect);
+      }
     });
+    mutations.observe(article, { childList: true, subtree: true });
+    requestAnimationFrame(collect);
   });
+  onCleanup(() => mutations?.disconnect());
   onCleanup(() => observer?.disconnect());
 
   const jump = (id: string) => {

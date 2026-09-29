@@ -108,7 +108,7 @@ export function KripkeView(props: { model: Kripke; formula: F }) {
     return { parent, pos, W, H };
   });
   const as = () => atoms(props.formula);
-  const subs = () => subformulas(props.formula).filter((g) => g.k !== 'atom');
+  const subs = () => subformulas(props.formula).filter((g) => g.k !== 'top' && g.k !== 'bot');
   return (
     <div class="kripke">
       <svg viewBox={`0 0 ${layout().W} ${layout().H}`} width={layout().W} height={layout().H} role="img" aria-label="Kripke model">
@@ -138,7 +138,7 @@ export function KripkeView(props: { model: Kripke; formula: F }) {
       </svg>
       <div class="kr-explain small">
         <p>
-          Worlds are stages of knowledge; moving up means learning more. An atom listed next to a world has evidence there, and keeps it at every later stage. At <b>w0</b>, the bottom stage:
+          Worlds are stages of knowledge, and moving up means learning more. The atoms listed next to a world have evidence there, and keep it at every later stage. The table shows which statements hold at each stage:
         </p>
         <table class="kr-table">
           <thead>
