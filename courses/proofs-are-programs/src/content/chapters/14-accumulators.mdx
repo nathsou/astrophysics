@@ -1,1 +1,211 @@
-This chapter is being written.
+Part V puts everything together: we write real programs, state what they should do, and prove that they do it. We start with the most common situation in practice. You have a simple, obviously correct function, and a fast one that is not obviously anything. You want to use the fast one, and you want to know it computes the same thing.
+
+## A slow reverse and a fast one
+
+Here is list reversal written the obvious way. It is clearly correct: the reverse of `x :: xs` is the reverse of `xs` followed by `x`.
+
+```lean
+def rev {α : Type} : List α → List α
+  | [] => []
+  | x :: xs => rev xs ++ [x]
+```
+
+It is also slow. Each `++` walks through its whole left argument, so reversing a list of length *n* takes about *n*²/2 steps. The standard fix uses an **accumulator**: walk down the list and push each element onto a second list, which ends up reversed.
+
+```lean
+def revAcc {α : Type} : List α → List α → List α
+  | [], acc => acc
+  | x :: xs, acc => revAcc xs (x :: acc)
+
+def fastRev {α : Type} (xs : List α) : List α := revAcc xs []
+```
+
+Compare the step counts shown next to each result:
+
+```lean
+def range : Nat → List Nat
+  | 0 => []
+  | n + 1 => n :: range n
+
+#eval (rev (range 500)).length
+#eval (fastRev (range 500)).length
+```
+
+The fast version needs about a hundred times fewer steps on 500 elements (roughly 23 thousand against 2.3 million), and the gap grows with the length. The question is whether it is right.
+
+## Test before you prove
+
+Before trying a proof, it is worth checking that the statement is true. `#test` runs it on random inputs:
+
+```lean
+#test ∀ (xs : List Nat), fastRev xs = rev xs
+```
+
+A hundred random lists agree. That is evidence, not proof, but it means a failed proof attempt is more likely a problem with the *proof* than with the *statement*, which is exactly what happens next.
+
+## The first attempt fails
+
+`fastRev xs` is `revAcc xs []`, so we need a fact about `revAcc`. Since `revAcc` recurses on its first argument, we do induction on it. And since `revAcc xs acc` should be `rev xs` with `acc` appended, that is the statement:
+
+<Playground errors lens title="Stuck" setup={`def rev {α : Type} : List α → List α
+  | [] => []
+  | x :: xs => rev xs ++ [x]
+
+def revAcc {α : Type} : List α → List α → List α
+  | [], acc => acc
+  | x :: xs, acc => revAcc xs (x :: acc)`} code={`theorem revAcc_eq {α : Type} (xs acc : List α) : revAcc xs acc = rev xs ++ acc := by
+  induction xs with
+  | nil => rfl
+  | cons x xs ih =>
+    simp [revAcc, rev]
+    sorry`} />
+
+Put the cursor on `sorry` and look at the goal:
+
+```text
+ih : revAcc xs acc = rev xs ++ acc
+⊢ revAcc xs (x :: acc) = rev xs ++ x :: acc
+```
+
+The induction hypothesis talks about `revAcc xs acc`, with the *original* accumulator. The goal needs `revAcc xs (x :: acc)`, with a *different* one. The hypothesis is true, but it is about the wrong call.
+
+The reason is in how the statement was set up. `induction xs` proves the statement for a fixed `acc`, chosen before the induction starts. But the recursion of `revAcc` changes the accumulator at every step, so an induction that follows the recursion must allow the accumulator to change too.
+
+## Generalising the accumulator
+
+The fix is to prove the statement **for all accumulators at once**, so that the induction hypothesis also covers the new one. `induction xs generalizing acc` does exactly that:
+
+<Playground lens title="Generalised" setup={`def rev {α : Type} : List α → List α
+  | [] => []
+  | x :: xs => rev xs ++ [x]
+
+def revAcc {α : Type} : List α → List α → List α
+  | [], acc => acc
+  | x :: xs, acc => revAcc xs (x :: acc)
+
+def fastRev {α : Type} (xs : List α) : List α := revAcc xs []`} code={`theorem revAcc_eq {α : Type} (xs acc : List α) : revAcc xs acc = rev xs ++ acc := by
+  induction xs generalizing acc with
+  | nil => rfl
+  | cons x xs ih => simp [revAcc, rev, ih]
+
+theorem fastRev_eq {α : Type} (xs : List α) : fastRev xs = rev xs := by
+  simp [fastRev, revAcc_eq]`} />
+
+Now the hypothesis is `ih : ∀ acc, revAcc xs acc = rev xs ++ acc`, and `simp` can use it with `x :: acc` in place of `acc`. What remains is `rev xs ++ (x :: acc) = (rev xs ++ [x]) ++ acc`, which `simp` closes with the associativity of `++`.
+
+Notice what the proof term looks like in the lens: the recursive call to the induction hypothesis passes a *different* accumulator, exactly like the recursive call in `revAcc`. Chapter 11 said that a proof by induction is a recursive function. For an accumulator function, it has to be a recursive function with an accumulator.
+
+<Key>
+**The statement must be at least as general as the recursion.** If a function changes an argument in its recursive calls, the theorem about it must quantify over that argument, and the induction must generalise it. When an induction gets stuck with a hypothesis about "the wrong call", this is almost always the fix.
+</Key>
+
+## Sums with an accumulator
+
+The same pattern works for any accumulating loop. A tail-recursive sum:
+
+```lean
+def sum : List Nat → Nat
+  | [] => 0
+  | x :: xs => x + sum xs
+
+def sumAcc : List Nat → Nat → Nat
+  | [], acc => acc
+  | x :: xs, acc => sumAcc xs (acc + x)
+
+theorem sumAcc_eq (xs : List Nat) (acc : Nat) : sumAcc xs acc = acc + sum xs := by
+  induction xs generalizing acc with
+  | nil => simp [sumAcc, sum]
+  | cons x xs ih =>
+    simp [sumAcc, sum, ih]
+    omega
+```
+
+Finding the right general statement (`acc + sum xs`, not `sum xs`) is the creative step. A good way to guess it: run the fast function by hand on a small input and write down what the accumulator holds at each step.
+
+## Remembering instead of recomputing
+
+Accumulators are one way to speed things up; remembering results is another. The Fibonacci numbers, defined directly, recompute the same values over and over:
+
+```lean
+def fib : Nat → Nat
+  | 0 => 0
+  | 1 => 1
+  | n + 2 => fib n + fib (n + 1)
+termination_by n => n
+
+#eval fib 20
+```
+
+A fast version computes the pairs `(fib n, fib (n + 1))` from the bottom up, each from the previous one:
+
+```lean
+def fibPair : Nat → Nat × Nat
+  | 0 => (0, 1)
+  | n + 1 => ((fibPair n).2, (fibPair n).1 + (fibPair n).2)
+
+def fastFib (n : Nat) : Nat := (fibPair n).1
+
+#eval fastFib 20
+#eval fastFib 90
+
+theorem fibPair_eq (n : Nat) : fibPair n = (fib n, fib (n + 1)) := by
+  induction n with
+  | zero => rfl
+  | succ n ih => simp [fibPair, ih, fib]
+
+theorem fastFib_eq (n : Nat) : fastFib n = fib n := by
+  simp [fastFib, fibPair_eq]
+```
+
+Here the generalisation goes the other way: to prove something about `(fibPair n).1`, we prove a statement about the whole pair, which is what the recursion computes.
+
+<Engineer title="Where this shows up">
+Optimising compilers do this kind of transformation (tail calls, accumulators, memoisation) automatically, and each one needs exactly this kind of argument to be correct. The CompCert C compiler is proved correct in this style in Coq. On a smaller scale: any time you replace a clear function with a fast one, stating `fast x = clear x` and testing it with random inputs is cheap, and proving it is often not much harder.
+</Engineer>
+
+## Exercises
+
+<Exercise id="accumulators:length" title="Length with an accumulator" lens code={`def lenAcc {α : Type} : List α → Nat → Nat
+  | [], n => n
+  | _ :: xs, n => lenAcc xs (n + 1)
+
+theorem lenAcc_eq {α : Type} (xs : List α) (n : Nat) : lenAcc xs n = xs.length + n := by
+  sorry`} must="lenAcc_eq" hint="induction xs generalizing n; in the cons case simp [lenAcc, ih] and finish with omega." solution={`def lenAcc {α : Type} : List α → Nat → Nat
+  | [], n => n
+  | _ :: xs, n => lenAcc xs (n + 1)
+
+theorem lenAcc_eq {α : Type} (xs : List α) (n : Nat) : lenAcc xs n = xs.length + n := by
+  induction xs generalizing n with
+  | nil => simp [lenAcc]
+  | cons x xs ih =>
+    simp [lenAcc, ih]
+    omega`}>
+Prove the general statement about `lenAcc`. Try it first without `generalizing` to see the problem again.
+</Exercise>
+
+<Exercise id="accumulators:map-acc" title="Map with an accumulator" lens code={`def rev {α : Type} : List α → List α
+  | [] => []
+  | x :: xs => rev xs ++ [x]
+
+-- maps f and reverses at the same time
+def mapRevAcc {α β : Type} (f : α → β) : List α → List β → List β
+  | [], acc => acc
+  | x :: xs, acc => mapRevAcc f xs (f x :: acc)
+
+theorem mapRevAcc_eq {α β : Type} (f : α → β) (xs : List α) (acc : List β) :
+    mapRevAcc f xs acc = rev (xs.map f) ++ acc := by
+  sorry`} must="mapRevAcc_eq" hint="induction xs generalizing acc, then simp [mapRevAcc, rev, ih]." solution={`def rev {α : Type} : List α → List α
+  | [] => []
+  | x :: xs => rev xs ++ [x]
+
+def mapRevAcc {α β : Type} (f : α → β) : List α → List β → List β
+  | [], acc => acc
+  | x :: xs, acc => mapRevAcc f xs (f x :: acc)
+
+theorem mapRevAcc_eq {α β : Type} (f : α → β) (xs : List α) (acc : List β) :
+    mapRevAcc f xs acc = rev (xs.map f) ++ acc := by
+  induction xs generalizing acc with
+  | nil => rfl
+  | cons x xs ih => simp [mapRevAcc, rev, ih]`}>
+The same pattern, with a function applied on the way.
+</Exercise>
