@@ -19,7 +19,7 @@ theme preference is the `theme` localStorage key shared by all courses (`light` 
 - Declare nullable/union state as `$state<T | null>(null)`, not `let x: T | null = $state(null)` (the latter narrows to `never`).
 - Checks before finishing: `pnpm test`, `pnpm typecheck`, `pnpm build`, and `cd training && uv run pytest && uv run ruff check`.
 - Parity tests: Python writes fixtures to `training/fixtures/`; Vitest compares the TypeScript results.
-- British English in all prose. Charts use the palette tokens in course/src/app.css (--series-1…8). The look is "Notebook": five tokens (--bg --fg --mute --ac --pn) drive everything, and cell labels ([md], In [n]:, Out[n]:) hang in a 70px gutter (`.nb`, collapsing above the cell under 760px). Code colours are the --code-* variables, shared by Shiki (tools/markdown/render.ts) and the exercise editor.
+- British English in all prose. Charts use the palette tokens in course/src/app.css (--series-1…8).
 - Dev server: run `npx vite dev --port 5199` in `course/` (the preview launcher cannot access ~/Documents).
   In dev, the Markdown compiler is loaded through Vite's module graph (`useDevServer` in
   `tools/markdown/preprocess.ts`), so edits to `tools/markdown/` apply live. Changes to `preprocess.ts` itself or

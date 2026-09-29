@@ -88,7 +88,7 @@
 
 <section class="exercise wide" aria-label="Exercise: {spec.title}">
   <header class="ui">
-    <span class="kind"><Icon name="exercises" size={14} /> Exercise</span>
+    <span class="kind"><Icon name="exercises" size={15} /> Exercise</span>
     <h4>{spec.title}</h4>
     {#if passedEver}
       <span class="badge ok"><Icon name="check" size={13} /> Solved</span>
@@ -97,12 +97,7 @@
     {/if}
   </header>
 
-  <div class="cell">
-    <span class="nb in" aria-hidden="true"></span>
-    <div class="cell-body">
-      <CodeEditor bind:this={editor} value={code} path="/exercises/{spec.id}/solution.ts" onchange={(c) => ((code = c), save())} onrun={run} label="Exercise: {spec.title}" />
-    </div>
-  </div>
+  <CodeEditor bind:this={editor} value={code} path="/exercises/{spec.id}/solution.ts" onchange={(c) => ((code = c), save())} onrun={run} label="Exercise: {spec.title}" />
 
   <div class="toolbar ui">
     <Button variant="primary" onclick={run} disabled={running || !loaded}>
@@ -132,8 +127,7 @@
   {/if}
 
   {#if report}
-    <div class="results" aria-live="polite">
-      <span class="nb out" aria-hidden="true"></span>
+    <div class="results ui" aria-live="polite">
       {#if !report.ok}
         <div class="fail-all"><strong>Couldn’t run your code.</strong> {report.error}</div>
       {:else}
@@ -155,77 +149,70 @@
   {/if}
 
   {#if showSolution}
-    <div class="cell solution">
-      <div class="cell-body">
-        <div class="sol-label ui">Reference solution</div>
-        <CodeEditor value={spec.solution} path="/exercises/{spec.id}/reference.ts" readonly typescript={false} minLines={4} label="Reference solution" />
-      </div>
+    <div class="solution">
+      <div class="sol-label ui">Reference solution</div>
+      <CodeEditor value={spec.solution} path="/exercises/{spec.id}/reference.ts" readonly typescript={false} minLines={4} label="Reference solution" />
     </div>
   {/if}
 </section>
 
 <style>
   .exercise {
-    margin: 2.5rem 0;
-    position: relative;
-    counter-increment: cell;
+    margin: 2rem 0;
+    border: 1px solid color-mix(in srgb, var(--lab) 30%, var(--border));
+    border-radius: var(--radius);
+    background: var(--surface);
+    overflow: hidden;
+    box-shadow: var(--shadow);
   }
   header {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 0.4rem 0.75rem;
-    padding: 0 0 0.6rem;
+    gap: 0.75rem;
+    padding: 0.65rem 1rem;
+    background: color-mix(in srgb, var(--lab) 7%, var(--surface));
   }
   .kind {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    font: 500 0.7rem var(--font-mono);
+    font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--accent);
+    letter-spacing: 0.08em;
+    font-weight: 650;
+    color: var(--lab);
   }
   h4 {
     margin: 0 !important;
     padding: 0 !important;
     border: 0 !important;
-    font-size: 1.1rem !important;
-    letter-spacing: -0.02em;
+    font-size: 0.95rem !important;
     flex: 1;
-  }
-  .cell {
-    position: relative;
-  }
-  .cell-body {
-    background: var(--pn);
-    border-left: 3px solid var(--ac);
-    border-radius: 0 var(--radius) var(--radius) 0;
-    overflow: hidden;
   }
   .badge {
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
-    font: 500 0.72rem var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
     padding: 0.1rem 0.5rem;
-    border-radius: 3px;
-    background: var(--pn);
+    border-radius: 99px;
+    background: var(--surface-3);
     color: var(--ink-2);
   }
   .badge.ok {
-    background: color-mix(in srgb, var(--good) 16%, var(--bg));
-    color: var(--good);
+    background: color-mix(in srgb, var(--good) 16%, var(--surface));
+    color: var(--ink);
   }
   .toolbar {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.4rem;
-    padding: 0.55rem 0 0.35rem;
+    padding: 0.55rem 0.75rem;
   }
   .toolbar kbd {
-    font-family: var(--font-mono);
+    font-family: var(--font-ui);
     font-size: 0.68rem;
     opacity: 0.75;
     margin-left: 0.2rem;
@@ -234,19 +221,16 @@
     flex: 1;
   }
   .hints {
-    margin: 0.4rem 0 0.75rem;
+    margin: 0 1rem 0.75rem;
     padding: 0.6rem 0.8rem 0.6rem 2rem;
-    border-left: 3px solid var(--tip);
-    background: color-mix(in srgb, var(--tip) 8%, var(--bg));
-    border-radius: 0 var(--radius) var(--radius) 0;
+    background: color-mix(in srgb, var(--tip) 7%, var(--surface));
+    border-radius: var(--radius-sm);
     font-size: 0.95rem;
   }
   .results {
-    position: relative;
-    margin-top: 0.6rem;
-    padding: 0.2rem 0;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
+    border-top: 1px solid var(--border);
+    padding: 0.65rem 1rem 0.75rem;
+    font-size: 0.84rem;
   }
   .results ul {
     list-style: none;
@@ -275,9 +259,9 @@
     font-family: var(--font-mono);
     font-size: 0.78rem;
     color: var(--ink-2);
-    background: var(--pn);
+    background: var(--surface-2);
     padding: 0.25rem 0.5rem;
-    border-radius: 3px;
+    border-radius: 4px;
     white-space: pre-wrap;
     word-break: break-word;
   }
@@ -286,11 +270,11 @@
   }
   .yay {
     margin: 0.6rem 0 0 !important;
-    color: var(--good);
-    font-weight: 500;
+    color: var(--ink);
+    font-weight: 560;
   }
   .err {
-    margin: 0.4rem 0 0.6rem !important;
+    margin: 0 1rem 0.6rem !important;
     font-size: 0.82rem;
     color: var(--critical);
   }
@@ -304,24 +288,22 @@
   .logs pre {
     margin: 0.4rem 0 0;
     padding: 0.5rem 0.7rem;
-    background: var(--pn);
-    border-radius: 3px;
+    background: var(--surface-2);
+    border-radius: 4px;
     font-family: var(--font-mono);
     font-size: 0.76rem;
     max-height: 14rem;
     overflow: auto;
   }
   .solution {
-    margin-top: 0.75rem;
-  }
-  .solution .cell-body {
-    border-left-color: var(--mute);
+    border-top: 1px solid var(--border);
   }
   .sol-label {
-    font: 500 0.68rem var(--font-mono);
+    font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
+    font-weight: 650;
     color: var(--ink-3);
-    padding: 0.5rem 1rem 0;
+    padding: 0.5rem 1rem;
   }
 </style>

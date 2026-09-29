@@ -37,10 +37,11 @@
 <style>
   .callout {
     margin: 1.75rem 0;
-    padding: 0.85rem 1.15rem 0.3rem;
-    background: color-mix(in srgb, var(--hue) 7%, var(--bg));
+    padding: 0.9rem 1.15rem 0.3rem;
+    background: color-mix(in srgb, var(--hue) 6%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--hue) 22%, var(--border));
     border-left: 3px solid var(--hue);
-    border-radius: 0 var(--radius) var(--radius) 0;
+    border-radius: var(--radius-sm);
   }
   header {
     display: flex;
@@ -54,15 +55,14 @@
     color: var(--hue);
   }
   .label {
-    font: 500 0.7rem var(--font-mono);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
+    font-weight: 650;
     color: var(--ink-2);
   }
   .title {
-    font-weight: 700;
-    font-size: 0.95rem;
-    letter-spacing: -0.01em;
+    font-weight: 600;
+    font-size: 0.9rem;
     color: var(--ink);
   }
   .title::before {
@@ -71,7 +71,7 @@
     color: var(--ink-3);
   }
   .body {
-    font-size: 1rem;
+    font-size: 1.02rem;
   }
   .body :global(p) {
     margin: 0 0 0.75rem;

@@ -30,8 +30,8 @@
     margin: 2rem 0;
     padding: 1.2rem 1.3rem 0.5rem;
     background: var(--history-soft);
-    border-left: 3px solid var(--history);
-    border-radius: 0 var(--radius) var(--radius) 0;
+    border: 1px solid color-mix(in srgb, var(--history) 25%, var(--border));
+    border-radius: var(--radius);
     position: relative;
   }
   .rail {
@@ -45,18 +45,19 @@
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;
-    font: 500 0.68rem var(--font-mono);
+    font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
+    font-weight: 650;
     color: var(--history);
   }
   .year {
-    font-family: var(--font-mono);
-    font-size: 1.6rem;
+    font-family: var(--font-body);
+    font-size: 2rem;
     font-weight: 500;
     line-height: 1;
-    letter-spacing: -0.04em;
     color: var(--history);
+    font-variant-numeric: oldstyle-nums;
   }
   h4 {
     margin: 0 0 0.2rem !important;

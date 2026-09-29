@@ -1,5 +1,5 @@
 <!--
-  Tufte-style margin note. On very wide screens it floats into the right margin next to the line that
+  Tufte-style margin note. On wide screens it floats into the right margin next to the line that
   references it; on narrow screens the number toggles it inline. Must render only inline elements
   because it sits inside paragraphs.
 -->
@@ -38,7 +38,7 @@
   .sidenote {
     display: none;
     font-family: var(--font-ui);
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     line-height: 1.5;
     color: var(--ink-2);
   }
@@ -51,11 +51,10 @@
     display: block;
     margin: 0.6rem 0;
     padding: 0.6rem 0.8rem;
-    background: var(--pn);
-    border-left: 3px solid var(--rule-strong);
-    border-radius: 0 var(--radius) var(--radius) 0;
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
   }
-  @media (min-width: 1760px) {
+  @media (min-width: 1280px) {
     .sidenote,
     .sidenote.open {
       display: block;

@@ -1,6 +1,6 @@
 /**
  * Colour ramps for value encodings (heatmaps, tensors). Sequential = one hue light→dark;
- * diverging = teal ↔ orange through a neutral. The low end recedes toward the surface in
+ * diverging = blue ↔ red through a neutral grey. The low end recedes toward the surface in
  * each theme, so dark mode gets its own stops rather than an inverted light ramp.
  */
 
@@ -9,12 +9,12 @@ type Stops = string[];
 
 const RAMPS: Record<RampName, { light: Stops; dark: Stops }> = {
   sequential: {
-    light: ['#f3f8f6', '#cfe6df', '#8ccbbb', '#43a08b', '#16705f', '#0b3d34'],
-    dark: ['#15302f', '#175046', '#1f7a69', '#3fa892', '#7fd6c2', '#d6f5ec'],
+    light: ['#f5f9fe', '#cde2fb', '#86b6ef', '#3987e5', '#1c5cab', '#0d366b'],
+    dark: ['#1c2129', '#16304f', '#184f95', '#2a78d6', '#6da7ec', '#cde2fb'],
   },
   diverging: {
-    light: ['#0b4d40', '#2f9a86', '#a4d6ca', '#eef1ef', '#f2bfa1', '#e0703a', '#8a3410'],
-    dark: ['#a6ead9', '#4fbfa8', '#1f5f56', '#2f4a4a', '#8a4a2e', '#f08a54', '#f8cdb2'],
+    light: ['#104281', '#3987e5', '#9ec5f4', '#f0efec', '#f3a3a2', '#e34948', '#8f1f1f'],
+    dark: ['#9ec5f4', '#3987e5', '#1c4a80', '#383835', '#8a3434', '#e66767', '#f6b5b5'],
   },
 };
 

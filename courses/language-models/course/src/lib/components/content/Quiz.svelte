@@ -30,11 +30,10 @@
 <style>
   .quiz {
     margin: 2rem 0;
-    padding: 0.9rem 1.2rem 1.1rem;
-    border: 0;
-    border-left: 3px solid var(--ac);
-    border-radius: 0 var(--radius) var(--radius) 0;
-    background: var(--pn);
+    padding: 1rem 1.2rem 1.1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
     font-size: 0.92rem;
   }
   legend {
@@ -42,9 +41,10 @@
     align-items: center;
     gap: 0.35rem;
     padding: 0 0.4rem;
-    font: 500 0.68rem var(--font-mono);
+    font-size: 0.72rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
+    font-weight: 650;
     color: var(--ink-2);
   }
   .q {
@@ -62,7 +62,6 @@
     align-items: flex-start;
     padding: 0.5rem 0.75rem;
     border: 1px solid var(--border);
-    background: var(--bg);
     border-radius: var(--radius-sm);
     cursor: pointer;
     transition: border-color 120ms, background-color 120ms;
@@ -86,7 +85,7 @@
     margin-top: 0.8rem;
     padding: 0.6rem 0.8rem;
     border-radius: var(--radius-sm);
-    background: var(--bg);
+    background: var(--surface-2);
     line-height: 1.5;
   }
 </style>

@@ -38,99 +38,78 @@
       <button class="reset" onclick={onreset} title="Reset" aria-label="Reset widget"><Icon name="reset" size={15} /></button>
     {/if}
   </header>
-  {#if controls}
-    <div class="cell in">
-      <span class="nb in" aria-hidden="true"></span>
-      <div class="controls ui">{@render controls()}</div>
-    </div>
-  {/if}
-  <div class="cell out">
-    <span class="nb out" aria-hidden="true"></span>
-    <div class="body">{@render children()}</div>
-  </div>
+  {#if controls}<div class="controls ui">{@render controls()}</div>{/if}
+  <div class="body">{@render children()}</div>
   {#if caption}<figcaption class="ui">{caption}</figcaption>{/if}
 </figure>
 
 <style>
   .widget {
-    margin: 2.5rem 0;
-    position: relative;
-    counter-increment: cell;
+    margin: 2rem 0;
+    background: var(--chart-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
   }
   header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     gap: 1rem;
-    padding: 0 0 0.6rem;
+    padding: 0.85rem 1.1rem 0.5rem;
   }
   .kind {
-    font: 500 0.68rem var(--font-mono);
+    font-size: 0.66rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
+    font-weight: 650;
     color: var(--accent);
   }
   h4 {
     margin: 0.1rem 0 0 !important;
     padding: 0 !important;
     border: 0 !important;
-    font-size: 1.15rem !important;
-    font-weight: 700;
-    letter-spacing: -0.02em;
+    font-size: 1.02rem !important;
+    font-weight: 620;
   }
   .sub {
-    margin: 0.25rem 0 0 !important;
-    font-size: 0.9rem;
+    margin: 0.2rem 0 0 !important;
+    font-size: 0.82rem;
     color: var(--ink-2);
-    line-height: 1.55;
+    line-height: 1.45;
   }
   .reset {
     border: 1px solid var(--border);
-    background: transparent;
+    background: var(--surface);
     color: var(--ink-2);
-    border-radius: var(--radius);
+    border-radius: 6px;
     padding: 0.3rem;
     cursor: pointer;
     display: inline-flex;
   }
   .reset:hover {
     color: var(--ink);
-    background: var(--pn);
-  }
-  .cell {
-    position: relative;
-  }
-  .cell.in .nb {
-    top: 0.7rem;
-  }
-  .cell.out .nb {
-    top: 0.45rem;
+    background: var(--surface-2);
   }
   .controls {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
     gap: 0.75rem 1.5rem;
-    padding: 0.7rem 1rem 0.8rem;
-    background: var(--pn);
-    border-left: 3px solid var(--ac);
-    border-radius: 0 var(--radius) var(--radius) 0;
-    margin-bottom: 0.5rem;
+    padding: 0.5rem 1.1rem 0.75rem;
+    border-bottom: 1px solid var(--rule);
   }
   .body {
-    padding: 0.4rem 0 0.5rem;
+    padding: 0.9rem 1.1rem 1rem;
     font-family: var(--font-ui);
     font-size: 0.9rem;
-    min-width: 0;
-    /* a figure wider than the column scrolls inside its cell instead of widening the page */
-    overflow-x: auto;
-    overflow-y: hidden;
   }
   figcaption {
-    padding: 0.5rem 0 0;
+    padding: 0.6rem 1.1rem 0.8rem;
     border-top: 1px solid var(--rule);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--ink-2);
-    line-height: 1.55;
+    line-height: 1.5;
   }
 </style>

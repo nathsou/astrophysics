@@ -53,11 +53,10 @@
 
 <article class="article">
   <header class="chapter-head">
-    <span class="nb md" aria-hidden="true"></span>
-    <p class="eyebrow">{eyebrow}</p>
+    <p class="eyebrow ui">{eyebrow}</p>
     <h1>{meta.title}</h1>
     <p class="summary">{meta.summary}</p>
-    <div class="meta">
+    <div class="meta ui">
       {#if meta.duration}<span><Icon name="history" size={14} /> {meta.duration}</span>{/if}
       {#if prereqs.length}
         <span>Assumes:
@@ -66,8 +65,8 @@
       {/if}
     </div>
     {#if meta.builds?.length}
-      <div class="builds">
-        <span class="label">builds =</span>
+      <div class="builds ui">
+        <span class="label">You will build</span>
         {#each meta.builds as b (b)}<span class="chip">{b}</span>{/each}
       </div>
     {/if}
@@ -106,74 +105,64 @@
     padding-bottom: 6rem;
   }
   .chapter-head {
-    padding: 3.25rem 0 1rem;
-  }
-  .chapter-head .nb {
-    top: 3.9rem;
+    padding: 3.5rem 0 1.5rem;
   }
   .eyebrow {
-    margin: 0 0 0.9rem;
-    font: 500 0.72rem var(--font-mono);
+    margin: 0 0 0.6rem;
+    font-size: 0.78rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.09em;
+    font-weight: 650;
     color: var(--accent);
   }
   h1 {
     font-family: var(--font-ui);
-    font-size: clamp(2.4rem, 7vw, 3.75rem);
-    line-height: 1;
-    letter-spacing: -0.04em;
-    font-weight: 700;
-    margin: 0 0 1rem;
-    text-wrap: balance;
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    font-weight: 720;
+    margin: 0 0 0.9rem;
   }
   .summary {
-    font-size: 1.125rem;
-    line-height: 1.65;
+    font-size: 1.3rem;
+    line-height: 1.5;
     color: var(--ink-2);
     margin: 0 0 1.25rem;
-    max-width: 36rem;
   }
   .meta {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem 1.5rem;
-    font: 400 0.78rem var(--font-mono);
+    font-size: 0.82rem;
     color: var(--ink-2);
   }
-  .meta > span {
-    display: block;
-    min-width: 0;
-  }
-  .meta :global(svg) {
-    vertical-align: -2px;
-    margin-right: 0.35rem;
+  .meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
   }
   .builds {
-    display: block;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
     margin-top: 1rem;
-    font: 400 0.78rem var(--font-mono);
-    padding: 0.55rem 0.9rem;
-    background: var(--pn);
-    border-left: 3px solid var(--ac);
-    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: 0.8rem;
   }
   .builds .label {
     color: var(--ink-3);
     margin-right: 0.3rem;
   }
   .chip {
+    padding: 0.15rem 0.6rem;
+    border-radius: 99px;
+    background: var(--accent-soft);
     color: var(--accent-ink);
-    font-weight: 500;
-  }
-  .chip:not(:last-child)::after {
-    content: ',';
-    color: var(--ink-3);
-    margin-right: 0.4rem;
+    font-weight: 560;
   }
   .references {
     margin-top: 3rem;
-    font-size: 0.95rem;
+    font-size: 0.92rem;
   }
   .references ol {
     padding-left: 1.4rem;
@@ -186,7 +175,7 @@
     border-radius: 4px;
   }
   .authors {
-    font-weight: 700;
+    font-weight: 600;
   }
   .note {
     display: block;
@@ -203,40 +192,25 @@
     display: flex;
     flex-direction: column;
     gap: 0.2rem;
-    padding: 0.8rem 1.1rem;
-    background: var(--pn);
-    border-left: 3px solid var(--ac);
-    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 0.9rem 1.1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
     text-decoration: none;
     color: var(--ink);
   }
   .pager a:hover {
-    background: var(--surface-3);
+    border-color: var(--accent-2);
   }
-  .pager .next {
+  .next {
     text-align: right;
     grid-column: 2;
-    border-left: 0;
-    border-right: 3px solid var(--ac);
-    border-radius: var(--radius) 0 0 var(--radius);
   }
   .dir {
-    font: 400 0.72rem var(--font-mono);
+    font-size: 0.75rem;
     color: var(--ink-3);
   }
   .t {
-    font-weight: 700;
-    letter-spacing: -0.01em;
-  }
-  @media (max-width: 759px) {
-    .chapter-head .nb {
-      margin-bottom: 0.6rem;
-    }
-    .pager {
-      grid-template-columns: 1fr;
-    }
-    .pager .next {
-      grid-column: 1;
-    }
+    font-weight: 600;
   }
 </style>

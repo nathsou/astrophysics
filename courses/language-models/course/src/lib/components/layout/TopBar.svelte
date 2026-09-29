@@ -6,18 +6,15 @@
   import Icon from '../ui/Icon.svelte';
   import GpuBadge from './GpuBadge.svelte';
 
-  let { menu = true }: { menu?: boolean } = $props();
   let scrolled = $state(false);
 </script>
 
 <svelte:window onscroll={() => (scrolled = scrollY > 160)} />
 
 <header class="topbar ui" class:scrolled>
-  {#if menu}
-    <button class="icon-btn menu" onclick={() => (nav.sidebarOpen = !nav.sidebarOpen)} aria-label="Open navigation" aria-expanded={nav.sidebarOpen}>
-      <Icon name="menu" />
-    </button>
-  {/if}
+  <button class="icon-btn menu" onclick={() => (nav.sidebarOpen = !nav.sidebarOpen)} aria-label="Open navigation" aria-expanded={nav.sidebarOpen}>
+    <Icon name="menu" />
+  </button>
   <a class="brand" href="{base}/">
     <span class="mark" aria-hidden="true">LM</span>
     <span class="name">{COURSE_TITLE}</span>
@@ -40,35 +37,39 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0 1rem;
-    background: color-mix(in srgb, var(--bg) 96%, transparent);
+    background: color-mix(in srgb, var(--page) 85%, transparent);
     backdrop-filter: saturate(1.4) blur(10px);
     -webkit-backdrop-filter: saturate(1.4) blur(10px);
-    border-bottom: 1px solid var(--rule);
+    border-bottom: 1px solid transparent;
+    transition: border-color 150ms;
+  }
+  .scrolled {
+    border-bottom-color: var(--rule);
   }
   .brand {
     display: flex;
     align-items: center;
-    gap: 0.65rem;
+    gap: 0.6rem;
     color: var(--ink);
     text-decoration: none;
-    font-weight: 700;
-    font-size: 0.95rem;
-    letter-spacing: -0.02em;
+    font-weight: 650;
+    font-size: 0.92rem;
+    letter-spacing: -0.01em;
   }
   .mark {
     display: grid;
     place-items: center;
-    height: 1.6rem;
-    padding: 0 0.5rem 0 0.45rem;
-    border-left: 3px solid var(--ac);
-    border-radius: 0 var(--radius) var(--radius) 0;
-    background: var(--pn);
-    color: var(--accent);
-    font: 500 0.7rem var(--font-mono);
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 7px;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-size: 0.72rem;
+    font-weight: 750;
     letter-spacing: 0.02em;
   }
   .page-title {
-    font: 400 0.78rem var(--font-mono);
+    font-size: 0.86rem;
     color: var(--ink-2);
     opacity: 0;
     transform: translateY(4px);
@@ -95,12 +96,12 @@
     border: 0;
     background: none;
     padding: 0.4rem;
-    border-radius: var(--radius);
+    border-radius: 7px;
     color: var(--ink-2);
     cursor: pointer;
   }
   .icon-btn:hover {
-    background: var(--pn);
+    background: var(--surface-2);
     color: var(--ink);
   }
   .menu {

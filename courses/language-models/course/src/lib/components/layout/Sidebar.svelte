@@ -55,24 +55,24 @@
     top: 3.25rem;
     height: calc(100vh - 3.25rem);
     overflow-y: auto;
-    padding: 1.5rem 0.75rem 3rem 1rem;
+    padding: 1.25rem 0.75rem 3rem 1rem;
     border-right: 1px solid var(--rule);
-    font-size: 0.86rem;
+    font-size: 0.84rem;
     scrollbar-width: thin;
   }
   section + section {
-    margin-top: 1.4rem;
+    margin-top: 1.25rem;
   }
   h2 {
-    font: 500 0.66rem var(--font-mono);
+    font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
+    font-weight: 650;
     color: var(--ink-3);
-    margin: 0 0 0.4rem 0.5rem;
+    margin: 0 0 0.35rem 0.5rem;
   }
   .part {
     color: var(--accent);
-    margin-right: 0.3rem;
   }
   ul {
     list-style: none;
@@ -82,25 +82,24 @@
   li a,
   .row {
     display: grid;
-    grid-template-columns: 1.7rem 1fr;
+    grid-template-columns: 1.6rem 1fr;
     padding: 0.28rem 0.5rem;
-    border-left: 3px solid transparent;
-    border-radius: 0 var(--radius) var(--radius) 0;
+    border-radius: 6px;
     color: var(--ink);
     text-decoration: none;
-    line-height: 1.4;
+    line-height: 1.35;
   }
   li a:hover {
-    background: var(--pn);
+    background: var(--surface-2);
   }
   .n {
-    font: 400 0.76rem/1.65 var(--font-mono);
     color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
   }
   .here > a {
-    background: var(--pn);
-    border-left-color: var(--ac);
-    font-weight: 700;
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+    font-weight: 600;
   }
   .here > a .n {
     color: var(--accent);
@@ -118,14 +117,14 @@
     padding: 0.2rem 0.6rem;
     font-size: 0.8rem;
     color: var(--ink-2);
-    border-radius: 0 var(--radius) var(--radius) 0;
+    border-radius: 0 6px 6px 0;
     margin-left: -1px;
     border-left: 2px solid transparent;
   }
   .toc .active a {
     color: var(--ink);
-    border-left-color: var(--ac);
-    font-weight: 700;
+    border-left-color: var(--accent-2);
+    font-weight: 560;
   }
   .scrim {
     display: none;
@@ -137,7 +136,7 @@
       left: 0;
       z-index: 45;
       width: min(20rem, 88vw);
-      background: var(--bg);
+      background: var(--page);
       transform: translateX(-100%);
       transition: transform 200ms ease;
       box-shadow: var(--shadow-lg);
@@ -150,7 +149,7 @@
       position: fixed;
       inset: 3.25rem 0 0 0;
       z-index: 44;
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.25);
     }
   }
 </style>
