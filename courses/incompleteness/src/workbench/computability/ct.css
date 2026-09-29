@@ -61,11 +61,11 @@
 
 /* timelines */
 .ct-strip { display: flex; flex-wrap: wrap; gap: 3px; margin: 8px 0; }
-.ct-cell { min-width: 30px; height: 30px; padding: 0 3px; display: inline-grid; place-items: center; border: 1px solid var(--rule-2); border-radius: 3px; font-family: var(--mono); font-size: 11.5px; color: var(--muted); background: var(--paper); }
+.ct-cell { min-width: 30px; height: 30px; padding: 0 3px; display: inline-grid; place-items: center; border: 1px solid var(--rule-2); border-radius: 3px; font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); background: var(--paper); }
 .ct-cell.in { background: var(--checked-soft); color: var(--checked); border-color: color-mix(in srgb, var(--checked) 75%, var(--rule-2)); font-weight: 700; }
 .ct-cell.new { box-shadow: 0 0 0 2px var(--accent); }
-/* not found (yet): muted and dotted rather than faded, so the value stays legible */
-.ct-cell.nf { color: var(--muted); border-style: dotted; }
+/* not a definition ("faint"): greyed box, dotted edge and muted digits rather than faded, so it stays legible */
+.ct-cell.nf { color: var(--muted); border-style: dotted; background: var(--pn); }
 .ct-cell.out { color: var(--danger); background: var(--danger-soft); border-style: dashed; }
 .ct-grid { display: grid; gap: 2px; }
 .ct-grid .ct-cell { min-width: 0; height: 24px; font-size: 10.5px; }

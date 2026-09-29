@@ -7,7 +7,7 @@
 .pv-row.static { cursor: default; }
 button.pv-row:hover { background: var(--paper-2); }
 button.pv-row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-.pv-line.sel > .pv-row { background: var(--accent-soft); }
+.pv-line.sel > .pv-row { background: var(--accent-soft); box-shadow: inset 3px 0 0 var(--accent); }
 .pv-line.premise > .pv-row { background: var(--hl-2); box-shadow: inset 3px 0 0 var(--number); }
 .pv-line.given > .pv-row { background: var(--paper-2); }
 .pv-n { font-family: var(--sans); font-size: 12px; color: var(--muted); text-align: right; }
