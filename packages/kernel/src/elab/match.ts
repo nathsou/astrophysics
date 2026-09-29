@@ -369,10 +369,27 @@ function split(el: Elaborator, st: State, i: number, elim: 'casesOn' | 'rec', re
     const sigma = new Map<number, Expr>([[v.id, y]]);
     const eqLocals: FVar[] = [];
     if (eqMode) {
-      if (hasFVar(el.instantiate(st.target), v.id) || reverted.some((r) => hasFVar(el.instantiate(el.lctx.get(r.id)!.type), v.id))) {
-        el.err(st.span, 'dependent pattern matching: the result type depends on a value of an inductive family with non-variable indices, which would need heterogeneous equality (not supported by this elaborator)');
-      }
       is.forEach((ix, k) => eqLocals.push(el.pushLocal(`h${k + 1}✝`, mkEq(el, idxLocals[k], ix))));
+      if (hasFVar(el.instantiate(st.target), v.id) || reverted.some((r) => hasFVar(el.instantiate(el.lctx.get(r.id)!.type), v.id))) {
+        // the goal mentions the value itself: it sees y cast along the index equations,
+        // `h ▸ y : I ps is`, which computes back to y once the equations are solved
+        // (Lean uses heterogeneous equality here; casts suffice when index types are independent)
+        const idxTypes = idxLocals.map((x) => el.lctx.get(x.id)!.type);
+        if (idxTypes.some((t) => idxLocals.some((x) => hasFVar(t, x.id)))) {
+          el.err(st.span, 'dependent pattern matching: the result type depends on a value of an inductive family whose index types depend on each other, which would need heterogeneous equality (not supported by this elaborator)');
+        }
+        let cur: Expr = y;
+        for (let k = 0; k < is.length; k++) {
+          const idxNow = (X: Expr) => [...is.slice(0, k), X, ...idxLocals.slice(k + 1)];
+          const castMotive = el.withSavedLctx(() => {
+            const X = el.pushLocal('X', idxTypes[k]);
+            const hx = el.pushLocal('h', mkEq(el, idxLocals[k], X));
+            return el.mkBinding('lam', [X, hx], mkApps(mkConst(I, h.levels), [...ps, ...idxNow(X)]));
+          });
+          cur = mkEqRec(el, idxTypes[k], idxLocals[k], castMotive, cur, is[k], eqLocals[k], mkApps(mkConst(I, h.levels), [...ps, ...idxNow(is[k])]));
+        }
+        sigma.set(v.id, cur);
+      }
     } else is.forEach((ix, k) => sigma.set((ix as FVar).id, idxLocals[k]));
     const newRev: FVar[] = [];
     for (const r of reverted) {
@@ -560,6 +577,17 @@ function mkEqRefl(el: Elaborator, a: Expr): Expr {
 }
 
 /** Eq.rec {T} {a} {motive} (m : motive a rfl) {b} (h : a = b) : motive b h */
+/** compute the casts `Eq.rec … y h` whose equation has become `a = a` (K-like reduction) */
+function reduceCasts(el: Elaborator, e: Expr): Expr {
+  return replaceExpr(e, (x) => {
+    if (x.k !== 'app') return undefined;
+    const f = getAppFn(x);
+    if (f.k !== 'const' || f.name !== 'Eq.rec' || getAppArgs(x).length < 6) return undefined;
+    const w = el.u.whnfCore(x);
+    return w !== x ? reduceCasts(el, w) : undefined;
+  });
+}
+
 function mkEqRec(el: Elaborator, T: Expr, a: Expr, motive: Expr, m: Expr, b: Expr, h: Expr, resultType: Expr): Expr {
   return mkApps(mkConst('Eq.rec', [sortLevel(el, resultType), sortLevel(el, T)]), [T, a, motive, m, b, h]);
 }
@@ -697,12 +725,15 @@ function solveEqs(
   return el.withSavedLctx(() => {
     const e = el.pushLocal('h✝', w.type);
     const rest = instantiate1(w.body, e);
-    if (hasFVar(el.instantiate(rest), e.id)) el.err(span, 'cannot solve an index equation that the goal depends on');
+    // the goal may mention the equation, inside casts (see `split`)
+    const dependent = hasFVar(el.instantiate(rest), e.id);
     let body: Expr;
     const cl = ctorApp(el, l);
     const cr = ctorApp(el, r);
     if (el.isDefEq(l, r)) {
-      body = solveEqs(el, rest, n - 1, locals, sigma, cont, span);
+      // any proof of l = l is rfl, by proof irrelevance, and the casts along it compute
+      const rest1 = dependent ? reduceCasts(el, replaceFVars(el.instantiate(rest), new Map([[e.id, mkEqRefl(el, l)]]))) : rest;
+      body = solveEqs(el, rest1, n - 1, locals, sigma, cont, span);
     } else if (cl && cr) {
       const nc = mkNoConfusion(el, T, rest, l, r, e, span);
       if (cl.name !== cr.name) body = nc; // conflict: the case is impossible
@@ -756,14 +787,21 @@ function solveEqs(
       const goal2 = el.mkBinding('pi', deps, rest); // Π deps, rest   (mentions x)
       // h : t = x
       const h = flipped ? e : mkEqSymm(el, T, x, t, e);
+      // where the goal mentions the equation e itself, it becomes the corresponding proof about y
+      const eAt = (y: Expr, hh: Expr): Expr => (flipped ? hh : mkEqSymm(el, T, t!, y, hh));
       const motive = el.withSavedLctx(() => {
         const y = el.pushLocal('y', T);
         const hh = el.pushLocal('h', mkEq(el, t!, y));
-        return el.mkBinding('lam', [y, hh], replaceFVars(goal2, new Map([[x!.id, y]])));
+        const m = new Map<number, Expr>([[x!.id, y]]);
+        if (dependent) m.set(e.id, eAt(y, hh));
+        return el.mkBinding('lam', [y, hh], replaceFVars(el.instantiate(goal2), m));
       });
       const minor = el.withSavedLctx(() => {
         // Π deps[x := t], rest[x := t]
-        let g = replaceFVars(goal2, new Map([[x!.id, t!]]));
+        const m = new Map<number, Expr>([[x!.id, t!]]);
+        if (dependent) m.set(e.id, eAt(t!, mkEqRefl(el, t!)));
+        let g = replaceFVars(el.instantiate(goal2), m);
+        if (dependent) g = reduceCasts(el, g);
         const newDeps: FVar[] = [];
         const sub = new Map<number, Expr>(sigma);
         sub.set(x!.id, t!);
@@ -771,12 +809,15 @@ function solveEqs(
           const pi = el.whnf(g) as Extract<Expr, { k: 'pi' }>;
           const nd = el.pushLocal(el.lctx.get(d.id)!.name, pi.type);
           newDeps.push(nd);
-          sub.set(d.id, nd);
+          if (!sub.has(d.id)) sub.set(d.id, nd);
           g = instantiate1(pi.body, nd);
         }
         const locals2 = new Set(locals);
         newDeps.forEach((d) => locals2.add(d.id));
-        for (const [k, vv] of sub) sub.set(k, replaceFVars(vv, new Map([[x!.id, t!]])));
+        // earlier substitutions may point at x or at a reverted hypothesis: follow them to the new versions
+        const rep = new Map<number, Expr>([[x!.id, t!]]);
+        deps.forEach((d, i) => rep.set(d.id, newDeps[i]));
+        for (const [k, vv] of sub) sub.set(k, replaceFVars(vv, rep));
         return el.mkBinding('lam', newDeps, solveEqs(el, g, n - 1, locals2, sub, cont, span));
       });
       body = mkApps(mkEqRec(el, T, t, motive, minor, x, h, goal2), deps);

@@ -47,7 +47,7 @@ export interface RecInfo {
   name: string;
 }
 
-const AUTO_BOUND_RE = /^[a-zα-κμ-ω][0-9₀-₉']*$/;
+const AUTO_BOUND_RE = /^[a-zA-Zα-κμ-ω][0-9₀-₉']*$/;
 
 export class Elaborator {
   readonly mctx = new MetaCtx();
@@ -983,7 +983,8 @@ export class Elaborator {
       }
     };
     // numerals whose type is known by now are elaborated early: `⟨10, rfl⟩` needs the 10 before the rfl
-    const isLate = (p: (typeof pending)[number]) => p.late && !(p.num && !this.unknownType(this.instantiate(p.type)));
+    // so are the other terms that only need the head of their type: `⟨.lit 0, rfl⟩` needs the `.lit 0` first
+    const isLate = (p: (typeof pending)[number]) => p.late && !(headOnly(p.s) && !this.unknownType(this.instantiate(p.type)));
     const flush = (late: boolean) => {
       for (const p of pending) if (!p.done && (late || !isLate(p))) elabPending(p);
     };
@@ -1108,6 +1109,23 @@ function shouldPostpone(s: STerm): boolean {
       return true;
     case 'paren':
       return shouldPostpone(s.term);
+    case 'app':
+      return s.fn.k === 'dotIdent';
+    default:
+      return false;
+  }
+}
+
+/** terms that postpone only until the head of their expected type is known */
+function headOnly(s: STerm): boolean {
+  switch (s.k) {
+    case 'num':
+    case 'dotIdent':
+    case 'anon':
+    case 'structInst':
+      return true;
+    case 'paren':
+      return headOnly(s.term);
     case 'app':
       return s.fn.k === 'dotIdent';
     default:

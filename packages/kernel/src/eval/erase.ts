@@ -12,6 +12,9 @@ import { TypeChecker } from '../core/typechecker.ts';
 
 type Rel = 'data' | 'type' | 'proof';
 
+const SHORT: Record<string, string> = { 'Bool.true': 'true', 'Bool.false': 'false', 'Option.some': 'some', 'Option.none': 'none', 'List.nil': '[]' };
+const INFIX: Record<string, string> = { 'Nat.add': '+', 'Nat.mul': '*', 'Nat.sub': '-', 'List.cons': '::' };
+
 function relevance(tc: TypeChecker, e: Expr): Rel {
   let t: Expr;
   try {
@@ -44,6 +47,20 @@ function numeral(e: Expr): number | undefined {
 
 /** the erased form of a closed term, as text */
 export function eraseToString(env: Environment, e: Expr, maxLen = 4000): string {
+  const s = eraser(env)(e, 0);
+  return s.length > maxLen ? s.slice(0, maxLen) + ' …' : s;
+}
+
+/**
+ * The erased form of an equation lemma `∀ x⃗, f p⃗ = rhs`, as `f p⃗ = rhs` with the
+ * type and proof arguments removed: how a definition by pattern matching reads once erased.
+ */
+export function eraseEquation(env: Environment, type: Expr): string | undefined {
+  const go = eraser(env);
+  return go(type, 0, true);
+}
+
+function eraser(env: Environment): (e: Expr, prec: number, eqn?: boolean) => string {
   const tc = new TypeChecker(env, LocalContext.empty, { fuel: 200_000 });
   const names = new Map<number, string>();
   const used = new Set<string>();
@@ -55,17 +72,33 @@ export function eraseToString(env: Environment, e: Expr, maxLen = 4000): string 
     used.add(k);
     return k;
   };
-  const go = (e: Expr, prec: number): string => {
+  const go = (e: Expr, prec: number, eqn = false): string => {
+    if (eqn) {
+      // the binders of an equation lemma: named, never shown
+      const saved = tc.lctx;
+      try {
+        while (e.k === 'pi') {
+          const id = freshFVarId();
+          tc.lctx = tc.lctx.push({ id, name: e.name, type: e.type });
+          names.set(id, relevance(tc, mkFVar(id)) === 'data' ? fresh(e.name) : '◾');
+          e = instantiate1(e.body, mkFVar(id));
+        }
+        const f = getAppFn(e);
+        const a = getAppArgs(e);
+        if (f.k !== 'const' || f.name !== 'Eq' || a.length !== 3) return '?';
+        return `${go(a[1], 0)} = ${go(a[2], 0)}`;
+      } finally {
+        tc.lctx = saved;
+      }
+    }
     const par = (s: string, p: number) => (prec > p ? `(${s})` : s);
     const n = numeral(e);
     if (n !== undefined) return String(n);
     switch (e.k) {
       case 'fvar':
         return names.get(e.id) ?? '?';
-      case 'const': {
-        const short = e.name;
-        return short;
-      }
+      case 'const':
+        return SHORT[e.name] ?? e.name;
       case 'sort':
         return '□';
       case 'lam': {
@@ -107,9 +140,13 @@ export function eraseToString(env: Environment, e: Expr, maxLen = 4000): string 
       case 'app': {
         const fn = getAppFn(e);
         const args = getAppArgs(e).filter((a) => relevance(tc, a) === 'data');
-        const head = fn.k === 'lam' ? `(${go(fn, 0)})` : go(fn, 2);
+        if (fn.k === 'const' && INFIX[fn.name] && args.length === 2) return par(`${go(args[0], 2)} ${INFIX[fn.name]} ${go(args[1], 2)}`, 1);
+        if (fn.k === 'const' && (fn.name === 'ite' || fn.name === 'dite') && args.length === 3) {
+          return par(`if ${go(args[0], 0)} then ${go(args[1], 0)} else ${go(args[2], 0)}`, 0);
+        }
+        const head = fn.k === 'lam' ? `(${go(fn, 0)})` : go(fn, 3);
         if (args.length === 0) return head;
-        return par([head, ...args.map((a) => go(a, 2))].join(' '), 1);
+        return par([head, ...args.map((a) => go(a, 3))].join(' '), 2);
       }
       case 'pi':
         return '□';
@@ -117,6 +154,5 @@ export function eraseToString(env: Environment, e: Expr, maxLen = 4000): string 
         return '?';
     }
   };
-  const s = go(e, 0);
-  return s.length > maxLen ? s.slice(0, maxLen) + ' …' : s;
+  return go;
 }

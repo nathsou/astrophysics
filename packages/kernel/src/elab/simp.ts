@@ -94,6 +94,7 @@ export function mkRule(el: Elaborator, name: string, proof: Expr, levelVars: str
       pf = mkApp(pf, fv);
       type = instantiate1(type.body, fv);
     }
+    type = headBeta(type); // the property of a subtype, `(fun x => …) v`
     const h = getAppFn(type);
     const args = getAppArgs(type);
     let lhs: Expr;

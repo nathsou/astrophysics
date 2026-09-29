@@ -1207,7 +1207,14 @@ export class TacticRunner {
         // hypotheses that the match reverted and reintroduced: the originals are shadowed and stale
         const gl = this.decl(goal).lctx.decls;
         const shadowed = this.decl(g).lctx.decls.filter((d) => gl.some((x, i) => x.id !== d.id && x.name === d.name && i > gl.findIndex((y) => y.id === d.id))).map((d) => d.id);
-        goal = this.clearStale(goal, [...stale, ...shadowed].filter((id) => !fields.some((f) => f.id === id)));
+        // index unification leaves its equations and the superseded versions of substituted hypotheses behind
+        const known = new Set(this.decl(g).lctx.decls.map((d) => d.id));
+        const fresh = gl.filter((d) => !known.has(d.id));
+        const gNames = new Set(this.decl(g).lctx.decls.map((d) => d.name));
+        const superseded = fresh
+          .filter((d, i) => !gNames.has(d.name) || fresh.slice(i + 1).some((y) => y.name === d.name) || (t0.k === 'fvar' && d.name === this.decl(g).lctx.get(t0.id)?.name))
+          .map((d) => d.id);
+        goal = this.clearStale(goal, [...stale, ...shadowed, ...superseded].filter((id) => !fields.some((f) => f.id === id)));
         this.succToAdd(goal);
         out.push({ goal, ctor: hole.ctor, fields });
       }

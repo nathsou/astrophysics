@@ -425,6 +425,19 @@ export class Printer {
         return this.wrap({ children: [{ text: '∃ ', cls: 'kw' }, { text: nm, cls: 'var' }, { text: ', ', cls: 'punct' }, body] }, P_BINDER, ctxPrec);
       }
     }
+    // { x : α // p }
+    if (name === 'Subtype' && visible.length === 1) {
+      const p = args[visible[0]];
+      if (p.k === 'lam') {
+        const nm = this.fresh(p.name, used);
+        const d = { id: freshFVarId(), name: nm, type: p.type };
+        const ty = this.pp(p.type, lctx, used, 0, [...argPath(visible[0]), 0], depth + 1);
+        const body = this.pp(instantiate1(p.body, mkFVar(d.id)), lctx.push(d), new Set(used).add(nm), 0, [...argPath(visible[0]), 1], depth + 1);
+        return {
+          children: [{ text: '{ ', cls: 'punct' }, { text: nm, cls: 'var' }, { text: ' : ', cls: 'punct' }, ty, { text: ' // ', cls: 'punct' }, body, { text: ' }', cls: 'punct' }],
+        };
+      }
+    }
     const nt = this.env.notations.find((n) => n.target === name);
     if (!nt) return undefined;
     if ((nt.kind === 'infixl' || nt.kind === 'infixr' || nt.kind === 'infix') && visible.length === 2) {
