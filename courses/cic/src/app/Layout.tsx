@@ -58,6 +58,9 @@ export function Layout(props: RouteSectionProps) {
       <nav class={`sidebar ${open() ? 'open' : ''}`} id="contents" aria-label="Course contents">
         <A href="/" class="brand" title="Calculus of Inductive Constructions: welcome">
           CIC <span class="brand-count">/ {chapters.length} chapters</span>
+          <span class="brand-read">
+            ✓ {chapters.filter((c) => isVisited(c.slug)).length} / {chapters.length} read
+          </span>
         </A>
         <For each={parts}>
           {(p) => (
