@@ -177,3 +177,31 @@ describe('flatten', () => {
     expect(flat.elements.find((e) => e.id === 'U/L')!.pins[0]).toBe(flat.elements.find((e) => e.id === 'T')!.pins[0]);
   });
 });
+
+describe('flatten merges nets tied inside subcircuits', () => {
+  test('a port tied to ground inside a subcircuit joins the global ground', () => {
+    const sub: Circuit = {
+      version: 1,
+      components: [
+        { id: 'P', type: 'port', x: 0, y: 0, params: { name: 'A' } },
+        { id: 'G', type: 'ground', x: 0, y: 0 },
+      ],
+      wires: [],
+    };
+    const top: Circuit = {
+      version: 1,
+      subcircuits: { s: sub },
+      components: [
+        { id: 'T', type: 'toggle', x: -3, y: 0 },
+        { id: 'U', type: 'sub:s', x: 0, y: 0 },
+        { id: 'L', type: 'indicator', x: 20, y: 20 },
+        { id: 'G2', type: 'ground', x: 20, y: 20 },
+      ],
+      wires: [],
+    };
+    const flat = flatten(top);
+    const t = flat.elements.find((e) => e.id === 'T')!;
+    expect(t.pins[0]).toBe(flat.ground);
+    expect(flat.alias).toBeDefined();
+  });
+});

@@ -16,7 +16,22 @@ export function flatten(circuit: Circuit, parts?: SubResolver): FlatNetlist {
   const netNames: (string | undefined)[] = [];
   const elements: FlatElement[] = [];
   const globals = new Map<string, number>();
-  const fresh = (name?: string) => netNames.push(name) - 1;
+  const fresh = (name?: string) => {
+    parent.push(parent.length);
+    return netNames.push(name) - 1;
+  };
+  // Union-find over flat nets: a subcircuit can tie a port to ground, to a rail or to another port,
+  // which merges nets that were numbered separately. The smaller number (the outer net) wins.
+  const parent: number[] = [];
+  const find = (n: number): number => {
+    while (parent[n] !== n) n = parent[n] = parent[parent[n]!]!;
+    return n;
+  };
+  const union = (a: number, b: number) => {
+    const ra = find(a);
+    const rb = find(b);
+    if (ra !== rb) parent[Math.max(ra, rb)] = Math.min(ra, rb);
+  };
 
   function expand(c: Circuit, prefix: string, resolve: SubResolver, portNets: Map<string, number> | undefined, depth: number): void {
     if (depth > 32) throw new Error(`subcircuits nested too deeply at ${prefix} (a subcircuit that contains itself?)`);
@@ -24,6 +39,11 @@ export function flatten(circuit: Circuit, parts?: SubResolver): FlatNetlist {
     const local = new Array<number | undefined>(conn.netCount);
     // The top level keeps connect()'s numbering, so renderers can map wires to flat nets directly.
     if (depth === 0) for (let n = 0; n < conn.netCount; n++) local[n] = fresh(conn.netNames[n]);
+    const bind = (n: number, flat: number) => {
+      const had = local[n];
+      if (had === undefined) local[n] = flat;
+      else union(had, flat);
+    };
 
     // Ports of this level map to the parent's nets; ground and rails to the global nets.
     for (const comp of c.components) {
@@ -32,11 +52,11 @@ export function flatten(circuit: Circuit, parts?: SubResolver): FlatNetlist {
       if (g) {
         const n = conn.pinNet.get(pinKey)!;
         if (!globals.has(g)) globals.set(g, local[n] ?? fresh(conn.netNames[n]));
-        local[n] = globals.get(g)!;
+        bind(n, globals.get(g)!);
       }
       if (comp.type === 'port' && portNets) {
         const outer = portNets.get(String(comp.params?.name ?? comp.id));
-        if (outer !== undefined) local[conn.pinNet.get(`${comp.id}.p`)!] = outer;
+        if (outer !== undefined) bind(conn.pinNet.get(`${comp.id}.p`)!, outer);
       }
     }
     const netOf = (n: number) => (local[n] ??= fresh(prefix ? undefined : conn.netNames[n]));
@@ -60,7 +80,17 @@ export function flatten(circuit: Circuit, parts?: SubResolver): FlatNetlist {
   }
 
   expand(circuit, '', subResolver(circuit, undefined, parts), undefined, 0);
-  return { netCount: netNames.length, netNames, elements, ground: globals.get('GND') };
+
+  const alias = parent.map((_, n) => find(n));
+  const merged = alias.some((r, n) => r !== n);
+  if (merged) {
+    for (const e of elements) e.pins = e.pins.map((n) => alias[n]!);
+    alias.forEach((r, n) => {
+      if (r !== n) netNames[r] ??= netNames[n];
+    });
+  }
+  const ground = globals.get('GND');
+  return { netCount: netNames.length, netNames, elements, ground: ground === undefined ? undefined : alias[ground], ...(merged ? { alias } : {}) };
 }
 
 const getDefIsSub = (type: string) => type.startsWith('sub:') || type.startsWith('part:');

@@ -137,6 +137,12 @@ export interface FlatNetlist {
   elements: FlatElement[];
   /** The ground net (0 V reference), if any element or label defines one. */
   ground?: number;
+  /**
+   * Present when a subcircuit merged nets (a port tied to ground, a rail or another port): the
+   * representative of each net. Element pins already use representatives; renderers mapping
+   * top-level wires to nets should look values up at `alias[n] ?? n`.
+   */
+  alias?: number[];
 }
 
 /** Where each drawn thing ended up: used by the renderer to colour wires and pins by net. */
