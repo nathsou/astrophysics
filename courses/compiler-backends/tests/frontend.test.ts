@@ -28,8 +28,8 @@ describe('tokens', () => {
     const lines = tokenLines(r.tokens!);
     expect(lines.length).toBe(1 + SMALL.trim().split('\n').length);
     expect(lineText(lines[0])).toContain(`${r.tokens!.length - 1} tokens`);
-    expect(lines[3].toks.filter((t) => t.info).map((t) => t.t)).toEqual(['c', '+=', '1', ';']);
-    expect(lines[3].links).toEqual(['src:4']);
+    expect(lines[4].toks.filter((t) => t.info).map((t) => t.t)).toEqual(['c', '+=', '1', ';']);
+    expect(lines[4].links).toEqual(['src:4']);
   });
 });
 
@@ -107,7 +107,9 @@ describe('three-address code', () => {
       expect(r.error).toBeUndefined();
       const t = tacText(r.lowered!);
       expect(t).not.toMatch(/\bphi\b/);
-      expect(t).not.toMatch(/\.addr\d/);
+      // arrays stay in memory (alloca of n*8 bytes); no 8-byte scalar slot survives
+      expect(t).not.toMatch(/= alloca 8$/m);
+      expect(t).not.toMatch(/\b(load|store)\b/);
     });
   }
 });
