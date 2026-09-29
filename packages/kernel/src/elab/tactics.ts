@@ -924,6 +924,15 @@ export class TacticRunner {
         const g = this.mainGoal(span);
         return this.replaceMain(this.refineWith(g, this.app('False.elim', [this.hole(span)], span), span));
       }
+      case 'symm': {
+        // a = b  ⟵  b = a;   a ↔ b  ⟵  b ↔ a;   a ≠ b  ⟵  b ≠ a
+        const g = this.mainGoal(span);
+        const t = this.el.instantiate(this.type(g));
+        const h = getAppFn(t);
+        const lemma = h.k === 'const' ? ({ Eq: 'Eq.symm', Iff: 'Iff.symm', Ne: 'Ne.symm' } as Record<string, string>)[h.name] : undefined;
+        if (!lemma) this.fail(span, 'symm: the goal must be an equation, an equivalence or a disequality');
+        return this.replaceMain(this.refineWith(g, this.app(lemma, [this.hole(span)], span), span));
+      }
       case 'contradiction':
         return this.contradiction(span);
       case 'assumption':
@@ -1169,7 +1178,7 @@ export class TacticRunner {
       const t0 = el.instantiate(target);
       if (t0.k === 'fvar') {
         stale.push(t0.id);
-        for (const ix of getAppArgs(tt)) if (ix.k === 'fvar') stale.push(ix.id);
+        for (const ix of getAppArgs(tt).slice(ind.numParams)) if (ix.k === 'fvar') stale.push(ix.id);
         for (const d of this.decl(g).lctx.decls) {
           const ty = el.instantiate(d.type);
           if (stale.some((id) => hasFVar(ty, id))) stale.push(d.id);

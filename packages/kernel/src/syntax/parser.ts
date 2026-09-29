@@ -1558,6 +1558,7 @@ export class Parser {
       case 'left':
       case 'right':
       case 'exfalso':
+      case 'symm':
       case 'contradiction':
       case 'assumption':
       case 'trivial':

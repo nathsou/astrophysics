@@ -1,1 +1,154 @@
-This chapter is being written.
+Part II wrote proofs as terms, and it worked: every proof was a program, checked like any other. But proof terms have a practical problem. You write them outside-in, all at once, and for anything longer than a few lines they become hard to write and harder to read. In Chapter 4 we developed proofs by leaving holes and asking the checker for the goal at each one. **Tactics** make that loop the main way of working: instead of writing the term, you write a sequence of commands, each of which fills the current hole with a piece of term and leaves new holes behind.
+
+This chapter introduces tactics, and shows the one thing to remember about them: **tactics are programs that write programs**. What they produce is an ordinary proof term, which the checker checks as if you had written it yourself.
+
+## The first tactic proof
+
+A tactic proof starts with `by`. After it comes a list of tactics, one per line. Put your cursor on each line of the proof below and watch the panel on the right: it shows the **goals** before and after that line, in the same format as the error messages of Chapter 4.
+
+<Playground lens title="Swapping a conjunction, with tactics" code={`theorem and_swap (p q : Prop) : p ∧ q → q ∧ p := by
+  intro h
+  constructor
+  · exact h.2
+  · exact h.1`} />
+
+Line by line:
+
+1. At the start there is one goal: `p ∧ q → q ∧ p`, with `p` and `q` in the context.
+2. `intro h` works on an implication: it moves the hypothesis `p ∧ q` into the context under the name `h`. The goal becomes `q ∧ p`.
+3. `constructor` works on a conjunction: to prove `q ∧ p`, prove `q` and prove `p`. There are now **two** goals.
+4. The bullets `·` focus on one goal at a time. `exact h.2` closes the first goal with a term, exactly as in Part II. `exact h.1` closes the second.
+
+When no goals are left, the proof is complete.
+
+## What the tactics wrote
+
+Now click **proof term** above the goal panel (or look at the panel below the editor). It shows the term the tactics have built so far, with the part written by the current line highlighted, and the holes still open marked `?_`. Step through the proof with the slider:
+
+- after `intro h`, the term is `fun h => ?_`;
+- after `constructor`, it is `fun h => ⟨?_, ?_⟩`;
+- after the two `exact`s, it is `fun h => ⟨h.2, h.1⟩`.
+
+That last term is the proof we wrote by hand in Chapter 3. Each tactic replaced one hole by a small piece of term, possibly with new holes in it. A goal *is* a hole, and a tactic is a function from a hole to a piece of term.
+
+<Key>
+A goal is a hole in a proof term, together with its type and the variables in scope. A tactic fills the hole with a term that may contain new holes, which become the new goals. The proof is finished when the term has no holes left.
+</Key>
+
+## A dictionary of first tactics
+
+Each basic tactic corresponds to a piece of term syntax from Part II:
+
+| Tactic | Works on the goal | Writes the term | Leaves |
+|---|---|---|---|
+| `intro h` | `A → B`, `∀ x, B` | `fun h => ?_` | `B` |
+| `exact e` | anything | `e` | nothing |
+| `apply f` | `B` when `f : A → B` | `f ?_` | `A` |
+| `constructor` | `A ∧ B`, `A ↔ B` | `⟨?_, ?_⟩` | `A` and `B` |
+| `left`, `right` | `A ∨ B` | `Or.inl ?_`, `Or.inr ?_` | `A` or `B` |
+| `exists w` | `∃ x, p x` | `⟨w, ?_⟩` | `p w` |
+| `cases h` | any, with `h : A ∨ B` | a `match` on `h` | one goal per case |
+| `assumption` | `A`, with `h : A` in context | `h` | nothing |
+| `contradiction` | anything, with `h : False` (or similar) | `absurd …` | nothing |
+
+`apply` is the backwards step of Chapter 4: to prove `r` using `hqr : q → r`, apply `hqr` and prove `q` instead.
+
+<Playground lens title="Backwards, with apply" code={`theorem trans_imp (p q r : Prop) (hpq : p → q) (hqr : q → r) : p → r := by
+  intro hp
+  apply hqr
+  apply hpq
+  exact hp`} />
+
+`cases` takes a hypothesis apart, one goal per constructor. On a disjunction, you get one goal for each side:
+
+<Playground lens title="Cases" code={`theorem or_swap (p q : Prop) : p ∨ q → q ∨ p := by
+  intro h
+  cases h with
+  | inl hp =>
+    right
+    exact hp
+  | inr hq =>
+    left
+    exact hq`} />
+
+The `with | inl hp => … | inr hq => …` part names the hypotheses in each case, like the alternatives of a `match`. The term written by `cases` is exactly such a `match`. Step through the lens to see it.
+
+## When tactics fail
+
+A tactic can fail, and it reports why, with the goals at that point. If the proof ends with goals left, they are reported at the end:
+
+<Playground errors title="Two mistakes" code={`theorem wrong_side (p q : Prop) : p ∧ q → q ∧ p := by
+  intro h
+  constructor
+  exact h.1
+
+theorem unfinished (p q : Prop) : p ∧ q → q ∧ p := by
+  intro h
+  constructor
+  exact h.2`} />
+
+In `wrong_side`, `exact h.1` is aimed at the first goal, `q`, and `h.1` proves `p`. In `unfinished`, the first goal is closed but the second, `p`, is left open.
+
+## Why trust a tactic?
+
+The course's tactics and automation are about three and a half thousand lines of code, written for this course. They certainly have bugs. Should you trust a theorem proved with them?
+
+You do not need to. A tactic never tells the checker "this is proved". It produces a term, and when the declaration is complete, the whole term is checked again by the **kernel**: the small, separate type checker that is the only part of the system that decides what is proved. A buggy tactic can fail, or produce a term that the kernel rejects (you would see an error starting with `(kernel)`), but it cannot make the kernel accept a false statement.
+
+This design has a name: the **de Bruijn criterion**, after Nicolaas de Bruijn, whose Automath system (1967) was the first to separate a small trusted checker from everything else. Lean, Coq and Agda all follow it, and so does the course language: parsing, elaboration, pattern matching, tactics and automation are all untrusted, and they all produce terms for the kernel.
+
+<UnderTheHood ch="intro">
+The CIC course starts from this idea: what a kernel is, why it should be small, and what exactly it checks. Its later chapters build the kernel's typing rules one by one, and CIC Chapter 17 shows the complete checker running on real terms.
+</UnderTheHood>
+
+You can see the kernel's view of any proof with `#print`, which shows the final term:
+
+```lean
+theorem trans_imp (p q r : Prop) (hpq : p → q) (hqr : q → r) : p → r := by
+  intro hp
+  apply hqr
+  apply hpq
+  exact hp
+
+#print trans_imp
+```
+
+## Terms and tactics together
+
+Tactics and terms mix freely. `exact` takes a term, and a term can contain `by` wherever a proof is needed:
+
+```lean
+theorem mixed (p q : Prop) (hp : p) (hq : q) : (p ∧ q) ∧ (q ∨ p) :=
+  ⟨⟨hp, hq⟩, by left; exact hq⟩
+```
+
+`;` separates tactics on one line. Use whichever style reads best. Short proofs are often clearest as terms; longer proofs, where you want to see the goal at each step, are clearer with tactics.
+
+## Exercises
+
+<Exercise id="tactics:intro-exact" title="First tactic proof" lens code={`theorem curry' (p q r : Prop) : (p ∧ q → r) → p → q → r := by
+  sorry`} must="curry'" hint="intro h hp hq (intro takes several names), then exact h ⟨hp, hq⟩." solution={`theorem curry' (p q r : Prop) : (p ∧ q → r) → p → q → r := by
+  intro h hp hq
+  exact h ⟨hp, hq⟩`}>
+Replace `sorry` with tactics. Watch the goal panel as you go, and compare the final term with the one you would have written by hand.
+</Exercise>
+
+<Exercise id="tactics:cases" title="Distributivity with tactics" lens code={`theorem and_or (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) := by
+  intro h
+  sorry`} must="and_or" hint="cases h.2 with | inl hq => … | inr hr => …; in the first case, left then exact ⟨h.1, hq⟩." solution={`theorem and_or (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) := by
+  intro h
+  cases h.2 with
+  | inl hq =>
+    left
+    exact ⟨h.1, hq⟩
+  | inr hr =>
+    right
+    exact ⟨h.1, hr⟩`}>
+Finish the proof. `cases` works on any term, not just a name: try `cases h.2`.
+</Exercise>
+
+<Exercise id="tactics:exists" title="A witness" lens code={`theorem exists_double : ∃ n : Nat, n + n = 10 := by
+  sorry`} must="exists_double" hint="exists 5 (the remaining goal 5 + 5 = 10 is closed by computation)." solution={`theorem exists_double : ∃ n : Nat, n + n = 10 := by
+  exists 5`}>
+`exists w` provides the witness, and tries to close the rest by computation.
+</Exercise>

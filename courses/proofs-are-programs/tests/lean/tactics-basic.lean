@@ -43,3 +43,15 @@ theorem t12 (n : Nat) : 0 + n = n := by
   induction n with
   | zero => rfl
   | succ n ih => simp [Nat.add, ih]
+theorem r14 (p q : Prop) (h : p ∨ q) (hnp : ¬p) : q := by
+  cases h with
+  | inl hp => exact absurd hp hnp
+  | inr hq => exact hq
+theorem r14b (p q : Prop) (h : p ∨ q) (hnp : ¬p) : q := by
+  cases h
+  · contradiction
+  · assumption
+theorem r14c (p q : Prop) (hnp : ¬p) (h : p ∨ q) : q := by
+  cases h with
+  | inl hp => contradiction
+  | inr hq => exact hq
