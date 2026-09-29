@@ -31,6 +31,8 @@ export interface PlaygroundProps {
   extra?: import('solid-js').JSX.Element;
   class?: string;
   lineNumbers?: boolean;
+  /** soft-wrap long lines in the editor */
+  wrap?: boolean;
 }
 
 export function hoverInfo(env: Environment, infos: InfoItem[], pos: number): { from: number; to: number; dom: HTMLElement } | undefined {
@@ -134,6 +136,7 @@ export function Playground(props: PlaygroundProps) {
             hover={(pos) => hoverInfo(result().env, result().infos, pos)}
             minHeight={props.height ?? '6rem'}
             lineNumbers={props.lineNumbers}
+            wrap={props.wrap}
             ref={(v) => (view = v)}
           />
         </div>

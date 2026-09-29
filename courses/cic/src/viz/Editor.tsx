@@ -127,6 +127,8 @@ export interface EditorProps {
   maxHeight?: string;
   readOnly?: boolean;
   lineNumbers?: boolean;
+  /** soft-wrap long lines instead of scrolling sideways (exercises: the signature must stay visible) */
+  wrap?: boolean;
   onCursor?: (pos: number) => void;
   ref?: (view: EditorView) => void;
 }
@@ -160,6 +162,7 @@ export function Editor(props: EditorProps) {
       }),
     ];
     if (props.lineNumbers !== false) exts.push(lineNumbers());
+    if (props.wrap) exts.push(EditorView.lineWrapping);
     if (props.hover) {
       exts.push(
         hoverTooltip((_view, pos): Tooltip | null => {

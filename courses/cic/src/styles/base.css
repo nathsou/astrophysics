@@ -165,6 +165,11 @@
   --ink-3: var(--mute);
   --rule: color-mix(in srgb, var(--pn) 88%, var(--fg));
   --rule-strong: color-mix(in srgb, var(--pn) 70%, var(--fg));
+  /* outlines of controls (buttons, inputs, segmented groups, map arrows):
+     ≥ 3:1 against every surface in all four palette/theme combinations */
+  --control-line: color-mix(in srgb, var(--pn) 38%, var(--fg));
+  /* glyphs drawn on a solid --err / --warn / --ac disc */
+  --on-solid: var(--bg);
   --accent: var(--ac);
   --accent-ink: var(--ac);
   --accent-soft: color-mix(in srgb, var(--ac) 12%, var(--bg));
@@ -291,7 +296,7 @@ hr {
   line-height: 1;
   padding: 0.55em 0.95em;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--rule-strong);
+  border: 1px solid var(--control-line);
   background: var(--code-bg);
   color: var(--ink);
   cursor: pointer;
@@ -333,6 +338,20 @@ hr {
 .btn.small {
   font-size: 0.7rem;
   padding: 0.4em 0.65em;
+  min-height: 28px;
+  min-width: 28px;
+  justify-content: center;
+}
+/* touch: comfortable targets */
+@media (pointer: coarse) {
+  .btn,
+  .btn.small {
+    min-height: 36px;
+    min-width: 36px;
+  }
+  .seg button {
+    min-height: 34px;
+  }
 }
 .btn.active {
   background: var(--accent-soft);
@@ -342,7 +361,7 @@ hr {
 
 .seg {
   display: inline-flex;
-  border: 1px solid var(--rule-strong);
+  border: 1px solid var(--control-line);
   border-radius: var(--radius-sm);
   overflow: hidden;
   background: var(--code-bg);
@@ -374,7 +393,7 @@ input.input {
   font-family: var(--font-mono);
   font-size: 0.78rem;
   padding: 0.45em 0.6em;
-  border: 1px solid var(--rule-strong);
+  border: 1px solid var(--control-line);
   border-radius: var(--radius-sm);
   background: var(--code-bg);
   color: var(--ink);

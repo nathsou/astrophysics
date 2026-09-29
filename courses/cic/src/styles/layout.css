@@ -655,13 +655,29 @@
 .callout.note .callout-title {
   color: var(--mute);
 }
+/* warnings stay in the page's violet family; only the rule and the icon are amber */
 .callout.warning {
-  border-color: color-mix(in srgb, var(--warn) 30%, var(--bg));
+  border-color: var(--code-border);
   border-left-color: var(--warn);
-  background: var(--warn-soft);
+  background: color-mix(in srgb, var(--ac) 4%, color-mix(in srgb, var(--code-bg) 55%, var(--bg)));
 }
 .callout.warning .callout-title {
   color: var(--warn);
+}
+.callout.warning .callout-title::before {
+  content: '!';
+  content: '!' / '';
+  display: inline-grid;
+  place-items: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-right: -0.15rem;
+  border-radius: 50%;
+  background: var(--warn);
+  color: var(--on-solid);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0;
 }
 .callout.history {
   border: 0;
@@ -1065,18 +1081,27 @@
    Playground & infoview
    ------------------------------------------------------------------------ */
 
+.playground {
+  /* the editor/infoview split follows the widget's own width, not the
+     viewport's: inside an exercise (reading column) it stacks */
+  container: playground / inline-size;
+}
 .pg-body {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
 }
-@media (max-width: 900px) {
-  .pg-body {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
 .pg-editor {
   border-right: 1px solid var(--rule);
   min-width: 0;
+}
+@container playground (max-width: 760px) {
+  .pg-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .pg-editor {
+    border-right: 0;
+    border-bottom: 1px solid var(--rule);
+  }
 }
 .pg-info {
   min-width: 0;
@@ -1173,7 +1198,7 @@
   place-items: center;
   font-size: 0.62rem;
   font-weight: 800;
-  color: #fff;
+  color: var(--on-solid);
   margin-top: 0.1rem;
 }
 .msg.error .msg-icon {
@@ -1278,7 +1303,8 @@
   margin-top: 1rem;
 }
 .home-map {
-  max-width: 62rem;
+  /* the horizontal course map is drawn 1:1 at 1030 user units when there is room */
+  max-width: calc(1030px + 7rem);
   padding: 0.5rem 3.5rem 0;
 }
 .home-map-caption {
@@ -1608,17 +1634,45 @@
   background: var(--ok);
 }
 
-/* course map */
+/* course map: one horizontal and one vertical layout, picked by container width */
 .coursemap {
   margin: 1.2rem 0 1.5rem;
-  overflow-x: auto;
+  container-type: inline-size;
 }
-.coursemap svg {
+.cm-svg {
   width: 100%;
-  min-width: 40rem;
   height: auto;
   display: block;
   font-family: var(--font-prose);
+  overflow: visible;
+}
+.cm-vertical {
+  display: none;
+  max-width: 25rem;
+  margin: 0 auto;
+}
+/* below this width the horizontal map would scale its labels under ~12px */
+@container (max-width: 799px) {
+  .cm-horizontal {
+    display: none;
+  }
+  .cm-vertical {
+    display: block;
+  }
+}
+.cm-line {
+  stroke: var(--control-line);
+  stroke-width: 1.6;
+}
+.cm-arrowhead {
+  fill: var(--control-line);
+}
+.cm-node {
+  cursor: pointer;
+}
+.cm-node:focus-visible circle {
+  stroke: var(--focus);
+  stroke-width: 3;
 }
 .cm-node circle {
   fill: var(--card);
@@ -1639,17 +1693,25 @@
 }
 .cm-label {
   font-family: var(--font-prose);
-  font-size: 19px;
+  font-size: var(--cm-label, 19px);
   font-weight: 700;
   fill: var(--ink);
 }
+/* sub-labels and edge labels carry a halo in the page colour so that an
+   arrow passing close by never cuts through the text */
+.cm-sub,
+.cm-edge {
+  font-size: var(--cm-text, 14px);
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
 .cm-sub {
-  font-size: 12px;
   fill: var(--ink-3);
 }
 .cm-edge {
-  font-size: 11px;
-  fill: var(--ink-3);
+  fill: var(--ink-2);
   font-style: italic;
 }
 .ex-prompt > :last-child {
@@ -2001,7 +2063,7 @@
 .cube-label.on {
   border-color: var(--accent);
   background: var(--accent);
-  color: #fff;
+  color: var(--on-solid);
 }
 .cube-side {
   padding: 1rem;
@@ -2433,4 +2495,3 @@
   margin: 0.15rem 0 0 1rem;
   color: var(--ink-2);
 }
-.cm-node { cursor: pointer; }
