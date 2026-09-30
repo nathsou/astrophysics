@@ -57,3 +57,7 @@ src/lib/widgets/<area>.ts                     exports of shared widgets
 
 `glossary.d/<you>.yaml`: `id: { term, definition, chapter }`. `bibliography.d/<you>.yaml`: `key: { authors, year, title, venue, url, note }`.
 `timeline.d/<you>.yaml`: list of `{ year, title, people, chapter, text }`. `terms.d/<you>.yaml`: shared equation-term docs (rarely needed).
+
+## YAML pitfalls
+
+All the data files and exercise blocks are YAML. A value that contains `: ` (colon and space), starts with a quote, `[`, `{`, `*`, `&`, `!`, `|`, `>` or `%`, or contains ` #`, **must be quoted** (single quotes; double a literal `'` as `''`), or written as a block scalar (`|` or `>`). An unquoted colon is the most common cause of the build error "Nested mappings are not allowed in compact mappings". Run `NODE_OPTIONS=--experimental-strip-types npm run build` to find them: the error names the file and the YAML line.

@@ -1,0 +1,28 @@
+cern:
+  term: CERN
+  definition: The European Organization for Nuclear Research, a particle-physics laboratory near Geneva on the French–Swiss border, founded in 1954. It builds and runs the Large Hadron Collider.
+  chapter: anatomy-of-a-collision
+lhc:
+  term: Large Hadron Collider (LHC)
+  definition: The 26.7 km ring at CERN in which two proton beams, each of 6.8 TeV, collide head-on at four points. The most powerful collider ever built.
+  chapter: anatomy-of-a-collision
+atlas-cms:
+  term: ATLAS and CMS
+  definition: The two general-purpose detectors of the LHC, built independently to confirm one another's results. CMS stands for Compact Muon Solenoid.
+  chapter: anatomy-of-a-collision
+bunch-crossing:
+  term: bunch crossing
+  definition: The passage of one bunch of protons through another inside a detector, which happens every 25 ns at the LHC. A crossing can contain dozens of separate proton–proton collisions.
+  chapter: anatomy-of-a-collision
+luminosity:
+  term: luminosity
+  definition: 'A measure of how many collisions a collider delivers. The number of events per second for a process is its cross-section times the instantaneous luminosity.'
+  chapter: anatomy-of-a-collision
+trigger:
+  term: trigger
+  definition: The system that decides, in microseconds, which collisions to record, because only a tiny fraction of the 40 million crossings per second can be stored.
+  chapter: anatomy-of-a-collision
+monte-carlo:
+  term: Monte Carlo simulation
+  definition: A calculation that uses random numbers to sample from a probability distribution. Event generators and detector simulations are Monte Carlo programs.
+  chapter: anatomy-of-a-collision
