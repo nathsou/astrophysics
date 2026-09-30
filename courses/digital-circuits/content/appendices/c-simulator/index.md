@@ -221,7 +221,7 @@ The default integration is **backward Euler**; the **trapezoidal** rule is an op
 
 **After a breakpoint or a parameter change** the step restarts small, with a first step of backward Euler even when the method is trapezoidal, as SPICE does, so that the trapezoidal rule does not ring on the jump. How small is a recent change: the restart step is the smallest of 1 ns, 10⁻³ of the *fastest time constant of the circuit as it is now*, and 1/100 of the interval `advance()` was asked for, never below 1 fs. The time constants are estimated by assembling the matrix once with a probe step: each capacitor gets τ = *C*/*G*, where *G* is the largest conductance at its terminals not counting capacitors, and each inductor or relay coil *L*/(*R* + 1/*G*). A switch that has just closed counts, so a fast RC edge is resolved from its first step.
 
-**Work caps.** When an `advance()` call reaches one of its caps before the requested time, the engine sets `lagging`, posts an information message, and simulated time falls behind the requested time: the figure simply runs slower than real time. The caps are deterministic. A UI loop may also pass a wall-clock budget, which is not, so tests do not use it.
+**Work caps.** When an `advance()` call reaches one of its caps before the requested time, the engine sets `lagging`, posts an information message, and simulated time falls behind the requested time: the figure simply runs slower than real time. The caps are deterministic. A UI loop may also pass a wall-clock budget, which is not, so tests do not use it. The digital and switch-level engines keep the same contract, counted in events rather than steps: at most 100,000 and 10,000 events per call (`maxEventsPerAdvance`), so a fast clock or a ring oscillator slows a figure down instead of freezing the page.
 
 ### When Newton–Raphson fails
 
@@ -329,7 +329,7 @@ The bench (`#/bench`) is a full-screen sandbox, and a compact form of it sits in
 |---|---|
 | Multimeter | Volts, amperes, ohms or continuity, with a red and a black probe placed on any wire or pin |
 | Oscilloscope | Up to 4 channels, volts per division and position for each, a timebase (ten divisions across), a trigger (source, level, rising or falling, auto or normal), two time cursors and two voltage cursors, persistence |
-| Logic analyser | 8 channels to start with and up to 16, a window, hold, two time cursors, and a hook for protocol decoders (none is registered in this version) |
+| Logic analyser | 8 channels to start with and up to 16, a window, hold, two time cursors, and protocol decoders for UART, SPI (MOSI and MISO) and I²C (`src/lib/bench/instruments/protocols.ts`, from Chapter 24) |
 | Logic probe | HIGH, LOW, Z or X of a net |
 
 - **Saving and sharing.** The circuit in the editor is autosaved to the browser’s local storage under the key `dc-bench` (every access is guarded, since storage can be missing or full). A **share link** keeps the whole circuit in the URL, so nothing is stored on a server:

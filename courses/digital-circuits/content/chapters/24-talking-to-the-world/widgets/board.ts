@@ -17,7 +17,7 @@
 import { Prng } from '$lib/sim/cpu/common/prng';
 import { bounceBurst } from '$lib/sim/analog/models/switches';
 import { OctetComputer, type OutputChange } from '../../23-running-programs/widgets/computer';
-import { makeSignal, setLevel, type Signal } from './protocols';
+import { makeSignal, setLevel, type Signal } from '$lib/bench/instruments/protocols';
 
 export const CLOCK_HZ = 1e6;
 export const PWM_PERIOD = 256;

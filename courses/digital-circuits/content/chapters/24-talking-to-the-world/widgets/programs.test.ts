@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { assemble } from '$lib/sim/cpu/octet';
 import { IoBoard, bitSignal, dacTrace, pwmSignal, valueAt, CLOCK_HZ, PWM_PERIOD } from './board';
 import { BOARD_PROGRAMS, UART_BIT_CYCLES, boardProgram } from './programs';
-import { decodeUart, edgesOf, frameText } from './protocols';
+import { decodeUart, edgesOf, frameText } from '$lib/bench/instruments/protocols';
 
 const board = (id: string) => {
   const b = new IoBoard(boardProgram(id).source);

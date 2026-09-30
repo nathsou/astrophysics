@@ -15,9 +15,9 @@ import type { Circuit, FlatNetlist, Params, Placed } from '$lib/sim/netlist/type
 import { createAnalogEngine, analogModelTypes, LED_COLOURS } from '$lib/sim/analog';
 import { G_CLOSED, G_OPEN, GMIN, GMIN_JUNCTION, VT } from '$lib/sim/analog/device';
 import { AMMETER_FLOOR, VOLTMETER_FLOOR } from '$lib/sim/analog/meter-floors';
-import { createDigitalEngine } from '$lib/sim/digital';
+import { createDigitalEngine, DEFAULT_MAX_EVENTS_PER_ADVANCE as DIGITAL_EVENTS } from '$lib/sim/digital';
 import { digitalModelTypes, TICKS_PER_SECOND } from '$lib/sim/digital/model';
-import { createSwitchEngine } from '$lib/sim/switch';
+import { createSwitchEngine, DEFAULT_MAX_EVENTS_PER_ADVANCE as SWITCH_EVENTS } from '$lib/sim/switch';
 import { ANALOG, TRANSISTOR_BUDGET } from '$lib/sim/expand/expand';
 import { cellFor, cellTransistors } from '$lib/sim/expand/cells';
 import { transistorsOf } from '$lib/sim/check/cost';
@@ -282,6 +282,14 @@ describe('the digital engine', () => {
     expect(s).toMatch(/and4 = \(a: number, b: number\): number => \(a === 0 \|\| b === 0 \? 0/);
     expect(s).toMatch(/or4 = \(a: number, b: number\): number => \(a === 1 \|\| b === 1 \? 1/);
     expect(s).toMatch(/xor4 = \(a: number, b: number\): number => \(a > 1 \|\| b > 1 \? X/);
+  });
+});
+
+describe('per-call event caps', () => {
+  it('match the text: 100,000 digital and 10,000 switch-level events per advance()', () => {
+    expect(DIGITAL_EVENTS).toBe(100_000);
+    expect(SWITCH_EVENTS).toBe(10_000);
+    expect(md).toContain('at most 100,000 and 10,000 events per call');
   });
 });
 

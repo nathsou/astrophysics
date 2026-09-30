@@ -14,7 +14,7 @@
   import TraceView from './TraceView.svelte';
   import { IoBoard } from './board';
   import { BOARD_PROGRAMS, boardProgram } from './programs';
-  import { decodeUart, frameText, hexByte, registerProtocolDecoders } from './protocols';
+  import { decodeUart, frameText, hexByte, registerProtocolDecoders } from '$lib/bench/instruments/protocols';
   import type { DecodedRow, TraceChannel } from './trace';
 
   let { program = 'uart', title = 'The I/O board and its analyser', subtitle = 'Software talking to pins', n, caption, rate = 3 }: { program?: string; title?: string; subtitle?: string; n?: string | number; caption?: string; rate?: number } = $props();

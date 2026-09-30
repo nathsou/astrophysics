@@ -8,7 +8,7 @@ import { createDigitalEngine, type DigitalEngine } from '$lib/sim/digital';
 import { flatten, topLevelNets } from '$lib/sim/netlist/flatten';
 import { resolveTraces } from '$lib/bench/traces';
 import type { Circuit, FlatNetlist } from '$lib/sim/netlist/types';
-import { signalsOf, type Signal } from './protocols';
+import { signalsOf, type Signal } from '$lib/bench/instruments/protocols';
 
 export interface Capture {
   engine: DigitalEngine;

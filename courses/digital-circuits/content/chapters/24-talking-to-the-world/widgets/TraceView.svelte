@@ -6,7 +6,7 @@
     <TraceView t0={0} t1={2e-3} channels={[{ name: 'TX', signal }]} decoded={[{ name: 'UART', notes }]} />
 -->
 <script lang="ts">
-  import { levelAt, type Signal } from './protocols';
+  import { levelAt, type Signal } from '$lib/bench/instruments/protocols';
   import type { DecodedRow, TraceChannel } from './trace';
 
   let {

@@ -10,7 +10,7 @@
   import Widget from '$lib/components/ui/Widget.svelte';
   import Segmented from '$lib/components/ui/Segmented.svelte';
   import TraceView from './TraceView.svelte';
-  import { registerProtocolDecoders } from './protocols';
+  import { registerProtocolDecoders } from '$lib/bench/instruments/protocols';
   import { i2cLab, spiLab, uartLab, UART_FORMATS, type UartFormat } from './lab';
 
   let { protocol = 'uart', n, caption }: { protocol?: 'uart' | 'spi' | 'i2c' | string; n?: string | number; caption?: string } = $props();

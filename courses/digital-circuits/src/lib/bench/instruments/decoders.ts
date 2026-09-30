@@ -1,7 +1,7 @@
 /**
- * Hook for protocol decoders in the logic analyser (UART, SPI and I²C arrive with Chapter 24). A decoder
- * reads the recorded levels of some channels and returns annotations, which the analyser draws as a row
- * of labelled boxes under the waveforms. Nothing is registered yet; the analyser lists what is.
+ * Hook for protocol decoders in the logic analyser. A decoder reads the recorded levels of some channels and
+ * returns annotations, which the analyser draws as a row of labelled boxes under the waveforms. The analyser
+ * registers the UART, SPI and I²C decoders of `protocols.ts` (Chapter 24) and lists whatever is registered.
  */
 
 export interface DecoderInput {

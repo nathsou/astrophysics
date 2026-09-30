@@ -14,11 +14,15 @@
   import Glyph from '../editor/Glyph.svelte';
   import type { Bench } from '../editor/bench.svelte';
   import { getDecoder, decoders } from './decoders';
+  import { registerProtocolDecoders } from './protocols';
   import { MAX_ANALYSER_CHANNELS, type AnalyserConfig, type Instrument } from './kinds';
   import { probeLabel, probeNet } from './probes';
   import { indexAtOrBefore, stepLadder } from './scope-math';
   import ProbeButton from './ProbeButton.svelte';
   import Stepper from './Stepper.svelte';
+
+  // UART, SPI and I²C are always on offer, not only after Chapter 24 has loaded them.
+  registerProtocolDecoders();
 
   let { bench, inst }: { bench: Bench; inst: Instrument } = $props();
   const cfg = $derived(inst.config as AnalyserConfig);

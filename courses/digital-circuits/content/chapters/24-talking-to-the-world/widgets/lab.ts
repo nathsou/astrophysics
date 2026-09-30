@@ -17,7 +17,7 @@ import {
   type I2cTransaction,
   type UartConfig,
   type UartFrame,
-} from './protocols';
+} from '$lib/bench/instruments/protocols';
 import type { DecodedRow, TraceChannel } from './trace';
 
 export interface LabResult {

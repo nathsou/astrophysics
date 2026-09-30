@@ -1,5 +1,5 @@
 import type { Annotation } from '$lib/bench/instruments/decoders';
-import type { Signal } from './protocols';
+import type { Signal } from '$lib/bench/instruments/protocols';
 
 export interface TraceChannel {
   name: string;

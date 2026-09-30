@@ -12,7 +12,7 @@
   import Segmented from '$lib/components/ui/Segmented.svelte';
   import TraceView from './TraceView.svelte';
   import { FILTER_R, rippleEstimate, runPwm, type PwmRun } from './pwm';
-  import { makeSignal, setLevel } from './protocols';
+  import { makeSignal, setLevel } from '$lib/bench/instruments/protocols';
 
   let { n, caption, duty: startDuty = 25 }: { n?: string | number; caption?: string; duty?: number } = $props();
 

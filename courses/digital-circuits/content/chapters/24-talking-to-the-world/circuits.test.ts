@@ -4,7 +4,7 @@ import { describe, expect, test } from 'vitest';
 import '$lib/sim/netlist/catalog';
 import type { Circuit } from '$lib/sim/netlist/types';
 import { captureDigital } from './widgets/capture';
-import { decodeSpi, decodeUart, edgesOf, frameText, levelAt } from './widgets/protocols';
+import { decodeSpi, decodeUart, edgesOf, frameText, levelAt } from '$lib/bench/instruments/protocols';
 
 /**
  * Every live circuit of Chapter 24 must do what the text says. Each test loads the JSON as the page does, drives it through
