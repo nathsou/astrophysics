@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Interactive textbooks on astrophysics, type theory, compiler backends, language models, Gödel’s incompleteness theorems, mathematical proof, Euclid’s Elements and digital circuits. Read, experiment and build — everything runs in your browser.">
+    <meta name="description" content="Interactive textbooks on astrophysics, type theory, compiler backends, language models, Gödel’s incompleteness theorems, mathematical proof, Euclid’s Elements and digital circuits, running in the browser.">
     <meta name="theme-color" content="#f5f1e8" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#0e1320" media="(prefers-color-scheme: dark)">
     <title>Interactive Courses</title>
@@ -33,21 +33,28 @@
       </header>
 
       <main>
-        <section class="hero" aria-labelledby="title">
-          <p class="eyebrow">A library of interactive textbooks</p>
-          <h1 id="title">Ideas you can <em>take&nbsp;apart.</em></h1>
-          <p class="lede">Nine deep dives, each with its own visual language. Read the explanation, then change the inputs and watch the idea work.</p>
-        </section>
+        <div class="toolbar">
+          <h1 id="title">Courses</h1>
+          <div class="filters" role="group" aria-label="Filter by topic" hidden>
+            <button type="button" data-topic="all" aria-pressed="true">All</button>
+            <button type="button" data-topic="physics" aria-pressed="false">Physics</button>
+            <button type="button" data-topic="mathematics" aria-pressed="false">Mathematics</button>
+            <button type="button" data-topic="logic" aria-pressed="false">Logic</button>
+            <button type="button" data-topic="systems" aria-pressed="false">Computer systems</button>
+            <button type="button" data-topic="ml" aria-pressed="false">Machine learning</button>
+          </div>
+          <p class="count" aria-live="polite"></p>
+        </div>
 
         <section class="grid" id="courses" aria-label="The courses">
-          <a class="card cosmos" href="./astrophysics/">
+          <a class="card cosmos" data-topic="physics" href="./astrophysics/">
             <i class="ring r1" aria-hidden="true"></i><i class="ring r2" aria-hidden="true"></i>
             <p class="kicker">The Almanac · Physics · 37 ch</p>
             <h2>The Cosmos, Computed</h2>
             <p class="desc">Kepler’s orbits to the cosmic microwave background, with live simulations.</p>
           </a>
 
-          <a class="card cic" href="./cic/">
+          <a class="card cic" data-topic="logic" href="./cic/">
             <p class="kicker">The Editor · Logic · 21 ch</p>
             <h2>Calculus of Inductive Constructions</h2>
             <p class="desc">-- From the λ-calculus to Lean 4, on a real kernel.</p>
@@ -55,7 +62,7 @@
             <p class="ok">✓ no errors</p>
           </a>
 
-          <a class="card pap" href="./proofs-are-programs/">
+          <a class="card pap" data-topic="logic" href="./proofs-are-programs/">
             <p class="kicker">The Twin · Logic · 23 ch</p>
             <h2>Proofs Are Programs</h2>
             <div class="twins" aria-hidden="true">
@@ -67,7 +74,7 @@
             <p class="desc">Curry–Howard for programmers: write proofs as programs, then prove a compiler correct and build your own kernel.</p>
           </a>
 
-          <a class="card compiler" href="./compiler-backends/">
+          <a class="card compiler" data-topic="systems" href="./compiler-backends/">
             <div class="head">
               <div>
                 <p class="kicker">Datasheet · Systems · 23 ch</p>
@@ -83,7 +90,7 @@
             </ul>
           </a>
 
-          <a class="card lm" href="./language-models/">
+          <a class="card lm" data-topic="ml" href="./language-models/">
             <p class="kicker"><span class="mark" aria-hidden="true">LM</span> From scratch · Machine learning · 30 ch</p>
             <div class="split">
               <h2>Language Models from Scratch</h2>
@@ -97,7 +104,7 @@
             <p class="desc">Build a GPT from nothing, then take it through scaling, fine-tuning, reasoning, tools, interpretability and safety.</p>
           </a>
 
-          <a class="card incompleteness" href="./incompleteness/">
+          <a class="card incompleteness" data-topic="logic" href="./incompleteness/">
             <p class="kicker">The Textbook · Logic · 9 ch</p>
             <h2>Incompleteness<br>and Computability</h2>
             <p class="formula">G ↔ ¬Prov(⌜G⌝)</p>
@@ -105,14 +112,14 @@
             <p class="desc">Richard Zach’s Open Logic text, made executable: build the objects, then find them in the proofs.</p>
           </a>
 
-          <a class="card proofs" href="./proofs/">
+          <a class="card proofs" data-topic="mathematics" href="./proofs/">
             <i class="blk red" aria-hidden="true"></i><i class="blk yellow" aria-hidden="true"></i><i class="blk blue" aria-hidden="true"></i>
             <h2><span class="sr-only">Proofcraft</span><span aria-hidden="true">PROOF<br>CRAFT</span></h2>
             <p class="desc">Rebuild great theorems, with a step checker and an optional Socratic tutor.</p>
             <p class="kicker">Byrne · Mathematics · 23 ch</p>
           </a>
 
-          <a class="card elements" href="./elements/">
+          <a class="card elements" data-topic="mathematics" href="./elements/">
             <svg class="fig" viewBox="0 0 220 170" aria-hidden="true">
               <circle cx="80" cy="105" r="60" class="k"/>
               <circle cx="140" cy="105" r="60" class="k"/>
@@ -131,7 +138,8 @@
               <p class="desc">All 465 propositions word for word, each with a modern version and a live figure you can drag, step through, or read in Byrne’s colours.</p>
             </div>
           </a>
-          <a class="card digital" href="./digital-circuits/">
+
+          <a class="card digital" data-topic="systems" href="./digital-circuits/">
             <div class="scope" aria-hidden="true">
               <svg viewBox="0 0 200 64" preserveAspectRatio="none">
                 <path class="grid" d="M0 16H200M0 32H200M0 48H200M40 0V64M80 0V64M120 0V64M160 0V64"/>
@@ -148,10 +156,38 @@
 
       <footer class="footer">
         <span>✳ Interactive Courses</span>
-        <span>Read · Experiment · Build</span>
       </footer>
     </div>
     <script>
+      // Topic filter: shows the cards of one broad topic; the choice is kept in the URL (?topic=logic).
+      (() => {
+        const bar = document.querySelector('.filters');
+        const buttons = [...bar.querySelectorAll('button')];
+        const cards = [...document.querySelectorAll('.grid .card')];
+        const count = document.querySelector('.count');
+        const topics = new Set(buttons.map((b) => b.dataset.topic));
+        const show = (topic, push) => {
+          if (!topics.has(topic)) topic = 'all';
+          let n = 0;
+          for (const c of cards) {
+            const on = topic === 'all' || c.dataset.topic === topic;
+            c.hidden = !on;
+            if (on) n++;
+          }
+          for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.topic === topic));
+          count.textContent = `${n} ${n === 1 ? 'course' : 'courses'}`;
+          if (push) {
+            const url = new URL(location.href);
+            if (topic === 'all') url.searchParams.delete('topic');
+            else url.searchParams.set('topic', topic);
+            history.replaceState(null, '', url);
+          }
+        };
+        bar.hidden = false;
+        for (const b of buttons) b.addEventListener('click', () => show(b.dataset.topic, true));
+        show(new URLSearchParams(location.search).get('topic') ?? 'all', false);
+      })();
+
       // Theme toggle: the same `theme` key as every course, so the choice follows you between them.
       (() => {
         const root = document.documentElement;
