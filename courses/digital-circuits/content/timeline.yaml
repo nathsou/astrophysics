@@ -430,3 +430,23 @@
   people: Greg James, Barry Silverman, Brian Silverman
   chapter: control
   text: A project images the die of the MOS 6502 layer by layer, traces its transistors and publishes a simulation of them that runs in a web page, showing a hardwired control unit at work.
+- year: 1874
+  title: Baudot’s code
+  people: Émile Baudot
+  chapter: talking-to-the-world
+  text: 'Baudot patents a telegraph code of five on–off signals of equal length, so that a machine can send and receive it; the unit of signalling speed, the baud, is named after him.'
+- year: 1937
+  title: Pulse-code modulation
+  people: Alec Reeves
+  chapter: talking-to-the-world
+  text: 'At ITT’s laboratory in Paris Reeves conceives of sending speech as numbers, sampled, quantised and coded as pulses, so that noise on the line can be removed; the French patent is filed in 1938.'
+- year: 1960
+  title: RS-232
+  people: Electronic Industries Association
+  chapter: talking-to-the-world
+  text: 'The EIA publishes Recommended Standard 232 on 1 May, for connecting a terminal to a modem with a serial line and voltages of ±3 to ±15 V.'
+- year: 1982
+  title: I²C
+  people: Philips Semiconductors
+  chapter: talking-to-the-world
+  text: 'Philips brings out chips with a two-wire bus of its own design, developed for the electronics of television sets: 100 kbit/s, 7-bit addresses, open-drain lines with pull-up resistors.'

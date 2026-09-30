@@ -1,0 +1,4200 @@
+{
+  "version": 1,
+  "title": "Register file",
+  "engine": "digital",
+  "components": [
+    {
+      "id": "WD0",
+      "type": "port",
+      "x": 4,
+      "y": 0,
+      "params": {
+        "name": "WD0",
+        "dir": "in"
+      },
+      "label": ""
+    },
+    {
+      "id": "WD1",
+      "type": "port",
+      "x": 4,
+      "y": 4,
+      "params": {
+        "name": "WD1",
+        "dir": "in"
+      },
+      "label": ""
+    },
+    {
+      "id": "WD2",
+      "type": "port",
+      "x": 4,
+      "y": 8,
+      "params": {
+        "name": "WD2",
+        "dir": "in"
+      },
+      "label": ""
+    },
+    {
+      "id": "WD3",
+      "type": "port",
+      "x": 4,
+      "y": 12,
+      "params": {
+        "name": "WD3",
+        "dir": "in"
+      },
+      "label": ""
+    },
+    {
+      "id": "WD4",
+      "type": "port",
+      "x": 4,
+      "y": 16,
+      "params": {
+        "name": "WD4",
+        "dir": "in"
+      },
+      "label": ""
+    },
+    {
+      "id": "WD5",
+      "type": "port",
+      "x": 4,
+      "y": 20,
+      "params": {
+        "name": "WD5",
+        "dir": "in"
+      },
+      "label": ""
+    },
+    {
+      "id": "WD6",
+      "type": "port",
+      "x": 4,
+      "y": 24,
+      "params": {
+        "name": "WD6",
+        "dir": "in"
+      },
+      "label": ""
+    },
+    {
+      "id": "WD7",
+      "type": "port",
+      "x": 4,
+      "y": 28,
+      "params": {
+        "name": "WD7",
+        "dir": "in"
+      },
+      "label": ""
+    },
+    {
+      "id": "WA0",
+      "type": "port",
+      "x": 4,
+      "y": 32,
+      "params": {
+        "name": "WA0",
+        "dir": "in"
+      },
+      "label": ""
+    },
+    {
+      "id": "WA1",
+      "type": "port",
+      "x": 4,
+      "y": 36,
+      "params": {
+        "name": "WA1",
+        "dir": "in"
+      },
+      "label": ""
+    },
+    {
+      "id": "WE",
+      "type": "port",
+      "x": 4,
+      "y": 40,
+      "params": {
+        "name": "WE",
+        "dir": "in"
+      },
+      "label": ""
+    },
+    {
+      "id": "RA0",
+      "type": "port",
+      "x": 4,
+      "y": 44,
+      "params": {
+        "name": "RA0",
+        "dir": "in"
+      },
+      "label": ""
+    },
+    {
+      "id": "RA1",
+      "type": "port",
+      "x": 4,
+      "y": 48,
+      "params": {
+        "name": "RA1",
+        "dir": "in"
+      },
+      "label": ""
+    },
+    {
+      "id": "RB0",
+      "type": "port",
+      "x": 4,
+      "y": 52,
+      "params": {
+        "name": "RB0",
+        "dir": "in"
+      },
+      "label": ""
+    },
+    {
+      "id": "RB1",
+      "type": "port",
+      "x": 4,
+      "y": 56,
+      "params": {
+        "name": "RB1",
+        "dir": "in"
+      },
+      "label": ""
+    },
+    {
+      "id": "CLK",
+      "type": "port",
+      "x": 4,
+      "y": 60,
+      "params": {
+        "name": "CLK",
+        "dir": "in"
+      },
+      "label": ""
+    },
+    {
+      "id": "U1",
+      "type": "const",
+      "x": 4,
+      "y": 64,
+      "params": {
+        "value": 0
+      }
+    },
+    {
+      "id": "U2",
+      "type": "part:dec2-4",
+      "x": 16,
+      "y": 34
+    },
+    {
+      "id": "U3",
+      "type": "part:register",
+      "x": 33,
+      "y": 15
+    },
+    {
+      "id": "U4",
+      "type": "part:register",
+      "x": 33,
+      "y": 38
+    },
+    {
+      "id": "U5",
+      "type": "part:register",
+      "x": 33,
+      "y": 61
+    },
+    {
+      "id": "U6",
+      "type": "part:register",
+      "x": 33,
+      "y": 84
+    },
+    {
+      "id": "U7",
+      "type": "part:mux4",
+      "x": 78,
+      "y": 43
+    },
+    {
+      "id": "U8",
+      "type": "part:mux4",
+      "x": 78,
+      "y": 69
+    },
+    {
+      "id": "U9",
+      "type": "part:mux4",
+      "x": 78,
+      "y": 56
+    },
+    {
+      "id": "U10",
+      "type": "part:mux4",
+      "x": 78,
+      "y": 95
+    },
+    {
+      "id": "U11",
+      "type": "part:mux4",
+      "x": 78,
+      "y": 82
+    },
+    {
+      "id": "U12",
+      "type": "part:mux4",
+      "x": 78,
+      "y": 121
+    },
+    {
+      "id": "U13",
+      "type": "part:mux4",
+      "x": 78,
+      "y": 108
+    },
+    {
+      "id": "U14",
+      "type": "part:mux4",
+      "x": 78,
+      "y": 147
+    },
+    {
+      "id": "U15",
+      "type": "part:mux4",
+      "x": 78,
+      "y": 134
+    },
+    {
+      "id": "U16",
+      "type": "part:mux4",
+      "x": 78,
+      "y": 173
+    },
+    {
+      "id": "U17",
+      "type": "part:mux4",
+      "x": 78,
+      "y": 160
+    },
+    {
+      "id": "U18",
+      "type": "part:mux4",
+      "x": 78,
+      "y": 199
+    },
+    {
+      "id": "U19",
+      "type": "part:mux4",
+      "x": 78,
+      "y": 186
+    },
+    {
+      "id": "U20",
+      "type": "part:mux4",
+      "x": 78,
+      "y": 225
+    },
+    {
+      "id": "U21",
+      "type": "part:mux4",
+      "x": 78,
+      "y": 212
+    },
+    {
+      "id": "U22",
+      "type": "part:mux4",
+      "x": 78,
+      "y": 238
+    },
+    {
+      "id": "QA0",
+      "type": "port",
+      "x": 102,
+      "y": 0,
+      "params": {
+        "name": "QA0",
+        "dir": "out"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "QA1",
+      "type": "port",
+      "x": 102,
+      "y": 4,
+      "params": {
+        "name": "QA1",
+        "dir": "out"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "QA2",
+      "type": "port",
+      "x": 102,
+      "y": 8,
+      "params": {
+        "name": "QA2",
+        "dir": "out"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "QA3",
+      "type": "port",
+      "x": 102,
+      "y": 12,
+      "params": {
+        "name": "QA3",
+        "dir": "out"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "QA4",
+      "type": "port",
+      "x": 102,
+      "y": 16,
+      "params": {
+        "name": "QA4",
+        "dir": "out"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "QA5",
+      "type": "port",
+      "x": 102,
+      "y": 20,
+      "params": {
+        "name": "QA5",
+        "dir": "out"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "QA6",
+      "type": "port",
+      "x": 102,
+      "y": 24,
+      "params": {
+        "name": "QA6",
+        "dir": "out"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "QA7",
+      "type": "port",
+      "x": 102,
+      "y": 28,
+      "params": {
+        "name": "QA7",
+        "dir": "out"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "QB0",
+      "type": "port",
+      "x": 102,
+      "y": 32,
+      "params": {
+        "name": "QB0",
+        "dir": "out"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "QB1",
+      "type": "port",
+      "x": 102,
+      "y": 36,
+      "params": {
+        "name": "QB1",
+        "dir": "out"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "QB2",
+      "type": "port",
+      "x": 102,
+      "y": 40,
+      "params": {
+        "name": "QB2",
+        "dir": "out"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "QB3",
+      "type": "port",
+      "x": 102,
+      "y": 44,
+      "params": {
+        "name": "QB3",
+        "dir": "out"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "QB4",
+      "type": "port",
+      "x": 102,
+      "y": 48,
+      "params": {
+        "name": "QB4",
+        "dir": "out"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "QB5",
+      "type": "port",
+      "x": 102,
+      "y": 52,
+      "params": {
+        "name": "QB5",
+        "dir": "out"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "QB6",
+      "type": "port",
+      "x": 102,
+      "y": 56,
+      "params": {
+        "name": "QB6",
+        "dir": "out"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "QB7",
+      "type": "port",
+      "x": 102,
+      "y": 60,
+      "params": {
+        "name": "QB7",
+        "dir": "out"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L1",
+      "type": "label",
+      "x": 6,
+      "y": 0,
+      "params": {
+        "name": "WD0"
+      },
+      "label": ""
+    },
+    {
+      "id": "L2",
+      "type": "label",
+      "x": 31,
+      "y": 15,
+      "params": {
+        "name": "WD0"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L3",
+      "type": "label",
+      "x": 31,
+      "y": 38,
+      "params": {
+        "name": "WD0"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L4",
+      "type": "label",
+      "x": 31,
+      "y": 61,
+      "params": {
+        "name": "WD0"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L5",
+      "type": "label",
+      "x": 31,
+      "y": 84,
+      "params": {
+        "name": "WD0"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L6",
+      "type": "label",
+      "x": 6,
+      "y": 4,
+      "params": {
+        "name": "WD1"
+      },
+      "label": ""
+    },
+    {
+      "id": "L7",
+      "type": "label",
+      "x": 31,
+      "y": 17,
+      "params": {
+        "name": "WD1"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L8",
+      "type": "label",
+      "x": 31,
+      "y": 40,
+      "params": {
+        "name": "WD1"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L9",
+      "type": "label",
+      "x": 31,
+      "y": 63,
+      "params": {
+        "name": "WD1"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L10",
+      "type": "label",
+      "x": 31,
+      "y": 86,
+      "params": {
+        "name": "WD1"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L11",
+      "type": "label",
+      "x": 6,
+      "y": 8,
+      "params": {
+        "name": "WD2"
+      },
+      "label": ""
+    },
+    {
+      "id": "L12",
+      "type": "label",
+      "x": 31,
+      "y": 19,
+      "params": {
+        "name": "WD2"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L13",
+      "type": "label",
+      "x": 31,
+      "y": 42,
+      "params": {
+        "name": "WD2"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L14",
+      "type": "label",
+      "x": 31,
+      "y": 65,
+      "params": {
+        "name": "WD2"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L15",
+      "type": "label",
+      "x": 31,
+      "y": 88,
+      "params": {
+        "name": "WD2"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L16",
+      "type": "label",
+      "x": 6,
+      "y": 12,
+      "params": {
+        "name": "WD3"
+      },
+      "label": ""
+    },
+    {
+      "id": "L17",
+      "type": "label",
+      "x": 31,
+      "y": 21,
+      "params": {
+        "name": "WD3"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L18",
+      "type": "label",
+      "x": 31,
+      "y": 44,
+      "params": {
+        "name": "WD3"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L19",
+      "type": "label",
+      "x": 31,
+      "y": 67,
+      "params": {
+        "name": "WD3"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L20",
+      "type": "label",
+      "x": 31,
+      "y": 90,
+      "params": {
+        "name": "WD3"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L21",
+      "type": "label",
+      "x": 6,
+      "y": 16,
+      "params": {
+        "name": "WD4"
+      },
+      "label": ""
+    },
+    {
+      "id": "L22",
+      "type": "label",
+      "x": 31,
+      "y": 23,
+      "params": {
+        "name": "WD4"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L23",
+      "type": "label",
+      "x": 31,
+      "y": 46,
+      "params": {
+        "name": "WD4"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L24",
+      "type": "label",
+      "x": 31,
+      "y": 69,
+      "params": {
+        "name": "WD4"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L25",
+      "type": "label",
+      "x": 31,
+      "y": 92,
+      "params": {
+        "name": "WD4"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L26",
+      "type": "label",
+      "x": 6,
+      "y": 20,
+      "params": {
+        "name": "WD5"
+      },
+      "label": ""
+    },
+    {
+      "id": "L27",
+      "type": "label",
+      "x": 31,
+      "y": 25,
+      "params": {
+        "name": "WD5"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L28",
+      "type": "label",
+      "x": 31,
+      "y": 48,
+      "params": {
+        "name": "WD5"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L29",
+      "type": "label",
+      "x": 31,
+      "y": 71,
+      "params": {
+        "name": "WD5"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L30",
+      "type": "label",
+      "x": 31,
+      "y": 94,
+      "params": {
+        "name": "WD5"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L31",
+      "type": "label",
+      "x": 6,
+      "y": 24,
+      "params": {
+        "name": "WD6"
+      },
+      "label": ""
+    },
+    {
+      "id": "L32",
+      "type": "label",
+      "x": 31,
+      "y": 27,
+      "params": {
+        "name": "WD6"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L33",
+      "type": "label",
+      "x": 31,
+      "y": 50,
+      "params": {
+        "name": "WD6"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L34",
+      "type": "label",
+      "x": 31,
+      "y": 73,
+      "params": {
+        "name": "WD6"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L35",
+      "type": "label",
+      "x": 31,
+      "y": 96,
+      "params": {
+        "name": "WD6"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L36",
+      "type": "label",
+      "x": 6,
+      "y": 28,
+      "params": {
+        "name": "WD7"
+      },
+      "label": ""
+    },
+    {
+      "id": "L37",
+      "type": "label",
+      "x": 31,
+      "y": 29,
+      "params": {
+        "name": "WD7"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L38",
+      "type": "label",
+      "x": 31,
+      "y": 52,
+      "params": {
+        "name": "WD7"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L39",
+      "type": "label",
+      "x": 31,
+      "y": 75,
+      "params": {
+        "name": "WD7"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L40",
+      "type": "label",
+      "x": 31,
+      "y": 98,
+      "params": {
+        "name": "WD7"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L41",
+      "type": "label",
+      "x": 6,
+      "y": 60,
+      "params": {
+        "name": "CLK"
+      },
+      "label": ""
+    },
+    {
+      "id": "L42",
+      "type": "label",
+      "x": 31,
+      "y": 31,
+      "params": {
+        "name": "CLK"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L43",
+      "type": "label",
+      "x": 31,
+      "y": 54,
+      "params": {
+        "name": "CLK"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L44",
+      "type": "label",
+      "x": 31,
+      "y": 77,
+      "params": {
+        "name": "CLK"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L45",
+      "type": "label",
+      "x": 31,
+      "y": 100,
+      "params": {
+        "name": "CLK"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L46",
+      "type": "label",
+      "x": 8,
+      "y": 64,
+      "params": {
+        "name": "zero"
+      },
+      "label": ""
+    },
+    {
+      "id": "L47",
+      "type": "label",
+      "x": 31,
+      "y": 35,
+      "params": {
+        "name": "zero"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L48",
+      "type": "label",
+      "x": 31,
+      "y": 58,
+      "params": {
+        "name": "zero"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L49",
+      "type": "label",
+      "x": 31,
+      "y": 81,
+      "params": {
+        "name": "zero"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L50",
+      "type": "label",
+      "x": 31,
+      "y": 104,
+      "params": {
+        "name": "zero"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L51",
+      "type": "label",
+      "x": 6,
+      "y": 44,
+      "params": {
+        "name": "RA0"
+      },
+      "label": ""
+    },
+    {
+      "id": "L52",
+      "type": "label",
+      "x": 76,
+      "y": 51,
+      "params": {
+        "name": "RA0"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L53",
+      "type": "label",
+      "x": 76,
+      "y": 64,
+      "params": {
+        "name": "RA0"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L54",
+      "type": "label",
+      "x": 76,
+      "y": 90,
+      "params": {
+        "name": "RA0"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L55",
+      "type": "label",
+      "x": 76,
+      "y": 116,
+      "params": {
+        "name": "RA0"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L56",
+      "type": "label",
+      "x": 76,
+      "y": 142,
+      "params": {
+        "name": "RA0"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L57",
+      "type": "label",
+      "x": 76,
+      "y": 168,
+      "params": {
+        "name": "RA0"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L58",
+      "type": "label",
+      "x": 76,
+      "y": 194,
+      "params": {
+        "name": "RA0"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L59",
+      "type": "label",
+      "x": 76,
+      "y": 220,
+      "params": {
+        "name": "RA0"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L60",
+      "type": "label",
+      "x": 6,
+      "y": 48,
+      "params": {
+        "name": "RA1"
+      },
+      "label": ""
+    },
+    {
+      "id": "L61",
+      "type": "label",
+      "x": 76,
+      "y": 53,
+      "params": {
+        "name": "RA1"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L62",
+      "type": "label",
+      "x": 76,
+      "y": 66,
+      "params": {
+        "name": "RA1"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L63",
+      "type": "label",
+      "x": 76,
+      "y": 92,
+      "params": {
+        "name": "RA1"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L64",
+      "type": "label",
+      "x": 76,
+      "y": 118,
+      "params": {
+        "name": "RA1"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L65",
+      "type": "label",
+      "x": 76,
+      "y": 144,
+      "params": {
+        "name": "RA1"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L66",
+      "type": "label",
+      "x": 76,
+      "y": 170,
+      "params": {
+        "name": "RA1"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L67",
+      "type": "label",
+      "x": 76,
+      "y": 196,
+      "params": {
+        "name": "RA1"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L68",
+      "type": "label",
+      "x": 76,
+      "y": 222,
+      "params": {
+        "name": "RA1"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L69",
+      "type": "label",
+      "x": 6,
+      "y": 52,
+      "params": {
+        "name": "RB0"
+      },
+      "label": ""
+    },
+    {
+      "id": "L70",
+      "type": "label",
+      "x": 76,
+      "y": 77,
+      "params": {
+        "name": "RB0"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L71",
+      "type": "label",
+      "x": 76,
+      "y": 103,
+      "params": {
+        "name": "RB0"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L72",
+      "type": "label",
+      "x": 76,
+      "y": 129,
+      "params": {
+        "name": "RB0"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L73",
+      "type": "label",
+      "x": 76,
+      "y": 155,
+      "params": {
+        "name": "RB0"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L74",
+      "type": "label",
+      "x": 76,
+      "y": 181,
+      "params": {
+        "name": "RB0"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L75",
+      "type": "label",
+      "x": 76,
+      "y": 207,
+      "params": {
+        "name": "RB0"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L76",
+      "type": "label",
+      "x": 76,
+      "y": 233,
+      "params": {
+        "name": "RB0"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L77",
+      "type": "label",
+      "x": 76,
+      "y": 246,
+      "params": {
+        "name": "RB0"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L78",
+      "type": "label",
+      "x": 6,
+      "y": 56,
+      "params": {
+        "name": "RB1"
+      },
+      "label": ""
+    },
+    {
+      "id": "L79",
+      "type": "label",
+      "x": 76,
+      "y": 79,
+      "params": {
+        "name": "RB1"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L80",
+      "type": "label",
+      "x": 76,
+      "y": 105,
+      "params": {
+        "name": "RB1"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L81",
+      "type": "label",
+      "x": 76,
+      "y": 131,
+      "params": {
+        "name": "RB1"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L82",
+      "type": "label",
+      "x": 76,
+      "y": 157,
+      "params": {
+        "name": "RB1"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L83",
+      "type": "label",
+      "x": 76,
+      "y": 183,
+      "params": {
+        "name": "RB1"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L84",
+      "type": "label",
+      "x": 76,
+      "y": 209,
+      "params": {
+        "name": "RB1"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L85",
+      "type": "label",
+      "x": 76,
+      "y": 235,
+      "params": {
+        "name": "RB1"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L86",
+      "type": "label",
+      "x": 76,
+      "y": 248,
+      "params": {
+        "name": "RB1"
+      },
+      "flip": true,
+      "label": ""
+    }
+  ],
+  "wires": [
+    {
+      "points": [
+        [
+          4,
+          32
+        ],
+        [
+          12,
+          32
+        ],
+        [
+          12,
+          34
+        ],
+        [
+          16,
+          34
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          4,
+          36
+        ],
+        [
+          16,
+          36
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          4,
+          40
+        ],
+        [
+          14,
+          40
+        ],
+        [
+          14,
+          38
+        ],
+        [
+          16,
+          38
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          22,
+          34
+        ],
+        [
+          23,
+          34
+        ],
+        [
+          23,
+          33
+        ],
+        [
+          33,
+          33
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          22,
+          36
+        ],
+        [
+          24,
+          36
+        ],
+        [
+          24,
+          56
+        ],
+        [
+          33,
+          56
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          22,
+          38
+        ],
+        [
+          25,
+          38
+        ],
+        [
+          25,
+          79
+        ],
+        [
+          33,
+          79
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          22,
+          40
+        ],
+        [
+          26,
+          40
+        ],
+        [
+          26,
+          102
+        ],
+        [
+          33,
+          102
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          15
+        ],
+        [
+          56,
+          15
+        ],
+        [
+          56,
+          43
+        ],
+        [
+          78,
+          43
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          15
+        ],
+        [
+          56,
+          15
+        ],
+        [
+          56,
+          69
+        ],
+        [
+          78,
+          69
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          38
+        ],
+        [
+          58,
+          38
+        ],
+        [
+          58,
+          45
+        ],
+        [
+          78,
+          45
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          38
+        ],
+        [
+          58,
+          38
+        ],
+        [
+          58,
+          71
+        ],
+        [
+          78,
+          71
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          61
+        ],
+        [
+          60,
+          61
+        ],
+        [
+          60,
+          47
+        ],
+        [
+          78,
+          47
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          61
+        ],
+        [
+          60,
+          61
+        ],
+        [
+          60,
+          73
+        ],
+        [
+          78,
+          73
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          84
+        ],
+        [
+          62,
+          84
+        ],
+        [
+          62,
+          49
+        ],
+        [
+          78,
+          49
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          84
+        ],
+        [
+          62,
+          84
+        ],
+        [
+          62,
+          75
+        ],
+        [
+          78,
+          75
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          17
+        ],
+        [
+          40,
+          17
+        ],
+        [
+          40,
+          56
+        ],
+        [
+          78,
+          56
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          17
+        ],
+        [
+          40,
+          17
+        ],
+        [
+          40,
+          95
+        ],
+        [
+          78,
+          95
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          40
+        ],
+        [
+          47,
+          40
+        ],
+        [
+          47,
+          58
+        ],
+        [
+          78,
+          58
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          40
+        ],
+        [
+          47,
+          40
+        ],
+        [
+          47,
+          97
+        ],
+        [
+          78,
+          97
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          63
+        ],
+        [
+          53,
+          63
+        ],
+        [
+          53,
+          60
+        ],
+        [
+          78,
+          60
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          63
+        ],
+        [
+          53,
+          63
+        ],
+        [
+          53,
+          99
+        ],
+        [
+          78,
+          99
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          86
+        ],
+        [
+          64,
+          86
+        ],
+        [
+          64,
+          62
+        ],
+        [
+          78,
+          62
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          86
+        ],
+        [
+          64,
+          86
+        ],
+        [
+          64,
+          101
+        ],
+        [
+          78,
+          101
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          19
+        ],
+        [
+          41,
+          19
+        ],
+        [
+          41,
+          82
+        ],
+        [
+          78,
+          82
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          19
+        ],
+        [
+          41,
+          19
+        ],
+        [
+          41,
+          121
+        ],
+        [
+          78,
+          121
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          42
+        ],
+        [
+          63,
+          42
+        ],
+        [
+          63,
+          84
+        ],
+        [
+          78,
+          84
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          42
+        ],
+        [
+          63,
+          42
+        ],
+        [
+          63,
+          123
+        ],
+        [
+          78,
+          123
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          65
+        ],
+        [
+          65,
+          65
+        ],
+        [
+          65,
+          86
+        ],
+        [
+          78,
+          86
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          65
+        ],
+        [
+          65,
+          65
+        ],
+        [
+          65,
+          125
+        ],
+        [
+          78,
+          125
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          88
+        ],
+        [
+          78,
+          88
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          88
+        ],
+        [
+          66,
+          88
+        ],
+        [
+          66,
+          127
+        ],
+        [
+          78,
+          127
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          21
+        ],
+        [
+          42,
+          21
+        ],
+        [
+          42,
+          108
+        ],
+        [
+          78,
+          108
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          21
+        ],
+        [
+          42,
+          21
+        ],
+        [
+          42,
+          147
+        ],
+        [
+          78,
+          147
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          44
+        ],
+        [
+          48,
+          44
+        ],
+        [
+          48,
+          110
+        ],
+        [
+          78,
+          110
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          44
+        ],
+        [
+          48,
+          44
+        ],
+        [
+          48,
+          149
+        ],
+        [
+          78,
+          149
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          67
+        ],
+        [
+          54,
+          67
+        ],
+        [
+          54,
+          112
+        ],
+        [
+          78,
+          112
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          67
+        ],
+        [
+          54,
+          67
+        ],
+        [
+          54,
+          151
+        ],
+        [
+          78,
+          151
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          90
+        ],
+        [
+          67,
+          90
+        ],
+        [
+          67,
+          114
+        ],
+        [
+          78,
+          114
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          90
+        ],
+        [
+          67,
+          90
+        ],
+        [
+          67,
+          153
+        ],
+        [
+          78,
+          153
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          23
+        ],
+        [
+          43,
+          23
+        ],
+        [
+          43,
+          134
+        ],
+        [
+          78,
+          134
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          23
+        ],
+        [
+          43,
+          23
+        ],
+        [
+          43,
+          173
+        ],
+        [
+          78,
+          173
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          46
+        ],
+        [
+          49,
+          46
+        ],
+        [
+          49,
+          136
+        ],
+        [
+          78,
+          136
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          46
+        ],
+        [
+          49,
+          46
+        ],
+        [
+          49,
+          175
+        ],
+        [
+          78,
+          175
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          69
+        ],
+        [
+          55,
+          69
+        ],
+        [
+          55,
+          138
+        ],
+        [
+          78,
+          138
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          69
+        ],
+        [
+          55,
+          69
+        ],
+        [
+          55,
+          177
+        ],
+        [
+          78,
+          177
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          92
+        ],
+        [
+          68,
+          92
+        ],
+        [
+          68,
+          140
+        ],
+        [
+          78,
+          140
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          92
+        ],
+        [
+          68,
+          92
+        ],
+        [
+          68,
+          179
+        ],
+        [
+          78,
+          179
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          25
+        ],
+        [
+          44,
+          25
+        ],
+        [
+          44,
+          160
+        ],
+        [
+          78,
+          160
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          25
+        ],
+        [
+          44,
+          25
+        ],
+        [
+          44,
+          199
+        ],
+        [
+          78,
+          199
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          48
+        ],
+        [
+          50,
+          48
+        ],
+        [
+          50,
+          162
+        ],
+        [
+          78,
+          162
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          48
+        ],
+        [
+          50,
+          48
+        ],
+        [
+          50,
+          201
+        ],
+        [
+          78,
+          201
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          71
+        ],
+        [
+          57,
+          71
+        ],
+        [
+          57,
+          164
+        ],
+        [
+          78,
+          164
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          71
+        ],
+        [
+          57,
+          71
+        ],
+        [
+          57,
+          203
+        ],
+        [
+          78,
+          203
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          94
+        ],
+        [
+          69,
+          94
+        ],
+        [
+          69,
+          166
+        ],
+        [
+          78,
+          166
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          94
+        ],
+        [
+          69,
+          94
+        ],
+        [
+          69,
+          205
+        ],
+        [
+          78,
+          205
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          27
+        ],
+        [
+          45,
+          27
+        ],
+        [
+          45,
+          186
+        ],
+        [
+          78,
+          186
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          27
+        ],
+        [
+          45,
+          27
+        ],
+        [
+          45,
+          225
+        ],
+        [
+          78,
+          225
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          50
+        ],
+        [
+          51,
+          50
+        ],
+        [
+          51,
+          188
+        ],
+        [
+          78,
+          188
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          50
+        ],
+        [
+          51,
+          50
+        ],
+        [
+          51,
+          227
+        ],
+        [
+          78,
+          227
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          73
+        ],
+        [
+          59,
+          73
+        ],
+        [
+          59,
+          190
+        ],
+        [
+          78,
+          190
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          73
+        ],
+        [
+          59,
+          73
+        ],
+        [
+          59,
+          229
+        ],
+        [
+          78,
+          229
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          96
+        ],
+        [
+          70,
+          96
+        ],
+        [
+          70,
+          192
+        ],
+        [
+          78,
+          192
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          96
+        ],
+        [
+          70,
+          96
+        ],
+        [
+          70,
+          231
+        ],
+        [
+          78,
+          231
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          29
+        ],
+        [
+          46,
+          29
+        ],
+        [
+          46,
+          212
+        ],
+        [
+          78,
+          212
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          29
+        ],
+        [
+          46,
+          29
+        ],
+        [
+          46,
+          238
+        ],
+        [
+          78,
+          238
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          52
+        ],
+        [
+          52,
+          52
+        ],
+        [
+          52,
+          214
+        ],
+        [
+          78,
+          214
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          52
+        ],
+        [
+          52,
+          52
+        ],
+        [
+          52,
+          240
+        ],
+        [
+          78,
+          240
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          75
+        ],
+        [
+          61,
+          75
+        ],
+        [
+          61,
+          216
+        ],
+        [
+          78,
+          216
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          75
+        ],
+        [
+          61,
+          75
+        ],
+        [
+          61,
+          242
+        ],
+        [
+          78,
+          242
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          98
+        ],
+        [
+          71,
+          98
+        ],
+        [
+          71,
+          218
+        ],
+        [
+          78,
+          218
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          98
+        ],
+        [
+          71,
+          98
+        ],
+        [
+          71,
+          244
+        ],
+        [
+          78,
+          244
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          84,
+          43
+        ],
+        [
+          85,
+          43
+        ],
+        [
+          85,
+          0
+        ],
+        [
+          102,
+          0
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          84,
+          56
+        ],
+        [
+          86,
+          56
+        ],
+        [
+          86,
+          4
+        ],
+        [
+          102,
+          4
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          84,
+          82
+        ],
+        [
+          88,
+          82
+        ],
+        [
+          88,
+          8
+        ],
+        [
+          102,
+          8
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          84,
+          108
+        ],
+        [
+          90,
+          108
+        ],
+        [
+          90,
+          12
+        ],
+        [
+          102,
+          12
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          84,
+          134
+        ],
+        [
+          92,
+          134
+        ],
+        [
+          92,
+          16
+        ],
+        [
+          102,
+          16
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          84,
+          160
+        ],
+        [
+          94,
+          160
+        ],
+        [
+          94,
+          20
+        ],
+        [
+          102,
+          20
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          84,
+          186
+        ],
+        [
+          96,
+          186
+        ],
+        [
+          96,
+          24
+        ],
+        [
+          102,
+          24
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          84,
+          212
+        ],
+        [
+          98,
+          212
+        ],
+        [
+          98,
+          28
+        ],
+        [
+          102,
+          28
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          84,
+          69
+        ],
+        [
+          87,
+          69
+        ],
+        [
+          87,
+          32
+        ],
+        [
+          102,
+          32
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          84,
+          95
+        ],
+        [
+          89,
+          95
+        ],
+        [
+          89,
+          36
+        ],
+        [
+          102,
+          36
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          84,
+          121
+        ],
+        [
+          91,
+          121
+        ],
+        [
+          91,
+          40
+        ],
+        [
+          102,
+          40
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          84,
+          147
+        ],
+        [
+          93,
+          147
+        ],
+        [
+          93,
+          44
+        ],
+        [
+          102,
+          44
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          84,
+          173
+        ],
+        [
+          95,
+          173
+        ],
+        [
+          95,
+          48
+        ],
+        [
+          102,
+          48
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          84,
+          199
+        ],
+        [
+          97,
+          199
+        ],
+        [
+          97,
+          52
+        ],
+        [
+          102,
+          52
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          84,
+          225
+        ],
+        [
+          99,
+          225
+        ],
+        [
+          99,
+          56
+        ],
+        [
+          102,
+          56
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          84,
+          238
+        ],
+        [
+          100,
+          238
+        ],
+        [
+          100,
+          60
+        ],
+        [
+          102,
+          60
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          4,
+          0
+        ],
+        [
+          6,
+          0
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          15
+        ],
+        [
+          33,
+          15
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          38
+        ],
+        [
+          33,
+          38
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          61
+        ],
+        [
+          33,
+          61
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          84
+        ],
+        [
+          33,
+          84
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          4,
+          4
+        ],
+        [
+          6,
+          4
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          17
+        ],
+        [
+          33,
+          17
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          40
+        ],
+        [
+          33,
+          40
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          63
+        ],
+        [
+          33,
+          63
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          86
+        ],
+        [
+          33,
+          86
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          4,
+          8
+        ],
+        [
+          6,
+          8
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          19
+        ],
+        [
+          33,
+          19
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          42
+        ],
+        [
+          33,
+          42
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          65
+        ],
+        [
+          33,
+          65
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          88
+        ],
+        [
+          33,
+          88
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          4,
+          12
+        ],
+        [
+          6,
+          12
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          21
+        ],
+        [
+          33,
+          21
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          44
+        ],
+        [
+          33,
+          44
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          67
+        ],
+        [
+          33,
+          67
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          90
+        ],
+        [
+          33,
+          90
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          4,
+          16
+        ],
+        [
+          6,
+          16
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          23
+        ],
+        [
+          33,
+          23
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          46
+        ],
+        [
+          33,
+          46
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          69
+        ],
+        [
+          33,
+          69
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          92
+        ],
+        [
+          33,
+          92
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          4,
+          20
+        ],
+        [
+          6,
+          20
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          25
+        ],
+        [
+          33,
+          25
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          48
+        ],
+        [
+          33,
+          48
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          71
+        ],
+        [
+          33,
+          71
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          94
+        ],
+        [
+          33,
+          94
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          4,
+          24
+        ],
+        [
+          6,
+          24
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          27
+        ],
+        [
+          33,
+          27
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          50
+        ],
+        [
+          33,
+          50
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          73
+        ],
+        [
+          33,
+          73
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          96
+        ],
+        [
+          33,
+          96
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          4,
+          28
+        ],
+        [
+          6,
+          28
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          29
+        ],
+        [
+          33,
+          29
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          52
+        ],
+        [
+          33,
+          52
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          75
+        ],
+        [
+          33,
+          75
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          98
+        ],
+        [
+          33,
+          98
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          4,
+          60
+        ],
+        [
+          6,
+          60
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          31
+        ],
+        [
+          33,
+          31
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          54
+        ],
+        [
+          33,
+          54
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          77
+        ],
+        [
+          33,
+          77
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          100
+        ],
+        [
+          33,
+          100
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          6,
+          64
+        ],
+        [
+          8,
+          64
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          35
+        ],
+        [
+          33,
+          35
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          58
+        ],
+        [
+          33,
+          58
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          81
+        ],
+        [
+          33,
+          81
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          104
+        ],
+        [
+          33,
+          104
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          4,
+          44
+        ],
+        [
+          6,
+          44
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          51
+        ],
+        [
+          78,
+          51
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          64
+        ],
+        [
+          78,
+          64
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          90
+        ],
+        [
+          78,
+          90
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          116
+        ],
+        [
+          78,
+          116
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          142
+        ],
+        [
+          78,
+          142
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          168
+        ],
+        [
+          78,
+          168
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          194
+        ],
+        [
+          78,
+          194
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          220
+        ],
+        [
+          78,
+          220
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          4,
+          48
+        ],
+        [
+          6,
+          48
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          53
+        ],
+        [
+          78,
+          53
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          66
+        ],
+        [
+          78,
+          66
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          92
+        ],
+        [
+          78,
+          92
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          118
+        ],
+        [
+          78,
+          118
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          144
+        ],
+        [
+          78,
+          144
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          170
+        ],
+        [
+          78,
+          170
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          196
+        ],
+        [
+          78,
+          196
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          222
+        ],
+        [
+          78,
+          222
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          4,
+          52
+        ],
+        [
+          6,
+          52
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          77
+        ],
+        [
+          78,
+          77
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          103
+        ],
+        [
+          78,
+          103
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          129
+        ],
+        [
+          78,
+          129
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          155
+        ],
+        [
+          78,
+          155
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          181
+        ],
+        [
+          78,
+          181
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          207
+        ],
+        [
+          78,
+          207
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          233
+        ],
+        [
+          78,
+          233
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          246
+        ],
+        [
+          78,
+          246
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          4,
+          56
+        ],
+        [
+          6,
+          56
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          79
+        ],
+        [
+          78,
+          79
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          105
+        ],
+        [
+          78,
+          105
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          131
+        ],
+        [
+          78,
+          131
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          157
+        ],
+        [
+          78,
+          157
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          183
+        ],
+        [
+          78,
+          183
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          209
+        ],
+        [
+          78,
+          209
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          235
+        ],
+        [
+          78,
+          235
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          76,
+          248
+        ],
+        [
+          78,
+          248
+        ]
+      ]
+    }
+  ]
+}

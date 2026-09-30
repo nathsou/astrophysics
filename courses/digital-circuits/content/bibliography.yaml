@@ -1590,3 +1590,59 @@ kernighan1970:
   venue: The Bell System Technical Journal 49(2), 291–307
   url: https://doi.org/10.1002/j.1538-7305.1970.tb01770.x
   note: The move-and-swap refinement with locking and roll-back to the best prefix, which the vCPLD-32 fitter uses to split outputs between function blocks.
+ethw-pcm:
+  authors: Engineering and Technology History Wiki
+  year: n.d.
+  title: Pulse Code Modulation
+  venue: Engineering and Technology History Wiki
+  url: https://ethw.org/Pulse_Code_Modulation
+  note: Alec Reeves conceived the use of PCM for voice at ITT’s laboratory in Paris in 1937 and filed a French patent in 1938.
+britannica-baudot:
+  authors: Encyclopaedia Britannica
+  year: n.d.
+  title: Jean-Maurice-Émile Baudot
+  venue: Encyclopaedia Britannica
+  url: https://www.britannica.com/biography/Jean-Maurice-Emile-Baudot
+  note: Baudot’s telegraph code, patented in 1874, of five on–off signals of equal duration.
+wiki-baud:
+  authors: Wikipedia
+  year: n.d.
+  title: Baud
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Baud
+  note: The baud, the unit of signalling events per second, named after Émile Baudot; and the difference between baud and bits per second.
+wiki-rs232:
+  authors: Wikipedia
+  year: n.d.
+  title: RS-232
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/RS-232
+  note: Recommended Standard 232 of the Electronic Industries Association, first published on 1 May 1960, and its revision C of August 1969.
+adi-rs232:
+  authors: Analog Devices
+  year: n.d.
+  title: Fundamentals of RS-232 serial communications
+  venue: Analog Devices technical article
+  url: https://www.analog.com/en/resources/technical-articles/fundamentals-of-rs232-serial-communications.html
+  note: RS-232 signal levels, with a 1 (mark) between −3 V and −15 V and a 0 (space) between +3 V and +15 V.
+wiki-i2c:
+  authors: Wikipedia
+  year: n.d.
+  title: I²C
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/I%C2%B2C
+  note: The bus developed by Philips in the early 1980s, with parts from 1982 at 100 kbit/s and 7-bit addresses, and the first public specification in 1992.
+nexperia-74hc595:
+  authors: Nexperia
+  year: n.d.
+  title: 74HC595; 74HCT595, 8-bit serial-in, serial or parallel-out shift register with output latches, product data sheet
+  venue: Nexperia B.V.
+  url: https://assets.nexperia.com/documents/data-sheet/74HC_HCT595.pdf
+  note: The pinout, the shift clock SHCP and the storage clock STCP that copies the shift register to the outputs on its rising edge.
+sparkfun-pulseview:
+  authors: SparkFun Electronics
+  year: n.d.
+  title: Using the USB logic analyzer with sigrok PulseView
+  venue: SparkFun Learn
+  url: https://learn.sparkfun.com/tutorials/using-the-usb-logic-analyzer-with-sigrok-pulseview/all
+  note: A cheap 24 MHz, eight-channel USB logic analyser with sigrok’s PulseView, and its UART, SPI and I²C protocol decoders.

@@ -1,0 +1,1208 @@
+{
+  "version": 1,
+  "title": "The flag logic",
+  "engine": "digital",
+  "components": [
+    {
+      "id": "in_OP2",
+      "type": "toggle",
+      "x": 2,
+      "y": 0,
+      "params": {},
+      "label": "OP2"
+    },
+    {
+      "id": "L1",
+      "type": "label",
+      "x": 7,
+      "y": 0,
+      "params": {
+        "name": "OP2"
+      },
+      "label": ""
+    },
+    {
+      "id": "in_OP1",
+      "type": "toggle",
+      "x": 2,
+      "y": 4,
+      "params": {},
+      "label": "OP1"
+    },
+    {
+      "id": "L2",
+      "type": "label",
+      "x": 7,
+      "y": 4,
+      "params": {
+        "name": "OP1"
+      },
+      "label": ""
+    },
+    {
+      "id": "in_OP0",
+      "type": "toggle",
+      "x": 2,
+      "y": 8,
+      "params": {},
+      "label": "OP0"
+    },
+    {
+      "id": "L3",
+      "type": "label",
+      "x": 7,
+      "y": 8,
+      "params": {
+        "name": "OP0"
+      },
+      "label": ""
+    },
+    {
+      "id": "in_COUT",
+      "type": "toggle",
+      "x": 2,
+      "y": 12,
+      "params": {},
+      "label": "COUT"
+    },
+    {
+      "id": "L4",
+      "type": "label",
+      "x": 7,
+      "y": 12,
+      "params": {
+        "name": "COUT"
+      },
+      "label": ""
+    },
+    {
+      "id": "in_A0",
+      "type": "toggle",
+      "x": 2,
+      "y": 16,
+      "params": {},
+      "label": "A0"
+    },
+    {
+      "id": "L5",
+      "type": "label",
+      "x": 7,
+      "y": 16,
+      "params": {
+        "name": "A0"
+      },
+      "label": ""
+    },
+    {
+      "id": "in_A7",
+      "type": "toggle",
+      "x": 2,
+      "y": 20,
+      "params": {},
+      "label": "A7"
+    },
+    {
+      "id": "L6",
+      "type": "label",
+      "x": 7,
+      "y": 20,
+      "params": {
+        "name": "A7"
+      },
+      "label": ""
+    },
+    {
+      "id": "in_B7",
+      "type": "toggle",
+      "x": 2,
+      "y": 24,
+      "params": {},
+      "label": "B7"
+    },
+    {
+      "id": "L7",
+      "type": "label",
+      "x": 7,
+      "y": 24,
+      "params": {
+        "name": "B7"
+      },
+      "label": ""
+    },
+    {
+      "id": "in_Y7",
+      "type": "toggle",
+      "x": 2,
+      "y": 28,
+      "params": {},
+      "label": "Y7"
+    },
+    {
+      "id": "L8",
+      "type": "label",
+      "x": 7,
+      "y": 28,
+      "params": {
+        "name": "Y7"
+      },
+      "label": ""
+    },
+    {
+      "id": "in_YZ",
+      "type": "toggle",
+      "x": 2,
+      "y": 32,
+      "params": {},
+      "label": "YZ"
+    },
+    {
+      "id": "L9",
+      "type": "label",
+      "x": 7,
+      "y": 32,
+      "params": {
+        "name": "YZ"
+      },
+      "label": ""
+    },
+    {
+      "id": "arith",
+      "type": "nor",
+      "x": 20,
+      "y": 0,
+      "params": {},
+      "label": ""
+    },
+    {
+      "id": "L10",
+      "type": "label",
+      "x": 17,
+      "y": 0,
+      "flip": true,
+      "params": {
+        "name": "OP1"
+      },
+      "label": ""
+    },
+    {
+      "id": "L11",
+      "type": "label",
+      "x": 17,
+      "y": 2,
+      "flip": true,
+      "params": {
+        "name": "OP2"
+      },
+      "label": ""
+    },
+    {
+      "id": "L12",
+      "type": "label",
+      "x": 29,
+      "y": 1,
+      "params": {
+        "name": "ARITH"
+      },
+      "label": ""
+    },
+    {
+      "id": "nop0",
+      "type": "not",
+      "x": 20,
+      "y": 6,
+      "params": {},
+      "label": ""
+    },
+    {
+      "id": "L13",
+      "type": "label",
+      "x": 17,
+      "y": 6,
+      "flip": true,
+      "params": {
+        "name": "OP0"
+      },
+      "label": ""
+    },
+    {
+      "id": "L14",
+      "type": "label",
+      "x": 28,
+      "y": 6,
+      "params": {
+        "name": "nOP0"
+      },
+      "label": ""
+    },
+    {
+      "id": "sub",
+      "type": "and",
+      "x": 20,
+      "y": 10,
+      "params": {},
+      "label": ""
+    },
+    {
+      "id": "L15",
+      "type": "label",
+      "x": 17,
+      "y": 10,
+      "flip": true,
+      "params": {
+        "name": "OP0"
+      },
+      "label": ""
+    },
+    {
+      "id": "L16",
+      "type": "label",
+      "x": 17,
+      "y": 12,
+      "flip": true,
+      "params": {
+        "name": "ARITH"
+      },
+      "label": ""
+    },
+    {
+      "id": "L17",
+      "type": "label",
+      "x": 29,
+      "y": 11,
+      "params": {
+        "name": "SUB"
+      },
+      "label": ""
+    },
+    {
+      "id": "shr",
+      "type": "and",
+      "x": 20,
+      "y": 16,
+      "params": {
+        "inputs": 3
+      },
+      "label": ""
+    },
+    {
+      "id": "L18",
+      "type": "label",
+      "x": 17,
+      "y": 16,
+      "flip": true,
+      "params": {
+        "name": "OP2"
+      },
+      "label": ""
+    },
+    {
+      "id": "L19",
+      "type": "label",
+      "x": 17,
+      "y": 18,
+      "flip": true,
+      "params": {
+        "name": "OP1"
+      },
+      "label": ""
+    },
+    {
+      "id": "L20",
+      "type": "label",
+      "x": 17,
+      "y": 20,
+      "flip": true,
+      "params": {
+        "name": "nOP0"
+      },
+      "label": ""
+    },
+    {
+      "id": "L21",
+      "type": "label",
+      "x": 29,
+      "y": 18,
+      "params": {
+        "name": "SHR"
+      },
+      "label": ""
+    },
+    {
+      "id": "cx",
+      "type": "xor",
+      "x": 20,
+      "y": 24,
+      "params": {},
+      "label": ""
+    },
+    {
+      "id": "L22",
+      "type": "label",
+      "x": 17,
+      "y": 24,
+      "flip": true,
+      "params": {
+        "name": "COUT"
+      },
+      "label": ""
+    },
+    {
+      "id": "L23",
+      "type": "label",
+      "x": 17,
+      "y": 26,
+      "flip": true,
+      "params": {
+        "name": "SUB"
+      },
+      "label": ""
+    },
+    {
+      "id": "L24",
+      "type": "label",
+      "x": 29,
+      "y": 25,
+      "params": {
+        "name": "CX"
+      },
+      "label": ""
+    },
+    {
+      "id": "shrc",
+      "type": "and",
+      "x": 20,
+      "y": 30,
+      "params": {},
+      "label": ""
+    },
+    {
+      "id": "L25",
+      "type": "label",
+      "x": 17,
+      "y": 30,
+      "flip": true,
+      "params": {
+        "name": "SHR"
+      },
+      "label": ""
+    },
+    {
+      "id": "L26",
+      "type": "label",
+      "x": 17,
+      "y": 32,
+      "flip": true,
+      "params": {
+        "name": "A0"
+      },
+      "label": ""
+    },
+    {
+      "id": "L27",
+      "type": "label",
+      "x": 29,
+      "y": 31,
+      "params": {
+        "name": "SHRC"
+      },
+      "label": ""
+    },
+    {
+      "id": "bx",
+      "type": "xor",
+      "x": 20,
+      "y": 36,
+      "params": {},
+      "label": ""
+    },
+    {
+      "id": "L28",
+      "type": "label",
+      "x": 17,
+      "y": 36,
+      "flip": true,
+      "params": {
+        "name": "B7"
+      },
+      "label": ""
+    },
+    {
+      "id": "L29",
+      "type": "label",
+      "x": 17,
+      "y": 38,
+      "flip": true,
+      "params": {
+        "name": "SUB"
+      },
+      "label": ""
+    },
+    {
+      "id": "L30",
+      "type": "label",
+      "x": 29,
+      "y": 37,
+      "params": {
+        "name": "BX"
+      },
+      "label": ""
+    },
+    {
+      "id": "cc",
+      "type": "or",
+      "x": 42,
+      "y": 0,
+      "params": {},
+      "label": ""
+    },
+    {
+      "id": "L31",
+      "type": "label",
+      "x": 39,
+      "y": 0,
+      "flip": true,
+      "params": {
+        "name": "CX"
+      },
+      "label": ""
+    },
+    {
+      "id": "L32",
+      "type": "label",
+      "x": 39,
+      "y": 2,
+      "flip": true,
+      "params": {
+        "name": "SHRC"
+      },
+      "label": ""
+    },
+    {
+      "id": "out_C",
+      "type": "indicator",
+      "x": 52,
+      "y": 1,
+      "params": {
+        "color": "amber"
+      },
+      "label": "C"
+    },
+    {
+      "id": "same",
+      "type": "xnor",
+      "x": 42,
+      "y": 10,
+      "params": {},
+      "label": ""
+    },
+    {
+      "id": "L33",
+      "type": "label",
+      "x": 39,
+      "y": 10,
+      "flip": true,
+      "params": {
+        "name": "A7"
+      },
+      "label": ""
+    },
+    {
+      "id": "L34",
+      "type": "label",
+      "x": 39,
+      "y": 12,
+      "flip": true,
+      "params": {
+        "name": "BX"
+      },
+      "label": ""
+    },
+    {
+      "id": "L35",
+      "type": "label",
+      "x": 51,
+      "y": 11,
+      "params": {
+        "name": "SAME"
+      },
+      "label": ""
+    },
+    {
+      "id": "diff",
+      "type": "xor",
+      "x": 42,
+      "y": 16,
+      "params": {},
+      "label": ""
+    },
+    {
+      "id": "L36",
+      "type": "label",
+      "x": 39,
+      "y": 16,
+      "flip": true,
+      "params": {
+        "name": "Y7"
+      },
+      "label": ""
+    },
+    {
+      "id": "L37",
+      "type": "label",
+      "x": 39,
+      "y": 18,
+      "flip": true,
+      "params": {
+        "name": "A7"
+      },
+      "label": ""
+    },
+    {
+      "id": "L38",
+      "type": "label",
+      "x": 51,
+      "y": 17,
+      "params": {
+        "name": "DIFF"
+      },
+      "label": ""
+    },
+    {
+      "id": "vv",
+      "type": "and",
+      "x": 42,
+      "y": 24,
+      "params": {
+        "inputs": 3
+      },
+      "label": ""
+    },
+    {
+      "id": "L39",
+      "type": "label",
+      "x": 39,
+      "y": 24,
+      "flip": true,
+      "params": {
+        "name": "ARITH"
+      },
+      "label": ""
+    },
+    {
+      "id": "L40",
+      "type": "label",
+      "x": 39,
+      "y": 26,
+      "flip": true,
+      "params": {
+        "name": "SAME"
+      },
+      "label": ""
+    },
+    {
+      "id": "L41",
+      "type": "label",
+      "x": 39,
+      "y": 28,
+      "flip": true,
+      "params": {
+        "name": "DIFF"
+      },
+      "label": ""
+    },
+    {
+      "id": "out_V",
+      "type": "indicator",
+      "x": 52,
+      "y": 26,
+      "params": {
+        "color": "amber"
+      },
+      "label": "V"
+    },
+    {
+      "id": "out_Z",
+      "type": "indicator",
+      "x": 46,
+      "y": 34,
+      "params": {
+        "color": "amber"
+      },
+      "label": "Z"
+    },
+    {
+      "id": "L42",
+      "type": "label",
+      "x": 43,
+      "y": 34,
+      "flip": true,
+      "params": {
+        "name": "YZ"
+      },
+      "label": ""
+    },
+    {
+      "id": "out_N",
+      "type": "indicator",
+      "x": 46,
+      "y": 38,
+      "params": {
+        "color": "amber"
+      },
+      "label": "N"
+    },
+    {
+      "id": "L43",
+      "type": "label",
+      "x": 43,
+      "y": 38,
+      "flip": true,
+      "params": {
+        "name": "Y7"
+      },
+      "label": ""
+    }
+  ],
+  "wires": [
+    {
+      "points": [
+        [
+          5,
+          0
+        ],
+        [
+          7,
+          0
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          4
+        ],
+        [
+          7,
+          4
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          8
+        ],
+        [
+          7,
+          8
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          12
+        ],
+        [
+          7,
+          12
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          16
+        ],
+        [
+          7,
+          16
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          20
+        ],
+        [
+          7,
+          20
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          24
+        ],
+        [
+          7,
+          24
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          28
+        ],
+        [
+          7,
+          28
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          32
+        ],
+        [
+          7,
+          32
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          0
+        ],
+        [
+          17,
+          0
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          2
+        ],
+        [
+          17,
+          2
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          26,
+          1
+        ],
+        [
+          29,
+          1
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          6
+        ],
+        [
+          17,
+          6
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          25,
+          6
+        ],
+        [
+          28,
+          6
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          10
+        ],
+        [
+          17,
+          10
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          12
+        ],
+        [
+          17,
+          12
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          26,
+          11
+        ],
+        [
+          29,
+          11
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          16
+        ],
+        [
+          17,
+          16
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          18
+        ],
+        [
+          17,
+          18
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          20
+        ],
+        [
+          17,
+          20
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          26,
+          18
+        ],
+        [
+          29,
+          18
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          24
+        ],
+        [
+          17,
+          24
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          26
+        ],
+        [
+          17,
+          26
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          26,
+          25
+        ],
+        [
+          29,
+          25
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          30
+        ],
+        [
+          17,
+          30
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          32
+        ],
+        [
+          17,
+          32
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          26,
+          31
+        ],
+        [
+          29,
+          31
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          36
+        ],
+        [
+          17,
+          36
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          38
+        ],
+        [
+          17,
+          38
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          26,
+          37
+        ],
+        [
+          29,
+          37
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          42,
+          0
+        ],
+        [
+          39,
+          0
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          42,
+          2
+        ],
+        [
+          39,
+          2
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          48,
+          1
+        ],
+        [
+          52,
+          1
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          42,
+          10
+        ],
+        [
+          39,
+          10
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          42,
+          12
+        ],
+        [
+          39,
+          12
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          48,
+          11
+        ],
+        [
+          51,
+          11
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          42,
+          16
+        ],
+        [
+          39,
+          16
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          42,
+          18
+        ],
+        [
+          39,
+          18
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          48,
+          17
+        ],
+        [
+          51,
+          17
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          42,
+          24
+        ],
+        [
+          39,
+          24
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          42,
+          26
+        ],
+        [
+          39,
+          26
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          42,
+          28
+        ],
+        [
+          39,
+          28
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          48,
+          26
+        ],
+        [
+          52,
+          26
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          46,
+          34
+        ],
+        [
+          43,
+          34
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          46,
+          38
+        ],
+        [
+          43,
+          38
+        ]
+      ]
+    }
+  ]
+}

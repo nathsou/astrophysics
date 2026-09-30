@@ -1066,3 +1066,51 @@ differential-testing:
   term: differential testing
   definition: 'Running two independent implementations of the same specification on the same inputs and comparing their results at every step. A disagreement is a bug in at least one of them.'
   chapter: control
+pwm:
+  term: pulse-width modulation (PWM)
+  definition: 'Controlling an average by switching fully on and off at a fixed frequency and varying the duty cycle, the fraction of each period the output is high. Through an RC filter it becomes a voltage; to an LED, a brightness.'
+  chapter: talking-to-the-world
+gpio:
+  term: GPIO
+  definition: 'General-purpose input/output: a pin that a program can drive as an output or read as an input, with nothing about it fixed by the chip. Octet’s LED register bits are eight output pins.'
+  chapter: talking-to-the-world
+interrupt:
+  term: interrupt
+  definition: 'A signal that makes a CPU stop what it is doing at the end of an instruction, save the program counter, and run a handler at a fixed address. Octet has none, so it polls.'
+  chapter: talking-to-the-world
+dac:
+  term: digital-to-analogue converter (DAC)
+  definition: 'A circuit that puts on a wire the voltage that a number stands for. An R-2R ladder does it with two resistor values; Octet’s DAC register makes 256 levels of 5/256 V.'
+  chapter: talking-to-the-world
+adc:
+  term: analogue-to-digital converter (ADC)
+  definition: 'A circuit that measures a voltage as a number. Most on-chip ones are successive-approximation converters: a comparator, a DAC and a register that does a binary search.'
+  chapter: talking-to-the-world
+sar:
+  term: successive-approximation ADC
+  definition: 'A converter that finds a number by binary search: it tries the top bit on a DAC, keeps it if a comparator says the input is still above the DAC, and moves down a bit. An n-bit conversion takes n comparisons.'
+  chapter: talking-to-the-world
+voltage-comparator:
+  term: comparator (analogue)
+  definition: 'A circuit with two analogue inputs whose output is 1 when the + input is above the − input and 0 otherwise. It is the one measuring instrument of an ADC; Chapter 13’s magnitude comparator compares two numbers.'
+  chapter: talking-to-the-world
+uart:
+  term: UART
+  definition: 'Universal asynchronous receiver/transmitter: sends bytes one bit at a time on one wire with no clock, framed by a start bit and a stop bit, at a speed both ends agreed beforehand.'
+  chapter: talking-to-the-world
+baud:
+  term: baud
+  definition: 'The number of signal changes per second on a line, named after Émile Baudot. On a UART, with two levels, it equals the bits per second: 9600 baud is 9600 bit/s, a bit time of 104 µs.'
+  chapter: talking-to-the-world
+bit-banging:
+  term: bit-banging
+  definition: 'Making a serial signal with a program: writing a pin at exactly the right moments, counting clock cycles between the writes, instead of using a UART or SPI peripheral.'
+  chapter: talking-to-the-world
+spi:
+  term: SPI
+  definition: 'Serial Peripheral Interface: a clocked serial bus of four wires, a clock SCK, data out MOSI, data in MISO and a chip select for each peripheral. Its four modes set the clock’s idle level and the edge on which data is sampled.'
+  chapter: talking-to-the-world
+i2c:
+  term: I²C
+  definition: 'A two-wire bus, clock SCL and data SDA, shared by every device, which has an address. Both wires are open-drain with pull-up resistors, and the receiver acknowledges each byte by pulling SDA low.'
+  chapter: talking-to-the-world

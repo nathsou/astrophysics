@@ -1,0 +1,877 @@
+{
+  "version": 1,
+  "title": "The jump condition",
+  "engine": "digital",
+  "components": [
+    {
+      "id": "in_Z",
+      "type": "toggle",
+      "x": 2,
+      "y": 0,
+      "params": {},
+      "label": "Z"
+    },
+    {
+      "id": "L1",
+      "type": "label",
+      "x": 7,
+      "y": 0,
+      "params": {
+        "name": "Z"
+      },
+      "label": ""
+    },
+    {
+      "id": "in_C",
+      "type": "toggle",
+      "x": 2,
+      "y": 4,
+      "params": {},
+      "label": "C"
+    },
+    {
+      "id": "L2",
+      "type": "label",
+      "x": 7,
+      "y": 4,
+      "params": {
+        "name": "C"
+      },
+      "label": ""
+    },
+    {
+      "id": "in_N",
+      "type": "toggle",
+      "x": 2,
+      "y": 8,
+      "params": {},
+      "label": "N"
+    },
+    {
+      "id": "L3",
+      "type": "label",
+      "x": 7,
+      "y": 8,
+      "params": {
+        "name": "N"
+      },
+      "label": ""
+    },
+    {
+      "id": "in_V",
+      "type": "toggle",
+      "x": 2,
+      "y": 12,
+      "params": {},
+      "label": "V"
+    },
+    {
+      "id": "L4",
+      "type": "label",
+      "x": 7,
+      "y": 12,
+      "params": {
+        "name": "V"
+      },
+      "label": ""
+    },
+    {
+      "id": "in_K3",
+      "type": "toggle",
+      "x": 2,
+      "y": 20,
+      "params": {},
+      "label": "K3"
+    },
+    {
+      "id": "L5",
+      "type": "label",
+      "x": 7,
+      "y": 20,
+      "params": {
+        "name": "K3"
+      },
+      "label": ""
+    },
+    {
+      "id": "in_K2",
+      "type": "toggle",
+      "x": 2,
+      "y": 24,
+      "params": {},
+      "label": "K2"
+    },
+    {
+      "id": "L6",
+      "type": "label",
+      "x": 7,
+      "y": 24,
+      "params": {
+        "name": "K2"
+      },
+      "label": ""
+    },
+    {
+      "id": "in_K1",
+      "type": "toggle",
+      "x": 2,
+      "y": 28,
+      "params": {},
+      "label": "K1"
+    },
+    {
+      "id": "L7",
+      "type": "label",
+      "x": 7,
+      "y": 28,
+      "params": {
+        "name": "K1"
+      },
+      "label": ""
+    },
+    {
+      "id": "in_K0",
+      "type": "toggle",
+      "x": 2,
+      "y": 32,
+      "params": {},
+      "label": "K0"
+    },
+    {
+      "id": "L8",
+      "type": "label",
+      "x": 7,
+      "y": 32,
+      "params": {
+        "name": "K0"
+      },
+      "label": ""
+    },
+    {
+      "id": "one",
+      "type": "const",
+      "x": 2,
+      "y": 38,
+      "params": {
+        "value": 1
+      },
+      "label": "1"
+    },
+    {
+      "id": "L9",
+      "type": "label",
+      "x": 6,
+      "y": 38,
+      "params": {
+        "name": "ONE"
+      },
+      "label": ""
+    },
+    {
+      "id": "nv",
+      "type": "xor",
+      "x": 20,
+      "y": 0,
+      "params": {},
+      "label": ""
+    },
+    {
+      "id": "L10",
+      "type": "label",
+      "x": 17,
+      "y": 0,
+      "flip": true,
+      "params": {
+        "name": "N"
+      },
+      "label": ""
+    },
+    {
+      "id": "L11",
+      "type": "label",
+      "x": 17,
+      "y": 2,
+      "flip": true,
+      "params": {
+        "name": "V"
+      },
+      "label": ""
+    },
+    {
+      "id": "L12",
+      "type": "label",
+      "x": 29,
+      "y": 1,
+      "params": {
+        "name": "NV"
+      },
+      "label": ""
+    },
+    {
+      "id": "cz",
+      "type": "or",
+      "x": 20,
+      "y": 6,
+      "params": {},
+      "label": ""
+    },
+    {
+      "id": "L13",
+      "type": "label",
+      "x": 17,
+      "y": 6,
+      "flip": true,
+      "params": {
+        "name": "C"
+      },
+      "label": ""
+    },
+    {
+      "id": "L14",
+      "type": "label",
+      "x": 17,
+      "y": 8,
+      "flip": true,
+      "params": {
+        "name": "Z"
+      },
+      "label": ""
+    },
+    {
+      "id": "L15",
+      "type": "label",
+      "x": 29,
+      "y": 7,
+      "params": {
+        "name": "CZ"
+      },
+      "label": ""
+    },
+    {
+      "id": "zn",
+      "type": "or",
+      "x": 20,
+      "y": 12,
+      "params": {},
+      "label": ""
+    },
+    {
+      "id": "L16",
+      "type": "label",
+      "x": 17,
+      "y": 12,
+      "flip": true,
+      "params": {
+        "name": "Z"
+      },
+      "label": ""
+    },
+    {
+      "id": "L17",
+      "type": "label",
+      "x": 17,
+      "y": 14,
+      "flip": true,
+      "params": {
+        "name": "NV"
+      },
+      "label": ""
+    },
+    {
+      "id": "L18",
+      "type": "label",
+      "x": 29,
+      "y": 13,
+      "params": {
+        "name": "ZNV"
+      },
+      "label": ""
+    },
+    {
+      "id": "mux",
+      "type": "mux",
+      "x": 46,
+      "y": 0,
+      "params": {
+        "select": 3
+      },
+      "label": "8-to-1"
+    },
+    {
+      "id": "L19",
+      "type": "label",
+      "x": 43,
+      "y": 0,
+      "flip": true,
+      "params": {
+        "name": "ONE"
+      },
+      "label": ""
+    },
+    {
+      "id": "L20",
+      "type": "label",
+      "x": 43,
+      "y": 2,
+      "flip": true,
+      "params": {
+        "name": "Z"
+      },
+      "label": ""
+    },
+    {
+      "id": "L21",
+      "type": "label",
+      "x": 43,
+      "y": 4,
+      "flip": true,
+      "params": {
+        "name": "C"
+      },
+      "label": ""
+    },
+    {
+      "id": "L22",
+      "type": "label",
+      "x": 43,
+      "y": 6,
+      "flip": true,
+      "params": {
+        "name": "N"
+      },
+      "label": ""
+    },
+    {
+      "id": "L23",
+      "type": "label",
+      "x": 43,
+      "y": 8,
+      "flip": true,
+      "params": {
+        "name": "V"
+      },
+      "label": ""
+    },
+    {
+      "id": "L24",
+      "type": "label",
+      "x": 43,
+      "y": 10,
+      "flip": true,
+      "params": {
+        "name": "NV"
+      },
+      "label": ""
+    },
+    {
+      "id": "L25",
+      "type": "label",
+      "x": 43,
+      "y": 12,
+      "flip": true,
+      "params": {
+        "name": "CZ"
+      },
+      "label": ""
+    },
+    {
+      "id": "L26",
+      "type": "label",
+      "x": 43,
+      "y": 14,
+      "flip": true,
+      "params": {
+        "name": "ZNV"
+      },
+      "label": ""
+    },
+    {
+      "id": "L27",
+      "type": "label",
+      "x": 43,
+      "y": 16,
+      "flip": true,
+      "params": {
+        "name": "K1"
+      },
+      "label": ""
+    },
+    {
+      "id": "L28",
+      "type": "label",
+      "x": 43,
+      "y": 18,
+      "flip": true,
+      "params": {
+        "name": "K2"
+      },
+      "label": ""
+    },
+    {
+      "id": "L29",
+      "type": "label",
+      "x": 43,
+      "y": 20,
+      "flip": true,
+      "params": {
+        "name": "K3"
+      },
+      "label": ""
+    },
+    {
+      "id": "inv",
+      "type": "xor",
+      "x": 62,
+      "y": 4,
+      "params": {},
+      "label": ""
+    },
+    {
+      "id": "L30",
+      "type": "label",
+      "x": 59,
+      "y": 4,
+      "flip": true,
+      "params": {
+        "name": "BASE"
+      },
+      "label": ""
+    },
+    {
+      "id": "L31",
+      "type": "label",
+      "x": 59,
+      "y": 6,
+      "flip": true,
+      "params": {
+        "name": "K0"
+      },
+      "label": ""
+    },
+    {
+      "id": "L32",
+      "type": "label",
+      "x": 55,
+      "y": 0,
+      "params": {
+        "name": "BASE"
+      },
+      "label": ""
+    },
+    {
+      "id": "out",
+      "type": "indicator",
+      "x": 72,
+      "y": 5,
+      "params": {
+        "color": "amber"
+      },
+      "label": "TAKEN"
+    }
+  ],
+  "wires": [
+    {
+      "points": [
+        [
+          5,
+          0
+        ],
+        [
+          7,
+          0
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          4
+        ],
+        [
+          7,
+          4
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          8
+        ],
+        [
+          7,
+          8
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          12
+        ],
+        [
+          7,
+          12
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          20
+        ],
+        [
+          7,
+          20
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          24
+        ],
+        [
+          7,
+          24
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          28
+        ],
+        [
+          7,
+          28
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          32
+        ],
+        [
+          7,
+          32
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          4,
+          38
+        ],
+        [
+          6,
+          38
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          0
+        ],
+        [
+          17,
+          0
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          2
+        ],
+        [
+          17,
+          2
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          26,
+          1
+        ],
+        [
+          29,
+          1
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          6
+        ],
+        [
+          17,
+          6
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          8
+        ],
+        [
+          17,
+          8
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          26,
+          7
+        ],
+        [
+          29,
+          7
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          12
+        ],
+        [
+          17,
+          12
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          14
+        ],
+        [
+          17,
+          14
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          26,
+          13
+        ],
+        [
+          29,
+          13
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          46,
+          0
+        ],
+        [
+          43,
+          0
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          46,
+          2
+        ],
+        [
+          43,
+          2
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          46,
+          4
+        ],
+        [
+          43,
+          4
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          46,
+          6
+        ],
+        [
+          43,
+          6
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          46,
+          8
+        ],
+        [
+          43,
+          8
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          46,
+          10
+        ],
+        [
+          43,
+          10
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          46,
+          12
+        ],
+        [
+          43,
+          12
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          46,
+          14
+        ],
+        [
+          43,
+          14
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          46,
+          16
+        ],
+        [
+          43,
+          16
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          46,
+          18
+        ],
+        [
+          43,
+          18
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          46,
+          20
+        ],
+        [
+          43,
+          20
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          62,
+          4
+        ],
+        [
+          59,
+          4
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          62,
+          6
+        ],
+        [
+          59,
+          6
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          52,
+          0
+        ],
+        [
+          55,
+          0
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          68,
+          5
+        ],
+        [
+          72,
+          5
+        ]
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "x": 20,
+      "y": 20,
+      "text": "K3 K2 K1 choose the test, K0 inverts it"
+    }
+  ]
+}
