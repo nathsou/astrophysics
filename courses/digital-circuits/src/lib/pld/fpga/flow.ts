@@ -119,7 +119,8 @@ export function runFlow(input: FlatNetlist | Design, opts: FlowOptions = {}): Fl
   let routing: RouteResult | undefined;
   const seed = opts.seed ?? 1;
   for (let attempt = 0; attempt <= retries; attempt++) {
-    placement = stage('placement', () => place(packed!, device!, { pins: opts.pins, ...opts.place, seed: seed + attempt }));
+    // A retry places again with another seed and asks the placer to spread the design out more (its congestion term).
+    placement = stage('placement', () => place(packed!, device!, { pins: opts.pins, ...(attempt > 0 ? { spread: 3, spreadAt: 1 } : {}), ...opts.place, seed: seed + attempt }));
     const problems = checkPlacement(packed, device, placement);
     if (problems.length) throw new FlowError(`Illegal placement: ${problems[0]}`, 'placement');
     routing = stage('routing', () => route(packed!, placement!, device!, opts.route));

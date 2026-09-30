@@ -7,9 +7,9 @@ import { FlowError } from './design';
 import { runFlow } from './flow';
 import type { LcNetlist } from './lcnet';
 import { pack } from './pack';
-import { checkPlacement } from './place';
+import { checkPlacement, place } from './place';
 import { formatReport } from './report';
-import { checkRouting } from './route';
+import { checkRouting, route } from './route';
 import { analyse, buildTimingGraph } from './sta';
 import { probeCell, probeNode } from './crossprobe';
 import { randomComb, runFabric, setInput, stimulus, traceFabric, traceOriginal, truthOf } from './testutil';
@@ -74,6 +74,18 @@ describe('legality of every stage', () => {
   });
 });
 
+describe('packing', () => {
+  test('tiles are filled as far as clocks, enables and resets allow: a design does not spread over the device', () => {
+    const res = runFlow(datapath(3, 6, 16, 2).nl, { device: 'M' });
+    const p = res.packed;
+    const filled = p.clusters.reduce((n, c) => n + c.slots.filter((s) => s >= 0).length, 0);
+    expect(filled).toBe(p.netlist.lcs.length);
+    // Full tiles but for a handful with unusual control sets: within a few tiles of the minimum.
+    expect(p.clusters.length).toBeLessThanOrEqual(Math.ceil(p.netlist.lcs.length / 8) + 6);
+    expect(p.clusters.length).toBeLessThan(res.device.counts.logicTiles * 0.6);
+  });
+});
+
 describe('placement', () => {
   const bench = randomComb(11, 8, 80, 4);
   const first = runFlow(bench.nl, { seed: 3, device: 'M' });
@@ -110,6 +122,56 @@ describe('placement', () => {
     expect(padOf('led0')).toBe('P12');
     expect(padOf('clk')).toBe(res.device.pads[res.device.gbPads[0]!]!.name);
     expect(() => runFlow(c.nl, { device: 'S', pins: { en: 'P99' } })).toThrow(/no such pad/);
+  });
+});
+
+describe('placement with the congestion term', () => {
+  const res = runFlow(datapath(3, 6, 16, 2).nl, { device: 'M', seed: 5 });
+  /** Wire demand (q-corrected half-perimeter) of the busiest 3 × 3 bin relative to the average bin. */
+  const peak = (pl: typeof res.placement) => {
+    const dev = res.device;
+    const nbx = Math.ceil(dev.width / 3);
+    const nby = Math.ceil(dev.height / 3);
+    const bins = new Float64Array(nbx * nby);
+    let total = 0;
+    for (const net of res.packed.nets) {
+      const units = [...new Set([net.driverUnit, ...net.sinks.map((k) => k.unit)])];
+      if (units.length < 2 || units.length > 64) continue;
+      const xs = units.map((u) => pl.unitX[u]!);
+      const ys = units.map((u) => pl.unitY[u]!);
+      const [x0, x1, y0, y1] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
+      const dem = x1 - x0 + (y1 - y0);
+      total += dem;
+      const [bx0, bx1, by0, by1] = [Math.floor(x0 / 3), Math.floor(x1 / 3), Math.floor(y0 / 3), Math.floor(y1 / 3)];
+      const share = dem / ((bx1 - bx0 + 1) * (by1 - by0 + 1));
+      for (let a = bx0; a <= bx1; a++) for (let b = by0; b <= by1; b++) bins[a * nby + b]! += share;
+    }
+    return Math.max(...bins) / (total / bins.length);
+  };
+
+  test('is legal, deterministic, and spreads the demand out at some cost in wirelength', () => {
+    const flat = place(res.packed, res.device, { seed: 5, spread: 0 });
+    const spread = place(res.packed, res.device, { seed: 5, spread: 4, spreadAt: 1 });
+    const again = place(res.packed, res.device, { seed: 5, spread: 4, spreadAt: 1 });
+    expect(checkPlacement(res.packed, res.device, spread)).toEqual([]);
+    expect(Array.from(again.unitX)).toEqual(Array.from(spread.unitX));
+    expect(Array.from(again.unitY)).toEqual(Array.from(spread.unitY));
+    expect(peak(spread)).toBeLessThan(peak(flat));
+    expect(spread.bb).toBeGreaterThanOrEqual(flat.bb * 0.95);
+  });
+});
+
+describe('router options', () => {
+  test('the present-congestion factor stops growing at its cap, and the box margin is a parameter', () => {
+    const res = runFlow(datapath(3, 6, 16, 2).nl, { device: 'M', seed: 5 });
+    const capped = route(res.packed, res.placement, res.device, { maxPresFac: 2, maxIterations: 6, graph: res.routing.graph });
+    expect(capped.iterations.length).toBeGreaterThan(3);
+    expect(Math.max(...capped.iterations.map((i) => i.presFac))).toBeLessThanOrEqual(2);
+    // A box margin of zero must not stall the search (the box doubles when a path is not found): it terminates, and a
+    // routing it reports as successful is legal.
+    const tight = route(res.packed, res.placement, res.device, { bboxMargin: 0, marginGrowth: 0, maxIterations: 8 });
+    expect(tight.iterations.length).toBeGreaterThan(0);
+    if (tight.success) expect(checkRouting(res.packed, tight, res.device)).toEqual([]);
   });
 });
 

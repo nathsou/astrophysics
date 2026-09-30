@@ -11,6 +11,11 @@
  * nets that touch an overused node are ripped up and re-routed. With `timing` on, each connection weighs a
  * node's delay against its congestion cost by its criticality (from static timing analysis).
  *
+ * As in VPR the present-congestion factor is capped (`maxPresFac`, 1000). A net's search is confined to its
+ * bounding box plus `bboxMargin` tiles; with span-4 and span-12 wires and no U-turns the box has to be generous (VPR's
+ * 3 is too small here: nets whose box was full of other nets' wires could not negotiate and two nets fought over a
+ * single node for dozens of iterations), and it grows with the iteration number for nets that are still in conflict.
+ *
  * The four inputs of an ordinary LUT are interchangeable: a connection to such a cell may end at any of its four
  * pins, and the router picks (the truth table is permuted to match when the bitstream is generated).
  *
@@ -31,9 +36,13 @@ export interface RouteOptions {
   maxIterations?: number;
   presFac0?: number;
   presMult?: number;
+  /** Upper limit of the present-congestion factor (VPR: 1000). */
+  maxPresFac?: number;
   accFac?: number;
   astarFac?: number;
+  /** Tiles added around the bounding box of a net; it grows by `marginGrowth` tiles per iteration after the tenth. */
   bboxMargin?: number;
+  marginGrowth?: number;
   timing?: boolean;
   /** Reuse a timing graph. */
   graph?: TimingGraph;
@@ -148,9 +157,11 @@ export function route(p: Packed, pl: Placement, dev: VFpgaDevice, opts: RouteOpt
   const maxIter = opts.maxIterations ?? 60;
   let presFac = opts.presFac0 ?? 0.5;
   const presMult = opts.presMult ?? 1.4;
+  const maxPres = opts.maxPresFac ?? 1000;
   const accFac = opts.accFac ?? 1;
   const astar = opts.astarFac ?? 1.2;
-  const margin0 = opts.bboxMargin ?? 3;
+  const margin0 = opts.bboxMargin ?? 8;
+  const marginGrowth = opts.marginGrowth ?? 4;
   const timing = opts.timing !== false;
   const nl = p.netlist;
   const tg = opts.graph ?? buildTimingGraph(p);
@@ -206,6 +217,7 @@ export function route(p: Packed, pl: Placement, dev: VFpgaDevice, opts: RouteOpt
   const nodeY = dev.nodeY;
   const baseCost = new Float32Array(N);
   for (let n = 0; n < N; n++) baseCost[n] = dev.nodeDelay[n]! + 0.01;
+  const minPerTile = 0.9 / 12;
   const occ = new Int32Array(N);
   const acc = new Float32Array(N).fill(1);
   const best = new Float64Array(N);
@@ -218,7 +230,6 @@ export function route(p: Packed, pl: Placement, dev: VFpgaDevice, opts: RouteOpt
   let treeId = 0;
   const heap = new Heap();
   let heapPops = 0;
-  const minPerTile = 0.9 / 12;
 
   const trees: RoutedNet[] = p.nets.map((net, ni) => ({ net: ni, source: source[ni]!, nodes: [], parents: [], sinkNodes: new Array(net.sinks.length).fill(-1) }));
   const connNode = new Int32Array(conns.length).fill(-1);
@@ -292,13 +303,15 @@ export function route(p: Packed, pl: Placement, dev: VFpgaDevice, opts: RouteOpt
       const c = conns[ci]!;
       const w = timing ? Math.min(0.99, crit[ci]!) * fade : 0;
       let found = -1;
-      for (let margin = margin0; found < 0; margin *= 2) {
+      // A net that still sits on an overused node late in the negotiation may need room to go around: its box grows.
+      const margin1 = Math.max(1, margin0 + (iter > 10 ? marginGrowth * (iter - 10) : 0));
+      for (let margin = margin1; found < 0; margin *= 2) {
         const bx0 = xmin - margin;
         const bx1 = xmax + margin;
         const by0 = ymin - margin;
         const by1 = ymax + margin;
         // Start from the tree nodes near the sink (all of them if none is near).
-        const near = 8 * (margin / margin0);
+        const near = 8 * (margin / Math.max(1, margin0));
         seenId++;
         targetId++;
         for (const tn of c.targets) targetMark[tn] = targetId;
@@ -454,7 +467,7 @@ export function route(p: Packed, pl: Placement, dev: VFpgaDevice, opts: RouteOpt
       success = true;
       break;
     }
-    presFac *= presMult;
+    presFac = Math.min(presFac * presMult, maxPres);
     if (timing) {
       routedDelays();
       setCrit(connDelay);

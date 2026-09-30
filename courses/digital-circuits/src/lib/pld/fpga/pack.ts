@@ -198,33 +198,71 @@ export function pack(nl: LcNetlist, dev: VFpgaDevice): Packed {
     grow(c);
   }
 
-  // Merge small clusters if the device would not hold them.
+  // Merge small clusters. Connectivity-driven growth stops when nothing is attracted to a tile, which leaves many
+  // tiles with one or two cells; the design would then spread over the whole device (and, on a crowded device, be
+  // forced into an arbitrary first-fit merge). Instead the smallest tiles are merged into the tile they share the
+  // most nets with (any tile with room and a compatible control set if they share none), best fit first, so tiles
+  // end up as full as the flip-flop control sets allow. Dense tiles leave the placer free space to work in, and
+  // nets inside a tile need no routing at all.
   let logicTiles = 0;
   for (let t = 0; t < dev.tileKind.length; t++) if (dev.tileKind[t] === 1) logicTiles++;
-  const macroTiles = () => clusters.filter((c) => c.macro >= 0).length;
-  const live = () => clusters.filter((c) => c.slots.some((s) => s >= 0));
-  if (live().length > logicTiles) {
-    const small = live()
-      .filter((c) => c.macro < 0)
-      .sort((a, b) => a.slots.filter((s) => s >= 0).length - b.slots.filter((s) => s >= 0).length);
+  {
+    const count = (c: Cluster) => c.slots.reduce((n, x) => n + (x >= 0 ? 1 : 0), 0);
+    const cellsOf = (c: Cluster) => c.slots.filter((x) => x >= 0).map((x) => lcs[x]!);
+    const small = clusters
+      .filter((c) => c.macro < 0 && count(c) > 0 && count(c) < LCS_PER_TILE)
+      .sort((a, b) => count(a) - count(b) || a.id - b.id);
+    // Tiles that can still take cells: chain tiles with free slots and ordinary tiles.
+    const open = new Set<Cluster>(clusters.filter((c) => count(c) > 0 && count(c) < LCS_PER_TILE));
     for (const a of small) {
-      if (live().length <= logicTiles) break;
-      if (!a.slots.some((s) => s >= 0)) continue;
-      const cnt = a.slots.filter((s) => s >= 0).length;
-      for (const b of live()) {
-        if (b === a || b.macro >= 0 && !b.slots.includes(-1)) continue;
-        const freeSlots = b.slots.filter((s) => s < 0).length;
-        if (freeSlots < cnt) continue;
-        const cells = a.slots.filter((s) => s >= 0).map((s) => lcs[s]!);
-        const probe: Cluster = { ...b, slots: [...b.slots] };
-        if (!cells.every((lc) => compatible(probe, lc) && (absorb(probe, lc), true))) continue;
-        for (const lc of cells) put(b, b.slots.indexOf(-1), lc);
-        a.slots.fill(-1);
-        break;
+      const cnt = count(a);
+      if (cnt === 0) continue;
+      const cells = cellsOf(a);
+      // Tiles that share nets with `a`.
+      const shared = new Map<Cluster, number>();
+      for (const lc of cells) {
+        for (const net of cellNets[lc.id]!) {
+          for (const other of netCells.get(net)!) {
+            const b = clusters[cellCluster[other]!]!;
+            if (b !== a && open.has(b)) shared.set(b, (shared.get(b) ?? 0) + 1);
+          }
+        }
       }
+      const fits = (b: Cluster): boolean => {
+        if (LCS_PER_TILE - count(b) < cnt) return false;
+        const probe: Cluster = { ...b, slots: [...b.slots] };
+        return cells.every((lc) => compatible(probe, lc) && (absorb(probe, lc), true));
+      };
+      let target: Cluster | undefined;
+      let bestShared = 0;
+      for (const [b, sc] of shared) {
+        if (sc > bestShared || (sc === bestShared && target && b.id < target.id)) {
+          if (fits(b)) {
+            target = b;
+            bestShared = sc;
+          }
+        }
+      }
+      if (!target) {
+        // Best fit: the fullest tile that still has room.
+        let bestFree = LCS_PER_TILE + 1;
+        for (const b of open) {
+          if (b === a) continue;
+          const f = LCS_PER_TILE - count(b);
+          if (f < cnt || f > bestFree || (f === bestFree && target && b.id > target.id)) continue;
+          if (fits(b)) {
+            target = b;
+            bestFree = f;
+          }
+        }
+      }
+      if (!target) continue;
+      for (const lc of cells) put(target, target.slots.indexOf(-1), lc);
+      a.slots.fill(-1);
+      open.delete(a);
+      if (count(target) === LCS_PER_TILE) open.delete(target);
     }
   }
-  void macroTiles;
   // Drop empty clusters, renumbering.
   const keep = clusters.filter((c) => c.slots.some((s) => s >= 0));
   const remap = new Map<number, number>();

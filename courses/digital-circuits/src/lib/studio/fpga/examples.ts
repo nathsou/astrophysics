@@ -89,7 +89,7 @@ export const FPGA_EXAMPLES: FpgaExample[] = [
   { id: 'hex-counter', title: 'Hex counter (board)', blurb: 'A 16-bit counter on the board’s four 7-segment digits, with buttons and switches.', source: HEX_COUNTER, size: 'M' },
   { id: 'alu', title: 'ALU (32-bit)', blurb: 'The RV32I core’s arithmetic and logic unit: adder, comparators, barrel shifter.', source: fromFile('alu'), size: 'M' },
   { id: 'regfile', title: 'Register file', blurb: '32 registers of 32 bits, two read ports and a write port, all flip-flops.', source: fromFile('regfile'), size: 'L', heavy: true },
-  { id: 'rv32i', title: 'RV32I core', blurb: 'A multi-cycle RV32I processor for vFPGA-L. At present the router cannot finish it (the fit stops in routing and says so): the toolchain’s job to fix, kept here as the Chapter 31 goal.', source: fromFile('rv32i'), size: 'L', heavy: true },
+  { id: 'rv32i', title: 'RV32I core', blurb: 'A multi-cycle RV32I processor: about 4,500 cells, over half of vFPGA-L. It places, routes with no overused wire and runs a program from its own bitstream; the fit takes a while.', source: fromFile('rv32i'), size: 'L', heavy: true },
 ];
 
 export const fpgaExample = (id: string | null | undefined): FpgaExample | undefined => FPGA_EXAMPLES.find((e) => e.id === id);

@@ -5,9 +5,18 @@
  *   rigid vertical macro; a move shifts the whole macro and evicts single tiles from its new footprint into the
  *   footprint it left.
  * - **Cost**: bounding-box wirelength of every net with the q(n) crossing-count correction (nets with more than
- *   `bigNet` blocks, reset- and enable-like nets, are left out), plus a timing term, the sum over connections of
- *   (estimated delay) × criticality^exponent. Both are normalised by their values at the previous temperature
- *   and combined with weight λ.
+ *   `bigNet` blocks, reset- and enable-like nets, are left out), plus a **congestion** term (below), plus a
+ *   timing term, the sum over connections of (estimated delay) × criticality^exponent. The wirelength and timing
+ *   terms are normalised by their values at the previous temperature and combined with weight λ.
+ * - **Congestion**: wirelength alone packs a design into a compact blob, and on a device with room to spare that
+ *   blob is where the routing runs out (RV32I on vFPGA-L fills 56 % of the cells but, placed for wirelength alone,
+ *   needs more wires in the middle than the channels there hold: a few nodes stay overused however long the router
+ *   negotiates). In the spirit of the channel-occupancy cost functions of early VPR, every net puts its wirelength
+ *   estimate into the coarse bins (3 × 3 tiles) its bounding box covers, and a bin whose demand is above `spreadAt`
+ *   × the average is charged `spread × excess² / threshold` (in wirelength units, so it adds to the wirelength
+ *   term). It is tracked incrementally from each net's bin box and rebuilt at every temperature. The design ends up
+ *   spread over the die (its busiest bin carries about 1.8 times the average demand instead of 3), at the price of
+ *   about 10 % more wirelength.
  * - **Schedule**: initial temperature 20 × the standard deviation of the cost over N random moves accepted
  *   unconditionally; N^(4/3) × `innerNum` moves per temperature; the cooling factor depends on the acceptance
  *   rate (0.5 above 96 %, 0.9 above 80 %, 0.95 above 15 %, 0.8 below); the range limiter follows
@@ -40,6 +49,10 @@ export interface PlaceOptions {
   snapshots?: number;
   /** Nets with more blocks than this do not count in the cost. */
   bigNet?: number;
+  /** Weight of the congestion term (default 2; 0 turns it off; see the header). */
+  spread?: number;
+  /** Bins are penalised above this multiple of the average wire demand per bin (default 1.1). */
+  spreadAt?: number;
 }
 
 export interface PlaceStep {
@@ -98,6 +111,11 @@ export function estimateDelay(dx: number, dy: number): number {
   };
   return 0.1 + seg(Math.abs(dx)) + seg(Math.abs(dy)) + (dx !== 0 && dy !== 0 ? 0.1 : 0);
 }
+
+/** Congestion estimate: bin size (tiles), weight and threshold (see `PlaceOptions`). */
+const BIN = 3;
+const SPREAD = 2;
+const SPREAD_AT = 1.1;
 
 const CLS_LOGIC = 0;
 const CLS_IO = 1;
@@ -291,6 +309,10 @@ export function place(p: Packed, dev: VFpgaDevice, opts: PlaceOptions = {}): Pla
   const netTime = new Float64Array(nNets);
   const netBB = new Float64Array(nNets);
 
+  let bbx0 = 0;
+  let bbx1 = 0;
+  let bby0 = 0;
+  let bby1 = 0;
   const bbOf = (ni: number): number => {
     let xmin = 1e9;
     let xmax = -1;
@@ -305,7 +327,67 @@ export function place(p: Packed, dev: VFpgaDevice, opts: PlaceOptions = {}): Pla
       if (y < ymin) ymin = y;
       if (y > ymax) ymax = y;
     }
+    bbx0 = xmin;
+    bbx1 = xmax;
+    bby0 = ymin;
+    bby1 = ymax;
     return qf[ni]! * (xmax - xmin + (ymax - ymin));
+  };
+
+  // Congestion estimate: the wire demand of every net (its q-corrected half-perimeter) is spread evenly over the
+  // bins its bounding box touches; a bin above a threshold adds a penalty growing with the square of the excess.
+  const gamma = opts.spread ?? SPREAD;
+  const alpha = opts.spreadAt ?? SPREAD_AT;
+  const NBX = Math.ceil(W / BIN);
+  const NBY = Math.ceil(H / BIN);
+  const binD = new Float64Array(NBX * NBY);
+  const netRect = new Int16Array(nNets * 4);
+  let theta = 1e18;
+  let totalCong = 0;
+  const pen = (d: number): number => (d > theta ? (gamma * (d - theta) * (d - theta)) / theta : 0);
+  const binUndo: number[] = [];
+  const binUndoD: number[] = [];
+  const binOfX = Int16Array.from({ length: W }, (_, x) => Math.floor(x / BIN));
+  const binOfY = Int16Array.from({ length: H }, (_, y) => Math.floor(y / BIN));
+  /** The demand each net has put into the bins (it is refreshed when the net's bin box changes, and at every temperature). */
+  const netDem = new Float64Array(nNets);
+  /** Moves net ni's demand from its old bins to the bin box (bx0..bx1, by0..by1) with demand dem; returns the penalty change. */
+  const rebin = (ni: number, bx0: number, bx1: number, by0: number, by1: number, dem: number): number => {
+    const ox0 = netRect[ni * 4]!;
+    const ox1 = netRect[ni * 4 + 1]!;
+    const oy0 = netRect[ni * 4 + 2]!;
+    const oy1 = netRect[ni * 4 + 3]!;
+    let d = 0;
+    const oldShare = netDem[ni]! / ((ox1 - ox0 + 1) * (oy1 - oy0 + 1));
+    const newShare = dem / ((bx1 - bx0 + 1) * (by1 - by0 + 1));
+    for (let bx = ox0; bx <= ox1; bx++) {
+      for (let by = oy0; by <= oy1; by++) {
+        const b = bx * NBY + by;
+        const before = binD[b]!;
+        const after = before - oldShare;
+        d += pen(after) - pen(before);
+        binD[b] = after;
+        binUndo.push(b);
+        binUndoD.push(-oldShare);
+      }
+    }
+    for (let bx = bx0; bx <= bx1; bx++) {
+      for (let by = by0; by <= by1; by++) {
+        const b = bx * NBY + by;
+        const before = binD[b]!;
+        const after = before + newShare;
+        d += pen(after) - pen(before);
+        binD[b] = after;
+        binUndo.push(b);
+        binUndoD.push(newShare);
+      }
+    }
+    return d;
+  };
+  const revertBins = () => {
+    for (let i = binUndo.length - 1; i >= 0; i--) binD[binUndo[i]!]! -= binUndoD[i]!;
+    binUndo.length = 0;
+    binUndoD.length = 0;
   };
   const timeOf = (ni: number): number => {
     if (!tg) return 0;
@@ -325,12 +407,33 @@ export function place(p: Packed, dev: VFpgaDevice, opts: PlaceOptions = {}): Pla
   const recomputeAll = () => {
     totalBB = 0;
     totalT = 0;
+    binD.fill(0);
     for (let ni = 0; ni < nNets; ni++) {
       if (!isCost[ni]) continue;
       netBB[ni] = bbOf(ni);
       netTime[ni] = timeOf(ni);
       totalBB += netBB[ni]!;
       totalT += netTime[ni]!;
+    }
+    totalCong = 0;
+    if (gamma > 0) {
+      theta = Math.max(1e-9, (alpha * totalBB) / (NBX * NBY));
+      for (let ni = 0; ni < nNets; ni++) {
+        if (!isCost[ni]) continue;
+        bbOf(ni);
+        const bx0 = binOfX[bbx0]!;
+        const bx1 = binOfX[bbx1]!;
+        const by0 = binOfY[bby0]!;
+        const by1 = binOfY[bby1]!;
+        netRect[ni * 4] = bx0;
+        netRect[ni * 4 + 1] = bx1;
+        netRect[ni * 4 + 2] = by0;
+        netRect[ni * 4 + 3] = by1;
+        netDem[ni] = netBB[ni]!;
+        const share = netBB[ni]! / ((bx1 - bx0 + 1) * (by1 - by0 + 1));
+        for (let bx = bx0; bx <= bx1; bx++) for (let by = by0; by <= by1; by++) binD[bx * NBY + by]! += share;
+      }
+      for (let b = 0; b < binD.length; b++) totalCong += pen(binD[b]!);
     }
   };
   let estPeriod = 0;
@@ -383,6 +486,7 @@ export function place(p: Packed, dev: VFpgaDevice, opts: PlaceOptions = {}): Pla
   const affNets: number[] = [];
   const affBB: number[] = [];
   const affT: number[] = [];
+  const affRect: number[] = [];
   let maxR = Math.max(W, H);
   let rlim = maxR;
 
@@ -480,6 +584,9 @@ export function place(p: Packed, dev: VFpgaDevice, opts: PlaceOptions = {}): Pla
     affNets.length = 0;
     affBB.length = 0;
     affT.length = 0;
+    affRect.length = 0;
+    binUndo.length = 0;
+    binUndoD.length = 0;
     let dBB = 0;
     let dT = 0;
     for (const u of mvU) {
@@ -494,6 +601,16 @@ export function place(p: Packed, dev: VFpgaDevice, opts: PlaceOptions = {}): Pla
         affT.push(t);
         dBB += b - netBB[ni]!;
         dT += t - netTime[ni]!;
+        if (gamma > 0) {
+          const r0 = binOfX[bbx0]!;
+          const r1 = binOfX[bbx1]!;
+          const r2 = binOfY[bby0]!;
+          const r3 = binOfY[bby1]!;
+          const k = ni * 4;
+          const moved = r0 !== netRect[k] || r1 !== netRect[k + 1] || r2 !== netRect[k + 2] || r3 !== netRect[k + 3];
+          affRect.push(moved ? 1 : 0, r0, r1, r2, r3);
+          if (moved) dBB += rebin(ni, r0, r1, r2, r3, b);
+        }
       }
     }
     return { dBB, dT };
@@ -505,7 +622,13 @@ export function place(p: Packed, dev: VFpgaDevice, opts: PlaceOptions = {}): Pla
       totalT += affT[i]! - netTime[ni]!;
       netBB[ni] = affBB[i]!;
       netTime[ni] = affT[i]!;
+      if (gamma > 0 && affRect[i * 5]) {
+        for (let k = 0; k < 4; k++) netRect[ni * 4 + k] = affRect[i * 5 + 1 + k]!;
+        netDem[ni] = affBB[i]!;
+      }
     }
+    binUndo.length = 0;
+    binUndoD.length = 0;
   };
 
   const N = movable.length;
@@ -558,7 +681,10 @@ export function place(p: Packed, dev: VFpgaDevice, opts: PlaceOptions = {}): Pla
       if (delta <= 0 || (T > 0 && rnd() < Math.exp(-delta / T))) {
         commit();
         accepted++;
-      } else apply(mvOld);
+      } else {
+        revertBins();
+        apply(mvOld);
+      }
     }
     totalMoves += moves;
     return accepted / moves;

@@ -103,7 +103,10 @@ export const VFPGA_SPECS: Record<VFpgaSize, VFpgaSpec> = {
     cbLocal: 4,
     globals: 4,
   },
-  // 12 × 12 logic tiles = 1,152 cells, plus two block RAM columns.
+  // 12 × 12 logic tiles = 1,152 cells, plus two block RAM columns. Octet is meant to use about two thirds of it.
+  // The connection boxes are rich: a pin can pick 27 of the 40 wires that arrive at its tile (Fc_in = 0.68; the
+  // 27 + 4 local inputs still fit five select bits). With 16 of the 40 a design of 740 cells (64 % of M) sometimes
+  // did not route at all: once the packer fills tiles densely, the wires a pin can see are all taken by other nets.
   M: {
     name: 'vFPGA-M',
     size: 'M',
@@ -112,12 +115,16 @@ export const VFPGA_SPECS: Record<VFpgaSize, VFpgaSpec> = {
     bramCols: [4, 11],
     padsPerTile: 4,
     tracks: { s1: 4, s4: 4, s12: 2 },
-    cbWires: 16,
+    cbWires: 27,
     cbLocal: 4,
     globals: 8,
   },
-  // 32 × 32 logic tiles = 8,192 cells, plus two block RAM columns: a design of about 4,000 cells uses half of it
-  // (sized after measuring: at 4,608 cells the router could not finish such a design in reasonable time).
+  // 32 × 32 logic tiles = 8,192 cells, plus two block RAM columns. The RV32I core (about 4,500 cells: 56 % of the
+  // cells, 576 of the 1,024 logic tiles) is the design it is sized for. It has M's channels and M's connection boxes.
+  // With 16-of-40 connection boxes the core does not route however long the router negotiates (it ends with a few
+  // dozen overused nodes, or two nets fight over one node for dozens of iterations); with 27-of-40 it takes about a
+  // dozen iterations. Widening the channels instead would need 6 span-4 and 3 span-12 wires per direction (13 wires
+  // per tile and direction instead of 10, and about 30 % more wires on the die).
   L: {
     name: 'vFPGA-L',
     size: 'L',
@@ -126,7 +133,7 @@ export const VFPGA_SPECS: Record<VFpgaSize, VFpgaSpec> = {
     bramCols: [9, 26],
     padsPerTile: 4,
     tracks: { s1: 4, s4: 4, s12: 2 },
-    cbWires: 16,
+    cbWires: 27,
     cbLocal: 4,
     globals: 8,
   },
