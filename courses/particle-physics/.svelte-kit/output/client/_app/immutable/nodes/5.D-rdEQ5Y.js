@@ -1,0 +1,1 @@
+import{B as e,C as t,I as n,T as r,m as i}from"../chunks/C1MU2Y5J.js";import"../chunks/xihTtKlq.js";import"../chunks/CySF57v5.js";import"../chunks/UK7i5rRI.js";var a=r(`<div class="page svelte-1uem6xk"><h1>control-room</h1><p>Coming soon.</p></div>`);function o(r){var o=a();i(`1uem6xk`,t=>{n(()=>{e.title=`control-room · Particle Physics`})}),t(r,o)}export{o as component};

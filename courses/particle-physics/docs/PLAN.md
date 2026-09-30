@@ -14,7 +14,7 @@ the LHC experiments.
 | Topic | Decision | Notes |
 |---|---|---|
 | Title | **Particle Physics** | Slug `particle-physics`, published at `/particle-physics/`. *Accelerator Physics* was the other candidate. It names the beam-dynamics field, which is one part of this course (Part V), so it would promise a different course. |
-| Reader | **A software engineer who has worked at CERN** | Knows the lab, its machines and experiments by name, and its software (ROOT, Geant4, the grid, the experiments' frameworks). Has not necessarily studied the physics. No tourist introductions; the physics and the maths are taught from the ground up. |
+| Reader | **A software engineer** with no particle-physics background, who is not assumed to know CERN or its software | CERN, its accelerators, its experiments and its software are introduced as they appear (Chapter 0 gives the tour). Nothing is assumed beyond school physics; the physics and the maths are taught from the ground up. |
 | Text | **One text for everyone** | No depth slider and no tiered variants (unlike astrophysics). A long derivation may fold into `:::details`, but the main text never depends on it. |
 | Maths | Engineering-school maths, used freely | Algebra, calculus, vectors and matrices, complex numbers, probability. Special relativity, quantum mechanics, Lagrangians and matrix groups are taught where needed, with primers in appendices A and B. Tree-level calculations are done in full for a few processes, with helicity amplitudes rather than trace technology. Loops and renormalisation are shown, not derived. |
 | Units | Natural units (ħ = c = 1, energies in GeV) from Chapter 1 | SI where the machine needs it (tesla, metres, amperes). A units converter and hoverable constants are available everywhere. Metric signature (+, −, −, −). LHC coordinate conventions: z along the beam, azimuth φ, polar angle θ, pseudorapidity η, transverse momentum pT. |
@@ -87,8 +87,9 @@ the LHC experiments.
    - blinding is a held-out test set;
    - the look-elsewhere effect is multiple comparisons (p-hacking done honestly);
    - a systematic uncertainty is a model that might be wrong.
-8. **In the experiments.** For a reader who has worked at CERN, callouts show how the production systems do
-   what the course's toy does, and where the toy is simpler. Examples:
+8. **In the experiments.** Callouts show how the production systems used at CERN and elsewhere do
+   what the course's toy does, and where the toy is simpler. Each system is named and described the first
+   time it appears. Examples:
    - Pythia and MadGraph for generation;
    - Geant4 and Delphes for simulation;
    - ACTS for tracking;
@@ -121,7 +122,7 @@ Standards per chapter:
 
 | # | Chapter | Key ideas | Flagship interactive | Pipeline |
 |---|---|---|---|---|
-| 0 | Anatomy of a collision | One LHC collision, followed from the beams to one entry in a histogram; the six stages; what the reader will build; how the course works | Scroll-driven journey: bunches cross → partons collide → particles cross the detector → hits → reconstructed objects → trigger decision → a histogram bin gains one entry | The finished pipeline, shown running |
+| 0 | Anatomy of a collision | What CERN is, what the LHC is, and why; one LHC collision, followed from the beams to one entry in a histogram; the six stages; what the reader will build; how the course works | Scroll-driven journey: bunches cross → partons collide → particles cross the detector → hits → reconstructed objects → trigger decision → a histogram bin gains one entry | The finished pipeline, shown running |
 
 ### Part I — Foundations
 
