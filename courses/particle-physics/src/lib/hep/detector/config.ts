@@ -160,7 +160,7 @@ const pix = (r: number, halfLength: number, x0 = 0.012): TrackerLayerConfig => (
 const strip = (r: number, halfLength: number, x0 = 0.02): TrackerLayerConfig => ({ r, halfLength, sigmaRPhi: 0.04, sigmaZ: 0.5, x0, kind: 'strip' });
 
 const onionCal = {
-  ecal: { rIn: 1290, depthX0: 25, halfLength: 3000, etaMax: 2.5, stochastic: 0.027, constant: 0.003, noise: 0.03, cellEta: 0.0175, cellPhi: 0.0175, layers: 3 },
+  ecal: { rIn: 1290, depthX0: 25, halfLength: 3000, etaMax: 2.5, stochastic: 0.027, constant: 0.003, noise: 0.015, cellEta: 0.0175, cellPhi: 0.0175, layers: 3 },
   hcal: { rIn: 1600, depthLambda: 10, stochastic: 1.0, constant: 0.05, noise: 0.02, cellEta: 0.087, cellPhi: 0.087, layers: 4, etaMax: 2.5 },
 } satisfies { ecal: EcalConfig; hcal: HcalConfig };
 

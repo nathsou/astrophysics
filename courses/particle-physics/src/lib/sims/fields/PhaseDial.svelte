@@ -420,9 +420,12 @@
   }
   .key li {
     margin: 0 !important;
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
+    display: block;
+    line-height: 1.45;
+  }
+  .key :global(.sw),
+  .key :global(.k) {
+    margin-right: 0.4rem;
   }
   .k {
     flex: none;

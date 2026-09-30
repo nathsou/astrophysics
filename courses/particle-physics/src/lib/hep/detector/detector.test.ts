@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { setOverride } from '../hooks.ts';
 import { exponential, normal, rng } from '../random/index.ts';
 import { fromMass, fromPtEtaPhiM, mass, type P4 } from '../kinematics/index.ts';
-import { particle } from '../particles/index.ts';
+import { allParticles, particle } from '../particles/index.ts';
 import type { DetectorEvent, TruthEvent } from '../event/index.ts';
 import {
   bethe, caloResolution, caloResponse, criticalEnergy, customise, deriveMuonMinP, densityEffect, gammaP, hcalOuterRadius,
@@ -718,6 +718,28 @@ describe('calorimeter resolution emerges from the parameters', () => {
   });
 });
 
+describe('calorimeter resolution of simulated showers', () => {
+  test('charged pions: the sum of the cells has σ/E = a_had/√E ⊕ b_had, whatever the depth at which the shower starts', () => {
+    const c = customise(clean(), { hcal: { stochastic: 1.0, constant: 0.05 } });
+    const r = rng(31);
+    for (const E of [30, 100]) {
+      const sums = Array.from({ length: 1200 }, () => sumCells(simulate(truthOf([withE(211, E, -0.6 + 1.2 * r(), -3 + 6 * r())]), c, r)));
+      const pred = Math.sqrt(1 / E + 0.05 ** 2);
+      expect(mean(sums) / E).toBeGreaterThan(0.97);
+      expect(Math.abs(sd(sums) / mean(sums) / pred - 1), `E = ${E}`).toBeLessThan(0.1);
+    }
+  });
+  test('electrons in the ECAL: a/√E ⊕ b with the electron energy scale unbiased', () => {
+    const c = customise(clean(), { ecal: { stochastic: 0.05, constant: 0.01 } });
+    const r = rng(32);
+    const E = 50;
+    const sums = Array.from({ length: 1500 }, () => sumCells(simulate(truthOf([withE(22, E, -0.5 + r(), -3 + 6 * r())]), c, r)));
+    const pred = Math.sqrt(0.05 ** 2 / E + 0.01 ** 2);
+    expect(Math.abs(mean(sums) / E - 1)).toBeLessThan(0.01);
+    expect(Math.abs(sd(sums) / mean(sums) / pred - 1)).toBeLessThan(0.1);
+  });
+});
+
 // ── muons ─────────────────────────────────────────────────────────────────────────────────────
 
 describe('muons', () => {
@@ -1067,6 +1089,43 @@ describe('presets', () => {
     const thin = deriveMuonMinP(presets.onion!.ecal, { ...presets.onion!.hcal, depthLambda: 5 });
     const thick = deriveMuonMinP(presets.onion!.ecal, { ...presets.onion!.hcal, depthLambda: 12 });
     expect(thick).toBeGreaterThan(thin + 1);
+  });
+});
+
+describe('robustness', () => {
+  test('every particle of the table, both signs, at many energies and angles: no exceptions, only finite numbers', () => {
+    const r = rng(50);
+    const cfgs = [presets.onion!, presets['atlas-like']!, presets.minimal!];
+    let events = 0;
+    for (const t of allParticles()) {
+      for (const pdg of t.selfConjugate ? [t.pdg] : [t.pdg, -t.pdg]) {
+        for (let i = 0; i < 6; i++) {
+          const pt = 10 ** (-1.5 + 4.5 * r());
+          const p = fromPtEtaPhiM(pt, -4 + 8 * r(), -3 + 6 * r(), t.mass);
+          const d = simulate(truthOf([{ pdg, p, vertex: [r() - 0.5, r() - 0.5, 60 * (r() - 0.5)] }]), cfgs[i % 3]!, r);
+          events++;
+          for (const h of d.hits) for (const v of [h.x, h.y, h.z, h.edep ?? 0]) if (!Number.isFinite(v)) throw new Error(`non-finite hit for pdg ${pdg}`);
+          for (const c of d.cells) if (!(Number.isFinite(c.energy) && c.energy > 0 && Number.isFinite(c.eta) && Number.isFinite(c.phi))) throw new Error(`bad cell for pdg ${pdg}`);
+          for (const m of d.muonHits) for (const v of [m.x, m.y, m.z]) if (!Number.isFinite(v)) throw new Error(`non-finite muon hit for pdg ${pdg}`);
+        }
+      }
+    }
+    expect(events).toBeGreaterThan(500);
+  });
+  test('unknown PDG codes, zero momentum and empty events are ignored', () => {
+    const r = rng(51);
+    const d = simulate(truthOf([{ pdg: 99999999, p: fromMass(1, 1, 1, 1) }, { pdg: 13, p: { E: 0.1057, px: 0, py: 0, pz: 0 } }]), presets.onion!, r);
+    expect(d.hits).toHaveLength(d.hits.length); // only noise hits, if any
+    expect(d.hits.every((h) => h.truth === -1)).toBe(true);
+    expect(d.cells).toHaveLength(0);
+    const e = simulate(truthOf([]), clean(), r);
+    expect(e).toEqual({ hits: [], cells: [], muonHits: [], pileup: 0 });
+  });
+  test('a very energetic event (a 7 TeV muon, a 3 TeV electron, a 5 TeV jet particle) does not break the tables', () => {
+    const r = rng(52);
+    const d = simulate(truthOf([withE(13, 7000, 0.1, 1), withE(11, 3000, -0.4, 2), withE(211, 5000, 0.3, -2)]), presets.onion!, r);
+    expect(d.muonHits.length).toBeGreaterThanOrEqual(4);
+    expect(sumCells(d)).toBeGreaterThan(3000);
   });
 });
 

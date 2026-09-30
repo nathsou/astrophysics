@@ -382,7 +382,7 @@ export function slotOf(pdg: number): number {
   }
 }
 /** The parton density f(x, Q) = (x f)/x. */
-export function f(pdg: number, x: number, Q: number, antiproton = false): number {
+export function pdf(pdg: number, x: number, Q: number, antiproton = false): number {
   return xf(pdg, x, Q, antiproton) / x;
 }
 

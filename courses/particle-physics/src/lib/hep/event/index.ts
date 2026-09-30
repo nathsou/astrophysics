@@ -189,7 +189,10 @@ export interface FullEvent {
 export class EventTable {
   readonly columns: Record<string, Float64Array> = {};
   readonly jagged: Record<string, { offsets: Uint32Array; values: Float64Array }> = {};
-  constructor(public n: number) {}
+  n: number;
+  constructor(n: number) {
+    this.n = n;
+  }
 
   setColumn(name: string, values: ArrayLike<number>): this {
     if (values.length !== this.n) throw new Error(`column ${name}: expected ${this.n} rows, got ${values.length}`);

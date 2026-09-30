@@ -530,10 +530,12 @@
   }
   .key li {
     margin: 0 !important;
-    display: flex;
-    gap: 0.4rem;
-    align-items: center;
-    flex-wrap: wrap;
+    display: block;
+    line-height: 1.45;
+  }
+  .key :global(.sw),
+  .key :global(.k) {
+    margin-right: 0.4rem;
   }
   .sw {
     display: inline-block;

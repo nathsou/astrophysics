@@ -108,13 +108,27 @@
         <div class:over={e.effective < par}><span>{e.label}</span><span class="m"><span style="width:{e.effective * 100}%"></span></span><strong>{fmtPct(e.effective)}</strong> {e.effective >= par ? '✓' : '✗'}</div>
       {/each}
     </div>
-    <div class="ex-bar ui"><button type="button" class="check" onclick={check}>Check</button></div>
+    <div class="ui"><button type="button" class="check" onclick={check}>Check</button></div>
     {#if verdict}<Verdict ok={verdict.ok}>{verdict.msg}</Verdict>{#if verdict.ok && spec.explain}<div class="explain">{@html spec.explain}</div>{/if}{/if}
   {/if}
 </ExerciseFrame>
 
 <style>
-  @import './parts/exercise.css';
+  .check {
+    border: 1px solid var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+    border-radius: var(--radius-sm);
+    padding: 0.3rem 1rem;
+    font: inherit;
+    font-weight: 700;
+    min-height: 2.3rem;
+    cursor: pointer;
+  }
+  .check:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
   .goal {
     font-size: 0.88rem;
     margin: 0 0 0.6rem;

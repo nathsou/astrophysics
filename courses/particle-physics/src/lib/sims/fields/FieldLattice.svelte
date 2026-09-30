@@ -840,10 +840,13 @@
     gap: 0.2rem;
   }
   .key li {
-    display: flex;
-    gap: 0.5rem;
-    align-items: baseline;
     margin: 0 !important;
+    display: block;
+    line-height: 1.45;
+  }
+  .key :global(.sw),
+  .key :global(.k) {
+    margin-right: 0.4rem;
   }
   .sw {
     flex: none;

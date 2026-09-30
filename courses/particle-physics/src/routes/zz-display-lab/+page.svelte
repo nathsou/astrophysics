@@ -18,30 +18,40 @@
   const truth = $derived(page.url.searchParams.get('t') === '1');
   const ev = $derived(sampleEvent(sample, { seed: 3 }));
   let bench = $state('');
-  onMount(() => {
+  onMount(async () => {
     if (page.url.searchParams.get('w') !== 'bench') return;
     const e = sampleEvent('stress', { seed: 1 });
-    const t0 = performance.now();
     const scene = buildScene(e, defaultGeometry);
-    const tScene = performance.now() - t0;
-    const c = document.createElement('canvas');
-    c.width = 1000; c.height = 700;
-    document.body.appendChild(c);
-    const gl = new EventGL(c);
-    gl.resize(1000, 700, 1);
-    const cam = new Camera();
-    cam.resize(1000, 700);
-    cam.distance = 11000;
     const pal = defaultColours('dark');
-    const t1 = performance.now();
-    gl.setScene(scene, { colourBy: 'particle', showTruth: false, showReco: true, showHits: true, showCalo: true, palette: pal });
-    const tSet = performance.now() - t1;
-    // CPU cost of submitting a frame (no waiting for the GPU).
-    const t2 = performance.now();
-    for (let i = 0; i < 200; i++) { cam.orbit(0.01, 0); cam.update(); gl.render(cam); }
-    const tSubmit = (performance.now() - t2) / 200;
-    const full = gl.benchmark(cam, 10);
-    bench = JSON.stringify({ tracks: e.reco.tracks.length, hits: e.detector!.hits.length, truth: e.truth!.particles.length, cells: e.detector!.cells.length, polylines: scene.polylines.length, towers: scene.towers.length, stats: gl.stats, sceneMs: +tScene.toFixed(1), setSceneMs: +tSet.toFixed(1), submitMsPerFrame: +tSubmit.toFixed(3), fullMsPerFrameSwiftShader: +full.toFixed(1) });
+    const W = 500, H = 350;
+    const results: Record<string, number> = {};
+    const base = { colourBy: 'particle' as const, showTruth: false, showReco: true, showHits: true, showCalo: true, palette: pal };
+    const variants: [string, Partial<typeof base>, boolean][] = [
+      ['all aa', {}, true],
+      ['all noaa', {}, false],
+      ['no points', { showHits: false }, false],
+      ['no towers', { showCalo: false }, false],
+      ['no hits no towers', { showHits: false, showCalo: false }, false],
+      ['wire only', { showHits: false, showCalo: false, showReco: false }, false],
+    ];
+    for (const [name, o, aa] of variants) {
+      const c = document.createElement('canvas');
+      document.body.appendChild(c);
+      const gl = new EventGL(c, { antialias: aa });
+      gl.resize(W, H, 1);
+      const cam = new Camera();
+      cam.resize(W, H);
+      cam.distance = 11000;
+      gl.setScene(scene, { ...base, ...o });
+      gl.render(cam);
+      gl.readPixel(1, 1);
+      results[name] = +gl.benchmark(cam, 2).toFixed(0);
+      results[name + ' (segs/pts/towers)'] = gl.stats.segments + gl.stats.points / 1e6 + gl.stats.towers / 1e12;
+      gl.dispose();
+      c.remove();
+      bench = JSON.stringify(results);
+      await new Promise((r) => setTimeout(r, 50));
+    }
   });
 </script>
 

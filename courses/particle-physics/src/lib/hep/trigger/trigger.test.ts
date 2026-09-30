@@ -4,7 +4,7 @@ import { rng } from '../random/index.ts';
 import { fromPtEtaPhiM } from '../kinematics/index.ts';
 import type { RecoEvent, RecoObject } from '../event/index.ts';
 import {
-  CatalogueEvaluator, EVENT_SIZE_MB, L1_INPUT_RATE_HZ, L1_LATENCY_US, L1_OUTPUT_RATE_HZ, MENU_KINDS, TOY_SAMPLES, bandwidth, effectiveEvents, efficiencyCurve, erf, estimateRates,
+  CatalogueEvaluator, DEFAULT_BUDGET, looseSettings, scoreReport, startSettings, suggestedSettings, EVENT_SIZE_MB, L1_INPUT_RATE_HZ, L1_LATENCY_US, L1_OUTPUT_RATE_HZ, MENU_KINDS, TOY_SAMPLES, bandwidth, effectiveEvents, efficiencyCurve, erf, estimateRates,
   evaluateMenu, fitTurnOn, generateToySamples, itemFromSetting, l1Decision, l1EgCandidates, l1InputFromDetector, l1InputFromReco, l1Jets, l1LatencyBudget, l1Met, l1Variables, liveFraction,
   menuFromSettings, physicsLost, rateHz, referenceL1Decision, turnOn, turnOnQuantile, weightedEfficiency, type ItemSetting, type Sample, type TriggerEvent, type TriggerMenu,
 } from './index.ts';
@@ -285,5 +285,30 @@ describe('turn-on curves', () => {
     expect(fit.x50).toBeLessThan(25);
     expect(fit.sigma).toBeGreaterThan(1.5);
     expect(fit.sigma).toBeLessThan(3.5);
+  });
+});
+
+describe('the trigger game model', () => {
+  const samples = generateToySamples({ seed: 3, nPerSample: 500 });
+  const evaluator = new CatalogueEvaluator(samples);
+  test('the starting menu is far over budget and scores almost nothing; a sensible menu is within budget and scores well', () => {
+    const start = scoreReport(evaluator.evaluate(startSettings(), 2e34), DEFAULT_BUDGET);
+    expect(start.overHlt).toBe(true);
+    expect(start.score).toBeLessThan(15);
+    const good = scoreReport(evaluator.evaluate(suggestedSettings(), 2e34), DEFAULT_BUDGET);
+    expect(good.overL1).toBe(false);
+    expect(good.overHlt).toBe(false);
+    expect(good.score).toBeGreaterThan(75);
+    expect(scoreReport(evaluator.evaluate(looseSettings(), 2e34), DEFAULT_BUDGET).score).toBeLessThan(2);
+  });
+  test('rates scale with luminosity', () => {
+    const a = evaluator.evaluate(suggestedSettings(), 1e34);
+    const b = evaluator.evaluate(suggestedSettings(), 2e34);
+    expect(b.hltTotal / a.hltTotal).toBeCloseTo(2, 6);
+  });
+  test('the score can be restricted to named samples', () => {
+    const r = evaluator.evaluate(suggestedSettings(), 2e34);
+    const s = scoreReport(r, DEFAULT_BUDGET, ['hgg']);
+    expect(s.score).toBeCloseTo(100 * s.samples.find((x) => x.key === 'hgg')!.effective, 9);
   });
 });

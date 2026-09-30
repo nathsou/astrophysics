@@ -181,4 +181,13 @@
       display: none;
     }
   }
+  @media (max-width: 420px) {
+    .topbar {
+      gap: 0.35rem;
+      padding: 0 0.6rem;
+    }
+    .brand .name {
+      display: none;
+    }
+  }
 </style>

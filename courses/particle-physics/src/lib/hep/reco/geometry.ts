@@ -31,6 +31,9 @@ export interface CaloGeometry {
   noise: number;
   /** Number of longitudinal layers. */
   layers: number;
+  /** Energy resolution σ/E = stochastic/√E ⊕ constant (E in GeV), used to judge whether an energy excess is significant. */
+  stochastic: number;
+  constant: number;
 }
 
 export interface MuonGeometry {
@@ -39,6 +42,8 @@ export interface MuonGeometry {
   returnField: number;
   /** Momentum a muon needs to reach the stations. */
   minP: number;
+  /** Material the calorimeters present to a radial muon, in radiation lengths (for its multiple scattering). */
+  caloX0: number;
   /** Expected muon momentum (GeV) after the calorimeters, for one of p0 (GeV) crossing with path factor f (≥ 1). */
   momentumAfterCalo: (p0: number, f: number) => number;
 }
@@ -87,12 +92,13 @@ export const DEFAULT_GEOMETRY: RecoGeometry = {
   zMax: 3000,
   etaMax: 2.5,
   coilRadius: 3000,
-  ecal: { rInner: 1290, dEta: 0.0175, dPhi: 0.0175, etaMax: 2.5, scale: 1, noise: 0.03, layers: 3 },
-  hcal: { rInner: 1600, dEta: 0.087, dPhi: 0.087, etaMax: 2.5, scale: 1, noise: 0.02, layers: 4 },
+  ecal: { rInner: 1290, dEta: 0.0175, dPhi: 0.0175, etaMax: 2.5, scale: 1, noise: 0.03, layers: 3, stochastic: 0.027, constant: 0.003 },
+  hcal: { rInner: 1600, dEta: 0.087, dPhi: 0.087, etaMax: 2.5, scale: 1, noise: 0.02, layers: 4, stochastic: 1.0, constant: 0.05 },
   muon: {
     stations: [4000, 5000, 6000, 7000].map((r) => ({ r, halfLength: 7000, sigmaRPhi: 0.3, sigmaZ: 1.5 })),
     returnField: -1.8,
     minP: 4,
+    caloX0: 120,
     momentumAfterCalo: (p0) => Math.max(0.5, p0 - 3),
   },
   beamSpotXY: 0.015,
@@ -143,12 +149,13 @@ function fromDetectorConfig(cfg: DetectorConfig): RecoGeometry {
     zMax: Math.max(...layers.map((l) => l.halfLength)),
     etaMax: eta,
     coilRadius,
-    ecal: { rInner: cfg.ecal.rIn, dEta: cfg.ecal.cellEta, dPhi: (2 * Math.PI) / nPhi(cfg.ecal.cellPhi), etaMax: cfg.ecal.etaMax, scale: 1, noise: cfg.ecal.noise, layers: Math.max(1, Math.round(cfg.ecal.layers)) },
-    hcal: { rInner: cfg.hcal.rIn, dEta: cfg.hcal.cellEta, dPhi: (2 * Math.PI) / nPhi(cfg.hcal.cellPhi), etaMax: cfg.hcal.etaMax ?? cfg.ecal.etaMax, scale: 1, noise: cfg.hcal.noise ?? 0, layers: Math.max(1, Math.round(cfg.hcal.layers)) },
+    ecal: { rInner: cfg.ecal.rIn, dEta: cfg.ecal.cellEta, dPhi: (2 * Math.PI) / nPhi(cfg.ecal.cellPhi), etaMax: cfg.ecal.etaMax, scale: 1, noise: cfg.ecal.noise, layers: Math.max(1, Math.round(cfg.ecal.layers)), stochastic: cfg.ecal.stochastic, constant: cfg.ecal.constant },
+    hcal: { rInner: cfg.hcal.rIn, dEta: cfg.hcal.cellEta, dPhi: (2 * Math.PI) / nPhi(cfg.hcal.cellPhi), etaMax: cfg.hcal.etaMax ?? cfg.ecal.etaMax, scale: 1, noise: cfg.hcal.noise ?? 0, layers: Math.max(1, Math.round(cfg.hcal.layers)), stochastic: cfg.hcal.stochastic, constant: cfg.hcal.constant },
     muon: {
       stations: cfg.muon.stations.map((s) => ({ r: s.r, halfLength: s.halfLength, sigmaRPhi: s.sigmaRPhi, sigmaZ: s.sigmaZ })),
       returnField: cfg.muon.returnField ?? 0,
       minP: cfg.muon.minPToReach,
+      caloX0: cfg.ecal.depthX0 + thick.hcal / mh.X0,
       momentumAfterCalo: (p0, f) => {
         let E = muonEnergyAfter(me, thick.ecal * f, Math.sqrt(p0 * p0 + M_MU * M_MU));
         if (E > 0) E = muonEnergyAfter(mh, thick.hcal * f, E);

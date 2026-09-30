@@ -15,10 +15,10 @@
   import Toggle from '$lib/components/ui/Toggle.svelte';
   import Segmented from '$lib/components/ui/Segmented.svelte';
   import Button from '$lib/components/ui/Button.svelte';
-  import { rng as makeRng } from '$lib/hep/random';
-  import { MATERIALS, makePicture, mipLoss, type Picture, type Track } from '$lib/hep/chamber';
+  import { makePicture, type Picture, type Track } from '$lib/hep/chamber';
   import { particle } from '$lib/hep/particles';
-  import { DropletField, dropletsForTrack, FOREVER } from './droplets';
+  import { DropletField } from './droplets';
+  import { fillFromPicture } from './scene';
   import ChamberView from './ChamberView.svelte';
   import TrackPanel from './TrackPanel.svelte';
   import { selectionInfo } from './info';
@@ -35,7 +35,6 @@
     forceCanvas = false,
   }: { n?: string | number; caption?: string; title?: string; preset?: string; seed?: number; field?: number; showNeutrals?: boolean; forceCanvas?: boolean } = $props();
 
-  const MIP = (mipLoss(MATERIALS.hydrogen, true) * MATERIALS.hydrogen.density) / 10;
   let preset = $state<string>(['omega', 'v0', 'pair'].includes(preset0) ? preset0 : 'omega');
   let seed = $state(seed0);
   let B = $state(field0);
@@ -60,18 +59,7 @@
 
   function build() {
     const p = makePicture(preset, seed, { bField: B });
-    const rng = makeRng(seed * 31 + 5);
-    droplets.clear();
-    const kept: Track[] = [];
-    for (const t of p.set.tracks) {
-      if (t.neutral) {
-        kept.push(t);
-        continue;
-      }
-      if (!t.points.some((q) => q.visible)) continue;
-      kept.push(t);
-      droplets.append(dropletsForTrack(t, rng, { kind: 'bubble', birth: 0.05 + rng() * 0.15, life: FOREVER, mip: MIP, id: t.id }));
-    }
+    const kept = fillFromPicture(p, droplets, seed);
     pic = p;
     tracks = kept;
     selected = null;

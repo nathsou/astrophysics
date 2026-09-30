@@ -239,16 +239,15 @@ const MAX_W = 3;
 class CellAcc {
   /** One map per (calorimeter, layer), keyed by (ieta + 4096) × nPhi + iphi (small integers, so V8 hashes them fast). */
   private maps: (Map<number, number> | undefined)[] = new Array(32);
-  /** Per cell: which (calorimeter, layer), the packed position, energy, variance and the first contributing truth particle. */
+  /** Per cell: which (calorimeter, layer), the packed position, energy and the first contributing truth particle. */
   mi: number[] = [];
   key: number[] = [];
   e: number[] = [];
-  v: number[] = [];
   t0: number[] = [];
   /** Further contributors, for the cells that have more than one. */
   more = new Map<number, number[]>();
 
-  add(cal: number, layer: number, ieta: number, iphi: number, nPhi: number, e: number, v: number, truth: number): void {
+  add(cal: number, layer: number, ieta: number, iphi: number, nPhi: number, e: number, truth: number): void {
     const mi = cal * 16 + layer;
     let map = this.maps[mi];
     if (!map) map = this.maps[mi] = new Map();
@@ -260,12 +259,10 @@ class CellAcc {
       this.mi.push(mi);
       this.key.push(key);
       this.e.push(e);
-      this.v.push(v);
       this.t0.push(truth);
       return;
     }
     this.e[i]! += e;
-    this.v[i]! += v;
     const first = this.t0[i]!;
     if (truth < 0 || first === truth) return;
     if (first < 0) {
@@ -797,7 +794,7 @@ function latTable(lat: Lateral, sCoreCells: number): { tab: LatTab } {
  * Spread layer energies `c.le[0..nl)` over the cells around (eta, phi) with a separable two-Gaussian lateral profile
  * whose widths are `scaleMm × (coreSigma, haloSigma)`, converted to angle at radius `rho`.
  */
-function spread(c: Ctx, g: CalGeo, eta: number, phi: number, rho: number, scaleMm: number, lat: Lateral, nl: number, a2: number, truth: number, point = false): void {
+function spread(c: Ctx, g: CalGeo, eta: number, phi: number, rho: number, scaleMm: number, lat: Lateral, nl: number, truth: number, point = false): void {
   if (point) {
     // a soft pile-up deposit: all in the central cell of each layer
     const ie = Math.floor(eta / g.cellEta);
@@ -806,7 +803,7 @@ function spread(c: Ctx, g: CalGeo, eta: number, phi: number, rho: number, scaleM
     if (ip < 0) ip += g.nPhi;
     for (let k = 0; k < nl; k++) {
       const ek = c.le[k]!;
-      if (ek >= g.eCut) c.cells.add(g.cal, k, ie, ip, g.nPhi, ek, a2 * ek, truth);
+      if (ek >= g.eCut) c.cells.add(g.cal, k, ie, ip, g.nPhi, ek, truth);
     }
     return;
   }
@@ -838,7 +835,7 @@ function spread(c: Ctx, g: CalGeo, eta: number, phi: number, rho: number, scaleM
         if (e < g.eCut) continue;
         let jp = (j0 + j) % g.nPhi;
         if (jp < 0) jp += g.nPhi;
-        cells.add(g.cal, k, ieta, jp, g.nPhi, e, a2 * e, truth);
+        cells.add(g.cal, k, ieta, jp, g.nPhi, e, truth);
       }
     }
   }
@@ -911,6 +908,19 @@ function hadCdf(E: number, x: number): number {
   return (t[r0]! * (1 - g) + t[r0 + 1]! * g) * (1 - f) + (t[r1]! * (1 - g) + t[r1 + 1]! * g) * f;
 }
 
+/**
+ * The fluctuation of one shower's visible energy, as a factor on all its cell energies: the stochastic term from Poisson
+ * statistics of E/a² "quanta" (σ/E = a/√E) and the constant term as a Gaussian factor (1 + bξ). Fluctuating the shower
+ * rather than each cell keeps the energy unbiased (a Gaussian per cell would, after the zero-suppression threshold,
+ * bias the sum up) and makes the resolution of the summed cells follow the configured parameters.
+ */
+function showerScale(c: Ctx, E: number, a: number, b: number): number {
+  let f = 1;
+  if (a > 0) f = (a * a * poisson(c.rng, E / (a * a))) / E;
+  if (b > 0) f *= 1 + b * gauss(c);
+  return f;
+}
+
 function depositEM(c: Ctx, E: number, x: number, y: number, z: number, truth: number, electron: boolean, point: boolean): void {
   if (E <= 1e-4) return;
   const rho = Math.sqrt(x * x + y * y);
@@ -920,7 +930,7 @@ function depositEM(c: Ctx, E: number, x: number, y: number, z: number, truth: nu
   if (Math.abs(eta) >= eg.etaMax) return;
   const phi = Math.atan2(y, x);
   const n = eg.layers;
-  const cf = eg.constant > 0 ? 1 + eg.constant * gauss(c) : 1;
+  const cf = showerScale(c, E, eg.stochastic, eg.constant);
   const cum = c.cum;
   emCumulative(electron ? c.emE : c.emG, E, cum);
   let prev = 0;
@@ -928,13 +938,13 @@ function depositEM(c: Ctx, E: number, x: number, y: number, z: number, truth: nu
     c.le[k] = E * (cum[k]! - prev) * cf;
     prev = cum[k]!;
   }
-  spread(c, eg, eta, phi, rho, c.rMolEm, LATERAL_EM, n, eg.stochastic * eg.stochastic, truth, point);
+  spread(c, eg, eta, phi, rho, c.rMolEm, LATERAL_EM, n, truth, point);
   // leakage behind the ECAL goes into the first layer of the HCAL
   const leak = E * (1 - prev) * cf;
   if (leak > hg.eCut && Math.abs(eta) < hg.etaMax) {
     c.le.fill(0);
     c.le[0] = leak;
-    spread(c, hg, eta, phi, Math.max(rho, hg.rIn * 0.5), c.lamHcal, LATERAL_HAD, 1, hg.stochastic * hg.stochastic, truth, point);
+    spread(c, hg, eta, phi, Math.max(rho, hg.rIn * 0.5), c.lamHcal, LATERAL_HAD, 1, truth, point);
   }
 }
 
@@ -951,9 +961,8 @@ function depositHadron(c: Ctx, Ekin: number, x: number, y: number, z: number, tr
   const Le = c.ecalDepthLam;
   const Lh = c.hcalDepthLam;
   const l0 = exponential(rng, 1);
-  const cf = hg.constant > 0 ? 1 + hg.constant * gauss(c) : 1;
+  const cf = showerScale(c, Ekin, hg.stochastic, hg.constant);
   const s = hadronShape(Ekin).s;
-  const a2 = hg.stochastic * hg.stochastic;
   // ECAL part: shower energy beyond the interaction point l0, plus a MIP-like deposit of a charged particle before it
   if (inE) {
     const n = eg.layers;
@@ -967,7 +976,7 @@ function depositHadron(c: Ctx, Ekin: number, x: number, y: number, z: number, tr
       pLo = pHi;
       if (c.le[k]! > 0) any = true;
     }
-    if (any) spread(c, eg, eta, phi, rho, c.lamEcal, LATERAL_HAD, n, a2, truth, point);
+    if (any) spread(c, eg, eta, phi, rho, c.lamEcal, LATERAL_HAD, n, truth, point);
   }
   if (inH) {
     const n = hg.layers;
@@ -980,7 +989,7 @@ function depositHadron(c: Ctx, Ekin: number, x: number, y: number, z: number, tr
       pLo = pHi;
       if (c.le[k]! > 0) any = true;
     }
-    if (any) spread(c, hg, eta, phi, Math.max(rho, hg.rIn * 0.5), c.lamHcal, LATERAL_HAD, n, a2, truth, point);
+    if (any) spread(c, hg, eta, phi, Math.max(rho, hg.rIn * 0.5), c.lamHcal, LATERAL_HAD, n, truth, point);
   }
 }
 
@@ -996,7 +1005,7 @@ function depositMip(c: Ctx, x: number, y: number, z: number, truth: number): voi
     const ieta = Math.floor(eta / g.cellEta);
     let iphi = Math.floor((phi + Math.PI) / g.dPhi) % g.nPhi;
     if (iphi < 0) iphi += g.nPhi;
-    for (let k = 0; k < g.layers; k++) c.cells.add(g.cal, k, ieta, iphi, g.nPhi, total / g.layers, 0, truth);
+    for (let k = 0; k < g.layers; k++) c.cells.add(g.cal, k, ieta, iphi, g.nPhi, total / g.layers, truth);
   }
 }
 
@@ -1070,17 +1079,14 @@ function addNoiseHits(c: Ctx): void {
 function finaliseCells(c: Ctx): CaloCell[] {
   const acc = c.cells;
   const out: CaloCell[] = [];
-  const rng = c.rng;
   for (let i = 0; i < acc.size; i++) {
     const mi = acc.mi[i]!;
     const g = mi >= 16 ? c.hcal : c.ecal;
     let e = acc.e[i]!;
-    const sig2 = acc.v[i]! + g.noise * g.noise;
     const thr = g.noise > 0 ? 2 * g.noise : 1e-9;
-    if (sig2 > 0) {
-      const sig = Math.sqrt(sig2);
-      if (e + 4 * sig < thr) continue; // cannot reach the threshold (p < 4e-5): skip the random number
-      e += sig * gauss(c);
+    if (g.noise > 0) {
+      if (e + 4 * g.noise < thr) continue; // cannot reach the threshold (p < 4e-5): skip the random number
+      e += g.noise * gauss(c);
     }
     if (!(e > thr)) continue;
     const key = acc.key[i]!;

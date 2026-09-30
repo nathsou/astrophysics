@@ -271,8 +271,11 @@ export class EventGL {
   /** Sign applied to the tower η flip so that faces are wound consistently (see the tower vertex shader). */
   private towerFlip = 1;
 
-  constructor(readonly canvas: HTMLCanvasElement) {
-    const gl = canvas.getContext('webgl2', { antialias: true, alpha: false, powerPreference: 'high-performance', preserveDrawingBuffer: false });
+  constructor(
+    readonly canvas: HTMLCanvasElement,
+    opts: { antialias?: boolean } = {},
+  ) {
+    const gl = canvas.getContext('webgl2', { antialias: opts.antialias ?? true, alpha: false, powerPreference: 'high-performance', preserveDrawingBuffer: false });
     if (!gl) throw new Error('WebGL2 is not available');
     this.gl = gl;
     this.init();
@@ -595,7 +598,7 @@ export class EventGL {
       cam.update();
       this.render(cam);
     }
-    this.gl.finish();
+    this.readPixel(1, 1); // reading a pixel back waits for the GPU to finish
     return (performance.now() - t0) / frames;
   }
 

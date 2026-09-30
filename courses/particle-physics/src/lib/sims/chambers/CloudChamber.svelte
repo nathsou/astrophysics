@@ -18,7 +18,8 @@
   import Button from '$lib/components/ui/Button.svelte';
   import { rng as makeRng, exponential, type Rng } from '$lib/hep/random';
   import { MATERIALS, andersonExposure, andersonPicture, cloudArrival, cloudSetup, mipLoss, type Picture, type SourceKind, type Track } from '$lib/hep/chamber';
-  import { DropletField, dropletsForTrack, FOREVER } from './droplets';
+  import { DropletField, dropletsForTrack } from './droplets';
+  import { fillFromPicture } from './scene';
   import { Geiger, readSoundPreference, writeSoundPreference } from './audio';
   import ChamberView from './ChamberView.svelte';
   import TrackPanel from './TrackPanel.svelte';
@@ -164,11 +165,8 @@
   function showPicture(p: Picture) {
     clearAll();
     picture = p;
-    tracks = p.set.tracks.filter((t) => !t.neutral && t.points.some((q) => q.visible));
-    for (const t of tracks) {
-      birth.set(t.id, 0);
-      droplets.append(dropletsForTrack(t, dropRng, { kind: 'cloud', birth: 0, life: FOREVER, mip: MIP, id: t.id }));
-    }
+    tracks = fillFromPicture(p, droplets, seed, 0.02).filter((t) => !t.neutral);
+    for (const t of tracks) birth.set(t.id, 0);
     simTime = 1; // droplets have all grown by the time it is drawn
     nextId = tracks.length;
     // select the labelled track automatically so that the panel has something to measure only when the reader asks: no

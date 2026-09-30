@@ -72,7 +72,6 @@ function sampleHVV(r: Rng, mH: number, v: VV, scan: { max: number }): { Hframe: 
   const m1lo = Math.max(mH / 2, v.mLow), m1hi = mH - v.mLow;
   const map = breitWignerMap(M, G, m1lo * m1lo, m1hi * m1hi);
   const [cL, cR] = v.c;
-  const A = cL * cL + cR * cR, B = 2 * cL * cR;
   for (let n = 0; n < 1e6; n++) {
     const { x: m1sq, jac } = map(r());
     const m1 = Math.sqrt(m1sq);
@@ -83,7 +82,7 @@ function sampleHVV(r: Rng, mH: number, v: VV, scan: { max: number }): { Hframe: 
     const l = lam(mH * mH, m1sq, m2sq);
     if (l <= 0) continue;
     const D = Math.sqrt(l) * ((mH * mH - m1sq - m2sq) ** 2 + 8 * m1sq * m2sq) * bwDen(m1sq, M, G) * bwDen(m2sq, M, G);
-    const w = D * jac * (m2hi - v.mLow);
+    const w = D * jac * (m2hi - v.mLow) * 2 * m2; // dm₂² = 2 m₂ dm₂
     if (r() * scan.max > w) {
       if (w > scan.max) scan.max = w;
       continue;
@@ -94,9 +93,8 @@ function sampleHVV(r: Rng, mH: number, v: VV, scan: { max: number }): { Hframe: 
     const [a2m, a2p] = decayIsotropic(r, V2, 0, 0);
     const X = dot(a1m, a2m) * dot(a1p, a2p), Y = dot(a1m, a2p) * dot(a1p, a2m);
     const bound = ((V1.E * V2.E) ** 2) / 4;
-    // coupling combinations: same chirality (A/2 here for cL²… see the docs) and opposite chirality
+    // same-chirality and opposite-chirality combinations of the squared couplings
     const W = (cL * cL + cR * cR) * X + 2 * cL * cR * Y;
-    void A; void B;
     if (r() * (cL + cR) ** 2 * bound <= W) return { Hframe: [V1, V2], leptons: [a1m, a1p, a2m, a2p] };
   }
   throw new Error('H → VV*: no decay accepted');
@@ -118,7 +116,7 @@ function scanMax(mH: number, v: VV): { max: number } {
       const l = lam(mH * mH, m1sq, m2 * m2);
       if (l <= 0) continue;
       const D = Math.sqrt(l) * ((mH * mH - m1sq - m2 * m2) ** 2 + 8 * m1sq * m2 * m2) * bwDen(m1sq, v.M, v.Gamma) * bwDen(m2 * m2, v.M, v.Gamma);
-      mx = Math.max(mx, D * jac * (m2hi - v.mLow));
+      mx = Math.max(mx, D * jac * (m2hi - v.mLow) * 2 * m2);
     }
   }
   return { max: mx * 1.1 };

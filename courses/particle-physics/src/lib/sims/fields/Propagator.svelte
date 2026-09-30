@@ -231,10 +231,13 @@
     color: var(--ink-2);
   }
   .key li {
-    display: flex;
-    gap: 0.4rem;
-    align-items: baseline;
     margin: 0 !important;
+    display: block;
+    line-height: 1.45;
+  }
+  .key :global(.sw),
+  .key :global(.k) {
+    margin-right: 0.4rem;
   }
   .sw {
     display: inline-block;

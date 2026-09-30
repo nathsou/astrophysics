@@ -73,7 +73,7 @@ function mk(
   const x0 = de?.x0 ?? (gas ? 1.7 : 0.2);
   const x1 = de?.x1 ?? (gas ? 4.0 : 3.0);
   const m = de?.m ?? 3;
-  // Continuity at x0 (δ = 0 for insulators there): a (x1 − x0)^m = 2 ln10 x0 − ... fixed by requiring δ(x0) = 0.
+  // a is fixed by requiring δ(x0) = 0 (insulators): a (x1 − x0)^m = C − 2 ln10 x0.
   const a = de?.a ?? Math.max(0, (C - 2 * Math.LN10 * x0) / Math.pow(x1 - x0, m));
   return {
     name,
