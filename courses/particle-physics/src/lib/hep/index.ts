@@ -12,3 +12,4 @@ export * as hooks from './hooks.ts';
 export { rng, type Rng } from './random/index.ts';
 export type { P4 } from './kinematics/index.ts';
 export { particle } from './particles/index.ts';
+export * as data from './data/index.ts';

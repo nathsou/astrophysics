@@ -60,6 +60,13 @@ export function mass(a: P4): number {
   const m2 = mass2(a);
   return m2 >= 0 ? Math.sqrt(m2) : -Math.sqrt(-m2);
 }
+/**
+ * Invariant mass of two particles: m² = (E₁ + E₂)² − |p₁ + p₂|². This is the reference for the hook
+ * `kinematics.pairMass`, which Chapter 2's exercise asks the reader to write.
+ */
+export function pairMass(a: P4, b: P4): number {
+  return mass(add(a, b));
+}
 /** Invariant mass of a list of four-vectors. */
 export const invariantMass = (list: readonly P4[]): number => mass(sum(list));
 

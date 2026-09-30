@@ -27,7 +27,7 @@
  * Output is a Svelte component whose `<script module>` exports metadata, toc, terms,
  * references and glossary, so routes can render chrome around the content.
  */
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
@@ -181,8 +181,7 @@ function addImport(ctx: Ctx, spec: string, prefix: string): string {
   return name;
 }
 
-const widgetIndex = (ctx: Ctx) => path.join(ctx.contentRoot, '..', 'src/lib/widgets/index.ts');
-
+const widgetDir = (ctx: Ctx) => path.join(ctx.contentRoot, '..', 'src/lib/widgets');
 /** Resolve a directive name to a component tag, adding imports as needed. */
 function resolveComponent(ctx: Ctx, name: string): string {
   const Name = pascal(name);
@@ -192,11 +191,16 @@ function resolveComponent(ctx: Ctx, name: string): string {
     if (!existing) ctx.imports.push(`import ${Name} from './widgets/${Name}.svelte';`);
     return Name;
   }
-  const index = widgetIndex(ctx);
-  ctx.deps.add(index);
-  const src = existsSync(index) ? readFileSync(index, 'utf8') : '';
+  // The shared widgets are exported from src/lib/widgets/index.ts and from the per-area files it re-exports (*.ts).
+  const dir = widgetDir(ctx);
+  const files = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.ts')) : [];
+  let src = '';
+  for (const f of files) {
+    ctx.deps.add(path.join(dir, f));
+    src += readFileSync(path.join(dir, f), 'utf8') + '\n';
+  }
   if (new RegExp(`\\b(as|default as)\\s+${Name}\\b|export \\{[^}]*\\b${Name}\\b`).test(src)) return `W.${Name}`;
-  throw new Error(`${ctx.file}: unknown directive/widget "${name}" — expected ./widgets/${Name}.svelte or an export named ${Name} in src/lib/widgets/index.ts`);
+  throw new Error(`${ctx.file}: unknown directive/widget "${name}" — expected ./widgets/${Name}.svelte or an export named ${Name} in src/lib/widgets/*.ts`);
 }
 
 const inlineProcessor = unified().use(remarkParse).use(remarkGfm).use(remarkMath);
@@ -256,9 +260,25 @@ function parseYamlBlock<T>(ctx: Ctx, src: string, kind: string): T {
   }
 }
 
+/**
+ * Load a YAML file, merged with every `<name>.d/*.yaml` beside it (so that authors working in parallel each
+ * keep their own glossary, bibliography, terms and timeline files). Objects are merged key by key; lists are
+ * concatenated.
+ */
 function loadYaml<T>(file: string, ctx: Ctx): T {
-  ctx.deps.add(file);
-  return existsSync(file) ? ((YAML.parse(readFileSync(file, 'utf8')) ?? {}) as T) : ({} as T);
+  const parse = (f: string): unknown => {
+    ctx.deps.add(f);
+    return YAML.parse(readFileSync(f, 'utf8')) ?? null;
+  };
+  const parts: unknown[] = [];
+  if (existsSync(file)) parts.push(parse(file));
+  const dir = file.replace(/\.yaml$/, '.d');
+  if (existsSync(dir)) {
+    for (const f of readdirSync(dir).filter((n) => n.endsWith('.yaml')).sort()) parts.push(parse(path.join(dir, f)));
+  }
+  const live = parts.filter((x) => x !== null);
+  if (live.length && live.every(Array.isArray)) return (live as unknown[][]).flat() as T;
+  return Object.assign({}, ...live.filter((x) => !Array.isArray(x))) as T;
 }
 
 async function buildReferenceList(ctx: Ctx, name: string, i: number): Promise<void> {

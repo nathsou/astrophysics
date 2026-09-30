@@ -1,0 +1,30 @@
+einstein1905:
+  authors: Albert Einstein
+  year: 1905
+  title: Zur Elektrodynamik bewegter Körper
+  venue: Annalen der Physik 322(10), 891–921
+  url: https://doi.org/10.1002/andp.19053221004
+minkowski1908:
+  authors: Hermann Minkowski
+  year: 1908
+  title: Raum und Zeit
+  venue: Lecture at the 80th Assembly of German Natural Scientists and Physicians, Cologne, 21 September 1908; Physikalische Zeitschrift 10 (1909), 104–111
+pdg2024:
+  authors: Particle Data Group (S. Navas et al.)
+  year: 2024
+  title: Review of Particle Physics
+  venue: Physical Review D 110, 030001
+  url: https://doi.org/10.1103/PhysRevD.110.030001
+  note: Text, figures and data are available under CC BY 4.0. The course's particle table is rounded from it.
+cms-open-data:
+  authors: CMS Collaboration
+  year: 2011
+  title: Dimuon events from the 2011 DoubleMu stream (education sample), CERN Open Data portal, record 5201
+  url: https://opendata.cern.ch/record/5201
+  note: Released under CC0. The course ships the four-momenta and charges of the 100,000 events (static/data/dimuon.f32; manifest beside it).
+goldberg1991:
+  authors: David Goldberg
+  year: 1991
+  title: What every computer scientist should know about floating-point arithmetic
+  venue: ACM Computing Surveys 23(1), 5–48
+  url: https://doi.org/10.1145/103162.103163

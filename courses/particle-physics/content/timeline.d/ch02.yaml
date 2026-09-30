@@ -1,0 +1,10 @@
+- year: 1905
+  title: Special relativity
+  people: Albert Einstein
+  chapter: relativity-for-particles
+  text: Einstein's paper on the electrodynamics of moving bodies gives the rules by which energy and momentum change between observers.
+- year: 1908
+  title: Spacetime
+  people: Hermann Minkowski
+  chapter: relativity-for-particles
+  text: Minkowski recasts relativity as the geometry of a four-dimensional spacetime, in which energy and momentum form one four-vector.
