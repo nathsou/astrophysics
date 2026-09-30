@@ -21,12 +21,13 @@ export function distToSegment(px: number, py: number, ax: number, ay: number, bx
 
 /**
  * The nearest polyline to (px, py) within `maxDist`. `xy` holds the projected points of all polylines, two numbers per point;
- * polyline k uses points starts[k] … starts[k+1]−1; `ids[k]` is its id. Points with NaN coordinates (behind the camera) break the line.
+ * polyline k uses points starts[k] … starts[k+1]−1; `ids[k]` is its id (a negative id hides the line). Points with NaN coordinates (behind the camera) break the line.
  */
 export function pickPolylines(xy: ArrayLike<number>, starts: ArrayLike<number>, ids: ArrayLike<number>, n: number, px: number, py: number, maxDist: number): PickResult | null {
   let best = maxDist;
   let bestId = -1;
   for (let k = 0; k < n; k++) {
+    if (ids[k]! < 0) continue; // a hidden line
     const s = starts[k]!, e = starts[k + 1]!;
     for (let i = s; i < e - 1; i++) {
       const ax = xy[2 * i]!, ay = xy[2 * i + 1]!, bx = xy[2 * i + 2]!, by = xy[2 * i + 3]!;
