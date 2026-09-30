@@ -294,7 +294,8 @@
  "ganssle-debounce": [
   "capacitors-and-time",
   "the-clock",
-  "talking-to-the-world"
+  "talking-to-the-world",
+  "appendix:build-it-for-real"
  ],
  "gb148582": [
   "feedback"
@@ -739,13 +740,15 @@
   "registers-and-counters",
   "datapath",
   "control",
-  "appendix:reference"
+  "appendix:reference",
+  "appendix:build-it-for-real"
  ],
  "ti-sn74hc00": [
   "feedback"
  ],
  "ti-sn74hc03": [
-  "real-gates"
+  "real-gates",
+  "appendix:build-it-for-real"
  ],
  "ti-sn74hc04": [
   "press-a-key",

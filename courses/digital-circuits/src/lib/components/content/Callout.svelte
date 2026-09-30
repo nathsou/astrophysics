@@ -39,7 +39,21 @@
     if (!parts || parts === true) return [];
     if (Array.isArray(parts)) return parts.map(String).filter(Boolean);
     const s = String(parts);
-    return (s.includes(',') || s.includes(';') ? s.split(/[,;]/) : s.split(/\s+/)).map((p) => p.trim()).filter(Boolean);
+    if (!s.includes(',') && !s.includes(';')) return s.split(/\s+/).filter(Boolean);
+    // Split on commas and semicolons outside brackets: "logic analyser (24 MHz, sigrok-compatible)" is one part.
+    const out: string[] = [];
+    let depth = 0;
+    let cur = '';
+    for (const ch of s) {
+      if (ch === '(' || ch === '[') depth++;
+      else if ((ch === ')' || ch === ']') && depth > 0) depth--;
+      if ((ch === ',' || ch === ';') && depth === 0) {
+        out.push(cur);
+        cur = '';
+      } else cur += ch;
+    }
+    out.push(cur);
+    return out.map((p) => p.trim()).filter(Boolean);
   }
 </script>
 

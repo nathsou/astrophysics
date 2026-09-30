@@ -1,0 +1,274 @@
+[
+  {
+    "chapter": "press-a-key",
+    "n": 1,
+    "heading": "how-the-course-climbs",
+    "headingText": "How the course climbs",
+    "parts": "an old USB keyboard (unplugged), a small screwdriver, a multimeter",
+    "lead": "The best introduction to this chapter costs nothing."
+  },
+  {
+    "chapter": "charge-voltage-current",
+    "n": 1,
+    "heading": "lab-how-does-the-current-follow-the-voltage",
+    "headingText": "Lab: how does the current follow the voltage?",
+    "parts": "multimeter, AA cell, 9 V battery, 100 Ω resistor, 1 kΩ resistor, two leads with crocodile clips",
+    "lead": "Measure a real battery with a multimeter."
+  },
+  {
+    "chapter": "ohms-law",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "breadboard, 9 V battery with clip, red LED, 390 Ω resistor (¼ W), 10 kΩ and 20 kΩ resistors, multimeter, jumper wires",
+    "lead": "LED and resistor."
+  },
+  {
+    "chapter": "the-bench",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "a digital multimeter (a £10–£20 one will do), a 9 V battery, two resistors of different values, a breadboard, jumper wires",
+    "lead": "A cheap multimeter is the first tool to buy, and it is worth understanding its dial."
+  },
+  {
+    "chapter": "capacitors-and-time",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "1000 µF electrolytic capacitor (10 V or more), 10 kΩ resistor, 100 Ω resistor, 470 Ω resistor, red LED, 5 V supply, multimeter, stopwatch (a phone will do), jumper wires",
+    "lead": "Both parts of this experiment are on a breadboard, at 5 V, and both use a capacitor whose time constant you can time with a stopwatch."
+  },
+  {
+    "chapter": "relays",
+    "n": 1,
+    "heading": "the-telegraph-repeater",
+    "headingText": "The telegraph repeater",
+    "parts": "5 V relay (SRD-05VDC-SL-C or similar), 2N3904, 1N4148 or 1N4007, 1 kΩ, 220 Ω, LED, pushbutton, 5 V USB supply",
+    "lead": "Wire the coil of the relay between +5 V and the collector of a 2N3904, and the emitter to ground."
+  },
+  {
+    "chapter": "shannons-switches",
+    "n": 1,
+    "heading": "the-staircase-light",
+    "headingText": "The staircase light",
+    "parts": "2 × SPDT slide switches, 2 × AA cells in a holder, LED, 330 Ω resistor, breadboard",
+    "lead": "The staircase circuit works at any voltage, so it makes a safe first build."
+  },
+  {
+    "chapter": "shannons-switches",
+    "n": 2,
+    "heading": "what-you-have-now",
+    "headingText": "What you have now",
+    "parts": "5 V relay (SPDT), 1N4148 diode, LED, 330 Ω resistor, 5 V USB supply module, pushbutton or toggle switch",
+    "lead": "A relay AND or OR gate needs nothing more than the parts in Figure 6.5, plus a second relay."
+  },
+  {
+    "chapter": "diodes-and-leds",
+    "n": 1,
+    "heading": "diode-logic",
+    "headingText": "Diode logic",
+    "parts": "red LED, 220 Ω resistor, 100 kΩ potentiometer (linear), 5 V USB supply module, breadboard, multimeter, jumper wires",
+    "lead": "Plot the curve of Figure 7.5 on a breadboard."
+  },
+  {
+    "chapter": "the-transistor",
+    "n": 1,
+    "heading": "nor-and-your-first-part",
+    "headingText": "NOR, and your first part",
+    "parts": "2N3904 (or any small NPN), red LED, 10 kΩ, 330 Ω, 4.7 kΩ, 1 kΩ, 1 MΩ, 5 V USB supply module, breadboard, multimeter",
+    "lead": "A transistor switch."
+  },
+  {
+    "chapter": "cmos",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "2N7000 (n-channel), BS250 (p-channel), red LED, 330 Ω, 100 kΩ, 10 kΩ potentiometer, 5 V USB supply module, breadboard, multimeter",
+    "lead": "A discrete CMOS inverter."
+  },
+  {
+    "chapter": "real-gates",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "74HC04, 74HC03, 10 kΩ potentiometer, 4.7 kΩ resistor, 1 kΩ resistor, LED, multimeter (two if you have them), 5 V USB supply module, breadboard, jumper wires",
+    "lead": "The transfer curve."
+  },
+  {
+    "chapter": "boolean-algebra",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "74HC00, LED, 1 kΩ resistor, 5 V USB supply module, breadboard, jumper wires",
+    "lead": "XOR from four NANDs."
+  },
+  {
+    "chapter": "simplifying-logic",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "74HC08, 74HC32, 74HC04, 3 push-buttons or a 3-way DIP switch, LED, 1 kΩ resistor, 5 V USB supply module, breadboard, jumper wires",
+    "lead": "The same function, three ways."
+  },
+  {
+    "chapter": "building-blocks",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "74HC04, 74HC08, 74HC02, common-cathode 7-segment display, 330 Ω resistor, 4-way DIP switch, 4 × 10 kΩ resistors, 5 V USB supply module, breadboard, jumper wires",
+    "lead": "One segment of the decoder, in three gates."
+  },
+  {
+    "chapter": "arithmetic",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "74HC283, 8-way DIP switch (or two 4-way), 8 × 10 kΩ resistors, 5 × LED, 5 × 330 Ω resistors, 5 V USB supply module, breadboard, jumper wires",
+    "lead": "A 4-bit adder with a 74HC283."
+  },
+  {
+    "chapter": "timing",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "74HC14, 74HC08, 74HC32, 100 kΩ resistor, 1 µF capacitor, LED, 1 kΩ resistor, breadboard, 5 V USB supply module, jumper wires",
+    "lead": "A glitch you can see."
+  },
+  {
+    "chapter": "feedback",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "74HC00, 2 × pushbuttons, 2 × 10 kΩ resistors, 2 × LEDs, 2 × 1 kΩ resistors, breadboard, 5 V USB supply module, jumper wires",
+    "lead": "A NAND latch on a breadboard."
+  },
+  {
+    "chapter": "the-clock",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "NE555 (or LMC555), 74HC74, 74HC14, LED, 1 kΩ resistor, 4.7 kΩ, 47 kΩ and 10 kΩ resistors, 10 µF and 1 µF capacitors, 10 nF capacitor, push button, 5 V USB supply module, breadboard, jumper wires",
+    "lead": "A 555 astable."
+  },
+  {
+    "chapter": "registers-and-counters",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "74HC161, 74HC595, 8 LEDs, 8 × 330 Ω resistors, 555 timer and its parts from Chapter 17 (or a debounced push button), 5 V USB supply module, breadboard, jumper wires",
+    "lead": "A 74HC161 counting on LEDs."
+  },
+  {
+    "chapter": "state-machines",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "74HC74 (dual D flip-flop), 74HC08, 74HC86, red, amber and green LEDs, 3 × 330 Ω resistors, pushbutton, 10 kΩ resistor, 5 V USB supply module, breadboard",
+    "lead": "The traffic light of Figure 19.3, in three chips."
+  },
+  {
+    "chapter": "memory",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "62256 (32K × 8 SRAM, 28-pin DIP), 8-way DIP switch, pushbutton, 8 × LEDs, 8 × 1 kΩ resistors, 8 × 330 Ω resistors, 10 kΩ resistor, 5 V USB supply module, breadboard, jumper wires",
+    "lead": "Read and write a 62256 SRAM by hand."
+  },
+  {
+    "chapter": "datapath",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "74HC161, 74HC00, 4 × LED, 4 × 330 Ω resistors, 4 × 10 kΩ resistors, 4 × DIP switch, 2 × pushbutton, 5 V USB supply module, breadboard, jumper wires",
+    "lead": "A program counter."
+  },
+  {
+    "chapter": "control",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "74HC161, SRAM or EEPROM (a 62256 or a 28C16), 4 × LED, 4 × 330 Ω resistors, 8 × DIP switch, pushbutton, 74HC04, 5 V USB supply module, breadboard, jumper wires",
+    "lead": "A control store on a breadboard."
+  },
+  {
+    "chapter": "running-programs",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "74HC161, 62256 static RAM, 8-way DIP switch, 8 × LED, 8 × 330 Ω, 10 kΩ resistors, pushbutton, 5 V USB supply module, breadboard, jumper wires",
+    "lead": "Deposit and examine, like an Altair."
+  },
+  {
+    "chapter": "talking-to-the-world",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "Arduino Uno (or any 5 V board), 74HC595, 8 × LED, 8 × 330 Ω, 100 nF capacitor, 8-channel USB logic analyser (24 MHz, sigrok-compatible), sigrok PulseView, breadboard, jumper wires",
+    "lead": "A 74HC595 on SPI, watched by a logic analyser."
+  },
+  {
+    "chapter": "talking-to-the-world",
+    "n": 2,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "8 × 10 kΩ, 9 × 20 kΩ (or 2 × 10 kΩ each), 5 V USB supply module, multimeter, breadboard, jumper wires",
+    "lead": "An R-2R DAC with resistors."
+  },
+  {
+    "chapter": "programmable-logic",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "28C16 EEPROM (or 28C64 or 28C256), Arduino Nano or Uno, two 74HC595 shift registers, 7-segment display (common cathode), 8 × 330 Ω resistors, 5 V USB supply, 4 DIP switches, breadboard",
+    "lead": "An EEPROM such as the 28C16 (2,048 words of 8 bits, 24 pins) is a PROM you can rewrite as often as you like: to write a byte, you put the address a…"
+  },
+  {
+    "chapter": "pals-and-gals",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "ATF22V10C in a 24-pin DIP, a TL866-class universal programmer (with the adapter it needs for 24-pin PLDs), 8 LEDs, 8 × 1 kΩ resistors, 555 timer circuit or another 1 Hz clock, 3 switches, 3 × 10 kΩ resistors, 100 nF capacitor, 5 V USB supply module, breadboard",
+    "lead": "The traffic light of Figure 26.3 in one chip."
+  },
+  {
+    "chapter": "cplds",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "ATF1502AS-7AX44 (TQFP-44) or ATF1502AS-10JU44 (PLCC-44) CPLD, a TQFP or PLCC 44-pin breakout board or socket adapter (or a ready-made ATF1502 dev board), an FT232H USB breakout board as a JTAG adapter, 5 V USB supply module, 4 × 100 nF capacitors, 4 LEDs, 4 × 1 kΩ resistors, a pushbutton and a 10 kΩ resistor, breadboard and jumper wires",
+    "lead": "Read a real chip’s IDCODE, boundary-scan a pin and program it in place."
+  },
+  {
+    "chapter": "inside-an-fpga",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "an iCE40 board (an iCEstick, an iCEBreaker or any board with an iCE40 HX1K, HX8K or UP5K), a USB cable, the open-source tools Yosys, nextpnr-ice40 and Project IceStorm",
+    "lead": "Blink an LED on the iCE40, and then find your LUT in its bitstream."
+  },
+  {
+    "chapter": "describing-hardware",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "iCE40 FPGA board (optional)",
+    "lead": "There is nothing to wire up in this chapter: the compiler and simulator run in your browser, and the Circuit tabs are the gates it built."
+  },
+  {
+    "chapter": "netlist-to-bitstream",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "an iCE40 board (an iCEstick or any board with an iCE40 HX1K, HX8K or UP5K), a USB cable, the open-source tools Yosys, nextpnr-ice40 and Project IceStorm",
+    "lead": "The same counter, on an iCE40, through the open-source flow, and a comparison with what you saw."
+  },
+  {
+    "chapter": "breadboard-to-billions",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "a windowed EPROM (a 2764, 27C64 or similar; an old one from a junk box is ideal), a 10× loupe or a USB microscope, a bright lamp",
+    "lead": "Look at a die."
+  }
+]
