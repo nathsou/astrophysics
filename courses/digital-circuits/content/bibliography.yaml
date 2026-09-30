@@ -97,13 +97,7 @@ oersted1820:
   title: Experimenta circa effectum conflictus electrici in acum magneticam
   venue: Pamphlet, Copenhagen, dated 21 July 1820 (four pages, in Latin)
   url: https://www.aps.org/apsnews/2008/07/1820-oersted-electromagnetism
-  note: The announcement that an electric current deflects a compass needle. Link is the American Physical Society’s account of it.
-aps-oersted:
-  authors: American Physical Society
-  year: 2008
-  title: 'This Month in Physics History: July 1820, Oersted and electromagnetism'
-  venue: APS News 17(7)
-  url: https://www.aps.org/apsnews/2008/07/1820-oersted-electromagnetism
+  note: 'The announcement that an electric current deflects a compass needle. The link is the American Physical Society’s account of it (APS News 17(7), July 2008, “This Month in Physics History: July 1820, Oersted and electromagnetism”), not the pamphlet itself.'
 sturgeon-britannica:
   authors: Encyclopaedia Britannica
   year: 2024
@@ -510,27 +504,20 @@ iec60063:
   title: 'IEC 60063: Preferred number series for resistors and capacitors'
   venue: IEC, Geneva
   note: The E series (E3 to E192) of preferred values, and the tolerances they go with.
-jedec-jesd8c:
+jedec-jesd8:
   authors: JEDEC
-  year: 2007
-  title: 'JESD8C.01: Interface standard for nominal 3 V/3.3 V supply digital integrated circuits'
+  year: 2001–2007
+  title: 'JESD8C.01: Interface standard for nominal 3 V/3.3 V supply digital integrated circuits (2007), and JESD8-7A: 1.8 V ± 0.15 V (normal range) and 1.2 V – 1.95 V (wide range) power supply voltage and interface standard for nonterminated digital integrated circuits (2001)'
   venue: JEDEC Solid State Technology Association
   url: https://www.jedec.org/
-  note: The 3.3 V LVTTL and LVCMOS input and output levels (VIH 2.0 V, VIL 0.8 V).
-jedec-jesd8-7a:
-  authors: JEDEC
-  year: 2001
-  title: 'JESD8-7A: 1.8 V ± 0.15 V (normal range) and 1.2 V – 1.95 V (wide range) power supply voltage and interface standard for nonterminated digital integrated circuits'
-  venue: JEDEC Solid State Technology Association
-  url: https://www.jedec.org/
-  note: The 1.8 V LVCMOS levels (VIH 0.65 VDD, VIL 0.35 VDD).
+  note: The 3.3 V LVTTL and LVCMOS input and output levels (VIH 2.0 V, VIL 0.8 V), and the 1.8 V LVCMOS levels (VIH 0.65 VDD, VIL 0.35 VDD).
 ti-sn74hc-family:
   authors: Texas Instruments
   year: n.d.
   title: 'SN74HC00, SN74HC02, SN74HC08, SN74HC32, SN74HC74, SN74HC86, SN74HC161, SN74HC283 and SN74HC595 data sheets'
   venue: Texas Instruments Incorporated
   url: https://www.ti.com/lit/ds/symlink/sn74hc00.pdf
-  note: 'One data sheet per part at www.ti.com/lit/ds/symlink/<part>.pdf, for example sn74hc595.pdf. Pin assignments, function tables and limits; check the current revision.'
+  note: 'One data sheet per part at www.ti.com/lit/ds/symlink/<part>.pdf, for example sn74hc595.pdf. Pin assignments, function tables and limits; check the current revision. The SN74HC00 sheet gives the 74HC00’s gate inputs on pins 1 and 2, 4 and 5, 9 and 10, and 12 and 13, and its outputs on pins 3, 6, 8 and 11.'
 ti-ne555:
   authors: Texas Instruments
   year: n.d.
@@ -1175,13 +1162,6 @@ chaney1973:
   venue: IEEE Transactions on Computers C-22(4), 421–422
   url: https://www.computer.org/csdl/journal/tc/1973/04/01672323/13rRUwInvxu
   note: Observations of oscillatory and metastable behaviour of flip-flops with logically undefined inputs; the abstract says that significant system failures had resulted from this problem.
-ti-sn74hc00:
-  authors: TI
-  year: 'n.d.'
-  title: SN54HC00, SN74HC00 quadruple 2-input positive-NAND gates, data sheet
-  venue: Texas Instruments Incorporated
-  url: https://www.ti.com/lit/ds/symlink/sn74hc00.pdf
-  note: The pinout of the 74HC00, with the gates' inputs on pins 1 and 2, 4 and 5, 9 and 10, and 12 and 13, and the outputs on pins 3, 6, 8 and 11.
 eejournal-amd-eol:
   authors: EE Journal
   year: n.d.
@@ -2049,3 +2029,73 @@ ihp-open-pdk:
   venue: GitHub, IHP-GmbH/IHP-Open-PDK
   url: https://github.com/IHP-GmbH/IHP-Open-PDK
   note: An open-source PDK for IHP’s 130 nm SiGe BiCMOS process, aimed at analogue, mixed-signal and radio-frequency design, under the Apache 2.0 licence.
+altera-nios-2000:
+  authors: Altera Corporation
+  year: 2000
+  title: Altera introduces the Nios embedded processor, industry’s first RISC-based embedded processor developed for SOPC integration
+  venue: Press release of 12 June 2000, reproduced by Design & Reuse
+  url: https://www.design-reuse.com/news/202503590--altera-introduces-the-nios-embedded-processor-industry-s-first-risc-based-embedded-processor-developed-for-sopc-integration/
+  note: The announcement of Nios on 12 June 2000, with a 16-bit instruction set, a five-stage pipeline, 16- or 32-bit data paths and a size of about 1,000 logic cells.
+altera-niosii-2004:
+  authors: Altera Corporation
+  year: 2004
+  title: Altera delivers world’s most versatile embedded processor with Nios II family
+  venue: Press release of 18 May 2004, reproduced by Embedded.com
+  url: https://www.embedded.com/altera-delivers-worlds-most-versatile-embedded-processor-with-nios-ii-family/
+  note: 'The Nios II family of 32-bit soft cores: one for performance, one for minimum logic, one between, all code compatible.'
+amd-microblaze:
+  authors: AMD (Xilinx)
+  year: n.d.
+  title: MicroBlaze and MicroBlaze V
+  venue: AMD Adaptive Computing wiki
+  url: https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/3073998859/MicroBlaze+and+MicroBlaze+V
+  note: MicroBlaze, a 32-bit RISC soft processor with a Harvard architecture and 32 general-purpose registers, first introduced by Xilinx in 2002 with its Embedded Development Kit.
+amd-zynq7000:
+  authors: AMD (Xilinx)
+  year: n.d.
+  title: Zynq-7000 SoCs
+  venue: AMD product page
+  url: https://www.xilinx.com/products/silicon-devices/soc/zynq-7000.html
+  note: A dual-core Arm Cortex-A9 processing system, hardwired, beside programmable logic; the processing system boots at power-up and then configures the logic.
+picorv32:
+  authors: Claire Xenia Wolf (Clifford Wolf) and YosysHQ
+  year: n.d.
+  title: 'PicoRV32: a size-optimized RISC-V CPU'
+  venue: GitHub, YosysHQ/picorv32 (README)
+  url: https://github.com/YosysHQ/picorv32
+  note: An RV32IMC core, 761 to 2,019 LUTs on Xilinx 7-series depending on configuration, about 4 cycles per instruction on average, 416 to 769 MHz on those devices, under the ISC licence.
+picosoc:
+  authors: Claire Xenia Wolf (Clifford Wolf) and YosysHQ
+  year: n.d.
+  title: 'PicoSoC: a simple example SoC using PicoRV32 (README, Makefile and firmware.c)'
+  venue: GitHub, YosysHQ/picorv32, directory picosoc
+  url: https://github.com/YosysHQ/picorv32/tree/main/picosoc
+  note: 'The make targets icebprog and icebprog_fw for the iCEBreaker board, the flow they run (Yosys synth_ice40, nextpnr-ice40, icetime, icepack, iceprog), the memory map, and the firmware that sets the UART divider to 104.'
+vexriscv:
+  authors: Charles Papon
+  year: n.d.
+  title: 'VexRiscv: a FPGA friendly 32 bit RISC-V CPU implementation'
+  venue: GitHub, SpinalHDL/VexRiscv (README)
+  url: https://github.com/SpinalHDL/VexRiscv
+  note: A configurable RISC-V core in SpinalHDL, pipelined from 2 to 5 or more stages and built from plugins.
+riscv-2011:
+  authors: Andrew Waterman, Yunsup Lee, David A. Patterson and Krste Asanović
+  year: 2011
+  title: 'The RISC-V Instruction Set Manual, Volume I: Base User-Level ISA'
+  venue: Technical report UCB/EECS-2011-62, EECS Department, University of California, Berkeley, 13 May 2011
+  url: https://www2.eecs.berkeley.edu/Pubs/TechRpts/2011/EECS-2011-62.pdf
+  note: The first public specification of RISC-V, an instruction set for computer architecture research and education.
+putnam2014:
+  authors: Andrew Putnam and colleagues
+  year: 2014
+  title: A reconfigurable fabric for accelerating large-scale datacenter services
+  venue: Proceedings of the 41st International Symposium on Computer Architecture (ISCA), 13–24
+  url: https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/Catapult_ISCA_2014.pdf
+  note: Catapult. A 6 × 8 torus of Stratix V FPGAs in half-racks of 48 servers, deployed on 1,632 servers to accelerate Bing ranking, for 95 % more throughput at equal latency, or 29 % lower tail latency at equal throughput, with 10 % more power.
+icebram:
+  authors: Clifford Wolf and contributors
+  year: n.d.
+  title: icebram(1), Replace BRAM initialization data in a .asc file
+  venue: Project IceStorm manual page (Debian fpga-icestorm)
+  url: https://manpages.debian.org/testing/fpga-icestorm/icebram.1.en.html
+  note: Replaces the initial contents of the block RAMs in an ASCII bitstream without running synthesis or place and route again.

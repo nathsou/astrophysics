@@ -41,7 +41,7 @@ The course uses SI units throughout: seconds, volts, amperes and their relatives
 | Energy | joule | J | W · s = V · C |
 | Power | watt | W | J/s = V · A |
 
-Values in electronics span more than twenty orders of magnitude, from a picofarad of stray capacitance to a gigahertz clock, so units come with prefixes. Each prefix is a power of ten; the ones you will use are these.
+Values in electronics span more than twenty orders of magnitude, from a picofarad of stray capacitance to a gigahertz clock, so units come with :term[prefixes]{id=si-prefix}. Each prefix is a power of ten; the ones you will use are these.
 
 | Prefix | Symbol | Factor | Where the course meets it |
 |---|---|---|---|
@@ -96,7 +96,7 @@ The digits follow the spectrum after brown: red, orange, yellow, green, blue, vi
 
 ## Preferred values: the E series
 
-Resistors and capacitors are not sold in every value. A shop stocks 4.7 kΩ and 5.6 kΩ, but not 5.0 kΩ, and the gaps are on purpose. The values follow the **E series** of preferred numbers (IEC 60063)::cite[iec60063] a geometric progression, with each value a fixed factor bigger than the last, rounded to two digits.
+Resistors and capacitors are not sold in every value. A shop stocks 4.7 kΩ and 5.6 kΩ, but not 5.0 kΩ, and the gaps are on purpose. The values follow the **:term[E series]{id=e-series}** of preferred numbers (IEC 60063)::cite[iec60063] a geometric progression, with each value a fixed factor bigger than the last, rounded to two digits.
 
 The factor is chosen so that the series has *N* steps in every decade (a factor of ten): each step multiplies by the *N*-th root of ten, and the series is named E*N*. For E12 that is 10^(1/12) = 1.21, a 21 % step; for E24 it is 10^(1/24) = 1.10, a 10 % step. The rounding to two digits makes a few values deviate from the ideal by up to about 4 % (33 for 31.6, 27 for 26.1), which is invisible at these tolerances.
 
@@ -172,7 +172,7 @@ To store negative numbers, hardware uses **:term[two’s complement]{id=twos-com
 
 A digital input does not compare a voltage with a fixed line; it has two thresholds, and everything between them is undefined. **V**IH is the lowest voltage guaranteed to read as a 1, **V**IL the highest guaranteed to read as a 0. Outputs make a matching promise: a gate driving a 1 delivers at least **V**OH, and one driving a 0 at most **V**OL. The margin between the output promise and the input requirement is the **noise margin** (Chapter 10), and it is what lets a signal pick up a little noise on its way and still be read correctly.
 
-The figures below are guaranteed worst cases from the data sheets and the JEDEC standards, so any part that meets its specification meets them. The 74HC row uses the 5 V supply of the labs; the data sheet gives 4.5 V, where V<sub>IH</sub> = 3.15 V and V<sub>IL</sub> = 1.35 V (70 % and 30 % of the supply), and interpolating the same percentages to 5 V gives 3.5 V and 1.5 V.:cite[ti-sn74hc04] The LVCMOS figures come from JEDEC’s interface standards.:cite[jedec-jesd8c,jedec-jesd8-7a]
+The figures below are guaranteed worst cases from the data sheets and the JEDEC standards, so any part that meets its specification meets them. The 74HC row uses the 5 V supply of the labs; the data sheet gives 4.5 V, where V<sub>IH</sub> = 3.15 V and V<sub>IL</sub> = 1.35 V (70 % and 30 % of the supply), and interpolating the same percentages to 5 V gives 3.5 V and 1.5 V.:cite[ti-sn74hc04] The LVCMOS figures come from JEDEC’s interface standards.:cite[jedec-jesd8]
 
 ::logic-levels{n="A.4"}
 
@@ -195,4 +195,4 @@ Some habits will save you an evening:
 - **Tie off unused inputs**, as in the previous section. For the 74HC74 that means PRE and CLR high; for the 74HC595, SRCLR high and OE low.
 - **The 74HC02 is not laid out like the other three-terminal gates.** The 00, 08, 32 and 86 all share one pinout (input, input, output, three times two, ground, then the second pair), and the 02 has its outputs where the others have inputs.
 - **Pin names differ between makers.** The table above follows the Texas Instruments data sheets;:cite[ti-sn74hc-family,ti-ne555] the 74HC595 in particular appears as SH_CP, ST_CP and DS in some catalogues. The pin *numbers* are always the same. When in doubt, look for the data sheet of the exact part number on your chip.
-- **Do not exceed the current limits.** A 74HC output may source or sink about 25 mA and a chip about 50 mA in all (Chapter 10), so an LED needs its resistor here as everywhere.
+- **Do not exceed the current limits.** The data sheet of the 74HC04 gives an absolute maximum of ±25 mA through any output pin and ±50 mA through VCC or ground for the whole chip.:cite[ti-sn74hc04] Other parts of the family differ a little, so check the sheet of the part you use. These are limits, not targets: the output levels of the table above are only guaranteed at about 4 mA, so an LED needs its resistor here as everywhere.

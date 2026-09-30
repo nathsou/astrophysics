@@ -17,7 +17,7 @@ In 1820 the Danish physicist Hans Christian Ørsted was demonstrating a battery,
 :::history{year=1820 title="Ørsted’s compass" people="Hans Christian Ørsted" source="Sources: Ørsted (1820); American Physical Society (2008)."}
 A compass needle beside a wire swung when the battery was connected, and connected two subjects that everyone had assumed were unrelated: electricity and magnetism.
 
-Ørsted had long suspected that the two forces were linked, but one might have expected the wire to act like a magnet pointing along it. What he found was stranger: the force on the needle was *sideways*, at right angles to the wire, and reversing the current reversed the swing. He described his experiments in a pamphlet dated 21 July 1820 and sent it to scientific societies across Europe.:cite[oersted1820]:cite[aps-oersted] Within weeks André-Marie Ampère in Paris had shown that two current-carrying wires attract or repel each other.
+Ørsted had long suspected that the two forces were linked, but one might have expected the wire to act like a magnet pointing along it. What he found was stranger: the force on the needle was *sideways*, at right angles to the wire, and reversing the current reversed the swing. He described his experiments in a pamphlet dated 21 July 1820 and sent it to scientific societies across Europe.:cite[oersted1820] Within weeks André-Marie Ampère in Paris had shown that two current-carrying wires attract or repel each other.
 :::
 
 The size of the effect is easy to state. At a distance *r* from a long straight wire carrying a current *I*, the field has strength
@@ -111,7 +111,7 @@ After one time constant the current is 63 % of its final value, after two 86 %, 
 
 A **relay** is an electromagnet arranged to work a switch. It has a **coil** wound round an iron **core**, and a hinged iron plate, the :term[armature]{id=armature}, held a small gap away from the core by a **spring**. When current flows in the coil, the core becomes a magnet and pulls the armature against the spring, and the armature moves one or more sets of **contacts**. When the current stops, the spring pulls the armature back.
 
-The contacts of the simplest kind of relay form a changeover switch, like the one in the staircase light of Chapter 6. The moving contact, :term[COM]{id=contacts} ("common"), is attached to the armature. When the coil is off it rests against **NC**, the "normally closed" contact; when the coil is on it moves across to **NO**, the "normally open" one. Nothing here is normal in an absolute sense: the names describe the relay *at rest*, with no current in the coil.
+The contacts of the simplest kind of relay form a changeover switch, like the one in the staircase light of Chapter 6. The moving contact, :term[COM]{id=contacts} ("common"), is attached to the armature. When the coil is off it rests against **NC**, the "normally closed" contact; when the coil is on it moves across to **NO**, the ":term[normally open]{id=normally-open}" one. Nothing here is normal in an absolute sense: the names describe the relay *at rest*, with no current in the coil.
 
 The picture below is a relay in cross-section, driven by a real coil current from the simulator. Run it in slow motion.
 

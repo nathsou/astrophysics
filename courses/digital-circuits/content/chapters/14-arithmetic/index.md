@@ -365,7 +365,7 @@ With 1 ns gates, the worst-case delay of an *n*-bit ripple adder in this chapt
 
 ## Build it for real
 
-:::real{parts="74HC283, 8-way DIP switch (or two 4-way), 8 × 10 kΩ resistors, 5 × LED, 5 × 330 Ω resistors, 5 V USB supply module, breadboard, jumper wires"}
+:::real{parts="2 × 74HC283, 8-way DIP switch (or two 4-way), 8 × 10 kΩ resistors, 5 × LED, 5 × 330 Ω resistors, 5 V USB supply module, breadboard, jumper wires"}
 **A 4-bit adder with a 74HC283.** The 74HC283 is a four-bit binary full adder with internal carry lookahead, in a 16-pin package.:cite[nxp-74hc283] Its pins (check them against your datasheet): the A inputs are pins 5, 3, 14 and 12 for A1 to A4, and the B inputs pins 6, 2, 15 and 11 for B1 to B4; the sum outputs are pins 4, 1, 13 and 10 for Σ1 to Σ4; C0 (the carry in) is pin 7, C4 (the carry out) is pin 9; ground is pin 8 and +5 V pin 16.
 
 Wire each of the eight A and B inputs to a DIP switch that connects it to +5 V when closed, with a 10 kΩ pull-down resistor to ground on each input so that an open switch gives a firm 0 (Chapter 10: never leave an input floating). Tie C0 to ground. Put an LED with a 330 Ω series resistor on each of the four sum outputs and on C4. Add 5 + 3 (0101 and 0011): the LEDs show 1000. Add 15 + 1: the sum LEDs are dark and C4 is lit. Then try to see the *speed* of the carry: you cannot with LEDs, since a 74HC283 settles in some tens of nanoseconds, but a scope on C0 and C4 with 1111 + 0000 would show how long a carry takes to cross the chip.

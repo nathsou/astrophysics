@@ -7,7 +7,7 @@
 <script lang="ts">
   import './appendix.css';
   import Widget from '$lib/components/ui/Widget.svelte';
-  import { CHIPS, pinLabel, sides, type Role } from './pinouts';
+  import { CHIPS, pinLabel, sides, usedIn, type Role } from './pinouts';
 
   let { n }: { n?: string | number } = $props();
 
@@ -77,7 +77,7 @@
             </tbody>
           </table>
         </details>
-        {#if chip.used}<p class="used">Labs: {chip.used}.</p>{/if}
+        {#if chip.labs.length}<p class="used">Labs: {usedIn(chip)}.</p>{/if}
         {#if chip.note}<p class="note">{chip.note}</p>{/if}
       </section>
     {/each}

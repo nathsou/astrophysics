@@ -89,7 +89,7 @@ Series and parallel do not care about order or grouping. A in series with B is t
 
 Back to the staircase. Two on–off switches cannot do it. In series, the top switch could only ever turn the light *off*; in parallel, only *on*. The trick is a different kind of switch.
 
-A :term[changeover switch]{id=changeover-switch} (single-pole, double-throw, or SPDT) has three terminals. Its common terminal C is always connected to one of the other two: to 0 in one position, to 1 in the other. It does not turn anything on or off. It *chooses a path*. Wire two of them back to back, with two wires between them that electricians call the **travellers**, and you have this:
+A :term[changeover switch]{id=changeover-switch} (single-pole, double-throw, or SPDT) has three terminals. Its common terminal C is always connected to one of the other two: to 0 in one position, to 1 in the other. It does not turn anything on or off. It *chooses a path*. Wire two of them back to back, with two wires between them that electricians call the **:term[travellers]{id=traveller}**, and you have this:
 
 ```quiz
 q: 'Both switches start at position 0 and the lamp is lit. Before you try it: how many of the four combinations of the two switches light the lamp?'
@@ -114,7 +114,7 @@ Follow the current from the battery: into the common terminal of the bottom swit
 | 1 | 0 | off |
 | 1 | 1 | **on** |
 
-This is **XNOR**, “equals”: the lamp shows whether the two switches agree. Swap the two travellers at one end and it becomes **XOR**, “differs”. Either way, flipping any one input flips the output, which is precisely what a staircase needs. It is also the heart of binary addition, as you will see at the end of the chapter.
+This is **:term[XNOR]{id=xnor}**, “equals”: the lamp shows whether the two switches agree. Swap the two travellers at one end and it becomes **:term[XOR]{id=xor}**, “differs”. Either way, flipping any one input flips the output, which is precisely what a staircase needs. It is also the heart of binary addition, as you will see at the end of the chapter.
 
 :::real{parts="2 × SPDT slide switches, 2 × AA cells in a holder, LED, 330 Ω resistor, breadboard"}
 The staircase circuit works at any voltage, so it makes a safe first build. Wire the two switches’ common pins to the battery and the LED (with the 330 Ω resistor in series; Chapter 7 explains why an LED needs one), and connect the switches’ other pins in pairs with two wires. Check it against the table above. A household staircase light is exactly this circuit at mains voltage, with the two travellers running through the wall. Do not open one up.
@@ -171,7 +171,7 @@ Published in a shortened form in the *Transactions of the American Institute of 
 :::
 
 :::note[Shannon’s hindrances]
-Shannon’s notation was the mirror image of ours. He described each switch by its **hindrance**: 0 when closed (no hindrance to current) and 1 when open. In that convention series connection is **addition** (two switches in series have no hindrance only if both have none) and parallel connection is **multiplication**. It is the same algebra seen in a mirror. De Morgan’s laws, which Chapter 11 covers, *are* the mirror. Engineers soon adopted the modern convention, in which 1 means “conducts”, and so does this course.
+Shannon’s notation was the mirror image of ours. He described each switch by its **:term[hindrance]{id=hindrance}**: 0 when closed (no hindrance to current) and 1 when open. In that convention series connection is **addition** (two switches in series have no hindrance only if both have none) and parallel connection is **multiplication**. It is the same algebra seen in a mirror. De Morgan’s laws, which Chapter 11 covers, *are* the mirror. Engineers soon adopted the modern convention, in which 1 means “conducts”, and so does this course.
 :::
 
 :::bio{name="Claude Elwood Shannon" born=1916 died=2001}
@@ -191,7 +191,7 @@ To add two binary digits you need two outputs: the **sum** digit, and the **carr
 | 1 | 0 | 0 | 1 |
 | 1 | 1 | 1 | 0 |
 
-Read down the columns. The carry is 1 only when both inputs are: that is AND, two contacts in series. The sum is 1 when the inputs differ: that is XOR, a staircase circuit. So a one-bit adder is a staircase circuit and a series circuit sharing the same two inputs. But the two inputs are worked by hand, and each has to work a staircase contact *and* a series contact. One switch cannot move two contacts of different circuits.
+Read down the columns. The carry is 1 only when both inputs are: that is AND, two contacts in series. The sum is 1 when the inputs differ: that is XOR, a staircase circuit. So a :term[one-bit adder]{id=half-adder} is a staircase circuit and a series circuit sharing the same two inputs. But the two inputs are worked by hand, and each has to work a staircase contact *and* a series contact. One switch cannot move two contacts of different circuits.
 
 A relay can. Each input switch works **two relays**, and each relay’s contacts sit in its own circuit. The relays RA1 and RA2 follow switch A; RB1 and RB2 follow switch B. RA1 and RB1 are wired as the staircase. RA2 and RB2 are wired in series.
 
@@ -360,7 +360,7 @@ You now have the whole logical toolkit of a computer, built from switches and la
 
 What is more, relays give you stages, each stage restoring the signal to full strength. What you do not have is speed. Every relay takes several milliseconds to move, and every operation wears out its contacts.
 
-:::real{parts="5 V relay (SPDT), 1N4148 diode, LED, 330 Ω resistor, 5 V USB supply module, pushbutton or toggle switch"}
+:::real{parts="2 × 5 V relay (SPDT), 2 × 1N4148 diode, LED, 330 Ω resistor, 5 V USB supply module, 2 × pushbutton or toggle switch"}
 A relay AND or OR gate needs nothing more than the parts in Figure 6.5, plus a second relay. For AND, put the contacts of two relays in series; for OR, in parallel. Give each coil its own switch, and put a 1N4148 diode across each coil, its stripe (cathode) towards the positive side: without it the collapsing field will produce a spike of a few hundred volts every time you open the switch. Light an LED, through the 330 Ω resistor, from the 5 V supply through the contacts. Hold the switches in each of the four positions and compare the LED with the truth tables. The click you hear is the armature: it is the sound of a logic gate, and it is the sound the first computers made.
 :::
 

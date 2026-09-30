@@ -37,9 +37,6 @@
  "aps-faraday": [
   "relays"
  ],
- "aps-oersted": [
-  "relays"
- ],
  "asanovic2014": [
   "breadboard-to-billions"
  ],
@@ -413,10 +410,7 @@
  "jedec-jesd79-4": [
   "memory"
  ],
- "jedec-jesd8-7a": [
-  "appendix:reference"
- ],
- "jedec-jesd8c": [
+ "jedec-jesd8": [
   "appendix:reference"
  ],
  "karnaugh1953": [
@@ -736,15 +730,13 @@
   "appendix:reference"
  ],
  "ti-sn74hc-family": [
+  "feedback",
   "the-clock",
   "registers-and-counters",
   "datapath",
   "control",
   "appendix:reference",
   "appendix:build-it-for-real"
- ],
- "ti-sn74hc00": [
-  "feedback"
  ],
  "ti-sn74hc03": [
   "real-gates",
@@ -753,7 +745,8 @@
  "ti-sn74hc04": [
   "press-a-key",
   "real-gates",
-  "appendix:reference"
+  "appendix:reference",
+  "appendix:build-it-for-real"
  ],
  "ti-sn74hc148": [
   "building-blocks"

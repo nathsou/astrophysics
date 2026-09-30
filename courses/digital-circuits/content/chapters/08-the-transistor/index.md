@@ -13,7 +13,7 @@ Here is the end of Chapter 7 again. A 5 V signal goes into four diode gates in a
 The relay of Chapter 5 did not have this problem. Every relay closed a contact connected to *its own* battery, so whatever the coil had received, however weak or noisy, the next stage was handed a fresh, full-strength signal. But a relay is slow and it wears out. What we want is a relay without moving parts. In precise terms, a part with three properties:
 
 1. It is **worked by electricity**: the output of one part can control the next.
-2. It has **gain**: a small current or voltage at the control terminal governs a large current from a separate supply, so every stage regenerates the signal instead of consuming it.
+2. It has **:term[gain]{id=gain}**: a small current or voltage at the control terminal governs a large current from a separate supply, so every stage regenerates the signal instead of consuming it.
 3. It has **nothing that moves**, so it can switch millions, and then billions, of times a second.
 
 The vacuum tube was the first thing to have all three.
@@ -37,16 +37,16 @@ The switch that replaced the valve came out of Bell Labs at the end of 1947, and
 :::history{year=1947 title="Two wires on a crystal of germanium" people="John Bardeen, Walter Brattain, William Shockley" source="Sources: Bardeen and Brattain (1948); Riordan and Hoddeson (1997); Computer History Museum; ETHW."}
 On 16 December 1947 John Bardeen and Walter Brattain, at Bell Labs, made a signal grow stronger in a solid for the first time. On 23 December they showed it to the management.
 
-Two gold contacts, a fraction of a millimetre apart, were pressed on a slab of germanium. A signal put on one came out of the other about a hundred times stronger.:cite[ethw-transistor] The demonstration on 23 December, with the device switched in and out of an audio circuit so that everyone could hear the difference, is the birthday of the transistor.:cite[chm-transistor] They published it in *Physical Review* in July 1948 as “The transistor, a semi-conductor triode”.:cite[bardeen1948] Their group leader, William Shockley, had been left out of the invention and was determined to do better. On 23 January 1948 he conceived a different device, based on the pn junction: a sandwich of three layers, with nothing to be adjusted by hand.:cite[chm-junction-transistor] He published the theory in 1949; junction transistors, and not point-contact ones, are what the rest of the industry was built on.:cite[shockley1949] Shockley, Bardeen and Brattain shared the Nobel Prize in Physics in 1956.
+Two gold contacts, a fraction of a millimetre apart, were pressed on a slab of germanium. A signal put on one came out of the other about a hundred times stronger.:cite[ethw-transistor] The demonstration on 23 December, with the device switched in and out of an audio circuit so that everyone could hear the difference, is the birthday of the :term[transistor]{id=transistor}.:cite[chm-transistor] They published it in *Physical Review* in July 1948 as “The transistor, a semi-conductor triode”.:cite[bardeen1948] Their group leader, William Shockley, had been left out of the invention and was determined to do better. On 23 January 1948 he conceived a different device, based on the pn junction: a sandwich of three layers, with nothing to be adjusted by hand.:cite[chm-junction-transistor] He published the theory in 1949; junction transistors, and not point-contact ones, are what the rest of the industry was built on.:cite[shockley1949] Shockley, Bardeen and Brattain shared the Nobel Prize in Physics in 1956.
 :::
 
 ### The bipolar transistor
 
-A **bipolar junction transistor** (BJT) is a sandwich of three layers: **n**–**p**–**n** (or p–n–p). The layers are called the emitter, the base and the collector, and each has a wire. The base is very thin, less than a micrometre, and lightly doped. That is the whole trick.
+A **:term[bipolar junction transistor]{id=bjt}** (BJT) is a sandwich of three layers: **n**–**p**–**n** (or p–n–p). The layers are called the emitter, the base and the collector, and each has a wire. The base is very thin, less than a micrometre, and lightly doped. That is the whole trick.
 
 Look at the two junctions in an NPN. The base–emitter junction is an ordinary diode, and when the base is about 0.65 V above the emitter it is forward-biased: electrons pour from the emitter into the base, as in the diode of Chapter 7. In a diode they would now recombine with holes and the current would end there. Here, the base is so thin and has so few holes that most of the electrons never meet one. They diffuse straight across and reach the far side, where the *other* junction, between base and collector, sits reverse-biased, with a strong field across it, exactly as in the reverse-biased diode of Chapter 7. The field sweeps them into the collector.
 
-So there are two currents. A large one goes from emitter to collector: nearly all the electrons. A small one goes into the base: the few electrons that did recombine, and the holes that were needed to feed them. The size of both is set by a single number, the base–emitter voltage, through the same exponential as in the diode. The ratio of the two is nearly constant, because it is a matter of geometry, of how likely an electron is to recombine while crossing the base. It is the transistor’s **current gain**, β:
+So there are two currents. A large one goes from emitter to collector: nearly all the electrons. A small one goes into the base: the few electrons that did recombine, and the holes that were needed to feed them. The size of both is set by a single number, the base–emitter voltage, through the same exponential as in the diode. The ratio of the two is nearly constant, because it is a matter of geometry, of how likely an electron is to recombine while crossing the base. It is the transistor’s **:term[current gain]{id=current-gain}**, β:
 
 :::equation{#beta caption="In the active region the collector current is β times the base current."}
 $$\term{ic}{I_C} = \term{beta}{\beta}\,\term{ib}{I_B}$$
@@ -74,9 +74,9 @@ That is gain: a small current, taken from one supply, controls a hundred times a
 
 | Region | Base–emitter | Collector current |
 |---|---|---|
-| **Cut-off**: an open switch | under 0.5 V | none |
-| **Active**: an amplifier | 0.6–0.7 V | *I*<sub>C</sub> = β *I*<sub>B</sub> |
-| **Saturation**: a closed switch | 0.7–0.8 V, base overdriven | set by the circuit, less than β *I*<sub>B</sub>; *V*<sub>CE</sub> falls to 0.1–0.2 V |
+| **:term[Cut-off]{id=cut-off}**: an open switch | under 0.5 V | none |
+| **:term[Active]{id=active-region}**: an amplifier | 0.6–0.7 V | *I*<sub>C</sub> = β *I*<sub>B</sub> |
+| **:term[Saturation]{id=saturation}**: a closed switch | 0.7–0.8 V, base overdriven | set by the circuit, less than β *I*<sub>B</sub>; *V*<sub>CE</sub> falls to 0.1–0.2 V |
 
 A saturated transistor is a closed switch with a small voltage across it: the base is fed more current than the transistor could use, so the collector runs out of voltage before it runs out of current, and the current is whatever the load allows. The rule of thumb for a switch is to feed the base at least a tenth of the collector current, which is a *forced gain* of ten, well inside the transistor’s β of 100. A rule of thumb for an amplifier is to stay away from saturation altogether.
 
@@ -106,7 +106,7 @@ Use Figure 8.2.
 
 ### The MOSFET
 
-The bipolar transistor is controlled by a current. The **MOSFET** (metal–oxide–semiconductor field-effect transistor) is controlled by a *voltage*, and that changes what it takes to drive it.
+The bipolar transistor is controlled by a current. The **:term[MOSFET]{id=mosfet}** (metal–oxide–semiconductor field-effect transistor) is controlled by a *voltage*, and that changes what it takes to drive it.
 
 Take a slab of p-type silicon, with two n-type regions near its surface, the **source** and the **drain**, separated by a gap. Above the gap, on a thin layer of insulating oxide (a few nanometres of silicon dioxide in a modern chip), lay a conducting plate: the **gate**. With the gate at 0 V there is no way for current to get from the source to the drain: each n region makes a junction with the p region, and the two junctions point in opposite directions, so one is always reverse-biased.
 
@@ -171,7 +171,7 @@ The two transistors differ in what they ask of whoever drives them:
 
 ## Gain is what makes digital work
 
-Take a transistor and a resistor, and you have a gate. The NPN below is the transistor of Figure 8.2. Its collector is joined to the supply through a 1 kΩ resistor (a *pull-up*: Chapter 4), and its base is fed from the input through 4.7 kΩ. When the input is 0 V, the base gets no current, the transistor is cut off, and the pull-up brings the output to 5 V. When the input is 5 V, 0.9 mA flows into the base, the transistor saturates, and the output is pulled down to 0.05 V. The output is the opposite of the input. This is an **inverter**, a NOT gate, and because the resistor and the transistor are the whole circuit, it is called **resistor–transistor logic**, or **RTL**.
+Take a transistor and a resistor, and you have a gate. The NPN below is the transistor of Figure 8.2. Its collector is joined to the supply through a 1 kΩ resistor (a *pull-up*: Chapter 4), and its base is fed from the input through 4.7 kΩ. When the input is 0 V, the base gets no current, the transistor is cut off, and the pull-up brings the output to 5 V. When the input is 5 V, 0.9 mA flows into the base, the transistor saturates, and the output is pulled down to 0.05 V. The output is the opposite of the input. This is an **inverter**, a NOT gate, and because the resistor and the transistor are the whole circuit, it is called **:term[resistor–transistor logic]{id=rtl}**, or **RTL**.
 
 ::circuit{src="08-the-transistor/circuits/rtl-inverter.json" title="An RTL inverter" n="8.4" current=true caption="Click the input. With the input at 0, the transistor is off and the output is 5.00 V. At 1 it is saturated: 0.9 mA flows into the base, 5 mA through the pull-up, and the output is 0.05 V. The current dots show where the energy goes: a low output means 5 mA through the 1 kΩ, all the time (Chapter 9 will fix that)."}
 
@@ -181,7 +181,7 @@ So far this is a NOT gate. What matters is what happens *between* the two clean 
 
 Look at the shape. There are two flat parts at the ends, and a very steep part in the middle. In the middle the gain (the slope) reaches −15.6, at an input of 0.86 V. The band where the slope is steeper than −1 is only 0.4 V wide, from 0.56 V to 0.96 V. That shape, flat at the ends and steep in the middle, is the whole reason a computer works. Here is why.
 
-Suppose the input is *nearly* right: it should be 5 V and it is 4.8 V, or it should be 0 V and it is 0.3 V. The inverter’s output has an error of its own, equal to the input’s error times the local slope. At the flat ends the slope is about 0.02, so an error of 0.3 V at the input becomes an error of a few millivolts at the output. The next inverter takes an even cleaner input, and the error is gone. Errors that could be tolerated have been removed, and it is the *flatness* that does it. This is **regeneration**, the restoration that the relay repeater of Chapter 5 achieved with a moving contact.
+Suppose the input is *nearly* right: it should be 5 V and it is 4.8 V, or it should be 0 V and it is 0.3 V. The inverter’s output has an error of its own, equal to the input’s error times the local slope. At the flat ends the slope is about 0.02, so an error of 0.3 V at the input becomes an error of a few millivolts at the output. The next inverter takes an even cleaner input, and the error is gone. Errors that could be tolerated have been removed, and it is the *flatness* that does it. This is **:term[regeneration]{id=regeneration}**, the restoration that the relay repeater of Chapter 5 achieved with a moving contact.
 
 But flatness alone would be no good: a stage that always outputs the same thing is not a wire. Where the input really is undecided, in the middle between the two levels, the steepness takes over. A signal that lands there is *amplified* away from the middle, towards one end or the other, by a gain much larger than 1. The middle is a ridge and the ends are valleys: everything rolls downhill into one of the two valleys, however slightly it started off. **Gain in the middle, saturation at the ends: together they turn a continuous voltage into a 0 or a 1.**
 
@@ -274,7 +274,7 @@ Off below threshold; a resistor-like parabola in the linear region; the square l
 The curves of the noise gauntlet come from this code. `widgets/vtc.ts` builds a netlist of two identical stages (one to measure, one as the load), sweeps an ideal source from −0.5 V to 5.5 V in steps of 20 mV, calls `settle()` on the engine at each step, and stores the output voltage. The whole sweep of both curves takes about 50 ms.
 :::
 
-:::real{parts="2N3904 (or any small NPN), red LED, 10 kΩ, 330 Ω, 4.7 kΩ, 1 kΩ, 1 MΩ, 5 V USB supply module, breadboard, multimeter"}
+:::real{parts="3 × 2N3904 (or any small NPN), red LED, 10 kΩ, 330 Ω, 3 × 4.7 kΩ, 3 × 1 kΩ, 1 MΩ, 10 kΩ potentiometer, 5 V USB supply module, breadboard, multimeter"}
 **A transistor switch.** The 2N3904 comes in a small black half-cylinder (TO-92). Hold it with the flat face towards you and the legs down: from left to right they are **E**mitter, **B**ase, **C**ollector. Wire the LED and the 330 Ω resistor in series from +5 V to the collector, and the emitter to ground. Connect the base to +5 V through the 10 kΩ resistor. The LED lights: the base takes (5 − 0.65) ÷ 10 kΩ = 0.43 mA and the collector carries about 9 mA, a forced gain of about 20. Measure the base–emitter voltage (about 0.65–0.7 V) and the collector–emitter voltage (0.05–0.2 V: saturation). Now replace the 10 kΩ with the 1 MΩ. The base current is 4 µA and, with a β of about 100–300, the collector current is 0.4–1.2 mA: the LED is dim, and you have measured the β of your transistor by dividing the two currents (the voltage across the 330 Ω resistor gives the collector current).
 
 **An RTL inverter.** Make the pull-up 1 kΩ from +5 V to the collector (no LED now), the emitter on ground, and the input through the 4.7 kΩ resistor to the base. With the input at ground the output is at 5 V; with the input at 5 V it is at about 0.1 V. Build two more, with each output feeding the next input through its own 4.7 kΩ, and feed the first from a potentiometer between 0 V and 5 V: the last output jumps between the two levels as you pass about 1 V, and nowhere near the slow, sliding response of a chain of resistors.

@@ -20,7 +20,7 @@
     "n": 1,
     "heading": "build-it-for-real",
     "headingText": "Build it for real",
-    "parts": "breadboard, 9 V battery with clip, red LED, 390 Ω resistor (¼ W), 10 kΩ and 20 kΩ resistors, multimeter, jumper wires",
+    "parts": "breadboard, 9 V battery with clip, red LED, 390 Ω resistor (¼ W), 10 kΩ and 20 kΩ resistors, 10 MΩ resistor, multimeter, jumper wires",
     "lead": "LED and resistor."
   },
   {
@@ -60,7 +60,7 @@
     "n": 2,
     "heading": "what-you-have-now",
     "headingText": "What you have now",
-    "parts": "5 V relay (SPDT), 1N4148 diode, LED, 330 Ω resistor, 5 V USB supply module, pushbutton or toggle switch",
+    "parts": "2 × 5 V relay (SPDT), 2 × 1N4148 diode, LED, 330 Ω resistor, 5 V USB supply module, 2 × pushbutton or toggle switch",
     "lead": "A relay AND or OR gate needs nothing more than the parts in Figure 6.5, plus a second relay."
   },
   {
@@ -76,7 +76,7 @@
     "n": 1,
     "heading": "nor-and-your-first-part",
     "headingText": "NOR, and your first part",
-    "parts": "2N3904 (or any small NPN), red LED, 10 kΩ, 330 Ω, 4.7 kΩ, 1 kΩ, 1 MΩ, 5 V USB supply module, breadboard, multimeter",
+    "parts": "3 × 2N3904 (or any small NPN), red LED, 10 kΩ, 330 Ω, 3 × 4.7 kΩ, 3 × 1 kΩ, 1 MΩ, 10 kΩ potentiometer, 5 V USB supply module, breadboard, multimeter",
     "lead": "A transistor switch."
   },
   {
@@ -124,7 +124,7 @@
     "n": 1,
     "heading": "build-it-for-real",
     "headingText": "Build it for real",
-    "parts": "74HC283, 8-way DIP switch (or two 4-way), 8 × 10 kΩ resistors, 5 × LED, 5 × 330 Ω resistors, 5 V USB supply module, breadboard, jumper wires",
+    "parts": "2 × 74HC283, 8-way DIP switch (or two 4-way), 8 × 10 kΩ resistors, 5 × LED, 5 × 330 Ω resistors, 5 V USB supply module, breadboard, jumper wires",
     "lead": "A 4-bit adder with a 74HC283."
   },
   {
@@ -140,7 +140,7 @@
     "n": 1,
     "heading": "build-it-for-real",
     "headingText": "Build it for real",
-    "parts": "74HC00, 2 × pushbuttons, 2 × 10 kΩ resistors, 2 × LEDs, 2 × 1 kΩ resistors, breadboard, 5 V USB supply module, jumper wires",
+    "parts": "74HC00, 74HC04, 2 × pushbuttons, 2 × 10 kΩ resistors, 2 × LEDs, 2 × 1 kΩ resistors, 3 × 100 kΩ resistors, 3 × 1 µF capacitors, breadboard, 5 V USB supply module, jumper wires",
     "lead": "A NAND latch on a breadboard."
   },
   {
@@ -172,7 +172,7 @@
     "n": 1,
     "heading": "build-it-for-real",
     "headingText": "Build it for real",
-    "parts": "62256 (32K × 8 SRAM, 28-pin DIP), 8-way DIP switch, pushbutton, 8 × LEDs, 8 × 1 kΩ resistors, 8 × 330 Ω resistors, 10 kΩ resistor, 5 V USB supply module, breadboard, jumper wires",
+    "parts": "62256 (32K × 8 SRAM, 28-pin DIP), 8-way DIP switch, pushbutton, 8 × LEDs, 8 × 1 kΩ resistors, 8 × 330 Ω resistors, 4 × 10 kΩ resistors, 5 V USB supply module, breadboard, jumper wires",
     "lead": "Read and write a 62256 SRAM by hand."
   },
   {
@@ -196,7 +196,7 @@
     "n": 1,
     "heading": "build-it-for-real",
     "headingText": "Build it for real",
-    "parts": "74HC161, 62256 static RAM, 8-way DIP switch, 8 × LED, 8 × 330 Ω, 10 kΩ resistors, pushbutton, 5 V USB supply module, breadboard, jumper wires",
+    "parts": "74HC161, 62256 static RAM, 8-way DIP switch, 8 × LED, 8 × 330 Ω, 8 × 10 kΩ resistors, pushbutton, 5 V USB supply module, breadboard, jumper wires",
     "lead": "Deposit and examine, like an Altair."
   },
   {
@@ -220,7 +220,7 @@
     "n": 1,
     "heading": "build-it-for-real",
     "headingText": "Build it for real",
-    "parts": "28C16 EEPROM (or 28C64 or 28C256), Arduino Nano or Uno, two 74HC595 shift registers, 7-segment display (common cathode), 8 × 330 Ω resistors, 5 V USB supply, 4 DIP switches, breadboard",
+    "parts": "28C16 EEPROM (or 28C64 or 28C256), Arduino Nano or Uno, two 74HC595 shift registers, 7-segment display (common cathode), 8 × 330 Ω resistors, 4 × 10 kΩ resistors, 5 V USB supply, 4 DIP switches, breadboard",
     "lead": "An EEPROM such as the 28C16 (2,048 words of 8 bits, 24 pins) is a PROM you can rewrite as often as you like: to write a byte, you put the address a…"
   },
   {

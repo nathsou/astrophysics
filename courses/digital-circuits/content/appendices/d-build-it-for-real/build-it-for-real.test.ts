@@ -218,6 +218,15 @@ describe('the bill of materials', () => {
       expect(a.count).toBeGreaterThanOrEqual(1);
     }
   });
+
+  test('no adjustment is redundant: the chapter’s own list does not already say it', () => {
+    for (const a of ADJUSTS) {
+      const lab = LABS.find((l) => l.key === a.lab)!;
+      let listed = 0;
+      for (const item of partItems(lab.parts)) for (const m of matchItem(item)) if (m.row.id === a.row) listed = Math.max(listed, m.count);
+      expect(listed, `${a.lab}: the list now says ${listed} × ${a.row}; remove the adjustment from ADJUSTS in widgets/bom.ts`).toBeLessThan(a.count);
+    }
+  });
 });
 
 /** The text of the nth `:::real` block of a chapter. */

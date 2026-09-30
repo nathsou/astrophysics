@@ -10,7 +10,7 @@ Relays computed, but they clicked. Every operation moved an armature, and an arm
 
 The crystal is silicon, and at first sight it is a poor choice. A cube of pure silicon conducts about 100,000,000,000 times worse than the same cube of copper. But add one atom of the right impurity for every few million silicon atoms, and it conducts half a million times better. Put two differently poisoned pieces side by side and you get something that has no counterpart among the switches of Chapter 6: a valve that lets current through one way and refuses it the other, with nothing moving inside it. If the crystal is made of the right material, that valve also glows.
 
-Before the explanation, the behaviour. Two lamps hang from one battery. In front of each lamp is a **diode**, a two-legged part drawn as a triangle against a bar. One faces the way the current wants to go; the other faces the opposite way.
+Before the explanation, the behaviour. Two lamps hang from one battery. In front of each lamp is a **:term[diode]{id=diode}**, a two-legged part drawn as a triangle against a bar. One faces the way the current wants to go; the other faces the opposite way.
 
 ```quiz
 q: 'A 6 V battery, a diode and a lamp in series. Turned one way round, the diode’s arrow points the way the current flows (from + through the lamp to −); turned the other way, it points against it. What does the lamp do in the two cases?'
@@ -55,7 +55,7 @@ Between the two lies the :term[bandgap]{id=bandgap}, an energy that an electron 
 | Material | Bandgap | What it does |
 |---|---|---|
 | Copper (and every metal) | none: the bands overlap | about 10²³ free electrons per cm³, always |
-| Germanium | 0.66 eV | a semiconductor |
+| Germanium | 0.66 eV | a :term[semiconductor]{id=semiconductor} |
 | **Silicon** | **1.12 eV** | a semiconductor |
 | Gallium arsenide | 1.42 eV | a semiconductor |
 | Diamond | 5.5 eV | an insulator |
@@ -85,7 +85,7 @@ Now replace one atom with **boron**, which has three outer electrons. There is o
 
 Both kinds are electrically neutral, as a whole. An n-type crystal is full of electrons, and also full of the positive ions they came from. What has changed is what can *move*.
 
-How many atoms does it take? Far fewer than you might expect. A doping of 10¹⁶ atoms per cm³ is one dopant atom for every five million silicon atoms. It puts 10¹⁶ free electrons in every cubic centimetre, a million times more than the thermal 10¹⁰, and the resistivity falls from about 230,000 Ω·cm to about 0.5 Ω·cm.:cite[sze2007] The crystal has to be extraordinarily pure to begin with, or the impurities you did not choose would swamp the ones you did.
+How many atoms does it take? Far fewer than you might expect. A :term[doping]{id=doping} of 10¹⁶ atoms per cm³ is one dopant atom for every five million silicon atoms. It puts 10¹⁶ free electrons in every cubic centimetre, a million times more than the thermal 10¹⁰, and the resistivity falls from about 230,000 Ω·cm to about 0.5 Ω·cm.:cite[sze2007] The crystal has to be extraordinarily pure to begin with, or the impurities you did not choose would swamp the ones you did.
 
 ```quiz
 q: 'One phosphorus atom for every five million silicon atoms. By roughly what factor does that improve the conductivity of the silicon?'
@@ -106,7 +106,7 @@ Grow a crystal that is p-type on the left and n-type on the right, with a sharp 
 Left alone, the junction settles in a fraction of a nanosecond:
 
 1. **Diffusion.** The n side is crowded with free electrons, the p side has almost none. Like gas expanding into an empty room, the electrons spread across the boundary into the p side. Holes spread the other way.
-2. **Recombination.** An electron that crosses meets a hole, and they cancel: the electron drops into the bond and both cease to be carriers. Near the boundary, therefore, the carriers *disappear*.
+2. **:term[Recombination]{id=recombination}.** An electron that crosses meets a hole, and they cancel: the electron drops into the bond and both cease to be carriers. Near the boundary, therefore, the carriers *disappear*.
 3. **Exposed ions.** What is left in that strip is what could not move: fixed positive phosphorus ions on the n side, fixed negative boron ions on the p side. No carriers hide their charge any more. The strip is the :term[depletion region]{id=depletion-region}, so called because it has been emptied of carriers.
 4. **A field appears.** Positive ions on one side and negative on the other make an electric field pointing from n to p. It pushes electrons back towards n and holes back towards p, opposing the diffusion.
 
@@ -168,8 +168,8 @@ options:
 Use Figure 7.2 with the doping at 1×10¹⁶.
 
 1. **No bias.** Carriers jiggle and hit the edge of the depletion region, and almost none get across. The current is exactly zero: whatever crosses one way is balanced by what crosses the other.
-2. **Reverse.** Slide to −5 V. The region widens from 0.43 µm to 1.2 µm and the barrier grows to 5.7 eV. The only things that cross are the occasional pairs created by heat inside the region, swept over at once by the field. The current is about 14 pA, some 300 million times smaller than the few milliamps the same junction passes at +0.7 V.
-3. **Forward.** Slide up from 0 V. Below about 0.4 V hardly anything happens. Then the barrier gets low enough for many carriers to cross, and each becomes a *minority* carrier on the other side, lives for a moment and recombines, with a flash. Meanwhile the wires deliver new carriers from the contacts. That flow is the current. Note the current at 0.5 V, 0.6 V and 0.7 V.
+2. **:term[Reverse]{id=reverse-bias}.** Slide to −5 V. The region widens from 0.43 µm to 1.2 µm and the barrier grows to 5.7 eV. The only things that cross are the occasional pairs created by heat inside the region, swept over at once by the field. The current is about 14 pA, some 300 million times smaller than the few milliamps the same junction passes at +0.7 V.
+3. **:term[Forward]{id=forward-bias}.** Slide up from 0 V. Below about 0.4 V hardly anything happens. Then the barrier gets low enough for many carriers to cross, and each becomes a *minority* carrier on the other side, lives for a moment and recombines, with a flash. Meanwhile the wires deliver new carriers from the contacts. That flow is the current. Note the current at 0.5 V, 0.6 V and 0.7 V.
 4. **Doping.** Slide it up to 1×10¹⁸: the region gets thinner, the built-in voltage rises to 0.95 V and the knee of the curve moves right. With light doping the knee moves left.
 :::
 
@@ -313,7 +313,7 @@ Use Figure 7.5 (the real version of this lab is at the end of the chapter). The 
 
 ## Diode logic
 
-A diode is a switch with no coil. It is worked by the voltage across it, and the voltage can come from another gate’s output. So can diodes compute? Yes, a little. Chapter 6 built AND from switches in series and OR from switches in parallel. Here are the same functions built from diodes and a resistor, with the input switches replaced by the outputs of other circuits (the logic switches A and B are 0 V or 5 V).
+A diode is a switch with no coil. It is worked by the voltage across it, and the voltage can come from another gate’s output. So can diodes compute? Yes, a little. Chapter 6 built AND from switches in series and OR from switches in parallel. Here are the same functions built from :term[diodes and a resistor]{id=diode-logic}, with the input switches replaced by the outputs of other circuits (the logic switches A and B are 0 V or 5 V).
 
 In an :term[AND]{id=and} gate the two diodes point at the inputs and share a resistor to the supply. If *both* inputs are high, no current flows in either diode, and the resistor pulls the output up to 5 V. If *either* input is low, its diode conducts, and the output is held one diode drop above it.
 

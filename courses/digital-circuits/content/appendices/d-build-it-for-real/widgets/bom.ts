@@ -6,10 +6,10 @@
  * list is cut into items (`partItems`), and each item is matched against the rows below (`ROWS`). Every item of every
  * lab must match at least one row: the test says which item does not, and a new part is one new row here.
  *
- * Quantities are the most that any single lab needs, since a lab is built and then taken apart. Where a lab's text
- * asks for more than its `parts` list says (a second relay, three inverters), `ADJUSTS` adds it, with the words of the
- * chapter that justify it (the test looks them up). An adjustment is a floor, never a sum, so it is harmless once the
- * chapter's own list is corrected.
+ * Quantities are the most that any single lab needs, since a lab is built and then taken apart. They come from the
+ * lists themselves ("3 × 100 kΩ resistors"). Should a lab's text ever ask for more than its `parts` list says,
+ * `ADJUSTS` is the stopgap that adds it, with the words of the chapter that justify it (the test looks them up, and
+ * fails once the chapter's own list says it too); the better fix is the chapter's list.
  */
 import { MINIMAL_PARTS, type Lab } from './labs';
 
@@ -241,23 +241,11 @@ export interface Adjust {
   quote: string;
 }
 
-export const ADJUSTS: Adjust[] = [
-  { lab: 'ohms-law', row: 'r-10M', count: 1, quote: 'Replace the 20 kΩ by a 10 MΩ resistor' },
-  { lab: 'shannons-switches#2', row: 'relay', count: 2, quote: 'plus a second relay' },
-  { lab: 'shannons-switches#2', row: 'd-1n4148', count: 2, quote: 'a 1N4148 diode across each coil' },
-  { lab: 'shannons-switches#2', row: 'push', count: 2, quote: 'Give each coil its own switch' },
-  { lab: 'the-transistor', row: 'q-2n3904', count: 3, quote: 'Build two more' },
-  { lab: 'the-transistor', row: 'r-4k7', count: 3, quote: 'through its own 4.7 kΩ' },
-  { lab: 'the-transistor', row: 'r-1k', count: 3, quote: 'Make the pull-up 1 kΩ' },
-  { lab: 'the-transistor', row: 'pot-10k', count: 1, quote: 'from a potentiometer between 0 V and 5 V' },
-  { lab: 'arithmetic', row: 'hc283', count: 2, quote: 'take a second 74HC283' },
-  { lab: 'feedback', row: 'hc04', count: 1, quote: 'A three-inverter ring of 74HC04 gates' },
-  { lab: 'feedback', row: 'r-100k', count: 3, quote: 'through a 100 kΩ resistor to the input of the next' },
-  { lab: 'feedback', row: 'c-1u', count: 3, quote: 'a 1 µF capacitor from that input to ground' },
-  { lab: 'memory', row: 'r-10k', count: 3, quote: 'three DIP switches (with pull-down resistors)' },
-  { lab: 'running-programs', row: 'r-10k', count: 8, quote: '10 kΩ pull-down resistors so that an open switch reads 0' },
-  { lab: 'programmable-logic', row: 'r-10k', count: 4, quote: 'with 10 kΩ pull-down resistors' },
-];
+/**
+ * None at present: every chapter's parts list names all that its lab uses (quantities included), so the bill is the
+ * lists and nothing else. A new gap is one entry here; the test fails if an entry has become redundant.
+ */
+export const ADJUSTS: Adjust[] = [];
 
 /** One lab's needs: row id → count. */
 export function needsOf(lab: Lab): Map<string, number> {

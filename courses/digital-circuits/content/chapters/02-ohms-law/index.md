@@ -326,7 +326,7 @@ The diagonal entries are the total conductance leaving each node; the off-diagon
 
 ## Build it for real
 
-:::real{parts="breadboard, 9 V battery with clip, red LED, 390 Ω resistor (¼ W), 10 kΩ and 20 kΩ resistors, multimeter, jumper wires"}
+:::real{parts="breadboard, 9 V battery with clip, red LED, 390 Ω resistor (¼ W), 10 kΩ and 20 kΩ resistors, 10 MΩ resistor, multimeter, jumper wires"}
 **LED and resistor.** On the breadboard connect the battery’s + lead to one end of the 390 Ω resistor, the other end of the resistor to the LED’s *long* leg (the anode) and the LED’s short leg (the cathode) to the battery’s − lead. The LED should light, and it is happy to stay lit. Then measure: with the meter on DC volts, the voltage across the resistor should be about 7 V and across the LED about 1.9 V, adding up to the battery’s 9 V (Kirchhoff’s voltage law), and the meter set to the mA range *in series* should read about 18 mA. If the LED does not light, it is the wrong way round; swap its legs.
 
 **A divider.** Join the 10 kΩ and 20 kΩ resistors end to end across the battery. Predict the voltage across the 20 kΩ one (9 × 20/30 = 6 V) and the current (0.3 mA), then measure both. Now connect your meter’s own input as a load: an ordinary meter is 10 MΩ, which barely disturbs a 20 kΩ resistor. Replace the 20 kΩ by a 10 MΩ resistor and the meter’s own resistance halves it. That is loading, and it is why the simulator’s voltmeter is 10 MΩ too.

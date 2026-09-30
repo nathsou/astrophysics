@@ -16,6 +16,13 @@ export interface Pin {
   note?: string;
 }
 
+export interface LabUse {
+  /** The chapter number, 0 to 32. */
+  chapter: number;
+  /** What the lab does with the chip, in a few words. */
+  what: string;
+}
+
 export interface Chip {
   id: string;
   /** Short name, e.g. "74HC00". */
@@ -24,8 +31,12 @@ export interface Chip {
   /** What is inside. */
   summary: string;
   pins: Pin[];
-  /** Lab or chapter that uses it. */
-  used?: string;
+  /**
+   * The labs that use it, by chapter: the chapters whose `:::real` parts list names the chip, each with a few words on
+   * what the lab does with it. `pinouts.test.ts` compares the chapters with the parts lists (through appendix D's
+   * `labs.json`), so this list cannot drift from the chapters.
+   */
+  labs: LabUse[];
   note?: string;
 }
 
@@ -46,7 +57,11 @@ export const CHIPS: Chip[] = [
     title: 'Quad 2-input NAND',
     summary: 'Four NAND gates. Y = ¬(A · B).',
     pins: quad(),
-    used: 'Chapters 11 (XOR from four NANDs) and 16 (NAND latch)',
+    labs: [
+      { chapter: 11, what: 'XOR from four NANDs' },
+      { chapter: 16, what: 'NAND latch' },
+      { chapter: 21, what: 'debouncing the clock button' },
+    ],
   },
   {
     id: '74hc02',
@@ -54,7 +69,7 @@ export const CHIPS: Chip[] = [
     title: 'Quad 2-input NOR',
     summary: 'Four NOR gates. Y = ¬(A + B).',
     pins: [o('1Y'), i('1A'), i('1B'), o('2Y'), i('2A'), i('2B'), GND, i('3A'), i('3B'), o('3Y'), i('4A'), i('4B'), o('4Y'), VCC],
-    used: 'Gate and latch experiments (Chapters 11, 16)',
+    labs: [{ chapter: 13, what: 'one segment of a display decoder' }],
     note: 'The odd one out: the outputs are on pins 1, 4, 10 and 13, not in the 7400 layout. Wiring a NOR into a socket meant for a NAND is a classic mistake.',
   },
   {
@@ -63,7 +78,13 @@ export const CHIPS: Chip[] = [
     title: 'Hex inverter',
     summary: 'Six NOT gates. Y = ¬A.',
     pins: [i('1A'), o('1Y'), i('2A'), o('2Y'), i('3A'), o('3Y'), GND, o('4Y'), i('4A'), o('5Y'), i('5A'), o('6Y'), i('6A'), VCC],
-    used: 'Chapters 10 (transfer curve) and 16 (ring oscillator)',
+    labs: [
+      { chapter: 10, what: 'transfer curve' },
+      { chapter: 12, what: 'the majority function' },
+      { chapter: 13, what: 'one segment of a display decoder' },
+      { chapter: 16, what: 'ring oscillator' },
+      { chapter: 22, what: 'the END bit of a control store' },
+    ],
     note: 'Tie the inputs of unused gates to VCC or GND: a floating CMOS input wanders through the middle and wastes current.',
   },
   {
@@ -72,7 +93,12 @@ export const CHIPS: Chip[] = [
     title: 'Quad 2-input AND',
     summary: 'Four AND gates. Y = A · B.',
     pins: quad(),
-    used: 'Gate experiments (Chapters 11, 13, 14)',
+    labs: [
+      { chapter: 12, what: 'the majority function' },
+      { chapter: 13, what: 'one segment of a display decoder' },
+      { chapter: 15, what: 'a glitch you can see' },
+      { chapter: 19, what: 'traffic-light state machine' },
+    ],
   },
   {
     id: '74hc32',
@@ -80,7 +106,10 @@ export const CHIPS: Chip[] = [
     title: 'Quad 2-input OR',
     summary: 'Four OR gates. Y = A + B.',
     pins: quad(),
-    used: 'Gate experiments (Chapters 11, 13, 14)',
+    labs: [
+      { chapter: 12, what: 'the majority function' },
+      { chapter: 15, what: 'a glitch you can see' },
+    ],
   },
   {
     id: '74hc86',
@@ -88,7 +117,7 @@ export const CHIPS: Chip[] = [
     title: 'Quad 2-input XOR',
     summary: 'Four exclusive-OR gates. Y = A ⊕ B.',
     pins: quad(),
-    used: 'Chapters 11 and 14 (sums and parity)',
+    labs: [{ chapter: 19, what: 'traffic-light state machine' }],
   },
   {
     id: '74hc74',
@@ -111,7 +140,10 @@ export const CHIPS: Chip[] = [
       c('2CLR', 'clear: Q = 0 while low', true),
       VCC,
     ],
-    used: 'Chapter 17 (debounced toggle)',
+    labs: [
+      { chapter: 17, what: 'debounced toggle' },
+      { chapter: 19, what: 'traffic-light state machine' },
+    ],
     note: 'Unused PRE and CLR must be tied high, or the flip-flop is held in reset.',
   },
   {
@@ -137,7 +169,12 @@ export const CHIPS: Chip[] = [
       o('RCO', 'ripple carry out: high at 15 while ENT is high'),
       VCC,
     ],
-    used: 'Chapter 18 (counter on LEDs)',
+    labs: [
+      { chapter: 18, what: 'counter on LEDs' },
+      { chapter: 21, what: 'program counter' },
+      { chapter: 22, what: 'micro-program counter' },
+      { chapter: 23, what: 'program counter' },
+    ],
     note: 'The 74HC163 has the same pins but clears synchronously.',
   },
   {
@@ -163,7 +200,7 @@ export const CHIPS: Chip[] = [
       i('B3'),
       VCC,
     ],
-    used: 'Chapter 14 (4-bit adder)',
+    labs: [{ chapter: 14, what: '4-bit adder, and two chained into 8 bits' }],
     note: 'The bits are numbered 1 to 4, not 0 to 3, and the pins are jumbled so that the sums and inputs of neighbouring bits sit near each other.',
   },
   {
@@ -189,7 +226,11 @@ export const CHIPS: Chip[] = [
       o('QA', 'first output'),
       VCC,
     ],
-    used: 'Chapter 18 (8 LEDs)',
+    labs: [
+      { chapter: 18, what: '8 LEDs' },
+      { chapter: 24, what: 'SPI, watched by a logic analyser' },
+      { chapter: 25, what: 'address lines of an EEPROM programmer' },
+    ],
     note: 'Some makers call the pins SH_CP, ST_CP, DS, MR and Q7S. Tie SRCLR high and OE low for everyday use.',
   },
   {
@@ -207,10 +248,23 @@ export const CHIPS: Chip[] = [
       { name: 'DISCH', role: 'io', note: 'discharge: open-collector transistor to GND' },
       { name: 'VCC', role: 'power', note: 'supply, 4.5 V to 16 V' },
     ],
-    used: 'Chapters 17 (astable) and 24 (PWM)',
+    labs: [
+      { chapter: 17, what: 'astable' },
+      { chapter: 18, what: 'slow clock' },
+      { chapter: 26, what: '1 Hz clock' },
+    ],
     note: 'An 8-pin DIP: pin 1 is at the notch, on the left.',
   },
 ];
+
+/**
+ * The labs of a chip as a phrase: "Chapters 11 (XOR from four NANDs), 16 (NAND latch) and 21 (…)".
+ */
+export function usedIn(chip: Chip): string {
+  const parts = chip.labs.map((l) => `${l.chapter} (${l.what})`);
+  const list = parts.length > 1 ? `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}` : parts.join('');
+  return `${parts.length > 1 ? 'Chapters' : 'Chapter'} ${list}`;
+}
 
 export const chipById = (id: string): Chip => {
   const chip = CHIPS.find((x) => x.id === id);

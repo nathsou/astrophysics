@@ -1,5 +1,7 @@
 import { describe, expect, test } from 'vitest';
-import { CHIPS, chipById, pinLabel, sides } from './pinouts';
+import { LABS } from '../../d-build-it-for-real/widgets/labs';
+import { bill } from '../../d-build-it-for-real/widgets/bom';
+import { CHIPS, chipById, pinLabel, sides, usedIn } from './pinouts';
 
 const names = (id: string) => chipById(id).pins.map((p) => p.name);
 
@@ -84,5 +86,25 @@ describe('sides of a DIP', () => {
     const s = sides(chipById('ne555'));
     expect(s.left.map((x) => x.pin.name)).toEqual(['GND', 'TRIG', 'OUT', 'RESET']);
     expect(s.right.map((x) => x.pin.name)).toEqual(['VCC', 'DISCH', 'THRES', 'CTRL']);
+  });
+});
+
+describe('where each chip is used', () => {
+  // The bill of materials of appendix D is made from the chapters' own `:::real` parts lists (labs.json).
+  const rowId = (id: string) => (id === 'ne555' ? 'ne555' : `hc${id.replace('74hc', '')}`);
+  const chaptersOf = (id: string) => bill(LABS).find((l) => l.row.id === rowId(id))!.uses.map((u) => Number(u.number));
+
+  test.each(CHIPS.map((c) => c.id))('%s: its labs are the chapters whose parts list names it', (id) => {
+    const chip = chipById(id);
+    expect(chip.labs.map((l) => l.chapter), `${chip.part}: regenerate its \`labs\` in pinouts.ts from the parts lists of the chapters (appendix D lists them)`).toEqual(
+      chaptersOf(id),
+    );
+    for (const l of chip.labs) expect(l.what.length, `${id} chapter ${l.chapter}`).toBeGreaterThan(3);
+  });
+
+  test('the phrase on the page', () => {
+    expect(usedIn(chipById('74hc283'))).toBe('Chapter 14 (4-bit adder, and two chained into 8 bits)');
+    expect(usedIn(chipById('74hc32'))).toBe('Chapters 12 (the majority function) and 15 (a glitch you can see)');
+    expect(usedIn(chipById('74hc00'))).toBe('Chapters 11 (XOR from four NANDs), 16 (NAND latch) and 21 (debouncing the clock button)');
   });
 });

@@ -491,7 +491,7 @@ for (let i = 0; i < steps && !ref.halted; i++) {
 
 ## Build it for real
 
-:::real{parts="74HC161, 62256 static RAM, 8-way DIP switch, 8 × LED, 8 × 330 Ω, 10 kΩ resistors, pushbutton, 5 V USB supply module, breadboard, jumper wires"}
+:::real{parts="74HC161, 62256 static RAM, 8-way DIP switch, 8 × LED, 8 × 330 Ω, 8 × 10 kΩ resistors, pushbutton, 5 V USB supply module, breadboard, jumper wires"}
 **Deposit and examine, like an Altair.** A program counter and a memory are all you need to “run” a list of bytes, and you can build both on a breadboard with the parts of Chapters 18 and 20.
 
 Wire a **74HC161** counter as the program counter: its four outputs Q0–Q3 (pins 14, 13, 12 and 11) go to the address inputs A0–A3 of the **62256** RAM, and the other address pins to ground. Give the counter a clock from a debounced pushbutton (Chapter 17); take MR̅, PE̅, CEP and CET (pins 1, 9, 7 and 10) high so that it counts. Put the eight data pins of the RAM through eight 330 Ω resistors to eight LEDs, and also to the DIP switch, with the switch’s other side to the supply and 10 kΩ pull-down resistors so that an open switch reads 0. Use the RAM’s output enable and write enable as you did in Chapter 20, with a switch on write enable.

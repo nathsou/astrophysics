@@ -28,7 +28,7 @@ If that surprised you, good. This chapter takes the picture of “electricity”
 
 Matter is made of atoms, and atoms of a heavy nucleus with positive :term[charge]{id=charge} and a cloud of light electrons with negative charge. The two kinds attract each other and each kind repels itself. That is the whole of the rule, and everything in this course, from a lamp to a processor, is a consequence of it and of one more fact: charge is never created or destroyed, only moved.
 
-Charge is measured in **coulombs** (C). The charge of one electron is tiny and exact:
+Charge is measured in **:term[coulombs]{id=coulomb}** (C). The charge of one electron is tiny and exact:
 
 $$e = 1.602\,176\,634 \times 10^{-19}\ \text{C}$$
 
@@ -46,7 +46,7 @@ A wire that is neutral and still does nothing. What does something is charge *mo
 $$I = \frac{Q}{t}$$
 :::
 
-The unit is the **ampere** (A), one coulomb per second, and it is one of the seven base units of the SI. So a current of 1 A means 6.24 × 10¹⁸ electrons crossing any section of the wire every second. The currents you will meet in this course range over a great many powers of ten, and it helps to have a feel for them:
+The unit is the **:term[ampere]{id=ampere}** (A), one coulomb per second, and it is one of the seven base units of the SI. So a current of 1 A means 6.24 × 10¹⁸ electrons crossing any section of the wire every second. The currents you will meet in this course range over a great many powers of ten, and it helps to have a feel for them:
 
 | Current | What draws it | Electrons per second |
 |---|---|---|
@@ -70,7 +70,7 @@ To push a charge through a lamp takes energy, and the lamp turns that energy int
 $$V = \frac{E}{Q}$$
 :::
 
-The unit is the **volt** (V): one joule per coulomb. A 9 V battery gives every coulomb that passes through it 9 J of energy. That is not much energy: it would lift a 100 g apple about nine metres. But a lamp passing 50 mA is being handed 0.05 C every second, so it receives 0.05 × 6 = 0.3 J per second, which is 0.3 W. You may notice that this is voltage times current. It is, and Chapter 2 makes a habit of it.
+The unit is the **:term[volt]{id=volt}** (V): one joule per coulomb. A 9 V battery gives every coulomb that passes through it 9 J of energy. That is not much energy: it would lift a 100 g apple about nine metres. But a lamp passing 50 mA is being handed 0.05 C every second, so it receives 0.05 × 6 = 0.3 J per second, which is 0.3 W. You may notice that this is voltage times current. It is, and Chapter 2 makes a habit of it.
 
 Two things about voltage are easy to get wrong.
 
