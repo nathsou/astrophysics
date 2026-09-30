@@ -18,3 +18,14 @@ export { default as PromFuses } from '../studio/widgets/PromFuses.svelte';
 export { default as PlaPlanes } from '../studio/widgets/PlaPlanes.svelte';
 /** The JTAG TAP controller: drive it by hand, or watch a programming run: `::jtag-tap{}`. */
 export { default as JtagTap } from '../studio/widgets/JtagTap.svelte';
+
+// ── The virtual FPGA in the Device Studio (src/lib/studio/fpga, panes/fpga, chips/vfpga) ─────────
+
+/** A compact FPGA Studio: `::fpga-studio{size="M" design="alu" views="source,chip,logic,report"}` (views: source, chip, logic, bits, report, replay, board, hand). */
+export { default as FpgaStudio } from '../studio/widgets/FpgaStudio.svelte';
+/** vFPGA-S by hand, against a goal (XOR two pins), with the logic recovered from the bits: `::fpga-by-hand{}`. */
+export { default as FpgaByHand } from '../studio/widgets/FpgaByHand.svelte';
+/** The placement and routing traces replayed on the chip view: `::place-route-replay{design="alu"}`. */
+export { default as PlaceRouteReplay } from '../studio/widgets/PlaceRouteReplay.svelte';
+/** A single LUT4: 16 bits and the multiplexer tree; type a function or click bits: `::lut-explorer{}`. */
+export { default as LutExplorer } from '../studio/widgets/LutExplorer.svelte';

@@ -9,6 +9,10 @@
 import { getAdapter } from './adapters';
 import { EMPTY_PROBE, refKey, type DeviceAdapter, type DeviceFit, type EditAction, type PinLevel, type Probe, type Ref, type RunState, type Runner, type SourceError } from './types';
 import { encodeState } from './state-hash';
+import { fpgaExample } from './fpga/examples';
+
+/** The vFPGA is not a `DeviceAdapter` (its fit is asynchronous and runs in a worker): the Studio only tracks its source. */
+export const FPGA_DEVICE = 'fpga';
 
 export type LogicLevel = PinLevel | 'x';
 
@@ -91,6 +95,7 @@ export class Studio {
   load(opts: StudioOptions): void {
     this.cancelProgramming();
     const id = opts.device ?? this.deviceId;
+    if (id === FPGA_DEVICE) return this.loadFpga(opts);
     const a = getAdapter(id) ?? getAdapter('gal22v10')!;
     this.deviceId = a.id;
     let source = opts.source;
@@ -114,6 +119,23 @@ export class Studio {
       this.handEdited = true;
       this.installFit(fit);
     } else this.fitNow();
+  }
+
+  /** Switch to the vFPGA: the workspace (`panes/fpga`) owns the flow; here only the source and example are kept. */
+  private loadFpga(opts: StudioOptions): void {
+    this.stopAutoClock();
+    clearTimeout(this.timer);
+    this.deviceId = FPGA_DEVICE;
+    const ex = fpgaExample(opts.example) ?? (opts.source === undefined ? fpgaExample('counter') : undefined);
+    this.source = opts.source ?? ex?.source ?? '';
+    this.exampleId = ex && ex.source === this.source ? ex.id : null;
+    this.selected = null;
+    this.hovered = null;
+    this.handEdited = false;
+    this.fit = null;
+    this.errors = [];
+    this.run = null;
+    this.runner = null;
   }
 
   loadExample(id: string): void {

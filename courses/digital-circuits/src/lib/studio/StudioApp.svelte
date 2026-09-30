@@ -6,7 +6,7 @@
 <script lang="ts">
   import './studio.css';
   import { untrack } from 'svelte';
-  import type { Studio } from './studio.svelte';
+  import { FPGA_DEVICE, type Studio } from './studio.svelte';
   import { listAdapters } from './adapters';
   import { getChip } from './registry';
   import './devices';
@@ -68,21 +68,14 @@
   });
 
   const adapters = listAdapters();
-  const deviceOptions = [...adapters.map((a) => ({ value: a.id, label: a.short })), { value: 'fpga', label: 'FPGA · soon', title: 'The vFPGA joins the Studio in a later milestone' }];
+  const deviceOptions = [...adapters.map((a) => ({ value: a.id, label: a.short })), { value: FPGA_DEVICE, label: 'FPGA', title: 'The virtual FPGA: vFPGA-S, -M and -L' }];
   let deviceChoice = $state(untrack(() => studio.deviceId));
   $effect(() => {
     deviceChoice = studio.deviceId;
   });
-  let fpgaNote = $state(false);
-  let fpgaTimer: ReturnType<typeof setTimeout> | undefined;
+  const isFpga = $derived(studio.deviceId === FPGA_DEVICE);
+  const files = $derived(isFpga ? [] : (fit?.files ?? []));
   function pickDevice(v: string) {
-    if (v === 'fpga') {
-      deviceChoice = studio.deviceId;
-      fpgaNote = true;
-      clearTimeout(fpgaTimer);
-      fpgaTimer = setTimeout(() => (fpgaNote = false), 6000);
-      return;
-    }
     studio.load({ device: v });
   }
 
@@ -124,9 +117,9 @@
     {#if picker}
       <Segmented size="sm" label="Device" options={deviceOptions} bind:value={deviceChoice} onchange={pickDevice} />
     {:else}
-      <span class="dev">{studio.adapter?.name}</span>
+      <span class="dev">{isFpga ? 'vFPGA' : studio.adapter?.name}</span>
     {/if}
-    {#if canHand}
+    {#if canHand && !isFpga}
       <Segmented
         size="sm"
         label="Programming mode"
@@ -138,16 +131,15 @@
         onchange={setMode}
       />
     {/if}
-    {#if canProgram && studio.source.trim()}
+    {#if canProgram && studio.source.trim() && !isFpga}
       <button type="button" class="tb" onclick={program} disabled={studio.programming} title="Blow the fuses of the source's design, one pulse at a time"><Icon name="bolt" size={13} /> Program</button>
     {/if}
     {#if studio.handEdited && studio.editable}
       <button type="button" class="tb" onclick={() => studio.resetDevice()}><Icon name="reset" size={13} /> New part</button>
     {/if}
-    {#if fpgaNote}<span class="note" role="status">The vFPGA (Chapters 28–31) joins the Studio in a later milestone: same panes, a new adapter.</span>{/if}
     <span class="grow"></span>
-    {#if fit}<span class="summary" title={fit.title}>{fit.summary}</span>{/if}
-    {#each fit?.files ?? [] as f (f.name)}
+    {#if fit && !isFpga}<span class="summary" title={fit.title}>{fit.summary}</span>{/if}
+    {#each files as f (f.name)}
       <button type="button" class="tb" onclick={() => download(f)} title="Download {f.name}"><Icon name="download" size={13} /> {f.label}</button>
     {/each}
     {#if openHref}
@@ -155,6 +147,11 @@
     {/if}
   </div>
 
+  {#if isFpga}
+    {#await import('./panes/fpga/FpgaHost.svelte') then m}
+      <m.default {studio} {views} {compact} />
+    {/await}
+  {:else}
   {#if tabs.length > 1}
     <div class="tabs ui" role="tablist" aria-label="Panes">
       {#each tabs as t (t.id)}
@@ -224,4 +221,5 @@
       </div>
     {/if}
   </div>
+  {/if}
 </div>
