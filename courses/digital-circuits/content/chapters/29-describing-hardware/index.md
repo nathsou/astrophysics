@@ -742,6 +742,188 @@ module TickGen<PERIOD: int>(clk: clock) -> (tick: bit) {
 The register is exactly wide enough for PERIOD values (`clog2(PERIOD)` is computed by the compiler, from the generic), `last` is a wire that says “this is the final count”, and the counter wraps on it. Wired to the `tick` input of `TrafficLight`, `TickGen<50_000_000>` on a 50 MHz clock gives the light a step once a second.
 :::
 
+Two modules to write, in the editor and with the compiler’s diagnostics as you type. Each is checked against hidden tests, and then against a reference design on the simulator, for every input (or, for a clocked design, every short sequence of inputs and thousands of random ones); a mismatch comes back as a table of inputs, expected outputs and what your design gave.
+
+```hdl
+id: 29-describing-hardware/priority-encoder
+title: Which request wins?
+top: PriorityEncoder
+prompt: |
+  Eight devices share a resource and each has a request line. Write a **priority encoder**: `req` is the eight request lines, and the outputs are `valid` (1 when any request is set) and `index`, the number (0 to 7) of the **highest-numbered** request that is set. When no request is set, `valid` is 0 and `index` is 0.
+
+  The arbiter earlier in the chapter picked the *lowest* request and returned a code from 1; this one picks the highest and returns the line’s own number.
+hints:
+  - 'A chain of `else if` is exactly a priority chain: test `req[7]` first, then `req[6]`, and so on. The last `else` is the case where only request 0 is set or none is.'
+  - '`valid` needs no chain: `any(req)` is 1 when at least one bit of `req` is 1.'
+explain: |
+  The `if` chain makes request 7 the first multiplexer’s select and request 0 the last branch: the priority is in the order of the tests. It is the right circuit here, because the conditions overlap and one of them has to win. (`match` would have been wrong: its arms may not overlap.)
+height: 9
+start: |
+  /// The highest-numbered request that is set, and whether there is one.
+  module PriorityEncoder(req: bits<8>) -> (valid: bit, index: bits<3>) {
+    valid = 0
+    index = 0
+  }
+reference: |
+  module PriorityEncoder(req: bits<8>) -> (valid: bit, index: bits<3>) {
+    valid = any(req)
+    index = if req[7] {
+      7
+    } else if req[6] {
+      6
+    } else if req[5] {
+      5
+    } else if req[4] {
+      4
+    } else if req[3] {
+      3
+    } else if req[2] {
+      2
+    } else if req[1] {
+      1
+    } else {
+      0
+    }
+  }
+tests: |
+  test "the highest request wins" {
+    let e = sim PriorityEncoder(req: 0b0010_0110)
+    expect e.valid == 1 && e.index == 5
+    e.req = 0b1000_0001
+    expect e.index == 7
+  }
+
+  test "no request: not valid, index 0" {
+    let e = sim PriorityEncoder(req: 0)
+    expect e.valid == 0 && e.index == 0
+  }
+
+  test "request 0 alone is valid" {
+    let e = sim PriorityEncoder(req: 1)
+    expect e.valid == 1 && e.index == 0
+  }
+equivalence: { exhaustiveBits: 8 }
+solution: |
+  /// The highest-numbered request that is set, and whether there is one.
+  module PriorityEncoder(req: bits<8>) -> (valid: bit, index: bits<3>) {
+    valid = any(req)
+    index = if req[7] {
+      7
+    } else if req[6] {
+      6
+    } else if req[5] {
+      5
+    } else if req[4] {
+      4
+    } else if req[3] {
+      3
+    } else if req[2] {
+      2
+    } else if req[1] {
+      1
+    } else {
+      0
+    }
+  }
+```
+
+```hdl
+id: 29-describing-hardware/saturating-counter
+title: A counter that stops
+top: SatCounter
+prompt: |
+  The module in the editor is an up/down counter that *wraps*: counting up from 15 gives 0, counting down from 0 gives 15. A volume control must not do that. Make it **saturate**: at 15 it stays at 15 when told to count up, and at 0 it stays at 0 when told to count down.
+
+  Ports: `clear` (synchronous; it beats everything), `en` (count when 1, hold when 0) and `up` (1 counts up, 0 counts down). Outputs: `count`, and two flags, `at_top` (count is 15) and `at_bottom` (count is 0). Keep the ports as they are.
+hints:
+  - 'The register’s `next` is a chain: `clear` first, then `en`, then the direction. The saturation belongs inside the direction branches: `if value == 15 { value } else { value + 1 }`.'
+  - 'Holding a value is written out in DCL: the answer for a counter that has hit its limit is `value`, the same register.'
+explain: |
+  The two comparisons are two more gates on the existing adder’s path, and the holding is a multiplexer that picks `value` itself (the register’s own output) instead of the sum. Nothing saturates in the adder: `15 + 1` is still 0 there, as arithmetic in DCL always wraps. The circuit simply chooses not to use it. The check ran the design from power-up through every input sequence of 4 cycles (there are 4,096 of them) and then through random ones, against a reference that saturates.
+height: 10
+start: |
+  /// A 4-bit up/down counter. It wraps at both ends: make it saturate.
+  module SatCounter(clk: clock, clear: bit, en: bit, up: bit) -> (count: bits<4>, at_top: bit, at_bottom: bit) {
+    reg value: bits<4> = 0
+
+    next value = if clear {
+      0
+    } else if !en {
+      value
+    } else if up {
+      value + 1
+    } else {
+      value - 1
+    }
+    count = value
+    at_top = value == 15
+    at_bottom = value == 0
+  }
+reference: |
+  module SatCounter(clk: clock, clear: bit, en: bit, up: bit) -> (count: bits<4>, at_top: bit, at_bottom: bit) {
+    reg value: bits<4> = 0
+
+    next value = if clear {
+      0
+    } else if !en {
+      value
+    } else if up {
+      if value == 15 { value } else { value + 1 }
+    } else {
+      if value == 0 { value } else { value - 1 }
+    }
+    count = value
+    at_top = value == 15
+    at_bottom = value == 0
+  }
+tests: |
+  test "counts up and stops at 15" {
+    let c = sim SatCounter(clear: 0, en: 1, up: 1)
+    step 15
+    expect c.count == 15 && c.at_top
+    step 3
+    expect c.count == 15
+  }
+
+  test "counts down and stops at 0" {
+    let c = sim SatCounter(clear: 0, en: 1, up: 1)
+    step 5
+    c.up = 0
+    step 9
+    expect c.count == 0 && c.at_bottom
+  }
+
+  test "clear wins, and en low holds" {
+    let c = sim SatCounter(clear: 0, en: 1, up: 1)
+    step 4
+    c.en = 0
+    step 3
+    expect c.count == 4
+    c.en = 1
+    c.clear = 1
+    step
+    expect c.count == 0
+  }
+solution: |
+  /// A 4-bit up/down counter that saturates at both ends.
+  module SatCounter(clk: clock, clear: bit, en: bit, up: bit) -> (count: bits<4>, at_top: bit, at_bottom: bit) {
+    reg value: bits<4> = 0
+
+    next value = if clear {
+      0
+    } else if !en {
+      value
+    } else if up {
+      if value == 15 { value } else { value + 1 }
+    } else {
+      if value == 0 { value } else { value - 1 }
+    }
+    count = value
+    at_top = value == 15
+    at_bottom = value == 0
+  }
+```
+
 ## What’s next
 
 We now have a language and know what it builds: modules and ports, wires that are `let` and state that is `reg`, multiplexers as `if` and `match`, hierarchy and generics, RAM as `mem`, state machines as enums, and tests that check a design before anything is built. Above all, the compiler shows its work: every line has a cost, and the cost has a name.

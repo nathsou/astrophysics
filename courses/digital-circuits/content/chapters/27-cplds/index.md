@@ -395,6 +395,36 @@ Reading a row back with ISC_VERIFY takes one scan of the 72-bit row register: th
 *Answer.* A scan is 3 + 72 + 2 = 77 clocks. Verifying 141 rows takes 142 scans: 142 × 77 = 10,934 clocks, which is 10.9 ms at 1 MHz. Writing the counter’s 10 rows is 10 × (77 + 3) = 800 clocks, under a millisecond: verification is about fourteen times the writing, which is what the programming run of Figure 27.6 showed. Real programmers often verify only the rows they wrote, or use a checksum, for this reason. (The model’s row pulse takes 3 idle clocks; a real flash row takes milliseconds, and then writing dominates.)
 :::
 
+An exercise on the vCPLD-32, checked on the configured device like the others.
+
+```fit
+id: 27-cplds/parity
+title: Parity in three macrocells
+device: cpld32
+prompt: |
+  The source pane asks for the parity of eight inputs, **P = A ^ B ^ C ^ D ^ E ^ F ^ G ^ H**, in one equation, and the fitter refuses: read what it says. Write the design so that it fits, using at most **3 macrocells** in all (the output and any buried ones).
+hints:
+  - 'The message gives the way out: compute part of the function in a buried macrocell and read that signal in the equation that needs it. Declare the buried names with `# @buried X1 X2`.'
+  - 'Four-input parity needs eight product terms, which one macrocell can collect (it may borrow from its neighbours). Five inputs need sixteen, which it cannot.'
+explain: |
+  Parity is the worst case for a sum of products: n inputs need 2ⁿ⁻¹ terms, because flipping any one input flips the output and so no term can cover two neighbouring input combinations. Eight inputs need 128, far beyond the 15 that a macrocell can gather (its own 5 and 5 borrowed from each neighbour). Two buried macrocells take four inputs each (8 terms apiece), and the output XORs them (2 terms): three macrocells and 18 terms. The price is the 5 ns of a buried macrocell in the path, which the report shows.
+spec:
+  inputs: [A, B, C, D, E, F, G, H]
+  expression: 'P = A ^ B ^ C ^ D ^ E ^ F ^ G ^ H'
+budget: { macrocells: 3 }
+start: |
+  # @title 8-input parity
+  # @inputs A B C D E F G H
+  P = A ^ B ^ C ^ D ^ E ^ F ^ G ^ H
+solution: |
+  # @title 8-input parity in three macrocells
+  # @inputs A B C D E F G H
+  # @buried X1 X2
+  X1 = A ^ B ^ C ^ D
+  X2 = E ^ F ^ G ^ H
+  P = X1 ^ X2
+```
+
 ## What’s next
 
 A CPLD is a small number of large blocks, each a sum-of-products, joined by a matrix in which every path costs the same. That is why it is predictable, and it is also why it stops at a few hundred macrocells: the blocks get wider, the matrix gets bigger, and a sum of products is not the way to build a large adder or a multiplier, however many terms you can borrow. Chapter 28 takes the opposite bet. It gives up the AND–OR array entirely and fills the chip with thousands of tiny look-up tables, each a 16-bit memory that computes any function of four inputs, and with wires and switches that a program will have to route. The delays will no longer be the same for every path, and that is the price of the freedom: a chip in which the design decides where the wires go.

@@ -318,6 +318,45 @@ A LUT6 holds 64 bits. Show that any function of six inputs can be built from at 
 *Answer.* Split on two inputs, e and f: the function is a 4:1 multiplexer, selected by e and f, of four functions of the remaining four inputs. Each is one LUT4: four LUT4s. A 4:1 multiplexer has six inputs and is itself three 2:1 multiplexers, each a function of three inputs, so three LUT4s (Figure 30.2 finds it). Total: 4 + 3 = 7 LUT4s, or 112 stored bits against the LUT6’s 64, and three levels of LUTs where the LUT6 has one. The LUT6 is smaller in bits and faster: that is the argument for six inputs. Its cost is that a function of only four inputs wastes three quarters of a LUT6’s memory, unless the cell can be split into two smaller functions, as the adaptive LUTs of Altera and the LUT6 of Xilinx can.
 :::
 
+An exercise in routing. In Figure 28.6 you did everything; here the cells are placed for you, and only the wires are yours.
+
+```route
+id: 28-inside-an-fpga/route-two-pairs
+title: Wire up the placed cells
+prompt: |
+  Three logic cells of a vFPGA-S are already set up: `LC(1,1,0)` computes `I0 & I1`, `LC(2,1,0)` computes `I0 & I1`, and `LC(1,2,0)` computes `I0 | I1`. Pads **P0**, **P1** and **P2** are inputs and **P8** is an output. Route the six nets in the list so that **P8 = P1 & (P0 | P2)**: P0 and P1 into the first cell, P1 and P2 into the second, both results into the third, and the third to P8.
+
+  Work from each sink back towards its source, as the hardware does. Choose a sink in the list, and the panel shows the inputs of the multiplexer that drives it, each labelled with the signal it carries right now. Choose one; if it is a wire that does not yet carry the net’s signal, carry on with that wire’s own multiplexer. Every wire has a single multiplexer, so two nets cannot share a wire: you will have to find each of them a road of its own.
+hints:
+  - 'P1 feeds two inputs, one in each of the first two cells. Route the first, then route the second: its last wire can start from a wire the first route already uses, because it carries the same signal.'
+  - 'If a choice says it carries another net, take another: using a wire that carries a different net would connect the two (the check calls it a short).'
+  - 'Stuck for a free road? The chip view shows which wires are in use. There are four wires in every direction from every tile, and the pads sit on the edge of the die.'
+explain: |
+  Each sink took between two and four multiplexers, and every wire was chosen by exactly one. That is all routing is: for each net, a tree of multiplexer settings from its source to its sinks, in which no wire is used by two nets. The router of Chapter 30 does this for thousands of nets at once, and when two of them want the same wire it makes one of them pay more, until everyone has a road. The check simulated the fabric and found `P8 = P1 & (P0 | P2)` for all eight input combinations.
+fabric:
+  pads: { P0: in, P1: in, P2: in, P8: out }
+  cells:
+    - { at: [1, 1, 0], lut: "I0 & I1" }
+    - { at: [2, 1, 0], lut: "I0 & I1" }
+    - { at: [1, 2, 0], lut: "I0 | I1" }
+nets:
+  - { name: a, from: P0, to: ["LC(1,1,0).I0"] }
+  - { name: b, from: P1, to: ["LC(1,1,0).I1", "LC(2,1,0).I0"] }
+  - { name: c, from: P2, to: ["LC(2,1,0).I1"] }
+  - { name: d, from: "LC(1,1,0)", to: ["LC(1,2,0).I0"] }
+  - { name: e, from: "LC(2,1,0)", to: ["LC(1,2,0).I1"] }
+  - { name: f, from: "LC(1,2,0)", to: [P8] }
+outputs: { P8: "P1 & (P0 | P2)" }
+solution:
+  - [P0, "LC(1,1,0).I0"]
+  - [P1, "LC(1,1,0).I1"]
+  - [P1, "LC(2,1,0).I0"]
+  - [P2, "LC(2,1,0).I1"]
+  - ["LC(1,1,0)", "LC(1,2,0).I0"]
+  - ["LC(2,1,0)", "LC(1,2,0).I1"]
+  - ["LC(1,2,0)", P8]
+```
+
 ## What’s next
 
 You now know what an FPGA is made of, and how a design *lives* in one: a few dozen LUT tables, a few hundred routing choices and a handful of flags, packed into a bitstream. Nobody sets those by hand except once, to see how. A design of any size is written as text, and Chapter 29 introduces the language, DCL, in which the rest of the course describes hardware. Chapter 30 then takes the compiled result through the tools that decide which cell, which wire and which bit, for a design too large to configure by hand: the toolchain that turned your 6-cell counter into about a hundred set bits, and can do the same to the 3,000-cell register file of a CPU.

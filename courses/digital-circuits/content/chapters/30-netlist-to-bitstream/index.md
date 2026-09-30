@@ -422,6 +422,84 @@ A path starts at a flip-flop (clock-to-output 0.3 ns), goes over a net of 0.4 ns
 *Answer.* 0.3 + 0.4 + 0.5 + 0.9 + 0.5 + 0.4 + 0.5 + 0.4 + 0.2 = 4.1 ns, and 1000 ÷ 4.1 = 244 MHz. With the merge, the net between the second and third LUTs (0.4 ns) and one LUT (0.5 ns) vanish, and the merged LUT still takes 0.5 ns: 0.3 + 0.4 + 0.5 + 0.9 + 0.5 + 0.4 + 0.2 = 3.2 ns, 312.5 MHz. A quarter faster, from one fewer LUT in the path: this is why the mapper minimises depth first, and why a LUT’s delay does not depend on what it holds.
 :::
 
+Two exercises on the tools’ own data: a placement to improve, and a bitstream to read.
+
+```place
+id: 30-netlist-to-bitstream/place-shift-register
+title: Beat the annealer
+seed: 5
+prompt: |
+  A small design, a 12-bit shift register with feedback and three flags, has been taken through Chapter 30’s flow as far as packing: its 23 logic cells are in **three tiles**, and it has a clock and thirteen ports. Five pads are already fixed, as on a board: the clock, and four pins that the circuit board has wired (`seed[0]`, `seed[2]`, `q[0]` and `q[2]`). The annealer placed everything on the vFPGA-S with seed 5, and got a wirelength cost of **40.50**.
+
+  Place the other blocks yourself, onto the four tile sites and the free pads, so that your cost is **lower**. The cost is the placer’s own: for each net, the half-perimeter of the box around its blocks, scaled up for nets with many terminals, added up over all the nets.
+hints:
+  - 'Each tile wants to sit near the blocks it shares nets with. Press *The annealer’s*, look at what it did, and draw the nets (the lines) to see which blocks pull on which.'
+  - 'The fixed pads pull their tiles towards them: `seed[2]` and `q[2]` want the tile that uses their nets. Put the pads you may choose beside the tile whose nets they join, and pads that join two tiles between them.'
+  - 'A net that stays inside one tile costs nothing. Look for the nets with the longest boxes, and shorten those first.'
+explain: |
+  The annealer minimises a weighted sum: wirelength, and timing, and a spreading term that stops the design piling up in one place. You minimised only the first, so you could pay for shorter wires with a longer critical path, or with a more crowded die, that the annealer would not accept (compare the estimated critical paths in the panel). It is also why the real flow runs the router afterwards: a placement that has the best wirelength is only a promise, and the wires have to keep it.
+design: |
+  /// A 12-bit shift register with feedback taps, four bits loaded at the top, and three flags.
+  module Lfsr(clk: clock, en: bit, load: bit, seed: bits<4>) -> (q: bits<4>, par: bit, hit: bit) {
+    reg r: bits<12> = 1
+    let fb: bit = r[11] ^ r[10] ^ r[9] ^ r[3]
+    next r = if load { concat(seed, r[7:0]) } else if en { concat(r[10:0], fb) } else { r }
+    q = r[11:8]
+    par = r[0] ^ r[1] ^ r[2] ^ r[3] ^ r[4] ^ r[5] ^ r[6] ^ r[7]
+    hit = r[11:4] == 0xA5
+  }
+pins: { "seed[0]": P12, "seed[2]": P14, "q[0]": P4, "q[2]": P6 }
+solution:
+  tile 0: "2,2"
+  tile 1: "1,1"
+  tile 2: "2,1"
+  en: P5
+  load: P13
+  seed[1]: P9
+  seed[3]: P8
+  q[1]: P2
+  q[3]: P3
+  par: P10
+  hit: P7
+```
+
+```decode
+id: 30-netlist-to-bitstream/read-the-bitstream
+title: What does this bitstream do?
+device: fpga
+prompt: |
+  A vFPGA-S has been configured, and this is what is in its bitstream, region by region: three logic cells, the routing multiplexers that are set, and the pads. Pads **P0**, **P1** and **P2** are inputs, and **P8** and **P9** are outputs. What does each output compute?
+
+  Start with the LUTs: bit *r* of a LUT is its output when I0 + 2·I1 + 4·I2 + 8·I3 = *r*. Then follow the wires: the routing table says which cell input is driven by what.
+hints:
+  - 'The LUT bits of `LC(1,2,0)` and `LC(1,2,1)` are the same: 0110 repeated. In which rows of a two-input table is the output 1? (The other two inputs do not matter.)'
+  - 'The third cell uses three inputs: its bits, 0xe8e8, are 1 when at least two of I0, I1, I2 are 1.'
+explain: |
+  `LC(1,2,0)` holds 0x6666, the XOR of its first two inputs (P0 and P1); `LC(1,2,1)` holds the same table and reads that result and P2, so **P8 = P0 ^ P1 ^ P2**. `LC(2,2,0)` holds 0xE8E8, the majority of its three inputs, and they are P0, P1 and P2, so **P9 = P0 & P1 | P0 & P2 | P1 & P2**. It is the full adder of Chapter 14, made of three logic cells: the sum by two XORs in series, the carry by one LUT, because a LUT has four inputs and a majority needs only three.
+bitstream:
+  pads: { P0: in, P1: in, P2: in, P8: out, P9: out }
+  cells:
+    - { at: [1, 2, 0], lut: "I0 ^ I1" }
+    - { at: [1, 2, 1], lut: "I0 ^ I1" }
+    - { at: [2, 2, 0], lut: "I0 & I1 | I0 & I2 | I1 & I2" }
+  routes:
+    - [P0, "LC(1,2,0).I0"]
+    - [P1, "LC(1,2,0).I1"]
+    - ["LC(1,2,0)", "LC(1,2,1).I0"]
+    - [P2, "LC(1,2,1).I1"]
+    - ["LC(1,2,1)", P8]
+    - [P0, "LC(2,2,0).I0"]
+    - [P1, "LC(2,2,0).I1"]
+    - [P2, "LC(2,2,0).I2"]
+    - ["LC(2,2,0)", P9]
+inputs: [P0, P1, P2]
+outputs: [P8, P9]
+answers: [expression, table, dcl]
+solution: |
+  P8 = P0 ^ P1 ^ P2
+  P9 = P0 & P1 | P0 & P2 | P1 & P2
+```
+
 ## What’s next
 
 You have followed a design the whole way, from a netlist through a graph of ANDs, LUTs, tiles, a placement, a routing and a timing report to about a hundred bits that a chip runs. Every step was one of a few classic algorithms, the same on the 32-bit ALU as on the counter, only slower. Chapter 31 uses all of it at once. It puts the Octet processor you built onto the vFPGA-M, and an RV32I core, a real instruction set that real compilers target, onto the vFPGA-L; it runs programs on the configured fabric through the virtual board; and it sends the same designs to a real iCE40, where the LEDs blink and the UART prints.

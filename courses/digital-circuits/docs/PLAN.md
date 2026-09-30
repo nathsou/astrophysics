@@ -736,20 +736,20 @@ courses/digital-circuits/
   - Octet: final ISA, assembler, reference interpreter, gate-level build in a worker, turbo mode, I/O
     devices.
   - Differential tests; `asm` exercises; protocol decoders; appendix E.
-- [ ] **M6 — Programmable logic I.**
+- [x] **M6 — Programmable logic I.**
   - DCL front end: parser, formatter, type checker, elaboration, diagnostics.
   - The DCL editor, the RTL simulator, and lowering to the netlist.
   - The Device Studio: panes, cross-probing, simulation from the bits, replay.
   - Devices: vPROM, vPLA, GAL22V10 with JEDEC, vCPLD-32 with JTAG.
   - Chapters 25–27; `hdl`, `fit` and `decode` exercises; the first datasheets in appendix G.
-- [ ] **M7 — Programmable logic II.**
+- [x] **M7 — Programmable logic II.**
   - vFPGA-S/M/L and the virtual board.
   - The FPGA flow: synthesis, mapping, packing, placement, routing, timing, bitstream.
   - Chapters 28–31; Octet and RV32I in DCL; `route` and `place` exercises.
   - The interchange netlist and the iCE40 labs; validation scripts.
   - **Benchmark gate** for the TypeScript kernels (HDL.md, *Implementation language*).
   - Appendices F and G.
-- [ ] **M8 — Epilogue and finish.**
+- [x] **M8 — Epilogue and finish.**
   - Chapter 32; appendices C, D and H (timeline deck); breadboard illustrations.
   - Accessibility, mobile and reduced-motion pass; review pass; *in progress* label removed.
 

@@ -536,6 +536,105 @@ You do not need a new module or a new register. Change only `Control`: it alread
 The RV32I core of Figure 31.4 with the register file in block RAM is 1,476 cells, and 667 of them are the ALU, which has a barrel shifter for `sll`, `srl` and `sra`. Rewrite the shifter in DCL so that it shifts by one bit each cycle, and takes as many cycles as the shift amount. How many cells do you save, and what does it do to a program that shifts by 31 every time? (The core’s designers made the same choice in PicoRV32: its “small” variants have no barrel shifter.)
 :::
 
+An exercise in adding a device to Octet’s board.
+
+```hdl
+id: 31-cpus-on-a-chip/countdown-timer
+title: A timer for Octet’s board
+top: Countdown
+prompt: |
+  The devices of Octet’s board sit at the top of the address space: the LEDs at 0xF8, the switches at 0xF9, and so on to RANDOM at 0xFD. Addresses 0xFE and 0xFF read 0 and ignore writes, so there is room for one more. Write the device that would go at 0xFE: a **countdown timer**.
+
+  A program writes a number *n* to it: the timer then holds *n* and reads back as *n*. Every cycle in which `tick` is 1 (the board would send one every millisecond) it counts down by one, and it stops at 0, where `done` is 1. The inputs are `clk`, `rst` (synchronous: the timer reads 0 afterwards and beats everything), `write` (1 in the cycle when the program writes; `data` is the byte, and a write beats a tick) and `tick`. The outputs are `value`, the byte the program reads, and `done`.
+hints:
+  - 'It is a register with four cases in a chain: `rst`, then `write`, then `tick` with the value not yet 0, then hold. The chain is the priority.'
+  - '`done` is a comparison of the register with 0, and it is 1 from the moment the register is 0, including at power-up.'
+explain: |
+  This is how Octet’s own devices are built: `reg hex` with a `next` that loads the bus when a write addresses it. The difference is the clocked behaviour, the `tick` and the stop at 0, which the board’s devices did not need. To finish the job on the real design you would add `reg timer` to the top module, route `write_device && mar[3:0] == 14` to `write`, and add `14 => timer_value` to the `match` that answers reads (the `match` of `device_out`). The Octet code that the tests of this chapter run is unchanged; you have written the part that would go into it.
+height: 10
+start: |
+  /// A countdown timer: write n, and it counts down to 0 on every tick.
+  module Countdown(clk: clock, rst: bit, write: bit, data: bits<8>, tick: bit) -> (value: bits<8>, done: bit) {
+    reg left: bits<8> = 0
+
+    next left = if rst { 0 } else if write { data } else { left }
+    value = left
+    done = 0
+  }
+reference: |
+  module Countdown(clk: clock, rst: bit, write: bit, data: bits<8>, tick: bit) -> (value: bits<8>, done: bit) {
+    reg left: bits<8> = 0
+
+    next left = if rst {
+      0
+    } else if write {
+      data
+    } else if tick && left != 0 {
+      left - 1
+    } else {
+      left
+    }
+    value = left
+    done = left == 0
+  }
+tests: |
+  test "reads back what was written" {
+    let t = sim Countdown(rst: 0, write: 1, data: 5, tick: 0)
+    step
+    t.write = 0
+    expect t.value == 5 && !t.done
+    step 4
+    expect t.value == 5
+  }
+
+  test "counts down on ticks only" {
+    let t = sim Countdown(rst: 0, write: 1, data: 3, tick: 0)
+    step
+    t.write = 0
+    t.tick = 1
+    step
+    expect t.value == 2
+    t.tick = 0
+    step 3
+    expect t.value == 2
+  }
+
+  test "stops at zero and says done" {
+    let t = sim Countdown(rst: 0, write: 1, data: 2, tick: 0)
+    step
+    t.write = 0
+    t.tick = 1
+    step 5
+    expect t.value == 0 && t.done
+  }
+
+  test "a write beats a tick, and reset beats a write" {
+    let t = sim Countdown(rst: 0, write: 1, data: 9, tick: 1)
+    step
+    expect t.value == 9
+    t.rst = 1
+    step
+    expect t.value == 0
+  }
+solution: |
+  /// A countdown timer: write n, and it counts down to 0 on every tick.
+  module Countdown(clk: clock, rst: bit, write: bit, data: bits<8>, tick: bit) -> (value: bits<8>, done: bit) {
+    reg left: bits<8> = 0
+
+    next left = if rst {
+      0
+    } else if write {
+      data
+    } else if tick && left != 0 {
+      left - 1
+    } else {
+      left
+    }
+    value = left
+    done = left == 0
+  }
+```
+
 ## What’s next
 
 You have built the whole chain: a machine drawn from gates in Chapters 21 and 22, the same machine described in 280 lines and fitted into 541 cells, a program turned into bytes and then into bits and run from a bitstream, and a real instruction set that filled more than half of a chip because of one array. And you have seen where the next number comes from: the block RAM that gave one design its memory and another its registers.

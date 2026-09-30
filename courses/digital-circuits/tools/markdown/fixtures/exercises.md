@@ -171,3 +171,158 @@ solution: |
            bnez t0, loop
            ebreak
 ```
+
+## Hardware exercises
+
+The five hardware kinds: `hdl`, `fit`, `decode`, `route` and `place`. Each `solution` passes its checker and each `start` fails it.
+
+```hdl
+id: fixture/majority
+title: A majority gate
+top: Majority
+prompt: Write a module whose output `y` is 1 when at least two of `a`, `b` and `c` are 1.
+hints:
+  - 'Two of three: `a & b`, `a & c` or `b & c`.'
+explain: A sum of the three pairs, which is the carry out of a full adder.
+start: |
+  module Majority(a: bit, b: bit, c: bit) -> (y: bit) {
+    y = 0
+  }
+reference: |
+  module Majority(a: bit, b: bit, c: bit) -> (y: bit) {
+    y = a & b | a & c | b & c
+  }
+tests: |
+  test "two of three" {
+    let m = sim Majority(a: 1, b: 1, c: 0)
+    expect m.y == 1
+    m.b = 0
+    expect m.y == 0
+  }
+solution: |
+  module Majority(a: bit, b: bit, c: bit) -> (y: bit) {
+    y = a & b | a & c | b & c
+  }
+```
+
+```fit
+id: fixture/comparator
+title: A comparator in six terms
+device: pla
+blank: true
+prompt: |
+  Compare two 2-bit numbers, **A1 A0** and **B1 B0**: LT is 1 when A < B, EQ when they are equal, GT when A > B. The PLA starts blank, with its pins named, and you may click the fuses or type a truth table in the source pane. Use **6** product terms or fewer.
+hints:
+  - 'Let the fitter choose each output’s polarity: `# @polarity auto`.'
+spec:
+  truthTable:
+    inputs: [A1, A0, B1, B0]
+    outputs: [LT, EQ, GT]
+    rows: ["0000 010", "0001 100", "0010 100", "0011 100", "0100 001", "0101 010", "0110 100", "0111 100", "1000 001", "1001 001", "1010 010", "1011 100", "1100 001", "1101 001", "1110 001", "1111 010"]
+budget: { terms: 6 }
+solution: |
+  # @polarity auto
+  A1 A0 B1 B0 | LT EQ GT
+  0 0 0 0 | 0 1 0
+  0 0 0 1 | 1 0 0
+  0 0 1 0 | 1 0 0
+  0 0 1 1 | 1 0 0
+  0 1 0 0 | 0 0 1
+  0 1 0 1 | 0 1 0
+  0 1 1 0 | 1 0 0
+  0 1 1 1 | 1 0 0
+  1 0 0 0 | 0 0 1
+  1 0 0 1 | 0 0 1
+  1 0 1 0 | 0 1 0
+  1 0 1 1 | 1 0 0
+  1 1 0 0 | 0 0 1
+  1 1 0 1 | 0 0 1
+  1 1 1 0 | 0 0 1
+  1 1 1 1 | 0 1 0
+```
+
+```decode
+id: fixture/read-the-prom
+title: What does this PROM hold?
+device: prom
+prompt: Sixteen words of four bits, addressed by **A1 A0 B1 B0**. What are the four output bits as functions of the address?
+hints:
+  - 'Look at the words for A = 2 and B = 3 (address 1011).'
+explain: It is a 2-bit multiplier, stored as a table.
+source: |
+  A1 A0 B1 B0 | P3 P2 P1 P0
+  0 0 0 0 | 0 0 0 0
+  0 0 0 1 | 0 0 0 0
+  0 0 1 0 | 0 0 0 0
+  0 0 1 1 | 0 0 0 0
+  0 1 0 0 | 0 0 0 0
+  0 1 0 1 | 0 0 0 1
+  0 1 1 0 | 0 0 1 0
+  0 1 1 1 | 0 0 1 1
+  1 0 0 0 | 0 0 0 0
+  1 0 0 1 | 0 0 1 0
+  1 0 1 0 | 0 1 0 0
+  1 0 1 1 | 0 1 1 0
+  1 1 0 0 | 0 0 0 0
+  1 1 0 1 | 0 0 1 1
+  1 1 1 0 | 0 1 1 0
+  1 1 1 1 | 1 0 0 1
+inputs: [A1, A0, B1, B0]
+outputs: [P3, P2, P1, P0]
+answers: [expression, table, dcl]
+solution: |
+  P0 = A0 & B0
+  P1 = A1 & B0 ^ A0 & B1
+  P2 = A1 & B1 & !(A0 & B0)
+  P3 = A1 & A0 & B1 & B0
+```
+
+```route
+id: fixture/route-xor
+title: Wire an XOR
+prompt: The cell `LC(1,2,0)` computes `I0 ^ I1`. Route P0 and P1 to it and its output to P8.
+hints:
+  - 'Start at the sink `LC(1,2,0).I0` and ask what drives it.'
+fabric:
+  pads: { P0: in, P1: in, P8: out }
+  cells:
+    - { at: [1, 2, 0], lut: "I0 ^ I1" }
+nets:
+  - { name: a, from: P0, to: ["LC(1,2,0).I0"] }
+  - { name: b, from: P1, to: ["LC(1,2,0).I1"] }
+  - { name: c, from: "LC(1,2,0)", to: [P8] }
+outputs: { P8: "P0 ^ P1" }
+solution:
+  - [P0, "LC(1,2,0).I0"]
+  - [P1, "LC(1,2,0).I1"]
+  - ["LC(1,2,0)", P8]
+```
+
+```place
+id: fixture/place
+title: Beat the annealer
+seed: 5
+prompt: Place the blocks of this small design on the die so that the wirelength cost is lower than the annealer's on seed 5.
+design: |
+  module Lfsr(clk: clock, en: bit, load: bit, seed: bits<4>) -> (q: bits<4>, par: bit, hit: bit) {
+    reg r: bits<12> = 1
+    let fb: bit = r[11] ^ r[10] ^ r[9] ^ r[3]
+    next r = if load { concat(seed, r[7:0]) } else if en { concat(r[10:0], fb) } else { r }
+    q = r[11:8]
+    par = r[0] ^ r[1] ^ r[2] ^ r[3] ^ r[4] ^ r[5] ^ r[6] ^ r[7]
+    hit = r[11:4] == 0xA5
+  }
+pins: { "seed[0]": P12, "seed[2]": P14, "q[0]": P4, "q[2]": P6 }
+solution:
+  tile 0: "2,2"
+  tile 1: "1,1"
+  tile 2: "2,1"
+  en: P5
+  load: P13
+  seed[1]: P9
+  seed[3]: P8
+  q[1]: P2
+  q[3]: P3
+  par: P10
+  hit: P7
+```

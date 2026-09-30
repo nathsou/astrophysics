@@ -10,9 +10,14 @@
   import Golf from '$lib/components/exercise/Golf.svelte';
   import Measure from '$lib/components/exercise/Measure.svelte';
   import Asm from '$lib/components/exercise/Asm.svelte';
+  import Hdl from '$lib/components/exercise/Hdl.svelte';
+  import Fit from '$lib/components/exercise/Fit.svelte';
+  import Decode from '$lib/components/exercise/Decode.svelte';
+  import Route from '$lib/components/exercise/Route.svelte';
+  import Place from '$lib/components/exercise/Place.svelte';
 
-  const blocks = [...fixture.matchAll(/```(build|debug|golf|measure|asm)\n([\s\S]*?)```/g)].map((m, i) => ({ kind: m[1]!, spec: { ...(YAML.parse(m[2]!) as Record<string, unknown>), ...((m[1] === 'build' || m[1] === 'debug' || m[1] === 'golf') && typeof YAML.parse(m[2]!).prompt === 'string' ? { prompt: `<p>${String(YAML.parse(m[2]!).prompt).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/`(.+?)`/g, '<code>$1</code>')}</p>` } : {}) }, i }));
-  const comps = { build: Build, debug: Debug, golf: Golf, measure: Measure, asm: Asm } as unknown as Record<string, typeof Build>;
+  const blocks = [...fixture.matchAll(/```(build|debug|golf|measure|asm|hdl|fit|decode|route|place)\n([\s\S]*?)```/g)].map((m, i) => ({ kind: m[1]!, spec: { ...(YAML.parse(m[2]!) as Record<string, unknown>), ...(['build', 'debug', 'golf', 'hdl', 'fit', 'decode', 'route', 'place'].includes(m[1]!) && typeof YAML.parse(m[2]!).prompt === 'string' ? { prompt: `<p>${String(YAML.parse(m[2]!).prompt).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/`(.+?)`/g, '<code>$1</code>')}</p>` } : {}) }, i }));
+  const comps = { build: Build, debug: Debug, golf: Golf, measure: Measure, asm: Asm, hdl: Hdl, fit: Fit, decode: Decode, route: Route, place: Place } as unknown as Record<string, typeof Build>;
 </script>
 
 <svelte:head><title>Exercise lab</title></svelte:head>

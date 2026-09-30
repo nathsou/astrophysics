@@ -16,7 +16,7 @@ progress: docs/PLAN.md; the hardware language DCL: docs/HDL.md. Read both first.
   `:::challenge`, …), `:::history{year title people}`, `:::bio{name born died}`, `:::details[…]`,
   `:::figure{caption}`, `::::hints` + `:::hint[…]`, `:::equation` with a ```terms block,
   `::widget-name{props}` (resolved to `./widgets/WidgetName.svelte` or an export of `src/lib/widgets/index.ts`),
-  `:sidenote[…]`, `:cite[key]`, `:term[word]{id=…}`. Exercises are fenced YAML blocks (`quiz`, `parsons`, `bug`).
+  `:sidenote[…]`, `:cite[key]`, `:term[word]{id=…}`. Exercises are fenced YAML blocks (`quiz`, `parsons`, `bug`, `build`, `debug`, `golf`, `measure`, `asm`, `hdl`, `fit`, `decode`, `route`, `place`; see docs/AUTHORING.md).
 
 ## The simulator (src/lib/sim)
 

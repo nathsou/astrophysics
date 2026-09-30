@@ -75,7 +75,7 @@ Length: 2,500–5,000 words of prose. One flagship interactive (usually wide), 2
 | `::circuit{src="06-shannons-switches/circuits/staircase.json" title="…"}` | a live circuit (see below) |
 | `::widget-name{props}` | a chapter widget, `./widgets/WidgetName.svelte` |
 | `:sidenote[…]`, `:cite[key]`, `:term[word]{id=…}` | inline |
-| ` ```quiz `, ` ```parsons `, ` ```bug ` | exercises (YAML) |
+| ` ```quiz `, ` ```parsons `, ` ```bug `, ` ```build `, ` ```debug `, ` ```golf `, ` ```measure `, ` ```asm `, ` ```hdl `, ` ```fit `, ` ```decode `, ` ```route `, ` ```place ` | exercises (YAML; see *Exercise blocks*) |
 
 ## Live circuits
 
@@ -278,6 +278,163 @@ voltage landscape, a K-map). Widgets:
 - render something meaningful during prerendering (no blank boxes), guard browser APIs, pause when
   off-screen, respect `prefers-reduced-motion`, work at 360 px wide, and are keyboard-operable;
 - put their logic in `.ts` modules with tests.
+
+## Exercise blocks
+
+An exercise is a fenced YAML block in the chapter's *Exercises* section. The compiler (`tools/markdown/compile.ts`) turns it into a component of `src/lib/components/exercise/`, renders the Markdown fields (`prompt`, `hints`, `explain`, `hint`) at build time and passes every other field through as data. Solved exercises and drafts are remembered in `localStorage` (`src/lib/state/progress.svelte.ts`), by `id`: start it with the chapter's directory name (`29-describing-hardware/priority-encoder`), so the chapter's progress counts it, and never change an `id` once it is published.
+
+| Kind | What the reader does | Checked by |
+|---|---|---|
+| `quiz`, `parsons`, `bug` | answer, order, or find the wrong step | the block itself |
+| `build`, `debug`, `golf` | draw a circuit on the bench | `src/lib/sim/check`, through `exercise/circuit/spec.ts` |
+| `measure` | read an instrument | `exercise/measure/probe.ts` |
+| `asm` | write an Octet or RV32I program | `exercise/asm/run.ts` |
+| `hdl` | write DCL to a specification | `exercise/hdl/check.ts`: hidden tests, then equivalence with a reference |
+| `fit` | program a PLA, GAL22V10 or vCPLD-32 within its resources | `exercise/fit/check.ts`: the configured device, against the spec and a budget |
+| `decode` | work out what a fuse map or bitstream does | `exercise/decode/model.ts`: equivalence with the configured device |
+| `route` | connect nets on a vFPGA-S by choosing routing multiplexers | `exercise/route/model.ts`: legality, then the fabric simulator |
+| `place` | place a small design's blocks on a vFPGA-S and beat the annealer | `exercise/place/model.ts`: the placer's wirelength cost |
+
+**Every exercise has a working `solution` and a `start` that fails**, and `src/lib/components/exercise/fixture.test.ts` runs them: for each block of `tools/markdown/fixtures/exercises.md` and of every chapter, the `solution` must pass and the starting point must not. A block whose solution fails is a failing test, not a confused reader. Put a small example of a new kind in the fixture; put the real ones in the chapters.
+
+Pitfalls common to all of them: `hints` is a list of Markdown strings, revealed one at a time; a field named `lines`, `text`, `label`, `note`, `options` or `success` is rendered as Markdown, so data must not be called that (the `hdl` editor height is `height` for this reason); DCL, equations and YAML specifications go in `|` block scalars, so their colons are harmless; and the page ships the solution and the hidden tests in its data, as every exercise does.
+
+### `hdl`: write DCL to a specification
+
+The reader edits DCL in the course's editor (diagnostics as they type, *Format*, their own visible `test` blocks under *Run my tests*) and presses *Check*. The check compiles the source, runs the hidden tests and compares the design with a reference.
+
+```yaml
+id: 29-describing-hardware/priority-encoder
+title: Which request wins?
+top: PriorityEncoder          # the module the reader writes; hidden tests and reference use this name
+prompt: |
+  Write a priority encoder: `index` is the number of the highest request that is set.
+height: 9                     # editor lines (optional)
+start: |                      # what the editor starts with; it must compile, and its ports are the contract
+  module PriorityEncoder(req: bits<8>) -> (valid: bit, index: bits<3>) {
+    valid = 0
+    index = 0
+  }
+reference: |                  # hidden; same module name and ports
+  module PriorityEncoder(req: bits<8>) -> (valid: bit, index: bits<3>) { … }
+tests: |                      # hidden `test` blocks, appended to the reader's source
+  test "the highest request wins" { … }
+equivalence: { exhaustiveBits: 8 }    # optional; `false` leaves it to the tests
+solution: |
+  module PriorityEncoder(…) { … }
+```
+
+- The ports may not change: the check compares names, widths and the clock with the reference's (or, without a reference, the starting code's).
+- **Equivalence** is exhaustive when the data inputs total at most `exhaustiveBits` (16 by default), else `random` seeded vectors (4,096). A module with a clock is run from power-up on every input sequence of up to `depth` cycles while there are at most 2¹³ of them, then on `random` seeded runs of `cycles` cycles (defaults 64 and 48), comparing the outputs before and after every clock edge. Keep a reference's behaviour fully specified: there are no don't cares.
+- A mismatch is shown as a table of inputs, expected outputs and what the design gave (for a clocked design, the last cycles before the first mismatch). A hidden test that fails shows its `expect` and the values it read.
+- Write tests for the behaviours a reader would get wrong, and leave the exhaustive comparison to catch the rest. Test names are visible to the reader.
+
+### `fit`: program a device within its resources
+
+The reader works in the Device Studio's own panes (source, chip, report) on a PLA, a GAL22V10 or a vCPLD-32, and *Check the device* runs the **configured device** (the fuses or bits, through the Studio's `Runner`), not the text.
+
+```yaml
+id: 25-programmable-logic/excess-3
+title: A code converter in seven terms
+device: pla                   # pla, gal22v10 or cpld32
+prompt: |
+  Convert BCD to excess-3 in 7 product terms or fewer.
+spec:                         # one of the three forms below
+  truthTable:
+    inputs: [D, C, B, A]
+    outputs: [E3, E2, E1, E0]
+    rows: ["0000 0011", "0001 0100", …]   # missing rows are don't cares
+budget: { terms: 7 }          # terms, macrocells, registers, literals: any of them
+start: |                      # the source pane's first text (optional)
+  D C B A | E3 E2 E1 E0
+  …
+solution: |                   # source text that fits and works: fixture.test.ts programs it
+  # @polarity auto
+  …
+```
+
+- **Specifications.** `truthTable` or `expression` (as in `build`: `expression: 'P = A ^ B ^ C'`, with `inputs:` for the order): every input combination, `x` outputs skipped. `fsm:` (a state machine table, as in `build`): device and table run in lock step from power-up, on every input sequence of a few cycles and on random ones, compared before and after each clock edge. `steps:` (a script, for counters and registers): each step sets inputs (`set`), gives `clock` edges and reads outputs (`expect`; `z` means not driven); `buses: { Q: [Q3, Q2, Q1, Q0] }` lets a step write `Q: 9`.
+- **Resources** are measured on the fit, so they mean the same on every device: `terms` (distinct product terms feeding outputs; a term shared by two outputs counts once), `macrocells` (outputs of the device, buried ones too), `registers` and `literals`. Terms and macrocells are always shown; a budget turns one into a goal. Choose budgets that only a technique from the chapter reaches (don't cares, polarity, buried macrocells), and check what the plain approach gives.
+- A source that the fitter refuses is a fine `start`: the reader reads the fitter's message. A PLA can also begin as a virgin device with named pins, to be programmed by clicking crossings: `blank: true` (the Studio's By-hand mode for that device has generic pin names, so the exercise hides it).
+- For the FPGA, `route`, `place` and `decode` are the exercises; there is no `fit` for it.
+
+### `decode`: work out what a configuration does
+
+A configuration is made from hidden source and shown as raw data; the answer is checked against what the configured *device* does, never against the source.
+
+```yaml
+id: 26-pals-and-gals/read-the-jedec
+title: Read a JEDEC file
+device: gal22v10              # prom, pla, gal22v10 or fpga
+prompt: |
+  The inputs are A (pin 2) … Which function does each output compute?
+source: |                     # hidden: the device is fitted from it (not for fpga)
+  # @pins A=2 B=3 C=4 D=5 Y=19 Z=18
+  # @polarity Z=low
+  Y = A & !B | C & D
+  Z = !(A & B & C)
+inputs: [A, B, C, D]          # the names the answer uses, in truth-table order
+outputs: [Y, Z]
+answers: [expression, table]  # forms offered: expression, table, dcl (default: expression, table)
+solution: |                   # an expression answer; fixture.test.ts checks it, and the table form from the device
+  Y = A & !B | C & D
+  Z = !(A & B & C)
+```
+
+- **What is shown.** `prom`: the fuse map, one row per word (1 = blown). `pla`: the AND plane (a pair of fuses per input) and the OR plane of the terms in use, and the polarity row. `gal22v10`: the rows of the output pins in use (the array rows that are not all 0, each 44 fuses, with the pin of every column, the fuse number of the row), the macrocell bits S0 and S1, and the pin list (`show: { pins: [19] }` picks outputs). `fpga`: a `bitstream` of `pads`, `cells` (`at: [x, y, cell]`, `lut: "I0 ^ I1"` or a number) and `routes` (`[from, to]`: `P0`, `LC(1,2,0)`, `LC(1,2,0).I1`) is built on a vFPGA-S and shown as the LUT bits of the cells, the routing multiplexers that are set and the pads.
+- **Answers.** An expression (one `Y = …` per output over the input names), a truth table (buttons, one row per input combination, at most a few inputs) or a DCL module named `Decoded` with one `bit` port per input and output, in lower case (`A` is `a`, `P0` is `p0`). A wrong answer returns a table of the input combinations that differ.
+- A decode function should not be constant, and its map should be something a person can read: two or three terms per output, not a whole ALU.
+
+### `route`: connect nets on a vFPGA-S by hand
+
+The cells and pads of a vFPGA-S are placed; the reader sets routing multiplexers. The chip view is the by-hand machinery of `::fpga-by-hand` (the same `HandDevice`, the same configuration bits), and beside it is a list of the nets with the multiplexer of the selected sink: each of its inputs is labelled with the signal it carries now. Everything can be done from the list, by keyboard or touch; clicking a pin on the chip selects the same multiplexer.
+
+```yaml
+id: 28-inside-an-fpga/route-two-pairs
+title: Wire up the placed cells
+prompt: |
+  Route the six nets so that P8 = P1 & (P0 | P2).
+fabric:
+  pads: { P0: in, P1: in, P2: in, P8: out }
+  cells:
+    - { at: [1, 1, 0], lut: "I0 & I1" }
+    - { at: [1, 2, 0], lut: "I0 | I1" }
+nets:
+  - { name: a, from: P0, to: ["LC(1,1,0).I0"] }
+  - { name: b, from: P1, to: ["LC(1,1,0).I1", "LC(2,1,0).I0"] }   # several sinks: a net with fan-out
+outputs: { P8: "P1 & (P0 | P2)" }      # what each output pad must show, over the input pads
+solution:                              # routes (source, sink), made with the auto-router in this order
+  - [P0, "LC(1,1,0).I0"]
+  - …
+```
+
+- **Legality.** Cells, pads and clocks are locked (changing one is refused). Each sink is traced back through the multiplexers to what drives it: it must be its net's source. A sink that reaches nothing is *open*; one that reaches another net's source is *shorted* to it. The fabric has single-driver wires, so two nets cannot fight: a second net that needs a wire simply reads the first one's signal, which is the short.
+- **Function.** A legal routing is decoded and simulated on the fabric simulator for every input combination of the input pads, and each output pad must show its expression.
+- vFPGA-S has 4 × 4 tiles (2 × 2 logic tiles), 16 pads and four span-1 tracks per direction. Each sink takes two to five multiplexers; six or seven nets are an exercise, twice that is a chore. The solution is built with `FabricConfig.route` in list order, so a solution that does not route in that order must be reordered.
+
+### `place`: beat the annealer
+
+A small DCL design is taken through the course's flow up to packing; the reader places its blocks (logic tiles, pad blocks) on the die, and their **wirelength cost** is compared with the annealer's (`src/lib/pld/fpga/place.ts`) on a given seed. The cost is the placer's own wirelength term: for every net of two or more blocks the half-perimeter of its bounding box, times the crossing-count factor for the net's size, added up (`model.test.ts` checks that it equals the annealer's `Placement.bb` exactly). The timing and congestion terms are not part of the score; the estimated critical paths are shown for both. Legality is the placer's `checkPlacement`.
+
+```yaml
+id: 30-netlist-to-bitstream/place-shift-register
+title: Beat the annealer
+seed: 5                        # the annealer's seed: its cost is the bar
+prompt: |
+  Place the other blocks so that your cost is lower.
+design: |                      # DCL; `top:` names the module (default: the last one)
+  module Lfsr(clk: clock, …) -> (…) { … }
+pins: { "seed[0]": P12, "q[0]": P4 }    # ports that are fixed, as on a board (the clock is fixed to its global pad anyway)
+start: { "tile 0": "1,1", clk: P0 }     # optional: where the blocks begin (default: first free site)
+goal: 1                        # the bar as a factor of the annealer's cost (default 1: strictly below)
+solution:                      # block → "x,y" (a logic tile) or a pad name
+  tile 0: "2,2"
+  en: P5
+```
+
+- Blocks are named `tile 0`, `tile 1`, … and by their port (`en`, `seed[1]`). The device is vFPGA-S, the only one small enough to drag blocks about on a phone; designs with carry chains (adders) and block RAM are refused.
+- Pick the `seed` and the `pins` so that the annealer is beatable but not trivially: `search()` in `place/model.ts` (wirelength-only annealing over several seeds, then pair swaps) finds a good placement for the `solution`, and `fixture.test.ts` checks that the `solution` beats the annealer and that the default start does not.
+- Dragging, and Enter or Space on a block and then on a site, move a block; a block dropped on another of its kind swaps with it.
 
 ## Accuracy
 

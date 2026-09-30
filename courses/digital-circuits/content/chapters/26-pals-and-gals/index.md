@@ -307,6 +307,90 @@ The GAL22V10 has 5,892 fuses, and the traffic light connects 21 of the 5,808 arr
 *Answer.* 21 ÷ 5,808 is 0.36 %: a design that fits comfortably in the chip uses well under one per cent of its crosspoints, which is why programmable logic is so much larger than the logic it implements. Eleven rows carry logic: ten product terms and the AR row. The file has 21 `*L` fields: 19 array rows that contain a 1, one field for the configuration bits and one for the signature. The 19 are the 11 rows of logic and the 8 output-enable rows of the used macrocells, each a row of 1s (nothing connected, so always true, so the output is always driven). A row of all 0s connects everything, is never true and is the default, so the writer leaves those out.
 :::
 
+Two exercises on the GAL22V10. Each is checked on the configured device, not on your text.
+
+```fit
+id: 26-pals-and-gals/decade-counter
+title: A decade counter in 14 terms
+device: gal22v10
+prompt: |
+  The source pane holds the 4-bit binary counter of the Studio’s examples. Turn it into a **decade counter**: it counts 0, 1, … 9 and then goes back to 0, not on to 10. The inputs are **EN** (count enable), **CLR** (synchronous clear, which beats EN) and the clock on pin 1; the outputs are the four registered bits **Q3 Q2 Q1 Q0** and a carry **CO** that is 1 while the count is 9 and EN is 1.
+
+  The binary counter needs 15 product terms. The decade counter must fit in **14**.
+hints:
+  - 'Only the steps from 7 to 8 and from 9 to 0 differ from binary counting. Q0 still toggles on every count, so its equation need not change.'
+  - 'Bit 1 must not toggle on the step from 9 to 0 (a binary counter would carry into it), and on 8 nothing above Q0 changes either: think of Q1 as toggling when `EN & Q0 & !Q3`.'
+  - 'Q3 toggles on the step from 7 to 8 (`Q0 & Q1 & Q2`) and on the step from 9 to 0 (`Q3 & Q0`). The carry is `EN & Q3 & Q0`.'
+explain: |
+  Toggle form: each bit is `!CLR & (Q ^ t)`, where the toggle condition `t` is when that bit must change. The decade counter differs from the binary one in two places only (Q1 must not toggle out of 9, and Q3 toggles on 9 as well as on 7). Writing every state out as minterms would take 15 terms, because the fitter cannot know that the states 10 to 15 never occur; telling it with `# @dc Q* : Q3 & (Q2 | Q1)` (Chapter 12’s don’t cares, as a pragma) lets the minterm form drop to 13. The toggle form is already 14.
+spec:
+  buses:
+    Q: [Q3, Q2, Q1, Q0]
+  ports:
+    inputs: [EN, CLR]
+    outputs: [Q3, Q2, Q1, Q0, CO]
+  steps:
+    - { name: "power-up", set: { CLR: 0, EN: 0 }, expect: { Q: 0, CO: 0 } }
+    - { name: "count 1", set: { EN: 1 }, clock: 1, expect: { Q: 1, CO: 0 } }
+    - { name: "count 2", clock: 1, expect: { Q: 2 } }
+    - { name: "count 3", clock: 1, expect: { Q: 3 } }
+    - { name: "count 4", clock: 1, expect: { Q: 4 } }
+    - { name: "count 5", clock: 1, expect: { Q: 5 } }
+    - { name: "count 6", clock: 1, expect: { Q: 6 } }
+    - { name: "count 7", clock: 1, expect: { Q: 7 } }
+    - { name: "count 8", clock: 1, expect: { Q: 8, CO: 0 } }
+    - { name: "count 9: the carry lights", clock: 1, expect: { Q: 9, CO: 1 } }
+    - { name: "the tenth edge wraps to 0", clock: 1, expect: { Q: 0, CO: 0 } }
+    - { name: "three more counts", clock: 3, expect: { Q: 3 } }
+    - { name: "EN low holds", set: { EN: 0 }, clock: 4, expect: { Q: 3, CO: 0 } }
+    - { name: "CLR beats EN", set: { CLR: 1, EN: 1 }, clock: 1, expect: { Q: 0 } }
+    - { name: "nine counts after CLR", set: { CLR: 0 }, clock: 9, expect: { Q: 9, CO: 1 } }
+    - { name: "and round again", clock: 1, expect: { Q: 0 } }
+budget: { terms: 14 }
+start: |
+  # @title Decade counter (still binary)
+  # @clock CLK
+  Q0.R = !CLR & (Q0 ^ EN)
+  Q1.R = !CLR & (Q1 ^ (EN & Q0))
+  Q2.R = !CLR & (Q2 ^ (EN & Q0 & Q1))
+  Q3.R = !CLR & (Q3 ^ (EN & Q0 & Q1 & Q2))
+  CO = EN & Q0 & Q1 & Q2 & Q3
+solution: |
+  # @title Decade counter
+  # @clock CLK
+  Q0.R = !CLR & (Q0 ^ EN)
+  Q1.R = !CLR & (Q1 ^ (EN & Q0 & !Q3))
+  Q2.R = !CLR & (Q2 ^ (EN & Q0 & Q1))
+  Q3.R = !CLR & (Q3 ^ (EN & (Q0 & Q1 & Q2 | Q3 & Q0)))
+  CO = EN & Q3 & Q0
+```
+
+```decode
+id: 26-pals-and-gals/read-the-jedec
+title: Read a JEDEC file
+device: gal22v10
+prompt: |
+  A GAL22V10 was programmed from a file, and this is what is in it: the fuse rows of two outputs, **Y** on pin 19 and **Z** on pin 18, and their macrocell bits. The inputs are **A** (pin 2), **B** (pin 3), **C** (pin 4) and **D** (pin 5). Which function does each output compute?
+
+  Read a row as Chapter 26 does: the 44 columns are the 22 signals of the array, a pair for each (the pin, then its complement), and a **0 connects** the signal to the term. Then the macrocell: S0 says whether the output is inverted on its way to the pin.
+hints:
+  - 'The pins across the top tell you which pair of columns belongs to which signal: find the pairs for pins 2, 3, 4 and 5, and ignore the rest, which are all 1s (not connected).'
+  - 'The row of pin 18 has only one term, but look at its S0. An active-low output puts the sum through an inverter.'
+explain: |
+  Pin 19 has two terms, `A & !B` (A’s true fuse and B’s complement fuse intact) and `C & D`, and is active high, so **Y = A & !B | C & D**. Pin 18 has a single term, `A & B & C`, but S0 = 0 makes the output active low: the pin is the inverse of the sum, **Z = !(A & B & C)**. The output-enable rows are all 1s, which is the constant 1: the outputs are always driven.
+source: |
+  # @pins A=2 B=3 C=4 D=5 Y=19 Z=18
+  # @polarity Z=low
+  Y = A & !B | C & D
+  Z = !(A & B & C)
+inputs: [A, B, C, D]
+outputs: [Y, Z]
+answers: [expression, table]
+solution: |
+  Y = A & !B | C & D
+  Z = !(A & B & C)
+```
+
 ## What’s next
 
 A GAL22V10 has ten outputs and 120 product terms, and every output that needs more than 16 terms must be split, and every design that needs more than ten macrocells will not fit. The obvious next step is to put several PALs on one chip and let them talk. Chapter 27 does: the CPLD is a set of PAL-like function blocks joined by an interconnect matrix, with a product-term allocator that lets an output that needs 20 terms borrow four from its neighbour, non-volatile cells so that it works the moment power is on, and a JTAG port to program it in place on the board.

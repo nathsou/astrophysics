@@ -96,7 +96,7 @@ const BUILTIN_BLOCKS: Record<string, string> = {
   hint: 'Hint',
 };
 const THEOREM_KINDS = new Set(['theorem', 'lemma', 'corollary', 'proposition', 'conjecture', 'claim']);
-const EXERCISE_BLOCKS: Record<string, string> = { parsons: 'Parsons', bug: 'SpotBug', build: 'Build', debug: 'Debug', measure: 'Measure', golf: 'Golf', asm: 'Asm' };
+const EXERCISE_BLOCKS: Record<string, string> = { parsons: 'Parsons', bug: 'SpotBug', build: 'Build', debug: 'Debug', measure: 'Measure', golf: 'Golf', asm: 'Asm', hdl: 'Hdl', fit: 'Fit', route: 'Route', place: 'Place', decode: 'Decode' };
 /**
  * Fields of the circuit and program exercises that are data, not Markdown: circuits, specifications, tests,
  * source code. They are passed through untouched. Circuits may be written as a path relative to
@@ -108,6 +108,12 @@ const RAW_FIELDS: Record<string, string[]> = {
   golf: ['spec', 'start', 'solution', 'budget', 'allowed', 'part'],
   measure: ['circuit', 'src', 'probe', 'tolerance', 'answer'],
   asm: ['start', 'solution', 'tests'],
+  // Hardware exercises (HDL, devices, fabric): DCL, equations, fuse maps and placements are data, not Markdown.
+  hdl: ['top', 'start', 'reference', 'tests', 'solution', 'equivalence'],
+  fit: ['device', 'start', 'blank', 'spec', 'budget', 'solution', 'views'],
+  decode: ['device', 'source', 'bitstream', 'inputs', 'outputs', 'answers', 'show', 'solution'],
+  route: ['fabric', 'nets', 'outputs', 'solution'],
+  place: ['design', 'top', 'device', 'seed', 'pins', 'start', 'solution', 'goal'],
 };
 /** Raw fields that hold a circuit (or, under `spec`, a `reference`) and may be a JSON file path. */
 const CIRCUIT_FIELDS = new Set(['start', 'solution', 'circuit']);

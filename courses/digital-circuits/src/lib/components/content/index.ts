@@ -27,3 +27,8 @@ export { default as Debug } from '../exercise/Debug.svelte';
 export { default as Golf } from '../exercise/Golf.svelte';
 export { default as Measure } from '../exercise/Measure.svelte';
 export { default as Asm } from '../exercise/Asm.svelte';
+export { default as Hdl } from '../exercise/Hdl.svelte';
+export { default as Fit } from '../exercise/Fit.svelte';
+export { default as Decode } from '../exercise/Decode.svelte';
+export { default as Route } from '../exercise/Route.svelte';
+export { default as Place } from '../exercise/Place.svelte';

@@ -9,7 +9,7 @@ const file = path.resolve(import.meta.dirname, 'fixtures/exercises.md');
 describe('exercise blocks compile', () => {
   test('the fixture', async () => {
     const { code } = await compileMarkdown(readFileSync(file, 'utf8'), file);
-    for (const tag of ['B.Build', 'B.Debug', 'B.Golf', 'B.Measure', 'B.Asm']) expect(code).toContain(`<${tag}`);
+    for (const tag of ['B.Build', 'B.Debug', 'B.Golf', 'B.Measure', 'B.Asm', 'B.Hdl', 'B.Fit', 'B.Decode', 'B.Route', 'B.Place']) expect(code).toContain(`<${tag}`);
     // Circuits, tests and code are passed through as data, not rendered as Markdown.
     expect(code).toContain('&quot;type&quot;:&quot;xor&quot;'.replace(/&quot;/g, '"'));
     expect(code).toContain('"tests"');

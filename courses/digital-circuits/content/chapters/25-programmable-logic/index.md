@@ -365,6 +365,87 @@ A PROM has 5 address lines and 8 data lines. How many fuses does it have, and ho
 *Answer.* A PROM has 32 × 8 = 256 fuses, and the table needs 32 × 3 = 96 to be blown. The fitter for the full adder blows 215 of the 392 fuses (Figure 25.4’s *Show a solution* does it): a blown fuse in a PLA *removes* a connection, and the other 177 fuses stay intact.
 :::
 
+Two exercises on the virtual devices of this chapter. Each is checked on the device itself, on its fuses, never on the text you typed.
+
+```fit
+id: 25-programmable-logic/excess-3
+title: A code converter in seven terms
+device: pla
+prompt: |
+  A decimal digit in **BCD** is four bits, **D C B A** (D is the most significant), for the ten codes 0000 to 1001. **Excess-3**, a code that old calculators used because it makes subtraction easier, stores the digit plus three: 0 is 0011, 1 is 0100 and 9 is 1100. Program the PLA to convert BCD to excess-3, **E3 E2 E1 E0**.
+
+  The source pane holds the truth table of the ten digits, and the fitter needs 9 of the 16 product terms for it. Do it in **7**. The codes 10 to 15 never occur in BCD, so what the PLA does for them is yours to choose.
+hints:
+  - 'A row whose outputs are all `-` is a don’t care: the fitter may make those outputs 0 or 1, whichever needs fewer terms. Add one for each of the six unused codes (1010 to 1111).'
+  - 'Don’t cares alone are not enough. The fitter can also build an output inverted, with the polarity fuse putting it right again: put `# @polarity auto` on a line of its own and let it choose for each output.'
+explain: |
+  Each trick alone leaves the table at 9 terms; together they need only 7. The don’t cares let the fitter grow a term over codes that cannot happen, so that one product covers several digits, and the polarity fuse lets an output that is mostly 1 be built as the complement of a short sum. The other six terms go unused, ready for another function.
+spec:
+  truthTable:
+    inputs: [D, C, B, A]
+    outputs: [E3, E2, E1, E0]
+    rows: ["0000 0011", "0001 0100", "0010 0101", "0011 0110", "0100 0111", "0101 1000", "0110 1001", "0111 1010", "1000 1011", "1001 1100"]
+budget: { terms: 7 }
+start: |
+  # @title BCD to excess-3
+  D C B A | E3 E2 E1 E0
+  0 0 0 0 | 0 0 1 1
+  0 0 0 1 | 0 1 0 0
+  0 0 1 0 | 0 1 0 1
+  0 0 1 1 | 0 1 1 0
+  0 1 0 0 | 0 1 1 1
+  0 1 0 1 | 1 0 0 0
+  0 1 1 0 | 1 0 0 1
+  0 1 1 1 | 1 0 1 0
+  1 0 0 0 | 1 0 1 1
+  1 0 0 1 | 1 1 0 0
+solution: |
+  # @title BCD to excess-3
+  # @polarity auto
+  D C B A | E3 E2 E1 E0
+  0 0 0 0 | 0 0 1 1
+  0 0 0 1 | 0 1 0 0
+  0 0 1 0 | 0 1 0 1
+  0 0 1 1 | 0 1 1 0
+  0 1 0 0 | 0 1 1 1
+  0 1 0 1 | 1 0 0 0
+  0 1 1 0 | 1 0 0 1
+  0 1 1 1 | 1 0 1 0
+  1 0 0 0 | 1 0 1 1
+  1 0 0 1 | 1 1 0 0
+  1 0 1 0 | - - - -
+  1 0 1 1 | - - - -
+  1 1 0 0 | - - - -
+  1 1 0 1 | - - - -
+  1 1 1 0 | - - - -
+  1 1 1 1 | - - - -
+```
+
+```decode
+id: 25-programmable-logic/read-the-planes
+title: Read the two planes
+device: pla
+prompt: |
+  Someone programmed a PLA with three inputs, **A**, **B** and **C**, and two outputs, **X** and **Y**, and sent you only its fuse map. Read it: which function of A, B and C does each output compute?
+
+  Take it one row at a time. In the AND plane, a pair of fuses for an input is (the input, its complement): if only the first is intact the term contains the input, if only the second is intact it contains the complement, if both are blown the input is left out. The OR plane says which terms each output adds up; the last row says which outputs are inverted on the way out.
+hints:
+  - 'Write each term as a product first. `T1`, for example, has only the complement fuse of A intact, only the true fuse of B, and both fuses of C blown: it is `!A & B`.'
+  - 'Y is the sum of its terms and then inverted. Work the sum out, then apply De Morgan’s law (Chapter 11) to the whole thing.'
+explain: |
+  X is the sum of the terms of its column, `!A & B | A & !B & C`. Y’s terms add up to `!A & !C | !B`, and the blown fuse in the last row inverts that: `!(!A & !C | !B)`, which by De Morgan is `B & (A | C)`. The source asked for Y to be built inverted (`# @polarity Y=low`); here it saves nothing, since both forms need two terms, but this is what a fuse map looks like when it does.
+source: |
+  # @polarity Y=low
+  X = !A & B | A & !B & C
+  Y = A & B | B & C
+inputs: [A, B, C]
+outputs: [X, Y]
+answers: [expression, table]
+solution: |
+  X = !A & B | A & !B & C
+  Y = B & (A | C)
+```
+
 ## What’s next
 
 A ROM is a truth table you can write. A PLA is a better one, with two programmable planes, but it has two costs. Its OR plane is large (every output must be able to see every term), which makes it slow, and 82S100-type parts were expensive. In 1978 an engineer at Monolithic Memories asked a shrewd question: *does the OR plane need to be programmable at all?* Fix it, give each output its own small group of product terms, and the chip gets faster and cheaper. Add a flip-flop to each output and it can hold a state. Chapter 26 follows that idea through the PAL, and then through the GAL, which replaced the fuses with erasable cells so that the same 24-pin chip could be programmed again and again, and which you can program on the real thing.
