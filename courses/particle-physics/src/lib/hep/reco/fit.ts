@@ -8,6 +8,7 @@
  */
 import { hook } from '../hooks.ts';
 import { GEV_PER_TESLA_M, type Helix } from './helix.ts';
+import { highland } from './material.ts';
 
 export interface CirclePoint {
   x: number;
@@ -55,28 +56,25 @@ export function circleChi2(points: readonly CirclePoint[], xc: number, yc: numbe
 }
 
 /**
- * Fit a circle to points with the Taubin algebraic method (see the file header). Reference for the hook
- * `reco.circleFit`. Points may carry a `sigma` that weights them.
- *
- * Returns the centre, the radius and χ². For (nearly) collinear points R is very large (capped at `R_MAX`).
+ * The Taubin fit on flat arrays: points (xs[i], ys[i]) with weights ws[i] (1/σ²), i < n. Writes (xc, yc, R) into `out`.
+ * No allocation: used inside the track finder's loops; `circleFit` is the same computation with objects in and out.
  */
-export function circleFit(points: readonly CirclePoint[]): CircleResult {
-  const n = points.length;
-  if (n < 3) throw new Error('circleFit needs at least 3 points');
-  const { w, sum } = weights(points);
-  let xm = 0, ym = 0;
+export function taubinFlat(xs: ArrayLike<number>, ys: ArrayLike<number>, ws: ArrayLike<number> | null, n: number, out: Float64Array | number[]): void {
+  let sum = 0, xm = 0, ym = 0;
   for (let i = 0; i < n; i++) {
-    xm += w[i]! * points[i]!.x;
-    ym += w[i]! * points[i]!.y;
+    const w = ws ? ws[i]! : 1;
+    sum += w;
+    xm += w * xs[i]!;
+    ym += w * ys[i]!;
   }
   xm /= sum;
   ym /= sum;
   let Mxx = 0, Myy = 0, Mxy = 0, Mxz = 0, Myz = 0, Mzz = 0;
   for (let i = 0; i < n; i++) {
-    const X = points[i]!.x - xm;
-    const Y = points[i]!.y - ym;
+    const X = xs[i]! - xm;
+    const Y = ys[i]! - ym;
     const Z = X * X + Y * Y;
-    const wi = w[i]!;
+    const wi = ws ? ws[i]! : 1;
     Mxy += wi * X * Y;
     Mxx += wi * X * X;
     Myy += wi * Y * Y;
@@ -113,14 +111,35 @@ export function circleFit(points: readonly CirclePoint[]): CircleResult {
   if (!Number.isFinite(R) || R > R_MAX) {
     // collinear within rounding: a line through the centroid along the principal axis, with a huge circle
     const theta = 0.5 * Math.atan2(2 * Mxy, Mxx - Myy);
-    const nx = -Math.sin(theta);
-    const ny = Math.cos(theta);
     R = R_MAX;
-    Xc = nx * R;
-    Yc = ny * R;
+    Xc = -Math.sin(theta) * R;
+    Yc = Math.cos(theta) * R;
   }
-  const xc = Xc + xm;
-  const yc = Yc + ym;
+  out[0] = Xc + xm;
+  out[1] = Yc + ym;
+  out[2] = R;
+}
+
+/**
+ * Fit a circle to points with the Taubin algebraic method (see the file header). Reference for the hook
+ * `reco.circleFit`. Points may carry a `sigma` that weights them.
+ *
+ * Returns the centre, the radius and χ². For (nearly) collinear points R is very large (capped at `R_MAX`).
+ */
+export function circleFit(points: readonly CirclePoint[]): CircleResult {
+  const n = points.length;
+  if (n < 3) throw new Error('circleFit needs at least 3 points');
+  const xs = new Float64Array(n), ys = new Float64Array(n), ws = new Float64Array(n);
+  for (let i = 0; i < n; i++) {
+    const p = points[i]!;
+    xs[i] = p.x;
+    ys[i] = p.y;
+    const s = p.sigma ?? 1;
+    ws[i] = 1 / (s * s);
+  }
+  const out = new Float64Array(3);
+  taubinFlat(xs, ys, ws, n, out);
+  const [xc, yc, R] = out as unknown as [number, number, number];
   return { xc, yc, R, chi2: circleChi2(points, xc, yc, R) };
 }
 
@@ -180,6 +199,23 @@ export interface FitPoint {
   z: number;
   sxy?: number;
   sz?: number;
+  /** Material the track crosses at this point, in radiation lengths at normal incidence (used when `scattering` is on). */
+  x0?: number;
+}
+
+export interface FitOptions {
+  /**
+   * Include multiple scattering: the hits' uncertainties become a full covariance matrix (hit resolution plus the
+   * correlated displacements that scattering in the layers inside produces), and the parameters are the generalised
+   * least-squares (best linear unbiased) estimate. The scattering uses Highland's formula at the pT of a first fit.
+   */
+  scattering?: boolean;
+  /** Mass (GeV) for the scattering's β (default: pion). */
+  mass?: number;
+  /** Number of passes of the scattering fit; the scattering is evaluated at the pT of the previous pass (default 1). */
+  passes?: number;
+  /** Also compute the parameter covariance without scattering (hit resolution only). Default false (saves time). */
+  covariance?: boolean;
 }
 
 export interface HelixFit extends Helix {
@@ -201,6 +237,83 @@ export interface HelixFit extends Helix {
   /** Residuals per point (input order): signed distance from the circle (mm) and z − z_fit (mm). */
   resT: number[];
   resZ: number[];
+  /** Covariance of (d0, φ0, c) and of (z0, tanλ) from the fit (only with `scattering`; otherwise from hit resolution alone). */
+  covT: number[][];
+  covZ: number[][];
+}
+
+/**
+ * Generalised least squares for a small linear model e ≈ H δ with data covariance C (n × n, row-major), by Cholesky
+ * factorisation C = L Lᵀ and whitening: y = L⁻¹ e, G = L⁻¹ H, δ = (GᵀG)⁻¹ Gᵀ y, χ² = yᵀy − Gᵀy·δ, cov(δ) = (GᵀG)⁻¹.
+ * H is n × m (row-major), m ≤ 3.
+ */
+export function generalisedLeastSquares(n: number, m: number, C: Float64Array, H: Float64Array, e: Float64Array): { delta: number[]; cov: number[][]; chi2: number; fitted: Float64Array } {
+  // Cholesky (lower)
+  const L = C; // in place
+  for (let j = 0; j < n; j++) {
+    let d = L[j * n + j]!;
+    for (let k = 0; k < j; k++) d -= L[j * n + k]! ** 2;
+    const dj = Math.sqrt(Math.max(d, 1e-300));
+    L[j * n + j] = dj;
+    for (let i = j + 1; i < n; i++) {
+      let v = L[i * n + j]!;
+      for (let k = 0; k < j; k++) v -= L[i * n + k]! * L[j * n + k]!;
+      L[i * n + j] = v / dj;
+    }
+  }
+  // forward substitution for the columns of [H | e]
+  const cols = m + 1;
+  const Y = new Float64Array(n * cols);
+  for (let i = 0; i < n; i++) {
+    for (let c = 0; c < cols; c++) {
+      let v = c < m ? H[i * m + c]! : e[i]!;
+      for (let k = 0; k < i; k++) v -= L[i * n + k]! * Y[k * cols + c]!;
+      Y[i * cols + c] = v / L[i * n + i]!;
+    }
+  }
+  const N: number[][] = Array.from({ length: m }, () => new Array<number>(m).fill(0));
+  const b = new Array<number>(m).fill(0);
+  let yy = 0;
+  for (let i = 0; i < n; i++) {
+    for (let a = 0; a < m; a++) {
+      const ya = Y[i * cols + a]!;
+      for (let c = a; c < m; c++) N[a]![c]! += ya * Y[i * cols + c]!;
+      b[a]! += ya * Y[i * cols + m]!;
+    }
+    yy += Y[i * cols + m]! ** 2;
+  }
+  for (let a = 0; a < m; a++) for (let c = 0; c < a; c++) N[a]![c] = N[c]![a]!;
+  const cov = inverseSmall(N, m);
+  const delta = cov.map((row) => row.reduce((acc, v, k) => acc + v * b[k]!, 0));
+  let chi2 = yy;
+  for (let a = 0; a < m; a++) chi2 -= b[a]! * delta[a]!;
+  const fitted = new Float64Array(n);
+  for (let i = 0; i < n; i++) {
+    let v = 0;
+    for (let a = 0; a < m; a++) v += H[i * m + a]! * delta[a]!;
+    fitted[i] = v;
+  }
+  return { delta, cov, chi2: Math.max(0, chi2), fitted };
+}
+
+/** Inverse of a symmetric 2×2 or 3×3 matrix by cofactors. */
+function inverseSmall(N: number[][], m: number): number[][] {
+  if (m === 2) {
+    const d = N[0]![0]! * N[1]![1]! - N[0]![1]! * N[1]![0]!;
+    return [
+      [N[1]![1]! / d, -N[0]![1]! / d],
+      [-N[1]![0]! / d, N[0]![0]! / d],
+    ];
+  }
+  const a = N[0]![0]!, b = N[0]![1]!, c = N[0]![2]!, d = N[1]![1]!, e = N[1]![2]!, f = N[2]![2]!;
+  const c00 = d * f - e * e, c01 = c * e - b * f, c02 = b * e - c * d;
+  const c11 = a * f - c * c, c12 = b * c - a * e, c22 = a * d - b * b;
+  const det = a * c00 + b * c01 + c * c02;
+  return [
+    [c00 / det, c01 / det, c02 / det],
+    [c01 / det, c11 / det, c12 / det],
+    [c02 / det, c12 / det, c22 / det],
+  ];
 }
 
 /**
@@ -212,8 +325,12 @@ export interface HelixFit extends Helix {
  * The transverse radius of the circle gives pT = 0.2998 B R; the charge follows from the sense of rotation (a
  * positive particle turns clockwise seen from +z); d0 and φ0 from the point of closest approach to the origin; z0 and
  * tanλ from the line. Requires at least 3 points.
+ *
+ * With `scattering` the circle is then corrected by a generalised least-squares step on the hits' residuals, with the
+ * covariance of hit resolution and multiple scattering (see `FitOptions`); the returned χ², covariance and residuals
+ * are those of that step.
  */
-export function fitTrack3D(points: readonly FitPoint[], bTesla: number): HelixFit {
+export function fitTrack3D(points: readonly FitPoint[], bTesla: number, opts: FitOptions = {}): HelixFit {
   const n = points.length;
   if (n < 3) throw new Error('fitTrack3D needs at least 3 points');
   const fit = hook('reco.circleFit', circleFit);
@@ -234,7 +351,6 @@ export function fitTrack3D(points: readonly FitPoint[], bTesla: number): HelixFi
   // counter-clockwise (cross > 0) means a negative particle for B > 0
   const sense = cross > 0 ? -1 : 1; // sign of the signed curvature c
   const charge = sense * Math.sign(bTesla || 1);
-  const cSigned = sense / Rr;
   // point of closest approach: on the ray from the centre through the origin
   const dC = Math.hypot(xc, yc);
   const ux = dC > 0 ? xc / dC : 1;
@@ -245,8 +361,8 @@ export function fitTrack3D(points: readonly FitPoint[], bTesla: number): HelixFi
   const ry = -Rr * uy;
   const dirx = sense > 0 ? ry / Rr : -ry / Rr;
   const diry = sense > 0 ? -rx / Rr : rx / Rr;
-  const phi0 = Math.atan2(diry, dirx);
-  const d0 = dirx * py - diry * px;
+  let phi0 = Math.atan2(diry, dirx);
+  let d0 = dirx * py - diry * px;
   // arc length of each hit from the perigee, from the chord
   const s = new Float64Array(n);
   for (let i = 0; i < n; i++) {
@@ -257,7 +373,17 @@ export function fitTrack3D(points: readonly FitPoint[], bTesla: number): HelixFi
     const arc = 2 * Rr * Math.asin(half);
     s[i] = dx * dirx + dy * diry < 0 ? -arc : arc;
   }
-  // line fit z = z0 + t s
+  // residuals from the circle, positive to the left of the direction of motion
+  const eT = new Float64Array(n);
+  for (let i = 0; i < n; i++) {
+    const dx = points[i]!.x - xc;
+    const dy = points[i]!.y - yc;
+    const d = Math.sqrt(dx * dx + dy * dy);
+    const g = points[i]!.x ** 2 + points[i]!.y ** 2 - 2 * (xc * points[i]!.x + yc * points[i]!.y) + (xc * xc + yc * yc - Rr * Rr);
+    eT[i] = sense * (Rr > 1e5 ? g / (d + Rr) : d - Rr);
+  }
+  let cSigned = sense / Rr;
+  // first line fit z = z0 + t s
   let Sw = 0, Ss = 0, Sss = 0, Sz = 0, Ssz = 0;
   for (let i = 0; i < n; i++) {
     const sz = points[i]!.sz ?? 1;
@@ -269,44 +395,138 @@ export function fitTrack3D(points: readonly FitPoint[], bTesla: number): HelixFi
     Ssz += wi * s[i]! * points[i]!.z;
   }
   const D = Sw * Sss - Ss * Ss;
-  const tanL = (Sw * Ssz - Ss * Sz) / D;
-  const z0 = (Sss * Sz - Ss * Ssz) / D;
+  let tanL = (Sw * Ssz - Ss * Sz) / D;
+  let z0 = (Sss * Sz - Ss * Ssz) / D;
+  let covT: number[][] = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+  let covZ: number[][] = [[Sss / D, -Ss / D], [-Ss / D, Sw / D]];
+  let chi2xy = circ.chi2;
   let chi2z = 0;
-  const resZ: number[] = new Array(n);
-  for (let i = 0; i < n; i++) {
-    const r = points[i]!.z - (z0 + tanL * s[i]!);
-    resZ[i] = r;
-    const sz = points[i]!.sz ?? 1;
-    chi2z += (r / sz) ** 2;
-  }
   const resT: number[] = new Array(n);
-  for (let i = 0; i < n; i++) {
-    const dx = points[i]!.x - xc;
-    const dy = points[i]!.y - yc;
-    const d = Math.sqrt(dx * dx + dy * dy);
-    const g = points[i]!.x ** 2 + points[i]!.y ** 2 - 2 * (xc * points[i]!.x + yc * points[i]!.y) + (xc * xc + yc * yc - Rr * Rr);
-    resT[i] = Rr > 1e5 ? g / (d + Rr) : d - Rr;
+  const resZ: number[] = new Array(n);
+
+  if (opts.scattering) {
+    const mass = opts.mass ?? 0.13957;
+    const order = Array.from({ length: n }, (_, i) => i).sort((a, b) => s[a]! - s[b]!);
+    // two passes: the scattering depends on the momentum, which the first pass refines
+    const nPass = opts.passes ?? 1;
+    for (let pass = 0; pass < nPass; pass++) {
+      const pT = (GEV_PER_TESLA_M * Math.abs(bTesla)) / (1000 * Math.max(Math.abs(cSigned), 1e-12));
+      const cosLam = 1 / Math.sqrt(1 + tanL * tanL);
+      const p = pT / cosLam;
+      // per-point scattering angle in the transverse plane (θ_T) and in the polar direction (θ_λ)
+      const thT = new Float64Array(n), thL = new Float64Array(n);
+      for (let k = 0; k < n; k++) {
+        const pt = points[order[k]!]!;
+        const r = Math.hypot(pt.x, pt.y);
+        const cosInc = Math.sqrt(Math.max(0.04, 1 - (r * Math.abs(cSigned) / 2) ** 2));
+        const th = highland(p, (pt.x0 ?? 0) / (cosInc * cosLam), mass);
+        thT[k] = th / cosLam;
+        thL[k] = th;
+      }
+      const CT = new Float64Array(n * n), CZ = new Float64Array(n * n);
+      const HT = new Float64Array(n * 3), HZ = new Float64Array(n * 2);
+      const eTs = new Float64Array(n), zs = new Float64Array(n);
+      const t2 = (1 + tanL * tanL) ** 2;
+      for (let a = 0; a < n; a++) {
+        const ia = order[a]!;
+        const sa = s[ia]!;
+        for (let b = 0; b <= a; b++) {
+          const ib = order[b]!;
+          const sb = s[ib]!;
+          let mT = 0, mL = 0;
+          for (let j = 0; j < b; j++) {
+            const sj = s[order[j]!]!;
+            const w = (sa - sj) * (sb - sj);
+            mT += thT[j]! ** 2 * w;
+            mL += thL[j]! ** 2 * w;
+          }
+          CT[a * n + b] = CT[b * n + a] = mT;
+          CZ[a * n + b] = CZ[b * n + a] = mL * t2;
+        }
+        const sxy = points[ia]!.sxy ?? 1;
+        const sz = points[ia]!.sz ?? 1;
+        CT[a * n + a]! += sxy * sxy;
+        CZ[a * n + a]! += sz * sz;
+        HT[a * 3] = 1;
+        HT[a * 3 + 1] = sa;
+        HT[a * 3 + 2] = -0.5 * sa * sa;
+        HZ[a * 2] = 1;
+        HZ[a * 2 + 1] = sa;
+        eTs[a] = eT[ia]!;
+        zs[a] = points[ia]!.z;
+      }
+      const gT = generalisedLeastSquares(n, 3, CT, HT, eTs);
+      const gZ = generalisedLeastSquares(n, 2, CZ, HZ, zs);
+      {
+        covT = gT.cov;
+        covZ = gZ.cov;
+        chi2xy = gT.chi2;
+        chi2z = gZ.chi2;
+        for (let k = 0; k < n; k++) {
+          const i = order[k]!;
+          resT[i] = eTs[k]! - gT.fitted[k]!;
+          resZ[i] = zs[k]! - gZ.fitted[k]!;
+        }
+      }
+      // apply the corrections to the circle parameters; a further pass works on the residuals left over
+      d0 += gT.delta[0]!;
+      phi0 += gT.delta[1]!;
+      cSigned += gT.delta[2]!;
+      if (cSigned * sense <= 0) cSigned = sense * 1e-9;
+      tanL = gZ.delta[1]!;
+      z0 = gZ.delta[0]!;
+      if (pass + 1 < nPass) for (let k = 0; k < n; k++) eT[order[k]!] = eT[order[k]!]! - gT.fitted[k]!;
+    }
+  } else {
+    for (let i = 0; i < n; i++) {
+      const r = points[i]!.z - (z0 + tanL * s[i]!);
+      resZ[i] = r;
+      const sz = points[i]!.sz ?? 1;
+      chi2z += (r / sz) ** 2;
+      resT[i] = sense * eT[i]!;
+    }
+    if (opts.covariance) {
+      // transverse: covariance of (d0, φ0, c) from the hit resolution alone
+      const H = new Float64Array(n * 3);
+      const CT = new Float64Array(n * n);
+      const e0 = new Float64Array(n);
+      for (let i = 0; i < n; i++) {
+        H[i * 3] = 1;
+        H[i * 3 + 1] = s[i]!;
+        H[i * 3 + 2] = -0.5 * s[i]! * s[i]!;
+        CT[i * n + i] = (points[i]!.sxy ?? 1) ** 2;
+      }
+      try {
+        covT = generalisedLeastSquares(n, 3, CT, H, e0).cov;
+      } catch {
+        /* keep zeros */
+      }
+    }
   }
   const ndof = 2 * n - 5;
+  const cAbs = Math.max(Math.abs(cSigned), 1e-12);
+  const Rfinal = 1 / cAbs;
   return {
     d0,
     z0,
     phi0,
     tanLambda: tanL,
     c: cSigned,
-    pt: (GEV_PER_TESLA_M * Math.abs(bTesla) * Rr) / 1000,
+    pt: (GEV_PER_TESLA_M * Math.abs(bTesla) * Math.min(Rfinal, R_MAX)) / 1000,
     eta: Math.asinh(tanL),
     phi: phi0,
     charge,
-    chi2: circ.chi2 + chi2z,
+    chi2: chi2xy + chi2z,
     ndof,
-    chi2xy: circ.chi2,
+    chi2xy,
     chi2z,
     circle: { xc, yc, R: Rr },
-    sigmaZ0: Math.sqrt(Sss / D),
-    sigmaTanLambda: Math.sqrt(Sw / D),
-    covZ0TanLambda: -Ss / D,
+    sigmaZ0: Math.sqrt(Math.max(0, covZ[0]![0]!)),
+    sigmaTanLambda: Math.sqrt(Math.max(0, covZ[1]![1]!)),
+    covZ0TanLambda: covZ[0]![1]!,
     resT,
     resZ,
+    covT,
+    covZ,
   };
 }

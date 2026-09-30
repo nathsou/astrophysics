@@ -69,7 +69,7 @@ export function normalUpperQuantile(q: number): number {
 
 /** The quantile function Φ⁻¹(p). */
 export function normalQuantile(p: number): number {
-  if (p > 0.5) return -normalUpperQuantile(p);
+  if (p < 0.5) return -normalUpperQuantile(p);
   return normalUpperQuantile(1 - p);
 }
 

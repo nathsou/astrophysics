@@ -8,6 +8,9 @@ import { normal, poisson, type Rng } from '../random/index.ts';
 import type { Hit } from '../event/index.ts';
 import { curvatureFromPt, propagateToRadius, type HelixState } from './helix.ts';
 import { DEFAULT_GEOMETRY, type RecoGeometry } from './geometry.ts';
+import { highland } from './material.ts';
+
+export { highland };
 
 export interface SynthTrack {
   pt: number;
@@ -20,13 +23,6 @@ export interface SynthTrack {
   id: number;
   /** Collision this particle belongs to (0 = signal). */
   collision: number;
-}
-
-/** Highland's formula for the projected scattering angle, for a particle of momentum p (GeV) and thickness t = x/X0. */
-export function highland(p: number, t: number, mass = 0.13957): number {
-  if (t <= 0) return 0;
-  const beta = p / Math.sqrt(p * p + mass * mass);
-  return (0.0136 / (beta * p)) * Math.sqrt(t) * (1 + 0.038 * Math.log(t));
 }
 
 /** Hits of one track through the barrel layers, with multiple scattering and smearing. */
@@ -44,7 +40,7 @@ export function simulateTrackHits(r: Rng, t: SynthTrack, geom: RecoGeometry = DE
     if (!nxt || nxt.ds <= 0) break;
     st = nxt;
     const z = st.z;
-    if (Math.abs(z) > geom.zMax) break;
+    if (Math.abs(z) > L.halfLength) break;
     if (r() < eff) {
       const phiPos = Math.atan2(st.y, st.x);
       const dphi = smear ? normal(r, 0, L.sigmaRPhi) / L.r : 0;
@@ -76,7 +72,7 @@ export function noiseHits(r: Rng, perLayer: number, geom: RecoGeometry = DEFAULT
   for (let i = 0; i < geom.layers.length; i++) {
     const L = geom.layers[i]!;
     const n = poisson(r, perLayer);
-    const zl = L.r * Math.sinh(geom.etaMax);
+    const zl = Math.min(L.halfLength, L.r * Math.sinh(geom.etaMax));
     for (let k = 0; k < n; k++) {
       const ph = (r() * 2 - 1) * Math.PI;
       out.push({ layer: i, x: L.r * Math.cos(ph), y: L.r * Math.sin(ph), z: (2 * r() - 1) * zl, truth: -1 });
@@ -122,4 +118,55 @@ export function synthEvent(
   }
   if (opts.noise) hits.push(...noiseHits(r, opts.noise, geom));
   return { hits, tracks };
+}
+
+// ── truth events for tests with the real detector simulation ──────────────────────────────────────
+
+import type { TruthEvent, TruthParticle } from '../event/index.ts';
+import { fromPtEtaPhiM } from '../kinematics/index.ts';
+import { particle } from '../particles/index.ts';
+
+export interface SimpleParticle {
+  pdg: number;
+  pt: number;
+  eta: number;
+  phi: number;
+  /** Production vertex in mm (default: the event's vertex). */
+  vertex?: [number, number, number];
+}
+
+/** A truth event of final-state particles produced at `vertex` (one collision). Particle i has id i. */
+export function truthEventFrom(list: readonly SimpleParticle[], vertex: [number, number, number] = [0, 0, 0], collision = 0, number = 0): TruthEvent {
+  const particles: TruthParticle[] = list.map((s, i) => ({
+    id: i,
+    pdg: s.pdg,
+    p: fromPtEtaPhiM(s.pt, s.eta, s.phi, particle(s.pdg).mass),
+    vertex: s.vertex ?? vertex,
+    status: 'final',
+    mothers: [],
+    daughters: [],
+    collision,
+  }));
+  return { number, weight: 1, process: 'synthetic', sqrtS: 13000, particles, primaryVertices: [vertex] };
+}
+
+/**
+ * A crude minimum-bias collision: about `nch` charged hadrons (π, K, p in 83 : 12 : 5 ratio), as many photons from π⁰
+ * decays, and a few neutral hadrons; pT from a gamma(2) distribution with mean ≈ 0.55 GeV, flat in η up to `etaMax`.
+ * Only for exercising reconstruction; the generator module has the real model.
+ */
+export function minBiasTruth(r: Rng, nch: number, vertex: [number, number, number], collision: number, etaMax = 2.6): TruthEvent {
+  const list: SimpleParticle[] = [];
+  const pt = () => Math.max(0.15, -0.275 * Math.log((1 - r()) * (1 - r())));
+  const n = poisson(r, nch);
+  for (let i = 0; i < n; i++) {
+    const u = r();
+    const id = u < 0.83 ? 211 : u < 0.95 ? 321 : 2212;
+    list.push({ pdg: r() < 0.5 ? id : -id, pt: pt(), eta: (2 * r() - 1) * etaMax, phi: (2 * r() - 1) * Math.PI });
+  }
+  const ng = poisson(r, nch * 0.8);
+  for (let i = 0; i < ng; i++) list.push({ pdg: 22, pt: 0.6 * pt(), eta: (2 * r() - 1) * etaMax, phi: (2 * r() - 1) * Math.PI });
+  const nn = poisson(r, nch * 0.12);
+  for (let i = 0; i < nn; i++) list.push({ pdg: r() < 0.5 ? 130 : 2112, pt: pt(), eta: (2 * r() - 1) * etaMax, phi: (2 * r() - 1) * Math.PI });
+  return truthEventFrom(list, vertex, collision);
 }

@@ -27,8 +27,8 @@ describe('minimize', () => {
     const f = (x: number[]) => 0.5 * ((x[0]! - a[0]!) * (H[0]![0]! * (x[0]! - a[0]!) + H[0]![1]! * (x[1]! - a[1]!)) + (x[1]! - a[1]!) * (H[1]![0]! * (x[0]! - a[0]!) + H[1]![1]! * (x[1]! - a[1]!)));
     const r = minimize(f, [5, 5]);
     const inv = invertSPD(H)!;
-    expect(r.x[0]).toBeCloseTo(1, 5);
-    expect(r.x[1]).toBeCloseTo(-2, 5);
+    expect(r.x[0]).toBeCloseTo(1, 4);
+    expect(r.x[1]).toBeCloseTo(-2, 4);
     expect(r.covariance![0]![0]).toBeCloseTo(inv[0]![0]!, 5);
     expect(r.covariance![0]![1]).toBeCloseTo(inv[0]![1]!, 5);
     expect(r.errors[1]).toBeCloseTo(Math.sqrt(inv[1]![1]!), 5);

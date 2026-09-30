@@ -239,3 +239,29 @@ export function wavyPolyline(x0: number, y0: number, x1: number, y1: number, amp
   }
   return out;
 }
+
+/**
+ * A wavy line between two 3D points: the sine wave lies in the plane containing the line and the z axis (or the y axis for a
+ * line along z). Returns x, y, z of each sample, flattened.
+ */
+export function wavyPolyline3D(x0: number, y0: number, z0: number, x1: number, y1: number, z1: number, amp: number, wavelength: number, perWave = 8): number[] {
+  const dx = x1 - x0, dy = y1 - y0, dz = z1 - z0;
+  const L = Math.hypot(dx, dy, dz);
+  if (L < 1e-9) return [x0, y0, z0];
+  const ux = dx / L, uy = dy / L, uz = dz / L;
+  // perpendicular n = component of the reference axis normal to u
+  const ref: [number, number, number] = Math.abs(uz) < 0.95 ? [0, 0, 1] : [0, 1, 0];
+  const dot = ref[0] * ux + ref[1] * uy + ref[2] * uz;
+  let nx = ref[0] - dot * ux, ny = ref[1] - dot * uy, nz = ref[2] - dot * uz;
+  const nl = Math.hypot(nx, ny, nz) || 1;
+  nx /= nl; ny /= nl; nz /= nl;
+  const n = Math.max(2, Math.ceil((L / wavelength) * perWave));
+  const out: number[] = [];
+  for (let i = 0; i <= n; i++) {
+    const u = (i / n) * L;
+    const env = Math.min(1, u / (wavelength / 2), (L - u) / (wavelength / 2));
+    const d = amp * env * Math.sin((2 * Math.PI * u) / wavelength);
+    out.push(x0 + ux * u + nx * d, y0 + uy * u + ny * d, z0 + uz * u + nz * d);
+  }
+  return out;
+}

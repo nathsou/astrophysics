@@ -26,7 +26,7 @@ import type { Hit } from '../event/index.ts';
 import { fitTrack3D } from './fit.ts';
 import { GEV_PER_TESLA_M, helixAtRadius, perigeeFromPoint, propagateToRadius, wrapPi } from './helix.ts';
 import { geometryFromConfig, type RecoGeometry } from './geometry.ts';
-import { highland } from './synthetic.ts';
+import { highland } from './material.ts';
 import { identity, inverse, matAdd, matMul, matSub, matVec, transpose, vecAdd, vecSub, type Mat } from './linalg.ts';
 
 export interface KalmanState {
@@ -174,14 +174,15 @@ export function kalmanTrackFit(hits: readonly Pick<Hit, 'layer' | 'x' | 'y' | 'z
   if (hits.length < 3) throw new Error('kalmanTrackFit needs at least 3 hits');
   const update = hook('reco.kalmanUpdate', kalmanUpdate);
   const mass = opts.mass ?? 0.13957;
-  const layerR = (h: Pick<Hit, 'layer' | 'x' | 'y'>): number => geom.layers[h.layer]?.r ?? Math.hypot(h.x, h.y);
+  const layerIndex = (h: Pick<Hit, 'layer'>): number => (geom.layerMap ? (geom.layerMap[h.layer] ?? -1) : h.layer);
+  const layerR = (h: Pick<Hit, 'layer' | 'x' | 'y'>): number => geom.layers[layerIndex(h)]?.r ?? Math.hypot(h.x, h.y);
   const sorted = [...hits].sort((a, b) => layerR(b) - layerR(a));
   // starting state at the outermost hit from a least-squares fit
   const ls = fitTrack3D(sorted.map((h) => ({ x: h.x, y: h.y, z: h.z })), geom.bField);
   const rOut = layerR(sorted[0]!);
   const p0 = helixAtRadius(ls, rOut) ?? { x: sorted[0]!.x, y: sorted[0]!.y, z: sorted[0]!.z, phi: ls.phi0 };
   let x: number[] = [Math.atan2(p0.y, p0.x), p0.z, p0.phi, ls.tanLambda, ls.c];
-  const sig0 = geom.layers[sorted[0]!.layer];
+  const sig0 = geom.layers[layerIndex(sorted[0]!)];
   let P: Mat = [
     [(5 * (sig0?.sigmaRPhi ?? 0.05)) ** 2 / rOut ** 2, 0, 0, 0, 0],
     [0, (5 * (sig0?.sigmaZ ?? 0.5)) ** 2, 0, 0, 0],
@@ -195,15 +196,16 @@ export function kalmanTrackFit(hits: readonly Pick<Hit, 'layer' | 'x' | 'y' | 'z
   for (let i = 0; i < sorted.length; i++) {
     const h = sorted[i]!;
     const r = layerR(h);
-    const L = geom.layers[h.layer];
+    const L = geom.layers[layerIndex(h)];
     if (i > 0 && Math.abs(r - rPrev) > 1e-9) {
       // predict to this layer; the scattering in this layer happens between the state we have and the hit
       const f0 = propagateState(x, rPrev, r);
       const F = f0 && propagationJacobian(x, rPrev, r, f0);
       if (!f0 || !F) throw new Error('kalmanTrackFit: the track does not reach layer ' + h.layer);
       const Q = opts.noScattering || !L ? identity(5).map((row) => row.map(() => 0)) : scatteringNoise(f0, r, L.xOverX0, geom.bField, mass);
+      // extended Kalman filter: the state goes through the exact (non-linear) propagation, the covariance through F
       const pred = kalmanPredict({ x, P }, F, Q);
-      x = pred.x;
+      x = f0;
       P = pred.P;
     }
     rPrev = r;

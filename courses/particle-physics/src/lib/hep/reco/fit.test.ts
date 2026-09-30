@@ -102,3 +102,53 @@ describe('fitTrack3D on synthetic helices', () => {
     expect(s).toBeGreaterThan(0.001);
   });
 });
+
+describe('fitTrack3D with multiple scattering (generalised least squares)', () => {
+  const pts = (hits: { layer: number; x: number; y: number; z: number }[]) =>
+    hits.map((h) => ({ x: h.x, y: h.y, z: h.z, sxy: DEFAULT_GEOMETRY.layers[h.layer]!.sigmaRPhi, sz: DEFAULT_GEOMETRY.layers[h.layer]!.sigmaZ, x0: DEFAULT_GEOMETRY.layers[h.layer]!.xOverX0 }));
+  test('χ²/ndof ≈ 1, parameter pulls ≈ N(0,1), and it beats the unweighted fit at low pT', () => {
+    const g = rng(21);
+    const rms = (a: number[]) => Math.sqrt(a.reduce((s, v) => s + v * v, 0) / a.length);
+    for (const pt of [1, 4, 30]) {
+      let chi = 0, ndof = 0;
+      const pd0: number[] = [], pz0: number[] = [], ppt: number[] = [], ptz: number[] = [];
+      let errPlain = 0, errGls = 0;
+      for (let k = 0; k < 300; k++) {
+        const eta = (g() - 0.5) * 2.4;
+        const hits = simulateTrackHits(g, { pt, eta, phi: g() * 6 - 3, charge: 1, vertex: [0, 0, 0], id: 0, collision: 0 });
+        if (hits.length < 10) continue;
+        const f = fitTrack3D(pts(hits), 3.8, { scattering: true });
+        const plain = fitTrack3D(pts(hits), 3.8);
+        chi += f.chi2;
+        ndof += f.ndof;
+        pd0.push(f.d0 / Math.sqrt(f.covT[0]![0]!));
+        pz0.push(f.z0 / f.sigmaZ0);
+        const sc = Math.sqrt(f.covT[2]![2]!);
+        ppt.push((f.c - 1 / (1000 * pt / (0.299792458 * 3.8))) / sc);
+        ptz.push((f.tanLambda - Math.sinh(eta)) / f.sigmaTanLambda);
+        errPlain += (1 / plain.pt - 1 / pt) ** 2;
+        errGls += (1 / f.pt - 1 / pt) ** 2;
+      }
+      expect(chi / ndof).toBeGreaterThan(0.75);
+      expect(chi / ndof).toBeLessThan(1.3);
+      for (const a of [pd0, pz0, ppt, ptz]) {
+        expect(rms(a)).toBeGreaterThan(0.75);
+        expect(rms(a)).toBeLessThan(1.3);
+      }
+      expect(errGls).toBeLessThanOrEqual(errPlain * 1.02);
+    }
+  });
+  test('agrees with the Kalman fit', async () => {
+    const { kalmanTrackFit } = await import('./kalman.ts');
+    const g = rng(22);
+    const hits = simulateTrackHits(g, { pt: 2, eta: 0.3, phi: 0.4, charge: -1, vertex: [0, 0, 0], id: 0, collision: 0 });
+    const f = fitTrack3D(pts(hits), 3.8, { scattering: true });
+    const k = kalmanTrackFit(hits, DEFAULT_GEOMETRY);
+    expect(f.pt / k.pt).toBeGreaterThan(0.97);
+    expect(f.pt / k.pt).toBeLessThan(1.03);
+    expect(Math.sqrt(f.covT[0]![0]!) / k.sigmaD0).toBeGreaterThan(0.85);
+    expect(Math.sqrt(f.covT[0]![0]!) / k.sigmaD0).toBeLessThan(1.15);
+    expect(f.sigmaZ0 / k.sigmaZ0).toBeGreaterThan(0.85);
+    expect(f.sigmaZ0 / k.sigmaZ0).toBeLessThan(1.15);
+  });
+});

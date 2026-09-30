@@ -7,7 +7,7 @@
  *
  * Units here: lengths in fm, masses in MeV/c², ħc = 197.327 MeV fm.
  */
-import { HBARC_MEV_FM, HBAR_GEV_S } from '../units/index.ts';
+import { HBARC_MEV_FM, HBAR_GEV_S, M_ELECTRON_MEV } from './constants.ts';
 
 /** The range of the force, R = ħc/(mc²), in fm, for a mediator of mass `massMeV`. */
 export function rangeFm(massMeV: number): number {
@@ -19,7 +19,7 @@ export function massFromRangeMeV(range: number): number {
 }
 /** The same in units of the electron mass (0.51099895 MeV). */
 export function massInElectronMasses(massMeV: number): number {
-  return massMeV / 0.51099895;
+  return massMeV / M_ELECTRON_MEV;
 }
 /** How long a virtual quantum of this mass may live on the energy–time argument, Δt ≈ ħ/(mc²), in seconds. */
 export function virtualLifetimeS(massMeV: number): number {

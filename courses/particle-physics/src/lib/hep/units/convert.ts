@@ -7,7 +7,7 @@
  *   time                                       → GeV⁻¹
  *   cross-section (area)                       → GeV⁻²
  */
-import { HBARC_GEV_FM, HBAR_GEV_S, GEV_KG, E_COULOMB, K_B_EV_K, HBARC2_GEV2_MB, C_M_S } from './index.ts';
+import { HBARC_GEV_FM, HBAR_GEV_S, GEV_KG, E_COULOMB, K_B_EV_K, HBARC2_GEV2_MB, C_M_S } from './constants.ts';
 
 export type Dimension = 'energy' | 'length' | 'time' | 'area';
 

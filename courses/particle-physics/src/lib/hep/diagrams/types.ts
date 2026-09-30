@@ -131,6 +131,8 @@ export interface Issue {
   node?: number;
   edge?: number;
   message: string;
+  /** Further reasons, when a vertex breaks several rules. */
+  more?: string[];
   /** `error`: a rule is broken. `todo`: not wrong, but not finished. `note`: worth knowing. */
   severity: 'error' | 'todo' | 'note';
 }

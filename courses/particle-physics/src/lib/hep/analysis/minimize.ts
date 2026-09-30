@@ -131,6 +131,7 @@ interface Core {
   converged: boolean;
   nIter: number;
   Hinv?: number[][];
+  edm?: number;
 }
 
 /** BFGS with central-difference gradients and a backtracking line search, on the internal (unbounded) variables. */
@@ -150,14 +151,35 @@ function bfgs(F: (u: number[]) => number, u0: number[], scale: number[], tol: nu
     }
     return g;
   };
-  const identity = () => Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => (i === j ? scale[i]! * scale[i]! : 0)));
-  let Hinv = identity();
   let u = u0.slice();
   let f = F(u);
   if (!Number.isFinite(f)) return { u, f, converged: false, nIter: 0 };
+  // Initial inverse Hessian: the reciprocal of the curvature along each axis, found by second differences with a step
+  // refined once to about half the width of the valley (as MINUIT does). Falls back on the nominal scale.
+  const diag0 = scale.map((s) => s * s);
+  let informed = true;
+  for (let i = 0; i < n; i++) {
+    let d = 0.1 * scale[i]!;
+    let c = NaN;
+    for (let pass = 0; pass < 2; pass++) {
+      const save = u[i]!;
+      u[i] = save + d;
+      const fp = F(u);
+      u[i] = save - d;
+      const fm = F(u);
+      u[i] = save;
+      c = (fp + fm - 2 * f) / (d * d);
+      if (!(c > 0) || !Number.isFinite(c)) break;
+      d = Math.min(10 * scale[i]!, Math.max(1e-4 * scale[i]!, 0.5 / Math.sqrt(c)));
+    }
+    if (c > 0 && Number.isFinite(c)) diag0[i] = 1 / c;
+    else informed = false;
+  }
+  const identity = () => Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => (i === j ? diag0[i]! : 0)));
+  let Hinv = identity();
   let g = grad(u);
   let converged = false;
-  let first = true;
+  let first = !informed;
   let stalled = 0;
   let iter = 0;
   for (; iter < maxIter; iter++) {
@@ -173,9 +195,12 @@ function bfgs(F: (u: number[]) => number, u0: number[], scale: number[], tol: nu
     const edm = -0.5 * gp;
     if (!first && edm < tol) { converged = true; break; }
     // Step length: at most ~a few typical scales on the first steps.
+    // No component may move by more than 15 of its own curvature widths in one step (and no more than a few scales).
+    let worst = 0;
+    for (let i = 0; i < n; i++) worst = Math.max(worst, Math.abs(p[i]!) / (15 * Math.sqrt(diag0[i]!)));
     const pn = Math.hypot(...p);
     const sn = Math.hypot(...scale);
-    let alpha = pn > 5 * sn ? (5 * sn) / pn : 1;
+    let alpha = Math.min(1, worst > 1 ? 1 / worst : 1, pn > 50 * sn ? (50 * sn) / pn : 1);
     let fnew = Infinity;
     let unew = u;
     let ok = false;
@@ -225,7 +250,8 @@ function bfgs(F: (u: number[]) => number, u0: number[], scale: number[], tol: nu
       break;
     }
   }
-  return { u, f, converged, nIter: iter, Hinv };
+  const edmEnd = 0.5 * g.reduce((a, gi, i) => a + gi * Hinv[i]!.reduce((b, h, j) => b + h * g[j]!, 0), 0);
+  return { u, f, converged, nIter: iter, Hinv, edm: edmEnd };
 }
 
 /** Nelder–Mead simplex with the dimension-adaptive coefficients of Gao and Han (2012). Derivative free. */
@@ -431,7 +457,10 @@ export function minimize(fn: Objective, x0: number[], opts: MinimizeOptions = {}
     Hfree = hessianAt(fn, x, t.free, h, t.lower, t.upper);
     inv = invertSPD(Hfree);
     if (!inv) break;
-    h = t.free.map((_, k) => Math.min(Math.max(0.3 * Math.sqrt(2 * errorDef * inv![k]![k]!), 1e-6 * scale[k]!), 10 * scale[k]!));
+    const hNew = t.free.map((_, k) => Math.min(Math.max(0.3 * Math.sqrt(2 * errorDef * inv![k]![k]!), 1e-6 * scale[k]!), 10 * scale[k]!));
+    const settled = hNew.every((v, k) => v > 0.5 * h[k]! && v < 2 * h[k]!);
+    h = hNew;
+    if (settled) break;
   }
   const full = (M: number[][]): number[][] => {
     const out = Array.from({ length: n }, () => new Array<number>(n).fill(0));
@@ -444,15 +473,8 @@ export function minimize(fn: Objective, x0: number[], opts: MinimizeOptions = {}
     res.covariance = full(cov);
     t.free.forEach((i, k) => (res.errors[i] = Math.sqrt(Math.max(0, cov[k]![k]!))));
     res.covValid = true;
-    // Distance to the minimum with the exact Hessian: ½ gᵀ H⁻¹ g, gradient in the external parameters.
-    const g = t.free.map((i, k) => {
-      const hh = h[k]!;
-      const a = x.slice(), b = x.slice();
-      a[i]! += hh;
-      b[i]! -= hh;
-      return (fn(a) - fn(b)) / (2 * hh);
-    });
-    res.edm = 0.5 * g.reduce((s, gi, a) => s + gi * inv![a]!.reduce((q, v, b) => q + v * g[b]!, 0), 0);
+    // Distance to the minimum: ½ gᵀ H⁻¹ g from the last quasi-Newton gradient.
+    res.edm = core.edm ?? NaN;
   } else {
     // Not positive definite: flat or saddle direction. Fall back to the diagonal for a rough error, flagged invalid.
     t.free.forEach((i, k) => (res.errors[i] = Hfree[k]![k]! > 0 ? Math.sqrt((2 * errorDef) / Hfree[k]![k]!) : NaN));

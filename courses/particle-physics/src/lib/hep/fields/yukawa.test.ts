@@ -32,7 +32,7 @@ describe('Yukawa potential', () => {
     expect(yukawaForceMeVPerFm(short, m, a) * short * short / (-a * 197.3269804)).toBeCloseTo(1, 2);
   });
   test('the exchange time and the suppression at one range', () => {
-    expect(virtualLifetimeS(140)).toBeCloseTo(4.70e-24, 2 + 24 - 24 + 0) ;
+    expect(virtualLifetimeS(140) / 4.70e-24).toBeCloseTo(1, 2);
     expect(suppressionAt(1.4095, 140)).toBeCloseTo(Math.exp(-1), 3);
     expect(propagator(0, 2)).toBe(0.25);
   });

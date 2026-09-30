@@ -9,8 +9,10 @@
  *
  * which is the chord of a circle through the origin: a circle of radius R subtends the angle φ − φ₀ = asin(r/2R) at
  * the origin. The **accumulator** is a grid over (φ₀, κ). A hit (r, φ) is compatible with every (φ₀, κ) on the curve
- * κ = 2 sin(φ − φ₀)/r, so it votes once in each φ₀ column, in the κ bin that formula gives. All hits of one track
- * give the same (φ₀, κ) and pile their votes into one cell: a track is a peak.
+ * κ = 2 sin(φ − φ₀)/r, so it votes once in each φ₀ column whose direction is within ±90° of the hit's azimuth (the
+ * track moves outwards), in the κ bin that formula gives. All hits of one track give the same (φ₀, κ) and pile
+ * their votes into one cell: a track is a peak. A φ₀ bin is an interval, so within it the hit's curve crosses a few κ bins
+ * (more for hits close to the origin, where a small change of φ₀ moves κ a lot): the hit votes in all of them.
  *
  * Layout of `accumulator`: index = iAngle · nCurv + iCurv, with φ₀ ∈ [−π, π) in `nAngle` equal bins and κ ∈
  * [−maxCurv, +maxCurv] in `nCurv` equal bins. It is periodic in φ₀.
@@ -63,6 +65,9 @@ export function houghTransform(hits: readonly { x: number; y: number }[], opts: 
     sinA[j] = Math.sin(a);
   }
   const scale = nCurv / (2 * maxCurv);
+  const halfA = dA / 2;
+  const cosH = Math.cos(halfA);
+  const sinH = Math.sin(halfA);
   for (const h of hits) {
     const r = Math.hypot(h.x, h.y);
     if (r < 1e-9) continue;
@@ -70,10 +75,22 @@ export function houghTransform(hits: readonly { x: number; y: number }[], opts: 
     const sp = h.y / r;
     const k2 = 2 / r;
     for (let j = 0; j < nAngle; j++) {
-      // sin(φ − φ₀) = sinφ cosφ₀ − cosφ sinφ₀
-      const kappa = k2 * (sp * cosA[j]! - cp * sinA[j]!);
-      const b = Math.floor((kappa + maxCurv) * scale);
-      if (b >= 0 && b < nCurv) acc[j * nCurv + b]! += 1;
+      // the track moves outwards: only directions within ±90° of the hit's own azimuth are possible (otherwise
+      // (φ₀ + π, −κ) would describe the same circle run backwards and every track would make two peaks)
+      const cd = cp * cosA[j]! + sp * sinA[j]!;
+      if (cd <= 0) continue;
+      // sin(φ − φ₀) = sinφ cosφ₀ − cosφ sinφ₀; κ at the two edges of the φ₀ bin (a bin is an interval of φ₀, so the
+      // hit's curve crosses a range of κ bins within it, and all of them are voted for)
+      const s0 = sp * cosA[j]! - cp * sinA[j]!; // sin(φ − φ₀) at the bin centre
+      const sLo = s0 * cosH + cd * sinH; // φ₀ → φ₀ − half a bin
+      const sHi = s0 * cosH - cd * sinH; // φ₀ → φ₀ + half a bin
+      let b0 = Math.floor((k2 * Math.min(sLo, sHi) + maxCurv) * scale);
+      let b1 = Math.floor((k2 * Math.max(sLo, sHi) + maxCurv) * scale);
+      if (b1 < 0 || b0 >= nCurv) continue;
+      if (b0 < 0) b0 = 0;
+      if (b1 >= nCurv) b1 = nCurv - 1;
+      const base = j * nCurv;
+      for (let b = b0; b <= b1; b++) acc[base + b]! += 1;
     }
   }
   const peaks: HoughPeak[] = [];
