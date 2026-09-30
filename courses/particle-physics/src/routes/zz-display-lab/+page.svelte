@@ -12,13 +12,52 @@
   import { Camera } from '$lib/display/camera';
   import { defaultColours } from '$lib/theme/particles';
   import { page } from '$app/state';
+  import { View2D } from '$lib/display/camera';
+  import { drawPlane, fitPlane } from '$lib/display/draw2d';
+  import { highlightStates } from '$lib/display/scene';
+  import { ScenePicker } from '$lib/display/scenePick';
   const which = $derived(page.url.searchParams.get('w') ?? 'all');
   const sample = $derived(page.url.searchParams.get('s') ?? 'zmumu');
   const views = $derived(page.url.searchParams.get('v') ?? '3d,rphi,rz,lego');
   const truth = $derived(page.url.searchParams.get('t') === '1');
   const ev = $derived(sampleEvent(sample, { seed: 3 }));
   let bench = $state('');
+  if (typeof window !== 'undefined' && page.url.searchParams.get('nogl')) {
+    const orig = HTMLCanvasElement.prototype.getContext;
+    // @ts-ignore
+    HTMLCanvasElement.prototype.getContext = function (type: string, ...a: unknown[]) { return type === 'webgl2' ? null : (orig as any).call(this, type, ...a); };
+  }
   onMount(async () => {
+    if (page.url.searchParams.get('w') === 'bench2d') {
+      const e = sampleEvent('stress', { seed: 1 });
+      const scene = buildScene(e, defaultGeometry);
+      const pal = defaultColours('dark');
+      const c = document.createElement('canvas');
+      c.width = 700; c.height = 500;
+      const ctx = c.getContext('2d')!;
+      const v = new View2D();
+      v.resize(700, 500);
+      fitPlane('rphi', v, scene, 'calo');
+      const o = { colourBy: 'particle' as const, showTruth: false, showReco: true, showHits: true, showCalo: true, palette: pal };
+      const out: Record<string, number> = {};
+      for (const [name, mode, states] of [['rphi', 'rphi', null], ['rz', 'rz', null]] as const) {
+        fitPlane(mode, v, scene, 'calo');
+        drawPlane(ctx, scene, mode, v, o, states);
+        const t = performance.now();
+        for (let i = 0; i < 5; i++) drawPlane(ctx, scene, mode, v, o, states);
+        out[name] = +((performance.now() - t) / 5).toFixed(1);
+      }
+      const st = highlightStates(scene, 'track:5');
+      fitPlane('rphi', v, scene, 'calo');
+      const t2 = performance.now();
+      for (let i = 0; i < 5; i++) drawPlane(ctx, scene, 'rphi', v, o, st);
+      out['rphi highlighted'] = +((performance.now() - t2) / 5).toFixed(1);
+      const t3 = performance.now();
+      for (let i = 0; i < 20; i++) new ScenePicker(scene).pick((x: number, y: number, z: number, s: number, o2: Float64Array) => { o2[0] = v.toScreenX(x); o2[1] = v.toScreenY(y); return true; }, 300, 200, { showTruth: false, showReco: true, showHits: true, showCalo: true });
+      out['pick'] = +((performance.now() - t3) / 20).toFixed(2);
+      bench = JSON.stringify(out);
+      return;
+    }
     if (page.url.searchParams.get('w') !== 'bench') return;
     const e = sampleEvent('stress', { seed: 1 });
     const scene = buildScene(e, defaultGeometry);
@@ -62,7 +101,7 @@
   {#if which === 'legend'}<ParticleLegend title="Key" extras />{/if}
   {#if which === 'gun'}<ParticleGun3D n="7.2" />{/if}
   {#if which === 'bare'}<EventDisplay event={ev} {views} showTruth={truth} />{/if}
-  {#if which === 'bench'}<pre id="bench">{bench}</pre>{/if}
+  {#if which === 'bench' || which === 'bench2d'}<pre id="bench">{bench}</pre>{/if}
 </div>
 
 <style>

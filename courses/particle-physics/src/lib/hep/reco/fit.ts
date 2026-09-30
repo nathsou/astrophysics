@@ -242,49 +242,69 @@ export interface HelixFit extends Helix {
   covZ: number[][];
 }
 
+/** Reusable work arrays for the fits (single-threaded, not re-entrant). */
+let scrN = 0;
+let scrC = new Float64Array(0);
+let scrY = new Float64Array(0);
+function ensureScratch(n: number): void {
+  if (n > scrN) {
+    scrN = Math.max(n, 16);
+    scrC = new Float64Array(scrN * scrN);
+    scrY = new Float64Array(scrN * 4);
+  }
+}
+
 /**
- * Generalised least squares for a small linear model e ≈ H δ with data covariance C (n × n, row-major), by Cholesky
- * factorisation C = L Lᵀ and whitening: y = L⁻¹ e, G = L⁻¹ H, δ = (GᵀG)⁻¹ Gᵀ y, χ² = yᵀy − Gᵀy·δ, cov(δ) = (GᵀG)⁻¹.
- * H is n × m (row-major), m ≤ 3.
+ * Generalised least squares for a small linear model e ≈ H δ with data covariance C (n × n, row-major, overwritten by its
+ * Cholesky factor), by whitening: C = L Lᵀ, y = L⁻¹ e, G = L⁻¹ H, δ = (GᵀG)⁻¹ Gᵀ y, χ² = yᵀy − Gᵀy·δ, cov(δ) = (GᵀG)⁻¹.
+ * H is n × m (row-major), m ≤ 3. `fitted` is H δ.
  */
 export function generalisedLeastSquares(n: number, m: number, C: Float64Array, H: Float64Array, e: Float64Array): { delta: number[]; cov: number[][]; chi2: number; fitted: Float64Array } {
-  // Cholesky (lower)
-  const L = C; // in place
+  const L = C;
   for (let j = 0; j < n; j++) {
-    let d = L[j * n + j]!;
-    for (let k = 0; k < j; k++) d -= L[j * n + k]! ** 2;
-    const dj = Math.sqrt(Math.max(d, 1e-300));
-    L[j * n + j] = dj;
+    const rj = j * n;
+    let d = L[rj + j]!;
+    for (let k = 0; k < j; k++) d -= L[rj + k]! * L[rj + k]!;
+    const dj = Math.sqrt(d > 1e-300 ? d : 1e-300);
+    L[rj + j] = dj;
+    const inv = 1 / dj;
     for (let i = j + 1; i < n; i++) {
-      let v = L[i * n + j]!;
-      for (let k = 0; k < j; k++) v -= L[i * n + k]! * L[j * n + k]!;
-      L[i * n + j] = v / dj;
+      const ri = i * n;
+      let v = L[ri + j]!;
+      for (let k = 0; k < j; k++) v -= L[ri + k]! * L[rj + k]!;
+      L[ri + j] = v * inv;
     }
   }
-  // forward substitution for the columns of [H | e]
   const cols = m + 1;
-  const Y = new Float64Array(n * cols);
+  const Y = n * cols <= scrY.length ? scrY : new Float64Array(n * cols);
   for (let i = 0; i < n; i++) {
+    const ri = i * n;
+    const inv = 1 / L[ri + i]!;
     for (let c = 0; c < cols; c++) {
       let v = c < m ? H[i * m + c]! : e[i]!;
-      for (let k = 0; k < i; k++) v -= L[i * n + k]! * Y[k * cols + c]!;
-      Y[i * cols + c] = v / L[i * n + i]!;
+      for (let k = 0; k < i; k++) v -= L[ri + k]! * Y[k * cols + c]!;
+      Y[i * cols + c] = v * inv;
     }
   }
-  const N: number[][] = Array.from({ length: m }, () => new Array<number>(m).fill(0));
-  const b = new Array<number>(m).fill(0);
+  const N: number[][] = m === 2 ? [[0, 0], [0, 0]] : [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+  const b = m === 2 ? [0, 0] : [0, 0, 0];
   let yy = 0;
   for (let i = 0; i < n; i++) {
+    const yi = Y[i * cols + m]!;
     for (let a = 0; a < m; a++) {
       const ya = Y[i * cols + a]!;
       for (let c = a; c < m; c++) N[a]![c]! += ya * Y[i * cols + c]!;
-      b[a]! += ya * Y[i * cols + m]!;
+      b[a]! += ya * yi;
     }
-    yy += Y[i * cols + m]! ** 2;
+    yy += yi * yi;
   }
   for (let a = 0; a < m; a++) for (let c = 0; c < a; c++) N[a]![c] = N[c]![a]!;
   const cov = inverseSmall(N, m);
-  const delta = cov.map((row) => row.reduce((acc, v, k) => acc + v * b[k]!, 0));
+  const delta = cov.map((row) => {
+    let v = 0;
+    for (let k = 0; k < m; k++) v += row[k]! * b[k]!;
+    return v;
+  });
   let chi2 = yy;
   for (let a = 0; a < m; a++) chi2 -= b[a]! * delta[a]!;
   const fitted = new Float64Array(n);
@@ -293,7 +313,7 @@ export function generalisedLeastSquares(n: number, m: number, C: Float64Array, H
     for (let a = 0; a < m; a++) v += H[i * m + a]! * delta[a]!;
     fitted[i] = v;
   }
-  return { delta, cov, chi2: Math.max(0, chi2), fitted };
+  return { delta, cov, chi2: chi2 > 0 ? chi2 : 0, fitted };
 }
 
 /** Inverse of a symmetric 2×2 or 3×3 matrix by cofactors. */
@@ -333,15 +353,35 @@ function inverseSmall(N: number[][], m: number): number[][] {
 export function fitTrack3D(points: readonly FitPoint[], bTesla: number, opts: FitOptions = {}): HelixFit {
   const n = points.length;
   if (n < 3) throw new Error('fitTrack3D needs at least 3 points');
+  ensureScratch(n);
   const fit = hook('reco.circleFit', circleFit);
-  const cpts: CirclePoint[] = points.map((p) => ({ x: p.x, y: p.y, sigma: p.sxy ?? 1 }));
-  const circ = fit(cpts);
-  const { xc, yc } = circ;
-  const Rr = circ.R;
+  let xc: number, yc: number, Rr: number;
+  if (fit === circleFit) {
+    // the reference fit, without building objects
+    const xs = new Float64Array(n), ys = new Float64Array(n), ws = new Float64Array(n);
+    for (let i = 0; i < n; i++) {
+      const p = points[i]!;
+      xs[i] = p.x;
+      ys[i] = p.y;
+      const sg = p.sxy ?? 1;
+      ws[i] = 1 / (sg * sg);
+    }
+    const out = new Float64Array(3);
+    taubinFlat(xs, ys, ws, n, out);
+    xc = out[0]!;
+    yc = out[1]!;
+    Rr = out[2]!;
+  } else {
+    const circ = fit(points.map((p) => ({ x: p.x, y: p.y, sigma: p.sxy ?? 1 })));
+    xc = circ.xc;
+    yc = circ.yc;
+    Rr = circ.R;
+  }
   // innermost and outermost hit
   let iMin = 0, iMax = 0, rMin = Infinity, rMax = -Infinity;
   for (let i = 0; i < n; i++) {
-    const r2 = points[i]!.x ** 2 + points[i]!.y ** 2;
+    const p = points[i]!;
+    const r2 = p.x * p.x + p.y * p.y;
     if (r2 < rMin) { rMin = r2; iMin = i; }
     if (r2 > rMax) { rMax = r2; iMax = i; }
   }
@@ -363,23 +403,23 @@ export function fitTrack3D(points: readonly FitPoint[], bTesla: number, opts: Fi
   const diry = sense > 0 ? -rx / Rr : rx / Rr;
   let phi0 = Math.atan2(diry, dirx);
   let d0 = dirx * py - diry * px;
-  // arc length of each hit from the perigee, from the chord
+  // arc length of each hit from the perigee (from the chord) and residuals from the circle, positive to the left of the motion
   const s = new Float64Array(n);
+  const eT = new Float64Array(n);
+  const R2 = Rr * Rr;
+  const invTwoR = 1 / (2 * Rr);
   for (let i = 0; i < n; i++) {
-    const dx = points[i]!.x - px;
-    const dy = points[i]!.y - py;
-    const chord = Math.hypot(dx, dy);
-    const half = Math.min(1, chord / (2 * Rr));
+    const pt = points[i]!;
+    const dx = pt.x - px;
+    const dy = pt.y - py;
+    const chord = Math.sqrt(dx * dx + dy * dy);
+    const half = Math.min(1, chord * invTwoR);
     const arc = 2 * Rr * Math.asin(half);
     s[i] = dx * dirx + dy * diry < 0 ? -arc : arc;
-  }
-  // residuals from the circle, positive to the left of the direction of motion
-  const eT = new Float64Array(n);
-  for (let i = 0; i < n; i++) {
-    const dx = points[i]!.x - xc;
-    const dy = points[i]!.y - yc;
-    const d = Math.sqrt(dx * dx + dy * dy);
-    const g = points[i]!.x ** 2 + points[i]!.y ** 2 - 2 * (xc * points[i]!.x + yc * points[i]!.y) + (xc * xc + yc * yc - Rr * Rr);
+    const cx = pt.x - xc;
+    const cy = pt.y - yc;
+    const d = Math.sqrt(cx * cx + cy * cy);
+    const g = pt.x * pt.x + pt.y * pt.y - 2 * (xc * pt.x + yc * pt.y) + (xc * xc + yc * yc - R2);
     eT[i] = sense * (Rr > 1e5 ? g / (d + Rr) : d - Rr);
   }
   let cSigned = sense / Rr;
@@ -388,85 +428,92 @@ export function fitTrack3D(points: readonly FitPoint[], bTesla: number, opts: Fi
   for (let i = 0; i < n; i++) {
     const sz = points[i]!.sz ?? 1;
     const wi = 1 / (sz * sz);
+    const si = s[i]!, zi = points[i]!.z;
     Sw += wi;
-    Ss += wi * s[i]!;
-    Sss += wi * s[i]! * s[i]!;
-    Sz += wi * points[i]!.z;
-    Ssz += wi * s[i]! * points[i]!.z;
+    Ss += wi * si;
+    Sss += wi * si * si;
+    Sz += wi * zi;
+    Ssz += wi * si * zi;
   }
   const D = Sw * Sss - Ss * Ss;
   let tanL = (Sw * Ssz - Ss * Sz) / D;
   let z0 = (Sss * Sz - Ss * Ssz) / D;
   let covT: number[][] = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
   let covZ: number[][] = [[Sss / D, -Ss / D], [-Ss / D, Sw / D]];
-  let chi2xy = circ.chi2;
+  let chi2xy = 0;
   let chi2z = 0;
   const resT: number[] = new Array(n);
   const resZ: number[] = new Array(n);
 
   if (opts.scattering) {
     const mass = opts.mass ?? 0.13957;
-    const order = Array.from({ length: n }, (_, i) => i).sort((a, b) => s[a]! - s[b]!);
-    // two passes: the scattering depends on the momentum, which the first pass refines
+    // order by arc length (insertion sort: n is small)
+    const order = new Int32Array(n);
+    for (let i = 0; i < n; i++) {
+      let j = i;
+      while (j > 0 && s[order[j - 1]!]! > s[i]!) {
+        order[j] = order[j - 1]!;
+        j--;
+      }
+      order[j] = i;
+    }
     const nPass = opts.passes ?? 1;
     for (let pass = 0; pass < nPass; pass++) {
       const pT = (GEV_PER_TESLA_M * Math.abs(bTesla)) / (1000 * Math.max(Math.abs(cSigned), 1e-12));
       const cosLam = 1 / Math.sqrt(1 + tanL * tanL);
       const p = pT / cosLam;
-      // per-point scattering angle in the transverse plane (θ_T) and in the polar direction (θ_λ)
-      const thT = new Float64Array(n), thL = new Float64Array(n);
+      const invCos2 = 1 + tanL * tanL; // 1/cos²λ
+      // scattering angle in the polar direction at each point (in arc-length order); θ_T² = θ²/cos²λ
+      const th2 = new Float64Array(n);
+      const sOrd = new Float64Array(n);
       for (let k = 0; k < n; k++) {
         const pt = points[order[k]!]!;
-        const r = Math.hypot(pt.x, pt.y);
-        const cosInc = Math.sqrt(Math.max(0.04, 1 - (r * Math.abs(cSigned) / 2) ** 2));
+        const r = Math.sqrt(pt.x * pt.x + pt.y * pt.y);
+        const cosInc = Math.sqrt(Math.max(0.04, 1 - (r * Math.abs(cSigned) * 0.5) ** 2));
         const th = highland(p, (pt.x0 ?? 0) / (cosInc * cosLam), mass);
-        thT[k] = th / cosLam;
-        thL[k] = th;
+        th2[k] = th * th;
+        sOrd[k] = s[order[k]!]!;
       }
       const CT = new Float64Array(n * n), CZ = new Float64Array(n * n);
       const HT = new Float64Array(n * 3), HZ = new Float64Array(n * 2);
       const eTs = new Float64Array(n), zs = new Float64Array(n);
-      const t2 = (1 + tanL * tanL) ** 2;
+      const t2 = invCos2 * invCos2;
       for (let a = 0; a < n; a++) {
-        const ia = order[a]!;
-        const sa = s[ia]!;
+        const sa = sOrd[a]!;
+        const ra = a * n;
         for (let b = 0; b <= a; b++) {
-          const ib = order[b]!;
-          const sb = s[ib]!;
-          let mT = 0, mL = 0;
+          const sb = sOrd[b]!;
+          let m2 = 0;
           for (let j = 0; j < b; j++) {
-            const sj = s[order[j]!]!;
-            const w = (sa - sj) * (sb - sj);
-            mT += thT[j]! ** 2 * w;
-            mL += thL[j]! ** 2 * w;
+            const sj = sOrd[j]!;
+            m2 += th2[j]! * (sa - sj) * (sb - sj);
           }
-          CT[a * n + b] = CT[b * n + a] = mT;
-          CZ[a * n + b] = CZ[b * n + a] = mL * t2;
+          CT[ra + b] = CT[b * n + a] = m2 * invCos2;
+          CZ[ra + b] = CZ[b * n + a] = m2 * t2;
         }
-        const sxy = points[ia]!.sxy ?? 1;
-        const sz = points[ia]!.sz ?? 1;
-        CT[a * n + a]! += sxy * sxy;
-        CZ[a * n + a]! += sz * sz;
+        const pt = points[order[a]!]!;
+        const sxy = pt.sxy ?? 1;
+        const sz = pt.sz ?? 1;
+        CT[ra + a]! += sxy * sxy;
+        CZ[ra + a]! += sz * sz;
         HT[a * 3] = 1;
         HT[a * 3 + 1] = sa;
         HT[a * 3 + 2] = -0.5 * sa * sa;
         HZ[a * 2] = 1;
         HZ[a * 2 + 1] = sa;
-        eTs[a] = eT[ia]!;
-        zs[a] = points[ia]!.z;
+        eTs[a] = eT[order[a]!]!;
+        zs[a] = pt.z;
       }
       const gT = generalisedLeastSquares(n, 3, CT, HT, eTs);
       const gZ = generalisedLeastSquares(n, 2, CZ, HZ, zs);
-      {
-        covT = gT.cov;
-        covZ = gZ.cov;
-        chi2xy = gT.chi2;
-        chi2z = gZ.chi2;
-        for (let k = 0; k < n; k++) {
-          const i = order[k]!;
-          resT[i] = eTs[k]! - gT.fitted[k]!;
-          resZ[i] = zs[k]! - gZ.fitted[k]!;
-        }
+      covT = gT.cov;
+      covZ = gZ.cov;
+      chi2xy = gT.chi2;
+      chi2z = gZ.chi2;
+      for (let k = 0; k < n; k++) {
+        const i = order[k]!;
+        resT[i] = eTs[k]! - gT.fitted[k]!;
+        resZ[i] = zs[k]! - gZ.fitted[k]!;
       }
       // apply the corrections to the circle parameters; a further pass works on the residuals left over
       d0 += gT.delta[0]!;
@@ -482,8 +529,11 @@ export function fitTrack3D(points: readonly FitPoint[], bTesla: number, opts: Fi
       const r = points[i]!.z - (z0 + tanL * s[i]!);
       resZ[i] = r;
       const sz = points[i]!.sz ?? 1;
-      chi2z += (r / sz) ** 2;
-      resT[i] = sense * eT[i]!;
+      chi2z += (r / sz) * (r / sz);
+      const rt = sense * eT[i]!;
+      resT[i] = rt;
+      const sg = points[i]!.sxy ?? 1;
+      chi2xy += (rt / sg) * (rt / sg);
     }
     if (opts.covariance) {
       // transverse: covariance of (d0, φ0, c) from the hit resolution alone

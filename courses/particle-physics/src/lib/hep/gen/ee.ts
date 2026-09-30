@@ -220,7 +220,7 @@ export function eeToFermions(opt: EeOptions): EeProcess {
     const s = sqrtS * sqrtS;
     const beta = radiatorBeta(s);
     const xmax = 1 - sMin / s;
-    if (xmax <= 0) return 0;
+    if (xmax <= 0) return sigmaPb(sqrtS);
     const sigAt = (x: number) => sigmaTotalGeV2(s * (1 - x)) * HBARC2_GEV2_PB * K;
     const x1 = Math.min(1e-3, xmax);
     // small x: variable v = x^β removes the integrable singularity
@@ -304,7 +304,8 @@ export function eeToFermions(opt: EeOptions): EeProcess {
     generate(r, cfg) {
       const s = cfg.sqrtS * cfg.sqrtS;
       if (2 * Math.min(...flavours.map(finalMass)) >= cfg.sqrtS) throw new Error(`${name}: √s = ${cfg.sqrtS} GeV is below the threshold`);
-      if (!cfg.isr) {
+      // no room for a photon (√s′ must stay above 2 GeV): no radiation
+      if (!cfg.isr || 1 - sMin / s <= 1e-6) {
         const pdgF = pickFlavour(r, s);
         const c = sampleCos(r, pdgF, s);
         const event = build(r, cfg, pdgF, s, c);

@@ -57,6 +57,22 @@ describe('samplers', () => {
       expect(variance(xs) / mu).toBeLessThan(1.1);
     }
   });
+  test('poisson tails are exact at large mean (P(n ≥ μ + 4√μ) within 25 % of the true value)', () => {
+    const r = rng(11);
+    const mu = 400;
+    // exact tail by summing the pmf in log space
+    let tail = 0;
+    for (let k = Math.ceil(mu + 4 * Math.sqrt(mu)); k < mu + 40 * Math.sqrt(mu); k++) {
+      let lg = 0;
+      for (let i = 2; i <= k; i++) lg += Math.log(i);
+      tail += Math.exp(-mu + k * Math.log(mu) - lg);
+    }
+    const N = 400000;
+    let hits = 0;
+    for (let i = 0; i < N; i++) if (poisson(r, mu) >= mu + 4 * Math.sqrt(mu)) hits++;
+    expect(hits / N / tail).toBeGreaterThan(0.75);
+    expect(hits / N / tail).toBeLessThan(1.25);
+  });
   test('Breit–Wigner median is the mass', () => {
     const r = rng(4);
     const xs = Array.from({ length: N }, () => breitWigner(r, 91.19, 2.5)).sort((a, b) => a - b);

@@ -8,5 +8,6 @@ export { default as EventDisplayWidget } from '$lib/display/EventDisplayWidget.s
 export { default as TruthRecoCompare } from '$lib/display/TruthRecoCompare.svelte';
 /** The key to particle colours and line styles: `::particle-legend{kinds="muon,electron,photon"}`. */
 export { default as ParticleLegend } from '$lib/display/ParticleLegend.svelte';
-/** Fire a single particle through the detector (Chapter 7): `::particle-gun-3d{n="7.2"}`. */
+/** Fire a single particle through the detector (Chapter 7): `::particle-gun-3d{n="7.2"}` (the directive name maps to `ParticleGun3d`). */
+export { default as ParticleGun3d } from '$lib/display/ParticleGun3D.svelte';
 export { default as ParticleGun3D } from '$lib/display/ParticleGun3D.svelte';

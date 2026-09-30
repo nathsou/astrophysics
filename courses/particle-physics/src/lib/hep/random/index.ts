@@ -69,23 +69,47 @@ export function exponential(r: Rng, mean = 1): number {
   return -mean * Math.log(1 - r());
 }
 
-/** Poisson: Knuth's product method for small means, a normal approximation with rejection for large. */
+/** ln Γ(x) for x > 0 (Lanczos approximation, g = 7; accurate to about 1e-14). */
+function lnGamma(x: number): number {
+  const c = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+  if (x < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * x)) - lnGamma(1 - x);
+  x -= 1;
+  let a = c[0]!;
+  const t = x + 7.5;
+  for (let i = 1; i < 9; i++) a += c[i]! / (x + i);
+  return 0.5 * Math.log(2 * Math.PI) + (x + 0.5) * Math.log(t) - t + Math.log(a);
+}
+
+/**
+ * Poisson: Knuth's product method below 30, and Hörmann's transformed rejection with squeeze (PTRS, 1993) above,
+ * which is exact in the tails (a rounded normal is not).
+ */
 export function poisson(r: Rng, mean: number): number {
-  if (mean <= 0) return 0;
+  if (!(mean > 0)) return 0;
   if (mean < 30) {
     const L = Math.exp(-mean);
     let k = 0;
-    let p = 1;
-    do {
+    let p = r();
+    while (p > L) {
       k++;
       p *= r();
-    } while (p > L);
-    return k - 1;
+    }
+    return k;
   }
-  // Atkinson's rejection (PA) is overkill here; a rounded normal is adequate above 30 and keeps the tails honest enough for the course.
+  const slam = Math.sqrt(mean);
+  const loglam = Math.log(mean);
+  const b = 0.931 + 2.53 * slam;
+  const a = -0.059 + 0.02483 * b;
+  const invalpha = 1.1239 + 1.1328 / (b - 3.4);
+  const vr = 0.9277 - 3.6224 / (b - 2);
   for (;;) {
-    const x = Math.round(normal(r, mean, Math.sqrt(mean)));
-    if (x >= 0) return x;
+    const U = r() - 0.5;
+    const V = r();
+    const us = 0.5 - Math.abs(U);
+    const k = Math.floor(((2 * a) / us + b) * U + mean + 0.43);
+    if (us >= 0.07 && V <= vr) return k;
+    if (k < 0 || (us < 0.013 && V > us)) continue;
+    if (Math.log(V) + Math.log(invalpha) - Math.log(a / (us * us) + b) <= -mean + k * loglam - lnGamma(k + 1)) return k;
   }
 }
 

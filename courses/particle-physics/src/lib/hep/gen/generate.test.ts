@@ -72,6 +72,7 @@ describe('generate: hard process → shower → hadronisation → decays', () =>
   test('pp → Z → μμ: two muons near the Z mass among many hadrons; the hard-scatter record is in collision 0 at the primary vertex', () => {
     const r = rng(3);
     const masses: number[] = [];
+    let total = 0;
     for (let i = 0; i < 100; i++) {
       const ev = generate('pp->Z->mumu', { sqrtS: 13000 }, r);
       expect(ev.process).toContain('Z');
@@ -79,9 +80,11 @@ describe('generate: hard process → shower → hadronisation → decays', () =>
       const mu = ev.particles.filter((p) => Math.abs(p.pdg) === 13 && p.status === 'final' && p.mothers.some((m) => ev.particles[m]!.pdg === 23));
       expect(mu.length).toBe(2);
       masses.push(invariantMass(mu.map((p) => p.p)));
-      expect(ev.particles.length).toBeGreaterThan(10);
+      total += ev.particles.length;
       for (const p of ev.particles) expect(p.collision).toBe(0);
     }
+    // the shower adds initial-state radiation, the hadronisation turns it into hadrons (no radiation: just the 7 lines of the matrix-element record)
+    expect(total / 100).toBeGreaterThan(15);
     masses.sort((a, b) => a - b);
     expect(masses[50]).toBeGreaterThan(85);
     expect(masses[50]).toBeLessThan(95);

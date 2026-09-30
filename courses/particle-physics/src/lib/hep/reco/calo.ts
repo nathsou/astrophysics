@@ -23,18 +23,10 @@ import { trackHelix } from './vertex.ts';
 
 const TWO_PI = 2 * Math.PI;
 
-interface CellInfo {
-  idx: number;
-  ieta: number;
-  iphi: number;
-  layer: number;
-  e: number;
-}
-
 /**
  * Cluster the cells of both calorimeters. Thresholds (GeV, on the raw cell energy) come from `rc`: `ecalSeed`, `ecalGrow`,
- * `hcalSeed`, `hcalGrow`; clusters with calibrated energy below `ecalClusterMin` / `hcalClusterMin` are dropped. Cell
- * indices in `RecoCluster.cells` refer to the input list.
+ * `hcalSeed`, `hcalGrow` (0 = automatic, from the cell noise); clusters with calibrated energy below `ecalClusterMin` /
+ * `hcalClusterMin` are dropped. Cell indices in `RecoCluster.cells` refer to the input list.
  */
 export function clusterCells(cells: readonly CaloCell[], geom: RecoGeometry, rcIn?: Partial<RecoConfig>): RecoCluster[] {
   const rc = resolveConfig(rcIn);
@@ -50,50 +42,83 @@ export function clusterCells(cells: readonly CaloCell[], geom: RecoGeometry, rcI
   return out;
 }
 
+/** A dense lookup from (η index, φ index, layer) to the cell's slot, reused between events (entries are cleared after use). */
+interface CaloGrid {
+  etaOff: number;
+  nEta: number;
+  nPhi: number;
+  nLay: number;
+  ix: Int32Array;
+}
+const gridCache = new WeakMap<CaloGeometry, CaloGrid>();
+function caloGrid(g: CaloGeometry): CaloGrid {
+  let c = gridCache.get(g);
+  if (!c) {
+    const nPhi = Math.max(4, Math.round(TWO_PI / g.dPhi));
+    const etaOff = Math.ceil((g.etaMax + 0.6) / g.dEta) + 2;
+    const nLay = Math.max(1, g.layers + 1);
+    const nEta = 2 * etaOff;
+    c = { etaOff, nEta, nPhi, nLay, ix: new Int32Array(nEta * nPhi * nLay).fill(-1) };
+    gridCache.set(g, c);
+  }
+  return c;
+}
+
 function clusterOne(cells: readonly CaloCell[], calo: 'ecal' | 'hcal', g: CaloGeometry, seedE: number, growE: number, minE: number): RecoCluster[] {
-  const nPhi = Math.max(4, Math.round(TWO_PI / g.dPhi));
-  const infos: CellInfo[] = [];
-  const at = new Map<number, number>();
-  const keyOf = (ieta: number, iphi: number, layer: number): number => ((ieta + 8192) * nPhi + iphi) * 32 + layer;
+  const G = caloGrid(g);
+  const { nPhi, nLay, etaOff, nEta, ix } = G;
+  // the cells above the grow threshold, as parallel arrays
+  const nMax = cells.length;
+  const cIeta = new Int32Array(nMax), cIphi = new Int32Array(nMax), cLay = new Int32Array(nMax), cCell = new Int32Array(nMax);
+  const cE = new Float64Array(nMax);
+  let n = 0;
   for (let i = 0; i < cells.length; i++) {
     const c = cells[i]!;
     if (c.calo !== calo || !(c.energy > growE)) continue;
-    const ieta = Math.round(c.eta / g.dEta - 0.5);
+    const ieta = Math.round(c.eta / g.dEta - 0.5) + etaOff;
+    if (ieta < 1 || ieta >= nEta - 1 || c.layer < 0 || c.layer >= nLay - 1) continue;
     let iphi = Math.round((c.phi + Math.PI) / g.dPhi - 0.5);
     iphi = ((iphi % nPhi) + nPhi) % nPhi;
-    const info: CellInfo = { idx: i, ieta, iphi, layer: c.layer, e: c.energy };
-    const k = keyOf(ieta, iphi, c.layer);
-    const prev = at.get(k);
-    if (prev !== undefined) infos[prev]!.e += c.energy; // duplicate address: add up
-    else {
-      at.set(k, infos.length);
-      infos.push(info);
+    const key = (ieta * nPhi + iphi) * nLay + c.layer;
+    const prev = ix[key]!;
+    if (prev >= 0) {
+      cE[prev]! += c.energy; // duplicate address: add up
+      continue;
     }
+    ix[key] = n;
+    cIeta[n] = ieta;
+    cIphi[n] = iphi;
+    cLay[n] = c.layer;
+    cCell[n] = i;
+    cE[n] = c.energy;
+    n++;
   }
-  // connected components over the 26-neighbourhood
-  const comp = new Int32Array(infos.length).fill(-1);
+  const slot = (ieta: number, iphi: number, layer: number): number => (layer < 0 ? -1 : ix[(ieta * nPhi + iphi) * nLay + layer]!);
+  const comp = new Int32Array(n).fill(-1);
+  const stack = new Int32Array(n);
   const clusters: RecoCluster[] = [];
-  const stack: number[] = [];
   let nComp = 0;
-  for (let s = 0; s < infos.length; s++) {
+  for (let s = 0; s < n; s++) {
     if (comp[s] !== -1) continue;
     const members: number[] = [];
     comp[s] = nComp;
-    stack.push(s);
+    let sp = 0;
+    stack[sp++] = s;
     let hasSeed = false;
-    while (stack.length) {
-      const a = stack.pop()!;
+    while (sp > 0) {
+      const a = stack[--sp]!;
       members.push(a);
-      const ci = infos[a]!;
-      if (ci.e > seedE) hasSeed = true;
+      if (cE[a]! > seedE) hasSeed = true;
+      const ie = cIeta[a]!, ip = cIphi[a]!, il = cLay[a]!;
       for (let de = -1; de <= 1; de++) {
         for (let dp = -1; dp <= 1; dp++) {
+          const jp = ip + dp < 0 ? ip + dp + nPhi : ip + dp >= nPhi ? ip + dp - nPhi : ip + dp;
           for (let dl = -1; dl <= 1; dl++) {
             if (de === 0 && dp === 0 && dl === 0) continue;
-            const j = at.get(keyOf(ci.ieta + de, (ci.iphi + dp + nPhi) % nPhi, ci.layer + dl));
-            if (j !== undefined && comp[j] === -1) {
+            const j = slot(ie + de, jp, il + dl);
+            if (j >= 0 && comp[j] === -1) {
               comp[j] = nComp;
-              stack.push(j);
+              stack[sp++] = j;
             }
           }
         }
@@ -101,29 +126,31 @@ function clusterOne(cells: readonly CaloCell[], calo: 'ecal' | 'hcal', g: CaloGe
     }
     nComp++;
     if (!hasSeed) continue;
-    for (const grp of splitByMaxima(members, infos, at, keyOf, nPhi, seedE)) {
-      const cl = makeCluster(grp, infos, cells, calo, g, nPhi);
+    for (const grp of splitByMaxima(members, cIeta, cIphi, cLay, cE, slot, nPhi, seedE)) {
+      const cl = makeCluster(grp, cE, cCell, cells, calo, g);
       if (cl.energy >= minE) clusters.push(cl);
     }
   }
+  // clear the lookup for the next event
+  for (let s = 0; s < n; s++) ix[(cIeta[s]! * nPhi + cIphi[s]!) * nLay + cLay[s]!] = -1;
   return clusters;
 }
 
-/** Split a group at its local maxima (cells above 2 × the seed threshold, separated by at least 2 cells from a larger one). */
-function splitByMaxima(members: number[], infos: CellInfo[], at: Map<number, number>, keyOf: (a: number, b: number, c: number) => number, nPhi: number, seedE: number): number[][] {
+/** Split a group at its local maxima (cells above 2 × the seed threshold, separated by at least 3 cells from a larger one). */
+function splitByMaxima(members: number[], cIeta: Int32Array, cIphi: Int32Array, cLay: Int32Array, cE: Float64Array, slot: (a: number, b: number, c: number) => number, nPhi: number, seedE: number): number[][] {
   if (members.length < 6) return [members];
-  // a cell is a local maximum if it is the largest of its 26 neighbours and in the largest layer of its tower
+  // a cell is a local maximum if it is the largest of its 26 neighbours
   const maxima: number[] = [];
   for (const a of members) {
-    const ci = infos[a]!;
-    if (ci.e < 2 * seedE) continue;
+    if (cE[a]! < 2 * seedE) continue;
     let isMax = true;
     for (let de = -1; de <= 1 && isMax; de++) {
       for (let dp = -1; dp <= 1 && isMax; dp++) {
+        const jp = (cIphi[a]! + dp + nPhi) % nPhi;
         for (let dl = -1; dl <= 1; dl++) {
           if (de === 0 && dp === 0 && dl === 0) continue;
-          const j = at.get(keyOf(ci.ieta + de, (ci.iphi + dp + nPhi) % nPhi, ci.layer + dl));
-          if (j !== undefined && infos[j]!.e >= ci.e) {
+          const j = slot(cIeta[a]! + de, jp, cLay[a]! + dl);
+          if (j >= 0 && cE[j]! >= cE[a]!) {
             isMax = false;
             break;
           }
@@ -134,16 +161,19 @@ function splitByMaxima(members: number[], infos: CellInfo[], at: Map<number, num
   }
   if (maxima.length < 2) return [members];
   // keep maxima that are at least 3 cells from every larger one (closer ones are fluctuations of the same shower)
-  maxima.sort((p, q) => infos[q]!.e - infos[p]!.e);
+  maxima.sort((p, q) => cE[q]! - cE[p]!);
   const kept: number[] = [];
-  const dist = (p: CellInfo, q: CellInfo) => Math.hypot(p.ieta - q.ieta, Math.min(Math.abs(p.iphi - q.iphi), nPhi - Math.abs(p.iphi - q.iphi)));
-  for (const m of maxima) if (kept.every((k) => dist(infos[k]!, infos[m]!) >= 3)) kept.push(m);
+  const dist = (p: number, q: number) => {
+    const dphi = Math.abs(cIphi[p]! - cIphi[q]!);
+    return Math.hypot(cIeta[p]! - cIeta[q]!, Math.min(dphi, nPhi - dphi));
+  };
+  for (const m of maxima) if (kept.every((k) => dist(k, m) >= 3)) kept.push(m);
   if (kept.length < 2) return [members];
   const groups: number[][] = kept.map(() => []);
   for (const a of members) {
     let best = 0, bd = Infinity;
     for (let k = 0; k < kept.length; k++) {
-      const d = dist(infos[a]!, infos[kept[k]!]!) / Math.sqrt(infos[kept[k]!]!.e); // a bigger shower claims a wider region
+      const d = dist(a, kept[k]!) / Math.sqrt(cE[kept[k]!]!); // a bigger shower claims a wider region
       if (d < bd) {
         bd = d;
         best = k;
@@ -151,21 +181,21 @@ function splitByMaxima(members: number[], infos: CellInfo[], at: Map<number, num
     }
     groups[best]!.push(a);
   }
-  return groups.filter((g) => g.length > 0);
+  return groups.filter((gr) => gr.length > 0);
 }
 
-function makeCluster(members: number[], infos: CellInfo[], cells: readonly CaloCell[], calo: 'ecal' | 'hcal', g: CaloGeometry, nPhi: number): RecoCluster {
+function makeCluster(members: number[], cE: Float64Array, cCell: Int32Array, cells: readonly CaloCell[], calo: 'ecal' | 'hcal', g: CaloGeometry): RecoCluster {
   let E = 0;
   let top = members[0]!;
   for (const a of members) {
-    E += infos[a]!.e;
-    if (infos[a]!.e > infos[top]!.e) top = a;
+    E += cE[a]!;
+    if (cE[a]! > cE[top]!) top = a;
   }
-  const phiRef = cells[infos[top]!.idx]!.phi;
+  const phiRef = cells[cCell[top]!]!.phi;
   let se = 0, sp = 0, sl = 0;
   for (const a of members) {
-    const c = cells[infos[a]!.idx]!;
-    const e = infos[a]!.e;
+    const c = cells[cCell[a]!]!;
+    const e = cE[a]!;
     se += e * c.eta;
     sp += e * deltaPhi(c.phi, phiRef);
     sl += e * c.layer;
@@ -174,20 +204,22 @@ function makeCluster(members: number[], infos: CellInfo[], cells: readonly CaloC
   const dphi = sp / E;
   let ve = 0, vp = 0;
   const cellIds: number[] = [];
-  const share = new Map<number, number>();
+  let share: Map<number, number> | undefined;
   for (const a of members) {
-    const c = cells[infos[a]!.idx]!;
-    const e = infos[a]!.e;
+    const c = cells[cCell[a]!]!;
+    const e = cE[a]!;
     ve += e * (c.eta - eta) ** 2;
     vp += e * (deltaPhi(c.phi, phiRef) - dphi) ** 2;
-    cellIds.push(infos[a]!.idx);
-    if (c.truth.length) for (const t of c.truth) share.set(t, (share.get(t) ?? 0) + e / c.truth.length);
+    cellIds.push(cCell[a]!);
+    if (c.truth.length) {
+      share ??= new Map();
+      for (const t of c.truth) share.set(t, (share.get(t) ?? 0) + e / c.truth.length);
+    }
   }
   let phi = phiRef + dphi;
   while (phi > Math.PI) phi -= TWO_PI;
   while (phi <= -Math.PI) phi += TWO_PI;
-  const truthEnergy = [...share.entries()].map(([truth, energy]) => ({ truth, energy: energy * g.scale })).sort((p, q) => q.energy - p.energy);
-  void nPhi;
+  const truthEnergy = share ? [...share.entries()].map(([truth, energy]) => ({ truth, energy: energy * g.scale })).sort((p, q) => q.energy - p.energy) : undefined;
   return {
     calo,
     energy: E * g.scale,
@@ -198,7 +230,7 @@ function makeCluster(members: number[], infos: CellInfo[], cells: readonly CaloC
     phiWidth: Math.sqrt(vp / E),
     nCells: members.length,
     depth: sl / E,
-    truthEnergy: truthEnergy.length ? truthEnergy : undefined,
+    truthEnergy,
   };
 }
 
@@ -235,21 +267,45 @@ export interface TrackClusterLink {
 export function matchTracksToClusters(tracks: readonly RecoTrack[], clusters: readonly RecoCluster[], calo: 'ecal' | 'hcal', geom: RecoGeometry, maxDR = 0.05, minPt = 0.5, widthScale = 0): TrackClusterLink[] {
   const r = geom[calo].rInner;
   const links: TrackClusterLink[] = [];
+  // bin the clusters in (η, φ) so that a track only looks at its own neighbourhood
+  let maxReach = maxDR;
+  for (const c of clusters) if (c.calo === calo) maxReach = Math.max(maxReach, maxDR + widthScale * Math.hypot(c.etaWidth, c.phiWidth));
+  const bin = Math.max(0.1, maxReach);
+  const etaMax = geom[calo].etaMax + 1;
+  const nE = Math.ceil((2 * etaMax) / bin) + 1;
+  const nP = Math.max(1, Math.floor(TWO_PI / bin));
+  const binP = TWO_PI / nP;
+  const grid: number[][] = new Array(nE * nP);
+  clusters.forEach((c, j) => {
+    if (c.calo !== calo) return;
+    const be = Math.min(nE - 1, Math.max(0, Math.floor((c.eta + etaMax) / bin)));
+    const bp = Math.min(nP - 1, Math.floor((c.phi + Math.PI) / binP));
+    (grid[be * nP + bp] ??= []).push(j);
+  });
   for (let i = 0; i < tracks.length; i++) {
     const t = tracks[i]!;
     if (t.pt < minPt) continue;
     const at = extrapolateToRadius(t, r);
     if (!at) continue;
+    const be = Math.floor((at.eta + etaMax) / bin);
+    const bp = Math.min(nP - 1, Math.floor((at.phi + Math.PI) / binP));
     let best = -1, bd = Infinity;
-    for (let j = 0; j < clusters.length; j++) {
-      const c = clusters[j]!;
-      if (c.calo !== calo) continue;
-      const d = Math.hypot(at.eta - c.eta, deltaPhi(at.phi, c.phi));
-      // a broad cluster (several overlapping showers) is reached from further away
-      const reach = maxDR + widthScale * Math.hypot(c.etaWidth, c.phiWidth);
-      if (d < reach && d < bd) {
-        bd = d;
-        best = j;
+    for (let de = -1; de <= 1; de++) {
+      const e2 = be + de;
+      if (e2 < 0 || e2 >= nE) continue;
+      for (let dp = -1; dp <= 1; dp++) {
+        const list = grid[e2 * nP + ((bp + dp + nP) % nP)];
+        if (!list) continue;
+        for (const j of list) {
+          const c = clusters[j]!;
+          const d = Math.hypot(at.eta - c.eta, deltaPhi(at.phi, c.phi));
+          // a broad cluster (several overlapping showers) is reached from further away
+          const reach = maxDR + widthScale * Math.hypot(c.etaWidth, c.phiWidth);
+          if (d < reach && d < bd) {
+            bd = d;
+            best = j;
+          }
+        }
       }
     }
     if (best >= 0) links.push({ track: i, cluster: best, dR: bd });

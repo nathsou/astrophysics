@@ -13,7 +13,7 @@
  *    the beam remnants of a hadron collision are not in the record.
  */
 import type { P4 } from '../kinematics/index.ts';
-import { boost, fromMass, twoBodyMomentum } from '../kinematics/index.ts';
+import { boost, fromMass, twoBodyDecay, twoBodyMomentum } from '../kinematics/index.ts';
 import type { Rng } from '../random/index.ts';
 import { rng as makeRng } from '../random/index.ts';
 import type { TruthEvent, TruthStatus } from '../event/index.ts';
@@ -115,9 +115,9 @@ export function decayAbout(parent: P4, m1: number, m2: number, axis: readonly [n
   return [boost(d1, bx, by, bz), boost(d2, bx, by, bz)];
 }
 
-/** Isotropic two-body decay (cheaper than `decayAbout`, same result distribution). */
+/** Isotropic two-body decay: `kinematics.twoBodyDecay`. */
 export function decayIsotropic(r: Rng, parent: P4, m1: number, m2: number): [P4, P4] {
-  return decayAbout(parent, m1, m2, [0, 0, 1], 2 * r() - 1, 2 * Math.PI * r());
+  return twoBodyDecay(r, parent, m1, m2);
 }
 
 /** Boost a four-vector along z by rapidity y. */

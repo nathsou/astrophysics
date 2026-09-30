@@ -321,7 +321,9 @@
             <header class="ph ui">
               <h5>{VIEW_TITLE[v]}</h5>
               <div class="tools">
-                {#if v === '3d' || v === 'lego'}
+                {#if v === '3d' && glFailed}
+                  <!-- no controls: the 3D view is not running -->
+                {:else if v === '3d' || v === 'lego'}
                   <button type="button" class="tb" onclick={() => rotate(v, 0.25, 0)} aria-label="Rotate left">◀</button>
                   <button type="button" class="tb" onclick={() => rotate(v, -0.25, 0)} aria-label="Rotate right">▶</button>
                   <button type="button" class="tb" onclick={() => rotate(v, 0, 0.2)} aria-label="Tilt up">▲</button>
@@ -331,13 +333,15 @@
                   <button type="button" class="tb txt" onclick={() => extent(v, 'calo')}>Calorimeters</button>
                   <button type="button" class="tb txt" onclick={() => extent(v, 'tracker')}>Tracker</button>
                 {/if}
-                <button type="button" class="tb" onclick={() => zoom(v, v === 'rphi' || v === 'rz' ? 1.3 : 0.8)} aria-label="Zoom in">+</button>
-                <button type="button" class="tb" onclick={() => zoom(v, v === 'rphi' || v === 'rz' ? 0.77 : 1.25)} aria-label="Zoom out">−</button>
-                {#if v === '3d' || v === 'lego'}<button type="button" class="tb" onclick={() => reset(v)} aria-label="Reset the view">↺</button>{/if}
+                {#if !(v === '3d' && glFailed)}
+                  <button type="button" class="tb" onclick={() => zoom(v, v === 'rphi' || v === 'rz' ? 1.3 : 0.8)} aria-label="Zoom in">+</button>
+                  <button type="button" class="tb" onclick={() => zoom(v, v === 'rphi' || v === 'rz' ? 0.77 : 1.25)} aria-label="Zoom out">−</button>
+                  {#if v === '3d' || v === 'lego'}<button type="button" class="tb" onclick={() => reset(v)} aria-label="Reset the view">↺</button>{/if}
+                {/if}
               </div>
             </header>
             {#if v === '3d'}
-              <GlView bind:this={gl3d} {scene} {options} {states} height={viewHeight} autoRotate={rotateOn && !reduced} onhover={onHover} onselect={onPick} oncycle={cycle} onfail={() => (glFailed = true)} label={label(v)} description={VIEW_HELP[v]} />
+              <GlView bind:this={gl3d} {scene} {options} {states} height={glFailed ? 84 : viewHeight} autoRotate={rotateOn && !reduced} onhover={onHover} onselect={onPick} oncycle={cycle} onfail={() => (glFailed = true)} label={label(v)} description={VIEW_HELP[v]} />
             {:else if v === 'rphi'}
               <PlaneView bind:this={planeRphi} mode="rphi" {scene} {options} {states} height={viewHeight} onhover={onHover} onselect={onPick} oncycle={cycle} label={label(v)} description={VIEW_HELP[v]} />
             {:else if v === 'rz'}
@@ -345,7 +349,7 @@
             {:else}
               <LegoView bind:this={lego} {scene} {options} {states} height={viewHeight} onhover={onHover} onselect={onPick} oncycle={cycle} label={label(v)} description={VIEW_HELP[v]} />
             {/if}
-            <p class="help ui">{VIEW_HELP[v]}</p>
+            {#if !(v === '3d' && glFailed)}<p class="help ui">{VIEW_HELP[v]}</p>{/if}
           </section>
         {/each}
       </div>

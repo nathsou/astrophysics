@@ -122,7 +122,7 @@
       g.setHighlight(states);
       request();
     } catch (e) {
-      fail(e instanceof Error ? e.message : String(e));
+      fail(e instanceof Error ? e.message.replace(/^WebGL2 is not available$/, 'WebGL 2 is off or unsupported') : String(e));
     }
   }
 
@@ -329,7 +329,7 @@
   <p class="sr" id={descId}>{description}</p>
   {#if failed}
     <div class="fail ui">
-      <p><strong>The 3D view is not available.</strong> This browser could not start WebGL 2 ({failed}). The flat views below show the same event.</p>
+      <p><strong>The 3D view is not available</strong> ({failed}). It needs WebGL 2, which this browser did not provide. The flat views show the same event.</p>
     </div>
   {/if}
 </div>
