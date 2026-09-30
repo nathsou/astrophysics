@@ -60,7 +60,7 @@ describe('the ledger', () => {
     expect(run('e- → nu_e + gamma').violated).toEqual(['charge']);
     expect(run('mu- → e- + gamma').violated).toEqual(['lepton-e', 'lepton-mu']);
     expect(run('mu- → e- + gamma').details.explanation.join(' ')).toMatch(/Total lepton number is conserved/);
-    expect(run('p + p → p + p + p').violated).toEqual(['baryon']);
+    expect(run('p + p → p + p + n').violated).toEqual(['baryon']);
     expect(run('pi- + p → K0 + K0').details.firstLaw).toBe('baryon');
     expect(run('pi- + p → pi0 + n').allowed).toBe(true);
     expect(run('p → n + e+ + nu_e').violated).toEqual(['energy']);
@@ -79,7 +79,7 @@ describe('the ledger', () => {
       expect(r.details.interaction, t).toBe('weak');
     }
     expect(run('Lambda → p + pi-').violated).toEqual(['strangeness']);
-    expect(run('D0 → K- + pi+').violated).toEqual(['charm', 'strangeness'].sort((a, b) => ['strangeness', 'charm'].indexOf(a) - ['strangeness', 'charm'].indexOf(b)));
+    expect(run('D0 → K- + pi+').violated).toEqual(['strangeness', 'charm']);
     // ΔS = 2 is two weak vertices
     const two = run('Xi- → n + pi-');
     expect(two.details.delta.strangeness).toBe(2);
