@@ -11,6 +11,7 @@
   Props: `windows` initial number of independent windows, `z` initial local significance, `n`, `caption`.
 -->
 <script lang="ts">
+  import { untrack } from 'svelte';
   import Widget from '$lib/components/ui/Widget.svelte';
   import Slider from '$lib/components/ui/Slider.svelte';
   import Button from '$lib/components/ui/Button.svelte';
@@ -21,8 +22,8 @@
 
   let { windows: w0 = 100, z: z0 = 3, n, caption, title = 'The look-elsewhere effect' }: { windows?: number; z?: number; n?: string | number; caption?: string; title?: string } = $props();
 
-  let N = $state(w0);
-  let zLocal = $state(z0);
+  let N = $state(untrack(() => w0));
+  let zLocal = $state(untrack(() => z0));
   let seed = $state(5);
   let story = $state(false);
 

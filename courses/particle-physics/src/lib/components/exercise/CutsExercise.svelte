@@ -162,7 +162,53 @@
 </ExerciseFrame>
 
 <style>
-  @import './parts/exercise.css';
+  .ex-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+  }
+  .ex-bar button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    padding: 0.3rem 0.8rem;
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--ink);
+    min-height: 2.3rem;
+    cursor: pointer;
+  }
+  .ex-bar button:hover {
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+  .ex-bar button:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .ex-bar button:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  .ex-bar .check {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+  }
+  .ex-note {
+    font-size: 0.84rem;
+    color: var(--ink-3);
+  }
+  .ex-bad {
+    margin: 0.25rem 0;
+    font-size: 0.84rem;
+    color: var(--bad);
+  }
   .goal {
     font-size: 0.9rem;
     margin: 0 0 0.6rem;

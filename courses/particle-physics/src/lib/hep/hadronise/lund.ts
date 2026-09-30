@@ -11,7 +11,7 @@
 import { twoBodyDecay } from '../kinematics/index.ts';
 import { normal, type Rng } from '../random/index.ts';
 import { HBARC_GEV_FM } from '../units/index.ts';
-import { defaultFlavour, hadronFor, hadronMass, lightestMass, pickLight, type FlavourParams } from './flavour.ts';
+import { defaultFlavour, hadronFor, hadronMass, lightestMass, lightestPdg, pickLight, type FlavourParams } from './flavour.ts';
 
 /** String tension κ in GeV² (≈ 1 GeV/fm: 0.2 GeV² × 0.1973 fm/GeV … i.e. κ = 0.2 GeV² = 1.01 GeV/fm). */
 export const stringTension = 0.2;
@@ -150,6 +150,7 @@ export function fragmentString(rng: Rng, W: number, leftEnd: readonly number[], 
   let A: readonly number[] = leftEnd;
   let B: readonly number[] = rightEnd;
   let kAx = 0, kAy = 0, kBx = 0, kBy = 0;
+  let sumM = 0; // total mass of the hadrons made so far: it plus the lightest possible remnant must stay below W
   const sig = par.sigma / Math.SQRT2;
   const stop2 = par.stopMass * par.stopMass;
   for (let iter = 0; iter < 80; iter++) {
@@ -194,10 +195,11 @@ export function fragmentString(rng: Rng, W: number, leftEnd: readonly number[], 
         const nPp = Pp - pp, nPm = Pm - pm, nPx = Px - hpx, nPy = Py - hpy;
         if (!(nPp > 0) || !(nPm > 0)) continue;
         const nM2 = nPp * nPm - nPx * nPx - nPy * nPy;
-        if (!(nM2 > lm * lm)) continue;
+        if (!(nM2 > lm * lm) || !(sumM + m + lm < W - 1e-6)) continue;
         const h: FragHadron = { pdg, mass: m, pp, pm, px: hpx, py: hpy, pair: code, side };
         (side === 0 ? left : right).push(h);
         Pp = nPp; Pm = nPm; Px = nPx; Py = nPy;
+        sumM += m;
         if (side === 0) {
           A = newEnd;
           kAx = kx; kAy = ky;
@@ -238,7 +240,8 @@ export function fragmentString(rng: Rng, W: number, leftEnd: readonly number[], 
     made = true;
   }
   if (!made) {
-    const one = hadronFor(A.concat(B), rng, par);
+    // a single hadron: the lightest one of this flavour, so that the string can still add up
+    const one = lightestPdg(A.concat(B));
     if (one !== 0) {
       const m = hadronMass(one, rng);
       const E = Math.sqrt(m * m + Px * Px + Py * Py + pzr * pzr);

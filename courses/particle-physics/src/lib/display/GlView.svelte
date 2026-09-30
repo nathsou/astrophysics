@@ -63,7 +63,7 @@
     cam.target = [0, 0, 0];
     // A narrow view needs to stand further back to show the same detector.
     const aspect = cam.width / cam.height;
-    cam.distance = Math.max(g.hcal.rOut * 3.6, (g.muon[0]?.r ?? 0) * 2.3) * Math.max(1, 1.35 / aspect);
+    cam.distance = Math.max(g.hcal.rOut * 3.6, (g.muon[0]?.r ?? 0) * 2.3) * Math.max(1, 1.15 / aspect);
     cam.fov = (36 * Math.PI) / 180;
   }
   resetCamera();
@@ -85,6 +85,13 @@
     if (!raf) raf = requestAnimationFrame(frame);
   }
 
+  function draw(): void {
+    if (!gl) return;
+    cam.fitClip(outerRadius(scene.geometry) * 1.4);
+    cam.update();
+    gl.render(cam);
+  }
+
   function frame(t: number): void {
     raf = 0;
     if (!gl) return;
@@ -93,9 +100,7 @@
       cam.orbit(dt * 0.18, 0);
     }
     lastT = autoRotate ? t : 0;
-    cam.fitClip(outerRadius(scene.geometry) * 1.4);
-    cam.update();
-    gl.render(cam);
+    draw();
     if (autoRotate) request();
   }
 
@@ -123,20 +128,14 @@
 
   onMount(() => {
     setup();
-    let roFrame = 0;
-    const ro = new ResizeObserver(() => {
-      if (roFrame) cancelAnimationFrame(roFrame);
-      roFrame = requestAnimationFrame(() => {
-        roFrame = 0;
-        resize();
-      });
-    });
+    // Resizing clears a canvas, so redraw in the same callback (no blank frame).
+    const ro = new ResizeObserver(() => resize());
     const resize = () => {
       if (!wrap || !gl) return;
       const r = wrap.getBoundingClientRect();
       gl.resize(r.width, r.height, Math.min(window.devicePixelRatio || 1, 2));
       cam.resize(r.width, r.height);
-      request();
+      draw();
     };
     if (wrap) ro.observe(wrap);
     const lost = (e: Event) => {
@@ -300,25 +299,32 @@
   }
 </script>
 
-<div class="glview screen" bind:this={wrap} style="height:{height}px">
+<!-- A custom widget with its own keyboard handling (role="application"), described by a label and a hidden description. -->
+<!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
+<div
+  class="glview screen"
+  bind:this={wrap}
+  style="height:{height}px"
+  tabindex="0"
+  role="application"
+  aria-label={label}
+  aria-describedby={descId}
+  onkeydown={onKey}
+>
   <canvas
     bind:this={canvas}
-    tabindex="0"
-    role="application"
-    aria-label={label}
-    aria-describedby={descId}
     onpointerdown={onDown}
     onpointermove={onMove}
     onpointerup={onUp}
     onpointercancel={onUp}
     onpointerleave={onLeave}
-    onkeydown={onKey}
     ondblclick={() => {
       resetCamera();
       request();
     }}
     oncontextmenu={(e) => e.preventDefault()}
     class:hidden={!!failed}
+    aria-hidden="true"
   ></canvas>
   <p class="sr" id={descId}>{description}</p>
   {#if failed}
@@ -347,8 +353,9 @@
   canvas:active {
     cursor: grabbing;
   }
-  canvas:focus-visible {
+  .glview:focus-visible {
     outline: 2px solid var(--focus);
+    outline-offset: -2px;
   }
   .hidden {
     visibility: hidden;

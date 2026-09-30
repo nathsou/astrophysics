@@ -60,104 +60,125 @@ export interface SequentialOptions {
  * that many jets (no beam distance, no pT cut).
  */
 export function sequentialJets(particles: readonly P4[], R: number, p: number, ptMin = 0, opts: SequentialOptions = {}): JetResult {
-  const items: Pseudo[] = [];
+  // structure of arrays over the usable particles; merged pseudojets reuse the slot of the first member
+  const idxMap: number[] = [];
   for (let i = 0; i < particles.length; i++) {
     const a = particles[i]!;
-    const pt2 = a.px * a.px + a.py * a.py;
-    if (!(pt2 > 1e-24)) continue; // along the beam axis: cannot be clustered (pT = 0)
-    items.push({ E: a.E, px: a.px, py: a.py, pz: a.pz, y: rapidityOf(a.E, a.pz), phi: Math.atan2(a.py, a.px), k: Math.pow(pt2, p), alive: true, nn: -1, dnn: Infinity, members: [i] });
+    if (a.px * a.px + a.py * a.py > 1e-24) idxMap.push(i); // pT = 0 (along the beam axis) cannot be clustered
   }
-  const n0 = items.length;
+  const n0 = idxMap.length;
+  const E = new Float64Array(n0), px = new Float64Array(n0), py = new Float64Array(n0), pz = new Float64Array(n0);
+  const y = new Float64Array(n0), phi = new Float64Array(n0), k = new Float64Array(n0), dnn = new Float64Array(n0);
+  const nn = new Int32Array(n0).fill(-1);
+  // the live slots, in a compact list
+  const live = new Int32Array(n0);
+  const where = new Int32Array(n0); // position of slot i in `live`
+  const members: number[][] = new Array(n0);
+  for (let s = 0; s < n0; s++) {
+    const a = particles[idxMap[s]!]!;
+    E[s] = a.E;
+    px[s] = a.px;
+    py[s] = a.py;
+    pz[s] = a.pz;
+    y[s] = rapidityOf(a.E, a.pz);
+    phi[s] = Math.atan2(a.py, a.px);
+    k[s] = p === 0 ? 1 : Math.pow(a.px * a.px + a.py * a.py, p);
+    members[s] = [idxMap[s]!];
+    live[s] = s;
+    where[s] = s;
+  }
+  let nLive = n0;
   const invR2 = 1 / (R * R);
-  const dist = (a: Pseudo, b: Pseudo): number => {
-    const dy = a.y - b.y;
-    let dphi = Math.abs(a.phi - b.phi);
-    if (dphi > Math.PI) dphi = 2 * Math.PI - dphi;
-    return (a.k < b.k ? a.k : b.k) * (dy * dy + dphi * dphi) * invR2;
+  const TWO_PI = 2 * Math.PI;
+  const dist = (a: number, b: number): number => {
+    const dy = y[a]! - y[b]!;
+    let dphi = Math.abs(phi[a]! - phi[b]!);
+    dphi = Math.min(dphi, TWO_PI - dphi);
+    return Math.min(k[a]!, k[b]!) * (dy * dy + dphi * dphi) * invR2;
   };
-  const recomputeNN = (i: number): void => {
-    const a = items[i]!;
+  const recomputeNN = (a: number): void => {
     let best = Infinity;
     let bj = -1;
-    for (let j = 0; j < items.length; j++) {
-      if (j === i) continue;
-      const b = items[j]!;
-      if (!b.alive) continue;
-      const d = dist(a, b);
+    const ya = y[a]!, pa = phi[a]!, ka = k[a]!;
+    for (let q = 0; q < nLive; q++) {
+      const b = live[q]!;
+      if (b === a) continue;
+      const dy = ya - y[b]!;
+      let dphi = Math.abs(pa - phi[b]!);
+      dphi = Math.min(dphi, TWO_PI - dphi);
+      const d = Math.min(ka, k[b]!) * (dy * dy + dphi * dphi) * invR2;
       if (d < best) {
         best = d;
-        bj = j;
+        bj = b;
       }
     }
-    a.nn = bj;
-    a.dnn = best;
+    nn[a] = bj;
+    dnn[a] = best;
   };
-  for (let i = 0; i < n0; i++) recomputeNN(i);
+  const remove = (a: number): void => {
+    const w = where[a]!;
+    const last = live[nLive - 1]!;
+    live[w] = last;
+    where[last] = w;
+    nLive--;
+  };
+  for (let s = 0; s < n0; s++) recomputeNN(s);
   const jets: { E: number; px: number; py: number; pz: number; members: number[] }[] = [];
-  let nAlive = n0;
   const target = opts.nJets ?? 0;
-  while (nAlive > 0) {
-    if (opts.nJets !== undefined && nAlive <= target) break;
-    // the smallest distance
+  const inclusive = opts.nJets === undefined;
+  while (nLive > 0) {
+    if (!inclusive && nLive <= target) break;
     let best = Infinity;
     let bi = -1;
     let beam = false;
-    for (let i = 0; i < items.length; i++) {
-      const a = items[i]!;
-      if (!a.alive) continue;
-      if (opts.nJets === undefined && a.k < best) {
-        best = a.k;
-        bi = i;
+    for (let q = 0; q < nLive; q++) {
+      const a = live[q]!;
+      if (inclusive && k[a]! < best) {
+        best = k[a]!;
+        bi = a;
         beam = true;
       }
-      if (a.nn >= 0 && a.dnn < best) {
-        best = a.dnn;
-        bi = i;
+      if (nn[a]! >= 0 && dnn[a]! < best) {
+        best = dnn[a]!;
+        bi = a;
         beam = false;
       }
     }
     if (bi < 0) break;
-    const a = items[bi]!;
     if (beam) {
-      a.alive = false;
-      nAlive--;
-      jets.push({ E: a.E, px: a.px, py: a.py, pz: a.pz, members: a.members });
-      for (let j = 0; j < items.length; j++) if (items[j]!.alive && items[j]!.nn === bi) recomputeNN(j);
+      jets.push({ E: E[bi]!, px: px[bi]!, py: py[bi]!, pz: pz[bi]!, members: members[bi]! });
+      remove(bi);
+      for (let q = 0; q < nLive; q++) if (nn[live[q]!] === bi) recomputeNN(live[q]!);
       continue;
     }
-    const j = a.nn;
-    const b = items[j]!;
-    // merge b into a
-    a.E += b.E;
-    a.px += b.px;
-    a.py += b.py;
-    a.pz += b.pz;
-    a.members = a.members.concat(b.members);
-    const pt2 = a.px * a.px + a.py * a.py;
-    a.y = rapidityOf(a.E, a.pz);
-    a.phi = Math.atan2(a.py, a.px);
-    a.k = Math.pow(Math.max(pt2, 1e-300), p);
-    b.alive = false;
-    nAlive--;
+    const j = nn[bi]!;
+    E[bi]! += E[j]!;
+    px[bi]! += px[j]!;
+    py[bi]! += py[j]!;
+    pz[bi]! += pz[j]!;
+    members[bi] = members[bi]!.concat(members[j]!);
+    y[bi] = rapidityOf(E[bi]!, pz[bi]!);
+    phi[bi] = Math.atan2(py[bi]!, px[bi]!);
+    k[bi] = p === 0 ? 1 : Math.pow(Math.max(px[bi]! * px[bi]! + py[bi]! * py[bi]!, 1e-300), p);
+    remove(j);
     recomputeNN(bi);
-    for (let m = 0; m < items.length; m++) {
-      const c = items[m]!;
-      if (!c.alive || m === bi) continue;
-      if (c.nn === bi || c.nn === j) {
-        recomputeNN(m);
-      } else {
-        const d = dist(a, c);
-        if (d < c.dnn) {
-          c.dnn = d;
-          c.nn = bi;
-        }
-      }
+    for (let q = 0; q < nLive; q++) {
+      const c = live[q]!;
+      if (c === bi) continue;
+      // Every other particle's distances are unchanged except those to the merged pseudojet. So if the merged pseudojet is
+      // at least as close as the old nearest neighbour was, it is the new nearest neighbour; only otherwise is a rescan needed.
+      const d = dist(bi, c);
+      if (d <= dnn[c]! || (nn[c] !== bi && nn[c] !== j && d < dnn[c]!)) {
+        dnn[c] = d;
+        nn[c] = bi;
+      } else if (nn[c] === bi || nn[c] === j) recomputeNN(c);
     }
   }
-  if (opts.nJets !== undefined) {
-    for (const a of items) if (a.alive) jets.push({ E: a.E, px: a.px, py: a.py, pz: a.pz, members: a.members });
+  if (!inclusive) for (let q = 0; q < nLive; q++) {
+    const a = live[q]!;
+    jets.push({ E: E[a]!, px: px[a]!, py: py[a]!, pz: pz[a]!, members: members[a]! });
   }
-  const keep = opts.nJets !== undefined ? jets : jets.filter((j) => Math.hypot(j.px, j.py) > ptMin);
+  const keep = inclusive ? jets.filter((j) => Math.hypot(j.px, j.py) > ptMin) : jets;
   keep.sort((u, v) => Math.hypot(v.px, v.py) - Math.hypot(u.px, u.py));
   return {
     jets: keep.map((j) => ({ E: j.E, px: j.px, py: j.py, pz: j.pz })),

@@ -85,7 +85,7 @@ export function selectionInfo(track: Track, B: number, medium: MediumName | Mate
     ionisation: m.ionisation,
     segments: segs,
     stops: track.end === 'range',
-    kinks: track.kinks.filter((k) => k.angle > 0.05).map((k) => ({ angleDeg: (k.angle * 180) / Math.PI, kind: k.kind })),
+    kinks: track.kinks.filter((k) => k.angle > 0.08).slice(0, 4).map((k) => ({ angleDeg: (k.angle * 180) / Math.PI, kind: k.kind })),
     end1: reversed ? { x: last.x, y: last.y } : { x: first.x, y: first.y },
     end2: reversed ? { x: first.x, y: first.y } : { x: last.x, y: last.y },
     reversed,

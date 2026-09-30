@@ -696,6 +696,14 @@ export function gunEvent(o: GunOptions): FullEvent {
   const tp: TruthParticle = { id: 0, pdg: o.pdg, p, vertex: pv, status: 'final', mothers: [], daughters: [], collision: 0 };
   const truth: TruthEvent = { number: o.seed ?? 1, weight: 1, process: `particle gun: ${particle(o.pdg).symbol}`, sqrtS: SQRT_S, particles: [tp], primaryVertices: [pv] };
   const out = simulateAndReconstruct(truth, geo, r, { noiseHits: 0 });
+  // A lone particle has no recoil to balance it, so the momentum imbalance that the simulation finds is not physical:
+  // report only what is invisible (a neutrino), as a balanced event would.
+  let nx = 0, ny = 0;
+  if ([12, 14, 16].includes(Math.abs(o.pdg))) {
+    nx = p.px;
+    ny = p.py;
+  }
+  out.reco.met = { x: nx + normal(r, 0, 0.8), y: ny + normal(r, 0, 0.8) };
   return { truth, ...out, weight: 1 };
 }
 

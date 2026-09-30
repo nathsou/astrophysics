@@ -500,6 +500,7 @@ function runCharged(ctx: Ctx, job: Job): void {
 
     // Multiple scattering, at the midpoint direction
     let uNew = u;
+    let tailAngle = 0;
     if (ctx.ms && ds > 0) {
       const xStep = (ds / 10) * rho; // g/cm²
       xCum += xStep;
@@ -515,6 +516,7 @@ function runCharged(ctx: Ctx, job: Job): void {
         for (let k = 0; k < nTail; k++) {
           const th = Math.min(1.6, thetaC / Math.sqrt(1 - rng()));
           uNew = deflect(uNew, th, 2 * Math.PI * rng());
+          tailAngle += th;
         }
       }
     }
@@ -540,13 +542,12 @@ function runCharged(ctx: Ctx, job: Job): void {
     }
     s += dsAct;
     pos = np;
-    const scatterAngle = angleBetween(u, uEnd) - Math.abs(dphi);
     u = uEnd;
     E = Math.max(mMeV, E - dE * (out ? tf : 1));
     const after = layerAt(ctx, pos[1] + u[1] * 1e-7);
     const pNow = Math.sqrt(Math.max(0, (E - mMeV) * (E - mMeV + 2 * mMeV)));
     push(after.mat, out ? layer : after.layer, localDedx(sp, pNow, after.mat));
-    if (scatterAngle > 0.05) t.kinks.push({ index: t.points.length - 1, kind: 'scatter', angle: scatterAngle, s });
+    if (tailAngle > 0.05) t.kinks.push({ index: t.points.length - 1, kind: 'scatter', angle: tailAngle, s });
     if (out) {
       t.end = 'exit';
       t.length = s;
@@ -927,4 +928,3 @@ export function meanIonisation(t: Track, mipMevPerMm: number): number {
   return len > 0 ? sum / len / mipMevPerMm : 0;
 }
 
-export { radiationLengthMm };

@@ -44,7 +44,10 @@ describe('particle table', () => {
       // A few entries list only the main modes; the tolerance is wide on purpose and tightened by the reviewer for the headline particles.
       expect(Math.abs(s - 1), `${p.name}: Σ BR = ${s}`).toBeLessThan(0.05);
     }
-    for (const id of [23, 24, 25, 13, 211, 443, 553]) {
+    // The bottom number follows the quark content: b quark −1, b̄ +1 (so B⁰ = d b̄ has +1 and Λ_b = udb has −1).
+    expect(particle(5122).bottom).toBe(-1);
+    expect(particle(511).bottom).toBe(1);
+    for (const id of [23, 24, 25, 13, 211, 443, 553, 421]) {
       const s = particle(id).decays.reduce((a, d) => a + d.br, 0);
       expect(Math.abs(s - 1), `${particle(id).name}: Σ BR = ${s}`).toBeLessThan(0.01);
     }

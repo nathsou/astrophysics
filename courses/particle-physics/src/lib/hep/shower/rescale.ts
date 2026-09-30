@@ -28,7 +28,6 @@ export function rescaleToTarget(p: P4[], masses: ArrayLike<number>, target: P4):
   }
   const MS2 = (E - Math.sqrt(X * X + Y * Y + Z * Z)) * (E + Math.sqrt(X * X + Y * Y + Z * Z));
   if (!(MS2 > 0)) return false;
-  const MS = Math.sqrt(MS2);
   const pT2 = target.px * target.px + target.py * target.py + target.pz * target.pz;
   const MT2 = (target.E - Math.sqrt(pT2)) * (target.E + Math.sqrt(pT2));
   if (!(MT2 > 0)) return false;

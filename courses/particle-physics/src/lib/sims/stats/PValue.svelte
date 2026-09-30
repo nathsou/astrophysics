@@ -9,6 +9,7 @@
   Props: `b` expected background, `observed` observed count, `uncertainty` relative uncertainty on b (0–0.5), `n`, `caption`.
 -->
 <script lang="ts">
+  import { untrack } from 'svelte';
   import Widget from '$lib/components/ui/Widget.svelte';
   import Slider from '$lib/components/ui/Slider.svelte';
   import Toggle from '$lib/components/ui/Toggle.svelte';
@@ -25,9 +26,9 @@
     title = 'p-value of a counting experiment',
   }: { b?: number; observed?: number; uncertainty?: number; n?: string | number; caption?: string; title?: string } = $props();
 
-  let b = $state(b0);
-  let obs = $state(n0);
-  let relUnc = $state(u0);
+  let b = $state(untrack(() => b0));
+  let obs = $state(untrack(() => n0));
+  let relUnc = $state(untrack(() => u0));
   let logY = $state(false);
 
   const p = $derived(poissonTail(obs, b));
@@ -79,7 +80,7 @@
       <line x1={sx(n5 - 0.5)} x2={sx(n5 - 0.5)} y1="0" y2={height} stroke="var(--bad)" stroke-dasharray="4 3" />
       <text x={sx(n5 - 0.5) + 4} y="30" class="lbl" fill="var(--bad)">5σ: N ≥ {n5}</text>
       <line x1={sx(obs)} x2={sx(obs)} y1="0" y2={height} stroke="var(--fg)" stroke-width="1.5" />
-      <text x={sx(obs) - 4} y={height - 6} class="lbl" text-anchor="end" fill="var(--fg)">observed {obs}</text>
+      <text x={sx(obs) - 4} y="14" class="lbl" text-anchor="end" fill="var(--fg)">observed {obs}</text>
     {/snippet}
   </Plot>
 

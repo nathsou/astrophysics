@@ -145,7 +145,7 @@
       <div class="card hot">
         <span class="k">Expected significance</span>
         <strong class="v">{fmtZ(sel.z)}</strong>
-        <span class="s">{none.z > 0 ? `${sig(sel.z / none.z, 2)}× the ${fmtZ(none.z)} with no cuts` : ''}{#if optimum} · {(100 * ratio).toFixed(0)} % of the optimum{/if}</span>
+        <span class="s">{none.z > 0 ? `${sig(sel.z / none.z, 2)}× the ${fmtZ(none.z)} with no cuts` : ''}{#if optimum}{' · '}{(100 * ratio).toFixed(0)} % of the optimum{/if}</span>
       </div>
       <table>
         <tbody>

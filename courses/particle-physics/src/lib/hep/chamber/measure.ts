@@ -5,7 +5,7 @@
  * All positions are in millimetres in the picture plane (x right, y up). Orientation +1 means anticlockwise, as the
  * viewer sees it; a positive particle in a field pointing out of the page (B > 0) circles clockwise.
  */
-import { CURVATURE_CONST, MEDIA, mipLoss, resolveMedium, type Material, type MediumName } from './material.ts';
+import { CURVATURE_CONST, mipLoss, resolveMedium, type Material, type MediumName } from './material.ts';
 import type { Track, TrackPoint } from './track.ts';
 
 export interface Pt {
@@ -251,4 +251,3 @@ export function sampleTrack(track: Track, dx = 1): TrackPoint[] {
   return out;
 }
 
-export { MEDIA };

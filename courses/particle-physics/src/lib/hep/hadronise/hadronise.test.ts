@@ -10,8 +10,6 @@ import {
 
 // ── helpers ─────────────────────────────────────────────────────────────────────────────────────────────────────
 
-const Q_CHARGE3: Record<string, number> = { u: 2, d: -1, s: -1, c: 2, b: -1, t: 2 };
-
 /** Net number of each quark flavour (quarks minus antiquarks) of a parton or of a hadron, from the quark content, not from the table's quantum numbers. */
 function flavourNumbers(pdg: number): Record<string, number> {
   const net: Record<string, number> = { d: 0, u: 0, s: 0, c: 0, b: 0 };

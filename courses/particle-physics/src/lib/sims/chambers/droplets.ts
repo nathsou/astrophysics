@@ -126,6 +126,10 @@ export function dropletsForTrack(track: Track, rng: Rng, o: DropletOptions): num
   const out: number[] = [];
   const pts = track.points;
   const k = o.density ?? 1;
+  // A track that retraces itself (a low-energy electron circling in the field) does not make new droplets where the
+  // vapour has already condensed: keep at most one droplet per small cell of the picture.
+  const cell = o.kind === 'cloud' ? 0.3 : 0.45;
+  const taken = new Set<number>();
   // droplets per mm of path at 1 × minimum ionisation, and the cap
   const perMm = o.kind === 'cloud' ? 2.1 : 0.55;
   const cap = o.kind === 'cloud' ? 16 : 3.2;
@@ -152,7 +156,12 @@ export function dropletsForTrack(track: Track, rng: Rng, o: DropletOptions): num
     for (let j = 0; j < n; j++) {
       const t = rng();
       const lat = normal(rng, 0, sigma);
-      out.push(a.x + dx * t + nx * lat, a.y + dy * t + ny * lat, o.birth + rng() * 0.04, size * (0.8 + 0.4 * rng()), 0.55 + 0.45 * rng(), o.life * (0.85 + 0.3 * rng()), o.id);
+      const px = a.x + dx * t + nx * lat;
+      const py = a.y + dy * t + ny * lat;
+      const key = (Math.floor(px / cell) + 32768) * 65536 + (Math.floor(py / cell) + 32768);
+      if (taken.has(key)) continue;
+      taken.add(key);
+      out.push(px, py, o.birth + rng() * 0.04, size * (0.8 + 0.4 * rng()), 0.55 + 0.45 * rng(), o.life * (0.85 + 0.3 * rng()), o.id);
     }
   }
   return out;
@@ -206,8 +215,10 @@ export function pickTrack(tracks: readonly Track[], x: number, y: number, tol: n
       if (!(a.visible && b.visible)) continue;
       if (x < Math.min(a.x, b.x) - bd || x > Math.max(a.x, b.x) + bd || y < Math.min(a.y, b.y) - bd || y > Math.max(a.y, b.y) + bd) continue;
       const d = distToSegment(x, y, a.x, a.y, b.x, b.y);
-      if (d < bd) {
-        bd = d;
+      // a delta-ray spur on a track must not steal the click from the track itself
+      const score = d + (t.origin === 'delta ray' ? 0.6 * tol : 0);
+      if (d < tol && score < bd) {
+        bd = score;
         best = { track: t, index: i, dist: d };
       }
     }

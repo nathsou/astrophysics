@@ -5,7 +5,7 @@
 -->
 <script lang="ts">
   import { nextId } from './ids.ts';
-  import { onMount } from 'svelte';
+  import { onMount, untrack } from 'svelte';
   import { View2D } from './camera.ts';
   import { drawPlane, fitPlane, planeProjector, type PlaneMode } from './draw2d.ts';
   import type { RenderOptions } from './glData.ts';
@@ -42,7 +42,7 @@
   const view = new View2D();
   // With muons the whole detector is shown, otherwise the calorimeters fill the view.
   const autoExtent = (s: DisplayScene): 'all' | 'calo' => (s.muonHits.count > 0 || s.objects.some((o) => o.cat === 'object' && o.kind === 'muon') ? 'all' : 'calo');
-  let extent: 'all' | 'calo' | 'tracker' = autoExtent(scene);
+  let extent: 'all' | 'calo' | 'tracker' = untrack(() => autoExtent(scene));
   let raf = 0;
   let dpr = 1;
   let ready = false;
@@ -50,7 +50,7 @@
   let hoverId: number | null = null;
   let hoverRaf = 0;
   let hoverAt: { x: number; y: number; cx: number; cy: number } | null = null;
-  const proj = planeProjector(mode, view);
+  const proj = planeProjector(untrack(() => mode), view);
 
   export function setExtent(e: 'all' | 'calo' | 'tracker'): void {
     extent = e;
@@ -77,14 +77,8 @@
   }
 
   onMount(() => {
-    let roFrame = 0;
-    const ro = new ResizeObserver(() => {
-      if (roFrame) cancelAnimationFrame(roFrame);
-      roFrame = requestAnimationFrame(() => {
-        roFrame = 0;
-        resize();
-      });
-    });
+    // Resizing clears a canvas, so redraw in the same callback (no blank frame).
+    const ro = new ResizeObserver(() => resize());
     const resize = () => {
       if (!wrap || !canvas) return;
       const r = wrap.getBoundingClientRect();
@@ -96,7 +90,7 @@
         ready = true;
         fitPlane(mode, view, scene, extent);
       } else fitPlane(mode, view, scene, extent);
-      request();
+      draw();
     };
     if (wrap) ro.observe(wrap);
     const wheel = (e: WheelEvent) => {
@@ -229,20 +223,27 @@
   }
 </script>
 
-<div class="plane screen" bind:this={wrap} style="height:{height}px">
+<!-- A custom widget with its own keyboard handling (role="application"), described by a label and a hidden description. -->
+<!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
+<div
+  class="plane screen"
+  bind:this={wrap}
+  style="height:{height}px"
+  tabindex="0"
+  role="application"
+  aria-label={label}
+  aria-describedby={descId}
+  onkeydown={onKey}
+>
   <canvas
     bind:this={canvas}
-    tabindex="0"
-    role="application"
-    aria-label={label}
-    aria-describedby={descId}
     onpointerdown={onDown}
     onpointermove={onMove}
     onpointerup={onUp}
     onpointercancel={onUp}
     onpointerleave={onLeave}
-    onkeydown={onKey}
     ondblclick={reset}
+    aria-hidden="true"
   ></canvas>
   <p class="sr" id={descId}>{description}</p>
 </div>
@@ -266,8 +267,9 @@
   canvas:active {
     cursor: grabbing;
   }
-  canvas:focus-visible {
+  .plane:focus-visible {
     outline: 2px solid var(--focus);
+    outline-offset: -2px;
   }
   .sr {
     position: absolute;

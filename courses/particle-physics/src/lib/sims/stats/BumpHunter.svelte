@@ -12,10 +12,11 @@
   `toys` number of pseudo-experiments (default 2000), `n` figure number, `caption`.
 -->
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, untrack } from 'svelte';
   import Widget from '$lib/components/ui/Widget.svelte';
   import Slider from '$lib/components/ui/Slider.svelte';
   import Toggle from '$lib/components/ui/Toggle.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import HepHist from '$lib/charts/HepHist.svelte';
   import { maxLocalZ, poissonSample, poissonTail, pToZ, scanWindows, bestWindow, erf } from '$lib/hep/analysis';
   import { rng as makeRng } from '$lib/hep/random';
@@ -40,11 +41,12 @@
   const norm = (TOTAL * -SLOPE) / (1 - Math.exp(SLOPE * (HI - LO)));
   const bkg = Array.from({ length: NB }, (_, i) => (norm / -SLOPE) * (Math.exp(SLOPE * i) - Math.exp(SLOPE * (i + 1))));
 
-  let injected = $state(signal0);
-  let sigma = $state(width0);
-  let position = $state(mass0);
-  let dataSeed = $state(seed0);
-  let toySeed = $state(7001);
+  const TOY_SEED0 = 7001;
+  let injected = $state(untrack(() => signal0));
+  let sigma = $state(untrack(() => width0));
+  let position = $state(untrack(() => mass0));
+  let dataSeed = $state(untrack(() => seed0));
+  let toySeed = $state(TOY_SEED0);
   let showTruth = $state(false);
 
   // Data: the background counts depend only on the seed; the signal events are the first `injected` of a fixed list of unit normals, so moving a slider moves the same events.
@@ -133,7 +135,7 @@
     };
   });
   // Re-run if the toy seed changes.
-  let lastToySeed = toySeed;
+  let lastToySeed = TOY_SEED0;
   $effect(() => {
     if (toySeed !== lastToySeed) {
       lastToySeed = toySeed;
@@ -186,8 +188,8 @@
     <Slider bind:value={sigma} min={0.8} max={6} step={0.1} label="Signal width σ [GeV]" format={(v) => v.toFixed(1)} />
     <Slider bind:value={position} min={105} max={155} step={0.5} label="Signal position [GeV]" format={(v) => v.toFixed(1)} />
     <div class="buttons ui">
-      <button onclick={reroll} title="Draw new background fluctuations (next seed)">Re-roll data <span class="seed">seed {dataSeed}</span></button>
-      <button onclick={rerunToys} disabled={running} title="Re-run the signal-free pseudo-experiments with a new seed">Re-run toys <span class="seed">seed {toySeed}</span></button>
+      <Button onclick={reroll} title="Draw new background fluctuations (next seed)">Re-roll data <span class="seed">seed {dataSeed}</span></Button>
+      <Button onclick={rerunToys} disabled={running} title="Re-run the signal-free pseudo-experiments with a new seed">Re-run toys <span class="seed">seed {toySeed}</span></Button>
       <Toggle bind:checked={showTruth} label="Show the injected signal" />
     </div>
   {/snippet}
@@ -276,24 +278,6 @@
     flex-wrap: wrap;
     gap: 0.5rem;
     align-items: center;
-  }
-  button {
-    border: 1px solid var(--line-strong);
-    background: var(--panel);
-    color: var(--fg);
-    border-radius: 6px;
-    padding: 0.3rem 0.7rem;
-    font: inherit;
-    font-size: 0.82rem;
-    cursor: pointer;
-  }
-  button:hover:not(:disabled) {
-    border-color: var(--track);
-    color: var(--track-ink);
-  }
-  button:disabled {
-    opacity: 0.5;
-    cursor: progress;
   }
   .seed {
     font-family: var(--font-mono);

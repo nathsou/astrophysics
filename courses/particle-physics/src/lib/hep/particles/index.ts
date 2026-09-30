@@ -139,7 +139,7 @@ def(223, 'omega', 'ω', 'meson', 0.78266, { spin2: 2, width: 8.68e-3, selfConjug
 def(333, 'phi', 'φ', 'meson', 1.019461, { spin2: 2, width: 4.249e-3, selfConjugate: true, quarks: 'ss~', decays: [[0.491, [321, -321]], [0.34, [130, 310]], [0.154, [211, -211, 111]], [0.0129, [221, 22]]] });
 
 // ── Charm and bottom mesons, quarkonia ──
-def(421, 'D0', 'D⁰', 'meson', 1.86484, { charm: 1, quarks: 'cu~', lifetime: 4.103e-13, decays: [[0.0395, [-321, 211]], [0.0801, [-321, 211, 111]], [0.0823, [-321, 211, 211, -211]], [0.0343, [-321, -11, 12]], [0.0327, [-321, -13, 14]], [0.7, [310, 211, -211]]] });
+def(421, 'D0', 'D⁰', 'meson', 1.86484, { charm: 1, quarks: 'cu~', lifetime: 4.103e-13, decays: [[0.0395, [-321, 211]], [0.0801, [-321, 211, 111]], [0.0823, [-321, 211, 211, -211]], [0.0343, [-321, -11, 12]], [0.0327, [-321, -13, 14]], [0.731, [310, 211, -211]]] });
 def(411, 'D+', 'D⁺', 'meson', 1.86966, { charge3: 3, charm: 1, quarks: 'cd~', lifetime: 1.033e-12, decays: [[0.094, [-321, 211, 211]], [0.0876, [310, 211]], [0.072, [-311, -11, 12]], [0.73, [310, 211, 111]]] });
 def(511, 'B0', 'B⁰', 'meson', 5.27966, { bottom: 1, quarks: 'db~', lifetime: 1.517e-12, decays: [[0.0004, [443, 310]], [0.0025, [-411, 211]], [0.0219, [-411, -11, 12]], [0.0219, [-411, -13, 14]], [0.9533, [-421, 211, -211]]] });
 def(521, 'B+', 'B⁺', 'meson', 5.27934, { charge3: 3, bottom: 1, quarks: 'ub~', lifetime: 1.638e-12, decays: [[0.001, [443, 321]], [0.0046, [-421, 211]], [0.0226, [-421, -11, 12]], [0.0226, [-421, -13, 14]], [0.9492, [-421, 211, 111]]] });
@@ -166,7 +166,7 @@ def(2214, 'Delta+', 'Δ⁺', 'baryon', 1.232, { charge3: 3, spin2: 3, baryon3: 3
 def(2114, 'Delta0', 'Δ⁰', 'baryon', 1.232, { spin2: 3, baryon3: 3, i3x2: -1, quarks: 'udd', width: 0.117, decays: [[0.667, [2112, 111]], [0.333, [2212, -211]]] });
 def(1114, 'Delta-', 'Δ⁻', 'baryon', 1.232, { charge3: -3, spin2: 3, baryon3: 3, i3x2: -3, quarks: 'ddd', width: 0.117, decays: [[1, [2112, -211]]] });
 def(4122, 'Lambda_c+', 'Λ_c⁺', 'baryon', 2.28646, { charge3: 3, spin2: 1, baryon3: 3, charm: 1, quarks: 'udc', lifetime: 2.029e-13, decays: [[0.0628, [2212, -321, 211]], [0.0159, [2212, 310]], [0.013, [3122, 211]], [0.9083, [2212, -321, 211, 111]]] });
-def(5122, 'Lambda_b', 'Λ_b⁰', 'baryon', 5.61960, { spin2: 1, baryon3: 3, bottom: 1, quarks: 'udb', lifetime: 1.471e-12, decays: [[0.6, [4122, -211]], [0.4, [4122, 13, -14]]] });
+def(5122, 'Lambda_b', 'Λ_b⁰', 'baryon', 5.61960, { spin2: 1, baryon3: 3, bottom: -1, quarks: 'udb', lifetime: 1.471e-12, decays: [[0.6, [4122, -211]], [0.4, [4122, 13, -14]]] });
 
 // ── Helpers ──
 /** The antiparticle of a table entry (derived by flipping every additive quantum number). */

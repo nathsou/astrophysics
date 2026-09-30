@@ -80,6 +80,19 @@ export function lightestMass(content: readonly number[]): number {
   return v;
 }
 
+/** The lightest table hadron with this content (0 if none). */
+export function lightestPdg(content: readonly number[]): number {
+  let best = 0, bm = Infinity;
+  for (const pdg of candidates(content)) {
+    const m = particle(pdg).mass;
+    if (m < bm) {
+      bm = m;
+      best = pdg;
+    }
+  }
+  return best;
+}
+
 /** Choose the hadron for a content (0 if the table has none). Consumes random numbers for the pseudoscalar/vector and octet/decuplet choices. */
 export function hadronFor(content: readonly number[], rng: Rng, par: FlavourParams): number {
   const n = content.length;

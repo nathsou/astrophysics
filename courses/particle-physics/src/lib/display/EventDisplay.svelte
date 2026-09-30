@@ -294,7 +294,7 @@
     </div>
   {/if}
 
-  <p class="info ui" aria-live="polite">
+  <p class="info ui" aria-live="polite" class:quiet={!controls}>
     {#if ev.truth}<strong>{ev.truth.process}</strong> ·{/if}
     {ev.reco.tracks.length} tracks · {ev.reco.objects.length} objects · missing pT {Math.hypot(ev.reco.met.x, ev.reco.met.y).toFixed(1)} GeV
     {#if ev.detector?.pileup} · {ev.detector.pileup} pile-up collisions{/if}
@@ -449,6 +449,9 @@
     margin: 0 !important;
     font-size: 0.8rem;
     color: var(--ink-2);
+  }
+  .info.quiet {
+    display: none;
   }
   .info strong {
     color: var(--fg);

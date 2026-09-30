@@ -6,6 +6,7 @@
     ::particle-gun-3d{n="7.2" caption="…"}  (for Chapter 7)
 -->
 <script lang="ts">
+  import { untrack } from 'svelte';
   import Widget from '$lib/components/ui/Widget.svelte';
   import Slider from '$lib/components/ui/Slider.svelte';
   import EventDisplay from './EventDisplay.svelte';
@@ -41,12 +42,12 @@
     { pdg: 130, note: 'Neutral kaon (K-long): no track; deposits energy in the hadronic calorimeter.' },
     { pdg: 14, note: 'Neutrino: passes through everything; only the missing momentum shows that it was there.' },
   ];
-  let choice = $state(Number(pdg) || 13);
+  let choice = $state(untrack(() => Number(pdg) || 13));
   let flip = $state(false);
   let logPt = $state(Math.log10(20));
   let eta = $state(0.4);
   let phi = $state(0.8);
-  let bField = $state(geometry.bField);
+  let bField = $state(untrack(() => geometry.bField));
   let shot = $state(1);
   const pT = $derived(10 ** logPt);
   const charged = $derived(particle(choice).charge3 !== 0);

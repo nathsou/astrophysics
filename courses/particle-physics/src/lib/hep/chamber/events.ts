@@ -7,8 +7,8 @@
 import { choice, normal, uniform, type Rng, rng as makeRng } from '../random/index.ts';
 import { add, fromMass, phaseSpace, pmag, twoBodyDecay, type P4 } from '../kinematics/index.ts';
 import { particle } from '../particles/index.ts';
-import { MEDIA, MATERIALS, mipLoss, type MediumName } from './material.ts';
-import { ALPHA_PDG, info, simulateEvent, simulateTrack, type Bounds, type EventOptions, type Injection, type Plate, type Track, type TrackSet, type Vec3 } from './track.ts';
+import type { MediumName } from './material.ts';
+import { ALPHA_PDG, info, simulateEvent, type Bounds, type EventOptions, type Injection, type Plate, type Track, type TrackSet, type Vec3 } from './track.ts';
 import { measureTrack, type TrackMeasurement } from './measure.ts';
 
 // ───────────────────────── pictures ─────────────────────────
@@ -149,7 +149,7 @@ export function cloudArrival(kind: SourceKind, rng: Rng, s: CloudSetup): TrackSe
   const z0 = () => uniform(rng, -s.depth / 2 + 5, s.depth / 2 - 5);
   const inPlane = (): Vec3 => {
     const a = 2 * Math.PI * rng();
-    return unit([Math.cos(a), Math.sin(a), normal(rng, 0, 0.1)]);
+    return unit([Math.cos(a), Math.sin(a), normal(rng, 0, 0.22)]);
   };
   switch (kind) {
     case 'alpha':
@@ -720,4 +720,3 @@ export function explainTrack(pic: Picture, label: PictureLabel): string {
   return parts.join('; ') + '.' + sign + (why[t] ?? '');
 }
 
-export { MATERIALS, mipLoss, simulateTrack };

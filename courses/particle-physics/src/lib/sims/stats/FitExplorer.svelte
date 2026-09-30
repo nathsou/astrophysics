@@ -10,7 +10,7 @@
   Props: `mode` 'diphoton' | 'fourlepton' | 'generic', `seed` (data), `n`, `caption`.
 -->
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, untrack } from 'svelte';
   import Widget from '$lib/components/ui/Widget.svelte';
   import Slider from '$lib/components/ui/Slider.svelte';
   import Segmented from '$lib/components/ui/Segmented.svelte';
@@ -27,7 +27,7 @@
   const PARAMS = ['sig.yield', 'sig.mean', 'sig.sigma', 'bkg.yield', 'bkg.slope'];
   const PRETTY = ['signal yield', 'signal position', 'signal width σ', 'background yield', 'background slope'];
 
-  let seed = $state(seedProp ?? (FIT_MODES[mode] ?? FIT_MODES.generic).seed);
+  let seed = $state(untrack(() => seedProp ?? (FIT_MODES[mode] ?? FIT_MODES.generic).seed));
   let method = $state<'nll' | 'chi2'>('nll');
   let showTruth = $state(false);
   const hist = $derived(toyHistogram(cfg, seed));
@@ -165,6 +165,16 @@
     yld = Math.max(0, Math.round(s.ys[0]! + fy * (s.ys[s.ys.length - 1]! - s.ys[0]!)));
   }
 
+  function nudge(e: KeyboardEvent) {
+    const dm = (cfg.massRange[1] - cfg.massRange[0]) / 200;
+    const dy = Math.max(1, Math.round(cfg.yieldMax / 100));
+    if (e.key === 'ArrowLeft') mu = Math.max(cfg.massRange[0], Math.round((mu - dm) * 100) / 100);
+    else if (e.key === 'ArrowRight') mu = Math.min(cfg.massRange[1], Math.round((mu + dm) * 100) / 100);
+    else if (e.key === 'ArrowUp') yld = Math.min(cfg.yieldMax, yld + dy);
+    else if (e.key === 'ArrowDown') yld = Math.max(0, yld - dy);
+    else return;
+    e.preventDefault();
+  }
   function reroll() {
     seed = seed + 1;
   }
@@ -209,7 +219,8 @@
     <div class="pane">
       <h5 class="ui">Likelihood surface: signal position against yield</h5>
       {#if surface}
-        <svg bind:this={surfEl} viewBox="0 0 {SW} {SH}" class="surf" role="img" aria-label="Contour map of the change in −2 ln L against signal position and yield; click to move the model" onclick={pick}>
+        <button type="button" class="surf-btn" aria-label="Likelihood surface: the change in −2 ln L against signal position and yield. Click, or use the arrow keys, to move your model; the sliders do the same." onclick={pick} onkeydown={nudge}>
+        <svg bind:this={surfEl} viewBox="0 0 {SW} {SH}" class="surf" aria-hidden="true">
           {#each surface.delta as row, iy}
             {#each row as d, im}
               {@const dx = (surface.mus[1]! - surface.mus[0]!)}
@@ -236,6 +247,7 @@
             <circle cx={sx(mu)} cy={sy(yld)} r="5" fill="var(--sig-high)" stroke="var(--panel)" stroke-width="1.5" />
           {/if}
         </svg>
+        </button>
         <p class="ui legend">
           <span class="sw" style:background={CELL_FILL[0]}></span>68 %
           <span class="sw" style:background={CELL_FILL[1]}></span>95 %
@@ -326,6 +338,18 @@
     margin: 0.1rem 0 0;
     font-size: 0.72rem;
     color: var(--mute);
+  }
+  .surf-btn {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 1px solid var(--line);
+    background: var(--chart-surface);
+    cursor: crosshair;
+  }
+  .surf-btn:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
   }
   .surf {
     width: 100%;

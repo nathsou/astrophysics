@@ -8,7 +8,7 @@ import { buildChains, outgoingPartons } from '../hadronise/colour.ts';
 import { hadronise } from '../hadronise/index.ts';
 import { decayAll } from '../decay/index.ts';
 import {
-  alphaSOver, alphaSShower, CA, CF, emissionRate, isrRecords, nextEmission, overestimateFactor, rescaleToTarget, shower, showerHistory, splitting, sudakov, TR,
+  alphaSOver, alphaSShower, CF, emissionRate, isrRecords, nextEmission, overestimateFactor, rescaleToTarget, shower, showerHistory, splitting, sudakov, TR,
 } from './index.ts';
 
 // ── helpers ─────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -491,7 +491,9 @@ describe('jets from shower + hadronisation', () => {
       nj++;
     }
     expect(fracHad / nj).toBeGreaterThan(0.9);
-    expect(fracDecayed / nj).toBeGreaterThan(0.9);
+    // after the decays (one flavour in three is charm, whose semileptonic decays lose a few per cent to neutrinos) a little less
+    expect(fracDecayed / nj).toBeGreaterThan(0.86);
+    expect(fracDecayed / nj).toBeLessThanOrEqual(fracHad / nj + 0.01);
   });
 
   test('everything conserved through shower → hadronisation → decays (e⁺e⁻ → q q̄ at several energies)', () => {
