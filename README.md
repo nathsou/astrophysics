@@ -11,7 +11,7 @@ A collection of interactive textbooks. The [course index](site/index.html) links
 | Incompleteness and Computability *(in progress)* | `courses/incompleteness/` | `/incompleteness/` |
 | Euclid’s Elements: an interactive edition | `courses/elements/` | `/elements/` |
 | Proofcraft: learning to prove, one great theorem at a time | `courses/proofs/` | `/proofs/` |
-| Digital Circuits *(in progress)* | `courses/digital-circuits/` | `/digital-circuits/` |
+| Digital Circuits | `courses/digital-circuits/` | `/digital-circuits/` |
 
 ## Build
 
