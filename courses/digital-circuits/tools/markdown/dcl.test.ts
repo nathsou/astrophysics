@@ -4,7 +4,7 @@ import path from 'node:path';
 import { compileMarkdown } from './compile';
 import { highlightDclHtml } from '../../src/lib/hdl/editor/highlightHtml';
 
-const file = path.resolve(import.meta.dirname, '../../content/chapters/zz-test/index.md');
+const file = path.resolve(import.meta.dirname, '../../content/chapters/06-shannons-switches/index.md');
 
 describe('DCL code blocks', () => {
   it('are highlighted with the lexer and the --code-* tokens', async () => {

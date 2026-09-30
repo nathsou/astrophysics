@@ -188,7 +188,8 @@ export function findCompiler(env: NodeJS.ProcessEnv): string | undefined {
 /** Compiles the RV32I `.S` tests of a checkout; returns the tests and the compile failures. */
 export function buildTests(root: string, gcc: string, work: string, env: NodeJS.ProcessEnv, run: Runner): { tests: ArchTest[]; failures: { name: string; message: string }[] } {
   const suite = path.join(root, 'riscv-test-suite/rv32i_m/I');
-  const target = env.RISCV_TARGET ?? path.join(root, 'riscv-target/spike');
+  // riscv-arch-test 2.x keeps the spike target in riscv-target/spike, 3.x in riscof-plugins/rv32/spike_simple/env.
+  const target = env.RISCV_TARGET ?? [path.join(root, 'riscv-target/spike'), path.join(root, 'riscof-plugins/rv32/spike_simple/env')].find((t) => existsSync(path.join(t, 'model_test.h'))) ?? path.join(root, 'riscv-target/spike');
   const tests: ArchTest[] = [];
   const failures: { name: string; message: string }[] = [];
   if (!existsSync(path.join(suite, 'src'))) return { tests, failures: [{ name: '(suite)', message: `no ${path.join(suite, 'src')}` }] };
@@ -235,7 +236,7 @@ export function judgeTest(
   const interp = runners.interpreter(loaded, options.maxSteps);
   if (interp.error) problems.push(`interpreter: ${interp.error}`);
   else if (reference) {
-    const d = compareSignatures(interp.signature!, reference);
+    const d = compareSignatures(interp.signature!, reference, true);
     if (d) problems.push(`interpreter signature differs from the reference: ${d}`);
   }
   let coreRun: MachineRun | undefined;
@@ -243,7 +244,7 @@ export function judgeTest(
     coreRun = runners.core(loaded, options.maxSteps * 2);
     if (coreRun.error) problems.push(`DCL core: ${coreRun.error}`);
     else if (reference) {
-      const d = compareSignatures(coreRun.signature!, reference);
+      const d = compareSignatures(coreRun.signature!, reference, true);
       if (d) problems.push(`DCL core signature differs from the reference: ${d}`);
     } else if (interp.signature) {
       const d = compareSignatures(coreRun.signature!, interp.signature);

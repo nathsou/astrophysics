@@ -61,6 +61,10 @@ describe('signatures', () => {
   it('are compared word by word', () => {
     expect(compareSignatures([1, 2], [1, 2])).toBeUndefined();
     expect(compareSignatures([1, 3], [1, 2])).toBe('word 1: got 00000003, expected 00000002');
+    // A reference padded with zero words matches only when padding is allowed, and only zeros count as padding.
+    expect(compareSignatures([1, 2], [1, 2, 0, 0], true)).toBeUndefined();
+    expect(compareSignatures([1, 2], [1, 2, 0, 0])).toBe('word 2: got <missing>, expected 00000000 (2 words against 4)');
+    expect(compareSignatures([1, 2], [1, 2, 0, 5], true)).toBe('word 2: got <missing>, expected 00000000 (2 words against 4)');
     expect(compareSignatures([1], [1, 2])).toMatch(/word 1: got <missing>, expected 00000002 \(1 words against 2\)/);
   });
 });

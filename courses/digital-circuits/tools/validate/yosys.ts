@@ -218,7 +218,11 @@ function runDesign(d: CourseDesign, work: string, tools: { yosys: string; nextpn
   const synth = path.join(dir, `${d.name}.synth.json`);
   writeFileSync(input, JSON.stringify(json));
 
-  const y = run(tools.yosys, ['-p', `read_json ${input}; synth_ice40 -top ${top} -json ${synth}; stat`], { cwd: dir });
+  // File names are relative to the design's folder, where the tools run: the WebAssembly builds (YoWASP) only see
+  // their working directory, and native builds do not mind.
+  const inputName = path.basename(input);
+  const synthName = path.basename(synth);
+  const y = run(tools.yosys, ['-p', `read_json ${inputName}; synth_ice40 -top ${top} -json ${synthName}; stat`], { cwd: dir });
   writeFileSync(path.join(dir, 'yosys.log'), y.stdout + y.stderr);
   if (y.status !== 0) {
     const last = `${y.stderr}\n${y.stdout}`.split('\n').filter((l) => /ERROR/.test(l)).pop() ?? y.error ?? `exit status ${y.status}`;
@@ -243,7 +247,7 @@ function runDesign(d: CourseDesign, work: string, tools: { yosys: string; nextpn
     }
     const reportFile = path.join(dir, `${part.id}.report.json`);
     const logFile = path.join(dir, `${part.id}.nextpnr.log`);
-    const n = run(tools.nextpnr, [`--${part.device}`, '--package', part.package, '--json', synth, '--freq', String(targetMHz), '--seed', String(seed), '--report', reportFile, '--log', logFile], { cwd: dir });
+    const n = run(tools.nextpnr, [`--${part.device}`, '--package', part.package, '--json', synthName, '--freq', String(targetMHz), '--seed', String(seed), '--report', path.basename(reportFile), '--log', path.basename(logFile)], { cwd: dir });
     const output = `${n.stdout}\n${n.stderr}\n${existsSync(logFile) ? readFileSync(logFile, 'utf8') : ''}`;
     if (n.status !== 0) {
       const why = classifyNextpnrFailure(output);

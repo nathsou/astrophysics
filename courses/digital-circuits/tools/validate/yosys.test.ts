@@ -184,10 +184,11 @@ interface FakeOptions {
   nextpnr?: (args: string[]) => ToolResult | undefined;
 }
 
-/** Stand-ins for yosys and nextpnr-ice40 that read and write the files the script names. */
+/** Stand-ins for yosys and nextpnr-ice40 that read and write the files the script names, relative to their working directory. */
 function fakeTools(o: FakeOptions = {}): Runner & { calls: string[][] } {
   const calls: string[][] = [];
-  const run = ((command: string, args: string[]): ToolResult => {
+  const run = ((command: string, args: string[], options: { cwd?: string } = {}): ToolResult => {
+    const at = (f: string) => path.resolve(options.cwd ?? '.', f);
     calls.push(['tool', ...args]);
     if (args[0] === '-V') return { status: 0, stdout: 'Yosys 0.40 (git sha1 deadbeef, clang 15)\n', stderr: '' };
     if (args[0] === '--version') return { status: 0, stdout: 'nextpnr-ice40 -- Next Generation Place and Route (Version nextpnr-0.7)\n', stderr: '' };
@@ -196,14 +197,14 @@ function fakeTools(o: FakeOptions = {}): Runner & { calls: string[][] } {
       const script = args[1]!;
       const input = /read_json (\S+);/.exec(script)![1]!;
       const output = /-json (\S+);/.exec(script)![1]!;
-      const json = JSON.parse(readFileSync(input, 'utf8')) as { modules: Record<string, { ports: Record<string, unknown> }> };
+      const json = JSON.parse(readFileSync(at(input), 'utf8')) as { modules: Record<string, { ports: Record<string, unknown> }> };
       if (o.breakPorts) for (const m of Object.values(json.modules)) for (const p of Object.keys(m.ports)) if (p !== 'clk') { m.ports[`${p}_renamed`] = m.ports[p]; delete m.ports[p]; break; }
-      writeFileSync(output, JSON.stringify(json));
+      writeFileSync(at(output), JSON.stringify(json));
       return { status: 0, stdout: `${STAT_NEW}\n`, stderr: '' };
     }
     const custom = o.nextpnr?.(args);
     if (custom) return custom;
-    writeFileSync(args[args.indexOf('--report') + 1]!, JSON.stringify(NEXTPNR_REPORT));
+    writeFileSync(at(args[args.indexOf('--report') + 1]!), JSON.stringify(NEXTPNR_REPORT));
     return { status: 0, stdout: '', stderr: '' };
   }) as Runner & { calls: string[][] };
   run.calls = calls;
@@ -243,9 +244,9 @@ describe('validate:yosys', () => {
     });
     // The command lines.
     const synth = run.calls.find((c) => c[1] === '-p' && c[2]!.includes('counter'))!;
-    expect(synth[2]).toMatch(/^read_json \S+counter\.json; synth_ice40 -top Counter -json \S+counter\.synth\.json; stat$/);
+    expect(synth[2]).toMatch(/^read_json counter\.json; synth_ice40 -top Counter -json counter\.synth\.json; stat$/);
     const pnr = run.calls.find((c) => c.includes('--up5k') && c.join(' ').includes('counter.synth'))!;
-    expect(pnr.join(' ')).toMatch(/--up5k --package sg48 --json \S+counter\.synth\.json --freq 12 --seed 1 --report \S+ --log \S+/);
+    expect(pnr.join(' ')).toMatch(/--up5k --package sg48 --json counter\.synth\.json --freq 12 --seed 1 --report \S+ --log \S+/);
     expect(log.lines.at(-1)).toMatch(/^validate:yosys: 2 of 2 designs went through; report in /);
   });
 

@@ -21,13 +21,18 @@ export function parseSignature(text: string): number[] {
   return words;
 }
 
-/** Where two signatures first differ, or undefined if they are the same. */
-export function compareSignatures(got: ArrayLike<number>, want: ArrayLike<number>): string | undefined {
-  const n = Math.max(got.length, want.length);
+/**
+ * Where two signatures first differ, or undefined if they are the same. With `padded`, `want` may end with zero words
+ * beyond the end of `got`: riscv-arch-test's reference files pad the signature to an alignment boundary.
+ */
+export function compareSignatures(got: ArrayLike<number>, want: ArrayLike<number>, padded = false): string | undefined {
+  let wantLength = want.length;
+  if (padded) while (wantLength > got.length && want[wantLength - 1] === 0) wantLength--;
+  const n = Math.max(got.length, wantLength);
   for (let i = 0; i < n; i++) {
     const g = i < got.length ? (got[i]! >>> 0).toString(16).padStart(8, '0') : undefined;
-    const w = i < want.length ? (want[i]! >>> 0).toString(16).padStart(8, '0') : undefined;
-    if (g !== w) return `word ${i}: got ${g ?? '<missing>'}, expected ${w ?? '<missing>'}${got.length !== want.length ? ` (${got.length} words against ${want.length})` : ''}`;
+    const w = i < wantLength ? (want[i]! >>> 0).toString(16).padStart(8, '0') : undefined;
+    if (g !== w) return `word ${i}: got ${g ?? '<missing>'}, expected ${w ?? '<missing>'}${got.length !== wantLength ? ` (${got.length} words against ${wantLength})` : ''}`;
   }
   return undefined;
 }
