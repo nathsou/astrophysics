@@ -1,7 +1,7 @@
 # Count from 0 to 255 on the LEDs and the hex display, then stop.
 # Shows: a counting loop that ends when the counter reaches a limit held in a register.
 
-        .equ DELAY, 515         # turns of the delay loop per count (5 cycles each)
+        .equ DELAY, 644         # turns of the delay loop per count (4 cycles each)
 
         li   a0, 0              # the count
         li   a1, 256            # the limit

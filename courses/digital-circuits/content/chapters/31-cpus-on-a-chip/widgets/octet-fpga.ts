@@ -38,7 +38,7 @@ export function patchProgram(device: VFpgaDevice, bits: Uint8Array, image: Array
   for (const key of rams) {
     const [x, y] = key.split(',').map(Number) as [number, number];
     const w = BRAM_WIDTHS[readBram(device, bits, x, y).mode]!;
-    // A block RAM is at least as wide as the byte; a wider one (Octet's are set to 256 × 16) holds it in its low bits.
+    // A block RAM is at least as wide as the byte; the fitter picks the mode that wastes least (Octet's are set to 512 × 8).
     if (w < 8) throw new Error(`the RAM at ${key} is ${w} bits wide, and Octet's words are 8`);
     const init = bramInitOffset(device, x, y);
     for (let a = 0; a < BRAM_BITS / w; a++) setBits(out, init + a * w, w, a < OCTET_MEMORY.ramSize ? (image[a] ?? 0) & 0xff : getBits(bits, init + a * w, w));

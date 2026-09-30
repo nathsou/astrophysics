@@ -36,10 +36,14 @@
  *
  * ## Timing model
  *
- * The reference multi-cycle core (Chapter 31) fetches in one cycle and executes in another; loads
- * and stores add a memory cycle, and instructions that change the PC through the adder add one
- * more. `RV32_TIMING` lists the totals; the interpreter counts them so that ISA-level and
- * gate-level runs can be compared cycle for cycle.
+ * The reference core (`content/designs/rv32i.dcl`, Chapter 31) takes two clock cycles for every
+ * instruction: one to fetch it, one to execute it. Loads, stores, jumps and taken branches are no
+ * slower, because the core's memory answers within the cycle (its `memory_value` input follows
+ * `memory_address` at once, as in the course's boards) and its adder computes the next PC in the same
+ * cycle as everything else. A trap (`ecall`, `ebreak`, an illegal instruction) is reported in the
+ * execute cycle and the core stops there, so the trapping instruction has cost only its fetch cycle.
+ * `RV32_TIMING` lists these numbers; the interpreter counts them so that ISA-level and gate-level runs
+ * can be compared cycle for cycle (`src/lib/hdl/rv32i.test.ts` does, on the RTL simulator).
  */
 
 export const REGISTER_NAMES = [
@@ -400,39 +404,22 @@ export function immJ(w: number): number {
 // Timing
 
 /**
- * Clock cycles per instruction of the reference multi-cycle core: fetch, execute, and the extra
- * cycles below. A model, not a measurement: the DCL core of Chapter 31 is built to match it.
+ * Clock cycles of the reference core: fetch, then execute, for every instruction. A model of the
+ * DCL core of Chapter 31, checked against it on the RTL simulator.
  */
 export const RV32_TIMING = {
-  /** Register and immediate arithmetic, lui, auipc, fence, and a branch that is not taken. */
-  alu: 2,
-  /** Loads and stores: fetch, address, memory access. */
-  load: 3,
-  store: 3,
-  /** A taken branch and `jal`/`jalr`: the target is computed by the adder in an extra cycle. */
-  taken: 3,
-  jump: 3,
-  /** ecall, ebreak: reported, then the core stops. */
-  system: 2,
+  /** Every instruction: one cycle to fetch, one to execute (loads, stores, jumps and branches too). */
+  instruction: 2,
+  /** The instruction that traps: only its fetch cycle is clocked, because the trap is reported during the execute cycle, where the core stops. */
+  trap: 1,
 } as const;
 
-/** Cycles of a decoded instruction (a conditional branch: `taken` says whether it was). */
-export function cyclesOf(mnemonic: string, taken = false): number {
-  const s = instructionByMnemonic(mnemonic);
-  switch (s?.group) {
-    case 'load':
-      return RV32_TIMING.load;
-    case 'store':
-      return RV32_TIMING.store;
-    case 'jump':
-      return RV32_TIMING.jump;
-    case 'branch':
-      return taken ? RV32_TIMING.taken : RV32_TIMING.alu;
-    case 'system':
-      return RV32_TIMING.system;
-    default:
-      return RV32_TIMING.alu;
-  }
+/**
+ * Cycles of a decoded instruction: 2, or 1 for one that traps (`ecall`, `ebreak`). `taken` is accepted
+ * for callers that pass it and does not matter: a taken branch costs the same as any instruction.
+ */
+export function cyclesOf(mnemonic: string, _taken = false): number {
+  return instructionByMnemonic(mnemonic)?.group === 'system' ? RV32_TIMING.trap : RV32_TIMING.instruction;
 }
 
 // ---------------------------------------------------------------------------------------------

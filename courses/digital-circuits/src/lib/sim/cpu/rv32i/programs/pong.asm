@@ -5,7 +5,7 @@
 #   s0 ball column (mask)   s1 ball row (0 = top)   s2 dx (0 right, 1 left)   s3 dy (+1 down, -1 up)
 #   s4 paddle (mask)        s5 score
 
-        .equ DELAY, 1000        # frame delay: turns of the delay loop (5 cycles each)
+        .equ DELAY, 1250        # frame delay: turns of the delay loop (4 cycles each)
 
         li   s0, 0x10
         li   s1, 1

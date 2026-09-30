@@ -8,7 +8,7 @@
   const entry = { ...ALL_ENTRIES.find((e) => e.slug === 'shannons-switches')!, available: true };
   const mod: ContentModule = {
     default: SampleBody,
-    metadata: { slug: entry.slug, title: entry.title, summary: entry.summary, number: entry.number, kind: 'chapter', duration: '45 min + labs', prerequisites: ['relays'] },
+    metadata: { slug: entry.slug, title: entry.title, summary: entry.summary, number: entry.number, kind: 'chapter', duration: '45 min + labs', prerequisites: ['relays', 'capacitors-and-time', 'boolean-algebra', 'registers-and-counters', 'describing-hardware', 'netlist-to-bitstream'] },
     toc: [
       { id: 'series-is-and', text: 'Series is AND', depth: 2 },
       { id: 'parallel-is-or', text: 'Parallel is OR', depth: 2 },

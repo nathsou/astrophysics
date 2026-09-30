@@ -18,7 +18,7 @@ import type { CarryPlan } from './carry';
 import { dependsOn, flipVar, notTt, replicate } from './cuts';
 import { FlowError, sinkLiterals, type Design } from './design';
 import type { MapResult } from './map';
-import { BRAM_WIDTHS } from '../devices/vfpga-arch';
+import { BRAM_BITS, BRAM_WIDTHS } from '../devices/vfpga-arch';
 
 export interface LcNet {
   id: number;
@@ -109,6 +109,31 @@ export interface LcNetlist {
   warnings: string[];
 }
 
+/**
+ * The width mode (an index into `BRAM_WIDTHS`) in which to map a RAM of `words` × `dataBits`, or −1 if no mode is deep enough.
+ * Fewest block RAMs first (a mode of width w needs ⌈dataBits / w⌉ of them), then the fewest wasted bits, then the fewest
+ * unused data pins: the first mode that is deep enough would put Octet's 240 × 8 into 256 × 16 and leave half of every
+ * word's pins idle, where 512 × 8 is just as small and uses all of them.
+ */
+export function bramMode(words: number, dataBits: number): number {
+  let best = -1;
+  let bestKey: number[] = [];
+  const lexLess = (a: number[], b: number[]) => {
+    for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return a[i]! < b[i]!;
+    return false;
+  };
+  BRAM_WIDTHS.forEach((w, mode) => {
+    if (words > BRAM_BITS / w) return;
+    const blocks = Math.ceil(dataBits / w);
+    const key = [blocks, blocks * BRAM_BITS - words * dataBits, blocks * w - dataBits];
+    if (best < 0 || lexLess(key, bestKey)) {
+      best = mode;
+      bestKey = key;
+    }
+  });
+  return best;
+}
+
 export function buildLcNetlist(d: Design, map: MapResult, plan: CarryPlan): LcNetlist {
   const aig: Aig = d.aig;
   const nets: LcNet[] = [];
@@ -168,7 +193,7 @@ export function buildLcNetlist(d: Design, map: MapResult, plan: CarryPlan): LcNe
   const rams: RamBlock[] = [];
   const ramOfDesign: RamBlock[][] = d.rams.map((m) => {
     const need = 1 << m.addrBits;
-    const mode = BRAM_WIDTHS.findIndex((w) => need <= 4096 / w);
+    const mode = bramMode(need, m.dataBits);
     if (mode < 0) throw new FlowError(`RAM ${m.name} has ${need} words; a block RAM holds at most 2048.`, 'ram-mapping', [m.name]);
     const w = BRAM_WIDTHS[mode]!;
     const blocks: RamBlock[] = [];

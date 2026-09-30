@@ -255,16 +255,16 @@ It began as a contract: Busicom, a Japanese calculator company, wanted a set of 
 
 ### The same task on RISC-V
 
-Chapter 31 builds a second CPU on the same virtual board: RV32I, the base of the RISC-V instruction set. It is a good contrast. RISC-V instructions are all 32 bits long, there are 32 registers of 32 bits (x0 is always zero), there is no flags register, and a branch compares two registers itself (`beq`, `blt`) instead of relying on an earlier CMP.:cite[riscv-spec] The course’s RV32I core also takes 2 or 3 cycles for every instruction, against Octet’s 4 to 8. Here are the same two programs on the two machines, from the course’s interpreters:
+Chapter 31 builds a second CPU on the same virtual board: RV32I, the base of the RISC-V instruction set. It is a good contrast. RISC-V instructions are all 32 bits long, there are 32 registers of 32 bits (x0 is always zero), there is no flags register, and a branch compares two registers itself (`beq`, `blt`) instead of relying on an earlier CMP.:cite[riscv-spec] The course’s RV32I core takes exactly 2 cycles for every instruction, one to fetch it and one to execute it, against Octet’s 4 to 8. Here are the same two programs on the two machines, from the course’s interpreters:
 
 | Program | CPU | Bytes | Instructions | Cycles | CPI |
 |---|---|---|---|---|---|
 | 13 × 11 by shift-and-add | Octet | 49 | 60 | 329 | 5.48 |
-| | RV32I | 64 | 29 | 69 | 2.38 |
+| | RV32I | 64 | 29 | 58 | 2.00 |
 | Sort 8 bytes | Octet | 38 | 581 | 2,941 | 5.06 |
-| | RV32I | 68 | 317 | 847 | 2.67 |
+| | RV32I | 68 | 317 | 634 | 2.00 |
 
-The RISC-V core needs about half the instructions, because its registers are wide enough to hold the whole product and it compares and branches in one instruction; and about a third of the cycles, because each of its instructions is cheaper. But it uses more bytes, in these programs, since every instruction is four bytes to Octet’s one or two. There is no free lunch: a small instruction word gives a small program and a slow one. That is why instruction sets are designed by measuring what real programs do and spending the transistors where the time goes.
+The RISC-V core needs about half the instructions, because its registers are wide enough to hold the whole product and it compares and branches in one instruction; and about a fifth of the cycles, because each of its instructions is cheaper. But it uses more bytes, in these programs, since every instruction is four bytes to Octet’s one or two. There is no free lunch: a small instruction word gives a small program and a slow one. That is why instruction sets are designed by measuring what real programs do and spending the transistors where the time goes.
 
 ## Memory-mapped devices
 

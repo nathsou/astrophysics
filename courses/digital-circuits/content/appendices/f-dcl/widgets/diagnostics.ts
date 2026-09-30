@@ -257,7 +257,7 @@ export const DIAGNOSTICS: DiagnosticDoc[] = [
   {
     code: 'comb-loop',
     stage: 'Clocks and dataflow',
-    meaning: 'A combinational loop: a signal that depends on itself with no register in the way. It would hold state without a clock (a latch). The message gives the path round the loop.',
+    meaning: 'A combinational loop: a signal that depends on itself with no register in the way. It would hold state without a clock (a latch). The message gives the path round the loop. A path through a memory does not count: its reads are synchronous, so the data is a register output, and a RAM’s data may feed its own address.',
     example: `module M(s_n: bit, r_n: bit) -> (q: bit) {\n  let a: bit = !(s_n && b)\n  let b: bit = !(r_n && a)\n  q = a\n}\n`,
     fix: 'Put a `reg` in the loop.',
   },

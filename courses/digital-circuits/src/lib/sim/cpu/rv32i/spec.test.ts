@@ -276,14 +276,13 @@ describe('decoding', () => {
   });
 
   test('cycle model', () => {
-    expect(cyclesOf('add')).toBe(RV32_TIMING.alu);
-    expect(cyclesOf('lw')).toBe(3);
-    expect(cyclesOf('sw')).toBe(3);
+    // The DCL core: fetch and execute for every instruction; a trap only its fetch cycle.
+    expect(RV32_TIMING).toEqual({ instruction: 2, trap: 1 });
+    for (const m of ['add', 'addi', 'lui', 'lw', 'lbu', 'sw', 'sb', 'jal', 'jalr', 'fence']) expect(cyclesOf(m), m).toBe(2);
     expect(cyclesOf('beq', false)).toBe(2);
-    expect(cyclesOf('beq', true)).toBe(3);
-    expect(cyclesOf('jal')).toBe(3);
-    expect(cyclesOf('jalr')).toBe(3);
-    expect(cyclesOf('ecall')).toBe(2);
+    expect(cyclesOf('beq', true)).toBe(2);
+    expect(cyclesOf('ecall')).toBe(1);
+    expect(cyclesOf('ebreak')).toBe(1);
     expect(instructionByMnemonic('ADD')?.mnemonic).toBe('add');
   });
 });

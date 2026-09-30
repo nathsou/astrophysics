@@ -250,6 +250,65 @@ test "t" {
 }`);
   });
 
+  it('allows a path from a memory read back into its own address: reads are synchronous', () => {
+    // The read data is a register output, so `data → ptr → data` goes through a register, like a counter.
+    passes(`module Chase(clk: clock) -> (q: bits<4>) {
+  mem store: [bits<4>; 16] = [3; 16]
+  let data: bits<4> = store.read(ptr)
+  let ptr: bits<4> = data
+  q = data
+}
+test "t" {
+  let c = sim Chase()
+  expect c.q == 0
+  step
+  expect c.q == 3
+}`);
+  });
+
+  it('allows the loop through a memory inside a child, and through the child from its parent', () => {
+    expect(codes(`module Rom(clk: clock, addr: bits<4>) -> (data: bits<4>) {
+  mem store: [bits<4>; 16] = [7; 16]
+  data = store.read(addr)
+}
+module M(clk: clock) -> (y: bits<4>) {
+  inst r: Rom(clk: clk, addr: r.data)
+  y = r.data
+}`)).toEqual([]);
+  });
+
+  it('still reports a real loop whose path passes a memory read only through its data', () => {
+    // `t` feeds itself through an XOR; the read in the middle does not break that loop, because the loop never goes through the read.
+    const r = check(`module M(clk: clock, a: bits<4>) -> (y: bits<4>) {
+  mem store: [bits<4>; 16] = [1; 16]
+  let t: bits<4> = store.read(a) ^ t
+  y = t
+}`);
+    expect(r.diagnostics.map((d) => [d.code, d.label])).toEqual([['comb-loop', 't → t']]);
+  });
+
+  it('still reports a loop inside a memory read address', () => {
+    const r = check(`module M(clk: clock) -> (y: bits<4>) {
+  mem store: [bits<4>; 16] = [1; 16]
+  let a: bits<4> = ~b
+  let b: bits<4> = ~a
+  y = store.read(a)
+}`);
+    expect(r.diagnostics.map((d) => [d.code, d.label])).toEqual([['comb-loop', 'a → b → a']]);
+  });
+
+  it('still reports a loop through an instance that reads a memory combinationally into its output', () => {
+    // Buf's output follows its input with no register, so the loop through it is real even though a RAM sits beside it.
+    const r = check(`module Buf(a: bits<4>) -> (y: bits<4>) {\n  y = a\n}
+module M(clk: clock) -> (y: bits<4>) {
+  mem store: [bits<4>; 16] = [1; 16]
+  inst b: Buf(a: t)
+  let t: bits<4> = b.y ^ store.read(b.y)
+  y = t
+}`);
+    expect(r.diagnostics.map((d) => d.code)).toEqual(['comb-loop']);
+  });
+
   it('lets outputs of instances feed each other without a loop', () => {
     passes(`module Inc(a: bits<4>) -> (y: bits<4>) {
   y = a + 1

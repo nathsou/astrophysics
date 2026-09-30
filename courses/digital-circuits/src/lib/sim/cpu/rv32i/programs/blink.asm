@@ -1,7 +1,7 @@
 # Blink: light the left and right halves of the LEDs in turn, forever.
 # Shows: a loop, xori, and calling a subroutine (jal and ret).
 
-        .equ DELAY, 2060        # turns of the delay loop per half period (5 cycles each)
+        .equ DELAY, 2575        # turns of the delay loop per half period (4 cycles each)
 
         li   a0, 0x0F           # the right half first
 loop:   sw   a0, LEDS(zero)     # the board's registers sit at the top of memory, so

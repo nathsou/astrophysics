@@ -124,7 +124,7 @@ describe('random RV32I programs', () => {
       expect(m.pc, `seed ${seed} pc`).toBe(o.pc);
       expect(Array.from(m.x, (v) => v >>> 0), `seed ${seed} registers`).toEqual(o.x);
       expect(Buffer.compare(Buffer.from(m.memory), Buffer.from(o.mem)), `seed ${seed} memory`).toBe(0);
-      expect(m.cycles, `seed ${seed} cycles`).toBe(o.cycles + 2); // the model stops before the ebreak (2 cycles)
+      expect(m.cycles, `seed ${seed} cycles`).toBe(o.cycles + 1); // the model stops before the ebreak (its fetch cycle)
       expect(m.steps, `seed ${seed} steps`).toBe(o.steps);
     }
   });

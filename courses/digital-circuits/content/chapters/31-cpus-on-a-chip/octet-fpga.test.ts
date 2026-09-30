@@ -175,10 +175,10 @@ describe('the numbers of Chapter 31', () => {
     expect(flow.routing.iterations.length).toBe(12);
   });
 
-  test('the block RAMs are set to 256 × 16 (Octet has 240 words of 8 bits) and the program is 4,096 configuration bits each', () => {
+  test('the block RAMs are set to 512 × 8 (Octet has 240 words of 8 bits) and the program is 4,096 configuration bits each', () => {
     const r = summarise(flow);
     const patch = patchProgram(flow.device, r.bits, new Uint8Array(240).fill(0xff));
-    // 240 words of the low 8 bits of a 16-bit word: 1,920 bits of each RAM (a few were already 1, in the walk program).
+    // 240 words of 8 bits: 1,920 bits of each RAM (a few were already 1, in the walk program).
     expect(patch.changed).toBeGreaterThan(2 * 1920 - 2 * 31 * 8);
     expect(patch.changed).toBeLessThanOrEqual(2 * 1920);
   });

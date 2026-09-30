@@ -41,13 +41,14 @@ describe('cycles per instruction', () => {
     const rows = ['multiply', 'sort'].map((id) => ({ id, octet: measure(id), rv32: measureRv32(id) }));
     const mul = rows[0]!;
     expect([mul.octet.bytes, mul.octet.instructions, mul.octet.cycles]).toEqual([49, 60, 329]);
-    expect([mul.rv32.bytes, mul.rv32.instructions, mul.rv32.cycles]).toEqual([64, 29, 69]);
+    expect([mul.rv32.bytes, mul.rv32.instructions, mul.rv32.cycles]).toEqual([64, 29, 58]);
     const sort = rows[1]!;
     expect([sort.octet.bytes, sort.octet.instructions, sort.octet.cycles]).toEqual([38, 581, 2941]);
-    expect([sort.rv32.bytes, sort.rv32.instructions, sort.rv32.cycles]).toEqual([68, 317, 847]);
+    expect([sort.rv32.bytes, sort.rv32.instructions, sort.rv32.cycles]).toEqual([68, 317, 634]);
     // RV32I's fixed 32-bit instructions cost code size; its wider registers and compare-and-branch cost fewer instructions.
     for (const r of rows) {
-      expect(r.rv32.cpi).toBeLessThan(3);
+      expect(r.rv32.cpi).toBe(2); // fetch and execute: every instruction of the DCL core takes two cycles
+      expect(r.rv32.cycles).toBe(2 * r.rv32.instructions);
       expect(r.octet.cpi).toBeGreaterThan(4.9);
     }
   });

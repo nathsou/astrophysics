@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest';
 import { check } from './check';
 import { elaborate } from './elaborate';
 import { createRtlSim, type RtlSignalHandle, type RtlSim } from './rtlsim';
+import { assembleOrThrow, Rv32Machine, rv32Program } from '../sim/cpu/rv32i';
 
 const SOURCE = readFileSync(new URL('../../../content/designs/rv32i.dcl', import.meta.url), 'utf8');
 const checked = check(SOURCE, { file: 'rv32i.dcl' });
@@ -343,6 +344,48 @@ describe('RV32I core (content/designs/rv32i.dcl)', () => {
       expect(Array.from({ length: 20 }, (_, i) => m.word(512 + 4 * i))).toEqual(fib.slice(0, 20));
       expect(m.x(1)).toBe(fib[20]);
       expect(m.cycles).toBe(2 * (4 + 20 * 7) + 1);
+    }
+  });
+
+  it('takes as many clock cycles as the reference interpreter counts, for every kind of instruction', () => {
+    // The interpreter's timing model (`RV32_TIMING`) claims to be this core's. Loads, stores, jumps and taken branches take
+    // two cycles like everything else, and the trapping instruction only its fetch cycle: the core reports the trap in
+    // the execute cycle and stops, so the testbench has not clocked that one. Compare the course's own programs, which
+    // use all of those, and an assembled program with one of each.
+    const sources: [string, string][] = [
+      ['multiply', rv32Program('multiply').source],
+      ['fibonacci', rv32Program('fibonacci').source],
+      ['sort', rv32Program('sort').source],
+      [
+        'one of each',
+        `        li   a0, 5
+        lw   a1, 0x200(zero)
+        sw   a0, 0x204(zero)
+        beq  a0, a0, taken
+        li   a2, 1
+taken:  bne  a0, a0, never
+        jal  ra, sub
+        jalr zero, 0(ra)
+never:  li   a3, 2
+sub:    addi a0, a0, 1
+        ebreak`,
+      ],
+    ];
+    for (const [name, source] of sources) {
+      const program = assembleOrThrow(source, name);
+      const words = Array.from({ length: Math.ceil(program.image.length / 4) }, (_, i) => {
+        const b = program.image;
+        return u32((b[4 * i] ?? 0) | ((b[4 * i + 1] ?? 0) << 8) | ((b[4 * i + 2] ?? 0) << 16) | ((b[4 * i + 3] ?? 0) << 24));
+      });
+      const core = new Machine(words);
+      expect(core.run(), name).toBe(3); // ebreak
+      const ref = new Rv32Machine();
+      ref.load(program);
+      ref.run(1_000_000);
+      expect(ref.halted, name).toBe(true);
+      expect(core.cycles, name).toBe(ref.cycles);
+      expect(core.cycles, name).toBe(2 * ref.steps + 1);
+      for (let i = 0; i < 32; i++) expect(core.x(i), `${name} x${i}`).toBe(ref.reg(i));
     }
   });
 

@@ -1,6 +1,6 @@
 /**
  * The RV32I reference interpreter: executes one instruction per `step()`, counting the clock cycles
- * of the reference multi-cycle core (`RV32_TIMING` in `spec.ts`). It is the specification the DCL
+ * of the reference core, two per instruction (`RV32_TIMING` in `spec.ts`). It is the specification the DCL
  * core is tested against, and the engine behind the ISA-level turbo mode.
  *
  * Memory is RAM at 0 (64 KiB by default) and the board's I/O block at 0xFFFF_FF00 (see `board.ts`).
@@ -221,7 +221,7 @@ export class Rv32Machine {
   // ---- Execution.
 
   private takeTrap(cause: Rv32TrapCause, pc: number, value: number): number {
-    const cycles = cause === 'ecall' || cause === 'breakpoint' ? RV32_TIMING.system : RV32_TIMING.alu;
+    const before = this.cycles;
     const trap: Rv32Trap = {
       cause,
       code: RV32_TRAP_CODES[cause],
@@ -230,21 +230,22 @@ export class Rv32Machine {
       message: trapMessage(cause, pc, value),
       cycle: this.cycles,
     };
-    this.cycles += cycles;
+    this.cycles += RV32_TIMING.trap;
     this.trap = trap;
     this.halted = true;
     this.board.reportTrap(trap);
     if (this.onTrap?.(trap, this) === true && (cause === 'ecall' || cause === 'breakpoint')) this.resume();
-    return cycles;
+    return this.cycles - before;
   }
 
-  /** After an `ecall` or `ebreak` trap: continue with the next instruction. */
+  /** After an `ecall` or `ebreak` trap: continue with the next instruction (the execute cycle the trap stopped short of is then clocked, so the instruction has taken its two cycles). */
   resume(): void {
     if (!this.trap || (this.trap.cause !== 'ecall' && this.trap.cause !== 'breakpoint')) throw new Error('resume() is only possible after ecall or ebreak');
     this.pc = (this.trap.pc + 4) >>> 0;
     this.trap = undefined;
     this.halted = false;
     this.steps++;
+    this.cycles += RV32_TIMING.instruction - RV32_TIMING.trap;
   }
 
   /**
@@ -268,7 +269,7 @@ export class Rv32Machine {
     const a = x[rs1]!;
     const b = x[rs2]!;
     let next = (pc + 4) >>> 0;
-    let cycles: number = RV32_TIMING.alu;
+    const cycles: number = RV32_TIMING.instruction;
     let result = 0;
     let write = false;
     const illegal = () => this.takeTrap('illegal-instruction', pc, w);
@@ -289,7 +290,6 @@ export class Rv32Machine {
         result = next;
         write = true;
         next = t;
-        cycles = RV32_TIMING.jump;
         break;
       }
       case 0x67: {
@@ -300,7 +300,6 @@ export class Rv32Machine {
         result = next;
         write = true;
         next = t;
-        cycles = RV32_TIMING.jump;
         break;
       }
       case 0x63: {
@@ -332,7 +331,6 @@ export class Rv32Machine {
           const t = (pc + (((w >> 31) << 12) | (((w >> 7) & 1) << 11) | (((w >> 25) & 0x3f) << 5) | (((w >> 8) & 0xf) << 1))) >>> 0;
           if (t & 3) return this.takeTrap('instruction-misaligned', pc, t);
           next = t;
-          cycles = RV32_TIMING.taken;
         }
         break;
       }
@@ -360,7 +358,6 @@ export class Rv32Machine {
         if (this.fault) return this.takeTrap(this.fault, pc, addr);
         result = f3 === 0 ? (v << 24) >> 24 : f3 === 1 ? (v << 16) >> 16 : v;
         write = true;
-        cycles = RV32_TIMING.load;
         break;
       }
       case 0x23: {
@@ -370,7 +367,6 @@ export class Rv32Machine {
         this.fault = undefined;
         this.storeBytes(addr, 1 << f3, b);
         if (this.fault) return this.takeTrap(this.fault, pc, addr);
-        cycles = RV32_TIMING.store;
         break;
       }
       case 0x13: {

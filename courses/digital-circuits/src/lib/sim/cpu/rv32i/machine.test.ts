@@ -540,9 +540,9 @@ describe('the board', () => {
     const m = exec(`
       lw   a0, TIMER(zero)      # nothing ran before it: 0
       nop
-      lw   a1, TIMER(zero)      # lw (3) + nop (2) = 5
+      lw   a1, TIMER(zero)      # lw (2) + nop (2) = 4
       lw   a2, TIMER_HI(zero)`);
-    expect([a0(m), m.reg(11), m.reg(12)]).toEqual([0, 5, 0]);
+    expect([a0(m), m.reg(11), m.reg(12)]).toEqual([0, 4, 0]);
     const long = new Rv32Machine().load(assembleOrThrow('lw a0, TIMER(zero)\nlw a1, TIMER_HI(zero)'));
     long.cycles = 0x1_0000_0005;
     long.step();
@@ -573,22 +573,31 @@ describe('timing, running, tracing and snapshots', () => {
     };
     expect(cycles('add a0, a0, a0')).toBe(2);
     expect(cycles('lui a0, 1')).toBe(2);
-    expect(cycles('lw a0, 0(zero)')).toBe(3);
-    expect(cycles('sw a0, 0x100(zero)')).toBe(3);
-    expect(cycles('beq a0, a0, . + 8')).toBe(3);
+    // The DCL core takes two cycles for every instruction, loads, stores, jumps and taken branches included.
+    expect(cycles('lw a0, 0(zero)')).toBe(2);
+    expect(cycles('sw a0, 0x100(zero)')).toBe(2);
+    expect(cycles('beq a0, a0, . + 8')).toBe(2);
     expect(cycles('bne a0, a0, . + 8')).toBe(2);
-    expect(cycles('jal ra, . + 8')).toBe(3);
-    expect(cycles('jalr zero, 8(zero)')).toBe(3);
+    expect(cycles('jal ra, . + 8')).toBe(2);
+    expect(cycles('jalr zero, 8(zero)')).toBe(2);
     expect(cycles('fence')).toBe(2);
+    // A trap costs the fetch cycle only: the core reports it in the execute cycle and stops.
+    expect(cycles('ebreak')).toBe(1);
+    expect(cycles('ecall')).toBe(1);
+    expect(cycles('.word 0')).toBe(1);
     const m = new Rv32Machine().load(assembleOrThrow('nop\nnop\nlw a0, 0(zero)\nebreak'));
     m.run();
-    expect(m.cycles).toBe(2 + 2 + 3 + 2);
+    expect(m.cycles).toBe(2 + 2 + 2 + 1);
     expect(m.steps).toBe(3); // the ebreak does not retire
+    // Resumed after an ecall (a host system call), the instruction has taken its two cycles like any other.
+    const h = new Rv32Machine({ onTrap: () => true }).load(assembleOrThrow('nop\necall\nnop\nebreak'));
+    h.run(3);
+    expect(h.cycles).toBe(2 + 2 + 2);
   });
 
   test('run(maxSteps), runCycles, breakpoints and runUntil', () => {
     const m = new Rv32Machine().load(assembleOrThrow('loop: addi a0, a0, 1\nj loop'));
-    expect(m.run(10)).toEqual({ reason: 'max-steps', steps: 10, cycles: 5 * 2 + 5 * 3 });
+    expect(m.run(10)).toEqual({ reason: 'max-steps', steps: 10, cycles: 10 * 2 });
     m.reset();
     expect(m.runCycles(20).reason).toBe('cycles');
     expect(m.cycles).toBeGreaterThanOrEqual(20);
@@ -608,7 +617,7 @@ describe('timing, running, tracing and snapshots', () => {
     const m = new Rv32Machine({ traceLimit: 3 }).load(assembleOrThrow('li a0, 1\nli a1, 2\nadd a2, a0, a1\nsw a2, LEDS(zero)\nebreak'));
     m.run();
     expect(m.trace.map((t) => t.text)).toEqual(['li a1, 2', 'add a2, a0, a1', 'sw a2, LEDS(zero)']);
-    expect(m.trace[2]).toMatchObject({ pc: 12, cycles: 3, step: 3 });
+    expect(m.trace[2]).toMatchObject({ pc: 12, cycles: 2, step: 3 });
     expect(m.trace[1]!.cycle).toBe(4);
   });
 

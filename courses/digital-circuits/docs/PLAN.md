@@ -313,7 +313,7 @@ vFPGA sizes:
 | Size | Tiles | Chosen so that |
 |---|---|---|
 | S | 2 × 2 | It is small enough to configure every bit by hand. |
-| M | Sized in M7 | Octet uses about two thirds of it. |
+| M | Sized in M7 | Octet uses 47 % of it (541 of 1,152 cells). |
 | L | Sized in M7 | The RV32I core fits. |
 
 - **Routing.** The vFPGA's routing is built from unidirectional, single-driver multiplexers, as in modern
@@ -706,7 +706,7 @@ courses/digital-circuits/
 
 ## Milestones
 
-- [ ] **M0 — Foundations.**
+- [x] **M0 — Foundations.**
   - SvelteKit shell and Markdown compiler (from Proofcraft).
   - "The Bench" design tokens and mockups.
   - Netlist model, digital engine, analog engine (R, C, sources, switch, lamp, relay).
@@ -714,24 +714,24 @@ courses/digital-circuits/
   - Engine benchmarks.
   - **Chapter 6 (Shannon's switches) as the reference chapter.** It exercises analog and logic, an
     exercise, history cards and sound.
-- [ ] **M1 — Part I.**
+- [x] **M1 — Part I.**
   - Prologue and chapters 1–5.
   - Bench v1: editor, multimeter, supply, oscilloscope, function generator.
   - Voltage landscape (WebGL2); ratings and magic smoke.
   - Appendices A and B.
   - Wired into the collection as *in progress*.
-- [ ] **M2 — Part II.**
+- [x] **M2 — Part II.**
   - Chapters 7–10.
   - Diode, LED, BJT and MOSFET models; Newton–Raphson.
   - Switch-level engine; the abstraction dial; the gate compiler; the parts bin.
-- [ ] **M3 — Part III.**
+- [x] **M3 — Part III.**
   - Chapters 11–15.
   - Synthesis, K-maps, Quine–McCluskey; timing diagrams; gate golf.
   - `build`, `debug` and `golf` exercises.
-- [ ] **M4 — Part IV.**
+- [x] **M4 — Part IV.**
   - Chapters 16–20.
   - Metastability model; the FSM designer and FSM equivalence checker; memory models; the logic analyser.
-- [ ] **M5 — Part V.**
+- [x] **M5 — Part V.**
   - Chapters 21–24.
   - Octet: final ISA, assembler, reference interpreter, gate-level build in a worker, turbo mode, I/O
     devices.

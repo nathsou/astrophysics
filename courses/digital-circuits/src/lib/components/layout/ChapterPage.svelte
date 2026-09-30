@@ -75,8 +75,8 @@
     <div class="meta ui">
       {#if meta.duration}<span><Icon name="history" size={14} /> {meta.duration}</span>{/if}
       {#if prereqs.length}
-        <span>Assumes:
-          {#each prereqs as p, i (p.slug)}{#if i}, {/if}{#if p.available}<a href="{base}{p.href}">{p.number}. {p.title}</a>{:else}<span title="Coming soon">{p.number}. {p.title}</span>{/if}{/each}
+        <span class="assumes">Assumes:
+          {#each prereqs as p, i (p.slug)}{#if i}{', '}{/if}{#if p.available}<a href="{base}{p.href}">{p.number}. {p.title}</a>{:else}<span title="Coming soon">{p.number}. {p.title}</span>{/if}{/each}
         </span>
       {/if}
     </div>
@@ -178,6 +178,17 @@
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
+  }
+  /* The prerequisites are running text, not a row of flex items: they wrap at the commas (and inside a long title) instead
+     of pushing the page wider than a phone. */
+  .meta .assumes {
+    display: block;
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+  .meta .assumes span {
+    display: inline;
   }
   .builds {
     display: flex;

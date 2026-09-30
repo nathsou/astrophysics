@@ -12,6 +12,7 @@ import type { Analyzer } from '../../hdl/editor/client';
 import type { RtlDesign } from '../../hdl/rtl';
 import { getVFpga, type VFpgaDevice } from '../../pld/devices/vfpga';
 import { bindBoard, boardOutputs, emptyBoardInputs, type BoardBinding, type BoardInputs, type BoardOutputs } from './board';
+import { analysisForFit, AnalysisInterrupted, SharedRequests } from './analysis-share';
 import { buildChipModel, type ChipModel } from './chipmodel';
 import { Cancelled, createFlowClient, FlowFailure, type FlowClient } from './client';
 import { buildIndex, logicLinkOf, resolveFpga, type FpgaIndex, type LogicLink } from './crossmap';
@@ -392,6 +393,10 @@ export class FpgaSession {
   ops = $state.raw<Op[]>([]);
 
   private client: FlowClient | undefined;
+  /** Analysis requests in flight, by text: the editor and `fit` share one instead of superseding each other. */
+  private readonly requests = new SharedRequests<Analysis>();
+  /** Changes when a fit starts and when one is cancelled; a fit that finds it changed has been replaced. */
+  private fitToken = 0;
   private analyzer: Analyzer | undefined;
   private timer: ReturnType<typeof setTimeout> | undefined;
   private readonly key = `fpga-${Math.random().toString(36).slice(2)}`;
@@ -452,9 +457,13 @@ export class FpgaSession {
   /** The editor's `analyze`: check, elaborate and lower, in the analysis worker. */
   analyze = async (text: string): Promise<Analysis | undefined> => {
     this.analysing = true;
-    const a = await (await this.getAnalyzer()).run({ source: text, file: 'design.dcl', top: this.top, design: true, circuit: { maxElements: 300 } }, this.key);
-    return a;
+    return this.request(text);
   };
+
+  /** One analysis request per text at a time (see `SharedRequests`). */
+  private request(text: string): Promise<Analysis | undefined> {
+    return this.requests.run(text, async () => (await this.getAnalyzer()).run({ source: text, file: 'design.dcl', top: this.top, design: true, circuit: { maxElements: 300 } }, this.key));
+  }
 
   onanalysis = (a: Analysis): void => {
     this.analysing = false;
@@ -505,24 +514,38 @@ export class FpgaSession {
     }
   }
 
-  /** Check → elaborate → front end → … → bitstream. Resolves when the result is installed or the fit failed. */
+  /**
+   * Check → elaborate → front end → … → bitstream. Resolves when the result is installed or the fit failed; the status
+   * is never left on `running` by a fit that has stopped, unless a newer fit or `cancel` took it over.
+   */
   async fit(): Promise<void> {
     clearTimeout(this.timer);
+    const token = ++this.fitToken;
+    const stale = () => token !== this.fitToken;
     this.status = 'running';
     this.error = null;
     this.doneStages = new Set();
     this.stageMs = {};
     this.runningStage = 'check';
-    const source = this.source;
     try {
-      let a = this.analysis && this.analysis.source === source ? this.analysis : undefined;
       const t0 = now();
-      if (!a) {
-        a = await (await this.getAnalyzer()).run({ source, file: 'design.dcl', top: this.top, design: true, circuit: { maxElements: 300 } }, this.key);
-        if (!a) return; // superseded by a newer request
-        this.analysis = a;
-        if (a.ok && a.design) this.goodAnalysis = a;
-      }
+      // The analysis of the text: the editor's if it has one, else a request shared with the editor's own. If a newer
+      // text or a lost worker supersedes it, this looks again (and gives up with an error after a few rounds).
+      const got = await analysisForFit({
+        source: () => this.source,
+        current: () => this.analysis,
+        request: async (text) => {
+          const r = await this.request(text);
+          if (r && this.source === text) {
+            this.analysis = r;
+            if (r.ok && r.design) this.goodAnalysis = r;
+          }
+          return r;
+        },
+        stale,
+      });
+      if (got === 'stale') return;
+      const { source, analysis: a } = got;
       this.stage('check', 'end', a.timings.check ?? now() - t0);
       if (!a.ok) {
         const first = a.diagnostics.find((d) => d.severity === 'error');
@@ -537,11 +560,12 @@ export class FpgaSession {
         device: this.size === 'auto' ? undefined : this.size,
         onProgress: (s, p, ms) => this.stage(s, p, ms),
       });
+      if (stale()) return;
       this.inWorker = this.client.worker;
       this.install(result, a.design, source);
     } catch (e) {
-      if (e instanceof Cancelled) return;
-      const stage = e instanceof FlowFailure ? e.stage : undefined;
+      if (e instanceof Cancelled || stale()) return;
+      const stage = e instanceof FlowFailure ? e.stage : e instanceof AnalysisInterrupted ? 'check' : undefined;
       this.error = { message: e instanceof Error ? e.message : String(e), stage };
       this.status = 'error';
       this.runningStage = '';
@@ -549,6 +573,7 @@ export class FpgaSession {
   }
 
   cancel(): void {
+    this.fitToken++;
     this.client?.cancel();
     this.status = this.result ? 'ok' : 'idle';
     this.runningStage = '';

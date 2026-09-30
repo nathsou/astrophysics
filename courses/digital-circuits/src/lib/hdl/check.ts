@@ -22,7 +22,7 @@ import { NO_SPAN, SourceFile, type Span } from './span';
 import { findStd } from './std/index';
 import {
   BIT, CLOCK, ERROR, INT, LIT, bits, bitsNeeded, clog2, fold, indexWidth, isBit, isUntyped, mask, typeEq,
-  typeToString, walkTExpr, widthOf, type BinOp, type TExpr, type TExprOf, type Type,
+  children, typeToString, walkTExpr, widthOf, type BinOp, type TExpr, type TExprOf, type Type,
 } from './tir';
 
 // ------------------------------------------------------------------------------------------ results
@@ -1196,14 +1196,26 @@ export class Checker {
   private analyse(spec: ModuleSpec, mod: ModState): void {
     // Graph nodes: L:let, O:output, I:inst.port (instance output), C:inst.port (instance input), P:input.
     const depsCache = new Map<string, string[]>();
+    // The combinational dependencies of an expression. A memory read stops the walk: every DCL memory has synchronous
+    // reads (`m.read(addr)` returns the word at `addr` one clock later, like block RAM), so its data is a register
+    // output and the address only feeds that register. A path from a RAM's data back into its own address is therefore
+    // legal hardware, not a loop.
     const exprDeps = (root: TExpr): string[] => {
       const out: string[] = [];
-      walkTExpr(root, (e) => {
-        if (e.k !== 'ref') return;
-        if (e.ref === 'let') out.push('L:' + e.name);
-        else if (e.ref === 'instout') out.push('I:' + e.name);
-        else if (e.ref === 'input') out.push('P:' + e.name);
-      });
+      const seen = new Set<TExpr>();
+      const stack = [root];
+      while (stack.length) {
+        const e = stack.pop()!;
+        if (seen.has(e)) continue;
+        seen.add(e);
+        if (e.k === 'memread') continue;
+        if (e.k === 'ref') {
+          if (e.ref === 'let') out.push('L:' + e.name);
+          else if (e.ref === 'instout') out.push('I:' + e.name);
+          else if (e.ref === 'input') out.push('P:' + e.name);
+        }
+        for (const c of children(e)) stack.push(c);
+      }
       return out;
     };
     const deps = (node: string): string[] => {

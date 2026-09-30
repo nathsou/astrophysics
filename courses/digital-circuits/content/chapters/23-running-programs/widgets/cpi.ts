@@ -80,5 +80,8 @@ export function measureRv32(id: string): Rv32Measurement {
   const m = new rv32i.Rv32Machine();
   m.load(program);
   m.run(1_000_000);
-  return { id, bytes: program.size, instructions: m.steps, cycles: m.cycles, cpi: m.cycles / m.steps };
+  // The `ebreak` that ends the program is not an instruction that retires, so its fetch cycle is not counted: every one of
+  // the instructions takes the core's two cycles (fetch and execute), and the CPI is exactly 2.
+  const cycles = m.cycles - (m.halted ? rv32i.RV32_TIMING.trap : 0);
+  return { id, bytes: program.size, instructions: m.steps, cycles, cpi: cycles / m.steps };
 }

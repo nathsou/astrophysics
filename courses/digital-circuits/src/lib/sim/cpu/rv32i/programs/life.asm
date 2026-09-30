@@ -10,7 +10,7 @@
 # matrix, and the matrix is copied back into grid when all 8 rows are done.
 # Edit grid to start from another pattern.
 
-        .equ DELAY, 400         # pause between generations: turns of the delay loop (5 cycles each)
+        .equ DELAY, 500         # pause between generations: turns of the delay loop (4 cycles each)
 
 gen:    li   s0, 0              # s0 = the row being computed
 row:    addi t0, s0, 7          # the row above (wrapping round: (row - 1) mod 8)
