@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "title": "Charging a capacitor through an LED",
+  "engine": "analog",
+  "components": [
+    {"id": "B1", "type": "battery", "x": 4, "y": 12, "rot": 270, "params": {"voltage": 5}, "label": "5 V"},
+    {"id": "S1", "type": "switch", "x": 10, "y": 4, "label": "Charge"},
+    {"id": "R1", "type": "resistor", "x": 18, "y": 4, "params": {"resistance": 470}},
+    {"id": "D1", "type": "led", "x": 30, "y": 4, "rot": 90, "params": {"color": "red"}},
+    {"id": "C1", "type": "capacitor", "x": 30, "y": 10, "rot": 90, "params": {"capacitance": 0.001, "polarised": true}, "label": "1000 µF"},
+    {"id": "G1", "type": "ground", "x": 4, "y": 20}
+  ],
+  "wires": [
+    {"points": [[4, 8], [4, 4], [10, 4]]},
+    {"points": [[14, 4], [18, 4]]},
+    {"points": [[22, 4], [30, 4]]},
+    {"points": [[30, 8], [30, 10]]},
+    {"points": [[30, 14], [30, 20], [4, 20], [4, 12]]}
+  ]
+}

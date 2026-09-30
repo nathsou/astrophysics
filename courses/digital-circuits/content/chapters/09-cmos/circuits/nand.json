@@ -1,0 +1,80 @@
+{
+ "version": 1,
+ "title": "A NAND gate",
+ "engine": "digital",
+ "components": [
+  {
+   "id": "U1",
+   "type": "nand",
+   "x": 12,
+   "y": 0,
+   "params": {
+    "inputs": 2
+   }
+  },
+  {
+   "id": "A",
+   "type": "toggle",
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": "B",
+   "type": "toggle",
+   "x": 0,
+   "y": 4
+  },
+  {
+   "id": "Y",
+   "type": "indicator",
+   "x": 22,
+   "y": 1
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     3,
+     0
+    ],
+    [
+     12,
+     0
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     3,
+     4
+    ],
+    [
+     7,
+     4
+    ],
+    [
+     7,
+     2
+    ],
+    [
+     12,
+     2
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     18,
+     1
+    ],
+    [
+     22,
+     1
+    ]
+   ]
+  }
+ ]
+}

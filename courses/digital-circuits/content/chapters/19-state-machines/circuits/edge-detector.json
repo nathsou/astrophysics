@@ -1,0 +1,227 @@
+{
+ "version": 1,
+ "title": "Mealy and Moore: the same detector, one cycle apart",
+ "engine": "digital",
+ "components": [
+  {
+   "id": "IN",
+   "type": "toggle",
+   "x": 0,
+   "y": 4,
+   "label": "IN"
+  },
+  {
+   "id": "CLK",
+   "type": "clock",
+   "x": 0,
+   "y": 12,
+   "params": {
+    "frequency": 10000000
+   },
+   "label": "CLK"
+  },
+  {
+   "id": "PREV",
+   "type": "dff",
+   "x": 12,
+   "y": 4,
+   "label": "previous IN"
+  },
+  {
+   "id": "G1",
+   "type": "and",
+   "x": 24,
+   "y": 5,
+   "label": ""
+  },
+  {
+   "id": "E",
+   "type": "dff",
+   "x": 24,
+   "y": 14,
+   "label": "registered"
+  },
+  {
+   "id": "MEALY",
+   "type": "indicator",
+   "x": 33,
+   "y": 6,
+   "params": {
+    "color": "amber"
+   },
+   "label": "MEALY"
+  },
+  {
+   "id": "MOORE",
+   "type": "indicator",
+   "x": 33,
+   "y": 14,
+   "params": {
+    "color": "green"
+   },
+   "label": "MOORE"
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     3,
+     4
+    ],
+    [
+     12,
+     4
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     8,
+     4
+    ],
+    [
+     8,
+     1
+    ],
+    [
+     22,
+     1
+    ],
+    [
+     22,
+     5
+    ],
+    [
+     24,
+     5
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     3,
+     12
+    ],
+    [
+     10,
+     12
+    ],
+    [
+     10,
+     6
+    ],
+    [
+     12,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     6,
+     12
+    ],
+    [
+     6,
+     18
+    ],
+    [
+     22,
+     18
+    ],
+    [
+     22,
+     16
+    ],
+    [
+     24,
+     16
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     18,
+     6
+    ],
+    [
+     20,
+     6
+    ],
+    [
+     20,
+     7
+    ],
+    [
+     24,
+     7
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     30,
+     6
+    ],
+    [
+     33,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     31,
+     6
+    ],
+    [
+     31,
+     11
+    ],
+    [
+     21,
+     11
+    ],
+    [
+     21,
+     14
+    ],
+    [
+     24,
+     14
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     30,
+     14
+    ],
+    [
+     33,
+     14
+    ]
+   ]
+  }
+ ],
+ "notes": [
+  {
+   "x": 24,
+   "y": 3.2,
+   "text": "Mealy: output = IN AND NOT previous"
+  },
+  {
+   "x": 24,
+   "y": 12.2,
+   "text": "Moore: the same signal, through a flip-flop"
+  }
+ ]
+}

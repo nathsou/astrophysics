@@ -1,0 +1,231 @@
+{
+  "version": 1,
+  "title": "A 4-bit shift register",
+  "engine": "digital",
+  "components": [
+    {
+      "id": "SI",
+      "type": "toggle",
+      "x": 2,
+      "y": 6,
+      "label": "SI (data in)"
+    },
+    {
+      "id": "F0",
+      "type": "dff",
+      "x": 12,
+      "y": 6,
+      "label": ""
+    },
+    {
+      "id": "Q0",
+      "type": "indicator",
+      "x": 20,
+      "y": 6,
+      "rot": 270,
+      "params": {
+        "color": "amber"
+      },
+      "label": "Q0"
+    },
+    {
+      "id": "F1",
+      "type": "dff",
+      "x": 22,
+      "y": 6,
+      "label": ""
+    },
+    {
+      "id": "Q1",
+      "type": "indicator",
+      "x": 30,
+      "y": 6,
+      "rot": 270,
+      "params": {
+        "color": "amber"
+      },
+      "label": "Q1"
+    },
+    {
+      "id": "F2",
+      "type": "dff",
+      "x": 32,
+      "y": 6,
+      "label": ""
+    },
+    {
+      "id": "Q2",
+      "type": "indicator",
+      "x": 40,
+      "y": 6,
+      "rot": 270,
+      "params": {
+        "color": "amber"
+      },
+      "label": "Q2"
+    },
+    {
+      "id": "F3",
+      "type": "dff",
+      "x": 42,
+      "y": 6,
+      "label": ""
+    },
+    {
+      "id": "Q3",
+      "type": "indicator",
+      "x": 50,
+      "y": 6,
+      "rot": 270,
+      "params": {
+        "color": "amber"
+      },
+      "label": "Q3"
+    },
+    {
+      "id": "CLK",
+      "type": "button",
+      "x": 2,
+      "y": 15,
+      "label": "CLK"
+    }
+  ],
+  "wires": [
+    {
+      "points": [
+        [
+          5,
+          6
+        ],
+        [
+          12,
+          6
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          18,
+          6
+        ],
+        [
+          22,
+          6
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          11,
+          15
+        ],
+        [
+          11,
+          8
+        ],
+        [
+          12,
+          8
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          28,
+          6
+        ],
+        [
+          32,
+          6
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          21,
+          15
+        ],
+        [
+          21,
+          8
+        ],
+        [
+          22,
+          8
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          38,
+          6
+        ],
+        [
+          42,
+          6
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          15
+        ],
+        [
+          31,
+          8
+        ],
+        [
+          32,
+          8
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          48,
+          6
+        ],
+        [
+          50,
+          6
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          41,
+          15
+        ],
+        [
+          41,
+          8
+        ],
+        [
+          42,
+          8
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          15
+        ],
+        [
+          41,
+          15
+        ]
+      ]
+    }
+  ]
+}

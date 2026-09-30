@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "title": "A voltmeter goes across the part",
+  "engine": "analog",
+  "components": [
+    {"id": "B1", "type": "battery", "x": 4, "y": 12, "rot": 270, "params": {"voltage": 9}, "label": "9 V"},
+    {"id": "R1", "type": "resistor", "x": 10, "y": 4, "params": {"resistance": 6000}},
+    {"id": "R2", "type": "resistor", "x": 22, "y": 4, "rot": 90, "params": {"resistance": 3000}},
+    {"id": "V1", "type": "voltmeter", "x": 32, "y": 10, "rot": 270},
+    {"id": "G1", "type": "ground", "x": 4, "y": 16}
+  ],
+  "wires": [
+    {"points": [[4, 8], [4, 4], [10, 4]]},
+    {"points": [[14, 4], [22, 4]]},
+    {"points": [[22, 4], [32, 4], [32, 6]]},
+    {"points": [[22, 8], [22, 16]]},
+    {"points": [[32, 10], [32, 16], [4, 16], [4, 12]]}
+  ],
+  "notes": [{"x": 25, "y": -1, "text": "in parallel with R2"}]
+}

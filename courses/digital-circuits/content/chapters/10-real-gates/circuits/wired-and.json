@@ -1,0 +1,255 @@
+{
+ "version": 1,
+ "title": "Open-drain outputs and a pull-up",
+ "engine": "analog",
+ "components": [
+  {
+   "id": "V1",
+   "type": "rail",
+   "x": 26,
+   "y": 0,
+   "params": {
+    "voltage": 5
+   }
+  },
+  {
+   "id": "RP",
+   "type": "resistor",
+   "x": 26,
+   "y": 4,
+   "rot": 90,
+   "params": {
+    "resistance": 4700
+   },
+   "label": "Pull-up 4.7 k\u03a9"
+  },
+  {
+   "id": "A",
+   "type": "toggle",
+   "x": 0,
+   "y": 12,
+   "label": "A",
+   "params": {
+    "on": true
+   }
+  },
+  {
+   "id": "NA",
+   "type": "not",
+   "x": 5,
+   "y": 12,
+   "label": "",
+   "params": {
+    "delay": 1
+   }
+  },
+  {
+   "id": "MA",
+   "type": "nmos",
+   "x": 13,
+   "y": 12,
+   "label": ""
+  },
+  {
+   "id": "GA",
+   "type": "ground",
+   "x": 16,
+   "y": 14
+  },
+  {
+   "id": "B",
+   "type": "toggle",
+   "x": 0,
+   "y": 22,
+   "label": "B",
+   "params": {
+    "on": true
+   }
+  },
+  {
+   "id": "NB",
+   "type": "not",
+   "x": 5,
+   "y": 22,
+   "label": "",
+   "params": {
+    "delay": 1
+   }
+  },
+  {
+   "id": "MB",
+   "type": "nmos",
+   "x": 13,
+   "y": 22,
+   "label": ""
+  },
+  {
+   "id": "GB",
+   "type": "ground",
+   "x": 16,
+   "y": 24
+  },
+  {
+   "id": "BF",
+   "type": "buffer",
+   "x": 28,
+   "y": 15,
+   "label": ""
+  },
+  {
+   "id": "RL",
+   "type": "resistor",
+   "x": 33,
+   "y": 15,
+   "rot": 90,
+   "params": {
+    "resistance": 330
+   },
+   "label": "330 \u03a9"
+  },
+  {
+   "id": "LD",
+   "type": "led",
+   "x": 33,
+   "y": 19,
+   "rot": 90,
+   "params": {
+    "color": "green"
+   },
+   "label": "LED"
+  },
+  {
+   "id": "GL",
+   "type": "ground",
+   "x": 33,
+   "y": 23
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     26,
+     0
+    ],
+    [
+     26,
+     4
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     26,
+     8
+    ],
+    [
+     26,
+     20
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     3,
+     12
+    ],
+    [
+     5,
+     12
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     10,
+     12
+    ],
+    [
+     13,
+     12
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     16,
+     10
+    ],
+    [
+     26,
+     10
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     3,
+     22
+    ],
+    [
+     5,
+     22
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     10,
+     22
+    ],
+    [
+     13,
+     22
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     16,
+     20
+    ],
+    [
+     26,
+     20
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     26,
+     15
+    ],
+    [
+     28,
+     15
+    ]
+   ]
+  }
+ ],
+ "notes": [
+  {
+   "x": 6,
+   "y": 8,
+   "text": "open-drain buffer A"
+  },
+  {
+   "x": 6,
+   "y": 18,
+   "text": "open-drain buffer B"
+  },
+  {
+   "x": 28,
+   "y": 11,
+   "text": "LED: line is high"
+  }
+ ]
+}

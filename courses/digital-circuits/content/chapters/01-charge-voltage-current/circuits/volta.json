@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "title": "Volta’s pile, rebuilt",
+  "engine": "analog",
+  "components": [
+    {"id": "C1", "type": "battery", "x": 8, "y": 30, "rot": 270, "params": {"voltage": 1, "resistance": 0.5}, "label": "1 V"},
+    {"id": "C2", "type": "battery", "x": 8, "y": 24, "rot": 270, "params": {"voltage": 1, "resistance": 0.5}, "label": "1 V"},
+    {"id": "C3", "type": "battery", "x": 8, "y": 18, "rot": 270, "params": {"voltage": 1, "resistance": 0.5}, "label": "1 V"},
+    {"id": "C4", "type": "battery", "x": 8, "y": 12, "rot": 270, "params": {"voltage": 1, "resistance": 0.5}, "label": "1 V"},
+    {"id": "C5", "type": "battery", "x": 8, "y": 6, "rot": 270, "params": {"voltage": 1, "resistance": 0.5}, "label": "1 V"},
+    {"id": "S1", "type": "switch", "x": 4, "y": 26, "rot": 90, "label": "bypass"},
+    {"id": "S2", "type": "switch", "x": 4, "y": 20, "rot": 90, "label": "bypass"},
+    {"id": "S3", "type": "switch", "x": 4, "y": 14, "rot": 90, "label": "bypass"},
+    {"id": "S4", "type": "switch", "x": 4, "y": 8, "rot": 90, "label": "bypass"},
+    {"id": "S5", "type": "switch", "x": 4, "y": 2, "rot": 90, "label": "bypass"},
+    {"id": "L1", "type": "lamp", "x": 20, "y": 14, "rot": 90, "params": {"ratedVoltage": 5, "ratedPower": 0.25}, "label": "Lamp"},
+    {"id": "V1", "type": "voltmeter", "x": 28, "y": 14, "rot": 270},
+    {"id": "G1", "type": "ground", "x": 8, "y": 34}
+  ],
+  "wires": [
+    {"points": [[8, 26], [8, 24]]},
+    {"points": [[8, 20], [8, 18]]},
+    {"points": [[8, 14], [8, 12]]},
+    {"points": [[8, 8], [8, 6]]},
+    {"points": [[8, 30], [8, 34]]},
+    {"points": [[4, 26], [8, 26]]},
+    {"points": [[4, 30], [8, 30]]},
+    {"points": [[4, 20], [8, 20]]},
+    {"points": [[4, 24], [8, 24]]},
+    {"points": [[4, 14], [8, 14]]},
+    {"points": [[4, 18], [8, 18]]},
+    {"points": [[4, 8], [8, 8]]},
+    {"points": [[4, 12], [8, 12]]},
+    {"points": [[4, 2], [8, 2]]},
+    {"points": [[4, 6], [8, 6]]},
+    {"points": [[8, 2], [28, 2], [28, 10]]},
+    {"points": [[20, 2], [20, 14]]},
+    {"points": [[20, 18], [20, 34]]},
+    {"points": [[28, 14], [28, 34], [8, 34]]}
+  ]
+}

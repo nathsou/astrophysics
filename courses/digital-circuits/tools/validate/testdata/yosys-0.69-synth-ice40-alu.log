@@ -1,0 +1,21 @@
+2.52. Executing JSON backend.
+
+3. Printing statistics.
+
+=== Alu ===
+
+        +----------Local Count, excluding submodules.
+        | 
+      389 wires
+     1213 wire bits
+      389 public wires
+     1213 public wire bits
+        6 ports
+      101 port bits
+      629 cells
+       63   SB_CARRY
+      566   SB_LUT4
+
+End of script. Logfile hash: 87597fca53, time: 1.70s, user: 1.71s, system: 0.00s
+Yosys 0.69 (git sha1 9f75ca1f9, Release, Clang /workspace/YoWASP/yosys/wasi-sdk-33.0-x86_64-linux/share/cmake/../..//bin/clang++ 22.1.0)
+Time spent: 54% 19x read_verilog (0 sec), 21% 1x abc9_exe (0 sec), ...

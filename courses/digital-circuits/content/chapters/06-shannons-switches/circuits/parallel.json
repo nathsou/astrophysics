@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "title": "Two switches in parallel",
+  "engine": "analog",
+  "components": [
+    {"id": "B1", "type": "battery", "x": 4, "y": 18, "rot": 270, "params": {"voltage": 6}, "label": "6 V"},
+    {"id": "A", "type": "switch", "x": 10, "y": 4, "params": {"closed": false}},
+    {"id": "B", "type": "switch", "x": 10, "y": 10, "params": {"closed": false}},
+    {"id": "L1", "type": "lamp", "x": 24, "y": 6, "rot": 90, "params": {"ratedVoltage": 6, "ratedPower": 0.3}, "label": "Lamp"},
+    {"id": "G1", "type": "ground", "x": 4, "y": 22}
+  ],
+  "wires": [
+    {"points": [[4, 14], [4, 4], [10, 4]]},
+    {"points": [[4, 10], [10, 10]]},
+    {"points": [[14, 4], [24, 4], [24, 6]]},
+    {"points": [[14, 10], [20, 10], [20, 4]]},
+    {"points": [[24, 10], [24, 22], [4, 22], [4, 18]]}
+  ]
+}

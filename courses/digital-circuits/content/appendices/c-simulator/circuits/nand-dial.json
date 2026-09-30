@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "title": "A NAND gate at three levels",
+  "engine": "digital",
+  "components": [
+    {"id": "A", "type": "toggle", "x": 5, "y": 2, "label": "A"},
+    {"id": "B", "type": "toggle", "x": 5, "y": 4, "label": "B"},
+    {"id": "U1", "type": "nand", "x": 12, "y": 2},
+    {"id": "Y", "type": "indicator", "x": 22, "y": 3, "label": "Y"}
+  ],
+  "wires": [
+    {"points": [[8, 2], [12, 2]]},
+    {"points": [[8, 4], [12, 4]]},
+    {"points": [[18, 3], [22, 3]]}
+  ]
+}

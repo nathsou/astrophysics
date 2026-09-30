@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "title": "An RTL NOR gate",
+  "engine": "analog",
+  "components": [
+    {"id": "A", "type": "toggle", "x": 2, "y": 12, "label": "A"},
+    {"id": "RB1", "type": "resistor", "x": 7, "y": 12, "params": {"resistance": 4700}, "label": "4.7 kΩ"},
+    {"id": "Q1", "type": "npn", "x": 14, "y": 12},
+    {"id": "G1", "type": "ground", "x": 17, "y": 16},
+    {"id": "B", "type": "toggle", "x": 2, "y": 20, "label": "B"},
+    {"id": "RB2", "type": "resistor", "x": 7, "y": 20, "params": {"resistance": 4700}, "label": "4.7 kΩ"},
+    {"id": "Q2", "type": "npn", "x": 26, "y": 12},
+    {"id": "G2", "type": "ground", "x": 29, "y": 16},
+    {"id": "P1", "type": "rail", "x": 23, "y": 0, "params": {"voltage": 5}},
+    {"id": "RC", "type": "resistor", "x": 23, "y": 0, "rot": 90, "params": {"resistance": 1000}, "label": "1 kΩ"},
+    {"id": "V1", "type": "voltmeter", "x": 34, "y": 10, "rot": 270, "label": "Y"},
+    {"id": "G3", "type": "ground", "x": 34, "y": 10}
+  ],
+  "wires": [
+    {"points": [[5, 12], [7, 12]]},
+    {"points": [[11, 12], [14, 12]]},
+    {"points": [[5, 20], [7, 20]]},
+    {"points": [[11, 20], [22, 20], [22, 12], [26, 12]]},
+    {"points": [[17, 10], [17, 6], [34, 6]]},
+    {"points": [[29, 10], [29, 6]]},
+    {"points": [[23, 4], [23, 6]]},
+    {"points": [[17, 14], [17, 16]]},
+    {"points": [[29, 14], [29, 16]]}
+  ],
+  "notes": [
+    {"x": 6, "y": 2, "text": "Y = A NOR B"}
+  ]
+}

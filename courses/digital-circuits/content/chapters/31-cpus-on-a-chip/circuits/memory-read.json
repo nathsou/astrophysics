@@ -1,0 +1,567 @@
+{
+  "version": 1,
+  "title": "Reading a memory: at once, or a cycle later",
+  "engine": "digital",
+  "components": [
+    {
+      "id": "in_A0",
+      "type": "toggle",
+      "x": 2,
+      "y": 0,
+      "label": "A0"
+    },
+    {
+      "id": "in_A1",
+      "type": "toggle",
+      "x": 2,
+      "y": 4,
+      "label": "A1"
+    },
+    {
+      "id": "in_CLK",
+      "type": "button",
+      "x": 2,
+      "y": 14,
+      "label": "Clock"
+    },
+    {
+      "id": "one",
+      "type": "const",
+      "x": 2,
+      "y": 18,
+      "params": {
+        "value": 1
+      },
+      "label": "1"
+    },
+    {
+      "id": "zero",
+      "type": "const",
+      "x": 2,
+      "y": 22,
+      "params": {
+        "value": 0
+      },
+      "label": "0"
+    },
+    {
+      "id": "la0",
+      "type": "label",
+      "x": 8,
+      "y": 0,
+      "params": {
+        "name": "A0"
+      },
+      "label": ""
+    },
+    {
+      "id": "la1",
+      "type": "label",
+      "x": 8,
+      "y": 4,
+      "params": {
+        "name": "A1"
+      },
+      "label": ""
+    },
+    {
+      "id": "lck",
+      "type": "label",
+      "x": 8,
+      "y": 14,
+      "params": {
+        "name": "CLK"
+      },
+      "label": ""
+    },
+    {
+      "id": "lone",
+      "type": "label",
+      "x": 6,
+      "y": 18,
+      "params": {
+        "name": "ONE"
+      },
+      "label": ""
+    },
+    {
+      "id": "lzero",
+      "type": "label",
+      "x": 6,
+      "y": 22,
+      "params": {
+        "name": "ZERO"
+      },
+      "label": ""
+    },
+    {
+      "id": "romA",
+      "type": "rom",
+      "x": 20,
+      "y": 0,
+      "params": {
+        "addrBits": 2,
+        "dataBits": 4,
+        "contents": "1,2,4,8"
+      },
+      "label": "asynchronous"
+    },
+    {
+      "id": "a0a",
+      "type": "label",
+      "x": 17,
+      "y": 0,
+      "flip": true,
+      "params": {
+        "name": "A0"
+      },
+      "label": ""
+    },
+    {
+      "id": "a1a",
+      "type": "label",
+      "x": 17,
+      "y": 2,
+      "flip": true,
+      "params": {
+        "name": "A1"
+      },
+      "label": ""
+    },
+    {
+      "id": "oa0",
+      "type": "indicator",
+      "x": 34,
+      "y": 0,
+      "params": {
+        "color": "amber"
+      },
+      "label": "D0"
+    },
+    {
+      "id": "oa1",
+      "type": "indicator",
+      "x": 34,
+      "y": 2,
+      "params": {
+        "color": "amber"
+      },
+      "label": "D1"
+    },
+    {
+      "id": "oa2",
+      "type": "indicator",
+      "x": 34,
+      "y": 4,
+      "params": {
+        "color": "amber"
+      },
+      "label": "D2"
+    },
+    {
+      "id": "oa3",
+      "type": "indicator",
+      "x": 34,
+      "y": 6,
+      "params": {
+        "color": "amber"
+      },
+      "label": "D3"
+    },
+    {
+      "id": "reg",
+      "type": "register",
+      "x": 20,
+      "y": 12,
+      "params": {
+        "bits": 2
+      },
+      "label": "address register"
+    },
+    {
+      "id": "b0",
+      "type": "label",
+      "x": 17,
+      "y": 12,
+      "flip": true,
+      "params": {
+        "name": "A0"
+      },
+      "label": ""
+    },
+    {
+      "id": "b1",
+      "type": "label",
+      "x": 17,
+      "y": 14,
+      "flip": true,
+      "params": {
+        "name": "A1"
+      },
+      "label": ""
+    },
+    {
+      "id": "bck",
+      "type": "label",
+      "x": 17,
+      "y": 16,
+      "flip": true,
+      "params": {
+        "name": "CLK"
+      },
+      "label": ""
+    },
+    {
+      "id": "bone",
+      "type": "label",
+      "x": 17,
+      "y": 18,
+      "flip": true,
+      "params": {
+        "name": "ONE"
+      },
+      "label": ""
+    },
+    {
+      "id": "bzero",
+      "type": "label",
+      "x": 17,
+      "y": 20,
+      "flip": true,
+      "params": {
+        "name": "ZERO"
+      },
+      "label": ""
+    },
+    {
+      "id": "romB",
+      "type": "rom",
+      "x": 34,
+      "y": 12,
+      "params": {
+        "addrBits": 2,
+        "dataBits": 4,
+        "contents": "1,2,4,8"
+      },
+      "label": "synchronous"
+    },
+    {
+      "id": "ob0",
+      "type": "indicator",
+      "x": 48,
+      "y": 12,
+      "params": {
+        "color": "green"
+      },
+      "label": "D0"
+    },
+    {
+      "id": "ob1",
+      "type": "indicator",
+      "x": 48,
+      "y": 14,
+      "params": {
+        "color": "green"
+      },
+      "label": "D1"
+    },
+    {
+      "id": "ob2",
+      "type": "indicator",
+      "x": 48,
+      "y": 16,
+      "params": {
+        "color": "green"
+      },
+      "label": "D2"
+    },
+    {
+      "id": "ob3",
+      "type": "indicator",
+      "x": 48,
+      "y": 18,
+      "params": {
+        "color": "green"
+      },
+      "label": "D3"
+    }
+  ],
+  "wires": [
+    {
+      "points": [
+        [
+          5,
+          0
+        ],
+        [
+          8,
+          0
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          4
+        ],
+        [
+          8,
+          4
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          14
+        ],
+        [
+          8,
+          14
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          4,
+          18
+        ],
+        [
+          6,
+          18
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          4,
+          22
+        ],
+        [
+          6,
+          22
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          17,
+          0
+        ],
+        [
+          20,
+          0
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          17,
+          2
+        ],
+        [
+          20,
+          2
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          28,
+          0
+        ],
+        [
+          34,
+          0
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          28,
+          2
+        ],
+        [
+          34,
+          2
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          28,
+          4
+        ],
+        [
+          34,
+          4
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          28,
+          6
+        ],
+        [
+          34,
+          6
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          17,
+          12
+        ],
+        [
+          20,
+          12
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          17,
+          14
+        ],
+        [
+          20,
+          14
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          17,
+          16
+        ],
+        [
+          20,
+          16
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          17,
+          18
+        ],
+        [
+          20,
+          18
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          17,
+          20
+        ],
+        [
+          20,
+          20
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          26,
+          12
+        ],
+        [
+          34,
+          12
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          26,
+          14
+        ],
+        [
+          34,
+          14
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          42,
+          12
+        ],
+        [
+          48,
+          12
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          42,
+          14
+        ],
+        [
+          48,
+          14
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          42,
+          16
+        ],
+        [
+          48,
+          16
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          42,
+          18
+        ],
+        [
+          48,
+          18
+        ]
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "x": 20,
+      "y": -3,
+      "text": "Chapter 22\u2019s RAM: the word appears at once"
+    },
+    {
+      "x": 20,
+      "y": 9,
+      "text": "A block RAM: it appears after the clock edge"
+    }
+  ]
+}

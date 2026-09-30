@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "title": "Four diode gates in a row",
+  "engine": "analog",
+  "components": [
+    {"id": "A", "type": "toggle", "x": 1, "y": 8, "label": "In", "params": {"on": true}},
+    {"id": "D1", "type": "diode", "x": 5, "y": 8, "label": ""},
+    {"id": "R1", "type": "resistor", "x": 9, "y": 10, "rot": 90, "params": {"resistance": 1000}, "label": ""},
+    {"id": "G1", "type": "ground", "x": 9, "y": 14},
+    {"id": "V1", "type": "voltmeter", "x": 12, "y": 14, "rot": 270},
+    {"id": "G5", "type": "ground", "x": 12, "y": 14},
+    {"id": "D2", "type": "diode", "x": 13, "y": 8, "label": ""},
+    {"id": "R2", "type": "resistor", "x": 17, "y": 10, "rot": 90, "params": {"resistance": 1000}, "label": ""},
+    {"id": "G2", "type": "ground", "x": 17, "y": 14},
+    {"id": "V2", "type": "voltmeter", "x": 20, "y": 14, "rot": 270},
+    {"id": "G6", "type": "ground", "x": 20, "y": 14},
+    {"id": "D3", "type": "diode", "x": 21, "y": 8, "label": ""},
+    {"id": "R3", "type": "resistor", "x": 25, "y": 10, "rot": 90, "params": {"resistance": 1000}, "label": ""},
+    {"id": "G3", "type": "ground", "x": 25, "y": 14},
+    {"id": "V3", "type": "voltmeter", "x": 28, "y": 14, "rot": 270},
+    {"id": "G7", "type": "ground", "x": 28, "y": 14},
+    {"id": "D4", "type": "diode", "x": 29, "y": 8, "label": ""},
+    {"id": "R4", "type": "resistor", "x": 33, "y": 10, "rot": 90, "params": {"resistance": 1000}, "label": ""},
+    {"id": "G4", "type": "ground", "x": 33, "y": 14},
+    {"id": "V4", "type": "voltmeter", "x": 36, "y": 14, "rot": 270},
+    {"id": "G8", "type": "ground", "x": 36, "y": 14}
+  ],
+  "wires": [
+    {"points": [[4, 8], [5, 8]]},
+    {"points": [[9, 8], [13, 8]]},
+    {"points": [[9, 8], [9, 10]]},
+    {"points": [[12, 10], [12, 8]]},
+    {"points": [[17, 8], [21, 8]]},
+    {"points": [[17, 8], [17, 10]]},
+    {"points": [[20, 10], [20, 8]]},
+    {"points": [[25, 8], [29, 8]]},
+    {"points": [[25, 8], [25, 10]]},
+    {"points": [[28, 10], [28, 8]]},
+    {"points": [[33, 8], [33, 10]]},
+    {"points": [[33, 8], [36, 8], [36, 10]]}
+  ]
+}

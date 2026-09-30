@@ -1,0 +1,274 @@
+{
+ "version": 1,
+ "title": "A PWM generator",
+ "engine": "digital",
+ "components": [
+  {
+   "id": "clk",
+   "type": "clock",
+   "x": 2,
+   "y": 3,
+   "params": {
+    "frequency": 1000
+   },
+   "label": "1 kHz"
+  },
+  {
+   "id": "l_clk",
+   "type": "label",
+   "x": 7,
+   "y": 3,
+   "params": {
+    "name": "CLK"
+   },
+   "label": ""
+  },
+  {
+   "id": "CNT",
+   "type": "counter",
+   "x": 14,
+   "y": 3,
+   "params": {
+    "bits": 4
+   },
+   "label": "counter"
+  },
+  {
+   "id": "f1",
+   "type": "label",
+   "x": 12,
+   "y": 3,
+   "flip": true,
+   "params": {
+    "name": "CLK"
+   },
+   "label": ""
+  },
+  {
+   "id": "CMP",
+   "type": "magnitude-comparator",
+   "x": 30,
+   "y": 3,
+   "params": {
+    "bits": 4
+   },
+   "label": "count < duty"
+  },
+  {
+   "id": "in_B0",
+   "type": "toggle",
+   "x": 22,
+   "y": 11,
+   "label": "",
+   "params": {
+    "on": false
+   }
+  },
+  {
+   "id": "in_B1",
+   "type": "toggle",
+   "x": 22,
+   "y": 13,
+   "label": "",
+   "params": {
+    "on": false
+   }
+  },
+  {
+   "id": "in_B2",
+   "type": "toggle",
+   "x": 22,
+   "y": 15,
+   "label": "",
+   "params": {
+    "on": true
+   }
+  },
+  {
+   "id": "in_B3",
+   "type": "toggle",
+   "x": 22,
+   "y": 17,
+   "label": "",
+   "params": {
+    "on": false
+   }
+  },
+  {
+   "id": "PWM",
+   "type": "indicator",
+   "x": 42,
+   "y": 5,
+   "params": {
+    "color": "amber"
+   },
+   "label": "PWM"
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     5,
+     3
+    ],
+    [
+     7,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     12,
+     3
+    ],
+    [
+     14,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     20,
+     3
+    ],
+    [
+     30,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     20,
+     5
+    ],
+    [
+     30,
+     5
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     20,
+     7
+    ],
+    [
+     30,
+     7
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     20,
+     9
+    ],
+    [
+     30,
+     9
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     25,
+     11
+    ],
+    [
+     30,
+     11
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     25,
+     13
+    ],
+    [
+     30,
+     13
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     25,
+     15
+    ],
+    [
+     30,
+     15
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     25,
+     17
+    ],
+    [
+     30,
+     17
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     36,
+     5
+    ],
+    [
+     42,
+     5
+    ]
+   ]
+  }
+ ],
+ "notes": [
+  {
+   "x": 14,
+   "y": 0,
+   "text": "counts 0 to 15, over and over"
+  },
+  {
+   "x": 30,
+   "y": 0,
+   "text": "high while the count is below the duty"
+  },
+  {
+   "x": 28,
+   "y": 10.4,
+   "text": "B0"
+  },
+  {
+   "x": 28,
+   "y": 12.4,
+   "text": "B1"
+  },
+  {
+   "x": 28,
+   "y": 14.4,
+   "text": "B2"
+  },
+  {
+   "x": 28,
+   "y": 16.4,
+   "text": "B3"
+  }
+ ]
+}

@@ -1,0 +1,51 @@
+{
+ "version": 1,
+ "title": "An inverter",
+ "engine": "digital",
+ "components": [
+  {
+   "id": "U1",
+   "type": "not",
+   "x": 12,
+   "y": 0
+  },
+  {
+   "id": "A",
+   "type": "toggle",
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": "Y",
+   "type": "indicator",
+   "x": 21,
+   "y": 0
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     3,
+     0
+    ],
+    [
+     12,
+     0
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     17,
+     0
+    ],
+    [
+     21,
+     0
+    ]
+   ]
+  }
+ ]
+}

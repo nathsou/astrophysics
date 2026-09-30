@@ -1,0 +1,26 @@
+2.52. Executing JSON backend.
+
+3. Printing statistics.
+
+=== Octet ===
+
+        +----------Local Count, excluding submodules.
+        | 
+      369 wires
+     1165 wire bits
+      369 public wires
+     1165 public wire bits
+       12 ports
+       60 port bits
+      639 cells
+        2   $scopeinfo
+       27   SB_CARRY
+       30   SB_DFF
+       48   SB_DFFE
+       79   SB_DFFESR
+      451   SB_LUT4
+        2   SB_RAM40_4K
+
+End of script. Logfile hash: c75a13361a, time: 2.57s, user: 2.57s, system: 0.00s
+Yosys 0.69 (git sha1 9f75ca1f9, Release, Clang /workspace/YoWASP/yosys/wasi-sdk-33.0-x86_64-linux/share/cmake/../..//bin/clang++ 22.1.0)
+Time spent: 31% 11x techmap (0 sec), 30% 19x read_verilog (0 sec), ...

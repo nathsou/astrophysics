@@ -1,0 +1,284 @@
+{
+ "version": 1,
+ "title": "A transmission gate holds what it last passed",
+ "engine": "switch",
+ "components": [
+  {
+   "id": "IN",
+   "type": "toggle",
+   "x": 0,
+   "y": 4,
+   "label": "In"
+  },
+  {
+   "id": "EN",
+   "type": "toggle",
+   "x": 0,
+   "y": 10,
+   "label": "Enable"
+  },
+  {
+   "id": "MN",
+   "type": "nmos",
+   "x": 16,
+   "y": 10,
+   "label": "nMOS"
+  },
+  {
+   "id": "MP",
+   "type": "pmos",
+   "x": 30,
+   "y": 10,
+   "flip": true,
+   "label": "pMOS"
+  },
+  {
+   "id": "C1",
+   "type": "capacitor",
+   "x": 23,
+   "y": 14,
+   "rot": 90,
+   "params": {
+    "capacitance": 1e-14
+   },
+   "label": "wire + next gate"
+  },
+  {
+   "id": "G1",
+   "type": "ground",
+   "x": 23,
+   "y": 18
+  },
+  {
+   "id": "OUT",
+   "type": "indicator",
+   "x": 31,
+   "y": 14,
+   "label": "Out"
+  },
+  {
+   "id": "R1",
+   "type": "rail",
+   "x": 13,
+   "y": 18,
+   "params": {
+    "voltage": 5
+   }
+  },
+  {
+   "id": "MPI",
+   "type": "pmos",
+   "x": 10,
+   "y": 22,
+   "label": "pMOS"
+  },
+  {
+   "id": "MNI",
+   "type": "nmos",
+   "x": 10,
+   "y": 28,
+   "label": "nMOS"
+  },
+  {
+   "id": "G2",
+   "type": "ground",
+   "x": 13,
+   "y": 32
+  },
+  {
+   "id": "LB",
+   "type": "label",
+   "x": 16,
+   "y": 25,
+   "params": {
+    "name": "ENb"
+   }
+  },
+  {
+   "id": "LB2",
+   "type": "label",
+   "x": 33,
+   "y": 10,
+   "params": {
+    "name": "ENb"
+   }
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     3,
+     4
+    ],
+    [
+     27,
+     4
+    ],
+    [
+     27,
+     8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     19,
+     4
+    ],
+    [
+     19,
+     8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     3,
+     10
+    ],
+    [
+     16,
+     10
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     19,
+     12
+    ],
+    [
+     19,
+     14
+    ],
+    [
+     27,
+     14
+    ],
+    [
+     27,
+     12
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     27,
+     14
+    ],
+    [
+     31,
+     14
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     30,
+     10
+    ],
+    [
+     33,
+     10
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     8,
+     10
+    ],
+    [
+     8,
+     28
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     8,
+     22
+    ],
+    [
+     10,
+     22
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     8,
+     28
+    ],
+    [
+     10,
+     28
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     13,
+     18
+    ],
+    [
+     13,
+     20
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     13,
+     24
+    ],
+    [
+     13,
+     26
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     13,
+     25
+    ],
+    [
+     16,
+     25
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     13,
+     30
+    ],
+    [
+     13,
+     32
+    ]
+   ]
+  }
+ ],
+ "notes": [
+  {
+   "x": 17,
+   "y": 30,
+   "text": "an inverter makes ENb\nfrom Enable"
+  }
+ ]
+}

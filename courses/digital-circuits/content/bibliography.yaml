@@ -1,0 +1,2108 @@
+# Bibliography: key → { authors, year, title, venue, url, note }
+
+shannon1938:
+  authors: Claude E. Shannon
+  year: 1938
+  title: A symbolic analysis of relay and switching circuits
+  venue: Transactions of the American Institute of Electrical Engineers 57(12), 713–723. Based on his MIT master’s thesis, submitted 10 August 1937
+  url: https://dspace.mit.edu/handle/1721.1/11173
+  note: The thesis at DSpace@MIT. The quotation about it is from Howard Gardner, The Mind’s New Science (1985).
+peirce1886:
+  authors: Charles S. Peirce
+  year: 1886
+  title: Letter to Allan Marquand, 30 December 1886
+  venue: 'Discussed by Kenneth L. Ketner, “The early history of computer design: Charles Sanders Peirce and Marquand’s logical machines”, The Princeton University Library Chronicle 45(3), 186–211 (1984)'
+  note: The letter suggests that switches in series and in parallel could carry out logical operations in an electrical logic machine.
+chm-stibitz:
+  authors: Computer History Museum
+  year: 2006
+  title: George Stibitz, the Model K and the Complex Number Calculator
+  venue: 'Computer History Museum, “Revolution: The First 2000 Years of Computing”'
+  url: https://www.computerhistory.org/revolution/birth-of-the-computer/4/85
+  note: Stibitz’s November 1937 relay adder and the September 1940 remote demonstration at Dartmouth College.
+zuse-z3:
+  authors: Raúl Rojas
+  year: 1997
+  title: 'Konrad Zuse’s legacy: the architecture of the Z1 and Z3'
+  venue: IEEE Annals of the History of Computing 19(2), 5–16
+  url: https://doi.org/10.1109/85.586067
+  note: The Z3 of 1941 and its 2,600 relays.
+nmah-bug:
+  authors: National Museum of American History, Smithsonian Institution
+  year: 1947
+  title: Log book with computer bug (Harvard Mark II, 9 September 1947)
+  venue: Smithsonian Institution, catalogue number 1994.0191.01
+  url: https://americanhistory.si.edu/collections/object/nmah_334663
+  note: The logbook page with the moth found in relay 70, panel F.
+bipm2019:
+  authors: Bureau International des Poids et Mesures
+  year: 2019
+  title: The International System of Units (SI Brochure), 9th edition
+  url: https://www.bipm.org/en/publications/si-brochure
+  note: Since 20 May 2019 the elementary charge is fixed at exactly 1.602 176 634 × 10⁻¹⁹ C, which defines the ampere.
+galvani1791:
+  authors: Luigi Galvani
+  year: 1791
+  title: De viribus electricitatis in motu musculari commentarius
+  venue: De Bononiensi Scientiarum et Artium Instituto atque Academia Commentarii 7, 363–418
+  note: Galvani’s account of his experiments on frogs and of “animal electricity”.
+volta1800:
+  authors: Alessandro Volta
+  year: 1800
+  title: On the electricity excited by the mere contact of conducting substances of different kinds
+  venue: Philosophical Transactions of the Royal Society of London 90, 403–431. A letter to Sir Joseph Banks dated 20 March 1800.
+  url: https://doi.org/10.1098/rstl.1800.0018
+  note: Volta’s announcement of the pile of zinc and silver discs, the first battery.
+pancaldi2003:
+  authors: Giuliano Pancaldi
+  year: 2003
+  title: 'Volta: Science and Culture in the Age of Enlightenment'
+  venue: Princeton University Press
+  note: A biography of Volta, including his dispute with Galvani over animal electricity and the invention of the pile.
+nicholson1800:
+  authors: William Nicholson
+  year: 1800
+  title: Account of the new electrical or galvanic apparatus of Sig. Alex. Volta, and experiments performed with the same
+  venue: A Journal of Natural Philosophy, Chemistry, and the Arts 4 (1800)
+  note: Nicholson and Carlisle’s decomposition of water by a voltaic pile, in May 1800.
+hunt1994:
+  authors: Bruce J. Hunt
+  year: 1994
+  title: 'The ohm is where the art is: British telegraph engineers and the development of electrical standards'
+  venue: Osiris 9, 48–63
+  url: https://doi.org/10.1086/368729
+  note: How the units of electrical measurement, the volt and the ohm among them, were settled by the British Association and the 1881 International Electrical Congress in Paris.
+franklin1751:
+  authors: Benjamin Franklin
+  year: 1751
+  title: Experiments and Observations on Electricity, made at Philadelphia in America
+  venue: London, E. Cave
+  note: Franklin’s one-fluid theory of electricity and the plus and minus notation, developed in letters from 1747.
+thomson1897:
+  authors: J. J. Thomson
+  year: 1897
+  title: Cathode rays
+  venue: Philosophical Magazine, series 5, 44, 293–316
+  url: https://doi.org/10.1080/14786449708621070
+  note: The measurement of the charge-to-mass ratio of the particles of cathode rays, the electron.
+ashcroft1976:
+  authors: Neil W. Ashcroft and N. David Mermin
+  year: 1976
+  title: Solid State Physics
+  venue: Holt, Rinehart and Winston
+  note: Table 1.1 gives the density of conduction electrons in copper (8.47 × 10²⁸ m⁻³) and Table 2.1 its Fermi velocity (1.57 × 10⁶ m/s).
+oersted1820:
+  authors: Hans Christian Ørsted
+  year: 1820
+  title: Experimenta circa effectum conflictus electrici in acum magneticam
+  venue: Pamphlet, Copenhagen, dated 21 July 1820 (four pages, in Latin)
+  url: https://www.aps.org/apsnews/2008/07/1820-oersted-electromagnetism
+  note: 'The announcement that an electric current deflects a compass needle. The link is the American Physical Society’s account of it (APS News 17(7), July 2008, “This Month in Physics History: July 1820, Oersted and electromagnetism”), not the pamphlet itself.'
+sturgeon-britannica:
+  authors: Encyclopaedia Britannica
+  year: 2024
+  title: William Sturgeon
+  venue: Encyclopaedia Britannica online
+  url: https://www.britannica.com/biography/William-Sturgeon
+  note: Sturgeon’s electromagnet of 1824, with about 18 turns of bare copper wire, and the seven-ounce piece of iron that lifted nine pounds.
+henry-albany:
+  authors: Princeton University Library
+  year: 2020
+  title: The Albany electromagnet
+  venue: The Joseph Henry Project, Princeton University
+  url: https://commons.princeton.edu/josephhenry/albany-electromagnet/
+  note: Henry’s electromagnet at the Albany Academy, which lifted 750 pounds in 1831.
+hochfelder-henry:
+  authors: David Hochfelder
+  year: 2003
+  title: 'Joseph Henry: inventor of the telegraph?'
+  venue: Joseph Henry Papers Project, Smithsonian Institution Archives
+  url: https://siarchives.si.edu/sites/default/files/pdfs/jhpp/JHP_Inventor_of_the_Telegraph.pdf
+  note: Henry’s intensity and quantity magnets, his 1835 relay, and Leonard Gale’s help to Morse.
+nmah-wwgw:
+  authors: Smithsonian National Museum of American History
+  year: 2024
+  title: '“What hath God wrought” telegraph message'
+  venue: National Museum of American History collections, object nmah_713485
+  url: https://www.si.edu/object/what-hath-god-wrought-telegraph-message:nmah_713485
+  note: Morse’s message of 24 May 1844 from Washington to Alfred Vail in Baltimore.
+loc-morse:
+  authors: Library of Congress
+  year: 2024
+  title: 'The invention of the telegraph'
+  venue: Samuel F. B. Morse Papers at the Library of Congress, articles and essays
+  url: https://www.loc.gov/static/collections/samuel-morse-papers/articles-and-essays/invention-of-the-telegraph/
+  note: Morse and Alfred Vail’s work on the electromagnetic telegraph.
+faraday1832:
+  authors: Michael Faraday
+  year: 1832
+  title: Experimental researches in electricity, first series
+  venue: Philosophical Transactions of the Royal Society 122, 125–162 (read 24 November 1831)
+  url: https://doi.org/10.1098/rstl.1832.0006
+  note: The discovery of electromagnetic induction, including the ring experiment of 29 August 1831.
+aps-faraday:
+  authors: American Physical Society
+  year: 2001
+  title: 'This Month in Physics History: September 4, 1821 and August 29, 1831, Faraday and electromagnetism'
+  venue: APS News 10(8)
+  url: https://www.aps.org/apsnews/2001/08/faraday-electromagnetism
+songle-srd:
+  authors: Songle Relay
+  year: 2010
+  title: SRD series (SRD-05VDC-SL-C) datasheet
+  venue: Manufacturer’s datasheet, widely mirrored
+  note: 5 V coil, 70 Ω, 70 mA; must-operate at 75 % or less and must-release at 10 % or more of the rated voltage; operate time up to 10 ms, release time up to 5 ms.
+braun1897:
+  authors: Ferdinand Braun
+  year: 1897
+  title: Ueber ein Verfahren zur Demonstration und zum Studium des zeitlichen Verlaufes variabler Ströme
+  venue: Annalen der Physik und Chemie, new series, 60, 552–559
+  note: 'Braun’s description of the cathode-ray tube that bears his name: a narrow electron beam deflected by the current under study and watched in a rotating mirror.'
+nobel-braun:
+  authors: NobelPrize.org
+  year: 1909
+  title: Ferdinand Braun, biographical
+  venue: NobelPrize.org, Nobel Prize in Physics 1909
+  url: https://www.nobelprize.org/prizes/physics/1909/braun/biographical/
+  note: The 1909 prize was shared by Marconi and Braun for their contributions to the development of wireless telegraphy.
+fluke-87v:
+  authors: Fluke
+  year: 2000
+  title: 83V and 87V Digital Multimeters, Users Manual
+  venue: Fluke Corporation
+  url: https://assets.fluke.com/manuals/87______umeng0800.pdf
+  note: A typical bench multimeter. Its current inputs are protected by a 440 mA fuse (mA range) and an 11 A fuse (A range), and its voltage ranges present about 10 MΩ.
+horowitz-hill2015:
+  authors: Paul Horowitz and Winfield Hill
+  year: 2015
+  title: The Art of Electronics, 3rd edition
+  venue: Cambridge University Press
+  note: The standard practical text. Chapter 1 and the appendix on scope probes cover 10× probes (10 MΩ in parallel with about 10–15 pF) and the loading of a circuit by its instruments.
+heilbron1979:
+  authors: J. L. Heilbron
+  year: 1979
+  title: 'Electricity in the 17th and 18th Centuries: A Study of Early Modern Physics'
+  venue: University of California Press
+  note: The invention of the Leyden jar by von Kleist (October 1745) and by Musschenbroek and Cunaeus (January 1746), and Nollet’s demonstrations.
+nexperia-74hc04:
+  authors: Nexperia
+  year: 2024
+  title: 74HC04; 74HCT04 Hex inverter, product data sheet (Rev. 10)
+  venue: Nexperia B.V.
+  url: https://assets.nexperia.com/documents/data-sheet/74HC_HCT04.pdf
+  note: The input capacitance of a 74HC gate is a few picofarads (3.5 pF typical).
+nxp-i2c:
+  authors: NXP
+  year: 2021
+  title: UM10204, I²C-bus specification and user manual, Rev. 7.0
+  venue: NXP Semiconductors, 1 October 2021
+  url: https://www.nxp.com/docs/en/user-guide/UM10204.pdf
+  note: Maximum rise time (from 0.3 to 0.7 of the supply) 1000 ns at 100 kHz, 300 ns at 400 kHz and 120 ns at 1 MHz; at most 400 pF on the bus; 3 mA at 0.4 V from a pulling-down device; and the equations for the pull-up resistor.
+ganssle-debounce:
+  authors: Jack G. Ganssle
+  year: 2004
+  title: A guide to debouncing
+  venue: The Ganssle Group
+  url: http://www.ganssle.com/debouncing.htm
+  note: Measurements of the bounce of many kinds of switch, and hardware and software cures.
+nagel1975:
+  authors: Laurence W. Nagel
+  year: 1975
+  title: 'SPICE2: A computer program to simulate semiconductor circuits'
+  venue: Memorandum ERL-M520, Electronics Research Laboratory, University of California, Berkeley
+  note: The design of the program that made companion models, backward Euler and the trapezoidal rule, and local-truncation-error step control the standard way to simulate circuits.
+pillage1995:
+  authors: Lawrence T. Pillage, Ronald A. Rohrer and Chandramouli Visweswariah
+  year: 1995
+  title: Electronic Circuit and System Simulation Methods
+  venue: McGraw-Hill
+  note: The companion-model treatment of capacitors and inductors, and the stability of numerical integration methods (A-stability and stiff decay).
+ohm1827:
+  authors: Georg Simon Ohm
+  year: 1827
+  title: Die galvanische Kette, mathematisch bearbeitet
+  venue: Berlin, T. H. Riemann
+  note: Ohm’s book, in which the relation between voltage, current and resistance is derived by analogy with Fourier’s theory of heat.
+caneva1978:
+  authors: Kenneth L. Caneva
+  year: 1978
+  title: 'From galvanism to electrodynamics: the transformation of German physics and its social context'
+  venue: Historical Studies in the Physical Sciences 9, 63–159
+  note: Includes the German reception of Ohm’s work in the late 1820s, among them the reviews of Schweigger, Kämtz and Pohl.
+kirchhoff1847:
+  authors: Gustav Kirchhoff
+  year: 1847
+  title: Ueber die Auflösung der Gleichungen, auf welche man bei der Untersuchung der linearen Vertheilung galvanischer Ströme geführt wird
+  venue: Annalen der Physik und Chemie 72, 497–508
+  note: Kirchhoff’s laws for networks and the spanning-tree method of choosing independent loops.
+britannica-kirchhoff:
+  authors: Encyclopaedia Britannica
+  year: 2024
+  title: Gustav Kirchhoff
+  url: https://www.britannica.com/biography/Gustav-Robert-Kirchhoff
+  note: Biography, including his studies under Franz Neumann at Königsberg and his work with Bunsen on spectroscopy.
+ti-sn74hc04:
+  authors: TI
+  year: 2003
+  title: SN54HC04, SN74HC04 hex inverters, data sheet SCLS078 (first issued December 1982)
+  venue: Texas Instruments Incorporated
+  url: https://www.ti.com/lit/ds/symlink/sn74hc04.pdf
+  note: Input thresholds of 0.7 and 0.3 of the supply (3.15 V and 1.35 V at 4.5 V, 4.2 V and 1.8 V at 6 V), outputs within 0.1 V of the rails at light load, and an absolute maximum of ±25 mA through an output pin and ±50 mA through VCC or ground.
+ti-sn74hc03:
+  authors: TI
+  year: 2021
+  title: SNx4HC03 quadruple 2-input NAND gates with open-drain outputs, data sheet (Rev. F)
+  venue: Texas Instruments Incorporated
+  url: https://www.ti.com/lit/ds/symlink/sn74hc03.pdf
+  note: "The open-drain member of the 74HC family: its outputs need pull-up resistors and can be joined to give a wired-AND."
+dennard1974:
+  authors: Robert H. Dennard, Fritz H. Gaensslen, Hwa-Nien Yu, V. Leo Rideout, Ernest Bassous and Andre R. LeBlanc
+  year: 1974
+  title: Design of ion-implanted MOSFET’s with very small physical dimensions
+  venue: IEEE Journal of Solid-State Circuits 9(5), 256–268
+  url: https://doi.org/10.1109/JSSC.1974.1050511
+  note: "The scaling rules: divide dimensions, voltage and oxide thickness by κ, multiply the doping by κ, and the fields stay the same, the delay falls by κ and the power per circuit by κ²."
+bohr2007:
+  authors: Mark Bohr
+  year: 2007
+  title: A 30 year retrospective on Dennard’s MOSFET scaling paper
+  venue: IEEE Solid-State Circuits Society Newsletter 12(1), 11–13
+  url: https://ieeexplore.ieee.org/document/4785534/
+  note: How the paper became the industry’s roadmap, and why classical scaling of the voltage and threshold stopped when subthreshold leakage grew.
+sutter2005:
+  authors: Herb Sutter
+  year: 2005
+  title: 'The free lunch is over: a fundamental turn toward concurrency in software'
+  venue: Dr. Dobb’s Journal 30(3), March 2005
+  url: http://www.gotw.ca/publications/concurrency-ddj.htm
+  note: The article that told programmers that clock speeds had stopped rising and that concurrency would be needed to use more transistors.
+eetimes-tejas:
+  authors: EETimes
+  year: 2004
+  title: Intel cancels Tejas, moves to dual-core designs
+  venue: EE Times, May 2004
+  url: https://www.eetimes.com/intel-cancels-tejas-moves-to-dual-core-designs/
+  note: Intel’s cancellation, in May 2004, of the planned successor to the Pentium 4, and its turn to multi-core chips.
+chm-standard-logic:
+  authors: CHM
+  year: 2007
+  title: 1963, Standard logic IC families introduced
+  venue: Computer History Museum, “The Silicon Engine”
+  url: https://www.computerhistory.org/siliconengine/standard-logic-ic-families-introduced/
+  note: Sylvania’s SUHL (1963), Texas Instruments’ SN5400 series (1964) and the plastic SN7400 series (1966), which took more than half of the logic market.
+weik1961:
+  authors: Martin H. Weik
+  year: 1961
+  title: The ENIAC story
+  venue: Ordnance (Journal of the American Ordnance Association), January–February 1961, 3–7
+  url: https://ftp.arl.army.mil/~mike/comphist/eniac-story.html
+  note: A history by an engineer of the Ballistic Research Laboratories, with ENIAC’s component counts (17,468 vacuum tubes, 7,200 crystal diodes, 1,500 relays, 70,000 resistors, 10,000 capacitors, about five million soldered joints), its size, weight and power, and its speed of 5,000 additions a second.
+apple-m2-ultra:
+  authors: Apple Inc.
+  year: 2023
+  title: Apple introduces M2 Ultra
+  venue: Apple Newsroom, 5 June 2023
+  url: https://www.apple.com/newsroom/2023/06/apple-introduces-m2-ultra/
+  note: 134 billion transistors, two M2 Max dies joined in one package.
+sze2007:
+  authors: Simon M. Sze and Kwok K. Ng
+  year: 2007
+  title: Physics of Semiconductor Devices, third edition
+  venue: John Wiley & Sons
+  note: The properties of silicon (lattice constant 0.543 nm, 5.0 × 10²² atoms per cm³) and doping levels from 10¹⁵ to 10²⁰ per cm³; at 10²⁰ about one atom in 500 is a dopant.
+braun1875:
+  authors: Ferdinand Braun
+  year: 1875
+  title: Ueber die Stromleitung durch Schwefelmetalle
+  venue: Annalen der Physik und Chemie 153 (series 2, vol. 229), 556–563. Submitted 23 November 1874
+  url: https://doi.org/10.1002/andp.18752291207
+  note: 'The first report of a rectifying contact between a metal point and a semiconducting crystal: the resistance of metal sulphides depended on the direction of the current.'
+chm-braun-rectifier:
+  authors: Computer History Museum
+  year: 2007
+  title: '1874: Semiconductor point-contact rectifier effect is discovered'
+  venue: Computer History Museum, The Silicon Engine
+  url: https://www.computerhistory.org/siliconengine/semiconductor-point-contact-rectifier-effect-is-discovered/
+  note: Braun’s discovery and its later use in cat’s-whisker radio detectors.
+fleming-patent:
+  authors: John Ambrose Fleming
+  year: 1905
+  title: Improvements in instruments for detecting and measuring alternating electric currents
+  venue: British patent 24,850. Provisional specification 16 November 1904, granted 21 September 1905
+  url: https://g3ynh.info/valves/old/history/flem.html
+  note: The patent for the thermionic diode, which Fleming called the oscillation valve. The URL is a transcription of the specification.
+fleming-milestone:
+  authors: IEEE History Center
+  year: 2004
+  title: 'Milestones: Fleming Valve, 1904'
+  venue: Engineering and Technology History Wiki
+  url: https://ethw.org/Milestones:Fleming_Valve,_1904
+  note: The IEEE milestone plaque at University College London.
+round1907:
+  authors: H. J. Round
+  year: 1907
+  title: A note on carborundum
+  venue: Electrical World 49, 309. Dated 9 February 1907
+  note: “On applying a potential of 10 volts between two points on a crystal of carborundum, the crystal gave out a yellowish light.” The first report of electroluminescence from a solid-state diode.
+chm-ohl:
+  authors: Computer History Museum
+  year: 2007
+  title: '1940: Discovery of the p–n junction'
+  venue: Computer History Museum, The Silicon Engine
+  url: https://www.computerhistory.org/siliconengine/discovery-of-the-p-n-junction/
+  note: Russell Ohl’s cracked silicon rod of 23 February 1940 and the two kinds of impurity on either side of the crack.
+riordan1997:
+  authors: Michael Riordan and Lillian Hoddeson
+  year: 1997
+  title: 'Crystal Fire: The Invention of the Transistor and the Birth of the Information Age'
+  venue: W. W. Norton
+  note: The standard history of the transistor at Bell Labs, from Ohl’s junction and the band theory of the 1930s to the point-contact and junction transistors.
+ohl-patent:
+  authors: Russell S. Ohl
+  year: 1946
+  title: Light-sensitive electric device
+  venue: US Patent 2,402,662. Filed 27 May 1941, granted 25 June 1946
+  url: https://patents.google.com/patent/US2402662A/en
+  note: The silicon pn junction as a photocell.
+holonyak1962:
+  authors: Nick Holonyak Jr. and S. F. Bevacqua
+  year: 1962
+  title: Coherent (visible) light emission from Ga(As1−xPx) junctions
+  venue: Applied Physics Letters 1(4), 82–83 (1 December 1962)
+  url: https://doi.org/10.1063/1.1753706
+  note: The GaAsP junction at General Electric that emitted visible red light (about 710 nm at 77 K as a laser diode) and worked as an LED at room temperature.
+physicstoday-holonyak:
+  authors: Physics Today
+  year: 2022
+  title: Nick Holonyak Jr
+  venue: Physics Today 75(12), 61
+  url: https://pubs.aip.org/physicstoday/article/75/12/61/2848592/Nick-Holonyak-Jr
+  note: An obituary that recounts the October 1962 demonstration of the red GaAsP diode.
+amano1989:
+  authors: H. Amano, M. Kito, K. Hiramatsu and I. Akasaki
+  year: 1989
+  title: P-type conduction in Mg-doped GaN treated with low-energy electron beam irradiation (LEEBI)
+  venue: Japanese Journal of Applied Physics 28, L2112–L2114
+  url: https://doi.org/10.1143/JJAP.28.L2112
+  note: The first p-type gallium nitride, and the first GaN pn-junction LED.
+nakamura1992:
+  authors: S. Nakamura, T. Mukai, M. Senoh and N. Iwasa
+  year: 1992
+  title: Thermal annealing effects on p-type Mg-doped GaN films
+  venue: Japanese Journal of Applied Physics 31, L139–L142
+  url: https://doi.org/10.1143/JJAP.31.L139
+  note: Heating in nitrogen above 700 °C makes magnesium-doped GaN p-type without an electron beam.
+nakamura1994:
+  authors: S. Nakamura, T. Mukai and M. Senoh
+  year: 1994
+  title: Candela-class high-brightness InGaN/AlGaN double-heterostructure blue-light-emitting diodes
+  venue: Applied Physics Letters 64(13), 1687–1689
+  url: https://doi.org/10.1063/1.111832
+  note: The first bright blue LED, made at Nichia.
+nobel2014:
+  authors: The Royal Swedish Academy of Sciences
+  year: 2014
+  title: 'The Nobel Prize in Physics 2014: press release'
+  venue: NobelPrize.org
+  url: https://www.nobelprize.org/prizes/physics/2014/press-release/
+  note: Awarded to Isamu Akasaki, Hiroshi Amano and Shuji Nakamura “for the invention of efficient blue light-emitting diodes which has enabled bright and energy-saving white light sources”.
+deforest-patent:
+  authors: Lee de Forest
+  year: 1907
+  title: Device for amplifying feeble electrical currents
+  venue: US Patent 841,387. Filed 25 October 1906, granted 15 January 1907
+  url: https://patents.google.com/patent/US841387A/en
+  note: The Audion. The three-electrode (grid) form was the subject of a second application, filed 29 January 1907.
+nmah-audion:
+  authors: National Museum of American History, Smithsonian Institution
+  year: 1906
+  title: Experimental DeForest “Audion” tube
+  venue: Smithsonian Institution, object nmah_1289117
+  url: https://americanhistory.si.edu/collections/object/nmah_1289117
+  note: An early Audion, with its filament, grid and plate.
+copeland2006:
+  authors: B. Jack Copeland (ed.)
+  year: 2006
+  title: 'Colossus: The Secrets of Bletchley Park’s Codebreaking Computers'
+  venue: Oxford University Press
+  note: Tommy Flowers’s design of Colossus and its valves; the Mark 1 of about 1,500 valves and the Mark 2 of 2,400.
+tnmoc-colossus:
+  authors: The National Museum of Computing
+  year: 2020
+  title: Colossus
+  venue: The National Museum of Computing, Bletchley Park
+  url: https://www.tnmoc.org/colossus
+  note: The Mark 1 began operation at Bletchley Park in early February 1944; the first Mark 2 went into service on 1 June 1944.
+bardeen1948:
+  authors: J. Bardeen and W. H. Brattain
+  year: 1948
+  title: The transistor, a semi-conductor triode
+  venue: Physical Review 74(2), 230–231
+  url: https://doi.org/10.1103/PhysRev.74.230
+  note: The announcement of the point-contact transistor.
+ethw-transistor:
+  authors: IEEE History Center
+  year: 2012
+  title: Bell demonstrates transistor
+  venue: Engineering and Technology History Wiki
+  url: https://ethw.org/Bell_Demonstrates_Transistor
+  note: The amplification of 16 December 1947 and the demonstration to Bell Labs officials on 23 December.
+chm-transistor:
+  authors: Computer History Museum
+  year: 2007
+  title: '1947: Invention of the point-contact transistor'
+  venue: Computer History Museum, The Silicon Engine
+  url: https://www.computerhistory.org/siliconengine/invention-of-the-point-contact-transistor/
+chm-junction-transistor:
+  authors: Computer History Museum
+  year: 2007
+  title: '1948: Conception of the junction transistor'
+  venue: Computer History Museum, The Silicon Engine
+  url: https://www.computerhistory.org/siliconengine/conception-of-the-junction-transistor/
+  note: Shockley’s notebook of 23 January 1948.
+shockley1949:
+  authors: William Shockley
+  year: 1949
+  title: The theory of p-n junctions in semiconductors and p-n junction transistors
+  venue: Bell System Technical Journal 28(3), 435–489
+  url: https://doi.org/10.1002/j.1538-7305.1949.tb03645.x
+  note: The theory of the junction diode and of the junction transistor.
+shirriff2019:
+  authors: Ken Shirriff
+  year: 2019
+  title: 'A computer built from NOR gates: inside the Apollo Guidance Computer'
+  venue: righto.com, September 2019
+  url: http://www.righto.com/2019/09/a-computer-built-from-nor-gates-inside.html
+  note: The Fairchild RTL three-input NOR gates of the AGC, two to a package.
+hall1996:
+  authors: Eldon C. Hall
+  year: 1996
+  title: 'Journey to the Moon: The History of the Apollo Guidance Computer'
+  venue: American Institute of Aeronautics and Astronautics
+  note: The design of the AGC by one of its designers, including the choice of integrated NOR gates.
+ebers1954:
+  authors: J. J. Ebers and J. L. Moll
+  year: 1954
+  title: Large-signal behavior of junction transistors
+  venue: Proceedings of the IRE 42(12), 1761–1772
+  note: The two-diode transport model of the bipolar transistor that circuit simulators still use.
+shichman1968:
+  authors: H. Shichman and D. A. Hodges
+  year: 1968
+  title: Modeling and simulation of insulated-gate field-effect transistor switching circuits
+  venue: IEEE Journal of Solid-State Circuits 3(3), 285–289
+  note: 'The “level-1” MOSFET model: off, linear and saturation regions.'
+iec60062:
+  authors: International Electrotechnical Commission
+  year: 2016
+  title: 'IEC 60062: Marking codes for resistors and capacitors'
+  venue: IEC, Geneva (5th edition)
+  note: The colour code for resistors, and the letter-and-digit codes such as 4k7 and R47.
+iec60063:
+  authors: International Electrotechnical Commission
+  year: 2015
+  title: 'IEC 60063: Preferred number series for resistors and capacitors'
+  venue: IEC, Geneva
+  note: The E series (E3 to E192) of preferred values, and the tolerances they go with.
+jedec-jesd8:
+  authors: JEDEC
+  year: 2001–2007
+  title: 'JESD8C.01: Interface standard for nominal 3 V/3.3 V supply digital integrated circuits (2007), and JESD8-7A: 1.8 V ± 0.15 V (normal range) and 1.2 V – 1.95 V (wide range) power supply voltage and interface standard for nonterminated digital integrated circuits (2001)'
+  venue: JEDEC Solid State Technology Association
+  url: https://www.jedec.org/
+  note: The 3.3 V LVTTL and LVCMOS input and output levels (VIH 2.0 V, VIL 0.8 V), and the 1.8 V LVCMOS levels (VIH 0.65 VDD, VIL 0.35 VDD).
+ti-sn74hc-family:
+  authors: Texas Instruments
+  year: n.d.
+  title: 'SN74HC00, SN74HC02, SN74HC08, SN74HC32, SN74HC74, SN74HC86, SN74HC161, SN74HC283 and SN74HC595 data sheets'
+  venue: Texas Instruments Incorporated
+  url: https://www.ti.com/lit/ds/symlink/sn74hc00.pdf
+  note: 'One data sheet per part at www.ti.com/lit/ds/symlink/<part>.pdf, for example sn74hc595.pdf. Pin assignments, function tables and limits; check the current revision. The SN74HC00 sheet gives the 74HC00’s gate inputs on pins 1 and 2, 4 and 5, 9 and 10, and 12 and 13, and its outputs on pins 3, 6, 8 and 11.'
+ti-ne555:
+  authors: Texas Instruments
+  year: n.d.
+  title: NE555, SA555, SE555 precision timers, data sheet
+  venue: Texas Instruments Incorporated
+  url: https://www.ti.com/lit/ds/symlink/ne555.pdf
+  note: The 8-pin timer with its comparators, latch and discharge transistor.
+flake2020:
+  authors: Peter Flake, Phil Moorby, Steve Golson, Arturo Salz, Simon Davidmann
+  year: 2020
+  title: Verilog HDL and its ancestors and descendants
+  venue: Proceedings of the ACM on Programming Languages 4(HOPL), History of Programming Languages IV
+  url: https://doi.org/10.1145/3386337
+  note: The history of Verilog by its authors. Moorby and Chi-Lai Huang specified the language in December 1983 at Gateway Design Automation, the simulator followed in 1984 and was on sale by early 1985, and Verilog-XL in 1987.
+ieee1076-1987:
+  authors: IEEE
+  year: 1987
+  title: IEEE Standard VHDL Language Reference Manual, IEEE Std 1076-1987
+  venue: Institute of Electrical and Electronics Engineers, December 1987
+  note: The first standard of VHDL, adopted in December 1987 (ANSI approval followed in 1988).
+wiki-vhdl:
+  authors: Wikipedia
+  year: n.d.
+  title: VHDL
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/VHDL
+  note: The VHSIC programme, the Woods Hole workshop of June 1981, the July 1983 contract to Intermetrics, IBM and Texas Instruments, and version 7.2 of August 1985.
+wiki-palasm:
+  authors: Wikipedia
+  year: n.d.
+  title: PALASM
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/PALASM
+  note: PALASM by John Birkner of Monolithic Memories, written in FORTRAN IV, source available at no cost.
+wiki-abel:
+  authors: Wikipedia
+  year: n.d.
+  title: Advanced Boolean Expression Language
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Advanced_Boolean_Expression_Language
+  note: ABEL, created in 1983 by Data I/O; the concept and first compiler by Russell de Pina in 1981.
+holley-abel:
+  authors: Michael Holley
+  year: n.d.
+  title: History of the ABEL project at Data I/O
+  venue: Programmable-logic history archive
+  url: https://deramp.com/swtpc.com/PLD_History/ABEL_project/ABEL_Memos.htm
+  note: Memos and recollections from the ABEL development team.
+cupl-1983:
+  authors: Assisted Technology
+  year: 1983
+  title: CUPL, the universal language for programmable logic (data sheet)
+  venue: Assisted Technology
+  url: https://deramp.com/swtpc.com/PLD_History/ABEL_project/CUPL_Data_Sheet_1983_ocr.pdf
+  note: The 1983 data sheet of CUPL, a compiler that targets a chip named at compile time.
+ethw-degeus:
+  authors: ETHW
+  year: n.d.
+  title: Aart J. de Geus
+  venue: ETHW, IEEE History Center
+  url: https://ethw.org/Aart_J._de_Geus
+  note: De Geus led the team at General Electric that built the SOCRATES logic-synthesis system in the mid-1980s.
+fundinguniverse-synopsys:
+  authors: FundingUniverse
+  year: n.d.
+  title: History of Synopsys, Inc.
+  venue: International Directory of Company Histories, reproduced at FundingUniverse
+  url: https://www.fundinguniverse.com/company-histories/synopsys-inc-history/
+  note: Founded in 1986 as Optimal Solutions, renamed Synopsys in 1987; revenue of $130,000 in 1987 and $976,000 in 1988; Verilog chosen as an input language by 1988; more than 75 per cent of the synthesis market by 1992.
+boole1854:
+  authors: George Boole
+  year: 1854
+  title: An Investigation of the Laws of Thought, on Which Are Founded the Mathematical Theories of Logic and Probabilities
+  venue: London, Walton and Maberly
+  url: https://www.gutenberg.org/ebooks/15114
+  note: Boole’s book that treats logic as an algebra of 0 and 1. His shorter The Mathematical Analysis of Logic (1847) had announced the idea.
+demorgan1847:
+  authors: Augustus De Morgan
+  year: 1847
+  title: 'Formal Logic: or, The Calculus of Inference, Necessary and Probable'
+  venue: London, Taylor and Walton
+  url: https://zenodo.org/records/7530519
+  note: The book in which De Morgan states the laws for the negation of a compound and of an aggregate.
+sep-algebra-logic:
+  authors: Stanley Burris
+  year: 2022
+  title: The Algebra of Logic Tradition
+  venue: 'The Stanford Encyclopedia of Philosophy'
+  url: https://plato.stanford.edu/entries/algebra-logic-tradition/
+  note: The history from Boole and De Morgan through Jevons and Peirce, including the change from Boole’s exclusive to the inclusive ‘or’.
+sheffer1913:
+  authors: Henry M. Sheffer
+  year: 1913
+  title: A set of five independent postulates for Boolean algebras, with application to logical constants
+  venue: Transactions of the American Mathematical Society 14(4), 481–488
+  url: https://www.jstor.org/stable/1988701
+  note: Introduces the stroke, a single operation from which all of Boolean algebra can be defined.
+mactutor-sheffer:
+  authors: J. J. O’Connor and E. F. Robertson
+  year: 2010
+  title: Henry Maurice Sheffer (1882–1964)
+  venue: MacTutor History of Mathematics archive, University of St Andrews
+  url: https://mathshistory.st-andrews.ac.uk/Biographies/Sheffer/
+  note: Sheffer’s biography, with the 1913 paper, its interpretation of the stroke as NOR, and the remark about NAND.
+iep-sheffer:
+  authors: Internet Encyclopedia of Philosophy
+  year: 2020
+  title: The Sheffer Stroke
+  venue: Internet Encyclopedia of Philosophy
+  url: https://iep.utm.edu/sheffers/
+  note: The stroke and its history, including Peirce’s earlier, unpublished discovery of the same connectives.
+nasm-agc-ic:
+  authors: National Air and Space Museum, Smithsonian Institution
+  year: 2017
+  title: Integrated Circuit, Dual 3 Input, Apollo Guidance Computer
+  venue: Smithsonian Institution, National Air and Space Museum, catalogue number A20170004000
+  url: https://www.si.edu/object/integrated-circuit-dual-3-input-apollo-guidance-computer:nasm_A20170004000
+  note: One of the dual three-input NOR packages of the Apollo Guidance Computer.
+veitch1952:
+  authors: Edward W. Veitch
+  year: 1952
+  title: A chart method for simplifying truth functions
+  venue: 'Proceedings of the Association for Computing Machinery, Pittsburgh, Pa., May 2 and 3, 1952, 127–133'
+  url: https://dl.acm.org/doi/10.1145/609784.609801
+  note: The Veitch chart, the ancestor of the Karnaugh map.
+karnaugh1953:
+  authors: Maurice Karnaugh
+  year: 1953
+  title: The map method for synthesis of combinational logic circuits
+  venue: 'Transactions of the American Institute of Electrical Engineers, Part I: Communication and Electronics 72(9), 593–599. Presented at the AIEE Summer General Meeting, Atlantic City, June 1953'
+  note: Karnaugh’s paper, with the Gray-code labelling that every textbook uses.
+quine1952:
+  authors: Willard V. Quine
+  year: 1952
+  title: The problem of simplifying truth functions
+  venue: The American Mathematical Monthly 59(8), 521–531
+  note: 'Quine’s account of prime implicants and how to find the shortest form of a truth function. A sequel, “A way to simplify truth functions”, appeared in the same journal 62(9), 627–631 (1955).'
+mccluskey1956:
+  authors: Edward J. McCluskey Jr.
+  year: 1956
+  title: Minimization of Boolean functions
+  venue: The Bell System Technical Journal 35(6), 1417–1444
+  url: https://archive.org/details/bstj35-6-1417
+  note: The tabular procedure that bears his name with Quine’s, described as a simplification and extension of Quine’s method.
+petrick1956:
+  authors: Stanley R. Petrick
+  year: 1956
+  title: A direct determination of the irredundant forms of a Boolean function from the set of prime implicants
+  venue: 'Air Force Cambridge Research Center technical report AFCRC-TR-56-110, Cambridge, Massachusetts'
+  note: Petrick’s method for choosing among prime implicants.
+chandra1978:
+  authors: Ashok K. Chandra and George Markowsky
+  year: 1978
+  title: On the number of prime implicants
+  venue: Discrete Mathematics 24(1), 7–11
+  url: https://doi.org/10.1016/0012-365X(78)90168-1
+  note: A function of n variables has at most O(3ⁿ/√n) prime implicants, and some have Ω(3ⁿ/n).
+brayton1984:
+  authors: Robert K. Brayton, Gary D. Hachtel, Curtis McMullen and Alberto L. Sangiovanni-Vincentelli
+  year: 1984
+  title: Logic Minimization Algorithms for VLSI Synthesis
+  venue: Boston, Kluwer Academic Publishers
+  url: https://link.springer.com/book/10.1007/978-1-4613-2821-6
+  note: The book that describes Espresso, the heuristic two-level minimiser, and the work at IBM and Berkeley that led to it.
+brayton1987:
+  authors: Robert K. Brayton, Richard Rudell, Alberto Sangiovanni-Vincentelli and Albert R. Wang
+  year: 1987
+  title: 'MIS: a multiple-level logic optimization system'
+  venue: IEEE Transactions on Computer-Aided Design 6(6), 1062–1081
+  note: Factoring, kernel extraction and technology mapping for multi-level logic.
+wiki-prom:
+  authors: Wikipedia
+  year: n.d.
+  title: Programmable ROM
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Programmable_ROM
+  note: The PROM invented in 1956 by Wen Tsing Chow at the Arma Division of American Bosch Arma, for the Atlas E/F missile’s guidance computer; the patent’s secrecy order and the origin of the word “burn”.
+chm-eprom:
+  authors: CHM
+  year: 2007
+  title: '1971: Reusable semiconductor ROM introduced'
+  venue: Computer History Museum, The Storage Engine
+  url: https://www.computerhistory.org/storageengine/reusable-semiconductor-rom-introduced/
+  note: The Intel 1702, a 2,048-bit ultraviolet-erasable PROM designed by Dov Frohman, and the FAMOS floating-gate device.
+frohman1971:
+  authors: Dov Frohman-Bentchkowsky
+  year: 1971
+  title: A fully decoded 2048-bit electrically programmable FAMOS read-only memory
+  venue: IEEE Journal of Solid-State Circuits 6(5), 301–306
+  note: The paper on the 2,048-bit floating-gate avalanche-injection MOS memory behind the Intel 1702.
+wiki-pld:
+  authors: Wikipedia
+  year: n.d.
+  title: Programmable logic device
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Programmable_logic_device
+  note: The Intersil IM5200 (June 1975) and the Signetics 82S100, the first field-programmable logic arrays; the PAL of 1978 that followed them.
+signetics-82s100:
+  authors: Signetics
+  year: 1975
+  title: 82S100 bipolar field-programmable logic array (FPLA), data sheet
+  venue: Signetics, scanned at the Internet Archive
+  url: https://archive.org/details/82s100
+  note: 16 inputs, 48 product terms and 8 outputs in a 28-pin package.
+actel-act1:
+  authors: Actel
+  year: 1996
+  title: ACT 1 Series FPGAs, data sheet
+  venue: Actel Corporation
+  url: https://media.digikey.com/pdf/Data%20Sheets/Microsemi%20PDFs/ACT1_Family.pdf
+  note: 'FPGAs built on the PLICE antifuse: a dielectric between two layers of metal that a programming voltage turns into a conducting link.'
+fowler1928:
+  authors: Ralph H. Fowler and Lothar Nordheim
+  year: 1928
+  title: Electron emission in intense electric fields
+  venue: Proceedings of the Royal Society of London A 119(781), 173–181
+  url: https://doi.org/10.1098/rspa.1928.0091
+  note: The theory of electrons tunnelling through a thin barrier in a strong field, which erases and programs EEPROM and flash cells.
+nexperia-74hc151:
+  authors: Nexperia
+  year: 2024
+  title: 74HC151; 74HCT151 8-input multiplexer, product data sheet (Rev. 11)
+  venue: Nexperia data sheet
+  url: https://assets.nexperia.com/documents/data-sheet/74HC_HCT151.pdf
+  note: One of eight binary inputs, chosen by three select inputs and an enable, routed to complementary outputs.
+nexperia-74hc138:
+  authors: Nexperia
+  year: 2024
+  title: 74HC138; 74HCT138 3-to-8 line decoder/demultiplexer; inverting, product data sheet
+  venue: Nexperia data sheet
+  url: https://assets.nexperia.com/documents/data-sheet/74HC_HCT138.pdf
+  note: Three address inputs, eight mutually exclusive active-low outputs, three enable inputs; usable as a demultiplexer by using one enable as the data input.
+ti-sn74hc148:
+  authors: TI
+  year: n.d.
+  title: SN54HC148, SN74HC148 8-line to 3-line priority encoders, product page and data sheet
+  venue: Texas Instruments Incorporated
+  url: https://www.ti.com/product/SN74HC148
+  note: Eight active-low inputs encoded to a three-bit binary output, the highest-numbered active input taking priority.
+nexperia-74hc85:
+  authors: Nexperia
+  year: 2024
+  title: 74HC85; 74HCT85 4-bit magnitude comparator, product data sheet (Rev. 5)
+  venue: Nexperia data sheet
+  url: https://www.mouser.com/datasheet/2/916/74HC_HCT85-1541793.pdf
+  note: Compares two 4-bit words and presents A > B, A = B and A < B; cascading inputs let several chips compare longer words.
+nexperia-74hc280:
+  authors: Nexperia
+  year: 2024
+  title: 74HC280; 74HCT280 9-bit odd/even parity generator/checker, product data sheet
+  venue: Nexperia data sheet
+  url: https://assets.nexperia.com/documents/data-sheet/74HC_HCT280.pdf
+  note: Nine data inputs with both an even-parity and an odd-parity output.
+nexperia-74hc4511:
+  authors: Nexperia
+  year: 2024
+  title: 74HC4511; 74HCT4511 BCD to 7-segment latch/decoder/driver, product data sheet
+  venue: Nexperia data sheet
+  url: https://assets.nexperia.com/documents/data-sheet/74HC_HCT4511.pdf
+  note: Four BCD inputs, latch enable, lamp test and blanking inputs, segment outputs a to g; the display is blank for every input code above 9.
+hamming1950:
+  authors: Richard W. Hamming
+  year: 1950
+  title: Error detecting and error correcting codes
+  venue: Bell System Technical Journal 29(2), 147–160
+  url: https://doi.org/10.1002/j.1538-7305.1950.tb00463.x
+  note: 'Hamming’s paper: parity checks over overlapping subsets of the bits, arranged so that the failing checks give the position of a single error.'
+boos2018:
+  authors: Jens Boos
+  year: 2018
+  title: 'The Nixie tube story: the neon display tech that engineers can’t quit'
+  venue: IEEE Spectrum, 25 June 2018
+  url: https://spectrum.ieee.org/nixie-tube
+  note: The history of the Nixie tube from the Haydu Brothers to Burroughs, and its revival by Dalibor Farny.
+wiki-nixie:
+  authors: Wikipedia
+  year: 'n.d.'
+  title: Nixie tube
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Nixie_tube
+  note: The name Nixie, usually explained as from NIX I, Numeric Indicator eXperimental No. 1, and Burroughs’s introduction of the tube in 1955.
+wood1908:
+  authors: Frank W. Wood
+  year: 1908
+  title: Illuminated announcement and display signal
+  venue: US patent 974,943, application filed 17 June 1908
+  url: https://patents.google.com/patent/US974943A/en
+  note: A signal that forms characters from electric lamps behind shaped openings, its object being to use as few lamps and circuits for each character as possible.
+wiki-pal:
+  authors: Wikipedia
+  year: n.d.
+  title: Programmable Array Logic
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Programmable_Array_Logic
+  note: The PAL introduced by Monolithic Memories in March 1978, by John Birkner and H. T. Chua working with Andy Chan; the 20-pin package against the PLAs’ 28 pins.
+us4124899:
+  authors: John M. Birkner and H. T. Chua
+  year: 1978
+  title: Programmable array logic circuit
+  venue: US patent 4,124,899, filed 23 May 1977, issued 7 November 1978
+  url: https://patentimages.storage.googleapis.com/08/ce/c7/a1158872bc9e61/US4124899.pdf
+  note: The patent for the PAL, whose programmable AND array feeds OR gates that are not programmable.
+wiki-gal:
+  authors: Wikipedia
+  year: n.d.
+  title: Generic Array Logic
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Generic_Array_Logic
+  note: The GAL, Lattice Semiconductor’s erasable, reprogrammable development of the PAL.
+galette:
+  authors: Simon Frankau
+  year: n.d.
+  title: galette, a GALasm-compatible assembler for GAL devices
+  venue: GitHub, MIT licence
+  url: https://github.com/simon-frankau/galette
+  note: A Rust port of GALasm. Its fuse layout and JEDEC output are the reference for the course’s GAL22V10 writer.
+jedec-jesd3:
+  authors: JEDEC
+  year: 1994
+  title: 'JESD3-C: Standard data transfer format between data preparation system and programmable logic device programmer'
+  venue: JEDEC Solid State Technology Association
+  url: https://www.jedec.org/
+  note: The text format of fuse files, with the fields QF, QP, F, G, L and C and the transmission checksum.
+leibniz1703:
+  authors: Gottfried Wilhelm Leibniz
+  year: 1703
+  title: Explication de l’Arithmétique Binaire, qui se sert des seuls caractères 0 et 1; avec des remarques sur son utilité, et sur ce qu’elle donne le sens des anciennes figures chinoises de Fohy
+  venue: 'Histoire de l’Académie Royale des Sciences, année MDCCIII, Mémoires, 85–89 (Paris: Jean Boudot, 1705)'
+  note: Leibniz’s account of binary arithmetic, with the rules of addition, subtraction, multiplication and division in base two and his reading of the hexagrams of the I Ching as binary numbers.
+norman-leibniz:
+  authors: Jeremy Norman
+  year: 'n.d.'
+  title: Leibniz expounds on binary arithmetic for computing
+  venue: From Cave Painting to the Internet, historyofinformation.com
+  url: https://www.historyofinformation.com/detail.php?id=395
+  note: Leibniz’s essay on binary arithmetic, sent to the Paris Academy after Bouvet’s letter about the hexagrams, and printed in 1705 in the volume for 1703.
+lions1996:
+  authors: J. L. Lions
+  year: 1996
+  title: 'Ariane 5 flight 501 failure: report by the inquiry board'
+  venue: European Space Agency, Paris, 19 July 1996
+  url: http://sunnyday.mit.edu/nasa-class/Ariane5-report.html
+  note: The maiden flight of Ariane 5 on 4 June 1996 ended about 37 seconds after lift-off, after the conversion of a 64-bit floating-point number to a 16-bit signed integer overflowed in the inertial reference system.
+bromley1982:
+  authors: Allan G. Bromley
+  year: 1982
+  title: Charles Babbage’s Analytical Engine, 1838
+  venue: Annals of the History of Computing 4(3), 196–217
+  url: https://doi.org/10.1109/MAHC.1982.10028
+  note: A study of the design of 1838, including the anticipating carriage, a mechanism that carries in all the wheels of a register in a single operation.
+nxp-74hc283:
+  authors: NXP
+  year: 'n.d.'
+  title: 74HC283; 74HCT283 4-bit binary full adder with fast carry, product data sheet
+  venue: NXP Semiconductors (now Nexperia)
+  url: https://www.mouser.com/datasheet/2/302/74HC283_3-39369.pdf
+  note: Two 4-bit words and a carry in are added with full carry lookahead across the four bits; the carry out can feed the carry in of the next chip.
+nmah-hopper-nanoseconds:
+  authors: National Museum of American History
+  year: 1985
+  title: Nanoseconds Associated with Grace Hopper (museum object record)
+  venue: Smithsonian Institution, National Museum of American History
+  url: https://americanhistory.si.edu/collections/object/nmah_692464
+  note: A bundle of about a hundred pieces of plastic-coated wire, each about 30 cm (11.8 in) long, the distance a signal travels in a nanosecond, which Hopper handed out from the late 1960s and brought to a lecture for the museum's docents in March 1985. The record also describes her microsecond, a coil of wire nearly 1,000 feet long.
+dataphys-hopper:
+  authors: Pierre Dragicevic and Yvonne Jansen
+  year: 'n.d.'
+  title: Grace Hopper’s Nanoseconds (1968)
+  venue: List of Physical Visualizations and Related Artefacts, dataphys.org
+  url: https://dataphys.org/list/grace-hopper-nanoseconds/
+  note: A catalogue of physical data visualisations, which dates Hopper's wires to 1968.
+huffman1957:
+  authors: David A. Huffman
+  year: 1957
+  title: The design and use of hazard-free switching networks
+  venue: Journal of the ACM 4(1), 47–62
+  url: https://doi.org/10.1145/320856.320866
+  note: How to synthesise a combinational switching network that behaves ideally even though its individual components do not.
+eichelberger1965:
+  authors: Edward B. Eichelberger
+  year: 1965
+  title: Hazard detection in combinational and sequential switching circuits
+  venue: IBM Journal of Research and Development 9(2), 90–99
+  url: https://doi.org/10.1147/rd.92.0090
+  note: Detects hazards with a ternary algebra, without knowing any delays, for changes of a single input and of several.
+nexperia-74hc14:
+  authors: Nexperia
+  year: 2024
+  title: 74HC14; 74HCT14 Hex inverting Schmitt trigger, product data sheet (Rev. 10)
+  venue: Nexperia B.V.
+  url: https://assets.nexperia.com/documents/data-sheet/74HC_HCT14.pdf
+  note: At a 4.5 V supply the typical thresholds are 2.38 V for a rising input and 1.4 V for a falling one, with a minimum of 0.9 V and a maximum of 2.0 V for the falling threshold.
+atalla-kahng1960:
+  authors: Dawon Kahng and Mohamed M. Atalla
+  year: 1960
+  title: Silicon–silicon dioxide field induced surface devices
+  venue: IRE–AIEE Solid-State Device Research Conference, Carnegie Institute of Technology, Pittsburgh, June 1960
+  note: The first announcement of the MOS field-effect transistor, made at Bell Laboratories in late 1959; a silicon dioxide layer is the insulator under the gate.
+chm-mos1960:
+  authors: Computer History Museum
+  year: 2007
+  title: '1960: Metal oxide semiconductor (MOS) transistor demonstrated'
+  venue: 'The Silicon Engine: A Timeline of Semiconductors in Computers, Computer History Museum'
+  url: https://www.computerhistory.org/siliconengine/metal-oxide-semiconductor-mos-transistor-demonstrated/
+  note: Atalla and Kahng’s device and its reception at Bell Laboratories, and how other companies took up MOS in the early 1960s.
+wanlass-sah1963:
+  authors: Frank M. Wanlass and Chih-Tang Sah
+  year: 1963
+  title: Nanowatt logic using field-effect metal-oxide semiconductor triodes
+  venue: IEEE International Solid-State Circuits Conference, Digest of Technical Papers, February 1963, 32–33
+  note: The first public description of complementary MOS logic, with a standby power of a few nanowatts.
+wanlass-patent:
+  authors: Frank M. Wanlass
+  year: 1967
+  title: Low stand-by power complementary field effect circuitry (US patent 3,356,858)
+  venue: 'United States Patent Office; filed 18 June 1963, granted 5 December 1967; assigned to Fairchild Camera and Instrument Corporation'
+  url: https://patents.google.com/patent/US3356858A/en
+  note: The patent for the complementary pair of an n-channel and a p-channel field-effect transistor.
+chm-cmos1963:
+  authors: Computer History Museum
+  year: 2007
+  title: '1963: Complementary MOS circuit configuration is invented'
+  venue: 'The Silicon Engine: A Timeline of Semiconductors in Computers, Computer History Museum'
+  url: https://www.computerhistory.org/siliconengine/complementary-mos-circuit-configuration-is-invented/
+  note: Wanlass and Sah’s complementary circuit and its very low standby power.
+shmj-cmos:
+  authors: Semiconductor History Museum of Japan
+  year: 2010
+  title: 1963 Invention of CMOS (Fairchild Semiconductor)
+  venue: Semiconductor History Museum of Japan, exhibit 307
+  url: https://www.shmj.or.jp/english/pdf/dis/exhibi307E.pdf
+  note: Wanlass and Sah’s 1963 presentation of the CMOS inverter, NOR gates and a flip-flop, and the patent.
+rca-cd4000:
+  authors: All About Circuits
+  year: 2021
+  title: 'RCA CD4000: the CMOS logic that wouldn’t die'
+  venue: All About Circuits, news article
+  url: https://www.allaboutcircuits.com/news/rca-cd4000-the-cmos-logic-that-wouldnt-die/
+  note: The 4000 series, introduced by RCA in 1968 as the first commercial family of logic built entirely in CMOS.
+weste-harris2011:
+  authors: Neil H. E. Weste and David Money Harris
+  year: 2011
+  title: 'CMOS VLSI Design: A Circuits and Systems Perspective, fourth edition'
+  venue: Addison-Wesley
+  note: Static CMOS gates, transistor sizing with the p-channel transistor twice as wide as the n-channel one (the mobility ratio), and the history of CMOS replacing nMOS in the 1980s.
+bryant1984:
+  authors: Randal E. Bryant
+  year: 1984
+  title: A switch-level model and simulator for MOS digital systems
+  venue: IEEE Transactions on Computers C-33(2), 160–177
+  url: https://doi.org/10.1109/TC.1984.1676408
+  note: Transistors as switches, node values 0, 1 and X with strengths, and the algorithm that resolves them.
+altera-history:
+  authors: Altera Corporation
+  year: 1997
+  title: 'Altera history (CS294-59 resources, University of California, Berkeley)'
+  venue: 'Course resource page, EECS, UC Berkeley, Fall 2010, reproducing Altera’s own company history'
+  url: https://www-inst.eecs.berkeley.edu//~cs294-59/fa10/resources/Altera-history/Altera-history.html
+  note: 'Altera founded in 1983; the EP300, its first erasable PLD, in 1984; the MAX (multiple array matrix) architecture of 1988.'
+chm-ep300:
+  authors: Computer History Museum
+  year: 2012
+  title: 'Altera EP300 oral history panel: design and development'
+  venue: Computer History Museum, catalogue number 102702147
+  url: https://archive.computerhistory.org/resources/access/text/2012/10/102702147-05-01-acc.pdf
+  note: 'The engineers who designed the EP300, a CMOS EPROM-based programmable logic device introduced in July 1984 as a replacement for 20-pin bipolar PALs, with 8 macrocells and a quartz window for ultraviolet erasure.'
+altera-max5000:
+  authors: Altera Corporation
+  year: 1996
+  title: MAX 5000 Programmable Logic Device Family data sheet
+  venue: Altera Corporation
+  url: https://cdrdv2-public.intel.com/654619/m5000.pdf
+  note: 'The first MAX family: logic array blocks of macrocells and expander product terms joined by a programmable interconnect array (PIA), in EPROM technology.'
+altera-max7000:
+  authors: Altera Corporation
+  year: 2003
+  title: MAX 7000 Programmable Logic Device Family data sheet
+  venue: Altera Corporation
+  url: https://cdrdv2-public.intel.com/654718/m7000.pdf
+  note: 'Macrocells of five product terms, arranged in logic array blocks joined by the PIA; parallel expanders (up to 20 product terms into one OR gate) and shareable expanders; EEPROM cells, in-system programming and JTAG.'
+xilinx-ds063:
+  authors: Xilinx
+  year: 1998
+  title: 'XC9500 In-System Programmable CPLD Family (DS063)'
+  venue: Xilinx data sheet
+  url: http://www.bitsavers.org/components/xilinx/cpld/9500.pdf
+  note: 'Function blocks of 36 inputs and 18 macrocells joined by the FastCONNECT switch matrix, a product-term allocator, in-system programming and IEEE 1149.1 boundary scan on flash (EEPROM) cells.'
+xilinx-ds054:
+  authors: Xilinx
+  year: 2007
+  title: 'XC9500XL High-Performance CPLD Family (DS054)'
+  venue: Xilinx data sheet
+  url: https://www.cs.columbia.edu/~sedwards/classes/2006/4840/ds054.pdf
+  note: 'The 3.3 V XC9500XL: 5 ns pin-to-pin delays, function blocks of 54 inputs, 10,000 program and erase cycles, full IEEE 1149.1 boundary scan. The XC9572XL has four function blocks of 18 macrocells: 72 in all.'
+xilinx-ds090:
+  authors: Xilinx
+  year: 2007
+  title: 'CoolRunner-II CPLD Family (DS090)'
+  venue: Xilinx data sheet
+  url: https://docs.amd.com/api/khub/documents/bQWR3igyPK5XHXKY2CiTeg/content
+  note: 'A 1.8 V core supply, 32 to 512 macrocells, and DataGATE, which blocks an input from the array to save power.'
+microchip-atf1502:
+  authors: Atmel, now Microchip Technology
+  year: 2014
+  title: 'ATF1502AS(L) High-performance EEPROM CPLD'
+  venue: Data sheet 0995
+  url: https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-0995-CPLD-ATF1502AS(L)-Datasheet.pdf
+  note: 'A 5 V CPLD of 32 macrocells with five product terms each (expandable to 40) in 44-pin packages, with in-system programming over JTAG; 7.5 ns pin-to-pin in the fastest grade.'
+ieee1149-1-1990:
+  authors: IEEE
+  year: 1990
+  title: 'IEEE Std 1149.1-1990: IEEE Standard Test Access Port and Boundary-Scan Architecture'
+  venue: 'IEEE Standards Board, ratified 15 February 1990'
+  url: https://ieeexplore.ieee.org/iel1/2860/5509/00211226.pdf
+  note: 'The four test pins (TDI, TMS, TCK, TDO) and an optional reset, the 16-state TAP controller, the instruction register and the boundary-scan register.'
+corelis-jtag:
+  authors: Corelis
+  year: n.d.
+  title: What is JTAG?
+  venue: Corelis Inc., tutorial
+  url: https://www.corelis.com/education/tutorials/jtag-tutorial/what-is-jtag/
+  note: 'The Joint Test Action Group, formed in 1985 by test professionals (Philips, BT, GEC, TI and others) to find faults such as poor solder joints on boards whose connections probes could no longer reach.'
+altera-maxii-2004:
+  authors: Design And Reuse
+  year: 2004
+  title: Altera takes radical new direction with MAX II CPLDs
+  venue: Design & Reuse, news, March 2004
+  url: https://design-reuse.com/news/7323/altera-takes-radical-direction-max-ii-cplds.html
+  note: 'MAX II, announced in March 2004: an embedded-flash CPLD with a look-up-table architecture instead of product terms, an on-chip user flash block, and configuration from on-chip flash in a few milliseconds.'
+prjbureau:
+  authors: whitequark
+  year: n.d.
+  title: 'Project Bureau: the Microchip (Atmel) ATF15xx CPLD fuse maps and programming algorithms'
+  venue: GitHub
+  url: https://github.com/whitequark/prjbureau
+  note: 'Documentation of the ATF15xx fuse maps, fuseconv (JED to SVF), and atf15xx_yosys, which takes Verilog through Yosys to a JED file: an open-source flow for ATF1502, ATF1504 and ATF1508.'
+cady1922:
+  authors: Walter G. Cady
+  year: 1922
+  title: The piezo-electric resonator
+  venue: Proceedings of the Institute of Radio Engineers 10(2), 83–114 (April 1922)
+  note: Cady's study of quartz resonators controlling the frequency of a vacuum-tube oscillator, begun in 1921.
+marrison1948:
+  authors: Warren A. Marrison
+  year: 1948
+  title: The evolution of the quartz crystal clock
+  venue: Bell System Technical Journal 27(3), 510–588 (July 1948)
+  note: The author's own account of the quartz clock built at Bell Telephone Laboratories, first shown in 1927.
+nihf-marrison:
+  authors: National Inventors Hall of Fame
+  year: n.d.
+  title: Warren Marrison, inductee
+  venue: National Inventors Hall of Fame
+  url: https://www.invent.org/inductees/warren-marrison
+  note: Marrison and J. W. Horton's quartz clock of 1927, with the crystal's frequency divided down to drive a synchronous motor.
+wiki-crystal-oscillator:
+  authors: Wikipedia
+  year: n.d.
+  title: Crystal oscillator
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Crystal_oscillator
+  note: Quartz as a resonator, the 32,768 Hz watch crystal (2^15 Hz) and typical accuracies of tens of parts per million, and the history from Cady (1921) to Marrison and Horton (1927).
+camenzind2005:
+  authors: Hans R. Camenzind
+  year: 2005
+  title: Designing Analog Chips
+  venue: Virtual Bookshelf, 2005; online textbook at All About Circuits
+  url: https://www.allaboutcircuits.com/textbook/designing-analog-chips/
+  note: The designer's account of the 555, including the two design reviews of 1971 (nine pins, then eight) and the origin of the name from a Signetics manager's liking for the number, not from the three 5 kΩ resistors.
+chm-555:
+  authors: Computer History Museum
+  year: n.d.
+  title: NE555 Timer, Signetics, 1971
+  venue: 'Computer History Museum, “Revolution: The First 2000 Years of Computing”'
+  url: https://www.computerhistory.org/revolution/digital-logic/12/281/1485
+  note: The 555 designed by Hans Camenzind for Signetics in 1971 and released in 1972.
+eejournal-555:
+  authors: EE Journal
+  year: 2022
+  title: Happy 50th birthday to the Signetics 555 timer IC
+  venue: EE Journal
+  url: https://www.eejournal.com/article/happy-50th-birthday-to-the-signetics-555-timer-ic/
+  note: The history of the 555 and its continued production; the estimate of more than a billion units a year is quoted there and in other sources.
+ginosar2011:
+  authors: Ran Ginosar
+  year: 2011
+  title: 'Metastability and synchronizers: a tutorial'
+  venue: IEEE Design & Test of Computers 28(5), 23–35
+  url: https://doi.org/10.1109/MDT.2011.113
+  note: The physics of metastability, the exponential resolution law with time constant τ, the MTBF formula and synchronisers.
+kleeman1987:
+  authors: Lindsay Kleeman, Antonio Cantoni
+  year: 1987
+  title: Metastable behavior in digital systems
+  venue: IEEE Design & Test of Computers 4(6), 4–19
+  note: An early survey of metastability in flip-flops and arbiters, and of the failure rate of synchronisers.
+wynn-williams1932:
+  authors: C. E. Wynn-Williams
+  year: 1932
+  title: A thyratron “scale of two” automatic counter
+  venue: Proceedings of the Royal Society of London A 136(829), 312–324 (1 May 1932)
+  url: https://doi.org/10.1098/rspa.1932.0083
+  note: The counter that halves the rate of pulses at each stage, so that a mechanical meter can record events too fast for it, built at the Cavendish Laboratory.
+golomb1967:
+  authors: Solomon W. Golomb
+  year: 1967
+  title: Shift Register Sequences
+  venue: Holden-Day, San Francisco
+  note: The theory of sequences from linear feedback shift registers, including the maximal-length sequences of period 2^n − 1.
+is-gps-200:
+  authors: Navstar GPS Joint Program Office
+  year: n.d.
+  title: 'IS-GPS-200, Navstar GPS space segment / navigation user segment interfaces'
+  venue: GPS Interface Control Working Group
+  url: https://www.gps.gov/technical/icwg/
+  note: The C/A code of 1023 chips at 1.023 Mchip/s, generated by two 10-stage shift registers (G1 and G2); use the current revision.
+ti-cd4060b:
+  authors: Texas Instruments
+  year: n.d.
+  title: CD4060B CMOS 14-stage ripple-carry binary counter/divider and oscillator, data sheet
+  venue: Texas Instruments Incorporated
+  url: https://www.ti.com/lit/ds/symlink/cd4060b.pdf
+  note: A ripple counter with an on-chip oscillator, used with a 32,768 Hz crystal for timekeeping.
+gb148582:
+  authors: W. H. Eccles and F. W. Jordan
+  year: 1920
+  title: Improvements in ionic relays (British patent specification 148,582)
+  venue: 'Filed 21 June 1918, published 1920. Patent record: Google Patents, GB148582A'
+  url: https://patents.google.com/patent/GB148582A/en
+  note: The two-valve circuit with two stable states, the first electronic flip-flop.
+hoi-flipflop:
+  authors: Jeremy Norman
+  year: 'n.d.'
+  title: Eccles and Jordan invent the flip-flop circuit, the basis for electronic memory
+  venue: From Cave Paintings to the Internet (historyofinformation.com)
+  url: https://www.historyofinformation.com/detail.php?id=3606
+  note: Records the September 1919 note "A trigger relay utilising three-electrode thermionic vacuum tubes" in The Electrician 83, 298.
+chaney1973:
+  authors: T. J. Chaney and C. E. Molnar
+  year: 1973
+  title: Anomalous behavior of synchronizer and arbiter circuits
+  venue: IEEE Transactions on Computers C-22(4), 421–422
+  url: https://www.computer.org/csdl/journal/tc/1973/04/01672323/13rRUwInvxu
+  note: Observations of oscillatory and metastable behaviour of flip-flops with logically undefined inputs; the abstract says that significant system failures had resulted from this problem.
+eejournal-amd-eol:
+  authors: EE Journal
+  year: n.d.
+  title: AMD discontinues CoolRunner and XC9500 CPLDs and Spartan-II and -3 FPGAs. Buy ’em while you can!
+  venue: EE Journal
+  url: https://www.eejournal.com/article/amd-discontinues-coolrunner-and-xc9500-cplds-and-spartan-ii-and-3-fpgas-buy-em-while-you-can/
+  note: The end-of-life announcement for the XC9500 and CoolRunner CPLD families.
+huffman1954:
+  authors: David A. Huffman
+  year: 1954
+  title: The synthesis of sequential switching circuits
+  venue: Journal of the Franklin Institute 257(3), 161–190 and 257(4), 275–303
+  url: https://doi.org/10.1016/0016-0032(54)90574-8
+  note: Huffman’s method for reducing a sequential circuit’s behaviour to a minimal flow table and then to gates.
+mealy1955:
+  authors: George H. Mealy
+  year: 1955
+  title: A method for synthesizing sequential circuits
+  venue: Bell System Technical Journal 34(5), 1045–1079
+  url: https://doi.org/10.1002/j.1538-7305.1955.tb03788.x
+  note: The machines whose outputs depend on the state and the input together, now called Mealy machines.
+moore1956:
+  authors: Edward F. Moore
+  year: 1956
+  title: Gedanken-experiments on sequential machines
+  venue: 'In C. E. Shannon and J. McCarthy (eds), Automata Studies, Annals of Mathematics Studies 34, Princeton University Press, 129–153'
+  note: Sequential machines whose output depends on the state alone (Moore machines), and what an experimenter can learn about one from its inputs and outputs.
+turing1936:
+  authors: Alan M. Turing
+  year: 1936
+  title: On computable numbers, with an application to the Entscheidungsproblem
+  venue: Proceedings of the London Mathematical Society, series 2, 42, 230–265
+  url: https://doi.org/10.1112/plms/s2-42.1.230
+  note: The abstract machine with a finite control and an unbounded tape.
+gold1967:
+  authors: Robert Gold
+  year: 1967
+  title: Optimal binary sequences for spread-spectrum multiplexing
+  venue: IEEE Transactions on Information Theory 13(4), 619–621
+  note: The family of sequences, made by adding two maximal-length shift-register sequences, now called Gold codes and used for the GPS C/A code.
+ethw-fpga:
+  authors: ETHW
+  year: n.d.
+  title: 'Milestones: The Field Programmable Gate Array (FPGA), 1984'
+  venue: ETHW, IEEE milestone entry
+  url: https://ethw.org/Milestones:The_Field_Programmable_Gate_Array_(FPGA),_1984
+  note: Ross Freeman, Bernard Vonderschmitt and James Barnett found Xilinx in 1984; the XC2064 of 1985, an 8 × 8 array of 64 configurable logic blocks with SRAM configuration.
+spectrum-fpga:
+  authors: IEEE Spectrum
+  year: n.d.
+  title: The FPGA milestone that let engineers rewrite chips like software
+  venue: IEEE Spectrum
+  url: https://spectrum.ieee.org/fpga-chip-ieee-milestone
+  note: Freeman’s idea of spending transistors on programmability, which colleagues thought wasteful, and his bet that Moore’s law would make transistors cheap.
+freeman-patent:
+  authors: Ross H. Freeman
+  year: 1989
+  title: Configurable electrical circuit having configurable logic elements and configurable interconnects
+  venue: US patent 4,870,302, assigned to Xilinx. Filed 19 February 1988, priority date 12 March 1984, granted 26 September 1989
+  url: https://patents.google.com/patent/US4870302A/en
+  note: 'The founding patent of the FPGA: an array of configurable logic elements and a hierarchy of configurable interconnects.'
+xilinx-wp284:
+  authors: Andrew Percey
+  year: 2007
+  title: Advantages of the Virtex-5 FPGA 6-input LUT architecture
+  venue: Xilinx white paper WP284 (v1.0), 19 December 2007
+  url: https://docs.amd.com/api/khub/documents/NCQUqSOhgNM3Dzndcf2vnw/content
+  note: The move from four-input to six-input LUTs in the Virtex-5.
+rose1990:
+  authors: Jonathan Rose, Robert J. Francis, David Lewis and Paul Chow
+  year: 1990
+  title: 'Architecture of field-programmable gate arrays: the effect of logic block functionality on area efficiency'
+  venue: IEEE Journal of Solid-State Circuits 25(5), 1217–1225
+  note: An early experimental study of how the size of the logic block affects the area of an FPGA.
+electronicdesign-alm:
+  authors: ElectronicDesign
+  year: n.d.
+  title: Adaptive logic molds faster, more efficient FPGAs
+  venue: Electronic Design
+  url: https://www.electronicdesign.com/technologies/industrial/boards/article/21774102/adaptive-logic-molds-faster-more-efficient-fpgas
+  note: The adaptive logic module of Altera’s 90 nm Stratix II, built from two adaptive LUTs.
+eetimes-virtex5:
+  authors: EETimes
+  year: 2006
+  title: 'Xilinx unveil revolutionary 65nm FPGA architecture: the Virtex-5 family'
+  venue: EE Times
+  url: https://www.eetimes.com/xilinx-unveil-revolutionary-65nm-fpga-architecture-the-virtex-5-family/
+  note: The Virtex-5 of May 2006, the first FPGA family on a 65 nm process, with six-input LUTs.
+lemieux2004:
+  authors: Guy Lemieux, Edmund Lee, Marvin Tom and Anthony Yu
+  year: 2004
+  title: Directional and single-driver wires in FPGA interconnect
+  venue: Proceedings of the IEEE International Conference on Field-Programmable Technology (FPT 2004), 41–48
+  url: https://ieeexplore.ieee.org/document/1393249/
+  note: Single-driver, directional wiring saves about 25 % of the area and 9 % of the delay against bidirectional wiring, and is what Altera and Xilinx moved to.
+prjicestorm:
+  authors: Clifford Wolf, Mathias Lasser and contributors
+  year: n.d.
+  title: Project IceStorm, bitstream file format documentation
+  venue: Project IceStorm documentation
+  url: https://prjicestorm.readthedocs.io/en/latest/format.html
+  note: The reverse-engineered layout of the iCE40 bitstream. Logic tiles are 54 bits wide, in a configuration block 16 rows high; each has 8 logic cells.
+tn1248:
+  authors: Lattice
+  year: 2016
+  title: iCE40 programming and configuration
+  venue: Lattice technical note TN1248 (v2.9), May 2016
+  url: https://www.latticesemi.com/en/Support/AnswerDatabase/2/7/1/~/media/79C1831CA6D645248FF4277173ECD136.ashx
+  note: The iCE40 loads its configuration from SPI flash at power-up. Bitstream sizes are 34,112 bytes for the HX1K and 136,448 bytes for the HX8K.
+ds1040:
+  authors: Lattice
+  year: n.d.
+  title: iCE40 LP/HX family data sheet (DS1040)
+  venue: Lattice Semiconductor
+  url: https://www.latticesemi.com/~/media/latticesemi/documents/datasheets/ice/ice40lphxfamilydatasheet.pdf
+  note: The logic cell, the routing and the block RAM of the iCE40 LP and HX families, on which the vFPGA is modelled.
+seu-scrubbing:
+  authors: K. W. Gear, J. A. Maestro, et al.
+  year: 2022
+  title: An analysis of FPGA configuration memory SEU accumulation and a preventative scrubbing technique
+  venue: Microprocessors and Microsystems 90, article 104467
+  url: https://dl.acm.org/doi/10.1016/j.micpro.2022.104467
+  note: A single-event upset in configuration memory persists until the bit is rewritten, by reconfiguration or by scrubbing.
+eejournal-actel:
+  authors: EEJournal
+  year: n.d.
+  title: 'How the FPGA came to be, part 6: Actel’s FPGA story'
+  venue: EEJournal
+  url: https://www.eejournal.com/article/how-the-fpga-came-to-be-part-6-actels-fpga-story/
+  note: Actel, founded in 1985 by Amr Mohsen and Esmat Hamdy, shipped its first antifuse FPGAs, the ACT 1010 and 1020, in 1988.
+kuon-rose:
+  authors: Ian Kuon and Jonathan Rose
+  year: 2007
+  title: Measuring the gap between FPGAs and ASICs
+  venue: IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems 26(2), 203–215 (first published at FPGA 2006)
+  url: https://ieeexplore.ieee.org/document/4068926/
+  note: A 90 nm FPGA against 90 nm standard cells. Soft logic only, the FPGA needs on average 35 times the area, is 3.4 to 4.6 times slower and uses 14 times the dynamic power; hard blocks narrow the area gap, to as little as 18.
+wiki-virtex:
+  authors: Wikipedia
+  year: n.d.
+  title: Virtex (FPGA)
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Virtex_(FPGA)
+  note: The Xilinx Virtex of 1998 with 4,096-bit block RAMs; Virtex-II of 2000 with hard 18 × 18 multipliers.
+hpcwire-v2pro:
+  authors: HPCwire
+  year: 2002
+  title: Xilinx intros breakthrough Virtex-II Pro FPGAs
+  venue: HPCwire, 8 March 2002
+  url: https://www.hpcwire.com/2002/03/08/xilinx-intros-breakthrough-virtex-ii-pro-fpgas/
+  note: The first FPGA family with IBM PowerPC 405 cores and multi-gigabit RocketIO transceivers in the fabric.
+kirkpatrick1983:
+  authors: Scott Kirkpatrick, C. Daniel Gelatt Jr. and Mario P. Vecchi
+  year: 1983
+  title: Optimization by simulated annealing
+  venue: Science 220(4598), 671–680
+  url: https://www.science.org/doi/10.1126/science.220.4598.671
+  note: Simulated annealing, with examples in the physical design of computers, placing and wiring circuit elements.
+metropolis1953:
+  authors: Nicholas Metropolis, Arianna W. Rosenbluth, Marshall N. Rosenbluth, Augusta H. Teller and Edward Teller
+  year: 1953
+  title: Equation of state calculations by fast computing machines
+  venue: Journal of Chemical Physics 21(6), 1087–1092
+  url: https://doi.org/10.1063/1.1699114
+  note: The Monte Carlo method whose acceptance rule, probability e^(−ΔE/kT) for a worse state, simulated annealing borrows.
+cong1994:
+  authors: Jason Cong and Yuzheng Ding
+  year: 1994
+  title: 'FlowMap: an optimal technology mapping algorithm for delay optimization in lookup-table based FPGA designs'
+  venue: IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems 13(1), 1–12
+  url: https://vast.cs.ucla.edu/publications/flowmap-optimal-technology-mapping-algorithm-delay-optimization-lookup-table-based-fpga
+  note: The first delay-optimal LUT mapping algorithm, polynomial in time, using a maximum-flow computation. 1995 best paper award of the IEEE Circuits and Systems Society.
+mcmurchie1995:
+  authors: Larry McMurchie and Carl Ebeling
+  year: 1995
+  title: 'PathFinder: a negotiation-based performance-driven router for FPGAs'
+  venue: Proceedings of the ACM/SIGDA International Symposium on Field-Programmable Gate Arrays (FPGA ’95), 111–117
+  url: https://dl.acm.org/doi/10.1145/201310.201328
+  note: Signals negotiate for routing resources over iterations until every signal is routed.
+betz1997:
+  authors: Vaughn Betz and Jonathan Rose
+  year: 1997
+  title: 'VPR: a new packing, placement and routing tool for FPGA research'
+  venue: Field-Programmable Logic and Applications (FPL 1997), Lecture Notes in Computer Science 1304, 213–222
+  url: https://link.springer.com/chapter/10.1007/3-540-63465-7_226
+  note: The place-and-route tool of the University of Toronto, with an annealing placer and a PathFinder router; its source code is public.
+icestorm-eetimes:
+  authors: EETimes
+  year: n.d.
+  title: 'IceStorm: reverse-engineering the Lattice iCE40 bitstream'
+  venue: EE Times
+  url: https://www.eetimes.com/icestorm-reverse-engineering-the-lattice-ice40-bitstream/
+  note: Project IceStorm, by Clifford Wolf and Mathias Lasser, documents the iCE40 LP and HX bitstream and makes a free Verilog-to-bitstream flow possible.
+wolf2013:
+  authors: Clifford Wolf and Johann Glaser
+  year: 2013
+  title: Yosys, a free Verilog synthesis suite
+  venue: Proceedings of the 21st Austrian Workshop on Microelectronics (Austrochip 2013), 47–52
+  url: https://yosyshq.net/yosys/files/yosys-austrochip2013.pdf
+  note: The open-source synthesis framework that Project IceStorm’s flow uses.
+shah2019:
+  authors: David Shah, Eddie Hung, Clifford Wolf, Serge Bazanski, Dan Gisselquist and Miodrag Milanović
+  year: 2019
+  title: 'Yosys+nextpnr: an open source framework from Verilog to bitstream for commercial FPGAs'
+  venue: IEEE International Symposium on Field-Programmable Custom Computing Machines (FCCM 2019); nextpnr was presented at ORConf 2018
+  url: https://github.com/YosysHQ/nextpnr
+  note: nextpnr, the portable, timing-driven place-and-route tool for iCE40, ECP5 and other families.
+sim-baby:
+  authors: Science and Industry Museum
+  year: n.d.
+  title: “Baby” and the birth of modern computing
+  venue: Science and Industry Museum, Manchester
+  url: https://www.scienceandindustrymuseum.org.uk/objects-and-stories/baby-and-modern-computing
+  note: The start of the Baby’s first program at 11 am on 21 June 1948, its author Tom Kilburn and the 52 minutes it ran for.
+manchester-baby:
+  authors: University of Manchester, Computer 50
+  year: n.d.
+  title: The Manchester Baby computer
+  venue: Computer 50, School of Computer Science, University of Manchester
+  url: https://curation.cs.manchester.ac.uk/computer50/www.computer50.org/mark1/new.baby.html
+  note: The machine (32 words of 32 bits, seven instructions, no add) and Kilburn’s first program, which found the highest factor of 2^18 in 52 minutes.
+ethw-baby:
+  authors: Engineering and Technology History Wiki
+  year: n.d.
+  title: Milestones, Manchester University “Baby” Computer and its Derivatives, 1948–1951
+  venue: IEEE Milestones, Engineering and Technology History Wiki
+  url: https://ethw.org/Milestones:Manchester_University_%22Baby%22_Computer_and_its_Derivatives,_1948-1951
+  note: The IEEE Milestone for the Baby, built by Williams, Kilburn and Tootill, and its Williams-tube memory.
+nmah-altair:
+  authors: National Museum of American History, Smithsonian Institution
+  year: n.d.
+  title: Altair 8800 Microcomputer
+  venue: Smithsonian Institution, catalogue number 334396
+  url: https://americanhistory.si.edu/collections/object/nmah_334396
+  note: MITS’s Altair 8800, which appeared on the cover of Popular Electronics in January 1975, with a front panel of switches and lamps.
+intel-4004-vault:
+  authors: Intel Corporation
+  year: 1971
+  title: Announcing a new era of integrated electronics (the Intel 4004)
+  venue: Intel Virtual Vault; the advertisement ran in Electronic News, 15 November 1971
+  url: https://www.intel.com/content/www/us/en/history/virtual-vault/articles/the-intel-4004.html
+  note: The announcement of the 4004 and the MCS-4 chip set.
+chm-4004:
+  authors: Computer History Museum
+  year: 2007
+  title: 1971, Microprocessor integrates CPU function onto a single chip
+  venue: Computer History Museum, “The Silicon Engine”
+  url: https://www.computerhistory.org/siliconengine/microprocessor-integrates-cpu-function-onto-a-single-chip/
+  note: The 4004’s origin in a Busicom calculator contract, and the roles of Hoff, Faggin, Mazor and Shima.
+wiki-intel-4004:
+  authors: Wikipedia
+  year: n.d.
+  title: Intel 4004
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Intel_4004
+  note: A 4-bit CPU of about 2,300 transistors, 46 instructions, a clock of at most 740 kHz and a 10.8 µs instruction cycle of eight clock periods, from Intel’s data sheets.
+riscv-spec:
+  authors: Andrew Waterman and Krste Asanović (editors)
+  year: 2019
+  title: The RISC-V Instruction Set Manual, Volume I, Unprivileged ISA (document version 20191213)
+  venue: RISC-V International
+  url: https://github.com/riscv/riscv-isa-manual/releases/download/Ratified-IMAFDQC/riscv-spec-20191213.pdf
+  note: 'RV32I has fixed 32-bit instructions, 32 integer registers with x0 hard-wired to zero, no condition flags, and compare-and-branch instructions.'
+chm-edsac:
+  authors: Computer History Museum
+  year: n.d.
+  title: 1949, EDSAC computer employs delay-line storage
+  venue: The Storage Engine, Computer History Museum
+  url: https://www.computerhistory.org/storageengine/edsac-computer-employs-delay-line-storage/
+  note: EDSAC’s memory of mercury delay lines, 512 words of 17 bits at first and 1,024 from 1952.
+chm-whirlwind-core:
+  authors: Computer History Museum
+  year: n.d.
+  title: 1953, Whirlwind computer debuts core memory
+  venue: The Storage Engine, Computer History Museum
+  url: https://www.computerhistory.org/storageengine/whirlwind-computer-debuts-core-memory/
+  note: Forrester’s coincident-current core memory, 32 × 32 × 16 bits, on Whirlwind in the summer of 1953.
+wang-patent:
+  authors: An Wang and Way-Dong Woo
+  year: 1955
+  title: Pulse transfer controlling devices
+  venue: US patent 2,708,722, granted 17 May 1955
+  url: https://patents.google.com/patent/US2708722A/en
+  note: Wang’s patent on the use of magnetic cores to store bits, sold to IBM in 1956.
+forrester-patent:
+  authors: Jay W. Forrester
+  year: 1956
+  title: Multicoordinate digital information storage device
+  venue: US patent 2,736,880, granted 28 February 1956
+  url: https://patents.google.com/patent/US2736880A/en
+  note: The coincident-current arrangement of cores that made core memory practical.
+righto-rope:
+  authors: Ken Shirriff
+  year: 2019
+  title: 'Software woven into wire: Core rope and the Apollo Guidance Computer'
+  venue: Ken Shirriff’s blog, righto.com
+  url: http://www.righto.com/2019/07/software-woven-into-wire-core-rope-and.html
+  note: How the fixed memory of the Apollo Guidance Computer, 36,864 words of 16 bits in six modules of 512 cores, stored its bits by the path of a wire.
+dennard-patent:
+  authors: Robert H. Dennard
+  year: 1968
+  title: Field-effect transistor memory
+  venue: US patent 3,387,286, filed 1967, granted 4 June 1968
+  url: https://patents.google.com/patent/US3387286A/en
+  note: The one-transistor dynamic memory cell.
+ibm-dram:
+  authors: IBM
+  year: n.d.
+  title: Dynamic random-access memory (DRAM)
+  venue: IBM History
+  url: https://www.ibm.com/history/dram
+  note: Dennard’s invention of the DRAM cell at IBM Research in 1966.
+intel-1103:
+  authors: Intel
+  year: n.d.
+  title: The Intel 1103 DRAM
+  venue: Intel Timeline, 1970
+  url: https://timeline.intel.com/1970/the-intel-1103-dram
+  note: The first commercially available DRAM, October 1970, 1,024 bits.
+masuoka1984:
+  authors: F. Masuoka, M. Asano, H. Iwahashi, T. Komuro and S. Tanaka
+  year: 1984
+  title: A new flash E²PROM cell using triple polysilicon technology
+  venue: International Electron Devices Meeting Technical Digest, 464–467
+  note: The NOR flash cell, presented at IEDM in December 1984.
+masuoka1987:
+  authors: F. Masuoka, M. Momodomi, Y. Iwata and R. Shirota
+  year: 1987
+  title: New ultra high density EPROM and flash EEPROM with NAND structure cell
+  venue: International Electron Devices Meeting Technical Digest, 552–555
+  note: The NAND flash cell.
+spectrum-nand:
+  authors: IEEE Spectrum
+  year: n.d.
+  title: 'Chip Hall of Fame: Toshiba NAND flash memory'
+  venue: IEEE Spectrum
+  url: https://spectrum.ieee.org/chip-hall-of-fame-toshiba-nand-flash-memory
+  note: The history of flash memory at Toshiba; the name “flash” is credited to Shōji Ariizumi.
+liu-raidr2012:
+  authors: Jamie Liu, Ben Jaiyen, Richard Veras and Onur Mutlu
+  year: 2012
+  title: 'RAIDR: Retention-aware intelligent DRAM refresh'
+  venue: Proceedings of the 39th International Symposium on Computer Architecture (ISCA), 1–12
+  url: https://doi.org/10.1109/ISCA.2012.6237001
+  note: Measures the distribution of DRAM retention times and shows that a few weak cells set the refresh interval for the whole chip.
+cai2017:
+  authors: Yu Cai, Saugata Ghose, Erich F. Haratsch, Yixin Luo and Onur Mutlu
+  year: 2017
+  title: Error characterization, mitigation, and recovery in flash-memory-based solid-state drives
+  venue: Proceedings of the IEEE 105(9), 1666–1704
+  url: https://doi.org/10.1109/JPROC.2017.2713127
+  note: How flash cells wear, drift and interfere with one another, and what SSDs do about it.
+jedec-jesd79-4:
+  authors: JEDEC
+  year: 2012
+  title: JESD79-4, DDR4 SDRAM standard
+  venue: JEDEC Solid State Technology Association
+  note: Refresh window of 64 ms with 8192 refresh commands (tREFI 7.8 µs), the refresh cycle times tRFC by density, and the halved interval above 85 °C.
+hennessy-patterson2019:
+  authors: John L. Hennessy and David A. Patterson
+  year: 2019
+  title: 'Computer Architecture: A Quantitative Approach, 6th edition'
+  venue: Morgan Kaufmann
+  note: The memory hierarchy, average memory access time and the typical latencies of each level.
+vonneumann1945:
+  authors: John von Neumann
+  year: 1945
+  title: First draft of a report on the EDVAC
+  venue: Contract W-670-ORD-4926 between the United States Army Ordnance Department and the University of Pennsylvania, Moore School of Electrical Engineering; typescript dated 30 June 1945
+  note: The report that divides a computer into a central arithmetic organ, a central control organ, a memory and input and output, and keeps instructions and numbers in the same memory.
+godfrey1993:
+  authors: Michael D. Godfrey
+  year: 1993
+  title: Introduction to “The First Draft Report on the EDVAC” by John von Neumann
+  venue: IEEE Annals of the History of Computing 15(4), 27–75
+  note: The circumstances of the draft, its circulation under von Neumann’s name alone, and the contribution of the Moore School engineers.
+wilkes1951:
+  authors: Maurice V. Wilkes
+  year: 1951
+  title: The best way to design an automatic calculating machine
+  venue: Manchester University Computer Inaugural Conference, July 1951, 16–18
+  note: 'The paper that proposes microprogramming: a control unit made of a regular matrix of stored control words.'
+wilkes-stringer1953:
+  authors: Maurice V. Wilkes and J. B. Stringer
+  year: 1953
+  title: Micro-programming and the design of the control circuits in an electronic digital computer
+  venue: Proceedings of the Cambridge Philosophical Society 49(2), 230–238
+  note: The fuller account of the diode-matrix control store.
+wilkes-renwick-wheeler1958:
+  authors: Maurice V. Wilkes, W. Renwick and D. J. Wheeler
+  year: 1958
+  title: The design of the control unit of an electronic digital computer
+  venue: Proceedings of the IEE, Part B 105(20), 121–128
+  note: The control unit of EDSAC 2, the first microprogrammed computer.
+visual6502:
+  authors: Greg James, Barry Silverman and Brian Silverman
+  year: 2010
+  title: Visual 6502
+  venue: The Visual 6502 project, visual6502.org
+  url: http://www.visual6502.org/
+  note: The MOS 6502 imaged, traced and simulated at the level of its transistors, in a web page.
+kernighan1970:
+  authors: B. W. Kernighan and S. Lin
+  year: 1970
+  title: An efficient heuristic procedure for partitioning graphs
+  venue: The Bell System Technical Journal 49(2), 291–307
+  url: https://doi.org/10.1002/j.1538-7305.1970.tb01770.x
+  note: The move-and-swap refinement with locking and roll-back to the best prefix, which the vCPLD-32 fitter uses to split outputs between function blocks.
+ethw-pcm:
+  authors: Engineering and Technology History Wiki
+  year: n.d.
+  title: Pulse Code Modulation
+  venue: Engineering and Technology History Wiki
+  url: https://ethw.org/Pulse_Code_Modulation
+  note: Alec Reeves conceived the use of PCM for voice at ITT’s laboratory in Paris in 1937 and filed a French patent in 1938.
+britannica-baudot:
+  authors: Encyclopaedia Britannica
+  year: n.d.
+  title: Jean-Maurice-Émile Baudot
+  venue: Encyclopaedia Britannica
+  url: https://www.britannica.com/biography/Jean-Maurice-Emile-Baudot
+  note: Baudot’s telegraph code, patented in 1874, of five on–off signals of equal duration.
+wiki-baud:
+  authors: Wikipedia
+  year: n.d.
+  title: Baud
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Baud
+  note: The baud, the unit of signalling events per second, named after Émile Baudot; and the difference between baud and bits per second.
+wiki-rs232:
+  authors: Wikipedia
+  year: n.d.
+  title: RS-232
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/RS-232
+  note: Recommended Standard 232 of the Electronic Industries Association, first published on 1 May 1960, and its revision C of August 1969.
+adi-rs232:
+  authors: Analog Devices
+  year: n.d.
+  title: Fundamentals of RS-232 serial communications
+  venue: Analog Devices technical article
+  url: https://www.analog.com/en/resources/technical-articles/fundamentals-of-rs232-serial-communications.html
+  note: RS-232 signal levels, with a 1 (mark) between −3 V and −15 V and a 0 (space) between +3 V and +15 V.
+wiki-i2c:
+  authors: Wikipedia
+  year: n.d.
+  title: I²C
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/I%C2%B2C
+  note: The bus developed by Philips in the early 1980s, with parts from 1982 at 100 kbit/s and 7-bit addresses, and the first public specification in 1992.
+nexperia-74hc595:
+  authors: Nexperia
+  year: n.d.
+  title: 74HC595; 74HCT595, 8-bit serial-in, serial or parallel-out shift register with output latches, product data sheet
+  venue: Nexperia B.V.
+  url: https://assets.nexperia.com/documents/data-sheet/74HC_HCT595.pdf
+  note: The pinout, the shift clock SHCP and the storage clock STCP that copies the shift register to the outputs on its rising edge.
+sparkfun-pulseview:
+  authors: SparkFun Electronics
+  year: n.d.
+  title: Using the USB logic analyzer with sigrok PulseView
+  venue: SparkFun Learn
+  url: https://learn.sparkfun.com/tutorials/using-the-usb-logic-analyzer-with-sigrok-pulseview/all
+  note: A cheap 24 MHz, eight-channel USB logic analyser with sigrok’s PulseView, and its UART, SPI and I²C protocol decoders.
+
+# Chapter 32: scaling data (Figure 32.1)
+wiki-transistor-count:
+  authors: Wikipedia
+  year: n.d.
+  title: Transistor count
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Transistor_count
+  note: A table of the transistor counts, process sizes and die areas of processors, each with its own reference; the starting point for the data of Figure 32.1.
+wiki-intel-8086:
+  authors: Wikipedia
+  year: n.d.
+  title: Intel 8086
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Intel_8086
+  note: Launched on 8 June 1978, about 29,000 transistors, 3 µm, 5 to 10 MHz.
+wiki-motorola-68000:
+  authors: Wikipedia
+  year: n.d.
+  title: Motorola 68000
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Motorola_68000
+  note: Introduced in 1979 with 68,000 transistors in a 3.5 µm HMOS process and initial speeds of 4, 6 and 8 MHz.
+wiki-intel-80286:
+  authors: Wikipedia
+  year: n.d.
+  title: Intel 80286
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Intel_80286
+  note: Introduced in 1982 with 134,000 transistors in a 1.5 µm process, at 6 MHz and above.
+wiki-i386:
+  authors: Wikipedia
+  year: n.d.
+  title: Intel 80386
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/I386
+  note: Introduced in October 1985 with 275,000 transistors in a 1.5 µm process, at 16 MHz.
+wiki-i486:
+  authors: Wikipedia
+  year: n.d.
+  title: Intel 80486
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/I486
+  note: Introduced on 10 April 1989 with about 1.2 million transistors in a 1 µm process, at 25 MHz.
+wiki-alpha-21064:
+  authors: Wikipedia
+  year: n.d.
+  title: Alpha 21064
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Alpha_21064
+  note: Announced in February 1992 by Digital Equipment Corporation, 1.68 million transistors in a 0.75 µm process on 233.5 mm², 200 MHz, 30 W.
+wiki-pentium-original:
+  authors: Wikipedia
+  year: n.d.
+  title: Pentium (original)
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Pentium_(original)
+  note: The P5 of 22 March 1993, 3.1 million transistors in 0.8 µm BiCMOS on 294 mm², at 60 or 66 MHz; maximum power of the 60 MHz part about 14.6 W.
+wiki-pentium-4:
+  authors: Wikipedia
+  year: n.d.
+  title: Pentium 4
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Pentium_4
+  note: Willamette, 42 million transistors in 180 nm on 217 mm², from 1.3 GHz; Prescott, 125 million transistors in 90 nm on 112 mm², up to 3.8 GHz, a thermal design power of 115 W and a pipeline of 31 stages.
+wiki-conroe:
+  authors: Wikipedia
+  year: n.d.
+  title: Conroe (microprocessor)
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Conroe_(microprocessor)
+  note: The dual-core Core 2 Duo of July 2006 in 65 nm, 291 million transistors on 143 mm²; the E6700 ran at 2.66 GHz within a 65 W thermal design power.
+wiki-bloomfield:
+  authors: Wikipedia
+  year: n.d.
+  title: Bloomfield (microprocessor)
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Bloomfield_(microprocessor)
+  note: The quad-core Core i7 of November 2008 in 45 nm, 731 million transistors on 263 mm²; the i7-920 ran at 2.66 GHz within a 130 W thermal design power.
+wiki-sandy-bridge:
+  authors: Wikipedia
+  year: n.d.
+  title: Sandy Bridge
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Sandy_Bridge
+  note: The quad-core Core i7 of January 2011 in 32 nm, 1.16 billion transistors (with its graphics unit) on 216 mm²; the i7-2600K ran at 3.4 GHz within 95 W.
+wiki-haswell:
+  authors: Wikipedia
+  year: n.d.
+  title: Haswell (microarchitecture)
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Haswell_(microarchitecture)
+  note: The quad-core Core i7 of 2013 in 22 nm, about 1.4 billion transistors on 177 mm²; the i7-4770K ran at 3.5 GHz within 84 W.
+wiki-apple-a11:
+  authors: Wikipedia
+  year: n.d.
+  title: Apple A11
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Apple_A11
+  note: Introduced on 12 September 2017, made by TSMC in 10 nm, 4.3 billion transistors on 87.66 mm², two performance cores at 2.39 GHz.
+apple-m1:
+  authors: Apple Inc.
+  year: 2020
+  title: Apple unleashes M1
+  venue: Apple Newsroom, 10 November 2020
+  url: https://www.apple.com/newsroom/2020/11/apple-unleashes-m1/
+  note: The first personal-computer chip in a 5 nm process, with 16 billion transistors.
+wiki-apple-m1:
+  authors: Wikipedia
+  year: n.d.
+  title: Apple M1
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Apple_M1
+  note: The M1’s die of 120.5 mm² and its performance cores’ clock of 3.2 GHz.
+nvidia-hopper:
+  authors: NVIDIA Corporation
+  year: 2022
+  title: NVIDIA Hopper architecture in depth
+  venue: NVIDIA Technical Blog, 22 March 2022
+  url: https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/
+  note: The H100 GPU, with 80 billion transistors, made on TSMC’s custom 4N process.
+wiki-hopper:
+  authors: Wikipedia
+  year: n.d.
+  title: Hopper (microarchitecture)
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Hopper_(microarchitecture)
+  note: The GH100 die of 814 mm² and the 700 W thermal design power of the SXM module.
+cerebras-wse3:
+  authors: Cerebras Systems
+  year: 2024
+  title: Cerebras Systems unveils world’s fastest AI chip with whopping 4 trillion transistors
+  venue: Cerebras press release, 13 March 2024
+  url: https://www.cerebras.ai/press-release/cerebras-announces-third-generation-wafer-scale-engine
+  note: The third-generation Wafer-Scale Engine, one chip of 46,225 mm² with 4 trillion transistors and 900,000 cores, made in a 5 nm process.
+
+# Chapter 32: history and the physics of making a chip
+chm-solid-circuit:
+  authors: Computer History Museum
+  year: n.d.
+  title: '1958: All semiconductor “solid circuit” is demonstrated'
+  venue: The Silicon Engine, Computer History Museum
+  url: https://www.computerhistory.org/siliconengine/all-semiconductor-solid-circuit-is-demonstrated/
+  note: Jack Kilby’s demonstration at Texas Instruments on 12 September 1958 of a phase-shift oscillator on a single slice of germanium.
+noyce-patent:
+  authors: Robert N. Noyce
+  year: 1961
+  title: Semiconductor device-and-lead structure, US patent 2,981,877
+  venue: Filed 30 July 1959, granted 25 April 1961; reprinted in Proceedings of the IEEE
+  url: https://ieeexplore.ieee.org/document/4785577/
+  note: Noyce’s integrated circuit for Fairchild, with components made in a silicon wafer covered with oxide and joined by metal lines evaporated on top.
+chm-monolithic-ic:
+  authors: Computer History Museum
+  year: n.d.
+  title: '1959: Practical monolithic integrated circuit concept patented'
+  venue: The Silicon Engine, Computer History Museum
+  url: https://www.computerhistory.org/siliconengine/practical-monolithic-integrated-circuit-concept-patented/
+  note: Noyce’s idea of January 1959, built on Jean Hoerni’s planar process, and why it made integrated circuits fit for mass production.
+moore1965:
+  authors: Gordon E. Moore
+  year: 1965
+  title: Cramming more components onto integrated circuits
+  venue: Electronics 38(8), 19 April 1965, 114–117
+  url: https://ieeexplore.ieee.org/document/4785860/
+  note: The subtitle says that by 1975 economics may dictate squeezing as many as 65,000 components on a single chip; the text extrapolates a doubling every year.
+moore1975:
+  authors: Gordon E. Moore
+  year: 1975
+  title: Progress in digital integrated electronics
+  venue: IEEE International Electron Devices Meeting, Technical Digest, 11–13
+  url: https://ieeexplore.ieee.org/document/4804410/
+  note: Moore’s talk that revised his forecast to a doubling about every two years, crediting bigger dies, finer lithography and circuit cleverness.
+mead-conway1980:
+  authors: Carver Mead and Lynn Conway
+  year: 1980
+  title: Introduction to VLSI Systems
+  venue: Addison-Wesley
+  url: https://archive.org/details/introductiontovl00mead
+  note: The textbook, drafted for Conway’s MIT course of 1978, that taught computer scientists to design chips with scalable design rules.
+conway-mpc79:
+  authors: Lynn Conway
+  year: 1979
+  title: Implementation documentation for the MPC79 multi-university, multi-project chip-set
+  venue: Xerox Palo Alto Research Center; archived by Lynn Conway
+  url: https://ai.eecs.umich.edu/people/conway/VLSI/MPC79/ImpDoc/ImpDoc79Front.html
+  note: 82 projects by 124 designers from twelve universities, gathered onto shared wafers in 1979; the service passed to USC-ISI in 1981 as MOSIS.
+asml-euv:
+  authors: ASML
+  year: n.d.
+  title: EUV lithography systems
+  venue: ASML product pages
+  url: https://www.asml.com/en/products/euv-lithography-systems
+  note: The NXE systems use light of 13.5 nm and a numerical aperture of 0.33, and the High-NA EXE:5000 a numerical aperture of 0.55, which takes the half-pitch resolution from about 13 nm to about 8 nm.
+asml-light:
+  authors: ASML
+  year: n.d.
+  title: Light and lasers, lithography principles
+  venue: ASML technology pages
+  url: https://www.asml.com/en/technology/lithography-principles/light-and-lasers
+  note: How a CO2 laser hitting droplets of molten tin, 50,000 times a second, makes the 13.5 nm light of an EUV scanner.
+song2022:
+  authors: Jungchul Song, Chae-Hwan Kim and Ga-Won Lee
+  year: 2022
+  title: A study on the resolution and depth of focus of ArF immersion photolithography
+  venue: Micromachines 13(11), 1971
+  url: https://doi.org/10.3390/mi13111971
+  note: The Rayleigh equation CD = k1 λ / NA, with 193 nm light, water immersion allowing a numerical aperture up to 1.35, and k1 no smaller than 0.25.
+wiki-photomask:
+  authors: Wikipedia
+  year: n.d.
+  title: Photomask
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Photomask
+  note: Reticles are patterned quartz plates, usually 6 × 6 inches, whose image is reduced (typically four times) onto the wafer; pellicles protect them from dust.
+wong2020:
+  authors: H.-S. Philip Wong, Chenming Hu, Tsu-Jae King Liu, Jeffrey Bokor, Sayeef Salahuddin and colleagues
+  year: 2020
+  title: A density metric for semiconductor technology
+  venue: Proceedings of the IEEE 108(4), 478–482 (summarised in IEEE Spectrum, July 2020)
+  url: https://eecs.berkeley.edu/news/2020/07/finding-better-way-measure-progress-semiconductors
+  note: Why the nanometre number of a process node stopped being a length, and a measure of the density of logic, memory and their connections to replace it.
+wiki-5nm:
+  authors: Wikipedia
+  year: n.d.
+  title: 5 nm process
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/5_nm_process
+  note: Since 1997 node names have had no relation to dimensions on the chip; the IRDS 2021 projections for a 5 nm node give a gate length of 18 nm, a contacted gate pitch of 51 nm and a tightest metal pitch of 30 nm.
+intel-22nm:
+  authors: Mark Bohr and Kaizad Mistry
+  year: 2011
+  title: Intel’s revolutionary 22 nm transistor technology
+  venue: Intel presentation, May 2011
+  url: https://download.intel.com/newsroom/kits/22nm/pdfs/22nm-Details_Presentation.pdf
+  note: The first tri-gate (FinFET) transistors in volume production, announced with the Ivy Bridge processors.
+samsung-3nm-gaa:
+  authors: Samsung Electronics
+  year: 2022
+  title: Samsung begins chip production using 3 nm process technology with GAA architecture
+  venue: Samsung Newsroom, 30 June 2022
+  url: https://news.samsung.com/us/samsung-begins-chip-production-3nm-process-gaa-architecture/
+  note: The first gate-all-around (MBCFET) transistors in production, replacing the FinFET.
+
+# Chapter 32: what a modern CPU adds
+smith1981:
+  authors: James E. Smith
+  year: 1981
+  title: A study of branch prediction strategies
+  venue: Proceedings of the 8th Annual Symposium on Computer Architecture (ISCA), 135–148
+  url: https://dl.acm.org/doi/10.5555/800052.801871
+  note: Compares strategies for guessing which way a branch goes, including small tables of counters indexed by the branch’s address.
+tomasulo1967:
+  authors: Robert M. Tomasulo
+  year: 1967
+  title: An efficient algorithm for exploiting multiple arithmetic units
+  venue: IBM Journal of Research and Development 11(1), 25–33
+  url: https://doi.org/10.1147/rd.111.0025
+  note: The floating-point unit of the IBM System/360 Model 91, whose register tagging and common data bus let independent instructions run out of order.
+
+# Chapter 32: open hardware and where to go next
+asanovic2014:
+  authors: Krste Asanović and David A. Patterson
+  year: 2014
+  title: 'Instruction sets should be free: the case for RISC-V'
+  venue: UC Berkeley technical report EECS-2014-146
+  url: https://www2.eecs.berkeley.edu/Pubs/TechRpts/2014/EECS-2014-146.html
+  note: Why an instruction set should be an open standard, and the RISC-V design that began at Berkeley in 2010.
+riscv-about:
+  authors: RISC-V International
+  year: n.d.
+  title: About RISC-V
+  venue: riscv.org
+  url: https://riscv.org/about/
+  note: The history and governance of the open instruction set, from its start at UC Berkeley in 2010.
+skywater-pdk:
+  authors: Google and SkyWater Technology Foundry
+  year: 2020
+  title: SkyWater open source PDK (SKY130)
+  venue: GitHub, google/skywater-pdk
+  url: https://github.com/google/skywater-pdk
+  note: An open-source process design kit for a production 130 nm CMOS process, released in 2020 so that anyone can design chips that SkyWater can make.
+antmicro-sky130:
+  authors: Antmicro
+  year: 2020
+  title: Open source process design kit from Google, SkyWater Technologies and partners released
+  venue: Antmicro blog, June 2020
+  url: https://antmicro.com/blog/2020/06/skywater-open-source-pdk
+  note: The announcement of the SKY130 PDK by Google and SkyWater with partners including efabless, and of free manufacturing for open hardware.
+shalan2020:
+  authors: Mohamed Shalan and Tim Edwards
+  year: 2020
+  title: 'Building OpenLANE: a 130 nm OpenROAD-based tapeout-proven flow'
+  venue: IEEE/ACM International Conference on Computer-Aided Design (ICCAD 2020), invited paper
+  note: OpenLane, the automated RTL-to-GDSII flow built from Yosys, OpenROAD, Magic and Netgen that runs on the SKY130 PDK.
+openlane:
+  authors: The OpenROAD Project and contributors
+  year: n.d.
+  title: OpenLane
+  venue: GitHub, The-OpenROAD-Project/OpenLane
+  url: https://github.com/The-OpenROAD-Project/OpenLane
+  note: An automated flow from RTL to GDSII based on OpenROAD, Yosys, Magic, Netgen and scripts for design exploration.
+tinytapeout:
+  authors: Tiny Tapeout
+  year: n.d.
+  title: 'Tiny Tapeout: quicker, easier and cheaper to make your own chip'
+  venue: tinytapeout.com
+  url: https://tinytapeout.com/
+  note: A shared shuttle on which many small open designs, each on a tile, are put on one chip; a recent SKY130 shuttle (TTSKY25b) carried 316 designs.
+tinytapeout-ttsky25b:
+  authors: Tiny Tapeout
+  year: 2025
+  title: Tiny Tapeout SKY 25b
+  venue: tinytapeout.com
+  url: https://tinytapeout.com/chips/ttsky25b/
+  note: The shuttle that went to ChipFoundry on the SKY130 process with 316 designs.
+zero-to-asic:
+  authors: Matt Venn
+  year: n.d.
+  title: Zero to ASIC course
+  venue: zerotoasiccourse.com
+  url: https://www.zerotoasiccourse.com/
+  note: A course that takes a small digital design through the open-source flow to a chip made on a shared wafer.
+patterson-hennessy2020:
+  authors: David A. Patterson and John L. Hennessy
+  year: 2020
+  title: 'Computer Organization and Design, RISC-V edition: the hardware/software interface, second edition'
+  venue: Morgan Kaufmann
+  note: The standard undergraduate text on how a processor is built and how software uses it, with a pipelined RISC-V core.
+harris-harris2021:
+  authors: Sarah L. Harris and David Harris
+  year: 2021
+  title: 'Digital Design and Computer Architecture, RISC-V edition'
+  venue: Morgan Kaufmann
+  note: Logic gates, sequential circuits and hardware description languages, up to single-cycle, multi-cycle and pipelined RISC-V processors.
+nisan-schocken2021:
+  authors: Noam Nisan and Shimon Schocken
+  year: 2021
+  title: 'The Elements of Computing Systems: Building a Modern Computer from First Principles, second edition'
+  venue: MIT Press
+  url: https://www.nand2tetris.org/
+  note: Nand2Tetris, from a NAND gate to a computer running a compiler, with free software and lectures.
+petzold2022:
+  authors: Charles Petzold
+  year: 2022
+  title: 'Code: The Hidden Language of Computer Hardware and Software, second edition'
+  venue: Microsoft Press
+  note: A narrative that builds from flashlight signals and relays to a small computer.
+eater8bit:
+  authors: Ben Eater
+  year: n.d.
+  title: Build an 8-bit computer from scratch
+  venue: eater.net
+  url: https://eater.net/8bit
+  note: Videos and kits that build a small computer from 74-series chips on breadboards.
+icebreaker:
+  authors: 1BitSquared and contributors
+  year: n.d.
+  title: iCEBreaker FPGA board
+  venue: 1BitSquared
+  url: https://1bitsquared.com/products/icebreaker
+  note: A low-cost iCE40UP5K board built around the open-source Yosys, nextpnr and IceStorm tools.
+verilator:
+  authors: Wilson Snyder and contributors
+  year: n.d.
+  title: Verilator
+  venue: veripool.org
+  url: https://www.veripool.org/verilator/
+  note: A free tool that turns Verilog and SystemVerilog into fast compiled simulations.
+amaranth:
+  authors: Amaranth HDL project
+  year: n.d.
+  title: Amaranth hardware definition language
+  venue: amaranth-lang.org
+  url: https://amaranth-lang.org/
+  note: A hardware description language embedded in Python, with a toolchain for open-source FPGA flows.
+chisel:
+  authors: Chisel project
+  year: n.d.
+  title: Chisel, hardware construction language
+  venue: chisel-lang.org
+  url: https://www.chisel-lang.org/
+  note: A hardware construction language embedded in Scala, originally from Berkeley and used to design open RISC-V cores.
+wikichip-mask:
+  authors: WikiChip
+  year: n.d.
+  title: Mask / reticle
+  venue: WikiChip
+  url: https://en.wikichip.org/wiki/mask
+  note: Immersion and EUV scanners expose a field of at most 26 mm by 33 mm (858 mm²), which limits the size of a single die; the field of High-NA EUV is half as large.
+gf180mcu-pdk:
+  authors: Google, GlobalFoundries and contributors
+  year: 2022
+  title: GF180MCU PDK
+  venue: GitHub, google/gf180mcu-pdk
+  url: https://github.com/google/gf180mcu-pdk
+  note: The open-source process design kit for GlobalFoundries’ 180 nm MCU process, announced with a no-cost shuttle programme in November 2022.
+ihp-open-pdk:
+  authors: IHP GmbH and contributors
+  year: n.d.
+  title: IHP Open PDK (SG13G2)
+  venue: GitHub, IHP-GmbH/IHP-Open-PDK
+  url: https://github.com/IHP-GmbH/IHP-Open-PDK
+  note: An open-source PDK for IHP’s 130 nm SiGe BiCMOS process, aimed at analogue, mixed-signal and radio-frequency design, under the Apache 2.0 licence.
+altera-nios-2000:
+  authors: Altera Corporation
+  year: 2000
+  title: Altera introduces the Nios embedded processor, industry’s first RISC-based embedded processor developed for SOPC integration
+  venue: Press release of 12 June 2000, reproduced by Design & Reuse
+  url: https://www.design-reuse.com/news/202503590--altera-introduces-the-nios-embedded-processor-industry-s-first-risc-based-embedded-processor-developed-for-sopc-integration/
+  note: The announcement of Nios on 12 June 2000, with a 16-bit instruction set, a five-stage pipeline, 16- or 32-bit data paths and a size of about 1,000 logic cells.
+altera-niosii-2004:
+  authors: Altera Corporation
+  year: 2004
+  title: Altera delivers world’s most versatile embedded processor with Nios II family
+  venue: Press release of 18 May 2004, reproduced by Embedded.com
+  url: https://www.embedded.com/altera-delivers-worlds-most-versatile-embedded-processor-with-nios-ii-family/
+  note: 'The Nios II family of 32-bit soft cores: one for performance, one for minimum logic, one between, all code compatible.'
+amd-microblaze:
+  authors: AMD (Xilinx)
+  year: n.d.
+  title: MicroBlaze and MicroBlaze V
+  venue: AMD Adaptive Computing wiki
+  url: https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/3073998859/MicroBlaze+and+MicroBlaze+V
+  note: MicroBlaze, a 32-bit RISC soft processor with a Harvard architecture and 32 general-purpose registers, first introduced by Xilinx in 2002 with its Embedded Development Kit.
+amd-zynq7000:
+  authors: AMD (Xilinx)
+  year: n.d.
+  title: Zynq-7000 SoCs
+  venue: AMD product page
+  url: https://www.xilinx.com/products/silicon-devices/soc/zynq-7000.html
+  note: A dual-core Arm Cortex-A9 processing system, hardwired, beside programmable logic; the processing system boots at power-up and then configures the logic.
+picorv32:
+  authors: Claire Xenia Wolf (Clifford Wolf) and YosysHQ
+  year: n.d.
+  title: 'PicoRV32: a size-optimized RISC-V CPU'
+  venue: GitHub, YosysHQ/picorv32 (README)
+  url: https://github.com/YosysHQ/picorv32
+  note: An RV32IMC core, 761 to 2,019 LUTs on Xilinx 7-series depending on configuration, about 4 cycles per instruction on average, 416 to 769 MHz on those devices, under the ISC licence.
+picosoc:
+  authors: Claire Xenia Wolf (Clifford Wolf) and YosysHQ
+  year: n.d.
+  title: 'PicoSoC: a simple example SoC using PicoRV32 (README, Makefile and firmware.c)'
+  venue: GitHub, YosysHQ/picorv32, directory picosoc
+  url: https://github.com/YosysHQ/picorv32/tree/main/picosoc
+  note: 'The make targets icebprog and icebprog_fw for the iCEBreaker board, the flow they run (Yosys synth_ice40, nextpnr-ice40, icetime, icepack, iceprog), the memory map, and the firmware that sets the UART divider to 104.'
+vexriscv:
+  authors: Charles Papon
+  year: n.d.
+  title: 'VexRiscv: a FPGA friendly 32 bit RISC-V CPU implementation'
+  venue: GitHub, SpinalHDL/VexRiscv (README)
+  url: https://github.com/SpinalHDL/VexRiscv
+  note: A configurable RISC-V core in SpinalHDL, pipelined from 2 to 5 or more stages and built from plugins.
+riscv-2011:
+  authors: Andrew Waterman, Yunsup Lee, David A. Patterson and Krste Asanović
+  year: 2011
+  title: 'The RISC-V Instruction Set Manual, Volume I: Base User-Level ISA'
+  venue: Technical report UCB/EECS-2011-62, EECS Department, University of California, Berkeley, 13 May 2011
+  url: https://www2.eecs.berkeley.edu/Pubs/TechRpts/2011/EECS-2011-62.pdf
+  note: The first public specification of RISC-V, an instruction set for computer architecture research and education.
+putnam2014:
+  authors: Andrew Putnam and colleagues
+  year: 2014
+  title: A reconfigurable fabric for accelerating large-scale datacenter services
+  venue: Proceedings of the 41st International Symposium on Computer Architecture (ISCA), 13–24
+  url: https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/Catapult_ISCA_2014.pdf
+  note: Catapult. A 6 × 8 torus of Stratix V FPGAs in half-racks of 48 servers, deployed on 1,632 servers to accelerate Bing ranking, for 95 % more throughput at equal latency, or 29 % lower tail latency at equal throughput, with 10 % more power.
+icebram:
+  authors: Clifford Wolf and contributors
+  year: n.d.
+  title: icebram(1), Replace BRAM initialization data in a .asc file
+  venue: Project IceStorm manual page (Debian fpga-icestorm)
+  url: https://manpages.debian.org/testing/fpga-icestorm/icebram.1.en.html
+  note: Replaces the initial contents of the block RAMs in an ASCII bitstream without running synthesis or place and route again.
+xilinx-xc9500-guide1996:
+  authors: Xilinx
+  year: 1996
+  title: XC9500 CPLD Applications Guide with Data Sheets
+  venue: Xilinx, February 1996
+  url: http://bitsavers.org/components/xilinx/_dataBooks/0010290-01_XC9500_CPLD_Applications_Guide_with_Data_Sheets_199602.pdf
+  note: The earliest dated XC9500 document found; the family was on sale by early 1996.

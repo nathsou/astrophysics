@@ -1,0 +1,303 @@
+{
+  "version": 1,
+  "title": "Full adder",
+  "engine": "digital",
+  "components": [
+    {
+      "id": "A",
+      "type": "port",
+      "x": 4,
+      "y": 0,
+      "params": {
+        "name": "A",
+        "dir": "in"
+      },
+      "label": ""
+    },
+    {
+      "id": "B",
+      "type": "port",
+      "x": 4,
+      "y": 4,
+      "params": {
+        "name": "B",
+        "dir": "in"
+      },
+      "label": ""
+    },
+    {
+      "id": "CIN",
+      "type": "port",
+      "x": 4,
+      "y": 8,
+      "params": {
+        "name": "CIN",
+        "dir": "in"
+      },
+      "label": ""
+    },
+    {
+      "id": "U1",
+      "type": "part:half-adder",
+      "x": 14,
+      "y": 1
+    },
+    {
+      "id": "U2",
+      "type": "part:half-adder",
+      "x": 33,
+      "y": 4
+    },
+    {
+      "id": "U3",
+      "type": "part:or",
+      "x": 52,
+      "y": 4
+    },
+    {
+      "id": "S",
+      "type": "port",
+      "x": 66,
+      "y": 0,
+      "params": {
+        "name": "S",
+        "dir": "out"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "COUT",
+      "type": "port",
+      "x": 66,
+      "y": 4,
+      "params": {
+        "name": "COUT",
+        "dir": "out"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L1",
+      "type": "label",
+      "x": 6,
+      "y": 8,
+      "params": {
+        "name": "CIN"
+      },
+      "label": ""
+    },
+    {
+      "id": "L2",
+      "type": "label",
+      "x": 31,
+      "y": 6,
+      "params": {
+        "name": "CIN"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L3",
+      "type": "label",
+      "x": 22,
+      "y": 3,
+      "params": {
+        "name": "n2"
+      },
+      "label": ""
+    },
+    {
+      "id": "L4",
+      "type": "label",
+      "x": 50,
+      "y": 4,
+      "params": {
+        "name": "n2"
+      },
+      "flip": true,
+      "label": ""
+    },
+    {
+      "id": "L5",
+      "type": "label",
+      "x": 41,
+      "y": 4,
+      "params": {
+        "name": "S"
+      },
+      "label": ""
+    },
+    {
+      "id": "L6",
+      "type": "label",
+      "x": 64,
+      "y": 0,
+      "params": {
+        "name": "S"
+      },
+      "flip": true,
+      "label": ""
+    }
+  ],
+  "wires": [
+    {
+      "points": [
+        [
+          4,
+          0
+        ],
+        [
+          11,
+          0
+        ],
+        [
+          11,
+          1
+        ],
+        [
+          14,
+          1
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          4,
+          4
+        ],
+        [
+          12,
+          4
+        ],
+        [
+          12,
+          3
+        ],
+        [
+          14,
+          3
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          1
+        ],
+        [
+          26,
+          1
+        ],
+        [
+          26,
+          4
+        ],
+        [
+          33,
+          4
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          6
+        ],
+        [
+          52,
+          6
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          58,
+          4
+        ],
+        [
+          66,
+          4
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          4,
+          8
+        ],
+        [
+          6,
+          8
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          31,
+          6
+        ],
+        [
+          33,
+          6
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          3
+        ],
+        [
+          22,
+          3
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          50,
+          4
+        ],
+        [
+          52,
+          4
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39,
+          4
+        ],
+        [
+          41,
+          4
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          64,
+          0
+        ],
+        [
+          66,
+          0
+        ]
+      ]
+    }
+  ]
+}

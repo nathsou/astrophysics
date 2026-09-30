@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "title": "An LED needs a resistor",
+  "engine": "analog",
+  "components": [
+    {"id": "B1", "type": "battery", "x": 4, "y": 10, "rot": 270, "params": {"voltage": 9}},
+    {"id": "G1", "type": "ground", "x": 4, "y": 12},
+    {"id": "A1", "type": "ammeter", "x": 6, "y": 2},
+    {"id": "R1", "type": "resistor", "x": 12, "y": 2, "params": {"resistance": 470}},
+    {"id": "SW", "type": "switch", "x": 12, "y": -2, "params": {"closed": false}, "label": "Short the resistor"},
+    {"id": "D1", "type": "led", "x": 22, "y": 4, "rot": 90, "params": {"color": "red"}, "label": "Red LED"},
+    {"id": "V1", "type": "voltmeter", "x": 28, "y": 8, "rot": 270},
+    {"id": "G2", "type": "ground", "x": 22, "y": 12}
+  ],
+  "wires": [
+    {"points": [[4, 6], [4, 2], [6, 2]]},
+    {"points": [[10, 2], [12, 2]]},
+    {"points": [[10, 2], [10, -2], [12, -2]]},
+    {"points": [[16, -2], [18, -2], [18, 2]]},
+    {"points": [[16, 2], [28, 2], [28, 4]]},
+    {"points": [[22, 2], [22, 4]]},
+    {"points": [[22, 8], [22, 12]]},
+    {"points": [[28, 8], [28, 12], [22, 12]]},
+    {"points": [[4, 10], [4, 12]]}
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "title": "A relay coil with a flyback diode",
+  "engine": "analog",
+  "components": [
+    {"id": "V1", "type": "rail", "x": 4, "y": 2, "params": {"voltage": 5}},
+    {"id": "K1", "type": "relay", "x": 4, "y": 4, "params": {"coilVoltage": 5}, "label": "Relay coil"},
+    {"id": "D1", "type": "diode", "x": 14, "y": 10, "rot": 270, "label": "Flyback diode"},
+    {"id": "SW", "type": "switch", "x": 4, "y": 16, "rot": 270, "params": {"closed": true}, "label": "Switch"},
+    {"id": "G1", "type": "ground", "x": 4, "y": 18}
+  ],
+  "wires": [
+    {"points": [[4, 2], [14, 2], [14, 6]]},
+    {"points": [[4, 2], [4, 4]]},
+    {"points": [[4, 8], [4, 12]]},
+    {"points": [[14, 10], [14, 12], [4, 12]]},
+    {"points": [[4, 16], [4, 18]]}
+  ]
+}

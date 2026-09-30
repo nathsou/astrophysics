@@ -1,0 +1,471 @@
+{
+  "version": 1,
+  "title": "One control line",
+  "engine": "digital",
+  "components": [
+    {
+      "id": "in_JCC",
+      "type": "toggle",
+      "x": 2,
+      "y": 0,
+      "params": {},
+      "label": "JCC"
+    },
+    {
+      "id": "L1",
+      "type": "label",
+      "x": 7,
+      "y": 0,
+      "params": {
+        "name": "JCC"
+      },
+      "label": ""
+    },
+    {
+      "id": "in_CALL",
+      "type": "toggle",
+      "x": 2,
+      "y": 4,
+      "params": {},
+      "label": "CALL"
+    },
+    {
+      "id": "L2",
+      "type": "label",
+      "x": 7,
+      "y": 4,
+      "params": {
+        "name": "CALL"
+      },
+      "label": ""
+    },
+    {
+      "id": "in_RET",
+      "type": "toggle",
+      "x": 2,
+      "y": 8,
+      "params": {},
+      "label": "RET"
+    },
+    {
+      "id": "L3",
+      "type": "label",
+      "x": 7,
+      "y": 8,
+      "params": {
+        "name": "RET"
+      },
+      "label": ""
+    },
+    {
+      "id": "in_STEP4",
+      "type": "toggle",
+      "x": 2,
+      "y": 12,
+      "params": {},
+      "label": "STEP4"
+    },
+    {
+      "id": "L4",
+      "type": "label",
+      "x": 7,
+      "y": 12,
+      "params": {
+        "name": "STEP4"
+      },
+      "label": ""
+    },
+    {
+      "id": "in_STEP7",
+      "type": "toggle",
+      "x": 2,
+      "y": 16,
+      "params": {},
+      "label": "STEP7"
+    },
+    {
+      "id": "L5",
+      "type": "label",
+      "x": 7,
+      "y": 16,
+      "params": {
+        "name": "STEP7"
+      },
+      "label": ""
+    },
+    {
+      "id": "in_TAKEN",
+      "type": "toggle",
+      "x": 2,
+      "y": 20,
+      "params": {},
+      "label": "TAKEN"
+    },
+    {
+      "id": "L6",
+      "type": "label",
+      "x": 7,
+      "y": 20,
+      "params": {
+        "name": "TAKEN"
+      },
+      "label": ""
+    },
+    {
+      "id": "t1",
+      "type": "and",
+      "x": 20,
+      "y": 0,
+      "params": {
+        "inputs": 3
+      },
+      "label": ""
+    },
+    {
+      "id": "L7",
+      "type": "label",
+      "x": 17,
+      "y": 0,
+      "flip": true,
+      "params": {
+        "name": "JCC"
+      },
+      "label": ""
+    },
+    {
+      "id": "L8",
+      "type": "label",
+      "x": 17,
+      "y": 2,
+      "flip": true,
+      "params": {
+        "name": "STEP4"
+      },
+      "label": ""
+    },
+    {
+      "id": "L9",
+      "type": "label",
+      "x": 17,
+      "y": 4,
+      "flip": true,
+      "params": {
+        "name": "TAKEN"
+      },
+      "label": ""
+    },
+    {
+      "id": "t2",
+      "type": "and",
+      "x": 20,
+      "y": 10,
+      "params": {},
+      "label": ""
+    },
+    {
+      "id": "L10",
+      "type": "label",
+      "x": 17,
+      "y": 10,
+      "flip": true,
+      "params": {
+        "name": "RET"
+      },
+      "label": ""
+    },
+    {
+      "id": "L11",
+      "type": "label",
+      "x": 17,
+      "y": 12,
+      "flip": true,
+      "params": {
+        "name": "STEP4"
+      },
+      "label": ""
+    },
+    {
+      "id": "t3",
+      "type": "and",
+      "x": 20,
+      "y": 16,
+      "params": {},
+      "label": ""
+    },
+    {
+      "id": "L12",
+      "type": "label",
+      "x": 17,
+      "y": 16,
+      "flip": true,
+      "params": {
+        "name": "CALL"
+      },
+      "label": ""
+    },
+    {
+      "id": "L13",
+      "type": "label",
+      "x": 17,
+      "y": 18,
+      "flip": true,
+      "params": {
+        "name": "STEP7"
+      },
+      "label": ""
+    },
+    {
+      "id": "or",
+      "type": "or",
+      "x": 40,
+      "y": 8,
+      "params": {
+        "inputs": 3
+      },
+      "label": ""
+    },
+    {
+      "id": "out",
+      "type": "indicator",
+      "x": 50,
+      "y": 10,
+      "params": {
+        "color": "amber"
+      },
+      "label": "PC_LD"
+    }
+  ],
+  "wires": [
+    {
+      "points": [
+        [
+          5,
+          0
+        ],
+        [
+          7,
+          0
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          4
+        ],
+        [
+          7,
+          4
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          8
+        ],
+        [
+          7,
+          8
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          12
+        ],
+        [
+          7,
+          12
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          16
+        ],
+        [
+          7,
+          16
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          20
+        ],
+        [
+          7,
+          20
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          0
+        ],
+        [
+          17,
+          0
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          2
+        ],
+        [
+          17,
+          2
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          4
+        ],
+        [
+          17,
+          4
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          10
+        ],
+        [
+          17,
+          10
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          12
+        ],
+        [
+          17,
+          12
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          16
+        ],
+        [
+          17,
+          16
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          18
+        ],
+        [
+          17,
+          18
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          26,
+          2
+        ],
+        [
+          36,
+          2
+        ],
+        [
+          36,
+          8
+        ],
+        [
+          40,
+          8
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          26,
+          11
+        ],
+        [
+          38,
+          11
+        ],
+        [
+          38,
+          10
+        ],
+        [
+          40,
+          10
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          26,
+          17
+        ],
+        [
+          40,
+          17
+        ],
+        [
+          40,
+          12
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          46,
+          10
+        ],
+        [
+          50,
+          10
+        ]
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "x": 20,
+      "y": -3,
+      "text": "PC_LD = Jcc·STEP4·TAKEN + RET·STEP4 + CALL·STEP7"
+    }
+  ]
+}

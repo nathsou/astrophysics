@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "title": "An ammeter goes in the path",
+  "engine": "analog",
+  "components": [
+    {"id": "B1", "type": "battery", "x": 4, "y": 12, "rot": 270, "params": {"voltage": 9}, "label": "9 V"},
+    {"id": "R1", "type": "resistor", "x": 10, "y": 4, "params": {"resistance": 6000}},
+    {"id": "R2", "type": "resistor", "x": 22, "y": 4, "rot": 90, "params": {"resistance": 3000}},
+    {"id": "A1", "type": "ammeter", "x": 22, "y": 10, "rot": 90},
+    {"id": "G1", "type": "ground", "x": 4, "y": 16}
+  ],
+  "wires": [
+    {"points": [[4, 8], [4, 4], [10, 4]]},
+    {"points": [[14, 4], [22, 4]]},
+    {"points": [[22, 8], [22, 10]]},
+    {"points": [[22, 14], [22, 16], [4, 16], [4, 12]]}
+  ],
+  "notes": [{"x": 33, "y": 9, "text": "in series:\nthe current\nflows through it"}]
+}

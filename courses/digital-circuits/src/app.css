@@ -1,0 +1,642 @@
+@import '@fontsource-variable/literata/opsz.css';
+@import '@fontsource-variable/literata/opsz-italic.css';
+@import '@fontsource-variable/space-grotesk';
+@import '@fontsource-variable/jetbrains-mono';
+@import 'katex/dist/katex.min.css';
+
+/* ───────────────────────── Design tokens: "The Bench" ─────────────────────────
+   Light: a lab notebook — warm paper with a faint engineering grid, ink, copper.
+   Dark: the lab at night — a deep blue-black page with phosphor-green instrument traces.
+
+   Every colour is written once as light-dark(light, dark). The theme is chosen by `color-scheme`:
+   `system` follows the OS, and `data-theme` on <html> (the collection's shared `theme` key) forces one.
+   A subtree can force a scheme too: `.screen` (an instrument screen) is always dark, so tokens inside it
+   resolve to their dark values in both themes.
+
+   Signal tokens (--sig-*, --volt-*, --wire, --copper, --phosphor, --silicon…) mean the same thing in every
+   figure. Canvas code reads them through src/lib/theme/signals.ts. */
+
+:root {
+  color-scheme: light dark;
+}
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
+.screen {
+  color-scheme: dark;
+}
+
+:root {
+  --font-display: 'Space Grotesk Variable', 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-ui: var(--font-display);
+  --font-body: 'Literata Variable', Literata, 'Iowan Old Style', Charter, Georgia, serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* ── Paper and ink ── */
+  --bg: light-dark(#f6f2ea, #0a0f17);
+  --fg: light-dark(#1c2127, #e2e8ef);
+  --ink-2: light-dark(#3d4550, #bcc6d2);
+  --mute: light-dark(#5d6570, #8f9bab);
+  --pn: light-dark(#eee8dc, #111a26);
+  --panel: light-dark(#fcfaf5, #0f1620);
+  --line: light-dark(#dcd4c5, #213043);
+  --line-strong: light-dark(#b4aa97, #35465d);
+  --grid-minor: light-dark(rgb(40 90 130 / 0.05), rgb(120 170 255 / 0.04));
+  --grid-major: light-dark(rgb(40 90 130 / 0.085), rgb(120 170 255 / 0.07));
+  --grid-size: 24px;
+
+  /* ── Accents ── */
+  --copper: light-dark(#b8652e, #e0925a);
+  --copper-ink: light-dark(#9c4f1c, #eaa472);
+  --copper-soft: light-dark(rgb(184 101 46 / 0.12), rgb(224 146 90 / 0.13));
+  --phosphor: light-dark(#0d8050, #5cf0a0);
+  --phosphor-ink: light-dark(#0b7247, #6ee7a4);
+  --phosphor-glow: light-dark(rgb(13 128 80 / 0.25), rgb(92 240 160 / 0.45));
+  --ac: light-dark(#9c4f1c, #6ee7a4);
+
+  /* ── Signals: identical meaning in every figure (never the only cue: HIGH is thicker, Z is dashed) ── */
+  --sig-high: light-dark(#c27000, #ffb23e);
+  --sig-high-glow: light-dark(rgb(255 160 0 / 0.32), rgb(255 178 62 / 0.45));
+  --sig-low: light-dark(#5b6b7e, #7a8ba1);
+  --sig-z: light-dark(#80868e, #6f7782);
+  --sig-x: light-dark(#cc3333, #ff6464);
+  --sig-current: light-dark(#1a73c9, #62c8ff);
+  --volt-neg: light-dark(#2d62c8, #5b8ff0);
+  --volt-zero: light-dark(#858b93, #7d8796);
+  --volt-pos: light-dark(#d1451b, #ff7a45);
+  --wire: light-dark(#3a4350, #8494a8);
+  --silicon: light-dark(#3b3f5c, #232840);
+  --silicon-metal: light-dark(#c2ab78, #c9b27c);
+  --scope-bg: light-dark(#0e1a17, #060d0b);
+  --scope-grid: rgb(92 240 160 / 0.13);
+  /* Stroke geometry for SVG wires (unitless: SVG user units). */
+  --wire-w: 2;
+  --wire-w-high: 3;
+  --sig-z-dash: 5 4;
+
+  /* ── Callout hues ── */
+  --c-note: light-dark(#4a6480, #8fa9c6);
+  --c-tip: light-dark(#0b7247, #6ee7a4);
+  --c-warning: light-dark(#b8322a, #ff7a6b);
+  --c-key: light-dark(#935600, #ffc15e);
+  --c-question: light-dark(#1765b3, #6cb8ff);
+  --c-challenge: light-dark(#7a4bb5, #b595ff);
+  --c-lab: light-dark(#0b6b66, #4fd6c8);
+  --c-programmer: light-dark(#3654b8, #8ea2ff);
+  --c-hood: light-dark(#56606c, #9aa8b8);
+  --c-deeper: light-dark(#8a3f86, #e29ad6);
+  --c-real: var(--copper-ink);
+  --c-history: light-dark(#8a5a14, #e6b25e);
+
+  /* ── Feedback ── */
+  --ok: light-dark(#0b7247, #6ee7a4);
+  --ok-soft: light-dark(rgb(13 128 80 / 0.1), rgb(92 240 160 / 0.1));
+  --bad: light-dark(#b8322a, #ff7a6b);
+  --bad-soft: light-dark(rgb(204 51 51 / 0.09), rgb(255 100 100 / 0.11));
+  --maybe: light-dark(#8a5800, #ffc15e);
+  --maybe-soft: light-dark(rgb(194 112 0 / 0.12), rgb(255 178 62 / 0.12));
+
+  /* ── Charts ── */
+  --series-1: light-dark(#1a73c9, #62c8ff);
+  --series-2: light-dark(#b8652e, #e0925a);
+  --series-3: light-dark(#0d8050, #5cf0a0);
+  --series-4: light-dark(#8a3f86, #e29ad6);
+  --series-5: light-dark(#c27000, #ffb23e);
+  --series-6: light-dark(#0e7a74, #4fd6c8);
+  --series-7: light-dark(#cc3333, #ff6464);
+  --series-8: light-dark(#5b6b7e, #9aa8b8);
+
+  /* ── Code (Shiki uses its own themes in tools/markdown/render.ts with the same values) ── */
+  --code-keyword: light-dark(#8a3f86, #e29ad6);
+  --code-string: light-dark(#0b6e44, #7fe0a8);
+  --code-number: light-dark(#9c4f1c, #f0a870);
+  --code-comment: light-dark(#5d646d, #7f8b9b);
+  --code-fn: light-dark(#1f5fbf, #7fb6ff);
+  --code-type: light-dark(#0c6e69, #5fd6c8);
+  --code-def: var(--fg);
+  --code-prop: light-dark(#3654b8, #9fb0ff);
+  --code-punct: light-dark(#4a525d, #aab4c0);
+
+  --shadow: 0 1px 2px light-dark(rgb(40 30 10 / 0.06), rgb(0 0 0 / 0.4));
+  --shadow-lg: 0 1px 2px light-dark(rgb(40 30 10 / 0.08), rgb(0 0 0 / 0.5)), 0 14px 36px -12px light-dark(rgb(40 30 10 / 0.22), rgb(0 0 0 / 0.7));
+  --radius: 8px;
+  --radius-sm: 5px;
+  --sidebar-w: 18rem;
+  --main-w: 41rem;
+  --margin-w: 16rem;
+
+  /* ── Legacy names used by the shared components and charts (aliases, keep) ── */
+  --page: var(--bg);
+  --ink: var(--fg);
+  --ink-3: var(--mute);
+  --surface: var(--panel);
+  --surface-2: var(--pn);
+  --surface-3: light-dark(#e2dacb, #1c2635);
+  --rule: var(--line);
+  --rule-strong: var(--line-strong);
+  --border: var(--line-strong);
+  --accent: var(--ac);
+  --accent-2: var(--copper);
+  --accent-soft: var(--copper-soft);
+  --accent-ink: light-dark(#7e3d12, #9af2c2);
+  --on-accent: light-dark(#fffaf2, #06120c);
+  --focus: light-dark(#1f6fd1, #7fd4ff);
+  --chart-surface: var(--panel);
+  --grid: var(--line);
+  --axis: var(--line-strong);
+  --good: var(--ok);
+  --critical: var(--bad);
+  --history: var(--c-history);
+  --history-soft: light-dark(rgb(194 112 0 / 0.08), rgb(255 178 62 / 0.07));
+  --note: var(--c-note);
+  --tip: var(--c-tip);
+  --warn: var(--c-warning);
+  --lab: var(--c-lab);
+  --break: var(--c-warning);
+  --challenge: var(--c-challenge);
+  --term-hl: light-dark(rgb(194 112 0 / 0.16), rgb(255 178 62 / 0.16));
+  --term-hl-strong: light-dark(rgb(194 112 0 / 0.3), rgb(255 178 62 / 0.3));
+  /* Proofcraft's illustration primaries, remapped (for any widget copied from there). */
+  --fx-red: var(--sig-x);
+  --fx-blue: var(--sig-current);
+  --fx-yellow: var(--sig-high);
+  --fx-ink: var(--fg);
+  --fx-cream: var(--bg);
+  --byrne-red: var(--sig-x);
+  --byrne-blue: var(--sig-current);
+  --byrne-yellow: var(--sig-high);
+  --byrne-ink: var(--fg);
+}
+
+/* ───────────────────────── Base ───────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 5rem;
+  background: var(--bg);
+}
+
+/* The engineering grid: a faint minor grid every 24 px and a major line every fifth. */
+.grid-paper,
+body {
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(var(--grid-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px);
+  background-size:
+    calc(var(--grid-size) * 5) calc(var(--grid-size) * 5),
+    calc(var(--grid-size) * 5) calc(var(--grid-size) * 5),
+    var(--grid-size) var(--grid-size),
+    var(--grid-size) var(--grid-size);
+  background-position: -1px -1px;
+}
+
+body {
+  margin: 0;
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  line-height: 1.66;
+  font-optical-sizing: auto;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color 120ms;
+}
+a:hover {
+  text-decoration-color: currentColor;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: var(--term-hl-strong);
+}
+
+.ui {
+  font-family: var(--font-ui);
+}
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* A small uppercase label, as on an instrument panel. */
+.label-caps {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ───────────────────────── Article grid ─────────────────────────
+   main column for prose; `wide` spans into the right margin; `full` spans the viewport.
+   Sidenotes float into the margin on wide screens. */
+
+.article {
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(1rem, 1fr)
+    [wide-start main-start] minmax(0, var(--main-w))
+    [main-end] minmax(0, calc(var(--margin-w) + 2.5rem))
+    [wide-end] minmax(1rem, 1fr) [full-end];
+  counter-reset: sidenote;
+}
+.article > *,
+.article > .term-layer > * {
+  grid-column: main;
+  min-width: 0;
+}
+.article > .term-layer {
+  display: contents;
+}
+.article > .wide,
+.article > .term-layer > .wide {
+  grid-column: wide;
+}
+.article > .full,
+.article > .term-layer > .full {
+  grid-column: full;
+}
+@media (max-width: 1279px) {
+  .article {
+    grid-template-columns: [full-start] minmax(1rem, 1fr) [wide-start main-start] minmax(0, 45rem) [main-end wide-end] minmax(1rem, 1fr) [full-end];
+  }
+}
+
+/* ───────────────────────── Prose ───────────────────────── */
+
+.article h2,
+.article h3,
+.article h4 {
+  color: var(--fg);
+  font-family: var(--font-display);
+}
+/* Section heading: a copper test-point pad with a short trace, on a hairline. */
+.article h2 {
+  position: relative;
+  font-weight: 600;
+  font-size: clamp(1.5rem, 3.2vw, 1.85rem);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 3.75rem 0 1.1rem;
+  padding-top: 1.35rem;
+  border-top: 1px solid var(--line);
+  text-wrap: balance;
+}
+.article h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -6px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 2px solid var(--copper);
+  background: var(--bg);
+  box-sizing: border-box;
+}
+.article h2::after {
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: -1.5px;
+  width: 3.5rem;
+  height: 2px;
+  background: linear-gradient(90deg, var(--copper), color-mix(in srgb, var(--copper) 0%, transparent));
+}
+.article h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  margin: 2.5rem 0 0.6rem;
+}
+.article h4 {
+  font-size: 1.02rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 1.75rem 0 0.4rem;
+}
+.article p,
+.article ul,
+.article ol {
+  margin: 0 0 1.15rem;
+}
+.article li + li {
+  margin-top: 0.3rem;
+}
+.article li > p {
+  margin-bottom: 0.4rem;
+}
+.article strong {
+  font-weight: 650;
+}
+.article hr {
+  border: 0;
+  height: 1px;
+  background: var(--line-strong);
+  margin: 2.75rem 0;
+}
+.article blockquote {
+  margin: 1.6rem 0;
+  padding: 0.1rem 0 0.1rem 1.25rem;
+  border-left: 2px solid var(--copper);
+  color: var(--ink-2);
+  font-style: italic;
+}
+/* Markdown lists (only, so widget and exercise lists are left alone): copper pads for bullets,
+   mono numerals. */
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level, .story) > ol {
+  list-style: none;
+  counter-reset: item;
+  padding-left: 2rem;
+}
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level, .story) > ol > li {
+  counter-increment: item;
+  position: relative;
+}
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level, .story) > ol > li::before {
+  content: counter(item);
+  position: absolute;
+  left: -2rem;
+  width: 1.45rem;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.78em;
+  line-height: inherit;
+  padding-top: 0.12em;
+  color: var(--copper-ink);
+  font-variant-numeric: tabular-nums;
+}
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level, .story) > ul {
+  list-style: none;
+  padding-left: 1.4rem;
+}
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level, .story) > ul > li {
+  position: relative;
+}
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level, .story) > ul > li::before {
+  content: '';
+  position: absolute;
+  left: -1.15rem;
+  top: 0.62em;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  border: 1.5px solid var(--copper);
+  box-sizing: border-box;
+}
+.article table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.6rem 0;
+  font-family: var(--font-ui);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums;
+}
+.article .table-scroll {
+  margin: 1.6rem 0;
+  overflow-x: auto;
+}
+.article .table-scroll > table {
+  margin: 0;
+}
+.article th,
+.article td {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+.article th {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  border-bottom: 1.5px solid var(--line-strong);
+}
+.article tbody tr:hover {
+  background: color-mix(in srgb, var(--pn) 60%, transparent);
+}
+.article :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.83em;
+  background: var(--pn);
+  border: 1px solid var(--line);
+  padding: 0.05em 0.35em;
+  border-radius: 4px;
+  /* Long file paths must wrap on phones rather than widen the page. */
+  overflow-wrap: anywhere;
+}
+.article img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Code blocks (Shiki dual theme). */
+figure.code-block {
+  margin: 1.6rem 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--pn);
+  overflow: hidden;
+}
+figure.code-block figcaption {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  padding: 0.45rem 1rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+}
+figure.code-block figcaption::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--copper);
+}
+figure.code-block pre {
+  margin: 0;
+  padding: 0.95rem 1.1rem;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  line-height: 1.62;
+  background: transparent !important;
+}
+.shiki,
+.shiki span {
+  color: light-dark(var(--shiki-light), var(--shiki-dark));
+}
+
+/* Maths. */
+.math-display {
+  margin: 1.4rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0;
+}
+.katex {
+  font-size: 1.05em;
+}
+.math-display .katex {
+  font-size: 1.16em;
+}
+[data-term] {
+  border-radius: 2px;
+  cursor: help;
+  transition: background-color 120ms ease;
+  box-shadow: inset 0 -2px 0 0 color-mix(in srgb, var(--sig-high) 70%, transparent);
+}
+[data-term]:hover,
+[data-term]:focus-visible,
+[data-term].term-active {
+  background: var(--term-hl-strong);
+  box-shadow: none;
+}
+[data-term]:focus-visible {
+  outline-offset: 1px;
+}
+/* KaTeX lays out sub/superscripts with empty positioning spans that sit on top of the glyphs;
+   let pointer events fall through them so hoverable terms can be hit. */
+.katex:has([data-term]) .vlist-t,
+.katex:has([data-term]) .vlist-r,
+.katex:has([data-term]) .vlist,
+.katex:has([data-term]) .vlist > span {
+  pointer-events: none;
+}
+.katex [data-term],
+.katex [data-term] * {
+  pointer-events: auto;
+}
+
+/* Footnotes (GFM). */
+.article .footnotes {
+  font-family: var(--font-ui);
+  font-size: 0.92rem;
+  color: var(--ink-2);
+}
+
+/* ───────────────────────── Signal helpers for SVG figures ─────────────────────────
+   <path class="wire sig-high" d="…"/>: colour, width and dash from the signal tokens.
+   X flickers (static under reduced motion); pair it with a hatch or an "X" label in the figure. */
+
+.wire {
+  fill: none;
+  stroke: var(--wire);
+  stroke-width: var(--wire-w);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 120ms;
+}
+.wire.sig-high {
+  stroke: var(--sig-high);
+  stroke-width: var(--wire-w-high);
+  filter: drop-shadow(0 0 2.5px var(--sig-high-glow));
+}
+.wire.sig-low {
+  stroke: var(--sig-low);
+}
+.wire.sig-z {
+  stroke: var(--sig-z);
+  stroke-dasharray: var(--sig-z-dash);
+}
+.wire.sig-x {
+  stroke: var(--sig-x);
+  animation: sig-x-flicker 0.8s steps(2, jump-none) infinite;
+}
+@keyframes sig-x-flicker {
+  50% {
+    opacity: 0.45;
+  }
+}
+/* Chips for logic values in running text: <span class="lv hi">1</span> */
+.lv {
+  display: inline-block;
+  min-width: 1.3em;
+  padding: 0 0.3em;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.5;
+  border: 1px solid currentColor;
+}
+.lv.hi {
+  color: var(--sig-high);
+  background: color-mix(in srgb, var(--sig-high) 12%, transparent);
+}
+.lv.lo {
+  color: var(--sig-low);
+}
+.lv.z {
+  color: var(--sig-z);
+  border-style: dashed;
+}
+.lv.x {
+  color: var(--sig-x);
+  background: color-mix(in srgb, var(--sig-x) 10%, transparent);
+}
+
+/* ───────────────────────── Utility ───────────────────────── */
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

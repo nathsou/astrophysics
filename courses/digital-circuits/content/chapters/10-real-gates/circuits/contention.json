@@ -1,0 +1,298 @@
+{
+ "version": 1,
+ "title": "Two drivers fighting",
+ "engine": "analog",
+ "components": [
+  {
+   "id": "V1",
+   "type": "rail",
+   "x": 11,
+   "y": 2,
+   "params": {
+    "voltage": 5
+   }
+  },
+  {
+   "id": "P1",
+   "type": "pmos",
+   "x": 8,
+   "y": 6,
+   "params": {
+    "k": 0.5
+   },
+   "label": ""
+  },
+  {
+   "id": "N1",
+   "type": "nmos",
+   "x": 8,
+   "y": 12,
+   "params": {
+    "k": 0.5
+   },
+   "label": ""
+  },
+  {
+   "id": "G1",
+   "type": "ground",
+   "x": 11,
+   "y": 14
+  },
+  {
+   "id": "T1",
+   "type": "toggle",
+   "x": 0,
+   "y": 9,
+   "label": "In 1"
+  },
+  {
+   "id": "BW1",
+   "type": "resistor",
+   "x": 14,
+   "y": 9,
+   "params": {
+    "resistance": 1,
+    "power": 0.25
+   },
+   "label": "bond wire"
+  },
+  {
+   "id": "AM",
+   "type": "ammeter",
+   "x": 24,
+   "y": 12,
+   "rot": 90,
+   "label": "Bus current"
+  },
+  {
+   "id": "V2",
+   "type": "rail",
+   "x": 11,
+   "y": 20,
+   "params": {
+    "voltage": 5
+   }
+  },
+  {
+   "id": "P2",
+   "type": "pmos",
+   "x": 8,
+   "y": 24,
+   "params": {
+    "k": 0.5
+   },
+   "label": ""
+  },
+  {
+   "id": "N2",
+   "type": "nmos",
+   "x": 8,
+   "y": 30,
+   "params": {
+    "k": 0.5
+   },
+   "label": ""
+  },
+  {
+   "id": "G2",
+   "type": "ground",
+   "x": 11,
+   "y": 32
+  },
+  {
+   "id": "T2",
+   "type": "toggle",
+   "x": 0,
+   "y": 27,
+   "label": "In 2"
+  },
+  {
+   "id": "BW2",
+   "type": "resistor",
+   "x": 14,
+   "y": 27,
+   "params": {
+    "resistance": 1,
+    "power": 0.25
+   },
+   "label": "bond wire"
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     11,
+     2
+    ],
+    [
+     11,
+     4
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     8,
+     6
+    ],
+    [
+     4,
+     6
+    ],
+    [
+     4,
+     12
+    ],
+    [
+     8,
+     12
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     3,
+     9
+    ],
+    [
+     4,
+     9
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     11,
+     8
+    ],
+    [
+     11,
+     10
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     11,
+     9
+    ],
+    [
+     14,
+     9
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     18,
+     9
+    ],
+    [
+     24,
+     9
+    ],
+    [
+     24,
+     12
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     24,
+     16
+    ],
+    [
+     24,
+     27
+    ],
+    [
+     18,
+     27
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     11,
+     20
+    ],
+    [
+     11,
+     22
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     8,
+     24
+    ],
+    [
+     4,
+     24
+    ],
+    [
+     4,
+     30
+    ],
+    [
+     8,
+     30
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     3,
+     27
+    ],
+    [
+     4,
+     27
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     11,
+     26
+    ],
+    [
+     11,
+     28
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     11,
+     27
+    ],
+    [
+     14,
+     27
+    ]
+   ]
+  }
+ ],
+ "notes": [
+  {
+   "x": 28,
+   "y": 18,
+   "text": "In 1 \u2260 In 2:\none output pulls up\nwhile the other\npulls down"
+  }
+ ]
+}

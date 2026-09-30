@@ -1,0 +1,517 @@
+# Timeline: list of { year, title, people, chapter, text }. Negative years are BC.
+
+- year: 1886
+  title: A letter fifty years early
+  people: Charles Sanders Peirce, Allan Marquand
+  chapter: shannons-switches
+  text: Peirce writes to Marquand that electric switches, in series and in parallel, could carry out logical operations.
+- year: 1937
+  title: Shannon’s thesis
+  people: Claude Shannon
+  chapter: shannons-switches
+  text: A master’s thesis submitted to MIT on 10 August shows that Boolean algebra describes switching circuits, and that circuits can be designed and simplified on paper.
+- year: 1937
+  title: The Model K
+  people: George Stibitz
+  chapter: shannons-switches
+  text: A binary adder made on a kitchen table from relays, dry cells, torch bulbs and strips of tin.
+- year: 1941
+  title: The Z3
+  people: Konrad Zuse
+  chapter: shannons-switches
+  text: A programmable, fully automatic computer of about 2,600 relays, working in Berlin.
+- year: 1947
+  title: The first actual bug
+  people: The Harvard Mark II operators
+  chapter: shannons-switches
+  text: A moth found in relay 70 of panel F is taped into the logbook on 9 September.
+- year: 1800
+  title: Galvani’s frogs and Volta’s pile
+  people: Luigi Galvani, Alessandro Volta
+  chapter: charge-voltage-current
+  text: Volta announces the first battery, a pile of zinc and silver discs with brine-soaked card between them, in a letter to the Royal Society dated 20 March. Cells in series add their voltages.
+- year: 1820
+  title: Ørsted’s compass
+  people: Hans Christian Ørsted
+  chapter: relays
+  text: A compass needle beside a wire swings when the current starts, and shows that electricity and magnetism are linked. The pamphlet announcing it is dated 21 July.
+- year: 1831
+  title: Faraday’s induction ring
+  people: Michael Faraday
+  chapter: relays
+  text: On 29 August, two coils on an iron ring show that a changing current in one makes a voltage in the other.
+- year: 1831
+  title: Henry’s Albany magnet
+  people: Joseph Henry
+  chapter: relays
+  text: An electromagnet wound with many turns of silk-insulated wire lifts 750 pounds.
+- year: 1835
+  title: Henry’s relay
+  people: Joseph Henry
+  chapter: relays
+  text: A small, sensitive electromagnet on a long wire switches the circuit of a large one with its own battery, the first relay.
+- year: 1844
+  title: “What hath God wrought”
+  people: Samuel Morse, Alfred Vail
+  chapter: relays
+  text: On 24 May, Morse sends the first message over the 40-mile Washington to Baltimore telegraph line.
+- year: 1745
+  title: The Leyden jar
+  people: Ewald Georg von Kleist, Pieter van Musschenbroek
+  chapter: capacitors-and-time
+  text: "A glass jar with water and a nail stores enough charge to give a memorable shock: on 11 October 1745 at Cammin, and again at Leiden in January 1746. The first capacitor."
+- year: 1897
+  title: Braun’s cathode-ray tube
+  people: Karl Ferdinand Braun
+  chapter: the-bench
+  text: "A tube with a narrow electron beam, steered by the current under study, draws the time course of fast currents on a fluorescent screen: the ancestor of the oscilloscope."
+- year: 1827
+  title: Ohm’s Die galvanische Kette
+  people: Georg Simon Ohm
+  chapter: ohms-law
+  text: A schoolteacher’s book derives the relation between voltage, current and resistance. It is received with incomprehension, and the Royal Society honours Ohm only in 1841.
+- year: 1845
+  title: Kirchhoff’s laws
+  people: Gustav Kirchhoff
+  chapter: ohms-law
+  text: A 21-year-old student at Königsberg finds the two rules, the current law and the voltage law, that let any network of resistors be solved.
+- year: 1964
+  title: The 7400 series
+  people: Texas Instruments, Sylvania
+  chapter: real-gates
+  text: Texas Instruments introduces the SN5400 family of TTL gates for military use, after Sylvania’s SUHL of 1963; the plastic SN7400 series of 1966 becomes the standard logic catalogue for a generation.
+- year: 1974
+  title: Dennard scaling
+  people: Robert Dennard, Fritz Gaensslen, Hwa-Nien Yu, V. Leo Rideout, Ernest Bassous, Andre LeBlanc
+  chapter: real-gates
+  text: A paper from IBM shows that a MOSFET whose dimensions, voltage and oxide thickness are divided by the same factor keeps working, faster and at constant power per unit area. It becomes the roadmap of chip design for thirty years.
+- year: 2004
+  title: The end of Dennard scaling
+  people: Intel, Herb Sutter
+  chapter: real-gates
+  text: Leakage stops the supply voltage falling, chips reach about 100 W, and in May Intel cancels its 7 GHz Tejas. Clock speeds stop rising, and Sutter’s 2005 article tells programmers that the free lunch is over.
+- year: 1945
+  title: ENIAC
+  people: J. Presper Eckert, John Mauchly
+  chapter: press-a-key
+  text: The first general-purpose electronic computer, with 17,468 vacuum tubes and 5,000 additions a second, is finished at the University of Pennsylvania.
+- year: 1874
+  title: Braun’s crystal rectifier
+  people: Ferdinand Braun
+  chapter: diodes-and-leds
+  text: A metal point on a lead-sulphide crystal conducts better one way than the other, the first semiconductor diode. The paper reached Annalen der Physik und Chemie on 23 November.
+- year: 1904
+  title: Fleming’s valve
+  people: John Ambrose Fleming
+  chapter: diodes-and-leds
+  text: A hot filament and a cold plate in a glass bulb pass current one way only; Fleming applies for the patent on 16 November and uses it to detect radio waves.
+- year: 1907
+  title: Round’s glowing crystal
+  people: H. J. Round
+  chapter: diodes-and-leds
+  text: 'A carborundum detector gives a yellowish light when 10 volts are put across it: the first electroluminescence from a solid-state diode.'
+- year: 1940
+  title: Ohl’s pn junction
+  people: Russell Ohl
+  chapter: diodes-and-leds
+  text: 'On 23 February a cracked silicon rod at Bell Labs generates a voltage in the light. The crack separates a p-type region from an n-type one: the first pn junction.'
+- year: 1962
+  title: Holonyak’s red LED
+  people: Nick Holonyak Jr.
+  chapter: diodes-and-leds
+  text: 'A gallium arsenide phosphide diode at General Electric emits visible red light: the first LED to give visible light.'
+- year: 1993
+  title: The bright blue LED
+  people: Isamu Akasaki, Hiroshi Amano, Shuji Nakamura
+  chapter: diodes-and-leds
+  text: Efficient blue LEDs of gallium nitride and indium gallium nitride make white LED lighting possible. Nobel Prize in Physics, 2014.
+- year: 1906
+  title: De Forest’s Audion
+  people: Lee de Forest
+  chapter: the-transistor
+  text: 'A third electrode, a grid, in Fleming’s valve lets a small voltage control a large current: the first electrical amplifier. The patent application is dated 25 October.'
+- year: 1944
+  title: Colossus
+  people: Tommy Flowers
+  chapter: the-transistor
+  text: About 1,500 valves break the Lorenz cipher at Bletchley Park, from early February. A Mark 2 of 2,400 valves follows on 1 June.
+- year: 1947
+  title: The point-contact transistor
+  people: John Bardeen, Walter Brattain, William Shockley
+  chapter: the-transistor
+  text: On 16 December two gold contacts on germanium amplify a signal about a hundred times; it is shown to Bell Labs management on 23 December. Shockley conceives the junction transistor on 23 January 1948.
+- year: 1983
+  title: PALASM, ABEL and CUPL
+  people: John Birkner, Russell de Pina, Bob Osann
+  chapter: describing-hardware
+  text: Text languages for programmable logic turn Boolean equations into fuse maps. PALASM comes from Monolithic Memories, ABEL from Data I/O and CUPL from Assisted Technology.
+- year: 1984
+  title: Verilog
+  people: Phil Moorby, Prabhu Goel, Chi-Lai Huang
+  chapter: describing-hardware
+  text: Specified in December 1983 at Gateway Design Automation, with a simulator written in 1984; on sale in early 1985 and standardised as IEEE 1364 in 1995.
+- year: 1987
+  title: VHDL
+  people: US Department of Defense (VHSIC programme), Intermetrics, IBM, Texas Instruments
+  chapter: describing-hardware
+  text: A language for describing digital hardware, developed under the VHSIC programme from 1983 and adopted as IEEE Standard 1076 in December 1987.
+- year: 1987
+  title: Logic synthesis becomes a product
+  people: Aart de Geus, David Gregory, Bill Krieger
+  chapter: describing-hardware
+  text: Optimal Solutions, founded in 1986 by engineers from General Electric, becomes Synopsys, and turns logic synthesis into the tool that designs are written for.
+- year: 1847
+  title: De Morgan’s Formal Logic
+  people: Augustus De Morgan
+  chapter: boolean-algebra
+  text: De Morgan states in words the rules for the negation of a compound statement, which in the algebra of Boole become the laws that turn AND into OR.
+- year: 1854
+  title: The Laws of Thought
+  people: George Boole
+  chapter: boolean-algebra
+  text: Boole publishes An Investigation of the Laws of Thought, in which logic is an algebra of 0 and 1. Eighty-three years later Shannon finds it in relay circuits.
+- year: 1913
+  title: Sheffer’s stroke
+  people: Henry M. Sheffer, Charles Sanders Peirce
+  chapter: boolean-algebra
+  text: Sheffer shows that one binary operation, the stroke, is enough to define all of Boolean algebra. Peirce had found the same thing about 1880 and never published it.
+- year: 1969
+  title: The Moon computer made of NOR gates
+  people: Eldon Hall, MIT Instrumentation Laboratory
+  chapter: boolean-algebra
+  text: The Apollo Guidance Computer, whose Block II version has about 2,800 integrated circuits each holding two three-input NOR gates, guides the lunar module of Apollo 11 to the surface.
+- year: 1952
+  title: The Veitch chart and Quine’s prime implicants
+  people: Edward W. Veitch, Willard Van Orman Quine
+  chapter: simplifying-logic
+  text: In 1952 Veitch presents a chart method for simplifying truth functions at an ACM meeting in Pittsburgh, and Quine, a logician at Harvard, publishes the theory of prime implicants.
+- year: 1953
+  title: The Karnaugh map
+  people: Maurice Karnaugh
+  chapter: simplifying-logic
+  text: Karnaugh, at Bell Laboratories, publishes the map method, with the Gray-code labelling that makes neighbouring cells differ in one variable.
+- year: 1956
+  title: McCluskey’s tabular method
+  people: Edward J. McCluskey, Stanley R. Petrick
+  chapter: simplifying-logic
+  text: McCluskey turns Quine’s method into a procedure that a computer can run, and Petrick publishes the method for choosing among prime implicants.
+- year: 1956
+  title: Chow’s PROM
+  people: Wen Tsing Chow
+  chapter: programmable-logic
+  text: At the Arma Division of American Bosch Arma, Chow invents the programmable read-only memory, to hold the target constants of the Atlas E/F missile’s guidance computer. The patent is kept secret for years.
+- year: 1971
+  title: The EPROM
+  people: Dov Frohman-Bentchkowsky, Intel
+  chapter: programmable-logic
+  text: Intel announces the 1702, a 2,048-bit PROM that ultraviolet light through a quartz window can erase. The floating-gate cell inside it is the ancestor of EEPROM and flash.
+- year: 1975
+  title: The first field-programmable logic arrays
+  people: Bill Sievers, Ron Cline, Intersil, Signetics
+  chapter: programmable-logic
+  text: Intersil introduces the IM5200 in June, and Signetics the faster 82S100 soon after, with 16 inputs, 48 product terms and 8 outputs.
+- year: 1955
+  title: The Nixie tube
+  people: Haydu Brothers, Burroughs Corporation
+  chapter: building-blocks
+  text: 'Burroughs introduces a neon tube with ten cathodes shaped as digits, developed from the Haydu Brothers’ design. Connecting one cathode to ground lights that digit: a decoder in glass.'
+- year: 1978
+  title: The PAL
+  people: John Birkner, H. T. Chua, Andy Chan, Monolithic Memories
+  chapter: pals-and-gals
+  text: Monolithic Memories introduces programmable array logic in March. A programmable AND plane feeds fixed OR gates, which makes the chip faster and cheaper than a PLA and the first widely used PLD.
+- year: 1985
+  title: The GAL
+  people: Lattice Semiconductor
+  chapter: pals-and-gals
+  text: Lattice makes the PAL erasable, with EEPROM cells and configurable output macrocells, so that a design can be tried, erased and tried again on a single chip.
+- year: 1703
+  title: Leibniz’s binary arithmetic
+  people: Gottfried Wilhelm Leibniz
+  chapter: arithmetic
+  text: 'Leibniz publishes Explication de l’Arithmétique Binaire in the Paris Academy’s memoirs (printed 1705): addition, subtraction, multiplication and division with only 0 and 1, and the hexagrams of the I Ching read as binary numbers.'
+- year: 1838
+  title: The anticipating carriage
+  people: Charles Babbage
+  chapter: arithmetic
+  text: 'Babbage’s design for the Analytical Engine includes a mechanism that carries in all the wheels of a register in a single operation instead of one after another: carry lookahead in brass.'
+- year: 1968
+  title: Grace Hopper’s nanosecond
+  people: Grace Hopper
+  chapter: timing
+  text: By the late 1960s Hopper is handing out 30 cm lengths of wire, the distance light travels in a nanosecond, to show why fast computers must be small.
+- year: 1959
+  title: The first working MOSFET
+  people: Mohamed Atalla, Dawon Kahng
+  chapter: cmos
+  text: At Bell Labs the two engineers make a field-effect transistor on silicon, with silicon dioxide as the insulator under the gate. They announce it in June 1960.
+- year: 1963
+  title: Nanowatt logic
+  people: Frank Wanlass, Chih-Tang Sah
+  chapter: cmos
+  text: At Fairchild they pair an n-channel and a p-channel transistor so that one is always off, and show logic with a standby power of nanowatts. Wanlass files the patent in June; it is granted in 1967.
+- year: 1984
+  title: The EP300
+  people: Altera
+  chapter: cplds
+  text: Altera’s first product is a CMOS programmable logic device with EPROM cells and 8 macrocells, erased by ultraviolet light through a quartz window in the package, and a plug-in replacement for 20-pin bipolar PALs.
+- year: 1988
+  title: MAX, the multiple array matrix
+  people: Altera
+  chapter: cplds
+  text: Altera joins several PAL-like blocks with a programmable interconnect array, giving up to 192 macrocells on one erasable chip, and starts the family of chips called CPLDs.
+- year: 1990
+  title: JTAG becomes a standard
+  people: The Joint Test Action Group, IEEE
+  chapter: cplds
+  text: 'IEEE Std 1149.1-1990, ratified in February, defines a four-wire test port and a boundary-scan cell on every pin, the result of a group of test engineers formed in 1985 to find bad solder joints.'
+- year: 1996
+  title: In-system programmable CPLDs
+  people: Xilinx
+  chapter: cplds
+  text: 'Xilinx’s XC9500 family, on sale by early 1996, is configured over JTAG after the chip is soldered to its board.'
+- year: 2004
+  title: MAX II
+  people: Altera
+  chapter: cplds
+  text: 'Altera’s CPLD drops product terms for look-up tables and keeps the flash: a small FPGA that starts by itself in a few milliseconds.'
+- year: 1918
+  title: The Eccles–Jordan trigger relay
+  people: William Eccles, Frank Jordan
+  chapter: feedback
+  text: On 21 June two British physicists file a patent for a circuit of two vacuum tubes with two stable states, the first electronic flip-flop (GB 148,582, published 1920).
+- year: 1973
+  title: Chaney and Molnar on metastability
+  people: T. J. Chaney, C. E. Molnar
+  chapter: feedback
+  text: Two engineers report flip-flops that hang between 0 and 1 in synchronisers and arbiters, and that this had already caused significant system failures.
+- year: 1936
+  title: The machine with a tape
+  people: Alan Turing
+  chapter: state-machines
+  text: Turing describes an abstract machine, a finite-state controller with an unbounded tape, that can compute anything computable.
+- year: 1954
+  title: Huffman’s sequential circuits
+  people: David Huffman
+  chapter: state-machines
+  text: In the Journal of the Franklin Institute, Huffman shows how to reduce a sequential circuit’s behaviour to a minimal table of states and then to gates.
+- year: 1955
+  title: Mealy machines
+  people: George Mealy
+  chapter: state-machines
+  text: In the September Bell System Technical Journal, Mealy gives a method for synthesising sequential circuits whose outputs depend on state and input together.
+- year: 1956
+  title: Moore machines
+  people: Edward Moore
+  chapter: state-machines
+  text: In Automata Studies, Moore analyses machines whose output depends on the state alone and asks what experiments on inputs and outputs can reveal about them.
+- year: 1927
+  title: Quartz keeps the beat
+  people: Walter Cady, Warren Marrison, J. W. Horton
+  chapter: the-clock
+  text: Cady controls an oscillator with quartz in 1921; at Bell Labs Marrison and Horton build a clock whose time base is a quartz oscillator, its frequency divided down by electronic dividers, shown in October 1927.
+- year: 1971
+  title: The 555 timer
+  people: Hans Camenzind, Signetics
+  chapter: the-clock
+  text: Camenzind’s second design review, in October, brings the timer down to eight pins; Signetics releases the NE555 in 1972.
+- year: 1932
+  title: The scale-of-two counter
+  people: C. E. Wynn-Williams
+  chapter: registers-and-counters
+  text: In the Proceedings of the Royal Society, a chain of thyratron circuits each passing on every second pulse, so that a slow mechanical meter can count fast events.
+- year: 1967
+  title: Shift register sequences
+  people: Solomon W. Golomb
+  chapter: registers-and-counters
+  text: Golomb’s book collects the theory of linear-feedback shift registers, and in particular which taps give the longest sequences. Robert Gold describes the codes now used by GPS in the same year.
+- year: 1985
+  title: The XC2064
+  people: Ross Freeman, Bernard Vonderschmitt, Jim Barnett, Xilinx
+  chapter: inside-an-fpga
+  text: Xilinx, founded in 1984, ships the first FPGA, an 8 × 8 array of 64 configurable logic blocks whose configuration lives in SRAM. Freeman's bet is that Moore's law will make the transistors wasted on programmability cheap.
+- year: 1988
+  title: Actel's antifuse FPGAs
+  people: Actel, Amr Mohsen, Esmat Hamdy
+  chapter: inside-an-fpga
+  text: Actel, founded in 1985, ships the ACT 1010 and 1020, FPGAs whose wiring is made of antifuses. They work at power-up, cannot be upset by a particle, and can be programmed only once.
+- year: 2006
+  title: Six-input LUTs
+  people: Xilinx
+  chapter: inside-an-fpga
+  text: After fifteen years of four-input lookup tables, Xilinx announces the Virtex-5 on a 65 nm process with a six-input LUT, so that wide functions need fewer LUTs and fewer levels of wire.
+- year: 2007
+  title: The price of programmability
+  people: Ian Kuon, Jonathan Rose
+  chapter: inside-an-fpga
+  text: A 90 nm FPGA against 90 nm standard cells for the same logic needs on average 35 times the area, is 3.4 to 4.6 times slower and uses 14 times the dynamic power. Hard blocks narrow the area gap to as little as 18.
+- year: 1983
+  title: Simulated annealing
+  people: Scott Kirkpatrick, C. Daniel Gelatt, Mario Vecchi
+  chapter: netlist-to-bitstream
+  text: A paper in Science shows that the way a metal cools into a low-energy state is a way to search for good solutions of large problems, and applies it to placing and wiring computer chips. It becomes the standard way to place logic.
+- year: 1994
+  title: FlowMap
+  people: Jason Cong, Yuzheng Ding
+  chapter: netlist-to-bitstream
+  text: The first algorithm that maps a logic network to lookup tables with the fewest possible levels, in polynomial time, using a maximum-flow computation to choose each node's cut.
+- year: 1995
+  title: PathFinder
+  people: Larry McMurchie, Carl Ebeling
+  chapter: netlist-to-bitstream
+  text: A router in which every signal takes what it wants and the price of contested wires rises over the iterations, so that signals negotiate for them. Negotiated congestion becomes the basis of most FPGA routing.
+- year: 1997
+  title: VPR
+  people: Vaughn Betz, Jonathan Rose
+  chapter: netlist-to-bitstream
+  text: A packing, placement and routing tool for any FPGA architecture a researcher can describe, with an annealing placer and a PathFinder router, and public source code. It becomes the tool of academic FPGA research.
+- year: 2015
+  title: Project IceStorm
+  people: Clifford Wolf, Mathias Lasser
+  chapter: netlist-to-bitstream
+  text: The bitstream of the Lattice iCE40 is reverse-engineered and documented, and with Yosys for synthesis and, from 2018, nextpnr for place and route, it becomes the first FPGA family with a free toolchain from Verilog to bitstream.
+- year: 1948
+  title: The Baby runs a program
+  people: Tom Kilburn, Freddie Williams, Geoff Tootill
+  chapter: running-programs
+  text: 'On 21 June the Manchester Small-Scale Experimental Machine runs Kilburn’s 17-instruction program for 52 minutes and finds the highest factor of 2^18: the first program ever run from an electronic memory.'
+- year: 1971
+  title: The Intel 4004
+  people: Federico Faggin, Ted Hoff, Stan Mazor, Masatoshi Shima
+  chapter: running-programs
+  text: 'Intel announces on 15 November a 4-bit CPU on one chip, of about 2,300 transistors, 46 instructions and a clock of up to 740 kHz, begun as a contract for the Japanese calculator company Busicom.'
+- year: 1947
+  title: A memory that is a picture on a tube
+  people: Freddie Williams, Tom Kilburn
+  chapter: memory
+  text: At Manchester, Williams and Kilburn store bits as spots of charge on the face of a cathode-ray tube, read back by the way they change the tube’s current. The spots fade and must be regenerated, as DRAM cells are today.
+- year: 1949
+  title: EDSAC and the mercury delay line
+  people: Maurice Wilkes
+  chapter: memory
+  text: On 6 May EDSAC runs its first program from a memory of 512 words of 17 bits, stored as pulses of sound circulating in tubes of mercury. Each word is available only when its pulse comes round.
+- year: 1953
+  title: Core memory
+  people: Jay Forrester, An Wang
+  chapter: memory
+  text: Forrester’s coincident-current array of tiny magnetic cores, 32 × 32 × 16 bits, goes into Whirlwind in the summer; it is fast, reliable and does not forget when the power goes off, and it dominates computer memory until the 1970s.
+- year: 1969
+  title: Software woven into wire
+  people: MIT Instrumentation Laboratory, Raytheon
+  chapter: memory
+  text: The Apollo Guidance Computer keeps 36,864 words of program in core rope, wires threaded through or round magnetic cores, and 2,048 words in ordinary erasable core.
+- year: 1968
+  title: The one-transistor DRAM cell
+  people: Robert Dennard
+  chapter: memory
+  text: IBM’s patent for a memory cell of a single transistor and a capacitor is granted on 4 June. Intel’s first DRAM, the 1103 of October 1970, uses a three-transistor cell instead; the one-transistor cell takes over in the mid-1970s.
+- year: 1984
+  title: Flash memory
+  people: Fujio Masuoka
+  chapter: memory
+  text: Masuoka and his colleagues at Toshiba present a NOR flash cell in December; the NAND cell follows in 1987. Erasing a block at once suggests the name.
+- year: 1945
+  title: The First Draft
+  people: John von Neumann
+  chapter: datapath
+  text: A typescript dated 30 June, First Draft of a Report on the EDVAC, divides a computer into arithmetic, control, memory and input and output organs, with instructions and numbers in one memory.
+- year: 1951
+  title: Microprogramming
+  people: Maurice Wilkes
+  chapter: control
+  text: At the Manchester conference in July, Wilkes proposes that a control unit be a regular matrix of stored control words, read out one row at a time, instead of an irregular tangle of gates.
+- year: 1958
+  title: EDSAC 2
+  people: Maurice Wilkes, W. Renwick, D. J. Wheeler
+  chapter: control
+  text: Cambridge’s second computer is the first with a microprogrammed control unit; the design is described in the Proceedings of the IEE the same year.
+- year: 2010
+  title: Visual 6502
+  people: Greg James, Barry Silverman, Brian Silverman
+  chapter: control
+  text: A project images the die of the MOS 6502 layer by layer, traces its transistors and publishes a simulation of them that runs in a web page, showing a hardwired control unit at work.
+- year: 1874
+  title: Baudot’s code
+  people: Émile Baudot
+  chapter: talking-to-the-world
+  text: 'Baudot patents a telegraph code of five on–off signals of equal length, so that a machine can send and receive it; the unit of signalling speed, the baud, is named after him.'
+- year: 1937
+  title: Pulse-code modulation
+  people: Alec Reeves
+  chapter: talking-to-the-world
+  text: 'At ITT’s laboratory in Paris Reeves conceives of sending speech as numbers, sampled, quantised and coded as pulses, so that noise on the line can be removed; the French patent is filed in 1938.'
+- year: 1960
+  title: RS-232
+  people: Electronic Industries Association
+  chapter: talking-to-the-world
+  text: 'The EIA publishes Recommended Standard 232 on 1 May, for connecting a terminal to a modem with a serial line and voltages of ±3 to ±15 V.'
+- year: 1982
+  title: I²C
+  people: Philips Semiconductors
+  chapter: talking-to-the-world
+  text: 'Philips brings out chips with a two-wire bus of its own design, developed for the electronics of television sets: 100 kbit/s, 7-bit addresses, open-drain lines with pull-up resistors.'
+- year: 1958
+  title: The first integrated circuit
+  people: Jack Kilby
+  chapter: breadboard-to-billions
+  text: On 12 September Kilby at Texas Instruments shows an oscillator whose transistor, resistor and capacitor are all made in one slice of germanium.
+- year: 1959
+  title: The planar integrated circuit
+  people: Robert Noyce, Jean Hoerni
+  chapter: breadboard-to-billions
+  text: At Fairchild, Noyce conceives an integrated circuit in silicon whose wires are printed on top of an oxide layer; the patent is filed in July and granted in 1961.
+- year: 1965
+  title: Moore’s law
+  people: Gordon Moore
+  chapter: breadboard-to-billions
+  text: In Electronics, Moore extrapolates a doubling of the components on a chip every year, to 65,000 by 1975. In 1975 he revises it to every two years.
+- year: 1980
+  title: The VLSI revolution
+  people: Carver Mead, Lynn Conway
+  chapter: breadboard-to-billions
+  text: Introduction to VLSI Systems teaches computer scientists to design chips with scalable rules; the shared wafers of MPC79 (1979) become the MOSIS service (1981).
+- year: 2010
+  title: RISC-V begins
+  people: Krste Asanović, Yunsup Lee, Andrew Waterman
+  chapter: breadboard-to-billions
+  text: At Berkeley, an instruction set that anybody may use without a licence is begun for research; it is now maintained by RISC-V International.
+- year: 2011
+  title: The FinFET
+  people: Intel
+  chapter: breadboard-to-billions
+  text: Intel announces its 22 nm process, the first in volume production with transistors whose channel is a fin that the gate wraps on three sides.
+- year: 2019
+  title: EUV goes to production
+  people: ASML
+  chapter: breadboard-to-billions
+  text: A scanner using light of 13.5 nm, made by a laser and molten tin, is offered for volume production from the second half of the year.
+- year: 2020
+  title: The first open process kit
+  people: Google, SkyWater Technology
+  chapter: breadboard-to-billions
+  text: The design kit of SkyWater’s 130 nm process is released under an open licence, with free manufacturing for open designs.
+- year: 2022
+  title: Gate-all-around transistors
+  people: Samsung
+  chapter: breadboard-to-billions
+  text: On 30 June Samsung starts production of a 3 nm process in which the gate surrounds the channel completely.
+- year: 2000
+  title: The processor becomes a file
+  people: Altera
+  chapter: cpus-on-a-chip
+  text: On 12 June Altera introduces Nios, a 16-bit RISC processor core of about 1,000 logic cells, made to be configured into a programmable chip with the rest of the design.
+- year: 2002
+  title: MicroBlaze
+  people: Xilinx
+  chapter: cpus-on-a-chip
+  text: Xilinx introduces MicroBlaze, a 32-bit RISC soft processor with 32 registers, delivered with its Embedded Development Kit.
+- year: 2011
+  title: The RISC-V manual
+  people: Andrew Waterman, Yunsup Lee, David Patterson, Krste Asanović
+  chapter: cpus-on-a-chip
+  text: Berkeley publishes the first specification of RISC-V as a technical report on 13 May, an instruction set that anyone may implement without a licence.
+- year: 2014
+  title: An FPGA in every server
+  people: Andrew Putnam, Doug Burger, Microsoft
+  chapter: cpus-on-a-chip
+  text: Microsoft describes Catapult, FPGAs in 1,632 servers that accelerate Bing’s ranking, with 95 % more throughput for 10 % more power.

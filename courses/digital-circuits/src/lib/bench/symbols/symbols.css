@@ -1,0 +1,87 @@
+/*
+ * Shared drawing classes for schematic symbols. Every colour is a private token set on the
+ * schematic's root (.sch) from the design tokens, with fallbacks; see Schematic.svelte.
+ */
+.sch .ln {
+  fill: none;
+  stroke: var(--_ink);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.sch .body {
+  fill: var(--_body);
+  stroke: var(--_ink);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.sch .ink {
+  fill: var(--_ink);
+  stroke: none;
+}
+.sch .thin {
+  stroke-width: 1.4;
+}
+.sch .thick {
+  stroke-width: 3.2;
+}
+.sch .dash {
+  stroke-dasharray: 3 3;
+  stroke-width: 1.4;
+}
+.sch .txt {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  fill: var(--_ink);
+  stroke: none;
+  font-size: 9px;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+.sch .txt.small {
+  font-size: 6.5px;
+  fill: var(--_ink2);
+}
+.sch .txt.bold {
+  font-weight: 700;
+}
+.sch .txt.start {
+  text-anchor: start;
+}
+.sch .txt.end {
+  text-anchor: end;
+}
+.sch .stub {
+  fill: none;
+  stroke: var(--_wire);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.sch .copper {
+  stroke: var(--_copper);
+}
+.sch .window {
+  fill: var(--_screen);
+  stroke: var(--_ink);
+  stroke-width: 1.2;
+}
+.sch .screen-txt {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  fill: var(--_phosphor);
+  font-size: 7.5px;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+.sch .screen-ln {
+  fill: none;
+  stroke: var(--_phosphor);
+  stroke-width: 1.3;
+  stroke-linejoin: round;
+}
+.sch .moving {
+  transition: transform 140ms cubic-bezier(0.3, 0.7, 0.4, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .sch .moving {
+    transition: none;
+  }
+}

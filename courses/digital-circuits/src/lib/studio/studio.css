@@ -1,0 +1,297 @@
+/*
+  Layout of the Studio workspace. The workspace is a size container, so the same component lays itself out
+  by its own width: side by side from 900px, one pane behind tabs below that.
+*/
+.studio {
+  container-type: inline-size;
+  container-name: studio;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-ui);
+}
+.studio .toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.6rem;
+  padding: 0.4rem 0.6rem;
+  background: linear-gradient(to bottom, color-mix(in srgb, light-dark(#ebe4d6, #131c29) 70%, var(--panel)), light-dark(#ebe4d6, #131c29));
+  border-bottom: 1px solid var(--line-strong);
+  font-size: 0.8rem;
+}
+.studio .toolbar .grow {
+  flex: 1;
+}
+.studio .note {
+  font-size: 0.75rem;
+  color: var(--maybe);
+  background: var(--maybe-soft);
+  border-radius: 6px;
+  padding: 0.2rem 0.55rem;
+}
+.studio .dev {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--copper-ink);
+}
+.studio .summary {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--mute);
+  max-width: 28rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@container studio (max-width: 1300px) {
+  .studio .summary {
+    display: none;
+  }
+}
+.studio .tb {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.22rem 0.6rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--fg);
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.studio .tb:hover:not(:disabled) {
+  border-color: var(--copper);
+  color: var(--copper-ink);
+}
+.studio .tb:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.studio .tabs {
+  display: none;
+  gap: 2px;
+  padding: 0.3rem 0.5rem 0;
+  background: var(--pn);
+  border-bottom: 1px solid var(--line-strong);
+  overflow-x: auto;
+}
+.studio .tabs button {
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+  background: transparent;
+  padding: 0.4rem 0.85rem;
+  font: inherit;
+  font-size: 0.82rem;
+  color: var(--ink-2);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.studio .tabs button.on {
+  background: var(--panel);
+  color: var(--fg);
+  font-weight: 600;
+  border-color: var(--line-strong);
+  margin-bottom: -1px;
+  padding-bottom: calc(0.4rem + 1px);
+}
+.studio .cols {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+.studio .col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+.studio .col.left {
+  flex: 0.85 1 0;
+  min-width: 17rem;
+  border-right: 1px solid var(--line-strong);
+}
+.studio .col.mid {
+  flex: 1.7 1 0;
+}
+.studio .col.right {
+  flex: 1.05 1 0;
+  min-width: 17rem;
+  border-left: 1px solid var(--line-strong);
+}
+.studio .col:only-child {
+  border: 0;
+}
+.studio .pane {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-height: 0;
+  min-width: 0;
+  border-bottom: 1px solid var(--line-strong);
+  background: var(--panel);
+}
+.studio .pane:last-child {
+  border-bottom: 0;
+}
+.studio .pane .pb {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+.studio .pane.chip .pb {
+  background: var(--panel);
+}
+.studio .ph {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.3rem 0.7rem;
+  background: var(--pn);
+  border-bottom: 1px solid var(--line);
+  font-size: 0.72rem;
+  color: var(--mute);
+  min-height: 1.9rem;
+}
+.studio .ph h4 {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.66rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600 !important;
+  color: var(--copper-ink);
+}
+.studio .ph span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.studio .mini {
+  display: flex;
+  gap: 2px;
+}
+.studio .mini button {
+  border: 0;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  color: var(--mute);
+  cursor: pointer;
+  padding: 0.1rem 0.5rem;
+  border-radius: 4px;
+}
+.studio .mini button.on {
+  color: var(--copper-ink);
+  background: var(--panel);
+  box-shadow: 0 0 0 1px var(--line);
+}
+.studio .empty {
+  margin: 1rem;
+  color: var(--mute);
+  font-size: 0.85rem;
+}
+.studio.compact .cols {
+  height: 38rem;
+  flex: none;
+}
+.studio.compact {
+  height: auto;
+}
+
+@container studio (max-width: 899px) {
+  .studio .tabs {
+    display: flex;
+  }
+  .studio .cols {
+    display: block;
+    position: relative;
+  }
+  .studio .col {
+    display: contents;
+  }
+  .studio .pane {
+    display: none;
+    height: 100%;
+    border: 0;
+  }
+  .studio .pane.active {
+    display: flex;
+  }
+  .studio .ph:not(.has-tabs) {
+    display: none;
+  }
+  .studio .ph.has-tabs {
+    min-height: 0;
+    padding: 0.2rem 0.5rem;
+  }
+  .studio .ph.has-tabs > span {
+    display: none;
+  }
+  .studio .cols {
+    display: flex;
+    flex-direction: column;
+  }
+  .studio .pane.active {
+    flex: 1 1 0;
+  }
+  .studio.compact .cols {
+    height: 34rem;
+  }
+}
+
+/* A chapter widget is narrower than the page: it keeps to tabs until it has room for the panes side by side. */
+@container studio (max-width: 1149px) {
+  .studio.compact .tabs {
+    display: flex;
+  }
+  .studio.compact .cols {
+    display: block;
+    position: relative;
+  }
+  .studio.compact .col {
+    display: contents;
+  }
+  .studio.compact .pane {
+    display: none;
+    height: 100%;
+    border: 0;
+  }
+  .studio.compact .pane.active {
+    display: flex;
+  }
+  .studio.compact .ph:not(.has-tabs) {
+    display: none;
+  }
+  .studio.compact .ph.has-tabs {
+    min-height: 0;
+    padding: 0.2rem 0.5rem;
+  }
+  .studio.compact .ph.has-tabs > span {
+    display: none;
+  }
+  .studio.compact .cols {
+    display: flex;
+    flex-direction: column;
+  }
+  .studio.compact .pane.active {
+    flex: 1 1 0;
+  }
+  .studio.compact .cols {
+    height: 34rem;
+  }
+}

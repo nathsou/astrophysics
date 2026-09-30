@@ -1,0 +1,126 @@
+{
+ "version": 1,
+ "title": "Four buffers of different speeds",
+ "engine": "digital",
+ "components": [
+  {
+   "id": "IN",
+   "type": "toggle",
+   "x": 2,
+   "y": 3,
+   "label": "IN"
+  },
+  {
+   "id": "B1",
+   "type": "buffer",
+   "x": 8,
+   "y": 3,
+   "params": {
+    "delay": 1
+   },
+   "label": "B1  1 ns"
+  },
+  {
+   "id": "B2",
+   "type": "buffer",
+   "x": 15,
+   "y": 3,
+   "params": {
+    "delay": 2
+   },
+   "label": "B2  2 ns"
+  },
+  {
+   "id": "B3",
+   "type": "buffer",
+   "x": 22,
+   "y": 3,
+   "params": {
+    "delay": 3
+   },
+   "label": "B3  3 ns"
+  },
+  {
+   "id": "B4",
+   "type": "buffer",
+   "x": 29,
+   "y": 3,
+   "params": {
+    "delay": 4
+   },
+   "label": "B4  4 ns"
+  },
+  {
+   "id": "lamp",
+   "type": "indicator",
+   "x": 36,
+   "y": 3,
+   "label": "",
+   "params": {
+    "color": "amber"
+   }
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     5,
+     3
+    ],
+    [
+     8,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     13,
+     3
+    ],
+    [
+     15,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     20,
+     3
+    ],
+    [
+     22,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     27,
+     3
+    ],
+    [
+     29,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     34,
+     3
+    ],
+    [
+     36,
+     3
+    ]
+   ]
+  }
+ ]
+}

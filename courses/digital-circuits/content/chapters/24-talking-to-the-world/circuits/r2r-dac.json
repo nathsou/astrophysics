@@ -1,0 +1,309 @@
+{
+ "version": 1,
+ "title": "A 4-bit R-2R ladder DAC",
+ "engine": "analog",
+ "components": [
+  {
+   "id": "Rt",
+   "type": "resistor",
+   "x": 2,
+   "y": 6,
+   "params": {
+    "resistance": 2000
+   },
+   "label": "2R"
+  },
+  {
+   "id": "G0",
+   "type": "ground",
+   "x": 2,
+   "y": 6
+  },
+  {
+   "id": "R0",
+   "type": "resistor",
+   "x": 13,
+   "y": 6,
+   "params": {
+    "resistance": 1000
+   },
+   "label": "R"
+  },
+  {
+   "id": "S0",
+   "type": "resistor",
+   "x": 10,
+   "y": 6,
+   "rot": 90,
+   "params": {
+    "resistance": 2000
+   },
+   "label": "2R"
+  },
+  {
+   "id": "in_B0",
+   "type": "toggle",
+   "x": 7,
+   "y": 14,
+   "label": "B0"
+  },
+  {
+   "id": "R1",
+   "type": "resistor",
+   "x": 23,
+   "y": 6,
+   "params": {
+    "resistance": 1000
+   },
+   "label": "R"
+  },
+  {
+   "id": "S1",
+   "type": "resistor",
+   "x": 20,
+   "y": 6,
+   "rot": 90,
+   "params": {
+    "resistance": 2000
+   },
+   "label": "2R"
+  },
+  {
+   "id": "in_B1",
+   "type": "toggle",
+   "x": 17,
+   "y": 14,
+   "label": "B1"
+  },
+  {
+   "id": "R2",
+   "type": "resistor",
+   "x": 33,
+   "y": 6,
+   "params": {
+    "resistance": 1000
+   },
+   "label": "R"
+  },
+  {
+   "id": "S2",
+   "type": "resistor",
+   "x": 30,
+   "y": 6,
+   "rot": 90,
+   "params": {
+    "resistance": 2000
+   },
+   "label": "2R"
+  },
+  {
+   "id": "in_B2",
+   "type": "toggle",
+   "x": 27,
+   "y": 14,
+   "label": "B2"
+  },
+  {
+   "id": "S3",
+   "type": "resistor",
+   "x": 40,
+   "y": 6,
+   "rot": 90,
+   "params": {
+    "resistance": 2000
+   },
+   "label": "2R"
+  },
+  {
+   "id": "in_B3",
+   "type": "toggle",
+   "x": 37,
+   "y": 14,
+   "label": "B3"
+  },
+  {
+   "id": "V1",
+   "type": "voltmeter",
+   "x": 46,
+   "y": 12,
+   "rot": 270,
+   "label": "Vout"
+  },
+  {
+   "id": "G1",
+   "type": "ground",
+   "x": 46,
+   "y": 12
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     6,
+     6
+    ],
+    [
+     10,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     10,
+     6
+    ],
+    [
+     13,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     17,
+     6
+    ],
+    [
+     20,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     10,
+     10
+    ],
+    [
+     10,
+     14
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     20,
+     6
+    ],
+    [
+     23,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     27,
+     6
+    ],
+    [
+     30,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     20,
+     10
+    ],
+    [
+     20,
+     14
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     30,
+     6
+    ],
+    [
+     33,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     37,
+     6
+    ],
+    [
+     40,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     30,
+     10
+    ],
+    [
+     30,
+     14
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     40,
+     10
+    ],
+    [
+     40,
+     14
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     40,
+     6
+    ],
+    [
+     46,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     46,
+     6
+    ],
+    [
+     46,
+     8
+    ]
+   ]
+  }
+ ],
+ "notes": [
+  {
+   "x": 2,
+   "y": 2,
+   "text": "LSB end"
+  },
+  {
+   "x": 38,
+   "y": 2,
+   "text": "MSB end"
+  }
+ ]
+}

@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "title": "Staircase light",
+  "engine": "analog",
+  "components": [
+    {"id": "B1", "type": "battery", "x": 4, "y": 12, "rot": 270, "params": {"voltage": 6}},
+    {"id": "S1", "type": "spdt", "x": 10, "y": 4, "label": "Downstairs", "params": {"throw": 0}},
+    {"id": "S2", "type": "spdt", "x": 28, "y": 4, "flip": true, "label": "Upstairs", "params": {"throw": 0}},
+    {"id": "L1", "type": "lamp", "x": 34, "y": 6, "rot": 90, "params": {"ratedVoltage": 6, "ratedPower": 0.3}},
+    {"id": "G1", "type": "ground", "x": 4, "y": 16}
+  ],
+  "wires": [
+    {"points": [[4, 8], [4, 4], [10, 4]]},
+    {"points": [[14, 4], [24, 4]]},
+    {"points": [[14, 2], [24, 2]]},
+    {"points": [[28, 4], [34, 4], [34, 6]]},
+    {"points": [[34, 10], [34, 16], [4, 16], [4, 12]]}
+  ],
+  "notes": [
+    {"x": 13, "y": -1, "text": "two travellers"}
+  ]
+}

@@ -1,0 +1,37 @@
+name: Digital Circuits — checks
+
+# Tests, type checks and a build for courses/digital-circuits. (Deployment is in deploy.yml.)
+on:
+  push:
+    branches: [main]
+    paths: ['courses/digital-circuits/**', '.github/workflows/digital-circuits.yml']
+  pull_request:
+    paths: ['courses/digital-circuits/**', '.github/workflows/digital-circuits.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: courses/digital-circuits
+
+jobs:
+  site:
+    runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: --experimental-strip-types
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: courses/digital-circuits/package-lock.json
+      - run: npm ci
+      - name: Simulator, toolchain and content tests
+        run: npm test
+      - name: Type-check (svelte-check)
+        run: npm run check
+      - name: Build
+        run: npm run build

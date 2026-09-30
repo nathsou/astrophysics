@@ -1,0 +1,105 @@
+{
+  "version": 1,
+  "title": "A flip-flop divides by two",
+  "engine": "digital",
+  "components": [
+    {
+      "id": "CLK",
+      "type": "clock",
+      "x": 2,
+      "y": 4,
+      "params": {
+        "frequency": 10000000.0
+      },
+      "label": "CLK"
+    },
+    {
+      "id": "FF",
+      "type": "dff",
+      "x": 12,
+      "y": 2,
+      "label": "D flip-flop"
+    },
+    {
+      "id": "Q",
+      "type": "indicator",
+      "x": 22,
+      "y": 2,
+      "params": {
+        "color": "amber"
+      },
+      "label": "Q"
+    },
+    {
+      "id": "F1",
+      "type": "label",
+      "x": 20,
+      "y": 4,
+      "params": {
+        "name": "Qn"
+      },
+      "label": ""
+    },
+    {
+      "id": "F2",
+      "type": "label",
+      "x": 10,
+      "y": 2,
+      "flip": true,
+      "params": {
+        "name": "Qn"
+      },
+      "label": ""
+    }
+  ],
+  "wires": [
+    {
+      "points": [
+        [
+          5,
+          4
+        ],
+        [
+          12,
+          4
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          18,
+          2
+        ],
+        [
+          22,
+          2
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          18,
+          4
+        ],
+        [
+          20,
+          4
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          10,
+          2
+        ],
+        [
+          12,
+          2
+        ]
+      ]
+    }
+  ]
+}

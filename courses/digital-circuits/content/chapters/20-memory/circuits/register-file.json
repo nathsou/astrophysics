@@ -1,0 +1,1275 @@
+{
+ "version": 1,
+ "title": "A register file of four words of two bits",
+ "engine": "digital",
+ "components": [
+  {
+   "id": "T_A0",
+   "type": "toggle",
+   "x": 0,
+   "y": 0,
+   "label": "A0"
+  },
+  {
+   "id": "l_A0",
+   "type": "label",
+   "x": 4,
+   "y": 0,
+   "params": {
+    "name": "A0"
+   },
+   "label": ""
+  },
+  {
+   "id": "T_A1",
+   "type": "toggle",
+   "x": 0,
+   "y": 4,
+   "label": "A1"
+  },
+  {
+   "id": "l_A1",
+   "type": "label",
+   "x": 4,
+   "y": 4,
+   "params": {
+    "name": "A1"
+   },
+   "label": ""
+  },
+  {
+   "id": "T_WE",
+   "type": "toggle",
+   "x": 0,
+   "y": 8,
+   "label": "WE"
+  },
+  {
+   "id": "l_WE",
+   "type": "label",
+   "x": 4,
+   "y": 8,
+   "params": {
+    "name": "WE"
+   },
+   "label": ""
+  },
+  {
+   "id": "T_D0",
+   "type": "toggle",
+   "x": 0,
+   "y": 13,
+   "label": "D0"
+  },
+  {
+   "id": "l_D0",
+   "type": "label",
+   "x": 4,
+   "y": 13,
+   "params": {
+    "name": "D0"
+   },
+   "label": ""
+  },
+  {
+   "id": "T_D1",
+   "type": "toggle",
+   "x": 0,
+   "y": 17,
+   "label": "D1"
+  },
+  {
+   "id": "l_D1",
+   "type": "label",
+   "x": 4,
+   "y": 17,
+   "params": {
+    "name": "D1"
+   },
+   "label": ""
+  },
+  {
+   "id": "CLK",
+   "type": "button",
+   "x": 0,
+   "y": 22,
+   "label": "clock"
+  },
+  {
+   "id": "l_CLK",
+   "type": "label",
+   "x": 4,
+   "y": 22,
+   "params": {
+    "name": "CLK"
+   },
+   "label": ""
+  },
+  {
+   "id": "DEC",
+   "type": "decoder",
+   "x": 18,
+   "y": 2,
+   "params": {
+    "bits": 2
+   },
+   "label": "write decoder"
+  },
+  {
+   "id": "ld_a0",
+   "type": "label",
+   "x": 16,
+   "y": 2,
+   "flip": true,
+   "params": {
+    "name": "A0"
+   },
+   "label": ""
+  },
+  {
+   "id": "ld_a1",
+   "type": "label",
+   "x": 16,
+   "y": 4,
+   "flip": true,
+   "params": {
+    "name": "A1"
+   },
+   "label": ""
+  },
+  {
+   "id": "ld_we",
+   "type": "label",
+   "x": 16,
+   "y": 6,
+   "flip": true,
+   "params": {
+    "name": "WE"
+   },
+   "label": ""
+  },
+  {
+   "id": "lw0",
+   "type": "label",
+   "x": 26,
+   "y": 2,
+   "params": {
+    "name": "W0"
+   },
+   "label": ""
+  },
+  {
+   "id": "R0",
+   "type": "register",
+   "x": 36,
+   "y": 0,
+   "params": {
+    "bits": 2
+   },
+   "label": "word 0"
+  },
+  {
+   "id": "lr0d0",
+   "type": "label",
+   "x": 34,
+   "y": 0,
+   "flip": true,
+   "params": {
+    "name": "D0"
+   },
+   "label": ""
+  },
+  {
+   "id": "lr0d1",
+   "type": "label",
+   "x": 34,
+   "y": 2,
+   "flip": true,
+   "params": {
+    "name": "D1"
+   },
+   "label": ""
+  },
+  {
+   "id": "lr0c",
+   "type": "label",
+   "x": 34,
+   "y": 4,
+   "flip": true,
+   "params": {
+    "name": "CLK"
+   },
+   "label": ""
+  },
+  {
+   "id": "lr0e",
+   "type": "label",
+   "x": 34,
+   "y": 6,
+   "flip": true,
+   "params": {
+    "name": "W0"
+   },
+   "label": ""
+  },
+  {
+   "id": "lq0_0",
+   "type": "label",
+   "x": 44,
+   "y": 0,
+   "params": {
+    "name": "Q0_0"
+   },
+   "label": ""
+  },
+  {
+   "id": "lq1_0",
+   "type": "label",
+   "x": 44,
+   "y": 2,
+   "params": {
+    "name": "Q1_0"
+   },
+   "label": ""
+  },
+  {
+   "id": "lw1",
+   "type": "label",
+   "x": 26,
+   "y": 4,
+   "params": {
+    "name": "W1"
+   },
+   "label": ""
+  },
+  {
+   "id": "R1",
+   "type": "register",
+   "x": 36,
+   "y": 12,
+   "params": {
+    "bits": 2
+   },
+   "label": "word 1"
+  },
+  {
+   "id": "lr1d0",
+   "type": "label",
+   "x": 34,
+   "y": 12,
+   "flip": true,
+   "params": {
+    "name": "D0"
+   },
+   "label": ""
+  },
+  {
+   "id": "lr1d1",
+   "type": "label",
+   "x": 34,
+   "y": 14,
+   "flip": true,
+   "params": {
+    "name": "D1"
+   },
+   "label": ""
+  },
+  {
+   "id": "lr1c",
+   "type": "label",
+   "x": 34,
+   "y": 16,
+   "flip": true,
+   "params": {
+    "name": "CLK"
+   },
+   "label": ""
+  },
+  {
+   "id": "lr1e",
+   "type": "label",
+   "x": 34,
+   "y": 18,
+   "flip": true,
+   "params": {
+    "name": "W1"
+   },
+   "label": ""
+  },
+  {
+   "id": "lq0_1",
+   "type": "label",
+   "x": 44,
+   "y": 12,
+   "params": {
+    "name": "Q0_1"
+   },
+   "label": ""
+  },
+  {
+   "id": "lq1_1",
+   "type": "label",
+   "x": 44,
+   "y": 14,
+   "params": {
+    "name": "Q1_1"
+   },
+   "label": ""
+  },
+  {
+   "id": "lw2",
+   "type": "label",
+   "x": 26,
+   "y": 6,
+   "params": {
+    "name": "W2"
+   },
+   "label": ""
+  },
+  {
+   "id": "R2",
+   "type": "register",
+   "x": 36,
+   "y": 24,
+   "params": {
+    "bits": 2
+   },
+   "label": "word 2"
+  },
+  {
+   "id": "lr2d0",
+   "type": "label",
+   "x": 34,
+   "y": 24,
+   "flip": true,
+   "params": {
+    "name": "D0"
+   },
+   "label": ""
+  },
+  {
+   "id": "lr2d1",
+   "type": "label",
+   "x": 34,
+   "y": 26,
+   "flip": true,
+   "params": {
+    "name": "D1"
+   },
+   "label": ""
+  },
+  {
+   "id": "lr2c",
+   "type": "label",
+   "x": 34,
+   "y": 28,
+   "flip": true,
+   "params": {
+    "name": "CLK"
+   },
+   "label": ""
+  },
+  {
+   "id": "lr2e",
+   "type": "label",
+   "x": 34,
+   "y": 30,
+   "flip": true,
+   "params": {
+    "name": "W2"
+   },
+   "label": ""
+  },
+  {
+   "id": "lq0_2",
+   "type": "label",
+   "x": 44,
+   "y": 24,
+   "params": {
+    "name": "Q0_2"
+   },
+   "label": ""
+  },
+  {
+   "id": "lq1_2",
+   "type": "label",
+   "x": 44,
+   "y": 26,
+   "params": {
+    "name": "Q1_2"
+   },
+   "label": ""
+  },
+  {
+   "id": "lw3",
+   "type": "label",
+   "x": 26,
+   "y": 8,
+   "params": {
+    "name": "W3"
+   },
+   "label": ""
+  },
+  {
+   "id": "R3",
+   "type": "register",
+   "x": 36,
+   "y": 36,
+   "params": {
+    "bits": 2
+   },
+   "label": "word 3"
+  },
+  {
+   "id": "lr3d0",
+   "type": "label",
+   "x": 34,
+   "y": 36,
+   "flip": true,
+   "params": {
+    "name": "D0"
+   },
+   "label": ""
+  },
+  {
+   "id": "lr3d1",
+   "type": "label",
+   "x": 34,
+   "y": 38,
+   "flip": true,
+   "params": {
+    "name": "D1"
+   },
+   "label": ""
+  },
+  {
+   "id": "lr3c",
+   "type": "label",
+   "x": 34,
+   "y": 40,
+   "flip": true,
+   "params": {
+    "name": "CLK"
+   },
+   "label": ""
+  },
+  {
+   "id": "lr3e",
+   "type": "label",
+   "x": 34,
+   "y": 42,
+   "flip": true,
+   "params": {
+    "name": "W3"
+   },
+   "label": ""
+  },
+  {
+   "id": "lq0_3",
+   "type": "label",
+   "x": 44,
+   "y": 36,
+   "params": {
+    "name": "Q0_3"
+   },
+   "label": ""
+  },
+  {
+   "id": "lq1_3",
+   "type": "label",
+   "x": 44,
+   "y": 38,
+   "params": {
+    "name": "Q1_3"
+   },
+   "label": ""
+  },
+  {
+   "id": "M0",
+   "type": "mux",
+   "x": 58,
+   "y": 4,
+   "params": {
+    "select": 2
+   },
+   "label": "read bit 0"
+  },
+  {
+   "id": "lm0_0",
+   "type": "label",
+   "x": 56,
+   "y": 4,
+   "flip": true,
+   "params": {
+    "name": "Q0_0"
+   },
+   "label": ""
+  },
+  {
+   "id": "lm0_1",
+   "type": "label",
+   "x": 56,
+   "y": 6,
+   "flip": true,
+   "params": {
+    "name": "Q0_1"
+   },
+   "label": ""
+  },
+  {
+   "id": "lm0_2",
+   "type": "label",
+   "x": 56,
+   "y": 8,
+   "flip": true,
+   "params": {
+    "name": "Q0_2"
+   },
+   "label": ""
+  },
+  {
+   "id": "lm0_3",
+   "type": "label",
+   "x": 56,
+   "y": 10,
+   "flip": true,
+   "params": {
+    "name": "Q0_3"
+   },
+   "label": ""
+  },
+  {
+   "id": "lms0_0",
+   "type": "label",
+   "x": 56,
+   "y": 12,
+   "flip": true,
+   "params": {
+    "name": "A0"
+   },
+   "label": ""
+  },
+  {
+   "id": "lms1_0",
+   "type": "label",
+   "x": 56,
+   "y": 14,
+   "flip": true,
+   "params": {
+    "name": "A1"
+   },
+   "label": ""
+  },
+  {
+   "id": "OUT0",
+   "type": "indicator",
+   "x": 68,
+   "y": 4,
+   "params": {
+    "color": "amber"
+   },
+   "label": "Q0"
+  },
+  {
+   "id": "M1",
+   "type": "mux",
+   "x": 58,
+   "y": 24,
+   "params": {
+    "select": 2
+   },
+   "label": "read bit 1"
+  },
+  {
+   "id": "lm1_0",
+   "type": "label",
+   "x": 56,
+   "y": 24,
+   "flip": true,
+   "params": {
+    "name": "Q1_0"
+   },
+   "label": ""
+  },
+  {
+   "id": "lm1_1",
+   "type": "label",
+   "x": 56,
+   "y": 26,
+   "flip": true,
+   "params": {
+    "name": "Q1_1"
+   },
+   "label": ""
+  },
+  {
+   "id": "lm1_2",
+   "type": "label",
+   "x": 56,
+   "y": 28,
+   "flip": true,
+   "params": {
+    "name": "Q1_2"
+   },
+   "label": ""
+  },
+  {
+   "id": "lm1_3",
+   "type": "label",
+   "x": 56,
+   "y": 30,
+   "flip": true,
+   "params": {
+    "name": "Q1_3"
+   },
+   "label": ""
+  },
+  {
+   "id": "lms0_1",
+   "type": "label",
+   "x": 56,
+   "y": 32,
+   "flip": true,
+   "params": {
+    "name": "A0"
+   },
+   "label": ""
+  },
+  {
+   "id": "lms1_1",
+   "type": "label",
+   "x": 56,
+   "y": 34,
+   "flip": true,
+   "params": {
+    "name": "A1"
+   },
+   "label": ""
+  },
+  {
+   "id": "OUT1",
+   "type": "indicator",
+   "x": 68,
+   "y": 24,
+   "params": {
+    "color": "amber"
+   },
+   "label": "Q1"
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     3,
+     0
+    ],
+    [
+     4,
+     0
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     3,
+     4
+    ],
+    [
+     4,
+     4
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     3,
+     8
+    ],
+    [
+     4,
+     8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     3,
+     13
+    ],
+    [
+     4,
+     13
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     3,
+     17
+    ],
+    [
+     4,
+     17
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     3,
+     22
+    ],
+    [
+     4,
+     22
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     16,
+     2
+    ],
+    [
+     18,
+     2
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     16,
+     4
+    ],
+    [
+     18,
+     4
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     16,
+     6
+    ],
+    [
+     18,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     24,
+     2
+    ],
+    [
+     26,
+     2
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     34,
+     0
+    ],
+    [
+     36,
+     0
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     34,
+     2
+    ],
+    [
+     36,
+     2
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     34,
+     4
+    ],
+    [
+     36,
+     4
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     34,
+     6
+    ],
+    [
+     36,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     42,
+     0
+    ],
+    [
+     44,
+     0
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     42,
+     2
+    ],
+    [
+     44,
+     2
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     24,
+     4
+    ],
+    [
+     26,
+     4
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     34,
+     12
+    ],
+    [
+     36,
+     12
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     34,
+     14
+    ],
+    [
+     36,
+     14
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     34,
+     16
+    ],
+    [
+     36,
+     16
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     34,
+     18
+    ],
+    [
+     36,
+     18
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     42,
+     12
+    ],
+    [
+     44,
+     12
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     42,
+     14
+    ],
+    [
+     44,
+     14
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     24,
+     6
+    ],
+    [
+     26,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     34,
+     24
+    ],
+    [
+     36,
+     24
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     34,
+     26
+    ],
+    [
+     36,
+     26
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     34,
+     28
+    ],
+    [
+     36,
+     28
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     34,
+     30
+    ],
+    [
+     36,
+     30
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     42,
+     24
+    ],
+    [
+     44,
+     24
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     42,
+     26
+    ],
+    [
+     44,
+     26
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     24,
+     8
+    ],
+    [
+     26,
+     8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     34,
+     36
+    ],
+    [
+     36,
+     36
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     34,
+     38
+    ],
+    [
+     36,
+     38
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     34,
+     40
+    ],
+    [
+     36,
+     40
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     34,
+     42
+    ],
+    [
+     36,
+     42
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     42,
+     36
+    ],
+    [
+     44,
+     36
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     42,
+     38
+    ],
+    [
+     44,
+     38
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     56,
+     4
+    ],
+    [
+     58,
+     4
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     56,
+     6
+    ],
+    [
+     58,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     56,
+     8
+    ],
+    [
+     58,
+     8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     56,
+     10
+    ],
+    [
+     58,
+     10
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     56,
+     12
+    ],
+    [
+     58,
+     12
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     56,
+     14
+    ],
+    [
+     58,
+     14
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     64,
+     4
+    ],
+    [
+     68,
+     4
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     56,
+     24
+    ],
+    [
+     58,
+     24
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     56,
+     26
+    ],
+    [
+     58,
+     26
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     56,
+     28
+    ],
+    [
+     58,
+     28
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     56,
+     30
+    ],
+    [
+     58,
+     30
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     56,
+     32
+    ],
+    [
+     58,
+     32
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     56,
+     34
+    ],
+    [
+     58,
+     34
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     64,
+     24
+    ],
+    [
+     68,
+     24
+    ]
+   ]
+  }
+ ],
+ "notes": []
+}

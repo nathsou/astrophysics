@@ -1,0 +1,6 @@
+node_modules
+dist
+.svelte-kit
+
+# Real Yosys and nextpnr logs used as test fixtures.
+!tools/validate/testdata/*.log

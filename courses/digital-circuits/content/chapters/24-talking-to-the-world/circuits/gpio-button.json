@@ -1,0 +1,114 @@
+{
+ "version": 1,
+ "title": "A button on a GPIO pin",
+ "engine": "analog",
+ "components": [
+  {
+   "id": "V5",
+   "type": "rail",
+   "x": 10,
+   "y": 0,
+   "params": {
+    "voltage": 5
+   },
+   "label": ""
+  },
+  {
+   "id": "R1",
+   "type": "resistor",
+   "x": 10,
+   "y": 0,
+   "rot": 90,
+   "params": {
+    "resistance": 10000
+   },
+   "label": "10 k\u03a9"
+  },
+  {
+   "id": "SW",
+   "type": "pushbutton",
+   "x": 10,
+   "y": 4,
+   "rot": 90,
+   "params": {
+    "bounce": true
+   },
+   "label": "button"
+  },
+  {
+   "id": "G1",
+   "type": "ground",
+   "x": 10,
+   "y": 8
+  },
+  {
+   "id": "pin",
+   "type": "label",
+   "x": 16,
+   "y": 2,
+   "params": {
+    "name": "PIN"
+   },
+   "label": ""
+  },
+  {
+   "id": "V1",
+   "type": "voltmeter",
+   "x": 24,
+   "y": 10,
+   "rot": 270,
+   "label": "PIN"
+  },
+  {
+   "id": "G2",
+   "type": "ground",
+   "x": 24,
+   "y": 10
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     10,
+     4
+    ],
+    [
+     24,
+     4
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     16,
+     4
+    ],
+    [
+     16,
+     2
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     24,
+     4
+    ],
+    [
+     24,
+     6
+    ]
+   ]
+  }
+ ],
+ "notes": [
+  {
+   "x": 12,
+   "y": -1,
+   "text": "pull-up: 1 when open"
+  }
+ ]
+}

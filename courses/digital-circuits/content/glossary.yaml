@@ -1,0 +1,1220 @@
+# Glossary: id → { term, definition (Markdown), chapter (slug) }
+
+series:
+  term: series
+  definition: Components joined one after the other, so that the same current passes through all of them. Switches in series conduct only if *all* of them are closed, which makes them an AND.
+  chapter: shannons-switches
+parallel:
+  term: parallel
+  definition: Components joined side by side, each across the same two points, so that the current has a choice of paths. Switches in parallel conduct if *any* of them is closed, which makes them an OR.
+  chapter: shannons-switches
+truth-table:
+  term: truth table
+  definition: A list of every combination of the inputs of a logic function and the output each one gives. A function of *n* inputs has 2^*n* rows.
+  chapter: shannons-switches
+changeover-switch:
+  term: changeover switch (SPDT)
+  definition: A switch with a common terminal C and two others, 0 and 1. C is always connected to exactly one of them, and flipping the switch moves it to the other. “Single pole, double throw”.
+  chapter: shannons-switches
+traveller:
+  term: traveller
+  definition: One of the two wires that join a pair of changeover switches in a staircase circuit. Whichever traveller the first switch selects, the lamp is lit only if the second switch selects the same one.
+  chapter: shannons-switches
+relay:
+  term: relay
+  definition: A switch worked by an electromagnet. Current in the coil pulls an armature, which moves one or more contacts. Because the coil and the contacts are separate circuits, one circuit can control another.
+  chapter: relays
+normally-open:
+  term: normally open (NO)
+  definition: A relay contact that is open while the coil is off and closes when it is energised.
+  chapter: shannons-switches
+normally-closed:
+  term: normally closed (NC)
+  definition: A relay contact that is closed while the coil is off and opens when it is energised. It is what makes NOT possible with switches.
+  chapter: shannons-switches
+and:
+  term: AND
+  definition: True only when *both* inputs are true. Switches in series. Written A · B, or `a && b`.
+  chapter: shannons-switches
+or:
+  term: OR
+  definition: True when *at least one* input is true. Switches in parallel. Written A + B, or `a || b`.
+  chapter: shannons-switches
+not:
+  term: NOT
+  definition: True when the input is false. A normally-closed relay contact. Written ¬A, or `!a`.
+  chapter: shannons-switches
+xor:
+  term: XOR (exclusive or)
+  definition: True when the two inputs *differ*. Two changeover switches with their travellers crossed. Written A ⊕ B. It is the sum digit of a one-bit binary addition.
+  chapter: shannons-switches
+xnor:
+  term: XNOR
+  definition: True when the two inputs are *equal*, the negation of XOR. Two changeover switches with their travellers straight, as in the staircase light.
+  chapter: shannons-switches
+restoration:
+  term: restoration (gain)
+  definition: A stage that produces a clean output from a degraded input, because the output is driven from the stage’s own supply. Relays restore signals, and so do transistors; without it, no chain of logic could be more than a few stages deep.
+  chapter: shannons-switches
+hindrance:
+  term: hindrance
+  definition: Shannon’s 1937 measure of how much a switch opposes current, 0 when closed and 1 when open. With it, series connection is addition and parallel connection is multiplication. Modern notation counts 1 for “conducts” instead.
+  chapter: shannons-switches
+half-adder:
+  term: half adder
+  definition: A circuit that adds two one-bit numbers and produces a sum bit (XOR) and a carry bit (AND). Stibitz’s Model K was one. It has no input for a carry from a previous column, which a *full adder* has.
+  chapter: shannons-switches
+flyback-diode:
+  term: flyback diode
+  definition: A diode across a relay coil, wired so that it conducts only when the coil’s field collapses. It gives the coil’s current somewhere to go and prevents a spike of hundreds of volts.
+  chapter: relays
+charge:
+  term: charge
+  definition: "The property of matter that makes it feel electric and magnetic forces. It comes in two kinds, positive and negative, and is never created or destroyed, only moved. Measured in coulombs; an electron carries −1.602 × 10⁻¹⁹ C."
+  chapter: charge-voltage-current
+coulomb:
+  term: coulomb (C)
+  definition: "The unit of charge: the charge of 6.24 × 10¹⁸ electrons, or what a current of one ampere carries past a point in one second."
+  chapter: charge-voltage-current
+current:
+  term: current
+  definition: "The rate at which charge passes a point, in coulombs per second, or amperes. Written *I*, with *I* = *Q*/*t*. By convention it points the way positive charge would flow, from + round to −."
+  chapter: charge-voltage-current
+ampere:
+  term: ampere (A)
+  definition: "The unit of current: one coulomb per second, or 6.24 × 10¹⁸ electrons per second. Since 2019 it is defined by fixing the value of the electron’s charge."
+  chapter: charge-voltage-current
+voltage:
+  term: voltage
+  definition: "The energy each coulomb of charge gains or gives up in going between two points, in joules per coulomb, or volts. It is always a difference between two points; *V* = *E*/*Q*."
+  chapter: charge-voltage-current
+volt:
+  term: volt (V)
+  definition: "The unit of voltage: one joule per coulomb. Named after Alessandro Volta."
+  chapter: charge-voltage-current
+ground:
+  term: ground
+  definition: "The point in a circuit chosen as 0 V, from which every other voltage is measured. Only differences of voltage mean anything; ground is the choice of where to start counting."
+  chapter: charge-voltage-current
+conventional-current:
+  term: conventional current
+  definition: "The direction of current drawn in circuit diagrams and used throughout the course: from the + terminal, round the circuit, to the − terminal, the way positive charge would move. The electrons in a metal go the other way."
+  chapter: charge-voltage-current
+drift-speed:
+  term: drift speed
+  definition: "The average speed at which charge carriers make progress along a wire, which is tiny: 0.07 mm/s for 1 A in 1 mm² of copper. It is *I*/(*n A e*). The signal that starts them all moving travels at a large fraction of the speed of light."
+  chapter: charge-voltage-current
+electromagnet:
+  term: electromagnet
+  definition: A coil of wire, usually wound round an iron core, that is a magnet while current flows in it. The turns add their fields, and the iron multiplies the total by hundreds.
+  chapter: relays
+inductance:
+  term: inductance
+  definition: How strongly a coil resists changes in its own current, measured in henries (H). The voltage across it is V = L·ΔI/Δt, so a current in a coil cannot jump, like the speed of a flywheel.
+  chapter: relays
+armature:
+  term: armature
+  definition: The hinged iron plate of a relay. The electromagnet pulls it against the core, against a spring, and it carries the moving contact.
+  chapter: relays
+hysteresis:
+  term: hysteresis
+  definition: A threshold that depends on history. A relay pulls in at about 70 % of its rated coil current but lets go only below about 30 %, so between the two it is in whichever state it was already in.
+  chapter: relays
+signal-restoration:
+  term: signal restoration
+  definition: Reading a weakened or noisy signal and sending out a fresh, full-strength copy. A telegraph relay does it for a fading line current, and a logic gate does it for a slightly degraded 0 or 1.
+  chapter: relays
+contacts:
+  term: contacts (COM, NO, NC)
+  definition: The switch part of a relay. COM (common) is the moving contact; NC (normally closed) is joined to COM when the coil is off; NO (normally open) is joined to COM when the coil is on.
+  chapter: relays
+multimeter:
+  term: multimeter
+  definition: "An instrument with a dial that makes it a voltmeter (across the part), an ammeter (in series, in the path of the current) or an ohmmeter (across an unpowered part). A typical one presents about 10 MΩ to a circuit when measuring voltage."
+  chapter: the-bench
+bench-supply:
+  term: bench power supply
+  definition: "An adjustable voltage source with a second knob for a current limit. It holds the voltage you set (constant-voltage mode) until the load draws the limit, and then holds the current instead (constant-current mode)."
+  chapter: the-bench
+current-limit:
+  term: current limit
+  definition: "The most current a bench supply will deliver. Above it the supply stops holding its voltage and lets it fall so that the current stays at the limit. Set it before connecting a load, and a fault costs you a lit lamp rather than a burnt part."
+  chapter: the-bench
+continuity:
+  term: continuity
+  definition: "A test of whether two points are joined by a low resistance (a wire, a closed switch, a good fuse). A multimeter’s continuity range is the ohms range with a beeper that sounds below some tens of ohms."
+  chapter: the-bench
+oscilloscope:
+  term: oscilloscope
+  definition: "An instrument that draws voltage against time: the horizontal axis is time (set in seconds per division), the vertical axis is voltage (volts per division). A trigger starts each sweep at the same point of a repeating signal so that the picture stands still."
+  chapter: the-bench
+timebase:
+  term: timebase
+  definition: "The horizontal scale of an oscilloscope, in seconds per division. The screen has ten divisions across, so at 1 ms/div it shows 10 ms."
+  chapter: the-bench
+trigger:
+  term: trigger
+  definition: "The part of an oscilloscope that decides when a sweep starts: when a chosen signal crosses a chosen level in a chosen direction. Without it, successive sweeps start at different phases of a repeating signal and the display smears. Like a conditional breakpoint."
+  chapter: the-bench
+function-generator:
+  term: function generator
+  definition: "A source of a periodic voltage with controls for the waveform (square, sine, triangle), frequency, amplitude and offset. It supplies the test signals for an oscilloscope."
+  chapter: the-bench
+capacitor:
+  term: capacitor
+  definition: "Two conductors separated by an insulator. Charge *Q* on the plates and voltage *V* across them are proportional, *Q* = *CV*. Its voltage cannot jump: it changes only as fast as current can move charge on or off the plates, *I* = *C* Δ*V*/Δ*t*."
+  chapter: capacitors-and-time
+farad:
+  term: farad (F)
+  definition: "The unit of capacitance: one coulomb of stored charge per volt. A farad is enormous; real capacitors are µF (10⁻⁶), nF (10⁻⁹) or pF (10⁻¹²)."
+  chapter: capacitors-and-time
+time-constant:
+  term: time constant (τ)
+  definition: "For a resistor charging or discharging a capacitor, τ = *RC*. In each time constant the voltage closes 63 % of the gap between where it is and where it is heading; after 5τ it is within 1 %. The time to a level *V* is τ ln(*V*ₛ/(*V*ₛ − *V*))."
+  chapter: capacitors-and-time
+pull-up:
+  term: pull-up resistor
+  definition: "A resistor from a signal wire to the supply that pulls the wire high when nothing pulls it low. Together with the wire’s capacitance it makes the rising edge an exponential with τ = *RC*, which is what limits the speed of I²C."
+  chapter: capacitors-and-time
+open-drain:
+  term: open-drain output
+  definition: "An output that can only pull its wire down to ground (with a transistor) and never push it up. Several can share one wire, with a pull-up resistor supplying the high level. I²C and 1-Wire work this way."
+  chapter: capacitors-and-time
+schmitt-trigger:
+  term: Schmitt trigger
+  definition: "A gate input with two thresholds, a higher one for a rising input and a lower one for a falling input, so that it switches once and cleanly on a slow or noisy signal. It is what follows an RC debouncing filter."
+  chapter: capacitors-and-time
+companion-model:
+  term: companion model
+  definition: "How a circuit simulator handles a capacitor: over each time step it is replaced by a resistor in parallel with a current source that depends on the previous step, so that the circuit can be solved as an ordinary resistor network, once per step."
+  chapter: capacitors-and-time
+contact-bounce:
+  term: contact bounce
+  definition: "The rattle of a mechanical switch’s contacts as they meet: they touch, spring apart and touch again for a fraction of a millisecond to several milliseconds. A fast circuit sees several presses instead of one, unless the signal is filtered or debounced."
+  chapter: capacitors-and-time
+resistance:
+  term: resistance
+  definition: "How strongly a component opposes current: the voltage across it divided by the current through it, *R* = *V*/*I*. Measured in ohms (Ω)."
+  chapter: ohms-law
+ohms-law:
+  term: Ohm’s law
+  definition: "For a resistor, the current is proportional to the voltage across it: *V* = *I R*. It holds for metals and carbon but not for lamps (whose resistance rises as they heat), diodes or LEDs."
+  chapter: ohms-law
+power:
+  term: power
+  definition: "Energy per second, in watts (W). Electrical power is voltage times current, *P* = *V I*; in a resistor it is also *I*²*R* = *V*²/*R*, and all of it becomes heat."
+  chapter: ohms-law
+conductance:
+  term: conductance
+  definition: "The reciprocal of resistance, *G* = 1/*R*, in siemens (S). Conductances add in parallel; the simulator’s equations are written in them."
+  chapter: ohms-law
+voltage-divider:
+  term: voltage divider
+  definition: "Two resistors in series across a voltage. The voltage at their junction is the input times the lower resistor’s share of the total, *V*out = *V*in *R*₂/(*R*₁ + *R*₂), provided nothing else loads it."
+  chapter: ohms-law
+kcl:
+  term: Kirchhoff’s current law
+  definition: "The currents flowing into a junction add up to the currents flowing out: charge does not pile up or vanish there."
+  chapter: ohms-law
+kvl:
+  term: Kirchhoff’s voltage law
+  definition: "Going round any closed loop, the voltage rises and drops add up to zero: a charge that returns to its starting point has the energy it started with."
+  chapter: ohms-law
+transfer-curve:
+  term: voltage transfer curve (VTC)
+  definition: "A gate’s output voltage plotted against its input voltage, with the input swept slowly from 0 V to the supply. A good inverter’s curve is flat near both rails and steep in the middle; the steepness is gain, and the flat ends are what make noise disappear from gate to gate."
+  chapter: real-gates
+voh:
+  term: VOH
+  definition: "The lowest voltage that a gate guarantees at its output when it is sending a 1. It sags below the supply as the load current grows."
+  chapter: real-gates
+vol:
+  term: VOL
+  definition: "The highest voltage that a gate may have at its output when it is sending a 0. It rises above 0 V as the load current grows."
+  chapter: real-gates
+vih:
+  term: VIH
+  definition: "The lowest input voltage that a gate is guaranteed to read as a 1. For 74HC gates it is 0.7 of the supply, 3.5 V at 5 V."
+  chapter: real-gates
+vil:
+  term: VIL
+  definition: "The highest input voltage that a gate is guaranteed to read as a 0. For 74HC gates it is 0.3 of the supply, 1.5 V at 5 V."
+  chapter: real-gates
+noise-margin:
+  term: noise margin
+  definition: "How much interference a logic level can pick up between two gates and still be read correctly: NMH = VOH − VIH for a 1 and NML = VIL − VOL for a 0. About 1.4 V each for 74HC on 5 V, and 0.4 V for TTL."
+  chapter: real-gates
+fan-out:
+  term: fan-out
+  definition: "The number of gate inputs that one output drives. In TTL it is limited by current (about ten); in CMOS by time, since every input is a capacitor that the output has to charge."
+  chapter: real-gates
+rise-time:
+  term: rise time
+  definition: "How long an edge takes to travel from 10 % to 90 % of its swing. For an RC edge it is 2.2 *RC*; the fall time is defined in the same way."
+  chapter: real-gates
+propagation-delay:
+  term: propagation delay
+  definition: "The time from the input of a gate crossing half the supply to the output crossing half the supply, given separately for a rising output (*t*ₚLH) and a falling one (*t*ₚHL). It depends on what the gate drives."
+  chapter: real-gates
+leakage:
+  term: leakage current
+  definition: "The small current that a transistor passes when it is supposed to be off. Below the threshold voltage it falls by a factor of ten for each 80–100 mV or so, so a low threshold makes a fast transistor that leaks. It is why a chip uses power even when the clock stops."
+  chapter: real-gates
+wired-and:
+  term: wired-AND
+  definition: "Several open-drain outputs on one wire with a pull-up resistor. The wire is high only if every output has let go, so the wiring itself computes the AND of the outputs."
+  chapter: real-gates
+tri-state:
+  term: tri-state output
+  definition: "An output with an enable input. Enabled, it drives 0 or 1; disabled, it lets go of the wire (high impedance, Z), so that many of them can share a bus if at most one is enabled at a time."
+  chapter: real-gates
+bus:
+  term: bus
+  definition: "A set of wires shared by several devices, each of which may drive it in turn. Its outputs are tri-state or open-drain, so that the ones not speaking are not fighting."
+  chapter: real-gates
+bus-contention:
+  term: bus contention
+  definition: "Two enabled outputs driving one wire to different levels. In the digital engine the wire becomes X; on a real board a large current flows from the supply through both output stages, which heats and can destroy them."
+  chapter: real-gates
+key-matrix:
+  term: key matrix
+  definition: Keys wired as a grid of rows and columns, with a switch at each crossing that can join one row wire to one column wire. A controller drives the rows one at a time and reads the columns, so that r rows and c columns need only r + c wires for r × c keys.
+  chapter: press-a-key
+digital-abstraction:
+  term: digital abstraction
+  definition: The agreement to treat a wire as carrying only a 0 or a 1, whatever its exact voltage. For 5 V logic, above 3.5 V is a 1, below 1.5 V is a 0, and gates are built to send out only voltages well clear of the gap between them, so that noise does not accumulate.
+  chapter: press-a-key
+parts-bin:
+  term: parts bin
+  definition: The collection of parts you have built in this course. A part that passes its checker goes into the bin as a black box with fixed pins, and later chapters build from it.
+  chapter: press-a-key
+
+semiconductor:
+  term: semiconductor
+  definition: A material whose electrons need a modest amount of energy (a bandgap of about 0.5 to 3 eV) to become free to carry current. Pure, it conducts hardly at all; doped, it conducts well, and in a way that can be controlled.
+  chapter: diodes-and-leds
+energy-band:
+  term: energy band
+  definition: In a crystal the energies an electron may have come in broad ranges, called bands, separated by forbidden gaps. The valence band is full of bonding electrons; the conduction band above it is where electrons are free to move.
+  chapter: diodes-and-leds
+bandgap:
+  term: bandgap
+  definition: The energy between the top of the valence band and the bottom of the conduction band, the minimum an electron needs to become a carrier. Silicon 1.12 eV, gallium arsenide 1.42 eV, diamond 5.5 eV. An LED’s photons carry about this energy, so it sets the colour.
+  chapter: diodes-and-leds
+hole:
+  term: hole
+  definition: A bond with an electron missing. A neighbouring electron can step into it, so the hole moves the other way, and behaves as a mobile positive charge.
+  chapter: diodes-and-leds
+doping:
+  term: doping
+  definition: Adding a small, chosen amount of another element to a pure crystal, typically one atom in 10⁶ to 10⁸, to fix which carriers it has. Phosphorus (five outer electrons) makes silicon n-type; boron (three) makes it p-type.
+  chapter: diodes-and-leds
+pn-junction:
+  term: pn junction
+  definition: The boundary between p-type and n-type material in one crystal. Around it is a depletion region with a built-in voltage of about 0.7 V in silicon; it passes current from p to n and blocks it from n to p.
+  chapter: diodes-and-leds
+depletion-region:
+  term: depletion region
+  definition: The strip around a pn junction that the carriers have left, exposing the fixed ions of the dopants. It is a few tenths of a micrometre wide, it widens under reverse bias, and it narrows under forward bias.
+  chapter: diodes-and-leds
+forward-bias:
+  term: forward bias
+  definition: 'A voltage applied to a diode with + on the p side (the anode), which lowers the barrier. The current grows exponentially: a factor of ten for every 60 mV.'
+  chapter: diodes-and-leds
+reverse-bias:
+  term: reverse bias
+  definition: A voltage applied to a diode with + on the n side (the cathode), which raises the barrier and widens the depletion region. Only a tiny leakage current flows.
+  chapter: diodes-and-leds
+diode:
+  term: diode
+  definition: A two-terminal part that passes current from its anode to its cathode and blocks it the other way. In silicon a conducting diode has about 0.6 to 0.7 V across it at a few milliamps.
+  chapter: diodes-and-leds
+led:
+  term: light-emitting diode (LED)
+  definition: A diode whose electrons and holes recombine by emitting a photon of about the bandgap energy. The material sets the colour (GaAs infrared, GaAsP red, GaP green, InGaN blue), and it needs a series resistor because its current grows exponentially with voltage.
+  chapter: diodes-and-leds
+recombination:
+  term: recombination
+  definition: An electron in the conduction band falling into a hole. The energy it gives up becomes heat in silicon, and light in an LED.
+  chapter: diodes-and-leds
+diode-logic:
+  term: diode logic
+  definition: AND and OR gates made from diodes and a resistor. They work, but they have no gain and lose about a diode drop (0.65 V) per stage, and they cannot make NOT, so they cannot be cascaded far.
+  chapter: diodes-and-leds
+
+transistor:
+  term: transistor
+  definition: A three-terminal semiconductor switch in which a small current or voltage at the control terminal governs a much larger current between the other two, with gain and no moving parts. The bipolar transistor (1947) is controlled by a current, the MOSFET by a voltage.
+  chapter: the-transistor
+bjt:
+  term: bipolar junction transistor (BJT)
+  definition: 'A transistor made of three layers, n–p–n or p–n–p: emitter, thin base and collector. A small base current makes a collector current β times larger flow.'
+  chapter: the-transistor
+current-gain:
+  term: current gain (β)
+  definition: The ratio of collector current to base current of a bipolar transistor in its active region, about 100 for a small one. It varies from part to part, so switches are designed not to depend on it.
+  chapter: the-transistor
+cut-off:
+  term: cut-off
+  definition: 'The region of a transistor with no control input: a bipolar transistor with less than about 0.5 V across its base–emitter junction, or a MOSFET below its threshold voltage. It is an open switch.'
+  chapter: the-transistor
+active-region:
+  term: active region
+  definition: 'The region in which a bipolar transistor is an amplifier: the collector current is β times the base current and the collector voltage is high enough that the transistor is not saturated.'
+  chapter: the-transistor
+saturation:
+  term: saturation
+  definition: 'A bipolar transistor driven with more base current than its collector can use, so that the collector voltage falls to 0.1–0.2 V and the circuit, not the transistor, sets the current: a closed switch. (For a MOSFET, saturation means something different: the drain current stops depending on the drain voltage.)'
+  chapter: the-transistor
+mosfet:
+  term: MOSFET
+  definition: 'A metal–oxide–semiconductor field-effect transistor: a gate over an insulating oxide creates a conducting channel between a source and a drain when its voltage passes the threshold. It takes no steady gate current, which is why almost all logic uses it.'
+  chapter: the-transistor
+threshold-voltage:
+  term: threshold voltage
+  definition: 'The gate voltage at which a MOSFET’s channel forms and current starts to flow: about 1 V in the simulator, about 2 V for a 2N7000, a few tenths of a volt in a modern processor.'
+  chapter: the-transistor
+gain:
+  term: gain
+  definition: 'The ratio of a change at a circuit’s output to the change at its input that caused it: the slope of its transfer curve. A gate with gain above 1 in its middle region and flat ends turns any nearly-right level into a clean 0 or 1.'
+  chapter: the-transistor
+regeneration:
+  term: regeneration
+  definition: 'What a chain of logic stages with gain does to a signal: each stage pushes a level that is a little off back towards the nearest of two clean levels, so errors do not accumulate however long the chain.'
+  chapter: the-transistor
+rtl:
+  term: resistor–transistor logic (RTL)
+  definition: 'The simplest transistor logic: a NOT is one transistor with a pull-up resistor and a base resistor; a NOR is two or more transistors in parallel. The Apollo Guidance Computer used it. It wastes power whenever an output is low and its noise margins are poor.'
+  chapter: the-transistor
+nor:
+  term: NOR
+  definition: 'True only when *neither* input is. NOT-OR: transistors in parallel under a common pull-up. NOR alone can build any logic function.'
+  chapter: the-transistor
+twos-complement-ref:
+  term: two’s complement
+  definition: 'The way hardware stores signed integers: an *n*-bit pattern is read as an ordinary binary number except that the top bit has weight −2^(*n*−1). To negate a number, invert every bit and add one. The same adder works for signed and unsigned numbers.'
+  chapter: reference
+si-prefix:
+  term: SI prefix
+  definition: 'A letter that multiplies a unit by a power of ten: k (10³), M (10⁶), G (10⁹), m (10⁻³), µ (10⁻⁶), n (10⁻⁹), p (10⁻¹²). *M* is mega and *m* is milli.'
+  chapter: reference
+e-series:
+  term: E series
+  definition: 'The preferred values of resistors and capacitors: a geometric progression with 6, 12, 24, 96 … values per decade (E6, E12, E24, E96), spaced so that the tolerance ranges of neighbouring values touch. E12 goes 10, 12, 15, 18, 22, 27, 33, 39, 47, 56, 68, 82.'
+  chapter: reference
+hexadecimal:
+  term: hexadecimal (hex)
+  definition: 'Base 16, with digits 0–9 and A–F. One hex digit is exactly four bits, so a byte is two hex digits and conversion to binary needs no arithmetic. Written 0x1F in code.'
+  chapter: reference
+netlist:
+  term: netlist
+  definition: A list of components and the wires (nets) that join them, with no positions. It is what a schematic draws, what the simulator runs, and what a synthesis tool produces from a hardware description.
+  chapter: describing-hardware
+logic-synthesis:
+  term: logic synthesis
+  definition: Turning a description of what a circuit does, at the register-transfer level, into a netlist of gates chosen by a program. It made hardware descriptions, and not schematics, the way chips are designed.
+  chapter: describing-hardware
+register-transfer-level:
+  term: register-transfer level (RTL)
+  definition: A way of describing a circuit by its registers and by what is computed between them in each clock cycle, leaving the choice of gates to a synthesis tool. Not to be confused with resistor–transistor logic, which has the same abbreviation.
+  chapter: describing-hardware
+ssa:
+  term: static single assignment (SSA)
+  definition: A form of program in which every value is defined exactly once. A DCL module is written in this form; the φ-function that SSA uses to join two definitions is a multiplexer in hardware.
+  chapter: describing-hardware
+nand:
+  term: NAND
+  definition: 'NOT-AND, false only when *both* inputs are true. In CMOS it is four transistors, the cheapest two-input gate, and it is universal: NAND gates alone can build any logic function.'
+  chapter: boolean-algebra
+de-morgan:
+  term: De Morgan’s laws
+  definition: 'The negation of an AND is the OR of the negations, and the negation of an OR is the AND of the negations: ¬(A·B) = ¬A + ¬B and ¬(A+B) = ¬A·¬B. In a gate diagram, a bubble may be pushed through a gate if the gate changes from AND to OR (or back).'
+  chapter: boolean-algebra
+duality:
+  term: principle of duality
+  definition: Swapping AND with OR and 0 with 1 in a true Boolean identity gives another true identity, so every law comes in two forms.
+  chapter: boolean-algebra
+bubble-pushing:
+  term: bubble pushing
+  definition: 'Redrawing a gate circuit by moving inversion bubbles across gates: the gate turns into its dual (AND into OR), all its bubbles flip, and two bubbles on one wire cancel. A consequence of De Morgan’s laws.'
+  chapter: boolean-algebra
+literal:
+  term: literal
+  definition: A Boolean variable or its complement, such as A or ¬A. The size of an expression is often measured in literals.
+  chapter: boolean-algebra
+minterm:
+  term: minterm
+  definition: A product of literals, one for every variable, that is 1 in exactly one row of the truth table. Minterm *m*₅ of three variables is A·¬B·C (row 101).
+  chapter: boolean-algebra
+maxterm:
+  term: maxterm
+  definition: A sum of literals, one for every variable, that is 0 in exactly one row of the truth table. It is the complement of a minterm.
+  chapter: boolean-algebra
+sum-of-products:
+  term: sum of products (SOP)
+  definition: An OR of AND terms, such as A·B + ¬A·C. Every function has one, and the canonical one has a minterm for every row where the function is 1. It is a two-level circuit, and the shape of a PLA.
+  chapter: boolean-algebra
+product-of-sums:
+  term: product of sums (POS)
+  definition: An AND of OR terms, such as (A + B)·(¬A + C). The canonical one has a maxterm for every row where the function is 0. The dual of the sum of products.
+  chapter: boolean-algebra
+functionally-complete:
+  term: functionally complete
+  definition: A set of gates from which every Boolean function can be built. AND, OR and NOT are complete, and so are NAND alone and NOR alone.
+  chapter: boolean-algebra
+parity:
+  term: parity
+  definition: Whether the number of 1s among some bits is odd or even. The XOR of the bits is 1 when it is odd. A parity bit added to a byte makes the total even and detects any single-bit error.
+  chapter: boolean-algebra
+half-life:
+  term: half-life
+  definition: 'The time for a decaying quantity to fall to half: *t*½ = τ ln 2 = 0.693 τ. After *k* half-lives a fraction 2^(−*k*) is left.'
+  chapter: maths
+logarithm:
+  term: logarithm
+  definition: 'The inverse of the exponential: log_*b* *x* is the power to which *b* must be raised to give *x*. It turns multiplication into addition. Base 2 counts bits, base 10 decades, base *e* is the natural logarithm ln.'
+  chapter: maths
+decibel:
+  term: decibel (dB)
+  definition: 'A logarithmic unit for ratios: 10 log₁₀ of a power ratio, or 20 log₁₀ of a voltage ratio. 3 dB is a factor of 2 in power, 6 dB a factor of 2 in voltage, 20 dB a factor of 10 in voltage.'
+  chapter: maths
+gaussian-elimination:
+  term: Gaussian elimination
+  definition: 'Solving a system of linear equations by using one equation to remove an unknown from the others, over and over, until the system is triangular, then working back up (back substitution).'
+  chapter: maths
+pivot:
+  term: pivot
+  definition: 'The entry that Gaussian elimination divides by to make the multipliers for a column. A zero pivot means swapping rows; if no row will do, the system has no unique solution.'
+  chapter: maths
+lu-decomposition:
+  term: LU decomposition
+  definition: 'Writing a matrix as a product *A* = *L U* of a lower and an upper triangular matrix: the multipliers of Gaussian elimination and what it leaves behind. Once known, each new right-hand side costs only two quick triangular solves.'
+  chapter: maths
+big-o:
+  term: big-O notation
+  definition: 'How the work of an algorithm grows with the size *n* of its input, ignoring constant factors: *O*(*n*³) means doubling *n* multiplies the work by about eight.'
+  chapter: maths
+octet:
+  term: Octet
+  definition: 'The course’s CPU: 8-bit data and addresses, 256 bytes of memory, four registers R0–R3, 21 instructions and a multi-cycle datapath on one shared bus. Appendix E is its reference card.'
+  chapter: octet
+status-flags:
+  term: flags (status flags)
+  definition: 'One-bit registers set by the ALU and tested by conditional jumps. Octet has Z (zero), C (carry or borrow), N (negative) and V (signed overflow).'
+  chapter: octet
+von-neumann-architecture:
+  term: von Neumann architecture
+  definition: 'A computer whose instructions and data share one memory, so a program is just data. It needs one address space and one bus; the price is that an instruction fetch and a data access cannot overlap.'
+  chapter: octet
+memory-mapped-io:
+  term: memory-mapped I/O
+  definition: 'Devices appear as addresses in the memory map, so a program talks to them with ordinary loads and stores instead of special I/O instructions. In Octet the top 16 bytes, 0xF0–0xFF.'
+  chapter: octet
+gray-code:
+  term: Gray code
+  definition: 'A way of counting in binary in which each step changes exactly one bit (00, 01, 11, 10). It labels the sides of a Karnaugh map so that neighbouring cells differ in exactly one variable.'
+  chapter: simplifying-logic
+karnaugh-map:
+  term: Karnaugh map
+  definition: 'A truth table drawn as a grid with Gray-code labels, so that cells that differ in one variable are next to each other (the edges wrap round). Groups of 1, 2, 4, 8 or 16 cells with the same value are product terms, and finding the largest groups is simplification.'
+  chapter: simplifying-logic
+dont-care:
+  term: don’t-care
+  definition: An input combination that never occurs, or an output that does not matter, written x. A simplifier may treat it as 0 or as 1, whichever makes the circuit smaller.
+  chapter: simplifying-logic
+prime-implicant:
+  term: prime implicant
+  definition: A product term that makes the function 1 wherever it is 1 and cannot be made any larger (have any literal removed) without also covering a 0. The largest groups of a Karnaugh map. A minimal sum of products is made of prime implicants.
+  chapter: simplifying-logic
+essential-prime:
+  term: essential prime implicant
+  definition: A prime implicant that alone covers some minterm, so every cover of the function must include it. On a Karnaugh map, the group that contains a 1 that no other largest group contains.
+  chapter: simplifying-logic
+cyclic-core:
+  term: cyclic core
+  definition: What remains of the prime implicant chart when there are no essential primes and nothing can be dropped by dominance. Every minterm can be covered in more than one way, so the choice needs Petrick’s method.
+  chapter: simplifying-logic
+multi-level:
+  term: multi-level logic
+  definition: A circuit in which signals pass through more than two layers of gates, made by factoring and by sharing common sub-expressions. Usually smaller than the two-level form and slower.
+  chapter: simplifying-logic
+rom:
+  term: ROM
+  definition: Read-only memory. Give it an address and it puts the stored word on its outputs. Seen as logic, it is a truth table, with the address as the inputs and the word as the outputs, and it can hold any function of its address lines.
+  chapter: programmable-logic
+mask-rom:
+  term: mask ROM
+  definition: A ROM whose contents are set by one layer of the chip, made while the chip is manufactured. Cheapest per part in large numbers, and fixed for ever.
+  chapter: programmable-logic
+prom:
+  term: PROM
+  definition: A programmable ROM. It leaves the factory with every fuse intact and is programmed once by the user, who blows the fuses of the bits that should read the other way.
+  chapter: programmable-logic
+pla:
+  term: PLA (programmable logic array)
+  definition: A chip with a programmable AND plane, which makes product terms from the inputs, and a programmable OR plane, which adds chosen terms into each output. All the outputs share the same product terms.
+  chapter: programmable-logic
+product-term:
+  term: product term
+  definition: An AND of some of the inputs, each true or complemented. In a programmable array it is one row of the AND plane, wired to just the literals it needs.
+  chapter: programmable-logic
+nre:
+  term: non-recurring engineering (NRE)
+  definition: The one-off cost of getting a chip made (design, verification and the masks), paid whether one part is made or a million. It is why custom chips only pay off at high volume.
+  chapter: programmable-logic
+pld:
+  term: programmable logic device (PLD)
+  definition: A chip made in bulk without a function, whose logic the customer fixes afterwards by programming it. PLAs, PALs, GALs, CPLDs and FPGAs are all PLDs.
+  chapter: programmable-logic
+antifuse:
+  term: antifuse
+  definition: 'The opposite of a fuse: two conductors separated by a thin insulator, open until a high voltage punches through it and leaves a small conducting filament. It can be programmed once.'
+  chapter: programmable-logic
+floating-gate:
+  term: floating gate
+  definition: A second gate in a transistor, between the control gate and the channel and surrounded by insulator, on which charge can be stored for years. The charge moves the transistor’s threshold voltage, which is how EPROM, EEPROM and flash cells hold a bit.
+  chapter: programmable-logic
+eprom:
+  term: EPROM
+  definition: Erasable programmable ROM. A floating-gate memory programmed electrically and erased by ultraviolet light through a quartz window in the package.
+  chapter: programmable-logic
+eeprom:
+  term: EEPROM
+  definition: Electrically erasable programmable ROM. A floating-gate memory that is both written and erased electrically, by tunnelling, with no lamp. Flash memory is the block-erased descendant.
+  chapter: programmable-logic
+fowler-nordheim:
+  term: tunnelling (Fowler–Nordheim)
+  definition: Electrons crossing a very thin insulator that they lack the energy to climb over, in a strong electric field. It is how floating-gate cells are written and erased electrically.
+  chapter: programmable-logic
+multiplexer:
+  term: multiplexer (mux)
+  definition: 'A circuit that copies one of several data inputs to its output, the one whose number is on the select inputs. A 2:1 multiplexer is Y = ¬S·D0 + S·D1. In software it is `s ? b : a` or `table[i]`.'
+  chapter: building-blocks
+lut:
+  term: lookup table (LUT)
+  definition: A multiplexer whose data inputs are stored constants. The select inputs are the inputs of a function and the stored bits are its truth table, so *k* inputs and 2^*k* bits make any of 2^(2^*k*) functions. An FPGA is built from them.
+  chapter: building-blocks
+decoder:
+  term: decoder
+  definition: A circuit with *n* address inputs and 2^*n* outputs, exactly one of which (the one whose number is on the inputs) is 1. Each output is one minterm. It is used for address decoding and, with OR gates, for any function.
+  chapter: building-blocks
+one-hot:
+  term: one-hot
+  definition: A pattern of bits with exactly one 1, such as the output of a decoder. The number of the 1 is the value.
+  chapter: building-blocks
+encoder:
+  term: encoder
+  definition: 'The inverse of a decoder: 2^*n* inputs, one of them expected to be 1, and *n* outputs that give its number. With two inputs at 1 it outputs the OR of their numbers, which is usually wrong.'
+  chapter: building-blocks
+priority-encoder:
+  term: priority encoder
+  definition: An encoder that reports the highest-numbered input that is 1 and ignores the others, with a valid output that says whether any input is 1. It is the circuit behind interrupt controllers, and an `if`–`else` chain in hardware.
+  chapter: building-blocks
+comparator:
+  term: comparator
+  definition: A circuit that compares two binary numbers. Equality is a row of XNORs and an AND; magnitude starts at the most significant bit, where the first difference decides.
+  chapter: building-blocks
+pal:
+  term: PAL (programmable array logic)
+  definition: A programmable logic device with a programmable AND plane feeding OR gates that are wired for good, each output owning a fixed group of product terms. Smaller and faster than a PLA, at the price of sharing terms.
+  chapter: pals-and-gals
+gal:
+  term: GAL (generic array logic)
+  definition: A PAL made with erasable EEPROM cells, and with output macrocells that can be configured, so that one part can replace several PAL types and be reprogrammed.
+  chapter: pals-and-gals
+macrocell:
+  term: output macrocell
+  definition: The logic around one output of a PAL or GAL. It can send the sum of products straight to the pin or through a flip-flop, invert it, drive the pin through a tri-state buffer and feed the result back into the array.
+  chapter: pals-and-gals
+fitter:
+  term: fitter
+  definition: The tool that turns equations into a fuse map for a programmable device. It minimises each output, chooses its polarity and assigns outputs to macrocells with enough product terms.
+  chapter: pals-and-gals
+jedec-file:
+  term: JEDEC file
+  definition: The standard text format for a fuse map (JESD3). It lists the fuse states in fields marked with a star, and ends with a fuse checksum and a transmission checksum that a programmer verifies before it burns anything.
+  chapter: pals-and-gals
+sign-magnitude:
+  term: sign–magnitude
+  definition: 'A way to write negative numbers: one bit is the sign and the rest are the size. It has two zeros (+0 and −0) and needs extra logic to add.'
+  chapter: arithmetic
+ones-complement:
+  term: ones’ complement
+  definition: A way to write negative numbers by inverting every bit of the positive number. It has two zeros (all zeros and all ones) and needs an end-around carry when adding.
+  chapter: arithmetic
+overflow:
+  term: overflow (V flag)
+  definition: 'The flag that says a two’s complement result does not fit: adding two numbers of the same sign gave a result of the other sign. In hardware it is the carry into the top bit XOR the carry out of it.'
+  chapter: arithmetic
+carry-flag:
+  term: carry flag (C)
+  definition: The flag that holds the carry out of the top bit of an addition. For unsigned numbers it means the sum did not fit; after a subtraction it is 1 when there was no borrow.
+  chapter: arithmetic
+full-adder:
+  term: full adder
+  definition: A circuit that adds three bits (A, B and a carry in) and gives a sum bit and a carry out. Two half adders and an OR make one; it counts the 1s among its inputs.
+  chapter: arithmetic
+ripple-carry:
+  term: ripple-carry adder
+  definition: An adder made of a chain of full adders, each carry out feeding the next column’s carry in. Its worst-case delay grows in proportion to its width.
+  chapter: arithmetic
+carry-lookahead:
+  term: carry lookahead
+  definition: A way to add faster by computing every carry directly from the generate and propagate signals of the columns below, in two levels of logic, or in a tree whose depth grows as the logarithm of the width.
+  chapter: arithmetic
+generate-propagate:
+  term: generate and propagate
+  definition: 'For one column of an adder: it generates a carry by itself when both bits are 1 (g = a·b), and propagates an incoming carry when exactly one is 1 (p = a ⊕ b). The carry out is g + p·(carry in).'
+  chapter: arithmetic
+barrel-shifter:
+  term: barrel shifter
+  definition: A shifter that moves a word by any number of places in a fixed time, with one layer of 2:1 multiplexers for each bit of the shift amount (shift by 1 or not, by 2 or not, by 4 or not, …).
+  chapter: arithmetic
+arithmetic-shift:
+  term: arithmetic shift
+  definition: A right shift that copies the sign bit into the empty places, so that a two’s complement number is divided by a power of two and stays negative. A logical shift puts in zeros.
+  chapter: arithmetic
+sign-extension:
+  term: sign extension
+  definition: Widening a two’s complement number by copying its top bit into the new upper bits, so that its value does not change.
+  chapter: arithmetic
+critical-path:
+  term: critical path
+  definition: The longest path from an input to an output of a combinational circuit, counting the delay of every gate on it. Its length is the circuit's propagation delay, and it decides how fast the circuit can be used.
+  chapter: timing
+contamination-delay:
+  term: contamination delay
+  definition: The shortest time from a change of an input to the first moment an output can start to change (t_cd), the length of the shortest path. Before it the outputs still show the old answer.
+  chapter: timing
+glitch:
+  term: glitch
+  definition: A short unwanted pulse on a wire, caused by two signals that should change together arriving at different times.
+  chapter: timing
+static-hazard:
+  term: static hazard
+  definition: The possibility of a glitch on an output that should not change. A static-1 hazard is a dip of an output that should stay at 1, a static-0 hazard a blip of one that should stay at 0.
+  chapter: timing
+dynamic-hazard:
+  term: dynamic hazard
+  definition: The possibility that an output which should change once changes three times (or more) on the way. It needs at least three paths of different lengths, so it arises in multi-level circuits.
+  chapter: timing
+consensus-theorem:
+  term: consensus theorem
+  definition: "A·B + A′·C + B·C = A·B + A′·C. The third term, the consensus of the first two, is logically redundant, and it is exactly the term that removes the static-1 hazard between them."
+  chapter: timing
+inertial-delay:
+  term: inertial delay
+  definition: A model of a gate that ignores an input pulse shorter than its own delay. It is what a gate with a capacitor on its output really does.
+  chapter: timing
+transport-delay:
+  term: transport delay
+  definition: A model of a delay that passes every change on, however short the pulse, as a wire does. It is the pessimistic model when looking for glitches.
+  chapter: timing
+static-timing-analysis:
+  term: static timing analysis
+  definition: Finding a circuit's critical path by walking the graph of gates in topological order and adding delays, without simulating any input patterns.
+  chapter: timing
+slack:
+  term: slack
+  definition: How much longer a gate's delay could get before it lengthens the critical path. Gates on the critical path have zero slack.
+  chapter: timing
+false-path:
+  term: false path
+  definition: A path that static timing analysis counts but that no input pattern can make a signal travel, because the gates along it block each other.
+  chapter: timing
+cmos:
+  term: CMOS
+  definition: 'Complementary metal–oxide–semiconductor: logic made of pairs of transistors, a p-channel one that pulls the output up and an n-channel one that pulls it down, so that exactly one is on in any steady state. It draws next to no current while it holds a value.'
+  chapter: cmos
+nmos:
+  term: nMOS (n-channel MOSFET)
+  definition: 'A MOSFET in which electrons carry the current. It conducts when its gate is a threshold voltage above its source, so it is on for a 1. It passes a 0 well and a 1 badly, and belongs on the ground side of a gate.'
+  chapter: cmos
+pmos:
+  term: pMOS (p-channel MOSFET)
+  definition: 'A MOSFET in which holes carry the current. It conducts when its gate is a threshold voltage below its source, so it is on for a 0. It passes a 1 well and a 0 badly, and belongs on the supply side of a gate. At the same size it carries about half the current of an nMOS.'
+  chapter: cmos
+mobility:
+  term: mobility
+  definition: 'How fast a charge carrier drifts in a given electric field: about 1,400 cm/s per V/cm for an electron in lightly doped silicon and about 450 for a hole. It is why a p-channel transistor is weaker than an n-channel one of the same size.'
+  chapter: cmos
+pdn:
+  term: pull-down network
+  definition: 'The nMOS transistors of a static CMOS gate, between its output and ground, arranged in series (AND) and parallel (OR). The output is 0 when it conducts.'
+  chapter: cmos
+pun:
+  term: pull-up network
+  definition: 'The pMOS transistors of a static CMOS gate, between +5 V and its output: the dual of the pull-down network, with series and parallel exchanged. It conducts exactly when the pull-down does not.'
+  chapter: cmos
+complex-gate:
+  term: complex gate
+  definition: 'A single CMOS stage whose networks are more than one series or parallel group, such as an and-or-invert gate for NOT (A·B + C·D). It has fewer transistors and less delay than the same function made of separate gates.'
+  chapter: cmos
+transmission-gate:
+  term: transmission gate
+  definition: 'An nMOS and a pMOS in parallel, controlled by a signal and its complement. It is a bidirectional switch that passes both a 0 and a 1 in full, and it has no supply of its own.'
+  chapter: cmos
+switch-level:
+  term: switch-level simulation
+  definition: 'Simulating a circuit with each transistor as a switch that is on or off, and each node as 0, 1 or X with a strength. It is faster than analog simulation and, unlike logic simulation, it handles pass transistors, stored charge and contention.'
+  chapter: cmos
+dynamic-node:
+  term: dynamic node
+  definition: 'A node that no supply drives at the moment and that keeps its value as charge on the capacitance of the wire and the gates attached to it. It is the memory of a DRAM cell and of a transmission-gate latch, and it is lost when the charge leaks away.'
+  chapter: cmos
+cpld:
+  term: CPLD
+  definition: 'A complex programmable logic device: several PAL-like function blocks on one chip, joined by a programmable interconnect. Non-volatile (EEPROM or flash), so it works the moment power is on.'
+  chapter: cplds
+function-block:
+  term: function block
+  definition: 'The PAL-like tile of a CPLD: an AND array that sees a limited number of signals from the interconnect, product terms, and a group of macrocells. The vCPLD-32 has four, each with 24 inputs, 40 product terms and 8 macrocells.'
+  chapter: cplds
+interconnect-matrix:
+  term: interconnect matrix
+  definition: 'The switch network of a CPLD (Altera’s PIA, Xilinx’s FastCONNECT) that carries pins and macrocell outputs to the inputs of the function blocks. Every signal crosses it, so it makes the delay the same whatever the fitter chose.'
+  chapter: cplds
+product-term-steering:
+  term: product-term steering
+  definition: 'The allocator of a function block, which sends a product term to the OR gate of its own macrocell or of a neighbour, so that an output that needs more than five terms can borrow the unused terms of the macrocells beside it, at a small cost in delay.'
+  chapter: cplds
+buried-macrocell:
+  term: buried macrocell
+  definition: 'A macrocell whose output feeds the interconnect but not its pin: internal logic, such as the carry of an adder.'
+  chapter: cplds
+jtag:
+  term: JTAG (IEEE 1149.1)
+  definition: 'A four-wire test port (TCK, TMS, TDI, TDO) on a chip, standardised in 1990 for testing the connections of circuit boards, and used since to program devices in place and to debug processors.'
+  chapter: cplds
+tap-controller:
+  term: TAP controller
+  definition: 'The 16-state machine inside a JTAG port. On each rising edge of TCK it moves to one of two states according to TMS, and five edges with TMS = 1 lead to Test-Logic-Reset from anywhere.'
+  chapter: cplds
+boundary-scan:
+  term: boundary scan
+  definition: 'A JTAG cell on every pin of a chip, linked into one long shift register, so that a tester can drive a pin or read what is on it without a probe. It finds broken and shorted connections on a board.'
+  chapter: cplds
+in-system-programming:
+  term: in-system programming (ISP)
+  definition: 'Programming a device while it is soldered on its board, through its JTAG port, so that blank chips can be assembled and configured afterwards, and upgraded in the field.'
+  chapter: cplds
+feedback:
+  term: feedback
+  definition: "Connecting a circuit’s output back, through gates, to one of its inputs. A circuit with feedback has a past: its outputs depend on what happened before as well as on what the inputs are now."
+  chapter: feedback
+ring-oscillator:
+  term: ring oscillator
+  definition: An odd number of inverters connected in a ring. The wires cannot settle, so an edge chases itself round the ring, and the period is 2 × n × the delay of an inverter.
+  chapter: feedback
+bistable:
+  term: bistable
+  definition: A circuit with two stable states, each of which it keeps until something forces it into the other. Two cross-coupled inverters are the simplest, and every flip-flop and SRAM cell is one.
+  chapter: feedback
+sr-latch:
+  term: SR latch
+  definition: "A pair of cross-coupled NOR (or NAND) gates with two inputs: S sets the output Q to 1, R resets it to 0, and with both at rest it holds. Both inputs active at once is forbidden."
+  chapter: feedback
+metastability:
+  term: metastability
+  definition: A latch or flip-flop balanced between its two stable states, its output neither 0 nor 1, for an unpredictable time. The chance that it is still undecided after a time t falls as e^(−t/τ).
+  chapter: feedback
+synchroniser:
+  term: synchroniser
+  definition: "Two flip-flops in a row that pass an asynchronous signal into a clocked circuit: the first may go metastable, and the second looks at it a full clock period later, when a decision is all but certain."
+  chapter: feedback
+state:
+  term: state
+  definition: What a sequential circuit remembers, held in its flip-flops. With *n* flip-flops a machine has at most 2^*n* states, and it is in exactly one of them at a time. It changes only at clock edges.
+  chapter: state-machines
+state-machine:
+  term: state machine
+  definition: A circuit with a finite number of states, a start state and a rule that gives, for every state and every input, the next state and the outputs. In hardware, a register (the state) with combinational logic that computes what to load next. Also *finite-state machine* (FSM) or *finite automaton*.
+  chapter: state-machines
+state-table:
+  term: state table
+  definition: A state machine written as a table with one row for each state and input combination, giving the next state and the outputs. Replacing the state names by their codes turns it into a truth table for the next-state logic.
+  chapter: state-machines
+moore-machine:
+  term: Moore machine
+  definition: A state machine whose outputs depend on the state alone, so they change only just after a clock edge. Drawn with the outputs inside the bubbles. After Edward Moore, 1956.
+  chapter: state-machines
+mealy-machine:
+  term: Mealy machine
+  definition: A state machine whose outputs depend on the state and the inputs, so they can change in the middle of a cycle when an input does. Drawn with the outputs on the arrows. Usually needs fewer states than a Moore machine for the same job. After George Mealy, 1955.
+  chapter: state-machines
+d-latch:
+  term: D latch
+  definition: "A latch with a data input D and an enable EN: while EN is 1 it is transparent and Q follows D; when EN falls, Q keeps the last value. Built from an SR latch with two gates that steer D into it."
+  chapter: the-clock
+flip-flop:
+  term: flip-flop
+  definition: "A memory element that copies its data input D to its output Q only at a clock edge (a D flip-flop, at the rising edge) and holds it in between. Made of two latches, a master open while the clock is low and a slave open while it is high."
+  chapter: the-clock
+setup-time:
+  term: set-up time
+  definition: "How long before the clock edge the data input of a flip-flop must be stable. If the data changes later than that, the flip-flop may go metastable."
+  chapter: the-clock
+hold-time:
+  term: hold time
+  definition: "How long after the clock edge the data input of a flip-flop must stay stable. Together with the set-up time it defines the aperture in which the data must not change. A hold violation cannot be cured by slowing the clock."
+  chapter: the-clock
+clock-to-q:
+  term: clock-to-Q delay
+  definition: "How long after the clock edge the output Q of a flip-flop shows its new value. It is the first term in the budget of a clock period."
+  chapter: the-clock
+synchronous-design:
+  term: synchronous design
+  definition: "A way of designing so that all the state is in flip-flops on the same clock, and only gates with no loops lie between them. Every path from flip-flop to flip-flop must fit inside one clock period: T ≥ t_cq + t_pd + t_su."
+  chapter: the-clock
+clock-skew:
+  term: clock skew
+  definition: "The difference between the times at which one clock edge reaches two flip-flops. Positive skew at the capturing flip-flop gives set-up time more room and takes hold time away; it is controlled with balanced clock trees."
+  chapter: the-clock
+register:
+  term: register
+  definition: "A row of flip-flops that share a clock and load together, so that they store a word. A load enable is made with a multiplexer in front of each D input that chooses between the new data and the flip-flop's own output."
+  chapter: registers-and-counters
+ripple-counter:
+  term: ripple counter
+  definition: "A counter in which each flip-flop is clocked by the previous one's output. It needs no gates between the stages, but the carry ripples down the chain, so for a moment after each clock edge the count shows wrong values."
+  chapter: registers-and-counters
+shift-register:
+  term: shift register
+  definition: "A chain of flip-flops, each taking its data from the one before, so that at every clock edge each bit moves up one place. It turns a serial stream into a parallel word and back, and a left shift doubles a number."
+  chapter: registers-and-counters
+lfsr:
+  term: linear-feedback shift register (LFSR)
+  definition: "A shift register whose new bit is the XOR of some of its bits (the taps). With the right taps it steps through all 2ⁿ − 1 non-zero states before repeating, a cheap source of a pseudo-random sequence, used for test patterns, scrambling, CRCs and GPS codes."
+  chapter: registers-and-counters
+maximal-length-sequence:
+  term: maximal-length sequence
+  definition: "The output of an n-bit LFSR whose taps make it visit every non-zero state before repeating, so its period is 2ⁿ − 1. It has 2ⁿ⁻¹ ones and 2ⁿ⁻¹ − 1 zeros in each period."
+  chapter: registers-and-counters
+scale-of-two:
+  term: scale of two
+  definition: "Wynn-Williams's 1932 name for a circuit that passes on every second pulse it receives, halving a rate. Chains of them counted particles faster than a mechanical meter could follow, and a binary counter is still a chain of scales of two."
+  chapter: registers-and-counters
+fpga:
+  term: FPGA (field-programmable gate array)
+  definition: A chip made in bulk and configured by its buyer. It is a grid of lookup-table logic cells and flip-flops in a sea of programmable wires, with hard blocks such as RAM and multipliers, all set by a bitstream held in memory on the chip.
+  chapter: inside-an-fpga
+logic-cell:
+  term: logic cell
+  definition: The basic unit of an FPGA. A lookup table, a flip-flop that can catch its output, a multiplexer that chooses between them, and a carry path to the neighbouring cell. Eight or so cells make a tile.
+  chapter: inside-an-fpga
+bitstream:
+  term: bitstream
+  definition: The configuration of an FPGA as a file of bits, one for every LUT truth-table entry, routing switch and flag. It is loaded into the chip's configuration memory, usually from flash, when the power comes on.
+  chapter: inside-an-fpga
+switch-box:
+  term: switch box
+  definition: The programmable multiplexers at a tile that drive the wire segments starting there, choosing between wires arriving from each direction and the tile's own outputs.
+  chapter: inside-an-fpga
+connection-box:
+  term: connection box
+  definition: The multiplexer in front of an input pin of a logic cell, which chooses which of the wires passing the tile the pin reads.
+  chapter: inside-an-fpga
+config-frame:
+  term: configuration frame
+  definition: The unit in which an FPGA's configuration memory is written, a column of it loaded at once like a row of a RAM. A bitstream file is a series of frames, each with a checksum.
+  chapter: inside-an-fpga
+scrubbing:
+  term: scrubbing
+  definition: Reading an SRAM FPGA's configuration back while it runs, comparing each frame with what it should be, and rewriting any that a cosmic ray or alpha particle has flipped.
+  chapter: inside-an-fpga
+hard-block:
+  term: hard block
+  definition: A fixed circuit on an FPGA die, such as block RAM, a multiplier, a transceiver or a processor core, that does a common job in less area, time and power than the same function built from LUTs.
+  chapter: inside-an-fpga
+pll:
+  term: PLL (phase-locked loop)
+  definition: A circuit that makes a clock of a new frequency from an old one, by multiplying and dividing. An FPGA uses it to turn a board's oscillator into the clock the fabric runs at.
+  chapter: inside-an-fpga
+aig:
+  term: and-inverter graph (AIG)
+  definition: A network in which every node is a two-input AND and every edge may be inverted. Any combinational circuit can be written this way, and synthesis tools optimise and map this form.
+  chapter: netlist-to-bitstream
+technology-mapping:
+  term: technology mapping
+  definition: Covering a gate-level network with the cells the target has, for an FPGA lookup tables of a few inputs, choosing which gates each cell absorbs so that the result is shallow and small.
+  chapter: netlist-to-bitstream
+cut:
+  term: cut
+  definition: For a node of a network, a set of at most K other nodes that every path from the inputs to the node passes through. The node is a function of the cut's leaves alone, so a K-input LUT can replace everything between.
+  chapter: netlist-to-bitstream
+packing:
+  term: packing
+  definition: Grouping logic cells into tiles so that the tile's shared clock, enable and reset are consistent and cells that share signals sit together.
+  chapter: netlist-to-bitstream
+simulated-annealing:
+  term: simulated annealing
+  definition: A search that accepts a worse solution with probability e^(-Δ/T), and lowers the temperature T as it goes, so that it can leave local minima early and settles late. FPGA tools use it to place logic.
+  chapter: netlist-to-bitstream
+pathfinder:
+  term: PathFinder (negotiated congestion)
+  definition: A routing algorithm in which every net takes the cheapest path as if alone, and the price of each wire that several nets want rises over the iterations, until each net that can go elsewhere has, and every wire has one user.
+  chapter: netlist-to-bitstream
+fmax:
+  term: fmax
+  definition: The highest clock frequency a design can run at, the inverse of its slowest register-to-register path with the set-up time of the register at its end. A timing report gives it in MHz.
+  chapter: netlist-to-bitstream
+assembler:
+  term: assembler
+  definition: The program that turns assembly language, one mnemonic per instruction, into machine code. It looks each mnemonic and register up in a table, and needs two passes over the source so that a jump can name a label defined further down.
+  chapter: running-programs
+machine-code:
+  term: machine code
+  definition: The bytes a CPU executes. On Octet each instruction is one byte, `oooo ddss`, plus at most one byte of constant or address.
+  chapter: running-programs
+symbol-table:
+  term: symbol table
+  definition: The assembler’s list of labels and constants with their values. Pass 1 builds it from the addresses of the labels; pass 2 reads it to fill in the operands.
+  chapter: running-programs
+stack:
+  term: stack
+  definition: A region of memory managed with a stack pointer, last in first out. On Octet CALL pushes the return address and RET pops it into PC, and PUSH and POP do the same for a register; the stack grows down from 0xEF.
+  chapter: running-programs
+subroutine:
+  term: subroutine
+  definition: Code that is called from several places and returns to whichever one called it. CALL saves the return address on the stack, and RET brings it back.
+  chapter: running-programs
+polling:
+  term: polling
+  definition: Reading a device again and again in a loop until it has something to say. It needs no extra hardware and wastes every cycle spent asking; the alternative is an interrupt, which Octet does not have.
+  chapter: running-programs
+cpi:
+  term: cycles per instruction (CPI)
+  definition: The average number of clock cycles an instruction takes on a program. Octet’s CPI is about 5 to 5.5, because it takes 3 cycles to fetch and decode and 1 to 5 more to execute.
+  chapter: running-programs
+iron-law:
+  term: iron law of processor performance
+  definition: 'Time = instructions × cycles per instruction × time per cycle. A program runs faster with fewer instructions, fewer cycles for each, or a shorter clock period, and improving one usually costs another.'
+  chapter: running-programs
+sram:
+  term: static RAM (SRAM)
+  definition: 'Memory whose cell is a loop of two inverters plus two access transistors: six transistors per bit. It holds its value for as long as the power is on, needs no refresh, and is fast, which makes it the memory of register files and caches.'
+  chapter: memory
+dram:
+  term: dynamic RAM (DRAM)
+  definition: 'Memory whose cell is one transistor and one capacitor: the bit is charge on the capacitor. It is the cheapest memory that can be written at will, and the charge leaks, so every row must be read and rewritten (refreshed) within about 64 ms.'
+  chapter: memory
+word-line:
+  term: word line
+  definition: 'The wire, raised by the address decoder, that connects every cell of one word to the bit lines. Exactly one word line is high during an access.'
+  chapter: memory
+bit-line:
+  term: bit line
+  definition: 'A wire that runs through all the words of a memory and connects to one cell in each: data goes in and out along it. A 6T SRAM has a pair of them per bit (BL and its complement); a DRAM a single one.'
+  chapter: memory
+sense-amplifier:
+  term: sense amplifier
+  definition: 'A circuit at the end of a bit line that turns a tiny voltage difference, tens of millivolts, into a full 0 or 1. It is a pair of cross-coupled inverters, balanced until the difference tips it one way.'
+  chapter: memory
+refresh:
+  term: refresh
+  definition: 'Reading a row of DRAM cells and writing them back at full strength before their charge has leaked too far. DDR4 sends 8192 refresh commands in every 64 ms.'
+  chapter: memory
+volatile:
+  term: volatile memory
+  definition: 'Memory that loses its contents when the power is off, such as SRAM and DRAM. Flash, ROM and core memory are non-volatile.'
+  chapter: memory
+flash-memory:
+  term: flash memory
+  definition: 'Non-volatile memory whose cell is a transistor with a floating gate: electrons put there raise its threshold voltage and stay for years. It is written in small pulses, and erased a whole block at a time, and each erase wears the cell a little.'
+  chapter: memory
+memory-hierarchy:
+  term: memory hierarchy
+  definition: 'The layers of memory between a processor and its bulk storage, each larger and slower than the one above: registers, L1 to L3 caches (SRAM), main memory (DRAM), then flash and disk. Programs reuse data, so most accesses are served by the fast layers.'
+  chapter: memory
+cache:
+  term: cache
+  definition: 'A small, fast memory, made of SRAM, that keeps copies of recently used data (in lines of 64 bytes) close to the processor, so that most memory accesses are answered in a nanosecond or so instead of eighty.'
+  chapter: memory
+datapath:
+  term: datapath
+  definition: 'The registers, ALU, memory port and buses of a processor, and the wires between them: the part that holds and moves the data. A control unit decides what the datapath does in each cycle.'
+  chapter: datapath
+alu:
+  term: ALU (arithmetic and logic unit)
+  definition: 'The circuit of a processor that adds, subtracts and combines bytes bitwise. It is always computing from its inputs; its result is only used when a control line says so.'
+  chapter: datapath
+program-counter:
+  term: program counter (PC)
+  definition: 'The register that holds the address of the next instruction byte. It counts up as bytes are fetched, and loads a new address for a jump, a call or a return.'
+  chapter: datapath
+micro-operation:
+  term: micro-operation
+  definition: 'One register transfer done in one clock cycle: one source drives the bus, one or more registers listen, and the clock edge moves the byte. An instruction is a sequence of them.'
+  chapter: datapath
+bus-window:
+  term: bus window
+  definition: 'A signal that is high only in the second half of the clock cycle, after a delay. Every bus driver’s enable is ANDed with it, so a driver is never switched on while another is still switching off.'
+  chapter: datapath
+control-unit:
+  term: control unit
+  definition: 'The circuit that turns the instruction in IR, the step of its execution and the flags into the control lines of the datapath, cycle by cycle. It is a finite-state machine whose output is the control word.'
+  chapter: control
+hardwired-control:
+  term: hardwired control
+  definition: 'A control unit made of gates: an AND for each (instruction, step) pair and an OR for each control line. Fast and small, and changed only by redrawing the logic.'
+  chapter: control
+microcode:
+  term: microcode
+  definition: 'The contents of a control store: one word per clock cycle, one bit per control line, read out in sequence by a micro-program counter. Proposed by Maurice Wilkes in 1951. A change to the microcode changes the instruction set without touching the gates.'
+  chapter: control
+differential-testing:
+  term: differential testing
+  definition: 'Running two independent implementations of the same specification on the same inputs and comparing their results at every step. A disagreement is a bug in at least one of them.'
+  chapter: control
+pwm:
+  term: pulse-width modulation (PWM)
+  definition: 'Controlling an average by switching fully on and off at a fixed frequency and varying the duty cycle, the fraction of each period the output is high. Through an RC filter it becomes a voltage; to an LED, a brightness.'
+  chapter: talking-to-the-world
+gpio:
+  term: GPIO
+  definition: 'General-purpose input/output: a pin that a program can drive as an output or read as an input, with nothing about it fixed by the chip. Octet’s LED register bits are eight output pins.'
+  chapter: talking-to-the-world
+interrupt:
+  term: interrupt
+  definition: 'A signal that makes a CPU stop what it is doing at the end of an instruction, save the program counter, and run a handler at a fixed address. Octet has none, so it polls.'
+  chapter: talking-to-the-world
+dac:
+  term: digital-to-analogue converter (DAC)
+  definition: 'A circuit that puts on a wire the voltage that a number stands for. An R-2R ladder does it with two resistor values; Octet’s DAC register makes 256 levels of 5/256 V.'
+  chapter: talking-to-the-world
+adc:
+  term: analogue-to-digital converter (ADC)
+  definition: 'A circuit that measures a voltage as a number. Most on-chip ones are successive-approximation converters: a comparator, a DAC and a register that does a binary search.'
+  chapter: talking-to-the-world
+sar:
+  term: successive-approximation ADC
+  definition: 'A converter that finds a number by binary search: it tries the top bit on a DAC, keeps it if a comparator says the input is still above the DAC, and moves down a bit. An n-bit conversion takes n comparisons.'
+  chapter: talking-to-the-world
+voltage-comparator:
+  term: comparator (analogue)
+  definition: 'A circuit with two analogue inputs whose output is 1 when the + input is above the − input and 0 otherwise. It is the one measuring instrument of an ADC; Chapter 13’s magnitude comparator compares two numbers.'
+  chapter: talking-to-the-world
+uart:
+  term: UART
+  definition: 'Universal asynchronous receiver/transmitter: sends bytes one bit at a time on one wire with no clock, framed by a start bit and a stop bit, at a speed both ends agreed beforehand.'
+  chapter: talking-to-the-world
+baud:
+  term: baud
+  definition: 'The number of signal changes per second on a line, named after Émile Baudot. On a UART, with two levels, it equals the bits per second: 9600 baud is 9600 bit/s, a bit time of 104 µs.'
+  chapter: talking-to-the-world
+bit-banging:
+  term: bit-banging
+  definition: 'Making a serial signal with a program: writing a pin at exactly the right moments, counting clock cycles between the writes, instead of using a UART or SPI peripheral.'
+  chapter: talking-to-the-world
+spi:
+  term: SPI
+  definition: 'Serial Peripheral Interface: a clocked serial bus of four wires, a clock SCK, data out MOSI, data in MISO and a chip select for each peripheral. Its four modes set the clock’s idle level and the edge on which data is sampled.'
+  chapter: talking-to-the-world
+i2c:
+  term: I²C
+  definition: 'A two-wire bus, clock SCL and data SDA, shared by every device, which has an address. Both wires are open-drain with pull-up resistors, and the receiver acknowledges each byte by pulling SDA low.'
+  chapter: talking-to-the-world
+integrated-circuit:
+  term: integrated circuit (IC)
+  definition: A whole circuit, transistors and wires, made together in one piece of semiconductor. Jack Kilby made the first in germanium in 1958; Robert Noyce’s planar silicon version, with the wires printed on top, is the one that could be mass-produced.
+  chapter: breadboard-to-billions
+wafer:
+  term: wafer
+  definition: A thin round slice of silicon, 300 mm across for today’s leading-edge chips, on which hundreds of copies of a chip are printed at once and then cut apart.
+  chapter: breadboard-to-billions
+die:
+  term: die
+  definition: 'One chip as cut from a wafer, before it is put in a package. Its area matters twice: the bigger it is, the fewer fit on a wafer and the likelier each one is to contain a defect.'
+  chapter: breadboard-to-billions
+photolithography:
+  term: photolithography
+  definition: Printing a pattern with light. A mask is imaged onto a film of photoresist, which dissolves in a developer where the light struck it, and the pattern is then cut into the layer beneath. A chip is made by repeating it for dozens of layers.
+  chapter: breadboard-to-billions
+photoresist:
+  term: photoresist
+  definition: A light-sensitive polymer spun on a wafer before exposure. In a positive resist the exposed parts dissolve in the developer, leaving a stencil of the mask’s pattern.
+  chapter: breadboard-to-billions
+photomask:
+  term: photomask (reticle)
+  definition: A plate of quartz coated with chrome in the pattern of one layer of a chip. In a scanner its image is reduced about four times onto the wafer, one field at a time.
+  chapter: breadboard-to-billions
+euv:
+  term: extreme ultraviolet (EUV)
+  definition: Light of wavelength 13.5 nm, made by hitting droplets of molten tin with a laser. Everything absorbs it, so an EUV scanner works in a vacuum and uses mirrors instead of lenses.
+  chapter: breadboard-to-billions
+dennard-scaling:
+  term: Dennard scaling
+  definition: The rule that if a transistor’s dimensions and voltage all shrink by the same factor, it becomes faster in proportion while the power of a square millimetre of chip stays the same. It stopped working around 2004, when the voltage could no longer fall.
+  chapter: real-gates
+moores-law:
+  term: Moore’s law
+  definition: The observation, made by Gordon Moore in 1965 and revised in 1975, that the number of components on a chip doubles at a steady rate, since 1975 about every two years. A forecast about economics, not a law of physics.
+  chapter: breadboard-to-billions
+process-node:
+  term: process node
+  definition: A generation of chip manufacturing, named by a number of nanometres. Since about 1997 the number is a label and not the length of anything on the chip.
+  chapter: breadboard-to-billions
+finfet:
+  term: FinFET
+  definition: A transistor whose channel is a thin vertical fin, so that the gate wraps around it on three sides and controls it better than a flat gate can. First used in volume by Intel’s 22 nm process, announced in 2011; gate-all-around transistors, which surround the channel completely, began to replace it in 2022.
+  chapter: breadboard-to-billions
+standard-cell:
+  term: standard cell
+  definition: A small pre-drawn layout of one logic function, such as a NAND gate or a flip-flop, of a fixed height so that cells fit into rows. An ASIC is a netlist of standard cells, placed and wired.
+  chapter: breadboard-to-billions
+asic:
+  term: ASIC
+  definition: Application-specific integrated circuit, a chip designed for one purpose and made with its own set of masks. It costs less per chip and is faster than an FPGA, but the masks are paid for first.
+  chapter: breadboard-to-billions
+pdk:
+  term: process design kit (PDK)
+  definition: 'The files a factory gives its designers: design rules, transistor models and a standard cell library. SKY130, released in 2020 for a 130 nm process, is a widely used open one.'
+  chapter: breadboard-to-billions
+tape-out:
+  term: tape-out
+  definition: The moment a finished chip design is sent to the factory to have masks made. After it, a change means a new set of masks.
+  chapter: breadboard-to-billions
+shuttle:
+  term: shuttle (multi-project wafer)
+  definition: A wafer, or a chip, shared by many designs from different customers, so that each pays only a share of the masks.
+  chapter: breadboard-to-billions
+pipelining:
+  term: pipelining
+  definition: Overlapping the stages of successive instructions, fetch, decode, execute and so on, with registers between them, so that a new instruction can finish every cycle and the clock is set by the slowest stage.
+  chapter: breadboard-to-billions
+branch-prediction:
+  term: branch prediction
+  definition: Guessing which way a branch will go so that a pipeline can go on fetching. A two-bit saturating counter per branch is the classic scheme; a wrong guess throws away the work done since the branch.
+  chapter: breadboard-to-billions
+out-of-order:
+  term: out-of-order execution
+  definition: Running instructions as soon as their inputs are ready rather than in program order, then committing the results in order so that the program cannot tell.
+  chapter: breadboard-to-billions
+risc-v:
+  term: RISC-V
+  definition: An open, royalty-free instruction set that began at UC Berkeley in 2010 and is now maintained by RISC-V International. Its base integer set, RV32I, is the core of Chapter 31.
+  chapter: breadboard-to-billions
+soft-core:
+  term: soft core
+  definition: A processor described in a hardware description language and loaded into the logic of an FPGA like any other design. It costs area and speed, and can be changed, copied or removed at will. MicroBlaze, Nios II, VexRiscv and PicoRV32 are soft cores.
+  chapter: cpus-on-a-chip
+hard-core:
+  term: hard core
+  definition: A processor built into the silicon of a chip, beside its FPGA fabric, as fixed as any other circuit. It is smaller and faster than a soft core and cannot be changed. The Arm cores of the Zynq-7000 are hard cores.
+  chapter: cpus-on-a-chip
+block-ram:
+  term: block RAM
+  definition: A memory built into an FPGA as a dedicated block, not made of logic cells. It reads and writes at clock edges and holds thousands of bits (4,096 in the vFPGA). A `mem` in DCL is mapped to it, while a `reg` array is made of flip-flops.
+  chapter: cpus-on-a-chip
+synchronous-read:
+  term: synchronous read
+  definition: A memory read whose data appears after the clock edge that takes the address, not as soon as the address changes. Block RAMs work this way, so a CPU that uses one gives the RAM its address a cycle early.
+  chapter: cpus-on-a-chip
+register-file:
+  term: register file
+  definition: The array of a CPU’s programmer-visible registers, with read ports that select one by number and a write port. RV32I’s has 32 registers of 32 bits; built of flip-flops it is about two thirds of the core, and in block RAM it costs almost nothing.
+  chapter: cpus-on-a-chip
+cross-probing:
+  term: cross-probing
+  definition: Selecting something in one view of a design and seeing the same thing marked in the others. A line of the source lights the cells that implement it on the chip, and a cell on the chip shows its line.
+  chapter: cpus-on-a-chip

@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "title": "A relay NOT gate",
+  "engine": "analog",
+  "components": [
+    {"id": "V1", "type": "rail", "x": 4, "y": 4, "params": {"voltage": 6}},
+    {"id": "A", "type": "switch", "x": 8, "y": 4, "params": {"closed": false}},
+    {"id": "D1", "type": "diode", "x": 16, "y": 8, "rot": 270, "label": ""},
+    {"id": "K1", "type": "relay", "x": 20, "y": 4, "params": {"coilVoltage": 6}, "label": "Relay"},
+    {"id": "V2", "type": "rail", "x": 32, "y": 6, "params": {"voltage": 6}},
+    {"id": "L1", "type": "lamp", "x": 36, "y": 8, "rot": 90, "params": {"ratedVoltage": 6, "ratedPower": 0.3}, "label": "Lamp"},
+    {"id": "G1", "type": "ground", "x": 20, "y": 8},
+    {"id": "G2", "type": "ground", "x": 36, "y": 12}
+  ],
+  "wires": [
+    {"points": [[4, 4], [8, 4]]},
+    {"points": [[12, 4], [20, 4]]},
+    {"points": [[16, 8], [20, 8]]},
+    {"points": [[28, 6], [32, 6]]},
+    {"points": [[28, 8], [36, 8]]}
+  ],
+  "notes": [
+    {"x": 12, "y": 10, "text": "flyback diode"}
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "title": "Kirchhoff’s current law at a junction",
+  "engine": "analog",
+  "components": [
+    {"id": "B1", "type": "battery", "x": 4, "y": 14, "rot": 270, "params": {"voltage": 9, "resistance": 0.01}},
+    {"id": "R1", "type": "resistor", "x": 8, "y": 4, "params": {"resistance": 1000}},
+    {"id": "A1", "type": "ammeter", "x": 14, "y": 4},
+    {"id": "A2", "type": "ammeter", "x": 22, "y": 6, "rot": 90},
+    {"id": "R2", "type": "resistor", "x": 22, "y": 12, "rot": 90, "params": {"resistance": 2000}},
+    {"id": "A3", "type": "ammeter", "x": 30, "y": 6, "rot": 90},
+    {"id": "R3", "type": "resistor", "x": 30, "y": 12, "rot": 90, "params": {"resistance": 2000}},
+    {"id": "G1", "type": "ground", "x": 4, "y": 20}
+  ],
+  "wires": [
+    {"points": [[4, 10], [4, 4], [8, 4]]},
+    {"points": [[12, 4], [14, 4]]},
+    {"points": [[18, 4], [30, 4], [30, 6]]},
+    {"points": [[22, 4], [22, 6]]},
+    {"points": [[22, 10], [22, 12]]},
+    {"points": [[30, 10], [30, 12]]},
+    {"points": [[22, 16], [22, 20]]},
+    {"points": [[30, 16], [30, 20], [4, 20], [4, 14]]}
+  ],
+  "notes": [{"x": 19, "y": 2, "text": "junction"}]
+}

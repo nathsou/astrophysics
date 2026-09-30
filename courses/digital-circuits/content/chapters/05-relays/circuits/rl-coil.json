@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "title": "A resistor and a coil, side by side",
+  "engine": "analog",
+  "components": [
+    {"id": "B1", "type": "battery", "x": 4, "y": 16, "rot": 270, "params": {"voltage": 6}, "label": "6 V"},
+    {"id": "G1", "type": "ground", "x": 4, "y": 18},
+    {"id": "S1", "type": "switch", "x": 8, "y": 12, "params": {"closed": false}, "label": "Switch"},
+    {"id": "R1", "type": "resistor", "x": 18, "y": 4, "params": {"resistance": 60}},
+    {"id": "A1", "type": "ammeter", "x": 26, "y": 4, "label": "A1"},
+    {"id": "G2", "type": "ground", "x": 34, "y": 6},
+    {"id": "L1", "type": "inductor", "x": 18, "y": 20, "params": {"inductance": 1, "resistance": 60}},
+    {"id": "A2", "type": "ammeter", "x": 26, "y": 20, "label": "A2"},
+    {"id": "G3", "type": "ground", "x": 34, "y": 22}
+  ],
+  "wires": [
+    {"points": [[4, 16], [4, 18]]},
+    {"points": [[4, 12], [8, 12]]},
+    {"points": [[12, 12], [16, 12]]},
+    {"points": [[16, 12], [16, 4], [18, 4]]},
+    {"points": [[16, 12], [16, 20], [18, 20]]},
+    {"points": [[22, 4], [26, 4]]},
+    {"points": [[30, 4], [34, 4], [34, 6]]},
+    {"points": [[22, 20], [26, 20]]},
+    {"points": [[30, 20], [34, 20], [34, 22]]}
+  ],
+  "notes": [
+    {"x": 18, "y": 0, "text": "a resistor: current at once"},
+    {"x": 18, "y": 16, "text": "a coil: current builds up"}
+  ]
+}

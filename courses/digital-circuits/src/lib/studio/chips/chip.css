@@ -1,0 +1,127 @@
+/*
+  The die: shared look of every chip view. A chip view is drawn on dark silicon in every theme (the `screen`
+  class forces the dark scheme), with metal-coloured lines. Configured fuses and bits glow; the running
+  state is amber (a HIGH), the selection is phosphor green, the transient hover copper.
+*/
+.die {
+  --die-top: color-mix(in srgb, var(--silicon) 88%, #3c4d8f);
+  --die-bottom: color-mix(in srgb, var(--silicon) 62%, #05070d);
+  --metal: var(--silicon-metal);
+  --metal-2: color-mix(in srgb, var(--silicon-metal) 70%, #b7c6e8);
+  --metal-dim: color-mix(in srgb, var(--silicon-metal) 34%, transparent);
+  --metal-faint: color-mix(in srgb, var(--silicon-metal) 15%, transparent);
+  --hot: var(--sig-high);
+  --hot-glow: var(--sig-high-glow);
+  --sel: var(--phosphor);
+  --sel-soft: color-mix(in srgb, var(--phosphor) 20%, transparent);
+  --hov: var(--copper);
+  --hov-soft: color-mix(in srgb, var(--copper) 22%, transparent);
+  --cold: var(--sig-low);
+  --die-ink: color-mix(in srgb, var(--fg) 88%, transparent);
+  --die-ink-2: color-mix(in srgb, var(--fg) 58%, transparent);
+  --bad: var(--sig-x);
+  position: relative;
+  background: radial-gradient(120% 90% at 50% 0%, var(--die-top), var(--die-bottom));
+  color: var(--die-ink);
+  font-family: var(--font-mono);
+  border-radius: 10px;
+  overflow: hidden;
+  isolation: isolate;
+}
+.die svg {
+  display: block;
+  font-family: var(--font-mono);
+  user-select: none;
+  -webkit-user-select: none;
+}
+.die .t {
+  fill: var(--die-ink);
+  font-size: 11px;
+}
+.die .t2 {
+  fill: var(--die-ink-2);
+  font-size: 10px;
+}
+.die .lbl {
+  fill: var(--die-ink-2);
+  font-size: 9.5px;
+  letter-spacing: 0.02em;
+}
+.die .metal {
+  stroke: var(--metal-dim);
+  fill: none;
+  stroke-linecap: round;
+}
+.die .hot {
+  stroke: var(--hot);
+}
+.die .glow {
+  filter: drop-shadow(0 0 3px var(--hot-glow));
+}
+.die :focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+/* A tooltip over a die. */
+.die .tip {
+  position: absolute;
+  z-index: 6;
+  pointer-events: none;
+  max-width: min(22rem, 86%);
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--metal-dim);
+  background: color-mix(in srgb, #06080f 92%, transparent);
+  color: var(--die-ink);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.45);
+}
+.die .tip strong {
+  display: block;
+  color: var(--metal);
+  font-family: var(--font-ui);
+  font-size: 0.74rem;
+  margin-bottom: 0.1rem;
+}
+@keyframes blow-flare {
+  0% {
+    transform: scale(0.3);
+    opacity: 1;
+  }
+  60% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}
+@keyframes blow-flash {
+  0% {
+    opacity: 1;
+    stroke-width: 3;
+  }
+  100% {
+    opacity: 0;
+    stroke-width: 1;
+  }
+}
+.die .flare {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: blow-flare 520ms ease-out forwards;
+  pointer-events: none;
+}
+.die .flash-line {
+  animation: blow-flash 620ms ease-out forwards;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .die .flare,
+  .die .flash-line {
+    animation: none;
+    opacity: 0;
+  }
+}

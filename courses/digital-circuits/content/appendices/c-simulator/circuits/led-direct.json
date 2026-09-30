@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "title": "An LED straight across a battery",
+  "engine": "analog",
+  "components": [
+    {"id": "B1", "type": "battery", "x": 4, "y": 10, "rot": 270, "params": {"voltage": 5}},
+    {"id": "S1", "type": "switch", "x": 8, "y": 2, "label": "Close me"},
+    {"id": "D1", "type": "led", "x": 18, "y": 4, "rot": 90, "params": {"color": "red"}},
+    {"id": "A1", "type": "voltmeter", "x": 26, "y": 8, "rot": 270},
+    {"id": "G1", "type": "ground", "x": 4, "y": 12}
+  ],
+  "wires": [
+    {"points": [[4, 6], [4, 2], [8, 2]]},
+    {"points": [[12, 2], [26, 2], [26, 4]]},
+    {"points": [[18, 2], [18, 4]]},
+    {"points": [[18, 8], [18, 12]]},
+    {"points": [[26, 8], [26, 12], [4, 12], [4, 10]]}
+  ],
+  "notes": [{"x": 8, "y": 0, "text": "no resistor: the LED is rated 30 mA"}]
+}

@@ -1,0 +1,115 @@
+{
+  "version": 1,
+  "title": "A transparent latch fed back on itself",
+  "engine": "digital",
+  "components": [
+    {
+      "id": "EN",
+      "type": "toggle",
+      "x": 5,
+      "y": 8,
+      "params": {
+        "on": true
+      },
+      "label": "EN"
+    },
+    {
+      "id": "L1",
+      "type": "dlatch",
+      "x": 14,
+      "y": 6,
+      "params": {
+        "delay": 1
+      },
+      "label": "D latch"
+    },
+    {
+      "id": "Q",
+      "type": "indicator",
+      "x": 24,
+      "y": 6,
+      "params": {
+        "color": "amber"
+      },
+      "label": "Q"
+    },
+    {
+      "id": "F1",
+      "type": "label",
+      "x": 22,
+      "y": 8,
+      "params": {
+        "name": "Qn"
+      },
+      "label": ""
+    },
+    {
+      "id": "F2",
+      "type": "label",
+      "x": 12,
+      "y": 6,
+      "flip": true,
+      "params": {
+        "name": "Qn"
+      },
+      "label": ""
+    }
+  ],
+  "wires": [
+    {
+      "points": [
+        [
+          8,
+          8
+        ],
+        [
+          14,
+          8
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          6
+        ],
+        [
+          24,
+          6
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          8
+        ],
+        [
+          22,
+          8
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          12,
+          6
+        ],
+        [
+          14,
+          6
+        ]
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "x": 3,
+      "y": 2,
+      "text": "D is wired to the inverted output,\nso Q keeps trying to become\nthe opposite of itself"
+    }
+  ]
+}

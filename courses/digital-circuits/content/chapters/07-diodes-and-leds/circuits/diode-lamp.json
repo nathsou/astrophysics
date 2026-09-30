@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "title": "A diode passes current one way",
+  "engine": "analog",
+  "components": [
+    {"id": "B1", "type": "battery", "x": 4, "y": 12, "rot": 270, "params": {"voltage": 6}},
+    {"id": "G1", "type": "ground", "x": 4, "y": 14},
+    {"id": "D1", "type": "diode", "x": 12, "y": 2, "rot": 90, "label": "Forward"},
+    {"id": "L1", "type": "lamp", "x": 12, "y": 8, "rot": 90, "params": {"ratedVoltage": 6, "ratedPower": 0.3}, "label": "Lamp"},
+    {"id": "G2", "type": "ground", "x": 12, "y": 14},
+    {"id": "V1", "type": "voltmeter", "x": 19, "y": 6, "rot": 270},
+    {"id": "D2", "type": "diode", "x": 30, "y": 6, "rot": 270, "label": "Reversed"},
+    {"id": "L2", "type": "lamp", "x": 30, "y": 8, "rot": 90, "params": {"ratedVoltage": 6, "ratedPower": 0.3}, "label": "Lamp"},
+    {"id": "G3", "type": "ground", "x": 30, "y": 14},
+    {"id": "V2", "type": "voltmeter", "x": 37, "y": 6, "rot": 270}
+  ],
+  "wires": [
+    {"points": [[4, 8], [4, 2], [37, 2]]},
+    {"points": [[12, 6], [12, 8]]},
+    {"points": [[19, 6], [12, 6]]},
+    {"points": [[12, 12], [12, 14]]},
+    {"points": [[30, 12], [30, 14]]},
+    {"points": [[37, 6], [30, 6]]},
+    {"points": [[4, 12], [4, 14]]},
+    {"points": [[30, 6], [30, 8]]}
+  ],
+  "notes": [
+    {"x": 20, "y": 10, "text": "voltage\nacross\nthe diode"}
+  ]
+}

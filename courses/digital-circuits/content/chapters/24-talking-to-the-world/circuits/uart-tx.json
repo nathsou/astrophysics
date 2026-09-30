@@ -1,0 +1,1053 @@
+{
+ "version": 1,
+ "title": "A UART transmitter",
+ "engine": "digital",
+ "components": [
+  {
+   "id": "clk",
+   "type": "clock",
+   "x": 2,
+   "y": 3,
+   "params": {
+    "frequency": 9600
+   },
+   "label": "9600 Hz"
+  },
+  {
+   "id": "l_clk",
+   "type": "label",
+   "x": 7,
+   "y": 3,
+   "params": {
+    "name": "CLK"
+   },
+   "label": ""
+  },
+  {
+   "id": "CNT",
+   "type": "counter",
+   "x": 14,
+   "y": 3,
+   "params": {
+    "bits": 4
+   },
+   "label": "bit counter"
+  },
+  {
+   "id": "f1",
+   "type": "label",
+   "x": 12,
+   "y": 3,
+   "flip": true,
+   "params": {
+    "name": "CLK"
+   },
+   "label": ""
+  },
+  {
+   "id": "l_q0",
+   "type": "label",
+   "x": 22,
+   "y": 3,
+   "params": {
+    "name": "q0"
+   },
+   "label": ""
+  },
+  {
+   "id": "l_q1",
+   "type": "label",
+   "x": 22,
+   "y": 5,
+   "params": {
+    "name": "q1"
+   },
+   "label": ""
+  },
+  {
+   "id": "l_q2",
+   "type": "label",
+   "x": 22,
+   "y": 7,
+   "params": {
+    "name": "q2"
+   },
+   "label": ""
+  },
+  {
+   "id": "l_q3",
+   "type": "label",
+   "x": 22,
+   "y": 9,
+   "params": {
+    "name": "q3"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_D0",
+   "type": "toggle",
+   "x": 2,
+   "y": 24,
+   "label": "",
+   "params": {
+    "on": true
+   }
+  },
+  {
+   "id": "l_d0",
+   "type": "label",
+   "x": 7,
+   "y": 24,
+   "params": {
+    "name": "d0"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_D1",
+   "type": "toggle",
+   "x": 2,
+   "y": 27,
+   "label": "",
+   "params": {
+    "on": false
+   }
+  },
+  {
+   "id": "l_d1",
+   "type": "label",
+   "x": 7,
+   "y": 27,
+   "params": {
+    "name": "d1"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_D2",
+   "type": "toggle",
+   "x": 2,
+   "y": 30,
+   "label": "",
+   "params": {
+    "on": false
+   }
+  },
+  {
+   "id": "l_d2",
+   "type": "label",
+   "x": 7,
+   "y": 30,
+   "params": {
+    "name": "d2"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_D3",
+   "type": "toggle",
+   "x": 2,
+   "y": 33,
+   "label": "",
+   "params": {
+    "on": false
+   }
+  },
+  {
+   "id": "l_d3",
+   "type": "label",
+   "x": 7,
+   "y": 33,
+   "params": {
+    "name": "d3"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_D4",
+   "type": "toggle",
+   "x": 2,
+   "y": 36,
+   "label": "",
+   "params": {
+    "on": false
+   }
+  },
+  {
+   "id": "l_d4",
+   "type": "label",
+   "x": 7,
+   "y": 36,
+   "params": {
+    "name": "d4"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_D5",
+   "type": "toggle",
+   "x": 2,
+   "y": 39,
+   "label": "",
+   "params": {
+    "on": false
+   }
+  },
+  {
+   "id": "l_d5",
+   "type": "label",
+   "x": 7,
+   "y": 39,
+   "params": {
+    "name": "d5"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_D6",
+   "type": "toggle",
+   "x": 2,
+   "y": 42,
+   "label": "",
+   "params": {
+    "on": true
+   }
+  },
+  {
+   "id": "l_d6",
+   "type": "label",
+   "x": 7,
+   "y": 42,
+   "params": {
+    "name": "d6"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_D7",
+   "type": "toggle",
+   "x": 2,
+   "y": 45,
+   "label": "",
+   "params": {
+    "on": false
+   }
+  },
+  {
+   "id": "l_d7",
+   "type": "label",
+   "x": 7,
+   "y": 45,
+   "params": {
+    "name": "d7"
+   },
+   "label": ""
+  },
+  {
+   "id": "MA",
+   "type": "mux",
+   "x": 34,
+   "y": 3,
+   "params": {
+    "select": 3
+   },
+   "label": "p 0\u20137"
+  },
+  {
+   "id": "k0",
+   "type": "const",
+   "x": 30,
+   "y": 3,
+   "params": {
+    "value": 0
+   },
+   "label": ""
+  },
+  {
+   "id": "f2",
+   "type": "label",
+   "x": 32,
+   "y": 5,
+   "flip": true,
+   "params": {
+    "name": "d0"
+   },
+   "label": ""
+  },
+  {
+   "id": "f3",
+   "type": "label",
+   "x": 32,
+   "y": 7,
+   "flip": true,
+   "params": {
+    "name": "d1"
+   },
+   "label": ""
+  },
+  {
+   "id": "f4",
+   "type": "label",
+   "x": 32,
+   "y": 9,
+   "flip": true,
+   "params": {
+    "name": "d2"
+   },
+   "label": ""
+  },
+  {
+   "id": "f5",
+   "type": "label",
+   "x": 32,
+   "y": 11,
+   "flip": true,
+   "params": {
+    "name": "d3"
+   },
+   "label": ""
+  },
+  {
+   "id": "f6",
+   "type": "label",
+   "x": 32,
+   "y": 13,
+   "flip": true,
+   "params": {
+    "name": "d4"
+   },
+   "label": ""
+  },
+  {
+   "id": "f7",
+   "type": "label",
+   "x": 32,
+   "y": 15,
+   "flip": true,
+   "params": {
+    "name": "d5"
+   },
+   "label": ""
+  },
+  {
+   "id": "f8",
+   "type": "label",
+   "x": 32,
+   "y": 17,
+   "flip": true,
+   "params": {
+    "name": "d6"
+   },
+   "label": ""
+  },
+  {
+   "id": "f9",
+   "type": "label",
+   "x": 32,
+   "y": 19,
+   "flip": true,
+   "params": {
+    "name": "q0"
+   },
+   "label": ""
+  },
+  {
+   "id": "f10",
+   "type": "label",
+   "x": 32,
+   "y": 21,
+   "flip": true,
+   "params": {
+    "name": "q1"
+   },
+   "label": ""
+  },
+  {
+   "id": "f11",
+   "type": "label",
+   "x": 32,
+   "y": 23,
+   "flip": true,
+   "params": {
+    "name": "q2"
+   },
+   "label": ""
+  },
+  {
+   "id": "MB",
+   "type": "mux",
+   "x": 34,
+   "y": 30,
+   "params": {
+    "select": 3
+   },
+   "label": "p 8\u201315"
+  },
+  {
+   "id": "f12",
+   "type": "label",
+   "x": 32,
+   "y": 30,
+   "flip": true,
+   "params": {
+    "name": "d7"
+   },
+   "label": ""
+  },
+  {
+   "id": "k1",
+   "type": "const",
+   "x": 28,
+   "y": 32,
+   "params": {
+    "value": 1
+   },
+   "label": ""
+  },
+  {
+   "id": "f13",
+   "type": "label",
+   "x": 32,
+   "y": 46,
+   "flip": true,
+   "params": {
+    "name": "q0"
+   },
+   "label": ""
+  },
+  {
+   "id": "f14",
+   "type": "label",
+   "x": 32,
+   "y": 48,
+   "flip": true,
+   "params": {
+    "name": "q1"
+   },
+   "label": ""
+  },
+  {
+   "id": "f15",
+   "type": "label",
+   "x": 32,
+   "y": 50,
+   "flip": true,
+   "params": {
+    "name": "q2"
+   },
+   "label": ""
+  },
+  {
+   "id": "MF",
+   "type": "mux",
+   "x": 50,
+   "y": 20,
+   "params": {
+    "select": 1
+   },
+   "label": ""
+  },
+  {
+   "id": "f16",
+   "type": "label",
+   "x": 44,
+   "y": 24,
+   "flip": true,
+   "params": {
+    "name": "q3"
+   },
+   "label": ""
+  },
+  {
+   "id": "FF",
+   "type": "dff",
+   "x": 64,
+   "y": 20,
+   "params": {
+    "init": "1"
+   },
+   "label": ""
+  },
+  {
+   "id": "f17",
+   "type": "label",
+   "x": 62,
+   "y": 22,
+   "flip": true,
+   "params": {
+    "name": "CLK"
+   },
+   "label": ""
+  },
+  {
+   "id": "TX",
+   "type": "indicator",
+   "x": 74,
+   "y": 20,
+   "params": {
+    "color": "amber"
+   },
+   "label": "TX"
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     5,
+     3
+    ],
+    [
+     7,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     12,
+     3
+    ],
+    [
+     14,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     20,
+     3
+    ],
+    [
+     22,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     20,
+     5
+    ],
+    [
+     22,
+     5
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     20,
+     7
+    ],
+    [
+     22,
+     7
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     20,
+     9
+    ],
+    [
+     22,
+     9
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     24
+    ],
+    [
+     7,
+     24
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     27
+    ],
+    [
+     7,
+     27
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     30
+    ],
+    [
+     7,
+     30
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     33
+    ],
+    [
+     7,
+     33
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     36
+    ],
+    [
+     7,
+     36
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     39
+    ],
+    [
+     7,
+     39
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     42
+    ],
+    [
+     7,
+     42
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     45
+    ],
+    [
+     7,
+     45
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     3
+    ],
+    [
+     34,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     5
+    ],
+    [
+     34,
+     5
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     7
+    ],
+    [
+     34,
+     7
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     9
+    ],
+    [
+     34,
+     9
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     11
+    ],
+    [
+     34,
+     11
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     13
+    ],
+    [
+     34,
+     13
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     15
+    ],
+    [
+     34,
+     15
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     17
+    ],
+    [
+     34,
+     17
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     19
+    ],
+    [
+     34,
+     19
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     21
+    ],
+    [
+     34,
+     21
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     23
+    ],
+    [
+     34,
+     23
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     30
+    ],
+    [
+     34,
+     30
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     30,
+     32
+    ],
+    [
+     32,
+     32
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     32
+    ],
+    [
+     32,
+     44
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     32
+    ],
+    [
+     34,
+     32
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     34
+    ],
+    [
+     34,
+     34
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     36
+    ],
+    [
+     34,
+     36
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     38
+    ],
+    [
+     34,
+     38
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     40
+    ],
+    [
+     34,
+     40
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     42
+    ],
+    [
+     34,
+     42
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     44
+    ],
+    [
+     34,
+     44
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     46
+    ],
+    [
+     34,
+     46
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     48
+    ],
+    [
+     34,
+     48
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     50
+    ],
+    [
+     34,
+     50
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     40,
+     3
+    ],
+    [
+     46,
+     3
+    ],
+    [
+     46,
+     20
+    ],
+    [
+     50,
+     20
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     40,
+     30
+    ],
+    [
+     47,
+     30
+    ],
+    [
+     47,
+     22
+    ],
+    [
+     50,
+     22
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     44,
+     24
+    ],
+    [
+     46,
+     24
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     44,
+     24
+    ],
+    [
+     50,
+     24
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     56,
+     20
+    ],
+    [
+     64,
+     20
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     62,
+     22
+    ],
+    [
+     64,
+     22
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     70,
+     20
+    ],
+    [
+     74,
+     20
+    ]
+   ]
+  }
+ ],
+ "notes": []
+}

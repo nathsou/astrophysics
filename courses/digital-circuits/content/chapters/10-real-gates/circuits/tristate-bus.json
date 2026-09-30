@@ -1,0 +1,149 @@
+{
+ "version": 1,
+ "title": "Two tri-state drivers on one bus",
+ "engine": "digital",
+ "components": [
+  {
+   "id": "D1",
+   "type": "toggle",
+   "x": 1,
+   "y": 6,
+   "label": "Data 1"
+  },
+  {
+   "id": "E1",
+   "type": "toggle",
+   "x": 5,
+   "y": 0,
+   "label": "Enable 1"
+  },
+  {
+   "id": "T1",
+   "type": "tristate",
+   "x": 10,
+   "y": 6,
+   "label": ""
+  },
+  {
+   "id": "D2",
+   "type": "toggle",
+   "x": 1,
+   "y": 16,
+   "label": "Data 2"
+  },
+  {
+   "id": "E2",
+   "type": "toggle",
+   "x": 5,
+   "y": 10,
+   "label": "Enable 2"
+  },
+  {
+   "id": "T2",
+   "type": "tristate",
+   "x": 10,
+   "y": 16,
+   "label": ""
+  },
+  {
+   "id": "P",
+   "type": "probe",
+   "x": 24,
+   "y": 11,
+   "params": {
+    "name": "BUS"
+   },
+   "label": "BUS"
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     4,
+     6
+    ],
+    [
+     10,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     8,
+     0
+    ],
+    [
+     12,
+     0
+    ],
+    [
+     12,
+     4
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     4,
+     16
+    ],
+    [
+     10,
+     16
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     8,
+     10
+    ],
+    [
+     12,
+     10
+    ],
+    [
+     12,
+     14
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     15,
+     6
+    ],
+    [
+     21,
+     6
+    ],
+    [
+     21,
+     16
+    ],
+    [
+     15,
+     16
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     21,
+     11
+    ],
+    [
+     24,
+     11
+    ]
+   ]
+  }
+ ]
+}

@@ -1,0 +1,959 @@
+{
+ "version": 1,
+ "title": "An address decoder",
+ "engine": "digital",
+ "components": [
+  {
+   "id": "in_A7",
+   "type": "toggle",
+   "x": 2,
+   "y": 3,
+   "label": "",
+   "params": {
+    "on": true
+   }
+  },
+  {
+   "id": "o1",
+   "type": "label",
+   "x": 7,
+   "y": 3,
+   "params": {
+    "name": "A7"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_A6",
+   "type": "toggle",
+   "x": 2,
+   "y": 6,
+   "label": "",
+   "params": {
+    "on": true
+   }
+  },
+  {
+   "id": "o2",
+   "type": "label",
+   "x": 7,
+   "y": 6,
+   "params": {
+    "name": "A6"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_A5",
+   "type": "toggle",
+   "x": 2,
+   "y": 9,
+   "label": "",
+   "params": {
+    "on": true
+   }
+  },
+  {
+   "id": "o3",
+   "type": "label",
+   "x": 7,
+   "y": 9,
+   "params": {
+    "name": "A5"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_A4",
+   "type": "toggle",
+   "x": 2,
+   "y": 12,
+   "label": "",
+   "params": {
+    "on": true
+   }
+  },
+  {
+   "id": "o4",
+   "type": "label",
+   "x": 7,
+   "y": 12,
+   "params": {
+    "name": "A4"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_A3",
+   "type": "toggle",
+   "x": 2,
+   "y": 15,
+   "label": "",
+   "params": {
+    "on": true
+   }
+  },
+  {
+   "id": "o5",
+   "type": "label",
+   "x": 7,
+   "y": 15,
+   "params": {
+    "name": "A3"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_A2",
+   "type": "toggle",
+   "x": 2,
+   "y": 18,
+   "label": "",
+   "params": {
+    "on": false
+   }
+  },
+  {
+   "id": "o6",
+   "type": "label",
+   "x": 7,
+   "y": 18,
+   "params": {
+    "name": "A2"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_A1",
+   "type": "toggle",
+   "x": 2,
+   "y": 21,
+   "label": "",
+   "params": {
+    "on": false
+   }
+  },
+  {
+   "id": "o7",
+   "type": "label",
+   "x": 7,
+   "y": 21,
+   "params": {
+    "name": "A1"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_A0",
+   "type": "toggle",
+   "x": 2,
+   "y": 24,
+   "label": "",
+   "params": {
+    "on": false
+   }
+  },
+  {
+   "id": "o8",
+   "type": "label",
+   "x": 7,
+   "y": 24,
+   "params": {
+    "name": "A0"
+   },
+   "label": ""
+  },
+  {
+   "id": "IOG",
+   "type": "and",
+   "x": 20,
+   "y": 3,
+   "params": {
+    "inputs": 4
+   },
+   "label": ""
+  },
+  {
+   "id": "f9",
+   "type": "label",
+   "x": 18,
+   "y": 3,
+   "flip": true,
+   "params": {
+    "name": "A7"
+   },
+   "label": ""
+  },
+  {
+   "id": "f10",
+   "type": "label",
+   "x": 18,
+   "y": 5,
+   "flip": true,
+   "params": {
+    "name": "A6"
+   },
+   "label": ""
+  },
+  {
+   "id": "f11",
+   "type": "label",
+   "x": 18,
+   "y": 7,
+   "flip": true,
+   "params": {
+    "name": "A5"
+   },
+   "label": ""
+  },
+  {
+   "id": "f12",
+   "type": "label",
+   "x": 18,
+   "y": 9,
+   "flip": true,
+   "params": {
+    "name": "A4"
+   },
+   "label": ""
+  },
+  {
+   "id": "o13",
+   "type": "label",
+   "x": 28,
+   "y": 6,
+   "params": {
+    "name": "IO"
+   },
+   "label": ""
+  },
+  {
+   "id": "RAMG",
+   "type": "nand",
+   "x": 20,
+   "y": 13,
+   "params": {
+    "inputs": 4
+   },
+   "label": ""
+  },
+  {
+   "id": "f14",
+   "type": "label",
+   "x": 18,
+   "y": 13,
+   "flip": true,
+   "params": {
+    "name": "A7"
+   },
+   "label": ""
+  },
+  {
+   "id": "f15",
+   "type": "label",
+   "x": 18,
+   "y": 15,
+   "flip": true,
+   "params": {
+    "name": "A6"
+   },
+   "label": ""
+  },
+  {
+   "id": "f16",
+   "type": "label",
+   "x": 18,
+   "y": 17,
+   "flip": true,
+   "params": {
+    "name": "A5"
+   },
+   "label": ""
+  },
+  {
+   "id": "f17",
+   "type": "label",
+   "x": 18,
+   "y": 19,
+   "flip": true,
+   "params": {
+    "name": "A4"
+   },
+   "label": ""
+  },
+  {
+   "id": "out_RAM",
+   "type": "indicator",
+   "x": 30,
+   "y": 16,
+   "params": {
+    "color": "green"
+   },
+   "label": "RAM"
+  },
+  {
+   "id": "DEC",
+   "type": "decoder",
+   "x": 40,
+   "y": 3,
+   "params": {
+    "bits": 4
+   },
+   "label": "4-to-16 decoder"
+  },
+  {
+   "id": "f18",
+   "type": "label",
+   "x": 38,
+   "y": 3,
+   "flip": true,
+   "params": {
+    "name": "A0"
+   },
+   "label": ""
+  },
+  {
+   "id": "f19",
+   "type": "label",
+   "x": 38,
+   "y": 5,
+   "flip": true,
+   "params": {
+    "name": "A1"
+   },
+   "label": ""
+  },
+  {
+   "id": "f20",
+   "type": "label",
+   "x": 38,
+   "y": 7,
+   "flip": true,
+   "params": {
+    "name": "A2"
+   },
+   "label": ""
+  },
+  {
+   "id": "f21",
+   "type": "label",
+   "x": 38,
+   "y": 9,
+   "flip": true,
+   "params": {
+    "name": "A3"
+   },
+   "label": ""
+  },
+  {
+   "id": "f22",
+   "type": "label",
+   "x": 38,
+   "y": 11,
+   "flip": true,
+   "params": {
+    "name": "IO"
+   },
+   "label": ""
+  },
+  {
+   "id": "ORM",
+   "type": "or",
+   "x": 52,
+   "y": 3,
+   "params": {
+    "inputs": 8
+   },
+   "label": ""
+  },
+  {
+   "id": "out_MATRIX",
+   "type": "indicator",
+   "x": 62,
+   "y": 10,
+   "params": {
+    "color": "red"
+   },
+   "label": "MATRIX"
+  },
+  {
+   "id": "out_LEDS",
+   "type": "indicator",
+   "x": 54,
+   "y": 19,
+   "params": {
+    "color": "amber"
+   },
+   "label": "LEDS"
+  },
+  {
+   "id": "out_SWITCHES",
+   "type": "indicator",
+   "x": 54,
+   "y": 21,
+   "params": {
+    "color": "amber"
+   },
+   "label": "SWITCHES"
+  },
+  {
+   "id": "out_BUTTONS",
+   "type": "indicator",
+   "x": 54,
+   "y": 23,
+   "params": {
+    "color": "amber"
+   },
+   "label": "BUTTONS"
+  },
+  {
+   "id": "out_HEX",
+   "type": "indicator",
+   "x": 54,
+   "y": 25,
+   "params": {
+    "color": "amber"
+   },
+   "label": "HEX"
+  },
+  {
+   "id": "out_CONSOLE",
+   "type": "indicator",
+   "x": 54,
+   "y": 27,
+   "params": {
+    "color": "amber"
+   },
+   "label": "CONSOLE"
+  },
+  {
+   "id": "out_RANDOM",
+   "type": "indicator",
+   "x": 54,
+   "y": 29,
+   "params": {
+    "color": "amber"
+   },
+   "label": "RANDOM"
+  },
+  {
+   "id": "out_PWM",
+   "type": "indicator",
+   "x": 54,
+   "y": 31,
+   "params": {
+    "color": "amber"
+   },
+   "label": "PWM"
+  },
+  {
+   "id": "out_DAC",
+   "type": "indicator",
+   "x": 54,
+   "y": 33,
+   "params": {
+    "color": "amber"
+   },
+   "label": "DAC"
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     5,
+     3
+    ],
+    [
+     7,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     6
+    ],
+    [
+     7,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     9
+    ],
+    [
+     7,
+     9
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     12
+    ],
+    [
+     7,
+     12
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     15
+    ],
+    [
+     7,
+     15
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     18
+    ],
+    [
+     7,
+     18
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     21
+    ],
+    [
+     7,
+     21
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     24
+    ],
+    [
+     7,
+     24
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     18,
+     3
+    ],
+    [
+     20,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     18,
+     5
+    ],
+    [
+     20,
+     5
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     18,
+     7
+    ],
+    [
+     20,
+     7
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     18,
+     9
+    ],
+    [
+     20,
+     9
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     26,
+     6
+    ],
+    [
+     28,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     18,
+     13
+    ],
+    [
+     20,
+     13
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     18,
+     15
+    ],
+    [
+     20,
+     15
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     18,
+     17
+    ],
+    [
+     20,
+     17
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     18,
+     19
+    ],
+    [
+     20,
+     19
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     26,
+     16
+    ],
+    [
+     30,
+     16
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     38,
+     3
+    ],
+    [
+     40,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     38,
+     5
+    ],
+    [
+     40,
+     5
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     38,
+     7
+    ],
+    [
+     40,
+     7
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     38,
+     9
+    ],
+    [
+     40,
+     9
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     38,
+     11
+    ],
+    [
+     40,
+     11
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     46,
+     3
+    ],
+    [
+     52,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     46,
+     5
+    ],
+    [
+     52,
+     5
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     46,
+     7
+    ],
+    [
+     52,
+     7
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     46,
+     9
+    ],
+    [
+     52,
+     9
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     46,
+     11
+    ],
+    [
+     52,
+     11
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     46,
+     13
+    ],
+    [
+     52,
+     13
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     46,
+     15
+    ],
+    [
+     52,
+     15
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     46,
+     17
+    ],
+    [
+     52,
+     17
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     58,
+     10
+    ],
+    [
+     62,
+     10
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     46,
+     19
+    ],
+    [
+     54,
+     19
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     46,
+     21
+    ],
+    [
+     54,
+     21
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     46,
+     23
+    ],
+    [
+     54,
+     23
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     46,
+     25
+    ],
+    [
+     54,
+     25
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     46,
+     27
+    ],
+    [
+     54,
+     27
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     46,
+     29
+    ],
+    [
+     54,
+     29
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     46,
+     31
+    ],
+    [
+     54,
+     31
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     46,
+     33
+    ],
+    [
+     54,
+     33
+    ]
+   ]
+  }
+ ],
+ "notes": [
+  {
+   "x": 1,
+   "y": 0,
+   "text": "the address on the bus, A7 first"
+  },
+  {
+   "x": 38,
+   "y": 0,
+   "text": "low four bits, inside region F"
+  },
+  {
+   "x": 19,
+   "y": 21,
+   "text": "below F0: RAM"
+  }
+ ]
+}

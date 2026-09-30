@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "title": "A voltage divider",
+  "engine": "analog",
+  "components": [
+    {"id": "B1", "type": "battery", "x": 4, "y": 20, "rot": 270, "params": {"voltage": 9, "resistance": 0.01}},
+    {"id": "A1", "type": "ammeter", "x": 6, "y": 2},
+    {"id": "R1", "type": "resistor", "x": 14, "y": 4, "rot": 90, "params": {"resistance": 2000}},
+    {"id": "R2", "type": "resistor", "x": 14, "y": 12, "rot": 90, "params": {"resistance": 1000}},
+    {"id": "V2", "type": "voltmeter", "x": 24, "y": 8, "rot": 270, "label": "across R1"},
+    {"id": "V1", "type": "voltmeter", "x": 24, "y": 16, "rot": 270, "label": "Vout"},
+    {"id": "G1", "type": "ground", "x": 4, "y": 22}
+  ],
+  "wires": [
+    {"points": [[4, 16], [4, 2], [6, 2]]},
+    {"points": [[10, 2], [24, 2], [24, 4]]},
+    {"points": [[14, 2], [14, 4]]},
+    {"points": [[14, 8], [14, 12]]},
+    {"points": [[14, 10], [24, 10]]},
+    {"points": [[24, 8], [24, 12]]},
+    {"points": [[14, 16], [14, 22]]},
+    {"points": [[24, 16], [24, 22], [4, 22], [4, 20]]}
+  ]
+}
