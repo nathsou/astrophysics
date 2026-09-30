@@ -1,5 +1,8 @@
 import { describe, expect, test } from 'vitest';
 import { createAnalogEngine, type AnalogEngine } from './engine';
+import { conductance, currentSource } from './device';
+import { registerAnalogModel } from './models';
+import type { FlatNetlist } from '../netlist/types';
 import { mulberry32 } from './rng';
 import { circuit } from './test-helpers';
 
@@ -297,5 +300,249 @@ describe('lamp brightness', () => {
     for (let i = 1; i < b.length; i++) expect(b[i]!).toBeGreaterThan(b[i - 1]!);
     // Smooth: no step bigger than 0.25 between neighbours.
     for (let i = 1; i < b.length; i++) expect(b[i]! - b[i - 1]!).toBeLessThan(0.25);
+  });
+});
+
+describe('the 555 astable from comparators, a NOR latch and a discharge transistor', () => {
+  type Supply = 'battery' | 'rail' | 'supply';
+  function astable(r1: number, r2: number, cap: number, supply: Supply) {
+    const c = circuit();
+    if (supply === 'battery') c.add('VCC', 'battery', { '-': 'gnd', '+': 'vcc' }, { voltage: 5 });
+    else if (supply === 'rail') c.add('VCC', 'rail', { v: 'vcc' }, { voltage: 5 });
+    else c.add('VCC', 'supply', { '-': 'gnd', '+': 'vcc' }, { voltage: 5, limit: 1 });
+    c.add('RA', 'resistor', { '1': 'vcc', '2': 'n2' }, { resistance: 5000 })
+      .add('RB', 'resistor', { '1': 'n2', '2': 'n1' }, { resistance: 5000 })
+      .add('RC', 'resistor', { '1': 'n1', '2': 'gnd' }, { resistance: 5000 })
+      .add('CT', 'comparator', { '+': 'cap', '-': 'n2', Y: 'rst' })
+      .add('CB', 'comparator', { '+': 'n1', '-': 'cap', Y: 'set' })
+      .add('N1', 'nor', { A: 'rst', B: 'qn', Y: 'q' }, { delay: 0 })
+      .add('N2', 'nor', { A: 'set', B: 'q', Y: 'qn' }, { delay: 0 })
+      .add('RD', 'resistor', { '1': 'qn', '2': 'base' }, { resistance: 4700 })
+      .add('T1', 'npn', { B: 'base', C: 'dis', E: 'gnd' })
+      .add('R1', 'resistor', { '1': 'vcc', '2': 'dis' }, { resistance: r1 })
+      .add('R2', 'resistor', { '1': 'dis', '2': 'cap' }, { resistance: r2 })
+      .add('C1', 'capacitor', { '1': 'cap', '2': 'gnd' }, { capacitance: cap });
+    return c;
+  }
+  /** Runs 6.5 textbook periods in frames of `frame` periods; returns measured period / textbook period. */
+  function measure(r1: number, r2: number, cap: number, supply: Supply, frame: number) {
+    const c = astable(r1, r2, cap, supply);
+    const e = createAnalogEngine(c.build());
+    const period = 0.693 * (r1 + 2 * r2) * cap;
+    const total = 6.5 * period;
+    const rec = e.watch([c.net('q')]);
+    const n = e.size;
+    const perIteration = 4 * n * n + 16 * c.build().elements.length;
+    const bound = Math.ceil(5e7 / perIteration) + 400;
+    let worst = 0;
+    let calls = 0;
+    while (e.time < total * (1 - 1e-9) && calls++ < 2000) {
+      const before = e.stats.iterations;
+      e.advance(Math.min(frame * period, total - e.time));
+      worst = Math.max(worst, e.stats.iterations - before);
+    }
+    const t = rec.times();
+    const v = rec.values()[0]!;
+    const rises: number[] = [];
+    for (let i = 1; i < t.length; i++) if (v[i - 1]! < 2.5 && v[i]! >= 2.5) rises.push(t[i]!);
+    const measured = rises.length >= 3 ? (rises[rises.length - 1]! - rises[1]!) / (rises.length - 2) : NaN;
+    return { ratio: measured / period, time: e.time / total, worst, bound, calls, messages: problems(e) };
+  }
+
+  test('R1 = R2 = 100 kΩ, C = 100 nF, and the other reported values, on every kind of supply', () => {
+    for (const supply of ['battery', 'rail', 'supply'] as const) {
+      for (const [r1, r2, cap] of [
+        [1000, 10000, 4.7e-6],
+        [1e5, 1e5, 1e-7],
+        [1e5, 1e4, 1e-7],
+        [1e5, 1e3, 1e-7],
+        [1e6, 100, 1e-6],
+        [100, 1e6, 1e-7],
+      ] as const) {
+        for (const frame of [1 / 200, 1 / 40, 1 / 10]) {
+          const m = measure(r1, r2, cap, supply, frame);
+          const label = `${supply} R1=${r1} R2=${r2} C=${cap} frame=${frame}`;
+          expect(m.time, label).toBeCloseTo(1, 6);
+          expect(Math.abs(m.ratio - 1), label).toBeLessThan(0.08);
+          expect(m.worst, label).toBeLessThan(m.bound);
+          expect(m.messages, label).toEqual([]);
+        }
+      }
+    }
+  });
+
+  test('fuzz over R1, R2 and C: it oscillates near the formula and every advance() stays within its caps', () => {
+    const rnd = mulberry32(555);
+    const decade = (lo: number, hi: number) => 10 ** (lo + (hi - lo) * rnd());
+    for (let k = 0; k < 30; k++) {
+      const r1 = decade(2, 6);
+      const r2 = decade(2, 6);
+      const cap = decade(-9, -5);
+      const supply = (['battery', 'rail', 'supply'] as const)[k % 3]!;
+      const m = measure(r1, r2, cap, supply, 1 / 40);
+      const label = `${supply} R1=${r1.toPrecision(3)} R2=${r2.toPrecision(3)} C=${cap.toPrecision(3)}`;
+      expect(m.time, label).toBeCloseTo(1, 6);
+      expect(Math.abs(m.ratio - 1), label).toBeLessThan(0.08);
+      expect(m.worst, label).toBeLessThan(m.bound);
+    }
+  });
+
+  test('the comparator is a Schmitt trigger that never rests half-way: rail-to-rail on either side of the flip', () => {
+    const c = circuit()
+      .add('V', 'rail', { v: 'vcc' }, { voltage: 5 })
+      .add('S', 'siggen', { '-': 'gnd', '+': 'in' }, { waveform: 'triangle', frequency: 1, amplitude: 0.05, offset: 2.5 })
+      .add('R', 'resistor', { '1': 'vcc', '2': 'ref' }, { resistance: 1000 })
+      .add('R2', 'resistor', { '1': 'ref', '2': 'gnd' }, { resistance: 1000 })
+      .add('K', 'comparator', { '+': 'in', '-': 'ref', Y: 'y' })
+      .add('RL', 'resistor', { '1': 'y', '2': 'gnd' }, { resistance: 100000 });
+    const e = createAnalogEngine(c.build());
+    const rec = e.watch([c.net('y')]);
+    e.advance(2);
+    // Every sample is within 20 mV of a rail: the output never rests in between (one sample per step,
+    // and the steps land on the flips).
+    const mid = Array.from(rec.values()[0]!).filter((v) => v > 0.02 && v < 4.98);
+    expect(mid.length).toBeLessThanOrEqual(4);
+    expect(e.stats.failures).toBe(0);
+  });
+});
+
+describe('advance() always returns within its caps, and lands on its target', () => {
+  const types = ['resistor', 'led', 'diode', 'npn', 'nmos', 'pmos', 'comparator', 'nor', 'not', 'capacitor', 'switch', 'lamp', 'inductor'] as const;
+  test('random circuits with tiny caps: iterations per call are bounded by the work cap, whatever happens inside', () => {
+    const rnd = mulberry32(99);
+    const nets = ['a', 'b', 'c', 'd', 'e', 'gnd'];
+    const net = () => nets[Math.floor(rnd() * nets.length)]!;
+    const decade = (lo: number, hi: number) => 10 ** (lo + (hi - lo) * rnd());
+    for (let k = 0; k < 60; k++) {
+      const c = circuit().add('V', 'rail', { v: 'a' }, { voltage: 5 });
+      const count = 4 + Math.floor(rnd() * 8);
+      for (let i = 0; i < count; i++) {
+        const type = types[Math.floor(rnd() * types.length)]!;
+        const id = `X${i}`;
+        switch (type) {
+          case 'resistor':
+            c.add(id, type, { '1': net(), '2': net() }, { resistance: decade(-1, 7) });
+            break;
+          case 'capacitor':
+            c.add(id, type, { '1': net(), '2': net() }, { capacitance: decade(-13, -4) });
+            break;
+          case 'inductor':
+            c.add(id, type, { '1': net(), '2': net() }, { inductance: decade(-9, 0) });
+            break;
+          case 'led':
+          case 'diode':
+            c.add(id, type, { A: net(), K: net() });
+            break;
+          case 'npn':
+            c.add(id, type, { B: net(), C: net(), E: net() });
+            break;
+          case 'nmos':
+            c.add(id, type, { G: net(), D: net(), S: net() });
+            break;
+          case 'pmos':
+            c.add(id, type, { G: net(), S: net(), D: net() });
+            break;
+          case 'comparator':
+            c.add(id, type, { '+': net(), '-': net(), Y: net() });
+            break;
+          case 'nor':
+            c.add(id, type, { A: net(), B: net(), Y: net() }, { delay: rnd() < 0.5 ? 0 : 1 });
+            break;
+          case 'not':
+            c.add(id, type, { A: net(), Y: net() }, { delay: rnd() < 0.5 ? 0 : 1 });
+            break;
+          case 'switch':
+            c.add(id, type, { '1': net(), '2': net() }, { closed: rnd() < 0.5 });
+            break;
+          case 'lamp':
+            c.add(id, type, { '1': net(), '2': net() });
+            break;
+        }
+      }
+      const flat = c.build();
+      const maxWork = 2e5;
+      const e = createAnalogEngine(flat, { maxStepsPerAdvance: 60, maxWorkPerAdvance: maxWork });
+      const perIteration = 4 * e.size * e.size + 16 * flat.elements.length;
+      // After the cap is reached the solve in progress finishes (at most 200 iterations), and one retry chain of a step that started just below it.
+      const bound = Math.ceil(maxWork / perIteration) + 3000;
+      for (let call = 0; call < 12; call++) {
+        const before = e.stats.iterations;
+        const t0 = e.time;
+        e.advance(1e-4);
+        expect(e.stats.iterations - before, `circuit ${k} call ${call}`).toBeLessThan(bound);
+        expect(e.time, `circuit ${k}`).toBeGreaterThanOrEqual(t0);
+        expect(Number.isFinite(e.time)).toBe(true);
+      }
+    }
+  });
+
+  test('a device that only converges at tiny steps cannot keep a call running: the work allowance covers the retry loops', () => {
+    // Its current flips sign at every evaluation when the step is above 1 ps, so every iterate differs
+    // from the last and no larger step converges: Newton–Raphson retries, step rejection and (at the
+    // smallest step) gmin stepping would all run, step after step, until the allowance is spent.
+    registerAnalogModel(
+      'test-tiny-steps-only',
+      () => {
+        let flip = 1;
+        return {
+          nonlinear: true,
+          stamp(c) {
+            conductance(c, 0, -1, 1);
+            if (c.h > 1e-12) flip = -flip;
+            currentSource(c, 0, -1, flip);
+          },
+          current: () => 0,
+          state: () => ({}),
+          setParam() {},
+          reset() {},
+        };
+      },
+      'regressions.test.ts',
+    );
+    const netlist: FlatNetlist = { netCount: 2, netNames: ['gnd', 'a'], elements: [{ id: 'X', type: 'test-tiny-steps-only', params: {}, pins: [1], pinNames: ['a'] }], ground: 0 };
+    for (const [maxWork, maxSteps] of [
+      [200, 1000],
+      [1e3, 1000],
+      [1e4, 1000],
+      [1e5, 60],
+      [5e7, 1000],
+    ] as const) {
+      const e = createAnalogEngine(netlist, { maxWorkPerAdvance: maxWork, maxStepsPerAdvance: maxSteps });
+      const perIteration = 4 * e.size * e.size + 16;
+      const before = e.stats.iterations;
+      const t0 = performance.now();
+      e.advance(1e-3);
+      const ms = performance.now() - t0;
+      // The allowance, plus the solve in progress when it ran out (at most 40 iterations here).
+      expect(e.stats.iterations - before, `work ${maxWork}`).toBeLessThan(maxWork / perIteration + 60);
+      expect(ms).toBeLessThan(2000);
+      expect(Number.isFinite(e.time)).toBe(true);
+    }
+  });
+
+  test('a call that is not lagging ends exactly on its target time', () => {
+    const c = circuit().add('V', 'rail', { v: 'a' }, { voltage: 5 }).add('R', 'resistor', { '1': 'a', '2': 'b' }, { resistance: 1000 }).add('C', 'capacitor', { '1': 'b', '2': 'gnd' }, { capacitance: 1e-6 });
+    const e = createAnalogEngine(c.build());
+    let want = 0;
+    for (let i = 0; i < 300; i++) {
+      const dt = 3.3e-4 * (1 + (i % 7));
+      want += dt;
+      e.advance(dt);
+      expect(e.lagging).toBe(false);
+      // A caller looping `while (e.time < end)` must not see a shortfall advance() itself ignores.
+      expect(e.time).toBeGreaterThanOrEqual(want * (1 - 1e-12));
+    }
+    // The numbers that once made a caller spin: a total of 6.5 textbook periods, in frames of 1/40 period.
+    const p = 0.693 * 21000 * 1e-5;
+    const total = 6.5 * p;
+    const rc = circuit().add('V', 'rail', { v: 'a' }, { voltage: 5 }).add('R', 'resistor', { '1': 'a', '2': 'b' }, { resistance: 11000 }).add('C', 'capacitor', { '1': 'b', '2': 'gnd' }, { capacitance: 1e-5 });
+    const f = createAnalogEngine(rc.build());
+    let n = 0;
+    while (f.time < total && n++ < 1000) f.advance(Math.min(p / 40, total - f.time));
+    expect(n).toBeLessThan(400);
+    const end = e.time + 0.0123456789;
+    let spins = 0;
+    while (e.time < end && spins++ < 1000) e.advance(Math.min(0.01, end - e.time));
+    expect(spins).toBeLessThan(10);
   });
 });

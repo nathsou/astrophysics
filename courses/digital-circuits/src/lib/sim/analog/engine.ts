@@ -37,7 +37,12 @@ import { mulberry32 } from './rng';
  * Work per advance(): capped by `maxStepsPerAdvance` (1000) and by `maxWorkPerAdvance` (5e7
  * multiply–adds, about 30 ms), optionally by a wall-clock `budgetMs`. When a cap stops the loop,
  * `lagging` is set, `speed` is < 1 and an info message is posted; simulated time then simply falls
- * behind the requested time.
+ * behind the requested time. The allowance is also enforced inside a step: once it is spent (or the
+ * wall-clock budget has passed) the retry loops (Newton–Raphson at a smaller step, truncation-error
+ * rejections, gmin stepping) stop, and the point in hand is accepted as it stands, with the usual
+ * "did not converge" warning if it did not converge. So one call costs at most its allowance plus the
+ * solve in progress (≤ 200 iterations), whatever the circuit. A call that is not lagging ends exactly
+ * on its target time (a caller's `while (time < end)` loop cannot spin on a rounding shortfall).
  *
  * Newton–Raphson: at most 40 iterations per point; junction voltages are limited (pnjlim,
  * fetlim). If a point fails, the step is divided by 8 and retried; at the smallest step, gmin
@@ -117,6 +122,8 @@ const LTE_ABS_I = 1e-8;
 const MAXITER = 40;
 const MAXITER_SETTLE = 200;
 const MAX_MESSAGES = 200;
+/** Work charged per device stamp (multiply–adds, roughly), so a circuit of many small parts is not free. */
+const WORK_PER_DEVICE = 16;
 
 export function createAnalogEngine(netlist: FlatNetlist, options?: AnalogEngineOptions): AnalogEngine {
   return new AnalogEngineImpl(netlist, options ?? {});
@@ -162,6 +169,8 @@ class AnalogEngineImpl implements AnalogEngine {
   private readonly reactors: AnalogDevice[] = [];
   /** The interval the current advance() call was asked for (s). */
   private reqDt = Infinity;
+  /** Wall-clock deadline of the current advance() call (performance.now() units), Infinity if none. */
+  private deadline = Infinity;
   private readonly nonlinear: boolean;
   private readonly n: number;
   private readonly isCurrent: Uint8Array;
@@ -339,7 +348,7 @@ class AnalogEngineImpl implements AnalogEngine {
         this.stats.factorizations++;
         this.work += (n * n * n) / 3;
       }
-      this.work += 4 * n * n;
+      this.work += 4 * n * n + WORK_PER_DEVICE * this.devices.length;
       this.consistent = lu.solve(b, xn, this.Af);
       this.stats.iterations++;
 
@@ -364,10 +373,20 @@ class AnalogEngineImpl implements AnalogEngine {
     return false;
   }
 
+  /**
+   * True when the current advance() call has used its work allowance (or its wall-clock budget). Checked
+   * between steps and inside every retry loop of a step, so no circuit, however hard, can keep one
+   * call running: what is left of the step is finished without further retries.
+   */
+  private overBudget(): boolean {
+    return this.work >= this.maxWork || (this.deadline !== Infinity && performance.now() > this.deadline);
+  }
+
   /** Gmin stepping: solve with a large conductance on every node, then reduce it by decades. */
   private gminStepping(t: number, h: number, method: Method): boolean {
     this.x.set(this.xAcc);
     for (let g = 1e-2; g >= 1e-11; g /= 10) {
+      if (this.overBudget()) return false;
       if (!this.solvePoint(t, h, method, g, MAXITER_SETTLE)) return false;
     }
     return this.solvePoint(t, h, method, 0, MAXITER_SETTLE);
@@ -508,7 +527,10 @@ class AnalogEngineImpl implements AnalogEngine {
     for (;;) {
       this.x.set(this.xAcc);
       let ok = this.solvePoint(t0 + h, h, method, 0, MAXITER);
-      if (!ok && !this.fixed && h > 2 * hmin) {
+      // Out of allowance: no more retries; the point is accepted as it stands (with the usual warning
+      // if it did not converge), so a call always ends within its caps.
+      const spent = this.overBudget();
+      if (!ok && !this.fixed && h > 2 * hmin && !spent) {
         h = Math.max(h / 8, hmin);
         land = Infinity;
         landBreak = false;
@@ -516,7 +538,7 @@ class AnalogEngineImpl implements AnalogEngine {
         continue;
       }
       if (!ok) {
-        ok = this.gminCooldown > 0 ? false : this.gminStepping(t0 + h, h, method);
+        ok = this.gminCooldown > 0 || spent ? false : this.gminStepping(t0 + h, h, method);
         if (!ok) {
           this.gminCooldown = 100;
           this.stats.failures++;
@@ -526,7 +548,7 @@ class AnalogEngineImpl implements AnalogEngine {
       if (!this.fixed && ok && this.sinceBreak >= order + 1) {
         const r = this.lteRatio(h, method);
         const factor = r > 0 ? 0.9 * Math.pow(r, -1 / (order + 1)) : MAX_GROW;
-        if (r > 1 && h > 2 * hmin) {
+        if (r > 1 && h > 2 * hmin && !spent) {
           h = Math.max(hmin, h * Math.max(0.2, Math.min(0.9, factor)));
           land = Infinity;
           landBreak = false;
@@ -582,6 +604,7 @@ class AnalogEngineImpl implements AnalogEngine {
     let steps = 0;
     this.lagging = false;
     if (this.fixed) {
+      this.deadline = Infinity;
       this.pending += dt;
       let k = Math.floor(this.pending / this.hFixed + 1e-9);
       if (k > this.maxSteps) {
@@ -601,7 +624,7 @@ class AnalogEngineImpl implements AnalogEngine {
     } else {
       const target = this.t + dt;
       this.work = 0;
-      const deadline = this.budgetMs ? performance.now() + this.budgetMs : Infinity;
+      const deadline = (this.deadline = this.budgetMs ? performance.now() + this.budgetMs : Infinity);
       while (target - this.t > Math.max(1e-15, Math.abs(target) * 1e-13)) {
         if (steps >= this.maxSteps || this.work >= this.maxWork || (steps > 0 && deadline !== Infinity && performance.now() > deadline)) {
           this.lagging = true;
@@ -610,6 +633,9 @@ class AnalogEngineImpl implements AnalogEngine {
         this.step(target);
         steps++;
       }
+      // Within rounding of the target: land on it exactly, so that a caller's `while (time < end)` loop
+      // never sees a shortfall that advance() itself considers negligible (and so never spins on it).
+      if (!this.lagging && target > this.t) this.t = target;
     }
     this.speed = (this.t - start) / dt;
     if (this.lagging) {
@@ -618,6 +644,9 @@ class AnalogEngineImpl implements AnalogEngine {
   }
 
   settle(): void {
+    // Not part of an advance() call: its allowance does not apply (the solves below are bounded by their iteration caps).
+    this.work = 0;
+    this.deadline = Infinity;
     this.x.set(this.xAcc);
     let ok = this.solvePoint(this.t, SETTLE_H, 'euler', 0, MAXITER_SETTLE);
     if (!ok) ok = this.gminStepping(this.t, SETTLE_H, 'euler');

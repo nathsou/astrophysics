@@ -2,6 +2,7 @@ import { L0, L1, LX, type Logic } from '../../netlist/types';
 import { CapacitorState, conductance, num, volt, type AcceptContext, type AnalogDevice, type DeviceEnv, type StampContext } from '../device';
 import { VDD } from './sources';
 import { registerAnalogModel } from './registry';
+import { AMMETER_FLOOR, VOLTMETER_FLOOR, floored } from '../meter-floors';
 
 /**
  * Behavioural parts: logic gates, comparator, logic indicator and probe, meters.
@@ -19,8 +20,14 @@ import { registerAnalogModel } from './registry';
  *  - output: m drives Y through 50 Ω.
  *  State: { value: 0 | 1 (output above 2.5 V) }.
  *
- * Comparator: output = high·(1 + tanh((v₊ − v₋ ± 1 mV)/5 mV))/2 through 10 Ω, with ±1 mV of
- * hysteresis around the last accepted output state; inputs draw nothing. State: { value: 0 | 1 }.
+ * Comparator: a Schmitt trigger. The state flips high when v₊ − v₋ rises above +1 mV and low when it
+ * falls below −1 mV (tested on each accepted point, which counts as a discontinuity). The output is
+ * high·(1 + tanh((v₊ − v₋ ∓ 12 mV)/2 mV))/2 through 10 Ω, minus for the low state and plus for the
+ * high one, so at the moment of flipping the old branch is still saturated (within 1e-4 V of its
+ * rail) and the output jumps a whole swing, never resting in between. This matters: a comparator
+ * whose output could rest half-way would, in a feedback loop that lowers its input as its output
+ * rises (a 555's discharge transistor), settle at a stable half-way point, and a latch behind it
+ * would never snap. Inputs draw nothing. State: { value: 0 | 1 }.
  *
  * Indicator (logic LED with its own driver): 1 MΩ and 5 pF to ground. State: { lit (above 2.5 V),
  * brightness (0 at 2.5 V to 1 at 4.5 V), value (0 | 1) }.
@@ -174,8 +181,11 @@ for (const [type, fn] of Object.entries(LOGIC_FUNCTIONS)) registerAnalogModel(ty
 
 // ---------------------------------------------------------------------------------------------
 
-const CMP_WIDTH = 5e-3;
-const CMP_HYST = 1e-3;
+const CMP_WIDTH = 2e-3;
+/** The input difference at which the state flips (either way). */
+const CMP_FLIP = 1e-3;
+/** Offset of the output curve on each branch: 12 mV = 6 widths, so the old branch is saturated at the flip. */
+const CMP_OFFSET = 12e-3;
 const CMP_ROUT = 10;
 
 registerAnalogModel('comparator', (env) => {
@@ -183,7 +193,8 @@ registerAnalogModel('comparator', (env) => {
   const [ip, im, out] = [env.nodes[0]!, env.nodes[1]!, env.nodes[2]!];
   let high = false;
   const hi = () => num(p, 'high', 5);
-  const vd = (x: Float64Array) => volt(x, ip) - volt(x, im) + (high ? CMP_HYST : -CMP_HYST);
+  const diff = (x: Float64Array) => volt(x, ip) - volt(x, im);
+  const vd = (x: Float64Array) => diff(x) + (high ? CMP_OFFSET : -CMP_OFFSET);
   const vout = (d: number) => (hi() * (1 + Math.tanh(d / CMP_WIDTH))) / 2;
   return {
     nonlinear: true,
@@ -202,7 +213,11 @@ registerAnalogModel('comparator', (env) => {
       }
     },
     accept(c) {
-      high = volt(c.x, out) > hi() / 2;
+      const d = diff(c.x);
+      const was = high;
+      if (!high && d > CMP_FLIP) high = true;
+      else if (high && d < -CMP_FLIP) high = false;
+      return high !== was;
     },
     current: (pin, x) => (pin === 2 ? (volt(x, out) - vout(vd(x))) / CMP_ROUT : 0),
     state: (x) => ({ value: volt(x, out) > hi() / 2 ? 1 : 0 }),
@@ -262,8 +277,7 @@ registerAnalogModel('probe', (env) => {
 // ---------------------------------------------------------------------------------------------
 
 /** Below these a meter reads exactly zero (see the header). */
-export const VOLTMETER_FLOOR = 1e-6;
-export const AMMETER_FLOOR = 1e-9;
+export { VOLTMETER_FLOOR, AMMETER_FLOOR };
 
 function meter(env: DeviceEnv, R: number, pinPlus: number, floor: number, show: (v: number, i: number) => number): AnalogDevice {
   const [a, b] = [env.nodes[0]!, env.nodes[1]!];
@@ -279,7 +293,7 @@ function meter(env: DeviceEnv, R: number, pinPlus: number, floor: number, show: 
       const vPlus = pinPlus === 0 ? volt(x, a) - volt(x, b) : volt(x, b) - volt(x, a);
       const iPlus = pinPlus === 0 ? i0(x) : -i0(x);
       const value = show(vPlus, iPlus);
-      return { value: Math.abs(value) < floor ? 0 : value };
+      return { value: floored(value, floor) };
     },
     setParam() {},
     reset() {},
