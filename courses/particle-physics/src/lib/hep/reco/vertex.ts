@@ -13,7 +13,6 @@
  * **Not modelled:** correlations between the transverse and z parameters of a track, the change of a track's
  * uncertainty with the vertex position beyond a first-order propagation, and vertex-constrained refits of the tracks.
  */
-import { hook } from '../hooks.ts';
 import type { Vertex } from '../event/index.ts';
 import type { P4 } from '../kinematics/index.ts';
 import { fromMass, mass } from '../kinematics/index.ts';
@@ -279,11 +278,6 @@ export function impactParameter(track: RecoTrack, vertex: { x: number; y: number
   }
   const sigma = Math.sqrt(s2);
   return { d0, sigma, significance: d0 / sigma, dz: a.dz, sigmaDz: Math.sqrt(sz2), significanceZ: a.dz / Math.sqrt(sz2) };
-}
-
-/** The transverse impact parameter through the hook `reco.impactParameter` (the reader's version if installed). */
-export function impactParameterHook(): typeof impactParameter {
-  return hook('reco.impactParameter', impactParameter);
 }
 
 // ── primary vertices ────────────────────────────────────────────────────────────────────────────

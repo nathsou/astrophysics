@@ -152,3 +152,31 @@ describe('fitTrack3D with multiple scattering (generalised least squares)', () =
     expect(f.sigmaZ0 / k.sigmaZ0).toBeLessThan(1.15);
   });
 });
+
+describe('the reco.circleFit hook', () => {
+  test('a replacement circle fit is used by fitTrack3D and by the track finder', async () => {
+    const { setOverride } = await import('../hooks.ts');
+    const { findTracks } = await import('./tracking.ts');
+    const hits = simulateTrackHits(rng(9), { pt: 6, eta: 0.2, phi: 0.4, charge: 1, vertex: [0, 0, 0], id: 0, collision: 0 });
+    const points = hits.map((h) => ({ x: h.x, y: h.y, z: h.z }));
+    const plain = fitTrack3D(points, 3.8);
+    let calls = 0;
+    // a deliberately wrong fit: the right circle with a radius 10 % too large
+    setOverride('reco.circleFit', ((pts: { x: number; y: number }[]) => {
+      calls++;
+      const c = circleFit(pts);
+      return { ...c, R: c.R * 1.1 };
+    }) as never);
+    try {
+      const biased = fitTrack3D(points, 3.8);
+      expect(calls).toBe(1);
+      expect(biased.pt / plain.pt).toBeGreaterThan(1.05);
+      calls = 0;
+      findTracks(hits, DEFAULT_GEOMETRY);
+      expect(calls).toBeGreaterThan(0);
+    } finally {
+      setOverride('reco.circleFit', undefined);
+    }
+    expect(fitTrack3D(points, 3.8).pt).toBeCloseTo(plain.pt, 10);
+  });
+});

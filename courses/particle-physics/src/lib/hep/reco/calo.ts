@@ -14,7 +14,7 @@
  */
 import type { CaloCell } from '../event/index.ts';
 import type { P4 } from '../kinematics/index.ts';
-import { deltaPhi } from '../kinematics/index.ts';
+
 import { resolveConfig, type RecoConfig } from './config.ts';
 import type { CaloGeometry, RecoGeometry } from './geometry.ts';
 import { helixAtRadius, type Helix } from './helix.ts';
@@ -22,6 +22,13 @@ import type { RecoCluster, RecoTrack } from './types.ts';
 import { trackHelix } from './vertex.ts';
 
 const TWO_PI = 2 * Math.PI;
+/** The difference of two azimuths wrapped into (−π, π]. */
+const dphiOf = (a: number, b: number): number => {
+  let d = a - b;
+  if (d > Math.PI) d -= TWO_PI;
+  else if (d <= -Math.PI) d += TWO_PI;
+  return d;
+};
 
 /**
  * Cluster the cells of both calorimeters. Thresholds (GeV, on the raw cell energy) come from `rc`: `ecalSeed`, `ecalGrow`,
@@ -64,13 +71,26 @@ function caloGrid(g: CaloGeometry): CaloGrid {
   return c;
 }
 
+let scratchCap = 0;
+let sIeta = new Int32Array(0), sIphi = new Int32Array(0), sLay = new Int32Array(0), sCell = new Int32Array(0), sComp = new Int32Array(0), sStack = new Int32Array(0);
+let sE = new Float64Array(0);
+
 function clusterOne(cells: readonly CaloCell[], calo: 'ecal' | 'hcal', g: CaloGeometry, seedE: number, growE: number, minE: number): RecoCluster[] {
   const G = caloGrid(g);
   const { nPhi, nLay, etaOff, nEta, ix } = G;
-  // the cells above the grow threshold, as parallel arrays
+  // the cells above the grow threshold, as parallel arrays (scratch space reused between events)
   const nMax = cells.length;
-  const cIeta = new Int32Array(nMax), cIphi = new Int32Array(nMax), cLay = new Int32Array(nMax), cCell = new Int32Array(nMax);
-  const cE = new Float64Array(nMax);
+  if (nMax > scratchCap) {
+    scratchCap = Math.max(nMax, 256);
+    sIeta = new Int32Array(scratchCap);
+    sIphi = new Int32Array(scratchCap);
+    sLay = new Int32Array(scratchCap);
+    sCell = new Int32Array(scratchCap);
+    sComp = new Int32Array(scratchCap);
+    sStack = new Int32Array(scratchCap);
+    sE = new Float64Array(scratchCap);
+  }
+  const cIeta = sIeta, cIphi = sIphi, cLay = sLay, cCell = sCell, cE = sE;
   let n = 0;
   for (let i = 0; i < cells.length; i++) {
     const c = cells[i]!;
@@ -94,8 +114,9 @@ function clusterOne(cells: readonly CaloCell[], calo: 'ecal' | 'hcal', g: CaloGe
     n++;
   }
   const slot = (ieta: number, iphi: number, layer: number): number => (layer < 0 ? -1 : ix[(ieta * nPhi + iphi) * nLay + layer]!);
-  const comp = new Int32Array(n).fill(-1);
-  const stack = new Int32Array(n);
+  const comp = sComp;
+  comp.fill(-1, 0, n);
+  const stack = sStack;
   const clusters: RecoCluster[] = [];
   let nComp = 0;
   for (let s = 0; s < n; s++) {
@@ -201,7 +222,7 @@ function makeCluster(members: number[], cE: Float64Array, cCell: Int32Array, cel
     const c = cells[cCell[a]!]!;
     const e = cE[a]!;
     se += e * c.eta;
-    sp += e * deltaPhi(c.phi, phiRef);
+    sp += e * dphiOf(c.phi, phiRef);
     sl += e * c.layer;
   }
   const eta = se / E;
@@ -213,7 +234,7 @@ function makeCluster(members: number[], cE: Float64Array, cCell: Int32Array, cel
     const c = cells[cCell[a]!]!;
     const e = cE[a]!;
     ve += e * (c.eta - eta) ** 2;
-    vp += e * (deltaPhi(c.phi, phiRef) - dphi) ** 2;
+    vp += e * (dphiOf(c.phi, phiRef) - dphi) ** 2;
     cellIds.push(cCell[a]!);
     if (c.truth.length) {
       share ??= new Map();
@@ -302,7 +323,7 @@ export function matchTracksToClusters(tracks: readonly RecoTrack[], clusters: re
         if (!list) continue;
         for (const j of list) {
           const c = clusters[j]!;
-          const d = Math.hypot(at.eta - c.eta, deltaPhi(at.phi, c.phi));
+          const d = Math.hypot(at.eta - c.eta, dphiOf(at.phi, c.phi));
           // a broad cluster (several overlapping showers) is reached from further away
           const reach = maxDR + widthScale * Math.hypot(c.etaWidth, c.phiWidth);
           if (d < reach && d < bd) {

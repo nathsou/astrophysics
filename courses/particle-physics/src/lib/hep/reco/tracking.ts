@@ -4,13 +4,16 @@
  * 1. **Seeding.** Every triplet of hits in three of the four innermost layers that is compatible with a helix from
  *    the luminous region with pT above `ptMin` is a seed. Compatibility is tested in steps so that almost all wrong
  *    combinations are rejected after two hits: the φ and z windows of the second and third hit follow from the
- *    allowed curvature and impact parameter. Hits are binned in φ per layer, so a window is a few bin lookups.
+ *    allowed curvature and impact parameter. Hits are binned in (z, φ) per layer, so a window is a few bin lookups.
+ *    There are three passes: prompt high-pT tracks with narrow windows first, then the full acceptance on the hits that
+ *    are left, then the layer combinations that skip a layer (for tracks that lost a hit).
  *    (Alternatively the seeds are the peaks of the Hough transform in the transverse plane, `seeding: 'hough'`.)
- * 2. **Extension.** From each seed the circle is followed outwards layer by layer: intersect the current circle with the
- *    layer's cylinder, take the compatible hit nearest to the prediction inside a road whose width combines the hit
- *    resolution and the expected multiple scattering, refit, continue.
- * 3. **Fit and quality.** Each candidate is fitted (circle + line, scattering included in the uncertainties) and cut on
- *    hit count, χ², pT, d0 and z0.
+ * 2. **Extension.** From each seed the circle is followed through the other layers: intersect it with the layer's
+ *    cylinder, correct the prediction with a quadratic fitted to the offsets of the hits found so far, take the
+ *    compatible hit nearest to the prediction inside a road whose width is the uncertainty of that extrapolation, the layer
+ *    resolution and the expected multiple scattering, continue.
+ * 3. **Fit and quality.** Candidates pass a cheap χ² from the extension; the survivors are fitted (circle + line, with the
+ *    full scattering covariance, see `fitTrack3D`) and cut on hit count, χ², pT, d0 and z0.
  * 4. **Ambiguity resolution.** Candidates are ranked by number of hits and χ²; a candidate that shares more than
  *    `maxSharedHits` hits with an accepted track is dropped. Seeds use the combinations of layers in turn; hits of
  *    accepted tracks are not reused by later seeds.
@@ -65,7 +68,7 @@ export function buildHitIndex(hits: readonly Hit[], geom: RecoGeometry): HitInde
     x[i] = h.x;
     y[i] = h.y;
     z[i] = h.z;
-    r[i] = Math.hypot(h.x, h.y);
+    r[i] = Math.sqrt(h.x * h.x + h.y * h.y);
     phi[i] = Math.atan2(h.y, h.x);
     layer[i] = geom.layerMap ? (geom.layerMap[h.layer] ?? -1) : h.layer;
   }

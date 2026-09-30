@@ -7,15 +7,15 @@ import type { TruthEvent } from '../event/index.ts';
 import { geometryFromConfig } from './geometry.ts';
 
 describe('track finding on the detector simulation', () => {
-  test('pile-up scan (report)', () => {
+  test('efficiency ≥ 95 % for pT > 1 GeV and fake rate < 5 % at 0, 25 and 50 pile-up collisions (onion preset)', () => {
     const cfg = presets.onion!;
     const g = rng(11);
     const rows: string[] = [];
-    for (const pu of [0, 10, 25, 50]) {
+    for (const pu of [0, 25, 50]) {
       let elig = 0, found = 0, fakes = 0, total = 0, tMs = 0;
-      const n = 6;
+      const n = 8;
       for (let e = 0; e < n; e++) {
-        const sig: SimpleParticle[] = Array.from({ length: 6 }, () => ({ pdg: g() < 0.5 ? 211 : -211, pt: 1 + 30 * g() * g(), eta: (2 * g() - 1) * 2.3, phi: (2 * g() - 1) * Math.PI }));
+        const sig: SimpleParticle[] = Array.from({ length: 10 }, () => ({ pdg: g() < 0.5 ? 211 : -211, pt: 1 + 30 * g() * g(), eta: (2 * g() - 1) * 2.3, phi: (2 * g() - 1) * Math.PI }));
         const zv = normal(g, 0, 50);
         const truth = truthEventFrom(sig, [0, 0, zv]);
         const pile: TruthEvent[] = Array.from({ length: pu }, (_, k) => minBiasTruth(g, 25, [normal(g, 0, 0.015), normal(g, 0, 0.015), normal(g, 0, 50)], k + 1));
@@ -42,6 +42,8 @@ describe('track finding on the detector simulation', () => {
           if (pt > 1 && Math.abs(eta) < 2.3) { elig++; if (matched.has(i)) found++; }
         });
       }
+      expect(found / elig).toBeGreaterThan(0.95);
+      expect(fakes / total).toBeLessThan(0.05);
       rows.push(`PU ${pu}: signal-track eff ${(found / elig).toFixed(3)} (${found}/${elig}) fake ${(fakes / total).toFixed(3)} tracks ${(total / n).toFixed(0)} ms/event ${(tMs / n).toFixed(1)}`);
     }
     console.log(rows.join('\n'));

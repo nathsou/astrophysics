@@ -27,21 +27,6 @@ export interface JetResult {
   constituents: number[][];
 }
 
-interface Pseudo {
-  E: number;
-  px: number;
-  py: number;
-  pz: number;
-  y: number;
-  phi: number;
-  /** pT^(2p) */
-  k: number;
-  alive: boolean;
-  nn: number;
-  dnn: number;
-  members: number[];
-}
-
 function rapidityOf(E: number, pz: number): number {
   const a = E + pz;
   const b = E - pz;

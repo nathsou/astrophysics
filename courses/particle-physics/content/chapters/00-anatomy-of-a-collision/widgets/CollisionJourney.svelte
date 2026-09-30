@@ -72,11 +72,11 @@
         {#if step === 2 || step === 4 || step === 5}
           {#each tracks as t}
             <path d={t.d} class="trk-line {t.cls}" fill="none" />
-            {#if step >= 4}<text x={t.end[0] * 1.06} y={t.end[1] * 1.06} class="t lab">{t.id}</text>{/if}
+            {#if step >= 4}<text x={t.end[0]! * 1.06} y={t.end[1]! * 1.06} class="t lab">{t.id}</text>{/if}
           {/each}
         {/if}
         {#if step === 3}
-          {#each hits as h}<circle cx={h[0]} cy={h[1]} r="2.6" fill="var(--p-hit)" />{/each}
+          {#each hits as h}<circle cx={h[0]!} cy={h[1]!} r="2.6" fill="var(--p-hit)" />{/each}
           {#each [[-52, -74], [12, -137]] as c}<circle cx={c[0]} cy={c[1]} r="9" fill="var(--p-calo-em)" opacity="0.5" />{/each}
         {/if}
         <circle cx="0" cy="0" r="3" fill="var(--p-higgs)" />

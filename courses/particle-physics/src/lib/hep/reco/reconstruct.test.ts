@@ -23,6 +23,43 @@ function event(g: ReturnType<typeof rng>, sig: SimpleParticle[], label: string, 
   return { truth, det };
 }
 
+describe('reconstruct: every preset, and an empty event', () => {
+  test('a muon pair, an electron and a jet are reconstructed in each of the five presets', () => {
+    for (const [name, c] of Object.entries(presets)) {
+      const g = rng(21);
+      let muons = 0, tracks = 0, fakes = 0;
+      const n = 8;
+      for (let e = 0; e < n; e++) {
+        const phi = (g() * 2 - 1) * Math.PI;
+        const sig: SimpleParticle[] = [
+          { pdg: 13, pt: 40, eta: (g() - 0.5) * 1.2, phi },
+          { pdg: -13, pt: 40, eta: (g() - 0.5) * 1.2, phi: phi + Math.PI },
+          { pdg: 11, pt: 30, eta: (g() - 0.5) * 2, phi: phi + 1 },
+          ...jetParticles(g, 'light', 50, (g() - 0.5) * 2, phi + 2.4),
+        ];
+        const truth = merge(truthEventFrom(sig), minBiasTruth(g, 10, [0, 0, 0], 0));
+        const det = simulate(truth, c, g.fork(name + e));
+        const reco = reconstruct(det, c, {}, truth);
+        muons += [0, 1].filter((t) => reco.objects.some((o) => o.kind === 'muon' && o.truth === t)).length;
+        tracks += reco.tracks.length;
+        fakes += reco.tracks.filter((t) => t.truth < 0).length;
+        expect(reco.objects.some((o) => o.kind === 'jet'), name).toBe(true);
+      }
+      expect(muons / (2 * n), name).toBeGreaterThan(0.85);
+      expect(fakes / tracks, name).toBeLessThan(0.05);
+    }
+  });
+  test('an event with nothing in it reconstructs to nothing, without errors', () => {
+    const empty: DetectorEvent = { hits: [], cells: [], muonHits: [], pileup: 0 };
+    const r = reconstruct(empty, cfg);
+    expect(r.tracks).toEqual([]);
+    expect(r.objects).toEqual([]);
+    expect(r.primaryVertex).toBe(-1);
+    expect(r.met).toEqual({ x: 0, y: 0 });
+    expect(r.sumEt).toBe(0);
+  });
+});
+
 describe('reconstruct: muons (Z → μμ)', () => {
   test('mass peak, truth links and resolution', () => {
     const g = rng(1);

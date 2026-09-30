@@ -5,7 +5,9 @@
  * the integration tests.
  */
 import { normal, poisson, type Rng } from '../random/index.ts';
-import type { Hit } from '../event/index.ts';
+import type { Hit, TruthEvent, TruthParticle } from '../event/index.ts';
+import { fromPtEtaPhiM } from '../kinematics/index.ts';
+import { particle } from '../particles/index.ts';
 import { curvatureFromPt, propagateToRadius, type HelixState } from './helix.ts';
 import { DEFAULT_GEOMETRY, type RecoGeometry } from './geometry.ts';
 import { highland } from './material.ts';
@@ -32,7 +34,6 @@ export function simulateTrackHits(r: Rng, t: SynthTrack, geom: RecoGeometry = DE
   const eff = opts.efficiency ?? 1;
   const hits: Hit[] = [];
   const tanL0 = Math.sinh(t.eta);
-  const p = t.pt * Math.cosh(t.eta);
   let st: HelixState = { x: t.vertex[0], y: t.vertex[1], z: t.vertex[2], psi: t.phi, tanLambda: tanL0, c: curvatureFromPt(t.pt, geom.bField, t.charge) };
   for (let i = 0; i < geom.layers.length; i++) {
     const L = geom.layers[i]!;
@@ -121,10 +122,6 @@ export function synthEvent(
 }
 
 // ── truth events for tests with the real detector simulation ──────────────────────────────────────
-
-import type { TruthEvent, TruthParticle } from '../event/index.ts';
-import { fromPtEtaPhiM } from '../kinematics/index.ts';
-import { particle } from '../particles/index.ts';
 
 export interface SimpleParticle {
   pdg: number;

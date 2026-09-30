@@ -86,5 +86,9 @@ describe('track finding on synthetic events', () => {
     }
     console.log(rows.join('\n'));
     expect(rows.length).toBe(3);
+    for (const r of rows) {
+      expect(Number(/eff ([0-9.]+)/.exec(r)![1])).toBeGreaterThan(0.85);
+      expect(Number(/fake ([0-9.]+)/.exec(r)![1])).toBeLessThan(0.05);
+    }
   });
 });

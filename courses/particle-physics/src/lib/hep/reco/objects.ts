@@ -22,7 +22,7 @@ import type { RecoGeometry } from './geometry.ts';
 import { arcNearest, curvatureFromPt, helixAtRadius, propagateToRadius } from './helix.ts';
 import { highland } from './material.ts';
 import type { RecoCluster, RecoObjectX, RecoTrack } from './types.ts';
-import { fitVertex, trackHelix, type RecoVertex } from './vertex.ts';
+import { trackHelix } from './vertex.ts';
 import { hook } from '../hooks.ts';
 
 const M_PI = 0.13957039;
@@ -60,19 +60,29 @@ export function missingPt(objects: P4[]): { x: number; y: number } {
  * calorimeters) by adding their momenta. Also returns the scalar sum of transverse energy. Uses the hook `reco.missingPt`.
  */
 export function metFromEvent(cells: readonly { calo: 'ecal' | 'hcal'; eta: number; phi: number; energy: number }[], geom: RecoGeometry, muons: readonly P4[] = []): { met: { x: number; y: number }; sumEt: number } {
+  const fn = hook('reco.missingPt', missingPt);
   const parts: P4[] = [];
   let sumEt = 0;
+  let sx = 0, sy = 0;
+  const eScale = { ecal: geom.ecal.scale, hcal: geom.hcal.scale };
   for (const c of cells) {
-    const e = c.energy * geom[c.calo].scale;
+    const e = c.energy * eScale[c.calo];
     const et = e / Math.cosh(c.eta);
     sumEt += et;
-    parts.push({ E: e, px: et * Math.cos(c.phi), py: et * Math.sin(c.phi), pz: et * Math.sinh(c.eta) });
+    if (fn === missingPt) {
+      // the reference function is a plain vector sum: add it up directly instead of building a four-vector per cell
+      sx -= et * Math.cos(c.phi);
+      sy -= et * Math.sin(c.phi);
+    } else parts.push({ E: e, px: et * Math.cos(c.phi), py: et * Math.sin(c.phi), pz: et * Math.sinh(c.eta) });
   }
   for (const m of muons) {
-    parts.push(m);
     sumEt += pt2(m);
+    if (fn === missingPt) {
+      sx -= m.px;
+      sy -= m.py;
+    } else parts.push(m);
   }
-  return { met: hook('reco.missingPt', missingPt)(parts), sumEt };
+  return { met: fn === missingPt ? { x: sx, y: sy } : fn(parts), sumEt };
 }
 
 // ── particle flow ──────────────────────────────────────────────────────────────────────────────
@@ -255,6 +265,13 @@ export function predictStationHits(track: RecoTrack, geom: RecoGeometry): { stat
   const bent = { ...coil, c: B2 !== 0 ? curvatureFromPt(ptA, B2, track.charge) : 0 };
   const straight = { ...coil, c: 0 };
   const th0 = highland(0.5 * (p + pa), geom.muon.caloX0 * f);
+  // the track's own uncertainty, continued outwards: a curvature error bends the extrapolation through the solenoid, a
+  // direction error grows with distance (for a tracker with poor momentum resolution this dominates the window)
+  const rOut = geom.layers[geom.layers.length - 1]!.r;
+  const sC = Math.sqrt(Math.max(0, track.cov[2]?.[2] ?? 0));
+  const sPhi = Math.sqrt(Math.max(0, track.cov[1]?.[1] ?? 0));
+  const sTan = Math.sqrt(Math.max(0, track.cov[4]?.[4] ?? 0));
+  const L1 = Math.max(0, geom.coilRadius - rOut);
   const out: { station: number; x: number; y: number; z: number; wT: number; wZ: number }[] = [];
   geom.muon.stations.forEach((S, i) => {
     const n = propagateToRadius(bent, S.r);
@@ -262,8 +279,8 @@ export function predictStationHits(track: RecoTrack, geom: RecoGeometry): { stat
     const s = propagateToRadius(straight, S.r);
     const bend = s ? Math.hypot(n.x - s.x, n.y - s.y) : 0;
     const lever = Math.max(0, S.r - geom.coilRadius);
-    const wT = 4 * S.sigmaRPhi + 12 + 0.3 * bend + 3 * th0 * lever;
-    const wZ = 4 * S.sigmaZ + 12 + 3 * th0 * lever * ch * ch;
+    const wT = 4 * S.sigmaRPhi + 12 + 0.3 * bend + 3 * th0 * lever + 3 * (sC * (0.5 * L1 * L1 + L1 * lever) + sPhi * (S.r - rOut));
+    const wZ = 4 * S.sigmaZ + 12 + 3 * th0 * lever * ch * ch + 3 * sTan * S.r;
     out.push({ station: i, x: n.x, y: n.y, z: n.z, wT, wZ });
   });
   return out;
