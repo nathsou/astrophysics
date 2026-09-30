@@ -5,7 +5,7 @@
 @import 'katex/dist/katex.min.css';
 
 /* ───────────────────────── Design tokens: "The Bench" ─────────────────────────
-   Light: a lab notebook — warm paper with a faint engineering grid, ink, copper.
+   Light: a lab notebook — warm paper (or plain white, see `data-paper` below), ink, copper.
    Dark: the lab at night — a deep blue-black page with phosphor-green instrument traces.
 
    Every colour is written once as light-dark(light, dark). The theme is chosen by `color-scheme`:
@@ -27,6 +27,31 @@
 }
 .screen {
   color-scheme: dark;
+}
+/* Some browsers resolve light-dark() in a custom property where it is declared (on :root) and inherit the
+   result, so an always-dark subtree would keep the light values. Pin the dark values it uses. */
+.screen {
+  --fg: #e2e8ef;
+  --ink-2: #bcc6d2;
+  --mute: #8f9bab;
+  --bg: #0a0f17;
+  --pn: #111a26;
+  --panel: #0f1620;
+  --line: #213043;
+  --line-strong: #35465d;
+  --copper: #e0925a;
+  --copper-ink: #eaa472;
+  --phosphor: #5cf0a0;
+  --sig-high: #ffb23e;
+  --sig-high-glow: rgb(255 178 62 / 0.45);
+  --sig-low: #7a8ba1;
+  --sig-z: #6f7782;
+  --sig-x: #ff6464;
+  --sig-current: #62c8ff;
+  --wire: #8494a8;
+  --silicon: #232840;
+  --silicon-metal: #c9b27c;
+  --focus: #7fd4ff;
 }
 
 :root {
@@ -171,6 +196,16 @@
   --byrne-ink: var(--fg);
 }
 
+/* Reader option: a plain white page in the light theme (the dark theme is unaffected). */
+:root[data-paper='white'] {
+  --bg: light-dark(#ffffff, #0a0f17);
+  --panel: light-dark(#ffffff, #0f1620);
+  --pn: light-dark(#f3f3f2, #111a26);
+  --line: light-dark(#e2e2e0, #213043);
+  --line-strong: light-dark(#bdbdb9, #35465d);
+  --surface-3: light-dark(#e8e8e6, #1c2635);
+}
+
 /* ───────────────────────── Base ───────────────────────── */
 
 *,
@@ -185,9 +220,9 @@ html {
   background: var(--bg);
 }
 
-/* The engineering grid: a faint minor grid every 24 px and a major line every fifth. */
-.grid-paper,
-body {
+/* The engineering grid: a faint minor grid every 24 px and a major line every fifth. Only figure canvases ask for it
+   (`.grid-paper`); the page itself is a solid colour so that text stays easy to read. */
+.grid-paper {
   background-color: var(--bg);
   background-image:
     linear-gradient(var(--grid-major) 1px, transparent 1px),
@@ -204,6 +239,7 @@ body {
 
 body {
   margin: 0;
+  background: var(--bg);
   color: var(--fg);
   font-family: var(--font-body);
   font-size: 1.125rem;

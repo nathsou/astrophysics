@@ -6,7 +6,6 @@
 
   const available = new Set(ALL_ENTRIES.filter((e) => e.available).map((e) => `${e.kind}:${e.slug}`));
   const chapters = PARTS.flatMap((p) => p.chapters);
-  const ready = chapters.filter((c) => available.has(`chapter:${c.slug}`)).length;
   const first = ALL_ENTRIES.find((e) => e.available);
   const numbered = PARTS.filter((p) => p.id !== '0' && p.id !== 'E').length;
 
@@ -74,7 +73,6 @@
         <div><dt>Chapters</dt><dd>{chapters.length}</dd></div>
         <div><dt>Parts</dt><dd>{numbered}</dd></div>
         <div><dt>Appendices</dt><dd>{APPENDICES.length}</dd></div>
-        <div><dt>Ready</dt><dd>{ready}</dd></div>
       </dl>
     </div>
 
@@ -143,11 +141,6 @@
     <header class="sec-head">
       <p class="kicker">The course map</p>
       <h2 id="map-h">One signal path, from a battery to a CPU on a chip</h2>
-      <p class="legend ui" aria-hidden="true">
-        <span><i class="pad on"></i> ready to read</span>
-        <span><i class="pad"></i> planned</span>
-        <span class="mono">{ready}/{chapters.length} ready</span>
-      </p>
     </header>
 
     <div class="board">
@@ -667,34 +660,6 @@
   .map {
     padding: 4.5rem 0 1rem;
   }
-  .legend {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem 1.25rem;
-    margin: 1rem 0 0;
-    font-size: 0.84rem;
-    color: var(--mute);
-  }
-  .legend span {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-  }
-  .legend .mono {
-    font-size: 0.74rem;
-  }
-  .legend .pad {
-    width: 11px;
-    height: 11px;
-    border-radius: 50%;
-    border: 1.5px dashed var(--sig-z);
-  }
-  .legend .pad.on {
-    border: 2px solid var(--copper);
-    background: var(--copper-soft);
-  }
-
   .board {
     --rail: 1.6rem;
     position: relative;

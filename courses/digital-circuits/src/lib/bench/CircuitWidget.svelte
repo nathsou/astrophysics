@@ -39,7 +39,7 @@
   import { createEngine } from './engines';
   import { engineOptions } from './options';
   import { resolveTraces } from './traces';
-  import { formatSI, formatSpeed } from './format';
+  import { formatSI, formatSpeed, NBSP } from './format';
   import { describeOutputs } from './summary';
   import { encodeCircuit, shareHash } from './share';
   import Icon from '../components/ui/Icon.svelte';
@@ -305,6 +305,12 @@
     simTime = e.time;
   }
 
+  /** The simulated time split into its number and its unit, so that each can sit in a fixed-width slot. */
+  const timeParts = $derived.by(() => {
+    const [value = '', unit = ''] = formatSI(simTime, 's', 3).split(NBSP);
+    return { value, unit };
+  });
+
   function step() {
     playing = false;
     tick(0.1);
@@ -499,7 +505,7 @@
         />
         <Toggle label="Current" bind:checked={showCurrent} />
       {/if}
-      {#if toolbar}<span class="time" aria-hidden="true">t = {formatSI(simTime, 's', 3)}</span>{/if}
+      {#if toolbar}<span class="time" aria-hidden="true">t = <span class="tv">{timeParts.value}</span><span class="tu">{timeParts.unit}</span></span>{/if}
     </div>
 {/snippet}
 
@@ -751,10 +757,23 @@
   }
   .time {
     margin-left: auto;
+    /* Fixed-width slots for the number and the unit, so the readout does not shift as they change while the simulation runs. */
+    display: inline-flex;
+    white-space: pre;
     font-family: var(--font-mono);
     font-size: 0.74rem;
     color: var(--mute);
     font-variant-numeric: tabular-nums;
+  }
+  .time .tv {
+    display: inline-block;
+    min-width: 4ch;
+    text-align: right;
+  }
+  .time .tu {
+    display: inline-block;
+    min-width: 2ch;
+    padding-left: 1ch;
   }
   .placeholder {
     min-height: 12rem;

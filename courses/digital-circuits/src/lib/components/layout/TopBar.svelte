@@ -8,6 +8,7 @@
 
   let scrolled = $state(false);
   const onBench = $derived(page.url.pathname.startsWith(`${base}/bench`));
+  const home = $derived(page.url.pathname.replace(/\/$/, '') === base);
   const onParts = $derived(page.url.pathname.startsWith(`${base}/parts`));
 </script>
 
@@ -17,6 +18,17 @@
   <button class="icon-btn menu" onclick={() => (nav.sidebarOpen = !nav.sidebarOpen)} aria-label="Open navigation" aria-expanded={nav.sidebarOpen}>
     <Icon name="menu" />
   </button>
+  {#if !home}
+    <button
+      class="icon-btn collapse"
+      onclick={() => nav.toggleCollapsed()}
+      aria-label={nav.sidebarCollapsed ? 'Show the chapter list' : 'Hide the chapter list'}
+      aria-expanded={!nav.sidebarCollapsed}
+      title={nav.sidebarCollapsed ? 'Show the chapter list' : 'Hide the chapter list'}
+    >
+      <Icon name="sidebar" />
+    </button>
+  {/if}
   <a class="brand" href="{base}/">
     <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
       <rect width="32" height="32" rx="7" class="tile" />
@@ -33,6 +45,18 @@
   <a class="icon-btn" class:current={onParts} href="{base}/parts/" aria-label="The parts bin" aria-current={onParts ? 'page' : undefined} title="The parts bin: the parts you have built">
     <Icon name="bin" />
   </a>
+  {#if theme.resolved === 'light'}
+    <button
+      class="icon-btn"
+      class:current={theme.paper === 'white'}
+      onclick={() => theme.setPaper(theme.paper === 'white' ? 'default' : 'white')}
+      aria-pressed={theme.paper === 'white'}
+      aria-label="White page background"
+      title={theme.paper === 'white' ? 'Back to the warm paper background' : 'Use a plain white page background'}
+    >
+      <Icon name="page" />
+    </button>
+  {/if}
   <button class="icon-btn" onclick={() => theme.set(theme.resolved === 'dark' ? 'light' : 'dark')} aria-label="Switch to {theme.resolved === 'dark' ? 'light' : 'dark'} theme" title="Switch to {theme.resolved === 'dark' ? 'light' : 'dark'} theme">
     <Icon name={theme.resolved === 'dark' ? 'sun' : 'moon'} />
   </button>
@@ -141,9 +165,15 @@
     display: none;
     margin-left: -0.4rem;
   }
+  .collapse {
+    margin-left: -0.4rem;
+  }
   @media (max-width: 1099px) {
     .menu {
       display: inline-grid;
+    }
+    .collapse {
+      display: none;
     }
   }
   @media (max-width: 640px) {

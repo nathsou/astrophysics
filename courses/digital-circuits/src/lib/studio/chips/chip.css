@@ -17,8 +17,8 @@
   --hov: var(--copper);
   --hov-soft: color-mix(in srgb, var(--copper) 22%, transparent);
   --cold: var(--sig-low);
-  --die-ink: color-mix(in srgb, var(--fg) 88%, transparent);
-  --die-ink-2: color-mix(in srgb, var(--fg) 58%, transparent);
+  --die-ink: rgb(226 232 239 / 0.88);
+  --die-ink-2: rgb(226 232 239 / 0.58);
   --bad: var(--sig-x);
   position: relative;
   background: radial-gradient(120% 90% at 50% 0%, var(--die-top), var(--die-bottom));
