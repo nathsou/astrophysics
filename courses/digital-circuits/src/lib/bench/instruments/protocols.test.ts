@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { decoders, getDecoder } from '$lib/bench/instruments/decoders';
+import { decoders, getDecoder } from './decoders';
 import { Prng } from '$lib/sim/cpu/common/prng';
 import {
   decodeI2c,

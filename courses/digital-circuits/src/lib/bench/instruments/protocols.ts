@@ -4,13 +4,12 @@
  * A *signal* here is what a logic analyser records: a list of times at which a line changed and the level it changed to
  * (`v[i]` holds from `t[i]` until `t[i + 1]`). The generators produce the waveforms a transmitter would put on the wires;
  * the decoders read them back the way a protocol analyser does: find the edges, sample in the middle of each bit, and
- * assemble bytes. The decoders implement the bench's `Decoder` interface (`src/lib/bench/instruments/decoders.ts`), so
- * `registerProtocolDecoders()` makes them available to the logic analyser instrument too, and the chapter's figures use the
- * same objects.
+ * assemble bytes. The decoders implement the bench's `Decoder` interface (`decoders.ts`); the logic analyser calls
+ * `registerProtocolDecoders()` so they are always offered, and Chapter 24's figures use the same objects.
  *
  * Levels are 0, 1, 2 (unknown) and 3 (high impedance), as in the digital engine. A decoder treats anything but 1 as low.
  */
-import { registerDecoder, type Annotation, type Decoder, type DecoderInput } from '$lib/bench/instruments/decoders';
+import { registerDecoder, type Annotation, type Decoder, type DecoderInput } from './decoders';
 
 export interface Signal {
   /** Times (s) at which the level changes (the first entry is the starting level). */
