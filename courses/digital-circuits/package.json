@@ -11,7 +11,10 @@
     "preview": "vite preview",
     "test": "svelte-kit sync && vitest run",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --threshold error",
-    "typecheck": "npm run check"
+    "typecheck": "npm run check",
+    "validate:gal": "node scripts/validate.mjs gal",
+    "validate:yosys": "node scripts/validate.mjs yosys",
+    "validate:rv32i": "node scripts/validate.mjs rv32i"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.20.3",

@@ -399,7 +399,7 @@ Everything runs in plain TypeScript, with typed arrays in the placer and the rou
 8. **:term[Static timing]{id=static-timing-analysis}** with the published delay model (Appendix G), and the critical path and *f*max.
 9. **:term[Bitstream]{id=bitstream}** generation, and its decoding back to a netlist of LUTs, flip-flops, carry cells, routing multiplexers, pads and block RAMs, which the digital engine runs on the virtual board: the device that runs is what the bits say, not what the source said.
 
-**Not in this version.** The plan for the course includes writing an interchange netlist for Yosys and nextpnr, so that a design could go to a real iCE40 board. That export does not exist yet: the toolchain here targets the virtual devices only.
+**To a real board.** `src/lib/pld/interchange/` writes a DCL design as a Yosys JSON netlist (the DCL playground's *Export JSON* button). It is word-level, taken from the RTL, and keeps the hierarchy, so Yosys does its own LUT mapping, carry chains and block RAM: `yosys -p "read_json design.json; synth_ice40 -json out.json"` and then `nextpnr-ice40` take it to a real iCE40. Tests run every course design from the JSON alone and compare it cycle by cycle with the RTL simulator. One difference: an out-of-range memory address reads 0 in the RTL simulator and is undefined in Yosys. The script `npm run validate:yosys` does the whole trip when Yosys and nextpnr are installed and records utilisation and fmax in a JSON report for Chapter 31; `validate:gal` compares the GAL fuse maps with galette's and `validate:rv32i` runs riscv-arch-test on the RV32I interpreter and core. The three skip, with a message, when their tools are missing.
 
 ## What the simulator does not model
 
@@ -447,7 +447,7 @@ Every model is a choice about what to leave out. These are the choices, by engin
 - The RTL simulator is zero-delay and cycle-based: it knows nothing about glitches, set-up or hold. Lowering to gates and running on the digital engine adds delays, but the delays are those of the abstract gates, not of any real technology.
 - **FPGA:** the clock is ideal (no skew, no jitter), there is no power analysis, and the delay model is a published table, not extracted from layout. A design that passes timing analysis here says nothing about a real FPGA.
 - **The DCL, GAL and CPLD paths are separate.** DCL does not reach the PROM, PLA, GAL or CPLD; those take equations.
-- **No export to a real toolchain** (Yosys, nextpnr): a design made here cannot be sent to a real board by this toolchain.
+- **The real-toolchain export is checked only structurally here**: the Yosys JSON is validated against the documented schema and simulated from the JSON alone, but whether a given Yosys and nextpnr accept it is what `validate:yosys` checks where they are installed.
 
 ## Where to look
 
@@ -467,4 +467,4 @@ Every model is a choice about what to leave out. These are the choices, by engin
 | The FPGA | `src/lib/pld/devices/vfpga*.ts`, `src/lib/pld/fpga/` |
 | The Device Studio | `src/lib/studio/` |
 
-`docs/PLAN.md` says what was planned, and this appendix says what exists. Where they differ (the interchange netlist for Yosys and nextpnr is the one this appendix knows of), this appendix is right about the code.
+`docs/PLAN.md` says what was planned, and this appendix says what exists. Where they differ, this appendix is right about the code.

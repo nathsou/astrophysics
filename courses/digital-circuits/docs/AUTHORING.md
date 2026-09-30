@@ -295,3 +295,27 @@ unless labelled as such.
 - [ ] At least one predict question, one lab, one history card, one exercise.
 - [ ] Every citation key exists in `content/bibliography.yaml`; new glossary terms added to `content/glossary.yaml`; timeline events added to `content/timeline.yaml`.
 - [ ] Screenshots of the chapter in light and dark themes at 1280 and 390 px checked by eye.
+
+## Validation
+
+Three scripts compare the course with real, external tools. They are not part of CI and not part of
+`npm test`. Each one prints `skipped: <tool> not found — install … or set …` and exits 0 when its tool is
+missing, and exits 1 on a real mismatch (2 on a bad argument). The entry point is `scripts/validate.mjs`; the
+logic is in `tools/validate/` (TypeScript, loaded through Vite, with unit tests on fixtures and fake tools).
+
+| Script | Tool | What it checks |
+|---|---|---|
+| `npm run validate:gal` | [galette](https://github.com/simon-frankau/galette): `GALETTE=/path/to/galette`, or `galette` on PATH, or `GALETTE_DIR=/path/to/checkout` (built with `cargo build --release` if it has no binary) | Every GAL22V10 example (the Studio's, Chapter 26's fixtures and the polarity demo's presets): galette's JEDEC file must equal, byte for byte, the course's galette-style file and the one the `.pld` assembler writes, and have the fuse map of the Studio's download. With a checkout it also runs galette's own `testcases/`. |
+| `npm run validate:yosys` | Yosys (`YOSYS`, default `yosys`) and nextpnr-ice40 (`NEXTPNR`, default `nextpnr-ice40`) | Every design of `content/designs/` and `content/chapters/*/designs/` is exported as Yosys JSON (`src/lib/pld/interchange`), validated, read by Yosys, synthesised (`synth_ice40`) and placed and routed for each part. Yosys must accept it and keep its ports. The report `docs/validation/yosys.json` has Yosys's cell counts, nextpnr's resource use and fmax. |
+| `npm run validate:rv32i` | [riscv-arch-test](https://github.com/riscv-non-isa/riscv-arch-test): `RISCV_ARCH_TEST=/path/to/checkout`, with precompiled `.elf` files or a RISC-V toolchain (`RISCV_PREFIX`, or `riscv64-unknown-elf-gcc` and friends on PATH) | The signatures of the RV32I tests, run on the reference interpreter and on the DCL core (`content/designs/rv32i.dcl`) on the RTL simulator, against the tests' `reference_output` files. |
+
+Options of `validate:yosys` (after `--`, or as environment variables): `--parts up5k:sg48,hx8k:ct256`
+(`ICE40_PARTS`; designs with wide ports may not fit the smaller part, which the report records as
+`does-not-fit`), `--freq 12` (`ICE40_FREQ`, the clock constraint in MHz), `--seed 1` (`ICE40_SEED`),
+`--only counter,alu`, `--out file`, `--work dir` (keeps the intermediate files). Without nextpnr it runs Yosys only.
+Options of `validate:rv32i`: `--only regexp`, `--skip regexp` (default `misalign|ecall|ebreak`, which need trap
+handlers), `--no-core`, `--max-steps n`. Example: `npm run validate:yosys -- --parts hx8k:ct256 --only rv32i`.
+
+The interchange netlist itself has ordinary tests (`src/lib/pld/interchange/`): a validator for the
+documented JSON format, a simulator that reads only the JSON and is compared with the RTL simulator on every
+course design, and a golden file (`UPDATE_GOLDEN=1 npx vitest run src/lib/pld/interchange` rewrites it).

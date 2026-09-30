@@ -569,10 +569,14 @@ describe('the DCL toolchain and the programmable-logic flows', () => {
     expect(src('src/lib/pld/cpld/jtag.ts')).toMatch(/16-state/);
   });
 
-  it('there is no interchange netlist writer, and the text says so', () => {
-    expect(existsSync(join(root, 'src/lib/pld/interchange'))).toBe(false);
-    expect(readdirSync(join(root, 'src/lib/pld/fpga')).some((f) => /yosys|nextpnr|interchange/i.test(f))).toBe(false);
-    expect(md).toContain('That export does not exist yet');
+  it('names the interchange writer and the validation scripts that exist', () => {
+    expect(existsSync(join(root, 'src/lib/pld/interchange/yosys.ts'))).toBe(true);
+    const scripts = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')).scripts as Record<string, string>;
+    for (const s of ['validate:yosys', 'validate:gal', 'validate:rv32i']) {
+      expect(scripts[s]).toBeTruthy();
+      expect(md).toContain(s);
+    }
+    expect(md).toContain('src/lib/pld/interchange/');
   });
 });
 

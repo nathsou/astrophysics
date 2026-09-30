@@ -324,6 +324,60 @@ source → lexer → parser → AST → names → types → elaboration (generic
   - hovering shows the type, the doc comment and the hardware cost (for example, "32-bit adder: 32 LUT4s
     on the carry chain"), and highlights the matching cells in the logic and chip views.
 
+### Interchange netlist
+
+PLAN.md left the choice between Yosys JSON and structural Verilog to M7. The choice is **Yosys JSON**, the
+format of Yosys's `write_json` and `read_json` (Yosys manual, *Yosys JSON netlist format*). It is data, so
+the writer is a pure function of the word-level RTL (`src/lib/pld/interchange/`), and it needs no Verilog
+printer, no escaping rules and no dialect. DCL therefore has no Verilog backend.
+
+```
+Counter.dcl → RTL → toYosysJson → counter.json
+yosys -p "read_json counter.json; synth_ice40 -top Counter -json counter.synth.json"
+nextpnr-ice40 --up5k --package sg48 --json counter.synth.json --pcf board.pcf --asc counter.asc
+```
+
+- **Level.** The netlist is word-level, like the RTL. Each RTL cell becomes one Yosys internal cell of the
+  same width, and Yosys does its own optimisation, LUT mapping, carry-chain and block-RAM inference. The
+  gate-level netlist and the course's own LUT mapping are not exported: comparing them with what Yosys
+  makes of the same source is the point of Chapter 31's utilisation and fmax table.
+- **File.** `{ creator, modules }`. A module has `attributes`, `ports` (direction and `bits`), `cells`
+  (`hide_name`, `type`, `parameters`, `attributes`, `port_directions`, `connections`) and `netnames`
+  (`hide_name`, `bits`, `attributes`). A bit is a net number (from 2, one per wire bit, least significant
+  bit first) or `"0"`, `"1"`. Integer parameters are 32-bit binary strings, as Yosys writes them.
+- **Hierarchy.** One module per DCL module specialisation, named like the RTL key with every run of
+  characters outside `A-Za-z0-9_$` replaced by `_` (`Fifo<8, 4>` is `Fifo_8_4`, and the original is in the
+  attribute `dcl_module`). An instance is a cell whose type is the child's module name, with the child's
+  ports as connections. The top module has the attribute `top`. `flatten: true` inlines the hierarchy first
+  (`flattenRtl`) and writes one module.
+- **Names and provenance.** Ports are ports. Every named RTL signal (ports, `let`s, registers, register
+  array elements, memory read ports) is a netname. Cells have automatic names (`$add$counter.dcl:12$4`,
+  `hide_name` 1), except instances and memories. A cell's `src` attribute is its source span
+  (`file:line.col-line.col`) and `dcl_path` its instance path.
+- **Cell mapping.**
+
+| RTL cell | Yosys |
+|---|---|
+| `add` `sub` `mul` `and` `or` `xor` `not` `neg` | `$add` `$sub` `$mul` `$and` `$or` `$xor` `$not` `$neg` |
+| `shl`; `shr` (`signed` or not) | `$shl`; `$sshr` or `$shr` |
+| `eq` `ne`; `lt` `le` `gt` `ge` | `$eq` `$ne`; `$lt` `$le` `$gt` `$ge` (`A_SIGNED` and `B_SIGNED` from `signed`) |
+| `mux` | `$mux` (`Y = S ? B : A`, as in the RTL) |
+| `pmux` | one `$eq` per matched value, a `$reduce_or` over the values of a case, and a `$pmux` whose one-hot select is the cases' hits |
+| `reduce_and` `reduce_or` `reduce_xor` | `$reduce_and` `$reduce_or` `$reduce_xor` |
+| `popcount` | a chain of `$add` |
+| `reg` | `$dff` (rising edge); the power-up value is the `init` attribute of its netnames |
+| `mem` | one `$mem_v2`: clocked reads, no enable or reset, not transparent (a read sees the word from before the edge's write), at most one write port |
+| `const` `slice` `concat` `repeat` `zext` `sext` | no cell: constant bits and rearranged bits |
+
+- **Differences.** The RTL reads 0 from an out-of-range memory address and ignores an out-of-range write;
+  Yosys leaves both undefined. This matters only for a memory whose depth is not a power of two. Yosys
+  optimises across the module boundaries only after `flatten`, which `synth_ice40` does.
+- **Testing.** `src/lib/pld/interchange/` has a validator for the documented format (shape, parameters and
+  port widths of every internal cell, one driver per net, the hierarchy) and a simulator that reads only the
+  JSON. The tests run every course design and random modules using every cell kind on the RTL simulator and
+  on the JSON side by side, and compare a golden file for the Counter. `validate:yosys`
+  (`docs/AUTHORING.md`, *Validation*) sends the same files through Yosys and nextpnr.
+
 ## Implementation language: TypeScript
 
 We compared writing the compiler and toolchain in Rust (compiled to WebAssembly) with writing them in

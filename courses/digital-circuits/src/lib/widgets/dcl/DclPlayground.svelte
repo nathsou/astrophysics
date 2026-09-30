@@ -125,6 +125,24 @@
   function onformat(o: FormatOutcome) {
     say(o === 'changed' ? 'Formatted.' : o === 'unchanged' ? 'Already formatted.' : 'Cannot format: fix the syntax errors first.');
   }
+  /** Downloads the design as a Yosys JSON netlist (HDL.md, *Interchange netlist*) for Yosys and nextpnr. */
+  async function exportNetlist() {
+    const design = analysis?.ok ? analysis.design : undefined;
+    if (!design || stale) return say('Cannot export: fix the errors first.');
+    try {
+      const { writeYosysJson } = await import('$lib/pld/interchange');
+      const text = writeYosysJson(design);
+      const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+      const a = Object.assign(document.createElement('a'), { href: url, download: `${file.replace(/\.dcl$/, '')}.json` });
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      say('Exported the Yosys JSON netlist.');
+    } catch (e) {
+      say(`Cannot export: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  }
   function reset() {
     code = original;
     outcomes = undefined;
@@ -164,6 +182,7 @@
   <div class="bar ui" role="toolbar" aria-label="Editor tools">
     <button class="tool" type="button" onclick={() => onformat(editor?.format() ?? 'error')} title="Format the code (Shift+Alt+F)">Format</button>
     <button class="tool" type="button" onclick={reset} disabled={code === original}>Reset code</button>
+    <button class="tool" type="button" onclick={exportNetlist} disabled={!analysis?.ok || stale} title="Download the design as a Yosys JSON netlist, for Yosys and nextpnr">Export JSON</button>
     {#if tests}<button class="tool primary" type="button" onclick={runTests} disabled={testing || errors > 0}>Run tests</button>{/if}
     <span class="status" role="status" aria-live="polite">{status}</span>
   </div>
