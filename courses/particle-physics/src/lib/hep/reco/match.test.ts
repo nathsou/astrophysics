@@ -63,7 +63,7 @@ describe('efficiency, fake rate, resolution', () => {
     const truths = [truthOf([tp(0, 211, 5, 0), tp(1, 211, 5, 0.5), tp(2, 22, 5, 0)]), truthOf([tp(0, 211, 5, 0), tp(1, 211, 0.3, 0)])];
     const recos = [reco([track([], 0), track([], 0)]), reco([track([], 1)])];
     const sel = (p: TruthParticle) => Math.abs(p.pdg) === 211 && Math.hypot(p.p.px, p.p.py) > 1;
-    const e = efficiency(recos, truthos(truths), sel);
+    const e = efficiency(recos, truths, sel);
     // event 1: particles 0,1 selected, 0 matched (twice); event 2: particle 0 selected, unmatched (track matches id 1, too soft)
     expect(e.n).toBe(3);
     expect(e.k).toBe(1);
@@ -92,6 +92,3 @@ describe('efficiency, fake rate, resolution', () => {
     expect(resolution([]).n).toBe(0);
   });
 });
-function truthos(t: TruthEvent[]): TruthEvent[] {
-  return t;
-}

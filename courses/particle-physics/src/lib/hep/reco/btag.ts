@@ -36,7 +36,7 @@ export interface BTagOptions {
 }
 
 export interface BTagInfo {
-  /** The b-tag score in [0, 1]; 0.5 is the working point (~70 % efficiency for b jets, ~1 % for light jets at pT ≈ 50 GeV). */
+  /** The b-tag score in [0, 1]; 0.5 is the medium working point (≈ 78 % efficiency for b jets and ≈ 1 % for light jets at pT ≈ 50 GeV; 0.85 gives ≈ 70 % and ≈ 0.2 %, see README.md). */
   score: number;
   /** The logistic argument (log-odds). */
   discriminant: number;
@@ -50,7 +50,7 @@ export interface BTagInfo {
 }
 
 /** Weights of the logistic function: bias, then the features listed in `bTagFeatures`. Fitted on simulation (see README.md). */
-export const BTAG_WEIGHTS = [-6.775, 1.45, 0.579, 1.06, 0.935, 0.038, 1.443, -0.889, 0.12];
+export const BTAG_WEIGHTS = [-5.701, 0.978, 0.408, 1.14, 1.351, 0.03, 1.483, -0.479, 0.125];
 
 const etaOf = (p: P4) => {
   const pt = Math.hypot(p.px, p.py);

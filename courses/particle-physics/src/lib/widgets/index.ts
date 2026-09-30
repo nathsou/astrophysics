@@ -15,3 +15,4 @@ export * from './sims.ts';
 export * from './trigger.ts';
 export * from './analysis.ts';
 export * from './units.ts';
+export * from './control.ts';

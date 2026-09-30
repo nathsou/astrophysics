@@ -19,7 +19,7 @@ import { deltaPhi, fromPtEtaPhiM, type P4 } from '../kinematics/index.ts';
 import { resolveConfig, type RecoConfig } from './config.ts';
 import { clusterGrid, clusterP4, extrapolateToRadius, matchTracksToClusters } from './calo.ts';
 import type { RecoGeometry } from './geometry.ts';
-import { curvatureFromPt, helixAtRadius, propagateToRadius } from './helix.ts';
+import { arcNearest, curvatureFromPt, helixAtRadius, propagateToRadius } from './helix.ts';
 import { highland } from './material.ts';
 import type { RecoCluster, RecoObjectX, RecoTrack } from './types.ts';
 import { fitVertex, trackHelix, type RecoVertex } from './vertex.ts';
@@ -389,13 +389,22 @@ export function findConversions(tracks: readonly RecoTrack[], minRadius = 10): C
       const b = tracks[j0]!;
       if (b.eta - a.eta > 0.06) break;
       if (a.charge * b.charge > 0 || Math.abs(deltaPhi(a.phi, b.phi)) > 0.08) continue;
-      const pa = trackP4(a, M_E), pb = trackP4(b, M_E);
+      const ha = trackHelix(a), hb = trackHelix(b);
+      const Ra = 1 / Math.abs(ha.c), Rb = 1 / Math.abs(hb.c);
+      const ca = { x: -ha.d0 * Math.sin(ha.phi0) + (Math.sin(ha.phi0) / ha.c), y: ha.d0 * Math.cos(ha.phi0) - Math.cos(ha.phi0) / ha.c };
+      const cb = { x: -hb.d0 * Math.sin(hb.phi0) + (Math.sin(hb.phi0) / hb.c), y: hb.d0 * Math.cos(hb.phi0) - Math.cos(hb.phi0) / hb.c };
+      const d12 = Math.hypot(ca.x - cb.x, ca.y - cb.y);
+      const gap = d12 - (Ra + Rb);
+      if (Math.abs(gap) > 1.5) continue;
+      const tx = ca.x + ((cb.x - ca.x) * Ra) / d12, ty = ca.y + ((cb.y - ca.y) * Ra) / d12;
+      const radius = Math.hypot(tx, ty);
+      if (radius < minRadius || radius > 400) continue;
+      // the pair's opening angle is measured at the conversion point, not at the perigees (the tracks bend apart in between)
+      const phiA = ha.phi0 - ha.c * arcNearest(ha, tx, ty), phiB = hb.phi0 - hb.c * arcNearest(hb, tx, ty);
+      const pa = fromPtEtaPhiM(a.pt, a.eta, phiA, M_E), pb = fromPtEtaPhiM(b.pt, b.eta, phiB, M_E);
       const s = { E: pa.E + pb.E, px: pa.px + pb.px, py: pa.py + pb.py, pz: pa.pz + pb.pz };
       const m2 = s.E * s.E - s.px * s.px - s.py * s.py - s.pz * s.pz;
       if (m2 > 0.05 * 0.05) continue;
-      const v = fitVertex([a, b], { chi2Cut: Infinity });
-      const radius = Math.hypot(v.x, v.y);
-      if (v.chi2 > 9 || radius < minRadius) continue;
       const lo = Math.min(i0, j0), hi = Math.max(i0, j0);
       out.push({ a: lo, b: hi, p: s, radius });
     }

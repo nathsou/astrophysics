@@ -249,3 +249,57 @@ export function matchSummary(tracks: readonly RecoTrack[], truth: TruthEvent, hi
   }
   return { nTruthTracks: n, nMatchedTracks: k, nFakeTracks: fakes };
 }
+
+// ── whole-event matching ─────────────────────────────────────────────────────────────────────
+
+export interface TruthMatchOptions {
+  /** Tracks: minimum share of hits from one particle (default 0.5). */
+  purity?: number;
+  /** ΔR cone for leptons and photons (default 0.1) and for jets (0.4). */
+  dRLepton?: number;
+  dRJet?: number;
+  /** Replace links that objects already have (default false: only objects without a link are matched). */
+  overwrite?: boolean;
+}
+
+/**
+ * Link a reconstructed event to its truth: tracks by shared hits (purity), then every object that has no link yet by
+ * ΔR to the truth particle of its kind (muons to μ±, electrons to e±, photons to γ, jets to the nearest quark or gluon).
+ * Fills `Track.truth`, `Track.purity` and `RecoObject.truth`, and returns the track summary. `reconstruct` already does
+ * this when given the truth; call it to (re)match an event, or with other options.
+ */
+export function truthMatch(reco: { tracks: RecoTrack[]; objects: RecoObject[] }, hits: readonly Hit[], truth: TruthEvent, opts: TruthMatchOptions = {}): MatchInfo {
+  labelTracks(reco.tracks, hits, opts.purity ?? 0.5);
+  const dRl = opts.dRLepton ?? 0.1;
+  const kindPdg: Partial<Record<RecoObject['kind'], (pdg: number) => boolean>> = {
+    muon: (p) => Math.abs(p) === 13,
+    electron: (p) => Math.abs(p) === 11,
+    photon: (p) => p === 22,
+  };
+  for (const o of reco.objects) {
+    if (o.truth >= 0 && !opts.overwrite) continue;
+    const pt = Math.hypot(o.p.px, o.p.py);
+    if (pt <= 0) continue;
+    const eta = Math.asinh(o.p.pz / pt), phi = Math.atan2(o.p.py, o.p.px);
+    if (o.kind === 'jet') {
+      o.truth = matchJetToParton(o.p, truth, opts.dRJet ?? 0.4);
+      continue;
+    }
+    const ok = kindPdg[o.kind];
+    if (!ok) continue;
+    const cands = truth.particles
+      .filter((p) => p.status === 'final' && ok(p.pdg))
+      .map((p) => ({ id: p.id, eta: Math.asinh(p.p.pz / Math.hypot(p.p.px, p.p.py)), phi: Math.atan2(p.p.py, p.p.px) }));
+    o.truth = matchByDeltaR(eta, phi, cands, dRl)?.candidate.id ?? -1;
+  }
+  const count = new Map<number, number>();
+  for (const h of hits) if (h.truth >= 0) count.set(h.truth, (count.get(h.truth) ?? 0) + 1);
+  const matched = new Set(reco.tracks.filter((t) => t.truth >= 0).map((t) => t.truth));
+  let n = 0, k = 0;
+  for (const p of truth.particles) {
+    if (p.status !== 'final' || (count.get(p.id) ?? 0) < 4) continue;
+    n++;
+    if (matched.has(p.id)) k++;
+  }
+  return { nTruthTracks: n, nMatchedTracks: k, nFakeTracks: reco.tracks.filter((t) => t.truth < 0).length };
+}
