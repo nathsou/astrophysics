@@ -456,3 +456,95 @@ describe('subcircuits', () => {
     }
   });
 });
+
+describe('the allowance of one advance() call', () => {
+  const clockNet = (frequency: number, options: DigitalEngineOptions = {}) => {
+    const b = new NetlistBuilder();
+    const c = b.net('C');
+    b.add('clock', 'CK', { Y: c }, { frequency });
+    return { e: createDigitalEngine(b.build(), options), c };
+  };
+
+  test('a ring oscillator advanced by a huge interval returns within the cap, lagging', () => {
+    const { e, nets } = ring(3, 1, { maxEventsPerAdvance: 1000 });
+    const r = e.watch([nets[0]!]);
+    const before = e.eventCount;
+    e.advance(1); // ~3e9 events if it ran to the end
+    expect(e.lagging).toBe(true);
+    expect(e.speed).toBeGreaterThan(0);
+    expect(e.speed).toBeLessThan(1e-5);
+    expect(e.time).toBeLessThan(5e-6);
+    expect(e.time).toBeGreaterThan(0);
+    // Within the allowance, plus the last time point.
+    expect(e.eventCount - before).toBeLessThan(1010);
+    expect(rows(r).length).toBeLessThan(1010);
+    expect(e.messages.some((m) => m.level === 'info' && /slower than real time/.test(m.text))).toBe(true);
+  });
+
+  test('a 1 GHz clock over one second stops at the default cap and reports lagging', () => {
+    const { e } = clockNet(1e9);
+    e.advance(1);
+    expect(e.lagging).toBe(true);
+    expect(e.speed).toBeLessThan(1e-3);
+    // Each edge costs two queue entries (the clock's wake-up and the change of its output), two edges a
+    // period of 1 ns: the 100 000 entries of the default cap cover about 25 µs.
+    expect(e.time).toBeGreaterThan(20e-6);
+    expect(e.time).toBeLessThan(30e-6);
+    expect(e.eventCount).toBeLessThan(100_100);
+  });
+
+  test('the message is posted once, and the next calls carry on from where the last one stopped', () => {
+    const { e } = clockNet(1e9, { maxEventsPerAdvance: 500 });
+    e.advance(1);
+    const t1 = e.time;
+    e.advance(1);
+    const t2 = e.time;
+    expect(t2).toBeGreaterThan(t1);
+    expect(e.messages.filter((m) => /slower than real time/.test(m.text))).toHaveLength(1);
+    e.reset();
+    expect(e.lagging).toBe(false);
+    expect(e.speed).toBe(1);
+    expect(e.time).toBe(0);
+    expect(e.messages.some((m) => /slower than real time/.test(m.text))).toBe(false);
+  });
+
+  test('an ordinary circuit is unaffected: it lands on its target, at speed 1', () => {
+    const { e, c } = clockNet(1e6);
+    const r = e.watch([c]);
+    e.advance(3.2e-6);
+    expect(e.lagging).toBe(false);
+    expect(e.speed).toBe(1);
+    expect(e.time).toBeCloseTo(3.2e-6, 15);
+    expect(rows(r)).toHaveLength(7);
+    // A lagging call is followed by a normal one that is not lagging.
+    const slow = clockNet(1e9, { maxEventsPerAdvance: 100 });
+    slow.e.advance(1);
+    expect(slow.e.lagging).toBe(true);
+    const t = slow.e.time;
+    slow.e.advance(10 * NS);
+    expect(slow.e.lagging).toBe(false);
+    expect(slow.e.time).toBeCloseTo(t + 10 * NS, 12);
+  });
+
+  test('a `while (time < end)` loop makes progress with any cap and sees the same waveform as one big call', () => {
+    const end = 2e-6;
+    const whole = clockNet(5e6, { maxEventsPerAdvance: 1e9 });
+    const rw = whole.e.watch([whole.c]);
+    whole.e.advance(end);
+    for (const cap of [1, 2, 3]) {
+      const { e, c } = clockNet(5e6, { maxEventsPerAdvance: cap });
+      const r = e.watch([c]);
+      let calls = 0;
+      while (e.time < end - 1e-15 && calls++ < 1000) e.advance(end - e.time);
+      expect(e.time, `cap ${cap}`).toBeCloseTo(end, 12);
+      expect(rows(r), `cap ${cap}`).toEqual(rows(rw));
+    }
+    expect(whole.e.lagging).toBe(false);
+  });
+
+  test('a zero-delay loop is still reported by maxDeltaCycles, not by the cap', () => {
+    const { e } = ring(1, 0, { maxEventsPerAdvance: 10 }, true);
+    e.advance(1e-6);
+    expect(e.messages.some((m) => m.level === 'error' && /loop with no delay/.test(m.text))).toBe(true);
+  });
+});

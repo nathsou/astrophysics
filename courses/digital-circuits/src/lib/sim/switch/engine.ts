@@ -54,6 +54,13 @@ import { SwitchRecorder, TICKS_PER_SECOND } from './recorder';
  *  - toggle `{ on, value }`, button `{ pressed, value }`, const `{ value }`, clock `{ value, frequency }`,
  *    rail `{ value }`; indicator `{ lit, brightness, value }`; probe `{ value }`;
  *    seven-seg `{ segments, unknown }`; hex-display `{ value }` (undefined when an input is X or Z).
+ *
+ * Work per advance(): capped by `maxEventsPerAdvance` (default 10 000: clock edges, relay moves and
+ * rounds) and optionally by a wall-clock `budgetMs`, both checked between instants. When a cap stops
+ * the call, `lagging` is set, `speed` is < 1, an info message is posted and simulated time stops at the
+ * last instant processed, so the next call carries on from there. At least one instant is processed per
+ * call, so a `while (time < end)` loop always makes progress. A call that is not lagging ends exactly on
+ * its target time. settle() and step() are not part of an advance() allowance.
  */
 
 export type SwitchMode = 'settle' | 'unit-delay';
@@ -73,7 +80,19 @@ export interface SwitchEngineOptions extends EngineOptions {
   powerUp?: 'random' | 'x';
   /** Size class of nets, by net index or net name (nets touching a capacitor are large anyway). */
   nodeSize?: Record<string, NodeSize>;
+  /**
+   * Cap on the events one advance() call processes (default 10 000): every clock edge, relay move and
+   * unit-delay round counts one, and so does each extra round a settle-mode instant needs. A fast clock or
+   * a ring oscillator with a large `dt` then cannot freeze a frame. Deterministic. Tests that settle a
+   * long interval in one call pass a larger value.
+   */
+  maxEventsPerAdvance?: number;
+  /** Optional wall-clock budget for one advance() call, in ms (default: none). Machine dependent: tests should not use it. */
+  budgetMs?: number;
 }
+
+/** Default cap on the events one advance() call processes (a round costs far more here than an event in the digital engine). */
+export const DEFAULT_MAX_EVENTS_PER_ADVANCE = 10_000;
 
 /** Strength levels of an engine instance (they depend on how many capacitor sizes there are). */
 export interface StrengthLevels {
@@ -94,6 +113,10 @@ export interface SwitchEngine extends Engine {
   readonly levels: StrengthLevels;
   /** Rounds run since construction (a measure of work done). */
   readonly roundCount: number;
+  /** True when the last advance() hit its event cap (or `budgetMs`) before reaching the requested time. */
+  readonly lagging: boolean;
+  /** Simulated time covered by the last advance() divided by the time requested (1 = on time). */
+  readonly speed: number;
   /** Numeric strength of a net's value (see `levels`); 0 for an unknown net. */
   strength(net: number): number;
   /** What kind of source holds a net at its value. */
@@ -203,6 +226,11 @@ class SwitchEngineImpl implements SwitchEngine {
   readonly levels: StrengthLevels;
   readonly messages: EngineMessage[] = [];
   roundCount = 0;
+  lagging = false;
+  speed = 1;
+  private laggingPosted = false;
+  private readonly maxEvents: number;
+  private readonly budgetMs: number;
 
   private readonly setupMessages: EngineMessage[] = [];
   private readonly n: number;
@@ -277,6 +305,8 @@ class SwitchEngineImpl implements SwitchEngine {
     // A change can legitimately ripple through every node in turn (a long inverter chain), so the
     // default limit grows with the circuit.
     this.maxRounds = Math.max(8, options.maxRounds ?? Math.max(1000, 4 * netlist.netCount));
+    this.maxEvents = Math.max(1, options.maxEventsPerAdvance ?? DEFAULT_MAX_EVENTS_PER_ADVANCE);
+    this.budgetMs = options.budgetMs && options.budgetMs > 0 ? options.budgetMs : 0;
     this.powerUp = options.powerUp ?? 'random';
     this.seed = options.seed ?? 1;
     this.rng = mulberry32(this.seed);
@@ -504,6 +534,9 @@ class SwitchEngineImpl implements SwitchEngine {
   reset(): void {
     const n = this.n;
     this.now = 0;
+    this.lagging = false;
+    this.speed = 1;
+    this.laggingPosted = false;
     this.nextRound = Infinity;
     this.messages.length = 0;
     this.messages.push(...this.setupMessages);
@@ -562,17 +595,43 @@ class SwitchEngineImpl implements SwitchEngine {
   advance(dt: number): void {
     if (this.mode === 'settle') this.settleNow();
     if (!(dt > 0)) return;
-    const target = this.now + Math.round(dt * TICKS_PER_SECOND);
+    this.lagging = false;
+    const start = this.now;
+    const target = start + Math.round(dt * TICKS_PER_SECOND);
+    this.advanceTo(target, this.maxEvents, this.budgetMs);
+    this.speed = target > start ? (this.now - start) / (target - start) : 1;
+    if (this.lagging && !this.laggingPosted) {
+      this.laggingPosted = true;
+      this.message('info', 'The circuit has more events than a frame allows: the simulation is running slower than real time.');
+    }
+  }
+
+  /**
+   * Process instants up to `target` (ticks), at most `maxEvents` events or `budgetMs` of real time; the
+   * caps are checked between instants and at least one instant is processed. Stopping early sets
+   * `lagging` and leaves `now` at the last instant processed.
+   */
+  private advanceTo(target: number, maxEvents: number, budgetMs: number): void {
+    const deadline = budgetMs ? performance.now() + budgetMs : Infinity;
+    let events = 0;
+    let instants = 0;
     for (;;) {
       let t = this.nextRound;
       for (const c of this.clocks) if (c.next < t) t = c.next;
       for (const r of this.relays) if (r.at < t) t = r.at;
       if (t > target) break;
+      if (instants > 0 && (events >= maxEvents || (deadline !== Infinity && (instants & 7) === 0 && performance.now() > deadline))) {
+        this.lagging = true;
+        return;
+      }
+      const rounds = this.roundCount;
       this.now = t;
       if (this.nextRound === t) this.unitRound();
       for (const c of this.clocks) if (c.next === t) this.clockEdge(c);
       for (const r of this.relays) if (r.at === t) this.relayMove(r);
       this.afterInputChange();
+      instants++;
+      events += 1 + this.roundCount - rounds;
     }
     this.now = target;
   }
@@ -582,14 +641,15 @@ class SwitchEngineImpl implements SwitchEngine {
       this.settleNow();
       return;
     }
-    // Unit-delay: run the pending rounds (time moves on by one delay per round) until quiet.
-    for (let k = 0; k < this.maxRounds && this.nextRound < Infinity; k++) this.advance((this.nextRound - this.now) / TICKS_PER_SECOND);
+    // Unit-delay: run the pending rounds (time moves on by one delay per round) until quiet. Not part of an
+    // advance() call: its allowance does not apply (the loop is bounded by maxRounds).
+    for (let k = 0; k < this.maxRounds && this.nextRound < Infinity; k++) this.advanceTo(this.nextRound, Infinity, 0);
   }
 
   step(): boolean {
     if (this.mode === 'unit-delay') {
       if (this.nextRound === Infinity) return false;
-      this.advance((this.nextRound - this.now) / TICKS_PER_SECOND);
+      this.advanceTo(this.nextRound, Infinity, 0);
       return true;
     }
     if (!this.pending()) return false;

@@ -420,9 +420,9 @@
     font-size: 0.66rem;
     color: var(--die-ink-2);
     max-width: calc(100% - 4rem);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    /* The fitter's summary is long ("11 of 32 macrocells, 28 of 160 product terms, 0 borrowed"): it wraps inside the pane. */
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
   .hud strong {
     color: var(--metal);

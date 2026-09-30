@@ -92,6 +92,36 @@ describe('Stepper', () => {
     expect(s.advanced).toBeGreaterThan(0);
   });
 
+  test('an engine that reports lagging (its own per-call cap) marks the stepper lagging and ends the frame', () => {
+    let calls = 0;
+    const engine = {
+      time: 0,
+      lagging: false,
+      speed: 1,
+      advance(dt: number) {
+        calls++;
+        // A cap that lets 1 % of any request through.
+        this.lagging = true;
+        this.speed = 0.01;
+        this.time += dt * 0.01;
+      },
+    };
+    const s = new Stepper(10, () => 0);
+    s.advance(engine, 0.016);
+    expect(s.lagging).toBe(true);
+    expect(calls).toBe(1);
+    expect(s.advanced).toBeLessThan(0.016 * 0.02);
+    // An engine that is not lagging is unaffected.
+    engine.advance = function (dt: number) {
+      this.lagging = false;
+      this.speed = 1;
+      this.time += dt;
+    };
+    s.advance(engine, 0.001);
+    expect(s.lagging).toBe(false);
+    expect(s.advanced).toBeCloseTo(0.001, 9);
+  });
+
   test('non-positive requests do nothing', () => {
     const { engine, clock } = fake(1);
     const s = new Stepper(10, clock);

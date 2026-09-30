@@ -120,7 +120,8 @@
     {#if want('chip')}
       <div class="col mid">
         <section class="pane chip" class:active={active === 'chip'} aria-label="Chip view">
-          <header class="ph ui">
+          <!-- Hidden in the one-pane-at-a-time layout, except when it carries the Chip/Placement/Routing tabs. -->
+          <header class="ph ui" class:has-tabs={want('replay') && !hand}>
             {#if want('replay') && !hand}
               <div class="mini" role="tablist" aria-label="Chip, placement or routing">
                 <button type="button" role="tab" aria-selected={chipView === 'design'} class:on={chipView === 'design'} onclick={() => (chipView = 'design')}>Chip</button>

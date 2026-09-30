@@ -66,7 +66,7 @@
 <Widget title="The 555 as a clock" subtitle="Choose R1, R2 and C; the simulated 555 and the formula agree" {caption} n={fig} onreset={reset}>
   {#snippet controls()}
     <div class="ctl">
-      <Slider label="R1" bind:value={r1} min={100} max={10000} log format={(v) => formatSI(v, 'Ω', 3)} />
+      <Slider label="R1" bind:value={r1} min={1000} max={1e6} log format={(v) => formatSI(v, 'Ω', 3)} />
       <Slider label="R2" bind:value={r2} min={1000} max={100000} log format={(v) => formatSI(v, 'Ω', 3)} />
       <Slider label="C" bind:value={c} min={1e-7} max={1e-4} log format={(v) => formatSI(v, 'F', 3)} />
     </div>

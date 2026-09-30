@@ -204,9 +204,38 @@ describe('the 555 astable (Figure 17.9)', () => {
       rec.close();
     });
   }
-  test('the supply is a battery: an ideal rail makes the simulated latch stick half-way at the threshold', () => {
+  test('the supply is an ideal rail, and the figure still oscillates', () => {
     const c = load('astable-555');
-    expect(c.components.some((x) => x.type === 'battery')).toBe(true);
-    expect(c.components.some((x) => x.type === 'rail')).toBe(false);
+    expect(c.components.some((x) => x.type === 'rail')).toBe(true);
+    expect(c.components.some((x) => x.type === 'battery')).toBe(false);
   });
+
+  // R1 and C1 are what the reader can change in the figure (double-click the part); the drawn circuit must keep
+  // working over the whole range the widget offers, up to R1 = 1 MΩ.
+  for (const [r1, c1] of [
+    [100e3, 1e-6],
+    [1e6, 1e-7],
+  ] as const) {
+    test(`R1 = ${r1 / 1000} kΩ, C1 = ${c1 * 1e6} µF: the OUT lamp still follows the formula`, () => {
+      const circuit = load('astable-555');
+      circuit.components.find((x) => x.id === 'R1')!.params = { resistance: r1 };
+      circuit.components.find((x) => x.id === 'C1')!.params = { capacitance: c1 };
+      const flat = flatten(circuit);
+      const e = createAnalogEngine(flat);
+      const out = flat.elements.find((x) => x.id === 'OUT')!.pins[0]!;
+      const rec = e.watch([out]);
+      const period = 0.693 * (r1 + 2 * 10e3) * c1;
+      const end = period * 6;
+      const frame = period / 40;
+      while (e.time < end - 1e-12) e.advance(Math.min(frame, end - e.time));
+      const t = rec.times();
+      const v = rec.values()[0]!;
+      const rises: number[] = [];
+      for (let i = 1; i < t.length; i++) if (v[i - 1]! < 2.5 && v[i]! >= 2.5) rises.push(t[i]!);
+      expect(rises.length).toBeGreaterThanOrEqual(4);
+      const measured = (rises[rises.length - 1]! - rises[1]!) / (rises.length - 2);
+      expect(Math.abs(measured / period - 1)).toBeLessThan(0.08);
+      rec.close();
+    });
+  }
 });

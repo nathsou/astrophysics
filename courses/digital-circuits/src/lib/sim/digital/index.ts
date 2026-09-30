@@ -2,7 +2,7 @@
  * The digital engine: event-driven four-valued logic simulation (engine.ts), its model registry
  * (model.ts) and built-in models (models/), and a netlist builder for code-generated circuits.
  */
-export { createDigitalEngine, type DigitalEngine, type DigitalEngineOptions, type DelayModel } from './engine';
+export { createDigitalEngine, DEFAULT_MAX_EVENTS_PER_ADVANCE, type DigitalEngine, type DigitalEngineOptions, type DelayModel } from './engine';
 export {
   registerDigitalModel,
   getDigitalModel,

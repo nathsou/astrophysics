@@ -84,7 +84,9 @@ export const snapSpeed = (speed: number): number => speedAt(speedIndex(clampSpee
 /**
  * Advances an engine by a requested amount of simulated time, in chunks sized from measured cost so
  * that one call takes at most about `budgetMs` of real time. When the engine cannot keep up, `lagging`
- * is set and the rest of the requested time is dropped (the simulation runs slower than asked).
+ * is set and the rest of the requested time is dropped (the simulation runs slower than asked). The same
+ * happens when the engine itself says so: every engine caps the work of one advance() call and reports
+ * `lagging` (and `speed`) when the cap stopped it, so a fast clock or a ring oscillator shows up here too.
  */
 export class Stepper {
   /** Simulated seconds the engine advanced in the last call, and how much was asked. */
@@ -98,7 +100,7 @@ export class Stepper {
     private readonly clock: () => number = () => performance.now(),
   ) {}
 
-  advance(engine: Pick<Engine, 'advance'>, dt: number): void {
+  advance(engine: Pick<Engine, 'advance' | 'lagging' | 'speed'>, dt: number): void {
     this.asked = dt;
     this.advanced = 0;
     this.lagging = false;
@@ -116,6 +118,12 @@ export class Stepper {
       engine.advance(step);
       const took = this.clock() - t0;
       remaining -= step;
+      if (engine.lagging) {
+        // The engine's own cap stopped it: it covered only `speed` of the step, and more calls would just hit the cap again.
+        this.advanced += step * (engine.speed ?? 0);
+        this.lagging = true;
+        break;
+      }
       this.advanced += step;
       // Aim for chunks that take a quarter of the budget.
       if (took < this.budgetMs * 0.1) this.chunk = Math.min(this.chunk * 2, 1e9);

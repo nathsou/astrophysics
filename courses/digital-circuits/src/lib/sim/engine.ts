@@ -13,12 +13,27 @@ export interface Engine {
   /** Simulated time, in seconds, since the last reset. */
   readonly time: number;
 
-  /** Advance simulated time by `dt` seconds; the engine chooses its internal steps. */
+  /**
+   * Advance simulated time by `dt` seconds; the engine chooses its internal steps. One call costs at
+   * most a fixed allowance of work (each engine has its own caps, see its options): when a cap stops
+   * it before `dt` has passed, `lagging` is set, `speed` is below 1, an info message is posted and
+   * `time` simply falls behind the requested time. A caller that needs the whole interval (a test
+   * settling a long interval in one call) passes larger caps in the engine options, or loops
+   * `while (engine.time < end)`, which always makes progress.
+   */
   advance(dt: number): void;
   /** Settle the circuit without advancing time (digital: process all zero-time events). */
   settle(): void;
   /** Back to the initial state (parameters keep their current values). */
   reset(): void;
+
+  /**
+   * True when the last `advance()` hit a work cap before reaching the requested time. All three
+   * engines implement it; optional here so that other Engine implementations (test doubles) stay valid.
+   */
+  readonly lagging?: boolean;
+  /** Simulated time covered by the last `advance()` divided by the time requested (1 = on time). */
+  readonly speed?: number;
 
   /** Logic value of a net. Analog engines derive it from the voltage (thresholds of 5 V CMOS). */
   logic(net: number): Logic;
@@ -90,4 +105,17 @@ export interface EngineOptions {
   step?: number;
   /** Seed for anything random (metastability resolution, bounce). */
   seed?: number;
+  /**
+   * Digital and switch engines: cap on the events (digital: queue entries; switch: clock edges, relay
+   * moves and rounds) processed by one `advance()` call, so a fast clock or a ring oscillator with a
+   * large `dt` cannot freeze the page. Deterministic. The analog engine has its own caps
+   * (`maxStepsPerAdvance`, `maxWorkPerAdvance`).
+   */
+  maxEventsPerAdvance?: number;
+  /**
+   * Optional wall-clock budget for one `advance()` call, in milliseconds (default: none; digital, switch
+   * and analog engines). A UI loop sets it to a fraction of the frame time. It depends on the machine,
+   * so tests must not use it.
+   */
+  budgetMs?: number;
 }

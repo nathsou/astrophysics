@@ -34,26 +34,17 @@ export interface Waveforms {
   frequency: number;
 }
 
-/**
- * Simulate and return the capacitor and output voltages. The analog model of the latch can, for some component
- * values and step sizes, stop half-way at the threshold (a real 555's latch snaps over; the engine's implicit
- * steps can land on the unstable middle); if no oscillation is measured, try again with other step sizes.
- */
+/** Simulate and return the capacitor and output voltages, and measure the period and duty cycle. */
 export function simulate(a: Astable): Waveforms {
-  let w = simulateWith(a, 1);
-  for (const k of [0.61, 1.37, 0.37, 2.3]) {
-    if (Number.isFinite(w.period)) break;
-    w = simulateWith(a, k);
-  }
-  return w;
+  return simulateWith(a);
 }
 
-function simulateWith(a: Astable, stepFactor: number, seconds?: number): Waveforms {
+function simulateWith(a: Astable, seconds?: number): Waveforms {
   const b = new NetlistBuilder();
   const gnd = b.ground();
   const [vcc, n2, n1, cap, rst, set, q, qn, base, dis] = b.nets(10);
   const res = (id: string, x: number, y: number, r: number) => b.add('resistor', id, { '1': x, '2': y }, { resistance: r });
-  b.add('battery', 'VCC', { '-': gnd, '+': vcc! }, { voltage: 5 });
+  b.add('rail', 'VCC', { v: vcc! }, { voltage: 5 });
   res('RA', vcc!, n2!, 5000);
   res('RB', n2!, n1!, 5000);
   res('RC', n1!, gnd, 5000);
@@ -70,7 +61,7 @@ function simulateWith(a: Astable, stepFactor: number, seconds?: number): Wavefor
   const p = predicted(a);
   const total = seconds ?? p.period * 4.5 + 0.35 * p.period;
   const rec = engine.watch([cap!, q!]);
-  const frame = (Math.min(total / 200, p.period / 40)) * stepFactor;
+  const frame = Math.min(total / 200, p.period / 40);
   while (engine.time < total - 1e-12) engine.advance(Math.min(frame, total - engine.time));
   const t = rec.times();
   const v = rec.values();

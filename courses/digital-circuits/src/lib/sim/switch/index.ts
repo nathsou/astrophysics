@@ -5,6 +5,7 @@
  */
 export {
   createSwitchEngine,
+  DEFAULT_MAX_EVENTS_PER_ADVANCE,
   netStrength,
   isSwitchEngine,
   transistorSize,

@@ -200,7 +200,7 @@ The 555 is eight pins and about two dozen transistors, and it is a clock on a ch
 
 The frequency of this astable is f = 1.44 / ((R1 + 2·R2)·C) and the output is high for a fraction (R1 + R2)/(R1 + 2·R2) of the time. It comes from the exponential charging law of Chapter 4: each half-cycle is a swing of a factor of two in the remaining distance to the supply, which takes ln 2 = 0.693 time constants; the charge time is 0.693·(R1 + R2)·C and the discharge time 0.693·R2·C. The figure below solves the whole circuit each time you move a slider.
 
-::astable-555{n="17.10" caption="The analog engine runs the 555 of Figure 17.9 for a few cycles every time you move a slider, and the numbers below compare it with the formula. Try R1 = 100 Ω with R2 = 47 kΩ for a nearly square wave, and note that the duty cycle can never fall below 50 %."}
+::astable-555{n="17.10" caption="The analog engine runs the 555 of Figure 17.9 for a few cycles every time you move a slider, and the numbers below compare it with the formula. Try R1 = 1 kΩ with R2 = 47 kΩ for a nearly square wave, and note that the duty cycle can never fall below 50 %; at the other end, R1 = 1 MΩ with R2 = 1 kΩ gives an output that is high for almost the whole cycle, with a brief low pulse."}
 
 An RC oscillator is only as good as its parts: the 555's timing error is about a percent, and it drifts with temperature and supply.:cite[ti-ne555] For a blinking lamp that does not matter; for the clock of a computer that must talk to a serial line, it does, which is why microcontrollers carry a crystal.
 

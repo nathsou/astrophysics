@@ -4,22 +4,13 @@
   "engine": "analog",
   "components": [
     {
-      "id": "B1",
-      "type": "battery",
+      "id": "V1",
+      "type": "rail",
       "x": 0,
-      "y": 10,
-      "rot": 270,
+      "y": 2,
       "params": {
         "voltage": 5
-      },
-      "label": "5 V"
-    },
-    {
-      "id": "G0",
-      "type": "ground",
-      "x": 0,
-      "y": 12,
-      "label": ""
+      }
     },
     {
       "id": "FV1",
@@ -264,10 +255,6 @@
       "points": [
         [
           0,
-          6
-        ],
-        [
-          0,
           2
         ],
         [
@@ -277,18 +264,6 @@
         [
           6,
           4
-        ]
-      ]
-    },
-    {
-      "points": [
-        [
-          0,
-          10
-        ],
-        [
-          0,
-          12
         ]
       ]
     },

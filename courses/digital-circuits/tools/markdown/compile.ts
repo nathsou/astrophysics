@@ -127,7 +127,8 @@ function props(attrs: Record<string, string | null | undefined> | null | undefin
       continue;
     }
     let expr = JSON.stringify(raw);
-    if (/^(-?\d+(\.\d+)?(e-?\d+)?|true|false)$/.test(raw) || /^[[{]/.test(raw)) {
+    // A figure number stays text: n="24.10" is figure ten, not 24.1.
+    if (key !== 'n' && (/^(-?\d+(\.\d+)?(e-?\d+)?|true|false)$/.test(raw) || /^[[{]/.test(raw))) {
       try {
         expr = JSON.stringify(JSON.parse(raw));
       } catch {

@@ -630,3 +630,101 @@ describe('inputs, displays and messages', () => {
     expect(netStrength(x, q)).toBe('driven');
   });
 });
+
+describe('the allowance of one advance() call', () => {
+  function ringOf(options: Parameters<typeof createSwitchEngine>[1]) {
+    const b = new SwitchBuilder();
+    const [a, bb, c] = [b.net('A'), b.net('B'), b.net('C')];
+    b.inv('I1', a, bb);
+    b.inv('I2', bb, c);
+    b.inv('I3', c, a);
+    return { e: createSwitchEngine(b.build(), options), a };
+  }
+  function clocked(frequency: number, options: Parameters<typeof createSwitchEngine>[1] = {}) {
+    const b = new SwitchBuilder();
+    const [c, y] = [b.net('C'), b.net('Y')];
+    b.add('clock', 'CK', { Y: c }, { frequency });
+    b.inv('I1', c, y);
+    return { e: createSwitchEngine(b.build(), options), c, y };
+  }
+
+  test('a unit-delay ring oscillator advanced by a huge interval returns within the cap, lagging', () => {
+    const { e } = ringOf({ mode: 'unit-delay', unitDelay: NS, maxEventsPerAdvance: 500 });
+    const rounds = e.roundCount;
+    e.advance(1); // a billion rounds if it ran to the end
+    expect(e.lagging).toBe(true);
+    expect(e.speed).toBeGreaterThan(0);
+    expect(e.speed).toBeLessThan(1e-5);
+    expect(e.time).toBeGreaterThan(0);
+    expect(e.time).toBeLessThan(2e-6);
+    expect(e.roundCount - rounds).toBeLessThan(510);
+    expect(e.messages.some((m) => m.level === 'info' && /slower than real time/.test(m.text))).toBe(true);
+  });
+
+  test('a 1 GHz clock over one second stops at the default cap and reports lagging', () => {
+    const { e } = clocked(1e9);
+    e.advance(1);
+    expect(e.lagging).toBe(true);
+    expect(e.speed).toBeLessThan(1e-3);
+    // An edge counts as an event and so does each round it sets off (here two): 10 000 events cover
+    // about 3 300 edges of 0.5 ns each.
+    expect(e.time).toBeGreaterThan(1e-6);
+    expect(e.time).toBeLessThan(3e-6);
+  });
+
+  test('the message is posted once; the next call carries on; reset clears it all', () => {
+    const { e } = clocked(1e9, { maxEventsPerAdvance: 100 });
+    e.advance(1);
+    const t1 = e.time;
+    e.advance(1);
+    expect(e.time).toBeGreaterThan(t1);
+    expect(e.messages.filter((m) => /slower than real time/.test(m.text))).toHaveLength(1);
+    e.reset();
+    expect(e.lagging).toBe(false);
+    expect(e.speed).toBe(1);
+    expect(e.time).toBe(0);
+    expect(e.messages.some((m) => /slower than real time/.test(m.text))).toBe(false);
+  });
+
+  test('an ordinary circuit is unaffected: it lands on its target, at speed 1', () => {
+    const { e, c, y } = clocked(1e6);
+    const rec = e.watch([c, y]);
+    e.advance(3.2e-6);
+    expect(e.lagging).toBe(false);
+    expect(e.speed).toBe(1);
+    expect(e.time).toBeCloseTo(3.2e-6, 15);
+    // The clock rose at 0.5 µs and 1.5 µs, fell at 1 µs and 2 µs, rose at 2.5 µs and fell at 3 µs.
+    expect(rec.times().length).toBe(7);
+    const slow = clocked(1e9, { maxEventsPerAdvance: 100 });
+    slow.e.advance(1);
+    expect(slow.e.lagging).toBe(true);
+    const t = slow.e.time;
+    slow.e.advance(10 * NS);
+    expect(slow.e.lagging).toBe(false);
+    expect(slow.e.time).toBeCloseTo(t + 10 * NS, 12);
+  });
+
+  test('a `while (time < end)` loop makes progress with any cap and sees the same waveform as one big call', () => {
+    const end = 3e-6;
+    const whole = clocked(2e6, { maxEventsPerAdvance: 1e9 });
+    const rw = whole.e.watch([whole.y]);
+    whole.e.advance(end);
+    for (const cap of [1, 2]) {
+      const { e, y } = clocked(2e6, { maxEventsPerAdvance: cap });
+      const r = e.watch([y]);
+      let calls = 0;
+      while (e.time < end - 1e-15 && calls++ < 1000) e.advance(end - e.time);
+      expect(e.time, `cap ${cap}`).toBeCloseTo(end, 12);
+      expect(Array.from(r.times()), `cap ${cap}`).toEqual(Array.from(rw.times()));
+      expect(Array.from(r.values()[0]!), `cap ${cap}`).toEqual(Array.from(rw.values()[0]!));
+    }
+  });
+
+  test('settle() and step() in unit-delay mode ignore the cap', () => {
+    const { e } = ringOf({ mode: 'unit-delay', unitDelay: NS, maxEventsPerAdvance: 1 });
+    const t = e.time;
+    expect(e.step()).toBe(true);
+    expect(e.lagging).toBe(false);
+    expect(e.time).toBeGreaterThan(t);
+  });
+});

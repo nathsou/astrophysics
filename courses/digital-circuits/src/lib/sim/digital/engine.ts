@@ -28,6 +28,15 @@ import './models';
  *   engine walks each loop once and gives every output that is still X a consistent value, picking
  *   a seeded random bit where the inputs do not decide it. An odd ring then oscillates with one
  *   travelling edge, an even ring or a latch settles in one of its stable states.
+ *
+ * Work per advance(): capped by `maxEventsPerAdvance` (default 100 000 queue entries, some 10–30 ms),
+ * optionally by a wall-clock `budgetMs`, both checked between time points. When a cap
+ * stops the call, `lagging` is set, `speed` is < 1, an info message is posted and simulated time stops
+ * at the last time point processed (every event due at or before it has been applied), so the next call
+ * carries on from there and the engine simply runs slower than real time. At least one time point is
+ * processed per call, so a `while (time < end)` loop always makes progress. A call that is not lagging
+ * ends exactly on its target time. Zero-time work (settle(), setParam()) is not part of an advance()
+ * allowance; it is bounded by `maxDeltaCycles`.
  */
 
 export type DelayModel = 'inertial' | 'transport';
@@ -39,7 +48,18 @@ export type DigitalEngineOptions = EngineOptions & {
   powerUp?: 'random' | 'x';
   /** Delta cycles at one time point before a zero-delay loop is declared unsettled (default 10 000). */
   maxDeltaCycles?: number;
+  /**
+   * Cap on the queue entries processed by one advance() call (default 100 000), so a fast clock or a
+   * ring oscillator with a large `dt` cannot freeze a frame. Deterministic. Tests that settle a long
+   * interval in one call pass a larger value.
+   */
+  maxEventsPerAdvance?: number;
+  /** Optional wall-clock budget for one advance() call, in ms (default: none). Machine dependent: tests should not use it. */
+  budgetMs?: number;
 };
+
+/** Default cap on the queue entries one advance() call processes. */
+export const DEFAULT_MAX_EVENTS_PER_ADVANCE = 100_000;
 
 /** The digital engine's extras beyond the Engine interface. */
 export interface DigitalEngine extends Engine {
@@ -47,6 +67,10 @@ export interface DigitalEngine extends Engine {
   readonly delayModel: DelayModel;
   /** Events processed since construction (output changes and wake-ups that were not cancelled). */
   readonly eventCount: number;
+  /** True when the last advance() hit its event cap (or `budgetMs`) before reaching the requested time. */
+  readonly lagging: boolean;
+  /** Simulated time covered by the last advance() divided by the time requested (1 = on time). */
+  readonly speed: number;
   /** Contents of a RAM or ROM element (the live array: read it, or change it with writeMemory). */
   memory(id: string): Uint8Array | Uint32Array | undefined;
   /** Write one word of a RAM or ROM element and update its outputs. */
@@ -71,6 +95,13 @@ class DigitalEngineImpl implements DigitalEngine, DigitalSim {
   /** Current time in ticks. */
   now = 0;
   eventCount = 0;
+  lagging = false;
+  speed = 1;
+  /** Queue entries popped since construction, cancelled ones included (the unit of the per-call cap). */
+  private popped = 0;
+  private laggingPosted = false;
+  private readonly maxEvents: number;
+  private readonly budgetMs: number;
 
   private readonly inertial: boolean;
   private readonly seed: number;
@@ -130,6 +161,8 @@ class DigitalEngineImpl implements DigitalEngine, DigitalSim {
     this.seed = (options.seed ?? 0x5eed) | 0;
     this.powerUpMode = options.powerUp ?? 'random';
     this.maxDeltas = Math.max(16, options.maxDeltaCycles ?? 10_000);
+    this.maxEvents = Math.max(1, options.maxEventsPerAdvance ?? DEFAULT_MAX_EVENTS_PER_ADVANCE);
+    this.budgetMs = options.budgetMs && options.budgetMs > 0 ? options.budgetMs : 0;
 
     const netCount = netlist.netCount;
     this.nets = new Uint8Array(netCount);
@@ -248,10 +281,28 @@ class DigitalEngineImpl implements DigitalEngine, DigitalSim {
   advance(dt: number): void {
     this.settle();
     if (!(dt > 0)) return;
-    const target = this.now + Math.round(dt * TICKS_PER_SECOND);
+    this.lagging = false;
+    const start = this.now;
+    const target = start + Math.round(dt * TICKS_PER_SECOND);
     const q = this.queue;
-    while (q.size > 0 && q.time[0]! <= target) this.step(q.time[0]!);
-    this.now = target;
+    const firstPop = this.popped;
+    const deadline = this.budgetMs ? performance.now() + this.budgetMs : Infinity;
+    let points = 0;
+    while (q.size > 0 && q.time[0]! <= target) {
+      // Between time points, so the state is always complete up to `now`. At least one time point per call.
+      if (points > 0 && (this.popped - firstPop >= this.maxEvents || (deadline !== Infinity && (points & 15) === 0 && performance.now() > deadline))) {
+        this.lagging = true;
+        break;
+      }
+      this.step(q.time[0]!);
+      points++;
+    }
+    if (!this.lagging) this.now = target;
+    this.speed = target > start ? (this.now - start) / (target - start) : 1;
+    if (this.lagging && !this.laggingPosted) {
+      this.laggingPosted = true;
+      this.message('info', 'The circuit has more events than a frame allows: the simulation is running slower than real time.');
+    }
   }
 
   settle(): void {
@@ -260,6 +311,9 @@ class DigitalEngineImpl implements DigitalEngine, DigitalSim {
 
   reset(): void {
     this.now = 0;
+    this.lagging = false;
+    this.speed = 1;
+    this.laggingPosted = false;
     this.queue.clear();
     this.messages.length = 0;
     this.messages.push(...this.setupMessages);
@@ -421,6 +475,7 @@ class DigitalEngineImpl implements DigitalEngine, DigitalSim {
     for (;;) {
       while (q.size > 0 && q.time[0] === t) {
         q.pop();
+        this.popped++;
         const target = q.pTarget;
         if (target >= 0) {
           if (q.pSerial !== this.drvSerial[target]) continue;
@@ -736,7 +791,7 @@ function fmtTime(ticks: number): string {
 /**
  * Create a digital engine for a flat netlist. The engine starts powered up at t = 0 (see the
  * module comment). `options` may add `delayModel`, `powerUp` and `maxDeltaCycles` to the common
- * EngineOptions (`seed` seeds metastability and power-up choices; `step` is the default delay of
+ * EngineOptions (`maxEventsPerAdvance` and `budgetMs` cap the work of one advance() call; `seed` seeds metastability and power-up choices; `step` is the default delay of
  * models without a delay parameter, 1 ns if omitted).
  */
 export function createDigitalEngine(netlist: FlatNetlist, options?: DigitalEngineOptions): DigitalEngine {

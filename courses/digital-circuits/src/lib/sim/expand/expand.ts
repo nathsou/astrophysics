@@ -39,7 +39,7 @@ const SOURCES = new Set(['toggle', 'button', 'clock', 'const']);
 
 /** Analog device parameters (documented in `expandToAnalog`). */
 export const ANALOG = {
-  /** Transconductance of every transistor, A/V²: about 5 kΩ on-resistance at 5 V. p-channel devices are drawn twice as wide, so both have the same k. */
+  /** Transconductance of every transistor, A/V²: about 2.5 kΩ on-resistance at 5 V (R_on = 1 / (k (V_gs − V_t)) = 1 / (1e-4 × (5 − 1) V) = 2.5 kΩ). p-channel devices are drawn twice as wide, so both have the same k. */
   k: 1e-4,
   /** Capacitance of each transistor gate, on the net that drives it (F). */
   gate: 2e-15,

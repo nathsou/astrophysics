@@ -24,7 +24,8 @@ describe('benchmarks', () => {
     const nets = b.nets(n);
     for (let i = 0; i < n; i++) b.add('not', `U${i}`, { A: nets[(i + n - 1) % n]!, Y: nets[i]! });
     const t0 = performance.now();
-    const e = createDigitalEngine(b.build());
+    // One call must run all 2 million events: lift the per-call cap that keeps a UI frame short.
+    const e = createDigitalEngine(b.build(), { maxEventsPerAdvance: 1e9 });
     const build = performance.now() - t0;
     // Warm up, then measure 2 million gate delays (one event each).
     e.advance(200_000e-9);

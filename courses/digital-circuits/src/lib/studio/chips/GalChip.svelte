@@ -415,7 +415,8 @@
     font-size: 0.66rem;
     color: var(--die-ink-2);
     max-width: calc(100% - 4rem);
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
   .hud strong {
     color: var(--metal);

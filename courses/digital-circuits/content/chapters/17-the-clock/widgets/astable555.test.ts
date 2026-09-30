@@ -33,7 +33,13 @@ describe('the 555 astable, built from its parts', () => {
       { r1: 100, r2: 1000, c: 1e-7 },
       { r1: 10000, r2: 100000, c: 1e-6 },
       { r1: 10000, r2: 1000, c: 1e-5 },
-      { r1: 100, r2: 100000, c: 1e-5 },
+      { r1: 1000, r2: 100000, c: 1e-5 },
+      // R1 up to 1 MΩ (a duty cycle near 100 %), with the ideal rail as the supply.
+      { r1: 100000, r2: 10000, c: 1e-6 },
+      { r1: 1e6, r2: 10000, c: 1e-7 },
+      { r1: 1e6, r2: 1000, c: 1e-7 },
+      { r1: 1e6, r2: 100000, c: 1e-6 },
+      { r1: 330000, r2: 4700, c: 4.7e-6 },
     ]) {
       const w = simulate(a);
       const p = predicted(a);
