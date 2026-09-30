@@ -1,0 +1,224 @@
+{
+ "version": 1,
+ "title": "An I\u00b2C line",
+ "engine": "analog",
+ "components": [
+  {
+   "id": "V5",
+   "type": "rail",
+   "x": 20,
+   "y": 0,
+   "params": {
+    "voltage": 5
+   },
+   "label": ""
+  },
+  {
+   "id": "R1",
+   "type": "resistor",
+   "x": 20,
+   "y": 0,
+   "rot": 90,
+   "params": {
+    "resistance": 4700
+   },
+   "label": "4.7 k\u03a9"
+  },
+  {
+   "id": "C1",
+   "type": "capacitor",
+   "x": 28,
+   "y": 4,
+   "rot": 90,
+   "params": {
+    "capacitance": 2e-10
+   },
+   "label": "200 pF"
+  },
+  {
+   "id": "G1",
+   "type": "ground",
+   "x": 28,
+   "y": 8
+  },
+  {
+   "id": "lab",
+   "type": "label",
+   "x": 24,
+   "y": 2,
+   "params": {
+    "name": "SDA"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_MASTER",
+   "type": "toggle",
+   "x": 34,
+   "y": 8,
+   "label": ""
+  },
+  {
+   "id": "M1",
+   "type": "nmos",
+   "x": 40,
+   "y": 8,
+   "label": ""
+  },
+  {
+   "id": "G3",
+   "type": "ground",
+   "x": 43,
+   "y": 10
+  },
+  {
+   "id": "in_SLAVE",
+   "type": "toggle",
+   "x": 46,
+   "y": 8,
+   "label": ""
+  },
+  {
+   "id": "M2",
+   "type": "nmos",
+   "x": 52,
+   "y": 8,
+   "label": ""
+  },
+  {
+   "id": "G4",
+   "type": "ground",
+   "x": 55,
+   "y": 10
+  },
+  {
+   "id": "V1",
+   "type": "voltmeter",
+   "x": 62,
+   "y": 10,
+   "rot": 270,
+   "label": "SDA"
+  },
+  {
+   "id": "G5",
+   "type": "ground",
+   "x": 62,
+   "y": 10
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     20,
+     4
+    ],
+    [
+     55,
+     4
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     24,
+     4
+    ],
+    [
+     24,
+     2
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     37,
+     8
+    ],
+    [
+     40,
+     8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     43,
+     4
+    ],
+    [
+     43,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     49,
+     8
+    ],
+    [
+     52,
+     8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     55,
+     4
+    ],
+    [
+     55,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     55,
+     4
+    ],
+    [
+     62,
+     4
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     62,
+     4
+    ],
+    [
+     62,
+     6
+    ]
+   ]
+  }
+ ],
+ "notes": [
+  {
+   "x": 14,
+   "y": -2,
+   "text": "+5 V through the pull-up"
+  },
+  {
+   "x": 32,
+   "y": 11,
+   "text": "master pulls low"
+  },
+  {
+   "x": 44,
+   "y": 11,
+   "text": "device pulls low"
+  }
+ ]
+}

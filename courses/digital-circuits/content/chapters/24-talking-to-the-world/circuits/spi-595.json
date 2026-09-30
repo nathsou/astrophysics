@@ -1,0 +1,1192 @@
+{
+ "version": 1,
+ "title": "An SPI master and a 74HC595",
+ "engine": "digital",
+ "components": [
+  {
+   "id": "clk",
+   "type": "clock",
+   "x": 2,
+   "y": 3,
+   "params": {
+    "frequency": 1000000.0
+   },
+   "label": "1 MHz"
+  },
+  {
+   "id": "o1",
+   "type": "label",
+   "x": 7,
+   "y": 3,
+   "params": {
+    "name": "CLK"
+   },
+   "label": ""
+  },
+  {
+   "id": "INV",
+   "type": "not",
+   "x": 14,
+   "y": 3,
+   "label": ""
+  },
+  {
+   "id": "f2",
+   "type": "label",
+   "x": 12,
+   "y": 3,
+   "flip": true,
+   "params": {
+    "name": "CLK"
+   },
+   "label": ""
+  },
+  {
+   "id": "o3",
+   "type": "label",
+   "x": 21,
+   "y": 3,
+   "params": {
+    "name": "NCLK"
+   },
+   "label": ""
+  },
+  {
+   "id": "CNT",
+   "type": "counter",
+   "x": 14,
+   "y": 10,
+   "params": {
+    "bits": 4
+   },
+   "label": "bit counter"
+  },
+  {
+   "id": "f4",
+   "type": "label",
+   "x": 12,
+   "y": 10,
+   "flip": true,
+   "params": {
+    "name": "NCLK"
+   },
+   "label": ""
+  },
+  {
+   "id": "o5",
+   "type": "label",
+   "x": 22,
+   "y": 10,
+   "params": {
+    "name": "q0"
+   },
+   "label": ""
+  },
+  {
+   "id": "o6",
+   "type": "label",
+   "x": 22,
+   "y": 12,
+   "params": {
+    "name": "q1"
+   },
+   "label": ""
+  },
+  {
+   "id": "o7",
+   "type": "label",
+   "x": 22,
+   "y": 14,
+   "params": {
+    "name": "q2"
+   },
+   "label": ""
+  },
+  {
+   "id": "o8",
+   "type": "label",
+   "x": 22,
+   "y": 16,
+   "params": {
+    "name": "CS"
+   },
+   "label": ""
+  },
+  {
+   "id": "GK",
+   "type": "nor",
+   "x": 34,
+   "y": 3,
+   "label": ""
+  },
+  {
+   "id": "f9",
+   "type": "label",
+   "x": 32,
+   "y": 3,
+   "flip": true,
+   "params": {
+    "name": "NCLK"
+   },
+   "label": ""
+  },
+  {
+   "id": "f10",
+   "type": "label",
+   "x": 32,
+   "y": 5,
+   "flip": true,
+   "params": {
+    "name": "CS"
+   },
+   "label": ""
+  },
+  {
+   "id": "o11",
+   "type": "label",
+   "x": 42,
+   "y": 4,
+   "params": {
+    "name": "SCK"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_D0",
+   "type": "toggle",
+   "x": 2,
+   "y": 22,
+   "label": "",
+   "params": {
+    "on": true
+   }
+  },
+  {
+   "id": "o12",
+   "type": "label",
+   "x": 7,
+   "y": 22,
+   "params": {
+    "name": "D0"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_D1",
+   "type": "toggle",
+   "x": 2,
+   "y": 25,
+   "label": "",
+   "params": {
+    "on": false
+   }
+  },
+  {
+   "id": "o13",
+   "type": "label",
+   "x": 7,
+   "y": 25,
+   "params": {
+    "name": "D1"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_D2",
+   "type": "toggle",
+   "x": 2,
+   "y": 28,
+   "label": "",
+   "params": {
+    "on": true
+   }
+  },
+  {
+   "id": "o14",
+   "type": "label",
+   "x": 7,
+   "y": 28,
+   "params": {
+    "name": "D2"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_D3",
+   "type": "toggle",
+   "x": 2,
+   "y": 31,
+   "label": "",
+   "params": {
+    "on": false
+   }
+  },
+  {
+   "id": "o15",
+   "type": "label",
+   "x": 7,
+   "y": 31,
+   "params": {
+    "name": "D3"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_D4",
+   "type": "toggle",
+   "x": 2,
+   "y": 34,
+   "label": "",
+   "params": {
+    "on": false
+   }
+  },
+  {
+   "id": "o16",
+   "type": "label",
+   "x": 7,
+   "y": 34,
+   "params": {
+    "name": "D4"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_D5",
+   "type": "toggle",
+   "x": 2,
+   "y": 37,
+   "label": "",
+   "params": {
+    "on": true
+   }
+  },
+  {
+   "id": "o17",
+   "type": "label",
+   "x": 7,
+   "y": 37,
+   "params": {
+    "name": "D5"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_D6",
+   "type": "toggle",
+   "x": 2,
+   "y": 40,
+   "label": "",
+   "params": {
+    "on": false
+   }
+  },
+  {
+   "id": "o18",
+   "type": "label",
+   "x": 7,
+   "y": 40,
+   "params": {
+    "name": "D6"
+   },
+   "label": ""
+  },
+  {
+   "id": "in_D7",
+   "type": "toggle",
+   "x": 2,
+   "y": 43,
+   "label": "",
+   "params": {
+    "on": true
+   }
+  },
+  {
+   "id": "o19",
+   "type": "label",
+   "x": 7,
+   "y": 43,
+   "params": {
+    "name": "D7"
+   },
+   "label": ""
+  },
+  {
+   "id": "MM",
+   "type": "mux",
+   "x": 34,
+   "y": 12,
+   "params": {
+    "select": 3
+   },
+   "label": "MOSI"
+  },
+  {
+   "id": "f20",
+   "type": "label",
+   "x": 32,
+   "y": 12,
+   "flip": true,
+   "params": {
+    "name": "D7"
+   },
+   "label": ""
+  },
+  {
+   "id": "f21",
+   "type": "label",
+   "x": 32,
+   "y": 14,
+   "flip": true,
+   "params": {
+    "name": "D6"
+   },
+   "label": ""
+  },
+  {
+   "id": "f22",
+   "type": "label",
+   "x": 32,
+   "y": 16,
+   "flip": true,
+   "params": {
+    "name": "D5"
+   },
+   "label": ""
+  },
+  {
+   "id": "f23",
+   "type": "label",
+   "x": 32,
+   "y": 18,
+   "flip": true,
+   "params": {
+    "name": "D4"
+   },
+   "label": ""
+  },
+  {
+   "id": "f24",
+   "type": "label",
+   "x": 32,
+   "y": 20,
+   "flip": true,
+   "params": {
+    "name": "D3"
+   },
+   "label": ""
+  },
+  {
+   "id": "f25",
+   "type": "label",
+   "x": 32,
+   "y": 22,
+   "flip": true,
+   "params": {
+    "name": "D2"
+   },
+   "label": ""
+  },
+  {
+   "id": "f26",
+   "type": "label",
+   "x": 32,
+   "y": 24,
+   "flip": true,
+   "params": {
+    "name": "D1"
+   },
+   "label": ""
+  },
+  {
+   "id": "f27",
+   "type": "label",
+   "x": 32,
+   "y": 26,
+   "flip": true,
+   "params": {
+    "name": "D0"
+   },
+   "label": ""
+  },
+  {
+   "id": "f28",
+   "type": "label",
+   "x": 32,
+   "y": 28,
+   "flip": true,
+   "params": {
+    "name": "q0"
+   },
+   "label": ""
+  },
+  {
+   "id": "f29",
+   "type": "label",
+   "x": 32,
+   "y": 30,
+   "flip": true,
+   "params": {
+    "name": "q1"
+   },
+   "label": ""
+  },
+  {
+   "id": "f30",
+   "type": "label",
+   "x": 32,
+   "y": 32,
+   "flip": true,
+   "params": {
+    "name": "q2"
+   },
+   "label": ""
+  },
+  {
+   "id": "o31",
+   "type": "label",
+   "x": 42,
+   "y": 12,
+   "params": {
+    "name": "MOSI"
+   },
+   "label": ""
+  },
+  {
+   "id": "SR",
+   "type": "shift-register",
+   "x": 54,
+   "y": 3,
+   "params": {
+    "bits": 8
+   },
+   "label": "shift register"
+  },
+  {
+   "id": "f32",
+   "type": "label",
+   "x": 52,
+   "y": 3,
+   "flip": true,
+   "params": {
+    "name": "SCK"
+   },
+   "label": ""
+  },
+  {
+   "id": "f33",
+   "type": "label",
+   "x": 52,
+   "y": 5,
+   "flip": true,
+   "params": {
+    "name": "MOSI"
+   },
+   "label": ""
+  },
+  {
+   "id": "RG",
+   "type": "register",
+   "x": 66,
+   "y": 3,
+   "params": {
+    "bits": 8
+   },
+   "label": "storage register"
+  },
+  {
+   "id": "f34",
+   "type": "label",
+   "x": 64,
+   "y": 19,
+   "flip": true,
+   "params": {
+    "name": "CS"
+   },
+   "label": ""
+  },
+  {
+   "id": "out_Q0",
+   "type": "indicator",
+   "x": 74,
+   "y": 3,
+   "params": {
+    "color": "amber"
+   },
+   "label": "Q0"
+  },
+  {
+   "id": "out_Q1",
+   "type": "indicator",
+   "x": 74,
+   "y": 5,
+   "params": {
+    "color": "amber"
+   },
+   "label": "Q1"
+  },
+  {
+   "id": "out_Q2",
+   "type": "indicator",
+   "x": 74,
+   "y": 7,
+   "params": {
+    "color": "amber"
+   },
+   "label": "Q2"
+  },
+  {
+   "id": "out_Q3",
+   "type": "indicator",
+   "x": 74,
+   "y": 9,
+   "params": {
+    "color": "amber"
+   },
+   "label": "Q3"
+  },
+  {
+   "id": "out_Q4",
+   "type": "indicator",
+   "x": 74,
+   "y": 11,
+   "params": {
+    "color": "amber"
+   },
+   "label": "Q4"
+  },
+  {
+   "id": "out_Q5",
+   "type": "indicator",
+   "x": 74,
+   "y": 13,
+   "params": {
+    "color": "amber"
+   },
+   "label": "Q5"
+  },
+  {
+   "id": "out_Q6",
+   "type": "indicator",
+   "x": 74,
+   "y": 15,
+   "params": {
+    "color": "amber"
+   },
+   "label": "Q6"
+  },
+  {
+   "id": "out_Q7",
+   "type": "indicator",
+   "x": 74,
+   "y": 17,
+   "params": {
+    "color": "amber"
+   },
+   "label": "Q7"
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     5,
+     3
+    ],
+    [
+     7,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     12,
+     3
+    ],
+    [
+     14,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     19,
+     3
+    ],
+    [
+     21,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     12,
+     10
+    ],
+    [
+     14,
+     10
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     20,
+     10
+    ],
+    [
+     22,
+     10
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     20,
+     12
+    ],
+    [
+     22,
+     12
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     20,
+     14
+    ],
+    [
+     22,
+     14
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     20,
+     16
+    ],
+    [
+     22,
+     16
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     3
+    ],
+    [
+     34,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     5
+    ],
+    [
+     34,
+     5
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     40,
+     4
+    ],
+    [
+     42,
+     4
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     22
+    ],
+    [
+     7,
+     22
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     25
+    ],
+    [
+     7,
+     25
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     28
+    ],
+    [
+     7,
+     28
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     31
+    ],
+    [
+     7,
+     31
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     34
+    ],
+    [
+     7,
+     34
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     37
+    ],
+    [
+     7,
+     37
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     40
+    ],
+    [
+     7,
+     40
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     43
+    ],
+    [
+     7,
+     43
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     12
+    ],
+    [
+     34,
+     12
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     14
+    ],
+    [
+     34,
+     14
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     16
+    ],
+    [
+     34,
+     16
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     18
+    ],
+    [
+     34,
+     18
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     20
+    ],
+    [
+     34,
+     20
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     22
+    ],
+    [
+     34,
+     22
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     24
+    ],
+    [
+     34,
+     24
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     26
+    ],
+    [
+     34,
+     26
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     28
+    ],
+    [
+     34,
+     28
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     30
+    ],
+    [
+     34,
+     30
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     32,
+     32
+    ],
+    [
+     34,
+     32
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     40,
+     12
+    ],
+    [
+     42,
+     12
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     52,
+     3
+    ],
+    [
+     54,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     52,
+     5
+    ],
+    [
+     54,
+     5
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     60,
+     3
+    ],
+    [
+     66,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     60,
+     5
+    ],
+    [
+     66,
+     5
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     60,
+     7
+    ],
+    [
+     66,
+     7
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     60,
+     9
+    ],
+    [
+     66,
+     9
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     60,
+     11
+    ],
+    [
+     66,
+     11
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     60,
+     13
+    ],
+    [
+     66,
+     13
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     60,
+     15
+    ],
+    [
+     66,
+     15
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     60,
+     17
+    ],
+    [
+     66,
+     17
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     64,
+     19
+    ],
+    [
+     66,
+     19
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     72,
+     3
+    ],
+    [
+     74,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     72,
+     5
+    ],
+    [
+     74,
+     5
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     72,
+     7
+    ],
+    [
+     74,
+     7
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     72,
+     9
+    ],
+    [
+     74,
+     9
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     72,
+     11
+    ],
+    [
+     74,
+     11
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     72,
+     13
+    ],
+    [
+     74,
+     13
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     72,
+     15
+    ],
+    [
+     74,
+     15
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     72,
+     17
+    ],
+    [
+     74,
+     17
+    ]
+   ]
+  }
+ ],
+ "notes": []
+}

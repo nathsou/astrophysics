@@ -1,0 +1,120 @@
+{
+ "version": 1,
+ "title": "PWM through an RC filter",
+ "engine": "analog",
+ "components": [
+  {
+   "id": "SRC",
+   "type": "clock",
+   "x": 2,
+   "y": 4,
+   "params": {
+    "frequency": 1000,
+    "duty": 0.25
+   },
+   "label": "PWM 1 kHz"
+  },
+  {
+   "id": "R1",
+   "type": "resistor",
+   "x": 8,
+   "y": 4,
+   "params": {
+    "resistance": 1000
+   },
+   "label": "1 k\u03a9"
+  },
+  {
+   "id": "C1",
+   "type": "capacitor",
+   "x": 18,
+   "y": 4,
+   "rot": 90,
+   "params": {
+    "capacitance": 1e-05
+   },
+   "label": "10 \u00b5F"
+  },
+  {
+   "id": "G1",
+   "type": "ground",
+   "x": 18,
+   "y": 8
+  },
+  {
+   "id": "V1",
+   "type": "voltmeter",
+   "x": 24,
+   "y": 10,
+   "rot": 270,
+   "label": "Vout"
+  },
+  {
+   "id": "G2",
+   "type": "ground",
+   "x": 24,
+   "y": 10
+  },
+  {
+   "id": "lab",
+   "type": "label",
+   "x": 22,
+   "y": 2,
+   "params": {
+    "name": "OUT"
+   },
+   "label": ""
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     5,
+     4
+    ],
+    [
+     8,
+     4
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     12,
+     4
+    ],
+    [
+     24,
+     4
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     24,
+     4
+    ],
+    [
+     24,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     22,
+     4
+    ],
+    [
+     22,
+     2
+    ]
+   ]
+  }
+ ],
+ "notes": []
+}

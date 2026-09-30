@@ -1,0 +1,385 @@
+{
+ "version": 1,
+ "title": "A comparator, a DAC and an unknown voltage",
+ "engine": "analog",
+ "components": [
+  {
+   "id": "Rt",
+   "type": "resistor",
+   "x": 2,
+   "y": 8,
+   "params": {
+    "resistance": 2000
+   },
+   "label": "2R"
+  },
+  {
+   "id": "G0",
+   "type": "ground",
+   "x": 2,
+   "y": 8
+  },
+  {
+   "id": "R0",
+   "type": "resistor",
+   "x": 13,
+   "y": 8,
+   "params": {
+    "resistance": 1000
+   },
+   "label": "R"
+  },
+  {
+   "id": "S0",
+   "type": "resistor",
+   "x": 10,
+   "y": 8,
+   "rot": 90,
+   "params": {
+    "resistance": 2000
+   },
+   "label": "2R"
+  },
+  {
+   "id": "in_B0",
+   "type": "toggle",
+   "x": 7,
+   "y": 16,
+   "label": "B0"
+  },
+  {
+   "id": "R1",
+   "type": "resistor",
+   "x": 23,
+   "y": 8,
+   "params": {
+    "resistance": 1000
+   },
+   "label": "R"
+  },
+  {
+   "id": "S1",
+   "type": "resistor",
+   "x": 20,
+   "y": 8,
+   "rot": 90,
+   "params": {
+    "resistance": 2000
+   },
+   "label": "2R"
+  },
+  {
+   "id": "in_B1",
+   "type": "toggle",
+   "x": 17,
+   "y": 16,
+   "label": "B1"
+  },
+  {
+   "id": "R2",
+   "type": "resistor",
+   "x": 33,
+   "y": 8,
+   "params": {
+    "resistance": 1000
+   },
+   "label": "R"
+  },
+  {
+   "id": "S2",
+   "type": "resistor",
+   "x": 30,
+   "y": 8,
+   "rot": 90,
+   "params": {
+    "resistance": 2000
+   },
+   "label": "2R"
+  },
+  {
+   "id": "in_B2",
+   "type": "toggle",
+   "x": 27,
+   "y": 16,
+   "label": "B2"
+  },
+  {
+   "id": "S3",
+   "type": "resistor",
+   "x": 40,
+   "y": 8,
+   "rot": 90,
+   "params": {
+    "resistance": 2000
+   },
+   "label": "2R"
+  },
+  {
+   "id": "in_B3",
+   "type": "toggle",
+   "x": 37,
+   "y": 16,
+   "label": "B3"
+  },
+  {
+   "id": "K1",
+   "type": "comparator",
+   "x": 58,
+   "y": 6,
+   "label": ""
+  },
+  {
+   "id": "VD",
+   "type": "voltmeter",
+   "x": 48,
+   "y": 14,
+   "rot": 270,
+   "label": "Vdac"
+  },
+  {
+   "id": "G1",
+   "type": "ground",
+   "x": 48,
+   "y": 14
+  },
+  {
+   "id": "V5",
+   "type": "rail",
+   "x": 52,
+   "y": -2,
+   "params": {
+    "voltage": 5
+   },
+   "label": ""
+  },
+  {
+   "id": "P1",
+   "type": "potentiometer",
+   "x": 52,
+   "y": -2,
+   "rot": 90,
+   "params": {
+    "position": 0.3
+   },
+   "label": "Vin"
+  },
+  {
+   "id": "G2",
+   "type": "ground",
+   "x": 52,
+   "y": 2
+  },
+  {
+   "id": "out_CMP",
+   "type": "indicator",
+   "x": 67,
+   "y": 7,
+   "params": {
+    "color": "amber"
+   },
+   "label": "Vin > Vdac"
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     6,
+     8
+    ],
+    [
+     10,
+     8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     10,
+     8
+    ],
+    [
+     13,
+     8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     17,
+     8
+    ],
+    [
+     20,
+     8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     10,
+     12
+    ],
+    [
+     10,
+     16
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     20,
+     8
+    ],
+    [
+     23,
+     8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     27,
+     8
+    ],
+    [
+     30,
+     8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     20,
+     12
+    ],
+    [
+     20,
+     16
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     30,
+     8
+    ],
+    [
+     33,
+     8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     37,
+     8
+    ],
+    [
+     40,
+     8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     30,
+     12
+    ],
+    [
+     30,
+     16
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     40,
+     12
+    ],
+    [
+     40,
+     16
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     40,
+     8
+    ],
+    [
+     58,
+     8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     48,
+     8
+    ],
+    [
+     48,
+     10
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     54,
+     0
+    ],
+    [
+     56,
+     0
+    ],
+    [
+     56,
+     6
+    ],
+    [
+     58,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     64,
+     7
+    ],
+    [
+     67,
+     7
+    ]
+   ]
+  }
+ ],
+ "notes": [
+  {
+   "x": 2,
+   "y": 4,
+   "text": "a 4-bit R-2R DAC, as before"
+  },
+  {
+   "x": 50,
+   "y": -5,
+   "text": "the unknown input: 3.5 V"
+  }
+ ]
+}

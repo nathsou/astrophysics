@@ -1646,3 +1646,385 @@ sparkfun-pulseview:
   venue: SparkFun Learn
   url: https://learn.sparkfun.com/tutorials/using-the-usb-logic-analyzer-with-sigrok-pulseview/all
   note: A cheap 24 MHz, eight-channel USB logic analyser with sigrok’s PulseView, and its UART, SPI and I²C protocol decoders.
+
+# Chapter 32: scaling data (Figure 32.1)
+wiki-transistor-count:
+  authors: Wikipedia
+  year: n.d.
+  title: Transistor count
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Transistor_count
+  note: A table of the transistor counts, process sizes and die areas of processors, each with its own reference; the starting point for the data of Figure 32.1.
+wiki-intel-8086:
+  authors: Wikipedia
+  year: n.d.
+  title: Intel 8086
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Intel_8086
+  note: Launched on 8 June 1978, about 29,000 transistors, 3 µm, 5 to 10 MHz.
+wiki-motorola-68000:
+  authors: Wikipedia
+  year: n.d.
+  title: Motorola 68000
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Motorola_68000
+  note: Introduced in 1979 with 68,000 transistors in a 3.5 µm HMOS process and initial speeds of 4, 6 and 8 MHz.
+wiki-intel-80286:
+  authors: Wikipedia
+  year: n.d.
+  title: Intel 80286
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Intel_80286
+  note: Introduced in 1982 with 134,000 transistors in a 1.5 µm process, at 6 MHz and above.
+wiki-i386:
+  authors: Wikipedia
+  year: n.d.
+  title: Intel 80386
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/I386
+  note: Introduced in October 1985 with 275,000 transistors in a 1.5 µm process, at 16 MHz.
+wiki-i486:
+  authors: Wikipedia
+  year: n.d.
+  title: Intel 80486
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/I486
+  note: Introduced on 10 April 1989 with about 1.2 million transistors in a 1 µm process, at 25 MHz.
+wiki-alpha-21064:
+  authors: Wikipedia
+  year: n.d.
+  title: Alpha 21064
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Alpha_21064
+  note: Announced in February 1992 by Digital Equipment Corporation, 1.68 million transistors in a 0.75 µm process on 233.5 mm², 200 MHz, 30 W.
+wiki-pentium-original:
+  authors: Wikipedia
+  year: n.d.
+  title: Pentium (original)
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Pentium_(original)
+  note: The P5 of 22 March 1993, 3.1 million transistors in 0.8 µm BiCMOS on 294 mm², at 60 or 66 MHz; maximum power of the 60 MHz part about 14.6 W.
+wiki-pentium-4:
+  authors: Wikipedia
+  year: n.d.
+  title: Pentium 4
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Pentium_4
+  note: Willamette, 42 million transistors in 180 nm on 217 mm², from 1.3 GHz; Prescott, 125 million transistors in 90 nm on 112 mm², up to 3.8 GHz and a thermal design power of 115 W.
+wiki-conroe:
+  authors: Wikipedia
+  year: n.d.
+  title: Conroe (microprocessor)
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Conroe_(microprocessor)
+  note: The dual-core Core 2 Duo of July 2006 in 65 nm, 291 million transistors on 143 mm²; the E6700 ran at 2.66 GHz within a 65 W thermal design power.
+wiki-bloomfield:
+  authors: Wikipedia
+  year: n.d.
+  title: Bloomfield (microprocessor)
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Bloomfield_(microprocessor)
+  note: The quad-core Core i7 of November 2008 in 45 nm, 731 million transistors on 263 mm²; the i7-920 ran at 2.66 GHz within a 130 W thermal design power.
+wiki-sandy-bridge:
+  authors: Wikipedia
+  year: n.d.
+  title: Sandy Bridge
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Sandy_Bridge
+  note: The quad-core Core i7 of January 2011 in 32 nm, 1.16 billion transistors (with its graphics unit) on 216 mm²; the i7-2600K ran at 3.4 GHz within 95 W.
+wiki-haswell:
+  authors: Wikipedia
+  year: n.d.
+  title: Haswell (microarchitecture)
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Haswell_(microarchitecture)
+  note: The quad-core Core i7 of 2013 in 22 nm, about 1.4 billion transistors on 177 mm²; the i7-4770K ran at 3.5 GHz within 84 W.
+wiki-apple-a11:
+  authors: Wikipedia
+  year: n.d.
+  title: Apple A11
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Apple_A11
+  note: Introduced on 12 September 2017, made by TSMC in 10 nm, 4.3 billion transistors on 87.66 mm², two performance cores at 2.39 GHz.
+apple-m1:
+  authors: Apple Inc.
+  year: 2020
+  title: Apple unleashes M1
+  venue: Apple Newsroom, 10 November 2020
+  url: https://www.apple.com/newsroom/2020/11/apple-unleashes-m1/
+  note: The first personal-computer chip in a 5 nm process, with 16 billion transistors.
+wiki-apple-m1:
+  authors: Wikipedia
+  year: n.d.
+  title: Apple M1
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Apple_M1
+  note: The M1’s die of 120.5 mm² and its performance cores’ clock of 3.2 GHz.
+nvidia-hopper:
+  authors: NVIDIA Corporation
+  year: 2022
+  title: NVIDIA Hopper architecture in depth
+  venue: NVIDIA Technical Blog, 22 March 2022
+  url: https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/
+  note: The H100 GPU, with 80 billion transistors, made on TSMC’s custom 4N process.
+wiki-hopper:
+  authors: Wikipedia
+  year: n.d.
+  title: Hopper (microarchitecture)
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Hopper_(microarchitecture)
+  note: The GH100 die of 814 mm² and the 700 W thermal design power of the SXM module.
+cerebras-wse3:
+  authors: Cerebras Systems
+  year: 2024
+  title: Cerebras Systems unveils world’s fastest AI chip with whopping 4 trillion transistors
+  venue: Cerebras press release, 13 March 2024
+  url: https://www.cerebras.ai/press-release/cerebras-announces-third-generation-wafer-scale-engine
+  note: The third-generation Wafer-Scale Engine, one chip of 46,225 mm² with 4 trillion transistors and 900,000 cores, made in a 5 nm process.
+
+# Chapter 32: history and the physics of making a chip
+chm-solid-circuit:
+  authors: Computer History Museum
+  year: n.d.
+  title: '1958: All semiconductor “solid circuit” is demonstrated'
+  venue: The Silicon Engine, Computer History Museum
+  url: https://www.computerhistory.org/siliconengine/all-semiconductor-solid-circuit-is-demonstrated/
+  note: Jack Kilby’s demonstration at Texas Instruments on 12 September 1958 of a phase-shift oscillator on a single slice of germanium.
+noyce-patent:
+  authors: Robert N. Noyce
+  year: 1961
+  title: Semiconductor device-and-lead structure, US patent 2,981,877
+  venue: Filed 30 July 1959, granted 25 April 1961; reprinted in Proceedings of the IEEE
+  url: https://ieeexplore.ieee.org/document/4785577/
+  note: Noyce’s integrated circuit for Fairchild, with components made in a silicon wafer covered with oxide and joined by metal lines evaporated on top.
+chm-monolithic-ic:
+  authors: Computer History Museum
+  year: n.d.
+  title: '1959: Practical monolithic integrated circuit concept patented'
+  venue: The Silicon Engine, Computer History Museum
+  url: https://www.computerhistory.org/siliconengine/practical-monolithic-integrated-circuit-concept-patented/
+  note: Noyce’s idea of January 1959, built on Jean Hoerni’s planar process, and why it made integrated circuits fit for mass production.
+moore1965:
+  authors: Gordon E. Moore
+  year: 1965
+  title: Cramming more components onto integrated circuits
+  venue: Electronics 38(8), 19 April 1965, 114–117
+  url: https://ieeexplore.ieee.org/document/4785860/
+  note: The subtitle says that by 1975 economics may dictate squeezing as many as 65,000 components on a single chip; the text extrapolates a doubling every year.
+moore1975:
+  authors: Gordon E. Moore
+  year: 1975
+  title: Progress in digital integrated electronics
+  venue: IEEE International Electron Devices Meeting, Technical Digest, 11–13
+  url: https://ieeexplore.ieee.org/document/4804410/
+  note: Moore’s talk that revised his forecast to a doubling about every two years, crediting bigger dies, finer lithography and circuit cleverness.
+mead-conway1980:
+  authors: Carver Mead and Lynn Conway
+  year: 1980
+  title: Introduction to VLSI Systems
+  venue: Addison-Wesley
+  url: https://archive.org/details/introductiontovl00mead
+  note: The textbook, drafted for Conway’s MIT course of 1978, that taught computer scientists to design chips with scalable design rules.
+conway-mpc79:
+  authors: Lynn Conway
+  year: 1979
+  title: Implementation documentation for the MPC79 multi-university, multi-project chip-set
+  venue: Xerox Palo Alto Research Center; archived by Lynn Conway
+  url: https://ai.eecs.umich.edu/people/conway/VLSI/MPC79/ImpDoc/ImpDoc79Front.html
+  note: 82 projects by 124 designers from twelve universities, gathered onto shared wafers in 1979; the service passed to USC-ISI in 1981 as MOSIS.
+asml-euv:
+  authors: ASML
+  year: n.d.
+  title: EUV lithography systems
+  venue: ASML product pages
+  url: https://www.asml.com/en/products/euv-lithography-systems
+  note: The NXE systems use light of 13.5 nm and a numerical aperture of 0.33, and the High-NA EXE:5000 a numerical aperture of 0.55, which takes the half-pitch resolution from about 13 nm to about 8 nm.
+asml-light:
+  authors: ASML
+  year: n.d.
+  title: Light and lasers, lithography principles
+  venue: ASML technology pages
+  url: https://www.asml.com/en/technology/lithography-principles/light-and-lasers
+  note: How a CO2 laser hitting droplets of molten tin, 50,000 times a second, makes the 13.5 nm light of an EUV scanner.
+song2022:
+  authors: Jungchul Song, Chae-Hwan Kim and Ga-Won Lee
+  year: 2022
+  title: A study on the resolution and depth of focus of ArF immersion photolithography
+  venue: Micromachines 13(11), 1971
+  url: https://doi.org/10.3390/mi13111971
+  note: The Rayleigh equation CD = k1 λ / NA, with 193 nm light, water immersion allowing a numerical aperture up to 1.35, and k1 no smaller than 0.25.
+wiki-photomask:
+  authors: Wikipedia
+  year: n.d.
+  title: Photomask
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Photomask
+  note: Reticles are patterned quartz plates, usually 6 × 6 inches, whose image is reduced (typically four times) onto the wafer; pellicles protect them from dust.
+wong2020:
+  authors: H.-S. Philip Wong, Chenming Hu, Tsu-Jae King Liu, Jeffrey Bokor, Sayeef Salahuddin and colleagues
+  year: 2020
+  title: A density metric for semiconductor technology
+  venue: Proceedings of the IEEE 108(4), 478–482 (summarised in IEEE Spectrum, July 2020)
+  url: https://eecs.berkeley.edu/news/2020/07/finding-better-way-measure-progress-semiconductors
+  note: Why the nanometre number of a process node stopped being a length, and a measure of the density of logic, memory and their connections to replace it.
+wiki-5nm:
+  authors: Wikipedia
+  year: n.d.
+  title: 5 nm process
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/5_nm_process
+  note: Since 1997 node names have had no relation to dimensions on the chip; the IRDS 2021 projections for a 5 nm node give a gate length of 18 nm, a contacted gate pitch of 51 nm and a tightest metal pitch of 30 nm.
+intel-22nm:
+  authors: Mark Bohr and Kaizad Mistry
+  year: 2011
+  title: Intel’s revolutionary 22 nm transistor technology
+  venue: Intel presentation, May 2011
+  url: https://download.intel.com/newsroom/kits/22nm/pdfs/22nm-Details_Presentation.pdf
+  note: The first tri-gate (FinFET) transistors in volume production, announced with the Ivy Bridge processors.
+samsung-3nm-gaa:
+  authors: Samsung Electronics
+  year: 2022
+  title: Samsung begins chip production using 3 nm process technology with GAA architecture
+  venue: Samsung Newsroom, 30 June 2022
+  url: https://news.samsung.com/us/samsung-begins-chip-production-3nm-process-gaa-architecture/
+  note: The first gate-all-around (MBCFET) transistors in production, replacing the FinFET.
+
+# Chapter 32: what a modern CPU adds
+smith1981:
+  authors: James E. Smith
+  year: 1981
+  title: A study of branch prediction strategies
+  venue: Proceedings of the 8th Annual Symposium on Computer Architecture (ISCA), 135–148
+  url: https://dl.acm.org/doi/10.5555/800052.801871
+  note: Compares strategies for guessing which way a branch goes, including small tables of counters indexed by the branch’s address.
+tomasulo1967:
+  authors: Robert M. Tomasulo
+  year: 1967
+  title: An efficient algorithm for exploiting multiple arithmetic units
+  venue: IBM Journal of Research and Development 11(1), 25–33
+  url: https://doi.org/10.1147/rd.111.0025
+  note: The floating-point unit of the IBM System/360 Model 91, whose register tagging and common data bus let independent instructions run out of order.
+
+# Chapter 32: open hardware and where to go next
+asanovic2014:
+  authors: Krste Asanović and David A. Patterson
+  year: 2014
+  title: 'Instruction sets should be free: the case for RISC-V'
+  venue: UC Berkeley technical report EECS-2014-146
+  url: https://www2.eecs.berkeley.edu/Pubs/TechRpts/2014/EECS-2014-146.html
+  note: Why an instruction set should be an open standard, and the RISC-V design that began at Berkeley in 2010.
+riscv-about:
+  authors: RISC-V International
+  year: n.d.
+  title: About RISC-V
+  venue: riscv.org
+  url: https://riscv.org/about/
+  note: The history and governance of the open instruction set, from its start at UC Berkeley in 2010.
+skywater-pdk:
+  authors: Google and SkyWater Technology Foundry
+  year: 2020
+  title: SkyWater open source PDK (SKY130)
+  venue: GitHub, google/skywater-pdk
+  url: https://github.com/google/skywater-pdk
+  note: The first open-source process design kit for a production semiconductor process, a 130 nm CMOS process, released in 2020.
+antmicro-sky130:
+  authors: Antmicro
+  year: 2020
+  title: Open source process design kit from Google, SkyWater Technologies and partners released
+  venue: Antmicro blog, June 2020
+  url: https://antmicro.com/blog/2020/06/skywater-open-source-pdk
+  note: The announcement of the SKY130 PDK by Google and SkyWater with partners including efabless, and of free manufacturing for open hardware.
+shalan2020:
+  authors: Mohamed Shalan and Tim Edwards
+  year: 2020
+  title: 'Building OpenLANE: a 130 nm OpenROAD-based tapeout-proven flow'
+  venue: IEEE/ACM International Conference on Computer-Aided Design (ICCAD 2020), invited paper
+  note: OpenLane, the automated RTL-to-GDSII flow built from Yosys, OpenROAD, Magic and Netgen that runs on the SKY130 PDK.
+openlane:
+  authors: The OpenROAD Project and contributors
+  year: n.d.
+  title: OpenLane
+  venue: GitHub, The-OpenROAD-Project/OpenLane
+  url: https://github.com/The-OpenROAD-Project/OpenLane
+  note: An automated flow from RTL to GDSII based on OpenROAD, Yosys, Magic, Netgen and scripts for design exploration.
+tinytapeout:
+  authors: Tiny Tapeout
+  year: n.d.
+  title: 'Tiny Tapeout: quicker, easier and cheaper to make your own chip'
+  venue: tinytapeout.com
+  url: https://tinytapeout.com/
+  note: A shared shuttle on which many small open designs, each on a tile, are put on one chip; a recent SKY130 shuttle (TTSKY25b) carried 316 designs.
+tinytapeout-ttsky25b:
+  authors: Tiny Tapeout
+  year: 2025
+  title: Tiny Tapeout SKY 25b
+  venue: tinytapeout.com
+  url: https://tinytapeout.com/chips/ttsky25b/
+  note: The shuttle that went to ChipFoundry on the SKY130 process with 316 designs.
+zero-to-asic:
+  authors: Matt Venn
+  year: n.d.
+  title: Zero to ASIC course
+  venue: zerotoasiccourse.com
+  url: https://www.zerotoasiccourse.com/
+  note: A course that takes a small digital design through the open-source flow to a chip made on a shared wafer.
+patterson-hennessy2020:
+  authors: David A. Patterson and John L. Hennessy
+  year: 2020
+  title: 'Computer Organization and Design, RISC-V edition: the hardware/software interface, second edition'
+  venue: Morgan Kaufmann
+  note: The standard undergraduate text on how a processor is built and how software uses it, with a pipelined RISC-V core.
+harris-harris2021:
+  authors: Sarah L. Harris and David Harris
+  year: 2021
+  title: 'Digital Design and Computer Architecture, RISC-V edition'
+  venue: Morgan Kaufmann
+  note: Logic gates, sequential circuits and hardware description languages, up to single-cycle, multi-cycle and pipelined RISC-V processors.
+nisan-schocken2021:
+  authors: Noam Nisan and Shimon Schocken
+  year: 2021
+  title: 'The Elements of Computing Systems: Building a Modern Computer from First Principles, second edition'
+  venue: MIT Press
+  url: https://www.nand2tetris.org/
+  note: Nand2Tetris, from a NAND gate to a computer running a compiler, with free software and lectures.
+petzold2022:
+  authors: Charles Petzold
+  year: 2022
+  title: 'Code: The Hidden Language of Computer Hardware and Software, second edition'
+  venue: Microsoft Press
+  note: A narrative that builds from flashlight signals and relays to a small computer.
+eater8bit:
+  authors: Ben Eater
+  year: n.d.
+  title: Build an 8-bit computer from scratch
+  venue: eater.net
+  url: https://eater.net/8bit
+  note: Videos and kits that build a small computer from 74-series chips on breadboards.
+icebreaker:
+  authors: 1BitSquared and contributors
+  year: n.d.
+  title: iCEBreaker FPGA board
+  venue: 1BitSquared
+  url: https://1bitsquared.com/products/icebreaker
+  note: A low-cost iCE40UP5K board built around the open-source Yosys, nextpnr and IceStorm tools.
+verilator:
+  authors: Wilson Snyder and contributors
+  year: n.d.
+  title: Verilator
+  venue: veripool.org
+  url: https://www.veripool.org/verilator/
+  note: A free tool that turns Verilog and SystemVerilog into fast compiled simulations.
+amaranth:
+  authors: Amaranth HDL project
+  year: n.d.
+  title: Amaranth hardware definition language
+  venue: amaranth-lang.org
+  url: https://amaranth-lang.org/
+  note: A hardware description language embedded in Python, with a toolchain for open-source FPGA flows.
+chisel:
+  authors: Chisel project
+  year: n.d.
+  title: Chisel, hardware construction language
+  venue: chisel-lang.org
+  url: https://www.chisel-lang.org/
+  note: A hardware construction language embedded in Scala, originally from Berkeley and used to design open RISC-V cores.
