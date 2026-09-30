@@ -1,0 +1,1127 @@
+{
+  "tools": {
+    "yosys": "Yosys 0.69 (git sha1 9f75ca1f9, Release, Clang /workspace/YoWASP/yosys/wasi-sdk-33.0-x86_64-linux/share/cmake/../..//bin/clang++ 22.1.0)",
+    "nextpnr": "\"yowasp-nextpnr-ice40\" -- Next Generation Place and Route (Version nextpnr-0.11.1)"
+  },
+  "parameters": {
+    "targetMHz": 12,
+    "seed": 1,
+    "parts": [
+      "up5k-sg48",
+      "hx8k-ct256"
+    ]
+  },
+  "designs": [
+    {
+      "design": "alu",
+      "file": "content/designs/alu.dcl",
+      "top": "Alu",
+      "status": "ok",
+      "netlist": {
+        "modules": 1,
+        "cells": 29
+      },
+      "yosys": {
+        "luts": 566,
+        "carries": 63,
+        "flipFlops": 0,
+        "brams": 0,
+        "dsps": 0,
+        "cells": {
+          "SB_CARRY": 63,
+          "SB_LUT4": 566
+        }
+      },
+      "parts": {
+        "up5k-sg48": {
+          "status": "does-not-fit",
+          "message": "Unable to find a placement location for cell 'b[31]$sb_io' (io: SB_IO 101 of 39)",
+          "utilisation": {
+            "ICESTORM_LC": {
+              "used": 569,
+              "available": 5280
+            },
+            "ICESTORM_RAM": {
+              "used": 0,
+              "available": 30
+            },
+            "SB_IO": {
+              "used": 101,
+              "available": 39
+            },
+            "SB_GB": {
+              "used": 0,
+              "available": 8
+            },
+            "ICESTORM_PLL": {
+              "used": 0,
+              "available": 1
+            },
+            "SB_WARMBOOT": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_DSP": {
+              "used": 0,
+              "available": 8
+            },
+            "ICESTORM_HFOSC": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_LFOSC": {
+              "used": 0,
+              "available": 1
+            },
+            "SB_I2C": {
+              "used": 0,
+              "available": 2
+            },
+            "SB_SPI": {
+              "used": 0,
+              "available": 2
+            },
+            "IO_I3C": {
+              "used": 0,
+              "available": 2
+            },
+            "SB_LEDDA_IP": {
+              "used": 0,
+              "available": 1
+            },
+            "SB_RGBA_DRV": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_SPRAM": {
+              "used": 0,
+              "available": 4
+            }
+          }
+        },
+        "hx8k-ct256": {
+          "status": "ok",
+          "fmaxMHz": null,
+          "targetMHz": 12,
+          "utilisation": {
+            "ICESTORM_LC": {
+              "used": 569,
+              "available": 7680
+            },
+            "ICESTORM_PLL": {
+              "used": 0,
+              "available": 2
+            },
+            "ICESTORM_RAM": {
+              "used": 0,
+              "available": 32
+            },
+            "SB_GB": {
+              "used": 0,
+              "available": 8
+            },
+            "SB_IO": {
+              "used": 101,
+              "available": 206
+            },
+            "SB_WARMBOOT": {
+              "used": 0,
+              "available": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "design": "counter",
+      "file": "content/designs/counter.dcl",
+      "top": "Counter",
+      "status": "ok",
+      "netlist": {
+        "modules": 1,
+        "cells": 6
+      },
+      "yosys": {
+        "luts": 7,
+        "carries": 2,
+        "flipFlops": 4,
+        "brams": 0,
+        "dsps": 0,
+        "cells": {
+          "SB_CARRY": 2,
+          "SB_DFFESR": 4,
+          "SB_LUT4": 7
+        }
+      },
+      "parts": {
+        "up5k-sg48": {
+          "status": "ok",
+          "fmaxMHz": 170.4158172607422,
+          "clock": "clk",
+          "targetMHz": 12,
+          "utilisation": {
+            "ICESTORM_DSP": {
+              "used": 0,
+              "available": 8
+            },
+            "ICESTORM_HFOSC": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_LC": {
+              "used": 11,
+              "available": 5280
+            },
+            "ICESTORM_LFOSC": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_PLL": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_RAM": {
+              "used": 0,
+              "available": 30
+            },
+            "ICESTORM_SPRAM": {
+              "used": 0,
+              "available": 4
+            },
+            "IO_I3C": {
+              "used": 0,
+              "available": 2
+            },
+            "SB_GB": {
+              "used": 1,
+              "available": 8
+            },
+            "SB_I2C": {
+              "used": 0,
+              "available": 2
+            },
+            "SB_IO": {
+              "used": 8,
+              "available": 39
+            },
+            "SB_LEDDA_IP": {
+              "used": 0,
+              "available": 1
+            },
+            "SB_RGBA_DRV": {
+              "used": 0,
+              "available": 1
+            },
+            "SB_SPI": {
+              "used": 0,
+              "available": 2
+            },
+            "SB_WARMBOOT": {
+              "used": 0,
+              "available": 1
+            }
+          }
+        },
+        "hx8k-ct256": {
+          "status": "ok",
+          "fmaxMHz": 447.8280334472656,
+          "clock": "clk",
+          "targetMHz": 12,
+          "utilisation": {
+            "ICESTORM_LC": {
+              "used": 11,
+              "available": 7680
+            },
+            "ICESTORM_PLL": {
+              "used": 0,
+              "available": 2
+            },
+            "ICESTORM_RAM": {
+              "used": 0,
+              "available": 32
+            },
+            "SB_GB": {
+              "used": 1,
+              "available": 8
+            },
+            "SB_IO": {
+              "used": 8,
+              "available": 206
+            },
+            "SB_WARMBOOT": {
+              "used": 0,
+              "available": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "design": "regfile",
+      "file": "content/designs/regfile.dcl",
+      "top": "RegFile",
+      "status": "ok",
+      "netlist": {
+        "modules": 1,
+        "cells": 189
+      },
+      "yosys": {
+        "luts": 1905,
+        "carries": 0,
+        "flipFlops": 992,
+        "brams": 0,
+        "dsps": 0,
+        "cells": {
+          "SB_DFFE": 992,
+          "SB_LUT4": 1905
+        }
+      },
+      "parts": {
+        "up5k-sg48": {
+          "status": "does-not-fit",
+          "message": "Unable to find a placement location for cell 'rs1_value[29]$sb_io' (io: SB_IO 113 of 39)",
+          "utilisation": {
+            "ICESTORM_LC": {
+              "used": 2899,
+              "available": 5280
+            },
+            "ICESTORM_RAM": {
+              "used": 0,
+              "available": 30
+            },
+            "SB_IO": {
+              "used": 113,
+              "available": 39
+            },
+            "SB_GB": {
+              "used": 1,
+              "available": 8
+            },
+            "ICESTORM_PLL": {
+              "used": 0,
+              "available": 1
+            },
+            "SB_WARMBOOT": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_DSP": {
+              "used": 0,
+              "available": 8
+            },
+            "ICESTORM_HFOSC": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_LFOSC": {
+              "used": 0,
+              "available": 1
+            },
+            "SB_I2C": {
+              "used": 0,
+              "available": 2
+            },
+            "SB_SPI": {
+              "used": 0,
+              "available": 2
+            },
+            "IO_I3C": {
+              "used": 0,
+              "available": 2
+            },
+            "SB_LEDDA_IP": {
+              "used": 0,
+              "available": 1
+            },
+            "SB_RGBA_DRV": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_SPRAM": {
+              "used": 0,
+              "available": 4
+            }
+          }
+        },
+        "hx8k-ct256": {
+          "status": "ok",
+          "fmaxMHz": null,
+          "targetMHz": 12,
+          "utilisation": {
+            "ICESTORM_LC": {
+              "used": 2899,
+              "available": 7680
+            },
+            "ICESTORM_PLL": {
+              "used": 0,
+              "available": 2
+            },
+            "ICESTORM_RAM": {
+              "used": 0,
+              "available": 32
+            },
+            "SB_GB": {
+              "used": 1,
+              "available": 8
+            },
+            "SB_IO": {
+              "used": 113,
+              "available": 206
+            },
+            "SB_WARMBOOT": {
+              "used": 0,
+              "available": 1
+            }
+          },
+          "message": "clocked by clk, but no register-to-register path: nextpnr reports no fmax"
+        }
+      }
+    },
+    {
+      "design": "rv32i",
+      "file": "content/designs/rv32i.dcl",
+      "top": "riscv32",
+      "status": "ok",
+      "netlist": {
+        "modules": 3,
+        "cells": 363
+      },
+      "yosys": {
+        "luts": 2734,
+        "carries": 264,
+        "flipFlops": 1056,
+        "brams": 0,
+        "dsps": 0,
+        "cells": {
+          "SB_CARRY": 264,
+          "SB_DFF": 1,
+          "SB_DFFE": 1055,
+          "SB_LUT4": 2734
+        }
+      },
+      "parts": {
+        "up5k-sg48": {
+          "status": "does-not-fit",
+          "message": "Unable to find a placement location for cell 'pc_out[0]$sb_io' (io: SB_IO 169 of 39)",
+          "utilisation": {
+            "ICESTORM_LC": {
+              "used": 3823,
+              "available": 5280
+            },
+            "ICESTORM_RAM": {
+              "used": 0,
+              "available": 30
+            },
+            "SB_IO": {
+              "used": 169,
+              "available": 39
+            },
+            "SB_GB": {
+              "used": 1,
+              "available": 8
+            },
+            "ICESTORM_PLL": {
+              "used": 0,
+              "available": 1
+            },
+            "SB_WARMBOOT": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_DSP": {
+              "used": 0,
+              "available": 8
+            },
+            "ICESTORM_HFOSC": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_LFOSC": {
+              "used": 0,
+              "available": 1
+            },
+            "SB_I2C": {
+              "used": 0,
+              "available": 2
+            },
+            "SB_SPI": {
+              "used": 0,
+              "available": 2
+            },
+            "IO_I3C": {
+              "used": 0,
+              "available": 2
+            },
+            "SB_LEDDA_IP": {
+              "used": 0,
+              "available": 1
+            },
+            "SB_RGBA_DRV": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_SPRAM": {
+              "used": 0,
+              "available": 4
+            }
+          }
+        },
+        "hx8k-ct256": {
+          "status": "ok",
+          "fmaxMHz": 36.871795654296875,
+          "clock": "clk",
+          "targetMHz": 12,
+          "utilisation": {
+            "ICESTORM_LC": {
+              "used": 3823,
+              "available": 7680
+            },
+            "ICESTORM_PLL": {
+              "used": 0,
+              "available": 2
+            },
+            "ICESTORM_RAM": {
+              "used": 0,
+              "available": 32
+            },
+            "SB_GB": {
+              "used": 1,
+              "available": 8
+            },
+            "SB_IO": {
+              "used": 169,
+              "available": 206
+            },
+            "SB_WARMBOOT": {
+              "used": 0,
+              "available": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "design": "traffic-light",
+      "file": "content/designs/traffic-light.dcl",
+      "top": "TrafficLight",
+      "status": "ok",
+      "netlist": {
+        "modules": 1,
+        "cells": 15
+      },
+      "yosys": {
+        "luts": 5,
+        "carries": 0,
+        "flipFlops": 2,
+        "brams": 0,
+        "dsps": 0,
+        "cells": {
+          "SB_DFFESR": 2,
+          "SB_LUT4": 5
+        }
+      },
+      "parts": {
+        "up5k-sg48": {
+          "status": "ok",
+          "fmaxMHz": 148.52220153808594,
+          "clock": "clk",
+          "targetMHz": 12,
+          "utilisation": {
+            "ICESTORM_DSP": {
+              "used": 0,
+              "available": 8
+            },
+            "ICESTORM_HFOSC": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_LC": {
+              "used": 7,
+              "available": 5280
+            },
+            "ICESTORM_LFOSC": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_PLL": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_RAM": {
+              "used": 0,
+              "available": 30
+            },
+            "ICESTORM_SPRAM": {
+              "used": 0,
+              "available": 4
+            },
+            "IO_I3C": {
+              "used": 0,
+              "available": 2
+            },
+            "SB_GB": {
+              "used": 1,
+              "available": 8
+            },
+            "SB_I2C": {
+              "used": 0,
+              "available": 2
+            },
+            "SB_IO": {
+              "used": 5,
+              "available": 39
+            },
+            "SB_LEDDA_IP": {
+              "used": 0,
+              "available": 1
+            },
+            "SB_RGBA_DRV": {
+              "used": 0,
+              "available": 1
+            },
+            "SB_SPI": {
+              "used": 0,
+              "available": 2
+            },
+            "SB_WARMBOOT": {
+              "used": 0,
+              "available": 1
+            }
+          }
+        },
+        "hx8k-ct256": {
+          "status": "ok",
+          "fmaxMHz": 324.3594055175781,
+          "clock": "clk",
+          "targetMHz": 12,
+          "utilisation": {
+            "ICESTORM_LC": {
+              "used": 7,
+              "available": 7680
+            },
+            "ICESTORM_PLL": {
+              "used": 0,
+              "available": 2
+            },
+            "ICESTORM_RAM": {
+              "used": 0,
+              "available": 32
+            },
+            "SB_GB": {
+              "used": 1,
+              "available": 8
+            },
+            "SB_IO": {
+              "used": 5,
+              "available": 206
+            },
+            "SB_WARMBOOT": {
+              "used": 0,
+              "available": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "design": "octet-alu",
+      "file": "content/chapters/21-datapath/designs/octet-alu.dcl",
+      "top": "OctetAlu",
+      "status": "ok",
+      "netlist": {
+        "modules": 1,
+        "cells": 33
+      },
+      "yosys": {
+        "luts": 72,
+        "carries": 8,
+        "flipFlops": 0,
+        "brams": 0,
+        "dsps": 0,
+        "cells": {
+          "SB_CARRY": 8,
+          "SB_LUT4": 72
+        }
+      },
+      "parts": {
+        "up5k-sg48": {
+          "status": "ok",
+          "fmaxMHz": null,
+          "targetMHz": 12,
+          "utilisation": {
+            "ICESTORM_DSP": {
+              "used": 0,
+              "available": 8
+            },
+            "ICESTORM_HFOSC": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_LC": {
+              "used": 75,
+              "available": 5280
+            },
+            "ICESTORM_LFOSC": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_PLL": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_RAM": {
+              "used": 0,
+              "available": 30
+            },
+            "ICESTORM_SPRAM": {
+              "used": 0,
+              "available": 4
+            },
+            "IO_I3C": {
+              "used": 0,
+              "available": 2
+            },
+            "SB_GB": {
+              "used": 0,
+              "available": 8
+            },
+            "SB_I2C": {
+              "used": 0,
+              "available": 2
+            },
+            "SB_IO": {
+              "used": 31,
+              "available": 39
+            },
+            "SB_LEDDA_IP": {
+              "used": 0,
+              "available": 1
+            },
+            "SB_RGBA_DRV": {
+              "used": 0,
+              "available": 1
+            },
+            "SB_SPI": {
+              "used": 0,
+              "available": 2
+            },
+            "SB_WARMBOOT": {
+              "used": 0,
+              "available": 1
+            }
+          }
+        },
+        "hx8k-ct256": {
+          "status": "ok",
+          "fmaxMHz": null,
+          "targetMHz": 12,
+          "utilisation": {
+            "ICESTORM_LC": {
+              "used": 75,
+              "available": 7680
+            },
+            "ICESTORM_PLL": {
+              "used": 0,
+              "available": 2
+            },
+            "ICESTORM_RAM": {
+              "used": 0,
+              "available": 32
+            },
+            "SB_GB": {
+              "used": 0,
+              "available": 8
+            },
+            "SB_IO": {
+              "used": 31,
+              "available": 206
+            },
+            "SB_WARMBOOT": {
+              "used": 0,
+              "available": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "design": "octet-regs",
+      "file": "content/chapters/21-datapath/designs/octet-regs.dcl",
+      "top": "OctetRegs",
+      "status": "ok",
+      "netlist": {
+        "modules": 1,
+        "cells": 24
+      },
+      "yosys": {
+        "luts": 54,
+        "carries": 0,
+        "flipFlops": 32,
+        "brams": 0,
+        "dsps": 0,
+        "cells": {
+          "SB_DFFE": 32,
+          "SB_LUT4": 54
+        }
+      },
+      "parts": {
+        "up5k-sg48": {
+          "status": "ok",
+          "fmaxMHz": null,
+          "targetMHz": 12,
+          "utilisation": {
+            "ICESTORM_DSP": {
+              "used": 0,
+              "available": 8
+            },
+            "ICESTORM_HFOSC": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_LC": {
+              "used": 88,
+              "available": 5280
+            },
+            "ICESTORM_LFOSC": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_PLL": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_RAM": {
+              "used": 0,
+              "available": 30
+            },
+            "ICESTORM_SPRAM": {
+              "used": 0,
+              "available": 4
+            },
+            "IO_I3C": {
+              "used": 0,
+              "available": 2
+            },
+            "SB_GB": {
+              "used": 1,
+              "available": 8
+            },
+            "SB_I2C": {
+              "used": 0,
+              "available": 2
+            },
+            "SB_IO": {
+              "used": 32,
+              "available": 39
+            },
+            "SB_LEDDA_IP": {
+              "used": 0,
+              "available": 1
+            },
+            "SB_RGBA_DRV": {
+              "used": 0,
+              "available": 1
+            },
+            "SB_SPI": {
+              "used": 0,
+              "available": 2
+            },
+            "SB_WARMBOOT": {
+              "used": 0,
+              "available": 1
+            }
+          },
+          "message": "clocked by clk, but no register-to-register path: nextpnr reports no fmax"
+        },
+        "hx8k-ct256": {
+          "status": "ok",
+          "fmaxMHz": null,
+          "targetMHz": 12,
+          "utilisation": {
+            "ICESTORM_LC": {
+              "used": 88,
+              "available": 7680
+            },
+            "ICESTORM_PLL": {
+              "used": 0,
+              "available": 2
+            },
+            "ICESTORM_RAM": {
+              "used": 0,
+              "available": 32
+            },
+            "SB_GB": {
+              "used": 1,
+              "available": 8
+            },
+            "SB_IO": {
+              "used": 32,
+              "available": 206
+            },
+            "SB_WARMBOOT": {
+              "used": 0,
+              "available": 1
+            }
+          },
+          "message": "clocked by clk, but no register-to-register path: nextpnr reports no fmax"
+        }
+      }
+    },
+    {
+      "design": "octet-decode",
+      "file": "content/chapters/22-control/designs/octet-decode.dcl",
+      "status": "skipped",
+      "message": "no `top` marker, and several modules that nothing instantiates: OctetDecode, OctetSequencer"
+    },
+    {
+      "design": "octet",
+      "file": "content/chapters/31-cpus-on-a-chip/designs/octet.dcl",
+      "top": "Octet",
+      "status": "ok",
+      "netlist": {
+        "modules": 3,
+        "cells": 420
+      },
+      "yosys": {
+        "luts": 451,
+        "carries": 27,
+        "flipFlops": 157,
+        "brams": 2,
+        "dsps": 0,
+        "cells": {
+          "SB_CARRY": 27,
+          "SB_DFF": 30,
+          "SB_DFFE": 48,
+          "SB_DFFESR": 79,
+          "SB_LUT4": 451,
+          "SB_RAM40_4K": 2
+        }
+      },
+      "parts": {
+        "up5k-sg48": {
+          "status": "does-not-fit",
+          "message": "Unable to find a placement location for cell 'seg3[2]$sb_io' (io: SB_IO 60 of 39)",
+          "utilisation": {
+            "ICESTORM_LC": {
+              "used": 584,
+              "available": 5280
+            },
+            "ICESTORM_RAM": {
+              "used": 2,
+              "available": 30
+            },
+            "SB_IO": {
+              "used": 60,
+              "available": 39
+            },
+            "SB_GB": {
+              "used": 2,
+              "available": 8
+            },
+            "ICESTORM_PLL": {
+              "used": 0,
+              "available": 1
+            },
+            "SB_WARMBOOT": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_DSP": {
+              "used": 0,
+              "available": 8
+            },
+            "ICESTORM_HFOSC": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_LFOSC": {
+              "used": 0,
+              "available": 1
+            },
+            "SB_I2C": {
+              "used": 0,
+              "available": 2
+            },
+            "SB_SPI": {
+              "used": 0,
+              "available": 2
+            },
+            "IO_I3C": {
+              "used": 0,
+              "available": 2
+            },
+            "SB_LEDDA_IP": {
+              "used": 0,
+              "available": 1
+            },
+            "SB_RGBA_DRV": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_SPRAM": {
+              "used": 0,
+              "available": 4
+            }
+          }
+        },
+        "hx8k-ct256": {
+          "status": "ok",
+          "fmaxMHz": 73.0140151977539,
+          "clock": "clk",
+          "targetMHz": 12,
+          "utilisation": {
+            "ICESTORM_LC": {
+              "used": 584,
+              "available": 7680
+            },
+            "ICESTORM_PLL": {
+              "used": 0,
+              "available": 2
+            },
+            "ICESTORM_RAM": {
+              "used": 2,
+              "available": 32
+            },
+            "SB_GB": {
+              "used": 2,
+              "available": 8
+            },
+            "SB_IO": {
+              "used": 60,
+              "available": 206
+            },
+            "SB_WARMBOOT": {
+              "used": 0,
+              "available": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "design": "rv32-board",
+      "file": "content/chapters/31-cpus-on-a-chip/designs/rv32-board.dcl",
+      "top": "Rv32Board",
+      "program": "rv32-walk.asm",
+      "status": "ok",
+      "netlist": {
+        "modules": 4,
+        "cells": 470
+      },
+      "yosys": {
+        "luts": 2340,
+        "carries": 264,
+        "flipFlops": 1076,
+        "brams": 0,
+        "dsps": 0,
+        "cells": {
+          "SB_CARRY": 264,
+          "SB_DFF": 1,
+          "SB_DFFE": 1047,
+          "SB_DFFESR": 28,
+          "SB_LUT4": 2340
+        }
+      },
+      "parts": {
+        "up5k-sg48": {
+          "status": "does-not-fit",
+          "message": "Unable to find a placement location for cell 'led[7]$sb_io' (io: SB_IO 51 of 39)",
+          "utilisation": {
+            "ICESTORM_LC": {
+              "used": 3419,
+              "available": 5280
+            },
+            "ICESTORM_RAM": {
+              "used": 0,
+              "available": 30
+            },
+            "SB_IO": {
+              "used": 51,
+              "available": 39
+            },
+            "SB_GB": {
+              "used": 1,
+              "available": 8
+            },
+            "ICESTORM_PLL": {
+              "used": 0,
+              "available": 1
+            },
+            "SB_WARMBOOT": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_DSP": {
+              "used": 0,
+              "available": 8
+            },
+            "ICESTORM_HFOSC": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_LFOSC": {
+              "used": 0,
+              "available": 1
+            },
+            "SB_I2C": {
+              "used": 0,
+              "available": 2
+            },
+            "SB_SPI": {
+              "used": 0,
+              "available": 2
+            },
+            "IO_I3C": {
+              "used": 0,
+              "available": 2
+            },
+            "SB_LEDDA_IP": {
+              "used": 0,
+              "available": 1
+            },
+            "SB_RGBA_DRV": {
+              "used": 0,
+              "available": 1
+            },
+            "ICESTORM_SPRAM": {
+              "used": 0,
+              "available": 4
+            }
+          }
+        },
+        "hx8k-ct256": {
+          "status": "ok",
+          "fmaxMHz": 40.48091506958008,
+          "clock": "clk",
+          "targetMHz": 12,
+          "utilisation": {
+            "ICESTORM_LC": {
+              "used": 3419,
+              "available": 7680
+            },
+            "ICESTORM_PLL": {
+              "used": 0,
+              "available": 2
+            },
+            "ICESTORM_RAM": {
+              "used": 0,
+              "available": 32
+            },
+            "SB_GB": {
+              "used": 1,
+              "available": 8
+            },
+            "SB_IO": {
+              "used": 51,
+              "available": 206
+            },
+            "SB_WARMBOOT": {
+              "used": 0,
+              "available": 1
+            }
+          }
+        }
+      }
+    }
+  ]
+}

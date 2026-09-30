@@ -57,6 +57,8 @@ export interface NextpnrResult {
   /** Per clock: the achieved maximum frequency and the constraint, in MHz. */
   fmax: Record<string, { achievedMHz: number; constraintMHz: number | null }>;
   utilisation: Record<string, ResourceUse>;
+  /** The clock domains the design's timing paths mention (besides `<async>`), by clock name; may have no fmax. */
+  domains: string[];
 }
 
 /** The clock's own name from nextpnr's net name (`clk$SB_IO_IN_$glb_clk` is `clk`). */
@@ -64,8 +66,8 @@ const clockName = (net: string) => net.replace(/\$.*$/, '') || net;
 
 /** The `--report` JSON: `{ fmax: { <clock>: { achieved, constraint } }, utilization: { <type>: { available, used } } }`. */
 export function parseNextpnrReport(json: unknown): NextpnrResult {
-  const out: NextpnrResult = { fmax: {}, utilisation: {} };
-  const r = json as { fmax?: Record<string, { achieved?: number; constraint?: number }>; utilization?: Record<string, { available?: number; used?: number }> };
+  const out: NextpnrResult = { fmax: {}, utilisation: {}, domains: [] };
+  const r = json as { critical_paths?: { from?: string; to?: string }[]; fmax?: Record<string, { achieved?: number; constraint?: number }>; utilization?: Record<string, { available?: number; used?: number }> };
   for (const [clock, v] of Object.entries(r.fmax ?? {})) {
     if (typeof v.achieved !== 'number') continue;
     const name = clockName(clock);
@@ -73,13 +75,16 @@ export function parseNextpnrReport(json: unknown): NextpnrResult {
     // Several nets of one clock domain: the slowest limits the design.
     if (!previous || v.achieved < previous.achievedMHz) out.fmax[name] = { achievedMHz: v.achieved, constraintMHz: typeof v.constraint === 'number' ? v.constraint : null };
   }
+  const domains = new Set<string>();
+  for (const p of r.critical_paths ?? []) for (const d of [p.from, p.to]) if (typeof d === 'string' && d !== '<async>') domains.add(clockName(d.replace(/^(posedge|negedge)\s+/, '')));
+  out.domains = [...domains];
   for (const [type, v] of Object.entries(r.utilization ?? {})) if (typeof v.used === 'number' && typeof v.available === 'number') out.utilisation[type] = { used: v.used, available: v.available };
   return out;
 }
 
 /** The same from nextpnr's log (older versions, or when `--report` is missing). */
 export function parseNextpnrLog(log: string): NextpnrResult {
-  const out: NextpnrResult = { fmax: {}, utilisation: {} };
+  const out: NextpnrResult = { fmax: {}, utilisation: {}, domains: [] };
   for (const l of log.split(/\r?\n/)) {
     const u = /^Info:\s+([A-Z][A-Z0-9_]*):\s+(\d+)\s*\/\s*(\d+)\s+\d+%\s*$/.exec(l);
     if (u) {
@@ -106,20 +111,25 @@ export function limitingFmax(r: NextpnrResult): { clock: string; achievedMHz: nu
 
 export type NextpnrFailure = { kind: 'io' | 'logic' | 'ram' | 'dsp' | 'other'; message: string };
 
+const KIND_OF_RESOURCE: Record<string, NextpnrFailure['kind']> = { SB_IO: 'io', ICESTORM_LC: 'logic', ICESTORM_RAM: 'ram', ICESTORM_DSP: 'dsp' };
+
 /**
  * Why nextpnr stopped. A design that needs more of some resource than the part has (most often pads, for a
  * design with wide ports) does not fit the part: that says nothing about the netlist. Anything else is a failure.
+ *
+ * nextpnr 0.11 (the current one) stops with `Unable to find a placement location for cell 'b[31]$sb_io'` after a
+ * utilisation table that shows `SB_IO: 101/ 39 258%`; older versions said `no BELs remaining to implement cell
+ * type 'SB_IO'`. The message alone can name a cell of any type, so the table decides as well: a resource used
+ * beyond what the part has is the reason, whatever the message says.
  */
 export function classifyNextpnrFailure(output: string): NextpnrFailure {
   const errors = output.split(/\r?\n/).filter((l) => /^ERROR:|^Error:/.test(l));
   const message = errors[0]?.replace(/^(ERROR|Error):\s*/, '') ?? output.trim().split('\n').pop() ?? 'nextpnr failed';
   const no = /no BELs remaining to implement cell type '(\w+)'/.exec(output);
-  if (no) {
-    const t = no[1]!;
-    const kind = t === 'SB_IO' ? 'io' : t === 'ICESTORM_LC' ? 'logic' : t === 'ICESTORM_RAM' ? 'ram' : t === 'ICESTORM_DSP' ? 'dsp' : 'other';
-    return { kind, message };
-  }
-  if (/too many (IO|I\/O)|not enough (IO|pads)|Unable to place .*SB_IO/i.test(output)) return { kind: 'io', message };
+  if (no) return { kind: KIND_OF_RESOURCE[no[1]!] ?? 'other', message };
+  // A pad cell that cannot be placed (its name ends in `$sb_io`, as Yosys names the SB_IO it inserts for a port).
+  if (/Unable to find a placement location for cell '[^']*\$sb_io'/i.test(output) || /too many (IO|I\/O)|not enough (IO|pads)|Unable to place .*SB_IO/i.test(output)) return { kind: 'io', message };
+  for (const [type, u] of Object.entries(parseNextpnrLog(output).utilisation)) if (u.used > u.available && KIND_OF_RESOURCE[type]) return { kind: KIND_OF_RESOURCE[type]!, message };
   return { kind: 'other', message };
 }
 

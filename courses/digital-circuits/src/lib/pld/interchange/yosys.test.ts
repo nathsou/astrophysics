@@ -374,6 +374,59 @@ describe('memories', () => {
   });
 });
 
+describe('a ROM (a memory with no write port)', () => {
+  const design = fromSource(
+    `module Rom(clk: clock, addr: bits<2>) -> (a: bits<8>, b: bits<8>) {
+  mem rom: [bits<8>; 4] = [0x11, 0x22, 0x33, 0x44]
+  a = rom.read(addr)
+  b = rom.read(addr)
+}`,
+    'Rom',
+  );
+  it('has parameters of at least one bit, as Yosys writes them (an empty one fails an assertion in Yosys 0.69)', () => {
+    const json = toYosysJson(design);
+    expect(validateYosysJson(json)).toEqual([]);
+    const p = Object.values(json.modules.Rom!.cells).find((c) => c.type === '$mem_v2')!.parameters;
+    for (const k of ['RD_TRANSPARENCY_MASK', 'RD_COLLISION_X_MASK', 'WR_CLK_ENABLE', 'WR_CLK_POLARITY', 'WR_PRIORITY_MASK', 'WR_WIDE_CONTINUATION']) expect(p[k], k).toBe('0');
+    expect(p.RD_CLK_ENABLE).toBe('11');
+    compare(design, json, 40, 2);
+  });
+
+  it('is refused by the validator when such a parameter is empty', () => {
+    const json = toYosysJson(design);
+    Object.values(json.modules.Rom!.cells).find((c) => c.type === '$mem_v2')!.parameters.WR_PRIORITY_MASK = '';
+    expect(validateYosysJson(json).join('\n')).toMatch(/WR_PRIORITY_MASK.*0 bits.*needs 1/);
+  });
+});
+
+describe('gate-level netlists (what Yosys writes after synthesis)', () => {
+  it('run in YosysSim: $_ gates, $_DFF_P_ with an init attribute (x bits are 0), and $scopeinfo is ignored', () => {
+    const json: YosysJson = {
+      creator: 'test',
+      modules: {
+        T: {
+          attributes: { top: '00000000000000000000000000000001' },
+          ports: { clk: { direction: 'input', bits: [2] }, d: { direction: 'input', bits: [3, 4] }, q: { direction: 'output', bits: [5, 6] }, m: { direction: 'output', bits: [7] } },
+          cells: {
+            scope: { hide_name: 1, type: '$scopeinfo', parameters: { TYPE: 'module' }, attributes: {}, port_directions: {}, connections: {} },
+            a: { hide_name: 1, type: '$_XOR_', parameters: {}, attributes: {}, port_directions: { A: 'input', B: 'input', Y: 'output' }, connections: { A: [3], B: [5], Y: [8] } },
+            f0: { hide_name: 1, type: '$_DFF_P_', parameters: {}, attributes: {}, port_directions: { C: 'input', D: 'input', Q: 'output' }, connections: { C: [2], D: [8], Q: [5] } },
+            f1: { hide_name: 1, type: '$_DFF_P_', parameters: {}, attributes: {}, port_directions: { C: 'input', D: 'input', Q: 'output' }, connections: { C: [2], D: [4], Q: [6] } },
+            mux: { hide_name: 1, type: '$_MUX_', parameters: {}, attributes: {}, port_directions: { A: 'input', B: 'input', S: 'input', Y: 'output' }, connections: { A: [5], B: [6], S: [3], Y: [7] } },
+          },
+          netnames: { q: { hide_name: 0, bits: [5, 6], attributes: { init: '1x' } } },
+        },
+      },
+    };
+    const sim = new YosysSim(json, 'T');
+    expect(sim.get('q')).toBe(2n); // bit 1 is 1, bit 0 is x: 0
+    sim.set('d', 0b01);
+    sim.tick();
+    expect(sim.get('q')).toBe(1n); // q0 <= d0 ^ q0 = 1, q1 <= d1 = 0
+    expect(sim.get('m')).toBe(0n); // the select d0 is 1, so the multiplexer passes q1, which is 0
+  });
+});
+
 describe('unsupported input', () => {
   it('refuses a memory with two write ports', () => {
     const mod = randomModule(1);

@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -14,9 +14,9 @@ import {
   summariseCells,
 } from './yosys-report';
 
-// Fixtures written from the formats of Yosys 0.3x-0.5x and nextpnr 0.4-0.7. They have not been compared with
-// a real installation (none was available when they were written): a change in a tool's output shows up as
-// the warning "no SB_ cells found" or as missing figures in the report, not as a wrong number.
+// The strings below were written from the formats of Yosys 0.3x-0.5x and nextpnr 0.4-0.7. The files in testdata/ are
+// real output of Yosys 0.69 and nextpnr 0.11.1 (the YoWASP builds), for designs of the course.
+const testdata = (f: string) => readFileSync(new URL(`./testdata/${f}`, import.meta.url), 'utf8');
 const STAT_OLD = `
 15. Printing statistics.
 
@@ -42,6 +42,7 @@ const STAT_NEW = `
          2   SB_DFFESR
         13   SB_LUT4
 `;
+const OCTET_CELLS = { SB_CARRY: 27, SB_DFF: 30, SB_DFFE: 48, SB_DFFESR: 79, SB_LUT4: 451, SB_RAM40_4K: 2 };
 const STAT_HIERARCHY = `
 === Sub ===
    Number of cells:                  1
@@ -76,6 +77,21 @@ describe('Yosys statistics', () => {
     expect(parseYosysStat(STAT_NEW)).toEqual(want);
   });
 
+  it('reads the real log of Yosys 0.69 (synth_ice40 and stat on Alu)', () => {
+    const real = testdata('yosys-0.69-synth-ice40-alu.log');
+    expect(parseYosysStat(real)).toEqual({ SB_CARRY: 63, SB_LUT4: 566 });
+    expect(summariseCells(parseYosysStat(real))).toMatchObject({ luts: 566, carries: 63, flipFlops: 0, brams: 0 });
+  });
+
+  it('reads the real log of Yosys 0.69 for a design with flip-flops and a block RAM (Octet)', () => {
+    const cells = parseYosysStat(testdata('yosys-0.69-synth-ice40-octet.log'));
+    expect(cells).toEqual(OCTET_CELLS);
+    const u = summariseCells(cells);
+    expect(u.brams).toBe(OCTET_CELLS.SB_RAM40_4K);
+    expect(u.flipFlops).toBeGreaterThan(0);
+    expect(u.luts).toBe(OCTET_CELLS.SB_LUT4);
+  });
+
   it('takes the last report, the design hierarchy', () => {
     expect(parseYosysStat(STAT_HIERARCHY)).toEqual({ SB_LUT4: 5, SB_RAM40_4K: 1 });
   });
@@ -104,6 +120,24 @@ describe('nextpnr output', () => {
   it('has no fmax without a clock', () => {
     expect(limitingFmax(parseNextpnrReport({ utilization: {}, fmax: {} }))).toBeNull();
     expect(limitingFmax(parseNextpnrLog(''))).toBeNull();
+  });
+
+  it('reads the real nextpnr 0.11 log of a design with more pads than the part has', () => {
+    const real = testdata('nextpnr-0.11-alu-up5k-pads.log');
+    const why = classifyNextpnrFailure(real);
+    expect(why).toEqual({ kind: 'io', message: "Unable to find a placement location for cell 'b[31]$sb_io'" });
+    expect(parseNextpnrLog(real).utilisation.SB_IO).toEqual({ used: 101, available: 39 });
+    // Whatever the message says, a resource used beyond what the part has is the reason.
+    expect(classifyNextpnrFailure(real.replace(/ERROR: .*/, 'ERROR: something new')).kind).toBe('io');
+    expect(classifyNextpnrFailure('Info: \t ICESTORM_LC:   9000/   5280   170%\nERROR: gave up').kind).toBe('logic');
+    expect(classifyNextpnrFailure('Info: \t SB_IO:   5/   39   12%\nERROR: Combinational loop detected').kind).toBe('other');
+  });
+
+  it('knows a clocked design with no register-to-register path (real report of RegFile on an hx8k)', () => {
+    const r = parseNextpnrReport(JSON.parse(testdata('nextpnr-0.11-regfile-hx8k.report.json')));
+    expect(limitingFmax(r)).toBeNull();
+    expect(r.domains).toEqual(['clk']);
+    expect(parseNextpnrReport({ utilization: {}, fmax: {}, critical_paths: [{ from: '<async>', to: '<async>' }] }).domains).toEqual([]);
   });
 
   it('tells a design that does not fit from a failure', () => {
@@ -168,6 +202,13 @@ describe('the course designs', () => {
     expect(board.source).toContain('module riscv32(');
     expect(board.source).not.toContain('top module riscv32(');
   });
+
+  it('put a program in the ROM of the RV32I board (its file has an empty one, which synthesis rightly removes)', () => {
+    const board = designs.find((d) => d.name === 'rv32-board');
+    if (!board) return;
+    expect(board.program).toBe('rv32-walk.asm');
+    expect(board.source).toMatch(/^    0 => 0x[0-9a-f]{8},$/m);
+  });
 });
 
 // ------------------------------------------------------------------------------------------ the script
@@ -181,6 +222,8 @@ interface FakeOptions {
   yosysStatus?: number;
   /** Rename an output port in Yosys's netlist. */
   breakPorts?: boolean;
+  /** Print `stat` to stdout and write no log file. */
+  nativeStdout?: boolean;
   nextpnr?: (args: string[]) => ToolResult | undefined;
 }
 
@@ -200,6 +243,13 @@ function fakeTools(o: FakeOptions = {}): Runner & { calls: string[][] } {
       const json = JSON.parse(readFileSync(at(input), 'utf8')) as { modules: Record<string, { ports: Record<string, unknown> }> };
       if (o.breakPorts) for (const m of Object.values(json.modules)) for (const p of Object.keys(m.ports)) if (p !== 'clk') { m.ports[`${p}_renamed`] = m.ports[p]; delete m.ports[p]; break; }
       writeFileSync(at(output), JSON.stringify(json));
+      // The WebAssembly build of Yosys loses what it prints to a pipe after ABC has run, `stat` included; the log file
+      // that `-l` names is complete. The fake does the same, unless it is told to behave like a native build.
+      const logFile = args.indexOf('-l') >= 0 ? args[args.indexOf('-l') + 1] : undefined;
+      if (logFile && !o.nativeStdout) {
+        writeFileSync(at(logFile), `3. Printing statistics.\n${STAT_NEW}\n`);
+        return { status: 0, stdout: 'Executing ABC9.\n', stderr: '' };
+      }
       return { status: 0, stdout: `${STAT_NEW}\n`, stderr: '' };
     }
     const custom = o.nextpnr?.(args);
@@ -245,9 +295,17 @@ describe('validate:yosys', () => {
     // The command lines.
     const synth = run.calls.find((c) => c[1] === '-p' && c[2]!.includes('counter'))!;
     expect(synth[2]).toMatch(/^read_json counter\.json; synth_ice40 -top Counter -json counter\.synth\.json; stat$/);
+    expect(synth.slice(3)).toEqual(['-l', 'yosys.log']);
     const pnr = run.calls.find((c) => c.includes('--up5k') && c.join(' ').includes('counter.synth'))!;
     expect(pnr.join(' ')).toMatch(/--up5k --package sg48 --json counter\.synth\.json --freq 12 --seed 1 --report \S+ --log \S+/);
     expect(log.lines.at(-1)).toMatch(/^validate:yosys: 2 of 2 designs went through; report in /);
+  });
+
+  it('reads the statistics from Yosys stdout when it writes no log file (a native build)', async () => {
+    const out = newOut();
+    expect(await main({ env: withTools(), log: collect(), run: fakeTools({ nativeStdout: true }), designs: some, args: ['--out', out, '--only', 'counter'] })).toBe(0);
+    const report = JSON.parse(readFileSync(out, 'utf8')) as YosysReport;
+    expect(report.designs[0]!.yosys).toMatchObject({ luts: 13, carries: 3, flipFlops: 4 });
   });
 
   it('takes parts, frequency, seed and designs from the arguments', async () => {
@@ -279,7 +337,35 @@ describe('validate:yosys', () => {
     const report = JSON.parse(readFileSync(out, 'utf8')) as YosysReport;
     expect(report.designs[0]!.status).toBe('ok');
     expect(report.designs[0]!.parts!['up5k-sg48']).toMatchObject({ status: 'does-not-fit' });
+    expect(report.designs[0]!.parts!['up5k-sg48']!.message).toMatch(/\(io\)$/);
     expect(report.designs[0]!.parts!['hx8k-ct256']).toMatchObject({ status: 'ok' });
+  });
+
+  it('records the pad overflow of the real nextpnr 0.11 as does-not-fit, with the utilisation it printed', async () => {
+    const real = testdata('nextpnr-0.11-alu-up5k-pads.log');
+    const out = newOut();
+    const run = fakeTools({ nextpnr: (args) => (args.includes('--up5k') ? { status: 255, stdout: real, stderr: '' } : undefined) });
+    expect(await main({ env: withTools(), log: collect(), run, designs: some, args: ['--out', out, '--only', 'counter'] })).toBe(0);
+    const part = (JSON.parse(readFileSync(out, 'utf8')) as YosysReport).designs[0]!.parts!['up5k-sg48']!;
+    expect(part.status).toBe('does-not-fit');
+    expect(part.message).toBe("Unable to find a placement location for cell 'b[31]$sb_io' (io: SB_IO 101 of 39)");
+    expect(part.utilisation!.ICESTORM_LC).toEqual({ used: 569, available: 5280 });
+  });
+
+  it('warns when Yosys removes every register of a design that has some', async () => {
+    const log = collect();
+    const out = newOut();
+    // Nothing but LUTs comes back from synthesis.
+    const run = fakeTools();
+    const wrapped = ((c: string, a: string[], o?: { cwd?: string }) => {
+      const r = run(c, a, o);
+      if (a[0] === '-p' && o?.cwd && a.includes('-l')) writeFileSync(path.resolve(o.cwd, a[a.indexOf('-l') + 1]!), '3. Printing statistics.\n=== Counter ===\n\n         1 cells\n         1   SB_LUT4\n');
+      return r;
+    }) as Runner;
+    expect(await main({ env: withTools(), log, run: wrapped, designs: some, args: ['--out', out, '--only', 'counter'] })).toBe(0);
+    const report = JSON.parse(readFileSync(out, 'utf8')) as YosysReport;
+    expect(report.designs[0]!.warnings![0]).toMatch(/removed every one of them/);
+    expect(log.lines.join('\n')).toMatch(/warning: the design has registers/);
   });
 
   it('exits 1 when nextpnr fails for another reason', async () => {

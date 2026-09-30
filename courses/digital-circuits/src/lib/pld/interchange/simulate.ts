@@ -7,6 +7,10 @@
  * The hierarchy is instantiated recursively into one flat set of nets; a cell is evaluated once its inputs
  * are, in dependency order; `$dff` and the read data of `$mem_v2` are the state.
  * Power-up: a register starts at its wire's `init` attribute (0 when it has none), a memory at `INIT`.
+ *
+ * It also runs what Yosys writes back after `synth` (`write_json`): the gate cells `$_AND_`, `$_MUX_`, … and the
+ * flip-flop `$_DFF_P_` (run `dfflegalize -cell $_DFF_P_ 01` first to turn enables and resets into gates), so that a
+ * test can compare Yosys's own reading of a netlist with the RTL simulator (`yosys-real.test.ts`).
  */
 import { paramInt } from './cells';
 import type { YosysBit, YosysCell, YosysJson, YosysModule } from './types';
@@ -79,8 +83,43 @@ export function evalInternal(type: string, p: (name: string) => number, a: Recor
       for (let i = 0; i < p('S_WIDTH'); i++) if ((a.S! >> BigInt(i)) & 1n) return (B >> BigInt(i * w)) & mask(w);
       return A;
     }
-    default:
-      throw new Error(`the netlist simulator does not know ${type}`);
+    default: {
+      const gate = evalGate(type, a);
+      if (gate === undefined) throw new Error(`the netlist simulator does not know ${type}`);
+      return gate;
+    }
+  }
+}
+
+/**
+ * The gate-level cells Yosys's `simplemap`, `techmap` and `abc` write (`$_AND_`, `$_MUX_`, …): one bit each, ports
+ * A, B, C, D, S and Y. `undefined` for a type that is not one of them.
+ */
+function evalGate(type: string, a: Record<string, bigint>): bigint | undefined {
+  const A = a.A ?? 0n;
+  const B = a.B ?? 0n;
+  const C = a.C ?? 0n;
+  const D = a.D ?? 0n;
+  const S = a.S ?? 0n;
+  const bit = (x: bigint) => (x ? 0n : 1n);
+  switch (type) {
+    case '$_BUF_': return A;
+    case '$_NOT_': return A ^ 1n;
+    case '$_AND_': return A & B;
+    case '$_NAND_': return (A & B) ^ 1n;
+    case '$_OR_': return A | B;
+    case '$_NOR_': return (A | B) ^ 1n;
+    case '$_XOR_': return A ^ B;
+    case '$_XNOR_': return (A ^ B) ^ 1n;
+    case '$_ANDNOT_': return A & (B ^ 1n);
+    case '$_ORNOT_': return A | (B ^ 1n);
+    case '$_MUX_': return S ? B : A;
+    case '$_NMUX_': return (S ? B : A) ^ 1n;
+    case '$_AOI3_': return bit((A & B) | C);
+    case '$_OAI3_': return bit((A | B) & C);
+    case '$_AOI4_': return bit((A & B) | (C & D));
+    case '$_OAI4_': return bit((A | B) & (C | D));
+    default: return undefined;
   }
 }
 
@@ -191,8 +230,10 @@ export class YosysSim {
         this.instantiate(child, sub);
         continue;
       }
-      if (cell.type === '$dff') {
-        this.flops.push({ clk: conns.CLK![0]!, d: conns.D!, q: conns.Q! });
+      if (cell.type === '$scopeinfo') continue; // Yosys's record of a flattened module: no logic
+      if (cell.type === '$dff' || cell.type === '$_DFF_P_') {
+        // `$_DFF_P_` is the gate-level flip-flop that Yosys's `dfflegalize` leaves (clock C).
+        this.flops.push({ clk: (conns.CLK ?? conns.C)![0]!, d: conns.D!, q: conns.Q! });
         // An init attribute on a wire of this module names the power-up value of these bits.
         continue;
       }
@@ -220,13 +261,14 @@ export class YosysSim {
       }
       const spec = { out: conns.Y! };
       const ins: Record<string, number[]> = {};
-      for (const port of ['A', 'B', 'S']) if (conns[port]) ins[port] = conns[port]!;
+      for (const port of ['A', 'B', 'C', 'D', 'S']) if (conns[port]) ins[port] = conns[port]!;
       this.comb.push({ type: cell.type, cell, path, ins, out: spec.out });
     }
     // The power-up values are the init attributes of this module's wires.
     for (const nn of Object.values(mod.netnames)) {
       const init = nn.attributes.init;
-      if (typeof init === 'string' && /^[01]+$/.test(init.trim())) this.initial.push({ q: this.bitsOf(path, '', nn.bits), value: BigInt(`0b${init.trim()}`) });
+      // Yosys writes `init` most significant bit first, with `x` for a bit that has no power-up value.
+      if (typeof init === 'string' && /^[01x]+$/.test(init.trim()) && /[01]/.test(init)) this.initial.push({ q: this.bitsOf(path, '', nn.bits), value: BigInt(`0b${init.trim().replace(/x/g, '0')}`) });
     }
   }
 

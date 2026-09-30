@@ -1,0 +1,46 @@
+{
+ "critical_paths": [
+  {
+   "from": "<async>",
+   "path": [],
+   "to": "<async>"
+  },
+  {
+   "from": "<async>",
+   "path": [],
+   "to": "posedge clk$SB_IO_IN_$glb_clk"
+  },
+  {
+   "from": "posedge clk$SB_IO_IN_$glb_clk",
+   "path": [],
+   "to": "<async>"
+  }
+ ],
+ "fmax": {},
+ "utilization": {
+  "ICESTORM_LC": {
+   "available": 7680,
+   "used": 2899
+  },
+  "ICESTORM_PLL": {
+   "available": 2,
+   "used": 0
+  },
+  "ICESTORM_RAM": {
+   "available": 32,
+   "used": 0
+  },
+  "SB_GB": {
+   "available": 8,
+   "used": 1
+  },
+  "SB_IO": {
+   "available": 206,
+   "used": 113
+  },
+  "SB_WARMBOOT": {
+   "available": 1,
+   "used": 0
+  }
+ }
+}

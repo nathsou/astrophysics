@@ -6,7 +6,10 @@
  * (`read_json`), synthesised for iCE40 (`synth_ice40`) and placed and routed by nextpnr-ice40 for each chosen
  * part. The script checks that Yosys accepts the netlist and keeps its ports, and writes the utilisation
  * (Yosys's cell counts, nextpnr's resource use) and the fmax nextpnr reports to a JSON report, by default
- * `docs/validation/yosys.json`, for Chapter 31's comparison with the course's own flow.
+ * `docs/validation/yosys.json`, for Chapter 31's comparison with the course's own flow. A part whose pads are fewer than
+ * a design's port bits (an up5k-sg48 has 39) is recorded as `does-not-fit`, with the utilisation nextpnr printed before
+ * it gave up (logic cells, block RAM: valid; no fmax). Yosys's log is read from a file (`-l`), because the WebAssembly
+ * build loses the end of what it prints to a pipe.
  *
  * Tools: `YOSYS` (default `yosys` on PATH) and `NEXTPNR` (default `nextpnr-ice40`). Without Yosys the script
  * prints `skipped: yosys not found — …` and exits 0. Without nextpnr it runs Yosys only: the report has the
@@ -24,6 +27,8 @@ import { check } from '../../src/lib/hdl/check';
 import { elaborate } from '../../src/lib/hdl/elaborate';
 import { SourceFile } from '../../src/lib/hdl/span';
 import { toYosysJson, validateYosysJson, yosysModuleName, type YosysJson } from '../../src/lib/pld/interchange';
+import { assembleOrThrow } from '../../src/lib/sim/cpu/rv32i';
+import { programWords, withRom } from '../../content/chapters/31-cpus-on-a-chip/widgets/rv32-board';
 import { COURSE_ROOT, consoleLogger, findTool, realRunner, relativeToCourse, skipMessage, type Logger, type Runner } from './common';
 import {
   classifyNextpnrFailure,
@@ -49,7 +54,21 @@ export interface CourseDesign {
   top?: string;
   /** Why the design cannot be exported. */
   problem?: string;
+  /** The program that was put into the design's ROM (the design file has an empty one), by file name. */
+  program?: string;
 }
+
+/**
+ * Designs whose file leaves the contents of a ROM to a program: `rv32-board.dcl` has a wrapper whose instruction ROM
+ * is empty (`_ => 0`, an illegal instruction), so the core traps at once and synthesis rightly removes all of it. The
+ * chapter's walking-light program, as the board widget loads it, goes into the ROM.
+ */
+const ROM_PROGRAMS: Record<string, { program: string; fill: (source: string, asm: string) => string }> = {
+  'rv32-board': {
+    program: 'content/chapters/31-cpus-on-a-chip/programs/rv32-walk.asm',
+    fill: (source, asm) => withRom(source, programWords(assembleOrThrow(asm, 'rv32-walk'))),
+  },
+};
 
 /** The DCL designs of the course: `content/designs/*.dcl` and `content/chapters/<chapter>/designs/*.dcl`. */
 export function courseDesignFiles(root: string = COURSE_ROOT): string[] {
@@ -108,6 +127,15 @@ export function courseDesigns(root: string = COURSE_ROOT): CourseDesign[] {
       const again = errorsOf(design.source, file);
       if (again.length > 0) design.problem = `does not check: ${again[0]!.message}`;
     }
+    const rom = ROM_PROGRAMS[name];
+    if (rom && !design.problem) {
+      try {
+        design.source = rom.fill(design.source, readFileSync(path.join(root, rom.program), 'utf8'));
+        design.program = path.basename(rom.program);
+      } catch (e) {
+        design.problem = `cannot put its program into the ROM: ${e instanceof Error ? e.message : String(e)}`;
+      }
+    }
     if (!design.problem) {
       const t = pickTop(design.source);
       if (t.problem) design.problem = t.problem;
@@ -156,8 +184,12 @@ export interface DesignReport {
   design: string;
   file: string;
   top?: string;
+  /** The program in the design's ROM, when the design file leaves it empty. */
+  program?: string;
   status: 'ok' | 'failed' | 'skipped';
   message?: string;
+  /** Things that are not failures but look wrong (Yosys removed every register of a design that has some). */
+  warnings?: string[];
   /** The interchange netlist: its size. */
   netlist?: { modules: number; cells: number };
   yosys?: YosysUtilisation;
@@ -195,7 +227,7 @@ const versionLine = (r: { stdout: string; stderr: string }) => `${r.stdout}${r.s
 
 /** Writes the netlist, runs Yosys and nextpnr for one design. */
 function runDesign(d: CourseDesign, work: string, tools: { yosys: string; nextpnr?: string }, parts: Part[], targetMHz: number, seed: number, run: Runner, log: Logger): DesignReport {
-  const report: DesignReport = { design: d.name, file: d.file, top: d.top, status: 'ok' };
+  const report: DesignReport = { design: d.name, file: d.file, top: d.top, ...(d.program ? { program: d.program } : {}), status: 'ok' };
   if (d.problem || !d.top) return { ...report, status: 'skipped', message: d.problem ?? 'no top module' };
   const fail = (message: string): DesignReport => ({ ...report, status: 'failed', message });
 
@@ -222,8 +254,13 @@ function runDesign(d: CourseDesign, work: string, tools: { yosys: string; nextpn
   // their working directory, and native builds do not mind.
   const inputName = path.basename(input);
   const synthName = path.basename(synth);
-  const y = run(tools.yosys, ['-p', `read_json ${inputName}; synth_ice40 -top ${top} -json ${synthName}; stat`], { cwd: dir });
-  writeFileSync(path.join(dir, 'yosys.log'), y.stdout + y.stderr);
+  // The log goes to a file (`-l`) and is read from there: the WebAssembly build of Yosys (YoWASP) loses whatever it
+  // prints to a pipe once ABC has run, which includes the `stat` report at the end; the log file is complete.
+  const logName = 'yosys.log';
+  const y = run(tools.yosys, ['-p', `read_json ${inputName}; synth_ice40 -top ${top} -json ${synthName}; stat`, '-l', logName], { cwd: dir });
+  const fileLog = existsSync(path.join(dir, logName)) ? readFileSync(path.join(dir, logName), 'utf8') : '';
+  const yosysLog = fileLog.includes('Printing statistics') || !(y.stdout + y.stderr) ? fileLog || y.stdout + y.stderr : y.stdout + y.stderr;
+  writeFileSync(path.join(dir, logName), yosysLog);
   if (y.status !== 0) {
     const last = `${y.stderr}\n${y.stdout}`.split('\n').filter((l) => /ERROR/.test(l)).pop() ?? y.error ?? `exit status ${y.status}`;
     return fail(`Yosys rejected the netlist: ${last.trim()}`);
@@ -236,8 +273,15 @@ function runDesign(d: CourseDesign, work: string, tools: { yosys: string; nextpn
   }
   const portProblems = comparePorts(json, synthJson, top);
   if (portProblems.length) return fail(`Yosys changed the ports: ${portProblems.join('; ')}`);
-  report.yosys = summariseCells(parseYosysStat(y.stdout));
+  report.yosys = summariseCells(parseYosysStat(yosysLog));
   if (Object.keys(report.yosys.cells).length === 0) log.log(`  warning: no SB_ cells found in Yosys's statistics for ${d.name} (a new layout of stat?)`);
+  // A design with registers or a memory that comes out of synthesis with neither has been optimised away: its
+  // inputs are constant, or its outputs do not depend on them. That can be the design's own doing (a ROM left
+  // empty), so it is reported, not failed.
+  const stateful = Object.values(json.modules).some((m) => Object.values(m.cells).some((c) => c.type === '$dff' || c.type === '$mem_v2'));
+  if (stateful && report.yosys.flipFlops + report.yosys.brams === 0 && Object.keys(report.yosys.cells).length > 0) {
+    (report.warnings ??= []).push('the design has registers or a memory, and Yosys removed every one of them: its outputs are constant or do not depend on its state');
+  }
 
   report.parts = {};
   for (const part of parts) {
@@ -255,7 +299,12 @@ function runDesign(d: CourseDesign, work: string, tools: { yosys: string; nextpn
         report.parts[part.id] = { status: 'failed', message: why.message };
         report.status = 'failed';
         report.message ??= `nextpnr failed on ${part.id}: ${why.message}`;
-      } else report.parts[part.id] = { status: 'does-not-fit', message: `${why.message} (${why.kind})` };
+      } else {
+        // The utilisation table that nextpnr prints before it gives up shows by how much.
+        const utilisation = parseNextpnrLog(output).utilisation;
+        const over = Object.entries(utilisation).filter(([, u]) => u.used > u.available).map(([t, u]) => `${t} ${u.used} of ${u.available}`);
+        report.parts[part.id] = { status: 'does-not-fit', message: `${why.message} (${why.kind}${over.length ? `: ${over.join(', ')}` : ''})`, ...(Object.keys(utilisation).length ? { utilisation } : {}) };
+      }
       continue;
     }
     let result: NextpnrResult;
@@ -266,6 +315,9 @@ function runDesign(d: CourseDesign, work: string, tools: { yosys: string; nextpn
     }
     const limit = limitingFmax(result);
     report.parts[part.id] = { status: 'ok', fmaxMHz: limit ? limit.achievedMHz : null, clock: limit?.clock, targetMHz, utilisation: result.utilisation };
+    // A clocked design can still have no fmax: when every register is loaded straight from an input (a register
+    // file whose write data comes from pins), there is no register-to-register path to time.
+    if (!limit && result.domains.length > 0) report.parts[part.id]!.message = `clocked by ${result.domains.join(', ')}, but no register-to-register path: nextpnr reports no fmax`;
   }
   return report;
 }
@@ -329,9 +381,10 @@ export async function main(options: YosysOptions = {}): Promise<number> {
     if (r.status === 'failed') bad++;
     const head = r.status === 'ok' ? 'ok   ' : r.status === 'skipped' ? 'skip ' : 'FAIL ';
     log.log(`  ${head} ${d.file}${r.top ? ` (${r.top})` : ''}${r.message ? `: ${r.message}` : ''}`);
+    for (const w of r.warnings ?? []) log.log(`         warning: ${w}`);
     if (r.yosys) log.log(`         Yosys: ${r.yosys.luts} LUT4, ${r.yosys.carries} carry, ${r.yosys.flipFlops} flip-flops, ${r.yosys.brams} block RAM`);
     for (const [id, p] of Object.entries(r.parts ?? {})) {
-      const detail = p.status === 'ok' ? (p.fmaxMHz == null ? 'placed and routed, no clock' : `fmax ${p.fmaxMHz.toFixed(2)} MHz (${p.clock})`) : (p.message ?? p.status);
+      const detail = p.status === 'ok' ? (p.fmaxMHz == null ? (p.message ?? 'placed and routed, no clock') : `fmax ${p.fmaxMHz.toFixed(2)} MHz (${p.clock})`) : (p.message ?? p.status);
       log.log(`         ${id}: ${p.status === 'ok' ? '' : `${p.status}: `}${detail}`);
     }
   }

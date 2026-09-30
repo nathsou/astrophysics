@@ -117,6 +117,22 @@ export function validateYosysJson(json: unknown, opts: ValidateOptions = {}): st
         }
         for (const name of REQUIRED_PARAMETERS[type] ?? []) if (!(name in params)) bad(`${where}.parameters`, `${type} needs the parameter ${name}`);
         const p = (name: string) => paramInt(params[name] as number | string);
+        if (type === '$mem_v2') {
+          // Yosys writes every bit-vector parameter of a memory with at least one bit, even when it describes no ports
+          // (`RD_TRANSPARENCY_MASK` of a ROM is "0", not ""), and its passes assert on an empty one.
+          const R = p('RD_PORTS');
+          const W = p('WR_PORTS');
+          const d = p('WIDTH');
+          const lengths: Record<string, number> = {
+            INIT: p('SIZE') * d, RD_CLK_ENABLE: R, RD_CLK_POLARITY: R, RD_TRANSPARENCY_MASK: R * W, RD_COLLISION_X_MASK: R * W,
+            RD_WIDE_CONTINUATION: R, RD_CE_OVER_SRST: R, RD_ARST_VALUE: R * d, RD_SRST_VALUE: R * d, RD_INIT_VALUE: R * d,
+            WR_CLK_ENABLE: W, WR_CLK_POLARITY: W, WR_PRIORITY_MASK: W * W, WR_WIDE_CONTINUATION: W,
+          };
+          for (const [name, n] of Object.entries(lengths)) {
+            const v = params[name];
+            if (typeof v === 'string' && !Number.isNaN(n) && v.length !== Math.max(1, n)) bad(`${where}.parameters.${name}`, `${v.length} bits, but ${type} with ${R} read and ${W} write ports needs ${Math.max(1, n)}`);
+          }
+        }
         for (const port of [...spec.inputs, ...spec.outputs]) {
           const bits = conns[port];
           if (!Array.isArray(bits)) {

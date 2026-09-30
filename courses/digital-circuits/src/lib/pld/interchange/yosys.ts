@@ -32,6 +32,8 @@
  *   not transparent: a read sees the word from before the same edge's write, as in the RTL) and at most one
  *   write port. The RTL gives 0 for an out-of-range read and ignores an out-of-range write; Yosys leaves
  *   both undefined, which matters only when the depth is not a power of two and the address can exceed it.
+ *   Every bit-vector parameter has at least one bit, as in Yosys's own files: the masks of a ROM (no write port)
+ *   are "0", because an empty string makes Yosys 0.69 fail an assertion in `opt_reduce`.
  * - **Case selection.** `pmux` becomes `$eq` cells (one per matched value, joined by `$reduce_or`) that feed
  *   the one-hot select of a `$pmux`. The RTL guarantees the cases are disjoint.
  * - **Population count** is a chain of `$add` cells.
@@ -305,8 +307,10 @@ function writeModule(mod: RtlModule, ctx: ModuleContext, isTop: boolean): YosysM
         };
         const initBits: (0 | 1)[] = [];
         for (let a = 0; a < c.depth; a++) for (let i = 0; i < c.width; i++) initBits.push(Number(((c.init[a] ?? 0n) >> BigInt(i)) & 1n) as 0 | 1);
-        const zeros = (n: number) => bitsParam(new Array<0 | 1>(n).fill(0));
-        const ones = (n: number) => bitsParam(new Array<0 | 1>(n).fill(1));
+        // A parameter that describes no ports (the write masks of a ROM) still has one bit, as Yosys writes it: with an
+        // empty string Yosys 0.69 fails an assertion in `opt_reduce`.
+        const zeros = (n: number) => bitsParam(new Array<0 | 1>(Math.max(1, n)).fill(0));
+        const ones = (n: number) => bitsParam(new Array<0 | 1>(Math.max(1, n)).fill(n === 0 ? 0 : 1));
         const clk = bits(c.clk);
         const n = (memoryOrdinal.get(c.name) ?? 0) + 1;
         memoryOrdinal.set(c.name, n);

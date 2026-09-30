@@ -447,7 +447,7 @@ Every model is a choice about what to leave out. These are the choices, by engin
 - The RTL simulator is zero-delay and cycle-based: it knows nothing about glitches, set-up or hold. Lowering to gates and running on the digital engine adds delays, but the delays are those of the abstract gates, not of any real technology.
 - **FPGA:** the clock is ideal (no skew, no jitter), there is no power analysis, and the delay model is a published table, not extracted from layout. A design that passes timing analysis here says nothing about a real FPGA.
 - **The DCL, GAL and CPLD paths are separate.** DCL does not reach the PROM, PLA, GAL or CPLD; those take equations.
-- **The real-toolchain export is checked only structurally here**: the Yosys JSON is validated against the documented schema and simulated from the JSON alone, but whether a given Yosys and nextpnr accept it is what `validate:yosys` checks where they are installed.
+- **The real-toolchain export is checked against Yosys only where Yosys is installed**: the Yosys JSON is validated against the documented schema and simulated from the JSON alone in every test run, and a test that runs Yosys itself (synthesis to gates, then the gates against the RTL simulator) is skipped when no Yosys is on the machine.
 
 ## Where to look
 
