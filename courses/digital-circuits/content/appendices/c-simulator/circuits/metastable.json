@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "title": "Data that changes 5 ns before the clock",
+  "engine": "digital",
+  "components": [
+    {"id": "CK", "type": "clock", "x": 4, "y": 8, "label": "Clock 1 MHz", "params": {"frequency": 1000000}},
+    {"id": "BUF", "type": "buffer", "x": 10, "y": 2, "label": "delay 995 ns", "params": {"delay": 995}},
+    {"id": "FF", "type": "dff", "x": 18, "y": 2, "label": "", "params": {"setup": 60, "hold": 30, "tau": 100}},
+    {"id": "Q", "type": "indicator", "x": 28, "y": 2, "label": "Q"}
+  ],
+  "wires": [
+    {"points": [[7, 8], [8, 8], [8, 2], [10, 2]]},
+    {"points": [[8, 8], [16, 8], [16, 4], [18, 4]]},
+    {"points": [[15, 2], [18, 2]]},
+    {"points": [[24, 2], [28, 2]]}
+  ],
+  "notes": [{"x": 17, "y": 10, "text": "set-up 60 ns, hold 30 ns, τ 100 ns"}]
+}
