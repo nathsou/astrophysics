@@ -38,6 +38,16 @@ class GPTConfig:
     pos: str = "learned"  # "learned" position embeddings, or "rope" (rotary embeddings in attention)
     kv_heads: int = 0  # grouped-query attention: key/value heads shared by groups of query heads (0: one per head)
     rope_base: float = 10000.0
+    # Chapter 19: mixture-of-experts MLPs. experts = 0 is a dense MLP.
+    experts: int = 0
+    top_k: int = 2
+    expert_hidden: int = 0  # 0: mlp_ratio·C / top_k, so each token's active compute equals the dense MLP's
+    aux_coef: float = 0.01  # weight of the load-balancing loss
+    gate: str = "auto"  # "auto": renormalise over the k chosen experts when k > 1, raw probability when k = 1; "renorm": always
+
+    @property
+    def moe_hidden(self) -> int:
+        return self.expert_hidden or self.mlp_ratio * self.width // self.top_k
 
     @property
     def swiglu_hidden(self) -> int:
@@ -102,7 +112,16 @@ class Block(nn.Module):
         })
         if cfg.mlp:
             self.ln2 = make_norm(cfg, C)
-            if cfg.mlp_type == "swiglu":
+            if cfg.experts:
+                H = cfg.moe_hidden
+                self.mlp = nn.ParameterDict({"router": nn.Parameter(torch.randn(C, cfg.experts) * std)})
+                for e in range(cfg.experts):
+                    self.mlp[f"fc{e}"] = nn.Parameter(torch.randn(C, H) * std)
+                    self.mlp[f"proj{e}"] = nn.Parameter(torch.randn(H, C) * resid)
+                self.aux = torch.zeros(())
+                self.load: torch.Tensor | None = None  # fraction of routing slots each expert received
+                self.choice: torch.Tensor | None = None  # each token's top expert, for inspection
+            elif cfg.mlp_type == "swiglu":
                 H = cfg.swiglu_hidden
                 self.mlp = nn.ParameterDict({
                     "gate": nn.Parameter(torch.randn(C, H) * std),
@@ -132,12 +151,42 @@ class Block(nn.Module):
         x = x + self.drop(y.transpose(1, 2).reshape(B, T, C) @ self.attn["o"])
         if self.cfg.mlp:
             m = self.ln2(x) if self.ln2 is not None else x
+            if self.cfg.experts:
+                return x + self.drop(self.moe(m))
             if self.cfg.mlp_type == "swiglu":
                 u = F.silu(m @ self.mlp["gate"]) * (m @ self.mlp["fc"])
             else:
                 u = F.gelu(m @ self.mlp["fc"], approximate="tanh")
             x = x + self.drop(u @ self.mlp["proj"])
         return x
+
+
+    def moe(self, m: torch.Tensor) -> torch.Tensor:
+        """Token-choice top-k routing: each token goes to its k highest-scoring experts, weighted by their
+        router probabilities renormalised over the k (as in Mixtral). With k = 1 the raw probability is kept (as in
+        the Switch Transformer): renormalised, the gate would always be 1 and the router would receive no gradient
+        from the language-modelling loss (`gate="renorm"` reproduces that mistake). The Switch Transformer's balancing
+        loss, E · Σₑ fₑ·Pₑ, is stored in self.aux: fₑ is the share of routing slots expert e received and
+        Pₑ its mean router probability; it is smallest (1) when both are uniform."""
+        B, T, C = m.shape
+        E, k = self.cfg.experts, self.cfg.top_k
+        flat = m.reshape(-1, C)
+        probs = (flat @ self.mlp["router"]).float().softmax(-1)  # (N, E)
+        gate, idx = probs.topk(k, dim=-1)  # (N, k)
+        if k > 1 or self.cfg.gate == "renorm":
+            gate = gate / gate.sum(-1, keepdim=True)
+        out = torch.zeros_like(flat)
+        for e in range(E):
+            token, slot = (idx == e).nonzero(as_tuple=True)
+            if token.numel() == 0:
+                continue
+            h = F.gelu(flat[token] @ self.mlp[f"fc{e}"], approximate="tanh") @ self.mlp[f"proj{e}"]
+            out.index_add_(0, token, (h * gate[token, slot, None]).to(out.dtype))
+        load = torch.bincount(idx.flatten(), minlength=E).float() / idx.numel()
+        self.aux = E * (load * probs.mean(0)).sum()
+        self.load = load.detach()
+        self.choice = idx[:, 0].detach().view(B, T)
+        return out.view(B, T, C)
 
 
 class GPT(nn.Module):
@@ -152,6 +201,17 @@ class GPT(nn.Module):
         self.drop = nn.Dropout(cfg.dropout)
 
     def forward(self, ids, targets=None):
+        x = self.features(ids)
+        logits = x @ self.tok.t()
+        if targets is None:
+            return logits, None
+        loss = F.cross_entropy(logits.view(-1, logits.shape[-1]), targets.reshape(-1))
+        if self.cfg.experts and self.training and self.cfg.aux_coef:
+            loss = loss + self.cfg.aux_coef * sum(b.aux for b in self.blocks) / len(self.blocks)
+        return logits, loss
+
+    def features(self, ids):
+        """The final hidden states (after the last norm), before the output layer: (B, T, C)."""
         T = ids.shape[1]
         rope = None
         if self.cfg.pos == "rope":
@@ -164,10 +224,7 @@ class GPT(nn.Module):
             x = block(x, rope)
         if self.lnf is not None:
             x = self.lnf(x)
-        logits = x @ self.tok.t()
-        if targets is None:
-            return logits, None
-        return logits, F.cross_entropy(logits.view(-1, logits.shape[-1]), targets.reshape(-1))
+        return x
 
     def optimizer(self, lr: float, weight_decay: float = 0.1, betas=(0.9, 0.99)) -> torch.optim.AdamW:
         """AdamW with weight decay on matrices only (not norms or position embeddings), as in the browser."""
@@ -181,7 +238,8 @@ class GPT(nn.Module):
         self, muon_lr: float, adam_lr: float, weight_decay: float = 0.1, betas=(0.9, 0.99)
     ) -> list[torch.optim.Optimizer]:
         """Muon for the blocks' 2-D matrices, AdamW for embeddings and norms (Chapter 13's split)."""
-        matrices = [p for n, p in self.named_parameters() if n.startswith("blocks.") and p.ndim == 2]
+        # The routers are small (C × E) and scored through a softmax; they train with AdamW like the embeddings.
+        matrices = [p for n, p in self.named_parameters() if n.startswith("blocks.") and p.ndim == 2 and "router" not in n]
         ids = {id(p) for p in matrices}
         decay, no_decay = [], []
         for name, p in self.named_parameters():

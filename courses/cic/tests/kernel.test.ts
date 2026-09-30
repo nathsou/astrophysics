@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { run } from './util.ts';
-import { pp } from '../src/kernel/core/pretty.ts';
+import { pp } from '@kernel/core/pretty.ts';
 
 function outputs(r: ReturnType<typeof run>): string[] {
   return r.results
@@ -36,7 +36,7 @@ describe('CIC basics', () => {
     expect(out[2]).toBe('t : 2 + 2 = 4');
   });
   it('rfl fails on false equations', () => {
-    fails(`theorem t : 2 + 2 = 5 := rfl`, /type mismatch/);
+    fails(`theorem t : 2 + 2 = 5 := rfl`, /rfl failed|type mismatch/);
   });
   it('implicit arguments and #check', () => {
     const { out } = ok(`#check id\n#check id 3\n#check @id Nat`);
@@ -59,7 +59,7 @@ def rev {α : Type} : List α → List α → List α
 #reduce rev (1 :: 2 :: 3 :: List.nil) List.nil
 `);
     expect(out[1]).toBe('120');
-    expect(out[3]).toBe('3 :: 2 :: 1 :: List.nil');
+    expect(out[3]).toBe('[3, 2, 1]');
   });
   it('recursion via match', () => {
     const { out } = ok(`

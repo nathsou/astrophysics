@@ -3,8 +3,8 @@ import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { run } from './util.ts';
-import * as L from '../src/kernel/untyped/lambda.ts';
-import type { CalculusId } from '../src/kernel/core/calculus.ts';
+import * as L from '@kernel/untyped/lambda.ts';
+import type { CalculusId } from '@kernel/core/calculus.ts';
 
 interface Snippet {
   file: string;

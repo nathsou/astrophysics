@@ -30,23 +30,23 @@ Also included: a full-page playground where you can switch between calculi, a ru
 ## Architecture
 
 ```
-src/
-  kernel/            the course's implementation of type theory
-    core/            TRUSTED: levels, terms, environment, type checker, inductive types
-    elab/            elaborator: metavariables, unification, pattern-matching compiler
-    syntax/          lexer and parser (Lean-like syntax, extensible notation)
-    frontend.ts      processes commands; every declaration is re-checked by the kernel
-    prelude/core.lean  a fragment of Lean's core library, checked at startup
-    untyped/         the untyped λ-calculus (Part I)
-    logic/           propositional natural deduction (Chapter 4)
-  viz/               interactive components (SolidJS; SVG, Canvas 2D, WebGL2)
-  content/chapters/  the chapters, in MDX
-  app/               application shell
-build/               MDX plugins (KaTeX pre-rendering, live code blocks)
-tests/               kernel, elaborator and property-based tests; every snippet in the chapters is checked
+packages/kernel/src/   the course's implementation of type theory (shared with courses/proofs-are-programs)
+  core/                TRUSTED: levels, terms, environment, type checker, inductive types
+  elab/                elaborator: metavariables, unification, pattern-matching compiler
+  syntax/              lexer and parser (Lean-like syntax, extensible notation)
+  frontend.ts          processes commands; every declaration is re-checked by the kernel
+  prelude/core.lean    a fragment of Lean's core library, checked at startup
+  untyped/             the untyped λ-calculus (Part I)
+  logic/               propositional natural deduction (Chapter 4)
+courses/cic/
+  src/viz/             interactive components (SolidJS; SVG, Canvas 2D, WebGL2)
+  src/content/chapters/  the chapters, in MDX
+  src/app/             application shell
+  build/               MDX plugins (KaTeX pre-rendering, live code blocks)
+  tests/               kernel, elaborator and property-based tests; every snippet in the chapters is checked
 ```
 
-The kernel follows Lean 4's design: locally nameless terms, lazy δ-reduction by definitional height, recursors generated from inductive declarations (with fixed-index promotion, subsingleton elimination and K-like reduction), and no recursion in the kernel. Pattern matching and structural recursion are compiled to `casesOn`/`rec` by the elaborator, including dependent pattern matching with index unification (conflict, injection, substitution). Only `src/kernel/core` needs to be correct for soundness.
+The kernel follows Lean 4's design: locally nameless terms, lazy δ-reduction by definitional height, recursors generated from inductive declarations (with fixed-index promotion, subsingleton elimination and K-like reduction), and no recursion in the kernel. Pattern matching and structural recursion are compiled to `casesOn`/`rec` by the elaborator, including dependent pattern matching with index unification (conflict, injection, substitution). Only `packages/kernel/src/core` needs to be correct for soundness.
 
 ## Development
 

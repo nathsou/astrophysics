@@ -1,0 +1,296 @@
+Chapter 10 used `decide` and `omega` as black boxes that produce proofs. This chapter opens the boxes. Both rely on one idea, called **proof by reflection**: write a program that *checks* a class of statements, prove once and for all that the checker is right, and from then on prove each statement of the class by running the checker. We build a verified checker for propositional logic, turn it into a proof procedure, and then look at how `omega` does the same thing for arithmetic.
+
+## Computation is proof
+
+The kernel accepts `rfl` as a proof of `a = b` whenever `a` and `b` compute to the same value. That makes some proofs free:
+
+```lean
+example : 2 + 2 = 4 := rfl
+example : 12 * 12 = 144 := rfl
+```
+
+No lemma about multiplication was used: the kernel evaluated `12 * 12` and found `144`. `decide` extends this to any decidable proposition. Recall from Chapter 13 that an instance of `Decidable p` is a program that answers `isTrue` (with a proof) or `isFalse` (with a refutation), and that `decide p : Bool` forgets the evidence and keeps the answer. The proof `decide` builds is:
+
+```lean
+example : 10 < 20 := of_decide_eq_true rfl
+```
+
+`of_decide_eq_true : decide p = true → p` is a theorem, proved once. The argument `rfl : decide (10 < 20) = true` is checked by *running* the decision procedure. The proof is tiny; the work has moved into the computation. That is the whole trick, and the rest of the chapter applies it to larger problems.
+
+## Propositions as data
+
+To compute with statements, we first need statements as data. Here is a type of propositional formulas: variables, true, false, and the connectives.
+
+```lean
+inductive Form where
+  | var (x : Nat)
+  | tru
+  | fls
+  | and (a b : Form)
+  | or (a b : Form)
+  | imp (a b : Form)
+  | not (a : Form)
+```
+
+A `Form` is syntax. Its meaning is a `Prop`, once we say which proposition each variable stands for:
+
+```lean
+def Form.denote (ρ : Nat → Prop) : Form → Prop
+  | .var x => ρ x
+  | .tru => True
+  | .fls => False
+  | .and a b => a.denote ρ ∧ b.denote ρ
+  | .or a b => a.denote ρ ∨ b.denote ρ
+  | .imp a b => a.denote ρ → b.denote ρ
+  | .not a => ¬ a.denote ρ
+
+-- the variables 0, 1, 2, … stand for the propositions of a list
+def atoms : List Prop → Nat → Prop
+  | [], _ => False
+  | p :: _, 0 => p
+  | _ :: ps, n + 1 => atoms ps n
+
+example (p q : Prop) : (Form.imp (.var 0) (.var 1)).denote (atoms [p, q]) = (p → q) := rfl
+```
+
+Going from a `Prop` to a `Form` whose `denote` is that `Prop` is called **reification**, making the statement into a thing. Going back is `denote`, and the last line shows that it is *computation*: `denote` unfolds to the statement itself, so `rfl` proves the equation.
+
+## A checker that computes
+
+A formula is a **tautology** if it is true whatever its variables mean. With booleans instead of propositions this can be checked: evaluate the formula for every assignment of `true` and `false` to its variables, the truth table.
+
+```lean
+def Form.eval (v : Nat → Bool) : Form → Bool
+  | .var x => v x
+  | .tru => true
+  | .fls => false
+  | .and a b => a.eval v && b.eval v
+  | .or a b => a.eval v || b.eval v
+  | .imp a b => !a.eval v || b.eval v
+  | .not a => !a.eval v
+
+/-- every variable of f is below f.bound -/
+def Form.bound : Form → Nat
+  | .var x => x + 1
+  | .tru => 0
+  | .fls => 0
+  | .and a b => Nat.max a.bound b.bound
+  | .or a b => Nat.max a.bound b.bound
+  | .imp a b => Nat.max a.bound b.bound
+  | .not a => a.bound
+
+def setVar (v : Nat → Bool) (x : Nat) (b : Bool) : Nat → Bool :=
+  fun y => if y = x then b else v y
+
+/-- try both values of each variable below n -/
+def checkAll : Nat → (Nat → Bool) → Form → Bool
+  | 0, v, f => f.eval v
+  | n + 1, v, f => checkAll n (setVar v n true) f && checkAll n (setVar v n false) f
+
+def taut (f : Form) : Bool := checkAll f.bound (fun _ => false) f
+
+#eval taut (.imp (.and (.var 0) (.var 1)) (.var 0))   -- p ∧ q → p
+#eval taut (.or (.var 0) (.not (.var 0)))             -- p ∨ ¬p
+#eval taut (.imp (.var 0) (.var 1))                   -- p → q
+```
+
+`checkAll n v f` splits on variable `n - 1`, then `n - 2`, and so on down to variable 0, and evaluates `f` at each of the `2ⁿ` leaves.
+
+## Proving the checker right
+
+We want: if `taut f = true`, then `f.denote ρ` for every `ρ`. Three steps.
+
+**The value of a formula depends only on its variables.** If two assignments agree below `f.bound`, they give `f` the same value. Each case uses the induction hypotheses with the bounds of the subformulas; `omega` knows that `y < a.bound` implies `y < Nat.max a.bound b.bound`.
+
+```lean
+theorem eval_congr (f : Form) (v w : Nat → Bool) (h : ∀ y, y < f.bound → v y = w y) :
+    f.eval v = f.eval w := by
+  induction f with
+  | var x => exact h x (by simp [Form.bound])
+  | tru => rfl
+  | fls => rfl
+  | and a b iha ihb =>
+    simp only [Form.eval]
+    rw [iha (fun y hy => h y (by simp [Form.bound]; omega)), ihb (fun y hy => h y (by simp [Form.bound]; omega))]
+  | or a b iha ihb =>
+    simp only [Form.eval]
+    rw [iha (fun y hy => h y (by simp [Form.bound]; omega)), ihb (fun y hy => h y (by simp [Form.bound]; omega))]
+  | imp a b iha ihb =>
+    simp only [Form.eval]
+    rw [iha (fun y hy => h y (by simp [Form.bound]; omega)), ihb (fun y hy => h y (by simp [Form.bound]; omega))]
+  | not a iha =>
+    simp only [Form.eval]
+    rw [iha (fun y hy => h y (by simp [Form.bound]; omega))]
+```
+
+**`checkAll` covers every assignment.** If `checkAll n v f = true`, then `f` evaluates to `true` under every `w` that agrees with `v` from `n` upwards. The induction is on `n`, and the key step is a case analysis on the value `w` gives to variable `n`: `cases hb : w n` splits on it and remembers the equation `hb`. Whichever it is, one of the two recursive checks covers it.
+
+```lean
+theorem checkAll_sound (n : Nat) (v : Nat → Bool) (f : Form) (h : checkAll n v f = true) :
+    ∀ w, (∀ y, n ≤ y → w y = v y) → f.eval w = true := by
+  induction n generalizing v with
+  | zero =>
+    intro w hw
+    have : w = v := funext (fun y => hw y (Nat.zero_le y))
+    rw [this]
+    exact h
+  | succ n ih =>
+    intro w hw
+    simp [checkAll] at h
+    cases hb : w n with
+    | true =>
+      apply ih (setVar v n true) h.1 w
+      intro y hy
+      by_cases hyn : y = n
+      · simp [setVar, hyn, hb]
+      · simp [setVar, hyn]
+        exact hw y (by omega)
+    | false =>
+      apply ih (setVar v n false) h.2 w
+      intro y hy
+      by_cases hyn : y = n
+      · simp [setVar, hyn, hb]
+      · simp [setVar, hyn]
+        exact hw y (by omega)
+```
+
+Combining the two, `taut f = true` means `f` evaluates to `true` under *every* assignment: given `w`, cut it off above `f.bound` (which does not change the value of `f`, by `eval_congr`), and the result is covered by `checkAll_sound`.
+
+```lean
+/-- w below n, and false above -/
+def restrict (w : Nat → Bool) (n : Nat) : Nat → Bool := fun y => if y < n then w y else false
+
+theorem taut_eval (f : Form) (h : taut f = true) (w : Nat → Bool) : f.eval w = true := by
+  have h1 : f.eval w = f.eval (restrict w f.bound) :=
+    eval_congr f w _ (fun y hy => by simp [restrict, hy])
+  have h2 : f.eval (restrict w f.bound) = true :=
+    checkAll_sound f.bound (fun _ => false) f h _ (fun y hy => by
+      have : ¬ y < f.bound := by omega
+      simp [restrict, this])
+  rw [h1, h2]
+```
+
+**From booleans to propositions.** Last, relate `eval` to `denote`: if the boolean `v x` is `true` exactly when the proposition `ρ x` holds, then `f` evaluates to `true` exactly when `f.denote ρ` holds. Each case is a small truth table; `cases a.eval v` enumerates it.
+
+```lean
+theorem eval_denote (ρ : Nat → Prop) (v : Nat → Bool) (hv : ∀ x, v x = true ↔ ρ x) (f : Form) :
+    f.eval v = true ↔ f.denote ρ := by
+  induction f with
+  | var x => exact hv x
+  | tru => simp [Form.eval, Form.denote]
+  | fls => simp [Form.eval, Form.denote]
+  | and a b iha ihb => simp [Form.eval, Form.denote, iha, ihb]
+  | or a b iha ihb => simp [Form.eval, Form.denote, iha, ihb]
+  | imp a b iha ihb =>
+    simp only [Form.eval, Form.denote]
+    rw [← iha, ← ihb]
+    cases a.eval v <;> cases b.eval v <;> simp
+  | not a iha =>
+    simp only [Form.eval, Form.denote]
+    rw [← iha]
+    cases a.eval v <;> simp
+
+theorem taut_sound (f : Form) (h : taut f = true) (ρ : Nat → Prop) : f.denote ρ :=
+  (eval_denote ρ (fun x => @decide (ρ x) (Classical.propDecidable (ρ x))) (fun x => by simp) f).mp (taut_eval f h _)
+```
+
+To use `eval_denote` for an arbitrary `ρ`, we need a boolean assignment that agrees with it: `true` where `ρ x` holds. For an arbitrary proposition there is no program that decides it, so `taut_sound` uses `Classical.propDecidable` (Chapter 7). That is not an accident: truth tables are *classical* logic, and the checker accepts `p ∨ ¬p`, which has no proof in the course language without an axiom.
+
+## Reflection at work
+
+Now `taut_sound` is a proof procedure. To prove a propositional statement: reify it into a `Form`, let the kernel check `taut f = true` by computation (`rfl`), and apply `taut_sound`. The statement the kernel sees, `f.denote (atoms [p, q, r])`, computes to the goal, so it is accepted in its place.
+
+```lean
+theorem chain (a b c d e : Prop) : (a → b) → (b → c) → (c → d) → (d → e) → a → e :=
+  taut_sound
+    (.imp (.imp (.var 0) (.var 1)) (.imp (.imp (.var 1) (.var 2)) (.imp (.imp (.var 2) (.var 3))
+      (.imp (.imp (.var 3) (.var 4)) (.imp (.var 0) (.var 4))))))
+    rfl
+    (atoms [a, b, c, d, e])
+
+theorem peirce (p q : Prop) : ((p → q) → p) → p :=
+  taut_sound (.imp (.imp (.imp (.var 0) (.var 1)) (.var 0)) (.var 0)) rfl (atoms [p, q])
+
+#print axioms peirce
+```
+
+Peirce's law was the example of Chapter 7 of a statement true in every truth table but unprovable without classical logic; `#print axioms` shows where the classical axiom came in. And a statement that is *not* a tautology fails at `rfl`: the kernel computes `taut f`, finds `false`, and rejects the proof.
+
+```lean errors
+theorem converse (p q : Prop) : (p → q) → q → p :=
+  taut_sound (.imp (.imp (.var 0) (.var 1)) (.imp (.var 1) (.var 0))) rfl (atoms [p, q])
+```
+
+Writing the `Form` by hand is tedious, and it is exactly what a **tactic** automates: it inspects the goal, builds the `Form`, and emits the term `taut_sound f rfl (atoms [...])`. The widget below plays the tactic. Type a statement; it reifies it (step 1), shows the computation `taut` will perform (step 2), and writes the proof term into an editor, where the kernel checks it (step 3).
+
+<ReflectionLab chapter formula="((p → q) → p) → p" />
+
+The widget's code is not trusted. If it reified the statement wrongly, `f.denote (atoms …)` would not compute to the goal, and the kernel would reject the proof. Only `taut_sound`, checked once, has to be right. This is the de Bruijn criterion of Chapter 8 again, in its most economical form: an untrusted program produces a tiny proof whose checking is a computation.
+
+<Key>
+Proof by reflection: write a checker `check : X → Bool`, prove `check x = true → P x` once, then prove each `P x` by `sound x rfl`. The proof term is small, the kernel does the work by computation, and whatever finds `x` (a tactic, a widget, an external solver) needs no trust.
+</Key>
+
+## How omega works
+
+`omega` is built the same way, with one twist. Its statements are linear arithmetic over natural numbers, and its prelude part, the namespace `Omega` of the course's standard library, contains:
+
+- a syntax of terms, `Omega.Term` (numerals, atoms, sums, multiplication by constants), with a meaning `Term.denote ρ t : Nat`, where `ρ : List Nat` gives the values of the atoms;
+- *linear forms*, lists of coefficients `[c, a₁, …, aₙ]` meaning `c + a₁·x₁ + … + aₙ·xₙ`, with a translation `Term.toForm` proved correct (`Term.sound`);
+- lemmas that combine inequalities between linear forms: add two of them (`le_add`), multiply one by a constant (`le_scale`);
+- a checker `dominates a b : Bool`, "every coefficient of `a` is at least that of `b`, and its constant is strictly larger", and the theorem `contra`: if `dominates a b = true`, then `eval a ρ ≤ eval b ρ` is impossible.
+
+To prove a goal, the tactic negates it, reifies every hypothesis into an inequality between linear forms, and then *searches* for a combination of them, with non-negative multipliers, whose two sides are dominated one by the other. The search (Fourier–Motzkin elimination) is the expensive part, and it runs outside the kernel, in the course's TypeScript code. It produces a **certificate**: which hypotheses to add, with which multipliers. The proof term replays the certificate with `le_add` and `le_scale`, and ends with `contra … rfl …`, where `rfl` proves `dominates a b = true` by computation. Open the lens to see the term for a small example:
+
+```lean playground lens
+theorem small (x y : Nat) (h₁ : x + y ≤ 3) (h₂ : 5 ≤ x) : False := by
+  omega
+```
+
+The search may take many steps, but the kernel only checks the one combination that works: `h₁ + h₂` gives `x + y + 5 ≤ 3 + x`, whose left side dominates the right one. Finding is hard; checking is easy.
+
+<Engineer title="Reflection in the wild">
+Reflection is how proof assistants scale. The Four Colour Theorem was proved in Coq (now Rocq) in 2005 by Georges Gonthier with verified checkers run by the kernel on hundreds of map configurations. Lean's `decide`, `omega` and `norm_num` produce reflective or computational proofs, and `bv_decide` sends goals about bit vectors to an external SAT solver, then checks the solver's certificate with a checker verified in Lean, so that the solver needs no trust. The pattern is always the one of this chapter: untrusted search, verified checking.
+</Engineer>
+
+<UnderTheHood title="The cost of computing in the kernel">
+Reflective proofs are small, but the kernel must still run the checker, and the kernel is an interpreter. `taut` evaluates `2ⁿ` rows, so a formula with 30 variables is out of reach, while 6 are instant. Numbers matter too: the course kernel represents `144` in unary, as 144 successors, while Lean's kernel uses binary arithmetic for numerals, which is why `decide` in Lean handles much larger numbers. When the computation is the bottleneck, verified checkers are designed for speed, like any other program.
+</UnderTheHood>
+
+## Exercises
+
+<Exercise id="reflection:use" title="Use the checker" chapter code={`theorem swap_and (p q : Prop) : p ∧ q → q ∧ p :=
+  sorry
+
+theorem contrapositive (p q : Prop) : (p → q) → ¬q → ¬p :=
+  sorry`} must="swap_and contrapositive" hint="taut_sound applied to the Form of the statement, rfl, and atoms [p, q]. ¬q is .not (.var 1)." solution={`theorem swap_and (p q : Prop) : p ∧ q → q ∧ p :=
+  taut_sound (.imp (.and (.var 0) (.var 1)) (.and (.var 1) (.var 0))) rfl (atoms [p, q])
+
+theorem contrapositive (p q : Prop) : (p → q) → ¬q → ¬p :=
+  taut_sound (.imp (.imp (.var 0) (.var 1)) (.imp (.not (.var 1)) (.not (.var 0)))) rfl (atoms [p, q])`}>
+Prove both statements by reflection: reify them by hand, and let the kernel compute.
+</Exercise>
+
+<Exercise id="reflection:even" title="A reflective proof of evenness" setup={`inductive Even : Nat → Prop where
+  | zero : Even 0
+  | add_two (n : Nat) (h : Even n) : Even (n + 2)
+
+def isEven : Nat → Bool
+  | 0 => true
+  | 1 => false
+  | n + 2 => isEven n`} code={`theorem isEven_sound : (n : Nat) → isEven n = true → Even n
+  | 0, _ => .zero
+  | 1, h => nomatch h
+  | n + 2, h => sorry
+
+-- 100 is even: by computation
+theorem even_100 : Even 100 := sorry`} must="isEven_sound even_100" hint="In the last case, h : isEven (n + 2) = true. rw [isEven] at h turns it into isEven n = true (isEven is defined by well-founded recursion, so its equations are used by rewriting, not by computation); then .add_two n (isEven_sound n h). For even_100: isEven_sound 100 rfl." solution={`theorem isEven_sound : (n : Nat) → isEven n = true → Even n
+  | 0, _ => .zero
+  | 1, h => nomatch h
+  | n + 2, h => by
+    rw [isEven] at h
+    exact .add_two n (isEven_sound n h)
+
+theorem even_100 : Even 100 := isEven_sound 100 rfl`}>
+The same pattern in miniature. A proof of `Even 100` built from the constructors is a tree of 50 `add_two`s; the reflective proof is one line, and the kernel runs `isEven 100`. The soundness proof is itself a recursive function, one case per equation of `isEven`.
+</Exercise>

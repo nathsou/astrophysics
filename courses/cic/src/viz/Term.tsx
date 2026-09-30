@@ -1,10 +1,10 @@
 // Rendering core terms with semantic colouring and hover information.
 
 import { createEffect, onCleanup } from 'solid-js';
-import type { Expr } from '../kernel/core/expr.ts';
-import { LocalContext, type Environment } from '../kernel/core/env.ts';
-import { Printer, type PNode, type PrettyOptions } from '../kernel/core/pretty.ts';
-import { TypeChecker } from '../kernel/core/typechecker.ts';
+import type { Expr } from '@kernel/core/expr.ts';
+import { LocalContext, type Environment } from '@kernel/core/env.ts';
+import { Printer, type PNode, type PrettyOptions } from '@kernel/core/pretty.ts';
+import { TypeChecker } from '@kernel/core/typechecker.ts';
 import { hideTooltip, showTooltip } from './tooltip.ts';
 
 export interface Highlight {

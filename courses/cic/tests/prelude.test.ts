@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { coreSrc, run } from './util.ts';
-import { pp } from '../src/kernel/core/pretty.ts';
+import { pp } from '@kernel/core/pretty.ts';
 
 describe('prelude', () => {
   it('checks without errors', () => {

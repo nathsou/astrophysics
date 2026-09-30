@@ -1,0 +1,63 @@
+You started with a function that could not be written, and ended by writing the checker that decides which functions can. Along the way, one idea did all the work: **a proposition is a type, and a proof is a program of that type**. This last chapter looks back at what that idea bought us, says honestly where the course language differs from Lean, and suggests where to go next.
+
+## What the correspondence gave us
+
+- **Types as promises** (Part I). A type is a specification, and a precise type is a precise promise: `Vec α n`, subtypes, and the free theorems of polymorphic types.
+- **Logic as a library** (Part II). `∧`, `∨`, `→`, `False`, `∃` and `=` are ordinary types, defined in the library, and proofs are ordinary programs. What cannot be programmed (excluded middle) cannot be proved without an axiom.
+- **Tactics** (Part III). Programs that write programs: every tactic builds a piece of a term, and the kernel checks the result, so the tactics need no trust.
+- **Recursion is induction** (Part IV). The recursor of a type is both its recursion scheme and its induction principle; termination is consistency.
+- **Verified programs** (Part V). Sorting, an optimiser, a compiler, a type system, a tautology checker: each specified by a type, each proved by a program.
+- **Your own kernel** (Part VI). A type checker for simple types, proved sound and complete, and a small dependent one: the machine at the bottom of the whole course.
+
+The [dictionary](#/reference/dictionary) collects the correspondence in one table.
+
+## From the course language to Lean 4
+
+The course language follows Lean 4 closely, and most of what you wrote here is valid Lean. The main differences:
+
+- **Numbers.** Numerals here are always natural numbers, represented in unary inside the kernel. Lean has a type class for numerals (so `2 : Int` and `2 : Float` work), and its kernel computes with binary numbers, so `decide` goes much further.
+- **The library.** The course has a small standard library, written for the chapters. Lean's core library and Mathlib contain hundreds of thousands of definitions and theorems: `List.reverse_reverse` exists, and so do `max`, strings, arrays, and hash maps.
+- **Automation.** `simp`, `omega` and `decide` here are small versions of Lean's. Lean's `simp` has many more lemmas, and its `omega` handles integers.
+- **Recursion.** Lean compiles more recursive definitions structurally (for example `isEven (n + 2) = isEven n` in Chapter 19), supports mutual recursion, and allows any well-founded measure. Here, well-founded recursion is on natural numbers only, and definitions made with it compute in the kernel (in Lean they are opaque to computation, by design).
+- **Missing features.** No `do` notation, no strings or input/output, no mutual definitions, no `let` in tactic blocks, and a smaller set of tactics (the [tactic reference](#/reference/tactics) lists them).
+
+None of these change the ideas. They change the scale.
+
+## Where to go next
+
+**Install Lean.** The official installation (with the `elan` version manager) and the VS Code extension give you the same experience as this course's editors: goals on the side, errors as you type, and much more power. The Lean website has the instructions.
+
+**Learn Lean properly.** *Theorem Proving in Lean 4* is the reference introduction, and *Functional Programming in Lean* covers Lean as a programming language. The *Natural Number Game* is a gentle, playful way to practise tactic proofs. *Mathematics in Lean* shows how mathematicians use Lean and Mathlib.
+
+**Verify more programs.** *Software Foundations* (in Rocq, formerly Coq) covers much of Parts IV and V in depth, including the type safety proofs of Chapter 18. *Concrete Semantics* (in Isabelle) proves compilers and static analyses correct. *Certified Programming with Dependent Types* explores the intrinsic style of Chapter 18 and proof by reflection.
+
+**Understand the kernel.** The companion course, [The Calculus of Inductive Constructions](../cic/), explains the rules of the kernel that checked every page of this one: dependent types, inductive types and their recursors, universes, and what breaks when a rule is removed. The [map of the two courses](#/reference/bridges) pairs their chapters.
+
+**Build your own.** András Kovács's *elaboration-zoo* and David Christiansen's tutorial on normalisation by evaluation continue Chapter 21 towards a real implementation, with implicit arguments and unification.
+
+The [reading list](#/reference/reading) gathers these, with the papers behind each chapter.
+
+## A last exercise
+
+One theorem to finish, using a little of everything: a recursive function, a specification, and an induction with an accumulator.
+
+<Exercise id="epilogue:sum" title="Gauss, verified" code={`def sumTo : Nat → Nat
+  | 0 => 0
+  | n + 1 => (n + 1) + sumTo n
+
+-- the schoolboy formula, times two (to stay in the natural numbers)
+theorem sumTo_formula (n : Nat) : 2 * sumTo n = n * (n + 1) := by
+  sorry`} must="sumTo_formula" hint="induction n. In the succ case, simp [sumTo] unfolds one step; then rewrite with Nat.mul_add, Nat.add_mul (or let simp do it with the induction hypothesis) and finish with omega: the goal is linear once the product n * n is treated as an atom." solution={`def sumTo : Nat → Nat
+  | 0 => 0
+  | n + 1 => (n + 1) + sumTo n
+
+theorem sumTo_formula (n : Nat) : 2 * sumTo n = n * (n + 1) := by
+  induction n with
+  | zero => rfl
+  | succ n ih =>
+    simp only [sumTo, Nat.mul_add, Nat.add_mul, Nat.mul_one, Nat.one_mul] at *
+    omega`}>
+The sum `1 + 2 + … + n` is `n(n + 1)/2`. The statement and its proof are a program and its type; the kernel checks one against the other, as it has for everything else in this course.
+</Exercise>
+
+Thank you for reading.

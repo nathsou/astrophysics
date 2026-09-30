@@ -285,6 +285,62 @@ h1 em {
   color: #4bb37a;
 }
 
+/* 2b · Proofs Are Programs: the Twin (a program and a proof, side by side) */
+.pap {
+  --cbg: #eef6f4;
+  --cfg: #14302c;
+  --cmute: #58736e;
+  --cac: #0f766e;
+  font: 400 12px / 1.7 var(--font-mono);
+}
+:root[data-theme='dark'] .pap {
+  --cbg: #0d1b19;
+  --cfg: #dcefeb;
+  --cmute: #86a7a1;
+  --cac: #4fd1c0;
+}
+.pap .kicker {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--cmute);
+}
+.pap h2 {
+  margin: 14px 0 12px;
+  font: 700 30px / 1.05 var(--font-sans);
+  letter-spacing: -0.02em;
+}
+.pap .twins {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+}
+.pap .twins p {
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px solid color-mix(in srgb, var(--cac) 35%, transparent);
+  border-radius: 8px;
+}
+.pap .twins .eq {
+  border: 0;
+  padding: 0;
+  font-size: 20px;
+  color: var(--cac);
+}
+.pap .kw {
+  color: var(--cac);
+}
+.pap .body {
+  margin: 8px 0 10px;
+  text-align: center;
+  color: var(--cac);
+}
+.pap .desc {
+  color: var(--cmute);
+  font-family: var(--font-sans);
+  font-size: 14px;
+}
+
 /* 3 · Compiler backends: the Datasheet */
 .compiler {
   --cbg: #f1f3ee;

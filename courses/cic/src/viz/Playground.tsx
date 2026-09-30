@@ -7,13 +7,13 @@ import { Editor } from './Editor.tsx';
 import { ResultView, type PanelKind } from './Infoview.tsx';
 import type { JSX } from 'solid-js';
 import { envFor, check, type PreludeId } from '../app/kernel.ts';
-import { calculi, type CalculusId } from '../kernel/core/calculus.ts';
-import { formatMsg } from '../kernel/format.ts';
-import { Printer } from '../kernel/core/pretty.ts';
-import { TypeChecker } from '../kernel/core/typechecker.ts';
+import { calculi, type CalculusId } from '@kernel/core/calculus.ts';
+import { formatMsg } from '@kernel/format.ts';
+import { Printer } from '@kernel/core/pretty.ts';
+import { TypeChecker } from '@kernel/core/typechecker.ts';
 import { renderPNode } from './Term.tsx';
-import type { InfoItem } from '../kernel/elab/elaborator.ts';
-import type { Environment } from '../kernel/core/env.ts';
+import type { InfoItem } from '@kernel/elab/elaborator.ts';
+import type { Environment } from '@kernel/core/env.ts';
 
 export interface PlaygroundProps {
   code: string;

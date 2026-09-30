@@ -1,8 +1,9 @@
 import { useParams, useLocation, A } from '@solidjs/router';
-import { Show, Suspense, createEffect, createResource, ErrorBoundary } from 'solid-js';
+import { For, Show, Suspense, createEffect, createResource, ErrorBoundary } from 'solid-js';
 import { chapterBySlug, neighbours, parts, fileName } from '../content/chapters.ts';
 import { mdxComponents } from '../content/mdx-components.tsx';
 import { markVisited } from './progress.ts';
+import { PAP, papHref } from '../content/pap.ts';
 
 export function ChapterPage() {
   const params = useParams();
@@ -53,6 +54,24 @@ export function ChapterPage() {
               </Show>
             </Suspense>
           </ErrorBoundary>
+          <Show when={PAP[params.slug!]?.length}>
+            <aside class="callout pap-bridge">
+              <div class="callout-title">In practice · Proofs Are Programs</div>
+              <p>The companion course programs and proves with the ideas of this chapter:</p>
+              <ul>
+                <For each={PAP[params.slug!]}>
+                  {(l) => (
+                    <li>
+                      <a href={papHref(l.slug)}>
+                        {l.num > 0 ? `Chapter ${l.num}` : 'Prologue'}: {l.title}
+                      </a>{' '}
+                      <span class="muted">({l.what})</span>
+                    </li>
+                  )}
+                </For>
+              </ul>
+            </aside>
+          </Show>
           <nav class="chapter-nav">
             <Show when={neighbours(params.slug!).prev}>
               {(p) => (

@@ -1,0 +1,146 @@
+We have used `rfl` as evidence for equations since Chapter 2, and equations have appeared in almost every statement. It is time to look at what `a = b` actually is. The answer follows the pattern of Chapter 3: equality is an inductive type, defined in the library, with one constructor. Everything about equality, from `rfl` to rewriting, follows from that definition and from the checker's ability to compute.
+
+## One constructor
+
+Here is the definition of equality, essentially as the library writes it:
+
+```lean nocheck
+inductive Eq {α : Sort u} : α → α → Prop where
+  | refl (a : α) : Eq a a
+```
+
+`a = b` is notation for `Eq a b`. The only constructor, `refl a`, builds evidence that `a` equals `a`. There is no way to build evidence that `a = b` for two *different* things. And `rfl` is just `Eq.refl` with the argument left implicit.
+
+This looks too weak to be useful: it only proves `a = a`. The trick is that the checker compares types *up to computation*. When it checks `rfl : 2 + 2 = 4`, it needs `Eq 4 4` (what `rfl` builds) to match `Eq (2 + 2) 4` (what was asked). It computes `2 + 2`, gets `4`, and the types match.
+
+```lean
+theorem four : 2 + 2 = 4 := rfl
+
+theorem add_zero' (n : Nat) : n + 0 = n := rfl
+
+#reduce 2 + 2
+#reduce fun (n : Nat) => n + 2
+#reduce fun (n : Nat) => 2 + n
+```
+
+`#reduce` shows what the checker sees after computing as far as possible. `n + 2` becomes `Nat.succ (Nat.succ n)`, because addition is defined by recursion on its second argument, which is a known number here. `2 + n` stays stuck: the second argument is the variable `n`, and there is nothing to compute. That is why `rfl` fails on `0 + n = n`:
+
+<Playground errors title="Stuck on a variable" code={`theorem zero_add' (n : Nat) : 0 + n = n := rfl`} />
+
+Two things are **definitionally equal** when the checker can see it by computing, and then `rfl` proves the equation. Otherwise, an equation can still be true, but it needs a real proof, and for `0 + n = n` that proof is an induction (Chapter 11). The library already contains it, as `Nat.zero_add`:
+
+```lean
+#check Nat.zero_add
+theorem zero_add' (n : Nat) : 0 + n = n := Nat.zero_add n
+```
+
+| | Definitional equality | Propositional equality |
+|---|---|---|
+| what | the two sides compute to the same thing | a proposition `a = b` with evidence |
+| who decides | the checker, automatically | you, by writing a proof |
+| example | `n + 0` and `n` | `0 + n` and `n` |
+| proof | `rfl` | `Nat.zero_add n`, induction, rewriting… |
+
+## Using an equation: transport
+
+What can you do with evidence `h : a = b`? The recursor of `Eq`, the elimination principle that comes with the inductive type, says: **if a property holds of `a`, it holds of `b`**. The notation for this is `h ▸ e`, read "rewrite `e` with `h`", or "transport `e` along `h`":
+
+```lean
+theorem transport (n m : Nat) (h : n = m) (p : Nat → Prop) (hp : p n) : p m :=
+  h ▸ hp
+```
+
+That single principle gives all the familiar properties of equality. Each one is a transport with a well-chosen property:
+
+```lean
+-- symmetry: transport "a = a" along h : a = b, in the first position
+theorem my_symm {α : Type} {a b : α} (h : a = b) : b = a := h ▸ rfl
+
+-- transitivity: transport "a = b" along b = c
+theorem my_trans {α : Type} {a b c : α} (h₁ : a = b) (h₂ : b = c) : a = c := h₂ ▸ h₁
+
+-- congruence: equal inputs give equal outputs
+theorem my_congr {α β : Type} (f : α → β) {a b : α} (h : a = b) : f a = f b := h ▸ rfl
+```
+
+The library versions are `Eq.symm`, `Eq.trans` and `congrArg`. With dot notation, `h.symm` and `h₁.trans h₂` read well.
+
+<Key>
+An equation is used by **replacing** one side with the other inside some statement. The statement you rewrite in is called the **motive**: in `my_congr`, the motive is "`f a = f x`" as a function of `x`, and transporting `rfl : f a = f a` along `h` turns the second `a` into `b`.
+</Key>
+
+## Chains of equations
+
+Long equational arguments are written as a chain, with one justification per step. `calc` checks that the steps connect and combines them with `Eq.trans`:
+
+```lean
+theorem chain (a b c : Nat) (h₁ : a = b) (h₂ : b + 1 = c) : a + 1 = c :=
+  calc a + 1 = b + 1 := congrArg (· + 1) h₁
+    _ = c := h₂
+```
+
+The `_` at the start of a line stands for the right-hand side of the previous step. `calc` works with `<` and `≤` too, and mixes them (a chain of `=` and `<` proves `<`), which is useful in Part V.
+
+## When rewriting fails
+
+To transport along `h : a = b`, the checker must find the motive: it takes the statement, replaces every occurrence of `a` with a variable `x`, and uses the result as the property. Usually this just works. But the result must still be a well-typed statement, and with dependent types it sometimes is not.
+
+The `rw` tactic (Chapter 9) does this search for you, and shows the problem clearly. Here `xs` is a vector of length `n`, and we try to replace `n` with `0` everywhere:
+
+<Playground errors title="A motive that does not type-check" code={`inductive Vec (α : Type) : Nat → Type where
+  | nil : Vec α 0
+  | cons (x : α) (xs : Vec α n) : Vec α (n + 1)
+
+def Vec.toList {α : Type} {n : Nat} : Vec α n → List α
+  | .nil => []
+  | .cons x xs => x :: xs.toList
+
+theorem stuck (n : Nat) (h : n = 0) (xs : Vec Nat n) : xs.toList.length = n := by
+  rw [h]
+  sorry`} />
+
+The goal mentions `n` twice: on the right of the equation, and hidden as an implicit argument of `Vec.toList` (which needs the length of its input). Replacing both with `x` gives `Vec.toList {x} xs`, but `xs` has type `Vec Nat n`, not `Vec Nat x`. The motive does not type-check, so there is nothing to transport along. The fix is to rewrite something else, or to generalise first so that `xs` moves along with `n`: the `cases` and `subst` tactics do exactly that (Chapter 9).
+
+<UnderTheHood ch="families" s="equality-as-an-inductive-family">
+Equality is the simplest *inductive family*: `Eq a` is a family of types indexed by the right-hand side, and its recursor is transport. The CIC course derives symmetry, transitivity and congruence from the recursor by hand, and discusses why some equations (like `0 + n = n`) cannot be made definitional.
+</UnderTheHood>
+
+## Equality of functions
+
+When are two functions equal? The library includes the principle of **function extensionality**: functions that agree on every input are equal.
+
+```lean
+theorem ext_example (f g : Nat → Nat) (h : ∀ x, f x = g x) : f = g := funext h
+
+theorem double_eq : (fun n : Nat => n + n) = (fun n => 2 * n) :=
+  funext (fun n => by omega)
+```
+
+The two functions in `double_eq` are different programs (one adds, one multiplies), and `rfl` cannot prove them equal. `funext` says that they are equal anyway, because they return the same result on every input: equality of functions is about behaviour, not code.
+
+## Exercises
+
+<Exercise id="equality:symm-trans" title="Chaining" code={`theorem swap_chain (a b c : Nat) (h₁ : a = b) (h₂ : c = b) : a = c :=
+  sorry`} must="swap_chain" hint="h₁.trans h₂.symm" solution={`theorem swap_chain (a b c : Nat) (h₁ : a = b) (h₂ : c = b) : a = c :=
+  h₁.trans h₂.symm`}>
+Combine the two equations. You need to turn one around.
+</Exercise>
+
+<Exercise id="equality:congr" title="Congruence with two arguments" code={`theorem congr_add (a b c d : Nat) (h₁ : a = b) (h₂ : c = d) : a + c = b + d :=
+  sorry`} must="congr_add" hint="Transport twice: h₁ ▸ h₂ ▸ rfl. Or a calc chain with congrArg (· + c) h₁ and congrArg (b + ·) h₂." solution={`theorem congr_add (a b c d : Nat) (h₁ : a = b) (h₂ : c = d) : a + c = b + d :=
+  calc a + c = b + c := congrArg (· + c) h₁
+    _ = b + d := congrArg (b + ·) h₂`}>
+Prove it with a `calc` chain, or with two transports.
+</Exercise>
+
+<Exercise id="equality:computation" title="Which are definitional?" code={`-- Replace each sorry with rfl where it works, and with the library lemma otherwise:
+-- Nat.zero_add n : 0 + n = n,   Nat.add_comm a b : a + b = b + a
+theorem e1 (n : Nat) : n + 1 = Nat.succ n := sorry
+theorem e2 (n : Nat) : 0 + n = n := sorry
+theorem e3 : [1, 2] ++ [3] = [1, 2, 3] := sorry
+theorem e4 (a b : Nat) : a + b = b + a := sorry`} must="e1 e2 e3 e4" hint="e1 and e3 compute (n + 1 unfolds to Nat.succ n; append on a known list computes). e2 and e4 are stuck on variables." solution={`theorem e1 (n : Nat) : n + 1 = Nat.succ n := rfl
+theorem e2 (n : Nat) : 0 + n = n := Nat.zero_add n
+theorem e3 : [1, 2] ++ [3] = [1, 2, 3] := rfl
+theorem e4 (a b : Nat) : a + b = b + a := Nat.add_comm a b`}>
+For each equation, decide whether computation alone proves it. Use `#reduce` in the playground to check your guess.
+</Exercise>

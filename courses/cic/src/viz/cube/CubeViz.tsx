@@ -3,7 +3,7 @@
 // Axes:  x = polymorphism (□,*)   y = type operators (□,□)   z = dependency (*,□)
 
 import { For, Show, createMemo, createSignal, onCleanup, onMount } from 'solid-js';
-import { calculi, type CalculusId } from '../../kernel/core/calculus.ts';
+import { calculi, type CalculusId } from '@kernel/core/calculus.ts';
 import { envFor, check } from '../../app/kernel.ts';
 import { Playground } from '../Playground.tsx';
 

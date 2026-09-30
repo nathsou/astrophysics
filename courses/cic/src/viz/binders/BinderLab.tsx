@@ -2,7 +2,7 @@
 // and a comparison of naive and capture-avoiding substitution.
 
 import { For, Show, createMemo, createSignal } from 'solid-js';
-import * as L from '../../kernel/untyped/lambda.ts';
+import * as L from '@kernel/untyped/lambda.ts';
 
 interface Tok {
   text: string;

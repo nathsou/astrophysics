@@ -1,0 +1,647 @@
+The language of Chapters 16 and 17 had only numbers, so every expression meant something. Add booleans and a conditional, and nonsense becomes possible: `1 + true`, or `if 3 then 1 else 2`. Real languages have the same problem, and their answer is a type system: a checker that rejects, before the program runs, every program that could go wrong. But how do we know the checker rejects the right programs?
+
+This chapter answers that question twice. First we define the types from the outside, as a relation between programs and types, and prove the classic theorem of the field: **well-typed programs do not go wrong**. Then we build the types into the syntax itself, so that ill-typed programs cannot even be written down, and the evaluator needs no error case at all.
+
+## A language with two types
+
+The language has numbers, booleans, addition, a test for zero, and a conditional:
+
+```lean
+inductive Ty where
+  | nat
+  | bool
+deriving DecidableEq
+
+inductive Tm where
+  | lit (n : Nat)
+  | tt
+  | ff
+  | add (a b : Tm)
+  | isZero (a : Tm)
+  | if_ (c t e : Tm)
+deriving DecidableEq
+```
+
+`Ty` lists the types of the language, and `Tm` its terms (the *object language*, which our programs manipulate). Nothing stops us from writing `Tm.add (.lit 1) .tt`: `Tm` describes the shape of programs, not their sense.
+
+## Running a program one step at a time
+
+In Chapter 16, `eval` returned a number. Here a result can be a number or a boolean, and `1 + true` has no result at all. So we describe execution differently, as **small steps**: a relation `Step t t'`, "the term `t` becomes `t'` in one step of computation". The finished results are the **values**:
+
+```lean
+inductive Value : Tm → Prop where
+  | lit : Value (.lit n)
+  | tt : Value .tt
+  | ff : Value .ff
+
+inductive Step : Tm → Tm → Prop where
+  | addLit : Step (.add (.lit n) (.lit m)) (.lit (n + m))
+  | addL : Step a a' → Step (.add a b) (.add a' b)
+  | addR : Value a → Step b b' → Step (.add a b) (.add a b')
+  | isZeroZero : Step (.isZero (.lit 0)) .tt
+  | isZeroSucc : Step (.isZero (.lit (n + 1))) .ff
+  | isZeroArg : Step a a' → Step (.isZero a) (.isZero a')
+  | ifTrue : Step (.if_ .tt t e) t
+  | ifFalse : Step (.if_ .ff t e) e
+  | ifCond : Step c c' → Step (.if_ c t e) (.if_ c' t e)
+```
+
+There are two kinds of rules. The **computation rules** (`addLit`, `isZeroZero`, `isZeroSucc`, `ifTrue`, `ifFalse`) do actual work, once the operands are values. The **congruence rules** (`addL`, `addR`, `isZeroArg`, `ifCond`) say where to work next: in an addition, reduce the left operand first, and the right one only when the left one is a value. The rules fix an evaluation order, left to right, just as an interpreter would.
+
+A step is a proof, built from the rules. Here `(1 + 2) + 3` steps to `3 + 3`, because its left operand steps by `addLit`:
+
+```lean
+example : Step (.add (.add (.lit 1) (.lit 2)) (.lit 3)) (.add (.lit 3) (.lit 3)) :=
+  .addL .addLit
+```
+
+A whole run is a sequence of steps, the reflexive-transitive closure of `Step` (Chapter 13's `Star`, specialised):
+
+```lean
+inductive Steps : Tm → Tm → Prop where
+  | refl : Steps t t
+  | step : Step t t' → Steps t' t'' → Steps t t''
+
+-- if isZero 0 then 1 else 2  ⟶  if true then 1 else 2  ⟶  1
+example : Steps (.if_ (.isZero (.lit 0)) (.lit 1) (.lit 2)) (.lit 1) :=
+  .step (.ifCond .isZeroZero) (.step .ifTrue .refl)
+```
+
+## Going wrong
+
+Now run `1 + true`. It is not a value, and no rule applies: `addLit` needs two numbers, `addL` needs the left operand to step, `addR` needs the right one to step, and neither `1` nor `true` can. The term is **stuck**. This is what "going wrong" means formally: the program has not finished, and cannot continue. In a real implementation, it is a crash or a runtime type error.
+
+```lean
+theorem stuck : ¬ ∃ t', Step (.add (.lit 1) .tt) t' := by
+  intro ⟨t', h⟩
+  cases h with
+  | addL h => cases h
+  | addR _ h => cases h
+
+theorem not_value : ¬ Value (.add (.lit 1) .tt) := by
+  intro h
+  cases h
+```
+
+`cases h` in the first proof tries the nine rules of `Step`; seven of them cannot produce an addition of `1` and `true` and are discarded automatically, and the two congruence rules each need a step of `1` or of `true`, which a second `cases` rules out.
+
+## Typing rules
+
+A type system predicts, without running a program, which kind of value it will produce. Its rules, in the notation of the literature (read each one as "if the premises above the line hold, the conclusion below holds"):
+
+<RuleRow>
+  <Rule name="lit" conclusion="n : \mathsf{nat}" />
+  <Rule name="tt / ff" conclusion="\mathsf{true} : \mathsf{bool}" />
+  <Rule name="add" premises="a : \mathsf{nat} || b : \mathsf{nat}" conclusion="a + b : \mathsf{nat}" />
+  <Rule name="isZero" premises="a : \mathsf{nat}" conclusion="\mathsf{isZero}\ a : \mathsf{bool}" />
+  <Rule name="if" premises="c : \mathsf{bool} || t : T || e : T" conclusion="\mathsf{if}\ c\ t\ e : T" />
+</RuleRow>
+
+The `if` rule says that both branches must have the same type `T`, since we cannot know in advance which one will run. As in Chapter 13, each rule becomes a constructor of an inductive predicate:
+
+```lean
+inductive HasType : Tm → Ty → Prop where
+  | lit : HasType (.lit n) .nat
+  | tt : HasType .tt .bool
+  | ff : HasType .ff .bool
+  | add : HasType a .nat → HasType b .nat → HasType (.add a b) .nat
+  | isZero : HasType a .nat → HasType (.isZero a) .bool
+  | if_ : HasType c .bool → HasType t T → HasType e T → HasType (.if_ c t e) T
+```
+
+A typing derivation is a proof tree built from the rules. We can write it as a term, or let `constructor` find it: each goal has exactly one applicable rule, because the rules follow the shape of the term.
+
+```lean
+example : HasType (.if_ (.isZero (.lit 0)) (.lit 1) (.lit 2)) .nat :=
+  .if_ (.isZero .lit) .lit .lit
+
+example : HasType (.if_ (.isZero (.lit 0)) (.lit 1) (.lit 2)) .nat := by
+  repeat constructor
+
+theorem ill_typed : ¬ HasType (.add (.lit 1) .tt) T := by
+  intro h
+  cases h with
+  | add _ hb => cases hb
+```
+
+This style is called **extrinsic** typing: terms exist first, and typing is a property of some of them, stated from the outside.
+
+## Type safety
+
+The theorem we want: a well-typed term never gets stuck. Following Wright and Felleisen's recipe, it splits into two halves.
+
+- **Progress**: a well-typed term is a value, or it can take a step.
+- **Preservation**: a step keeps the type.
+
+Together they say that a well-typed program can always take another step, and after it is still well typed, so it can take another step again, until it reaches a value. First, two small lemmas about values, the **canonical forms**: a value of type `nat` is a numeral, and a value of type `bool` is `true` or `false`.
+
+```lean
+theorem nat_canonical (h : HasType v .nat) (hv : Value v) : ∃ n, v = .lit n := by
+  cases hv with
+  | lit => exact ⟨_, rfl⟩
+  | tt => cases h
+  | ff => cases h
+
+theorem bool_canonical (h : HasType v .bool) (hv : Value v) : v = .tt ∨ v = .ff := by
+  cases hv with
+  | lit => cases h
+  | tt => exact .inl rfl
+  | ff => exact .inr rfl
+```
+
+Progress is an induction on the typing derivation. In each compound case, the induction hypotheses say that each operand is a value or steps; if one steps, a congruence rule steps the whole term; if all are values, the canonical forms tell us which values they are, and a computation rule applies. This is exactly where types matter: in the `add` case, the canonical forms lemma turns "a value of type `nat`" into "a numeral", which is what `addLit` needs.
+
+```lean
+theorem progress (h : HasType t T) : Value t ∨ ∃ t', Step t t' := by
+  induction h with
+  | lit => exact .inl .lit
+  | tt => exact .inl .tt
+  | ff => exact .inl .ff
+  | add ha hb iha ihb =>
+    right
+    cases iha with
+    | inr hs =>
+      obtain ⟨a', ha'⟩ := hs
+      exact ⟨_, .addL ha'⟩
+    | inl va =>
+      cases ihb with
+      | inr hs =>
+        obtain ⟨b', hb'⟩ := hs
+        exact ⟨_, .addR va hb'⟩
+      | inl vb =>
+        obtain ⟨n, rfl⟩ := nat_canonical ha va
+        obtain ⟨m, rfl⟩ := nat_canonical hb vb
+        exact ⟨_, .addLit⟩
+  | isZero ha iha =>
+    right
+    cases iha with
+    | inr hs =>
+      obtain ⟨a', ha'⟩ := hs
+      exact ⟨_, .isZeroArg ha'⟩
+    | inl va =>
+      obtain ⟨n, rfl⟩ := nat_canonical ha va
+      cases n with
+      | zero => exact ⟨_, .isZeroZero⟩
+      | succ k => exact ⟨_, .isZeroSucc⟩
+  | if_ hc ht he ihc iht ihe =>
+    right
+    cases ihc with
+    | inr hs =>
+      obtain ⟨c', hc'⟩ := hs
+      exact ⟨_, .ifCond hc'⟩
+    | inl vc =>
+      cases bool_canonical hc vc with
+      | inl h => rw [h]; exact ⟨_, .ifTrue⟩
+      | inr h => rw [h]; exact ⟨_, .ifFalse⟩
+```
+
+Preservation is an induction on the *step*, with one case per rule of `Step`, and in each case a `cases` on the typing derivation to learn the types of the parts. The grid below the editor lists the nine cases. Break one (replace `.lit` by `.tt` in the first line, say) and watch its cell turn red; replace one by `sorry` and it turns amber.
+
+<ObligationGrid lens code={`theorem preservation (hs : Step t t') (h : HasType t T) : HasType t' T := by
+  induction hs generalizing T with
+  | addLit => cases h; exact .lit
+  | addL _ ih =>
+    cases h with
+    | add ha hb => exact .add (ih ha) hb
+  | addR _ _ ih =>
+    cases h with
+    | add ha hb => exact .add ha (ih hb)
+  | isZeroZero => cases h; exact .tt
+  | isZeroSucc => cases h; exact .ff
+  | isZeroArg _ ih =>
+    cases h with
+    | isZero ha => exact .isZero (ih ha)
+  | ifTrue =>
+    cases h with
+    | if_ _ ht _ => exact ht
+  | ifFalse =>
+    cases h with
+    | if_ _ _ he => exact he
+  | ifCond _ ih =>
+    cases h with
+    | if_ hc ht he => exact .if_ (ih hc) ht he
+
+theorem safety (h : HasType t T) (hs : Steps t t') : Value t' ∨ ∃ t'', Step t' t'' := by
+  induction hs with
+  | refl => exact progress h
+  | step s _ ih => exact ih (preservation s h)`} setup={`inductive Ty where
+  | nat
+  | bool
+deriving DecidableEq
+
+inductive Tm where
+  | lit (n : Nat)
+  | tt
+  | ff
+  | add (a b : Tm)
+  | isZero (a : Tm)
+  | if_ (c t e : Tm)
+deriving DecidableEq
+
+inductive Value : Tm → Prop where
+  | lit : Value (.lit n)
+  | tt : Value .tt
+  | ff : Value .ff
+
+inductive Step : Tm → Tm → Prop where
+  | addLit : Step (.add (.lit n) (.lit m)) (.lit (n + m))
+  | addL : Step a a' → Step (.add a b) (.add a' b)
+  | addR : Value a → Step b b' → Step (.add a b) (.add a b')
+  | isZeroZero : Step (.isZero (.lit 0)) .tt
+  | isZeroSucc : Step (.isZero (.lit (n + 1))) .ff
+  | isZeroArg : Step a a' → Step (.isZero a) (.isZero a')
+  | ifTrue : Step (.if_ .tt t e) t
+  | ifFalse : Step (.if_ .ff t e) e
+  | ifCond : Step c c' → Step (.if_ c t e) (.if_ c' t e)
+
+inductive Steps : Tm → Tm → Prop where
+  | refl : Steps t t
+  | step : Step t t' → Steps t' t'' → Steps t t''
+
+inductive HasType : Tm → Ty → Prop where
+  | lit : HasType (.lit n) .nat
+  | tt : HasType .tt .bool
+  | ff : HasType .ff .bool
+  | add : HasType a .nat → HasType b .nat → HasType (.add a b) .nat
+  | isZero : HasType a .nat → HasType (.isZero a) .bool
+  | if_ : HasType c .bool → HasType t T → HasType e T → HasType (.if_ c t e) T
+
+theorem nat_canonical (h : HasType v .nat) (hv : Value v) : ∃ n, v = .lit n := by
+  cases hv with
+  | lit => exact ⟨_, rfl⟩
+  | tt => cases h
+  | ff => cases h
+
+theorem bool_canonical (h : HasType v .bool) (hv : Value v) : v = .tt ∨ v = .ff := by
+  cases hv with
+  | lit => cases h
+  | tt => exact .inl rfl
+  | ff => exact .inr rfl
+
+theorem progress (h : HasType t T) : Value t ∨ ∃ t', Step t t' := by
+  induction h with
+  | lit => exact .inl .lit
+  | tt => exact .inl .tt
+  | ff => exact .inl .ff
+  | add ha hb iha ihb =>
+    right
+    cases iha with
+    | inr hs =>
+      obtain ⟨a', ha'⟩ := hs
+      exact ⟨_, .addL ha'⟩
+    | inl va =>
+      cases ihb with
+      | inr hs =>
+        obtain ⟨b', hb'⟩ := hs
+        exact ⟨_, .addR va hb'⟩
+      | inl vb =>
+        obtain ⟨n, rfl⟩ := nat_canonical ha va
+        obtain ⟨m, rfl⟩ := nat_canonical hb vb
+        exact ⟨_, .addLit⟩
+  | isZero ha iha =>
+    right
+    cases iha with
+    | inr hs =>
+      obtain ⟨a', ha'⟩ := hs
+      exact ⟨_, .isZeroArg ha'⟩
+    | inl va =>
+      obtain ⟨n, rfl⟩ := nat_canonical ha va
+      cases n with
+      | zero => exact ⟨_, .isZeroZero⟩
+      | succ k => exact ⟨_, .isZeroSucc⟩
+  | if_ hc ht he ihc iht ihe =>
+    right
+    cases ihc with
+    | inr hs =>
+      obtain ⟨c', hc'⟩ := hs
+      exact ⟨_, .ifCond hc'⟩
+    | inl vc =>
+      cases bool_canonical hc vc with
+      | inl h => rw [h]; exact ⟨_, .ifTrue⟩
+      | inr h => rw [h]; exact ⟨_, .ifFalse⟩`} />
+
+`safety` is the payoff: from a well-typed term, however many steps we take, we are never stuck. Its proof is three lines, because progress and preservation did the work; the induction on `Steps` uses preservation to carry the typing along the run, and progress at the end.
+
+<Key>
+Type safety is progress plus preservation. Progress: a well-typed term is finished or can continue. Preservation: continuing keeps it well typed. Each is an induction with one case per rule, and the canonical forms lemmas are where the types earn their keep.
+</Key>
+
+<Engineer title="Is your language type safe?">
+The slogan "well-typed programs cannot go wrong" is Robin Milner's (1978), and the progress-and-preservation method is Wright and Felleisen's (1994); it has since been used for Java, for WebAssembly (whose specification comes with a mechanised proof of exactly these two theorems) and for large parts of Rust. Some popular languages are *deliberately* unsound: TypeScript's type system accepts programs that go wrong at run time (array covariance is a classic example), trading safety for convenience. A soundness theorem is what tells the two situations apart.
+</Engineer>
+
+## Types inside the syntax
+
+Extrinsic typing keeps two things apart: the terms, and a proof about them. There is another way. Recall `Vec α n` from Chapter 2: the length lived *in the type*, and a function could not return a vector of the wrong length. We can do the same with the type of a term: index the syntax by the type of the term it describes.
+
+```lean
+inductive TTm : Ty → Type where
+  | lit (n : Nat) : TTm .nat
+  | tt : TTm .bool
+  | ff : TTm .bool
+  | add (a b : TTm .nat) : TTm .nat
+  | isZero (a : TTm .nat) : TTm .bool
+  | if_ (c : TTm .bool) (t e : TTm T) : TTm T
+```
+
+The constructors are the typing rules. `TTm.add` only accepts two terms of type `nat`, so `1 + true` is not a value of any type `TTm T`: the course's own type checker rejects it, and our language needs no type checker of its own.
+
+```lean errors
+#check (TTm.add (.lit 1) .tt : TTm .nat)
+```
+
+This style is called **intrinsic** typing: the type is part of what a term *is*. It pays off in the evaluator. Each type of the object language is interpreted as a type of the course language, and `eval` sends a term of type `T` to a value of the interpretation of `T`:
+
+```lean
+def Ty.denote : Ty → Type
+  | .nat => Nat
+  | .bool => Bool
+
+def TTm.eval : TTm T → T.denote
+  | .lit n => n
+  | .tt => true
+  | .ff => false
+  | .add a b => a.eval + b.eval
+  | .isZero a => a.eval == 0
+  | .if_ c t e => if c.eval then t.eval else e.eval
+
+#eval (TTm.if_ (.isZero (.lit 0)) (.lit 1) (.lit 2)).eval
+#eval (TTm.isZero (.add (.lit 2) (.lit 3))).eval
+```
+
+Look at the `add` case: `a.eval` has type `Ty.nat.denote`, which computes to `Nat`, so `+` applies. No error case, no `Option`, no stuck states: the evaluator is total, and "well-typed programs cannot go wrong" is now true *by construction*, checked by the course's type checker every time `eval` is compiled. `Ty.denote` is a function that returns *types*, which only a dependently typed language allows; it is the same idea as the `Vec` length, one level up.
+
+## Connecting the two
+
+Intrinsic terms are what we want to evaluate, but programs arrive as text, parsed into plain `Tm`s. The bridge in one direction is **erasure**, which forgets the types; and every erased term is well typed in the extrinsic sense:
+
+```lean
+def TTm.erase : TTm T → Tm
+  | .lit n => .lit n
+  | .tt => .tt
+  | .ff => .ff
+  | .add a b => .add a.erase b.erase
+  | .isZero a => .isZero a.erase
+  | .if_ c t e => .if_ c.erase t.erase e.erase
+
+theorem TTm.erase_typed (t : TTm T) : HasType t.erase T := by
+  induction t with
+  | lit n => exact .lit
+  | tt => exact .tt
+  | ff => exact .ff
+  | add a b iha ihb => exact .add iha ihb
+  | isZero a ih => exact .isZero ih
+  | if_ c t e ihc iht ihe => exact .if_ ihc iht ihe
+```
+
+The other direction is a **type checker**: given a plain term and a type, produce the typed term, or fail. We make it *certified*: along with the typed term, it returns a proof that erasing it gives back the input. The result type is a subtype (Chapter 2), `{ t' : TTm T // t'.erase = t }`, and each case builds its proof from the proofs of the recursive calls:
+
+```lean
+def check : (t : Tm) → (T : Ty) → Option { t' : TTm T // t'.erase = t }
+  | .lit n, .nat => some ⟨.lit n, rfl⟩
+  | .tt, .bool => some ⟨.tt, rfl⟩
+  | .ff, .bool => some ⟨.ff, rfl⟩
+  | .add a b, .nat =>
+    match check a .nat, check b .nat with
+    | some ⟨a', ha⟩, some ⟨b', hb⟩ => some ⟨.add a' b', by simp [TTm.erase, ha, hb]⟩
+    | _, _ => none
+  | .isZero a, .bool =>
+    match check a .nat with
+    | some ⟨a', ha⟩ => some ⟨.isZero a', by simp [TTm.erase, ha]⟩
+    | none => none
+  | .if_ c t e, T =>
+    match check c .bool, check t T, check e T with
+    | some ⟨c', hc⟩, some ⟨t', ht⟩, some ⟨e', he⟩ => some ⟨.if_ c' t' e', by simp [TTm.erase, hc, ht, he]⟩
+    | _, _, _ => none
+  | _, _ => none
+
+def run (t : Tm) (T : Ty) : Option T.denote :=
+  (check t T).map (fun r => r.val.eval)
+
+#eval run (.if_ (.isZero (.lit 0)) (.lit 1) (.lit 2)) .nat
+#eval run (.if_ (.isZero (.lit 0)) (.lit 1) .tt) .nat
+```
+
+The checker's soundness is then a two-line corollary, with no induction: whatever `check` returns erases to the input, and every erased term is well typed.
+
+```lean
+theorem check_sound (h : check t T = some r) : HasType t T := by
+  rw [← r.property]
+  exact r.val.erase_typed
+```
+
+`r.property` is the proof carried inside the result, `r.val.erase = t`; rewriting with it backwards turns the goal into `HasType r.val.erase T`, which is `erase_typed`. The proof was done once, inside `check`, piece by piece, where each piece was easy.
+
+<Note title="Correct by construction, or proved afterwards?">
+The two styles of this chapter recur everywhere. *Proved afterwards* (extrinsic): write the simple program, then prove a theorem about it, as with `progress`. *Correct by construction* (intrinsic): make the type so precise that the program cannot be wrong, as with `TTm.eval` and the certified `check`. The first keeps programs simple and theorems separate; the second moves the proof into the program, where it is often smaller, but makes the types heavier. Lean's own libraries mix both.
+</Note>
+
+## What runs
+
+Types and proofs are for the checker. When a program runs, they are gone: the compiler **erases** every argument that is a type or a proof, and only data remains. The panel below the editor shows what remains of each definition. Note what survives: `check` returns `some (Subtype.mk …)` with the typed term and *no proof*, so certification costs nothing at run time. And the index `T` of `TTm` survives in `TTm.eval`: it is a value of `Ty`, an ordinary piece of data, not a type. The same holds for subtypes in general, as the last two definitions show: a number that carries a proof that it is small is, at run time, just a number.
+
+<ErasureView code={`def Ty.denote : Ty → Type
+  | .nat => Nat
+  | .bool => Bool
+
+def TTm.eval : TTm T → T.denote
+  | .lit n => n
+  | .tt => true
+  | .ff => false
+  | .add a b => a.eval + b.eval
+  | .isZero a => a.eval == 0
+  | .if_ c t e => if c.eval then t.eval else e.eval
+
+def TTm.erase : TTm T → Tm
+  | .lit n => .lit n
+  | .tt => .tt
+  | .ff => .ff
+  | .add a b => .add a.erase b.erase
+  | .isZero a => .isZero a.erase
+  | .if_ c t e => .if_ c.erase t.erase e.erase
+
+def checkNat (n : Nat) : Option { t' : TTm .nat // t'.erase = .lit n } :=
+  some ⟨.lit n, rfl⟩
+
+-- numbers below a bound: at run time, just numbers
+def Below (n : Nat) := { i : Nat // i < n }
+
+def Below.last (n : Nat) : Below (n + 1) := ⟨n, by omega⟩`} setup={`inductive Ty where
+  | nat
+  | bool
+deriving DecidableEq
+
+inductive Tm where
+  | lit (n : Nat)
+  | tt
+  | ff
+  | add (a b : Tm)
+  | isZero (a : Tm)
+  | if_ (c t e : Tm)
+deriving DecidableEq
+
+inductive TTm : Ty → Type where
+  | lit (n : Nat) : TTm .nat
+  | tt : TTm .bool
+  | ff : TTm .bool
+  | add (a b : TTm .nat) : TTm .nat
+  | isZero (a : TTm .nat) : TTm .bool
+  | if_ (c : TTm .bool) (t e : TTm T) : TTm T`} />
+
+`Below n` is the course's version of Lean's `Fin n`, the type of the numbers below `n`: it is how Lean indexes arrays safely (an array of size `n` is indexed by `Fin n`, so an index out of bounds is a type error), and after erasure it costs exactly as much as a plain number.
+
+<UnderTheHood title="Why the index survives">
+Erasure removes *types* (things whose type is a sort, like `Nat` or `TTm .nat`) and *proofs* (things whose type is a proposition). The index `T : Ty` is neither: `Ty` is an ordinary inductive type in `Type`, and `.nat` is a value of it, like `3` is a value of `Nat`. The compiler cannot know that `eval` never looks at it at run time. (Lean's compiler keeps it too.) Had we indexed `TTm` by the *types of the course language* directly, `TTm : Type → Type`, the index would be erased, but `TTm` would then live in a higher universe: the trade-offs of such encodings are a topic of the CIC course.
+</UnderTheHood>
+
+## Exercises
+
+<Exercise id="typed:unique" title="Types are unique" setup={`inductive Ty where
+  | nat
+  | bool
+deriving DecidableEq
+
+inductive Tm where
+  | lit (n : Nat)
+  | tt
+  | ff
+  | add (a b : Tm)
+  | isZero (a : Tm)
+  | if_ (c t e : Tm)
+
+inductive HasType : Tm → Ty → Prop where
+  | lit : HasType (.lit n) .nat
+  | tt : HasType .tt .bool
+  | ff : HasType .ff .bool
+  | add : HasType a .nat → HasType b .nat → HasType (.add a b) .nat
+  | isZero : HasType a .nat → HasType (.isZero a) .bool
+  | if_ : HasType c .bool → HasType t T → HasType e T → HasType (.if_ c t e) T`} code={`theorem unique (h1 : HasType t T) (h2 : HasType t U) : T = U := by
+  sorry`} must="unique" hint="induction h1 generalizing U. In every case but if_, cases h2 leaves a goal like Ty.nat = Ty.nat: rfl. In the if_ case, cases h2 with | if_ _ ht' _ gives the typing of the then-branch at U, and the induction hypothesis for the then-branch finishes." solution={`theorem unique (h1 : HasType t T) (h2 : HasType t U) : T = U := by
+  induction h1 generalizing U with
+  | lit => cases h2; rfl
+  | tt => cases h2; rfl
+  | ff => cases h2; rfl
+  | add _ _ _ _ => cases h2; rfl
+  | isZero _ _ => cases h2; rfl
+  | if_ _ _ _ _ iht _ =>
+    cases h2 with
+    | if_ _ ht' _ => exact iht ht'`}>
+A term has at most one type. (This fails in languages with subtyping or polymorphism, where a term can have many types.)
+</Exercise>
+
+<Exercise id="typed:optif" title="A typed optimiser" setup={`inductive Ty where
+  | nat
+  | bool
+
+def Ty.denote : Ty → Type
+  | .nat => Nat
+  | .bool => Bool
+
+inductive TTm : Ty → Type where
+  | lit (n : Nat) : TTm .nat
+  | tt : TTm .bool
+  | ff : TTm .bool
+  | add (a b : TTm .nat) : TTm .nat
+  | isZero (a : TTm .nat) : TTm .bool
+  | if_ (c : TTm .bool) (t e : TTm T) : TTm T
+
+def TTm.eval : TTm T → T.denote
+  | .lit n => n
+  | .tt => true
+  | .ff => false
+  | .add a b => a.eval + b.eval
+  | .isZero a => a.eval == 0
+  | .if_ c t e => if c.eval then t.eval else e.eval`} code={`-- if true then t else e  becomes  t;  if false then t else e  becomes  e
+def TTm.optIf : TTm T → TTm T
+  | .if_ .tt t _ => t
+  | .if_ .ff _ e => e
+  | t => t
+
+theorem TTm.optIf_eval (t : TTm T) : t.optIf.eval = t.eval := by
+  sorry`} must="TTm.optIf_eval" hint="cases t. Only the if_ case is interesting: there, cases on the condition c and simp [TTm.optIf, TTm.eval] in each case. The other cases are rfl." solution={`def TTm.optIf : TTm T → TTm T
+  | .if_ .tt t _ => t
+  | .if_ .ff _ e => e
+  | t => t
+
+theorem TTm.optIf_eval (t : TTm T) : t.optIf.eval = t.eval := by
+  cases t with
+  | if_ c t e =>
+    cases c <;> simp [TTm.optIf, TTm.eval]
+  | _ => rfl`}>
+The optimiser's type, `TTm T → TTm T`, already guarantees that it preserves types: that part of its correctness is free. Prove the rest: it preserves meaning.
+</Exercise>
+
+<Exercise id="typed:deterministic" title="Evaluation is deterministic" setup={`inductive Tm where
+  | lit (n : Nat)
+  | tt
+  | ff
+  | add (a b : Tm)
+  | isZero (a : Tm)
+  | if_ (c t e : Tm)
+
+inductive Value : Tm → Prop where
+  | lit : Value (.lit n)
+  | tt : Value .tt
+  | ff : Value .ff
+
+inductive Step : Tm → Tm → Prop where
+  | addLit : Step (.add (.lit n) (.lit m)) (.lit (n + m))
+  | addL : Step a a' → Step (.add a b) (.add a' b)
+  | addR : Value a → Step b b' → Step (.add a b) (.add a b')
+  | isZeroZero : Step (.isZero (.lit 0)) .tt
+  | isZeroSucc : Step (.isZero (.lit (n + 1))) .ff
+  | isZeroArg : Step a a' → Step (.isZero a) (.isZero a')
+  | ifTrue : Step (.if_ .tt t e) t
+  | ifFalse : Step (.if_ .ff t e) e
+  | ifCond : Step c c' → Step (.if_ c t e) (.if_ c' t e)`} code={`theorem value_no_step (hv : Value t) (hs : Step t t') : False := by
+  sorry
+
+theorem deterministic (h1 : Step t t1) (h2 : Step t t2) : t1 = t2 := by
+  sorry`} must="value_no_step deterministic" hint="value_no_step: cases hv <;> cases hs. deterministic: induction h1 generalizing t2, then cases h2 in each case. Most combinations are impossible and cases discards them; the ones that remain are a rule against itself (rfl, or rw [ih h'] for congruence rules) or a congruence rule against a computation rule, where a value would have to step (cases on that step, or value_no_step)." solution={`theorem value_no_step (hv : Value t) (hs : Step t t') : False := by
+  cases hv <;> cases hs
+
+theorem deterministic (h1 : Step t t1) (h2 : Step t t2) : t1 = t2 := by
+  induction h1 generalizing t2 with
+  | addLit =>
+    cases h2 with
+    | addLit => rfl
+    | addL h => cases h
+    | addR _ h => cases h
+  | addL h ih =>
+    cases h2 with
+    | addLit => cases h
+    | addL h' => rw [ih h']
+    | addR hv h' => exact (value_no_step hv h).elim
+  | addR hv h ih =>
+    cases h2 with
+    | addLit => cases h
+    | addL h' => exact (value_no_step hv h').elim
+    | addR _ h' => rw [ih h']
+  | isZeroZero =>
+    cases h2 with
+    | isZeroZero => rfl
+    | isZeroArg h => cases h
+  | isZeroSucc =>
+    cases h2 with
+    | isZeroSucc => rfl
+    | isZeroArg h => cases h
+  | isZeroArg h ih =>
+    cases h2 with
+    | isZeroZero => cases h
+    | isZeroSucc => cases h
+    | isZeroArg h' => rw [ih h']
+  | ifTrue =>
+    cases h2 with
+    | ifTrue => rfl
+    | ifCond h => cases h
+  | ifFalse =>
+    cases h2 with
+    | ifFalse => rfl
+    | ifCond h => cases h
+  | ifCond h ih =>
+    cases h2 with
+    | ifTrue => cases h
+    | ifFalse => cases h
+    | ifCond h' => rw [ih h']`}>
+Each term has at most one next step: the congruence rules never compete with each other or with the computation rules. First show that values do not step. (A longer exercise: nine cases, each with its own small case analysis.)
+</Exercise>

@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { highlight, languageOf, languageLabel, LEAN_KEYWORDS } from '../src/app/highlight.ts';
-import { KEYWORDS as LEXER_KEYWORDS } from '../src/kernel/syntax/lexer.ts';
+import { KEYWORDS as LEXER_KEYWORDS } from '@kernel/syntax/lexer.ts';
 
 /** the class given to each occurrence of `word` */
 function classesOf(code: string, lang: string, word: string): (string | undefined)[] {

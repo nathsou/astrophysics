@@ -83,6 +83,15 @@ export function Home() {
           )}
         </For>
       </section>
+      <section class="home-companion">
+        <div class="callout pap-bridge">
+          <div class="callout-title">Companion course · Proofs Are Programs</div>
+          <p>
+            This course explains how the kernel works. <a href="../proofs-are-programs/">Proofs Are Programs</a> uses the same language to program and prove: logic as a library, tactics,
+            induction, verified sorting, a verified compiler, and a type checker you build yourself. Chapters of both courses link to each other.
+          </p>
+        </div>
+      </section>
     </div>
   );
 }

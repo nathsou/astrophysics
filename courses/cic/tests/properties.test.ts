@@ -1,11 +1,11 @@
 // Property-based tests of metatheoretic properties, on the course's engines.
 import { describe, expect, it } from 'vitest';
 import fc from 'fast-check';
-import * as L from '../src/kernel/untyped/lambda.ts';
+import * as L from '@kernel/untyped/lambda.ts';
 import { run } from './util.ts';
-import { Stepper } from '../src/kernel/core/steps.ts';
-import { TypeChecker } from '../src/kernel/core/typechecker.ts';
-import { exprEq } from '../src/kernel/core/expr.ts';
+import { Stepper } from '@kernel/core/steps.ts';
+import { TypeChecker } from '@kernel/core/typechecker.ts';
+import { exprEq } from '@kernel/core/expr.ts';
 
 const names = ['x', 'y', 'z'];
 const termArb: fc.Arbitrary<L.U> = fc.letrec((tie) => ({

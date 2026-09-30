@@ -36,7 +36,7 @@
         <section class="hero" aria-labelledby="title">
           <p class="eyebrow">A library of interactive textbooks</p>
           <h1 id="title">Ideas you can <em>take&nbsp;apart.</em></h1>
-          <p class="lede">Eight deep dives, each with its own visual language. Read the explanation, then change the inputs and watch the idea work.</p>
+          <p class="lede">Nine deep dives, each with its own visual language. Read the explanation, then change the inputs and watch the idea work.</p>
         </section>
 
         <section class="grid" id="courses" aria-label="The courses">
@@ -53,6 +53,18 @@
             <p class="desc">-- From the λ-calculus to Lean 4, on a real kernel.</p>
             <p class="code"><span class="kw">theorem</span> welcome : ∀ n : Nat,<br>&nbsp;&nbsp;n + 0 = n := <span class="kw">by</span> rfl</p>
             <p class="ok">✓ no errors</p>
+          </a>
+
+          <a class="card pap" href="./proofs-are-programs/">
+            <p class="kicker">The Twin · Logic · 23 ch</p>
+            <h2>Proofs Are Programs</h2>
+            <div class="twins" aria-hidden="true">
+              <p><span class="kw">def</span> swap :<br>α × β → β × α</p>
+              <p class="eq">≡</p>
+              <p><span class="kw">theorem</span> comm :<br>p ∧ q → q ∧ p</p>
+            </div>
+            <p class="body mono">:= fun ⟨a, b⟩ =&gt; ⟨b, a⟩</p>
+            <p class="desc">Curry–Howard for programmers: write proofs as programs, then prove a compiler correct and build your own kernel.</p>
           </a>
 
           <a class="card compiler" href="./compiler-backends/">
@@ -72,7 +84,7 @@
           </a>
 
           <a class="card lm" href="./language-models/">
-            <p class="kicker"><span class="mark" aria-hidden="true">LM</span> From scratch · Machine learning · 18&nbsp;of&nbsp;30&nbsp;ch</p>
+            <p class="kicker"><span class="mark" aria-hidden="true">LM</span> From scratch · Machine learning · 30 ch</p>
             <div class="split">
               <h2>Language Models from Scratch</h2>
               <div class="predict" aria-hidden="true">
@@ -82,7 +94,7 @@
                 <p class="row"><span>sofa</span><i style="--w: 27%"></i><span>11%</span></p>
               </div>
             </div>
-            <p class="desc">Build a GPT from nothing, then take it through scaling, fine-tuning and reasoning.</p>
+            <p class="desc">Build a GPT from nothing, then take it through scaling, fine-tuning, reasoning, tools, interpretability and safety.</p>
           </a>
 
           <a class="card incompleteness" href="./incompleteness/">

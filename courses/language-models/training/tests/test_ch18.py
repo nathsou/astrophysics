@@ -43,3 +43,17 @@ def test_rope_model_runs_beyond_its_training_context():
     model = GPT(GPTConfig(vocab=50, context=16, width=64, layers=1, heads=4, pos="rope"))
     logits, _ = model(torch.randint(50, (1, 40)))
     assert logits.shape == (1, 40, 50)
+
+
+def test_moe_routes_every_token_to_k_experts_and_balances():
+    torch.manual_seed(0)
+    cfg = GPTConfig(vocab=50, context=16, width=64, layers=2, heads=4, experts=4, top_k=2)
+    model = GPT(cfg)
+    ids = torch.randint(50, (3, 16))
+    _, loss = model(ids, ids)
+    assert torch.isfinite(loss)
+    block = model.blocks[0]
+    assert block.load.sum().item() == pytest.approx(1.0)
+    assert block.aux.item() == pytest.approx(1.0, abs=0.2)  # E · Σ f·P is 1 for uniform routing, as at initialisation
+    loss.backward()
+    assert model.blocks[0].mlp["router"].grad.abs().sum() > 0  # the router learns through the gates

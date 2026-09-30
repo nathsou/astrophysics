@@ -1440,3 +1440,715 @@ wortsman2023:
   title: Small-scale proxies for large-scale Transformer training instabilities
   venue: ICLR 2024
   url: https://arxiv.org/abs/2309.14322
+jacobs1991:
+  authors: Robert A. Jacobs, Michael I. Jordan, Steven J. Nowlan and Geoffrey E. Hinton
+  year: 1991
+  title: Adaptive Mixtures of Local Experts
+  venue: Neural Computation 3(1), 79–87
+shazeer2017:
+  authors: Noam Shazeer, Azalia Mirhoseini, Krzysztof Maziarz, Andy Davis, Quoc Le, Geoffrey Hinton and Jeff Dean
+  year: 2017
+  title: "Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer"
+  venue: ICLR 2017
+  url: https://arxiv.org/abs/1701.06538
+lepikhin2021:
+  authors: Dmitry Lepikhin, HyoukJoong Lee, Yuanzhong Xu and others
+  year: 2021
+  title: "GShard: Scaling Giant Models with Conditional Computation and Automatic Sharding"
+  venue: ICLR 2021
+  url: https://arxiv.org/abs/2006.16668
+fedus2022:
+  authors: William Fedus, Barret Zoph and Noam Shazeer
+  year: 2022
+  title: "Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity"
+  venue: Journal of Machine Learning Research 23(120)
+  url: https://arxiv.org/abs/2101.03961
+zoph2022:
+  authors: Barret Zoph, Irwan Bello, Sameer Kumar and others
+  year: 2022
+  title: "ST-MoE: Designing Stable and Transferable Sparse Expert Models"
+  venue: arXiv:2202.08906
+  url: https://arxiv.org/abs/2202.08906
+jiang2024mixtral:
+  authors: Albert Q. Jiang, Alexandre Sablayrolles, Antoine Roux and others
+  year: 2024
+  title: Mixtral of Experts
+  venue: arXiv:2401.04088
+  url: https://arxiv.org/abs/2401.04088
+dai2024deepseekmoe:
+  authors: Damai Dai, Chengqi Deng, Chenggang Zhao and others
+  year: 2024
+  title: "DeepSeekMoE: Towards Ultimate Expert Specialization in Mixture-of-Experts Language Models"
+  venue: ACL 2024
+  url: https://arxiv.org/abs/2401.06066
+deepseek2024v3:
+  authors: DeepSeek-AI
+  year: 2024
+  title: DeepSeek-V3 Technical Report
+  venue: arXiv:2412.19437
+  url: https://arxiv.org/abs/2412.19437
+howard2018:
+  authors: Jeremy Howard and Sebastian Ruder
+  year: 2018
+  title: Universal Language Model Fine-tuning for Text Classification
+  venue: ACL 2018
+  url: https://arxiv.org/abs/1801.06146
+houlsby2019:
+  authors: Neil Houlsby, Andrei Giurgiu, Stanislaw Jastrzebski and others
+  year: 2019
+  title: Parameter-Efficient Transfer Learning for NLP
+  venue: ICML 2019
+  url: https://arxiv.org/abs/1902.00751
+aghajanyan2021:
+  authors: Armen Aghajanyan, Sonal Gupta and Luke Zettlemoyer
+  year: 2021
+  title: Intrinsic Dimensionality Explains the Effectiveness of Language Model Fine-Tuning
+  venue: ACL 2021
+  url: https://arxiv.org/abs/2012.13255
+hu2022lora:
+  authors: Edward J. Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang, Lu Wang and Weizhu Chen
+  year: 2022
+  title: "LoRA: Low-Rank Adaptation of Large Language Models"
+  venue: ICLR 2022
+  url: https://arxiv.org/abs/2106.09685
+dettmers2023qlora:
+  authors: Tim Dettmers, Artidoro Pagnoni, Ari Holtzman and Luke Zettlemoyer
+  year: 2023
+  title: "QLoRA: Efficient Finetuning of Quantized LLMs"
+  venue: NeurIPS 2023
+  url: https://arxiv.org/abs/2305.14314
+wei2022flan:
+  authors: Jason Wei, Maarten Bosma, Vincent Y. Zhao and others
+  year: 2022
+  title: Finetuned Language Models Are Zero-Shot Learners
+  venue: ICLR 2022
+  url: https://arxiv.org/abs/2109.01652
+zhou2023lima:
+  authors: Chunting Zhou, Pengfei Liu, Puxin Xu and others
+  year: 2023
+  title: "LIMA: Less Is More for Alignment"
+  venue: NeurIPS 2023
+  url: https://arxiv.org/abs/2305.11206
+kirkpatrick2017:
+  authors: James Kirkpatrick, Razvan Pascanu, Neil Rabinowitz and others
+  year: 2017
+  title: Overcoming catastrophic forgetting in neural networks
+  venue: PNAS 114(13), 3521–3526
+  url: https://arxiv.org/abs/1612.00796
+biderman2024:
+  authors: Dan Biderman, Jacob Portes, Jose Javier Gonzalez Ortiz and others
+  year: 2024
+  title: LoRA Learns Less and Forgets Less
+  venue: Transactions on Machine Learning Research
+  url: https://arxiv.org/abs/2405.09673
+lester2021:
+  authors: Brian Lester, Rami Al-Rfou and Noah Constant
+  year: 2021
+  title: The Power of Scale for Parameter-Efficient Prompt Tuning
+  venue: EMNLP 2021
+  url: https://arxiv.org/abs/2104.08691
+bradley1952:
+  authors: Ralph Allan Bradley and Milton E. Terry
+  year: 1952
+  title: "Rank Analysis of Incomplete Block Designs: I. The Method of Paired Comparisons"
+  venue: Biometrika 39(3/4), 324–345
+christiano2017:
+  authors: Paul F. Christiano, Jan Leike, Tom B. Brown, Miljan Martic, Shane Legg and Dario Amodei
+  year: 2017
+  title: Deep Reinforcement Learning from Human Preferences
+  venue: NeurIPS 2017
+  url: https://arxiv.org/abs/1706.03741
+stiennon2020:
+  authors: Nisan Stiennon, Long Ouyang, Jeff Wu and others
+  year: 2020
+  title: Learning to summarize from human feedback
+  venue: NeurIPS 2020
+  url: https://arxiv.org/abs/2009.01325
+schulman2017:
+  authors: John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford and Oleg Klimov
+  year: 2017
+  title: Proximal Policy Optimization Algorithms
+  venue: arXiv:1707.06347
+  url: https://arxiv.org/abs/1707.06347
+rafailov2023:
+  authors: Rafael Rafailov, Archit Sharma, Eric Mitchell, Stefano Ermon, Christopher D. Manning and Chelsea Finn
+  year: 2023
+  title: "Direct Preference Optimization: Your Language Model is Secretly a Reward Model"
+  venue: NeurIPS 2023
+  url: https://arxiv.org/abs/2305.18290
+bai2022constitutional:
+  authors: Yuntao Bai, Saurav Kadavath, Sandipan Kundu and others
+  year: 2022
+  title: "Constitutional AI: Harmlessness from AI Feedback"
+  venue: arXiv:2212.08073
+  url: https://arxiv.org/abs/2212.08073
+gao2023overopt:
+  authors: Leo Gao, John Schulman and Jacob Hilton
+  year: 2023
+  title: Scaling Laws for Reward Model Overoptimization
+  venue: ICML 2023
+  url: https://arxiv.org/abs/2210.10760
+wei2022cot:
+  authors: Jason Wei, Xuezhi Wang, Dale Schuurmans and others
+  year: 2022
+  title: Chain-of-Thought Prompting Elicits Reasoning in Large Language Models
+  venue: NeurIPS 2022
+  url: https://arxiv.org/abs/2201.11903
+nye2021:
+  authors: Maxwell Nye, Anders Johan Andreassen, Guy Gur-Ari and others
+  year: 2021
+  title: "Show Your Work: Scratchpads for Intermediate Computation with Language Models"
+  venue: arXiv:2112.00114
+  url: https://arxiv.org/abs/2112.00114
+kojima2022:
+  authors: Takeshi Kojima, Shixiang Shane Gu, Machel Reid, Yutaka Matsuo and Yusuke Iwasawa
+  year: 2022
+  title: Large Language Models are Zero-Shot Reasoners
+  venue: NeurIPS 2022
+  url: https://arxiv.org/abs/2205.11916
+wang2023selfconsistency:
+  authors: Xuezhi Wang, Jason Wei, Dale Schuurmans and others
+  year: 2023
+  title: Self-Consistency Improves Chain of Thought Reasoning in Language Models
+  venue: ICLR 2023
+  url: https://arxiv.org/abs/2203.11171
+cobbe2021:
+  authors: Karl Cobbe, Vineet Kosaraju, Mohammad Bavarian and others
+  year: 2021
+  title: Training Verifiers to Solve Math Word Problems
+  venue: arXiv:2110.14168
+  url: https://arxiv.org/abs/2110.14168
+lightman2023:
+  authors: Hunter Lightman, Vineet Kosaraju, Yura Burda and others
+  year: 2023
+  title: Let's Verify Step by Step
+  venue: ICLR 2024
+  url: https://arxiv.org/abs/2305.20050
+shao2024:
+  authors: Zhihong Shao, Peiyi Wang, Qihao Zhu and others
+  year: 2024
+  title: "DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models"
+  venue: arXiv:2402.03300
+  url: https://arxiv.org/abs/2402.03300
+deepseek2025r1:
+  authors: DeepSeek-AI
+  year: 2025
+  title: "DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning"
+  venue: arXiv:2501.12948 (Nature, 2025)
+  url: https://arxiv.org/abs/2501.12948
+snell2024:
+  authors: Charlie Snell, Jaehoon Lee, Kelvin Xu and Aviral Kumar
+  year: 2024
+  title: Scaling LLM Test-Time Compute Optimally can be More Effective than Scaling Model Parameters
+  venue: arXiv:2408.03314
+  url: https://arxiv.org/abs/2408.03314
+openai2024o1:
+  authors: OpenAI
+  year: 2024
+  title: Learning to Reason with LLMs
+  venue: OpenAI blog, 12 September 2024
+  url: https://openai.com/index/learning-to-reason-with-llms/
+lee2024arith:
+  authors: Nayoung Lee, Kartik Sreenivasan, Jason D. Lee, Kangwook Lee and Dimitris Papailiopoulos
+  year: 2024
+  title: Teaching Arithmetic to Small Transformers
+  venue: ICLR 2024
+  url: https://arxiv.org/abs/2307.03381
+chen2021codex:
+  authors: Mark Chen, Jerry Tworek, Heewoo Jun and others
+  year: 2021
+  title: Evaluating Large Language Models Trained on Code
+  venue: arXiv
+  url: https://arxiv.org/abs/2107.03374
+williams1992:
+  authors: Ronald J. Williams
+  year: 1992
+  title: Simple Statistical Gradient-Following Algorithms for Connectionist Reinforcement Learning
+  venue: Machine Learning 8
+  url: https://doi.org/10.1007/BF00992696
+schick2023:
+  authors: Timo Schick, Jane Dwivedi-Yu, Roberto Dessì and others
+  year: 2023
+  title: "Toolformer: Language Models Can Teach Themselves to Use Tools"
+  venue: NeurIPS 2023
+  url: https://arxiv.org/abs/2302.04761
+yao2023react:
+  authors: Shunyu Yao, Jeffrey Zhao, Dian Yu and others
+  year: 2023
+  title: "ReAct: Synergizing Reasoning and Acting in Language Models"
+  venue: ICLR 2023
+  url: https://arxiv.org/abs/2210.03629
+nakano2021:
+  authors: Reiichiro Nakano, Jacob Hilton, Suchir Balaji and others
+  year: 2021
+  title: "WebGPT: Browser-assisted question-answering with human feedback"
+  venue: arXiv
+  url: https://arxiv.org/abs/2112.09332
+lewis2020rag:
+  authors: Patrick Lewis, Ethan Perez, Aleksandra Piktus and others
+  year: 2020
+  title: Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks
+  venue: NeurIPS 2020
+  url: https://arxiv.org/abs/2005.11401
+karpukhin2020:
+  authors: Vladimir Karpukhin, Barlas Oğuz, Sewon Min and others
+  year: 2020
+  title: Dense Passage Retrieval for Open-Domain Question Answering
+  venue: EMNLP 2020
+  url: https://arxiv.org/abs/2004.04906
+borgeaud2022:
+  authors: Sebastian Borgeaud, Arthur Mensch, Jordan Hoffmann and others
+  year: 2022
+  title: Improving language models by retrieving from trillions of tokens
+  venue: ICML 2022
+  url: https://arxiv.org/abs/2112.04426
+sparckjones1972:
+  authors: Karen Spärck Jones
+  year: 1972
+  title: A statistical interpretation of term specificity and its application in retrieval
+  venue: Journal of Documentation 28
+  url: https://doi.org/10.1108/eb026526
+robertson2009:
+  authors: Stephen Robertson and Hugo Zaragoza
+  year: 2009
+  title: "The Probabilistic Relevance Framework: BM25 and Beyond"
+  venue: Foundations and Trends in Information Retrieval 3
+  url: https://doi.org/10.1561/1500000019
+anthropic2024mcp:
+  authors: Anthropic
+  year: 2024
+  title: Introducing the Model Context Protocol
+  venue: Anthropic announcement
+  url: https://www.anthropic.com/news/model-context-protocol
+gao2023pal:
+  authors: Luyu Gao, Aman Madaan, Shuyan Zhou and others
+  year: 2023
+  title: "PAL: Program-aided Language Models"
+  venue: ICML 2023
+  url: https://arxiv.org/abs/2211.10435
+jimenez2024:
+  authors: Carlos E. Jimenez, John Yang, Alexander Wettig and others
+  year: 2024
+  title: "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?"
+  venue: ICLR 2024
+  url: https://arxiv.org/abs/2310.06770
+yang2024sweagent:
+  authors: John Yang, Carlos E. Jimenez, Alexander Wettig and others
+  year: 2024
+  title: "SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering"
+  venue: NeurIPS 2024
+  url: https://arxiv.org/abs/2405.15793
+greshake2023:
+  authors: Kai Greshake, Sahar Abdelnabi, Shailesh Mishra and others
+  year: 2023
+  title: "Not what you've signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection"
+  venue: AISec 2023
+  url: https://arxiv.org/abs/2302.12173
+dosovitskiy2021:
+  authors: Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov and others
+  year: 2021
+  title: "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale"
+  venue: ICLR 2021
+  url: https://arxiv.org/abs/2010.11929
+radford2021:
+  authors: Alec Radford, Jong Wook Kim, Chris Hallacy and others
+  year: 2021
+  title: Learning Transferable Visual Models From Natural Language Supervision
+  venue: ICML 2021
+  url: https://arxiv.org/abs/2103.00020
+oord2018cpc:
+  authors: Aäron van den Oord, Yazhe Li and Oriol Vinyals
+  year: 2018
+  title: Representation Learning with Contrastive Predictive Coding
+  venue: arXiv
+  url: https://arxiv.org/abs/1807.03748
+zhai2023siglip:
+  authors: Xiaohua Zhai, Basil Mustafa, Alexander Kolesnikov and Lucas Beyer
+  year: 2023
+  title: Sigmoid Loss for Language Image Pre-Training
+  venue: ICCV 2023
+  url: https://arxiv.org/abs/2303.15343
+alayrac2022:
+  authors: Jean-Baptiste Alayrac, Jeff Donahue, Pauline Luc and others
+  year: 2022
+  title: "Flamingo: a Visual Language Model for Few-Shot Learning"
+  venue: NeurIPS 2022
+  url: https://arxiv.org/abs/2204.14198
+liu2023llava:
+  authors: Haotian Liu, Chunyuan Li, Qingyang Wu and Yong Jae Lee
+  year: 2023
+  title: Visual Instruction Tuning
+  venue: NeurIPS 2023
+  url: https://arxiv.org/abs/2304.08485
+radford2023whisper:
+  authors: Alec Radford, Jong Wook Kim, Tao Xu and others
+  year: 2023
+  title: Robust Speech Recognition via Large-Scale Weak Supervision
+  venue: ICML 2023
+  url: https://arxiv.org/abs/2212.04356
+oord2017vqvae:
+  authors: Aäron van den Oord, Oriol Vinyals and Koray Kavukcuoglu
+  year: 2017
+  title: Neural Discrete Representation Learning
+  venue: NeurIPS 2017
+  url: https://arxiv.org/abs/1711.00937
+ramesh2021:
+  authors: Aditya Ramesh, Mikhail Pavlov, Gabriel Goh and others
+  year: 2021
+  title: Zero-Shot Text-to-Image Generation
+  venue: ICML 2021
+  url: https://arxiv.org/abs/2102.12092
+ho2020:
+  authors: Jonathan Ho, Ajay Jain and Pieter Abbeel
+  year: 2020
+  title: Denoising Diffusion Probabilistic Models
+  venue: NeurIPS 2020
+  url: https://arxiv.org/abs/2006.11239
+rombach2022:
+  authors: Robin Rombach, Andreas Blattmann, Dominik Lorenz, Patrick Esser and Björn Ommer
+  year: 2022
+  title: High-Resolution Image Synthesis with Latent Diffusion Models
+  venue: CVPR 2022
+  url: https://arxiv.org/abs/2112.10752
+peebles2023:
+  authors: William Peebles and Saining Xie
+  year: 2023
+  title: Scalable Diffusion Models with Transformers
+  venue: ICCV 2023
+  url: https://arxiv.org/abs/2212.09748
+chameleon2024:
+  authors: Chameleon Team (Meta)
+  year: 2024
+  title: "Chameleon: Mixed-Modal Early-Fusion Foundation Models"
+  venue: arXiv
+  url: https://arxiv.org/abs/2405.09818
+defossez2023:
+  authors: Alexandre Défossez, Jade Copet, Gabriel Synnaeve and Yossi Adi
+  year: 2023
+  title: High Fidelity Neural Audio Compression
+  venue: TMLR
+  url: https://arxiv.org/abs/2210.13438
+gale2023megablocks:
+  authors: Trevor Gale, Deepak Narayanan, Cliff Young and Matei Zaharia
+  year: 2023
+  title: "MegaBlocks: Efficient Sparse Training with Mixture-of-Experts"
+  venue: MLSys 2023
+  url: https://arxiv.org/abs/2211.15841
+hendrycks2021:
+  authors: Dan Hendrycks, Collin Burns, Steven Basart and others
+  year: 2021
+  title: Measuring Massive Multitask Language Understanding
+  venue: ICLR 2021
+  url: https://arxiv.org/abs/2009.03300
+liang2022helm:
+  authors: Percy Liang, Rishi Bommasani, Tony Lee and others
+  year: 2022
+  title: Holistic Evaluation of Language Models
+  venue: TMLR 2023
+  url: https://arxiv.org/abs/2211.09110
+zheng2023judge:
+  authors: Lianmin Zheng, Wei-Lin Chiang, Ying Sheng and others
+  year: 2023
+  title: Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena
+  venue: NeurIPS 2023 Datasets and Benchmarks
+  url: https://arxiv.org/abs/2306.05685
+chiang2024arena:
+  authors: Wei-Lin Chiang, Lianmin Zheng, Ying Sheng and others
+  year: 2024
+  title: "Chatbot Arena: An Open Platform for Evaluating LLMs by Human Preference"
+  venue: ICML 2024
+  url: https://arxiv.org/abs/2403.04132
+guo2017:
+  authors: Chuan Guo, Geoff Pleiss, Yu Sun and Kilian Q. Weinberger
+  year: 2017
+  title: On Calibration of Modern Neural Networks
+  venue: ICML 2017
+  url: https://arxiv.org/abs/1706.04599
+kadavath2022:
+  authors: Saurav Kadavath, Tom Conerly, Amanda Askell and others
+  year: 2022
+  title: Language Models (Mostly) Know What They Know
+  venue: arXiv
+  url: https://arxiv.org/abs/2207.05221
+sainz2023:
+  authors: Oscar Sainz, Jon Ander Campos, Iker García-Ferrero and others
+  year: 2023
+  title: "NLP Evaluation in trouble: On the Need to Measure LLM Data Contamination for each Benchmark"
+  venue: Findings of EMNLP 2023
+  url: https://arxiv.org/abs/2310.18018
+zellers2019:
+  authors: Rowan Zellers, Ari Holtzman, Yonatan Bisk, Ali Farhadi and Yejin Choi
+  year: 2019
+  title: "HellaSwag: Can a Machine Really Finish Your Sentence?"
+  venue: ACL 2019
+  url: https://arxiv.org/abs/1905.07830
+mostafazadeh2016:
+  authors: Nasrin Mostafazadeh, Nathanael Chambers, Xiaodong He and others
+  year: 2016
+  title: A Corpus and Cloze Evaluation for Deeper Understanding of Commonsense Stories
+  venue: NAACL 2016
+  url: https://arxiv.org/abs/1604.01696
+efron1979:
+  authors: Bradley Efron
+  year: 1979
+  title: "Bootstrap Methods: Another Look at the Jackknife"
+  venue: The Annals of Statistics 7
+  url: https://doi.org/10.1214/aos/1176344552
+miller2024:
+  authors: Evan Miller
+  year: 2024
+  title: "Adding Error Bars to Evals: A Statistical Approach to Language Model Evaluations"
+  venue: arXiv
+  url: https://arxiv.org/abs/2411.00640
+papineni2002:
+  authors: Kishore Papineni, Salim Roukos, Todd Ward and Wei-Jing Zhu
+  year: 2002
+  title: "BLEU: a Method for Automatic Evaluation of Machine Translation"
+  venue: ACL 2002
+  url: https://aclanthology.org/P02-1040/
+dubois2024:
+  authors: Yann Dubois, Balázs Galambosi, Percy Liang and Tatsunori B. Hashimoto
+  year: 2024
+  title: "Length-Controlled AlpacaEval: A Simple Way to Debias Automatic Evaluators"
+  venue: arXiv
+  url: https://arxiv.org/abs/2404.04475
+nostalgebraist2020:
+  authors: nostalgebraist
+  year: 2020
+  title: Interpreting GPT, the logit lens
+  venue: LessWrong
+  url: https://www.lesswrong.com/posts/AcKRB8wDpdaN6v6ru/interpreting-gpt-the-logit-lens
+belrose2023:
+  authors: Nora Belrose, Zach Furman, Logan Smith and others
+  year: 2023
+  title: Eliciting Latent Predictions from Transformers with the Tuned Lens
+  venue: arXiv
+  url: https://arxiv.org/abs/2303.08112
+alain2016:
+  authors: Guillaume Alain and Yoshua Bengio
+  year: 2016
+  title: Understanding intermediate layers using linear classifier probes
+  venue: arXiv
+  url: https://arxiv.org/abs/1610.01644
+hewitt2019:
+  authors: John Hewitt and Percy Liang
+  year: 2019
+  title: Designing and Interpreting Probes with Control Tasks
+  venue: EMNLP 2019
+  url: https://arxiv.org/abs/1909.03368
+elhage2022:
+  authors: Nelson Elhage, Tristan Hume, Catherine Olsson and others
+  year: 2022
+  title: Toy Models of Superposition
+  venue: Transformer Circuits Thread
+  url: https://transformer-circuits.pub/2022/toy_model/index.html
+bricken2023:
+  authors: Trenton Bricken, Adly Templeton, Joshua Batson and others
+  year: 2023
+  title: "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
+  venue: Transformer Circuits Thread
+  url: https://transformer-circuits.pub/2023/monosemantic-features
+cunningham2023:
+  authors: Hoagy Cunningham, Aidan Ewart, Logan Riggs, Robert Huben and Lee Sharkey
+  year: 2023
+  title: Sparse Autoencoders Find Highly Interpretable Features in Language Models
+  venue: ICLR 2024
+  url: https://arxiv.org/abs/2309.08600
+templeton2024:
+  authors: Adly Templeton, Tom Conerly, Jonathan Marcus and others
+  year: 2024
+  title: "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
+  venue: Transformer Circuits Thread
+  url: https://transformer-circuits.pub/2024/scaling-monosemanticity/
+gao2024topk:
+  authors: Leo Gao, Tom Dupré la Tour, Henk Tillman and others
+  year: 2024
+  title: Scaling and evaluating sparse autoencoders
+  venue: arXiv
+  url: https://arxiv.org/abs/2406.04093
+meng2022:
+  authors: Kevin Meng, David Bau, Alex Andonian and Yonatan Belinkov
+  year: 2022
+  title: Locating and Editing Factual Associations in GPT
+  venue: NeurIPS 2022
+  url: https://arxiv.org/abs/2202.05262
+wang2023ioi:
+  authors: Kevin Wang, Alexandre Variengien, Arthur Conmy, Buck Shlegeris and Jacob Steinhardt
+  year: 2023
+  title: "Interpretability in the Wild: a Circuit for Indirect Object Identification in GPT-2 small"
+  venue: ICLR 2023
+  url: https://arxiv.org/abs/2211.00593
+lindsey2025:
+  authors: Jack Lindsey, Wes Gurnee, Emmanuel Ameisen and others
+  year: 2025
+  title: On the Biology of a Large Language Model
+  venue: Transformer Circuits Thread
+  url: https://transformer-circuits.pub/2025/attribution-graphs/biology.html
+shoeybi2019:
+  authors: Mohammad Shoeybi, Mostofa Patwary, Raul Puri and others
+  year: 2019
+  title: "Megatron-LM: Training Multi-Billion Parameter Language Models Using Model Parallelism"
+  venue: arXiv
+  url: https://arxiv.org/abs/1909.08053
+huang2019gpipe:
+  authors: Yanping Huang, Youlong Cheng, Ankur Bapna and others
+  year: 2019
+  title: "GPipe: Efficient Training of Giant Neural Networks using Pipeline Parallelism"
+  venue: NeurIPS 2019
+  url: https://arxiv.org/abs/1811.06965
+narayanan2021:
+  authors: Deepak Narayanan, Mohammad Shoeybi, Jared Casper and others
+  year: 2021
+  title: Efficient Large-Scale Language Model Training on GPU Clusters Using Megatron-LM
+  venue: SC 2021
+  url: https://arxiv.org/abs/2104.04473
+zhao2023fsdp:
+  authors: Yanli Zhao, Andrew Gu, Rohan Varma and others
+  year: 2023
+  title: "PyTorch FSDP: Experiences on Scaling Fully Sharded Data Parallel"
+  venue: VLDB 2023
+  url: https://arxiv.org/abs/2304.11277
+yu2022orca:
+  authors: Gyeong-In Yu, Joo Seong Jeong, Geon-Woo Kim, Soojeong Kim and Byung-Gon Chun
+  year: 2022
+  title: "Orca: A Distributed Serving System for Transformer-Based Generative Models"
+  venue: OSDI 2022
+  url: https://www.usenix.org/conference/osdi22/presentation/yu
+llama3herd2024:
+  authors: Llama Team (Meta)
+  year: 2024
+  title: The Llama 3 Herd of Models
+  venue: arXiv
+  url: https://arxiv.org/abs/2407.21783
+amodei2016:
+  authors: Dario Amodei, Chris Olah, Jacob Steinhardt, Paul Christiano, John Schulman and Dan Mané
+  year: 2016
+  title: Concrete Problems in AI Safety
+  venue: arXiv
+  url: https://arxiv.org/abs/1606.06565
+krakovna2020:
+  authors: Victoria Krakovna, Jonathan Uesato, Vladimir Mikulik and others
+  year: 2020
+  title: "Specification gaming: the flip side of AI ingenuity"
+  venue: DeepMind blog
+  url: https://deepmind.google/discover/blog/specification-gaming-the-flip-side-of-ai-ingenuity/
+hubinger2024:
+  authors: Evan Hubinger, Carson Denison, Jesse Mu and others
+  year: 2024
+  title: "Sleeper Agents: Training Deceptive LLMs that Persist Through Safety Training"
+  venue: arXiv
+  url: https://arxiv.org/abs/2401.05566
+wei2023jailbroken:
+  authors: Alexander Wei, Nika Haghtalab and Jacob Steinhardt
+  year: 2023
+  title: "Jailbroken: How Does LLM Safety Training Fail?"
+  venue: NeurIPS 2023
+  url: https://arxiv.org/abs/2307.02483
+zou2023:
+  authors: Andy Zou, Zifan Wang, Nicholas Carlini, Milad Nasr, J. Zico Kolter and Matt Fredrikson
+  year: 2023
+  title: Universal and Transferable Adversarial Attacks on Aligned Language Models
+  venue: arXiv
+  url: https://arxiv.org/abs/2307.15043
+perez2022:
+  authors: Ethan Perez, Saffron Huang, Francis Song and others
+  year: 2022
+  title: Red Teaming Language Models with Language Models
+  venue: EMNLP 2022
+  url: https://arxiv.org/abs/2202.03286
+ganguli2022:
+  authors: Deep Ganguli, Liane Lovitt, Jackson Kernion and others
+  year: 2022
+  title: "Red Teaming Language Models to Reduce Harms: Methods, Scaling Behaviors, and Lessons Learned"
+  venue: arXiv
+  url: https://arxiv.org/abs/2209.07858
+sharma2024:
+  authors: Mrinank Sharma, Meg Tong, Tomasz Korbak and others
+  year: 2024
+  title: Towards Understanding Sycophancy in Language Models
+  venue: ICLR 2024
+  url: https://arxiv.org/abs/2310.13548
+greenblatt2024:
+  authors: Ryan Greenblatt, Carson Denison, Benjamin Wright and others
+  year: 2024
+  title: Alignment faking in large language models
+  venue: arXiv
+  url: https://arxiv.org/abs/2412.14093
+shevlane2023:
+  authors: Toby Shevlane, Sebastian Farquhar, Ben Garfinkel and others
+  year: 2023
+  title: Model evaluation for extreme risks
+  venue: arXiv
+  url: https://arxiv.org/abs/2305.15324
+hines2024:
+  authors: Keegan Hines, Gary Lopez, Matthew Hall and others
+  year: 2024
+  title: Defending Against Indirect Prompt Injection Attacks With Spotlighting
+  venue: arXiv
+  url: https://arxiv.org/abs/2403.14720
+wallace2024:
+  authors: Eric Wallace, Kai Xiao, Reimar Leike and others
+  year: 2024
+  title: "The Instruction Hierarchy: Training LLMs to Prioritize Privileged Instructions"
+  venue: arXiv
+  url: https://arxiv.org/abs/2404.13208
+carlini2024:
+  authors: Nicholas Carlini, Matthew Jagielski, Christopher A. Choquette-Choo and others
+  year: 2024
+  title: Poisoning Web-Scale Training Datasets is Practical
+  venue: IEEE S&P 2024
+  url: https://arxiv.org/abs/2302.10149
+souly2025:
+  authors: Alexandra Souly, Javier Rando, Ed Chapman and others
+  year: 2025
+  title: Poisoning Attacks on LLMs Require a Near-constant Number of Poison Samples
+  venue: Anthropic, UK AI Security Institute and the Alan Turing Institute
+  url: https://www.anthropic.com/research/small-samples-poison
+gu2023mamba:
+  authors: Albert Gu and Tri Dao
+  year: 2023
+  title: "Mamba: Linear-Time Sequence Modeling with Selective State Spaces"
+  venue: arXiv
+  url: https://arxiv.org/abs/2312.00752
+hinton2015:
+  authors: Geoffrey Hinton, Oriol Vinyals and Jeff Dean
+  year: 2015
+  title: Distilling the Knowledge in a Neural Network
+  venue: NeurIPS 2014 Deep Learning Workshop
+  url: https://arxiv.org/abs/1503.02531
+wilson1927:
+  authors: Edwin B. Wilson
+  year: 1927
+  title: Probable Inference, the Law of Succession, and Statistical Inference
+  venue: Journal of the American Statistical Association 22
+  url: https://doi.org/10.1080/01621459.1927.10502953
+wasserman2004:
+  authors: Larry Wasserman
+  year: 2004
+  title: "All of Statistics: A Concise Course in Statistical Inference"
+  venue: Springer
+  url: https://doi.org/10.1007/978-0-387-21736-9
+bouthillier2021:
+  authors: Xavier Bouthillier, Pierre Delaunay, Mirko Bronzi and others
+  year: 2021
+  title: Accounting for Variance in Machine Learning Benchmarks
+  venue: MLSys 2021
+  url: https://arxiv.org/abs/2103.03098
+dror2018:
+  authors: Rotem Dror, Gili Baumer, Segev Shlomov and Roi Reichart
+  year: 2018
+  title: "The Hitchhiker's Guide to Testing Statistical Significance in Natural Language Processing"
+  venue: ACL 2018
+  url: https://aclanthology.org/P18-1128/
+hastie2009:
+  authors: Trevor Hastie, Robert Tibshirani and Jerome Friedman
+  year: 2009
+  title: "The Elements of Statistical Learning (2nd edition)"
+  venue: Springer
+  url: https://hastie.su.domains/ElemStatLearn/
+yue2025:
+  authors: Yang Yue, Zhiqi Chen, Rui Lu and others
+  year: 2025
+  title: Does Reinforcement Learning Really Incentivize Reasoning Capacity in LLMs Beyond the Base Model?
+  venue: arXiv
+  url: https://arxiv.org/abs/2504.13837

@@ -3,10 +3,10 @@
 
 import { For, Show, createMemo, createSignal } from 'solid-js';
 import { envFor, check } from '../../app/kernel.ts';
-import { TypeChecker } from '../../kernel/core/typechecker.ts';
-import { type Level, lzero, lsucc, lparam, limax, lmax, levelToString, toNat, simplifyLevel } from '../../kernel/core/level.ts';
+import { TypeChecker } from '@kernel/core/typechecker.ts';
+import { type Level, lzero, lsucc, lparam, limax, lmax, levelToString, toNat, simplifyLevel } from '@kernel/core/level.ts';
 import { Term } from '../Term.tsx';
-import type { Expr } from '../../kernel/core/expr.ts';
+import type { Expr } from '@kernel/core/expr.ts';
 
 const DEFAULT = `Nat
 Nat → Nat

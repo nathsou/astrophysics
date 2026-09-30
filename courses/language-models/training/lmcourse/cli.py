@@ -89,6 +89,22 @@ def main() -> None:
     c17.add_argument("what", choices=["sweep", "fit", "summary"])
     c18 = sub.add_parser("ch18", help="Chapter 18: ablation | context | summary")
     c18.add_argument("what", choices=["ablation", "context", "summary"])
+    c19 = sub.add_parser("ch19", help="Chapter 19: train | routing | summary")
+    c19.add_argument("what", choices=["train", "routing", "summary"])
+    c20 = sub.add_parser("ch20", help="Chapter 20: finetune | evaluate | spectrum | export | summary")
+    c20.add_argument("what", choices=["finetune", "evaluate", "spectrum", "export", "summary"])
+    c21 = sub.add_parser("ch21", help="Chapter 21: pairs | reward | bestofn | dpo | summary")
+    c21.add_argument("what", choices=["pairs", "reward", "bestofn", "dpo", "summary"])
+    c22 = sub.add_parser("ch22", help="Chapter 22: train | vote | grpo | summary")
+    c22.add_argument("what", choices=["train", "vote", "grpo", "summary"])
+    c23 = sub.add_parser("ch23", help="Chapter 23: train | evaluate | export | summary")
+    c23.add_argument("what", choices=["train", "evaluate", "export", "summary"])
+    c25 = sub.add_parser("ch25", help="Chapter 25: benchmark | calibration | contaminate | summary")
+    c25.add_argument("what", choices=["benchmark", "calibration", "contaminate", "summary"])
+    c26 = sub.add_parser("ch26", help="Chapter 26: lens | heads | probe | sae | summary")
+    c26.add_argument("what", choices=["lens", "heads", "probe", "sae", "summary"])
+    c28 = sub.add_parser("ch28", help="Chapter 28: poison | summary")
+    c28.add_argument("what", choices=["poison", "summary"])
     tr = sub.add_parser("train", help="Chapter 12+: train a GPT (presets: quick, chargpt, chargpt-big, smoke, coursegpt, draft)")
     tr.add_argument("--preset", default="chargpt")
     tr.add_argument("--steps", type=int, default=None)
@@ -210,6 +226,38 @@ def main() -> None:
         from . import ch18
 
         getattr(ch18, args.what)()
+    elif args.cmd == "ch19":
+        from . import ch19
+
+        getattr(ch19, args.what)()
+    elif args.cmd == "ch20":
+        from . import ch20
+
+        getattr(ch20, args.what)()
+    elif args.cmd == "ch21":
+        from . import ch21
+
+        getattr(ch21, args.what)()
+    elif args.cmd == "ch22":
+        from . import ch22
+
+        getattr(ch22, args.what)()
+    elif args.cmd == "ch23":
+        from . import ch23
+
+        getattr(ch23, args.what)()
+    elif args.cmd == "ch25":
+        from . import ch25
+
+        getattr(ch25, args.what)()
+    elif args.cmd == "ch26":
+        from . import ch26
+
+        getattr(ch26, args.what)()
+    elif args.cmd == "ch28":
+        from . import ch28
+
+        getattr(ch28, args.what)()
     elif args.cmd == "train":
         from . import train
 

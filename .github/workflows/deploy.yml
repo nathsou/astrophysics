@@ -34,6 +34,7 @@ jobs:
           cache-dependency-path: |
             courses/astrophysics/package-lock.json
             courses/cic/package-lock.json
+            courses/proofs-are-programs/package-lock.json
             courses/compiler-backends/package-lock.json
             courses/incompleteness/package-lock.json
             courses/elements/package-lock.json
@@ -44,6 +45,7 @@ jobs:
         run: |
           npm ci --prefix courses/astrophysics
           npm ci --prefix courses/cic
+          npm ci --prefix courses/proofs-are-programs
           npm ci --prefix courses/compiler-backends
           npm ci --prefix courses/incompleteness
           npm ci --prefix courses/elements

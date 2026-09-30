@@ -58,6 +58,12 @@ class TrainConfig:
     mlp_type: str = "gelu"
     pos: str = "learned"
     kv_heads: int = 0
+    # Chapter 19: mixture of experts (0: dense).
+    experts: int = 0
+    top_k: int = 2
+    expert_hidden: int = 0
+    aux_coef: float = 0.01
+    gate: str = "auto"
     seed: int = 1
     notes: dict = field(default_factory=dict)
 
@@ -199,6 +205,11 @@ def main(
         mlp_type=cfg.mlp_type,
         pos=cfg.pos,
         kv_heads=cfg.kv_heads,
+        experts=cfg.experts,
+        top_k=cfg.top_k,
+        expert_hidden=cfg.expert_hidden,
+        aux_coef=cfg.aux_coef,
+        gate=cfg.gate,
     )
     model = GPT(mcfg).to(dev)
     if cfg.optimizer == "muon":

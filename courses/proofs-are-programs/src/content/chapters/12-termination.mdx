@@ -1,0 +1,178 @@
+Since Chapter 1 the checker has insisted that every recursive function terminates, and Chapter 11 showed that a proof by induction is a recursive function. This chapter explains why the two facts belong together, what exactly the checker accepts, and what to do when it refuses a function that you know terminates.
+
+## A proof that never ends
+
+Suppose the checker accepted any recursive definition. Then this would be a proof of `False`:
+
+<Playground errors title="The shortest proof of False" code={`theorem loop : False := loop`} />
+
+Read it as a program: `loop` is a value of type `False`, computed by... calling `loop`. It never returns, so it never produces a value, but its type claims one. As a *program* this is a harmless infinite loop, the kind every programming language allows. As a *proof* it is a disaster: with a proof of `False`, every statement becomes provable (Chapter 3), and nothing the checker says means anything any more.
+
+The same trick works for any statement, including false ones about your programs: `theorem sorted : isSorted (mySort xs) := sorted`. So the rule is not a matter of style. **In a language where proofs are programs, every program must terminate**, or the proofs are worthless.
+
+<Key>
+A type is a promise, and a program that never returns never breaks its promise: it just never keeps it. Programmers can live with that ("if it returns, the result is correct"). A proof cannot: "if this proof finishes, the theorem holds" is no proof at all. Termination is what turns "the result would be correct" into "the result is correct".
+</Key>
+
+<UnderTheHood ch="recursion" s="why-recursion-must-be-restricted">
+The CIC course shows other ways that unrestricted recursion breaks the logic, and why the kernel's recursors only allow calls on constructor arguments.
+</UnderTheHood>
+
+## Structural recursion
+
+The default rule, used since Chapter 1, is **structural recursion**: pattern match on an argument, and call yourself only on parts of it, the fields of the constructor you matched. Every value is a finite tree of constructors, so following the calls, the argument gets smaller at every step, and the recursion must stop.
+
+The view below shows how the checker justified each recursive definition in the snippet. Edit the code and watch it change:
+
+<TerminationView code={`def length' {α : Type} : List α → Nat
+  | [] => 0
+  | _ :: xs => length' xs + 1
+
+def add' : Nat → Nat → Nat
+  | n, 0 => n
+  | n, m + 1 => add' n m + 1`} />
+
+The rule is strict: the recursive call must be on an *immediate* part. `halve` below calls itself on `n` from the pattern `n + 2`. The call is on a smaller number, but `n` is two constructors down, not one, and the rule refuses:
+
+<Playground errors title="Two steps down" code={`def halve : Nat → Nat
+  | 0 => 0
+  | 1 => 0
+  | n + 2 => halve n + 1`} />
+
+(Lean 4 would accept this one, with a smarter version of the structural rule. The course language keeps the simplest version, and uses the next section for everything else.)
+
+## Well-founded recursion: a measure that decreases
+
+When the argument does not get *structurally* smaller, you can still show termination with a **measure**: a number, computed from the arguments, that decreases at every recursive call. Numbers cannot decrease forever, so the recursion stops. Give the measure with `termination_by`:
+
+<TerminationView code={`def halve : Nat → Nat
+  | 0 => 0
+  | 1 => 0
+  | n + 2 => halve n + 1
+termination_by n => n
+
+-- the measure can combine several arguments
+def merge : List Nat → List Nat → List Nat
+  | [], ys => ys
+  | xs, [] => xs
+  | x :: xs, y :: ys =>
+    if x ≤ y then x :: merge xs (y :: ys) else y :: merge (x :: xs) ys
+termination_by xs ys => xs.length + ys.length
+
+#eval halve 21
+#eval merge [1, 4, 6] [2, 3, 7]`} />
+
+In `termination_by xs ys => xs.length + ys.length`, the names `xs ys` refer to the arguments matched by the equations. For each recursive call, the checker creates a proof obligation, like `(xs.length + (y :: ys).length) < ((x :: xs).length + (y :: ys).length)`, and tries to prove it automatically (with `omega` and `simp`, from Chapter 10). The view lists the obligations it proved.
+
+The measure does not have to follow the structure of the data at all. Euclid's algorithm, in its subtraction form, recurses on `b - a` and `a - b`:
+
+<TerminationView code={`def gcd' (a b : Nat) : Nat :=
+  if a = 0 then b
+  else if b = 0 then a
+  else if a ≤ b then gcd' a (b - a)
+  else gcd' (a - b) b
+termination_by a + b
+
+#eval gcd' 84 36`} />
+
+Each obligation is proved in the context of the call: in the branch `a ≤ b` of the `if`, the hypotheses `¬(a = 0)`, `¬(b = 0)` and `a ≤ b` are available, and they are what makes `a + (b - a) < a + b` true.
+
+### When the automatic proof fails
+
+If the default tactic cannot prove an obligation, the checker shows you the goal. A wrong measure, or a function that really does not terminate, looks like this:
+
+<Playground errors title="Going up" code={`def up (n : Nat) : Nat := up (n + 1)
+termination_by n`} />
+
+Sometimes the function is fine and the proof is just beyond the automation. Then `decreasing_by` supplies the proof yourself, with tactics. Here the measure is a function of our own, `weight`, which the automatic proof does not know how to unfold:
+
+```lean
+def weight : List Nat → Nat
+  | [] => 0
+  | x :: xs => x + 1 + weight xs
+
+def total : List Nat → Nat
+  | [] => 0
+  | x :: xs => total xs + x
+termination_by xs => weight xs
+decreasing_by
+  simp [weight]
+  omega
+```
+
+(This `total` is structurally recursive anyway; the point is the shape of `decreasing_by`. Delete it to see the obligation that the default tactic could not prove.)
+
+## What well-founded recursion costs
+
+A definition by well-founded recursion is compiled to a general-purpose fixed-point operator from the library, `WellFounded.fix`, together with a proof that `<` on numbers has no infinite descending chains (`Nat.lt_wf`). The program still runs with `#eval`, and the checker generates the equations you expect (`halve (n + 2) = halve n + 1`), which `simp` and `rw` use:
+
+```lean
+def halve : Nat → Nat
+  | 0 => 0
+  | 1 => 0
+  | n + 2 => halve n + 1
+termination_by n => n
+
+example : halve 10 = 5 := by simp [halve]
+
+```
+
+The difference is in the kernel. To compute `halve 10` by itself, for `rfl` or `decide`, it must now run `WellFounded.fix`, which recurses on the *proof* that the measure decreases. The course's kernel does this (it unfolds the proofs of `Nat.lt_wf`, which is slow but works on small inputs). Lean's kernel refuses: it treats definitions by well-founded recursion as opaque, precisely because computing with proofs is slow and fragile, and asks you to use their equations (`simp [halve]`, `rw [halve]`, `unfold halve`) instead. That is a good habit in any case: prefer structural recursion when it works, use `termination_by` when it does not, and reason about the result through its equations.
+
+<Note title="Is there a function nobody can define?">
+Here is a famous one:
+
+```lean nocheck
+def collatz (n : Nat) : Nat :=
+  if n ≤ 1 then 0
+  else if n % 2 = 0 then collatz (n / 2) + 1
+  else collatz (3 * n + 1) + 1
+```
+
+Nobody knows whether it terminates for every `n`: that is the Collatz conjecture, open since 1937. No measure is known, so no one can write the `termination_by` clause. The usual escape hatch is **fuel**: an extra argument that counts down, and a result wrapped in `Option` for when the fuel runs out. A program with fuel always terminates, and says honestly when it gave up.
+</Note>
+
+```lean
+def collatzFuel : Nat → Nat → Option Nat
+  | 0, _ => none
+  | fuel + 1, n =>
+    if n ≤ 1 then some 0
+    else if n % 2 = 0 then (collatzFuel fuel (n / 2)).map (· + 1)
+    else (collatzFuel fuel (3 * n + 1)).map (· + 1)
+
+#eval collatzFuel 1000 27
+```
+
+<UnderTheHood ch="beyond-structural" s="well-founded-recursion">
+How `WellFounded.fix` is built from the accessibility predicate `Acc`, and why it is the most general form of terminating recursion, is in the CIC chapter on mutual, nested and well-founded recursion.
+</UnderTheHood>
+
+## Exercises
+
+<Exercise id="termination:sum-down" title="A measure" code={`-- the sum n + (n - 1) + … + 1, recursing on n - 1
+def sumDown (n : Nat) : Nat :=
+  if n = 0 then 0 else n + sumDown (n - 1)
+termination_by sorry
+
+example : sumDown 4 = 10 := by simp [sumDown]`} must="sumDown" hint="The argument itself decreases: termination_by n." solution={`def sumDown (n : Nat) : Nat :=
+  if n = 0 then 0 else n + sumDown (n - 1)
+termination_by n
+
+example : sumDown 4 = 10 := by simp [sumDown]`}>
+`sumDown` is not structurally recursive (it calls itself on `n - 1`, which is not a pattern variable). Give it a measure.
+</Exercise>
+
+<Exercise id="termination:interleave" title="Interleaving" code={`-- alternate the elements of two lists: interleave [1, 2] [7, 8, 9] = [1, 7, 2, 8, 9]
+def interleave : List Nat → List Nat → List Nat
+  | [], ys => ys
+  | x :: xs, ys => x :: interleave ys xs
+termination_by sorry
+
+example : interleave [1, 2] [7, 8, 9] = [1, 7, 2, 8, 9] := by simp [interleave]`} must="interleave" hint="The arguments are swapped at each call, so neither decreases alone. Their total length does: termination_by xs ys => xs.length + ys.length." solution={`def interleave : List Nat → List Nat → List Nat
+  | [], ys => ys
+  | x :: xs, ys => x :: interleave ys xs
+termination_by xs ys => xs.length + ys.length
+
+example : interleave [1, 2] [7, 8, 9] = [1, 7, 2, 8, 9] := by simp [interleave]`}>
+The recursive call swaps the two lists, so neither argument gets structurally smaller. Find a measure.
+</Exercise>

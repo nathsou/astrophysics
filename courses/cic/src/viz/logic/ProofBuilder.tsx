@@ -1,7 +1,7 @@
 // Natural deduction proofs, built goal-first, with their proof terms.
 
 import { For, Show, createMemo, createSignal } from 'solid-js';
-import * as ND from '../../kernel/logic/nd.ts';
+import * as ND from '@kernel/logic/nd.ts';
 import { envFor, check } from '../../app/kernel.ts';
 
 export interface ProofBuilderProps {
