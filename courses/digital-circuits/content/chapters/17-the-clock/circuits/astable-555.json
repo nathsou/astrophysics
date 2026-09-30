@@ -1,0 +1,558 @@
+{
+  "version": 1,
+  "title": "A 555 astable from its parts",
+  "engine": "analog",
+  "components": [
+    {
+      "id": "B1",
+      "type": "battery",
+      "x": 0,
+      "y": 10,
+      "rot": 270,
+      "params": {
+        "voltage": 5
+      },
+      "label": "5 V"
+    },
+    {
+      "id": "G0",
+      "type": "ground",
+      "x": 0,
+      "y": 12,
+      "label": ""
+    },
+    {
+      "id": "FV1",
+      "type": "label",
+      "x": 12,
+      "y": 2,
+      "params": {
+        "name": "VCC"
+      },
+      "label": ""
+    },
+    {
+      "id": "RA",
+      "type": "resistor",
+      "x": 6,
+      "y": 4,
+      "rot": 90,
+      "params": {
+        "resistance": 5000
+      }
+    },
+    {
+      "id": "RB",
+      "type": "resistor",
+      "x": 6,
+      "y": 8,
+      "rot": 90,
+      "params": {
+        "resistance": 5000
+      }
+    },
+    {
+      "id": "RC",
+      "type": "resistor",
+      "x": 6,
+      "y": 12,
+      "rot": 90,
+      "params": {
+        "resistance": 5000
+      }
+    },
+    {
+      "id": "G1",
+      "type": "ground",
+      "x": 6,
+      "y": 18,
+      "label": ""
+    },
+    {
+      "id": "CT",
+      "type": "comparator",
+      "x": 16,
+      "y": 6,
+      "label": "threshold"
+    },
+    {
+      "id": "CB",
+      "type": "comparator",
+      "x": 16,
+      "y": 12,
+      "label": "trigger"
+    },
+    {
+      "id": "F1",
+      "type": "label",
+      "x": 14,
+      "y": 6,
+      "flip": true,
+      "params": {
+        "name": "CAP"
+      },
+      "label": ""
+    },
+    {
+      "id": "F2",
+      "type": "label",
+      "x": 14,
+      "y": 14,
+      "flip": true,
+      "params": {
+        "name": "CAP"
+      },
+      "label": ""
+    },
+    {
+      "id": "N1",
+      "type": "nor",
+      "x": 30,
+      "y": 6,
+      "params": {
+        "delay": 0
+      },
+      "label": ""
+    },
+    {
+      "id": "N2",
+      "type": "nor",
+      "x": 30,
+      "y": 12,
+      "params": {
+        "delay": 0
+      },
+      "label": ""
+    },
+    {
+      "id": "F3",
+      "type": "label",
+      "x": 28,
+      "y": 8,
+      "flip": true,
+      "params": {
+        "name": "QN"
+      },
+      "label": ""
+    },
+    {
+      "id": "F4",
+      "type": "label",
+      "x": 28,
+      "y": 14,
+      "flip": true,
+      "params": {
+        "name": "Q"
+      },
+      "label": ""
+    },
+    {
+      "id": "F5",
+      "type": "label",
+      "x": 38,
+      "y": 7,
+      "params": {
+        "name": "Q"
+      },
+      "label": ""
+    },
+    {
+      "id": "OUT",
+      "type": "indicator",
+      "x": 44,
+      "y": 7,
+      "params": {
+        "color": "amber"
+      },
+      "label": "OUT"
+    },
+    {
+      "id": "F6",
+      "type": "label",
+      "x": 38,
+      "y": 13,
+      "params": {
+        "name": "QN"
+      },
+      "label": ""
+    },
+    {
+      "id": "RD",
+      "type": "resistor",
+      "x": 40,
+      "y": 13,
+      "params": {
+        "resistance": 4700
+      },
+      "label": ""
+    },
+    {
+      "id": "T1",
+      "type": "npn",
+      "x": 46,
+      "y": 13,
+      "label": "discharge"
+    },
+    {
+      "id": "G2",
+      "type": "ground",
+      "x": 49,
+      "y": 19,
+      "label": ""
+    },
+    {
+      "id": "R1",
+      "type": "resistor",
+      "x": 54,
+      "y": 4,
+      "rot": 90,
+      "params": {
+        "resistance": 1000
+      }
+    },
+    {
+      "id": "R2",
+      "type": "resistor",
+      "x": 54,
+      "y": 8,
+      "rot": 90,
+      "params": {
+        "resistance": 10000
+      }
+    },
+    {
+      "id": "C1",
+      "type": "capacitor",
+      "x": 54,
+      "y": 12,
+      "rot": 90,
+      "params": {
+        "capacitance": 4.7e-06
+      }
+    },
+    {
+      "id": "G3",
+      "type": "ground",
+      "x": 54,
+      "y": 18,
+      "label": ""
+    },
+    {
+      "id": "FV2",
+      "type": "label",
+      "x": 51,
+      "y": 2,
+      "flip": true,
+      "params": {
+        "name": "VCC"
+      },
+      "label": ""
+    },
+    {
+      "id": "F7",
+      "type": "label",
+      "x": 57,
+      "y": 12,
+      "params": {
+        "name": "CAP"
+      },
+      "label": ""
+    }
+  ],
+  "wires": [
+    {
+      "points": [
+        [
+          0,
+          6
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          6,
+          4
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          0,
+          10
+        ],
+        [
+          0,
+          12
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          6,
+          2
+        ],
+        [
+          12,
+          2
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          6,
+          16
+        ],
+        [
+          6,
+          18
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          6,
+          8
+        ],
+        [
+          16,
+          8
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          6,
+          12
+        ],
+        [
+          16,
+          12
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          14,
+          6
+        ],
+        [
+          16,
+          6
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          14,
+          14
+        ],
+        [
+          16,
+          14
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          22,
+          7
+        ],
+        [
+          26,
+          7
+        ],
+        [
+          26,
+          6
+        ],
+        [
+          30,
+          6
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          22,
+          13
+        ],
+        [
+          26,
+          13
+        ],
+        [
+          26,
+          12
+        ],
+        [
+          30,
+          12
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          28,
+          8
+        ],
+        [
+          30,
+          8
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          28,
+          14
+        ],
+        [
+          30,
+          14
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          36,
+          7
+        ],
+        [
+          44,
+          7
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          36,
+          13
+        ],
+        [
+          40,
+          13
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          44,
+          13
+        ],
+        [
+          46,
+          13
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          49,
+          11
+        ],
+        [
+          49,
+          8
+        ],
+        [
+          54,
+          8
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          49,
+          15
+        ],
+        [
+          49,
+          19
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          54,
+          4
+        ],
+        [
+          54,
+          2
+        ],
+        [
+          51,
+          2
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          54,
+          16
+        ],
+        [
+          54,
+          18
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          54,
+          12
+        ],
+        [
+          57,
+          12
+        ]
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "x": 8,
+      "y": 20.5,
+      "text": "three equal resistors:\n1/3 and 2/3 of the supply"
+    },
+    {
+      "x": 22,
+      "y": 1.5,
+      "text": "CAP above 2/3: reset"
+    },
+    {
+      "x": 22,
+      "y": 17,
+      "text": "CAP below 1/3: set"
+    },
+    {
+      "x": 34,
+      "y": 19,
+      "text": "QN high: the transistor\ndischarges the capacitor"
+    }
+  ]
+}

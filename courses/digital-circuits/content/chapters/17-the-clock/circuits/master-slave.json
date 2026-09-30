@@ -1,0 +1,163 @@
+{
+  "version": 1,
+  "title": "Two latches make a flip-flop",
+  "engine": "digital",
+  "components": [
+    {
+      "id": "D",
+      "type": "toggle",
+      "x": 2,
+      "y": 2,
+      "label": "D"
+    },
+    {
+      "id": "CLK",
+      "type": "clock",
+      "x": 2,
+      "y": 8,
+      "params": {
+        "frequency": 10000000.0
+      },
+      "label": "CLK"
+    },
+    {
+      "id": "N1",
+      "type": "not",
+      "x": 8,
+      "y": 8,
+      "label": ""
+    },
+    {
+      "id": "M",
+      "type": "dlatch",
+      "x": 14,
+      "y": 2,
+      "params": {
+        "delay": 1
+      },
+      "label": "master"
+    },
+    {
+      "id": "S",
+      "type": "dlatch",
+      "x": 30,
+      "y": 2,
+      "params": {
+        "delay": 1
+      },
+      "label": "slave"
+    },
+    {
+      "id": "Q",
+      "type": "indicator",
+      "x": 40,
+      "y": 2,
+      "params": {
+        "color": "amber"
+      },
+      "label": "Q"
+    }
+  ],
+  "wires": [
+    {
+      "points": [
+        [
+          5,
+          2
+        ],
+        [
+          14,
+          2
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          8
+        ],
+        [
+          8,
+          8
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          6,
+          8
+        ],
+        [
+          6,
+          11
+        ],
+        [
+          26,
+          11
+        ],
+        [
+          26,
+          4
+        ],
+        [
+          30,
+          4
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          13,
+          8
+        ],
+        [
+          13,
+          4
+        ],
+        [
+          14,
+          4
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          2
+        ],
+        [
+          30,
+          2
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          36,
+          2
+        ],
+        [
+          40,
+          2
+        ]
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "x": 14,
+      "y": -1.5,
+      "text": "open while CLK is low"
+    },
+    {
+      "x": 30,
+      "y": -1.5,
+      "text": "open while CLK is high"
+    }
+  ]
+}

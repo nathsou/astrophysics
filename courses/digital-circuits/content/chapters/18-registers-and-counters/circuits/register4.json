@@ -1,0 +1,673 @@
+{
+  "version": 1,
+  "title": "A 4-bit register with load enable",
+  "engine": "digital",
+  "components": [
+    {
+      "id": "D3",
+      "type": "toggle",
+      "x": 2,
+      "y": 5,
+      "label": "D3"
+    },
+    {
+      "id": "M3",
+      "type": "mux",
+      "x": 14,
+      "y": 3,
+      "params": {
+        "select": 1
+      },
+      "label": ""
+    },
+    {
+      "id": "F3",
+      "type": "dff",
+      "x": 26,
+      "y": 3,
+      "label": ""
+    },
+    {
+      "id": "Q3",
+      "type": "indicator",
+      "x": 38,
+      "y": 3,
+      "params": {
+        "color": "amber"
+      },
+      "label": "Q3"
+    },
+    {
+      "id": "FQ3",
+      "type": "label",
+      "x": 34,
+      "y": 3,
+      "params": {
+        "name": "Q3"
+      },
+      "label": ""
+    },
+    {
+      "id": "FR3",
+      "type": "label",
+      "x": 12,
+      "y": 3,
+      "flip": true,
+      "params": {
+        "name": "Q3"
+      },
+      "label": ""
+    },
+    {
+      "id": "FE3",
+      "type": "label",
+      "x": 12,
+      "y": 7,
+      "flip": true,
+      "params": {
+        "name": "EN"
+      },
+      "label": ""
+    },
+    {
+      "id": "FC3",
+      "type": "label",
+      "x": 24,
+      "y": 5,
+      "flip": true,
+      "params": {
+        "name": "CLK"
+      },
+      "label": ""
+    },
+    {
+      "id": "D2",
+      "type": "toggle",
+      "x": 2,
+      "y": 12,
+      "label": "D2"
+    },
+    {
+      "id": "M2",
+      "type": "mux",
+      "x": 14,
+      "y": 10,
+      "params": {
+        "select": 1
+      },
+      "label": ""
+    },
+    {
+      "id": "F2",
+      "type": "dff",
+      "x": 26,
+      "y": 10,
+      "label": ""
+    },
+    {
+      "id": "Q2",
+      "type": "indicator",
+      "x": 38,
+      "y": 10,
+      "params": {
+        "color": "amber"
+      },
+      "label": "Q2"
+    },
+    {
+      "id": "FQ2",
+      "type": "label",
+      "x": 34,
+      "y": 10,
+      "params": {
+        "name": "Q2"
+      },
+      "label": ""
+    },
+    {
+      "id": "FR2",
+      "type": "label",
+      "x": 12,
+      "y": 10,
+      "flip": true,
+      "params": {
+        "name": "Q2"
+      },
+      "label": ""
+    },
+    {
+      "id": "FE2",
+      "type": "label",
+      "x": 12,
+      "y": 14,
+      "flip": true,
+      "params": {
+        "name": "EN"
+      },
+      "label": ""
+    },
+    {
+      "id": "FC2",
+      "type": "label",
+      "x": 24,
+      "y": 12,
+      "flip": true,
+      "params": {
+        "name": "CLK"
+      },
+      "label": ""
+    },
+    {
+      "id": "D1",
+      "type": "toggle",
+      "x": 2,
+      "y": 19,
+      "label": "D1"
+    },
+    {
+      "id": "M1",
+      "type": "mux",
+      "x": 14,
+      "y": 17,
+      "params": {
+        "select": 1
+      },
+      "label": ""
+    },
+    {
+      "id": "F1",
+      "type": "dff",
+      "x": 26,
+      "y": 17,
+      "label": ""
+    },
+    {
+      "id": "Q1",
+      "type": "indicator",
+      "x": 38,
+      "y": 17,
+      "params": {
+        "color": "amber"
+      },
+      "label": "Q1"
+    },
+    {
+      "id": "FQ1",
+      "type": "label",
+      "x": 34,
+      "y": 17,
+      "params": {
+        "name": "Q1"
+      },
+      "label": ""
+    },
+    {
+      "id": "FR1",
+      "type": "label",
+      "x": 12,
+      "y": 17,
+      "flip": true,
+      "params": {
+        "name": "Q1"
+      },
+      "label": ""
+    },
+    {
+      "id": "FE1",
+      "type": "label",
+      "x": 12,
+      "y": 21,
+      "flip": true,
+      "params": {
+        "name": "EN"
+      },
+      "label": ""
+    },
+    {
+      "id": "FC1",
+      "type": "label",
+      "x": 24,
+      "y": 19,
+      "flip": true,
+      "params": {
+        "name": "CLK"
+      },
+      "label": ""
+    },
+    {
+      "id": "D0",
+      "type": "toggle",
+      "x": 2,
+      "y": 26,
+      "label": "D0"
+    },
+    {
+      "id": "M0",
+      "type": "mux",
+      "x": 14,
+      "y": 24,
+      "params": {
+        "select": 1
+      },
+      "label": ""
+    },
+    {
+      "id": "F0",
+      "type": "dff",
+      "x": 26,
+      "y": 24,
+      "label": ""
+    },
+    {
+      "id": "Q0",
+      "type": "indicator",
+      "x": 38,
+      "y": 24,
+      "params": {
+        "color": "amber"
+      },
+      "label": "Q0"
+    },
+    {
+      "id": "FQ0",
+      "type": "label",
+      "x": 34,
+      "y": 24,
+      "params": {
+        "name": "Q0"
+      },
+      "label": ""
+    },
+    {
+      "id": "FR0",
+      "type": "label",
+      "x": 12,
+      "y": 24,
+      "flip": true,
+      "params": {
+        "name": "Q0"
+      },
+      "label": ""
+    },
+    {
+      "id": "FE0",
+      "type": "label",
+      "x": 12,
+      "y": 28,
+      "flip": true,
+      "params": {
+        "name": "EN"
+      },
+      "label": ""
+    },
+    {
+      "id": "FC0",
+      "type": "label",
+      "x": 24,
+      "y": 26,
+      "flip": true,
+      "params": {
+        "name": "CLK"
+      },
+      "label": ""
+    },
+    {
+      "id": "EN",
+      "type": "toggle",
+      "x": 2,
+      "y": 32,
+      "params": {
+        "on": true
+      },
+      "label": "EN"
+    },
+    {
+      "id": "FEN",
+      "type": "label",
+      "x": 8,
+      "y": 32,
+      "params": {
+        "name": "EN"
+      },
+      "label": ""
+    },
+    {
+      "id": "CLK",
+      "type": "button",
+      "x": 2,
+      "y": 35,
+      "label": "CLK"
+    },
+    {
+      "id": "FCK",
+      "type": "label",
+      "x": 8,
+      "y": 35,
+      "params": {
+        "name": "CLK"
+      },
+      "label": ""
+    }
+  ],
+  "wires": [
+    {
+      "points": [
+        [
+          5,
+          5
+        ],
+        [
+          14,
+          5
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          3
+        ],
+        [
+          26,
+          3
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          32,
+          3
+        ],
+        [
+          38,
+          3
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          12,
+          3
+        ],
+        [
+          14,
+          3
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          12,
+          7
+        ],
+        [
+          14,
+          7
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          24,
+          5
+        ],
+        [
+          26,
+          5
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          12
+        ],
+        [
+          14,
+          12
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          10
+        ],
+        [
+          26,
+          10
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          32,
+          10
+        ],
+        [
+          38,
+          10
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          12,
+          10
+        ],
+        [
+          14,
+          10
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          12,
+          14
+        ],
+        [
+          14,
+          14
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          24,
+          12
+        ],
+        [
+          26,
+          12
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          19
+        ],
+        [
+          14,
+          19
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          17
+        ],
+        [
+          26,
+          17
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          32,
+          17
+        ],
+        [
+          38,
+          17
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          12,
+          17
+        ],
+        [
+          14,
+          17
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          12,
+          21
+        ],
+        [
+          14,
+          21
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          24,
+          19
+        ],
+        [
+          26,
+          19
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          26
+        ],
+        [
+          14,
+          26
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          20,
+          24
+        ],
+        [
+          26,
+          24
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          32,
+          24
+        ],
+        [
+          38,
+          24
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          12,
+          24
+        ],
+        [
+          14,
+          24
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          12,
+          28
+        ],
+        [
+          14,
+          28
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          24,
+          26
+        ],
+        [
+          26,
+          26
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          32
+        ],
+        [
+          8,
+          32
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          35
+        ],
+        [
+          8,
+          35
+        ]
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "x": 15,
+      "y": -1.5,
+      "text": "D0 = hold, D1 = load"
+    }
+  ]
+}
