@@ -305,3 +305,23 @@
   people: Edward Moore
   chapter: state-machines
   text: In Automata Studies, Moore analyses machines whose output depends on the state alone and asks what experiments on inputs and outputs can reveal about them.
+- year: 1927
+  title: Quartz keeps the beat
+  people: Walter Cady, Warren Marrison, J. W. Horton
+  chapter: the-clock
+  text: Cady controls an oscillator with quartz in 1921; at Bell Labs Marrison and Horton build a clock whose time base is a quartz oscillator, its frequency divided down by electronic dividers, shown in October 1927.
+- year: 1971
+  title: The 555 timer
+  people: Hans Camenzind, Signetics
+  chapter: the-clock
+  text: Camenzind’s second design review, in October, brings the timer down to eight pins; Signetics releases the NE555 in 1972.
+- year: 1932
+  title: The scale-of-two counter
+  people: C. E. Wynn-Williams
+  chapter: registers-and-counters
+  text: In the Proceedings of the Royal Society, a chain of thyratron circuits each passing on every second pulse, so that a slow mechanical meter can count fast events.
+- year: 1967
+  title: Shift register sequences
+  people: Solomon W. Golomb
+  chapter: registers-and-counters
+  text: Golomb’s book collects the theory of linear-feedback shift registers, and in particular which taps give the longest sequences. Robert Gold describes the codes now used by GPS in the same year.

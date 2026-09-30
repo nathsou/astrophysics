@@ -842,3 +842,55 @@ mealy-machine:
   term: Mealy machine
   definition: A state machine whose outputs depend on the state and the inputs, so they can change in the middle of a cycle when an input does. Drawn with the outputs on the arrows. Usually needs fewer states than a Moore machine for the same job. After George Mealy, 1955.
   chapter: state-machines
+d-latch:
+  term: D latch
+  definition: "A latch with a data input D and an enable EN: while EN is 1 it is transparent and Q follows D; when EN falls, Q keeps the last value. Built from an SR latch with two gates that steer D into it."
+  chapter: the-clock
+flip-flop:
+  term: flip-flop
+  definition: "A memory element that copies its data input D to its output Q only at a clock edge (a D flip-flop, at the rising edge) and holds it in between. Made of two latches, a master open while the clock is low and a slave open while it is high."
+  chapter: the-clock
+setup-time:
+  term: set-up time
+  definition: "How long before the clock edge the data input of a flip-flop must be stable. If the data changes later than that, the flip-flop may go metastable."
+  chapter: the-clock
+hold-time:
+  term: hold time
+  definition: "How long after the clock edge the data input of a flip-flop must stay stable. Together with the set-up time it defines the aperture in which the data must not change. A hold violation cannot be cured by slowing the clock."
+  chapter: the-clock
+clock-to-q:
+  term: clock-to-Q delay
+  definition: "How long after the clock edge the output Q of a flip-flop shows its new value. It is the first term in the budget of a clock period."
+  chapter: the-clock
+synchronous-design:
+  term: synchronous design
+  definition: "A way of designing so that all the state is in flip-flops on the same clock, and only gates with no loops lie between them. Every path from flip-flop to flip-flop must fit inside one clock period: T ≥ t_cq + t_pd + t_su."
+  chapter: the-clock
+clock-skew:
+  term: clock skew
+  definition: "The difference between the times at which one clock edge reaches two flip-flops. Positive skew at the capturing flip-flop gives set-up time more room and takes hold time away; it is controlled with balanced clock trees."
+  chapter: the-clock
+register:
+  term: register
+  definition: "A row of flip-flops that share a clock and load together, so that they store a word. A load enable is made with a multiplexer in front of each D input that chooses between the new data and the flip-flop's own output."
+  chapter: registers-and-counters
+ripple-counter:
+  term: ripple counter
+  definition: "A counter in which each flip-flop is clocked by the previous one's output. It needs no gates between the stages, but the carry ripples down the chain, so for a moment after each clock edge the count shows wrong values."
+  chapter: registers-and-counters
+shift-register:
+  term: shift register
+  definition: "A chain of flip-flops, each taking its data from the one before, so that at every clock edge each bit moves up one place. It turns a serial stream into a parallel word and back, and a left shift doubles a number."
+  chapter: registers-and-counters
+lfsr:
+  term: linear-feedback shift register (LFSR)
+  definition: "A shift register whose new bit is the XOR of some of its bits (the taps). With the right taps it steps through all 2ⁿ − 1 non-zero states before repeating, a cheap source of a pseudo-random sequence, used for test patterns, scrambling, CRCs and GPS codes."
+  chapter: registers-and-counters
+maximal-length-sequence:
+  term: maximal-length sequence
+  definition: "The output of an n-bit LFSR whose taps make it visit every non-zero state before repeating, so its period is 2ⁿ − 1. It has 2ⁿ⁻¹ ones and 2ⁿ⁻¹ − 1 zeros in each period."
+  chapter: registers-and-counters
+scale-of-two:
+  term: scale of two
+  definition: "Wynn-Williams's 1932 name for a circuit that passes on every second pulse it receives, halving a rate. Chains of them counted particles faster than a mechanical meter could follow, and a binary counter is still a chain of scales of two."
+  chapter: registers-and-counters

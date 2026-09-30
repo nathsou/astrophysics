@@ -1216,3 +1216,9 @@ turing1936:
   venue: Proceedings of the London Mathematical Society, series 2, 42, 230–265
   url: https://doi.org/10.1112/plms/s2-42.1.230
   note: The abstract machine with a finite control and an unbounded tape.
+gold1967:
+  authors: Robert Gold
+  year: 1967
+  title: Optimal binary sequences for spread-spectrum multiplexing
+  venue: IEEE Transactions on Information Theory 13(4), 619–621
+  note: The family of sequences, made by adding two maximal-length shift-register sequences, now called Gold codes and used for the GPS C/A code.

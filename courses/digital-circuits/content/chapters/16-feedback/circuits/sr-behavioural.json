@@ -1,0 +1,99 @@
+{
+ "version": 1,
+ "title": "An SR latch",
+ "engine": "digital",
+ "components": [
+  {
+   "id": "S",
+   "type": "toggle",
+   "x": 2,
+   "y": 3
+  },
+  {
+   "id": "R",
+   "type": "toggle",
+   "x": 2,
+   "y": 5
+  },
+  {
+   "id": "L1",
+   "type": "srlatch",
+   "x": 12,
+   "y": 3,
+   "label": "SR latch",
+   "params": {
+    "delay": 1,
+    "tau": 2
+   }
+  },
+  {
+   "id": "Q",
+   "type": "indicator",
+   "x": 22,
+   "y": 3,
+   "params": {
+    "color": "amber"
+   }
+  },
+  {
+   "id": "Qn",
+   "type": "indicator",
+   "x": 22,
+   "y": 5,
+   "params": {
+    "color": "amber"
+   },
+   "label": "Q̄"
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     5,
+     3
+    ],
+    [
+     12,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     5
+    ],
+    [
+     12,
+     5
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     18,
+     3
+    ],
+    [
+     22,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     18,
+     5
+    ],
+    [
+     22,
+     5
+    ]
+   ]
+  }
+ ]
+}
