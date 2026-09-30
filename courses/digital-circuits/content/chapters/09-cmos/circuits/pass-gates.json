@@ -1,0 +1,180 @@
+{
+ "version": 1,
+ "title": "Passing a level through a transistor",
+ "engine": "analog",
+ "components": [
+  {
+   "id": "IN",
+   "type": "toggle",
+   "x": 0,
+   "y": 4,
+   "label": "In"
+  },
+  {
+   "id": "GN",
+   "type": "toggle",
+   "x": 0,
+   "y": 10,
+   "label": "nMOS gate"
+  },
+  {
+   "id": "GP",
+   "type": "toggle",
+   "x": 31,
+   "y": 10,
+   "flip": true,
+   "label": "pMOS gate",
+   "params": {
+    "on": true
+   }
+  },
+  {
+   "id": "MN",
+   "type": "nmos",
+   "x": 14,
+   "y": 10,
+   "label": "nMOS"
+  },
+  {
+   "id": "MP",
+   "type": "pmos",
+   "x": 24,
+   "y": 10,
+   "flip": true,
+   "label": "pMOS"
+  },
+  {
+   "id": "CL",
+   "type": "capacitor",
+   "x": 11,
+   "y": 14,
+   "rot": 90,
+   "params": {
+    "capacitance": 1e-05
+   },
+   "label": "next gate"
+  },
+  {
+   "id": "G0",
+   "type": "ground",
+   "x": 11,
+   "y": 18
+  },
+  {
+   "id": "VO",
+   "type": "voltmeter",
+   "x": 19,
+   "y": 20,
+   "rot": 270,
+   "label": "Out"
+  },
+  {
+   "id": "G1",
+   "type": "ground",
+   "x": 19,
+   "y": 20
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     3,
+     4
+    ],
+    [
+     21,
+     4
+    ],
+    [
+     21,
+     8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     17,
+     4
+    ],
+    [
+     17,
+     8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     3,
+     10
+    ],
+    [
+     14,
+     10
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     24,
+     10
+    ],
+    [
+     28,
+     10
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     11,
+     14
+    ],
+    [
+     21,
+     14
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     17,
+     12
+    ],
+    [
+     17,
+     14
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     21,
+     12
+    ],
+    [
+     21,
+     14
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     19,
+     14
+    ],
+    [
+     19,
+     16
+    ]
+   ]
+  }
+ ]
+}

@@ -534,8 +534,9 @@ export async function compileMarkdown(source: string, file: string): Promise<Com
   const hast = await unified().use(remarkRehype, { allowDangerousHtml: true }).run(tree);
   let html = unified().use(rehypeStringify, { allowDangerousHtml: true }).stringify(hast as never);
 
-  // Wide tables scroll sideways inside their own box instead of widening the page on phones.
-  html = html.replace(/<table[\s>][\s\S]*?<\/table>/g, (t) => `<div class="table-scroll" role="region" aria-label="Table" tabindex="0">${t}</div>`);
+  // Wide tables scroll sideways inside their own box instead of widening the page on phones
+  // (browsers make such a scroller keyboard-focusable themselves).
+  html = html.replace(/<table[\s>][\s\S]*?<\/table>/g, (t) => `<div class="table-scroll">${t}</div>`);
 
   // Everything that is still HTML is static: neutralise Svelte's { } before inserting components.
   html = html.replace(/[{}]/g, (c) => (c === '{' ? '&#123;' : '&#125;'));

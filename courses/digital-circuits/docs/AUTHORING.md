@@ -67,6 +67,7 @@ Length: 2,500–5,000 words of prose. One flagship interactive (usually wide), 2
 | `:::lab[Title]` | a guided experiment |
 | `:::real{parts="…"}` | build it for real |
 | `:::history{year=1937 title="…" people="…"}` | a history flip card: first paragraph is the front's hook |
+| `::::run-original{title="<card title>"}` | wraps the live figure that a history card with `run="Run the original"` opens (shared widget) |
 | `:::bio{name="…" born=1916 died=2001}` | a short biography |
 | `:::details[Summary]` | collapsible |
 | `:::figure{caption="…"}` | a static figure with a caption |

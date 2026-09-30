@@ -762,3 +762,83 @@ dynamic-node:
   term: dynamic node
   definition: 'A node that no supply drives at the moment and that keeps its value as charge on the capacitance of the wire and the gates attached to it. It is the memory of a DRAM cell and of a transmission-gate latch, and it is lost when the charge leaks away.'
   chapter: cmos
+cpld:
+  term: CPLD
+  definition: 'A complex programmable logic device: several PAL-like function blocks on one chip, joined by a programmable interconnect. Non-volatile (EEPROM or flash), so it works the moment power is on.'
+  chapter: cplds
+function-block:
+  term: function block
+  definition: 'The PAL-like tile of a CPLD: an AND array that sees a limited number of signals from the interconnect, product terms, and a group of macrocells. The vCPLD-32 has four, each with 24 inputs, 40 product terms and 8 macrocells.'
+  chapter: cplds
+interconnect-matrix:
+  term: interconnect matrix
+  definition: 'The switch network of a CPLD (Altera’s PIA, Xilinx’s FastCONNECT) that carries pins and macrocell outputs to the inputs of the function blocks. Every signal crosses it, so it makes the delay the same whatever the fitter chose.'
+  chapter: cplds
+product-term-steering:
+  term: product-term steering
+  definition: 'The allocator of a function block, which sends a product term to the OR gate of its own macrocell or of a neighbour, so that an output that needs more than five terms can borrow the unused terms of the macrocells beside it, at a small cost in delay.'
+  chapter: cplds
+buried-macrocell:
+  term: buried macrocell
+  definition: 'A macrocell whose output feeds the interconnect but not its pin: internal logic, such as the carry of an adder.'
+  chapter: cplds
+jtag:
+  term: JTAG (IEEE 1149.1)
+  definition: 'A four-wire test port (TCK, TMS, TDI, TDO) on a chip, standardised in 1990 for testing the connections of circuit boards, and used since to program devices in place and to debug processors.'
+  chapter: cplds
+tap-controller:
+  term: TAP controller
+  definition: 'The 16-state machine inside a JTAG port. On each rising edge of TCK it moves to one of two states according to TMS, and five edges with TMS = 1 lead to Test-Logic-Reset from anywhere.'
+  chapter: cplds
+boundary-scan:
+  term: boundary scan
+  definition: 'A JTAG cell on every pin of a chip, linked into one long shift register, so that a tester can drive a pin or read what is on it without a probe. It finds broken and shorted connections on a board.'
+  chapter: cplds
+in-system-programming:
+  term: in-system programming (ISP)
+  definition: 'Programming a device while it is soldered on its board, through its JTAG port, so that blank chips can be assembled and configured afterwards, and upgraded in the field.'
+  chapter: cplds
+feedback:
+  term: feedback
+  definition: "Connecting a circuit’s output back, through gates, to one of its inputs. A circuit with feedback has a past: its outputs depend on what happened before as well as on what the inputs are now."
+  chapter: feedback
+ring-oscillator:
+  term: ring oscillator
+  definition: An odd number of inverters connected in a ring. The wires cannot settle, so an edge chases itself round the ring, and the period is 2 × n × the delay of an inverter.
+  chapter: feedback
+bistable:
+  term: bistable
+  definition: A circuit with two stable states, each of which it keeps until something forces it into the other. Two cross-coupled inverters are the simplest, and every flip-flop and SRAM cell is one.
+  chapter: feedback
+sr-latch:
+  term: SR latch
+  definition: "A pair of cross-coupled NOR (or NAND) gates with two inputs: S sets the output Q to 1, R resets it to 0, and with both at rest it holds. Both inputs active at once is forbidden."
+  chapter: feedback
+metastability:
+  term: metastability
+  definition: A latch or flip-flop balanced between its two stable states, its output neither 0 nor 1, for an unpredictable time. The chance that it is still undecided after a time t falls as e^(−t/τ).
+  chapter: feedback
+synchroniser:
+  term: synchroniser
+  definition: "Two flip-flops in a row that pass an asynchronous signal into a clocked circuit: the first may go metastable, and the second looks at it a full clock period later, when a decision is all but certain."
+  chapter: feedback
+state:
+  term: state
+  definition: What a sequential circuit remembers, held in its flip-flops. With *n* flip-flops a machine has at most 2^*n* states, and it is in exactly one of them at a time. It changes only at clock edges.
+  chapter: state-machines
+state-machine:
+  term: state machine
+  definition: A circuit with a finite number of states, a start state and a rule that gives, for every state and every input, the next state and the outputs. In hardware, a register (the state) with combinational logic that computes what to load next. Also *finite-state machine* (FSM) or *finite automaton*.
+  chapter: state-machines
+state-table:
+  term: state table
+  definition: A state machine written as a table with one row for each state and input combination, giving the next state and the outputs. Replacing the state names by their codes turns it into a truth table for the next-state logic.
+  chapter: state-machines
+moore-machine:
+  term: Moore machine
+  definition: A state machine whose outputs depend on the state alone, so they change only just after a clock edge. Drawn with the outputs inside the bubbles. After Edward Moore, 1956.
+  chapter: state-machines
+mealy-machine:
+  term: Mealy machine
+  definition: A state machine whose outputs depend on the state and the inputs, so they can change in the middle of a cycle when an input does. Drawn with the outputs on the arrows. Usually needs fewer states than a Moore machine for the same job. After George Mealy, 1955.
+  chapter: state-machines

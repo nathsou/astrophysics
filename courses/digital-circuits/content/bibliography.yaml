@@ -983,3 +983,236 @@ bryant1984:
   venue: IEEE Transactions on Computers C-33(2), 160–177
   url: https://doi.org/10.1109/TC.1984.1676408
   note: Transistors as switches, node values 0, 1 and X with strengths, and the algorithm that resolves them.
+altera-history:
+  authors: Altera Corporation
+  year: 1997
+  title: 'Altera history (CS294-59 resources, University of California, Berkeley)'
+  venue: 'Course resource page, EECS, UC Berkeley, Fall 2010, reproducing Altera’s own company history'
+  url: https://www-inst.eecs.berkeley.edu//~cs294-59/fa10/resources/Altera-history/Altera-history.html
+  note: 'Altera founded in 1983; the EP300, its first erasable PLD, in 1984; the MAX (multiple array matrix) architecture of 1988, up to 5,000 gates, system speeds up to 40 MHz and more than 200,000 programmable elements.'
+chm-ep300:
+  authors: Computer History Museum
+  year: 2012
+  title: 'Altera EP300 oral history panel: design and development'
+  venue: Computer History Museum, catalogue number 102702147
+  url: https://archive.computerhistory.org/resources/access/text/2012/10/102702147-05-01-acc.pdf
+  note: 'The engineers who designed the EP300, a CMOS EPROM-based programmable logic device introduced in July 1984 as a replacement for 20-pin bipolar PALs, with 8 macrocells and a quartz window for ultraviolet erasure.'
+altera-max5000:
+  authors: Altera Corporation
+  year: 1996
+  title: MAX 5000 Programmable Logic Device Family data sheet
+  venue: Altera Corporation
+  url: https://cdrdv2-public.intel.com/654619/m5000.pdf
+  note: 'The first MAX family: logic array blocks of macrocells and expander product terms joined by a programmable interconnect array (PIA), in EPROM technology.'
+altera-max7000:
+  authors: Altera Corporation
+  year: 2003
+  title: MAX 7000 Programmable Logic Device Family data sheet
+  venue: Altera Corporation
+  url: https://cdrdv2-public.intel.com/654718/m7000.pdf
+  note: 'Macrocells of five product terms, arranged in logic array blocks joined by the PIA; parallel expanders (up to 20 product terms into one OR gate) and shareable expanders; EEPROM cells, in-system programming and JTAG.'
+xilinx-ds063:
+  authors: Xilinx
+  year: 1998
+  title: 'XC9500 In-System Programmable CPLD Family (DS063)'
+  venue: Xilinx data sheet
+  url: http://www.bitsavers.org/components/xilinx/cpld/9500.pdf
+  note: 'Function blocks of 36 inputs and 18 macrocells joined by the FastCONNECT switch matrix, a product-term allocator, in-system programming and IEEE 1149.1 boundary scan on flash (EEPROM) cells.'
+xilinx-ds054:
+  authors: Xilinx
+  year: 2007
+  title: 'XC9500XL High-Performance CPLD Family (DS054)'
+  venue: Xilinx data sheet
+  url: https://www.cs.columbia.edu/~sedwards/classes/2006/4840/ds054.pdf
+  note: 'The 3.3 V XC9500XL: 5 ns pin-to-pin delays, function blocks of 54 inputs, 10,000 program and erase cycles, full IEEE 1149.1 boundary scan. The XC9572XL has four function blocks of 18 macrocells: 72 in all.'
+xilinx-ds090:
+  authors: Xilinx
+  year: 2007
+  title: 'CoolRunner-II CPLD Family (DS090)'
+  venue: Xilinx data sheet
+  url: https://docs.amd.com/api/khub/documents/bQWR3igyPK5XHXKY2CiTeg/content
+  note: 'A 1.8 V core supply, 32 to 512 macrocells, and DataGATE, which blocks an input from the array to save power.'
+microchip-atf1502:
+  authors: Atmel, now Microchip Technology
+  year: 2014
+  title: 'ATF1502AS(L) High-performance EEPROM CPLD'
+  venue: Data sheet 0995
+  url: https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-0995-CPLD-ATF1502AS(L)-Datasheet.pdf
+  note: 'A 5 V CPLD of 32 macrocells with five product terms each (expandable to 40) in 44-pin packages, with in-system programming over JTAG; 7.5 ns pin-to-pin in the fastest grade.'
+ieee1149-1-1990:
+  authors: IEEE
+  year: 1990
+  title: 'IEEE Std 1149.1-1990: IEEE Standard Test Access Port and Boundary-Scan Architecture'
+  venue: 'IEEE Standards Board, ratified 15 February 1990'
+  url: https://ieeexplore.ieee.org/iel1/2860/5509/00211226.pdf
+  note: 'The four test pins (TDI, TMS, TCK, TDO) and an optional reset, the 16-state TAP controller, the instruction register and the boundary-scan register.'
+corelis-jtag:
+  authors: Corelis
+  year: n.d.
+  title: What is JTAG?
+  venue: Corelis Inc., tutorial
+  url: https://www.corelis.com/education/tutorials/jtag-tutorial/what-is-jtag/
+  note: 'The Joint Test Action Group, formed in 1985 by test professionals (Philips, BT, GEC, TI and others) to find faults such as poor solder joints on boards whose connections probes could no longer reach.'
+altera-maxii-2004:
+  authors: Design And Reuse
+  year: 2004
+  title: Altera takes radical new direction with MAX II CPLDs
+  venue: Design & Reuse, news, March 2004
+  url: https://design-reuse.com/news/7323/altera-takes-radical-direction-max-ii-cplds.html
+  note: 'MAX II, announced in March 2004: an embedded-flash CPLD with a look-up-table architecture instead of product terms, an on-chip user flash block, and configuration from on-chip flash in a few milliseconds.'
+prjbureau:
+  authors: whitequark
+  year: n.d.
+  title: 'Project Bureau: the Microchip (Atmel) ATF15xx CPLD fuse maps and programming algorithms'
+  venue: GitHub
+  url: https://github.com/whitequark/prjbureau
+  note: 'Documentation of the ATF15xx fuse maps, fuseconv (JED to SVF), and atf15xx_yosys, which takes Verilog through Yosys to a JED file: an open-source flow for ATF1502, ATF1504 and ATF1508.'
+cady1922:
+  authors: Walter G. Cady
+  year: 1922
+  title: The piezo-electric resonator
+  venue: Proceedings of the Institute of Radio Engineers 10(2), 83–114 (April 1922)
+  note: Cady's study of quartz resonators controlling the frequency of a vacuum-tube oscillator, begun in 1921.
+marrison1948:
+  authors: Warren A. Marrison
+  year: 1948
+  title: The evolution of the quartz crystal clock
+  venue: Bell System Technical Journal 27(3), 510–588 (July 1948)
+  note: The author's own account of the quartz clock built at Bell Telephone Laboratories, first shown in 1927.
+nihf-marrison:
+  authors: National Inventors Hall of Fame
+  year: n.d.
+  title: Warren Marrison, inductee
+  venue: National Inventors Hall of Fame
+  url: https://www.invent.org/inductees/warren-marrison
+  note: Marrison and J. W. Horton's quartz clock of 1927, with the crystal's frequency divided down to drive a synchronous motor.
+wiki-crystal-oscillator:
+  authors: Wikipedia
+  year: n.d.
+  title: Crystal oscillator
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Crystal_oscillator
+  note: Quartz as a resonator, the 32,768 Hz watch crystal (2^15 Hz) and typical accuracies of tens of parts per million, and the history from Cady (1921) to Marrison and Horton (1927).
+camenzind2005:
+  authors: Hans R. Camenzind
+  year: 2005
+  title: Designing Analog Chips
+  venue: Virtual Bookshelf, 2005; online textbook at All About Circuits
+  url: https://www.allaboutcircuits.com/textbook/designing-analog-chips/
+  note: The designer's account of the 555, including the two design reviews of 1971 (nine pins, then eight) and the origin of the name from a Signetics manager's liking for the number, not from the three 5 kΩ resistors.
+chm-555:
+  authors: Computer History Museum
+  year: n.d.
+  title: NE555 Timer, Signetics, 1971
+  venue: 'Computer History Museum, “Revolution: The First 2000 Years of Computing”'
+  url: https://www.computerhistory.org/revolution/digital-logic/12/281/1485
+  note: The 555 designed by Hans Camenzind for Signetics in 1971 and released in 1972.
+eejournal-555:
+  authors: EE Journal
+  year: 2022
+  title: Happy 50th birthday to the Signetics 555 timer IC
+  venue: EE Journal
+  url: https://www.eejournal.com/article/happy-50th-birthday-to-the-signetics-555-timer-ic/
+  note: The history of the 555 and its continued production; the estimate of more than a billion units a year is quoted there and in other sources.
+ginosar2011:
+  authors: Ran Ginosar
+  year: 2011
+  title: 'Metastability and synchronizers: a tutorial'
+  venue: IEEE Design & Test of Computers 28(5), 23–35
+  url: https://doi.org/10.1109/MDT.2011.113
+  note: The physics of metastability, the exponential resolution law with time constant τ, the MTBF formula and synchronisers.
+kleeman1987:
+  authors: Lindsay Kleeman, Antonio Cantoni
+  year: 1987
+  title: Metastable behavior in digital systems
+  venue: IEEE Design & Test of Computers 4(6), 4–19
+  note: An early survey of metastability in flip-flops and arbiters, and of the failure rate of synchronisers.
+wynn-williams1932:
+  authors: C. E. Wynn-Williams
+  year: 1932
+  title: A thyratron “scale of two” automatic counter
+  venue: Proceedings of the Royal Society of London A 136(829), 312–324 (1 May 1932)
+  url: https://doi.org/10.1098/rspa.1932.0083
+  note: The counter that halves the rate of pulses at each stage, so that a mechanical meter can record events too fast for it, built at the Cavendish Laboratory.
+golomb1967:
+  authors: Solomon W. Golomb
+  year: 1967
+  title: Shift Register Sequences
+  venue: Holden-Day, San Francisco
+  note: The theory of sequences from linear feedback shift registers, including the maximal-length sequences of period 2^n − 1.
+is-gps-200:
+  authors: Navstar GPS Joint Program Office
+  year: n.d.
+  title: 'IS-GPS-200, Navstar GPS space segment / navigation user segment interfaces'
+  venue: GPS Interface Control Working Group
+  url: https://www.gps.gov/technical/icwg/
+  note: The C/A code of 1023 chips at 1.023 Mchip/s, generated by two 10-stage shift registers (G1 and G2); use the current revision.
+ti-cd4060b:
+  authors: Texas Instruments
+  year: n.d.
+  title: CD4060B CMOS 14-stage ripple-carry binary counter/divider and oscillator, data sheet
+  venue: Texas Instruments Incorporated
+  url: https://www.ti.com/lit/ds/symlink/cd4060b.pdf
+  note: A ripple counter with an on-chip oscillator, used with a 32,768 Hz crystal for timekeeping.
+gb148582:
+  authors: W. H. Eccles and F. W. Jordan
+  year: 1920
+  title: Improvements in ionic relays (British patent specification 148,582)
+  venue: 'Filed 21 June 1918, published 1920. Patent record: Google Patents, GB148582A'
+  url: https://patents.google.com/patent/GB148582A/en
+  note: The two-valve circuit with two stable states, the first electronic flip-flop.
+hoi-flipflop:
+  authors: Jeremy Norman
+  year: 'n.d.'
+  title: Eccles and Jordan invent the flip-flop circuit, the basis for electronic memory
+  venue: From Cave Paintings to the Internet (historyofinformation.com)
+  url: https://www.historyofinformation.com/detail.php?id=3606
+  note: Records the September 1919 note "A trigger relay utilising three-electrode thermionic vacuum tubes" in The Electrician 83, 298.
+chaney1973:
+  authors: T. J. Chaney and C. E. Molnar
+  year: 1973
+  title: Anomalous behavior of synchronizer and arbiter circuits
+  venue: IEEE Transactions on Computers C-22(4), 421–422
+  url: https://www.computer.org/csdl/journal/tc/1973/04/01672323/13rRUwInvxu
+  note: Observations of oscillatory and metastable behaviour of flip-flops with logically undefined inputs; the abstract says that significant system failures had resulted from this problem.
+ti-sn74hc00:
+  authors: TI
+  year: 'n.d.'
+  title: SN54HC00, SN74HC00 quadruple 2-input positive-NAND gates, data sheet
+  venue: Texas Instruments Incorporated
+  url: https://www.ti.com/lit/ds/symlink/sn74hc00.pdf
+  note: The pinout of the 74HC00, with the gates' inputs on pins 1 and 2, 4 and 5, 9 and 10, and 12 and 13, and the outputs on pins 3, 6, 8 and 11.
+eejournal-amd-eol:
+  authors: EE Journal
+  year: n.d.
+  title: AMD discontinues CoolRunner and XC9500 CPLDs and Spartan-II and -3 FPGAs. Buy ’em while you can!
+  venue: EE Journal
+  url: https://www.eejournal.com/article/amd-discontinues-coolrunner-and-xc9500-cplds-and-spartan-ii-and-3-fpgas-buy-em-while-you-can/
+  note: The end-of-life announcement for the XC9500 and CoolRunner CPLD families.
+huffman1954:
+  authors: David A. Huffman
+  year: 1954
+  title: The synthesis of sequential switching circuits
+  venue: Journal of the Franklin Institute 257(3), 161–190 and 257(4), 275–303
+  url: https://doi.org/10.1016/0016-0032(54)90574-8
+  note: Huffman’s method for reducing a sequential circuit’s behaviour to a minimal flow table and then to gates.
+mealy1955:
+  authors: George H. Mealy
+  year: 1955
+  title: A method for synthesizing sequential circuits
+  venue: Bell System Technical Journal 34(5), 1045–1079
+  url: https://doi.org/10.1002/j.1538-7305.1955.tb03788.x
+  note: The machines whose outputs depend on the state and the input together, now called Mealy machines.
+moore1956:
+  authors: Edward F. Moore
+  year: 1956
+  title: Gedanken-experiments on sequential machines
+  venue: 'In C. E. Shannon and J. McCarthy (eds), Automata Studies, Annals of Mathematics Studies 34, Princeton University Press, 129–153'
+  note: Sequential machines whose output depends on the state alone (Moore machines), and what an experimenter can learn about one from its inputs and outputs.
+turing1936:
+  authors: Alan M. Turing
+  year: 1936
+  title: On computable numbers, with an application to the Entscheidungsproblem
+  venue: Proceedings of the London Mathematical Society, series 2, 42, 230–265
+  url: https://doi.org/10.1112/plms/s2-42.1.230
+  note: The abstract machine with a finite control and an unbounded tape.

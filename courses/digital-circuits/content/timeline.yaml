@@ -250,3 +250,58 @@
   people: Frank Wanlass, Chih-Tang Sah
   chapter: cmos
   text: At Fairchild they pair an n-channel and a p-channel transistor so that one is always off, and show logic with a standby power of nanowatts. Wanlass files the patent in June; it is granted in 1967.
+- year: 1984
+  title: The EP300
+  people: Altera
+  chapter: cplds
+  text: Altera’s first product is a CMOS programmable logic device with EPROM cells and 8 macrocells, erased by ultraviolet light through a quartz window in the package, and a plug-in replacement for 20-pin bipolar PALs.
+- year: 1988
+  title: MAX, the multiple array matrix
+  people: Altera
+  chapter: cplds
+  text: Altera joins several PAL-like blocks with a programmable interconnect array, giving up to 5,000 gates on one erasable chip, and starts the family of chips called CPLDs.
+- year: 1990
+  title: JTAG becomes a standard
+  people: The Joint Test Action Group, IEEE
+  chapter: cplds
+  text: 'IEEE Std 1149.1-1990, ratified in February, defines a four-wire test port and a boundary-scan cell on every pin, the result of a group of test engineers formed in 1985 to find bad solder joints.'
+- year: 1995
+  title: In-system programmable CPLDs
+  people: Xilinx
+  chapter: cplds
+  text: 'Xilinx’s XC9500 family, introduced at the end of 1995, is configured over JTAG after the chip is soldered to its board.'
+- year: 2004
+  title: MAX II
+  people: Altera
+  chapter: cplds
+  text: 'Altera’s CPLD drops product terms for look-up tables and keeps the flash: a small FPGA that starts by itself in a few milliseconds.'
+- year: 1918
+  title: The Eccles–Jordan trigger relay
+  people: William Eccles, Frank Jordan
+  chapter: feedback
+  text: On 21 June two British physicists file a patent for a circuit of two vacuum tubes with two stable states, the first electronic flip-flop (GB 148,582, published 1920).
+- year: 1973
+  title: Chaney and Molnar on metastability
+  people: T. J. Chaney, C. E. Molnar
+  chapter: feedback
+  text: Two engineers report flip-flops that hang between 0 and 1 in synchronisers and arbiters, and that this had already caused significant system failures.
+- year: 1936
+  title: The machine with a tape
+  people: Alan Turing
+  chapter: state-machines
+  text: Turing describes an abstract machine, a finite-state controller with an unbounded tape, that can compute anything computable.
+- year: 1954
+  title: Huffman’s sequential circuits
+  people: David Huffman
+  chapter: state-machines
+  text: In the Journal of the Franklin Institute, Huffman shows how to reduce a sequential circuit’s behaviour to a minimal table of states and then to gates.
+- year: 1955
+  title: Mealy machines
+  people: George Mealy
+  chapter: state-machines
+  text: In the September Bell System Technical Journal, Mealy gives a method for synthesising sequential circuits whose outputs depend on state and input together.
+- year: 1956
+  title: Moore machines
+  people: Edward Moore
+  chapter: state-machines
+  text: In Automata Studies, Moore analyses machines whose output depends on the state alone and asks what experiments on inputs and outputs can reveal about them.

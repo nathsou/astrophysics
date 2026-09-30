@@ -1,0 +1,164 @@
+{
+ "version": 1,
+ "title": "The two kinds of switch",
+ "engine": "switch",
+ "components": [
+  {
+   "id": "G1",
+   "type": "toggle",
+   "x": 0,
+   "y": 6,
+   "label": "Gate"
+  },
+  {
+   "id": "MN",
+   "type": "nmos",
+   "x": 10,
+   "y": 6,
+   "label": "nMOS"
+  },
+  {
+   "id": "R1",
+   "type": "rail",
+   "x": 13,
+   "y": 2,
+   "params": {
+    "voltage": 5
+   }
+  },
+  {
+   "id": "L1",
+   "type": "indicator",
+   "x": 24,
+   "y": 10,
+   "label": "Out"
+  },
+  {
+   "id": "G2",
+   "type": "toggle",
+   "x": 0,
+   "y": 22,
+   "label": "Gate",
+   "params": {
+    "on": true
+   }
+  },
+  {
+   "id": "MP",
+   "type": "pmos",
+   "x": 10,
+   "y": 22,
+   "label": "pMOS"
+  },
+  {
+   "id": "R2",
+   "type": "rail",
+   "x": 13,
+   "y": 18,
+   "params": {
+    "voltage": 5
+   }
+  },
+  {
+   "id": "L2",
+   "type": "indicator",
+   "x": 24,
+   "y": 26,
+   "label": "Out"
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     3,
+     6
+    ],
+    [
+     10,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     13,
+     2
+    ],
+    [
+     13,
+     4
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     13,
+     8
+    ],
+    [
+     13,
+     10
+    ],
+    [
+     24,
+     10
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     3,
+     22
+    ],
+    [
+     10,
+     22
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     13,
+     18
+    ],
+    [
+     13,
+     20
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     13,
+     24
+    ],
+    [
+     13,
+     26
+    ],
+    [
+     24,
+     26
+    ]
+   ]
+  }
+ ],
+ "notes": [
+  {
+   "x": 15,
+   "y": 5,
+   "text": "on when the gate is 1"
+  },
+  {
+   "x": 15,
+   "y": 21,
+   "text": "on when the gate is 0"
+  }
+ ]
+}
