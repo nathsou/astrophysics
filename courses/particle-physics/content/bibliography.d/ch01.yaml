@@ -1,0 +1,24 @@
+planck1899:
+  authors: Max Planck
+  year: 1899
+  title: Über irreversible Strahlungsvorgänge (Fünfte Mitteilung)
+  venue: Sitzungsberichte der Königlich Preussischen Akademie der Wissenschaften zu Berlin, 440–480
+  note: Introduces the natural units of length, mass and time built from the speed of light, the gravitational constant and the new constant h.
+rutherford1911:
+  authors: Ernest Rutherford
+  year: 1911
+  title: The scattering of α and β particles by matter and the structure of the atom
+  venue: Philosophical Magazine 21, 669–688
+  url: https://doi.org/10.1080/14786440508637080
+hofstadter1956:
+  authors: Robert Hofstadter
+  year: 1956
+  title: Electron scattering and nuclear structure
+  venue: Reviews of Modern Physics 28, 214–254
+  url: https://doi.org/10.1103/RevModPhys.28.214
+codata2018:
+  authors: E. Tiesinga, P. J. Mohr, D. B. Newell, B. N. Taylor
+  year: 2021
+  title: CODATA recommended values of the fundamental physical constants, 2018
+  venue: Reviews of Modern Physics 93, 025010
+  url: https://doi.org/10.1103/RevModPhys.93.025010

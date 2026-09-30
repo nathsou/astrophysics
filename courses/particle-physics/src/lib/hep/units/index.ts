@@ -141,3 +141,4 @@ export function formatTime(s: number, digits = 3): string {
 function trim(x: number, digits: number): string {
   return Number(x.toPrecision(digits)).toString();
 }
+export * from "./convert.ts";
