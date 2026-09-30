@@ -834,6 +834,61 @@ h1 {
   letter-spacing: 0.15em;
 }
 
+/* 9 · Particle Physics: Tracks */
+.tracks {
+  --cbg: #f1efe9;
+  --cfg: #1c2127;
+  --cmute: #5d6570;
+  --cac: #0b7088;
+  font-family: var(--font-sans, system-ui, sans-serif);
+}
+:root[data-theme='dark'] .tracks {
+  --cbg: #06090e;
+  --cfg: #e6ebf2;
+  --cmute: #94a0ad;
+  --cac: #5fd4e8;
+}
+.tracks .film {
+  height: 84px;
+  margin: 0 0 18px;
+  border-radius: 8px;
+  background: #05080d;
+  box-shadow: inset 0 0 0 1px rgba(95, 212, 232, 0.25);
+  overflow: hidden;
+}
+.tracks .film svg {
+  width: 100%;
+  height: 100%;
+}
+.tracks .film path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-width: 2;
+}
+.tracks .film .sp {
+  stroke: #6fe3ff;
+  filter: drop-shadow(0 0 3px rgba(111, 227, 255, 0.8));
+}
+.tracks .film .mu {
+  stroke: #ff7a7a;
+  stroke-width: 2.6;
+  filter: drop-shadow(0 0 3px rgba(255, 122, 122, 0.7));
+}
+.tracks .film .ph {
+  stroke: #9aa8b8;
+  stroke-dasharray: 2 5;
+}
+.tracks h2 {
+  margin: 6px 0 10px;
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.tracks .desc {
+  color: var(--cmute);
+  line-height: 1.5;
+}
+
 @media (max-width: 560px) {
   .wordmark {
     white-space: nowrap;

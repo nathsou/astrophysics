@@ -40,6 +40,7 @@ jobs:
             courses/elements/package-lock.json
             courses/proofs/package-lock.json
             courses/digital-circuits/package-lock.json
+            courses/particle-physics/package-lock.json
 
       - name: Install dependencies
         run: |
@@ -51,6 +52,7 @@ jobs:
           npm ci --prefix courses/elements
           npm ci --prefix courses/proofs
           npm ci --prefix courses/digital-circuits
+          npm ci --prefix courses/particle-physics
           pnpm --dir courses/language-models install --frozen-lockfile
 
       - name: Build

@@ -85,6 +85,16 @@ export function rapidity(a: P4): number {
 }
 /** Transverse mass mT = √(m² + pT²). */
 export const mT = (a: P4): number => Math.sqrt(Math.max(0, mass2(a)) + pt(a) ** 2);
+/**
+ * Transverse mass of a charged lepton and the missing transverse momentum (a neutrino), as used for W → ℓν:
+ * mT² = 2 pT(ℓ) ET(miss) (1 − cos Δφ). Reference for the hook `kinematics.transverseMass`.
+ */
+export function transverseMass(lepton: P4, met: { x: number; y: number }): number {
+  const ptl = pt(lepton);
+  const etm = Math.hypot(met.x, met.y);
+  const dphi = deltaPhi(phi(lepton), Math.atan2(met.y, met.x));
+  return Math.sqrt(Math.max(0, 2 * ptl * etm * (1 - Math.cos(dphi))));
+}
 /** Velocity β = |p|/E. */
 export const beta = (a: P4): number => pmag(a) / a.E;
 /** Lorentz factor γ = E/m. */
