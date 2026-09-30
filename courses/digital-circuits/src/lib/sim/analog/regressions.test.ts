@@ -546,3 +546,32 @@ describe('advance() always returns within its caps, and lands on its target', ()
     expect(spins).toBeLessThan(10);
   });
 });
+
+describe('Newton does not fall into a two-point cycle', () => {
+  test('a device whose reported slope is half its true slope still converges (damped late iterations)', () => {
+    // I = v − 1 into ground, but the stamp claims dI/dv = 0.5: an undamped Newton step overshoots by
+    // exactly two, so the error flips sign forever (the cycle seen on Node 24 with a lamp behind relay
+    // contacts, whose dI/dv is also an approximation). Halving the late updates lands on the root.
+    registerAnalogModel(
+      'test-half-slope',
+      () => ({
+        nonlinear: true,
+        stamp(c) {
+          const v = c.x[0]!;
+          conductance(c, 0, -1, 0.5);
+          currentSource(c, 0, -1, v - 1 - 0.5 * v);
+        },
+        current: () => 0,
+        state: () => ({}),
+        setParam() {},
+        reset() {},
+      }),
+      'regressions.test.ts',
+    );
+    const netlist: FlatNetlist = { netCount: 2, netNames: ['gnd', 'a'], elements: [{ id: 'X', type: 'test-half-slope', params: {}, pins: [1], pinNames: ['a'] }], ground: 0 };
+    const e = createAnalogEngine(netlist);
+    e.advance(1e-3);
+    expect(e.messages.filter((m) => m.level !== 'info')).toEqual([]);
+    expect(e.voltage(1)).toBeCloseTo(1, 6);
+  });
+});

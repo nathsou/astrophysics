@@ -112,6 +112,8 @@ const START_DT_FRACTION = 1e-2;
 /** Step used to assemble the matrix when estimating time constants (any small value: its companion conductances are subtracted). */
 const PROBE_H = 1e-9;
 const H_MIN = 1e-15;
+/** Newton iterations after which the update is damped by half (see solvePoint). */
+const DAMP_AFTER = 20;
 const MAX_GROW = 4;
 const SETTLE_H = 1e-12;
 const RELTOL = 1e-6;
@@ -362,6 +364,9 @@ class AnalogEngineImpl implements AnalogEngine {
           if (Math.abs(v - old) > tol) converged = false;
         }
       }
+      // Late in a long Newton run, halve the update: a pure Newton step can fall into a two-point cycle
+      // around the solution (seen with a lamp behind relay contacts), which damping breaks.
+      if (!converged && iter >= DAMP_AFTER) for (let i = 0; i < n; i++) xn[i] = 0.5 * (x[i]! + xn[i]!);
       x.set(xn);
       if (!this.nonlinear || converged) {
         let changed = false;
