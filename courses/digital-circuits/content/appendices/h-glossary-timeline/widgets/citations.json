@@ -1,0 +1,952 @@
+{
+ "actel-act1": [
+  "programmable-logic",
+  "inside-an-fpga"
+ ],
+ "adi-rs232": [
+  "talking-to-the-world"
+ ],
+ "altera-history": [
+  "cplds"
+ ],
+ "altera-max5000": [
+  "cplds"
+ ],
+ "altera-max7000": [
+  "cplds"
+ ],
+ "altera-maxii-2004": [
+  "cplds"
+ ],
+ "amano1989": [
+  "diodes-and-leds"
+ ],
+ "amaranth": [
+  "breadboard-to-billions"
+ ],
+ "antmicro-sky130": [
+  "breadboard-to-billions"
+ ],
+ "apple-m1": [
+  "breadboard-to-billions"
+ ],
+ "apple-m2-ultra": [
+  "press-a-key",
+  "breadboard-to-billions"
+ ],
+ "aps-faraday": [
+  "relays"
+ ],
+ "aps-oersted": [
+  "relays"
+ ],
+ "asanovic2014": [
+  "breadboard-to-billions"
+ ],
+ "ashcroft1976": [
+  "charge-voltage-current"
+ ],
+ "asml-euv": [
+  "breadboard-to-billions"
+ ],
+ "asml-light": [
+  "breadboard-to-billions"
+ ],
+ "atalla-kahng1960": [
+  "cmos"
+ ],
+ "bardeen1948": [
+  "the-transistor"
+ ],
+ "betz1997": [
+  "netlist-to-bitstream",
+  "appendix:simulator"
+ ],
+ "bipm2019": [
+  "charge-voltage-current",
+  "appendix:reference"
+ ],
+ "bohr2007": [
+  "real-gates"
+ ],
+ "boole1854": [
+  "boolean-algebra"
+ ],
+ "boos2018": [
+  "building-blocks"
+ ],
+ "braun1875": [
+  "diodes-and-leds"
+ ],
+ "braun1897": [
+  "the-bench"
+ ],
+ "brayton1984": [
+  "simplifying-logic"
+ ],
+ "brayton1987": [
+  "simplifying-logic"
+ ],
+ "britannica-baudot": [
+  "talking-to-the-world"
+ ],
+ "britannica-kirchhoff": [
+  "ohms-law"
+ ],
+ "bromley1982": [
+  "arithmetic"
+ ],
+ "bryant1984": [
+  "cmos",
+  "appendix:simulator"
+ ],
+ "cady1922": [
+  "the-clock"
+ ],
+ "cai2017": [
+  "memory"
+ ],
+ "camenzind2005": [
+  "the-clock"
+ ],
+ "caneva1978": [
+  "ohms-law"
+ ],
+ "cerebras-wse3": [
+  "breadboard-to-billions"
+ ],
+ "chandra1978": [
+  "simplifying-logic"
+ ],
+ "chaney1973": [
+  "feedback"
+ ],
+ "chisel": [
+  "breadboard-to-billions"
+ ],
+ "chm-4004": [
+  "running-programs"
+ ],
+ "chm-555": [
+  "the-clock"
+ ],
+ "chm-braun-rectifier": [
+  "diodes-and-leds"
+ ],
+ "chm-cmos1963": [
+  "cmos"
+ ],
+ "chm-edsac": [
+  "memory"
+ ],
+ "chm-ep300": [
+  "cplds"
+ ],
+ "chm-eprom": [
+  "programmable-logic"
+ ],
+ "chm-junction-transistor": [
+  "the-transistor"
+ ],
+ "chm-monolithic-ic": [
+  "breadboard-to-billions"
+ ],
+ "chm-mos1960": [
+  "cmos"
+ ],
+ "chm-ohl": [
+  "diodes-and-leds"
+ ],
+ "chm-solid-circuit": [
+  "breadboard-to-billions"
+ ],
+ "chm-standard-logic": [
+  "real-gates"
+ ],
+ "chm-stibitz": [
+  "shannons-switches"
+ ],
+ "chm-transistor": [
+  "the-transistor"
+ ],
+ "chm-whirlwind-core": [
+  "memory"
+ ],
+ "cong1994": [
+  "netlist-to-bitstream",
+  "appendix:simulator"
+ ],
+ "conway-mpc79": [
+  "breadboard-to-billions"
+ ],
+ "copeland2006": [
+  "the-transistor"
+ ],
+ "corelis-jtag": [
+  "cplds"
+ ],
+ "cupl-1983": [
+  "describing-hardware"
+ ],
+ "dataphys-hopper": [
+  "timing"
+ ],
+ "deforest-patent": [
+  "the-transistor"
+ ],
+ "demorgan1847": [
+  "boolean-algebra"
+ ],
+ "dennard-patent": [
+  "memory"
+ ],
+ "dennard1974": [
+  "real-gates"
+ ],
+ "ds1040": [
+  "inside-an-fpga"
+ ],
+ "eater8bit": [
+  "breadboard-to-billions"
+ ],
+ "ebers1954": [
+  "the-transistor"
+ ],
+ "eejournal-555": [
+  "the-clock"
+ ],
+ "eejournal-actel": [
+  "inside-an-fpga"
+ ],
+ "eejournal-amd-eol": [
+  "cplds"
+ ],
+ "eetimes-tejas": [
+  "real-gates",
+  "breadboard-to-billions"
+ ],
+ "eetimes-virtex5": [
+  "inside-an-fpga"
+ ],
+ "eichelberger1965": [
+  "timing"
+ ],
+ "electronicdesign-alm": [
+  "inside-an-fpga"
+ ],
+ "ethw-baby": [
+  "memory",
+  "running-programs"
+ ],
+ "ethw-degeus": [
+  "describing-hardware"
+ ],
+ "ethw-fpga": [
+  "inside-an-fpga"
+ ],
+ "ethw-pcm": [
+  "talking-to-the-world"
+ ],
+ "ethw-transistor": [
+  "the-transistor"
+ ],
+ "faraday1832": [
+  "relays"
+ ],
+ "flake2020": [
+  "describing-hardware"
+ ],
+ "fleming-milestone": [
+  "diodes-and-leds"
+ ],
+ "fleming-patent": [
+  "diodes-and-leds"
+ ],
+ "fluke-87v": [
+  "the-bench"
+ ],
+ "forrester-patent": [
+  "memory"
+ ],
+ "fowler1928": [
+  "programmable-logic"
+ ],
+ "franklin1751": [
+  "charge-voltage-current",
+  "capacitors-and-time"
+ ],
+ "freeman-patent": [
+  "inside-an-fpga"
+ ],
+ "frohman1971": [
+  "programmable-logic"
+ ],
+ "fundinguniverse-synopsys": [
+  "describing-hardware"
+ ],
+ "galette": [
+  "pals-and-gals",
+  "appendix:simulator"
+ ],
+ "galvani1791": [
+  "charge-voltage-current"
+ ],
+ "ganssle-debounce": [
+  "capacitors-and-time",
+  "the-clock",
+  "talking-to-the-world"
+ ],
+ "gb148582": [
+  "feedback"
+ ],
+ "gf180mcu-pdk": [
+  "breadboard-to-billions"
+ ],
+ "ginosar2011": [
+  "feedback",
+  "the-clock"
+ ],
+ "godfrey1993": [
+  "datapath"
+ ],
+ "gold1967": [
+  "registers-and-counters"
+ ],
+ "golomb1967": [
+  "registers-and-counters"
+ ],
+ "hall1996": [
+  "the-transistor",
+  "boolean-algebra"
+ ],
+ "hamming1950": [
+  "building-blocks"
+ ],
+ "harris-harris2021": [
+  "breadboard-to-billions"
+ ],
+ "heilbron1979": [
+  "capacitors-and-time"
+ ],
+ "hennessy-patterson2019": [
+  "memory",
+  "breadboard-to-billions"
+ ],
+ "henry-albany": [
+  "relays"
+ ],
+ "hochfelder-henry": [
+  "relays"
+ ],
+ "hoi-flipflop": [
+  "feedback"
+ ],
+ "holley-abel": [
+  "describing-hardware"
+ ],
+ "holonyak1962": [
+  "diodes-and-leds"
+ ],
+ "horowitz-hill2015": [
+  "the-bench",
+  "talking-to-the-world",
+  "breadboard-to-billions"
+ ],
+ "hpcwire-v2pro": [
+  "inside-an-fpga"
+ ],
+ "huffman1954": [
+  "state-machines"
+ ],
+ "huffman1957": [
+  "timing"
+ ],
+ "hunt1994": [
+  "charge-voltage-current",
+  "ohms-law"
+ ],
+ "ibm-dram": [
+  "memory"
+ ],
+ "icebreaker": [
+  "breadboard-to-billions"
+ ],
+ "icestorm-eetimes": [
+  "netlist-to-bitstream",
+  "breadboard-to-billions"
+ ],
+ "iec60062": [
+  "appendix:reference"
+ ],
+ "iec60063": [
+  "appendix:reference"
+ ],
+ "ieee1076-1987": [
+  "describing-hardware"
+ ],
+ "ieee1149-1-1990": [
+  "cplds"
+ ],
+ "iep-sheffer": [
+  "boolean-algebra"
+ ],
+ "ihp-open-pdk": [
+  "breadboard-to-billions"
+ ],
+ "intel-1103": [
+  "memory"
+ ],
+ "intel-22nm": [
+  "breadboard-to-billions"
+ ],
+ "intel-4004-vault": [
+  "running-programs"
+ ],
+ "is-gps-200": [
+  "registers-and-counters"
+ ],
+ "jedec-jesd3": [
+  "pals-and-gals",
+  "appendix:simulator"
+ ],
+ "jedec-jesd79-4": [
+  "memory"
+ ],
+ "jedec-jesd8-7a": [
+  "appendix:reference"
+ ],
+ "jedec-jesd8c": [
+  "appendix:reference"
+ ],
+ "karnaugh1953": [
+  "simplifying-logic"
+ ],
+ "kernighan1970": [
+  "appendix:simulator"
+ ],
+ "kirchhoff1847": [
+  "ohms-law"
+ ],
+ "kirkpatrick1983": [
+  "netlist-to-bitstream"
+ ],
+ "kleeman1987": [
+  "the-clock"
+ ],
+ "kuon-rose": [
+  "inside-an-fpga",
+  "breadboard-to-billions"
+ ],
+ "leibniz1703": [
+  "arithmetic"
+ ],
+ "lemieux2004": [
+  "inside-an-fpga"
+ ],
+ "lions1996": [
+  "arithmetic"
+ ],
+ "liu-raidr2012": [
+  "memory"
+ ],
+ "loc-morse": [
+  "relays"
+ ],
+ "mactutor-sheffer": [
+  "boolean-algebra"
+ ],
+ "manchester-baby": [
+  "running-programs"
+ ],
+ "marrison1948": [
+  "the-clock"
+ ],
+ "masuoka1984": [
+  "memory"
+ ],
+ "masuoka1987": [
+  "memory"
+ ],
+ "mccluskey1956": [
+  "simplifying-logic"
+ ],
+ "mcmurchie1995": [
+  "netlist-to-bitstream",
+  "appendix:simulator"
+ ],
+ "mead-conway1980": [
+  "breadboard-to-billions"
+ ],
+ "mealy1955": [
+  "state-machines"
+ ],
+ "metropolis1953": [
+  "netlist-to-bitstream"
+ ],
+ "microchip-atf1502": [
+  "cplds"
+ ],
+ "moore1956": [
+  "state-machines"
+ ],
+ "moore1965": [
+  "breadboard-to-billions"
+ ],
+ "moore1975": [
+  "breadboard-to-billions"
+ ],
+ "nagel1975": [
+  "capacitors-and-time",
+  "diodes-and-leds",
+  "the-transistor",
+  "appendix:maths",
+  "appendix:simulator"
+ ],
+ "nakamura1992": [
+  "diodes-and-leds"
+ ],
+ "nakamura1994": [
+  "diodes-and-leds"
+ ],
+ "nasm-agc-ic": [
+  "boolean-algebra"
+ ],
+ "nexperia-74hc04": [
+  "capacitors-and-time",
+  "real-gates",
+  "timing"
+ ],
+ "nexperia-74hc138": [
+  "building-blocks"
+ ],
+ "nexperia-74hc14": [
+  "timing"
+ ],
+ "nexperia-74hc151": [
+  "building-blocks"
+ ],
+ "nexperia-74hc280": [
+  "building-blocks"
+ ],
+ "nexperia-74hc4511": [
+  "building-blocks"
+ ],
+ "nexperia-74hc595": [
+  "talking-to-the-world"
+ ],
+ "nexperia-74hc85": [
+  "building-blocks"
+ ],
+ "nicholson1800": [
+  "charge-voltage-current"
+ ],
+ "nihf-marrison": [
+  "the-clock"
+ ],
+ "nisan-schocken2021": [
+  "breadboard-to-billions"
+ ],
+ "nmah-altair": [
+  "running-programs"
+ ],
+ "nmah-audion": [
+  "the-transistor"
+ ],
+ "nmah-bug": [
+  "shannons-switches"
+ ],
+ "nmah-hopper-nanoseconds": [
+  "timing"
+ ],
+ "nmah-wwgw": [
+  "relays"
+ ],
+ "nobel-braun": [
+  "the-bench"
+ ],
+ "nobel2014": [
+  "diodes-and-leds"
+ ],
+ "norman-leibniz": [
+  "arithmetic"
+ ],
+ "noyce-patent": [
+  "breadboard-to-billions"
+ ],
+ "nvidia-hopper": [
+  "breadboard-to-billions"
+ ],
+ "nxp-74hc283": [
+  "arithmetic"
+ ],
+ "nxp-i2c": [
+  "capacitors-and-time",
+  "real-gates",
+  "talking-to-the-world"
+ ],
+ "oersted1820": [
+  "relays"
+ ],
+ "ohl-patent": [
+  "diodes-and-leds"
+ ],
+ "ohm1827": [
+  "ohms-law"
+ ],
+ "openlane": [
+  "breadboard-to-billions"
+ ],
+ "pancaldi2003": [
+  "charge-voltage-current"
+ ],
+ "patterson-hennessy2020": [
+  "breadboard-to-billions"
+ ],
+ "peirce1886": [
+  "shannons-switches"
+ ],
+ "petrick1956": [
+  "simplifying-logic"
+ ],
+ "petzold2022": [
+  "breadboard-to-billions"
+ ],
+ "physicstoday-holonyak": [
+  "diodes-and-leds"
+ ],
+ "pillage1995": [
+  "capacitors-and-time"
+ ],
+ "prjbureau": [
+  "cplds"
+ ],
+ "prjicestorm": [
+  "inside-an-fpga"
+ ],
+ "quine1952": [
+  "simplifying-logic"
+ ],
+ "rca-cd4000": [
+  "cmos"
+ ],
+ "righto-rope": [
+  "memory"
+ ],
+ "riordan1997": [
+  "diodes-and-leds"
+ ],
+ "riscv-about": [
+  "breadboard-to-billions"
+ ],
+ "riscv-spec": [
+  "running-programs",
+  "breadboard-to-billions"
+ ],
+ "rose1990": [
+  "inside-an-fpga"
+ ],
+ "round1907": [
+  "diodes-and-leds"
+ ],
+ "samsung-3nm-gaa": [
+  "breadboard-to-billions"
+ ],
+ "sep-algebra-logic": [
+  "boolean-algebra"
+ ],
+ "seu-scrubbing": [
+  "inside-an-fpga"
+ ],
+ "shah2019": [
+  "netlist-to-bitstream",
+  "breadboard-to-billions"
+ ],
+ "shalan2020": [
+  "breadboard-to-billions"
+ ],
+ "shannon1938": [
+  "shannons-switches"
+ ],
+ "sheffer1913": [
+  "boolean-algebra"
+ ],
+ "shichman1968": [
+  "the-transistor",
+  "appendix:simulator"
+ ],
+ "shirriff2019": [
+  "the-transistor",
+  "boolean-algebra"
+ ],
+ "shmj-cmos": [
+  "cmos"
+ ],
+ "shockley1949": [
+  "the-transistor"
+ ],
+ "signetics-82s100": [
+  "programmable-logic"
+ ],
+ "sim-baby": [
+  "running-programs"
+ ],
+ "skywater-pdk": [
+  "breadboard-to-billions"
+ ],
+ "smith1981": [
+  "breadboard-to-billions"
+ ],
+ "song2022": [
+  "breadboard-to-billions"
+ ],
+ "songle-srd": [
+  "relays"
+ ],
+ "sparkfun-pulseview": [
+  "talking-to-the-world"
+ ],
+ "spectrum-fpga": [
+  "inside-an-fpga"
+ ],
+ "spectrum-nand": [
+  "memory"
+ ],
+ "sturgeon-britannica": [
+  "relays"
+ ],
+ "sutter2005": [
+  "real-gates",
+  "breadboard-to-billions"
+ ],
+ "sze2007": [
+  "press-a-key",
+  "diodes-and-leds",
+  "cmos"
+ ],
+ "thomson1897": [
+  "charge-voltage-current",
+  "the-bench"
+ ],
+ "ti-cd4060b": [
+  "registers-and-counters"
+ ],
+ "ti-ne555": [
+  "the-clock",
+  "appendix:reference"
+ ],
+ "ti-sn74hc-family": [
+  "the-clock",
+  "registers-and-counters",
+  "datapath",
+  "control",
+  "appendix:reference"
+ ],
+ "ti-sn74hc00": [
+  "feedback"
+ ],
+ "ti-sn74hc03": [
+  "real-gates"
+ ],
+ "ti-sn74hc04": [
+  "press-a-key",
+  "real-gates",
+  "appendix:reference"
+ ],
+ "ti-sn74hc148": [
+  "building-blocks"
+ ],
+ "tinytapeout": [
+  "breadboard-to-billions"
+ ],
+ "tinytapeout-ttsky25b": [
+  "breadboard-to-billions"
+ ],
+ "tn1248": [
+  "inside-an-fpga"
+ ],
+ "tnmoc-colossus": [
+  "the-transistor"
+ ],
+ "tomasulo1967": [
+  "breadboard-to-billions"
+ ],
+ "turing1936": [
+  "state-machines"
+ ],
+ "us4124899": [
+  "pals-and-gals"
+ ],
+ "veitch1952": [
+  "simplifying-logic"
+ ],
+ "verilator": [
+  "breadboard-to-billions"
+ ],
+ "visual6502": [
+  "control",
+  "breadboard-to-billions"
+ ],
+ "volta1800": [
+  "charge-voltage-current"
+ ],
+ "vonneumann1945": [
+  "datapath"
+ ],
+ "wang-patent": [
+  "memory"
+ ],
+ "wanlass-patent": [
+  "cmos"
+ ],
+ "wanlass-sah1963": [
+  "cmos"
+ ],
+ "weik1961": [
+  "press-a-key"
+ ],
+ "weste-harris2011": [
+  "cmos",
+  "breadboard-to-billions"
+ ],
+ "wiki-5nm": [
+  "breadboard-to-billions"
+ ],
+ "wiki-abel": [
+  "describing-hardware"
+ ],
+ "wiki-alpha-21064": [
+  "breadboard-to-billions"
+ ],
+ "wiki-apple-a11": [
+  "breadboard-to-billions"
+ ],
+ "wiki-apple-m1": [
+  "breadboard-to-billions"
+ ],
+ "wiki-baud": [
+  "talking-to-the-world"
+ ],
+ "wiki-bloomfield": [
+  "breadboard-to-billions"
+ ],
+ "wiki-conroe": [
+  "breadboard-to-billions"
+ ],
+ "wiki-crystal-oscillator": [
+  "the-clock"
+ ],
+ "wiki-gal": [
+  "pals-and-gals"
+ ],
+ "wiki-haswell": [
+  "breadboard-to-billions"
+ ],
+ "wiki-hopper": [
+  "breadboard-to-billions"
+ ],
+ "wiki-i2c": [
+  "talking-to-the-world"
+ ],
+ "wiki-i386": [
+  "breadboard-to-billions"
+ ],
+ "wiki-i486": [
+  "breadboard-to-billions"
+ ],
+ "wiki-intel-4004": [
+  "running-programs",
+  "breadboard-to-billions"
+ ],
+ "wiki-intel-80286": [
+  "breadboard-to-billions"
+ ],
+ "wiki-intel-8086": [
+  "breadboard-to-billions"
+ ],
+ "wiki-motorola-68000": [
+  "breadboard-to-billions"
+ ],
+ "wiki-nixie": [
+  "building-blocks"
+ ],
+ "wiki-pal": [
+  "pals-and-gals"
+ ],
+ "wiki-palasm": [
+  "pals-and-gals",
+  "describing-hardware"
+ ],
+ "wiki-pentium-4": [
+  "breadboard-to-billions"
+ ],
+ "wiki-pentium-original": [
+  "breadboard-to-billions"
+ ],
+ "wiki-photomask": [
+  "breadboard-to-billions"
+ ],
+ "wiki-pld": [
+  "programmable-logic"
+ ],
+ "wiki-prom": [
+  "programmable-logic"
+ ],
+ "wiki-rs232": [
+  "talking-to-the-world"
+ ],
+ "wiki-sandy-bridge": [
+  "breadboard-to-billions"
+ ],
+ "wiki-transistor-count": [
+  "breadboard-to-billions"
+ ],
+ "wiki-vhdl": [
+  "describing-hardware"
+ ],
+ "wiki-virtex": [
+  "inside-an-fpga"
+ ],
+ "wikichip-mask": [
+  "breadboard-to-billions"
+ ],
+ "wilkes-renwick-wheeler1958": [
+  "control"
+ ],
+ "wilkes-stringer1953": [
+  "control"
+ ],
+ "wilkes1951": [
+  "control"
+ ],
+ "wolf2013": [
+  "netlist-to-bitstream",
+  "breadboard-to-billions"
+ ],
+ "wong2020": [
+  "breadboard-to-billions"
+ ],
+ "wood1908": [
+  "building-blocks"
+ ],
+ "wynn-williams1932": [
+  "registers-and-counters"
+ ],
+ "xilinx-ds054": [
+  "cplds"
+ ],
+ "xilinx-ds063": [
+  "cplds"
+ ],
+ "xilinx-ds090": [
+  "cplds"
+ ],
+ "xilinx-wp284": [
+  "inside-an-fpga"
+ ],
+ "zero-to-asic": [
+  "breadboard-to-billions"
+ ],
+ "zuse-z3": [
+  "shannons-switches"
+ ]
+}

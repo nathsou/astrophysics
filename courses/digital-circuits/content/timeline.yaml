@@ -450,3 +450,48 @@
   people: Philips Semiconductors
   chapter: talking-to-the-world
   text: 'Philips brings out chips with a two-wire bus of its own design, developed for the electronics of television sets: 100 kbit/s, 7-bit addresses, open-drain lines with pull-up resistors.'
+- year: 1958
+  title: The first integrated circuit
+  people: Jack Kilby
+  chapter: breadboard-to-billions
+  text: On 12 September Kilby at Texas Instruments shows an oscillator whose transistor, resistor and capacitor are all made in one slice of germanium.
+- year: 1959
+  title: The planar integrated circuit
+  people: Robert Noyce, Jean Hoerni
+  chapter: breadboard-to-billions
+  text: At Fairchild, Noyce conceives an integrated circuit in silicon whose wires are printed on top of an oxide layer; the patent is filed in July and granted in 1961.
+- year: 1965
+  title: Moore’s law
+  people: Gordon Moore
+  chapter: breadboard-to-billions
+  text: In Electronics, Moore extrapolates a doubling of the components on a chip every year, to 65,000 by 1975. In 1975 he revises it to every two years.
+- year: 1980
+  title: The VLSI revolution
+  people: Carver Mead, Lynn Conway
+  chapter: breadboard-to-billions
+  text: Introduction to VLSI Systems teaches computer scientists to design chips with scalable rules; the shared wafers of MPC79 (1979) become the MOSIS service (1981).
+- year: 2010
+  title: RISC-V begins
+  people: Krste Asanović, Yunsup Lee, Andrew Waterman
+  chapter: breadboard-to-billions
+  text: At Berkeley, an instruction set that anybody may use without a licence is begun for research; it is now maintained by RISC-V International.
+- year: 2011
+  title: The FinFET
+  people: Intel
+  chapter: breadboard-to-billions
+  text: Intel announces its 22 nm process, the first in volume production with transistors whose channel is a fin that the gate wraps on three sides.
+- year: 2019
+  title: EUV goes to production
+  people: ASML
+  chapter: breadboard-to-billions
+  text: A scanner using light of 13.5 nm, made by a laser and molten tin, is offered for volume production from the second half of the year.
+- year: 2020
+  title: The first open process kit
+  people: Google, SkyWater Technology
+  chapter: breadboard-to-billions
+  text: The design kit of SkyWater’s 130 nm process is released under an open licence, with free manufacturing for open designs.
+- year: 2022
+  title: Gate-all-around transistors
+  people: Samsung
+  chapter: breadboard-to-billions
+  text: On 30 June Samsung starts production of a 3 nm process in which the gate surrounds the channel completely.

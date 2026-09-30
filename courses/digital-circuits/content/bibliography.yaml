@@ -1710,7 +1710,7 @@ wiki-pentium-4:
   title: Pentium 4
   venue: Wikipedia, the free encyclopedia
   url: https://en.wikipedia.org/wiki/Pentium_4
-  note: Willamette, 42 million transistors in 180 nm on 217 mm², from 1.3 GHz; Prescott, 125 million transistors in 90 nm on 112 mm², up to 3.8 GHz and a thermal design power of 115 W.
+  note: Willamette, 42 million transistors in 180 nm on 217 mm², from 1.3 GHz; Prescott, 125 million transistors in 90 nm on 112 mm², up to 3.8 GHz, a thermal design power of 115 W and a pipeline of 31 stages.
 wiki-conroe:
   authors: Wikipedia
   year: n.d.
@@ -1926,7 +1926,7 @@ skywater-pdk:
   title: SkyWater open source PDK (SKY130)
   venue: GitHub, google/skywater-pdk
   url: https://github.com/google/skywater-pdk
-  note: The first open-source process design kit for a production semiconductor process, a 130 nm CMOS process, released in 2020.
+  note: An open-source process design kit for a production 130 nm CMOS process, released in 2020 so that anyone can design chips that SkyWater can make.
 antmicro-sky130:
   authors: Antmicro
   year: 2020
@@ -2028,3 +2028,24 @@ chisel:
   venue: chisel-lang.org
   url: https://www.chisel-lang.org/
   note: A hardware construction language embedded in Scala, originally from Berkeley and used to design open RISC-V cores.
+wikichip-mask:
+  authors: WikiChip
+  year: n.d.
+  title: Mask / reticle
+  venue: WikiChip
+  url: https://en.wikichip.org/wiki/mask
+  note: Immersion and EUV scanners expose a field of at most 26 mm by 33 mm (858 mm²), which limits the size of a single die; the field of High-NA EUV is half as large.
+gf180mcu-pdk:
+  authors: Google, GlobalFoundries and contributors
+  year: 2022
+  title: GF180MCU PDK
+  venue: GitHub, google/gf180mcu-pdk
+  url: https://github.com/google/gf180mcu-pdk
+  note: The open-source process design kit for GlobalFoundries’ 180 nm MCU process, announced with a no-cost shuttle programme in November 2022.
+ihp-open-pdk:
+  authors: IHP GmbH and contributors
+  year: n.d.
+  title: IHP Open PDK (SG13G2)
+  venue: GitHub, IHP-GmbH/IHP-Open-PDK
+  url: https://github.com/IHP-GmbH/IHP-Open-PDK
+  note: An open-source PDK for IHP’s 130 nm SiGe BiCMOS process, aimed at analogue, mixed-signal and radio-frequency design, under the Apache 2.0 licence.

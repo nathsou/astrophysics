@@ -1114,3 +1114,83 @@ i2c:
   term: I²C
   definition: 'A two-wire bus, clock SCL and data SDA, shared by every device, which has an address. Both wires are open-drain with pull-up resistors, and the receiver acknowledges each byte by pulling SDA low.'
   chapter: talking-to-the-world
+integrated-circuit:
+  term: integrated circuit (IC)
+  definition: A whole circuit, transistors and wires, made together in one piece of semiconductor. Jack Kilby made the first in germanium in 1958; Robert Noyce’s planar silicon version, with the wires printed on top, is the one that could be mass-produced.
+  chapter: breadboard-to-billions
+wafer:
+  term: wafer
+  definition: A thin round slice of silicon, 300 mm across for today’s leading-edge chips, on which hundreds of copies of a chip are printed at once and then cut apart.
+  chapter: breadboard-to-billions
+die:
+  term: die
+  definition: 'One chip as cut from a wafer, before it is put in a package. Its area matters twice: the bigger it is, the fewer fit on a wafer and the likelier each one is to contain a defect.'
+  chapter: breadboard-to-billions
+photolithography:
+  term: photolithography
+  definition: Printing a pattern with light. A mask is imaged onto a film of photoresist, which dissolves in a developer where the light struck it, and the pattern is then cut into the layer beneath. A chip is made by repeating it for dozens of layers.
+  chapter: breadboard-to-billions
+photoresist:
+  term: photoresist
+  definition: A light-sensitive polymer spun on a wafer before exposure. In a positive resist the exposed parts dissolve in the developer, leaving a stencil of the mask’s pattern.
+  chapter: breadboard-to-billions
+photomask:
+  term: photomask (reticle)
+  definition: A plate of quartz coated with chrome in the pattern of one layer of a chip. In a scanner its image is reduced about four times onto the wafer, one field at a time.
+  chapter: breadboard-to-billions
+euv:
+  term: extreme ultraviolet (EUV)
+  definition: Light of wavelength 13.5 nm, made by hitting droplets of molten tin with a laser. Everything absorbs it, so an EUV scanner works in a vacuum and uses mirrors instead of lenses.
+  chapter: breadboard-to-billions
+dennard-scaling:
+  term: Dennard scaling
+  definition: The rule that if a transistor’s dimensions and voltage all shrink by the same factor, it becomes faster in proportion while the power of a square millimetre of chip stays the same. It stopped working around 2004, when the voltage could no longer fall.
+  chapter: real-gates
+moores-law:
+  term: Moore’s law
+  definition: The observation, made by Gordon Moore in 1965 and revised in 1975, that the number of components on a chip doubles at a steady rate, since 1975 about every two years. A forecast about economics, not a law of physics.
+  chapter: breadboard-to-billions
+process-node:
+  term: process node
+  definition: A generation of chip manufacturing, named by a number of nanometres. Since about 1997 the number is a label and not the length of anything on the chip.
+  chapter: breadboard-to-billions
+finfet:
+  term: FinFET
+  definition: A transistor whose channel is a thin vertical fin, so that the gate wraps around it on three sides and controls it better than a flat gate can. First used in volume by Intel’s 22 nm process, announced in 2011; gate-all-around transistors, which surround the channel completely, began to replace it in 2022.
+  chapter: breadboard-to-billions
+standard-cell:
+  term: standard cell
+  definition: A small pre-drawn layout of one logic function, such as a NAND gate or a flip-flop, of a fixed height so that cells fit into rows. An ASIC is a netlist of standard cells, placed and wired.
+  chapter: breadboard-to-billions
+asic:
+  term: ASIC
+  definition: Application-specific integrated circuit, a chip designed for one purpose and made with its own set of masks. It costs less per chip and is faster than an FPGA, but the masks are paid for first.
+  chapter: breadboard-to-billions
+pdk:
+  term: process design kit (PDK)
+  definition: 'The files a factory gives its designers: design rules, transistor models and a standard cell library. SKY130, released in 2020 for a 130 nm process, is a widely used open one.'
+  chapter: breadboard-to-billions
+tape-out:
+  term: tape-out
+  definition: The moment a finished chip design is sent to the factory to have masks made. After it, a change means a new set of masks.
+  chapter: breadboard-to-billions
+shuttle:
+  term: shuttle (multi-project wafer)
+  definition: A wafer, or a chip, shared by many designs from different customers, so that each pays only a share of the masks.
+  chapter: breadboard-to-billions
+pipelining:
+  term: pipelining
+  definition: Overlapping the stages of successive instructions, fetch, decode, execute and so on, with registers between them, so that a new instruction can finish every cycle and the clock is set by the slowest stage.
+  chapter: breadboard-to-billions
+branch-prediction:
+  term: branch prediction
+  definition: Guessing which way a branch will go so that a pipeline can go on fetching. A two-bit saturating counter per branch is the classic scheme; a wrong guess throws away the work done since the branch.
+  chapter: breadboard-to-billions
+out-of-order:
+  term: out-of-order execution
+  definition: Running instructions as soon as their inputs are ready rather than in program order, then committing the results in order so that the program cannot tell.
+  chapter: breadboard-to-billions
+risc-v:
+  term: RISC-V
+  definition: An open, royalty-free instruction set that began at UC Berkeley in 2010 and is now maintained by RISC-V International. Its base integer set, RV32I, is the core of Chapter 31.
+  chapter: breadboard-to-billions
