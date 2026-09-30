@@ -678,3 +678,87 @@ sign-extension:
   term: sign extension
   definition: Widening a two’s complement number by copying its top bit into the new upper bits, so that its value does not change.
   chapter: arithmetic
+critical-path:
+  term: critical path
+  definition: The longest path from an input to an output of a combinational circuit, counting the delay of every gate on it. Its length is the circuit's propagation delay, and it decides how fast the circuit can be used.
+  chapter: timing
+contamination-delay:
+  term: contamination delay
+  definition: The shortest time from a change of an input to the first moment an output can start to change (t_cd), the length of the shortest path. Before it the outputs still show the old answer.
+  chapter: timing
+glitch:
+  term: glitch
+  definition: A short unwanted pulse on a wire, caused by two signals that should change together arriving at different times.
+  chapter: timing
+static-hazard:
+  term: static hazard
+  definition: The possibility of a glitch on an output that should not change. A static-1 hazard is a dip of an output that should stay at 1, a static-0 hazard a blip of one that should stay at 0.
+  chapter: timing
+dynamic-hazard:
+  term: dynamic hazard
+  definition: The possibility that an output which should change once changes three times (or more) on the way. It needs at least three paths of different lengths, so it arises in multi-level circuits.
+  chapter: timing
+consensus-theorem:
+  term: consensus theorem
+  definition: "A·B + A′·C + B·C = A·B + A′·C. The third term, the consensus of the first two, is logically redundant, and it is exactly the term that removes the static-1 hazard between them."
+  chapter: timing
+inertial-delay:
+  term: inertial delay
+  definition: A model of a gate that ignores an input pulse shorter than its own delay. It is what a gate with a capacitor on its output really does.
+  chapter: timing
+transport-delay:
+  term: transport delay
+  definition: A model of a delay that passes every change on, however short the pulse, as a wire does. It is the pessimistic model when looking for glitches.
+  chapter: timing
+static-timing-analysis:
+  term: static timing analysis
+  definition: Finding a circuit's critical path by walking the graph of gates in topological order and adding delays, without simulating any input patterns.
+  chapter: timing
+slack:
+  term: slack
+  definition: How much longer a gate's delay could get before it lengthens the critical path. Gates on the critical path have zero slack.
+  chapter: timing
+false-path:
+  term: false path
+  definition: A path that static timing analysis counts but that no input pattern can make a signal travel, because the gates along it block each other.
+  chapter: timing
+cmos:
+  term: CMOS
+  definition: 'Complementary metal–oxide–semiconductor: logic made of pairs of transistors, a p-channel one that pulls the output up and an n-channel one that pulls it down, so that exactly one is on in any steady state. It draws next to no current while it holds a value.'
+  chapter: cmos
+nmos:
+  term: nMOS (n-channel MOSFET)
+  definition: 'A MOSFET in which electrons carry the current. It conducts when its gate is a threshold voltage above its source, so it is on for a 1. It passes a 0 well and a 1 badly, and belongs on the ground side of a gate.'
+  chapter: cmos
+pmos:
+  term: pMOS (p-channel MOSFET)
+  definition: 'A MOSFET in which holes carry the current. It conducts when its gate is a threshold voltage below its source, so it is on for a 0. It passes a 1 well and a 0 badly, and belongs on the supply side of a gate. At the same size it carries about half the current of an nMOS.'
+  chapter: cmos
+mobility:
+  term: mobility
+  definition: 'How fast a charge carrier drifts in a given electric field: about 1,400 cm/s per V/cm for an electron in lightly doped silicon and about 450 for a hole. It is why a p-channel transistor is weaker than an n-channel one of the same size.'
+  chapter: cmos
+pdn:
+  term: pull-down network
+  definition: 'The nMOS transistors of a static CMOS gate, between its output and ground, arranged in series (AND) and parallel (OR). The output is 0 when it conducts.'
+  chapter: cmos
+pun:
+  term: pull-up network
+  definition: 'The pMOS transistors of a static CMOS gate, between +5 V and its output: the dual of the pull-down network, with series and parallel exchanged. It conducts exactly when the pull-down does not.'
+  chapter: cmos
+complex-gate:
+  term: complex gate
+  definition: 'A single CMOS stage whose networks are more than one series or parallel group, such as an and-or-invert gate for NOT (A·B + C·D). It has fewer transistors and less delay than the same function made of separate gates.'
+  chapter: cmos
+transmission-gate:
+  term: transmission gate
+  definition: 'An nMOS and a pMOS in parallel, controlled by a signal and its complement. It is a bidirectional switch that passes both a 0 and a 1 in full, and it has no supply of its own.'
+  chapter: cmos
+switch-level:
+  term: switch-level simulation
+  definition: 'Simulating a circuit with each transistor as a switch that is on or off, and each node as 0, 1 or X with a strength. It is faster than analog simulation and, unlike logic simulation, it handles pass transistors, stored charge and contention.'
+  chapter: cmos
+dynamic-node:
+  term: dynamic node
+  definition: 'A node that no supply drives at the moment and that keeps its value as charge on the capacitance of the wire and the gates attached to it. It is the memory of a DRAM cell and of a transmission-gate latch, and it is lost when the charge leaks away.'
+  chapter: cmos

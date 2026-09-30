@@ -1,0 +1,189 @@
+{
+  "version": 1,
+  "title": "Half adder",
+  "engine": "digital",
+  "components": [
+    {
+      "id": "A",
+      "type": "port",
+      "x": 5,
+      "y": 3,
+      "params": {
+        "name": "A",
+        "dir": "in"
+      },
+      "label": ""
+    },
+    {
+      "id": "B",
+      "type": "port",
+      "x": 5,
+      "y": 5,
+      "params": {
+        "name": "B",
+        "dir": "in"
+      },
+      "label": ""
+    },
+    {
+      "id": "g1",
+      "type": "xor",
+      "x": 9,
+      "y": 3,
+      "label": ""
+    },
+    {
+      "id": "g2",
+      "type": "and",
+      "x": 9,
+      "y": 8,
+      "label": ""
+    },
+    {
+      "id": "S",
+      "type": "port",
+      "x": 17,
+      "y": 4,
+      "flip": true,
+      "params": {
+        "name": "S",
+        "dir": "out"
+      },
+      "label": ""
+    },
+    {
+      "id": "C",
+      "type": "port",
+      "x": 17,
+      "y": 9,
+      "flip": true,
+      "params": {
+        "name": "C",
+        "dir": "out"
+      },
+      "label": ""
+    }
+  ],
+  "wires": [
+    {
+      "points": [
+        [
+          5,
+          3
+        ],
+        [
+          7,
+          3
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          8
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          7,
+          3
+        ],
+        [
+          9,
+          3
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          7,
+          8
+        ],
+        [
+          9,
+          8
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          5,
+          5
+        ],
+        [
+          6,
+          5
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          6,
+          5
+        ],
+        [
+          6,
+          10
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          6,
+          5
+        ],
+        [
+          9,
+          5
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          6,
+          10
+        ],
+        [
+          9,
+          10
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          15,
+          4
+        ],
+        [
+          17,
+          4
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          15,
+          9
+        ],
+        [
+          17,
+          9
+        ]
+      ]
+    }
+  ]
+}

@@ -235,3 +235,18 @@
   people: Charles Babbage
   chapter: arithmetic
   text: 'Babbage’s design for the Analytical Engine includes a mechanism that carries in all the wheels of a register in a single operation instead of one after another: carry lookahead in brass.'
+- year: 1968
+  title: Grace Hopper’s nanosecond
+  people: Grace Hopper
+  chapter: timing
+  text: By the late 1960s Hopper is handing out 30 cm lengths of wire, the distance light travels in a nanosecond, to show why fast computers must be small.
+- year: 1959
+  title: The first working MOSFET
+  people: Mohamed Atalla, Dawon Kahng
+  chapter: cmos
+  text: At Bell Labs the two engineers make a field-effect transistor on silicon, with silicon dioxide as the insulator under the gate. They announce it in June 1960.
+- year: 1963
+  title: Nanowatt logic
+  people: Frank Wanlass, Chih-Tang Sah
+  chapter: cmos
+  text: At Fairchild they pair an n-channel and a p-channel transistor so that one is always off, and show logic with a standby power of nanowatts. Wanlass files the patent in June; it is granted in 1967.

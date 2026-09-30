@@ -753,14 +753,14 @@ nexperia-74hc151:
   authors: Nexperia
   year: 2024
   title: 74HC151; 74HCT151 8-input multiplexer, product data sheet (Rev. 11)
-  venue: Nexperia B.V.
+  venue: Nexperia data sheet
   url: https://assets.nexperia.com/documents/data-sheet/74HC_HCT151.pdf
   note: One of eight binary inputs, chosen by three select inputs and an enable, routed to complementary outputs.
 nexperia-74hc138:
   authors: Nexperia
   year: 2024
   title: 74HC138; 74HCT138 3-to-8 line decoder/demultiplexer; inverting, product data sheet
-  venue: Nexperia B.V.
+  venue: Nexperia data sheet
   url: https://assets.nexperia.com/documents/data-sheet/74HC_HCT138.pdf
   note: Three address inputs, eight mutually exclusive active-low outputs, three enable inputs; usable as a demultiplexer by using one enable as the data input.
 ti-sn74hc148:
@@ -774,21 +774,21 @@ nexperia-74hc85:
   authors: Nexperia
   year: 2024
   title: 74HC85; 74HCT85 4-bit magnitude comparator, product data sheet (Rev. 5)
-  venue: Nexperia B.V.
+  venue: Nexperia data sheet
   url: https://www.mouser.com/datasheet/2/916/74HC_HCT85-1541793.pdf
   note: Compares two 4-bit words and presents A > B, A = B and A < B; cascading inputs let several chips compare longer words.
 nexperia-74hc280:
   authors: Nexperia
   year: 2024
   title: 74HC280; 74HCT280 9-bit odd/even parity generator/checker, product data sheet
-  venue: Nexperia B.V.
+  venue: Nexperia data sheet
   url: https://assets.nexperia.com/documents/data-sheet/74HC_HCT280.pdf
   note: Nine data inputs with both an even-parity and an odd-parity output.
 nexperia-74hc4511:
   authors: Nexperia
   year: 2024
   title: 74HC4511; 74HCT4511 BCD to 7-segment latch/decoder/driver, product data sheet
-  venue: Nexperia B.V.
+  venue: Nexperia data sheet
   url: https://assets.nexperia.com/documents/data-sheet/74HC_HCT4511.pdf
   note: Four BCD inputs, latch enable, lamp test and blanking inputs, segment outputs a to g; the display is blank for every input code above 9.
 hamming1950:
@@ -888,3 +888,98 @@ nxp-74hc283:
   venue: NXP Semiconductors (now Nexperia)
   url: https://www.mouser.com/datasheet/2/302/74HC283_3-39369.pdf
   note: Two 4-bit words and a carry in are added with full carry lookahead across the four bits; the carry out can feed the carry in of the next chip.
+nmah-hopper-nanoseconds:
+  authors: National Museum of American History
+  year: 1985
+  title: Nanoseconds Associated with Grace Hopper (museum object record)
+  venue: Smithsonian Institution, National Museum of American History
+  url: https://americanhistory.si.edu/collections/object/nmah_692464
+  note: A bundle of about a hundred pieces of plastic-coated wire, each about 30 cm (11.8 in) long, the distance a signal travels in a nanosecond, which Hopper handed out from the late 1960s and brought to a lecture for the museum's docents in March 1985. The record also describes her microsecond, a coil of wire nearly 1,000 feet long.
+dataphys-hopper:
+  authors: Pierre Dragicevic and Yvonne Jansen
+  year: 'n.d.'
+  title: Grace Hopper’s Nanoseconds (1968)
+  venue: List of Physical Visualizations and Related Artefacts, dataphys.org
+  url: https://dataphys.org/list/grace-hopper-nanoseconds/
+  note: A catalogue of physical data visualisations, which dates Hopper's wires to 1968.
+huffman1957:
+  authors: David A. Huffman
+  year: 1957
+  title: The design and use of hazard-free switching networks
+  venue: Journal of the ACM 4(1), 47–62
+  url: https://doi.org/10.1145/320856.320866
+  note: How to synthesise a combinational switching network that behaves ideally even though its individual components do not.
+eichelberger1965:
+  authors: Edward B. Eichelberger
+  year: 1965
+  title: Hazard detection in combinational and sequential switching circuits
+  venue: IBM Journal of Research and Development 9(2), 90–99
+  url: https://doi.org/10.1147/rd.92.0090
+  note: Detects hazards with a ternary algebra, without knowing any delays, for changes of a single input and of several.
+nexperia-74hc14:
+  authors: Nexperia
+  year: 2024
+  title: 74HC14; 74HCT14 Hex inverting Schmitt trigger, product data sheet (Rev. 10)
+  venue: Nexperia B.V.
+  url: https://assets.nexperia.com/documents/data-sheet/74HC_HCT14.pdf
+  note: At a 4.5 V supply the typical thresholds are 2.38 V for a rising input and 1.4 V for a falling one, with a minimum of 0.9 V and a maximum of 2.0 V for the falling threshold.
+atalla-kahng1960:
+  authors: Dawon Kahng and Mohamed M. Atalla
+  year: 1960
+  title: Silicon–silicon dioxide field induced surface devices
+  venue: IRE–AIEE Solid-State Device Research Conference, Carnegie Institute of Technology, Pittsburgh, June 1960
+  note: The first announcement of the MOS field-effect transistor, made at Bell Laboratories in late 1959; a silicon dioxide layer is the insulator under the gate.
+chm-mos1960:
+  authors: Computer History Museum
+  year: 2007
+  title: '1960: Metal oxide semiconductor (MOS) transistor demonstrated'
+  venue: 'The Silicon Engine: A Timeline of Semiconductors in Computers, Computer History Museum'
+  url: https://www.computerhistory.org/siliconengine/metal-oxide-semiconductor-mos-transistor-demonstrated/
+  note: Atalla and Kahng’s device and its reception at Bell Laboratories, and how other companies took up MOS in the early 1960s.
+wanlass-sah1963:
+  authors: Frank M. Wanlass and Chih-Tang Sah
+  year: 1963
+  title: Nanowatt logic using field-effect metal-oxide semiconductor triodes
+  venue: IEEE International Solid-State Circuits Conference, Digest of Technical Papers, February 1963, 32–33
+  note: The first public description of complementary MOS logic, with a standby power of a few nanowatts.
+wanlass-patent:
+  authors: Frank M. Wanlass
+  year: 1967
+  title: Low stand-by power complementary field effect circuitry (US patent 3,356,858)
+  venue: 'United States Patent Office; filed 18 June 1963, granted 5 December 1967; assigned to Fairchild Camera and Instrument Corporation'
+  url: https://patents.google.com/patent/US3356858A/en
+  note: The patent for the complementary pair of an n-channel and a p-channel field-effect transistor.
+chm-cmos1963:
+  authors: Computer History Museum
+  year: 2007
+  title: '1963: Complementary MOS circuit configuration is invented'
+  venue: 'The Silicon Engine: A Timeline of Semiconductors in Computers, Computer History Museum'
+  url: https://www.computerhistory.org/siliconengine/complementary-mos-circuit-configuration-is-invented/
+  note: Wanlass and Sah’s complementary circuit and its very low standby power.
+shmj-cmos:
+  authors: Semiconductor History Museum of Japan
+  year: 2010
+  title: 1963 Invention of CMOS (Fairchild Semiconductor)
+  venue: Semiconductor History Museum of Japan, exhibit 307
+  url: https://www.shmj.or.jp/english/pdf/dis/exhibi307E.pdf
+  note: Wanlass and Sah’s 1963 presentation of the CMOS inverter, NOR gates and a flip-flop, and the patent.
+rca-cd4000:
+  authors: All About Circuits
+  year: 2021
+  title: 'RCA CD4000: the CMOS logic that wouldn’t die'
+  venue: All About Circuits, news article
+  url: https://www.allaboutcircuits.com/news/rca-cd4000-the-cmos-logic-that-wouldnt-die/
+  note: The 4000 series, introduced by RCA in 1968 as the first commercial family of logic built entirely in CMOS.
+weste-harris2011:
+  authors: Neil H. E. Weste and David Money Harris
+  year: 2011
+  title: 'CMOS VLSI Design: A Circuits and Systems Perspective, fourth edition'
+  venue: Addison-Wesley
+  note: Static CMOS gates, transistor sizing with the p-channel transistor twice as wide as the n-channel one (the mobility ratio), and the history of CMOS replacing nMOS in the 1980s.
+bryant1984:
+  authors: Randal E. Bryant
+  year: 1984
+  title: A switch-level model and simulator for MOS digital systems
+  venue: IEEE Transactions on Computers C-33(2), 160–177
+  url: https://doi.org/10.1109/TC.1984.1676408
+  note: Transistors as switches, node values 0, 1 and X with strengths, and the algorithm that resolves them.
