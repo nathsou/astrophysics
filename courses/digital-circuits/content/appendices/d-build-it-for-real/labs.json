@@ -264,6 +264,14 @@
     "lead": "The same counter, on an iCE40, through the open-source flow, and a comparison with what you saw."
   },
   {
+    "chapter": "cpus-on-a-chip",
+    "n": 1,
+    "heading": "build-it-for-real",
+    "headingText": "Build it for real",
+    "parts": "an iCE40 board (an iCEBreaker is ideal: an UP5K with a USB–UART bridge on the board), a USB cable, the open-source tools Yosys, nextpnr-ice40 and Project IceStorm, a RISC-V compiler (riscv32-unknown-elf-gcc)",
+    "lead": "Put a RISC-V CPU on a real FPGA and talk to it over a serial port."
+  },
+  {
     "chapter": "breadboard-to-billions",
     "n": 1,
     "heading": "build-it-for-real",

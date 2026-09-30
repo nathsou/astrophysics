@@ -18,11 +18,23 @@
  "altera-maxii-2004": [
   "cplds"
  ],
+ "altera-nios-2000": [
+  "cpus-on-a-chip"
+ ],
+ "altera-niosii-2004": [
+  "cpus-on-a-chip"
+ ],
  "amano1989": [
   "diodes-and-leds"
  ],
  "amaranth": [
   "breadboard-to-billions"
+ ],
+ "amd-microblaze": [
+  "cpus-on-a-chip"
+ ],
+ "amd-zynq7000": [
+  "cpus-on-a-chip"
  ],
  "antmicro-sky130": [
   "breadboard-to-billions"
@@ -366,6 +378,9 @@
  "ibm-dram": [
   "memory"
  ],
+ "icebram": [
+  "cpus-on-a-chip"
+ ],
  "icebreaker": [
   "breadboard-to-billions"
  ],
@@ -430,6 +445,7 @@
  ],
  "kuon-rose": [
   "inside-an-fpga",
+  "cpus-on-a-chip",
   "breadboard-to-billions"
  ],
  "leibniz1703": [
@@ -609,6 +625,12 @@
  "physicstoday-holonyak": [
   "diodes-and-leds"
  ],
+ "picorv32": [
+  "cpus-on-a-chip"
+ ],
+ "picosoc": [
+  "cpus-on-a-chip"
+ ],
  "pillage1995": [
   "capacitors-and-time"
  ],
@@ -617,6 +639,9 @@
  ],
  "prjicestorm": [
   "inside-an-fpga"
+ ],
+ "putnam2014": [
+  "cpus-on-a-chip"
  ],
  "quine1952": [
   "simplifying-logic"
@@ -629,6 +654,9 @@
  ],
  "riordan1997": [
   "diodes-and-leds"
+ ],
+ "riscv-2011": [
+  "cpus-on-a-chip"
  ],
  "riscv-about": [
   "breadboard-to-billions"
@@ -777,6 +805,9 @@
  ],
  "verilator": [
   "breadboard-to-billions"
+ ],
+ "vexriscv": [
+  "cpus-on-a-chip"
  ],
  "visual6502": [
   "control",

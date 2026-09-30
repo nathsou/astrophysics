@@ -159,6 +159,7 @@ export const LAB_TITLES: Record<string, string> = {
   'inside-an-fpga': 'Blink an LED on an iCE40; find a LUT in its bitstream',
   'describing-hardware': 'Nothing to wire: a board for the designs of Chapter 31 (optional)',
   'netlist-to-bitstream': 'The same counter through Yosys and nextpnr',
+  'cpus-on-a-chip': 'PicoRV32 on an iCEBreaker, with a serial port to your terminal',
   'breadboard-to-billions': 'Look at the die of a windowed EPROM',
 };
 

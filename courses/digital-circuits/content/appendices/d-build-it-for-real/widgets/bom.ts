@@ -160,6 +160,7 @@ export const ROWS: Row[] = [
   { id: 'yosys', group: 'tool', name: 'Yosys', detail: 'free software', test: /Yosys/, software: true },
   { id: 'nextpnr', group: 'tool', name: 'nextpnr-ice40', detail: 'free software', test: /nextpnr/, software: true },
   { id: 'icestorm', group: 'tool', name: 'Project IceStorm', detail: 'free software', test: /IceStorm/, software: true },
+  { id: 'riscv-gcc', group: 'tool', name: 'RISC-V compiler', detail: 'free software: riscv32-unknown-elf-gcc, to build PicoSoC’s firmware', test: /RISC-V compiler/, software: true },
   { id: 'screwdriver', group: 'tool', name: 'Small screwdriver', test: /screwdriver/ },
   { id: 'keyboard', group: 'tool', name: 'Old USB keyboard, unplugged', test: /USB keyboard/ },
   { id: 'loupe', group: 'tool', name: '10× loupe or USB microscope', test: /loupe/ },

@@ -1194,3 +1194,27 @@ risc-v:
   term: RISC-V
   definition: An open, royalty-free instruction set that began at UC Berkeley in 2010 and is now maintained by RISC-V International. Its base integer set, RV32I, is the core of Chapter 31.
   chapter: breadboard-to-billions
+soft-core:
+  term: soft core
+  definition: A processor described in a hardware description language and loaded into the logic of an FPGA like any other design. It costs area and speed, and can be changed, copied or removed at will. MicroBlaze, Nios II, VexRiscv and PicoRV32 are soft cores.
+  chapter: cpus-on-a-chip
+hard-core:
+  term: hard core
+  definition: A processor built into the silicon of a chip, beside its FPGA fabric, as fixed as any other circuit. It is smaller and faster than a soft core and cannot be changed. The Arm cores of the Zynq-7000 are hard cores.
+  chapter: cpus-on-a-chip
+block-ram:
+  term: block RAM
+  definition: A memory built into an FPGA as a dedicated block, not made of logic cells. It reads and writes at clock edges and holds thousands of bits (4,096 in the vFPGA). A `mem` in DCL is mapped to it, while a `reg` array is made of flip-flops.
+  chapter: cpus-on-a-chip
+synchronous-read:
+  term: synchronous read
+  definition: A memory read whose data appears after the clock edge that takes the address, not as soon as the address changes. Block RAMs work this way, so a CPU that uses one gives the RAM its address a cycle early.
+  chapter: cpus-on-a-chip
+register-file:
+  term: register file
+  definition: The array of a CPU’s programmer-visible registers, with read ports that select one by number and a write port. RV32I’s has 32 registers of 32 bits; built of flip-flops it is about two thirds of the core, and in block RAM it costs almost nothing.
+  chapter: cpus-on-a-chip
+cross-probing:
+  term: cross-probing
+  definition: Selecting something in one view of a design and seeing the same thing marked in the others. A line of the source lights the cells that implement it on the chip, and a cell on the chip shows its line.
+  chapter: cpus-on-a-chip

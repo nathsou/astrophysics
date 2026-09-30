@@ -495,3 +495,23 @@
   people: Samsung
   chapter: breadboard-to-billions
   text: On 30 June Samsung starts production of a 3 nm process in which the gate surrounds the channel completely.
+- year: 2000
+  title: The processor becomes a file
+  people: Altera
+  chapter: cpus-on-a-chip
+  text: On 12 June Altera introduces Nios, a 16-bit RISC processor core of about 1,000 logic cells, made to be configured into a programmable chip with the rest of the design.
+- year: 2002
+  title: MicroBlaze
+  people: Xilinx
+  chapter: cpus-on-a-chip
+  text: Xilinx introduces MicroBlaze, a 32-bit RISC soft processor with 32 registers, delivered with its Embedded Development Kit.
+- year: 2011
+  title: The RISC-V manual
+  people: Andrew Waterman, Yunsup Lee, David Patterson, Krste Asanović
+  chapter: cpus-on-a-chip
+  text: Berkeley publishes the first specification of RISC-V as a technical report on 13 May, an instruction set that anyone may implement without a licence.
+- year: 2014
+  title: An FPGA in every server
+  people: Andrew Putnam, Doug Burger, Microsoft
+  chapter: cpus-on-a-chip
+  text: Microsoft describes Catapult, FPGAs in 1,632 servers that accelerate Bing’s ranking, with 95 % more throughput for 10 % more power.
