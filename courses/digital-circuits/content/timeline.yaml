@@ -259,17 +259,17 @@
   title: MAX, the multiple array matrix
   people: Altera
   chapter: cplds
-  text: Altera joins several PAL-like blocks with a programmable interconnect array, giving up to 5,000 gates on one erasable chip, and starts the family of chips called CPLDs.
+  text: Altera joins several PAL-like blocks with a programmable interconnect array, giving up to 192 macrocells on one erasable chip, and starts the family of chips called CPLDs.
 - year: 1990
   title: JTAG becomes a standard
   people: The Joint Test Action Group, IEEE
   chapter: cplds
   text: 'IEEE Std 1149.1-1990, ratified in February, defines a four-wire test port and a boundary-scan cell on every pin, the result of a group of test engineers formed in 1985 to find bad solder joints.'
-- year: 1995
+- year: 1996
   title: In-system programmable CPLDs
   people: Xilinx
   chapter: cplds
-  text: 'Xilinx’s XC9500 family, introduced at the end of 1995, is configured over JTAG after the chip is soldered to its board.'
+  text: 'Xilinx’s XC9500 family, on sale by early 1996, is configured over JTAG after the chip is soldered to its board.'
 - year: 2004
   title: MAX II
   people: Altera

@@ -37,7 +37,7 @@ Altera was founded in 1983, and its first product, in 1984, was the EP300: a CMO
 ## Blocks, a matrix and I/O
 
 :::history{year=1988 title="MAX, the multiple array matrix" people="Altera"}
-Altera’s MAX 5000 family of 1988, named for its *multiple array matrix*, is usually counted as the first CPLD: up to 5,000 gates and system speeds up to 40 MHz, still erased with ultraviolet light.:cite[altera-history] Each *logic array block* was a PAL-like array with its macrocells, and the blocks talked to each other and to the pins through a **programmable interconnect array** (PIA), a global bus fed by every input pin and every macrocell.:cite[altera-max5000] A small array of your own and a switch matrix for the rest: the idea of Figure 27.1. Every CPLD since has had the same three levels.
+Altera’s MAX 5000 family of 1988, named for its *multiple array matrix*, is usually counted as the first CPLD: 32 to 192 macrocells on one chip, still erased with ultraviolet light.:cite[altera-history]:cite[altera-max5000] Each *logic array block* was a PAL-like array with its macrocells, and the blocks talked to each other and to the pins through a **programmable interconnect array** (PIA), a global bus fed by every input pin and every macrocell.:cite[altera-max5000] A small array of your own and a switch matrix for the rest: the idea of Figure 27.1. Every CPLD since has had the same three levels.
 :::
 
 - **:term[Function blocks]{id=function-block}.** Each is a small PAL: in the vCPLD-32, 8 macrocells and a 48-column AND array of 40 product terms (five per macrocell). It is Chapter 26’s PAL with one difference: it sees only **24 signals** at a time.
@@ -53,7 +53,7 @@ A signal from one block to another leaves its macrocell, crosses the matrix and 
 | Xilinx XC9572XL | 72 | 4 blocks of 18, 54 inputs each | 3.3 V | 5 ns pin to pin, 10,000 erase cycles:cite[xilinx-ds054] |
 | Xilinx CoolRunner-II | 32 to 512 | product terms and a matrix | 1.8 V core | low power, DataGATE:cite[xilinx-ds090] |
 | Atmel/Microchip ATF1502AS | 32 | 5 terms each, expandable to 40 | 5 V | 44 pins, 7.5 ns, JTAG:cite[microchip-atf1502] |
-| Altera MAX II (2004) | 240 to 2,210 logic elements | look-up tables | 1.8 V core | a small FPGA (see below):cite[altera-maxii-2004] |
+| Altera MAX II (2004) | 240 to 2,210 logic elements | look-up tables | 3.3 or 2.5 V (1.8 V in the later MAX IIG and IIZ) | a small FPGA (see below):cite[altera-maxii-2004] |
 
 ## A macrocell that counts
 
@@ -181,8 +181,8 @@ A GAL22V10 is programmed in a socket on a bench programmer, then soldered. A CPL
 By the mid-1980s the pins of a board’s chips were under them or too close for a probe, and most faults on manufactured boards were bad solder joints. Test engineers from Philips, British Telecom, GEC, Texas Instruments and others formed the *Joint Test Action Group* in 1985 to put a way of looking at every pin into the chips themselves.:cite[corelis-jtag] The result was IEEE Std 1149.1, ratified on 15 February 1990: four test pins (TDI, TMS, TCK, TDO, and an optional reset), a state machine that controls them, and a **boundary-scan cell** on every pin.:cite[ieee1149-1-1990] The name :term[JTAG]{id=jtag} stuck.
 :::
 
-:::history{year=1995 title="Program it after you solder it" people="Xilinx"}
-Xilinx introduced its XC9500 family at the end of 1995 with in-system programming through the JTAG port: manufacturers could assemble boards with blank CPLDs, configure them afterwards, build several products from one board and upgrade them in the field.:cite[xilinx-ds063] The MAX 7000S did the same.:cite[altera-max7000] The test port every chip already had proved the ideal programming port.
+:::history{year=1996 title="Program it after you solder it" people="Xilinx"}
+By early 1996 (its applications guide is dated February of that year):cite[xilinx-xc9500-guide1996] Xilinx was selling the XC9500 family, with in-system programming through the JTAG port: manufacturers could assemble boards with blank CPLDs, configure them afterwards, build several products from one board and upgrade them in the field.:cite[xilinx-ds063] The MAX 7000S did the same.:cite[altera-max7000] The test port every chip already had proved the ideal programming port.
 :::
 
 The port has four wires: **TCK** is the clock, **TMS** the mode select, **TDI** data in and **TDO** data out. The chips of a board are chained, each TDO to the next TDI, so four wires reach every device. Inside each chip is a 16-state machine, the :term[TAP controller]{id=tap-controller}, that moves on every rising edge of TCK to one of two states, chosen by TMS: a finite-state machine like Chapter 19’s. Two states are resting places (*Test-Logic-Reset* and *Run-Test/Idle*), and the rest are two identical columns, one that moves data through a **data register** (DR) and one that moves an **instruction** through the instruction register (IR).

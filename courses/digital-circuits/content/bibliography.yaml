@@ -976,7 +976,7 @@ altera-history:
   title: 'Altera history (CS294-59 resources, University of California, Berkeley)'
   venue: 'Course resource page, EECS, UC Berkeley, Fall 2010, reproducing Altera’s own company history'
   url: https://www-inst.eecs.berkeley.edu//~cs294-59/fa10/resources/Altera-history/Altera-history.html
-  note: 'Altera founded in 1983; the EP300, its first erasable PLD, in 1984; the MAX (multiple array matrix) architecture of 1988, up to 5,000 gates, system speeds up to 40 MHz and more than 200,000 programmable elements.'
+  note: 'Altera founded in 1983; the EP300, its first erasable PLD, in 1984; the MAX (multiple array matrix) architecture of 1988.'
 chm-ep300:
   authors: Computer History Museum
   year: 2012
@@ -2099,3 +2099,10 @@ icebram:
   venue: Project IceStorm manual page (Debian fpga-icestorm)
   url: https://manpages.debian.org/testing/fpga-icestorm/icebram.1.en.html
   note: Replaces the initial contents of the block RAMs in an ASCII bitstream without running synthesis or place and route again.
+xilinx-xc9500-guide1996:
+  authors: Xilinx
+  year: 1996
+  title: XC9500 CPLD Applications Guide with Data Sheets
+  venue: Xilinx, February 1996
+  url: http://bitsavers.org/components/xilinx/_dataBooks/0010290-01_XC9500_CPLD_Applications_Guide_with_Data_Sheets_199602.pdf
+  note: The earliest dated XC9500 document found; the family was on sale by early 1996.

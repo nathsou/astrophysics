@@ -970,6 +970,9 @@
  "xilinx-wp284": [
   "inside-an-fpga"
  ],
+ "xilinx-xc9500-guide1996": [
+  "cplds"
+ ],
  "zero-to-asic": [
   "breadboard-to-billions"
  ],
