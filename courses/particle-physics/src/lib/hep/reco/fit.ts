@@ -242,15 +242,21 @@ export interface HelixFit extends Helix {
   covZ: number[][];
 }
 
-/** Reusable work arrays for the fits (single-threaded, not re-entrant). */
+/** Reusable work arrays for the fits (single-threaded, not re-entrant): typed arrays are expensive to allocate. */
 let scrN = 0;
-let scrC = new Float64Array(0);
 let scrY = new Float64Array(0);
+const scr: Record<'xs' | 'ys' | 'ws' | 's' | 'eT' | 'th2' | 'sOrd' | 'eTs' | 'zs' | 'HT' | 'HZ' | 'CT' | 'CZ' | 'fT' | 'fZ' | 'out', Float64Array> = { fT: new Float64Array(0), fZ: new Float64Array(0), xs: new Float64Array(0), ys: new Float64Array(0), ws: new Float64Array(0), s: new Float64Array(0), eT: new Float64Array(0), th2: new Float64Array(0), sOrd: new Float64Array(0), eTs: new Float64Array(0), zs: new Float64Array(0), HT: new Float64Array(0), HZ: new Float64Array(0), CT: new Float64Array(0), CZ: new Float64Array(0), out: new Float64Array(3) };
+let scrOrder = new Int32Array(0);
 function ensureScratch(n: number): void {
   if (n > scrN) {
     scrN = Math.max(n, 16);
-    scrC = new Float64Array(scrN * scrN);
+    for (const k of ['xs', 'ys', 'ws', 's', 'eT', 'th2', 'sOrd', 'eTs', 'zs', 'fT', 'fZ'] as const) scr[k] = new Float64Array(scrN);
+    scr.HT = new Float64Array(scrN * 3);
+    scr.HZ = new Float64Array(scrN * 2);
+    scr.CT = new Float64Array(scrN * scrN);
+    scr.CZ = new Float64Array(scrN * scrN);
     scrY = new Float64Array(scrN * 4);
+    scrOrder = new Int32Array(scrN);
   }
 }
 
@@ -259,7 +265,7 @@ function ensureScratch(n: number): void {
  * Cholesky factor), by whitening: C = L Lᵀ, y = L⁻¹ e, G = L⁻¹ H, δ = (GᵀG)⁻¹ Gᵀ y, χ² = yᵀy − Gᵀy·δ, cov(δ) = (GᵀG)⁻¹.
  * H is n × m (row-major), m ≤ 3. `fitted` is H δ.
  */
-export function generalisedLeastSquares(n: number, m: number, C: Float64Array, H: Float64Array, e: Float64Array): { delta: number[]; cov: number[][]; chi2: number; fitted: Float64Array } {
+export function generalisedLeastSquares(n: number, m: number, C: Float64Array, H: Float64Array, e: Float64Array, fittedOut?: Float64Array): { delta: number[]; cov: number[][]; chi2: number; fitted: Float64Array } {
   const L = C;
   for (let j = 0; j < n; j++) {
     const rj = j * n;
@@ -307,7 +313,7 @@ export function generalisedLeastSquares(n: number, m: number, C: Float64Array, H
   });
   let chi2 = yy;
   for (let a = 0; a < m; a++) chi2 -= b[a]! * delta[a]!;
-  const fitted = new Float64Array(n);
+  const fitted = fittedOut ?? new Float64Array(n);
   for (let i = 0; i < n; i++) {
     let v = 0;
     for (let a = 0; a < m; a++) v += H[i * m + a]! * delta[a]!;
@@ -358,7 +364,7 @@ export function fitTrack3D(points: readonly FitPoint[], bTesla: number, opts: Fi
   let xc: number, yc: number, Rr: number;
   if (fit === circleFit) {
     // the reference fit, without building objects
-    const xs = new Float64Array(n), ys = new Float64Array(n), ws = new Float64Array(n);
+    const xs = scr.xs, ys = scr.ys, ws = scr.ws;
     for (let i = 0; i < n; i++) {
       const p = points[i]!;
       xs[i] = p.x;
@@ -366,7 +372,7 @@ export function fitTrack3D(points: readonly FitPoint[], bTesla: number, opts: Fi
       const sg = p.sxy ?? 1;
       ws[i] = 1 / (sg * sg);
     }
-    const out = new Float64Array(3);
+    const out = scr.out;
     taubinFlat(xs, ys, ws, n, out);
     xc = out[0]!;
     yc = out[1]!;
@@ -404,8 +410,8 @@ export function fitTrack3D(points: readonly FitPoint[], bTesla: number, opts: Fi
   let phi0 = Math.atan2(diry, dirx);
   let d0 = dirx * py - diry * px;
   // arc length of each hit from the perigee (from the chord) and residuals from the circle, positive to the left of the motion
-  const s = new Float64Array(n);
-  const eT = new Float64Array(n);
+  const s = scr.s;
+  const eT = scr.eT;
   const R2 = Rr * Rr;
   const invTwoR = 1 / (2 * Rr);
   for (let i = 0; i < n; i++) {
@@ -448,7 +454,7 @@ export function fitTrack3D(points: readonly FitPoint[], bTesla: number, opts: Fi
   if (opts.scattering) {
     const mass = opts.mass ?? 0.13957;
     // order by arc length (insertion sort: n is small)
-    const order = new Int32Array(n);
+    const order = scrOrder;
     for (let i = 0; i < n; i++) {
       let j = i;
       while (j > 0 && s[order[j - 1]!]! > s[i]!) {
@@ -464,8 +470,8 @@ export function fitTrack3D(points: readonly FitPoint[], bTesla: number, opts: Fi
       const p = pT / cosLam;
       const invCos2 = 1 + tanL * tanL; // 1/cos²λ
       // scattering angle in the polar direction at each point (in arc-length order); θ_T² = θ²/cos²λ
-      const th2 = new Float64Array(n);
-      const sOrd = new Float64Array(n);
+      const th2 = scr.th2;
+      const sOrd = scr.sOrd;
       for (let k = 0; k < n; k++) {
         const pt = points[order[k]!]!;
         const r = Math.sqrt(pt.x * pt.x + pt.y * pt.y);
@@ -474,9 +480,9 @@ export function fitTrack3D(points: readonly FitPoint[], bTesla: number, opts: Fi
         th2[k] = th * th;
         sOrd[k] = s[order[k]!]!;
       }
-      const CT = new Float64Array(n * n), CZ = new Float64Array(n * n);
-      const HT = new Float64Array(n * 3), HZ = new Float64Array(n * 2);
-      const eTs = new Float64Array(n), zs = new Float64Array(n);
+      const CT = scr.CT, CZ = scr.CZ;
+      const HT = scr.HT, HZ = scr.HZ;
+      const eTs = scr.eTs, zs = scr.zs;
       const t2 = invCos2 * invCos2;
       for (let a = 0; a < n; a++) {
         const sa = sOrd[a]!;
@@ -504,8 +510,8 @@ export function fitTrack3D(points: readonly FitPoint[], bTesla: number, opts: Fi
         eTs[a] = eT[order[a]!]!;
         zs[a] = pt.z;
       }
-      const gT = generalisedLeastSquares(n, 3, CT, HT, eTs);
-      const gZ = generalisedLeastSquares(n, 2, CZ, HZ, zs);
+      const gT = generalisedLeastSquares(n, 3, CT, HT, eTs, scr.fT);
+      const gZ = generalisedLeastSquares(n, 2, CZ, HZ, zs, scr.fZ);
       covT = gT.cov;
       covZ = gZ.cov;
       chi2xy = gT.chi2;

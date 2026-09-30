@@ -53,8 +53,14 @@
       for (let i = 0; i < 5; i++) drawPlane(ctx, scene, 'rphi', v, o, st);
       out['rphi highlighted'] = +((performance.now() - t2) / 5).toFixed(1);
       const t3 = performance.now();
-      for (let i = 0; i < 20; i++) new ScenePicker(scene).pick((x: number, y: number, z: number, s: number, o2: Float64Array) => { o2[0] = v.toScreenX(x); o2[1] = v.toScreenY(y); return true; }, 300, 200, { showTruth: false, showReco: true, showHits: true, showCalo: true });
-      out['pick'] = +((performance.now() - t3) / 20).toFixed(2);
+      const pk = new ScenePicker(scene);
+      const pj = (x: number, y: number, z: number, s: number, o2: Float64Array) => { o2[0] = v.toScreenX(x); o2[1] = v.toScreenY(y); return true; };
+      const fl = { showTruth: false, showReco: true, showHits: true, showCalo: true };
+      pk.pick(pj, 300, 200, fl);
+      const t4 = performance.now();
+      for (let i = 0; i < 100; i++) pk.pick(pj, 300 + i, 200, fl);
+      out['pick cached'] = +((performance.now() - t4) / 100).toFixed(3);
+      out['pick first (projects all)'] = +(t4 - t3).toFixed(2);
       bench = JSON.stringify(out);
       return;
     }

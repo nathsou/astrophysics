@@ -18,16 +18,16 @@
  *        |M|² ∝ (c_L¹c_L² + c_R¹c_R²)(p₁⁻·p₂⁻)(p₁⁺·p₂⁺) + (c_L¹c_R² + c_R¹c_L²)(p₁⁻·p₂⁺)(p₁⁺·p₂⁻),
  *    with the fermion (ℓ⁻ or ν) labelled − and the antifermion + and c_L, c_R the squared chiral couplings of the Z to the lepton (W: left only).
  */
-import { GAMMA_H, G_F, M_H, M_W, GAMMA_W, M_Z, GAMMA_Z, V_EW, alphaS1, zCouplings } from '../sm/index.ts';
+import { GAMMA_H, M_H, M_W, GAMMA_W, M_Z, GAMMA_Z, V_EW, alphaS1, zCouplings } from '../sm/index.ts';
 import { HBARC2_GEV2_PB } from '../units/index.ts';
 import { particle } from '../particles/index.ts';
 import type { Rng } from '../random/index.ts';
 import type { P4 } from '../kinematics/index.ts';
-import { dot, fromMass } from '../kinematics/index.ts';
+import { dot } from '../kinematics/index.ts';
 import type { TruthEvent } from '../event/index.ts';
 import { NPDF, addBeamsAndPartons, density, pdfAll } from './hadron.ts';
-import { breitWignerMap, gaussLegendre, integrateMapped, mixMap } from './integrate.ts';
-import { type Beams, type Process, addParticle, boostZ, decayAbout, decayIsotropic, makeMCProcess, newEvent, registerProcess } from './process.ts';
+import { breitWignerMap, gaussLegendre, integrateMapped } from './integrate.ts';
+import { type Beams, type Process, addParticle, boostZ, decayIsotropic, makeMCProcess, newEvent, registerProcess } from './process.ts';
 
 export type HiggsDecay = 'none' | 'gammagamma' | 'ZZ4l' | 'bb' | 'tautau' | 'WWlnulnu';
 
@@ -282,4 +282,3 @@ registerProcess(['pp->H->ZZ->4l', 'pp->H->4l'], () => higgsGGF({ decay: 'ZZ4l' }
 registerProcess(['pp->H->bb'], () => higgsGGF({ decay: 'bb' }));
 registerProcess(['pp->H->tautau'], () => higgsGGF({ decay: 'tautau' }));
 registerProcess(['pp->H->WW->lnulnu', 'pp->H->WW'], () => higgsGGF({ decay: 'WWlnulnu' }));
-void G_F; void mixMap; void fromMass; void decayAbout;

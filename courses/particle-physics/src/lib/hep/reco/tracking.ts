@@ -236,8 +236,6 @@ interface Cand {
  * the beam line (`d0`, `z0` are also stored as `d0Raw`, `z0Raw`; the reconstruction chain later re-expresses `d0`, `z0`
  * relative to the primary vertex). `Track.hits` holds indices into `hits`.
  */
-const __T: Record<string, number> = ((globalThis as any).__T = {});
-const __now = () => { const u = process.cpuUsage(); return (u.user + u.system) / 1000; };
 export function findTracks(hits: readonly Hit[], cfg: DetectorConfig | RecoGeometry, rcIn?: Partial<RecoConfig>, statsOut?: FinderStats): RecoTrack[] {
   const geom = geometryFromConfig(cfg);
   const rc = resolveConfig(rcIn);
@@ -248,9 +246,7 @@ export function findTracks(hits: readonly Hit[], cfg: DetectorConfig | RecoGeome
   stats.nTracks = 0;
   if (nL < 3 || hits.length < 3) return [];
   const minHits = rc.minHits > 0 ? rc.minHits : Math.max(3, Math.min(6, Math.round(0.6 * nL)));
-  let __t = __now();
   const idx = buildHitIndex(hits, geom);
-  __T.index = (__T.index ?? 0) + __now() - __t;
   const rm = roadModel(geom);
   const B = geom.bField;
   const layerR = Float64Array.from(geom.layers, (l) => l.r);
@@ -494,19 +490,21 @@ export function findTracks(hits: readonly Hit[], cfg: DetectorConfig | RecoGeome
   const maxSeedLayer = Math.max(...combos.flat()) + 1;
   // Two passes: prompt high-pT tracks first, with narrow windows; then what is left, with the full acceptance.
   const passes: { d0Max: number; ptMin: number; combos: [number, number, number][] }[] = [];
-  if (rc.d0Max > 1 || rc.ptMin < 1) passes.push({ d0Max: Math.min(1, rc.d0Max), ptMin: Math.max(1, rc.ptMin), combos: combos.slice(0, 2) });
+  if (rc.d0Max > 0.5 || rc.ptMin < 0.7) passes.push({ d0Max: Math.min(0.5, rc.d0Max), ptMin: Math.max(0.7, rc.ptMin), combos: combos.slice(0, 2) });
   passes.push({ d0Max: rc.d0Max, ptMin: rc.ptMin, combos });
   let nBuilt = 0;
   for (const pass of passes) {
     const PRmin = radiusFromPt(pass.ptMin, B);
     // the hits of the tracks found so far are dropped from the grids for this pass
     if (accepted.length > nBuilt) {
-      const __b = __now();
       buildGrids(idx, geom, maxSeedLayer);
-      __T.grids = (__T.grids ?? 0) + __now() - __b;
       nBuilt = accepted.length;
     }
     for (const [la, lb, lc] of pass.combos) {
+      if (accepted.length > nBuilt) {
+        buildGrids(idx, geom, maxSeedLayer);
+        nBuilt = accepted.length;
+      }
       const ra = layerR[la]!, rb = layerR[lb]!, rcc = layerR[lc]!;
       const tolAB = Math.asin(Math.min(1, rb / (2 * PRmin))) - Math.asin(ra / (2 * PRmin)) + pass.d0Max * (1 / ra - 1 / rb) + 0.004;
       const tolC = 1.15 * pass.d0Max * ((rcc - rb) * (rcc - ra)) / (ra * rb * rcc) + 2 * highland(pass.ptMin, geom.layers[lb]!.xOverX0) * ((rcc - rb) / rcc) + phiTol + 4 * layerSigT[lc]! / rcc;
@@ -553,17 +551,13 @@ export function findTracks(hits: readonly Hit[], cfg: DetectorConfig | RecoGeome
             if (Math.abs(zA - t * sA) > rc.z0Max * 1.2) continue;
             if (Math.abs(idx.z[Ci]! - (zB + t * (sC - sB))) > zTol) continue;
             stats.nSeeds++;
-            const __g = __now();
             const cand = grow(A, Bi, Ci, xc, yc, R);
-            __T.grow = (__T.grow ?? 0) + __now() - __g;
             if (cand && cand.chi2 / cand.ndof <= 4 * rc.maxChi2PerDof) cands.push(cand);
           }
         }
       }
       stats.nCandidates += cands.length;
-      const __a = __now();
       acceptCandidates(cands);
-      __T.accept = (__T.accept ?? 0) + __now() - __a;
     }
   }
   stats.nTracks = accepted.length;

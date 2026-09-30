@@ -132,6 +132,13 @@
   const activeKey = $derived(hover ?? selected);
   const activeId = $derived(activeKey === null ? null : (scene.byKey.get(activeKey) ?? null));
   const states = $derived(activeKey !== null && activeId !== null ? highlightStates(scene, activeKey) : null);
+  // A selection does not carry over to another event.
+  let lastEvent: FullEvent | null = null;
+  $effect(() => {
+    const e = ev;
+    if (lastEvent && lastEvent !== e) selected = null;
+    lastEvent = e;
+  });
   $effect(() => {
     if (selected !== null && !scene.byKey.has(selected)) selected = null;
   });

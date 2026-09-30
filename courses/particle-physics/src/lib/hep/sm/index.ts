@@ -154,9 +154,6 @@ export const beta0 = (nf: number): number => 11 - (2 * nf) / 3;
 /** The two-loop coefficient β₁ = 102 − 38nf/3. */
 export const beta1 = (nf: number): number => 102 - (38 * nf) / 3;
 
-/** Segment boundaries in ln Q for the flavour thresholds. */
-const THRESH = [M_C, M_B, M_T];
-
 /** dαs/d ln Q for nf flavours, `loops` = 1 or 2. */
 function dAlpha(a: number, nf: number, loops: 1 | 2): number {
   const b0 = beta0(nf) / (4 * Math.PI);
@@ -402,14 +399,14 @@ export interface HiggsWidths {
  * The result is a leading-order estimate: the measured/recommended values differ by QCD corrections of order 20 % on bb̄ and ~60 % on gg.
  */
 export function higgsWidths(mH = M_H): HiggsWidths {
-  const fermionW = (pdg: number, m: number, Nc: number) => {
+  const fermionW = (m: number, Nc: number) => {
     const beta = Math.sqrt(Math.max(0, 1 - (4 * m * m) / (mH * mH)));
     return (Nc * G_F * mH * m * m * beta ** 3) / (4 * Math.SQRT2 * Math.PI);
   };
-  const bb = fermionW(5, runningMass(5, mH), 3);
-  const cc = fermionW(4, runningMass(4, mH), 3);
-  const tautau = fermionW(15, particle(15).mass, 1);
-  const mumu = fermionW(13, particle(13).mass, 1);
+  const bb = fermionW(runningMass(5, mH), 3);
+  const cc = fermionW(runningMass(4, mH), 3);
+  const tautau = fermionW(particle(15).mass, 1);
+  const mumu = fermionW(particle(13).mass, 1);
   const vv = (MV: number, delta: number) => {
     const x = (MV * MV) / (mH * mH);
     if (4 * x <= 1) return 0; // mH > 2 mV: the on-shell two-body formula is not implemented (not needed near 125 GeV)

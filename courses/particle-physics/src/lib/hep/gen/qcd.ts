@@ -366,8 +366,7 @@ export function diphoton(opt: DiphotonOptions = {}): Process {
       ctx.contrib[list.length] = g;
       return sum + g;
     },
-    channel(k, _ctx, r) {
-      void r;
+    channel(k) {
       if (k < list.length) {
         const ch = list[k]!;
         return { a: ch.a, b: ch.b, c: 22, d: 22, colour: [quarkCol(ch.a), quarkCol(ch.b), undefined, undefined] };
