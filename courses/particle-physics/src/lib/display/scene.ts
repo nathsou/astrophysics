@@ -286,6 +286,7 @@ export function buildScene(event: FullEvent, geo: DisplayGeometry, options: Scen
   const cells: CaloCell[] = det?.cells ?? [];
   const cellTower = new Int32Array(cells.length).fill(-1);
   let energyScale = 1;
+  let fromClusters = false;
   const towerSize = (calo: 'ecal' | 'hcal') => (calo === 'ecal' ? geo.ecal.cell : geo.hcal.cell);
   {
     const grid = new Map<string, { calo: 'ecal' | 'hcal'; ieta: number; iphi: number; energy: number; cells: number[]; eta: number; phi: number }>();
@@ -307,7 +308,8 @@ export function buildScene(event: FullEvent, geo: DisplayGeometry, options: Scen
     energyScale = (0.4 * geo.hcal.rOut) / Math.max(40, maxE);
     // With no cells (real data, or a reco-only event) the clusters are drawn instead.
     if (list.length === 0 && reco.clusters.length) {
-      list = reco.clusters.map((c, i) => ({ calo: c.calo, ieta: 0, iphi: 0, energy: c.energy, cells: [], eta: c.eta, phi: c.phi, cluster: i })) as typeof list;
+      fromClusters = true;
+      list = reco.clusters.map((c) => ({ calo: c.calo, ieta: 0, iphi: 0, energy: c.energy, cells: [], eta: c.eta, phi: c.phi }));
       const mE = list.reduce((m, t) => Math.max(m, t.energy), 0);
       energyScale = (0.4 * geo.hcal.rOut) / Math.max(40, mE);
     }
@@ -405,6 +407,8 @@ export function buildScene(event: FullEvent, geo: DisplayGeometry, options: Scen
     }
     for (const t of topTruth(c.cells.map((k) => cells[k]).filter((x): x is CaloCell => !!x), 6)) link(clusterObj[i]!, truthObj[t] ?? -1);
   });
+  // With no cells the towers are the clusters themselves.
+  if (fromClusters) towers.forEach((_, i) => link(towerObj[i]!, clusterObj[i] ?? -1));
   towers.forEach((tw, i) => {
     const ts = new Map<number, number>();
     for (const c of tw.cells) for (const t of cells[c]!.truth) ts.set(t, (ts.get(t) ?? 0) + cells[c]!.energy);
@@ -553,7 +557,7 @@ export function buildScene(event: FullEvent, geo: DisplayGeometry, options: Scen
 
   // ── Missing pT arrow ──
   let met: MetArrow | null = null;
-  if (metMag > 1) {
+  if (metMag > 2) {
     const length = Math.min(0.95 * geo.hcal.rOut, Math.max(0.12 * geo.hcal.rOut, metMag * scale));
     met = { obj: metObj, x: reco.met.x, y: reco.met.y, magnitude: metMag, phi: Math.atan2(reco.met.y, reco.met.x), length, origin: [pvT[0], pvT[1], pvT[2]] };
   }

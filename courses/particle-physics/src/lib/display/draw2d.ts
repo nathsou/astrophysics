@@ -423,7 +423,7 @@ export const LEGO_ETA = 3;
 export function legoModel(scene: DisplayScene): LegoModel {
   const bars: LegoBar[] = scene.towers.map((t) => ({ obj: t.obj, eta: t.eta, phi: t.phi, dEta: t.dEta, dPhi: t.dPhi, et: t.energy / Math.cosh(t.eta), calo: t.calo }));
   const maxEt = bars.reduce((m, b) => Math.max(m, b.et), 0);
-  return { bars, maxEt, hScale: 2.4 / Math.max(30, maxEt) };
+  return { bars, maxEt, hScale: 2.0 / Math.max(30, maxEt) };
 }
 
 /** Set up the lego camera for a canvas size. */
@@ -432,7 +432,7 @@ export function legoCamera(cam: Camera, w: number, h: number): void {
   cam.resize(w, h);
   cam.target = [0, 0.5, 0];
   const aspect = w / h;
-  const half = 4.7; // half of the vertical extent to fit (the floor seen at an angle is about 9 units across)
+  const half = 3.9; // half of the vertical extent to fit (the floor seen at an angle is about 9 units across)
   cam.distance = 12;
   cam.fov = 2 * Math.atan(half / Math.min(1, aspect * 1.25) / cam.distance);
   cam.near = -60;
@@ -602,8 +602,8 @@ export function drawLego(ctx: CanvasRenderingContext2D, scene: DisplayScene, mod
       ctx.stroke();
       const [lx, ly] = P(j.eta, 0.01, j.phi);
       ctx.fillStyle = rgba(pal.jet.rgb, s === 3 ? 0.3 : 1);
-      ctx.textAlign = 'center';
-      ctx.fillText(`jet ${j.pt.toFixed(0)}`, lx, ly);
+      ctx.textAlign = 'left';
+      ctx.fillText(`jet ${j.pt.toFixed(0)}`, lx + 18, ly - 10);
       addPoly(ring, j.obj, 2);
     }
     // Leptons and photons: a pole with a glyph on top, at (η, φ).
@@ -642,9 +642,9 @@ export function drawLego(ctx: CanvasRenderingContext2D, scene: DisplayScene, mod
   }
   ctx.lineWidth = 1;
   ctx.fillStyle = 'rgba(200,215,235,0.75)';
-  ctx.textAlign = 'right';
-  ctx.textBaseline = 'top';
-  ctx.fillText('bar height: E_T = E / cosh η', W - 8, 6);
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'bottom';
+  ctx.fillText('bar height: E_T = E / cosh η', 10, H - 8);
   ctx.textBaseline = 'middle';
   return buf;
 }

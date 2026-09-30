@@ -8,8 +8,7 @@
  *    (Alternatively the seeds are the peaks of the Hough transform in the transverse plane, `seeding: 'hough'`.)
  * 2. **Extension.** From each seed the circle is followed outwards layer by layer: intersect the current circle with the
  *    layer's cylinder, take the compatible hit nearest to the prediction inside a road whose width combines the hit
- *    resolution and the expected multiple scattering, refit, continue. (`extension: 'kalman'` replaces this with a
- *    combinatorial Kalman filter that keeps several candidates.)
+ *    resolution and the expected multiple scattering, refit, continue.
  * 3. **Fit and quality.** Each candidate is fitted (circle + line, scattering included in the uncertainties) and cut on
  *    hit count, χ², pT, d0 and z0.
  * 4. **Ambiguity resolution.** Candidates are ranked by number of hits and χ²; a candidate that shares more than
@@ -52,6 +51,8 @@ export interface HitIndex {
   layer: Int16Array;
   used: Uint8Array;
   grids: LayerGrid[];
+  /** Hit indices of each layer. */
+  byLayer: Int32Array[];
 }
 
 /** Read the hits into flat arrays. The grids are built by `buildGrids`. */
@@ -68,7 +69,15 @@ export function buildHitIndex(hits: readonly Hit[], geom: RecoGeometry): HitInde
     phi[i] = Math.atan2(h.y, h.x);
     layer[i] = geom.layerMap ? (geom.layerMap[h.layer] ?? -1) : h.layer;
   }
-  const idx: HitIndex = { n, x, y, z, r, phi, layer, used: new Uint8Array(n), grids: [] };
+  const cnt = new Int32Array(geom.layers.length);
+  for (let i = 0; i < n; i++) if (layer[i]! >= 0 && layer[i]! < cnt.length) cnt[layer[i]!]!++;
+  const byLayer = Array.from(cnt, (c) => new Int32Array(c));
+  cnt.fill(0);
+  for (let i = 0; i < n; i++) {
+    const l = layer[i]!;
+    if (l >= 0 && l < cnt.length) byLayer[l]![cnt[l]!++] = i;
+  }
+  const idx: HitIndex = { n, x, y, z, r, phi, layer, used: new Uint8Array(n), grids: [], byLayer };
   buildGrids(idx, geom);
   return idx;
 }
@@ -76,26 +85,34 @@ export function buildHitIndex(hits: readonly Hit[], geom: RecoGeometry): HitInde
 /** (Re)build the per-layer grids from the hits not yet used by an accepted track. */
 export function buildGrids(idx: HitIndex, geom: RecoGeometry, onlyLayers = geom.layers.length): void {
   const nLayers = geom.layers.length;
-  const counts = new Int32Array(nLayers);
-  for (let i = 0; i < idx.n; i++) if (!idx.used[i] && idx.layer[i]! >= 0 && idx.layer[i]! < nLayers) counts[idx.layer[i]!]!++;
   const grids: LayerGrid[] = onlyLayers < nLayers ? idx.grids.slice() : [];
+  const cellOf = new Int32Array(idx.n);
   for (let l = 0; l < onlyLayers; l++) {
-    const cnt = counts[l]!;
+    const all = idx.byLayer[l]!;
+    // the hits of this layer that are still free
+    let cnt = 0;
+    for (let k = 0; k < all.length; k++) if (!idx.used[all[k]!]) cnt++;
     const nz = cnt < 64 ? 1 : 16;
     const nb = Math.max(4, Math.min(512, 1 << Math.round(Math.log2(Math.max(4, cnt / nz)))));
     const zHalf = Math.min(geom.zMax, geom.layers[l]!.r * Math.sinh(geom.etaMax + 0.4)) || 1;
     const invDz = nz / (2 * zHalf);
-    const cell = (i: number): number => {
+    const start = new Int32Array(nb * nz + 1);
+    for (let k = 0; k < all.length; k++) {
+      const i = all[k]!;
+      if (idx.used[i]) continue;
       const bz = nz === 1 ? 0 : Math.min(nz - 1, Math.max(0, Math.floor((idx.z[i]! + zHalf) * invDz)));
       const bp = Math.min(nb - 1, Math.floor(((idx.phi[i]! + Math.PI) / TWO_PI) * nb));
-      return bz * nb + bp;
-    };
-    const start = new Int32Array(nb * nz + 1);
-    for (let i = 0; i < idx.n; i++) if (!idx.used[i] && idx.layer[i] === l) start[cell(i) + 1]!++;
+      const c = bz * nb + bp;
+      cellOf[i] = c;
+      start[c + 1]!++;
+    }
     for (let c = 0; c < nb * nz; c++) start[c + 1]! += start[c]!;
     const fill = start.slice(0, nb * nz);
     const ids = new Int32Array(cnt);
-    for (let i = 0; i < idx.n; i++) if (!idx.used[i] && idx.layer[i] === l) ids[fill[cell(i)]!++] = i;
+    for (let k = 0; k < all.length; k++) {
+      const i = all[k]!;
+      if (!idx.used[i]) ids[fill[cellOf[i]!]!++] = i;
+    }
     grids[l] = { nb, nz, zMin: -zHalf, invDz, start, ids };
   }
   idx.grids = grids;
@@ -491,7 +508,9 @@ export function findTracks(hits: readonly Hit[], cfg: DetectorConfig | RecoGeome
   // Two passes: prompt high-pT tracks first, with narrow windows; then what is left, with the full acceptance.
   const passes: { d0Max: number; ptMin: number; combos: [number, number, number][] }[] = [];
   if (rc.d0Max > 0.5 || rc.ptMin < 0.7) passes.push({ d0Max: Math.min(0.5, rc.d0Max), ptMin: Math.max(0.7, rc.ptMin), combos: combos.slice(0, 2) });
-  passes.push({ d0Max: rc.d0Max, ptMin: rc.ptMin, combos });
+  passes.push({ d0Max: rc.d0Max, ptMin: rc.ptMin, combos: combos.slice(0, 2) });
+  // the combinations that skip a layer only rescue good tracks that lost a hit: prompt and not too soft
+  if (combos.length > 2) passes.push({ d0Max: Math.min(1, rc.d0Max), ptMin: Math.max(0.7, rc.ptMin), combos: combos.slice(2) });
   let nBuilt = 0;
   for (const pass of passes) {
     const PRmin = radiusFromPt(pass.ptMin, B);
@@ -510,6 +529,8 @@ export function findTracks(hits: readonly Hit[], cfg: DetectorConfig | RecoGeome
       const tolC = 1.15 * pass.d0Max * ((rcc - rb) * (rcc - ra)) / (ra * rb * rcc) + 2 * highland(pass.ptMin, geom.layers[lb]!.xOverX0) * ((rcc - rb) / rcc) + phiTol + 4 * layerSigT[lc]! / rcc;
       const sigmaSeedZ = Math.hypot(layerSigZ[la]!, layerSigZ[lb]!, layerSigZ[lc]!);
       const xb = geom.layers[lb]!.xOverX0;
+      // worst-case scattering angle at pT = ptMin, times 3 (and 1.15 for the log term); the pT and path factors of the slope are applied per pair
+      const msZ = (3 * 1.15 * 0.0136 * Math.sqrt(xb) * (1 + 0.038 * Math.log(xb))) / pass.ptMin;
       const cands: Cand[] = [];
       const kAB = (rcc - rb) / (rb - ra);
       const GA = idx.grids[la]!.ids;
@@ -525,14 +546,16 @@ export function findTracks(hits: readonly Hit[], cfg: DetectorConfig | RecoGeome
           if (idx.used[Bi]) continue;
           const zB = idx.z[Bi]!;
           if (Math.abs(zB - zBnom) > zBtol) continue;
-          const dphi = wrap(idx.phi[Bi]! - phiA);
-          if (Math.abs(dphi) > tolAB) continue;
+          let dphi = idx.phi[Bi]! - phiA;
+          if (dphi > Math.PI) dphi -= TWO_PI;
+          else if (dphi < -Math.PI) dphi += TWO_PI;
+          if (dphi > tolAB || dphi < -tolAB) continue;
           const phiPred = idx.phi[Bi]! + dphi * kAB;
           const slope = (zB - zA) / (rb - ra);
           const zPred = zB + (zB - zA) * kAB;
           // z window at the third layer: hit resolution, arc-length effect and the scattering at the worst-case pT
           const chB = Math.sqrt(1 + slope * slope);
-          const zTol = 6 * sigmaSeedZ + 0.4 + 0.25 * Math.abs(slope) + 3 * chB * chB * highland(pass.ptMin * chB, xb * chB) * (rcc - rb);
+          const zTol = 6 * sigmaSeedZ + 0.4 + 0.25 * Math.abs(slope) + (msZ * chB * chB * (rcc - rb)) / Math.sqrt(chB);
           const nC = collect(idx, lc, phiPred, tolC, zPred - zTol, zPred + zTol, bufC);
           for (let kc = 0; kc < nC; kc++) {
             const Ci = bufC[kc]!;

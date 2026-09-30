@@ -148,6 +148,7 @@ describe('drawing primitives', () => {
     expect(s.towers.length).toBe(e.reco.clusters.length);
     expect(s.polylines.length).toBeGreaterThan(5);
     expect(s.hasTruth).toBe(false);
+    for (const t of s.towers) expect(s.objects[t.obj]!.links.some((l) => s.objects[l]!.cat === 'cluster')).toBe(true);
   });
 });
 
@@ -244,7 +245,7 @@ describe('render data', () => {
       const t = dijet.towers.find((x) => x.obj === b.obj)!;
       expect(b.et).toBeCloseTo(t.energy / Math.cosh(t.eta), 9);
     }
-    expect(m.hScale * m.maxEt).toBeLessThanOrEqual(2.4 + 1e-9);
+    expect(m.hScale * m.maxEt).toBeLessThanOrEqual(2.0 + 1e-9);
   });
   it('the lego plot draws on a fake 2D context and reports polygons for picking', () => {
     const calls: string[] = [];

@@ -163,17 +163,21 @@ function splitByMaxima(members: number[], cIeta: Int32Array, cIphi: Int32Array, 
   // keep maxima that are at least 3 cells from every larger one (closer ones are fluctuations of the same shower)
   maxima.sort((p, q) => cE[q]! - cE[p]!);
   const kept: number[] = [];
-  const dist = (p: number, q: number) => {
+  // squared distance in cell units
+  const dist2 = (p: number, q: number) => {
     const dphi = Math.abs(cIphi[p]! - cIphi[q]!);
-    return Math.hypot(cIeta[p]! - cIeta[q]!, Math.min(dphi, nPhi - dphi));
+    const dp = Math.min(dphi, nPhi - dphi);
+    const de = cIeta[p]! - cIeta[q]!;
+    return de * de + dp * dp;
   };
-  for (const m of maxima) if (kept.every((k) => dist(k, m) >= 3)) kept.push(m);
+  for (const m of maxima) if (kept.every((k) => dist2(k, m) >= 9)) kept.push(m);
   if (kept.length < 2) return [members];
   const groups: number[][] = kept.map(() => []);
+  const keptE = kept.map((k) => cE[k]!);
   for (const a of members) {
     let best = 0, bd = Infinity;
     for (let k = 0; k < kept.length; k++) {
-      const d = dist(a, kept[k]!) / Math.sqrt(cE[kept[k]!]!); // a bigger shower claims a wider region
+      const d = dist2(a, kept[k]!) / keptE[k]!; // a bigger shower claims a wider region (d²/E orders like d/√E)
       if (d < bd) {
         bd = d;
         best = k;
@@ -325,4 +329,37 @@ export function clusterP4(c: RecoCluster, geom: RecoGeometry, zv = 0): P4 {
   const d = clusterDirection(c, geom, zv);
   const pt = c.energy / Math.cosh(d.eta);
   return { E: c.energy, px: pt * Math.cos(d.phi), py: pt * Math.sin(d.phi), pz: pt * Math.sinh(d.eta) };
+}
+
+/**
+ * A coarse (η, φ) grid over the clusters of one calorimeter, for "what is near here" queries without looking at every
+ * cluster: `near(eta, phi, cb)` calls `cb(j)` for the clusters in the 3 × 3 bins around the point (bin size ≥ the largest
+ * distance you will ask about).
+ */
+export function clusterGrid(clusters: readonly RecoCluster[], calo: 'ecal' | 'hcal', geom: RecoGeometry, bin = 0.2): { near: (eta: number, phi: number, cb: (j: number) => void) => void } {
+  const etaMax = geom[calo].etaMax + 1;
+  const nE = Math.ceil((2 * etaMax) / bin) + 1;
+  const nP = Math.max(1, Math.floor(TWO_PI / bin));
+  const binP = TWO_PI / nP;
+  const grid: number[][] = new Array(nE * nP);
+  clusters.forEach((c, j) => {
+    if (c.calo !== calo) return;
+    const be = Math.min(nE - 1, Math.max(0, Math.floor((c.eta + etaMax) / bin)));
+    const bp = Math.min(nP - 1, Math.floor((c.phi + Math.PI) / binP));
+    (grid[be * nP + bp] ??= []).push(j);
+  });
+  return {
+    near(eta, phi, cb) {
+      const be = Math.floor((eta + etaMax) / bin);
+      const bp = Math.min(nP - 1, Math.max(0, Math.floor((phi + Math.PI) / binP)));
+      for (let de = -1; de <= 1; de++) {
+        const e2 = be + de;
+        if (e2 < 0 || e2 >= nE) continue;
+        for (let dp = -1; dp <= 1; dp++) {
+          const list = grid[e2 * nP + ((bp + dp + nP) % nP)];
+          if (list) for (const j of list) cb(j);
+        }
+      }
+    },
+  };
 }

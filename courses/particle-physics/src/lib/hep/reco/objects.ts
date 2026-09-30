@@ -17,7 +17,7 @@
 import type { MuonHit } from '../event/index.ts';
 import { deltaPhi, fromPtEtaPhiM, type P4 } from '../kinematics/index.ts';
 import { resolveConfig, type RecoConfig } from './config.ts';
-import { clusterP4, extrapolateToRadius, matchTracksToClusters } from './calo.ts';
+import { clusterGrid, clusterP4, extrapolateToRadius, matchTracksToClusters } from './calo.ts';
 import type { RecoGeometry } from './geometry.ts';
 import { curvatureFromPt, helixAtRadius, propagateToRadius } from './helix.ts';
 import { highland } from './material.ts';
@@ -96,7 +96,7 @@ export interface PFOptions {
   muonTracks?: ReadonlySet<number>;
   /** Drop charged candidates that are not from the primary vertex (charged-hadron subtraction). */
   chs?: boolean;
-  /** An excess of calorimeter energy over the tracks' momenta is neutral if it exceeds this many σ (default 1). */
+  /** An excess of calorimeter energy over the tracks' momenta is neutral if it exceeds this many σ (default 1.5). */
   excessSigma?: number;
 }
 
@@ -112,7 +112,7 @@ function dominantTruth(c: RecoCluster): number {
 export function particleFlow(tracks: readonly RecoTrack[], clusters: readonly RecoCluster[], geom: RecoGeometry, opts: PFOptions = {}): PFCandidate[] {
   const zv = opts.pvZ ?? 0;
   const muonTracks = opts.muonTracks ?? new Set<number>();
-  const nSig = opts.excessSigma ?? 1;
+  const nSig = opts.excessSigma ?? 1.5;
   const nT = tracks.length;
   const nC = clusters.length;
   // union-find over tracks [0, nT) and clusters [nT, nT + nC)
@@ -130,19 +130,19 @@ export function particleFlow(tracks: readonly RecoTrack[], clusters: readonly Re
   for (const l of matchTracksToClusters(tracks, clusters, 'ecal', geom, 0.05, 0, 1)) union(l.track, nT + l.cluster);
   for (const l of matchTracksToClusters(tracks, clusters, 'hcal', geom, 0.1, 0, 1.5)) union(l.track, nT + l.cluster);
   // each ECAL cluster to the nearest HCAL cluster within 0.1
+  const hgrid = clusterGrid(clusters, 'hcal', geom, 0.2);
   for (let i = 0; i < nC; i++) {
     const a = clusters[i]!;
     if (a.calo !== 'ecal') continue;
     let best = -1, bd = 0.1;
-    for (let j = 0; j < nC; j++) {
+    hgrid.near(a.eta, a.phi, (j) => {
       const b = clusters[j]!;
-      if (b.calo !== 'hcal') continue;
       const d = dR(a.eta, a.phi, b.eta, b.phi);
       if (d < bd) {
         bd = d;
         best = j;
       }
-    }
+    });
     if (best >= 0) union(nT + i, nT + best);
   }
   const blocks = new Map<number, { tracks: number[]; ecal: number[]; hcal: number[] }>();
@@ -377,13 +377,18 @@ interface Conversion {
 /** Photon conversions: pairs of opposite-charge tracks, nearly parallel, with a small invariant mass, meeting at a displaced point. */
 export function findConversions(tracks: readonly RecoTrack[], minRadius = 10): Conversion[] {
   const out: Conversion[] = [];
-  for (let i = 0; i < tracks.length; i++) {
-    const a = tracks[i]!;
-    if (a.pt < 0.5) continue;
-    for (let j = i + 1; j < tracks.length; j++) {
-      const b = tracks[j]!;
-      if (b.pt < 0.5 || a.charge * b.charge > 0) continue;
-      if (Math.abs(a.eta - b.eta) > 0.06 || Math.abs(deltaPhi(a.phi, b.phi)) > 0.08) continue;
+  // candidates sorted by η, so each track is only compared with the ones within 0.06 of it
+  const idx: number[] = [];
+  for (let i = 0; i < tracks.length; i++) if (tracks[i]!.pt >= 0.5) idx.push(i);
+  idx.sort((p, q) => tracks[p]!.eta - tracks[q]!.eta);
+  for (let u = 0; u < idx.length; u++) {
+    const i0 = idx[u]!;
+    const a = tracks[i0]!;
+    for (let w = u + 1; w < idx.length; w++) {
+      const j0 = idx[w]!;
+      const b = tracks[j0]!;
+      if (b.eta - a.eta > 0.06) break;
+      if (a.charge * b.charge > 0 || Math.abs(deltaPhi(a.phi, b.phi)) > 0.08) continue;
       const pa = trackP4(a, M_E), pb = trackP4(b, M_E);
       const s = { E: pa.E + pb.E, px: pa.px + pb.px, py: pa.py + pb.py, pz: pa.pz + pb.pz };
       const m2 = s.E * s.E - s.px * s.px - s.py * s.py - s.pz * s.pz;
@@ -391,7 +396,8 @@ export function findConversions(tracks: readonly RecoTrack[], minRadius = 10): C
       const v = fitVertex([a, b], { chi2Cut: Infinity });
       const radius = Math.hypot(v.x, v.y);
       if (v.chi2 > 9 || radius < minRadius) continue;
-      out.push({ a: i, b: j, p: s, radius });
+      const lo = Math.min(i0, j0), hi = Math.max(i0, j0);
+      out.push({ a: lo, b: hi, p: s, radius });
     }
   }
   return out;
@@ -410,7 +416,7 @@ export function findElectronsPhotons(tracks: readonly RecoTrack[], clusters: rea
   const usedTracks = new Set<number>();
   const usedClusters = new Set<number>();
   const ecal = clusters.map((c, i) => ({ c, i })).filter((x) => x.c.calo === 'ecal').sort((a, b) => b.c.energy - a.c.energy);
-  const hcal = clusters.map((c, i) => ({ c, i })).filter((x) => x.c.calo === 'hcal');
+  const hgrid = clusterGrid(clusters, 'hcal', geom, 0.2);
   // track extrapolations
   const ext = tracks.map((t, i) => (!skipTracks.has(i) && (t.pt >= 0.5 * rc.electronPtMin || t.pt >= 1) ? extrapolateToRadius(t, geom.ecal.rInner) : undefined));
   const conversions = findConversions(tracks);
@@ -419,7 +425,7 @@ export function findElectronsPhotons(tracks: readonly RecoTrack[], clusters: rea
     if (claimed.has(i)) continue;
     const dir0 = clusterP4(c, geom, pvZ);
     const et0 = pt2(dir0);
-    if (et0 < Math.min(rc.electronPtMin, rc.photonPtMin) * 0.6) break;
+    if (et0 < Math.min(rc.electronPtMin, rc.photonPtMin) * 0.6) continue;
     // supercluster: ECAL clusters in the road
     const members = [i];
     let E = c.energy;
@@ -432,7 +438,9 @@ export function findElectronsPhotons(tracks: readonly RecoTrack[], clusters: rea
     }
     // hadronic leakage
     let H = 0;
-    for (const h of hcal) if (dR(h.c.eta, h.c.phi, c.eta, c.phi) < 0.15) H += h.c.energy;
+    hgrid.near(c.eta, c.phi, (j) => {
+      if (dR(clusters[j]!.eta, clusters[j]!.phi, c.eta, c.phi) < 0.15) H += clusters[j]!.energy;
+    });
     const hOverE = H / E;
     // best matching track
     let bt = -1, bd = Infinity;

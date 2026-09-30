@@ -16,6 +16,7 @@ export * from './jets.ts';
 export * from './btag.ts';
 export * from './objects.ts';
 export * from './match.ts';
+export * from './calibrate.ts';
 export * from './reconstruct.ts';
 export * from './material.ts';
 export * as synthetic from './synthetic.ts';

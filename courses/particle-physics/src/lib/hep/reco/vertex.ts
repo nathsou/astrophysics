@@ -64,9 +64,14 @@ export interface TrackAtVertex {
 const FD = 1e-3;
 
 /** The residuals and uncertainties of a track relative to a point. */
-export function trackAtVertex(t: RecoTrack, x: number, y: number, z: number): TrackAtVertex {
+export function trackAtVertex(t: RecoTrack, x: number, y: number, z: number, sigmas?: { sxy: number; sz: number }): TrackAtVertex {
   const h = trackHelix(t);
   const a = distanceToHelix(h, x, y);
+  if (sigmas) {
+    // uncertainties given (from an earlier evaluation near this vertex): only the geometry is recomputed
+    const s1 = arcNearest(h, x + FD, y), s2 = arcNearest(h, x, y + FD);
+    return { dxy: a.d, dz: a.z - z, sxy: sigmas.sxy, sz: sigmas.sz, nx: a.gx, ny: a.gy, gzx: (h.tanLambda * wrapArc(s1 - a.s, h)) / FD, gzy: (h.tanLambda * wrapArc(s2 - a.s, h)) / FD, s: a.s };
+  }
   // uncertainty of the transverse distance: propagate (d0, φ0, c) through the distance function numerically
   const C = t.cov;
   const params: [keyof Helix, number][] = [['d0', 0], ['phi0', 1], ['c', 2]];
@@ -128,6 +133,12 @@ export function fitVertex(tracks: readonly RecoTrack[], opts: VertexFitOptions =
   const use: boolean[] = new Array(n).fill(true);
   let v: [number, number, number] = opts.start ? [...opts.start] : [opts.beamSpot?.x ?? 0, opts.beamSpot?.y ?? 0, tracks.reduce((a, t) => a + (t.z0Raw ?? t.z0), 0) / n];
   const rejected: number[] = [];
+  const sigCache: ({ sxy: number; sz: number } | undefined)[] = new Array(n).fill(undefined);
+  const evalTrack = (i: number): TrackAtVertex => {
+    const a = trackAtVertex(tracks[i]!, v[0], v[1], v[2], sigCache[i]);
+    if (!sigCache[i]) sigCache[i] = { sxy: a.sxy, sz: a.sz };
+    return a;
+  };
   let cov: number[][] = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
   let chi2 = 0;
   let info: TrackAtVertex[] = [];
@@ -137,7 +148,7 @@ export function fitVertex(tracks: readonly RecoTrack[], opts: VertexFitOptions =
     for (let it = 0; it < maxIt; it++) {
       const A = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
       const b = [0, 0, 0];
-      info = tracks.map((t, i) => (use[i] ? trackAtVertex(t, v[0], v[1], v[2]) : (undefined as unknown as TrackAtVertex)));
+      info = tracks.map((_, i) => (use[i] ? evalTrack(i) : (undefined as unknown as TrackAtVertex)));
       for (const i of idxs) {
         const a = info[i]!;
         // transverse: dxy + n·δ = 0
@@ -168,7 +179,9 @@ export function fitVertex(tracks: readonly RecoTrack[], opts: VertexFitOptions =
       if (Math.abs(step[0]!) + Math.abs(step[1]!) + Math.abs(step[2]!) < 1e-5) break;
     }
     // covariance and χ² at the solution
-    info = tracks.map((t, i) => (use[i] ? trackAtVertex(t, v[0], v[1], v[2]) : (undefined as unknown as TrackAtVertex)));
+    // refresh the uncertainties at the solution (they depend weakly on the vertex position)
+    for (const i of idxs) sigCache[i] = undefined;
+    info = tracks.map((_, i) => (use[i] ? evalTrack(i) : (undefined as unknown as TrackAtVertex)));
     const A = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
     chi2 = 0;
     let worst = -1;

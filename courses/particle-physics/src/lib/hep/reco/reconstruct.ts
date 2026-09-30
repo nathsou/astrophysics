@@ -14,7 +14,8 @@ import { particle } from '../particles/index.ts';
 import { bTagInfo, bTagScore } from './btag.ts';
 import { clusterCells } from './calo.ts';
 import { resolveConfig, type RecoConfig } from './config.ts';
-import { geometryFromConfig, type RecoGeometry } from './geometry.ts';
+import type { RecoGeometry } from './geometry.ts';
+import { calibratedGeometry } from './calibrate.ts';
 import { clusterJets } from './jets.ts';
 import { jetFlavour as _unused, labelTracks, matchJetToParton, matchSummary } from './match.ts';
 import { caloIsolation, findElectronsPhotons, findMuons, findTaus, metFromEvent, particleFlow, trackIsolation, trackP4, type PFCandidate } from './objects.ts';
@@ -78,7 +79,7 @@ export function buildObjects(
   const pf = particleFlow(tracks, clusters, geom, { pvZ, muonTracks, chs: rc.chs });
   const forJets = pf.filter((c) => !(c.track >= 0 && isoTracks.has(c.track)) && !(c.kind !== 'chHad' && c.kind !== 'muon' && c.clusters.some((j) => isoClusters.has(j))) && Math.abs(etaOf(c.p)) < 4.7);
   // a muon's calorimeter deposit is a MIP, not jet energy: muons do not enter the jets at all
-  const jetInputs = forJets.filter((c) => c.kind !== 'muon');
+  const jetInputs = forJets.filter((c) => c.kind !== 'muon' && (c.charge !== 0 || ptOf(c.p) >= rc.jetInputPtMin));
   const { jets, constituents } = clusterJets(jetInputs.map((c) => c.p), rc.jetR, rc.jetPtMin);
   const jetObjs: RecoObjectX[] = jets.map((p, k) => {
     const mem = constituents[k]!.map((i) => jetInputs[i]!);
@@ -114,8 +115,8 @@ export function buildObjects(
  * `RecoEventFull.match`. With real data `truth` is absent.
  */
 export function reconstruct(det: DetectorEvent, cfg: DetectorConfig | RecoGeometry, rc?: Partial<RecoConfig>, truth?: TruthEvent): RecoEventFull {
-  const geom = geometryFromConfig(cfg);
   const conf = resolveConfig(rc);
+  const geom = calibratedGeometry(cfg, conf);
   // tracks
   const tracks = findTracks(det.hits, geom, conf);
   if (truth) labelTracks(tracks, det.hits, conf.matchPurity);

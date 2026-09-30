@@ -63,36 +63,54 @@ export const defaultGeometry: DisplayGeometry = {
 export const X0_MM = 8.9;
 export const LAMBDA_MM = 165;
 
-/** The structural shape of a detector configuration that `geometryFromDetectorConfig` accepts. */
+/**
+ * The structural shape of a detector configuration that `geometryFromDetectorConfig` accepts: the fields of the detector
+ * module's `DetectorConfig` that the display needs, so that any `DetectorConfig` matches without an import. The optional
+ * fields are used when present.
+ */
 export interface DetectorConfigShape {
   bField: number;
   trackerLayers: { r: number; halfLength: number }[];
-  ecal: { rIn: number; depthX0: number; halfLength: number };
-  hcal: { rIn: number; depthLambda: number };
-  muon: { stations: { r: number; halfLength: number }[] };
+  ecal: { rIn: number; depthX0: number; halfLength: number; cellEta?: number };
+  hcal: { rIn: number; depthLambda: number; cellEta?: number };
+  muon: { stations: { r: number; halfLength: number }[]; /** Field (T, signed) outside the coil; absent or 0 = none. */ returnField?: number };
+  /** Radius of the coil (mm); default: the outer radius of the HCAL. */
+  solenoidRadius?: number;
 }
 
+export interface GeometryOptions {
+  /** Exact outer radii of the calorimeters (mm), if the caller knows them (e.g. from the detector's material tables). */
+  ecalOuterRadius?: number;
+  hcalOuterRadius?: number;
+  /** Radiation length and interaction length (mm) used when the outer radii are not given. */
+  x0mm?: number;
+  lambdaMm?: number;
+}
+
+/** The display's tower size: at least 0.087 in η and φ (finer cells are summed into towers so that the picture stays readable). */
+const towerSize = (cellEta: number | undefined) => Math.max(0.087, cellEta ?? 0.087);
+
 /**
- * Build a display geometry from a detector configuration. The ECAL thickness is `depthX0` radiation lengths (8.9 mm each,
- * lead tungstate) and the HCAL thickness `depthLambda` interaction lengths (165 mm each, steel). The HCAL is given the same
- * η coverage as the ECAL, and the coil sits between the HCAL and the first muon station. These are drawing choices.
+ * Build a display geometry from a detector configuration. Unless `opts` gives the outer radii, the ECAL is `depthX0`
+ * radiation lengths thick (8.9 mm each, lead tungstate) and the HCAL `depthLambda` interaction lengths (165 mm each, steel). The
+ * HCAL is given the same η coverage as the ECAL. The coil is at `solenoidRadius` (default: the HCAL's outer radius), and the
+ * field outside it is `muon.returnField` (none if absent), so muon tracks are drawn as the detector simulation propagates them.
  */
-export function geometryFromDetectorConfig(cfg: DetectorConfigShape): DisplayGeometry {
-  const ecalOut = cfg.ecal.rIn + cfg.ecal.depthX0 * X0_MM;
+export function geometryFromDetectorConfig(cfg: DetectorConfigShape, opts: GeometryOptions = {}): DisplayGeometry {
+  const ecalOut = opts.ecalOuterRadius ?? cfg.ecal.rIn + cfg.ecal.depthX0 * (opts.x0mm ?? X0_MM);
   const hcalIn = Math.max(cfg.hcal.rIn, ecalOut + 10);
-  const hcalOut = hcalIn + cfg.hcal.depthLambda * LAMBDA_MM;
+  const hcalOut = opts.hcalOuterRadius ?? hcalIn + cfg.hcal.depthLambda * (opts.lambdaMm ?? LAMBDA_MM);
   const stations = cfg.muon.stations.map((s) => ({ r: s.r, halfLength: s.halfLength }));
-  const st0 = stations[0]?.r ?? hcalOut + 1000;
-  const coilR = Math.min(hcalOut + 500, (hcalOut + st0) / 2);
+  const coilR = cfg.solenoidRadius ?? hcalOut;
   const hcalHalf = cfg.ecal.halfLength * (hcalIn / cfg.ecal.rIn);
   return {
     bField: cfg.bField,
     tracker: cfg.trackerLayers.map((l) => ({ r: l.r, halfLength: l.halfLength })),
-    ecal: { rIn: cfg.ecal.rIn, rOut: ecalOut, halfLength: cfg.ecal.halfLength, cell: 0.087 },
-    hcal: { rIn: hcalIn, rOut: hcalOut, halfLength: hcalHalf, cell: 0.087 },
-    solenoid: { r: coilR, halfLength: hcalHalf * 1.1 },
+    ecal: { rIn: cfg.ecal.rIn, rOut: ecalOut, halfLength: cfg.ecal.halfLength, cell: towerSize(cfg.ecal.cellEta) },
+    hcal: { rIn: hcalIn, rOut: hcalOut, halfLength: hcalHalf, cell: towerSize(cfg.hcal.cellEta) },
+    solenoid: { r: coilR, halfLength: hcalHalf * 1.05 },
     muon: stations,
-    outerFieldFactor: 1,
+    outerFieldFactor: cfg.bField !== 0 ? (cfg.muon.returnField ?? 0) / cfg.bField : 0,
   };
 }
 

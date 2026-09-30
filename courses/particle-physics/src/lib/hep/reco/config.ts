@@ -17,8 +17,6 @@ export interface RecoConfig {
   roadSigmas: number;
   /** 'triplets' (pixel-triplet seeds) or 'hough' (seeds from peaks of the Hough transform in the transverse plane). */
   seeding: 'triplets' | 'hough';
-  /** Track extension: 'road' follows the seed helix, refitting after each hit (fast); 'kalman' is a combinatorial Kalman filter (slower, better in dense events). */
-  extension: 'road' | 'kalman';
   // ── vertices ──
   /** Minimum tracks for a primary vertex. */
   minVertexTracks: number;
@@ -40,6 +38,8 @@ export interface RecoConfig {
   /** Jet algorithm radius and minimum pT. */
   jetR: number;
   jetPtMin: number;
+  /** Neutral particle-flow candidates below this pT (GeV) are not clustered into jets (they are mostly pile-up, and they cost time). */
+  jetInputPtMin: number;
   /** Lepton and photon pT thresholds (GeV). */
   electronPtMin: number;
   muonPtMin: number;
@@ -51,6 +51,12 @@ export interface RecoConfig {
   matchPurity: number;
   /** Compute b-tag scores for jets. */
   bTag: boolean;
+  /**
+   * Calibrate the calorimeters' energy scale against the detector simulation before the first use of a configuration
+   * (see `calibrateCalorimeters`; the result is remembered per configuration object). Turn it off for real data, or give the
+   * scales directly in a `RecoGeometry`.
+   */
+  autoCalibrate: boolean;
 }
 
 export const DEFAULT_RECO_CONFIG: RecoConfig = {
@@ -62,7 +68,6 @@ export const DEFAULT_RECO_CONFIG: RecoConfig = {
   maxSharedHits: 1,
   roadSigmas: 4,
   seeding: 'triplets',
-  extension: 'road',
   minVertexTracks: 2,
   vertexAssocSigma: 4,
   ecalSeed: 0,
@@ -73,6 +78,7 @@ export const DEFAULT_RECO_CONFIG: RecoConfig = {
   hcalClusterMin: 1.0,
   jetR: 0.4,
   jetPtMin: 15,
+  jetInputPtMin: 0.5,
   electronPtMin: 5,
   muonPtMin: 3,
   photonPtMin: 10,
@@ -80,6 +86,7 @@ export const DEFAULT_RECO_CONFIG: RecoConfig = {
   chs: true,
   matchPurity: 0.5,
   bTag: true,
+  autoCalibrate: true,
 };
 
 export function resolveConfig(rc?: Partial<RecoConfig>): RecoConfig {
