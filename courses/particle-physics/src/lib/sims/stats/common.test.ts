@@ -50,7 +50,7 @@ describe('sample generator', () => {
     expect(Math.max(...ys)).toBeLessThanOrEqual(1);
     const a = generateSamples(DEFAULT_CUT_TOY);
     const b = generateSamples(DEFAULT_CUT_TOY);
-    expect(Array.from(a.sig.columns.m!.slice(0, 5) as Float64Array)).toEqual(Array.from(b.sig.columns.m!.slice(0, 5) as Float64Array));
+    expect(Array.from(a.sig.columns.m as Float64Array).slice(0, 5)).toEqual(Array.from(b.sig.columns.m as Float64Array).slice(0, 5));
     expect(a.sig.weight).toBeCloseTo(150 / 2500, 12);
   });
   test('correlated normals have the requested correlation', async () => {

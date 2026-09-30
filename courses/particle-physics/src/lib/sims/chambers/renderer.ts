@@ -97,7 +97,7 @@ void main() {
     float t = uTime * 0.03 * uMist;
     float m = fbm(q * 2.2 + vec2(t, -t * 0.7)) * fbm(q * 1.3 - vec2(t * 0.6, t));
     float floorGlow = pow(1.0 - uv.y, 5.0);
-    col = vec3(0.006, 0.013, 0.020) + vec3(0.022, 0.046, 0.064) * m * (0.5 + 0.9 * (1.0 - uv.y)) + vec3(0.020, 0.050, 0.070) * floorGlow;
+    col = vec3(0.010, 0.021, 0.031) + vec3(0.030, 0.060, 0.080) * m * (0.5 + 0.9 * (1.0 - uv.y)) + vec3(0.024, 0.056, 0.078) * floorGlow;
     // a soft lamp from the left
     col += vec3(0.010, 0.016, 0.022) * pow(1.0 - uv.x, 3.0) * 0.6;
   } else {
@@ -328,8 +328,8 @@ class CanvasRenderer implements Renderer {
       const y = d[o + 1]! - p.drift * Math.max(age - p.hold * 0.5, 0);
       const sx = ((d[o]! - view.cx) * view.scale + this.w / 2) * k;
       const sy = (this.h / 2 - (y - view.cy) * view.scale) * k;
-      const px = Math.max(this.minPx, d[o + 3]! * view.scale * (0.65 + 0.35 * grow)) * k * 1.9;
-      c.globalAlpha = Math.min(1, a);
+      const px = Math.max(this.minPx, d[o + 3]! * view.scale * (0.65 + 0.35 * grow)) * k * (this.kind === 'cloud' ? 1.9 : 1.45);
+      c.globalAlpha = Math.min(1, a * (this.kind === 'cloud' ? 1 : 0.8));
       c.drawImage(this.sprite, sx - px / 2, sy - px / 2, px, px);
     }
     c.globalAlpha = 1;

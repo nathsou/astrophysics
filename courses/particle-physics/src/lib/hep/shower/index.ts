@@ -10,7 +10,7 @@ import { showerIsr } from './isr.ts';
 
 export type { ShowerOptions, EmissionConfig, Emission, BranchKind } from './fsr.ts';
 export { nextEmission, showerFsr } from './fsr.ts';
-export { showerIsr, isrRecords, type IsrRecord } from './isr.ts';
+export { showerIsr, isrRecords, ISR_PT_MAX_FRACTION, ISR_PT0_SQ, type IsrRecord } from './isr.ts';
 export { showerHistory, type Branching, type BranchingKind } from './history.ts';
 export { rescaleToTarget } from './rescale.ts';
 export {

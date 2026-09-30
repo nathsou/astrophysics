@@ -307,7 +307,7 @@
   </div>
 
   {#if ledger.length}
-    <table class="ui ledger">
+    <div class="tw"><table class="ui ledger">
       <caption>What each action did (most recent last)</caption>
       <thead>
         <tr>
@@ -327,7 +327,7 @@
           </tr>
         {/each}
       </tbody>
-    </table>
+    </table></div>
   {/if}
 
   <div class="text ui">
@@ -350,6 +350,9 @@
 </Widget>
 
 <style>
+  .tw {
+    overflow-x: auto;
+  }
   .layout {
     display: grid;
     grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);

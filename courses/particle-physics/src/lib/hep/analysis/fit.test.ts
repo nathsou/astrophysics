@@ -310,5 +310,24 @@ describe('χ² fit', () => {
     expect(b.params[1]).toBeCloseTo(a.params[1]!, 1);
     expect(b.errors[1]! / a.errors[1]!).toBeCloseTo(1, 1);
     expect(b.objective_kind).toBe('chi2');
+    expect(b.chi2).toBe(b.nll); // the goodness of fit of a χ² fit is the minimised χ²
+  });
+});
+
+describe('profile of a fitted parameter', () => {
+  test('the profile of the signal yield is parabolic at high statistics and crosses 1 at ± the error; it is asymmetric near zero', async () => {
+    const { profileParameter } = await import('./fit.ts');
+    const r = rng(6);
+    const model = gaussianPlusExponential();
+    const edges = Array.from({ length: 61 }, (_, i) => 100 + i);
+    const h = toyBinned(model, [400, 125, 2.5, 6000, -0.03], r, edges);
+    const fit = fitBinned(h, model, [300, 124, 3, 5000, -0.02]);
+    const e = fit.errors[0]!;
+    const prof = profileParameter(fit, 0, [fit.params[0]! - e, fit.params[0]!, fit.params[0]! + e]);
+    expect(prof[1]!.delta).toBeCloseTo(0, 4);
+    expect(prof[0]!.delta).toBeGreaterThan(0.7);
+    expect(prof[0]!.delta).toBeLessThan(1.3);
+    expect(prof[2]!.delta).toBeGreaterThan(0.7);
+    expect(prof[2]!.delta).toBeLessThan(1.3);
   });
 });

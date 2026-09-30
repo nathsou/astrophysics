@@ -156,9 +156,13 @@ export interface LookElsewhereResult {
 /**
  * The look-elsewhere effect with a number of *independent* trials: if a bump can appear in N places, the chance that some place
  * fluctuates to local p is 1 − (1 − p)^N ≈ N p. `nTrialsEffective` is the number of independent mass windows the search could
- * have fired in (about the mass range divided by the resolution, times a factor of order one for overlapping windows).
+ * have fired in (about the mass range divided by the resolution, times a factor of order one for overlapping windows). Without `zLocal` it returns the
+ * conversion as a function: `lookElsewhere(100)(3)`.
  */
-export function lookElsewhere(nTrialsEffective: number, zLocal: number): LookElsewhereResult {
+export function lookElsewhere(nTrialsEffective: number): (zLocal: number) => LookElsewhereResult;
+export function lookElsewhere(nTrialsEffective: number, zLocal: number): LookElsewhereResult;
+export function lookElsewhere(nTrialsEffective: number, zLocal?: number): LookElsewhereResult | ((zLocal: number) => LookElsewhereResult) {
+  if (zLocal === undefined) return (z: number) => lookElsewhere(nTrialsEffective, z);
   const pLocal = zToP(zLocal);
   const pGlobal = -Math.expm1(nTrialsEffective * Math.log1p(-pLocal));
   return { pLocal, zLocal, pGlobal, zGlobal: pToZ(pGlobal), trialsFactor: pGlobal / pLocal };

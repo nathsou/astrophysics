@@ -229,9 +229,10 @@ export interface TrackClusterLink {
 
 /**
  * Match every track to the nearest cluster of a calorimeter within `maxDR` (extrapolating the track to the calorimeter's
- * inner radius). Returns, for each track index, the index of the matched cluster or −1.
+ * inner radius); with `widthScale` > 0 a cluster's reach grows by that multiple of its angular rms width. Returns one link
+ * per matched track.
  */
-export function matchTracksToClusters(tracks: readonly RecoTrack[], clusters: readonly RecoCluster[], calo: 'ecal' | 'hcal', geom: RecoGeometry, maxDR = 0.05, minPt = 0.5): TrackClusterLink[] {
+export function matchTracksToClusters(tracks: readonly RecoTrack[], clusters: readonly RecoCluster[], calo: 'ecal' | 'hcal', geom: RecoGeometry, maxDR = 0.05, minPt = 0.5, widthScale = 0): TrackClusterLink[] {
   const r = geom[calo].rInner;
   const links: TrackClusterLink[] = [];
   for (let i = 0; i < tracks.length; i++) {
@@ -239,12 +240,14 @@ export function matchTracksToClusters(tracks: readonly RecoTrack[], clusters: re
     if (t.pt < minPt) continue;
     const at = extrapolateToRadius(t, r);
     if (!at) continue;
-    let best = -1, bd = maxDR;
+    let best = -1, bd = Infinity;
     for (let j = 0; j < clusters.length; j++) {
       const c = clusters[j]!;
       if (c.calo !== calo) continue;
       const d = Math.hypot(at.eta - c.eta, deltaPhi(at.phi, c.phi));
-      if (d < bd) {
+      // a broad cluster (several overlapping showers) is reached from further away
+      const reach = maxDR + widthScale * Math.hypot(c.etaWidth, c.phiWidth);
+      if (d < reach && d < bd) {
         bd = d;
         best = j;
       }

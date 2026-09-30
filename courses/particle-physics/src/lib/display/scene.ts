@@ -439,6 +439,8 @@ export function buildScene(event: FullEvent, geo: DisplayGeometry, options: Scen
       outerFactor: geo.outerFieldFactor,
       sMax,
       maxTurns: 1,
+      maxStep: 250,
+      maxTurn: 0.2,
     });
   };
 

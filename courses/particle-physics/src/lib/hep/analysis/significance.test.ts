@@ -167,6 +167,7 @@ describe('pseudo-experiments and trials', () => {
     const one = lookElsewhere(1, 3);
     expect(one.pGlobal).toBeCloseTo(one.pLocal, 12);
     expect(one.zGlobal).toBeCloseTo(3, 9);
+    expect(lookElsewhere(100)(3).pGlobal).toBeCloseTo(lookElsewhere(100, 3).pGlobal, 14);
     const hundred = lookElsewhere(100, 3);
     expect(hundred.pGlobal).toBeCloseTo(1 - (1 - zToP(3)) ** 100, 10);
     expect(hundred.zGlobal).toBeCloseTo(1.14, 1);

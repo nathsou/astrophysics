@@ -3,6 +3,7 @@
   and photons as poles, and the missing pT as a dotted line. An orthographic orbit camera (drag or arrow keys to turn it).
 -->
 <script lang="ts">
+  import { nextId } from './ids.ts';
   import { onMount } from 'svelte';
   import { Camera } from './camera.ts';
   import { drawLego, legoCamera, legoModel, pickLego, type LegoPolygons } from './draw2d.ts';
@@ -31,6 +32,7 @@
     description?: string;
   } = $props();
 
+  const descId = `view-desc-${nextId()}`;
   let canvas = $state<HTMLCanvasElement>();
   let wrap = $state<HTMLDivElement>();
   const cam = new Camera({ ortho: true });
@@ -74,7 +76,15 @@
   }
 
   onMount(() => {
+    let roFrame = 0;
     const ro = new ResizeObserver(() => {
+      if (roFrame) cancelAnimationFrame(roFrame);
+      roFrame = requestAnimationFrame(() => {
+        roFrame = 0;
+        resize();
+      });
+    });
+    const resize = () => {
       if (!wrap || !canvas) return;
       const r = wrap.getBoundingClientRect();
       dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -86,7 +96,7 @@
       cam.azimuth = az;
       cam.elevation = el;
       request();
-    });
+    };
     if (wrap) ro.observe(wrap);
     const wheel = (e: WheelEvent) => {
       e.preventDefault();
@@ -182,7 +192,7 @@
     tabindex="0"
     role="application"
     aria-label={label}
-    aria-description={description}
+    aria-describedby={descId}
     onpointerdown={onDown}
     onpointermove={onMove}
     onpointerup={onUp}
@@ -191,6 +201,7 @@
     onkeydown={onKey}
     ondblclick={reset}
   ></canvas>
+  <p class="sr" id={descId}>{description}</p>
 </div>
 
 <style>
@@ -214,5 +225,14 @@
   }
   canvas:focus-visible {
     outline: 2px solid var(--focus);
+  }
+  .sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    margin: 0;
   }
 </style>

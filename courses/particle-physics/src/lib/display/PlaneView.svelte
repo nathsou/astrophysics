@@ -4,6 +4,7 @@
   reset() and setExtent() for the panel buttons.
 -->
 <script lang="ts">
+  import { nextId } from './ids.ts';
   import { onMount } from 'svelte';
   import { View2D } from './camera.ts';
   import { drawPlane, fitPlane, planeProjector, type PlaneMode } from './draw2d.ts';
@@ -35,6 +36,7 @@
     description?: string;
   } = $props();
 
+  const descId = `view-desc-${nextId()}`;
   let canvas = $state<HTMLCanvasElement>();
   let wrap = $state<HTMLDivElement>();
   const view = new View2D();
@@ -75,7 +77,15 @@
   }
 
   onMount(() => {
+    let roFrame = 0;
     const ro = new ResizeObserver(() => {
+      if (roFrame) cancelAnimationFrame(roFrame);
+      roFrame = requestAnimationFrame(() => {
+        roFrame = 0;
+        resize();
+      });
+    });
+    const resize = () => {
       if (!wrap || !canvas) return;
       const r = wrap.getBoundingClientRect();
       dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -87,7 +97,7 @@
         fitPlane(mode, view, scene, extent);
       } else fitPlane(mode, view, scene, extent);
       request();
-    });
+    };
     if (wrap) ro.observe(wrap);
     const wheel = (e: WheelEvent) => {
       e.preventDefault();
@@ -225,7 +235,7 @@
     tabindex="0"
     role="application"
     aria-label={label}
-    aria-description={description}
+    aria-describedby={descId}
     onpointerdown={onDown}
     onpointermove={onMove}
     onpointerup={onUp}
@@ -234,6 +244,7 @@
     onkeydown={onKey}
     ondblclick={reset}
   ></canvas>
+  <p class="sr" id={descId}>{description}</p>
 </div>
 
 <style>
@@ -257,5 +268,14 @@
   }
   canvas:focus-visible {
     outline: 2px solid var(--focus);
+  }
+  .sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    margin: 0;
   }
 </style>

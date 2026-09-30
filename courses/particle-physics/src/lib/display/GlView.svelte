@@ -4,6 +4,7 @@
   2D views. Exports rotate(), zoom() and reset() for the buttons in the panel header.
 -->
 <script lang="ts">
+  import { nextId } from './ids.ts';
   import { onMount } from 'svelte';
   import { Camera } from './camera.ts';
   import { EventGL } from './gl.ts';
@@ -40,6 +41,7 @@
     description?: string;
   } = $props();
 
+  const descId = `view-desc-${nextId()}`;
   let canvas = $state<HTMLCanvasElement>();
   let wrap = $state<HTMLDivElement>();
   let gl: EventGL | null = $state(null);
@@ -121,13 +123,21 @@
 
   onMount(() => {
     setup();
+    let roFrame = 0;
     const ro = new ResizeObserver(() => {
+      if (roFrame) cancelAnimationFrame(roFrame);
+      roFrame = requestAnimationFrame(() => {
+        roFrame = 0;
+        resize();
+      });
+    });
+    const resize = () => {
       if (!wrap || !gl) return;
       const r = wrap.getBoundingClientRect();
       gl.resize(r.width, r.height, Math.min(window.devicePixelRatio || 1, 2));
       cam.resize(r.width, r.height);
       request();
-    });
+    };
     if (wrap) ro.observe(wrap);
     const lost = (e: Event) => {
       e.preventDefault();
@@ -296,7 +306,7 @@
     tabindex="0"
     role="application"
     aria-label={label}
-    aria-description={description}
+    aria-describedby={descId}
     onpointerdown={onDown}
     onpointermove={onMove}
     onpointerup={onUp}
@@ -310,6 +320,7 @@
     oncontextmenu={(e) => e.preventDefault()}
     class:hidden={!!failed}
   ></canvas>
+  <p class="sr" id={descId}>{description}</p>
   {#if failed}
     <div class="fail ui">
       <p><strong>The 3D view is not available.</strong> This browser could not start WebGL 2 ({failed}). The flat views below show the same event.</p>
@@ -354,6 +365,15 @@
   }
   .fail p {
     max-width: 28rem;
+    margin: 0;
+  }
+  .sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
     margin: 0;
   }
 </style>

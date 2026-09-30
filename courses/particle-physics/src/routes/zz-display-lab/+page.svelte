@@ -27,7 +27,6 @@
     const results: Record<string, number> = {};
     const base = { colourBy: 'particle' as const, showTruth: false, showReco: true, showHits: true, showCalo: true, palette: pal };
     const variants: [string, Partial<typeof base>, boolean][] = [
-      ['all aa', {}, true],
       ['all noaa', {}, false],
       ['no points', { showHits: false }, false],
       ['no towers', { showCalo: false }, false],

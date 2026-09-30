@@ -109,7 +109,7 @@
           <li class:ok={r.ok}>
             <strong>Track {r.l.letter}</strong>:
             {#if r.ok}✓ {nameOf(expected[i]!)}.{:else}✗ you chose {nameOf(chosen[i] ?? '')}; it was {plainOf(expected[i]!)}.{/if}
-            The clues: {explainTrack(pic, r.l)}.
+            The clues: {explainTrack(pic, r.l)}
           </li>
         {/each}
       </ul>

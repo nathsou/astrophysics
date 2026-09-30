@@ -90,6 +90,7 @@
   let stage = $state<HTMLDivElement | undefined>();
   let glCanvas = $state<HTMLCanvasElement | undefined>();
   let ov = $state<HTMLCanvasElement | undefined>();
+  let wrap = $state<HTMLDivElement | undefined>();
   let canvasKey = $state(0);
   let useCanvas2d = $state(false);
   let W = $state(600);
@@ -237,8 +238,9 @@
       c.stroke();
       c.fillStyle = 'rgba(220,228,238,0.85)';
       c.textAlign = 'right';
-      if (h > 9) c.fillText(`lead plate, ${(p.y1 - p.y0).toFixed(0)} mm`, W - 8, ya + h / 2 + 4);
-      else c.fillText(`lead plate, ${(p.y1 - p.y0).toFixed(0)} mm`, W - 8, ya - 5);
+      const name = W < 520 ? `Pb ${(p.y1 - p.y0).toFixed(0)} mm` : `lead plate, ${(p.y1 - p.y0).toFixed(0)} mm`;
+      if (h > 9) c.fillText(name, W - 8, ya + h / 2 + 4);
+      else c.fillText(name, W - 8, ya - 5);
       c.textAlign = 'left';
     }
 
@@ -425,7 +427,7 @@
         c.stroke();
       }
       c.textAlign = 'right';
-      c.fillText(`B = ${Math.abs(bField).toFixed(bField % 1 ? 2 : 1)} T, ${bField > 0 ? 'out of the page' : 'into the page'}`, cx - 14, cy + 4);
+      c.fillText(W < 520 ? `B = ${Math.abs(bField).toFixed(bField % 1 ? 2 : 1)} T` : `B = ${Math.abs(bField).toFixed(bField % 1 ? 2 : 1)} T, ${bField > 0 ? 'out of the page' : 'into the page'}`, cx - 14, cy + 4);
       c.textAlign = 'left';
     }
   }
@@ -578,7 +580,11 @@
 
   function onPointerDown(e: PointerEvent) {
     if (e.button !== 0) return;
-    ov!.setPointerCapture(e.pointerId);
+    try {
+      ov!.setPointerCapture(e.pointerId);
+    } catch {
+      /* synthetic or already released pointer */
+    }
     const [x, y] = local(e);
     drag = { x, y, cx: centre.x, cy: centre.y, moved: false };
   }
@@ -602,7 +608,7 @@
     const [x, y] = local(e);
     if (tool !== 'none') addPoint(worldAt(x, y, true));
     else pickAt(worldAt(x, y, false));
-    ov!.focus({ preventScroll: true });
+    wrap?.focus({ preventScroll: true });
   }
   function onPointerLeave() {
     hover = null;
@@ -689,26 +695,31 @@
   {#key canvasKey}
     <canvas class="gl" bind:this={glCanvas} aria-hidden="true"></canvas>
   {/key}
-  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-  <canvas
-    class="overlay"
-    bind:this={ov}
+  <div
+    class="ovwrap"
+    bind:this={wrap}
     tabindex="0"
     role="application"
     aria-label={ariaLabel}
     aria-describedby="{uid}-hint"
-    onpointerdown={onPointerDown}
-    onpointermove={onPointerMove}
-    onpointerup={onPointerUp}
-    onpointerleave={onPointerLeave}
-    onwheel={onWheel}
     onkeydown={onKeyDown}
     onfocus={() => {
       focused = true;
       cursor ??= { x: centre.x, y: centre.y };
     }}
     onblur={() => (focused = false)}
-  ></canvas>
+  >
+    <canvas
+      class="overlay"
+      bind:this={ov}
+      aria-hidden="true"
+      onpointerdown={onPointerDown}
+      onpointermove={onPointerMove}
+      onpointerup={onPointerUp}
+      onpointerleave={onPointerLeave}
+      onwheel={onWheel}
+    ></canvas>
+  </div>
   {#if zoomable}
     <div class="zoom ui" role="group" aria-label="Zoom">
       <button type="button" onclick={() => zoomBy(1.5)} aria-label="Zoom in" title="Zoom in">+</button>
@@ -739,14 +750,18 @@
     height: 100%;
     display: block;
   }
+  .ovwrap {
+    position: absolute;
+    inset: 0;
+    outline: none;
+  }
+  .ovwrap:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: -2px;
+  }
   .overlay {
     touch-action: pan-y;
     cursor: crosshair;
-    outline: none;
-  }
-  .overlay:focus-visible {
-    outline: 2px solid var(--focus);
-    outline-offset: -2px;
   }
   .zoom {
     position: absolute;

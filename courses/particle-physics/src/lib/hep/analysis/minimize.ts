@@ -137,17 +137,25 @@ interface Core {
 /** BFGS with central-difference gradients and a backtracking line search, on the internal (unbounded) variables. */
 function bfgs(F: (u: number[]) => number, u0: number[], scale: number[], tol: number, maxIter: number): Core {
   const n = u0.length;
-  const grad = (u: number[]): number[] => {
+  // Central differences (2n evaluations) near the minimum; one-sided differences (n evaluations) while far from it, where a line search needs only a direction.
+  const grad = (u: number[], cheap = false, f0 = NaN): number[] => {
     const g = new Array<number>(n);
     for (let i = 0; i < n; i++) {
-      const h = 1e-5 * Math.max(Math.abs(u[i]!), scale[i]!);
       const save = u[i]!;
-      u[i] = save + h;
-      const fp = F(u);
-      u[i] = save - h;
-      const fm = F(u);
+      if (cheap) {
+        // Forward difference with a step of the order of the curvature width, for accuracy 1e-3 of the derivative in a parabola.
+        const h = 1e-4 * Math.max(Math.abs(save), scale[i]!);
+        u[i] = save + h;
+        g[i] = (F(u) - f0) / h;
+      } else {
+        const h = 1e-5 * Math.max(Math.abs(save), scale[i]!);
+        u[i] = save + h;
+        const fp = F(u);
+        u[i] = save - h;
+        const fm = F(u);
+        g[i] = (fp - fm) / (2 * h);
+      }
       u[i] = save;
-      g[i] = (fp - fm) / (2 * h);
     }
     return g;
   };
@@ -177,7 +185,8 @@ function bfgs(F: (u: number[]) => number, u0: number[], scale: number[], tol: nu
   }
   const identity = () => Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => (i === j ? diag0[i]! : 0)));
   let Hinv = identity();
-  let g = grad(u);
+  let g = grad(u, true, f);
+  let lastCheap = true;
   let converged = false;
   let first = !informed;
   let stalled = 0;
@@ -193,7 +202,16 @@ function bfgs(F: (u: number[]) => number, u0: number[], scale: number[], tol: nu
       if (!(gp < 0)) { converged = true; break; } // zero gradient
     }
     const edm = -0.5 * gp;
-    if (!first && edm < tol) { converged = true; break; }
+    if (!first && edm < tol) {
+      if (lastCheap) {
+        // The one-sided gradient is too rough to declare convergence: confirm with central differences.
+        g = grad(u);
+        lastCheap = false;
+        continue;
+      }
+      converged = true;
+      break;
+    }
     // Step length: at most ~a few typical scales on the first steps.
     // No component may move by more than 15 of its own curvature widths in one step (and no more than a few scales).
     let worst = 0;
@@ -217,7 +235,9 @@ function bfgs(F: (u: number[]) => number, u0: number[], scale: number[], tol: nu
       if (!first) { Hinv = identity(); first = true; continue; } // restart from steepest descent once
       break;
     }
-    const gnew = grad(unew);
+    // Far from the minimum (estimated distance above 0.5 in units of f) a one-sided gradient is enough.
+    lastCheap = edm > 0.5;
+    const gnew = grad(unew, lastCheap, fnew);
     const s = unew.map((v, i) => v - u[i]!);
     const y = gnew.map((v, i) => v - g[i]!);
     const sy = s.reduce((a, v, i) => a + v * y[i]!, 0);
@@ -458,7 +478,7 @@ export function minimize(fn: Objective, x0: number[], opts: MinimizeOptions = {}
     inv = invertSPD(Hfree);
     if (!inv) break;
     const hNew = t.free.map((_, k) => Math.min(Math.max(0.3 * Math.sqrt(2 * errorDef * inv![k]![k]!), 1e-6 * scale[k]!), 10 * scale[k]!));
-    const settled = hNew.every((v, k) => v > 0.5 * h[k]! && v < 2 * h[k]!);
+    const settled = hNew.every((v, k) => v > 0.33 * h[k]! && v < 3 * h[k]!);
     h = hNew;
     if (settled) break;
   }

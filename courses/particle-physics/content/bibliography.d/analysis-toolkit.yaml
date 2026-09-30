@@ -1,0 +1,76 @@
+cowan2011:
+  authors: Glen Cowan, Kyle Cranmer, Eilam Gross, Ofer Vitells
+  year: 2011
+  title: Asymptotic formulae for likelihood-based tests of new physics
+  venue: European Physical Journal C 71, 1554
+  url: https://arxiv.org/abs/1007.1727
+  note: The profile-likelihood-ratio test statistics, the Asimov data set and the asymptotic distributions used for discovery significance and limits.
+read2002:
+  authors: Alexander L. Read
+  year: 2002
+  title: "Presentation of search results: the CLs technique"
+  venue: Journal of Physics G 28, 2693–2704
+  note: The CLs prescription for upper limits.
+junk1999:
+  authors: Thomas Junk
+  year: 1999
+  title: Confidence level computation for combining searches with small statistics
+  venue: Nuclear Instruments and Methods in Physics Research A 434, 435–443
+  note: The CLs method as applied at LEP.
+grossvitells2010:
+  authors: Eilam Gross, Ofer Vitells
+  year: 2010
+  title: Trial factors for the look elsewhere effect in high energy physics
+  venue: European Physical Journal C 70, 525–530
+  url: https://arxiv.org/abs/1005.1891
+  note: The global p-value from the number of upcrossings of the local significance.
+bakercousins1984:
+  authors: Steve Baker, Robert D. Cousins
+  year: 1984
+  title: Clarification of the use of chi-square and likelihood functions in fits to histograms
+  venue: Nuclear Instruments and Methods 221, 437–442
+  note: The likelihood-ratio chi-square for binned Poisson data.
+cousins2008:
+  authors: Robert D. Cousins, James T. Linnemann, Jordan Tucker
+  year: 2008
+  title: Evaluation of three methods for calculating statistical significance when incorporating a systematic uncertainty into a test of the background-only hypothesis for a Poisson process
+  venue: Nuclear Instruments and Methods in Physics Research A 595, 480–501
+  note: Significance of a Poisson count with an uncertain background.
+choudalakis2012:
+  authors: Georgios Choudalakis, Diego Casadei
+  year: 2012
+  title: Plotting the differences between data and expectation
+  venue: European Physical Journal Plus 127, 25
+  note: The BumpHunter algorithm, scanning a histogram with windows of several widths.
+hormann1993:
+  authors: Wolfgang Hörmann
+  year: 1993
+  title: The transformed rejection method for generating Poisson random variables
+  venue: Insurance, Mathematics and Economics 12, 39–45
+  note: The PTRS sampler used for large Poisson means.
+garwood1936:
+  authors: F. Garwood
+  year: 1936
+  title: Fiducial limits for the Poisson distribution
+  venue: Biometrika 28, 437–442
+  note: The central confidence interval for a Poisson mean.
+clopperpearson1934:
+  authors: C. J. Clopper, E. S. Pearson
+  year: 1934
+  title: The use of confidence or fiducial limits illustrated in the case of the binomial
+  venue: Biometrika 26, 404–413
+  note: The "exact" interval for a binomial proportion, used for efficiencies.
+lepewwg2006:
+  authors: ALEPH, DELPHI, L3, OPAL and SLD collaborations, LEP Electroweak Working Group, SLD Electroweak and Heavy Flavour Groups
+  year: 2006
+  title: Precision electroweak measurements on the Z resonance
+  venue: Physics Reports 427, 257–454
+  url: https://arxiv.org/abs/hep-ex/0509008
+  note: The combination of the LEP and SLD measurements, including the number of light neutrino species N_ν = 2.9840 ± 0.0082.
+janotjadach2020:
+  authors: Patrick Janot, Stanisław Jadach
+  year: 2020
+  title: Improved Bhabha cross section at LEP and the number of light neutrino species
+  venue: Physics Letters B 803, 135319
+  url: https://arxiv.org/abs/1912.02067
+  note: A corrected calculation behind the LEP luminosity measurement, moving N_ν to 2.9963 ± 0.0074.

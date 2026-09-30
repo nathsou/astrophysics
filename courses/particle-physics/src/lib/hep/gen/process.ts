@@ -126,19 +126,49 @@ export function boostZ(p: P4, y: number): P4 {
   return { E: c * p.E + s * p.pz, px: p.px, py: p.py, pz: s * p.E + c * p.pz };
 }
 
-/** Sum of a record's outgoing ('final') four-momenta and charges against the incoming ones; used by the tests and by `generate`. */
+/** Incoming minus outgoing ('final') four-momentum and charge of a hard-process record (all zero when conserved); the charge is summed in thirds, so exact. */
 export function conservation(ev: TruthEvent, chargeOf: (pdg: number) => number): { dE: number; dpx: number; dpy: number; dpz: number; dCharge: number; scale: number } {
   let E = 0, px = 0, py = 0, pz = 0, q = 0;
   const hasHard = ev.particles.some((p) => p.status === 'hard');
   for (const p of ev.particles) {
     const incoming = hasHard ? p.status === 'hard' : p.status === 'beam';
     if (incoming) {
-      E += p.p.E; px += p.p.px; py += p.p.py; pz += p.p.pz; q += chargeOf(p.pdg);
+      E += p.p.E; px += p.p.px; py += p.p.py; pz += p.p.pz; q += Math.round(3 * chargeOf(p.pdg));
     } else if (p.status === 'final') {
-      E -= p.p.E; px -= p.p.px; py -= p.p.py; pz -= p.p.pz; q -= chargeOf(p.pdg);
+      E -= p.p.E; px -= p.p.px; py -= p.p.py; pz -= p.p.pz; q -= Math.round(3 * chargeOf(p.pdg));
     }
   }
-  return { dE: E, dpx: px, dpy: py, dpz: pz, dCharge: q, scale: ev.sqrtS };
+  return { dE: E, dpx: px, dpy: py, dpz: pz, dCharge: q / 3, scale: ev.sqrtS };
+}
+
+/**
+ * Check the Les Houches colour flow of a hard-process record: every colour tag must appear exactly twice among the incoming partons
+ * (status 'hard') and the outgoing ones (status 'final'), in one of the four allowed pairings: (incoming colour, outgoing colour),
+ * (incoming anticolour, outgoing anticolour), (incoming colour, incoming anticolour) or (outgoing colour, outgoing anticolour).
+ */
+export function colourFlowValid(ev: TruthEvent): boolean {
+  const cnt = new Map<number, [number, number, number, number]>();
+  const bump = (tag: number, slot: number) => {
+    if (!tag) return;
+    let c = cnt.get(tag);
+    if (!c) cnt.set(tag, (c = [0, 0, 0, 0]));
+    c[slot] = c[slot]! + 1;
+  };
+  for (const p of ev.particles) {
+    if (!p.colour) continue;
+    if (p.status === 'hard') {
+      bump(p.colour[0], 0);
+      bump(p.colour[1], 1);
+    } else if (p.status === 'final') {
+      bump(p.colour[0], 2);
+      bump(p.colour[1], 3);
+    }
+  }
+  for (const [a, b, c, d] of cnt.values()) {
+    if (a + b + c + d !== 2) return false;
+    if (!((a === 1 && c === 1) || (b === 1 && d === 1) || (a === 1 && b === 1) || (c === 1 && d === 1))) return false;
+  }
+  return true;
 }
 
 // ── Monte Carlo process ───────────────────────────────────────────────────────────────────────────────────────

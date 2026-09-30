@@ -170,3 +170,42 @@ export function minBiasTruth(r: Rng, nch: number, vertex: [number, number, numbe
   for (let i = 0; i < nn; i++) list.push({ pdg: r() < 0.5 ? 130 : 2112, pt: pt(), eta: (2 * r() - 1) * etaMax, phi: (2 * r() - 1) * Math.PI });
   return truthEventFrom(list, vertex, collision);
 }
+
+export type SynthFlavour = 'light' | 'c' | 'b';
+
+/**
+ * The final-state particles of a crude jet of the given flavour and total pT, η, φ: a heavy hadron (B⁰, D⁰) carrying a
+ * fraction z of the momentum for b and c jets (the detector simulation decays it in flight with the particle table: B⁰ →
+ * D⁰ππ → Kπ…, a real displaced cascade), and light hadrons (π±, π⁰, K±, K_L, K_S, p, n) sharing the rest with a
+ * transverse momentum of about 0.35 GeV relative to the jet axis. The fragmentation is schematic; what is realistic is the
+ * vertex structure from the heavy hadron's lifetime.
+ */
+export function jetParticles(r: Rng, flavour: SynthFlavour, pt: number, eta: number, phi: number): SimpleParticle[] {
+  const out: SimpleParticle[] = [];
+  const axis = { eta, phi };
+  const place = (pdg: number, ptH: number, jT: number) => {
+    // a transverse kick jT relative to the jet axis in a random direction: ΔR ≈ jT / pT of the hadron
+    const ang = (2 * r() - 1) * Math.PI;
+    const d = jT / ptH;
+    out.push({ pdg, pt: ptH, eta: axis.eta + d * Math.cos(ang), phi: axis.phi + d * Math.sin(ang) });
+  };
+  let rest = pt;
+  if (flavour !== 'light') {
+    const z = flavour === 'b' ? Math.min(0.95, Math.max(0.4, normal(r, 0.72, 0.12))) : Math.min(0.9, Math.max(0.3, normal(r, 0.6, 0.15)));
+    const id = flavour === 'b' ? 511 : 421;
+    out.push({ pdg: r() < 0.5 ? id : -id, pt: z * pt, eta: axis.eta + normal(r, 0, 0.02), phi: axis.phi + normal(r, 0, 0.02) });
+    rest = pt * (1 - z);
+  }
+  // light hadrons: fractions of the remaining pT from an exponential
+  let n = 4 + Math.floor(pt / 12);
+  n = Math.min(n, 25);
+  const w = Array.from({ length: n }, () => (-Math.log(1 - r())) ** 1.3);
+  const sw = w.reduce((a, b) => a + b, 0);
+  for (let i = 0; i < n; i++) {
+    const ptH = Math.max(0.3, (rest * w[i]!) / sw);
+    const u = r();
+    const pdg = u < 0.55 ? (r() < 0.5 ? 211 : -211) : u < 0.82 ? 111 : u < 0.88 ? (r() < 0.5 ? 321 : -321) : u < 0.91 ? 130 : u < 0.94 ? 310 : u < 0.98 ? (r() < 0.5 ? 2212 : -2212) : 2112;
+    place(pdg, ptH, Math.abs(normal(r, 0, 0.35)));
+  }
+  return out;
+}

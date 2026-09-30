@@ -59,13 +59,12 @@
           <text {x} y={sy(YUK_ROW - 0.25) - 5} text-anchor="middle" class="yt">{y === 1 ? '1' : pow10(y)}</text>
         {/if}
       {/each}
-      <text x={sx(LO) + 4} y={sy(YUK_ROW + 0.22)} class="yl">Yukawa coupling y = √2 m/v, the dimensionless number a fermion needs to have this mass</text>
+      <text x={sx(LO) + 4} y={sy(YUK_ROW + 0.22)} class="yl">Yukawa coupling y = √2 m/v</text>
 
       <!-- neutrino band: a limit, not a measurement -->
       <rect x={sx(band.lower)} y={sy(ROW.lepton) - 9} width={sx(band.upper) - sx(band.lower)} height="18" class="band" />
       <line x1={sx(band.upper)} x2={sx(band.upper) + 12} y1={sy(ROW.lepton)} y2={sy(ROW.lepton)} class="limit" />
-      <text x={sx(LO) + 4} y={sy(ROW.lepton) - 14} class="nu">neutrinos: heaviest between ≈ {NEUTRINO_HEAVIEST_LOWER_EV} and &lt; {NEUTRINO_LIMIT_EV} eV</text>
-      <text x={sx(LO) + 4} y={sy(ROW.lepton) + 25} class="nu2">limits, not measured masses</text>
+      <text x={sx(LO) + 4} y={sy(ROW.lepton) + 26} class="nu">neutrinos: limits only, ≈ {NEUTRINO_HEAVIEST_LOWER_EV} to &lt; {NEUTRINO_LIMIT_EV} eV</text>
 
       <!-- the particles -->
       {#each entries as e (e.id)}
@@ -88,7 +87,7 @@
     From the electron to the top quark the masses span a factor of about {fmt(ratio, 2)}; counting the neutrinos, whose masses are below 1 eV, the span is more than a factor of 10<sup>11</sup>. The Standard Model has a place to put each of these numbers and no reason for any of them: <strong>nobody knows why the masses are what they are</strong>, or why they are so unequal. Only one, the top quark's, has a Yukawa coupling near 1.
   </p>
 
-  <table class="ui">
+  <div class="tw"><table class="ui">
     <caption>The same numbers as a table (masses from the library's particle table; the quark masses are the PDG's current-quark values, the top quark's is its pole mass)</caption>
     <thead><tr><th scope="col">particle</th><th scope="col">kind</th><th scope="col">mass</th><th scope="col">y = √2 m/v</th></tr></thead>
     <tbody>
@@ -97,7 +96,7 @@
       {/each}
       <tr><th scope="row">ν (heaviest)</th><td>neutrino</td><td class="n">≈ {NEUTRINO_HEAVIEST_LOWER_EV} eV to &lt; {NEUTRINO_LIMIT_EV} eV</td><td class="n">&lt; {fmt((Math.SQRT2 * band.upper) / V_EW_GEV, 2)}</td></tr>
     </tbody>
-  </table>
+  </table></div>
   <p class="ui fn">
     * For W, Z and H the same ratio √2 m/v is only a convenient rescaling of the mass: their masses come from the gauge couplings and from the Higgs self-coupling, not from a Yukawa coupling. Photons and gluons have no mass and cannot appear on a logarithmic axis. The neutrino band is bounded above by the direct limit from the beta decay of tritium (the KATRIN experiment) and below by what neutrino oscillations require of the heaviest neutrino; the lightest may be massless.
   </p>
@@ -120,11 +119,6 @@
   .nu {
     font-size: 10.5px;
     fill: var(--ink-2);
-  }
-  .nu2 {
-    font-size: 10px;
-    fill: var(--mute);
-    font-style: italic;
   }
   .mk.q {
     fill: var(--series-1);
@@ -151,15 +145,14 @@
     stroke-width: 2;
     marker-end: none;
   }
-  .leader {
-    stroke: var(--mute);
-    stroke-width: 1;
-  }
   .lead {
     font-size: 0.86rem;
     line-height: 1.55;
     color: var(--ink-2);
     margin: 0.6rem 0;
+  }
+  .tw {
+    overflow-x: auto;
   }
   table {
     border-collapse: collapse;

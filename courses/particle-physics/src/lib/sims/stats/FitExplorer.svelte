@@ -267,8 +267,8 @@
     </table>
     <div class="quality">
       {#if fit}
-        <p><strong>{fit.converged ? 'Converged' : 'Did not converge'}.</strong> {method === 'nll' ? 'Baker–Cousins χ²' : 'χ²'} = {sig(fit.chi2, 4)} for {fit.ndf} degrees of freedom (p = {fmtP(fit.pValue)}). {#if method === 'chi2'}With so few events the √n errors are wrong; compare with the likelihood fit.{/if}</p>
-        <p class="sub">−2 ln L at the minimum = {sig(2 * goodness.nll, 6)}</p>
+        <p><strong>{fit.converged ? 'Converged' : 'Did not converge'}.</strong> {method === 'nll' ? 'Baker–Cousins χ²' : 'χ² (errors √n)'} = {sig(fit.chi2, 4)} for {fit.ndf} degrees of freedom (p = {fmtP(fit.pValue)}). {#if method === 'chi2' && mode === 'fourlepton'}With so few events the √n errors are wrong; compare with the likelihood fit.{/if}</p>
+        <p class="sub">{method === 'nll' ? '−2 ln L at the minimum' : '−2 ln L of these parameters'} = {sig(2 * goodness.nll, 6)}</p>
       {:else}
         <p>−2 ln L of your model (background re-fitted) = <strong>{sig(manualMinus2lnL, 6)}</strong>. Lower is better; press <strong>Fit</strong> to let the minimiser find the lowest.</p>
         <p class="sub">Baker–Cousins χ² = {sig(goodness.chi2, 4)}</p>

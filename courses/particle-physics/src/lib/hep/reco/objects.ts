@@ -96,7 +96,7 @@ export interface PFOptions {
   muonTracks?: ReadonlySet<number>;
   /** Drop charged candidates that are not from the primary vertex (charged-hadron subtraction). */
   chs?: boolean;
-  /** An excess of calorimeter energy over the tracks' momenta is neutral if it exceeds this many σ (default 2). */
+  /** An excess of calorimeter energy over the tracks' momenta is neutral if it exceeds this many σ (default 1). */
   excessSigma?: number;
 }
 
@@ -112,7 +112,7 @@ function dominantTruth(c: RecoCluster): number {
 export function particleFlow(tracks: readonly RecoTrack[], clusters: readonly RecoCluster[], geom: RecoGeometry, opts: PFOptions = {}): PFCandidate[] {
   const zv = opts.pvZ ?? 0;
   const muonTracks = opts.muonTracks ?? new Set<number>();
-  const nSig = opts.excessSigma ?? 2;
+  const nSig = opts.excessSigma ?? 1;
   const nT = tracks.length;
   const nC = clusters.length;
   // union-find over tracks [0, nT) and clusters [nT, nT + nC)
@@ -127,8 +127,8 @@ export function particleFlow(tracks: readonly RecoTrack[], clusters: readonly Re
   const union = (a: number, b: number) => {
     parent[find(a)] = find(b);
   };
-  for (const l of matchTracksToClusters(tracks, clusters, 'ecal', geom, 0.05, 0)) union(l.track, nT + l.cluster);
-  for (const l of matchTracksToClusters(tracks, clusters, 'hcal', geom, 0.1, 0)) union(l.track, nT + l.cluster);
+  for (const l of matchTracksToClusters(tracks, clusters, 'ecal', geom, 0.05, 0, 1)) union(l.track, nT + l.cluster);
+  for (const l of matchTracksToClusters(tracks, clusters, 'hcal', geom, 0.1, 0, 1.5)) union(l.track, nT + l.cluster);
   // each ECAL cluster to the nearest HCAL cluster within 0.1
   for (let i = 0; i < nC; i++) {
     const a = clusters[i]!;
@@ -403,7 +403,7 @@ export function findConversions(tracks: readonly RecoTrack[], minRadius = 10): C
  * supercluster with an extrapolated track, E/p between 0.6 and 2 and little energy behind it in the HCAL (H/E < 0.15); a
  * photon is a supercluster without a track (or with a conversion pair), H/E < 0.1 and ET above `photonPtMin`.
  */
-export function findElectronsPhotons(tracks: readonly RecoTrack[], clusters: readonly RecoCluster[], geom: RecoGeometry, rcIn?: Partial<RecoConfig>, pvZ = 0): EgammaResult {
+export function findElectronsPhotons(tracks: readonly RecoTrack[], clusters: readonly RecoCluster[], geom: RecoGeometry, rcIn?: Partial<RecoConfig>, pvZ = 0, skipTracks: ReadonlySet<number> = new Set()): EgammaResult {
   const rc = resolveConfig(rcIn);
   const electrons: RecoObjectX[] = [];
   const photons: RecoObjectX[] = [];
@@ -412,7 +412,7 @@ export function findElectronsPhotons(tracks: readonly RecoTrack[], clusters: rea
   const ecal = clusters.map((c, i) => ({ c, i })).filter((x) => x.c.calo === 'ecal').sort((a, b) => b.c.energy - a.c.energy);
   const hcal = clusters.map((c, i) => ({ c, i })).filter((x) => x.c.calo === 'hcal');
   // track extrapolations
-  const ext = tracks.map((t) => (t.pt >= 0.5 * rc.electronPtMin || t.pt >= 1 ? extrapolateToRadius(t, geom.ecal.rInner) : undefined));
+  const ext = tracks.map((t, i) => (!skipTracks.has(i) && (t.pt >= 0.5 * rc.electronPtMin || t.pt >= 1) ? extrapolateToRadius(t, geom.ecal.rInner) : undefined));
   const conversions = findConversions(tracks);
   const claimed = new Set<number>();
   for (const { c, i } of ecal) {
@@ -449,15 +449,6 @@ export function findElectronsPhotons(tracks: readonly RecoTrack[], clusters: rea
         bt = k;
       }
     }
-    const sumPt = (idx: number[]) => {
-      let ex = 0, ey = 0;
-      for (const j of idx) {
-        const p = clusterP4(clusters[j]!, geom, pvZ);
-        ex += p.px;
-        ey += p.py;
-      }
-      return Math.hypot(ex, ey);
-    };
     if (bt >= 0) {
       const t = tracks[bt]!;
       const p = t.pt * Math.cosh(t.eta);
@@ -513,7 +504,6 @@ export function findElectronsPhotons(tracks: readonly RecoTrack[], clusters: rea
         usedClusters.add(m);
       }
     }
-    void sumPt;
   }
   return { electrons, photons, usedTracks, usedClusters };
 }

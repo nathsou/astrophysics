@@ -50,7 +50,7 @@ export interface BTagInfo {
 }
 
 /** Weights of the logistic function: bias, then the features listed in `bTagFeatures`. Fitted on simulation (see README.md). */
-export const BTAG_WEIGHTS = [-4.2, 0.9, 0.9, 0.5, 0.2, 2.0, 0.7, 0.5, 0.25];
+export const BTAG_WEIGHTS = [-6.775, 1.45, 0.579, 1.06, 0.935, 0.038, 1.443, -0.889, 0.12];
 
 const etaOf = (p: P4) => {
   const pt = Math.hypot(p.px, p.py);

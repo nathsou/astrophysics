@@ -58,10 +58,10 @@
     embedded?: boolean;
   } = $props();
 
-  let seed = $state(seed0);
+  let seed = $state(untrack(() => seed0));
   let tool = $state<ToolName>('ruler');
   let snap = $state(true);
-  let labelsOn = $state(showLabels);
+  let labelsOn = $state(untrack(() => showLabels));
   let backend = $state('');
   let busy = $state(false);
   let built = $state.raw<Picture | null>(null);
@@ -76,7 +76,7 @@
   const comparisons = $derived(compared && pic ? measurements.map((m) => ({ m, c: compareMeasurement(m, pic) })) : []);
 
   function load(p: Picture) {
-    tracks = fillFromPicture(p, droplets, seed0, 0.02);
+    tracks = fillFromPicture(p, droplets, 7, 0.02);
     selected = null;
     measurements = [];
     compared = false;

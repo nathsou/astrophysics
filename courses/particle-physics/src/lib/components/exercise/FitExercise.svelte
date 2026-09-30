@@ -141,7 +141,7 @@
           </tbody>
         </table>
         <p class="q">
-          {fitted.fit.converged ? 'Converged' : 'Did not converge'}. {fitted.choice.method === 'nll' ? 'Baker–Cousins χ²' : 'χ²'} = {fmt(fitted.fit.chi2)} for {fitted.fit.ndf} degrees of freedom,
+          {fitted.fit.converged ? 'Converged' : 'Did not converge'}. {fitted.choice.method === 'nll' ? 'Baker–Cousins χ²' : 'χ² (errors √n)'} = {fmt(fitted.fit.chi2)} for {fitted.fit.ndf} degrees of freedom,
           p = {Number.isFinite(fitted.fit.pValue) ? (fitted.fit.pValue < 0.001 ? fitted.fit.pValue.toExponential(1) : fitted.fit.pValue.toFixed(3)) : 'n/a'}.
           {#if Number.isFinite(fitted.fit.pValue) && fitted.fit.pValue < 0.01}The model does not describe the data well; look at the pulls and try another shape.{/if}
         </p>

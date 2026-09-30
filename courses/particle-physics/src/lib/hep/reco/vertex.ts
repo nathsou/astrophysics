@@ -23,6 +23,7 @@ import type { RecoTrack } from './types.ts';
 import { solve } from './linalg.ts';
 
 export interface RecoVertex extends Vertex {
+  chi2: number;
   /** Covariance of (x, y, z) in mm². */
   cov: number[][];
   ndof: number;

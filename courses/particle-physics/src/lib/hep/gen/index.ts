@@ -8,7 +8,7 @@ export { generate, type GenerateConfig } from './generate.ts';
 export {
   type Process, type ProcessConfig, type Beams, type PointSpec, type MCProcessDef,
   getProcess, listProcesses, registerProcess, makeMCProcess,
-  newEvent, addParticle, addBeams, decayAbout, decayIsotropic, boostZ, conservation,
+  newEvent, addParticle, addBeams, decayAbout, decayIsotropic, boostZ, conservation, colourFlowValid,
 } from './process.ts';
 export {
   Vegas, type VegasResult, Unweighter, type UnweightState, unweight, crossSection, type CrossSectionResult,

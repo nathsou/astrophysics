@@ -149,7 +149,8 @@ export class U1Lattice {
     const W = Math.min(window, L);
     let s = 0;
     let n = 0;
-    for (const [w, h] of R === T ? [[R, T]] : [[R, T], [T, R]]) {
+    const shapes: [number, number][] = R === T ? [[R, T]] : [[R, T], [T, R]];
+    for (const [w, h] of shapes) {
       for (let y = 0; y < W; y++)
         for (let x = 0; x < W; x++) {
           let a = 0;

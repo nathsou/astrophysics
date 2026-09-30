@@ -482,8 +482,9 @@ describe('the string picture', () => {
     const snap = simulateString(rng(9), 30, 3);
     expect(snap.hadrons.length).toBeGreaterThan(2);
     expect(snap.breaks.length).toBe(snap.hadrons.length - 1);
-    // the leading hadron contains the strange quark
-    expect(Math.abs(flavourNumbers(snap.hadrons[0]!).s) + Math.abs(flavourNumbers(snap.hadrons[0]!).d) + Math.abs(flavourNumbers(snap.hadrons[0]!).u)).toBeGreaterThanOrEqual(0);
+    // the leading hadron contains the strange quark (η′ has no quark string in the table)
+    const lead = Math.abs(snap.hadrons[0]!);
+    expect(lead === 331 || particle(lead).quarks.includes('s')).toBe(true);
   });
 
   test('a copy of the event has no string records (they are kept per object)', () => {

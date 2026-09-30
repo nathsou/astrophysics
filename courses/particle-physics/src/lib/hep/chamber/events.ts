@@ -274,8 +274,7 @@ export function composeCloudPicture(names: string[], seed: number, o: { bField?:
     sensitiveZ: [-s.depth / 2, s.depth / 2],
     labels,
     steps: labels.map((l) => `${l.letter}: ${PARTICLE_CHOICES.find((c) => c.id === l.truth)?.plain ?? l.truth}`),
-    note: 'A simulated picture. Decay lengths of unstable particles are shortened so that the kink fits in the window.',
-    source: s.source,
+    note: names.some((n) => /^(pi|K)/.test(n)) ? 'A simulated picture. The decay lengths of the pions and kaons are shortened so that their kinks fit in the window.' : 'A simulated picture.',
   };
 }
 
@@ -450,17 +449,14 @@ export function omegaPicture(seed = 1, bField = BUBBLE.bField): Picture {
     return pp > 1.4 && pp < 3.2 && om.px > 0 && inPlane(om) && kp.px > 0 && inPlane(kp) && pmag(kp) > 0.6 && Math.abs(p[1]!.pz) < 0.5 * pmag(p[1]!) && p[1]!.px > 0;
   });
   const [omega, k0, kplus] = fin as [P4, P4, P4];
-  // The Ω⁻ decays: Ω⁻ → Ξ⁰ π⁻.
+  // A sample of the decay chain, only to pick typical flight lengths (the decays themselves are generated in simulateEvent).
   const mXi = particle(3322).mass;
   const mPi = particle(-211).mass;
-  const [xi, piOm] = twoBodyDecay(rng.fork('om'), omega, mXi, mPi);
+  const [xi] = twoBodyDecay(rng.fork('om'), omega, mXi, mPi);
   // Ξ⁰ → Λ π⁰
   const mLam = particle(3122).mass;
   const mPi0 = particle(111).mass;
-  const [lam, pi0] = twoBodyDecay(rng.fork('xi'), xi, mLam, mPi0);
-  void piOm;
-  void lam;
-  void pi0;
+  const [lam] = twoBodyDecay(rng.fork('xi'), xi, mLam, mPi0);
   const Lomega = decayLength(mOmega, pmag(omega), 3334, rng, 0.45, 0.6);
   const Lxi = decayLength(mXi, pmag(xi), 3322, rng, 0.4, 0.7);
   const Llam = decayLength(mLam, pmag(lam), 3122, rng, 0.35, 0.6);
@@ -481,13 +477,11 @@ export function omegaPicture(seed = 1, bField = BUBBLE.bField): Picture {
   const ev = simulateEvent(opts);
   // Prepend the beam track (ids shift by one).
   const set = mergeSets([beam, ev]);
-  const byName = (name: string) => set.tracks.find((t) => t.name === name);
   const labels: PictureLabel[] = [];
   const add1 = (letter: string, t: Track | undefined, truth: string) => t && labels.push({ letter, trackId: t.id, truth });
   add1('A', set.tracks[0], 'K-');
   add1('B', set.tracks.find((t) => t.pdg === 3334), 'Omega-');
   add1('C', set.tracks.find((t) => t.pdg === 321), 'K+');
-  void byName;
   return {
     id: 'omega',
     title: 'Ω⁻ production and decay: a simulation of the topology',
@@ -532,8 +526,8 @@ export function v0Picture(seed = 1, bField = BUBBLE.bField): Picture {
       break;
     }
   }
-  const Ll = decayLength(particle(3122).mass, pmag(lam), 3122, rng, 0.3, 0.6);
-  const Lk = decayLength(particle(310).mass, pmag(k0), 310, rng, 0.3, 0.6);
+  const Ll = decayLength(particle(3122).mass, pmag(lam), 3122, rng, 0.55, 0.85);
+  const Lk = decayLength(particle(310).mass, pmag(k0), 310, rng, 0.55, 0.85);
   const ev = simulateEvent({
     ...bubbleBase(rng.fork('event'), bField),
     particles: [
@@ -682,27 +676,48 @@ export function measureLabels(pic: Picture): { label: PictureLabel; m: TrackMeas
   });
 }
 
-/** A short plain-English account of what the clues of a track say (for the feedback of the identification exercise). */
+/**
+ * A short plain-English account of what the clues of a track say (for the feedback of the identification exercise): what was
+ * measured, and what each clue implies about the particle.
+ */
 export function explainTrack(pic: Picture, label: PictureLabel): string {
   const track = pic.set.tracks[label.trackId]!;
   const m = measureTrack(track, pic.bField, pic.medium);
   const parts: string[] = [];
   const ion = m.ionisation;
-  const mat = MEDIA[pic.medium];
-  void mat;
   const first = m.segments[0];
   if (ion > 40) parts.push(`very heavily ionising (about ${Math.round(ion)} times a minimum-ionising particle)`);
   else if (ion > 4) parts.push(`heavily ionising (about ${ion.toFixed(0)} times minimum)`);
   else if (ion > 1.5) parts.push(`somewhat more ionising than a minimum-ionising particle (${ion.toFixed(1)} times)`);
   else parts.push('thin, close to minimum ionisation');
-  if (m.endsInside && track.end === 'range') parts.push(`it stops after ${m.length.toFixed(0)} mm: a finite range`);
+  if (track.end === 'range') parts.push(`it stops after ${m.length.toFixed(0)} mm: a finite range`);
   else parts.push(`it is ${m.length.toFixed(0)} mm long in the picture`);
   if (first?.fit && !first.fit.straight && Number.isFinite(first.pT) && pic.bField !== 0) {
-    parts.push(`its radius of curvature is about ${Math.round(first.fit.R)} mm, so p_T ≈ ${(first.pT * 1000).toFixed(0)} MeV/c`);
+    parts.push(`its radius of curvature is about ${Math.round(first.fit.R)} mm, so p⊥ ≈ ${(first.pT * 1000).toFixed(0)} MeV/c if its charge is ±e`);
   } else if (pic.bField !== 0) parts.push('it is nearly straight, so its momentum is high');
   const kink = track.kinks.find((k) => k.kind === 'decay');
-  if (kink) parts.push(`there is a kink where it decays (${(kink.angle * 180 / Math.PI).toFixed(0)}° change of direction)`);
-  return parts.join('; ');
+  if (kink) parts.push(`there is a kink where it decays (${((kink.angle * 180) / Math.PI).toFixed(0)}° change of direction)`);
+  // The sense of the curve along the direction of travel, and what it says about the charge.
+  let sign = '';
+  if (first?.fit && !first.fit.straight && pic.bField !== 0 && track.charge !== 0) {
+    const clockwise = first.fit.orientation < 0;
+    sign = ` It turns ${clockwise ? 'clockwise' : 'anticlockwise'} as it moves, and with the field ${pic.bField > 0 ? 'out of' : 'into'} the page that means a ${track.charge > 0 ? 'positive' : 'negative'} charge.`;
+  }
+  const t = label.truth;
+  const why: Record<string, string> = {
+    alpha: ' Only a slow, heavy, doubly charged particle ionises this much, and it stops after a few centimetres of gas: an alpha particle.',
+    p: ' Dense and short-ranged, but far less dense than an alpha: a slow singly charged heavy particle, a proton.',
+    pbar: ' Dense and short-ranged like a proton, but with the opposite sense of curvature.',
+    'e-': ' Thin but strongly curved, so light and of low momentum: an electron.',
+    'e+': ' Thin but strongly curved, so light and of low momentum; the sense of the curve says positive: a positron.',
+    'mu-': ' Thin, long and stiff: a muon. It scatters little, so its track is smooth.',
+    'mu+': ' Thin, long and stiff: a muon. It scatters little, so its track is smooth.',
+    'pi-': ' Thin like a muon, but a pion often ends in a kink where it decays to a muon and a neutrino.',
+    'pi+': ' Thin like a muon, but a pion often ends in a kink where it decays to a muon and a neutrino.',
+    'K-': ' Denser than a pion at the same momentum, because it is heavier and so slower.',
+    'K+': ' Denser than a pion at the same momentum, because it is heavier and so slower.',
+  };
+  return parts.join('; ') + '.' + sign + (why[t] ?? '');
 }
 
 export { MATERIALS, mipLoss, simulateTrack };

@@ -62,7 +62,7 @@
     events?: FullEvent[];
     geometry?: DisplayGeometry;
     /** Which views to show: any of '3d', 'rphi', 'rz', 'lego' (an array, or a comma-separated string). */
-    views?: ViewName[] | string;
+    views?: readonly string[] | string;
     showTruth?: boolean;
     showReco?: boolean;
     showHits?: boolean;
@@ -204,7 +204,16 @@
     reduced = mq.matches;
     const onMq = () => (reduced = mq.matches);
     mq.addEventListener('change', onMq);
-    const ro = new ResizeObserver((entries) => (width = entries[0]!.contentRect.width));
+    let roFrame = 0;
+    const ro = new ResizeObserver((entries) => {
+      // Applied on the next frame, so that a layout change it causes cannot re-enter the observer.
+      const w = entries[0]!.contentRect.width;
+      if (roFrame) cancelAnimationFrame(roFrame);
+      roFrame = requestAnimationFrame(() => {
+        roFrame = 0;
+        if (Math.abs(w - width) > 0.5) width = w;
+      });
+    });
     if (root) ro.observe(root);
     return () => {
       off();

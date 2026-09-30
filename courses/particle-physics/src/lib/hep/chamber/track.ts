@@ -654,7 +654,7 @@ function endOfRange(ctx: Ctx, t: Track, job: Job, pos: Vec3, u: Vec3, E: number,
     const rest = fromMass(t.mass, 0, 0, 0);
     // A tiny direction so that the decay products are isotropic.
     const prods = pickDecay(ctx, pdg, rest);
-    emitProducts(ctx, t, pos, prods, u, 'decay', job);
+    emitProducts(ctx, t, pos, prods, u, 'decay');
     t.end = 'decay';
     t.endDetail = describeProducts(prods) + ' (at rest)';
   }
@@ -667,7 +667,7 @@ function decayCharged(ctx: Ctx, t: Track, job: Job, pos: Vec3, u: Vec3, E: numbe
   const parent: P4 = { E: E / 1000, px: (pMeV / 1000) * u[0], py: (pMeV / 1000) * u[1], pz: (pMeV / 1000) * u[2] };
   const prods = pickDecay(ctx, t.pdg, parent);
   t.endDetail = describeProducts(prods);
-  emitProducts(ctx, t, pos, prods, u, 'decay', job);
+  emitProducts(ctx, t, pos, prods, u, 'decay');
 }
 
 // ───────────────────────── decays ─────────────────────────
@@ -753,7 +753,7 @@ function muonDecay(ctx: Ctx, pdg: number, ids: number[], parent: P4): Product[] 
   return out;
 }
 
-function emitProducts(ctx: Ctx, t: Track, pos: Vec3, prods: Product[], uParent: Vec3, origin: TrackOrigin, _job: Job): void {
+function emitProducts(ctx: Ctx, t: Track, pos: Vec3, prods: Product[], uParent: Vec3, origin: TrackOrigin): void {
   let firstCharged: Vec3 | null = null;
   for (const pr of prods) {
     const isNu = [12, 14, 16].includes(Math.abs(pr.pdg));
@@ -822,7 +822,7 @@ function runNeutral(ctx: Ctx, job: Job): void {
         const parent: P4 = { E, px: pGeV * u[0], py: pGeV * u[1], pz: pGeV * u[2] };
         const prods = pickDecay(ctx, t.pdg, parent);
         t.endDetail = describeProducts(prods);
-        emitProducts(ctx, t, pos, prods, u, 'decay', job);
+        emitProducts(ctx, t, pos, prods, u, 'decay');
       }
       return;
     }

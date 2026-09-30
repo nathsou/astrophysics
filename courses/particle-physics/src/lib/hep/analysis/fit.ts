@@ -13,7 +13,7 @@
  */
 import { hook } from '../hooks.ts';
 import { Hist1D } from './hist.ts';
-import { minimize, minos as minosFn, type MinimizeOptions, type MinimizeResult } from './minimize.ts';
+import { minimize, minos as minosFn, profile, type MinimizeOptions, type MinimizeResult, type ProfilePoint } from './minimize.ts';
 import { extendedModel, type Model } from './models.ts';
 import { chi2Sf, lnFactorial, lnGamma } from './special.ts';
 
@@ -79,7 +79,7 @@ export interface FitResult {
   nll: number;
   /** Which objective was minimised. */
   objective_kind?: 'nll' | 'chi2';
-  /** Baker–Cousins χ² (binned fits; NaN for unbinned). */
+  /** Goodness of fit of a binned fit: the Baker–Cousins likelihood-ratio χ² (for `fitChi2`, the minimised χ²). NaN for unbinned fits. */
   chi2: number;
   pearson: number;
   ndf: number;
@@ -196,6 +196,9 @@ export function fitChi2(hist: Hist1D, model: Model | ((p: number[]) => number[])
   };
   const r = finish(names, objective, p0, { ...opts, errorDef: 1 }, lower, upper, { counts, expectedAt: expectedOf });
   r.objective_kind = 'chi2';
+  // For a χ² fit the goodness of fit is the minimised χ² itself (and its p-value), not the likelihood-ratio form.
+  r.chi2 = r.nll;
+  r.pValue = r.ndf > 0 ? chi2Sf(r.chi2, r.ndf) : NaN;
   return r;
 }
 
@@ -437,4 +440,15 @@ export function guessStart(hist: Hist1D, model: Model): number[] {
     });
   }
   return p;
+}
+
+/**
+ * The profile likelihood of one parameter of a finished fit: for each value on `grid`, the other free parameters are re-fitted, and `delta` is
+ * Δ(−2 ln L) = 2(−ln L − (−ln L)_min) (or Δχ² for a χ² fit). The values where it crosses 1 bound the 68 % interval, which is asymmetric when the likelihood is not
+ * parabolic (for a yield near zero, for instance). `index` is the position in `fit.names`.
+ */
+export function profileParameter(fit: FitResult, index: number, grid: number[]): ProfilePoint[] {
+  const chi2 = fit.objective_kind === 'chi2';
+  const best = { x: fit.params, fval: fit.nll, errors: fit.errors } as MinimizeResult;
+  return profile(fit.objective, index, grid, { best, lower: fit.lower, upper: fit.upper, fixed: fit.fixed, errorDef: chi2 ? 1 : 0.5, hessian: false });
 }

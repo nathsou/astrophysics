@@ -17,7 +17,7 @@
   import Slider from '$lib/components/ui/Slider.svelte';
   import Toggle from '$lib/components/ui/Toggle.svelte';
   import HepHist from '$lib/charts/HepHist.svelte';
-  import { maxLocalZ, poissonSample, pToZ, scanWindows, bestWindow, erf } from '$lib/hep/analysis';
+  import { maxLocalZ, poissonSample, poissonTail, pToZ, scanWindows, bestWindow, erf } from '$lib/hep/analysis';
   import { rng as makeRng } from '$lib/hep/random';
   import { chunked, fmtP, fmtZ, sig } from './common';
 
@@ -82,10 +82,18 @@
 
   const windows = $derived(scanWindows(counts, bkg, WIDTHS, edges));
   const best = $derived(bestWindow(windows));
-  // A window fixed in advance: 4 GeV wide, centred on the nominal mass 125 GeV.
+  // A window fixed in advance: the signal position ± 2σ, rounded out to whole bins. This is the local p-value of a search that knew where to look.
   const fixedWindow = $derived.by(() => {
-    const w = windows.find((x) => x.width === 4 && x.lo === 123);
-    return w ? { z: w.z, p: w.pLocal, observed: w.observed, expected: w.expected } : null;
+    const a = Math.max(0, Math.floor(position - 2 * sigma - LO));
+    const b = Math.min(NB, Math.ceil(position + 2 * sigma - LO));
+    if (b - a < 1) return null;
+    let obs = 0, exp = 0;
+    for (let i = a; i < b; i++) {
+      obs += counts[i]!;
+      exp += bkg[i]!;
+    }
+    const p = obs > exp ? poissonTail(obs, exp) : 1;
+    return { lo: LO + a, hi: LO + b, z: p < 1 ? Math.max(0, pToZ(p)) : 0, p, observed: obs, expected: exp };
   });
 
   // Pseudo-experiments: signal-free, scanned with the same windows.
@@ -160,7 +168,7 @@
   const markers = $derived(best && best.z > 0 ? [{ x: best.lo, label: `best window ${best.lo}–${best.hi} GeV`, color: 'var(--series-5)', at: 0.96 }, { x: best.hi, label: '', color: 'var(--series-5)' }] : []);
   const zMarkers = $derived([
     ...(best ? [{ x: Math.min(5.9, zObs), label: `this data: ${zObs.toFixed(1)}σ`, color: 'var(--series-5)', at: 0.92 }] : []),
-    ...(fixedWindow && fixedWindow.z > 0 ? [{ x: Math.min(5.9, fixedWindow.z), label: `fixed window: ${fixedWindow.z.toFixed(1)}σ`, color: 'var(--series-3)', at: 0.7 }] : []),
+    ...(fixedWindow ? [{ x: Math.min(5.9, fixedWindow.z), label: `fixed window: ${fixedWindow.z.toFixed(1)}σ`, color: 'var(--series-3)', at: 0.7 }] : []),
   ]);
   const yMax = $derived(Math.max(10, ...bkg.map((b) => b), ...counts) * 1.12);
 
@@ -221,10 +229,10 @@
       {/if}
     </div>
     <div class="card">
-      <span class="k">Fixed window (123–127 GeV, chosen in advance)</span>
+      <span class="k">Window fixed in advance{#if fixedWindow}: {fixedWindow.lo}–{fixedWindow.hi} GeV{/if}</span>
       {#if fixedWindow}
         <strong class="v">{fmtZ(fixedWindow.z)}</strong>
-        <span class="s">p = {fmtP(fixedWindow.p)}: the honest local p-value if you knew where to look.</span>
+        <span class="s">p = {fmtP(fixedWindow.p)}: a search that knew the position (the slider) needs no look-elsewhere correction.</span>
       {/if}
     </div>
     <div class="card hot">

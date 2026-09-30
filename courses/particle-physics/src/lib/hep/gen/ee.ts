@@ -189,10 +189,11 @@ export function eeToFermions(opt: EeOptions): EeProcess {
     const xmax = 1 - sMin / s;
     if (xmax <= 0) return { x: 0, w: 0 };
     const hasZ = M_Z * M_Z > sMin && M_Z * M_Z < s;
-    const wA = 0.5, wB = hasZ ? 0.35 : 0, wC = 1 - wA - wB;
-    // channel B: s' = BW(M_Z), x = 1 − s'/s
+    const wA = 0.4, wB = hasZ ? 0.3 : 0, wD = 0.25, wC = 1 - wA - wB - wD;
+    // channel B: s' = BW(M_Z), x = 1 − s'/s; channel D: s' with density 1/s' (the radiative return to low mass); C: flat in x
     const aZ = Math.atan((sMin - M_Z * M_Z) / (M_Z * GAMMA_Z));
     const bZ = Math.atan((s - M_Z * M_Z) / (M_Z * GAMMA_Z));
+    const L = Math.log(s / sMin);
     const pB = (x: number) => {
       const sp = s * (1 - x);
       if (sp < sMin || sp > s) return 0;
@@ -200,15 +201,17 @@ export function eeToFermions(opt: EeOptions): EeProcess {
     };
     const pA = (x: number) => (x > 0 && x <= xmax ? (beta * Math.pow(x, beta - 1)) / Math.pow(xmax, beta) : 0);
     const pC = (x: number) => (x > 0 && x <= xmax ? 1 / xmax : 0);
+    const pD = (x: number) => (x > 0 && x <= xmax ? 1 / ((1 - x) * L) : 0);
     const u = r();
     let x: number;
     if (u < wA) x = xmax * Math.pow(r(), 1 / beta);
     else if (u < wA + wB) {
       const th = aZ + (bZ - aZ) * r();
       x = 1 - (M_Z * M_Z + M_Z * GAMMA_Z * Math.tan(th)) / s;
-    } else x = xmax * r();
+    } else if (u < wA + wB + wD) x = 1 - (sMin * Math.exp(L * r())) / s;
+    else x = xmax * r();
     if (!(x > 0 && x <= xmax)) return { x: 0, w: 0 };
-    const p = wA * pA(x) + wB * pB(x) + wC * pC(x);
+    const p = wA * pA(x) + wB * pB(x) + wC * pC(x) + wD * pD(x);
     const sp = s * (1 - x);
     const sig = sigmaTotalGeV2(sp) * HBARC2_GEV2_PB * K;
     return { x, w: (radiator(x, beta) * sig) / p };

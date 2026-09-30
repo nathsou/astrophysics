@@ -74,48 +74,48 @@
       Ionisation: {fmtIonisation(info.ionisation)} minimum{#if protonRatio}; a proton of that momentum would ionise about {fmtIonisation(protonRatio)} minimum{/if}.
     </p>
   {/if}
-  <ol>
-    <li>
+  <div class="qs">
+    <div>
       <fieldset>
-        <legend>On which side of the plate is the track more strongly curved (smaller radius)?</legend>
+        <legend>1. On which side of the plate is the track more strongly curved (smaller radius)?</legend>
         {#each [['below', 'Below the plate'], ['above', 'Above the plate'], ['same', 'Neither']] as [v, l] (v)}
           <label><input type="radio" name="side" value={v} bind:group={side} /> {l}</label>
         {/each}
       </fieldset>
-    </li>
-    <li>
+    </div>
+    <div>
       <fieldset>
-        <legend>A particle loses momentum crossing the plate and is bent more afterwards. Did it move…</legend>
+        <legend>2. A particle loses momentum crossing the plate and is bent more afterwards. Did it move…</legend>
         {#each [['up', 'upwards'], ['down', 'downwards']] as [v, l] (v)}
           <label><input type="radio" name="dir" value={v} bind:group={dir} /> {l}</label>
         {/each}
       </fieldset>
-    </li>
-    <li>
+    </div>
+    <div>
       <fieldset>
-        <legend>The field points {bField > 0 ? 'out of the page, towards you' : 'into the page'}. With that direction of motion, is the charge…</legend>
+        <legend>3. The field points {bField > 0 ? 'out of the page, towards you' : 'into the page'}. With that direction of motion, is the charge…</legend>
         {#each [['positive', 'positive'], ['negative', 'negative']] as [v, l] (v)}
           <label><input type="radio" name="charge" value={v} bind:group={charge} /> {l}</label>
         {/each}
       </fieldset>
-    </li>
-    <li>
+    </div>
+    <div>
       <fieldset>
-        <legend>From its ionisation at that momentum, is it…</legend>
+        <legend>4. From its ionisation at that momentum, is it…</legend>
         {#each [['light', 'light, like an electron or a muon'], ['heavy', 'heavy, like a proton']] as [v, l] (v)}
           <label><input type="radio" name="mass" value={v} bind:group={mass} /> {l}</label>
         {/each}
       </fieldset>
-    </li>
-    <li>
+    </div>
+    <div>
       <fieldset>
-        <legend>So the particle is…</legend>
+        <legend>5. So the particle is…</legend>
         {#each CHOICES as c (c.id)}
           <label><input type="radio" name="who" value={c.id} bind:group={who} /> {c.label}</label>
         {/each}
       </fieldset>
-    </li>
-  </ol>
+    </div>
+  </div>
   <div class="row">
     <button type="button" class="go" disabled={!ready || !info} onclick={() => (revealed = true)}>Check my answers</button>
     <button type="button" onclick={onnext}>{first ? 'Take another exposure' : 'Another exposure'}</button>
@@ -165,11 +165,9 @@
     margin: 0 0 0.6rem;
     color: var(--ink-2);
   }
-  ol {
-    margin: 0;
-    padding-left: 1.2rem;
+  .qs {
     display: grid;
-    gap: 0.6rem;
+    gap: 0.7rem;
   }
   fieldset {
     border: 0;

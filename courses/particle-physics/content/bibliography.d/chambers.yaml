@@ -1,0 +1,26 @@
+chambers-anderson1933:
+  authors: Carl D. Anderson
+  year: 1933
+  title: The positive electron
+  venue: Physical Review 43(6), 491–494
+  url: https://doi.org/10.1103/PhysRev.43.491
+  note: Reports the cloud-chamber photograph with a 6 mm lead plate across the chamber in a field of about 15,000 gauss, and the momenta of the track on either side of the plate.
+chambers-barnes1964:
+  authors: V. E. Barnes et al.
+  year: 1964
+  title: Observation of a hyperon with strangeness minus three
+  venue: Physical Review Letters 12(8), 204–206
+  url: https://doi.org/10.1103/PhysRevLett.12.204
+  note: The Brookhaven 80-inch hydrogen bubble chamber event with the Ω⁻. The course re-simulates the topology; it does not reproduce the photograph.
+chambers-highland1975:
+  authors: V. L. Highland
+  year: 1975
+  title: Some practical remarks on multiple scattering
+  venue: Nuclear Instruments and Methods 129(2), 497–499
+  url: https://doi.org/10.1016/0029-554X(75)90743-0
+chambers-sternheimer1984:
+  authors: R. M. Sternheimer, M. J. Berger, S. M. Seltzer
+  year: 1984
+  title: Density effect for the ionization loss of charged particles in various substances
+  venue: Atomic Data and Nuclear Data Tables 30(2), 261–271
+  url: https://doi.org/10.1016/0092-640X(84)90002-0

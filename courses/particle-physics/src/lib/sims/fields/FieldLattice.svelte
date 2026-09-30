@@ -669,7 +669,7 @@
           <li><span class="sw ring"></span> the packet launched with the momentum slider; the short line through it is the tangent, whose slope dω/dk is the packet's velocity</li>
         </ul>
       {:else if panel === 'packet'}
-        <table class="ui">
+        <div class="tw"><table class="ui">
           <thead>
             <tr><th>quantity</th><th>value</th><th>how</th></tr>
           </thead>
@@ -682,9 +682,9 @@
             <tr><th scope="row">phase velocity ω/k</th><td>{m > 0 ? fmt(pp.phase, 3) + ' c' : '1 c'}</td><td>speed of the crests: above c when m &gt; 0, never carrying energy</td></tr>
             <tr><th scope="row">γ = E/m</th><td>{m > 0 ? fmt(pp.gamma, 3) : '∞ (massless)'}</td><td>how relativistic the packet is</td></tr>
           </tbody>
-        </table>
+        </table></div>
         <p class="note ui">
-          With m = 0 every packet moves at exactly c, whatever its momentum. With m &gt; 0, slow packets move slowly, fast ones approach c, and p/E is the velocity of the packet you launched. Nothing here was built in as a particle: only oscillators coupled to their neighbours.
+          With m = 0 a long-wavelength packet moves at c whatever its momentum (on this grid, packets with k near 1 or more are a few per cent slower than the continuum prediction, because short waves feel the graininess: compare the two velocity rows). With m &gt; 0, slow packets move slowly, fast ones approach c, and p/E is the velocity of the packet you launched. Nothing here was built in as a particle: only oscillators coupled to their neighbours.
         </p>
       {:else}
         <p class="note ui">
@@ -725,6 +725,9 @@
 </Widget>
 
 <style>
+  .tw {
+    overflow-x: auto;
+  }
   .wrap {
     display: flex;
     flex-direction: column;

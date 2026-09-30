@@ -29,7 +29,7 @@ layout(location=1) in vec3 aP0;
 layout(location=2) in vec3 aP1;
 layout(location=3) in vec4 aCol;
 layout(location=4) in vec4 aInfo;
-uniform mat4 uVP; uniform vec2 uViewport; uniform float uDpr; uniform float uClipW; uniform vec2 uFog;
+uniform mat4 uVP; uniform vec2 uViewport; uniform float uDpr; uniform float uClipW; uniform vec2 uFog; uniform float uGlow;
 out vec4 vCol; out float vSide; out float vHalf; out float vS; out float vDash; out float vWhite; out float vGlow;
 ${STATE_LIB}
 void main() {
@@ -54,8 +54,8 @@ void main() {
   vec2 nrm = vec2(-dir.y, dir.x);
   float wMul = st == 2 ? 2.0 : (st == 1 ? 1.5 : 1.0);
   float halfW = 0.5 * aInfo.x * uDpr * wMul;
-  float gw = 1.8 * uDpr;
-  float reach = halfW + 3.0 * gw;
+  float gw = 1.3 * uDpr;
+  float reach = halfW + (uGlow > 0.5 ? 2.0 * gw : 0.8 * uDpr);
   float t = aCorner.x;
   vec4 c = mix(a, b, t);
   vec2 off = dir * (t * 2.0 - 1.0) * reach + nrm * aCorner.y * reach;
@@ -68,7 +68,7 @@ void main() {
   vS = aInfo.z + t * length(aP1 - aP0);
   vDash = aInfo.y;
   vWhite = st == 2 ? 0.55 : (st == 1 ? 0.18 : 0.0);
-  vGlow = (st == 3 || st == 4) ? 0.0 : 1.0;
+  vGlow = (st == 3 || st == 4 || uGlow < 0.5) ? 0.0 : 1.0;
 }`;
 
 const SEG_FS = /* glsl */ `#version 300 es
@@ -81,9 +81,9 @@ void main() {
   float d = abs(vSide);
   float aa = 0.8 * uDpr;
   float core = 1.0 - smoothstep(vHalf - aa, vHalf + aa, d);
-  float gw = 1.8 * uDpr;
+  float gw = 1.3 * uDpr;
   float x = max(d - vHalf, 0.0) / gw;
-  float g = exp(-0.5 * x * x) * 0.4 * vGlow;
+  float g = exp(-0.5 * x * x) * 0.45 * vGlow;
   float I = core + (1.0 - core) * g;
   float centre = 1.0 - smoothstep(0.0, max(vHalf, 0.5 * uDpr), d);
   vec3 col = mix(vCol.rgb, vec3(1.0), clamp(vWhite + 0.3 * centre * vGlow, 0.0, 1.0));
@@ -92,36 +92,35 @@ void main() {
 
 const PT_VS = /* glsl */ `#version 300 es
 precision highp float; precision highp int;
-layout(location=0) in vec2 aCorner;
 layout(location=1) in vec3 aPos;
 layout(location=2) in vec4 aCol;
 layout(location=3) in vec4 aInfo;
-uniform mat4 uVP; uniform vec2 uViewport; uniform float uDpr; uniform float uClipW; uniform vec2 uFog;
-out vec4 vCol; out vec2 vUV; out float vShape; out float vWhite;
+uniform mat4 uVP; uniform float uDpr; uniform float uClipW; uniform vec2 uFog;
+out vec4 vCol; out float vShape; out float vWhite;
 ${STATE_LIB}
 void main() {
   int st = stateOf(aInfo.z);
   vec4 c = uVP * vec4(aPos, 1.0);
-  if (c.w < uClipW) { gl_Position = vec4(2.0, 2.0, 2.0, 1.0); vCol = vec4(0.0); vUV = vec2(0.0); vShape = 0.0; vWhite = 0.0; return; }
-  float sz = aInfo.x * uDpr * (st == 2 ? 2.2 : (st == 1 ? 1.6 : 1.0));
-  vec2 hv = uViewport * 0.5;
-  gl_Position = vec4(c.xy + aCorner * sz * 0.5 / hv * c.w, c.z, c.w);
+  if (c.w < uClipW) { gl_Position = vec4(2.0, 2.0, 2.0, 1.0); gl_PointSize = 0.0; vCol = vec4(0.0); vShape = 0.0; vWhite = 0.0; return; }
+  gl_Position = c;
+  gl_PointSize = aInfo.x * uDpr * (st == 2 ? 2.2 : (st == 1 ? 1.6 : 1.0));
   float fog = uFog.y > uFog.x ? mix(1.0, 0.42, clamp((c.w - uFog.x) / (uFog.y - uFog.x), 0.0, 1.0)) : 1.0;
   float dimF = st == 3 ? 0.14 : (st == 4 ? uNeutralDim : 1.0);
   vCol = vec4(aCol.rgb, aCol.a * fog * dimF);
-  vUV = aCorner; vShape = aInfo.y;
+  vShape = aInfo.y;
   vWhite = st == 2 ? 0.6 : (st == 1 ? 0.2 : 0.0);
 }`;
 
 const PT_FS = /* glsl */ `#version 300 es
 precision highp float;
-in vec4 vCol; in vec2 vUV; in float vShape; in float vWhite;
+in vec4 vCol; in float vShape; in float vWhite;
 out vec4 o;
 void main() {
-  float r = length(vUV);
+  vec2 uv = gl_PointCoord * 2.0 - 1.0;
+  float r = length(uv);
   float a;
   if (vShape < 0.5) a = 1.0 - smoothstep(0.55, 1.0, r);
-  else if (vShape < 1.5) { float q = abs(vUV.x) + abs(vUV.y); a = 1.0 - smoothstep(0.7, 1.0, q); }
+  else if (vShape < 1.5) { float q = abs(uv.x) + abs(uv.y); a = 1.0 - smoothstep(0.7, 1.0, q); }
   else a = max(smoothstep(0.5, 0.65, r) * (1.0 - smoothstep(0.85, 1.0, r)), 1.0 - smoothstep(0.2, 0.35, r));
   vec3 col = mix(vCol.rgb, vec3(1.0), vWhite);
   o = vec4(col * a * vCol.a, 1.0);
@@ -270,12 +269,14 @@ export class EventGL {
   private disposed = false;
   /** Sign applied to the tower η flip so that faces are wound consistently (see the tower vertex shader). */
   private towerFlip = 1;
+  /** Above this many line segments the glow around lines is dropped, to keep the fill rate down. */
+  glowMax = 12000;
 
   constructor(
     readonly canvas: HTMLCanvasElement,
     opts: { antialias?: boolean } = {},
   ) {
-    const gl = canvas.getContext('webgl2', { antialias: opts.antialias ?? true, alpha: false, powerPreference: 'high-performance', preserveDrawingBuffer: false });
+    const gl = canvas.getContext('webgl2', { antialias: opts.antialias ?? false, alpha: false, powerPreference: 'high-performance', preserveDrawingBuffer: false });
     if (!gl) throw new Error('WebGL2 is not available');
     this.gl = gl;
     this.init();
@@ -322,7 +323,7 @@ export class EventGL {
 
   private init(): void {
     const gl = this.gl;
-    const common = ['uVP', 'uViewport', 'uDpr', 'uClipW', 'uFog', 'uState', 'uHasSel', 'uNeutralDim'];
+    const common = ['uVP', 'uViewport', 'uDpr', 'uClipW', 'uFog', 'uState', 'uHasSel', 'uNeutralDim', 'uGlow'];
     this.seg = this.program(SEG_VS, SEG_FS, common);
     this.pt = this.program(PT_VS, PT_FS, common);
     this.tw = this.program(TW_VS, TW_FS, ['uVP', 'uFlip', 'uState', 'uHasSel', 'uNeutralDim']);
@@ -348,18 +349,15 @@ export class EventGL {
     this.instAttr(3, 4, ss, 24);
     this.instAttr(4, 4, ss, 40);
 
-    // Point quad.
-    const ptQuad = this.staticBuffer(new Float32Array([-1, -1, -1, 1, 1, -1, 1, 1]));
+    // Points: one vertex per point (gl.POINTS), no instancing.
     this.vaoPt = gl.createVertexArray()!;
     gl.bindVertexArray(this.vaoPt);
-    gl.bindBuffer(gl.ARRAY_BUFFER, ptQuad);
-    gl.enableVertexAttribArray(0);
-    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.bufPt);
     const ps = POINT_STRIDE * 4;
-    this.instAttr(1, 3, ps, 0);
-    this.instAttr(2, 4, ps, 12);
-    this.instAttr(3, 4, ps, 28);
+    for (const [loc, size, off] of [[1, 3, 0], [2, 4, 12], [3, 4, 28]] as const) {
+      gl.enableVertexAttribArray(loc);
+      gl.vertexAttribPointer(loc, size, gl.FLOAT, false, ps, off);
+    }
 
     // Tower cube: 6 faces × 2 triangles, corners in {0,1}³, outward-facing counter-clockwise.
     const faces = [
@@ -556,6 +554,7 @@ export class EventGL {
       gl.uniform1i(p.u.uState!, 0);
       gl.uniform1i(p.u.uHasSel!, this.hasSel);
       gl.uniform1f(p.u.uNeutralDim!, neutral);
+      gl.uniform1f(p.u.uGlow!, this.stats.segments <= this.glowMax ? 1 : 0);
     };
     if (this.stats.segments > 0) {
       gl.useProgram(this.seg.p);
@@ -567,7 +566,7 @@ export class EventGL {
       gl.useProgram(this.pt.p);
       setCommon(this.pt);
       gl.bindVertexArray(this.vaoPt);
-      gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, this.stats.points);
+      gl.drawArrays(gl.POINTS, 0, this.stats.points);
     }
     gl.bindVertexArray(null);
   }
