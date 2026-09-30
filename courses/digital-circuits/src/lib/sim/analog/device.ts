@@ -20,6 +20,17 @@ import type { FlatElement, ParamValue, Params } from '../netlist/types';
 export const VT = 0.025852;
 /** Conductance from every node to ground so floating nets do not make the matrix singular. */
 export const GMIN = 1e-12;
+/**
+ * Conductance in parallel with every pn junction (diode, LED, transistor junctions): SPICE's GMIN,
+ * but larger than 1e-12 S on purpose. A junction behind a series resistance (a diode's Rs, a closed
+ * contact, an ammeter) whose other terminals float is a node held only by the junction's own tiny
+ * conductance; the matrix entry `1/Rs + g` cannot represent a g of 1e-12 to better than 1e-4
+ * (double precision against a 0.5 S neighbour), so the node voltage is pure rounding noise and
+ * Newton–Raphson flips between two values ~1e-5 V apart forever (measured: 100 000+ steps in 5 ms
+ * for an LED behind an open switch). With 1e-10 S the noise is 1e-6 and below the tolerance, and
+ * the leakage (0.5 nA at 5 V) is still invisible next to any real current.
+ */
+export const GMIN_JUNCTION = 1e-10;
 /** A closed contact: 10 mΩ. */
 export const G_CLOSED = 100;
 /** An open contact or a burned-open part: 1 TΩ. */
@@ -90,6 +101,13 @@ export interface AnalogDevice {
   breakpoint?(t: number): number;
   /** Largest step the device tolerates right now (Infinity if any). */
   maxStep?(): number;
+  /**
+   * The capacitors and inductors this device stamps (its own state objects, read live), so the
+   * engine can estimate the circuit's fastest RC / L/R time constant and choose the first step after
+   * a breakpoint from it. Optional: a device that does not list its reactive parts simply does not
+   * influence the start step.
+   */
+  reactives?(): readonly (CapacitorState | InductorState)[];
   /** Current into pin `pin` at solution x. */
   current(pin: number, x: Float64Array): number;
   state(x: Float64Array): ElementState;

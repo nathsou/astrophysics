@@ -209,6 +209,7 @@ registerAnalogModel('relay', (env) => {
       }
       return changed;
     },
+    reactives: () => [coil],
     breakpoint: (t) => {
       let next = Infinity;
       for (const e of events) if (e.t > t && e.t < next) next = e.t;

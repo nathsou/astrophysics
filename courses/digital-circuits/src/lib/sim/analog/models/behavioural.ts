@@ -30,6 +30,11 @@ import { registerAnalogModel } from './registry';
  *
  * Voltmeter: 10 MΩ between − and +; state { value: V(+) − V(−) }.
  * Ammeter: 0.1 Ω; state { value: current from + to − through it }.
+ * Both snap `value` to exactly 0 below a noise floor (voltmeter 1 µV, ammeter 1 nA): the engine's
+ * leakage conductances (gmin, an open contact's 1 TΩ) produce picoamps and picovolts on open circuits,
+ * which a real meter would not resolve and which would only show up as "3.9 pA" on a readout. The
+ * threshold is strict (|value| < floor is 0; a reading of exactly the floor is kept). `current()` and
+ * `voltage()` are not snapped: they are the solver's numbers.
  */
 
 export const LOGIC_THRESHOLD = VDD / 2;
@@ -256,7 +261,11 @@ registerAnalogModel('probe', (env) => {
 
 // ---------------------------------------------------------------------------------------------
 
-function meter(env: DeviceEnv, R: number, pinPlus: number, show: (v: number, i: number) => number): AnalogDevice {
+/** Below these a meter reads exactly zero (see the header). */
+export const VOLTMETER_FLOOR = 1e-6;
+export const AMMETER_FLOOR = 1e-9;
+
+function meter(env: DeviceEnv, R: number, pinPlus: number, floor: number, show: (v: number, i: number) => number): AnalogDevice {
   const [a, b] = [env.nodes[0]!, env.nodes[1]!];
   const g = 1 / R;
   // Current into pin 0 flows from pin 0 to pin 1.
@@ -269,7 +278,8 @@ function meter(env: DeviceEnv, R: number, pinPlus: number, show: (v: number, i: 
     state(x) {
       const vPlus = pinPlus === 0 ? volt(x, a) - volt(x, b) : volt(x, b) - volt(x, a);
       const iPlus = pinPlus === 0 ? i0(x) : -i0(x);
-      return { value: show(vPlus, iPlus) };
+      const value = show(vPlus, iPlus);
+      return { value: Math.abs(value) < floor ? 0 : value };
     },
     setParam() {},
     reset() {},
@@ -277,5 +287,5 @@ function meter(env: DeviceEnv, R: number, pinPlus: number, show: (v: number, i: 
 }
 
 // Voltmeter pins: −, +. Ammeter pins: +, −.
-registerAnalogModel('voltmeter', (env) => meter(env, 1e7, 1, (v) => v));
-registerAnalogModel('ammeter', (env) => meter(env, 0.1, 0, (_v, i) => i));
+registerAnalogModel('voltmeter', (env) => meter(env, 1e7, 1, VOLTMETER_FLOOR, (v) => v));
+registerAnalogModel('ammeter', (env) => meter(env, 0.1, 0, AMMETER_FLOOR, (_v, i) => i));

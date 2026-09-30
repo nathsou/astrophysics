@@ -2,6 +2,7 @@ import type { ParamValue, Params } from '../../netlist/types';
 import {
   G_OPEN,
   GMIN,
+  GMIN_JUNCTION,
   VT,
   conductance,
   currentSource,
@@ -39,7 +40,8 @@ import { registerAnalogModel } from './registry';
 
 // ---------------------------------------------------------------------------------------------
 // Diodes: Shockley junction I = Is·(e^(V/(n·Vt)) − 1) in series with Rs (an internal node between
-// them), with gmin in parallel for the reverse leakage beyond −Is. Reverse breakdown is not modelled.
+// them), with GMIN_JUNCTION (1e-10 S, see device.ts) in parallel: reverse leakage beyond −Is, and a
+// well-conditioned floating node when the diode is the only thing holding one. Reverse breakdown is not modelled.
 
 interface DiodeParams {
   is: number;
@@ -91,7 +93,7 @@ function diodeDevice(env: DeviceEnv, p: Params, get: () => DiodeParams, led: boo
       }
       const nvt = dp.n * VT;
       vd = pnjlim(c, volt(c.x, m) - volt(c.x, k), vd, nvt, vcrit(nvt, dp.is));
-      const g = GMIN + c.gmin;
+      const g = GMIN_JUNCTION + c.gmin;
       const id = dp.is * (safeExp(vd / nvt) - 1) + g * vd;
       const gd = (dp.is * safeExpD(vd / nvt)) / nvt + g;
       conductance(c, m, k, gd);

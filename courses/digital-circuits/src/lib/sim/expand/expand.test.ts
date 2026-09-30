@@ -12,6 +12,12 @@ import type { Engine } from '../engine';
 import { GATE_TYPES, cellFor, conducts, gateTransistors, transistorsOf, type GateType } from './cells';
 import { canExpand, cellCircuit, expandCheck, expandToAnalog, expandToSwitch, ANALOG } from './expand';
 
+/**
+ * These tests settle 30 ns in one advance() call. The engine resolves each edge's picosecond
+ * transient, which takes more than the per-call cap a UI frame uses, so lift the caps here.
+ */
+const SETTLE = { maxStepsPerAdvance: 100_000, maxWorkPerAdvance: 1e12 };
+
 /** A bench for one gate: a toggle per input pin, the gate, an indicator "Y" on its output. */
 function gateBench(type: GateType, inputs: number): Circuit {
   const def = getDef(type)!;
@@ -233,7 +239,7 @@ describe('analog level matches the digital gates', () => {
         const bench = gateBench(type, n);
         const digital = createDigitalEngine(flatten(bench));
         const exp = expandToAnalog(bench);
-        const an = createAnalogEngine(exp.netlist());
+        const an = createAnalogEngine(exp.netlist(), SETTLE);
         const dOut = topLevelNets(bench).pinNet.get('Y.A')!;
         const aOut = topLevelNets(exp.circuit).pinNet.get('Y.A')!;
         const names = inputNames(type, n);
@@ -254,7 +260,7 @@ describe('analog level matches the digital gates', () => {
 
   test('tristate: follows A while EN', () => {
     const exp = expandToAnalog(gateBench('tristate', 1));
-    const an = createAnalogEngine(exp.netlist());
+    const an = createAnalogEngine(exp.netlist(), SETTLE);
     const out = topLevelNets(exp.circuit).pinNet.get('Y.A')!;
     for (const a of [0, 1]) {
       drive(an, ['A', 'EN'], [a, 1]);
@@ -339,7 +345,7 @@ const mux: Circuit = {
 function truth(c: Circuit, inputs: string[], out: string, level: 'digital' | 'switch' | 'analog'): number[] {
   const results: number[] = [];
   const x = level === 'switch' ? expandToSwitch(c) : level === 'analog' ? expandToAnalog(c) : undefined;
-  const e: Engine = x ? (level === 'switch' ? createSwitchEngine(x.netlist()) : createAnalogEngine(x.netlist())) : createDigitalEngine(flatten(c));
+  const e: Engine = x ? (level === 'switch' ? createSwitchEngine(x.netlist()) : createAnalogEngine(x.netlist(), SETTLE)) : createDigitalEngine(flatten(c));
   const outNet = topLevelNets(x?.circuit ?? c).pinNet.get(`${out}.A`)!;
   for (const bits of combos(inputs.length)) {
     drive(e, inputs, bits);

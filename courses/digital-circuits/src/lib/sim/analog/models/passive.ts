@@ -28,7 +28,11 @@ import { registerAnalogModel } from './registry';
  *  - lamp: normalised filament temperature T (1 at the rated power, ambient T₀ = 0.1, about
  *    2700 K × T), resistance R = R_hot·T with R_hot = V_rated²/P_rated (so cold = R_hot/10), and a
  *    first-order thermal lag τ·dT/dt = (P/P_rated)(1 − T₀) − (T − T₀) with τ = 50 ms. At a steady
- *    voltage V, T² − 0.1·T = 0.9·(V/V_rated)². Brightness ((T − 0.3)/0.7)², clamped to 0–1.
+ *    voltage V, T² − 0.1·T = 0.9·(V/V_rated)². Brightness ((T − T_glow)/(T_rated − T_glow))^1.4,
+ *    clamped to 0–1, with T_glow = 0.32 (about 860 K: the first dull red) and T_rated = 1. Since
+ *    T = 0.1 + 0.9·P/P_rated at a steady state, the glow starts near 25 % of the rated power, is a
+ *    dull red around 35 % (brightness 0.07), half bright at 72 % of the power (0.52: a lamp at
+ *    85 % of its rated current) and full at 100 %.
  *    Burns (→ open) above T = 1.45, which a steady 1.47 × the rated voltage reaches.
  */
 
@@ -115,6 +119,7 @@ registerAnalogModel('capacitor', (env) => {
         return true;
       }
     },
+    reactives: () => (burned ? [] : [cap]),
     current: (pin, x) => (pin === 0 ? 1 : -1) * (burned ? CAP_SHORT * cap.voltage(x) : cap.current(x)),
     state: (x) => ({ burned, value: cap.voltage(x), charge: cap.C * cap.voltage(x) }),
     setParam(key, value) {
@@ -146,6 +151,7 @@ registerAnalogModel('inductor', (env) => {
     accept(c) {
       ind.accept(c.x);
     },
+    reactives: () => [ind],
     current: (pin, x) => (pin === 0 ? 1 : -1) * (x[k]! + v(x) / INDUCTOR_PARALLEL),
     state: (x) => ({ current: x[k]! }),
     setParam(key, value) {
@@ -194,6 +200,10 @@ const LAMP_T0 = 0.1;
 const LAMP_TAU = 0.05;
 const LAMP_BURN_T = 1.45;
 const LAMP_RATED_K = 2700;
+/** Normalised temperature where the filament starts to glow, and the exponent of the brightness curve. */
+const LAMP_T_GLOW = 0.32;
+const LAMP_T_RATED = 1;
+const LAMP_BRIGHTNESS_EXP = 1.4;
 
 registerAnalogModel('lamp', (env) => {
   const p = { ...env.element.params };
@@ -253,9 +263,9 @@ registerAnalogModel('lamp', (env) => {
     maxStep: () => (!burned && Math.abs(rate) > 0.1 ? 2e-3 : Infinity),
     current: (pin, x) => (pin === 0 ? 1 : -1) * g() * v(x),
     state(x) {
-      const u = Math.max(0, Math.min(1, (T - 0.3) / 0.7));
+      const u = Math.max(0, Math.min(1, (T - LAMP_T_GLOW) / (LAMP_T_RATED - LAMP_T_GLOW)));
       return {
-        brightness: burned ? 0 : u * u,
+        brightness: burned ? 0 : u ** LAMP_BRIGHTNESS_EXP,
         burned,
         temperature: T * LAMP_RATED_K,
         resistance: burned ? Infinity : Rhot() * T,

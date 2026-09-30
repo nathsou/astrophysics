@@ -1,6 +1,6 @@
 import type { ElementState, Engine, EngineMessage, EngineOptions, Recorder } from '../engine';
 import type { FlatElement, FlatNetlist, Logic, ParamValue } from '../netlist/types';
-import { GMIN, type AcceptContext, type AnalogDevice, type DeviceEnv, type Method, type StampContext } from './device';
+import { GMIN, CapacitorState, InductorState, type AcceptContext, type AnalogDevice, type DeviceEnv, type Method, type StampContext } from './device';
 import { DenseLU } from './lu';
 import { getAnalogModel } from './models';
 import { logicLevel } from './models/behavioural';
@@ -22,8 +22,10 @@ import { mulberry32 } from './rng';
  *    retried with a smaller one; otherwise the next step grows (at most ×4). The step never
  *    exceeds `options.step` (default 10 ms), a device's own limit (a warming lamp, a sine), or the
  *    distance to the next breakpoint (source edges, switch bounces, relay contact changes);
- *  - after every breakpoint or parameter change the step restarts at 1 ns (or less) and the first
- *    step uses backward Euler, as in SPICE, so the trapezoidal rule does not ring on the jump;
+ *  - after every breakpoint or parameter change the step restarts small and the first step uses
+ *    backward Euler, as in SPICE, so the trapezoidal rule does not ring on the jump. The restart
+ *    step is min(1 ns, 1e-3 × the fastest RC or L/R time constant estimated from the circuit as it
+ *    is now, 1/100 of the interval advance() was asked for), at least 1 fs (startStep());
  *  - `fixedStep: true` uses exactly `options.step` (default 1 µs) with the chosen method throughout,
  *    to show how the methods behave (Chapter 4).
  *
@@ -98,7 +100,13 @@ export interface AnalogEngine extends Engine {
 const DEFAULT_MAX_STEP = 1e-2;
 const DEFAULT_FIXED_STEP = 1e-6;
 const H_START = 1e-9;
-const H_MIN = 1e-14;
+/** The first step after a breakpoint is this fraction of the fastest time constant found (see startStep). */
+const START_TAU_FRACTION = 1e-3;
+/** … but not more than this fraction of the interval an advance() call asked for. */
+const START_DT_FRACTION = 1e-2;
+/** Step used to assemble the matrix when estimating time constants (any small value: its companion conductances are subtracted). */
+const PROBE_H = 1e-9;
+const H_MIN = 1e-15;
 const MAX_GROW = 4;
 const SETTLE_H = 1e-12;
 const RELTOL = 1e-6;
@@ -151,6 +159,9 @@ class AnalogEngineImpl implements AnalogEngine {
   private readonly accepters: AnalogDevice[] = [];
   private readonly timed: AnalogDevice[] = [];
   private readonly limiters: AnalogDevice[] = [];
+  private readonly reactors: AnalogDevice[] = [];
+  /** The interval the current advance() call was asked for (s). */
+  private reqDt = Infinity;
   private readonly nonlinear: boolean;
   private readonly n: number;
   private readonly isCurrent: Uint8Array;
@@ -255,6 +266,7 @@ class AnalogEngineImpl implements AnalogEngine {
       if (dev.accept) this.accepters.push(dev);
       if (dev.breakpoint) this.timed.push(dev);
       if (dev.maxStep) this.limiters.push(dev);
+      if (dev.reactives) this.reactors.push(dev);
     }
     creating = false;
     this.nonlinear = this.devices.some((d) => d.nonlinear);
@@ -403,6 +415,60 @@ class AnalogEngineImpl implements AnalogEngine {
     return worst;
   }
 
+  /**
+   * The first step after a breakpoint: min(1 ns, 1e-3 × the fastest time constant, requested dt / 100),
+   * never below 1 fs. Time constants are estimated from the circuit as it is now (a switch that has
+   * just closed counts): the matrix is assembled once with a probe step, and each capacitor gets
+   * τ = C / G, where G is the largest conductance at its terminals not counting the capacitors
+   * themselves (a lower bound of the true τ, so the step errs on the small side); each inductor
+   * (or relay coil) L / (R + 1 / G). Parts that do not list their reactive elements are ignored.
+   */
+  private startStep(): number {
+    let h = H_START;
+    if (this.reqDt < Infinity) h = Math.min(h, START_DT_FRACTION * this.reqDt);
+    if (this.reactors.length > 0 && this.n > 0) {
+      const tau = this.fastestTimeConstant();
+      if (tau < Infinity) h = Math.min(h, START_TAU_FRACTION * tau);
+    }
+    return Math.max(h, H_MIN);
+  }
+
+  private fastestTimeConstant(): number {
+    const { n, A, b, ctx } = this;
+    this.x.set(this.xAcc);
+    ctx.t = this.t;
+    ctx.h = PROBE_H;
+    ctx.method = 'euler';
+    ctx.gmin = 0;
+    ctx.limited = false;
+    A.fill(0);
+    b.fill(0);
+    for (const d of this.devices) d.stamp(ctx);
+    // Conductance at each node, minus the companion conductances of the listed capacitors.
+    const g = (i: number): number => (i >= 0 ? A[i * n + i]! : 0);
+    const own = new Map<number, number>();
+    const parts: (CapacitorState | InductorState)[] = [];
+    for (const d of this.reactors) {
+      for (const r of d.reactives!()) {
+        parts.push(r);
+        if (r instanceof CapacitorState) {
+          if (r.a >= 0) own.set(r.a, (own.get(r.a) ?? 0) + r.g);
+          if (r.b >= 0) own.set(r.b, (own.get(r.b) ?? 0) + r.g);
+        }
+      }
+    }
+    const free = (i: number): number => (i >= 0 ? Math.max(0, g(i) - (own.get(i) ?? 0)) : 0);
+    let tau = Infinity;
+    for (const r of parts) {
+      const G = Math.max(free(r.a), free(r.b));
+      if (!(G > 1e-9)) continue;
+      if (r instanceof CapacitorState) {
+        if (r.C > 0) tau = Math.min(tau, r.C / G);
+      } else if (r.L > 0) tau = Math.min(tau, r.L / (r.R + 1 / G));
+    }
+    return tau;
+  }
+
   private hmin(): number {
     return Math.max(H_MIN, Math.abs(this.t) * 1e-12);
   }
@@ -413,7 +479,7 @@ class AnalogEngineImpl implements AnalogEngine {
     if (this.breakPending) {
       this.breakPending = false;
       this.sinceBreak = 0;
-      this.hNext = Math.min(H_START, this.hmax);
+      this.hNext = Math.min(this.startStep(), this.hmax);
     }
     const hmin = this.hmin();
     let h: number;
@@ -511,6 +577,7 @@ class AnalogEngineImpl implements AnalogEngine {
 
   advance(dt: number): void {
     if (!(dt > 0)) return;
+    this.reqDt = dt;
     const start = this.t;
     let steps = 0;
     this.lagging = false;
