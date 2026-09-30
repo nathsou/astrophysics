@@ -751,6 +751,11 @@
   }
   .time {
     margin-left: auto;
+    /* A fixed width, so the readout does not move as the digits and the unit (µs, ms, s) change. */
+    display: inline-block;
+    min-width: 12ch;
+    text-align: left;
+    white-space: nowrap;
     font-family: var(--font-mono);
     font-size: 0.74rem;
     color: var(--mute);

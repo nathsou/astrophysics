@@ -50,7 +50,6 @@
       {#each appendices as a (a.slug)}{@render item(`appendix:${a.slug}`)}{/each}
     </ul>
   </section>
-  <p class="legend" aria-hidden="true"><span class="pad on"></span> ready <span class="pad"></span> planned</p>
 </nav>
 
 <style>
@@ -191,28 +190,6 @@
     color: var(--fg);
     border-left-color: var(--sig-high);
     font-weight: 600;
-  }
-  .legend {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    margin: 1.75rem 0 0 0.3rem;
-    font-family: var(--font-mono);
-    font-size: 0.66rem;
-    letter-spacing: 0.04em;
-    color: var(--mute);
-  }
-  .legend .pad {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    border: 1.5px dashed var(--sig-z);
-  }
-  .legend .pad.on {
-    border: 1.5px solid var(--copper);
-  }
-  .legend .pad:not(.on) {
-    margin-left: 0.6rem;
   }
   .scrim {
     display: none;

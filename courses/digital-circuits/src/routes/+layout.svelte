@@ -15,7 +15,10 @@
   // The landing page has its own full contents list, so it drops the sidebar.
   const home = $derived(page.url.pathname.replace(/\/$/, '') === base);
 
-  onMount(() => theme.init());
+  onMount(() => {
+    theme.init();
+    nav.init();
+  });
   afterNavigate(() => (nav.sidebarOpen = false));
 </script>
 
@@ -64,13 +67,16 @@
       grid-template-columns: minmax(0, 1fr);
     }
   }
-  /* Landing page: no sidebar on wide screens. */
+  /* Landing page: no sidebar on wide screens. A reader can also fold the sidebar away (state on <html>, set before first paint). */
   @media (min-width: 1100px) {
-    .shell.home {
+    .shell.home,
+    :global(:root[data-sidebar='collapsed']) .shell {
       grid-template-columns: minmax(0, 1fr);
     }
     .shell.home :global(.sidebar),
-    .shell.home :global(.scrim) {
+    .shell.home :global(.scrim),
+    :global(:root[data-sidebar='collapsed']) .shell :global(.sidebar),
+    :global(:root[data-sidebar='collapsed']) .shell :global(.scrim) {
       display: none;
     }
   }

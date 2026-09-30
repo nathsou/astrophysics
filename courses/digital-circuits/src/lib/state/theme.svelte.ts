@@ -4,6 +4,8 @@
  */
 
 export type ThemeChoice = 'system' | 'light' | 'dark';
+/** The page colour in the light theme: the warm default, or plain white. */
+export type PaperChoice = 'default' | 'white';
 
 function read(): ThemeChoice {
   try {
@@ -14,13 +16,23 @@ function read(): ThemeChoice {
   }
 }
 
+function readPaper(): PaperChoice {
+  try {
+    return localStorage.getItem('paper') === 'white' ? 'white' : 'default';
+  } catch {
+    return 'default';
+  }
+}
+
 class Theme {
   choice: ThemeChoice = $state('system');
+  paper: PaperChoice = $state('default');
   /** The theme actually shown (resolves `system`). */
   resolved: 'light' | 'dark' = $state('light');
 
   init(): void {
     this.choice = read();
+    this.paper = readPaper();
     const mq = matchMedia('(prefers-color-scheme: dark)');
     const update = () => {
       this.resolved = this.choice === 'system' ? (mq.matches ? 'dark' : 'light') : this.choice;
@@ -29,6 +41,11 @@ class Theme {
     update();
     // Another tab (or another course) changed the shared preference.
     addEventListener('storage', (e: StorageEvent) => {
+      if (e.key === 'paper') {
+        this.paper = readPaper();
+        this.applyPaper();
+        return;
+      }
       if (e.key !== 'theme') return;
       this.choice = read();
       if (this.choice === 'system') delete document.documentElement.dataset.theme;
@@ -48,6 +65,22 @@ class Theme {
     if (choice === 'system') delete document.documentElement.dataset.theme;
     else document.documentElement.dataset.theme = choice;
     this.resolved = choice === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : choice;
+  }
+
+  setPaper(paper: PaperChoice): void {
+    this.paper = paper;
+    try {
+      if (paper === 'white') localStorage.setItem('paper', 'white');
+      else localStorage.removeItem('paper');
+    } catch {
+      /* storage unavailable: the choice still applies for this page view */
+    }
+    this.applyPaper();
+  }
+
+  private applyPaper(): void {
+    if (this.paper === 'white') document.documentElement.dataset.paper = 'white';
+    else delete document.documentElement.dataset.paper;
   }
 
   cycle(): void {
