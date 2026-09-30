@@ -39,11 +39,6 @@ export function cutawayNetlist(): FlatNetlist {
   add('D1', 'led', { A: 'ledno', K: 'gnd' }, { color: 'green' });
   add('R2', 'resistor', { '1': 'nc', '2': 'lednc' }, { resistance: 150 });
   add('D2', 'led', { A: 'lednc', K: 'gnd' }, { color: 'red' });
-  // Workaround for the analog engine: while the armature is in flight both contacts are open and both
-  // LEDs float, and the solver then stalls in tiny steps. A 10 MΩ bleeder across each LED (0.4 µA at
-  // 4 V, invisible) keeps every node anchored.
-  add('RB1', 'resistor', { '1': 'ledno', '2': 'gnd' }, { resistance: 1e7 });
-  add('RB2', 'resistor', { '1': 'lednc', '2': 'gnd' }, { resistance: 1e7 });
   const netNames: (string | undefined)[] = [];
   for (const [k, v] of names) netNames[v] = k;
   return { netCount: names.size, netNames, elements, ground: 0 };

@@ -57,4 +57,31 @@ describe('the relay cutaway circuit', () => {
     }
     expect(Math.abs(closedAt - armAt)).toBeLessThan(2e-4);
   });
+
+  test('no bleeder resistors: while the armature is in flight both LEDs float, and the solver copes', () => {
+    // (The netlist once had a 10 MΩ resistor across each LED to keep the solver from stalling; the engine no longer needs them.)
+    const nl = cutawayNetlist();
+    expect(nl.elements.filter((x) => x.type === 'resistor').map((x) => x.id)).toEqual(['R1', 'R2']);
+    const e = createAnalogEngine(nl);
+    /** Advance in frame-sized pieces, as the figure does; every piece must reach its target time. */
+    const frames = (dt: number, n: number) => {
+      for (let i = 0; i < n; i++) {
+        const t = e.time;
+        e.advance(dt);
+        expect(e.time - t).toBeCloseTo(dt, 9);
+      }
+    };
+    frames(1e-3, 20);
+    for (const v of [5, 0, 5, 0]) {
+      e.setParam('S', 'voltage', v);
+      frames(1e-4, 300);
+    }
+    // Nothing failed, and the solver did not fall into tiny steps.
+    expect(e.stats.failures).toBe(0);
+    expect(e.stats.steps).toBeLessThan(5000);
+    expect(e.messages.filter((m) => m.level !== 'info')).toEqual([]);
+    frames(1e-3, 50);
+    expect(e.state('D2').brightness as number).toBeGreaterThan(0.3);
+    expect(e.state('D1').brightness as number).toBeLessThan(0.01);
+  });
 });

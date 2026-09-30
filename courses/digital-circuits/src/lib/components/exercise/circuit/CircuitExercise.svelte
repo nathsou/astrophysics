@@ -16,11 +16,11 @@
   import { PARTS, getPart } from '$lib/partsbin/parts';
   import { getDef, allDefs, withDefaults } from '$lib/sim/netlist/catalog';
   import type { Circuit } from '$lib/sim/netlist/types';
-  import { CircuitBench, findClock } from '$lib/sim/check';
+  import { CircuitBench } from '$lib/sim/check';
   import { isCircuit } from '$lib/partsbin/store-core';
   import { EditorState } from './editor.svelte';
   import BuildCanvas from './BuildCanvas.svelte';
-  import { allowedTypes, golfScore, runCheck, startCircuit, tableFor, type BuildInput, type Outcome } from './spec';
+  import { allowedTypes, exerciseClock, golfScore, runCheck, startCircuit, tableFor, type BuildInput, type Outcome } from './spec';
 
   let { spec, kind }: { spec: BuildInput; kind: 'Build' | 'Debug' | 'Golf' } = $props();
 
@@ -170,7 +170,8 @@
     bench.settle();
     tick++;
   }
-  const clockName = $derived(bench ? findClock(bench.inputs) : undefined);
+  const specClock = $derived(exerciseClock(spec, parts));
+  const clockName = $derived(bench && specClock && bench.hasInput(specClock) ? specClock : undefined);
   function pulse() {
     if (!bench || !clockName) return;
     bench.set(clockName, 1);

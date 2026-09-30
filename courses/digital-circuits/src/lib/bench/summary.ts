@@ -6,6 +6,7 @@
 import type { Engine } from '../sim/engine';
 import type { Circuit, Connectivity } from '../sim/netlist/types';
 import { formatReadout, logicChar } from './format';
+import { AMMETER_FLOOR, VOLTMETER_FLOOR, floored } from '../sim/analog/meter-floors';
 
 const OUTPUTS = new Set(['indicator', 'probe', 'led', 'lamp', 'hex-display', 'seven-seg', 'voltmeter', 'ammeter']);
 
@@ -44,12 +45,20 @@ export function describeOutputs(circuit: Circuit, conn: Connectivity, engine: En
       case 'seven-seg':
         text = s.segments !== undefined ? `segments ${Number(s.segments).toString(2).padStart(8, '0')}` : undefined;
         break;
-      case 'voltmeter':
-        text = pin('+') >= 0 && pin('-') >= 0 ? formatReadout(engine.voltage(pin('+')) - engine.voltage(pin('-')), 'V') : undefined;
+      // A meter announces what it displays (see symbols/Meters.svelte): its state's `value`, which is zero below the noise floor (1 µV, 1 nA),
+      // not the solver's leakage ("3.9 pA" on an open circuit). An engine without that state gets the same floors here.
+      case 'voltmeter': {
+        const shown = Number(s.value ?? s.reading);
+        const v = Number.isFinite(shown) ? shown : pin('+') >= 0 && pin('-') >= 0 ? floored(engine.voltage(pin('+')) - engine.voltage(pin('-')), VOLTMETER_FLOOR) : undefined;
+        text = v === undefined ? undefined : formatReadout(v, 'V');
         break;
-      case 'ammeter':
-        text = formatReadout(engine.current(c.id, 0), 'A');
+      }
+      case 'ammeter': {
+        const shown = Number(s.value ?? s.reading);
+        const i = Number.isFinite(shown) ? shown : floored(engine.current(c.id, 0), AMMETER_FLOOR);
+        text = formatReadout(i, 'A');
         break;
+      }
     }
     if (text) parts.push(`${name}: ${text}`);
   }

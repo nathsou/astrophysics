@@ -16,6 +16,11 @@
   voltage, and a timing strip shows the switching delay. The reader's switch settings travel with them
   from level to level. Levels the circuit cannot reach (a part with no transistor version, or more
   transistors than the level can show) are disabled, with the reason as their tooltip. See ./dial.ts.
+
+  Engine options: `delayModel="transport"` (digital circuits: pass pulses shorter than a gate's delay, instead of
+  the default "inertial", which swallows them) and `seed=3` (the seed of the random power-up state of gate loops
+  and of metastability), e.g. `::circuit{src="…" delayModel="transport" seed=3}`. They are merged with the options
+  of the abstraction level (see ./options.ts): `seed` reaches every engine, `delayModel` only the digital one.
 -->
 <script lang="ts">
   import { onMount, untrack } from 'svelte';
@@ -32,6 +37,7 @@
   import type { SubResolver } from '../sim/netlist/connect';
   import { topLevelNets } from '../sim/netlist/flatten';
   import { createEngine } from './engines';
+  import { engineOptions } from './options';
   import { resolveTraces } from './traces';
   import { formatSI, formatSpeed } from './format';
   import { describeOutputs } from './summary';
@@ -79,6 +85,8 @@
     parts = defaultParts,
     dial,
     level: initialLevel,
+    delayModel,
+    seed,
   }: {
     /** Path of a circuit JSON relative to content/chapters/, e.g. "06-shannons-switches/circuits/staircase.json". */
     src?: string;
@@ -110,6 +118,10 @@
     dial?: boolean | string;
     /** Level to start at: "logic", "switch" or "analog" (default: logic). */
     level?: string;
+    /** Digital engine: "inertial" (default; a pulse shorter than a gate's delay is swallowed) or "transport" (it passes). */
+    delayModel?: 'inertial' | 'transport';
+    /** Seed for the random power-up state of gate loops and for metastability (a fixed default: figures are reproducible). */
+    seed?: number;
   } = $props();
 
   const files = import.meta.glob<Circuit>('/content/chapters/*/circuits/*.json', { import: 'default' });
@@ -237,7 +249,9 @@
     if (!dialOn) status = '';
     try {
       const flat = a.netlist();
-      createEngine(a.kind, flat, a.options as EngineOptions).then(
+      const opts = engineOptions(a.kind, a.options, { delayModel, seed });
+      if (opts.error) engineError = opts.error;
+      createEngine(a.kind, flat, opts.options as EngineOptions).then(
         (e) => {
           if (cancelled) return;
           made = e;

@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { CircuitBuilder } from '../../partsbin/builder';
-import { checkCombinational, checkSequential, checkWaveform, checkMeasurement, costOf, parseTruthTable, compileComb, valueAt, edges, dutyCycle } from './index';
+import { CircuitBench, DEFAULT_CLOCK, findClock, seqClock, checkCombinational, checkSequential, checkWaveform, checkMeasurement, costOf, parseTruthTable, compileComb, valueAt, edges, dutyCycle } from './index';
 import { flatten } from '../netlist/flatten';
 import { connect } from '../netlist/connect';
 
@@ -167,6 +167,60 @@ describe('sequential checker', () => {
   });
   test('missing clock is reported', () => {
     expect(checkSequential(halfAdder(), { reference: dffFrom('dff') }).problems.join()).toMatch(/no input called/);
+  });
+});
+
+/** A D flip-flop whose data input is called `data` and whose clock port is called `clk`; D takes `data` (or its inverse). */
+function ffNamed(data: string, clk: string, invert = false) {
+  const b = new CircuitBuilder('ff');
+  b.input(data);
+  b.input(clk);
+  const d = invert ? b.gate('not', [data], 'nd') : data;
+  b.comp('dff', { D: d, CLK: clk, Q: 'Q' });
+  b.output('Q');
+  return b.build();
+}
+
+describe('clock detection', () => {
+  test('a clock is the input wired to a clock pin, whatever it is called', () => {
+    for (const clk of ['CLK', 'Clock', 'phi', 'C']) expect(new CircuitBench(ffNamed('D', clk)).clockInputs).toEqual([clk]);
+    expect(findClock(new CircuitBench(ffNamed('D', 'phi')))).toBe('phi');
+  });
+  test('an input called C or CLK that reaches no clock pin is data', () => {
+    const ha = new CircuitBench(halfAdder());
+    expect(ha.clockInputs).toEqual([]);
+    const b = new CircuitBuilder('and3');
+    for (const n of ['A', 'B', 'C', 'CLK']) b.input(n);
+    b.gate('and', ['A', 'B', 'C'], 'Y');
+    b.output('Y');
+    const bench = new CircuitBench(b.build());
+    expect(bench.inputs).toEqual(['A', 'B', 'C', 'CLK']);
+    expect(findClock(bench)).toBeUndefined();
+  });
+  test('the spec says when it differs: an explicit name, or false for level-sensitive', () => {
+    const bench = new CircuitBench(ffNamed('D', 'CLK'));
+    expect(findClock(bench, 'D')).toBe('D');
+    expect(findClock(bench, false)).toBeUndefined();
+    expect(seqClock({ reference: ffNamed('D', 'phi') })).toBe('phi');
+    expect(seqClock({ reference: ffNamed('D', 'phi'), clock: 'D' })).toBe('D');
+    expect(seqClock({ reference: ffNamed('D', 'phi'), clock: false })).toBeUndefined();
+    expect(seqClock({ fsm: { inputs: ['T'], outputs: ['Q'], initial: 'a', states: { a: { out: '0', next: { '-': 'a' } } } } })).toBe(DEFAULT_CLOCK);
+    expect(seqClock({ reference: halfAdder() })).toBeUndefined();
+  });
+  test('a sequential circuit may have a data input called C, and a clock with another name', () => {
+    const ref = ffNamed('C', 'phi');
+    const good = checkSequential(ffNamed('C', 'phi'), { reference: ref });
+    expect(good.problems).toEqual([]);
+    expect(good.pass).toBe(true);
+    const bad = checkSequential(ffNamed('C', 'phi', true), { reference: ref });
+    expect(bad.pass).toBe(false);
+    // C is stimulus (it varies in the counterexample), the clock is not.
+    expect(Object.keys(bad.counterexample!.sequence[0]!)).toEqual(['C']);
+  });
+  test('the circuit must use the clock name of the specification', () => {
+    const r = checkSequential(ffNamed('D', 'CLK'), { reference: ffNamed('D', 'phi') });
+    expect(r.pass).toBe(false);
+    expect(r.problems.join()).toMatch(/clock input \(call it phi\)/);
   });
 });
 

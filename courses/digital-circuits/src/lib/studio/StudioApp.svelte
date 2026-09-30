@@ -53,6 +53,19 @@
     if (chipTab === 'jtag' && !showJtag) chipTab = 'chip';
   });
 
+  const uid = $props.id();
+  /** Arrow keys, Home and End move between the Chip and JTAG tabs, as in any tablist. */
+  function miniKey(ev: KeyboardEvent) {
+    const order = ['chip', 'jtag'] as const;
+    const i = order.indexOf(chipTab);
+    const step = ['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp'].includes(ev.key); // two tabs: any arrow moves to the other
+    const next = step ? order[1 - i] : ev.key === 'Home' ? order[0] : ev.key === 'End' ? order[1] : null;
+    if (!next) return;
+    ev.preventDefault();
+    chipTab = next;
+    (ev.currentTarget as HTMLElement).querySelector<HTMLElement>(`#${CSS.escape(`${uid}-${next}`)}`)?.focus();
+  }
+
   const tabs = $derived(
     [
       want('source') && { id: 'source', label: 'Source' },
@@ -180,17 +193,19 @@
     {#if want('chip')}
       <div class="col mid">
         <section class="pane chip" class:active={active === 'chip'} aria-label="Chip view">
-          <header class="ph ui">
+          <!-- The header is hidden in the one-pane-at-a-time layout, except when it carries the Chip/JTAG tabs. -->
+          <header class="ph ui" class:has-tabs={showJtag}>
             {#if showJtag}
-              <div class="mini" role="tablist" aria-label="Chip or JTAG">
-                <button type="button" role="tab" aria-selected={chipTab === 'chip'} class:on={chipTab === 'chip'} onclick={() => (chipTab = 'chip')}>Chip</button>
-                <button type="button" role="tab" aria-selected={chipTab === 'jtag'} class:on={chipTab === 'jtag'} onclick={() => (chipTab = 'jtag')}>JTAG</button>
+              <!-- svelte-ignore a11y_interactive_supports_focus -->
+              <div class="mini" role="tablist" aria-label="Chip or JTAG" onkeydown={miniKey}>
+                <button type="button" role="tab" id="{uid}-chip" aria-selected={chipTab === 'chip'} aria-controls="{uid}-panel" tabindex={chipTab === 'chip' ? 0 : -1} class:on={chipTab === 'chip'} onclick={() => (chipTab = 'chip')}>Chip</button>
+                <button type="button" role="tab" id="{uid}-jtag" aria-selected={chipTab === 'jtag'} aria-controls="{uid}-panel" tabindex={chipTab === 'jtag' ? 0 : -1} class:on={chipTab === 'jtag'} onclick={() => (chipTab = 'jtag')}>JTAG</button>
               </div>
             {:else}<h4>Chip</h4>{/if}
             <span>{fit?.title ?? ''}</span>
           </header>
           {#if chipTab === 'chip'}<RunBar {studio} {compact} />{/if}
-          <div class="pb">
+          <div class="pb" id="{uid}-panel" role={showJtag ? 'tabpanel' : undefined} aria-labelledby={showJtag ? `${uid}-${chipTab}` : undefined}>
             {#if chipTab === 'jtag' && showJtag}
               {#await import('./panes/JtagPanel.svelte') then m}
                 <m.default {studio} />

@@ -182,14 +182,30 @@ export interface ResetSpec {
   cycles?: number;
 }
 
-const CLOCK_NAMES = ['clk', 'ck', 'clock', 'c'];
+/** The clock pin of an fsm table or a code model (they have no circuit to look at): `spec.clock` says otherwise. */
+export const DEFAULT_CLOCK = 'CLK';
 
-export function findClock(names: string[]): string | undefined {
-  for (const c of CLOCK_NAMES) {
-    const hit = names.find((n) => n.toLowerCase() === c);
-    if (hit) return hit;
-  }
-  return undefined;
+/**
+ * The input a circuit is clocked by. Never decided by its name: `explicit` (a spec's `clock`) wins, `false`
+ * means level-sensitive (latches), and otherwise it is the input wired to the clock pin of a component.
+ * Returns undefined when nothing is clocked. (A bare input called `C` or `CLK` that reaches no clock pin is data.)
+ */
+export function findClock(bench: Pick<CircuitBench, 'inputs' | 'clockInputs'>, explicit?: string | false): string | undefined {
+  if (explicit === false) return undefined;
+  if (typeof explicit === 'string') return explicit;
+  return bench.clockInputs[0];
+}
+
+/**
+ * The clock input a checked circuit must have, from the specification (not from the reader's circuit, which
+ * may be half-built): `spec.clock`, else `CLK` for an fsm table or a model, else the input of the reference
+ * circuit that drives a clock pin. Undefined for level-sensitive specifications.
+ */
+export function seqClock(spec: Pick<SeqSpec, 'clock' | 'fsm' | 'model' | 'reference'>, parts?: SubResolver): string | undefined {
+  if (spec.clock === false) return undefined;
+  if (typeof spec.clock === 'string') return spec.clock;
+  if (!spec.fsm && !spec.model && spec.reference) return findClock(new CircuitBench(spec.reference, { parts }));
+  return DEFAULT_CLOCK;
 }
 
 export function normaliseReset(r: SeqSpec['reset']): ResetSpec | undefined {
@@ -290,7 +306,11 @@ export interface SeqSpec {
   bias?: Record<string, number>;
   /** Code only: shape the random cycles; return the inputs to override (e.g. keep RAM addresses in a small set). */
   stimulus?: (rand: () => number, cycle: number) => Record<string, number> | undefined;
-  /** The clock input: a name, `false` for a level-sensitive circuit (latches), default: CLK / CK / C if there is one. */
+  /**
+   * The clock input: its name, or `false` for a level-sensitive circuit (latches). Default: for a reference
+   * circuit, the input wired to a component's clock pin (never guessed from a name); for an fsm table or a
+   * model, `CLK`.
+   */
   clock?: string | false;
   /** Pin that resets the circuit before checking (pulsed for a few cycles). */
   reset?: string | ResetSpec | false;
@@ -337,30 +357,31 @@ export function checkSequential(circuit: Circuit, spec: SeqSpec, options: { part
   let cand: CircuitMachine;
   let stimulus: string[];
   let resetPin: string | undefined;
+  let clock: string | undefined;
   try {
     const reset = normaliseReset(spec.reset);
     if (spec.fsm) {
       const fsm = new FsmMachine(spec.fsm);
       ref = fsm;
       stimulus = fsm.inputs;
+      clock = seqClock(spec);
     } else if (spec.model) {
       const m = new ModelMachine(spec.model);
       ref = m;
       stimulus = m.inputs;
+      clock = seqClock(spec);
     } else if (spec.reference) {
       const probe = new CircuitBench(spec.reference, { parts });
-      const clock = spec.clock === false ? undefined : (spec.clock ?? findClock(probe.inputs));
+      clock = findClock(probe, spec.clock);
       if (probe.problems.length) return fail(`The reference circuit has problems: ${probe.problems.join('; ')}`);
       stimulus = probe.inputs.filter((n) => n !== clock);
       ref = new CircuitMachine(spec.reference, stimulus, probe.outputs, clock, reset, { parts, expectation: true });
     } else return fail('A sequential specification needs a reference circuit, an fsm table or a model.');
     const probe = new CircuitBench(circuit, { parts });
-    const clock = spec.clock === false ? undefined : (spec.clock ?? findClock(probe.inputs));
     const problems = [...probe.problems];
     for (const n of stimulus) if (!probe.hasInput(n)) problems.push(`The circuit has no input called ${n}.`);
     for (const n of ref.outputs) if (!probe.hasOutput(n)) problems.push(`The circuit has no output called ${n}.`);
-    if (spec.clock !== false && !clock) problems.push('The circuit has no clock input (call it CLK).');
-    else if (typeof spec.clock === 'string' && !probe.hasInput(spec.clock)) problems.push(`The circuit has no clock input called ${spec.clock}.`);
+    if (clock && !probe.hasInput(clock)) problems.push(`The circuit has no clock input (call it ${clock}).`);
     if (reset && !probe.hasInput(reset.pin)) problems.push(`The circuit has no reset input called ${reset.pin}.`);
     if (problems.length) return fail(...problems);
     resetPin = reset?.pin;

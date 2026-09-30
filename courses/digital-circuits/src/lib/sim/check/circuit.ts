@@ -14,6 +14,9 @@ import { createDigitalEngine } from '../digital';
 import { createSwitchEngine } from '../switch';
 import { createAnalogEngine } from '../analog';
 
+/** The pin name every clocked component of the catalog uses for its clock. */
+const CLOCK_PIN = 'CLK';
+
 export interface PinRef {
   name: string;
   kind: 'toggle' | 'button' | 'port' | 'indicator' | 'probe';
@@ -98,6 +101,12 @@ export interface BenchOptions {
 /** A circuit on the digital engine with named inputs and outputs. */
 export class CircuitBench {
   readonly inputs: string[];
+  /**
+   * Inputs that drive the clock pin (`CLK`) of a component (flip-flop, counter, register, memory…), whatever
+   * they are called, in reading order. A name never makes an input a clock: an input called `C` or `CLK`
+   * that reaches no clock pin is data.
+   */
+  readonly clockInputs: string[];
   readonly outputs: string[];
   readonly problems: string[];
   readonly engine: Engine;
@@ -120,6 +129,9 @@ export class CircuitBench {
     }
     for (const p of found.outputs) this.outNets.set(p.name, p.net);
     this.inputs = found.inputs.map((p) => p.name);
+    const clockNets = new Set<number>();
+    for (const e of flat.elements) e.pinNames.forEach((n, i) => n === CLOCK_PIN && clockNets.add(e.pins[i]!));
+    this.clockInputs = found.inputs.filter((p) => clockNets.has(p.net)).map((p) => p.name);
     this.outputs = found.outputs.map((p) => p.name);
     const netlist = { ...flat, elements: [...flat.elements, ...extra] };
     this.kind = options.engine ?? circuit.engine ?? 'digital';

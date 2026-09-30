@@ -14,8 +14,10 @@
   import { CW, RH, cpldGeom, cpldHit, type CpldHit, type FbGeom } from './cpld-geometry';
   import PanZoom from './PanZoom.svelte';
 
-  let { fit, probe, hover, run, onselect, onhover, title }: ChipProps<CpldDeviceFit> = $props();
+  let { fit, probe, hover, run, onselect, onhover, title, compact = false }: ChipProps<CpldDeviceFit> = $props();
 
+  /** In a chapter's narrow pane the whole chip is a thumbnail (about 0.36 at 900 px); below this it opens on block 0 instead. */
+  const COMPACT_MIN_FIT = 0.5;
   const chip = $derived(fit.chip);
   const g = cpldGeom();
   const uid = $props.id();
@@ -184,11 +186,14 @@
     const n = h.source < 32 ? chip.ioNames[h.source] : chip.mcNames[h.source - 32];
     onselect?.(n ? { kind: 'signal', name: n } : null);
   }
-  function focusFb(fb: number) {
+  function fbRect(fb: number) {
     const f = g.fbs[fb]!;
     const x0 = Math.min(f.padX, f.arrX0);
     const x1 = Math.max(f.padX + f.padW, f.arrX1);
-    pz?.focus({ x: x0 - 16, y: f.arrY0 - 46, w: x1 - x0 + 32, h: f.arrY1 - f.arrY0 + 120 });
+    return { x: x0 - 16, y: f.arrY0 - 46, w: x1 - x0 + 32, h: f.arrY1 - f.arrY0 + 120 };
+  }
+  function focusFb(fb: number) {
+    pz?.focus(fbRect(fb));
   }
   function focusGim() {
     pz?.focus({ x: g.band.x0, y: g.band.y0 - 40, w: g.band.x1 - g.band.x0, h: g.band.y1 - g.band.y0 + 80 });
@@ -376,7 +381,7 @@
 {/snippet}
 
 <div class="die screen" bind:this={box} ondblclick={dbl} role="presentation">
-  <PanZoom bind:this={pz} width={g.W} height={g.H} label="vCPLD-32 chip: function blocks, interconnect matrix and pads" ondown={click} onpoint={pointerAt} onkey={key} onfocuschange={(f) => (focused = f)}>
+  <PanZoom bind:this={pz} width={g.W} height={g.H} home={compact ? fbRect(0) : undefined} minFit={COMPACT_MIN_FIT} wheel={compact ? 'modifier' : 'always'} label="vCPLD-32 chip: function blocks, interconnect matrix and pads" ondown={click} onpoint={pointerAt} onkey={key} onfocuschange={(f) => (focused = f)}>
     {#snippet children({ k })}
       {@render art(k)}
     {/snippet}

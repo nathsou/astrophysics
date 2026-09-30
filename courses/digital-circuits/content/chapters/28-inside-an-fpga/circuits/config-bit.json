@@ -1,0 +1,400 @@
+{
+ "version": 1,
+ "title": "A configuration bit is a switch",
+ "engine": "switch",
+ "components": [
+  {
+   "id": "PB",
+   "type": "pmos",
+   "x": 10,
+   "y": 4,
+   "label": "",
+   "params": {
+    "strength": "weak"
+   }
+  },
+  {
+   "id": "NB",
+   "type": "nmos",
+   "x": 10,
+   "y": 12,
+   "label": "",
+   "params": {
+    "strength": "strong"
+   }
+  },
+  {
+   "id": "PA",
+   "type": "pmos",
+   "x": 26,
+   "y": 4,
+   "label": "",
+   "params": {
+    "strength": "weak"
+   }
+  },
+  {
+   "id": "NA",
+   "type": "nmos",
+   "x": 26,
+   "y": 12,
+   "label": "",
+   "params": {
+    "strength": "strong"
+   }
+  },
+  {
+   "id": "V0",
+   "type": "rail",
+   "x": 13,
+   "y": 2
+  },
+  {
+   "id": "V1",
+   "type": "rail",
+   "x": 29,
+   "y": 2
+  },
+  {
+   "id": "G0",
+   "type": "ground",
+   "x": 13,
+   "y": 14
+  },
+  {
+   "id": "G1",
+   "type": "ground",
+   "x": 29,
+   "y": 14
+  },
+  {
+   "id": "AX1",
+   "type": "nmos",
+   "x": 17,
+   "y": 13,
+   "label": "",
+   "params": {
+    "strength": "normal"
+   }
+  },
+  {
+   "id": "AX2",
+   "type": "nmos",
+   "x": 17,
+   "y": 1,
+   "label": "",
+   "params": {
+    "strength": "normal"
+   }
+  },
+  {
+   "id": "WL",
+   "type": "toggle",
+   "x": 6,
+   "y": -3,
+   "label": "Word line"
+  },
+  {
+   "id": "BLB",
+   "type": "toggle",
+   "x": 12,
+   "y": -6,
+   "label": "Bit line B"
+  },
+  {
+   "id": "BL",
+   "type": "toggle",
+   "x": 12,
+   "y": 20,
+   "label": "Bit line"
+  },
+  {
+   "id": "PT",
+   "type": "nmos",
+   "x": 36,
+   "y": 9,
+   "label": "pass",
+   "params": {
+    "strength": "normal"
+   }
+  },
+  {
+   "id": "IN",
+   "type": "toggle",
+   "x": 47,
+   "y": 3,
+   "flip": true,
+   "label": "Signal in",
+   "params": {
+    "on": true
+   }
+  },
+  {
+   "id": "OUT",
+   "type": "probe",
+   "x": 42,
+   "y": 14,
+   "label": "Signal out",
+   "params": {
+    "name": "OUT"
+   }
+  },
+  {
+   "id": "R1",
+   "type": "resistor",
+   "x": 39,
+   "y": 14,
+   "rot": 90,
+   "label": "pull-down",
+   "params": {
+    "resistance": 100000
+   }
+  },
+  {
+   "id": "G2",
+   "type": "ground",
+   "x": 39,
+   "y": 18
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     10,
+     4
+    ],
+    [
+     10,
+     12
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     26,
+     4
+    ],
+    [
+     26,
+     12
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     13,
+     6
+    ],
+    [
+     13,
+     10
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     29,
+     6
+    ],
+    [
+     29,
+     10
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     13,
+     7
+    ],
+    [
+     26,
+     7
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     29,
+     9
+    ],
+    [
+     10,
+     9
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     20,
+     3
+    ],
+    [
+     20,
+     7
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     20,
+     11
+    ],
+    [
+     20,
+     9
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     20,
+     -1
+    ],
+    [
+     20,
+     -6
+    ],
+    [
+     15,
+     -6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     20,
+     15
+    ],
+    [
+     20,
+     20
+    ],
+    [
+     15,
+     20
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     9,
+     -3
+    ],
+    [
+     16,
+     -3
+    ],
+    [
+     16,
+     13
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     16,
+     1
+    ],
+    [
+     17,
+     1
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     16,
+     13
+    ],
+    [
+     17,
+     13
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     29,
+     8
+    ],
+    [
+     36,
+     8
+    ],
+    [
+     36,
+     9
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     44,
+     3
+    ],
+    [
+     39,
+     3
+    ],
+    [
+     39,
+     7
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     39,
+     11
+    ],
+    [
+     39,
+     14
+    ],
+    [
+     42,
+     14
+    ]
+   ]
+  }
+ ],
+ "notes": [
+  {
+   "x": 30,
+   "y": 5,
+   "text": "Q"
+  },
+  {
+   "x": 14,
+   "y": 5,
+   "text": "Q̄"
+  },
+  {
+   "x": 0,
+   "y": 12,
+   "text": "a 6-transistor\nSRAM cell"
+  },
+  {
+   "x": 30,
+   "y": 18,
+   "text": "one routing switch"
+  }
+ ]
+}

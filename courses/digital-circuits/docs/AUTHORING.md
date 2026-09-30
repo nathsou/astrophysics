@@ -103,6 +103,19 @@ Every `::circuit` needs a `title` and a caption that says what to try (see the c
 | `window` | seconds of simulated time across the timing diagram | `4 × speed` |
 | `highlight` | ids or net names to outline, e.g. `highlight="U1,CLK"` | none |
 | `toolbar` | `toolbar=false` hides play, step and speed (for a figure that is only a picture that reacts) | shown |
+| `delayModel` | digital engine only: `delayModel="transport"` passes pulses shorter than a gate's delay; the default `"inertial"` swallows them (see below) | `inertial` |
+| `seed` | `seed=3`: seed of everything random in the run (the power-up state of a loop of gates, metastability), for any engine | fixed |
+| `dial`, `level` | `dial=true` adds the Logic · Switches · Analog control to the toolbar; `level="switch"` starts lower down | off, `logic` |
+
+**Engine options.** `delayModel` and `seed` are handed to the simulation engine when the figure is created (and again
+on Reset), so `::circuit{src="15-timing/circuits/pulse-chain.json" delayModel="transport" seed=3 …}` runs the circuit with
+transport delay and a different power-up state of its latches and rings. They are merged with the options the
+abstraction dial sets for its own level (unit delay at the switch level, fine steps at the analog level), which win
+on a clash; `seed` reaches every level's engine, `delayModel` only the digital one, so `dial=true` keeps working and
+`delayModel` simply has no effect on the transistor levels. A value that is not one of `"inertial"`/`"transport"`, or a
+`seed` that is not a number, is shown in the figure's status line and ignored. Leave both out unless the figure is
+about them: the defaults (inertial delay, a fixed seed) are what every other figure uses, and a fixed seed keeps
+a figure's random power-up state the same for every reader.
 
 ### The JSON
 

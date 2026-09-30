@@ -155,7 +155,7 @@ options:
     why: 'The drain current comes from the drain supply, through the channel to the source. None of it goes near the gate.'
 ```
 
-::nmos-switch{n="8.3" caption="Turn the gate voltage down from 5 V. Nothing flows below the 1 V threshold; just above it the current rises fast (0.4 mA at 1.2 V, 2.6 mA at 1.5 V); by 2 V the LED’s resistor is the limit. The gate ammeter reads zero throughout: the MOSFET is controlled by a voltage, not a current. (The 10 MΩ resistor is the off-state leakage, and keeps the simulator’s drain node from floating.)"}
+::nmos-switch{n="8.3" caption="Turn the gate voltage down from 5 V. Nothing flows below the 1 V threshold; just above it the current rises fast (0.4 mA at 1.2 V, 2.6 mA at 1.5 V); by 2 V the LED’s resistor is the limit. The gate ammeter reads zero throughout: the MOSFET is controlled by a voltage, not a current. So does the drain ammeter below the threshold: with no channel the LED’s branch is an open circuit."}
 
 The two transistors differ in what they ask of whoever drives them:
 

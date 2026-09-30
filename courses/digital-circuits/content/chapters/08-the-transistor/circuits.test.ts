@@ -45,7 +45,9 @@ describe('the circuits load and run without messages, and never stall', () => {
       expect(e.messages.filter((m) => m.level !== 'info')).toEqual([]);
     });
   }
-  test('the NMOS figure does not stall with the gate low (the off-state leakage resistor keeps the drain anchored)', () => {
+  test('the NMOS figure does not stall with the gate low: the LED’s node floats, and needs no bleeder resistor', () => {
+    // (It once had a 10 MΩ resistor from the drain to ground to keep the solver from stalling; the engine no longer needs it.)
+    expect(load('nmos-led').components.some((c) => c.type === 'resistor' && c.id !== 'R1')).toBe(false);
     for (const vg of [0, 0.5, 1]) {
       const e = engine('nmos-led');
       e.setParam('VG', 'voltage', vg);
@@ -53,6 +55,10 @@ describe('the circuits load and run without messages, and never stall', () => {
       const t0 = e.time;
       run(e, 0.3);
       expect(e.time - t0).toBeGreaterThan(0.29);
+      expect(e.stats.failures).toBe(0);
+      expect(e.stats.rejected).toBe(0);
+      expect(e.stats.steps).toBeLessThan(200);
+      expect(e.messages.filter((m) => m.level !== 'info')).toEqual([]);
     }
   });
 });
@@ -126,6 +132,14 @@ describe('the NMOS switch (Figure 8.3)', () => {
     expect(point(0).region).toBe('off');
     expect(point(0.9).id).toBeLessThan(1e-6);
     expect(point(1).id).toBeLessThan(1e-6);
+    // Off means off: the drain ammeter reads exactly zero (the solver's picoamps are below its 1 nA floor).
+    for (const vg of [0, 0.5, 1]) {
+      const e = engine('nmos-led');
+      e.setParam('VG', 'voltage', vg);
+      e.settle();
+      run(e, 0.3);
+      expect(e.state('A2').value).toBe(0);
+    }
     const a = point(1.2);
     const b = point(1.5);
     expect(a.region).toBe('saturation');

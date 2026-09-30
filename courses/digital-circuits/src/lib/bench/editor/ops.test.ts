@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import type { Circuit } from '../../sim/netlist/types';
-import { connect } from '../../sim/netlist/connect';
+import { connect, subResolver } from '../../sim/netlist/connect';
+import { partsResolver } from '../../partsbin/store-core';
 import '../../sim/netlist/catalog';
 import {
   addWire,
@@ -437,9 +438,15 @@ describe('jog', () => {
 describe('normalise keeps every committed circuit electrically identical', () => {
   const files = import.meta.glob<Circuit>(['../examples/*.json', '/content/chapters/*/circuits/*.json'], { eager: true, import: 'default' });
 
+  /**
+   * What the widgets resolve `sub:` and `part:` components with: the circuit's own subcircuits, then the parts bin
+   * (`defaultParts` in partsbin/flatten.ts, which needs SvelteKit; for a reader with no parts of their own it is the reference parts).
+   */
+  const resolver = (c: Circuit) => subResolver(c, undefined, partsResolver(false));
+
   /** The partition of pins into nets, as a sorted list of sorted groups. */
   const partition = (c: Circuit) => {
-    const { pinNet } = connect(c);
+    const { pinNet } = connect(c, resolver(c));
     const groups = new Map<number, string[]>();
     for (const [pin, net] of pinNet) groups.set(net, [...(groups.get(net) ?? []), pin]);
     return [...groups.values()].map((g) => g.sort()).sort((a, b) => a[0]!.localeCompare(b[0]!));
@@ -451,13 +458,30 @@ describe('normalise keeps every committed circuit electrically identical', () =>
 
   for (const [path, circuit] of Object.entries(files)) {
     test(path.replace(/^.*\/(?=[^/]+\/circuits|examples)/, ''), () => {
-      const n = normalise(circuit);
+      const n = normalise(circuit, resolver(circuit));
       expect(partition(n)).toEqual(partition(circuit));
       expect(n.wires.every((w) => w.points.length >= 2)).toBe(true);
       // Idempotent.
-      expect(normalise(n).wires).toEqual(n.wires);
+      expect(normalise(n, resolver(n)).wires).toEqual(n.wires);
     });
   }
+
+  // A `part:` circuit fails without the parts resolver (this was the test's blind spot); with it, it is checked like any other.
+  test('a circuit that uses a part from the bin is normalised with the default parts resolver', () => {
+    const c: Circuit = {
+      version: 1,
+      engine: 'digital',
+      components: [
+        { id: 'A', type: 'toggle', x: 0, y: 0 },
+        { id: 'U1', type: 'part:half-adder', x: 8, y: 0 },
+        { id: 'S', type: 'probe', x: 24, y: 0, params: { name: 'S' } },
+      ],
+      wires: [{ points: [[3, 0], [8, 0]] }, { points: [[14, 0], [24, 0]] }],
+    };
+    expect(() => normalise(c)).toThrow();
+    const n = normalise(c, resolver(c));
+    expect(partition(n)).toEqual(partition(c));
+  });
 });
 
 describe('circuits with subcircuits', () => {

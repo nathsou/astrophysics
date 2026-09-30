@@ -9,6 +9,9 @@ import {
   checkCombinational,
   checkScenarios,
   checkSequential,
+  CircuitBench,
+  DEFAULT_CLOCK,
+  seqClock,
   compileComb,
   costOf,
   type CombResult,
@@ -128,7 +131,7 @@ export function pinsOfSpec(input: BuildInput): { inputs: string[]; outputs: stri
   if (!s) return undefined;
   try {
     if (s.fsm) {
-      const clock = s.clock === false ? [] : [typeof s.clock === 'string' ? s.clock : 'CLK'];
+      const clock = s.clock === false ? [] : [typeof s.clock === 'string' ? s.clock : DEFAULT_CLOCK];
       const reset = typeof s.reset === 'string' ? [s.reset] : s.reset ? [s.reset.pin] : [];
       return { inputs: [...s.fsm.inputs, ...clock, ...reset.filter((r) => !s.fsm!.inputs.includes(r))], outputs: s.fsm.outputs };
     }
@@ -172,7 +175,7 @@ export interface Outcome {
   correct: boolean;
 }
 
-function specKind(input: BuildInput): 'part' | 'comb' | 'seq' | 'scenarios' | 'none' {
+function specKind(input: BuildInput, parts?: SubResolver): 'part' | 'comb' | 'seq' | 'scenarios' | 'none' {
   const s = input.spec;
   if (!s) return input.part && getPart(input.part)?.check ? 'part' : 'none';
   if (s.scenarios) return 'scenarios';
@@ -181,14 +184,42 @@ function specKind(input: BuildInput): 'part' | 'comb' | 'seq' | 'scenarios' | 'n
     const c = getPart(s.reference)?.check;
     return c?.kind === 'seq' ? 'seq' : 'comb';
   }
-  if (s.reference) return s.clock !== undefined || s.reset !== undefined || hasClock(s.reference) ? 'seq' : 'comb';
+  if (s.reference) return s.clock !== undefined || s.reset !== undefined || hasClock(s.reference, parts) ? 'seq' : 'comb';
   return 'comb';
 }
 
-const hasClock = (c: Circuit) => c.components.some((x) => /^(dff|dffr|dffe|jkff|tff|register|counter|shift-register|lfsr|ram)$/.test(x.type)) || c.components.some((x) => x.type === 'port' && /^(clk|ck|clock)$/i.test(String(x.params?.name)));
+/** A reference circuit is sequential when a component in it has a clock pin (a port's name proves nothing). */
+function hasClock(c: Circuit, parts?: SubResolver): boolean {
+  try {
+    return new CircuitBench(c, { parts }).clockInputs.length > 0;
+  } catch {
+    return c.components.some((x) => /^(dff|dffr|dffe|jkff|tff|register|counter|shift-register|lfsr|ram)$/.test(x.type));
+  }
+}
+
+/**
+ * The input a sequential exercise is clocked by (the live "Pulse" button drives it): the block's `clock`, else
+ * the spec's (a part's check, an fsm's `CLK`, the reference circuit's clock pin). Undefined for combinational
+ * and level-sensitive exercises: an input called `C` is data.
+ */
+export function exerciseClock(input: BuildInput, parts?: SubResolver): string | undefined {
+  try {
+    const s = input.spec;
+    const partId = s ? (typeof s.reference === 'string' ? s.reference : undefined) : input.part;
+    const check = partId ? getPart(partId)?.check : undefined;
+    let base: Pick<SeqSpec, 'clock' | 'fsm' | 'model' | 'reference'>;
+    if (check?.kind === 'seq') base = check.spec;
+    else if (s?.fsm) base = { fsm: s.fsm };
+    else if (s?.reference && typeof s.reference !== 'string' && specKind(input, parts) === 'seq') base = { reference: s.reference };
+    else return undefined;
+    return seqClock({ ...base, ...(s?.clock !== undefined ? { clock: s.clock } : {}) }, parts);
+  } catch {
+    return undefined;
+  }
+}
 
 export function runCheck(input: BuildInput, circuit: Circuit, parts?: SubResolver): Outcome {
-  const kind = specKind(input);
+  const kind = specKind(input, parts);
   let cost: Cost | undefined;
   try {
     cost = costOf(circuit, parts);

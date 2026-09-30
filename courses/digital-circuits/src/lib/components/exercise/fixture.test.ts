@@ -71,6 +71,9 @@ for (const ch of chapters) {
       const input = data as unknown as BuildInput;
       test(`${input.id}: solution passes${input.start ? ', start fails' : ''}`, () => {
         for (const f of ['start', 'solution'] as const) if (typeof input[f] === 'string') input[f] = JSON.parse(readFileSync(path.join(chaptersDir, input[f] as string), 'utf8'));
+        // As the markdown compiler does (tools/markdown/compile.ts): a `spec.reference` that is a path is the circuit in that file.
+        const ref = input.spec?.reference;
+        if (typeof ref === 'string' && /\.json$/.test(ref)) input.spec!.reference = JSON.parse(readFileSync(path.join(chaptersDir, ref), 'utf8'));
         expect(input.solution, 'exercises need a solution').toBeDefined();
         const r = runCheck(input, input.solution!, parts);
         expect(r.problems).toEqual([]);

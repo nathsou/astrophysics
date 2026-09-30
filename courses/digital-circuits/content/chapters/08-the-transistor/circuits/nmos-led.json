@@ -11,9 +11,7 @@
     {"id": "R1", "type": "resistor", "x": 17, "y": -4, "rot": 90, "params": {"resistance": 330}, "label": "330 Ω"},
     {"id": "D1", "type": "led", "x": 17, "y": 0, "rot": 90, "params": {"color": "green"}, "label": ""},
     {"id": "A2", "type": "ammeter", "x": 17, "y": 6, "rot": 90, "label": "Id"},
-    {"id": "G1", "type": "ground", "x": 17, "y": 20},
-    {"id": "RL", "type": "resistor", "x": 22, "y": 14, "rot": 90, "params": {"resistance": 10000000}, "label": "10 MΩ leak"},
-    {"id": "G2", "type": "ground", "x": 22, "y": 20}
+    {"id": "G1", "type": "ground", "x": 17, "y": 20}
   ],
   "wires": [
     {"points": [[4, 16], [6, 16]]},
@@ -22,8 +20,6 @@
     {"points": [[17, -6], [17, -4]]},
     {"points": [[17, 4], [17, 6]]},
     {"points": [[17, 10], [17, 14]]},
-    {"points": [[17, 18], [17, 20]]},
-    {"points": [[17, 14], [22, 14]]},
-    {"points": [[22, 18], [22, 20]]}
+    {"points": [[17, 18], [17, 20]]}
   ]
 }

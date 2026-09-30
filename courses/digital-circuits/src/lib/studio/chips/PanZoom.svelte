@@ -20,6 +20,7 @@
   import type { Snippet } from 'svelte';
   import { untrack } from 'svelte';
   import Icon from '../../components/ui/Icon.svelte';
+  import { fitAll, initialView } from './panzoom-fit';
 
   let {
     width,
@@ -36,6 +37,8 @@
     onkey,
     onfocuschange,
     onpoint,
+    home,
+    minFit = 0,
   }: {
     width: number;
     height: number;
@@ -54,6 +57,13 @@
     onfocuschange?: (focused: boolean) => void;
     /** The pointer over the content (content pixels), or null when it leaves. */
     onpoint?: (p: { x: number; y: number } | null, ev: PointerEvent | null) => void;
+    /**
+     * A part of the content to open on when fitting the whole content would be smaller than `minFit`
+     * (too small to read): a big chip in a narrow pane opens on its first block instead of as a thumbnail.
+     * The Fit button and the 0 key still show everything.
+     */
+    home?: { x: number; y: number; w: number; h: number };
+    minFit?: number;
   } = $props();
 
   let box: HTMLDivElement | undefined = $state();
@@ -68,13 +78,22 @@
 
   const clampK = (v: number) => Math.max(minK, Math.min(maxK, v));
 
-  export function fit(pad = 12) {
-    const kk = clampK(Math.min((w - 2 * pad) / width, (h - 2 * pad) / height));
-    k = kk;
-    tx = (w - width * kk) / 2;
-    ty = Math.max(pad, (h - height * kk) / 2);
+  const apply = (v: { k: number; tx: number; ty: number }) => {
+    k = v.k;
+    tx = v.tx;
+    ty = v.ty;
     userMoved = false;
+  };
+
+  /** Fit all the content to the view (the Fit button, the 0 key). */
+  export function fit(pad = 12) {
+    showAll = true;
+    apply(fitAll(w, h, width, height, pad, minK, maxK));
   }
+  let showAll = false;
+
+  /** The view a fresh or resized pane gets: everything, or `home` when everything would be unreadably small. */
+  const initialFit = () => apply(initialView(w, h, width, height, { home, minFit, all: showAll, minK, maxK }));
 
   /** Zoom so the rectangle (content pixels) fills the view. */
   export function focus(r: { x: number; y: number; w: number; h: number }, pad = 24) {
@@ -117,7 +136,7 @@
       if (r.width < 2 || r.height < 2) return;
       w = r.width;
       h = r.height;
-      if (!userMoved) untrack(() => fit());
+      if (!userMoved) untrack(() => initialFit());
       fitted = true;
     });
     ro.observe(box);
@@ -126,7 +145,7 @@
   $effect(() => {
     void width;
     void height;
-    if (fitted && !userMoved) untrack(() => fit());
+    if (fitted && !userMoved) untrack(() => initialFit());
   });
   $effect(() => {
     if (view) untrack(() => ((view!.k = k), (view!.tx = tx), (view!.ty = ty)));
