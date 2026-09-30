@@ -1,0 +1,104 @@
+import { describe, expect, test } from 'vitest';
+import { normal, rng } from '../random/index.ts';
+import { circleFit, fitTrack3D, kasaFit, ptFromRadius } from './fit.ts';
+import { DEFAULT_GEOMETRY } from './geometry.ts';
+import { simulateTrackHits } from './synthetic.ts';
+import { radiusFromPt } from './helix.ts';
+
+function arc(xc: number, yc: number, R: number, a0: number, a1: number, n: number) {
+  return Array.from({ length: n }, (_, i) => {
+    const a = a0 + ((a1 - a0) * i) / (n - 1);
+    return { x: xc + R * Math.cos(a), y: yc + R * Math.sin(a) };
+  });
+}
+
+describe('circle fits', () => {
+  test('exact points give the exact circle', () => {
+    const r = circleFit(arc(100, -50, 300, 0.3, 2.5, 8));
+    expect(r.xc).toBeCloseTo(100, 6);
+    expect(r.yc).toBeCloseTo(-50, 6);
+    expect(r.R).toBeCloseTo(300, 6);
+    expect(r.chi2).toBeLessThan(1e-12);
+    const k = kasaFit(arc(100, -50, 300, 0.3, 2.5, 8));
+    expect(k.R).toBeCloseTo(300, 6);
+  });
+  test('three points are enough', () => {
+    const r = circleFit([{ x: 1, y: 0 }, { x: 0, y: 1 }, { x: -1, y: 0 }]);
+    expect(r.R).toBeCloseTo(1, 10);
+    expect(() => circleFit([{ x: 0, y: 0 }, { x: 1, y: 1 }])).toThrow();
+  });
+  test('a straight line gives a huge radius, not NaN', () => {
+    const r = circleFit(Array.from({ length: 6 }, (_, i) => ({ x: 100 * i, y: 50 * i })));
+    expect(Number.isFinite(r.R)).toBe(true);
+    expect(r.R).toBeGreaterThan(1e8);
+    expect(r.chi2).toBeLessThan(1e-6);
+  });
+  test('Taubin is less biased than Kåsa on short noisy arcs', () => {
+    const g = rng(11);
+    let biasT = 0, biasK = 0;
+    const N = 400;
+    for (let k = 0; k < N; k++) {
+      const pts = arc(0, 2000, 2000, -Math.PI / 2 - 0.25, -Math.PI / 2 + 0.25, 6).map((p) => ({ x: p.x + normal(g, 0, 6), y: p.y + normal(g, 0, 6) }));
+      biasT += circleFit(pts).R - 2000;
+      biasK += kasaFit(pts).R - 2000;
+    }
+    // Kåsa shrinks the circle; Taubin is (almost) unbiased
+    expect(biasK / N).toBeLessThan(biasT / N);
+    expect(Math.abs(biasT / N)).toBeLessThan(Math.abs(biasK / N));
+  });
+  test('weights: a point with a large sigma is followed less', () => {
+    const pts = arc(0, 0, 100, 0, 1.5, 7).map((p) => ({ ...p, sigma: 0.01 }));
+    const bad = { x: pts[3]!.x + 5, y: pts[3]!.y, sigma: 100 };
+    const r1 = circleFit([...pts, bad]);
+    const r2 = circleFit([...pts, { ...bad, sigma: 0.01 }]);
+    expect(Math.abs(r1.R - 100)).toBeLessThan(Math.abs(r2.R - 100));
+  });
+  test('ptFromRadius: R = 1 m at 1 T is 0.2998 GeV', () => {
+    expect(ptFromRadius(1000, 1)).toBeCloseTo(0.299792458, 9);
+    expect(ptFromRadius(radiusFromPt(12.3, 3.8), 3.8)).toBeCloseTo(12.3, 9);
+  });
+});
+
+describe('fitTrack3D on synthetic helices', () => {
+  test('recovers pT, η, φ, charge, d0, z0 from noise-free hits, both charges, both field signs', () => {
+    const r = rng(5);
+    for (const q of [1, -1]) {
+      for (const eta of [-2, 0.3, 1.7]) {
+        const hits = simulateTrackHits(r, { pt: 4.2, eta, phi: 0.8, charge: q, vertex: [0, 0, 12], id: 0, collision: 0 }, DEFAULT_GEOMETRY, { ms: false, smear: false });
+        const f = fitTrack3D(hits, 3.8);
+        expect(f.charge).toBe(q);
+        expect(f.pt).toBeCloseTo(4.2, 4);
+        expect(f.eta).toBeCloseTo(eta, 5);
+        expect(f.phi).toBeCloseTo(0.8, 5);
+        expect(Math.abs(f.d0)).toBeLessThan(1e-4);
+        expect(f.z0).toBeCloseTo(12, 4);
+        expect(f.chi2).toBeLessThan(1e-6);
+        expect(f.ndof).toBe(2 * hits.length - 5);
+      }
+    }
+    // reversed field flips the sense of rotation: the same hits now belong to the opposite charge
+    const hits = simulateTrackHits(r, { pt: 4.2, eta: 0.2, phi: 0.8, charge: 1, vertex: [0, 0, 0], id: 0, collision: 0 }, DEFAULT_GEOMETRY, { ms: false, smear: false });
+    expect(fitTrack3D(hits, -3.8).charge).toBe(-1);
+  });
+  test('a displaced track has the right signed d0', () => {
+    const r = rng(6);
+    // production vertex 2 mm left of a particle going along +x: the perigee is at the vertex, y = +2 -> d0 = +2·cos... ≈ 2
+    const hits = simulateTrackHits(r, { pt: 20, eta: 0, phi: 0, charge: 1, vertex: [0, 2, 0], id: 0, collision: 0 }, DEFAULT_GEOMETRY, { ms: false, smear: false });
+    const f = fitTrack3D(hits, 3.8);
+    expect(f.d0).toBeGreaterThan(1.9);
+    expect(f.d0).toBeLessThan(2.1);
+  });
+  test('resolution with smearing and multiple scattering is sensible', () => {
+    const r = rng(7);
+    const rel: number[] = [];
+    for (let k = 0; k < 300; k++) {
+      const hits = simulateTrackHits(r, { pt: 20, eta: 0.4, phi: k, charge: 1, vertex: [0, 0, 0], id: 0, collision: 0 });
+      rel.push(fitTrack3D(hits, 3.8).pt / 20 - 1);
+    }
+    const m = rel.reduce((a, b) => a + b, 0) / rel.length;
+    const s = Math.sqrt(rel.reduce((a, b) => a + (b - m) ** 2, 0) / rel.length);
+    expect(Math.abs(m)).toBeLessThan(0.01);
+    expect(s).toBeLessThan(0.05);
+    expect(s).toBeGreaterThan(0.001);
+  });
+});
