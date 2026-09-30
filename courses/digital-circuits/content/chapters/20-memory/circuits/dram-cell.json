@@ -1,0 +1,176 @@
+{
+ "version": 1,
+ "title": "The one-transistor DRAM cell",
+ "engine": "switch",
+ "components": [
+  {
+   "id": "D",
+   "type": "toggle",
+   "x": 0,
+   "y": 5,
+   "label": "D"
+  },
+  {
+   "id": "WE",
+   "type": "toggle",
+   "x": 7,
+   "y": -3,
+   "label": "WE"
+  },
+  {
+   "id": "WD",
+   "type": "nmos",
+   "x": 10,
+   "y": 2,
+   "rot": 90,
+   "params": {
+    "strength": "strong"
+   },
+   "label": ""
+  },
+  {
+   "id": "CBL",
+   "type": "capacitor",
+   "x": 18,
+   "y": 5,
+   "rot": 90,
+   "params": {
+    "capacitance": 3e-13
+   },
+   "label": "bit line 300 fF"
+  },
+  {
+   "id": "G1",
+   "type": "ground",
+   "x": 18,
+   "y": 9
+  },
+  {
+   "id": "IBL",
+   "type": "indicator",
+   "x": 21,
+   "y": 1,
+   "params": {
+    "color": "amber"
+   },
+   "label": "BL"
+  },
+  {
+   "id": "WL",
+   "type": "toggle",
+   "x": 25,
+   "y": -3,
+   "label": "WL"
+  },
+  {
+   "id": "AX",
+   "type": "nmos",
+   "x": 28,
+   "y": 2,
+   "rot": 90,
+   "label": ""
+  },
+  {
+   "id": "CS",
+   "type": "capacitor",
+   "x": 34,
+   "y": 5,
+   "rot": 90,
+   "params": {
+    "capacitance": 3e-14
+   },
+   "label": "cell 30 fF"
+  },
+  {
+   "id": "G2",
+   "type": "ground",
+   "x": 34,
+   "y": 9
+  },
+  {
+   "id": "ICELL",
+   "type": "indicator",
+   "x": 37,
+   "y": 5,
+   "params": {
+    "color": "green"
+   },
+   "label": "cell"
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     3,
+     5
+    ],
+    [
+     8,
+     5
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     10,
+     -3
+    ],
+    [
+     10,
+     2
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     12,
+     5
+    ],
+    [
+     26,
+     5
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     21,
+     5
+    ],
+    [
+     21,
+     1
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     28,
+     -3
+    ],
+    [
+     28,
+     2
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     30,
+     5
+    ],
+    [
+     37,
+     5
+    ]
+   ]
+  }
+ ],
+ "notes": []
+}

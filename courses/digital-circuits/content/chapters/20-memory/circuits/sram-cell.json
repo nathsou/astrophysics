@@ -1,0 +1,679 @@
+{
+ "version": 1,
+ "title": "The six-transistor SRAM cell",
+ "engine": "switch",
+ "components": [
+  {
+   "id": "PA",
+   "type": "pmos",
+   "x": 23,
+   "y": 5,
+   "params": {
+    "strength": "weak"
+   },
+   "label": ""
+  },
+  {
+   "id": "NA",
+   "type": "nmos",
+   "x": 23,
+   "y": 15,
+   "params": {
+    "strength": "strong"
+   },
+   "label": ""
+  },
+  {
+   "id": "PB",
+   "type": "pmos",
+   "x": 37,
+   "y": 5,
+   "params": {
+    "strength": "weak"
+   },
+   "label": ""
+  },
+  {
+   "id": "NB",
+   "type": "nmos",
+   "x": 37,
+   "y": 15,
+   "params": {
+    "strength": "strong"
+   },
+   "label": ""
+  },
+  {
+   "id": "AXB",
+   "type": "nmos",
+   "x": 11,
+   "y": 10,
+   "flip": true,
+   "label": ""
+  },
+  {
+   "id": "AXQ",
+   "type": "nmos",
+   "x": 49,
+   "y": 10,
+   "label": ""
+  },
+  {
+   "id": "WDB",
+   "type": "nmos",
+   "x": 11,
+   "y": -10,
+   "flip": true,
+   "params": {
+    "strength": "strong"
+   },
+   "label": ""
+  },
+  {
+   "id": "WDQ",
+   "type": "nmos",
+   "x": 49,
+   "y": -10,
+   "params": {
+    "strength": "strong"
+   },
+   "label": ""
+  },
+  {
+   "id": "R1",
+   "type": "rail",
+   "x": 26,
+   "y": 1,
+   "params": {
+    "voltage": 5
+   },
+   "label": ""
+  },
+  {
+   "id": "R2",
+   "type": "rail",
+   "x": 40,
+   "y": 1,
+   "params": {
+    "voltage": 5
+   },
+   "label": ""
+  },
+  {
+   "id": "GA",
+   "type": "ground",
+   "x": 26,
+   "y": 19
+  },
+  {
+   "id": "GB",
+   "type": "ground",
+   "x": 40,
+   "y": 19
+  },
+  {
+   "id": "WL",
+   "type": "toggle",
+   "x": 27,
+   "y": -9,
+   "label": "WL"
+  },
+  {
+   "id": "WE",
+   "type": "toggle",
+   "x": 23,
+   "y": -14,
+   "label": "WE"
+  },
+  {
+   "id": "D",
+   "type": "toggle",
+   "x": 49,
+   "y": -16,
+   "label": "D"
+  },
+  {
+   "id": "DB",
+   "type": "toggle",
+   "x": 5,
+   "y": -16,
+   "label": "D̄"
+  },
+  {
+   "id": "IQ",
+   "type": "indicator",
+   "x": 56,
+   "y": 14,
+   "params": {
+    "color": "amber"
+   },
+   "label": "Q"
+  },
+  {
+   "id": "IQB",
+   "type": "indicator",
+   "x": 4,
+   "y": 14,
+   "params": {
+    "color": "blue"
+   },
+   "label": "Q̄"
+  },
+  {
+   "id": "IBL",
+   "type": "indicator",
+   "x": 55,
+   "y": 0,
+   "params": {
+    "color": "amber"
+   },
+   "label": "BL"
+  },
+  {
+   "id": "IBLB",
+   "type": "indicator",
+   "x": 1,
+   "y": 0,
+   "params": {
+    "color": "blue"
+   },
+   "label": "B̄L"
+  },
+  {
+   "id": "lQ1",
+   "type": "label",
+   "x": 42,
+   "y": 9,
+   "params": {
+    "name": "Q"
+   },
+   "label": ""
+  },
+  {
+   "id": "lQ2",
+   "type": "label",
+   "x": 19,
+   "y": 10,
+   "flip": true,
+   "params": {
+    "name": "Q"
+   },
+   "label": ""
+  },
+  {
+   "id": "lQ3",
+   "type": "label",
+   "x": 54,
+   "y": 17,
+   "params": {
+    "name": "Q"
+   },
+   "label": ""
+  },
+  {
+   "id": "lQB1",
+   "type": "label",
+   "x": 28,
+   "y": 12,
+   "params": {
+    "name": "QB"
+   },
+   "label": ""
+  },
+  {
+   "id": "lQB2",
+   "type": "label",
+   "x": 6,
+   "y": 17,
+   "flip": true,
+   "params": {
+    "name": "QB"
+   },
+   "label": ""
+  },
+  {
+   "id": "lWE1",
+   "type": "label",
+   "x": 28,
+   "y": -14,
+   "params": {
+    "name": "WE"
+   },
+   "label": ""
+  },
+  {
+   "id": "lWE2",
+   "type": "label",
+   "x": 47,
+   "y": -10,
+   "flip": true,
+   "params": {
+    "name": "WE"
+   },
+   "label": ""
+  },
+  {
+   "id": "lWE3",
+   "type": "label",
+   "x": 13,
+   "y": -10,
+   "params": {
+    "name": "WE"
+   },
+   "label": ""
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     21,
+     5
+    ],
+    [
+     21,
+     15
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     21,
+     5
+    ],
+    [
+     23,
+     5
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     21,
+     15
+    ],
+    [
+     23,
+     15
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     26,
+     1
+    ],
+    [
+     26,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     26,
+     17
+    ],
+    [
+     26,
+     19
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     26,
+     7
+    ],
+    [
+     26,
+     13
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     35,
+     5
+    ],
+    [
+     35,
+     15
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     35,
+     5
+    ],
+    [
+     37,
+     5
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     35,
+     15
+    ],
+    [
+     37,
+     15
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     40,
+     1
+    ],
+    [
+     40,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     40,
+     17
+    ],
+    [
+     40,
+     19
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     40,
+     7
+    ],
+    [
+     40,
+     13
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     26,
+     10
+    ],
+    [
+     35,
+     10
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     40,
+     9
+    ],
+    [
+     42,
+     9
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     19,
+     10
+    ],
+    [
+     21,
+     10
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     26,
+     12
+    ],
+    [
+     28,
+     12
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     52,
+     8
+    ],
+    [
+     52,
+     -8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     52,
+     12
+    ],
+    [
+     52,
+     14
+    ],
+    [
+     56,
+     14
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     54,
+     14
+    ],
+    [
+     54,
+     17
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     8,
+     8
+    ],
+    [
+     8,
+     -8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     8,
+     12
+    ],
+    [
+     8,
+     14
+    ],
+    [
+     4,
+     14
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     6,
+     14
+    ],
+    [
+     6,
+     17
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     49,
+     10
+    ],
+    [
+     49,
+     -5
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     11,
+     10
+    ],
+    [
+     11,
+     -5
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     11,
+     -5
+    ],
+    [
+     49,
+     -5
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     30,
+     -9
+    ],
+    [
+     30,
+     -5
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     52,
+     -16
+    ],
+    [
+     52,
+     -12
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     8,
+     -16
+    ],
+    [
+     8,
+     -12
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     47,
+     -10
+    ],
+    [
+     49,
+     -10
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     11,
+     -10
+    ],
+    [
+     13,
+     -10
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     26,
+     -14
+    ],
+    [
+     28,
+     -14
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     52,
+     0
+    ],
+    [
+     55,
+     0
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     8,
+     0
+    ],
+    [
+     1,
+     0
+    ]
+   ]
+  }
+ ],
+ "notes": [
+  {
+   "x": 22,
+   "y": -7.5,
+   "text": "word line"
+  }
+ ]
+}

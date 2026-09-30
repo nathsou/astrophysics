@@ -1222,3 +1222,371 @@ gold1967:
   title: Optimal binary sequences for spread-spectrum multiplexing
   venue: IEEE Transactions on Information Theory 13(4), 619–621
   note: The family of sequences, made by adding two maximal-length shift-register sequences, now called Gold codes and used for the GPS C/A code.
+ethw-fpga:
+  authors: ETHW
+  year: n.d.
+  title: 'Milestones: The Field Programmable Gate Array (FPGA), 1984'
+  venue: ETHW, IEEE milestone entry
+  url: https://ethw.org/Milestones:The_Field_Programmable_Gate_Array_(FPGA),_1984
+  note: Ross Freeman, Bernard Vonderschmitt and James Barnett found Xilinx in 1984; the XC2064 of 1985, an 8 × 8 array of 64 configurable logic blocks with SRAM configuration.
+spectrum-fpga:
+  authors: IEEE Spectrum
+  year: n.d.
+  title: The FPGA milestone that let engineers rewrite chips like software
+  venue: IEEE Spectrum
+  url: https://spectrum.ieee.org/fpga-chip-ieee-milestone
+  note: Freeman’s idea of spending transistors on programmability, which colleagues thought wasteful, and his bet that Moore’s law would make transistors cheap.
+freeman-patent:
+  authors: Ross H. Freeman
+  year: 1989
+  title: Configurable electrical circuit having configurable logic elements and configurable interconnects
+  venue: US patent 4,870,302, assigned to Xilinx. Filed 19 February 1988, priority date 12 March 1984, granted 26 September 1989
+  url: https://patents.google.com/patent/US4870302A/en
+  note: 'The founding patent of the FPGA: an array of configurable logic elements and a hierarchy of configurable interconnects.'
+xilinx-wp284:
+  authors: Andrew Percey
+  year: 2007
+  title: Advantages of the Virtex-5 FPGA 6-input LUT architecture
+  venue: Xilinx white paper WP284 (v1.0), 19 December 2007
+  url: https://docs.amd.com/api/khub/documents/NCQUqSOhgNM3Dzndcf2vnw/content
+  note: The move from four-input to six-input LUTs in the Virtex-5.
+rose1990:
+  authors: Jonathan Rose, Robert J. Francis, David Lewis and Paul Chow
+  year: 1990
+  title: 'Architecture of field-programmable gate arrays: the effect of logic block functionality on area efficiency'
+  venue: IEEE Journal of Solid-State Circuits 25(5), 1217–1225
+  note: An early experimental study of how the size of the logic block affects the area of an FPGA.
+electronicdesign-alm:
+  authors: ElectronicDesign
+  year: n.d.
+  title: Adaptive logic molds faster, more efficient FPGAs
+  venue: Electronic Design
+  url: https://www.electronicdesign.com/technologies/industrial/boards/article/21774102/adaptive-logic-molds-faster-more-efficient-fpgas
+  note: The adaptive logic module of Altera’s 90 nm Stratix II, built from two adaptive LUTs.
+eetimes-virtex5:
+  authors: EETimes
+  year: 2006
+  title: 'Xilinx unveil revolutionary 65nm FPGA architecture: the Virtex-5 family'
+  venue: EE Times
+  url: https://www.eetimes.com/xilinx-unveil-revolutionary-65nm-fpga-architecture-the-virtex-5-family/
+  note: The Virtex-5 of May 2006, the first FPGA family on a 65 nm process, with six-input LUTs.
+lemieux2004:
+  authors: Guy Lemieux, Edmund Lee, Marvin Tom and Anthony Yu
+  year: 2004
+  title: Directional and single-driver wires in FPGA interconnect
+  venue: Proceedings of the IEEE International Conference on Field-Programmable Technology (FPT 2004), 41–48
+  url: https://ieeexplore.ieee.org/document/1393249/
+  note: Single-driver, directional wiring saves about 25 % of the area and 9 % of the delay against bidirectional wiring, and is what Altera and Xilinx moved to.
+prjicestorm:
+  authors: Clifford Wolf, Mathias Lasser and contributors
+  year: n.d.
+  title: Project IceStorm, bitstream file format documentation
+  venue: Project IceStorm documentation
+  url: https://prjicestorm.readthedocs.io/en/latest/format.html
+  note: The reverse-engineered layout of the iCE40 bitstream. Logic tiles are 54 bits wide, in a configuration block 16 rows high; each has 8 logic cells.
+tn1248:
+  authors: Lattice
+  year: 2016
+  title: iCE40 programming and configuration
+  venue: Lattice technical note TN1248 (v2.9), May 2016
+  url: https://www.latticesemi.com/en/Support/AnswerDatabase/2/7/1/~/media/79C1831CA6D645248FF4277173ECD136.ashx
+  note: The iCE40 loads its configuration from SPI flash at power-up. Bitstream sizes are 34,112 bytes for the HX1K and 136,448 bytes for the HX8K.
+ds1040:
+  authors: Lattice
+  year: n.d.
+  title: iCE40 LP/HX family data sheet (DS1040)
+  venue: Lattice Semiconductor
+  url: https://www.latticesemi.com/~/media/latticesemi/documents/datasheets/ice/ice40lphxfamilydatasheet.pdf
+  note: The logic cell, the routing and the block RAM of the iCE40 LP and HX families, on which the vFPGA is modelled.
+seu-scrubbing:
+  authors: K. W. Gear, J. A. Maestro, et al.
+  year: 2022
+  title: An analysis of FPGA configuration memory SEU accumulation and a preventative scrubbing technique
+  venue: Microprocessors and Microsystems 90, article 104467
+  url: https://dl.acm.org/doi/10.1016/j.micpro.2022.104467
+  note: A single-event upset in configuration memory persists until the bit is rewritten, by reconfiguration or by scrubbing.
+eejournal-actel:
+  authors: EEJournal
+  year: n.d.
+  title: 'How the FPGA came to be, part 6: Actel’s FPGA story'
+  venue: EEJournal
+  url: https://www.eejournal.com/article/how-the-fpga-came-to-be-part-6-actels-fpga-story/
+  note: Actel, founded in 1985 by Amr Mohsen and Esmat Hamdy, shipped its first antifuse FPGAs, the ACT 1010 and 1020, in 1988.
+kuon-rose:
+  authors: Ian Kuon and Jonathan Rose
+  year: 2007
+  title: Measuring the gap between FPGAs and ASICs
+  venue: IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems 26(2), 203–215 (first published at FPGA 2006)
+  url: https://ieeexplore.ieee.org/document/4068926/
+  note: A 90 nm FPGA against 90 nm standard cells. Soft logic only, the FPGA needs on average 35 times the area, is 3.4 to 4.6 times slower and uses 14 times the dynamic power; hard blocks narrow the area gap, to as little as 18.
+wiki-virtex:
+  authors: Wikipedia
+  year: n.d.
+  title: Virtex (FPGA)
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Virtex_(FPGA)
+  note: The Xilinx Virtex of 1998 with 4,096-bit block RAMs; Virtex-II of 2000 with hard 18 × 18 multipliers.
+hpcwire-v2pro:
+  authors: HPCwire
+  year: 2002
+  title: Xilinx intros breakthrough Virtex-II Pro FPGAs
+  venue: HPCwire, 8 March 2002
+  url: https://www.hpcwire.com/2002/03/08/xilinx-intros-breakthrough-virtex-ii-pro-fpgas/
+  note: The first FPGA family with IBM PowerPC 405 cores and multi-gigabit RocketIO transceivers in the fabric.
+kirkpatrick1983:
+  authors: Scott Kirkpatrick, C. Daniel Gelatt Jr. and Mario P. Vecchi
+  year: 1983
+  title: Optimization by simulated annealing
+  venue: Science 220(4598), 671–680
+  url: https://www.science.org/doi/10.1126/science.220.4598.671
+  note: Simulated annealing, with examples in the physical design of computers, placing and wiring circuit elements.
+metropolis1953:
+  authors: Nicholas Metropolis, Arianna W. Rosenbluth, Marshall N. Rosenbluth, Augusta H. Teller and Edward Teller
+  year: 1953
+  title: Equation of state calculations by fast computing machines
+  venue: Journal of Chemical Physics 21(6), 1087–1092
+  url: https://doi.org/10.1063/1.1699114
+  note: The Monte Carlo method whose acceptance rule, probability e^(−ΔE/kT) for a worse state, simulated annealing borrows.
+cong1994:
+  authors: Jason Cong and Yuzheng Ding
+  year: 1994
+  title: 'FlowMap: an optimal technology mapping algorithm for delay optimization in lookup-table based FPGA designs'
+  venue: IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems 13(1), 1–12
+  url: https://vast.cs.ucla.edu/publications/flowmap-optimal-technology-mapping-algorithm-delay-optimization-lookup-table-based-fpga
+  note: The first delay-optimal LUT mapping algorithm, polynomial in time, using a maximum-flow computation. 1995 best paper award of the IEEE Circuits and Systems Society.
+mcmurchie1995:
+  authors: Larry McMurchie and Carl Ebeling
+  year: 1995
+  title: 'PathFinder: a negotiation-based performance-driven router for FPGAs'
+  venue: Proceedings of the ACM/SIGDA International Symposium on Field-Programmable Gate Arrays (FPGA ’95), 111–117
+  url: https://dl.acm.org/doi/10.1145/201310.201328
+  note: Signals negotiate for routing resources over iterations until every signal is routed.
+betz1997:
+  authors: Vaughn Betz and Jonathan Rose
+  year: 1997
+  title: 'VPR: a new packing, placement and routing tool for FPGA research'
+  venue: Field-Programmable Logic and Applications (FPL 1997), Lecture Notes in Computer Science 1304, 213–222
+  url: https://link.springer.com/chapter/10.1007/3-540-63465-7_226
+  note: The place-and-route tool of the University of Toronto, with an annealing placer and a PathFinder router; its source code is public.
+icestorm-eetimes:
+  authors: EETimes
+  year: n.d.
+  title: 'IceStorm: reverse-engineering the Lattice iCE40 bitstream'
+  venue: EE Times
+  url: https://www.eetimes.com/icestorm-reverse-engineering-the-lattice-ice40-bitstream/
+  note: Project IceStorm, by Clifford Wolf and Mathias Lasser, documents the iCE40 LP and HX bitstream and makes a free Verilog-to-bitstream flow possible.
+wolf2013:
+  authors: Clifford Wolf and Johann Glaser
+  year: 2013
+  title: Yosys, a free Verilog synthesis suite
+  venue: Proceedings of the 21st Austrian Workshop on Microelectronics (Austrochip 2013), 47–52
+  url: https://yosyshq.net/yosys/files/yosys-austrochip2013.pdf
+  note: The open-source synthesis framework that Project IceStorm’s flow uses.
+shah2019:
+  authors: David Shah, Eddie Hung, Clifford Wolf, Serge Bazanski, Dan Gisselquist and Miodrag Milanović
+  year: 2019
+  title: 'Yosys+nextpnr: an open source framework from Verilog to bitstream for commercial FPGAs'
+  venue: IEEE International Symposium on Field-Programmable Custom Computing Machines (FCCM 2019); nextpnr was presented at ORConf 2018
+  url: https://github.com/YosysHQ/nextpnr
+  note: nextpnr, the portable, timing-driven place-and-route tool for iCE40, ECP5 and other families.
+sim-baby:
+  authors: Science and Industry Museum
+  year: n.d.
+  title: “Baby” and the birth of modern computing
+  venue: Science and Industry Museum, Manchester
+  url: https://www.scienceandindustrymuseum.org.uk/objects-and-stories/baby-and-modern-computing
+  note: The start of the Baby’s first program at 11 am on 21 June 1948, its author Tom Kilburn and the 52 minutes it ran for.
+manchester-baby:
+  authors: University of Manchester, Computer 50
+  year: n.d.
+  title: The Manchester Baby computer
+  venue: Computer 50, School of Computer Science, University of Manchester
+  url: https://curation.cs.manchester.ac.uk/computer50/www.computer50.org/mark1/new.baby.html
+  note: The machine (32 words of 32 bits, seven instructions, no add) and Kilburn’s first program, which found the highest factor of 2^18 in 52 minutes.
+ethw-baby:
+  authors: Engineering and Technology History Wiki
+  year: n.d.
+  title: Milestones, Manchester University “Baby” Computer and its Derivatives, 1948–1951
+  venue: IEEE Milestones, Engineering and Technology History Wiki
+  url: https://ethw.org/Milestones:Manchester_University_%22Baby%22_Computer_and_its_Derivatives,_1948-1951
+  note: The IEEE Milestone for the Baby, built by Williams, Kilburn and Tootill, and its Williams-tube memory.
+nmah-altair:
+  authors: National Museum of American History, Smithsonian Institution
+  year: n.d.
+  title: Altair 8800 Microcomputer
+  venue: Smithsonian Institution, catalogue number 334396
+  url: https://americanhistory.si.edu/collections/object/nmah_334396
+  note: MITS’s Altair 8800, which appeared on the cover of Popular Electronics in January 1975, with a front panel of switches and lamps.
+intel-4004-vault:
+  authors: Intel Corporation
+  year: 1971
+  title: Announcing a new era of integrated electronics (the Intel 4004)
+  venue: Intel Virtual Vault; the advertisement ran in Electronic News, 15 November 1971
+  url: https://www.intel.com/content/www/us/en/history/virtual-vault/articles/the-intel-4004.html
+  note: The announcement of the 4004 and the MCS-4 chip set.
+chm-4004:
+  authors: Computer History Museum
+  year: 2007
+  title: 1971, Microprocessor integrates CPU function onto a single chip
+  venue: Computer History Museum, “The Silicon Engine”
+  url: https://www.computerhistory.org/siliconengine/microprocessor-integrates-cpu-function-onto-a-single-chip/
+  note: The 4004’s origin in a Busicom calculator contract, and the roles of Hoff, Faggin, Mazor and Shima.
+wiki-intel-4004:
+  authors: Wikipedia
+  year: n.d.
+  title: Intel 4004
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Intel_4004
+  note: A 4-bit CPU of about 2,300 transistors, 46 instructions, a clock of at most 740 kHz and a 10.8 µs instruction cycle of eight clock periods, from Intel’s data sheets.
+riscv-spec:
+  authors: Andrew Waterman and Krste Asanović (editors)
+  year: 2019
+  title: The RISC-V Instruction Set Manual, Volume I, Unprivileged ISA (document version 20191213)
+  venue: RISC-V International
+  url: https://github.com/riscv/riscv-isa-manual/releases/download/Ratified-IMAFDQC/riscv-spec-20191213.pdf
+  note: 'RV32I has fixed 32-bit instructions, 32 integer registers with x0 hard-wired to zero, no condition flags, and compare-and-branch instructions.'
+chm-edsac:
+  authors: Computer History Museum
+  year: n.d.
+  title: 1949, EDSAC computer employs delay-line storage
+  venue: The Storage Engine, Computer History Museum
+  url: https://www.computerhistory.org/storageengine/edsac-computer-employs-delay-line-storage/
+  note: EDSAC’s memory of mercury delay lines, 512 words of 17 bits at first and 1,024 from 1952.
+chm-whirlwind-core:
+  authors: Computer History Museum
+  year: n.d.
+  title: 1953, Whirlwind computer debuts core memory
+  venue: The Storage Engine, Computer History Museum
+  url: https://www.computerhistory.org/storageengine/whirlwind-computer-debuts-core-memory/
+  note: Forrester’s coincident-current core memory, 32 × 32 × 16 bits, on Whirlwind in the summer of 1953.
+wang-patent:
+  authors: An Wang and Way-Dong Woo
+  year: 1955
+  title: Pulse transfer controlling devices
+  venue: US patent 2,708,722, granted 17 May 1955
+  url: https://patents.google.com/patent/US2708722A/en
+  note: Wang’s patent on the use of magnetic cores to store bits, sold to IBM in 1956.
+forrester-patent:
+  authors: Jay W. Forrester
+  year: 1956
+  title: Multicoordinate digital information storage device
+  venue: US patent 2,736,880, granted 28 February 1956
+  url: https://patents.google.com/patent/US2736880A/en
+  note: The coincident-current arrangement of cores that made core memory practical.
+righto-rope:
+  authors: Ken Shirriff
+  year: 2019
+  title: 'Software woven into wire: Core rope and the Apollo Guidance Computer'
+  venue: Ken Shirriff’s blog, righto.com
+  url: http://www.righto.com/2019/07/software-woven-into-wire-core-rope-and.html
+  note: How the fixed memory of the Apollo Guidance Computer, 36,864 words of 16 bits in six modules of 512 cores, stored its bits by the path of a wire.
+dennard-patent:
+  authors: Robert H. Dennard
+  year: 1968
+  title: Field-effect transistor memory
+  venue: US patent 3,387,286, filed 1967, granted 4 June 1968
+  url: https://patents.google.com/patent/US3387286A/en
+  note: The one-transistor dynamic memory cell.
+ibm-dram:
+  authors: IBM
+  year: n.d.
+  title: Dynamic random-access memory (DRAM)
+  venue: IBM History
+  url: https://www.ibm.com/history/dram
+  note: Dennard’s invention of the DRAM cell at IBM Research in 1966.
+intel-1103:
+  authors: Intel
+  year: n.d.
+  title: The Intel 1103 DRAM
+  venue: Intel Timeline, 1970
+  url: https://timeline.intel.com/1970/the-intel-1103-dram
+  note: The first commercially available DRAM, October 1970, 1,024 bits.
+masuoka1984:
+  authors: F. Masuoka, M. Asano, H. Iwahashi, T. Komuro and S. Tanaka
+  year: 1984
+  title: A new flash E²PROM cell using triple polysilicon technology
+  venue: International Electron Devices Meeting Technical Digest, 464–467
+  note: The NOR flash cell, presented at IEDM in December 1984.
+masuoka1987:
+  authors: F. Masuoka, M. Momodomi, Y. Iwata and R. Shirota
+  year: 1987
+  title: New ultra high density EPROM and flash EEPROM with NAND structure cell
+  venue: International Electron Devices Meeting Technical Digest, 552–555
+  note: The NAND flash cell.
+spectrum-nand:
+  authors: IEEE Spectrum
+  year: n.d.
+  title: 'Chip Hall of Fame: Toshiba NAND flash memory'
+  venue: IEEE Spectrum
+  url: https://spectrum.ieee.org/chip-hall-of-fame-toshiba-nand-flash-memory
+  note: The history of flash memory at Toshiba; the name “flash” is credited to Shōji Ariizumi.
+liu-raidr2012:
+  authors: Jamie Liu, Ben Jaiyen, Richard Veras and Onur Mutlu
+  year: 2012
+  title: 'RAIDR: Retention-aware intelligent DRAM refresh'
+  venue: Proceedings of the 39th International Symposium on Computer Architecture (ISCA), 1–12
+  url: https://doi.org/10.1109/ISCA.2012.6237001
+  note: Measures the distribution of DRAM retention times and shows that a few weak cells set the refresh interval for the whole chip.
+cai2017:
+  authors: Yu Cai, Saugata Ghose, Erich F. Haratsch, Yixin Luo and Onur Mutlu
+  year: 2017
+  title: Error characterization, mitigation, and recovery in flash-memory-based solid-state drives
+  venue: Proceedings of the IEEE 105(9), 1666–1704
+  url: https://doi.org/10.1109/JPROC.2017.2713127
+  note: How flash cells wear, drift and interfere with one another, and what SSDs do about it.
+jedec-jesd79-4:
+  authors: JEDEC
+  year: 2012
+  title: JESD79-4, DDR4 SDRAM standard
+  venue: JEDEC Solid State Technology Association
+  note: Refresh window of 64 ms with 8192 refresh commands (tREFI 7.8 µs), the refresh cycle times tRFC by density, and the halved interval above 85 °C.
+hennessy-patterson2019:
+  authors: John L. Hennessy and David A. Patterson
+  year: 2019
+  title: 'Computer Architecture: A Quantitative Approach, 6th edition'
+  venue: Morgan Kaufmann
+  note: The memory hierarchy, average memory access time and the typical latencies of each level.
+vonneumann1945:
+  authors: John von Neumann
+  year: 1945
+  title: First draft of a report on the EDVAC
+  venue: Contract W-670-ORD-4926 between the United States Army Ordnance Department and the University of Pennsylvania, Moore School of Electrical Engineering; typescript dated 30 June 1945
+  note: The report that divides a computer into a central arithmetic organ, a central control organ, a memory and input and output, and keeps instructions and numbers in the same memory.
+godfrey1993:
+  authors: Michael D. Godfrey
+  year: 1993
+  title: Introduction to “The First Draft Report on the EDVAC” by John von Neumann
+  venue: IEEE Annals of the History of Computing 15(4), 27–75
+  note: The circumstances of the draft, its circulation under von Neumann’s name alone, and the contribution of the Moore School engineers.
+wilkes1951:
+  authors: Maurice V. Wilkes
+  year: 1951
+  title: The best way to design an automatic calculating machine
+  venue: Manchester University Computer Inaugural Conference, July 1951, 16–18
+  note: 'The paper that proposes microprogramming: a control unit made of a regular matrix of stored control words.'
+wilkes-stringer1953:
+  authors: Maurice V. Wilkes and J. B. Stringer
+  year: 1953
+  title: Micro-programming and the design of the control circuits in an electronic digital computer
+  venue: Proceedings of the Cambridge Philosophical Society 49(2), 230–238
+  note: The fuller account of the diode-matrix control store.
+wilkes-renwick-wheeler1958:
+  authors: Maurice V. Wilkes, W. Renwick and D. J. Wheeler
+  year: 1958
+  title: The design of the control unit of an electronic digital computer
+  venue: Proceedings of the IEE, Part B 105(20), 121–128
+  note: The control unit of EDSAC 2, the first microprogrammed computer.
+visual6502:
+  authors: Greg James, Barry Silverman and Brian Silverman
+  year: 2010
+  title: Visual 6502
+  venue: The Visual 6502 project, visual6502.org
+  url: http://www.visual6502.org/
+  note: The MOS 6502 imaged, traced and simulated at the level of its transistors, in a web page.
+kernighan1970:
+  authors: B. W. Kernighan and S. Lin
+  year: 1970
+  title: An efficient heuristic procedure for partitioning graphs
+  venue: The Bell System Technical Journal 49(2), 291–307
+  url: https://doi.org/10.1002/j.1538-7305.1970.tb01770.x
+  note: The move-and-swap refinement with locking and roll-back to the best prefix, which the vCPLD-32 fitter uses to split outputs between function blocks.

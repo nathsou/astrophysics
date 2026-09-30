@@ -325,3 +325,108 @@
   people: Solomon W. Golomb
   chapter: registers-and-counters
   text: Golomb’s book collects the theory of linear-feedback shift registers, and in particular which taps give the longest sequences. Robert Gold describes the codes now used by GPS in the same year.
+- year: 1985
+  title: The XC2064
+  people: Ross Freeman, Bernard Vonderschmitt, Jim Barnett, Xilinx
+  chapter: inside-an-fpga
+  text: Xilinx, founded in 1984, ships the first FPGA, an 8 × 8 array of 64 configurable logic blocks whose configuration lives in SRAM. Freeman's bet is that Moore's law will make the transistors wasted on programmability cheap.
+- year: 1988
+  title: Actel's antifuse FPGAs
+  people: Actel, Amr Mohsen, Esmat Hamdy
+  chapter: inside-an-fpga
+  text: Actel, founded in 1985, ships the ACT 1010 and 1020, FPGAs whose wiring is made of antifuses. They work at power-up, cannot be upset by a particle, and can be programmed only once.
+- year: 2006
+  title: Six-input LUTs
+  people: Xilinx
+  chapter: inside-an-fpga
+  text: After fifteen years of four-input lookup tables, Xilinx announces the Virtex-5 on a 65 nm process with a six-input LUT, so that wide functions need fewer LUTs and fewer levels of wire.
+- year: 2007
+  title: The price of programmability
+  people: Ian Kuon, Jonathan Rose
+  chapter: inside-an-fpga
+  text: A 90 nm FPGA against 90 nm standard cells for the same logic needs on average 35 times the area, is 3.4 to 4.6 times slower and uses 14 times the dynamic power. Hard blocks narrow the area gap to as little as 18.
+- year: 1983
+  title: Simulated annealing
+  people: Scott Kirkpatrick, C. Daniel Gelatt, Mario Vecchi
+  chapter: netlist-to-bitstream
+  text: A paper in Science shows that the way a metal cools into a low-energy state is a way to search for good solutions of large problems, and applies it to placing and wiring computer chips. It becomes the standard way to place logic.
+- year: 1994
+  title: FlowMap
+  people: Jason Cong, Yuzheng Ding
+  chapter: netlist-to-bitstream
+  text: The first algorithm that maps a logic network to lookup tables with the fewest possible levels, in polynomial time, using a maximum-flow computation to choose each node's cut.
+- year: 1995
+  title: PathFinder
+  people: Larry McMurchie, Carl Ebeling
+  chapter: netlist-to-bitstream
+  text: A router in which every signal takes what it wants and the price of contested wires rises over the iterations, so that signals negotiate for them. Negotiated congestion becomes the basis of most FPGA routing.
+- year: 1997
+  title: VPR
+  people: Vaughn Betz, Jonathan Rose
+  chapter: netlist-to-bitstream
+  text: A packing, placement and routing tool for any FPGA architecture a researcher can describe, with an annealing placer and a PathFinder router, and public source code. It becomes the tool of academic FPGA research.
+- year: 2015
+  title: Project IceStorm
+  people: Clifford Wolf, Mathias Lasser
+  chapter: netlist-to-bitstream
+  text: The bitstream of the Lattice iCE40 is reverse-engineered and documented, and with Yosys for synthesis and, from 2018, nextpnr for place and route, it becomes the first FPGA family with a free toolchain from Verilog to bitstream.
+- year: 1948
+  title: The Baby runs a program
+  people: Tom Kilburn, Freddie Williams, Geoff Tootill
+  chapter: running-programs
+  text: 'On 21 June the Manchester Small-Scale Experimental Machine runs Kilburn’s 17-instruction program for 52 minutes and finds the highest factor of 2^18: the first program ever run from an electronic memory.'
+- year: 1971
+  title: The Intel 4004
+  people: Federico Faggin, Ted Hoff, Stan Mazor, Masatoshi Shima
+  chapter: running-programs
+  text: 'Intel announces on 15 November a 4-bit CPU on one chip, of about 2,300 transistors, 46 instructions and a clock of up to 740 kHz, begun as a contract for the Japanese calculator company Busicom.'
+- year: 1947
+  title: A memory that is a picture on a tube
+  people: Freddie Williams, Tom Kilburn
+  chapter: memory
+  text: At Manchester, Williams and Kilburn store bits as spots of charge on the face of a cathode-ray tube, read back by the way they change the tube’s current. The spots fade and must be regenerated, as DRAM cells are today.
+- year: 1949
+  title: EDSAC and the mercury delay line
+  people: Maurice Wilkes
+  chapter: memory
+  text: On 6 May EDSAC runs its first program from a memory of 512 words of 17 bits, stored as pulses of sound circulating in tubes of mercury. Each word is available only when its pulse comes round.
+- year: 1953
+  title: Core memory
+  people: Jay Forrester, An Wang
+  chapter: memory
+  text: Forrester’s coincident-current array of tiny magnetic cores, 32 × 32 × 16 bits, goes into Whirlwind in the summer; it is fast, reliable and does not forget when the power goes off, and it dominates computer memory until the 1970s.
+- year: 1969
+  title: Software woven into wire
+  people: MIT Instrumentation Laboratory, Raytheon
+  chapter: memory
+  text: The Apollo Guidance Computer keeps 36,864 words of program in core rope, wires threaded through or round magnetic cores, and 2,048 words in ordinary erasable core.
+- year: 1968
+  title: The one-transistor DRAM cell
+  people: Robert Dennard
+  chapter: memory
+  text: IBM’s patent for a memory cell of a single transistor and a capacitor is granted on 4 June. Intel’s first DRAM, the 1103 of October 1970, uses a three-transistor cell instead; the one-transistor cell takes over in the mid-1970s.
+- year: 1984
+  title: Flash memory
+  people: Fujio Masuoka
+  chapter: memory
+  text: Masuoka and his colleagues at Toshiba present a NOR flash cell in December; the NAND cell follows in 1987. Erasing a block at once suggests the name.
+- year: 1945
+  title: The First Draft
+  people: John von Neumann
+  chapter: datapath
+  text: A typescript dated 30 June, First Draft of a Report on the EDVAC, divides a computer into arithmetic, control, memory and input and output organs, with instructions and numbers in one memory.
+- year: 1951
+  title: Microprogramming
+  people: Maurice Wilkes
+  chapter: control
+  text: At the Manchester conference in July, Wilkes proposes that a control unit be a regular matrix of stored control words, read out one row at a time, instead of an irregular tangle of gates.
+- year: 1958
+  title: EDSAC 2
+  people: Maurice Wilkes, W. Renwick, D. J. Wheeler
+  chapter: control
+  text: Cambridge’s second computer is the first with a microprogrammed control unit; the design is described in the Proceedings of the IEE the same year.
+- year: 2010
+  title: Visual 6502
+  people: Greg James, Barry Silverman, Brian Silverman
+  chapter: control
+  text: A project images the die of the MOS 6502 layer by layer, traces its transistors and publishes a simulation of them that runs in a web page, showing a hardwired control unit at work.

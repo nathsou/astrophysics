@@ -894,3 +894,175 @@ scale-of-two:
   term: scale of two
   definition: "Wynn-Williams's 1932 name for a circuit that passes on every second pulse it receives, halving a rate. Chains of them counted particles faster than a mechanical meter could follow, and a binary counter is still a chain of scales of two."
   chapter: registers-and-counters
+fpga:
+  term: FPGA (field-programmable gate array)
+  definition: A chip made in bulk and configured by its buyer. It is a grid of lookup-table logic cells and flip-flops in a sea of programmable wires, with hard blocks such as RAM and multipliers, all set by a bitstream held in memory on the chip.
+  chapter: inside-an-fpga
+logic-cell:
+  term: logic cell
+  definition: The basic unit of an FPGA. A lookup table, a flip-flop that can catch its output, a multiplexer that chooses between them, and a carry path to the neighbouring cell. Eight or so cells make a tile.
+  chapter: inside-an-fpga
+bitstream:
+  term: bitstream
+  definition: The configuration of an FPGA as a file of bits, one for every LUT truth-table entry, routing switch and flag. It is loaded into the chip's configuration memory, usually from flash, when the power comes on.
+  chapter: inside-an-fpga
+switch-box:
+  term: switch box
+  definition: The programmable multiplexers at a tile that drive the wire segments starting there, choosing between wires arriving from each direction and the tile's own outputs.
+  chapter: inside-an-fpga
+connection-box:
+  term: connection box
+  definition: The multiplexer in front of an input pin of a logic cell, which chooses which of the wires passing the tile the pin reads.
+  chapter: inside-an-fpga
+config-frame:
+  term: configuration frame
+  definition: The unit in which an FPGA's configuration memory is written, a column of it loaded at once like a row of a RAM. A bitstream file is a series of frames, each with a checksum.
+  chapter: inside-an-fpga
+scrubbing:
+  term: scrubbing
+  definition: Reading an SRAM FPGA's configuration back while it runs, comparing each frame with what it should be, and rewriting any that a cosmic ray or alpha particle has flipped.
+  chapter: inside-an-fpga
+hard-block:
+  term: hard block
+  definition: A fixed circuit on an FPGA die, such as block RAM, a multiplier, a transceiver or a processor core, that does a common job in less area, time and power than the same function built from LUTs.
+  chapter: inside-an-fpga
+pll:
+  term: PLL (phase-locked loop)
+  definition: A circuit that makes a clock of a new frequency from an old one, by multiplying and dividing. An FPGA uses it to turn a board's oscillator into the clock the fabric runs at.
+  chapter: inside-an-fpga
+aig:
+  term: and-inverter graph (AIG)
+  definition: A network in which every node is a two-input AND and every edge may be inverted. Any combinational circuit can be written this way, and synthesis tools optimise and map this form.
+  chapter: netlist-to-bitstream
+technology-mapping:
+  term: technology mapping
+  definition: Covering a gate-level network with the cells the target has, for an FPGA lookup tables of a few inputs, choosing which gates each cell absorbs so that the result is shallow and small.
+  chapter: netlist-to-bitstream
+cut:
+  term: cut
+  definition: For a node of a network, a set of at most K other nodes that every path from the inputs to the node passes through. The node is a function of the cut's leaves alone, so a K-input LUT can replace everything between.
+  chapter: netlist-to-bitstream
+packing:
+  term: packing
+  definition: Grouping logic cells into tiles so that the tile's shared clock, enable and reset are consistent and cells that share signals sit together.
+  chapter: netlist-to-bitstream
+simulated-annealing:
+  term: simulated annealing
+  definition: A search that accepts a worse solution with probability e^(-Δ/T), and lowers the temperature T as it goes, so that it can leave local minima early and settles late. FPGA tools use it to place logic.
+  chapter: netlist-to-bitstream
+pathfinder:
+  term: PathFinder (negotiated congestion)
+  definition: A routing algorithm in which every net takes the cheapest path as if alone, and the price of each wire that several nets want rises over the iterations, until each net that can go elsewhere has, and every wire has one user.
+  chapter: netlist-to-bitstream
+fmax:
+  term: fmax
+  definition: The highest clock frequency a design can run at, the inverse of its slowest register-to-register path with the set-up time of the register at its end. A timing report gives it in MHz.
+  chapter: netlist-to-bitstream
+assembler:
+  term: assembler
+  definition: The program that turns assembly language, one mnemonic per instruction, into machine code. It looks each mnemonic and register up in a table, and needs two passes over the source so that a jump can name a label defined further down.
+  chapter: running-programs
+machine-code:
+  term: machine code
+  definition: The bytes a CPU executes. On Octet each instruction is one byte, `oooo ddss`, plus at most one byte of constant or address.
+  chapter: running-programs
+symbol-table:
+  term: symbol table
+  definition: The assembler’s list of labels and constants with their values. Pass 1 builds it from the addresses of the labels; pass 2 reads it to fill in the operands.
+  chapter: running-programs
+stack:
+  term: stack
+  definition: A region of memory managed with a stack pointer, last in first out. On Octet CALL pushes the return address and RET pops it into PC, and PUSH and POP do the same for a register; the stack grows down from 0xEF.
+  chapter: running-programs
+subroutine:
+  term: subroutine
+  definition: Code that is called from several places and returns to whichever one called it. CALL saves the return address on the stack, and RET brings it back.
+  chapter: running-programs
+polling:
+  term: polling
+  definition: Reading a device again and again in a loop until it has something to say. It needs no extra hardware and wastes every cycle spent asking; the alternative is an interrupt, which Octet does not have.
+  chapter: running-programs
+cpi:
+  term: cycles per instruction (CPI)
+  definition: The average number of clock cycles an instruction takes on a program. Octet’s CPI is about 5 to 5.5, because it takes 3 cycles to fetch and decode and 1 to 5 more to execute.
+  chapter: running-programs
+iron-law:
+  term: iron law of processor performance
+  definition: 'Time = instructions × cycles per instruction × time per cycle. A program runs faster with fewer instructions, fewer cycles for each, or a shorter clock period, and improving one usually costs another.'
+  chapter: running-programs
+sram:
+  term: static RAM (SRAM)
+  definition: 'Memory whose cell is a loop of two inverters plus two access transistors: six transistors per bit. It holds its value for as long as the power is on, needs no refresh, and is fast, which makes it the memory of register files and caches.'
+  chapter: memory
+dram:
+  term: dynamic RAM (DRAM)
+  definition: 'Memory whose cell is one transistor and one capacitor: the bit is charge on the capacitor. It is the cheapest memory that can be written at will, and the charge leaks, so every row must be read and rewritten (refreshed) within about 64 ms.'
+  chapter: memory
+word-line:
+  term: word line
+  definition: 'The wire, raised by the address decoder, that connects every cell of one word to the bit lines. Exactly one word line is high during an access.'
+  chapter: memory
+bit-line:
+  term: bit line
+  definition: 'A wire that runs through all the words of a memory and connects to one cell in each: data goes in and out along it. A 6T SRAM has a pair of them per bit (BL and its complement); a DRAM a single one.'
+  chapter: memory
+sense-amplifier:
+  term: sense amplifier
+  definition: 'A circuit at the end of a bit line that turns a tiny voltage difference, tens of millivolts, into a full 0 or 1. It is a pair of cross-coupled inverters, balanced until the difference tips it one way.'
+  chapter: memory
+refresh:
+  term: refresh
+  definition: 'Reading a row of DRAM cells and writing them back at full strength before their charge has leaked too far. DDR4 sends 8192 refresh commands in every 64 ms.'
+  chapter: memory
+volatile:
+  term: volatile memory
+  definition: 'Memory that loses its contents when the power is off, such as SRAM and DRAM. Flash, ROM and core memory are non-volatile.'
+  chapter: memory
+flash-memory:
+  term: flash memory
+  definition: 'Non-volatile memory whose cell is a transistor with a floating gate: electrons put there raise its threshold voltage and stay for years. It is written in small pulses, and erased a whole block at a time, and each erase wears the cell a little.'
+  chapter: memory
+memory-hierarchy:
+  term: memory hierarchy
+  definition: 'The layers of memory between a processor and its bulk storage, each larger and slower than the one above: registers, L1 to L3 caches (SRAM), main memory (DRAM), then flash and disk. Programs reuse data, so most accesses are served by the fast layers.'
+  chapter: memory
+cache:
+  term: cache
+  definition: 'A small, fast memory, made of SRAM, that keeps copies of recently used data (in lines of 64 bytes) close to the processor, so that most memory accesses are answered in a nanosecond or so instead of eighty.'
+  chapter: memory
+datapath:
+  term: datapath
+  definition: 'The registers, ALU, memory port and buses of a processor, and the wires between them: the part that holds and moves the data. A control unit decides what the datapath does in each cycle.'
+  chapter: datapath
+alu:
+  term: ALU (arithmetic and logic unit)
+  definition: 'The circuit of a processor that adds, subtracts and combines bytes bitwise. It is always computing from its inputs; its result is only used when a control line says so.'
+  chapter: datapath
+program-counter:
+  term: program counter (PC)
+  definition: 'The register that holds the address of the next instruction byte. It counts up as bytes are fetched, and loads a new address for a jump, a call or a return.'
+  chapter: datapath
+micro-operation:
+  term: micro-operation
+  definition: 'One register transfer done in one clock cycle: one source drives the bus, one or more registers listen, and the clock edge moves the byte. An instruction is a sequence of them.'
+  chapter: datapath
+bus-window:
+  term: bus window
+  definition: 'A signal that is high only in the second half of the clock cycle, after a delay. Every bus driver’s enable is ANDed with it, so a driver is never switched on while another is still switching off.'
+  chapter: datapath
+control-unit:
+  term: control unit
+  definition: 'The circuit that turns the instruction in IR, the step of its execution and the flags into the control lines of the datapath, cycle by cycle. It is a finite-state machine whose output is the control word.'
+  chapter: control
+hardwired-control:
+  term: hardwired control
+  definition: 'A control unit made of gates: an AND for each (instruction, step) pair and an OR for each control line. Fast and small, and changed only by redrawing the logic.'
+  chapter: control
+microcode:
+  term: microcode
+  definition: 'The contents of a control store: one word per clock cycle, one bit per control line, read out in sequence by a micro-program counter. Proposed by Maurice Wilkes in 1951. A change to the microcode changes the instruction set without touching the gates.'
+  chapter: control
+differential-testing:
+  term: differential testing
+  definition: 'Running two independent implementations of the same specification on the same inputs and comparing their results at every step. A disagreement is a bug in at least one of them.'
+  chapter: control

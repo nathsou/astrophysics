@@ -1,0 +1,362 @@
+{
+ "version": 1,
+ "title": "A memory bit from gates",
+ "engine": "digital",
+ "components": [
+  {
+   "id": "D",
+   "type": "toggle",
+   "x": 0,
+   "y": 0,
+   "params": {
+    "on": true
+   },
+   "label": "D (data)"
+  },
+  {
+   "id": "WL",
+   "type": "toggle",
+   "x": 0,
+   "y": 12,
+   "params": {
+    "on": true
+   },
+   "label": "WL (word line)"
+  },
+  {
+   "id": "N1",
+   "type": "not",
+   "x": 6,
+   "y": 4,
+   "label": ""
+  },
+  {
+   "id": "G1",
+   "type": "nand",
+   "x": 12,
+   "y": 0,
+   "label": ""
+  },
+  {
+   "id": "G2",
+   "type": "nand",
+   "x": 12,
+   "y": 8,
+   "label": ""
+  },
+  {
+   "id": "G3",
+   "type": "nand",
+   "x": 24,
+   "y": 2,
+   "label": ""
+  },
+  {
+   "id": "G4",
+   "type": "nand",
+   "x": 24,
+   "y": 8,
+   "label": ""
+  },
+  {
+   "id": "Q",
+   "type": "indicator",
+   "x": 36,
+   "y": 3,
+   "params": {
+    "color": "amber"
+   },
+   "label": "Q"
+  },
+  {
+   "id": "QB",
+   "type": "indicator",
+   "x": 36,
+   "y": 9,
+   "params": {
+    "color": "blue"
+   },
+   "label": "Q̄"
+  },
+  {
+   "id": "L_EN1",
+   "type": "label",
+   "x": 10,
+   "y": 2,
+   "flip": true,
+   "params": {
+    "name": "WL"
+   },
+   "label": ""
+  },
+  {
+   "id": "L_EN2",
+   "type": "label",
+   "x": 10,
+   "y": 10,
+   "flip": true,
+   "params": {
+    "name": "WL"
+   },
+   "label": ""
+  },
+  {
+   "id": "L_EN",
+   "type": "label",
+   "x": 5,
+   "y": 12,
+   "params": {
+    "name": "WL"
+   },
+   "label": ""
+  },
+  {
+   "id": "L_Q1",
+   "type": "label",
+   "x": 33,
+   "y": 1,
+   "params": {
+    "name": "Q"
+   },
+   "label": ""
+  },
+  {
+   "id": "L_Q2",
+   "type": "label",
+   "x": 22,
+   "y": 10,
+   "flip": true,
+   "params": {
+    "name": "Q"
+   },
+   "label": ""
+  },
+  {
+   "id": "L_QB1",
+   "type": "label",
+   "x": 33,
+   "y": 7,
+   "params": {
+    "name": "QB"
+   },
+   "label": ""
+  },
+  {
+   "id": "L_QB2",
+   "type": "label",
+   "x": 22,
+   "y": 4,
+   "flip": true,
+   "params": {
+    "name": "QB"
+   },
+   "label": ""
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     3,
+     0
+    ],
+    [
+     12,
+     0
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     5,
+     0
+    ],
+    [
+     5,
+     4
+    ],
+    [
+     6,
+     4
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     11,
+     4
+    ],
+    [
+     11,
+     8
+    ],
+    [
+     12,
+     8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     10,
+     2
+    ],
+    [
+     12,
+     2
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     10,
+     10
+    ],
+    [
+     12,
+     10
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     3,
+     12
+    ],
+    [
+     5,
+     12
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     18,
+     1
+    ],
+    [
+     21,
+     1
+    ],
+    [
+     21,
+     2
+    ],
+    [
+     24,
+     2
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     18,
+     9
+    ],
+    [
+     21,
+     9
+    ],
+    [
+     21,
+     8
+    ],
+    [
+     24,
+     8
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     22,
+     4
+    ],
+    [
+     24,
+     4
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     22,
+     10
+    ],
+    [
+     24,
+     10
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     30,
+     3
+    ],
+    [
+     36,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     33,
+     1
+    ],
+    [
+     33,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     30,
+     9
+    ],
+    [
+     36,
+     9
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     33,
+     7
+    ],
+    [
+     33,
+     9
+    ]
+   ]
+  }
+ ],
+ "notes": [
+  {
+   "x": 12,
+   "y": -3,
+   "text": "S̄ = NAND(D, WL)      R̄ = NAND(D̄, WL)"
+  },
+  {
+   "x": 24,
+   "y": 13,
+   "text": "while WL = 0 the pair holds its last value"
+  }
+ ]
+}

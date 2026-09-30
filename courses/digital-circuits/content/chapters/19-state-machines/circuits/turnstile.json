@@ -1,0 +1,250 @@
+{
+ "version": 1,
+ "title": "A turnstile: one flip-flop, two gates",
+ "engine": "digital",
+ "components": [
+  {
+   "id": "COIN",
+   "type": "toggle",
+   "x": 0,
+   "y": 1,
+   "label": "coin"
+  },
+  {
+   "id": "PUSH",
+   "type": "toggle",
+   "x": 0,
+   "y": 6,
+   "label": "push"
+  },
+  {
+   "id": "N1",
+   "type": "not",
+   "x": 7,
+   "y": 6,
+   "label": ""
+  },
+  {
+   "id": "G1",
+   "type": "and",
+   "x": 15,
+   "y": 6,
+   "label": ""
+  },
+  {
+   "id": "G2",
+   "type": "or",
+   "x": 24,
+   "y": 2,
+   "label": ""
+  },
+  {
+   "id": "FF",
+   "type": "dff",
+   "x": 34,
+   "y": 3,
+   "label": "unlocked?"
+  },
+  {
+   "id": "CLK",
+   "type": "button",
+   "x": 26,
+   "y": 10,
+   "label": "clock edge"
+  },
+  {
+   "id": "UNLOCKED",
+   "type": "indicator",
+   "x": 44,
+   "y": 3,
+   "params": {
+    "color": "green"
+   },
+   "label": "unlocked"
+  },
+  {
+   "id": "LOCKED",
+   "type": "indicator",
+   "x": 44,
+   "y": 5,
+   "params": {
+    "color": "red"
+   },
+   "label": "locked"
+  },
+  {
+   "id": "LU1",
+   "type": "label",
+   "x": 41,
+   "y": 1,
+   "params": {
+    "name": "U"
+   },
+   "label": ""
+  },
+  {
+   "id": "LU2",
+   "type": "label",
+   "x": 12,
+   "y": 8,
+   "flip": true,
+   "params": {
+    "name": "U"
+   },
+   "label": ""
+  }
+ ],
+ "wires": [
+  {
+   "points": [
+    [
+     3,
+     1
+    ],
+    [
+     22,
+     1
+    ],
+    [
+     22,
+     2
+    ],
+    [
+     24,
+     2
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     3,
+     6
+    ],
+    [
+     7,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     12,
+     6
+    ],
+    [
+     15,
+     6
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     21,
+     7
+    ],
+    [
+     23,
+     7
+    ],
+    [
+     23,
+     4
+    ],
+    [
+     24,
+     4
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     30,
+     3
+    ],
+    [
+     34,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     29,
+     10
+    ],
+    [
+     32,
+     10
+    ],
+    [
+     32,
+     5
+    ],
+    [
+     34,
+     5
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     40,
+     3
+    ],
+    [
+     44,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     41,
+     1
+    ],
+    [
+     41,
+     3
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     40,
+     5
+    ],
+    [
+     44,
+     5
+    ]
+   ]
+  },
+  {
+   "points": [
+    [
+     12,
+     8
+    ],
+    [
+     15,
+     8
+    ]
+   ]
+  }
+ ],
+ "notes": [
+  {
+   "x": 24,
+   "y": -1,
+   "text": "next = coin  OR  (unlocked AND NOT push)"
+  }
+ ]
+}
