@@ -133,7 +133,7 @@
     {/each}
     {#each vmarks as m}
       <line x1={sx(m.value)} x2={sx(m.value)} y1="0" y2={h} stroke={m.color ?? 'var(--mute)'} stroke-dasharray={m.dash ?? '4 3'} stroke-width="1.2" />
-      {#if m.label}<text x={sx(m.value) + 4} y="12" class="mk" fill={m.color ?? 'var(--ink-2)'}>{m.label}</text>{/if}
+      {#if m.label}{@const flip = sx(m.value) > w - 70}<text x={sx(m.value) + (flip ? -4 : 4)} y="12" text-anchor={flip ? 'end' : 'start'} class="mk" fill={m.color ?? 'var(--ink-2)'}>{m.label}</text>{/if}
     {/each}
     {#each points as p}
       {#if p.yerr}<line x1={sx(p.x)} x2={sx(p.x)} y1={sy(p.y - p.yerr)} y2={sy(p.y + p.yerr)} stroke={p.color ?? 'var(--series-1)'} stroke-width="1.5" />{/if}

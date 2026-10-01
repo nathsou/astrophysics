@@ -17,14 +17,16 @@
   const L57 = 57 * FEET; // metres
   const xs = Array.from({ length: 160 }, (_, i) => (i / 159) * 25);
   const lines = $derived([310, 130].map((pdg) => ({ pdg, label: pdg === 310 ? 'K_S' : 'K_L', colour: pdg === 310 ? 'var(--series-3)' : 'var(--series-1)', pts: xs.map((L) => ({ L, y: Math.max(-12, logSurvival(pdg, p, L * 1000) / Math.LN10) })), at: logSurvival(pdg, p, L57 * 1000) / Math.LN10, mean: meanDecayLengthMm(pdg, p) / 1000 })));
-  const fmtP = (l10: number) => (l10 > -2 ? `${(10 ** l10).toPrecision(3)}` : `10^${l10.toFixed(0)}`);
+  const SUP: Record<string, string> = { '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '-': '⁻' };
+  const tenTo = (e: number) => `10${String(Math.round(e)).replace(/./g, (c) => SUP[c] ?? c)}`;
+  const fmtP = (l10: number) => (l10 > -2 ? `${(10 ** l10).toPrecision(3)}` : tenTo(l10));
 </script>
 
 <Widget {title} {n} {caption} kind="Explore" onreset={() => (p = 2)}>
   {#snippet controls()}
     <Slider bind:value={p} min={0.5} max={30} step={0.5} log label="Kaon momentum, GeV/c" format={(v) => v.toFixed(1)} />
   {/snippet}
-  <Plot x={{ domain: [0, 25], label: 'distance flown [m]' }} y={{ domain: [-12, 0], label: 'surviving fraction (log₁₀)', format: (v) => `10^${v}`, tickValues: [-12, -10, -8, -6, -4, -2, 0] }} height={280} crosshair={false} label="Surviving fraction of K_S and K_L mesons against the distance flown, on a logarithmic scale: the K_S has gone after a metre, the K_L survives for tens of metres">
+  <Plot x={{ domain: [0, 25], label: 'distance flown [m]' }} y={{ domain: [-12, 0], label: 'surviving fraction (log₁₀)', format: (v) => tenTo(v), tickValues: [-12, -10, -8, -6, -4, -2, 0] }} height={280} crosshair={false} label="Surviving fraction of K_S and K_L mesons against the distance flown, on a logarithmic scale: the K_S has gone after a metre, the K_L survives for tens of metres">
     {#snippet marks({ sx, sy, height })}
       <line x1={sx(L57)} x2={sx(L57)} y1="0" y2={height} stroke="var(--ink-2)" stroke-dasharray="4 3" />
       <text x={sx(L57) + 5} y="14" class="lbl">57 feet = 17.4 m</text>

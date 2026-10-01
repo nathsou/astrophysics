@@ -192,12 +192,12 @@
           {#if true}
             {@const mphi = Math.atan2(ev.met.y, ev.met.x)}
             {@const mm = Math.hypot(ev.met.x, ev.met.y)}
-            <line x1={WD / 2} y1={ey(mphi)} x2={WD / 2 + Math.min(50, mm * 0.6)} y2={ey(mphi)} stroke="var(--p-neutrino)" stroke-width="2.4" stroke-dasharray="3 3" />
-            <text x={WD / 2 + 4} y={ey(mphi) - 5} class="tick">missing pT {mm.toFixed(0)} GeV</text>
+            <line x1="20" y1={ey(mphi)} x2="46" y2={ey(mphi)} stroke="var(--p-neutrino)" stroke-width="3" />
+            <line x1={WD - 20} y1={ey(mphi)} x2={WD - 46} y2={ey(mphi)} stroke="var(--p-neutrino)" stroke-width="3" />
           {/if}
         </svg>
         <p class="ui sub">
-          {nj} jets used: {combos} possible assignments (4 jets: 12; 6 jets: 180). Blue-filled jets are b-tagged. A green outline marks a jet that the generator's truth links to one of the four quarks.
+          {nj} jets used: {combos} possible assignments (4 jets: 12; 6 jets: 180). Blue-filled jets are b-tagged. A green outline marks a jet that the generator's truth links to one of the four quarks. The marks on both edges give the φ of the missing transverse momentum ({Math.hypot(ev.met.x, ev.met.y).toFixed(0)} GeV).
           {#if asg}Chosen: b(ℓ) = jet {asg.bLep + 1}, b(h) = jet {asg.bHad + 1}, q = jets {asg.q1 + 1} and {asg.q2 + 1}; χ² = {asg.chi2.toFixed(1)}, m(jj) = {asg.mW.toFixed(0)}, m(jjb) = {asg.mTopHad.toFixed(0)}, m(ℓνb) = {asg.mTopLep.toFixed(0)} GeV.{/if}
         </p>
       {/if}

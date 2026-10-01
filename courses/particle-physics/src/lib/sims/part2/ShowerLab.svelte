@@ -114,7 +114,7 @@
   const tree = $derived.by(() => {
     const out: { x1: number; y1: number; x2: number; y2: number; photon: boolean; g: number }[] = [];
     const maxG = 5;
-    const W = 640, H = 170;
+    const W = 640, H = 206; // the tree spans ±(45 + 22.5 + 11 + 6 + 3) = ±87 about the middle of the area above the labels
     const dx = 100;
     const go = (g: number, x: number, y: number, isPhoton: boolean, spread: number) => {
       if (g >= maxG) return;
@@ -130,7 +130,7 @@
         go(g + 1, x2, y + spread, false, spread / 2);
       }
     };
-    go(0, 20, H / 2, kind === 'gamma', 70);
+    go(0, 20, (H - 18) / 2, kind === 'gamma', 45);
     return { lines: out, W, H };
   });
   const genPoints = $derived(heitler ? heitler.generations.map((g) => ({ x: g.depthX0, y: g.count, color: 'var(--series-2)' })) : []);

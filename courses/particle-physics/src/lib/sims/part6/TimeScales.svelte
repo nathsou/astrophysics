@@ -55,7 +55,7 @@
     </div>
   {/snippet}
   <Plot
-    x={{ type: 'log', domain: [1e-26, 1e-5], label: 'time [s]', tickValues: [1e-25, 1e-22, 1e-19, 1e-16, 1e-13, 1e-10, 1e-7], format: (v) => `1e${Math.round(Math.log10(v))}` }}
+    x={{ type: 'log', domain: [1e-26, 1e-5], label: 'time [s]', tickValues: [1e-25, 1e-22, 1e-19, 1e-16, 1e-13, 1e-10, 1e-7], format: (v) => `10${String(Math.round(Math.log10(v))).replace(/./g, (c) => (c === '-' ? '⁻' : '⁰¹²³⁴⁵⁶⁷⁸⁹'[Number(c)] ?? c))}` }}
     y={{ domain: [0, rows.length], label: '', tickValues: [] }}
     height={340}
     crosshair={false}
@@ -67,7 +67,8 @@
         {@const y = sy(i + 0.5)}
         <line x1={sx(1e-26)} x2={sx(r.t)} y1={y} y2={y} stroke={r.colour} stroke-width={r.bold ? 6 : 3} opacity={r.bold ? 1 : 0.6} />
         <circle cx={sx(r.t)} cy={y} r={r.bold ? 5 : 3.5} fill={r.colour} />
-        <text x={Math.min(sx(r.t) + 9, sx(1e-5) - 150)} y={y + 4} class="lbl">{r.label}: {fmt(r.t)} s</text>
+        {@const over = sx(r.t) + 9 > sx(1e-5) - 150}
+        <text x={over ? sx(r.t) - 8 : sx(r.t) + 9} y={over ? y - 8 : y + 4} text-anchor={over ? 'end' : 'start'} class="lbl">{r.label}: {fmt(r.t)} s</text>
       {/each}
     {/snippet}
   </Plot>

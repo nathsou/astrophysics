@@ -39,7 +39,7 @@
         <tr class:struck={r.status === 'struck'} class:new={r.law.startsWith('Lepton flavour')}>
           <th scope="row"><span class="law">{r.law}</span></th>
           <td class="st st-{r.status}">{r.status === 'struck' ? '✗ ' : '✓ '}{WORD[r.status]}</td>
-          <td>{r.what}{#if r.chapter} <span class="ch">({r.chapter})</span>{/if}</td>
+          <td>{r.what}{#if r.chapter}{' '}<span class="ch">({r.chapter})</span>{/if}</td>
         </tr>
       {/each}
     </tbody>

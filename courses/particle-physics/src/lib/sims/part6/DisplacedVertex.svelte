@@ -42,8 +42,8 @@
     <section aria-label="The ladder of cτ">
       <h5 class="ui">cτ of each particle (the distance light travels in one lifetime)</h5>
       <Plot
-        x={{ type: 'log', domain: [10, 3e7], label: 'cτ [µm]', tickValues: [10, 100, 1e3, 1e4, 1e5, 1e6, 1e7], format: (v) => (v >= 1e6 ? `${v / 1e6} m` : v >= 1e3 ? `${v / 1e3} mm` : `${v} µm`) }}
-        y={{ domain: [0, ladder.length], label: '', tickValues: [] }}
+        x={{ type: 'log', domain: [10, 1e9], label: 'cτ [µm]', tickValues: [10, 100, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9], format: (v) => (v >= 1e9 ? `${v / 1e9} km` : v >= 1e6 ? `${v / 1e6} m` : v >= 1e3 ? `${v / 1e3} mm` : `${v} µm`) }}
+        y={{ domain: [0, ladder.length + 1], label: '', tickValues: [] }}
         height={300}
         crosshair={false}
         margin={{ top: 8, right: 14, bottom: 42, left: 14 }}
@@ -52,11 +52,11 @@
         {#snippet marks({ sx, sy })}
           <rect x={sx(10)} width={Math.max(0, sx(res * 3) - sx(10))} y="0" height={sy(0)} fill="var(--bad)" opacity="0.1" />
           <line x1={sx(res * 3)} x2={sx(res * 3)} y1="0" y2={sy(0)} stroke="var(--bad)" stroke-dasharray="4 3" />
-          <text x={sx(res * 3) + 4} y="12" class="lbl" fill="var(--bad)">3 × resolution: invisible displacement</text>
+          <text x={sx(res * 3) + 4} y="16" class="lbl" fill="var(--bad)">3 × resolution: invisible displacement</text>
           {#each ladder as f, i}
             {@const y = sy(i + 0.5)}
-            <line x1={sx(10)} x2={sx(f.ctau)} y1={y} y2={y} stroke={f.pdg === pdg ? 'var(--accent)' : 'var(--series-1)'} stroke-width={f.pdg === pdg ? 5 : 3} opacity={f.pdg === pdg ? 1 : 0.55} />
-            <text x={Math.min(sx(f.ctau) + 5, sx(3e7) - 40)} y={y + 4} class="lbl">{f.label} {fmtLen(f.ctau / 1)}</text>
+            <line x1={sx(10)} x2={sx(f.ctau * 1000)} y1={y} y2={y} stroke={f.pdg === pdg ? 'var(--accent)' : 'var(--series-1)'} stroke-width={f.pdg === pdg ? 5 : 3} opacity={f.pdg === pdg ? 1 : 0.55} />
+            <text x={f.ctau * 1000 > 5e6 ? sx(f.ctau * 1000) - 5 : sx(f.ctau * 1000) + 5} text-anchor={f.ctau * 1000 > 5e6 ? 'end' : 'start'} y={y + 4} class="lbl">{f.label} {fmtLen(f.ctau)}</text>
           {/each}
         {/snippet}
       </Plot>

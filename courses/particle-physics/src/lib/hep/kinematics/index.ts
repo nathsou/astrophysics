@@ -7,6 +7,7 @@
  * A four-vector is a plain object `{ E, px, py, pz }`, so exercises can write functions over it without a class.
  */
 import type { Rng } from '../random/index.ts';
+import { hook } from '../hooks.ts';
 
 export interface P4 {
   E: number;
@@ -163,7 +164,7 @@ export function isotropic(r: Rng): [number, number, number] {
  * Isotropic two-body decay of a particle with four-momentum `parent` to masses m1 and m2.
  * Returns the two daughters in the lab frame.
  */
-export function twoBodyDecay(r: Rng, parent: P4, m1: number, m2: number): [P4, P4] {
+export function twoBodyDecayReference(r: Rng, parent: P4, m1: number, m2: number): [P4, P4] {
   const M = mass(parent);
   const k = twoBodyMomentum(M, m1, m2);
   const [ux, uy, uz] = isotropic(r);
@@ -171,6 +172,14 @@ export function twoBodyDecay(r: Rng, parent: P4, m1: number, m2: number): [P4, P
   const d2 = fromMass(m2, -k * ux, -k * uy, -k * uz);
   const b = boostVector(parent);
   return [boost(d1, b[0], b[1], b[2]), boost(d2, b[0], b[1], b[2])];
+}
+
+/**
+ * Isotropic two-body decay, through the hook `kinematics.twoBodyDecay`: when the reader has installed their own
+ * version (Chapter 3's exercise), it runs everywhere the library decays a particle into two bodies.
+ */
+export function twoBodyDecay(r: Rng, parent: P4, m1: number, m2: number): [P4, P4] {
+  return hook('kinematics.twoBodyDecay', twoBodyDecayReference)(r, parent, m1, m2);
 }
 
 /**
