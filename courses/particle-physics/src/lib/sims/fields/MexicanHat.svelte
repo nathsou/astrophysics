@@ -352,13 +352,13 @@
         <figure>
           <svg viewBox="0 0 {TMAX} 60" role="img" aria-label="Radius of the ball against time">
             <line x1="0" x2={TMAX} y1={60 - (Math.sqrt(Math.max(s, 0)) / radMax) * 60} y2={60 - (Math.sqrt(Math.max(s, 0)) / radMax) * 60} class="ref" />
-            <path d={sparkPath(rad, 0, radMax, TMAX, 60)} class="tr r" />
+            <path d={ro.t >= 0 ? sparkPath(rad, 0, radMax, TMAX, 60) : ''} class="tr r" />
           </svg>
           <figcaption>Radius |φ| of the ball (dashed: the brim). A radial kick rings at the Higgs mass, and the ringing dies away with friction.</figcaption>
         </figure>
         <figure>
           <svg viewBox="0 0 {TMAX} 60" role="img" aria-label="Angle of the ball round the brim against time">
-            <path d={sparkPath(angl, -Math.PI, Math.PI, TMAX, 60, true)} class="tr a" />
+            <path d={ro.t >= 0 ? sparkPath(angl, -Math.PI, Math.PI, TMAX, 60, true) : ''} class="tr a" />
           </svg>
           <figcaption>Angle arg φ of the ball. An angular kick never rings: nothing pushes the ball back, so it just keeps going round until friction stops it. That is a massless mode.</figcaption>
         </figure>

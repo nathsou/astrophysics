@@ -155,7 +155,7 @@
     grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
     gap: 1rem;
   }
-  @media (max-width: 820px) {
+  @media (max-width: 1100px) {
     .grid {
       grid-template-columns: minmax(0, 1fr);
     }
