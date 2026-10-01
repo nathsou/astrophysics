@@ -217,7 +217,7 @@ export const WOLFENSTEIN = { lambda: 0.22501, A: 0.826, rhobar: 0.159, etabar: 0
 
 /**
  * The CKM matrix built exactly from the Wolfenstein parameters (so it is unitary to rounding) through the
- * standard parametrisation: s12 = λ, s23 = Aλ², s13 e^(−iδ) = Aλ³(ρ + iη) with (ρ + iη) from (ρ̄ + iη̄).
+ * standard (PDG) parametrisation: s12 = λ, s23 = Aλ², s13 e^(−iδ) = Aλ³(ρ − iη) with (ρ + iη) from (ρ̄ + iη̄); the Jarlskog invariant J is then positive.
  * Rows are u, c, t; columns d, s, b.
  */
 export function ckmMatrix(w = WOLFENSTEIN): Complex[][] {
@@ -232,7 +232,7 @@ export function ckmMatrix(w = WOLFENSTEIN): Complex[][] {
   const numRe = rhobar * k, numIm = etabar * k;
   const rho = (numRe * dRe + numIm * dIm) / d2;
   const eta = (numIm * dRe - numRe * dIm) / d2;
-  const X: Complex = { re: A * l ** 3 * rho, im: A * l ** 3 * eta }; // s13 e^(−iδ)
+  const X: Complex = { re: A * l ** 3 * rho, im: -A * l ** 3 * eta }; // s13 e^(−iδ) = Aλ³(ρ − iη), the PDG convention
   const Xc: Complex = { re: X.re, im: -X.im }; // s13 e^(+iδ)
   const s13 = Math.hypot(X.re, X.im);
   const c12 = Math.sqrt(1 - s12 * s12), c23 = Math.sqrt(1 - s23 * s23), c13 = Math.sqrt(1 - s13 * s13);

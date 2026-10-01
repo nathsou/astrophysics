@@ -17,12 +17,11 @@ const cdiv = (a: Complex, b: Complex): Complex => {
 export type Wolfenstein = typeof WOLFENSTEIN;
 
 /**
- * The CKM matrix in the PDG's phase convention, V_ub = A λ³ (ρ − iη). The matrix of `hep/sm` is built with the opposite sign of the complex phase
- * (V_ub = A λ³ (ρ + iη), the complex conjugate of the PDG matrix): all magnitudes and every physical prediction are identical, but J and η̄ come out
- * negative if one reads its elements literally. This function conjugates it back, so that J > 0 and the apex of the triangle lies above the axis.
+ * The CKM matrix in the PDG's phase convention, V_ub = A λ³ (ρ − iη), so that J > 0 and the apex of the triangle lies above the axis.
+ * (`hep/sm` used the opposite sign of the phase until this was fixed; this wrapper is kept for the exercises' sake.)
  */
 export function pdgCkm(w: Wolfenstein = WOLFENSTEIN): Complex[][] {
-  return ckmMatrix(w).map((row) => row.map(conj));
+  return ckmMatrix(w);
 }
 export const NAMES_UP = ['u', 'c', 't'] as const;
 export const NAMES_DOWN = ['d', 's', 'b'] as const;

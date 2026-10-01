@@ -28,10 +28,11 @@ describe('the CKM matrix', () => {
   test('Jarlskog invariant: 3.1 × 10⁻⁵ in size, equal to twice the area of the triangle', () => {
     expect(jarlskog()).toBeCloseTo(3.08e-5, 7);
     expect(jarlskogFromTriangle()).toBeCloseTo(jarlskog(), 9);
-    // the library's own matrix has the opposite sign of the phase: the PDG-convention function undoes it
+    // hep/sm follows the PDG convention: V_ub = Aλ³(ρ − iη), so Im V_ub < 0 and J > 0
     const V = ckmMatrix();
-    expect(V[0]![2]!.im).toBeGreaterThan(0);
+    expect(V[0]![2]!.im).toBeLessThan(0);
     expect(pdgCkm()[0]![2]!.im).toBeLessThan(0);
+    expect(jarlskog()).toBeGreaterThan(0);
   });
   test('no CP violation when η̄ = 0: J = 0', () => {
     expect(Math.abs(jarlskog({ ...WOLFENSTEIN, etabar: 0 }))).toBeLessThan(1e-15);

@@ -15,9 +15,9 @@
   {
    "file": "ee-zpole.json",
    "preset": "ee-zpole",
-   "bytes": 4325,
-   "sha256": "7b906c93cc4a62b1dfdc9958de2361ef21b538f0ffc4154ffaad3058bbfce2c8",
-   "events": 10000,
+   "bytes": 4422,
+   "sha256": "6ee44a62af0867bf79853b89d9fab3a95c9bbe4ef732c121c641b949710c70bb",
+   "events": 100000,
    "seed": 1,
    "made": "2026-10-01",
    "pipelineVersion": "1.0.0",
@@ -26,13 +26,13 @@
   {
    "file": "higgs-4l.json",
    "preset": "higgs-4l",
-   "bytes": 6866,
-   "sha256": "8f35d546cd0f05a6e4e460fe05fdc90b3f2f0762ce928faa10990d17f4e61d1f",
-   "events": 10000,
+   "bytes": 7050,
+   "sha256": "7e2cb3182b675ba786b626d5b219254da3cee2611b00dcd51bf9edb2f326aab4",
+   "events": 30000,
    "seed": 1,
    "made": "2026-10-01",
    "pipelineVersion": "1.0.0",
-   "codeSha256": "cd3f83ce7ce5df9e94e6eeb94232f9a24d6d410110339672dfa3b43efc88bb8a"
+   "codeSha256": "d443a0522fa4c8056325b0118126139c28a116949c0cfca510ef17773b7b02a6"
   },
   {
    "file": "higgs-gamgam.json",
@@ -48,9 +48,9 @@
   {
    "file": "minbias.json",
    "preset": "minbias",
-   "bytes": 3842,
-   "sha256": "5b9c479a831438d9616656694adb6569264d709739727cf9abb78be53dc84257",
-   "events": 4000,
+   "bytes": 3913,
+   "sha256": "4ac4a30660001063ab99e289f7941a95e3eda86bc91532a9a2793ecff1550d7f",
+   "events": 40000,
    "seed": 1,
    "made": "2026-10-01",
    "pipelineVersion": "1.0.0",
@@ -70,13 +70,13 @@
   {
    "file": "zmumu.json",
    "preset": "zmumu",
-   "bytes": 4524,
-   "sha256": "1dca4111e03aabd2ece92282545a63c7979a512c867d3e2ec608bb8cd6dd7964",
-   "events": 20000,
+   "bytes": 4605,
+   "sha256": "5e2550d164e93ae07f07fbbc7fd574fbba95fdb782c86fdb6a29f1b5af83410c",
+   "events": 50000,
    "seed": 1,
    "made": "2026-10-01",
    "pipelineVersion": "1.0.0",
-   "codeSha256": "be237090fcfbc16bb012fa0f471a33ea7e5119b800ccb186e78131f0dd909a9d"
+   "codeSha256": "d443a0522fa4c8056325b0118126139c28a116949c0cfca510ef17773b7b02a6"
   }
  ]
 }

@@ -153,6 +153,8 @@ describe('W, top and Higgs widths', () => {
 describe('CKM', () => {
   test('unitary to 1e-10', () => {
     const V = ckmMatrix();
+    // PDG convention: V_ub = Aλ³(ρ − iη), so its imaginary part is negative
+    expect(V[0]![2]!.im).toBeLessThan(0);
     for (let i = 0; i < 3; i++)
       for (let j = 0; j < 3; j++) {
         let re = 0, im = 0;
