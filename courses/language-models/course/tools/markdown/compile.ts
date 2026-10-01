@@ -152,6 +152,7 @@ async function renderInline(md: string | undefined): Promise<string | undefined>
   if (md == null) return undefined;
   const tree = inlineProcessor.parse(String(md)) as Root;
   visit(tree, (node, index, parent) => {
+    if (node.type === 'link' && node.url.startsWith('/') && !node.url.startsWith('//')) node.url = `__COURSE_BASE__${node.url}`;
     if ((node.type === 'inlineMath' || node.type === 'math') && parent && index !== undefined) {
       parent.children[index] = { type: 'html', value: renderMath(node.value, node.type === 'math') } as never;
     }
@@ -187,19 +188,19 @@ async function buildReferenceList(ctx: Ctx, name: string, i: number): Promise<vo
     const items = Object.entries(bib)
       .map(([key, r]) => ({ key, ...r }))
       .sort((a, b) => String(a.authors).localeCompare(String(b.authors)) || Number(a.year) - Number(b.year));
-    ctx.components[i] = { tag: 'B.ReferenceList', props: `items={${JSON.stringify(items)}}` };
+    ctx.components[i] = { tag: 'B.ReferenceList', props: `items={withBase(${JSON.stringify(items)})}` };
   } else if (name === 'all-glossary') {
     const g = loadYaml<Record<string, { term: string; definition: string; chapter?: string }>>(path.join(ctx.contentRoot, 'glossary.yaml'), ctx);
     const items = await Promise.all(
       Object.entries(g).map(async ([id, e]) => ({ id, term: e.term, chapter: e.chapter, definition: await renderInline(e.definition) })),
     );
     items.sort((a, b) => a.term.localeCompare(b.term));
-    ctx.components[i] = { tag: 'B.GlossaryList', props: `items={${JSON.stringify(items)}}` };
+    ctx.components[i] = { tag: 'B.GlossaryList', props: `items={withBase(${JSON.stringify(items)})}` };
   } else {
     const t = loadYaml<{ year: number; title: string; people?: string; chapter?: string; text: string }[]>(path.join(ctx.contentRoot, 'timeline.yaml'), ctx);
     const items = await Promise.all((Array.isArray(t) ? t : []).map(async (e) => ({ ...e, text: await renderInline(e.text) })));
     items.sort((a, b) => a.year - b.year);
-    ctx.components[i] = { tag: 'B.Timeline', props: `items={${JSON.stringify(items)}}` };
+    ctx.components[i] = { tag: 'B.Timeline', props: `items={withBase(${JSON.stringify(items)})}` };
   }
 }
 
@@ -332,7 +333,7 @@ async function transform(tree: Root, ctx: Ctx): Promise<void> {
                   data.options.map(async (o) => ({ text: await renderInline(o.text), correct: !!o.correct, why: await renderInline(o.why) })),
                 ),
               };
-              ctx.components[i]!.props = `data={${JSON.stringify(rendered)}}`;
+              ctx.components[i]!.props = `data={withBase(${JSON.stringify(rendered)})}`;
             })(),
           );
           parent.children[index] = marker('leaf', i);
@@ -361,7 +362,7 @@ async function transform(tree: Root, ctx: Ctx): Promise<void> {
 
       case 'link': {
         const link = node as Link;
-        if (link.url.startsWith('/') && !link.url.startsWith('//')) link.url = `§BASE§${link.url}`;
+        if (link.url.startsWith('/') && !link.url.startsWith('//')) link.url = `__COURSE_BASE__${link.url}`;
         return;
       }
     }
@@ -450,6 +451,17 @@ export async function compileMarkdown(source: string, file: string): Promise<Com
   };
 
   const tree = unified().use(remarkParse).use(remarkGfm).use(remarkMath).use(remarkDirective).parse(body) as Root;
+  // A paragraph consisting of $$…$$ is display math even when written on one line.
+  visit(tree, 'paragraph', (node, index, parent) => {
+    const child = node.children[0];
+    const raw = body.slice(node.position?.start.offset, node.position?.end.offset).trim();
+    if (parent && index !== undefined && node.children.length === 1 && child?.type === 'inlineMath' && raw.startsWith('$$') && raw.endsWith('$$')) {
+      parent.children[index] = { type: 'math', value: child.value, position: node.position } as never;
+    }
+  });
+  visit(tree, (node) => {
+    if (node.type === 'containerDirective' && ['equation', 'figure'].includes(node.name) && node.attributes?.id) ctx.slugs.set(node.attributes.id, 1);
+  });
   await transform(tree, ctx);
   const hast = await unified().use(remarkRehype, { allowDangerousHtml: true }).run(tree);
   wrapTables(hast as unknown as Parent);
@@ -457,7 +469,7 @@ export async function compileMarkdown(source: string, file: string): Promise<Com
 
   // Everything that is still HTML is static: neutralise Svelte's { } before inserting components.
   html = html.replace(/[{}]/g, (c) => (c === '{' ? '&#123;' : '&#125;'));
-  html = html.replaceAll('§BASE§', '{base}');
+  html = html.replaceAll('__COURSE_BASE__', '{base}');
   html = html.replace(/<!--§(open|close|leaf):(\d+)-->/g, (_, kind: string, i: string) => {
     const c = ctx.components[Number(i)]!;
     const p = c.props ? ` ${c.props}` : '';
@@ -486,14 +498,21 @@ export async function compileMarkdown(source: string, file: string): Promise<Com
   }
 
   const code = `<script module>
+import { base } from '$app/paths';
+/** @param {any} value @returns {any} */
+function withBase(value) {
+  if (typeof value === 'string') return value.replaceAll('__COURSE_BASE__', base);
+  if (Array.isArray(value)) return value.map(withBase);
+  if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([key, val]) => [key, withBase(val)]));
+  return value;
+}
 export const metadata = ${JSON.stringify(metadata)};
 export const toc = ${JSON.stringify(ctx.toc)};
-export const terms = ${JSON.stringify(terms)};
+export const terms = withBase(${JSON.stringify(terms)});
 export const references = ${JSON.stringify(references)};
-export const glossary = ${JSON.stringify(glossary)};
+export const glossary = withBase(${JSON.stringify(glossary)});
 </script>
 <script>
-import { base } from '$app/paths';
 import * as B from '$lib/components/content';
 import * as W from '$lib/widgets';
 ${ctx.imports.join('\n')}

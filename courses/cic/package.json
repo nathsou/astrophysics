@@ -41,5 +41,10 @@
   },
   "engines": {
     "node": ">=20.19"
+  },
+  "overrides": {
+    "rehype-katex": {
+      "katex": "$katex"
+    }
   }
 }

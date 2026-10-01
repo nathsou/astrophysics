@@ -17,7 +17,7 @@
 </script>
 
 <span class="cite ui"
-  >(<!-- -->{#each refs as r, i (r.key)}{#if i > 0}; {/if}<a
+  >(<!-- -->{#each refs as r, i (r.key)}{#if i > 0};{' '}{/if}<a
       href="#ref-{r.key}"
       onpointerenter={(e) => {
         clearTimeout(timer);
@@ -38,7 +38,7 @@
   .cite {
     font-size: 0.82em;
     color: var(--ink-2);
-    white-space: nowrap;
+    white-space: normal;
   }
   .cite a {
     color: inherit;

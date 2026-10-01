@@ -44,7 +44,9 @@ The Flemish mathematician Albert Girard stated which numbers are sums of two squ
 In 1990 Don Zagier published a paper in the *American Mathematical Monthly* whose title announced “a one-sentence proof”. Here is its content, in our own words.:cite[zagier1990]
 
 > The map
+>
 > $$(x, y, z) \mapsto \begin{cases} (x + 2z,\; z,\; y - x - z) & \text{if } x < y - z, \\ (2y - x,\; y,\; x - y + z) & \text{if } y - z < x < 2y, \\ (x - 2y,\; x - y + z,\; y) & \text{if } x > 2y \end{cases}$$
+>
 > is an involution of the finite set $S = \{(x, y, z) \in \mathbb{N}^3 : x^2 + 4yz = p\}$ with exactly one fixed point, so $|S|$ is odd, and therefore the involution $(x, y, z) \mapsto (x, z, y)$ also has a fixed point.
 
 If this reads like a magic trick, that is because the sentence hides three ideas and one very clever picture. Let us unpack it.
@@ -197,7 +199,7 @@ why: |
 :::challenge
 **Check the involution.** Verify Zagier's map in the third case: show that $(x - 2y)^2 + 4(x - y + z)y = x^2 + 4yz$, that the image lies in the first case, and that applying the first-case formula to it returns $(x, y, z)$.
 
-**From one fixed point to the other.** Start at Zagier's fixed point $(1, 1, rac{p-1}{4})$ and apply the flip, then Zagier's map, then the flip, and so on. Try it by hand for $p = 13$ or $p = 29$ with the widget. Prove that the walk never repeats a windmill and must end at a fixed point of the flip. This turns the existence proof into an algorithm (though not a fast one).
+**From one fixed point to the other.** Start at Zagier's fixed point $(1, 1, \frac{p-1}{4})$ and apply the flip, then Zagier's map, then the flip, and so on. Try it by hand for $p = 13$ or $p = 29$ with the widget. Prove that the walk never repeats a windmill and must end at a fixed point of the flip. This turns the existence proof into an algorithm (though not a fast one).
 :::
 
 ## Further reading

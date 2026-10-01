@@ -95,6 +95,11 @@ button { font: inherit; color: inherit; }
 h1, h2, h3 { font-weight: 600; line-height: 1.2; }
 code, pre { font-family: var(--mono); font-size: 0.8em; }
 pre { background: var(--sunk); border-radius: 12px; padding: 14px 16px; overflow-x: auto; line-height: 1.55; }
+pre code { font-size: inherit; }
+pre .hl-keyword { color: var(--blue); }
+pre .hl-literal { color: var(--red); }
+pre .hl-function { color: var(--code-ink); }
+pre .hl-comment { color: var(--muted); font-style: italic; }
 :focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 .muted { color: var(--muted); }
 

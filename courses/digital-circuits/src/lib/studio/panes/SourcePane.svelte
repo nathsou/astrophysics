@@ -10,6 +10,7 @@
 
   let { studio, readonly = false, examples = true }: { studio: Studio; readonly?: boolean; examples?: boolean } = $props();
 
+  const instanceId = $props.id();
   const LH = 20;
   const lines = $derived(studio.source.split('\n'));
   const errorLines = $derived(new Map(studio.errors.filter((e) => e.line > 0).map((e) => [e.line, e])));
@@ -102,13 +103,13 @@
           rows={lines.length}
           aria-label="{studio.adapter?.name ?? 'Device'} source: {studio.adapter?.language ?? ''}"
           aria-invalid={studio.hasErrors}
-          aria-describedby="src-errors"
+          aria-describedby={`${instanceId}-src-errors`}
         ></textarea>
       </div>
     </div>
   </div>
 
-  <div class="msgs ui" id="src-errors" aria-live="polite">
+  <div class="msgs ui" id={`${instanceId}-src-errors`} aria-live="polite">
     {#each generalErrors as e, i (i)}
       <p class="msg" class:warn={e.severity === 'warning'}><span class="tag">{e.severity === 'warning' ? 'warning' : 'error'}</span>{e.message}</p>
     {/each}

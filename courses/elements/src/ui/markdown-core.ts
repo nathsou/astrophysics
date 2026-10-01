@@ -9,6 +9,7 @@
 
 import katex from 'katex';
 import { Marked } from 'marked';
+import { highlightCode } from './code-highlight';
 import { byId, citeLabel, hrefOf } from '../text';
 import type { Kind } from '../geometry/resolve';
 
@@ -41,13 +42,21 @@ export function renderMath(tex: string, display: boolean): string {
 
 export const escapeHtml = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
 
+marked.use({ renderer: {
+  code({ text, lang }) {
+    const language = lang?.trim().split(/\s+/)[0]?.toLowerCase() ?? '';
+    const html = ['ts', 'typescript', 'js', 'javascript'].includes(language) ? highlightCode(text, escapeHtml) : escapeHtml(text);
+    return `<pre tabindex="0"><code${language ? ` class="language-${escapeHtml(language)}"` : ''}>${html}\n</code></pre>\n`;
+  },
+} });
+
 /** Markdown (with the extensions above, but no widgets) to HTML. */
 export function mdToHtml(src: string): string {
   const stash: string[] = [];
   const keep = (html: string) => `\u0000${stash.push(html) - 1}\u0000`;
   let s = src;
   // code first, so that $ and @ inside code are left alone
-  s = s.replace(/```[\s\S]*?```/g, (m) => keep(marked.parse(m) as string));
+  s = s.replace(/```[\s\S]*?```/g, (m) => `\n\n${keep(marked.parse(m) as string)}\n\n`);
   s = s.replace(/`[^`\n]+`/g, (m) => keep(`<code>${escapeHtml(m.slice(1, -1))}</code>`));
   s = s.replace(/\$\$([\s\S]+?)\$\$/g, (_, t: string) => keep(renderMath(t.trim(), true)));
   s = s.replace(/(^|[^\\$])\$([^$\n]+?)\$/g, (_, pre: string, t: string) => pre + keep(renderMath(t, false)));
@@ -63,7 +72,7 @@ export function mdToHtml(src: string): string {
   // callouts
   s = s.replace(/^:::(\w+)[ \t]*(.*)\n([\s\S]*?)^:::[ \t]*$/gm, (_, kind: string, title: string, body: string) => {
     const t = title.trim() || CALLOUTS[kind] || kind;
-    return keep(`<aside class="callout ${kind}"><div class="callout-title">${escapeHtml(t)}</div>${restore(marked.parse(body) as string, stash)}</aside>`) + '\n';
+    return `\n\n${keep(`<aside class="callout ${kind}"><div class="callout-title">${escapeHtml(t)}</div>${restore(marked.parse(body) as string, stash)}</aside>`)}\n\n`;
   });
   const html = marked.parse(s) as string;
   return restore(html, stash);
@@ -74,6 +83,8 @@ function restore(html: string, stash: string[]): string {
   let out = html;
   while (out !== prev) {
     prev = out;
+    // Keep block placeholders out of paragraphs so browsers do not insert empty paragraphs.
+    out = out.replace(/<p>\u0000(\d+)\u0000<\/p>/g, (match, i: string) => /^<(?:pre|aside)\b/.test(stash[Number(i)]) ? stash[Number(i)] : match);
     out = out.replace(/\u0000(\d+)\u0000/g, (_, i: string) => stash[Number(i)]);
   }
   return out;

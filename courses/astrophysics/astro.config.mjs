@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import { unified } from '@astrojs/markdown-remark';
 import remarkMath from 'remark-math';
+import { remarkCourseLinks } from './build/remark-course-links.mjs';
 import rehypeKatex from 'rehype-katex';
 import { almanacLight, almanacDark } from './src/styles/shiki-almanac.mjs';
 
@@ -12,7 +13,7 @@ export default defineConfig({
   devToolbar: { enabled: false },
   markdown: {
     processor: unified({
-      remarkPlugins: [remarkMath],
+      remarkPlugins: [remarkMath, [remarkCourseLinks, { base: `${process.env.COURSES_BASE_PATH ?? ''}/astrophysics` }]],
       // trust:true enables \htmlData{term=...}{...} used for hover-linked equation terms
       rehypePlugins: [[rehypeKatex, {
         trust: true,

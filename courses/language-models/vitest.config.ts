@@ -11,6 +11,6 @@ export default defineConfig({
     },
   },
   test: {
-    include: ['packages/*/src/**/*.test.ts', 'course/src/**/*.test.ts', 'course/content/**/*.test.ts'],
+    include: ['packages/*/src/**/*.test.ts', 'course/src/**/*.test.ts', 'course/content/**/*.test.ts', 'course/tools/**/*.test.ts'],
   },
 });

@@ -459,6 +459,7 @@ button {
   height: 0.42rem;
   background: var(--fx-blue);
 }
+.article .table-scroll { overflow-x: auto; min-width: 0; }
 .article table {
   border-collapse: collapse;
   width: 100%;

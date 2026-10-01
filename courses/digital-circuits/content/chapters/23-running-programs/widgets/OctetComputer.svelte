@@ -23,6 +23,7 @@
   import Devices, { type Device } from './Devices.svelte';
   import type { CycleInfo, Node } from './cycles';
 
+  const instanceId = $props.id();
   let {
     program = 'sum',
     title = 'The Octet computer',
@@ -370,7 +371,7 @@
             autocomplete="off"
             wrap="off"
             aria-label="Octet assembly source"
-            aria-describedby="oc-keys"></textarea>
+            aria-describedby={`${instanceId}-oc-keys`}></textarea>
         </div>
         <div class="status ui" aria-live="polite">
           {#if errors.length}
@@ -383,7 +384,7 @@
           {/if}
           {#if note}<span class="note">{note}</span>{/if}
         </div>
-        <p id="oc-keys" class="hint ui">
+        <p id={`${instanceId}-oc-keys`} class="hint ui">
           {#if isEditable}Edit the source and the listing follows. Click a dot in the gutter for a breakpoint. Tab indents; Escape then Tab leaves the box.{:else}Click a dot in the gutter for a breakpoint.{/if}
         </p>
       </section>

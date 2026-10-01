@@ -2,7 +2,7 @@
  * Build-time renderers for maths (KaTeX) and code (Shiki).
  */
 import katex from 'katex';
-import { createHighlighter, type Highlighter } from 'shiki';
+import { bundledLanguages, createHighlighter, type Highlighter } from 'shiki';
 
 /**
  * Macros available in every equation.
@@ -35,13 +35,15 @@ export function termRefs(tex: string): string[] {
   return [...tex.matchAll(/\\term\{([^}]+)\}/g)].map((m) => m[1]!);
 }
 
-const LANGS = ['ts', 'typescript', 'js', 'javascript', 'python', 'bash', 'sh', 'json', 'wgsl', 'yaml', 'text', 'svelte', 'html', 'css', 'diff', 'toml'];
 let highlighter: Promise<Highlighter> | undefined;
 
 export async function highlight(code: string, lang: string | null | undefined): Promise<string> {
-  highlighter ??= createHighlighter({ themes: ['github-light', 'github-dark'], langs: LANGS });
+  highlighter ??= createHighlighter({ themes: ['github-light', 'github-dark'], langs: [] });
   const h = await highlighter;
-  const l = lang && LANGS.includes(lang) ? lang : 'text';
+  // Load any bundled grammar (including aliases) instead of silently losing highlighting.
+  const requested = lang?.trim().toLowerCase() ?? 'text';
+  const l = Object.hasOwn(bundledLanguages, requested) ? requested : 'text';
+  if (l !== 'text') await h.loadLanguage(bundledLanguages[l as keyof typeof bundledLanguages]);
   // Shiki makes <pre> focusable (tabindex=0) so wide code can be scrolled from the keyboard,
   // which is right for accessibility, but trips Svelte's generic a11y lint.
   const html = h.codeToHtml(code, {

@@ -578,7 +578,7 @@ body.landing .page { max-width: 1000px; margin: 0 auto; padding: 0 40px 60px; }
 }
 .masthead .mast-right { display: flex; align-items: center; gap: 1.2rem; color: var(--fg-muted); }
 .masthead .btn { letter-spacing: 0.1em; font-size: 0.625rem; padding: 0.3rem 0.6rem; }
-.hero { position: relative; padding: 70px 0 50px; }
+.hero { position: relative; padding: 70px 0 50px; overflow: clip; }
 .hero .ring { position: absolute; border: 1px solid var(--ac); border-radius: 50%; opacity: 0.6; pointer-events: none; }
 .hero .ring.r1 { right: 0; top: 40px; width: 260px; height: 260px; }
 .hero .ring.r2 { right: 60px; top: 100px; width: 140px; height: 140px; }

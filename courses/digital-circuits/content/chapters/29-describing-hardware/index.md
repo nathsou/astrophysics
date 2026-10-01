@@ -73,7 +73,7 @@ Turning a description into gates is called :term[logic synthesis]{id=logic-synth
 :::history{year=1987 title="Logic synthesis becomes a product" people="Aart de Geus, David Gregory, Bill Krieger"}
 Synthesis started as research. A team at General Electric, led by Aart de Geus, built a rule-based system called SOCRATES that turned a description of logic into optimised gates.:cite[ethw-degeus] In 1986 de Geus and two other GE engineers, David Gregory and Bill Krieger, founded a company, Optimal Solutions, to sell the idea; it was renamed Synopsys in 1987.
 
-Its early years were small: revenue was $130,000 in 1987 and $976,000 in 1988, when it chose Verilog as an input language for its synthesis tool, first called Logic Compiler and soon renamed Design Compiler. By 1992 Synopsys, then a $50 million company, had more than three quarters of the synthesis market.:cite[fundinguniverse-synopsys] After that, the description was the design and the gates were an output, like machine code from a compiler.
+Its early years were small: revenue was \$130,000 in 1987 and \$976,000 in 1988, when it chose Verilog as an input language for its synthesis tool, first called Logic Compiler and soon renamed Design Compiler. By 1992 Synopsys, then a \$50 million company, had more than three quarters of the synthesis market.:cite[fundinguniverse-synopsys] After that, the description was the design and the gates were an output, like machine code from a compiler.
 :::
 
 The rest of this chapter follows the same route on a small scale: we describe hardware in DCL, and the compiler builds the gates, and every time we ask “what does that become?” we shall count them.

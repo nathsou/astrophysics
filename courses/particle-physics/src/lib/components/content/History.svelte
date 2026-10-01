@@ -6,9 +6,9 @@
 
     The rest of the story, shown on the back.
     :::
-  The story is rendered twice (the front shows only its first block, the back everything after it), so the
-  card works without JavaScript measurements and each face is complete for assistive technology; the face
-  that is turned away is `inert`. With reduced motion the faces crossfade instead of turning.
+  The compiler passes the first block as the hook snippet and the remaining story as children.
+  Each block is rendered once, so citations, footnotes and widgets retain unique identities.
+  The face turned away is inert. With reduced motion the faces crossfade instead of turning.
   "Run the original" dispatches a bubbling `run-original` CustomEvent with { title, year } for the bench.
 -->
 <script lang="ts">
@@ -24,6 +24,7 @@
     imageAlt,
     source,
     run,
+    hook,
     children,
   }: {
     year?: number | string;
@@ -36,6 +37,7 @@
     source?: string;
     /** Label of the "Run the original" button; omitted → no button. `run` alone → default label. */
     run?: string | boolean;
+    hook?: Snippet;
     children?: Snippet;
   } = $props();
 
@@ -54,12 +56,13 @@
 
   $effect(() => {
     if (!frontEl || !backEl) return;
-    // The back holds everything after the first block; a one-paragraph story does not flip.
+    // A one-paragraph story has only a hook and does not flip.
     const story = backEl.querySelector('.story');
-    hasBack = !!story && [...story.children].slice(1).some((c) => c.textContent?.trim());
+    hasBack = !!story && [...story.children].some((c) => c.textContent?.trim());
+    // Include each face’s top and bottom border so the story and focus rings are not clipped.
     const ro = new ResizeObserver(() => {
-      hFront = frontEl!.offsetHeight;
-      hBack = backEl!.offsetHeight;
+      hFront = frontEl!.offsetHeight + 2;
+      hBack = backEl!.offsetHeight + 2;
     });
     ro.observe(frontEl);
     ro.observe(backEl);
@@ -89,7 +92,7 @@
           <div class="front-text">
             {#if title}<h4 class="face-title" tabindex="-1" id="{id}-t">{title}</h4>{/if}
             {#if people}<p class="people ui">{people}</p>{/if}
-            <div class="hook">{@render children?.()}</div>
+            <div class="hook">{@render hook?.()}</div>
           </div>
           {#if src}
             <figure class="plate">
@@ -237,17 +240,11 @@
     color: var(--ink-2);
   }
   /* Front: the hook is the story's first block; the back shows the rest. */
-  .hook :global(> :not(:first-child)) {
-    display: none;
-  }
   .hook :global(> :first-child) {
     margin: 0 0 0.9rem;
     font-size: 1.08rem;
     font-style: italic;
     color: var(--fg);
-  }
-  .story :global(> :first-child) {
-    display: none;
   }
   .story {
     font-size: 1rem;

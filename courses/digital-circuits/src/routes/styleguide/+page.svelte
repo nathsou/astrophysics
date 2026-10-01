@@ -254,7 +254,7 @@
   <h2 id="history">History card</h2>
   <p>Press <em>Read the story</em> to flip it (a crossfade with reduced motion). <em>Run the original</em> dispatches a <code>run-original</code> event{#if lastRun}: last received “{lastRun}”{/if}.</p>
   <History year={1937} title="Shannon’s master’s thesis" people="Claude Shannon, MIT" source="Source: C. E. Shannon, ‘A Symbolic Analysis of Relay and Switching Circuits’, 1938." run="Run Shannon’s circuit">
-    <p>A 21-year-old student noticed that the relay circuits in telephone exchanges obey Boole’s algebra.</p>
+    {#snippet hook()}<p>A 21-year-old student noticed that the relay circuits in telephone exchanges obey Boole’s algebra.</p>{/snippet}
     <p>
       Shannon had spent a summer at Bell Labs and knew the tangle of relays that routed calls. Back at MIT, where he tended Vannevar Bush’s
       differential analyser, he realised that series contacts behave like AND and parallel contacts like OR, so a circuit could be designed
