@@ -1,0 +1,83 @@
+// Extract the chapter code and generated widget certificates without registering tests.
+import { judge, parseF, theoremDecl } from '../src/engines/props.ts';
+import { reflectionProof } from '../src/engines/reflect.ts';
+import { certificate, TYPING_PRESETS } from '../src/engines/stlc.ts';
+import { kernelCertificate, KERNEL_PRESETS } from '../src/engines/depcheck.ts';
+
+interface Snippet {
+  line: number;
+  code: string;
+  allowErrors: boolean;
+  what: string;
+}
+
+function attr(tag: string, name: string): string | undefined {
+  const m = new RegExp(`\\b${name}=(?:"([^"]*)"|\\{\`([\\s\\S]*?)\`\\}|\\{"([^"]*)"\\})`).exec(tag);
+  return m ? (m[1] ?? m[2] ?? m[3]) : undefined;
+}
+
+export function extract(src: string): Snippet[] {
+  const out: Snippet[] = [];
+  const lineOf = (i: number) => src.slice(0, i).split('\n').length;
+  // the code blocks of a chapter form one file (see build/mdx-plugins.ts)
+  let context = '';
+  // the chapter context after each code block, for widgets marked `chapter`
+  const contexts: { at: number; context: string }[] = [];
+  for (const m of src.matchAll(/```(\w+)([^\n]*)\n([\s\S]*?)```/g)) {
+    const meta = m[2];
+    if (m[1] !== 'lean' || /\bnocheck\b/.test(meta)) continue;
+    const alone = /\balone\b/.test(meta);
+    const errors = /\berrors\b/.test(meta);
+    out.push({ line: lineOf(m.index!), code: (alone ? '' : context) + m[3], allowErrors: errors, what: 'code block' });
+    if (!alone && !errors) context += m[3] + '\n\n';
+    contexts.push({ at: m.index!, context });
+  }
+  const contextAt = (i: number) => contexts.filter((c) => c.at < i).pop()?.context ?? '';
+  for (const m of src.matchAll(/<(Playground|Exercise|ObligationGrid|[A-Z][A-Za-z]+Lab|[A-Z][A-Za-z]+View)\b/g)) {
+    let i = m.index! + m[0].length;
+    let depth = 0;
+    let q: string | undefined;
+    for (; i < src.length; i++) {
+      const c = src[i];
+      if (q) {
+        if (c === q) q = undefined;
+        continue;
+      }
+      if (c === '`' || (c === '"' && depth === 0)) q = c;
+      else if (c === '{') depth++;
+      else if (c === '}') depth--;
+      else if (c === '>' && depth === 0) break;
+    }
+    const tag = src.slice(m.index! + m[0].length, i);
+    const bare = tag.replace(/\{`[\s\S]*?`\}/g, '').replace(/"[^"]*"/g, '');
+    const setup = (/(^|\s)chapter(?=\s|$|\/)/.test(bare) ? contextAt(m.index!) : '') + (attr(tag, 'setup') ?? '');
+    const code = attr(tag, 'code');
+    const allowErrors = /\berrors\b/.test(tag) || m[1] === 'Exercise';
+    if (code !== undefined) out.push({ line: lineOf(m.index!), code: setup + '\n' + code, allowErrors, what: m[1] });
+    // the reflection lab builds its proof from a formula
+    const formula = attr(tag, 'formula');
+    if (m[1] === 'ReflectionLab' && formula !== undefined) out.push({ line: lineOf(m.index!), code: setup + '\n' + reflectionProof(formula).code, allowErrors, what: m[1] });
+    // the kernel lab: the mirror and the course-language checker agree on its presets
+    if (m[1] === 'KernelLab') {
+      const terms = [attr(tag, 'term'), ...KERNEL_PRESETS.map((p) => p.src)].filter((x): x is string => x !== undefined);
+      out.push({ line: lineOf(m.index!), code: setup + '\n' + terms.map((x) => kernelCertificate(x)).join('\n\n'), allowErrors, what: m[1] });
+    }
+    // the typing lab's certificates, for its term and its presets
+    if (m[1] === 'TypingLab') {
+      const terms = [attr(tag, 'term'), ...TYPING_PRESETS].filter((x): x is string => x !== undefined);
+      out.push({ line: lineOf(m.index!), code: setup + '\n' + terms.map((x) => certificate(x).code).join('\n\n'), allowErrors, what: m[1] });
+    }
+    const sol = attr(tag, 'solution');
+    if (sol !== undefined) out.push({ line: lineOf(m.index!), code: setup + '\n' + sol, allowErrors: false, what: `${m[1]} solution` });
+  }
+  // the provable presets of the provability oracle come with proof terms: check them
+  for (const m of src.matchAll(/<PropOracle\b[^>]*presets="([^"]*)"/g)) {
+    const decls = m[1].split(';').flatMap((p, i) => {
+      const f = parseF(p);
+      const v = judge(f);
+      return v.kind === 'provable' ? [theoremDecl(f, v.term, `oracle${i}`)] : [];
+    });
+    out.push({ line: lineOf(m.index!), code: decls.join('\n\n'), allowErrors: false, what: 'PropOracle proofs' });
+  }
+  return out;
+}
