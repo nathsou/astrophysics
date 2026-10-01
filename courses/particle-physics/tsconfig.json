@@ -1,0 +1,28 @@
+{
+  // Used by svelte-check, which also checks the plain .ts files included below.
+  "extends": "./.svelte-kit/tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "allowJs": true,
+    "checkJs": false,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
+    "moduleResolution": "bundler",
+    "types": ["vite/client", "node"]
+  },
+  // SvelteKit's generated config only covers src/; chapter widgets and exercises live in content/.
+  "include": [
+    ".svelte-kit/ambient.d.ts",
+    ".svelte-kit/non-ambient.d.ts",
+    ".svelte-kit/types/**/$types.d.ts",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "tools/**/*.ts",
+    "src/**/*.ts",
+    "src/**/*.svelte",
+    "content/**/*.ts",
+    "content/**/*.svelte"
+  ]
+}

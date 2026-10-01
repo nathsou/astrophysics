@@ -1,0 +1,12 @@
+cern-history:
+  authors: CERN
+  year: 2024
+  title: Our history
+  url: https://home.cern/about/who-we-are/our-history
+  note: CERN's account of the convention of 1954 and the laboratory's early years.
+lhc-design:
+  authors: O. Brüning, P. Collier, P. Lebrun, S. Myers, R. Ostojic, J. Poole, P. Proudlock (eds.)
+  year: 2004
+  title: LHC Design Report, Volume I, The LHC Main Ring
+  venue: CERN-2004-003-V-1
+  url: https://cds.cern.ch/record/782076

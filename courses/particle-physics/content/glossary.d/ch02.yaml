@@ -1,0 +1,28 @@
+four-momentum:
+  term: four-momentum
+  definition: The four numbers (E, p_x, p_y, p_z) that describe the energy and momentum of a particle together. They change into one another when the observer's velocity changes, and the combination E² − |p|² does not change.
+  chapter: relativity-for-particles
+invariant-mass:
+  term: invariant mass
+  definition: The mass of a system of particles, computed from their summed four-momentum as √(E² − |p|²). It is the same in every frame. For two particles that came from one decay, it is the mass of the parent.
+  chapter: relativity-for-particles
+boost:
+  term: boost
+  definition: A change of reference frame to one moving at a steady velocity. It mixes the energy and the momentum along the direction of motion.
+  chapter: relativity-for-particles
+transverse-momentum:
+  term: transverse momentum (pT)
+  definition: The part of a particle's momentum perpendicular to the beam axis, √(p_x² + p_y²). Unchanged by a boost along the beam.
+  chapter: relativity-for-particles
+pseudorapidity:
+  term: pseudorapidity (η)
+  definition: A measure of the angle from the beam, η = −ln tan(θ/2). Zero at 90°, about 2.5 at 9°. Detector coverage and particle density are quoted in η.
+  chapter: relativity-for-particles
+rapidity:
+  term: rapidity
+  definition: y = ½ ln((E + p_z)/(E − p_z)). A boost along the beam adds the same constant to the rapidity of every particle.
+  chapter: relativity-for-particles
+centre-of-mass-energy:
+  term: centre-of-mass energy (√s)
+  definition: The total energy in the frame in which the colliding particles have no net momentum. It is the energy available to make new particles.
+  chapter: relativity-for-particles

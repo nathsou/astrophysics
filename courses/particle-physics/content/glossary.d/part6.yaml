@@ -1,0 +1,101 @@
+# Part VI: the weak force
+weak-force:
+  term: weak force
+  definition: The interaction responsible for beta decay and for the decay of the muon, the pion, the strange, charm and bottom particles and the top quark. It is carried by the W and Z bosons, it is the only force that changes the flavour of a quark, and it is the only one that distinguishes left from right.
+  chapter: the-weak-force
+neutrino:
+  term: neutrino
+  definition: A neutral lepton of spin ½ that feels only the weak force (and gravity). There are three kinds, one for each charged lepton. It was proposed by Pauli in 1930 to save energy conservation in beta decay, and detected in 1956.
+  chapter: the-weak-force
+beta-decay:
+  term: beta decay
+  definition: The decay in which a nucleus, or a single neutron, emits an electron and an antineutrino (or a positron and a neutrino) and changes one unit of charge. At the level of quarks, a down quark becomes an up quark, or the reverse.
+  chapter: the-weak-force
+fermi-constant:
+  term: Fermi's constant (G_F)
+  definition: The strength of the weak interaction at low energy, 1.1664 × 10⁻⁵ GeV⁻². It has the dimensions of an inverse energy squared, and is fixed by the lifetime of the muon. In the electroweak theory, G_F/√2 = g²/(8 m_W²).
+  chapter: the-weak-force
+parity:
+  term: parity (P)
+  definition: The operation of reflecting all three spatial coordinates. A law respects parity if the mirror image of every process it allows is a process it allows, with the same probability. The strong and electromagnetic forces respect parity. The weak force violates it.
+  chapter: the-weak-force
+helicity:
+  term: helicity
+  definition: The component of a particle's spin along its direction of motion, in units of ½. Positive is right-handed and negative is left-handed. It is invariant for a massless particle, not for one with mass.
+  chapter: the-weak-force
+chirality:
+  term: chirality
+  definition: The property of a fermion field that the weak interaction distinguishes. The left-handed and right-handed parts of the field are acted on by projectors (1 ∓ γ⁵)/2. For a massless particle it equals helicity.
+  chapter: the-weak-force
+v-minus-a:
+  term: V − A
+  definition: The form of the weak charged-current interaction, a vector current minus an axial-vector current, γ^μ(1 − γ⁵). It couples only left-handed particles and right-handed antiparticles.
+  chapter: the-weak-force
+helicity-suppression:
+  term: helicity suppression
+  definition: The reduction of a weak decay into a light charged lepton, because the lepton must be produced with the helicity that the weak interaction disfavours, with a probability of about (m/2E)². It makes π → eν about 10⁴ times rarer than π → μν.
+  chapter: the-weak-force
+w-boson:
+  term: W boson
+  definition: The charged carrier of the weak force, W⁺ or W⁻, with a mass of 80.4 GeV. It changes the flavour of a quark or the type of a lepton, and violates parity maximally. Found in 1983 by UA1 and UA2.
+  chapter: w-and-z
+z-boson:
+  term: Z boson
+  definition: The neutral carrier of the weak force, mass 91.19 GeV and width 2.50 GeV. It couples to every fermion, and its resonance at LEP showed that there are three light neutrino species.
+  chapter: w-and-z
+weak-mixing-angle:
+  term: weak mixing angle (θ_W)
+  definition: The angle by which the neutral fields W³ and B are rotated into the photon and the Z. sin²θ_W is about 0.23. It ties together the W and Z masses, the strength of neutral currents and the asymmetries at the Z.
+  chapter: w-and-z
+neutral-current:
+  term: neutral current
+  definition: 'A weak interaction mediated by the Z in which no electric charge is exchanged: a neutrino scatters off a nucleon and stays a neutrino. First seen in the Gargamelle bubble chamber in 1973.'
+  chapter: w-and-z
+missing-transverse-momentum:
+  term: missing transverse momentum
+  definition: Minus the vector sum of the transverse momenta of everything a detector sees. At a hadron collider it stands for particles that escape unseen, such as neutrinos.
+  chapter: w-and-z
+transverse-mass:
+  term: transverse mass (m_T)
+  definition: A mass built from transverse momenta only, m_T² = 2 p_T(ℓ) p_T(miss) (1 − cos Δφ). For a lepton and a neutrino from a W it never exceeds the W mass, and its distribution has an edge there.
+  chapter: w-and-z
+stochastic-cooling:
+  term: stochastic cooling
+  definition: A way of reducing the spread of a stored beam, invented by Simon van der Meer. A pick-up measures the average offset of a sample of particles and a kicker corrects it. It made the antiproton beam of the SppS dense enough for collisions.
+  chapter: w-and-z
+flavour:
+  term: flavour
+  definition: Which kind of quark (u, d, s, c, b, t) or lepton a particle is. Only the weak force changes it.
+  chapter: flavour
+generation:
+  term: generation
+  definition: One of three copies of the pattern of quarks and leptons, each heavier than the last. The first holds u, d, e and ν_e, the second c, s, μ and ν_μ, the third t, b, τ and ν_τ.
+  chapter: flavour
+ckm-matrix:
+  term: CKM matrix
+  definition: The 3 × 3 unitary matrix of the strengths with which the W couples each up-type quark to each down-type one. Four numbers fix it, and one of them is a complex phase that makes the weak force treat matter and antimatter differently.
+  chapter: flavour
+cp-violation:
+  term: CP violation
+  definition: A difference between the behaviour of matter and that of antimatter, after reflection in a mirror. In the Standard Model it comes only from the complex phase of the CKM matrix. Seen in kaons in 1964 and in B mesons in 2001.
+  chapter: flavour
+unitarity-triangle:
+  term: unitarity triangle
+  definition: The triangle in the complex plane formed by V_ud V_ub* + V_cd V_cb* + V_td V_tb* = 0. Its sides and angles are measured separately, and they must close; its area is proportional to the amount of CP violation.
+  chapter: flavour
+impact-parameter:
+  term: impact parameter
+  definition: The distance of closest approach of a track to the primary vertex, in the plane transverse to the beam. A track from the decay of a long-lived hadron has a large one, and its significance, d₀ divided by its uncertainty, is used to tag b jets.
+  chapter: flavour
+b-tagging:
+  term: b-tagging
+  definition: Deciding whether a jet came from a b quark, from the displaced tracks and decay vertex of the b hadron it contains.
+  chapter: flavour
+top-quark:
+  term: top quark
+  definition: The heaviest known elementary particle, 172.6 GeV, the up-type quark of the third generation. It decays through t → W b in about 5 × 10⁻²⁵ s, before it can form hadrons. Found at Fermilab in 1995.
+  chapter: the-top-quark
+combinatorial-background:
+  term: combinatorial background
+  definition: Wrong combinations of correct objects. A tt̄ event with six jets offers 180 ways to assign them to the four quarks, and most are wrong.
+  chapter: the-top-quark

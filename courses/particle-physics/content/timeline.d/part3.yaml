@@ -1,0 +1,95 @@
+- year: 1928
+  title: Dirac's equation
+  people: Paul A. M. Dirac
+  chapter: antimatter
+  text: Dirac writes a relativistic equation for the electron that gives its spin, and whose solutions include states of negative energy.
+- year: 1932
+  title: The positron
+  people: Carl D. Anderson
+  chapter: antimatter
+  text: A cloud-chamber photograph with a lead plate shows a particle with the electron's mass and a positive charge, the first antiparticle seen.
+- year: 1955
+  title: The antiproton
+  people: Owen Chamberlain, Emilio Segrè, Clyde Wiegand, Thomas Ypsilantis
+  chapter: antimatter
+  text: Protons of 6.2 GeV from the Bevatron make antiprotons in a copper target, above the threshold of 5.63 GeV.
+- year: 1995
+  title: Antihydrogen
+  people: PS210 collaboration, then ATHENA, ATRAP, ALPHA
+  chapter: antimatter
+  text: The first antihydrogen atoms are made at CERN in 1995; cold antihydrogen follows in 2002, trapped atoms in 2010, and in 2023 ALPHA-g sees antihydrogen fall.
+- year: 1912
+  title: Cosmic rays
+  people: Victor F. Hess
+  chapter: cosmic-rays-pions-muons
+  text: Balloon flights up to about 5,300 m show that the ionisation of the air rises with height, and so that a penetrating radiation comes from above.
+- year: 1935
+  title: Yukawa's meson
+  people: Hideki Yukawa
+  chapter: cosmic-rays-pions-muons
+  text: Yukawa explains the short range of the nuclear force by the exchange of a particle of about two hundred electron masses.
+- year: 1937
+  title: The muon
+  people: Seth Neddermeyer, Carl Anderson, Jabez Street, Edward Stevenson
+  chapter: cosmic-rays-pions-muons
+  text: A cosmic-ray particle of mass between the electron's and the proton's, which penetrates matter easily, is found in cloud chambers.
+- year: 1941
+  title: Time dilation of the muon
+  people: Bruno Rossi, David B. Hall
+  chapter: cosmic-rays-pions-muons
+  text: Rossi and Hall find that slower cosmic-ray mesotrons decay about three times as fast as faster ones, as relativity predicts, and measure the proper lifetime.
+- year: 1947
+  title: The muon is not Yukawa's particle
+  people: Marcello Conversi, Ettore Pancini, Oreste Piccioni
+  chapter: cosmic-rays-pions-muons
+  text: Negative cosmic-ray particles stopped in carbon decay instead of being absorbed by nuclei, so they do not feel the strong force.
+- year: 1947
+  title: The pion
+  people: César Lattes, Giuseppe Occhialini, Cecil Powell, Hugh Muirhead
+  chapter: cosmic-rays-pions-muons
+  text: Photographic emulsions exposed on mountains show a heavier meson that comes to rest and gives a lighter one, the pion and the muon.
+- year: 1947
+  title: V particles
+  people: George Rochester, Clifford Butler
+  chapter: conservation-laws
+  text: Two cloud-chamber photographs in Manchester show new unstable particles of about a thousand electron masses, the first strange particles.
+- year: 1953
+  title: Strangeness
+  people: Murray Gell-Mann, Tadao Nakano, Kazuhiko Nishijima
+  chapter: conservation-laws
+  text: A new additive quantum number, conserved by the strong and electromagnetic forces and not by the weak, explains why strange particles are made fast and decay slowly.
+- year: 1952
+  title: The Δ resonance
+  people: Enrico Fermi, Herbert Anderson and colleagues
+  chapter: the-eightfold-way
+  text: The pion–proton cross-section rises steeply with energy, the first sign of the resonance later called Δ(1232).
+- year: 1961
+  title: The Eightfold Way
+  people: Murray Gell-Mann, Yuval Ne'eman
+  chapter: the-eightfold-way
+  text: The hadrons are arranged in the octets and decuplets of SU(3).
+- year: 1964
+  title: The Ω⁻
+  people: V. E. Barnes and colleagues, Brookhaven
+  chapter: the-eightfold-way
+  text: The particle that Gell-Mann's pattern predicted for the empty corner of the decuplet is found in a bubble-chamber photograph, with a mass of 1686 ± 12 MeV.
+- year: 1964
+  title: Quarks
+  people: Murray Gell-Mann, George Zweig
+  chapter: quarks
+  text: The triplet of SU(3) is proposed as real particles of charge ⅔ and −⅓ from which all hadrons are made.
+- year: 1965
+  title: Colour
+  people: Oscar Greenberg, Moo-Young Han, Yoichiro Nambu
+  chapter: quarks
+  text: A third property of quarks, taking three values, resolves the exclusion-principle problem of the Δ⁺⁺.
+- year: 1968
+  title: Deep inelastic scattering at SLAC
+  people: Jerome Friedman, Henry Kendall, Richard Taylor
+  chapter: quarks
+  text: Electrons scattered at high momentum transfer from protons show scaling, the signature of point-like constituents.
+- year: 1969
+  title: Feynman's partons
+  people: Richard P. Feynman
+  chapter: quarks
+  text: The proton is described as a swarm of point-like partons, and scaling follows.

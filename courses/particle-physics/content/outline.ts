@@ -1,0 +1,140 @@
+/**
+ * The course outline: single source of truth for navigation. A chapter becomes readable when a
+ * matching `chapters/<nn>-<slug>/index.md` exists; until then it is listed as planned.
+ */
+
+export interface OutlineEntry {
+  slug: string;
+  number: string;
+  title: string;
+  summary: string;
+  /** The flagship interactive, shown on the home page. */
+  flagship?: string;
+  /** Year of the chapter's key historical moment, for the home page's timeline. */
+  year?: number;
+  /** What happened that year. */
+  event?: string;
+  /** What the reader adds to the mini-LHC in this chapter. */
+  pipeline?: string;
+}
+
+export interface OutlinePart {
+  id: string;
+  title: string;
+  blurb: string;
+  chapters: OutlineEntry[];
+}
+
+export const COURSE_TITLE = 'Particle Physics';
+export const COURSE_SUBTITLE = 'From a cloud chamber to the Higgs boson, by building a mini-LHC';
+
+export const PARTS: OutlinePart[] = [
+  {
+    id: '0',
+    title: 'Prologue',
+    blurb: 'What CERN is, what the LHC does, and one collision followed from the beams to a histogram.',
+    chapters: [
+      { slug: 'anatomy-of-a-collision', number: '0', title: 'Anatomy of a collision', summary: 'CERN, the LHC, and one proton collision followed from the beams to one entry in a histogram.', flagship: 'Collision journey', year: 1954, event: 'CERN is founded', pipeline: 'The finished pipeline, running' },
+    ],
+  },
+  {
+    id: 'I',
+    title: 'Foundations',
+    blurb: 'Natural units, four-vectors, quantum essentials and the idea that scattering is seeing.',
+    chapters: [
+      { slug: 'scales-and-units', number: '1', title: 'Scales and natural units', summary: 'eV and GeV, ħ = c = 1, and the energy needed to see each scale.', flagship: 'Powers-of-ten zoom', year: 1899, event: 'Planck’s natural units', pipeline: 'hep/units' },
+      { slug: 'relativity-for-particles', number: '2', title: 'Relativity for particles', summary: 'Four-momenta, invariant mass, boosts, and real muon pairs from the LHC.', flagship: 'The dimuon map', year: 1908, event: 'Minkowski’s spacetime', pipeline: 'Kinematics' },
+      { slug: 'quantum-essentials', number: '3', title: 'Quantum essentials', summary: 'Spin, statistics, decay, lifetime and width, cross-section and luminosity.', flagship: 'Decay clock', year: 1925, event: 'Pauli’s exclusion principle', pipeline: 'Generator v0' },
+      { slug: 'scattering-is-seeing', number: '4', title: 'Scattering is seeing', summary: 'Rutherford, cross-sections, resolution and the size of the proton.', flagship: 'Geiger and Marsden', year: 1911, event: 'Rutherford’s nucleus', pipeline: 'Accept–reject sampling' },
+    ],
+  },
+  {
+    id: 'II',
+    title: 'Seeing particles',
+    blurb: 'Tracks, matter, detectors and reconstruction: how invisible things become data.',
+    chapters: [
+      { slug: 'tracks', number: '5', title: 'Tracks', summary: 'Charged particles in a magnetic field, cloud and bubble chambers, momentum from curvature.', flagship: 'Cloud chamber', year: 1911, event: 'Wilson’s cloud chamber', pipeline: 'Detector v0, circle fit' },
+      { slug: 'particles-through-matter', number: '6', title: 'Particles through matter', summary: 'Energy loss, multiple scattering, radiation length and showers.', flagship: 'Shower lab', year: 1930, event: 'Bethe’s energy-loss formula', pipeline: 'Material effects' },
+      { slug: 'building-a-detector', number: '7', title: 'Building a detector', summary: 'The onion of tracker, calorimeters and muon chambers, and how to design one.', flagship: 'Detector designer', year: 1968, event: 'Charpak’s wire chamber', pipeline: 'Detector v1, event display' },
+      { slug: 'reconstruction', number: '8', title: 'Reconstruction', summary: 'From hits to particles: the Hough transform, the Kalman filter, vertices and clusters.', flagship: 'Tracking under pile-up', year: 1960, event: 'The Kalman filter', pipeline: 'Reconstruction v1' },
+    ],
+  },
+  {
+    id: 'III',
+    title: 'The zoo',
+    blurb: 'Antimatter, cosmic rays, conservation laws, the Eightfold Way and quarks.',
+    chapters: [
+      { slug: 'antimatter', number: '9', title: 'Antimatter', summary: 'Dirac’s equation, the positron, annihilation and antiprotons.', flagship: 'Anderson’s photograph', year: 1932, event: 'Anderson’s positron', pipeline: 'Antiparticles' },
+      { slug: 'cosmic-rays-pions-muons', number: '10', title: 'Cosmic rays, pions and muons', summary: 'Air showers, Yukawa’s pion, the muon and time dilation.', flagship: 'Air shower', year: 1912, event: 'Hess’s balloon flights', pipeline: 'Cosmic-muon source' },
+      { slug: 'conservation-laws', number: '11', title: 'Conservation laws', summary: 'Charge, baryon and lepton numbers, strangeness, and the ledger.', flagship: 'Reaction judge', year: 1953, event: 'Strangeness', pipeline: 'Conservation checker' },
+      { slug: 'the-eightfold-way', number: '12', title: 'The Eightfold Way', summary: 'Isospin, SU(3) patterns, resonances and the prediction of the Ω⁻.', flagship: 'Eightfold Way puzzle', year: 1964, event: 'The Ω⁻', pipeline: 'Resonances' },
+      { slug: 'quarks', number: '13', title: 'Quarks', summary: 'The quark model, colour, deep inelastic scattering and partons.', flagship: 'Deep inelastic scattering', year: 1968, event: 'SLAC–MIT scattering', pipeline: 'Parton distributions' },
+    ],
+  },
+  {
+    id: 'IV',
+    title: 'Forces as fields',
+    blurb: 'Fields, Feynman diagrams, QED, gauge symmetry and QCD.',
+    chapters: [
+      { slug: 'fields-and-particles', number: '14', title: 'Fields and particles', summary: 'A field as coupled oscillators; quanta, mass and virtual exchange.', flagship: 'Field lattice', year: 1927, event: 'Dirac quantises the field' },
+      { slug: 'feynman-diagrams', number: '15', title: 'Feynman diagrams', summary: 'Vertices, propagators, coupling powers and what a diagram is.', flagship: 'Diagram sketchpad', year: 1948, event: 'The Pocono conference' },
+      { slug: 'qed', number: '16', title: 'QED', summary: 'e⁺e⁻ → μ⁺μ⁻ computed, running α, and counting colours with R.', flagship: 'Virtual e⁺e⁻ collider', year: 1948, event: 'Schwinger’s α/2π', pipeline: 'Generator v1, analysis v1' },
+      { slug: 'symmetry-and-gauge', number: '17', title: 'Symmetry and gauge invariance', summary: 'Noether, local phase symmetry, and the photon as the price of consistency.', flagship: 'Phase dial', year: 1954, event: 'Yang–Mills theory' },
+      { slug: 'qcd', number: '18', title: 'QCD', summary: 'Colour, gluons, asymptotic freedom, confinement and jets.', flagship: 'String breaking', year: 1979, event: 'Three-jet events at PETRA', pipeline: 'Generator v2, jets' },
+    ],
+  },
+  {
+    id: 'V',
+    title: 'The machine',
+    blurb: 'Accelerating, steering and colliding beams.',
+    chapters: [
+      { slug: 'accelerating-particles', number: '19', title: 'Accelerating particles', summary: 'RF cavities, synchrotrons, phase stability and the CERN injector chain.', flagship: 'RF bucket', year: 1945, event: 'Phase stability' },
+      { slug: 'steering-and-focusing', number: '20', title: 'Steering and focusing', summary: 'Dipoles, quadrupoles, strong focusing and the stability of a ring.', flagship: 'Lattice designer', year: 1952, event: 'Strong focusing', pipeline: 'Transfer-matrix tracking' },
+      { slug: 'colliding-beams', number: '21', title: 'Colliding beams', summary: 'Luminosity, pile-up, synchrotron radiation, and why the LHC collides protons.', flagship: 'Collider dashboard', year: 2008, event: 'The LHC incident', pipeline: 'Machine stage' },
+    ],
+  },
+  {
+    id: 'VI',
+    title: 'The weak force',
+    blurb: 'Beta decay, parity violation, W and Z, flavour and the top quark.',
+    chapters: [
+      { slug: 'the-weak-force', number: '22', title: 'The weak force', summary: 'The neutrino, Fermi’s theory, and the violation of parity.', flagship: 'Mirror', year: 1957, event: 'Wu’s experiment' },
+      { slug: 'w-and-z', number: '23', title: 'W and Z', summary: 'Electroweak unification, the discovery of the W and Z, and three neutrinos.', flagship: 'Counting neutrinos', year: 1983, event: 'W and Z discovered', pipeline: 'Drell–Yan, missing pT' },
+      { slug: 'flavour', number: '24', title: 'Flavour', summary: 'Three generations, the CKM matrix, CP violation and b-hadrons.', flagship: 'Unitarity triangle', year: 1974, event: 'The November Revolution', pipeline: 'Vertexing, b-tagging' },
+      { slug: 'the-top-quark', number: '25', title: 'The top quark', summary: 'The heaviest quark: tt̄ events and mass reconstruction.', flagship: 'Top reconstruction', year: 1995, event: 'CDF and D0 find the top', pipeline: 'tt̄ production' },
+    ],
+  },
+  {
+    id: 'VII',
+    title: 'The Higgs boson',
+    blurb: 'Why particles have mass, the trigger, the statistics of discovery, and finding the Higgs.',
+    chapters: [
+      { slug: 'the-higgs-mechanism', number: '26', title: 'The Higgs mechanism', summary: 'Spontaneous symmetry breaking, and where particle masses come from.', flagship: 'Mexican hat', year: 1964, event: 'Brout, Englert, Higgs' },
+      { slug: 'a-needle-in-a-haystack', number: '27', title: 'A needle in a haystack', summary: 'Rates, the trigger, data volumes and the computing grid.', flagship: 'Trigger game', year: 1989, event: 'The Web is proposed at CERN', pipeline: 'Trigger stage' },
+      { slug: 'the-statistics-of-discovery', number: '28', title: 'The statistics of discovery', summary: 'Likelihoods, p-values, 5σ, the look-elsewhere effect and systematics.', flagship: 'Bump hunter', year: 2016, event: 'The 750 GeV excess fades', pipeline: 'Analysis v2' },
+      { slug: 'finding-the-higgs', number: '29', title: 'Finding the Higgs', summary: 'H → γγ and H → ZZ* → 4ℓ, in your own pipeline and then in real data.', flagship: 'The whole pipeline', year: 2012, event: 'The 4 July seminar', pipeline: 'The full chain' },
+      { slug: 'measuring-the-higgs', number: '30', title: 'Measuring the Higgs', summary: 'Spin, couplings proportional to mass, and the shape of the potential.', flagship: 'Couplings against mass', year: 2013, event: 'The Nobel Prize' },
+    ],
+  },
+  {
+    id: 'VIII',
+    title: 'Open questions',
+    blurb: 'Neutrino masses, dark matter, the matter–antimatter puzzle, and particle physics in the world.',
+    chapters: [
+      { slug: 'neutrinos', number: '31', title: 'Neutrinos', summary: 'Oscillations, mixing and the masses nobody expected.', flagship: 'Oscillation lab', year: 1998, event: 'Super-Kamiokande', pipeline: 'Oscillation probability' },
+      { slug: 'beyond-the-standard-model', number: '32', title: 'Beyond the Standard Model', summary: 'Dark matter, the matter–antimatter asymmetry, hierarchy, and what comes next.', flagship: 'Search sandbox', year: 2025, event: 'The final muon g − 2', pipeline: 'Limit setting' },
+      { slug: 'particle-physics-in-the-world', number: '33', title: 'Particle physics in the world', summary: 'Medical imaging, muography, detector spin-offs, the Web and the grid.', flagship: 'Muography', year: 2017, event: 'A void in Khufu’s pyramid' },
+    ],
+  },
+];
+
+export const APPENDICES: OutlineEntry[] = [
+  { slug: 'maths', number: 'A', title: 'Maths primers', summary: 'Complex numbers, vectors and matrices, calculus, probability, Fourier intuition and Lagrangians.' },
+  { slug: 'physics', number: 'B', title: 'Physics primers', summary: 'Special relativity and quantum mechanics in brief, linked to the astrophysics course.' },
+  { slug: 'units', number: 'C', title: 'Units, constants and conventions', summary: 'Natural units, conversions, the metric and detector coordinates.' },
+  { slug: 'particle-data', number: 'D', title: 'Particle data', summary: 'The Standard Model particles and the hadrons used in the course.' },
+  { slug: 'the-pipeline', number: 'E', title: 'The pipeline', summary: 'What each stage models, and what it does not.' },
+  { slug: 'hep-reference', number: 'F', title: 'The hep library', summary: 'Reference for the code exercises.' },
+  { slug: 'build-it-for-real', number: 'G', title: 'Build it for real', summary: 'Cloud chamber, Geiger counter, muon detector, phone camera: kit, safety and labs.' },
+  { slug: 'glossary-timeline', number: 'H', title: 'Glossary, timeline and bibliography', summary: 'Every term, date and source in the course.' },
+];

@@ -1,0 +1,28 @@
+control-room:
+  term: Control Room
+  definition: The page of this course that runs the whole mini-LHC, from the colliding beams to a histogram, on all the processor cores of your computer. Each of the six stages shows whether it runs the library's reference code or yours.
+  chapter: finding-the-higgs
+page-one:
+  term: LHC Page 1
+  definition: The public status display of the LHC's operators, which shows on one screen the beam mode, the beam energy, the intensities and the luminosity. The Control Room's status strip imitates it.
+  chapter: finding-the-higgs
+use-my-code:
+  term: use my code
+  definition: A switch that replaces the library's reference implementation of a pipeline function by the one you wrote in an exercise. The function runs inside every stage that calls it, in every worker.
+  chapter: finding-the-higgs
+pseudo-data:
+  term: pseudo-data
+  definition: Counts drawn from a Poisson distribution whose mean is the simulated expectation, standing in for a real measurement. They show what an experiment of that size would see by chance. They are not data.
+  chapter: finding-the-higgs
+k-factor:
+  term: K-factor
+  definition: The ratio of a cross-section calculated with higher-order corrections to the leading-order one. This course's generator works at leading order, so a K-factor is a number you apply yourself; the Control Room says when it is 1.
+  chapter: finding-the-higgs
+generator-window:
+  term: generator-level window
+  definition: A cut on the hard process, made before the parton shower, hadronisation and detector simulation, which are the expensive stages. It lets a background sample cover only the mass range the analysis looks at. The sample's cross-section is reduced by the fraction of events that pass.
+  chapter: finding-the-higgs
+stratified-generation:
+  term: stratified generation
+  definition: Generating a steeply falling spectrum in slices, each with its own cross-section and weight, so that the rare high-energy tail is sampled as well as the bulk. One simulated event of a slice stands for many expected ones.
+  chapter: finding-the-higgs

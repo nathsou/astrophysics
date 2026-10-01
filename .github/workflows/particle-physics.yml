@@ -1,0 +1,37 @@
+name: Particle Physics — checks
+
+# Tests, type checks and a build for courses/particle-physics. (Deployment is in deploy.yml.)
+on:
+  push:
+    branches: [main]
+    paths: ['courses/particle-physics/**', '.github/workflows/particle-physics.yml']
+  pull_request:
+    paths: ['courses/particle-physics/**', '.github/workflows/particle-physics.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: courses/particle-physics
+
+jobs:
+  site:
+    runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: --experimental-strip-types
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: courses/particle-physics/package-lock.json
+      - run: npm ci
+      - name: Library, widget and content tests
+        run: npm test
+      - name: Type-check (svelte-check)
+        run: npm run check
+      - name: Build
+        run: npm run build

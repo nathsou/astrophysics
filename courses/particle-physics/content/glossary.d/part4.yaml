@@ -1,0 +1,180 @@
+field:
+  term: field
+  definition: A quantity with a value (or several) at every point of space and time. In field theory every kind of particle is a quantum of a field, and forces are the response of a field to a source.
+  chapter: fields-and-particles
+quantum:
+  term: quantum
+  definition: One rung of the energy ladder of a mode of a field. A quantum of the mode with wave number k has momentum ħk and energy ħω; it is what is called a particle.
+  chapter: fields-and-particles
+dispersion-relation:
+  term: dispersion relation
+  definition: The relation between the frequency ω and the wave number k of a wave. For a relativistic field it is ω² = k² + m², which is E² = p² + m² for its quanta.
+  chapter: fields-and-particles
+group-velocity:
+  term: group velocity
+  definition: The speed dω/dk at which a wave packet travels. For the relativistic dispersion relation it is p/E, the speed of a particle.
+  chapter: fields-and-particles
+creation-operator:
+  term: creation and annihilation operators
+  definition: The operators a† and a that add one quantum to a mode of a field or remove one. Interactions are products of them, which is how particles are created and destroyed.
+  chapter: fields-and-particles
+propagator:
+  term: propagator
+  definition: The response of a field to a disturbance. For a scalar field of mass m it is 1/(q² + m²) in the static case, and i/(p² − m²) in general. A line inside a Feynman diagram stands for one.
+  chapter: fields-and-particles
+virtual-particle:
+  term: virtual particle
+  definition: An internal line of a Feynman diagram, whose energy and momentum do not satisfy E² = p² + m² (it is off shell). It is a factor in a calculation, not an object that a detector sees.
+  chapter: fields-and-particles
+off-shell:
+  term: off shell
+  definition: Having energy and momentum that do not satisfy E² = p² + m². Real particles that reach a detector are on shell; internal lines of diagrams are generally off shell.
+  chapter: fields-and-particles
+yukawa-potential:
+  term: Yukawa potential
+  definition: The potential V(r) = −(g²/4π) e^(−r/R)/r between two sources exchanging a particle of mass m. Its range is R = ħc/mc². For m = 0 it is the Coulomb potential.
+  chapter: fields-and-particles
+noether-theorem:
+  term: Noether's theorem
+  definition: Every continuous symmetry of the action implies a conserved quantity. Invariance under shifts in time gives energy, shifts in space momentum, rotations angular momentum, and phase changes of a charged field electric charge.
+  chapter: symmetry-and-gauge
+global-symmetry:
+  term: global symmetry
+  definition: A transformation applied identically at every point of space and time that leaves the equations unchanged, such as ψ → e^(iα)ψ with a constant α. By Noether's theorem it gives a conserved charge.
+  chapter: symmetry-and-gauge
+gauge-symmetry:
+  term: gauge symmetry (local symmetry)
+  definition: A symmetry under transformations whose parameters depend on position and time, such as ψ → e^(iα(x))ψ. It requires a gauge field, which fixes the form of the interaction.
+  chapter: symmetry-and-gauge
+covariant-derivative:
+  term: covariant derivative
+  definition: The derivative D_μ = ∂_μ − iqA_μ that compares a field at neighbouring points using the gauge field. It transforms like the field itself, so expressions built from it are gauge invariant.
+  chapter: symmetry-and-gauge
+gauge-field:
+  term: gauge field
+  definition: 'The field that compensates for the position-dependent change of phase convention. Its quanta are the force carriers of the interaction: the photon for U(1), the W bosons for the weak SU(2), the gluons for SU(3).'
+  chapter: symmetry-and-gauge
+field-strength:
+  term: field strength
+  definition: The gauge-invariant derivative of a gauge field, F_μν = ∂_μA_ν − ∂_νA_μ for the photon. Its components are the electric and magnetic fields. For a non-abelian group it has an extra term with two gauge fields.
+  chapter: symmetry-and-gauge
+generator:
+  term: generator
+  definition: One of the matrices T_a from which a group of matrices is built, with elements exp(iθ_aT_a). SU(n) has n² − 1 generators, and there is one gauge boson for each.
+  chapter: symmetry-and-gauge
+non-abelian:
+  term: non-abelian
+  definition: Describing a group whose elements do not commute, so that the commutator of two generators is not zero. Non-abelian gauge bosons carry the charge they couple to and interact with each other.
+  chapter: symmetry-and-gauge
+wilson-loop:
+  term: Wilson loop
+  definition: The product of link variables round a closed loop of a lattice, a gauge-invariant quantity. Its average falls with the area of the loop when the force confines.
+  chapter: symmetry-and-gauge
+feynman-diagram:
+  term: Feynman diagram
+  definition: A graph of lines (particles) and vertices (interactions) that stands for one term of the perturbation series of a process. The sum of the diagrams is the amplitude.
+  chapter: feynman-diagrams
+vertex:
+  term: vertex
+  definition: A point of a Feynman diagram where lines meet, standing for one interaction term. Each vertex contributes a power of the coupling, and conserves energy, momentum, charge and the other conserved numbers.
+  chapter: feynman-diagrams
+tree-diagram:
+  term: tree diagram
+  definition: A Feynman diagram with no closed loop. It is the leading term in the series for a process, and a tree with n external lines and cubic vertices has n − 2 vertices.
+  chapter: feynman-diagrams
+loop-diagram:
+  term: loop diagram
+  definition: A Feynman diagram with a closed circuit of internal lines. Each loop adds two powers of the coupling to the amplitude, and its momentum integral can diverge, which renormalisation absorbs.
+  chapter: feynman-diagrams
+crossing:
+  term: crossing
+  definition: The rule that an incoming particle of momentum p is equivalent, in the amplitude, to an outgoing antiparticle of momentum −p. One amplitude then describes annihilation, scattering and pair production.
+  chapter: feynman-diagrams
+mandelstam:
+  term: Mandelstam variables
+  definition: The invariants s = (p₁ + p₂)², t = (p₁ − k₁)² and u = (p₁ − k₂)² of a two-body process, with s + t + u equal to the sum of the squared masses.
+  chapter: feynman-diagrams
+helicity-amplitude:
+  term: helicity amplitude
+  definition: The amplitude for a process with definite helicities (spin projections along the direction of motion) of every particle. For massless fermions the vector coupling conserves helicity, so few amplitudes are non-zero.
+  chapter: qed
+bhabha-scattering:
+  term: Bhabha scattering
+  definition: The process e⁺e⁻ → e⁺e⁻. It has an annihilation (s-channel) and a scattering (t-channel) diagram that interfere, and a forward peak that makes it the standard process for measuring luminosity.
+  chapter: qed
+running-coupling:
+  term: running coupling
+  definition: The dependence of a coupling constant on the energy scale. The electromagnetic α grows with energy because of vacuum polarisation; the strong α_s falls.
+  chapter: qed
+vacuum-polarisation:
+  term: vacuum polarisation
+  definition: The loop of a charged fermion–antifermion pair in a photon line. It screens a charge and makes α depend on the energy of the process.
+  chapter: qed
+r-ratio:
+  term: R ratio
+  definition: 'R = σ(e⁺e⁻ → hadrons) / σ(e⁺e⁻ → μ⁺μ⁻). At leading order it equals N_c ΣQ_q² over the quarks that can be produced, with steps at each quark threshold: 2, 10/3 and 11/3 for three colours.'
+  chapter: qed
+anomalous-magnetic-moment:
+  term: anomalous magnetic moment
+  definition: The fractional excess a = (g − 2)/2 of a particle's g-factor over Dirac's value 2, produced by loop corrections. For the electron, a = α/2π + … = 0.00115965218.
+  chapter: qed
+unweighting:
+  term: unweighting
+  definition: Turning weighted Monte Carlo points into events of equal weight by accepting each with probability w/w_max. The fraction kept is the efficiency.
+  chapter: qed
+colour:
+  term: colour
+  definition: The charge of the strong force. Each quark carries one of three colours, each antiquark one of three anticolours, and each gluon a colour and an anticolour. The labels are components of an SU(3) vector, not colours of light.
+  chapter: qcd
+gluon:
+  term: gluon
+  definition: The massless spin-1 gauge boson of the strong force. There are eight, one for each generator of SU(3). Gluons carry colour themselves, so they interact with each other.
+  chapter: qcd
+colour-factor:
+  term: colour factor
+  definition: A number set by the gauge group that multiplies the strength of a vertex. C_F = 4/3 for a quark emitting a gluon, C_A = 3 for a gluon emitting a gluon, T_R = 1/2 for a gluon splitting to a quark pair.
+  chapter: qcd
+asymptotic-freedom:
+  term: asymptotic freedom
+  definition: The decrease of the strong coupling with energy, which makes quarks and gluons interact weakly at short distances. It follows from the gluon self-coupling, which outweighs the screening by quark loops when there are at most 16 flavours.
+  chapter: qcd
+confinement:
+  term: confinement
+  definition: 'The fact that coloured particles are never found alone: quarks and gluons exist only inside colour-neutral hadrons. The energy between a quark and an antiquark grows linearly with their separation.'
+  chapter: qcd
+string-tension:
+  term: string tension
+  definition: The energy per unit length κ of the colour flux tube between a quark and an antiquark, about 1 GeV per fermi (0.2 GeV²).
+  chapter: qcd
+hadronisation:
+  term: hadronisation
+  definition: The process by which the quarks and gluons of a collision turn into the colourless hadrons that a detector sees. It cannot be calculated perturbatively and is described by models, such as the Lund string and cluster models.
+  chapter: qcd
+jet:
+  term: jet
+  definition: A narrow spray of hadrons from a quark or gluon, grouped by a jet algorithm into a set whose summed four-momentum approximates that of the parton. Jets are defined by the algorithm and its radius.
+  chapter: qcd
+anti-kt:
+  term: anti-kT algorithm
+  definition: The sequential recombination jet algorithm that merges the pair with the smallest d_ij = min(1/pT_i², 1/pT_j²) ΔR²/R², or declares a jet when the beam distance 1/pT² is smallest. Its jets are cones of radius R around hard particles, and it is infrared and collinear safe.
+  chapter: qcd
+irc-safety:
+  term: infrared and collinear safety
+  definition: The property of a jet algorithm that adding a very soft particle, or splitting a particle into two collinear ones, does not change the hard jets. It is needed for the algorithm's predictions to be calculable in perturbation theory.
+  chapter: qcd
+parton-shower:
+  term: parton shower
+  definition: The cascade of gluon emissions and splittings from a quark or gluon, simulated step by step from the hard scale down to about 1 GeV with the soft and collinear splitting probabilities.
+  chapter: qcd
+sudakov-factor:
+  term: Sudakov form factor
+  definition: The probability that a parton does not radiate between two scales. It is the exponential of minus the integrated emission rate, and the shower draws the scale of the next emission from it.
+  chapter: qcd
+veto-algorithm:
+  term: veto algorithm
+  definition: A way of sampling from a distribution that cannot be integrated and inverted. Trial values are drawn from a larger function that can, each is kept with probability equal to the ratio of the true to the larger function, and a rejected one is a veto.
+  chapter: qcd
+quark-gluon-plasma:
+  term: quark–gluon plasma
+  definition: The state of matter above about 155 MeV (1.8 × 10¹² K) in which quarks and gluons are not confined into hadrons. It is produced in collisions of heavy nuclei, such as those studied by ALICE at the LHC.
+  chapter: qcd

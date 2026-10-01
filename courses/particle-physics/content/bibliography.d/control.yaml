@@ -1,0 +1,21 @@
+lhc-page1:
+  authors: CERN accelerator operations
+  year: 2024
+  title: LHC Page 1
+  venue: Public operations display of the LHC
+  url: https://op-webtools.web.cern.ch/vistar/vistars.php?usr=LHC1
+  note: The status page the LHC's operators watch, shown publicly. It lists the beam mode, beam energy, intensities and luminosity. The address is that of the public display; it may change.
+whatwg-workers:
+  authors: WHATWG
+  year: 2024
+  title: HTML Living Standard, Web workers
+  venue: whatwg.org
+  url: https://html.spec.whatwg.org/multipage/workers.html
+  note: The specification of the browser's Worker objects, which run the pipeline in parallel threads off the page's main thread.
+whatwg-compression:
+  authors: WHATWG
+  year: 2024
+  title: Compression Standard
+  venue: whatwg.org
+  url: https://compression.spec.whatwg.org/
+  note: The specification of CompressionStream and DecompressionStream, used to shorten the configuration stored in the Control Room's shared links.

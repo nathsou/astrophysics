@@ -1,0 +1,25 @@
+- year: 1909
+  title: Alphas bounce back from gold
+  people: Hans Geiger, Ernest Marsden
+  chapter: scattering-is-seeing
+  text: Geiger and Marsden find that a small fraction of alpha particles fired at a metal foil are reflected through more than 90°, which Thomson's model of the atom could not explain.
+- year: 1922
+  title: Silver atoms split into two beams
+  people: Otto Stern, Walther Gerlach
+  chapter: quantum-essentials
+  text: A beam of silver atoms crossing an inhomogeneous magnetic field separates into two, the first direct sign of a quantised angular momentum that turns out to be the electron's spin.
+- year: 1925
+  title: The exclusion principle
+  people: Wolfgang Pauli
+  chapter: quantum-essentials
+  text: Pauli proposes that no two electrons in an atom can be in the same quantum state, which explains the shell structure of the periodic table.
+- year: 1925
+  title: Spin
+  people: George Uhlenbeck, Samuel Goudsmit
+  chapter: quantum-essentials
+  text: Uhlenbeck and Goudsmit propose that the electron has an intrinsic angular momentum of ħ/2, which accounts for the two-valuedness Pauli had to postulate.
+- year: 1955
+  title: The proton has a size
+  people: Robert Hofstadter, Robert McAllister
+  chapter: scattering-is-seeing
+  text: Electrons of a few hundred MeV scattered from protons at Stanford fall off with angle faster than for a point charge, and give the proton a root-mean-square radius of a little under 0.8 fm.

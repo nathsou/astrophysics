@@ -1,0 +1,50 @@
+- year: 1964
+  title: The mechanism that gives mass to gauge bosons
+  people: Brout and Englert; Higgs; Guralnik, Hagen and Kibble
+  chapter: the-higgs-mechanism
+  text: "Three papers in Physical Review Letters, within about three months, show how a field with a non-zero value in the vacuum gives mass to gauge bosons without breaking the gauge symmetry. Higgs's paper states that the theory predicts a massive scalar boson."
+- year: 1989
+  title: A proposal for sharing information at CERN
+  people: Tim Berners-Lee
+  chapter: a-needle-in-a-haystack
+  text: "Berners-Lee's Information Management: A Proposal, to link documents on different computers with hypertext, which his supervisor annotated 'Vague but exciting'. It became the World Wide Web."
+- year: 1996
+  title: ROOT
+  people: René Brun and Fons Rademakers
+  chapter: a-needle-in-a-haystack
+  text: "A C++ data-analysis framework, successor to the Fortran tools of earlier decades, presented at a computing conference in 1996 and now the file format and toolkit of the LHC experiments."
+- year: 2005
+  title: The tiered computing grid for the LHC
+  people: CERN and the LHC experiments
+  chapter: a-needle-in-a-haystack
+  text: "The LHC Computing Grid Technical Design Report describes the tiers (Tier 0 at CERN, Tier 1 with tape, Tier 2 for simulation and analysis) of what became the Worldwide LHC Computing Grid."
+- year: 2011
+  title: Neutrinos that seemed to outrun light
+  people: The OPERA collaboration
+  chapter: the-statistics-of-discovery
+  text: "OPERA reports neutrinos arriving 60 ns early at 6σ by its own errors. In 2012 a loose fibre-optic connector and a clock oscillator are found to explain it."
+- year: 2000
+  title: LEP's last months
+  people: ALEPH, DELPHI, L3 and OPAL
+  chapter: finding-the-higgs
+  text: "A few candidate events suggest a Higgs boson near 115 GeV. The combined data set a lower limit of 114.4 GeV at 95 % confidence and a small excess near 115 GeV. LEP closes in November."
+- year: 2012
+  title: The 4 July seminar
+  people: ATLAS and CMS
+  chapter: finding-the-higgs
+  text: "At CERN the two experiments report a new particle near 125 GeV: ATLAS at 5.9σ and a mass of 126.0 GeV, CMS at 5.0σ and 125.3 GeV."
+- year: 2013
+  title: The Nobel Prize to Englert and Higgs
+  people: François Englert and Peter Higgs
+  chapter: measuring-the-higgs
+  text: "The prize is awarded for the theoretical discovery of the mechanism that contributes to our understanding of the origin of mass of subatomic particles, confirmed by the ATLAS and CMS discovery of the predicted particle."
+- year: 2016
+  title: The 750 GeV bump fades
+  people: ATLAS and CMS
+  chapter: the-statistics-of-discovery
+  text: "A diphoton excess near 750 GeV reported in December 2015 at about 3.9σ (ATLAS) and 2.6σ (CMS) locally does not reappear in the larger data set of 2016."
+- year: 2018
+  title: H → bb̄ and ttH observed
+  people: ATLAS and CMS
+  chapter: measuring-the-higgs
+  text: "The Higgs boson's decay to bottom quarks (5.4σ and 5.6σ) and its production with a top-quark pair (6.3σ and 5.2σ) are observed, testing its couplings to the two heaviest quarks."

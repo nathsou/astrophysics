@@ -1,0 +1,215 @@
+ion-pair:
+  term: ion pair
+  definition: >-
+    A free electron and the positive ion it left behind, made when a charged particle strips an electron from an atom. It takes about 34 eV on average to make one in air, and about 3.6 eV in silicon (where it is an electron and a hole).
+  chapter: tracks
+ionisation:
+  term: ionisation
+  definition: >-
+    The removal of an electron from an atom. A charged particle passing through matter ionises the atoms along its path and loses energy doing so. The trail of ion pairs is what tracking detectors record.
+  chapter: tracks
+cloud-chamber:
+  term: cloud chamber
+  definition: >-
+    A chamber of gas saturated with vapour that is made supersaturated, so that droplets condense on the ions left by a charged particle and show its track. Invented by C. T. R. Wilson in 1911.
+  chapter: tracks
+bubble-chamber:
+  term: bubble chamber
+  definition: >-
+    A chamber of superheated liquid, often liquid hydrogen, in which a charged particle leaves a trail of bubbles. Invented by D. A. Glaser in 1952. The liquid is also the target for the particle's collisions.
+  chapter: tracks
+track:
+  term: track
+  definition: >-
+    The path of a charged particle through a detector, recorded as a line of droplets, bubbles or position measurements (hits), usually curved by a magnetic field.
+  chapter: tracks
+sagitta:
+  term: sagitta
+  definition: >-
+    The largest distance between an arc and the straight chord joining its ends. For a track of transverse momentum pT in a field B over a chord L it is about 0.3 B L² / 8 pT.
+  chapter: tracks
+momentum-resolution:
+  term: momentum resolution
+  definition: >-
+    The relative uncertainty σ(pT)/pT with which a tracker measures a track's transverse momentum. It grows in proportion to pT because stiffer tracks bend less, and falls as the square of the track length and in proportion to the field.
+  chapter: tracks
+delta-ray:
+  term: delta ray
+  definition: >-
+    An electron knocked out of an atom with enough energy to ionise further and leave a short track of its own, branching off the track of the particle that made it.
+  chapter: tracks
+stopping-power:
+  term: stopping power (dE/dx)
+  definition: >-
+    The mean energy a particle loses per unit length of material, usually quoted per g/cm² of material crossed, in MeV cm²/g. The Bethe–Bloch formula gives it for charged particles losing energy by ionisation.
+  chapter: particles-through-matter
+minimum-ionising-particle:
+  term: minimum-ionising particle
+  definition: >-
+    A charged particle at the minimum of the stopping-power curve, near βγ ≈ 3–4, which loses the least energy per unit length. Most muons and many other particles in a detector are close to it.
+  chapter: particles-through-matter
+landau-distribution:
+  term: Landau distribution
+  definition: >-
+    The distribution of the energy lost by a charged particle in a thin layer: a peak (the most probable loss, below the mean) with a long tail of rare large losses.
+  chapter: particles-through-matter
+multiple-scattering:
+  term: multiple Coulomb scattering
+  definition: >-
+    The random change of direction of a charged particle crossing matter, the sum of many small deflections by atomic nuclei. The angle is roughly Gaussian with a width given by Highland's formula, falling as 1/p and rising as the square root of the thickness.
+  chapter: particles-through-matter
+radiation-length:
+  term: radiation length (X₀)
+  definition: >-
+    The distance in which a high-energy electron loses all but a fraction 1/e of its energy by bremsstrahlung. It is the natural unit of thickness for electromagnetic showers and for scattering. About 0.56 cm in lead and 36 cm in water.
+  chapter: particles-through-matter
+bremsstrahlung:
+  term: bremsstrahlung
+  definition: >-
+    Radiation of photons by a charged particle accelerated in the electric field of a nucleus. The energy lost per unit length is proportional to the particle's energy and inversely to the square of its mass, so it matters for electrons and hardly for muons below hundreds of GeV.
+  chapter: particles-through-matter
+critical-energy:
+  term: critical energy
+  definition: >-
+    The energy at which an electron loses as much energy by ionisation as by radiation. Above it a shower grows and below it the shower dies out. About 7.4 MeV in lead and 22 MeV in iron.
+  chapter: particles-through-matter
+electromagnetic-shower:
+  term: electromagnetic shower
+  definition: >-
+    The cascade of bremsstrahlung and pair production that a high-energy electron or photon starts in matter. The number of particles grows until their energy falls to the critical energy, so the depth of a shower grows only as the logarithm of its energy.
+  chapter: particles-through-matter
+moliere-radius:
+  term: Molière radius
+  definition: >-
+    The scale of the width of an electromagnetic shower, R_M = 21.2 MeV × X₀ / E_c. About 90 % of the shower's energy is inside a cylinder of this radius around its axis.
+  chapter: particles-through-matter
+interaction-length:
+  term: nuclear interaction length (λ_I)
+  definition: >-
+    The mean distance a hadron travels in a material before a nuclear collision, much longer than the radiation length. About 17.6 cm in lead and 16.8 cm in iron.
+  chapter: particles-through-matter
+hadronic-shower:
+  term: hadronic shower
+  definition: >-
+    The cascade started by a hadron colliding with an atomic nucleus, which makes more hadrons. It is deeper and wider than an electromagnetic shower, and part of its energy is invisible.
+  chapter: particles-through-matter
+cherenkov-radiation:
+  term: Cherenkov radiation
+  definition: >-
+    Light emitted by a charged particle moving faster than light does in a medium, at an angle cos θ = 1/(nβ) to its path. Used to measure the speed of particles and in water tanks that detect neutrinos.
+  chapter: particles-through-matter
+transition-radiation:
+  term: transition radiation
+  definition: >-
+    X-rays emitted when a fast charged particle crosses the boundary between two materials, with a total energy that grows with its Lorentz factor. Used to tell electrons from heavier particles.
+  chapter: particles-through-matter
+tracker:
+  term: tracker
+  definition: >-
+    The innermost part of a detector, made of many layers of position-sensitive sensors in a magnetic field, which records the hits from which the tracks of charged particles are reconstructed.
+  chapter: building-a-detector
+calorimeter:
+  term: calorimeter
+  definition: >-
+    A block of dense material in which a particle is stopped and its energy turned into a signal proportional to it. The electromagnetic calorimeter (ECAL) measures electrons and photons, and the hadron calorimeter (HCAL) measures hadrons.
+  chapter: building-a-detector
+muon-system:
+  term: muon system
+  definition: >-
+    The outermost layers of a detector, behind all the absorber, where almost the only particles to arrive are muons. It records their tracks again, often in a second magnetic field.
+  chapter: building-a-detector
+solenoid:
+  term: solenoid
+  definition: >-
+    A cylindrical coil that makes a nearly uniform magnetic field along its axis. The detectors at the LHC have the beam along that axis, so charged particles circle in the transverse plane.
+  chapter: building-a-detector
+energy-resolution:
+  term: energy resolution
+  definition: >-
+    The relative uncertainty σ(E)/E of a calorimeter, usually written a/√E ⊕ b ⊕ c/E, with a stochastic term, a constant term and a noise term added in quadrature.
+  chapter: building-a-detector
+hermeticity:
+  term: hermeticity
+  definition: >-
+    The property of a detector of covering the whole solid angle around the collision, with no gaps through which a particle can escape unseen. It is needed to infer neutrinos from the missing transverse momentum.
+  chapter: building-a-detector
+missing-transverse-momentum:
+  term: missing transverse momentum
+  definition: >-
+    The momentum, in the plane perpendicular to the beam, that must have been carried off by particles the detector did not see (neutrinos, for example), found as minus the vector sum of the transverse momenta of everything that was seen.
+  chapter: building-a-detector
+sampling-calorimeter:
+  term: sampling calorimeter
+  definition: >-
+    A calorimeter made of alternating layers of dense absorber and an active material, in which only a fraction of the shower's energy is measured. It is cheaper than a homogeneous calorimeter and has a worse stochastic term.
+  chapter: building-a-detector
+wire-chamber:
+  term: multiwire proportional chamber
+  definition: >-
+    A gas-filled chamber with many thin parallel anode wires, each of which gives its own electrical signal when a charged particle ionises the gas near it. Invented by Georges Charpak in 1968.
+  chapter: building-a-detector
+silicon-detector:
+  term: silicon strip and pixel detector
+  definition: >-
+    A sensor made from a thin wafer of silicon divided into narrow strips or small pixels, in which a charged particle makes electron–hole pairs that are collected to give its position to a few tens of micrometres.
+  chapter: building-a-detector
+event-display:
+  term: event display
+  definition: >-
+    A picture of one event from the detector's point of view: the hits, tracks, calorimeter energies and reconstructed objects drawn in the detector's geometry.
+  chapter: building-a-detector
+reconstruction:
+  term: reconstruction
+  definition: >-
+    The software that turns what a detector recorded (hits, calorimeter energies, muon-chamber signals) into physics objects, tracks, vertices, electrons, photons, muons and jets. It is an inverse problem.
+  chapter: reconstruction
+seed:
+  term: seed
+  definition: >-
+    A small group of hits, typically three, that could be the start of a track. The track finder builds candidate tracks from each seed by following them outwards through the other layers.
+  chapter: reconstruction
+combinatorics:
+  term: combinatorial problem
+  definition: >-
+    The number of ways of choosing hits grows much faster than the number of hits, so in a busy event most of the work of tracking is rejecting wrong combinations.
+  chapter: reconstruction
+hough-transform:
+  term: Hough transform
+  definition: >-
+    A method of finding shapes by letting every point vote for all the shapes it could belong to, so that a real shape appears as a peak in the space of its parameters. Invented for bubble-chamber tracks.
+  chapter: reconstruction
+kalman-filter:
+  term: Kalman filter
+  definition: >-
+    A recursive estimator that alternates a prediction of the state (here, the track parameters at the next layer) with an update that weights the prediction and the next measurement by their uncertainties.
+  chapter: reconstruction
+primary-vertex:
+  term: primary vertex
+  definition: >-
+    The point along the beam where a proton–proton collision happened, found by fitting the tracks that appear to come from it. In a crossing with pile-up there is one for each collision.
+  chapter: reconstruction
+cluster:
+  term: calorimeter cluster
+  definition: >-
+    A group of neighbouring calorimeter cells with energy, taken to be the deposit of one particle or of a few overlapping ones.
+  chapter: reconstruction
+particle-flow:
+  term: particle flow
+  definition: >-
+    A reconstruction method that uses the best detector for each particle: tracks for the momenta of charged particles, the ECAL for photons and the HCAL for neutral hadrons, with each calorimeter deposit counted once.
+  chapter: reconstruction
+truth-matching:
+  term: truth matching
+  definition: >-
+    Linking a reconstructed track or object to the simulated particle it came from, for example by the fraction of its hits that the particle supplied. It is possible only in simulation.
+  chapter: reconstruction
+tracking-efficiency:
+  term: tracking efficiency
+  definition: >-
+    The fraction of the particles that could have been reconstructed (charged, enough momentum, inside the acceptance) for which a track was found and matched to them.
+  chapter: reconstruction
+fake-rate:
+  term: fake rate
+  definition: >-
+    The fraction of reconstructed tracks (or objects) that do not correspond to a real particle, for example hits from several different particles joined by accident.
+  chapter: reconstruction

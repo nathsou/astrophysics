@@ -1,0 +1,96 @@
+gerlach1922:
+  authors: Walther Gerlach, Otto Stern
+  year: 1922
+  title: Der experimentelle Nachweis der Richtungsquantelung im Magnetfeld
+  venue: Zeitschrift für Physik 9, 349–352
+  note: The silver-atom beam split into two in an inhomogeneous magnetic field. An English translation is on the arXiv (2301.11343).
+uhlenbeck1925:
+  authors: George E. Uhlenbeck, Samuel Goudsmit
+  year: 1925
+  title: Ersetzung der Hypothese vom unmechanischen Zwang durch eine Forderung bezüglich des inneren Verhaltens jedes einzelnen Elektrons
+  venue: Naturwissenschaften 13, 953–954
+  note: The proposal of the electron's spin. The English version is Nature 117, 264–265 (1926), "Spinning electrons and the structure of spectra".
+pauli1925:
+  authors: Wolfgang Pauli
+  year: 1925
+  title: Über den Zusammenhang des Abschlusses der Elektronengruppen im Atom mit der Komplexstruktur der Spektren
+  venue: Zeitschrift für Physik 31, 765–783
+  note: The exclusion principle, in its original form for electrons in an atom.
+pauli1940:
+  authors: Wolfgang Pauli
+  year: 1940
+  title: The connection between spin and statistics
+  venue: Physical Review 58, 716–722
+nobel1943:
+  authors: NobelPrize.org
+  year: 1943
+  title: The Nobel Prize in Physics 1943 (Otto Stern)
+  url: https://www.nobelprize.org/prizes/physics/1943/summary/
+nobel1945:
+  authors: NobelPrize.org
+  year: 1945
+  title: The Nobel Prize in Physics 1945 (Wolfgang Pauli)
+  url: https://www.nobelprize.org/prizes/physics/1945/summary/
+nobel1961:
+  authors: NobelPrize.org
+  year: 1961
+  title: The Nobel Prize in Physics 1961 (Robert Hofstadter and Rudolf Mössbauer)
+  url: https://www.nobelprize.org/prizes/physics/1961/summary/
+griffiths2008:
+  authors: David Griffiths
+  year: 2008
+  title: Introduction to Elementary Particles
+  venue: Wiley-VCH, 2nd edition
+feynman-lectures3:
+  authors: Richard P. Feynman, Robert B. Leighton, Matthew Sands
+  year: 1965
+  title: The Feynman Lectures on Physics, Volume III, Quantum Mechanics
+  venue: Addison-Wesley
+cowan1998:
+  authors: Glen Cowan
+  year: 1998
+  title: Statistical Data Analysis
+  venue: Oxford University Press
+geiger-marsden1909:
+  authors: Hans Geiger, Ernest Marsden
+  year: 1909
+  title: On a diffuse reflection of the α-particles
+  venue: Proceedings of the Royal Society of London A 82, 495–500
+  url: https://doi.org/10.1098/rspa.1909.0054
+  note: Alpha particles reflected from metal foils through angles of more than 90°; the heavier the metal, the more were reflected.
+geiger-marsden1913:
+  authors: Hans Geiger, Ernest Marsden
+  year: 1913
+  title: The laws of deflexion of α particles through large angles
+  venue: Philosophical Magazine, series 6, 25, 604–623
+  note: Tests Rutherford's formula by varying the angle, the foil thickness, the atomic weight of the foil and the speed of the alpha particles.
+thomson1904:
+  authors: J. J. Thomson
+  year: 1904
+  title: On the structure of the atom
+  venue: Philosophical Magazine, series 6, 7, 237–265
+  note: The model in which the atom's positive charge is spread through a sphere with the electrons embedded in it.
+hofstadter-mcallister1955:
+  authors: Robert Hofstadter, Robert W. McAllister
+  year: 1955
+  title: Electron scattering from the proton
+  venue: Physical Review 98, 217–218
+  url: https://doi.org/10.1103/PhysRev.98.217
+mott1929:
+  authors: N. F. Mott
+  year: 1929
+  title: The scattering of fast electrons by atomic nuclei
+  venue: Proceedings of the Royal Society of London A 124, 425–442
+codata2022:
+  authors: Peter J. Mohr, David B. Newell, Barry N. Taylor, Eite Tiesinga
+  year: 2024
+  title: CODATA recommended values of the fundamental physical constants, 2022
+  venue: arXiv:2409.03787; Reviews of Modern Physics (2025)
+  url: https://arxiv.org/abs/2409.03787
+  note: Recommends a proton charge radius of 0.84075(64) fm.
+pohl2010:
+  authors: Randolf Pohl et al.
+  year: 2010
+  title: The size of the proton
+  venue: Nature 466, 213–216
+  note: The proton radius from the spectroscopy of muonic hydrogen, smaller than the value then accepted from electron scattering and ordinary hydrogen.

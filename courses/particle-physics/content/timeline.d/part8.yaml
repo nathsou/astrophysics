@@ -1,0 +1,66 @@
+# Part VIII history cards: Chapters 31 to 33.
+- year: 1946
+  title: Fast protons proposed for radiotherapy
+  people: Robert R. Wilson
+  chapter: particle-physics-in-the-world
+  text: 'In *Radiology*, Wilson points out that the Bragg peak makes protons a better tool than X-rays for deep tumours: a sharply defined range and a low dose to the skin.'
+- year: 1957
+  title: A neutrino that turns into its antineutrino
+  people: Bruno Pontecorvo
+  chapter: neutrinos
+  text: 'By analogy with the mixing of neutral kaons, Pontecorvo suggests that a neutrino with mass could change into an antineutrino. Maki, Nakagawa and Sakata (1962) and Pontecorvo (1967) extend the idea to flavours.'
+- year: 1967
+  title: Sakharov's three conditions
+  people: Andrei Sakharov
+  chapter: beyond-the-standard-model
+  text: 'Sakharov lists what a symmetric early universe needs in order to end up with more matter than antimatter: baryon-number violation, C and CP violation, and a departure from equilibrium.'
+- year: 1968
+  title: One third of the Sun
+  people: Raymond Davis Jr., John Bahcall
+  chapter: neutrinos
+  text: 'The chlorine tank in the Homestake mine catches far fewer solar neutrinos than the solar model predicts: about 30 % in the end. The solar neutrino problem begins.'
+- year: 1970
+  title: A search for a chamber in Khafre's pyramid
+  people: Luis W. Alvarez and collaborators
+  chapter: particle-physics-in-the-world
+  text: 'Spark chambers in Khafre''s pyramid count cosmic-ray muons from every direction in a search for hidden chambers. None is found in the region the detector can see; the method is established.'
+- year: 1970
+  title: Flat rotation curves
+  people: Vera Rubin, Kent Ford
+  chapter: beyond-the-standard-model
+  text: 'Rotation of the Andromeda galaxy measured out to large radii does not fall off, as visible matter alone would require. Zwicky had inferred missing mass in the Coma cluster in 1933.'
+- year: 1933
+  title: The missing mass
+  people: Fritz Zwicky
+  chapter: beyond-the-standard-model
+  text: 'Applying the virial theorem to the Coma cluster, Zwicky concludes that it contains far more mass than its visible stars: dark matter.'
+- year: 1993
+  title: The Web is released into the public domain
+  people: CERN
+  chapter: particle-physics-in-the-world
+  text: 'On 30 April CERN puts the software of the World Wide Web in the public domain. By the end of the year there are over 500 known web servers.'
+- year: 1998
+  title: Muon neutrinos missing from below
+  people: Takaaki Kajita and the Super-Kamiokande collaboration
+  chapter: neutrinos
+  text: 'Super-Kamiokande shows that atmospheric muon neutrinos arriving from below the horizon, which have crossed the Earth, are about half missing: evidence of oscillation.'
+- year: 2001
+  title: The solar neutrinos were all there
+  people: Arthur McDonald and the SNO collaboration
+  chapter: neutrinos
+  text: 'The Sudbury Neutrino Observatory finds that solar neutrinos include muon and tau flavours (2001), and in 2002 that the total flux of all three flavours matches the solar model.'
+- year: 2015
+  title: A tau neutrino appears in a muon-neutrino beam
+  people: OPERA collaboration
+  chapter: neutrinos
+  text: 'Five tau-neutrino candidates against 0.25 expected background, 5.1 standard deviations: direct evidence of νμ → ντ appearance in the CNGS beam from CERN to Gran Sasso.'
+- year: 2017
+  title: A void above the Grand Gallery
+  people: ScanPyramids collaboration
+  chapter: particle-physics-in-the-world
+  text: 'Three kinds of muon detector find a void at least 30 m long above the Grand Gallery of Khufu''s pyramid, the first major internal structure found there since the nineteenth century.'
+- year: 2025
+  title: The muon g − 2, final result
+  people: Muon g − 2 Collaboration and Theory Initiative
+  chapter: beyond-the-standard-model
+  text: 'Fermilab''s final measurement agrees with the 2025 theory white paper, which uses lattice QCD for the hadronic contribution. The 4.2σ tension of 2021 had come from the earlier prediction.'

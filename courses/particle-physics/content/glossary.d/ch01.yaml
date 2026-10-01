@@ -1,0 +1,20 @@
+electronvolt:
+  term: electronvolt (eV)
+  definition: The energy an electron gains by moving through a potential difference of one volt, 1.602 × 10⁻¹⁹ J. Particle physics uses keV, MeV, GeV and TeV, and measures masses and momenta in eV too.
+  chapter: scales-and-units
+natural-units:
+  term: natural units
+  definition: A system of units in which ħ = c = 1. Energy, momentum and mass have the same dimension (GeV), and lengths and times are in GeV⁻¹.
+  chapter: scales-and-units
+cross-section:
+  term: cross-section
+  definition: The effective area that a target presents to a projectile for a given process, so that the number of such events is the cross-section times the number of projectiles per unit area. Measured in barns (10⁻²⁸ m²) and its multiples.
+  chapter: scales-and-units
+barn:
+  term: barn
+  definition: The unit of cross-section, 10⁻²⁸ m² = 100 fm². LHC processes are quoted in picobarns and femtobarns.
+  chapter: scales-and-units
+planck-scale:
+  term: Planck scale
+  definition: The energy (1.22 × 10¹⁹ GeV) and length (1.6 × 10⁻³⁵ m) at which gravity becomes as strong as the other forces, built from ħ, c and Newton's constant.
+  chapter: scales-and-units
