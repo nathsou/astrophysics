@@ -56,7 +56,7 @@
   {/snippet}
   <Plot
     x={{ type: 'log', domain: [1e-26, 1e-5], label: 'time [s]', tickValues: [1e-25, 1e-22, 1e-19, 1e-16, 1e-13, 1e-10, 1e-7], format: (v) => `10${String(Math.round(Math.log10(v))).replace(/./g, (c) => (c === '-' ? '⁻' : '⁰¹²³⁴⁵⁶⁷⁸⁹'[Number(c)] ?? c))}` }}
-    y={{ domain: [0, rows.length], label: '', tickValues: [] }}
+    y={{ domain: [0, rows.length + 1], label: '', tickValues: [] }}
     height={340}
     crosshair={false}
     margin={{ top: 8, right: 14, bottom: 42, left: 14 }}

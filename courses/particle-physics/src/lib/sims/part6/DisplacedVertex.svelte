@@ -56,7 +56,7 @@
           {#each ladder as f, i}
             {@const y = sy(i + 0.5)}
             <line x1={sx(10)} x2={sx(f.ctau * 1000)} y1={y} y2={y} stroke={f.pdg === pdg ? 'var(--accent)' : 'var(--series-1)'} stroke-width={f.pdg === pdg ? 5 : 3} opacity={f.pdg === pdg ? 1 : 0.55} />
-            <text x={f.ctau * 1000 > 5e6 ? sx(f.ctau * 1000) - 5 : sx(f.ctau * 1000) + 5} text-anchor={f.ctau * 1000 > 5e6 ? 'end' : 'start'} y={y + 4} class="lbl">{f.label} {fmtLen(f.ctau)}</text>
+            <text x={f.ctau * 1000 > 5e6 ? sx(f.ctau * 1000) - 5 : sx(f.ctau * 1000) + 5} text-anchor={f.ctau * 1000 > 5e6 ? 'end' : 'start'} y={y + 4} class={f.ctau * 1000 > 5e6 ? 'lbl wide' : 'lbl'}>{f.label} {fmtLen(f.ctau)}</text>
           {/each}
         {/snippet}
       </Plot>
@@ -109,6 +109,9 @@
     color: var(--ink-2);
     text-transform: none;
     letter-spacing: 0;
+  }
+  .lbl.wide {
+    stroke-width: 7px;
   }
   .lbl {
     font-size: 11px;

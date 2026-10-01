@@ -470,7 +470,11 @@ async function transform(tree: Root, ctx: Ctx): Promise<void> {
 
       case 'link': {
         const link = node as Link;
-        if (link.url.startsWith('/') && !link.url.startsWith('//')) link.url = `§BASE§${link.url}`;
+        if (link.url.startsWith('/') && !link.url.startsWith('//')) {
+          // Links to the other courses of the collection live beside this course, not inside it: go up one level.
+          const sibling = /^\/(astrophysics|cic|proofs-are-programs|compiler-backends|language-models|incompleteness|elements|proofs|digital-circuits)\//.test(link.url);
+          link.url = sibling ? `PPBASEPLACEHOLDER/..${link.url}` : `PPBASEPLACEHOLDER${link.url}`;
+        }
         return;
       }
     }
@@ -557,7 +561,7 @@ export async function compileMarkdown(source: string, file: string): Promise<Com
 
   // Everything that is still HTML is static: neutralise Svelte's { } before inserting components.
   html = html.replace(/[{}]/g, (c) => (c === '{' ? '&#123;' : '&#125;'));
-  html = html.replaceAll('§BASE§', '{base}');
+  html = html.replaceAll('PPBASEPLACEHOLDER', '{base}').replaceAll('%C2%A7BASE%C2%A7', '{base}');
   html = html.replace(/<!--§(open|close|leaf):(\d+)-->/g, (_, kind: string, i: string) => {
     const c = ctx.components[Number(i)]!;
     const p = c.props ? ` ${c.props}` : '';

@@ -58,7 +58,8 @@
     if (s < 172800) return `one every ${sig(s / 3600, 2)} h`;
     return `one every ${sig(s / 86400, 2)} days`;
   }
-  const fmtHz = (hz: number) => (hz >= 1e9 ? `${sig(hz / 1e9, 2)} GHz` : hz >= 1e6 ? `${sig(hz / 1e6, 2)} MHz` : hz >= 1e3 ? `${sig(hz / 1e3, 2)} kHz` : hz >= 1 ? `${sig(hz, 2)} Hz` : `${sig(hz * 1000, 2)} mHz`);
+  const fmtHz = (hz: number) =>
+    hz >= 0.9995e9 ? `${sig(hz / 1e9, 2)} GHz` : hz >= 0.9995e6 ? `${sig(hz / 1e6, 2)} MHz` : hz >= 0.9995e3 ? `${sig(hz / 1e3, 2)} kHz` : hz >= 0.9995 ? `${sig(hz, 2)} Hz` : `${sig(hz * 1000, 2)} mHz`;
   const count = (r: Row) => r.sigmaPb * dataset * 1e3; // fb⁻¹ → pb⁻¹ = 1e3
   const fmtCount = (x: number) => big(x);
   const LINES = [
@@ -81,6 +82,7 @@
         {#each [-6, -4, -2, 0, 2, 4, 6, 8, 10] as e}<span class="tick" style:left="{pos(10 ** e)}%">10{e < 0 ? '⁻' : ''}{String(Math.abs(e)).replace(/\d/g, (d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+d]!)}</span>{/each}
       </div>
       <span class="unit">events per second</span>
+      <span class="unit">events in the data set</span>
     </div>
     {#each rows as r (r.key)}
       {@const hz = rate(r)}
@@ -112,9 +114,6 @@
     grid-template-columns: minmax(9rem, 13rem) 1fr minmax(7rem, 9rem) minmax(8rem, 12rem);
     gap: 0.6rem;
     align-items: center;
-  }
-  .axis {
-    grid-template-columns: minmax(9rem, 13rem) 1fr;
   }
   .name,
   .val,
@@ -152,7 +151,9 @@
     font-variant-numeric: tabular-nums;
   }
   .unit {
-    display: none;
+    color: var(--mute);
+    font-size: 0.68rem;
+    line-height: 1.2;
   }
   .bar {
     position: absolute;

@@ -52,6 +52,7 @@
     x={{ type: 'log', domain: X, label: 'particle mass [GeV]' }}
     y={{ type: 'log', domain: [1e-6, 2], label: 'coupling to the Higgs boson' }}
     height={340}
+    margin={{ top: 12, right: 16, bottom: 42, left: 86 }}
     label="Reduced coupling strength against mass on logarithmic axes: the Standard Model line y = m/v and one marker for each particle, coded by how well its coupling has been tested"
   >
     {#snippet marks({ sx, sy })}

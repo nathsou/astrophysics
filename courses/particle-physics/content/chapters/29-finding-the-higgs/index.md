@@ -45,7 +45,7 @@ Everything in the course has been leading to this figure. The pipeline of Chapte
 
 ::pipeline{preset="higgs-gamgam" n="29.1" caption="The whole chain for H → γγ, over the irreducible diphoton background: machine → generator → detector → reconstruction → trigger → analysis. Each stage shows its counters. If you have written a function in an earlier chapter and switched on use my code, the stage that uses it says so."}
 
-::pipeline{preset="higgs-4l" n="29.2" caption="The same chain for H → ZZ* → 4ℓ. The generator has no ZZ* continuum of its own, so this preset builds one from the same pieces: leading-order qq̄ → ZZ* → 4ℓ."}
+::pipeline{preset="higgs-4l" n="29.2" caption="The same chain for H → ZZ* → 4ℓ. The generator has no ZZ* continuum of its own, so this preset builds one from the same pieces: leading-order qq̄ → ZZ* → 4ℓ. This preset has a switch between the simulation and real data: the real data are the 278 four-lepton candidates of the CMS Open Data education sample (2011 and 2012), put through the same selection. The diphoton preset has no such switch, because no real diphoton sample is shipped with the course (the section on real data below says why)."}
 
 Each stage has a cost in signal that can be counted. For the diphoton channel the course's own samples (made once, with fixed seeds, by `scripts/data/higgs-sim.ts`, so that the page does not have to simulate 100,000 events when you open it) give the cut flow of the table below, for a data set equivalent to 9.99 fb⁻¹ at 8 TeV. It is a *simulation*: it is not data, and its normalisation is leading order.
 
