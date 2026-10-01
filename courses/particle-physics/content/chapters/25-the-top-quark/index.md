@@ -6,23 +6,23 @@ duration: About 2½ hours
 prerequisites: [flavour, w-and-z, reconstruction]
 ---
 
-The top quark has a mass of 172.57 GeV. An atom of rhenium, element 75, has a mass of 186.2 atomic mass units, which is 173.5 GeV: a single point-like quark weighs about as much as an atom with 75 electrons, 75 protons and 111 neutrons. It is the heaviest elementary particle known, 40 times heavier than the b quark of the same generation (Chapter 24) and more than 3 × 10⁵ times heavier than the electron.
+The top quark has a mass of 172.57 GeV. An atom of rhenium, element 75, has a mass of 186.2 atomic mass units, which is 173.5 GeV: a single point-like quark weighs about as much as an atom of 75 electrons, 75 protons and the neutrons that go with them. It is the heaviest elementary particle known, 40 times heavier than the b quark of the same generation (Chapter 24) and more than 3 × 10⁵ times heavier than the electron.
 
-A top quark's life lasts $5\times10^{-25}$ s. It is made, decays, and is gone before it has travelled a seventh of the radius of a proton. This chapter tells how a particle that was never seen in a track was first estimated from its effects on other particles, then found; why its short life is not a technicality but changes what kind of particle it is; and how to put the pieces of a top quark pair back together from the jets and the missing momentum that a detector records.
+A top quark's life lasts $5\times10^{-25}$ s. It is made, decays, and is gone before it could have travelled a sixth of the radius of a proton, even at the speed of light. This chapter tells how a particle that was never seen in a track was first estimated from its effects on other particles, then found; why its short life is not a technicality but changes what kind of particle it is; and how to put the pieces of a top quark pair back together from the jets and the missing momentum that a detector records.
 
 ## Why there had to be a top quark
 
 When the bottom quark was found in 1977 (Chapter 24), the third generation was one member short. The up-type partner of the b, with charge +⅔, was missing, and the theory wants generations complete. In the electroweak theory the left-handed b quark and its partner form a doublet, as the u and d do; the Z's couplings to the b quark, which LEP measured, show that the left-handed b has the weak isospin −½ of the lower member of a doublet, and a lower member needs an upper one.:cite[lepewwg2006] The charges within a generation must also add up in a particular way for the theory to be consistent (Chapter 26 returns to this).
 
-The question was the mass. The b is 4.18 GeV and the c 1.27 GeV: a top of 10 or 20 GeV looked natural, and it would have been in reach of the electron–positron colliders of the 1980s. Machines went up in energy, PETRA at DESY in Hamburg to 46.8 GeV and TRISTAN at KEK in Japan to above 60 GeV, and found nothing. Then the proton–antiproton collider at CERN and LEP excluded one range after another. The top was much heavier than expected.
+The question was the mass. The b is 4.18 GeV and the c 1.27 GeV: a top of 10 or 20 GeV looked natural, and it would have been in reach of the electron–positron colliders of the 1980s. Machines went up in energy, PETRA at DESY in Hamburg to 46.8 GeV and TRISTAN at KEK in Japan to above 60 GeV, and found nothing. Then the proton–antiproton collider at CERN and LEP excluded one range after another.:cite[campagnari1997] The top was much heavier than expected.
 
 ## A particle weighed before it was seen
 
-The mass came first from its virtual effects. Chapter 23 predicted the W and Z masses from three numbers ($G_F$, $\alpha$ and $\sin^2\theta_W$) at tree level and said that corrections of a few per cent were not included. One of them is a loop in which the Z or the W turns for a moment into a top quark and a bottom quark and back. The loop changes the **ρ parameter**, which measures the relative strength of the neutral and the charged weak currents, by
+The mass came first from its virtual effects. Chapter 23 predicted the W and Z masses from three numbers ($G_F$, $\alpha$ and $\sin^2\theta_W$) at tree level and said that corrections of a few per cent were not included. One of them is a loop in which the Z or the W turns for a moment into a pair of quarks, one of them a top, and back. The loop changes the **ρ parameter**, which measures the relative strength of the neutral and the charged weak currents, by
 
 $$\Delta\rho = \frac{3\,G_F\,m_t^2}{8\sqrt2\,\pi^2},$$
 
-the leading term. It grows as the **square** of the top mass. For $m_t = 172.6$ GeV, $\Delta\rho = 0.0093$, a correction of 0.9 %. At fixed $\alpha$, $G_F$ and $m_Z$ it raises the predicted W mass by about 0.5 GeV (the leading term), a half per cent, which is five times the 0.1 % to which the masses of the W and the Z come to be measured. A loop of virtual particles that are too heavy to be produced still changes what can be measured, by an amount that grows with their mass.
+the leading term. It grows as the **square** of the top mass. For $m_t = 172.6$ GeV, $\Delta\rho = 0.0093$, a correction of 0.9 %. At fixed $\alpha$, $G_F$ and $m_Z$ it raises the predicted W mass by about 0.5 GeV (the leading term), two-thirds of a per cent, which is large next to the precision of the Z mass (two parts in 10⁵) and, later, of the W mass. A loop of virtual particles that are too heavy to be produced still changes what can be measured, by an amount that grows with their mass.
 
 ::rho-parameter{n="25.1" caption="The top quark's contribution to the ρ parameter, Δρ = 3 G_F m_t²/(8√2π²), and the shift it causes in the predicted W mass (leading terms, on-shell definitions), against the top-quark mass. The curve is a parabola: doubling the mass quadruples the effect. The shaded band is the range from which the indirect determinations of the early 1990s pointed (about 170 GeV, with an uncertainty of the order of 20 GeV, which depended on the assumed mass of the Higgs boson), marked as approximate. The Higgs boson enters the corrections only logarithmically, so it is much more weakly constrained than the top."}
 
@@ -31,7 +31,7 @@ The idea was old. The loop's quadratic dependence on a mass that nobody could me
 :::history{year=1994 title="A mass from loops, before the particle" people="The LEP and SLD collaborations and the LEP Electroweak Working Group" source="Sources: LEP Electroweak Working Group (2006); Campagnari and Franklin (1997)."}
 The LEP Electroweak Working Group combines the measurements of the four LEP experiments, and, with SLD, the results of the Z-pole programme. Its fits to the Z-pole data in 1993 and 1994 used the Standard Model to estimate the top mass from the corrections the top quark makes to the Z's properties: the combination of the Z lineshape, the asymmetries and the partial widths, in which the top enters through $\Delta\rho$ and a related correction to the $Zb\bar b$ coupling. The central value was around 170 GeV, with an uncertainty of the order of 20 GeV.:cite[campagnari1997,lepewwg2006]
 
-Earlier hints were in the oscillation of $B^0$ mesons, which ARGUS saw in 1987 and which depends on the top quark's mass in a loop (Chapter 24): it was too fast for a top of 30 or 40 GeV.:cite[albrecht1987] The mass found by direct production a year later, 176 GeV and 199 GeV in two experiments, agreed within uncertainties with the fits.:cite[cdf1995,d01995] The agreement was an early confirmation of the loop corrections of the Standard Model as a whole.
+An earlier hint was the oscillation of $B^0$ mesons, which ARGUS saw in 1987 and which depends on the top quark's mass through a loop (Chapter 24): it was faster than a light top would have given, which pointed to a heavy one.:cite[albrecht1987] The masses found by direct production a year later, 176 GeV and 199 GeV in the two experiments, agreed within their uncertainties with the fits.:cite[cdf1995,d01995] The agreement was an early confirmation that the loop corrections of the Standard Model are what the Z-pole data respond to.
 :::
 
 ## The discovery
@@ -50,10 +50,10 @@ The top does not live long enough to be seen as a track. It decays by the weak f
 | One to a lepton (e or μ) and a neutrino, one to quarks | 29 % | One lepton, missing momentum, four jets, two of them b jets. The **lepton + jets** channel |
 | Both to a lepton and a neutrino | 4.5 % | Two leptons, missing momentum, two b jets |
 
-The fractions are those of the course's generator, from the W branching fractions in the particle table, and leave out the tau lepton (which decays to an electron or a muon with neutrinos or to hadrons, and is harder). Each W decays to a lepton pair 21 % of the time and to quarks 67 %. The lepton + jets channel is the one that is used the most: it is a decent fraction of all the pairs, and a lepton of high transverse momentum is easy to identify and to trigger on (Chapter 27), where six jets are not. One of the W's is fully reconstructable from the two jets, and the other has a neutrino whose transverse momentum is the missing momentum of Chapter 23.
+The fractions are those of the course's generator, from the W branching fractions in the particle table, and leave out the tau lepton (which decays to an electron or a muon with neutrinos or to hadrons, and is harder). Each W decays to a lepton pair 21 % of the time and to quarks 67 %. The lepton + jets channel is a favourite for mass measurements: it is a decent fraction of all the pairs, and a lepton of high transverse momentum is easy to identify and to trigger on (Chapter 27), where six jets are not. One of the W's is fully reconstructable from the two jets, and the other has a neutrino whose transverse momentum is the missing momentum of Chapter 23.
 
 :::history{year=1995 title="Two experiments, one announcement" people="The CDF and D0 collaborations" source="Sources: Abe et al. (CDF, 1995); Abachi et al. (D0, 1995); Campagnari and Franklin (1997)."}
-On 2 March 1995 the CDF and D0 collaborations announced, at Fermilab, that they had observed the top quark. Each published in *Physical Review Letters* with consecutive papers. CDF, with 67 inverse picobarns of data, found a signal that was inconsistent with the background by 4.8 standard deviations and measured a mass of $176\pm8\pm10$ GeV (statistical, then systematic uncertainty).:cite[cdf1995] D0 found 4.6 standard deviations and $199^{+19}_{-21}\pm22$ GeV.:cite[d01995] The two experiments had been looking for the same thing for years, and each had evidence, not yet discovery, in 1994 (CDF) or earlier.
+On 2 March 1995 the CDF and D0 collaborations announced, at Fermilab, that they had observed the top quark. Each published in *Physical Review Letters* with consecutive papers. CDF, with 67 inverse picobarns of data, found a signal that was inconsistent with the background by 4.8 standard deviations and measured a mass of $176\pm8\pm10$ GeV (statistical, then systematic uncertainty).:cite[cdf1995] D0 found 4.6 standard deviations and $199^{+19}_{-21}\pm22$ GeV.:cite[d01995] The two experiments had been looking for the same thing for years, and CDF had reported evidence, short of a discovery, in 1994.:cite[campagnari1997]
 
 The channels used included events with a lepton and jets in which at least one jet was tagged as a b jet by a displaced vertex, the method of Chapter 24, and events with two leptons. The mass today, from the combination of direct measurements at the Tevatron and the LHC, is $172.57\pm0.29$ GeV.:cite[pdg2024] The two early values and the indirect value from the Z-pole fits were within 1.5 uncertainties of it.
 :::
@@ -69,8 +69,8 @@ $$\term{Gt}{\Gamma_t} = \frac{\term{GF}{G_F}\,\term{mt}{m_t}^3}{8\pi\sqrt2}\,\te
 Gt:
   label: 'Γ_t, the top-quark width'
   what: The decay rate of the top quark in GeV. At leading order, 1.48 GeV; with the first correction from the strong force, 1.34 GeV; the particle table gives 1.42 GeV.
-  why: The lifetime is ħ/Γ, so the width tells how long a top quark lives: 4.6 × 10⁻²⁵ s for 1.42 GeV.
-  effect: It is larger than the width of the W (2.1 GeV)'s decay to a single mode and larger than the energy scale of the strong force, Λ_QCD, which is the reason the top quark does not hadronise.
+  why: 'The lifetime is ħ/Γ, so the width tells how long a top quark lives: 4.6 × 10⁻²⁵ s for 1.42 GeV.'
+  effect: It is about two-thirds of the W's total width (2.1 GeV) and seven times the energy scale of the strong force, Λ_QCD, which is the reason the top quark does not hadronise.
 GF:
   label: 'G_F, Fermi’s constant'
   what: 1.1664 × 10⁻⁵ GeV⁻², from the muon lifetime (Chapter 22).
@@ -79,8 +79,8 @@ GF:
 mt:
   label: 'm_t, the top-quark mass'
   what: 172.57 GeV.
-  why: The width goes as the cube of the mass (not the fifth power of the muon's: the final state contains a heavy W, which takes away part of the phase space), so a top quark is about 10²⁵ times quicker to decay than a muon.
-  effect: The heavier the top, the shorter its life: Figure 25.3 lets you move it.
+  why: 'The width goes as the cube of the mass, not the fifth power of the muon''s decay, because the W is produced on shell: this is a two-body decay. A top quark lives about 5 × 10¹⁸ times less long than a muon.'
+  effect: 'The heavier the top, the shorter its life: Figure 25.3 lets you move it.'
 Vtb:
   label: '|V_tb|², the CKM element'
   what: The square of the matrix element that couples t to b, 0.998. Almost 1.
@@ -89,7 +89,7 @@ Vtb:
 r:
   label: 'r = m_W²/m_t², the phase-space factor'
   what: 0.217 for the real masses. The factor (1 − r)²(1 + 2r) = 0.880 is the suppression from the W's mass.
-  why: The W is a heavy final state: 80 of the 172 GeV go to its mass.
+  why: 'The W is a heavy final state: 80 of the 172 GeV go to its mass.'
   effect: If the top were lighter than m_W + m_b, the decay would be forbidden.
 ```
 :::
@@ -113,13 +113,13 @@ explain: 'τ = 4.635 × 10⁻²⁵ s. The hadronisation time, 3.29 × 10⁻²⁴
 
 ::time-scales{n="25.3" caption="Time scales on a logarithmic axis. The top quark lives for 4.6 × 10⁻²⁵ s, shorter than the 3 × 10⁻²⁴ s it takes the strong force to dress a quark into hadrons (move Λ_QCD to see how robust the conclusion is), and about as long as the W and the Z. Move the top mass: the width scales as the cube of the mass in this approximation, and the lifetime at 100 GeV would be a few times longer. The b quark decays weakly in 10⁻¹² s, a million million times more slowly than the strong force acts, so it always hadronises and is found in B mesons; the c quark and the τ behave the same way. The top is the only quark that decays before it hadronises."}
 
-The consequence is that there are **no top hadrons**. No $t\bar u$ meson, no $tud$ baryon, no bound state with a long life (a bound state of a top and an antitop, a "toponium", would need to form more quickly than the top decays and its binding is too weak for that). The top quark is the only quark that can be studied as a bare quark. What the detector records is not a spray of hadrons around a top, but the decay of the top itself: a W and a b quark, with their momenta in the directions that the top's own spin and the dynamics dictate. The spin of the top is not washed out by the strong force, since there is no time for it to be: it can be read from the decay products' angles, which the W's polarisation also carries. In the course's generator the W from a top decay has helicity fractions $F_0 = 0.70$ longitudinal and $F_L = 0.30$ left-handed, and no right-handed ones, which are the leading-order values and the lepton's angular distribution follows from them.
+The consequence is that there are **no top hadrons**. No $t\bar u$ meson and no $tud$ baryon. The top quark is the only quark that can be studied as a bare quark. What the detector records is not a spray of hadrons around a top, but the decay of the top itself: a W and a b quark, with their momenta in the directions that the top's own spin and the dynamics dictate. The spin of the top is not washed out by the strong force, since there is no time for it to be: it can be read from the decay products' angles, which the W's polarisation also carries. In the course's generator the W from a top decay has helicity fractions $F_0 = 0.70$ longitudinal and $F_L = 0.30$ left-handed, and no right-handed ones, which are the leading-order values and the lepton's angular distribution follows from them.
 
-Another number goes with the mass. The top quark's coupling to the Higgs field, its **Yukawa coupling** (Chapter 26), is $y_t = \sqrt2\,m_t/v = 0.991$. It is the only fermion coupling of order one; every other one is smaller than 0.02. Whether that is a coincidence or a hint is a question taken up in Chapters 26 and 30.
+Another number goes with the mass. The top quark's coupling to the Higgs field, its **Yukawa coupling** (Chapter 26), is $y_t = \sqrt2\,m_t/v = 0.991$. It is the only fermion coupling of order one; every other one is below 0.03. Whether that is a coincidence or a hint is a question taken up in Chapters 26 and 30.
 
 ## Tops at the LHC
 
-At the LHC the top quark is not a discovery but a signal and a background: a pair of them is made in every few hundred million collisions, and a measurement of its properties is a test of the Standard Model, and the background to many searches. The leading-order cross-section of the course's generator at 13 TeV is 439 pb. The full calculation, with the higher-order terms of the strong force, gives about 830 pb,:cite[czakon2014] almost twice as large. The factor shows how much the first term of an expansion in $\alpha_s$ is missing here. At the Tevatron at 1.96 TeV the leading-order cross-section is 5.3 pb.
+At the LHC the top quark is not a discovery but a signal and a background: a pair of them is made in about one inelastic collision in a hundred million, and a measurement of its properties is a test of the Standard Model, and the background to many searches. The leading-order cross-section of the course's generator at 13 TeV is 439 pb. The full calculation, with the higher-order terms of the strong force, gives about 830 pb,:cite[czakon2014] almost twice as large. The factor shows how much the first term of an expansion in $\alpha_s$ is missing here. At the Tevatron at 1.96 TeV the leading-order cross-section is 5.3 pb.
 
 ```fermi
 id: top-pairs-per-second
@@ -151,7 +151,7 @@ $$\chi^2 = \left(\frac{m_{qq'}-m_W}{\term{sw}{\sigma_W}}\right)^2 + \left(\frac{
 sw:
   label: 'σ_W, the width allowed for the W mass'
   what: 10 GeV in the course's reference. It stands for the resolution with which two jets give the W mass.
-  why: A pair of jets is not a pair of quarks: radiation outside the cone, the neutrinos in jets and the finite resolution all smear the mass. The weight of each term is one over its expected uncertainty squared.
+  why: 'A pair of jets is not a pair of quarks: radiation outside the cone, the neutrinos in jets and the finite resolution all smear the mass. The weight of each term is one over its expected uncertainty squared.'
   effect: A smaller σ_W trusts the W mass more, and prefers the pair that fits it.
 st:
   label: 'σ_t, the width allowed for the top mass'
@@ -161,7 +161,7 @@ st:
 pen:
   label: 'the b-tag penalty'
   what: An optional amount added to χ² for each jet assigned as a b quark that was not tagged, and each tagged jet assigned as a light quark.
-  why: It brings the b-tagging of Chapter 24 into the choice: assignments in which the b's are the jets that were tagged are preferred.
+  why: 'It brings the b-tagging of Chapter 24 into the choice: assignments in which the b''s are the jets that were tagged are preferred.'
   effect: With a penalty of 10 or more, almost every assignment with the wrong b's is penalised away.
 ```
 :::
