@@ -30,7 +30,7 @@
           </tbody>
         </table>
         {#if fit.yieldSignificance !== undefined}<p class="cr-note">Signal yield over its uncertainty: {fit.yieldSignificance.toFixed(1)} σ (a rough measure; see Chapter 28 for significance proper).</p>{/if}
-        {#if !fit.converged}<p class="cr-warn">The fit did not converge.</p>{/if}
+        {#if !fit.reliable}<p class="cr-warn">The fit is not reliable yet: with so few events it cannot constrain the peak. Let the run go on.</p>{/if}
       </div>
     {/if}
     {#if w}

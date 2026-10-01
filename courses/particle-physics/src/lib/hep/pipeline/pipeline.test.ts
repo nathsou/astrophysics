@@ -170,6 +170,7 @@ describe('physics of the whole chain', () => {
     expect(mu.efficiency).toBeGreaterThan(0.95);
     expect(s.tracking.efficiency).toBeGreaterThan(0.9);
     expect(s.fit!.converged).toBe(true);
+    expect(s.fit!.reliable).toBe(true);
     expect(Math.abs(s.fit!.params['sig.mean']!.value - 91.19)).toBeLessThan(1.5);
   }, 120_000);
 

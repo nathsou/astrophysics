@@ -14,6 +14,7 @@
   import Segmented from '$lib/components/ui/Segmented.svelte';
   import Button from '$lib/components/ui/Button.svelte';
   import { simulateShower, type ShowerResult } from './airshower';
+  import { pow10Label } from './fmt';
 
   let { n, caption, seed: seed0 = 4 }: { n?: string | number; caption?: string; seed?: number } = $props();
 
@@ -36,11 +37,11 @@
   onMount(() => { mounted = true; });
 
   const res: ShowerResult = $derived(simulateShower({ E0: cfg.energy, zenithDeg: cfg.zenith, seed: cfg.seed, timeDilation: cfg.dilation, keepTracks: 260 }));
-  const fmtE = (gev: number) => `10^${Math.round(Math.log10(gev * 1e9))} eV`;
+  const fmtE = (gev: number) => `${pow10Label(gev * 1e9)} eV`;
   const fmtN = (x: number) => (x >= 100 ? Math.round(x).toLocaleString('en-GB') : x >= 1 ? x.toFixed(0) : x.toPrecision(2));
 
   // view
-  const W = 640, Hh = 400, ML = 44, MB = 26, MT = 10;
+  const W = 640, Hh = 430, ML = 44, MB = 44, MT = 10;
   const maxH = 32; // km
   const latMax = $derived.by(() => {
     let m = 0.5;
@@ -50,6 +51,8 @@
   const sx = (lat: number) => ML + ((lat + latMax) / (2 * latMax)) * (W - ML - 8);
   const sy = (h: number) => MT + (1 - h / maxH) * (Hh - MT - MB);
   const line = (pts: [number, number][]) => pts.map((p, i) => `${i ? 'L' : 'M'}${sx(p[0]).toFixed(1)},${sy(p[1]).toFixed(1)}`).join('');
+
+  const latTicks = $derived(Array.from({ length: 2 * Math.floor(latMax) + 1 }, (_, i) => i - Math.floor(latMax)));
 
   // histogram of birth heights
   const bins = 16;
@@ -100,10 +103,11 @@
           <text x={ML - 6} y={sy(h) + 4} text-anchor="end" class="p3-tag">{h}</text>
         {/each}
         <text x="12" y={MT + 10} class="p3-tag" transform="rotate(-90 12 {MT + 60})">height [km]</text>
-        {#each Array.from({ length: Math.floor(latMax * 2) * 2 + 1 }, (_, i) => -latMax + i / 2) as l}
-          <text x={sx(l)} y={Hh - 8} text-anchor="middle" class="p3-tag">{l}</text>
+        {#each latTicks as l}
+          <line x1={sx(l)} x2={sx(l)} y1={sy(0)} y2={sy(0) + 4} stroke="var(--ink-3)" />
+          <text x={sx(l)} y={sy(0) + 16} text-anchor="middle" class="p3-tag">{l}</text>
         {/each}
-        <text x={W - 10} y={Hh - 8} text-anchor="end" class="p3-tag">km from the axis</text>
+        <text x={(ML + W - 8) / 2} y={Hh - 6} text-anchor="middle" class="p3-tag">distance from the shower axis [km]</text>
         <rect x={ML} y={sy(0)} width={W - ML - 8} height="3" fill="var(--ink-3)" />
         {#each res.tracks.filter((t) => t.kind === 'pion') as t}
           <path d={line(t.pts)} stroke="var(--p-hadron)" stroke-width="0.8" fill="none" opacity="0.55" />
@@ -127,24 +131,25 @@
     </div>
     <div>
       <h5 class="p3-h">Where the muons were born, and how many arrive</h5>
-      <svg viewBox="0 0 320 260" role="img" aria-label="Histogram of the height at which muons are born, with the number that reach the ground in this run and the number expected without time dilation.">
+      <svg viewBox="0 0 320 290" role="img" aria-label="Histogram of the height at which muons are born, with the number that reach the ground in this run and the number expected without time dilation.">
+        <text x="6" y="12" class="p3-tag">muons per 2 km bin (largest bin: {fmtN(hist.max)})</text>
+        <rect x="6" y="20" width="9" height="9" fill="var(--line-strong)" /><text x="19" y="28" class="p3-tag">born</text>
+        <rect x="64" y="20" width="9" height="9" fill="var(--p-muon)" /><text x="77" y="28" class="p3-tag">arrive (this run)</text>
+        <rect x="6" y="36" width="9" height="3" fill="var(--series-3)" /><text x="19" y="41" class="p3-tag">expected to arrive without time dilation</text>
         {#each hist.born as b, i}
-          {@const bw = 280 / bins}
+          {@const bw = 262 / bins}
           {@const x = 36 + i * bw}
-          {@const y0 = 226}
-          {@const sc = 200 / hist.max}
+          {@const y0 = 256}
+          {@const sc = 190 / hist.max}
           <rect {x} y={y0 - b * sc} width={bw - 1} height={b * sc} fill="var(--line-strong)" />
           <rect {x} y={y0 - hist.reached[i]! * sc} width={bw - 1} height={hist.reached[i]! * sc} fill="var(--p-muon)" />
           <rect x={x + 1} y={y0 - hist.noDil[i]! * sc - 1.5} width={bw - 3} height="3" fill="var(--series-3)" />
         {/each}
+        <line x1="36" x2="298" y1="256" y2="256" stroke="var(--ink-3)" />
         {#each [0, 8, 16, 24, 32] as h}
-          <text x={36 + (h / maxH) * 280} y="244" text-anchor="middle" class="p3-tag">{h}</text>
+          <text x={36 + (h / maxH) * 262} y="270" text-anchor="middle" class="p3-tag">{h}</text>
         {/each}
-        <text x="176" y="258" text-anchor="middle" class="p3-tag">height of birth [km]</text>
-        <text x="36" y="14" class="p3-tag">muons per 2 km bin (max {fmtN(hist.max)})</text>
-        <rect x="190" y="6" width="9" height="9" fill="var(--line-strong)" /><text x="202" y="14" class="p3-tag">born</text>
-        <rect x="236" y="6" width="9" height="9" fill="var(--p-muon)" /><text x="248" y="14" class="p3-tag">arrive</text>
-        <rect x="190" y="20" width="9" height="3" fill="var(--series-3)" /><text x="202" y="26" class="p3-tag">expected with no dilation</text>
+        <text x="167" y="286" text-anchor="middle" class="p3-tag">height of birth [km]</text>
       </svg>
     </div>
   </div>

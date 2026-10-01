@@ -32,7 +32,7 @@
       <text x={sx(L57) + 5} y="14" class="lbl">57 feet = 17.4 m</text>
       {#each lines as l}
         <path d={l.pts.map((q, i) => `${i ? 'L' : 'M'}${sx(q.L)},${sy(q.y)}`).join('')} fill="none" stroke={l.colour} stroke-width="2.4" />
-        <text x={sx(l.label === 'K_S' ? 1.3 : 20)} y={sy(l.label === 'K_S' ? -5 : l.pts[Math.floor((20 / 25) * 159)]!.y) + (l.label === 'K_S' ? -6 : 16)} class="lbl" fill={l.colour}>{l.label}</text>
+        <text x={sx(l.label === 'K_S' ? 1.3 : 7)} y={sy(l.label === 'K_S' ? -5 : l.pts[Math.floor((7 / 25) * 159)]!.y) + (l.label === 'K_S' ? -6 : 16)} class="lbl" fill={l.colour}>{l.label}</text>
       {/each}
       <text x={sx(14)} y={sy(-12) - 6} class="lbl">K_S: below 10⁻¹², off the scale</text>
     {/snippet}

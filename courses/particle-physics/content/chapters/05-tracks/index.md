@@ -53,8 +53,8 @@ Put the chamber in a magnetic field. A particle of charge $q$ moving at velocity
 
 Set the force equal to the mass times the centripetal acceleration. With the relativistic momentum $p = \gamma m v$ in place of $mv$ (the force law holds in that form; Chapter 2), a circle of radius $R$ requires $q v B = p v/R$, so $p = qBR$. In SI units that is a momentum in kg m/s. Particle physicists want GeV/c. One GeV/c is $10^9 e/c$ kg m/s, so dividing $p = q B R$ by it gives a convenient form:
 
-:::equation{#p-bend caption="The momentum of a charged particle from the radius of its circle in a magnetic field. For a unit charge, p (in GeV/c) is 0.3 times B (in tesla) times R (in metres)."}
-$$\term{pT}{p_T} = 0.2998\;\term{q}{|q|}\;\term{B}{B}\;\term{R}{R}\qquad [\,p_T\text{ in GeV/}c,\; B\text{ in T},\; R\text{ in m}\,]$$
+:::equation{#p-bend caption="The momentum of a charged particle from the radius of its circle in a magnetic field, with pT in GeV/c, B in tesla and R in metres. For a unit charge, pT is 0.3 times B times R."}
+$$\term{pT}{p_T} = 0.2998\;\term{q}{|q|}\;\term{B}{B}\;\term{R}{R}$$
 
 ```terms
 pT:

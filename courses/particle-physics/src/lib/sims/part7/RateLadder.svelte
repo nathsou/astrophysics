@@ -79,7 +79,7 @@
     <div class="axis" aria-hidden="true">
       <span></span>
       <div class="track head">
-        {#each [-6, -4, -2, 0, 2, 4, 6, 8, 10] as e}<span class="tick" style:left="{pos(10 ** e)}%">10{e < 0 ? '⁻' : ''}{String(Math.abs(e)).replace(/\d/g, (d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+d]!)}</span>{/each}
+        {#each [-6, -2, 2, 6, 10] as e}<span class="tick" class:last={e === 10} style:left="{pos(10 ** e)}%">10{e < 0 ? '⁻' : ''}{String(Math.abs(e)).replace(/\d/g, (d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+d]!)}</span>{/each}
       </div>
       <span class="unit">events per second</span>
       <span class="unit">events in the data set</span>
@@ -111,7 +111,7 @@
   .row,
   .axis {
     display: grid;
-    grid-template-columns: minmax(9rem, 13rem) 1fr minmax(7rem, 9rem) minmax(8rem, 12rem);
+    grid-template-columns: minmax(8rem, 11rem) minmax(8rem, 1fr) 6.2rem minmax(6.5rem, 10rem);
     gap: 0.6rem;
     align-items: center;
   }
@@ -149,6 +149,9 @@
     font-size: 0.68rem;
     color: var(--mute);
     font-variant-numeric: tabular-nums;
+  }
+  .tick.last {
+    transform: translateX(-100%);
   }
   .unit {
     color: var(--mute);

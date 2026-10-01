@@ -21,6 +21,7 @@
   import { ControlSession } from './session.svelte.ts';
   import { presetHash } from './codec.ts';
   import Histogram from './Histogram.svelte';
+  import Residual from './Residual.svelte';
   import { int, pct, plusMinus, sig, hz, xsec } from './fmt.ts';
   import './control.css';
 
@@ -131,7 +132,12 @@
       {#if obs}
         <Histogram {obs} summary={s} main={obsIndex === 0} real={real && obsIndex === 0 ? { edges: real.edges, counts: real.counts, manifest: real.manifest } : null} height={300} />
       {/if}
-      {#if obsIndex === 0 && fit}
+      {#if obsIndex === 0 && fit?.reliable && obs?.pseudo && fit.components['bkg']}
+        <Residual obs={obs} {fit} height={180} />
+      {/if}
+      {#if obsIndex === 0 && fit && !fit.reliable}
+        <p class="fit ui">The fit is not reliable yet: too few events. Run live for longer, or use the precomputed sample.</p>
+      {:else if obsIndex === 0 && fit}
         <p class="fit ui">
           Fit ({fit.model}, {fit.of}):
           {#if fit.params['sig.mean']}peak at <b>{plusMinus(fit.params['sig.mean'].value, fit.params['sig.mean'].error)}</b> GeV{/if}

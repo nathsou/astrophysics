@@ -45,7 +45,7 @@
   {#snippet controls()}
     <Slider bind:value={mH} min={100} max={159} step={0.1} label="Higgs boson mass (GeV)" format={(v) => v.toFixed(1)} />
   {/snippet}
-  <Plot x={{ domain: [100, 160], label: 'm_H [GeV]' }} y={{ type: 'log', domain: [1e-4, 1], label: 'branching fraction' }} height={320} label="Branching fractions of the Higgs boson against its mass on a logarithmic axis for eight decay channels">
+  <Plot x={{ domain: [100, 160], label: 'Higgs boson mass [GeV]' }} y={{ type: 'log', domain: [1e-4, 1], label: 'branching fraction' }} height={320} label="Branching fractions of the Higgs boson against its mass on a logarithmic axis for eight decay channels">
     {#snippet marks({ sx, sy })}
       <line x1={sx(mH)} x2={sx(mH)} y1={sy(1)} y2={sy(1e-4)} stroke="var(--ink-3)" stroke-dasharray="4 3" />
       {#each CH as c}

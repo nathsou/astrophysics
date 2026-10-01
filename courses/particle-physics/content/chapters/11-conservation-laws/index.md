@@ -23,6 +23,30 @@ explain: "τ(Δ) = 6.582 × 10⁻²⁵ GeV·s / 0.117 GeV = 5.6 × 10⁻²⁴ s.
 
 The explanation, found in 1952 to 1955, is a conservation law, and this chapter is about the whole family. A **conservation law** says that the total of some quantity is the same before and after every reaction. You know two already: energy and momentum, which Chapter 2 used for every decay. Particle physics adds quantities that are not energy or momentum: each particle carries a charge of the new kind, the charges add up like numbers, and the sum does not change. Collecting them is useful because they are the *selection rules* of the subject: they tell you, without any calculation of probabilities, which reactions are impossible. Everything else is a question of rates.
 
+Written as an equation, every law of this chapter has the same form:
+
+:::equation{#ledger-sum caption="A conservation law: the total of a quantum number is the same on both sides of the reaction."}
+$$\sum_{i\,\in\,\text{initial}} \term{qi}{q_i^{(a)}} \;=\; \sum_{f\,\in\,\text{final}} \term{qf}{q_f^{(a)}}\qquad\text{for each law }\term{a}{a}$$
+
+```terms
+qi:
+  label: 'q_i^(a), the value of law a for an initial particle'
+  what: The number that particle i carries for the law a. For charge it is the electric charge, for baryon number it is 1, 0 or −1, for the electron-lepton number it is 1 for the electron and its neutrino.
+  why: Every additive quantum number is a table entry for each particle, and an antiparticle has the opposite entry.
+  effect: Adding the entries of the particles that come in gives the total on the left.
+qf:
+  label: 'q_f^(a), the value of law a for a final particle'
+  what: The same number for each particle that comes out.
+  why: The law holds when the sum over the outgoing particles equals the sum over the incoming ones.
+  effect: If the two sums differ for any law that the force at work conserves, the reaction cannot happen by that force.
+a:
+  label: 'a, which law'
+  what: The index of the law. The ledger of this chapter has charge, baryon number, the three lepton numbers, strangeness, charm and bottom number.
+  why: Each law is checked separately, and a reaction can fail several at once.
+  effect: Strangeness and its relatives hold for the strong and electromagnetic forces and not for the weak one.
+```
+:::
+
 ## The laws, one at a time
 
 ### Electric charge

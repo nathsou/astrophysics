@@ -23,7 +23,7 @@ decupletSpacing().omegaFromLastSpacing;                     // 1.6799 GeV
 ## Conventions and a warning
 
 Quark content strings are those of `hep/particles`: `"ud~"` is u d̄ (a trailing `~` marks the antiquark). The particle table's own
-derivation of antiparticles (`particle(-211).quarks`) does not follow this convention (it gives `"~u~d~"`), so `hadronsWithContent` works from the
+derivation of antiparticles follows the same convention (`particle(-211).quarks` is `"u~d"`); `hadronsWithContent` works from the
 table's base entries and flips the content itself.
 
 Tests: `npx vitest run src/lib/hep/su3`. They check the dimensions of every (p, q) up to 5, the decompositions 3⊗3̄, 3⊗3, 3⊗3⊗3, 8⊗8,

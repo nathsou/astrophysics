@@ -55,7 +55,7 @@ where the bar marks an **antineutrino**: the particle emitted along with an elec
 Pauli had a particle and no theory. In 1933 and 1934 Fermi provided one, by taking the newest field theory of the day, the quantum electrodynamics of Chapter 16, and making the simplest change that would let a neutron turn into a proton. A field that creates an electron and an antineutrino, and a field that changes a neutron into a proton, meet at a single point: a four-fermion **contact interaction** with one strength, which today is written $G_F$ and called **Fermi's constant**.:cite[fermi1934z,fermi1934nc]
 
 :::history{year=1933 title="Fermi's paper, and a journal that declined it" people="Enrico Fermi" source="Sources: Fermi (1934), both versions; Wilson (1968); Schwartz (2017)."}
-Fermi published the theory in Italian in *Il Nuovo Cimento* and in German in the *Zeitschrift für Physik*, both in 1934,.:cite[fermi1934nc,fermi1934z] According to the account usually given, he first sent a short version to *Nature*, which declined it as containing speculations too remote from reality to be of interest to its readers.:cite[wilson1968] The further story, that the editors later regretted it publicly, is not supported by Fermi's biographer, who examined it.:cite[schwartz2017]
+Fermi published the theory in Italian in *Il Nuovo Cimento* and in German in the *Zeitschrift für Physik*, both in 1934.:cite[fermi1934nc,fermi1934z] According to the account usually given, he first sent a short version to *Nature*, which declined it as containing speculations too remote from reality to be of interest to its readers.:cite[wilson1968] The further story, that the editors later regretted it publicly, is not supported by Fermi's biographer, who examined it.:cite[schwartz2017]
 
 The theory made predictions that a measurement could confirm: the shape of the electron spectrum, the relation between the energy released and the lifetime, and the value of a single constant, $G_F$, that every weak decay shares. They were confirmed, each to the precision of its day.
 :::
@@ -100,7 +100,7 @@ tolerance: 0.01
 hints:
   - 'm_μ⁵ = (0.10566)⁵ = 1.3 × 10⁻⁵ GeV⁵. G_F² = 1.36 × 10⁻¹⁰ GeV⁻⁴.'
   - 'Γ comes out near 3 × 10⁻¹⁹ GeV. Then τ = 6.582 × 10⁻²⁵ GeV·s divided by Γ.'
-explain: 'Γ = 3.009 × 10⁻¹⁹ GeV, so τ = 6.582 × 10⁻²⁵ / 3.009 × 10⁻¹⁹ = 2.187 × 10⁻⁶ s. The measured lifetime is 2.1970 μs. The 0.4 % difference is the size of the electromagnetic corrections that the leading-order formula leaves out. The MuLan experiment at the Paul Scherrer Institute (PSI, Switzerland) measured the lifetime to a part in a million and used the formula, with those corrections, to give the most precise value of G_F.'
+explain: 'Γ = 3.009 × 10⁻¹⁹ GeV, so τ = 6.582 × 10⁻²⁵ / 3.009 × 10⁻¹⁹ = 2.187 × 10⁻⁶ s. The measured lifetime is 2.1970 μs. The 0.5 % difference is the size of the electromagnetic corrections that the leading-order formula leaves out. The MuLan experiment at the Paul Scherrer Institute (PSI, Switzerland) measured the lifetime to a part in a million and used the formula, with those corrections, to give the most precise value of G_F.'
 ```
 
 The measurement of the muon lifetime is also the measurement of $G_F$. The MuLan experiment at PSI recorded about $10^{12}$ muon decays and found $\tau_\mu = 2\,196\,980.3 \pm 2.2$ ps, hence $G_F = 1.1663787(6)\times10^{-5}\ \text{GeV}^{-2}$.:cite[mulan2013] The constant has dimensions of energy⁻², which means that it defines an energy: $G_F^{-1/2} = 293$ GeV. Put another way, the weak interaction is weak only because ordinary decays happen at energies far below 293 GeV. The rate of a process at energy $E$ is, by dimensions, $G_F^2E^5$, and compared with the energy itself, $(G_FE^2)^2$. At $E$ of a few GeV this is $10^{-9}$ or so. At a few hundred GeV it stops being small, and Fermi's theory, taken literally, cannot be right there: the cross-section it gives grows with the collision energy squared and would eventually exceed the largest value that the conservation of probability allows. Something must change at those energies. Chapter 23 shows what.
@@ -189,7 +189,7 @@ a:
   label: 'A P β, the size of the asymmetry'
   what: The product of three numbers. A is a property of the decay (the asymmetry parameter). P is the degree of polarisation of the nuclei, from 0 (random) to 1 (all aligned). β is the electron's speed in units of the speed of light.
   why: The asymmetry needs all three. No polarisation, no direction to be asymmetric about, so P = 0 gives a flat distribution, which is why warming the crystal removed the effect. A parity-respecting law has A = 0.
-  effect: 'For the cobalt-60 decay the theory of the next section gives A = −1, and a fast electron has β near 0.8 or more. So 1 + a cos θ with a up to about −0.8 at full polarisation: several times more electrons against the spin than along.'
+  effect: 'For the cobalt-60 decay the theory of the next section gives A = −1, and the fastest electrons have β near 0.8. So 1 + a cos θ with a down to about −0.8 at full polarisation: for those electrons, nine times more go against the spin than along it.'
 ```
 :::
 

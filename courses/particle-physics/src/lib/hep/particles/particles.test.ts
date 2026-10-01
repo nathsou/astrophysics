@@ -8,11 +8,16 @@ describe('particle table', () => {
     expect(pim.symbol).toBe('π⁻');
     const pbar = particle(-2212);
     expect(pbar.baryon3).toBe(-3);
-    expect(pbar.quarks).toBe('~u~u~d');
+    expect(pbar.quarks).toBe('u~u~d~');
+    expect(particle(-211).quarks).toBe('u~d');
+    expect(particle(-2214).name).toBe('anti-Delta+');
+    expect(particle(-2214).name).not.toBe(particle(1114).name);
+    expect(particle(-2212).symbol).toBe('p\u0304');
+    expect(particle(-3222).symbol).toBe('Σ\u0304⁻');
     expect(particle(-11).charge3).toBe(3);
     expect(particle(-11).lepton[0]).toBe(-1);
     expect(particle(2224).name).toBe('Delta++');
-    expect(particle(-2224).name).toBe('Delta--');
+    expect(particle(-2224).name).toBe('anti-Delta++');
   });
   test('self-conjugate particles have no antiparticle entry', () => {
     expect(antiId(22)).toBe(22);

@@ -131,7 +131,7 @@ factor: 1.5
 hints:
   - 'rate = σ L.'
   - '830 pb = 8.3 × 10⁻³⁴ cm².'
-explain: 'σL = 8.3 × 10⁻³⁴ cm² × 2 × 10³⁴ cm⁻² s⁻¹ = 17 per second. Over 10⁷ s of collisions that is 1.7 × 10⁸ pairs, of which 29 % (5 × 10⁷) are in the lepton + jets channel. Fewer than half pass the selection of this chapter, and the pairs are mixed up with billions of other collisions: Chapter 27 is about how the trigger finds them. Compare the Tevatron: at 5 pb and 3 × 10³² cm⁻² s⁻¹ the same arithmetic gives one pair per ten minutes or so, which is why the discovery needed years of data.'
+explain: 'σL = 8.3 × 10⁻³⁴ cm² × 2 × 10³⁴ cm⁻² s⁻¹ = 17 per second. Over 10⁷ s of collisions that is 1.7 × 10⁸ pairs, of which 29 % (5 × 10⁷) are in the lepton + jets channel. Fewer than half pass the selection of this chapter, and the pairs are mixed up with billions of other collisions: Chapter 27 is about how the trigger finds them. Compare the Tevatron: at 5 pb and the 3 × 10³² cm⁻² s⁻¹ of its later years the same arithmetic gives one pair per ten minutes or so, and in the 1990s, with a luminosity more than ten times lower, one every few hours: the discovery needed years of data.'
 ```
 
 ## Reconstructing a top pair
@@ -175,7 +175,7 @@ options:
     why: 'Without any information on the b-tagging there are 4 × 3 × 1 = 12 assignments: 4 choices of b(ℓ), 3 of b(h), and the last two jets are q and q′. The tags remove many of them.'
   - text: 2.
     correct: true
-    why: 'The tagged jets are the b quarks: which of the two is b(ℓ) and which b(h) is the only freedom, because q and q′ are interchangeable. That is 2 assignments, from 12, and the χ² of the leptonic and hadronic top masses chooses between them. A b-tag with efficiency 70 % and a light-jet rate of 0.3 % can reduce the number of assignments by an order of magnitude. With real tags, which are not perfect, the penalty softens this.'
+    why: 'The tagged jets are the b quarks: which of the two is b(ℓ) and which b(h) is the only freedom, because q and q′ are interchangeable. That is 2 assignments, from 12, and the χ² of the leptonic and hadronic top masses chooses between them. A b-tag with an efficiency of about 75 % and a light-jet rate below 1 % (Chapter 24) can reduce the number of assignments by an order of magnitude. With real tags, which are not perfect, the penalty softens this.'
   - text: 1.
     why: 'There is one choice of the b’s as a pair, but they still have to be put on the leptonic and the hadronic side, which is a factor 2. The two tops’ masses decide it.'
 ```

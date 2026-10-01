@@ -183,7 +183,7 @@ $$V(h) = \tfrac12\,m_H^2\,h^2 + \lambda v\,h^3 + \tfrac14\lambda\,h^4 + \text{co
 
 The first term is the Higgs mass. The second and third are the Higgs boson interacting with itself: a Higgs can split into two, or two scatter. Both strengths follow from $m_H$ and $v$ alone, so **the Standard Model predicts the self-coupling** of the Higgs boson. Whether it is right is one of the open questions that Chapter 30 returns to, and it is the only test of the shape of the potential that is not the *existence* of the hat.
 
-::potential-slice{n="26.2" caption="The potential along the real direction, seen from the vacuum at h = 0 (real numbers: m_H = 125.2 GeV, v = 246.22 GeV). The white curve is the sum of the three terms; switch on the pieces to see them. The parabola is the Higgs mass, the cubic term makes the curve steeper on the right than on the left, and the quartic term closes the walls. The second valley, on the left, is the same vacuum seen at the opposite point of the brim of the hat. The dashed vertical line at h = −v is φ = 0, the top of the hat."}
+::potential-slice{n="26.2" caption="The potential along the real direction, seen from the vacuum at h = 0 (real numbers: Higgs mass 125.2 GeV, v = 246.22 GeV). The solid curve is the sum of the three terms; switch on the pieces to see them. The parabola is the Higgs mass, the cubic term makes the curve steeper on the right than on the left, and the quartic term closes the walls. The second valley, on the left, is the same vacuum seen at the opposite point of the brim of the hat. The dashed vertical line at h = −v is φ = 0, the top of the hat."}
 
 ### Couplings are proportional to mass
 

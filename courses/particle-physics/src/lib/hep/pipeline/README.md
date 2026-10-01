@@ -162,15 +162,27 @@ Observables that need tracks or vertices (`nTracks`, `nVertices`) are not availa
 
 ## Performance
 
-Asserted in `pipeline.test.ts` at half the plan's target where the plan sets one for the stage (histogram filling: 10⁶ fills in under 200 ms, the plan asking 100 ms for the analysis library), and with a conservative floor for the whole chain (Z → μμ, no pile-up: at least 40 events/s per core, the trigger, analysis
-and accumulation together under 25 % of the time). Measured on the (heavily shared) development machine, one core, JIT warm: see the table in the final section of the Control Room's notes below; the library agents' own numbers are reco ≈ 1,800 events/s without pile-up and ≈ 30/s with 50 pile-up collisions, the full generator chain ≈ 380 pp → Z → μμ events/s.
+Asserted in `pipeline.test.ts` at half the plan's target where the plan sets one for the stage (histogram filling: 10⁶ fills in under 200 ms, the plan asking 100 ms for the analysis library), and with a conservative floor for the whole chain
+(Z → μμ without pile-up: at least 40 events/s per core, with the trigger, analysis and accumulation together under 25 % of the time; the stage timings account for the wall-clock time). The plan's per-stage targets (generation at 5,000 events/s, simulation and
+reconstruction at 2,000 events/s without pile-up and 50 events/s with 50 pile-up collisions) are the library modules' targets and are tested in their own directories; the library agents measured the reconstruction at about 1,800 events/s without pile-up and about 30/s with 50
+pile-up collisions, and the full generator chain at about 380 pp → Z → μμ events/s. The pipeline adds the trigger and the analysis, which together cost 2–10 % of an event.
 
-| Preset (one core) | events/s | where the time goes |
+Measured as CPU time per event in one Node process (`process.cpuUsage()`, so it does not depend on how busy the machine is, but the development machine was shared with a dozen other jobs, so an idle laptop will be faster), warm JIT, after 6 warm-up events:
+
+| Preset (one core) | events/s | generator / detector / reconstruction / trigger / analysis (share of the time) |
 |---|---|---|
-| zmumu, no pile-up | 130–260 | generator 40 %, detector 20 %, reconstruction 35 %, trigger and analysis 5 % |
-| higgs-gamgam, μ = 10 | 25–45 | reconstruction 45 %, detector 30 %, generator 20 % |
-| ttbar, μ = 5 | 16–30 | reconstruction 50 % (jets, b-tagging) |
-| ee-zpole | 300 | |
+| zmumu, no pile-up | 142 (257 on a quiet moment) | 22 / 30 / 43 / 3 / 1 % |
+| zmumu, μ = 20 | 15 | 13 / 31 / 52 / 4 / 0 % |
+| higgs-gamgam, μ = 10 | 26 | 18 / 33 / 47 / 2 / 1 % |
+| higgs-4l, μ = 10 | 33 | 18 / 28 / 51 / 1 / 1 % |
+| ttbar, μ = 5 | 18 | 12 / 38 / 47 / 2 / 1 % |
+| dijet, μ = 5 | 23 | 18 / 26 / 51 / 3 / 2 % |
+| minbias, no pile-up | 395 | 26 / 24 / 47 / 1 / 2 % |
+| ee-zpole | 1,400 | 21 / 10 / 58 / 2 / 8 % |
+
+In the browser the Control Room runs on `navigator.hardwareConcurrency − 1` workers (at most 12). Measured in headless Chromium on the same shared machine with 3 workers: Z → μμ at about 130 events/s (1,100 events/s in a quiet minute), H → γγ at 40–60 events/s.
+**The Higgs peak:** with the `higgs-gamgam` preset the fit of the pseudo-data finds the peak at about 7σ (yield over its uncertainty; the Asimov significance in the 120–130 GeV window is 5.3σ at leading order, K = 1) about 10 seconds after pressing Start (165 events) in a freshly loaded page (served by the Vite dev server), and stable from about 20 seconds (770 events) onwards, on a shared machine; the
+precomputed sample shows it at once. The target was two minutes.
 
 ## Files
 

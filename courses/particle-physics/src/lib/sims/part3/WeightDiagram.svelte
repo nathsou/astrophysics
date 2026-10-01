@@ -52,7 +52,7 @@
       <dl class="p3-out ui" style="grid-template-columns:1fr" aria-live="polite">
         <div><dt>representation (p, q) = ({p}, {q})</dt><dd>{r.name}: {r.dim} states</dd></div>
         <div><dt>highest weight</dt><dd>I₃ = {r.highest.i3x2 / 2}, Y = {(r.highest.y3 / 3).toFixed(2)}</dd></div>
-        <div><dt>isospin multiplets (Y: I)</dt><dd>{r.multiplets.map((m) => `${(m.y3 / 3).toFixed(2).replace(/\.?0+$/, '')}: ${m.i2 / 2}`).join(' · ')}</dd></div>
+        <div><dt>isospin multiplets</dt><dd>{r.multiplets.map((m) => `Y = ${fq(m.y3 / 3)}, I = ${m.i2 % 2 ? m.i2 + '/2' : m.i2 / 2}`).join(' · ')}</dd></div>
         <div><dt>{r.name} ⊗ 3 =</dt><dd>{prod}</dd></div>
       </dl>
       <p class="p3-note ui">Red dots carry positive charge, blue negative, grey none; the small label is the charge in units of e. Triality (p − q) mod 3 = {(((p - q) % 3) + 3) % 3}: only triality 0 representations, such as 1, 8, 10 and 27, contain integer charges, which is all that hadrons have.</p>

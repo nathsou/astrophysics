@@ -43,7 +43,7 @@ export interface Particle {
   top: number;
   /** 2 × the third component of isospin (for hadrons and light quarks), else 0. */
   i3x2: number;
-  /** Quark content, e.g. "uud" (bars written with a leading "~", e.g. "u~d"); empty for non-hadrons. */
+  /** Quark content, e.g. "uud" (an antiquark is written with a trailing "~", e.g. "ud~" for π⁺ = u d̄); empty for non-hadrons. */
   quarks: string;
   /** Is the particle its own antiparticle? */
   selfConjugate: boolean;
@@ -175,8 +175,8 @@ function anti(p: Particle): Particle {
   return {
     ...p,
     pdg: -p.pdg,
-    name: flipName(p.name),
-    symbol: flipSymbol(p.symbol),
+    name: flipName(p.name, p.kind),
+    symbol: flipSymbol(p.symbol, p.kind),
     charge3: flip(p.charge3),
     baryon3: flip(p.baryon3),
     lepton: [flip(p.lepton[0]), flip(p.lepton[1]), flip(p.lepton[2])],
@@ -185,22 +185,35 @@ function anti(p: Particle): Particle {
     bottom: flip(p.bottom),
     top: flip(p.top),
     i3x2: flip(p.i3x2),
-    quarks: p.quarks.replace(/(~?)([udscbt])/g, (_, bar: string, q: string) => (bar ? q : `~${q}`)),
+    quarks: p.quarks.replace(/([udscbt])(~?)/g, (_, q: string, bar: string) => (bar ? q : `${q}~`)),
     decays: p.decays.map((d) => ({ br: d.br, products: d.products.map((id) => (table.get(id)?.selfConjugate ? id : -id)) })),
   };
 }
-function flipName(n: string): string {
-  if (n.endsWith('++')) return n.slice(0, -2) + '--';
-  if (n.endsWith('--')) return n.slice(0, -2) + '++';
-  if (n.endsWith('+')) return n.slice(0, -1) + '-';
-  if (n.endsWith('-')) return n.slice(0, -1) + '+';
+/**
+ * Names of antiparticles. Charged leptons and mesons flip the sign (e⁻ → e⁺, π⁺ → π⁻, K⁺ → K⁻); everything else gets an
+ * "anti-" prefix, so that, for example, the antiparticle of the Δ⁺ ("anti-Delta+") is never confused with the Δ⁻.
+ */
+function flipName(n: string, kind: ParticleKind): string {
+  if (kind === 'lepton' || kind === 'meson') {
+    if (n.endsWith('++')) return n.slice(0, -2) + '--';
+    if (n.endsWith('--')) return n.slice(0, -2) + '++';
+    if (n.endsWith('+')) return n.slice(0, -1) + '-';
+    if (n.endsWith('-')) return n.slice(0, -1) + '+';
+  }
   return `anti-${n}`;
 }
-function flipSymbol(s: string): string {
-  if (s.endsWith('⁺⁺')) return s.slice(0, -2) + '⁻⁻';
-  if (s.endsWith('⁺')) return s.slice(0, -1) + '⁻';
-  if (s.endsWith('⁻')) return s.slice(0, -1) + '⁺';
-  return s + '̄';
+/** Symbols: a bar over the symbol with the charge flipped for baryons and quarks (p̄, Σ̄⁻), a flipped sign for leptons and mesons. */
+function flipSymbol(s: string, kind: ParticleKind): string {
+  const flipCharge = (t: string) => t.replace('⁺⁺', '\u0000').replace('⁻⁻', '⁺⁺').replace('\u0000', '⁻⁻').replace(/⁺$/, '\u0001').replace(/⁻$/, '⁺').replace('\u0001', '⁻');
+  if (kind === 'lepton' || kind === 'meson') {
+    if (/[⁺⁻]$/.test(s)) return flipCharge(s);
+    return s + '\u0304';
+  }
+  // bar goes on the letter(s) before any charge superscript
+  const m = /^(.*?)([⁺⁻]+)?$/.exec(s)!;
+  const body = m[1]!;
+  const charge = m[2] ? flipCharge(m[2]) : '';
+  return body + '\u0304' + charge;
 }
 
 const antiCache = new Map<number, Particle>();

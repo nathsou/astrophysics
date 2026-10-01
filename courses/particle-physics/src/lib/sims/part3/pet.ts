@@ -21,9 +21,9 @@ export const HALF = 12;
 export interface Hot { x: number; y: number; r: number; w: number }
 /** Uptake: background 1, three hot regions. */
 export const PHANTOM_DEFAULT: Hot[] = [
-  { x: -3.5, y: 2.5, r: 1.6, w: 6 },
-  { x: 3.8, y: -2.0, r: 1.0, w: 6 },
-  { x: 0.5, y: -6.0, r: 0.6, w: 6 },
+  { x: -3.5, y: 2.5, r: 1.9, w: 6 },
+  { x: 3.8, y: -2.0, r: 1.4, w: 6 },
+  { x: 0.5, y: -6.0, r: 1.0, w: 6 },
 ];
 
 export function activityAt(x: number, y: number, hot: readonly Hot[]): number {

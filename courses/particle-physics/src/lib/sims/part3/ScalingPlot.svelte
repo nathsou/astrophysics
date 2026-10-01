@@ -10,6 +10,7 @@
   import Widget from '$lib/components/ui/Widget.svelte';
   import Plot from '$lib/charts/Plot.svelte';
   import { xf } from '$lib/hep/gen/pdf';
+  import { pow10Label } from './fmt';
 
   let { n, caption }: { n?: string | number; caption?: string } = $props();
   const E2: [number, number][] = [[2, 4 / 9], [1, 1 / 9], [3, 1 / 9], [4, 4 / 9], [5, 1 / 9]];
@@ -25,12 +26,12 @@
   <Plot
     height={270}
     label="The structure function F2 against Q squared on a logarithmic axis for four values of x: nearly flat for x of 0.1 to 0.5, and rising slowly for x equal to 0.01."
-    x={{ type: 'log', domain: [1, 4e5], label: 'Q²  [GeV²]', tickValues: [1, 10, 100, 1e3, 1e4, 1e5], format: (v) => '10^' + Math.round(Math.log10(v)) }}
-    y={{ domain: [0, 0.8], label: 'F₂(x, Q²)', ticks: 4 }}
+    x={{ type: 'log', domain: [1, 4e5], label: 'Q²  [GeV²]', tickValues: [1, 10, 100, 1e3, 1e4, 1e5], format: pow10Label }}
+    y={{ domain: [0, 1.3], label: 'F₂(x, Q²)', ticks: 5 }}
   >
     {#snippet marks({ sx, sy })}
       <rect x={sx(2)} width={sx(20) - sx(2)} y="0" height="1000" fill="var(--grid)" opacity="0.7" />
-      <text x={sx(2) + 4} y="14" class="p3-tag">an illustrative range, Q² = 2–20 GeV²</text>
+      <text x={sx(2) + 4} y={sy(0.03)} class="p3-tag">an illustrative range, Q² = 2–20 GeV²</text>
       {#each XS as x, i}
         <path d={path(x, sx, sy)} class="p3-line" stroke={COLS[i]} />
         <text x={sx(3e5)} y={sy(F2(x, 550)) - 5} text-anchor="end" class="p3-tag">x = {x}</text>

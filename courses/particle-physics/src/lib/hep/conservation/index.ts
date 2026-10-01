@@ -25,6 +25,9 @@ import { particle, quantumNumbers, hasParticle } from '../particles/index.ts';
 
 export { parseReaction, parseParticle, formatReaction, type ParsedReaction } from './parse.ts';
 
+/** The hook names registered by this module. */
+export const HOOKS = ['conservation.checkReaction'] as const;
+
 export type LawId = 'charge' | 'baryon' | 'lepton-e' | 'lepton-mu' | 'lepton-tau' | 'strangeness' | 'charm' | 'bottom' | 'energy';
 
 export interface Law {

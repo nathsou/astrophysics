@@ -14,8 +14,8 @@
   import { simulatePet, reconstruct, truthImage, crystalPos, GRID, HALF, RING_R, PHANTOM_R, PHANTOM_DEFAULT } from './pet';
 
   let { n, caption, seed = 7 }: { n?: string | number; caption?: string; seed?: number } = $props();
-  let emitted = $state(30000);
-  let iters = $state(6);
+  let emitted = $state(60000);
+  let iters = $state(12);
   let range = $state(0.1);
   let canvasL: HTMLCanvasElement | undefined = $state();
   let canvasR: HTMLCanvasElement | undefined = $state();
@@ -59,7 +59,7 @@
     for (let iy = 0; iy < GRID; iy++) for (let ix = 0; ix < GRID; ix++) {
       const v = mx > 0 ? img[iy * GRID + ix]! / mx : 0;
       const o = ((GRID - 1 - iy) * GRID + ix) * 4;
-      const g = Math.round(255 * Math.sqrt(v));
+      const g = Math.round(255 * v ** 1.4);
       im.data[o] = g; im.data[o + 1] = Math.round(g * 0.62); im.data[o + 2] = Math.round(g * 0.2); im.data[o + 3] = 255;
     }
     const off = document.createElement('canvas');
@@ -79,7 +79,7 @@
 <Widget title="A PET scan, reconstructed from coincidences" {n} {caption} kind="Simulation">
   {#snippet controls()}
     <Slider bind:value={emitted} min={2000} max={100000} step={1000} log label="Decays simulated" format={(v) => Math.round(v).toLocaleString('en-GB')} />
-    <Slider bind:value={iters} min={0} max={15} step={1} label="ML-EM iterations (0 = plain back-projection)" format={(v) => String(v)} />
+    <Slider bind:value={iters} min={0} max={20} step={1} label="ML-EM iterations (0 = plain back-projection)" format={(v) => String(v)} />
     <Slider bind:value={range} min={0} max={0.6} step={0.05} label="Positron range (rms blur) [cm]" format={(v) => v.toFixed(2)} />
   {/snippet}
   <div class="p3-two">

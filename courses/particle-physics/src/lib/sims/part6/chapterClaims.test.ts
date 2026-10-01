@@ -1,7 +1,8 @@
 import { describe, expect, test } from 'vitest';
 import { rng } from '$lib/hep/random';
-import { ttbar } from '$lib/hep/gen';
+import { ttbar, pdf } from '$lib/hep/gen';
 
+// Numbers that the chapters quote from the course's own generator (Chapters 23 and 25).
 // Chapter 25's caption: the share of top pairs from gluon fusion (LHC) and from qq̄ annihilation (Tevatron) in the course's leading-order generator.
 describe('tt̄ production channels in the course generator', () => {
   test('gluon fusion gives about 84 % at 13 TeV pp; quark annihilation about 95 % at 1.96 TeV ppbar', () => {
@@ -18,5 +19,12 @@ describe('tt̄ production channels in the course generator', () => {
     expect(gg / n).toBeLessThan(0.86);
     expect(qq / n).toBeGreaterThan(0.93);
     expect(qq / n).toBeLessThan(0.96);
+  });
+
+  test('Chapter 23: at x = 0.15 and Q = m_W an up quark in the proton is about ten times more probable than an up antiquark', () => {
+    const q = pdf(2, 0.15, 80.4), qbar = pdf(-2, 0.15, 80.4);
+    console.log('u/ubar at x = 0.15:', q / qbar);
+    expect(q / qbar).toBeGreaterThan(7);
+    expect(q / qbar).toBeLessThan(14);
   });
 });

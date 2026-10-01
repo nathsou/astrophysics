@@ -63,7 +63,7 @@
   <dl class="p3-out ui" aria-live="polite">
     <div><dt>√s at this beam energy</dt><dd>{(s_now * 1000).toFixed(0)} MeV (resonance: {(M * 1000).toFixed(0)} MeV)</dd></div>
     <div><dt>model σ(π⁺p) · σ(π⁻p)</dt><dd>{sigmaPlus(T).toFixed(0)} mb · {sigmaMinus(T).toFixed(0)} mb</dd></div>
-    <div><dt>pion energy at the peak</dt><dd>{Tpeak.toFixed(0)} MeV (√s = M)</dd></div>
+    <div><dt>pion energy at √s = M</dt><dd>{Tpeak.toFixed(0)} MeV</dd></div>
     <div><dt>peak height from unitarity</dt><dd>8π/k² = {peak.toFixed(0)} mb, k = {(kPeak * 1000).toFixed(0)} MeV/c</dd></div>
   </dl>
   <p class="p3-note ui">This is a model curve, not data. Its three inputs are the particle table's mass and width of the Δ, the kinematics of a pion on a proton at rest, and the largest cross-section one partial wave of angular momentum 3/2 can give; the real π⁺p cross-section peaks at about 200 mb. The π⁻p curve is a third as high by the isospin Clebsch–Gordan coefficients, the ratio 3 : 1 that helped to show the resonance has isospin 3/2.</p>

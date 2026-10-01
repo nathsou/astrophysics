@@ -10,6 +10,7 @@
   import Slider from '$lib/components/ui/Slider.svelte';
   import Plot from '$lib/charts/Plot.svelte';
   import { particle } from '$lib/hep/particles';
+  import { pow10Label } from './fmt';
 
   let { n, caption }: { n?: string | number; caption?: string } = $props();
   const mu = particle(13);
@@ -43,7 +44,7 @@
     height={260}
     label="Survival probability of a muon against its energy on logarithmic axes: with time dilation it rises from nearly zero to one; without dilation it is a constant, vanishingly small for a muon born at this height."
     x={{ type: 'log', domain: [0.12, 300], label: 'muon energy [GeV]', tickValues: [0.1, 1, 10, 100], format: (v) => String(v) }}
-    y={{ type: 'log', domain: [1e-20, 2], label: 'probability of reaching the ground', tickValues: [1e-18, 1e-12, 1e-6, 1], format: (v) => (v === 1 ? '1' : '10^' + Math.round(Math.log10(v))) }}
+    y={{ type: 'log', domain: [1e-20, 2], label: 'survival probability', tickValues: [1e-18, 1e-12, 1e-6, 1], format: pow10Label }}
   >
     {#snippet marks({ sx, sy })}
       <path d={p(withD, sx, sy)} class="p3-line" stroke="var(--series-1)" />

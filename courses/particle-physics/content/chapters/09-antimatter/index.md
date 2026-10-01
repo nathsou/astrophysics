@@ -115,7 +115,7 @@ $$\beta = \begin{pmatrix} 1 & 0\\ 0 & -1\end{pmatrix},\qquad \alpha_i = \begin{p
 
 You can check it in one line: the square of $\alpha_i$ is $\begin{pmatrix}\sigma_i^2 & 0\\ 0 & \sigma_i^2\end{pmatrix}$, which is the identity because $\sigma_i^2 = 1$; and $\alpha_i$ anticommutes with $\beta$ because the off-diagonal blocks change sign when $\beta$ multiplies from the left rather than from the right. The library's tests do the full check numerically, all the anticommutators and $H^2 = (p^2 + m^2)\mathbb 1$, for any momentum and mass (`src/lib/sims/part3/dirac.ts`).
 
-The wave function $\psi$ that this $H$ acts on has therefore **four components**: a *spinor*, two numbers for each of the two blocks. This is where the spin of the electron comes from. Dirac did not put it in: two of the four components are the two spin states, and he found that the equation gives the electron a magnetic moment with $g = 2$, which was the measured value, unexplained until then.
+The wave function $\psi$ that this $H$ acts on has therefore **four components**: a *spinor*, two numbers for each of the two blocks. This is where the spin of the electron comes from. Dirac did not put it in: two of the four components are the two spin states, and he found that the equation gives the electron a magnetic moment with $g = 2$, which was the measured value, unexplained until then.:cite[dirac1928]
 
 ### Two of the four components have negative energy
 
@@ -146,10 +146,10 @@ The classical argument threw the negative root away because a particle with nega
 
 If electrons could fall into the negative-energy states, atoms would collapse with a burst of radiation, as all the electrons dropped downwards forever. Dirac's answer in 1930 was that all the negative-energy states are already filled, and that the exclusion principle (Chapter 3) stops an electron from falling into a state that is occupied. The filled sea is invisible: it has no net charge or energy that we can measure, since it is everywhere. What one can see is a *disturbance* of it. A photon of energy 2mc² or more can lift one electron out of the sea into a positive-energy state, and leaves a **hole**. A missing electron of negative energy and negative charge behaves as a particle with *positive* energy and *positive* charge, and with the electron's mass.
 
-Dirac's first reading, in 1930, was that the hole was a proton, since that was the only positive particle then known.:cite[dirac1930] That could not be right: a hole has exactly the electron's mass, and the proton is 1836 times heavier. In 1931 Dirac proposed that the hole is a new particle, with the electron's mass and the opposite charge, an **anti-electron**, and he noted that the same argument would apply to the proton.:cite[dirac1931] That is a prediction, and a few months later Anderson's photograph confirmed the first half of it.
+Dirac's first reading, in 1930, was that the hole was a proton, since that was the only positive particle then known.:cite[dirac1930] That could not be right: a hole has exactly the electron's mass, and the proton is 1836 times heavier. In 1931 Dirac proposed that the hole is a new particle, with the electron's mass and the opposite charge, an **anti-electron**, and he noted that the same argument would apply to the proton.:cite[dirac1931] That is a prediction, and about a year later Anderson's photograph confirmed the first half of it.
 
 :::history{year=1928 title="Dirac takes the square root" people="Paul A. M. Dirac" source="Sources: Dirac (1928, 1930, 1931)."}
-Dirac published the relativistic equation for the electron in February 1928, in the *Proceedings of the Royal Society*.:cite[dirac1928] Its success was immediate: it gave the electron's spin and its magnetic moment, and the fine structure of hydrogen, from one assumption. Its difficulty was also immediate. In 1930 he proposed that the negative-energy states were filled, and identified the holes with protons.:cite[dirac1930] In 1931 he accepted that the holes had to have the electron's mass, and named them anti-electrons.:cite[dirac1931] The prediction and Anderson's photograph came less than two years apart.
+Dirac published the relativistic equation for the electron in February 1928, in the *Proceedings of the Royal Society*.:cite[dirac1928] Its success was immediate: it gave the electron's spin and its magnetic moment, and the fine structure of hydrogen, from one assumption. Its difficulty was also immediate. In 1930 he proposed that the negative-energy states were filled, and identified the holes with protons.:cite[dirac1930] In 1931 he accepted that the holes had to have the electron's mass, and named them anti-electrons.:cite[dirac1931] The prediction and Anderson's photograph came about a year apart.
 
 The picture of a sea has been dropped since. Quantum field theory (Chapter 14) replaces it with a cleaner statement: every field has particles and antiparticles as its quanta, and there is no sea. The prediction survived; its first explanation did not.
 :::
@@ -220,10 +220,10 @@ Dirac's argument applied to the proton too, and it was a long wait. An antiproto
 
 There is a rule that makes the cost exact. **Baryon number** (the number of quarks minus antiquarks, divided by three, Chapter 11) is conserved in every known reaction, and the proton has $B = +1$. The collision of two protons has $B = +2$. A final state with an antiproton in it (which has $B = -1$) must also contain *three* protons to have $B = 2$ again: the reaction is $p\,p \to p\,p\,p\,\bar p$. The final state has four particles of the proton's mass, so the threshold for $\sqrt s$ is $4m_p$.
 
-With a proton beam on a fixed target, $s = 2m_p^2 + 2m_p E_{\text{beam}}$. Setting $s = (4m_p)^2 = 16\,m_p^2$ gives $E_{\text{beam}} = 7m_p$, and the *kinetic* energy, which is what an accelerator supplies on top of the mass, is
+With a proton beam on a fixed target, $s = 2m_p^2 + 2m_p E_{\text{beam}}$. Setting $s = (4m_p)^2 = 16\,m_p^2$ gives $E_{\text{beam}} = 7m_p$, and the *kinetic* energy, which is what an accelerator supplies on top of the mass, is $T = E_\text{beam} - m_p$, which can be written as
 
 :::equation{#pbar-threshold caption="Threshold kinetic energy for p p → p p p p̄ on a stationary proton."}
-$$\term{T}{T_\text{thr}} = \frac{\term{s}{(4m_p)^2} - (2m_p)^2}{2m_p} - m_p = \term{six}{6\,m_p}\approx 5.63\ \text{GeV}$$
+$$\term{T}{T_\text{thr}} = \frac{\term{s}{(4m_p)^2} - (2m_p)^2}{2m_p} = \term{six}{6\,m_p}\approx 5.63\ \text{GeV}$$
 
 ```terms
 T:
@@ -262,7 +262,7 @@ explain: "s = 16 m_p² gives E = 7 m_p, so T = E − m_p = 6 m_p = 5.63 GeV. The
 ```
 
 :::history{year=1955 title="The Bevatron finds the antiproton" people="Owen Chamberlain, Emilio Segrè, Clyde Wiegand, Thomas Ypsilantis" source="Source: Chamberlain et al. (1955)."}
-In October 1955 the Berkeley group published *Observation of antiprotons*. A beam of protons from the Bevatron struck a copper target, and the apparatus picked out negative particles of one momentum and measured their time of flight over a known distance, along with their Cherenkov light in two different counters. A negative particle with the proton's mass showed up against the much more numerous pions.:cite[chamberlain1955] Segrè and Chamberlain shared the 1959 Nobel Prize in Physics.
+In late 1955 the Berkeley group published *Observation of antiprotons*. A beam of protons from the Bevatron struck a copper target, and the apparatus picked out negative particles of one momentum and measured their time of flight over a known distance, along with their Cherenkov light in two different counters. A negative particle with the proton's mass showed up against the much more numerous pions.:cite[chamberlain1955] Segrè and Chamberlain shared the 1959 Nobel Prize in Physics.
 
 The threshold of 5.63 GeV on a free proton fixed what the machine had to be, and the Bevatron's 6.2 GeV was above it. A proton and an antiproton that meet annihilate into lighter particles, mostly pions.
 :::
@@ -307,11 +307,9 @@ hints:
 explain: "λ = ln 2 / (110 × 60 s) = 1.05 × 10⁻⁴ s⁻¹, so the injection holds N = A/λ = 3 × 10⁸ / 1.05 × 10⁻⁴ ≈ 2.9 × 10¹² atoms. In an hour a fraction 1 − 2^(−60/110) = 0.31 of them decay: 9 × 10¹¹ decays, and 97 % of those give a positron: about 8.7 × 10¹¹ annihilations. Each releases 1.022 MeV, so the whole hour is about 0.15 J of annihilation energy, all of it in photons of 511 keV, most of which leave the body. The decays are plentiful. What limits the image is the small fraction of photon pairs that the ring catches, and the statistical noise that follows."
 ```
 
-## Where this leads
+## What comes next
 
 The antiproton and the positron are the tip of a symmetry: for every kind of matter there is a kind of antimatter. The next two chapters use that, and ask two questions that arise. Where do particles come from, in the sky, before there were accelerators? That is Chapter 10: cosmic rays, which made the positron, the muon and the pion available to physicists a generation before the machines could make them. And what rules decide which reactions among them can happen and which cannot? That is Chapter 11, in which the conservation laws are collected in one ledger, and in which baryon number, which forced three extra protons into the antiproton reaction, is one line.
-
-## What comes next
 
 [Chapter 10](/chapters/cosmic-rays-pions-muons/) follows the cosmic rays that Anderson was photographing and finds two more particles in them, the pion and the muon, which differ from each other in a way that surprised everyone.
 

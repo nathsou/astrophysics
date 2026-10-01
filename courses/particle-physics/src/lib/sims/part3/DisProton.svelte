@@ -12,12 +12,13 @@
   import Slider from '$lib/components/ui/Slider.svelte';
   import Plot from '$lib/charts/Plot.svelte';
   import { rng } from '$lib/hep/random';
+  import { pow10Label } from './fmt';
   import { partonCounts, momentumShares, resolutionFm, uValence, dValence, seaQuark, gluon } from './partons';
 
   let { n, caption }: { n?: string | number; caption?: string } = $props();
   const R_P = 0.84; // fm: charge radius of the proton
   let logQ = $state(Math.log10(2));
-  let logX = $state(-2);
+  let logX = $state(-2.5);
   const Q = $derived(10 ** logQ);
   const xMin = $derived(10 ** logX);
   const lam = $derived(resolutionFm(Q));
@@ -40,7 +41,9 @@
   const nGlue = $derived(Math.min(60, Math.round(counts.gluons)));
   const glueIdx = $derived(stage === 2 ? Array.from({ length: nGlue }, (_, i) => i) : []);
   const seaIdx = $derived(stage === 2 ? Array.from({ length: nSea }, (_, i) => i) : []);
-  const dotR = $derived(Math.max(3.5, Math.min(26, 0.5 * lam * k * 0.35)));
+  const dotR = $derived(Math.max(8, Math.min(30, 0.45 * lam * k)));
+  const smallR = $derived(Math.max(3.5, Math.min(11, 0.2 * lam * k)));
+  const blur = $derived(Math.max(0.4, Math.min(5, 0.05 * lam * k)));
 
   const XG = Array.from({ length: 120 }, (_, i) => 10 ** (-4 + (i * 4) / 119));
   const pth = (f: (x: number) => number, sx: (v: number) => number, sy: (v: number) => number) => XG.map((x, i) => `${i ? 'L' : 'M'}${sx(x).toFixed(1)},${sy(f(x)).toFixed(1)}`).join('');
@@ -58,7 +61,7 @@
       <svg viewBox="0 0 {S} {S}" role="img" aria-label="A circle the size of the proton. {stage === 0 ? 'The resolution is coarser than the proton: a single blurred blob.' : stage === 1 ? 'Three blurred valence quarks.' : `Three valence quarks, about ${nSea} sea quarks and antiquarks and ${nGlue} gluons.`}">
         <defs>
           <radialGradient id="blob"><stop offset="0%" stop-color="var(--series-5)" stop-opacity="0.85" /><stop offset="100%" stop-color="var(--series-5)" stop-opacity="0.1" /></radialGradient>
-          <filter id="fuzz"><feGaussianBlur stdDeviation={Math.max(0.5, Math.min(9, lam * k * 0.12))} /></filter>
+          <filter id="fuzz"><feGaussianBlur stdDeviation={blur} /></filter>
         </defs>
         <rect width={S} height={S} fill="var(--panel)" />
         <circle cx={S / 2} cy={S / 2} r={R_P * k} fill="none" stroke="var(--line-strong)" stroke-dasharray="4 4" />
@@ -69,11 +72,11 @@
           <g filter="url(#fuzz)" opacity={stage === 1 ? 1 : 0.95}>
             {#each glueIdx as i}
               {@const p = pos(i, 11)}
-              <path d="M{p[0] - 5},{p[1]} q2.5,-5 5,0 t5,0" fill="none" stroke="var(--p-jet)" stroke-width="1.6" opacity="0.8" />
+              <path d="M{p[0] - 8},{p[1]} q4,-8 8,0 t8,0" fill="none" stroke="var(--p-jet)" stroke-width="2" opacity="0.85" />
             {/each}
             {#each seaIdx as i}
               {@const p = pos(i, 29)}
-              <circle cx={p[0]} cy={p[1]} r={Math.max(2.2, dotR * 0.45)} fill={i % 2 ? 'none' : 'var(--ink-3)'} stroke="var(--ink-3)" stroke-width="1.4" />
+              <circle cx={p[0]} cy={p[1]} r={smallR} fill={i % 2 ? 'none' : 'var(--ink-3)'} stroke="var(--ink-3)" stroke-width="1.4" />
             {/each}
             {#each valenceFlav as f, i}
               {@const p = pos(i, 3)}
@@ -92,8 +95,8 @@
       <Plot
         height={290}
         label="The parton distributions x f of the proton against the momentum fraction x on a logarithmic axis: up and down valence peaked near x of 0.2, sea quarks and gluons rising towards small x, at the chosen Q."
-        x={{ type: 'log', domain: [1e-4, 1], label: 'momentum fraction x', tickValues: [1e-4, 1e-3, 1e-2, 0.1, 1], format: (v) => (v >= 1 ? '1' : v >= 0.1 ? '0.1' : '10^' + Math.round(Math.log10(v))) }}
-        y={{ domain: [0, 1], label: 'x f(x, Q)', ticks: 5 }}
+        x={{ type: 'log', domain: [1e-4, 1], label: 'momentum fraction x', tickValues: [1e-4, 1e-3, 1e-2, 0.1, 1], format: (v) => (v === 0.1 ? '0.1' : pow10Label(v)) }}
+        y={{ domain: [0, 1.5], label: 'x f(x, Q)', ticks: 5 }}
       >
         {#snippet marks({ sx, sy })}
           <rect x="0" width={Math.max(0, sx(xMin))} y="0" height="1000" fill="var(--grid)" opacity="0.6" />

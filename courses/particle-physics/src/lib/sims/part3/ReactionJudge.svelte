@@ -104,7 +104,7 @@
         <tbody>
           {#each d.laws.filter((l) => l.applies) as l}
             <tr class:bad={!l.conserved}>
-              <th scope="row">{l.name}{#if !l.exact}<span class="approx" title="Conserved by the strong and electromagnetic forces, not by the weak force"> (approximate)</span>{/if}</th>
+              <th scope="row">{l.name}{#if !l.exact}<span class="approx" title="Conserved by the strong and electromagnetic forces, not by the weak force">&nbsp;(approximate)</span>{/if}</th>
               <td>{fmtNum(l, l.initial)}</td>
               <td>{fmtNum(l, l.final)}</td>
               <td aria-label={l.conserved ? 'yes' : 'no'}>{l.conserved ? '✓' : '✗'}</td>

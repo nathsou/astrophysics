@@ -1,0 +1,82 @@
+{
+ "about": "Precomputed pipeline samples made by scripts/data/samples.ts with the reference code; each file holds its own manifest.",
+ "files": [
+  {
+   "file": "dijet.json",
+   "preset": "dijet",
+   "bytes": 10028,
+   "sha256": "7cdd454dfc91abad7d6312b343202ffb9bec92767f393ffacbd98d4df59f00c7",
+   "events": 6000,
+   "seed": 1,
+   "made": "2026-10-01",
+   "pipelineVersion": "1.0.0",
+   "codeSha256": "cd3f83ce7ce5df9e94e6eeb94232f9a24d6d410110339672dfa3b43efc88bb8a"
+  },
+  {
+   "file": "ee-zpole.json",
+   "preset": "ee-zpole",
+   "bytes": 4325,
+   "sha256": "7b906c93cc4a62b1dfdc9958de2361ef21b538f0ffc4154ffaad3058bbfce2c8",
+   "events": 10000,
+   "seed": 1,
+   "made": "2026-10-01",
+   "pipelineVersion": "1.0.0",
+   "codeSha256": "d443a0522fa4c8056325b0118126139c28a116949c0cfca510ef17773b7b02a6"
+  },
+  {
+   "file": "higgs-4l.json",
+   "preset": "higgs-4l",
+   "bytes": 6866,
+   "sha256": "8f35d546cd0f05a6e4e460fe05fdc90b3f2f0762ce928faa10990d17f4e61d1f",
+   "events": 10000,
+   "seed": 1,
+   "made": "2026-10-01",
+   "pipelineVersion": "1.0.0",
+   "codeSha256": "cd3f83ce7ce5df9e94e6eeb94232f9a24d6d410110339672dfa3b43efc88bb8a"
+  },
+  {
+   "file": "higgs-gamgam.json",
+   "preset": "higgs-gamgam",
+   "bytes": 6845,
+   "sha256": "dbac71ef9a299c2b5a17ab7afc0a9a3b6ac6b2544ea5f0928267f4466738501b",
+   "events": 16000,
+   "seed": 1,
+   "made": "2026-10-01",
+   "pipelineVersion": "1.0.0",
+   "codeSha256": "38a0ba6079a4e6e57eb01fb5d9364de727adfe25d45b4524244343de4926fd5a"
+  },
+  {
+   "file": "minbias.json",
+   "preset": "minbias",
+   "bytes": 3842,
+   "sha256": "5b9c479a831438d9616656694adb6569264d709739727cf9abb78be53dc84257",
+   "events": 4000,
+   "seed": 1,
+   "made": "2026-10-01",
+   "pipelineVersion": "1.0.0",
+   "codeSha256": "d443a0522fa4c8056325b0118126139c28a116949c0cfca510ef17773b7b02a6"
+  },
+  {
+   "file": "ttbar.json",
+   "preset": "ttbar",
+   "bytes": 4328,
+   "sha256": "eded1209e82701685732c793209168e5d907cdf8f7ab2ad660fe008f119f6060",
+   "events": 3000,
+   "seed": 1,
+   "made": "2026-10-01",
+   "pipelineVersion": "1.0.0",
+   "codeSha256": "cd3f83ce7ce5df9e94e6eeb94232f9a24d6d410110339672dfa3b43efc88bb8a"
+  },
+  {
+   "file": "zmumu.json",
+   "preset": "zmumu",
+   "bytes": 4524,
+   "sha256": "1dca4111e03aabd2ece92282545a63c7979a512c867d3e2ec608bb8cd6dd7964",
+   "events": 20000,
+   "seed": 1,
+   "made": "2026-10-01",
+   "pipelineVersion": "1.0.0",
+   "codeSha256": "be237090fcfbc16bb012fa0f471a33ea7e5119b800ccb186e78131f0dd909a9d"
+  }
+ ]
+}

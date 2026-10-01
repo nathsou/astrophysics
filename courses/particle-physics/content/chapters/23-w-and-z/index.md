@@ -20,7 +20,7 @@ If the carrier of the charged weak current is a particle $W$ of mass $m_W$ coupl
 
 $$\frac{G_F}{\sqrt2} = \frac{g^2}{8\,m_W^2}.$$
 
-That is Fermi's theory, derived as an approximation. For a coupling $g$ of about the strength of electromagnetism's, and $G_F^{-1/2} = 293$ GeV, the mass comes out near 80 GeV. The range of such a force is $\hbar c/m_W = 0.1973\ \text{GeV·fm}/80.4\ \text{GeV} = 2.5\times10^{-3}$ fm, or $2.5\times10^{-18}$ m, a thousand times smaller than a proton. The weak interaction is not feeble in itself; at distances comparable to its range it is about as strong as electromagnetism. It looks feeble at the distances of ordinary decays because the amplitude is suppressed by $(E/m_W)^2$ and the rate by the fourth power of that.
+That is Fermi's theory, derived as an approximation. For a coupling $g$ of about the strength of electromagnetism's, and $G_F^{-1/2} = 293$ GeV, the mass comes out near 80 GeV. The range of such a force is $\hbar c/m_W = 0.1973\ \text{GeV·fm}/80.4\ \text{GeV} = 2.5\times10^{-3}$ fm, or $2.5\times10^{-18}$ m, several hundred times smaller than a proton. The weak interaction is not feeble in itself; at distances comparable to its range it is about as strong as electromagnetism. It looks feeble at the distances of ordinary decays because the amplitude is suppressed by $(E/m_W)^2$ and the rate by the fourth power of that.
 
 The charged carriers are two particles, $W^+$ and $W^-$. They are what turns a down-type quark into an up-type one and a charged lepton into its neutrino.
 
@@ -394,7 +394,7 @@ The Z is a spike on a smooth background. At a hadron collider it is one of many 
 
 **LEP**, the Large Electron–Positron collider, was the 27 km ring at CERN that Chapter 21 described. From 1989 to 1995 it ran with the energy of the beams adjusted to sit on and around the Z, with a total collision energy of about 91 GeV, and four experiments recorded the collisions: **ALEPH** (Apparatus for LEp PHysics), **DELPHI** (DEtector with Lepton, Photon and Hadron Identification), **L3** (named for the third letter of intent submitted for LEP) and **OPAL** (Omni-Purpose Apparatus for LEP). In all they recorded about 17 million Z decays: 15.5 million into quarks and 1.7 million into charged leptons.:cite[lepewwg2006]
 
-At the peak the cross-section of $e^+e^-\to Z\to$ anything is enormous by the standards of Chapter 16. The cross-section for $e^+e^-\to\mu^+\mu^-$ by photon exchange alone at 91 GeV is $86.8\ \text{nb}\,\text{GeV}^2/s = 0.010$ nb. At the Z peak it is about 1.5 nb, 140 times larger. The Z is a resonance, and the cross-section as a function of energy follows a Breit–Wigner shape (Chapter 3), the one the Z's width of 2.5 GeV sets.
+At the peak the cross-section of $e^+e^-\to Z\to$ anything is enormous by the standards of Chapter 16. The cross-section for $e^+e^-\to\mu^+\mu^-$ by photon exchange alone at 91 GeV is $86.8\ \text{nb}\,\text{GeV}^2/s = 0.010$ nb. At the Z peak its height is 2.0 nb, about 190 times larger. The Z is a resonance, and the cross-section as a function of energy follows a Breit–Wigner shape (Chapter 3), the one the Z's width of 2.5 GeV sets.
 
 :::equation{#lineshape caption="The Z lineshape for the hadronic final state, without radiation: a Breit–Wigner peak whose height and width are set by the partial widths."}
 $$\term{sigma}{\sigma_\text{had}}(s) = \term{sigma0}{\sigma^0_\text{had}}\;\frac{s\,\Gamma_Z^2}{(s-m_Z^2)^2 + s^2\Gamma_Z^2/m_Z^2},\qquad \sigma^0_\text{had} = \frac{12\pi}{m_Z^2}\,\frac{\term{Gee}{\Gamma_{ee}}\,\Gamma_\text{had}}{\term{GZ}{\Gamma_Z}^2}$$
@@ -452,7 +452,7 @@ The **luminosity**: the height of the peak is a cross-section, number of events 
 The **independence**: the number of species is fixed by the height and the width together. If the normalisation is left free (the toggle in the figure), only the shape of the peak counts, and the answer is less precise but does not depend on the luminosity. The two measurements agree.
 
 :::history{year=1989 title="The first weeks of LEP" people="The ALEPH, DELPHI, L3 and OPAL collaborations" source="Sources: CERN; Mele (2015); the LEP Electroweak Working Group (2006)."}
-LEP's first collisions were recorded on 13 August 1989. On 13 October 1989, at a seminar at CERN, the four experiments presented their first results, from only a few weeks of data: the first lineshape, and a count of the light neutrino species. The individual values reported were 3.0 ± 0.4 (ALEPH), 2.4 ± 0.6 (DELPHI), 3.42 ± 0.48 (L3) and 3.1 ± 0.4 (OPAL), all consistent with three and not obviously with two or four.:cite[mele2015] The SLC collider at Stanford, whose Mark II detector also took data on the Z that autumn, gave a result consistent with these.:cite[mele2015]
+LEP's first collisions were recorded on 13 August 1989. On 13 October 1989, at a seminar at CERN, the four experiments presented their first results, from only a few weeks of data: the first lineshape, and a count of the light neutrino species. The values in the experiments' first papers were 3.27 ± 0.30 for ALEPH, from about 3,000 hadronic decays,:cite[aleph1989] and 2.4 ± 0.6 (DELPHI), 3.42 ± 0.48 (L3) and 3.1 ± 0.4 (OPAL), each consistent with three, and together disfavouring two and four.:cite[mele2015] The SLC collider at Stanford, whose Mark II detector also took data on the Z that autumn, gave a result consistent with these.:cite[mele2015]
 
 After 1995 the four experiments had recorded about 17 million Z decays. The combination of their results, by the LEP Electroweak Working Group in 2006, is $N_\nu = 2.9840 \pm 0.0082$.:cite[lepewwg2006] In 2020 two corrections to the luminosity calculation (one for the effect of the electromagnetic field of one beam on the other, and one for the Bhabha cross-section itself) moved the number to $2.9963 \pm 0.0074$.:cite[voutsinas2020,janot2020] The move, which is larger than the old uncertainty, is a lesson in systematic uncertainties that Chapter 28 uses.
 :::
@@ -480,14 +480,14 @@ explain: 'Γ_inv/Γ_ℓℓ = 5.940, and 5.940/1.991 = 2.984. With the Standard M
 ```fermi
 id: z-per-second
 title: Z bosons per second at LEP
-prompt: 'At the Z peak the visible hadronic cross-section was about 30 nb. LEP’s luminosity at that energy was of the order of 2 × 10³¹ cm⁻² s⁻¹ (1 nb = 10⁻³³ cm²). How many hadronic Z decays per second did LEP produce at the peak, summed over its four detectors?'
+prompt: 'At the Z peak the visible hadronic cross-section was about 30 nb. LEP’s luminosity at that energy was of the order of 2 × 10³¹ cm⁻² s⁻¹ (1 nb = 10⁻³³ cm²). How many hadronic Z decays per second did one LEP experiment see at the peak?'
 answer: 0.6
 unit: s⁻¹
 factor: 3
 hints:
   - 'rate = σ L.'
   - '30 nb = 3 × 10⁻³² cm².'
-explain: 'σL = 3 × 10⁻³² cm² × 2 × 10³¹ cm⁻² s⁻¹ = 0.6 per second: about one Z every couple of seconds in the whole collider, and the same for each experiment since they all see the same collisions. A year of continuous running is 3 × 10⁷ s; accelerators run a fraction of that, which is why the total over six years, 17 million decays summed over four experiments, is millions and not billions. The same arithmetic at the LHC gives a much higher rate, with a much smaller fraction of the collisions being Zs (Chapter 27).'
+explain: 'σL = 3 × 10⁻³² cm² × 2 × 10³¹ cm⁻² s⁻¹ = 0.6 per second: about one hadronic Z every couple of seconds at each of the four collision points, one for each experiment. A year of continuous running is 3 × 10⁷ s; accelerators run a fraction of that, and at lower luminosity than the best, which is why the total over six years, 17 million decays summed over four experiments, is millions and not billions. The same arithmetic at the LHC gives a much higher rate, with a much smaller fraction of the collisions being Zs (Chapter 27).'
 ```
 
 ## The W mass today

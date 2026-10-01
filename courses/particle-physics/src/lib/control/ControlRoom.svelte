@@ -119,7 +119,7 @@
     <li>Pseudo-data are Poisson fluctuations of the simulation. They are not data. Real data appear in Chapter 29, labelled as such.</li>
   </ul>
   <p class="cr-note ui">Every number is reproducible: the seed, the configuration (in the address bar) and the code decide every event, whatever the number of workers. Units are GeV; lengths in mm.
-    <a class="cr-link" href="{base}/chapters/">Back to the chapters.</a></p>
+    <a class="cr-link" href="{base}/">Back to the contents.</a> What each stage models is in <a class="cr-link" href="{base}/appendix/the-pipeline/">appendix E</a>.</p>
 </div>
 
 <style>

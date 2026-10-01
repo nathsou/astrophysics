@@ -12,6 +12,7 @@
 
   let { n, caption, material: m0 = 'Fe' }: { n?: string | number; caption?: string; material?: string } = $props();
 
+  // svelte-ignore state_referenced_locally (the prop only chooses the starting material)
   let mat = $state(['Si', 'Fe', 'Cu', 'Pb', 'H2O'].includes(m0) ? m0 : 'Fe');
   let density = $state(true);
   let chosen = $state<Species['id']>('p');

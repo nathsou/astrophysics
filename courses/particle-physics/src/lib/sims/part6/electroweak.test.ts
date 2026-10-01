@@ -12,7 +12,7 @@ describe('tree-level masses', () => {
     expect(m.mW).toBeCloseTo(77.53, 1);
     expect(m.mZ).toBeCloseTo(88.42, 1);
   });
-  test('with α at the Z scale (1/127.95) they move to 80.2 and 91.5 GeV, within 0.3 % of the measured masses', () => {
+  test('with α at the Z scale (1/127.95) they move to 80.2 and 91.5 GeV, within 0.4 % of the measured masses', () => {
     const m = treeMasses(0.23122, ALPHAS.atZ);
     expect(m.mW).toBeCloseTo(80.2, 1);
     expect(m.mZ).toBeCloseTo(91.5, 1);

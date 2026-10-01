@@ -48,7 +48,7 @@
     const colours = obs.stack.map((s) => (s.role === 'signal' ? SIGNAL_COLOURS[si++ % SIGNAL_COLOURS.length]! : BACKGROUND_COLOURS[bi++ % BACKGROUND_COLOURS.length]!));
     for (let k = obs.stack.length - 1; k >= 0; k--) out.push({ edges: obs.edges, counts: cum[k]!, label: `${obs.stack[k]!.label} (simulation)`, color: colours[k], fill: true });
     if (main && showTruth && obs.truth) out.push({ edges: obs.edges, counts: obs.truth.counts, label: 'truth level, before detector and trigger (simulation)', color: 'var(--series-4)' });
-    if (main && showFit && summary.fit) out.push({ edges: obs.edges, counts: summary.fit.expected, label: `fit: ${summary.fit.model}`, color: 'var(--series-7)' });
+    if (main && showFit && summary.fit?.reliable) out.push({ edges: obs.edges, counts: summary.fit.expected, label: `fit: ${summary.fit.model}`, color: 'var(--series-7)' });
     if (main && obs.pseudo) out.push({ edges: obs.edges, counts: obs.pseudo.counts, label: 'pseudo-data (Poisson fluctuation of the simulation)', color: 'var(--fg)', points: true, errors: true });
     if (main && real) out.push({ edges: real.edges, counts: real.counts, label: `real data: ${real.manifest.title}`, color: 'var(--fg)', points: true, errors: true });
     return out;

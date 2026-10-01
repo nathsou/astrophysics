@@ -167,7 +167,6 @@ export class RunPool {
 
   /** Terminate the workers and make the next start() create new ones, which re-read the reader's saved code (call after the saved solutions change). */
   refreshMine(): void {
-    const wasRunning = this.running;
     this.pause();
     this.terminateAll();
     this.mine = null;
@@ -181,8 +180,7 @@ export class RunPool {
     this.elapsedBefore = 0;
     this.config = null;
     this.configKey = '';
-    if (wasRunning) this.publish(true);
-    else this.publish(true);
+    this.publish(true);
   }
 
   /** Create the workers now (so the first Start is fast and the hook status can be shown before a run). */

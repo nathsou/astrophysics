@@ -82,7 +82,7 @@
         <path d={path(mass, sx, sy)} fill="none" stroke="var(--series-2)" stroke-width="1.4" stroke-dasharray="5 3" />
         <path d={path((h) => cubic(h, kappa), sx, sy)} fill="none" stroke="var(--series-4)" stroke-width="1.4" stroke-dasharray="5 3" />
         <path d={path(quartic, sx, sy)} fill="none" stroke="var(--series-5)" stroke-width="1.4" stroke-dasharray="5 3" />
-        <text x={sx(H_MAX) - 6} y={sy(Math.min(yHi - 0.5, mass(H_MAX * 0.9))) - 4} class="lbl" text-anchor="end" fill="var(--series-2)">½ m_H² h²</text>
+        <text x={sx(H_MAX) - 6} y={sy(Math.min(yHi - 0.5, mass(H_MAX * 0.9))) - 4} class="lbl" text-anchor="end" fill="var(--series-2)">½ m<tspan baseline-shift="sub" font-size="0.75em">H</tspan>² h²</text>
         <text x={sx(H_MAX * 0.55)} y={sy(Math.min(yHi - 1, cubic(H_MAX * 0.55, kappa))) - 6} class="lbl" fill="var(--series-4)">κ_λ λ v h³</text>
         <text x={sx(H_MIN * 0.97)} y={sy(Math.min(yHi - 1, quartic(H_MIN * 0.93))) + 14} class="lbl" fill="var(--series-5)">¼ λ h⁴</text>
       {/if}
@@ -92,8 +92,8 @@
   </Plot>
 
   <div class="readout ui" aria-live="polite">
-    <div class="card"><span class="k">Curvature at the vacuum</span><strong class="v">m_H = {mH.toFixed(1)} GeV</strong><span class="s">V″(0) = m_H²: the Higgs mass sets the parabola at the bottom.</span></div>
-    <div class="card"><span class="k">Trilinear coupling 3κ m_H²/v</span><strong class="v">{trilinear.toFixed(0)} GeV</strong><span class="s">{kappa === 1 ? 'The Standard Model value, fixed by m_H and v.' : `${kappa.toFixed(2)} times the Standard Model value (191 GeV).`}</span></div>
+    <div class="card"><span class="k">Curvature at the vacuum</span><strong class="v">m<sub>H</sub> = {mH.toFixed(1)} GeV</strong><span class="s">V″(0) = m<sub>H</sub>²: the Higgs mass sets the parabola at the bottom.</span></div>
+    <div class="card"><span class="k">Trilinear coupling 3κ m<sub>H</sub>²/v</span><strong class="v">{trilinear.toFixed(0)} GeV</strong><span class="s">{kappa === 1 ? 'The Standard Model value, fixed by the Higgs mass and v.' : `${kappa.toFixed(2)} times the Standard Model value (191 GeV).`}</span></div>
     {#if slider}
       <div class="card" class:warn={!stable}>
         <span class="k">Second valley</span>

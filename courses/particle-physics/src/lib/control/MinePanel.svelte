@@ -42,7 +42,7 @@
     </div>
     <p class="cr-note">Switching a solution on or off restarts the run, because the events already made were made with the other code. Solutions are saved in this browser when an exercise passes (see the chapter's exercise).</p>
   {/if}
-  <p class="cr-note">The panes above are labelled <span class="cr-badge">reference</span> or <span class="cr-badge mine">mine</span> by the hooks that are installed in the workers. See <a class="cr-link" href="{base}/appendix/">the appendices</a> for the hook names.</p>
+  <p class="cr-note">The panes above are labelled <span class="cr-badge">reference</span> or <span class="cr-badge mine">mine</span> by the hooks that are installed in the workers. The hook names are listed in <a class="cr-link" href="{base}/appendix/hep-reference/">appendix F</a>.</p>
 </div>
 
 <style>

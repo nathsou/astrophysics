@@ -53,7 +53,7 @@
     const k = key(s);
     const here = placed[k] ?? [];
     if (held) {
-      if (s.pdg === null && kind === 'decuplet') return; // the empty corner has no known chip
+      if (kind === 'decuplet' && s.strangeness === -3) return; // the empty corner has no known chip
       if (here.length < capacity(s)) placed[k] = [...here, held];
       held = null;
       checked = false;
@@ -77,7 +77,7 @@
   const fmtMeV = (g: number) => Math.round(g * 1000).toString();
 
   // layout in percent
-  const X = (s: Slot) => 50 + (s.i3x2 / 2) * (kind === 'decuplet' ? 24 : 38);
+  const X = (s: Slot) => 50 + (s.i3x2 / 2) * (kind === 'decuplet' ? 22 : 33);
   const Y = (s: Slot) => (kind === 'decuplet' ? 12 + ((3 - s.y3) / 3) * 25.3 * 1 : 18 + ((3 - s.y3) / 3) * 32);
   const rowS = $derived(kind === 'decuplet' ? [0, -1, -2, -3] : [0, -1, -2]);
   const rowY = (S: number) => (kind === 'decuplet' ? 12 + (-S) * 25.3 : 18 + (-S) * 32);
@@ -114,7 +114,7 @@
             {#if guessed}<span class="sym">Ω⁻</span><span class="sub">{guess} MeV?</span>{:else}<span class="sym">?</span>{/if}
           {:else if here.length}
             {#each here as id}<span class="sym">{chipById(id).symbol}</span>{/each}
-          {:else}<span class="sub">Q = {s.charge}</span>{/if}
+          {:else}<span class="sub">Q = {s.charge}, S = {s.strangeness}</span>{/if}
           {#if checked && here.length && here.every((id) => isRight(s, id))}<span class="tick" aria-hidden="true">✓</span>{/if}
           {#if checked && here.some((id) => !isRight(s, id))}<span class="tick bad" aria-hidden="true">✗</span>{/if}
         </button>
@@ -156,7 +156,7 @@
           <div class="reveal" role="status">
             <p>
               <strong>Equal spacing</strong> puts it {fmtMeV(spacing.step2)} MeV above the last row: {fmtMeV(spacing.omegaFromLastSpacing)} MeV (a straight line through all three rows gives {fmtMeV(spacing.omegaFromMeanSpacing)}).
-              You said {guess} MeV: {Math.abs(guess - 1000 * spacing.omegaFromLastSpacing) < 25 ? 'well within the range that a straight-line argument gives.' : 'a little away from a straight line through the rows.'}
+              You said {guess} MeV, which is {Math.abs(guess - 1000 * spacing.omegaFromLastSpacing).toFixed(0)} MeV from the equal-spacing value.
             </p>
             <p>
               It has S = −3, charge −1 and spin 3/2: three strange quarks. The strong force could only turn it into a Ξ and an anti-kaon, which conserve strangeness, and
@@ -172,9 +172,10 @@
 
 <style>
   .diagram { position: relative; width: 100%; max-width: 640px; margin: 0.6rem auto; aspect-ratio: 1.25; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; }
+  @media (max-width: 560px) { .rowlab { display: none; } }
   .rowline { position: absolute; left: 12%; right: 2%; border-top: 1px dashed var(--line-strong); opacity: 0.6; }
   .rowlab { position: absolute; left: 6px; transform: translateY(-50%); font-size: 0.72rem; font-family: var(--font-mono); color: var(--mute); }
-  .slot { position: absolute; transform: translate(-50%, -50%); width: 22%; min-width: 64px; }
+  .slot { position: absolute; transform: translate(-50%, -50%); width: 20%; min-width: 64px; }
   .cell { width: 100%; min-height: 56px; border: 2px dashed var(--line-strong); background: var(--surface); color: var(--ink); border-radius: 8px; padding: 0.15rem; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; font-family: var(--font-ui); }
   .cell.empty .sub { color: var(--mute); font-size: 0.7rem; }
   .cell:not(.empty) { border-style: solid; border-color: var(--accent); }

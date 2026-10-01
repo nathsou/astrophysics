@@ -2,6 +2,7 @@
 <script lang="ts">
   import Toggle from '$lib/components/ui/Toggle.svelte';
   import Histogram from './Histogram.svelte';
+  import Residual from './Residual.svelte';
   import { OBSERVABLES } from '$lib/hep/pipeline/index.ts';
   import type { ControlSession } from './session.svelte.ts';
   import { plusMinus, sig, int } from './fmt.ts';
@@ -28,6 +29,10 @@
     </span>
   </div>
   <Histogram obs={main} summary={s} main log={logY} {showTruth} {showFit} real={real ? { edges: real.edges, counts: real.counts, manifest: real.manifest } : null} height={mainHeight} />
+  {#if fit?.reliable && showFit && main.pseudo && fit.components['bkg']}
+    <h4 class="ui sub">Pseudo-data minus the fitted background</h4>
+    <Residual obs={main} {fit} />
+  {/if}
   <p class="cr-note ui">
     {#if s.lumiFb !== null}
       Expected events at {sig(s.lumiFb)} fb⁻¹, from leading-order cross-sections{s.isLO ? ' (K = 1)' : ` times K = ${s.kFactor.toFixed(1)}`}. {s.isLO ? 'The normalisation is leading order: higher orders would raise it.' : ''}
@@ -62,6 +67,9 @@
     gap: 1rem;
     grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
     margin-top: 0.8rem;
+  }
+  h4.sub {
+    margin-top: 0.7rem;
   }
   h4 {
     font-size: 0.82rem;
