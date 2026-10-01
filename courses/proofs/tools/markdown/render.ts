@@ -2,7 +2,7 @@
  * Build-time renderers for maths (KaTeX) and code (Shiki).
  */
 import katex from 'katex';
-import { createHighlighter, type Highlighter, type ThemeRegistration } from 'shiki';
+import { bundledLanguages, createHighlighter, type Highlighter, type ThemeRegistration } from 'shiki';
 
 /**
  * Macros available in every equation.
@@ -65,13 +65,15 @@ function byrneTheme(name: string, type: 'light' | 'dark', c: Record<'fg' | 'bg' 
 const THEME_LIGHT = byrneTheme('byrne-light', 'light', { fg: '#1a1917', bg: '#e8ddc7', keyword: '#a3211c', string: '#1f5aa6', number: '#7d5200', comment: '#5f574b', fn: '#6a3f8f', type: '#1d6470', prop: '#1f5aa6', punct: '#3f3b34' });
 const THEME_DARK = byrneTheme('byrne-dark', 'dark', { fg: '#f3ead9', bg: '#2b2521', keyword: '#ff7a6b', string: '#7aa9ec', number: '#e9a91b', comment: '#a89d8a', fn: '#c3a3f0', type: '#62c2cf', prop: '#7aa9ec', punct: '#d9cfbb' });
 
-const LANGS = ['ts', 'typescript', 'js', 'javascript', 'python', 'bash', 'sh', 'json', 'wgsl', 'yaml', 'text', 'svelte', 'html', 'css', 'diff', 'toml'];
 let highlighter: Promise<Highlighter> | undefined;
 
 export async function highlight(code: string, lang: string | null | undefined): Promise<string> {
-  highlighter ??= createHighlighter({ themes: [THEME_LIGHT, THEME_DARK], langs: LANGS });
+  highlighter ??= createHighlighter({ themes: [THEME_LIGHT, THEME_DARK], langs: [] });
   const h = await highlighter;
-  const l = lang && LANGS.includes(lang) ? lang : 'text';
+  // Load any bundled grammar (including aliases) instead of silently losing highlighting.
+  const requested = lang?.trim().toLowerCase() ?? 'text';
+  const l = Object.hasOwn(bundledLanguages, requested) ? requested : 'text';
+  if (l !== 'text') await h.loadLanguage(bundledLanguages[l as keyof typeof bundledLanguages]);
   // Shiki makes <pre> focusable (tabindex=0) so wide code can be scrolled from the keyboard,
   // which is right for accessibility, but trips Svelte's generic a11y lint.
   const html = h.codeToHtml(code, {

@@ -1,5 +1,8 @@
 <script lang="ts">
+  import { base } from '$app/paths';
   import '../app.css';
+  import '../../../../../packages/course-navigation/navigation.css';
+  import { mountSidebar, closeSidebar } from '../../../../../packages/course-navigation/sidebar';
   import { onMount, type Snippet } from 'svelte';
   import { theme } from '$lib/state/theme.svelte';
   import { nav } from '$lib/state/nav.svelte';
@@ -9,13 +12,23 @@
 
   let { children }: { children: Snippet } = $props();
 
-  onMount(() => theme.init());
-  afterNavigate(() => (nav.sidebarOpen = false));
+  onMount(() => {
+    theme.init();
+    return mountSidebar('language-models', state => (nav.sidebarOpen = state.open));
+  });
+  afterNavigate(closeSidebar);
 </script>
 
 <a class="skip ui" href="#main">Skip to content</a>
+<nav class="course-index-nav" aria-label="Course collection">
+  <a class="course-index-link" href="{base}/../" data-sveltekit-reload><span aria-hidden="true">←</span> All courses</a>
+  <button class="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" data-sidebar-toggle>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
+    <span data-sidebar-label>Hide contents</span>
+  </button>
+</nav>
 <TopBar />
-<div class="shell">
+<div class="shell course-shell">
   <Sidebar />
   <main id="main">
     {@render children()}
@@ -38,7 +51,7 @@
   .shell {
     display: grid;
     grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
-    min-height: calc(100vh - 3.25rem);
+    min-height: calc(100vh - 3.25rem - var(--course-nav-height));
   }
   main {
     min-width: 0;

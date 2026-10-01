@@ -270,7 +270,7 @@
 
 html {
   -webkit-text-size-adjust: 100%;
-  scroll-padding-top: 5rem;
+  scroll-padding-top: calc(5rem + var(--course-nav-height));
 }
 
 body {
@@ -459,6 +459,7 @@ button {
   height: 0.42rem;
   background: var(--fx-blue);
 }
+.article .table-scroll { overflow-x: auto; min-width: 0; }
 .article table {
   border-collapse: collapse;
   width: 100%;

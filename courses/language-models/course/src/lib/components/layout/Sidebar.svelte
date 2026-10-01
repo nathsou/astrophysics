@@ -30,9 +30,7 @@
   </li>
 {/snippet}
 
-<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
-<div class="scrim" class:open={nav.sidebarOpen} onclick={() => (nav.sidebarOpen = false)}></div>
-<nav class="sidebar ui" class:open={nav.sidebarOpen} aria-label="Course contents">
+<nav id="course-contents" class="sidebar ui" class:open={nav.sidebarOpen} aria-label="Course contents">
   {#each PARTS as part (part.id)}
     <section>
       <h2><span class="part">Part {part.id}</span> {part.title}</h2>
@@ -52,8 +50,8 @@
 <style>
   .sidebar {
     position: sticky;
-    top: 3.25rem;
-    height: calc(100vh - 3.25rem);
+    top: calc(3.25rem + var(--course-nav-height));
+    height: calc(100dvh - 3.25rem - var(--course-nav-height));
     overflow-y: auto;
     padding: 1.25rem 0.75rem 3rem 1rem;
     border-right: 1px solid var(--rule);
@@ -126,13 +124,10 @@
     border-left-color: var(--accent-2);
     font-weight: 560;
   }
-  .scrim {
-    display: none;
-  }
   @media (max-width: 1099px) {
     .sidebar {
       position: fixed;
-      top: 3.25rem;
+      top: calc(3.25rem + var(--course-nav-height));
       left: 0;
       z-index: 45;
       width: min(20rem, 88vw);
@@ -145,13 +140,6 @@
     .sidebar.open {
       transform: none;
       box-shadow: var(--shadow-lg); /* only when open: closed, it would bleed onto the page's left edge */
-    }
-    .scrim.open {
-      display: block;
-      position: fixed;
-      inset: 3.25rem 0 0 0;
-      z-index: 44;
-      background: rgba(0, 0, 0, 0.25);
     }
   }
 </style>

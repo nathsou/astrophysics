@@ -12,9 +12,6 @@
 <svelte:window onscroll={() => (scrolled = scrollY > 160)} />
 
 <header class="topbar ui" class:scrolled>
-  <button class="icon-btn menu" onclick={() => (nav.sidebarOpen = !nav.sidebarOpen)} aria-label="Open navigation" aria-expanded={nav.sidebarOpen}>
-    <Icon name="menu" />
-  </button>
   <a class="brand" href="{base}/">
     <span class="mark" aria-hidden="true">LM</span>
     <span class="name">{COURSE_TITLE}</span>
@@ -30,7 +27,7 @@
 <style>
   .topbar {
     position: sticky;
-    top: 0;
+    top: var(--course-nav-height);
     z-index: 40;
     height: 3.25rem;
     display: flex;
@@ -110,14 +107,6 @@
   .icon-btn:hover {
     background: var(--surface-2);
     color: var(--ink);
-  }
-  .menu {
-    display: none;
-  }
-  @media (max-width: 1099px) {
-    .menu {
-      display: inline-flex;
-    }
   }
   @media (max-width: 640px) {
     .name,

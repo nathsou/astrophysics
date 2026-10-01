@@ -170,7 +170,7 @@
     };
   });
 
-  // The sidebar sits under the bench on wide screens (and is a drawer on narrow ones): inert unless opened.
+  // The shared disclosure keeps the sidebar usable only while it is shown.
   $effect(() => {
     const open = nav.sidebarOpen;
     const el = document.querySelector('.sidebar');
@@ -520,7 +520,7 @@
 <style>
   .bench {
     position: fixed;
-    inset: 3.5rem 0 0 0;
+    inset: calc(3.5rem + var(--course-nav-height)) 0 0 0;
     z-index: 30;
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
@@ -530,6 +530,12 @@
     font-family: var(--font-ui);
     font-size: 0.9rem;
     line-height: 1.4;
+  }
+
+  @media (min-width: 1100px) {
+    :global(:root:not([data-sidebar='collapsed'])) .bench {
+      left: var(--sidebar-w);
+    }
   }
 
   /* Toolbar */

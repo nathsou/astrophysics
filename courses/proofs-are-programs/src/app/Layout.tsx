@@ -1,3 +1,5 @@
+import '../../../../packages/course-navigation/navigation.css';
+import { mountSidebar, closeSidebar } from '../../../../packages/course-navigation/sidebar';
 import { A, useLocation, type RouteSectionProps } from '@solidjs/router';
 import { For, Show, createSignal, createEffect, onCleanup, onMount } from 'solid-js';
 import { chapters, parts, chapterBySlug, romans, chapterLabel } from '../content/chapters.ts';
@@ -5,14 +7,14 @@ import { cycleTheme, theme } from './theme.ts';
 import { isVisited } from './progress.ts';
 
 export function Layout(props: RouteSectionProps) {
-  const [open, setOpen] = createSignal(false);
   const [scroll, setScroll] = createSignal(0);
   const loc = useLocation();
+  onMount(() => onCleanup(mountSidebar('proofs-are-programs')));
   const slug = () => /^\/ch\/([^/?]+)/.exec(loc.pathname)?.[1];
   const current = () => (slug() ? chapterBySlug(slug()!) : undefined);
   createEffect(() => {
     void loc.pathname;
-    setOpen(false);
+    closeSidebar();
   });
   onMount(() => {
     const on = () => {
@@ -26,8 +28,16 @@ export function Layout(props: RouteSectionProps) {
   const partLabel = (n: number) => (n === 0 || n === 7 ? parts[n].title : `Part ${romans[n]} · ${parts[n].title}`);
 
   return (
-    <div class="shell">
-      <nav class={`sidebar ${open() ? 'open' : ''}`} aria-label="Course contents">
+    <>
+      <nav class="course-index-nav" aria-label="Course collection">
+        <a class="course-index-link" href="../" target="_self"><span aria-hidden="true">←</span> All courses</a>
+        <button class="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" data-sidebar-toggle>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
+          <span data-sidebar-label>Hide contents</span>
+        </button>
+      </nav>
+    <div class="shell course-shell">
+      <nav class="sidebar" id="course-contents" aria-label="Course contents">
         <A href="/" class="brand">
           <span class="brand-mark">⊢</span>
           <span class="brand-text">
@@ -80,14 +90,8 @@ export function Layout(props: RouteSectionProps) {
           </A>
         </div>
       </nav>
-      <Show when={open()}>
-        <div class="scrim" onClick={() => setOpen(false)} />
-      </Show>
       <div class="main">
         <header class="topbar">
-          <button class="btn ghost small menu-btn" onClick={() => setOpen(!open())} aria-label="open contents">
-            ☰
-          </button>
           <span class="crumb">
             <Show when={current()} fallback={<b>{loc.pathname.startsWith('/playground') ? 'Playground' : loc.pathname.startsWith('/reference') ? 'Reference' : 'Home'}</b>}>
               {current()!.part > 0 && current()!.part < 7 ? `${chapterLabel(current()!)} · ` : ''}
@@ -108,5 +112,6 @@ export function Layout(props: RouteSectionProps) {
         {props.children}
       </div>
     </div>
+    </>
   );
 }

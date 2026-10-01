@@ -109,8 +109,8 @@
     width: 1rem;
   }
   .in input {
-    flex: 1;
-    min-width: 8rem;
+    flex: 1 1 8rem;
+    min-width: 0;
     font-family: var(--font-mono);
     font-size: 0.9rem;
     padding: 0.3rem 0.5rem;

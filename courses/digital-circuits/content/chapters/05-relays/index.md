@@ -219,7 +219,7 @@ This is more important than it may seem. A repeater does not amplify the *weak* 
 :::history{year=1844 title="What hath God wrought" people="Samuel Morse, Alfred Vail" source="Sources: Smithsonian National Museum of American History; Hochfelder (Smithsonian Institution Archives)."}
 On 24 May 1844 Samuel Morse tapped a Bible verse out of the Capitol in Washington to his partner Alfred Vail in Baltimore, 40 miles away. It arrived.
 
-The line, funded by a $30,000 grant from Congress, ran between the Capitol and the Pratt Street station of the Baltimore and Ohio Railroad, and the message, chosen by Annie Ellsworth, the daughter of the Commissioner of Patents, was "What hath God wrought", from the Book of Numbers.:cite[nmah-wwgw] Vail, a skilled machinist, had built the first practical sending key and improved the relay magnets.:cite[loc-morse]
+The line, funded by a \$30,000 grant from Congress, ran between the Capitol and the Pratt Street station of the Baltimore and Ohio Railroad, and the message, chosen by Annie Ellsworth, the daughter of the Commissioner of Patents, was "What hath God wrought", from the Book of Numbers.:cite[nmah-wwgw] Vail, a skilled machinist, had built the first practical sending key and improved the relay magnets.:cite[loc-morse]
 
 The line was about 64 km long. For longer lines the answer was the relay that Henry had demonstrated in the 1830s: according to historians of Henry's papers, Leonard Gale, a chemist who had worked with Henry, showed Morse how a relay could boost a signal over long distances.:cite[hochfelder-henry] What a relay repeated was a series of dots and dashes: a code of two states, on and off, that a relay could copy without loss. An electromagnet had become the first component of a digital network.
 :::

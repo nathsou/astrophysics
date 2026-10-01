@@ -1,0 +1,123 @@
+/* The collection link is shared by every course, independent of its UI framework. */
+:root {
+  --course-nav-height: 44px;
+}
+
+.course-index-nav {
+  position: sticky;
+  top: 0;
+  z-index: 55;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: var(--course-nav-height);
+  padding: 0 max(1rem, env(safe-area-inset-left));
+  border-bottom: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  background: var(--bg, var(--page, var(--paper, Canvas)));
+  color: var(--fg, var(--ink, CanvasText));
+  font: 500 13px/1.4 system-ui, sans-serif;
+}
+
+.course-index-nav .course-index-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 36px;
+  color: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+  border-radius: 3px;
+}
+
+.course-index-nav .course-index-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.course-index-nav .course-index-link:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+.course-sidebar-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 36px;
+  margin-left: auto;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.course-sidebar-toggle svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+.course-sidebar-toggle:hover {
+  border-color: currentColor;
+}
+.course-sidebar-toggle:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 1px;
+}
+.course-sidebar-scrim {
+  display: none;
+}
+
+@media (min-width: 1100px) {
+  :root[data-sidebar='collapsed'] .course-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  :root[data-sidebar='collapsed'] .course-shell > .sidebar {
+    display: none;
+  }
+}
+@media (max-width: 1099px) {
+  :root .course-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  :root .course-shell > .sidebar {
+    position: fixed;
+    left: 0;
+    top: var(--course-nav-height);
+    z-index: 54;
+    display: block;
+    width: min(320px, 88vw);
+    height: calc(100dvh - var(--course-nav-height));
+    box-sizing: border-box;
+    background: var(--bg, var(--page, var(--paper, Canvas)));
+    visibility: hidden;
+    transform: translateX(-105%);
+    overscroll-behavior: contain;
+    transition: transform 160ms ease, visibility 0s 160ms;
+  }
+  :root[data-sidebar-open='true'] .course-shell > .sidebar {
+    visibility: visible;
+    transform: none;
+    transition: transform 160ms ease;
+  }
+  :root[data-sidebar-open='true'] .course-sidebar-scrim {
+    position: fixed;
+    inset: var(--course-nav-height) 0 0;
+    z-index: 52;
+    display: block;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    background: rgb(0 0 0 / 0.35);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root .course-shell > .sidebar,
+  :root[data-sidebar-open='true'] .course-shell > .sidebar {
+    transition: none;
+  }
+}

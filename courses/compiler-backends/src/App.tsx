@@ -1,3 +1,5 @@
+import '../../../packages/course-navigation/navigation.css';
+import { mountSidebar } from '../../../packages/course-navigation/sidebar';
 import { lazy, Suspense, useEffect, useState, type ComponentType } from 'react';
 import { MDXProvider } from '@mdx-js/react';
 import { CHAPTERS, PARTS, chapterBySlug } from './content/course';
@@ -64,10 +66,10 @@ function Chapter({ slug, anchor }: { slug: string; anchor?: string }) {
   );
 }
 
-function Sidebar({ route, open, onNav }: { route: string; open: boolean; onNav: () => void }) {
+function Sidebar({ route }: { route: string }) {
   const cur = route.startsWith('ch/') ? route.slice(3).split('#')[0] : '';
   return (
-    <nav className={`sidebar ${open ? 'open' : ''}`} onClick={(e) => (e.target as HTMLElement).closest('a') && onNav()}>
+    <nav id="course-contents" className="sidebar" aria-label="Course contents">
       <a className="brand" href="#/">
         <span className="logo-mark" aria-hidden="true" />
         <span>
@@ -97,8 +99,8 @@ function Sidebar({ route, open, onNav }: { route: string; open: boolean; onNav: 
 }
 
 export function App() {
+  useEffect(() => mountSidebar('compiler-backends'), []);
   const route = useRoute();
-  const [open, setOpen] = useState(false);
   useEffect(() => { applyTheme(themeStore.get(), false); }, []);
   let page;
   if (route.startsWith('ch/')) {
@@ -113,12 +115,18 @@ export function App() {
   }
   return (
     <MDXProvider components={mdxComponents}>
-      <div className={`app ${route.startsWith('playground') ? 'wide-mode' : route.startsWith('ch/') ? '' : 'home-mode'}`}>
+      <nav className="course-index-nav" aria-label="Course collection">
+        <a className="course-index-link" href="../"><span aria-hidden="true">←</span> All courses</a>
+        <button className="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" data-sidebar-toggle>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
+          <span data-sidebar-label>Hide contents</span>
+        </button>
+      </nav>
+      <div className={`app course-shell ${route.startsWith('playground') ? 'wide-mode' : route.startsWith('ch/') ? '' : 'home-mode'}`}>
         <a className="skip-link" href="#/" onClick={(e) => { e.preventDefault(); document.getElementById('main')?.focus(); }}>Skip to content</a>
-        <Sidebar route={route} open={open} onNav={() => setOpen(false)} />
+        <Sidebar route={route} />
         <main className="main" id="main" tabIndex={-1} style={{ outline: 'none' }}>
           <div className="mobile-bar">
-            <button className="chip-btn" onClick={() => setOpen((o) => !o)} aria-label="Open contents" aria-expanded={open}>☰ Contents</button>
             <span className="logo-mark" aria-hidden="true" />
             <span style={{ fontWeight: 700, letterSpacing: '-0.02em' }}>SSA to Silicon</span>
           </div>

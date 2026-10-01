@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import '../../../../packages/course-navigation/navigation.css';
 // KaTeX CSS must match the KaTeX version that renders the maths at build time. rehype-katex 7 bundles
 // its own KaTeX 0.16 (nested in its node_modules), whose markup uses class names (.sizing, .strut,
 // .sqrt>.root, .stretchy…) that the top-level katex 0.18 stylesheet renamed. With the 0.18 CSS,
@@ -25,6 +26,7 @@ const published = new Set(
       r.dataset.depth = '2';
       let preference = 'system';
       try {
+        if (localStorage.getItem('astrophysics:sidebar') === 'collapsed') r.dataset.sidebar = 'collapsed';
         const saved = localStorage.getItem('theme') ?? localStorage.getItem('cic-theme');
         if (saved === 'light' || saved === 'dark') preference = saved;
         const d = localStorage.getItem('depth');
@@ -42,10 +44,16 @@ const published = new Set(
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   </head>
   <body data-chapter={current} class:list={[landing && 'landing']}>
+    <nav class="course-index-nav" aria-label="Course collection">
+      <a class="course-index-link" href={`${base}/../`}><span aria-hidden="true">←</span> All courses</a>
+      <button class="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" data-sidebar-toggle>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
+        <span data-sidebar-label>Hide contents</span>
+      </button>
+    </nav>
     <a class="skip" href="#main">Skip to content</a>
-    {!landing && <button class="btn menu-toggle" aria-label="Menu" aria-controls="site-nav" aria-expanded="false">☰</button>}
-    <div class="shell">
-      {!landing && <nav class="sidebar" id="site-nav" aria-label="Course contents">
+    <div class="shell course-shell">
+      <nav class="sidebar" id="course-contents" aria-label="Course contents">
         <a class="brand" href={`${base}/`}>The <span>Cosmos</span>, Computed</a>
         {parts.map((p) => (
           <>
@@ -68,10 +76,12 @@ const published = new Set(
         <div class="part">Depth of explanation</div>
         <DepthControl compact />
         <div class="tools"><button class="btn" data-action="theme">◐ System</button></div>
-      </nav>}
+      </nav>
       <main id="main" tabindex="-1"><slot /></main>
     </div>
     <script>
+      import { mountSidebar } from '../../../../packages/course-navigation/sidebar';
+      mountSidebar('astrophysics');
       import '../scripts/page.ts';
       import '../scripts/islands.ts';
     </script>

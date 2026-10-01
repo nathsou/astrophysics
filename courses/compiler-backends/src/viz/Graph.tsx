@@ -1,6 +1,6 @@
 // Generic layered graph renderer (dagre layout, SVG edges, HTML node bodies).
 
-import { useMemo, type ReactNode } from 'react';
+import { useId, useMemo, type ReactNode } from 'react';
 import dagre from '@dagrejs/dagre';
 import type { Line } from '../compiler/listing';
 import { CodeView } from '../ui/CodeView';
@@ -95,6 +95,7 @@ export interface GraphViewProps {
 }
 
 export function GraphView({ nodes, edges, rankdir, target, onNodeClick, onNodeHover, compact, maxHeight, nodesep, ranksep, overlay }: GraphViewProps) {
+  const markerPrefix = useId();
   const key = JSON.stringify([nodes.map((n) => [n.id, n.lines?.length, n.titleText, n.width, n.extraLines, n.lines?.map((l) => textWidth(l))]), edges.map((e) => [e.from, e.to]), rankdir, compact, nodesep, ranksep]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const L = useMemo(() => layout(nodes, edges, { rankdir, compact, nodesep, ranksep }), [key]);
@@ -104,7 +105,7 @@ export function GraphView({ nodes, edges, rankdir, target, onNodeClick, onNodeHo
       <svg className="graph" width={L.width} height={L.height} viewBox={`0 0 ${L.width} ${L.height}`} style={{ minWidth: L.width, margin: '0 auto' }}>
         <defs>
           {colors.map((c) => (
-            <marker key={c} id={`arr-${c}`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <marker key={c} id={`${markerPrefix}-arr-${c}`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
               <path d="M0,0 L10,5 L0,10 z" fill={EDGE_COLORS[c]} />
             </marker>
           ))}
@@ -116,7 +117,7 @@ export function GraphView({ nodes, edges, rankdir, target, onNodeClick, onNodeHo
           const mid = pts[Math.floor(pts.length / 2)];
           return (
             <g key={k}>
-              <path d={pathD(pts)} fill="none" stroke={EDGE_COLORS[kind]} strokeWidth={kind === 'critical' || kind === 'hot' ? 2.2 : kind === 'faint' ? 1 : 1.5} strokeDasharray={kind === 'back' ? '6 3' : kind === 'war' || kind === 'waw' ? '3 3' : undefined} markerEnd={`url(#arr-${kind})`} opacity={kind === 'faint' ? 0.6 : 1} />
+              <path d={pathD(pts)} fill="none" stroke={EDGE_COLORS[kind]} strokeWidth={kind === 'critical' || kind === 'hot' ? 2.2 : kind === 'faint' ? 1 : 1.5} strokeDasharray={kind === 'back' ? '6 3' : kind === 'war' || kind === 'waw' ? '3 3' : undefined} markerEnd={`url(#${markerPrefix}-arr-${kind})`} opacity={kind === 'faint' ? 0.6 : 1} />
               {e.label && (
                 <text x={mid.x + 4} y={mid.y - 3} fontSize={10} fontFamily="var(--sans)" fill={EDGE_COLORS[kind]} style={{ paintOrder: 'stroke', stroke: 'var(--panel)', strokeWidth: 3 }}>{e.label}</text>
               )}

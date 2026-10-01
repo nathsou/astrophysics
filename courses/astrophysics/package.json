@@ -6,7 +6,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "typecheck": "tsc --noEmit -p ."
+    "typecheck": "tsc --noEmit -p .",
+    "test": "node --test build/*.test.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.3.1",

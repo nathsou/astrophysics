@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "preview": "node scripts/preview.mjs"
+    "preview": "node scripts/preview.mjs",
+    "audit": "python3 scripts/audit-built-courses.py"
   },
   "engines": {
     "node": ">=22"

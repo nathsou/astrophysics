@@ -3,7 +3,7 @@
 import { it } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { extract } from './content.test.ts';
+import { extract } from './snippets.ts';
 import { run } from './util.ts';
 
 it.skipIf(!process.env.REPORT)('errors report', () => {

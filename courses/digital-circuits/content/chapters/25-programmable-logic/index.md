@@ -38,18 +38,18 @@ unit:
 ```
 ::::
 
-The numbers below are made up for the arithmetic, not taken from any product: a custom chip with an NRE of $40,000 and a unit cost of $1, against a board of standard chips that costs $6 for each unit assembled.
+The numbers below are made up for the arithmetic, not taken from any product: a custom chip with an NRE of \$40,000 and a unit cost of \$1, against a board of standard chips that costs \$6 for each unit assembled.
 
 ```quiz
 q: 'At what volume does the custom chip become cheaper than the board of standard chips?'
 options:
   - text: About 800 units.
-    why: 'That would need an NRE of only $4,000. Work it out: the custom chip saves $5 on every unit, and it must first earn back $40,000.'
+    why: 'That would need an NRE of only \$4,000. Work it out: the custom chip saves \$5 on every unit, and it must first earn back \$40,000.'
   - text: About 8,000 units.
     correct: true
-    why: 'C(N) is equal for both at $40,000 + $1 × N = $6 × N, so N = 40,000 ÷ 5 = 8,000. Below that the board is cheaper; above it the custom chip wins.'
+    why: 'C(N) is equal for both at \$40,000 + \$1 × N = \$6 × N, so N = 40,000 ÷ 5 = 8,000. Below that the board is cheaper; above it the custom chip wins.'
   - text: About 80,000 units.
-    why: 'That would need the saving per unit to be only 50 cents. Here it is $5.'
+    why: 'That would need the saving per unit to be only 50 cents. Here it is \$5.'
 ```
 
 So a custom chip only pays when you sell thousands of them, and a start-up building a few hundred units, an engineer building one prototype, or a designer who has just found a bug will never get there. A third kind of part is needed: one made by the million, bought off a shelf like a 7400, but able to become any logic after it leaves the factory. The customer supplies the last step. That is the :term[programmable logic device]{id=pld}, or PLD, and this part of the course is about its family tree.

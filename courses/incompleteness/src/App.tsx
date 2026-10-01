@@ -1,3 +1,5 @@
+import '../../../packages/course-navigation/navigation.css';
+import { mountSidebar } from '../../../packages/course-navigation/sidebar';
 import { useEffect, useRef, useState } from 'react';
 import { MDXProvider } from '@mdx-js/react';
 import { applyTheme, inspectorCollapsed, inspectorStore, reducedMotion, themeStore, useStore, type Theme } from './ui/store';
@@ -66,11 +68,11 @@ function Topbar({ onSearch }: { onSearch: () => void }) {
   );
 }
 
-function Sidebar({ route, open, onNav, onSearch }: { route: Route; open: boolean; onNav: () => void; onSearch: () => void }) {
+function Sidebar({ route, onSearch }: { route: Route; onSearch: () => void }) {
   const ref = useRef<HTMLElement>(null);
   const loaded = useRef(false);
-  // Keep the current section in view: centred on load and whenever the drawer opens; after
-  // navigating, only if it is not already visible (so a clicked row does not jump away).
+  // Centre the current section on load; after navigating, reveal it only when needed.
+  // The shared disclosure also reveals the current section when the mobile drawer opens.
   useEffect(() => {
     const nav = ref.current;
     const link = nav?.querySelector<HTMLAnchorElement>('.toc a.active');
@@ -80,12 +82,12 @@ function Sidebar({ route, open, onNav, onSearch }: { route: Route; open: boolean
     const first = !loaded.current;
     loaded.current = true;
     const reveal = (force: boolean, smooth: boolean) => revealInContainer(nav, link, { force, smooth });
-    reveal(first || open, !first && !reducedMotion());
+    reveal(first, !first && !reducedMotion());
     // Web fonts can change the rows' heights after the first layout.
     if (first) document.fonts?.ready.then(() => reveal(true, false));
-  }, [route.section, open]);
+  }, [route.section]);
   return (
-    <nav ref={ref} id="contents" className={`sidebar ${open ? 'open' : ''}`} aria-label="Contents" onClick={(e) => (e.target as HTMLElement).closest('a') && onNav()}>
+    <nav ref={ref} id="course-contents" className="sidebar" aria-label="Contents">
       <a className="brand" href="#/">
         <span className="brand-mark" aria-hidden="true">⌜⌝</span>
         <span>
@@ -152,8 +154,8 @@ function InspectorButton() {
 }
 
 export function App() {
+  useEffect(() => mountSidebar('incompleteness'), []);
   const route = useRoute();
-  const [open, setOpen] = useState(false);
   const [searching, setSearching] = useState(false);
   useEffect(() => applyTheme(themeStore.get(), false), []);
   useEffect(() => {
@@ -180,15 +182,19 @@ export function App() {
   const landing = route.page === 'home';
   return (
     <MDXProvider components={mdxComponents}>
+      <nav className="course-index-nav" aria-label="Course collection">
+        <a className="course-index-link" href="../"><span aria-hidden="true">←</span> All courses</a>
+        <button className="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" data-sidebar-toggle>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
+          <span data-sidebar-label>Hide contents</span>
+        </button>
+      </nav>
       <a className="skip" href="#main">Skip to content</a>
-      <div className={`app${landing ? ' landing' : ''}`}>
-        {!landing && <Sidebar route={route} open={open} onNav={() => setOpen(false)} onSearch={() => setSearching(true)} />}
+      <div className={`app course-shell${landing ? ' landing' : ''}`}>
+        <Sidebar route={route} onSearch={() => setSearching(true)} />
         <main className="main" id="main">
           {landing && <Topbar onSearch={() => setSearching(true)} />}
           {!landing && <div className="mobile-bar">
-            <button className="chip-btn" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="contents">
-              ☰ Contents
-            </button>
             <span>Incompleteness and Computability</span>
             <button className="chip-btn" onClick={() => setSearching(true)} aria-label="Search">
               ⌕ Search

@@ -30,9 +30,7 @@
   </li>
 {/snippet}
 
-<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
-<div class="scrim" class:open={nav.sidebarOpen} onclick={() => (nav.sidebarOpen = false)}></div>
-<nav class="sidebar ui" class:open={nav.sidebarOpen} aria-label="Course contents">
+<nav id="course-contents" class="sidebar ui" class:open={nav.sidebarOpen} aria-label="Course contents">
   {#each PARTS as part (part.id)}
     <section>
       <h2>
@@ -55,8 +53,8 @@
 <style>
   .sidebar {
     position: sticky;
-    top: 3.5rem;
-    height: calc(100vh - 3.5rem);
+    top: calc(3.5rem + var(--course-nav-height));
+    height: calc(100dvh - 3.5rem - var(--course-nav-height));
     overflow-y: auto;
     padding: 1.4rem 0.9rem 3rem 1rem;
     border-right: 1px solid var(--line);
@@ -191,13 +189,10 @@
     border-left-color: var(--sig-high);
     font-weight: 600;
   }
-  .scrim {
-    display: none;
-  }
   @media (max-width: 1099px) {
     .sidebar {
       position: fixed;
-      top: 3.5rem;
+      top: calc(3.5rem + var(--course-nav-height));
       left: 0;
       z-index: 45;
       width: min(20rem, 88vw);
@@ -210,13 +205,6 @@
       transform: none;
       visibility: visible;
       box-shadow: var(--shadow-lg);
-    }
-    .scrim.open {
-      display: block;
-      position: fixed;
-      inset: 3.5rem 0 0 0;
-      z-index: 44;
-      background: light-dark(rgb(28 33 39 / 0.35), rgb(0 0 0 / 0.55));
     }
   }
 </style>

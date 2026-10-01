@@ -23,6 +23,7 @@
 
   let { editor, parts, engine = null, label = 'Circuit editor', height = 340 }: { editor: EditorState; parts?: SubResolver; engine?: Engine | null; label?: string; height?: number } = $props();
 
+  const instanceId = $props.id();
   let board: HTMLDivElement | undefined = $state();
   let schematic: Schematic | undefined = $state();
   let width = $state(600);
@@ -273,9 +274,9 @@
 >
   <svg class="grid" aria-hidden="true" viewBox="{vb.x0} {vb.y0} {vb.x1 - vb.x0} {vb.y1 - vb.y0}" preserveAspectRatio="none">
     <defs>
-      <pattern id="bc-dots" width={G} height={G} patternUnits="userSpaceOnUse"><circle cx="0" cy="0" r={pxPerGrid > 9 ? 0.9 : 0.6} class="dot" /></pattern>
+      <pattern id={`${instanceId}-bc-dots`} width={G} height={G} patternUnits="userSpaceOnUse"><circle cx="0" cy="0" r={pxPerGrid > 9 ? 0.9 : 0.6} class="dot" /></pattern>
     </defs>
-    {#if pxPerGrid >= 6}<rect x={vb.x0} y={vb.y0} width={vb.x1 - vb.x0} height={vb.y1 - vb.y0} fill="url(#bc-dots)" />{/if}
+    {#if pxPerGrid >= 6}<rect x={vb.x0} y={vb.y0} width={vb.x1 - vb.x0} height={vb.y1 - vb.y0} fill={`url(#${instanceId}-bc-dots)`} />{/if}
   </svg>
 
   <Schematic bind:this={schematic} circuit={editor.shown} {engine} {parts} mode="logic" interactive={false} live={!!engine} fill viewBox={vb} {label} />

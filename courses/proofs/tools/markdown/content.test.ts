@@ -3,6 +3,7 @@
  * the test suite rather than a page at run time.
  */
 import { describe, expect, test } from 'vitest';
+import { compile } from 'svelte/compiler';
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { compileMarkdown } from './compile';
@@ -21,6 +22,8 @@ describe('content compiles', () => {
     test(path.relative(root, file), async () => {
       const { code } = await compileMarkdown(readFileSync(file, 'utf8'), file);
       expect(code).toContain('export const metadata');
+      expect(code).not.toContain('class="katex-error"');
+      expect(() => compile(code, { filename: file.replace(/\.md$/, '.svelte'), generate: 'server' })).not.toThrow();
     }, 30000);
   }
 });
