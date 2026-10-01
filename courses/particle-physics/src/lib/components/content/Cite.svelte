@@ -8,10 +8,16 @@
   let anchor = $state<HTMLElement | null>(null);
   let timer: ReturnType<typeof setTimeout> | undefined;
 
+  /** "Chatrchyan, Khachatryan et al." → "Chatrchyan et al."; organisations ("ATLAS Collaboration (…)") keep their name. */
   const short = (authors: string) => {
-    const list = authors.split(/\s*(?:,| and |&)\s*/).filter(Boolean);
-    const last = (s: string) => s.trim().split(/\s+/).at(-1);
-    return list.length > 2 ? `${last(list[0]!)} et al.` : list.map(last).join(' & ');
+    const a = authors.replace(/\s*\([^)]*\)/g, '').trim();
+    const org = /(Collaboration|Working Group|Group|Foundation|Organization|NobelPrize\.org|CERN|Initiative)/.exec(a);
+    if (org && !/\b[A-Z]\.\s/.test(a.slice(0, org.index))) return a.slice(0, org.index + org[0].length).trim();
+    const raw = a.split(/\s*(?:,| and |&)\s*/).filter(Boolean);
+    const etal = raw.some((x) => /^(et al\.?|others)$/i.test(x)) || /et al\.?$/.test(a);
+    const list = raw.filter((x) => !/^(et al\.?|others)$/i.test(x)).map((x) => x.replace(/\s*et al\.?$/, ''));
+    const last = (x: string) => x.trim().split(/\s+/).at(-1);
+    return etal || list.length > 2 ? `${last(list[0] ?? a)} et al.` : list.map(last).join(' & ');
   };
   const hide = () => (timer = setTimeout(() => (anchor = null), 150));
 </script>
