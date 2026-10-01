@@ -1,0 +1,102 @@
+spin:
+  term: spin
+  definition: An intrinsic angular momentum that every particle carries, with a fixed quantum number s (0, ½, 1, 3/2, …). Measured along any axis it takes one of 2s + 1 values, in units of ħ.
+  chapter: quantum-essentials
+fermion:
+  term: fermion
+  definition: A particle with half-integer spin (½, 3/2, …). Two identical fermions cannot be in the same quantum state. Quarks and leptons are fermions.
+  chapter: quantum-essentials
+boson:
+  term: boson
+  definition: A particle with integer spin (0, 1, …). Identical bosons can share a quantum state. The photon, gluon, W, Z and Higgs boson are bosons.
+  chapter: quantum-essentials
+exclusion-principle:
+  term: Pauli exclusion principle
+  definition: No two identical fermions can occupy the same quantum state. It gives atoms their shell structure and stops white dwarfs and neutron stars from collapsing.
+  chapter: quantum-essentials
+amplitude:
+  term: amplitude
+  definition: A complex number whose squared length is a probability (or a rate). When an outcome can happen in indistinguishable ways, the amplitudes of the ways are added before squaring, which produces interference.
+  chapter: quantum-essentials
+uncertainty-principle:
+  term: uncertainty principle
+  definition: The product of the spreads of a particle's position and momentum is at least ħ/2. A probe that resolves a small length therefore has a large momentum.
+  chapter: quantum-essentials
+isotropic:
+  term: isotropic
+  definition: The same in every direction. A decay of a particle with no preferred spin direction is isotropic in its rest frame.
+  chapter: quantum-essentials
+lifetime:
+  term: mean lifetime (τ)
+  definition: The average time an unstable particle lives before decaying, in its own rest frame. After one lifetime a fraction 1/e of a sample is left; the half-life is τ ln 2.
+  chapter: quantum-essentials
+width:
+  term: width (Γ)
+  definition: The full width at half maximum of the Breit–Wigner line of an unstable particle, equal to the total decay rate in natural units, Γ = ħ/τ.
+  chapter: quantum-essentials
+breit-wigner:
+  term: Breit–Wigner distribution
+  definition: The bell-shaped distribution of the mass of an unstable particle, proportional to 1/((m − M)² + Γ²/4). Its full width at half maximum is the width Γ.
+  chapter: quantum-essentials
+resonance:
+  term: resonance
+  definition: A very short-lived particle, seen not as a track but as a peak of Breit–Wigner shape in the invariant mass of its decay products.
+  chapter: quantum-essentials
+branching-ratio:
+  term: branching ratio
+  definition: The fraction of decays of a particle that go to a given final state, equal to the partial width of that channel divided by the total width.
+  chapter: quantum-essentials
+poisson-distribution:
+  term: Poisson distribution
+  definition: The distribution of the number of independent, rare events counted in a fixed interval. For mean μ its probability is μⁿ e⁻ᵘ/n!, and its standard deviation is √μ.
+  chapter: quantum-essentials
+phase-space:
+  term: phase space
+  definition: The set of final-state momenta allowed by energy and momentum conservation. For a two-body decay at rest it is a sphere of directions.
+  chapter: quantum-essentials
+inverse-transform:
+  term: inverse-transform sampling
+  definition: Drawing a random number with cumulative distribution F by applying the inverse of F to a uniform random number. The exponential decay time is t = −τ ln(1 − u).
+  chapter: quantum-essentials
+differential-cross-section:
+  term: differential cross-section
+  definition: >-
+    The cross-section per unit solid angle, dσ/dΩ: the probability per unit beam flux and per target that a particle scatters into a small cone around a given direction.
+  chapter: scattering-is-seeing
+impact-parameter:
+  term: impact parameter
+  definition: The perpendicular distance between the incoming particle's undeflected line of flight and the target. Small impact parameters give large deflections.
+  chapter: scattering-is-seeing
+rutherford-scattering:
+  term: Rutherford scattering
+  definition: The scattering of a charged particle by the Coulomb field of a point charge, with dσ/dΩ proportional to 1/sin⁴(θ/2).
+  chapter: scattering-is-seeing
+solid-angle:
+  term: solid angle
+  definition: A measure of a cone of directions, in steradians. The whole sphere is 4π sr, and a ring between polar angles θ₁ and θ₂ is 2π(cos θ₁ − cos θ₂).
+  chapter: scattering-is-seeing
+momentum-transfer:
+  term: momentum transfer (q)
+  definition: The momentum given to the target in a scattering. For elastic scattering through θ off a heavy target, q = 2p sin(θ/2). It sets the resolution, ħ/q.
+  chapter: scattering-is-seeing
+form-factor:
+  term: form factor
+  definition: The Fourier transform of the target's charge distribution. The cross-section of a finite-size target is the point-charge one multiplied by the square of its form factor.
+  chapter: scattering-is-seeing
+elastic-scattering:
+  term: elastic scattering
+  definition: >-
+    Scattering in which the target is left as it was: the same particle, in its ground state. Energy is shared between the two but no new particles or excitations appear.
+  chapter: scattering-is-seeing
+inelastic-scattering:
+  term: inelastic scattering
+  definition: Scattering in which the target is excited or broken up, so that the final state contains more than the two original particles or an excited state.
+  chapter: scattering-is-seeing
+importance-sampling:
+  term: importance sampling
+  definition: Drawing random numbers from an easy distribution that resembles the wanted one, and correcting by a weight or by accept–reject, so that the points come out with the wanted density.
+  chapter: scattering-is-seeing
+accept-reject:
+  term: accept–reject sampling
+  definition: Drawing a point under a bounding curve and keeping it only if it falls under the wanted density. The fraction kept is the efficiency, which is low when the bound is loose.
+  chapter: scattering-is-seeing

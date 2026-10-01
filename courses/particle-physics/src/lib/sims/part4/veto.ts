@@ -12,6 +12,8 @@ export interface Trial {
   t: number;
   /** The true rate there, per unit ln t. */
   rate: number;
+  /** The random height u × (overestimate) used for the accept–reject test: accepted if it lies below `rate`. */
+  height: number;
   accepted: boolean;
 }
 
@@ -31,8 +33,9 @@ export function traceVeto(E: number, tmax: number, tmin: number, alpha: number, 
     t = t * Math.pow(r(), 1 / over);
     if (t <= tmin) return trials;
     const rate = emissionRate(t, { parton: 'q', E, alphaS: alpha });
-    const accepted = r() * over < rate;
-    trials.push({ t, rate, accepted });
+    const height = r() * over;
+    const accepted = height < rate;
+    trials.push({ t, rate, height, accepted });
     if (accepted) return trials;
   }
   return trials;

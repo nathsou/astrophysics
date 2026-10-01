@@ -1,0 +1,62 @@
+# Part III: the zoo (Chapters 9–13). URLs only where they follow a reliable pattern (APS DOIs) or were seen in a search result.
+dirac1928:
+  authors: P. A. M. Dirac
+  year: 1928
+  title: The quantum theory of the electron
+  venue: Proceedings of the Royal Society of London A 117, 610–624
+dirac1930:
+  authors: P. A. M. Dirac
+  year: 1930
+  title: A theory of electrons and protons
+  venue: Proceedings of the Royal Society of London A 126, 360–365
+dirac1931:
+  authors: P. A. M. Dirac
+  year: 1931
+  title: Quantised singularities in the electromagnetic field
+  venue: Proceedings of the Royal Society of London A 133, 60–72
+  note: The paper in which the anti-electron (and, by the same argument, the antiproton) is predicted, in the course of a discussion of magnetic monopoles.
+anderson1932:
+  authors: Carl D. Anderson
+  year: 1932
+  title: The apparent existence of easily deflectable positives
+  venue: Science 76, 238–239
+blackett1933:
+  authors: P. M. S. Blackett, G. P. S. Occhialini
+  year: 1933
+  title: Some photographs of the tracks of penetrating radiation
+  venue: Proceedings of the Royal Society of London A 139, 699–726
+  note: A cloud chamber triggered by Geiger counters, with showers of electrons and positrons.
+chamberlain1955:
+  authors: Owen Chamberlain, Emilio Segrè, Clyde Wiegand, Thomas Ypsilantis
+  year: 1955
+  title: Observation of antiprotons
+  venue: Physical Review 100, 947–950
+  url: https://doi.org/10.1103/PhysRev.100.947
+baur1996:
+  authors: G. Baur et al. (PS210 Collaboration)
+  year: 1996
+  title: Production of antihydrogen
+  venue: Physics Letters B 368, 251–258
+amoretti2002:
+  authors: M. Amoretti et al. (ATHENA Collaboration)
+  year: 2002
+  title: Production and detection of cold antihydrogen atoms
+  venue: Nature 419, 456–459
+gabrielse2002:
+  authors: G. Gabrielse et al. (ATRAP Collaboration)
+  year: 2002
+  title: Background-free observation of cold antihydrogen with field-ionization analysis of its states
+  venue: Physical Review Letters 89, 213401
+  url: https://doi.org/10.1103/PhysRevLett.89.213401
+alpha2010:
+  authors: G. B. Andresen et al. (ALPHA Collaboration)
+  year: 2010
+  title: Trapped antihydrogen
+  venue: Nature 468, 673–676
+alphag2023:
+  authors: E. K. Anderson et al. (ALPHA Collaboration)
+  year: 2023
+  title: Observation of the effect of gravity on the motion of antimatter
+  venue: Nature 621, 716–722
+  url: https://www.nature.com/articles/s41586-023-06527-1
+  note: The measured acceleration of antihydrogen, 0.75 ± 0.13 (statistical and systematic) ± 0.16 (simulation) times g.

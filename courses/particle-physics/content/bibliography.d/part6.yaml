@@ -1,0 +1,111 @@
+# Part VI: the weak force (Chapters 22 to 25)
+chadwick1914:
+  authors: James Chadwick
+  year: 1914
+  title: Intensitätsverteilung im magnetischen Spectrum der β-Strahlen von Radium B + C
+  venue: Verhandlungen der Deutschen Physikalischen Gesellschaft 16, 383–391
+ellis1927:
+  authors: C. D. Ellis, W. A. Wooster
+  year: 1927
+  title: The average energy of disintegration of radium E
+  venue: Proceedings of the Royal Society of London A 117, 109–123
+brown1978:
+  authors: Laurie M. Brown
+  year: 1978
+  title: The idea of the neutrino
+  venue: Physics Today 31(9), 23–28
+  note: Gives the English translation of Pauli's letter of 4 December 1930 to the radioactivity meeting in Tübingen, and the history of the name.
+fermi1934nc:
+  authors: Enrico Fermi
+  year: 1934
+  title: Tentativo di una teoria dei raggi β
+  venue: Il Nuovo Cimento 11, 1–19
+fermi1934z:
+  authors: Enrico Fermi
+  year: 1934
+  title: Versuch einer Theorie der β-Strahlen. I
+  venue: Zeitschrift für Physik 88, 161–177
+  url: https://doi.org/10.1007/BF01351864
+wilson1968:
+  authors: Fred L. Wilson
+  year: 1968
+  title: Fermi's theory of beta decay
+  venue: American Journal of Physics 36, 1150–1160
+  note: Contains an English translation of Fermi's paper and the account of its first submission to Nature.
+schwartz2017:
+  authors: David N. Schwartz
+  year: 2017
+  title: The Last Man Who Knew Everything. The Life and Times of Enrico Fermi, Father of the Nuclear Age
+  venue: Basic Books
+bethe1934:
+  authors: H. Bethe, R. Peierls
+  year: 1934
+  title: The "neutrino"
+  venue: Nature 133, 532
+  url: https://doi.org/10.1038/133532a0
+cowan1956:
+  authors: C. L. Cowan Jr., F. Reines, F. B. Harrison, H. W. Kruse, A. D. McGuire
+  year: 1956
+  title: 'Detection of the free neutrino: a confirmation'
+  venue: Science 124, 103–104
+  url: https://doi.org/10.1126/science.124.3212.103
+leeyang1956:
+  authors: T. D. Lee, C. N. Yang
+  year: 1956
+  title: Question of parity conservation in weak interactions
+  venue: Physical Review 104, 254–258
+  url: https://doi.org/10.1103/PhysRev.104.254
+wu1957:
+  authors: C. S. Wu, E. Ambler, R. W. Hayward, D. D. Hoppes, R. P. Hudson
+  year: 1957
+  title: Experimental test of parity conservation in beta decay
+  venue: Physical Review 105, 1413–1415
+  url: https://doi.org/10.1103/PhysRev.105.1413
+garwin1957:
+  authors: R. L. Garwin, L. M. Lederman, M. Weinrich
+  year: 1957
+  title: 'Observations of the failure of conservation of parity and charge conjugation in meson decays: the magnetic moment of the free muon'
+  venue: Physical Review 105, 1415–1417
+  url: https://doi.org/10.1103/PhysRev.105.1415
+nobel1957:
+  authors: The Nobel Foundation
+  year: 1957
+  title: The Nobel Prize in Physics 1957 (Chen Ning Yang and Tsung-Dao Lee)
+  venue: NobelPrize.org
+  url: https://www.nobelprize.org/prizes/physics/1957/summary/
+goldhaber1958:
+  authors: M. Goldhaber, L. Grodzins, A. W. Sunyar
+  year: 1958
+  title: Helicity of neutrinos
+  venue: Physical Review 109, 1015–1017
+  url: https://doi.org/10.1103/PhysRev.109.1015
+feynman1958:
+  authors: R. P. Feynman, M. Gell-Mann
+  year: 1958
+  title: Theory of the Fermi interaction
+  venue: Physical Review 109, 193–198
+  url: https://doi.org/10.1103/PhysRev.109.193
+sudarshan1958:
+  authors: E. C. G. Sudarshan, R. E. Marshak
+  year: 1958
+  title: Chirality invariance and the universal Fermi interaction
+  venue: Physical Review 109, 1860–1862
+  url: https://doi.org/10.1103/PhysRev.109.1860
+fazzini1958:
+  authors: T. Fazzini, G. Fidecaro, A. W. Merrison, H. Paul, A. V. Tollestrup
+  year: 1958
+  title: Electron decay of the pion
+  venue: Physical Review Letters 1, 247–249
+  url: https://doi.org/10.1103/PhysRevLett.1.247
+mulan2013:
+  authors: V. Tishchenko et al. (MuLan Collaboration)
+  year: 2013
+  title: Detailed report of the MuLan measurement of the positive muon lifetime and determination of the Fermi constant
+  venue: Physical Review D 87, 052003
+  url: https://doi.org/10.1103/PhysRevD.87.052003
+katrin2022:
+  authors: M. Aker et al. (KATRIN Collaboration)
+  year: 2022
+  title: Direct neutrino-mass measurement with sub-electronvolt sensitivity
+  venue: Nature Physics 18, 160–166
+  url: https://doi.org/10.1038/s41567-021-01463-1

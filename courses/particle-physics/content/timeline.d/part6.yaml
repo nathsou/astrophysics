@@ -1,0 +1,31 @@
+# Part VI: the weak force
+- year: 1914
+  title: A continuous beta spectrum
+  people: James Chadwick
+  chapter: the-weak-force
+  text: Chadwick measures the speeds of beta electrons from radium B and C and finds a continuous band, where a two-body decay would give a single energy.
+- year: 1930
+  title: Pauli's letter
+  people: Wolfgang Pauli
+  chapter: the-weak-force
+  text: Pauli writes to "dear radioactive ladies and gentlemen" proposing a light neutral particle, later called the neutrino, to save energy conservation in beta decay.
+- year: 1933
+  title: Fermi's theory of beta decay
+  people: Enrico Fermi
+  chapter: the-weak-force
+  text: Fermi gives the neutrino a theory, a contact interaction of four fermions with one strength, G_F.
+- year: 1956
+  title: The neutrino is detected
+  people: Clyde Cowan, Frederick Reines
+  chapter: the-weak-force
+  text: Cowan and Reines detect antineutrinos from the Savannah River reactor by inverse beta decay.
+- year: 1957
+  title: Parity is violated
+  people: Chien-Shiung Wu and colleagues
+  chapter: the-weak-force
+  text: Wu's group finds that electrons from polarised cobalt-60 leave preferentially against the nuclear spin. The weak force can tell left from right.
+- year: 1958
+  title: The neutrino is left-handed
+  people: Maurice Goldhaber, Lee Grodzins, Andrew Sunyar
+  chapter: the-weak-force
+  text: A measurement with europium-152m shows that the neutrino has negative helicity.

@@ -1,0 +1,28 @@
+antiparticle:
+  term: antiparticle
+  definition: The partner of a particle with the same mass, spin and lifetime and the opposite value of every additive quantum number (electric charge, baryon number, lepton number, strangeness and the others). A few particles, such as the photon and the π⁰, are their own antiparticles.
+  chapter: antimatter
+positron:
+  term: positron
+  definition: The antiparticle of the electron, with the electron's mass and a positive charge. Predicted by Dirac's equation and photographed by Anderson in 1932.
+  chapter: antimatter
+pair-production:
+  term: pair production
+  definition: The conversion of a photon into a particle and its antiparticle, such as e⁺e⁻, in the field of a nucleus that takes up the recoil. The photon needs at least twice the particle's rest energy.
+  chapter: antimatter
+annihilation:
+  term: annihilation
+  definition: The disappearance of a particle and its antiparticle into other particles, usually photons. An electron and positron at rest give two photons of 511 keV flying in opposite directions.
+  chapter: antimatter
+spinor:
+  term: spinor
+  definition: The multi-component wave function of a particle with spin. Dirac's equation for the electron uses four components, which describe two spin states of the particle and two of the antiparticle.
+  chapter: antimatter
+threshold-energy:
+  term: threshold energy
+  definition: The smallest beam energy at which a reaction can occur, when the centre-of-mass energy √s equals the sum of the masses of the final state. On a stationary target it grows much faster than the final mass.
+  chapter: antimatter
+pet:
+  term: PET (positron emission tomography)
+  definition: A medical imaging method. A tracer that emits positrons is injected; each positron annihilates into two back-to-back 511 keV photons, and a ring of detectors locates the source along the line between the two crystals that fire together.
+  chapter: antimatter

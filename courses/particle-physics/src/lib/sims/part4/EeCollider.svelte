@@ -10,6 +10,7 @@
   The "data" are simulated by the course's generator (photon exchange, α(0), perfect detector); the Z is a switch.
 -->
 <script lang="ts">
+  import { untrack } from 'svelte';
   import Widget from '$lib/components/ui/Widget.svelte';
   import Slider from '$lib/components/ui/Slider.svelte';
   import Segmented from '$lib/components/ui/Segmented.svelte';
@@ -30,14 +31,14 @@
     type FinalState,
   } from './collider';
 
-  let { n, caption, title = 'A virtual e⁺e⁻ collider' }: { n?: string | number; caption?: string; title?: string } = $props();
+  let { n, caption, title = 'A virtual e⁺e⁻ collider', tab: firstTab = 'measure' }: { n?: string | number; caption?: string; title?: string; tab?: 'measure' | 'scan' } = $props();
 
-  let tab = $state<'measure' | 'scan'>('measure');
+  let tab = $state<'measure' | 'scan'>(untrack(() => firstTab));
   let final = $state<FinalState>('mumu');
   let z = $state(false);
   let logE = $state(Math.log10(10));
   let logL = $state(Math.log10(20)); // pb⁻¹
-  let seed = $state(1);
+  let seed = $state(4);
   // scan
   let muPairs = $state(3000);
   let nColours = $state(3);
@@ -45,7 +46,7 @@
 
   const sqrtS = $derived(10 ** logE);
   const lumi = $derived(10 ** logL);
-  const fmtNum = (v: number, d = 3) => (v === 0 ? '0' : Math.abs(v) >= 1e4 || Math.abs(v) < 1e-2 ? v.toExponential(2) : v.toPrecision(d));
+  const fmtNum = (v: number, d = 3) => (v === 0 ? '0' : Math.abs(v) >= 1e4 ? v.toExponential(2) : Math.abs(v) < 1e-2 ? v.toFixed(4) : v.toPrecision(d));
   const fmtPb = (v: number) => (v >= 1000 ? `${(v / 1000).toPrecision(4)} nb` : `${v.toPrecision(4)} pb`);
 
   const meas = $derived(measure(final, z, sqrtS, lumi, seed));

@@ -52,8 +52,15 @@ describe('the ledger', () => {
       const r = run(t);
       expect(r.allowed, t).toBe(true);
       expect(r.violated, t).toEqual([]);
-      expect(r.details.interaction).toBe('strong');
     }
+    expect(run('p + p → p + p + p + anti-p').details.interaction).toBe('strong');
+    expect(run('K- + p → Omega- + K+ + K0').details.interaction).toBe('strong');
+    expect(run('Delta++ → p + pi+').details.interaction).toBe('strong');
+    expect(run('pi0 → gamma + gamma').details.interaction).toBe('electromagnetic');
+    expect(run('Sigma0 → Lambda + gamma').details.interaction).toBe('electromagnetic');
+    expect(run('e+ + e- → mu+ + mu-').details.interaction).toBe('electromagnetic');
+    expect(run('n → p + e- + anti-nu_e').details.interaction).toBe('weak');
+    expect(run('mu- → e- + anti-nu_e + nu_mu').details.interaction).toBe('weak');
   });
   test('known forbidden reactions name the right law', () => {
     expect(run('p → e+ + gamma').violated).toEqual(['baryon', 'lepton-e']);

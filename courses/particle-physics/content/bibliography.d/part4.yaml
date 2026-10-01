@@ -1,0 +1,131 @@
+# Part IV (Chapters 14–18). Keys are prefixed p4- to stay clear of the other parts' files.
+p4-dirac1927:
+  authors: P. A. M. Dirac
+  year: 1927
+  title: The quantum theory of the emission and absorption of radiation
+  venue: Proceedings of the Royal Society of London A 114(767), 243–265
+  url: https://doi.org/10.1098/rspa.1927.0039
+p4-einstein1917:
+  authors: Albert Einstein
+  year: 1917
+  title: Zur Quantentheorie der Strahlung
+  venue: Physikalische Zeitschrift 18, 121–128
+p4-yukawa1935:
+  authors: Hideki Yukawa
+  year: 1935
+  title: On the interaction of elementary particles. I
+  venue: Proceedings of the Physico-Mathematical Society of Japan 17, 48–57
+  url: https://doi.org/10.11429/ppmsj1919.17.0_48
+p4-peskin1995:
+  authors: Michael E. Peskin and Daniel V. Schroeder
+  year: 1995
+  title: An Introduction to Quantum Field Theory
+  venue: Addison-Wesley (reprinted by Westview Press)
+  note: A standard graduate text. Chapter 2 treats the Klein–Gordon field and its propagator; chapters 4 to 6 the diagrams and e⁺e⁻ → μ⁺μ⁻ used in Chapters 15 and 16.
+p4-feynman1949a:
+  authors: Richard P. Feynman
+  year: 1949
+  title: The theory of positrons
+  venue: Physical Review 76(6), 749–759
+  url: https://doi.org/10.1103/PhysRev.76.749
+p4-feynman1949b:
+  authors: Richard P. Feynman
+  year: 1949
+  title: Space-time approach to quantum electrodynamics
+  venue: Physical Review 76(6), 769–789
+  url: https://doi.org/10.1103/PhysRev.76.769
+p4-dyson1949a:
+  authors: Freeman J. Dyson
+  year: 1949
+  title: The radiation theories of Tomonaga, Schwinger, and Feynman
+  venue: Physical Review 75(3), 486–502
+  url: https://doi.org/10.1103/PhysRev.75.486
+p4-dyson1949b:
+  authors: Freeman J. Dyson
+  year: 1949
+  title: The S matrix in quantum electrodynamics
+  venue: Physical Review 75(11), 1736–1755
+  url: https://doi.org/10.1103/PhysRev.75.1736
+p4-dyson1952:
+  authors: Freeman J. Dyson
+  year: 1952
+  title: Divergence of perturbation theory in quantum electrodynamics
+  venue: Physical Review 85(4), 631–632
+  url: https://doi.org/10.1103/PhysRev.85.631
+p4-schweber1994:
+  authors: Silvan S. Schweber
+  year: 1994
+  title: 'QED and the Men Who Made It: Dyson, Feynman, Schwinger, and Tomonaga'
+  venue: Princeton University Press
+  note: A history of the three formulations of quantum electrodynamics, including the Shelter Island and Pocono conferences. The accounts of who said what at Pocono rest on participants' recollections.
+p4-nobel1965:
+  authors: The Nobel Foundation
+  year: 1965
+  title: The Nobel Prize in Physics 1965 (Tomonaga, Schwinger, Feynman)
+  url: https://www.nobelprize.org/prizes/physics/1965/summary/
+  note: Awarded for fundamental work in quantum electrodynamics.
+p4-bhabha1936:
+  authors: H. J. Bhabha
+  year: 1936
+  title: The scattering of positrons by electrons with exchange on Dirac's theory of the positron
+  venue: Proceedings of the Royal Society of London A 154(881), 195–206
+  url: https://doi.org/10.1098/rspa.1936.0045
+p4-lamb1947:
+  authors: Willis E. Lamb Jr. and Robert C. Retherford
+  year: 1947
+  title: Fine structure of the hydrogen atom by a microwave method
+  venue: Physical Review 72(3), 241–243
+  url: https://doi.org/10.1103/PhysRev.72.241
+p4-bethe1947:
+  authors: H. A. Bethe
+  year: 1947
+  title: The electromagnetic shift of energy levels
+  venue: Physical Review 72(4), 339–341
+  url: https://doi.org/10.1103/PhysRev.72.339
+p4-kusch1948:
+  authors: P. Kusch and H. M. Foley
+  year: 1948
+  title: The magnetic moment of the electron
+  venue: Physical Review 74(3), 250–263
+  url: https://doi.org/10.1103/PhysRev.74.250
+  note: The value g = 2.00238 ± 0.00006 was first reported in a letter, Physical Review 73, 412 (1948).
+p4-schwinger1948:
+  authors: Julian Schwinger
+  year: 1948
+  title: On quantum-electrodynamics and the magnetic moment of the electron
+  venue: Physical Review 73(4), 416–417
+  url: https://doi.org/10.1103/PhysRev.73.416
+p4-petermann1957:
+  authors: A. Petermann
+  year: 1957
+  title: Fourth order magnetic moment of the electron
+  venue: Helvetica Physica Acta 30, 407–408
+p4-sommerfield1957:
+  authors: Charles M. Sommerfield
+  year: 1957
+  title: Magnetic dipole moment of the electron
+  venue: Physical Review 107(1), 328–329
+  url: https://doi.org/10.1103/PhysRev.107.328
+p4-laporta1996:
+  authors: S. Laporta and E. Remiddi
+  year: 1996
+  title: The analytical value of the electron (g−2) at order α³ in QED
+  venue: Physics Letters B 379, 283–291
+  url: https://doi.org/10.1016/0370-2693(96)00439-X
+p4-aoyama2012:
+  authors: Tatsumi Aoyama, Masashi Hayakawa, Toichiro Kinoshita and Makiko Nio
+  year: 2012
+  title: Tenth-order QED contribution to the electron g−2 and an improved value of the fine structure constant
+  venue: Physical Review Letters 109, 111807
+  url: https://doi.org/10.1103/PhysRevLett.109.111807
+p4-fan2023:
+  authors: X. Fan, T. G. Myers, B. A. D. Sukra and G. Gabrielse
+  year: 2023
+  title: Measurement of the electron magnetic moment
+  venue: Physical Review Letters 130, 071801
+  url: https://doi.org/10.1103/PhysRevLett.130.071801
+p4-nobel1955:
+  authors: The Nobel Foundation
+  year: 1955
+  title: The Nobel Prize in Physics 1955 (Lamb and Kusch)
+  url: https://www.nobelprize.org/prizes/physics/1955/summary/

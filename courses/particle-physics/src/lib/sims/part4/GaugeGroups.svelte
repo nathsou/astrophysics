@@ -54,7 +54,6 @@
     if (r === 0) return `${i === 1 ? '' : i === -1 ? '−' : i.toFixed(2).replace(/\.?0+$/, '')}i`;
     return `${r.toFixed(2)}${i > 0 ? '+' : '−'}${Math.abs(i).toFixed(2)}i`;
   };
-  const GREEK: Record<GroupName, string> = { U1: 'T', SU2: 'σ/2 = T', SU3: 'λ/2 = T' };
   const names: Record<GroupName, string[]> = {
     U1: ['charge'],
     SU2: ['T₁', 'T₂', 'T₃'],

@@ -1,0 +1,98 @@
+# Part VII: The Higgs boson (Chapters 26 to 30)
+englert1964:
+  authors: F. Englert, R. Brout
+  year: 1964
+  title: Broken symmetry and the mass of gauge vector mesons
+  venue: Physical Review Letters 13, 321–323
+  url: https://doi.org/10.1103/PhysRevLett.13.321
+higgs1964a:
+  authors: Peter W. Higgs
+  year: 1964
+  title: Broken symmetries, massless particles and gauge fields
+  venue: Physics Letters 12, 132–133
+higgs1964b:
+  authors: Peter W. Higgs
+  year: 1964
+  title: Broken symmetries and the masses of gauge bosons
+  venue: Physical Review Letters 13, 508–509
+  url: https://doi.org/10.1103/PhysRevLett.13.508
+guralnik1964:
+  authors: G. S. Guralnik, C. R. Hagen, T. W. B. Kibble
+  year: 1964
+  title: Global conservation laws and massless particles
+  venue: Physical Review Letters 13, 585–587
+  url: https://doi.org/10.1103/PhysRevLett.13.585
+anderson1963:
+  authors: P. W. Anderson
+  year: 1963
+  title: Plasmons, gauge invariance, and mass
+  venue: Physical Review 130, 439–442
+  url: https://doi.org/10.1103/PhysRev.130.439
+nambu1960:
+  authors: Yoichiro Nambu
+  year: 1960
+  title: Quasi-particles and gauge invariance in the theory of superconductivity
+  venue: Physical Review 117, 648–663
+  url: https://doi.org/10.1103/PhysRev.117.648
+goldstone1961:
+  authors: J. Goldstone
+  year: 1961
+  title: Field theories with "superconductor" solutions
+  venue: Il Nuovo Cimento 19, 154–164
+leequiggthacker1977:
+  authors: Benjamin W. Lee, C. Quigg, H. B. Thacker
+  year: 1977
+  title: 'Weak interactions at very high energies: the role of the Higgs-boson mass'
+  venue: Physical Review D 16, 1519–1531
+  url: https://doi.org/10.1103/PhysRevD.16.1519
+weinberg1967:
+  authors: Steven Weinberg
+  year: 1967
+  title: A model of leptons
+  venue: Physical Review Letters 19, 1264–1266
+  url: https://doi.org/10.1103/PhysRevLett.19.1264
+thooft1971:
+  authors: Gerard 't Hooft
+  year: 1971
+  title: Renormalizable Lagrangians for massive Yang–Mills fields
+  venue: Nuclear Physics B 35, 167–188
+thooftveltman1972:
+  authors: Gerard 't Hooft, Martinus Veltman
+  year: 1972
+  title: Regularization and renormalization of gauge fields
+  venue: Nuclear Physics B 44, 189–213
+cmstrigger2017:
+  authors: CMS Collaboration
+  year: 2017
+  title: The CMS trigger system
+  venue: Journal of Instrumentation 12, P01020
+  url: https://arxiv.org/abs/1609.02366
+atlastrigger2017:
+  authors: ATLAS Collaboration
+  year: 2017
+  title: Performance of the ATLAS trigger system in 2015
+  venue: European Physical Journal C 77, 317
+  url: https://arxiv.org/abs/1611.09661
+wlcgtdr2005:
+  authors: LHC Computing Grid Project (I. Bird et al., eds.)
+  year: 2005
+  title: LHC Computing Grid, Technical Design Report
+  venue: CERN-LHCC-2005-024, CERN, June 2005
+bernerslee1989:
+  authors: Tim Berners-Lee
+  year: 1989
+  title: 'Information management: a proposal'
+  venue: CERN, March 1989 (reissued with Robert Cailliau in 1990)
+cernweb:
+  authors: CERN
+  year: 2024
+  title: A short history of the Web
+  venue: CERN website, home.cern
+  url: https://home.cern/science/computing/birth-web/short-history-web
+  note: CERN's own account of the origin of the Web at CERN.
+brun1997:
+  authors: René Brun, Fons Rademakers
+  year: 1997
+  title: ROOT, an object oriented data analysis framework
+  venue: Nuclear Instruments and Methods in Physics Research A 389, 81–86
+  note: Proceedings of the AIHENP'96 workshop, Lausanne, September 1996.

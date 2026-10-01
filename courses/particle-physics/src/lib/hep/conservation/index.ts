@@ -11,9 +11,9 @@
  * numbers that the strong and electromagnetic forces conserve and the weak force does not (strangeness, charm, bottom).
  * For a decay (one initial particle) the mass must also be large enough: energy is conserved.
  *
- * `allowed` is the strong-force verdict: no law of the ledger is broken. `details.interaction` says more: `'strong'` (everything
- * holds), `'weak'` (only strangeness, charm or bottom change, by at most one unit each: a weak interaction can do it, slowly) or
- * `'forbidden'` (an exact law is broken, or a flavour changes by two units at once).
+ * `allowed` means that no law of the ledger is broken. `details.interaction` says which force can do it: `'strong'` (hadrons only, everything
+ * holds), `'electromagnetic'` (a photon or a charged lepton takes part and everything holds), `'weak'` (a neutrino takes part, or strangeness,
+ * charm or bottom change by one unit: slow) or `'forbidden'` (an exact law is broken, or a flavour changes by two units at once).
  *
  * "Allowed" never means "observed": the ledger is a list of necessary conditions. Charge conjugation forbids π⁰ → γγγ,
  * which passes every law listed here; other reactions are allowed and merely too rare to have been seen.
@@ -67,7 +67,8 @@ export interface LawResult {
   applies: boolean;
 }
 
-export type Interaction = 'strong' | 'weak' | 'forbidden';
+/** The weakest-coupled force that can do it: `strong` (hadrons only, every law holds), `electromagnetic` (a photon or a charged lepton takes part), `weak` (a neutrino takes part, or a flavour number changes), or `forbidden`. */
+export type Interaction = 'strong' | 'electromagnetic' | 'weak' | 'forbidden';
 
 export interface CheckDetails {
   laws: LawResult[];
@@ -145,7 +146,14 @@ export function checkReaction(initial: number[], final: number[]): CheckResult {
   const flavourBroken = broken.filter((l) => !l.exact).map((l) => l.id);
   const delta = { strangeness: b.strangeness! - a.strangeness!, charm: b.charm! - a.charm!, bottom: b.bottom! - a.bottom! };
   const oneUnit = Math.abs(delta.strangeness) <= 1 && Math.abs(delta.charm) <= 1 && Math.abs(delta.bottom) <= 1;
-  const interaction: Interaction = exactBroken.length ? 'forbidden' : flavourBroken.length === 0 ? 'strong' : oneUnit ? 'weak' : 'forbidden';
+  const all = [...initial, ...final];
+  const hasNeutrino = all.some((id) => [12, 14, 16].includes(Math.abs(id)));
+  const hasEM = all.some((id) => id === 22 || [11, 13, 15].includes(Math.abs(id)));
+  const interaction: Interaction = exactBroken.length
+    ? 'forbidden'
+    : flavourBroken.length > 0
+      ? oneUnit ? 'weak' : 'forbidden'
+      : hasNeutrino ? 'weak' : hasEM ? 'electromagnetic' : 'strong';
 
   const firstLaw = PRIORITY.find((id) => violated.includes(id)) ?? null;
   const explanation: string[] = [];
@@ -163,9 +171,12 @@ export function checkReaction(initial: number[], final: number[]): CheckResult {
     const lTotF = b['lepton-e']! + b['lepton-mu']! + b['lepton-tau']!;
     if (Math.abs(lTotI - lTotF) < EPS) explanation.push('Total lepton number is conserved; what fails is the conservation of each lepton flavour separately (Chapter 31 shows that neutrino oscillations break it, but never in a charged-lepton reaction like this).');
   }
-  if (interaction === 'weak') explanation.push('Only a flavour number changes, by one unit: the weak force can do this, and it is slow (lifetimes of 10⁻¹⁰ s and longer, instead of 10⁻²³ s).');
+  if (interaction === 'weak' && flavourBroken.length) explanation.push('Only a flavour number changes, by one unit: the weak force can do this, and it is slow (lifetimes of 10⁻¹⁰ s and longer, instead of 10⁻²³ s).');
   if (interaction === 'forbidden' && !exactBroken.length) explanation.push('A single weak interaction changes a flavour number by at most one unit; this reaction needs two.');
-  if (interaction === 'strong') explanation.push('Every law in the ledger holds. The strong force could do this.');
+  if (!violated.length) explanation.push('Every law in the ledger holds: nothing forbids it.');
+  if (interaction === 'strong') explanation.push('Only hadrons take part, so the strong force can do it (at the speed of the strong force, about 10⁻²³ s, if the energy is there).');
+  if (interaction === 'electromagnetic') explanation.push('A photon or a charged lepton takes part: an electromagnetic process, at a rate smaller than a strong one by a factor of order α.');
+  if (interaction === 'weak' && !flavourBroken.length) explanation.push('A neutrino takes part, and neutrinos feel only the weak force: this is a weak process, slow by the standards of the other two.');
 
   return {
     allowed: violated.length === 0,

@@ -1,0 +1,37 @@
+# Part VI: the weak force
+weak-force:
+  term: weak force
+  definition: The interaction responsible for beta decay and for the decay of the muon, the pion, the strange, charm and bottom particles and the top quark. It is carried by the W and Z bosons, it is the only force that changes the flavour of a quark, and it is the only one that distinguishes left from right.
+  chapter: the-weak-force
+neutrino:
+  term: neutrino
+  definition: A neutral lepton of spin ½ that feels only the weak force (and gravity). There are three kinds, one for each charged lepton. It was proposed by Pauli in 1930 to save energy conservation in beta decay, and detected in 1956.
+  chapter: the-weak-force
+beta-decay:
+  term: beta decay
+  definition: The decay in which a nucleus, or a single neutron, emits an electron and an antineutrino (or a positron and a neutrino) and changes one unit of charge. At the level of quarks, a down quark becomes an up quark, or the reverse.
+  chapter: the-weak-force
+fermi-constant:
+  term: Fermi's constant (G_F)
+  definition: The strength of the weak interaction at low energy, 1.1664 × 10⁻⁵ GeV⁻². It has the dimensions of an inverse energy squared, and is fixed by the lifetime of the muon. In the electroweak theory, G_F/√2 = g²/(8 m_W²).
+  chapter: the-weak-force
+parity:
+  term: parity (P)
+  definition: The operation of reflecting all three spatial coordinates. A law respects parity if the mirror image of every process it allows is a process it allows, with the same probability. The strong and electromagnetic forces respect parity. The weak force violates it.
+  chapter: the-weak-force
+helicity:
+  term: helicity
+  definition: The component of a particle's spin along its direction of motion, in units of ½. Positive is right-handed and negative is left-handed. It is invariant for a massless particle, not for one with mass.
+  chapter: the-weak-force
+chirality:
+  term: chirality
+  definition: The property of a fermion field that the weak interaction distinguishes. The left-handed and right-handed parts of the field are acted on by projectors (1 ∓ γ⁵)/2. For a massless particle it equals helicity.
+  chapter: the-weak-force
+v-minus-a:
+  term: V − A
+  definition: The form of the weak charged-current interaction, a vector current minus an axial-vector current, γ^μ(1 − γ⁵). It couples only left-handed particles and right-handed antiparticles.
+  chapter: the-weak-force
+helicity-suppression:
+  term: helicity suppression
+  definition: The reduction of a weak decay into a light charged lepton, because the lepton must be produced with the helicity that the weak interaction disfavours, with a probability of about (m/2E)². It makes π → eν about 10⁴ times rarer than π → μν.
+  chapter: the-weak-force

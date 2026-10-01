@@ -1,0 +1,61 @@
+# Part VII: The Higgs boson (Chapters 26 to 30)
+spontaneous-symmetry-breaking:
+  term: spontaneous symmetry breaking
+  definition: A situation in which the laws of a system have a symmetry that its lowest-energy state does not. A pencil balanced on its tip obeys rotational symmetry, but when it falls it falls in one direction. The Higgs field's vacuum value breaks the electroweak symmetry in this way.
+  chapter: the-higgs-mechanism
+vacuum-expectation-value:
+  term: vacuum expectation value (vev)
+  definition: The value a field takes in empty space, in the state of lowest energy. The Higgs field's vev is v = 246.22 GeV. Every mass that comes from the Higgs mechanism is a coupling times v.
+  chapter: the-higgs-mechanism
+goldstone-boson:
+  term: Goldstone boson
+  definition: The massless particle that accompanies each continuous symmetry broken by the vacuum. In the electroweak theory the three Goldstone bosons are absorbed by the W⁺, W⁻ and Z, where they are the longitudinal polarisation.
+  chapter: the-higgs-mechanism
+longitudinal-polarisation:
+  term: longitudinal polarisation
+  definition: The third polarisation state of a massive spin-1 particle, along its direction of motion. A massless spin-1 particle, like the photon, has only two.
+  chapter: the-higgs-mechanism
+higgs-boson:
+  term: Higgs boson
+  definition: The quantum of the Higgs field's radial excitation. A neutral, spin-0 particle of mass 125.2 GeV that couples to every massive particle in proportion to its mass.
+  chapter: the-higgs-mechanism
+yukawa-coupling:
+  term: Yukawa coupling
+  definition: The strength y_f with which the Higgs field couples to a fermion f. The fermion's mass is m_f = y_f v/√2. The Standard Model does not predict any of these numbers.
+  chapter: the-higgs-mechanism
+unitarity:
+  term: unitarity
+  definition: The requirement that probabilities of all outcomes of a scattering process add up to no more than one. An amplitude that grows with energy without limit eventually violates it, which signals that the theory needs something more.
+  chapter: the-higgs-mechanism
+trigger:
+  term: trigger
+  definition: The system that decides, in real time, which collisions to record. It is a filter with a deadline and an output-rate budget; what it rejects is lost for ever.
+  chapter: a-needle-in-a-haystack
+level-1-trigger:
+  term: Level-1 trigger (L1)
+  definition: The first, hardware, stage of the trigger. Custom electronics decide within a few microseconds, from coarse calorimeter and muon-chamber information, which crossings to read out. The output is of the order of 100 kHz.
+  chapter: a-needle-in-a-haystack
+high-level-trigger:
+  term: high-level trigger (HLT)
+  definition: The second, software, stage of the trigger. A farm of computers runs a fast version of the reconstruction on the events that Level 1 kept and writes out about 1 kHz.
+  chapter: a-needle-in-a-haystack
+trigger-menu:
+  term: trigger menu
+  definition: The list of trigger items, each a condition on objects in the event (for example, a muon above 25 GeV) with a threshold and a prescale, which together decide what is recorded.
+  chapter: a-needle-in-a-haystack
+prescale:
+  term: prescale
+  definition: A factor N by which a trigger item's accepted events are reduced: only one in N is kept. Used for abundant, low-threshold physics.
+  chapter: a-needle-in-a-haystack
+turn-on-curve:
+  term: turn-on curve
+  definition: The efficiency of a trigger item as a function of the true transverse momentum of the object. It rises over a range set by the trigger's resolution, reaching a plateau a few standard deviations above the nominal threshold.
+  chapter: a-needle-in-a-haystack
+integrated-luminosity:
+  term: integrated luminosity
+  definition: The instantaneous luminosity added up over the running time, in inverse femtobarns (fb⁻¹). Multiplied by a cross-section, it gives the number of events expected in the data set.
+  chapter: a-needle-in-a-haystack
+wlcg:
+  term: Worldwide LHC Computing Grid (WLCG)
+  definition: The network of computing centres, in tiers, that stores, reprocesses and serves the data of the LHC experiments. Tier 0 is at CERN, Tier 1 are large national centres with tape, Tier 2 are mostly universities.
+  chapter: a-needle-in-a-haystack

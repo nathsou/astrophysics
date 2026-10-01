@@ -1,0 +1,36 @@
+field:
+  term: field
+  definition: A quantity with a value (or several) at every point of space and time. In field theory every kind of particle is a quantum of a field, and forces are the response of a field to a source.
+  chapter: fields-and-particles
+quantum:
+  term: quantum
+  definition: One rung of the energy ladder of a mode of a field. A quantum of the mode with wave number k has momentum ħk and energy ħω; it is what is called a particle.
+  chapter: fields-and-particles
+dispersion-relation:
+  term: dispersion relation
+  definition: The relation between the frequency ω and the wave number k of a wave. For a relativistic field it is ω² = k² + m², which is E² = p² + m² for its quanta.
+  chapter: fields-and-particles
+group-velocity:
+  term: group velocity
+  definition: The speed dω/dk at which a wave packet travels. For the relativistic dispersion relation it is p/E, the speed of a particle.
+  chapter: fields-and-particles
+creation-operator:
+  term: creation and annihilation operators
+  definition: The operators a† and a that add one quantum to a mode of a field or remove one. Interactions are products of them, which is how particles are created and destroyed.
+  chapter: fields-and-particles
+propagator:
+  term: propagator
+  definition: The response of a field to a disturbance. For a scalar field of mass m it is 1/(q² + m²) in the static case, and i/(p² − m²) in general. A line inside a Feynman diagram stands for one.
+  chapter: fields-and-particles
+virtual-particle:
+  term: virtual particle
+  definition: An internal line of a Feynman diagram, whose energy and momentum do not satisfy E² = p² + m² (it is off shell). It is a factor in a calculation, not an object that a detector sees.
+  chapter: fields-and-particles
+off-shell:
+  term: off shell
+  definition: Having energy and momentum that do not satisfy E² = p² + m². Real particles that reach a detector are on shell; internal lines of diagrams are generally off shell.
+  chapter: fields-and-particles
+yukawa-potential:
+  term: Yukawa potential
+  definition: The potential V(r) = −(g²/4π) e^(−r/R)/r between two sources exchanging a particle of mass m. Its range is R = ħc/mc². For m = 0 it is the Coulomb potential.
+  chapter: fields-and-particles

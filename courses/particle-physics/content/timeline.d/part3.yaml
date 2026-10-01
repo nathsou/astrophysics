@@ -1,0 +1,20 @@
+- year: 1928
+  title: Dirac's equation
+  people: Paul A. M. Dirac
+  chapter: antimatter
+  text: Dirac writes a relativistic equation for the electron that gives its spin, and whose solutions include states of negative energy.
+- year: 1932
+  title: The positron
+  people: Carl D. Anderson
+  chapter: antimatter
+  text: A cloud-chamber photograph with a lead plate shows a particle with the electron's mass and a positive charge, the first antiparticle seen.
+- year: 1955
+  title: The antiproton
+  people: Owen Chamberlain, Emilio Segrè, Clyde Wiegand, Thomas Ypsilantis
+  chapter: antimatter
+  text: Protons of 6.2 GeV from the Bevatron make antiprotons in a copper target, above the threshold of 5.63 GeV.
+- year: 1995
+  title: Antihydrogen
+  people: PS210 collaboration, then ATHENA, ATRAP, ALPHA
+  chapter: antimatter
+  text: The first antihydrogen atoms are made at CERN in 1995; cold antihydrogen follows in 2002, trapped atoms in 2010, and in 2023 ALPHA-g sees antihydrogen fall.

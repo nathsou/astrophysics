@@ -1,0 +1,12 @@
+import '/home/user/courses/courses/particle-physics/src/app.css';
+import { mount } from 'svelte';
+import * as W from '/home/user/courses/courses/particle-physics/src/lib/widgets/part8.ts';
+const q = new URLSearchParams(location.search);
+const name = q.get('w') ?? 'OscillationLab';
+const props: Record<string, unknown> = {};
+for (const [k, v] of q) if (k !== 'w' && k !== 'theme') props[k] = isNaN(Number(v)) ? v : Number(v);
+const theme = q.get('theme'); if (theme) document.documentElement.dataset.theme = theme;
+const C = (W as any)[name];
+const host = document.getElementById('app')!;
+host.style.cssText = 'max-width:960px;margin:0 auto;padding:16px;';
+mount(C, { target: host, props });

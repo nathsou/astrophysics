@@ -46,7 +46,7 @@
 
 <Widget title="The cyclotron's relativistic limit" subtitle="A proton gets heavier, and arrives at the gap too late" {n} {caption} kind="Explore" onreset={() => { mode = 'fixed'; voltageKV = 100; phi0 = -40; B = 1.5; }}>
   {#snippet controls()}
-    <Segmented label="Machine" bind:value={mode} options={modes} />
+    <Segmented label="Machine" bind:value={mode} options={modes} onchange={(m) => { phi0 = m === 'modulated' ? 30 : -40; }} />
     <Slider bind:value={voltageKV} min={10} max={400} step={5} label="Voltage across the gap [kV]" format={(v) => v.toFixed(0)} />
     <Slider bind:value={phi0} min={-80} max={60} step={1} label="Starting phase from the RF crest [°]" format={(v) => v.toFixed(0)} />
     <Slider bind:value={B} min={0.5} max={2} step={0.05} label="Magnetic field [T] (sets the frequency only)" format={(v) => v.toFixed(2)} />
