@@ -21,7 +21,7 @@
 
   let { n, caption, title = 'Counting neutrinos', seed: seed0 = 4 }: { n?: string | number; caption?: string; title?: string; seed?: number } = $props();
 
-  let hyp = $state<'2' | '3' | '4'>('4');
+  let hyp = $state<'2' | '3' | '4'>('3');
   let logScale = $state(0);
   let seed = $state(untrack(() => seed0));
   let freeNorm = $state(false);
@@ -54,7 +54,7 @@
   const dChi = $derived(Math.max(0, chi2[H as 2 | 3 | 4].chi2 - Math.min(chi2[2].chi2, chi2[3].chi2, chi2[4].chi2)));
 </script>
 
-<Widget {title} {n} {caption} kind="Simulation" onreset={() => { hyp = '4'; logScale = 0; seed = seed0; freeNorm = false; lumiSyst = 0; showBorn = false; }}>
+<Widget {title} {n} {caption} kind="Simulation" onreset={() => { hyp = '3'; logScale = 0; seed = seed0; freeNorm = false; lumiSyst = 0; showBorn = false; }}>
   {#snippet controls()}
     <div class="ctl">
       <Segmented label="Hypothesis: number of light neutrino species" size="sm" bind:value={hyp} options={[{ value: '2', label: '2 species' }, { value: '3', label: '3 species' }, { value: '4', label: '4 species' }]} />

@@ -30,31 +30,31 @@ $$\Gamma(H\to f\bar f) = \frac{\term{nc}{N_c}\,\term{gf}{G_F}\,\term{mh}{m_H}\,\
 
 ```terms
 nc:
-  label: 'N_c, the number of colours'
+  label: '$N_c$, the number of colours'
   what: 3 for a quark and 1 for a lepton. A quark can have any of three colours, and each is a separate final state.
   why: It is a counting factor. It triples the rate into any quark pair, relative to a lepton of the same mass.
   effect: It is why bb̄ (a quark) is more than three times as frequent as ττ would be for the same mass.
 gf:
-  label: 'G_F, the Fermi constant'
+  label: '$G_F$, the Fermi constant'
   what: The strength of the weak interaction at low energy, 1.1664 × 10⁻⁵ GeV⁻². It is 1/(√2 v²).
   why: |
-    It carries the scale v of the Higgs field: the coupling of the Higgs boson to a fermion is m_f/v, and the square of that coupling is m_f² G_F √2.
+    It carries the scale v of the Higgs field: the coupling of the Higgs boson to a fermion is $m_f$/v, and the square of that coupling is $m_f^2$ $G_F$ √2.
   effect: A fixed constant. It sets the overall size of every width in the Higgs sector.
 mh:
-  label: 'm_H, the Higgs boson mass'
+  label: '$m_H$, the Higgs boson mass'
   what: 125.2 GeV. It sets how much energy there is to share between the two decay products.
   why: A decay width grows with the energy available. A heavier Higgs boson would decay faster.
-  effect: Raising m_H raises every width, and the total width rises very steeply once the WW and ZZ channels open fully near 160 GeV.
+  effect: Raising $m_H$ raises every width, and the total width rises very steeply once the WW and ZZ channels open fully near 160 GeV.
 mf:
-  label: 'm_f, the fermion mass'
+  label: '$m_f$, the fermion mass'
   what: The mass of the fermion in the final state.
   why: The coupling to the Higgs is proportional to it, and the width is proportional to the coupling squared.
   effect: Doubling the mass quadruples the width. The tau, at 1.78 GeV, is 17 times heavier than the muon, and H → ττ is 280 times more frequent than H → μμ.
 beta:
   label: 'β, the velocity of the decay products'
-  what: The velocity of each fermion in the Higgs boson's rest frame, as a fraction of the speed of light. It is close to 1 for any fermion much lighter than m_H/2.
-  why: The factor β³ is the phase-space suppression, which switches the decay off as m_f approaches m_H/2.
-  effect: For the bottom quark, β = 0.99. For the top quark (172.6 GeV), 2m_t exceeds m_H and the decay H → tt̄ is forbidden.
+  what: The velocity of each fermion in the Higgs boson's rest frame, as a fraction of the speed of light. It is close to 1 for any fermion much lighter than $m_H$/2.
+  why: The factor β³ is the phase-space suppression, which switches the decay off as $m_f$ approaches $m_H$/2.
+  effect: For the bottom quark, β = 0.99. For the top quark (172.6 GeV), 2m_t exceeds $m_H$ and the decay H → tt̄ is forbidden.
 ```
 :::
 
@@ -166,21 +166,21 @@ $$V(h) = \tfrac12\,\term{mh2}{m_H^2}\,h^2 + \term{kl}{\kappa_\lambda}\,\lambda v
 
 ```terms
 mh2:
-  label: 'm_H², the Higgs mass squared'
+  label: '$m_H^2$, the Higgs mass squared'
   what: The curvature of the potential at the vacuum. The first term is the Higgs boson's mass term.
   why: It is measured, from the peak. 125.2 GeV.
-  effect: It also fixes the other two terms through λ = m_H²/(2v²), if the Standard Model's potential is right.
+  effect: It also fixes the other two terms through $\lambda = m_H^2/(2v^2)$, if the Standard Model's potential is right.
 kl:
-  label: 'κ_λ, the trilinear modifier'
+  label: '$\kappa_\lambda$, the trilinear modifier'
   what: The ratio of the Higgs boson's coupling to itself (the h³ term) to the Standard Model's value. It is 1 if the potential is the Standard Model's.
-  why: It is the one parameter that measures the shape of the potential near the minimum. A different shape (a different dynamics behind electroweak symmetry breaking) shows up as κ_λ ≠ 1.
-  effect: At κ_λ = 1 the trilinear coupling is 3m_H²/v = 191 GeV.
+  why: It is the one parameter that measures the shape of the potential near the minimum. A different shape (a different dynamics behind electroweak symmetry breaking) shows up as $\kappa_\lambda \ne 1$.
+  effect: At $\kappa_\lambda = 1$ the trilinear coupling is $3m_H^2/v$ = 191 GeV.
 ```
 :::
 
 The trilinear term can be measured only through a process in which a Higgs boson splits into two, or two are made at once. The signature is **di-Higgs production**, in which a collision makes two Higgs bosons. There are two main diagrams. In one a virtual Higgs boson, made through the top-quark loop of gluon fusion, splits into two through the trilinear coupling. In the other, the two Higgs bosons are radiated directly from the top-quark loop. The two **interfere destructively** in the Standard Model, so the cross-section, of the order of 30 fb at the LHC's energy, is a thousand and more times smaller than that of a single Higgs boson, and its dependence on $\kappa_\lambda$ is not a simple one.:cite[lhchxswg2017] The result of the searches so far is that the self-coupling is not measured: the data set limits on $\kappa_\lambda$ that are several units wide and include the Standard Model value. The projection for the High-Luminosity LHC (below) is of a measurement, at the level of a few tens of per cent, if the data are combined.:cite[hllhc2019]
 
-::potential-slice{n="30.3" slider=true caption="The Higgs potential along the real direction, with the trilinear coupling scaled by κ_λ. At κ_λ = 1 (the Standard Model) the valley on the left is a mirror image of the vacuum. Slide κ_λ and the shape changes, in the range of values that the present limits have not yet excluded. A measurement of the trilinear coupling fixes the third derivative of the potential at the vacuum, and nothing else: the shape far from h = 0 is an extrapolation, not a measurement."}
+::potential-slice{n="30.3" slider=true caption="The Higgs potential along the real direction, with the trilinear coupling scaled by κλ. At κλ = 1 (the Standard Model) the valley on the left is a mirror image of the vacuum. Slide κλ and the shape changes, in the range of values that the present limits have not yet excluded. A measurement of the trilinear coupling fixes the third derivative of the potential at the vacuum, and nothing else: the shape far from h = 0 is an extrapolation, not a measurement."}
 
 ```fermi
 id: hh-count

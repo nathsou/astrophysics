@@ -66,9 +66,9 @@ nu:
   why: It is where the physics enters. Change the model and the same data give different parameters.
   effect: ν_i must be positive (a count cannot be negative). A fit that steps to parameters where ν_i ≤ 0 has left the allowed region.
 ni:
-  label: 'n_i, the observed count in bin i'
+  label: '$n_i$, the observed count in bin i'
   what: The number of events in the bin. It is a whole number, possibly zero.
-  why: The data. The last term, ln n_i!, does not depend on θ, so it does not move the minimum, but it makes the value the true −ln L.
+  why: The data. The last term, ln $n_i$!, does not depend on θ, so it does not move the minimum, but it makes the value the true −ln L.
   effect: "Bins with no events still contribute: the term ν_i says that a bin that was expected to have many, but had none, is unlikely."
 ```
 :::
@@ -236,7 +236,7 @@ $$\term{p}{p} = \sum_{k\ge n_\mathrm{obs}}\frac{e^{-b}\,b^{k}}{k!}, \qquad p = \
 ```terms
 p:
   label: 'p, the p-value'
-  what: The probability, calculated under the hypothesis that there is only background, of an outcome at least as extreme as the one observed. For a counting experiment, the chance of n_obs or more events.
+  what: The probability, calculated under the hypothesis that there is only background, of an outcome at least as extreme as the one observed. For a counting experiment, the chance of $n_{\mathrm{obs}}$ or more events.
   why: It measures how surprising the data are if there is nothing new. A small value makes the no-signal hypothesis hard to believe.
   effect: For b = 3.5 and 9 events, p = 0.0099. For the same b and 15 events, p = 1.5 × 10⁻⁵.
 Z:
@@ -373,12 +373,12 @@ $$\term{pg}{p_\text{global}} = 1 - \left(1 - \term{pl}{p_\text{local}}\right)^{\
 
 ```terms
 pg:
-  label: 'p_global, the global p-value'
+  label: '$p_{\mathrm{global}}$, the global p-value'
   what: The probability that, with only background and with the freedom to look anywhere in the search range, the most significant bump is at least as significant as the observed one.
   why: It is the number that says whether the bump is surprising given that you looked in N places.
   effect: A 3σ local excess among 100 independent looks has a global p-value of 0.13, which is 1.1σ. That is an ordinary fluctuation.
 pl:
-  label: 'p_local, the local p-value'
+  label: '$p_{\mathrm{local}}$, the local p-value'
   what: The p-value of the bump calculated as if its position had been chosen in advance.
   why: It is what the fit reports at the bump.
   effect: A local p-value of 1.35 × 10⁻³ is a 3σ effect.

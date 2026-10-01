@@ -32,7 +32,7 @@ L:
   why: It is set by the number of protons per bunch, the number of bunches, how tightly the beams are squeezed at the collision point and how often they cross (Chapter 21).
   effect: Double the luminosity and every rate doubles, the wanted ones and the unwanted ones alike.
 Lint:
-  label: 'L_int, the integrated luminosity'
+  label: '$L_{\mathrm{int}}$, the integrated luminosity'
   what: The luminosity added up over the time the detector was recording, in fb⁻¹ (inverse femtobarns). One fb⁻¹ is 10³⁹ cm⁻².
   why: Multiplied by a cross-section it gives the number of events of that process in the whole data set. It is the number that experiments quote to say how much data they have.
   effect: About 140 fb⁻¹ of good data were taken at 13 TeV in Run 2. At 50 pb, that is 7 million Higgs bosons produced.

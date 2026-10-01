@@ -202,12 +202,12 @@ $$\term{mf}{m_f} = \frac{\term{y}{y_f}\,\term{v2}{v}}{\sqrt2}, \qquad\text{so}\q
 
 ```terms
 mf:
-  label: 'm_f, the fermion mass'
+  label: '$m_f$, the fermion mass'
   what: The mass of an electron, a quark or another fermion. Measured, and listed in the particle table.
   why: It is the coefficient of ψ̄ψ once the Higgs field takes its vacuum value, and so it is the energy of the fermion at rest.
   effect: The top quark is 172.6 GeV and the electron 0.511 MeV. The ratio is 3.4 × 10⁵.
 y:
-  label: 'y_f, the Yukawa coupling'
+  label: '$y_f$, the Yukawa coupling'
   what: A dimensionless number, one for each fermion, that measures how strongly the fermion couples to the Higgs field.
   why: It is a free parameter of the Standard Model, because the theory has no equation that gives it. Each of these is a separate measured number.
   effect: The top quark has y ≈ 0.99, of order 1. The electron has 2.9 × 10⁻⁶.

@@ -17,7 +17,7 @@
   let us = $state(L1_LATENCY_STAGES.map((s) => s.us));
   const stages = $derived(L1_LATENCY_STAGES.map((s, i) => ({ name: s.name, us: us[i]! })));
   const budget = $derived(l1LatencyBudget(stages));
-  const depth = budget.pipelineDepth; // 160 crossings
+  const depth = $derived(budget.pipelineDepth); // 160 crossings
   const used = $derived(Math.ceil((budget.totalUs * 1000) / BUNCH_SPACING_NS));
   const COLS = 40;
   const late = $derived(!budget.ok);

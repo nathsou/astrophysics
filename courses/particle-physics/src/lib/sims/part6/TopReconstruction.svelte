@@ -146,7 +146,7 @@
         label="Histogram of the three-jet mass assigned to the hadronic top quark in simulated tt̄ events: all combinations, the best chi-squared assignment, the best with b-tagging, and the correct one"
         series={[
           ...(showAll ? [{ edges, counts: result.hAll, label: 'a random three-jet combination (each event counted once)', color: 'var(--series-8)', fill: true } as const] : []),
-          ...(showChi ? [{ edges, counts: result.hChi, label: 'best χ²', color: 'var(--series-3)', errors: false } as const] : []),
+          ...(showChi ? [{ edges, counts: result.hChi, label: 'best χ²', color: 'var(--series-2)', errors: false } as const] : []),
           ...(showTag ? [{ edges, counts: result.hTag, label: 'best χ² with b-tag penalty', color: 'var(--series-1)', errors: false } as const] : []),
           ...(showTruth ? [{ edges, counts: result.hTruth, label: 'correct jets (truth: simulation only)', color: 'var(--ok)', errors: false } as const] : []),
         ]}
@@ -181,7 +181,7 @@
           {#each ev.jets.slice(0, nj) as j, i}
             {@const r = 4 + 0.9 * Math.sqrt(Math.hypot(j.p.px, j.p.py))}
             {@const tr = truthRole(i)}
-            <circle cx={ex(jetEta(j.p))} cy={ey(jetPhi(j.p))} r={r} fill={j.btag > 0.5 ? 'var(--series-1)' : 'var(--series-3)'} fill-opacity="0.35" stroke={tr ? 'var(--ok)' : 'var(--ink-3)'} stroke-width={tr ? 3 : 1} />
+            <circle cx={ex(jetEta(j.p))} cy={ey(jetPhi(j.p))} r={r} fill={j.btag > 0.5 ? 'var(--series-1)' : 'var(--series-8)'} fill-opacity="0.35" stroke={tr ? 'var(--ok)' : 'var(--ink-3)'} stroke-width={tr ? 3 : 1} />
             <text x={ex(jetEta(j.p))} y={ey(jetPhi(j.p)) + 4} text-anchor="middle" class="role">{roleName(i)}</text>
           {/each}
           {#each ev.jets.slice(nj) as j}

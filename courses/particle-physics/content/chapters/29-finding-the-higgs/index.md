@@ -125,9 +125,9 @@ nm:
   why: The fit compares it with the observed counts in each bin by the Poisson likelihood of Chapter 28.
   effect: Away from 125 GeV only the background term matters, and it is what sets the denominator of the significance.
 ns:
-  label: 'N_s, the signal yield'
+  label: '$N_s$, the signal yield'
   what: The number of events in the peak, a free parameter of the fit, positive for an excess and allowed to be negative for a deficit.
-  why: It is the measurement. N_s divided by the number expected is the signal strength μ of Chapter 30.
+  why: It is the measurement. $N_s$ divided by the number expected is the signal strength μ of Chapter 30.
   effect: The fit reports it with its uncertainty. A yield of 240 ± 47 events is five standard deviations from zero.
 dm:
   label: 'Δm, the shift of the peak'
@@ -135,7 +135,7 @@ dm:
   why: The mass is measured relative to the simulation. The simulation fixes the shape (the width, the tail), and the data fix where it is.
   effect: A shift of 0.25 GeV in the error means the mass is measured to 0.25 GeV, statistically. A mis-calibration of the energy scale shifts every peak, and it is the leading systematic uncertainty.
 nb:
-  label: 'N_b, the background yield'
+  label: '$N_b$, the background yield'
   what: The number of background events in the fit range, free in the fit.
   why: The background is fitted from the data in the sidebands, away from the peak, not taken from the simulation.
   effect: 'It is the largest number in the fit: about 26,000 events for 240 of signal.'
