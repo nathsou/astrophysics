@@ -49,7 +49,10 @@ export class ScenePicker {
   private coneCap = new Float32Array(0); // ax, ay, bx, by, radius
   private metXY = new Float32Array(4);
 
-  constructor(readonly scene: DisplayScene) {}
+  readonly scene: DisplayScene;
+  constructor(scene: DisplayScene) {
+    this.scene = scene;
+  }
 
   private signatureChanged(proj: Projector): boolean {
     const t = this.tmp;

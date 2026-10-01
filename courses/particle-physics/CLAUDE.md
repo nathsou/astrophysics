@@ -23,15 +23,16 @@ The physics, as importable TypeScript. The reader's exercises import it as `hep`
 
 - Conventions: natural units, GeV; lengths in mm, times in ns inside the detector model; metric (+,−,−,−); z along the
   beam; φ in (−π, π]; η = −ln tan(θ/2). A four-vector is a plain object `P4 = { E, px, py, pz }`.
-- Core (done): `units`, `random` (seeded `rng`, samplers), `kinematics`, `particles` (table with decays),
+- Core: `units`, `random` (seeded `rng`, samplers), `kinematics`, `particles` (table with decays),
   `event` (Truth/Detector/Reco/FullEvent, columnar `EventTable`), `hooks`, `data`.
-- Stages (under construction): `gen`, `detector`, `reco`, `machine`, `trigger`, `analysis`. Each has a reference
+- Stages (done): `gen` (with `sm`, `shower`, `hadronise`, `decay`), `detector`, `reco`, `machine`, `trigger`, `analysis`, and
+  `pipeline` (the whole chain, used by the Control Room). Each has a reference
   implementation; the reader's code can replace functions through `hook('stage.function', reference)`
   (src/lib/hep/hooks.ts, src/lib/code/mine.ts).
 - **Every random number comes from a seeded `Rng`**; nothing in `hep` calls `Math.random`.
 - No DOM, no Svelte and no Node-only APIs in `src/lib/hep` (it runs in workers and under Vitest).
 
-## Working rules (several agents work in parallel)
+## Working rules (the course was built by several agents in parallel; these still apply to concurrent work)
 
 - Only edit the files and directories your task assigns to you. Shared files (`src/app.css`, `tools/**`,
   `content/outline.ts`, `package.json`, `src/lib/hep/{index,hooks}.ts`, `src/lib/hep/{units,random,kinematics,particles,event}/**`,

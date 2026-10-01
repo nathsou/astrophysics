@@ -9,6 +9,36 @@ analysis. Each chapter adds or upgrades one stage, often with code the reader wr
 whole chain runs to find the Higgs boson in simulation. The same analysis then runs on real open data from
 the LHC experiments.
 
+## Status: as built (2026-10-01)
+
+All milestones M0–M8 are done: 34 chapters (0–33), appendices A–H, the `hep` library with its six pipeline stages, the Control Room,
+and the interactive figures. This section records where the implementation differs from the plan above. The rest of the document is
+kept as the original plan.
+
+| Topic | Plan | As built |
+|---|---|---|
+| Reader | Worked at CERN | Software engineer who is **not** assumed to know CERN or its software (revised at the start of implementation); Chapter 0 introduces CERN, the LHC and the experiments |
+| Code editor | CodeMirror 6 with a TypeScript language service in a worker | CodeMirror 6 with TypeScript syntax highlighting only; the tests are the feedback. Code runs in a Web Worker (sucrase), as planned |
+| Rendering | WebGL2 for the chambers, display, field lattice and beam tracking | WebGL2 for the event display, cloud and bubble chambers (with Canvas 2D fallbacks) and the Mexican hat; Canvas 2D or SVG for the field lattice, the gauge demos, the RF bucket and the lattice designer. The lattice gauge demo has an optional WebGPU path with a CPU fallback |
+| Generator | Hard process, shower, hadronisation | As planned, with exact conservation tests. Initial-state radiation, the toy Lund string and the pp beam remnants are simplified (hep/gen, hep/shower, hep/hadronise READMEs list every approximation) |
+| Detector | Fast simulation | `hep/detector`; barrel layers only (no endcap disks), parametrised showers; pile-up particles skip some material effects to stay fast |
+| Performance | See the table in *Performance targets* | Measured, on a shared and heavily loaded machine: e⁺e⁻ → μμ generation about 600,000 events/s; pp → Z → μμ hard events about 27,000/s but about 380/s through shower, hadronisation and decays; detector simulation of Z → μμ about 8,500 events/s without pile-up and about 40/s with 50 pile-up collisions; reconstruction about 1,800 events/s without and about 30/s with 50 pile-up; the whole chain about 140 Z → μμ events/s per core. The tests assert half the planned targets where the plan set one, or a conservative floor. The Higgs peak appears about 10 s after pressing *Start* in the Control Room, and at once from the precomputed samples |
+| Real data | CMS dimuon, 4ℓ; ATLAS diphoton and 4ℓ; LEP lineshape; OPERA | Shipped: the CMS Open Data education dimuon sample (100,000 events) and 278 CMS four-lepton candidates (from the education mirror; the CERN portal could not be reached, see the manifest for the licence statement). **Not shipped:** real diphoton data (the chapter says so and points to the ATLAS Open Data notebooks), the LEP lineshape (the figure is a simulated, LEP-like scan from the generator, labelled as such; published numbers appear as cited text) and the OPERA hits |
+| Image licences | Anderson photograph, Ω⁻ photograph, Gargamelle | No historic photographs are shipped. Anderson's and the Ω⁻ events are re-simulated in the cloud and bubble chambers and labelled as simulations |
+| Names | Onion, Tracks | As planned (the detector preset is called `onion`; the theme is "Tracks") |
+| Hooks | Several | The hooks listed in appendix F (about two dozen). `kinematics.twoBodyDecay` and `kinematics.pairMass` run everywhere the library uses them; `gen.samplePartonX` is used only by Chapter 13's figure |
+| Exercises | `code`, `reaction`, `diagram`, `scan`, `identify`, `cuts`, `trigger`, `lattice`, `fit`, `fermi` | All implemented; `tools/markdown/exercises.test.ts` checks that every code exercise's reference solution passes and its starter fails |
+| Extra modules | | `hep/{scattering,conservation,su3,topreco,oscillations,muography,pipeline,fields,chamber,diagrams,sm}` |
+
+Known limitations, also recorded in the relevant READMEs:
+
+- Several numbers in the chapters rest on sources that could not be opened in the authoring environment (CERN, HEPData, arXiv and PDG
+  pages were blocked); each chapter's author listed the claims they are least sure of, and those are the first to check in a review
+  against the primary sources.
+- The reconstructed photon energy scale of the course detector is about 0.6 % high; Chapter 29 says so.
+- The LHC and LEP machine parameters in `hep/machine` are from public design documents as remembered by the authors and are labelled
+  approximate; the LEP bending radius is 3026 m in the library and about 3100 m in other sources (3.5 or 3.4 GeV per turn at 104.5 GeV).
+
 ## Decisions (agreed 2026-09-30)
 
 | Topic | Decision | Notes |
@@ -677,7 +707,7 @@ courses/particle-physics/
 
 ## Milestones
 
-- [ ] **M0 — Foundations.**
+- [x] **M0 — Foundations.**
   - SvelteKit shell and Markdown compiler (from Digital Circuits); the code-along harness (from Language
     Models).
   - "Tracks" design tokens and mockups; particle styles.
@@ -687,39 +717,39 @@ courses/particle-physics/
   - **Chapter 2 (Relativity for particles) as the reference chapter.** It exercises a code exercise, real
     data (the dimuon map), a history card, a predict question and a Fermi estimate.
   - The course's `CLAUDE.md` and `docs/AUTHORING.md`.
-- [ ] **M1 — Foundations, continued.**
+- [x] **M1 — Foundations, continued.**
   - Prologue and chapters 1, 3 and 4.
   - Generator v0 (particle gun, decays); the Rutherford simulation; Geiger clicks.
   - Appendices A–C.
   - Wired into the collection as *in progress*.
-- [ ] **M2 — Seeing particles.**
+- [x] **M2 — Seeing particles.**
   - Chapters 5–8.
   - Chambers (WebGL2); Onion's fast simulation; the event display; reconstruction v1; truth matching.
-- [ ] **M3 — The zoo.**
+- [x] **M3 — The zoo.**
   - Chapters 9–13.
   - Reaction judge; Eightfold Way puzzle; quark builder; parton distributions; scanning table; historic
     images.
-- [ ] **M4 — Forces as fields.**
+- [x] **M4 — Forces as fields.**
   - Chapters 14–18.
   - Field lattice; Feynman sketchpad and enumeration; e⁺e⁻ generator with matrix elements; toy shower and
     hadronisation; jets.
-- [ ] **M5 — The machine.**
+- [x] **M5 — The machine.**
   - Chapters 19–21.
   - Optics toolkit; RF bucket; lattice designer; luminosity and pile-up; the machine stage; the Control Room.
-- [ ] **M6 — The weak force.**
+- [x] **M6 — The weak force.**
   - Chapters 22–25.
   - Drell–Yan, W and tt̄; missing pT; vertexing and b-tagging; the LEP lineshape; the dimuon map completed.
-- [ ] **M7 — The Higgs boson.**
+- [x] **M7 — The Higgs boson.**
   - Chapters 26–30.
   - Trigger emulation and the trigger game; the analysis library; H → γγ and H → 4ℓ in simulation; the open
     data; the whole chain; precomputed samples; validation scripts.
-- [ ] **M8 — Open questions and finish.**
+- [x] **M8 — Open questions and finish.**
   - Chapters 31–33; the lattice gauge demo; appendices D–H (timeline deck).
   - Accessibility, mobile and reduced-motion pass; fact-check and review pass; *in progress* label removed.
 
 ## Open questions
 
-- **Names:** *Onion* for the detector is a working name.
+- **Names:** *Onion* for the detector is now its name in the code.
 - **Parton distributions:** which leading-order set to ship (licence and size), or a documented
   parametrisation instead.
 - **Real data:** each dataset is confirmed (licence, size, what it shows) when its chapter is written.

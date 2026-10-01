@@ -75,7 +75,12 @@ export interface CutflowRow {
  */
 export class Cutflow {
   private readonly steps: { name: string; count: number }[] = [];
-  constructor(readonly initial: number, readonly label = 'all events') {}
+  readonly initial: number;
+  readonly label: string;
+  constructor(initial: number, label = 'all events') {
+    this.initial = initial;
+    this.label = label;
+  }
 
   /** Record the count after a cut. Counts may be sums of weights. */
   add(name: string, count: number): this {
