@@ -68,6 +68,18 @@ In 1909 Hans Geiger and Ernest Marsden, working in Ernest Rutherford's laborator
 In 1911 he showed that the result required the atom's positive charge and most of its mass to sit in a region much smaller than the atom: from the energy of the alphas he could say that the nucleus of gold was smaller than 3.4 × 10⁻¹² cm = 34 fm, thousands of times smaller than the atom.:cite[rutherford1911] The alphas could not get much closer to the centre than about 30 fm: their energy could not overcome the electric repulsion any further. To see the inside of the nucleus and then the proton, physicists needed more energetic probes, and they found them in electron accelerators: in the 1950s Robert Hofstadter's electrons at Stanford measured the proton's size,:cite[hofstadter1956] and at SLAC in 1967–1968 electrons of 20 GeV saw the quarks inside it (Chapter 13). Chapter 4 reruns the first of these experiments.
 :::
 
+```predict
+q: 'To see detail ten times smaller than a probe can resolve now, how much more energy does the probe need?'
+options:
+  - text: 100 times more, because area scales as the square of length.
+    why: 'The relation is between a length and a wavelength, not an area: λ = h/p, so the momentum (and for a fast particle the energy) scales as 1/λ.'
+  - text: Ten times more.
+    correct: true
+    why: 'E ≈ hc/L, so dividing L by 10 multiplies E by 10. The ladder in the figure above is a straight line on logarithmic axes: every factor of ten in size is a factor of ten in energy.'
+  - text: About three times more (the square root of ten).
+    why: 'A square root would appear if energy went as the square of momentum, as it does for slow particles. For a fast probe, E ≈ pc, so the dependence is linear.'
+```
+
 ## Natural units
 
 The rule $E \gtrsim hc/L$ has two constants in it, and they are in every equation of quantum mechanics and relativity. **Natural units** remove them by choosing units in which

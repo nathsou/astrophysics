@@ -486,6 +486,15 @@ The price is that the limit is **conservative**: it excludes slightly less than 
 In the LHC experiments the p-values and limits are not calculated with the Poisson sums of this chapter but with a **profile likelihood** over a model with hundreds of bins and hundreds of nuisance parameters, using the asymptotic formulae of Cowan, Cranmer, Gross and Vitells, which replace millions of pseudo-experiments by a formula that holds when the statistics are large.:cite[cowan2011] The fitting tool in the two experiments is **RooFit**, part of ROOT (Chapter 27), with **RooStats** for the statistics, both written by members of the collaborations, and the combination of ATLAS and CMS for the Higgs discovery was made with a common, agreed statistical procedure (the LHC Higgs Combination Group's) so that results could be added. The profile-likelihood ratio is the quantity that this chapter's `hep/analysis` computes (`discovery`, `upperLimit`) for a simple counting model; the reference implementation of a limit on a signal strength uses the same CLs formula. The 5σ convention is applied to the **local** significance in the Higgs papers, and their global significance is quoted separately.
 :::
 
+```fermi
+id: five-sigma-experiments
+title: How often does chance give a five-sigma excess?
+prompt: The one-sided p-value of a 5σ fluctuation is 2.87 × 10⁻⁷. If you ran one search for a bump in a fixed, single mass window on pure background, about how many independent such searches would you have to run before you expected one 5σ excess by chance?
+answer: 3.5e6
+factor: 3
+explain: "1 / 2.87 × 10⁻⁷ ≈ 3.5 million. That is why 5σ is the conventional threshold in particle physics: with of the order of 10⁴ to 10⁶ histogram bins, mass windows and channels looked at across the field, a lower threshold would make false discoveries routine. The look-elsewhere effect of the previous sections is the same arithmetic applied to one analysis."
+```
+
 ## What comes next
 
 The tools are in place: the Poisson count, the likelihood, the significance, the look-elsewhere effect, the nuisance parameter and the limit. [Chapter 29](/chapters/finding-the-higgs/) uses them in earnest. It fits a peak in a mass spectrum produced by the whole of the pipeline, machine, generator, detector, reconstruction and trigger, and then does the same analysis on real data, and reports the result with its uncertainty, honestly.

@@ -123,6 +123,8 @@ final-state particles (no hadron among the ancestors) in the same acceptance; th
 in the detector's acceptance (tracker η limit minus a margin; for muons the second-best muon station's reach, about |η| < 1.1 for the course detector) with a reconstructed object of the same kind within ΔR < 0.1; the fake rate is the fraction of
 reconstructed objects with no truth particle of their kind within ΔR < 0.1.
 
+**A known offset.** In the `higgs-gamgam` sample the reconstructed diphoton mass is on average 0.58 % above the truth-level mass ((reco − truth)/truth, 5,600 events, rms 1.6 %), so the fitted peak sits at 125.8 GeV for a generated 125.25: the photon energy scale of `hep/reco` is about 0.6 % high (its calibration is done with single photons and charged pions). The Control Room shows the offset in the resolution readout; it is not corrected here.
+
 ## Trigger rates
 
 The rates of the events **in the run**, σ L ε: per item (after prescales, and before), in total with overlaps counted once, the dead-time live fraction 1/(1 + Rτ), the bandwidth, with binomial errors. `rateReportFrom` produces the same numbers as

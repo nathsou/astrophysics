@@ -225,6 +225,17 @@ The detectors at the LHC are described, in their own papers, as the sum of their
 The sensor in a phone's camera is a silicon pixel detector, built on the same physics as the silicon detectors of this chapter. With the lens covered, an ordinary phone can record the signals of cosmic-ray muons and of radioactivity as bright spots in the dark frames. Appendix G describes a way to try it: how to record, how to find the hits in the frames with a few lines of code, and what to expect. See [Appendix G](/appendix/build-it-for-real/).
 :::
 
+```fermi
+id: pixels-per-square-metre
+title: How many pixels cover a square metre?
+prompt: A pixel detector layer is tiled with silicon pixels of 100 µm × 150 µm, a size close to that of the pixels in the CMS tracker. About how many pixels does one square metre of such a layer contain?
+answer: 6.7e7
+factor: 3
+hints:
+  - The area of one pixel is 100 µm × 150 µm = 1.5 × 10⁻⁸ m².
+explain: "1 m² / (1.5 × 10⁻⁸ m²) ≈ 6.7 × 10⁷ pixels. The innermost tracker of a real detector covers a few square metres, which is why the pixel systems of ATLAS and CMS have of the order of a hundred million channels, each one read out every 25 ns."
+```
+
 ## What comes next
 
 A detector is an instrument that records hits, cells and chamber signals. A physicist needs particles: this track belongs to a 20 GeV muon, this deposit to an electron, this set of energy to a jet. The step between the two, from hits to objects, is software, and it is the subject of [Chapter 8](/chapters/reconstruction/): finding the tracks among thousands of hits, fitting them with a Kalman filter, locating the vertices, clustering the calorimeter cells and combining everything into particles, then measuring how well it was done by comparing with the simulated truth.

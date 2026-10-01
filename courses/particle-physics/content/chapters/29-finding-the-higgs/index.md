@@ -265,6 +265,17 @@ None of these makes the analysis here wrong. Each is a place where this chapter'
 **HEPData** (hepdata.net) is the repository where the experiments publish the numbers behind the figures of their papers: histograms, cross-sections, covariance matrices, in a machine-readable form. It is the place to look for the published diphoton and four-lepton mass spectra of the Higgs papers (the portal could not be reached when this chapter was written, and the course does not include them). The **CERN Open Data portal** (opendata.cern.ch) and the **ATLAS Open Data portal** (opendata.atlas.cern) release actual events, in reduced formats, for education and for research; the four-lepton files of this chapter are from the education branch of the first. The analysis frameworks of the two experiments, CMSSW and Athena, produce the files on the grid. The columnar tools that read them (Python's `uproot` and `awkward`, ROOT's RDataFrame) work on arrays of values for all the events at once, as the course's `EventTable` does. In all of them the unit of work is the same as here: select, histogram, fit, and compare with the simulation.
 :::
 
+```fermi
+id: higgs-per-run2
+title: Higgs bosons in the Run 2 data
+prompt: 'The Higgs production cross-section at 13 TeV is several tens of picobarns; take 50 pb. ATLAS recorded about 140 fb⁻¹ of good data in Run 2 (2015 to 2018). About how many Higgs bosons were produced in that data in one experiment?'
+answer: 7e6
+factor: 3
+hints:
+  - Number of events = cross-section × integrated luminosity. 1 pb = 1000 fb.
+explain: "50 pb = 5 × 10⁴ fb, and 5 × 10⁴ fb × 140 fb⁻¹ ≈ 7 × 10⁶: about seven million Higgs bosons, most of which were never identified: the H → γγ branching fraction of about 0.2 % leaves some 16,000 diphoton decays before acceptance and selection, among a continuum background many times larger."
+```
+
 ## What comes next
 
 The peak has been found, in the simulation and in the real data. [Chapter 30](/chapters/measuring-the-higgs/) asks whether it is the Higgs boson of Chapter 26: its production and decay rates, its spin and parity, the proportionality of its couplings to mass, and the shape of its potential.

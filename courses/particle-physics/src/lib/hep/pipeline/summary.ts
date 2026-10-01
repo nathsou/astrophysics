@@ -80,7 +80,7 @@ export interface FitSummary {
   ndf: number;
   pValue: number;
   converged: boolean;
-  /** The fit converged, its covariance is valid and every error is finite: false early in a run, when there are too few events to constrain the model. */
+  /** The fit converged, every error is finite and the peak position and width are constrained: false early in a run, when there are too few events to constrain the model. */
   reliable: boolean;
   /** Fitted expected counts per bin of the histogram, total and per component (`sig`, `bkg`). */
   expected: number[];
@@ -365,7 +365,7 @@ export function fitMain(main: ObservableSummary, modelName: string, range: [numb
   const y = params['sig.yield'];
   return {
     model: modelName, range: [lo, hi], params, chi2: r.chi2, ndf: r.ndf, pValue: r.pValue, converged: r.converged,
-    reliable: r.converged && r.covValid && r.errors.every((e) => Number.isFinite(e)) && r.ndf > 0 && Object.entries(params).every(([k, p]) => !(k.endsWith('mean') || k.endsWith('sigma') || k.endsWith('width')) || p.error < 0.5 * Math.max(Math.abs(p.value), 1)),
+    reliable: r.converged && r.errors.every((e) => Number.isFinite(e)) && r.ndf > 0 && Object.entries(params).every(([k, p]) => (k.endsWith('mean') ? p.error < 0.05 * Math.abs(p.value) : k.endsWith('sigma') || k.endsWith('width') ? p.error < Math.abs(p.value) : true)),
     expected: model.binned(r.params, Array.from(h.edges), [lo, hi]).map((x) => x * k), components: comps,
     of: usePseudo && main.pseudo ? 'pseudo-data' : 'expectation',
     signalYield: y,

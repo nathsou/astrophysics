@@ -48,7 +48,7 @@ Follow one collision through the whole apparatus. The figure below walks through
 3. **The detector** is the apparatus: layers of sensors around the collision point, in a magnetic field. The detector simulation takes the particles the generator produced and works out what the sensors would record. Part II builds it.
 4. **The signals** are what the detector reports: hits in a tracker, energy in calorimeter cells. In real data these are all there is. In simulation they are accompanied by the *truth*: what really happened. Comparing them is how you measure how well you understand your apparatus.
 5. **Reconstruction** is the software that turns signals back into physics objects: tracks, electrons, muons, jets, missing momentum. It is an inverse problem. Chapter 8 is where you write part of it.
-6. **The trigger and the analysis.** The detectors see 40 million crossings per second and can store a few thousand. A trigger decides, in microseconds, which ones to keep. Then the analysis, a program of selections and statistics, turns millions of kept events into a histogram, a measurement, a discovery. Part VII builds both, and finishes with the search for the Higgs boson in your own data.
+6. **The trigger and the analysis.** The detectors see 40 million crossings per second and can store only about a thousand of them. A trigger decides, in microseconds, which ones to keep. Then the analysis, a program of selections and statistics, turns millions of kept events into a histogram, a measurement, a discovery. Part VII builds both, and finishes with the search for the Higgs boson in your own data.
 
 The rest of this chapter's subject is the word **your**. Every stage has a reference implementation built into the course, and the exercises ask you to write some of its functions yourself, in TypeScript, in the browser. Once your function passes its tests you can tell the pipeline to use it instead of the built-in one: the **Control Room** page runs the whole chain and shows you which parts are yours. The chain is complete and runs from the first chapter. What changes is how much of it you understand.
 
@@ -69,6 +69,18 @@ factor: 3
 hints:
   - Divide the inelastic cross-section by the Higgs one. First put them in the same unit; 1 mb = 10⁹ pb.
 explain: "80 mb = 8 × 10¹⁰ pb, so the ratio is 8 × 10¹⁰ / 50 = 1.6 × 10⁹: about one collision in two billion makes a Higgs boson, and most of the time it decays into something that is hard to tell from ordinary collisions. Finding it took the collisions of years. Chapters 26 to 30 tell how."
+```
+
+```predict
+q: 'The LHC delivers 40 million bunch crossings per second. ATLAS and CMS can write about a thousand events per second to permanent storage. Roughly what fraction of the crossings is kept?'
+options:
+  - text: About one in two, since the detectors are built to record everything that matters.
+    why: 'Recording everything would mean about 40 million events per second, each a megabyte or so: tens of terabytes every second, far beyond any storage system.'
+  - text: About one in a hundred.
+    why: 'One in a hundred would still be 400,000 events per second, which is several hundred times what can be written.'
+  - text: About one in 40,000.
+    correct: true
+    why: '1,000 / 40,000,000 = 1 / 40,000. Deciding which 1 in 40,000 to keep, in microseconds and without throwing away the rare physics, is the problem of Chapter 27.'
 ```
 
 ## How the course works
