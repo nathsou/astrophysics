@@ -3,7 +3,7 @@
   by comparison with the true emission rate, and the resulting distribution of first-emission scales against the analytic
   Sudakov formula. A quark of energy E radiating at fixed coupling; the rate is hep/shower's `emissionRate`.
 
-    ::sudakov-veto{n="18.4" caption="…"}
+    ::sudakov-veto{n="18.6" caption="…"}
 -->
 <script lang="ts">
   import { untrack } from 'svelte';

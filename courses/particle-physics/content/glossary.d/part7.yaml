@@ -95,3 +95,28 @@ cls:
   term: CLs
   definition: The ratio CLs+b/CLb used to set upper limits. A signal is excluded at 95 % confidence when CLs < 0.05. Dividing by CLb stops a downward fluctuation from excluding signals the experiment could not see.
   chapter: the-statistics-of-discovery
+
+signal-strength:
+  term: signal strength (μ)
+  definition: The ratio of an observed rate (production times decay) to the Standard Model prediction for it. μ = 1 means the Standard Model; the uncertainty on μ is what a measurement of a channel delivers.
+  chapter: measuring-the-higgs
+kappa-framework:
+  term: kappa framework
+  definition: A way to test the Higgs couplings by multiplying each Standard Model coupling by a modifier κ and fitting the κ's to the measured rates. κ = 1 is the Standard Model.
+  chapter: measuring-the-higgs
+metastable-vacuum:
+  term: metastable vacuum
+  definition: A vacuum that is not the lowest state of the field but is stable on any time scale of interest, because the transition to the lower state needs a very improbable fluctuation. The measured Higgs and top masses put the Standard Model vacuum close to this regime.
+  chapter: measuring-the-higgs
+irreducible-background:
+  term: irreducible background
+  definition: A background with the same final state as the signal, such as two real photons for H → γγ, which no selection on the objects can remove. It is distinguished from the reducible background, in which other objects fake the signal's.
+  chapter: finding-the-higgs
+local-significance:
+  term: local significance
+  definition: The significance of an excess at a mass fixed in advance, without the look-elsewhere correction. The global significance is smaller.
+  chapter: finding-the-higgs
+open-data:
+  term: open data
+  definition: Real collision data released by an experiment for public use, usually in reduced form and under an open licence, such as the CMS and ATLAS open-data portals at CERN.
+  chapter: finding-the-higgs

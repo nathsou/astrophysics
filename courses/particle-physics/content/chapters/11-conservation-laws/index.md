@@ -1,7 +1,7 @@
 ---
 number: 11
 title: Conservation laws
-summary: Charge, baryon number, lepton number and strangeness: the quantities that no reaction changes, or that only the weak force changes. A ledger that tells you in advance which reactions can happen, and a judge that applies it to any reaction you type.
+summary: Charge, baryon number, lepton number and strangeness, the quantities that no reaction changes or that only the weak force changes. A ledger that tells you in advance which reactions can happen, and a judge that applies it to any reaction you type.
 duration: About 2½ hours
 prerequisites: [antimatter, cosmic-rays-pions-muons]
 ---
@@ -58,6 +58,25 @@ George Rochester and Clifford Butler worked in Patrick Blackett's laboratory at 
 :::history{year=1953 title="A new number for the new particles" people="Murray Gell-Mann, Tadao Nakano, Kazuhiko Nishijima" source="Sources: Gell-Mann (1953); Nakano and Nishijima (1953); Nishijima (1955)."}
 In 1953, in a two-page note in the *Physical Review*, Gell-Mann proposed a scheme in which the new particles were assigned a new additive quantum number that is conserved by the strong interaction and violated by the weak one, and he applied it to the particles known at the time.:cite[gellmann1953] Nakano and Nishijima, in Japan, proposed a similar scheme in the same year in *Progress of Theoretical Physics*, and Nishijima developed it in 1955.:cite[nakano1953,nishijima1955] The relation between charge, isospin, baryon number and the new quantity is named after Gell-Mann and Nishijima (Chapter 12). Strange particles had been seen for six years by then, and the quantum number brought order to all of them.
 :::
+
+## Using the ledger: what must be missing
+
+The most practical use of the laws is to fill in what you cannot see. Suppose a bubble-chamber photograph shows a $K^-$ hitting a proton, and a $\Xi^-$ coming out, with one other particle that left no track. The ledger says what the unseen one carried. Before: charge $-1+1 = 0$, baryon number $+1$, strangeness $-1$. After, the $\Xi^-$ has charge $-1$, $B = +1$ and $S = -2$. The missing particle must therefore have charge $+1$, baryon number 0 and strangeness $+1$, and the only particle in the table that fits is the $K^+$: the reaction is $K^-p\to\Xi^-K^+$, and indeed it is. The same reasoning, with lepton number in place of strangeness, is how the antineutrino in neutron decay was inferred: charge and baryon number balanced without it and lepton number did not.
+
+Strangeness also sorts the particles by *how* they decay. The table has the strange particles with their lifetimes, and they fall into two groups:
+
+| Particle | $S$ | Mean life (s) | Decays by |
+|---|---|---|---|
+| $K^+$ | +1 | $1.24\times10^{-8}$ | weak force |
+| $\Lambda$ | −1 | $2.63\times10^{-10}$ | weak force |
+| $\Sigma^+$ | −1 | $8.02\times10^{-11}$ | weak force |
+| $\Sigma^0$ | −1 | $7.4\times10^{-20}$ | electromagnetic force ($\Sigma^0\to\Lambda\gamma$) |
+| $\Xi^0$, $\Xi^-$ | −2 | $2.90\times10^{-10}$, $1.64\times10^{-10}$ | weak force |
+| $\Omega^-$ | −3 | $8.21\times10^{-11}$ | weak force |
+
+Every strange particle in the table but one lives between $10^{-11}$ and $10^{-7}$ seconds (the long-lived neutral kaon, $K_L$, reaches $5\times10^{-8}$ s). The exception, the $\Sigma^0$, proves the rule. Its decay to a $\Lambda$ and a photon *conserves* strangeness (both sides have $S = -1$), so no weak interaction is needed, and it takes place by the electromagnetic force in $10^{-19}$ s, nine orders of magnitude faster than its charged siblings, which cannot take that route: a $\Lambda$ and a photon together are neutral. The $\Delta$ resonances of Chapter 12, with $S = 0$, decay in $10^{-23}$ s by the strong force. The three time scales, strong ($10^{-23}$ s), electromagnetic ($10^{-19}$–$10^{-16}$ s) and weak ($10^{-13}$ s and longer), are the three forces' signatures, and a lifetime in the table tells you which force is at work as clearly as a quantum number does.
+
+All of these laws are connected to symmetries, and the connection is the theorem of Emmy Noether that Chapter 17 explains: for every continuous symmetry of the laws of physics there is a conserved quantity. Energy and momentum come from the symmetry of the laws under shifts in time and in space, and electric charge from a symmetry of the phase of the wave function. For baryon number, lepton numbers and strangeness the symmetries are weaker ones, which only some of the forces respect, and that is why they sit lower in the ledger below.
 
 ## Exact laws and approximate ones
 

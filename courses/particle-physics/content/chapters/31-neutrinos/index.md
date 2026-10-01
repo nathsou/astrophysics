@@ -414,6 +414,8 @@ A heavy Majorana neutrino has another consequence, which Chapter 32 takes up. It
 
 Chapter 11 collected the conservation laws in a ledger, and promised that some would be struck off. Parity went in Chapter 22 and CP in Chapter 24. Lepton flavour goes here. The individual lepton numbers $L_e$, $L_\mu$ and $L_\tau$ were conserved in every process the course has examined: a muon never decays to an electron and a photon, a $\nu_\mu$ makes a muon and never an electron. Oscillation is a process that changes them. A neutrino that is a $\nu_\mu$ when it is made can be detected as a $\nu_\tau$, and the three numbers are no longer separately conserved. Only the **total** lepton number $L = L_e + L_\mu + L_\tau$ is left in the ledger, and if neutrinos are Majorana particles even that is not exact.
 
+::ledger-final{n="31.6" caption="The ledger of Chapter 11 as it stands after Chapter 31. Parity, charge conjugation and CP were struck through by the weak force (Chapters 22 and 24); lepton flavour, highlighted, is struck through here. What remains exact is energy and momentum, charge and colour, and CPT. Baryon number and total lepton number have not been seen to fail: Chapter 32 returns to them."}
+
 There is an oddity in this. Lepton flavour is changed freely in neutrinos and not seen in charged leptons. The decay $\mu \to e\gamma$, which would turn a muon into an electron, has been looked for in the MEG experiment, which set a limit on its branching fraction of $4.2 \times 10^{-13}$ at 90 % confidence level.:cite[meg2016] The reason is that the neutrino masses are so small that the mixing, which enters the rate as $(\Delta m^2/M_W^2)^2$, suppresses the decay to a branching fraction of $10^{-50}$ or less. If a charged-lepton flavour change were ever seen, it would not come from the neutrinos.
 
 ## Under the hood, and in the experiments
@@ -447,7 +449,7 @@ export function evolve(H: CMat3, LeV: number): CMat3 {
 }
 ```
 
-Why not use the closed-form eigenvalue formulae? In vacuum there is one, and the module tests against it. In matter with all three flavours, a closed form exists but needs care when two eigenvalues are close, which they are when $\theta_{13}$ or $\Delta m^2_{21}$ is switched to zero in the lab. The exponential has no special cases. It is checked three ways: the rows and columns of the probability matrix sum to one to $10^{-9}$ (unitarity), the two-flavour limit agrees with the textbook MSW formula to $10^{-6}$, and the difference between neutrino and antineutrino in vacuum equals $16J \sin\Delta_{21}\sin\Delta_{31}\sin\Delta_{32}$, the Jarlskog form, for the default parameters.
+Why not use the closed-form eigenvalue formulae? In vacuum there is one, and in matter with all three flavours an exact one exists too, but it needs care when two eigenvalues are close, which they are when $\theta_{13}$ or $\Delta m^2_{21}$ is switched to zero in the lab. The exponential has no special cases. It is checked three ways: the rows and columns of the probability matrix sum to one to $10^{-9}$ (unitarity), the two-flavour limit agrees with the textbook MSW formula to $10^{-6}$, and the difference between neutrino and antineutrino in vacuum equals $16J \sin\Delta_{21}\sin\Delta_{31}\sin\Delta_{32}$, the Jarlskog form, for the default parameters.
 :::
 
 :::experiments

@@ -26,9 +26,11 @@
     { key: 'tautau', label: 'ττ', colour: 'var(--series-4)', table: 0.0627 },
     { key: 'cc', label: 'cc̄', colour: 'var(--series-5)', table: 0.0289 },
     { key: 'ZZ', label: 'ZZ*', colour: 'var(--series-6)', table: 0.0262 },
-    { key: 'gammagamma', label: 'γγ', colour: 'var(--sig-high)', table: 0.00227 },
+    { key: 'gammagamma', label: 'γγ', colour: 'var(--p-photon)', table: 0.00227 },
     { key: 'mumu', label: 'μμ', colour: 'var(--series-8)', table: 0.00022 },
   ];
+  /** Where each curve is labelled: a mass and a vertical nudge in pixels, chosen so that no two labels touch. */
+  const LABEL: Record<string, [number, number]> = { bb: [103, -7], WW: [157, -7], gg: [118, 11], tautau: [103, -7], cc: [143, 11], ZZ: [141, 11], gammagamma: [150, -7], mumu: [103, -7] };
   const masses = Array.from({ length: 60 }, (_, i) => 100 + i);
   const curves = masses.map((m) => higgsWidths(m));
   const here = $derived(higgsWidths(mH));
@@ -48,7 +50,8 @@
       <line x1={sx(mH)} x2={sx(mH)} y1={sy(1)} y2={sy(1e-4)} stroke="var(--ink-3)" stroke-dasharray="4 3" />
       {#each CH as c}
         <path d={path(c.key, sx, sy)} fill="none" stroke={c.colour} stroke-width="2" />
-        <text x={sx(160) - 3} y={sy(curves.at(-1)!.br[c.key]) - 4} class="lbl" text-anchor="end" fill={c.colour}>{c.label}</text>
+        {@const lb = LABEL[c.key]!}
+        <text x={sx(lb[0])} y={sy(higgsWidths(lb[0]).br[c.key]) + lb[1]} class="lbl" fill={c.colour}>{c.label}</text>
         <circle cx={sx(mH)} cy={sy(here.br[c.key])} r="3.5" fill={c.colour} />
       {/each}
     {/snippet}

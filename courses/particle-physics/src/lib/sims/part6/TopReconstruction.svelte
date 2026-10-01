@@ -170,7 +170,7 @@
         <button onclick={() => (evIndex = Math.max(0, idx - 1))} aria-label="Previous event">‹</button>
         <input type="range" min="0" max={Math.max(0, events.length - 1)} bind:value={evIndex} aria-label="Event number" />
         <button onclick={() => (evIndex = Math.min(events.length - 1, idx + 1))} aria-label="Next event">›</button>
-        <button class:on={method === 'chi'} onclick={() => (method = 'chi')}>χ²</button>
+        <button class:on={method === 'chi2'} onclick={() => (method = 'chi2')}>χ²</button>
         <button class:on={method === 'tag'} onclick={() => (method = 'tag')}>χ² + b-tag</button>
       </div>
       {#if ev}

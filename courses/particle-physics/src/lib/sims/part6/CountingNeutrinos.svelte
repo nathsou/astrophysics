@@ -16,13 +16,14 @@
   import Plot from '$lib/charts/Plot.svelte';
   import { eeToFermions } from '$lib/hep/gen';
   import { M_Z } from '$lib/hep/sm';
+  import { untrack } from 'svelte';
   import { SCAN, SELECTION_EFFICIENCY, GAMMA_NU, fitAtFixedN, fitLineshape, pseudoData, sigmaHad, zWidthFor } from './lineshape';
 
   let { n, caption, title = 'Counting neutrinos', seed: seed0 = 4 }: { n?: string | number; caption?: string; title?: string; seed?: number } = $props();
 
   let hyp = $state<'2' | '3' | '4'>('4');
   let logScale = $state(0);
-  let seed = $state(seed0);
+  let seed = $state(untrack(() => seed0));
   let freeNorm = $state(false);
   let lumiSyst = $state(0);
   let showBorn = $state(false);
@@ -85,7 +86,7 @@
       {/snippet}
     </Plot>
     <p class="ui legend">Points: simulated, LEP-like, with error bars (too small to see at full statistics). Lines: generator prediction for 2, 3 and 4 species (the chosen one thick).</p>
-    <Plot x={{ domain: [88, 95.5], label: 'centre-of-mass energy √s [GeV]' }} y={{ domain: [-devMax, devMax], label: `data / ${H}-species fit − 1`, format: (v) => `${(100 * v).toFixed(v === 0 ? 0 : 1)} %` }} height={170} label="Residuals of the simulated points from the chosen hypothesis" crosshair={false}>
+    <Plot x={{ domain: [88, 95.5], label: 'centre-of-mass energy √s [GeV]' }} y={{ domain: [-devMax, devMax], label: `data/fit − 1 (N_ν = ${H})`, format: (v) => `${(100 * v).toFixed(v === 0 ? 0 : devMax > 0.1 ? 0 : 1)}%` }} height={170} label="Residuals of the simulated points from the chosen hypothesis" crosshair={false}>
       {#snippet marks({ sx, sy, width })}
         <line x1="0" x2={width} y1={sy(0)} y2={sy(0)} stroke="var(--line-strong)" />
         {#each dev as d}

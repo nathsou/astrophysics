@@ -100,8 +100,7 @@
   dt {
     color: var(--mute);
     font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.03em;
   }
   dd {
     margin: 0;

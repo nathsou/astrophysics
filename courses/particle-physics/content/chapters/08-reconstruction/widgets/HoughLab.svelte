@@ -13,6 +13,7 @@
   import { hook } from '$lib/hep/hooks';
   import { rng as makeRng, normal } from '$lib/hep/random';
   import { savedFor, useMine } from '$lib/sims/part2/mine';
+  import { resolveColor, watchTheme } from '$lib/sims/fields/canvas';
 
   let { n, caption }: { n?: string | number; caption?: string } = $props();
 
@@ -107,7 +108,10 @@
 
   let hitCanvas: HTMLCanvasElement | undefined = $state();
   let accCanvas: HTMLCanvasElement | undefined = $state();
-  const css = (el: HTMLElement | undefined, v: string) => (el ? getComputedStyle(el).getPropertyValue(v).trim() || '#888' : '#888');
+  // a canvas cannot use var() or light-dark(): resolve the theme colour through a probe element
+  const css = (el: HTMLElement | undefined, v: string) => (el ? resolveColor(el, `var(${v})`) : '#888');
+  let themeTick = $state(0);
+  onMount(() => watchTheme(() => themeTick++));
 
   function drawHits() {
     const c = hitCanvas;
@@ -199,7 +203,7 @@
     ctx.setLineDash([]);
   }
   $effect(() => {
-    void event, result;
+    void event, result, themeTick;
     void tick().then(() => {
       drawHits();
       drawAcc();

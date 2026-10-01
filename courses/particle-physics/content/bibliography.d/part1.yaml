@@ -22,17 +22,17 @@ pauli1940:
   title: The connection between spin and statistics
   venue: Physical Review 58, 716–722
 nobel1943:
-  authors: The Nobel Foundation
+  authors: NobelPrize.org
   year: 1943
   title: The Nobel Prize in Physics 1943 (Otto Stern)
   url: https://www.nobelprize.org/prizes/physics/1943/summary/
 nobel1945:
-  authors: The Nobel Foundation
+  authors: NobelPrize.org
   year: 1945
   title: The Nobel Prize in Physics 1945 (Wolfgang Pauli)
   url: https://www.nobelprize.org/prizes/physics/1945/summary/
 nobel1961:
-  authors: The Nobel Foundation
+  authors: NobelPrize.org
   year: 1961
   title: The Nobel Prize in Physics 1961 (Robert Hofstadter and Rudolf Mössbauer)
   url: https://www.nobelprize.org/prizes/physics/1961/summary/
@@ -94,13 +94,3 @@ pohl2010:
   title: The size of the proton
   venue: Nature 466, 213–216
   note: The proton radius from the spectroscopy of muonic hydrogen, smaller than the value then accepted from electron scattering and ordinary hydrogen.
-bloom1969:
-  authors: E. D. Bloom et al.
-  year: 1969
-  title: High-energy inelastic e–p scattering at 6° and 10°
-  venue: Physical Review Letters 23, 930–934
-breidenbach1969:
-  authors: M. Breidenbach et al.
-  year: 1969
-  title: Observed behavior of highly inelastic electron–proton scattering
-  venue: Physical Review Letters 23, 935–939

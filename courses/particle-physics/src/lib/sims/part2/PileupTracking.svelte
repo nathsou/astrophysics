@@ -10,19 +10,19 @@
   and kalmanUpdate (whichever the reader has written).
 -->
 <script lang="ts">
-  import { onMount, tick } from 'svelte';
+  import { onMount } from 'svelte';
   import Widget from '$lib/components/ui/Widget.svelte';
   import Slider from '$lib/components/ui/Slider.svelte';
   import Segmented from '$lib/components/ui/Segmented.svelte';
   import Toggle from '$lib/components/ui/Toggle.svelte';
-  import Button from '$lib/components/ui/Button.svelte';
   import LinePlot from './LinePlot.svelte';
-  import { DEFAULT_QUALITY, PILEUP_POINTS, REFERENCE, aggregate, eventSeed, reconstructCrossing, simulateCrossing, configFor, type EventResult, type FinderSettings, type PointResult, type Quality } from './pileup.ts';
-  import { savedFor, useMine } from './mine.ts';
+  import { DEFAULT_QUALITY, PILEUP_HOOKS, PILEUP_POINTS, REFERENCE, configFor, type EventResult, type FinderSettings, type PointResult, type Quality } from './pileup.ts';
+  import type { PileupRequest, PileupResponse } from './pileup.worker.ts';
+  import { loadMine } from '../../code/mine.ts';
+  import { resolveColor, watchTheme } from '../fields/canvas.ts';
 
   let { n: figNo, caption, title = 'Tracking under growing pile-up' }: { n?: string | number; caption?: string; title?: string } = $props();
 
-  const HOOKS = ['reco.circleFit', 'reco.houghTransform', 'reco.kalmanUpdate'];
   let seeding = $state<'triplets' | 'hough'>('triplets');
   let minHits = $state(0);
   let road = $state(4);
@@ -33,22 +33,58 @@
   let picPu = $state(50);
   let mineSaved = $state<string[]>([]);
   let useMineOn = $state(false);
-  let mineNote = $state('');
-  let mineVersion = $state(0);
+  let note = $state('');
 
   const settings = $derived<FinderSettings>({ seeding, minHits: Math.round(minHits), roadSigmas: road, maxChi2: 10 ** logChi });
   const quality = $derived<Quality>({ noise: Math.round(noise), dead: deadPct / 100 });
 
-  onMount(() => {
-    mineSaved = savedFor(HOOKS);
-    return () => useMine(HOOKS, false);
-  });
-  function toggleMine(on: boolean) {
-    const r = useMine(HOOKS, on);
-    const errs = Object.entries(r.errors);
-    mineNote = errs.length ? `Could not load: ${errs.map(([k, v]) => `${k} (${v})`).join('; ')}.` : on ? `Running with your ${r.active.map((h) => h.split('.')[1]).join(', ')}.` : '';
-    mineVersion++;
+  /** The source of the reader's saved functions that the finder uses (all of them, if "use my code" is on). */
+  function minePayload(): Record<string, string> {
+    if (!useMineOn) return {};
+    const all = loadMine();
+    const out: Record<string, string> = {};
+    for (const h of PILEUP_HOOKS) if (all[h]) out[h] = all[h]!.code;
+    return out;
   }
+
+  // ── two workers: one for the curves, one for the picture, so that the picture is not queued behind the scan ──
+  class Rpc {
+    private w: Worker | undefined;
+    private pending = new Map<number, (r: PileupResponse) => void>();
+    private next = 0;
+    call(msg: PileupRequest extends infer R ? (R extends { id: number } ? Omit<R, 'id'> : never) : never): Promise<PileupResponse> {
+      if (!this.w) {
+        this.w = new Worker(new URL('./pileup.worker.ts', import.meta.url), { type: 'module' });
+        this.w.onmessage = (e: MessageEvent<PileupResponse>) => {
+          this.pending.get(e.data.id)?.(e.data);
+          this.pending.delete(e.data.id);
+        };
+        this.w.onerror = (e) => {
+          for (const f of this.pending.values()) f({ id: -1, error: e.message || 'the worker failed' });
+          this.pending.clear();
+        };
+      }
+      const id = ++this.next;
+      return new Promise((resolve) => {
+        this.pending.set(id, resolve);
+        this.w!.postMessage({ ...msg, id });
+      });
+    }
+    reset() {
+      this.w?.terminate();
+      this.w = undefined;
+      this.pending.clear();
+    }
+  }
+  const scanRpc = new Rpc();
+  const picRpc = new Rpc();
+  onMount(() => {
+    mineSaved = PILEUP_HOOKS.filter((h) => loadMine()[h]);
+    return () => {
+      scanRpc.reset();
+      picRpc.reset();
+    };
+  });
 
   // ── the scans ──
   let ref = $state<PointResult[]>([]);
@@ -56,68 +92,54 @@
   let progress = $state(0);
   let running = $state(false);
   let token = 0;
-
   let refKey = '';
-  const tick0 = () => new Promise((r) => setTimeout(r, 0));
-
-  /** The reference curve: always the library's code, so the reader's hooks are taken out while it runs. */
-  async function scanRef(q: Quality, n: number, my: number): Promise<boolean> {
-    const restore = useMineOn;
-    if (restore) useMine(HOOKS, false);
-    ref = [];
-    const out: PointResult[] = [];
-    let ok = true;
-    for (const pu of PILEUP_POINTS) {
-      const ev: EventResult[] = [];
-      for (let i = 0; i < n; i++) {
-        ev.push(reconstructCrossing(simulateCrossing(pu, eventSeed(1, pu, i), q), REFERENCE));
-        await tick0();
-        if (my !== token) {
-          ok = false;
-          break;
-        }
-      }
-      if (!ok) break;
-      out.push(aggregate(pu, ev));
-      ref = [...out];
-    }
-    if (restore) useMine(HOOKS, true);
-    if (ok) refKey = JSON.stringify([q, n]);
-    return ok;
-  }
 
   async function scan() {
     const my = ++token;
+    scanRpc.reset();
     const s = settings, q = quality, n = Math.round(perPoint);
-    void mineVersion;
     running = true;
     progress = 0;
     mine = [];
-    if (refKey !== JSON.stringify([q, n])) {
-      progress = 0;
-      if (!(await scanRef(q, n, my))) return;
-    }
-    const out: PointResult[] = [];
-    let done = 0;
     const total = PILEUP_POINTS.length * n;
-    for (const pu of PILEUP_POINTS) {
-      const ev: EventResult[] = [];
-      for (let i = 0; i < n; i++) {
-        ev.push(reconstructCrossing(simulateCrossing(pu, eventSeed(1, pu, i), q), s));
-        done++;
-        progress = done / total;
-        await tick0();
+    let done = 0;
+    // the reference curve: always the library's code (no hooks), kept while the detector and the number of events do not change
+    if (refKey !== JSON.stringify([q, n])) {
+      ref = [];
+      const out: PointResult[] = [];
+      for (const pu of PILEUP_POINTS) {
+        const r = await scanRpc.call({ kind: 'point', pu, n, seed: 1, settings: REFERENCE, quality: q, mine: {} });
         if (my !== token) return;
+        if ('point' in r) out.push(r.point);
+        ref = [...out];
       }
-      out.push(aggregate(pu, ev));
-      mine = [...out];
+      refKey = JSON.stringify([q, n]);
+    }
+    const payload = minePayload();
+    const out: PointResult[] = [];
+    note = '';
+    for (const pu of PILEUP_POINTS) {
+      const r = await scanRpc.call({ kind: 'point', pu, n, seed: 1, settings: s, quality: q, mine: payload });
+      if (my !== token) return;
+      if ('error' in r) {
+        note = `The finder stopped: ${r.error}`;
+        break;
+      }
+      if (r.kind === 'point') {
+        out.push(r.point);
+        mine = [...out];
+        const errs = Object.entries(r.errors);
+        if (errs.length) note = `Could not load: ${errs.map(([k, v]) => `${k} (${v})`).join('; ')}. The library's version is used.`;
+      }
+      done += n;
+      progress = done / total;
     }
     running = false;
   }
 
   let timer: ReturnType<typeof setTimeout> | undefined;
   $effect(() => {
-    void settings.seeding, settings.minHits, settings.roadSigmas, settings.maxChi2, quality.noise, quality.dead, perPoint, mineVersion;
+    void settings.seeding, settings.minHits, settings.roadSigmas, settings.maxChi2, quality.noise, quality.dead, perPoint, useMineOn;
     clearTimeout(timer);
     timer = setTimeout(() => void scan(), 350);
     return () => clearTimeout(timer);
@@ -127,25 +149,30 @@
   let canvas: HTMLCanvasElement | undefined = $state();
   let picResult = $state.raw<EventResult | null>(null);
   let picError = $state('');
+  let picToken = 0;
   $effect(() => {
-    void settings.seeding, settings.minHits, settings.roadSigmas, settings.maxChi2, quality.noise, quality.dead, picPu, mineVersion;
+    void settings.seeding, settings.minHits, settings.roadSigmas, settings.maxChi2, quality.noise, quality.dead, picPu, useMineOn;
     const s = settings, q = quality, pu = picPu;
-    const id = setTimeout(() => {
-      try {
-        const x = simulateCrossing(pu, eventSeed(7, pu, 0), q);
-        picResult = reconstructCrossing(x, s, true);
-        picError = '';
-        void tick().then(draw);
-      } catch (e) {
-        picError = e instanceof Error ? e.message : String(e);
+    const my = ++picToken;
+    const id = setTimeout(async () => {
+      picRpc.reset();
+      const r = await picRpc.call({ kind: 'picture', pu, seed: 7, settings: s, quality: q, mine: minePayload() });
+      if (my !== picToken) return;
+      if ('error' in r) {
+        picError = r.error;
+        return;
       }
-    }, 200);
+      if (r.kind === 'picture') {
+        picError = '';
+        picResult = r.picture;
+      }
+    }, 250);
     return () => clearTimeout(id);
   });
 
+  // a canvas cannot use var() or light-dark(): resolve the theme colour through a probe element
   function cssVar(name: string): string {
-    const v = canvas ? getComputedStyle(canvas).getPropertyValue(name).trim() : '';
-    return v || '#888';
+    return canvas ? resolveColor(canvas, `var(${name})`) : '#888';
   }
   function draw() {
     const r = picResult;
@@ -168,8 +195,7 @@
       ctx.arc(cx, cy, l.r * k, 0, 2 * Math.PI);
       ctx.stroke();
     }
-    const colHit = cssVar('--p-hit');
-    ctx.fillStyle = colHit;
+    ctx.fillStyle = cssVar('--p-hit');
     ctx.globalAlpha = r.hits.length > 4000 ? 0.45 : 0.75;
     for (const h of r.hits) {
       if (h.kind === 'signal') continue;
@@ -193,24 +219,25 @@
     for (const h of r.hits) if (h.kind === 'signal') ctx.fillRect(cx + h.x * k - 1.6, cy - h.y * k - 1.6, 3.2, 3.2);
     ctx.strokeStyle = colBad;
     ctx.lineWidth = 1.5;
-    for (const ids of r.missed) for (const i of ids) {
-      const h = r.hits[i]!;
-      ctx.beginPath();
-      ctx.arc(cx + h.x * k, cy - h.y * k, 5, 0, 2 * Math.PI);
-      ctx.stroke();
-    }
+    for (const ids of r.missed)
+      for (const i of ids) {
+        const h = r.hits[i]!;
+        ctx.beginPath();
+        ctx.arc(cx + h.x * k, cy - h.y * k, 5, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
   }
+  let themeTick = $state(0);
+  onMount(() => watchTheme(() => themeTick++));
   $effect(() => {
     void picResult;
+    void themeTick;
     if (canvas) draw();
   });
 
-  const xs = PILEUP_POINTS;
-  const series = (a: PointResult[], f: (p: PointResult) => number) => ({ x: a.map((p) => p.pu), y: a.map(f) });
   const effPts = $derived(mine.map((p) => ({ x: p.pu, y: p.efficiency.value, yerr: (p.efficiency.high - p.efficiency.low) / 2, color: 'var(--series-2)' })));
-  const fakePts = $derived(mine.map((p) => ({ x: p.pu, y: p.fakeRate.value, yerr: (p.fakeRate.high - p.fakeRate.low) / 2, color: 'var(--series-2)' })));
+  const fakePts = $derived(mine.filter((p) => Number.isFinite(p.fakeRate.value)).map((p) => ({ x: p.pu, y: p.fakeRate.value, yerr: (p.fakeRate.high - p.fakeRate.low) / 2, color: 'var(--series-2)' })));
   const last = $derived(mine.at(-1));
-  void xs;
 </script>
 
 <Widget {title} n={figNo} {caption} kind="Explore">
@@ -229,7 +256,7 @@
     <Slider bind:value={noise} min={0} max={300} step={10} label="Noise hits per layer" format={(v) => v.toFixed(0)} />
     <Slider bind:value={deadPct} min={0} max={10} step={0.5} label="Dead channels [%]" format={(v) => v.toFixed(1)} />
     <Slider bind:value={perPoint} min={3} max={12} step={1} label="Events per point" format={(v) => v.toFixed(0)} />
-    {#if mineSaved.length}<Toggle bind:checked={useMineOn} label="use my code" onchange={toggleMine} />{/if}
+    {#if mineSaved.length}<Toggle bind:checked={useMineOn} label="use my code" />{/if}
   {/snippet}
 
   <div class="charts">
@@ -278,12 +305,12 @@
     <span>{running ? `Simulating and reconstructing… ${(100 * progress).toFixed(0)} %` : 'Done.'}</span>
     {#if last}<span class="sum">At {last.pu} pile-up collisions: {(100 * last.efficiency.value).toFixed(0)} % efficient, {(100 * last.fakeRate.value).toFixed(1)} % fakes, {last.tracksPerEvent.toFixed(0)} tracks and {last.msPerEvent.toFixed(0)} ms per event.</span>{/if}
   </div>
-  {#if mineNote}<p class="ui small">{mineNote}</p>{/if}
+  {#if note}<p class="ui small">{note}</p>{/if}
 
   <h5 class="ui">One crossing, seen along the beam</h5>
   <Slider bind:value={picPu} min={0} max={200} step={5} label="Pile-up collisions in this picture" format={(v) => v.toFixed(0)} />
   <div class="pic">
-    <canvas bind:this={canvas} aria-label="The transverse view of one simulated bunch crossing with the tracks found by your settings" role="img"></canvas>
+    <div role="img" aria-label="The transverse view of one simulated bunch crossing with the tracks found by your settings"><canvas bind:this={canvas}></canvas></div>
     <div class="keys ui">
       <p><span class="k" style="background: var(--sig-high)"></span> hits of the six signal pions</p>
       <p><span class="k line" style="border-color: var(--series-3)"></span> track matched to a signal pion</p>

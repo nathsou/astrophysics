@@ -54,7 +54,7 @@
     };
     list = make(s);
   };
-  const PRESETS: [string, string][] = [['proton uud', 'uud'], ['neutron udd', 'udd'], ['π⁺ ud̄', 'ud~'], ['K⁻ sū', 's~u'.replace('s~u', 'su~')], ['Δ⁺⁺ uuu', 'uuu'], ['Ω⁻ sss', 'sss'], ['J/ψ cc̄', 'cc~'], ['Υ bb̄', 'bb~'], ['two quarks uu', 'uu'], ['one quark u', 'u'], ['uud ū', 'uud~']];
+  const PRESETS: [string, string][] = [['proton uud', 'uud'], ['neutron udd', 'udd'], ['π⁺ ud̄', 'ud~'], ['K⁻ sū', 'su~'], ['Δ⁺⁺ uuu', 'uuu'], ['Ω⁻ sss', 'sss'], ['J/ψ cc̄', 'cc~'], ['Υ bb̄', 'bb~'], ['two quarks uu', 'uu'], ['one quark u', 'u'], ['uud ū', 'uud~']];
 
   const cons = $derived<Constituent[]>(list.map((q) => ({ letter: q.letter, anti: q.anti })));
   const num = $derived(contentNumbers(cons));

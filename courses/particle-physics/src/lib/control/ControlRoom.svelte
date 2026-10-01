@@ -77,7 +77,8 @@
   <div class="gap"></div>
   <RunControls {session} />
 
-  <h2 id="stages">The six stages</h2>
+  <section id="stages" aria-labelledby="stages-h">
+  <h2 id="stages-h">The six stages</h2>
   <div class="stages">
     {#each panes as stage}
       <StagePane {stage} {session}>
@@ -90,17 +91,24 @@
       </StagePane>
     {/each}
   </div>
+  </section>
 
-  <h2 id="histograms">Histograms</h2>
-  <HistogramPanel {session} />
-  <div class="gap"></div>
-  <ResultsPanel {session} />
+  <section id="histograms" aria-labelledby="histograms-h">
+    <h2 id="histograms-h">Histograms</h2>
+    <HistogramPanel {session} />
+    <div class="gap"></div>
+    <ResultsPanel {session} />
+  </section>
 
-  <h2 id="events">Events</h2>
-  <EventPanel {session} />
+  <section id="events" aria-labelledby="events-h">
+    <h2 id="events-h">Events</h2>
+    <EventPanel {session} />
+  </section>
 
-  <h2 id="mine">My code</h2>
-  <MinePanel {session} />
+  <section id="mine" aria-labelledby="mine-h">
+    <h2 id="mine-h">My code</h2>
+    <MinePanel {session} />
+  </section>
 
   <h2>What is approximate</h2>
   <ul class="approx ui">

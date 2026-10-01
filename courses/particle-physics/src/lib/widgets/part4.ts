@@ -2,7 +2,7 @@
 
 /** Chapter 14: quanta of one mode: number states and coherent states of the field: `::quanta-ladder{n="14.2"}`. */
 export { default as QuantaLadder } from '$lib/sims/part4/QuantaLadder.svelte';
-/** Chapter 16: the angular distributions of e⁺e⁻ → μ⁺μ⁻ and Bhabha scattering, split by channel: `::angular-shapes{n="16.1"}`. */
+/** Chapter 16: the angular distributions of e⁺e⁻ → μ⁺μ⁻ and Bhabha scattering, split by channel: `::angular-shapes{n="16.2"}`. */
 export { default as AngularShapes } from '$lib/sims/part4/AngularShapes.svelte';
 /** Chapter 16 flagship: a virtual e⁺e⁻ collider (σ, angles, A_FB, the R ratio): `::ee-collider{n="16.2"}`. */
 export { default as EeCollider } from '$lib/sims/part4/EeCollider.svelte';

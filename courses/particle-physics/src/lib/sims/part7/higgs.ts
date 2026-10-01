@@ -178,6 +178,9 @@ export function signalShapeFromSimulation(s: DiphotonSample, c: DiphotonCuts, ra
   return { w1: y1 / (y1 + y2), m1, s1, m2, s2, mH: s.manifest.samples.signal.mH_GeV, entries: h.entries, peak: m1 };
 }
 
+export type Background = 'exp' | 'bern3' | 'bern4';
+export const BACKGROUND_LABEL: Record<Background, string> = { exp: 'exponential', bern3: 'Bernstein polynomial, order 3', bern4: 'Bernstein polynomial, order 4' };
+
 export interface MassFit {
   hist: Hist1D;
   model: Model;

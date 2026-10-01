@@ -79,7 +79,7 @@ k:
 
 Put *E* = ħω and *p* = ħ*k* (Chapter 3) and choose ħ = *c* = 1. The limit is $E^2 = p^2 + m^2$: the relation of Chapter 2 between the energy, momentum and mass of a particle. The lattice did not know about relativity; it got there because a wave equation with the same second derivative in space and time is relativistic. The mass of the particle is the lowest frequency of the field.
 
-How fast does a packet move? A packet is a superposition of waves with a narrow spread of *k*, and it travels at the **group velocity** $v = d\omega/dk$. Differentiating $\omega^2 = k^2 + m^2$ gives $2\omega\,d\omega = 2k\,dk$, so
+How fast does a packet move? A packet is a superposition of waves with a narrow spread of *k*, and it travels at the **:term[group velocity]{id=group-velocity}** $v = d\omega/dk$. Differentiating $\omega^2 = k^2 + m^2$ gives $2\omega\,d\omega = 2k\,dk$, so
 
 $$v = \frac{d\omega}{dk} = \frac{k}{\omega} = \frac{p}{E}.$$
 
@@ -125,14 +125,14 @@ hw:
 
 The operators **a**† and **a** (*creation* and *annihilation*) move the state up and down the ladder; $\hat a^\dagger|n\rangle = \sqrt{n+1}\,|n+1\rangle$ says that adding a quantum to a mode that already holds *n* has an amplitude that grows as √(*n* + 1). Every interpretation of the word *particle* in field theory reduces to this ladder:
 
-- **A particle is one rung.** A quantum of the mode with wave number *k* has momentum ħ*k* and energy ħω<sub>*k*</sub>, so it obeys the dispersion relation, and, by the argument above, *E*² = *p*² + *m*².
+- **A particle is one rung.** A quantum of the mode with wave number *k* has momentum ħ*k* and energy ħω<sub>*k*</sub>, so it obeys the :term[dispersion relation]{id=dispersion-relation}, and, by the argument above, *E*² = *p*² + *m*².
 - **Identical particles are a property of the ladder.** Two quanta in one mode differ in nothing, because the state is described only by how many there are. There is no label to attach. The rungs are equally spaced and every field of the same kind has the same ladder, so the quanta of the electron field everywhere are the same.
 - **Particles can be created and destroyed**, by operators that take the state up or down the ladder. The number of quanta is not conserved unless the equations conserve it. A field is the natural language for processes in which particles appear (an electron–positron pair from a photon, Chapter 9) and disappear.
 - **The vacuum is not empty.** The lowest rung, *n* = 0, has energy ½ħω, not zero. Summed over all modes of a field the vacuum energy is infinite on paper, and only *differences* of energy are observable in every experiment of this course. (Gravity is sensitive to total energy, which makes this sum a real puzzle outside our scope.)
 
 For a field with *spin* a mode is additionally labelled by the polarisation, and quanta of fields of half-integer spin obey the exclusion principle instead of being stackable: no two in the same state, which is Pauli's rule of Chapter 3. The spin-½ case uses a different algebra (anticommutators, not commutators) and is not derived here.
 
-::quanta-ladder{n="14.2" caption="One mode in two kinds of quantum state. With exactly n quanta (left), the average field is zero at all times: no wave, but the noise in the field grows with n. In a coherent state (right), the field oscillates like a classical wave of amplitude √(2n̄/ω), while the noise stays fixed at its vacuum value, so a wave with many quanta is a clean classical wave: its amplitude stands 2√n̄ noise widths above zero. The number of quanta is uncertain by √n̄, which is about 10 % at n̄ = 100 and one part in 10⁶ for a typical radio transmitter."}
+::quanta-ladder{n="14.2" caption="One mode in two kinds of quantum state. With exactly n quanta (left), the average field is zero at all times: no wave, but the noise in the field grows with n. In a coherent state (right), the field oscillates like a classical wave of amplitude √(2n̄/ω), while the noise stays fixed at its vacuum value, so a wave with many quanta is a clean classical wave: its amplitude stands 2√n̄ noise widths above zero. The number of quanta is uncertain by √n̄, which is 10 % of n̄ at n̄ = 100 and smaller still for any macroscopic source."}
 
 The right-hand panel is the bridge to classical physics. A radio station or a laser produces a state with an enormous number of quanta in one mode, with a relative uncertainty in the number of quanta of only 1/√*n̄*. The field oscillates as a classical wave. Maxwell's equations are the classical limit of the equations of a field whose quanta are photons; the quantum of the electromagnetic field is the photon because the field equation has this ladder structure.
 
@@ -141,7 +141,7 @@ Quantum mechanics in 1926 could describe an atom, but it described light classic
 
 In 1927 Paul Dirac resolved the radiation field into its normal modes and treated each as a harmonic oscillator, then applied the quantum rules to the oscillators. The state of the radiation field was specified by the number of quanta in each mode. The coupling of the atom to the field became a term that changes these numbers, and so an atom can emit a quantum into a mode that held none: spontaneous emission follows. Dirac obtained Einstein's coefficients for spontaneous and stimulated emission and their relation, and showed that the quantised oscillators are equivalent to an assembly of light-quanta obeying Bose–Einstein statistics.:cite[p4-dirac1927]
 
-It is usually counted as the beginning of quantum field theory. The idea of the chapter is already there: the particle, here the photon, is what the oscillator ladder calls a quantum, and emission and absorption are the creation and annihilation of quanta.
+It is usually counted as the beginning of quantum field theory. The idea of the chapter is already there: the particle, here the photon, is what the oscillator ladder calls a quantum, and emission and absorption are the :term[creation and annihilation]{id=creation-operator} of quanta.
 :::
 
 ## Interaction: how quanta are made and destroyed
@@ -162,7 +162,7 @@ This is a linear equation, so take its Fourier transform, to momentum space, whe
 
 $$\tilde\phi(q) = \frac{g}{q^2 + m^2}.$$
 
-The factor 1/(*q*² + *m*²) is the **propagator** of the field (in its static form). It is the response of the field to a disturbance carrying momentum *q*. A second source at distance *r* has energy $g\,\phi(r)$ in the profile of the first: the energy of interaction is, with the sign that makes scalar exchange attractive,
+The factor 1/(*q*² + *m*²) is the **:term[propagator]{id=propagator}** of the field (in its static form). It is the response of the field to a disturbance carrying momentum *q*. A second source at distance *r* has energy $g\,\phi(r)$ in the profile of the first: the energy of interaction is, with the sign that makes scalar exchange attractive,
 
 :::equation{#yukawa caption="The potential energy of two static sources that exchange a particle of mass m: the Fourier transform of the propagator. Yukawa's potential."}
 $$\term{V}{V}(\term{r}{r}) = -\frac{\term{g}{g}^2}{4\pi}\,\frac{e^{-\term{mr}{m}\,r}}{r} = -\frac{g^2}{4\pi}\,\frac{e^{-r/\term{R}{R}}}{r}, \qquad R = \frac{\hbar c}{mc^2}$$
@@ -208,9 +208,9 @@ Close the contour in the upper half-plane. The only pole there is at *q* = *im*,
 
 ### What a virtual particle is, and what it is not
 
-The propagator 1/(*q*² + *m*²) is the object that physicists call a **virtual particle**. The phrase is a source of a great deal of confusion, so here is what it does and does not mean.
+The propagator 1/(*q*² + *m*²) is the object that physicists call a **:term[virtual particle]{id=virtual-particle}**. The phrase is a source of a great deal of confusion, so here is what it does and does not mean.
 
-What it is: in the perturbation theory of Chapter 15, where the response of the field to an interaction is expanded in a series, each term contains a factor like this propagator for every internal line. The factor is large when the energy and momentum flowing through the line nearly satisfy the mass-shell relation $E^2 = p^2 + m^2$, and moderate or small when they are far from it. A line for which they do not satisfy it is called **off shell**, or virtual. For the static potential above the exchanged momentum is entirely spatial, *E* = 0, so *E*² − *p*² = −*q*² is *negative*: nothing could be on shell.
+What it is: in the perturbation theory of Chapter 15, where the response of the field to an interaction is expanded in a series, each term contains a factor like this propagator for every internal line. The factor is large when the energy and momentum flowing through the line nearly satisfy the mass-shell relation $E^2 = p^2 + m^2$, and moderate or small when they are far from it. A line for which they do not satisfy it is called **:term[off shell]{id=off-shell}**, or virtual. For the static potential above the exchanged momentum is entirely spatial, *E* = 0, so *E*² − *p*² = −*q*² is *negative*: nothing could be on shell.
 
 What it is not:
 

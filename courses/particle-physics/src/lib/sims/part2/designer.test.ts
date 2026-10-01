@@ -1,7 +1,8 @@
 import { describe, expect, test } from 'vitest';
-import { BUDGET, DEFAULT_DESIGN, buildConfig, cost, measure, gunEventFor, type DesignParams } from './designer.ts';
+import { BUDGET, DEFAULT_DESIGN, buildConfig, cost, measure, gunEventFor, trackerResolution, type DesignParams } from './designer.ts';
 import { glucksternMeasurement } from './trackMc.ts';
-import { hcalOuterRadius, ecalOuterRadius } from '../../hep/detector/index.ts';
+import { hcalOuterRadius, ecalOuterRadius, presets } from '../../hep/detector/index.ts';
+import { rng } from '../../hep/random/index.ts';
 
 const D = DEFAULT_DESIGN;
 
@@ -75,6 +76,21 @@ describe('what the designer measures', () => {
     const m = measure(D, 160, 7);
     expect(m.hadRes50).toBeGreaterThan(0.1);
     expect(m.hadRes50).toBeLessThan(0.22);
+  });
+  test('the numbers quoted in Chapter 5 for the course detector with a free circle fit: about 0.4 % at 10 GeV, 1.8 % at 100 GeV, 7.5 % at 400 GeV', () => {
+    const cfg = buildConfig({ ...DEFAULT_DESIGN, stripLayers: 4 });
+    const onion = presets.onion!;
+    expect(cfg.bField).toBe(onion.bField);
+    const r = rng(3);
+    const a = trackerResolution(onion, 10, 400, r.fork('a'));
+    const b = trackerResolution(onion, 100, 400, r.fork('b'));
+    const c = trackerResolution(onion, 400, 400, r.fork('c'));
+    expect(a).toBeGreaterThan(0.003);
+    expect(a).toBeLessThan(0.0055);
+    expect(b).toBeGreaterThan(0.014);
+    expect(b).toBeLessThan(0.023);
+    expect(c).toBeGreaterThan(0.055);
+    expect(c).toBeLessThan(0.095);
   });
   test('a gun event has truth, hits, cells and a reconstruction', () => {
     const ev = gunEventFor(buildConfig(D), 13, 40, 0.3, 1, 1);

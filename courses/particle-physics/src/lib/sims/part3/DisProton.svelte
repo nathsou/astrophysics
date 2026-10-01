@@ -38,6 +38,8 @@
   const valenceCol = ['var(--series-7)', 'var(--series-3)', 'var(--series-1)'];
   const nSea = $derived(Math.min(40, Math.round(counts.sea)));
   const nGlue = $derived(Math.min(60, Math.round(counts.gluons)));
+  const glueIdx = $derived(stage === 2 ? Array.from({ length: nGlue }, (_, i) => i) : []);
+  const seaIdx = $derived(stage === 2 ? Array.from({ length: nSea }, (_, i) => i) : []);
   const dotR = $derived(Math.max(3.5, Math.min(26, 0.5 * lam * k * 0.35)));
 
   const XG = Array.from({ length: 120 }, (_, i) => 10 ** (-4 + (i * 4) / 119));
@@ -65,11 +67,11 @@
           <circle cx={S / 2} cy={S / 2} r={R_P * k * 1.1} fill="url(#blob)" filter="url(#fuzz)" />
         {:else}
           <g filter="url(#fuzz)" opacity={stage === 1 ? 1 : 0.95}>
-            {#each nGlue && stage === 2 ? Array.from({ length: nGlue }, (_, i) => i) : [] as i}
+            {#each glueIdx as i}
               {@const p = pos(i, 11)}
               <path d="M{p[0] - 5},{p[1]} q2.5,-5 5,0 t5,0" fill="none" stroke="var(--p-jet)" stroke-width="1.6" opacity="0.8" />
             {/each}
-            {#each stage === 2 ? Array.from({ length: nSea }, (_, i) => i) : [] as i}
+            {#each seaIdx as i}
               {@const p = pos(i, 29)}
               <circle cx={p[0]} cy={p[1]} r={Math.max(2.2, dotR * 0.45)} fill={i % 2 ? 'none' : 'var(--ink-3)'} stroke="var(--ink-3)" stroke-width="1.4" />
             {/each}

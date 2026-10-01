@@ -31,6 +31,9 @@ export interface Quality {
 export const REFERENCE: FinderSettings = { seeding: 'triplets', minHits: 0, roadSigmas: 4, maxChi2: 4 };
 export const DEFAULT_QUALITY: Quality = { noise: 1, dead: 0.01 };
 
+/** The hooks the track finder calls: the reader's versions of these functions can be swapped in. */
+export const PILEUP_HOOKS = ['reco.circleFit', 'reco.houghTransform', 'reco.kalmanUpdate'] as const;
+
 export const PILEUP_POINTS = [0, 10, 25, 50, 100, 140, 200];
 
 export function configFor(q: Quality): DetectorConfig {

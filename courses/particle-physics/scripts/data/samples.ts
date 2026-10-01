@@ -25,12 +25,12 @@ const outDir = join(root, 'static', 'data', 'samples');
 /** Events per preset (the sample the page shows at once) and the run seed. */
 const PLAN: Record<string, { events: number; seed: number }> = {
   zmumu: { events: 20000, seed: 1 },
-  'higgs-gamgam': { events: 40000, seed: 1 },
-  'higgs-4l': { events: 20000, seed: 1 },
-  ttbar: { events: 4000, seed: 1 },
-  dijet: { events: 8000, seed: 1 },
-  minbias: { events: 5000, seed: 1 },
-  'ee-zpole': { events: 20000, seed: 1 },
+  'higgs-gamgam': { events: 16000, seed: 1 },
+  'higgs-4l': { events: 10000, seed: 1 },
+  ttbar: { events: 3000, seed: 1 },
+  dijet: { events: 6000, seed: 1 },
+  minbias: { events: 4000, seed: 1 },
+  'ee-zpole': { events: 10000, seed: 1 },
 };
 
 const NOTES: Record<string, string[]> = {

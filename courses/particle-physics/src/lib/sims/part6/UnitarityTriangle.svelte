@@ -168,6 +168,9 @@
     font-size: 10px;
     fill: var(--ink-3);
     font-family: var(--font-ui);
+    paint-order: stroke;
+    stroke: var(--chart-surface);
+    stroke-width: 3px;
   }
   .lab,
   .ang {

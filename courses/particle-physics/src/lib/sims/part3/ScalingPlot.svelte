@@ -30,7 +30,7 @@
   >
     {#snippet marks({ sx, sy })}
       <rect x={sx(2)} width={sx(20) - sx(2)} y="0" height="1000" fill="var(--grid)" opacity="0.7" />
-      <text x={sx(2) + 4} y="14" class="p3-tag">SLAC’s range, Q² ≈ 2–20 GeV²</text>
+      <text x={sx(2) + 4} y="14" class="p3-tag">an illustrative range, Q² = 2–20 GeV²</text>
       {#each XS as x, i}
         <path d={path(x, sx, sy)} class="p3-line" stroke={COLS[i]} />
         <text x={sx(3e5)} y={sy(F2(x, 550)) - 5} text-anchor="end" class="p3-tag">x = {x}</text>
@@ -38,7 +38,7 @@
     {/snippet}
   </Plot>
   <dl class="p3-out ui">
-    {#each XS as x}<div><dt>F₂(x = {x}) at Q² = 20 over Q² = 2 GeV²</dt><dd>{slac(x).toFixed(2)}</dd></div>{/each}
+    {#each XS as x}<div><dt>F₂ at x = {x}: Q² = 20 over Q² = 2 GeV²</dt><dd>{slac(x).toFixed(2)}</dd></div>{/each}
   </dl>
-  <p class="p3-note ui">Computed from the course's parton distributions, F₂ = Σ e<sub>q</sub>² x (q + q̄) over u, d, s, c, b. In the shaded range where SLAC measured, the curves at the moderate x that SLAC reached are nearly flat: that is Bjorken scaling. The slow rise at small x, and the slight fall at large x, are the scaling violations that QCD predicts. A teaching parametrisation, not data.</p>
+  <p class="p3-note ui">Computed from the course's parton distributions, F₂ = Σ e<sub>q</sub>² x (q + q̄) over u, d, s, c, b. Across the shaded band the curves at x = 0.1 and 0.25 change little (see the numbers): that is Bjorken scaling. At larger x the function falls and at smaller x it rises: the scaling violations that QCD predicts (Chapter 18). A teaching parametrisation, not data.</p>
 </Widget>

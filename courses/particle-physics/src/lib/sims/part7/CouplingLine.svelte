@@ -40,6 +40,7 @@
   const X: [number, number] = [0.3e-3, 600];
   const grid = Array.from({ length: 60 }, (_, i) => 10 ** (Math.log10(0.0003) + ((Math.log10(600) - Math.log10(0.0003)) * i) / 59));
   const fmtM = (m: number) => (m >= 1 ? `${m.toPrecision(4)} GeV` : `${(m * 1000).toPrecision(3)} MeV`);
+  const OFFSET: Record<string, number> = { s: -16, W: -16, c: -16 };
   const MARK: Record<Status, string> = { observed: 'var(--sig-high)', evidence: 'var(--series-1)', 'not yet': 'var(--mute)' };
 </script>
 
@@ -49,7 +50,7 @@
   {/snippet}
   <Plot
     x={{ type: 'log', domain: X, label: 'particle mass [GeV]' }}
-    y={{ type: 'log', domain: [1e-6, 2], label: 'coupling to the Higgs boson: κ m/v for fermions, √κ m/v for W, Z' }}
+    y={{ type: 'log', domain: [1e-6, 2], label: 'coupling to the Higgs boson' }}
     height={340}
     label="Reduced coupling strength against mass on logarithmic axes: the Standard Model line y = m/v and one marker for each particle, coded by how well its coupling has been tested"
   >
@@ -58,7 +59,7 @@
       {#if eps !== 0}
         <path d={grid.map((m, i) => `${i ? 'L' : 'M'}${sx(m).toFixed(1)},${sy(yOf(m, eps)).toFixed(1)}`).join('')} fill="none" stroke="var(--bad)" stroke-width="1.6" stroke-dasharray="6 4" />
       {/if}
-      <text x={sx(0.002)} y={sy(0.002 / v) - 8} class="lbl" fill="var(--p-higgs)">y = m/v (the Standard Model)</text>
+      <text x={sx(1.5)} y={sy(1.5 / v) + 34} class="lbl" fill="var(--p-higgs)">y = m/v: the Standard Model</text>
       {#each pts as p}
         {@const y = yOf(p.m, eps)}
         {#if p.status === 'observed'}
@@ -68,7 +69,7 @@
         {:else}
           <rect x={sx(p.m) - 5} y={sy(y) - 5} width="10" height="10" fill="none" stroke={MARK[p.status]} stroke-width="1.5" transform="rotate(45 {sx(p.m)} {sy(y)})" />
         {/if}
-        <text x={sx(p.m) + 9} y={sy(y) + 14} class="lbl" fill="var(--ink-2)">{p.label}</text>
+        <text x={sx(p.m) + (OFFSET[p.id] ?? 9)} y={sy(y) + 14} class="lbl" fill="var(--ink-2)">{p.label}</text>
       {/each}
     {/snippet}
   </Plot>

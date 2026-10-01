@@ -15,11 +15,17 @@
 
   let { n, caption, title = 'The Higgs self-coupling at high energy (a one-loop toy)' }: { n?: string | number; caption?: string; title?: string } = $props();
 
+  const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+  const sup = (e: number) => String(e).replace(/\d/g, (d) => SUP[+d]!);
   let mt = $state(172.57);
   let mH = $state(125.2);
   const run = $derived(runCouplings(mt, mH, 12));
   const xs = $derived(run.mu.map((m) => Math.log10(m)));
-  const fmtScale = (x: number) => (x === Infinity ? 'never, before the Planck mass' : `${x.toExponential(1).replace('e+', ' × 10^')} GeV`);
+  const fmtScale = (x: number) => {
+    if (x === Infinity) return 'never, before the Planck mass';
+    const e = Math.floor(Math.log10(x));
+    return `${(x / 10 ** e).toFixed(1)} × 10${sup(e)} GeV`;
+  };
   const path = (sx: (v: number) => number, sy: (v: number) => number) => run.lambda.map((l, i) => `${i ? 'L' : 'M'}${sx(xs[i]!).toFixed(1)},${sy(l).toFixed(1)}`).join('');
   const lamMin = $derived(Math.min(-0.05, ...run.lambda) - 0.01);
 </script>
@@ -29,7 +35,7 @@
     <Slider bind:value={mt} min={165} max={180} step={0.05} label="Top quark mass (GeV)" format={(v) => v.toFixed(2)} />
     <Slider bind:value={mH} min={115} max={135} step={0.1} label="Higgs boson mass (GeV)" format={(v) => v.toFixed(1)} />
   {/snippet}
-  <Plot x={{ domain: [Math.log10(mt), Math.log10(M_PLANCK_GEV)], label: 'energy scale μ [GeV]', tickValues: [3, 6, 9, 12, 15, 18], format: (v) => `10^${v}` }} y={{ domain: [lamMin, 0.15], label: 'λ(μ)' }} height={280} label="The Higgs self-coupling lambda as a function of the energy scale, falling through zero at a high scale">
+  <Plot x={{ domain: [Math.log10(mt), Math.log10(M_PLANCK_GEV)], label: 'energy scale μ [GeV]', tickValues: [3, 6, 9, 12, 15, 18], format: (v) => `10${sup(v)}` }} y={{ domain: [lamMin, 0.15], label: 'λ(μ)' }} height={280} label="The Higgs self-coupling lambda as a function of the energy scale, falling through zero at a high scale">
     {#snippet marks({ sx, sy, width, height })}
       <rect x="0" y={sy(0)} width={width} height={Math.max(0, height - sy(0))} fill="var(--bad)" opacity="0.1" />
       <line x1="0" x2={width} y1={sy(0)} y2={sy(0)} stroke="var(--bad)" stroke-dasharray="4 3" />

@@ -19,14 +19,14 @@ options:
   - text: The muon, because it is the most massive of the charged leptons.
     why: 'A muon is heavier than an electron, which is exactly why it radiates and scatters less. It is minimum-ionising: it loses about 1.1 MeV for each g/cm² of lead, about 130 MeV in this block, and keeps going.'
   - text: The neutrino, because it has no charge for the lead to resist.
-    why: 'Having no charge it does not ionise the lead, and it has no strong interaction either. Its only chance is the weak interaction, which is so weak that a 10 GeV neutrino would need millions of kilometres of iron to have an even chance of interacting. It leaves the block unseen.'
+    why: 'Having no charge it does not ionise the lead, and it has no strong interaction either. Its only chance is the weak interaction, which is so weak that a 10 GeV neutrino would need tens of millions of kilometres of iron to have an even chance of interacting. It leaves the block unseen.'
 ```
 
 This chapter works out what each particle does and how big the effect is, using the numbers in the course's own material table (`hep/detector`, rounded from the Particle Data Group's tables of material properties:cite[pdg2024]). The first half is about charged particles that keep their identity as they cross matter: they lose energy to ionisation and change direction by scattering. The second half is about the particles that do not: the electrons and photons, and the hadrons, that multiply into showers.
 
 ## Energy loss by ionisation
 
-Chapter 5 described the loss of energy by a charged particle to the electrons of the atoms along its path, which makes a track visible. The mean rate of that loss, per unit of the mass of material crossed, is given by the **Bethe–Bloch formula**. It is the most important formula in the subject after $p = 0.3BR$, and its shape is worth understanding before its details.
+Chapter 5 described the loss of energy by a charged particle to the electrons of the atoms along its path, which makes a track visible. The mean rate of that loss, per unit of the mass of material crossed, is the :term[stopping power]{id=stopping-power}, and it is given by the **Bethe–Bloch formula**. It is the most important formula in the subject after $p = 0.3BR$, and its shape is worth understanding before its details.
 
 :::equation{#bethe caption="The mean energy lost by ionisation by a particle of charge ze and speed βc in a material, per g/cm² crossed. The shape: it falls as 1/β² at low speed, passes a minimum near βγ ≈ 3–4, and rises slowly (logarithmically) at high speed until the density effect flattens it."}
 $$-\left\langle \frac{dE}{dx}\right\rangle \;=\; \term{K}{K}\,\term{z}{z^2}\,\frac{\term{ZA}{Z}}{A}\,\frac{1}{\term{beta}{\beta^2}}\left[\frac12\ln\frac{2m_ec^2\,\beta^2\gamma^2\,\term{Wmax}{W_{\max}}}{\term{I}{I^2}} \;-\; \beta^2 \;-\; \frac{\term{delta}{\delta(\beta\gamma)}}{2}\right]$$
@@ -84,7 +84,7 @@ The formula has outlived almost everything else in the subject of its time, beca
 
 Four things in the figure matter in practice.
 
-- **The minimum.** Near $\beta\gamma \approx 3$–$4$ the loss is smallest, and it is nearly the same for every material when expressed per g/cm²: 1.66 MeV cm²/g in silicon, 1.45 in iron, 1.12 in lead, 1.99 in water. A particle at the minimum is called **minimum ionising**, and an extraordinary number of particles at the LHC are very close to it, because a particle of any mass with a momentum of a few times its mass is. A muon in a detector is a minimum-ionising particle. This is why Chapter 5's cosmic muon makes the same thin track in a cloud chamber whatever its energy.
+- **The minimum.** Near $\beta\gamma \approx 3$–$4$ the loss is smallest, and it is nearly the same for every material when expressed per g/cm²: 1.66 MeV cm²/g in silicon, 1.45 in iron, 1.12 in lead, 1.99 in water. A particle at the minimum is called :term[minimum ionising]{id=minimum-ionising-particle}, and an extraordinary number of particles at the LHC are very close to it, because a particle of any mass with a momentum of a few times its mass is. A muon in a detector is a minimum-ionising particle. This is why Chapter 5's cosmic muon makes the same thin track in a cloud chamber whatever its energy.
 - **The rise at low momentum** is how slow particles are told apart from fast ones. At a given momentum a proton is much slower than a pion, so it ionises far more. Measuring $dE/dx$ and the momentum (from the curvature) gives the mass, and that is how a pion, a kaon and a proton are separated at momenta below a few GeV/*c*. Chapter 9 uses this.
 - **The relativistic rise** above the minimum is slow, about 10–60 % up to $\beta\gamma = 1000$ with the density effect. A TeV muon loses hardly more by ionisation than a 10 GeV one.
 - **The range.** A particle that loses energy at the rate $S(E) = -dE/dx$ stops after a distance $R = \int_0^{T} dE/S(E)$, where $T$ is its kinetic energy. The right-hand plot is that integral. A 100 MeV proton has a range of 7.7 g/cm² in water (the library gives 7.71 and the NIST tables of proton stopping power 7.72:cite[nist-pstar]), about 7.7 cm, which is why protons of that energy are used to treat tumours deep in the body (Chapter 33): most of the energy is deposited at the end of the range, in the Bragg peak.
@@ -103,7 +103,7 @@ explain: "1.66 MeV cm²/g × 0.0699 g/cm² = 0.116 MeV = 116 keV. At about 3.6 e
 
 ### The fluctuations of a thin layer
 
-The Bethe–Bloch formula is the *mean* loss. In a thin layer the actual loss varies a great deal from particle to particle, because most collisions transfer a little energy but a rare few transfer a lot, and a thin layer may contain none of the rare ones or one. The distribution has a sharp peak and a long tail towards high values, and it was worked out by Lev Landau in 1944.:cite[landau1944] The peak, the **most probable loss**, is lower than the mean, and in a layer of silicon 300 μm thick it is about two thirds of it. Figure 6.2 shows the distribution of the loss of 20,000 simulated muons in layers of different thickness.
+The Bethe–Bloch formula is the *mean* loss. In a thin layer the actual loss varies a great deal from particle to particle, because most collisions transfer a little energy but a rare few transfer a lot, and a thin layer may contain none of the rare ones or one. The distribution (the :term[Landau distribution]{id=landau-distribution}) has a sharp peak and a long tail towards high values, and it was worked out by Lev Landau in 1944.:cite[landau1944] The peak, the **most probable loss**, is lower than the mean, and in a layer of silicon 300 μm thick it is about two thirds of it. Figure 6.2 shows the distribution of the loss of 20,000 simulated muons in layers of different thickness.
 
 ::landau-loss{n="6.2" caption="The energy lost by minimum-ionising muons in a thin layer of material: a peak (the most probable value), a tail of rare large losses (delta rays) and a mean from Bethe–Bloch that lies above the peak. The thicker the layer, the closer the peak comes to the mean and the more nearly Gaussian the distribution. The samples are from the library's sampleEnergyLoss, a Landau distribution with a Bichsel peak position, cut at the largest possible single transfer."}
 
@@ -111,7 +111,7 @@ For a detector the lesson is that a pixel's signal cannot be used as a precise m
 
 ## Scattering: why tracks wander
 
-A charged particle is also deflected by the electric fields of the atomic nuclei it passes. Each deflection is tiny, but there are very many, and the sum is a random walk in angle. The result is **multiple Coulomb scattering**: after crossing a thickness $x$ of material the direction has changed by a random angle with a roughly Gaussian distribution, whose width is given with about 11 % accuracy by Highland's formula.:cite[chambers-highland1975]
+A charged particle is also deflected by the electric fields of the atomic nuclei it passes. Each deflection is tiny, but there are very many, and the sum is a random walk in angle. The result is :term[multiple Coulomb scattering]{id=multiple-scattering}: after crossing a thickness $x$ of material the direction has changed by a random angle with a roughly Gaussian distribution, whose width is given with about 11 % accuracy by Highland's formula.:cite[chambers-highland1975]
 
 :::equation{#highland caption="The width of the projected scattering angle of a particle of momentum p and speed βc after crossing a thickness x of a material with radiation length X0 (Highland, valid to about 11 % for 10⁻³ < x/X0 < 100)."}
 $$\term{th}{\theta_0} \;=\; \frac{13.6\ \text{MeV}}{\term{bp}{\beta c\,p}}\;\term{zz}{z}\;\sqrt{\term{xx}{x/X_0}}\;\Big[\,1 + 0.038\ln\big(x z^2/(X_0\beta^2)\big)\Big]$$
@@ -140,7 +140,7 @@ xx:
 ```
 :::
 
-The thickness is measured in **radiation lengths**, a unit this chapter will come to use constantly. The radiation length $X_0$ of a material is defined by radiation (the energy a high-energy electron loses by emitting photons, next section) but it is also the natural unit of scattering, because both effects come from the same electric field of the nucleus. It depends on the material mostly through the charge of its nuclei: for a material of atomic number $Z$ and mass number $A$ it is roughly $716\,A/\big(Z(Z+1)\ln(287/\sqrt{Z})\big)$ g/cm². That formula gives 6.3 g/cm² for lead (the library's table has 6.37) and 14.1 for iron (13.84). Divide by the density to get a length:
+The thickness is measured in :term[radiation lengths]{id=radiation-length}, a unit this chapter will come to use constantly. The radiation length $X_0$ of a material is defined by radiation (the energy a high-energy electron loses by emitting photons, next section) but it is also the natural unit of scattering, because both effects come from the same electric field of the nucleus. It depends on the material mostly through the charge of its nuclei: for a material of atomic number $Z$ and mass number $A$ it is roughly $716\,A/\big(Z(Z+1)\ln(287/\sqrt{Z})\big)$ g/cm². That formula gives 6.3 g/cm² for lead (the library's table has 6.37) and 14.1 for iron (13.84). Divide by the density to get a length:
 
 | Material | X₀ (g/cm²) | X₀ (cm) | λ<sub>I</sub> (cm) | E<sub>c</sub> (MeV) | Molière radius (cm) | minimum dE/dx (MeV cm²/g) |
 |---|---|---|---|---|---|---|
@@ -155,19 +155,19 @@ The thickness is measured in **radiation lengths**, a unit this chapter will com
 
 ## Radiation and the critical energy
 
-A charged particle accelerated by the electric field of a nucleus radiates. A light particle is accelerated more, and the energy lost to radiation per unit length at a given energy goes as the inverse square of the mass, so for muons it is $(0.511/105.7)^2 \approx 2\times 10^{-5}$ of what it is for electrons. For electrons the effect is large. A high-energy electron radiates photons (this is *bremsstrahlung*, "braking radiation") at a rate proportional to its energy, and the energy loss per unit length is
+A charged particle accelerated by the electric field of a nucleus radiates. A light particle is accelerated more, and the energy lost to radiation per unit length at a given energy goes as the inverse square of the mass, so for muons it is $(0.511/105.7)^2 \approx 2\times 10^{-5}$ of what it is for electrons. For electrons the effect is large. A high-energy electron radiates photons (this is :term[bremsstrahlung]{id=bremsstrahlung}, "braking radiation") at a rate proportional to its energy, and the energy loss per unit length is
 
 $$ -\left(\frac{dE}{dx}\right)_{\rm rad} = \frac{E}{X_0}, \qquad\text{so}\qquad E(x) = E_0\,e^{-x/X_0}. $$
 
 That is the definition of the radiation length: *the distance over which an electron's energy falls, by radiation alone, to $1/e$ of its value*. A photon of high energy converts into an electron–positron pair in the field of a nucleus, with a mean free path of $9/7$ of a radiation length.
 
-Ionisation loss, in contrast, is nearly independent of energy: a few MeV per $X_0$. So at low energy ionisation wins and at high energy radiation wins, and between the two there is an energy at which they are equal. That is the **critical energy** $E_c$: about 7.4 MeV in lead, 22 MeV in iron and 78 MeV in water, and it will determine how a shower stops. Figure 6.3 shows the crossing, computed from the library's electron stopping power.
+Ionisation loss, in contrast, is nearly independent of energy: a few MeV per $X_0$. So at low energy ionisation wins and at high energy radiation wins, and between the two there is an energy at which they are equal. That is the :term[critical energy]{id=critical-energy} $E_c$: about 7.4 MeV in lead, 22 MeV in iron and 78 MeV in water, and it will determine how a shower stops. Figure 6.3 shows the crossing, computed from the library's electron stopping power.
 
 ::critical-energy{n="6.3" caption="Energy lost by an electron in one radiation length of material, to ionisation (dashed, nearly constant) and to radiation (solid, equal to the electron's energy E). They cross at the critical energy, which Rossi's definition places at the point where the ionisation loss per radiation length equals the energy. Below it an electron is soaked up by ionisation; above it radiation dominates and a shower grows. The crossing computed from the library's Bethe–Bloch agrees with the library's table of critical energies to 2 % for all five materials."}
 
 ## Electromagnetic showers: Heitler's model
 
-Put the two processes together. A high-energy electron radiates a photon (taking a share of its energy); the photon converts into an electron and a positron (sharing its energy between them); each of those radiates, and so on. The number of particles multiplies and the energy per particle falls, until the energy per particle is below $E_c$ and ionisation takes over. This is an **electromagnetic shower**, and a model by Walter Heitler captures its essentials with almost no mathematics.:cite[heitler1954]
+Put the two processes together. A high-energy electron radiates a photon (taking a share of its energy); the photon converts into an electron and a positron (sharing its energy between them); each of those radiates, and so on. The number of particles multiplies and the energy per particle falls, until the energy per particle is below $E_c$ and ionisation takes over. This is an :term[electromagnetic shower]{id=electromagnetic-shower}, and a model by Walter Heitler captures its essentials with almost no mathematics.:cite[heitler1954]
 
 Heitler's model has three rules.
 
@@ -193,7 +193,7 @@ options:
     why: 'The depth does depend on the energy, but only slowly (as ln E). 25 X₀ is deep enough for the energies at the LHC, but a block that contained 1 GeV electrons well (13 X₀) would let 100 GeV electrons leak.'
 ```
 
-The real shower is messier. Photons and electrons do not split exactly in half, the number of particles in a generation counts photons as well as electrons, and the energy sharing is random. A better description is a smooth profile in depth, a gamma distribution, with a maximum at $t_{\max} = \ln(E_0/E_c) - 0.5$ for an electron (and $+0.5$ for a photon) in units of $X_0$.:cite[pdg2024] The toy and the better description agree on the scaling, and differ in the details by factors of order one (Heitler's tree has its maximum at $\ln(E_0/E_c)$ rounded up to a whole number of splitting lengths, so it is between 0.5 and 1.2 $X_0$ deeper than the profile's). The shower's *width* is set by the **Molière radius**, $R_M = 21.2\ \text{MeV}\times X_0/E_c$ (1.6 cm in lead, about 10 cm in water), the radius of a cylinder around the axis that holds about 90 % of the energy: the multiple scattering of the low-energy particles spreads the shower sideways, and the scale of that spreading is the same in every material when measured in $R_M$. A shower is a thin pencil, a couple of centimetres across in lead, and one calorimeter cell is about the width of one.
+The real shower is messier. Photons and electrons do not split exactly in half, the number of particles in a generation counts photons as well as electrons, and the energy sharing is random. A better description is a smooth profile in depth, a gamma distribution, with a maximum at $t_{\max} = \ln(E_0/E_c) - 0.5$ for an electron (and $+0.5$ for a photon) in units of $X_0$.:cite[pdg2024] The toy and the better description agree on the scaling, and differ in the details by factors of order one (Heitler's tree has its maximum at $\ln(E_0/E_c)$ rounded up to a whole number of splitting lengths, so it is between 0.5 and 1.2 $X_0$ deeper than the profile's). The shower's *width* is set by the :term[Molière radius]{id=moliere-radius}, $R_M = 21.2\ \text{MeV}\times X_0/E_c$ (1.6 cm in lead, about 10 cm in water), the radius of a cylinder around the axis that holds about 90 % of the energy: the multiple scattering of the low-energy particles spreads the shower sideways, and the scale of that spreading is the same in every material when measured in $R_M$. A shower is a thin pencil, a couple of centimetres across in lead, and one calorimeter cell is about the width of one.
 
 Figure 6.4 is the shower lab. Choose a particle, its energy and a material, and the page draws what the library computes: for an electron or photon, Heitler's cascade (using the library's `heitlerShower`, or yours, once you have written it) and the energy deposited against depth; for a pion, the hadronic profile of the next section; for a muon, the energy it loses.
 
@@ -353,7 +353,7 @@ A shower is a **branching process**, a tree that grows by recursion until a stop
 
 ## Hadronic showers
 
-A hadron, a particle made of quarks, such as a pion, a proton or a neutron, is subject to the strong interaction as well as the electromagnetic one. A charged hadron ionises like any other charged particle, but in addition it can collide with an atomic *nucleus*. In such a collision the nucleus breaks up and new hadrons are made (mostly pions), which have their own collisions. The distance a hadron travels before its first nuclear collision is exponentially distributed, with mean the **nuclear interaction length** $\lambda_I$, which is longer than the radiation length by a large factor: 17.6 cm in lead and 16.8 cm in iron (against 0.56 and 1.76 cm). The reason is that a nucleus is a small target. The cascade that follows is called a **hadronic shower**.
+A hadron, a particle made of quarks, such as a pion, a proton or a neutron, is subject to the strong interaction as well as the electromagnetic one. A charged hadron ionises like any other charged particle, but in addition it can collide with an atomic *nucleus*. In such a collision the nucleus breaks up and new hadrons are made (mostly pions), which have their own collisions. The distance a hadron travels before its first nuclear collision is exponentially distributed, with mean the :term[nuclear interaction length]{id=interaction-length} $\lambda_I$, which is longer than the radiation length by a large factor: 17.6 cm in lead and 16.8 cm in iron (against 0.56 and 1.76 cm). The reason is that a nucleus is a small target. The cascade that follows is called a :term[hadronic shower]{id=hadronic-shower}.
 
 A hadronic shower is deeper, wider and messier than an electromagnetic one. It is deeper because $\lambda_I$ is long; its maximum is at about $(0.2\ln E + 0.7)$ interaction lengths (E in GeV), and 95 % of a 100 GeV shower is within about 6 $\lambda_I$ of the first interaction in the library's model. That is why hadron calorimeters are made from thick absorber of iron or copper, about 8–10 interaction lengths deep; the HCAL of the course detector is 10 $\lambda_I$ of iron, 1.7 metres. It is messier because a good part of the energy goes into things that cannot be seen: neutrinos from pion decays, the energy it takes to break up nuclei and slow neutrons. Part of the energy goes into $\pi^0$ mesons, which decay at once to two photons and start electromagnetic showers inside the hadronic one. As a result the response of a real calorimeter to hadrons is lower than to electrons of the same energy and the resolution is worse: the course detector's HCAL has $\sigma/E = 100\%/\sqrt{E} \oplus 5\%$, the ECAL 2.7 %/$\sqrt{E}$ ⊕ 0.3 %. (The symbol ⊕ means addition in quadrature.) The library does not simulate the particles of a hadronic shower one by one: it draws the visible energy from a gamma-distributed profile with these resolution terms.
 
@@ -367,7 +367,7 @@ A muon is 207 times as heavy as an electron, so it radiates $4\times10^{4}$ time
 
 Two further effects are used for particle identification, not for measuring energy. Both are small, and both come from the same fact: a charged particle moving faster than light does in a medium disturbs it.
 
-**Cherenkov radiation.** The speed of light in a medium of refractive index $n$ is $c/n$, and a particle can travel faster than that without breaking any law, since its speed is below $c$. When it does, it emits light at a fixed angle to its path, as a boat's wake forms a cone, with
+**:term[Cherenkov radiation]{id=cherenkov-radiation}.** The speed of light in a medium of refractive index $n$ is $c/n$, and a particle can travel faster than that without breaking any law, since its speed is below $c$. When it does, it emits light at a fixed angle to its path, as a boat's wake forms a cone, with
 
 $$ \cos\theta_C = \frac{1}{n\beta}, $$
 
@@ -377,7 +377,7 @@ and nothing at all when $\beta < 1/n$. In water ($n = 1.33$) the threshold is $\
 In 1934 Pavel Cherenkov, working in Moscow, published observations of visible light from pure liquids bombarded with the gamma rays of a radioactive source, under the title "Visible emission of clean liquids by action of γ radiation".:cite[cherenkov1934] The light was not the ordinary fluorescence that was already known. Three years later Ilya Frank and Igor Tamm explained it as the coherent radiation of a charged particle moving faster than light in the medium.:cite[frank1937] The three shared the 1958 Nobel Prize in Physics.:cite[nobel-cherenkov] Cherenkov counters, and later the huge water tanks of neutrino physics, are the descendants.
 :::
 
-**Transition radiation.** When a very fast particle crosses the boundary between two materials with different dielectric properties it emits radiation, a few X-ray photons, with a total energy that grows with the particle's Lorentz factor $\gamma$. A stack of many thin foils with gaps between them multiplies the number of boundaries. Since $\gamma$ is $E/m$, an electron radiates when a pion of the same momentum does not: this is used to tell electrons from pions at momenta where other methods fail. The straw-tube tracker of ATLAS is interleaved with radiator material for exactly this purpose.:cite[atlas2008]
+**:term[Transition radiation]{id=transition-radiation}.** When a very fast particle crosses the boundary between two materials with different dielectric properties it emits radiation, a few X-ray photons, with a total energy that grows with the particle's Lorentz factor $\gamma$. A stack of many thin foils with gaps between them multiplies the number of boundaries. Since $\gamma$ is $E/m$, an electron radiates when a pion of the same momentum does not: this is used to tell electrons from pions at momenta where other methods fail. The straw-tube tracker of ATLAS is interleaved with radiator material for exactly this purpose.:cite[atlas2008]
 
 ## Why neutrinos escape
 
@@ -387,13 +387,13 @@ Everything above came from the electromagnetic interaction, or the strong. A neu
 id: neutrino-mfp
 title: The mean free path of a neutrino in iron
 prompt: 'A neutrino of 10 GeV crosses iron (density 7.87 g/cm³). Take its cross-section per nucleon to be 0.7 × 10⁻³⁸ cm² for each GeV of energy, and the number of nucleons per cm³ of iron to be density × Avogadro''s number (about 6 × 10²³ per gram). What is its mean free path, in kilometres?'
-answer: 3.0e6
+answer: 3.0e7
 unit: km
 factor: 3
 hints:
   - The cross-section at 10 GeV is 7 × 10⁻³⁸ cm². The number of nucleons per cm³ is about 7.87 × 6.02 × 10²³ = 4.7 × 10²⁴.
   - The mean free path is 1/(n σ), in centimetres. Divide by 10⁵ for kilometres.
-explain: "n σ = 4.7 × 10²⁴ × 7 × 10⁻³⁷ = 3.3 × 10⁻¹² per cm, so the mean free path is 3 × 10¹¹ cm = 3 × 10⁶ km. The diameter of the Earth is 1.3 × 10⁴ km, so the Earth is about 240 times too thin to stop half of 10 GeV neutrinos if it were made of iron throughout. A detector a few metres thick has a probability of about 10⁻⁹ of catching one. To see neutrinos anyway, experiments use beams of 10¹⁷ and more neutrinos and tanks of thousands of tonnes (Chapter 31). At the LHC the neutrinos of a collision cannot be detected, only deduced, from the momentum that is missing (Chapter 7)."
+explain: "n σ = 4.7 × 10²⁴ × 7 × 10⁻³⁸ = 3.3 × 10⁻¹³ per cm, so the mean free path is 3 × 10¹² cm = 3 × 10⁷ km. The diameter of the Earth is 1.3 × 10⁴ km, so an Earth made of iron throughout would be some 2,400 times too thin to stop half of the 10 GeV neutrinos crossing it. A detector three metres thick catches about one in 10¹⁰. To see neutrinos anyway, experiments need very large numbers of them and very massive detectors (Chapter 31). At the LHC the neutrinos of a collision cannot be detected, only deduced, from the momentum that is missing (Chapter 7)."
 ```
 
 ## Under the hood: material effects as random numbers

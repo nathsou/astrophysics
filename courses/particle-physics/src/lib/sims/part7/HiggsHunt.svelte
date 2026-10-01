@@ -108,10 +108,10 @@
 
 <Widget {title} {n} {caption} kind="Simulation">
   {#snippet controls()}
-    <Slider bind:value={mu} min={0} max={3} step={0.1} label="Signal strength μ (1 = the Standard Model, with K = 3.4)" format={(v) => v.toFixed(1)} />
+    <Slider bind:value={mu} min={0} max={3} step={0.1} labelHtml={'<span style="text-transform:none;font-variant:normal">Signal strength μ (1 = the Standard Model, with K = 3.4)</span>'} format={(v) => v.toFixed(1)} />
     <Slider bind:value={lumi} min={0.25} max={1} step={0.05} label="Luminosity (fraction of 9.9 fb⁻¹ at 8 TeV)" format={(v) => `${(v * 9.9).toFixed(1)} fb⁻¹`} />
-    <Slider bind:value={ptFrac1} min={0.2} max={0.5} step={0.01} label="Leading photon pT / mγγ above" format={(v) => v.toFixed(2)} />
-    <Slider bind:value={ptFrac2} min={0.15} max={0.4} step={0.01} label="Second photon pT / mγγ above" format={(v) => v.toFixed(2)} />
+    <Slider bind:value={ptFrac1} min={0.2} max={0.5} step={0.01} labelHtml={'<span style="text-transform:none;font-variant:normal">Leading photon p<sub>T</sub> / m<sub>γγ</sub> above</span>'} format={(v) => v.toFixed(2)} />
+    <Slider bind:value={ptFrac2} min={0.15} max={0.4} step={0.01} labelHtml={'<span style="text-transform:none;font-variant:normal">Second photon p<sub>T</sub> / m<sub>γγ</sub> above</span>'} format={(v) => v.toFixed(2)} />
     <Slider bind:value={isoTrackMax} min={0.02} max={0.5} step={0.01} label="Track isolation below" format={(v) => v.toFixed(2)} />
     <span class="row">
       <Toggle bind:checked={useTrigger} label="Require the trigger" />

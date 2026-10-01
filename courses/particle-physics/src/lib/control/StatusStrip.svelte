@@ -47,8 +47,7 @@
   }
   .k {
     font-size: 0.64rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    letter-spacing: 0.04em;
     color: var(--mute);
   }
   .v {

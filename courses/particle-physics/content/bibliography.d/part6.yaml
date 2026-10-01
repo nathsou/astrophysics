@@ -402,3 +402,27 @@ lhcb2019:
   title: Observation of CP violation in charm decays
   venue: Physical Review Letters 122, 211803
   url: https://doi.org/10.1103/PhysRevLett.122.211803
+campagnari1997:
+  authors: Claudio Campagnari, Melissa Franklin
+  year: 1997
+  title: The discovery of the top quark
+  venue: Reviews of Modern Physics 69, 137–176
+  url: https://doi.org/10.1103/RevModPhys.69.137
+cdf1995:
+  authors: F. Abe et al. (CDF Collaboration)
+  year: 1995
+  title: Observation of top quark production in p̄p collisions with the Collider Detector at Fermilab
+  venue: Physical Review Letters 74, 2626–2631
+  url: https://doi.org/10.1103/PhysRevLett.74.2626
+d01995:
+  authors: S. Abachi et al. (D0 Collaboration)
+  year: 1995
+  title: Observation of the top quark
+  venue: Physical Review Letters 74, 2632–2637
+  url: https://doi.org/10.1103/PhysRevLett.74.2632
+czakon2014:
+  authors: Michał Czakon, Alexander Mitov
+  year: 2014
+  title: 'Top++: a program for the calculation of the top-pair cross-section at hadron colliders'
+  venue: Computer Physics Communications 185, 2930–2938
+  url: https://doi.org/10.1016/j.cpc.2014.06.021

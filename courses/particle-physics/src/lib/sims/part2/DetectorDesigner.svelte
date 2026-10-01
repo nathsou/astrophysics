@@ -15,8 +15,10 @@
   import EventDisplay from '$lib/display/EventDisplay.svelte';
   import { geometryFromDetectorConfig } from '$lib/display/geometry.ts';
   import { ecalOuterRadius, hcalOuterRadius } from '../../hep/detector/index.ts';
-  import { BUDGET, DEFAULT_DESIGN, LIMITS, buildConfig, cost, gunEventFor, measure, type DesignParams, type Measurements } from './designer.ts';
-  import { savedFor, useMine } from './mine.ts';
+  import { BUDGET, DEFAULT_DESIGN, LIMITS, buildConfig, cost, type DesignParams, type Measurements } from './designer.ts';
+  import { savedFor } from './mine.ts';
+  import { loadMine } from '../../code/mine.ts';
+  import type { DesignerRequest, DesignerResponse } from './designer.worker.ts';
   import type { FullEvent } from '../../hep/event/index.ts';
 
   let { n: figNo, caption, title = 'Detector designer' }: { n?: string | number; caption?: string; title?: string } = $props();
@@ -41,33 +43,54 @@
   let meas = $state<Measurements | null>(null);
   let ev = $state.raw<FullEvent | null>(null);
   let busy = $state(true);
+  let note = $state('');
+
+  let worker: Worker | undefined;
+  let jobId = 0;
+  function startWorker() {
+    worker?.terminate();
+    worker = new Worker(new URL('./designer.worker.ts', import.meta.url), { type: 'module' });
+    worker.onmessage = (e: MessageEvent<DesignerResponse>) => {
+      const r = e.data;
+      if (r.id !== jobId) return;
+      busy = false;
+      if ('error' in r) {
+        note = `The simulation stopped: ${r.error}`;
+        return;
+      }
+      meas = r.meas;
+      ev = r.event;
+      const errs = Object.entries(r.errors);
+      note = errs.length ? `Could not load your code (${errs.map(([, v]) => v).join('; ')}); the library's circle fit is used.` : '';
+    };
+  }
 
   onMount(() => {
     mineAvailable = savedFor(['reco.circleFit']).length > 0;
-    return () => useMine(['reco.circleFit'], false);
+    startWorker();
+    return () => worker?.terminate();
   });
-  function toggleMine(on: boolean) {
-    useMine(['reco.circleFit'], on);
-    recompute();
-  }
 
   let timer: ReturnType<typeof setTimeout> | undefined;
   function recompute() {
     busy = true;
     clearTimeout(timer);
     const d = { ...design };
+    const gun = { pdg: gunPdg, pt: gunPt, eta: 0.4, phi: 0.8, seed: shot };
+    const mine: Record<string, string> = {};
+    if (useMineOn) {
+      const m = loadMine()['reco.circleFit'];
+      if (m) mine['reco.circleFit'] = m.code;
+    }
     timer = setTimeout(() => {
-      try {
-        meas = measure(d);
-        ev = gunEventFor(buildConfig(d), gunPdg, gunPt, 0.4, 0.8, shot);
-      } catch (e) {
-        meas = null;
-      }
-      busy = false;
+      if (!worker) return;
+      // a new request replaces the one in progress: restart the worker so that the old simulation stops
+      startWorker();
+      worker!.postMessage({ id: ++jobId, design: d, gun, mine } satisfies DesignerRequest);
     }, 220);
   }
   $effect(() => {
-    void design.B, design.trackerRadius, design.stripLayers, design.ecalDepth, design.ecalType, design.hcalDepth, gunPdg, gunPt, shot;
+    void design.B, design.trackerRadius, design.stripLayers, design.ecalDepth, design.ecalType, design.hcalDepth, gunPdg, gunPt, shot, useMineOn;
     recompute();
     return () => clearTimeout(timer);
   });
@@ -141,7 +164,7 @@
       bind:value={ecalType}
     />
     {#each PRESETS as p}<Button size="sm" onclick={() => apply(p.set)}>{p.name}</Button>{/each}
-    {#if mineAvailable}<Toggle bind:checked={useMineOn} label="use my code (circleFit)" onchange={toggleMine} />{/if}
+    {#if mineAvailable}<Toggle bind:checked={useMineOn} label="use my code (circleFit)" />{/if}
   {/snippet}
 
   <div class="top">
@@ -214,6 +237,7 @@
     {:else if allMet}Every goal is met, within budget: {c.total.toFixed(1)} of {BUDGET}.
     {:else if meas}Within budget, but some goals are not met yet.{/if}
   </p>
+  {#if note}<p class="ui tiny">{note}</p>{/if}
   <p class="ui tiny">Numbers from 200 simulated muons at each momentum, 100 electrons and 200 pions at each energy, with the muons fitted with the library's circle fit on the hits of each muon (so the pattern recognition is taken as perfect). They fluctuate by about 5–10 % from one design to the next: the simulation is seeded, so the same design always gives the same numbers.</p>
 
   <h5 class="ui">Fire one particle into it</h5>

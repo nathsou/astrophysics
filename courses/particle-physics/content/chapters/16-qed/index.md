@@ -33,7 +33,7 @@ s:
 
 Here $\overline{|\mathcal M|^2}$ is the squared amplitude, averaged over the four spin states of the incoming pair and summed over those of the outgoing pair. What remains is to compute it.
 
-The result, derived below with helicity amplitudes, is
+The result, derived below with :term[helicity amplitudes]{id=helicity-amplitude}, is
 
 :::equation{#result caption="The tree-level QED cross-section of e⁺e⁻ → μ⁺μ⁻, for massless leptons."}
 $$\frac{d\sigma}{d\Omega} = \frac{\term{alpha}{\alpha}^2}{4\,\term{s2}{s}}\,\bigl(1 + \term{cos}{\cos^2\theta}\bigr), \qquad \sigma = \frac{4\pi\alpha^2}{3s} = \frac{86.8\ \text{nb}}{s\,[\text{GeV}^2]}$$
@@ -259,9 +259,9 @@ $$\frac{d\sigma}{d\cos\theta} = \frac{\pi\alpha^2}{s}\left[\frac{t^2+u^2}{s^2} +
 
 The three terms are the s-channel squared, the t-channel squared and their interference. The first is exactly the e⁺e⁻ → μ⁺μ⁻ shape, (1 + cos²θ)/2 in units of πα²/*s*; the course's tests check this, and that the three add up to the library's `bhabhaDiffXsec`. The interference is negative, as it must be for identical fermions in the two channels (the relative sign from Fermi statistics, Chapter 3).
 
-::angular-shapes{n="16.2" caption="Bhabha scattering in its three parts, on a logarithmic scale. The s-channel part is e⁺e⁻ → μ⁺μ⁻ and is flat. The t-channel part has a 1/(1 − cos θ)² pole: at small angles the electron and positron barely notice each other and the photon exchange is Rutherford scattering, with the 1/sin⁴(θ/2) of Chapter 4. Near θ = 0 the total is that pole."}
+::angular-shapes{n="16.2" caption="Bhabha scattering in its three parts, on a logarithmic scale. The s-channel part is e⁺e⁻ → μ⁺μ⁻ and is nearly flat. The t-channel part has a 1/(1 − cos θ)² pole: at small angles the electron and positron barely notice each other and the photon exchange is Rutherford scattering, with the 1/sin⁴(θ/2) of Chapter 4. Near θ = 0 the total is that pole."}
 
-At small angles the t-channel term dominates completely. Near θ = 0, *t* → −*s*θ²/4 and the formula tends to $(\pi\alpha^2/s)\cdot 2s^2/t^2 \propto 1/\sin^4(\theta/2)$, the Rutherford formula of Chapter 4, with the electron scattering off the field of the positron. At 10 GeV and within |cos θ| < 0.9 the Bhabha cross-section is 39 nb, forty-five times that of muon pairs, and the forward peak carries most of it. Because the small-angle cross-section is so large and so well calculable, Bhabha scattering is the standard way to count collisions in an e⁺e⁻ collider: measure how many Bhabha events you see at small angles, divide by the calculated cross-section, and you have the luminosity. The LEP experiments did this, and Chapter 23 returns to the consequences of the precision.
+At small angles the t-channel term dominates completely. Near θ = 0, *t* → −*s*θ²/4 and the formula tends to $(\pi\alpha^2/s)\cdot 2s^2/t^2 \propto 1/\sin^4(\theta/2)$, the Rutherford formula of Chapter 4, with the electron scattering off the field of the positron. At 10 GeV and within |cos θ| < 0.9 the Bhabha cross-section is 39 nb, forty-five times that of muon pairs, and the forward peak carries most of it. Because the small-angle cross-section is so large and so well calculable, :term[Bhabha scattering]{id=bhabha-scattering} is the standard way to count collisions in an e⁺e⁻ collider: measure how many Bhabha events you see at small angles, divide by the calculated cross-section, and you have the luminosity. The LEP experiments did this, and Chapter 23 returns to the consequences of the precision.
 
 ## Generating the events: Monte Carlo and unweighting
 
@@ -269,7 +269,7 @@ The collider figure needs to turn a formula into events. Two techniques make thi
 
 **Monte Carlo integration.** To integrate a function *f*(*x*) over an interval, evaluate it at *N* random points and average: $\int_a^b f\,dx \approx (b-a)\langle f\rangle$, with an error $(b-a)\,\sigma_f/\sqrt N$. The error falls as $1/\sqrt N$ whatever the dimension of the integral, which is why it is used for integrals over the phase space of several particles. The generator's `crossSection(process, sqrtS, nEvents)` does this and returns the cross-section with its error, next to the analytic value where one exists. For e⁺e⁻ → μ⁺μ⁻ the integrand is 1 + cos²θ, and the Monte Carlo result agrees with 4πα²/3s within the error, as the test suite demands.
 
-**Unweighting.** Integration gives a cross-section. A generator must also produce *events*, each a full set of particle momenta, distributed as the theory says, so that a detector simulation can process them one at a time. The simplest way is **accept–reject**, which you met in Chapter 4: draw a point *x* uniformly, compute its weight *w* = *f*(*x*), and accept it with probability *w*/*w*<sub>max</sub>, where *w*<sub>max</sub> is at least the largest weight. The accepted points are distributed as *f*, with all weights equal to one. The fraction of points kept, the **efficiency**, is ⟨*w*⟩/*w*<sub>max</sub>: for 1 + cos²θ under a flat bound of 2 it is (4/3)/2 = 2/3, which the test suite checks. A weight much larger than typical makes the efficiency poor, which is why real generators spend effort on importance sampling and on the VEGAS algorithm that learns a good sampling density.
+**:term[Unweighting]{id=unweighting}.** Integration gives a cross-section. A generator must also produce *events*, each a full set of particle momenta, distributed as the theory says, so that a detector simulation can process them one at a time. The simplest way is **accept–reject**, which you met in Chapter 4: draw a point *x* uniformly, compute its weight *w* = *f*(*x*), and accept it with probability *w*/*w*<sub>max</sub>, where *w*<sub>max</sub> is at least the largest weight. The accepted points are distributed as *f*, with all weights equal to one. The fraction of points kept, the **efficiency**, is ⟨*w*⟩/*w*<sub>max</sub>: for 1 + cos²θ under a flat bound of 2 it is (4/3)/2 = 2/3, which the test suite checks. A weight much larger than typical makes the efficiency poor, which is why real generators spend effort on importance sampling and on the VEGAS algorithm that learns a good sampling density.
 
 ```code
 id: qed-unweight
@@ -388,7 +388,7 @@ A point heavier than the maximum so far raises it and is kept, which makes the h
 
 ## What the loops do
 
-The tree-level cross-section is the first term of a series. The others, in the diagrams of Figure 15.2, are small, and yet measured to astonishing precision. One of them is **the magnetic moment of the electron**.
+The tree-level cross-section is the first term of a series. The others, in the diagrams of Figure 15.2, are small, and yet measured to astonishing precision. One of them is **the :term[anomalous magnetic moment]{id=anomalous-magnetic-moment} of the electron**.
 
 An electron has a magnetic moment, the strength of its response to a magnetic field, which is conventionally written $\mu = g\,\frac{e\hbar}{2m}\,S$ with *S* the spin in units of ħ. Dirac's equation (Chapter 9) predicts exactly *g* = 2. The vertex correction of Chapter 15, in which the electron emits and reabsorbs a photon while it interacts with the external field, changes the value to
 
@@ -413,15 +413,19 @@ The first term, **Schwinger's**, is one diagram: *a*<sub>e</sub> = α/2π = 0.00
 
 The first-term-alone estimate is within 0.15 % of the measurement: one diagram. The electron's magnetic moment is the most precisely tested prediction of physics. Chapter 32 returns to the same quantity for the muon, where the heavier particle is more sensitive to new physics and the agreement is the subject of an open question.
 
-:::history{year=1947 title="The Lamb shift, g − 2, and Schwinger's α/2π" people="Willis Lamb, Robert Retherford, Polykarp Kusch, Henry Foley, Julian Schwinger" source="Sources: Lamb and Retherford (1947); Kusch and Foley (1948); Schwinger (1948); Nobel Foundation (1955)."}
+:::history{year=1947 title="The Lamb shift and Kusch's g − 2" people="Willis Lamb, Robert Retherford, Polykarp Kusch, Henry Foley" source="Sources: Lamb and Retherford (1947); Bethe (1947); Kusch and Foley (1948); Nobel Foundation (1955)."}
 Dirac's equation for the hydrogen atom says that the 2S<sub>1/2</sub> and 2P<sub>1/2</sub> levels have exactly the same energy. In 1947, at Columbia University, Willis Lamb and Robert Retherford used a microwave technique to measure the difference and found the 2S level higher, by about 1000 MHz.:cite[p4-lamb1947] The result was discussed at the Shelter Island conference that June (Chapter 15). Hans Bethe calculated, within weeks, a shift of the right size by treating the electron's interaction with the radiation field and discarding the infinite energy that a free electron would have anyway, which is absorbed into its mass.:cite[p4-bethe1947] The modern value of the splitting is 1057.8 MHz, an energy of 4.4 μeV.
 
-In the same months Polykarp Kusch and Henry Foley, also at Columbia, measured the *g*-factors of atoms in a magnetic field, from which the electron's own *g* follows, and found it about 0.1 % above Dirac's value: *g* = 2.00238 ± 0.00006, as they reported it.:cite[p4-kusch1948] In 1948 Julian Schwinger calculated the first correction, *a* = α/2π = 0.00116, in agreement.:cite[p4-schwinger1948] Lamb and Kusch shared the 1955 Nobel Prize in Physics for the two measurements.:cite[p4-nobel1955] The work of 1947–48 is what turned quantum electrodynamics from a formalism that gave infinities into a theory that could be tested: the calculated numbers were finite and matched. The diagrams of Chapter 15 were the next step.
+In the same months Polykarp Kusch and Henry Foley, also at Columbia, measured the *g*-factors of atoms in a magnetic field, from which the electron's own *g* follows, and found it about 0.1 % above Dirac's value: *g* = 2.00238 ± 0.00006, as they reported it.:cite[p4-kusch1948] Lamb and Kusch shared the 1955 Nobel Prize in Physics for the two measurements.:cite[p4-nobel1955] Both results were effects of the quantum field's loops, which Dirac's equation does not contain.
+:::
+
+:::history{year=1948 title="Schwinger's α/2π" people="Julian Schwinger" source="Source: Schwinger (1948)."}
+In 1948 Julian Schwinger calculated the first correction to the magnetic moment of the electron: *a* = (*g* − 2)/2 = α/2π = 0.00116, in agreement with the measurement of Kusch and Foley.:cite[p4-schwinger1948] It was one diagram, the vertex correction of Chapter 15, evaluated with the infinite parts absorbed into the electron's mass and charge. The work of 1947–48 is what turned quantum electrodynamics from a formalism that gave infinities into a theory that could be tested: the calculated numbers were finite and matched the measured ones. The diagrams of Chapter 15 were the next step.
 :::
 
 ## A coupling that runs
 
-The bubbles in the photon line, which Figure 15.2 shows, have a physical effect larger than the vertex correction: they change the strength of the electromagnetic force with the energy at which you look. A charge in vacuum polarises the vacuum: virtual electron–positron pairs appear around it, and the member of each pair with the opposite sign sits slightly closer than the other, which screens the charge. From a distance the charge looks smaller. Probed at higher energy, which means at shorter distance (Chapter 1), one penetrates the screening and sees more of the bare charge. The coupling grows with energy.
+The bubbles in the photon line (:term[vacuum polarisation]{id=vacuum-polarisation}), which Figure 15.2 shows, have a physical effect larger than the vertex correction: they change the strength of the electromagnetic force with the energy at which you look. A charge in vacuum polarises the vacuum: virtual electron–positron pairs appear around it, and the member of each pair with the opposite sign sits slightly closer than the other, which screens the charge. From a distance the charge looks smaller. Probed at higher energy, which means at shorter distance (Chapter 1), one penetrates the screening and sees more of the bare charge. The coupling grows with energy: it is a :term[running coupling]{id=running-coupling}.
 
 For a fermion of mass *m* and charge *Q*<sub>f</sub>, at a scale *Q* well above *m*, the bubble gives a shift:
 
@@ -452,7 +456,7 @@ The same kind of calculation in the strong interaction has the opposite sign. Th
 
 ## R and the colours
 
-If quarks have charge *Q*<sub>q</sub> and the same spin and electromagnetic coupling as the muon, then e⁺e⁻ → q q̄ has exactly the cross-section of e⁺e⁻ → μ⁺μ⁻ multiplied by $Q_q^2$, times the number of colours *N*<sub>c</sub> = 3, since a quark–antiquark pair can be made in any of the colours (Chapter 13). The quarks are not seen individually (Chapter 18 explains why), but the total number of hadrons produced is the sum over quark flavours that are kinematically allowed. The **R ratio** is
+If quarks have charge *Q*<sub>q</sub> and the same spin and electromagnetic coupling as the muon, then e⁺e⁻ → q q̄ has exactly the cross-section of e⁺e⁻ → μ⁺μ⁻ multiplied by $Q_q^2$, times the number of colours *N*<sub>c</sub> = 3, since a quark–antiquark pair can be made in any of the colours (Chapter 13). The quarks are not seen individually (Chapter 18 explains why), but the total number of hadrons produced is the sum over quark flavours that are kinematically allowed. The **:term[R ratio]{id=r-ratio}** is
 
 :::equation{#rratio caption="The R ratio at leading order: the sum of the squared charges of the quarks that can be produced, times the number of colours."}
 $$R(s) \equiv \frac{\sigma(e^+e^-\to\text{hadrons})}{\sigma(e^+e^-\to\mu^+\mu^-)} = \term{Nc}{N_c}\sum_{q}\term{Qq}{Q_q^2}\qquad (2m_q < \sqrt s)$$

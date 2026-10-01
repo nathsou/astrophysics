@@ -51,7 +51,7 @@
           <tr><th scope="row">Range ħc/m<sub>W</sub></th><td colspan="3">{(rangeFm(M_W) * 1e-15 * 1e0).toExponential(2)} m ({rangeFm(M_W).toFixed(4)} fm)</td></tr>
         </tbody>
       </table>
-      <p class="ui note">Tree level: m_W sinθ_W = m_Z sinθ_W cosθ_W = A. The larger the angle, the lighter the W. The measured masses are the table's (PDG 2024). Using α at q² = 0 misses by 3 % and more; the running of α to the Z scale accounts for most of the gap. The remaining loop corrections are small and partly cancel, so the agreement at 0.3 % is better than a tree-level formula deserves.</p>
+      <p class="ui note">Tree level: m_W sinθ_W = m_Z sinθ_W cosθ_W = A. The larger the angle, the lighter the W. The measured masses are the table's (PDG 2024). Using α at q² = 0 misses by 3 % and more; the running of α to the Z scale accounts for most of the gap. The remaining loop corrections are small and partly cancel, so agreement at the 0.4 % level is better than a tree-level formula deserves.</p>
     </section>
     <section aria-label="Neutral-current ratios in neutrino scattering">
       <h5 class="ui">Neutral current to charged current in ν and ν̄ scattering</h5>

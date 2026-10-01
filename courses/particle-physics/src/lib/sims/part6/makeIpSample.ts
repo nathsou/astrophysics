@@ -9,7 +9,7 @@
 import { writeFileSync } from 'node:fs';
 import { rng } from '../../hep/random/index.ts';
 import { presets, simulate } from '../../hep/detector/index.ts';
-import { reconstruct, bTagInfo, synthetic } from '../../hep/reco/index.ts';
+import { reconstruct, bTagInfo, synthetic, type RecoVertex } from '../../hep/reco/index.ts';
 import { fromPtEtaPhiM, deltaR } from '../../hep/kinematics/index.ts';
 
 const n = Number(process.argv[2] ?? 250);
@@ -27,7 +27,7 @@ for (const flavour of ['light', 'c', 'b'] as const) {
     const jets = reco.objects.filter((o) => o.kind === 'jet').sort((a, b) => deltaR(a.p, axis) - deltaR(b.p, axis));
     const jet = jets[0];
     if (!jet || deltaR(jet.p, axis) > 0.4) continue;
-    const info = bTagInfo(jet.p, reco.tracks, reco.vertices);
+    const info = bTagInfo(jet.p, reco.tracks, reco.vertices as RecoVertex[]);
     out[flavour]!.push([Number(info.score.toFixed(4)), ...info.significances.slice(0, 12).map((s) => Number(s.toFixed(1)))]);
   }
 }

@@ -9,6 +9,12 @@ import { simulateShower, CTAU_MU_M, CTAU_PI_M } from './airshower.ts';
 import { antiprotonThreshold, thresholdKineticFixedTarget } from './threshold.ts';
 import { decupletSpacing, gellMannOkuboBaryons, gellMannOkuboMesons, omegaStrongDecayThreshold, unitarityLimit, GEV2_TO_MB, DECUPLET_MASSES } from '../../hep/su3/index.ts';
 import { twoBodyMomentum } from '../../hep/kinematics/index.ts';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { parseDimuon, dimuonMasses } from '../../hep/data/index.ts';
+import { xf } from '../../hep/gen/pdf.ts';
+import { momentumShares, partonCounts } from './partons.ts';
+import { octetMoments, equalMassQuarkMoments, momentsFitToNucleons, MEASURED_MOMENTS, constituentMassRatio } from '../../hep/su3/index.ts';
 
 describe('Chapter 9', () => {
   test('radii and momenta of the Anderson track: R = p / (0.2998 B)', () => {
@@ -140,6 +146,21 @@ describe('Chapter 11', () => {
   });
 });
 
+describe('Chapter 11 (continued)', () => {
+  test('the lifetimes of the strange particles in the table', () => {
+    const t = (id: number) => particle(id).lifetime;
+    expect(t(321)).toBeCloseTo(1.238e-8, 11);
+    expect(t(3122)).toBeCloseTo(2.632e-10, 13);
+    expect(t(3222)).toBeCloseTo(8.018e-11, 14);
+    expect(t(3212)).toBeCloseTo(7.4e-20, 21);
+    expect(t(3322)).toBeCloseTo(2.90e-10, 13);
+    expect(t(3312)).toBeCloseTo(1.639e-10, 13);
+    expect(t(3334)).toBeCloseTo(8.21e-11, 14);
+    expect(t(3222) / t(3212)).toBeGreaterThan(1e8);
+    expect(6.582e-25 / particle(2224).width).toBeLessThan(1e-23);
+  });
+});
+
 describe('Chapter 12', () => {
   test('nucleon and pion mass differences', () => {
     expect((particle(2112).mass - particle(2212).mass) * 1000).toBeCloseTo(1.293, 3);
@@ -189,5 +210,76 @@ describe('Chapter 12', () => {
     const T = thresholdKineticFixedTarget(particle(-321).mass, particle(2212).mass, finals);
     const E = T + particle(-321).mass;
     expect(Math.sqrt(E * E - particle(-321).mass ** 2)).toBeCloseTo(3.14, 1);
+  });
+});
+
+describe('Chapter 13', () => {
+  test('quark masses in the table and the proton', () => {
+    const mu = particle(2).mass, md = particle(1).mass;
+    expect((2 * mu + md) * 1000).toBeCloseTo(8.99, 2);
+    expect(((2 * mu + md) / particle(2212).mass) * 100).toBeCloseTo(0.96, 2);
+  });
+  test('magnetic moments', () => {
+    const m = octetMoments(equalMassQuarkMoments());
+    expect(m.p).toBeCloseTo(3, 12);
+    expect(m.n).toBeCloseTo(-2, 12);
+    expect(m.p / m.n).toBeCloseTo(-1.5, 12);
+    expect(MEASURED_MOMENTS.p / MEASURED_MOMENTS.n).toBeCloseTo(-1.46, 2);
+    expect((1.5 - 1.4599) / 1.4599 * 100).toBeCloseTo(2.7, 1);
+    expect(Math.abs(3 - MEASURED_MOMENTS.p) / MEASURED_MOMENTS.p * 100).toBeLessThan(8);
+    expect(Math.abs(-2 - MEASURED_MOMENTS.n) / Math.abs(MEASURED_MOMENTS.n) * 100).toBeLessThan(5);
+    const fit = momentsFitToNucleons();
+    expect(fit.u).toBeCloseTo(1.852, 3);
+    expect(fit.d).toBeCloseTo(-0.972, 3);
+    const mp = particle(2212).mass * 1000;
+    expect(constituentMassRatio(2 / 3, fit.u) * mp).toBeCloseTo(337.8, 0);
+    expect(constituentMassRatio(-1 / 3, fit.d) * mp).toBeCloseTo(321.8, 0);
+    expect(constituentMassRatio(-1 / 3, MEASURED_MOMENTS.Lambda) * mp).toBeCloseTo(510, 0);
+  });
+  test('vector mesons', () => {
+    const rho = particle(113), omega = particle(223), phi = particle(333);
+    expect(rho.mass * 1000).toBeCloseTo(775.3, 0);
+    expect(omega.mass * 1000).toBeCloseTo(782.7, 0);
+    expect(phi.mass * 1000).toBeCloseTo(1019.5, 0);
+    expect((phi.mass - omega.mass) * 1000).toBeCloseTo(236.8, 0);
+    expect((rho.mass - 2 * particle(211).mass) * 1000).toBeCloseTo(496, 0);
+    expect(twoBodyMomentum(phi.mass, particle(321).mass, particle(321).mass) * 1000).toBeCloseTo(127, 0);
+    expect((phi.mass - 2 * particle(321).mass) * 1000).toBeCloseTo(32.1, 0);
+    expect(phi.decays.filter((d) => d.products.includes(321) || d.products.includes(130)).reduce((s, d) => s + d.br, 0)).toBeCloseTo(0.831, 3);
+    expect(rho.width / phi.width).toBeCloseTo(34.7, 0);
+    expect(rho.width / omega.width).toBeCloseTo(17, 0);
+  });
+  test('the real dimuon sample: the ω/ρ and φ windows', () => {
+    const buf = readFileSync(path.resolve(import.meta.dirname, '../../../../static/data/dimuon.f32'));
+    const d = parseDimuon(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer);
+    const m = dimuonMasses(d);
+    const win = (a: number, b: number) => { let c = 0; for (const x of m) if (x >= a && x < b) c++; return c; };
+    expect(win(0.74, 0.82)).toBe(717);
+    expect(win(0.66, 0.74)).toBe(491);
+    expect(win(0.82, 0.9)).toBe(487);
+    expect(win(0.98, 1.06)).toBe(760);
+    expect(win(0.9, 0.98)).toBe(490);
+    expect(win(1.06, 1.14)).toBe(495);
+  });
+  test('deep inelastic scattering', () => {
+    expect(0.1973 / Math.sqrt(10)).toBeCloseTo(0.0624, 4);
+    expect(0.84 / (0.1973 / Math.sqrt(10))).toBeCloseTo(13.5, 1);
+  });
+  test('the course PDFs: shares, counts and F2 scaling', () => {
+    const a = momentumShares(2), b = momentumShares(100);
+    expect([a.valence, a.sea, a.gluons].map((x) => Math.round(x * 100))).toEqual([38, 18, 44]);
+    expect([b.valence, b.sea, b.gluons].map((x) => Math.round(x * 100))).toEqual([26, 26, 48]);
+    const c2 = partonCounts(2, 0.01), c100 = partonCounts(100, 0.01);
+    expect([c2.valence, c2.sea, c2.gluons].map((x) => Math.round(x * 10) / 10)).toEqual([2.5, 3.4, 8.0]);
+    expect([c100.valence, c100.sea, c100.gluons].map((x) => Math.round(x * 10) / 10)).toEqual([2.2, 5.1, 8.8]);
+    expect(Math.round(partonCounts(1.27, 0.001).gluons)).toBe(20);
+    expect(Math.round(partonCounts(100, 0.001).gluons)).toBe(54);
+    const E2: [number, number][] = [[2, 4 / 9], [1, 1 / 9], [3, 1 / 9], [4, 4 / 9], [5, 1 / 9]];
+    const F2 = (x: number, Q: number) => E2.reduce((s, [id, e2]) => s + e2 * (xf(id, x, Q) + xf(-id, x, Q)), 0);
+    const r = (x: number) => F2(x, Math.sqrt(20)) / F2(x, Math.sqrt(2)) - 1;
+    expect(Math.round(r(0.1) * 100)).toBe(1);
+    expect(Math.round(r(0.25) * 100)).toBe(-14);
+    expect(Math.round(r(0.5) * 100)).toBe(-29);
+    expect(Math.round(r(0.01) * 100)).toBe(44);
   });
 });

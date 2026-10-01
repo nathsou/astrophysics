@@ -174,7 +174,7 @@
       {/each}
     </div>
     <Slider bind:value={logTau} min={-25.5} max={-5} step={0.05} label="Mean lifetime τ" oninput={onTau} format={() => formatTime(tauS)} />
-    <Slider bind:value={N} min={20} max={3000} step={10} log label="Particles N" format={(v) => Math.round(v).toString()} />
+    <Slider bind:value={N} min={20} max={3000} step={10} log label="Particles N" oninput={(v) => (N = Math.round(v))} format={(v) => Math.round(v).toString()} />
     <Toggle bind:checked={sound} onchange={setSound} label="Geiger clicks (off by default)" />
   {/snippet}
 
@@ -194,7 +194,7 @@
     <div class="bar">
       {#each PRESETS as p}
         <span class="dot" class:on={presetId === p.id} style:left="{rx(Math.log10(p.tauS))}%" title="{p.label}: τ = {formatTime(p.tauS)}"></span>
-        <span class="plabel" style:left="{rx(Math.log10(p.tauS))}%">{p.label}</span>
+        <span class="plabel" class:on={presetId === p.id} style:left="{rx(Math.log10(p.tauS))}%">{p.label}</span>
       {/each}
       <span class="cursor" style:left="{rx(logTau)}%"></span>
     </div>
@@ -486,6 +486,18 @@
   }
   .bv small {
     color: var(--mute);
+  }
+  @media (max-width: 560px) {
+    .axis .tick:nth-child(even) {
+      display: none;
+    }
+    .plabel:not(.on) {
+      display: none;
+    }
+    .ruler {
+      margin-left: 0.6rem;
+      margin-right: 0.6rem;
+    }
   }
   @media (max-width: 520px) {
     .brow {

@@ -41,9 +41,18 @@
   const rate = (r: Row) => r.sigmaPb * 1e-36 * lumi * 1e34; // Hz
   const inel = rows[0]!.sigmaPb;
 
+  const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+  /** A number as "1.6 × 10⁹" from 10⁴ up, plain below. */
+  function big(x: number): string {
+    if (!(x >= 1e4)) return sig(x, 2);
+    const e = Math.floor(Math.log10(x));
+    return `${sig(x / 10 ** e, 2)} × 10${String(e).replace(/\d/g, (d) => SUP[+d]!)}`;
+  }
   function every(hz: number): string {
-    if (hz >= 1) return `${sig(hz, 2)} per second`;
     const s = 1 / hz;
+    if (s < 1e-6) return `one every ${sig(s * 1e9, 2)} ns`;
+    if (s < 1e-3) return `one every ${sig(s * 1e6, 2)} µs`;
+    if (s < 1) return `one every ${sig(s * 1e3, 2)} ms`;
     if (s < 120) return `one every ${sig(s, 2)} s`;
     if (s < 7200) return `one every ${sig(s / 60, 2)} min`;
     if (s < 172800) return `one every ${sig(s / 3600, 2)} h`;
@@ -51,7 +60,7 @@
   }
   const fmtHz = (hz: number) => (hz >= 1e9 ? `${sig(hz / 1e9, 2)} GHz` : hz >= 1e6 ? `${sig(hz / 1e6, 2)} MHz` : hz >= 1e3 ? `${sig(hz / 1e3, 2)} kHz` : hz >= 1 ? `${sig(hz, 2)} Hz` : `${sig(hz * 1000, 2)} mHz`);
   const count = (r: Row) => r.sigmaPb * dataset * 1e3; // fb⁻¹ → pb⁻¹ = 1e3
-  const fmtCount = (x: number) => (x >= 1e9 ? `${sig(x / 1e9, 2)} × 10⁹` : x >= 1e6 ? `${sig(x / 1e6, 2)} × 10⁶` : x >= 1e3 ? `${sig(x / 1e3, 3)} thousand` : sig(x, 2));
+  const fmtCount = (x: number) => big(x);
   const LINES = [
     { hz: 40e6, label: '40 MHz: crossings' },
     { hz: 100e3, label: '100 kHz: Level 1' },
@@ -67,6 +76,7 @@
 
   <div class="ladder ui" role="table" aria-label="Rates of several processes at the chosen luminosity">
     <div class="axis" aria-hidden="true">
+      <span></span>
       <div class="track head">
         {#each [-6, -4, -2, 0, 2, 4, 6, 8, 10] as e}<span class="tick" style:left="{pos(10 ** e)}%">10{e < 0 ? '⁻' : ''}{String(Math.abs(e)).replace(/\d/g, (d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+d]!)}</span>{/each}
       </div>
@@ -81,7 +91,7 @@
           <span class="bar" class:hot={r.key.startsWith('h')} style:width="{pos(hz)}%"></span>
         </div>
         <div class="val" role="cell"><strong>{fmtHz(hz)}</strong><small>{every(hz)}</small></div>
-        <div class="cnt" role="cell"><strong>{fmtCount(count(r))}</strong><small>in {sig(dataset, 3)} fb⁻¹; 1 in {sig(inel / r.sigmaPb, 2)} collisions</small></div>
+        <div class="cnt" role="cell"><strong>{fmtCount(count(r))}</strong><small>in {sig(dataset, 3)} fb⁻¹; 1 in {big(inel / r.sigmaPb)} collisions</small></div>
       </div>
     {/each}
     <div class="legend">

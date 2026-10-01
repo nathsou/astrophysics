@@ -114,7 +114,7 @@
       first = false;
       return;
     }
-    untrack(() => fire(true));
+    untrack(() => fire());
   });
 
   const dens = $derived(counts.map((c, i) => c / OMEGA[i]!)); // counts per steradian
@@ -139,7 +139,7 @@
   {#snippet controls()}
     <Segmented label="Foil" size="sm" bind:value={foilId} options={[{ value: 'gold', label: 'gold (Z = 79)' }, { value: 'silver', label: 'silver (Z = 47)' }]} />
     <Slider bind:value={T} min={3} max={9} step={0.1} label="Alpha energy T" format={(v) => `${v.toFixed(1)} MeV`} />
-    <Slider bind:value={logN} min={6} max={10} step={0.05} label="Alphas fired" format={() => fmtN(target)} />
+    <Slider bind:value={logN} min={6} max={9.5} step={0.05} label="Alphas fired" format={() => fmtN(target)} />
     <Toggle bind:checked={showFit} label="Fit the angular law" />
     <Toggle bind:checked={showPudding} label="Thomson's plum pudding" />
     {#if mine.length}<Toggle bind:checked={useMine} label="use my code" />{/if}

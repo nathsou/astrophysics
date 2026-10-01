@@ -640,7 +640,7 @@ hints:
 Sampling an isotropic direction looks simple and has a standard mistake. Uniform in θ and φ is the natural first guess and is wrong: it crowds points near the poles, because circles of latitude near the poles are short. The correct recipe samples the variable in which the distribution is flat, cos θ, and the pattern returns in every generator: *find the variable in which the density is uniform, sample it, and transform*. The exercise's test catches the mistake by comparing ⟨cos²θ⟩ with 1/3 (θ uniform would give 1/2).
 :::
 
-:::hood[Under the hood: inverse transform, two-body phase space and RAMBO]
+:::hood[Inverse transform, two-body phase space and RAMBO]
 Every random number in the course comes from a seeded generator, `rng(seed)`, which returns uniform numbers in [0, 1). Everything else is a transformation of those. The decay time of the clock above is the simplest case of **:term[inverse-transform sampling]{id=inverse-transform}**: if *u* is uniform and *F*(*t*) = 1 − e<sup>−*t*/τ</sup> is the cumulative distribution of the decay time, then *t* = *F*<sup>−1</sup>(*u*) = −τ ln(1 − *u*) has the distribution *F*. In the library (`hep/random`):
 
 ```ts

@@ -68,7 +68,7 @@
 
 <Widget {title} {n} {caption} kind="Explore">
   {#snippet controls()}
-    {#if slider}<Slider bind:value={kappa} min={-2} max={4} step={0.05} label="Trilinear coupling, κλ (Standard Model: 1)" format={(x) => x.toFixed(2)} />{/if}
+    {#if slider}<Slider bind:value={kappa} min={-2} max={4} step={0.05} labelHtml={'<span style="text-transform:none;font-variant:normal">Trilinear coupling, κ<sub>λ</sub> (Standard Model: 1)</span>'} format={(x) => x.toFixed(2)} />{/if}
     <Toggle bind:checked={pieces} label="Show the pieces (mass, cubic, quartic)" />
   {/snippet}
 

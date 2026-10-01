@@ -117,7 +117,7 @@
       {:else}
         <p>
           [T<sub>{ia + 1}</sub>, T<sub>{ib + 1}</sub>] =
-          {#each terms as t, k}{k ? ' + ' : ''}i·({t.f.toFixed(3).replace(/\.?0+$/, '')}) T<sub>{t.c + 1}</sub>{/each}
+          {#each terms as t, k}{k ? (t.f < 0 ? ' − ' : ' + ') : t.f < 0 ? '−' : ''}{Math.abs(Math.abs(t.f) - 1) < 1e-9 ? 'i' : `i·${Math.abs(t.f).toFixed(3).replace(/\.?0+$/, '')}`} T<sub>{t.c + 1}</sub>{/each}
         </p>
         <p class="sub">Computed from the matrices above. The coefficients are the structure constants f<sub>abc</sub>; they are the same in every representation.</p>
       {/if}

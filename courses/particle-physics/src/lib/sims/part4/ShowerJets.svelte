@@ -2,7 +2,7 @@
   Jets from a parton shower (Chapter 18): simulated e⁺e⁻ → qq̄ events (hep/gen: matrix element, shower, toy Lund string,
   decays), clustered with anti-kT (hep/reco, or the reader's version of `reco.antiKt` when it is installed).
 
-    ::shower-jets{n="18.2" caption="…"}
+    ::shower-jets{n="18.5" caption="…"}
 
   Each event is rotated so that its plane (from the momentum tensor) is the transverse plane, the view seen by a
   hadron-collider detector for a jet pair at rapidity zero. Two-jet and three-jet events, the dependence of the jet

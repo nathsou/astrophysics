@@ -108,7 +108,7 @@
     if (!realHist || !cms || source !== 'real') return [];
     return realHist.results
       .map((r, i) => ({ r, e: cms!.events[i]! }))
-      .filter((x) => x.r.pass && x.r.m4l! >= 118 && x.r.m4l! < 130)
+      .filter((x) => x.r.pass && x.r.m4l! >= 121 && x.r.m4l! < 130)
       .sort((a, b) => a.r.m4l! - b.r.m4l!);
   });
   void pairMass;
@@ -173,7 +173,7 @@
     </div>
     {#if source === 'real' && nearby.length}
       <details class="ui events">
-        <summary>The {nearby.length} real events between 118 and 130 GeV</summary>
+        <summary>The {nearby.length} real events between 121 and 130 GeV</summary>
         <table>
           <thead><tr><th>m(4ℓ) [GeV]</th><th>Channel</th><th>Year</th><th>m(Z₁)</th><th>m(Z₂)</th><th>Run : event</th></tr></thead>
           <tbody>

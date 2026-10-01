@@ -18,7 +18,7 @@ const M_P = 0.9382720813; // GeV
 export function protonStoppingPower(T: number): number {
   const E = T * 1e-3 + M_P;
   const p = Math.sqrt(E * E - M_P * M_P);
-  return bethe({ material: materials.H2O, betaGamma: p / M_P, mass: M_P });
+  return bethe({ material: materials.H2O!, betaGamma: p / M_P, mass: M_P });
 }
 
 const cache = new Map<number, number>();

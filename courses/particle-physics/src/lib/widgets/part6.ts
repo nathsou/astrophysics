@@ -25,7 +25,7 @@ export { default as DisplacedVertex } from '$lib/sims/part6/DisplacedVertex.svel
 /** Chapter 24: survival of K_S and K_L over a beam line (Cronin and Fitch): `::kaon-survival{n="24.4"}`. */
 export { default as KaonSurvival } from '$lib/sims/part6/KaonSurvival.svelte';
 /** Chapter 24: b-tagging on simulated jets; runs the reader's impactParameter and bTag if installed: `::btag-lab{n="24.5"}`. */
-export { default as BTagLab } from '$lib/sims/part6/BTagLab.svelte';
+export { default as BtagLab } from '$lib/sims/part6/BTagLab.svelte';
 /** Chapter 25: the top quark's lifetime against the hadronisation time: `::time-scales{n="25.1"}`. */
 export { default as TimeScales } from '$lib/sims/part6/TimeScales.svelte';
 /** Chapter 25 flagship: reconstruct simulated tt̄ → ℓ+jets events; runs the reader's assignTopJets if installed: `::top-reconstruction{n="25.2"}`. */

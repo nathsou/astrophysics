@@ -14,7 +14,7 @@ This chapter explains how to read that picture, what it is worth, and, equally i
 
 ## The grammar: lines and vertices
 
-A Feynman diagram is a graph. Its **external lines** are the particles that come in and go out, and they are the only part a detector sees. Its **internal lines** join vertices to each other. Its **vertices** are the interaction terms of Chapter 14: the points where lines meet. The grammar is short.
+A :term[Feynman diagram]{id=feynman-diagram} is a graph. Its **external lines** are the particles that come in and go out, and they are the only part a detector sees. Its **internal lines** join :term[vertices]{id=vertex} to each other. Its **vertices** are the interaction terms of Chapter 14: the points where lines meet. The grammar is short.
 
 - **Lines.** A straight line with an arrow stands for a fermion (a quark or a lepton), and the arrow marks the flow of the fermion number. A fermion line, followed forwards in time, is a particle; followed backwards against the arrow, it is the antiparticle. A wavy line is a photon, a W or a Z boson, a curly line a gluon, and a dashed line a Higgs boson (the conventions of this course; other books vary).
 - **Vertices.** A vertex is one term in the interaction. In QED there is only one: a fermion line comes in, a fermion line of the same type goes out, and a photon line is attached. The Standard Model has more, listed below.
@@ -88,7 +88,7 @@ L:
 ```
 :::
 
-For a tree diagram (*L* = 0) this says *V* = *n* − 2: four lines, two vertices; five lines, three; and so on, regardless of which tree it is. For a diagram with a quartic vertex, such as the four-gluon vertex, a vertex with *d* lines counts as $d - 2$ powers (a quartic vertex is of order $g_s^2$), and the formula still holds. The library's `diagramOrder` computes exactly this. The exercise at the end of the chapter asks you to write it.
+For a :term[tree diagram]{id=tree-diagram} (*L* = 0) this says *V* = *n* − 2: four lines, two vertices; five lines, three; and so on, regardless of which tree it is. For a diagram with a quartic vertex, such as the four-gluon vertex, a vertex with *d* lines counts as $d - 2$ powers (a quartic vertex is of order $g_s^2$), and the formula still holds. The library's `diagramOrder` computes exactly this. The exercise at the end of the chapter asks you to write it.
 
 ```fermi
 id: diagrams-orders-needed
@@ -104,7 +104,7 @@ explain: "ln(10⁻¹²) / ln(2.32 × 10⁻³) = −27.63 / −6.06 = 4.56. So ab
 
 ## Trees and loops
 
-A **tree** diagram has no closed circuit. It is the leading term in the series for a process, and for a scattering, the only one that needs no integration. A **loop** diagram has a closed circuit of internal lines. Because energy and momentum flow round the loop unconstrained, the loop momentum is integrated over all values, and the integrals can diverge. The way to handle those divergences (renormalisation) is sketched in Chapter 16 and not derived in this course. Their observable effects are real and are found in Chapter 16: the magnetic moment of the electron, the Lamb shift and the running of α.
+A **tree** diagram has no closed circuit. It is the leading term in the series for a process, and for a scattering, the only one that needs no integration. A **:term[loop]{id=loop-diagram}** diagram has a closed circuit of internal lines. Because energy and momentum flow round the loop unconstrained, the loop momentum is integrated over all values, and the integrals can diverge. The way to handle those divergences (renormalisation) is sketched in Chapter 16 and not derived in this course. Their observable effects are real and are found in Chapter 16: the magnetic moment of the electron, the Lamb shift and the running of α.
 
 The library enumerates one-loop diagrams of small processes, and this is what it finds for the process of Figure 15.1.
 
@@ -112,7 +112,7 @@ The library enumerates one-loop diagrams of small processes, and this is what it
 
 The three kinds have names that recur through the course.
 
-- **Vacuum polarisation**: a loop in the middle of the photon line. The photon briefly becomes a fermion–antifermion pair, which annihilates back. It screens the charge of the source and makes α grow with energy (Chapter 16).
+- **:term[Vacuum polarisation]{id=vacuum-polarisation}**: a loop in the middle of the photon line. The photon briefly becomes a fermion–antifermion pair, which annihilates back. It screens the charge of the source and makes α grow with energy (Chapter 16).
 - **Vertex correction**: a photon exchanged across a vertex. It corrects the coupling of the electron to the photon and is responsible for the electron's anomalous magnetic moment α/2π (Chapter 16).
 - **Self-energy**: a photon emitted and absorbed by the same line. It changes the apparent mass of the fermion and is the origin of the Lamb shift.
 
@@ -135,11 +135,11 @@ A diagram is easy to misread, because it looks like a picture of something happe
 
 ### Crossing
 
-If you turn a diagram on its side, you get a different process that is given by the same function. The rule is called **crossing**: an incoming particle of momentum *p* is equivalent, in the amplitude, to an outgoing antiparticle of momentum −*p*. The diagram is unchanged; only the direction in which you read it differs. So e⁺e⁻ → μ⁺μ⁻ (an electron and a positron annihilating, read along the photon) and e⁻μ⁻ → e⁻μ⁻ (an electron scattering from a muon by exchanging a photon, read across it) are one diagram, read in two ways.
+If you turn a diagram on its side, you get a different process that is given by the same function. The rule is called **:term[crossing]{id=crossing}**: an incoming particle of momentum *p* is equivalent, in the amplitude, to an outgoing antiparticle of momentum −*p*. The diagram is unchanged; only the direction in which you read it differs. So e⁺e⁻ → μ⁺μ⁻ (an electron and a positron annihilating, read along the photon) and e⁻μ⁻ → e⁻μ⁻ (an electron scattering from a muon by exchanging a photon, read across it) are one diagram, read in two ways.
 
 ::feynman{process="e- mu- > e- mu-" forces="qed" n="15.3" caption="Electron–muon scattering by photon exchange. It is the diagram of Figure 15.1 rotated through 90°: the muon line that was outgoing is now read in the other direction. Annihilation e⁺e⁻ → μ⁺μ⁻ is the s-channel of this amplitude (the photon carries q² = s), and scattering is the t-channel (q² = t, negative). The same formula, with s and t exchanged, gives both cross-sections: the spin-averaged squared amplitude of e⁻μ⁻ → e⁻μ⁻ is 2e⁴(s² + u²)/t², and of e⁺e⁻ → μ⁺μ⁻ is 2e⁴(t² + u²)/s²."}
 
-The kinematic variables in those formulas are the **Mandelstam variables**, for a process with incoming momenta $p_1, p_2$ and outgoing $k_1, k_2$:
+The kinematic variables in those formulas are the **:term[Mandelstam variables]{id=mandelstam}**, for a process with incoming momenta $p_1, p_2$ and outgoing $k_1, k_2$:
 
 $$s = (p_1+p_2)^2,\qquad t = (p_1-k_1)^2,\qquad u = (p_1-k_2)^2,\qquad s+t+u = \sum m^2 .$$
 
@@ -209,12 +209,16 @@ The counts grow quickly with the number of external lines, which is the reason t
 The programs that do this at CERN are **matrix-element generators**: **MadGraph** (used through its MadGraph5_aMC@NLO version) and **Sherpa** with its own matrix-element generators (Comix, AMEGIC) enumerate the diagrams of a process from the Standard Model's vertex rules, exactly as above. They also evaluate the amplitude of each diagram numerically with helicity methods and sum them, and they handle processes with many final-state particles, where the number of diagrams reaches the tens of thousands. Recursion relations (Berends–Giele) are used to avoid listing the diagrams at all, because their cost grows much more slowly than the number of diagrams. The course's `hep/diagrams` generates the trees for the sketchpad and for the challenge above; `hep/gen` uses the final formulas of the diagrams, not a diagram-by-diagram sum.
 :::
 
-:::history{year=1948 title="Feynman's diagrams arrive at Pocono" people="Richard Feynman, Julian Schwinger, Freeman Dyson" source="Sources: Schweber, QED and the Men Who Made It (1994); Feynman (1949); Dyson (1949); Nobel Foundation (1965)."}
+:::history{year=1948 title="Feynman's diagrams at the Pocono conference" people="Richard Feynman, Julian Schwinger" source="Sources: Schweber, QED and the Men Who Made It (1994); Feynman (1949)."}
 By 1947 the problem was clear. Quantum electrodynamics gave finite answers at the lowest order and infinite ones at the next. In June 1947 the Shelter Island conference heard of the measured Lamb shift (Chapter 16) and started the work that let the infinities be absorbed into the mass and charge of the electron. Julian Schwinger and, independently in Japan, Sin-Itiro Tomonaga had found a way of doing this that kept the equations consistent with relativity at every step. It was a formidable formalism, worked out with operators.
 
-At the conference at the Pocono Manor Inn in Pennsylvania, from 30 March to 1 April 1948, Schwinger gave a long lecture on his method, and Richard Feynman presented a different one, in which the terms of the series were pictured as paths and the lines drawn as diagrams. By the accounts of participants, collected in Schweber's history, the audience found Feynman's talk hard to follow and objected to it: Bohr, in particular, thought that the picture of particle paths contradicted the uncertainty principle. The accounts differ in detail; the talk is generally described as a failure.:cite[p4-schweber1994]
+At the conference at the Pocono Manor Inn in Pennsylvania, from 30 March to 1 April 1948, Schwinger gave a long lecture on his method, and Richard Feynman presented a different one, in which the terms of the series were pictured as paths and the lines drawn as diagrams. By the accounts of participants, collected in Schweber's history, the audience found Feynman's talk hard to follow and objected to it: Bohr, in particular, thought that the picture of particle paths contradicted the uncertainty principle. The accounts differ in detail; the talk is generally described as a failure.:cite[p4-schweber1994] The diagrams reached print in two papers by Feynman in 1949, *The theory of positrons* and *Space-time approach to quantum electrodynamics*.:cite[p4-feynman1949a,p4-feynman1949b]
+:::
 
-The diagrams reached print in two papers by Feynman in 1949, *The theory of positrons* and *Space-time approach to quantum electrodynamics*,:cite[p4-feynman1949a,p4-feynman1949b] and, more importantly for their spread, through Freeman Dyson. In 1949 Dyson published two papers showing that the methods of Tomonaga, Schwinger and Feynman are equivalent, and translating Feynman's diagrams into rules that other physicists could apply without the path picture. He also argued that the infinities can be absorbed, to every order, into the mass and charge of the electron.:cite[p4-dyson1949a,p4-dyson1949b] Feynman, Schwinger and Tomonaga shared the Nobel Prize in Physics in 1965 for their work on quantum electrodynamics; Dyson was not among them.:cite[p4-nobel1965]
+:::history{year=1949 title="Dyson shows that the three theories are one" people="Freeman Dyson, Richard Feynman, Julian Schwinger, Sin-Itiro Tomonaga" source="Sources: Dyson (1949); Nobel Foundation (1965)."}
+The diagrams spread through Freeman Dyson. In 1949 Dyson published two papers showing that the methods of Tomonaga, Schwinger and Feynman are equivalent, and translating Feynman's diagrams into rules that other physicists could apply without the path picture. He also argued that the infinities can be absorbed, to every order, into the mass and charge of the electron.:cite[p4-dyson1949a,p4-dyson1949b]
+
+Feynman, Schwinger and Tomonaga shared the Nobel Prize in Physics in 1965 for their work on quantum electrodynamics; Dyson was not among them.:cite[p4-nobel1965] The rules of this chapter, with their propagators and vertices, are the form in which the three formulations are used today.
 :::
 
 ## What comes next

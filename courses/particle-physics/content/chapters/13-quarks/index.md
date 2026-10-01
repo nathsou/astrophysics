@@ -12,7 +12,7 @@ The proposal had a cost. For the baryons to have charges of 0, ±1 and +2, the q
 
 ## The quark model
 
-There are three quarks of light flavour, named $u$ (up), $d$ (down) and $s$ (strange). The charge, baryon number, isospin and strangeness of each follow from the quantum numbers of Chapters 11 and 12, as a Gell-Mann–Nishijima fit to the table of hadrons:
+There are three quarks of light flavour, named $u$ (up), $d$ (down) and $s$ (strange). The charge, baryon number, isospin and strangeness of each are chosen so that the sums reproduce the table of hadrons of Chapter 12, with the relation $Q = I_3 + Y/2$:
 
 | Quark | $Q$ | $B$ | $I_3$ | $S$ |
 |---|---|---|---|---|
@@ -34,7 +34,7 @@ The library does this arithmetic: `parseContent`, `contentNumbers` and `hadronsW
 
 The quark model explains more than the labels. A quark has to be *light*, to make hadrons of about a GeV, and yet the quark masses in the particle table are tiny: the $u$ is 2.2 MeV, the $d$ 4.7 MeV, the $s$ 93 MeV. These are **current masses**, the quarks' masses in the equations of the theory. Two $u$ and a $d$ add up to 9 MeV, which is 1 % of the proton's mass of 938 MeV. The rest is the energy of the strong force that binds them, and of their motion, and that is why the proton is as heavy as it is (Chapter 18). A different number, the **constituent mass**, about 340 MeV for $u$ and $d$ and about 510 MeV for $s$, is the effective mass that a quark has inside a hadron, and the next sections use it.
 
-Two further successes. The mass splittings of Chapter 12 are the cost of replacing a light quark by a strange one: each step down the decuplet adds about 150 MeV, which is the extra mass of a strange quark in the hadron. And the pattern of which hadrons exist, as opposed to which are merely allowed, follows from the rule that quarks combine into only two shapes, $qqq$ and $q\bar q$. A state with only two quarks, or with one, does not appear in the table. The builder will say so.
+Two further successes. The mass splittings of Chapter 12 are the cost of replacing a light quark by a strange one: each step down the decuplet adds about 150 MeV, which is the extra mass of a strange quark in the hadron. And the pattern of which hadrons exist, as opposed to which are merely allowed, follows from the rule that quarks combine into only two shapes, $qqq$ and $q\bar q$. A state with only two quarks, or with one, does not appear in the table, and the builder will say so. The heavier flavours, $c$, $b$ and $t$, come in Chapters 24 and 25.
 
 ## A problem with the Δ⁺⁺, and its solution
 
@@ -42,15 +42,17 @@ The $\Delta^{++}$ is made of three $u$ quarks, $uuu$, and it has spin 3/2, so th
 
 The way out, proposed in 1964 by Oscar Greenberg and in 1965 by Moo-Young Han and Yoichiro Nambu, is that quarks carry another property, which takes three values and is hidden in every observed hadron. We call it **colour**, and name the three values red, green and blue, though nothing about it is visual.:cite[greenberg1964,hannambu1965] The wave function of a baryon then has a colour part as well, and if the three quarks are in the state that is antisymmetric in colour ("one of each colour"), then the total wave function is antisymmetric even though the rest is symmetric, and the exclusion principle is satisfied.
 
-:::history{year=1964 title="Quarks, aces, and a third property" people="Murray Gell-Mann, George Zweig, Oscar W. Greenberg, Moo-Young Han, Yoichiro Nambu" source="Sources: Gell-Mann (1964); Zweig (1964); Greenberg (1964); Han and Nambu (1965)."}
-Gell-Mann's paper, *A schematic model of baryons and mesons*, was published in *Physics Letters* in 1964. It built the hadrons from three kinds of quark with fractional charges, and the name was, he later wrote, taken from a line in James Joyce's *Finnegans Wake*.:cite[gellmann1964,gellmann1994] George Zweig, then at CERN, wrote the same idea in two CERN preprints in the same year, with the name "aces".:cite[zweig1964] Neither paper claimed that the quarks were real particles one could find.
+:::history{year=1964 title="Quarks and aces" people="Murray Gell-Mann, George Zweig" source="Sources: Gell-Mann (1964); Zweig (1964)."}
+Gell-Mann's paper, *A schematic model of baryons and mesons*, was published in *Physics Letters* in 1964. It built the hadrons from three kinds of quark with fractional charges. The name, he later wrote, was taken from a line in James Joyce's *Finnegans Wake*.:cite[gellmann1964,gellmann1994] George Zweig, then at CERN, wrote down the same idea in two CERN preprints in the same year, with the name "aces".:cite[zweig1964] Gell-Mann received the Nobel Prize in Physics in 1969 for his work on the classification of elementary particles.:cite[nobel-physics]
+:::
 
-The Δ⁺⁺ problem was seen at once. Greenberg proposed that quarks obey a modified statistics ("parastatistics of order three") in 1964, and in 1965 Han and Nambu proposed three triplets of quarks with a new, hidden SU(3), which is the ancestor of colour.:cite[greenberg1964,hannambu1965] In the theory of the strong force that exists today (Chapter 18), colour is the charge of the strong force, as electric charge is that of electromagnetism.
+:::history{year=1965 title="A third property, colour" people="Oscar W. Greenberg, Moo-Young Han, Yoichiro Nambu" source="Sources: Greenberg (1964); Han and Nambu (1965)."}
+The Δ⁺⁺ problem was seen at once. In 1964 Greenberg proposed that quarks obey a modified statistics, "parastatistics of order three", under which three identical quarks could be in the same state.:cite[greenberg1964] In 1965 Han and Nambu proposed three triplets of quarks with a new, hidden SU(3), the ancestor of colour.:cite[hannambu1965] In the theory of the strong force that exists today (Chapter 18), colour is the charge of the strong force, as electric charge is that of electromagnetism.
 :::
 
 Colour has a consequence that explains why quarks are never seen alone. Hadrons are **colour-neutral**: the colours cancel. The cancellation can happen in two ways, and they are the two shapes that quark models need: three quarks of three different colours (red, green, blue), which cancel as the three primary colours of light add to white, or a quark with an antiquark of its anticolour (a meson). Two quarks cannot cancel. One quark cannot. A mathematical test, made with the representation theory of Chapter 12: colour is an SU(3) triplet, a combination of colour triplets contains a singlet if and only if it is $3\otimes3\otimes3$ or $3\otimes\bar3$ or a combination of those; and the library's `hasColourSinglet` decomposes the product and looks for the $1$. The builder uses it. Why the strong force makes only colourless combinations visible, **confinement**, is a property of the force that Chapter 18 describes.
 
-The first evidence for three colours, apart from the Δ⁺⁺, came from counting: the rate at which electrons and positrons make hadrons is three times as large as it would be without colour (Chapter 16).
+A second line of evidence for three colours is counting: the rate at which electrons and positrons make hadrons is three times as large as it would be without colour (Chapter 16).
 
 ```predict
 q: 'In the quark model the Δ⁺⁺ is three u quarks with their spins lined up, in the lowest spatial state. Suppose colour did not exist. What would the exclusion principle say about this state?'
@@ -93,7 +95,7 @@ mun:
   label: 'μ_n, the neutron''s magnetic moment'
   what: The neutron has one u and two d quarks, so the roles of u and d are exchanged.
   why: It is the proton's formula with u and d exchanged, which is what isospin says it should be.
-  effect: A neutral particle with a moment of −1.913 nuclear magnetons: a negative sign, and the second proof that it has charged parts.
+  effect: A neutral particle with a moment of −1.913 nuclear magnetons, negative, and a second proof that it has charged parts.
 ```
 :::
 
@@ -101,7 +103,7 @@ If the $u$ and $d$ quarks have the same constituent mass, $\mu_u = -2\mu_d$ and 
 
 $$\frac{\mu_p}{\mu_n} = \frac{4\mu_u - \mu_d}{4\mu_d - \mu_u} = \frac{-8\mu_d-\mu_d}{4\mu_d + 2\mu_d} = -\frac32 .$$
 
-The measured ratio is $2.793/(-1.913) = -1.460$. The prediction is within 3 %. If one also takes the constituent mass to be a third of the proton's, then $\mu_u = 2$ and $\mu_d = -1$ nuclear magnetons, and the model gives $\mu_p = 3$ and $\mu_n = -2$: both within 7 % of the measurements. It is not an accident, and no other model of that time did this. Turn it around: fix $\mu_u$ and $\mu_d$ to reproduce the proton and neutron exactly, and the quark masses follow: $\mu_u = 1.852$, $\mu_d = -0.972$, a constituent mass of 338 MeV for $u$ and $d$. Doing the same with the measured moment of the $\Lambda$, $-0.613\,\mu_N$, which in the model is the moment of its strange quark, gives a mass of the strange quark of about 510 MeV. These are the numbers of the previous section, and now they have a source.
+The measured ratio is $2.793/(-1.913) = -1.460$. The prediction is within 3 %. If one also takes the constituent mass to be a third of the proton's, then $\mu_u = 2$ and $\mu_d = -1$ nuclear magnetons, and the model gives $\mu_p = 3$ and $\mu_n = -2$: both within 8 % of the measurements. It is not an accident, and no other model of that time did this. Turn it around: fix $\mu_u$ and $\mu_d$ to reproduce the proton and neutron exactly, and the quark masses follow: $\mu_u = 1.852$, $\mu_d = -0.972$, a constituent mass of 338 MeV for $u$ and $d$. Doing the same with the measured moment of the $\Lambda$, $-0.613\,\mu_N$, which in the model is the moment of its strange quark, gives a mass of the strange quark of about 510 MeV. These are the numbers of the previous section, and now they have a source.
 
 ```numeric
 id: quark-mass-from-moments
@@ -113,7 +115,7 @@ tolerance: 0.02
 hints:
   - Solve the two equations for μ_u. Adding 4 times the first to the second gives 4μ_p + μ_n = 5μ_u.
   - Then m_u = Q_u m_p / μ_u.
-explain: "μ_u = (4 × 2.7928 − 1.9130)/5 = 1.852 nuclear magnetons. m_u = (2/3) × 938.27 MeV / 1.852 = 338 MeV: about a third of the proton's mass, which is what the constituent picture says. The d quark comes out at μ_d = (4 × (−1.9130) + 2.7928)/5 = −0.972, with the same mass to within 4 %."
+explain: "μ_u = (4 × 2.7928 − 1.9130)/5 = 1.852 nuclear magnetons. m_u = (2/3) × 938.27 MeV / 1.852 = 338 MeV: about a third of the proton's mass, which is what the constituent picture says. The d quark comes out at μ_d = (4 × (−1.9130) + 2.7928)/5 = −0.972, with a mass of 322 MeV, within 5 % of the u quark's."
 ```
 
 :::deeper[Where the weights 4/3 and −1/3 come from]
@@ -219,14 +221,14 @@ The structure function $F_2$ is the combination of the cross-sections that carri
 
 $$F_2(x) = \sum_q e_q^2\; x\, f_q(x),$$
 
-where $f_q(x)\,dx$ is the number of partons of kind $q$ with momentum fraction between $x$ and $x+dx$, the **parton distribution function** (PDF), and $e_q$ is the quark's charge. Callan and Gross showed that point-like partons of *spin ½* give a particular relation between two of the structure functions, and the SLAC data fitted it: the partons are spin-½ particles, as quarks are.:cite[callan1969] Comparing the measurements with neutrino scattering (a different way to probe the same partons, with different charges) showed that the fractional charges $\tfrac23$ and $-\tfrac13$ were right, and that the charged partons carry about half of the proton's momentum. The other half is carried by something neutral, which is the glue of Chapter 18.:cite[pdg2024]
+where $f_q(x)\,dx$ is the number of partons of kind $q$ with momentum fraction between $x$ and $x+dx$, the **parton distribution function** (PDF), and $e_q$ is the quark's charge. Callan and Gross showed that point-like partons of *spin ½* give a particular relation between two of the structure functions, and the SLAC data fitted it: the partons are spin-½ particles, as quarks are.:cite[callan1969] Later measurements, including the scattering of neutrinos (a different probe of the same partons, with different charges), supported the fractional charges $\tfrac23$ and $-\tfrac13$ and showed that the charged partons carry only about half of the proton's momentum. The other half is carried by something neutral, the glue of Chapter 18.:cite[pdg2024]
 
 :::history{year=1968 title="Electrons see points inside the proton" people="Jerome Friedman, Henry Kendall, Richard Taylor, and the SLAC–MIT collaboration" source="Sources: Bloom et al. (1969); Breidenbach et al. (1969); Bjorken (1969); Feynman (1969)."}
-The SLAC–MIT group scattered electrons from the linear accelerator off hydrogen and deuterium targets and measured the scattered electrons in spectrometers at fixed angles of 6° and 10°. They found that, for a hadronic mass $W$ above the resonances, the cross-section was far larger than a smooth-blob proton would give and, as expressed in the right variables, that it depended only weakly on $Q^2$. The first results were shown in 1968 and the two papers appeared in *Physical Review Letters* in October 1969.:cite[bloom1969,breidenbach1969] Bjorken's prediction of the scaling behaviour was published in the same year,:cite[bjorken1969] and Feynman's parton model, which explained it as scattering from point-like constituents, soon after.:cite[feynman1969] Friedman, Kendall and Taylor received the Nobel Prize in Physics in 1990.:cite[nobel-physics]
+The SLAC–MIT group scattered electrons from the linear accelerator off hydrogen and deuterium targets and measured the scattered electrons in spectrometers at fixed angles of 6° and 10°. They found that, for a hadronic mass $W$ above the resonances, the cross-section was far larger than a smooth-blob proton would give and, as expressed in the right variables, that it depended only weakly on $Q^2$. The first results were shown in 1968 and the two papers appeared in *Physical Review Letters* in 1969.:cite[bloom1969,breidenbach1969] Bjorken's prediction of the scaling behaviour was published in the same year,:cite[bjorken1969] and Feynman's parton model, which explained it as scattering from point-like constituents, soon after.:cite[feynman1969] Friedman, Kendall and Taylor received the Nobel Prize in Physics in 1990.:cite[nobel-physics]
 :::
 
 :::history{year=1969 title="Feynman's partons" people="Richard P. Feynman" source="Source: Feynman (1969)."}
-Feynman visited SLAC in 1968, saw the first scaling data, and went away to find a picture that made it simple. His answer, published in 1969 under the title *Very high-energy collisions of hadrons*, was to view a fast-moving proton as a swarm of point-like constituents, each carrying a fraction of its momentum, and the collision as an incoherent sum of collisions with each of them.:cite[feynman1969] He called them partons, without committing himself to what they were. The identification with quarks followed from the measured charges and the spin ½, and the glue was added when the momentum sum did not reach 1.
+Feynman's paper *Very high-energy collisions of hadrons*, published in *Physical Review Letters* in 1969, viewed a fast-moving proton as a swarm of point-like constituents, each carrying a fraction of its momentum, and a collision as an incoherent sum of collisions with each of them.:cite[feynman1969] He called them partons, without committing himself to what they were. The identification with quarks followed from their measured charges and spin ½, and the glue was added when it became clear that the charged partons carry only about half of the momentum.
 :::
 
 ## The proton at increasing resolution
@@ -243,11 +245,11 @@ The structure function does not scale exactly, and the second figure shows how i
 
 ::scaling-plot{n="13.4" caption="F₂(x, Q²) = Σ e_q² x (q + q̄) from the course's parton distributions, for four values of x, against Q². The shaded band is an illustrative range of Q² (2 to 20 GeV²). The curves for x = 0.1 and 0.25 are nearly flat there: Bjorken scaling. At x = 0.01 the function rises, and at x = 0.5 it falls: the scaling violations. A teaching parametrisation and not data."}
 
-For the numbers in the band: between $Q^2 = 2$ and 20 GeV², $F_2$ at $x = 0.1$ changes by 1 %, at $x = 0.25$ it falls by 13 %, at $x = 0.5$ it falls by 29 % and at $x = 0.01$ it rises by 44 %.
+For the numbers in the band: between $Q^2 = 2$ and 20 GeV², $F_2$ at $x = 0.1$ changes by 1 %, at $x = 0.25$ it falls by 14 %, at $x = 0.5$ it falls by 29 % and at $x = 0.01$ it rises by 44 %.
 
 ## Sampling a parton's momentum
 
-The proton beams of the generator (Chapter 2's pipeline stage 2) need one more thing from the PDFs: to make a collision at the LHC one needs the momentum fractions $x_1$ and $x_2$ of the two partons that collide. They are random numbers with the density of the PDFs. A parton distribution is a function of $x$ that varies over many orders of magnitude; the algorithm for drawing from it is the subject of the exercise.
+The proton beams of the generator (stage 2 of the pipeline in Chapter 0) need one more thing from the PDFs: to make a collision at the LHC one needs the momentum fractions $x_1$ and $x_2$ of the two partons that collide. They are random numbers with the density of the PDFs. A parton distribution is a function of $x$ that varies over many orders of magnitude; the algorithm for drawing from it is the subject of the exercise.
 
 ```code
 id: sample-parton-x

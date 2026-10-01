@@ -223,3 +223,61 @@ okubo1962:
   year: 1962
   title: Note on unitary symmetry in strong interactions
   venue: Progress of Theoretical Physics 27, 949–966
+gellmann1964:
+  authors: M. Gell-Mann
+  year: 1964
+  title: A schematic model of baryons and mesons
+  venue: Physics Letters 8, 214–215
+zweig1964:
+  authors: George Zweig
+  year: 1964
+  title: An SU(3) model for strong interaction symmetry and its breaking
+  venue: CERN preprints TH.401 and TH.412
+gellmann1994:
+  authors: Murray Gell-Mann
+  year: 1994
+  title: The Quark and the Jaguar
+  venue: W. H. Freeman, New York
+  note: Gell-Mann's account of the choice of the name "quark".
+greenberg1964:
+  authors: O. W. Greenberg
+  year: 1964
+  title: Spin and unitary-spin independence in a paraquark model of baryons and mesons
+  venue: Physical Review Letters 13, 598–602
+  url: https://doi.org/10.1103/PhysRevLett.13.598
+hannambu1965:
+  authors: M. Y. Han, Y. Nambu
+  year: 1965
+  title: Three-triplet model with double SU(3) symmetry
+  venue: Physical Review 139, B1006–B1010
+  url: https://doi.org/10.1103/PhysRev.139.B1006
+bloom1969:
+  authors: E. D. Bloom et al.
+  year: 1969
+  title: High-energy inelastic e–p scattering at 6° and 10°
+  venue: Physical Review Letters 23, 930–934
+  url: https://doi.org/10.1103/PhysRevLett.23.930
+breidenbach1969:
+  authors: M. Breidenbach et al.
+  year: 1969
+  title: Observed behavior of highly inelastic electron–proton scattering
+  venue: Physical Review Letters 23, 935–939
+  url: https://doi.org/10.1103/PhysRevLett.23.935
+bjorken1969:
+  authors: J. D. Bjorken
+  year: 1969
+  title: Asymptotic sum rules at infinite momentum
+  venue: Physical Review 179, 1547–1553
+  url: https://doi.org/10.1103/PhysRev.179.1547
+feynman1969:
+  authors: R. P. Feynman
+  year: 1969
+  title: Very high-energy collisions of hadrons
+  venue: Physical Review Letters 23, 1415–1417
+  url: https://doi.org/10.1103/PhysRevLett.23.1415
+callan1969:
+  authors: C. G. Callan, D. J. Gross
+  year: 1969
+  title: High-energy electroproduction and the constitution of the electric current
+  venue: Physical Review Letters 22, 156–159
+  url: https://doi.org/10.1103/PhysRevLett.22.156

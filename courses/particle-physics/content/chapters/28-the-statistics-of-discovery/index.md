@@ -24,7 +24,7 @@ options:
 
 ## Counting
 
-Particles arrive independently, at a constant average rate. Whatever is being counted (muon pairs in a mass window, photons in a detector) follows the **Poisson distribution**. If the expected number of events is $\mu$, the probability of observing exactly $n$ is
+Particles arrive independently, at a constant average rate. Whatever is being counted (muon pairs in a mass window, photons in a detector) follows the :term[Poisson distribution]{id=poisson-distribution}. If the expected number of events is $\mu$, the probability of observing exactly $n$ is
 
 :::equation{#poisson caption="The Poisson distribution: the probability of n events when μ are expected, for independent events at a steady average rate."}
 $$P(\term{n}{n}\mid\term{mu}{\mu}) = \frac{\mu^{n}\,e^{-\mu}}{n!}$$
@@ -228,7 +228,7 @@ hints:
 
 ## From a count to a number of standard deviations
 
-Back to the nine events. The question is a precise one: if there were no signal, how often would the background alone fluctuate to 9 or more events? That probability is the **p-value**. For a counting experiment with a known expected background $b$ and $n_\mathrm{obs}$ observed events,
+Back to the nine events. The question is a precise one: if there were no signal, how often would the background alone fluctuate to 9 or more events? That probability is the :term[p-value]{id=p-value}. For a counting experiment with a known expected background $b$ and $n_\mathrm{obs}$ observed events,
 
 :::equation{#pvalue caption="The p-value, and its conversion to a significance Z: the number of standard deviations of a Gaussian with the same one-sided tail."}
 $$\term{p}{p} = \sum_{k\ge n_\mathrm{obs}}\frac{e^{-b}\,b^{k}}{k!}, \qquad p = \int_{\term{Z}{Z}}^{\infty}\frac{e^{-x^2/2}}{\sqrt{2\pi}}\,dx = \tfrac12\operatorname{erfc}\!\left(\frac{Z}{\sqrt2}\right)$$
@@ -364,7 +364,7 @@ hints:
 
 ## The look-elsewhere effect
 
-The p-value above assumed that the location of the bump was decided before the data were looked at. A search for a new particle of unknown mass does not do that. It looks for a bump **anywhere** in a spectrum, and some bin will have the largest fluctuation. Flip a fair coin a hundred times and the chance of *some* run of seven heads is large, even though a run of seven at a particular place is unlikely. The p-value of a particular bin, found after looking, is the **local** p-value. The probability that *somewhere* in the search range the background fluctuates at least as much is the **global** p-value, and it is larger.
+The p-value above assumed that the location of the bump was decided before the data were looked at. A search for a new particle of unknown mass does not do that. It looks for a bump **anywhere** in a spectrum, and some bin will have the largest fluctuation. Flip a fair coin a hundred times and the chance of *some* run of seven heads is large, even though a run of seven at a particular place is unlikely. The p-value of a particular bin, found after looking, is the **local** p-value. The probability that *somewhere* in the search range the background fluctuates at least as much is the **global** p-value, and it is larger. This is the :term[look-elsewhere effect]{id=look-elsewhere-effect}.
 
 If there are $N$ independent places to look, each with local probability $p_\mathrm{local}$, the chance that at least one fluctuates that far is
 
@@ -404,9 +404,9 @@ In August 2016 both experiments presented the analysis of the larger data set of
 
 ## Systematic uncertainties and nuisance parameters
 
-Everything so far has assumed that $b$, the expected background, is known exactly. It never is. The background comes from a simulation with its own uncertainties, or from a fit to the sidebands, or from a measurement elsewhere, and the **systematic** uncertainty on it does not shrink with more data in the signal region. (A **statistical** uncertainty does: it is the scatter of the counts themselves.) Examples are the uncertainty on the luminosity, on the efficiency of the trigger and of the selection, on the energy scale of the detector, and on the theory's cross-sections.
+Everything so far has assumed that $b$, the expected background, is known exactly. It never is. The background comes from a simulation with its own uncertainties, or from a fit to the sidebands, or from a measurement elsewhere, and the **systematic** uncertainty (:term[systematic uncertainty]{id=systematic-uncertainty}) on it does not shrink with more data in the signal region. (A **statistical** uncertainty does: it is the scatter of the counts themselves.) Examples are the uncertainty on the luminosity, on the efficiency of the trigger and of the selection, on the energy scale of the detector, and on the theory's cross-sections.
 
-The standard way to include them is to add a **nuisance parameter** $\theta$, a parameter of the model that is not of interest but that the data can constrain. For a background known to a relative uncertainty $\delta$, write $b \to b(1 + \delta\theta)$ and put a Gaussian constraint on $\theta$ of mean 0 and width 1, which says what was known about it beforehand. The fit then adjusts $\theta$ to suit the data while paying a penalty for going far from 0, and the uncertainty of the quantity of interest (the signal strength μ) is found by **profiling**: at each value of μ, minimise over $\theta$. Its effect on a counting experiment is to add, in quadrature, the uncertainty on $b$ to the statistical one:
+The standard way to include them is to add a :term[nuisance parameter]{id=nuisance-parameter} $\theta$, a parameter of the model that is not of interest but that the data can constrain. For a background known to a relative uncertainty $\delta$, write $b \to b(1 + \delta\theta)$ and put a Gaussian constraint on $\theta$ of mean 0 and width 1, which says what was known about it beforehand. The fit then adjusts $\theta$ to suit the data while paying a penalty for going far from 0, and the uncertainty of the quantity of interest (the signal strength μ) is found by **profiling**: at each value of μ, minimise over $\theta$. Its effect on a counting experiment is to add, in quadrature, the uncertainty on $b$ to the statistical one:
 
 :::equation{#syst caption="The uncertainty on a measured signal strength μ from a counting experiment: the statistical and systematic parts add in quadrature."}
 $$\term{sigmu}{\sigma_\mu}^2 \approx \frac{s + b}{s^2} + \left(\frac{\term{delta}{\delta}\,b}{s}\right)^{2}$$
@@ -441,7 +441,7 @@ In 2012 the collaboration found two problems with the timing. A fibre-optic cabl
 
 ## Blinding
 
-There is a subtler way to fool yourself than a fluctuation, and it needs no mistakes in calculation. If an analyst looks at the signal region and adjusts the selection, the binning, the range of the fit or the choice of background model until the excess grows, the final p-value no longer means what the formula says: it is the p-value of the most favourable of many analyses, which is another look-elsewhere effect, hidden in the choices. The remedy is **blinding**. The signal region of the data is hidden while the analysis is developed, on simulation and on the sidebands, and the selection and the background model are then frozen. Only after that is the box opened. It is the held-out test set of machine learning: the data you tune on and the data you report on must be different, and the test set is looked at once.
+There is a subtler way to fool yourself than a fluctuation, and it needs no mistakes in calculation. If an analyst looks at the signal region and adjusts the selection, the binning, the range of the fit or the choice of background model until the excess grows, the final p-value no longer means what the formula says: it is the p-value of the most favourable of many analyses, which is another look-elsewhere effect, hidden in the choices. The remedy is :term[blinding]{id=blinding}. The signal region of the data is hidden while the analysis is developed, on simulation and on the sidebands, and the selection and the background model are then frozen. Only after that is the box opened. It is the held-out test set of machine learning: the data you tune on and the data you report on must be different, and the test set is looked at once.
 
 ```ts
 const d = new BlindedSample(masses, [120, 130]);
@@ -478,7 +478,7 @@ clb:
 ```
 :::
 
-The price is that the limit is **conservative**: it excludes slightly less than 95 % of the cases it is meant to, and in return it never excludes what the experiment could not test. The method was introduced by Read and, in an earlier form, Junk.:cite[read2002,junk1999] For an observation of zero events, the limit comes out the same whatever the background: the 95 % limit is $s < -\ln 0.05 = 3.0$ events.
+The price is that the limit is **conservative**: it excludes slightly less than 95 % of the cases it is meant to, and in return it never excludes what the experiment could not test. The method (:term[CLs]{id=cls}) was introduced by Read and, in an earlier form, Junk.:cite[read2002,junk1999] For an observation of zero events, the limit comes out the same whatever the background: the 95 % limit is $s < -\ln 0.05 = 3.0$ events.
 
 ::limit-explorer{n="28.6" caption="CLs limits for a counting experiment. The white curve is CLs as a function of the signal size; the limit is where it crosses 0.05. The dashed curve is CLs+b alone, which is the quantity not to quote. The blue band is the range of limits that an experiment with no signal and this background would get, to ±1σ. Set N to 0 and the limit is 3.0 whatever b. Set b large and N small: CLs+b alone would exclude everything, and CLs does not."}
 

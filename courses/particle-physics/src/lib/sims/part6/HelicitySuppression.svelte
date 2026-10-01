@@ -51,14 +51,14 @@
         <line x1={W / 2 - 22} y1="70" x2="36" y2="70" stroke="var(--p-neutrino)" stroke-width="3" stroke-dasharray="2 4" marker-end="url(#h-mom)" />
         <text x="36" y="56" class="s">ν: momentum</text>
         <line x1="70" y1="92" x2="130" y2="92" stroke="var(--accent)" stroke-width="3.5" marker-end="url(#h-spin)" />
-        <text x="36" y="114" class="s">spin (pointing right):</text>
-        <text x="36" y="127" class="s">left-handed, as the weak force demands</text>
+        <text x="36" y="114" class="s">ν spin points right:</text>
+        <text x="36" y="127" class="s">left-handed, as V − A wants</text>
         <!-- antilepton to the right -->
         <line x1={W / 2 + 22} y1="70" x2={W - 36} y2="70" stroke="var(--p-electron)" stroke-width="3.5" marker-end="url(#h-mom)" />
         <text x={W - 36} y="56" text-anchor="end" class="s">ℓ⁺: momentum</text>
         <line x1={W - 70} y1="92" x2={W - 130} y2="92" stroke="var(--accent)" stroke-width="3.5" marker-end="url(#h-spin)" />
-        <text x={W - 36} y="114" text-anchor="end" class="s">spin must point left: against</text>
-        <text x={W - 36} y="127" text-anchor="end" class="s">its motion, which the weak force disfavours</text>
+        <text x={W - 36} y="114" text-anchor="end" class="s">ℓ⁺ spin must point left:</text>
+        <text x={W - 36} y="127" text-anchor="end" class="s">the disfavoured helicity</text>
         <text x={W / 2} y="162" text-anchor="middle" class="s">total spin along the axis: 0</text>
       </svg>
       <table class="ui tab">
@@ -84,7 +84,7 @@
           <circle cx={sx(mE * 1000)} cy={sy(Le.rateFactor / ref)} r="5" fill="var(--p-electron)" />
           <text x={sx(mE * 1000) + 8} y={sy(Le.rateFactor / ref) + 4} class="lbl">e: {fmt(Le.rateFactor / ref)}</text>
           <circle cx={sx(mMu * 1000)} cy={sy(1)} r="5" fill="var(--p-muon)" />
-          <text x={sx(mMu * 1000) - 8} y={sy(1) - 8} text-anchor="end" class="lbl">μ: 1</text>
+          <text x={sx(mMu * 1000) - 9} y={sy(1) + 16} text-anchor="end" class="lbl">μ: 1</text>
           {#if relRate > 0}
             <circle cx={sx(mMeV)} cy={sy(Math.max(relRate, 1e-7))} r="6" fill="none" stroke="var(--ink)" stroke-width="2" />
           {/if}

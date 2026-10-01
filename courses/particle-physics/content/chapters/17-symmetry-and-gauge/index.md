@@ -39,7 +39,7 @@ options:
     why: 'Charge goes with invariance under changes of the phase of a charged field, which is a transformation of the field, not of the clock.'
 ```
 
-The last row is the one that matters for this chapter. A **complex field** ψ(*x*) has a phase. The equations of a free charged field (for instance, the Klein–Gordon field of Chapter 14 made complex, or the electron field) are unchanged if the phase is rotated by the same angle α everywhere: ψ → e<sup>iα</sup>ψ. Noether's theorem gives a conserved current, whose time component integrates to a conserved number, the charge.
+The last row is the one that matters for this chapter. A **complex field** ψ(*x*) has a phase. The equations of a free charged field (for instance, the Klein–Gordon field of Chapter 14 made complex, or the electron field) are unchanged if the phase is rotated by the same angle α everywhere: ψ → e<sup>iα</sup>ψ. :term[Noether's theorem]{id=noether-theorem} gives a conserved current, whose time component integrates to a conserved number, the charge.
 
 :::deeper[The conserved charge of a complex scalar field]
 Take $\mathcal L = \partial_\mu\psi^*\,\partial^\mu\psi - m^2\psi^*\psi$. Under $\psi\to e^{i\alpha}\psi$ with α constant, $\psi^*\psi$ and $\partial\psi^*\partial\psi$ are unchanged. For an infinitesimal α, $\delta\psi = i\alpha\psi$ and $\delta\psi^* = -i\alpha\psi^*$. Noether's current is $\frac{\partial\mathcal L}{\partial(\partial_\mu\psi)}\,\delta\psi/\alpha + \frac{\partial\mathcal L}{\partial(\partial_\mu\psi^*)}\,\delta\psi^*/\alpha$, which is, up to an overall sign that is a matter of convention,
@@ -59,7 +59,7 @@ The paper proves two theorems. The first is the one used in particle physics: to
 
 ## Making the symmetry local
 
-The phase rotation of the previous section used the same angle α at every point. That is a **global** symmetry. It is a strange requirement: it says that an observer in Geneva and an observer on the other side of the galaxy must use the same convention for what zero phase means, though no signal can reach from one to the other at once. A more natural statement is that each point has its own freedom: ψ(*x*) → e<sup>iα(*x*)</sup>ψ(*x*) with α depending on *x*. This is a **local** symmetry, or **gauge** symmetry.
+The phase rotation of the previous section used the same angle α at every point. That is a **:term[global symmetry]{id=global-symmetry}**. It is a strange requirement: it says that an observer in Geneva and an observer on the other side of the galaxy must use the same convention for what zero phase means, though no signal can reach from one to the other at once. A more natural statement is that each point has its own freedom: ψ(*x*) → e<sup>iα(*x*)</sup>ψ(*x*) with α depending on *x*. This is a **local** symmetry, or **:term[gauge symmetry]{id=gauge-symmetry}**.
 
 The trouble is the derivative. Write the transformed field's derivative with the product rule:
 
@@ -67,7 +67,7 @@ $$\partial_\mu\!\left(e^{i\alpha(x)}\psi\right) = e^{i\alpha(x)}\left(\partial_\
 
 The extra term $i(\partial_\mu\alpha)\psi$ spoils everything that contains a derivative. The kinetic term $|\partial\psi|^2$ is not invariant. Physically, a derivative compares the field at neighbouring points, and if the phase convention differs from point to point the comparison is meaningless: the phase dial's energy is the sum of $|\psi_i-\psi_j|^2$ over neighbours, and local rotations change it.
 
-The repair is to introduce a new field that carries the information about how to compare phases at neighbouring points, and to define a derivative that uses it. On the grid, it is the dial *A*<sub>ij</sub> on each edge, and the comparison is $\psi_i - e^{iA_{ij}}\psi_j$. In the continuum it is a vector field *A*<sub>μ</sub>, and the **covariant derivative** is
+The repair is to introduce a new field that carries the information about how to compare phases at neighbouring points, and to define a derivative that uses it. On the grid, it is the dial *A*<sub>ij</sub> on each edge, and the comparison is $\psi_i - e^{iA_{ij}}\psi_j$. In the continuum it is a vector field *A*<sub>μ</sub>, and the **:term[covariant derivative]{id=covariant-derivative}** is
 
 :::equation{#covariant caption="The covariant derivative and the transformation of the gauge field that makes it work."}
 $$\term{D}{D_\mu}\psi = \left(\partial_\mu - i\,\term{q}{q}\,\term{A}{A_\mu}\right)\psi,\qquad \psi\to e^{i\term{alpha}{\alpha(x)}}\psi,\quad A_\mu\to A_\mu + \frac1q\,\partial_\mu\alpha$$
@@ -150,11 +150,11 @@ f:
 ```
 :::
 
-The figure computes the commutators and group elements numerically. Pick two generators, read off the structure constants from the matrices, and check that a group element exp(iθ*T*) is unitary with unit determinant.
+The figure computes the commutators and group elements numerically. Pick two :term[generators]{id=generator}, read off the structure constants from the matrices, and check that a group element exp(iθ*T*) is unitary with unit determinant.
 
 ::gauge-groups{n="17.2" caption="U(1), SU(2) and SU(3) as matrices. The generators are shown as matrices (the two selected are outlined). The commutator of two of them is computed from the matrices and written as a sum of generators with the structure constants f_abc. Finite elements exp(iθT_a) and exp(iφT_b) are built numerically: they are unitary and have determinant one, and for SU(2) and SU(3) the order in which two are applied matters (for U(1) it never does). The numbers of generators, 1, 3 and 8, are the numbers of gauge bosons: the photon, the three weak bosons and the eight gluons."}
 
-When the matrices do not commute, the field strength acquires an extra term. The gauge fields are *A*<sup>a</sup><sub>μ</sub>, one per generator, and
+When the matrices do not commute, the :term[field strength]{id=field-strength} acquires an extra term. The gauge fields are *A*<sup>a</sup><sub>μ</sub>, one per generator, and
 
 $$F^a_{\mu\nu} = \partial_\mu A^a_\nu - \partial_\nu A^a_\mu + g\,f^{abc}A^b_\mu A^c_\nu .$$
 
@@ -192,7 +192,7 @@ The lattice version of the phase dial is not only a picture: it is the way gauge
 
 $$S = \beta\sum_p\left(1 - \cos\theta_p\right),\qquad \beta = 1/g^2,$$
 
-which for small angles is $\tfrac12\beta\sum\theta_p^2$, the sum of squared field strengths of Maxwell's theory. The quantum theory is defined by averaging over all link configurations with the weight e<sup>−S</sup>, which is what a Monte Carlo can do: propose a change to one link, accept it with probability min(1, e<sup>−ΔS</sup>), and repeat. The measurable gauge-invariant quantities are averages of products of links around loops, **Wilson loops**.
+which for small angles is $\tfrac12\beta\sum\theta_p^2$, the sum of squared field strengths of Maxwell's theory. The quantum theory is defined by averaging over all link configurations with the weight e<sup>−S</sup>, which is what a Monte Carlo can do: propose a change to one link, accept it with probability min(1, e<sup>−ΔS</sup>), and repeat. The measurable gauge-invariant quantities are averages of products of links around loops, **:term[Wilson loops]{id=wilson-loop}**.
 
 ::lattice-gauge{n="17.3" caption="Optional deep dive: a two-dimensional U(1) lattice gauge theory by Monte Carlo, with the exact answers beside it. Small β is strong coupling: the plaquette angles are random. Large β is weak coupling: they are nearly zero. The average plaquette is compared with the exact result I₁(β)/I₀(β), where I are modified Bessel functions. Wilson loops of R × T squares have ⟨W⟩ = exp(−σRT) where σ = −ln(I₁/I₀): the logarithm falls on a straight line against the area, an 'area law'. The scan button sweeps β. A larger lattice can run on the GPU where the browser supports it; the CPU version is complete."}
 
@@ -212,7 +212,7 @@ explain: "4 × 64⁴ = 6.7 × 10⁷ links, times 18 × 8 = 144 bytes, is 9.7 × 
 ```
 
 :::programmer
-A gauge theory is **comparison across frames**. The value of ψ at one point is stored in that point's own local convention, like a pointer in a separate address space or a coordinate in a local chart; to compare two such values you need a rule for translating between frames. The gauge field is that rule, one translation (the link) per edge. A gauge transformation is a re-choice of the local frames, and a physical quantity is one that does not depend on the choice, in the way that a graph invariant does not depend on how the nodes are numbered. Programmers meet the same structure when merging replicated state: the data are what matter, the frame in which each replica stored them is bookkeeping, and the meaningful operations are those that give the same answer however the bookkeeping is chosen. The Phase dial's covariant energy is such an operation.
+A gauge theory is **comparison across frames**. The value of ψ at one point is stored in that point's own local convention, like a pointer in a separate address space or a coordinate in a local chart; to compare two such values you need a rule for translating between frames. The :term[gauge field]{id=gauge-field} is that rule, one translation (the link) per edge. A gauge transformation is a re-choice of the local frames, and a physical quantity is one that does not depend on the choice, in the way that a graph invariant does not depend on how the nodes are numbered. Programmers meet the same structure when merging replicated state: the data are what matter, the frame in which each replica stored them is bookkeeping, and the meaningful operations are those that give the same answer however the bookkeeping is chosen. The Phase dial's covariant energy is such an operation.
 :::
 
 :::hood[Gauge transformations on a grid]
@@ -246,7 +246,7 @@ The test suite checks the three claims of the figure on random fields: a global 
 :::
 
 :::experiments
-Gauge invariance makes sharp predictions, and experiments test them. The photon mass limit quoted above (about 10⁻¹⁸ eV, from the Particle Data Group's compilation of limits) is one. Another is **charge conservation** itself, which Noether's theorem ties to the global symmetry: searches for the decay of an electron into a photon and a neutrino, which would violate it, set a lifetime limit longer than 10²⁶ years.:cite[pdg2024] At CERN the non-abelian structure is tested in a different way: the triple coupling of the W bosons to the photon and the Z, which the symmetry fixes, was measured at LEP and at the LHC (Chapter 23). The coupling of three gluons is probed by the rate of three-jet events (Chapter 18).
+Gauge invariance makes sharp predictions, and experiments test them. The photon mass limit quoted above (about 10⁻¹⁸ eV, from the Particle Data Group's compilation of limits) is one. Another is **charge conservation** itself, which Noether's theorem ties to the global symmetry: searches for the decay of an electron into a photon and a neutrino, which would violate it, set a lifetime limit longer than 10²⁶ years.:cite[pdg2024] At CERN the :term[non-abelian]{id=non-abelian} structure is tested in a different way: the triple coupling of the W bosons to the photon and the Z, which the symmetry fixes, was measured at LEP and at the LHC (Chapter 23). The coupling of three gluons is probed by the rate of three-jet events (Chapter 18).
 
 The lattice computations of this chapter are carried out by collaborations of theorists on supercomputers: the calculation of the masses of the proton and the neutron, of the pion decay constant and of the strong coupling from first principles is the largest-scale use of gauge theory today. The generators of the experiments (Chapter 18) use none of it, but their parameters are checked against it.
 :::

@@ -28,3 +28,5 @@ export { default as ParticleTable } from '$lib/sims/part8/ParticleTable.svelte';
 export { default as SmChart } from '$lib/sims/part8/SmChart.svelte';
 /** One-loop running of the three gauge couplings, with and without supersymmetry (toy): `::coupling-running{n="32.4"}`. */
 export { default as CouplingRunning } from '$lib/sims/part8/CouplingRunning.svelte';
+/** The ledger of Chapter 11 with parity, C, CP and lepton flavour struck through: `::ledger-final{n="31.6"}`. */
+export { default as LedgerFinal } from '$lib/sims/part8/LedgerFinal.svelte';

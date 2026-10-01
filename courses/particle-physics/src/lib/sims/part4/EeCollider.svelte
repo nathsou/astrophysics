@@ -1,7 +1,7 @@
 <!--
   A virtual e⁺e⁻ collider (Chapter 16 flagship).
 
-    ::ee-collider{n="16.2" caption="…"}
+    ::ee-collider{n="16.1" caption="…"}
 
   Tab 1 (Measure): choose a final state and √s; the collider runs for an integrated luminosity, the number of events is
   Poisson(σL), and the events come from `hep/gen` (hard process only: the angles, not the showers). It shows the counts, σ
