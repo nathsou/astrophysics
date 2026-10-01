@@ -145,8 +145,6 @@ button { font: inherit; color: inherit; }
 
 /* ------------------------------------------------------------ app shell */
 .app { display: grid; grid-template-columns: var(--sidebar-w) minmax(0, 1fr); min-height: calc(100vh - var(--course-nav-height)); }
-.app.wide-mode, .app.home-mode { grid-template-columns: minmax(0, 1fr); }
-.app.wide-mode > .sidebar, .app.home-mode > .sidebar { display: none; }
 .app.home-mode .mobile-bar { display: none; }
 .sidebar {
   position: sticky; top: var(--course-nav-height); height: calc(100dvh - var(--course-nav-height)); overflow-y: auto; border-right: 1px solid var(--fg);

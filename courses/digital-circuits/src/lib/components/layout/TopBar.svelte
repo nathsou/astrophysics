@@ -8,27 +8,12 @@
 
   let scrolled = $state(false);
   const onBench = $derived(page.url.pathname.startsWith(`${base}/bench`));
-  const home = $derived(page.url.pathname.replace(/\/$/, '') === base);
   const onParts = $derived(page.url.pathname.startsWith(`${base}/parts`));
 </script>
 
 <svelte:window onscroll={() => (scrolled = scrollY > 160)} />
 
 <header class="topbar ui" class:scrolled>
-  <button class="icon-btn menu" onclick={() => (nav.sidebarOpen = !nav.sidebarOpen)} aria-label="Open navigation" aria-expanded={nav.sidebarOpen}>
-    <Icon name="menu" />
-  </button>
-  {#if !home}
-    <button
-      class="icon-btn collapse"
-      onclick={() => nav.toggleCollapsed()}
-      aria-label={nav.sidebarCollapsed ? 'Show the chapter list' : 'Hide the chapter list'}
-      aria-expanded={!nav.sidebarCollapsed}
-      title={nav.sidebarCollapsed ? 'Show the chapter list' : 'Hide the chapter list'}
-    >
-      <Icon name="sidebar" />
-    </button>
-  {/if}
   <a class="brand" href="{base}/">
     <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
       <rect width="32" height="32" rx="7" class="tile" />
@@ -160,21 +145,6 @@
     color: var(--copper-ink);
     border-color: var(--line);
     background: var(--panel);
-  }
-  .menu {
-    display: none;
-    margin-left: -0.4rem;
-  }
-  .collapse {
-    margin-left: -0.4rem;
-  }
-  @media (max-width: 1099px) {
-    .menu {
-      display: inline-grid;
-    }
-    .collapse {
-      display: none;
-    }
   }
   @media (max-width: 640px) {
     .page-title {

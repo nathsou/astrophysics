@@ -1,4 +1,5 @@
 import '../../../../packages/course-navigation/navigation.css';
+import { mountSidebar, closeSidebar } from '../../../../packages/course-navigation/sidebar';
 import { A, useLocation, type RouteSectionProps } from '@solidjs/router';
 import { For, Show, createSignal, createEffect, onCleanup, onMount } from 'solid-js';
 import { chapters, parts, chapterBySlug, fileName, baseFileName } from '../content/chapters.ts';
@@ -9,14 +10,14 @@ const REFERENCE_FILES: Record<string, string> = { rules: 'rule_index.md', timeli
 const PART_ROMAN = ['', 'I', 'II', 'III', 'IV', 'V'];
 
 export function Layout(props: RouteSectionProps) {
-  const [open, setOpen] = createSignal(false);
   const [scroll, setScroll] = createSignal(0);
   const loc = useLocation();
+  onMount(() => onCleanup(mountSidebar('cic')));
   const slug = () => /^\/ch\/([^/?]+)/.exec(loc.pathname)?.[1];
   const current = () => (slug() ? chapterBySlug(slug()!) : undefined);
   createEffect(() => {
     void loc.pathname;
-    setOpen(false);
+    closeSidebar();
   });
   onMount(() => {
     const on = () => {
@@ -34,21 +35,18 @@ export function Layout(props: RouteSectionProps) {
     if (refPage()) return REFERENCE_FILES[refPage()!] ?? `${refPage()}.md`;
     return undefined;
   };
-  const onKey = (e: KeyboardEvent) => {
-    if (e.key === 'Escape' && open()) setOpen(false);
-  };
-  onMount(() => {
-    window.addEventListener('keydown', onKey);
-    onCleanup(() => window.removeEventListener('keydown', onKey));
-  });
   const themeIcon = () => (theme() === 'dark' ? '☾' : theme() === 'light' ? '☀' : '◐');
 
   return (
     <>
       <nav class="course-index-nav" aria-label="Course collection">
         <a class="course-index-link" href="../" target="_self"><span aria-hidden="true">←</span> All courses</a>
+        <button class="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" data-sidebar-toggle>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
+          <span data-sidebar-label>Hide contents</span>
+        </button>
       </nav>
-    <div class="shell">
+    <div class="shell course-shell">
       <a
         href="#main"
         class="skip-link"
@@ -60,7 +58,7 @@ export function Layout(props: RouteSectionProps) {
       >
         Skip to content
       </a>
-      <nav class={`sidebar ${open() ? 'open' : ''}`} id="contents" aria-label="Course contents">
+      <nav class="sidebar" id="course-contents" aria-label="Course contents">
         <A href="/" class="brand" title="Calculus of Inductive Constructions: welcome">
           CIC <span class="brand-count">/ {chapters.length} chapters</span>
           <span class="brand-read">
@@ -107,14 +105,8 @@ export function Layout(props: RouteSectionProps) {
           </A>
         </div>
       </nav>
-      <Show when={open()}>
-        <div class="scrim" onClick={() => setOpen(false)} />
-      </Show>
       <div class="main">
         <header class="topbar">
-          <button class="btn ghost small menu-btn" onClick={() => setOpen(!open())} aria-label="Contents" aria-expanded={open()} aria-controls="contents">
-            ☰
-          </button>
           <div class="tabs">
             <A href="/" class={`tab tab-home ${tabName() ? '' : 'active'}`} aria-current={tabName() ? undefined : 'page'} end>
               <span>00_welcome.lean</span>

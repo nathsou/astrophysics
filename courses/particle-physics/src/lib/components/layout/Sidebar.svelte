@@ -30,9 +30,7 @@
   </li>
 {/snippet}
 
-<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
-<div class="scrim" class:open={nav.sidebarOpen} onclick={() => (nav.sidebarOpen = false)}></div>
-<nav class="sidebar ui" class:open={nav.sidebarOpen} aria-label="Course contents">
+<nav id="course-contents" class="sidebar ui" class:open={nav.sidebarOpen} aria-label="Course contents">
   {#each PARTS as part (part.id)}
     <section>
       <h2>
@@ -191,9 +189,6 @@
     border-left-color: var(--sig-high);
     font-weight: 600;
   }
-  .scrim {
-    display: none;
-  }
   @media (max-width: 1099px) {
     .sidebar {
       position: fixed;
@@ -210,13 +205,6 @@
       transform: none;
       visibility: visible;
       box-shadow: var(--shadow-lg);
-    }
-    .scrim.open {
-      display: block;
-      position: fixed;
-      inset: calc(3.5rem + var(--course-nav-height)) 0 0 0;
-      z-index: 44;
-      background: light-dark(rgb(28 33 39 / 0.35), rgb(0 0 0 / 0.55));
     }
   }
 </style>

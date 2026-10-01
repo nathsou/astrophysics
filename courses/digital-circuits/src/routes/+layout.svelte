@@ -1,6 +1,7 @@
 <script lang="ts">
   import '../app.css';
   import '../../../../packages/course-navigation/navigation.css';
+  import { mountSidebar, closeSidebar } from '../../../../packages/course-navigation/sidebar';
   import { onMount, type Snippet } from 'svelte';
   import { theme } from '$lib/state/theme.svelte';
   import { nav } from '$lib/state/nav.svelte';
@@ -8,27 +9,27 @@
   import TopBar from '$lib/components/layout/TopBar.svelte';
   import Sidebar from '$lib/components/layout/Sidebar.svelte';
   import { afterNavigate } from '$app/navigation';
-  import { page } from '$app/state';
   import { base } from '$app/paths';
 
   let { children }: { children: Snippet } = $props();
 
-  // The landing page has its own full contents list, so it drops the sidebar.
-  const home = $derived(page.url.pathname.replace(/\/$/, '') === base);
-
   onMount(() => {
     theme.init();
-    nav.init();
+    return mountSidebar('digital-circuits', state => (nav.sidebarOpen = state.open));
   });
-  afterNavigate(() => (nav.sidebarOpen = false));
+  afterNavigate(closeSidebar);
 </script>
 
 <a class="skip ui" href="#main">Skip to content</a>
 <nav class="course-index-nav" aria-label="Course collection">
   <a class="course-index-link" href="{base}/../" data-sveltekit-reload><span aria-hidden="true">←</span> All courses</a>
+  <button class="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" data-sidebar-toggle>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
+    <span data-sidebar-label>Hide contents</span>
+  </button>
 </nav>
 <TopBar />
-<div class="shell" class:home>
+<div class="shell course-shell">
   <Sidebar />
   <main id="main">
     {@render children()}
@@ -69,19 +70,6 @@
   @media (max-width: 1099px) {
     .shell {
       grid-template-columns: minmax(0, 1fr);
-    }
-  }
-  /* Landing page: no sidebar on wide screens. A reader can also fold the sidebar away (state on <html>, set before first paint). */
-  @media (min-width: 1100px) {
-    .shell.home,
-    :global(:root[data-sidebar='collapsed']) .shell {
-      grid-template-columns: minmax(0, 1fr);
-    }
-    .shell.home :global(.sidebar),
-    .shell.home :global(.scrim),
-    :global(:root[data-sidebar='collapsed']) .shell :global(.sidebar),
-    :global(:root[data-sidebar='collapsed']) .shell :global(.scrim) {
-      display: none;
     }
   }
   .foot {

@@ -38,3 +38,86 @@
   outline: 2px solid currentColor;
   outline-offset: 3px;
 }
+
+.course-sidebar-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 36px;
+  margin-left: auto;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.course-sidebar-toggle svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+.course-sidebar-toggle:hover {
+  border-color: currentColor;
+}
+.course-sidebar-toggle:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 1px;
+}
+.course-sidebar-scrim {
+  display: none;
+}
+
+@media (min-width: 1100px) {
+  :root[data-sidebar='collapsed'] .course-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  :root[data-sidebar='collapsed'] .course-shell > .sidebar {
+    display: none;
+  }
+}
+@media (max-width: 1099px) {
+  :root .course-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  :root .course-shell > .sidebar {
+    position: fixed;
+    left: 0;
+    top: var(--course-nav-height);
+    z-index: 54;
+    display: block;
+    width: min(320px, 88vw);
+    height: calc(100dvh - var(--course-nav-height));
+    box-sizing: border-box;
+    background: var(--bg, var(--page, var(--paper, Canvas)));
+    visibility: hidden;
+    transform: translateX(-105%);
+    overscroll-behavior: contain;
+    transition: transform 160ms ease, visibility 0s 160ms;
+  }
+  :root[data-sidebar-open='true'] .course-shell > .sidebar {
+    visibility: visible;
+    transform: none;
+    transition: transform 160ms ease;
+  }
+  :root[data-sidebar-open='true'] .course-sidebar-scrim {
+    position: fixed;
+    inset: var(--course-nav-height) 0 0;
+    z-index: 52;
+    display: block;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    background: rgb(0 0 0 / 0.35);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root .course-shell > .sidebar,
+  :root[data-sidebar-open='true'] .course-shell > .sidebar {
+    transition: none;
+  }
+}

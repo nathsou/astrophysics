@@ -30,9 +30,7 @@
   </li>
 {/snippet}
 
-<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
-<div class="scrim" class:open={nav.sidebarOpen} onclick={() => (nav.sidebarOpen = false)}></div>
-<nav class="sidebar ui" class:open={nav.sidebarOpen} aria-label="Course contents">
+<nav id="course-contents" class="sidebar ui" class:open={nav.sidebarOpen} aria-label="Course contents">
   {#each PARTS as part (part.id)}
     <section>
       <h2>{#if part.id !== '0' && part.id !== 'E'}<span class="part">Part {part.id}</span> {/if}{part.title}</h2>
@@ -135,9 +133,6 @@
     border-left-color: var(--fx-yellow);
     font-weight: 700;
   }
-  .scrim {
-    display: none;
-  }
   @media (max-width: 1099px) {
     .sidebar {
       position: fixed;
@@ -152,13 +147,6 @@
     .sidebar.open {
       transform: none;
       box-shadow: var(--shadow-lg);
-    }
-    .scrim.open {
-      display: block;
-      position: fixed;
-      inset: calc(3.25rem + var(--course-nav-height)) 0 0 0;
-      z-index: 44;
-      background: rgba(26, 25, 23, 0.4);
     }
   }
 </style>

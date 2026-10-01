@@ -15,7 +15,7 @@ A collection of interactive textbooks. The [course index](site/index.html) links
 | Digital Circuits | `courses/digital-circuits/` | `/digital-circuits/` |
 | Particle Physics *(in progress)* | `courses/particle-physics/` | `/particle-physics/` |
 
-Every course has an “All courses” link at the top that returns to the collection index. Its shared styles live in `packages/course-navigation/navigation.css`.
+Every course has an “All courses” link and a contents toggle at the top. Sidebars collapse on desktop and open as drawers on smaller screens; each course remembers its desktop preference. The shared navigation lives in `packages/course-navigation/`.
 
 ## Build
 

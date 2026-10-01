@@ -49,38 +49,12 @@ window.addEventListener('storage', (event) => {
 // ---------- Sidebar ----------
 {
   const sidebar = document.querySelector<HTMLElement>('.sidebar');
-  const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
   // Bring the current chapter into view in the (long) sidebar list without scrolling the page.
   const cur = sidebar?.querySelector<HTMLElement>('[aria-current="page"]');
   if (sidebar && cur) {
     const r = cur.getBoundingClientRect(), s = sidebar.getBoundingClientRect();
     if (r.bottom > s.bottom - 40 || r.top < s.top) sidebar.scrollTop += r.top - s.top - s.height / 3;
   }
-  // Mobile: the sidebar is an off-canvas drawer.
-  const setOpen = (open: boolean) => {
-    sidebar?.classList.toggle('open', open);
-    document.body.classList.toggle('nav-open', open);
-    toggle?.setAttribute('aria-expanded', String(open));
-    if (toggle) toggle.textContent = open ? '✕' : '☰';
-  };
-  toggle?.setAttribute('aria-expanded', 'false');
-  // Hide the floating menu button while scrolling down (it would cover figures on phones).
-  let lastY = window.scrollY;
-  window.addEventListener('scroll', () => {
-    const y = window.scrollY;
-    if (Math.abs(y - lastY) < 8) return;
-    document.body.classList.toggle('scroll-down', y > lastY && y > 80);
-    lastY = y;
-  }, { passive: true });
-  toggle?.addEventListener('click', () => setOpen(!sidebar?.classList.contains('open')));
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && sidebar?.classList.contains('open')) { setOpen(false); toggle?.focus(); }
-  });
-  document.addEventListener('click', (e) => {
-    const t = e.target as Element;
-    if (!sidebar?.classList.contains('open') || t.closest('.menu-toggle')) return;
-    if (!t.closest('.sidebar') || t.closest('.sidebar a')) setOpen(false);
-  });
 }
 
 // ---------- Equation term highlighting ----------

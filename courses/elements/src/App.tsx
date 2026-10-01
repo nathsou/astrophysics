@@ -1,4 +1,5 @@
 import '../../../packages/course-navigation/navigation.css';
+import { mountSidebar } from '../../../packages/course-navigation/sidebar';
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { applyTheme, themeStore, useStore, type Theme } from './ui/store';
 import { byId, citeLabel, index, parseRef, ROMAN } from './text';
@@ -133,6 +134,36 @@ const PAGES: Entry[] = [
   { key: 'about', href: '#/about', num: '', title: 'About', go: 'sources and method' },
 ];
 
+function Sidebar({ route }: { route: Route }) {
+  const book = route.page === 'book' ? route.n : route.page === 'item' ? byId.get(route.id)!.book : 0;
+  return (
+    <nav id="course-contents" className="sidebar" aria-label="Course contents">
+      <a className="sidebar-home" href="#/">Euclid’s Elements</a>
+      <h2>Books</h2>
+      <ol className="sidebar-books">
+        {BOOKS.map((info, i) => (
+          <li key={i + 1}>
+            <a href={`#/book/${i + 1}`} aria-current={route.page === 'book' && book === i + 1 ? 'page' : undefined}>
+              <span className="book-number">{ROMAN[i + 1]}</span><span>{info.title}</span>
+            </a>
+            {book === i + 1 && <ol className="sidebar-items">
+              {index.filter(entry => entry.book === book).map(entry => (
+                <li key={entry.id}>
+                  <a href={`#/${entry.id}`} aria-current={route.page === 'item' && route.id === entry.id ? 'page' : undefined}>
+                    {citeLabel(entry.id)}{modernTitle(entry.id) ? ` · ${modernTitle(entry.id)}` : ''}
+                  </a>
+                </li>
+              ))}
+            </ol>}
+          </li>
+        ))}
+      </ol>
+      <h2>Explore &amp; reference</h2>
+      {PAGES.map(entry => <a key={entry.key} href={entry.href} aria-current={route.page === entry.key ? 'page' : undefined}>{entry.title}</a>)}
+    </nav>
+  );
+}
+
 function search(q: string): Entry[] {
   const words = q.toLowerCase().split(/\s+/).filter(Boolean);
   if (!words.length) return [];
@@ -264,6 +295,7 @@ function Palette({ route, onClose }: { route: Route; onClose: () => void }) {
 }
 
 export function App() {
+  useEffect(() => mountSidebar('elements'), []);
   const route = useRoute();
   const [palette, setPalette] = useState(false);
   useEffect(() => {
@@ -290,20 +322,27 @@ export function App() {
     <div className="app">
       <nav className="course-index-nav" aria-label="Course collection">
         <a className="course-index-link" href="../"><span aria-hidden="true">←</span> All courses</a>
+        <button className="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" data-sidebar-toggle>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
+          <span data-sidebar-label>Hide contents</span>
+        </button>
       </nav>
       <TopBar route={route} onSearch={() => setPalette(true)} />
-      <main className="main">
-        <Suspense fallback={<div className="page muted">Loading…</div>}>
-          {route.page === 'home' && <Home />}
-          {route.page === 'book' && <BookPage n={route.n} />}
-          {route.page === 'item' && <ItemPage key={route.id} id={route.id} />}
-          {route.page === 'graph' && <GraphPage params={route.params} />}
-          {route.page === 'workshop' && <Workshop params={route.params} />}
-          {route.page === 'explore' && <Explore name={route.name} />}
-          {route.page === 'glossary' && <Glossary />}
-          {route.page === 'about' && <About />}
-        </Suspense>
-      </main>
+      <div className="course-shell">
+        <Sidebar route={route} />
+        <main className="main">
+          <Suspense fallback={<div className="page muted">Loading…</div>}>
+            {route.page === 'home' && <Home />}
+            {route.page === 'book' && <BookPage n={route.n} />}
+            {route.page === 'item' && <ItemPage key={route.id} id={route.id} />}
+            {route.page === 'graph' && <GraphPage params={route.params} />}
+            {route.page === 'workshop' && <Workshop params={route.params} />}
+            {route.page === 'explore' && <Explore name={route.name} />}
+            {route.page === 'glossary' && <Glossary />}
+            {route.page === 'about' && <About />}
+          </Suspense>
+        </main>
+      </div>
       <footer className="footer">
         <span>Heath’s 1908 translation, with modern versions and live figures.</span>
         <a href="#/glossary">Glossary</a>
