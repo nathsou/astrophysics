@@ -1,0 +1,193 @@
+# Part V: the machine (Chapters 19 to 21)
+wideroe1928:
+  authors: Rolf Widerøe
+  year: 1928
+  title: Über ein neues Prinzip zur Herstellung hoher Spannungen
+  venue: Archiv für Elektrotechnik 21, 387–406
+  note: The first radio-frequency accelerator, with drift tubes. The 25 kV, about 1 MHz and 50 keV potassium-ion figures quoted in Chapter 19 are as given in the history by Bryant (1994).
+bryant1994:
+  authors: P. J. Bryant
+  year: 1994
+  title: A brief history and review of accelerators
+  venue: CERN Accelerator School lecture notes (CERN 94-01)
+  url: https://cds.cern.ch/record/261062/files/p1_2.pdf
+cockcroft1932:
+  authors: J. D. Cockcroft, E. T. S. Walton
+  year: 1932
+  title: Experiments with high velocity positive ions. II. The disintegration of elements by high velocity protons
+  venue: Proceedings of the Royal Society of London A 137, 229–242
+nobel1951:
+  authors: The Nobel Foundation
+  year: 1951
+  title: The Nobel Prize in Physics 1951, John Cockcroft and Ernest Walton
+  url: https://www.nobelprize.org/prizes/physics/1951/walton/facts/
+  note: The prize was awarded for the transmutation of atomic nuclei by artificially accelerated particles. The date of the first observation, 14 April 1932, is the one the Nobel Foundation gives.
+lawrence1932:
+  authors: Ernest O. Lawrence, M. Stanley Livingston
+  year: 1932
+  title: The production of high speed light ions without the use of high voltages
+  venue: Physical Review 40, 19–35
+  url: https://doi.org/10.1103/PhysRev.40.19
+veksler1944:
+  authors: Vladimir I. Veksler
+  year: 1944
+  title: A new method of acceleration of relativistic particles
+  venue: Comptes Rendus (Doklady) de l'Académie des Sciences de l'URSS 43 (1944); in English also J. Phys. USSR 9, 153 (1945)
+mcmillan1945:
+  authors: Edwin M. McMillan
+  year: 1945
+  title: The synchrotron, a proposed high energy particle accelerator
+  venue: Physical Review 68, 143
+  url: https://doi.org/10.1103/PhysRev.68.143
+elder1947:
+  authors: F. R. Elder, A. M. Gurewitsch, R. V. Langmuir, H. C. Pollock
+  year: 1947
+  title: Radiation from electrons in a synchrotron
+  venue: Physical Review 71, 829–830
+  note: The first observation of synchrotron light, in the 70 MeV synchrotron of the General Electric Research Laboratory.
+cern-sc:
+  authors: CERN
+  year: 2024
+  title: CERN's first accelerator begins operations (the Synchrocyclotron), CERN70 timeline
+  url: https://cern70.cern/timeline/the-synchrocyclotron-begins-operation/
+  note: The 600 MeV Synchrocyclotron started up in 1957, turned to nuclear physics in 1964, fed ISOLDE from 1967 and was shut down in 1990.
+cern-ps-60:
+  authors: CERN Courier
+  year: 2019
+  title: CERN's proton synchrotron turns 60
+  url: https://cerncourier.com/a/cerns-proton-synchrotron-turns-60/
+  note: The Council endorsed a study of an alternating-gradient machine in 1952 and approved the PS in 1953 (design energy 20 to 30 GeV). The first beam was accelerated to about 24 GeV on 24 November 1959.
+sps-start:
+  authors: CERN
+  year: 2024
+  title: The Super Proton Synchrotron starts up, and SPS reaches its design energy of 400 GeV (CERN timeline)
+  url: https://timeline.web.cern.ch/super-proton-synchrotron-starts
+  note: First beam round the 7 km ring on 3 May 1976; 400 GeV on 17 June 1976. The second page is https://timeline.web.cern.ch/sps-reaches-its-design-energy-400-gev.
+linac4:
+  authors: CERN Courier
+  year: 2017
+  title: The long road to Linac4
+  url: https://cerncourier.com/a/the-long-road-to-linac4/
+  note: Linac4 accelerates H⁻ ions to 160 MeV and was inaugurated in May 2017.
+ls2-booster:
+  authors: CERN
+  year: 2020
+  title: LS2 Report, metamorphosis of the Booster
+  url: https://home.cern/news/news/accelerators/ls2-report-metamorphosis-booster
+  note: Linac4 was connected to the injector chain in 2020, replacing Linac2 (50 MeV); the PS Booster, now fed at 160 MeV, can reach 2 GeV, against 1.4 GeV before.
+christofilos1956:
+  authors: Nicholas C. Christofilos
+  year: 1956
+  title: Focussing system for ions and electrons
+  venue: United States patent 2,736,799, filed 10 March 1950, issued 28 February 1956
+courant1952:
+  authors: Ernest D. Courant, M. Stanley Livingston, Hartland S. Snyder
+  year: 1952
+  title: The strong-focusing synchrotron, a new high energy accelerator
+  venue: Physical Review 88, 1190–1196
+  url: https://link.aps.org/doi/10.1103/PhysRev.88.1190
+courant1958:
+  authors: Ernest D. Courant, Hartland S. Snyder
+  year: 1958
+  title: Theory of the alternating-gradient synchrotron
+  venue: Annals of Physics 3, 1–48
+tevatron-legacy:
+  authors: Fermilab
+  year: 2011
+  title: Fermilab's Tevatron
+  url: https://news.fnal.gov/wp-content/uploads/tevatron-legacy.pdf
+  note: The Tevatron was the first synchrotron built with superconducting magnets; it ran from 1983 to 2011.
+evans2008:
+  authors: Lyndon Evans, Philip Bryant (eds.)
+  year: 2008
+  title: LHC Machine
+  venue: Journal of Instrumentation 3, S08001
+  url: https://doi.org/10.1088/1748-0221/3/08/S08001
+boyd2020:
+  authors: J. T. Boyd
+  year: 2020
+  title: LHC Run-2 and future prospects
+  venue: arXiv:2001.04370
+  url: https://arxiv.org/abs/2001.04370
+  note: 'Run-2 luminosity and pile-up: the design luminosity was exceeded in 2016, and the peak pile-up reached about 60.'
+ada-history:
+  authors: INFN Laboratori Nazionali di Frascati
+  year: 2018
+  title: 'Bruno Touschek and AdA: from Frascati to Orsay'
+  venue: INFN-18-05/LNF; arXiv:1805.09434
+  url: https://arxiv.org/abs/1805.09434
+  note: AdA stored its first beams on 27 February 1961, moved to Orsay in July 1962, and collisions were observed there in 1963 to 1964.
+cern-isr:
+  authors: CERN
+  year: 2021
+  title: 'Today in 1971: first proton–proton collisions'
+  url: https://home.cern/news/news/cern/today-1971-first-proton-proton-collisions
+  note: The Intersecting Storage Rings, the first hadron collider, ran from 1971 to 1984.
+myers-isr:
+  authors: Stephen Myers
+  year: 2013
+  title: The CERN Intersecting Storage Rings
+  venue: Chapter 9 in a World Scientific volume on the history of colliders, doi:10.1142/9789814436403_0009
+  url: https://www.worldscientific.com/doi/pdf/10.1142/9789814436403_0009
+  note: RF stacking, currents up to 57 A, and the luminosity of 1.4 × 10³² cm⁻² s⁻¹ reached in 1982 with a superconducting low-β section.
+vandermeer1972:
+  authors: Simon van der Meer
+  year: 1972
+  title: Stochastic damping of betatron oscillations in the ISR
+  venue: CERN/ISR-PO/72-31, August 1972
+vandermeer1984:
+  authors: Simon van der Meer
+  year: 1984
+  title: Stochastic cooling and the accumulation of antiprotons
+  venue: Nobel Lecture, 8 December 1984
+  url: https://www.nobelprize.org/uploads/2018/06/meer-lecture.pdf
+cern-lep:
+  authors: CERN
+  year: 2000
+  title: LEP shuts down after eleven years of forefront research
+  url: https://home.cern/news/press-release/cern/lep-shuts-down-after-eleven-years-forefront-research
+  note: LEP was shut down at 8:00 on 2 November 2000. The first beam circulated on 14 July 1989 (CERN timeline, https://timeline.web.cern.ch/timeline-header/88), and the collision energy exceeded 209 GeV in 2000.
+lep-wpair:
+  authors: ALEPH, DELPHI, L3, OPAL Collaborations and the LEP Electroweak Working Group
+  year: 2013
+  title: Electroweak measurements in electron–positron collisions at W-boson-pair energies at LEP
+  venue: Physics Reports 532, 119; arXiv:1302.3415
+  url: https://arxiv.org/abs/1302.3415
+  note: LEP2 reached a beam energy of 104.5 GeV; the loss to synchrotron radiation was about 3.3% of the beam energy per turn, and the total RF voltage about 3.6 GV.
+cern-incident:
+  authors: CERN
+  year: 2008
+  title: CERN releases analysis of LHC incident
+  url: https://home.cern/cern-releases-analysis-of-lhc-incident/
+  note: Press release of 16 October 2008, with the Summary of the analysis of the 19 September 2008 incident at the LHC (https://cds.cern.ch/record/1135729). The cause was a faulty electrical connection between two magnets; at most 24 dipoles and 5 quadrupoles needed repair.
+cern-restart:
+  authors: CERN Courier
+  year: 2009
+  title: 'The LHC is back: four remarkable weeks'
+  url: https://cerncourier.com/the-lhc-is-back-four-remarkable-weeks/
+  note: Beams circulated again on 20 November 2009, a little over a year after the incident.
+cern-2010:
+  authors: CERN
+  year: 2010
+  title: LHC research programme gets underway
+  url: https://home.cern/news/press-release/cern/lhc-research-programme-gets-underway
+  note: Press release of 30 March 2010. Beams collided at 7 TeV (3.5 TeV per beam) at 13:06 CEST.
+hllhc-tdr:
+  authors: I. Béjar Alonso, O. Brüning, P. Fessia, M. Lamont, L. Rossi, L. Tavian, M. Zerlauth (eds.)
+  year: 2020
+  title: 'High-Luminosity Large Hadron Collider (HL-LHC): Technical design report'
+  venue: CERN Yellow Reports, Monographs, CERN-2020-010
+  url: https://doi.org/10.23731/CYRM-2020-0010
+hllhc-schedule:
+  authors: CERN
+  year: 2026
+  title: New schedule for CERN's accelerators
+  url: https://home.cern/new-schedule-cerns-accelerators/
+  note: Long Shutdown 3 begins in mid-2026; the restart of the upgraded LHC is planned for June 2030. Schedules have moved before.
+fcc2025:
+  authors: FCC Collaboration
+  year: 2025
+  title: Future Circular Collider Feasibility Study Report, Volumes 1 to 3
+  venue: arXiv:2505.00272, 2505.00273, 2505.00274
+  url: https://arxiv.org/abs/2505.00274
+  note: The report states that it does not imply any commitment by the CERN Member or Associate Member States to build the Future Circular Collider.

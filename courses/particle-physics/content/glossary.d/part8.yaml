@@ -1,0 +1,117 @@
+# Part VIII: Chapters 31 to 33.
+solar-neutrino-problem:
+  term: solar neutrino problem
+  definition: 'The discrepancy, from 1968 to 2002, between the number of electron neutrinos the Sun was predicted to deliver and the number detected, about one third in the chlorine experiment. It was resolved by neutrino oscillation.'
+  chapter: neutrinos
+neutrino-oscillation:
+  term: neutrino oscillation
+  definition: 'The change of a neutrino from one flavour to another as it travels. It happens because the flavour states are mixtures of states of definite mass, which advance in phase at different rates, and it requires neutrinos to have mass. For two flavours P = sin²2θ sin²(1.267 Δm² L/E).'
+  chapter: neutrinos
+pmns-matrix:
+  term: PMNS matrix
+  definition: 'The 3 × 3 unitary matrix (Pontecorvo, Maki, Nakagawa, Sakata) that relates the neutrino flavour states to the states of definite mass: three angles and one CP phase. It plays for leptons the part the CKM matrix plays for quarks.'
+  chapter: neutrinos
+msw-effect:
+  term: MSW effect
+  definition: 'The change in neutrino oscillations caused by passage through matter (Mikheyev, Smirnov, Wolfenstein). Electron neutrinos feel a potential from the electrons in the matter. It explains the solar neutrino deficit at high energy and gives long-baseline beams sensitivity to the mass ordering.'
+  chapter: neutrinos
+mass-ordering:
+  term: mass ordering (normal and inverted)
+  definition: 'Whether the third neutrino mass state is the heaviest (normal ordering, m₁ < m₂ < m₃) or the lightest (inverted ordering, m₃ < m₁ < m₂). Oscillations measure only squared-mass differences, and the sign of the larger one is not yet known.'
+  chapter: neutrinos
+majorana-neutrino:
+  term: Majorana neutrino
+  definition: 'A neutrino that is its own antiparticle. It would violate lepton number and allow neutrinoless double-beta decay. Whether neutrinos are Majorana or Dirac particles is unknown.'
+  chapter: neutrinos
+dirac-neutrino:
+  term: Dirac neutrino
+  definition: 'A neutrino that is distinct from its antineutrino, like the electron from the positron, and conserves lepton number.'
+  chapter: neutrinos
+seesaw-mechanism:
+  term: seesaw mechanism
+  definition: 'An explanation of why neutrino masses are so small: a very heavy partner of mass M mixes with the light neutrino, whose mass becomes about m_D²/M, with m_D an ordinary Higgs-type mass. It requires Majorana neutrinos.'
+  chapter: neutrinos
+neutrinoless-double-beta-decay:
+  term: neutrinoless double-beta decay
+  definition: 'A hypothetical decay of some nuclei by two beta decays with no neutrinos emitted, which can happen only if neutrinos are Majorana particles. Its rate depends on the effective Majorana mass.'
+  chapter: neutrinos
+jarlskog-invariant:
+  term: Jarlskog invariant
+  definition: 'The combination of mixing angles and the CP phase, J = c₁₂s₁₂c₂₃s₂₃c₁₃²s₁₃ sin δ, that measures the size of CP violation in a mixing matrix. For quarks about 3 × 10⁻⁵; for neutrinos it can be as large as 0.033.'
+  chapter: neutrinos
+dark-matter:
+  term: dark matter
+  definition: 'Matter that does not emit or absorb light but whose gravity is measured, with about five times the density of ordinary matter. Its particle nature is unknown; the Standard Model has no candidate.'
+  chapter: beyond-the-standard-model
+wimp:
+  term: WIMP
+  definition: 'A weakly interacting massive particle: a hypothetical dark-matter particle with weak-interaction-sized couplings and a mass near the electroweak scale, whose thermal relic density comes out about right.'
+  chapter: beyond-the-standard-model
+freeze-out:
+  term: freeze-out
+  definition: 'The moment in the cooling universe when a particle species stops annihilating because the particles are too far apart and the expansion is too fast. Its abundance per comoving volume stays fixed afterwards.'
+  chapter: beyond-the-standard-model
+baryon-asymmetry:
+  term: baryon asymmetry
+  definition: 'The excess of matter over antimatter in the universe, measured by the baryon-to-photon ratio η ≈ 6 × 10⁻¹⁰: about one baryon for every 1.6 billion photons, and almost no antibaryons.'
+  chapter: beyond-the-standard-model
+sakharov-conditions:
+  term: Sakharov's conditions
+  definition: 'The three requirements for generating a baryon asymmetry from a symmetric start (1967): baryon-number violation, C and CP violation, and a departure from thermal equilibrium.'
+  chapter: beyond-the-standard-model
+sphaleron:
+  term: sphaleron
+  definition: 'A non-perturbative field configuration of the electroweak theory that changes baryon and lepton number (by equal amounts) and is unsuppressed at temperatures above the electroweak scale.'
+  chapter: beyond-the-standard-model
+leptogenesis:
+  term: leptogenesis
+  definition: 'A proposed origin of the matter excess: the CP-violating decays of heavy Majorana neutrinos make more leptons than antileptons, and sphalerons convert part of the lepton excess into a baryon excess.'
+  chapter: beyond-the-standard-model
+hierarchy-problem:
+  term: hierarchy problem
+  definition: 'The question why the Higgs mass, and so the electroweak scale, is so small compared with the Planck scale, when loop corrections to a scalar mass grow with the square of the highest scale in the theory.'
+  chapter: beyond-the-standard-model
+naturalness:
+  term: naturalness
+  definition: 'The preference for theories in which observed quantities do not depend on a delicate cancellation between unrelated terms. The Higgs mass looks unnatural in the Standard Model if the theory holds to the Planck scale.'
+  chapter: beyond-the-standard-model
+supersymmetry:
+  term: supersymmetry (SUSY)
+  definition: 'A hypothetical symmetry relating fermions to bosons: every Standard-Model particle would have a partner whose spin differs by one half. It would cancel the large loop corrections to the Higgs mass, supply a dark-matter candidate and improve the unification of the couplings. No partner has been found.'
+  chapter: beyond-the-standard-model
+grand-unification:
+  term: grand unified theory
+  definition: 'A theory that puts the three gauge groups of the Standard Model into one larger group, so that the three couplings become equal at a very high energy (about 10¹⁵ to 10¹⁶ GeV) and quarks and leptons can turn into one another.'
+  chapter: beyond-the-standard-model
+proton-decay:
+  term: proton decay
+  definition: 'The hypothetical decay of the proton, forbidden by baryon-number conservation but predicted by grand unified theories. The best limit on its lifetime is above 10³⁴ years.'
+  chapter: beyond-the-standard-model
+anomalous-magnetic-moment:
+  term: anomalous magnetic moment
+  definition: 'The deviation a = (g − 2)/2 of a particle''s gyromagnetic ratio from the Dirac value g = 2, caused by virtual particles. For the muon it is about 0.00116592.'
+  chapter: beyond-the-standard-model
+magic-momentum:
+  term: magic momentum
+  definition: 'The muon momentum, 3.094 GeV, at which an electric focusing field does not change the spin precession in a storage ring (γ² = 1 + 1/a_μ).'
+  chapter: beyond-the-standard-model
+cls:
+  term: CLs
+  definition: 'The ratio CL_{s+b}/CL_b used to set upper limits: the probability of a result this low with a signal, divided by its probability with background only. A signal is excluded at 95 % confidence if CLs < 0.05. It protects against excluding signals the experiment could not have seen.'
+  chapter: beyond-the-standard-model
+bragg-peak:
+  term: Bragg peak
+  definition: 'The sharp maximum of energy deposition at the end of the range of a charged particle, which is why protons and ions deposit most of their dose at a chosen depth.'
+  chapter: particle-physics-in-the-world
+muography:
+  term: muography
+  definition: 'Radiography with cosmic-ray muons: counting the muons that come through a structure from each direction to find where there is less matter, such as a hidden chamber in a pyramid.'
+  chapter: particle-physics-in-the-world
+hybrid-pixel-detector:
+  term: hybrid pixel detector
+  definition: 'A silicon sensor in which every pixel is joined by a solder bump to its own readout electronics. Developed for particle trackers, adopted by the Medipix chips for counting X-ray photons.'
+  chapter: particle-physics-in-the-world
+line-of-response:
+  term: line of response
+  definition: 'In PET, the straight line between two detector crystals that fired in coincidence; the annihilation that made the two photons lies on it.'
+  chapter: particle-physics-in-the-world

@@ -129,3 +129,175 @@ p4-nobel1955:
   year: 1955
   title: The Nobel Prize in Physics 1955 (Lamb and Kusch)
   url: https://www.nobelprize.org/prizes/physics/1955/summary/
+p4-noether1918:
+  authors: Emmy Noether
+  year: 1918
+  title: Invariante Variationsprobleme
+  venue: Nachrichten von der Gesellschaft der Wissenschaften zu Göttingen, Mathematisch-Physikalische Klasse, 235–257
+  url: https://eudml.org/doc/59024
+p4-kosmann2011:
+  authors: Yvette Kosmann-Schwarzbach
+  year: 2011
+  title: The Noether Theorems. Invariance and Conservation Laws in the Twentieth Century
+  venue: Springer
+  note: A history of the two theorems and their reception, with a translation of the paper.
+p4-weyl1918:
+  authors: Hermann Weyl
+  year: 1918
+  title: Gravitation und Elektrizität
+  venue: Sitzungsberichte der Preussischen Akademie der Wissenschaften zu Berlin, 465–480
+p4-london1927:
+  authors: Fritz London
+  year: 1927
+  title: Quantenmechanische Deutung der Theorie von Weyl
+  venue: Zeitschrift für Physik 42, 375–389
+  url: https://doi.org/10.1007/BF01397553
+p4-weyl1929:
+  authors: Hermann Weyl
+  year: 1929
+  title: Elektron und Gravitation. I
+  venue: Zeitschrift für Physik 56, 330–352
+  url: https://doi.org/10.1007/BF01339504
+p4-yang1954:
+  authors: C. N. Yang and R. L. Mills
+  year: 1954
+  title: Conservation of isotopic spin and isotopic gauge invariance
+  venue: Physical Review 96(1), 191–195
+  url: https://doi.org/10.1103/PhysRev.96.191
+p4-gross1973:
+  authors: David J. Gross and Frank Wilczek
+  year: 1973
+  title: Ultraviolet behavior of non-abelian gauge theories
+  venue: Physical Review Letters 30(26), 1343–1346
+  url: https://doi.org/10.1103/PhysRevLett.30.1343
+p4-politzer1973:
+  authors: H. David Politzer
+  year: 1973
+  title: Reliable perturbative results for strong interactions?
+  venue: Physical Review Letters 30(26), 1346–1349
+  url: https://doi.org/10.1103/PhysRevLett.30.1346
+p4-nobel2004:
+  authors: The Nobel Foundation
+  year: 2004
+  title: The Nobel Prize in Physics 2004 (Gross, Politzer, Wilczek)
+  url: https://www.nobelprize.org/prizes/physics/2004/summary/
+  note: Awarded for the discovery of asymptotic freedom in the theory of the strong interaction.
+p4-wilson1974:
+  authors: Kenneth G. Wilson
+  year: 1974
+  title: Confinement of quarks
+  venue: Physical Review D 10(8), 2445–2459
+  url: https://doi.org/10.1103/PhysRevD.10.2445
+p4-creutz1980:
+  authors: Michael Creutz
+  year: 1980
+  title: Monte Carlo study of quantized SU(2) gauge theory
+  venue: Physical Review D 21(8), 2308–2315
+  url: https://doi.org/10.1103/PhysRevD.21.2308
+p4-eichten1975:
+  authors: E. Eichten, K. Gottfried, T. Kinoshita, J. Kogut, K. D. Lane and T.-M. Yan
+  year: 1975
+  title: Spectrum of charmed quark–antiquark bound states
+  venue: Physical Review Letters 34(6), 369–372
+  url: https://doi.org/10.1103/PhysRevLett.34.369
+p4-andersson1983:
+  authors: B. Andersson, G. Gustafson, G. Ingelman and T. Sjöstrand
+  year: 1983
+  title: Parton fragmentation and string dynamics
+  venue: Physics Reports 97(2–3), 31–145
+  url: https://doi.org/10.1016/0370-1573(83)90080-7
+p4-sterman1977:
+  authors: George Sterman and Steven Weinberg
+  year: 1977
+  title: Jets from quantum chromodynamics
+  venue: Physical Review Letters 39(23), 1436–1439
+  url: https://doi.org/10.1103/PhysRevLett.39.1436
+p4-cacciari2008:
+  authors: Matteo Cacciari, Gavin P. Salam and Gregory Soyez
+  year: 2008
+  title: The anti-kt jet clustering algorithm
+  venue: Journal of High Energy Physics 2008(04), 063
+  url: https://doi.org/10.1088/1126-6708/2008/04/063
+p4-cacciari2006:
+  authors: Matteo Cacciari and Gavin P. Salam
+  year: 2006
+  title: Dispelling the N³ myth for the kt jet-finder
+  venue: Physics Letters B 641(1), 57–61
+  url: https://doi.org/10.1016/j.physletb.2006.08.037
+p4-cacciari2012:
+  authors: Matteo Cacciari, Gavin P. Salam and Gregory Soyez
+  year: 2012
+  title: FastJet user manual
+  venue: European Physical Journal C 72, 1896
+  url: https://doi.org/10.1140/epjc/s10052-012-1896-2
+p4-sudakov1956:
+  authors: V. V. Sudakov
+  year: 1956
+  title: Vertex parts at very high-energies in quantum electrodynamics
+  venue: Soviet Physics JETP 3, 65–71 (Zhurnal Eksperimentalnoi i Teoreticheskoi Fiziki 30, 87–95)
+p4-ellis1976:
+  authors: John Ellis, Mary K. Gaillard and Graham G. Ross
+  year: 1976
+  title: Search for gluons in e⁺e⁻ annihilation
+  venue: Nuclear Physics B 111(2), 253–271
+  url: https://doi.org/10.1016/0550-3213(76)90542-3
+p4-tasso1979:
+  authors: TASSO Collaboration (R. Brandelik et al.)
+  year: 1979
+  title: Evidence for planar events in e⁺e⁻ annihilation at high energies
+  venue: Physics Letters B 86(2), 243–249
+  url: https://doi.org/10.1016/0370-2693(79)90830-X
+p4-markj1979:
+  authors: MARK-J Collaboration (D. P. Barber et al.)
+  year: 1979
+  title: Discovery of three-jet events and a test of quantum chromodynamics at PETRA
+  venue: Physical Review Letters 43(12), 830–833
+  url: https://doi.org/10.1103/PhysRevLett.43.830
+p4-pluto1979:
+  authors: PLUTO Collaboration (Ch. Berger et al.)
+  year: 1979
+  title: Evidence for gluon bremsstrahlung in e⁺e⁻ annihilations at high energies
+  venue: Physics Letters B 86(3–4), 418–425
+  url: https://doi.org/10.1016/0370-2693(79)90869-4
+p4-jade1980:
+  authors: JADE Collaboration (W. Bartel et al.)
+  year: 1980
+  title: Observation of planar three-jet events in e⁺e⁻ annihilation and evidence for gluon bremsstrahlung
+  venue: Physics Letters B 91(1), 142–147
+  url: https://doi.org/10.1016/0370-2693(80)90680-2
+p4-aoki2006:
+  authors: Y. Aoki, G. Endrődi, Z. Fodor, S. D. Katz and K. K. Szabó
+  year: 2006
+  title: The order of the quantum chromodynamics transition predicted by the standard model of particle physics
+  venue: Nature 443, 675–678
+  url: https://doi.org/10.1038/nature05120
+p4-bazavov2014:
+  authors: A. Bazavov et al. (HotQCD Collaboration)
+  year: 2014
+  title: Equation of state in (2+1)-flavor QCD
+  venue: Physical Review D 90, 094503
+  url: https://doi.org/10.1103/PhysRevD.90.094503
+p4-alice2008:
+  authors: ALICE Collaboration (K. Aamodt et al.)
+  year: 2008
+  title: The ALICE experiment at the CERN LHC
+  venue: Journal of Instrumentation 3, S08002
+  url: https://doi.org/10.1088/1748-0221/3/08/S08002
+p4-alice2010:
+  authors: ALICE Collaboration (K. Aamodt et al.)
+  year: 2010
+  title: Elliptic flow of charged particles in Pb–Pb collisions at 2.76 TeV
+  venue: Physical Review Letters 105, 252302
+  url: https://doi.org/10.1103/PhysRevLett.105.252302
+p4-alice2011:
+  authors: ALICE Collaboration (K. Aamodt et al.)
+  year: 2011
+  title: Suppression of charged particle production at large transverse momentum in central Pb–Pb collisions at √sNN = 2.76 TeV
+  venue: Physics Letters B 696(1–2), 30–39
+  url: https://doi.org/10.1016/j.physletb.2010.12.020
+p4-sjostrand2015:
+  authors: Torbjörn Sjöstrand et al.
+  year: 2015
+  title: An introduction to PYTHIA 8.2
+  venue: Computer Physics Communications 191, 159–177
+  url: https://doi.org/10.1016/j.cpc.2015.01.024

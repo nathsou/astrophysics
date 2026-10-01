@@ -60,3 +60,166 @@ alphag2023:
   venue: Nature 621, 716–722
   url: https://www.nature.com/articles/s41586-023-06527-1
   note: The measured acceleration of antihydrogen, 0.75 ± 0.13 (statistical and systematic) ± 0.16 (simulation) times g.
+nobel-physics:
+  authors: The Nobel Foundation
+  year: 2026
+  title: All Nobel Prizes in Physics
+  venue: NobelPrize.org
+  url: https://www.nobelprize.org/prizes/physics/
+  note: The list of laureates and years used for the prizes mentioned in Part III (Hess and Anderson 1936, Powell 1950, Segrè and Chamberlain 1959, Gell-Mann 1969, Friedman, Kendall and Taylor 1990).
+hess1912:
+  authors: Victor F. Hess
+  year: 1912
+  title: Über Beobachtungen der durchdringenden Strahlung bei sieben Freiballonfahrten
+  venue: Physikalische Zeitschrift 13, 1084–1091
+  note: Seven balloon flights, up to about 5,300 m; the ionisation rises with height above about 1,000 m.
+auger1939:
+  authors: Pierre Auger, R. Maze, T. Grivet-Meyer, et al.
+  year: 1939
+  title: Extensive cosmic-ray showers
+  venue: Reviews of Modern Physics 11, 288–291
+  url: https://doi.org/10.1103/RevModPhys.11.288
+bird1995:
+  authors: D. J. Bird et al. (Fly's Eye Collaboration)
+  year: 1995
+  title: Detection of a cosmic ray with measured energy well beyond the expected spectral cutoff due to cosmic microwave radiation
+  venue: The Astrophysical Journal 441, 144–150
+pdg-cosmic:
+  authors: Particle Data Group
+  year: 2024
+  title: Review of Particle Physics, section "Cosmic rays"
+  venue: Physical Review D 110, 030001
+  url: https://pdg.lbl.gov/
+  note: Source of the vertical muon intensity at sea level (about 70 m⁻² s⁻¹ sr⁻¹ above 1 GeV), the rule of thumb of about 1 cm⁻² min⁻¹ for a horizontal detector, and the cos²θ dependence for muons of about 3 GeV. Text, figures and data CC BY 4.0.
+matthews2005:
+  authors: J. Matthews
+  year: 2005
+  title: A Heitler model of extensive air showers
+  venue: Astroparticle Physics 22, 387–397
+yukawa1935:
+  authors: Hideki Yukawa
+  year: 1935
+  title: On the interaction of elementary particles. I
+  venue: Proceedings of the Physico-Mathematical Society of Japan 17, 48–57
+neddermeyer1937:
+  authors: Seth H. Neddermeyer, Carl D. Anderson
+  year: 1937
+  title: Note on the nature of cosmic-ray particles
+  venue: Physical Review 51, 884–886
+  url: https://doi.org/10.1103/PhysRev.51.884
+street1937:
+  authors: J. C. Street, E. C. Stevenson
+  year: 1937
+  title: New evidence for the existence of a particle of mass intermediate between the proton and electron
+  venue: Physical Review 52, 1003–1004
+  url: https://doi.org/10.1103/PhysRev.52.1003
+ftw1947:
+  authors: E. Fermi, E. Teller, V. Weisskopf
+  year: 1947
+  title: The decay of negative mesotrons in matter
+  venue: Physical Review 71, 314–315
+  url: https://doi.org/10.1103/PhysRev.71.314
+conversi1947:
+  authors: M. Conversi, E. Pancini, O. Piccioni
+  year: 1947
+  title: On the disintegration of negative mesons
+  venue: Physical Review 71, 209–210
+  url: https://doi.org/10.1103/PhysRev.71.209
+lattes1947:
+  authors: C. M. G. Lattes, H. Muirhead, G. P. S. Occhialini, C. F. Powell
+  year: 1947
+  title: Processes involving charged mesons
+  venue: Nature 159, 694–697
+rossi1941:
+  authors: Bruno Rossi, David B. Hall
+  year: 1941
+  title: Variation of the rate of decay of mesotrons with momentum
+  venue: Physical Review 59, 223–228
+  url: https://link.aps.org/doi/10.1103/PhysRev.59.223
+  note: Softer mesotrons decayed about three times faster than the more penetrating ones, as time dilation predicts; proper lifetime (2.4 ± 0.3) µs.
+frisch1963:
+  authors: David H. Frisch, James H. Smith
+  year: 1963
+  title: Measurement of the relativistic time dilation using μ-mesons
+  venue: American Journal of Physics 31, 342–355
+  note: Muons of speed 0.995 c counted on Mount Washington and at sea level; observed dilation factor 8.8 ± 0.8 against 8.4 ± 2 expected.
+heck1998:
+  authors: D. Heck, J. Knapp, J. N. Capdevielle, G. Schatz, T. Thouw
+  year: 1998
+  title: 'CORSIKA: a Monte Carlo code to simulate extensive air showers'
+  venue: Forschungszentrum Karlsruhe report FZKA 6019
+auger2015:
+  authors: The Pierre Auger Collaboration
+  year: 2015
+  title: The Pierre Auger Cosmic Ray Observatory
+  venue: Nuclear Instruments and Methods in Physics Research A 798, 172–213
+rochester1947:
+  authors: G. D. Rochester, C. C. Butler
+  year: 1947
+  title: Evidence for the existence of new unstable elementary particles
+  venue: Nature 160, 855–857
+  note: Two cloud-chamber photographs taken at Manchester, a neutral V and a charged kink, of particles of about a thousand electron masses.
+pais1952:
+  authors: A. Pais
+  year: 1952
+  title: Some remarks on the V-particles
+  venue: Physical Review 86, 663–672
+  url: https://doi.org/10.1103/PhysRev.86.663
+  note: Associated production.
+gellmann1953:
+  authors: M. Gell-Mann
+  year: 1953
+  title: Isotopic spin and new unstable particles
+  venue: Physical Review 92, 833–834
+  url: https://link.aps.org/doi/10.1103/PhysRev.92.833
+nakano1953:
+  authors: T. Nakano, K. Nishijima
+  year: 1953
+  title: Charge independence for V-particles
+  venue: Progress of Theoretical Physics 10, 581–582
+nishijima1955:
+  authors: K. Nishijima
+  year: 1955
+  title: Charge independence theory of V particles
+  venue: Progress of Theoretical Physics 13, 285–304
+meg2016:
+  authors: A. M. Baldini et al. (MEG Collaboration)
+  year: 2016
+  title: Search for the lepton flavour violating decay μ⁺ → e⁺γ with the full dataset of the MEG experiment
+  venue: European Physical Journal C 76, 434
+  url: https://arxiv.org/abs/1606.08168
+  note: B(μ⁺ → e⁺γ) < 4.2 × 10⁻¹³ at 90 % confidence, from 7.5 × 10¹⁴ stopped muons.
+heisenberg1932:
+  authors: Werner Heisenberg
+  year: 1932
+  title: Über den Bau der Atomkerne. I
+  venue: Zeitschrift für Physik 77, 1–11
+anderson1952:
+  authors: H. L. Anderson, E. Fermi, E. A. Long, D. E. Nagle
+  year: 1952
+  title: Total cross sections of positive pions in hydrogen
+  venue: Physical Review 85, 936
+  url: https://doi.org/10.1103/PhysRev.85.936
+gellmann1961:
+  authors: Murray Gell-Mann
+  year: 1961
+  title: 'The Eightfold Way: a theory of strong interaction symmetry'
+  venue: California Institute of Technology Synchrotron Laboratory report CTSL-20
+neeman1961:
+  authors: Yuval Ne'eman
+  year: 1961
+  title: Derivation of strong interactions from a gauge invariance
+  venue: Nuclear Physics 26, 222–229
+  url: https://www.sciencedirect.com/science/article/pii/0029558261901341
+gellmann1962:
+  authors: Murray Gell-Mann
+  year: 1962
+  title: Symmetries of baryons and mesons
+  venue: Physical Review 125, 1067–1084
+  url: https://doi.org/10.1103/PhysRev.125.1067
+  note: Includes the prediction of the Ω⁻ from the decuplet.
+okubo1962:
+  authors: Susumu Okubo
+  year: 1962
+  title: Note on unitary symmetry in strong interactions
+  venue: Progress of Theoretical Physics 27, 949–966

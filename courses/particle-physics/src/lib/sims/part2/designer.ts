@@ -209,15 +209,15 @@ export function caloMeasurement(cfg: DetectorConfig, pdg: number, E: number, n: 
   return { res: robustSigma(v) / mu, response: mu / E };
 }
 
-/** All the numbers the designer shows. `n` is the number of simulated particles per measurement (default 200; the calorimeter ones use half). */
+/** All the numbers the designer shows. `n` is the number of simulated particles per measurement (default 200; the electron ones use half). */
 export function measure(p: DesignParams, n = 200, seed = 1): Measurements {
   const cfg = buildConfig(p);
   const r = makeRng(seed);
   const ptRes100 = trackerResolution(cfg, 100, n, r.fork('100'));
   const ptRes10 = trackerResolution(cfg, 10, n, r.fork('10'));
   const e = caloMeasurement(cfg, 11, 50, Math.round(n / 2), r.fork('e'), 'ecal');
-  const h = caloMeasurement(cfg, 211, 50, Math.round(n / 2), r.fork('h'));
-  const h100 = caloMeasurement(cfg, 211, 100, Math.round(n / 2), r.fork('h100'));
+  const h = caloMeasurement(cfg, 211, 50, n, r.fork('h'));
+  const h100 = caloMeasurement(cfg, 211, 100, n, r.fork('h100'));
   // muons at 100 GeV: how many leave hits in three or more stations
   const rm = r.fork('mu');
   let ok = 0;

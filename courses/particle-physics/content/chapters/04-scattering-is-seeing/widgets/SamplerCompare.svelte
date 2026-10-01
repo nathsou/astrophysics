@@ -68,7 +68,7 @@
 
   <Plot
     label={method === 'flat' ? 'Trials under a flat envelope: nearly all fall above the density and are rejected' : 'Trials under the 16 over theta cubed envelope: nearly all are accepted'}
-    x={{ type: 'log', domain: [thetaMin, Math.PI], label: 'trial angle θ [rad]', tickValues: [0.001, 0.01, 0.1, 1, Math.PI].filter((v) => v >= thetaMin * 0.999) }}
+    x={{ type: 'log', domain: [thetaMin, Math.PI], label: 'trial angle θ [rad]', tickValues: [0.001, 0.01, 0.1, 1, Math.PI].filter((v) => v >= thetaMin * 0.999), format: (v) => (Math.abs(v - Math.PI) < 1e-6 ? 'π' : String(v)) }}
     y={{ domain: [0, 1.04], label: method === 'flat' ? 'height u (units of the envelope)' : 'height u (units of the envelope 16/θ³)', ticks: 5 }}
     height={290}
   >

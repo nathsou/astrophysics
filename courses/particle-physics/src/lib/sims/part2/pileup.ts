@@ -62,20 +62,27 @@ export interface Crossing {
   cfg: DetectorConfig;
   signal: TruthEvent;
   det: DetectorEvent;
+  /** The z position (mm) of every collision of the crossing: the hard scatter first, then the pile-up. */
+  vertices: number[];
 }
 
 /** Simulate one bunch crossing with `pu` pile-up collisions. Deterministic for a given `seed`. */
 export function simulateCrossing(pu: number, seed: number, quality: Quality = DEFAULT_QUALITY): Crossing {
   const cfg = configFor(quality);
   const r = makeRng(seed);
-  const pile: TruthEvent[] = Array.from({ length: pu }, (_, k) => synthetic.minBiasTruth(r, 25, [normal(r, 0, 0.015), normal(r, 0, 0.015), normal(r, 0, 50)], k + 1));
+  const pileZ: number[] = [];
+  const pile: TruthEvent[] = Array.from({ length: pu }, (_, k) => {
+    const vx = normal(r, 0, 0.015), vy = normal(r, 0, 0.015), vz = normal(r, 0, 50);
+    pileZ.push(vz);
+    return synthetic.minBiasTruth(r, 25, [vx, vy, vz], k + 1);
+  });
   const zv = normal(r, 0, 50);
   const signal = synthetic.truthEventFrom(
     Array.from({ length: 6 }, () => ({ pdg: r() < 0.5 ? 211 : -211, pt: 1 + 30 * r() * r(), eta: (2 * r() - 1) * 2.3, phi: (2 * r() - 1) * Math.PI })),
     [0, 0, zv],
   );
   const det = simulate(signal, cfg, r.fork('sim'), { pileup: pile });
-  return { pu, cfg, signal, det };
+  return { pu, cfg, signal, det, vertices: [zv, ...pileZ] };
 }
 
 /** Find tracks in a crossing with the given settings and compare them with the truth. */

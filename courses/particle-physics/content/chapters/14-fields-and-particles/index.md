@@ -68,7 +68,7 @@ m2:
   label: 'm, the mass term'
   what: The same tying-to-the-floor strength as in the equation of motion.
   why: It sets the frequency of the longest waves, at k = 0, to ω = m.
-  effect: Sets the rest energy of the quanta: E = m when p = 0.
+  effect: 'Sets the rest energy of the quanta: E = m when p = 0.'
 k:
   label: 'k, the wave number'
   what: Radians per unit length, 2π divided by the wavelength.
@@ -118,7 +118,7 @@ n:
 hw:
   label: 'ħω, one quantum'
   what: The spacing between adjacent levels, the energy of one quantum of the mode.
-  why: E = ħω for a quantum of frequency ω: Planck's and Einstein's relation for light, applied to every field.
+  why: 'E = ħω for a quantum of frequency ω: Planck''s and Einstein''s relation for light, applied to every field.'
   effect: A mode of higher frequency has more energetic quanta. For the lattice, ω is given by the dispersion relation.
 ```
 :::
@@ -187,7 +187,7 @@ mr:
   label: 'm, the mass of the exchanged quantum'
   what: The mass term of the field that mediates the force.
   why: It enters the propagator as m² and so sets how fast the potential decays.
-  effect: At m = 0 the exponential is 1 and V is the Coulomb 1/r: the photon. A heavy mediator gives a short-range force.
+  effect: 'At m = 0 the exponential is 1 and V is the Coulomb 1/r: the photon. A heavy mediator gives a short-range force.'
 R:
   label: 'R, the range'
   what: The distance over which the potential falls by a factor e, ħc/mc². In natural units, R = 1/m.

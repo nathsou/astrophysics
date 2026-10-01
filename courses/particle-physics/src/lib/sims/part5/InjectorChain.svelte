@@ -46,7 +46,7 @@
   const fmtE = (g: number) => (g < 1 ? `${(g * 1e3).toFixed(0)} MeV` : g < 1000 ? `${g.toFixed(g < 10 ? 2 : 1)} GeV` : `${(g / 1000).toFixed(2)} TeV`);
 
   // Energy ladder (log scale) and to-scale rings.
-  const W = 560, H = 244;
+  const W = 560, H = 256;
   const lx = (e: number) => 30 + ((Math.log10(e) - Math.log10(0.1)) / (Math.log10(10000) - Math.log10(0.1))) * (W - 60);
   const energyOf = (s: Stage) => (s.quantity === 'kinetic' ? s.value : fromMomentum(s.value).T);
   const R = (c: number) => (c / (2 * Math.PI)) * (58 / 4243);
@@ -74,7 +74,7 @@
     {#each STAGES.filter((s) => s.kind === 'ring') as s}
       {@const r = Math.max(2.2, R(s.circumference))}
       <circle cx={RX[s.key]} cy={176} r={r} class="ring" class:on={s.key === sel} />
-      <text x={RX[s.key]} y={242} text-anchor="middle" class="tick" class:on={s.key === sel}>{s.name === 'PS Booster' ? 'Booster' : s.name}</text>
+      <text x={RX[s.key]} y={250} text-anchor="middle" class="tick" class:on={s.key === sel}>{s.name === 'PS Booster' ? 'Booster' : s.name}</text>
     {/each}
   </svg>
 

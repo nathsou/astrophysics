@@ -17,6 +17,8 @@
 
   let { n, caption, title = 'What the resolution shows: form factors and the proton' }: { n?: string | number; caption?: string; title?: string } = $props();
 
+  const SUP: Record<string, string> = { '-': '⁻', '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹' };
+  const fmtPow = (v: number) => (v === 1 ? '1' : `10${String(Math.round(Math.log10(v))).split('').map((c) => SUP[c]).join('')}`);
   const Mp = particle(2212).mass;
   let shape = $state<FormFactorShape>('exponential');
   let rms = $state(0.84);
@@ -55,12 +57,12 @@
       <Plot
         label="Squared form factor against the momentum transfer Q on logarithmic axes: equal to one for a point charge and falling once ħc/Q is below the radius"
         x={{ type: 'log', domain: [0.03, 12], label: 'momentum transfer Q [GeV]', tickValues: [0.03, 0.1, 0.3, 1, 3, 10] }}
-        y={{ type: 'log', domain: [1e-8, 2], label: '|F(Q)|²  (the cross-section relative to a point charge)' }}
+        y={{ type: 'log', domain: [1e-8, 4], label: '|F(Q)|², relative to a point charge', format: fmtPow }}
         height={300}
       >
         {#snippet marks({ sx, sy })}
           <line x1={sx(0.03)} x2={sx(12)} y1={sy(1)} y2={sy(1)} stroke="var(--ink-3)" stroke-dasharray="5 4" />
-          <text x={sx(0.035)} y={sy(1) - 6} font-size="10" fill="var(--ink-2)">point charge: F = 1</text>
+          <text x={sx(0.035)} y={sy(1) + 14} font-size="10" fill="var(--ink-2)">point charge: |F|² = 1</text>
           <path d={curve.map((p, i) => `${i ? 'L' : 'M'}${sx(p.q)} ${sy(p.f2)}`).join('')} fill="none" stroke="var(--series-1)" stroke-width="2.4" />
           <line x1={sx(Q)} x2={sx(Q)} y1="0" y2={sy(1e-8)} stroke="var(--sig-high)" stroke-width="1.6" />
           <circle cx={sx(Q)} cy={sy(Math.max(1e-8, F2))} r="5" fill="var(--sig-high)" />

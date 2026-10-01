@@ -16,7 +16,7 @@
 
   let { n, caption }: { n?: string | number; caption?: string } = $props();
 
-  let rho = $state(LEP.bendingRadius_m);
+  let rho = $state<number>(LEP.bendingRadius_m);
   let vrfGV = $state(3.63);
   let eBeam = $state(104.5);
 

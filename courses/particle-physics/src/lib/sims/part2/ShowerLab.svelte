@@ -36,6 +36,7 @@
   let kind = $state<Kind>(untrack(() => (['e', 'gamma', 'pi', 'mu'].includes(p0) ? (p0 as Kind) : 'e')));
   let mat = $state(untrack(() => (['Pb', 'Fe', 'Cu', 'H2O'].includes(m0) ? m0 : 'Pb')));
   let logE = $state(untrack(() => Math.log10(Math.min(1000, Math.max(0.5, Number(e0))))));
+  let sharing = $state<'equal' | 'random'>('equal');
   let logDepth = $state(Math.log10(25));
   let seed = $state(untrack(() => seed0));
   let mineAvailable = $state(false);
@@ -76,7 +77,7 @@
     // with a random split the library tracks every particle: beyond ~10⁵ particles use the analytic (equal-split) model
     const r = makeRng(seed);
     try {
-      return E / Ec < 40_000 ? fn(E, Ec, r) : fn(E, Ec);
+      return sharing === 'random' && E / Ec < 40_000 ? fn(E, Ec, r) : fn(E, Ec);
     } catch (e) {
       return null;
     }
@@ -161,6 +162,7 @@
     />
     <Slider bind:value={logE} min={-0.3} max={3} step={0.02} label={kind === 'mu' ? 'Muon momentum' : 'Energy'} format={(v) => fmtE(10 ** v)} />
     <Slider bind:value={logDepth} min={0} max={3} step={0.02} label="Absorber thickness" format={(v) => `${(10 ** v).toFixed(10 ** v < 10 ? 1 : 0)} cm`} />
+    {#if isEM}<Segmented label="Energy sharing" options={[{ value: 'equal', label: 'equal halves (Heitler)' }, { value: 'random', label: 'random shares' }]} bind:value={sharing} />{/if}
     <Button onclick={() => (seed += 1)}>Fire again (seed {seed})</Button>
     {#if mineAvailable && isEM}<Toggle bind:checked={useMineOn} label="use my code (heitlerShower)" onchange={toggleMine} />{/if}
   {/snippet}
@@ -185,7 +187,7 @@
         <p class="ui small"><span class="key e"></span> electron or positron <span class="key g"></span> photon. Every splitting takes one splitting length, ln 2 × X₀ = {fmt(Math.LN2 * X0)} cm of {M.label.toLowerCase()}, and halves the energy per particle.</p>
       </div>
       <div>
-        <h5 class="ui">Particles in each generation (Heitler, random sharing)</h5>
+        <h5 class="ui">Particles in each generation ({sharing === 'equal' ? 'equal halves' : 'random shares'})</h5>
         <LinePlot
           lines={[{ x: genLine.x, y: genLine.y, label: 'particles', dash: '' }]}
           points={genPoints}
@@ -198,7 +200,7 @@
         />
         <p class="ui small">
           Maximum after <strong>{heitler.maxGeneration}</strong> splittings, at <strong>{fmt(heitler.tMaxX0)} X₀</strong> ({fmt(heitler.tMaxX0 * X0)} cm), with <strong>{heitler.nMax.toLocaleString('en-GB')}</strong> particles
-          (E₀/E<sub>c</sub> = {(E / Ec).toFixed(0)}). Total deposited: {fmt(heitler.totalDeposited)} GeV of {fmt(E)} GeV.
+          (E₀/E<sub>c</sub> = {(E / Ec).toFixed(0)}{sharing === 'equal' ? `; the model says N = E₀/E_c at depth X₀ ln(E₀/E_c) = ${fmt(Math.log(E / Ec))} X₀, rounded up to a whole splitting length` : ''}). Total deposited: {fmt(heitler.totalDeposited)} GeV of {fmt(E)} GeV.
         </p>
       </div>
     </div>

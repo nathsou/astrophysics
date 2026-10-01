@@ -25,7 +25,7 @@
   const hit = $derived(lines.filter((l) => Math.abs(l.n * qx + l.m * qy - l.p) <= spread * (Math.abs(l.n) + l.m) + 1e-12));
   const byOrder = $derived([1, 2, 3, 4, 5].map((o) => hit.filter((l) => l.order === o).length));
 
-  const S = 380, M = 34;
+  const S = 390, M = 46;
   const px = (q: number) => M + (q - QX0) * (S - 2 * M);
   const py = (q: number) => S - M - (q - QY0) * (S - 2 * M);
 
@@ -95,7 +95,7 @@
         <text x={M - 6} y={py(QY0 + t)} text-anchor="end" dy="0.3em" class="tk">{(QY0 + t).toFixed(2)}</text>
       {/each}
       <text x={S / 2} y={S - 6} text-anchor="middle" class="ax">Qx</text>
-      <text x="9" y={S / 2} class="ax" transform="rotate(-90 9 {S / 2})" text-anchor="middle">Qy</text>
+      <text x="11" y={S / 2} class="ax" transform="rotate(-90 11 {S / 2})" text-anchor="middle">Qy</text>
       <rect x={M} y={M} width={S - 2 * M} height={S - 2 * M} fill="transparent" role="presentation" style="cursor: crosshair; touch-action: none"
         onpointerdown={(e) => { dragging = true; (e.currentTarget as Element).setPointerCapture(e.pointerId); pick(e); }}
         onpointermove={(e) => dragging && pick(e)} onpointerup={() => (dragging = false)} />

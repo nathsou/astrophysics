@@ -24,10 +24,14 @@
   const run = $derived(runCyclotron(mode, voltageKV * 1e3, phi0, NTURNS, 0.6));
   const f0 = $derived(cyclotronFrequency(B) / 1e6);
   const pts = $derived.by(() => {
+    // Log-spaced samples (every turn at first), so that the early turns are not lost on a logarithmic axis.
     const out: { t: number; T: number; ph: number }[] = [];
     const N = run.T.length;
-    const step = Math.max(1, Math.floor(N / 500));
-    for (let i = 0; i < N; i += step) out.push({ t: i + 1, T: run.T[i]! * 1e3, ph: run.phase[i]! });
+    let i = 0;
+    while (i < N) {
+      out.push({ t: i + 1, T: run.T[i]! * 1e3, ph: run.phase[i]! });
+      i = Math.max(i + 1, Math.floor(i * 1.015));
+    }
     if (N > 0) out.push({ t: N, T: run.T[N - 1]! * 1e3, ph: run.phase[N - 1]! });
     return out;
   });
@@ -84,11 +88,11 @@
 
   <dl class="readout ui" role="status" aria-live="polite">
     <div><dt>Highest energy reached</dt><dd>{f(run.maxT * 1e3, 1)} MeV{mode === 'fixed' ? ` at turn ${run.turnOfMax + 1}` : ''}</dd></div>
-    <div><dt>Energy at the end of the run</dt><dd>{f(finalT, 1)} MeV in {nShown.toLocaleString('en-GB')} turns</dd></div>
+    <div><dt>What happens next</dt><dd>{run.captured ? `still gaining energy after ${nShown.toLocaleString('en-GB')} turns` : 'the proton slides off the wave, is decelerated and lost'}</dd></div>
     <div><dt>Revolution frequency at {f(B, 2)} T, slow proton</dt><dd>{f(f0, 2)} MHz</dd></div>
     <div><dt>Fall in revolution frequency at the top energy</dt><dd>{f(fDrop, 1)}% (γ = {f(gammaMax, 3)})</dd></div>
   </dl>
-  <p class="note ui">A toy: two gap crossings per turn, one RF frequency, no focusing. The run stops at 600 MeV or after 60,000 turns. In the frequency-modulated machine the RF frequency falls with the synchronous proton's γ; protons outside its bucket are left behind, which is why such a machine delivers bunches rather than a continuous beam.</p>
+  <p class="note ui">A toy: two gap crossings per turn, one RF frequency, no focusing. The run stops at 600 MeV, after 60,000 turns, or when a fixed-frequency proton has lost half its peak energy. In the frequency-modulated machine the RF frequency falls with the synchronous proton's γ; protons outside its bucket are left behind, which is why such a machine delivers bunches rather than a continuous beam.</p>
 </Widget>
 
 <style>

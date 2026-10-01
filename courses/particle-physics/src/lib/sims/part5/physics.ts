@@ -70,7 +70,7 @@ export interface CyclotronRun {
   maxT: number;
   /** The turn at which the maximum was first reached. */
   turnOfMax: number;
-  /** Whether the particle kept gaining energy to the end (true) or was left behind by the RF (false). */
+  /** Whether the particle kept gaining energy to the end (true) or was left behind by the RF and decelerated (false). */
   captured: boolean;
 }
 
@@ -97,6 +97,7 @@ export function runCyclotron(mode: CyclotronMode, voltageV: number, phi0Deg: num
   let gs = 1; // the synchronous particle of the modulated mode
   let best = 0;
   let bestTurn = 0;
+  let lost = false;
   for (let i = 0; i < nTurns; i++) {
     const dT = gainPerTurn(phi);
     g += dT / m;
@@ -116,9 +117,14 @@ export function runCyclotron(mode: CyclotronMode, voltageV: number, phi0Deg: num
       bestTurn = i;
     }
     if (t >= maxT) break;
+    // A fixed-frequency proton that has slid past the crest is decelerated, falls out of the machine and is lost.
+    if (mode === 'fixed' && best > 0 && t < 0.5 * best) {
+      lost = true;
+      break;
+    }
   }
   const last = T[T.length - 1] ?? 0;
-  return { T, phase, maxT: best, turnOfMax: bestTurn, captured: last >= best * 0.999 && (mode !== 'fixed' || last >= maxT) };
+  return { T, phase, maxT: best, turnOfMax: bestTurn, captured: !lost && last >= best * 0.999 };
 }
 
 /** The rigidity Bρ (T·m) of a proton of kinetic energy T (GeV). */

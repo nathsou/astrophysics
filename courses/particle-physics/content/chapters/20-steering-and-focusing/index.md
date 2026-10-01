@@ -20,7 +20,7 @@ $$\term{p}{p}\;[\mathrm{GeV}/c] = 0.2998\;\term{B}{B}\;[\mathrm{T}]\;\term{rho}{
 ```terms
 p:
   label: 'p, the momentum'
-  what: The momentum of the particle, in GeV/c (natural units: GeV).
+  what: 'The momentum of the particle, in GeV/c (natural units: GeV).'
   why: It is what the field has to hold on the circle. Nothing else about the particle matters to the bending of a single magnet, apart from its charge.
   effect: 6,800 GeV/c for an LHC proton in the present runs, and 450 GeV/c at injection.
 B:
@@ -31,7 +31,7 @@ B:
 rho:
   label: 'ρ, the bending radius'
   what: The radius of curvature of the orbit inside a dipole, in metres.
-  why: It is fixed by the layout of the ring: a magnet of length L bends the beam by an angle L/ρ.
+  why: 'It is fixed by the layout of the ring: a magnet of length L bends the beam by an angle L/ρ.'
   effect: 2,804 m in the LHC, which is smaller than the ring's mean radius of 4,243 m because dipoles fill only part of the circumference.
 ```
 :::
@@ -49,12 +49,12 @@ unit: T
 tolerance: 0.01
 hints:
   - B = p/(0.2998 ρ), with p in GeV/c.
-explain: "B = 6,800 / (0.2998 × 2,804) = 8.09 T. The design energy of 7 TeV needs 8.33 T, the figure in the design report, and injection at 450 GeV needs 0.535 T: a dipole at injection runs at 6% of its top field."
+explain: "B = 6,800 / (0.2998 × 2,804) = 8.09 T. The design energy of 7 TeV needs 8.33 T, the figure in the design report, and injection at 450 GeV needs 0.535 T: a dipole at injection runs at 7% of its top field."
 ```
 
 ### Why the field has to be superconducting
 
-An iron-cored electromagnet saturates: above about 2 T the iron can no longer add to the field. At 2 T, a 6.8 TeV ring would need ρ = 11.3 km, a circumference of 71 km if every metre of it were a dipole. The LHC reaches 8 T by winding the coils from a superconductor, niobium–titanium cable, which carries current with no resistance when it is cold enough, and the field is shaped by the coil rather than by iron. The LHC cools the magnets to 1.9 K with superfluid helium, colder than the 2.7 K of the cosmic microwave background, because NbTi at 1.9 K can carry the current density the 8 T coil needs with some margin, and because superfluid helium carries heat away very well.:cite[lhc-design] The two beam pipes share one magnet: each dipole holds both, with the field pointing in opposite directions in the two bores, which is what bends two counter-rotating beams the same way round.
+An iron-cored electromagnet saturates: above about 2 T the iron can no longer add to the field. At 2 T, a 6.8 TeV ring would need ρ = 11.3 km, a circumference of 71 km if every metre of it were a dipole. The LHC reaches 8 T by winding the coils from a superconductor, niobium–titanium cable, which carries current with no resistance when it is cold enough, and the field is shaped by the coil rather than by iron. The LHC cools the magnets to 1.9 K with superfluid helium, colder than the 2.7 K of the cosmic microwave background, because NbTi at 1.9 K can carry the current density the 8 T coil needs with some margin, and because superfluid helium carries heat away very well.:cite[lhc-design] The two beam pipes share one magnet: each dipole holds both, with the field pointing in opposite directions in the two bores, so that the two counter-rotating beams are both bent towards the centre of the ring.
 
 Fermilab's Tevatron, a proton–antiproton collider that worked from 1983 to 2011, was the first synchrotron to use superconducting magnets.:cite[tevatron-legacy] The upgrade of the LHC for high luminosity (Chapter 21) will use niobium–tin for the quadrupoles next to the collision points, with a peak field of 11 to 12 T.:cite[hllhc-tdr] The rest of this chapter needs only that a dipole provides *B*.
 
@@ -78,7 +78,7 @@ The fix is to add a force that grows with the distance from the axis, in both pl
 
 ## A lens for charged particles: the quadrupole
 
-A **quadrupole** magnet has four poles, arranged so that the field is zero on the axis and grows linearly with the distance from it: *B*<sub>y</sub> = *g* *x*, *B*<sub>x</sub> = *g* *y*, where *g* is the field gradient in tesla per metre. A proton moving along *z* with a horizontal displacement *x* feels a force, from *q* **v** × **B**, that is proportional to *x* and points towards the axis if the field has one sign and away from it if it has the other. A proton at vertical displacement *y* feels the opposite: **a quadrupole that focuses in one plane defocuses in the other.** This is not a design defect, it is Maxwell's equations: in free space ∇ × **B** = 0 requires ∂*B*<sub>y</sub>/∂*x* = ∂*B*<sub>x</sub>/∂*y*.
+A :term[quadrupole]{id=quadrupole} magnet has four poles, arranged so that the field is zero on the axis and grows linearly with the distance from it: *B*<sub>y</sub> = *g* *x*, *B*<sub>x</sub> = *g* *y*, where *g* is the field gradient in tesla per metre. A proton moving along *z* with a horizontal displacement *x* feels a force, from *q* **v** × **B**, that is proportional to *x* and points towards the axis if the field has one sign and away from it if it has the other. A proton at vertical displacement *y* feels the opposite: **a quadrupole that focuses in one plane defocuses in the other.** This is not a design defect, it is Maxwell's equations: in free space ∇ × **B** = 0 requires ∂*B*<sub>y</sub>/∂*x* = ∂*B*<sub>x</sub>/∂*y*.
 
 Dividing the gradient by the rigidity gives the **normalised strength** *k* = *g*/(*B*ρ), in m⁻². The equation of motion of a proton in a quadrupole is *x*″ = −*kx* and *y*″ = +*ky*, where the primes are derivatives with respect to the distance *s* along the orbit, and *x*′ = d*x*/d*s* is the slope. The LHC's main quadrupoles have a design gradient of 223 T/m and a length of 3.1 m, and at 7 TeV *k* = 223/23,350 T·m = 0.00955 m⁻² (the rigidity of a 7 TeV proton is 23,350 T·m):cite[lhc-design] so the focal length of one, for a proton that passes through it quickly, is 1/(*kL*) = 34 m.
 
@@ -111,7 +111,7 @@ So the ring is stable if and only if |Tr **M**| < 2. The same condition decides 
 
 ## Strong focusing
 
-Take one thin focusing lens of focal length *f*, a drift of length *L*, one thin *defocusing* lens (focal length −*f*) and another drift of length *L*. This is the simplest **FODO cell**: **F**ocus, drift (**O**), **D**efocus, drift. Multiplying the four matrices, the terms in *L*/*f* in the trace cancel, and
+Take one thin focusing lens of focal length *f*, a drift of length *L*, one thin *defocusing* lens (focal length −*f*) and another drift of length *L*. This is the simplest :term[FODO cell]{id=fodo-cell}: **F**ocus, drift (**O**), **D**efocus, drift. Multiplying the four matrices, the terms in *L*/*f* in the trace cancel, and
 
 :::equation{#fodo caption="The thin-lens FODO cell: its trace, the phase advance per cell, and the limit of stability."}
 $$\operatorname{Tr}\mathbf{M} = 2 - \frac{\term{L}{L}^2}{\term{f}{f}^2}, \qquad \sin\frac{\term{mu}{\mu}}{2} = \frac{L}{2f}$$
@@ -124,25 +124,25 @@ L:
   effect: 53.45 m in the LHC's arc cell, which is 106.9 m long and has two quadrupoles.
 f:
   label: 'f, the focal length'
-  what: The focal length of each lens, in metres: 1/(kL_quad) for a quadrupole.
+  what: 'The focal length of each lens, in metres: 1/(kL_quad) for a quadrupole.'
   why: A shorter focal length means a stronger lens.
   effect: The cell is stable only for f > L/2. The LHC's arc cell runs at 90°, which needs f = 37.8 m.
 mu:
   label: 'μ, the phase advance per cell'
   what: The angle by which the betatron oscillation advances in one cell, with cos μ = Tr M/2.
   why: It sets the oscillation's wavelength, and the tune of a ring of N identical cells is Nμ/2π.
-  effect: 90° in the LHC's arcs: a quarter of a betatron oscillation per cell. At f = L/2, μ = 180° and the cell is at its stability limit.
+  effect: '90° in the LHC''s arcs: a quarter of a betatron oscillation per cell. At f = L/2, μ = 180° and the cell is at its stability limit.'
 ```
 :::
 
-The cell is stable for *L*² < 4*f*², that is for *f* > *L*/2, with focusing and defocusing lenses of exactly equal strength. The result is surprising. A focusing lens and a defocusing lens of equal and opposite strength would cancel if they were at the same place. Separated by a drift *L* they do not: two thin lenses of focal lengths *f*₁ and *f*₂ at distance *L* have a combined focal length given by 1/*f* = 1/*f*₁ + 1/*f*₂ − *L*/(*f*₁*f*₂), which for *f*₁ = *f* and *f*₂ = −*f* is 1/*f*<sub>eff</sub> = *L*/*f*², positive, so the pair focuses. The reason is in the picture: a proton that is off axis is farther from the axis in the focusing lens, where the force is directed inwards, than in the defocusing lens, where the force is directed outwards. The force is proportional to the distance, so the inward kick is larger than the outward one. This is the principle of the alternating-gradient, or **strong-focusing**, synchrotron.
+The cell is stable for *L*² < 4*f*², that is for *f* > *L*/2, with focusing and defocusing lenses of exactly equal strength. The result is surprising. A focusing lens and a defocusing lens of equal and opposite strength would cancel if they were at the same place. Separated by a drift *L* they do not: two thin lenses of focal lengths *f*₁ and *f*₂ at distance *L* have a combined focal length given by 1/*f* = 1/*f*₁ + 1/*f*₂ − *L*/(*f*₁*f*₂), which for *f*₁ = *f* and *f*₂ = −*f* is 1/*f*<sub>eff</sub> = *L*/*f*², positive, so the pair focuses. The reason is in the picture: a proton that is off axis is farther from the axis in the focusing lens, where the force is directed inwards, than in the defocusing lens, where the force is directed outwards. The force is proportional to the distance, so the inward kick is larger than the outward one. This is the principle of the alternating-gradient, or :term[strong-focusing]{id=strong-focusing}, synchrotron.
 
 ```predict
 q: 'A horizontally focusing quadrupole is followed, 4 m further down the beam line, by an identical quadrupole rotated by 90°, so that it defocuses horizontally and focuses vertically. Both have focal length f = 3 m. Is the horizontal motion through the pair, repeated over many pairs, stable?'
 options:
-  - text: No: the two lenses cancel, so there is no net focusing and the beam drifts away.
+  - text: 'No: the two lenses cancel, so there is no net focusing and the beam drifts away.'
     why: 'Equal and opposite strengths cancel only for lenses at the same place. Separated by a drift, they do not.'
-  - text: Yes, for a range of strengths: the cell matrix has Tr M = 2 − L²/f², which is 0.22 here, below 2.
+  - text: 'Yes, for a range of strengths: the cell matrix has Tr M = 2 − L²/f², which is 0.22 here, below 2.'
     correct: true
     why: 'With L = 4 m and f = 3 m, L²/f² = 1.78, so Tr M = 0.22. The proton is farther from the axis in the focusing lens than in the defocusing one, and the net effect is to focus. The vertical plane works the same way, with the roles of the lenses exchanged.'
   - text: Only in one of the two planes, because a quadrupole focuses in one plane and defocuses in the other.
@@ -187,18 +187,18 @@ $$x(s) = \sqrt{\term{eps}{\varepsilon}\,\term{beta}{\beta(s)}}\;\cos\!\big(\term
 ```terms
 eps:
   label: 'ε, the emittance'
-  what: The constant of the motion of a proton, in metre-radians: π ε is the area of its ellipse in the (x, x′) plane. For a beam, the rms emittance of its protons.
+  what: 'The constant of the motion of a proton, in metre-radians: π ε is the area of its ellipse in the (x, x′) plane. For a beam, the rms emittance of its protons.'
   why: It is the quantity that stays constant along the ring (apart from acceleration). The optics change the ellipse's shape, never its area.
   effect: The LHC's beam has a normalised emittance of 3.75 µm in the design, which is a geometric ε = 7.8 nm at 450 GeV and 0.5 nm at 6.8 TeV.
 beta:
   label: 'β(s), the β function'
-  what: A length, in metres, determined by the magnets, which describes the envelope of the oscillation: the beam's rms size is √(εβ).
+  what: 'A length, in metres, determined by the magnets, which describes the envelope of the oscillation: the beam''s rms size is √(εβ).'
   why: It is large where the beam is wide and its angular spread small, and small where the beam is narrow and its divergence large.
   effect: Between about 30 and 180 m in the LHC arcs, and 0.55 m at the collision points in the design (β*).
 psi:
   label: 'ψ(s), the betatron phase'
   what: The phase of the oscillation along the ring, increasing by ds/β at each step.
-  why: Where β is small, the phase advances quickly: the oscillation wavelength is about 2πβ.
+  why: 'Where β is small, the phase advances quickly: the oscillation wavelength is about 2πβ.'
   effect: A proton at the LHC advances by about 64 full cycles per turn in the horizontal plane.
 Q:
   label: 'Q, the tune'
@@ -208,11 +208,11 @@ Q:
 ```
 :::
 
-The **β function** is the central object of beam optics. It is computed from the one-turn matrix, which can always be written in the form **M** = [[cos μ + α sin μ, β sin μ], [−γ sin μ, cos μ − α sin μ]] with γ = (1 + α²)/β (the matrix of a rotation in a rescaled phase space), and the β, α and γ at the start point are read off from it: β = *M*<sub>12</sub>/sin μ, α = (*M*<sub>11</sub> − *M*<sub>22</sub>)/(2 sin μ). The library's `periodicTwiss` does exactly that. Matrices then carry β, α, γ from one point to the next. For a thin-lens FODO cell, β at the focusing lens is *L*<sub>cell</sub>(1 + sin(μ/2))/sin μ and at the defocusing lens it is *L*<sub>cell</sub>(1 − sin(μ/2))/sin μ; at 90° these are 1.71 and 0.29 of the cell length, about 182 m and 31 m for the LHC cell. The library's thick-lens model gives 181 m and 31.5 m.
+The :term[β function]{id=beta-function} is the central object of beam optics. It is computed from the one-turn matrix, which can always be written in the form **M** = [[cos μ + α sin μ, β sin μ], [−γ sin μ, cos μ − α sin μ]] with γ = (1 + α²)/β (the matrix of a rotation in a rescaled phase space), and the β, α and γ at the start point are read off from it: β = *M*<sub>12</sub>/sin μ, α = (*M*<sub>11</sub> − *M*<sub>22</sub>)/(2 sin μ). The library's `periodicTwiss` does exactly that. Matrices then carry β, α, γ from one point to the next. For a thin-lens FODO cell, β at the focusing lens is *L*<sub>cell</sub>(1 + sin(μ/2))/sin μ and at the defocusing lens it is *L*<sub>cell</sub>(1 − sin(μ/2))/sin μ; at 90° these are 1.71 and 0.29 of the cell length, about 182 m and 31 m for the LHC cell. The library's thick-lens model gives 181 m and 31.5 m.
 
 ### Emittance
 
-A beam of many protons is a cloud in the (*x*, *x*′) plane. Each proton goes round its own ellipse, all with the same shape, and the cloud's size is the **emittance**: the beam's rms width is σ = √(ε β) and its rms angular spread is σ′ = √(ε γ), where γ = (1 + α²)/β is the Twiss parameter of the next paragraph, not the Lorentz factor. **The ellipse's area, π ε, does not change** as the beam goes round the ring: at a large β the ellipse is wide and flat, at a small β it is tall and thin, and the area is the same. The emittance can be changed only by things the linear optics leaves out, such as a collimator scraping the beam, noise in a magnet, or collisions among the protons of a bunch.
+A beam of many protons is a cloud in the (*x*, *x*′) plane. Each proton goes round its own ellipse, all with the same shape, and the cloud's size is the :term[emittance]{id=emittance}: the beam's rms width is σ = √(ε β) and its rms angular spread is σ′ = √(ε γ), where γ = (1 + α²)/β is the Twiss parameter of the previous paragraph, not the Lorentz factor. **The ellipse's area, π ε, does not change** as the beam goes round the ring: at a large β the ellipse is wide and flat, at a small β it is tall and thin, and the area is the same. The emittance can be changed only by things the linear optics leaves out, such as a collimator scraping the beam, noise in a magnet, or collisions among the protons of a bunch.
 
 There is one important exception. When a beam is accelerated, its momentum rises, and the slope *x*′ = *p*<sub>x</sub>/*p* shrinks, because the transverse momentum does not grow but the longitudinal one does. The geometric emittance therefore falls as 1/(βγ), which is called **adiabatic damping**, and the product βγ ε, the **normalised emittance**, is constant. The LHC's normalised emittance of 3.75 µm (design) is the same at 450 GeV and at 6.8 TeV; the geometric emittance falls from 7.8 nm to 0.52 nm, and the beam in the arcs shrinks from about 0.5–1.2 mm at injection to 0.12–0.31 mm.
 
@@ -220,7 +220,7 @@ There is one important exception. When a beam is accelerated, its momentum rises
 
 ## Building a ring
 
-Everything above is in the next figure. The lattice designer lets you build a cell from drifts, dipoles, quadrupoles and a sextupole, repeat it round a ring, and track protons turn by turn. It shows the trace of the one-turn matrix, the β function along the cell, the phase-space ellipses of five protons, and the tune measured from the tracking against the tune from the matrix. The first preset is the textbook FODO cell. The second is a cell whose quadrupoles have been wired to defocus: the trace is above 2, and the protons leave. The third is the LHC arc cell. The fourth adds a sextupole, which we meet in the next section.
+Everything above is in the next figure. The lattice designer lets you build a cell from drifts, dipoles, quadrupoles and a sextupole, repeat it round a ring, and track protons turn by turn. It shows the trace of the one-turn matrix, the β function along the cell, the phase-space ellipses of five protons, and the tune measured from the tracking against the tune from the matrix. The first preset is the textbook FODO cell. The second is a cell whose quadrupoles have been wired to defocus: the trace is above 2, and the protons leave. The third is the LHC arc cell (the preset has only arc cells, so its tune is 51.2, not the real 64.3: the machine's straight sections are left out). The fourth adds a sextupole, which we meet in the next section.
 
 ::lattice-designer{preset="fodo" n="20.3" caption="A ring built of identical cells: the one-turn matrix, β(s), the tunes, and five protons on nested ellipses, tracked with your own tracking function once you write it (below). Try: lengthen a drift, and watch the tune and the stable range; set the quadrupoles to the wrong sign (the second preset); add a sextupole (the fourth) and raise the amplitudes, and see the ellipses lose their shape."}
 
@@ -252,7 +252,7 @@ explain: 'The quadrupoles are equal, and the cell has a phase advance of a quart
 ```lattice
 id: fodo-60
 title: A longer cell at 60° per cell
-prompt: 'Twelve cells, 5 m between quadrupoles of 0.4 m. Make the phase advance 60° per cell (tune 2) with β(max) = 15.1 m and β(min) = 7.2 m.'
+prompt: 'Twelve cells, 5 m between quadrupoles of 0.4 m. Make the phase advance 60° per cell (tune 2) with β(max) = 15.1 m and β(min) = 7.3 m.'
 config:
   nCells: 12
   cellDrift: 5
@@ -263,11 +263,11 @@ target:
   muDeg: 60
   tune: 2
   betaMax: 15.1
-  betaMin: 7.2
+  betaMin: 7.3
 par: 0.03
 hints:
   - A weaker phase advance needs weaker quadrupoles, for the same cell length.
-solution: 'kF = kD = 0.32 m⁻²: μ = 60.0°, β(max) = 15.07 m, β(min) = 7.22 m.'
+solution: 'kF = kD = 0.32 m⁻²: μ = 60.0°, β(max) = 15.07 m, β(min) = 7.29 m.'
 explain: 'Both rings have the same kind of cell, and the difference in the phase advance changes the ratio β(max)/β(min) from 3.2 to 2.1 (at 90° it is larger, at 60° smaller). A large phase advance per cell gives a small β(min) but a larger spread; accelerator designers choose between these for the size of the beam, the aperture and the sensitivity to errors.'
 ```
 
@@ -281,7 +281,7 @@ for integers *n*, *m* and *p*. The **order** of the resonance is |*n*| + |*m*|. 
 
 ::resonance-map{n="20.4" caption="The LHC's tune diagram, near its design working point (64.3, 59.3). The lines are the resonances n Qx + m Qy = p up to the order you choose; the thick ones are low order. The shaded square is the beam's tune spread. Move the point with the sliders or by dragging: the nearest resonance, and the number of lines that cross the tune spread, update. The fractional tunes are about 0.3, between the fourth-order line at 1/4 and the third-order line at 1/3. The two integer parts differ by almost exactly 5, so the point is also close to the second-order coupling line Qx − Qy = 5, and the machine has to keep the coupling between the planes small."}
 
-Real beams have a tune *spread*, not a single tune, for two reasons. Protons of different momenta are focused differently, because a quadrupole's strength is *g*/(*B*ρ) and ρ grows with *p*: the tune falls as the momentum rises. The rate is the **chromaticity**, ξ = d*Q*/(d*p*/*p*), and for a ring of quadrupoles and dipoles it is negative and of the order of −*Q*. The second is that real magnets are not perfectly linear, so the tune depends on the amplitude. Sextupole magnets correct the chromaticity, by giving a momentum-dependent focusing, at the price of nonlinearity: it is the nonlinear terms that limit how large an amplitude stays stable (the **dynamic aperture**). The fourth preset of the lattice designer shows it: with a weak sextupole, small amplitudes go round their ellipses as before, and large ones distort and are lost.
+Real beams have a tune *spread*, not a single tune, for two reasons. The first is that protons of different momenta are focused differently, because a quadrupole's strength is *g*/(*B*ρ) and the rigidity grows with *p*: the tune falls as the momentum rises. The rate of change is the :term[chromaticity]{id=chromaticity}, ξ = d*Q*/(d*p*/*p*), and for a ring of quadrupoles and dipoles it is negative and of the order of −*Q* (the lattice designer's FODO ring gives −2.8 for a tune of 3.3). The second is that real magnets are not perfectly linear, so the tune depends on the amplitude. Sextupole magnets correct the chromaticity, by giving a momentum-dependent focusing, at the price of nonlinearity: it is the nonlinear terms that limit how large an amplitude stays stable (the **dynamic aperture**). The fourth preset of the lattice designer shows it: with a weak sextupole, small amplitudes go round their ellipses as before, and large ones distort and are lost.
 
 A particle-physics consequence follows. The LHC's protons stay in for ten hours, which is 4 × 10⁸ turns. The dynamic aperture is the region in which a proton survives that many turns, and it is one of the main quantities that decide the performance of the machine.
 
@@ -476,7 +476,7 @@ The third problem is **aliasing**: a real signal cannot tell a tune *Q* from 1 �
 :::
 
 :::experiments
-Beam optics at CERN is calculated with **MAD-X** (Methodical Accelerator Design), a program that reads a lattice written as a list of elements, exactly as in the lattice designer, and computes the β function, the tunes, the chromaticity and the closed orbit; its successors, such as **Xsuite**, add tracking with many particles on graphics processors. The LHC has about a thousand **beam-position monitors**, electrodes around the pipe that measure where the beam passes; the tune is measured by kicking the beam gently and Fourier-analysing their signals, as in the last box. The toy here has no coupling between the planes, no errors in the magnets and no space-charge or beam–beam forces, all of which move the tune; the real machine is corrected turn by turn to keep it in the gap between the resonances.
+Beam optics at CERN is calculated with **MAD-X** (Methodical Accelerator Design), a program that reads a lattice written as a list of elements, exactly as in the lattice designer, and computes the β function, the tunes, the chromaticity and the closed orbit; its successors, such as **Xsuite**, add tracking with many particles on graphics processors. The LHC has about a thousand **beam-position monitors**, electrodes around the pipe that measure where the beam passes; the tune can be measured by exciting small oscillations and Fourier-analysing their signals, as in the last box. The toy here has no coupling between the planes, no errors in the magnets and no space-charge or beam–beam forces, all of which move the tune; the real machine measures the tunes and corrects them continuously to keep the working point in the gap between the resonances.
 :::
 
 ## What comes next

@@ -79,12 +79,19 @@
 
   const params = $derived(paramsFromSin2(s12, s13, s23, delta, dm21, dm3l, ordering));
   const opts = $derived({ matter: useMatter ? density : undefined, anti });
-  const xs = logspace(0.3, 2e5, 900);
+  const xs = logspace(0.3, 2e5, 600);
+  let smear = $state(true);
+  const SPREAD = [-0.1, -0.05, 0, 0.05, 0.1];
   const curves = $derived.by(() => {
     const out: number[][] = [[], [], []];
     for (const x of xs) {
-      const P = probabilities3(params, x * E, E, opts)[flavour]!;
-      for (let b = 0; b < 3; b++) out[b]!.push(P[b]!);
+      const acc = [0, 0, 0];
+      const samples = smear ? SPREAD : [0];
+      for (const d of samples) {
+        const P = probabilities3(params, x * E, E * (1 + d), opts)[flavour]!;
+        for (let b = 0; b < 3; b++) acc[b]! += P[b]! / samples.length;
+      }
+      for (let b = 0; b < 3; b++) out[b]!.push(acc[b]!);
     }
     return out;
   });
@@ -117,6 +124,7 @@
       <Segmented label="Initial flavour" size="sm" options={[{ value: 0, label: 'ν_e' }, { value: 1, label: 'ν_μ' }, { value: 2, label: 'ν_τ' }]} bind:value={flavour} />
       <Toggle bind:checked={anti} label="Antineutrinos" />
       <Toggle bind:checked={useMatter} label="Matter" />
+      <Toggle bind:checked={smear} label="Average over a 10 % energy spread" />
       <Segmented label="Mass ordering" size="sm" options={[{ value: 'normal', label: 'Normal' }, { value: 'inverted', label: 'Inverted' }]} bind:value={ordering} />
     </div>
     <div class="sliders">

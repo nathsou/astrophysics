@@ -29,3 +29,68 @@
   people: Maurice Goldhaber, Lee Grodzins, Andrew Sunyar
   chapter: the-weak-force
   text: A measurement with europium-152m shows that the neutrino has negative helicity.
+- year: 1961
+  title: Electroweak unification
+  people: Sheldon Glashow, Steven Weinberg, Abdus Salam
+  chapter: w-and-z
+  text: Glashow (1961), Weinberg (1967) and Salam (1968) combine the weak and electromagnetic forces in one theory with a mixing angle and predict the W and Z.
+- year: 1971
+  title: The theory is renormalisable
+  people: Gerard 't Hooft, Martinus Veltman
+  chapter: w-and-z
+  text: "'t Hooft and Veltman show that the electroweak theory gives finite predictions."
+- year: 1973
+  title: Neutral currents
+  people: The Gargamelle collaboration
+  chapter: w-and-z
+  text: Neutrino events without a muon appear in the Gargamelle bubble chamber at CERN, the first evidence of the Z's interaction.
+- year: 1983
+  title: The W and Z are found
+  people: The UA1 and UA2 collaborations
+  chapter: w-and-z
+  text: At CERN's proton–antiproton collider, UA1 and UA2 see the W in January and the Z in May, from electrons with missing transverse momentum and from lepton pairs.
+- year: 1989
+  title: Three light neutrinos
+  people: The ALEPH, DELPHI, L3 and OPAL collaborations
+  chapter: w-and-z
+  text: In the first weeks of LEP, the width of the Z shows that there are three kinds of light neutrino.
+- year: 1963
+  title: The Cabibbo angle
+  people: Nicola Cabibbo
+  chapter: flavour
+  text: Cabibbo proposes that the weak force couples the up quark to a rotated mixture of down and strange.
+- year: 1964
+  title: CP violation
+  people: James Cronin, Val Fitch and colleagues
+  chapter: flavour
+  text: Long-lived neutral kaons are seen to decay into two pions, which CP symmetry forbids.
+- year: 1970
+  title: The GIM mechanism and charm
+  people: Sheldon Glashow, John Iliopoulos, Luciano Maiani
+  chapter: flavour
+  text: A fourth quark, charm, cancels the flavour-changing neutral currents that the weak force does not have.
+- year: 1973
+  title: Six quarks
+  people: Makoto Kobayashi, Toshihide Maskawa
+  chapter: flavour
+  text: Kobayashi and Maskawa show that three generations of quarks allow CP violation in the weak force.
+- year: 1974
+  title: The November Revolution
+  people: Samuel Ting, Burton Richter
+  chapter: flavour
+  text: The J/ψ is found at Brookhaven and SLAC on the same day, a narrow bound state of a charm quark and its antiquark.
+- year: 1977
+  title: The upsilon
+  people: Leon Lederman and the E288 collaboration
+  chapter: flavour
+  text: A dimuon resonance at 9.5 GeV at Fermilab is the bound state of the bottom quark and its antiquark.
+- year: 2001
+  title: CP violation in B mesons
+  people: The BaBar and Belle collaborations
+  chapter: flavour
+  text: Two asymmetric electron–positron colliders measure a large CP asymmetry in B⁰ decays, confirming the Kobayashi–Maskawa mechanism.
+- year: 1995
+  title: The top quark
+  people: The CDF and D0 collaborations
+  chapter: the-top-quark
+  text: Two experiments at Fermilab's Tevatron announce the discovery of the top quark, the heaviest particle of the Standard Model.

@@ -45,7 +45,7 @@ trigger-menu:
   chapter: a-needle-in-a-haystack
 prescale:
   term: prescale
-  definition: A factor N by which a trigger item's accepted events are reduced: only one in N is kept. Used for abundant, low-threshold physics.
+  definition: "A factor N by which a trigger item's accepted events are reduced: only one in N is kept. Used for abundant, low-threshold physics."
   chapter: a-needle-in-a-haystack
 turn-on-curve:
   term: turn-on curve
@@ -59,3 +59,39 @@ wlcg:
   term: Worldwide LHC Computing Grid (WLCG)
   definition: The network of computing centres, in tiers, that stores, reprocesses and serves the data of the LHC experiments. Tier 0 is at CERN, Tier 1 are large national centres with tape, Tier 2 are mostly universities.
   chapter: a-needle-in-a-haystack
+poisson-distribution:
+  term: Poisson distribution
+  definition: The distribution of the number of independent events that occur at a steady average rate. If μ are expected, the probability of n is μⁿe^(−μ)/n!. The mean and the variance are both μ.
+  chapter: the-statistics-of-discovery
+likelihood:
+  term: likelihood
+  definition: The probability of the observed data, regarded as a function of the model's parameters. The maximum-likelihood estimate is the parameter value that makes the observed data most probable.
+  chapter: the-statistics-of-discovery
+p-value:
+  term: p-value
+  definition: The probability, if there is only background, of a result at least as extreme as the one observed. It is not the probability that the background-only hypothesis is true.
+  chapter: the-statistics-of-discovery
+significance:
+  term: significance (Z)
+  definition: A p-value expressed as the number of standard deviations of a Gaussian that has the same one-sided tail. 3σ is p = 1.35 × 10⁻³ (evidence), 5σ is p = 2.87 × 10⁻⁷ (discovery).
+  chapter: the-statistics-of-discovery
+look-elsewhere-effect:
+  term: look-elsewhere effect
+  definition: The increase in the chance of seeing some excess when a search looks in many places. The local p-value of the biggest bump overstates its significance; the global p-value includes the number of places that could have fluctuated.
+  chapter: the-statistics-of-discovery
+nuisance-parameter:
+  term: nuisance parameter
+  definition: A parameter of the model that is not of interest but that the data and prior knowledge constrain, such as the background normalisation or the energy scale. Profiling it widens the uncertainty on the parameters of interest.
+  chapter: the-statistics-of-discovery
+systematic-uncertainty:
+  term: systematic uncertainty
+  definition: An uncertainty from the model of the apparatus or of the physics, such as the luminosity, the efficiency or the energy scale. It does not shrink with more data in the way a statistical uncertainty does.
+  chapter: the-statistics-of-discovery
+blinding:
+  term: blinding
+  definition: Hiding the signal region of the data while the analysis is developed, so that the selection and the background model cannot be tuned to the result. The box is opened once, after the analysis is frozen.
+  chapter: the-statistics-of-discovery
+cls:
+  term: CLs
+  definition: The ratio CLs+b/CLb used to set upper limits. A signal is excluded at 95 % confidence when CLs < 0.05. Dividing by CLb stops a downward fluctuation from excluding signals the experiment could not see.
+  chapter: the-statistics-of-discovery

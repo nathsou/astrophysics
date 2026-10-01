@@ -28,6 +28,10 @@
     label?: string;
     color?: string;
     dash?: string;
+    /** Stagger the label vertically (0, 1, 2 …) so that nearby marks do not overprint each other. */
+    row?: number;
+    /** For a horizontal mark: put the label at the left end instead of the right. */
+    left?: boolean;
   }
   export interface Point {
     x: number;
@@ -129,11 +133,11 @@
     {/each}
     {#each hmarks as m}
       <line x1="0" x2={w} y1={sy(m.value)} y2={sy(m.value)} stroke={m.color ?? 'var(--mute)'} stroke-dasharray={m.dash ?? '4 3'} stroke-width="1.2" />
-      {#if m.label}<text x={w - 4} y={sy(m.value) - 4} text-anchor="end" class="mk" fill={m.color ?? 'var(--ink-2)'}>{m.label}</text>{/if}
+      {#if m.label}<text x={m.left ? 4 : w - 4} y={sy(m.value) - 4} text-anchor={m.left ? 'start' : 'end'} class="mk" fill={m.color ?? 'var(--ink-2)'}>{m.label}</text>{/if}
     {/each}
     {#each vmarks as m}
       <line x1={sx(m.value)} x2={sx(m.value)} y1="0" y2={h} stroke={m.color ?? 'var(--mute)'} stroke-dasharray={m.dash ?? '4 3'} stroke-width="1.2" />
-      {#if m.label}<text x={sx(m.value) + (sx(m.value) > w * 0.7 ? -4 : 4)} y="12" text-anchor={sx(m.value) > w * 0.7 ? 'end' : 'start'} class="mk" fill={m.color ?? 'var(--ink-2)'}>{m.label}</text>{/if}
+      {#if m.label}<text x={sx(m.value) + (sx(m.value) > w * 0.7 ? -4 : 4)} y={12 + 13 * (m.row ?? 0)} text-anchor={sx(m.value) > w * 0.7 ? 'end' : 'start'} class="mk" fill={m.color ?? 'var(--ink-2)'}>{m.label}</text>{/if}
     {/each}
     {#each points as p}
       {#if p.yerr}<line x1={sx(p.x)} x2={sx(p.x)} y1={sy(p.y - p.yerr)} y2={sy(p.y + p.yerr)} stroke={p.color ?? 'var(--series-1)'} stroke-width="1.5" />{/if}

@@ -3,3 +3,48 @@
   people: Paul Dirac
   chapter: fields-and-particles
   text: Dirac treats the radiation field as a set of quantised oscillators, one for each mode, and obtains spontaneous emission as the creation of a quantum. It is usually counted as the beginning of quantum field theory.
+- year: 1918
+  title: Noether's theorem
+  people: Emmy Noether
+  chapter: symmetry-and-gauge
+  text: Noether proves that every continuous symmetry of the action has a conserved quantity, and that local symmetries give identities among the equations of motion.
+- year: 1918
+  title: Weyl's gauge idea
+  people: Hermann Weyl
+  chapter: symmetry-and-gauge
+  text: Weyl proposes that the scale of length can be chosen independently at each point, with the electromagnetic potential as the compensating field. In 1929 he replaces the scale by the phase of the wave function, the modern gauge principle.
+- year: 1954
+  title: Yang–Mills theory
+  people: Chen Ning Yang, Robert Mills
+  chapter: symmetry-and-gauge
+  text: Yang and Mills generalise the gauge principle from phases to SU(2) matrices. Their gauge bosons interact with each other.
+- year: 1948
+  title: Feynman's diagrams at the Pocono conference
+  people: Richard Feynman, Freeman Dyson
+  chapter: feynman-diagrams
+  text: Feynman presents his diagrammatic method at the Pocono conference (30 March to 1 April 1948). In 1949 he publishes it, and Dyson proves it equivalent to the methods of Schwinger and Tomonaga.
+- year: 1947
+  title: The Lamb shift and the electron's g − 2
+  people: Willis Lamb, Robert Retherford, Polykarp Kusch, Henry Foley
+  chapter: qed
+  text: Columbia experiments find that the 2S level of hydrogen lies above the 2P level and that the electron's magnetic moment is slightly larger than Dirac's value. Both are loop effects.
+- year: 1948
+  title: Schwinger's α/2π
+  people: Julian Schwinger
+  chapter: qed
+  text: Schwinger calculates the first correction to the electron's magnetic moment, a = α/2π = 0.00116, in agreement with the measurement.
+- year: 1973
+  title: Asymptotic freedom
+  people: David Gross, Frank Wilczek, David Politzer
+  chapter: qcd
+  text: Gross and Wilczek, and Politzer, show that the coupling of a non-abelian gauge theory falls with energy. It makes QCD the theory of the strong interaction. They share the 2004 Nobel Prize.
+- year: 1974
+  title: Wilson's lattice
+  people: Kenneth Wilson
+  chapter: qcd
+  text: Wilson formulates gauge theory on a lattice and shows that at strong coupling the energy between a quark and an antiquark grows linearly with their separation, which is confinement.
+- year: 1979
+  title: Three-jet events at PETRA
+  people: TASSO, MARK-J, PLUTO and JADE collaborations
+  chapter: qcd
+  text: Experiments at DESY's PETRA collider observe planar three-jet events in e⁺e⁻ annihilation, the first evidence of the gluon, radiated by a quark.

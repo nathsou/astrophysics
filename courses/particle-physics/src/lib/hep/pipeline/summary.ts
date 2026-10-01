@@ -56,6 +56,13 @@ export interface ObservableSummary {
   total: Series;
   /** Each sample's scaled contribution (backgrounds first, then signals). */
   bySample: Series[];
+  /**
+   * What to draw as a stack, bottom first. Normally `bySample`. With pseudo-data the background samples, which carry large weights (one simulated event
+   * stands for thousands of expected ones), are replaced by one background series that is a *smooth fit* of their sum, as analyses use an analytic background
+   * shape: the Poisson pseudo-data then fluctuate around a smooth curve instead of around the simulation's own lumps. `smoothed` says which.
+   */
+  stack: Series[];
+  smoothed: boolean;
   /** Poisson-fluctuated pseudo-data from the expectation (main observable only, if configured). */
   pseudo?: Series;
   /** The main observable at truth level (before detector and trigger), scaled like the total. */
@@ -201,12 +208,13 @@ export function summarise(result: BatchResult, config: PipelineConfig, xsec: rea
     });
     const mean = sum > 0 ? sumx / sum : NaN;
     const std = sum > 0 ? Math.sqrt(Math.max(0, sumx2 / sum - mean * mean)) : NaN;
-    const o: ObservableSummary = { name, label: def.label, unit: def.unit, edges, total, bySample, mean, std };
+    let o: ObservableSummary = { name, label: def.label, unit: def.unit, edges, total, bySample, stack: bySample, smoothed: false, mean, std };
+    if (oi === 0 && a.pseudoData && a.fit) o = smoothBackgrounds(o, specs.map((sp) => sp.role), order, a.fit.model, a.fit.range);
     if (oi === 0) {
       if (def.truth) o.truth = seriesFrom(result.samples.map((s) => s.truthHist), weights, edges, 'truth level', 'truth');
       if (a.pseudoData) {
         const u = pseudoUniforms(opts.seed ?? 1, edges.length - 1);
-        const counts = total.counts.map((mu, i) => poissonAt(u[i]!, mu));
+        const counts = o.total.counts.map((mu, i) => poissonAt(u[i]!, mu));
         o.pseudo = { label: 'pseudo-data', role: 'data', counts, errors: counts.map(Math.sqrt) };
       }
     }
@@ -226,11 +234,18 @@ export function summarise(result: BatchResult, config: PipelineConfig, xsec: rea
 
   // ── signal window ──
   let window: Summary['window'];
-  if (a.window) {
+  if (a.window && main) {
+    // from the histogram, so that moving the window needs no new run: the bins whose centres lie inside it
     let s = 0, b = 0;
-    samples.forEach((info) => {
-      if (info.role === 'signal') s += info.expectedInWindow;
-      else b += info.expectedInWindow;
+    result.samples.forEach((acc, k) => {
+      const h = acc.hist[0]!;
+      let c = 0;
+      for (let i = 0; i < h.counts.length; i++) {
+        const ctr = 0.5 * (main.edges[i]! + main.edges[i + 1]!);
+        if (ctr >= a.window![0] && ctr <= a.window![1]) c += h.counts[i]!;
+      }
+      if (specs[k]!.role === 'signal') s += c * weights[k]!;
+      else b += c * weights[k]!;
     });
     window = { lo: a.window[0], hi: a.window[1], signal: s, background: b, significance: s > 0 && b > 0 ? significance(s, b) : null };
   }
@@ -281,13 +296,58 @@ export function summarise(result: BatchResult, config: PipelineConfig, xsec: rea
   };
 }
 
+/** The mean weight of a weighted histogram, Σ w² / Σ w (1 for unit weights): dividing by it puts the contents in units of simulated events. */
+function unitWeight(counts: readonly number[], variance: readonly number[]): number {
+  const sw = counts.reduce((a, b) => a + b, 0), sw2 = variance.reduce((a, b) => a + b, 0);
+  return sw > 0 && sw2 > 0 ? sw2 / sw : 1;
+}
+
+/** Replace the background samples of `o` by one smooth background (an analytic fit to their sum) and rebuild the stack and the total from it and the signal samples. */
+function smoothBackgrounds(o: ObservableSummary, roles: ('signal' | 'background')[], order: number[], model: string, range: [number, number] | null): ObservableSummary {
+  const bkg = order.map((k, i) => ({ k, s: o.bySample[i]! })).filter((x) => roles[x.k] === 'background');
+  const sig = order.map((k, i) => ({ k, s: o.bySample[i]! })).filter((x) => roles[x.k] === 'signal');
+  if (bkg.length === 0) return o;
+  const n = o.edges.length - 1;
+  const counts = new Array<number>(n).fill(0), v = new Array<number>(n).fill(0);
+  for (const { s } of bkg) for (let i = 0; i < n; i++) { counts[i]! += s.counts[i]!; v[i]! += s.errors[i]! ** 2; }
+  const shape = model.includes('+') ? model.split('+')[1]!.trim() : model;
+  let smooth: number[] | null = null;
+  try {
+    // fit in units of "one simulated event" (mean weight 1): the minimiser is badly conditioned with yields of 10⁵ and a slope of 10⁻²
+    const k = unitWeight(counts, v);
+    const h = new Hist1D(o.edges);
+    for (let i = 0; i < n; i++) { h.counts[i] = counts[i]! / k; h.sumw2[i] = v[i]! / (k * k); }
+    // too few simulated background events to fit a shape: use the simulation as it is
+    const effN = h.counts.reduce((a, b) => a + b, 0) ** 2 / Math.max(1e-300, h.sumw2.reduce((a, b) => a + b, 0));
+    if (effN >= 30) {
+      const bm = namedModel(shape);
+      const r = fitBinned(h, bm, guessStart(h, bm), range ? { range } : {});
+      if (r.converged && r.ndf > 0) {
+        const lo = range ? range[0] : h.lower, hi = range ? range[1] : h.upper;
+        const e = bm.binned(r.params, Array.from(h.edges), [lo, hi]);
+        smooth = counts.map((c, i) => (h.binCenter(i) >= lo && h.binCenter(i) <= hi ? e[i]! * k : c));
+      }
+    }
+  } catch {
+    smooth = null;
+  }
+  if (!smooth) return o;
+  const background: Series = { label: bkg.length === 1 ? bkg[0]!.s.label : 'background', role: 'background', counts: smooth, errors: v.map(Math.sqrt) };
+  const stack = [background, ...sig.map((x) => x.s)];
+  const tot = new Array<number>(n).fill(0), tv = new Array<number>(n).fill(0);
+  for (const s of stack) for (let i = 0; i < n; i++) { tot[i]! += s.counts[i]!; tv[i]! += s.errors[i]! ** 2; }
+  return { ...o, stack, smoothed: true, total: { ...o.total, counts: tot, errors: tv.map(Math.sqrt) } };
+}
+
 /** Fit the main observable's pseudo-data (or its expectation) with a named model. */
 export function fitMain(main: ObservableSummary, modelName: string, range: [number, number] | null, usePseudo: boolean): FitSummary {
   const series = usePseudo && main.pseudo ? main.pseudo : main.total;
   const h = new Hist1D(main.edges);
+  // an expectation made of weighted events is fitted in units of one simulated event (see `smoothBackgrounds`); pseudo-data are counts already
+  const k = usePseudo && main.pseudo ? 1 : unitWeight(series.counts, series.errors.map((e) => e * e));
   for (let i = 0; i < series.counts.length; i++) {
-    h.counts[i] = series.counts[i]!;
-    h.sumw2[i] = usePseudo ? series.counts[i]! : series.errors[i]! ** 2;
+    h.counts[i] = series.counts[i]! / k;
+    h.sumw2[i] = usePseudo && main.pseudo ? series.counts[i]! : series.errors[i]! ** 2 / (k * k);
   }
   const model = namedModel(modelName);
   const p0 = guessStart(h, model);
@@ -296,13 +356,14 @@ export function fitMain(main: ObservableSummary, modelName: string, range: [numb
   // expected counts per bin of the full histogram, per component
   const comps: Record<string, number[]> = {};
   const cb = model.componentBinned(r.params, Array.from(h.edges), [lo, hi]);
-  model.components.forEach((c, i) => (comps[c.label] = cb[i]!));
+  model.components.forEach((c, i) => (comps[c.label] = cb[i]!.map((x) => x * k)));
   const params: FitSummary['params'] = {};
-  r.names.forEach((nm, i) => (params[nm] = { value: r.params[i]!, error: r.errors[i]! }));
+  // yields are in simulated events when k ≠ 1: report them in the units of the histogram
+  r.names.forEach((nm, i) => (params[nm] = { value: nm.endsWith('.yield') ? r.params[i]! * k : r.params[i]!, error: nm.endsWith('.yield') ? r.errors[i]! * k : r.errors[i]! }));
   const y = params['sig.yield'];
   return {
     model: modelName, range: [lo, hi], params, chi2: r.chi2, ndf: r.ndf, pValue: r.pValue, converged: r.converged,
-    expected: model.binned(r.params, Array.from(h.edges), [lo, hi]), components: comps,
+    expected: model.binned(r.params, Array.from(h.edges), [lo, hi]).map((x) => x * k), components: comps,
     of: usePseudo && main.pseudo ? 'pseudo-data' : 'expectation',
     signalYield: y,
     yieldSignificance: y && y.error > 0 ? y.value / y.error : undefined,
@@ -384,7 +445,7 @@ export function rateReportFrom(result: BatchResult, config: PipelineConfig, xsec
       const it = itemRates[i]!;
       it.l1Rate += R * l1e.eff; it.hltRate += R * he.eff;
       it.l1Error = Math.hypot(it.l1Error, R * l1e.err); it.hltError = Math.hypot(it.hltError, R * he.err);
-      const ps1 = Math.max(1, items[i]!.prescale), ps = ps1 * Math.max(1, items[i]!.hltPrescale ?? 1);
+      const ps1 = Math.max(1, items[i]!.prescale), ps = ps1;
       it.l1RateRaw += R * l1e.eff * ps1; it.hltRateRaw += R * he.eff * ps;
       it.hltUniqueRaw += T.unique[i]! * perEvent;
       for (let j = 0; j < nI; j++) overlap[i]![j]! += T.overlap[i]![j]! * perEvent;

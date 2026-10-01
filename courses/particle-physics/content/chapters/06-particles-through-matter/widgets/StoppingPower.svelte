@@ -21,7 +21,7 @@
   const lines = $derived(
     SPECIES.filter((s) => s.id !== 'e').map((s) => ({
       x: pGrid,
-      y: pGrid.map((p) => stoppingPower(M, s.mass, p / s.mass, density)),
+      y: pGrid.map((p) => (p / s.mass >= 0.1 ? stoppingPower(M, s.mass, p / s.mass, density) : NaN)),
       label: s.label,
       dash: { mu: '', pi: '6 3', K: '2 3', p: '8 3 2 3' }[s.id as 'mu' | 'pi' | 'K' | 'p'],
     })),

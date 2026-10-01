@@ -16,7 +16,7 @@ decupletSpacing().omegaFromLastSpacing;                     // 1.6799 GeV
 - `productWeights`, `decompose`, `decomposeProduct`: products by adding weights, decomposition by repeatedly removing the representation
   of the highest weight. `hasColourSinglet`, `flavourMultiplets`.
 - `baryonMultiplet('octet' | 'decuplet')`: the diagram with the table's baryons placed on it. The table has Δ and Ω⁻ but not the Σ*(1385)
-  and Ξ*(1530): `DECUPLET_MASSES` supplies their masses (PDG isospin averages, rounded; typed from memory of the PDG listing, to be checked).
+  and Ξ*(1530): `DECUPLET_MASSES` supplies their masses (the neutral members, rounded; typed from memory of the PDG listing, to be checked).
 - `decupletSpacing`, `gellMannOkuboBaryons`, `gellMannOkuboMesons`, `omegaStrongDecayThreshold`, `unitarityLimit`, `gellMannNishijima`.
 - Quark model (`quark.ts`): `parseContent`, `contentNumbers`, `hadronsWithContent`, colour neutrality, magnetic moments of the octet.
 

@@ -18,10 +18,10 @@ A particle of charge *q* falling through a potential difference *V* gains an ene
 
 In 1932 John Cockcroft and Ernest Walton, at the Cavendish Laboratory in Cambridge, used a generator that multiplied a transformer's alternating voltage with a cascade of rectifiers and capacitors to accelerate protons in an evacuated tube towards a target of lithium.:cite[cockcroft1932] Another family of machines, the Van de Graaff generators, carries charge on a moving belt to a hollow metal terminal and lets it accumulate. Both give a steady (direct-current) voltage, so both are **electrostatic accelerators**, and both share one limit: at some voltage the insulation fails. Dry air at atmospheric pressure breaks down in a field of about 3 MV per metre. Better insulating gases and careful shaping of the electrodes gain a factor of a few, not a factor of a thousand. An electrostatic machine reaches some megavolts, and no more.
 
-:::history{year=1932 title="Cockcroft and Walton split the lithium nucleus" people="John Cockcroft, Ernest Walton" source="Sources: Cockcroft and Walton (1932); the Nobel Prize in Physics 1951."}
+:::history{year=1932 title="Cockcroft and Walton split the lithium nucleus" people="John Cockcroft, Ernest Walton" source="Sources: Cockcroft and Walton (1932); the Nobel Foundation (1951)."}
 Nuclei had been broken before, by the alpha particles of natural radioactivity. The question of the early 1930s was whether a machine could do the same with particles it accelerated itself, and with how much energy. Gamow's theory of tunnelling (1928) suggested that protons of a few hundred keV might be enough to enter a light nucleus, far less than the millions of volts the alpha particles had suggested.
 
-Cockcroft and Walton built a voltage multiplier that gave protons of up to about 700 keV, aimed them at lithium, and saw alpha particles emerging: a proton had entered a ⁷Li nucleus, and the nucleus had split into two helium nuclei. They reported it in 1932, and the observation is dated to 14 April.:cite[cockcroft1932] It was the first nuclear reaction produced with an artificially accelerated beam, and they shared the 1951 Nobel Prize in Physics for it. The lesson was that protons of a few hundred keV could do nuclear physics; what followed was a race to ever higher energies, for ever higher goals.
+Cockcroft and Walton built a voltage multiplier that gave protons of up to about 700 keV, aimed them at lithium, and saw alpha particles emerging: a proton had entered a ⁷Li nucleus, and the nucleus had split into two helium nuclei. They reported it in 1932, and the observation is dated to 14 April.:cite[cockcroft1932,nobel1951] It was the first nuclear reaction produced with an artificially accelerated beam, and they shared the 1951 Nobel Prize in Physics for it. The lesson was that protons of a few hundred keV could do nuclear physics; what followed was a race to ever higher energies, for ever higher goals.
 :::
 
 ```fermi
@@ -44,7 +44,7 @@ The way round the insulation limit was found by the Norwegian engineer Rolf Wide
 :::history{year=1928 title="A voltage used twice" people="Rolf Widerøe" source="Sources: Widerøe (1928); Bryant (1994); Lawrence and Livingston (1932)."}
 Rolf Widerøe described the principle in 1928 and demonstrated it: a radio-frequency source delivering about 25 kV at about 1 MHz gave potassium ions an energy of about 50 keV, twice the applied voltage, because the ions crossed two gaps.:cite[wideroe1928,bryant1994] It was the first time a particle had been given more energy than the largest voltage in the apparatus, and it showed that the limit of the electrostatic machines was not a limit of nature.
 
-The paper was in German, in an electrical-engineering journal. Ernest Lawrence, a young physicist at the University of California, is usually said to have been led by it, around 1929, to the idea of replacing the row of tubes by a single gap traversed again and again, with the particles made to go in circles. That idea became the cyclotron.:cite[bryant1994,lawrence1932]
+The paper was in German, in an electrical-engineering journal. Ernest Lawrence, a young physicist at the University of California, is usually said to have been led by it, around 1929, to the idea of replacing the row of tubes by a single gap traversed again and again, with the particles made to go in circles. That idea became the cyclotron.:cite[bryant1994]
 :::
 
 The part that needs calculating is the length of the tubes. The voltage changes sign every half period, so the particle must take exactly half a period to cross each tube. At an RF frequency *f* the half period is 1/(2*f*), and a particle moving at a speed β*c* covers β*c*/(2*f*) in that time.
@@ -85,7 +85,7 @@ For a proton of 10 MeV in a 200 MHz linac, β = 0.145 and the tube is 10.9 cm lo
 
 ::drift-tubes{n="19.1" caption="A row of drift tubes, each βλ/2 long. Raise the frequency and the tubes shorten. The first tubes are much shorter than the later ones, because the speed grows fast at low energy, and the lengths approach λ/2 when β nears 1. The last two numbers show the cost: hundreds of gaps, and more than a hundred metres, to reach the 160 MeV of CERN's Linac4 at these settings. Real linacs have a much higher field in each gap, several structure types, and focusing magnets inside the tubes; this figure keeps only the timing."}
 
-The timing condition has a consequence. The particle gets the full push only if it crosses the gap at the crest of the field, and one that arrives a little earlier or later gets a different push. A linac therefore does not accelerate a continuous stream. It accelerates **bunches**: groups of particles short enough, compared with the RF period, to see nearly the same field. Particles arriving at the wrong phase are not accelerated, and the machine delivers a beam chopped into bunches, one per RF period.
+The timing condition has a consequence. The particle gets the full push only if it crosses the gap at the crest of the field, and one that arrives a little earlier or later gets a different push. A linac therefore does not accelerate a continuous stream. It accelerates :term[bunches]{id=bunch}: groups of particles short enough, compared with the RF period, to see nearly the same field. Particles arriving at the wrong phase are not accelerated, and the machine delivers a beam chopped into bunches, one per RF period.
 
 **Linac4** at CERN is a linear accelerator of this kind. It accelerates negative hydrogen ions (a proton with two electrons) to 160 MeV in several types of structure, one after another as the speed grows, at RF frequencies of 352 and 704 MHz.:cite[linac4] It began to feed CERN's accelerators in 2020, replacing the older Linac2, which reached 50 MeV.:cite[ls2-booster] Negative ions are used for a reason we meet in the last section. A linac reaches a high energy only by being long: its energy is its length times its accelerating gradient, and protons of several TeV would need a line of hundreds of kilometres. To reach them, the structure must be folded into a circle.
 
@@ -101,7 +101,7 @@ fc:
   label: 'f_c, the cyclotron frequency'
   what: The number of times per second the particle goes round its circle, in hertz.
   why: It is the frequency at which the gap's voltage must alternate to push the particle on every passage.
-  effect: For a proton it is 15.25 MHz in 1 T, and 22.9 MHz in 1.5 T: radio frequencies, hence RF.
+  effect: 'For a proton it is 15.25 MHz in 1 T, and 22.9 MHz in 1.5 T: radio frequencies, hence RF.'
 q:
   label: 'q, the charge'
   what: The particle's electric charge, in coulombs (1.602 × 10⁻¹⁹ C for a proton).
@@ -125,7 +125,7 @@ m:
 ```
 :::
 
-The frequency depends on *q*, *B* and *m* and on nothing else: a particle at a small radius and one at a large radius go round in the same time. A **cyclotron** exploits this. Two hollow half-discs ("dees") sit in a vacuum between the poles of a magnet, with a gap between them, and an alternating voltage at the cyclotron frequency is applied. A proton injected at the centre crosses the gap and is pushed, moves on a larger semicircle inside a dee (shielded from the electric field), returns to the gap half a period later when the voltage has reversed, and is pushed again. It spirals outwards, gaining energy at each of two crossings per turn. The whole machine is one magnet and one fixed-frequency oscillator, and its energy is limited by the radius of the magnet rather than by a voltage.
+The frequency depends on *q*, *B* and *m* and on nothing else: a particle at a small radius and one at a large radius go round in the same time. A :term[cyclotron]{id=cyclotron} exploits this. Two hollow half-discs ("dees") sit in a vacuum between the poles of a magnet, with a gap between them, and an alternating voltage at the cyclotron frequency is applied. A proton injected at the centre crosses the gap and is pushed, moves on a larger semicircle inside a dee (shielded from the electric field), returns to the gap half a period later when the voltage has reversed, and is pushed again. It spirals outwards, gaining energy at each of two crossings per turn. The whole machine is one magnet and one fixed-frequency oscillator, and its energy is limited by the radius of the magnet rather than by a voltage.
 
 :::history{year=1931 title="A magnet in place of a long line of tubes" people="Ernest Lawrence, M. Stanley Livingston" source="Sources: Lawrence and Livingston (1932); the Nobel Prize in Physics 1939."}
 Lawrence, working at Berkeley with his student M. Stanley Livingston, built the first small working cyclotron in 1931. In a paper sent to *Physical Review* in February 1932 they reported protons of more than a million electron-volts from a machine 28 cm (11 inches) across, using an alternating voltage of only about 4,000 V: the protons went round more than 300 times.:cite[lawrence1932] That was an energy no insulator of the time could have held as a voltage, reached from a few kilovolts. Lawrence received the 1939 Nobel Prize in Physics.
@@ -135,7 +135,7 @@ The cyclotron made accelerator physics an industry. Lawrence's laboratory built 
 
 ### The relativistic limit
 
-The formula above has a γ in it, and γ is not constant. When the proton's kinetic energy reaches 94 MeV, which is 10% of its rest energy, γ = 1.1 and the revolution frequency is 9% lower than at the start. The oscillating voltage was tuned to the slow proton; the fast proton reaches the gap a little later in each cycle than on the turn before, and is pushed a little less. After some tens or hundreds of turns it arrives when the field has gone through zero, is pushed backwards, and loses energy. A fixed-frequency cyclotron has a limit that depends on the energy gained per turn and not on the size of the magnet.
+The formula above has a γ in it, and γ is not constant. When the proton's kinetic energy reaches 94 MeV, which is 10% of its rest energy, γ = 1.1 and the revolution frequency is 9% lower than at the start. The oscillating voltage was tuned to the slow proton; the fast proton reaches the gap a little later in each cycle than on the turn before, and is pushed a little less. The limit comes well before 94 MeV, because what matters is the slip that accumulates. At γ = 1.01 the revolution takes 1% longer, which is 3.6° of RF phase per turn, and in 25 turns the proton has slid a quarter of a period, to where the field has gone through zero. It is then pushed backwards, and loses energy. A fixed-frequency cyclotron has a limit that depends on the energy gained per turn and not on the size of the magnet.
 
 ```predict
 q: 'A cyclotron has a fixed RF frequency. Its designer wants protons of higher energy, so she doubles the voltage across the gap, keeping everything else the same. The protons now reach (roughly) what maximum energy, compared with before?'
@@ -163,13 +163,13 @@ The synchrocyclotron's cure contains the idea that matters for the rest of the c
 
 ## The synchrotron
 
-A magnet as large as the orbit is expensive, and at 6.8 TeV a cyclotron magnet would be a disc 2.8 km in radius, even at 8 T. The alternative is to keep the orbit at a fixed radius ρ and to raise the magnetic field as the proton's momentum rises, so that *B*(*t*) = *p*(*t*)/(0.3 ρ) is always the field that holds the radius. The magnets are then needed only along a thin ring, and the beam travels in a narrow vacuum pipe. This is the **synchrotron**. The magnet field must be ramped in step with the momentum, and so must the RF frequency, which is always a whole number *h* (the **harmonic number**) times the revolution frequency:
+A magnet as large as the orbit is expensive, and at 6.8 TeV a cyclotron magnet would be a disc 2.8 km in radius, even at 8 T. The alternative is to keep the orbit at a fixed radius ρ and to raise the magnetic field as the proton's momentum rises, so that *B*(*t*) = *p*(*t*)/(0.3 ρ) is always the field that holds the radius. The magnets are then needed only along a thin ring, and the beam travels in a narrow vacuum pipe. This is the :term[synchrotron]{id=synchrotron}. The magnet field must be ramped in step with the momentum, and so must the RF frequency, which is always a whole number *h* (the **harmonic number**) times the revolution frequency:
 
 $$f_\text{RF} = h\, f_\text{rev}, \qquad f_\text{rev} = \frac{\beta c}{C}.$$
 
 For the LHC, *C* = 26,658.883 m, so a proton at practically the speed of light goes round 11,245.5 times a second, and with *h* = 35,640 the RF frequency is 400.79 MHz.:cite[lhc-design] Because the protons are already extremely relativistic at 450 GeV (1 − β = 2.2 × 10⁻⁶), the revolution frequency changes by only about two parts in a million during the whole ramp to 6.8 TeV, and the RF frequency by about 870 Hz out of 400 MHz. A synchrocyclotron must change its frequency by tens of percent. An electron synchrotron hardly changes its RF frequency at all, because electrons are relativistic almost from the start.
 
-There is a consequence for the beam's structure. The RF wave has *h* crests around the ring, and each is a place where a bunch can sit and be accelerated. These *h* places are the **RF buckets**. In the LHC, *h* = 35,640, and ten buckets fit in each 25 ns interval, the LHC's bunch spacing. Only one in ten is ever filled, which is why the beam is made of bunches 25 ns apart, not 2.5 ns apart. Of the 3,564 slots of 25 ns around the ring, 2,808 are filled in the design beam; the others are gaps, for the injection kickers to rise and for the beam-dump magnets to fire (Chapter 21).
+There is a consequence for the beam's structure. The RF wave has *h* crests around the ring, and each is a place where a bunch can sit and be accelerated. These *h* places are the :term[RF buckets]{id=rf-bucket}. In the LHC, *h* = 35,640, and ten buckets fit in each 25 ns interval, the LHC's bunch spacing. Only one in ten is ever filled, which is why the beam is made of bunches 25 ns apart, not 2.5 ns apart. Of the 3,564 slots of 25 ns around the ring, 2,808 are filled in the design beam; the others are gaps, for the injection kickers to rise and for the beam-dump magnets to fire (Chapter 21).
 
 ```numeric
 id: lhc-rf-frequency
@@ -195,18 +195,18 @@ $$\frac{\Delta \term{T}{T}}{T} = \term{eta}{\eta}\,\frac{\Delta \term{p}{p}}{p},
 ```terms
 T:
   label: 'T, the revolution time'
-  what: The time to go once round the ring, in seconds: T = C/(βc).
+  what: 'The time to go once round the ring, in seconds: T = C/(βc).'
   why: It decides when the particle arrives at the cavity on its next turn.
   effect: For the LHC, T = 88.9 µs, hardly different between 450 GeV and 6.8 TeV.
 eta:
   label: 'η, the slip factor'
   what: The fractional change in revolution time per fractional change in momentum. Positive above transition, negative below.
   why: It says whether a proton with extra energy arrives late (η > 0) or early (η < 0) on its next turn.
-  effect: At the LHC's injection η = +3.2 × 10⁻⁴: a proton with 0.1% more momentum takes 28 ps longer per turn.
+  effect: 'At the LHC''s injection η = +3.2 × 10⁻⁴: a proton with 0.1% more momentum takes 28 ps longer per turn.'
 p:
   label: 'p, the momentum'
   what: The particle's momentum; Δp/p is its fractional deviation from the synchronous particle's.
-  why: It is what the magnets act on: a proton of different momentum follows a different orbit.
+  why: 'It is what the magnets act on: a proton of different momentum follows a different orbit.'
   effect: The bunch drawn in the RF-bucket figure has a spread Δp/p of 3 × 10⁻⁴.
 alpha:
   label: 'α_c, the momentum compaction factor'
@@ -216,7 +216,7 @@ alpha:
 ```
 :::
 
-Both terms of η are fixed by the machine and the energy. At low energy 1/γ² is large and wins: η < 0, and a proton with more energy goes round *faster* and arrives early. At high energy 1/γ² is small and α<sub>c</sub> wins: η > 0, and a proton with more energy goes round *slower*, because its path is longer. The energy at which the two cancel is the **transition energy**, at γ<sub>t</sub> = 1/√α<sub>c</sub>. For the LHC, γ<sub>t</sub> = 55.7, which is 52 GeV; the machine works from 450 GeV to 6.8 TeV, above transition all the time, and never has to cross it. The PS at CERN does cross it while accelerating from 2 GeV to 26 GeV, and needs a special procedure at that moment, since the stable phase changes sides.
+Both terms of η are fixed by the machine and the energy. At low energy 1/γ² is large and wins: η < 0, and a proton with more energy goes round *faster* and arrives early. At high energy 1/γ² is small and α<sub>c</sub> wins: η > 0, and a proton with more energy goes round *slower*, because its path is longer. The energy at which the two cancel is the :term[transition energy]{id=transition-energy}, at γ<sub>t</sub> = 1/√α<sub>c</sub>. For the LHC, γ<sub>t</sub> = 55.7, which is 52 GeV; the machine works from 450 GeV to 6.8 TeV, above transition all the time, and never has to cross it. The PS at CERN does cross it while accelerating from 2 GeV to 26 GeV, and needs a special procedure at that moment, since the stable phase changes sides.
 
 Now the RF. A particle that crosses the cavity at phase φ, measured from the zero of the voltage, gains an energy *eV* sin φ, where *V* is the peak voltage. Suppose the synchronous particle arrives at φ<sub>s</sub>. Above transition, a particle arriving *late* has too much energy, since more energy means a slower lap and a later arrival. To restore it, the cavity must give it *less* energy than the synchronous particle got, and that happens on the side of the wave where the voltage is falling. A particle arriving *early* has too little energy, and on the falling side it gets more than the synchronous particle. Below transition the signs reverse and the synchronous phase must be on the rising side. **The synchronous particle must sit on the side of the wave where late particles get less.**
 
@@ -228,7 +228,7 @@ options:
   - text: Give it less energy than the synchronous proton.
     correct: true
     why: 'Above transition, more energy means a longer lap, so a late proton is one with too much energy, and it must lose some. The sign of the slip factor is the whole point.'
-  - text: Nothing: a late proton will arrive on time by itself.
+  - text: 'Nothing: a late proton will arrive on time by itself.'
     why: 'Without the cavity’s restoring push, a proton of the wrong energy keeps the wrong revolution time for ever, and its lateness grows by the same amount on every turn.'
 ```
 
@@ -245,7 +245,7 @@ E:
   effect: At the LHC's injection the edge of the bucket is at 0.45 GeV, and the bunch in the figure has offsets of about 0.1 GeV.
 eV:
   label: 'eV, the energy scale of the RF'
-  what: The proton's charge times the peak cavity voltage: the most energy it can gain in one turn.
+  what: 'The proton''s charge times the peak cavity voltage: the most energy it can gain in one turn.'
   why: It multiplies the sine, and so sets how strongly the cavity pulls a proton back.
   effect: 8 MV at the LHC's injection, 16 MV at top energy in the design.
 phis:
@@ -260,12 +260,12 @@ dphi:
   effect: One RF period at the LHC is 2.5 ns, so a bunch of length 30° (σ) is about 0.2 ns long.
 h:
   label: 'h, the harmonic number'
-  what: The RF frequency divided by the revolution frequency: the number of buckets around the ring.
+  what: 'The RF frequency divided by the revolution frequency: the number of buckets around the ring.'
   why: A proton late by a time δt is late by 2πhδt/T in RF phase, so h converts time into phase.
   effect: 35,640 for the LHC.
 b2E:
   label: 'β²E, the synchronous energy times β²'
-  what: The factor that converts the energy offset into a fractional momentum offset: Δp/p = ΔE/(β²E).
+  what: 'The factor that converts the energy offset into a fractional momentum offset: Δp/p = ΔE/(β²E).'
   why: The slip factor is defined for Δp/p, not for ΔE.
   effect: At the LHC it is almost exactly 450 GeV at injection and 6.8 TeV at the top.
 ```
@@ -285,7 +285,7 @@ Qs:
 ```
 :::
 
-The square root contains −η cos φ<sub>s</sub>, which must be positive for the motion to be an oscillation: η cos φ<sub>s</sub> must be negative. **That is phase stability**: above transition (η > 0) the synchronous phase must be where the cosine is negative, on the falling side of the wave; below transition, on the rising side. For large amplitudes the curvature of the sine matters and the motion is that of a pendulum. There is a boundary beyond which oscillation turns into rotation, the **separatrix**, and everything inside it is the **RF bucket**. A proton inside circulates round the synchronous point for ever, in this idealisation. A proton outside it slips away, turn by turn, and is lost from the accelerating process.
+The square root contains −η cos φ<sub>s</sub>, which must be positive for the motion to be an oscillation: η cos φ<sub>s</sub> must be negative. :term[That is phase stability]{id=phase-stability}: above transition (η > 0) the synchronous phase must be where the cosine is negative, on the falling side of the wave; below transition, on the rising side. For large amplitudes the curvature of the sine matters and the motion is that of a pendulum. There is a boundary beyond which oscillation turns into rotation, the **separatrix**, and everything inside it is the **RF bucket**. A proton inside circulates round the synchronous point for ever, in this idealisation. A proton outside it slips away, turn by turn, and is lost from the accelerating process.
 
 :::history{year=1945 title="The principle of phase stability" people="Vladimir Veksler, Edwin McMillan" source="Sources: Veksler (1944, 1945); McMillan (1945); Elder and others (1947)."}
 In the Soviet Union, in 1944, Vladimir Veksler published the idea that particles could be kept in step with an RF field by using the dependence of their revolution time on energy. In 1945, independently, Edwin McMillan at Berkeley wrote the same principle into a paper proposing a new machine, which he named the synchrotron.:cite[veksler1944,mcmillan1945] Their result freed accelerators from the limit of the cyclotron in two ways at once: the RF frequency may change during acceleration, which gave the synchrocyclotron and the synchrotron, and the orbit may stay at a fixed radius, which gave the ring. McMillan and Veksler shared the Atoms for Peace Award in 1963.
@@ -311,7 +311,7 @@ export function stepLongitudinal(q: LongParticle, p: RfParams): void {
 }
 ```
 
-The second line uses the energy *after* the kick, `q.dE`, which the first line has just updated. The order matters. It makes the map **symplectic**: it preserves areas in the (Δφ, ΔE) plane, as the real motion does (Liouville's theorem), so it neither creates nor destroys emittance. Written with the old energy in both lines, the obvious way to discretise two coupled equations (explicit Euler), every step would enlarge the area a little and orbits would spiral outwards, at a rate invisible in a hundred turns and fatal in a million. This chapter's tests follow a small oscillation for 10⁵ turns with both orderings: the invariant of the motion stays constant to a few parts in 10³ with the library's order and grows by orders of magnitude with the other. The LHC's protons make about 10⁷ turns in a ramp, and a simulation of them must not add its own heating.
+The second line uses the energy *after* the kick, `q.dE`, which the first line has just updated. The order matters. It makes the map **symplectic**: it preserves areas in the (Δφ, ΔE) plane, as the real motion does (Liouville's theorem), so it neither creates nor destroys emittance. Written with the old energy in both lines, the obvious way to discretise two coupled equations (explicit Euler), every step would enlarge the area a little and orbits would spiral outwards, at a rate invisible in a hundred turns and fatal in a million. This chapter's tests follow a small oscillation for 10⁵ turns with both orderings. With the library's order the invariant of the motion stays within 2% of its starting value, oscillating but not drifting. With the other order it grows by a factor of more than a thousand. The LHC's protons make about 10⁷ turns in a ramp, and a simulation of them must not add its own heating.
 :::
 
 ## Bunches, buckets and trains

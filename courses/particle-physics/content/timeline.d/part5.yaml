@@ -1,0 +1,66 @@
+# Part V: the machine (Chapters 19 to 21)
+- year: 1928
+  title: A voltage used twice
+  people: Rolf Widerøe
+  chapter: accelerating-particles
+  text: Widerøe demonstrates the first radio-frequency accelerator, with drift tubes, and gives ions more energy than the largest voltage in the apparatus.
+- year: 1931
+  title: The cyclotron
+  people: Ernest Lawrence, M. Stanley Livingston
+  chapter: accelerating-particles
+  text: Lawrence's group builds the first working cyclotrons at Berkeley, and by early 1932 reports protons of more than a million electron-volts from a few thousand volts.
+- year: 1932
+  title: The lithium nucleus is split
+  people: John Cockcroft, Ernest Walton
+  chapter: accelerating-particles
+  text: At the Cavendish Laboratory, protons of a few hundred keV from a voltage multiplier split lithium nuclei into two helium nuclei, the first nuclear reaction made with an accelerator.
+- year: 1945
+  title: Phase stability
+  people: Vladimir Veksler, Edwin McMillan
+  chapter: accelerating-particles
+  text: Veksler (1944) and McMillan (1945) find that particles can be held in step with an RF field, which made the synchrocyclotron and the synchrotron possible.
+- year: 1952
+  title: Strong focusing
+  people: Nicholas Christofilos, Ernest Courant, M. Stanley Livingston, Hartland Snyder
+  chapter: steering-and-focusing
+  text: Quadrupoles of alternating sign focus a beam in both planes at once. Christofilos had patented the idea in 1950; the Brookhaven group published it in 1952.
+- year: 1957
+  title: CERN's first accelerator
+  people: CERN
+  chapter: accelerating-particles
+  text: The 600 MeV Synchrocyclotron starts up and gives the new laboratory its first beams.
+- year: 1959
+  title: The Proton Synchrotron
+  people: CERN
+  chapter: steering-and-focusing
+  text: On 24 November the PS accelerates a beam to about 24 GeV, the highest energy in the world at the time. It is now the second stage of the LHC's chain.
+- year: 1961
+  title: AdA
+  people: Bruno Touschek and colleagues
+  chapter: colliding-beams
+  text: The small electron–positron ring AdA stores its first beams at Frascati on 27 February; collisions are observed after it is moved to Orsay.
+- year: 1971
+  title: The Intersecting Storage Rings
+  people: CERN
+  chapter: colliding-beams
+  text: The first proton–proton collisions, in the world's first hadron collider, are announced on 27 January.
+- year: 1972
+  title: Stochastic cooling
+  people: Simon van der Meer
+  chapter: colliding-beams
+  text: Van der Meer's report describes how a feedback on small samples of a beam can reduce its emittance. It made the SppS and the discovery of the W and Z possible.
+- year: 1989
+  title: LEP
+  people: CERN
+  chapter: colliding-beams
+  text: The first beam circulates in the Large Electron–Positron collider on 14 July. It runs until 2 November 2000 and reaches 209 GeV.
+- year: 2008
+  title: The LHC incident
+  people: CERN
+  chapter: colliding-beams
+  text: On 19 September a faulty electrical connection between two magnets leads to a helium leak and mechanical damage in one sector. Repairs take about a year.
+- year: 2010
+  title: First collisions at 7 TeV
+  people: CERN
+  chapter: colliding-beams
+  text: On 30 March the LHC collides beams at 3.5 TeV each, the start of its research programme.

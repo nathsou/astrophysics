@@ -1,0 +1,24 @@
+{
+  "name": "higgs-4l",
+  "title": "CMS Open Data education sample: 278 four-lepton candidates, 2011 (7 TeV) and 2012 (8 TeV)",
+  "file": "higgs-4l.f32",
+  "format": "objects-f32-v1",
+  "events": 278,
+  "rows": 1112,
+  "sha256": "c24c3c6d0e4f6d2dabf3fe8c9c05d8dc34471938d650bc84618ee88edd8c828b",
+  "sqrtS": 8000,
+  "luminosityFb": 13.9,
+  "observables": [
+    "m4l"
+  ],
+  "selection": "As published: the four-lepton candidates that CMS selected, 2011 and 2012 files together (the 2011 events were recorded at 7 TeV, the 2012 ones at 8 TeV; sqrtS here is the 2012 value). No selection applied here. Only the four leptons are stored (no isolation: the source files have none, iso = -1). The luminosity is the sum of the two values (2.3 and 11.6 fb^-1) given in the title of the plot in the notebook that accompanies the files; it was not checked against the portal.",
+  "source": {
+    "title": "CMS Open Data education sample (four-lepton candidates), mirrored in cms-opendata-education/cms-jupyter-materials-english",
+    "record": "https://github.com/cms-opendata-education/cms-jupyter-materials-english (commit fd23734a71b863d944d44f7dbe9c0d0261c5302b)",
+    "experiment": "CMS",
+    "dataset": "4mu, 4e and 2e2mu CSV files, 2011 and 2012"
+  },
+  "licence": "CC BY 4.0 as stated by the mirror repository (CERN Open Data: CC0; not confirmed on the portal). Attribution: CMS Collaboration, CERN Open Data portal; education materials by the CMS open data education team.",
+  "prepared": "2026-10-01",
+  "script": "scripts/data/h4l.py"
+}

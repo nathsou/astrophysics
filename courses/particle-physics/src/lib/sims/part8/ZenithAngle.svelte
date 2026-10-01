@@ -37,7 +37,7 @@
   const centres = edges.slice(0, NB).map((e, i) => 0.5 * (e + edges[i + 1]!));
   // Energy spectrum dN/dE ∝ E⁻² from Elo to 10 Elo: uniform in ln E weighted by 1/E, sampled on a grid.
   const params = $derived(paramsFromSin2(GLOBAL_FIT_APPROX.sin2theta12, GLOBAL_FIT_APPROX.sin2theta13, s23, GLOBAL_FIT_APPROX.deltaCPDeg, GLOBAL_FIT_APPROX.dm21, dm3l));
-  const NE = 64;
+  const NE = 150;
   function survival(c: number, E0: number): number {
     const L = pathLength(c);
     let num = 0, den = 0;
@@ -50,7 +50,7 @@
     }
     return num / den;
   }
-  const fine = linspace(-1, 1, 81);
+  const fine = linspace(-1, 1, 61);
   const curve = $derived(fine.map((c) => (oscillate ? survival(c, Elo) : 1)));
   const expected = $derived(centres.map((c) => perBin * (oscillate ? survival(c, Elo) : 1)));
   const counts = $derived.by(() => {

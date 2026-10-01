@@ -8,7 +8,7 @@ prerequisites: [relativity-for-particles]
 
 Nobody has ever seen a particle. What can be seen is what a charged particle does to the matter it crosses: it knocks electrons off atoms along its path, and if the matter is prepared the right way, each of those disturbed atoms grows into something large enough to photograph. The result is a line, a *track*, and almost everything an experimenter knows about a particle in Part II of this course comes from reading one. The box below is a simulated cloud chamber, a few hundred millimetres across, in which particles arrive at random. Watch for a minute before reading on. Some tracks are short, straight and dense, some long, thin and straight, and some thin and twisted. By the end of the chapter you will be able to say what each one is, from the picture alone.
 
-::cloud-chamber{n="5.1" source="mixed" caption="A simulated diffusion cloud chamber (air and alcohol vapour), seen from the side, with no magnetic field. Droplets form along the path of each charged particle and fade after a couple of seconds. Sources: alpha particles (helium nuclei from radioactive decay), beta particles (electrons from radioactive decay) and cosmic-ray muons. Click a track for its measured length and ionisation. Raise the field and watch the paths bend. The tracks are computed by the course's chamber model (hep/chamber); the droplets are drawn, not simulated one by one."}
+::cloud-chamber{n="5.1" source="mixed" caption="A simulated diffusion cloud chamber (air and alcohol vapour), seen from the side, with no magnetic field. Droplets form along the path of each charged particle and fade after a couple of seconds. The default source is a mixture; the buttons select alpha particles (helium nuclei from radioactive decay), beta particles (electrons from radioactive decay) or cosmic-ray muons alone. Click a track for its measured length and ionisation. Raise the field and watch the paths bend. The tracks are computed by the course's chamber model (hep/chamber); the droplets are drawn, not simulated one by one."}
 
 ## What a particle leaves behind
 
@@ -220,7 +220,8 @@ BB:
 LL:
   label: 'L, the lever arm'
   what: The length of track over which the points are spread, in metres (the radial extent, for a barrel tracker).
-  why: The sagitta grows as L², so the lever arm is the most powerful dial: a tracker twice as large gives a resolution four times better.
+  why: |
+    The sagitta grows as L², so the lever arm is the most powerful dial: a tracker twice as large gives a resolution four times better.
   effect: Doubling L divides σ(pT)/pT by four.
 NN:
   label: 'N, the number of points'

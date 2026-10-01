@@ -1,0 +1,49 @@
+{
+  "file": "h4l-cms-opendata.json",
+  "events": 278,
+  "sha256": "1a1648e62e7e1e10efc3152688a4bfe07e6a59bde06dd58d82a04b6571b7b105",
+  "source": {
+    "title": "CMS Open Data education sample: four-lepton candidates (H -> ZZ* -> 4l), 2011 and 2012",
+    "mirror": "https://github.com/cms-opendata-education/cms-jupyter-materials-english",
+    "mirrorCommit": "fd23734a71b863d944d44f7dbe9c0d0261c5302b",
+    "files": {
+      "4mu_2011.csv": {
+        "sha256": "b49969df770f15d7bd6c18f0109885931d761d48a323eaa3f903e243ab682770",
+        "bytes": 5551,
+        "events": 18
+      },
+      "4e_2011.csv": {
+        "sha256": "53bcf1e51582bf6a49e52167bc5b594b280c623df66258ddc51ec9ea05f6c8c3",
+        "bytes": 2271,
+        "events": 7
+      },
+      "2e2mu_2011.csv": {
+        "sha256": "b218244b0e15fe5209cde85e79b4194a17813e079cf01ea6c6d1fd62ec90348d",
+        "bytes": 4093,
+        "events": 13
+      },
+      "4mu_2012.csv": {
+        "sha256": "0e0fb5a9159e30491b18b6b7888871e394386827f966d502a2e3cc40bf09065d",
+        "bytes": 28664,
+        "events": 95
+      },
+      "4e_2012.csv": {
+        "sha256": "7f5fee3e126a7800dcdd17ed018f46c786ccfeccc9ec82e04c05487be978914e",
+        "bytes": 12445,
+        "events": 41
+      },
+      "2e2mu_2012.csv": {
+        "sha256": "65c0fb187623c2ab7790fa8c8ebaaaf8bd3bd861a95b0ed706e0e6f628eb99bd",
+        "bytes": 31445,
+        "events": 104
+      }
+    },
+    "notebook": "Exercises-with-open-data/Advanced/Hunting-the-Higgs-4leptons.ipynb (the simulated histograms come from it)",
+    "portal": "The mirror says its data files are copies of files on the CERN Open Data portal (record 545, the CMS education derived datasets); the notebook cites the Higgs-to-four-lepton analysis example, record 5500, DOI 10.7483/OPENDATA.CMS.JKB8.RR42. The portal was not reachable when this file was made, so the record numbers were taken from the mirror and not checked on the portal."
+  },
+  "licence": "The mirror repository states: \"This material is made available under a CC-BY licence\" (https://creativecommons.org/licenses/by/4.0/). CERN Open Data releases CMS derived datasets under CC0; that was not confirmed on the portal. Both allow redistribution; attribution is given here and in the chapter.",
+  "selection": "As published: the candidate events in the six CSV files, which CMS selected for the four-lepton analysis. No selection is applied here. The files already contain the events of all masses between about 80 and 740 GeV, not only the 125 GeV region. The invariant masses in the files (M, mZ1, mZ2) are kept and checked against the four-vectors by the chapter.",
+  "luminosity": "\u221as = 7 TeV, L = 2.3 fb\u207b\u00b9; \u221as = 8 TeV, L = 11.6 fb\u207b\u00b9",
+  "prepared": "2026-10-01",
+  "script": "scripts/data/h4l.py"
+}

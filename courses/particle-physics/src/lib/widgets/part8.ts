@@ -26,3 +26,5 @@ export { default as PetRing } from '$lib/sims/part8/PetRing.svelte';
 export { default as ParticleTable } from '$lib/sims/part8/ParticleTable.svelte';
 /** Appendix D: the twelve fermions and the bosons on one logarithmic mass axis: `::sm-chart{n="D.2"}`. */
 export { default as SmChart } from '$lib/sims/part8/SmChart.svelte';
+/** One-loop running of the three gauge couplings, with and without supersymmetry (toy): `::coupling-running{n="32.4"}`. */
+export { default as CouplingRunning } from '$lib/sims/part8/CouplingRunning.svelte';

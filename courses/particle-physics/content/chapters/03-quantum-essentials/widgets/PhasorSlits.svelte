@@ -46,12 +46,12 @@
         <line x1="0" x2="0" y1="-95" y2="95" stroke="var(--line-strong)" />
         <defs><marker id="pa" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8z" fill="context-stroke" /></marker></defs>
         <line x1="0" y1="0" x2={ph.a1[0] * R} y2={-ph.a1[1] * R} stroke="var(--series-1)" stroke-width="2.4" marker-end="url(#pa)" />
-        <line x1={ph.a1[0] * R} y1={-ph.a1[1] * R} x2={sum[0] * R} y2={-sum[1] * R} stroke="var(--series-2)" stroke-width="2.4" marker-end="url(#pa)" />
+        <line x1={ph.a1[0] * R} y1={-ph.a1[1] * R} x2={sum[0] * R} y2={-sum[1] * R} stroke="var(--series-4)" stroke-width="2.4" marker-end="url(#pa)" />
         {#if !whichPath}
           <line x1="0" y1="0" x2={sum[0] * R} y2={-sum[1] * R} stroke="var(--sig-high)" stroke-width="3.2" marker-end="url(#pa)" />
         {/if}
         <text x="-104" y="-86" font-size="10" fill="var(--series-1)">A₁ (path 1)</text>
-        <text x="-104" y="-74" font-size="10" fill="var(--series-2)">A₂ (path 2)</text>
+        <text x="-104" y="-74" font-size="10" fill="var(--series-4)">A₂ (path 2)</text>
         {#if !whichPath}<text x="-104" y="-62" font-size="10" fill="var(--sig-high)">A₁ + A₂</text>{/if}
       </svg>
       <p class="ui small" aria-live="polite">

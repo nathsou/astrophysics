@@ -1,0 +1,176 @@
+/* Shared styles of the Control Room and its compact widget. Classes are prefixed cr- . Colours come from the site's tokens, so both themes work. */
+.cr-fields {
+  display: grid;
+  gap: 0.55rem 0.9rem;
+  grid-template-columns: repeat(auto-fill, minmax(11.5rem, 1fr));
+  align-items: end;
+}
+.cr-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.9rem;
+  align-items: center;
+}
+.cr-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mute);
+  display: block;
+  margin-bottom: 0.2rem;
+}
+.cr-select,
+.cr-input {
+  font: inherit;
+  font-size: 0.84rem;
+  color: var(--fg);
+  background: var(--pn);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+  min-height: 2rem;
+  max-width: 100%;
+}
+.cr-select:focus-visible,
+.cr-input:focus-visible,
+.cr-btn:focus-visible,
+.cr-link:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+.cr-input.num {
+  width: 5.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-align: right;
+}
+.cr-btn {
+  font-family: var(--font-ui);
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: var(--fg);
+  background: var(--panel);
+  border: 1px solid var(--line-strong);
+  border-radius: 7px;
+  padding: 0.3rem 0.9rem;
+  min-height: 2.2rem;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.cr-btn:hover:not(:disabled) {
+  border-color: var(--track);
+  color: var(--track-ink);
+}
+.cr-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.cr-btn.primary {
+  background: var(--track);
+  border-color: var(--track);
+  color: var(--bg);
+}
+.cr-btn.primary:hover:not(:disabled) {
+  color: var(--bg);
+  filter: brightness(1.08);
+}
+.cr-btn.stop {
+  border-color: var(--sig-x);
+  color: var(--sig-x);
+}
+.cr-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  padding: 0.08rem 0.5rem;
+  border-radius: 99px;
+  border: 1px solid var(--line-strong);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.cr-badge.mine {
+  border-color: var(--sig-high);
+  color: var(--sig-high);
+  background: var(--maybe-soft);
+}
+.cr-badge.ok {
+  border-color: var(--ok);
+  color: var(--ok);
+}
+.cr-badge.bad {
+  border-color: var(--bad);
+  color: var(--bad);
+  background: var(--bad-soft);
+}
+.cr-note {
+  font-size: 0.78rem;
+  color: var(--mute);
+  line-height: 1.45;
+  margin: 0.3rem 0 0;
+}
+.cr-warn {
+  font-size: 0.82rem;
+  color: var(--bad);
+  background: var(--bad-soft);
+  border: 1px solid var(--bad);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  margin: 0.4rem 0 0;
+}
+.cr-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+.cr-table th,
+.cr-table td {
+  text-align: right;
+  padding: 0.22rem 0.5rem;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.cr-table th:first-child,
+.cr-table td:first-child {
+  text-align: left;
+  white-space: normal;
+}
+.cr-table thead th {
+  font-weight: 500;
+  color: var(--mute);
+  font-size: 0.72rem;
+}
+.cr-table td.num,
+.cr-mono {
+  font-family: var(--font-mono);
+}
+.cr-scroll {
+  overflow-x: auto;
+  max-width: 100%;
+}
+.cr-link {
+  color: var(--track-ink);
+}
+.cr-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cr-anim {
+    animation: none !important;
+    transition: none !important;
+  }
+}

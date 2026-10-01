@@ -21,7 +21,7 @@ $$\frac{d\sigma}{d\Omega} = \frac{\term{M2}{\overline{|\mathcal M|^2}}}{64\pi^2\
 M2:
   label: '|M|², the squared amplitude'
   what: The squared modulus of the amplitude of Chapter 15, summed over the spin states of the final particles and averaged over those of the initial ones.
-  why: It carries all the dynamics: the couplings, the propagator and the spins. The rest of the formula is kinematics (flux and phase space).
+  why: 'It carries all the dynamics: the couplings, the propagator and the spins. The rest of the formula is kinematics (flux and phase space).'
   effect: For e⁺e⁻ → μ⁺μ⁻ it is e⁴(1 + cos²θ), where e² = 4πα.
 s:
   label: 's, the squared centre-of-mass energy'
@@ -52,8 +52,8 @@ alpha:
 cos:
   label: 'θ, the angle of the μ⁻ to the e⁻ beam'
   what: The polar angle of the outgoing muon, measured from the direction of the incoming electron.
-  why: The 1 + cos²θ is the signature of the spin of the particles: it is what a spin-½ fermion pair produced through a spin-1 photon gives.
-  effect: The distribution is symmetric in cos θ: as many muons go forward as backward. It is lowest at 90° and twice as large along the beam.
+  why: 'The 1 + cos²θ is the signature of the spin of the particles: it is what a spin-½ fermion pair produced through a spin-1 photon gives.'
+  effect: 'The distribution is symmetric in cos θ: as many muons go forward as backward. It is lowest at 90° and twice as large along the beam.'
 ```
 :::
 
@@ -83,7 +83,7 @@ explain: "Rate = L σ = 10³¹ cm⁻² s⁻¹ × 8.68 × 10⁻³⁴ cm² = 8.7 �
 ```predict
 q: 'A muon pair is produced in an e⁺e⁻ annihilation at 10 GeV. Measured from the direction of the incoming electron, in which directions do the muons go?'
 options:
-  - text: Equally in every direction: a virtual photon has no memory of the beams.
+  - text: 'Equally in every direction: a virtual photon has no memory of the beams.'
     why: 'The photon has spin 1 and the fermions are massless, so helicity is conserved at each vertex. That forces the spin of the photon to lie along the beam axis and gives the pair a direction. The distribution is not isotropic.'
   - text: Mostly at 90° to the beams, because the electron and positron annihilate at rest.
     why: 'The pair does not annihilate “at rest”: it collides at high energy. The distribution has its minimum at 90°, not its maximum.'
@@ -157,7 +157,7 @@ N:
 L:
   label: 'L, the integrated luminosity'
   what: The integral of the instantaneous luminosity over the run, in inverse cross-section units (pb⁻¹ = events per pb of cross-section).
-  why: It is the conversion between a count and a cross-section: the expected count is σ L ε.
+  why: 'It is the conversion between a count and a cross-section: the expected count is σ L ε.'
   effect: Luminosity is the machine's contribution (Part V); cross-section is the theory's.
 eps:
   label: 'ε, the efficiency'
@@ -461,11 +461,11 @@ $$R(s) \equiv \frac{\sigma(e^+e^-\to\text{hadrons})}{\sigma(e^+e^-\to\mu^+\mu^-)
 Nc:
   label: 'N_c, the number of colours'
   what: The number of colour states of a quark (Chapter 13). A quark–antiquark pair can be produced in N_c ways, each with the same probability.
-  why: Each colour is a separate final state, and the cross-section adds them: the rate is proportional to the number of ways.
+  why: 'Each colour is a separate final state, and the cross-section adds them: the rate is proportional to the number of ways.'
   effect: With N_c = 3, R is three times larger than it would be without colour.
 Qq:
   label: 'Q_q, the electric charge of quark q'
-  what: In units of the proton's charge: +2/3 for u, c, t and −1/3 for d, s, b.
+  what: 'In units of the proton''s charge: +2/3 for u, c, t and −1/3 for d, s, b.'
   why: The photon couples to charge, so the amplitude is proportional to Q_q and the cross-section to its square.
   effect: The up-type quarks contribute 4/9 each and the down-type 1/9 each.
 ```

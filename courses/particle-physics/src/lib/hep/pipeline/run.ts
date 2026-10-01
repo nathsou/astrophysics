@@ -12,7 +12,8 @@
  * has installed is what runs (`reco.antiKt`, `gen.unweight`, `trigger.l1Decision`, `kinematics.pairMass`, …).
  * Every event has its own random streams, derived from `(seed, index)` alone: a batch does not depend on how it was split.
  */
-import { simulate, customise, presets, type DetectorConfig } from '../detector/index.ts';
+import { simulate, type DetectorConfig } from '../detector/index.ts';
+import { resolveDetector } from './detector.ts';
 import { generate, type Process } from '../gen/index.ts';
 import type { FullEvent, TruthEvent } from '../event/index.ts';
 import type { MachineStageResult } from '../machine/index.ts';
@@ -21,37 +22,14 @@ import { poisson } from '../random/index.ts';
 import { reconstruct } from '../reco/index.ts';
 import { evaluateMenu, l1InputFromDetector, menuFromSettings, EVENT_SIZE_MB, type EventDecision, type TriggerMenu } from '../trigger/index.ts';
 import { eventRng, sampleIndexFor, stageStreams } from './rand.ts';
-import { STAGE_NAMES, configKey, type PipelineConfig, type SampleSpec, type Selection, type StageName, type DetectorSettings } from './config.ts';
+import { STAGE_NAMES, type PipelineConfig, type SampleSpec, type Selection, type StageName } from './config.ts';
 import { OBSERVABLES, binEdges, detectorAcceptance, matchCounts, recoObservables, truthObservable, EFF_KINDS, type EffCounts, type EffKind } from './observables.ts';
 import { processFor, sampleXsec } from './processes.ts';
 import { emptySample, emptyTimes, fillHist, RESOLUTION_EDGES, type BatchResult, type KeptEvent, type SampleAcc } from './accum.ts';
 
 // ── Resolving a configuration ─────────────────────────────────────────────────────────────────
 
-const detectorCache = new Map<string, DetectorConfig>();
-
-/** The detector configuration for some settings: the preset with the knobs applied. The same object comes back for the same settings, so the reconstruction's calibration is done once. */
-export function resolveDetector(d: DetectorSettings): DetectorConfig {
-  const key = configKey(d);
-  let cfg = detectorCache.get(key);
-  if (cfg) return cfg;
-  const base = d.custom ?? presets[d.preset];
-  if (!base) throw new Error(`unknown detector preset "${d.preset}"; available: ${Object.keys(presets).join(', ')}`);
-  cfg = customise(base, {});
-  if (d.bField !== undefined) cfg.bField = d.bField;
-  if (d.trackerResolution !== undefined && d.trackerResolution !== 1) {
-    cfg.trackerLayers = cfg.trackerLayers.map((l) => ({ ...l, sigmaRPhi: l.sigmaRPhi * d.trackerResolution!, sigmaZ: l.sigmaZ * d.trackerResolution! }));
-  }
-  if (d.ecalStochastic !== undefined) cfg.ecal.stochastic = d.ecalStochastic;
-  if (d.hcalStochastic !== undefined) cfg.hcal.stochastic = d.hcalStochastic;
-  if (d.deadFraction !== undefined) cfg.deadFraction = d.deadFraction;
-  if (d.noiseHitsPerLayer !== undefined) cfg.noiseHitsPerLayer = d.noiseHitsPerLayer;
-  if (detectorCache.size > 16) detectorCache.clear();
-  detectorCache.set(key, cfg);
-  return cfg;
-}
-
-export { machineOf };
+export { machineOf, resolveDetector };
 
 export interface Prepared {
   config: PipelineConfig;

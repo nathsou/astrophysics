@@ -16,3 +16,19 @@ export { default as CountingNeutrinos } from '$lib/sims/part6/CountingNeutrinos.
 export { default as WTransverse } from '$lib/sims/part6/WTransverse.svelte';
 /** Chapter 23: a toy of stochastic cooling, sample size and gain: `::stochastic-cooling{n="23.4"}`. */
 export { default as StochasticCooling } from '$lib/sims/part6/StochasticCooling.svelte';
+/** Chapter 24: the CKM matrix from the Wolfenstein parameters: `::ckm-matrix{n="24.1"}`. */
+export { default as CkmMatrix } from '$lib/sims/part6/CkmMatrix.svelte';
+/** Chapter 24 flagship: the unitarity triangle built from side and angle measurements: `::unitarity-triangle{n="24.2"}`. */
+export { default as UnitarityTriangle } from '$lib/sims/part6/UnitarityTriangle.svelte';
+/** Chapter 24: decay lengths of B, D and τ against the vertex resolution: `::displaced-vertex{n="24.3"}`. */
+export { default as DisplacedVertex } from '$lib/sims/part6/DisplacedVertex.svelte';
+/** Chapter 24: survival of K_S and K_L over a beam line (Cronin and Fitch): `::kaon-survival{n="24.4"}`. */
+export { default as KaonSurvival } from '$lib/sims/part6/KaonSurvival.svelte';
+/** Chapter 24: b-tagging on simulated jets; runs the reader's impactParameter and bTag if installed: `::btag-lab{n="24.5"}`. */
+export { default as BTagLab } from '$lib/sims/part6/BTagLab.svelte';
+/** Chapter 25: the top quark's lifetime against the hadronisation time: `::time-scales{n="25.1"}`. */
+export { default as TimeScales } from '$lib/sims/part6/TimeScales.svelte';
+/** Chapter 25 flagship: reconstruct simulated tt̄ → ℓ+jets events; runs the reader's assignTopJets if installed: `::top-reconstruction{n="25.2"}`. */
+export { default as TopReconstruction } from '$lib/sims/part6/TopReconstruction.svelte';
+/** Chapter 25: the ρ parameter and the W mass shift from the top loop: `::rho-parameter{n="25.3"}`. */
+export { default as RhoParameter } from '$lib/sims/part6/RhoParameter.svelte';

@@ -92,6 +92,30 @@ describe('on the shipped CMS dimuon data', () => {
     expect(fit.sigma).toBeGreaterThan(0.8);
     expect(fit.sigma).toBeLessThan(4);
   });
+  test('the numbers quoted in Chapter 3: the fits the figure makes, with its grid', () => {
+    const jp = particle(443), zz = particle(23);
+    const hj = hist(m, 2.8, 3.4, 60);
+    const fj = fitLineshape(hj.edges, hj.counts, jp.width, { mass: [jp.mass * 0.98, jp.mass * 1.005], sigma: [0.004, 0.2], nMass: 25, nSigma: 45 });
+    const hz = hist(m, 70, 112, 42);
+    const fz = fitLineshape(hz.edges, hz.counts, zz.width, { mass: [zz.mass * 0.98, zz.mass * 1.005], sigma: [0.3, 6], nMass: 25, nSigma: 45 });
+    const fwj = fwhm((x) => smeared(x, fj.mass, jp.width, fj.sigma), fj.mass - 0.5, fj.mass + 0.5, 8000);
+    const fwz = fwhm((x) => smeared(x, fz.mass, zz.width, fz.sigma), fz.mass - 20, fz.mass + 20, 8000);
+    console.log('widget fits', { jpsi: { mass: fj.mass, sigma: fj.sigma, fwhm: fwj, ratio: fwj / jp.width, chi2dof: fj.chi2 / fj.dof }, z: { mass: fz.mass, sigma: fz.sigma, fwhm: fwz, chi2dof: fz.chi2 / fz.dof } });
+    expect(fj.sigma).toBeGreaterThan(0.028);
+    expect(fj.sigma).toBeLessThan(0.032);
+    expect(fwj / jp.width).toBeGreaterThan(700);
+    expect(fwj / jp.width).toBeLessThan(840);
+    expect(fj.mass).toBeGreaterThan(3.090);
+    expect(fj.mass).toBeLessThan(3.096);
+    expect(fz.sigma).toBeGreaterThan(1.3);
+    expect(fz.sigma).toBeLessThan(1.5);
+    expect(fwz).toBeGreaterThan(4.6);
+    expect(fwz).toBeLessThan(5.0);
+    expect(fz.mass).toBeGreaterThan(90.5);
+    expect(fz.mass).toBeLessThan(91.0);
+    expect(fj.chi2 / fj.dof).toBeGreaterThan(2);
+    expect(fz.chi2 / fz.dof).toBeGreaterThan(2);
+  });
   test('the sample holds what the chapter says it does', () => {
     const count = (lo: number, hi: number) => Array.from(m).filter((x) => x >= lo && x < hi).length;
     console.log('counts', { all: m.length, jpsi: count(2.9, 3.3), z: count(70, 112) });

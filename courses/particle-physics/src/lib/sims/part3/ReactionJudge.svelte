@@ -21,13 +21,14 @@
   const PRESETS: Preset[] = [
     { text: 'K- + p -> Omega- + K+ + K0', note: 'The reaction that made the first Ω⁻ (Chapter 12). Strangeness −1 before and after: three strange quarks appear, two strange antiquarks keep the books.' },
     { text: 'pi- + p -> K0 + Lambda', note: 'Associated production: the kaon (S = +1) and the Λ (S = −1) are made together.' },
-    { text: 'pi- + p -> K0 + n', note: 'The same pions and protons, but one strange particle alone: strangeness 0 before, +1 after.' },
+    { text: 'pi- + p -> K0 + n', note: 'The same pion and proton, but one strange particle alone: strangeness 0 before, +1 after. The strong force cannot do it. A weak interaction could, so slowly that strange particles are, in practice, made in pairs.' },
     { text: 'Lambda -> p + pi-', note: 'Λ has S = −1, and its decay products have none. Observed, slowly (2.6 × 10⁻¹⁰ s): the weak force changes strangeness.' },
     { text: 'p -> e+ + gamma', note: 'Baryon number and electron-lepton number both fail. No proton decay has ever been seen (Chapter 32).' },
     { text: 'mu- -> e- + gamma', note: 'Charge and baryon number are fine; the lepton flavours are not. Searched for at the level of parts in 10¹³ and never seen.' },
     { text: 'n -> p + e- + anti-nu_e', note: 'Neutron decay, a weak process.' },
     { text: 'pi0 -> gamma + gamma + gamma', note: 'Every law here holds, and the decay is never seen: charge conjugation forbids it, a law that is not in this ledger. Allowed is not observed.' },
     { text: 'p + p -> p + p + p + anti-p', note: 'The antiproton experiment of Chapter 9.' },
+    { text: 'pi- + p -> K0 + K0 + n', note: 'Two units of strangeness from nothing: a single weak vertex changes strangeness by one unit at most, so no force does this.' },
     { text: 'Xi- -> n + pi-', note: 'Strangeness would change by two units at once: a single weak vertex changes it by at most one.' },
   ];
 

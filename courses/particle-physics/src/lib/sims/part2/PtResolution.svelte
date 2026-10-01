@@ -128,7 +128,7 @@
       </p>
     </div>
     <div>
-      <h5 class="ui">σ(pT)/pT against pT</h5>
+      <h5 class="ui">Relative resolution against pT</h5>
       <LinePlot
         lines={[
           { x: grid, y: curves.meas, label: 'position error', dash: '6 3' },

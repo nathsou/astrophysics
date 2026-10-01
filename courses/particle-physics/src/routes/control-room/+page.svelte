@@ -1,7 +1,11 @@
 <script lang="ts">
   import { COURSE_TITLE } from '$content/outline';
+  import ControlRoom from '$lib/control/ControlRoom.svelte';
 </script>
 
-<svelte:head><title>control-room · {COURSE_TITLE}</title></svelte:head>
-<div class="page"><h1>control-room</h1><p>Coming soon.</p></div>
-<style>.page { max-width: 48rem; margin: 3rem auto; padding: 0 1rem; }</style>
+<svelte:head>
+  <title>The Control Room · {COURSE_TITLE}</title>
+  <meta name="description" content="The whole mini-LHC in the browser: machine, generator, detector, reconstruction, trigger and analysis, running your own code." />
+</svelte:head>
+
+<ControlRoom />

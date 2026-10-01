@@ -232,8 +232,9 @@ const BARYONS: BaryonRow[] = [
 // ── Masses: equal spacing and Gell-Mann–Okubo ─────────────────────────────────────────────────────────────────
 
 /**
- * Masses (GeV) of the decuplet by strangeness. Δ and Ω⁻ come from `hep/particles`. The Σ*(1385) and Ξ*(1530) are not in the
- * table; the values are the PDG Review's isospin averages, rounded: Σ(1385) 1.3837 (Σ*⁰), Ξ(1530) 1.5318 (Ξ*⁰) GeV.
+ * Masses (GeV) of the decuplet by strangeness. Δ and Ω⁻ come from `hep/particles`. The Σ*(1385) and Ξ*(1530) are not in the table; the values are
+ * those of the neutral members in the PDG listing, rounded (Σ(1385)⁰ 1.3837, Ξ(1530)⁰ 1.5318 GeV; the charged members differ by a few MeV), typed from
+ * memory of the listing and to be checked against it.
  * The historical prediction used only the first three.
  */
 export const DECUPLET_MASSES = {

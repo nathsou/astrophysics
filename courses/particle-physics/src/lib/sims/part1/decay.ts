@@ -99,14 +99,19 @@ export const widthOf = (tauS: number): number => HBAR_GEV_S / tauS;
 /** The lifetime in seconds for a width in GeV. */
 export const lifetimeOf = (widthGeV: number): number => HBAR_GEV_S / widthGeV;
 
-/** Format a width given in GeV with an SI prefix, down to eV, then as a power of ten in eV. */
+const SUP: Record<string, string> = { '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '-': '⁻' };
+/** A number in scientific notation with a Unicode superscript exponent: 3.00 × 10⁻¹⁰. */
+export function sci(x: number, digits = 3): string {
+  const [m, e] = x.toExponential(digits - 1).split('e');
+  return `${m} × 10${String(Number(e)).split('').map((c) => SUP[c] ?? c).join('')}`;
+}
+
+/** Format a width given in GeV with an SI prefix, from GeV down to peV, then in scientific notation. */
 export function formatWidth(gev: number): string {
   const ev = gev * 1e9;
-  if (ev >= 1e9) return `${sig(ev / 1e9)} GeV`;
-  if (ev >= 1e6) return `${sig(ev / 1e6)} MeV`;
-  if (ev >= 1e3) return `${sig(ev / 1e3)} keV`;
-  if (ev >= 1) return `${sig(ev)} eV`;
-  return `${ev.toExponential(2).replace('e', ' × 10^').replace('^-', '^−')} eV`;
+  const table: [number, string][] = [[1e9, 'GeV'], [1e6, 'MeV'], [1e3, 'keV'], [1, 'eV'], [1e-3, 'meV'], [1e-6, 'µeV'], [1e-9, 'neV'], [1e-12, 'peV']];
+  for (const [f, u] of table) if (ev >= f * 0.9995) return `${sig(ev / f)} ${u}`;
+  return `${sci(ev)} eV`;
 }
 function sig(x: number): string {
   return Number(x.toPrecision(3)).toString();

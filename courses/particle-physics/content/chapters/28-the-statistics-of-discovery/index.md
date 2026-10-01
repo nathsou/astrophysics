@@ -32,12 +32,12 @@ $$P(\term{n}{n}\mid\term{mu}{\mu}) = \frac{\mu^{n}\,e^{-\mu}}{n!}$$
 ```terms
 n:
   label: 'n, the observed count'
-  what: A whole number of events: 0, 1, 2, … It is what the experiment sees in a bin, or in a whole region.
-  why: Every analysis in the next chapter ends with counts: how many events in this window, in this bin.
+  what: "A whole number of events: 0, 1, 2, … It is what the experiment sees in a bin, or in a whole region."
+  why: "Every analysis in the next chapter ends with counts: how many events in this window, in this bin."
   effect: For the same μ, the probability is largest near n = μ and falls off on both sides.
 mu:
   label: 'μ, the expected count'
-  what: The mean number of events, a positive real number, which need not be an integer. It is a property of the process: its cross-section times the luminosity times the efficiency.
+  what: "The mean number of events, a positive real number, which need not be an integer. It is a property of the process: its cross-section times the luminosity times the efficiency."
   why: It is the prediction. The Poisson distribution turns a prediction of a rate into a prediction of how the counts will scatter about it.
   effect: The mean of the distribution is μ, and so is its variance, so the standard deviation is √μ. A count of 100 is known to ±10, a count of 4 to ±2.
 ```
@@ -57,19 +57,19 @@ $$-\ln L(\term{theta}{\theta}) = \sum_{i}\Big[\term{nu}{\nu_i(\theta)} - \term{n
 ```terms
 theta:
   label: 'θ, the parameters'
-  what: The numbers the model depends on: for a peak on a background, the signal yield, the peak's position and width, and the background's level and slope.
+  what: "The numbers the model depends on: for a peak on a background, the signal yield, the peak's position and width, and the background's level and slope."
   why: The fit's job is to find θ. The one that minimises −ln L is the maximum-likelihood estimate.
   effect: Move the peak's position away from where the data have it, and −ln L rises.
 nu:
   label: 'ν_i(θ), the expected count in bin i'
-  what: The model's prediction for the bin: the integral of the signal and background shapes over the bin's width, times the yields.
+  what: "The model's prediction for the bin: the integral of the signal and background shapes over the bin's width, times the yields."
   why: It is where the physics enters. Change the model and the same data give different parameters.
   effect: ν_i must be positive (a count cannot be negative). A fit that steps to parameters where ν_i ≤ 0 has left the allowed region.
 ni:
   label: 'n_i, the observed count in bin i'
   what: The number of events in the bin. It is a whole number, possibly zero.
   why: The data. The last term, ln n_i!, does not depend on θ, so it does not move the minimum, but it makes the value the true −ln L.
-  effect: Bins with no events still contribute: the term ν_i says that a bin that was expected to have many, but had none, is unlikely.
+  effect: "Bins with no events still contribute: the term ν_i says that a bin that was expected to have many, but had none, is unlikely."
 ```
 :::
 
@@ -241,7 +241,7 @@ p:
   effect: For b = 3.5 and 9 events, p = 0.0099. For the same b and 15 events, p = 1.5 × 10⁻⁵.
 Z:
   label: 'Z, the significance'
-  what: A re-expression of p in units of standard deviations: the number of σ for which a Gaussian has a one-sided upper tail of p.
+  what: "A re-expression of p in units of standard deviations: the number of σ for which a Gaussian has a one-sided upper tail of p."
   why: It gives one scale for every kind of measurement, counting or fitting, and it is the scale physicists use to say 'evidence' or 'discovery'.
   effect: 3σ is p = 1.35 × 10⁻³. 5σ is p = 2.87 × 10⁻⁷, about one in 3.5 million.
 ```
@@ -419,7 +419,7 @@ sigmu:
   effect: With s = 50 and b = 200 and no systematic, σ_μ = 0.32. With a 10 % systematic on b, it is 0.46.
 delta:
   label: 'δ, the relative systematic uncertainty on b'
-  what: The fractional uncertainty on the expected background: 0.1 for 10 %.
+  what: "The fractional uncertainty on the expected background: 0.1 for 10 %."
   why: It does not depend on the amount of data. More luminosity reduces the first term and leaves this one.
   effect: When δb is larger than the statistical √(s+b), the measurement is systematics-limited, and collecting more of the same data no longer helps.
 ```

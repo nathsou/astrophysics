@@ -1,0 +1,109 @@
+# Part V: the machine (Chapters 19 to 21)
+rf-cavity:
+  term: RF cavity
+  definition: A metal cavity in which an oscillating electric field, at a radio frequency, pushes the particles that pass through it. The LHC has eight superconducting cavities for each beam, at 400.79 MHz.
+  chapter: accelerating-particles
+linac:
+  term: linear accelerator (linac)
+  definition: A line of accelerating gaps and drift tubes in which a particle gains energy at each gap and never meets a voltage larger than one gap's. Its energy is its length times its accelerating gradient.
+  chapter: accelerating-particles
+cyclotron:
+  term: cyclotron
+  definition: An accelerator in which particles spiral outwards between the poles of one magnet, crossing a single accelerating gap twice per turn. At low energy the revolution frequency does not depend on the energy, so one fixed RF frequency serves; relativity ends that, at about 20 MeV for protons.
+  chapter: accelerating-particles
+synchrotron:
+  term: synchrotron
+  definition: A ring in which the particles stay at a fixed radius while the magnetic field and the RF frequency are raised in step with their momentum. All large modern accelerators are synchrotrons.
+  chapter: accelerating-particles
+phase-stability:
+  term: phase stability
+  definition: The property that makes a bunch of particles stay together in an RF field. A particle that is early or late is given a different energy from the synchronous one, which changes its revolution time in the direction that brings it back. It requires the synchronous phase to be on the correct side of the RF wave.
+  chapter: accelerating-particles
+slip-factor:
+  term: slip factor (η)
+  definition: The fractional change in revolution time per fractional change in momentum, η = α_c − 1/γ². It is negative below the transition energy and positive above it.
+  chapter: accelerating-particles
+transition-energy:
+  term: transition energy
+  definition: The energy at which the slip factor changes sign, γ_t = 1/√α_c. The LHC is always above it; the CERN PS crosses it during acceleration.
+  chapter: accelerating-particles
+rf-bucket:
+  term: RF bucket
+  definition: The region of longitudinal phase space, bounded by the separatrix, in which particles are held by the RF field. A bunch is the particles in a bucket. The LHC has 35,640 buckets and fills at most 2,808.
+  chapter: accelerating-particles
+bunch:
+  term: bunch
+  definition: A group of particles, 10¹¹ protons in the LHC and a few centimetres long, held together in one RF bucket. Accelerators work with bunches because only particles at the right RF phase are accelerated.
+  chapter: accelerating-particles
+injector-chain:
+  term: injector chain
+  definition: The series of accelerators that feeds the LHC. At CERN it is Linac4 (160 MeV), the PS Booster (2 GeV), the PS (about 26 GeV) and the SPS (450 GeV).
+  chapter: accelerating-particles
+dipole-magnet:
+  term: dipole magnet
+  definition: A magnet with a uniform field perpendicular to the beam, which bends it on a circle of radius ρ = p/(0.3 B), with p in GeV/c, B in tesla and ρ in metres. The LHC has 1,232 of them, with a field of 8.33 T at 7 TeV.
+  chapter: steering-and-focusing
+quadrupole:
+  term: quadrupole magnet
+  definition: A four-pole magnet whose field grows linearly with the distance from the axis. It focuses the beam in one plane and defocuses it in the other, so a focusing and a defocusing quadrupole are used in alternation.
+  chapter: steering-and-focusing
+strong-focusing:
+  term: strong focusing (alternating gradient)
+  definition: The arrangement, found in 1949 to 1952, in which quadrupoles alternately focus and defocus. The net effect is focusing in both planes, with a beam far smaller than a weak-focusing ring would have.
+  chapter: steering-and-focusing
+transfer-matrix:
+  term: transfer matrix
+  definition: The 2×2 matrix that maps a particle's position and slope (x, x′) before a magnet to their values after it. The matrix of a line of elements is the product of their matrices, and its determinant is 1.
+  chapter: steering-and-focusing
+fodo-cell:
+  term: FODO cell
+  definition: A focusing quadrupole, a drift, a defocusing quadrupole and a drift. It is stable if |Tr M| < 2, which for thin lenses of focal length f and spacing L means f > L/2.
+  chapter: steering-and-focusing
+betatron-tune:
+  term: betatron tune (Q)
+  definition: The number of transverse oscillations a particle makes in one turn of a ring. The LHC's are about 64.3 horizontally and 59.3 vertically. A tune near a simple fraction is a resonance.
+  chapter: steering-and-focusing
+beta-function:
+  term: β function
+  definition: 'A length, set by the magnets, that describes the envelope of the transverse oscillations: the beam''s rms size is √(εβ(s)). It is small where the beam is narrow and its divergence large, as at a collision point (β*).'
+  chapter: steering-and-focusing
+emittance:
+  term: emittance (ε)
+  definition: The area π ε of the ellipse a beam fills in the (x, x′) plane. It is constant along a ring, shrinks as 1/(βγ) in acceleration, and its normalised form βγε is constant.
+  chapter: steering-and-focusing
+resonance-tune:
+  term: tune resonance
+  definition: A working point where n Q_x + m Q_y is an integer. A small field error then kicks every particle in step turn after turn, and the amplitude grows. The order is |n| + |m|; low orders are the strongest.
+  chapter: steering-and-focusing
+chromaticity:
+  term: chromaticity
+  definition: The change of the tune with momentum, ξ = dQ/(dp/p). It is negative for a ring of quadrupoles and dipoles, and is corrected with sextupole magnets.
+  chapter: steering-and-focusing
+pile-up:
+  term: pile-up
+  definition: The collisions that happen in the same bunch crossing as the one of interest. Their mean number is μ = σ_inel L/(n f), about 26 in the LHC design and about 60 at the peak of Run 2.
+  chapter: colliding-beams
+crossing-angle:
+  term: crossing angle
+  definition: The angle (285 µrad in the LHC design) at which the two beams meet, which avoids parasitic collisions along the shared pipe at the cost of a smaller overlap of the bunches, by the factor F = 1/√(1 + φ²).
+  chapter: colliding-beams
+beta-star:
+  term: β* (beta star)
+  definition: The value of the β function at the collision point. The beam size there is √(ε β*), so a smaller β* gives a higher luminosity. The LHC design value is 0.55 m.
+  chapter: colliding-beams
+synchrotron-radiation:
+  term: synchrotron radiation
+  definition: The light emitted by a charged particle on a curved orbit. The energy lost per turn is U₀ = C_γ E⁴/ρ, with C_γ proportional to 1/m⁴, so an electron loses 10¹³ times more than a proton of the same energy.
+  chapter: colliding-beams
+beam-dump:
+  term: beam dump
+  definition: The system that extracts the whole beam from the ring, with fast kicker magnets that fire in the empty abort gap, and absorbs it in a block of graphite. It is the default action of the LHC's machine protection.
+  chapter: colliding-beams
+quench:
+  term: quench
+  definition: The loss of superconductivity in part of a magnet's coil. The coil then heats itself, and the magnet's current has to be removed quickly.
+  chapter: colliding-beams
+stochastic-cooling:
+  term: stochastic cooling
+  definition: A feedback that reduces a beam's emittance by measuring the average position of small samples of particles and kicking them to correct it. Invented by Simon van der Meer at CERN, it made the antiproton beams of the SppS possible.
+  chapter: colliding-beams

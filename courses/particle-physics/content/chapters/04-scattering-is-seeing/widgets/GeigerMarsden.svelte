@@ -22,6 +22,7 @@
     GOLD, SILVER, closestApproachFm, fireAlphas, fitAnglePower, gaussianPerSr, nucleiPerFm2, ringSolidAngle, rutherfordDiffXsecFm2, type Foil,
   } from '$lib/hep/scattering';
   import { applyMine, listMine } from '$lib/code/apply';
+  import { sci } from '$lib/sims/part1/decay';
 
   let { n, caption, title = 'Geiger and Marsden, rebuilt' }: { n?: string | number; caption?: string; title?: string } = $props();
 
@@ -127,7 +128,7 @@
 
   const yLo = $derived(Math.max(1e-3, Math.min(pred(150 * DEG) || 1, ...dens.filter((x) => x > 0)) / 3));
   const yHi = $derived(Math.max(1, pred(10 * DEG), ...dens) * 4);
-  const fmtN = (x: number) => (x >= 1e9 ? `${(x / 1e9).toPrecision(2)} × 10⁹` : x >= 1e6 ? `${(x / 1e6).toPrecision(2)} × 10⁶` : x.toLocaleString('en-GB'));
+  const fmtN = (x: number) => (x >= 1e4 ? sci(x, 2) : x.toLocaleString('en-GB'));
   const total = $derived(counts.reduce((a, b) => a + b, 0));
   const fracBack = $derived(fired > 0 ? counts.slice(8).reduce((a, b) => a + b, 0) / fired : 0); // bins at 90° and above
   // schematic ring: marker size from the log of the counts
@@ -188,8 +189,9 @@
           {@const a = th}
           <circle cx={150 + 88 * Math.cos(a)} cy={105 - 88 * Math.sin(a)} r={ringSize(counts[i]!)} fill="var(--series-1)" opacity="0.75" />
         {/each}
-        <text x="150" y="14" font-size="9" fill="var(--mute)" text-anchor="middle">detectors at 15°, 25°, … 145°; circle size ∝ log(count)</text>
-        <text x="290" y="200" font-size="9" fill="var(--mute)" text-anchor="end">schematic, not to scale</text>
+        <text x="150" y="176" font-size="9" fill="var(--mute)" text-anchor="middle">detectors at 15°, 25°, … 145°;</text>
+        <text x="150" y="188" font-size="9" fill="var(--mute)" text-anchor="middle">circle size grows with the log of the count</text>
+        <text x="292" y="204" font-size="9" fill="var(--mute)" text-anchor="end">schematic, not to scale</text>
       </svg>
       <dl class="read ui" aria-live="polite">
         <div><dt>alphas fired</dt><dd>{fmtN(fired)}</dd></div>

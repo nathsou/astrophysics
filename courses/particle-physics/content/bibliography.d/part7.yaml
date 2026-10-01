@@ -96,3 +96,192 @@ brun1997:
   title: ROOT, an object oriented data analysis framework
   venue: Nuclear Instruments and Methods in Physics Research A 389, 81–86
   note: Proceedings of the AIHENP'96 workshop, Lausanne, September 1996.
+lyons2008:
+  authors: Louis Lyons
+  year: 2008
+  title: Open statistical issues in particle physics
+  venue: Annals of Applied Statistics 2, 887–915
+  url: https://arxiv.org/abs/0811.1663
+atlashiggs2012:
+  authors: ATLAS Collaboration
+  year: 2012
+  title: Observation of a new particle in the search for the Standard Model Higgs boson with the ATLAS detector at the LHC
+  venue: Physics Letters B 716, 1–29
+  url: https://arxiv.org/abs/1207.7214
+cmshiggs2012:
+  authors: CMS Collaboration
+  year: 2012
+  title: Observation of a new boson at a mass of 125 GeV with the CMS experiment at the LHC
+  venue: Physics Letters B 716, 30–61
+  url: https://arxiv.org/abs/1207.7235
+atlasdiphoton2016:
+  authors: ATLAS Collaboration
+  year: 2016
+  title: Search for resonances in diphoton events at √s = 13 TeV with the ATLAS detector
+  venue: Journal of High Energy Physics 09 (2016) 001
+  url: https://arxiv.org/abs/1606.03833
+cmsdiphoton2016:
+  authors: CMS Collaboration
+  year: 2016
+  title: Search for resonant production of high-mass photon pairs in proton–proton collisions at √s = 8 and 13 TeV
+  venue: Physical Review Letters 117, 051802
+  url: https://arxiv.org/abs/1606.04093
+atlasdiphoton2016conf:
+  authors: ATLAS Collaboration
+  year: 2016
+  title: Search for scalar diphoton resonances with 15.4 fb⁻¹ of data collected at √s = 13 TeV in 2015 and 2016 with the ATLAS detector
+  venue: ATLAS-CONF-2016-059, August 2016
+cmsdiphoton2016conf:
+  authors: CMS Collaboration
+  year: 2016
+  title: Search for resonant production of high mass photon pairs using 12.9 fb⁻¹ of proton–proton collisions at √s = 13 TeV and combined interpretation of searches at 8 and 13 TeV
+  venue: CMS-PAS-EXO-16-027, August 2016
+opera2012:
+  authors: OPERA Collaboration (T. Adam et al.)
+  year: 2012
+  title: Measurement of the neutrino velocity with the OPERA detector in the CNGS beam
+  venue: Journal of High Energy Physics 10 (2012) 093; first version arXiv:1109.4897 (September 2011)
+  url: https://arxiv.org/abs/1109.4897
+lhchxswg2017:
+  authors: D. de Florian et al. (LHC Higgs Cross Section Working Group)
+  year: 2017
+  title: "Handbook of LHC Higgs Cross Sections: 4. Deciphering the nature of the Higgs sector"
+  venue: CERN Yellow Reports Monographs CERN-2017-002-M
+  url: https://arxiv.org/abs/1610.07922
+  note: The reviewed predictions for Higgs production and decay at the LHC. The course quotes rounded shares from it, from memory.
+atlashbb2018:
+  authors: ATLAS Collaboration
+  year: 2018
+  title: Observation of H → bb̄ decays and VH production with the ATLAS detector
+  venue: Physics Letters B 786, 59–86
+  url: https://arxiv.org/abs/1808.08238
+cmshbb2018:
+  authors: CMS Collaboration
+  year: 2018
+  title: Observation of Higgs boson decay to bottom quarks
+  venue: Physical Review Letters 121, 121801
+  url: https://arxiv.org/abs/1808.08242
+cmstth2018:
+  authors: CMS Collaboration
+  year: 2018
+  title: Observation of ttH production
+  venue: Physical Review Letters 120, 231801
+  url: https://arxiv.org/abs/1804.02610
+atlastth2018:
+  authors: ATLAS Collaboration
+  year: 2018
+  title: Observation of Higgs boson production in association with a top quark pair at the LHC with the ATLAS detector
+  venue: Physics Letters B 784, 173–191
+  url: https://arxiv.org/abs/1806.00425
+atlascms2016:
+  authors: ATLAS and CMS Collaborations
+  year: 2016
+  title: Measurements of the Higgs boson production and decay rates and constraints on its couplings from a combined ATLAS and CMS analysis of the LHC pp collision data at √s = 7 and 8 TeV
+  venue: Journal of High Energy Physics 08 (2016) 045
+  url: https://arxiv.org/abs/1606.02266
+atlascmsmass2015:
+  authors: ATLAS and CMS Collaborations
+  year: 2015
+  title: Combined measurement of the Higgs boson mass in pp collisions at √s = 7 and 8 TeV with the ATLAS and CMS experiments
+  venue: Physical Review Letters 114, 191803
+  url: https://arxiv.org/abs/1503.07589
+landau1948:
+  authors: L. D. Landau
+  year: 1948
+  title: On the angular momentum of a system of two photons
+  venue: Doklady Akademii Nauk SSSR 60, 207–209
+yang1950:
+  authors: C. N. Yang
+  year: 1950
+  title: Selection rules for the dematerialization of a particle into two photons
+  venue: Physical Review 77, 242–245
+  url: https://doi.org/10.1103/PhysRev.77.242
+atlasspin2015:
+  authors: ATLAS Collaboration
+  year: 2015
+  title: Study of the spin and parity of the Higgs boson in diboson decays with the ATLAS detector
+  venue: European Physical Journal C 75, 476
+  url: https://arxiv.org/abs/1506.05669
+cmsspin2015:
+  authors: CMS Collaboration
+  year: 2015
+  title: Constraints on the spin-parity and anomalous HVV couplings of the Higgs boson in proton collisions at 7 and 8 TeV
+  venue: Physical Review D 92, 012004
+  url: https://arxiv.org/abs/1411.3441
+atlasnature2022:
+  authors: ATLAS Collaboration
+  year: 2022
+  title: A detailed map of Higgs boson interactions by the ATLAS experiment ten years after the discovery
+  venue: Nature 607, 52–59
+cmsnature2022:
+  authors: CMS Collaboration
+  year: 2022
+  title: A portrait of the Higgs boson by the CMS experiment ten years after the discovery
+  venue: Nature 607, 60–68
+degrassi2012:
+  authors: Giuseppe Degrassi, Stefano Di Vita, Joan Elias-Miró, José R. Espinosa, Gian F. Giudice, Gino Isidori, Alessandro Strumia
+  year: 2012
+  title: Higgs mass and vacuum stability in the Standard Model at NNLO
+  venue: Journal of High Energy Physics 08 (2012) 098
+  url: https://arxiv.org/abs/1205.6497
+buttazzo2013:
+  authors: Dario Buttazzo, Giuseppe Degrassi, Pier Paolo Giardino, Gian F. Giudice, Filippo Sala, Alberto Salvio, Alessandro Strumia
+  year: 2013
+  title: Investigating the near-criticality of the Higgs boson
+  venue: Journal of High Energy Physics 12 (2013) 089
+  url: https://arxiv.org/abs/1307.3536
+hllhc2019:
+  authors: M. Cepeda et al.
+  year: 2019
+  title: Higgs physics at the HL-LHC and HE-LHC
+  venue: CERN Yellow Reports Monographs 7 (2019) 221
+  url: https://arxiv.org/abs/1902.00134
+hllhc2020:
+  authors: I. Zurbano Fernandez et al. (eds.)
+  year: 2020
+  title: High-Luminosity Large Hadron Collider (HL-LHC), Technical design report
+  venue: CERN Yellow Reports Monographs CERN-2020-010
+nobel2013:
+  authors: The Royal Swedish Academy of Sciences
+  year: 2013
+  title: The Nobel Prize in Physics 2013, press release (8 October 2013)
+  venue: NobelPrize.org
+  url: https://www.nobelprize.org/prizes/physics/2013/press-release/
+cmshmumu2021:
+  authors: CMS Collaboration
+  year: 2021
+  title: Evidence for Higgs boson decay to a pair of muons
+  venue: Journal of High Energy Physics 01 (2021) 148
+  url: https://arxiv.org/abs/2009.04363
+lephiggs2003:
+  authors: ALEPH, DELPHI, L3 and OPAL Collaborations, LEP Working Group for Higgs Boson Searches
+  year: 2003
+  title: Search for the Standard Model Higgs boson at LEP
+  venue: Physics Letters B 565, 61–75
+  url: https://arxiv.org/abs/hep-ex/0306033
+cern-higgs-2012:
+  authors: CERN
+  year: 2012
+  title: CERN experiments observe particle consistent with long-sought Higgs boson
+  venue: CERN press release, 4 July 2012
+cms-4l-open-data:
+  authors: CMS Collaboration; CMS open data education team
+  year: 2018
+  title: CMS Jupyter materials, English (four-lepton candidate files and the Higgs-hunting notebook)
+  venue: GitHub, cms-opendata-education/cms-jupyter-materials-english
+  url: https://github.com/cms-opendata-education/cms-jupyter-materials-english
+  note: The repository states that its material is released under CC BY 4.0. The course ships the 278 four-lepton events and four simulated histograms from it (static/data/h4l-cms-opendata.json, manifest beside it).
+cms-h4l-example:
+  authors: Nur Zulaiha Jomhari, Achim Geiser, Afiq Aizuddin Bin Anuar
+  year: 2017
+  title: Higgs-to-four-lepton analysis example using 2011-2012 data
+  venue: CERN Open Data Portal, DOI 10.7483/OPENDATA.CMS.JKB8.RR42
+  url: https://doi.org/10.7483/OPENDATA.CMS.JKB8.RR42
+  note: The analysis example on which the notebook of the education materials is based, as the notebook says.
+atlas-open-data:
+  authors: ATLAS Collaboration
+  year: 2020
+  title: ATLAS Open Data for research and education (13 TeV samples and the notebooks collection)
+  venue: opendata.atlas.cern; github.com/atlas-outreach-data-tools/notebooks-collection-opendata
+  url: https://opendata.atlas.cern
+  note: Not used for data in the course (the files are large and the portal could not be reached); the notebook collection has diphoton and four-lepton analyses that readers can run.

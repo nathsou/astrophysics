@@ -84,8 +84,9 @@
 
   // view
   const VS = 260; // half size in SVG units
-  const maxP = $derived(sqrtS / 2);
-  const len = (p: number) => Math.max(5, VS * 0.95 * Math.pow(Math.min(1, p / maxP), 0.6));
+  const maxP = $derived(Math.max(1, ...(ev ? ev.particles.map((q) => ptOf(q.p)) : [1])));
+  const len = (p: number) => 10 + (VS * 0.92 - 10) * Math.sqrt(Math.min(1, p / maxP));
+  const jetLen = (jpt: number) => 20 + (VS * 0.9 - 20) * Math.min(1, jpt / (sqrtS / 2));
   const COLORS = ['var(--series-1)', 'var(--series-2)', 'var(--series-3)', 'var(--series-4)', 'var(--series-5)', 'var(--series-6)'];
   const owner = $derived.by(() => {
     const o = new Map<number, number>();
@@ -166,6 +167,9 @@
           {/each}
         {/if}
         {#each jets as j, k}
+          <line x1="0" y1="0" x2={jetLen(j.pt) * Math.cos(j.phi)} y2={-jetLen(j.pt) * Math.sin(j.phi)} stroke={COLORS[k % 6]} stroke-width="4" stroke-linecap="round" opacity="0.55" />
+        {/each}
+        {#each jets as j, k}
           <text x={(VS * 1.02 + 6) * Math.cos(-j.phi)} y={(VS * 1.02 + 6) * Math.sin(-j.phi)} text-anchor="middle" dominant-baseline="middle" class="jl" fill={COLORS[k % 6]}>
             j{k + 1}
           </text>
@@ -173,7 +177,7 @@
         <circle r="3.5" fill="var(--ink)" />
       </svg>
       <p class="key ui">
-        Lines: particles, length growing with the transverse momentum; solid = charged, dashed = neutral, grey = in no jet. Shaded wedges: the radius R around each jet.
+        Thin lines: particles, length growing with the square root of the transverse momentum; solid = charged, dashed = neutral, grey = in no jet. Thick line: the jet axis, with length proportional to the jet's pT. Shaded wedges: the radius R around each jet.
         {#if mine}<strong>Clustering with your code (reco.antiKt).</strong>{/if}
       </p>
     </div>

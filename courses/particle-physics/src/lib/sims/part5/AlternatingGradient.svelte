@@ -71,7 +71,7 @@
   const curve = $derived.by(() => {
     const out: { r: number; x: number; y: number }[] = [];
     for (let i = 0; i <= 200; i++) {
-      const r = (4.5 * i) / 200; // L/f
+      const r = (3.5 * i) / 200; // L/f
       const ff = r === 0 ? 1e9 : L / r;
       const c = cellOf(arr, ff);
       out.push({ r, x: trace(oneTurnMatrix(c, 'x')), y: trace(oneTurnMatrix(c, 'y')) });
@@ -95,35 +95,35 @@
       {#each lensX as lx, i}
         {@const sg = lensSign(plane, i)}
         <line x1={sx(lx)} x2={sx(lx)} y1={PH / 2 - 20} y2={PH / 2 + 20} class={sg > 0 ? 'lens foc' : 'lens def'} />
-        <text x={sx(lx)} y={PH - 4} text-anchor="middle" class="lb">{sg > 0 ? 'F' : 'D'}</text>
+        <text x={sx(lx)} y="13" text-anchor="middle" class="lb">{sg > 0 ? 'F' : 'D'}</text>
       {/each}
       {#each (tt as { s: number; x: number }[][]) as ray, ri}
         <path d={ray.map((p, i) => `${i ? 'L' : 'M'}${sx(p.s).toFixed(1)} ${sy(p.x * 1e3).toFixed(1)}`).join('')} class="path r{ri}" />
       {/each}
-      <text x="6" y="14" class="lb">x [mm]</text>
-      <text x={PL - 4} y={sy(AMP)} text-anchor="end" class="lb" dy="0.3em">{AMP}</text>
-      <text x={PL - 4} y={sy(-AMP)} text-anchor="end" class="lb" dy="0.3em">−{AMP}</text>
+      <text x={W - PR} y={PH - 5} text-anchor="end" class="lb">displacement [mm]</text>
+      <text x={PL - 14} y={sy(AMP)} text-anchor="end" class="lb" dy="0.3em">{AMP}</text>
+      <text x={PL - 14} y={sy(-AMP)} text-anchor="end" class="lb" dy="0.3em">−{AMP}</text>
     </svg>
   {/each}
 
-  <h5 class="ui">Trace of the one-cell matrix against L/f: the motion is stable where |Tr M| < 2</h5>
+  <h5 class="ui">Trace of the one-cell matrix against L/f: the motion is stable where |Tr M| &lt; 2</h5>
   <Plot
     label="Trace of the cell matrix against the ratio of lens spacing to focal length, for the horizontal and vertical planes. The stable band is between minus 2 and plus 2."
-    x={{ domain: [0, 4.5], label: 'L / f' }}
-    y={{ domain: [-4, 8], label: 'Tr M', tickValues: [-4, -2, 0, 2, 4, 6, 8] }}
+    x={{ domain: [0, 3.5], label: 'L / f' }}
+    y={{ domain: [-6, 8], label: 'Tr M', tickValues: [-6, -4, -2, 0, 2, 4, 6, 8] }}
     height={200}
   >
     {#snippet marks({ sx: ax, sy: ay })}
-      <rect x={ax(0)} y={ay(2)} width={ax(4.5) - ax(0)} height={ay(-2) - ay(2)} class="band" />
-      <path class="cx" d={curve.map((p, i) => `${i ? 'L' : 'M'}${ax(p.r)} ${ay(Math.max(-4, Math.min(8, p.x)))}`).join('')} />
-      <path class="cy" d={curve.map((p, i) => `${i ? 'L' : 'M'}${ax(p.r)} ${ay(Math.max(-4, Math.min(8, p.y)))}`).join('')} />
-      <circle cx={ax(L / f)} cy={ay(Math.max(-4, Math.min(8, tr.x)))} r="5" class="px" />
-      <circle cx={ax(L / f)} cy={ay(Math.max(-4, Math.min(8, tr.y)))} r="5" class="py" />
+      <rect x={ax(0)} y={ay(2)} width={ax(3.5) - ax(0)} height={ay(-2) - ay(2)} class="band" />
+      <path class="cx" d={curve.map((p, i) => `${i ? 'L' : 'M'}${ax(p.r)} ${ay(Math.max(-6, Math.min(8, p.x)))}`).join('')} />
+      <path class="cy" d={curve.map((p, i) => `${i ? 'L' : 'M'}${ax(p.r)} ${ay(Math.max(-6, Math.min(8, p.y)))}`).join('')} />
+      <circle cx={ax(L / f)} cy={ay(Math.max(-6, Math.min(8, tr.x)))} r="5" class="px" />
+      <circle cx={ax(L / f)} cy={ay(Math.max(-6, Math.min(8, tr.y)))} r="5" class="py" />
       <text x={ax(0) + 6} y={ay(2) - 6} class="lb">unstable above</text>
       <text x={ax(0) + 6} y={ay(-2) + 14} class="lb">unstable below</text>
     {/snippet}
   </Plot>
-  <p class="leg ui"><span class="kx"></span> horizontal plane · <span class="ky"></span> vertical plane (dashed). Lens strength is L/f = {(L / f).toFixed(2)}; for the alternating sequence Tr M = 2 − (L/f)², so the cell is stable for L/f < 2 in both planes at once.</p>
+  <p class="leg ui"><span class="kx"></span> horizontal plane · <span class="ky"></span> vertical plane (dashed). Lens strength is L/f = {(L / f).toFixed(2)}; for the alternating sequence Tr M = 2 − (L/f)², so the cell is stable for L/f &lt; 2 in both planes at once.</p>
 </Widget>
 
 <style>

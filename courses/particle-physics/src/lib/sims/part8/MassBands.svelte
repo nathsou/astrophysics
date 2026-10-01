@@ -61,10 +61,10 @@
     y={{ type: 'log', domain: [1e-4, 1], label: 'effective Majorana mass m_ββ [eV]', tickValues: [1e-4, 1e-3, 1e-2, 1e-1, 1] }}
     vmarks={[
       { value: 0.45, label: 'KATRIN < 0.45 eV (m_β)', color: 'var(--series-7)' },
-      { value: cosmo, label: 'Σm < 0.12 eV', color: 'var(--series-5)' },
+      { value: cosmo, label: 'Σm < 0.12 eV', color: 'var(--series-5)', row: 1 },
     ]}
     hmarks={[
-      { value: 0.156, label: 'KamLAND-Zen: < 0.036–0.156 eV (upper edge)', color: 'var(--series-7)' },
+      { value: 0.156, label: 'KamLAND-Zen limits', color: 'var(--series-7)', left: true },
       { value: 0.036, color: 'var(--series-7)' },
     ]}
     height={330}

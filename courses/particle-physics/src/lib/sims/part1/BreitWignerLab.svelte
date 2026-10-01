@@ -167,7 +167,7 @@
   {#snippet controls()}
     <Segmented label="Mode" size="sm" bind:value={mode} options={[{ value: 'theory', label: 'Theory' }, { value: 'gun', label: 'Particle gun' }, { value: 'data', label: 'Real data' }]} />
     <Segmented label="Particle" size="sm" value={lineId} onchange={pickLine} options={LINES.filter((l) => mode !== 'data' || ['z', 'jpsi'].includes(l.id)).map((l) => ({ value: l.id, label: l.label }))} />
-    <Slider bind:value={gScale} min={-3} max={3} step={0.05} label="Natural width Γ (table value × …)" format={() => `${fmtG(gamma)}${Math.abs(gScale) < 0.03 ? ' (table)' : ''}`} />
+    <Slider bind:value={gScale} min={-3} max={3} step={0.05} label="Natural width Γ" format={() => `${fmtG(gamma)}${Math.abs(gScale) < 0.03 ? ' (table)' : ''}`} />
     <Slider bind:value={logSigma} min={-4} max={0.8} step={0.02} label={mode === 'gun' ? 'Mass resolution σ (from momentum smearing)' : 'Detector resolution σ'} format={() => (sigma < 0.1 ? `${(sigma * 1000).toPrecision(2)} MeV` : `${sigma.toPrecision(2)} GeV`)} />
   {/snippet}
 
@@ -258,8 +258,8 @@
         {/snippet}
       </Plot>
       <div class="legend ui" aria-live="polite">
-        <span><i class="solid" style="background:var(--fg)"></i>CMS data, {dataHist.counts.reduce((a, b) => a + b, 0).toLocaleString('en-GB')} events in the window</span>
-        <span><i class="solid" style="background:var(--series-2)"></i>line of width Γ = {fmtG(gamma)} and σ = {sigma < 0.1 ? `${(sigma * 1000).toPrecision(3)} MeV` : `${sigma.toPrecision(3)} GeV`} (peak position fitted: {dataFit ? dataFit.mass.toFixed(3) : ''} GeV; table mass {M} GeV)</span>
+        <span><i class="solid" style="border-top-color:var(--fg)"></i>CMS data, {dataHist.counts.reduce((a, b) => a + b, 0).toLocaleString('en-GB')} events in the window</span>
+        <span><i class="solid" style="border-top-color:var(--series-2)"></i>line of width Γ = {fmtG(gamma)} and σ = {sigma < 0.1 ? `${(sigma * 1000).toPrecision(3)} MeV` : `${sigma.toPrecision(3)} GeV`} (peak position fitted: {dataFit ? dataFit.mass.toFixed(3) : ''} GeV; table mass {M} GeV)</span>
         {#if dataFit}<span>χ²/dof = {(dataFit.chi2 / dataFit.dof).toFixed(1)}. A large value means the simple shape is not the whole story (radiation, a non-Gaussian tail, background).</span>{/if}
       </div>
       <div class="row ui">

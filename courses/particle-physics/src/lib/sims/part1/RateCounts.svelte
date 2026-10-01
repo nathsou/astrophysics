@@ -17,6 +17,7 @@
   import { poissonPmf } from '$lib/hep/analysis';
   import { formatTime } from '$lib/hep/units';
   import { RATE_PROCESSES, integratedPb, rateHz } from './rates';
+  import { sci } from './decay';
 
   let { process: proc0 = 'z', lumi: lumi0 = 1e34, seconds: sec0 = 1, n, caption, title = 'Rate = σ L, and the counts that fluctuate' }: { process?: string; lumi?: number; seconds?: number; n?: string | number; caption?: string; title?: string } = $props();
 
@@ -67,13 +68,13 @@
 <Widget {title} subtitle="Expected events = σ × ∫L dt; the events actually seen fluctuate by √N" {n} {caption} kind="Simulation" onreset={() => { procId = proc0; logL = Math.log10(lumi0); logT = Math.log10(sec0); seed = 5; }}>
   {#snippet controls()}
     <Segmented label="Process" size="sm" bind:value={procId} options={RATE_PROCESSES.map((p) => ({ value: p.id, label: p.id === 'inel' ? 'inelastic' : p.id === 'w' ? 'W → μν' : p.id === 'z' ? 'Z → μμ' : p.id === 'tt' ? 'tt̄' : 'Higgs' }))} />
-    <Slider bind:value={logL} min={30} max={35} step={0.05} label="Luminosity L [cm⁻² s⁻¹]" format={(v) => `10^${v.toFixed(2)}`} />
+    <Slider bind:value={logL} min={30} max={35} step={0.05} label="Luminosity L [cm⁻² s⁻¹]" format={(v) => sci(10 ** v, 2)} />
     <Slider bind:value={logT} min={-3} max={7} step={0.05} label="Running time" format={() => formatTime(T)} />
   {/snippet}
 
   <div class="cards ui" aria-live="polite">
     <div><span class="k">process</span><strong>{proc.label}</strong><span class="s">σ = {fmtSigma(proc.sigmaPb)} ({proc.source})</span></div>
-    <div><span class="k">rate R = σ L</span><strong>{fmtRate(rate)}</strong><span class="s">L = 10<sup>{logL.toFixed(2)}</sup> cm⁻² s⁻¹ = {(L * 1e-36).toPrecision(2)} pb⁻¹ per second</span></div>
+    <div><span class="k">rate R = σ L</span><strong>{fmtRate(rate)}</strong><span class="s">L = {sci(L, 2)} cm⁻² s⁻¹ = {(L * 1e-36).toPrecision(2)} pb⁻¹ per second</span></div>
     <div><span class="k">expected count μ = R t</span><strong>{mu >= 100 ? mu.toPrecision(3) : mu.toFixed(2)}</strong><span class="s">integrated luminosity {fmtInt(intPb)}; √μ = {Math.sqrt(mu).toPrecision(3)}</span></div>
   </div>
 

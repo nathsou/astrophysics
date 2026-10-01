@@ -207,7 +207,7 @@
 
   <div class="panes">
     <div class="pane">
-      <h5 class="ui">{N} particles at t = {(t).toFixed(2)} τ ({formatTime(t * tauS)})</h5>
+      <h5 class="ui">{N} particles at t = {(t).toFixed(2)} τ ({t === 0 ? '0 s' : formatTime(t * tauS)})</h5>
       <svg viewBox="0 0 {GW} {GH}" role="img" aria-label="{N - k} of {N} particles have not decayed at t = {t.toFixed(2)} lifetimes; {k} have decayed" class="grid">
         <path d={gridPaths.alive} fill="var(--fg)" opacity="0.85" />
         {#each gridPaths.dead as d, i}
@@ -277,7 +277,7 @@
       <h5 class="ui">The same number as a line shape</h5>
       <Plot
         label="Breit–Wigner line shape with full width at half maximum equal to the width Γ = ħ/τ"
-        x={{ domain: bwX, label: 'E − M (axis scaled to Γ)', format: fmtE, tickValues: [-2 * gammaGeV, -gammaGeV, 0, gammaGeV, 2 * gammaGeV] }}
+        x={{ domain: bwX, label: 'E − M (axis scaled to Γ)', format: fmtE, tickValues: [-gammaGeV, 0, gammaGeV] }}
         y={{ domain: [0, 1.1], label: 'relative rate', ticks: 4 }}
         height={190}
         crosshair={false}

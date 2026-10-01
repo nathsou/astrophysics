@@ -151,6 +151,18 @@ The sketchpad below is the course's rule-checker. Choose a process, then draw li
 
 ::diagram-sketchpad{process="e+ e- > mu+ mu-" forces="qed,weak" n="15.4" caption="The diagram sketchpad. The answer key is the complete set of tree diagrams of the process that the vertex rules allow, enumerated by the same code that checks your drawing. With only QED there is one diagram for e⁺e⁻ → μ⁺μ⁻. With the weak force switched on there are two, since the Z boson can also carry the pair: a line of the same type as the photon's, with a mass of 91 GeV (Chapter 23). Try e+ e- > e+ e- (Bhabha): you should find two in QED, and four with the Z."}
 
+```predict
+q: 'A photon is radiated in the process e⁺e⁻ → μ⁺μ⁻γ, by photon exchange alone. Before you open the sketchpad, how many tree diagrams do you expect?'
+options:
+  - text: Two, with the photon radiated by the outgoing muon or the outgoing antimuon.
+    why: 'Those are two of them (final-state radiation). The incoming electron and positron can radiate, too (initial-state radiation), before they annihilate.'
+  - text: Four, with the photon radiated by the electron, the positron, the muon or the antimuon.
+    correct: true
+    why: 'Each of the four charged external lines can emit the photon, and in each case the rest of the diagram is the s-channel diagram of Figure 15.1. The count is confirmed by the enumerator, and agrees with the rule that a tree with five external lines has three vertices.'
+  - text: Five, including one in which the photon comes off the virtual photon.
+    why: 'There is no such diagram. The photon has no electric charge, so there is no vertex with three photon lines; the virtual photon cannot emit another photon.'
+```
+
 :::challenge[Four diagrams, not five]
 A photon can be radiated in the final state of e⁺e⁻ → μ⁺μ⁻. Draw every tree diagram of **e⁺e⁻ → μ⁺μ⁻γ** in QED. You should find four: the photon is radiated from the incoming electron, the incoming positron, the outgoing muon or the outgoing antimuon. Then try to draw a fifth, with the photon coming off the virtual photon. The sketchpad refuses it. There is no vertex with three photon lines, because the photon has no charge to couple to, so the virtual photon cannot emit a photon. (At the level of loops there is a further reason: a loop of charged fermions with three photon ends vanishes, which is Furry's theorem, a consequence of the symmetry between particles and antiparticles.)
 :::

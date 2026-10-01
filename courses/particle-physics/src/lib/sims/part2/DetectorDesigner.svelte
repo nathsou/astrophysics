@@ -82,7 +82,7 @@
           { id: 'pt10', label: 'Momentum resolution of 10 GeV muons', value: `${(100 * meas.ptRes10).toFixed(2)} %`, goal: 'for information', ok: null },
           { id: 'ecal', label: '50 GeV electron: energy in the ECAL', value: `${(100 * meas.eResponse).toFixed(0)} % of E`, goal: '≥ 95 %', ok: meas.eResponse >= 0.95 },
           { id: 'eres', label: '50 GeV electron: resolution', value: `${(100 * meas.eRes50).toFixed(2)} %`, goal: '≤ 1 %', ok: meas.eRes50 <= 0.01 },
-          { id: 'had', label: '50 GeV pion: resolution', value: `${(100 * meas.hadRes50).toFixed(1)} %`, goal: '≤ 16 %', ok: meas.hadRes50 <= 0.16 },
+          { id: 'had', label: '50 GeV pion: resolution', value: `${(100 * meas.hadRes50).toFixed(1)} %`, goal: '≤ 18 %', ok: meas.hadRes50 <= 0.18 },
           { id: 'leak', label: '100 GeV pion: energy that leaks out', value: `${(100 * meas.leakage100).toFixed(1)} %`, goal: '≤ 5 %', ok: meas.leakage100 <= 0.05 },
           { id: 'mu', label: '100 GeV muons seen in 3 or more stations', value: `${(100 * meas.muonEff100).toFixed(0)} %`, goal: '≥ 95 %', ok: meas.muonEff100 >= 0.95 },
           { id: 'minp', label: 'Lowest muon momentum that reaches the muon stations', value: `${meas.muonMinP.toFixed(1)} GeV`, goal: 'for information', ok: null },
@@ -214,7 +214,7 @@
     {:else if allMet}Every goal is met, within budget: {c.total.toFixed(1)} of {BUDGET}.
     {:else if meas}Within budget, but some goals are not met yet.{/if}
   </p>
-  <p class="ui tiny">Numbers from 100 simulated muons at each momentum and 50 electrons or pions, fitted with the library's circle fit on the hits of each muon (so the pattern recognition is taken as perfect). They fluctuate by about 5–10 % from one design to the next: the simulation is seeded, so the same design always gives the same numbers.</p>
+  <p class="ui tiny">Numbers from 200 simulated muons at each momentum, 100 electrons and 200 pions at each energy, with the muons fitted with the library's circle fit on the hits of each muon (so the pattern recognition is taken as perfect). They fluctuate by about 5–10 % from one design to the next: the simulation is seeded, so the same design always gives the same numbers.</p>
 
   <h5 class="ui">Fire one particle into it</h5>
   <div class="gun ui">

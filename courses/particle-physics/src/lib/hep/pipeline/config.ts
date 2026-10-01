@@ -185,7 +185,7 @@ export const PRESET_INFO: Record<PresetName, PresetInfo> = {
   ttbar: { name: 'ttbar', title: 'tt̄ → ℓ + jets', summary: 'Top-quark pairs with one leptonic W: jets, b-tags, missing energy and HT.' },
   dijet: { name: 'dijet', title: 'QCD dijets', summary: 'Hard QCD scattering in four pT slices, each with its own weight: the dijet mass spectrum over several decades.' },
   minbias: { name: 'minbias', title: 'Minimum bias', summary: 'Soft inelastic collisions, as in pile-up: charged-particle multiplicity and transverse-energy sum.' },
-  'ee-zpole': { name: 'ee-zpole', title: 'e⁺e⁻ → Z → μμ', summary: 'A lepton collider on the Z pole, with initial-state radiation: the radiative return and the muon angular distribution.' },
+  'ee-zpole': { name: 'ee-zpole', title: 'e⁺e⁻ → Z → μμ', summary: 'A lepton collider on the Z pole, with initial-state radiation and the muon angular distribution. Raise √s to see the radiative return to the Z.' },
 };
 
 const DEFAULT_SELECTION: Selection = { leptonPtMin: 10, photonPtMin: 20, jetPtMin: 30, etaMax: 2.4, jetEtaMax: 2.5, isolationMax: 0.3, ptOverM: false, btagMin: 0.5 };
@@ -246,7 +246,7 @@ export function presetConfig(name: PresetName | string): PipelineConfig {
       c.analysis.pseudoData = true;
       break;
     case 'ttbar':
-      c.machine.pileupMean = 10;
+      c.machine.pileupMean = 5;
       c.generator.samples = [{ name: 'ttbar', label: 'tt̄ → ℓ + jets', process: 'pp->ttbar->leptonjets', role: 'signal', share: 1 }];
       c.trigger.menu = [makeSetting('SingleMu', 24), makeSetting('SingleEG', 28), makeSetting('SingleJet', 200)];
       c.analysis.observables = ['ht', 'njets', 'nbtag', 'met'];
@@ -255,14 +255,11 @@ export function presetConfig(name: PresetName | string): PipelineConfig {
       break;
     case 'dijet': {
       c.machine.pileupMean = 5;
-      const slice = (name: string, lo: number, hi?: number) => ({
-        name,
-        label: hi ? `pT̂ ${lo}–${hi} GeV` : `pT̂ > ${lo} GeV`,
-        process: 'pp->jj',
-        options: hi ? { ptMin: lo, ptMax: hi } : { ptMin: lo },
-        role: 'background' as const,
-        share: 1,
-      });
+      const slice = (name: string, lo: number, hi?: number): SampleSpec => {
+        const options: Record<string, number> = { ptMin: lo };
+        if (hi !== undefined) options.ptMax = hi;
+        return { name, label: hi ? `pT̂ ${lo}–${hi} GeV` : `pT̂ > ${lo} GeV`, process: 'pp->jj', options, role: 'background', share: 1 };
+      };
       c.generator.samples = [slice('jj30', 30, 80), slice('jj80', 80, 200), slice('jj200', 200, 500), slice('jj500', 500)];
       c.trigger.menu = [makeSetting('SingleJet', 100), makeSetting('HT', 250)];
       c.trigger.apply = false;
@@ -319,7 +316,8 @@ function structuredCloneJson<T>(x: T): T {
 }
 
 /** A configuration from a (possibly partial, possibly untrusted) object, on top of the preset `patch.name` (or `zmumu`). Unknown presets fall back to `zmumu`. */
-export function mergeConfig(patch: unknown, fallback: PresetName = 'zmumu'): PipelineConfig {
+export function mergeConfig(patchIn: unknown, fallback: PresetName = 'zmumu'): PipelineConfig {
+  const patch = isObj(patchIn) ? patchIn : {};
   const requested = isObj(patch) && typeof patch.name === 'string' ? patch.name : fallback;
   const baseCfg = presetConfig(isPreset(requested) ? requested : fallback);
   const merged = deepMerge(baseCfg, patch);
@@ -336,3 +334,50 @@ export function mergeConfig(patch: unknown, fallback: PresetName = 'zmumu'): Pip
 export function configKey(c: unknown): string {
   return JSON.stringify(c);
 }
+
+/**
+ * What differs between two configurations, as a partial configuration (objects are compared key by key; arrays and scalars whole), or undefined if they are equal.
+ * `mergeConfig(diffConfig(presetConfig(name), c))` gives `c` back, so a shared link need only carry the changes to a preset.
+ */
+export function diffConfig(baseValue: unknown, cur: unknown): unknown {
+  if (JSON.stringify(baseValue) === JSON.stringify(cur)) return undefined;
+  if (isObj(baseValue) && isObj(cur)) {
+    const out: Record<string, unknown> = {};
+    for (const k of Object.keys(cur)) {
+      const d = diffConfig(baseValue[k], cur[k]);
+      if (d !== undefined) out[k] = d;
+    }
+    // a key present in the base but missing in `cur` cannot be expressed by merging; it is rare (optional fields), so send the object whole
+    for (const k of Object.keys(baseValue)) if (!(k in cur)) return cur;
+    return out;
+  }
+  return cur;
+}
+
+/** The processes a sample can choose from in the Control Room (all are `hep/gen` names, except the toy ZZ* continuum of this module). */
+export const PROCESS_CHOICES: { name: string; label: string; beams: 'pp' | 'ee' | 'ppbar' }[] = [
+  { name: 'pp->Z->mumu', label: 'pp → Z → μ⁺μ⁻', beams: 'pp' },
+  { name: 'pp->Z->ee', label: 'pp → Z → e⁺e⁻', beams: 'pp' },
+  { name: 'pp->W->munu', label: 'pp → W → μν', beams: 'pp' },
+  { name: 'pp->W->enu', label: 'pp → W → eν', beams: 'pp' },
+  { name: 'pp->jj', label: 'pp → dijets (QCD)', beams: 'pp' },
+  { name: 'pp->gammagamma', label: 'pp → γγ continuum', beams: 'pp' },
+  { name: 'pp->H->gammagamma', label: 'pp → H → γγ', beams: 'pp' },
+  { name: 'pp->H->ZZ->4l', label: 'pp → H → ZZ* → 4ℓ', beams: 'pp' },
+  { name: 'pp->H->bb', label: 'pp → H → bb̄', beams: 'pp' },
+  { name: 'pp->H->WW->lnulnu', label: 'pp → H → WW* → ℓνℓν', beams: 'pp' },
+  { name: 'pp->ZZ*->4l', label: 'pp → ZZ* → 4ℓ (toy continuum)', beams: 'pp' },
+  { name: 'pp->ttbar->leptonjets', label: 'pp → tt̄ → ℓ + jets', beams: 'pp' },
+  { name: 'pp->ttbar->dilepton', label: 'pp → tt̄ → ℓℓ', beams: 'pp' },
+  { name: 'pp->ttbar->hadronic', label: 'pp → tt̄ → hadrons', beams: 'pp' },
+  { name: 'pp->Zprime->mumu', label: 'pp → Z′ → μ⁺μ⁻ (3 TeV)', beams: 'pp' },
+  { name: 'minbias', label: 'minimum bias', beams: 'pp' },
+  { name: 'ppbar->Z->mumu', label: 'pp̄ → Z → μ⁺μ⁻', beams: 'ppbar' },
+  { name: 'ppbar->ttbar', label: 'pp̄ → tt̄', beams: 'ppbar' },
+  { name: 'ee->mumu', label: 'e⁺e⁻ → μ⁺μ⁻', beams: 'ee' },
+  { name: 'ee->tautau', label: 'e⁺e⁻ → τ⁺τ⁻', beams: 'ee' },
+  { name: 'ee->qq', label: 'e⁺e⁻ → hadrons', beams: 'ee' },
+  { name: 'ee->ee', label: 'e⁺e⁻ → e⁺e⁻ (Bhabha)', beams: 'ee' },
+];
+/** The beams a process name implies. */
+export const beamsOf = (process: string): 'pp' | 'ee' | 'ppbar' => (process.startsWith('ee->') || process === 'bhabha' ? 'ee' : process.startsWith('ppbar->') ? 'ppbar' : 'pp');

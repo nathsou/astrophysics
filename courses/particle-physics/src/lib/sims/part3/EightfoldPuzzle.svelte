@@ -2,7 +2,7 @@
   The Eightfold Way puzzle (Chapter 12's flagship). Place the baryons on the weight diagram of the octet and of the decuplet by their strangeness
   and charge; the decuplet has one empty corner. Predict its mass from the equal spacing of the rows, then see what the particle must be.
   The diagrams come from hep/su3 (Gelfand–Tsetlin patterns); the masses of the Δ and Ω⁻ from hep/particles. The Σ*(1385) and Ξ*(1530) are
-  not in the particle table: their masses are the PDG isospin averages kept in hep/su3's DECUPLET_MASSES.
+  not in the particle table: their masses (of the neutral members) are kept in hep/su3's DECUPLET_MASSES.
 
     ::eightfold-puzzle{n="12.4" caption="…"}
 -->
@@ -26,7 +26,7 @@
     return { id: String(id), symbol: p.symbol, charge: p.charge3 / 3, strangeness: p.strangeness, mass: p.mass };
   };
   const OCTET: Chip[] = [2212, 2112, 3222, 3212, 3112, 3122, 3322, 3312].map(fromTable);
-  const star = (letter: string, S: number, q: number, m: number): Chip => ({ id: `${letter}*${q}`, symbol: `${letter}*${sup(q)}`, charge: q, strangeness: S, mass: m, note: 'mass: isospin average of the PDG listing' });
+  const star = (letter: string, S: number, q: number, m: number): Chip => ({ id: `${letter}*${q}`, symbol: `${letter}*${sup(q)}`, charge: q, strangeness: S, mass: m, note: 'mass of the neutral member' });
   const DECUPLET: Chip[] = [
     ...[2224, 2214, 2114, 1114].map(fromTable),
     star('Σ', -1, 1, DECUPLET_MASSES[-1].mass), star('Σ', -1, 0, DECUPLET_MASSES[-1].mass), star('Σ', -1, -1, DECUPLET_MASSES[-1].mass),

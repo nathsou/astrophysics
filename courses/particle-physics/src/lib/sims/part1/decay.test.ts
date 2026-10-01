@@ -70,6 +70,7 @@ describe('the decay clock model', () => {
     expect(formatWidth(2.4955)).toBe('2.5 GeV');
     expect(formatWidth(9.26e-5)).toBe('92.6 keV');
     expect(formatWidth(0.1474)).toBe('147 MeV');
-    expect(formatWidth(2.996e-19)).toContain('10^−10 eV');
+    expect(formatWidth(2.996e-19)).toBe('300 peV');
+    expect(formatWidth(1e-23)).toBe('1.00 × 10⁻¹⁴ eV');
   });
 });

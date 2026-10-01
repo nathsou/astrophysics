@@ -19,7 +19,7 @@
   let { n, caption, title = 'Rate = σ × L: a ladder of processes' }: { n?: string | number; caption?: string; title?: string } = $props();
 
   const SIGMA_H_PB = 50;
-  const brGG = particle(25).decays!.find((d) => d[1].length === 2 && d[1][0] === 22 && d[1][1] === 22)![0];
+  const brGG = particle(25).decays!.find((d) => d.products.length === 2 && d.products[0] === 22 && d.products[1] === 22)!.br;
   const BR_4L = 1.2e-4;
   interface Row { key: string; label: string; sigmaPb: number; note: string }
   const rows: Row[] = [

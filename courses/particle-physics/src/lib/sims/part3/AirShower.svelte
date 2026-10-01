@@ -35,7 +35,7 @@
   });
   onMount(() => { mounted = true; });
 
-  const res: ShowerResult = $derived(simulateShower({ E0: cfg.energy, zenithDeg: cfg.zenith, seed: cfg.seed, timeDilation: cfg.dilation, keepTracks: 240 }));
+  const res: ShowerResult = $derived(simulateShower({ E0: cfg.energy, zenithDeg: cfg.zenith, seed: cfg.seed, timeDilation: cfg.dilation, keepTracks: 260 }));
   const fmtE = (gev: number) => `10^${Math.round(Math.log10(gev * 1e9))} eV`;
   const fmtN = (x: number) => (x >= 100 ? Math.round(x).toLocaleString('en-GB') : x >= 1 ? x.toFixed(0) : x.toPrecision(2));
 

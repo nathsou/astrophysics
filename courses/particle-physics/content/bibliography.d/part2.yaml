@@ -1,0 +1,207 @@
+thomson1897:
+  authors: J. J. Thomson
+  year: 1897
+  title: Cathode rays
+  venue: Philosophical Magazine, series 5, 44(269), 293–316
+  note: >-
+    The deflection of cathode rays in electric and magnetic fields and the ratio of mass to charge of the particles.
+wilson1911:
+  authors: C. T. R. Wilson
+  year: 1911
+  title: On a method of making visible the paths of ionising particles through a gas
+  venue: Proceedings of the Royal Society of London A 85(578), 285–288
+  url: https://royalsocietypublishing.org/doi/10.1098/rspa.1911.0041
+nobel-wilson:
+  authors: The Nobel Foundation
+  year: 1927
+  title: 'The Nobel Prize in Physics 1927: C. T. R. Wilson (facts)'
+  venue: nobelprize.org
+  url: https://www.nobelprize.org/prizes/physics/1927/wilson/facts/
+glaser1952:
+  authors: D. A. Glaser
+  year: 1952
+  title: Some effects of ionizing radiation on the formation of bubbles in liquids
+  venue: Physical Review 87(4), 665
+  url: https://link.aps.org/doi/10.1103/PhysRev.87.665
+nobel-glaser:
+  authors: The Nobel Foundation
+  year: 1960
+  title: 'The Nobel Prize in Physics 1960: Donald A. Glaser (facts)'
+  venue: nobelprize.org
+  url: https://www.nobelprize.org/prizes/physics/1960/glaser/facts/
+gluckstern1963:
+  authors: R. L. Gluckstern
+  year: 1963
+  title: Uncertainties in track momentum and direction, due to multiple scattering and measurement errors
+  venue: Nuclear Instruments and Methods 24, 381–389
+  url: https://doi.org/10.1016/0029-554X(63)90347-1
+  note: >-
+    Written for bubble-chamber tracks, with results for uniform and clustered measuring points.
+acts2022:
+  authors: X. Ai et al.
+  year: 2022
+  title: A common tracking software project
+  venue: Computing and Software for Big Science 6, 8
+  url: https://arxiv.org/abs/2106.13593
+bohr1913:
+  authors: N. Bohr
+  year: 1913
+  title: On the theory of the decrease of velocity of moving electrified particles on passing through matter
+  venue: Philosophical Magazine 25(145), 10–31
+bethe1930:
+  authors: H. Bethe
+  year: 1930
+  title: Zur Theorie des Durchgangs schneller Korpuskularstrahlen durch Materie
+  venue: Annalen der Physik 397(3), 325–400
+bethe1932:
+  authors: H. Bethe
+  year: 1932
+  title: Bremsformel für Elektronen relativistischer Geschwindigkeit
+  venue: Zeitschrift für Physik 76, 293–299
+fermi1940:
+  authors: E. Fermi
+  year: 1940
+  title: The ionization loss of energy in gases and in condensed materials
+  venue: Physical Review 57(6), 485–493
+landau1944:
+  authors: L. Landau
+  year: 1944
+  title: On the energy loss of fast particles by ionization
+  venue: Journal of Physics (USSR) 8, 201–205
+heitler1954:
+  authors: W. Heitler
+  year: 1954
+  title: The Quantum Theory of Radiation, third edition
+  venue: Oxford University Press
+  note: >-
+    The multiplicative model of an electromagnetic cascade used in Chapter 6 is described in the chapter on cascade showers.
+cherenkov1934:
+  authors: P. A. Cherenkov
+  year: 1934
+  title: Visible emission of clean liquids by action of γ radiation
+  venue: Doklady Akademii Nauk SSSR 2, 451
+frank1937:
+  authors: I. M. Frank, I. E. Tamm
+  year: 1937
+  title: Coherent radiation of fast electrons in a medium
+  venue: Doklady Akademii Nauk SSSR 14, 107
+nobel-cherenkov:
+  authors: The Nobel Foundation
+  year: 1958
+  title: The Nobel Prize in Physics 1958 (Cherenkov, Frank and Tamm)
+  venue: nobelprize.org
+  url: https://www.nobelprize.org/prizes/physics/1958/summary/
+nist-pstar:
+  authors: M. J. Berger, J. S. Coursey, M. A. Zucker, J. Chang
+  year: 2005
+  title: 'ESTAR, PSTAR and ASTAR: computer programs for calculating stopping-power and range tables for electrons, protons and helium ions'
+  venue: National Institute of Standards and Technology
+  url: https://physics.nist.gov/PhysRefData/Star/Text/ref.html
+atlas2008:
+  authors: ATLAS Collaboration
+  year: 2008
+  title: The ATLAS experiment at the CERN Large Hadron Collider
+  venue: Journal of Instrumentation 3, S08003
+  url: https://doi.org/10.1088/1748-0221/3/08/S08003
+cms2008:
+  authors: CMS Collaboration
+  year: 2008
+  title: The CMS experiment at the CERN LHC
+  venue: Journal of Instrumentation 3, S08004
+  url: https://doi.org/10.1088/1748-0221/3/08/S08004
+charpak1968:
+  authors: G. Charpak, R. Bouclier, T. Bressani, J. Favier, Č. Zupančič
+  year: 1968
+  title: The use of multiwire proportional counters to select and localize charged particles
+  venue: Nuclear Instruments and Methods 62, 262–268
+  url: https://doi.org/10.1016/0029-554X(68)90371-6
+nobel-charpak:
+  authors: The Nobel Foundation
+  year: 1992
+  title: 'The Nobel Prize in Physics 1992: Georges Charpak (facts)'
+  venue: nobelprize.org
+  url: https://www.nobelprize.org/prizes/physics/1992/charpak/facts/
+hyams1983:
+  authors: B. Hyams, U. Koetz, E. Belau, R. Klanner, G. Lutz, E. Neugebauer, A. Wylie, J. Kemmer
+  year: 1983
+  title: A silicon counter telescope to study short-lived particles in high-energy hadronic interactions
+  venue: Nuclear Instruments and Methods 205(1–2), 99–105
+  url: https://doi.org/10.1016/0167-5087(83)90177-1
+  note: >-
+    Six silicon microstrip detectors with 5 μm resolution for minimum-ionising particles, tested in a 175 GeV/c beam at CERN.
+hough1959:
+  authors: P. V. C. Hough
+  year: 1959
+  title: Machine analysis of bubble chamber pictures
+  venue: Proceedings of the International Conference on High Energy Accelerators and Instrumentation, CERN, Geneva, 14–19 September 1959, 554–558
+  url: https://inspirehep.net/literature/919922
+hough1962:
+  authors: P. V. C. Hough
+  year: 1962
+  title: Method and means for recognizing complex patterns
+  venue: United States patent 3,069,654, filed 25 March 1960, granted 18 December 1962
+  url: https://patents.google.com/patent/US3069654A/en
+duda1972:
+  authors: R. O. Duda, P. E. Hart
+  year: 1972
+  title: Use of the Hough transformation to detect lines and curves in pictures
+  venue: Communications of the ACM 15(1), 11–15
+  url: https://doi.org/10.1145/361237.361242
+kalman1960:
+  authors: R. E. Kalman
+  year: 1960
+  title: A new approach to linear filtering and prediction problems
+  venue: Journal of Basic Engineering (Transactions of the ASME) 82(1), 35–45
+  url: https://doi.org/10.1115/1.3662552
+fruhwirth1987:
+  authors: R. Frühwirth
+  year: 1987
+  title: Application of Kalman filtering to track and vertex fitting
+  venue: Nuclear Instruments and Methods in Physics Research A 262, 444–450
+  url: https://doi.org/10.1016/0168-9002(87)90887-4
+cms-pf2017:
+  authors: CMS Collaboration
+  year: 2017
+  title: Particle-flow reconstruction and global event description with the CMS detector
+  venue: Journal of Instrumentation 12, P10003
+  url: https://arxiv.org/abs/1706.04965
+cosmicwatch2018:
+  authors: S. N. Axani, K. Frankiewicz, J. M. Conrad
+  year: 2018
+  title: 'The CosmicWatch desktop muon detector: a self-contained, pocket sized particle detector'
+  venue: Journal of Instrumentation 13, P03019
+  url: https://doi.org/10.1088/1748-0221/13/03/P03019
+cosmicwatch-v3x:
+  authors: S. Axani and collaborators
+  year: 2025
+  title: 'CosmicWatch: the desktop muon detector (v3X), design files and documentation'
+  venue: GitHub repository spenceraxani/CosmicWatch-Desktop-Muon-Detector-v3X; project site cosmicwatch.lns.mit.edu
+  url: https://github.com/spenceraxani/CosmicWatch-Desktop-Muon-Detector-v3X
+  note: >-
+    Released under the Creative Commons Attribution-NonCommercial 4.0 International licence (CC BY-NC 4.0), so the course links to it and does not copy its files.
+deco2015:
+  authors: J. Vandenbroucke et al.
+  year: 2015
+  title: 'Detecting particles with cell phones: the Distributed Electronic Cosmic-ray Observatory'
+  venue: arXiv:1510.07665
+  url: https://arxiv.org/abs/1510.07665
+crayfis2016:
+  authors: D. Whiteson, M. Mulhearn, C. Shimmin, K. Cranmer, K. Brodie, D. Burns
+  year: 2016
+  title: Observing ultra-high energy cosmic rays with smartphones
+  venue: Astroparticle Physics 79, 1
+  url: https://arxiv.org/abs/1410.2895
+k40-wiki:
+  authors: Wikipedia contributors
+  year: 2025
+  title: Potassium-40
+  venue: Wikipedia, the free encyclopedia
+  url: https://en.wikipedia.org/wiki/Potassium-40
+  note: >-
+    Natural abundance 0.0117 %, half-life 1.248 × 10⁹ years, about 89 % beta decay to calcium-40 and about 11 % electron capture to argon-40 with a 1.46 MeV gamma ray; the last digit of the branching fractions differs between compilations.
+cms-tracking2014:
+  authors: CMS Collaboration
+  year: 2014
+  title: Description and performance of track and primary-vertex reconstruction with the CMS tracker
+  venue: Journal of Instrumentation 9, P10009
+  url: https://arxiv.org/abs/1405.6569

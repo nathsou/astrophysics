@@ -1,0 +1,350 @@
+# Part VIII: Chapters 31 to 33 and appendices D to H. Keys are the :cite[...] keys used in those chapters.
+abi2021:
+  authors: B. Abi, Muon g−2 Collaboration, and others
+  year: 2021
+  title: Measurement of the positive muon anomalous magnetic moment to 0.46 ppm
+  venue: Physical Review Letters 126, 141801
+  url: https://doi.org/10.1103/PhysRevLett.126.141801
+ahmad2001:
+  authors: Q. R. Ahmad, SNO Collaboration, and others
+  year: 2001
+  title: Measurement of the rate of νe + d → p + p + e⁻ interactions produced by ⁸B solar neutrinos at the Sudbury Neutrino Observatory
+  venue: Physical Review Letters 87, 071301
+  url: https://doi.org/10.1103/PhysRevLett.87.071301
+ahmad2002:
+  authors: Q. R. Ahmad, SNO Collaboration, and others
+  year: 2002
+  title: Direct evidence for neutrino flavor transformation from neutral-current interactions in the Sudbury Neutrino Observatory
+  venue: Physical Review Letters 89, 011301
+  url: https://doi.org/10.1103/PhysRevLett.89.011301
+aliberti2025:
+  authors: R. Aliberti, Muon g−2 Theory Initiative, and others
+  year: 2025
+  title: 'The anomalous magnetic moment of the muon in the Standard Model: an update'
+  venue: Physics Reports 1143; arXiv:2505.21476
+  url: https://arxiv.org/abs/2505.21476
+  note: The 2025 white paper. It adopts lattice QCD for the leading hadronic contribution and gives a_μ = 116 592 033(62) × 10⁻¹¹.
+alvarez1970:
+  authors: L. W. Alvarez, J. A. Anderson, and others
+  year: 1970
+  title: Search for hidden chambers in the pyramids
+  venue: Science 167, 832–839
+  note: Spark chambers of about 4 m² in Khafre's pyramid; no hidden chamber found in the region the detector could see.
+aoyama2020:
+  authors: T. Aoyama, Muon g−2 Theory Initiative, and others
+  year: 2020
+  title: The anomalous magnetic moment of the muon in the Standard Model
+  venue: Physics Reports 887, 1–166; arXiv:2006.04822
+  url: https://arxiv.org/abs/2006.04822
+  note: The 2020 white paper, with the data-driven hadronic vacuum polarisation. a_μ = 116 591 810(43) × 10⁻¹¹.
+araki2005:
+  authors: T. Araki, KamLAND Collaboration, and others
+  year: 2005
+  title: 'Measurement of neutrino oscillation with KamLAND: evidence of spectral distortion'
+  venue: Physical Review Letters 94, 081801
+  url: https://doi.org/10.1103/PhysRevLett.94.081801
+bennett2006:
+  authors: G. W. Bennett, Muon g−2 Collaboration, and others
+  year: 2006
+  title: Final report of the E821 muon anomalous magnetic moment measurement at BNL
+  venue: Physical Review D 73, 072003
+  url: https://doi.org/10.1103/PhysRevD.73.072003
+bonechi2020:
+  authors: Lorenzo Bonechi, Raffaello D'Alessandro, Andrea Giammanco
+  year: 2020
+  title: Atmospheric muons as an imaging tool
+  venue: Reviews in Physics 5, 100038; arXiv:1906.03934
+  url: https://arxiv.org/abs/1906.03934
+  note: A review of muography, from archaeology and volcanoes to nuclear reactors.
+borsanyi2021:
+  authors: Sz. Borsanyi, BMW Collaboration, and others
+  year: 2021
+  title: Leading hadronic contribution to the muon magnetic moment from lattice QCD
+  venue: Nature 593, 51–55
+  url: https://doi.org/10.1038/s41586-021-03418-1
+cernpd1993:
+  authors: CERN
+  year: 1993
+  title: Statement putting the World Wide Web software in the public domain, 30 April 1993
+  venue: CERN
+  url: https://timeline.web.cern.ch/cern-puts-world-wide-web-public-domain
+  note: CERN's timeline entry for the release; the statement made the software free to use, copy, modify and distribute.
+cleveland1998:
+  authors: B. T. Cleveland, T. Daily, and others
+  year: 1998
+  title: Measurement of the solar electron neutrino flux with the Homestake chlorine detector
+  venue: Astrophysical Journal 496, 505–526
+  url: https://doi.org/10.1086/305343
+  note: The final Homestake result, 2.56 ± 0.16 ± 0.16 SNU.
+cmd32023:
+  authors: F. V. Ignatov, CMD-3 Collaboration, and others
+  year: 2023
+  title: Measurement of the e⁺e⁻ → π⁺π⁻ cross section from threshold to 1.2 GeV with the CMD-3 detector
+  venue: arXiv:2302.08834; Physical Review D 109, 112002 (2024)
+  url: https://arxiv.org/abs/2302.08834
+davis1968:
+  authors: Raymond Davis, Don S. Harmer, Kenneth C. Hoffman
+  year: 1968
+  title: Search for neutrinos from the Sun
+  venue: Physical Review Letters 20, 1205
+  url: https://doi.org/10.1103/PhysRevLett.20.1205
+dayabay2012:
+  authors: F. P. An, Daya Bay Collaboration, and others
+  year: 2012
+  title: Observation of electron-antineutrino disappearance at Daya Bay
+  venue: Physical Review Letters 108, 171803
+  url: https://doi.org/10.1103/PhysRevLett.108.171803
+desi2024:
+  authors: A. G. Adame, DESI Collaboration, and others
+  year: 2024
+  title: 'DESI 2024 VI: cosmological constraints from the measurements of baryon acoustic oscillations'
+  venue: arXiv:2404.03002; Journal of Cosmology and Astroparticle Physics 02 (2025) 021
+  url: https://arxiv.org/abs/2404.03002
+  note: With the cosmic microwave background, in the simplest cosmological model, the sum of the neutrino masses is below 0.072 eV at 95 % confidence.
+eguchi2003:
+  authors: K. Eguchi, KamLAND Collaboration, and others
+  year: 2003
+  title: 'First results from KamLAND: evidence for reactor antineutrino disappearance'
+  venue: Physical Review Letters 90, 021802
+  url: https://doi.org/10.1103/PhysRevLett.90.021802
+esteban2024:
+  authors: Ivan Esteban, M. C. Gonzalez-Garcia, Michele Maltoni, Ivan Martinez-Soler, João Paulo Pinheiro, Thomas Schwetz
+  year: 2024
+  title: 'NuFit-6.0: updated global analysis of three-flavor neutrino oscillations'
+  venue: Journal of High Energy Physics 12 (2024) 216; arXiv:2410.05380
+  url: https://arxiv.org/abs/2410.05380
+  note: The global fit behind the approximate parameter values quoted in Chapter 31. The course's numbers are rounded and are not a copy of the paper's tables.
+eustrategy:
+  authors: CERN
+  year: 2026
+  title: European Strategy for Particle Physics, 2026 update
+  venue: CERN, europeanstrategy.cern
+  url: https://europeanstrategy.cern/european-strategy-for-particle-physics/
+  note: The strategy update adopted on 22 May 2026 names the electron–positron Future Circular Collider as the preferred next flagship project; construction depends on later funding decisions.
+fukuda1998:
+  authors: Y. Fukuda, Super-Kamiokande Collaboration, and others
+  year: 1998
+  title: Evidence for oscillation of atmospheric neutrinos
+  venue: Physical Review Letters 81, 1562
+  url: https://doi.org/10.1103/PhysRevLett.81.1562
+fukugita1986:
+  authors: M. Fukugita, T. Yanagida
+  year: 1986
+  title: Baryogenesis without grand unification
+  venue: Physics Letters B 174, 45
+  url: https://doi.org/10.1016/0370-2693(86)91126-3
+georgi1974:
+  authors: Howard Georgi, Sheldon L. Glashow
+  year: 1974
+  title: Unity of all elementary-particle forces
+  venue: Physical Review Letters 32, 438
+  url: https://doi.org/10.1103/PhysRevLett.32.438
+gm2final:
+  authors: Muon g−2
+  year: 2025
+  title: Measurement of the positive muon anomalous magnetic moment to 127 ppb
+  venue: arXiv:2506.03069
+  url: https://arxiv.org/abs/2506.03069
+  note: Final result of the Fermilab experiment, 3 June 2025. a_μ = 116 592 0705(148) × 10⁻¹²; the experimental world average is 116 592 0715(145) × 10⁻¹².
+juno2025:
+  authors: JUNO
+  year: 2025
+  title: First measurement of reactor neutrino oscillations at JUNO
+  venue: arXiv:2511.14593
+  url: https://arxiv.org/abs/2511.14593
+  note: sin²θ₁₂ = 0.3092 ± 0.0087 and Δm²₂₁ = (7.50 ± 0.12) × 10⁻⁵ eV² from 59 days of data.
+kajantie1996:
+  authors: K. Kajantie, M. Laine, K. Rummukainen, M. Shaposhnikov
+  year: 1996
+  title: Is there a hot electroweak phase transition at m_H ≳ m_W?
+  venue: Physical Review Letters 77, 2887
+  url: https://doi.org/10.1103/PhysRevLett.77.2887
+kamlandzen2023:
+  authors: S. Abe, KamLAND-Zen Collaboration, and others
+  year: 2023
+  title: Search for the Majorana nature of neutrinos in the inverted mass ordering region with KamLAND-Zen
+  venue: Physical Review Letters 130, 051801
+  url: https://doi.org/10.1103/PhysRevLett.130.051801
+katrin2025:
+  authors: M. Aker, KATRIN Collaboration, and others
+  year: 2025
+  title: Direct neutrino-mass measurement based on 259 days of KATRIN data
+  venue: Science (2025)
+  url: https://doi.org/10.1126/science.adq9592
+  note: An upper limit of 0.45 eV (90 % confidence) on the effective electron-neutrino mass.
+kuzmin1985:
+  authors: V. A. Kuzmin, V. A. Rubakov, M. E. Shaposhnikov
+  year: 1985
+  title: On anomalous electroweak baryon number non-conservation in the early universe
+  venue: Physics Letters B 155, 36
+  url: https://doi.org/10.1016/0370-2693(85)91028-7
+lhcb2023:
+  authors: LHCb
+  year: 2023
+  title: Test of lepton universality in b → sℓ⁺ℓ⁻ decays
+  venue: Physical Review Letters 131, 051803; arXiv:2212.09152
+  url: https://arxiv.org/abs/2212.09152
+lhcb2025:
+  authors: LHCb
+  year: 2025
+  title: Observation of charge–parity symmetry breaking in baryon decays
+  venue: Nature 643, 1223–1228; arXiv:2503.16954
+  url: https://arxiv.org/abs/2503.16954
+lz2025:
+  authors: LZ
+  year: 2025
+  title: Dark matter search results from 4.2 tonne-years of exposure of the LUX-ZEPLIN (LZ) experiment
+  venue: Physical Review Letters (2025)
+  url: https://doi.org/10.1103/4dyc-z8zf
+  note: No excess over background; the strongest spin-independent limit is 2.2 × 10⁻⁴⁸ cm² at a WIMP mass of 40 GeV.
+majorana1937:
+  authors: Ettore Majorana
+  year: 1937
+  title: Teoria simmetrica dell'elettrone e del positrone
+  venue: Il Nuovo Cimento 14, 171–184
+maki1962:
+  authors: Ziro Maki, Masami Nakagawa, Shoichi Sakata
+  year: 1962
+  title: Remarks on the unified model of elementary particles
+  venue: Progress of Theoretical Physics 28, 870
+  url: https://doi.org/10.1143/PTP.28.870
+medipix:
+  authors: CERN
+  year: 2024
+  title: Medipix Collaboration
+  venue: CERN Knowledge Transfer, kt.cern
+  url: https://kt.cern/medtech/medipix
+  note: The hybrid pixel detectors of the Medipix and Timepix chips, from the LHC trackers to X-ray imaging, space dosimetry and a photon-counting CT scanner cleared by the US FDA.
+meg2016:
+  authors: A. M. Baldini, MEG Collaboration, and others
+  year: 2016
+  title: Search for the lepton flavour violating decay μ⁺ → e⁺γ with the full dataset of the MEG experiment
+  venue: European Physical Journal C 76, 434
+  url: https://doi.org/10.1140/epjc/s10052-016-4271-x
+  note: BR(μ → eγ) < 4.2 × 10⁻¹³ at 90 % confidence.
+mikheyev1985:
+  authors: S. P. Mikheyev, A. Yu. Smirnov
+  year: 1985
+  title: Resonance enhancement of oscillations in matter and solar neutrino spectroscopy
+  venue: Soviet Journal of Nuclear Physics 42, 913
+minkowski1977:
+  authors: Peter Minkowski
+  year: 1977
+  title: μ → eγ at a rate of one out of 10⁹ muon decays?
+  venue: Physics Letters B 67, 421
+  url: https://doi.org/10.1016/0370-2693(77)90435-X
+mohapatra1980:
+  authors: Rabindra N. Mohapatra, Goran Senjanović
+  year: 1980
+  title: Neutrino mass and spontaneous parity nonconservation
+  venue: Physical Review Letters 44, 912
+  url: https://doi.org/10.1103/PhysRevLett.44.912
+morishima2017:
+  authors: Kunihiro Morishima, Mitsuaki Kuno, Akira Nishio, and others
+  year: 2017
+  title: Discovery of a big void in Khufu's Pyramid by observation of cosmic-ray muons
+  venue: Nature 552, 386–390
+  url: https://www.nature.com/articles/nature24647
+nobel2002:
+  authors: NobelPrize.org
+  year: 2002
+  title: The Nobel Prize in Physics 2002
+  venue: nobelprize.org
+  url: https://www.nobelprize.org/prizes/physics/2002/press-release/
+  note: Raymond Davis Jr. and Masatoshi Koshiba, for cosmic neutrinos, and Riccardo Giacconi, for cosmic X-ray sources.
+nobel2015:
+  authors: NobelPrize.org
+  year: 2015
+  title: The Nobel Prize in Physics 2015
+  venue: nobelprize.org
+  url: https://www.nobelprize.org/prizes/physics/2015/press-release/
+  note: Takaaki Kajita and Arthur B. McDonald, for the discovery of neutrino oscillations, which shows that neutrinos have mass.
+opera2015:
+  authors: N. Agafonova, OPERA Collaboration, and others
+  year: 2015
+  title: Discovery of τ neutrino appearance in the CNGS neutrino beam with the OPERA experiment
+  venue: Physical Review Letters 115, 121802
+  url: https://doi.org/10.1103/PhysRevLett.115.121802
+  note: 'Five candidate events against an expected background of 0.25 ± 0.05: 5.1 standard deviations.'
+pontecorvo1957:
+  authors: B. Pontecorvo
+  year: 1957
+  title: Mesonium and anti-mesonium
+  venue: Zhurnal Eksperimental'noi i Teoreticheskoi Fiziki 33, 549 (Soviet Physics JETP 6, 429, 1958)
+  note: The first mention of neutrino–antineutrino transitions.
+pontecorvo1958:
+  authors: B. Pontecorvo
+  year: 1958
+  title: Inverse beta processes and nonconservation of lepton charge
+  venue: Zhurnal Eksperimental'noi i Teoreticheskoi Fiziki 34, 247 (Soviet Physics JETP 7, 172, 1958)
+pontecorvo1967:
+  authors: B. Pontecorvo
+  year: 1967
+  title: Neutrino experiments and the problem of conservation of leptonic charge
+  venue: Zhurnal Eksperimental'noi i Teoreticheskoi Fiziki 53, 1717 (Soviet Physics JETP 26, 984, 1968)
+planck2018:
+  authors: Planck
+  year: 2020
+  title: 'Planck 2018 results. VI. Cosmological parameters'
+  venue: Astronomy & Astrophysics 641, A6; arXiv:1807.06209
+  url: https://arxiv.org/abs/1807.06209
+  note: Ω_c h² = 0.120 ± 0.001, Ω_b h² = 0.0224 ± 0.0001; with baryon acoustic oscillations the sum of neutrino masses is below 0.12 eV (95 %).
+procureur2023:
+  authors: S. Procureur, K. Morishima, M. Kuno, and others
+  year: 2023
+  title: Precise characterization of a corridor-shaped structure in Khufu's Pyramid by observation of cosmic-ray muons
+  venue: Nature Communications 14 (2023)
+  url: https://www.nature.com/articles/s41467-023-36351-0
+pstar:
+  authors: M. J. Berger, J. S. Coursey, M. A. Zucker, J. Chang
+  year: 2005
+  title: 'PSTAR: stopping-power and range tables for protons'
+  venue: NIST Standard Reference Database 124
+  url: https://physics.nist.gov/PhysRefData/Star/Text/PSTAR.html
+rubin1970:
+  authors: Vera C. Rubin, W. Kent Ford Jr.
+  year: 1970
+  title: Rotation of the Andromeda Nebula from a spectroscopic survey of emission regions
+  venue: Astrophysical Journal 159, 379
+  url: https://doi.org/10.1086/150317
+sakharov1967:
+  authors: A. D. Sakharov
+  year: 1967
+  title: Violation of CP invariance, C asymmetry, and baryon asymmetry of the universe
+  venue: Pis'ma v ZhETF 5, 32; JETP Letters 5, 24–27
+sekmen2025:
+  authors: Sezen Sekmen
+  year: 2025
+  title: 'Supersymmetry searches in CMS Run 2: a complete review'
+  venue: arXiv:2510.17971
+  url: https://arxiv.org/abs/2510.17971
+superk2020:
+  authors: K. Abe, Super-Kamiokande Collaboration, and others
+  year: 2020
+  title: Search for proton decay via p → e⁺π⁰ and p → μ⁺π⁰ with an enlarged fiducial volume in Super-Kamiokande I–IV
+  venue: Physical Review D 102, 112011
+  url: https://doi.org/10.1103/PhysRevD.102.112011
+  note: τ/B(p → e⁺π⁰) > 2.4 × 10³⁴ years and τ/B(p → μ⁺π⁰) > 1.6 × 10³⁴ years at 90 % confidence, from 450 kilotonne-years.
+wilson1946:
+  authors: Robert R. Wilson
+  year: 1946
+  title: Radiological use of fast protons
+  venue: Radiology 47, 487–491
+  url: https://doi.org/10.1148/47.5.487
+wilsonfnal:
+  authors: Fermilab
+  year: 2000
+  title: 'History and heritage of proton-beam therapy: Robert R. Wilson'
+  venue: history.fnal.gov
+  url: https://history.fnal.gov/historical/applications/history_proton_therapy.html
+wolfenstein1978:
+  authors: L. Wolfenstein
+  year: 1978
+  title: Neutrino oscillations in matter
+  venue: Physical Review D 17, 2369
+  url: https://doi.org/10.1103/PhysRevD.17.2369
+zwicky1933:
+  authors: Fritz Zwicky
+  year: 1933
+  title: Die Rotverschiebung von extragalaktischen Nebeln
+  venue: Helvetica Physica Acta 6, 110–127

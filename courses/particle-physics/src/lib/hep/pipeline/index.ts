@@ -13,6 +13,7 @@ export * from './processes.ts';
 export * from './observables.ts';
 export * from './accum.ts';
 export * from './machine.ts';
+export * from './detector.ts';
 export * from './run.ts';
 export * from './summary.ts';
 export * from './samples.ts';

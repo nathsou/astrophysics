@@ -12,3 +12,15 @@ export { default as DimuonThresholds } from '$lib/sims/part7/DimuonThresholds.sv
 
 /** Chapter 28: CLs upper limits for a counting experiment, with CLs+b alone and the expected limit bands: `::limit-explorer{n="28.6" caption="…"}`. */
 export { default as LimitExplorer } from '$lib/sims/part7/LimitExplorer.svelte';
+
+/** Chapter 29: the diphoton analysis on simulated events (cut flow, mass histogram, Crystal Ball fit, local significance): `::higgs-hunt{n="29.3" caption="…"}`. */
+export { default as HiggsHunt } from '$lib/sims/part7/HiggsHunt.svelte';
+/** Chapter 29: the same four-lepton analysis on real CMS open data and on simulation, one button to swap: `::four-lepton-swap{n="29.4" caption="…"}`. */
+export { default as FourLeptonSwap } from '$lib/sims/part7/FourLeptonSwap.svelte';
+
+/** Chapter 30: the Standard Model's coupling-against-mass line with each particle's test status (the prediction; no measured value is drawn): `::coupling-line{n="30.1" caption="…"}`. */
+export { default as CouplingLine } from '$lib/sims/part7/CouplingLine.svelte';
+/** Chapter 30: Higgs branching fractions against mass from `hep/sm` higgsWidths, beside the particle table: `::higgs-branching{n="30.2" caption="…"}`. */
+export { default as HiggsBranching } from '$lib/sims/part7/HiggsBranching.svelte';
+/** Chapter 30: a one-loop toy of the running of λ and the stability of the vacuum, with the top-mass slider: `::vacuum-running{n="30.4" caption="…"}`. */
+export { default as VacuumRunning } from '$lib/sims/part7/VacuumRunning.svelte';

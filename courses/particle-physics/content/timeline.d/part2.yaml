@@ -1,0 +1,60 @@
+- year: 1897
+  title: The cathode-ray particle
+  people: J. J. Thomson
+  chapter: tracks
+  text: >-
+    Thomson deflects cathode rays in electric and magnetic fields and finds a ratio of mass to charge about a thousand times smaller than for the hydrogen ion, whatever the gas or the electrode.
+- year: 1911
+  title: The cloud chamber
+  people: C. T. R. Wilson
+  chapter: tracks
+  text: >-
+    Wilson publishes a method of making the paths of individual ionising particles visible by condensing water on the ions they leave in a moist gas.
+- year: 1930
+  title: Bethe's energy-loss formula
+  people: Hans Bethe
+  chapter: particles-through-matter
+  text: >-
+    Bethe derives with quantum mechanics the mean rate at which a fast charged particle loses energy to the electrons of the matter it crosses; the relativistic form followed in 1932.
+- year: 1934
+  title: Cherenkov's light
+  people: Pavel Cherenkov
+  chapter: particles-through-matter
+  text: >-
+    Cherenkov reports visible light from pure liquids irradiated with gamma rays, which Frank and Tamm explain in 1937 as radiation from particles moving faster than light in the medium.
+- year: 1952
+  title: The bubble chamber
+  people: Donald A. Glaser
+  chapter: tracks
+  text: >-
+    Glaser shows that ionising radiation starts bubbles along its path in a superheated liquid, the idea behind the bubble chamber.
+- year: 1959
+  title: The Hough transform
+  people: Paul V. C. Hough
+  chapter: reconstruction
+  text: >-
+    Hough presents at CERN a method of finding tracks in bubble-chamber pictures by machine; the patent, filed in 1960 and granted in 1962, is the origin of the Hough transform.
+- year: 1960
+  title: The Kalman filter
+  people: Rudolf E. Kalman
+  chapter: reconstruction
+  text: >-
+    Kalman publishes the recursive filter for estimating the state of a linear system from noisy measurements.
+- year: 1968
+  title: The multiwire proportional chamber
+  people: Georges Charpak and colleagues
+  chapter: building-a-detector
+  text: >-
+    Charpak's group at CERN shows that a plane of many thin wires in a gas gives the position of a particle electronically, at high rate, without photographs.
+- year: 1983
+  title: Silicon microstrip detectors in a CERN experiment
+  people: B. Hyams, J. Kemmer and colleagues
+  chapter: building-a-detector
+  text: >-
+    A telescope of six silicon microstrip detectors, with a resolution of 5 micrometres, is used in a fixed-target experiment at CERN to study short-lived particles.
+- year: 1987
+  title: Kalman filtering for tracks
+  people: Rudolf Frühwirth
+  chapter: reconstruction
+  text: >-
+    Frühwirth shows that the iterative track and vertex fits used in particle physics are the Kalman filter, opening the way to its use as the standard track fit.
