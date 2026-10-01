@@ -13,7 +13,7 @@ const kernel = fileURLToPath(new URL('../../packages/kernel/src', import.meta.ur
 export default defineConfig({
   base: './',
   resolve: { alias: { '@kernel': kernel } },
-  server: { fs: { allow: ['.', kernel] } },
+  server: { fs: { allow: ['.', kernel, fileURLToPath(new URL('../../packages/course-navigation', import.meta.url))] } },
   plugins: [
     {
       enforce: 'pre',

@@ -215,7 +215,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  scroll-padding-top: 5rem;
+  scroll-padding-top: calc(5rem + var(--course-nav-height));
 }
 
 body {

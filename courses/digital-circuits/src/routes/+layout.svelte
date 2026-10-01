@@ -1,5 +1,6 @@
 <script lang="ts">
   import '../app.css';
+  import '../../../../packages/course-navigation/navigation.css';
   import { onMount, type Snippet } from 'svelte';
   import { theme } from '$lib/state/theme.svelte';
   import { nav } from '$lib/state/nav.svelte';
@@ -23,6 +24,9 @@
 </script>
 
 <a class="skip ui" href="#main">Skip to content</a>
+<nav class="course-index-nav" aria-label="Course collection">
+  <a class="course-index-link" href="{base}/../" data-sveltekit-reload><span aria-hidden="true">←</span> All courses</a>
+</nav>
 <TopBar />
 <div class="shell" class:home>
   <Sidebar />
@@ -57,7 +61,7 @@
   .shell {
     display: grid;
     grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
-    min-height: calc(100vh - 3.5rem);
+    min-height: calc(100vh - 3.5rem - var(--course-nav-height));
   }
   main {
     min-width: 0;

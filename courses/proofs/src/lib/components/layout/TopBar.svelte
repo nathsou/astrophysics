@@ -28,7 +28,7 @@
 <style>
   .topbar {
     position: sticky;
-    top: 0;
+    top: var(--course-nav-height);
     z-index: 40;
     height: 3.25rem;
     display: flex;

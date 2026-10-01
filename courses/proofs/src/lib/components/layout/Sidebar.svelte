@@ -52,8 +52,8 @@
 <style>
   .sidebar {
     position: sticky;
-    top: 3.25rem;
-    height: calc(100vh - 3.25rem);
+    top: calc(3.25rem + var(--course-nav-height));
+    height: calc(100dvh - 3.25rem - var(--course-nav-height));
     overflow-y: auto;
     padding: 1.25rem 0.75rem 3rem 1rem;
     border-right: 2px solid var(--fg);
@@ -141,7 +141,7 @@
   @media (max-width: 1099px) {
     .sidebar {
       position: fixed;
-      top: 3.25rem;
+      top: calc(3.25rem + var(--course-nav-height));
       left: 0;
       z-index: 45;
       width: min(20rem, 88vw);
@@ -156,7 +156,7 @@
     .scrim.open {
       display: block;
       position: fixed;
-      inset: 3.25rem 0 0 0;
+      inset: calc(3.25rem + var(--course-nav-height)) 0 0 0;
       z-index: 44;
       background: rgba(26, 25, 23, 0.4);
     }

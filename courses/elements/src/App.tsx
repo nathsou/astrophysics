@@ -1,3 +1,4 @@
+import '../../../packages/course-navigation/navigation.css';
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { applyTheme, themeStore, useStore, type Theme } from './ui/store';
 import { byId, citeLabel, index, parseRef, ROMAN } from './text';
@@ -287,6 +288,9 @@ export function App() {
   }, []);
   return (
     <div className="app">
+      <nav className="course-index-nav" aria-label="Course collection">
+        <a className="course-index-link" href="../"><span aria-hidden="true">←</span> All courses</a>
+      </nav>
       <TopBar route={route} onSearch={() => setPalette(true)} />
       <main className="main">
         <Suspense fallback={<div className="page muted">Loading…</div>}>

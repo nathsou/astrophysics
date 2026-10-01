@@ -1,3 +1,4 @@
+import '../../../../packages/course-navigation/navigation.css';
 import { A, useLocation, type RouteSectionProps } from '@solidjs/router';
 import { For, Show, createSignal, createEffect, onCleanup, onMount } from 'solid-js';
 import { chapters, parts, chapterBySlug, romans, chapterLabel } from '../content/chapters.ts';
@@ -26,6 +27,10 @@ export function Layout(props: RouteSectionProps) {
   const partLabel = (n: number) => (n === 0 || n === 7 ? parts[n].title : `Part ${romans[n]} · ${parts[n].title}`);
 
   return (
+    <>
+      <nav class="course-index-nav" aria-label="Course collection">
+        <a class="course-index-link" href="../" target="_self"><span aria-hidden="true">←</span> All courses</a>
+      </nav>
     <div class="shell">
       <nav class={`sidebar ${open() ? 'open' : ''}`} aria-label="Course contents">
         <A href="/" class="brand">
@@ -108,5 +113,6 @@ export function Layout(props: RouteSectionProps) {
         {props.children}
       </div>
     </div>
+    </>
   );
 }

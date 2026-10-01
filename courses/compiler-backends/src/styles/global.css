@@ -119,7 +119,7 @@
 :root:root:root .inv { --code-bg: var(--inv-surface); }
 
 * { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: var(--course-nav-height); }
 body {
   margin: 0;
   background: var(--bg);
@@ -144,12 +144,12 @@ button { font: inherit; color: inherit; }
 .label-mono, .article .kicker, .toc-part, .callout .callout-title, .aside .aside-kind { font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.14em; font-weight: 500; }
 
 /* ------------------------------------------------------------ app shell */
-.app { display: grid; grid-template-columns: var(--sidebar-w) minmax(0, 1fr); min-height: 100vh; }
+.app { display: grid; grid-template-columns: var(--sidebar-w) minmax(0, 1fr); min-height: calc(100vh - var(--course-nav-height)); }
 .app.wide-mode, .app.home-mode { grid-template-columns: minmax(0, 1fr); }
 .app.wide-mode > .sidebar, .app.home-mode > .sidebar { display: none; }
 .app.home-mode .mobile-bar { display: none; }
 .sidebar {
-  position: sticky; top: 0; height: 100vh; overflow-y: auto; border-right: 1px solid var(--fg);
+  position: sticky; top: var(--course-nav-height); height: calc(100dvh - var(--course-nav-height)); overflow-y: auto; border-right: 1px solid var(--fg);
   background: var(--pn); font-family: var(--plex); font-size: 13.5px; padding: 22px 14px 40px 16px;
   scrollbar-width: thin;
 }
@@ -173,9 +173,9 @@ button { font: inherit; color: inherit; }
 .mobile-bar { display: none; }
 @media (max-width: 980px) {
   .app { grid-template-columns: minmax(0, 1fr); }
-  .sidebar { position: fixed; z-index: 50; left: 0; top: 0; width: min(320px, 88vw); transform: translateX(-102%); visibility: hidden; transition: transform 0.2s, visibility 0.2s; box-shadow: var(--shadow-lg); }
+  .sidebar { position: fixed; z-index: 50; left: 0; top: var(--course-nav-height); width: min(320px, 88vw); transform: translateX(-102%); visibility: hidden; transition: transform 0.2s, visibility 0.2s; box-shadow: var(--shadow-lg); }
   .sidebar.open { transform: none; visibility: visible; }
-  .mobile-bar { display: flex; position: sticky; top: 0; z-index: 40; align-items: center; gap: 10px; padding: 10px 16px; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--fg); font-family: var(--plex); font-size: 14px; }
+  .mobile-bar { display: flex; position: sticky; top: var(--course-nav-height); z-index: 40; align-items: center; gap: 10px; padding: 10px 16px; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--fg); font-family: var(--plex); font-size: 14px; }
   .mobile-bar .logo-mark { width: 22px; height: 22px; border-radius: 3px; }
   .mobile-bar .logo-mark::after { inset: 5px; }
 }

@@ -1,3 +1,4 @@
+import '../../../packages/course-navigation/navigation.css';
 import { useEffect, useRef, useState } from 'react';
 import { MDXProvider } from '@mdx-js/react';
 import { applyTheme, inspectorCollapsed, inspectorStore, reducedMotion, themeStore, useStore, type Theme } from './ui/store';
@@ -180,6 +181,9 @@ export function App() {
   const landing = route.page === 'home';
   return (
     <MDXProvider components={mdxComponents}>
+      <nav className="course-index-nav" aria-label="Course collection">
+        <a className="course-index-link" href="../"><span aria-hidden="true">←</span> All courses</a>
+      </nav>
       <a className="skip" href="#main">Skip to content</a>
       <div className={`app${landing ? ' landing' : ''}`}>
         {!landing && <Sidebar route={route} open={open} onNav={() => setOpen(false)} onSearch={() => setSearching(true)} />}

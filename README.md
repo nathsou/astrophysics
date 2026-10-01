@@ -15,6 +15,8 @@ A collection of interactive textbooks. The [course index](site/index.html) links
 | Digital Circuits | `courses/digital-circuits/` | `/digital-circuits/` |
 | Particle Physics *(in progress)* | `courses/particle-physics/` | `/particle-physics/` |
 
+Every course has an “All courses” link at the top that returns to the collection index. Its shared styles live in `packages/course-navigation/navigation.css`.
+
 ## Build
 
 Node.js 22 or later is required. Each course keeps its own dependencies and lockfile; language-models is a pnpm workspace (its site, its TypeScript library and a Python training lab), so it also needs [pnpm](https://pnpm.io).
@@ -44,8 +46,6 @@ To install, build and preview everything locally in one step, run `npm run previ
 
 Course-specific development and tests are documented in each course's README.
 
-## Course audit
-
-The findings, fixes, coverage and remaining checks are recorded in [COURSE_AUDIT.md](COURSE_AUDIT.md).
+## Content checks
 
 After building, run `npm run audit` (requires Python 3) to check every generated HTML page for broken local links and images, missing section targets, duplicate IDs and equation errors. For a build published under a prefix, use `npm run audit -- --base-path /courses`, replacing `/courses` with the value used for `COURSES_BASE_PATH`. Hash-router destinations, widget behavior and mobile layout also need browser checks.

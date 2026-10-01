@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import '../../../../packages/course-navigation/navigation.css';
 // KaTeX CSS must match the KaTeX version that renders the maths at build time. rehype-katex 7 bundles
 // its own KaTeX 0.16 (nested in its node_modules), whose markup uses class names (.sizing, .strut,
 // .sqrt>.root, .stretchy…) that the top-level katex 0.18 stylesheet renamed. With the 0.18 CSS,
@@ -42,6 +43,9 @@ const published = new Set(
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   </head>
   <body data-chapter={current} class:list={[landing && 'landing']}>
+    <nav class="course-index-nav" aria-label="Course collection">
+      <a class="course-index-link" href={`${base}/../`}><span aria-hidden="true">←</span> All courses</a>
+    </nav>
     <a class="skip" href="#main">Skip to content</a>
     {!landing && <button class="btn menu-toggle" aria-label="Menu" aria-controls="site-nav" aria-expanded="false">☰</button>}
     <div class="shell">

@@ -1,3 +1,4 @@
+import '../../../packages/course-navigation/navigation.css';
 import { lazy, Suspense, useEffect, useState, type ComponentType } from 'react';
 import { MDXProvider } from '@mdx-js/react';
 import { CHAPTERS, PARTS, chapterBySlug } from './content/course';
@@ -113,6 +114,9 @@ export function App() {
   }
   return (
     <MDXProvider components={mdxComponents}>
+      <nav className="course-index-nav" aria-label="Course collection">
+        <a className="course-index-link" href="../"><span aria-hidden="true">←</span> All courses</a>
+      </nav>
       <div className={`app ${route.startsWith('playground') ? 'wide-mode' : route.startsWith('ch/') ? '' : 'home-mode'}`}>
         <a className="skip-link" href="#/" onClick={(e) => { e.preventDefault(); document.getElementById('main')?.focus(); }}>Skip to content</a>
         <Sidebar route={route} open={open} onNav={() => setOpen(false)} />

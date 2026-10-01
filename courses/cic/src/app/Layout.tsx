@@ -1,3 +1,4 @@
+import '../../../../packages/course-navigation/navigation.css';
 import { A, useLocation, type RouteSectionProps } from '@solidjs/router';
 import { For, Show, createSignal, createEffect, onCleanup, onMount } from 'solid-js';
 import { chapters, parts, chapterBySlug, fileName, baseFileName } from '../content/chapters.ts';
@@ -43,6 +44,10 @@ export function Layout(props: RouteSectionProps) {
   const themeIcon = () => (theme() === 'dark' ? '☾' : theme() === 'light' ? '☀' : '◐');
 
   return (
+    <>
+      <nav class="course-index-nav" aria-label="Course collection">
+        <a class="course-index-link" href="../" target="_self"><span aria-hidden="true">←</span> All courses</a>
+      </nav>
     <div class="shell">
       <a
         href="#main"
@@ -147,5 +152,6 @@ export function Layout(props: RouteSectionProps) {
         </main>
       </div>
     </div>
+    </>
   );
 }
