@@ -10,6 +10,10 @@ Chapter 8 ended with an inverter that works and a power bill that does not. When
 
 The last paragraph of Chapter 8 already named the cure: make the pull-up a transistor too, one that is on exactly when the pull-down is off. Then the supply is never joined to ground through the gate, except for the instant that the gate switches. That idea is called **CMOS**, for :term[complementary metal–oxide–semiconductor]{id=cmos}, and it is what almost every digital chip made today is built from. This chapter builds the idea up from a single transistor, finds the rule that makes every CMOS gate work, and ends with a program that applies the rule for you: type a Boolean expression and it draws the transistors.
 
+:::note
+**Three sessions, one idea at a time.** First understand the inverter and why its steady-state current is small. Next use series/parallel duality to predict a NAND or NOR network; stop before complex gates. Finally explore complex gates and passing a level. Choose one build exercise that challenges your prediction; completing all variations is optional.
+:::
+
 ## Two kinds of switch
 
 Chapter 6 showed that switches in series compute AND and switches in parallel compute OR, but that no arrangement of switches computes NOT, because every switch conducts *more* when it is closed. NOT needed a relay, with a normally-closed contact that conducts when its coil is off.

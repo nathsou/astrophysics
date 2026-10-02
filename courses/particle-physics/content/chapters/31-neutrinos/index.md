@@ -114,7 +114,7 @@ Three properties of the formula decide how every experiment is built.
 - **It is zero for a distance much shorter than the oscillation length.** Near the source the beam is still pure. That is why a "near detector" measures the beam before it has had time to change and a "far detector" measures it after.
 - **It averages to $\tfrac12\sin^2 2\theta$** when many oscillations fit inside the detector's resolution: far above the first maximum the neutrinos have lost the phase, and the detector sees a fixed fraction.
 
-::two-flavour{n="31.1" caption="The two-flavour formula, drawn by the library's function through the hook oscillations.probability. Drag Δm² and the energy: the pattern in L stretches or shrinks and the height stays at sin²2θ. If you have solved the exercise below and ticked use my code, it is your function that draws the curve."}
+::two-flavour{n="31.1" caption="The two-flavour formula, drawn by the library's function through the hook oscillations.probability. Drag Δm² and the energy: the pattern in L stretches or shrinks and the height stays at sin²2θ. Use the reference curve to check the scaling prediction below."}
 
 ### You write: the oscillation probability
 

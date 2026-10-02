@@ -2,7 +2,7 @@
 number: 8
 title: Reconstruction
 summary: From thousands of hits and calorimeter cells to tracks, vertices, electrons, photons, muons and jets. Seeding and its combinatorics, the Hough transform, the Kalman filter, vertex finding, clustering and particle flow, and how efficiency and fake rate are measured against the simulated truth.
-duration: About 3 hours
+duration: Three sessions, with optional implementation extensions
 prerequisites: [building-a-detector]
 ---
 

@@ -2,6 +2,9 @@
 Two values can share a register only if they are never needed at the same time. Liveness analysis computes, for every point in the program, which values are still needed — the fact register allocation is built on.
 </p>
 
+
+<Callout kind="try" title="Predict before stepping">Pause at one block. Write down which values must survive its exit, then reveal the computed live-out set. Change a use in the source and predict which predecessor sets change. The goal is to explain one propagation, not to implement a fixed-point engine.</Callout>
+
 ## When is a value live?
 
 A value *v* is **<Term k="liveness">live</Term>** at a program point *p* if there is a path from *p* to a **use** of *v* that does not pass through a **redefinition** of *v*. Informally, *v* is live at *p* if its current contents might still be read. Otherwise the register holding it can be reused.

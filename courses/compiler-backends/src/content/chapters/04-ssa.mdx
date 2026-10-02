@@ -2,6 +2,9 @@
 Static single assignment form gives every value exactly one definition. It turns data flow into explicit edges between instructions — and it is what makes a modern backend’s analyses simple and fast. This chapter builds it: mem2reg, the pass that turns the front end’s stack slots into SSA values.
 </p>
 
+
+<Callout kind="try" title="Predict before stepping">Before stepping SSA construction, identify a join where two definitions of the same variable meet. Predict whether a phi is needed if the variable is never used after that join. Check the generated SSA, then explain any difference.</Callout>
+
 ## Why SSA?
 
 In ordinary three-address code a variable may be assigned many times. To know which assignment a use sees, you need a dataflow analysis (*reaching definitions*), and its answer is a set. In **<Term k="ssa">SSA</Term>** form each name is assigned exactly once, so the question disappears: a use sees *the* definition of its name. Every use-def chain is a single pointer. Many optimisations become simple and *sparse*, working only along those pointers instead of iterating over every program point:

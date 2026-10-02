@@ -1,3 +1,4 @@
+import { mountReadingGuide } from './reading';
 export interface SidebarState {
   open: boolean;
   collapsed: boolean;
@@ -17,6 +18,7 @@ export function mountSidebar(course: string, onChange?: (state: SidebarState) =>
   const main = document.querySelector<HTMLElement>('.course-shell > main, .course-shell > .main');
   if (!button || !sidebar) return () => {};
 
+  const stopReading = mountReadingGuide(course);
   const label = button.querySelector('[data-sidebar-label]');
   const key = `${course}:sidebar`;
   const media = matchMedia('(max-width: 1099px)');
@@ -117,6 +119,7 @@ export function mountSidebar(course: string, onChange?: (state: SidebarState) =>
   update();
 
   return () => {
+    stopReading();
     button.removeEventListener('click', toggle);
     scrim.remove();
     document.removeEventListener('click', onClick);

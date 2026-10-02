@@ -2,7 +2,7 @@
 number: 3
 title: Quantum essentials
 summary: Spin and the two families of particles, amplitudes that add before they are squared, the exponential law of decay, the link between a short life and a wide line, and the two numbers, a cross-section and a luminosity, that turn a theory into a count rate.
-duration: About 2½ hours
+duration: Three sessions, with optional implementation extensions
 prerequisites: [relativity-for-particles]
 ---
 

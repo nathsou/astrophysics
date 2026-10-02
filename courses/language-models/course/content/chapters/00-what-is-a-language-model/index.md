@@ -14,7 +14,7 @@ builds:
 :::
 
 
-This is CourseGPT. It has 30 million parameters, it trained on about a billion token presentations from children’s stories, and it writes new ones. By the end of Part IV you will have built every piece of it yourself — the tokeniser, the tensors, the automatic differentiation, the GPU kernels, the Transformer, the training loop and the inference engine — and it will run on code you wrote. Here it is at work:
+This is CourseGPT. It has 30 million parameters, it trained on about a billion token presentations from children’s stories, and it writes new ones. By the end of Part IV you can trace every piece — the tokeniser, tensors, automatic differentiation, GPU kernels, Transformer, training loop and inference engine. Choose the components you want to implement; supplied reference code keeps the model running while you learn. Here it is at work:
 
 ::course-gpt-tour
 

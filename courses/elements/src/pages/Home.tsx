@@ -100,6 +100,15 @@ export function Home() {
         <HeroFigure />
       </header>
 
+      <section aria-label="Choose a learning path">
+        <h2>Choose a learning path</h2>
+        <p>For a first reading, select Modern text on a proposition; Heath preserves the original translation for comparison. Follow a proposition's dependency links when a step needs a result you have not met. The complete book remains a reference, not a required checklist.</p>
+        <ul>
+          <li><strong>To Pythagoras:</strong> start with <a href="#/1.1">I.1</a>, then triangle congruence and parallel lines in Book I, ending at <a href="#/1.47">I.47</a>. Explain one construction before advancing.</li>
+          <li><strong>To Euclid's primes:</strong> start with <a href="#/7.1">VII.1</a> and the number definitions, then use the cited divisibility results to reach <a href="#/9.20">IX.20</a>. Try the numerical self-checks in Modern text.</li>
+          <li><strong>To the regular solids:</strong> use <a href="#/book/11">Book XI</a> for solid geometry, then the constructions of Book XIII and <a href="#/13.18">XIII.18</a>. Earlier ratios and constructions are reference prerequisites, linked from each proof.</li>
+        </ul>
+      </section>
       <section aria-label="The thirteen books">
         <div className="home-h">
           <h2>Thirteen books</h2>

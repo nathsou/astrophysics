@@ -136,7 +136,7 @@ for await (const chunk of tokenBytes) {
 text += decoder.decode(); // flush
 ```
 
-Now implement both directions yourself. The encoder is short. The decoder is harder: malformed input must be handled exactly as browsers do, which is a good first taste of the “specification-accurate” code an inference engine needs.
+Inspect both directions with the supplied codec. Pay attention to malformed input: understanding why it is rejected is more useful here than reimplementing every decoding edge case.
 
 :::question
 **Read the bytes.** In the character explorer, compare `A`, `é`, and `🙂`. Predict their UTF-8 lengths before revealing the bytes: one, two, and four bytes respectively. The prefixes encode the sequence length; the remaining bits carry the code point. You do not need to implement a text codec to continue.
@@ -149,7 +149,7 @@ Now implement both directions yourself. The encoder is short. The decoder is har
 :::breakit
 1. Encode `café` as UTF-8, then decode the bytes as Latin-1: `new TextDecoder('latin1').decode(new TextEncoder().encode('café'))`. Predict the output before you run it.
 2. Split the UTF-8 bytes of `'日本'` after the fourth byte and decode each half *without* `stream: true`. How many replacement characters do you get, and why?
-3. Switch the inspector above to your encoder, then deliberately break the 3-byte case (say, drop the `& 0x3F`). Which examples still look right? Which tests catch it?
+3. In the inspector, compare one-, two- and three-byte characters. Predict how losing a continuation byte changes the decoded result, then check with the supplied decoder.
 :::
 
 ### Normalisation: when equal isn’t equal

@@ -121,3 +121,10 @@
     transition: none;
   }
 }
+
+.course-reading-guide { font: inherit; font-size: 0.9rem; padding: 0.75rem 1rem; margin: 1rem 0 1.5rem; border: 1px solid currentColor; border-radius: 6px; opacity: 0.95; max-width: 100%; }
+.course-reading-guide summary { cursor: pointer; font-weight: 600; }
+.course-reading-guide button { appearance: none; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; padding: 0.25rem 0; text-decoration: underline; cursor: pointer; white-space: normal; }
+.course-reading-guide button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.course-reading-guide ol { padding-left: 1.25rem; }
+@media print { .course-reading-guide { display: none; } }

@@ -6,7 +6,7 @@
     ::::
 -->
 <script lang="ts">
-  import type { Snippet } from 'svelte';
+  import { onMount, type Snippet } from 'svelte';
   import { setZoom } from './zoom';
 
   let { levels = 'Idea, Sketch, Proof', title, children }: { levels?: string; title?: string; children?: Snippet } = $props();
@@ -14,6 +14,18 @@
   const names = $derived(levels.split(',').map((s) => s.trim()));
   let current = $state(0);
   let next = 0;
+  function choose(index: number) {
+    current = Math.max(0, Math.min(names.length - 1, index));
+    try { localStorage.setItem('proofcraft:detail', names[current]!); } catch { /* use current choice */ }
+    window.dispatchEvent(new CustomEvent('proofcraft:detail', { detail: names[current] }));
+  }
+  onMount(() => {
+    const apply = (name: string | null) => { const i = names.indexOf(name ?? ''); if (i >= 0) current = i; };
+    try { apply(localStorage.getItem('proofcraft:detail')); } catch { /* first level */ }
+    const listener = (event: Event) => apply((event as CustomEvent<string>).detail);
+    window.addEventListener('proofcraft:detail', listener);
+    return () => window.removeEventListener('proofcraft:detail', listener);
+  });
   setZoom({
     claim: () => next++,
     get current() {
@@ -27,14 +39,14 @@
     <span class="kind">Zoom</span>
     {#if title}<span class="title">{title}</span>{/if}
     <span class="spacer"></span>
-    <div class="levels" role="tablist" aria-label="Level of detail">
-      <button class="step" onclick={() => (current = Math.max(0, current - 1))} disabled={current === 0} aria-label="Less detail">−</button>
+    <div class="levels" role="tablist" aria-label="Level of detail (remembered across proofs)">
+      <button class="step" onclick={() => choose(current - 1)} disabled={current === 0} aria-label="Less detail">−</button>
       {#each names as n, i (i)}
-        <button role="tab" aria-selected={current === i} class:on={current === i} onclick={() => (current = i)}>
+        <button role="tab" aria-selected={current === i} class:on={current === i} onclick={() => choose(i)}>
           <span class="dot" style:--k={i / Math.max(1, names.length - 1)}></span>{n}
         </button>
       {/each}
-      <button class="step" onclick={() => (current = Math.min(names.length - 1, current + 1))} disabled={current === names.length - 1} aria-label="More detail">+</button>
+      <button class="step" onclick={() => choose(current + 1)} disabled={current === names.length - 1} aria-label="More detail">+</button>
     </div>
   </header>
   <div class="body">{@render children?.()}</div>

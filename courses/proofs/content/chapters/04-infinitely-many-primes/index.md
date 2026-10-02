@@ -76,6 +76,11 @@ notes:
   '2': 'Correct: $N$ divided by $p_i$ leaves remainder $1$.'
 ```
 
+
+:::note
+**A stopping point:** explain why a prime factor of the product-plus-one cannot be on the original list. That completes the main lesson. The following proofs are optional alternatives: the Euler route uses unique factorisation (Chapter 6) and infinite series (Chapter 16); the topological proof introduces another viewpoint. Return after those prerequisites if they are unfamiliar.
+:::
+
 ## Five more proofs
 
 A fact this fundamental has been proved in many ways, and each proof teaches a different technique. There is even a whole book of them.:cite[aigner-ziegler]

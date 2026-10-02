@@ -42,10 +42,10 @@ export function SectionPage({ id, params }: { id: string; params: URLSearchParam
 
   const available: Mode[] = [plan?.intuition && 'intuition', plan?.explore && 'explore', 'formal'].filter(Boolean) as Mode[];
   const requested = params.get('mode') as Mode | null;
-  const stored = persisted<Mode | null>(`ic.mode.${id}`, null);
+  const stored = persisted<Mode | null>('ic.mode.preferred', persisted<Mode | null>(`ic.mode.${id}`, null));
   const mode: Mode = requested && available.includes(requested) ? requested : stored && available.includes(stored) ? stored : available[0];
   const setMode = (m: Mode) => {
-    persist(`ic.mode.${id}`, m);
+    persist('ic.mode.preferred', m);
     history.replaceState(null, '', `#/s/${id}?mode=${m}`);
     window.dispatchEvent(new HashChangeEvent('hashchange'));
   };
@@ -76,7 +76,7 @@ export function SectionPage({ id, params }: { id: string; params: URLSearchParam
         }
       });
     } else window.scrollTo({ top: 0 });
-  }, [section, at, mode]);
+  }, [section, at]);
 
   useEffect(() => {
     if (meta) recordVisit(id);

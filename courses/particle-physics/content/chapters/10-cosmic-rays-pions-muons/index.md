@@ -184,9 +184,9 @@ hints:
 explain: "βγ = 15,000 / (658.6 × 0.6931) = 32.86, so γ = √(1 + 32.86²) = 32.88 and E = 0.10566 × 32.88 = 3.47 GeV. Muons above this energy have an even chance of arriving, and nearly all those above 10 GeV do."
 ```
 
-### Write it yourself
+### Test the physical explanation
 
-The toy shower, the survival figure and the exercise above all use one small function. Write it, and the checker will compare it with the particle table's muon mass and lifetime.
+The toy shower and survival figure use the same muon mass and lifetime. Compare their predictions before changing the assumptions.
 
 :::note
 **Compare the two lifetimes.** Use the survival figure with time dilation on and off at the same energy and altitude. Predict which curve lets more muons reach the ground, then explain the role of βγ in the decay length. No new code is needed to test that prediction.

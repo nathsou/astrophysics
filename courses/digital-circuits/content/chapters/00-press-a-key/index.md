@@ -6,6 +6,11 @@ duration: About 25 minutes
 prerequisites: []
 ---
 
+:::note
+**Two milestones.** Chapters 0–24 take you from electrical measurements to a CPU that runs programs and talks to peripherals. That is a complete first course. Chapters 25–31 form a second path: programmable logic, hardware description, and implementation on a chip. You can explore that path using the supplied designs before choosing a hardware or coding challenge. Chapter 32 connects both paths to fabrication.
+:::
+
+
 You press the letter A. A few milliseconds later an “a” appears on the screen, and nothing you can see explains how. There is no wire from your finger to the letter. Between the two lie a switch, a scanning circuit, a chip that speaks USB, a processor running instructions, and, underneath all of it, billions of transistors made of a crystal grown from sand, with a few impurities added on purpose.
 
 This course tells the story of that stack from the bottom up, from a battery and a switch to a computer you have built yourself, and then put on a programmable chip. This prologue tells it once from the top down, as a zoom: eight levels and about eight powers of ten, from a 45 cm keyboard to a 5 nm patch of crystal. Take the tour, or drag the slider, and read the caption at each level.

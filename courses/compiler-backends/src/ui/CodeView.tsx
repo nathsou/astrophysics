@@ -49,14 +49,14 @@ function NoteBar({ store, lines }: { store: Store<number | null>; lines: Line[] 
   const i = useStore(store);
   const l = i !== null ? lines[i] : undefined;
   return (
-    <div className="code-note">
+    <div className="code-note" aria-live="polite">
       {l?.note ? (
         <>
           <span className="why">why</span>
           <span>{l.note}</span>
         </>
       ) : (
-        <span className="muted">Hover an instruction to see why it is there; hover operands for details.</span>
+        <span className="muted">Focus or tap this listing. Use ↑/↓ for instructions and ←/→ for operand details. Escape clears the explanation.</span>
       )}
     </div>
   );
@@ -66,6 +66,8 @@ export function CodeView({ lines, target, gutter = 'none', bytes, maxHeight, min
   const ref = useRef<HTMLDivElement>(null);
   const hovered = useMemo(() => new Store<number | null>(null), []);
   const lastKey = useRef<string>('');
+  const selected = useRef(0);
+  const operand = useRef(-1);
 
   useEffect(() => {
     if (scrollTo === undefined || !ref.current) return;
@@ -76,13 +78,13 @@ export function CodeView({ lines, target, gutter = 'none', bytes, maxHeight, min
     if (el.offsetTop < box.scrollTop || el.offsetTop > box.scrollTop + box.clientHeight - 30) box.scrollTo({ top, behavior: 'smooth' });
   }, [scrollTo]);
 
-  const onOver = (e: React.MouseEvent) => {
-    const t = e.target as HTMLElement;
+  const inspect = (t: HTMLElement) => {
     const lnEl = t.closest('.ln') as HTMLElement | null;
     if (!lnEl) return;
     const i = Number(lnEl.dataset.i);
     const line = lines[i];
     if (!line) return;
+    selected.current = i;
     hovered.set(i);
     if (hints) hintStore.set(line.note ? { why: 'why', text: line.note } : null);
     const tokEl = t.closest('[data-ti]') as HTMLElement | null;
@@ -111,6 +113,8 @@ export function CodeView({ lines, target, gutter = 'none', bytes, maxHeight, min
     setHighlight(null);
   };
   const onClick = (e: React.MouseEvent) => {
+    ref.current?.focus();
+    inspect(e.target as HTMLElement);
     if (!onLineClick) return;
     const lnEl = (e.target as HTMLElement).closest('.ln') as HTMLElement | null;
     if (lnEl) onLineClick(Number(lnEl.dataset.i), lines[Number(lnEl.dataset.i)]);
@@ -122,8 +126,28 @@ export function CodeView({ lines, target, gutter = 'none', bytes, maxHeight, min
         ref={ref}
         className={`code${className?.includes('gnode') ? '' : ' inv'}`}
         style={{ maxHeight, minHeight, flex: 1, cursor: onLineClick ? 'pointer' : undefined, padding: '8px 0' }}
-        onMouseOver={onOver}
-        onMouseLeave={onLeave}
+        tabIndex={0}
+        role="group"
+        aria-label="Instruction listing. Up and down select instructions; left and right inspect operands; Enter selects a line."
+        onFocus={() => { const el = ref.current?.querySelector<HTMLElement>(`[data-i="${selected.current}"]`); if (el) inspect(el); }}
+        onBlur={onLeave}
+        onMouseOver={e => inspect(e.target as HTMLElement)}
+        onMouseLeave={() => { if (document.activeElement !== ref.current) onLeave(); }}
+        onKeyDown={e => {
+          if (e.key === 'Escape') { onLeave(); return; }
+          if (e.key === 'Enter') { const line = lines[selected.current]; if (line) onLineClick?.(selected.current, line); return; }
+          if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
+          e.preventDefault();
+          if (e.key === 'ArrowUp' || e.key === 'ArrowDown') { selected.current = Math.max(0, Math.min(lines.length - 1, selected.current + (e.key === 'ArrowDown' ? 1 : -1))); operand.current = -1; }
+          if (e.key === 'Home') { selected.current = 0; operand.current = -1; }
+          if (e.key === 'End') { selected.current = lines.length - 1; operand.current = -1; }
+          const line = ref.current?.querySelector<HTMLElement>(`[data-i="${selected.current}"]`);
+          if (!line) return;
+          const tokens = [...line.querySelectorAll<HTMLElement>('[data-ti]')];
+          if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') operand.current = Math.max(-1, Math.min(tokens.length - 1, operand.current + (e.key === 'ArrowRight' ? 1 : -1)));
+          inspect(tokens[operand.current] ?? line);
+          line.scrollIntoView({ block: 'nearest' });
+        }}
         onClick={onClick}
       >
         {lines.length === 0 && empty}

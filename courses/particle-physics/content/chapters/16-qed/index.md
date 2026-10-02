@@ -210,7 +210,7 @@ The collider figure needs to turn a formula into events. Two techniques make thi
 :::
 
 :::programmer
-Event generation is **sampling from a distribution you can evaluate but not invert**, and the tools are the ones a programmer knows from randomised algorithms. Accept–reject is rejection sampling. A weighted event, with a weight instead of a rejection, is **importance sampling**: draw from an easier distribution and correct with the ratio. VEGAS adapts the easier distribution to the integrand, bin by bin, the way an adaptive quadrature refines where the function varies. The hook system is a **strategy pattern**: the generator calls `hook('gen.unweight', unweight)` for each event, and if your function is installed it takes the place of the reference, which is why an exercise can be tested in isolation and then run inside the whole pipeline.
+Event generation is **sampling from a distribution you can evaluate but not invert**, and the tools are the ones a programmer knows from randomised algorithms. Accept–reject is rejection sampling. A weighted event, with a weight instead of a rejection, is **importance sampling**: draw from an easier distribution and correct with the ratio. VEGAS adapts the easier distribution to the integrand, bin by bin, the way an adaptive quadrature refines where the function varies. The reference generator supplies the sampling routines. The useful check is physical: changing how events are sampled must preserve the distribution once weights or rejection probabilities are accounted for.
 :::
 
 :::hood[Unweighting and the running maximum]

@@ -2,7 +2,7 @@
 number: 8
 title: GPU compute with WebGPU
 summary: Why neural networks run on graphics cards, and how to program one. We write WGSL kernels for element-wise operations, reductions and matrix multiplication, see why memory rather than arithmetic is usually the limit, and build a GPU backend with autograd that trains Chapter 7’s MLP hundreds of times faster.
-duration: About 3 hours, including the lab
+duration: Three sessions, with optional implementation extensions
 prerequisites: [tensors, automatic-differentiation, mlp-language-model, gpu-programming]
 builds:
   - WebGPU context and buffer pool

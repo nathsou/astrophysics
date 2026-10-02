@@ -2,6 +2,11 @@
 A compiler’s front end understands your program; its backend has to make a machine run it. This course builds a real backend from the ground up — from a small SSA intermediate representation all the way to bytes a CPU executes — and lets you poke at every data structure on the way.
 </p>
 
+
+<Callout title="Choose one route through the pipeline">
+Start with RISC-V and the supplied programs. At each stage, predict one change before stepping the compiler: where a phi is needed, which values stay live, or what must spill. You can learn the pipeline without implementing every pass. Once that path is clear, compare AArch64, x86-64 and Wasm. The final chapter offers a small investigation with a concrete success criterion, plus an optional implementation extension.
+</Callout>
+
 ## The job description
 
 By the time a program reaches the backend, the front end has checked it, resolved its names, and translated it into an <Term k="ir">intermediate representation</Term>. The middle end may have optimised it. What is left is a gap between two very different worlds:
