@@ -91,6 +91,8 @@ export interface QuizData {
 
 /** An in-browser exercise. Code strings are real .ts files imported with `?raw`. */
 export interface ExerciseSpec {
+  /** Longer implementation extensions are closed on first visit. */
+  optional?: boolean;
   id: string;
   title: string;
   /** Code shown initially in the editor. */

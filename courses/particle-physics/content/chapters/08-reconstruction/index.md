@@ -2,15 +2,25 @@
 number: 8
 title: Reconstruction
 summary: From thousands of hits and calorimeter cells to tracks, vertices, electrons, photons, muons and jets. Seeding and its combinatorics, the Hough transform, the Kalman filter, vertex finding, clustering and particle flow, and how efficiency and fake rate are measured against the simulated truth.
-duration: About 3 hours
+duration: Three sessions, with optional implementation extensions
 prerequisites: [building-a-detector]
 ---
+
+:::note
+**Read this chapter in three sessions.** Session 1: find candidate tracks. Session 2: update an estimate. Session 3: reconstruct the event. Each session has a stopping point; the section menu remembers where you paused.
+:::
+
 
 The detector of Chapter 7 does not report particles. It reports *signals*: a position in a silicon layer, an energy in a calorimeter cell, a hit in a muon chamber. In a crossing of the LHC's beams with fifty collisions at once, there are some 7,700 hits in the course detector's tracker alone, 8,000 calorimeter cells with energy, and a few hundred real particles somewhere in them (these numbers are from the library's notes on `hep/reco`), and nothing on a hit says which particle it came from. **:term[Reconstruction]{id=reconstruction}** is the software that works backwards from the signals to the particles. It is an *inverse problem*: the forward direction (given particles, what does the detector record?) is physics, and it is what the simulation of Chapter 7 computes. The inverse (given what it recorded, which particles?) has no formula, and it is solved by algorithms. This chapter writes two of them.
 
 ::event-display-widget{sample="pileup" n="8.1" views="rphi,rz" caption="A simulated Z → μ⁺μ⁻ event with pile-up, seen in the event display's simplified detector model. The two muons are in there, among the tracks of some thirty other collisions. The display draws the reconstructed objects and the calorimeter towers; with truth switched on it also draws what was really there. This display uses its own event generator, a stand-in for the library's simulation, which the figures later in the chapter use."}
 
 Two ideas run through the chapter. The first is **truth and reconstruction**: every simulated event exists twice, as what the generator produced (the *truth*) and as what the algorithms found (the *reconstruction*), linked object by object. Simulated hits remember which particle made them, so every track the software finds can be asked: *which particle are you?* Comparing the two measures how good the software is, and is the only way to know. With real data only the reconstruction exists, so the numbers measured on simulation are what you trust when you use the software on data (Chapter 29 makes this point sharply). The second idea is that **reconstruction is mostly a combinatorial problem**. Finding the right hits is hard because there are so many wrong ways to choose them, and the algorithms of this chapter are, above all, ways of not trying most of the wrong ones.
+
+
+:::note
+**Session 1: find candidate tracks.** Compare seeding and the Hough transform. Predict the effect of an extra unrelated hit; stop before the Kalman filter.
+:::
 
 ## Seeding and combinatorics
 
@@ -102,6 +112,7 @@ The cost is the grid, and the grid has a resolution: too coarse and the votes of
 
 ```code
 id: hough-transform
+optional: true
 title: A Hough transform
 hook: reco.houghTransform
 prompt: |
@@ -276,6 +287,11 @@ hints:
   - 'Wrap φ₀ with ((j + da + nAngle) % nAngle); do not wrap κ (the cells beyond ±maxCurv do not exist).'
 ```
 
+
+:::note
+**Session 2: update an estimate.** Understand one residual, its uncertainty and the gain. A variance is a squared uncertainty; doubling an uncertainty multiplies its variance by four. Predict whether a noisier measurement should move the estimate more or less. Full matrix implementation is optional.
+:::
+
 ## The Kalman filter
 
 Once the hits of a track have been found, the track must be *fitted*: the five parameters of its helix, and their uncertainties, estimated from the measured points. A least-squares fit does it all at once, and the circle fit of Chapter 5 is an example. But there is a better way, one that is also the way to *find* the hits in the first place. It adds one measurement at a time and keeps, at every step, the best estimate of the state so far and how uncertain it is. It is the :term[Kalman filter]{id=kalman-filter}, and it is one of the most widely used algorithms in engineering: it is how a phone's GPS receiver, for example, combines its noisy position fixes with a model of how fast you are moving.
@@ -346,6 +362,7 @@ The mathematics is a few lines and is the second exercise of the chapter. The co
 
 ```code
 id: kalman-update
+optional: true
 title: A Kalman measurement update
 hook: reco.kalmanUpdate
 prompt: |
@@ -534,6 +551,11 @@ Once your function passes its tests it is saved as `reco.kalmanUpdate`. The libr
 
 :::programmer
 The Kalman filter is **recursive least squares with a model of how the state changes**. If you have used an exponential moving average, you have used a Kalman filter with a fixed gain; the point of Kalman's is that the gain is *computed*, at every step, from how uncertain the current estimate and the new measurement are. The same code is in robotics (fusing wheel odometry with a laser), in GPS receivers, in the smoothing of a noisy sensor, and in game physics. A neat fact for a programmer: the filter processes data in a single pass with constant memory, whatever the number of measurements. A track fit with 8 layers or a vehicle with 8 million samples uses the same ten lines.
+:::
+
+
+:::note
+**Session 3: reconstruct the event.** Combine tracks, vertices and clusters; finish by separating efficiency from fake rate. Use the supplied pipeline to test one prediction.
 :::
 
 ## Vertices

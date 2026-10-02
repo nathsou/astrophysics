@@ -1,3 +1,4 @@
+import { readDraft, saveDraft, exportDraft } from '../../../../packages/course-navigation/drafts.ts';
 // A live editor connected to the course kernel, with Lean-style goal display
 // and the tactic ↔ term lens.
 
@@ -19,6 +20,8 @@ import { cicPlaygroundHref } from '../content/bridges.ts';
 
 export interface PlaygroundProps {
   code: string;
+  draftKey?: string;
+  onEdit?: () => void;
   title?: string;
   height?: string;
   /** show the proof-term lens (open by default when true) */
@@ -72,7 +75,7 @@ const bool = (v: boolean | string | undefined, d: boolean) => (v === undefined ?
 
 export function Playground(props: PlaygroundProps) {
   const initial = () => props.code.replace(/^\n/, '').replace(/\n$/, '');
-  const [code, setCode] = createSignal(initial());
+  const [code, setCode] = createSignal(readDraft(props.draftKey, initial()));
   const [debounced, setDebounced] = createSignal(code());
   const [cursor, setCursor] = createSignal<number | undefined>();
   const [showLens, setShowLens] = createSignal(bool(props.lens, false));
@@ -80,6 +83,8 @@ export function Playground(props: PlaygroundProps) {
   let view: EditorView | undefined;
   const onChange = (v: string) => {
     setCode(v);
+    saveDraft(props.draftKey, v);
+    props.onEdit?.();
     clearTimeout(timer);
     timer = window.setTimeout(() => setDebounced(v), 250);
   };
@@ -133,7 +138,7 @@ export function Playground(props: PlaygroundProps) {
       <div class="widget-head">
         <span class="widget-title">{props.title ?? 'Playground'}</span>
         <span class="grow" />
-        <Show when={errors() > 0} fallback={<span class="badge ok">✓ checked</span>}>
+        <Show when={errors() > 0} fallback={<span class="badge">{code() !== debounced() ? "Checking…" : result().messages.some(m => m.severity === "warning") ? "Checks with warnings" : "✓ Code type-checks"}</span>}>
           <span class="badge err">
             {errors()} error{errors() > 1 ? 's' : ''}
           </span>
@@ -151,7 +156,8 @@ export function Playground(props: PlaygroundProps) {
             ⇄ CIC
           </a>
         </Show>
-        <button class="btn small ghost" title="reset to the original code" onClick={() => onChange(initial())}>
+        <Show when={props.draftKey}><button class="btn small ghost" onClick={() => exportDraft(code(), props.draftKey!.split(":").slice(-2).join("-") + ".lean")}>Export draft</button><span class="muted" title="Drafts are kept in this browser when storage is available; export a copy as backup.">Local draft</span></Show>
+        <button class="btn small ghost" title="reset to the original code" aria-label="Reset to starter" onClick={() => { if (code() === initial() || confirm("Replace your draft with the starter code?")) onChange(initial()); }}>
           ↺
         </button>
       </div>

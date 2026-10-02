@@ -62,19 +62,24 @@ Starting from $\{2\}$ and always taking the smallest new prime gives the **Eucli
 
 ```bug
 title: A popular mistake
-prompt: 'This “proof” appears in many places. The conclusion (there are infinitely many primes) is true, but one line is false. Which?'
+prompt: 'We want to find a new prime from an arbitrary finite list. Which line makes a claim that does not follow?'
 lines:
-  - Suppose there are only finitely many primes, $p_1, \ldots, p_n$.
+  - Start with any finite list of primes, $p_1, \ldots, p_n$.
   - Let $N = p_1 p_2 \cdots p_n + 1$.
   - None of the $p_i$ divides $N$, because each leaves remainder $1$.
   - Therefore $N$ is prime.
-  - But $N$ is larger than every $p_i$, so it is a prime not on the list — a contradiction.
+  - If $N$ is prime, it is larger than every $p_i$, so it is a prime not on the list.
 wrong: 3
 why: |
-  $N$ need not be prime: $2 \cdot 3 \cdot 5 \cdot 7 \cdot 11 \cdot 13 + 1 = 30031 = 59 \cdot 509$ (try this start in the machine). Within the contradiction argument the line happens to be “true”, since *under the false assumption* every number greater than 1 is divisible by some $p_i$ — but as a claim about $N$ it is simply wrong, and it hides the lemma that actually does the work: $N$ has *some* prime factor, and that factor is new.
+  $N$ need not be prime: $2 \cdot 3 \cdot 5 \cdot 7 \cdot 11 \cdot 13 + 1 = 30031 = 59 \cdot 509$. The list is arbitrary, so it can omit prime factors smaller than $N$. What we can always conclude is that $N$ has some prime factor, and none of its prime factors is on the list. That is enough to construct a new prime.
 notes:
   '2': 'Correct: $N$ divided by $p_i$ leaves remainder $1$.'
 ```
+
+
+:::note
+**A stopping point:** explain why a prime factor of the product-plus-one cannot be on the original list. That completes the main lesson. The following proofs are optional alternatives: the Euler route uses unique factorisation (Chapter 6) and infinite series (Chapter 16); the topological proof introduces another viewpoint. Return after those prerequisites if they are unfamiliar.
+:::
 
 ## Five more proofs
 

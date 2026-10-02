@@ -936,3 +936,6 @@ h1 {
     transform: none;
   }
 }
+
+.course-choice { max-width: 85ch; margin: 0 0 1.5rem; line-height: 1.6; }
+.card .course-fit { font-family: inherit; font-size: 0.82rem; line-height: 1.5; margin-top: auto; padding-top: 1rem; opacity: 0.9; }

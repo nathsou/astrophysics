@@ -197,100 +197,15 @@ The same geometry gives the other signature. For a W at rest, the lepton's trans
 
 The lepton's transverse momentum has a peak at $m_W/2$ and an edge beyond it, and the transverse mass has an edge at $m_W$. Both are blurred by the W's own transverse momentum, which comes from the gluons that the quarks radiate before they annihilate, by the W's width of 2 GeV, and by the resolution with which the missing momentum is measured.
 
-::w-transverse{n="23.4" caption="Simulated W → μν events from the course generator (truth level, with a parton shower; the detector is represented by a Gaussian smearing of the missing momentum). Left: the muon's transverse momentum and the missing transverse momentum, with the analytic Jacobian peak for a W at rest. Right: the transverse mass, with its edge at the W mass. Switch between the SppS (proton–antiproton at 540 GeV) and the LHC (proton–proton at 13 TeV), and raise the resolution parameter to see the edge dissolve. When you have solved the exercises below, tick *use my code* and the figure runs your missing-momentum and transverse-mass functions."}
+::w-transverse{n="23.4" caption="Simulated W → μν events from the course generator (truth level, with a parton shower; the detector is represented by a Gaussian smearing of the missing momentum). Left: the muon's transverse momentum and the missing transverse momentum, with the analytic Jacobian peak for a W at rest. Right: the transverse mass, with its edge at the W mass. Switch between the SppS (proton–antiproton at 540 GeV) and the LHC (proton–proton at 13 TeV), and raise the resolution parameter to see the edge dissolve. The optional transverse-mass exercise below can replace that part of the calculation; the missing-momentum routine is supplied."}
 
 ### Write it yourself
 
 Two small functions turn what a detector sees into the W's signature. The reference ones are in `hep/reco` and `hep/kinematics`; the figure above uses yours once they pass.
 
-```code
-id: missing-pt
-title: Missing transverse momentum
-hook: reco.missingPt
-prompt: |
-  Implement `missingPt(objects)`. Given the four-momenta of everything the detector saw (a list of `{ E, px, py, pz }`),
-  return the missing transverse momentum as a vector `{ x, y }`: **minus** the sum of the transverse momenta. Only the
-  components across the beam count. Remember what you know about the longitudinal ones.
-starter: |
-  import type { P4 } from 'hep';
-
-  export function missingPt(objects: P4[]): { x: number; y: number } {
-    // minus the vector sum of (px, py)
-    return { x: 0, y: 0 };
-  }
-tests: |
-  import { test, expect } from '@pp/test';
-  import { missingPt } from 'solution';
-  import { generate } from 'hep/gen';
-  import { rng } from 'hep/random';
-  import { boost } from 'hep/kinematics';
-
-  test('one visible particle: the missing momentum is minus its transverse momentum', () => {
-    const m = missingPt([{ E: 60, px: 30, py: -40, pz: 25 }]);
-    expect(m.x).toBeCloseTo(-30, 10);
-    expect(m.y).toBeCloseTo(40, 10);
-  });
-
-  test('nothing seen: nothing missing, and no NaN', () => {
-    const m = missingPt([]);
-    expect(Math.abs(m.x)).toBeLessThan(1e-12);
-    expect(Math.abs(m.y)).toBeLessThan(1e-12);
-  });
-
-  test('momenta add as vectors: two balanced jets and a lone muon', () => {
-    const jets = [
-      { E: 55, px: 50, py: 10, pz: 20 },
-      { E: 60, px: -45, py: -5, pz: -30 },
-      { E: 30, px: 0, py: -12, pz: 27 },
-    ];
-    const m = missingPt(jets);
-    expect(m.x).toBeCloseTo(-5, 10);
-    expect(m.y).toBeCloseTo(7, 10);
-  });
-
-  test('a boost along the beam does not change it', () => {
-    const objs = [
-      { E: 55, px: 50, py: 10, pz: 20 },
-      { E: 30, px: -3, py: -12, pz: 27 },
-    ];
-    const a = missingPt(objs);
-    const b = missingPt(objs.map((p) => boost(p, 0, 0, 0.7)));
-    expect(b.x).toBeCloseTo(a.x, 8);
-    expect(b.y).toBeCloseTo(a.y, 8);
-  });
-
-  test('W → μν events: the missing momentum is the neutrino', () => {
-    const r = rng(41);
-    for (let i = 0; i < 25; i++) {
-      const ev = generate('pp->W->munu', { sqrtS: 13000 }, r);
-      const visible = [];
-      let nx = 0, ny = 0;
-      for (const p of ev.particles) {
-        if (p.status !== 'final') continue;
-        const a = Math.abs(p.pdg);
-        if (a === 12 || a === 14 || a === 16) { nx += p.p.px; ny += p.p.py; } else visible.push(p.p);
-      }
-      const m = missingPt(visible);
-      expect(m.x).toBeCloseTo(nx, 6);
-      expect(m.y).toBeCloseTo(ny, 6);
-    }
-  });
-solution: |
-  import type { P4 } from 'hep';
-
-  export function missingPt(objects: P4[]): { x: number; y: number } {
-    let x = 0;
-    let y = 0;
-    for (const o of objects) {
-      x -= o.px;
-      y -= o.py;
-    }
-    return { x, y };
-  }
-hints:
-  - 'Start with x = 0 and y = 0 and subtract each object’s px and py. The longitudinal momentum pz plays no part.'
-  - 'An empty list should give zero, and a loop that subtracts does that for free.'
-```
+:::note
+**Account for transverse momentum.** If the measured objects sum to (+20, −15) GeV in the transverse plane, the missing vector is (−20, +15) GeV. Explain why adding the same construction along the beam would not identify a neutrino: the incoming partons’ longitudinal momenta are unknown.
+:::
 
 ```code
 id: transverse-mass

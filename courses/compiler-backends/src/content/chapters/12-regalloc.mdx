@@ -2,6 +2,9 @@
 Register allocation decides, for every virtual register, which physical register holds it — or that it must live in memory. It matters more for performance than any other backend pass, and its classic formulation is one of the prettiest ideas in compilers: graph colouring.
 </p>
 
+
+<Callout kind="try" title="Predict before stepping">Before reducing the register budget, choose a value you expect to spill and explain why. Compare the allocator’s decision, then locate one inserted load or store. A different choice can still be reasonable; compare cost and correctness rather than guessing a name.</Callout>
+
 ## The interference graph
 
 Two values **<Term k="interference">interfere</Term>** if one is live at a point where the other is defined. Interfering values cannot share a register, since writing one would destroy the other while it is still needed. Build a graph with a node per virtual register and an edge between each interfering pair: the **<Term k="interference-graph">interference graph</Term>**. A register assignment is then a **colouring** of this graph with *K* colours, where *K* is the number of allocatable registers. Adjacent nodes must get different colours.

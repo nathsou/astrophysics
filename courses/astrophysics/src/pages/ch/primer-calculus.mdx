@@ -146,7 +146,7 @@ $$
 
 The last is the **chain rule**, and it is the one that does the heavy lifting: the rate of change of a composition is the product of the rates of each link. In Leibniz notation it looks like fraction cancellation, $\frac{df}{dx} = \frac{df}{dg}\frac{dg}{dx}$, which is why that notation won. Examples:
 
-- $\frac{d}{dt}\sqrt{1 - v^2/c^2} = \frac{1}{2}(1-v^2/c^2)^{-1/2}\cdot\left(-\frac{2v\dot v}{c^2}\right)$: the Lorentz factor of an accelerating particle ([Chapter 17](/ch/relativity/)).
+- $\frac{d}{dt}\sqrt{1 - v^2/c^2} = \frac{1}{2}(1-v^2/c^2)^{-1/2}\cdot\left(-\frac{2v\dot v}{c^2}\right)$: the inverse Lorentz factor of an accelerating particle ([Chapter 17](/ch/relativity/)).
 - **Logarithmic derivatives.** For a power law $y = Ax^n$, $\frac{d\ln y}{d\ln x} = n$. Astronomers use this constantly: the slope on a log–log plot *is* the exponent, whether it is $L \propto M^{3.5}$ on the main sequence ([Chapter 14](/ch/main-sequence/)) or a spectral index. See [Appendix A2](/ch/primer-functions/).
 - **Maxima and minima** are where $f' = 0$. Setting the derivative of the Gamow exponent to zero finds the energy at which fusion actually happens ([Chapter 12](/ch/fusion/)); setting the derivative of the Planck curve to zero gives Wien's law ([Chapter 4](/ch/light/)).
 </Fragment>
@@ -231,13 +231,13 @@ Two techniques cover most of what the chapters do. **Substitution** is the chain
 
 <Aside>**When there is no formula.** Many integrals have no closed form: the Fermi–Dirac integrals of degenerate matter, most cosmological distances ([Chapter 25](/ch/expansion/)). Then you compute them numerically with midpoint, trapezoid, Simpson or Gaussian quadrature. These are the same strip sums, with cleverer placement of the sample points.</Aside>
 
-## Taylor series: every smooth function is locally a polynomial
+## Taylor approximation: a polynomial near one point
 
 The zoom slider in the first figure showed that a smooth curve looks like a straight line up close. The straight line is a first approximation. Add a parabola to follow the curve's bending and you do better; add a cubic and better still. That sequence is the **Taylor series**, and it is quietly the most used tool in theoretical physics: almost every "approximately" in this course is a Taylor series cut off after one or two terms.
 
 <Tiers>
 <Fragment slot="l1">
-Near any point, a smooth curve can be copied by a simple polynomial: first match its height, then its slope, then how it bends, then how the bending changes, and so on. Each extra ingredient makes the copy good over a wider range. A handful of terms is often enough, and physicists stop as soon as the next term is too small to matter. When an astronomer says "for speeds much less than light, relativity reduces to Newton", they mean: keep the first term of a series and throw the rest away.
+Near any point, a smooth curve can be copied by a simple polynomial: first match its height, then its slope, then how it bends, then how the bending changes, and so on. Near the expansion point, extra terms can improve the approximation; they do not guarantee accuracy farther away. A handful of terms is often enough, and physicists stop as soon as the next term is too small to matter. When an astronomer says "for speeds much less than light, relativity reduces to Newton", they mean: keep the first term of a series and throw the rest away.
 </Fragment>
 <Fragment slot="l2">
 Near $x = 0$, a few approximations do an enormous amount of work when $x$ is small ($|x| \ll 1$):
@@ -256,14 +256,16 @@ $$
 The last-but-one, the **binomial approximation**, works for any power, including negative and fractional ones. For example $\sqrt{1.02} = (1 + 0.02)^{1/2} \approx 1.01$ (the true value is 1.00995), and $1/(1.01)^2 \approx 1 - 0.02$. Each approximation is the start of an infinite polynomial. Every extra term is built from one more derivative of the function at 0.
 </Fragment>
 <Fragment slot="l3">
-<KeyEq title="Taylor series">
+A smooth function has finite Taylor approximations with a remainder. Equality to its infinite Taylor series requires more: the function must be **analytic** near the expansion point. Smoothness alone is insufficient; for example, the smooth function defined by $e^{-1/x^2}$ for $x \ne 0$ and by $0$ at $x=0$ has every derivative zero at $0$, yet is nonzero nearby. For an analytic function,
+
+<KeyEq title="Taylor series (analytic functions)">
 $$
 \term{f}{f}(\term{x}{x}) = \sum_{k=0}^{\infty} \frac{\term{fk}{f^{(k)}(a)}}{\term{kfact}{k!}}\,(\term{x}{x}-\term{a}{a})^k = f(a) + f'(a)(x-a) + \tfrac12 f''(a)(x-a)^2 + \dots
 $$
 <Fragment slot="where">Each coefficient is fixed by matching one more derivative at the expansion point <span data-term="a">a</span>. Cutting the sum at order $n$ leaves an error of order $(x-a)^{n+1}$. More precisely, Taylor's theorem gives the remainder as $f^{(n+1)}(\xi)(x-a)^{n+1}/(n+1)!$ for some $\xi$ between $a$ and $x$.</Fragment>
 </KeyEq>
 
-The series converges to $f$ inside a **radius of convergence**: the distance from $a$ to the nearest singularity of $f$ *in the complex plane*. For $e^x$, $\sin x$ and $\cos x$ it is infinite. For $\ln(1+x)$ it is the distance to $x = -1$. The Lorentz factor $\gamma = (1-\beta^2)^{-1/2}$ blows up at $\beta = \pm 1$, so its expansion about $\beta = 0$ works only for $|\beta| < 1$, which is physically fine. Curiously, $1/(1+x^2)$, which is perfectly smooth on the real line, has radius 1 about $x = 0$ because of its poles at $x = \pm i$.
+For a function analytic in a complex neighbourhood of $a$, the series converges to $f$ inside a **radius of convergence**: the distance from $a$ to the nearest singularity of $f$ *in the complex plane*. For $e^x$, $\sin x$ and $\cos x$ it is infinite. For $\ln(1+x)$ it is the distance to $x = -1$. The Lorentz factor $\gamma = (1-\beta^2)^{-1/2}$ blows up at $\beta = \pm 1$, so its expansion about $\beta = 0$ works only for $|\beta| < 1$, which is physically fine. Curiously, $1/(1+x^2)$, which is perfectly smooth on the real line, has radius 1 about $x = 0$ because of its poles at $x = \pm i$.
 </Fragment>
 </Tiers>
 

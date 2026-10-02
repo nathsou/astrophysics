@@ -6,6 +6,7 @@ import tests from './solution.test.ts?raw';
 export default {
   id: 'ch08/tiled-matmul',
   title: 'Tiled matrix multiplication',
+  optional: true,
   starter,
   solution,
   tests,

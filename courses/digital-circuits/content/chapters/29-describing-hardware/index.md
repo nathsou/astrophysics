@@ -10,74 +10,6 @@ By the end of Chapter 28 you could configure an FPGA by hand: fill in the truth 
 
 What we want is what programmers have had since the 1950s: a **language**. Write what the circuit should be, in text that can be read, searched, compared, reviewed, tested and reused, and let a program produce the bits. That language is **DCL**, which the course has used whenever a part or a design was shown as text. A hardware language looks like software and is not software, and the main thing to learn is where the resemblance stops. We start with the history, because it explains why the languages look the way they do.
 
-## Why we stopped drawing
-
-A schematic is a picture of a :term[netlist]{id=netlist}, a list of components and the wires between them. For a dozen gates it is the clearest description there is, and it stops working long before a computer is on the page. The numbers below are not from a textbook: they are what the DCL compiler builds.
-
-- A 32-bit adder, written as `a + b`, becomes **154 gates**.
-- The ALU of the RV32I core, thirty-odd lines of DCL, becomes **1,180 gates** (1,281 elements in all), with a longest path of 69 gates.
-- The 32-entry register file of the same core becomes **992 flip-flops** and about 3,900 gates.
-
-To draw the ALU you would place a thousand boxes and route thousands of wires, and the picture would say less than the thirty lines. It would have to be redrawn for a 64-bit version, and could be neither searched nor compared with last week’s. Text has all of these properties for free, and it can be **parameterised**: one description, any width. A schematic is a photograph of one particular circuit.
-
-### Equations for programmable chips
-
-The first people to need a language were programming PALs (Chapter 26), chips whose function is a set of sum-of-products equations blown into fuses. Drawing the fuse map by hand was hopeless, so within a few years every maker of programmable logic had a program that read the equations as text and produced the fuse pattern. Here is one bit of a counter, a flip-flop that toggles when `EN` is high, in three of them (the dialects vary a little between tool versions).
-
-```text title="PALASM"
-Q0 := /Q0 * EN + Q0 * /EN
-```
-
-```text title="ABEL"
-Q0 := Q0 $ EN;
-```
-
-```text title="CUPL"
-Q0.D = Q0 $ EN;
-```
-
-In each, `:=` or `.D` means “the value after the clock edge”, and `$` is exclusive-or (PALASM writes out the AND–OR form). Already the equation *is* the circuit. But these languages describe a **device**: the pins are numbered, the flip-flops are the chip’s macrocells, and a design that needs more product terms than the chip has is an error. You cannot name a sub-circuit and use it twice.
-
-:::history{year=1983 title="Equations for fuses: PALASM, ABEL and CUPL" people="John Birkner, Russell de Pina, Bob Osann"}
-In the early 1980s, programming a PAL meant writing its equations in a text file and running them through a compiler.
-
-The first was PALASM, from Monolithic Memories, the company that had introduced the PAL in 1978. It was written by John Birkner, the PAL’s co-inventor, as a FORTRAN IV program, and Monolithic Memories gave the source away.:cite[wiki-palasm] Two commercial languages followed in 1983. ABEL, from Data I/O, a maker of chip programmers, grew from a compiler that Russell de Pina had written there in 1981, and offered equations, truth tables and state-machine descriptions in one language.:cite[wiki-abel,holley-abel] CUPL, from Assisted Technology, named the target chip at compile time, so the same equations could be compiled for more than one device.:cite[cupl-1983]
-
-All three were tied to PAL-sized chips and designs of a few dozen equations. They taught a generation of engineers to write hardware as text.
-:::
-
-### Verilog and VHDL
-
-The next step came from two directions at once, and neither began with programmable logic.
-
-**Verilog** began with a start-up, Gateway Design Automation, founded by Prabhu Goel. In December 1983 its engineer Phil Moorby and Chi-Lai Huang specified a language for logic simulation, fault simulation and synthesis; Moorby wrote the simulator in 1984, and it was on sale by early 1985.:cite[flake2020] Its expressions borrow C’s operators, and its blocks are marked `begin … end`. **VHDL** began with the US Department of Defense, whose VHSIC programme for advanced chips needed one language in which its contractors could describe their designs. It was specified from 1983 by Intermetrics, IBM and Texas Instruments, and is modelled on Ada: strongly typed, verbose, precise.:cite[wiki-vhdl]
-
-:::history{year=1984 title="Verilog" people="Phil Moorby, Prabhu Goel, Chi-Lai Huang"}
-Verilog was a simulator’s language first. Phil Moorby, who had joined Gateway Design Automation by 1983, set out to create a language that could support logic simulation, fault simulation for test and logic synthesis. He specified it in December of that year with Chi-Lai Huang, and wrote the simulator in 1984.
-
-By early 1985 the product was on sale, and a faster simulator, Verilog-XL, followed in 1987. Cadence bought Gateway in 1990, and the next year the language was opened to the public through Open Verilog International, which took it to the IEEE. It became IEEE Standard 1364 in 1995.:cite[flake2020]
-:::
-
-:::history{year=1987 title="VHDL" people="US Department of Defense (VHSIC programme), Intermetrics, IBM, Texas Instruments"}
-The VHSIC programme (1980–1990) was the Pentagon’s effort to advance very-fast integrated circuits. In June 1981 a workshop at Woods Hole, Massachusetts, began the work of defining a hardware description language for it.
-
-In July 1983 the contract went to a team of Intermetrics (language expertise), Texas Instruments (chip design) and IBM (system design). They released version 7.2 in August 1985, and after public review the IEEE adopted the language as Standard 1076 in December 1987.:cite[wiki-vhdl,ieee1076-1987] The name is a nested acronym: VHSIC Hardware Description Language.
-:::
-
-Notice what both languages were for: writing down what a chip does, running it, and checking it before anyone paid for silicon. Turning the same text into gates came later.
-
-### Synthesis
-
-Turning a description into gates is called :term[logic synthesis]{id=logic-synthesis}, and it changed what a hardware language was for. Instead of describing a circuit that somebody had already designed, the designer describes *behaviour at the register-transfer level*: which registers there are, and what is computed between them in each clock cycle. A program chooses the gates. That level of description is called :term[RTL]{id=register-transfer-level} for short (not to be confused with the resistor–transistor logic of Chapter 8), and it is what nearly every chip is designed in now. Chapter 30 follows the tool through its stages.
-
-:::history{year=1987 title="Logic synthesis becomes a product" people="Aart de Geus, David Gregory, Bill Krieger"}
-Synthesis started as research. A team at General Electric, led by Aart de Geus, built a rule-based system called SOCRATES that turned a description of logic into optimised gates.:cite[ethw-degeus] In 1986 de Geus and two other GE engineers, David Gregory and Bill Krieger, founded a company, Optimal Solutions, to sell the idea; it was renamed Synopsys in 1987.
-
-Its early years were small: revenue was \$130,000 in 1987 and \$976,000 in 1988, when it chose Verilog as an input language for its synthesis tool, first called Logic Compiler and soon renamed Design Compiler. By 1992 Synopsys, then a \$50 million company, had more than three quarters of the synthesis market.:cite[fundinguniverse-synopsys] After that, the description was the design and the gates were an output, like machine code from a compiler.
-:::
-
-The rest of this chapter follows the same route on a small scale: we describe hardware in DCL, and the compiler builds the gates, and every time we ask “what does that become?” we shall count them.
-
 ## A first module
 
 Here is a counter. Read it as you would read a function, then run it. On a wide screen the code is on the left and the simulator beside it: set `enable` and `clear` with the switches, step the clock, and read the outputs. The *Circuit* tab draws the gates the compiler built.
@@ -923,6 +855,75 @@ solution: |
     at_bottom = value == 0
   }
 ```
+
+## Optional background: why we stopped drawing
+
+A schematic is a picture of a :term[netlist]{id=netlist}, a list of components and the wires between them. For a dozen gates it is the clearest description there is, and it stops working long before a computer is on the page. The numbers below are not from a textbook: they are what the DCL compiler builds.
+
+- A 32-bit adder, written as `a + b`, becomes **154 gates**.
+- The ALU of the RV32I core, thirty-odd lines of DCL, becomes **1,180 gates** (1,281 elements in all), with a longest path of 69 gates.
+- The 32-entry register file of the same core becomes **992 flip-flops** and about 3,900 gates.
+
+To draw the ALU you would place a thousand boxes and route thousands of wires, and the picture would say less than the thirty lines. It would have to be redrawn for a 64-bit version, and could be neither searched nor compared with last week’s. Text has all of these properties for free, and it can be **parameterised**: one description, any width. A schematic is a photograph of one particular circuit.
+
+### Equations for programmable chips
+
+The first people to need a language were programming PALs (Chapter 26), chips whose function is a set of sum-of-products equations blown into fuses. Drawing the fuse map by hand was hopeless, so within a few years every maker of programmable logic had a program that read the equations as text and produced the fuse pattern. Here is one bit of a counter, a flip-flop that toggles when `EN` is high, in three of them (the dialects vary a little between tool versions).
+
+```text title="PALASM"
+Q0 := /Q0 * EN + Q0 * /EN
+```
+
+```text title="ABEL"
+Q0 := Q0 $ EN;
+```
+
+```text title="CUPL"
+Q0.D = Q0 $ EN;
+```
+
+In each, `:=` or `.D` means “the value after the clock edge”, and `$` is exclusive-or (PALASM writes out the AND–OR form). Already the equation *is* the circuit. But these languages describe a **device**: the pins are numbered, the flip-flops are the chip’s macrocells, and a design that needs more product terms than the chip has is an error. You cannot name a sub-circuit and use it twice.
+
+:::history{year=1983 title="Equations for fuses: PALASM, ABEL and CUPL" people="John Birkner, Russell de Pina, Bob Osann"}
+In the early 1980s, programming a PAL meant writing its equations in a text file and running them through a compiler.
+
+The first was PALASM, from Monolithic Memories, the company that had introduced the PAL in 1978. It was written by John Birkner, the PAL’s co-inventor, as a FORTRAN IV program, and Monolithic Memories gave the source away.:cite[wiki-palasm] Two commercial languages followed in 1983. ABEL, from Data I/O, a maker of chip programmers, grew from a compiler that Russell de Pina had written there in 1981, and offered equations, truth tables and state-machine descriptions in one language.:cite[wiki-abel,holley-abel] CUPL, from Assisted Technology, named the target chip at compile time, so the same equations could be compiled for more than one device.:cite[cupl-1983]
+
+All three were tied to PAL-sized chips and designs of a few dozen equations. They taught a generation of engineers to write hardware as text.
+:::
+
+### Verilog and VHDL
+
+The next step came from two directions at once, and neither began with programmable logic.
+
+**Verilog** began with a start-up, Gateway Design Automation, founded by Prabhu Goel. In December 1983 its engineer Phil Moorby and Chi-Lai Huang specified a language for logic simulation, fault simulation and synthesis; Moorby wrote the simulator in 1984, and it was on sale by early 1985.:cite[flake2020] Its expressions borrow C’s operators, and its blocks are marked `begin … end`. **VHDL** began with the US Department of Defense, whose VHSIC programme for advanced chips needed one language in which its contractors could describe their designs. It was specified from 1983 by Intermetrics, IBM and Texas Instruments, and is modelled on Ada: strongly typed, verbose, precise.:cite[wiki-vhdl]
+
+:::history{year=1984 title="Verilog" people="Phil Moorby, Prabhu Goel, Chi-Lai Huang"}
+Verilog was a simulator’s language first. Phil Moorby, who had joined Gateway Design Automation by 1983, set out to create a language that could support logic simulation, fault simulation for test and logic synthesis. He specified it in December of that year with Chi-Lai Huang, and wrote the simulator in 1984.
+
+By early 1985 the product was on sale, and a faster simulator, Verilog-XL, followed in 1987. Cadence bought Gateway in 1990, and the next year the language was opened to the public through Open Verilog International, which took it to the IEEE. It became IEEE Standard 1364 in 1995.:cite[flake2020]
+:::
+
+:::history{year=1987 title="VHDL" people="US Department of Defense (VHSIC programme), Intermetrics, IBM, Texas Instruments"}
+The VHSIC programme (1980–1990) was the Pentagon’s effort to advance very-fast integrated circuits. In June 1981 a workshop at Woods Hole, Massachusetts, began the work of defining a hardware description language for it.
+
+In July 1983 the contract went to a team of Intermetrics (language expertise), Texas Instruments (chip design) and IBM (system design). They released version 7.2 in August 1985, and after public review the IEEE adopted the language as Standard 1076 in December 1987.:cite[wiki-vhdl,ieee1076-1987] The name is a nested acronym: VHSIC Hardware Description Language.
+:::
+
+Notice what both languages were for: writing down what a chip does, running it, and checking it before anyone paid for silicon. Turning the same text into gates came later.
+
+### Synthesis
+
+Turning a description into gates is called :term[logic synthesis]{id=logic-synthesis}, and it changed what a hardware language was for. Instead of describing a circuit that somebody had already designed, the designer describes *behaviour at the register-transfer level*: which registers there are, and what is computed between them in each clock cycle. A program chooses the gates. That level of description is called :term[RTL]{id=register-transfer-level} for short (not to be confused with the resistor–transistor logic of Chapter 8), and it is what nearly every chip is designed in now. Chapter 30 follows the tool through its stages.
+
+:::history{year=1987 title="Logic synthesis becomes a product" people="Aart de Geus, David Gregory, Bill Krieger"}
+Synthesis started as research. A team at General Electric, led by Aart de Geus, built a rule-based system called SOCRATES that turned a description of logic into optimised gates.:cite[ethw-degeus] In 1986 de Geus and two other GE engineers, David Gregory and Bill Krieger, founded a company, Optimal Solutions, to sell the idea; it was renamed Synopsys in 1987.
+
+Its early years were small: revenue was \$130,000 in 1987 and \$976,000 in 1988, when it chose Verilog as an input language for its synthesis tool, first called Logic Compiler and soon renamed Design Compiler. By 1992 Synopsys, then a \$50 million company, had more than three quarters of the synthesis market.:cite[fundinguniverse-synopsys] After that, the description was the design and the gates were an output, like machine code from a compiler.
+:::
+
+The examples in this chapter follow the same route on a small scale: we describe hardware in DCL, and the compiler builds the gates, and every time we ask “what does that become?” we shall count them.
+
 
 ## What’s next
 

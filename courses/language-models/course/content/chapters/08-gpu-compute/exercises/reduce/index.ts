@@ -6,6 +6,7 @@ import tests from './solution.test.ts?raw';
 export default {
   id: 'ch08/reduce',
   title: 'A parallel sum',
+  optional: true,
   starter,
   solution,
   tests,

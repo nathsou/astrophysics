@@ -18,6 +18,8 @@
 
   // svelte-ignore state_referenced_locally
   let code = $state(spec.starter);
+  // svelte-ignore state_referenced_locally
+  let expanded = $state(!spec.optional);
   let loaded = $state(false);
   let running = $state(false);
   let report = $state<RunReport | null>(null);
@@ -27,11 +29,11 @@
   let useMine = $state(false);
   let installError = $state<string | null>(null);
   let editor = $state<ReturnType<typeof CodeEditor> | undefined>();
-  let saveTimer: ReturnType<typeof setTimeout> | undefined;
+  let testedCode = $state<string | null>(null);
 
   const passedCount = $derived(report?.results.filter((r) => r.passed).length ?? 0);
   const total = $derived(report?.results.length ?? 0);
-  const allPassed = $derived(!!report?.ok && total > 0 && passedCount === total);
+  const allPassed = $derived(testedCode === code && !!report?.ok && total > 0 && passedCount === total);
 
   onMount(async () => {
     const saved = await get<SavedExercise>('exercises', spec.id);
@@ -39,29 +41,41 @@
       code = saved.code;
       editor?.setValue(saved.code);
       passedEver = saved.passed;
-      if (saved.useMine && saved.passed && spec.provides) toggleMine(true, false);
+      // Saved completion is history, not permission to run unverified code.
+      // Run tests on the restored draft before installing it into widgets.
     }
     loaded = true;
   });
 
   function save() {
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => put('exercises', spec.id, { code, passed: passedEver, useMine, updatedAt: Date.now() } satisfies SavedExercise), 400);
+    void put('exercises', spec.id, { code, passed: passedEver, useMine, updatedAt: Date.now() } satisfies SavedExercise);
   }
 
   async function run() {
     if (running) return;
     running = true;
-    report = await runExercise(spec, code);
+    const submitted = code;
+    const nextReport = await runExercise(spec, submitted);
     running = false;
+    if (code !== submitted) return;
+    testedCode = submitted;
+    report = nextReport;
     if (allPassed) passedEver = true;
     else if (useMine) toggleMine(false);
     save();
   }
 
+  function edit(next: string) {
+    code = next;
+    report = null;
+    testedCode = null;
+    if (useMine) toggleMine(false, false);
+    save();
+  }
+
   function reset() {
     if (code !== spec.starter && !confirm('Replace your code with the starter code?')) return;
-    code = spec.starter;
+    edit(spec.starter);
     editor?.setValue(spec.starter);
     report = null;
     save();
@@ -70,6 +84,7 @@
   function toggleMine(on: boolean, persist = true) {
     installError = null;
     if (!spec.provides) return;
+    if (on && !allPassed) return;
     if (on) {
       try {
         impl.install(spec.id, code, spec.provides);
@@ -86,18 +101,21 @@
   }
 </script>
 
+<details class="coding-choice" bind:open={expanded}>
+  <summary>{spec.optional ? 'Optional implementation extension' : 'Coding exercise'}: {spec.title}</summary>
+  {#if expanded}
 <section class="exercise wide" aria-label="Exercise: {spec.title}">
   <header class="ui">
     <span class="kind"><Icon name="exercises" size={15} /> Exercise</span>
     <h4>{spec.title}</h4>
     {#if passedEver}
-      <span class="badge ok"><Icon name="check" size={13} /> Solved</span>
+      <span class="badge ok"><Icon name="check" size={13} /> {allPassed ? 'Tests passed' : 'Previously passed'}</span>
     {:else if report}
       <span class="badge">{passedCount}/{total} passing</span>
     {/if}
   </header>
 
-  <CodeEditor bind:this={editor} value={code} path="/exercises/{spec.id}/solution.ts" onchange={(c) => ((code = c), save())} onrun={run} label="Exercise: {spec.title}" />
+  <CodeEditor bind:this={editor} value={code} path="/exercises/{spec.id}/solution.ts" onchange={edit} onrun={run} label="Exercise: {spec.title}" />
 
   <div class="toolbar ui">
     <Button variant="primary" onclick={run} disabled={running || !loaded}>
@@ -114,9 +132,11 @@
     <Button variant="ghost" onclick={() => (showSolution = !showSolution)}><Icon name="eye" size={14} /> {showSolution ? 'Hide' : 'Show'} solution</Button>
     <span class="spacer"></span>
     {#if spec.provides}
-      <Toggle checked={useMine} disabled={!passedEver} onchange={(v) => toggleMine(v)} label="Use my code in this chapter’s widgets" />
+      <Toggle checked={useMine} disabled={!allPassed} onchange={(v) => toggleMine(v)} label="Use my code in this chapter’s widgets" />
     {/if}
   </div>
+
+  {#if !report}<p class="ui">Run tests on this draft before using it in widgets. Previous completion does not verify edited code.</p>{/if}
 
   {#if installError}<p class="err ui">{installError}</p>{/if}
 
@@ -156,7 +176,12 @@
   {/if}
 </section>
 
+  {/if}
+</details>
+
 <style>
+  .coding-choice { margin: 1.5rem 0; }
+  .coding-choice > summary { cursor: pointer; padding: 0.7rem 0; font-weight: 600; }
   .exercise {
     margin: 2rem 0;
     border: 1px solid color-mix(in srgb, var(--lab) 30%, var(--border));

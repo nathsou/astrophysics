@@ -31,7 +31,9 @@ Instruction datasets for real assistants are made the same way in spirit — fro
 
 The training example is the concatenation of instruction and story, but the loss should only count the story. The instruction is given, and there is nothing to be gained by learning to predict it; worse, training on it would teach the model to write instructions. **Loss masking** sets the target at every instruction position to an ignored value, so the average runs over response tokens only — including the final `<|endoftext|>`, which teaches the model to stop.
 
-::exercise{id="sft-example"}
+:::question
+**Read one training example.** Inspect the formatted instruction and response. Identify which tokens provide context and which contribute to the supervised loss. Formatting the string is supplied; the important decision is the loss mask, which you can implement below.
+:::
 
 ::exercise{id="masked-loss"}
 

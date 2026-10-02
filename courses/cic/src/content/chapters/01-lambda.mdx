@@ -1,3 +1,10 @@
+
+<Definition title="A first session">
+Read **Terms**, substitution and reduction first. Your goal is to identify bound variables and reduce a small term without capturing a free variable. Once you can explain why a reduction is valid, continue to the next chapter on binders. Church encodings, predecessor and fixed points are optional extensions on a first pass; they are not prerequisites for starting the typed calculi.
+
+Notation: `λx. t` binds `x` in `t`; `f x` applies `f`; application associates to the left. The browser later uses a small **Lean-style course language**, not the Lean 4 compiler or its full libraries. Checked terms are verified by the course's TypeScript kernel. See the Lean chapter for the compatibility boundary.
+</Definition>
+
 Every modern programming language has anonymous functions. In JavaScript you write `x => x + 1`; in Python `lambda x: x + 1`; in Haskell `\x -> x + 1`. The notation descends directly from a formal system Alonzo Church invented in the early 1930s, in which *everything* is an anonymous function: there are no numbers, no booleans, no data structures, no loops — only functions, applied to functions, returning functions.
 
 It sounds like a toy. It is in fact a complete model of computation, as powerful as any programming language, and it is the backbone of every system in this course. CIC is, at its core, a λ-calculus with a very sophisticated type system bolted on. So we start here, without any types at all.
@@ -134,6 +141,9 @@ In the graph above, the term at the left can reduce in two ways — contract the
 
 Confluence will matter enormously later. In a type theory, types can contain computation, and the kernel decides whether two types are equal by *computing* them. That is only sensible if the result of computation does not depend on the order in which the kernel happens to do it.
 
+<details>
+<summary>Optional extension: programming with functions, fixed points and undecidability</summary>
+
 ## Programming with nothing
 
 We have only functions. Where are the numbers, the booleans, the data? The surprising answer is that data can be *represented* by functions — by what the data lets you do.
@@ -261,6 +271,8 @@ $$
 $$
 
 A function that just passes its argument to $M$ *is* $M$, as far as anyone applying it can tell. This is **η-conversion** (eta). It is not a computation step in the labs, but it is part of the definitional equality of Lean's type theory: the kernel considers `fun x => f x` and `f` to be the same. We come back to it in Chapter 17.
+
+</details>
 
 ## Summary
 

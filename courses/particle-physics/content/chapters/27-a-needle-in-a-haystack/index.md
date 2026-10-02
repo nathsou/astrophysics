@@ -6,11 +6,11 @@ duration: About 3 hours
 prerequisites: [the-higgs-mechanism, colliding-beams, reconstruction]
 ---
 
-Chapter 26 ended with a prediction: a neutral particle of spin 0 and mass that nobody knew, which decays into the heaviest particles it can reach. Finding it is a counting problem before it is a physics problem. At the LHC's design luminosity, protons collide about 1.6 billion times a second and a Higgs boson appears about once. Each detector produces something like a megabyte per collision it looks at, and the computers can write about a gigabyte a second. Something has to decide, within millionths of a second, which crossings are worth keeping, and whatever it throws away is gone for ever. This chapter is about that decision, the statistics of the rates it has to manage, and the price of getting it wrong. It also uses the real dimuon data of Chapter 2 to look for the trigger's fingerprints, and ends with where the kept data go.
+Chapter 26 ended with a prediction: a neutral particle of spin 0 and mass that nobody knew, which decays into the heaviest particles it can reach. Finding it is a counting problem before it is a physics problem. At the LHC's design luminosity, protons collide about 1.6 billion times a second across the two high-luminosity collision points, and a Higgs boson appears about once. Each detector produces something like a megabyte per collision it looks at, and the computers can write about a gigabyte a second. Something has to decide, within millionths of a second, which crossings are worth keeping, and whatever it throws away is gone for ever. This chapter is about that decision, the statistics of the rates it has to manage, and the price of getting it wrong. It also uses the real dimuon data of Chapter 2 to look for the trigger's fingerprints, and ends with where the kept data go.
 
 ## Rate is cross-section times luminosity
 
-Chapter 3 introduced the two numbers that set how often a process happens, and Chapter 21 showed how a machine makes the second one large. The first is the **cross-section** σ of the process: an area that measures how likely it is for one collision to make it (Chapter 1 gave the units, and the barn, the picobarn and the femtobarn). The second is the **instantaneous luminosity** $\mathcal L$, the number of particles per unit area and time that the colliding beams present to each other. The rate of the process, the number of times per second it happens, is their product:
+Use the rate relation from [Chapter 3](../quantum-essentials/#cross-sections-and-luminosity), with the beam luminosity derived in [Chapter 21](../colliding-beams/). Before checking the equation, predict what doubling luminosity does to both the wanted event rate and the trigger's input load. The new question here is how much of that rate can be recorded.
 
 :::equation{#rate caption="The rate of any process: its cross-section times the luminosity. The same equation gives the number of events in a data set when the luminosity is integrated over the running time."}
 $$\term{R}{R} = \term{sigma}{\sigma}\,\term{L}{\mathcal{L}}, \qquad N = \sigma\int \mathcal L\,dt = \sigma\,\term{Lint}{L_\mathrm{int}}$$
@@ -291,6 +291,7 @@ The Level-1 logic of the library is a function that takes the coarse input of on
 
 ```code
 id: l1-algorithm
+optional: true
 title: A Level-1 trigger
 hook: trigger.l1Decision
 prompt: |

@@ -114,7 +114,7 @@ export function Term(props: TermProps) {
     applyHighlights();
   });
 
-  const onMove = (e: MouseEvent) => {
+  const onMove = (e: Pick<MouseEvent, 'target' | 'clientX' | 'clientY'>) => {
     const t = (e.target as HTMLElement).closest('.sub') as HTMLElement | null;
     if (t === hovered) return;
     hovered?.classList.remove('hover');
@@ -136,6 +136,7 @@ export function Term(props: TermProps) {
     hideTooltip();
   };
   const onClick = (e: MouseEvent) => {
+    onMove(e);
     const t = (e.target as HTMLElement).closest('.sub') as HTMLElement | null;
     const n = t ? nodes.get(t) : undefined;
     if (n?.path) props.onClickPath?.(n.path, e);
@@ -147,8 +148,27 @@ export function Term(props: TermProps) {
       ref={host as HTMLSpanElement}
       class={`term ${props.class ?? ''}`}
       style={{ display: props.block ? 'block' : 'inline' }}
+      tabIndex={0}
+      role="group"
+      aria-label="Term. Use arrow keys to inspect subterms, Enter to select, Escape to dismiss."
+      onFocus={() => {
+        const el = [...nodes.keys()].find(el => nodes.get(el)?.expr);
+        if (el) { const box = el.getBoundingClientRect(); onMove({ target: el, clientX: box.left, clientY: box.bottom }); }
+      }}
+      onBlur={onLeave}
+      onKeyDown={e => {
+        if (e.key === 'Escape') { onLeave(); return; }
+        if (e.key === 'Enter') { hovered?.click(); return; }
+        if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) return;
+        e.preventDefault();
+        const terms = [...nodes.keys()].filter(el => nodes.get(el)?.expr);
+        const delta = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : -1;
+        const index = hovered ? terms.indexOf(hovered) : -1;
+        const el = terms[Math.max(0, Math.min(terms.length - 1, index + delta))];
+        if (el) { const box = el.getBoundingClientRect(); onMove({ target: el, clientX: box.left, clientY: box.bottom }); }
+      }}
       onMouseMove={onMove}
-      onMouseLeave={onLeave}
+      onMouseLeave={() => { if (document.activeElement !== host) onLeave(); }}
       onClick={onClick}
     />
   );

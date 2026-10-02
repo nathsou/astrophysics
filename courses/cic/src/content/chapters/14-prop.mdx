@@ -124,13 +124,14 @@ def val (p : Pos) : Nat := p.val
 
 The distinction between `∃ x, p x : Prop` and `{ x // p x } : Type` is the distinction between *knowing that* something exists and *having* it — the first can be established by classical reasoning, the second only by construction.
 
-<Exercise id="prop:and" title="Using And in data" code={`-- And eliminates into Type (subsingleton elimination), so this is allowed:
-def choose (p q : Prop) (h : p ∧ q) (a b : Nat) : Nat :=
-  sorry`} hint="Any natural number will do — the point is that matching on h is allowed. Try match h with | ⟨hp, hq⟩ => a." solution={`def choose (p q : Prop) (h : p ∧ q) (a b : Nat) : Nat :=
+**Predict before editing.** The following match returns data from a proof of `And`. Predict whether the checker will accept it, then inspect the result. Change `p ∧ q` to `p ∨ q` and try separate `Or.inl` and `Or.inr` cases: why is that elimination different?
+
+<Playground title="Explore subsingleton elimination" code={`def choose (p q : Prop) (h : p ∧ q) (a b : Nat) : Nat :=
   match h with
-  | ⟨_, _⟩ => a`}>
-Pattern-match on the proof `h : p ∧ q` in a definition that returns a `Nat`. It's allowed because `And` satisfies the subsingleton condition. Then try the same with `h : p ∨ q` and read the error.
-</Exercise>
+  | ⟨_, _⟩ => a`} />
+
+`And` has one constructor whose fields are proofs, so it satisfies the subsingleton condition. `Or` has two constructors, and choosing a different number in each branch would make computational data depend on which proof you supplied. This is an exploration, with no completion badge.
+
 
 ## Classical logic, safely
 

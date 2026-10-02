@@ -7,6 +7,11 @@ theorems: [Pythagoras’ theorem]
 techniques: [direct proof, dissection, algebraic identity]
 ---
 
+:::note
+**First pass:** choose the first Pythagoras proof and explain why its rearrangement preserves area. The other four are a gallery to return to after you can distinguish an example from an argument for every case. You do not need to compare all five before continuing. Written proofs use a self-review rubric; “Self-reviewed” is your assessment, not an automatic proof check.
+:::
+
+
 Here is a claim. For every whole number $n \ge 0$, the number $n^2 + n + 41$ is prime.
 
 Try it. For $n = 0$ you get $41$, which is prime. For $n = 1$, $43$: prime. Then $47$, $53$, $61$, $71$, $83$, $97$ — all prime. You could check forty values in a row and never find an exception. Leonhard Euler noticed this polynomial in 1772 and was struck by it.:cite[euler1772] If you were a scientist, forty successful experiments would be a lot of evidence.
@@ -60,9 +65,9 @@ The Greek contribution was not the theorem but the demand for a proof. Euclid's 
 Pythagoras founded a religious and philosophical community in Croton, in southern Italy, whose members believed that “all is number”. He wrote nothing, and everything we know was written down centuries later, mixed with legend: that he sacrificed a hundred oxen when he discovered the theorem, that he forbade eating beans. Nobody knows whether he or his followers proved the theorem that bears his name, or how. We will meet the Pythagoreans again in Chapter 3, where the same theorem led them to a discovery they are said to have tried to hide.
 :::
 
-## Four ways to see it
+## Five ways to see it
 
-There are hundreds of proofs of Pythagoras' theorem — Elisha Loomis collected 367 of them.:cite[loomis] Here are four. As you read each one, ask yourself two questions: *why* does it work, and *what exactly* does it use?
+There are hundreds of proofs of Pythagoras' theorem — Elisha Loomis collected 367 of them.:cite[loomis] Here are five. As you read each one, ask yourself two questions: *why* does it work, and *what exactly* does it use?
 
 ### Rearranging four triangles
 

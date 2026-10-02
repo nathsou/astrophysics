@@ -18,7 +18,7 @@ import { byrneStore, hoverStore, textModeStore, useStore, type TextMode } from '
 import { citedBy, cites, depth, usesParallelPostulate } from '../graph/deps';
 import { markRead } from '../ui/progress';
 
-const STEP_MS = 1500;
+
 
 /** "Postulate 3", "Definition 15", "I.2": the name of a dependency, in full. */
 function fullName(id: string, fromBook: number): string {
@@ -43,6 +43,7 @@ export function ItemPage({ id }: { id: string }) {
   const [bus, setBus] = useState<Bus | null>(null);
   const [step, setStep] = useState<number | null>(null);
   const [playing, setPlaying] = useState(false);
+  const [stepMs, setStepMs] = useState(6000);
   const textMode = useStore(textModeStore);
   const byrne = useStore(byrneStore);
   const hoverKey = useStore(hoverStore);
@@ -91,7 +92,7 @@ export function ItemPage({ id }: { id: string }) {
     [steps, first],
   );
 
-  // play: one paragraph every 1.5 s, stopping at the last
+  // Manual stepping is the default; autoplay speed is chosen by the reader.
   const stepRef = useRef(step);
   stepRef.current = step;
   useEffect(() => {
@@ -101,9 +102,9 @@ export function ItemPage({ id }: { id: string }) {
       const n = steps[Math.min(steps.length - 1, k + 1)];
       setStep(n);
       if (k + 1 >= steps.length - 1) setPlaying(false);
-    }, STEP_MS);
+    }, stepMs);
     return () => clearInterval(t);
-  }, [playing, steps]);
+  }, [playing, steps, stepMs]);
   const togglePlay = () => {
     if (playing) return setPlaying(false);
     if (!steps.length) return;
@@ -173,6 +174,11 @@ export function ItemPage({ id }: { id: string }) {
   const pos = step === null ? -1 : steps.indexOf(step);
   const stepper = item && steps.length > 0 && (
     <div className="fig-row1">
+      <label style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>Autoplay
+        <select aria-label="Time per proof step" value={stepMs} onChange={e => setStepMs(Number(e.target.value))}>
+          <option value={3000}>3 seconds / step</option><option value={6000}>6 seconds / step</option><option value={12000}>12 seconds / step</option>
+        </select>
+      </label>
       <button className="play-btn" onClick={togglePlay} aria-label={playing ? 'Pause' : 'Step through the proof'}>
         {playing ? '❚❚' : '▶'}
       </button>

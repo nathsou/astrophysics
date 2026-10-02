@@ -6,6 +6,7 @@ import tests from './solution.test.ts?raw';
 export default {
   id: 'ch12/epoch-sampler',
   title: 'An epoch sampler',
+  optional: true,
   starter,
   solution,
   tests,

@@ -95,7 +95,9 @@ A **checkpoint** must contain everything needed to continue as if nothing had ha
 
 The dashboard saves checkpoints in the browser’s IndexedDB and can restore any of them. Its **Download** button writes the weights as a **safetensors** file, and its **Load** button reads one back. Safetensors is a deliberately simple format: an 8-byte length, a JSON header listing each tensor’s name, type, shape and byte range, then the raw bytes. PyTorch’s default `torch.save` uses Python’s *pickle*, which can execute arbitrary code when loaded, so loading a stranger’s pickle is a security risk. Loading safetensors is not.
 
-::exercise{id="safetensors"}
+:::question
+**Inspect a checkpoint.** A checkpoint must identify each tensor’s name, shape, dtype and byte range. Inspect the example header and explain how you would detect a shape mismatch before loading the bytes. Use the supplied loader; file-format plumbing is not required for this chapter.
+:::
 
 The browser and PyTorch models use the same parameter names (Chapter 11), so a checkpoint can travel either way. Download char-GPT from the dashboard and load it in PyTorch with `safetensors.torch.load_file`. Or train in PyTorch with `lmc train --export` and load the file into the dashboard.
 

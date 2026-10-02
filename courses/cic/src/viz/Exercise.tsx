@@ -1,3 +1,6 @@
+import { readDraft, saveDraft } from '../../../../packages/course-navigation/drafts.ts';
+import { check, envFor, type PreludeId } from '../app/kernel.ts';
+import { checkExercise, exerciseNames } from '@kernel/exercise.ts';
 // Exercises checked automatically — by the kernel (Lean-style) or by the λ-evaluator.
 
 import { Show, createMemo, createSignal, type JSX } from 'solid-js';
@@ -26,6 +29,8 @@ export interface ExerciseProps {
 
 export function Exercise(props: ExerciseProps) {
   const [solved, setSolved] = createSignal(isExerciseDone(props.id));
+  const [current, setCurrent] = createSignal(false);
+  const [feedback, setFeedback] = createSignal('');
   const [showHint, setShowHint] = createSignal(false);
   const [showSol, setShowSol] = createSignal(false);
   const kind = () => props.kind ?? 'lean';
@@ -37,7 +42,7 @@ export function Exercise(props: ExerciseProps) {
   };
 
   // λ exercises
-  const [lsrc, setLsrc] = createSignal(props.code.trim());
+  const [lsrc, setLsrc] = createSignal(readDraft(`cic:exercise:${props.id}`, props.code.trim()));
   const lambdaResult = createMemo(() => {
     if (kind() !== 'lambda') return undefined;
     try {
@@ -48,6 +53,7 @@ export function Exercise(props: ExerciseProps) {
       const exp = props.expect ? L.parseProgram(L.STDLIB + '\n' + props.expect) : undefined;
       const target = exp?.main ? L.normalize(exp.main, 'normal', exp.defs, 3000).final : undefined;
       const ok = !!target && L.alphaEq(r.final, target);
+      setCurrent(ok);
       succeed(ok);
       return { msg: `normal form: ${L.print(r.final, { recognise: true })}${L.describeValue(r.final, prog.defs) ? ` (${L.describeValue(r.final, prog.defs)})` : ''} after ${r.steps.length} steps`, ok };
     } catch (e) {
@@ -55,12 +61,12 @@ export function Exercise(props: ExerciseProps) {
     }
   });
 
+  const reference = createMemo(() => check(props.solution ?? props.code, envFor((props.calculus as CalculusId) ?? 'cic', props.prelude as PreludeId)));
   const onLeanResult = (r: import('../app/kernel.ts').CheckResult) => {
-    const errors = r.messages.some((m) => m.severity === 'error');
-    const sorry = r.messages.some((m) => m.severity === 'warning' && m.msg.some((p) => typeof p === 'string' && p.includes('sorry')));
-    const must = (props.must ?? '').split(/[\s,]+/).filter(Boolean);
-    const allThere = must.every((n) => r.env.has(n));
-    succeed(!errors && !sorry && allThere);
+    const issue = checkExercise(r, reference(), props.must ?? exerciseNames(props.code, reference().env.notations));
+    setFeedback(issue ?? 'The requested types and authored example checks pass.');
+    setCurrent(issue === null);
+    succeed(issue === null);
   };
 
   return (
@@ -72,16 +78,16 @@ export function Exercise(props: ExerciseProps) {
         </Show>
         <span class="grow" />
         <Show when={solved()}>
-          <span class="badge ok">✓ solved</span>
+          <span class="badge ok">{current() ? (kind() === 'lambda' ? '✓ Normal form matched' : '✓ Kernel checked') : 'Previously completed'}</span>
         </Show>
       </div>
       <div class="ex-prompt">{props.children}</div>
       <Show
         when={kind() === 'lambda'}
-        fallback={<Playground code={props.code} calculus={props.calculus} prelude={props.prelude} title="Your solution" onResult={onLeanResult} derivations={true} wrap={true} />}
+        fallback={<Playground draftKey={`cic:exercise:${props.id}`} onEdit={() => { setCurrent(false); setFeedback("Edited — checking…"); }} code={props.code} calculus={props.calculus} prelude={props.prelude} title="Your solution" onResult={onLeanResult} derivations={true} wrap={true} />}
       >
         <div class="widget" style={{ margin: '0.8rem 0' }}>
-          <Editor value={lsrc()} onChange={setLsrc} lang="lambda" minHeight="3rem" lineNumbers={false} />
+          <Editor value={lsrc()} onChange={(v) => { setCurrent(false); setLsrc(v); saveDraft(`cic:exercise:${props.id}`, v); }} lang="lambda" minHeight="3rem" lineNumbers={false} />
           <div class={`widget-foot ${lambdaResult()?.ok ? '' : ''}`}>
             <Show when={lambdaResult()?.ok} fallback={<span>{lambdaResult()?.msg}</span>}>
               <span class="badge ok">✓ correct</span> {lambdaResult()?.msg}
@@ -89,6 +95,7 @@ export function Exercise(props: ExerciseProps) {
           </div>
         </div>
       </Show>
+      <Show when={feedback()}><p role="status">{feedback()}</p></Show>
       <div class="row" style={{ 'margin-top': '0.5rem' }}>
         <Show when={props.hint}>
           <button class="btn small" onClick={() => setShowHint(!showHint())}>

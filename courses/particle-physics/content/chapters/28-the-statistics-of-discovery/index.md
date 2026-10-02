@@ -113,6 +113,7 @@ The library has a Poisson maximum-likelihood fitter. Here is the core of it, for
 
 ```code
 id: fit-likelihood
+optional: true
 title: A Poisson likelihood fit
 hook: analysis.fitLikelihood
 prompt: |

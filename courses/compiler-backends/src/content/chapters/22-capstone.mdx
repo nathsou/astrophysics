@@ -2,6 +2,15 @@
 You have now seen every stage of a compiler backend, from the first SSA value to the last relocated byte. This chapter puts the pipeline back together, measures what each stage bought, and suggests where to go next.
 </p>
 
+
+## A small capstone you can finish
+
+Use the supplied **collatz** program in the pipeline below; keep RISC-V as the target. Before running it, write down which of two changes you expect to matter more: fewer available registers, or a higher optimisation level. Record output agreement with the interpreter, dynamic instruction count and the spills you can identify.
+
+Change one setting at a time, keeping the source fixed. Your result is complete when you can point to one changed instruction sequence, explain the cause, and show that the output is still correct. A short table and a paragraph are enough; no coding is required.
+
+**Optional implementation extension:** start with the backend's existing peephole pass and add one local rewrite with a stated precondition. Demonstrate an input that benefits, an input where the precondition fails, and agreement with the interpreter. A rewrite that changes semantics does not pass, even if its instruction count is lower.
+
 ## The whole pipeline, once more
 
 <PipelineDiagram />

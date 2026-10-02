@@ -2,7 +2,7 @@
 number: 8
 title: GPU compute with WebGPU
 summary: Why neural networks run on graphics cards, and how to program one. We write WGSL kernels for element-wise operations, reductions and matrix multiplication, see why memory rather than arithmetic is usually the limit, and build a GPU backend with autograd that trains Chapter 7’s MLP hundreds of times faster.
-duration: About 3 hours, including the lab
+duration: Three sessions, with optional implementation extensions
 prerequisites: [tensors, automatic-differentiation, mlp-language-model, gpu-programming]
 builds:
   - WebGPU context and buffer pool
@@ -10,6 +10,11 @@ builds:
   - GpuTensor with autograd
   - GPU training loop
 ---
+
+:::note
+**Read this chapter in three sessions.** Session 1: understand parallel work. Session 2: explain performance. Session 3: combine results. Each session has a stopping point; the section menu remembers where you paused.
+:::
+
 
 At the end of Chapter 7 our MLP trained at about 150 steps per second, and a model with ten times the parameters would have been unbearably slow. Every model from here on is bigger. CourseGPT (Part IV) does about a thousand times more arithmetic per token than the MLP, and frontier models thousands of times more again. None of that is possible on a CPU running the loops we wrote in Chapter 4.
 
@@ -19,6 +24,11 @@ The main lesson, though, is not a speed-up. It is a way of thinking about perfor
 
 :::note
 Everything interactive in this chapter needs a browser with WebGPU: Chrome or Edge 113+, Safari 26+, or Firefox 141+ on Windows. The badge in the top bar shows what your browser offers. Without WebGPU the widgets show results measured on an Apple M4 Pro instead.
+:::
+
+
+:::note
+**Session 1: understand parallel work.** Read through the first kernel and identify workgroups, invocations and memory. You can stop before performance tuning; GPU coding is an optional engine-building path.
 :::
 
 ## Why GPUs?
@@ -163,6 +173,11 @@ const result = await gpu.readFloat32(bo, n);
 
 ::exercise{id="saxpy"}
 
+
+:::note
+**Session 2: explain performance.** Compare naive and tiled multiplication. Predict how operand reuse changes bytes transferred per multiply–add. Use the reference measurements if WebGPU is unavailable.
+:::
+
 ## Bytes, not FLOPs: the roofline
 
 How fast is `saxpy`? Each element needs 2 floating-point operations (a multiply and an add) and moves 12 bytes: two 4-byte loads and one 4-byte store. The ratio of the two is the kernel’s **arithmetic intensity**:
@@ -265,6 +280,11 @@ Vendor libraries close that gap with a long list of further tricks, each adding 
 
 :::note
 **Transposes for free.** Backpropagation through $C = AB$ needs $\partial A = \partial C\, B^\top$ and $\partial B = A^\top\, \partial C$ (Chapter 6). Rather than materialising transposed copies, the library’s kernel takes `transA`/`transB` flags and simply reads the operand with swapped strides. It also takes a batch dimension (the `z` of the dispatch grid), which attention will need in Chapter 10.
+:::
+
+
+:::note
+**Session 3: combine results.** Understand barriers, reductions and fusion. Pick one optional kernel challenge; implementing every kernel is not required.
 :::
 
 ## Reductions

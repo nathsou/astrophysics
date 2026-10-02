@@ -42,16 +42,11 @@ export function Callout({ kind = 'key', title, children }: { kind?: 'key' | 'try
 
 export function Term({ k, children }: { k: string; children?: ReactNode }) {
   const g = GLOSSARY[k];
-  if (!g) console.warn(`unknown glossary term ${k}`);
-  return (
-    <span
-      className="term"
-      onMouseEnter={(e) => g && showTip(e.currentTarget, { info: { kind: 'term', term: k } })}
-      onMouseLeave={hideTip}
-    >
-      {children ?? g?.term}
-    </span>
-  );
+  const reveal = (el: Element) => g && showTip(el, { info: { kind: 'term', term: k } });
+  return <button type="button" className="term" aria-description={g?.def}
+    onMouseEnter={e => reveal(e.currentTarget)} onMouseLeave={e => { if (document.activeElement !== e.currentTarget) hideTip(); }}
+    onFocus={e => reveal(e.currentTarget)} onBlur={hideTip} onClick={e => reveal(e.currentTarget)}
+    onKeyDown={e => { if (e.key === 'Escape') hideTip(); }}>{children ?? g?.term}</button>;
 }
 
 export function Kbd({ children }: { children: ReactNode }) {
@@ -60,9 +55,9 @@ export function Kbd({ children }: { children: ReactNode }) {
 
 /** Small inline code-ish chip that explains itself on hover. */
 export function Tip({ title, body, children }: { title: string; body: string; children: ReactNode }) {
-  return (
-    <span className="term" onMouseEnter={(e) => showTip(e.currentTarget, { info: { kind: 'text', title, body } })} onMouseLeave={hideTip}>
-      {children}
-    </span>
-  );
+  const reveal = (el: Element) => showTip(el, { info: { kind: 'text', title, body } });
+  return <button type="button" className="term" aria-description={body}
+    onMouseEnter={e => reveal(e.currentTarget)} onMouseLeave={e => { if (document.activeElement !== e.currentTarget) hideTip(); }}
+    onFocus={e => reveal(e.currentTarget)} onBlur={hideTip} onClick={e => reveal(e.currentTarget)}
+    onKeyDown={e => { if (e.key === 'Escape') hideTip(); }}>{children}</button>;
 }

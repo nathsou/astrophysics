@@ -120,12 +120,12 @@ export function Home() {
             <span className="sr-only">“text only”</span>. To find a definition or theorem, use search (<kbd>/</kbd>) or the <a href="#/index">index of defined terms</a>.
           </p>
           {sourceIndex.chapters.map((c) => (
-            <section key={c.id} className="home-chapter" aria-labelledby={`ch-${c.id}`}>
-              <h3 id={`ch-${c.id}`}>
-                <a href={`#/s/${c.sections[0].id}`}>
+            <details key={c.id} className="home-chapter">
+              <summary id={`ch-${c.id}`} style={{ cursor: 'pointer', padding: '0.8rem 0', fontWeight: 600 }}>
+                <span>
                   {c.number && <span className="num">{chapterLabel(c.number)}</span>} {c.title}
-                </a>
-              </h3>
+                </span>
+              </summary>
               <ol className="home-toc">
                 {c.sections.map((s) => {
                   const p = planOf(s.id);
@@ -147,7 +147,7 @@ export function Home() {
                   );
                 })}
               </ol>
-            </section>
+            </details>
           ))}
         </nav>
         <p className="home-end">

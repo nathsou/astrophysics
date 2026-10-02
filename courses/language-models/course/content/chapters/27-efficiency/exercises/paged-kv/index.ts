@@ -6,6 +6,7 @@ import tests from './solution.test.ts?raw';
 export default {
   id: 'ch27/paged-kv',
   title: 'Paged KV memory',
+  optional: true,
   starter,
   solution,
   tests,

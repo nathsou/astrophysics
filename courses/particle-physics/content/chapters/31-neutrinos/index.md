@@ -114,85 +114,13 @@ Three properties of the formula decide how every experiment is built.
 - **It is zero for a distance much shorter than the oscillation length.** Near the source the beam is still pure. That is why a "near detector" measures the beam before it has had time to change and a "far detector" measures it after.
 - **It averages to $\tfrac12\sin^2 2\theta$** when many oscillations fit inside the detector's resolution: far above the first maximum the neutrinos have lost the phase, and the detector sees a fixed fraction.
 
-::two-flavour{n="31.1" caption="The two-flavour formula, drawn by the library's function through the hook oscillations.probability. Drag Δm² and the energy: the pattern in L stretches or shrinks and the height stays at sin²2θ. If you have solved the exercise below and ticked use my code, it is your function that draws the curve."}
+::two-flavour{n="31.1" caption="The two-flavour formula, drawn by the library's function through the hook oscillations.probability. Drag Δm² and the energy: the pattern in L stretches or shrinks and the height stays at sin²2θ. Use the reference curve to check the scaling prediction below."}
 
 ### You write: the oscillation probability
 
-```code
-id: oscillation-probability
-title: The oscillation probability
-hook: oscillations.probability
-prompt: |
-  Implement `probability(theta, dm2, L, E)`, the two-flavour probability $P(\nu_\alpha \to \nu_\beta) = \sin^2 2\theta\,\sin^2(1.267\,\Delta m^2 L/E)$.
-  The angle `theta` is in radians, `dm2` in eV², `L` in km and `E` in GeV, as in the equation above. Your function drives the curve of
-  Figure 31.1, and from there the library's two-flavour code: tick *use my code* and the figure uses it.
-starter: |
-  export function probability(theta: number, dm2: number, L: number, E: number): number {
-    // P = sin²(2θ) · sin²(1.267 Δm² L / E)
-    return 0;
-  }
-tests: |
-  import { test, expect } from '@pp/test';
-  import { probability } from 'solution';
-
-  const K = 1.26693; // 1e3 / (4 ħc) with ħc in eV·m and E in eV
-
-  test('maximal mixing at the first maximum gives probability 1', () => {
-    const dm2 = 2.5e-3, E = 1;
-    const L = Math.PI / 2 / (K * dm2 / E); // about 496 km
-    expect(probability(Math.PI / 4, dm2, L, E)).toBeCloseTo(1, 3);
-  });
-
-  test('the probability at the first maximum is sin²2θ', () => {
-    const dm2 = 7.5e-5, E = 0.004;
-    const L = Math.PI / 2 / (K * dm2 / E);
-    expect(probability(0.58, dm2, L, E)).toBeCloseTo(Math.sin(1.16) ** 2, 3);
-  });
-
-  test('no mixing, or no distance, means no oscillation', () => {
-    expect(probability(0, 2.5e-3, 500, 1)).toBeCloseTo(0, 12);
-    expect(probability(0.7, 2.5e-3, 0, 1)).toBeCloseTo(0, 12);
-  });
-
-  test('a reactor experiment at 1.65 km sees the small theta13 dip', () => {
-    // sin²2θ13 = 0.092, Δm² = 2.5e-3 eV², 3.5 MeV antineutrinos
-    const s = Math.sqrt(0.092);
-    const theta = 0.5 * Math.asin(s);
-    const expected = 0.092 * Math.sin(K * 2.5e-3 * 1.65 / 0.0035) ** 2;
-    expect(probability(theta, 2.5e-3, 1.65, 0.0035)).toBeCloseTo(expected, 3);
-  });
-
-  test('the pattern repeats with the oscillation length, and does not depend on the sign of Δm²', () => {
-    const dm2 = 2.5e-3, E = 2;
-    const Losc = Math.PI * E / (K * dm2);
-    expect(probability(0.6, dm2, 100 + Losc, E)).toBeCloseTo(probability(0.6, dm2, 100, E), 3);
-    expect(probability(0.6, -dm2, 100, E)).toBeCloseTo(probability(0.6, dm2, 100, E), 12);
-  });
-
-  test('averaged over many oscillations the probability is half of sin²2θ', () => {
-    let sum = 0;
-    const N = 4000;
-    for (let i = 0; i < N; i++) sum += probability(0.5, 2.5e-3, 5000 + (i * 7919) / N, 1);
-    expect(sum / N).toBeCloseTo(0.5 * Math.sin(1) ** 2, 2);
-  });
-
-  test('it is always a probability', () => {
-    for (let i = 0; i < 200; i++) {
-      const p = probability(i * 0.013, 1e-3 + i * 1e-5, 10 + i * 37, 0.5 + i * 0.1);
-      expect(p).toBeGreaterThanOrEqual(0);
-      expect(p).toBeLessThanOrEqual(1);
-    }
-  });
-solution: |
-  export function probability(theta: number, dm2: number, L: number, E: number): number {
-    const s2 = Math.sin(2 * theta);
-    const s = Math.sin((1.267 * dm2 * L) / E);
-    return s2 * s2 * s * s;
-  }
-hints:
-  - 'The phase inside the second sine is 1.267 × Δm² × L / E. The first sine is of twice the angle, then both are squared.'
-  - 'Two sines, each squared. The sign of Δm² cancels because the sine is squared.'
-```
+:::note
+**Move the first maximum.** Use the oscillation plot to predict what happens when the neutrino energy doubles at fixed mass splitting: the distance to the first maximum doubles. Setting the mixing angle to zero removes oscillations rather than changing their period.
+:::
 
 ## How the oscillation was found
 

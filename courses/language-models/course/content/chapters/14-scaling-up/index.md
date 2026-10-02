@@ -88,7 +88,9 @@ rtol:
 
 When a parity test fails, the size and location of the worst error are the best debugging clues. An error of $10^{-6}$ is rounding; an error of $0.1$ everywhere is a bug; an error confined to one position, or one head, points straight at the culprit.
 
-::exercise{id="allclose"}
+:::question
+**Choose a useful tolerance.** For a reference value near zero, a relative tolerance alone is ineffective. For large values, a fixed absolute tolerance can be too strict. The parity check combines both: absolute error ≤ absolute tolerance + relative tolerance × magnitude of the reference. Explain which term dominates in each case before comparing the two implementations.
+:::
 
 The course has parity tests at every level: the tensor operations of Chapter 4, the GPU kernels of Chapter 8, the Transformer of Chapter 11, and now the tokeniser and the trained CourseGPT. CourseGPT’s tokeniser test encodes 105 texts (TinyStories, punctuation, numbers, accents, emoji and odd whitespace) in both Python and TypeScript and requires identical ids — tokenisers must match *exactly*, since a single different id changes everything after it.
 

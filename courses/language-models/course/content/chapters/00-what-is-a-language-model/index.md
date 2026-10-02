@@ -7,7 +7,14 @@ builds:
   - Your first exercise
 ---
 
-This is CourseGPT. It has 30 million parameters, it read a billion words of children’s stories, and it writes new ones. By the end of Part IV you will have built every piece of it yourself — the tokeniser, the tensors, the automatic differentiation, the GPU kernels, the Transformer, the training loop and the inference engine — and it will run on code you wrote. Here it is at work:
+:::note
+**Choose a path.** To understand and train language models, use the supplied implementations and follow the explanations, figures and prediction questions. You may postpone GPU compute (Chapter 8) until after the Transformer, and sample advanced topics after inference. To implement the engine, take the coding exercises and optional GPU extensions as a second pass. Neither path requires every exercise.
+
+**Before running a model:** the pretrained browser demo downloads tens of megabytes of weights on demand; the full site contains additional model assets. Larger browser experiments use WebGPU when available, and the later PyTorch labs need a separate Python environment and suitable hardware. Read the run's size and timing information before starting. The supplied figures and reference results let you continue when you cannot run a GPU lab.
+:::
+
+
+This is CourseGPT. It has 30 million parameters, it trained on about a billion token presentations from children’s stories, and it writes new ones. By the end of Part IV you can trace every piece — the tokeniser, tensors, automatic differentiation, GPU kernels, Transformer, training loop and inference engine. Choose the components you want to implement; supplied reference code keeps the model running while you learn. Here it is at work:
 
 ::course-gpt-tour
 
@@ -53,7 +60,7 @@ Each chapter mixes several kinds of material, all of it interactive:
 
 - **Equations you can explore.** Hover over a symbol in a numbered equation to see what it means, why it is there and what changing it does. Some symbols are linked to the widgets beside them.
 - **Widgets.** Every chapter has interactive figures, most of them running real computations in your browser — often on your GPU.
-- **Exercises.** You write the course’s code yourself, in TypeScript, in the page. Tests run as you type, and hints and a reference solution are there if you need them. Many exercises can then **replace the reference code** in the chapter’s widgets, so the figures run on your implementation. Your work is saved in your browser and can be exported.
+- **Exercises.** You write the course’s code yourself, in TypeScript, in the page. Run tests when you are ready, and hints and a reference solution are there if you need them. Many exercises can then **replace the reference code** in the chapter’s widgets, so the figures run on your implementation. Your work is saved in your browser and can be exported.
 - **Labs.** The `training/` directory holds the Python companion: parity checks against our TypeScript library, and from Chapter 14 the PyTorch training runs.
 - **Break it**, **exercises**, **challenges** and **history** boxes at the end of each chapter suggest experiments, extensions, harder projects and where the ideas came from.
 

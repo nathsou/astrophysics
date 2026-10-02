@@ -20,7 +20,9 @@ In **Part I** text became numbers: bytes, characters, and the tokens of byte-pai
 
 ::scale-ladder
 
-::exercise{id="gpu-days"}
+:::question
+**Estimate before running.** Training time in days is approximately 6 × parameters × tokens ÷ (peak FLOPs per second × utilisation × 86,400). In the calculator, halve utilisation and predict the change: the run takes twice as long. Treat the result as a budget estimate, not a promise of measured throughput.
+:::
 
 Frontier models are 10,000 times larger than CourseGPT and train on 10,000 times more tokens: roughly 10⁸ times the compute. Almost everything in this book carries across that gap unchanged. The loss is the same cross-entropy, the architecture is the same stack of attention and MLP blocks, with Chapter 18’s refinements, and the optimisers, the schedules, the KV cache and the sampling methods are the ones we wrote. What changes is what the models can do. At our scale, a model learns grammar, names that persist through a story, and simple cause and effect; at 10⁸ times the compute, the same objective yields models that write working programs, explain their reasoning, and pass professional examinations. That is the observation that has driven the field since GPT-2 :cite[radford2019], and the reason Sutton’s “bitter lesson” — that general methods which scale with compute win over hand-built knowledge — has been quoted so often :cite[sutton2019].
 
