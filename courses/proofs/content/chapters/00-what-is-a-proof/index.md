@@ -60,7 +60,7 @@ The Greek contribution was not the theorem but the demand for a proof. Euclid's 
 Pythagoras founded a religious and philosophical community in Croton, in southern Italy, whose members believed that “all is number”. He wrote nothing, and everything we know was written down centuries later, mixed with legend: that he sacrificed a hundred oxen when he discovered the theorem, that he forbade eating beans. Nobody knows whether he or his followers proved the theorem that bears his name, or how. We will meet the Pythagoreans again in Chapter 3, where the same theorem led them to a discovery they are said to have tried to hide.
 :::
 
-## Four ways to see it
+## Five ways to see it
 
 There are hundreds of proofs of Pythagoras' theorem — Elisha Loomis collected 367 of them.:cite[loomis] Here are four. As you read each one, ask yourself two questions: *why* does it work, and *what exactly* does it use?
 

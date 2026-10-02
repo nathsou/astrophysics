@@ -62,7 +62,7 @@ Real key matrices need a diode at every key. Without it, three keys pressed at t
 The zoom shows two more things that the steps skip: the circuit board that carries the controller (between steps 2 and 3), and the layers of metal wire that join the gates to one another (between steps 5 and 6).
 
 ```quiz
-q: 'The first computer, ENIAC (1945), had 17,468 vacuum tubes, each one a switch. Apple’s M2 Ultra processor (2023) has 134 billion transistors. About how many times as many switches is that?'
+q: 'ENIAC (1945), an early general-purpose electronic digital computer, had 17,468 vacuum tubes, each one a switch. Apple’s M2 Ultra processor (2023) has 134 billion transistors. About how many times as many switches is that?'
 options:
   - text: 'About a thousand times as many.'
     why: 'Only 17 million. A thousand times as many would be 17 million.'
@@ -70,7 +70,7 @@ options:
     why: 'That would be 1.7 billion. Chips are far past that.'
   - text: 'About eight million times as many.'
     correct: true
-    why: '134 × 10⁹ ÷ 17,468 ≈ 7.7 × 10⁶. Eight orders of magnitude between them, in 78 years.'
+    why: '134 × 10⁹ ÷ 17,468 ≈ 7.7 × 10⁶. About seven orders of magnitude between them, in 78 years.'
   - text: 'About eight billion times as many.'
     why: 'That would be 140 trillion transistors. The largest chips have hundreds of billions.'
 ```
