@@ -1,7 +1,7 @@
 ---
 number: 21
 title: Colliding beams
-summary: How many collisions a pair of bunches produces, and what it costs. Luminosity derived from the beam geometry, β* and the crossing angle, pile-up, integrated luminosity, synchrotron radiation and why the LHC collides protons, the energy stored in the beam, and the accident of 2008. The reader writes the luminosity formula.
+summary: How many collisions a pair of bunches produces, and what it costs. Luminosity derived from the beam geometry, β* and the crossing angle, pile-up, integrated luminosity, synchrotron radiation and why the LHC collides protons, the energy stored in the beam, and the accident of 2008. The reader predicts how beam changes affect the collision rate.
 duration: About 3 hours
 prerequisites: [steering-and-focusing]
 ---
@@ -12,7 +12,7 @@ That ratio is the subject of the chapter. Chapter 2 showed that colliding beams 
 
 ## Rate = cross-section × luminosity
 
-Chapter 3 defined the rate of any process as *R* = σ*L*, the cross-section of the process times a quantity *L* that depends only on the beams, the :term[luminosity]{id=luminosity}. Its unit is a cross-section per second inverted: cm⁻² s⁻¹. The LHC's design value is 10³⁴ cm⁻² s⁻¹.:cite[lhc-design] With an inelastic cross-section of about 80 mb = 8 × 10⁻²⁶ cm², the rate of proton–proton collisions is 10³⁴ × 8 × 10⁻²⁶ ≈ 8 × 10⁸ per second.
+Recall *R* = σ*L* from [Chapter 3](../quantum-essentials/#cross-sections-and-luminosity). Before using the calculator, check that cm² × cm⁻² s⁻¹ gives events per second. Use the question below to estimate the rate at one collision point; this chapter's new task is to derive *L* from the beam geometry.
 
 ```fermi
 id: collisions-per-second
@@ -312,104 +312,9 @@ Beyond that the options follow from this chapter's two limits, and none is decid
 
 The machine stage of the course's pipeline turns beam parameters into a luminosity and a pile-up, and the later stages take both from it. The function at its centre is the one derived above. The library's `machineStage` calls `luminosity(params)` through the hook, so once yours passes its tests, the dashboard and the Control Room use it.
 
-```code
-id: luminosity
-title: The luminosity of a collider
-hook: machine.luminosity
-prompt: |
-  Implement `luminosity(p)` for two equal, round Gaussian bunches, and return it in **cm⁻² s⁻¹**.
-
-  The parameters `p` (type `LumiParams`) are: `Nb` (protons per bunch), `nb` (colliding bunch pairs), `frev` (revolution frequency in Hz),
-  `eps_n` (normalised emittance, m·rad), `betaStar` (m), `gamma` (Lorentz factor), `crossingAngle` (full angle in rad) and `sigmaZ` (bunch length in m).
-
-  1. The beam size at the collision point: σ*² = ε β*, with the geometric emittance ε = ε_n/γ.
-  2. The head-on luminosity: N² n f /(4π σ*²), which comes out in m⁻² s⁻¹.
-  3. The crossing angle: multiply by F = 1/√(1 + φ²), where φ = θ σ_z /(2σ*).
-  4. Convert to cm⁻² s⁻¹ (1 m⁻² = 10⁻⁴ cm⁻²).
-starter: |
-  import type { LumiParams } from 'hep/machine';
-
-  export function luminosity(p: LumiParams): number {
-    // σ*² = ε_n β*/γ;  L = N² n f / (4π σ*²) × F;  then convert m⁻² to cm⁻²
-    return 0;
-  }
-tests: |
-  import { test, expect } from '@pp/test';
-  import { luminosity } from 'solution';
-  import type { LumiParams } from 'hep/machine';
-
-  // The LHC design report's parameters at 7 TeV.
-  const DESIGN: LumiParams = {
-    Nb: 1.15e11, nb: 2808, frev: 11245.5, eps_n: 3.75e-6, betaStar: 0.55, gamma: 7000 / 0.9382720813, crossingAngle: 285e-6, sigmaZ: 0.0755,
-  };
-  const HEAD_ON: LumiParams = { ...DESIGN, crossingAngle: 0 };
-
-  test('the LHC design parameters give about 1.0 × 10³⁴ cm⁻² s⁻¹', () => {
-    const L = luminosity(DESIGN);
-    expect(L).toBeGreaterThan(0.98e34);
-    expect(L).toBeLessThan(1.03e34);
-  });
-
-  test('head-on, the result is N² n f /(4π σ*²), in cm⁻² s⁻¹', () => {
-    const sigma2 = (DESIGN.eps_n * DESIGN.betaStar) / DESIGN.gamma;
-    const expected = (DESIGN.Nb ** 2 * DESIGN.nb * DESIGN.frev) / (4 * Math.PI * sigma2) * 1e-4;
-    expect(luminosity(HEAD_ON) / expected).toBeCloseTo(1, 9);
-    expect(luminosity(HEAD_ON)).toBeGreaterThan(1.19e34);
-    expect(luminosity(HEAD_ON)).toBeLessThan(1.21e34);
-  });
-
-  test('the units: a beam 10 µm wide gives 8.0 × 10³⁰ cm⁻² s⁻¹ for 10¹¹ protons, one bunch, 10 kHz', () => {
-    // ε_n β*/γ = 10⁻⁶ × 1 / 10⁴ = 10⁻¹⁰ m², so σ* = 10 µm
-    const p: LumiParams = { Nb: 1e11, nb: 1, frev: 1e4, eps_n: 1e-6, betaStar: 1, gamma: 1e4, crossingAngle: 0, sigmaZ: 0.1 };
-    expect(luminosity(p) / 7.9577e30).toBeCloseTo(1, 4);
-  });
-
-  test('the luminosity goes as N², n, f, and as 1/β* when the beams meet head-on', () => {
-    const L0 = luminosity(HEAD_ON);
-    expect(luminosity({ ...HEAD_ON, Nb: 2 * HEAD_ON.Nb }) / L0).toBeCloseTo(4, 9);
-    expect(luminosity({ ...HEAD_ON, nb: 2 * HEAD_ON.nb }) / L0).toBeCloseTo(2, 9);
-    expect(luminosity({ ...HEAD_ON, frev: 3 * HEAD_ON.frev }) / L0).toBeCloseTo(3, 9);
-    expect(luminosity({ ...HEAD_ON, betaStar: HEAD_ON.betaStar / 2 }) / L0).toBeCloseTo(2, 9);
-  });
-
-  test('the energy matters through γ: a higher-energy beam is narrower, and the luminosity rises in proportion', () => {
-    expect(luminosity({ ...HEAD_ON, gamma: 2 * HEAD_ON.gamma }) / luminosity(HEAD_ON)).toBeCloseTo(2, 9);
-  });
-
-  test('a crossing angle with Piwinski angle 1 costs a factor √2', () => {
-    const sigma = Math.sqrt((DESIGN.eps_n * DESIGN.betaStar) / DESIGN.gamma);
-    const theta = (2 * sigma) / DESIGN.sigmaZ;
-    expect(luminosity({ ...DESIGN, crossingAngle: theta }) / luminosity(HEAD_ON)).toBeCloseTo(1 / Math.SQRT2, 9);
-  });
-
-  test('the crossing angle costs more as β* shrinks', () => {
-    const r = (b: number) => luminosity({ ...DESIGN, betaStar: b }) / luminosity({ ...HEAD_ON, betaStar: b });
-    expect(r(0.275)).toBeLessThan(r(0.55));
-    expect(r(0.55)).toBeLessThan(r(1.1));
-  });
-
-  test('the sign of the crossing angle does not matter, and the input is not changed', () => {
-    const p = { ...DESIGN };
-    const a = luminosity(p);
-    expect(luminosity({ ...DESIGN, crossingAngle: -DESIGN.crossingAngle }) / a).toBeCloseTo(1, 12);
-    expect(p).toEqual(DESIGN);
-  });
-solution: |
-  import type { LumiParams } from 'hep/machine';
-
-  export function luminosity(p: LumiParams): number {
-    const sigmaSq = (p.eps_n * p.betaStar) / p.gamma; // σ*² in m²
-    const sigma = Math.sqrt(sigmaSq);
-    const headOn = (p.Nb * p.Nb * p.nb * p.frev) / (4 * Math.PI * sigmaSq); // m⁻² s⁻¹
-    const piwinski = (p.crossingAngle * p.sigmaZ) / (2 * sigma);
-    const F = 1 / Math.sqrt(1 + piwinski * piwinski);
-    return headOn * F * 1e-4; // cm⁻² s⁻¹
-  }
-hints:
-  - 'The beam size comes from the emittance and β*: σ*² = ε_n β*/γ. The bunch population appears squared.'
-  - 'A common slip is to leave the answer in m⁻² s⁻¹: the design value would then come out as 10³⁸.'
-  - 'The Piwinski angle uses σ* (not σ*²), the full crossing angle and the bunch length: φ = θ σ_z/(2σ*).'
-```
+:::note
+**Predict a beam change.** Holding the beam size and crossing geometry fixed, doubling the number of protons in *each* bunch multiplies luminosity by four; doubling only the number of colliding bunch pairs multiplies it by two. Check both in the luminosity calculator. Explain why neither change doubles the energy of an individual collision. The reference implementation supplies the formula and unit conversion.
+:::
 
 :::experiments
 ATLAS and CMS measure their own luminosity, since the machine's beam parameters are not known well enough. Dedicated detectors count something proportional to it, such as the collisions seen in the forward calorimeters or in rings of small counters round the beam pipe, and these are calibrated against the beams themselves in **van der Meer scans**: the beams are moved across each other in small steps while the rates are recorded, and the widths of the resulting curve give the effective beam overlap directly. The method is due to van der Meer, in the late 1960s at the ISR. The precision reached is of the order of one per cent, and it enters every cross-section measurement (Chapters 23 and 30). The course's machine stage replaces all of this by the formula you wrote. It computes the luminosity from the beam parameters, then the pile-up, then the positions of the collision vertices along the beam axis, which are Gaussian with the width of the luminous region. The real machine adds the structure of the bunch trains, the decay of the luminosity during a fill and the differences between bunches.

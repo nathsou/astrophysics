@@ -156,8 +156,8 @@ export function Playground(props: PlaygroundProps) {
             ⇄ CIC
           </a>
         </Show>
-        <Show when={props.draftKey}><button class="btn small ghost" onClick={() => exportDraft(code(), "exercise.lean")}>Export draft</button><span class="muted">Draft kept in this browser when storage is available</span></Show>
-        <button class="btn small ghost" title="reset to the original code" onClick={() => { if (code() === initial() || confirm("Replace your draft with the starter code?")) onChange(initial()); }}>
+        <Show when={props.draftKey}><button class="btn small ghost" onClick={() => exportDraft(code(), props.draftKey!.split(":").slice(-2).join("-") + ".lean")}>Export draft</button><span class="muted" title="Drafts are kept in this browser when storage is available; export a copy as backup.">Local draft</span></Show>
+        <button class="btn small ghost" title="reset to the original code" aria-label="Reset to starter" onClick={() => { if (code() === initial() || confirm("Replace your draft with the starter code?")) onChange(initial()); }}>
           ↺
         </button>
       </div>

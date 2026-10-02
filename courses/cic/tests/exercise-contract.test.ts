@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { makeEnv, processSource } from '@kernel/frontend.ts';
-import { checkExercise } from '@kernel/exercise.ts';
+import { checkExercise, exerciseNames } from '@kernel/exercise.ts';
 import core from '@kernel/prelude/core.lean?raw';
 
 const env = () => makeEnv('cic', [{ id: 'core', src: core }]).env;
@@ -64,8 +64,26 @@ for (const course of ['cic', 'proofs-are-programs']) {
           }
         }
         const answer = processSource(context + (attr(tag, 'setup') ?? '') + '\n' + solution, base);
-        expect(checkExercise(answer, answer, attr(tag, 'must'))).toBeNull();
+        expect(checkExercise(answer, answer, attr(tag, 'must') ?? exerciseNames(attr(tag, 'code') ?? solution, answer.env.notations), (context + (attr(tag, 'setup') ?? '')).length + 1)).toBeNull();
       });
     }
   }
 }
+
+
+describe('protected example assertions', () => {
+  it('rejects deleting an example while keeping the function type', () => {
+    const ref = processSource('def inc (n : Nat) : Nat := n + 1\nexample : inc 2 = 3 := rfl', env());
+    const wrong = processSource('def inc (n : Nat) : Nat := 0', env());
+    expect(checkExercise(wrong, ref, 'inc')).toContain('example assertion');
+  });
+  it('accepts a correct alternative without requiring the sample answer helper', () => {
+    const ref = processSource('def helper (n : Nat) : Nat := n + 1\ndef inc (n : Nat) : Nat := helper n\nexample : inc 2 = 3 := rfl', env());
+    const right = processSource('def inc (n : Nat) : Nat := Nat.succ n', env());
+    expect(checkExercise(right, ref, exerciseNames('def inc (n : Nat) : Nat := sorry'))).toBeNull();
+  });
+  it('protects expected reductions even when the learner deletes the command', () => {
+    const ref = processSource('def inc (n : Nat) : Nat := n + 1\n#reduce inc 2', env());
+    expect(checkExercise(processSource('def inc (n : Nat) : Nat := 0', env()), ref, 'inc')).not.toBeNull();
+  });
+});

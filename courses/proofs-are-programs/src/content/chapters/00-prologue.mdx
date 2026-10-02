@@ -103,7 +103,7 @@ Every code block with a header is live, and runs on a real type checker:
 - **proof term** shows the program your tactics are writing.
 - `#eval` runs a program and `#test` tries a statement on random inputs. The pale code blocks have a *try it* button that opens them in the [playground](#/playground).
 
-Exercises are checked by the type checker. An exercise is solved when your code has no errors and no `sorry`, and your progress is saved in your browser.
+Exercises are checked by the type checker. The required declarations must keep their requested types and check without errors, added axioms or `sorry`. Drafts and completion history are kept in your browser when storage is available; export a draft to keep a separate copy. Editing a completed answer starts a fresh check.
 
 <Note title="What you need to know">
 You should be comfortable programming in a typed language. You do not need any logic or type theory: the course builds both from scratch, by programming. Some mathematical induction helps in Part IV, but Chapter 11 explains it again, as recursion.

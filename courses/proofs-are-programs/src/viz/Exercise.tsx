@@ -1,5 +1,5 @@
 import { check } from '../app/kernel.ts';
-import { checkExercise } from '@kernel/exercise.ts';
+import { checkExercise, exerciseNames } from '@kernel/exercise.ts';
 // Exercises checked by the kernel: the solution must check without errors and without sorry,
 // and the declarations named in `must` must exist.
 
@@ -31,10 +31,10 @@ export function Exercise(props: ExerciseProps) {
   const [showSol, setShowSol] = createSignal(false);
   const reference = createMemo(() => check((props.setup ?? '') + '\n' + (props.solution ?? props.code)));
   const onResult = (r: CheckResult) => {
-    const issue = checkExercise(r, reference(), props.must);
+    const issue = checkExercise(r, reference(), props.must ?? exerciseNames(props.code, reference().env.notations), (props.setup ?? '').length + 1);
     const ok = issue === null;
     setCurrent(ok);
-    setFeedback(issue ?? 'The required declarations and types check.');
+    setFeedback(issue ?? 'The requested types and authored example checks pass.');
     if (ok && !solved()) {
       setSolved(true);
       markExercise(props.id);

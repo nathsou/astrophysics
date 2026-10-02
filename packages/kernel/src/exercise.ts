@@ -3,8 +3,23 @@ import type { ProcessResult } from './frontend.ts';
 import { TypeChecker } from './core/typechecker.ts';
 import { instantiateLevelParamsExpr, forEachExpr } from './core/expr.ts';
 import { lparam } from './core/level.ts';
+import { Parser } from './syntax/parser.ts';
+import type { Notation } from './core/env.ts';
 
-export function checkExercise(result: ProcessResult, reference: ProcessResult, required?: string): string | null {
+/** Required names come from the task, never from an optional helper in its sample answer. */
+export function exerciseNames(source: string, notations: Notation[] = []): string {
+  const parser = new Parser(source, notations);
+  const names: string[] = [];
+  let cmd;
+  while ((cmd = parser.nextCommand())) {
+    if (cmd.k === 'def' && cmd.kind !== 'example') names.push(cmd.name);
+    if (cmd.k === 'inductive') names.push(...cmd.types.map(t => t.name));
+    if (cmd.k === 'structure') names.push(cmd.name);
+  }
+  return names.join(' ');
+}
+
+export function checkExercise(result: ProcessResult, reference: ProcessResult, required?: string, checkFrom = 0): string | null {
   if (reference.messages.some(m => m.severity === 'error')) return 'The exercise contract could not be loaded.';
   if (result.messages.some(m => m.severity === 'error')) return 'Resolve the errors before checking this answer.';
   if (result.messages.some(m => m.severity === 'warning' && m.msg.some(p => typeof p === 'string' && p.includes('sorry')))) return 'Replace every sorry with a proof.';
@@ -28,7 +43,7 @@ export function checkExercise(result: ProcessResult, reference: ProcessResult, r
       let changedContext = false;
       const seen = new Set<string>();
       const inspect = (expr: typeof expected.type) => forEachExpr(expr, node => {
-        if (node.k !== 'const' || seen.has(node.name)) return;
+        if (node.k !== 'const' || seen.has(node.name) || names.includes(node.name)) return;
         seen.add(node.name);
         const before = reference.env.get(node.name), after = result.env.get(node.name);
         if (!before || before.builtin) return;
@@ -42,6 +57,20 @@ export function checkExercise(result: ProcessResult, reference: ProcessResult, r
       if (changedContext) return `Keep the definitions used by the type of ${name}.`;
       if (!tc.isDefEq(actualType, expected.type)) return `Keep the requested type of ${name}.`;
     } catch { return `The type of ${name} does not match the task.`; }
+  }
+  // Re-check authored examples even if the learner removed or weakened them in the editor.
+  // These are finite examples, not a claim of full functional equivalence.
+  for (const entry of reference.results) {
+    if (entry.span.from < checkFrom) continue;
+    const out = entry.output;
+    try {
+      if (entry.cmd.k === 'def' && entry.cmd.kind === 'example' && out?.k === 'check') {
+        new TypeChecker(result.env, out.lctx).check(out.expr, out.type);
+      }
+      if (out?.k === 'reduce' && !new TypeChecker(result.env, out.lctx).isDefEq(out.input, out.result)) {
+        return 'The result does not match an example in the task.';
+      }
+    } catch { return 'An example assertion in the task does not hold for this implementation.'; }
   }
   return null;
 }

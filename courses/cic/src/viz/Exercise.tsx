@@ -1,6 +1,6 @@
 import { readDraft, saveDraft } from '../../../../packages/course-navigation/drafts.ts';
 import { check, envFor, type PreludeId } from '../app/kernel.ts';
-import { checkExercise } from '@kernel/exercise.ts';
+import { checkExercise, exerciseNames } from '@kernel/exercise.ts';
 // Exercises checked automatically — by the kernel (Lean-style) or by the λ-evaluator.
 
 import { Show, createMemo, createSignal, type JSX } from 'solid-js';
@@ -63,8 +63,8 @@ export function Exercise(props: ExerciseProps) {
 
   const reference = createMemo(() => check(props.solution ?? props.code, envFor((props.calculus as CalculusId) ?? 'cic', props.prelude as PreludeId)));
   const onLeanResult = (r: import('../app/kernel.ts').CheckResult) => {
-    const issue = checkExercise(r, reference(), props.must);
-    setFeedback(issue ?? 'The required declarations and types check.');
+    const issue = checkExercise(r, reference(), props.must ?? exerciseNames(props.code, reference().env.notations));
+    setFeedback(issue ?? 'The requested types and authored example checks pass.');
     setCurrent(issue === null);
     succeed(issue === null);
   };
