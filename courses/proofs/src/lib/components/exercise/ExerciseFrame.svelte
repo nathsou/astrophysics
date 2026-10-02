@@ -13,6 +13,7 @@
     hints = [],
     solution,
     solutionLabel = 'Show a solution',
+    completionLabel = 'Answer checked',
     children,
     footer,
   }: {
@@ -23,6 +24,7 @@
     hints?: string[];
     solution?: string;
     solutionLabel?: string;
+    completionLabel?: string;
     children: Snippet;
     footer?: Snippet;
   } = $props();
@@ -42,7 +44,7 @@
     <span class="kind"><Icon name="exercises" size={14} /> {kind}</span>
     {#if title}<span class="title">{title}</span>{/if}
     <span class="spacer"></span>
-    {#if solved}<span class="badge"><Icon name="check" size={13} /> Solved</span>{/if}
+    {#if solved}<span class="badge"><Icon name="check" size={13} /> {completionLabel}</span>{/if}
   </header>
   {#if prompt}<div class="prompt">{@html prompt}</div>{/if}
   <div class="body">{@render children()}</div>

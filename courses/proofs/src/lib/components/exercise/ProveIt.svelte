@@ -72,19 +72,19 @@
   }
 </script>
 
-<ExerciseFrame id={spec.id} kind="Write a proof" title={spec.title} prompt={spec.prompt} hints={spec.hints ?? (spec.hint ? [spec.hint] : [])} solution={spec.solution} solutionLabel="Compare with a model proof">
+<ExerciseFrame id={spec.id} kind="Write a proof" completionLabel="Self-reviewed" title={spec.title} prompt={spec.prompt} hints={spec.hints ?? (spec.hint ? [spec.hint] : [])} solution={spec.solution} solutionLabel="Compare with a model proof">
   <textarea bind:value={text} oninput={save} rows={Math.max(6, text.split('\n').length + 1)} placeholder="Write your proof here. Plain text is fine; use $…$ for maths if you like." aria-label="Your proof"></textarea>
   {#if spec.rubric?.length}
     <fieldset class="rubric ui">
-      <legend>Check your proof</legend>
+      <legend>Self-review: these checks do not verify the proof automatically</legend>
       {#each spec.rubric as r, i (i)}
         <label><input type="checkbox" bind:checked={ticks[i]} onchange={save} /> <span>{@html r}</span></label>
       {/each}
     </fieldset>
   {/if}
   <div class="tutor ui">
-    <button onclick={() => ask('feedback')} disabled={busy || (mounted && !text.trim())}><Icon name="question" size={14} /> Feedback on my proof</button>
-    <button onclick={() => ask('hint')} disabled={busy}><Icon name="tip" size={14} /> Nudge me</button>
+    <button onclick={() => ask('feedback')} disabled={busy || (mounted && !text.trim())}><Icon name="question" size={14} /> AI feedback (optional)</button>
+    <button onclick={() => ask('hint')} disabled={busy}><Icon name="tip" size={14} /> AI nudge (optional)</button>
     {#if busy}<button class="stop" onclick={() => controller?.abort()}>Stop</button>{/if}
     <span class="spacer"></span>
     <button class="link" onclick={() => (tutorSettings.open = true)}>{mounted && tutorSettings.enabled ? 'Tutor settings' : 'Set up the AI tutor'}</button>

@@ -62,7 +62,7 @@ export function Layout(props: RouteSectionProps) {
         <A href="/" class="brand" title="Calculus of Inductive Constructions: welcome">
           CIC <span class="brand-count">/ {chapters.length} chapters</span>
           <span class="brand-read">
-            ✓ {chapters.filter((c) => isVisited(c.slug)).length} / {chapters.length} read
+            ✓ {chapters.filter((c) => isVisited(c.slug)).length} / {chapters.length} visited
           </span>
         </A>
         <For each={parts}>

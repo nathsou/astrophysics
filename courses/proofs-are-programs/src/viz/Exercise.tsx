@@ -1,7 +1,9 @@
+import { check } from '../app/kernel.ts';
+import { checkExercise } from '@kernel/exercise.ts';
 // Exercises checked by the kernel: the solution must check without errors and without sorry,
 // and the declarations named in `must` must exist.
 
-import { Show, createSignal, type JSX } from 'solid-js';
+import { Show, createMemo, createSignal, type JSX } from 'solid-js';
 import { Playground } from './Playground.tsx';
 import { isExerciseDone, markExercise } from '../app/progress.ts';
 import { CodeBlock } from './CodeBlock.tsx';
@@ -23,14 +25,16 @@ export interface ExerciseProps {
 
 export function Exercise(props: ExerciseProps) {
   const [solved, setSolved] = createSignal(isExerciseDone(props.id));
+  const [current, setCurrent] = createSignal(false);
+  const [feedback, setFeedback] = createSignal('');
   const [showHint, setShowHint] = createSignal(false);
   const [showSol, setShowSol] = createSignal(false);
+  const reference = createMemo(() => check((props.setup ?? '') + '\n' + (props.solution ?? props.code)));
   const onResult = (r: CheckResult) => {
-    const errors = r.messages.some((m) => m.severity === 'error');
-    const sorry = r.messages.some((m) => m.severity === 'warning' && m.msg.some((p) => typeof p === 'string' && p.includes('sorry')));
-    const must = (props.must ?? '').split(/[\s,]+/).filter(Boolean);
-    const allThere = must.every((n) => r.env.has(n));
-    const ok = !errors && !sorry && allThere;
+    const issue = checkExercise(r, reference(), props.must);
+    const ok = issue === null;
+    setCurrent(ok);
+    setFeedback(issue ?? 'The required declarations and types check.');
     if (ok && !solved()) {
       setSolved(true);
       markExercise(props.id);
@@ -45,11 +49,12 @@ export function Exercise(props: ExerciseProps) {
         </Show>
         <span class="grow" />
         <Show when={solved()}>
-          <span class="badge ok">✓ solved</span>
+          <span class="badge ok">{current() ? '✓ Kernel checked' : 'Previously completed'}</span>
         </Show>
       </div>
       <div class="ex-prompt">{props.children}</div>
-      <Playground code={props.code} setup={props.setup} title="Your solution" onResult={onResult} lens={props.lens} />
+      <Playground draftKey={`proofs-are-programs:exercise:${props.id}`} onEdit={() => { setCurrent(false); setFeedback("Edited — checking…"); }} code={props.code} setup={props.setup} title="Your solution" onResult={onResult} lens={props.lens} />
+      <Show when={feedback()}><p role="status">{feedback()}</p></Show>
       <div class="row" style={{ 'margin-top': '0.5rem' }}>
         <Show when={props.hint}>
           <button class="btn small" onClick={() => setShowHint(!showHint())}>
