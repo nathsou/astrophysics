@@ -16,6 +16,7 @@
   import type { ExerciseBase } from './types';
 
   interface Spec extends ExerciseBase {
+    optional?: boolean;
     starter: string;
     tests: string;
     /** Reference solution source (shown on request, and used by the test suite). */
@@ -26,10 +27,13 @@
   let { spec }: { spec: Spec } = $props();
 
   let code = $state(spec.starter);
+  // svelte-ignore state_referenced_locally
+  let expanded = $state(!spec.optional);
   let editor: CodeEditor | undefined;
   let running = $state(false);
   let report = $state<RunReport | null>(null);
   let mounted = $state(false);
+  let testedCode = $state<string | null>(null);
 
   onMount(() => {
     progress.load();
@@ -41,7 +45,7 @@
     mounted = true;
   });
 
-  const passed = $derived(report?.ok && report.results.length > 0 && report.results.every((r) => r.passed));
+  const passed = $derived(testedCode === code && report?.ok && report.results.length > 0 && report.results.every((r) => r.passed));
   const solutionHtml = $derived(spec.solution ? `<pre class="solution-code"><code>${escape(spec.solution)}</code></pre>` : undefined);
 
   function escape(s: string) {
@@ -52,14 +56,25 @@
     if (running) return;
     running = true;
     progress.saveDraft(spec.id, code);
-    report = await runExercise(spec, code);
+    const submitted = code;
+    const nextReport = await runExercise(spec, submitted);
     running = false;
+    if (code !== submitted) return;
+    testedCode = submitted;
+    report = nextReport;
     if (passed) {
       progress.markSolved(spec.id);
       if (spec.hook) saveMine(spec.hook, spec.id, code);
     }
   }
+  function edit(next: string) {
+    code = next;
+    report = null;
+    testedCode = null;
+    progress.saveDraft(spec.id, code);
+  }
   function reset() {
+    if (code !== spec.starter && !confirm("Replace your draft with the starter code?")) return;
     code = spec.starter;
     editor?.setValue(spec.starter);
     report = null;
@@ -67,14 +82,17 @@
   }
 </script>
 
+<details class="coding-choice" bind:open={expanded}>
+  <summary>{spec.optional ? 'Optional implementation extension' : 'Coding exercise'}: {spec.title}</summary>
+  {#if expanded}
 <ExerciseFrame id={spec.id} kind="Code" title={spec.title} prompt={spec.prompt} hints={spec.hints ?? []} solution={solutionHtml} solutionLabel="Show the reference solution">
   <div class="code-ex">
-    <CodeEditor bind:this={editor} value={code} path="{spec.id}.ts" onchange={(c) => (code = c)} onrun={run} minLines={10} label="Your code" />
+    <CodeEditor bind:this={editor} value={code} path="{spec.id}.ts" onchange={edit} onrun={run} minLines={10} label="Your code" />
     <div class="bar ui">
       <button class="run" onclick={run} disabled={running}><Icon name="play" size={14} /> {running ? 'Running…' : 'Run tests'}</button>
       <button onclick={reset}><Icon name="reset" size={14} /> Reset</button>
       <span class="hint">Ctrl/⌘ + Enter runs the tests</span>
-      {#if spec.hook && mounted && progress.isSolved(spec.id)}
+      {#if spec.hook && mounted && passed}
         <span class="mine" title="The Control Room can run your version in the pipeline">Saved as <code>{spec.hook}</code>: use it in the Control Room</span>
       {/if}
     </div>
@@ -97,7 +115,12 @@
   </div>
 </ExerciseFrame>
 
+  {/if}
+</details>
+
 <style>
+  .coding-choice { margin: 1.5rem 0; }
+  .coding-choice > summary { cursor: pointer; padding: 0.7rem 0; font-weight: 600; }
   .code-ex {
     display: flex;
     flex-direction: column;

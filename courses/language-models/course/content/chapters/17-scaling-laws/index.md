@@ -54,7 +54,9 @@ When the two exponents are equal, $N$ and $D$ grow alike, each as $\sqrt C$: dou
 
 ::scaling-law-playground
 
-::exercise{id="allocate"}
+:::question
+**Trade parameters for data.** At fixed compute C ≈ 6ND, doubling the parameter count halves the available training tokens. Use the allocation figure to compare those two choices. More parameters alone do not guarantee a lower loss.
+:::
 
 The two famous laws disagree here. Kaplan and colleagues concluded that model size should grow much faster than data, $N_{\text{opt}} \propto C^{0.73}$, and the models of that era — GPT-3 with 175 billion parameters and 300 billion tokens — were built accordingly. Hoffmann and colleagues found the exponents nearly equal, and a ratio of about **20 tokens per parameter**. They tested it directly: Chinchilla, with 70 billion parameters and 1.4 trillion tokens, outperformed their own 280-billion-parameter Gopher trained with the same compute.
 
@@ -68,7 +70,9 @@ We ran the experiment on TinyStories with CourseGPT’s recipe (Muon, context 51
 
 ::iso-flop-measured
 
-::exercise{id="isoflop-minimum"}
+:::question
+**Locate the minimum.** On an isoflop curve, identify the undertrained large-model side and the capacity-limited small-model side. Read the minimum from the figure, then explain why neither endpoint uses the budget well.
+:::
 
 Each budget has a clear minimum: 4.2 million parameters at $10^{15}$ FLOPs, 7.2 million at $2.5 \times 10^{15}$ and 12.7 million at $6.25 \times 10^{15}$, trained on 9, 8 and 6 tokens per parameter. The optimal size grows as $C^{0.60}$, between Chinchilla’s 0.5 and Kaplan’s 0.73. And the optimal ratio is well below Chinchilla’s 20. That is not a contradiction: the ratio depends on the data (TinyStories is far more predictable than web text), on the optimiser (Muon extracts more from each token), on counting embedding parameters, which are a third of our smallest models, and on scale, since our budgets are a million times smaller than Chinchilla’s.
 
@@ -100,7 +104,9 @@ A compute-optimal model is the cheapest way to *train* to a given loss. But a mo
 
 ::inference-cost
 
-::exercise{id="tokens-for-loss"}
+:::question
+**Check the target.** As a target loss approaches the fitted irreducible floor, the required data grows sharply. Use the curve to compare a modest improvement with a target near that floor. A target below the floor has no finite solution in this fitted model.
+:::
 
 Modern open models go far beyond the Chinchilla ratio for this reason. Llama 3’s 8-billion-parameter model was trained on 15 trillion tokens :cite[dubey2024], nearly 1,900 per parameter. CourseGPT, at 35 tokens per parameter, was trained on four to six times more tokens per parameter than our sweep says is compute-optimal — and for a model meant to run in a browser, that is the right trade.
 

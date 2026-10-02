@@ -188,81 +188,9 @@ explain: "βγ = 15,000 / (658.6 × 0.6931) = 32.86, so γ = √(1 + 32.86²) = 
 
 The toy shower, the survival figure and the exercise above all use one small function. Write it, and the checker will compare it with the particle table's muon mass and lifetime.
 
-```code
-id: muon-survival
-title: The survival probability of a muon
-prompt: |
-  Implement `survival(energy, distanceKm, timeDilation)`: the probability that a muon of total energy `energy` (GeV) flies `distanceKm` kilometres without decaying.
-  With `timeDilation` true the decay length is βγ·cτ with βγ = √((E/m)² − 1); with it false the lifetime is applied in the lab frame and the decay length is just cτ.
-  Take the muon's mass and lifetime from the particle table (`particle(13)`; its lifetime is in seconds and c = 299 792 458 m/s). A muon with no kinetic energy (E ≤ m) does not go anywhere:
-  it survives a distance of zero and no other.
-starter: |
-  import { particle } from 'hep/particles';
-
-  export function survival(energy: number, distanceKm: number, timeDilation = true): number {
-    // P = exp(−d / L), with L = βγ c τ (or c τ without time dilation)
-    return 0;
-  }
-tests: |
-  import { test, expect } from '@pp/test';
-  import { survival } from 'solution';
-  import { particle } from 'hep/particles';
-
-  const mu = particle(13);
-  const ctau = mu.lifetime * 299792458; // m
-
-  test('a 3 GeV muon born 15 km up has a 45 % chance', () => {
-    const bg = Math.sqrt((3 / mu.mass) ** 2 - 1);
-    expect(survival(3, 15)).toBeCloseTo(Math.exp(-15000 / (bg * ctau)), 10);
-    expect(survival(3, 15)).toBeCloseTo(0.452, 2);
-  });
-
-  test('without time dilation almost nothing arrives', () => {
-    const p = survival(3, 15, false);
-    expect(p / Math.exp(-15000 / ctau)).toBeCloseTo(1, 8);
-    expect(p).toBeLessThan(1e-9);
-    expect(p).toBeGreaterThan(1e-11);
-  });
-
-  test('without dilation the energy does not matter', () => {
-    expect(survival(1, 2, false)).toBeCloseTo(survival(100, 2, false), 12);
-  });
-
-  test('more energy, more survival', () => {
-    expect(survival(10, 15)).toBeGreaterThan(survival(1, 15));
-    expect(survival(100, 15)).toBeGreaterThan(survival(10, 15));
-  });
-
-  test('zero distance is certain survival, and a muon at rest goes nowhere', () => {
-    expect(survival(5, 0)).toBe(1);
-    expect(survival(mu.mass, 1)).toBe(0);
-    expect(survival(mu.mass, 0)).toBe(1);
-  });
-
-  test('half-way at βγ = d/(cτ ln 2)', () => {
-    const bg = 15000 / (ctau * Math.LN2);
-    const E = mu.mass * Math.sqrt(1 + bg * bg);
-    expect(survival(E, 15)).toBeCloseTo(0.5, 8);
-  });
-solution: |
-  import { particle } from 'hep/particles';
-
-  const C = 299_792_458; // m/s
-
-  export function survival(energy: number, distanceKm: number, timeDilation = true): number {
-    const mu = particle(13);
-    const ctau = mu.lifetime * C;
-    const d = distanceKm * 1000;
-    if (d === 0) return 1;
-    const bg2 = (energy / mu.mass) ** 2 - 1;
-    if (timeDilation && bg2 <= 0) return 0;
-    const L = timeDilation ? Math.sqrt(bg2) * ctau : ctau;
-    return Math.exp(-d / L);
-  }
-hints:
-  - 'The proper decay length of the muon is `particle(13).lifetime * 299792458` metres, about 659 m.'
-  - 'βγ is the momentum over the mass: `Math.sqrt((E / m) ** 2 - 1)`. For E ≤ m there is no real momentum.'
-```
+:::note
+**Compare the two lifetimes.** Use the survival figure with time dilation on and off at the same energy and altitude. Predict which curve lets more muons reach the ground, then explain the role of βγ in the decay length. No new code is needed to test that prediction.
+:::
 
 ## How many muons: the flux at sea level
 

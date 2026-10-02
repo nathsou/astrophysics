@@ -6,6 +6,7 @@ import tests from './solution.test.ts?raw';
 export default {
   id: 'ch15/beam-search',
   title: 'Beam search',
+  optional: true,
   starter,
   solution,
   tests,

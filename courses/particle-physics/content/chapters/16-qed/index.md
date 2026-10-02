@@ -181,75 +181,9 @@ explain: "1/√17000 = 0.00767, or 0.77 %. To reach a statistical precision of 0
 
 ### Write the differential cross-section
 
-```code
-id: qed-dsigma
-title: The differential cross-section of e⁺e⁻ → μ⁺μ⁻
-hook: gen.dsigmaEeMuMu
-prompt: |
-  Implement `dsigmaEeMuMu(s, cosTheta)`, the tree-level differential cross-section of e⁺e⁻ → μ⁺μ⁻ through a photon, per unit cos θ, in GeV⁻²:
-
-  $$\frac{d\sigma}{d\cos\theta} = \frac{\pi\alpha^2}{2s}\,(1+\cos^2\theta),$$
-
-  that is $2\pi\,d\sigma/d\Omega$ from the derivation above. Take α from `ALPHA_0` in `hep/sm` (1/137.036). The generator's process `ee->mumu-qed` calls the function to draw the angle of every muon and to integrate the cross-section, so once your function passes, *use my code* makes your formula drive the virtual collider.
-starter: |
-  import { ALPHA_0 } from 'hep/sm';
-
-  /** dσ/dcosθ in GeV⁻² for s = E_cm² in GeV². */
-  export function dsigmaEeMuMu(s: number, cosTheta: number): number {
-    // π α² (1 + cos²θ) / (2 s)
-    return 0;
-  }
-tests: |
-  import { test, expect } from '@pp/test';
-  import { dsigmaEeMuMu } from 'solution';
-  import { ALPHA_0 } from 'hep/sm';
-  import { crossSection, getProcess } from 'hep/gen';
-  import { rng } from 'hep/random';
-  import { hooks } from 'hep';
-
-  test('matches the closed form at several points', () => {
-    for (const [s, c] of [[100, 0], [100, 0.5], [25, -0.8], [8317, 1]] as const) {
-      const want = (Math.PI * ALPHA_0 * ALPHA_0 * (1 + c * c)) / (2 * s);
-      expect(dsigmaEeMuMu(s, c)).toBeCloseTo(want, 14);
-    }
-  });
-
-  test('forward–backward symmetric, and twice as large along the beam as at 90°', () => {
-    expect(dsigmaEeMuMu(50, 0.7)).toBeCloseTo(dsigmaEeMuMu(50, -0.7), 15);
-    expect(dsigmaEeMuMu(50, 1) / dsigmaEeMuMu(50, 0)).toBeCloseTo(2, 12);
-  });
-
-  test('falls as 1/s', () => {
-    expect(dsigmaEeMuMu(400, 0.3) / dsigmaEeMuMu(100, 0.3)).toBeCloseTo(0.25, 12);
-  });
-
-  test('its integral over cos θ is 4πα²/3s', () => {
-    const s = 100;
-    const n = 2000;
-    let acc = 0;
-    for (let i = 0; i < n; i++) acc += dsigmaEeMuMu(s, -1 + (2 * (i + 0.5)) / n) * (2 / n);
-    expect(acc).toBeCloseTo((4 * Math.PI * ALPHA_0 * ALPHA_0) / (3 * s), 12);
-  });
-
-  test('used by the generator, the Monte Carlo cross-section agrees with the closed form', () => {
-    hooks.setOverride('gen.dsigmaEeMuMu', dsigmaEeMuMu);
-    try {
-      const cs = crossSection(getProcess('ee->mumu-qed'), 10, 20000, rng(3));
-      expect(Math.abs(cs.pull ?? 99)).toBeLessThan(4);
-    } finally {
-      hooks.setOverride('gen.dsigmaEeMuMu', undefined);
-    }
-  });
-solution: |
-  import { ALPHA_0 } from 'hep/sm';
-
-  export function dsigmaEeMuMu(s: number, cosTheta: number): number {
-    return (Math.PI * ALPHA_0 * ALPHA_0 * (1 + cosTheta * cosTheta)) / (2 * s);
-  }
-hints:
-  - 'The formula is in the prompt. Watch the units: s is in GeV², α is dimensionless, and the result is in GeV⁻².'
-  - 'A common slip is to write 4πα²/3s (the total) instead of the differential cross-section, or α/4s without the factor 2π (which belongs to dΩ → dcosθ).'
-```
+:::note
+**Predict the angular shape.** Compare forward, transverse and backward muons in the angular distribution. The factor 1 + cos²θ gives twice the density at cos θ = ±1 as at 0. Doubling the collision energy makes s four times larger and reduces this massless tree-level cross section by four.
+:::
 
 ## Bhabha scattering: two diagrams that interfere
 
@@ -271,84 +205,9 @@ The collider figure needs to turn a formula into events. Two techniques make thi
 
 **:term[Unweighting]{id=unweighting}.** Integration gives a cross-section. A generator must also produce *events*, each a full set of particle momenta, distributed as the theory says, so that a detector simulation can process them one at a time. The simplest way is **accept–reject**, which you met in Chapter 4: draw a point *x* uniformly, compute its weight *w* = *f*(*x*), and accept it with probability *w*/*w*<sub>max</sub>, where *w*<sub>max</sub> is at least the largest weight. The accepted points are distributed as *f*, with all weights equal to one. The fraction of points kept, the **efficiency**, is ⟨*w*⟩/*w*<sub>max</sub>: for 1 + cos²θ under a flat bound of 2 it is (4/3)/2 = 2/3, which the test suite checks. A weight much larger than typical makes the efficiency poor, which is why real generators spend effort on importance sampling and on the VEGAS algorithm that learns a good sampling density.
 
-```code
-id: qed-unweight
-title: 'Unweighting: accept–reject'
-hook: gen.unweight
-prompt: |
-  Implement `unweight(w, wMax, rng)`: given the weight `w` of a generated point and the largest weight `wMax`, return `true` if the point is kept. A point must be kept with probability `w / wMax`, using one call of `rng()` (a uniform random number in [0, 1)). A weight above `wMax` is always kept.
-
-  The generator's `Unweighter`, which keeps a running maximum, calls your function for every event of every hadron-collider process and for the initial-state-radiation sampler, so a wrong function biases every distribution that comes out.
-starter: |
-  import type { Rng } from 'hep/random';
-
-  /** Keep a point of weight w with probability w / wMax. */
-  export function unweight(w: number, wMax: number, rng: Rng): boolean {
-    // one uniform random number: keep if rng() * wMax < w
-    return true;
-  }
-tests: |
-  import { test, expect } from '@pp/test';
-  import { unweight } from 'solution';
-  import { rng } from 'hep/random';
-
-  function fraction(w: number, wMax: number, n: number, seed: number): number {
-    const r = rng(seed);
-    let k = 0;
-    for (let i = 0; i < n; i++) if (unweight(w, wMax, r)) k++;
-    return k / n;
-  }
-
-  test('a zero weight is never kept, a weight at or above the maximum always is', () => {
-    expect(fraction(0, 3, 2000, 1)).toBe(0);
-    expect(fraction(3, 3, 2000, 2)).toBe(1);
-    expect(fraction(5, 3, 2000, 3)).toBe(1);
-  });
-
-  test('the acceptance probability is w / wMax', () => {
-    const n = 40000;
-    for (const p of [0.1, 0.5, 0.9]) {
-      const f = fraction(p * 7, 7, n, 11);
-      expect(Math.abs(f - p)).toBeLessThan(4 * Math.sqrt((p * (1 - p)) / n));
-    }
-  });
-
-  test('it uses the random number generator it is given, and only that', () => {
-    const a = rng(5);
-    const b = rng(5);
-    const seqA = Array.from({ length: 50 }, () => unweight(0.4, 1, a));
-    const seqB = Array.from({ length: 50 }, () => unweight(0.4, 1, b));
-    expect(seqA).toEqual(seqB);
-    expect(seqA.some((x) => x)).toBe(true);
-    expect(seqA.some((x) => !x)).toBe(true);
-  });
-
-  test('unweighting 1 + cos²θ gives ⟨cos²θ⟩ = 0.4 and an efficiency of 2/3', () => {
-    const r = rng(9);
-    let kept = 0, trials = 0, c2 = 0;
-    while (kept < 20000) {
-      const c = 2 * r() - 1;
-      trials++;
-      if (unweight(1 + c * c, 2, r)) {
-        kept++;
-        c2 += c * c;
-      }
-    }
-    expect(c2 / kept).toBeGreaterThan(0.39);
-    expect(c2 / kept).toBeLessThan(0.41);
-    expect(kept / trials).toBeGreaterThan(0.65);
-    expect(kept / trials).toBeLessThan(0.685);
-  });
-solution: |
-  import type { Rng } from 'hep/random';
-
-  export function unweight(w: number, wMax: number, rng: Rng): boolean {
-    return rng() * wMax < w;
-  }
-hints:
-  - 'Draw u = rng() once. Then u × wMax is uniform on [0, wMax), and it is below w with probability w / wMax.'
-  - 'A weight larger than wMax gives a probability larger than one, and the comparison is then always true, which is the behaviour the prompt asks for.'
-```
+:::note
+**Keep or reject?.** If an event has one quarter of the maximum weight, keep it with probability one quarter. Predict how many of 1,000 such proposals survive, then compare with the generator: about 250, with statistical fluctuations. The supplied accept–reject routine handles the random draws.
+:::
 
 :::programmer
 Event generation is **sampling from a distribution you can evaluate but not invert**, and the tools are the ones a programmer knows from randomised algorithms. Accept–reject is rejection sampling. A weighted event, with a weight instead of a rejection, is **importance sampling**: draw from an easier distribution and correct with the ratio. VEGAS adapts the easier distribution to the integrand, bin by bin, the way an adaptive quadrature refines where the function varies. The hook system is a **strategy pattern**: the generator calls `hook('gen.unweight', unweight)` for each event, and if your function is installed it takes the place of the reference, which is why an exercise can be tested in isolation and then run inside the whole pipeline.

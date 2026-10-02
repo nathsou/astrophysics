@@ -55,7 +55,9 @@ Trained for four passes over the 3,271 training pairs, the reward model ranked 9
 
 The simplest way to use a reward model needs no further training: sample $n$ responses, score each, and return the best. **Best-of-n** (or rejection sampling) is surprisingly strong, and a useful yardstick for the methods that follow. Its cost is at test time — $n$ times the generation — and its effect on the model’s distribution is bounded: choosing the best of $n$ samples moves the distribution by at most $\log n - (n-1)/n$ nats of KL divergence from the original.
 
-::exercise{id="best-of-n"}
+:::question
+**Predict the selection bias.** Compare selection from 1, 4 and 16 sampled responses. The best reward score cannot decrease when candidates are added, but the quality judged by a person need not improve: selection can exploit errors in the reward model.
+:::
 
 ::preference-results{view="bestofn"}
 

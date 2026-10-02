@@ -6,6 +6,11 @@ duration: About 2½ hours
 prerequisites: [relativity-for-particles]
 ---
 
+:::note
+**Read this chapter in three sessions.** Session 1: quantum states. Session 2: unstable particles. Session 3: event rates. Each session has a stopping point; the section menu remembers where you paused.
+:::
+
+
 Two muons are created in the same instant. One of them decays after 0.3 microseconds and the other after 7. There is nothing to tell them apart: they are identical, their properties are the same to every digit, and no measurement made on either of them beforehand would have let you predict which would go first. Only the average is fixed. Over many muons it is 2.197 microseconds, a number known to about one part in a million.:cite[pdg2024]
 
 This is not a failure of the instruments. It is how the world works at this scale, and almost everything a collider measures is a consequence of it. The spikes in Figure 2.1 have widths because their particles live for a fixed average time and not a fixed time. The number of Z bosons a collider makes in a day is an average, and the number you actually count fluctuates around it. Each decay picks its products at random, with fixed odds. This chapter collects the parts of quantum mechanics that the rest of the course leans on, in the order in which the course needs them:
@@ -17,6 +22,11 @@ This is not a failure of the instruments. It is how the world works at this scal
 5. **Cross-sections and luminosity**: how many events a collider will make, and how much that number can be trusted.
 
 A primer on quantum mechanics is in [Appendix B](/appendix/physics/), and the [primer in the astrophysics course](/astrophysics/ch/primer-quantum/) covers the same ground with different examples. Nothing below assumes more than the idea that a particle has a wave-like description.
+
+
+:::note
+**Session 1: quantum states.** Distinguish spin, particle statistics and amplitudes; stop after Uncertainty. Explain why amplitudes must be added before probabilities.
+:::
 
 ## Spin
 
@@ -221,6 +231,11 @@ hbar:
 This is the exact form of Chapter 1's rule of thumb. To resolve a length Δ*x* a probe needs momentum of at least ħ/2Δ*x*, and for a fast particle, energy of order ħ*c*/Δ*x*: a hundred times smaller needs a hundred times more energy. The factor of two and the factor of 2π are conventions about how "spread" is defined, and the rule of thumb is good to that factor.
 
 There is a second, looser relation between energy and time. It cannot be derived in the same way, because time is not something a particle has a spread in. The precise form applies to unstable states and is derived below. It says that a state that lasts for a time τ before decaying has an energy that is uncertain by about ħ/τ.
+
+
+:::note
+**Session 2: unstable particles.** Connect lifetime, width and branching ratios. Before changing a lifetime, predict the width change. The decay implementation is optional.
+:::
 
 ## Decay is random
 
@@ -490,6 +505,7 @@ Write the function that decays a parent into two bodies. Given a random number g
 
 ```code
 id: two-body-decay
+optional: true
 title: Decay a particle into two
 hook: kinematics.twoBodyDecay
 prompt: |
@@ -666,6 +682,11 @@ export function twoBodyDecay(r: Rng, parent: P4, m1: number, m2: number): [P4, P
 ```
 
 For two bodies the set of allowed final states (the :term[**phase space**]{id=phase-space}) is just a sphere of directions, and uniform on the sphere is the right distribution when nothing else matters. For three or more bodies the allowed momenta form a bigger set with a complicated shape. The library offers two ways to sample it. `phaseSpace` uses **RAMBO** (Kleiss, Stirling and Ellis): it draws *n* massless four-momenta with isotropic directions and energies from the density *q*e<sup>−*q*</sup>, which in code is `-Math.log(r() * r())`, then boosts and rescales them to the required total mass; for massive particles a correction step and a weight follow. `uniformPhaseSpace` in `hep/decay` (GENBOD, James) builds the decay as a chain of two-body decays and keeps events by accept–reject, so that all events have weight one. Both are tested against each other. The same idea, sample what is easy and correct by a weight, is the subject of Chapter 4's under-the-hood box.
+:::
+
+
+:::note
+**Session 3: event rates.** Use rate = cross section × luminosity, check units, then distinguish an expected count from one fluctuating observation.
 :::
 
 ## Cross-sections and luminosity

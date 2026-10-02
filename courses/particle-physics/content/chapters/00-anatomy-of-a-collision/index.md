@@ -5,6 +5,11 @@ summary: What CERN is, what the Large Hadron Collider does, and one proton colli
 duration: About 1 hour
 ---
 
+:::note
+**Follow the physics first.** Use the figures, measurements and predictions to explain what a detector can infer from a collision. Code exercises are optional ways to change a model; the reference pipeline already works. Longer reconstruction projects are folded into implementation extensions. Each toy model exposes selected effects, so compare its assumptions with the real data before drawing a physical conclusion.
+:::
+
+
 Forty million times a second, somewhere under the French–Swiss border, a pair of proton bunches crosses in the middle of a detector the size of a cathedral. Most of the time nothing interesting happens. Every now and then two protons collide hard enough that a few of their constituents meet head-on, and for a few billionths of a billionth of a second there is enough concentrated energy to produce short-lived particles that were abundant in the early universe and are also made in natural high-energy collisions. It sounds like a thought experiment. It is a facility, with a shift rota, and some of the data it produces can be downloaded by anyone.
 
 This course teaches the physics behind those collisions, and it teaches it by making you build a miniature of the apparatus. This first chapter sets the scene: who runs the machine, what it does, and the path that one collision takes from two beams of protons to a number in a histogram. Each step of that path is something you will write, run and test yourself.

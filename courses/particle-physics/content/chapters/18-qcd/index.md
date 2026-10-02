@@ -207,6 +207,7 @@ Things to try:
 
 ```code
 id: qcd-antikt
+optional: true
 title: Anti-kT jet clustering
 hook: reco.antiKt
 prompt: |

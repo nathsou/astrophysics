@@ -6,6 +6,7 @@ import tests from './solution.test.ts?raw';
 export default {
   id: 'ch02/kneser-ney',
   title: 'Kneser–Ney for bigrams (harder)',
+  optional: true,
   starter,
   solution,
   tests,

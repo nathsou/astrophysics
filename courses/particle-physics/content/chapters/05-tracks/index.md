@@ -272,30 +272,58 @@ The fit that gives the radius is a small, self-contained piece of numerical code
 The trick is one every engineer knows: a problem that looks non-linear (fitting a circle) becomes linear when the parametrisation is changed (fitting $D$, $E$, $F$). The cost is that the quantity being minimised is no longer the distance of the points from the circle, but an algebraic residual that overweights the points far from the centre; fits of this kind are *biased* when the noise is large compared to the curvature. The library's fit is a cousin (Taubin's) that removes most of the bias; the reader's fit is the simple version. The difference in the answer is a fraction of a percent for the tracks in this course and matters only for stiff tracks measured badly.
 :::
 
+
+:::note
+**Before fitting:** a residual is measured position minus predicted position. Dividing it by the measurement uncertainty gives a dimensionless pull; summing squared pulls gives χ². A hit with twice the uncertainty gets one quarter of the weight. Try that change in the fitter before editing code. Chapter 28 develops the statistical interpretation in detail.
+:::
+
 ```code
 id: circle-fit
 title: A circle fit that returns the momentum
 hook: reco.circleFit
 prompt: |
-  Implement `circleFit(points)` for points `{ x, y, sigma? }` in millimetres: return the centre `(xc, yc)`, the radius `R` and
-  `chi2 = Σ ((distance to the centre − R)/σ)²`, weighting each point by 1/σ² (σ = 1 if it is missing). Use the algebraic form
-  x² + y² + D x + E y + F = 0 and solve the 2 × 2 normal equations. Then write `ptFromRadius(R, B)`, the
-  transverse momentum in GeV/c of a unit-charge track of radius R (mm) in a field B (tesla).
-  Two things to watch: subtract the weighted mean of the points first (the hits of a stiff track are almost on a line, and the algebra loses digits if you do not); and do not divide by
-  a σ of zero.
+  Complete the inverse-variance weight in the supplied circle fitter, then compare the fit with and without a very uncertain hit. The centring, normal equations, momentum conversion and residual calculation are supplied. Explain why doubling a hit’s uncertainty divides its weight by four.
 starter: |
   import type { CirclePoint, CircleResult } from 'hep/reco';
 
   export function circleFit(points: readonly CirclePoint[]): CircleResult {
-    // weights w = 1/σ²; centre the points on their weighted mean (u, v);
-    // solve  [Suu Suv; Suv Svv] (uc, vc) = ½ (Suuu + Suvv, Svvv + Svuu);
-    // then R = √(uc² + vc² + (Suu + Svv)/Σw), centre = mean + (uc, vc)
-    return { xc: 0, yc: 0, R: 0, chi2: 0 };
+    const n = points.length;
+    const w = points.map((p) => 1 /* TODO: inverse variance; a less certain hit gets less weight */);
+    let sw = 0, mx = 0, my = 0;
+    for (let i = 0; i < n; i++) {
+      sw += w[i]!;
+      mx += w[i]! * points[i]!.x;
+      my += w[i]! * points[i]!.y;
+    }
+    mx /= sw;
+    my /= sw;
+    let Suu = 0, Svv = 0, Suv = 0, Suuu = 0, Svvv = 0, Suvv = 0, Svuu = 0;
+    for (let i = 0; i < n; i++) {
+      const u = points[i]!.x - mx, v = points[i]!.y - my, wi = w[i]!;
+      Suu += wi * u * u;
+      Svv += wi * v * v;
+      Suv += wi * u * v;
+      Suuu += wi * u * u * u;
+      Svvv += wi * v * v * v;
+      Suvv += wi * u * v * v;
+      Svuu += wi * v * u * u;
+    }
+    const det = Suu * Svv - Suv * Suv;
+    const b1 = 0.5 * (Suuu + Suvv), b2 = 0.5 * (Svvv + Svuu);
+    const uc = (b1 * Svv - b2 * Suv) / det;
+    const vc = (b2 * Suu - b1 * Suv) / det;
+    const R = Math.sqrt(uc * uc + vc * vc + (Suu + Svv) / sw);
+    const xc = mx + uc, yc = my + vc;
+    let chi2 = 0;
+    for (let i = 0; i < n; i++) {
+      const d = Math.hypot(points[i]!.x - xc, points[i]!.y - yc) - R;
+      chi2 += w[i]! * d * d;
+    }
+    return { xc, yc, R, chi2 };
   }
 
   export function ptFromRadius(R: number, B: number): number {
-    // pT [GeV/c] = 0.2998 · B [T] · R [m]; R is given in millimetres
-    return 0;
+    return (0.299792458 * B * R) / 1000;
   }
 tests: |
   import { test, expect } from '@pp/test';

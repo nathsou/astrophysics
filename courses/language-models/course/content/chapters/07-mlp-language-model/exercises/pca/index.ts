@@ -6,6 +6,7 @@ import tests from './solution.test.ts?raw';
 export default {
   id: 'ch07/pca',
   title: 'PCA for the embedding projector',
+  optional: true,
   starter,
   solution,
   tests,

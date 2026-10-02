@@ -20,7 +20,9 @@ Every model in this book optimised a number: cross-entropy, a reward model’s s
 
 Whether harder optimisation hurts depends on the kind of error in the proxy. When the errors are small and spread evenly, choosing the candidates the proxy rates highest still picks good ones. When a few errors are enormous — a reward model that wildly overrates some strange output — strong optimisation finds exactly those.
 
-::exercise{id="goodhart"}
+:::question
+**Compare reward with quality.** In the reward experiment, increase the strength of optimisation. Find where the proxy score keeps rising while the intended quality stops improving. Explain what information a held-out human evaluation would add.
+:::
 
 ::goodhart-sim
 
@@ -38,7 +40,9 @@ Chapter 23’s agents read text they did not write: web pages, emails, documents
 
 Defences make the boundary visible to the model. Delimiters mark where untrusted text begins and ends; **spotlighting** goes further and transforms the untrusted text — marking every line, or encoding it — so that it cannot pass as instructions :cite[hines2024]; and models are trained with an **instruction hierarchy** in which system instructions outrank the user’s, and the user’s outrank anything in tool results :cite[wallace2024].
 
-::exercise{id="wrap-untrusted"}
+:::question
+**Inspect the boundary.** In the injection viewer, compare raw text with marked text. Explain why visibly separating retrieved text from instructions helps, and why delimiters alone cannot guarantee that a model will obey the intended boundary. The transformation is supplied; no string-formatting exercise is needed.
+:::
 
 ::injection-view
 

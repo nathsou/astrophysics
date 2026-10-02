@@ -6,6 +6,7 @@ import tests from './solution.test.ts?raw';
 export default {
   id: 'ch14/loss-scaler',
   title: 'Dynamic loss scaling',
+  optional: true,
   starter,
   solution,
   tests,

@@ -42,13 +42,17 @@ export class Value {
 
   exp(): Value {
     const out = new Value(Math.exp(this.data), [this], 'exp');
-    // TODO
+    out.backwardFn = () => {
+      this.grad += out.data * out.grad;
+    };
     return out;
   }
 
   pow(p: number): Value {
     const out = new Value(this.data ** p, [this], `^${p}`);
-    // TODO
+    out.backwardFn = () => {
+      this.grad += p * this.data ** (p - 1) * out.grad;
+    };
     return out;
   }
 
@@ -62,7 +66,16 @@ export class Value {
 
   /** Set this.grad = 1 and propagate gradients to every node it depends on. */
   backward(): void {
-    // TODO: build a topological order (every node after the nodes it was computed from),
-    // then call backwardFn on each node in REVERSE order.
+    const order: Value[] = [];
+    const seen = new Set<Value>();
+    const visit = (v: Value) => {
+      if (seen.has(v)) return;
+      seen.add(v);
+      for (const p of v.prev) visit(p);
+      order.push(v); // after all its inputs: a topological order
+    };
+    visit(this);
+    this.grad = 1;
+    for (let i = order.length - 1; i >= 0; i--) order[i]!.backwardFn();
   }
 }

@@ -18,6 +18,8 @@
 
   // svelte-ignore state_referenced_locally
   let code = $state(spec.starter);
+  // svelte-ignore state_referenced_locally
+  let expanded = $state(!spec.optional);
   let loaded = $state(false);
   let running = $state(false);
   let report = $state<RunReport | null>(null);
@@ -99,6 +101,9 @@
   }
 </script>
 
+<details class="coding-choice" bind:open={expanded}>
+  <summary>{spec.optional ? 'Optional implementation extension' : 'Coding exercise'}: {spec.title}</summary>
+  {#if expanded}
 <section class="exercise wide" aria-label="Exercise: {spec.title}">
   <header class="ui">
     <span class="kind"><Icon name="exercises" size={15} /> Exercise</span>
@@ -171,7 +176,12 @@
   {/if}
 </section>
 
+  {/if}
+</details>
+
 <style>
+  .coding-choice { margin: 1.5rem 0; }
+  .coding-choice > summary { cursor: pointer; padding: 0.7rem 0; font-weight: 600; }
   .exercise {
     margin: 2rem 0;
     border: 1px solid color-mix(in srgb, var(--lab) 30%, var(--border));

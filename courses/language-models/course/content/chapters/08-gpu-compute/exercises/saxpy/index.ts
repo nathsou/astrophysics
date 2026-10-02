@@ -6,6 +6,7 @@ import tests from './solution.test.ts?raw';
 export default {
   id: 'ch08/saxpy',
   title: 'Your first kernel',
+  optional: true,
   starter,
   solution,
   tests,

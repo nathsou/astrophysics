@@ -7,6 +7,13 @@ builds:
   - Your first exercise
 ---
 
+:::note
+**Choose a path.** To understand and train language models, use the supplied implementations and follow the explanations, figures and prediction questions. You may postpone GPU compute (Chapter 8) until after the Transformer, and sample advanced topics after inference. To implement the engine, take the coding exercises and optional GPU extensions as a second pass. Neither path requires every exercise.
+
+**Before running a model:** the pretrained browser demo downloads tens of megabytes of weights on demand; the full site contains additional model assets. Larger browser experiments use WebGPU when available, and the later PyTorch labs need a separate Python environment and suitable hardware. Read the run's size and timing information before starting. The supplied figures and reference results let you continue when you cannot run a GPU lab.
+:::
+
+
 This is CourseGPT. It has 30 million parameters, it trained on about a billion token presentations from children’s stories, and it writes new ones. By the end of Part IV you will have built every piece of it yourself — the tokeniser, the tensors, the automatic differentiation, the GPU kernels, the Transformer, the training loop and the inference engine — and it will run on code you wrote. Here it is at work:
 
 ::course-gpt-tour

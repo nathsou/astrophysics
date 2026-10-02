@@ -187,22 +187,13 @@ id: assign-top-jets
 title: Assigning jets to the four quarks by χ²
 hook: reco.assignTopJets
 prompt: |
-  Implement `assignTopJets(jets, lepton, met, opts?)`. `jets` is a list of `{ p, btag }` (a four-vector and a b-tag score; a score above 0.5 counts as tagged), ordered by decreasing p_T;
-  `lepton` is the charged lepton's four-vector and `met` the missing transverse momentum `{ x, y }`.
-
-  Consider every assignment of four different jets to **b_ℓ** (the b of the leptonic top), **b_h** (the b of the hadronic top) and an unordered pair **q, q′** (with `q1 < q2`), among the first `opts.maxJets` jets (default 6). For each:
-
-  χ² = ((m(q q′) − m_W)/σ_W)² + ((m(q q′ b_h) − m_t)/σ_t)² + ((m(ℓ ν b_ℓ) − m_t)/σ_t)²  + `btagPenalty` × (number of mismatches)
-
-  with m_W = 80.4, m_t = 172.5, σ_W = 10 and σ_t = 20 GeV (the constants are exported as `TOP_CHI2` from `hep/topreco`). The neutrino has transverse momentum `met` and
-  longitudinal momentum from `neutrinoPz(lepton, met)`, also from `hep/topreco`; its energy is the length of its momentum. A **mismatch** is a jet assigned as a b quark that is not tagged, or a
-  jet assigned as a light quark that is tagged. `btagPenalty` is 0 unless given in `opts`.
-
-  Return the best assignment as `{ bLep, bHad, q1, q2, chi2, mW, mTopHad, mTopLep, nuPz }` (indices into `jets`, the three masses of the chosen assignment, the neutrino's p_z), or `null` with fewer than four jets.
+  Complete only the mass-mismatch score in the supplied assignment search: sum the squared pulls of the W mass and the two top masses. Enumeration, neutrino reconstruction and the optional b-tag penalty are provided. Predict how inflating sigmaW changes the influence of the W constraint.
 starter: |
   import type { P4 } from 'hep';
   import { neutrinoPz, TOP_CHI2 } from 'hep/topreco';
   import { mass } from 'hep/kinematics';
+
+  const add = (a: P4, b: P4): P4 => ({ E: a.E + b.E, px: a.px + b.px, py: a.py + b.py, pz: a.pz + b.pz });
 
   export function assignTopJets(
     jets: { p: P4; btag: number }[],
@@ -210,8 +201,33 @@ starter: |
     met: { x: number; y: number },
     opts: { btagPenalty?: number; maxJets?: number } = {},
   ) {
-    // loop over b(ℓ), b(h), q1 < q2 among the first maxJets jets; keep the assignment with the smallest χ²
-    return null;
+    const n = Math.min(jets.length, opts.maxJets ?? 6);
+    if (n < 4) return null;
+    const pen = opts.btagPenalty ?? 0;
+    const { mW, mT, sigmaW, sigmaT, tagThreshold } = TOP_CHI2;
+    const nu = neutrinoPz(lepton, met, mW);
+    const neutrino: P4 = { E: Math.hypot(met.x, met.y, nu.pz), px: met.x, py: met.y, pz: nu.pz };
+    const lnu = add(lepton, neutrino);
+    const tagged = jets.slice(0, n).map((j) => j.btag > tagThreshold);
+    let best: any = null;
+    for (let bl = 0; bl < n; bl++) {
+      const mLep = mass(add(lnu, jets[bl].p));
+      for (let bh = 0; bh < n; bh++) {
+        if (bh === bl) continue;
+        for (let a = 0; a < n; a++) {
+          if (a === bl || a === bh) continue;
+          for (let b = a + 1; b < n; b++) {
+            if (b === bl || b === bh) continue;
+            const mw = mass(add(jets[a].p, jets[b].p));
+            const mh = mass(add(add(jets[a].p, jets[b].p), jets[bh].p));
+            let chi2 = 0 /* TODO: sum the three squared mass pulls */;
+            if (pen) chi2 += pen * ((tagged[bl] ? 0 : 1) + (tagged[bh] ? 0 : 1) + (tagged[a] ? 1 : 0) + (tagged[b] ? 1 : 0));
+            if (!best || chi2 < best.chi2) best = { bLep: bl, bHad: bh, q1: a, q2: b, chi2, mW: mw, mTopHad: mh, mTopLep: mLep, nuPz: nu.pz };
+          }
+        }
+      }
+    }
+    return best;
   }
 tests: |
   import { test, expect } from '@pp/test';

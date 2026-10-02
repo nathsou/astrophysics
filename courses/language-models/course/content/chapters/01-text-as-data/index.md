@@ -4,7 +4,7 @@ title: Text as data
 summary: Before a model can predict text, it has to see it. How text becomes numbers — Unicode, UTF-8, normalisation — and what the statistics of real text tell us about the problem ahead.
 duration: About 2½ hours, including the lab
 builds:
-  - UTF-8 encoder & decoder
+  - Reading UTF-8 and malformed sequences
   - Corpus statistics
   - Entropy
 ---
@@ -45,19 +45,10 @@ Hover over any symbol in an equation to see what it means, why it is there and w
 Before we can estimate any of those probabilities we need to settle something more basic: **what is a symbol?** A computer stores numbers, not letters. This chapter follows text from the characters you see, through the numbers that represent them, to the statistical regularities that make prediction possible — and occasionally hard.
 
 :::key
-By the end of this chapter you will have implemented the first module of the library we build throughout the course, `@lm/core/text`: a UTF-8 encoder and decoder, frequency counting, power-law fitting and entropy. Every later chapter imports from it.
+By the end of this chapter you can distinguish bytes, code points and graphemes, read a rank-frequency plot, and interpret entropy. The supplied `@lm/core/text` library handles encoding and fitting; the short entropy exercise is available if you want to connect the formula to code.
 :::
 
-## How this course works
-
-Each chapter mixes four kinds of material:
-
-- **Prose and interactive equations.** Read normally; hover symbols for explanations.
-- **Figures you can play with.** Every widget is live. Most expose the one or two parameters that matter; reset buttons restore the defaults.
-- **Exercises in the browser.** You write TypeScript in an editor with type checking and autocompletion, and run tests against it. Your code is saved locally in your browser. Once your implementation passes, you can switch the chapter’s widgets over to *your* code with the toggle under the editor — if you broke something subtly, the figures will show it.
-- **Labs in the repository.** Larger experiments live in the course repository. From Chapter 14 onwards the heavy lifting moves to PyTorch on your GPU; before that, the Python side mirrors the TypeScript so you can check the numbers match.
-
-Look out for :kbd[Break it] boxes: they ask you to damage a component deliberately and predict what happens before you look. Predicting first is what makes it stick.
+For editor controls, saving work and optional labs, see [How the course works](../what-is-a-language-model/#how-the-course-works). Here, start with the character explorer.
 
 ## From characters to numbers
 
@@ -147,9 +138,13 @@ text += decoder.decode(); // flush
 
 Now implement both directions yourself. The encoder is short. The decoder is harder: malformed input must be handled exactly as browsers do, which is a good first taste of the “specification-accurate” code an inference engine needs.
 
-::exercise{id="utf8-encode"}
+:::question
+**Read the bytes.** In the character explorer, compare `A`, `é`, and `🙂`. Predict their UTF-8 lengths before revealing the bytes: one, two, and four bytes respectively. The prefixes encode the sequence length; the remaining bits carry the code point. You do not need to implement a text codec to continue.
+:::
 
-::exercise{id="utf8-decode"}
+:::question
+**Find a broken sequence.** Use the decoder to inspect a missing continuation byte and an overlong encoding. Explain why a decoder must reject both. The supplied decoder handles those edge cases; the learning goal is to recognise malformed input.
+:::
 
 :::breakit
 1. Encode `café` as UTF-8, then decode the bytes as Latin-1: `new TextDecoder('latin1').decode(new TextEncoder().encode('café'))`. Predict the output before you run it.
@@ -241,7 +236,9 @@ Zipf’s law matters for language models in three ways:
 2. **Vocabulary design.** A word-level vocabulary must either be enormous or map many real words to an “unknown” symbol. Subword tokenisation (Chapter 3) is the escape route.
 3. **Imbalanced outputs.** The model’s next-token distribution is dominated by a few very common tokens, which shapes the training dynamics of the output layer.
 
-::exercise{id="fit-power-law"}
+:::question
+**Read the slope.** Compare a straight segment and the curved tail of the rank-frequency plot. A single fitted exponent summarises the straight segment, but can hide a poor fit to the tail. Predict which part changes most when you shorten the corpus, then check the figure.
+:::
 
 ## Heaps’ law: the vocabulary keeps growing
 
@@ -390,7 +387,7 @@ The last command prints the corpus statistics shown in the widgets above: token 
 
 :::exercises
 1. **Grapheme-safe reversal.** Write `reverseText(s)` that reverses by grapheme cluster, so `'é👍🏽'` becomes `'👍🏽é'`. Explain precisely why `[...s].reverse().join('')` fails, and why `s.split('').reverse()` fails worse.
-2. **A streaming decoder.** Using your `decodeStep` logic, implement a `Utf8StreamDecoder` class with `push(bytes: Uint8Array): string` and `flush(): string` that never emits a replacement character for a sequence split across chunks. Keep it — CourseGPT’s streaming output will use it in Chapter 16.
+2. **A streaming decoder.** Optional systems extension: using the supplied `decodeStep`, implement a `Utf8StreamDecoder` class with `push(bytes: Uint8Array): string` and `flush(): string` that never emits a replacement character for a sequence split across chunks. The reference streaming decoder is supplied in Chapter 16.
 3. **Types, tokens and case.** How much does case-folding shrink the word vocabulary of TinyShakespeare? Which frequent words have the largest share of capitalised occurrences, and why?
 4. **Your own corpus.** Paste a few thousand words of your own writing (or code) into `words()` and fit Zipf and Heaps. How does source code compare to prose?
 :::

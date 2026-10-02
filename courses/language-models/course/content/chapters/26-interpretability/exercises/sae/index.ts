@@ -6,6 +6,7 @@ import tests from './solution.test.ts?raw';
 export default {
   id: 'ch26/sae',
   title: 'A top-k sparse autoencoder',
+  optional: true,
   starter,
   solution,
   tests,

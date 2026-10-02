@@ -416,6 +416,7 @@ The numbers in the table are the entries of a **confusion matrix** read off at a
 
 ```code
 id: btag
+optional: true
 title: A b-tagger
 hook: reco.bTag
 prompt: |

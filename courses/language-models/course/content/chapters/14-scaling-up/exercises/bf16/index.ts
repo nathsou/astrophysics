@@ -6,6 +6,7 @@ import tests from './solution.test.ts?raw';
 export default {
   id: 'ch14/bf16',
   title: 'Round to bfloat16',
+  optional: true,
   starter,
   solution,
   tests,
