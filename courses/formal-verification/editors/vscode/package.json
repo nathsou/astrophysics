@@ -1,0 +1,27 @@
+{
+  "name": "vouch",
+  "displayName": "Vouch",
+  "description": "Language support for Vouch, the verification language of the course For All Inputs: diagnostics, hover, completion, navigation, rename, and verification results as you type.",
+  "version": "1.0.0",
+  "private": true,
+  "publisher": "for-all-inputs",
+  "engines": { "vscode": "^1.90.0" },
+  "categories": ["Programming Languages"],
+  "main": "./extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "languages": [{ "id": "vouch", "aliases": ["Vouch"], "extensions": [".vouch"], "configuration": "./language-configuration.json" }],
+    "grammars": [{ "language": "vouch", "scopeName": "source.vouch", "path": "./syntaxes/vouch.tmLanguage.json" }],
+    "configuration": {
+      "title": "Vouch",
+      "properties": {
+        "vouch.courseDirectory": {
+          "type": "string",
+          "default": "",
+          "description": "Path to courses/formal-verification in a checkout of the Interactive Courses repository (where `npm run vouch -- lsp --stdio` runs)."
+        }
+      }
+    }
+  },
+  "dependencies": { "vscode-languageclient": "^9.0.1" }
+}

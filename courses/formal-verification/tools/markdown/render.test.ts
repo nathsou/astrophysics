@@ -20,3 +20,10 @@ describe('code rendering', () => {
     expect(html).toMatch(/&amp;|&#x26;/);
   });
 });
+
+test('Vouch code blocks are highlighted with the shared grammar', async () => {
+  const { highlight } = await import('./render');
+  const html = await highlight('fn f(x: int) -> int\n  requires x > 0\n{ return x }', 'vouch');
+  expect(html).toContain('requires');
+  expect(html).toMatch(/--shiki-light:#8A5D00|--shiki-light:#8a5d00/i);
+});

@@ -12,7 +12,7 @@
     "test": "svelte-kit sync && vitest run",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --threshold error",
     "typecheck": "npm run check",
-    "vouch": "node --experimental-strip-types tools/vouch-cli/main.ts"
+    "vouch": "node --experimental-transform-types --no-warnings --import ./tools/vouch-cli/register.mjs tools/vouch-cli/main.ts"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.20.3",
