@@ -171,6 +171,12 @@ function exerciseBlock(code: Code, ctx: Ctx): string {
 }
 
 function transform(tree: Root, ctx: Ctx): void {
+  // Prose list spacing must not affect the lists rendered inside widgets or word cards.
+  visit(tree, (node) => {
+    if (node.type === 'list' || node.type === 'listItem') {
+      node.data = { ...node.data, hProperties: { ...node.data?.hProperties, className: ['prose-list'] } };
+    }
+  });
   // Fenced blocks first (they contain Chinese that must not be annotated as prose).
   visit(tree, 'code', (node: Code, index, parent: Parent | undefined) => {
     if (!parent || index === undefined) return;

@@ -5,8 +5,8 @@
 </script>
 
 <div class="gate ui">
-  <p><strong>{what}</strong> uses Claude as a live partner, with your own Anthropic API key.</p>
-  <p class="small">It is optional: everything else in the course works without it. Add a key in <a href="{base}/settings/#tutor">Settings</a>; it stays in this browser and is sent only to Anthropic.</p>
+  <p><strong>{what}</strong> uses your chosen AI teacher, with your own Anthropic, OpenAI or OpenRouter API key.</p>
+  <p class="small">It is optional: everything else in the course works without it. Add a key in <a href="{base}/settings/#tutor">Settings</a>; it stays in this browser and is sent only to your selected provider.</p>
 </div>
 
 <style>

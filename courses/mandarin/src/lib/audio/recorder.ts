@@ -20,6 +20,7 @@ export class Recorder {
   private heardVoice = false;
   private quietSince = 0;
   private started = 0;
+  private generation = 0;
 
   constructor(
     private onLive: (hz: number | null, level: number) => void,
@@ -31,7 +32,13 @@ export class Recorder {
   }
 
   async start(): Promise<Recording> {
-    this.stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
+    const id = ++this.generation;
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
+    if (id !== this.generation) {
+      stream.getTracks().forEach(t => t.stop());
+      throw new DOMException('Recording cancelled', 'AbortError');
+    }
+    this.stream = stream;
     this.ctx = new AudioContext();
     const src = this.ctx.createMediaStreamSource(this.stream);
     this.node = this.ctx.createScriptProcessor(1024, 1, 1);
@@ -70,6 +77,7 @@ export class Recorder {
   }
 
   stop(): void {
+    this.generation++;
     if (!this.node || !this.ctx) return;
     const sr = this.ctx.sampleRate;
     this.node.disconnect();

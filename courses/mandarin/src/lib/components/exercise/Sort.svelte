@@ -55,9 +55,9 @@
 <div class="buckets" style="--n: {data.buckets.length}">
   {#each data.buckets as b, i (i)}
     <button class="bucket" class:wrong={wrongBucket === i} onclick={() => drop(i)} disabled={!current}>
-      <span class="name"><Rich text={b} size="md" /></span>
+      <span class="name"><Rich text={b} size="md" plain /></span>
       <span class="filed">
-        {#each filed[i] ?? [] as k (k)}<span class="chip"><Rich text={data.items[k]![0]} pinyin="hide" /></span>{/each}
+        {#each filed[i] ?? [] as k (k)}<span class="chip"><Rich text={data.items[k]![0]} pinyin="hide" plain /></span>{/each}
       </span>
     </button>
   {/each}

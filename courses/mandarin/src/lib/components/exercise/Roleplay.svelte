@@ -1,15 +1,14 @@
 <script lang="ts">
-  import { untrack } from 'svelte';
+  import { untrack, onDestroy } from 'svelte';
   /**
-   * Free conversation with Claude playing a character, with a goal to reach. Claude keeps to the
+   * Free conversation with the AI teacher playing a character, with a goal to reach. The AI teacher keeps to the
    * learner's words; the course double-checks and flags any word it has not taught yet.
    */
   import type { Roleplay } from '$lib/exercises/types';
-  import type Anthropic from '@anthropic-ai/sdk';
   import { settings } from '$lib/state/settings.svelte';
   import { deck } from '$lib/srs/deck.svelte';
   import { speech } from '$lib/audio/speech.svelte';
-  import { askClaude, tag, TutorError } from '$lib/tutor/tutor';
+  import { askTutor, tag, TutorError, type TutorMessage } from '$lib/tutor/tutor';
   import { roleplaySystem, roleplayVerdictSystem } from '$lib/tutor/prompts';
   import { levelLabel, unfamiliar } from '$lib/tutor/known';
   import Zh from '../zh/Zh.svelte';
@@ -29,6 +28,8 @@
   let review = $state('');
   let showEn = $state(false);
   let controller: AbortController | null = null;
+  let generation = 0;
+  onDestroy(() => { generation++; controller?.abort(); });
 
   const known = $derived(new Set([...Object.values(deck.data.cards).map((c) => c.word), ...(data.words ?? [])]));
   const maxLevel = $derived(settings.data.start === 'hsk2' ? 2 : 1);
@@ -43,9 +44,9 @@
 
   log = [{ from: 'they', zh: untrack(() => data.opener), en: untrack(() => data.openerEn) }];
 
-  function history(): Anthropic.MessageParam[] {
-    // The opener is Claude's first line; the API needs the conversation to start with the user.
-    const msgs: Anthropic.MessageParam[] = [{ role: 'user', content: '(The scene begins. Say your opening line.)' }];
+  function history(): TutorMessage[] {
+    // The opener is the AI teacher's first line; the API needs the conversation to start with the user.
+    const msgs: TutorMessage[] = [{ role: 'user', content: '(The scene begins. Say your opening line.)' }];
     for (const t of log) {
       if (t.from === 'they') msgs.push({ role: 'assistant', content: `<reply>${t.zh}</reply>\n<en>${t.en ?? ''}</en>\n<fix></fix>\n<done>no</done>` });
       else msgs.push({ role: 'user', content: t.zh });
@@ -62,8 +63,10 @@
     input = '';
     busy = true;
     controller = new AbortController();
+    const id = ++generation;
     try {
-      const out = await askClaude({ system: roleplaySystem(setup), messages: history(), effort: 'low', signal: controller.signal });
+      const out = await askTutor({ system: roleplaySystem(setup), messages: history(), effort: 'low', signal: controller.signal });
+      if (id !== generation) return;
       const zh = tag(out, 'reply') || out.trim();
       const fix = tag(out, 'fix');
       if (fix) log[log.length - 1]!.fix = fix;
@@ -71,30 +74,39 @@
       void speech.say(zh);
       if (/^yes/i.test(tag(out, 'done'))) await finish(true);
     } catch (err) {
+      if (id !== generation) return;
       error = err instanceof TutorError ? err.message : String(err);
       log = log.slice(0, -1);
       input = text;
     } finally {
-      busy = false;
+      if (id === generation) busy = false;
     }
   }
 
   async function finish(reached: boolean) {
+    const id = ++generation;
+    controller?.abort();
+    controller = new AbortController();
     done = true;
     busy = true;
     try {
       const transcript = log.map((t) => `${t.from === 'you' ? 'Learner' : data.partner}: ${t.zh}`).join('\n');
-      review = await askClaude({ system: roleplayVerdictSystem(setup), messages: [{ role: 'user', content: transcript }], effort: 'medium' });
+      const feedback = await askTutor({ system: roleplayVerdictSystem(setup), messages: [{ role: 'user', content: transcript }], effort: 'medium', signal: controller.signal });
+      if (id !== generation) return;
+      review = feedback;
       report(reached);
     } catch (err) {
+      if (id !== generation) return;
       review = err instanceof TutorError ? err.message : String(err);
     } finally {
-      busy = false;
+      if (id === generation) busy = false;
     }
   }
 
   function restart() {
+    generation++;
     controller?.abort();
+    busy = false;
     log = [{ from: 'they', zh: data.opener, en: data.openerEn }];
     done = false;
     review = '';

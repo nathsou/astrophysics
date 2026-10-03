@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte';
   /**
    * Ear training: hear a syllable (or a two-syllable word), name its tones. Missed items come
    * back later in the round, and tones you confuse are drawn more often next time.
@@ -16,6 +17,9 @@
   import PlayButton from '$lib/components/zh/PlayButton.svelte';
   import Zh from '$lib/components/zh/Zh.svelte';
   import Icon from '$lib/components/ui/Icon.svelte';
+
+  let cancelReplay = () => {};
+  onDestroy(() => cancelReplay());
 
   let { mode = 'single', count = 10, only = '' }: { mode?: 'single' | 'pairs'; count?: number; only?: string } = $props();
 
@@ -93,7 +97,8 @@
   function ask() {
     picked = [];
     result = null;
-    if (queue[pos]) setTimeout(() => void speech.say(queue[pos]!.text), 200);
+    cancelReplay();
+    if (queue[pos]) cancelReplay = speech.schedule(queue[pos]!.text, 200);
   }
 
   function choose(t: number) {
@@ -126,6 +131,7 @@
   }
 
   function onKey(e: KeyboardEvent) {
+    if (e.defaultPrevented || e.isComposing || (e.target instanceof HTMLElement && e.target.closest('input, textarea, select, [contenteditable="true"], #teacher-chat, .wordcard'))) return;
     if (!started || finished) return;
     if (e.target instanceof HTMLInputElement) return;
     const n = Number(e.key);

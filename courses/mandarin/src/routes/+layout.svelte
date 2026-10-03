@@ -14,6 +14,8 @@
   import TopBar from '$lib/components/layout/TopBar.svelte';
   import Sidebar from '$lib/components/layout/Sidebar.svelte';
   import WordCard from '$lib/components/zh/WordCard.svelte';
+  import { popover } from '$lib/components/zh/popover.svelte';
+  import TeacherChat from '$lib/components/layout/TeacherChat.svelte';
 
   let { children }: { children: Snippet } = $props();
 
@@ -25,7 +27,11 @@
     speech.prepare();
     return mountSidebar('mandarin', (state) => (nav.sidebarOpen = state.open));
   });
-  afterNavigate(closeSidebar);
+  afterNavigate(() => {
+    closeSidebar();
+    popover.close();
+    speech.stop();
+  });
 </script>
 
 <a class="skip ui" href="#main">Skip to content</a>
@@ -37,6 +43,7 @@
   </main>
 </div>
 <WordCard />
+<TeacherChat />
 <footer class="foot ui">
   <p class="t"><span class="zh-font">声</span> {COURSE_TITLE}</p>
   <p class="s">{COURSE_SUBTITLE}. Progress is saved in this browser only.</p>

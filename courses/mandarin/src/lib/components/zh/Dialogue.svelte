@@ -8,6 +8,7 @@
   import Zh from './Zh.svelte';
   import PlayButton from './PlayButton.svelte';
   import Icon from '../ui/Icon.svelte';
+  import { onDestroy } from 'svelte';
 
   let { title = null, lines }: { title?: string | null; lines: { who: string; zh: string; en?: string }[] } = $props();
 
@@ -18,31 +19,38 @@
   let current = $state(-1);
   let mode = $state<'idle' | 'play' | 'shadow'>('idle');
   let yourTurn = $state(false);
+  let session = 0;
+  function stop() {
+    session++;
+    mode = 'idle';
+    speech.stop();
+    current = -1;
+    yourTurn = false;
+  }
+  onDestroy(() => { if (mode !== 'idle') stop(); });
 
   async function run(kind: 'play' | 'shadow') {
     if (mode !== 'idle') {
-      mode = 'idle';
-      speech.stop();
-      current = -1;
-      yourTurn = false;
+      stop();
       return;
     }
     mode = kind;
+    const id = ++session;
     for (let i = 0; i < lines.length; i++) {
-      if (mode !== kind) return;
+      if (id !== session) return;
       current = i;
       const start = performance.now();
       await speech.say(lines[i]!.zh);
-      if (mode !== kind) return;
+      if (id !== session) return;
       if (kind === 'shadow') {
         yourTurn = true;
         const pause = Math.max(1500, (performance.now() - start) * 1.4);
         await new Promise((r) => setTimeout(r, pause));
+        if (id !== session) return;
         yourTurn = false;
       } else await new Promise((r) => setTimeout(r, 400));
     }
-    mode = 'idle';
-    current = -1;
+    if (id === session) { mode = 'idle'; current = -1; }
   }
 </script>
 

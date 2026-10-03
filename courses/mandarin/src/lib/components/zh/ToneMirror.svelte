@@ -28,13 +28,17 @@
   let calibrated = $state(false);
   let recorder: Recorder | null = null;
   let liveRef = 0;
+  let generation = 0;
 
   $effect(() => {
     void text;
+    generation++;
+    recorder?.stop();
     phase = 'idle';
     result = null;
     rec = null;
     live = [];
+    return () => { generation++; recorder?.stop(); cancelAnimationFrame(liveRef); };
   });
 
   const W = 300;
@@ -79,8 +83,10 @@
       cancelAnimationFrame(liveRef);
     });
     phase = 'recording';
+    const id = generation;
     try {
       const r = await recorder.start();
+      if (id !== generation) return;
       rec = r;
       const voiced = r.pitch.filter((x): x is number => !!x).sort((a, b) => a - b);
       const known = loadVoice();
@@ -97,6 +103,7 @@
         onresult?.(ok);
       } else onresult?.(null);
     } catch (e) {
+      if (id !== generation) return;
       phase = 'error';
       error = e instanceof DOMException && e.name === 'NotAllowedError' ? 'Microphone access was blocked. Allow it in your browser to use the tone mirror.' : 'No microphone available.';
     }

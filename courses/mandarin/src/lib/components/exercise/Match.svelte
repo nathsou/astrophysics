@@ -54,14 +54,14 @@
   <div class="col">
     {#each left as i (i)}
       <button class="cell" class:sel={sel === i} class:done={matched.has(i)} onclick={() => pickLeft(i)} disabled={matched.has(i)}>
-        {#if data.listen && !matched.has(i)}<Icon name="speaker" size={20} /><span class="sr-only">Sound {i + 1}</span>{:else}<Rich text={data.pairs[i]![0]} />{/if}
+        {#if data.listen && !matched.has(i)}<Icon name="speaker" size={20} /><span class="sr-only">Sound {i + 1}</span>{:else}<Rich text={data.pairs[i]![0]} plain />{/if}
       </button>
     {/each}
   </div>
   <div class="col">
     {#each right as i (i)}
       <button class="cell" class:done={matched.has(i)} class:flash={flash === i} onclick={() => pickRight(i)} disabled={matched.has(i) || sel === null}>
-        <Rich text={data.pairs[i]![1]} pinyin={data.listen ? 'hide' : 'auto'} />
+        <Rich text={data.pairs[i]![1]} pinyin={data.listen ? 'hide' : 'auto'} plain />
       </button>
     {/each}
   </div>

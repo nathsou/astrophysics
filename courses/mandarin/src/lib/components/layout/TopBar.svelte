@@ -36,7 +36,7 @@
   <span class="spacer"></span>
   <nav class="links" aria-label="Tools">
     {#each links as l (l.href)}
-      <a href="{base}{l.href}" class:current={path.startsWith(l.href)} aria-current={path.startsWith(l.href) ? 'page' : undefined} title={l.title}>
+      <a href="{base}{l.href}" class:current={path.startsWith(l.href)} aria-current={path.startsWith(l.href) ? 'page' : undefined} title={l.title} aria-label={l.label}>
         <Icon name={l.icon} size={17} /><span class="lbl">{l.label}</span>
         {#if l.href === '/review/' && due > 0}<span class="badge" aria-label="{due} cards to review">{due}</span>{/if}
       </a>
@@ -182,5 +182,14 @@
       top: 0;
       right: -2px;
     }
+  }
+  @media (max-width: 360px) {
+    .topbar { gap: 0.1rem; padding: 0 0.25rem; }
+    .links { gap: 0; }
+    .links a { padding: 0 0.2rem; }
+    .icon-btn { width: 1.7rem; flex: none; }
+    .seal { width: 1.6rem; height: 1.6rem; }
+    .brand { gap: 0; }
+    .spacer { display: none; }
   }
 </style>

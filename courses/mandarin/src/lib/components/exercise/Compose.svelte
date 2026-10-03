@@ -1,14 +1,15 @@
 <script lang="ts">
-  /** Write your own sentence; Claude says what works and what to fix. */
+  /** Write your own sentence; the AI teacher says what works and what to fix. */
   import type { Compose } from '$lib/exercises/types';
   import { settings } from '$lib/state/settings.svelte';
-  import { askClaude, tag, TutorError } from '$lib/tutor/tutor';
+  import { askTutor, tag, TutorError } from '$lib/tutor/tutor';
   import { composeSystem } from '$lib/tutor/prompts';
   import { levelLabel } from '$lib/tutor/known';
   import Rich from './Rich.svelte';
   import Zh from '../zh/Zh.svelte';
   import PlayButton from '../zh/PlayButton.svelte';
   import TutorGate from './TutorGate.svelte';
+  import { onDestroy } from 'svelte';
 
   let { data, report }: { data: Compose; id: string; report: (ok: boolean) => void } = $props();
   let text = $state('');
@@ -16,6 +17,11 @@
   let result = $state<{ verdict: string; better: string; explain: string } | null>(null);
   let error = $state('');
   let showExamples = $state(false);
+  let checkedText = $state('');
+  let alive = true;
+  let controller: AbortController | null = null;
+  onDestroy(() => { alive = false; controller?.abort(); });
+  $effect(() => { if (text !== checkedText) result = null; });
 
   async function check(e: Event) {
     e.preventDefault();
@@ -23,16 +29,20 @@
     busy = true;
     error = '';
     result = null;
+    checkedText = text;
+    controller = new AbortController();
     try {
-      const out = await askClaude({
+      const out = await askTutor({
         system: composeSystem(data.task, data.target, levelLabel(settings.data.start)),
         messages: [{ role: 'user', content: text.trim() }],
         effort: 'medium',
+        signal: controller.signal,
       });
+      if (!alive) return;
       result = { verdict: tag(out, 'verdict').toLowerCase(), better: tag(out, 'better'), explain: tag(out, 'explain') || out };
       report(result.verdict.startsWith('correct'));
     } catch (err) {
-      error = err instanceof TutorError ? err.message : String(err);
+      if (alive) error = err instanceof TutorError ? err.message : String(err);
     } finally {
       busy = false;
     }
@@ -49,7 +59,7 @@
   {/if}
 {:else}
   <form class="ui" onsubmit={check}>
-    <textarea bind:value={text} rows="2" placeholder="Write in characters or pinyin…" aria-label="Your sentence"></textarea>
+    <textarea bind:value={text} readonly={busy} rows="2" placeholder="Write in characters or pinyin…" aria-label="Your sentence"></textarea>
     <button class="btn primary" disabled={busy || !text.trim()}>{busy ? 'Checking…' : 'Check my sentence'}</button>
   </form>
   {#if error}<p class="err ui">{error}</p>{/if}

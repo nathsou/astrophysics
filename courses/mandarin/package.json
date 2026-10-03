@@ -17,7 +17,8 @@
     "audio:texts": "WRITE=1 vitest run tools/audio/collect.test.ts",
     "strokes": "node --experimental-strip-types scripts/copy-strokes.ts",
     "audio:pack": "node --experimental-strip-types scripts/audio-release.ts pack",
-    "audio:fetch": "node --experimental-strip-types scripts/audio-release.ts fetch"
+    "audio:fetch": "node --experimental-strip-types scripts/audio-release.ts fetch",
+    "test:browser": "playwright test"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.128.0",
@@ -28,6 +29,7 @@
     "ts-fsrs": "^5.4.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@sveltejs/adapter-static": "^3.0.10",
     "@sveltejs/kit": "^2.70.3",
     "@sveltejs/vite-plugin-svelte": "^7.3.1",

@@ -243,31 +243,31 @@ h3 {
 }
 
 /* Lesson prose */
-.prose {
+:where(.prose) {
   max-width: 44rem;
 }
-.prose > h2 {
+:where(.prose) > h2 {
   font-size: 1.65rem;
   margin: 3.2rem 0 0.9rem;
   padding-top: 1.4rem;
   border-top: 1px solid var(--line);
 }
-.prose > h3 {
+:where(.prose) > h3 {
   font-size: 1.2rem;
   margin: 2rem 0 0.6rem;
 }
-.prose p,
-.prose li {
+:where(.prose) p,
+:where(.prose) li {
   text-wrap: pretty;
 }
-.prose ul,
-.prose ol {
+:where(.prose) ul.prose-list,
+:where(.prose) ol.prose-list {
   padding-left: 1.3rem;
 }
-.prose li + li {
+:where(.prose) li.prose-list + li.prose-list {
   margin-top: 0.3rem;
 }
-.prose table {
+:where(.prose) table {
   border-collapse: collapse;
   margin: 1.2rem 0;
   font-size: 0.95rem;
@@ -275,38 +275,38 @@ h3 {
   display: block;
   overflow-x: auto;
 }
-.prose th,
-.prose td {
+:where(.prose) th,
+:where(.prose) td {
   border-bottom: 1px solid var(--line);
   padding: 0.45rem 0.7rem;
   text-align: left;
   vertical-align: top;
 }
-.prose th {
+:where(.prose) th {
   font-family: var(--font-ui);
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--mute);
 }
-.prose blockquote {
+:where(.prose) blockquote {
   margin: 1.2rem 0;
   padding: 0.2rem 0 0.2rem 1.1rem;
   border-left: 3px solid var(--accent);
   color: var(--ink-2);
   font-style: italic;
 }
-.prose code {
+:where(.prose) code {
   font-family: var(--font-ui);
   font-size: 0.88em;
   background: var(--pn);
   padding: 0.1em 0.35em;
   border-radius: 5px;
 }
-.prose strong {
+:where(.prose) strong {
   font-weight: 650;
 }
-.prose hr {
+:where(.prose) hr {
   border: none;
   border-top: 1px dashed var(--line-strong);
   margin: 2.5rem 0;

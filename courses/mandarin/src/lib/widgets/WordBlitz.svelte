@@ -74,6 +74,7 @@
     nextQ();
   }
   function onKey(e: KeyboardEvent) {
+    if (e.defaultPrevented || e.isComposing || (e.target instanceof HTMLElement && e.target.closest('input, textarea, select, [contenteditable="true"], #teacher-chat, .wordcard'))) return;
     if (!running) return;
     const n = Number(e.key);
     if (n >= 1 && n <= 4) pick(n - 1);

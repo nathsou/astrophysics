@@ -37,7 +37,7 @@
   const order = $derived(q ? shuffle(q.options.map((_, k) => k), `placement:${i}`) : []);
 
   $effect(() => {
-    if (q?.audio) setTimeout(() => q.audio && speech.say(q.audio), 200);
+    if (q?.audio && !result) return speech.schedule(q.audio, 200);
   });
 
   function score(band: Q['band']) {

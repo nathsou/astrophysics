@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte';
   /**
    * Endless number practice: hear (or read) a number, price, time, date or phone number in
    * Chinese and type it in digits; or see the digits and say it aloud, then compare.
@@ -13,6 +14,9 @@
   import PlayButton from '$lib/components/zh/PlayButton.svelte';
   import ClockFace from '$lib/components/ui/ClockFace.svelte';
   import Icon from '$lib/components/ui/Icon.svelte';
+
+  let cancelReplay = () => {};
+  onDestroy(() => cancelReplay());
 
   let { kinds = 'number', max = 99, count = 8, mode = 'listen' }: { kinds?: string; max?: number; count?: number; mode?: 'listen' | 'read' | 'say' } = $props();
   const kindList = $derived(kinds.split(',') as NumberKind[]);
@@ -47,7 +51,8 @@
     typed = '';
     result = null;
     revealed = false;
-    if (how === 'listen' && qs[i]) setTimeout(() => void speech.say(qs[i]!.zh), 250);
+    cancelReplay();
+    if (how === 'listen' && qs[i]) cancelReplay = speech.schedule(qs[i]!.zh);
   }
   function check(e: Event) {
     e.preventDefault();

@@ -66,7 +66,7 @@
     {/if}
   </header>
 
-  <data.Content />
+  {#key ref.slug}<data.Content />{/key}
 
   <LessonEnd slug={ref.slug} words={data.metadata.words} />
 

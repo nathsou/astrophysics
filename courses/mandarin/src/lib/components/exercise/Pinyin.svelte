@@ -32,7 +32,7 @@
     void seq.round;
     typed = '';
     last = null;
-    if (data.listen) setTimeout(() => void speech.say(item.zh), 250);
+    if (!seq.done && data.listen && (seq.index > 0 || seq.round > 0)) return speech.schedule(item.zh);
   });
 
   function check(e?: Event) {
