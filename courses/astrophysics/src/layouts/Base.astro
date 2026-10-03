@@ -44,16 +44,18 @@ const published = new Set(
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   </head>
   <body data-chapter={current} class:list={[landing && 'landing']}>
-    <nav class="course-index-nav" aria-label="Course collection">
-      <a class="course-index-link" href={`${base}/../`}><span aria-hidden="true">←</span> All courses</a>
-      <button class="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" data-sidebar-toggle>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
-        <span data-sidebar-label>Hide contents</span>
-      </button>
-    </nav>
+    <button class="course-sidebar-toggle course-sidebar-handle" type="button" aria-controls="course-contents" aria-expanded="true" aria-label="Hide contents" title="Hide contents" data-sidebar-toggle>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
+    </button>
     <a class="skip" href="#main">Skip to content</a>
     <div class="shell course-shell">
       <nav class="sidebar" id="course-contents" aria-label="Course contents">
+        <div class="course-sidebar-tools">
+          <a class="course-index-link" href={`${base}/../`}><span aria-hidden="true">←</span> All courses</a>
+          <button class="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" aria-label="Hide contents" title="Hide contents" data-sidebar-toggle>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
+          </button>
+        </div>
         <a class="brand" href={`${base}/`}>The <span>Cosmos</span>, Computed</a>
         {parts.map((p) => (
           <>

@@ -11,6 +11,9 @@
 <svelte:window onscroll={() => (scrolled = scrollY > 160)} />
 
 <header class="topbar ui" class:scrolled>
+  <button class="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" aria-label="Hide contents" title="Hide contents" data-sidebar-toggle>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
+  </button>
   <a class="brand" href="{base}/">
     <span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>
     <span class="name">{COURSE_TITLE}</span>
@@ -25,7 +28,7 @@
 <style>
   .topbar {
     position: sticky;
-    top: var(--course-nav-height);
+    top: 0px;
     z-index: 40;
     height: 3.25rem;
     display: flex;

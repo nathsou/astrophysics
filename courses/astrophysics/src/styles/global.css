@@ -99,7 +99,7 @@
 *::before,
 *::after { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(2rem + var(--course-nav-height)); }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 2rem; }
 body {
   margin: 0;
   background: var(--bg);
@@ -167,9 +167,9 @@ th { color: var(--fg-muted); font-family: var(--font-mono); font-weight: 500; fo
 [data-term].term-hl { background: var(--hl); color: var(--ac); }
 
 /* ---------- Shell ---------- */
-.shell { display: grid; grid-template-columns: var(--sidebar-w) minmax(0, 1fr); min-height: calc(100vh - var(--course-nav-height)); }
+.shell { display: grid; grid-template-columns: var(--sidebar-w) minmax(0, 1fr); min-height: 100vh; }
 .sidebar {
-  position: sticky; top: var(--course-nav-height); height: calc(100dvh - var(--course-nav-height)); overflow-y: auto; overscroll-behavior: contain;
+  position: sticky; top: 0px; height: 100dvh; overflow-y: auto; overscroll-behavior: contain;
   border-right: 1px solid var(--rule); background: var(--pn);
   padding: 1.5rem 1.1rem 3rem; font-size: 0.95rem; line-height: 1.35;
 }
@@ -410,7 +410,7 @@ input[type='range']:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px colo
   .sidebar.open { transform: none; visibility: visible; transition: transform 0.25s; box-shadow: 0 0 40px rgba(0, 0, 0, 0.35); }
   body.nav-open::before { content: ''; position: fixed; inset: 0; z-index: 45; background: rgba(0, 0, 0, 0.45); }
   .menu-toggle {
-    display: grid; place-items: center; position: fixed; top: calc(0.8rem + var(--course-nav-height)); left: 0.8rem; z-index: 60;
+    display: grid; place-items: center; position: fixed; top: 0.8rem; left: 0.8rem; z-index: 60;
     width: 2.4rem; height: 2.4rem; padding: 0; font-size: 1.05rem; line-height: 1; background: var(--bg); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     transition: transform 0.25s ease, opacity 0.25s ease;
   }

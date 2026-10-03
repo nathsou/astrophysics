@@ -3,7 +3,7 @@
    ------------------------------------------------------------------------ */
 
 .shell {
-  min-height: calc(100vh - var(--course-nav-height));
+  min-height: 100vh;
   display: grid;
   grid-template-columns: var(--sidebar) minmax(0, 1fr);
 }
@@ -27,8 +27,8 @@
 
 .sidebar {
   position: sticky;
-  top: var(--course-nav-height);
-  height: calc(100dvh - var(--course-nav-height));
+  top: 0px;
+  height: 100dvh;
   overflow-y: auto;
   background: var(--pn);
   border-right: 1px solid var(--rule);
@@ -120,7 +120,7 @@
 /* tab strip */
 .topbar {
   position: sticky;
-  top: var(--course-nav-height);
+  top: 0px;
   z-index: 50;
   display: flex;
   align-items: stretch;
@@ -199,7 +199,7 @@
     position: fixed;
     z-index: 100;
     left: 0;
-    top: var(--course-nav-height);
+    top: 0px;
     width: min(20rem, 86vw);
     transform: translateX(-102%);
     visibility: hidden;

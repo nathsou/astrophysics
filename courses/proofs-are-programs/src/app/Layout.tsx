@@ -29,15 +29,14 @@ export function Layout(props: RouteSectionProps) {
 
   return (
     <>
-      <nav class="course-index-nav" aria-label="Course collection">
-        <a class="course-index-link" href="../" target="_self"><span aria-hidden="true">←</span> All courses</a>
-        <button class="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" data-sidebar-toggle>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
-          <span data-sidebar-label>Hide contents</span>
-        </button>
-      </nav>
     <div class="shell course-shell">
       <nav class="sidebar" id="course-contents" aria-label="Course contents">
+        <div class="course-sidebar-tools">
+          <a class="course-index-link" href="../" target="_self"><span aria-hidden="true">←</span> All courses</a>
+          <button class="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" aria-label="Hide contents" title="Hide contents" data-sidebar-toggle>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
+          </button>
+        </div>
         <A href="/" class="brand">
           <span class="brand-mark">⊢</span>
           <span class="brand-text">
@@ -92,6 +91,9 @@ export function Layout(props: RouteSectionProps) {
       </nav>
       <div class="main">
         <header class="topbar">
+          <button class="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" aria-label="Hide contents" title="Hide contents" data-sidebar-toggle>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
+          </button>
           <span class="crumb">
             <Show when={current()} fallback={<b>{loc.pathname.startsWith('/playground') ? 'Playground' : loc.pathname.startsWith('/reference') ? 'Reference' : 'Home'}</b>}>
               {current()!.part > 0 && current()!.part < 7 ? `${chapterLabel(current()!)} · ` : ''}

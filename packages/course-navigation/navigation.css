@@ -1,57 +1,57 @@
-/* The collection link is shared by every course, independent of its UI framework. */
-:root {
-  --course-nav-height: 44px;
-}
-
-.course-index-nav {
-  position: sticky;
-  top: 0;
-  z-index: 55;
+/* Navigation belongs to each course's contents and existing header. */
+.course-sidebar-tools {
   display: flex;
   align-items: center;
-  box-sizing: border-box;
-  height: var(--course-nav-height);
-  padding: 0 max(1rem, env(safe-area-inset-left));
-  border-bottom: 1px solid color-mix(in srgb, currentColor 18%, transparent);
-  background: var(--bg, var(--page, var(--paper, Canvas)));
-  color: var(--fg, var(--ink, CanvasText));
-  font: 500 13px/1.4 system-ui, sans-serif;
+  gap: 0.5rem;
+  margin: 0 0 0.75rem;
+  padding: 0 0.5rem;
+  color: inherit;
+  font: inherit;
+  font-size: 0.8rem;
 }
-
-.course-index-nav .course-index-link {
+.course-sidebar-tools .course-index-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  min-height: 36px;
+  gap: 0.4rem;
+  min-height: 40px;
+  padding: 0;
   color: inherit;
   text-decoration: none;
   white-space: nowrap;
-  border-radius: 3px;
 }
-
-.course-index-nav .course-index-link:hover {
+.course-sidebar-tools .course-index-link:hover {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-
-.course-index-nav .course-index-link:focus-visible {
+.course-index-link:focus-visible,
+.course-sidebar-toggle:focus-visible {
   outline: 2px solid currentColor;
-  outline-offset: 3px;
+  outline-offset: 2px;
 }
-
 .course-sidebar-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  min-height: 36px;
-  margin-left: auto;
-  padding: 0.35rem 0.5rem;
+  justify-content: center;
+  flex: none;
+  box-sizing: border-box;
+  width: 40px;
+  height: 40px;
+  padding: 0.5rem;
   border: 1px solid transparent;
   border-radius: 4px;
   background: transparent;
   color: inherit;
   font: inherit;
   cursor: pointer;
+}
+.course-sidebar-tools .course-sidebar-toggle {
+  margin-left: auto;
+}
+/* Keep disclosure controls immediately focusable when the drawer becomes visible,
+   including in courses whose reduced-motion rules set a duration on every element. */
+.course-sidebar-tools,
+.course-sidebar-tools * {
+  transition-property: background-color, border-color, color;
 }
 .course-sidebar-toggle svg {
   width: 18px;
@@ -61,17 +61,27 @@
   stroke-width: 1.5;
 }
 .course-sidebar-toggle:hover {
+  background: color-mix(in srgb, currentColor 8%, transparent);
   border-color: currentColor;
 }
-.course-sidebar-toggle:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 1px;
+/* Courses without a persistent header use a small handle when the contents are hidden. */
+.course-sidebar-handle {
+  position: fixed;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  left: max(0.75rem, env(safe-area-inset-left));
+  z-index: 50;
+  background: var(--bg, var(--page, var(--paper, Canvas)));
+  color: var(--fg, var(--ink, CanvasText));
+  border-color: color-mix(in srgb, currentColor 25%, transparent);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.12);
 }
 .course-sidebar-scrim {
   display: none;
 }
-
 @media (min-width: 1100px) {
+  :root:not([data-sidebar='collapsed']) .course-sidebar-handle {
+    display: none;
+  }
   :root[data-sidebar='collapsed'] .course-shell {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -86,11 +96,11 @@
   :root .course-shell > .sidebar {
     position: fixed;
     left: 0;
-    top: var(--course-nav-height);
+    top: 0;
     z-index: 54;
     display: block;
     width: min(320px, 88vw);
-    height: calc(100dvh - var(--course-nav-height));
+    height: 100dvh;
     box-sizing: border-box;
     background: var(--bg, var(--page, var(--paper, Canvas)));
     visibility: hidden;
@@ -103,9 +113,12 @@
     transform: none;
     transition: transform 160ms ease;
   }
+  :root[data-sidebar-open='true'] .course-sidebar-handle {
+    display: none;
+  }
   :root[data-sidebar-open='true'] .course-sidebar-scrim {
     position: fixed;
-    inset: var(--course-nav-height) 0 0;
+    inset: 0;
     z-index: 52;
     display: block;
     border: 0;
@@ -114,12 +127,16 @@
     background: rgb(0 0 0 / 0.35);
   }
 }
-
 @media (prefers-reduced-motion: reduce) {
   :root .course-shell > .sidebar,
   :root[data-sidebar-open='true'] .course-shell > .sidebar {
     transition: none;
   }
+}
+@media print {
+  .course-sidebar-tools,
+  .course-sidebar-toggle,
+  .course-sidebar-scrim { display: none !important; }
 }
 
 .course-reading-guide { font: inherit; font-size: 0.9rem; padding: 0.75rem 1rem; margin: 1rem 0 1.5rem; border: 1px solid currentColor; border-radius: 6px; opacity: 0.95; max-width: 100%; }

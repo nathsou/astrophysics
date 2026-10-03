@@ -72,6 +72,9 @@ function TopBar({ route, onSearch }: { route: Route; onSearch: () => void }) {
   );
   return (
     <header className="topbar">
+      <button className="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" aria-label="Hide contents" title="Hide contents" data-sidebar-toggle>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
+      </button>
       <a className="brand" href="#/">
         <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true">
           <path d="M5 26 L16 7 L27 26 Z" fill="var(--yellow)" stroke="var(--ink)" strokeWidth="1.4" />
@@ -138,6 +141,12 @@ function Sidebar({ route }: { route: Route }) {
   const book = route.page === 'book' ? route.n : route.page === 'item' ? byId.get(route.id)!.book : 0;
   return (
     <nav id="course-contents" className="sidebar" aria-label="Course contents">
+      <div className="course-sidebar-tools">
+        <a className="course-index-link" href="../"><span aria-hidden="true">←</span> All courses</a>
+        <button className="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" aria-label="Hide contents" title="Hide contents" data-sidebar-toggle>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
+        </button>
+      </div>
       <a className="sidebar-home" href="#/">Euclid’s Elements</a>
       <h2>Books</h2>
       <ol className="sidebar-books">
@@ -320,13 +329,6 @@ export function App() {
   }, []);
   return (
     <div className="app">
-      <nav className="course-index-nav" aria-label="Course collection">
-        <a className="course-index-link" href="../"><span aria-hidden="true">←</span> All courses</a>
-        <button className="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" data-sidebar-toggle>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
-          <span data-sidebar-label>Hide contents</span>
-        </button>
-      </nav>
       <TopBar route={route} onSearch={() => setPalette(true)} />
       <div className="course-shell">
         <Sidebar route={route} />

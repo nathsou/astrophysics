@@ -70,6 +70,12 @@ function Sidebar({ route }: { route: string }) {
   const cur = route.startsWith('ch/') ? route.slice(3).split('#')[0] : '';
   return (
     <nav id="course-contents" className="sidebar" aria-label="Course contents">
+      <div className="course-sidebar-tools">
+        <a className="course-index-link" href="../"><span aria-hidden="true">←</span> All courses</a>
+        <button className="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" aria-label="Hide contents" title="Hide contents" data-sidebar-toggle>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
+        </button>
+      </div>
       <a className="brand" href="#/">
         <span className="logo-mark" aria-hidden="true" />
         <span>
@@ -115,13 +121,9 @@ export function App() {
   }
   return (
     <MDXProvider components={mdxComponents}>
-      <nav className="course-index-nav" aria-label="Course collection">
-        <a className="course-index-link" href="../"><span aria-hidden="true">←</span> All courses</a>
-        <button className="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" data-sidebar-toggle>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
-          <span data-sidebar-label>Hide contents</span>
-        </button>
-      </nav>
+      <button className="course-sidebar-toggle course-sidebar-handle" type="button" aria-controls="course-contents" aria-expanded="true" aria-label="Hide contents" title="Hide contents" data-sidebar-toggle>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
+      </button>
       <div className={`app course-shell ${route.startsWith('playground') ? 'wide-mode' : route.startsWith('ch/') ? '' : 'home-mode'}`}>
         <a className="skip-link" href="#/" onClick={(e) => { e.preventDefault(); document.getElementById('main')?.focus(); }}>Skip to content</a>
         <Sidebar route={route} />

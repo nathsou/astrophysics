@@ -46,17 +46,12 @@
           <p class="count" aria-live="polite"></p>
         </div>
 
-        <section class="course-choice" aria-label="Choose your starting point">
-          <p><strong>New to proofs?</strong> Start with Proofcraft. Comfortable programming? Try Proofs Are Programs. For the underlying type theory and kernel, choose CIC.</p>
-          <p>Read in short sections and choose activities that help you explain an idea. Coding is optional; supplied implementations keep the figures usable. Longer labs and implementation extensions are marked separately.</p>
-        </section>
         <section class="grid" id="courses" aria-label="The courses">
           <a class="card cosmos" data-topic="physics" href="./astrophysics/">
             <i class="ring r1" aria-hidden="true"></i><i class="ring r2" aria-hidden="true"></i>
             <p class="kicker">Physics · 28 chapters + 9 primers</p>
             <h2>The Cosmos, Computed</h2>
             <p class="desc">Kepler’s orbits to the cosmic microwave background, with live simulations.</p>
-          <p class="course-fit">For programmers comfortable with algebra; calculus primers included. Explain and estimate astronomical phenomena. Read by section; simulations run in the browser.</p>
           </a>
 
           <a class="card cic" data-topic="logic" href="./cic/">
@@ -65,7 +60,6 @@
             <p class="desc">From λ-calculus to dependent types, with a Lean-style teaching language and a checked kernel.</p>
             <p class="code"><span class="kw">theorem</span> welcome : ∀ n : Nat,<br>&nbsp;&nbsp;n + 0 = n := <span class="kw">by</span> rfl</p>
             <p class="ok">✓ no errors</p>
-          <p class="course-fit">For programmers learning type theory. Trace reductions and check dependent types. Small browser exercises; full Lean 4 libraries are outside this course.</p>
           </a>
 
           <a class="card pap" data-topic="logic" href="./proofs-are-programs/">
@@ -78,7 +72,6 @@
             </div>
             <p class="body mono">:= fun ⟨a, b⟩ =&gt; ⟨b, a⟩</p>
             <p class="desc">Curry–Howard for programmers: write proofs as programs, then prove a compiler correct and build your own kernel.</p>
-          <p class="course-fit">For programmers new to formal proof. Write proofs and connect them to verified programs. Start here before the implementation details in CIC.</p>
           </a>
 
           <a class="card compiler" data-topic="systems" href="./compiler-backends/">
@@ -95,7 +88,6 @@
               <li><span>12–14</span><span>Register allocation</span><span>RegAlloc</span></li>
               <li><span>20</span><span>Linking &amp; running</span><span>Link</span></li>
             </ul>
-          <p class="course-fit">For readers familiar with basic programming and machine code. Follow one RISC-V pipeline before comparing four targets. No local toolchain needed for the main path.</p>
           </a>
 
           <a class="card lm" data-topic="ml" href="./language-models/">
@@ -110,7 +102,6 @@
               </div>
             </div>
             <p class="desc">Build a GPT from nothing, then take it through scaling, fine-tuning, reasoning, tools, interpretability and safety.</p>
-          <p class="course-fit">For programmers with basic probability and linear algebra. Choose a conceptual path or implement the engine. Model downloads are on demand; GPU and Python labs are optional.</p>
           </a>
 
           <a class="card incompleteness" data-topic="logic" href="./incompleteness/">
@@ -119,7 +110,6 @@
             <p class="formula">G ↔ ¬Prov(⌜G⌝)</p>
             <i class="rule" aria-hidden="true"></i>
             <p class="desc">Richard Zach’s Open Logic text, made executable: build the objects, then find them in the proofs.</p>
-          <p class="course-fit">For readers ready for first-order logic; review appendices as needed. Connect computability, self-reference and formal proofs. Nine chapters, read one section at a time.</p>
           </a>
 
           <a class="card proofs" data-topic="mathematics" href="./proofs/">
@@ -127,7 +117,6 @@
             <h2><span class="sr-only">Proofcraft</span><span aria-hidden="true">PROOF<br>CRAFT</span></h2>
             <p class="desc">Rebuild great theorems, with a step checker and an optional Socratic tutor.</p>
             <p class="kicker">Byrne · Mathematics · 23 ch</p>
-          <p class="course-fit">For readers with school algebra. Learn to construct and critique arguments. One main proof per first pass; alternative proofs are optional.</p>
           </a>
 
           <a class="card elements" data-topic="mathematics" href="./elements/">
@@ -148,7 +137,6 @@
               <p class="prop"><span>Book I, Proposition 1.</span> On a given finite straight line to construct an equilateral triangle.</p>
               <p class="desc">All 465 propositions word for word, each with a modern version and a live figure you can drag, step through, or read in Byrne’s colours.</p>
             </div>
-          <p class="course-fit">A complete reference edition with three guided starting paths. Begin with plane geometry, number theory or solids. Use Modern text for a first reading.</p>
           </a>
 
           <a class="card digital" data-topic="systems" href="./digital-circuits/">
@@ -162,7 +150,6 @@
             <h2>Digital Circuits</h2>
             <p class="desc">From a battery and a switch to a CPU you build from your own parts, then map onto an FPGA.</p>
             <p class="leds" aria-hidden="true"><i class="on"></i><i></i><i class="on"></i><i class="on"></i><span>1011</span></p>
-          <p class="course-fit">Start with basic arithmetic; electrical ideas are introduced. First build a CPU, then optionally explore programmable chips and HDLs. Browser simulation requires no hardware kit.</p>
           </a>
 
           <a class="card tracks" data-topic="physics" href="./particle-physics/">
@@ -177,7 +164,6 @@
             <p class="kicker">Tracks · Physics · 34 ch</p>
             <h2>Particle Physics</h2>
             <p class="desc">From a cloud chamber to the Higgs boson, by building a mini-LHC: a collider, a generator, a detector, reconstruction, a trigger and an analysis, in your browser.</p>
-          <p class="course-fit">For readers comfortable with algebra and basic mechanics. Infer particles from detector evidence. Longer chapters have session breaks; reconstruction coding is optional.</p>
           </a>
         </section>
       </main>
