@@ -1,0 +1,27 @@
+// expect: verified
+// Insertion sort, in place: the result is sorted and a permutation of the input.
+
+pred sorted(a: [int]) {
+  forall i, j :: 0 <= i < j < len(a) ==> a[i] <= a[j]
+}
+
+fn insertion_sort(inout a: [int])
+  ensures sorted(a)
+  ensures multiset(a) == multiset(old(a))
+{
+  for i in 1..len(a)
+    invariant sorted(a[..i])
+    invariant multiset(a) == multiset(old(a))
+  {
+    var j = i
+    while j > 0 && a[j - 1] > a[j]
+      invariant 0 <= j <= i
+      invariant forall k, l :: 0 <= k < l <= i && l != j ==> a[k] <= a[l]
+      invariant multiset(a) == multiset(old(a))
+      decreases j
+    {
+      a[j - 1], a[j] = a[j], a[j - 1]
+      j = j - 1
+    }
+  }
+}

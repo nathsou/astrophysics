@@ -1,0 +1,15 @@
+// expect: counterexample no_dir_contains_itself
+// A small file-system model in the style of Alloy (chapter 9).
+
+world FileSystem {
+  type Dir, File
+  rel parent: Dir -> lone Dir
+  rel contents: Dir -> set File
+  rel root: Dir
+
+  fact one_root: one root
+  fact root_has_no_parent: no root.parent
+  fact every_file_somewhere: forall f: File :: some { d: Dir | f in d.contents }
+
+  check no_dir_contains_itself: forall d: Dir :: d !in d.^parent for 3
+}

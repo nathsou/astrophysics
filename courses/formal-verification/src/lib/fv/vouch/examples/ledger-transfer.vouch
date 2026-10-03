@@ -1,0 +1,20 @@
+// expect: verified
+// The Ledger's transfer: balances are u64, so every addition is an obligation.
+
+pure fn total(b: [u64]) -> int
+  decreases len(b)
+{
+  if len(b) == 0 { 0 } else { total(b[..len(b) - 1]) + b[len(b) - 1] }
+}
+
+fn transfer(inout balance: [u64], from: int, to: int, amount: u64)
+  requires 0 <= from < len(balance) && 0 <= to < len(balance) && from != to
+  requires amount <= balance[from]
+  requires balance[to] as int + amount as int <= 18446744073709551615
+  ensures balance[from] == old(balance[from]) - amount
+  ensures balance[to] == old(balance[to]) + amount
+  ensures forall k :: 0 <= k < len(balance) && k != from && k != to ==> balance[k] == old(balance[k])
+{
+  balance[from] = balance[from] - amount
+  balance[to] = balance[to] + amount
+}

@@ -1,0 +1,21 @@
+// expect: holds mutex
+// Peterson's mutual exclusion algorithm (1981) for two processes.
+
+system Peterson {
+  type Proc = 0..2
+  var flag: Proc -> bool = false
+  var turn: Proc = 0
+
+  process P(me: Proc) {
+    loop {
+      want: flag[me] = true
+      yield: turn = 1 - me
+      wait: await !flag[1 - me] || turn == me
+      critical: flag[me] = false
+    }
+  }
+
+  invariant mutex: !(P(0) at critical && P(1) at critical)
+  property progress: forall p: Proc :: always (P(p) at wait ==> eventually P(p) at critical)
+  fairness weak P
+}

@@ -1,0 +1,28 @@
+// expect: holds consistent
+// Two-phase commit across any number of shards (the Ledger's cross-shard transfer, chapters 4 and 25).
+
+system TwoPhaseCommit {
+  symmetric type Shard
+  instance Shard = 3
+  enum Vote { none, yes, no }
+  enum Decision { undecided, commit, abort }
+
+  var vote: Shard -> Vote = none
+  var decision: Decision = undecided
+  var told: Shard -> Decision = undecided
+
+  action vote_yes(s: Shard) when vote[s] == none { vote[s] = yes }
+  action vote_no(s: Shard) when vote[s] == none { vote[s] = no }
+  action decide_commit when decision == undecided && (forall s: Shard :: vote[s] == yes) {
+    decision = commit
+  }
+  action decide_abort when decision == undecided && (exists s: Shard :: vote[s] == no) {
+    decision = abort
+  }
+  action inform(s: Shard) when decision != undecided && told[s] == undecided {
+    told[s] = decision
+  }
+
+  invariant consistent: forall s, t: Shard :: told[s] != undecided && told[t] != undecided ==> told[s] == told[t]
+  invariant commit_means_yes: decision == commit ==> forall s: Shard :: vote[s] == yes
+}
