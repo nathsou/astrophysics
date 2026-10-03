@@ -5,7 +5,7 @@ export { TutorError, type TutorMessage } from './client';
 
 export async function askTutor(call: TutorCall): Promise<string> {
   settings.load();
-  return requestReply(settings.data.provider, settings.tutorConfig, call);
+  return requestReply(settings.data.provider, { ...settings.tutorConfig }, call);
 }
 
 /** Pull <tag>…</tag> sections out of a reply. */

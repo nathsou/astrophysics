@@ -4,26 +4,31 @@
   import { speech } from '$lib/audio/speech.svelte';
   import Zh from './Zh.svelte';
   import Icon from '../ui/Icon.svelte';
+  import { onDestroy } from 'svelte';
 
   let { items }: { items: { w: string; g?: string }[] } = $props();
   const rows = $derived(items.map((it) => ({ ...it, gloss: it.g ?? lookup(it.w.replace(/\[[^\]]*\]/g, ''))?.g ?? '' })));
   let playingAll = $state(false);
+  let run = 0;
+  function stop() { run++; playingAll = false; speech.stop(); }
+  onDestroy(() => { if (playingAll) stop(); });
 
   async function playAll() {
+    const id = ++run;
     playingAll = true;
     for (const r of rows) {
-      if (!playingAll) break;
+      if (id !== run) return;
       await speech.say(r.w);
       await new Promise((res) => setTimeout(res, 350));
     }
-    playingAll = false;
+    if (id === run) playingAll = false;
   }
 </script>
 
 <div class="words card">
   <div class="bar ui">
     <span class="label">New words</span>
-    <button class="btn small ghost" onclick={() => (playingAll ? ((playingAll = false), speech.stop()) : playAll())}>
+    <button class="btn small ghost" onclick={() => (playingAll ? stop() : playAll())}>
       <Icon name={playingAll ? 'stop' : 'play'} size={14} />
       {playingAll ? 'Stop' : 'Hear them all'}
     </button>
@@ -71,6 +76,9 @@
     padding: 0.35rem 1rem;
     border-top: 1px solid var(--line);
     min-width: 0;
+    margin: 0;
+    flex-wrap: wrap;
+    min-height: 3.5rem;
   }
   .w {
     flex: none;

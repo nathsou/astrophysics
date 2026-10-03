@@ -35,3 +35,7 @@ jobs:
         run: npm run check
       - name: Build
         run: npm run build
+      - name: Install browser
+        run: npx playwright install --with-deps chromium
+      - name: Course and teacher browser checks
+        run: npm run test:browser

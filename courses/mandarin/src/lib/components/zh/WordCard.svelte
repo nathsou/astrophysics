@@ -6,6 +6,7 @@
   import { popover } from './popover.svelte';
   import PlayButton from './PlayButton.svelte';
   import Icon from '../ui/Icon.svelte';
+  import { wordCardPosition } from './position';
 
   let card: HTMLElement | undefined = $state();
   const t = $derived(popover.token);
@@ -14,15 +15,10 @@
   const parts = $derived(t && t.t.length > 1 ? [...t.t].map((ch, i) => ({ ch, py: t.s?.[i]?.py ?? '', tone: t.s?.[i]?.tone ?? 5, e: lookup(ch) })) : []);
   const inDeck = $derived(t ? deck.has(t.t) : false);
 
-  let pos = $state({ left: 0, top: 0, above: false });
+  let pos = $state({ left: 8, top: 8 });
   $effect(() => {
     if (!popover.anchor || !card) return;
-    const a = popover.anchor;
-    const w = card.offsetWidth;
-    const h = card.offsetHeight;
-    const left = Math.max(8, Math.min(innerWidth - w - 8, a.left + a.width / 2 - w / 2));
-    const above = a.bottom + h + 12 > innerHeight && a.top - h - 12 > 0;
-    pos = { left, top: above ? a.top - h - 10 : a.bottom + 10, above };
+    pos = wordCardPosition(popover.anchor, { width: card.offsetWidth, height: card.offsetHeight }, { width: innerWidth, height: innerHeight });
     card.focus({ preventScroll: true });
   });
 
@@ -32,9 +28,12 @@
   function onDown(e: PointerEvent) {
     if (popover.token && card && !card.contains(e.target as Node)) popover.close();
   }
+  function onScroll(e: Event) {
+    if (popover.token && !(e.target instanceof Node && card?.contains(e.target))) popover.close();
+  }
 </script>
 
-<svelte:window onkeydown={onKey} onpointerdown={onDown} onscroll={() => popover.token && popover.close()} onresize={() => popover.close()} />
+<svelte:window onkeydown={onKey} onpointerdown={onDown} onscroll={onScroll} onresize={() => popover.close()} />
 
 {#if t}
   <div bind:this={card} class="wordcard card ui" role="dialog" aria-label="Word: {t.t}" tabindex="-1" style="left: {pos.left}px; top: {pos.top}px">
@@ -43,10 +42,11 @@
       <div class="audio">
         <PlayButton text={t.t} />
         <PlayButton text={t.t} slow />
+        <button type="button" class="btn small ghost" aria-label="Close word card" onclick={() => popover.close(true)}><Icon name="x" size={16} /></button>
       </div>
     </div>
     <p class="py">
-      {#each t.s ?? [] as s, i (i)}<span class="t{s.tone}">{s.py}</span>{/each}
+      {#each t.s ?? [] as s, i (i)}{i > 0 ? ' ' : ''}<span class="t{s.tone}">{s.py}</span>{/each}
     </p>
     {#if entry?.g}<p class="gloss">{entry.g}</p>{:else}<p class="gloss muted">Not in the course dictionary.</p>{/if}
     {#if entry?.c?.length}<p class="meta">Measure word: <span class="zh-font">{entry.c.join('、')}</span></p>{/if}
@@ -78,6 +78,9 @@
     box-shadow: var(--shadow-lg);
     font-size: 0.9rem;
     line-height: 1.45;
+    max-height: calc(100dvh - 16px);
+    overflow: auto;
+    overflow-wrap: anywhere;
   }
   .wordcard:focus {
     outline: none;
@@ -89,11 +92,14 @@
     gap: 0.5rem;
   }
   .chars {
+    min-width: 0;
     font-size: 2.4rem;
     line-height: 1.1;
   }
   .audio {
     display: flex;
+    flex: none;
+    align-items: center;
   }
   .py {
     margin: 0.2rem 0 0.35rem;
@@ -137,6 +143,7 @@
   }
   .foot {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 0.5rem;
     margin-top: 0.75rem;

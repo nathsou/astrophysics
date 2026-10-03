@@ -45,4 +45,7 @@
       min-width: 1.8rem;
     }
   }
+  @media (max-width: 360px) {
+    button { padding: 0.2rem; min-width: 1.5rem; }
+  }
 </style>

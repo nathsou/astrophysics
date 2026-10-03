@@ -16,11 +16,14 @@ export const clipKey = (text: string) => plain(text).replace(/\s+/g, '').trim();
 class Speech {
   /** The text currently being spoken, for highlighting play buttons. */
   playing: string | null = $state(null);
+  /** Relative button speed, so normal and slow controls do not both appear active. */
+  rate = $state(1);
   /** False once we know the browser has no Chinese voice and no clip exists. */
   voiceMissing = $state(false);
   private manifest: Promise<Manifest> | null = null;
   private audio: HTMLAudioElement | null = null;
   private token = 0;
+  private finish: (() => void) | null = null;
 
   private loadManifest(): Promise<Manifest> {
     this.manifest ??= fetch(`${base}/audio/manifest.json`)
@@ -40,6 +43,8 @@ class Speech {
 
   stop(): void {
     this.token++;
+    this.finish?.();
+    this.finish = null;
     this.audio?.pause();
     if (browser && 'speechSynthesis' in window) speechSynthesis.cancel();
     this.playing = null;
@@ -50,26 +55,37 @@ class Speech {
     if (!browser) return;
     this.stop();
     const token = this.token;
-    const rate = (opts.rate ?? 1) * settings.data.rate;
+    this.rate = opts.rate ?? 1;
+    const rate = this.rate * settings.data.rate;
     this.playing = text;
     const file = (await this.loadManifest())[clipKey(text)];
     if (token !== this.token) return;
     try {
-      if (file) await this.playFile(`${base}/audio/${file}`, rate, token);
-      else await this.synthesise(plain(text), rate, token);
+      const played = file ? await this.playFile(`${base}/audio/${file}`, rate, token) : false;
+      if (!played && token === this.token) await this.synthesise(plain(text), rate, token);
     } finally {
       if (token === this.token) this.playing = null;
     }
   }
 
-  private playFile(src: string, rate: number, token: number): Promise<void> {
+  private playFile(src: string, rate: number, token: number): Promise<boolean> {
     return new Promise((resolve) => {
+      let settled = false;
+      const finish = (played: boolean) => {
+        if (settled) return;
+        settled = true;
+        if (this.finish === cancel) this.finish = null;
+        resolve(played);
+      };
+      const cancel = () => finish(false);
+      this.finish = cancel;
       const a = new Audio(src);
       a.playbackRate = rate;
       a.preservesPitch = true;
       this.audio = a;
-      a.onended = a.onerror = a.onpause = () => resolve();
-      a.play().catch(() => resolve());
+      a.onended = () => finish(true);
+      a.onerror = a.onpause = () => finish(false);
+      a.play().catch(() => finish(false));
       if (token !== this.token) a.pause();
     });
   }
@@ -93,13 +109,19 @@ class Speech {
     }
     if (token !== this.token) return;
     const voice = this.voice();
-    if (!voice) this.voiceMissing = true;
+    this.voiceMissing = !voice;
+    if (!voice) return;
     const u = new SpeechSynthesisUtterance(text);
     u.lang = 'zh-CN';
     if (voice) u.voice = voice;
     u.rate = 0.9 * rate;
     await new Promise<void>((resolve) => {
-      u.onend = u.onerror = () => resolve();
+      const finish = () => {
+        if (this.finish === finish) this.finish = null;
+        resolve();
+      };
+      this.finish = finish;
+      u.onend = u.onerror = finish;
       speechSynthesis.speak(u);
     });
   }

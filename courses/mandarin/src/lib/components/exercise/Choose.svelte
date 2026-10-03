@@ -72,7 +72,7 @@
           onclick={() => pick(i)}
         >
           <span class="n ui">{k + 1}</span>
-          <span class="o">{#if isZh(o)}<Zh text={o} size="md" pinyin={item.noPinyin && !seq.settled ? 'hide' : 'auto'} plain play={false} />{:else}<Rich text={o} />{/if}</span>
+          <span class="o">{#if isZh(o)}<Zh text={o} size="md" pinyin={item.noPinyin && !seq.settled ? 'hide' : 'auto'} plain play={false} />{:else}<Rich text={o} plain />{/if}</span>
         </button>
       {/each}
     </div>

@@ -16,7 +16,6 @@
   let hasClips = $state<boolean | null>(null);
   $effect(() => {
     keyDraft = settings.tutorConfig.apiKey;
-    keySaved = false;
     void speech.has('你好').then((h) => (hasClips = h));
   });
 
