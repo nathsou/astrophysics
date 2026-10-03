@@ -5,11 +5,12 @@
 import { browser } from '$app/environment';
 import type { ListId } from '$lib/zh/lexicon';
 import { readJSON, writeJSON } from './storage';
+import { tutorSettings, type TutorSettings, type Provider, type TutorConfig } from '$lib/tutor/providers';
 
 export type PinyinMode = 'always' | 'tap' | 'off';
 export type StartPoint = 'new' | 'pinyin' | 'hsk1' | 'hsk2';
 
-export interface SettingsData {
+export interface SettingsData extends TutorSettings {
   pinyin: PinyinMode;
   /** Show English translations of example sentences straight away. */
   translations: boolean;
@@ -23,11 +24,7 @@ export interface SettingsData {
   typeAnswers: boolean;
   /** Little chimes for right and wrong answers. */
   sounds: boolean;
-  apiKey: string;
-  model: string;
 }
-
-export const DEFAULT_MODEL = 'claude-opus-5-5';
 
 const KEY = 'mandarin:settings';
 const DEFAULTS: SettingsData = {
@@ -40,8 +37,7 @@ const DEFAULTS: SettingsData = {
   newPerDay: 10,
   typeAnswers: false,
   sounds: true,
-  apiKey: '',
-  model: DEFAULT_MODEL,
+  ...tutorSettings({}),
 };
 
 /** Help levels for each starting point: beginners see everything, HSK 2 learners less. */
@@ -60,11 +56,11 @@ class Settings {
   load(): void {
     if (this.loaded || !browser) return;
     this.loaded = true;
-    this.data = readJSON(KEY, { ...DEFAULTS });
+    this.read();
     this.apply();
     addEventListener('storage', (e) => {
       if (e.key === KEY) {
-        this.data = readJSON(KEY, { ...DEFAULTS });
+        this.read();
         this.apply();
       }
     });
@@ -73,6 +69,22 @@ class Settings {
   set<K extends keyof SettingsData>(key: K, value: SettingsData[K]): void {
     this.data[key] = value;
     this.save();
+  }
+
+  private read(): void {
+    const raw = readJSON<Partial<SettingsData>>(KEY, {});
+    this.data = { ...DEFAULTS, ...raw, ...tutorSettings(raw) };
+    delete (this.data as unknown as Record<string, unknown>).apiKey;
+    delete (this.data as unknown as Record<string, unknown>).model;
+  }
+
+  setTutor(provider: Provider, patch: Partial<TutorConfig>): void {
+    Object.assign(this.data.tutors[provider], patch);
+    this.save();
+  }
+
+  get tutorConfig(): TutorConfig {
+    return this.data.tutors[this.data.provider];
   }
 
   update(patch: Partial<SettingsData>): void {
@@ -94,7 +106,7 @@ class Settings {
   }
 
   get tutorEnabled(): boolean {
-    return this.data.apiKey.trim().length > 0;
+    return this.tutorConfig.apiKey.trim().length > 0;
   }
 }
 

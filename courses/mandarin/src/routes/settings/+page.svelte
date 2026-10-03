@@ -1,6 +1,7 @@
 <script lang="ts">
   import { base } from '$app/paths';
-  import { settings, DEFAULT_MODEL, type PinyinMode } from '$lib/state/settings.svelte';
+  import { settings, type PinyinMode } from '$lib/state/settings.svelte';
+  import { PROVIDERS, isProvider, withoutTutorKeys, restoreTutorSettings } from '$lib/tutor/providers';
   import { progress } from '$lib/state/progress.svelte';
   import { deck } from '$lib/srs/deck.svelte';
   import { LIST_NAMES, type ListId } from '$lib/zh/lexicon';
@@ -11,9 +12,11 @@
   let keyDraft = $state('');
   let keySaved = $state(false);
   let importMsg = $state('');
+  const providerInfo = $derived(PROVIDERS[settings.data.provider]);
   let hasClips = $state<boolean | null>(null);
   $effect(() => {
-    keyDraft = settings.data.apiKey;
+    keyDraft = settings.tutorConfig.apiKey;
+    keySaved = false;
     void speech.has('你好').then((h) => (hasClips = h));
   });
 
@@ -24,7 +27,7 @@
   ];
 
   function saveKey() {
-    settings.update({ apiKey: keyDraft.trim() });
+    settings.setTutor(settings.data.provider, { apiKey: keyDraft.trim() });
     keySaved = true;
     setTimeout(() => (keySaved = false), 2000);
   }
@@ -32,11 +35,11 @@
   function exportData() {
     const data = {
       app: 'mandarin-out-loud',
-      version: 1,
+      version: 2,
       exported: new Date().toISOString(),
       progress: progress.data,
       deck: deck.data,
-      settings: { ...settings.data, apiKey: '' },
+      settings: { ...settings.data, ...withoutTutorKeys(settings.data) },
     };
     const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' }));
     const a = document.createElement('a');
@@ -55,8 +58,8 @@
       if (!confirm('Replace your current progress and review deck with this backup?')) return;
       progress.replace(data.progress);
       deck.replace(data.deck);
-      const { apiKey: _ignored, ...rest } = data.settings ?? {};
-      settings.update(rest);
+      const { apiKey: _ignored, model: _oldModel, tutors: _ignoredProfiles, provider: _ignoredProvider, ...rest } = data.settings ?? {};
+      settings.update({ ...rest, ...restoreTutorSettings(data.settings, settings.data) });
       importMsg = 'Backup restored.';
     } catch (err) {
       importMsg = `Could not read that file: ${(err as Error).message}`;
@@ -114,7 +117,7 @@
   <section class="card">
     <h2>Review deck</h2>
     <label class="row ui">New cards per day
-      <input type="number" min="0" max="100" value={settings.data.newPerDay} onchange={(e) => settings.set('newPerDay', Math.max(0, Number(e.currentTarget.value) || 0))} />
+      <input type="number" min="0" max="100" value={settings.data.newPerDay} onchange={(e) => settings.set('newPerDay', Math.min(100, Math.max(0, Number(e.currentTarget.value) || 0)))} />
     </label>
     <label class="row ui"><input type="checkbox" checked={settings.data.typeAnswers} onchange={(e) => settings.set('typeAnswers', e.currentTarget.checked)} /> Type the pinyin on reading cards (checked automatically)</label>
     <label class="row ui">HSK word list
@@ -127,15 +130,20 @@
 
   <section class="card" id="tutor">
     <h2>AI conversation partner <span class="opt-tag ui">Optional</span></h2>
-    <p class="ui note">The role-plays and "your own sentence" exercises use Claude as a live partner. They need your own Anthropic API key, which stays in this browser's storage and is sent only to api.anthropic.com. Usage is billed to your Anthropic account. Everything else in the course works without it.</p>
-    <label class="row ui">API key
-      <input type="password" bind:value={keyDraft} placeholder="sk-ant-…" autocomplete="off" spellcheck="false" />
+    <p class="ui note">The teacher chat, role-plays and sentence feedback use your chosen provider. Keys stay in this browser; messages and lesson context go directly to {providerInfo.host}. Usage is billed to your {providerInfo.name} account. Everything else works without AI.</p>
+    <label class="row ui">Provider
+      <select value={settings.data.provider} onchange={(e) => { if (isProvider(e.currentTarget.value)) settings.set('provider', e.currentTarget.value); }}>
+        {#each Object.entries(PROVIDERS) as [id, info] (id)}<option value={id}>{info.name}</option>{/each}
+      </select>
+    </label>
+    <label class="row ui">{providerInfo.name} API key
+      <input type="password" bind:value={keyDraft} placeholder={providerInfo.placeholder} autocomplete="off" spellcheck="false" />
       <button class="btn small" onclick={saveKey}>{keySaved ? 'Saved' : 'Save'}</button>
     </label>
     <label class="row ui">Model
-      <input type="text" value={settings.data.model} onchange={(e) => settings.set('model', e.currentTarget.value.trim() || DEFAULT_MODEL)} />
+      <input type="text" value={settings.tutorConfig.model} onchange={(e) => settings.setTutor(settings.data.provider, { model: e.currentTarget.value.trim() || providerInfo.model })} />
     </label>
-    {#if settings.tutorEnabled}<button class="btn small ghost" onclick={() => ((keyDraft = ''), settings.update({ apiKey: '' }))}>Remove key</button>{/if}
+    {#if settings.tutorEnabled}<button class="btn small ghost" onclick={() => ((keyDraft = ''), settings.setTutor(settings.data.provider, { apiKey: '' }))}>Remove key</button>{/if}
   </section>
 
   <section class="card">
@@ -218,6 +226,7 @@
   .row input[type='password'],
   .row input[type='text'],
   select {
+    max-width: 100%;
     padding: 0.4rem 0.6rem;
     border-radius: 8px;
     border: 1.5px solid var(--line-strong);
@@ -228,7 +237,8 @@
   .row input[type='password'],
   .row input[type='text'] {
     flex: 1;
-    min-width: 12rem;
+    min-width: min(12rem, 100%);
+    max-width: 100%;
   }
   .row input[type='number'] {
     width: 5rem;

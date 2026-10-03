@@ -1,8 +1,8 @@
 <script lang="ts">
-  /** Write your own sentence; Claude says what works and what to fix. */
+  /** Write your own sentence; the AI teacher says what works and what to fix. */
   import type { Compose } from '$lib/exercises/types';
   import { settings } from '$lib/state/settings.svelte';
-  import { askClaude, tag, TutorError } from '$lib/tutor/tutor';
+  import { askTutor, tag, TutorError } from '$lib/tutor/tutor';
   import { composeSystem } from '$lib/tutor/prompts';
   import { levelLabel } from '$lib/tutor/known';
   import Rich from './Rich.svelte';
@@ -24,7 +24,7 @@
     error = '';
     result = null;
     try {
-      const out = await askClaude({
+      const out = await askTutor({
         system: composeSystem(data.task, data.target, levelLabel(settings.data.start)),
         messages: [{ role: 'user', content: text.trim() }],
         effort: 'medium',
