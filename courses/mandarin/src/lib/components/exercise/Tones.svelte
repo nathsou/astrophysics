@@ -31,8 +31,7 @@
     picked = syl.map(() => null);
     checked = syl.map(() => null);
     last = null;
-    const timer = setTimeout(() => void speech.say(item.zh), 250);
-    return () => clearTimeout(timer);
+    if (!seq.done && (seq.index > 0 || seq.round > 0)) return speech.schedule(item.zh);
   });
 
   function choose(k: number, t: number) {

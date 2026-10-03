@@ -28,8 +28,7 @@
     void seq.round;
     wrong = new Set();
     last = null;
-    const timer = item.listen && audioText ? setTimeout(() => void speech.say(audioText), 250) : undefined;
-    return () => clearTimeout(timer);
+    if (!seq.done && item.listen && audioText && (seq.index > 0 || seq.round > 0)) return speech.schedule(audioText);
   });
 
   function pick(i: number) {

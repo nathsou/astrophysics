@@ -92,3 +92,36 @@ test('normal and slow audio have distinct active states and stop does not hang t
   await list.getByRole('button', { name: 'Hear them all' }).click();
   await expect(list.getByRole('button', { name: 'Stop', exact: true })).toBeVisible();
 });
+
+test('lesson prompts stay quiet on load and never interrupt newer requested audio', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(window, 'spokenPrompts', { value: [] });
+    Object.defineProperty(window, 'SpeechSynthesisUtterance', { value: class { constructor(public text: string) {} } });
+    Object.defineProperty(window, 'speechSynthesis', { value: {
+      getVoices: () => [{ lang: 'zh-CN', name: 'Chinese', localService: true }],
+      speak: (utterance: { text: string }) => Reflect.get(window, 'spokenPrompts').push(utterance.text),
+      cancel: () => {}, addEventListener: () => {},
+    } });
+  });
+  await page.goto('/learn/07-numbers/');
+  await expect(page.locator('html')).toHaveAttribute('data-pinyin', 'always');
+  await page.clock.install();
+  await page.clock.pauseAt(new Date());
+  // Observe beyond the former 250ms page-load autoplay delay.
+  await page.clock.runFor(400);
+  expect(await page.evaluate(() => Reflect.get(window, 'spokenPrompts'))).toEqual([]);
+  const exercise = page.getByRole('region', { name: 'Tone detective: Tones of the numbers' });
+  await exercise.getByRole('button', { name: 'Listen', exact: true }).click();
+  await exercise.locator('button[title="Tone 1: high"]').click();
+  await exercise.getByRole('button', { name: 'Next', exact: true }).click();
+  await page.clock.runFor(300);
+  await expect.poll(() => page.evaluate(() => Reflect.get(window, 'spokenPrompts'))).toEqual(['一', '二']);
+  await exercise.locator('button[title="Tone 4: falling"]').click();
+  await exercise.getByRole('button', { name: 'Next', exact: true }).click();
+  await expect(exercise.getByLabel('Question 3 of 10')).toBeVisible();
+  await page.locator('.words .word').filter({ hasText: '五' }).first().evaluate((word: HTMLElement) => word.click());
+  await expect.poll(() => page.evaluate(() => Reflect.get(window, 'spokenPrompts'))).toEqual(['一', '二', '五']);
+  // The superseded third prompt must remain cancelled after its scheduled time.
+  await page.clock.runFor(350);
+  expect(await page.evaluate(() => Reflect.get(window, 'spokenPrompts'))).toEqual(['一', '二', '五']);
+});

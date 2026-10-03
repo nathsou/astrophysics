@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte';
   /**
    * A little town seen from above. Questions use position words: 银行在哪儿？
    * 学校在医院的左边 — tap the right building. A new town is drawn every round.
@@ -10,6 +11,9 @@
   import Zh from '$lib/components/zh/Zh.svelte';
   import PlayButton from '$lib/components/zh/PlayButton.svelte';
   import Icon from '$lib/components/ui/Icon.svelte';
+
+  let cancelReplay = () => {};
+  onDestroy(() => cancelReplay());
 
   const PLACES = [
     { zh: '学校', icon: '🏫' },
@@ -63,7 +67,8 @@
     solved = false;
     missed = false;
     round++;
-    setTimeout(() => qs[0] && speech.say(qs[0].text), 200);
+    cancelReplay();
+    if (qs[0]) cancelReplay = speech.schedule(qs[0].text, 200);
   }
 
   function tap(i: number) {

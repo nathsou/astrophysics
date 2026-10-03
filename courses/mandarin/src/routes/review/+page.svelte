@@ -4,7 +4,7 @@
    * then reveal and grade yourself honestly; the scheduler does the rest.
    */
   import { base } from '$app/paths';
-  import { untrack } from 'svelte';
+  import { untrack, onDestroy } from 'svelte';
   import { deck } from '$lib/srs/deck.svelte';
   import { preview, Rating, type DeckCard } from '$lib/srs/deck';
   import { settings } from '$lib/state/settings.svelte';
@@ -26,6 +26,8 @@
   let reviewed = $state(0);
   let typed = $state('');
   let typedResult = $state<boolean | null>(null);
+  let cancelReplay = () => {};
+  onDestroy(() => cancelReplay());
   const card = $derived(queue[0]);
   const entry = $derived(card ? lookup(card.word) : undefined);
   const py = $derived(card ? annotate(card.word).flatMap((t) => t.s ?? []).map((s) => s.py).join(' ') : '');
@@ -39,11 +41,12 @@
     show();
   }
   function show() {
+    cancelReplay();
     revealed = false;
     typed = '';
     typedResult = null;
     const c = untrack(() => queue[0]);
-    if (c?.kind === 'hear') setTimeout(() => void speech.say(c.word), 250);
+    if (c?.kind === 'hear') cancelReplay = speech.schedule(c.word);
   }
   function reveal() {
     if (!card || revealed) return;

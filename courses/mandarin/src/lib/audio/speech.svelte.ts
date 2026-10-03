@@ -24,6 +24,7 @@ class Speech {
   private audio: HTMLAudioElement | null = null;
   private token = 0;
   private finish: (() => void) | null = null;
+  private pending: ReturnType<typeof setTimeout> | null = null;
 
   private loadManifest(): Promise<Manifest> {
     this.manifest ??= fetch(`${base}/audio/manifest.json`)
@@ -43,11 +44,29 @@ class Speech {
 
   stop(): void {
     this.token++;
+    if (this.pending !== null) clearTimeout(this.pending);
+    this.pending = null;
     this.finish?.();
     this.finish = null;
     this.audio?.pause();
     if (browser && 'speechSynthesis' in window) speechSynthesis.cancel();
     this.playing = null;
+  }
+
+  /** Delayed exercise prompts must not interrupt a newer playback request. */
+  schedule(text: string, delay = 250): () => void {
+    if (!browser) return () => {};
+    if (this.pending !== null) clearTimeout(this.pending);
+    const token = this.token;
+    const timer = setTimeout(() => {
+      if (this.pending === timer) this.pending = null;
+      if (token === this.token) void this.say(text);
+    }, delay);
+    this.pending = timer;
+    return () => {
+      clearTimeout(timer);
+      if (this.pending === timer) this.pending = null;
+    };
   }
 
   /** Speak `text`; resolves when it finishes (or is interrupted). */

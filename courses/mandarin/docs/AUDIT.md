@@ -17,6 +17,7 @@ for word-card access. The production static build is used for browser tests.
 | Matching and sorting answers contained nested word-card controls. | Answer text is non-interactive inside the enclosing button. |
 | Cancelling browser speech could leave an awaited playback promise unresolved; failed clips did not fall back to speech. | Settle playback on cancellation and fall back to a Chinese voice after clip errors. |
 | Quickly stopping and restarting word lists/dialogues could resume an older playback loop. | Guard sequences with generation IDs and cancel them on destruction. |
+| Off-screen lesson exercises queued audio on page load and could interrupt a word card; delayed prompts could outlive newer playback. | Start lesson exercises silently, replay after advancing, and cancel delayed prompts on newer playback or navigation. |
 | Lesson navigation could preserve local exercise state and a stale word card. | Key lesson content by slug; close word cards and stop speech on navigation. |
 | Typing numbered pinyin in the teacher chat could answer a running practice game. | Game shortcuts ignore text input, composition events, dialogs and already-handled keys. |
 | A pending microphone permission could outlive the tone mirror. | Stop late-granted tracks and ignore results from discarded recordings. |
