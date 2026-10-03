@@ -14,6 +14,7 @@ import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { downloadBytes } from './download.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dest = join(root, 'course', 'static', 'weights');
@@ -38,9 +39,7 @@ for (const file of manifest.files) {
   const url = `${manifest.release}/${file.name}`;
   try {
     console.log(`weights: downloading ${file.name} (${(file.bytes / 1e6).toFixed(0)} MB)`);
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const bytes = new Uint8Array(await res.arrayBuffer());
+    const bytes = await downloadBytes(url);
     if (sha256(bytes) !== file.sha256) throw new Error('SHA-256 mismatch');
     writeFileSync(`${path}.part`, bytes);
     renameSync(`${path}.part`, path);
