@@ -1,0 +1,1 @@
+Stroke data from hanzi-writer-data (https://github.com/chanind/hanzi-writer-data), derived from Make Me a Hanzi and the Arphic PL fonts; distributed under the Arphic Public License (LICENSE). Regenerate with `npm run strokes`.
