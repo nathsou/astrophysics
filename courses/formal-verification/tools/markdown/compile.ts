@@ -96,6 +96,8 @@ const BUILTIN_BLOCKS: Record<string, string> = {
   hints: 'Hints',
   hint: 'Hint',
 };
+/** Directives whose first code block is passed to the widget as `code` (the rest is its caption). */
+const CODE_WIDGETS = new Set(['workbench', 'explorer', 'interleavings', 'trace-lab', 'msc', 'intruder', 'state-space']);
 const THEOREM_KINDS = new Set(['theorem', 'lemma', 'corollary', 'proposition', 'conjecture', 'claim']);
 /** Kinds of the Vouch-specific exercises (PLAN §5); all render through one dispatching component. */
 export const VOUCH_EXERCISES = ['verify', 'spec', 'invariant', 'model', 'ltl', 'encode', 'play', 'drive', 'rewrite', 'bug'] as const;
@@ -345,6 +347,30 @@ function transformDirective(ctx: Ctx, node: Directive, parent: Parent, index: nu
   let tag: string;
   const extra: Record<string, unknown> = {};
   if (title !== undefined && attrs.title == null) extra.title = title;
+
+  // Widgets that take code: the first fenced block inside the directive becomes the `code` prop.
+  if (node.type === 'containerDirective' && CODE_WIDGETS.has(name)) {
+    const code = node.children.find((c) => c.type === 'code') as Code | undefined;
+    if (!code) throw new Error(`${path.relative(ctx.contentRoot, ctx.file)}: :::${name} needs a code block inside.`);
+    extra.code = code.value;
+    const rest = node.children.filter((c) => c !== code);
+    node.children = rest as typeof node.children;
+    const component = resolveComponent(ctx, name);
+    const i = ctx.components.push({ tag: component, props: props(attrs, extra) }) - 1;
+    if (!rest.length) {
+      parent.children.splice(index, 1, marker('leaf', i));
+      return index + 1;
+    }
+    // Remaining Markdown becomes the caption.
+    ctx.asyncJobs.push(
+      (async () => {
+        const md = rest.map((c) => toString(c)).join('\n\n');
+        ctx.components[i]!.props += ` caption={${JSON.stringify(await renderInline(md))}}`;
+      })(),
+    );
+    parent.children.splice(index, 1, marker('leaf', i));
+    return index + 1;
+  }
 
   if (node.type === 'textDirective') {
     if (name === 'cite') {
