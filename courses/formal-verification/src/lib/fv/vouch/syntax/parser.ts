@@ -678,7 +678,8 @@ class Parser {
     const t = this.peek();
     const start = t.span.start;
     // Labels: `name: stmt` (process steps, named assertions).
-    if (t.kind === 'ident' && this.is(':', 1) && !this.is('::', 1)) {
+    const softLabel = t.kind === 'kw' && ['count', 'some', 'no', 'one', 'lone', 'set', 'run', 'check', 'fact', 'rel', 'solve', 'instance', 'init', 'next', 'weak', 'strong', 'via', 'where'].includes(t.value);
+    if ((t.kind === 'ident' || softLabel) && this.is(':', 1) && !this.is('::', 1)) {
       this.next();
       this.next();
       this.skipNewlines();
