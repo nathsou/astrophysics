@@ -1,0 +1,37 @@
+name: For All Inputs — checks
+
+# Tests, type checks and a build for courses/formal-verification. (Deployment is in deploy.yml.)
+on:
+  push:
+    branches: [main]
+    paths: ['courses/formal-verification/**', '.github/workflows/formal-verification.yml']
+  pull_request:
+    paths: ['courses/formal-verification/**', '.github/workflows/formal-verification.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: courses/formal-verification
+
+jobs:
+  site:
+    runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: --experimental-strip-types
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: courses/formal-verification/package-lock.json
+      - run: npm ci
+      - name: Library, widget and content tests
+        run: npm test
+      - name: Type-check (svelte-check)
+        run: npm run check
+      - name: Build
+        run: npm run build

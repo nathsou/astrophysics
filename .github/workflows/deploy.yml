@@ -42,6 +42,7 @@ jobs:
             courses/digital-circuits/package-lock.json
             courses/particle-physics/package-lock.json
             courses/mandarin/package-lock.json
+            courses/formal-verification/package-lock.json
 
       - name: Install dependencies
         run: |
@@ -55,6 +56,7 @@ jobs:
           npm ci --prefix courses/digital-circuits
           npm ci --prefix courses/particle-physics
           npm ci --prefix courses/mandarin
+          npm ci --prefix courses/formal-verification
           pnpm --dir courses/language-models install --frozen-lockfile
 
       - name: Fetch the Mandarin course audio

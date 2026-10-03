@@ -1,0 +1,181 @@
+# Shared bibliography. Chapter authors add their own entries in bibliography.d/<name>.yaml (merged by the compiler).
+turing1949:
+  authors: Alan M. Turing
+  year: 1949
+  title: Checking a large routine
+  venue: Report of a Conference on High Speed Automatic Calculating Machines, University Mathematical Laboratory, Cambridge, 67–69
+floyd1967:
+  authors: Robert W. Floyd
+  year: 1967
+  title: Assigning meanings to programs
+  venue: Mathematical Aspects of Computer Science, Proceedings of Symposia in Applied Mathematics 19, American Mathematical Society, 19–32
+hoare1969:
+  authors: C. A. R. Hoare
+  year: 1969
+  title: An axiomatic basis for computer programming
+  venue: Communications of the ACM 12(10), 576–580
+  url: https://doi.org/10.1145/363235.363259
+dijkstra1975:
+  authors: Edsger W. Dijkstra
+  year: 1975
+  title: Guarded commands, nondeterminacy and formal derivation of programs
+  venue: Communications of the ACM 18(8), 453–457
+  url: https://doi.org/10.1145/360933.360975
+pnueli1977:
+  authors: Amir Pnueli
+  year: 1977
+  title: The temporal logic of programs
+  venue: 18th Annual Symposium on Foundations of Computer Science (FOCS), 46–57
+clarke1981:
+  authors: Edmund M. Clarke and E. Allen Emerson
+  year: 1981
+  title: Design and synthesis of synchronization skeletons using branching time temporal logic
+  venue: Logics of Programs Workshop (1981), Lecture Notes in Computer Science 131 (1982), 52–71
+queille1982:
+  authors: Jean-Pierre Queille and Joseph Sifakis
+  year: 1982
+  title: Specification and verification of concurrent systems in CESAR
+  venue: International Symposium on Programming, Lecture Notes in Computer Science 137, 337–351
+cook1971:
+  authors: Stephen A. Cook
+  year: 1971
+  title: The complexity of theorem-proving procedures
+  venue: Proceedings of the Third Annual ACM Symposium on Theory of Computing (STOC), 151–158
+bryant1986:
+  authors: Randal E. Bryant
+  year: 1986
+  title: Graph-based algorithms for Boolean function manipulation
+  venue: IEEE Transactions on Computers C-35(8), 677–691
+cousot1977:
+  authors: Patrick Cousot and Radhia Cousot
+  year: 1977
+  title: 'Abstract interpretation: a unified lattice model for static analysis of programs by construction or approximation of fixpoints'
+  venue: 4th ACM Symposium on Principles of Programming Languages (POPL), 238–252
+moskewicz2001:
+  authors: Matthew W. Moskewicz, Conor F. Madigan, Ying Zhao, Lintao Zhang and Sharad Malik
+  year: 2001
+  title: 'Chaff: engineering an efficient SAT solver'
+  venue: 38th Design Automation Conference (DAC), 530–535
+demoura2008:
+  authors: Leonardo de Moura and Nikolaj Bjørner
+  year: 2008
+  title: 'Z3: an efficient SMT solver'
+  venue: Tools and Algorithms for the Construction and Analysis of Systems (TACAS), Lecture Notes in Computer Science 4963, 337–340
+bloch2006:
+  authors: Joshua Bloch
+  year: 2006
+  title: 'Extra, extra – read all about it: nearly all binary searches and mergesorts are broken'
+  venue: Google Research Blog, 2 June 2006
+  url: https://research.google/blog/extra-extra-read-all-about-it-nearly-all-binary-searches-and-mergesorts-are-broken/
+hyman1966:
+  authors: Harris Hyman
+  year: 1966
+  title: Comments on a problem in concurrent programming control
+  venue: Communications of the ACM 9(1), 45
+leveson1993:
+  authors: Nancy G. Leveson and Clark S. Turner
+  year: 1993
+  title: An investigation of the Therac-25 accidents
+  venue: IEEE Computer 26(7), 18–41
+jones1997:
+  authors: Mike Jones (relaying Glenn Reeves of JPL)
+  year: 1997
+  title: What really happened on Mars?
+  venue: Online account of the Mars Pathfinder priority-inversion reset, December 1997
+needham1978:
+  authors: Roger M. Needham and Michael D. Schroeder
+  year: 1978
+  title: Using encryption for authentication in large networks of computers
+  venue: Communications of the ACM 21(12), 993–999
+lowe1995:
+  authors: Gavin Lowe
+  year: 1995
+  title: An attack on the Needham–Schroeder public-key authentication protocol
+  venue: Information Processing Letters 56(3), 131–133
+lowe1996:
+  authors: Gavin Lowe
+  year: 1996
+  title: Breaking and fixing the Needham–Schroeder public-key protocol using FDR
+  venue: Tools and Algorithms for the Construction and Analysis of Systems (TACAS), Lecture Notes in Computer Science 1055, 147–166
+pratt1995:
+  authors: Vaughan Pratt
+  year: 1995
+  title: Anatomy of the Pentium bug
+  venue: TAPSOFT '95, Lecture Notes in Computer Science 915, 97–107
+edelman1997:
+  authors: Alan Edelman
+  year: 1997
+  title: The mathematics of the Pentium division bug
+  venue: SIAM Review 39(1), 54–67
+lopes2015:
+  authors: Nuno P. Lopes, David Menendez, Santosh Nagarakatte and John Regehr
+  year: 2015
+  title: Provably correct peephole optimizations with Alive
+  venue: ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI), 22–32
+cnn2008zune:
+  authors: CNN
+  year: 2008
+  title: Leap-year glitch freezes Zune MP3 players
+  venue: CNN.com, 31 December 2008
+  url: https://edition.cnn.com/2008/TECH/12/31/zune.player.failures/index.html
+citp2009zune:
+  authors: Freedom to Tinker (Center for Information Technology Policy, Princeton)
+  year: 2009
+  title: Debugging the Zune blackout
+  venue: Blog post, 12 January 2009
+  url: https://blog.citp.princeton.edu/2009/01/12/debugging-zune-blackout/
+degouw2015:
+  authors: Stijn de Gouw, Jurriaan Rot, Frank S. de Boer, Richard Bubel and Reiner Hähnle
+  year: 2015
+  title: "OpenJDK's java.utils.Collection.sort() is broken: the good, the bad and the worst case"
+  venue: Computer Aided Verification (CAV), Lecture Notes in Computer Science 9206, 273–289
+atzei2017:
+  authors: Nicola Atzei, Massimo Bartoletti and Tiziana Cimoli
+  year: 2017
+  title: A survey of attacks on Ethereum smart contracts (SoK)
+  venue: Principles of Security and Trust (POST), Lecture Notes in Computer Science 10204, 164–186
+lions1996:
+  authors: J. L. Lions (chair) et al.
+  year: 1996
+  title: 'ARIANE 5 Flight 501 failure: report by the Inquiry Board'
+  venue: European Space Agency and CNES, July 1996
+durumeric2014:
+  authors: Zakir Durumeric et al.
+  year: 2014
+  title: The matter of Heartbleed
+  venue: ACM Internet Measurement Conference (IMC), 475–488
+fonseca2017:
+  authors: Pedro Fonseca, Kaiyuan Zhang, Xi Wang and Arvind Krishnamurthy
+  year: 2017
+  title: An empirical study on the correctness of formally verified distributed systems
+  venue: Twelfth European Conference on Computer Systems (EuroSys), 328–343
+newcombe2015:
+  authors: Chris Newcombe, Tim Rath, Fan Zhang, Bogdan Munteanu, Marc Brooker and Michael Deardeuff
+  year: 2015
+  title: How Amazon Web Services uses formal methods
+  venue: Communications of the ACM 58(4), 66–73
+yang2011:
+  authors: Xuejun Yang, Yang Chen, Eric Eide and John Regehr
+  year: 2011
+  title: Finding and understanding bugs in C compilers
+  venue: ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI), 283–294
+klein2009:
+  authors: Gerwin Klein et al.
+  year: 2009
+  title: 'seL4: formal verification of an OS kernel'
+  venue: ACM Symposium on Operating Systems Principles (SOSP), 207–220
+leroy2009:
+  authors: Xavier Leroy
+  year: 2009
+  title: Formal verification of a realistic compiler
+  venue: Communications of the ACM 52(7), 107–115
+hawblitzel2015:
+  authors: Chris Hawblitzel, Jon Howell, Manos Kapritsos, Jacob R. Lorch, Bryan Parno, Michael L. Roberts, Srinath Setty and Brian Zill
+  year: 2015
+  title: 'IronFleet: proving practical distributed systems correct'
+  venue: ACM Symposium on Operating Systems Principles (SOSP), 1–17
+mackenzie2001:
+  authors: Donald MacKenzie
+  year: 2001
+  title: 'Mechanizing Proof: Computing, Risk, and Trust'
+  venue: MIT Press

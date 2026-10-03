@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Interactive textbooks on astrophysics, type theory, compiler backends, language models, Gödel’s incompleteness theorems, mathematical proof, Euclid’s Elements, digital circuits, particle physics and Mandarin Chinese, running in the browser.">
+    <meta name="description" content="Interactive textbooks on astrophysics, type theory, compiler backends, language models, Gödel’s incompleteness theorems, mathematical proof, Euclid’s Elements, digital circuits, particle physics, formal verification and Mandarin Chinese, running in the browser.">
     <meta name="theme-color" content="#f5f1e8" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#0e1320" media="(prefers-color-scheme: dark)">
     <title>Interactive Courses</title>
@@ -180,6 +180,16 @@
             <p class="kicker">Languages · 23 lessons</p>
             <h2>Mandarin, Out Loud</h2>
             <p class="desc">From your first tone to HSK 2: a tone mirror for your voice, characters you write by hand, games, spaced repetition and an optional AI conversation partner.</p>
+          </a>
+          <a class="card notary" data-topic="logic" href="./formal-verification/">
+            <div class="cert" aria-hidden="true">
+              <p class="code"><span class="kw">while</span> lo &lt; hi<br>&nbsp;&nbsp;<span class="kw">invariant</span> key !in a[..lo]<br>&nbsp;&nbsp;<span class="kw">decreases</span> hi - lo</p>
+              <svg class="seal" viewBox="0 0 64 64"><circle cx="32" cy="32" r="29"/><circle class="in" cx="32" cy="32" r="23"/><path d="M21 33l7 7 15-16"/></svg>
+            </div>
+            <p class="stamps" aria-hidden="true"><span class="ok">✓ verified · ∀ inputs</span><span class="cex">✗ lo + hi overflows</span></p>
+            <p class="kicker">The Notary · Formal methods · 31 ch</p>
+            <h2>For All Inputs</h2>
+            <p class="desc">Formal verification from SAT solvers to verified systems: model checking, SMT, program proofs, separation logic and abstract interpretation, with every result certified.</p>
           </a>
         </section>
       </main>

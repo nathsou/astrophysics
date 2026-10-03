@@ -1,0 +1,101 @@
+# The bug museum (PLAN §3, through-line 4). Each exhibit is re-enacted (or told as history) in `chapter`.
+- id: hyman-1966
+  title: Hyman’s mutual exclusion algorithm
+  year: 1966
+  chapter: interleavings
+  reenacted: true
+  summary: A two-process mutual exclusion algorithm, published as a letter in *Communications of the ACM*, that lets both processes into the critical section under one interleaving.
+  simplification: modelled as two processes with labelled atomic steps.
+  cite: [hyman1966]
+- id: therac-25
+  title: Therac-25 radiation overdoses
+  year: 1985–87
+  chapter: interleavings
+  reenacted: false
+  summary: A radiation therapy machine whose software, among other faults, contained race conditions between operator input and the treatment set-up; patients received massive overdoses.
+  simplification: the chapter models a generic race between an editing task and a set-up task, not the machine’s actual code.
+  cite: [leveson1993]
+- id: pathfinder-1997
+  title: Mars Pathfinder’s resets
+  year: 1997
+  chapter: eventually
+  reenacted: false
+  summary: Repeated system resets on Mars, traced to priority inversion between tasks sharing a lock; fixed by enabling priority inheritance from Earth.
+  cite: [jones1997]
+- id: needham-schroeder-1995
+  title: Lowe’s attack on Needham–Schroeder
+  year: 1995
+  chapter: the-adversary
+  reenacted: true
+  summary: A public-key authentication protocol from 1978 in which an attacker can impersonate one party to another; found by Gavin Lowe with a model checker seventeen years after publication.
+  simplification: one honest initiator, one honest responder and one intruder, with a bounded number of sessions.
+  cite: [needham1978, lowe1995, lowe1996]
+- id: pentium-fdiv-1994
+  title: The Pentium division bug
+  year: 1994
+  chapter: unrolling-time
+  reenacted: true
+  summary: Missing entries in a lookup table of the Pentium’s floating-point divider produced wrong quotients for rare operands; Intel took a charge of hundreds of millions of dollars to replace chips.
+  simplification: a toy table-driven divider with a few bits, not Intel’s SRT divider.
+  cite: [pratt1995, edelman1997]
+- id: binary-search-2006
+  title: The binary search midpoint overflow
+  year: 2006
+  chapter: for-all-inputs
+  reenacted: true
+  summary: '`mid = (low + high) / 2` overflows a 32-bit integer when the array has more than about a billion elements. The bug sat in Java’s standard library, and in many textbook versions, for years.'
+  cite: [bloch2006]
+- id: zune-2008
+  title: The Zune leap-year freeze
+  year: 2008
+  chapter: loop-invariants
+  reenacted: true
+  summary: On 31 December 2008, Zune 30 music players froze at start-up. A loop in the clock driver that converted days to years made no progress on the 366th day of a leap year.
+  simplification: the loop as widely published, in Vouch.
+  cite: [cnn2008zune, citp2009zune]
+- id: alive-2015
+  title: Wrong peephole rewrites in LLVM
+  year: 2015
+  chapter: bits-and-arrays
+  reenacted: true
+  summary: When LLVM’s instruction-combining rewrites were translated into the Alive language and checked with an SMT solver, several turned out to be wrong for some inputs.
+  simplification: the chapter checks rewrites written in Vouch’s bit-vector expressions, in the same spirit, not the original LLVM rules.
+  cite: [lopes2015]
+- id: timsort-2015
+  title: TimSort’s run-stack invariant
+  year: 2015
+  chapter: quantifiers-ghosts-and-lemmas
+  reenacted: false
+  summary: An attempt to verify OpenJDK’s sort with the KeY verifier showed that an invariant the code relied on did not always hold, which could make the sort throw an exception on large inputs.
+  cite: [degouw2015]
+- id: dao-2016
+  title: The DAO re-entrancy
+  year: 2016
+  chapter: data-abstraction
+  reenacted: true
+  summary: A smart contract sent funds before updating its own balance record; a malicious recipient called back into the contract during the transfer and withdrew again and again.
+  simplification: a Vouch object whose invariant is broken while an external callback runs.
+  cite: [atzei2017]
+- id: ariane5-1996
+  title: Ariane 5 flight 501
+  year: 1996
+  chapter: abstract-interpretation
+  reenacted: true
+  summary: The rocket’s inertial reference software converted a 64-bit floating-point value to a 16-bit signed integer; the value was larger than on Ariane 4, the conversion failed, and the launcher was lost about forty seconds after lift-off.
+  simplification: an integer narrowing conversion analysed with intervals.
+  cite: [lions1996]
+- id: heartbleed-2014
+  title: Heartbleed
+  year: 2014
+  chapter: abstract-interpretation
+  reenacted: true
+  summary: OpenSSL’s heartbeat handler copied as many bytes as the request claimed to contain, not as many as it did, leaking server memory to anyone who asked.
+  simplification: a heartbeat handler over an array, checked for out-of-bounds reads.
+  cite: [durumeric2014]
+- id: verified-systems-2017
+  title: Bugs in verified distributed systems
+  year: 2017
+  chapter: what-did-we-prove
+  reenacted: false
+  summary: A study of three formally verified distributed systems found bugs, almost all of them in the unverified parts and at the interfaces between verified code and its environment.
+  cite: [fonseca2017]

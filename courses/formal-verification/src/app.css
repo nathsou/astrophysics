@@ -1,0 +1,646 @@
+@import '@fontsource-variable/newsreader/opsz.css';
+@import '@fontsource-variable/newsreader/opsz-italic.css';
+@import '@fontsource-variable/bricolage-grotesque';
+@import '@fontsource-variable/jetbrains-mono';
+@import 'katex/dist/katex.min.css';
+
+/* ───────────────────────── Design tokens: "The Notary" ─────────────────────────
+   Light: certificate paper — a warm cream page, blue-black ink, an ink-blue accent, seals in deep green,
+   counterexamples in red pencil, gold for history and emphasis.
+   Dark: a night desk — a deep slate page, parchment-coloured text, gold seals, the same red pencil.
+
+   Every colour is written once as light-dark(light, dark). The theme is chosen by `color-scheme`:
+   `system` follows the OS, and `data-theme` on <html> (the collection's shared `theme` key) forces one.
+
+   Verification tokens mean the same thing in every figure: a verified result is a seal (--seal), a
+   counterexample is red pencil (--pencil), an unknown is amber (--maybe). States in state graphs are
+   --state, bad states --state-bad, traces --trace, counterexamples to induction --cti. Colour is never the
+   only cue: seals carry ✓, counterexamples ✗, unknowns ?. Canvas code reads them through
+   src/lib/theme/tokens.ts. */
+
+:root {
+  color-scheme: light dark;
+}
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+:root {
+  --font-display: 'Newsreader Variable', Newsreader, 'Iowan Old Style', Charter, Georgia, serif;
+  --font-ui: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'Newsreader Variable', Newsreader, 'Iowan Old Style', Charter, Georgia, serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* ── Paper and ink ── */
+  --bg: light-dark(#f6f1e4, #111318);
+  --fg: light-dark(#1b2333, #ebe5d6);
+  --ink-2: light-dark(#3a4456, #c9c2b1);
+  --mute: light-dark(#606a7a, #958f82);
+  --pn: light-dark(#ede6d3, #181b22);
+  --panel: light-dark(#fbf8ef, #15181e);
+  --line: light-dark(#d9cfb8, #2a2e37);
+  --line-strong: light-dark(#b3a687, #464b57);
+  --grid-minor: light-dark(rgb(31 63 122 / 0.045), rgb(216 180 92 / 0.035));
+  --grid-major: light-dark(rgb(31 63 122 / 0.08), rgb(216 180 92 / 0.06));
+  --grid-size: 24px;
+
+  /* ── The Notary's inks ── */
+  --ink-blue: light-dark(#1f3f7a, #9db7f0);
+  --ink-blue-soft: light-dark(rgb(31 63 122 / 0.1), rgb(157 183 240 / 0.12));
+  --seal: light-dark(#1d6a46, #74d19c);
+  --seal-ink: light-dark(#155236, #9be3b7);
+  --seal-soft: light-dark(rgb(29 106 70 / 0.11), rgb(116 209 156 / 0.12));
+  --gold: light-dark(#9a7420, #d8b45c);
+  --gold-soft: light-dark(rgb(154 116 32 / 0.12), rgb(216 180 92 / 0.13));
+  --pencil: light-dark(#bf3426, #ff7d6b);
+  --pencil-soft: light-dark(rgb(191 52 38 / 0.09), rgb(255 125 107 / 0.12));
+  --guilloche: light-dark(rgb(31 63 122 / 0.16), rgb(216 180 92 / 0.18));
+
+  /* ── Verification figures ── */
+  --state: light-dark(#fbf8ef, #1e222b);
+  --state-line: light-dark(#5b6576, #8d96a6);
+  --state-init: var(--ink-blue);
+  --state-bad: var(--pencil);
+  --state-visited: light-dark(#dfe7f5, #26324a);
+  --trace: light-dark(#c2410c, #ffa060);
+  --cti: light-dark(#7c3aad, #c8a2ff);
+  --edge: light-dark(#8a8370, #5d6170);
+
+  /* Legacy accent names used by the shared components (kept so copied components work). */
+  --track: var(--ink-blue);
+  --track-ink: light-dark(#173262, #b9cbf5);
+  --track-soft: var(--ink-blue-soft);
+  --phosphor: var(--seal);
+  --phosphor-ink: var(--seal-ink);
+  --phosphor-glow: light-dark(rgb(29 106 70 / 0.25), rgb(116 209 156 / 0.4));
+  --ac: var(--ink-blue);
+  --sig-high: var(--gold);
+  --sig-high-glow: var(--gold-soft);
+  --sig-low: light-dark(#5b6b7e, #7a8ba1);
+  --sig-x: var(--pencil);
+  --sig-current: var(--ink-blue);
+
+  /* ── Callout hues ── */
+  --c-note: light-dark(#4a5f80, #9fb2cf);
+  --c-tip: var(--seal);
+  --c-warning: var(--pencil);
+  --c-key: var(--gold);
+  --c-question: light-dark(#1d5fa8, #7fb9ff);
+  --c-challenge: light-dark(#6d43a8, #b99bff);
+  --c-lab: light-dark(#0f6a68, #5fd2c6);
+  --c-programmer: light-dark(#34509f, #93a6ff);
+  --c-hood: light-dark(#5a5f69, #a3a9b5);
+  --c-deeper: light-dark(#86397c, #e29ad6);
+  --c-industry: light-dark(#7a5a24, #e2bf7a);
+  --c-proved: var(--seal);
+  --c-real: var(--track-ink);
+  --c-fermi: light-dark(#9c4f1c, #f0a870);
+  --c-experiments: light-dark(#3d4f9c, #9fb0ff);
+  --c-history: var(--gold);
+
+  /* ── Feedback ── */
+  --ok: var(--seal);
+  --ok-soft: var(--seal-soft);
+  --bad: var(--pencil);
+  --bad-soft: var(--pencil-soft);
+  --maybe: light-dark(#8a5800, #ffc15e);
+  --maybe-soft: light-dark(rgb(194 112 0 / 0.12), rgb(255 178 62 / 0.12));
+
+  /* ── Charts ── */
+  --series-1: light-dark(#1f3f7a, #9db7f0);
+  --series-2: light-dark(#b8652e, #e0925a);
+  --series-3: light-dark(#1d6a46, #74d19c);
+  --series-4: light-dark(#86397c, #e29ad6);
+  --series-5: light-dark(#9a7420, #d8b45c);
+  --series-6: light-dark(#0e7a74, #4fd6c8);
+  --series-7: light-dark(#bf3426, #ff7d6b);
+  --series-8: light-dark(#5b6b7e, #9aa8b8);
+
+  /* ── Code (Shiki uses its own themes in tools/markdown/render.ts with the same values) ── */
+  --code-keyword: light-dark(#7b2f6e, #e3a0d6);
+  --code-string: light-dark(#0b6e44, #8ee0b0);
+  --code-number: light-dark(#9c4f1c, #f0a870);
+  --code-comment: light-dark(#6b6658, #8f8a7d);
+  --code-fn: light-dark(#1f4f9f, #8fbaff);
+  --code-type: light-dark(#0c6a66, #66d6c8);
+  --code-spec: light-dark(#8a5d00, #e6c06a);
+  --code-def: var(--fg);
+  --code-prop: light-dark(#34509f, #a7b6ff);
+  --code-punct: light-dark(#4d5462, #b1b7c2);
+
+  --shadow: 0 1px 2px light-dark(rgb(60 40 10 / 0.07), rgb(0 0 0 / 0.4));
+  --shadow-lg: 0 1px 2px light-dark(rgb(60 40 10 / 0.08), rgb(0 0 0 / 0.5)), 0 14px 36px -12px light-dark(rgb(60 40 10 / 0.22), rgb(0 0 0 / 0.7));
+  --radius: 6px;
+  --radius-sm: 4px;
+  --sidebar-w: 18rem;
+  --main-w: 41rem;
+  --margin-w: 16rem;
+
+  /* ── Legacy names used by the shared components and charts (aliases, keep) ── */
+  --page: var(--bg);
+  --ink: var(--fg);
+  --ink-3: var(--mute);
+  --surface: var(--panel);
+  --surface-2: var(--pn);
+  --surface-3: light-dark(#e3dac3, #20242c);
+  --rule: var(--line);
+  --rule-strong: var(--line-strong);
+  --border: var(--line-strong);
+  --accent: var(--ac);
+  --accent-2: var(--track);
+  --accent-soft: var(--track-soft);
+  --accent-ink: var(--track-ink);
+  --on-accent: light-dark(#fbf8ef, #111318);
+  --focus: light-dark(#1f5fd1, #9fc4ff);
+  --chart-surface: var(--panel);
+  --grid: var(--line);
+  --axis: var(--line-strong);
+  --good: var(--ok);
+  --critical: var(--bad);
+  --history: var(--c-history);
+  --history-soft: var(--gold-soft);
+  --note: var(--c-note);
+  --tip: var(--c-tip);
+  --warn: var(--c-warning);
+  --lab: var(--c-lab);
+  --break: var(--c-warning);
+  --challenge: var(--c-challenge);
+  --term-hl: var(--gold-soft);
+  --term-hl-strong: light-dark(rgb(154 116 32 / 0.26), rgb(216 180 92 / 0.28));
+  --wire: light-dark(#3a4350, #8494a8);
+}
+
+/* Reader option: a plain white page in the light theme (the dark theme is unaffected). */
+:root[data-paper='white'] {
+  --bg: light-dark(#ffffff, #111318);
+  --panel: light-dark(#ffffff, #15181e);
+  --pn: light-dark(#f4f3ef, #181b22);
+  --line: light-dark(#e3e0d8, #2a2e37);
+  --line-strong: light-dark(#bdb8aa, #464b57);
+  --surface-3: light-dark(#e9e7e1, #20242c);
+}
+
+/* The guilloché: fine interlaced curves, as on a certificate's border. Used on part headers, the home
+   hero and seals. An inline SVG data URI drawn with currentColor-free strokes; tinted by --guilloche. */
+.guilloche {
+  position: relative;
+  isolation: isolate;
+}
+.guilloche::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--guilloche);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='40' viewBox='0 0 120 40'%3E%3Cg fill='none' stroke='black' stroke-width='0.6'%3E%3Cpath d='M0 20 C15 0 30 40 45 20 S75 0 90 20 S105 40 120 20'/%3E%3Cpath d='M0 20 C15 40 30 0 45 20 S75 40 90 20 S105 0 120 20'/%3E%3Cpath d='M0 14 C20 4 40 36 60 14 S100 4 120 14'/%3E%3Cpath d='M0 26 C20 36 40 4 60 26 S100 36 120 26'/%3E%3Cpath d='M0 8 C20 18 40 -2 60 8 S100 18 120 8'/%3E%3Cpath d='M0 32 C20 22 40 42 60 32 S100 22 120 32'/%3E%3C/g%3E%3C/svg%3E") repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='40' viewBox='0 0 120 40'%3E%3Cg fill='none' stroke='black' stroke-width='0.6'%3E%3Cpath d='M0 20 C15 0 30 40 45 20 S75 0 90 20 S105 40 120 20'/%3E%3Cpath d='M0 20 C15 40 30 0 45 20 S75 40 90 20 S105 0 120 20'/%3E%3Cpath d='M0 14 C20 4 40 36 60 14 S100 4 120 14'/%3E%3Cpath d='M0 26 C20 36 40 4 60 26 S100 36 120 26'/%3E%3Cpath d='M0 8 C20 18 40 -2 60 8 S100 18 120 8'/%3E%3Cpath d='M0 32 C20 22 40 42 60 32 S100 22 120 32'/%3E%3C/g%3E%3C/svg%3E") repeat;
+  pointer-events: none;
+}
+
+/* ───────────────────────── Base ───────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 5rem;
+  background: var(--bg);
+}
+
+/* The engineering grid: a faint minor grid every 24 px and a major line every fifth. Only figure canvases ask for it
+   (`.grid-paper`); the page itself is a solid colour so that text stays easy to read. */
+.grid-paper {
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(var(--grid-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px);
+  background-size:
+    calc(var(--grid-size) * 5) calc(var(--grid-size) * 5),
+    calc(var(--grid-size) * 5) calc(var(--grid-size) * 5),
+    var(--grid-size) var(--grid-size),
+    var(--grid-size) var(--grid-size);
+  background-position: -1px -1px;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  line-height: 1.66;
+  font-optical-sizing: auto;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color 120ms;
+}
+a:hover {
+  text-decoration-color: currentColor;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: var(--term-hl-strong);
+}
+
+.ui {
+  font-family: var(--font-ui);
+}
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* A small uppercase label, as on an instrument panel. */
+.label-caps {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ───────────────────────── Article grid ─────────────────────────
+   main column for prose; `wide` spans into the right margin; `full` spans the viewport.
+   Sidenotes float into the margin on wide screens. */
+
+.article {
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(1rem, 1fr)
+    [wide-start main-start] minmax(0, var(--main-w))
+    [main-end] minmax(0, calc(var(--margin-w) + 2.5rem))
+    [wide-end] minmax(1rem, 1fr) [full-end];
+  counter-reset: sidenote;
+}
+.article > *,
+.article > .term-layer > * {
+  grid-column: main;
+  min-width: 0;
+}
+.article > .term-layer {
+  display: contents;
+}
+.article > .wide,
+.article > .term-layer > .wide {
+  grid-column: wide;
+}
+.article > .full,
+.article > .term-layer > .full {
+  grid-column: full;
+}
+@media (max-width: 1279px) {
+  .article {
+    grid-template-columns: [full-start] minmax(1rem, 1fr) [wide-start main-start] minmax(0, 45rem) [main-end wide-end] minmax(1rem, 1fr) [full-end];
+  }
+}
+
+/* ───────────────────────── Prose ───────────────────────── */
+
+.article h2,
+.article h3,
+.article h4 {
+  color: var(--fg);
+  font-family: var(--font-display);
+}
+/* Section heading: a small seal (a double ring) on a hairline, with a short ink rule. */
+.article h2 {
+  position: relative;
+  font-weight: 560;
+  font-size: clamp(1.5rem, 3.2vw, 1.85rem);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 3.75rem 0 1.1rem;
+  padding-top: 1.35rem;
+  border-top: 1px solid var(--line);
+  text-wrap: balance;
+}
+.article h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -6px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gold);
+  outline: 1px solid var(--gold);
+  outline-offset: 1.5px;
+  background: var(--bg);
+  box-sizing: border-box;
+}
+.article h2::after {
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: -1.5px;
+  width: 3.5rem;
+  height: 2px;
+  background: linear-gradient(90deg, var(--track), color-mix(in srgb, var(--track) 0%, transparent));
+}
+.article h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  margin: 2.5rem 0 0.6rem;
+}
+.article h4 {
+  font-size: 1.02rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 1.75rem 0 0.4rem;
+}
+.article p,
+.article ul,
+.article ol {
+  margin: 0 0 1.15rem;
+}
+.article li + li {
+  margin-top: 0.3rem;
+}
+.article li > p {
+  margin-bottom: 0.4rem;
+}
+.article strong {
+  font-weight: 650;
+}
+.article hr {
+  border: 0;
+  height: 1px;
+  background: var(--line-strong);
+  margin: 2.75rem 0;
+}
+.article blockquote {
+  margin: 1.6rem 0;
+  padding: 0.1rem 0 0.1rem 1.25rem;
+  border-left: 2px solid var(--track);
+  color: var(--ink-2);
+  font-style: italic;
+}
+/* Markdown lists (only, so widget and exercise lists are left alone): track-coloured pads for bullets,
+   mono numerals. */
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level, .story) > ol {
+  list-style: none;
+  counter-reset: item;
+  padding-left: 2rem;
+}
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level, .story) > ol > li {
+  counter-increment: item;
+  position: relative;
+}
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level, .story) > ol > li::before {
+  content: counter(item);
+  position: absolute;
+  left: -2rem;
+  width: 1.45rem;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.78em;
+  line-height: inherit;
+  padding-top: 0.12em;
+  color: var(--track-ink);
+  font-variant-numeric: tabular-nums;
+}
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level, .story) > ul {
+  list-style: none;
+  padding-left: 1.4rem;
+}
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level, .story) > ul > li {
+  position: relative;
+}
+:is(.article, .article > .term-layer, .thm > .body, .proof > .body, .callout > .body, .details > .body, .level, .story) > ul > li::before {
+  content: '';
+  position: absolute;
+  left: -1.15rem;
+  top: 0.62em;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  border: 1.5px solid var(--track);
+  box-sizing: border-box;
+}
+.article table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.6rem 0;
+  font-family: var(--font-ui);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums;
+}
+.article .table-scroll {
+  margin: 1.6rem 0;
+  overflow-x: auto;
+}
+.article .table-scroll > table {
+  margin: 0;
+}
+.article th,
+.article td {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+.article th {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  border-bottom: 1.5px solid var(--line-strong);
+}
+.article tbody tr:hover {
+  background: color-mix(in srgb, var(--pn) 60%, transparent);
+}
+.article :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.83em;
+  background: var(--pn);
+  border: 1px solid var(--line);
+  padding: 0.05em 0.35em;
+  border-radius: 4px;
+  /* Long file paths must wrap on phones rather than widen the page. */
+  overflow-wrap: anywhere;
+}
+.article img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Code blocks (Shiki dual theme). */
+figure.code-block {
+  margin: 1.6rem 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--pn);
+  overflow: hidden;
+}
+figure.code-block figcaption {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  padding: 0.45rem 1rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+}
+figure.code-block figcaption::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--track);
+}
+figure.code-block pre {
+  margin: 0;
+  padding: 0.95rem 1.1rem;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  line-height: 1.62;
+  background: transparent !important;
+}
+.shiki,
+.shiki span {
+  color: light-dark(var(--shiki-light), var(--shiki-dark));
+}
+
+/* Maths. */
+.math-display {
+  margin: 1.4rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0;
+}
+.katex {
+  font-size: 1.05em;
+}
+.math-display .katex {
+  font-size: 1.16em;
+}
+[data-term] {
+  border-radius: 2px;
+  cursor: help;
+  transition: background-color 120ms ease;
+  box-shadow: inset 0 -2px 0 0 color-mix(in srgb, var(--sig-high) 70%, transparent);
+}
+[data-term]:hover,
+[data-term]:focus-visible,
+[data-term].term-active {
+  background: var(--term-hl-strong);
+  box-shadow: none;
+}
+[data-term]:focus-visible {
+  outline-offset: 1px;
+}
+/* KaTeX lays out sub/superscripts with empty positioning spans that sit on top of the glyphs;
+   let pointer events fall through them so hoverable terms can be hit. */
+.katex:has([data-term]) .vlist-t,
+.katex:has([data-term]) .vlist-r,
+.katex:has([data-term]) .vlist,
+.katex:has([data-term]) .vlist > span {
+  pointer-events: none;
+}
+.katex [data-term],
+.katex [data-term] * {
+  pointer-events: auto;
+}
+
+/* Footnotes (GFM). */
+.article .footnotes {
+  font-family: var(--font-ui);
+  font-size: 0.92rem;
+  color: var(--ink-2);
+}
+
+/* ───────────────────────── Verdict chips ─────────────────────────
+   <span class="vchip ok">✓ verified</span>, <span class="vchip bad">✗ violated</span>, <span class="vchip maybe">? unknown</span>.
+   The glyph is part of the text, so colour is never the only cue. */
+
+.vchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  padding: 0 0.45em;
+  border-radius: 999px;
+  font-family: var(--font-ui);
+  font-size: 0.78em;
+  font-weight: 600;
+  line-height: 1.6;
+  border: 1px solid currentColor;
+  white-space: nowrap;
+}
+.vchip.ok {
+  color: var(--seal);
+  background: var(--seal-soft);
+}
+.vchip.bad {
+  color: var(--pencil);
+  background: var(--pencil-soft);
+}
+.vchip.maybe {
+  color: var(--maybe);
+  background: var(--maybe-soft);
+}
+.vchip.info {
+  color: var(--ink-blue);
+  background: var(--ink-blue-soft);
+}
+
+/* ───────────────────────── Utility ───────────────────────── */
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -995,3 +995,101 @@ h1 {
     transform: none;
   }
 }
+
+/* 11 · For All Inputs: "The Notary" — certificate paper, a seal, red pencil */
+.notary {
+  --cbg: #f6f1e4;
+  --cfg: #1b2333;
+  --cmute: #606a7a;
+  --cac: #1f3f7a;
+  background:
+    repeating-linear-gradient(115deg, rgb(31 63 122 / 0.05) 0 1px, transparent 1px 7px),
+    var(--cbg);
+  font-family: 'Newsreader', Georgia, serif;
+}
+:root[data-theme='dark'] .notary {
+  --cbg: #111318;
+  --cfg: #ebe5d6;
+  --cmute: #958f82;
+  --cac: #d8b45c;
+  background:
+    repeating-linear-gradient(115deg, rgb(216 180 92 / 0.06) 0 1px, transparent 1px 7px),
+    var(--cbg);
+}
+.notary .cert {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.notary .code {
+  margin: 0;
+  font-family: ui-monospace, 'JetBrains Mono', Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--cfg);
+}
+.notary .kw {
+  color: #7b2f6e;
+}
+:root[data-theme='dark'] .notary .kw {
+  color: #e3a0d6;
+}
+.notary .seal {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  transform: rotate(-10deg);
+}
+.notary .seal circle {
+  fill: rgb(154 116 32 / 0.12);
+  stroke: #9a7420;
+  stroke-width: 1.6;
+}
+.notary .seal .in {
+  fill: none;
+  stroke-dasharray: 2 2;
+}
+.notary .seal path {
+  fill: none;
+  stroke: #1d6a46;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.notary .stamps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 14px;
+  font-family: system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+}
+.notary .stamps span {
+  padding: 1px 8px;
+  border-radius: 99px;
+  border: 1px solid currentColor;
+}
+.notary .ok {
+  color: #1d6a46;
+}
+.notary .cex {
+  color: #bf3426;
+}
+:root[data-theme='dark'] .notary .ok {
+  color: #74d19c;
+}
+:root[data-theme='dark'] .notary .cex {
+  color: #ff7d6b;
+}
+.notary h2 {
+  margin: 6px 0 10px;
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.notary .desc {
+  color: var(--cmute);
+  line-height: 1.5;
+}
