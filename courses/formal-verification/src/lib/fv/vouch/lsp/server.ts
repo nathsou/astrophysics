@@ -71,8 +71,12 @@ export class VouchLanguageServer {
   // ── JSON-RPC dispatch ──
   handle(msg: { id?: number | string; method?: string; params?: unknown }): void {
     if (!msg.method) return; // a response to a request we never send
-    const reply = (result: unknown) => msg.id !== undefined && this.conn.send({ jsonrpc: '2.0', id: msg.id, result });
-    const fail = (code: number, message: string) => msg.id !== undefined && this.conn.send({ jsonrpc: '2.0', id: msg.id, error: { code, message } });
+    const reply = (result: unknown): void => {
+      if (msg.id !== undefined) this.conn.send({ jsonrpc: '2.0', id: msg.id, result });
+    };
+    const fail = (code: number, message: string): void => {
+      if (msg.id !== undefined) this.conn.send({ jsonrpc: '2.0', id: msg.id, error: { code, message } });
+    };
     try {
       const p = msg.params as never;
       switch (msg.method) {
@@ -505,11 +509,12 @@ export class VouchLanguageServer {
       if (diagItem.source !== 'vouch') continue;
       const code = String(diagItem.code ?? '');
       const at = this.offset(d, diagItem.range.start);
+      const message = typeof diagItem.message === 'string' ? diagItem.message : diagItem.message.value;
       if (code === 'name/unknown' || code === 'type/unknown') {
-        const m = /Did you mean “([^”]+)”/.exec(diagItem.message);
+        const m = /Did you mean “([^”]+)”/.exec(message);
         if (m) out.push({ title: `Change to “${m[1]}”`, kind: 'quickfix', diagnostics: [diagItem], edit: { changes: { [d.uri]: [{ range: diagItem.range, newText: m[1]! }] } } });
       }
-      if (code === 'stmt/immutable' && /declared with `let`/.test(diagItem.message)) {
+      if (code === 'stmt/immutable' && /declared with `let`/.test(message)) {
         const sym = this.symbolAt(d, at)?.sym;
         if (sym) {
           const letAt = d.text.lastIndexOf('let', sym.def.start);

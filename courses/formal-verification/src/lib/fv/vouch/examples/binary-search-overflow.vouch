@@ -1,18 +1,19 @@
 // expect: violated overflow
-// The midpoint that was in Java's standard library until 2006: lo + hi overflows an i32.
+// The midpoint that was in Java's standard library until 2006: lo + hi overflows. Java's indices were 32-bit
+// ints, so the bug needed arrays of more than 2^30 elements; with 8-bit indices it needs only 65.
 
-pred sorted(a: [i32]) {
+pred sorted(a: [int]) {
   forall i, j :: 0 <= i < j < len(a) ==> a[i] <= a[j]
 }
 
-fn search(a: [i32], key: i32) -> (r: int)
+fn search(a: [int], key: int) -> (r: int)
   requires sorted(a)
-  requires len(a) <= 2147483647
+  requires len(a) <= 127
   ensures 0 <= r ==> r < len(a) && a[r] == key
   ensures r < 0 ==> key !in a
 {
-  var lo: i32 = 0
-  var hi: i32 = len(a) as i32
+  var lo: i8 = 0
+  var hi: i8 = len(a) as i8
   while lo < hi
     invariant 0 <= lo <= hi <= len(a)
     invariant forall i :: 0 <= i < lo ==> a[i] < key

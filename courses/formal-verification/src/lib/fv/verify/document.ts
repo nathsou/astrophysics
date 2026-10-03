@@ -17,6 +17,7 @@ import { randomValue } from './inputs';
 import { show } from '../vouch/interp/values';
 import { RuntimeFailure } from '../vouch/interp/eval';
 import { hasErrors } from '../vouch/diagnostics';
+import { verifyFunction } from '../vouch/vc/verify';
 
 export interface DeclVerdicts {
   /** Declaration name (a function, or a system). */
@@ -64,7 +65,7 @@ export async function verifyDocument(checked: Checked, opts: VerifyOptions = {})
       result = { decl: d.name, kind: 'system', verdicts };
     } else if (d.k === 'fn' && (d.flavour === 'fn' || d.flavour === 'lemma') && d.body) {
       const info = checked.fns.get(d.name)!;
-      const verdicts = opts.fnVerifier?.(checked, info, opts) ?? testFunction(checked, info, opts.tests ?? 200);
+      const verdicts = opts.fnVerifier?.(checked, info, opts) ?? proveOrTest(checked, info, opts);
       result = { decl: d.name, kind: 'fn', verdicts };
     }
     if (result) {
@@ -74,6 +75,17 @@ export async function verifyDocument(checked: Checked, opts: VerifyOptions = {})
     await pause();
   }
   return out;
+}
+
+/**
+ * Prove the function with the program verifier; when it uses something the verifier does not handle yet, test it
+ * instead and say why.
+ */
+export function proveOrTest(checked: Checked, info: FnInfo, opts: VerifyOptions = {}): Verdict[] {
+  const r = verifyFunction(checked, info, { timeout: Math.min(opts.timeout ?? 8000, 4000), signal: opts.signal });
+  if (!r.unsupported) return r.verdicts;
+  const tested = testFunction(checked, info, opts.tests ?? 200);
+  return tested.map((v) => (v.status === 'violated' ? v : { ...v, message: `${v.message ?? ''} (Not proved: ${r.unsupported}.)`.trim() }));
 }
 
 /** The "tested" rung: run the function on random inputs that satisfy its precondition, with every contract checked. */
@@ -93,7 +105,7 @@ export function testFunction(checked: Checked, info: FnInfo, runs: number): Verd
       discarded++;
       continue;
     }
-    if (res.failure && res.failure.kind !== 'unbounded-quantifier') {
+    if (res.failure && res.failure.kind !== 'unbounded-quantifier' && res.failure.kind !== 'fuel') {
       return [{
         engine: 'test',
         status: 'violated',

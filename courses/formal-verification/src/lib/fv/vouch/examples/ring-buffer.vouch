@@ -11,11 +11,18 @@ pred valid(q: Ring) {
   len(q.buf) > 0 && 0 <= q.head < len(q.buf) && 0 <= q.size <= len(q.buf)
 }
 
+/// Index i of the buffer, wrapped around once.
+pure fn wrap(i: int, n: int) -> int
+  requires 0 <= i < 2 * n
+{
+  if i < n { i } else { i - n }
+}
+
 /// The abstraction function: what the ring means, as a sequence.
 pure fn contents(q: Ring) -> [int]
   requires valid(q)
 {
-  [q.buf[(q.head + k) % len(q.buf)] | k in 0..q.size]
+  [q.buf[wrap(q.head + k, len(q.buf))] | k in 0..q.size]
 }
 
 fn push(inout q: Ring, x: int)
@@ -23,7 +30,7 @@ fn push(inout q: Ring, x: int)
   ensures valid(q)
   ensures contents(q) == old(contents(q)) ++ [x]
 {
-  q.buf[(q.head + q.size) % len(q.buf)] = x
+  q.buf[wrap(q.head + q.size, len(q.buf))] = x
   q.size = q.size + 1
 }
 
@@ -33,6 +40,6 @@ fn pop(inout q: Ring) -> (x: int)
   ensures [x] ++ contents(q) == old(contents(q))
 {
   x = q.buf[q.head]
-  q.head = (q.head + 1) % len(q.buf)
+  q.head = wrap(q.head + 1, len(q.buf))
   q.size = q.size - 1
 }

@@ -164,7 +164,7 @@ describe('SMT certificates', () => {
   }
   it('rejects a tampered Farkas certificate', () => {
     const r = checkSat([gt(x, num(2)), lt(x, num(3))], { proof: true });
-    for (const j of r.proof!.justifications.values()) if (j.kind === 'farkas') j.coeffs = j.coeffs.map(([l, c]) => [l, c.add(c)]).slice(1);
+    for (const j of r.proof!.justifications.values()) if (j.kind === 'farkas') j.coeffs = j.coeffs.map(([l, c]) => [l, c.add(c)] as [number, typeof c]).slice(1);
     expect(checkUnsatCertificate(r.proof!).ok).toBe(false);
   });
 });
