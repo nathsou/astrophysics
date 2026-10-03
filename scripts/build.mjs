@@ -52,6 +52,14 @@ const courses = [
       NODE_OPTIONS: `${process.env.NODE_OPTIONS ?? ''} --experimental-strip-types`.trim(),
     }),
   },
+  {
+    // Mandarin, Out Loud: the same single-package SvelteKit setup.
+    name: 'mandarin',
+    env: (base) => ({
+      BASE_PATH: `${base}/mandarin`,
+      NODE_OPTIONS: `${process.env.NODE_OPTIONS ?? ''} --experimental-strip-types`.trim(),
+    }),
+  },
 ];
 const repository = process.env.GITHUB_REPOSITORY?.split('/')[1];
 const basePath = (process.env.COURSES_BASE_PATH ?? (repository ? `/${repository}` : '')).replace(/\/$/, '');

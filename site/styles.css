@@ -889,6 +889,65 @@ h1 {
   line-height: 1.5;
 }
 
+/* 10 · Mandarin, Out Loud: tones as shapes */
+.mandarin {
+  --cbg: #fbf3ea;
+  --cfg: #2a1c16;
+  --cmute: #6f5d52;
+  --cac: #c23b22;
+  font-family: var(--font-sans, system-ui, sans-serif);
+}
+:root[data-theme='dark'] .mandarin {
+  --cbg: #1d1410;
+  --cfg: #f4e8de;
+  --cmute: #b9a596;
+  --cac: #ef6a4f;
+}
+.mandarin .tones {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0 0 16px;
+}
+.mandarin .seal {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: #c23b22;
+  color: #fff;
+  font-size: 34px;
+  font-family: 'Kaiti SC', 'STKaiti', 'KaiTi', 'PingFang SC', 'Noto Sans SC', serif;
+  transform: rotate(-4deg);
+}
+.mandarin .tones svg {
+  width: 100%;
+  max-width: 220px;
+  height: 56px;
+}
+.mandarin .tones path {
+  fill: none;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.mandarin .t1 { stroke: #d0372c; }
+.mandarin .t2 { stroke: #2e8a43; }
+.mandarin .t3 { stroke: #2a66cc; }
+.mandarin .t4 { stroke: #8b3cc4; }
+.mandarin h2 {
+  margin: 6px 0 10px;
+  font-size: 32px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.mandarin .desc {
+  color: var(--cmute);
+  line-height: 1.5;
+}
+
 @media (max-width: 560px) {
   .wordmark {
     white-space: nowrap;

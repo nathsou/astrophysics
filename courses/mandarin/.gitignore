@@ -1,0 +1,10 @@
+node_modules
+.svelte-kit
+dist
+.env
+# Generated audio (npm run audio); distributed separately, not committed
+static/audio/*.mp3
+static/audio/manifest.json
+static/audio/qa.json
+static/audio/.release
+build
