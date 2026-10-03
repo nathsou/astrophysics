@@ -42,7 +42,7 @@
   <div class="grid">
     {#each GAMES as g (g.id)}
       {@const b = bestOf(g.best)}
-      <a class="game card" class:on={current === g.id} href="#{g.id}" onclick={(e) => { e.preventDefault(); goto(`#${g.id}`, { replaceState: true, noScroll: true }); }}>
+      <a class="game card" id={g.id} class:on={current === g.id} href="#{g.id}" onclick={(e) => { e.preventDefault(); goto(`#${g.id}`, { replaceState: true, noScroll: true }); }}>
         <span class="gzh zh-font">{g.zh}</span>
         <span class="gt">{g.title}</span>
         <span class="gd ui">{g.text}</span>

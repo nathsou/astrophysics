@@ -8,6 +8,7 @@
   import type { Paper, Question } from '$content/exams/types';
   import { speech } from '$lib/audio/speech.svelte';
   import { progress } from '$lib/state/progress.svelte';
+  import { shuffle } from '$lib/exercises/shuffle';
   import Zh from '$lib/components/zh/Zh.svelte';
   import PlayButton from '$lib/components/zh/PlayButton.svelte';
   import Icon from '$lib/components/ui/Icon.svelte';
@@ -19,6 +20,9 @@
   let finished = $state(false);
   let playing = $state<number | null>(null);
   const section = $derived(paper?.sections[si]);
+
+  /** Options are shown in a fixed shuffled order per question (the papers list the answer first). */
+  const orderOf = (n: number, k: number) => shuffle(Array.from({ length: n }, (_, i) => i), `${paper?.id}:${si}:${k}`);
 
   /** What is read aloud: speaker labels like 女： are not spoken. */
   const spoken = (zh: string) => zh.replace(/[男女]：/g, '');
@@ -137,11 +141,11 @@
               </div>
             {:else if q.type === 'pictures'}
               <div class="pics">
-                {#each q.pictures as p, i (i)}<button class="pic-choice" class:on={a === i} onclick={() => answer(k, i)} aria-label="Picture {String.fromCharCode(65 + i)}"><span>{p}</span><span class="ui l">{String.fromCharCode(65 + i)}</span></button>{/each}
+                {#each orderOf(q.pictures.length, k) as i, pos (i)}<button class="pic-choice" class:on={a === i} onclick={() => answer(k, i)} aria-label="Picture {String.fromCharCode(65 + pos)}"><span>{q.pictures[i]}</span><span class="ui l">{String.fromCharCode(65 + pos)}</span></button>{/each}
               </div>
             {:else}
               <div class="opts">
-                {#each q.options as o, i (i)}<button class="choice" class:on={a === i} onclick={() => answer(k, i)}><span class="ui l">{String.fromCharCode(65 + i)}</span> <Zh text={o} pinyin="hide" plain play={false} /></button>{/each}
+                {#each orderOf(q.options.length, k) as i, pos (i)}<button class="choice" class:on={a === i} onclick={() => answer(k, i)}><span class="ui l">{String.fromCharCode(65 + pos)}</span> <Zh text={q.options[i]!} pinyin="hide" plain play={false} /></button>{/each}
               </div>
             {/if}
           </div>
