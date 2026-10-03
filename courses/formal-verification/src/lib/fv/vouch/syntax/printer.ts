@@ -4,6 +4,7 @@
  * `printExpr` to show verification conditions in the reader's own notation.
  */
 import type * as A from './ast';
+import { isBlock } from './ast';
 
 export interface PrintOptions {
   /** Use the mathematical spellings (∀ ⟹ ≤ …) instead of ASCII. */
@@ -210,7 +211,7 @@ export function printStmt(s: A.Stmt, indent: string, o: PrintOptions = {}): stri
       return `${indent}${s.declare ? (s.mutable ? 'var ' : 'let ') : ''}${s.targets.map(e).join(', ')} = ${s.values.map(e).join(', ')}`;
     case 'if': {
       let out = `${indent}if ${e(s.cond)} ${printBlock(s.then, indent, o)}`;
-      if (s.else) out += ` else ${s.else.k === 'if' ? printStmt(s.else, indent, o).trimStart() : printBlock(s.else, indent, o)}`;
+      if (s.else) out += ` else ${!isBlock(s.else) ? printStmt(s.else, indent, o).trimStart() : printBlock(s.else, indent, o)}`;
       return out;
     }
     case 'while':
@@ -331,7 +332,7 @@ export function printDecl(d: A.Decl, o: PrintOptions = {}): string {
   if (d.k === 'system' || d.k === 'world' || d.k === 'problem') {
     return `${d.k} ${d.name} {\n${d.members.map((m) => printMember(m, IND, o)).join('\n')}\n}`;
   }
-  return printMember(d, '', o);
+  return printMember(d as A.Member, '', o);
 }
 
 export function printProgram(p: A.Program, o: PrintOptions = {}): string {

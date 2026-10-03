@@ -4,7 +4,7 @@
  * checkers and the language server all work from.
  */
 import type * as A from '../syntax/ast';
-import { forEachSubExpr } from '../syntax/ast';
+import { forEachSubExpr, isBlock } from '../syntax/ast';
 import type { Span } from '../syntax/lexer';
 import { diag, type Diagnostic } from '../diagnostics';
 import { Scope, suggest, type Sym, type SymKind } from './symbols';
@@ -668,7 +668,7 @@ class Checker {
       case 'if':
         this.expectBool(s.cond, ctx, 'if');
         this.block(s.then, ctx);
-        if (s.else) s.else.k === 'if' ? this.stmt(s.else, ctx) : this.block(s.else, ctx);
+        if (s.else) !isBlock(s.else) ? this.stmt(s.else, ctx) : this.block(s.else, ctx);
         break;
       case 'while':
         this.expectBool(s.cond, ctx, 'while');
@@ -1628,7 +1628,7 @@ export function collectLabels(b: A.Block): string[] {
         break;
       case 'if':
         s.then.stmts.forEach(walk);
-        if (s.else) s.else.k === 'if' ? walk(s.else) : s.else.stmts.forEach(walk);
+        if (s.else) !isBlock(s.else) ? walk(s.else) : s.else.stmts.forEach(walk);
         break;
       case 'while':
       case 'for':
@@ -1649,7 +1649,7 @@ export function collectLabels(b: A.Block): string[] {
 }
 
 /** Defer work until all declarations of a scope exist (field types refer to types declared later). */
-function queueMicrotaskLike(f: () => void, c: { queued?: (() => void)[] }): void {
+function queueMicrotaskLike(f: () => void, c: object): void {
   (c as unknown as { queued: (() => void)[] }).queued.push(f);
 }
 

@@ -367,3 +367,7 @@ export function forEachSubExpr(e: Expr, f: (e: Expr) => void): void {
   }
   f(e);
 }
+
+export function isBlock(x: Block | Stmt): x is Block {
+  return 'stmts' in x;
+}

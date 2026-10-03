@@ -76,7 +76,7 @@ describe('systems', () => {
     const rt = load(ex('needham-schroeder.vouch'), 'NeedhamSchroeder');
     const r = bfs(rt, 'responder_authenticated');
     expect(r.violation).toBeDefined();
-    expect(r.trace.some((t) => t.startsWith('a_start(p = I)'))).toBe(true);
+    expect(r.trace!.some((t) => t.startsWith('a_start(p = I)'))).toBe(true);
   });
   it('action guards that draw parameters from a set only enumerate the set', () => {
     const rt = load(`system S {

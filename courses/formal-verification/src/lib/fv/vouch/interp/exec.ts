@@ -7,6 +7,7 @@
  * accepts must never fail here.
  */
 import type * as A from '../syntax/ast';
+import { isBlock } from '../syntax/ast';
 import type { Span } from '../syntax/lexer';
 import type { Checked, FnInfo } from '../check/checker';
 import { assignable, intBounds, type Ty } from '../check/types';
@@ -185,7 +186,7 @@ export class Runner {
       }
       case 'if':
         if (this.ev.eval(s.cond, env)) return this.block(s.then, env, info);
-        if (s.else) return s.else.k === 'if' ? this.stmt(s.else, env, info) : this.block(s.else, env, info);
+        if (s.else) return !isBlock(s.else) ? this.stmt(s.else, env, info) : this.block(s.else, env, info);
         return;
       case 'while':
         return this.loop(s, env, info, () => !!this.ev.eval(s.cond, env), () => {}, s.body);

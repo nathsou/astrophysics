@@ -12,6 +12,7 @@
  * against this definition, and every counterexample trace is replayed through it.
  */
 import type * as A from '../syntax/ast';
+import { isBlock } from '../syntax/ast';
 import type { Span } from '../syntax/lexer';
 import type { Checked, ContainerInfo, FnInfo, ProcessInfo } from '../check/checker';
 import { conjuncts } from '../check/checker';
@@ -425,7 +426,7 @@ class Compiler {
         this.block(s.then);
         const jmp = this.emit({ op: 'jmp', to: 0 });
         (this.code[br] as { else: number }).else = this.code.length;
-        if (s.else) s.else.k === 'if' ? this.stmt(s.else) : this.block(s.else);
+        if (s.else) !isBlock(s.else) ? this.stmt(s.else) : this.block(s.else);
         (this.code[jmp] as { to: number }).to = this.code.length;
         return;
       }
