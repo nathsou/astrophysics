@@ -88,6 +88,12 @@ function Sidebar({ route, onSearch }: { route: Route; onSearch: () => void }) {
   }, [route.section]);
   return (
     <nav ref={ref} id="course-contents" className="sidebar" aria-label="Contents">
+      <div className="course-sidebar-tools">
+        <a className="course-index-link" href="../"><span aria-hidden="true">←</span> All courses</a>
+        <button className="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" aria-label="Hide contents" title="Hide contents" data-sidebar-toggle>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
+        </button>
+      </div>
       <a className="brand" href="#/">
         <span className="brand-mark" aria-hidden="true">⌜⌝</span>
         <span>
@@ -182,13 +188,9 @@ export function App() {
   const landing = route.page === 'home';
   return (
     <MDXProvider components={mdxComponents}>
-      <nav className="course-index-nav" aria-label="Course collection">
-        <a className="course-index-link" href="../"><span aria-hidden="true">←</span> All courses</a>
-        <button className="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" data-sidebar-toggle>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
-          <span data-sidebar-label>Hide contents</span>
-        </button>
-      </nav>
+      <button className="course-sidebar-toggle course-sidebar-handle" type="button" aria-controls="course-contents" aria-expanded="true" aria-label="Hide contents" title="Hide contents" data-sidebar-toggle>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
+      </button>
       <a className="skip" href="#main">Skip to content</a>
       <div className={`app course-shell${landing ? ' landing' : ''}`}>
         <Sidebar route={route} onSearch={() => setSearching(true)} />

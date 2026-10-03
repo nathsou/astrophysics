@@ -31,6 +31,12 @@
 {/snippet}
 
 <nav id="course-contents" class="sidebar ui" class:open={nav.sidebarOpen} aria-label="Course contents">
+  <div class="course-sidebar-tools">
+    <a class="course-index-link" href="{base}/../" data-sveltekit-reload><span aria-hidden="true">←</span> All courses</a>
+    <button class="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" aria-label="Hide contents" title="Hide contents" data-sidebar-toggle>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
+    </button>
+  </div>
   {#each PARTS as part (part.id)}
     <section>
       <h2><span class="part">Part {part.id}</span> {part.title}</h2>
@@ -50,8 +56,8 @@
 <style>
   .sidebar {
     position: sticky;
-    top: calc(3.25rem + var(--course-nav-height));
-    height: calc(100dvh - 3.25rem - var(--course-nav-height));
+    top: 3.25rem;
+    height: calc(100dvh - 3.25rem);
     overflow-y: auto;
     padding: 1.25rem 0.75rem 3rem 1rem;
     border-right: 1px solid var(--rule);
@@ -127,7 +133,7 @@
   @media (max-width: 1099px) {
     .sidebar {
       position: fixed;
-      top: calc(3.25rem + var(--course-nav-height));
+      top: 3.25rem;
       left: 0;
       z-index: 45;
       width: min(20rem, 88vw);

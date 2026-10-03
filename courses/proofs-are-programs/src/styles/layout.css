@@ -3,7 +3,7 @@
    ------------------------------------------------------------------------ */
 
 .shell {
-  min-height: calc(100vh - var(--course-nav-height));
+  min-height: 100vh;
   display: grid;
   grid-template-columns: var(--sidebar) minmax(0, 1fr);
 }
@@ -13,8 +13,8 @@
 
 .sidebar {
   position: sticky;
-  top: var(--course-nav-height);
-  height: calc(100dvh - var(--course-nav-height));
+  top: 0px;
+  height: 100dvh;
   overflow-y: auto;
   border-right: 1px solid var(--rule);
   background: var(--paper-2);
@@ -109,7 +109,7 @@
 
 .topbar {
   position: sticky;
-  top: var(--course-nav-height);
+  top: 0px;
   z-index: 50;
   display: flex;
   align-items: center;
@@ -153,7 +153,7 @@
     position: fixed;
     z-index: 100;
     left: 0;
-    top: var(--course-nav-height);
+    top: 0px;
     width: min(20rem, 86vw);
     transform: translateX(-102%);
     transition: transform 0.2s ease;
@@ -201,9 +201,9 @@
 
 .page-toc {
   position: sticky;
-  top: calc(4.5rem + var(--course-nav-height));
+  top: 4.5rem;
   align-self: start;
-  max-height: calc(100vh - 6rem - var(--course-nav-height));
+  max-height: calc(100vh - 6rem);
   overflow-y: auto;
   font-family: var(--font-sans);
   font-size: 0.78rem;

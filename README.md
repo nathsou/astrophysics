@@ -15,7 +15,7 @@ A collection of interactive textbooks. The [course index](site/index.html) links
 | Digital Circuits | `courses/digital-circuits/` | `/digital-circuits/` |
 | Particle Physics *(in progress)* | `courses/particle-physics/` | `/particle-physics/` |
 
-Every course has an “All courses” link and a contents toggle at the top. Sidebars collapse on desktop and open as drawers on smaller screens; each course remembers its desktop preference. The shared navigation lives in `packages/course-navigation/`.
+Every course has an “All courses” link beside its contents and a compact contents toggle in its own header or drawer handle. Sidebars collapse on desktop and open as drawers on smaller screens; each course remembers its desktop preference. The shared navigation lives in `packages/course-navigation/`.
 
 ## Build
 
@@ -48,4 +48,4 @@ Course-specific development and tests are documented in each course's README.
 
 ## Content checks
 
-After building, run `npm run audit` (requires Python 3) to check every generated HTML page for broken local links and images, missing section targets, duplicate IDs and equation errors. For a build published under a prefix, use `npm run audit -- --base-path /courses`, replacing `/courses` with the value used for `COURSES_BASE_PATH`. Hash-router destinations, widget behavior and mobile layout also need browser checks.
+After building, run `npm run audit` (requires Python 3) to check every generated HTML page for broken local links and images, missing section targets, duplicate IDs and equation errors. For a build published under a prefix, use `npm run audit -- --base-path /courses`, replacing `/courses` with the value used for `COURSES_BASE_PATH`. Hash-router destinations, widget behavior and mobile layout also need browser checks. With the built site served locally, `python3 scripts/check-course-navigation.py http://127.0.0.1:8000` checks collection links, remembered sidebar collapse, mobile drawers and keyboard focus across every course (requires Python Playwright and Chromium).

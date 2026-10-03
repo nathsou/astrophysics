@@ -520,7 +520,7 @@
 <style>
   .bench {
     position: fixed;
-    inset: calc(3.5rem + var(--course-nav-height)) 0 0 0;
+    inset: 3.5rem 0 0 0;
     z-index: 30;
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;

@@ -39,13 +39,6 @@ export function Layout(props: RouteSectionProps) {
 
   return (
     <>
-      <nav class="course-index-nav" aria-label="Course collection">
-        <a class="course-index-link" href="../" target="_self"><span aria-hidden="true">←</span> All courses</a>
-        <button class="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" data-sidebar-toggle>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
-          <span data-sidebar-label>Hide contents</span>
-        </button>
-      </nav>
     <div class="shell course-shell">
       <a
         href="#main"
@@ -59,6 +52,12 @@ export function Layout(props: RouteSectionProps) {
         Skip to content
       </a>
       <nav class="sidebar" id="course-contents" aria-label="Course contents">
+        <div class="course-sidebar-tools">
+          <a class="course-index-link" href="../" target="_self"><span aria-hidden="true">←</span> All courses</a>
+          <button class="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" aria-label="Hide contents" title="Hide contents" data-sidebar-toggle>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
+          </button>
+        </div>
         <A href="/" class="brand" title="Calculus of Inductive Constructions: welcome">
           CIC <span class="brand-count">/ {chapters.length} chapters</span>
           <span class="brand-read">
@@ -107,6 +106,9 @@ export function Layout(props: RouteSectionProps) {
       </nav>
       <div class="main">
         <header class="topbar">
+          <button class="course-sidebar-toggle" type="button" aria-controls="course-contents" aria-expanded="true" aria-label="Hide contents" title="Hide contents" data-sidebar-toggle>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>
+          </button>
           <div class="tabs">
             <A href="/" class={`tab tab-home ${tabName() ? '' : 'active'}`} aria-current={tabName() ? undefined : 'page'} end>
               <span>00_welcome.lean</span>
