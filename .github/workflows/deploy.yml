@@ -57,6 +57,10 @@ jobs:
           npm ci --prefix courses/mandarin
           pnpm --dir courses/language-models install --frozen-lockfile
 
+      - name: Fetch the Mandarin course audio
+        # The clips live in a release asset (courses/mandarin/audio-release.json), not in git.
+        run: npm run audio:fetch --prefix courses/mandarin -- --optional
+
       - name: Build
         run: npm run build
 

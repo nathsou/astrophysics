@@ -43,7 +43,7 @@ const PREFERRED: Record<string, string> = {
   度: 'dù', 读: 'dú', 发: 'fā', 正: 'zhèng', 省: 'shěng', 脏: 'zāng', 当时: 'dāng shí', 觉得: 'jué de',
   睡觉: 'shuì jiào', 为什么: 'wèi shén me', 因为: 'yīn wèi', 没: 'méi', 空: 'kòng', 音乐: 'yīn yuè',
   银行: 'yín háng', 大夫: 'dài fu', 种: 'zhǒng', 觉: 'jué', 都: 'dōu', 少年: 'shào nián', 背: 'bèi',
-  称: 'chēng', 倒: 'dào', 干: 'gàn', 角: 'jiǎo', 见: 'jiàn', 结: 'jié', 难: 'nán', 系: 'xì',
+  称: 'chēng', 倒: 'dào', 比: 'bǐ', 占: 'zhàn', 弄: 'nòng', 干: 'gàn', 角: 'jiǎo', 见: 'jiàn', 结: 'jié', 难: 'nán', 系: 'xì',
 };
 
 const UNHELPFUL = /^(\(?(old |erhua |unofficial )?variant|used in|see |surname|abbr\.|\(archaic\)|\(literary\)|\(onom\.\)|\(Tw\)|\(coll\.\))/i;
