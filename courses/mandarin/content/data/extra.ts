@@ -265,6 +265,8 @@ export const EXTRA: Record<string, ExtraWord> = {
   早上好: { p: 'zǎo shang hǎo', g: 'good morning' },
   晚安: { p: 'wǎn ān', g: 'good night' },
   看看: { p: 'kàn kan', g: 'to have a look' },
+  几点: { p: 'jǐ diǎn', g: 'what time' },
+  什么时候: { p: 'shén me shí hou', g: 'when' },
   多大: { p: 'duō dà', g: 'how old; how big' },
   多少钱: { p: 'duō shao qián', g: 'how much (money)?' },
   // Characters met in the character lessons.
@@ -297,6 +299,10 @@ export const EXTRA: Record<string, ExtraWord> = {
   饣: { p: 'shí', g: '“food” radical' },
   钅: { p: 'jīn', g: '“metal” radical' },
   纟: { p: 'sī', g: '“silk” radical' },
+  外公: { p: 'wài gōng', g: 'grandpa (mum’s father)' },
+  外婆: { p: 'wài pó', g: 'grandma (mum’s mother)' },
+  爷爷: { g: 'grandpa (dad’s father)' },
+  奶奶: { g: 'grandma (dad’s mother)' },
   // Names and words outside the HSK lists.
   王: { p: 'wáng', g: 'Wang (a surname); king' },
   李: { p: 'lǐ', g: 'Li (a surname)' },
