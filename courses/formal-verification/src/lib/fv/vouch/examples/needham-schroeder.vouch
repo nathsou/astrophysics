@@ -1,12 +1,17 @@
 // expect: violated responder_authenticated
 // The Needham–Schroeder public-key protocol (1978) with a Dolev–Yao intruder, reduced to its three messages.
-// Lowe (1995): A runs the protocol with the intruder I; I replays A's messages to B, and B believes it talks to A.
+// Lowe (1995): A runs the protocol with the intruder I; I re-encrypts A's message for B, and B ends up
+// believing it talked to A.
+//
+// Modelling choice: instead of letting the intruder add messages to the network (which makes the state space
+// explode), every honest agent accepts any message that is on the network or that the intruder could build from
+// what it knows. This is the standard way to keep a Dolev–Yao model small.
 
 system NeedhamSchroeder {
   enum Agent { A, B, I }
   enum Nonce { NA, NB, NI }
   enum Kind { msg1, msg2, msg3 }
-  // A message encrypted for `to`: msg1 = {na, sender}, msg2 = {na, nb}, msg3 = {nb}.
+  // A message encrypted for `to`: msg1 = {n1, sender}, msg2 = {n1, n2}, msg3 = {n1}.
   struct Msg { kind: Kind, to: Agent, n1: Nonce, n2: Nonce, sender: Agent }
 
   var net: set<Msg> = {}
@@ -16,31 +21,32 @@ system NeedhamSchroeder {
   var b_peer: Agent = B                       // whom B believes it talks to (B means: not started)
   var b_done: bool = false
 
+  /// A message can be delivered if it was sent, or if the intruder can make it from nonces it knows.
+  pred deliverable(m: Msg) {
+    m in net || (m.n1 in known && m.n2 in known)
+  }
+
   // A starts a session with B or with the intruder.
   action a_start(p: Agent) when a_peer == A && p != A {
     a_peer = p
     net = net + {Msg { kind: msg1, to: p, n1: NA, n2: NA, sender: A }}
   }
-  // B answers a msg1 addressed to it.
-  action b_reply(m: Msg) when m in net && m.kind == msg1 && m.to == B && b_peer == B {
+  // B answers a first message addressed to it.
+  action b_reply(m: Msg) when m.kind == msg1 && m.to == B && b_peer == B && deliverable(m) {
     b_peer = m.sender
     net = net + {Msg { kind: msg2, to: m.sender, n1: m.n1, n2: NB, sender: B }}
   }
-  // A completes when it gets back its own nonce.
-  action a_finish(m: Msg) when m in net && m.kind == msg2 && m.to == A && m.n1 == NA && a_peer != A && !a_done {
+  // A completes when it gets back its own nonce, and returns the responder's nonce to its peer.
+  action a_finish(m: Msg) when m.kind == msg2 && m.to == A && m.n1 == NA && a_peer != A && !a_done && deliverable(m) {
     a_done = true
     net = net + {Msg { kind: msg3, to: a_peer, n1: m.n2, n2: m.n2, sender: A }}
   }
-  action b_finish(m: Msg) when m in net && m.kind == msg3 && m.to == B && m.n1 == NB && b_peer != B {
+  action b_finish(m: Msg) when m.kind == msg3 && m.to == B && m.n1 == NB && b_peer != B && !b_done && deliverable(m) {
     b_done = true
   }
-  // The intruder reads messages encrypted for it...
-  action i_learn(m: Msg) when m in net && m.to == I {
+  // The intruder decrypts what is encrypted for it.
+  action i_learn(m: Msg) when m in net && m.to == I && !(m.n1 in known && m.n2 in known) {
     known = known + {m.n1, m.n2}
-  }
-  // ...and sends anything it can build from what it knows, encrypted for anyone, claiming any sender.
-  action i_send(k: Kind, to: Agent, n1: Nonce, n2: Nonce, s: Agent) when n1 in known && n2 in known && to != I {
-    net = net + {Msg { kind: k, to: to, n1: n1, n2: n2, sender: s }}
   }
 
   // If B finishes believing it talked to A, then A really started a session with B.
