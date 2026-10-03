@@ -9,7 +9,7 @@
  * to segment and gloss everything the course says. The levels are kept per list:
  *   n = the 2025 syllabus ("newest" in the dataset), s = the 2021 standard (HSK 3.0), o = HSK 2.0.
  */
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { pinyin } from 'pinyin-pro';
 
 interface Form {
@@ -121,7 +121,16 @@ console.log(`${Object.keys(sorted).length} words`, LISTS.map(([name, k]) => `${n
  * any reading in place with 字[pinyin].
  */
 const chars: Record<string, string> = {};
-for (const w of Object.keys(sorted)) {
+// Characters in the lessons and course data too, so text outside the HSK lists still gets a reading.
+const extraText: string[] = [];
+const scan = (dir: URL) => {
+  if (!existsSync(dir)) return;
+  for (const f of readdirSync(dir, { recursive: true }) as string[]) {
+    if (/\.(md|ts)$/.test(f) && !f.endsWith('.test.ts')) extraText.push(readFileSync(new URL(f, dir), 'utf8'));
+  }
+};
+scan(new URL('../content/', import.meta.url));
+for (const w of [...Object.keys(sorted), ...extraText]) {
   for (const ch of w) {
     if (!/\p{Script=Han}/u.test(ch) || ch in chars) continue;
     chars[ch] = sorted[ch]?.p ?? pinyin(ch, { toneSandhi: false });

@@ -17,8 +17,8 @@ const add = (text: string) => {
 };
 add(Object.keys(JSON.parse(readFileSync(join(root, 'content/data/lexicon.json'), 'utf8'))).join(''));
 add(Object.keys(JSON.parse(readFileSync(join(root, 'content/data/chars.json'), 'utf8'))).join(''));
-const lessons = join(root, 'content/lessons');
-if (existsSync(lessons)) for (const f of readdirSync(lessons)) if (f.endsWith('.md')) add(readFileSync(join(lessons, f), 'utf8'));
+const content = join(root, 'content');
+for (const f of readdirSync(content, { recursive: true }) as string[]) if (/\.(md|ts)$/.test(f)) add(readFileSync(join(content, f), 'utf8'));
 
 let n = 0;
 const missing: string[] = [];
