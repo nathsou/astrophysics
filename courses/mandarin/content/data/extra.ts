@@ -267,6 +267,10 @@ export const EXTRA: Record<string, ExtraWord> = {
   看看: { p: 'kàn kan', g: 'to have a look' },
   几点: { p: 'jǐ diǎn', g: 'what time' },
   什么时候: { p: 'shén me shí hou', g: 'when' },
+  每天: { p: 'měi tiān', g: 'every day' },
+  多了: { p: 'duō le', g: 'much (more), a lot (more)' },
+  多远: { p: 'duō yuǎn', g: 'how far' },
+  多长时间: { p: 'duō cháng shí jiān', g: 'how long (time)' },
   多大: { p: 'duō dà', g: 'how old; how big' },
   多少钱: { p: 'duō shao qián', g: 'how much (money)?' },
   // Characters met in the character lessons.
