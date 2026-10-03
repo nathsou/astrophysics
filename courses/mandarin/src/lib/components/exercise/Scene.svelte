@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
   /**
    * A conversation in which you choose what to say. Wrong choices are not just marked wrong:
    * the other person reacts, in character, the way a real person would.
@@ -43,7 +44,7 @@
   }
   $effect(() => {
     void round;
-    start();
+    untrack(start);
   });
 
   async function choose(i: number) {

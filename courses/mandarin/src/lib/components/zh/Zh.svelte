@@ -103,7 +103,7 @@
     letter-spacing: 0.01em;
     color: var(--tone, var(--mute));
     line-height: 1;
-    padding-bottom: 0.1em;
+    padding: 0 0.12em 0.1em;
     user-select: none;
   }
   .xl rt,

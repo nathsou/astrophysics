@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
   /**
    * Free conversation with Claude playing a character, with a goal to reach. Claude keeps to the
    * learner's words; the course double-checks and flags any word it has not taught yet.
@@ -40,9 +41,7 @@
     checks: data.checks,
   });
 
-  $effect(() => {
-    if (!log.length) log = [{ from: 'they', zh: data.opener, en: data.openerEn }];
-  });
+  log = [{ from: 'they', zh: untrack(() => data.opener), en: untrack(() => data.openerEn) }];
 
   function history(): Anthropic.MessageParam[] {
     // The opener is Claude's first line; the API needs the conversation to start with the user.
@@ -96,7 +95,7 @@
 
   function restart() {
     controller?.abort();
-    log = [];
+    log = [{ from: 'they', zh: data.opener, en: data.openerEn }];
     done = false;
     review = '';
     error = '';
