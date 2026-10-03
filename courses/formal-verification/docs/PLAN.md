@@ -44,7 +44,7 @@ cover that), not a mathematical logic textbook (*Incompleteness*), and not a sur
 without running any. It is also not a course in one industrial tool: Dafny, TLA+, Alloy, CBMC and Infer
 appear in *In industry* callouts and in the Rosetta appendix, and none of them runs in the browser.
 
-## 2. Decisions (proposed 2026-10-03)
+## 2. Decisions (agreed 2026-10-03)
 
 | Topic | Decision | Notes |
 |---|---|---|
@@ -56,14 +56,15 @@ appear in *In industry* callouts and in the Rosetta appendix, and none of them r
 | Toolchain | **Our own engines in TypeScript**, in Web Workers, with no third-party solver in the browser | SAT (CDCL), SMT (DPLL(T) with EUF, LRA, LIA, bit-vectors, arrays and quantifiers), explicit-state model checking with LTL, BMC, k-induction, IC3, BDDs, symbolic execution, a VC generator, symbolic heaps and abstract interpretation. Z3 runs only in tests, as a differential oracle (see §10). This follows the collection's convention (kiln, the DCL toolchain, `hep`). |
 | Trust | **Every answer carries a certificate that a small trusted checker re-checks** | A SAT model is evaluated. An UNSAT answer is checked by a RUP/DRAT checker, plus one certificate per theory lemma (Farkas coefficients, congruence chains, axiom instances). Counterexample traces are replayed by the reference interpreter. "Safe" results from the symbolic engines produce an inductive invariant, which is re-checked. Invariants from the abstract interpreter are re-checked by the verifier. The trusted computing base is shown on screen (§5, *TCB meter*). |
 | Honest results | Each result says exactly what was established, through one shared set of **result badges** | Badges: *tested on n inputs*, *bounded to depth k*, *exhaustive for this instance*, *verified, given these assumptions*, *violated, with the counterexample replayed*, *unknown, with the reason*. This applies the collection's rule that feedback must say what was established. |
-| Reader's code | The main activity is **writing Vouch**: specifications, invariants, models, properties and encodings. A second, optional track, **You build**, has the reader implement engine cores in TypeScript, which then plug into the toolchain behind a *use my code* toggle | The harness is copied from Particle Physics (CodeMirror 6, sucrase in a worker, hidden tests, hooks). Certificates guard soundness: when the reader's buggy unit propagation claims UNSAT, the DRAT checker rejects the claim, and that rejection is part of the lesson. |
+| Reader's work | The reader **writes Vouch**: specifications, invariants, models, properties and encodings. They open the tools by **driving the engines' steppers**: choosing the decision, picking the conflict cut, choosing the pivot, applying the widening. They never write engine code | There is no TypeScript code-along track (decided 2026-10-03). *Under the hood* boxes quote the real engine code instead. |
 | Real bugs | **The bug museum**: each part re-enacts famous failures in the reader's own tools | See §3, through-line 4. Re-enactments are simplified models and are labelled as such. Every historical claim is cited. |
 | Site | SvelteKit 2 + Svelte 5, `adapter-static`, TypeScript 6, and the Markdown-with-directives compiler copied from Particle Physics | Single npm package. Output in `dist/`, base path from `BASE_PATH`. |
 | Editor | CodeMirror 6 with a Lezer grammar for Vouch | Verification gutter, hover values from counterexamples, locked regions for exercises, Unicode input for `∀ ∃ ⟹` with ASCII equivalents. |
 | Rendering | SVG for diagrams, graphs and trees. Canvas 2D for plots and large state graphs. WebGL2 only for state spaces beyond a few thousand nodes | Graph layout uses ELK (elkjs, lazy-loaded in a worker), as Digital Circuits does. No charting libraries. Respect `prefers-reduced-motion`. |
 | Sound | None | |
-| LLM | Optional and off by default (open question 3): an *untrusted oracle* that proposes invariants, which the verifier then checks | It would appear only in the invariant workshops and the epilogue. The course works fully without it. |
-| Progress | `localStorage` for exercises, badges and settings. IndexedDB for the reader's Vouch files and *You build* code. Export and import as JSON | Drafts are saved before a run. Results are invalidated on edit and bound to the submitted source. |
+| LLM | **None** | No language-model features (decided 2026-10-03). The epilogue discusses language models in prose, as one more kind of untrusted oracle. |
+| History | **The evolution of the field is a through-line** (§3, through-line 9): each part opens with an essay on how its ideas and tools developed; history cards and biographies sit where each idea appears; the course has an interactive timeline and a family tree of tools | Every date and claim is cited. Biographies use typographic monograms, as in Proofcraft, unless a portrait has a clear licence. |
+| Progress | `localStorage` for exercises, badges and settings. IndexedDB for the reader's Vouch files. Export and import as JSON | Drafts are saved before a run. Results are invalidated on edit and bound to the submitted source. |
 | Design | **"The Notary"**: certificate paper and seals by day, a night desk with gold seals by night | See §11. Shares the collection's `theme` key. |
 | Language | British English | |
 
@@ -87,7 +88,7 @@ appear in *In industry* callouts and in the Rosetta appendix, and none of them r
 2. **Don't trust, check.** Solvers are large, clever and wrong now and then. Checkers are small. Each
    chapter's *What did we prove?* box says which certificate backs the result and what remained trusted. This
    is the CIC course's de Bruijn criterion (CIC Ch. 0) applied to automated tools. It also explains why an
-   untrusted oracle, whether the reader's code, a heuristic or a language model, is safe to use.
+   untrusted oracle, whether a heuristic, an unverified tool or a language model, is safe to use.
 
 3. **The specification is code you haven't tested.** Writing the specification is the hard part, so the
    course has tools for testing specifications:
@@ -159,11 +160,35 @@ appear in *In industry* callouts and in the Rosetta appendix, and none of them r
 
    Each tool is introduced the first time it appears.
 
+9. **How we got here.** The history of the field, told as the evolution of its ideas and tools as well as its
+   people and dates. Most techniques in the course waited decades between the idea and the tool that made it
+   practical. Symbolic execution (1976) waited for fast solvers (2005–08). SAT was "hopeless" after 1971 and a
+   commodity after 2001. The course says why each wait ended: an algorithmic insight, faster machines, a
+   standard format, a competition, or an industrial disaster that paid for the work. The history appears at
+   three levels:
+   - **Part essays.** Each part opens with *How we got here*, an essay of 800–1,500 words on how its family of
+     techniques developed (outlines in §4). It sits next to that part's slice of the timeline.
+   - **In place.** History cards (`:::history{year title people}`) and biographies (`:::bio`) appear where an
+     idea is introduced, not piled at the end. Each chapter's *Under the hood* box says when its algorithm
+     appeared and what it replaced. For example, watched literals (Chaff, 2001) replaced counting every
+     clause on each assignment.
+   - **Course-wide.** An interactive **timeline** with one lane per family (§5), a **family tree of tools**
+     showing which tools descend from or influenced which, and the field's debates. These include whether
+     program proofs can be trusted (De Millo, Lipton and Perlis, 1979; Fetzer, 1988), Hoare's 1996 question
+     *how did software get so reliable without proof?*, and the cost of false alarms. Chapter 29 and the
+     epilogue draw them together.
+
+   The rules from Particle Physics apply: every date, attribution and quotation is cited in
+   `content/bibliography.yaml`. Priority disputes and independent discoveries are stated as such (Cook and
+   Levin; Clarke and Emerson, and Queille and Sifakis). Nothing is quoted from memory. MacKenzie's
+   *Mechanizing Proof* (2001) is the main secondary source on the field's history before 2000.
+
 ## 4. Curriculum
 
 Chapters are roughly 1–1.5 hours each. Chapters marked ◇ are optional deeper chapters: the core path skips
 them without losing anything later chapters need. Each chapter's *Flagship* is its main interactive; §5 lists
-the cross-cutting components.
+the cross-cutting components. Each part opens with a *How we got here* essay (through-line 9), outlined
+below each part's table. The essay is a part-opening page, so a reader can skip it and come back to it.
 
 ### Prologue
 
@@ -175,43 +200,100 @@ the cross-cutting components.
 
 | # | Chapter | Key ideas | Flagship interactive | Reader does |
 |---|---|---|---|---|
-| 1 | State machines | Systems as state plus actions; `system` blocks; nondeterminism; reachability; an invariant as a property of every reachable state; BFS and shortest counterexamples; the Die Hard jugs (a classic first TLA+ example) solved by "proving" the goal unreachable and reading the counterexample; small 15-puzzle instances (bridge: Proofcraft Ch. 20) | **State-space explorer**: the model and its state graph side by side. Step by hand by choosing enabled actions, or run BFS. Bad states turn red, the shortest path to one lights up, and a trace replays as a table and a timeline | Model a lock with a timeout; write its invariant; *You build*: BFS with parent pointers |
+| 1 | State machines | Systems as state plus actions; `system` blocks; nondeterminism; reachability; an invariant as a property of every reachable state; BFS and shortest counterexamples; the Die Hard jugs (a classic first TLA+ example) solved by "proving" the goal unreachable and reading the counterexample; small 15-puzzle instances (bridge: Proofcraft Ch. 20) | **State-space explorer**: the model and its state graph side by side. Step by hand by choosing enabled actions, or run BFS. Bad states turn red, the shortest path to one lights up, and a trace replays as a table and a timeline | Model a lock with a timeout; write its invariant; step BFS by hand and predict which state it visits next |
 | 2 | Interleavings | Threads as processes; atomic steps and labels; the `process` sugar compiled to actions (shown under the hood); race conditions; mutual exclusion (Hyman 1966, Peterson 1981); the Ledger's lost update; locks and deadlock; state explosion counted; symmetry and partial-order reduction; ◇ box: weak memory and the store-buffering litmus test | **Interleaving explorer** with *be the scheduler*: two or three threads as lanes. The reader picks who steps next and tries to break mutual exclusion; then the explorer finds the shortest bad interleaving. Toggles for symmetry and POR show the state count drop | Find Hyman's bug by hand, then with the explorer; fix the Ledger's transfer; order the locks |
-| 3 | Eventually | Safety and liveness (Lamport; Alpern and Schneider); LTL: `always`, `eventually`, `until`, `leads to`; lasso-shaped counterexamples; fairness (weak and strong); starvation; Büchi automata and nested DFS (under the hood); a short tour of CTL | **Trace lab**: build lasso traces by drag and drop and watch each formula's truth value update; see the formula's automaton; *starve a process*, then turn fairness on and watch the lasso disappear | Write LTL for English requirements (checked against a bank of traces); *You build*: LTL evaluation on lassos |
+| 3 | Eventually | Safety and liveness (Lamport; Alpern and Schneider); LTL: `always`, `eventually`, `until`, `leads to`; lasso-shaped counterexamples; fairness (weak and strong); starvation; Büchi automata and nested DFS (under the hood); a short tour of CTL | **Trace lab**: build lasso traces by drag and drop and watch each formula's truth value update; see the formula's automaton; *starve a process*, then turn fairness on and watch the lasso disappear | Write LTL for English requirements (checked against a bank of traces); evaluate a formula on a lasso by hand, position by position |
 | 4 | Messages and failures | The network as a multiset of messages; loss, duplication, reordering and crashes; two-phase commit for the Ledger; why 2PC blocks; a glimpse of consensus and FLP; **refinement**: an implementation's steps map to a specification's steps, with stuttering (TLA+'s TCommit and TwoPhase pattern); TLA+ at AWS | **Message sequence chart with a network adversary**: drop, duplicate, delay or crash, then hand the same powers to the explorer. A refinement view projects each protocol step onto the specification | Find the blocking scenario; check that 2PC refines atomic commit for three shards |
 | 5 | The adversary | Security protocols as systems with an attacker; the Dolev–Yao intruder (knowledge, encryption only with keys); secrecy and authentication as properties; Needham–Schroeder (1978) and Lowe's attack (1995) and fix; bounded sessions | **Intruder sandbox**: the reader plays the intruder, with their knowledge set shown, and tries to impersonate Alice. The explorer then finds Lowe's attack automatically, and the fixed protocol passes for the bounded scenario | Reproduce the attack; state the authentication property so that it fails on the original protocol and holds on Lowe's fix |
+
+**How we got here (Part I).** Model checking began as a reaction against proving concurrent programs by hand:
+let the machine search instead. The essay covers:
+- Dijkstra's mutual exclusion problem (1965) and the incorrect published solutions that followed it, Hyman's
+  among them;
+- Pnueli bringing temporal logic to programs (1977);
+- model checking, invented independently by Clarke and Emerson (1981) and by Queille and Sifakis (1982);
+- Vardi and Wolper's automata-theoretic approach (1986);
+- Holzmann's SPIN, built at Bell Labs for telephone-switching protocols;
+- Hoare's CSP (1978) and the FDR checker, which Lowe used to break Needham–Schroeder;
+- Lamport's path from safety and liveness (1977) through TLA (1994) to the TLC model checker (1999);
+- the 2007 Turing Award to Clarke, Emerson and Sifakis;
+- AWS's report on TLA+ in production (2015).
 
 ### Part II: Encode in bits (SAT and symbolic model checking)
 
 | # | Chapter | Key ideas | Flagship interactive | Reader does |
 |---|---|---|---|---|
 | 6 | Propositional encoding | Why Part I's explosion pushes us to symbols; Boolean formulas, CNF and Tseitin's encoding; one-hot and cardinality constraints; Sudoku, N-queens and package dependency resolution; NP-completeness (Cook 1971) in one paragraph; the random 3-SAT phase transition | **Encoding lab**: high-level constraints compile to the clause list, with live clause and variable counts, a naive-versus-Tseitin blow-up slider and solution counts. A phase-transition plot is generated live, after a *predict* question about where the hard ratio lies | Encode a scheduling puzzle exactly. It is checked by **counting solutions**, not just by satisfiability |
-| 7 | Inside a SAT solver | DPLL; unit propagation; CDCL: implication graph, 1-UIP learning, non-chronological backjumping; watched literals; VSIDS and restarts; GRASP and Chaff | **CDCL stepper**: trail and decision levels, implication graph, the conflict cut, the learned clause, the backjump; replay and statistics | *You build*: unit propagation with watched literals; 1-UIP conflict analysis (then *use my code* everywhere SAT runs) |
-| 8 | Proofs of unsatisfiability | Resolution; RUP and DRAT certificates; why checking is easier than solving; the pigeonhole principle is exponential for resolution (Haken 1985); the Boolean Pythagorean triples proof (Heule, Kullmann and Marek, 2016) | **Proof viewer**: a resolution DAG for small instances and a DRAT replay for large ones. **The lying solver**: a sabotaged solver, or the reader's own code, claims UNSAT and the checker refuses. A plot shows the pigeonhole principle growing | Predict the pigeonhole growth; find the bad step in a hand-built refutation |
+| 7 | Inside a SAT solver | DPLL; unit propagation; CDCL: implication graph, 1-UIP learning, non-chronological backjumping; watched literals; VSIDS and restarts; GRASP and Chaff | **CDCL stepper**: trail and decision levels, implication graph, the conflict cut, the learned clause, the backjump; replay and statistics | Drive the stepper: choose the decisions, propagate by hand, then pick the 1-UIP cut and predict the learned clause and the backjump level |
+| 8 | Proofs of unsatisfiability | Resolution; RUP and DRAT certificates; why checking is easier than solving; the pigeonhole principle is exponential for resolution (Haken 1985); the Boolean Pythagorean triples proof (Heule, Kullmann and Marek, 2016) | **Proof viewer**: a resolution DAG for small instances and a DRAT replay for large ones. **The lying solver**: a sabotaged solver claims UNSAT and the checker refuses. A plot shows the pigeonhole principle growing | Predict the pigeonhole growth; find the bad step in a hand-built refutation |
 | 9 ◇ | Small worlds | Bounded relational model finding; `world` blocks: types, relations, multiplicities, facts; the small scope hypothesis (Jackson, Alloy); relations to SAT | **Instance visualiser**: atoms and arrows for each instance or counterexample, with a scope slider that shows time rising as more cases are covered | Model a file system or an access-control policy; find the counterexample in scope 3 |
 | 10 | Unrolling time | Bounded model checking (Biere, Cimatti, Clarke and Zhu, 1999): transition relation × k copies → SAT; completeness thresholds; hardware as a transition system; equivalence checking with a miter; Part I's models checked at bounds explicit search can't reach | **Unrolling view**: the system copied k times, the SAT counterexample shown as a waveform (Digital Circuits style), and a k-versus-time chart. **Miter bench**: a ripple-carry adder against a carry-lookahead adder (bridge: Digital Circuits Ch. 14) | Catch the toy FDIV divider's missing table entries; prove two adder designs equal for 8 bits |
-| 11 ◇ | Decision diagrams | ROBDDs (Bryant 1986); canonicity; `apply`; variable ordering; adders are linear, multipliers are exponential under every order (Bryant 1991); symbolic reachability as a fixpoint over sets of states; *10²⁰ states and beyond* (1990) | **BDD lab**: type a formula and see its BDD; drag the variable order and watch the size change; adder-versus-multiplier growth; reachability with the frontier BDD growing each iteration | *You build*: `apply` with a unique table and memoisation |
+| 11 ◇ | Decision diagrams | ROBDDs (Bryant 1986); canonicity; `apply`; variable ordering; adders are linear, multipliers are exponential under every order (Bryant 1991); symbolic reachability as a fixpoint over sets of states; *10²⁰ states and beyond* (1990) | **BDD lab**: type a formula and see its BDD; drag the variable order and watch the size change; adder-versus-multiplier growth; reachability with the frontier BDD growing each iteration | Build a BDD by hand with `apply`; find a variable order that keeps a comparator small |
+
+**How we got here (Part II).** From "NP-complete, so give up" to SAT solvers as a commodity. The essay
+covers:
+- Boole's algebra (1847, 1854);
+- Davis and Putnam (1960) and Davis, Logemann and Loveland (1962), built as theorem provers for first-order
+  logic;
+- Robinson's resolution (1965) and Tseitin's encodings (1968);
+- Cook (1971) and Levin, independently, making SAT the archetypal hard problem;
+- the turnaround: GRASP's clause learning (1996), Chaff's watched literals and VSIDS (2001), MiniSat (2003)
+  and the SAT competitions, from 2002;
+- Bryant's BDDs (1986), symbolic model checking (Burch et al., 1990) and McMillan's SMV;
+- the move from BDDs to SAT with bounded model checking (1999);
+- Intel's investment in formal methods after FDIV;
+- certificates (DRUP, then DRAT, 2013–14) as the community's answer to buggy solvers, and the record proofs
+  they made possible;
+- Alloy (Jackson; *Software Abstractions*, 2006), bringing SAT to software design.
 
 ### Part III: Reason with theories (SMT)
 
 | # | Chapter | Key ideas | Flagship interactive | Reader does |
 |---|---|---|---|---|
-| 12 | Equality and functions | First-order logic in brief (with appendix A); satisfiability modulo theories; DPLL(T) (Nieuwenhuis, Oliveras and Tinelli); uninterpreted functions as abstraction; congruence closure; theory conflicts become learned clauses; Ackermann's reduction | **DPLL(T) conversation**: the SAT core proposes, and the theory solver (an e-graph with union–find) answers *consistent* or returns a conflict with its explanation | *You build*: congruence closure; prove two programs equal modulo uninterpreted operations |
-| 13 | Arithmetic | Linear real arithmetic and simplex (Dutertre and de Moura); Farkas certificates; integers with branch and bound and cuts; nonlinear arithmetic: undecidable over the integers (Hilbert's tenth problem, Matiyasevich; bridge: *Incompleteness*), decidable over the reals (Tarski); why a verifier says *unknown* | **Simplex view**: a 2D or 3D feasible region with the pivots, the branch-and-bound tree for integer problems, and a nonlinear query that returns *unknown* with its reason | Read a Farkas certificate; solve a resource-allocation problem; *You build* ◇: Fourier–Motzkin |
+| 12 | Equality and functions | First-order logic in brief (with appendix A); satisfiability modulo theories; DPLL(T) (Nieuwenhuis, Oliveras and Tinelli); uninterpreted functions as abstraction; congruence closure; theory conflicts become learned clauses; Ackermann's reduction | **DPLL(T) conversation**: the SAT core proposes, and the theory solver (an e-graph with union–find) answers *consistent* or returns a conflict with its explanation | Merge classes in the e-graph by hand and predict the conflict; prove two programs equal modulo uninterpreted operations |
+| 13 | Arithmetic | Linear real arithmetic and simplex (Dutertre and de Moura); Farkas certificates; integers with branch and bound and cuts; nonlinear arithmetic: undecidable over the integers (Hilbert's tenth problem, Matiyasevich; bridge: *Incompleteness*), decidable over the reals (Tarski); why a verifier says *unknown* | **Simplex view**: a 2D or 3D feasible region with the pivots, the branch-and-bound tree for integer problems, and a nonlinear query that returns *unknown* with its reason | Read a Farkas certificate; solve a resource-allocation problem; choose the next pivot |
 | 14 | Bits and arrays | Bit-vectors by bit-blasting; machine arithmetic: overflow, signedness, shifts; arrays: read-over-write and extensionality; Alive (Lopes, Menendez, Nagarakatte and Regehr, 2015): peephole rewrites proved or refuted; Zelkova for AWS access policies | **Peephole court**: propose `lhs ⇒ rhs` at widths 8–64 and get a verdict for each width; a refutation shows its counterexample in binary and hex; also bit-blasted circuit sizes (bridge: SSA to Silicon Ch. 17) | Decide which of a docket of rewrites are correct, with preconditions where needed; write an access policy question |
 | 15 | Symbolic execution | Symbolic values and path conditions (King 1976); generating tests from paths; path explosion; KLEE and SAGE; loops unroll forever, which motivates invariants | **Path tree explorer**: the execution tree with a path condition at every node, a solver-generated input for each leaf (replayed to confirm) and the coverage map; a loop makes the tree explode | Generate inputs that reach a hard branch; see why the binary search loop needs something other than unrolling |
+
+**How we got here (Part III).** Program verifiers needed decision procedures before the name SMT existed. The
+essay covers:
+- the Stanford Pascal Verifier (1979) and Nelson and Oppen's combination of theories (1979), then Shostak
+  (1984);
+- Simplify and ESC/Java (2002);
+- the SMT-LIB initiative (2003) and its competition;
+- DPLL(T) (2004–06);
+- Yices, CVC and Z3 (2008), and the uses that followed;
+- the ceiling on all of this: Hilbert's tenth problem, settled by Matiyasevich (1970).
+
+Symbolic execution is the other story: King's 1976 idea waited for solvers to catch up, then returned as
+DART (2005), KLEE and SAGE (2008).
 
 ### Part IV: Prove programs (deductive verification)
 
 | # | Chapter | Key ideas | Flagship interactive | Reader does |
 |---|---|---|---|---|
 | 16 | Specifications and contracts | `requires`, `ensures`, `assert`, `old`; partial and total correctness; modularity (callers see only contracts); executable contracts: test first, then verify; writing specifications is the hard part; vacuity | **The Workbench** (first full use) and the **spec adversary**: the reader writes a specification for `max`, `dedup` or `sort`, and a bank of wrong implementations tries to satisfy it; any that verifies exposes a hole | Specify sorting (the empty-array implementation must fail); the Ledger's overflow-safe `transfer` |
-| 17 | Weakest preconditions | Hoare triples and the rules (Floyd 1967, Hoare 1969); wp (Dijkstra 1975); verification conditions; passive form and SSA (bridge: SSA to Silicon Ch. 4); exponential VCs and how to avoid them (Flanagan and Saxe) | **wp stepper**: the predicate flows backwards line by line, and hovering a program point shows what must hold there. **Hoare rule builder**: apply rules by clicking, with side conditions sent to the solver. **VC inspector**: the exact SMT query | *You build*: wp for assignment, sequence and `if` (the TCB meter marks the reader's VC generator as untrusted) |
+| 17 | Weakest preconditions | Hoare triples and the rules (Floyd 1967, Hoare 1969); wp (Dijkstra 1975); verification conditions; passive form and SSA (bridge: SSA to Silicon Ch. 4); exponential VCs and how to avoid them (Flanagan and Saxe) | **wp stepper**: the predicate flows backwards line by line, and hovering a program point shows what must hold there. **Hoare rule builder**: apply rules by clicking, with side conditions sent to the solver. **VC inspector**: the exact SMT query | Compute wp by hand for a short program, then compare with the stepper; build a Hoare derivation with the rule builder |
 | 18 | Loop invariants and termination | The missing piece; the three lights; heuristics for finding invariants (weaken the postcondition, replace a constant with a variable; Gries); CTIs; termination with `decreases`; the Zune freeze; binary search, fully verified; Dijkstra's Dutch national flag | **Invariant workshop (programs)**: the loop's actual states plotted (2D for two-variable loops), the candidate invariant as a region, the three lights, and CTIs as state pairs; a termination bar that must shrink | Invariants for sum, power, Dutch flag and binary search; find the Zune bug with `decreases` |
 | 19 | Quantifiers, ghosts and lemmas | Arrays, sequences and multisets in specifications (`sorted`, permutation); ghost variables and ghost code; quantifier instantiation by E-matching (Simplify), triggers and matching loops; recursive functions in specifications; a lemma as a recursive proof (bridge: *Proofs Are Programs* Ch. 11); debugging a failed proof; the TimSort story | **Proof debugger**: a failing VC's model mapped back to program states, an instantiation viewer (which quantifier instances fired, with a matching-loop counter) and *assert bisection* | Verify insertion sort (sorted and a permutation); the Ledger's sum-over-update lemma |
 | 20 | Data abstraction and refinement | Abstract state as ghost state; representation invariants; abstraction functions; the simulation square (bridge: *Proofs Are Programs* Ch. 17); invariants at method boundaries; re-entrancy and the DAO | **Abstraction view**: concrete state (ring buffer, hash table) and abstract state (sequence, map) side by side, linked; one simulation square per operation, coloured when proved | A verified ring-buffer queue; the Ledger's account map |
 | 21 | The heap: separation logic | Aliasing breaks Hoare logic; the frame problem; dynamic frames, briefly; separation logic (Reynolds; O'Hearn, Reynolds and Yang): points-to, the separating conjunction, the frame rule | **Heap diagrams linked to assertions**: hovering a conjunct highlights its footprint; drag a pointer to create aliasing and watch `*` become false; the frame rule animated | Specify and verify swap and an in-place update with frames |
 | 22 | Linked structures and ownership | List segments and inductive predicates; folding and unfolding; symbolic execution with symbolic heaps (Smallfoot); memory safety: null dereferences, leaks and use-after-free; Infer at Meta; **ownership**: Rust's borrow checker as permission accounting; fractional permissions; Prusti, Creusot and Verus | **Symbolic heap stepper**: list reversal step by step, with fold and unfold; memory-safety errors pinpointed. **Permission tracker**: permissions flowing through a Rust-like program as tokens | Verify list reversal; the Ledger's journal; find the use-after-free |
+
+**How we got here (Part IV).** From proofs on paper to a verifier in the editor. The essay covers:
+- Goldstine and von Neumann's assertion boxes in flow diagrams (1947), Turing's *Checking a large routine*
+  (1949), McCarthy (1963) and Naur's "general snapshots" (1966);
+- Floyd (1967) and Hoare (1969);
+- the NATO conference of 1968 and the "software crisis";
+- Dijkstra's weakest preconditions and the derivation of programs (1975–76);
+- the backlash: De Millo, Lipton and Perlis (1979) and Fetzer (1988);
+- design by contract (Meyer, Eiffel);
+- the line of verifiers from ESC/Modula-3 through ESC/Java and Spec# to Boogie and Dafny, alongside Why3,
+  Frama-C, KeY and SPARK;
+- heap reasoning, from Burstall (1972) to Reynolds and O'Hearn's separation logic (2001–02), then Smallfoot
+  and Infer at Facebook (acquired with Monoidics, 2013);
+- Hoare's Verifying Compiler grand challenge (2003), seL4 (2009), and the verifiers built on Rust's
+  ownership types.
 
 ### Part V: Prove systems (inductive invariants)
 
@@ -221,12 +303,30 @@ the cross-cutting components.
 | 24 ◇ | IC3: the machine finds the invariant | IC3/PDR (Bradley 2011; Eén, Mishchenko and Brayton 2011): frames, relative induction, generalisation, propagation; the result is a certificate | **IC3 stepper**: frames as nested regions over a small state space, the proof-obligation stack, blocked cubes generalised, and the final invariant exported and re-checked | Predict which clauses survive propagation; compare IC3's invariant with the one written by hand in Ch. 23 |
 | 25 | For every N | Parameterised verification; uninterpreted sorts for nodes; decidable fragments (EPR) and why they matter; the Ivy workflow (Padon et al., 2016); leader election in a ring (Chang and Roberts); two-phase commit for any number of shards | **Parameterised workshop**: a CTI drawn as a small diagram of nodes and messages, plus a counter of ground instances | Prove ring leader election and the Ledger's 2PC for every N |
 
+**How we got here (Part V).** From inventing invariants by hand to machines that find them. The essay covers:
+- invariants for concurrent programs: Owicki and Gries (1976), Lamport (1977), and Manna and Pnueli's books;
+- induction over transition systems and k-induction (2000);
+- IC3 (Bradley, 2011) and PDR, which changed hardware model checking;
+- decidable fragments of logic, going back to Bernays, Schönfinkel and Ramsey (1928–30), revived by Ivy
+  (2016) for protocols;
+- IronFleet and Verdi (2015): verified distributed systems.
+
 ### Part VI: Approximate (abstract interpretation)
 
 | # | Chapter | Key ideas | Flagship interactive | Reader does |
 |---|---|---|---|---|
-| 26 | Abstract interpretation | Concrete and abstract semantics (Cousot and Cousot, 1977); the sign and interval domains; lattices and joins; fixpoints over the CFG (bridge: SSA to Silicon Ch. 11, the liveness fixpoint); widening and narrowing; soundness means false alarms; Ariane 5; Astrée | **Interval analyser**: a CFG with intervals on every edge, updated iteration by iteration; widening animated; a number line showing concrete states inside their abstraction; a false alarm explained | *You build*: interval transfer functions and widening; triage alarms in the Ledger's fee code and a heartbeat handler |
+| 26 | Abstract interpretation | Concrete and abstract semantics (Cousot and Cousot, 1977); the sign and interval domains; lattices and joins; fixpoints over the CFG (bridge: SSA to Silicon Ch. 11, the liveness fixpoint); widening and narrowing; soundness means false alarms; Ariane 5; Astrée | **Interval analyser**: a CFG with intervals on every edge, updated iteration by iteration; widening animated; a number line showing concrete states inside their abstraction; a false alarm explained | Run the fixpoint by hand and choose where to widen; triage alarms in the Ledger's fee code and a heartbeat handler |
 | 27 ◇ | Better abstractions | Relational domains: octagons (Miné) and polyhedra (Cousot and Halbwachs, 1978); predicate abstraction (Graf and Saïdi) and CEGAR (Clarke et al., 2000); SLAM; the analyser's invariants handed to the verifier (untrusted oracle, checked result) | **Domain comparison**: 2D reachable states with box, octagon and polyhedron overlays. **CEGAR loop**: an abstract counterexample is replayed, found spurious, and the abstraction refined | Pick the cheapest domain that proves an assertion; watch CEGAR discover a predicate |
+
+**How we got here (Part VI).** Soundness against usability. The essay covers:
+- dataflow analysis in compilers (Kildall, 1973) as the ancestor;
+- the Cousots' abstract interpretation (1977) and Cousot and Halbwachs' polyhedra (1978);
+- Ariane 5, the inquiry board's report (1996) and the static analysis that followed;
+- Astrée on Airbus flight control (2003) and Miné's octagons;
+- predicate abstraction (1997), SLAM (2001) and CEGAR (2000), which led to Microsoft's Static Driver
+  Verifier;
+- the industrial lesson on false alarms (Bessey et al., *A few billion lines of code later*, 2010) and how
+  Infer's diff-time deployment answered it.
 
 ### Part VII: Trust
 
@@ -235,16 +335,24 @@ the cross-cutting components.
 | 28 | Capstone: the verified Ledger | Layers in the style of IronFleet (Hawblitzel et al., 2015): specification → protocol → implementation; which engine checks each layer; the assumptions between layers; what the composition proves | **Ledger dashboard**: each layer with its badge and certificate status, and *break it* switches that inject a bug into any layer to show which check catches it and which one can't | Close the last proof obligations; find the bug that slips between layers |
 | 29 | What did we prove? | The trusted computing base; specification validation; the verified compiler (CompCert) and what Csmith found in its unverified parts; bugs at the interfaces of verified distributed systems (Fonseca et al., 2017); seL4's assumptions; the limits: Rice's theorem (bridge: *Incompleteness*) | **TCB map**: everything a result trusted, from parser and VC generator to solver, checker, compiler and hardware, each component clickable. **Spec court**: planted specification bugs to find | Audit three "verified" artefacts and name each one's gap |
 
+**How we got here (Part VII).** What a proof buys, an argument that has run since 1979:
+- the "social processes" critique, Fetzer, and Hoare's 1996 reconsideration;
+- CompCert (2006–09) and what Csmith did and did not find in it (2011);
+- seL4 (2009);
+- the industrial turn of the 2010s at AWS, Meta, Microsoft and Intel;
+- where the field stands in 2026.
+
 ### Epilogue
 
 | # | Chapter | Key ideas | Flagship interactive |
 |---|---|---|---|
-| 30 | The landscape | Which tool when: Dafny, Why3, Frama-C, SPARK, Viper, Verus, KeY, CBMC, TLA+ and Apalache, Alloy, Ivy, SPIN, nuXmv, ABC, Infer, Astrée, KLEE, and Lean, Coq and Isabelle for the rest; untrusted oracles, including language models that propose invariants and proofs, and why checkers make them safe; where to go next | **Tool chooser**: answer questions about the system to be checked and get recommended tools, each linked to the Rosetta appendix |
+| 30 | The landscape | Which tool when: Dafny, Why3, Frama-C, SPARK, Viper, Verus, KeY, CBMC, TLA+ and Apalache, Alloy, Ivy, SPIN, nuXmv, ABC, Infer, Astrée, KLEE, and Lean, Coq and Isabelle for the rest; the field's open problems and a look back across the timeline; language models as one more untrusted oracle, which checkers make safe; where to go next | **Tool chooser**: answer questions about the system to be checked and get recommended tools, each linked to the Rosetta appendix |
 
 **Appendices.** A. Logic primer: propositional and first-order logic, sets and relations, induction.
 B. Vouch reference. C. The engines: what each one checks, its limits and its certificate (the honesty page,
 like Proofcraft's appendix B). D. The bug museum. E. Rosetta: the same small examples in Vouch, Dafny, TLA+,
-Alloy, SMT-LIB, Viper and ACSL. F. Glossary, timeline and bibliography.
+Alloy, SMT-LIB, Viper and ACSL. F. The timeline and the family tree of tools (full-page versions). G. Glossary
+and bibliography.
 
 **Reading paths** (shown on the home page's course map):
 
@@ -262,9 +370,12 @@ Alloy, SMT-LIB, Viper and ACSL. F. Glossary, timeline and bibliography.
 | **Result badge** | The one way any result is reported (§2, *Honest results*). Every badge expands into *what was checked*, *how* and *what was assumed* |
 | **Engine room** | One model or program run under every applicable engine side by side: explorer, BMC, k-induction, IC3 and BDD for systems; random tests, symbolic execution, bounded unrolling, the verifier and the abstract interpreter for programs. Each column shows time, states or clauses, and the badge. This shows the guarantee ladder on one example. Appears in Ch. 10, 23, 26 and 28 |
 | **Counterexample viewer** | Program counterexamples as a time-travel debugger: values on each line, stepping forwards and backwards. System traces as a table, as process lanes and as a message sequence chart, with lassos for liveness. Every counterexample is replayed by the reference interpreter before it is shown; a spurious one is labelled spurious |
-| **TCB meter** | A compact strip that shows which components a result depended on, and which of them were trusted, certificate-checked or the reader's own code |
+| **TCB meter** | A compact strip that shows which components a result depended on, and which of them were trusted and which were certificate-checked |
 | **Spec adversary** | Runs a bank of wrong implementations (or systems, or traces) against the reader's specification, which must reject them all. Running the reference implementation guards against the opposite mistake, a specification that is too strong |
-| **Invariant workshop** | One design in three settings (loops, Ch. 18; systems, Ch. 23; protocols, Ch. 25): the three lights, CTIs drawn in the setting's own picture, and the strengthening loop. Optional *ask the oracle* button (open question 3) |
+| **Invariant workshop** | One design in three settings (loops, Ch. 18; systems, Ch. 23; protocols, Ch. 25): the three lights, CTIs drawn in the setting's own picture, and the strengthening loop |
+| **Timeline** | One lane per family: logic and decision procedures, model checking, SAT, SMT, deductive verification, heap reasoning, abstract interpretation, industrial adoption and disasters. It runs from Boole (1847) to 2026. Zoom, filter by lane or by part, and follow links to the chapter where each event matters. Every card is cited. The part essays embed their own slice. Built from `content/timeline.yaml` |
+| **Family tree of tools** | A lineage graph of tools and the ideas they carried, such as Chaff → MiniSat → today's CDCL solvers, Simplify → ESC/Java → Boogie → Dafny, SMV → NuSMV → nuXmv, and Smallfoot → Infer. Edges are typed *descends from* or *influenced*, and each edge is cited. Each node links to the Rosetta appendix and the chapter that uses its idea. Built from `content/lineage.yaml` |
+| **Biography cards** | `:::bio{name born died}` for the people behind the ideas: Turing, Floyd, Hoare, Dijkstra, Pnueli, Clarke, Emerson, Sifakis, Lamport, the Cousots, Bryant, Reynolds, O'Hearn and others, placed where their idea appears. Typographic monograms unless a portrait has a clear licence |
 | **Bug museum** | A gallery page: exhibit cards with a history summary and citation, linked to their re-enactment, with *caught* status |
 | **Course map** | Chapters as a graph with engine icons and the three reading paths |
 | Terms, equations, history cards, glossary, timeline, bibliography | Ported from Particle Physics' compiler and components |
@@ -281,8 +392,8 @@ Alloy, SMT-LIB, Viper and ACSL. F. Glossary, timeline and bibliography.
 | `ltl` | writes a temporal formula for an English requirement | a bank of lasso traces, plus automaton equivalence where feasible |
 | `encode` | encodes a puzzle or constraint problem | the **exact solution count** (by model enumeration with blocking clauses), so over- and under-constrained encodings both fail |
 | `play` | plays scheduler, intruder, network or environment | the game state reaches the target (a bad state or a broken property) |
+| `drive` | drives an engine's stepper: picks the decision, the conflict cut, the pivot, the widening point or the next frame | each step is compared with what the engine would do, and the run must reach the engine's answer |
 | `rewrite` | decides whether rewrites are correct, adding preconditions where needed | bit-vector SMT at every listed width |
-| `build` | implements an engine core in TypeScript (*You build*) | hidden tests; then *use my code* plugs it in, behind the certificate checkers |
 | `bug`, `parsons` | spots the flaw in a proof, specification or model; orders Hoare-rule steps | answer key |
 
 All exercises save progress locally. Feedback always names what was established, such as *verified*,
@@ -378,7 +489,7 @@ is the semantics every engine is tested against.
 
 Hook (an exhibit from the museum or a history card) → 🔮 predict → explore (the flagship) → explain →
 ✍️ specify or verify (a Vouch exercise) → 🐞 catch the bug → ⚙️ under the hood (how the engine does it, with an
-excerpt of the real code) → 🧰 you build (optional) → 🏭 in industry → 🔏 what did we prove? → what's next →
+excerpt of the real code) → 🏭 in industry → 🔏 what did we prove? → what's next →
 further reading.
 
 Standards per chapter:
@@ -389,7 +500,11 @@ Standards per chapter:
 - At least one exercise that is a verification task (`verify`, `spec`, `invariant`, `model`, `ltl` or
   `encode`).
 - One *What did we prove?* box.
-- One history card or museum exhibit, cited.
+- At least one history card or museum exhibit, cited, placed where its idea appears. Biographies for the
+  people whose idea the chapter is built on. *Under the hood* says when the algorithm appeared and what it
+  replaced.
+- Each part opener: a *How we got here* essay of 800–1,500 words with its slice of the timeline, and new
+  entries in the timeline and the family tree.
 - An *Under the hood* box wherever an engine does something non-trivial.
 - Every Vouch snippet carries its expected verdict and is checked in tests.
 
@@ -405,7 +520,6 @@ Standards per chapter:
 | Ch. 17: passive form | SSA to Silicon Ch. 4 (SSA) |
 | Ch. 19: lemmas as recursion; Ch. 20: the simulation square | *Proofs Are Programs* Ch. 11 (induction) and Ch. 17 (the compiler) |
 | Ch. 26: fixpoints on the CFG | SSA to Silicon Ch. 11 (liveness) |
-| Ch. 30: language models as oracles | Language Models from Scratch (reasoning and tools chapters) |
 
 Reciprocal *see also* links in those courses are a separate, small change made at integration (M8).
 
@@ -413,8 +527,10 @@ Reciprocal *see also* links in those courses are a separate, small change made a
 
 ```
 courses/formal-verification/
-  content/            outline.ts; chapters/<nn>-<slug>/{index.md, widgets/*.svelte, *.vouch};
-                      appendices; museum.yaml; YAML for the glossary, timeline, bibliography and terms
+  content/            outline.ts; parts/<n>-<slug>/index.md (the *How we got here* essays);
+                      chapters/<nn>-<slug>/{index.md, widgets/*.svelte, *.vouch}; appendices;
+                      museum.yaml, timeline.yaml (with lanes), lineage.yaml (tool family tree);
+                      YAML for the glossary, bibliography and terms
   src/lib/fv/         the toolchain: pure TypeScript, no DOM (it runs in workers and under Vitest)
     logic/            sorts, terms, formulas, printer, evaluator                      (trusted)
     sat/              CDCL solver, DIMACS, DRAT output; check/ (RUP/DRAT checker)     (check/ trusted)
@@ -440,6 +556,8 @@ Quality gates (Vitest, deterministic, and in `.github/workflows/formal-verificat
   the chapters generate. The explorer is checked against BMC and IC3 on the same models.
 - **Soundness fuzzing:** every program the verifier accepts is run on random inputs with run-time contract
   checking, and no contract may fail. Every counterexample must replay.
+- **History data:** every timeline event, lineage edge, museum exhibit and biography has a bibliography key
+  that resolves, and every timeline event links to a chapter that exists.
 - `npm run check` (svelte-check, 0 errors) and `npm run build`; the root audit and the navigation and workflow
   browser checks.
 
@@ -474,14 +592,14 @@ Colour is never the only signal; ✓, ✗ and ? glyphs go with it. The index car
 | | Milestone | Contents |
 |---|---|---|
 | M0 | Plan and language | This plan agreed; `docs/VOUCH.md` (syntax, types, semantics, contract checking); `docs/AUTHORING.md`; scaffold copied from Particle Physics; the reference chapter chosen (Ch. 18) |
-| M1 | Core and first engines | `logic`, `sat` with DRAT checking, the Vouch parser, type checker and interpreter, `explore` with traces; the Workbench, badge and counterexample viewer. Benchmark: Ch. 2's models at target speed |
-| M2 | Part I | Chapters 0–5; `ltl`; the explorer, interleaving, trace-lab, message-chart and intruder widgets |
-| M3 | Part II | Chapters 6–11; `relational`, `bmc`, `bdd`; the CDCL stepper and proof viewer; the *You build* harness |
-| M4 | Part III | `smt` with every theory and its certificates; differential testing against Z3; Chapters 12–15; `symex` |
-| M5 | Part IV | `vcgen`, `heap`; Chapters 16–22; **benchmark decision** (§10) |
-| M6 | Part V | `kind`, `ic3`, `param`; Chapters 23–25 |
-| M7 | Part VI | `absint`; Chapters 26–27 |
-| M8 | Part VII and integration | Chapters 28–30, the appendices and the museum page; root build, deploy, workflow, index card, README row, reciprocal links in the bridged courses |
+| M1 | Core and first engines | `logic`, `sat` with DRAT checking, the Vouch parser, type checker and interpreter, `explore` with traces; the Workbench, badge and counterexample viewer; the timeline, family-tree and biography components with their YAML schemas. Benchmark: Ch. 2's models at target speed |
+| M2 | Part I | Chapters 0–5 and the Part I essay; `ltl`; the explorer, interleaving, trace-lab, message-chart and intruder widgets |
+| M3 | Part II | Chapters 6–11 and the Part II essay; `relational`, `bmc`, `bdd`; the CDCL stepper and proof viewer |
+| M4 | Part III | `smt` with every theory and its certificates; differential testing against Z3; Chapters 12–15 and the Part III essay; `symex` |
+| M5 | Part IV | `vcgen`, `heap`; Chapters 16–22 and the Part IV essay; **benchmark decision** (§10) |
+| M6 | Part V | `kind`, `ic3`, `param`; Chapters 23–25 and the Part V essay |
+| M7 | Part VI | `absint`; Chapters 26–27 and the Part VI essay |
+| M8 | Part VII and integration | Chapters 28–30 and the Part VII essay, the appendices, the museum page, and the full timeline and family tree reviewed end to end for coverage and citations; root build, deploy, workflow, index card, README row, reciprocal links in the bridged courses |
 
 ## 13. Risks
 
@@ -489,23 +607,23 @@ Colour is never the only signal; ✓, ✗ and ? glyphs go with it. The index car
   - every example is authored against the course's solver and kept in tests;
   - *unknown* is taught as a normal outcome (Ch. 13 and 19);
   - the M5 decision point.
-- **Scope.** There are 31 chapters and about a dozen engines. The four ◇ chapters and the *You build* track
-  can be cut without breaking the core path. One shared language and one shared expression layer keep the
-  engines small.
+- **Scope.** There are 31 chapters and about a dozen engines, and all of them ship in the first release. One
+  shared language and one shared expression layer keep the engines small. If a milestone slips, the four ◇
+  chapters are the ones that can move later without breaking the core path.
 - **Language design.** A language that is pleasant both for programs and for systems is the hardest design
   problem here. M0 writes VOUCH.md and checks it on the hardest examples (Peterson, the 2PC for every N,
   insertion sort, list reversal) before any chapter is written.
-- **Facts.** Every number, date and claim about a historical bug must be cited from a primary or reputable
+- **Facts.** History is now a through-line, so it carries more claims. Every number, date, attribution and
+  claim about a historical bug must be cited from a primary or reputable
   source in `content/bibliography.yaml`. Re-enactments say what they simplify. If a number cannot be checked,
   the chapter says less.
 
-## 14. Open questions
+## 14. Resolved questions (2026-10-03)
 
-1. **Title and names.** Do you want *For All Inputs*, *Vouch* and *The Notary*, or other names?
-2. **Length.** This plan has 31 chapters, 4 of them optional. Should a leaner first release ship the core
-   path (27 chapters) and add the ◇ chapters later?
-3. **LLM oracle.** Should the invariant workshops have an optional, bring-your-own-key button that asks a
-   language model for invariants, always checked by the verifier? It fits the trust through-line, but it is
-   the only feature that needs a network.
-4. **You build.** Is the TypeScript engine-building track wanted alongside the Vouch exercises, or should the
-   course stay purely about using and understanding the tools?
+1. **Names.** *For All Inputs* (course), *Vouch* (language) and *The Notary* (design) are agreed.
+2. **Length.** The first release ships all 31 chapters, the four ◇ chapters included.
+3. **LLM.** There is no language-model feature. The epilogue mentions language models in prose only.
+4. **Code-along.** There is no TypeScript engine-building track. The reader opens the tools by driving their
+   steppers (`drive` exercises) and by reading *Under the hood* excerpts.
+5. **History.** The evolution of the field's theories and tools is a through-line (§3, through-line 9; §4,
+   *How we got here*; §5, *Timeline* and *Family tree of tools*).
