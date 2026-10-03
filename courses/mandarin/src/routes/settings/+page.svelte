@@ -131,12 +131,12 @@
     <h2>AI conversation partner <span class="opt-tag ui">Optional</span></h2>
     <p class="ui note">The teacher chat, role-plays and sentence feedback use your chosen provider. Keys stay in this browser; messages and lesson context go directly to {providerInfo.host}. Usage is billed to your {providerInfo.name} account. Everything else works without AI.</p>
     <label class="row ui">Provider
-      <select value={settings.data.provider} onchange={(e) => { if (isProvider(e.currentTarget.value)) settings.set('provider', e.currentTarget.value); }}>
+      <select aria-label="Provider" value={settings.data.provider} onchange={(e) => { if (isProvider(e.currentTarget.value)) settings.set('provider', e.currentTarget.value); }}>
         {#each Object.entries(PROVIDERS) as [id, info] (id)}<option value={id}>{info.name}</option>{/each}
       </select>
     </label>
     <label class="row ui">{providerInfo.name} API key
-      <input type="password" bind:value={keyDraft} placeholder={providerInfo.placeholder} autocomplete="off" spellcheck="false" />
+      <input type="password" aria-label="{providerInfo.name} API key" bind:value={keyDraft} placeholder={providerInfo.placeholder} autocomplete="off" spellcheck="false" />
       <button class="btn small" onclick={saveKey}>{keySaved ? 'Saved' : 'Save'}</button>
     </label>
     <label class="row ui">Model

@@ -53,6 +53,9 @@ test('word-list rows align and a short viewport keeps every word-card control re
   await word.click();
   const card = page.getByRole('dialog', { name: 'Word: 五' });
   await expect(card).toBeVisible();
+  // A queued scroll event after opening must not dismiss an unmoved anchor.
+  await page.evaluate(() => window.dispatchEvent(new Event('scroll')));
+  await expect(card).toBeVisible();
   const rect = await card.boundingBox();
   expect(rect!.y).toBeGreaterThanOrEqual(8);
   expect(rect!.y + rect!.height).toBeLessThanOrEqual(293);
@@ -60,6 +63,10 @@ test('word-list rows align and a short viewport keeps every word-card control re
   await card.getByRole('button', { name: 'Close word card' }).click();
   await expect(card).toHaveCount(0);
   await expect(word).toBeFocused();
+  await word.click();
+  await expect(card).toBeVisible();
+  await page.evaluate(() => window.scrollBy(0, 50));
+  await expect(card).toHaveCount(0);
 });
 
 test('normal and slow audio have distinct active states and stop does not hang the word list', async ({ page }) => {

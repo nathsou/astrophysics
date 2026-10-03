@@ -32,7 +32,8 @@
     void seq.round;
     typed = '';
     last = null;
-    if (data.listen) setTimeout(() => void speech.say(item.zh), 250);
+    const timer = data.listen ? setTimeout(() => void speech.say(item.zh), 250) : undefined;
+    return () => clearTimeout(timer);
   });
 
   function check(e?: Event) {

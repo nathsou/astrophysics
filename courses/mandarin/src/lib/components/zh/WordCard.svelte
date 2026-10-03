@@ -29,7 +29,12 @@
     if (popover.token && card && !card.contains(e.target as Node)) popover.close();
   }
   function onScroll(e: Event) {
-    if (popover.token && !(e.target instanceof Node && card?.contains(e.target))) popover.close();
+    if (!popover.token || (e.target instanceof Node && card?.contains(e.target))) return;
+    // A scroll-into-view event can arrive after the click that opened the card.
+    // Dismiss only if the anchor moved since opening, not for a queued event.
+    const now = popover.opener?.getBoundingClientRect();
+    const anchor = popover.anchor;
+    if (!now || !anchor || Math.abs(now.top - anchor.top) > 0.5 || Math.abs(now.left - anchor.left) > 0.5) popover.close();
   }
 </script>
 

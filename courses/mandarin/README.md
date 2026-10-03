@@ -24,8 +24,10 @@ deck, a practice arcade, a word list, mock exams and a placement check.
   builder and the pinyin chart.
 - **Mock exams** in HSK 1 and 2 formats, a **placement check**, and a **word list** of every
   HSK 1–3 word in three syllabuses (2025, 2021 "HSK 3.0" and HSK 2.0).
-- **Optional AI partner**: role-plays and sentence feedback use Claude with the learner's own
-  Anthropic API key (kept in their browser). The course is complete without it.
+- **Optional AI partner**: a teacher chat is available on every page for course questions or
+  Mandarin conversation, alongside role-plays and sentence feedback. Choose Anthropic, OpenAI
+  or OpenRouter with your own API key, stored in your browser. Pinyin tone keys and a
+  dictionary-assisted character keyboard help with typing. The course is complete without AI.
 
 Every word of the 2025 HSK 1 and 2 syllabus is taught in some lesson; `content/coverage.test.ts`
 enforces this.
@@ -38,10 +40,33 @@ npm run dev        # http://localhost:5173
 npm test           # library, content, coverage and exam tests
 npm run check      # svelte-check
 npm run build      # static site in dist/
+npx playwright install chromium
+npm run test:browser # every lesson, practice tool and teacher workflow in four layouts
 ```
 
 Progress, settings and the review deck live in the learner's browser (`localStorage`), with
 export and import in Settings.
+
+## AI teacher
+
+Open **Teacher** from any page. **Course questions** uses the current lesson, section and
+course outline; **Converse in Mandarin** gives short Chinese replies, translations and useful
+corrections. The teacher also sees your starting level, self-reviewed lessons and words in
+your review deck, without treating them as mastered. Conversations stay in memory across
+course navigation and are cleared on reload; the two modes keep separate conversations.
+
+Use **Keyboard** to insert tone-marked vowels or find dictionary words from plain, marked or
+numbered pinyin (`ni hao`, `nǐ hǎo`, `ni3 hao3`). This is a dictionary-assisted keyboard; your
+device’s Chinese IME remains available for other words. Shift+Enter inserts a new line.
+
+Select a provider in **Settings → AI conversation partner** and save its API key. Each provider
+keeps its own key and model ID; existing Anthropic settings are migrated. Keys are kept in
+localStorage, and messages plus lesson context go directly to the selected provider:
+`api.anthropic.com`, `api.openai.com` or `openrouter.ai`. Usage is billed to that account.
+Backups omit every API key, and importing a backup preserves the keys already on the device.
+Text-chat models use the provider’s standard text endpoint; the teacher can be mistaken.
+
+See [the course audit](docs/AUDIT.md) for fixes and validation scope.
 
 ## Audio
 

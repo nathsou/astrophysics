@@ -111,3 +111,29 @@ test('provider changes keep keys separate and backups contain no credentials', a
   expect(backup).not.toContain('browser-test-key');
   expect(Object.values(JSON.parse(backup).settings.tutors).every((profile: any) => profile.apiKey === '')).toBe(true);
 });
+
+test('editing a sentence clears feedback and restarting a roleplay cancels pending review', async ({ page }) => {
+  await configure(page);
+  await page.route('https://api.openai.com/**', async route => {
+    const system = route.request().postDataJSON().messages[0].content;
+    if (system.includes('reviewing a short practice conversation')) return;
+    const content = system.includes('check single sentences')
+      ? '<verdict>correct</verdict><better>我有一个妹妹。</better><explain>Good use of 有.</explain>'
+      : '<reply>很好！</reply><en>Very good!</en><fix></fix><done>yes</done>';
+    await route.fulfill({ json: { choices: [{ message: { content } }] } });
+  });
+  await page.goto('/learn/08-family/');
+  const sentence = page.getByRole('textbox', { name: 'Your sentence' });
+  await sentence.fill('我有一个妹妹。');
+  await page.getByRole('button', { name: 'Check my sentence' }).click();
+  await expect(page.locator('.result.correct')).toBeVisible();
+  await sentence.fill('我有妹妹');
+  await expect(page.locator('.result.correct')).toHaveCount(0);
+  await page.getByRole('textbox', { name: 'Your reply' }).fill('你好');
+  await page.locator('.rp').getByRole('button', { name: 'Send', exact: true }).click();
+  await expect(page.locator('.rp .review')).toContainText('Reading your conversation');
+  await page.getByRole('button', { name: 'Start over' }).click();
+  await expect(page.getByRole('textbox', { name: 'Your reply' })).toBeEnabled();
+  await expect(page.locator('.rp .review')).toHaveCount(0);
+  await expect(page.locator('.rp .log .msg')).toHaveCount(1);
+});
