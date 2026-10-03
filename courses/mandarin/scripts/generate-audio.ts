@@ -194,8 +194,17 @@ async function check(item: Item, mp3: Buffer, samples: Float32Array | null): Pro
   if (!want.length) return null;
   const heard = (await transcribe(mp3)).replace(/[^\p{Script=Han}]/gu, '');
   const got = toneless(pinyin(heard, { toneType: 'symbol' }));
-  const allowed = want.length <= 3 ? 0 : Math.floor(want.length * 0.15);
-  if (distance(want, got) > allowed) return { problem: `heard “${heard}” (${got.join(' ')}), expected ${want.join(' ')}`, heard, kind: 'text' };
+  if (/\d/.test(item.text)) {
+    // Digits are spoken as several syllables each; only check nothing extra was added.
+    if (got.length > want.length + item.text.replace(/\D/g, '').length + 2) return { problem: `heard “${heard}”: too long`, heard, kind: 'text' };
+  } else if (want.length <= 2) {
+    // Recognisers often mishear a syllable said on its own (个 as 课), so for single words
+    // only reject recordings that clearly say more than the word.
+    if (got.length > want.length + 1) return { problem: `heard “${heard}” (${got.join(' ')}), expected ${want.join(' ')}`, heard, kind: 'text' };
+  } else {
+    const allowed = Math.max(1, Math.floor(want.length * 0.15));
+    if (distance(want, got) > allowed) return { problem: `heard “${heard}” (${got.join(' ')}), expected ${want.join(' ')}`, heard, kind: 'text' };
+  }
   const syl = item.py.split(/\s+/);
   if (samples && syl.length === 1) {
     const tone = toneOfSyllable(syl[0]!);
