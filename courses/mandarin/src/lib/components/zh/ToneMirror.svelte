@@ -5,7 +5,7 @@
    * recording never leaves the browser.
    */
   import { annotate } from '$lib/zh/annotate';
-  import { analyse, targetContour, TONE_NAMES, type Analysis } from '$lib/audio/tones';
+  import { analyse, targetContour, TONE_NAMES, CONFIDENT, type Analysis } from '$lib/audio/tones';
   import { Recorder, playRecording, type Recording } from '$lib/audio/recorder';
   import { learnVoice, loadVoice } from '$lib/audio/voice';
   import { settings } from '$lib/state/settings.svelte';
@@ -24,6 +24,8 @@
   let result = $state<Analysis | null>(null);
   let rec = $state<Recording | null>(null);
   let error = $state('');
+  /** Whether the speaker's typical pitch was known when the last recording was judged. */
+  let calibrated = $state(false);
   let recorder: Recorder | null = null;
   let liveRef = 0;
 
@@ -81,12 +83,16 @@
       const r = await recorder.start();
       rec = r;
       const voiced = r.pitch.filter((x): x is number => !!x).sort((a, b) => a - b);
-      const a = analyse(r.pitch, 0.01, loadVoice());
+      const known = loadVoice();
+      calibrated = !!known;
+      const a = analyse(r.pitch, 0.01, known);
       if (voiced.length > 10) learnVoice(voiced[Math.floor(voiced.length / 2)]!);
       result = a;
       phase = 'done';
-      if (single && a.tone) {
-        const ok = a.tone === syl[0]!.tone || (syl[0]!.tone === 5 && a.tone !== null);
+      // Without the speaker's level, a rising third tone cannot be told from a second: no verdict.
+      const ambiguous = syl[0]?.tone === 3 && a.tone === 2 && !calibrated;
+      if (single && a.tone && a.confidence >= CONFIDENT && !ambiguous) {
+        const ok = a.tone === syl[0]!.tone || syl[0]!.tone === 5;
         sfx(ok ? 'right' : 'wrong', settings.data.sounds);
         onresult?.(ok);
       } else onresult?.(null);
@@ -98,10 +104,11 @@
 
   const verdict = $derived.by(() => {
     if (!result || !single) return null;
-    if (!result.tone) return { ok: null, text: result.reason };
+    if (!result.tone || result.confidence < CONFIDENT) return { ok: null, text: result.reason };
     const want = syl[0]!.tone;
     if (want === 5) return { ok: true, text: 'Neutral tones are short and light; yours sounds fine.' };
     if (result.tone === want) return { ok: true, text: `${result.reason} Exactly what we wanted.` };
+    if (want === 3 && result.tone === 2 && !calibrated) return { ok: null, text: 'That rose like a second tone. A third tone dips lower first, and stays low: try starting lower. (The mirror judges level better after a few recordings.)' };
     return { ok: false, text: `I heard a ${TONE_NAMES[result.tone]}. The target is the ${TONE_NAMES[want]}.` };
   });
 </script>
