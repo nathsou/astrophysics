@@ -13,7 +13,10 @@ deck, a practice arcade, a word list, mock exams and a placement check.
   Activities include dialogues with a shadowing mode, scripted scenes, graded stories, sentence
   builders, tone and pinyin drills, writing with stroke order, and the tone mirror.
 - **Tone mirror**: records the learner, tracks pitch in the browser (YIN), draws the contour over
-  the target tone shapes and names the tone it heard. Recordings never leave the device.
+  the target tone shapes and names the tone it heard, by comparing the contour with 300 recorded
+  syllables in four voices plus textbook shapes. It only gives a verdict when it is confident
+  (right about 93% of the time on unseen voices) and says so when it is not. Recordings never
+  leave the device.
 - **Review deck**: FSRS spaced repetition (ts-fsrs) with reading, listening and speaking cards.
   Finishing a lesson adds its words.
 - **Practice**: word blitz, tone detective, tone pairs, number drills (numbers, prices, times,
@@ -51,12 +54,18 @@ npm run audio -- --env path/to/.env      # generate clips -> static/audio/*.mp3 
 ```
 
 The script reads `OPENAI_API_KEY` from the environment or a `.env` file (`--env`, else `./.env`,
-the repository's `.env`, or a `.env` in the folder containing the repository). Without
-`--model` it picks the newest steerable speech model the API lists (`gpt-*-tts`). Options:
-`--voice coral`, `--tiers words,lessons,extras`, `--format mp3|aac|opus`, `--limit N`,
-`--dry-run`. It skips clips that already exist, so it can be stopped and resumed. About 2,750
-clips cover every word card, review card, lesson, exam and widget; text generated on the fly
-(number drills, the town map) uses the browser voice.
+the repository's `.env`, or a `.env` in the folder containing the repository); behind a proxy
+that adds the credential itself, run it with `NODE_USE_ENV_PROXY=1`. Without `--model` it picks
+the newest steerable speech model the API lists (`gpt-*-tts`). Options: `--voice coral`,
+`--tiers words,lessons,extras`, `--limit N`, `--concurrency N`, `--no-verify`, `--dry-run`.
+
+Every clip is trimmed of silence and re-encoded as mono 40 kbps MP3 (with ffmpeg), then checked:
+it is transcribed and compared with the expected reading, and single syllables go through the
+course's tone classifier. Failures are retried; short clips with the wrong words are left to the
+browser voice, and anything doubtful is listed in `static/audio/qa.json` for a human to check.
+The script skips clips that already exist, so it can be stopped and resumed. About 2,750 clips
+cover every word card, review card, lesson, exam and widget; text generated on the fly (number
+drills, the town map) uses the browser voice.
 
 ## Regenerating derived data
 

@@ -28,7 +28,7 @@ export function collect(root: string): Map<string, Tier> {
   const out = new Map<string, Tier>();
   const add = (text: string, tier: Tier) => {
     const k = clipKey(text);
-    if (!k || !HAN.test(k) || k.length > 400) return;
+    if (!k || !HAN.test(k) || k.length > 400 || k.includes('〇')) return;
     // Lower tiers win: a word needed by a lesson is a "words" clip.
     const order: Tier[] = ['words', 'lessons', 'extras'];
     const prev = out.get(k);

@@ -58,13 +58,24 @@ export function yin(frame: Float32Array, opts: PitchOptions): number | null {
   return sampleRate / (tau + shift);
 }
 
-/** Track pitch through a whole recording: one value (Hz or null) per hop. */
-export function track(samples: Float32Array, opts: PitchOptions & { frame?: number; hop?: number }): (number | null)[] {
+/**
+ * Track pitch through a whole recording: one value (Hz or null) per hop. Frames quieter than
+ * `relRms` × the loudest frame count as silence, so the quiet end of a falling or creaky tone
+ * is still tracked whatever the recording level.
+ */
+export function track(samples: Float32Array, opts: PitchOptions & { frame?: number; hop?: number; relRms?: number }): (number | null)[] {
   const frame = opts.frame ?? Math.round(opts.sampleRate * 0.04);
   const hop = opts.hop ?? Math.round(opts.sampleRate * 0.01);
-  const out: (number | null)[] = [];
+  const rms: number[] = [];
   for (let start = 0; start + frame <= samples.length; start += hop) {
-    out.push(yin(samples.subarray(start, start + frame), opts));
+    let e = 0;
+    for (let i = start; i < start + frame; i++) e += samples[i]! * samples[i]!;
+    rms.push(Math.sqrt(e / frame));
+  }
+  const floor = Math.max(opts.minRms ?? 0.004, (opts.relRms ?? 0.08) * Math.max(0, ...rms));
+  const out: (number | null)[] = [];
+  for (let k = 0, start = 0; start + frame <= samples.length; k++, start += hop) {
+    out.push(rms[k]! < floor ? null : yin(samples.subarray(start, start + frame), { threshold: 0.25, ...opts, minRms: 0 }));
   }
   return out;
 }

@@ -7,6 +7,7 @@ import { describe, expect, it } from 'vitest';
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { collect, clipKey } from './collect';
+import { annotate } from '$lib/zh/annotate';
 
 const root = join(__dirname, '../..');
 
@@ -18,7 +19,10 @@ describe('audio texts', () => {
   });
   it('writes the clip list', () => {
     if (!process.env.WRITE) return;
-    const list = [...texts].sort(([a], [b]) => (a < b ? -1 : 1)).map(([text, tier]) => ({ text, tier }));
+    // The expected reading lets the generator check each clip (transcription and tone).
+    const list = [...texts]
+      .sort(([a], [b]) => (a < b ? -1 : 1))
+      .map(([text, tier]) => ({ text, tier, py: annotate(text).flatMap((t) => t.s?.map((s) => s.py) ?? []).join(' ') }));
     writeFileSync(join(root, 'static/audio/texts.json'), JSON.stringify(list, null, 0).replace(/\},\{/g, '},\n{') + '\n');
     const by = (t: string) => list.filter((x) => x.tier === t).length;
     console.log(`${list.length} clips: ${by('words')} words, ${by('lessons')} lesson texts, ${by('extras')} extras`);

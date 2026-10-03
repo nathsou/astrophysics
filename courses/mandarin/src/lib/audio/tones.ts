@@ -1,15 +1,24 @@
 /**
  * Recognising a Mandarin tone from a pitch track, and drawing it on Chao's five-level scale.
  *
- * Tones are shapes, not absolute pitches, so the classifier looks at the contour in semitones:
- * how much it rises and falls, and where its lowest point is. Level only matters to tell a
- * high flat first tone from a low flat third tone, and that uses the speaker's own voice range,
- * learned from their recordings.
+ * Real syllables are messier than textbook contours: a second tone dips before it rises, a
+ * third tone often goes creaky (pitch trackers halve it), and a fourth can rise briefly before
+ * it falls. So rather than hand-written rules, the classifier compares the learner's contour
+ * with 300 recorded examples (75 syllables in four voices, fixtures/tts-tones.json) and lets the
+ * nine nearest vote. The shape is compared in semitones around the syllable's own average; once
+ * the course knows the speaker's typical pitch it also compares the level, which is what tells
+ * a low, level third tone from a first tone. Idealised textbook contours are added as templates
+ * so that clean, exaggerated learner tones are recognised too. On held-out voices, with the
+ * speaker's level known, it is right about 87% of the time and 93% when the vote is clear (85% of
+ * syllables); unclear votes are reported as unsure. tones.test.ts measures this.
  */
 import type { Tone } from '$lib/zh/pinyin';
+import FIXTURE from './fixtures/tts-tones.json' with { type: 'json' };
+
+type Tone4 = Exclude<Tone, 5>;
 
 /** Chao tone letters: the target contour of each tone on a 1 (low) to 5 (high) scale. */
-export const CHAO: Record<Exclude<Tone, 5>, number[]> = {
+export const CHAO: Record<Tone4, number[]> = {
   1: [5, 5],
   2: [3, 5],
   3: [2, 1, 4],
@@ -24,46 +33,40 @@ export const TONE_NAMES: Record<Tone, string> = {
   5: 'neutral tone',
 };
 
+const REASONS: Record<Tone4, string> = {
+  1: 'Your pitch stayed high and level: a first tone.',
+  2: 'Your pitch rose: a second tone.',
+  3: 'Your pitch dipped low: a third tone.',
+  4: 'Your pitch fell: a fourth tone.',
+};
+
 export interface Analysis {
-  tone: Exclude<Tone, 5> | null;
-  /** The voiced part of the contour, smoothed, on the Chao scale, 24 points. */
+  tone: Tone4 | null;
+  /** Share of the neighbours' vote won by `tone` (0–1). Below 0.7 the verdict is unsure. */
+  confidence: number;
+  /** The voiced part of the contour, smoothed, on the Chao scale, 24 points (for drawing). */
   chao: number[];
   /** Duration of the voiced part in seconds. */
   seconds: number;
   /** Why the classifier decided, in words a learner can use. */
   reason: string;
-  features: { rise: number; fall: number; net: number; span: number; minPos: number; level: number };
 }
+
+export interface Voice {
+  /** The speaker's typical pitch (Hz); the middle of their range. */
+  mid: number;
+}
+
+export const CONFIDENT = 0.7;
+const N = 12;
+const K = 9;
+const LEVEL_WEIGHT = 2;
 
 export const semitones = (hz: number, ref: number) => 12 * Math.log2(hz / ref);
-
-/** The longest voiced stretch, bridging gaps of up to `gap` frames. */
-export function voicedSegment(track: (number | null)[], gap = 4): number[] {
-  let best: number[] = [];
-  let cur: number[] = [];
-  let silent = 0;
-  for (const f of track) {
-    if (f) {
-      cur.push(f);
-      silent = 0;
-    } else if (cur.length && ++silent > gap) {
-      if (cur.length > best.length) best = cur;
-      cur = [];
-      silent = 0;
-    }
-  }
-  if (cur.length > best.length) best = cur;
-  return best;
-}
 
 function median(xs: number[]): number {
   const s = [...xs].sort((a, b) => a - b);
   return s[Math.floor(s.length / 2)] ?? 0;
-}
-
-function medianFilter(xs: number[], k = 5): number[] {
-  const h = Math.floor(k / 2);
-  return xs.map((_, i) => median(xs.slice(Math.max(0, i - h), i + h + 1)));
 }
 
 function resample(xs: number[], n: number): number[] {
@@ -76,20 +79,104 @@ function resample(xs: number[], n: number): number[] {
   });
 }
 
-/** Remove octave jumps (a common pitch-tracker error) by folding outliers back toward the median. */
-function fixOctaves(hz: number[]): number[] {
+/** The voiced stretch, gaps filled by interpolation, octave slips folded back. Null if too short. */
+export function voicedContour(track: (number | null)[]): { hz: number[]; frames: number } | null {
+  const idx = track.flatMap((f, i) => (f ? [i] : []));
+  if (idx.length < 6) return null;
+  const hz: number[] = [];
+  for (let i = idx[0]!; i <= idx[idx.length - 1]!; i++) {
+    const f = track[i];
+    if (f) {
+      hz.push(f);
+      continue;
+    }
+    const p = idx.filter((k) => k < i).pop()!;
+    const n = idx.find((k) => k > i)!;
+    hz.push(track[p]! + ((track[n]! - track[p]!) * (i - p)) / (n - p));
+  }
   const m = median(hz);
-  return hz.map((f) => {
-    let x = f;
-    while (x > m * 1.7) x /= 2;
-    while (x < m / 1.7) x *= 2;
-    return x;
+  // Pitch trackers jump an octave up on some frames; creaky voice reads as an octave down,
+  // and is genuinely low, so it is held at the bottom rather than folded up.
+  return { hz: hz.map((f) => (f > m * 1.7 ? f / 2 : f < m / 1.7 ? m / 1.7 : f)), frames: idx.length };
+}
+
+/** Feature vector: 12-point shape (semitones around its mean) and level relative to the speaker. */
+export function features(track: (number | null)[], mid?: number): number[] | null {
+  const v = voicedContour(track);
+  if (!v) return null;
+  const m = median(v.hz);
+  const st = v.hz.map((f) => semitones(f, m));
+  const core = st.slice(Math.floor(st.length * 0.1));
+  const smooth = core.map((_, i) => median(core.slice(Math.max(0, i - 2), i + 3)));
+  const shape = resample(smooth, N);
+  const mean = shape.reduce((a, b) => a + b, 0) / N;
+  const level = mid ? semitones(m, mid) + mean : 0;
+  return [...shape.map((x) => x - mean), level * LEVEL_WEIGHT];
+}
+
+export interface Template {
+  tone: Tone4;
+  voice: string;
+  x: number[];
+}
+
+type FixtureRow = { voice: string; ch: string; tone: number; hz: number[] };
+
+/** Templates from the recorded fixture, each voice levelled against its own median pitch. */
+export function buildTemplates(rows: FixtureRow[] = FIXTURE as FixtureRow[]): Template[] {
+  const mids = new Map<string, number>();
+  for (const v of new Set(rows.map((r) => r.voice))) mids.set(v, median(rows.filter((r) => r.voice === v).flatMap((r) => r.hz.filter((x) => x > 0))));
+  return rows.flatMap((r) => {
+    const x = features(
+      r.hz.map((h) => h || null),
+      mids.get(r.voice),
+    );
+    return x ? [{ tone: r.tone as Tone4, voice: r.voice, x }] : [];
   });
 }
 
-export interface Voice {
-  /** The speaker's typical pitch (Hz); the middle of their range. */
-  mid: number;
+/**
+ * Textbook contours at several sizes, so clean, exaggerated learner tones (a straight rise, a
+ * deep dip) are recognised as well as natural speech. Level is in semitones from the speaker's
+ * middle, as for recorded templates.
+ */
+export function idealTemplates(): Template[] {
+  const out: Template[] = [];
+  const add = (tone: Tone4, semis: (t: number) => number, level: number) => {
+    const frames = Array.from({ length: 40 }, (_, i) => 200 * 2 ** (semis(i / 39) / 12));
+    const x = features(frames, 200 * 2 ** (-level / 12));
+    if (x) out.push({ tone, voice: 'ideal', x });
+  };
+  for (const k of [0.7, 1, 1.4, 1.8]) {
+    add(1, () => 0, 5 * k);
+    add(2, (t) => -3 * k + 6 * k * t, 0.5 * k);
+    add(2, (t) => (t < 0.3 ? -2 * k - t * k : -2.3 * k + ((t - 0.3) / 0.7) * 6 * k), 0);
+    add(3, (t) => (t < 0.55 ? -2 * k * (t / 0.55) : -2 * k + ((t - 0.55) / 0.45) * 4 * k), -4 * k);
+    add(3, (t) => -1.5 * k * t, -6 * k);
+    add(3, (t) => (t < 0.5 ? -2.5 * k * (t / 0.5) : -2.5 * k + ((t - 0.5) / 0.5) * 7.5 * k), -2 * k);
+    add(4, (t) => 4 * k - 9 * k * t, 1.5 * k);
+  }
+  return out;
+}
+
+let TEMPLATES: Template[] | null = null;
+
+/** k-nearest-neighbour vote. Without a speaker level, the level dimension is ignored. */
+export function vote(x: number[], templates: Template[], useLevel: boolean): { tone: Tone4; confidence: number } {
+  const dims = useLevel ? x.length : x.length - 1;
+  const near = templates
+    .map((t) => {
+      let d = 0;
+      for (let i = 0; i < dims; i++) d += (t.x[i]! - x[i]!) ** 2;
+      return { tone: t.tone, d };
+    })
+    .sort((a, b) => a.d - b.d)
+    .slice(0, K);
+  const votes = new Map<Tone4, number>();
+  for (const n of near) votes.set(n.tone, (votes.get(n.tone) ?? 0) + 1 / (1 + n.d));
+  const ranked = [...votes].sort((a, b) => b[1] - a[1]);
+  const total = ranked.reduce((s, [, w]) => s + w, 0);
+  return { tone: ranked[0]![0], confidence: ranked[0]![1] / total };
 }
 
 /**
@@ -97,65 +184,22 @@ export interface Voice {
  * there is too little voiced sound to judge.
  */
 export function analyse(track: (number | null)[], hopSeconds: number, voice?: Voice): Analysis {
-  const seg = voicedSegment(track);
-  const empty: Analysis = { tone: null, chao: [], seconds: 0, reason: '', features: { rise: 0, fall: 0, net: 0, span: 0, minPos: 0, level: 0 } };
-  if (seg.length < 8) return { ...empty, reason: 'I could not hear a clear voiced syllable. Try again, a little louder and longer.' };
+  const v = voicedContour(track);
+  if (!v || v.frames < 8) return { tone: null, confidence: 0, chao: [], seconds: 0, reason: 'I could not hear a clear voiced syllable. Try again, a little louder and longer.' };
+  const x = features(track, voice?.mid)!;
+  TEMPLATES ??= [...buildTemplates(), ...idealTemplates()];
+  const { tone, confidence } = vote(x, TEMPLATES, !!voice);
 
-  // Trim the unstable onset and release (consonant transitions, creak).
-  const trim = Math.floor(seg.length * 0.1);
-  const core = fixOctaves(seg.slice(trim, seg.length - trim || undefined));
-  const mid = voice?.mid ?? median(core);
-  const st = resample(medianFilter(core.map((f) => semitones(f, mid))), 24);
-
-  const start = (st[0]! + st[1]!) / 2;
-  const end = (st[22]! + st[23]!) / 2;
-  let minI = 0;
-  st.forEach((v, i) => {
-    if (v < st[minI]!) minI = i;
-  });
-  const min = st[minI]!;
-  const max = Math.max(...st);
-  const features = {
-    rise: end - min,
-    fall: start - min,
-    net: end - start,
-    span: max - min,
-    minPos: minI / 23,
-    level: st.reduce((a, b) => a + b, 0) / st.length,
-  };
-  const { rise, fall, net, span, minPos, level } = features;
-
-  let tone: Exclude<Tone, 5>;
-  let reason: string;
-  if (span < 1.8) {
-    if (voice && level < -2.5) {
-      tone = 3;
-      reason = 'Level and low in your voice: that is a (half) third tone.';
-    } else {
-      tone = 1;
-      reason = 'Your pitch stayed level, which is the first tone.';
-    }
-  } else if (fall >= 1.2 && rise >= 1.2 && minPos > 0.25 && minPos < 0.85) {
-    tone = 3;
-    reason = 'Your pitch dipped and came back up, which is the third tone.';
-  } else if (net <= -1.8 || (fall > rise && minPos >= 0.6)) {
-    tone = 4;
-    reason = 'Your pitch fell, which is the fourth tone.';
-  } else if (net >= 1.8 || (rise > fall && minPos <= 0.4)) {
-    tone = minPos > 0.3 && fall > 1.5 ? 3 : 2;
-    reason = tone === 2 ? 'Your pitch rose, which is the second tone.' : 'Your pitch dipped before rising, which is the third tone.';
-  } else {
-    tone = 1;
-    reason = 'Your pitch hardly moved, which sounds like the first tone.';
-  }
-
-  // Chao scale: about 2.5 semitones per level around the speaker's middle (level 3).
-  const centre = voice ? 0 : level;
-  const chao = st.map((v) => Math.max(0.6, Math.min(5.4, 3 + (v - centre) / 2.5)));
-  return { tone, chao, seconds: seg.length * hopSeconds, reason, features };
+  // For drawing: about 2.5 semitones per Chao level, centred on the speaker (or the syllable).
+  const ref = voice?.mid ?? median(v.hz);
+  const st = resample(v.hz.map((f) => semitones(f, ref)), 24);
+  const smooth = st.map((_, i) => median(st.slice(Math.max(0, i - 2), i + 3)));
+  const chao = smooth.map((s) => Math.max(0.6, Math.min(5.4, 3 + s / 2.5)));
+  const reason = confidence >= CONFIDENT ? REASONS[tone] : 'I am not sure which tone that was. Compare your line with the target shape.';
+  return { tone, confidence, chao, seconds: v.frames * hopSeconds, reason };
 }
 
 /** The target contour of a tone, as `n` points on the Chao scale (for drawing). */
-export function targetContour(tone: Exclude<Tone, 5>, n = 24): number[] {
+export function targetContour(tone: Tone4, n = 24): number[] {
   return resample(CHAO[tone], n);
 }
