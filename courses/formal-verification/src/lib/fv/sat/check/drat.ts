@@ -20,25 +20,55 @@ export interface DratResult {
 
 const key = (c: readonly number[]) => [...c].sort((a, b) => a - b).join(' ');
 
-export function checkDrat(input: number[][], proof: readonly ProofLine[], theory?: (clause: number[]) => boolean): DratResult {
-  // The clause database, as a multiset keyed by sorted literals.
-  const db = new Map<string, { clause: number[]; count: number }>();
-  const add = (c: number[]) => {
+/** The clause database: a multiset of clauses keyed by their sorted literals, with occurrence lists. */
+class Db {
+  private byKey = new Map<string, { clause: number[]; count: number }>();
+  /** literal → clauses containing it (clauses are shared arrays; deleted ones are skipped). */
+  private occ = new Map<number, Set<number[]>>();
+  units: number[][] = [];
+
+  add(c: number[]): void {
     const k = key(c);
-    const e = db.get(k);
-    if (e) e.count++;
-    else db.set(k, { clause: [...c], count: 1 });
-  };
+    const e = this.byKey.get(k);
+    if (e) {
+      e.count++;
+      return;
+    }
+    const clause = [...c];
+    this.byKey.set(k, { clause, count: 1 });
+    for (const l of clause) {
+      let s = this.occ.get(l);
+      if (!s) this.occ.set(l, (s = new Set()));
+      s.add(clause);
+    }
+    if (clause.length === 1) this.units.push(clause);
+  }
+
+  delete(c: number[]): void {
+    const k = key(c);
+    const e = this.byKey.get(k);
+    if (!e || --e.count > 0) return;
+    this.byKey.delete(k);
+    for (const l of e.clause) this.occ.get(l)?.delete(e.clause);
+    if (e.clause.length === 1) this.units = this.units.filter((u) => u !== e.clause);
+  }
+
+  clausesWith(l: number): Iterable<number[]> {
+    return this.occ.get(l) ?? [];
+  }
+}
+
+export function checkDrat(input: number[][], proof: readonly ProofLine[], theory?: (clause: number[]) => boolean): DratResult {
+  const db = new Db();
   for (const c of input) {
     if (c.length === 0) return { ok: true, checked: 0 };
-    add(c);
+    db.add(c);
   }
   let checked = 0;
   for (let i = 0; i < proof.length; i++) {
     const line = proof[i]!;
     if (line.kind === 'd') {
-      const e = db.get(key(line.lits));
-      if (e && --e.count === 0) db.delete(key(line.lits));
+      db.delete(line.lits);
       continue;
     }
     if (line.kind === 't') {
@@ -48,17 +78,28 @@ export function checkDrat(input: number[][], proof: readonly ProofLine[], theory
     }
     checked++;
     if (line.lits.length === 0) return { ok: true, checked };
-    add(line.lits);
+    db.add(line.lits);
   }
   return { ok: false, message: 'The proof never derives the empty clause.', checked };
 }
 
-/** Unit propagation from `assigned` over the database. Returns true when a clause becomes false (a conflict). */
-function propagatesToConflict(db: Map<string, { clause: number[] }>, assigned: Set<number>): boolean {
-  let changed = true;
-  while (changed) {
-    changed = false;
-    for (const { clause } of db.values()) {
+/**
+ * Unit propagation from `assigned` (a set of true literals) over the database. Returns true when some clause has
+ * every literal false (a conflict). Each newly true literal l only affects the clauses containing ¬l.
+ */
+function propagatesToConflict(db: Db, assigned: Set<number>): boolean {
+  const queue = [...assigned];
+  for (const u of db.units) {
+    const l = u[0]!;
+    if (assigned.has(-l)) return true;
+    if (!assigned.has(l)) {
+      assigned.add(l);
+      queue.push(l);
+    }
+  }
+  while (queue.length) {
+    const t = queue.pop()!;
+    for (const clause of db.clausesWith(-t)) {
       let unassigned = 0;
       let last = 0;
       let satisfied = false;
@@ -70,30 +111,29 @@ function propagatesToConflict(db: Map<string, { clause: number[] }>, assigned: S
         if (!assigned.has(-l)) {
           unassigned++;
           last = l;
+          if (unassigned > 1) break;
         }
       }
-      if (satisfied) continue;
+      if (satisfied || unassigned > 1) continue;
       if (unassigned === 0) return true;
-      if (unassigned === 1) {
-        assigned.add(last);
-        changed = true;
-      }
+      assigned.add(last);
+      queue.push(last);
     }
   }
   return false;
 }
 
-function rup(db: Map<string, { clause: number[] }>, c: number[]): boolean {
+function rup(db: Db, c: number[]): boolean {
+  for (const l of c) if (c.includes(-l)) return true;
   const assigned = new Set<number>(c.map((l) => -l));
   return propagatesToConflict(db, assigned);
 }
 
 /** Resolution asymmetric tautology on the first literal (the pivot). */
-function rat(db: Map<string, { clause: number[] }>, c: number[]): boolean {
+function rat(db: Db, c: number[]): boolean {
   const p = c[0];
   if (p === undefined) return false;
-  for (const { clause } of db.values()) {
-    if (!clause.includes(-p)) continue;
+  for (const clause of [...db.clausesWith(-p)]) {
     const resolvent = [...c, ...clause.filter((l) => l !== -p)];
     if (resolvent.some((l) => resolvent.includes(-l))) continue; // a tautology is fine
     if (!rup(db, resolvent)) return false;
