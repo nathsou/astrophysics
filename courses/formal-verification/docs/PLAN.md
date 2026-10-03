@@ -59,13 +59,13 @@ appear in *In industry* callouts and in the Rosetta appendix, and none of them r
 | Reader's work | The reader **writes Vouch**: specifications, invariants, models, properties and encodings. They open the tools by **driving the engines' steppers**: choosing the decision, picking the conflict cut, choosing the pivot, applying the widening. They never write engine code | There is no TypeScript code-along track (decided 2026-10-03). *Under the hood* boxes quote the real engine code instead. |
 | Real bugs | **The bug museum**: each part re-enacts famous failures in the reader's own tools | See §3, through-line 4. Re-enactments are simplified models and are labelled as such. Every historical claim is cited. |
 | Site | SvelteKit 2 + Svelte 5, `adapter-static`, TypeScript 6, and the Markdown-with-directives compiler copied from Particle Physics | Single npm package. Output in `dist/`, base path from `BASE_PATH`. |
-| Editor | CodeMirror 6 with a Lezer grammar for Vouch | Verification gutter, hover values from counterexamples, locked regions for exercises, Unicode input for `∀ ∃ ⟹` with ASCII equivalents. |
+| Editor and LSP | CodeMirror 6, talking to **a Vouch language server (LSP)** that runs in a Web Worker | The server (`src/lib/fv/vouch/lsp/`) speaks the Language Server Protocol over a transport-agnostic JSON-RPC core: in the browser through `@codemirror/lsp-client` with a worker transport, and on the command line as `npm run vouch -- lsp --stdio` for VS Code, Neovim or Helix (setup in docs/VOUCH.md; a minimal VS Code client lives in `editors/vscode/`). Features: diagnostics (parse, type and verification results as they arrive), hover (types, contract summaries, counterexample values), completion, signature help, go to definition, find references, rename, document symbols, semantic tokens (which also drive highlighting), inlay hints (inferred types, counterexample values) and code actions (insert a suggested `decreases`, add an inferred invariant from the abstract interpreter). Verification runs incrementally per declaration, cached and cancellable. Locked regions and the gutter are CodeMirror extensions on top. |
 | Rendering | SVG for diagrams, graphs and trees. Canvas 2D for plots and large state graphs. WebGL2 only for state spaces beyond a few thousand nodes | Graph layout uses ELK (elkjs, lazy-loaded in a worker), as Digital Circuits does. No charting libraries. Respect `prefers-reduced-motion`. |
 | Sound | None | |
 | LLM | **None** | No language-model features (decided 2026-10-03). The epilogue discusses language models in prose, as one more kind of untrusted oracle. |
 | History | **The evolution of the field is a through-line** (§3, through-line 9): each part opens with an essay on how its ideas and tools developed; history cards and biographies sit where each idea appears; the course has an interactive timeline and a family tree of tools | Every date and claim is cited. Biographies use typographic monograms, as in Proofcraft, unless a portrait has a clear licence. |
 | Progress | `localStorage` for exercises, badges and settings. IndexedDB for the reader's Vouch files. Export and import as JSON | Drafts are saved before a run. Results are invalidated on edit and bound to the submitted source. |
-| Design | **"The Notary"**: certificate paper and seals by day, a night desk with gold seals by night | See §11. Shares the collection's `theme` key. |
+| Design | **"The Notary"**: certificate paper and seals by day, a night desk with gold seals by night | See §11. Shares the collection's `theme` key. Every surface follows it: the reading pages, the Workbench and editor (gutter seals, red-pencil counterexample annotations), widgets, badges, the timeline, the museum and the index card. Design tokens live in `src/lib/theme/`; widgets use only those tokens. |
 | Language | British English | |
 
 ## 3. Through-lines
@@ -521,7 +521,10 @@ Standards per chapter:
 | Ch. 19: lemmas as recursion; Ch. 20: the simulation square | *Proofs Are Programs* Ch. 11 (induction) and Ch. 17 (the compiler) |
 | Ch. 26: fixpoints on the CFG | SSA to Silicon Ch. 11 (liveness) |
 
-Reciprocal *see also* links in those courses are a separate, small change made at integration (M8).
+Inside this course, each bridge is a `:::bridge{course=… chapter=…}` callout that links to the exact chapter (and
+section) of the other course and says in one sentence what the reader will find there. At integration (M8) the
+bridged courses get reciprocal links: a short *Formal verification* callout or a line in their further-reading
+sections, added with each course's own conventions and checked by its tests.
 
 ## 10. Architecture and quality gates
 
