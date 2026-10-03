@@ -80,8 +80,8 @@ export function mountSidebar(course: string, onChange?: (state: SidebarState) =>
       } catch { /* The current view remains usable without storage. */ }
     }
     update();
-    if (media.matches && mobileOpen) {
-      revealCurrent();
+    if (media.matches ? mobileOpen : !collapsed) {
+      if (media.matches) revealCurrent();
       sidebar.querySelector<HTMLButtonElement>('[data-sidebar-toggle]')?.focus({ preventScroll: true });
     } else if (sidebar.contains(button)) {
       returnFocus?.focus({ preventScroll: true });
