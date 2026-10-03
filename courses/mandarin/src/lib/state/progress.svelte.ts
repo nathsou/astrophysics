@@ -44,6 +44,11 @@ class Progress {
     writeJSON(KEY, this.data);
   }
 
+  /** Count today towards the streak. */
+  touch(): void {
+    this.save();
+  }
+
   visit(slug: string): void {
     this.data.visited[slug] = Date.now();
     this.save();

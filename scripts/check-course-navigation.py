@@ -12,7 +12,7 @@ from playwright.sync_api import sync_playwright, expect
 BASE = (sys.argv[1] if len(sys.argv) > 1 else 'http://127.0.0.1:8000').rstrip('/')
 COURSES = ['astrophysics', 'cic', 'proofs-are-programs', 'compiler-backends',
            'incompleteness', 'elements', 'language-models', 'proofs',
-           'digital-circuits', 'particle-physics']
+           'digital-circuits', 'particle-physics', 'mandarin']
 
 
 with sync_playwright() as pw:
@@ -22,7 +22,7 @@ with sync_playwright() as pw:
     context = browser.new_context(viewport={'width': 1440, 'height': 900}, reduced_motion='reduce')
     page = context.new_page()
     page.goto(BASE + '/')
-    expect(page.locator('.grid .card')).to_have_count(10)
+    expect(page.locator('.grid .card')).to_have_count(11)
     expect(page.locator('.course-choice, .course-fit')).to_have_count(0)
 
     for course in COURSES:

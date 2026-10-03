@@ -1,0 +1,37 @@
+name: Mandarin, Out Loud — checks
+
+# Tests (library, content, HSK coverage), type checks and a build for courses/mandarin. (Deployment is in deploy.yml.)
+on:
+  push:
+    branches: [main]
+    paths: ['courses/mandarin/**', '.github/workflows/mandarin.yml']
+  pull_request:
+    paths: ['courses/mandarin/**', '.github/workflows/mandarin.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: courses/mandarin
+
+jobs:
+  site:
+    runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: --experimental-strip-types
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: courses/mandarin/package-lock.json
+      - run: npm ci
+      - name: Library, widget and content tests
+        run: npm test
+      - name: Type-check (svelte-check)
+        run: npm run check
+      - name: Build
+        run: npm run build

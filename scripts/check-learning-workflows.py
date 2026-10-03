@@ -122,12 +122,13 @@ with sync_playwright() as pw:
         ('incompleteness', '/'), ('elements', '/'),
         ('language-models', '/chapters/text-as-data/'), ('proofs', '/chapters/what-is-a-proof/'),
         ('digital-circuits', '/chapters/cmos/'), ('particle-physics', '/chapters/quantum-essentials/'),
+        ('mandarin', '/learn/06-hello/'),
     ]:
         page.set_viewport_size({'width': 390, 'height': 900})
         page.goto(BASE + '/' + course + route)
         page.wait_for_timeout(700)
         assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1'), course + ' overflows'
     assert not errors, errors
-    print('PASS mobile layout across all ten courses; no uncaught page errors', flush=True)
+    print('PASS mobile layout across all eleven courses; no uncaught page errors', flush=True)
     context.close()
     browser.close()
