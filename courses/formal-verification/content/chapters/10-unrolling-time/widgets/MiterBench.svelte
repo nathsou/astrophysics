@@ -191,7 +191,7 @@
     border-radius: var(--radius-sm);
     min-width: 0;
   }
-  h4 {
+  .miter h4 {
     margin: 0 0 0.3rem;
     font-family: var(--font-ui);
     font-weight: 700;

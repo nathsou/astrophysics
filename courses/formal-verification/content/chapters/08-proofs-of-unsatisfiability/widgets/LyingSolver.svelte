@@ -140,7 +140,7 @@
     border: 1px solid var(--line);
     border-radius: var(--radius-sm);
   }
-  h4 {
+  .liar h4 {
     margin: 0 0 0.4rem;
     font-family: var(--font-ui);
     font-weight: 700;

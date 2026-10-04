@@ -191,6 +191,19 @@ export class Stepper {
     this.check();
   }
 
+  /**
+   * Add a clause from outside the Boolean search (a theory lemma in DPLL(T)). It is checked against the current
+   * assignment at once: if it is false, that is a conflict to analyse like any other.
+   */
+  addClause(c: number[]): void {
+    this.clauses.push([...c]);
+    if (this.status === 'unsat') return;
+    this.status = 'running';
+    this.conflict = -1;
+    this.analysis = undefined;
+    this.check();
+  }
+
   /** One automatic step: propagate if possible, else resolve a conflict, else decide. */
   step(): void {
     if (this.status === 'conflict') return this.learnAndBackjump();
