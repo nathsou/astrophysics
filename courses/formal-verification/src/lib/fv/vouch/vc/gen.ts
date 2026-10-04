@@ -578,11 +578,43 @@ class VcGen {
       const pre = this.formula(r.value, fcx);
       this.oblige(cx, pre, cx.spec ? 'well-formed' : 'precondition', e.span, `The precondition of ${d.name}${r.label ? ` (${r.label})` : ''}`);
     }
-    if (!d.body || isBlockBody(d.body)) throw new Unsupported(`${d.name} has no expression body`);
+    // A pure function without a body is uninterpreted: only its contract is known (chapter 12).
+    if (!d.body) return scalar(this.uninterpretedApp(info, args, cx));
+    if (isBlockBody(d.body)) throw new Unsupported(`${d.name} has no expression body`);
     if (!this.recursive.has(d.name)) return this.ex(d.body as A.Expr, fcx);
     // Recursive: an uninterpreted function with its definition as an axiom.
     if (this.info.decl.name === d.name && this.measureAtEntry && !cx.spec) this.checkMeasure(cx, d, args, e.span);
     return scalar(this.recursiveApp(info, args));
+  }
+
+  /** An application of a bodiless pure function: an uninterpreted symbol, with its postcondition as an axiom. */
+  private uninterpretedApp(info: FnInfo, args: SVal[], cx?: Cx): Term {
+    const d = info.decl;
+    const resTy = info.result?.ty ?? { k: 'bool' as const };
+    if (!isScalarTy(resTy)) throw new Unsupported(`${d.name} has no body and returns a compound value`);
+    const name = d.name;
+    const out = app(name, args.flatMap((a) => this.flatten(a, cx)), d.flavour === 'pred' ? BOOL : sortOf(resTy));
+    if (!this.axiomatised.has(name) && d.spec.ensures.length && info.result) {
+      this.axiomatised.add(name);
+      const frame = new Map<number, SVal>();
+      const bound: Term[] = [];
+      for (const p of info.params) {
+        const v = freshValue(p.ty, `${d.name}_${p.name}`);
+        frame.set(p.id, v);
+        if (v.k === 'scalar') bound.push(v.t);
+        else if (v.k === 'seq' && v.arr) bound.push(v.arr, v.len);
+        else throw new Unsupported('uninterpreted functions over compound parameters');
+      }
+      const head = app(name, bound, out.sort);
+      frame.set(info.result.id, scalar(head));
+      const st: State = { env: new Map(), path: [], alive: true };
+      const fcx: Cx = { st, guards: [], spec: true, qvars: [], local: frame, quiet: true };
+      const pre = and(...d.spec.requires.map((r) => this.formula(r.value, fcx)));
+      const post = and(...d.spec.ensures.map((r) => this.formula(r.value, fcx)));
+      const facts = info.params.flatMap((p) => typeFacts(p.ty, frame.get(p.id)!)).filter((f) => f.op !== 'forall');
+      this.axioms.push(forall(bound, imp(and(...facts, pre), post), [[head]]));
+    }
+    return out;
   }
 
   private checkMeasure(cx: Cx, d: A.FnDecl, args: SVal[], span: Span): void {

@@ -88,6 +88,11 @@ export interface EvalOptions {
   fuel: number;
   /** Largest number of values a quantifier may enumerate. */
   maxEnum: number;
+  /**
+   * Interpretations of bodiless (uninterpreted) pure functions, e.g. from a solver's model, so that a
+   * counterexample that depends on them can be replayed.
+   */
+  externals?: Map<string, (args: Value[]) => Value | undefined>;
 }
 
 const truncDiv = (a: bigint, b: bigint) => a / b; // BigInt division truncates toward zero, as in Java, C and Rust
@@ -489,7 +494,12 @@ export class Evaluator {
       if (ok === false) throw new RuntimeFailure('precondition', span, `The precondition of ${info.decl.name}${r.label ? ` (${r.label})` : ''} does not hold for ${args.map(show).join(', ')}.`);
     }
     const body = info.decl.body;
-    if (!body || 'stmts' in body) throw new RuntimeFailure('internal', span, `${info.decl.name} has no expression body.`);
+    if (!body) {
+      const ext = this.opts.externals?.get(info.decl.name)?.(args);
+      if (ext !== undefined) return ext;
+      throw new RuntimeFailure('internal', span, `${info.decl.name} has no body: it is uninterpreted, and cannot be run.`);
+    }
+    if ('stmts' in body) throw new RuntimeFailure('internal', span, `${info.decl.name} has no expression body.`);
     return this.eval(body, inner);
   }
 

@@ -426,7 +426,7 @@ class Checker {
     for (const e of d.spec.ensures) this.expectBoolish(e.value, { ...base, scope: post, allowOld: d.flavour === 'fn' || d.flavour === 'lemma' }, 'ensures');
     for (const e of d.spec.decreases ?? []) this.decreasesExpr(e, base);
     if (!d.body) {
-      if (pure || d.flavour === 'fn') this.warn(d.nameSpan, 'fn/no-body', `“${d.name}” has no body: the verifier will trust its contract without checking it.`);
+      if (d.flavour === 'fn') this.warn(d.nameSpan, 'fn/no-body', `“${d.name}” has no body: the verifier will trust its contract without checking it.`);
       return;
     }
     if ('stmts' in d.body) {

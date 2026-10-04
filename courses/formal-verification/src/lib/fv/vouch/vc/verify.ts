@@ -7,7 +7,7 @@
 import type { Checked, FnInfo } from '../check/checker';
 import type { Ty } from '../check/types';
 import type { TraceStep, Verdict } from '../../engines';
-import { evaluate, not, num, smtlibScript, type Model, type MValue, type Term } from '../../logic/term';
+import { evaluate, mvKey, not, num, smtlibScript, type Model, type MValue, type Term } from '../../logic/term';
 import { SmtSolver, type SmtResult } from '../../smt/solver';
 import { checkUnsatCertificate } from '../../smt/check/certificate';
 import { Runner } from '../interp/exec';
@@ -95,9 +95,10 @@ function discharge(checked: Checked, info: FnInfo, vcs: FunctionVcs, ob: Obligat
   // Replay: run the function on the inputs from the model.
   const inputs = vcs.params.map((p) => toValue(p.value, p.sym.ty, smt.model!));
   if (inputs.every((x) => x !== undefined)) {
-    const res = new Runner(checked, { fuel: 200_000, trace: 400 }).run(info.decl.name, inputs as Value[]);
+    const calls: string[] = [];
+    const res = new Runner(checked, { fuel: 200_000, trace: 400, externals: modelFunctions(checked, smt.model, calls) }).run(info.decl.name, inputs as Value[]);
     if (res.failure && !['unbounded-quantifier', 'internal', 'fuel'].includes(res.failure.kind)) {
-      const shown = vcs.params.map((p, i) => `${p.sym.name} = ${show(inputs[i]!)}`).join(', ');
+      const shown = vcs.params.map((p, i) => `${p.sym.name} = ${show(inputs[i]!)}`).join(', ') + (calls.length ? `, with the uninterpreted functions as the solver chose them: ${calls.join(', ')}` : '');
       return {
         obligation: ob,
         status: 'failed',
@@ -146,7 +147,9 @@ function toVerdicts(info: FnInfo, vcs: FunctionVcs, results: ObligationResult[])
       stats,
       message: results.length
         ? `All ${results.length} proof obligation${results.length === 1 ? '' : 's'} hold: ${summarise(results)}.`
-        : 'There is nothing to prove: the function has no contract and no operation that can fail.',
+        : info.decl.spec.ensures.length
+          ? 'The contract holds by simplification alone: no proof obligation was left for the solver.'
+          : 'There is nothing to prove: the function has no contract and no operation that can fail.',
       span: info.decl.nameSpan,
     }];
   }
@@ -213,6 +216,30 @@ function mval(t: Term, m: Model): MValue | undefined {
 }
 
 /** A Vouch value from a symbolic value under a model (undefined if it cannot be read back). */
+/** The model's interpretation of each uninterpreted (bodiless) pure function, for replaying counterexamples. */
+function modelFunctions(checked: Checked, m: Model, calls: string[] = []): Map<string, (args: Value[]) => Value | undefined> {
+  const out = new Map<string, (args: Value[]) => Value | undefined>();
+  const toM = (a: Value): MValue | undefined => (typeof a === 'bigint' || typeof a === 'boolean' ? a : a !== null && typeof a === 'object' && a.t === 'enum' && !a.fields.length ? BigInt(a.tag) : undefined);
+  for (const f of checked.fns.values()) {
+    const d = f.decl;
+    if (d.body || (d.flavour !== 'pure' && d.flavour !== 'pred')) continue;
+    const resTy = f.result?.ty;
+    out.set(d.name, (args) => {
+      const keys = args.map(toM);
+      if (keys.some((k) => k === undefined)) return undefined;
+      const fun = m.funs.get(d.name);
+      const x = fun?.entries.get(keys.map((k) => mvKey(k!)).join(',')) ?? fun?.def ?? (d.flavour === 'pred' || resTy?.k === 'bool' ? false : 0n);
+      const v: Value | undefined = resTy?.k === 'enum' && typeof x === 'bigint' ? { t: 'enum', name: resTy.name, tag: Number(x), variant: resTy.variants[Number(x)]?.name ?? '?', fields: [] } : typeof x === 'bigint' || typeof x === 'boolean' ? x : undefined;
+      if (v !== undefined) {
+        const call = `${d.name}(${args.map(show).join(', ')}) = ${show(v)}`;
+        if (!calls.includes(call)) calls.push(call);
+      }
+      return v;
+    });
+  }
+  return out;
+}
+
 export function toValue(v: SVal, ty: Ty, m: Model): Value | undefined {
   switch (v.k) {
     case 'scalar': {
