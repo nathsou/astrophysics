@@ -707,7 +707,9 @@ export class SmtSolver implements Theory {
       if (!triggers.length) substs.push(...this.enumerative(bound));
       for (const s of substs) {
         if (bound.some((b) => !s.has(b))) continue;
-        const key = `${e.lit}|${bound.map((b) => this.euf.find(s.get(b)!).id).join(',')}`;
+        // Keyed by the terms themselves, not their current classes: classes change when the search backtracks, and
+        // an instance skipped because two terms were equal in one branch may be needed in another.
+        const key = `${e.lit}|${bound.map((b) => s.get(b)!.id).join(',')}`;
         if (this.instancesDone.has(key)) continue;
         this.instancesDone.add(key);
         if (++this.instances > max) {

@@ -104,3 +104,37 @@ ${Array.from({ length: n }, () => '  if x > 10 { x = 2 * x } else { x = x + 3 }'
     }
   });
 });
+
+describe('loop invariants: the three lights', () => {
+  const SUMN = `fn sum_to(n: int) -> int
+  requires n >= 0
+  ensures 2 * result == n * (n + 1)
+{
+  var i = 0
+  var s = 0
+  while i < n {
+    i = i + 1
+    s = s + i
+  }
+  return s
+}`;
+  it('reports entry, preservation and exit separately, with a replayable CTI', async () => {
+    const { checkLoop, formulaFromText, loopStates, holdsAt, runStmts, splitAtLoop } = await import('./wp');
+    const p = fromVouch(SUMN);
+    const inv = (t: string) => formulaFromText(p, t);
+    const good = checkLoop(p, inv('0 <= i <= n && 2 * s == i * (i + 1)'), inv('n - i'));
+    expect([good.entry.valid, good.preserved.valid, good.exit.valid, good.bounded!.valid, good.decreases!.valid]).toEqual([true, true, true, true, true]);
+    const noBound = checkLoop(p, inv('2 * s == i * (i + 1)'));
+    expect([noBound.entry.valid, noBound.preserved.valid, noBound.exit.valid]).toEqual([true, true, false]);
+    const cti = checkLoop(p, inv('s >= i'));
+    expect(cti.preserved.valid).toBe(false);
+    expect(holdsAt(inv('s >= i && i < n'), cti.cti!.before)).toBe(true);
+    expect(holdsAt(inv('s >= i'), cti.cti!.after!)).toBe(false);
+    // The reachable states all satisfy the good invariant.
+    const states = loopStates(p, new Map([['n', 6n]]));
+    expect(states).toHaveLength(7);
+    for (const s of states) expect(holdsAt(inv('0 <= i <= n && 2 * s == i * (i + 1)'), s)).toBe(true);
+    void runStmts;
+    void splitAtLoop;
+  });
+});

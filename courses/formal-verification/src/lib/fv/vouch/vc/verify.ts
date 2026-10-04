@@ -184,16 +184,20 @@ function toVerdicts(info: FnInfo, vcs: FunctionVcs, results: ObligationResult[])
         trace: { steps: r.replay.trace },
       } satisfies Verdict;
     }
-    const cti = ob.kind === 'invariant-preserved';
+    // A counterexample to induction only when the solver produced a real model; a candidate from an incomplete
+    // search (quantifiers, non-linear arithmetic) proves nothing either way.
+    const cti = ob.kind === 'invariant-preserved' && r.smt.status === 'sat';
     const steps: TraceStep[] = (r.states ?? []).map((s) => ({ label: s.label, state: { values: s.values.map((v) => ({ ...v, kind: 'var' as const })) } }));
     const why =
       r.smt.status === 'unknown' && !r.states
         ? `The solver gave up (${r.smt.reason ?? 'unknown'}).`
         : cti
           ? 'Not proved: the invariant is not inductive. The solver found a state that satisfies the invariant and the loop condition, but after one iteration the invariant fails. This state may never occur in a real run: strengthen the invariant so that it excludes it.'
+          : r.smt.status === 'sat' && ob.kind === 'decreases'
+            ? 'Not proved: in the state shown (at the loop head, after an arbitrary number of iterations), one more iteration does not decrease the measure, or the measure is negative. If such a state is reachable, the loop can run forever.'
           : r.smt.status === 'sat'
             ? 'Not proved: the solver found values for which this check fails, but running the function on them does not fail, so they come from what the proof does not know (a loop invariant or a callee’s postcondition is too weak).'
-            : `Not proved (${r.smt.reason ?? 'the solver could not decide'}).`;
+            : `Not proved (${r.smt.reason ?? 'the solver could not decide'}).${r.states ? ' The states shown are the solver’s last candidate, which it could not confirm.' : ''}`;
     return {
       engine: 'vc',
       status: 'unknown',

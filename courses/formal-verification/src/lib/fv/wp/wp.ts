@@ -21,6 +21,7 @@ import {
   type Term,
 } from '../logic/term';
 import { checkSat } from '../smt/solver';
+import { evaluate, type MValue } from '../logic/term';
 
 export class WpError extends Error {}
 
@@ -30,7 +31,7 @@ export type WStmt =
   | { k: 'assert'; c: Term; span: Span; text: string }
   | { k: 'assume'; c: Term; span: Span; text: string }
   | { k: 'return'; e?: Term; span: Span; text: string }
-  | { k: 'while'; c: Term; inv: Term[]; body: WStmt[]; span: Span; text: string };
+  | { k: 'while'; c: Term; inv: Term[]; dec?: Term; body: WStmt[]; span: Span; text: string };
 
 export interface WpProgram {
   name: string;
@@ -115,7 +116,7 @@ class Translator {
           out.push({ k: 'return', e: s.value ? this.expr(s.value) : undefined, span: s.span, text: t });
           break;
         case 'while':
-          out.push({ k: 'while', c: this.expr(s.cond), inv: s.spec.invariants.map((i) => this.expr(i.value)), body: this.block(s.body.stmts), span: s.span, text: t });
+          out.push({ k: 'while', c: this.expr(s.cond), inv: s.spec.invariants.map((i) => this.expr(i.value)), dec: s.spec.decreases?.[0] ? this.expr(s.spec.decreases[0]) : undefined, body: this.block(s.body.stmts), span: s.span, text: t });
           break;
         case 'skip':
           break;
@@ -451,4 +452,132 @@ export function formulaFromText(prog: WpProgram, text: string): Term {
   const s = (d.body as A.Block).stmts[0];
   if (!s || s.k !== 'assert') throw new WpError('Write one formula.');
   return new Translator(new Map(prog.sorts), src).expr(s.cond);
+}
+
+// ── Loops: the three lights, termination, counterexamples to induction (chapter 18) ──
+
+export type Env = Map<string, bigint | boolean>;
+
+export interface LoopReport {
+  entry: Validity;
+  preserved: Validity;
+  exit: Validity;
+  /** With a measure: it is non-negative and decreases on every iteration. */
+  bounded?: Validity;
+  decreases?: Validity;
+  /** For a failed preservation check: a state satisfying the invariant and the condition, and its successor. */
+  cti?: { before: Env; after?: Env };
+}
+
+/** The first top-level loop of the function and the statements around it. */
+export function splitAtLoop(prog: WpProgram): { before: WStmt[]; loop: Extract<WStmt, { k: 'while' }>; after: WStmt[] } {
+  const i = prog.body.findIndex((s) => s.k === 'while');
+  if (i < 0) throw new WpError('The function has no loop.');
+  return { before: prog.body.slice(0, i), loop: prog.body[i] as Extract<WStmt, { k: 'while' }>, after: prog.body.slice(i + 1) };
+}
+
+function envOfModel(vars: Map<string, MValue>, names: string[]): Env {
+  const out: Env = new Map();
+  for (const n of names) {
+    const x = vars.get(n);
+    if (typeof x === 'bigint' || typeof x === 'boolean') out.set(n, x);
+  }
+  return out;
+}
+
+export function loopVariables(prog: WpProgram): string[] {
+  return [...new Set([...prog.params, ...prog.sorts.keys()])].filter((x) => x !== 'result');
+}
+
+export function checkLoop(prog: WpProgram, inv: Term, measure?: Term): LoopReport {
+  const { before, loop, after } = splitAtLoop(prog);
+  const sortOf = (x: string) => (prog.sorts.get(x) === 'bool' ? BOOL : INT);
+  const sub = (ss: WStmt[], q: Term) => computeWp({ ...prog, body: ss, post: q }).wp;
+  const entry = valid(imp(prog.pre, sub(before, inv)), prog.params);
+  const pf = imp(and(inv, loop.c), sub(loop.body, inv));
+  const preserved = valid(pf);
+  // After the loop: the rest of the function with its postcondition (a return in the rest uses it too).
+  const exit = valid(imp(and(inv, not(loop.c)), computeWp({ ...prog, body: after, post: prog.post }).wp));
+  const report: LoopReport = { entry, preserved, exit };
+  if (measure) {
+    const m0 = v('measure_before', INT);
+    report.bounded = valid(imp(and(inv, loop.c), ge(measure, num(0))));
+    report.decreases = valid(subst(imp(and(inv, loop.c), sub(loop.body, lt(measure, m0))), new Map([[m0, measure]])));
+  }
+  if (preserved.status === 'invalid') {
+    const r = checkSat([not(pf)], { timeout: 4000 });
+    if (r.status === 'sat' && r.model) {
+      const names = loopVariables(prog);
+      const st = envOfModel(r.model.vars, names);
+      for (const n of names) if (!st.has(n)) st.set(n, sortOf(n) === BOOL ? false : 0n);
+      const next = runStmts(loop.body, new Map(st), prog);
+      report.cti = { before: st, after: next.returned ? undefined : next.env };
+    }
+  }
+  return report;
+}
+
+/** Run statements on concrete values (assertions and assumptions are not checked). */
+export function runStmts(ss: WStmt[], env: Env, prog: WpProgram, fuel = { n: 10_000 }): { env: Env; returned?: bigint | boolean } {
+  const val = (t: Term) => evaluate(t, { vars: new Map(env) as Map<string, MValue>, funs: new Map() }) as bigint | boolean;
+  for (const s of ss) {
+    if (--fuel.n < 0) throw new WpError('The run took too many steps.');
+    switch (s.k) {
+      case 'assign': {
+        const vals = s.es.map(val);
+        s.xs.forEach((x, i) => env.set(x, vals[i]!));
+        break;
+      }
+      case 'if': {
+        const r = runStmts(val(s.c) ? s.then : s.else, env, prog, fuel);
+        if (r.returned !== undefined) return r;
+        break;
+      }
+      case 'while':
+        while (val(s.c)) {
+          if (--fuel.n < 0) throw new WpError('The run took too many steps.');
+          const r = runStmts(s.body, env, prog, fuel);
+          if (r.returned !== undefined) return r;
+        }
+        break;
+      case 'return':
+        return { env, returned: s.e ? val(s.e) : true };
+      default:
+        break;
+    }
+  }
+  return { env };
+}
+
+/** The states at the loop head, from a run on the given parameter values (at most `max`). */
+export function loopStates(prog: WpProgram, params: Env, max = 80): Env[] {
+  const { before, loop } = splitAtLoop(prog);
+  const env: Env = new Map(params);
+  runStmts(before, env, prog);
+  const out: Env[] = [];
+  const val = (t: Term) => evaluate(t, { vars: new Map(env) as Map<string, MValue>, funs: new Map() });
+  for (let k = 0; k <= max; k++) {
+    out.push(new Map(env));
+    if (!val(loop.c)) break;
+    const r = runStmts(loop.body, env, prog);
+    if (r.returned !== undefined) break;
+  }
+  return out;
+}
+
+export function holdsAt(f: Term, env: Env): boolean {
+  try {
+    return evaluate(f, { vars: new Map(env) as Map<string, MValue>, funs: new Map() }) === true;
+  } catch {
+    return false;
+  }
+}
+
+export function valueAt(t: Term, env: Env): bigint | undefined {
+  try {
+    const x = evaluate(t, { vars: new Map(env) as Map<string, MValue>, funs: new Map() });
+    return typeof x === 'bigint' ? x : undefined;
+  } catch {
+    return undefined;
+  }
 }
