@@ -6,6 +6,8 @@
  * tested against their contracts on random inputs. The program verifier, the relational model finder and the
  * encoders plug in here as they land.
  */
+import { usesHeap } from '../heap/symheap';
+import { heapVerdicts } from '../heap/verdicts';
 import type { Checked, FnInfo } from '../vouch/check/checker';
 import type { Verdict } from '../engines';
 import { SystemRuntime } from '../vouch/interp/system';
@@ -118,7 +120,8 @@ export async function verifyDocument(checked: Checked, opts: VerifyOptions = {})
       result = { decl: d.name, kind: 'world', verdicts };
     } else if (d.k === 'fn' && (d.flavour === 'fn' || d.flavour === 'lemma') && d.body) {
       const info = checked.fns.get(d.name)!;
-      const verdicts = opts.fnVerifier?.(checked, info, opts) ?? proveOrTest(checked, info, opts);
+      // Heap programs (references, heap assertions) go to the separation-logic verifier.
+      const verdicts = opts.fnVerifier?.(checked, info, opts) ?? (usesHeap(d) ? heapVerdicts(checked, info, '').verdicts : proveOrTest(checked, info, opts));
       result = { decl: d.name, kind: 'fn', verdicts };
     }
     if (result) {

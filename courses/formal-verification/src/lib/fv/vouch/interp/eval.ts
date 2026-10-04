@@ -337,7 +337,16 @@ export class Evaluator {
     if (op === '||') return !!this.eval(e.left, env) || !!this.eval(e.right, env);
     if (op === '==>') return !this.eval(e.left, env) || !!this.eval(e.right, env);
     if (op === '<==') return !!this.eval(e.left, env) || !this.eval(e.right, env);
-    if (op === '|->') throw new RuntimeFailure('internal', e.span, 'Points-to evaluated outside a heap assertion.');
+    // Heap assertions at run time (approximately: `**` is checked as a conjunction, without disjointness; the heap
+    // verifier is the one that reasons about separation).
+    if (op === '|->') {
+      if (e.left.k !== 'field') throw new RuntimeFailure('internal', e.span, 'Points-to needs a field on its left.');
+      const target = this.eval(e.left.target, env);
+      if (target === null) return false;
+      const o = env.heap.get((target as { addr: number }).addr);
+      if (!o || o.freed) return false;
+      return equal(this.eval(e.left, env), this.eval(e.right, env));
+    }
     const l = this.eval(e.left, env);
     const r = this.eval(e.right, env);
     switch (op) {
@@ -561,6 +570,25 @@ export class Evaluator {
         const x = BigInt.asIntN(bits, a0 as bigint);
         const k = args[1] as bigint;
         return BigInt.asUintN(bits, k >= BigInt(bits) ? (x < 0n ? -1n : 0n) : x >> k);
+      }
+      case 'list':
+      case 'lseg': {
+        // Following next from x reaches y (null for list) without a cycle and without a freed node.
+        let cur = a0;
+        const stop = e.callee === 'list' ? null : args[1]!;
+        const seen = new Set<number>();
+        for (;;) {
+          if (cur === null || (stop !== null && cur !== null && equal(cur, stop))) return cur === null ? stop === null : true;
+          const addr = (cur as { addr: number }).addr;
+          if (seen.has(addr)) return false;
+          seen.add(addr);
+          const o = env.heap.get(addr);
+          if (!o || o.freed) return false;
+          const cls = this.checked.program.decls.find((d) => d.k === 'class' && d.name === o.cls) as A.StructDecl | undefined;
+          const i = cls?.fields.findIndex((f) => f.name === 'next') ?? -1;
+          if (i < 0) return false;
+          cur = o.fields[i]!;
+        }
       }
       case 'seq_of':
         return seq(args);

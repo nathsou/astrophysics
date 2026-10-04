@@ -98,7 +98,7 @@ interface Ctx {
   ghost?: boolean;
 }
 
-const BUILTINS = ['len', 'multiset', 'set', 'min', 'max', 'abs', 'reversed', 'keys', 'slt', 'sle', 'sgt', 'sge', 'sdiv', 'srem', 'ashr', 'sum', 'seq_of'];
+const BUILTINS = ['len', 'multiset', 'set', 'min', 'max', 'abs', 'reversed', 'keys', 'slt', 'sle', 'sgt', 'sge', 'sdiv', 'srem', 'ashr', 'sum', 'seq_of', 'list', 'lseg'];
 
 export function check(program: A.Program): Checked {
   return new Checker(program).run();
@@ -1589,6 +1589,14 @@ class Checker {
       case 'keys':
         arity(1);
         return a0.k === 'map' ? { k: 'set', elem: a0.key } : ERR;
+      case 'list':
+      case 'lseg': {
+        // The heap verifier's built-in list predicates (chapter 22): lseg(x, y) is a list segment from x to y along
+        // `next` fields, list(x) the list from x to null.
+        arity(e.callee === 'list' ? 1 : 2);
+        for (const [i, t] of args.entries()) if (!isPermissive(t) && t.k !== 'ref') this.err(e.args[i]!.span, 'heap/list', `\`${e.callee}\` takes references to objects with a \`next\` field; this is ${showTy(t)}.`);
+        return HEAPPROP;
+      }
       case 'sum':
         arity(1);
         if (!isPermissive(a0) && (a0.k !== 'seq' || !isIntLike(a0.elem))) this.err(e.span, 'type/args', '`sum` adds up a sequence of integers.');
