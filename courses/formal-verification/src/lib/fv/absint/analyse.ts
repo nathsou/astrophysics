@@ -30,7 +30,7 @@ export interface LoopTrace {
   capped: boolean;
 }
 
-export type CheckKind = 'assert' | 'division' | 'index' | 'overflow' | 'nat';
+export type CheckKind = 'assert' | 'division' | 'index' | 'overflow' | 'nat' | 'conversion';
 
 export interface Check {
   kind: CheckKind;
@@ -199,6 +199,15 @@ export class Analyzer<S> {
         }
         return;
       }
+      case 'cast': {
+        this.checkExpr(e.arg, s);
+        const to = ty && boundsOf(ty);
+        if (to && ty?.k === 'mach') {
+          const r = this.D.range(s, e.arg);
+          this.check('conversion', e.span, I.leq(r, to), `The value always fits in ${ty.signed ? 'i' : 'u'}${ty.bits}: ${I.show(r)}.`, `The value may not fit in ${ty.signed ? 'i' : 'u'}${ty.bits}: it lies in ${I.show(r)}, beyond ${I.show(to)}.`);
+        }
+        return;
+      }
       case 'index': {
         this.checkExpr(e.target, s);
         e.indices.forEach((i) => this.checkExpr(i, s));
@@ -226,7 +235,9 @@ export class Analyzer<S> {
     const b = this.bounds.get(x);
     if (!b) return s;
     const ty = this.info.locals.concat(this.info.params).find((v) => v.name === x)?.ty;
-    if (ty && (ty.k === 'mach' || ty.k === 'nat' || ty.k === 'range')) {
+    // Machine arithmetic is checked where it happens (checkExpr); the assignment adds nothing then.
+    const checkedOp = e.k === 'binary' && ['+', '-', '*', '/'].includes(e.op) && (this.checked.types.get(e) as Ty | undefined)?.k === 'mach';
+    if (ty && (ty.k === 'mach' || ty.k === 'nat' || ty.k === 'range') && !checkedOp) {
       const r = this.D.range(s, e);
       this.check(ty.k === 'nat' ? 'nat' : 'overflow', span, I.leq(r, b), `The value always fits: ${I.show(r)}.`, ty.k === 'nat' ? `May be negative: the value lies in ${I.show(r)}.` : `May not fit in ${x}'s type: the value lies in ${I.show(r)}, beyond ${I.show(b)}.`);
     }

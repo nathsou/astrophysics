@@ -272,6 +272,8 @@ export class Octagons implements StateDomain<OctS> {
       }
       case 'if':
         return I.join(this.range(this.assume(s, e.cond, true), e.then), this.range(this.assume(s, e.cond, false), e.else));
+      case 'cast':
+        return this.range(s, e.arg);
     }
     return I.TOP;
   }

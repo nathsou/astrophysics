@@ -20,7 +20,7 @@ export interface Triaged extends Check {
 }
 
 /** Interpreter failure kinds for each check. */
-const RUN_KIND: Record<CheckKind, string[]> = { assert: ['assert'], division: ['division'], index: ['bounds'], overflow: ['overflow', 'range'], nat: ['overflow', 'range'] };
+const RUN_KIND: Record<CheckKind, string[]> = { assert: ['assert'], division: ['division'], index: ['bounds'], overflow: ['overflow', 'range'], nat: ['overflow', 'range'], conversion: ['narrowing'] };
 
 /** Boundary values for a parameter: the type's ends, 0, ±1, and the integer constants in the code (and ±1 around them). */
 function boundary(ty: Ty, consts: bigint[]): Value[] | undefined {
@@ -80,7 +80,7 @@ function testBoundaries(checked: Checked, info: FnInfo, alarms: Check[], lineOf:
   return found;
 }
 
-const SYMEX_KIND: Record<CheckKind, string[]> = { assert: ['assert'], division: ['division'], index: ['bounds'], overflow: ['overflow', 'range'], nat: ['overflow', 'range'] };
+const SYMEX_KIND: Record<CheckKind, string[]> = { assert: ['assert'], division: ['division'], index: ['bounds'], overflow: ['overflow', 'range'], nat: ['overflow', 'range'], conversion: ['narrowing'] };
 
 export function triage(checked: Checked, info: FnInfo, source: string, checks: Check[], opts: { maxUnroll?: number; maxNodes?: number } = {}): { checks: Triaged[]; explored: number; unroll: number } {
   const alarms = checks.filter((c) => c.status === 'alarm');

@@ -232,6 +232,9 @@ export class NonRelational<V> implements StateDomain<Env<V>> {
       }
       case 'var':
         return env.get(e.name) ?? this.D.top;
+      case 'cast':
+        // A conversion that fails stops the run; one that succeeds keeps the value.
+        return this.value(s, e.arg);
       case 'if': {
         const t = this.value(this.assume(s, e.cond, true), e.then);
         const f = this.value(this.assume(s, e.cond, false), e.else);
