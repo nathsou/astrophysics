@@ -112,7 +112,9 @@ function discharge(checked: Checked, info: FnInfo, vcs: FunctionVcs, ob: Obligat
   if (inputs.every((x) => x !== undefined)) {
     const calls: string[] = [];
     const res = new Runner(checked, { fuel: 200_000, trace: 400, externals: modelFunctions(checked, smt.model, calls) }).run(info.decl.name, inputs as Value[]);
-    if (res.failure && !['unbounded-quantifier', 'internal', 'fuel'].includes(res.failure.kind)) {
+    // A replay confirms the failure only if every contract on the way was actually evaluated: an unbounded
+    // quantifier in a precondition cannot be, and then the model may not satisfy it.
+    if (res.failure && !['unbounded-quantifier', 'internal', 'fuel'].includes(res.failure.kind) && !res.unchecked.length) {
       const shown = vcs.params.map((p, i) => `${p.sym.name} = ${show(inputs[i]!)}`).join(', ') + (calls.length ? `, with the uninterpreted functions as the solver chose them: ${calls.join(', ')}` : '');
       return {
         obligation: ob,

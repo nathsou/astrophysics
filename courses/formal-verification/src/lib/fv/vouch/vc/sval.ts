@@ -11,7 +11,7 @@
  *   - Structs and tuples are their fields.
  */
 import {
-  add, and, app, arraySort, bvSort, eq, exists, forall, freshVar, iff, imp, INT, BOOL, ite, le, lt, num, or, select, sub, uSort,
+  add, and, app, arraySort, bvSort, eq, exists, forall, freshVar, iff, imp, INT, BOOL, ite, le, lt, num, or, select, store, sub, uSort,
   type Sort, type Term,
 } from '../../logic/term';
 import { intBounds, isIntLike, type Ty } from '../check/types';
@@ -203,6 +203,9 @@ export function seqStore(s: SVal & { k: 'seq' }, k: Term, v: SVal): SVal {
     k: 'seq',
     elemTy: s.elemTy,
     len: s.len,
+    // As an array term too, so that equal updates of the same array are the same term (function arguments,
+    // recursive definitions); reading it back agrees with `at`.
+    arr: s.arr && v.k === 'scalar' ? store(s.arr, k, v.t) : undefined,
     at: (i) => joinS(eq(i, k), v, s.at(i)),
     count:
       s.count && old.k === 'scalar' && v.k === 'scalar'

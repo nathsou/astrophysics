@@ -66,6 +66,8 @@ export interface SmtResult {
   reason?: string;
   proof?: SmtProof;
   stats: Record<string, number>;
+  /** The quantifier instances the solver made, in order. */
+  instances?: { quant: Term; bindings: Term[]; round: number }[];
 }
 
 export interface SmtOptions {
@@ -694,6 +696,10 @@ export class SmtSolver implements Theory {
     }
   }
 
+  /** Every quantifier instance made, in order (for the proof debugger). */
+  instanceLog: { quant: Term; bindings: Term[]; round: number }[] = [];
+  private round = 0;
+
   private quantifiers(): void {
     const active = this.trail.filter((e) => this.atoms.get(Math.abs(e.lit))!.kind === 'quant');
     if (!active.length) return;
@@ -733,6 +739,7 @@ export class SmtSolver implements Theory {
           return;
         }
         const inst = subst(matrix, s);
+        if (this.instanceLog.length < 2000) this.instanceLog.push({ quant: q, bindings: bound.map((b) => s.get(b)!), round: this.round });
         this.pending.push({ clause: [-e.lit], just: { kind: 'instance', quant: q, subst: bound.map((b) => [b, s.get(b)!]), instance: inst }, encode: inst });
       }
     }
@@ -758,6 +765,12 @@ export class SmtSolver implements Theory {
   // ── Solving ──
 
   solve(): SmtResult {
+    const r = this.solveInner();
+    if (this.instanceLog.length) r.instances = this.instanceLog;
+    return r;
+  }
+
+  private solveInner(): SmtResult {
     const start = Date.now();
     const deadline = this.opts.timeout ? start + this.opts.timeout : Infinity;
     const stop = () => Date.now() > deadline || !!this.opts.signal?.aborted;
@@ -770,6 +783,7 @@ export class SmtSolver implements Theory {
       if (r === 'unknown') return { status: 'unknown', reason: stop() ? 'out of time' : 'conflict limit reached', stats: this.stats(start, rounds) };
       if (this.pending.length && rounds < maxRounds && !stop()) {
         rounds++;
+        this.round = rounds;
         for (const p of this.pending.splice(0)) {
           const pre = this.pre.run(p.encode!);
           const defs = this.pre.defs.splice(0);
