@@ -499,7 +499,7 @@ export class SystemEncoder {
    * One step from S to S2. Returns the transition formula, the selector variable of each step instance (true when
    * that step is taken; a stutter step keeps the state), and the condition under which the step taken fails.
    */
-  step(S: SymState, S2: SymState, opts: { stutter?: boolean } = {}): { formula: Formula; selectors: { step: StepInstance; sel: number; params?: SV[] }[]; failure: Formula; failures: { step: StepInstance; cond: Formula; message: string }[] } {
+  step(S: SymState, S2: SymState, opts: { stutter?: boolean; blockFailures?: boolean } = {}): { formula: Formula; selectors: { step: StepInstance; sel: number; params?: SV[] }[]; failure: Formula; failures: { step: StepInstance; cond: Formula; message: string }[] } {
     const parts: Formula[] = [];
     const selectors: { step: StepInstance; sel: number; params?: SV[] }[] = [];
     const failures: { step: StepInstance; cond: Formula; message: string }[] = [];
@@ -513,7 +513,9 @@ export class SystemEncoder {
       const alts: Formula[] = [];
       for (const p of paths) {
         const after = this.slotsAfter(S, p, st.instance);
-        alts.push(and(p.cond, or(p.fail, and(...after.map((x, k) => eqSV(S2.slots[k]!, x))))));
+        // A failing path ends the run: for BMC it is a violation to report; for reachability it leads nowhere.
+        const post = and(...after.map((x, k) => eqSV(S2.slots[k]!, x)));
+        alts.push(and(p.cond, opts.blockFailures ? and(not(p.fail), post) : or(p.fail, post)));
         if (!isF(p.fail)) failures.push({ step: st, cond: and(v(sel), p.cond, p.fail), message: p.failMessage ?? 'a run-time check fails' });
       }
       parts.push(or(not(v(sel)), or(...alts)));
@@ -527,6 +529,25 @@ export class SystemEncoder {
     }
     parts.push(or(...sels));
     return { formula: and(...parts), selectors, failure: or(...failures.map((f) => f.cond)), failures };
+  }
+
+  /**
+   * The relation of each step instance on its own, without selector variables: for symbolic engines that take
+   * the disjunction themselves (BDD reachability). Failing paths lead nowhere.
+   */
+  stepParts(S: SymState, S2: SymState): { step: StepInstance; formula: Formula; sideStart: number; sideEnd: number }[] {
+    const out: { step: StepInstance; formula: Formula; sideStart: number; sideEnd: number }[] = [];
+    for (const st of this.steps) {
+      const sideStart = this.pool.sideClauses.length;
+      const { paths } = this.stepPaths.get(st)!(S);
+      if (!paths.length) continue;
+      const alts = paths.map((p) => {
+        const after = this.slotsAfter(S, p, st.instance);
+        return and(p.cond, not(p.fail), ...after.map((x, k) => eqSV(S2.slots[k]!, x)));
+      });
+      out.push({ step: st, formula: or(...alts), sideStart, sideEnd: this.pool.sideClauses.length });
+    }
+    return out;
   }
 
   /** A condition of the system (an invariant) in state S. */

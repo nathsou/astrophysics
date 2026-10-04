@@ -18,7 +18,9 @@ export interface DratResult {
   checked: number;
 }
 
-const key = (c: readonly number[]) => [...c].sort((a, b) => a - b).join(' ');
+/** A clause is a set: duplicate literals are removed (a duplicate would otherwise hide that a clause is unit). */
+const dedupe = (c: readonly number[]) => [...new Set(c)];
+const key = (c: readonly number[]) => dedupe(c).sort((a, b) => a - b).join(' ');
 
 /** The clause database: a multiset of clauses keyed by their sorted literals, with occurrence lists. */
 class Db {
@@ -34,7 +36,7 @@ class Db {
       e.count++;
       return;
     }
-    const clause = [...c];
+    const clause = dedupe(c);
     this.byKey.set(k, { clause, count: 1 });
     for (const l of clause) {
       let s = this.occ.get(l);

@@ -109,7 +109,7 @@ export function tseitin(f: Formula, firstFresh = maxVar(f) + 1): Cnf & { root: n
         return -go(g.a);
       case 'and':
       case 'or': {
-        const xs = g.args.map(go);
+        const xs = [...new Set(g.args.map(go))];
         const x = next++;
         if (g.k === 'and') {
           for (const a of xs) clauses.push([-x, a]);
