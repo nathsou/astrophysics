@@ -12,6 +12,7 @@ import type { Verdict, Trace, EngineOptions } from '../engines';
 import type * as A from '../vouch/syntax/ast';
 import { RuntimeFailure } from '../vouch/interp/eval';
 import { canonicalizer } from './symmetry';
+import { LocalSteps } from './por';
 
 export interface ExploreOptions extends EngineOptions {
   /** Invariants to check, by name (default: all). */
@@ -22,6 +23,8 @@ export interface ExploreOptions extends EngineOptions {
   maxStates?: number;
   /** Identify states that differ only by a permutation of a `symmetric type`. */
   symmetry?: boolean;
+  /** Partial-order reduction: take a purely local, invisible process step alone (./por.ts). */
+  por?: boolean;
   /** Keep nodes and edges for drawing (small systems only). */
   keepGraph?: boolean;
   /** Stop at the first violation (default true). */
@@ -60,11 +63,16 @@ export class Exploration {
   readonly violations = new Map<string, { at: number; failure?: RuntimeFailure; stepLabel?: StepLabel }>();
   transitions = 0;
   done = false;
+  /** The search stopped at a violation before visiting every state. */
+  stoppedEarly = false;
   readonly nodes: GraphNode[] = [];
   readonly edges: GraphEdge[] = [];
   private canon: (s: State) => string;
   readonly started = Date.now();
   stepFailure?: { from: number; label: StepLabel; failure: RuntimeFailure };
+  private local?: LocalSteps;
+  /** States expanded with a reduced set of successors (partial-order reduction). */
+  reduced = 0;
 
   constructor(
     readonly rt: SystemRuntime,
@@ -74,6 +82,7 @@ export class Exploration {
       .filter((i) => !opts.invariants || opts.invariants.includes(i.name ?? ''))
       .map((i, k) => ({ name: i.name ?? `invariant ${k + 1}`, expr: i.expr, span: i.span }));
     this.canon = opts.symmetry ? canonicalizer(rt) : (s) => rt.key(s);
+    if (opts.por) this.local = new LocalSteps(rt);
     const { states, failures } = rt.initial();
     if (failures.length) this.stepFailure = { from: -1, label: failures[0]!.label, failure: failures[0]!.failure };
     for (const s of states) this.add(s, -1, undefined, 0);
@@ -115,11 +124,16 @@ export class Exploration {
     let n = 0;
     while (this.frontier < this.entries.length && n < budget) {
       if (this.opts.signal?.aborted) return (this.done = true);
-      if (stopAtFirst && (this.violations.size > 0 || this.stepFailure)) return (this.done = true);
+      if (stopAtFirst && (this.violations.size > 0 || this.stepFailure)) {
+        this.stoppedEarly = this.frontier < this.entries.length;
+        return (this.done = true);
+      }
       if (this.entries.length >= max) return (this.done = true);
       const id = this.frontier++;
       const e = this.entries[id]!;
-      const { succs, failures } = this.rt.successors(e.state);
+      const all = this.rt.successors(e.state);
+      const { failures } = all;
+      const succs = this.local ? this.ample(e.state, all.succs) : all.succs;
       if (failures.length && !this.stepFailure) this.stepFailure = { from: id, label: failures[0]!.label, failure: failures[0]!.failure };
       if (this.opts.deadlock && !succs.length && !this.allDone(e.state)) {
         if (!this.violations.has('deadlock')) this.violations.set('deadlock', { at: id });
@@ -134,6 +148,22 @@ export class Exploration {
     }
     if (this.frontier >= this.entries.length) this.done = true;
     return this.done;
+  }
+
+  /** An ample set: the steps of one process whose step here is local and invisible, if they lead to new states. */
+  private ample(s: State, succs: { label: StepLabel; state: State }[]): { label: StepLabel; state: State }[] {
+    for (let i = 0; i < this.rt.instances.length; i++) {
+      const inst = this.rt.instances[i]!;
+      const pc = s.vals[inst.base + inst.proc.locals.length] as bigint;
+      if (pc < 0n || !this.local!.reducible(i, Number(pc))) continue;
+      const mine = succs.filter((x) => x.label.kind === 'process' && x.label.instance === i);
+      if (!mine.length || mine.length === succs.length) continue;
+      // Cycle proviso: every reduced step must reach a state not seen before.
+      if (mine.some((x) => this.index.has(this.canon(x.state)))) continue;
+      this.reduced++;
+      return mine;
+    }
+    return succs;
   }
 
   allDone(s: State): boolean {
@@ -192,7 +222,8 @@ export function toTrace(rt: SystemRuntime, states: State[], labels: StepLabel[])
 
 /** Run the explorer to completion and report one verdict per invariant (and for deadlock, if asked). */
 export function explore(rt: SystemRuntime, opts: ExploreOptions = {}): { verdicts: Verdict[]; exploration: Exploration } {
-  const x = new Exploration(rt, opts);
+  // Keep searching after a violation, so that every property gets its own verdict (and its own shortest trace).
+  const x = new Exploration(rt, { ...opts, stopAtFirst: opts.stopAtFirst ?? false });
   const timeout = opts.timeout ? Date.now() + opts.timeout : Infinity;
   while (!x.run(2000)) {
     opts.onProgress?.({ stats: x.stats() });
@@ -200,7 +231,7 @@ export function explore(rt: SystemRuntime, opts: ExploreOptions = {}): { verdict
   }
   const canon = opts.symmetry ? canonicalizer(rt) : (s: State) => rt.key(s);
   const instance = describeInstance(rt);
-  const complete = x.done && !opts.signal?.aborted && !(opts.maxStates && x.size >= opts.maxStates) && Date.now() <= timeout;
+  const complete = x.done && !x.stoppedEarly && !opts.signal?.aborted && !(opts.maxStates && x.size >= opts.maxStates) && Date.now() <= timeout;
   const verdicts: Verdict[] = [];
   const names = [...x.invariants.map((i) => i.name), ...(opts.deadlock ? ['deadlock'] : [])];
   for (const name of names) {
@@ -220,7 +251,7 @@ export function explore(rt: SystemRuntime, opts: ExploreOptions = {}): { verdict
         stats: x.stats(),
         trace: toTrace(rt, concrete ?? p.states, p.labels),
         message: v.failure ? v.failure.message : name === 'deadlock' ? `A reachable state where nothing can move (${p.labels.length} steps from the start).` : `The invariant ${name} fails after ${p.labels.length} step${p.labels.length === 1 ? '' : 's'}.`,
-        span: inv?.span,
+        span: inv?.span ?? rt.info.decl.nameSpan,
       });
     } else if (x.stepFailure) {
       const p = x.stepFailure.from >= 0 ? x.path(x.stepFailure.from) : { states: [], labels: [] };
@@ -245,7 +276,7 @@ export function explore(rt: SystemRuntime, opts: ExploreOptions = {}): { verdict
         certificate: { kind: 'state-space', checked: false, checker: 'the explorer itself (no independent certificate)', detail: 'Every reachable state was visited.' },
         assumptions: [instance, ...(opts.symmetry ? ['states that differ by a permutation of a symmetric type behave alike'] : [])],
         stats: x.stats(),
-        span: inv?.span,
+        span: inv?.span ?? rt.info.decl.nameSpan,
       });
     } else {
       verdicts.push({

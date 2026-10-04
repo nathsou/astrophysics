@@ -52,7 +52,9 @@ export async function verifyDocument(checked: Checked, opts: VerifyOptions = {})
       const verdicts: Verdict[] = [];
       try {
         const rt = new SystemRuntime(checked, d.name);
-        if (rt.info.invariants.length) verdicts.push(...explore(rt, { timeout, signal: opts.signal, symmetry: true }).verdicts);
+        // Systems of processes are also checked for deadlock: a state where no process can move, though some has not finished.
+        const deadlock = rt.instances.length > 0;
+        if (rt.info.invariants.length || deadlock) verdicts.push(...explore(rt, { timeout, signal: opts.signal, symmetry: true, deadlock }).verdicts);
         for (const p of rt.info.properties) {
           await pause();
           if (opts.signal?.aborted) break;

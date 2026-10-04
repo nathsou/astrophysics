@@ -433,14 +433,18 @@ function transformDirective(ctx: Ctx, node: Directive, parent: Parent, index: nu
     parent.children.splice(index, 1, marker('leaf', i));
     return index + 1;
   }
+  // The children move up into the parent; empty the directive so that the walk does not visit them twice
+  // (it would otherwise descend into the detached directive as well as into the spliced copies).
+  const kids = node.children;
+  node.children = [];
   if (name === 'history') {
     // Render the hook once. Duplicating it on both faces duplicates footnote ids and widgets.
-    const [hook, ...story] = node.children;
+    const [hook, ...story] = kids;
     const open: Html = { type: 'html', value: '<!--§hook-open-->' };
     const close: Html = { type: 'html', value: '<!--§hook-close-->' };
     parent.children.splice(index, 1, marker('open', i), open, ...(hook ? [hook] : [] as never[]), close, ...story, marker('close', i));
   } else {
-    parent.children.splice(index, 1, marker('open', i), ...(node.children as never[]), marker('close', i));
+    parent.children.splice(index, 1, marker('open', i), ...(kids as never[]), marker('close', i));
   }
   return index + 1;
 }
