@@ -31,6 +31,8 @@
     adversary = [],
     exhibit,
     refinement = false,
+    forger,
+    watch = [],
   }: {
     code: string;
     title?: string;
@@ -54,6 +56,10 @@
     exhibit?: string;
     /** Show the specification step that each step maps to (the system declares `refines`). */
     refinement?: boolean;
+    /** The lane of an intruder: a step that uses a message nobody sent shows it as forged by this lane. */
+    forger?: string;
+    /** State variables to show under the chart (the intruder's knowledge, the participants' beliefs). */
+    watch?: string[];
   } = $props();
 
   let rt = $state.raw<SystemRuntime | undefined>();
@@ -142,7 +148,11 @@
     }
     return 0;
   }
-  function route(m: Value): [number, number] {
+  function route(m: Value, stepLane: number): [number, number] {
+    if (toField && !fromField) {
+      const t = field(m, toField);
+      return [stepLane, laneByName((t as { variant?: string })?.variant ?? show(t!))];
+    }
     if (fromField && toField) {
       const f = field(m, fromField);
       const t = field(m, toField);
@@ -184,7 +194,7 @@
       for (const m of after) {
         const k = show(m);
         if (before.has(k)) continue;
-        const [from, to] = route(m);
+        const [from, to] = route(m, lane);
         arrows.push({ from, to, sentAt: row, lost: false, text: kindOf(m) || k });
         (open.get(k) ?? open.set(k, []).get(k)!).push(arrows.length - 1);
       }
@@ -194,6 +204,19 @@
         for (const a of open.get(k) ?? []) if (arrows[a]!.doneAt === undefined) {
           arrows[a]!.doneAt = row;
           arrows[a]!.lost = adversary.includes(l.name);
+        }
+      }
+      // Messages passed to this step as arguments: received (if they were sent) or forged by the intruder.
+      for (const arg of l.args) {
+        if (!arg || typeof arg !== 'object' || (arg as { t?: string }).t !== 'struct' || !msgFields.length) continue;
+        const k = show(arg);
+        const sent = (open.get(k) ?? []).find((a) => arrows[a]!.doneAt === undefined || arrows[a]!.doneAt === row);
+        if (sent !== undefined && arrows[sent]!.doneAt === undefined) arrows[sent]!.doneAt = row;
+        else if (sent === undefined && before.has(k)) {
+          // Sent earlier and already received once: a duplicate delivery.
+          arrows.push({ from: lane, to: lane, sentAt: row, doneAt: row, lost: false, text: `again: ${kindOf(arg)}` });
+        } else if (sent === undefined && forger && !before.has(k) && l.name !== adversary.find((a) => a === l.name)) {
+          arrows.push({ from: laneByName(forger), to: lane, sentAt: row, doneAt: row, lost: false, text: `forged ${kindOf(arg)}` });
         }
       }
       // Messages received by this step (the action reads a message of that kind addressed to this lane).
@@ -251,7 +274,7 @@
 </script>
 
 {#snippet drawChart(c: Chart)}
-  {@const w = Math.max(lanes.length * COLW + (refine ? 190 : 0), 300)}
+  {@const w = Math.max(lanes.length * COLW + (refine ? 190 : 60), 300)}
   {@const h = (c.steps.length + 1.5) * ROWH + 30}
   <div class="chart">
     <svg viewBox="0 0 {w} {h}" width={w} height={h} role="img" aria-label="Message sequence chart">
@@ -278,8 +301,8 @@
       {#each c.steps as s, i (i)}
         {@const x = COLW * s.lane + COLW / 2}
         {@const y = 30 + (i + 1) * ROWH}
-        <circle cx={x} cy={y} r="5" class="step" class:adv={s.adversary} />
-        <text x={x + 9} y={y - 7} class="step-label" class:adv={s.adversary}>{s.text}</text>
+        <circle cx={x} cy={y} r="5" class="step" class:adv={s.adversary}><title>{s.text}</title></circle>
+        <text x={x + 8} y={y + 14} class="step-label" class:adv={s.adversary}>{s.text.length > 26 ? `${s.text.replace(/\(.*$/, '')}(…)` : s.text}<title>{s.text}</title></text>
         {#if s.abstract}<text x={lanes.length * COLW + 10} y={y + 4} class="abs" class:bad={s.abstract.startsWith('✗')}>{s.abstract === 'stutter' ? '·' : s.abstract}</text>{/if}
       {/each}
     </svg>
@@ -291,6 +314,9 @@
   {#if error}<p class="err ui">{error}</p>{/if}
   {#if rt && handChart}
     {@render drawChart(handChart)}
+    {#if watch.length && cur}
+      <div class="watch ui">{#each watch as w (w)}{@const i = rt.info.vars.findIndex((v) => v.name === w)}{#if i >= 0}<span><code>{w}</code> = <code>{show(cur.vals[i]!)}</code></span>{/if}{/each}</div>
+    {/if}
     {#if refine}<p class="note ui">Right margin: the step of the specification that each step corresponds to (· for none: the specification does not see it).</p>{/if}
     <div class="choices ui">
       <div>
@@ -412,6 +438,13 @@
   }
   .abs.bad {
     fill: var(--pencil);
+  }
+  .watch {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1rem;
+    margin-top: 0.5rem;
+    font-size: 0.82rem;
   }
   .note {
     font-size: 0.78rem;

@@ -1,0 +1,25 @@
+dolev1983:
+  authors: Danny Dolev and Andrew C. Yao
+  year: 1983
+  title: On the security of public key protocols
+  venue: IEEE Transactions on Information Theory 29(2), 198–208
+burrows1990:
+  authors: Michael Burrows, Martín Abadi and Roger Needham
+  year: 1990
+  title: A logic of authentication
+  venue: ACM Transactions on Computer Systems 8(1), 18–36
+lowe1998:
+  authors: Gavin Lowe
+  year: 1998
+  title: Towards a completeness result for model checking of security protocols
+  venue: 11th IEEE Computer Security Foundations Workshop (CSFW), 96–105
+cremers2017:
+  authors: Cas Cremers, Marko Horvat, Jonathan Hoyland, Sam Scott and Thyla van der Merwe
+  year: 2017
+  title: A comprehensive symbolic analysis of TLS 1.3
+  venue: ACM Conference on Computer and Communications Security (CCS), 1773–1788
+bhargavan2017:
+  authors: Karthikeyan Bhargavan, Bruno Blanchet and Nadim Kobeissi
+  year: 2017
+  title: 'Verified models and reference implementations for the TLS 1.3 standard candidate'
+  venue: IEEE Symposium on Security and Privacy, 483–502
