@@ -148,7 +148,7 @@ export class DplltStepper {
       st.propagateAll();
       this.checked = false;
       const forced = st.trail.slice(before).map((t) => t.lit);
-      if (st.status === 'conflict' && !forced.length) return this.next();
+      if ((st.status as string) === 'conflict' && !forced.length) return this.next();
       return say({ who: 'sat', kind: 'propagate', text: `Unit propagation: ${forced.map((l) => this.litText(l)).join(', ')}.`, lits: forced });
     }
     if (!this.checked) {

@@ -32,7 +32,7 @@
   })();
 
   let order = $state<number[]>([]);
-  const state = $derived.by(() => {
+  const snap = $derived.by(() => {
     const events: { text: string; kind: 'assert' | 'cong' | 'conflict' }[] = [];
     const euf = new Euf();
     allTerms.forEach((t) => euf.add(t));
@@ -83,7 +83,7 @@
       <h4 class="ui">Equalities (click to assert)</h4>
       <div class="eqs">
         {#each eqs as e, i (i)}
-          <button type="button" class="ui" class:used={order.includes(i)} disabled={order.includes(i) || !!state.conflict} onclick={() => (order = [...order, i])}>
+          <button type="button" class="ui" class:used={order.includes(i)} disabled={order.includes(i) || !!snap.conflict} onclick={() => (order = [...order, i])}>
             {#if order.includes(i)}<span class="n">{order.indexOf(i) + 1}</span>{/if}{showTerm(e.a)} = {showTerm(e.b)}
           </button>
         {/each}
@@ -97,10 +97,10 @@
     <section>
       <h4 class="ui">Classes</h4>
       <div class="classes">
-        {#each state.groups as g, i (i)}<div class="cls" class:multi={g.length > 1}>{#each g as t (t.id)}<code>{showTerm(t)}</code>{/each}</div>{/each}
+        {#each snap.groups as g, i (i)}<div class="cls" class:multi={g.length > 1}>{#each g as t (t.id)}<code>{showTerm(t)}</code>{/each}</div>{/each}
       </div>
       <ol class="events">
-        {#each state.events as e, i (i)}<li class={e.kind}>{e.text}</li>{/each}
+        {#each snap.events as e, i (i)}<li class={e.kind}>{e.text}</li>{/each}
       </ol>
     </section>
   </div>
