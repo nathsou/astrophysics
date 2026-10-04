@@ -97,7 +97,7 @@ const sameLoc = (h: SymHeap, a: Term, b: Term) => a === b || proves(h, eq(a, b))
 
 // ── Showing states ──
 
-const clean = (s: string) => s.replace(/!\d+/g, (m) => `′${m.slice(1)}`);
+const clean = (s: string) => s.replace(/!\d+/g, '');
 export function showAtom(a: Atom): string {
   return clean(a.k === 'pt' ? `${pretty(a.at)}.${a.field} ↦ ${pretty(a.val)}` : a.to === NULL ? `list(${pretty(a.from)})` : `lseg(${pretty(a.from)}, ${pretty(a.to)})`);
 }

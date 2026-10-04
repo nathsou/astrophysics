@@ -18,16 +18,21 @@ const ASSUMPTIONS = [
 ];
 
 /** Build concrete arguments for the precondition: lists of n nodes for list(p), objects for p.f ↦ c. */
-function concreteInputs(checked: Checked, d: A.FnDecl, n: number): { args: Value[]; heap: Heap } | undefined {
+function concreteInputs(checked: Checked, d: A.FnDecl, n: number): { args: Value[]; heap: Heap; lists: number } | undefined {
   const heap = new Heap();
   const listCls = checked.program.decls.find((x) => x.k === 'class' && x.fields.some((f) => f.name === 'next')) as A.StructDecl | undefined;
   const lists = new Set<string>();
-  const objects = new Map<string, Map<string, bigint | null>>();
+  const objects = new Map<string, Map<string, bigint | null | string>>();
+  // Integer parameters get distinct values, so that a mix-up between two of them shows.
+  const ints = new Map<string, bigint>();
+  d.params.forEach((p, i) => {
+    if (p.type.k !== 'ref') ints.set(p.name, BigInt(i + 1));
+  });
   const visit = (e: A.Expr) => {
     if (e.k === 'call' && (e.callee === 'list' || e.callee === 'lseg') && e.args[0]?.k === 'var') lists.add(e.args[0].name);
     if (e.k === 'binary' && e.op === '|->' && e.left.k === 'field' && e.left.target.k === 'var') {
       const m = objects.get(e.left.target.name) ?? objects.set(e.left.target.name, new Map()).get(e.left.target.name)!;
-      m.set(e.left.name, e.right.k === 'int' ? e.right.value : e.right.k === 'null' ? null : 0n);
+      m.set(e.left.name, e.right.k === 'int' ? e.right.value : e.right.k === 'null' ? null : e.right.k === 'var' ? e.right.name : 0n);
     }
     if (e.k === 'binary') {
       visit(e.left);
@@ -38,7 +43,7 @@ function concreteInputs(checked: Checked, d: A.FnDecl, n: number): { args: Value
   const args: Value[] = [];
   for (const p of d.params) {
     if (p.type.k !== 'ref') {
-      args.push(0n);
+      args.push(ints.get(p.name) ?? 0n);
       continue;
     }
     if (lists.has(p.name) && listCls) {
@@ -57,19 +62,30 @@ function concreteInputs(checked: Checked, d: A.FnDecl, n: number): { args: Value
       args.push(null);
       continue;
     }
-    const fields = cls.fields.map((f) => (given?.has(f.name) ? (given.get(f.name) as Value) : f.type.k === 'ref' ? null : 0n));
+    const fields = cls.fields.map((f): Value => {
+      const g = given?.get(f.name);
+      if (typeof g === 'string') return ints.get(g) ?? 0n;
+      if (g !== undefined) return g;
+      return f.type.k === 'ref' ? null : 0n;
+    });
     args.push(heap.alloc(cls.name, fields));
   }
-  return { args, heap };
+  return { args, heap, lists: lists.size };
 }
 
 function replay(checked: Checked, d: A.FnDecl, err: HeapError): string | undefined {
-  if (err.kind !== 'null' && err.kind !== 'freed') return undefined;
+  if (err.kind !== 'null' && err.kind !== 'freed' && err.kind !== 'post' && err.kind !== 'assert') return undefined;
+  const kinds = err.kind === 'post' ? ['postcondition'] : err.kind === 'assert' ? ['assert'] : ['null', 'use-after-free'];
   for (let n = 0; n <= 3; n++) {
     const input = concreteInputs(checked, d, n);
     if (!input) return undefined;
+    if (!input.lists && n > 0) return undefined;
     const r = new Runner(checked, { fuel: 50_000 }).run(d.name, input.args, input.heap);
-    if (r.failure && (r.failure.kind === 'null' || r.failure.kind === 'use-after-free')) return `${r.failure.message} The interpreter fails this way on ${n === 0 ? 'empty lists' : `lists of ${n} node${n === 1 ? '' : 's'}`}.`;
+    if (r.failure && kinds.includes(r.failure.kind)) {
+      const ints = d.params.filter((p) => p.type.k !== 'ref').map((p, i) => `${p.name} = ${String(input.args[d.params.indexOf(p)] ?? i)}`);
+      const on = input.lists ? (n === 0 ? 'empty lists' : `lists of ${n} node${n === 1 ? '' : 's'}`) : 'objects built from the precondition';
+      return `${r.failure.message} The interpreter fails this way on ${on}${ints.length ? `, with ${ints.join(', ')}` : ''}.`;
+    }
   }
   return undefined;
 }
