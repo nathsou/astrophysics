@@ -14,10 +14,12 @@ export type Badge =
   | { kind: 'exhaustive'; states: number; instance: string }
   | { kind: 'verified'; scope: string }
   | { kind: 'violated'; replayed: boolean }
+  /** A constraint problem: how many solutions it has (every one checked by the interpreter). */
+  | { kind: 'counted'; count: number; more: boolean; solve?: boolean }
   | { kind: 'unknown'; reason: string }
   | { kind: 'error'; reason: string };
 
-export type CertificateKind = 'model' | 'drat' | 'smt-proof' | 'trace' | 'lasso' | 'inductive-invariant' | 'state-space' | 'none';
+export type CertificateKind = 'model' | 'solutions' | 'drat' | 'smt-proof' | 'trace' | 'lasso' | 'inductive-invariant' | 'state-space' | 'none';
 
 export interface Certificate {
   kind: CertificateKind;
@@ -78,6 +80,8 @@ export function badgeText(b: Badge): string {
       return `verified for ${b.scope}`;
     case 'violated':
       return b.replayed ? 'violated · counterexample replayed' : 'violated · counterexample not replayed';
+    case 'counted':
+      return b.count === 0 ? 'no solution' : b.solve ? 'a solution found' : b.more ? `more than ${b.count.toLocaleString('en-GB')} solutions` : `${b.count.toLocaleString('en-GB')} solution${b.count === 1 ? '' : 's'}`;
     case 'unknown':
       return `unknown · ${b.reason}`;
     case 'error':

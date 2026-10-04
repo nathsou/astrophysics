@@ -15,6 +15,7 @@
     verdict.status === 'violated' ? 'Violated'
     : b.kind === 'verified' ? 'Verified'
     : b.kind === 'exhaustive' ? 'Checked exhaustively'
+    : b.kind === 'counted' ? (b.count ? 'Solved' : 'No solution')
     : b.kind === 'tested' ? 'Tested'
     : b.kind === 'bounded' ? 'Bounded check'
     : b.kind === 'error' ? 'Error'

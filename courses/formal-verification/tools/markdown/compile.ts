@@ -97,7 +97,7 @@ const BUILTIN_BLOCKS: Record<string, string> = {
   hint: 'Hint',
 };
 /** Directives whose first code block is passed to the widget as `code` (the rest is its caption). */
-const CODE_WIDGETS = new Set(['workbench', 'explorer', 'interleavings', 'msc', 'intruder', 'state-space', 'liveness']);
+const CODE_WIDGETS = new Set(['workbench', 'explorer', 'interleavings', 'msc', 'intruder', 'state-space', 'liveness', 'encoding-lab']);
 const THEOREM_KINDS = new Set(['theorem', 'lemma', 'corollary', 'proposition', 'conjecture', 'claim']);
 /** Kinds of the Vouch-specific exercises (PLAN §5); all render through one dispatching component. */
 export const VOUCH_EXERCISES = ['verify', 'spec', 'invariant', 'model', 'ltl', 'encode', 'play', 'drive', 'rewrite', 'bug'] as const;
@@ -106,7 +106,7 @@ const EXERCISE_BLOCKS: Record<string, string> = {
   numeric: 'Numeric',
   ...Object.fromEntries(VOUCH_EXERCISES.map((k) => [k, 'VouchExercise'])),
 };
-const VOUCH_RAW = ['code', 'fn', 'exhibit', 'formula', 'props', 'starter', 'solution', 'reference', 'adversaries', 'locked', 'traces', 'bank', 'expect', 'config', 'answers', 'engine', 'options', 'widths', 'rewrites', 'target', 'model', 'property', 'instance', 'count', 'steps', 'lines', 'bug', 'goal', 'game', 'cases', 'forbid', 'requires'];
+const VOUCH_RAW = ['code', 'fn', 'exhibit', 'formula', 'props', 'feedback', 'starter', 'solution', 'reference', 'adversaries', 'locked', 'traces', 'bank', 'expect', 'config', 'answers', 'engine', 'options', 'widths', 'rewrites', 'target', 'model', 'property', 'instance', 'count', 'steps', 'lines', 'bug', 'goal', 'game', 'cases', 'forbid', 'requires'];
 /**
  * Fields of the exercises that are data, not Markdown: code, configurations, expected answers, fixtures.
  * They are passed through untouched.

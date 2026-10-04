@@ -1,0 +1,84 @@
+- year: 1960
+  lane: sat
+  title: The Davis–Putnam procedure
+  people: Martin Davis, Hilary Putnam
+  chapter: inside-a-sat-solver
+  text: A decision procedure for propositional formulas, inside a theorem prover for first-order logic; it eliminates variables by resolution.
+  cite: [davis1960]
+- year: 1962
+  lane: sat
+  title: DPLL
+  people: Martin Davis, George Logemann, Donald Loveland
+  chapter: inside-a-sat-solver
+  text: Search with backtracking replaces elimination; unit propagation and pure literals prune the search. The skeleton of every complete SAT solver since.
+  cite: [davis1962]
+- year: 1965
+  lane: logic
+  title: Resolution
+  people: J. Alan Robinson
+  chapter: proofs-of-unsatisfiability
+  text: One inference rule that suffices for refuting any unsatisfiable set of clauses.
+  cite: [robinson1965]
+- year: 1968
+  lane: sat
+  title: Tseitin's encoding
+  people: G. S. Tseitin
+  chapter: propositional-encoding
+  text: Naming subformulas with fresh variables converts any formula to clauses with only a linear increase in size.
+  cite: [tseitin1968]
+- year: 1990
+  lane: model-checking
+  title: 10^20 states and beyond
+  people: Burch, Clarke, McMillan, Dill, Hwang
+  chapter: decision-diagrams
+  text: Symbolic model checking represents sets of states as BDDs and computes reachability as a fixpoint.
+  cite: [burch1990]
+- year: 1996
+  lane: sat
+  title: GRASP
+  people: João Marques-Silva, Karem Sakallah
+  chapter: inside-a-sat-solver
+  text: Conflict analysis, learned clauses and non-chronological backtracking.
+  cite: [marquessilva1996]
+- year: 1999
+  lane: model-checking
+  title: Bounded model checking
+  people: Biere, Cimatti, Clarke, Zhu
+  chapter: unrolling-time
+  text: Unroll the transition relation k times and ask a SAT solver for a path to a bad state.
+  cite: [biere1999]
+- year: 2002
+  lane: sat
+  title: Alloy
+  people: Daniel Jackson
+  chapter: small-worlds
+  text: Relational models of software designs, analysed by SAT within a bounded scope.
+  cite: [jackson2002]
+- year: 2003
+  lane: sat
+  title: MiniSat
+  people: Niklas Eén, Niklas Sörensson
+  chapter: inside-a-sat-solver
+  text: A short, extensible CDCL solver that became the base of many others.
+  cite: [een2003]
+- year: 2013
+  lane: sat
+  title: Clausal proofs (DRUP, DRAT)
+  people: Marijn Heule, Warren Hunt, Nathan Wetzler
+  chapter: proofs-of-unsatisfiability
+  text: Solvers write refutations that small, independent checkers verify.
+  cite: [heule2013, wetzler2014]
+- year: 2016
+  lane: sat
+  title: The Boolean Pythagorean triples
+  people: Marijn Heule, Oliver Kullmann, Victor Marek
+  chapter: proofs-of-unsatisfiability
+  text: A problem in Ramsey theory settled by SAT, with a proof of about 200 terabytes.
+  cite: [heule2016]
+- year: 2009
+  lane: industry
+  title: Formal verification replaces testing at Intel
+  people: Roope Kaivola and colleagues
+  chapter: unrolling-time
+  text: The execution engine of the Core i7 is verified formally, largely in place of simulation-based testing.
+  cite: [kaivola2009]

@@ -1,0 +1,18 @@
+- id: boole
+  name: George Boole
+  born: 1815
+  died: 1864
+  summary: 'English mathematician, largely self-taught, who treated logic as algebra over two values (1847, 1854). Professor at Queen''s College, Cork, from 1849.'
+  chapters: [propositional-encoding]
+  cite: [boole1847, boole1854]
+- id: cook-levin
+  name: Stephen Cook and Leonid Levin
+  summary: 'Cook (born 1939, Toronto) proved in 1971 that satisfiability is NP-complete; Levin (born 1948), in the Soviet Union, found the same class of universal search problems independently, published in 1973. Cook received the Turing Award in 1982.'
+  chapters: [propositional-encoding]
+  cite: [cook1971, levin1973]
+- id: bryant
+  name: Randal Bryant
+  born: 1952
+  summary: 'American computer scientist whose 1986 paper on ordered binary decision diagrams gave hardware verification a canonical, compact representation of Boolean functions.'
+  chapters: [decision-diagrams]
+  cite: [bryant1986]

@@ -1,0 +1,90 @@
+boole1847:
+  authors: George Boole
+  year: 1847
+  title: 'The Mathematical Analysis of Logic: Being an Essay Towards a Calculus of Deductive Reasoning'
+  venue: Macmillan, Barclay and Macmillan, Cambridge
+boole1854:
+  authors: George Boole
+  year: 1854
+  title: An Investigation of the Laws of Thought
+  venue: Walton and Maberly, London
+davis1960:
+  authors: Martin Davis and Hilary Putnam
+  year: 1960
+  title: A computing procedure for quantification theory
+  venue: Journal of the ACM 7(3), 201–215
+davis1962:
+  authors: Martin Davis, George Logemann and Donald Loveland
+  year: 1962
+  title: A machine program for theorem-proving
+  venue: Communications of the ACM 5(7), 394–397
+robinson1965:
+  authors: J. Alan Robinson
+  year: 1965
+  title: A machine-oriented logic based on the resolution principle
+  venue: Journal of the ACM 12(1), 23–41
+tseitin1968:
+  authors: G. S. Tseitin
+  year: 1968
+  title: On the complexity of derivation in propositional calculus
+  venue: 'Studies in Constructive Mathematics and Mathematical Logic, Part II (in Russian; English translation 1970)'
+levin1973:
+  authors: Leonid A. Levin
+  year: 1973
+  title: Universal sequential search problems
+  venue: Problems of Information Transmission 9(3), 265–266
+marquessilva1996:
+  authors: João P. Marques-Silva and Karem A. Sakallah
+  year: 1996
+  title: 'GRASP: a new search algorithm for satisfiability'
+  venue: IEEE/ACM International Conference on Computer-Aided Design (ICCAD), 220–227
+een2003:
+  authors: Niklas Eén and Niklas Sörensson
+  year: 2003
+  title: An extensible SAT-solver
+  venue: Theory and Applications of Satisfiability Testing (SAT 2003), Lecture Notes in Computer Science 2919, 502–518
+burch1990:
+  authors: Jerry R. Burch, Edmund M. Clarke, Kenneth L. McMillan, David L. Dill and L. J. Hwang
+  year: 1990
+  title: 'Symbolic model checking: 10^20 states and beyond'
+  venue: Fifth Annual IEEE Symposium on Logic in Computer Science (LICS), 428–439
+mcmillan1993:
+  authors: Kenneth L. McMillan
+  year: 1993
+  title: Symbolic Model Checking
+  venue: Kluwer Academic Publishers
+biere1999:
+  authors: Armin Biere, Alessandro Cimatti, Edmund M. Clarke and Yunshan Zhu
+  year: 1999
+  title: Symbolic model checking without BDDs
+  venue: Tools and Algorithms for the Construction and Analysis of Systems (TACAS), Lecture Notes in Computer Science 1579, 193–207
+kaivola2009:
+  authors: Roope Kaivola et al.
+  year: 2009
+  title: Replacing testing with formal verification in Intel Core i7 processor execution engine validation
+  venue: Computer Aided Verification (CAV), Lecture Notes in Computer Science 5643, 414–429
+heule2013:
+  authors: Marijn J. H. Heule, Warren A. Hunt Jr. and Nathan Wetzler
+  year: 2013
+  title: Trimming while checking clausal proofs
+  venue: Formal Methods in Computer-Aided Design (FMCAD), 181–188
+wetzler2014:
+  authors: Nathan Wetzler, Marijn J. H. Heule and Warren A. Hunt Jr.
+  year: 2014
+  title: 'DRAT-trim: efficient checking and trimming using expressive clausal proofs'
+  venue: Theory and Applications of Satisfiability Testing (SAT 2014), Lecture Notes in Computer Science 8561, 422–429
+heule2016:
+  authors: Marijn J. H. Heule, Oliver Kullmann and Victor W. Marek
+  year: 2016
+  title: Solving and verifying the Boolean Pythagorean triples problem via cube-and-conquer
+  venue: Theory and Applications of Satisfiability Testing (SAT 2016), Lecture Notes in Computer Science 9710, 228–245
+jackson2002:
+  authors: Daniel Jackson
+  year: 2002
+  title: 'Alloy: a lightweight object modelling notation'
+  venue: ACM Transactions on Software Engineering and Methodology 11(2), 256–290
+jackson2006:
+  authors: Daniel Jackson
+  year: 2006
+  title: 'Software Abstractions: Logic, Language, and Analysis'
+  venue: MIT Press

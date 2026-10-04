@@ -19,6 +19,7 @@ import { show } from '../vouch/interp/values';
 import { RuntimeFailure } from '../vouch/interp/eval';
 import { hasErrors } from '../vouch/diagnostics';
 import { verifyFunction } from '../vouch/vc/verify';
+import { solveProblem, EncodeError } from '../problem/encode';
 
 export interface DeclVerdicts {
   /** Declaration name (a function, or a system). */
@@ -70,6 +71,8 @@ export async function verifyDocument(checked: Checked, opts: VerifyOptions = {})
         verdicts.push({ engine: 'explore', status: 'error', subject: d.name, badge: { kind: 'error', reason: e.message }, certificate: { kind: 'none', checked: false, checker: '' }, assumptions: [], stats: {}, message: e.message, span: e.span });
       }
       result = { decl: d.name, kind: 'system', verdicts };
+    } else if (d.k === 'problem') {
+      result = { decl: d.name, kind: 'problem', verdicts: [problemVerdict(checked, d.name, d.nameSpan)] };
     } else if (d.k === 'fn' && (d.flavour === 'fn' || d.flavour === 'lemma') && d.body) {
       const info = checked.fns.get(d.name)!;
       const verdicts = opts.fnVerifier?.(checked, info, opts) ?? proveOrTest(checked, info, opts);
@@ -82,6 +85,34 @@ export async function verifyDocument(checked: Checked, opts: VerifyOptions = {})
     await pause();
   }
   return out;
+}
+
+/** Solve or count a constraint problem; every solution is checked by the interpreter. */
+export function problemVerdict(checked: Checked, name: string, span: Verdict['span']): Verdict {
+  const info = checked.containers.get(name)!;
+  const counting = info.goal === 'count';
+  try {
+    const r = solveProblem(checked, name, { limit: counting ? 10_000 : 1, keep: 1 });
+    const allChecked = r.solutions.every((s) => s.checked);
+    const sol = r.solutions[0];
+    const shown = sol ? [...sol.values].map(([k, v]) => `${k} = ${show(v)}`).join(', ') : '';
+    return {
+      engine: 'sat',
+      status: r.count > 0 && allChecked ? 'verified' : r.count > 0 ? 'error' : 'violated',
+      subject: counting ? `the solutions of ${name}` : `a solution of ${name}`,
+      badge: { kind: 'counted', count: r.count, more: r.more, solve: !counting },
+      certificate: r.count > 0
+        ? { kind: 'solutions', checked: allChecked, checker: 'the reference interpreter evaluates every constraint on the solution' }
+        : { kind: 'none', checked: false, checker: 'no solution: the SAT solver’s answer (Chapter 8 checks such answers)' },
+      assumptions: counting ? ['the encoding into SAT is correct (each solution found is checked; the count trusts the encoding and the solver)'] : [],
+      stats: { solutions: r.count, 'cells': r.encoding.stats.cells, variables: r.encoding.cnf.nvars, clauses: r.encoding.stats.clauses, ms: r.ms },
+      message: r.count === 0 ? 'No assignment satisfies every constraint.' : `${counting ? `${r.more ? 'More than ' : ''}${r.count.toLocaleString('en-GB')} solution${r.count === 1 ? '' : 's'}. One of them: ` : 'A solution: '}${shown}.`,
+      span,
+    };
+  } catch (e) {
+    if (!(e instanceof EncodeError)) throw e;
+    return { engine: 'sat', status: 'error', subject: name, badge: { kind: 'error', reason: e.message }, certificate: { kind: 'none', checked: false, checker: '' }, assumptions: [], stats: {}, message: e.message, span };
+  }
 }
 
 /**

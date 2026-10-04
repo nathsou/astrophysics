@@ -1,0 +1,20 @@
+nodes:
+  - { id: dp, name: Davis–Putnam, year: 1960, kind: idea, lane: sat, chapter: inside-a-sat-solver }
+  - { id: dpll, name: DPLL, year: 1962, kind: idea, lane: sat, chapter: inside-a-sat-solver }
+  - { id: grasp, name: GRASP, year: 1996, kind: tool, lane: sat, chapter: inside-a-sat-solver }
+  - { id: chaff, name: Chaff, year: 2001, kind: tool, lane: sat, chapter: inside-a-sat-solver }
+  - { id: minisat, name: MiniSat, year: 2003, kind: tool, lane: sat, chapter: inside-a-sat-solver }
+  - { id: drat, name: DRAT proofs, year: 2014, kind: idea, lane: sat, chapter: proofs-of-unsatisfiability }
+  - { id: bdd, name: BDDs, year: 1986, kind: idea, lane: sat, chapter: decision-diagrams }
+  - { id: smv, name: SMV, year: 1993, kind: tool, lane: model-checking, chapter: decision-diagrams }
+  - { id: bmc, name: Bounded model checking, year: 1999, kind: idea, lane: model-checking, chapter: unrolling-time }
+  - { id: alloy, name: Alloy, year: 2002, kind: tool, lane: sat, chapter: small-worlds, rosetta: alloy }
+edges:
+  - { from: dp, to: dpll, type: descends, cite: [davis1962] }
+  - { from: dpll, to: grasp, type: descends, cite: [marquessilva1996] }
+  - { from: grasp, to: chaff, type: influenced, cite: [moskewicz2001] }
+  - { from: chaff, to: minisat, type: influenced, cite: [een2003] }
+  - { from: minisat, to: drat, type: influenced, cite: [wetzler2014] }
+  - { from: bdd, to: smv, type: influenced, cite: [burch1990] }
+  - { from: chaff, to: bmc, type: influenced }
+  - { from: chaff, to: alloy, type: influenced }
