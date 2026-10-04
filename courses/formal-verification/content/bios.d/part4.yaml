@@ -1,0 +1,36 @@
+- id: floyd
+  name: Robert W. Floyd
+  born: 1936
+  died: 2001
+  summary: 'American computer scientist whose 1967 paper attached assertions to the edges of flowcharts, derived a verification condition for each command, and proved termination with a decreasing measure: the method behind every loop invariant in this course. Turing Award, 1978.'
+  chapters: [loop-invariants]
+  cite: [floyd1967, acm-turing-deductive]
+- id: hoare
+  name: Tony Hoare
+  summary: 'British computer scientist who turned Floyd''s method into a logic of triples {P} S {Q} with a rule for each construct (1969), later proposed communicating sequential processes (1978) and, in 2003, the verifying compiler as a grand challenge. Turing Award, 1980.'
+  chapters: [weakest-preconditions, prove-programs]
+  cite: [hoare1969, hoare1978, hoare2003, acm-turing-deductive]
+- id: dijkstra
+  name: Edsger W. Dijkstra
+  born: 1930
+  died: 2002
+  summary: 'Dutch computer scientist who posed mutual exclusion (1965), invented weakest preconditions (1975), and argued in A Discipline of Programming (1976) that a program and its proof should be developed together. Turing Award, 1972.'
+  chapters: [weakest-preconditions, loop-invariants]
+  cite: [dijkstra1965, dijkstra1975, dijkstra1976, acm-turing-deductive]
+- id: reynolds
+  name: John C. Reynolds
+  born: 1935
+  died: 2013
+  summary: 'American computer scientist whose 2002 paper on separation logic, a logic for shared mutable data structures, brought together a line of work with Peter O''Hearn, Samin Ishtiaq and Hongseok Yang.'
+  chapters: [the-heap]
+  cite: [reynolds2002]
+- id: ohearn
+  name: Peter O'Hearn
+  summary: 'Computer scientist who co-developed separation logic and the frame rule (2001), the Smallfoot prover (2005) and bi-abduction (2009), and brought the analysis to Facebook as Infer, where it reviews code changes.'
+  chapters: [the-heap, linked-structures-and-ownership]
+  cite: [ohearn2001, berdine2005, calcagno2009, calcagno2015]
+- id: leino
+  name: K. Rustan M. Leino
+  summary: 'Computer scientist behind a line of automatic verifiers: extended static checking for Modula-3 (1998) and Java (2002), Spec# and the Boogie intermediate language, and the Dafny language (2010).'
+  chapters: [specifications-and-contracts]
+  cite: [detlefs1998, flanagan2002, barnett2005, barnett2006, leino2010]

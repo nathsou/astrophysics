@@ -1,0 +1,10 @@
+kildall1973:
+  authors: Gary A. Kildall
+  year: 1973
+  title: A unified approach to global program optimization
+  venue: Principles of Programming Languages (POPL 1973), ACM, 194–206
+blanchet2003:
+  authors: Bruno Blanchet, Patrick Cousot, Radhia Cousot, Jérôme Feret, Laurent Mauborgne, Antoine Miné, David Monniaux and Xavier Rival
+  year: 2003
+  title: A static analyzer for large safety-critical software
+  venue: Programming Language Design and Implementation (PLDI 2003), ACM, 196–207

@@ -1,0 +1,4 @@
+# The family tree of tools (PLAN §5). Nodes and edges; authors add theirs in lineage.d/<name>.yaml as
+# `{ nodes: [...], edges: [...] }` (lists are merged).
+nodes: []
+edges: []

@@ -1,0 +1,15 @@
+// expect: count 1
+// A 4×4 Sudoku as a constraint problem (chapter 6): one solution.
+
+problem Sudoku4 {
+  type Idx = 0..4
+  type Digit = 1..=4
+  var cell: (Idx, Idx) -> Digit
+
+  constraint rows: forall r: Idx, c1: Idx, c2: Idx :: c1 != c2 ==> cell[r, c1] != cell[r, c2]
+  constraint cols: forall c: Idx, r1: Idx, r2: Idx :: r1 != r2 ==> cell[r1, c] != cell[r2, c]
+  constraint boxes: forall r1: Idx, c1: Idx, r2: Idx, c2: Idx ::
+    r1 / 2 == r2 / 2 && c1 / 2 == c2 / 2 && (r1 != r2 || c1 != c2) ==> cell[r1, c1] != cell[r2, c2]
+  constraint givens: cell[0, 0] == 1 && cell[0, 3] == 4 && cell[1, 1] == 4 && cell[2, 2] == 2 && cell[3, 0] == 2 && cell[3, 3] == 3 && cell[1, 2] == 1
+  count
+}

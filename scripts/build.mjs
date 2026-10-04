@@ -53,6 +53,14 @@ const courses = [
     }),
   },
   {
+    // For All Inputs (formal verification): the same single-package SvelteKit setup.
+    name: 'formal-verification',
+    env: (base) => ({
+      BASE_PATH: `${base}/formal-verification`,
+      NODE_OPTIONS: `${process.env.NODE_OPTIONS ?? ''} --experimental-strip-types`.trim(),
+    }),
+  },
+  {
     // Mandarin, Out Loud: the same single-package SvelteKit setup.
     name: 'mandarin',
     env: (base) => ({

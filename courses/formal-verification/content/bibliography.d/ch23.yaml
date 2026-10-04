@@ -1,0 +1,15 @@
+sheeran2000:
+  authors: Mary Sheeran, Satnam Singh and Gunnar Stålmarck
+  year: 2000
+  title: Checking safety properties using induction and a SAT-solver
+  venue: Formal Methods in Computer-Aided Design (FMCAD 2000), Lecture Notes in Computer Science 1954, 108–125
+johnson1879:
+  authors: Wm. Woolsey Johnson and William E. Story
+  year: 1879
+  title: Notes on the “15” puzzle (I and II)
+  venue: American Journal of Mathematics 2(4), 397–404
+owicki1976:
+  authors: Susan Owicki and David Gries
+  year: 1976
+  title: An axiomatic proof technique for parallel programs I
+  venue: Acta Informatica 6(4), 319–340

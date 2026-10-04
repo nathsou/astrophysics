@@ -1,0 +1,50 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Vouch",
+  "scopeName": "source.vouch",
+  "fileTypes": ["vouch"],
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#declarations" },
+    { "include": "#keywords" },
+    { "include": "#types" },
+    { "include": "#numbers" },
+    { "include": "#strings" },
+    { "include": "#labels" },
+    { "include": "#calls" },
+    { "include": "#operators" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        { "name": "comment.line.double-slash.vouch", "match": "//.*$" },
+        { "name": "comment.block.vouch", "begin": "/\\*", "end": "\\*/" }
+      ]
+    },
+    "declarations": {
+      "patterns": [
+        { "match": "\\b(fn|pred|lemma|process|action)\\s+([A-Za-z_][\\w']*)", "captures": { "1": { "name": "storage.type.function.vouch" }, "2": { "name": "entity.name.function.vouch" } } },
+        { "match": "\\b(system|world|problem|struct|class|enum|type)\\s+([A-Za-z_][\\w']*)", "captures": { "1": { "name": "storage.type.vouch" }, "2": { "name": "entity.name.type.vouch" } } }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        { "name": "keyword.other.specification.vouch", "match": "\\b(requires|ensures|invariant|decreases|modifies|reads|assert|assume|old|forall|exists|property|fairness|weak|strong|fact|check|run|constraint|always|eventually|next|until|ghost)\\b" },
+        { "name": "keyword.control.vouch", "match": "\\b(if|else|while|for|in|loop|match|return|break|await|atomic|choose|where|skip|when|at|as|via|refines|instance|init|count|solve|some|no|one|lone)\\b" },
+        { "name": "storage.type.vouch", "match": "\\b(fn|pure|pred|lemma|const|enum|struct|class|type|symmetric|system|world|problem|let|var|action|process|rel|inout|new|free)\\b" },
+        { "name": "constant.language.vouch", "match": "\\b(true|false|null|emp)\\b" }
+      ]
+    },
+    "types": {
+      "patterns": [
+        { "name": "support.type.vouch", "match": "\\b(int|nat|bool|[iu](8|16|32|64)|bv[0-9]+|set|multiset|map|seq|ref)\\b" },
+        { "name": "entity.name.type.vouch", "match": "\\b[A-Z][\\w']*\\b" }
+      ]
+    },
+    "numbers": { "name": "constant.numeric.vouch", "match": "\\b(0x[0-9a-fA-F_]+|0b[01_]+|[0-9][0-9_]*)\\b" },
+    "strings": { "name": "string.quoted.double.vouch", "begin": "\"", "end": "\"" },
+    "labels": { "match": "^\\s*([a-z_][\\w']*)\\s*(:)(?!:)", "captures": { "1": { "name": "entity.name.label.vouch" }, "2": { "name": "punctuation.separator.vouch" } } },
+    "calls": { "match": "\\b([a-z_][\\w']*)\\s*(?=\\()", "captures": { "1": { "name": "entity.name.function.vouch" } } },
+    "operators": { "name": "keyword.operator.vouch", "match": "<==>|==>|<==|\\|->|\\*\\*|~>|::|\\.\\.=?|==|!=|<=|>=|&&|\\|\\||\\+\\+|[-+*/%<>!=&|^~#]|[∀∃⟹⟸⟺≤≥≠∧∨¬∈∉∗↦⇝]" }
+  }
+}

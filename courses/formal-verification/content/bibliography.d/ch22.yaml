@@ -1,0 +1,52 @@
+berdine2005:
+  authors: Josh Berdine, Cristiano Calcagno and Peter W. O'Hearn
+  year: 2005
+  title: Symbolic execution with separation logic
+  venue: Programming Languages and Systems (APLAS 2005), Lecture Notes in Computer Science 3780, 52–68
+calcagno2009:
+  authors: Cristiano Calcagno, Dino Distefano, Peter O'Hearn and Hongseok Yang
+  year: 2009
+  title: Compositional shape analysis by means of bi-abduction
+  venue: Principles of Programming Languages (POPL 2009), ACM, 289–300
+calcagno2015:
+  authors: Cristiano Calcagno, Dino Distefano, Jérémy Dubreil, Dominik Gabi, Pieter Hooimeijer, Martino Luca, Peter O'Hearn, Irene Papakonstantinou, Jim Purbrick and Dulma Rodriguez
+  year: 2015
+  title: Moving fast with software verification
+  venue: NASA Formal Methods (NFM 2015), Lecture Notes in Computer Science 9058, 3–11
+fbinfer2015:
+  authors: Cristiano Calcagno, Dino Distefano and Peter O'Hearn
+  year: 2015
+  title: 'Open-sourcing Facebook Infer: identify bugs before you ship'
+  venue: Engineering at Meta blog, 11 June 2015
+  url: https://engineering.fb.com/2015/06/11/developer-tools/open-sourcing-facebook-infer-identify-bugs-before-you-ship/
+boyland2003:
+  authors: John Boyland
+  year: 2003
+  title: Checking interference with fractional permissions
+  venue: Static Analysis (SAS 2003), Lecture Notes in Computer Science 2694, 55–72
+rust2018:
+  authors: The Rust Release Team
+  year: 2018
+  title: Announcing Rust 1.31 and Rust 2018
+  venue: The Rust Programming Language Blog, 6 December 2018
+  url: https://blog.rust-lang.org/2018/12/06/Rust-1.31-and-rust-2018/
+jung2018:
+  authors: Ralf Jung, Jacques-Henri Jourdan, Robbert Krebbers and Derek Dreyer
+  year: 2018
+  title: 'RustBelt: securing the foundations of the Rust programming language'
+  venue: Proceedings of the ACM on Programming Languages 2 (POPL), Article 66
+astrauskas2019:
+  authors: Vytautas Astrauskas, Peter Müller, Federico Poli and Alexander J. Summers
+  year: 2019
+  title: Leveraging Rust types for modular specification and verification
+  venue: Proceedings of the ACM on Programming Languages 3 (OOPSLA), Article 147
+denis2022:
+  authors: Xavier Denis, Jacques-Henri Jourdan and Claude Marché
+  year: 2022
+  title: 'Creusot: a foundry for the deductive verification of Rust programs'
+  venue: Formal Methods and Software Engineering (ICFEM 2022), Lecture Notes in Computer Science 13478, 90–105
+lattuada2023:
+  authors: Andrea Lattuada, Travis Hance, Chanhee Cho, Matthias Brun, Isitha Subasinghe, Yi Zhou, Jon Howell, Bryan Parno and Chris Hawblitzel
+  year: 2023
+  title: 'Verus: verifying Rust programs using linear ghost types'
+  venue: Proceedings of the ACM on Programming Languages 7 (OOPSLA1), Article 85

@@ -1,0 +1,15 @@
+torlak2007:
+  authors: Emina Torlak and Daniel Jackson
+  year: 2007
+  title: 'Kodkod: a relational model finder'
+  venue: Tools and Algorithms for the Construction and Analysis of Systems (TACAS 2007), Lecture Notes in Computer Science 4424, 632–647
+zave2012:
+  authors: Pamela Zave
+  year: 2012
+  title: Using lightweight modeling to understand Chord
+  venue: ACM SIGCOMM Computer Communication Review 42(2)
+zave2017:
+  authors: Pamela Zave
+  year: 2017
+  title: 'Reasoning about identifier spaces: how to make Chord correct'
+  venue: IEEE Transactions on Software Engineering 43(12), 1144–1156

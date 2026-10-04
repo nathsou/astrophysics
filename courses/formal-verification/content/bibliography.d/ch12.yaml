@@ -1,0 +1,20 @@
+nelson1980:
+  authors: Greg Nelson and Derek C. Oppen
+  year: 1980
+  title: Fast decision procedures based on congruence closure
+  venue: Journal of the ACM 27(2), 356–364
+downey1980:
+  authors: Peter J. Downey, Ravi Sethi and Robert E. Tarjan
+  year: 1980
+  title: Variations on the common subexpression problem
+  venue: Journal of the ACM 27(4), 758–771
+nieuwenhuis2007:
+  authors: Robert Nieuwenhuis and Albert Oliveras
+  year: 2007
+  title: Fast congruence closure and extensions
+  venue: Information and Computation 205(4), 557–580
+ackermann1954:
+  authors: Wilhelm Ackermann
+  year: 1954
+  title: Solvable Cases of the Decision Problem
+  venue: North-Holland

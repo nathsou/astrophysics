@@ -1,0 +1,23 @@
+// expect: violated not_four
+// The water-jug puzzle from Die Hard with a Vengeance, a classic first model for a model checker:
+// "prove" that the big jug never holds 4 gallons, and read the counterexample as the solution.
+
+system DieHard {
+  var small: 0..=3 = 0
+  var big: 0..=5 = 0
+
+  action fill_small { small = 3 }
+  action fill_big { big = 5 }
+  action empty_small { small = 0 }
+  action empty_big { big = 0 }
+  action small_to_big {
+    let pour = min(small, 5 - big)
+    small, big = small - pour, big + pour
+  }
+  action big_to_small {
+    let pour = min(big, 3 - small)
+    small, big = small + pour, big - pour
+  }
+
+  invariant not_four: big != 4
+}

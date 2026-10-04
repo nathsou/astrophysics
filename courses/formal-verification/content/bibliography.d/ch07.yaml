@@ -1,0 +1,25 @@
+marquessilva1999:
+  authors: João P. Marques-Silva and Karem A. Sakallah
+  year: 1999
+  title: 'GRASP: a search algorithm for propositional satisfiability'
+  venue: IEEE Transactions on Computers 48(5), 506–521
+gomes1998:
+  authors: Carla P. Gomes, Bart Selman and Henry Kautz
+  year: 1998
+  title: Boosting combinatorial search through randomization
+  venue: Fifteenth National Conference on Artificial Intelligence (AAAI-98), 431–437
+luby1993:
+  authors: Michael Luby, Alistair Sinclair and David Zuckerman
+  year: 1993
+  title: Optimal speedup of Las Vegas algorithms
+  venue: Information Processing Letters 47(4), 173–180
+audemard2009:
+  authors: Gilles Audemard and Laurent Simon
+  year: 2009
+  title: Predicting learnt clauses quality in modern SAT solvers
+  venue: Twenty-first International Joint Conference on Artificial Intelligence (IJCAI), 399–404
+pipatsrisawat2007:
+  authors: Knot Pipatsrisawat and Adnan Darwiche
+  year: 2007
+  title: A lightweight component caching scheme for satisfiability solvers
+  venue: Theory and Applications of Satisfiability Testing (SAT 2007), Lecture Notes in Computer Science 4501, 294–299

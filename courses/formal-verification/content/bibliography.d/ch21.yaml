@@ -1,0 +1,20 @@
+burstall1972:
+  authors: Rod M. Burstall
+  year: 1972
+  title: Some techniques for proving correctness of programs which alter data structures
+  venue: Machine Intelligence 7, Edinburgh University Press, 23–50
+ohearn2001:
+  authors: Peter O'Hearn, John C. Reynolds and Hongseok Yang
+  year: 2001
+  title: Local reasoning about programs that alter data structures
+  venue: Computer Science Logic (CSL 2001), Lecture Notes in Computer Science 2142, 1–19
+reynolds2002:
+  authors: John C. Reynolds
+  year: 2002
+  title: 'Separation logic: a logic for shared mutable data structures'
+  venue: Logic in Computer Science (LICS 2002), IEEE, 55–74
+leino2010:
+  authors: K. Rustan M. Leino
+  year: 2010
+  title: 'Dafny: an automatic program verifier for functional correctness'
+  venue: Logic for Programming, Artificial Intelligence, and Reasoning (LPAR-16), Lecture Notes in Computer Science 6355, 348–370

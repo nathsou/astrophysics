@@ -1,0 +1,26 @@
+haken1985:
+  authors: Armin Haken
+  year: 1985
+  title: The intractability of resolution
+  venue: Theoretical Computer Science 39, 297–308
+cook1976:
+  authors: Stephen A. Cook
+  year: 1976
+  title: A short proof of the pigeon hole principle using extended resolution
+  venue: SIGACT News 8(4), 28–32
+goldberg2003:
+  authors: Evguenii Goldberg and Yakov Novikov
+  year: 2003
+  title: Verification of proofs of unsatisfiability for CNF formulas
+  venue: Design, Automation and Test in Europe (DATE 2003)
+heule2016drat:
+  authors: Marijn J. H. Heule
+  year: 2016
+  title: The DRAT format and DRAT-trim checker
+  venue: arXiv:1610.06229
+  url: https://arxiv.org/abs/1610.06229
+tan2021:
+  authors: Yong Kiam Tan, Marijn J. H. Heule and Magnus O. Myreen
+  year: 2021
+  title: 'cake_lpr: verified propagation redundancy checking in CakeML'
+  venue: Tools and Algorithms for the Construction and Analysis of Systems (TACAS 2021), Lecture Notes in Computer Science 12652, 223–241

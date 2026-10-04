@@ -1,0 +1,21 @@
+// expect: violated mutex
+// Hyman's algorithm (CACM, 1966): both processes can enter the critical section.
+
+system Hyman {
+  type Proc = 0..2
+  var flag: Proc -> bool = false
+  var turn: Proc = 0
+
+  process P(me: Proc) {
+    loop {
+      want: flag[me] = true
+      test: while turn != me {
+        wait: await !flag[1 - me]
+        take: turn = me
+      }
+      critical: flag[me] = false
+    }
+  }
+
+  invariant mutex: !(P(0) at critical && P(1) at critical)
+}

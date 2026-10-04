@@ -1,0 +1,45 @@
+// expect: verified
+// A bounded queue in a ring buffer, with its abstraction: the sequence of queued items (chapter 20).
+
+struct Ring {
+  buf: [int]
+  head: int
+  size: int
+}
+
+pred valid(q: Ring) {
+  len(q.buf) > 0 && 0 <= q.head < len(q.buf) && 0 <= q.size <= len(q.buf)
+}
+
+/// Index i of the buffer, wrapped around once.
+pure fn wrap(i: int, n: int) -> int
+  requires 0 <= i < 2 * n
+{
+  if i < n { i } else { i - n }
+}
+
+/// The abstraction function: what the ring means, as a sequence.
+pure fn contents(q: Ring) -> [int]
+  requires valid(q)
+{
+  [q.buf[wrap(q.head + k, len(q.buf))] | k in 0..q.size]
+}
+
+fn push(inout q: Ring, x: int)
+  requires valid(q) && q.size < len(q.buf)
+  ensures valid(q)
+  ensures contents(q) == old(contents(q)) ++ [x]
+{
+  q.buf[wrap(q.head + q.size, len(q.buf))] = x
+  q.size = q.size + 1
+}
+
+fn pop(inout q: Ring) -> (x: int)
+  requires valid(q) && q.size > 0
+  ensures valid(q)
+  ensures [x] ++ contents(q) == old(contents(q))
+{
+  x = q.buf[q.head]
+  q.head = wrap(q.head + 1, len(q.buf))
+  q.size = q.size - 1
+}

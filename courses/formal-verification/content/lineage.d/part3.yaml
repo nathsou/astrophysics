@@ -1,0 +1,26 @@
+nodes:
+  - { id: spv, name: Stanford Pascal Verifier, year: 1979, kind: tool, lane: deductive, chapter: equality-and-functions }
+  - { id: nelson-oppen, name: Nelson–Oppen combination, year: 1979, kind: idea, lane: smt, chapter: equality-and-functions }
+  - { id: shostak, name: Shostak's method, year: 1984, kind: idea, lane: smt, chapter: equality-and-functions }
+  - { id: simplify, name: Simplify, year: 2002, kind: tool, lane: smt, chapter: equality-and-functions }
+  - { id: escjava, name: ESC/Java, year: 2002, kind: tool, lane: deductive, chapter: specifications-and-contracts }
+  - { id: dpllt, name: DPLL(T), year: 2006, kind: idea, lane: smt, chapter: equality-and-functions }
+  - { id: yices-simplex, name: Simplex for DPLL(T), year: 2006, kind: idea, lane: smt, chapter: arithmetic }
+  - { id: z3, name: Z3, year: 2008, kind: tool, lane: smt, chapter: equality-and-functions }
+  - { id: symex, name: Symbolic execution, year: 1976, kind: idea, lane: deductive, chapter: symbolic-execution }
+  - { id: dart, name: DART, year: 2005, kind: tool, lane: deductive, chapter: symbolic-execution }
+  - { id: klee, name: KLEE, year: 2008, kind: tool, lane: deductive, chapter: symbolic-execution }
+  - { id: sage, name: SAGE, year: 2008, kind: tool, lane: deductive, chapter: symbolic-execution }
+  - { id: alive, name: Alive, year: 2015, kind: tool, lane: smt, chapter: bits-and-arrays }
+edges:
+  - { from: nelson-oppen, to: spv, type: influenced, cite: [nelson1979, luckham1979] }
+  - { from: nelson-oppen, to: simplify, type: descends, cite: [detlefs2005] }
+  - { from: simplify, to: escjava, type: influenced, cite: [flanagan2002] }
+  - { from: minisat, to: dpllt, type: influenced, cite: [nieuwenhuis2006] }
+  - { from: nelson-oppen, to: dpllt, type: influenced }
+  - { from: dpllt, to: z3, type: influenced, cite: [demoura2008] }
+  - { from: yices-simplex, to: z3, type: influenced }
+  - { from: symex, to: dart, type: descends, cite: [godefroid2005] }
+  - { from: dart, to: sage, type: descends, cite: [godefroid2008] }
+  - { from: symex, to: klee, type: descends, cite: [cadar2008] }
+  - { from: z3, to: alive, type: influenced, cite: [lopes2015] }

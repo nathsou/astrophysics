@@ -1,0 +1,40 @@
+farkas1902:
+  authors: Julius Farkas
+  year: 1902
+  title: Theorie der einfachen Ungleichungen
+  venue: Journal für die reine und angewandte Mathematik 124, 1–27
+dantzig1951:
+  authors: George B. Dantzig
+  year: 1951
+  title: Maximization of a linear function of variables subject to linear inequalities
+  venue: In T. C. Koopmans (ed.), Activity Analysis of Production and Allocation, Cowles Commission Monograph 13, Wiley, 339–347
+landdoig1960:
+  authors: Ailsa H. Land and Alison G. Doig
+  year: 1960
+  title: An automatic method of solving discrete programming problems
+  venue: Econometrica 28(3), 497–520
+gomory1958:
+  authors: Ralph E. Gomory
+  year: 1958
+  title: Outline of an algorithm for integer solutions to linear programs
+  venue: Bulletin of the American Mathematical Society 64(5), 275–278
+presburger1929:
+  authors: Mojżesz Presburger
+  year: 1929
+  title: Über die Vollständigkeit eines gewissen Systems der Arithmetik ganzer Zahlen, in welchem die Addition als einzige Operation hervortritt
+  venue: Comptes Rendus du Premier Congrès des Mathématiciens des Pays Slaves, Warsaw, 92–101
+tarski1951:
+  authors: Alfred Tarski
+  year: 1951
+  title: A Decision Method for Elementary Algebra and Geometry
+  venue: University of California Press, second edition (first published as a RAND Corporation report, 1948)
+collins1975:
+  authors: George E. Collins
+  year: 1975
+  title: Quantifier elimination for real closed fields by cylindrical algebraic decomposition
+  venue: Automata Theory and Formal Languages, 2nd GI Conference, Lecture Notes in Computer Science 33, 134–183
+wiles1995:
+  authors: Andrew Wiles
+  year: 1995
+  title: Modular elliptic curves and Fermat's Last Theorem
+  venue: Annals of Mathematics 141(3), 443–551

@@ -1,0 +1,10 @@
+meyer1986:
+  authors: Bertrand Meyer
+  year: 1986
+  title: Design by Contract
+  venue: Technical Report TR-EI-12/CO, Interactive Software Engineering Inc.
+meyer1992:
+  authors: Bertrand Meyer
+  year: 1992
+  title: Applying “design by contract”
+  venue: IEEE Computer 25(10), 40–51

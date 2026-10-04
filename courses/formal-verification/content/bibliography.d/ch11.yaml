@@ -1,0 +1,25 @@
+bryant1991:
+  authors: Randal E. Bryant
+  year: 1991
+  title: On the complexity of VLSI implementations and graph representations of Boolean functions with application to integer multiplication
+  venue: IEEE Transactions on Computers 40(2), 205–213
+akers1978:
+  authors: Sheldon B. Akers
+  year: 1978
+  title: Binary decision diagrams
+  venue: IEEE Transactions on Computers C-27(6), 509–516
+lee1959:
+  authors: C. Y. Lee
+  year: 1959
+  title: Representation of switching circuits by binary-decision programs
+  venue: Bell System Technical Journal 38(4), 985–999
+bollig1996:
+  authors: Beate Bollig and Ingo Wegener
+  year: 1996
+  title: Improving the variable ordering of OBDDs is NP-complete
+  venue: IEEE Transactions on Computers 45(9), 993–1002
+rudell1993:
+  authors: Richard Rudell
+  year: 1993
+  title: Dynamic variable ordering for ordered binary decision diagrams
+  venue: IEEE/ACM International Conference on Computer-Aided Design (ICCAD), 42–47

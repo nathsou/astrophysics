@@ -1,0 +1,35 @@
+padon2016:
+  authors: Oded Padon, Kenneth L. McMillan, Aurojit Panda, Mooly Sagiv and Sharon Shoham
+  year: 2016
+  title: 'Ivy: safety verification by interactive generalization'
+  venue: Programming Language Design and Implementation (PLDI 2016), ACM, 614–630
+chang1979:
+  authors: Ernest Chang and Rosemary Roberts
+  year: 1979
+  title: An improved algorithm for decentralized extrema-finding in circular configurations of processes
+  venue: Communications of the ACM 22(5), 281–283
+bernays1928:
+  authors: Paul Bernays and Moses Schönfinkel
+  year: 1928
+  title: Zum Entscheidungsproblem der mathematischen Logik
+  venue: Mathematische Annalen 99, 342–372
+ramsey1930:
+  authors: Frank P. Ramsey
+  year: 1930
+  title: On a problem of formal logic
+  venue: Proceedings of the London Mathematical Society s2-30, 264–286
+apt1986:
+  authors: Krzysztof R. Apt and Dexter C. Kozen
+  year: 1986
+  title: Limits for automatic verification of finite-state concurrent systems
+  venue: Information Processing Letters 22(6), 307–309
+church1936:
+  authors: Alonzo Church
+  year: 1936
+  title: A note on the Entscheidungsproblem
+  venue: Journal of Symbolic Logic 1(1), 40–41
+turing1936:
+  authors: Alan M. Turing
+  year: 1936
+  title: On computable numbers, with an application to the Entscheidungsproblem
+  venue: Proceedings of the London Mathematical Society s2-42, 230–265

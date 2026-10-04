@@ -1,0 +1,11 @@
+dijkstra1965ewd123:
+  authors: Edsger W. Dijkstra
+  year: 1965
+  title: Cooperating sequential processes (EWD123)
+  venue: Technological University Eindhoven
+  url: https://www.cs.utexas.edu/~EWD/transcriptions/EWD01xx/EWD123.html
+sewell2010:
+  authors: Peter Sewell, Susmit Sarkar, Scott Owens, Francesco Zappa Nardelli and Magnus O. Myreen
+  year: 2010
+  title: 'x86-TSO: a rigorous and usable programmer’s model for x86 multiprocessors'
+  venue: Communications of the ACM 53(7), 89–97

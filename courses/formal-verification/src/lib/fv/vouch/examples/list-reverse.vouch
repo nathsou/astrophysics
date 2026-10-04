@@ -1,0 +1,34 @@
+// expect: verified
+// In-place reversal of a singly linked list, with separation logic (chapter 22).
+
+class Node {
+  val: int
+  next: ref Node?
+}
+
+pred list(x: ref Node?, xs: [int]) {
+  if x == null { xs == [] && emp }
+  else { exists n: ref Node? :: len(xs) > 0 && x.val |-> xs[0] ** x.next |-> n ** list(n, xs[1..]) }
+}
+
+fn reverse(x: ref Node?, ghost xs: [int]) -> (r: ref Node?)
+  requires list(x, xs)
+  ensures list(r, reversed(xs))
+{
+  var prev: ref Node? = null
+  var cur = x
+  ghost var done: [int] = []
+  ghost var todo = xs
+  while cur != null
+    invariant list(prev, done) ** list(cur, todo)
+    invariant reversed(xs) == reversed(todo) ++ done
+  {
+    let nxt = cur.next
+    cur.next = prev
+    prev = cur
+    cur = nxt
+    done = [todo[0]] ++ done
+    todo = todo[1..]
+  }
+  return prev
+}

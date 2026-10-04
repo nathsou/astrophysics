@@ -1,0 +1,200 @@
+# The course timeline (PLAN §3, through-line 9). Authors add events in timeline.d/<name>.yaml.
+# Fields: year, month?, lane, title, people?, chapter?, parts?, text, cite?
+- year: 1847
+  lane: logic
+  title: Boole’s algebra of logic
+  people: George Boole
+  chapter: propositional-encoding
+  text: '*The Mathematical Analysis of Logic* treats reasoning as algebra over two values: the ancestor of every SAT encoding.'
+- year: 1949
+  lane: deductive
+  title: Checking a large routine
+  people: Alan Turing
+  chapter: for-all-inputs
+  text: A three-page talk at a Cambridge conference proves a routine correct by attaching assertions to its steps and arguing that it terminates.
+  cite: [turing1949]
+- year: 1966
+  lane: disasters
+  title: A flawed mutual exclusion algorithm is published
+  people: Harris Hyman
+  chapter: interleavings
+  text: A short letter proposes a two-process solution to the mutual exclusion problem. One interleaving lets both processes in.
+  cite: [hyman1966]
+- year: 1967
+  lane: deductive
+  title: Assigning meanings to programs
+  people: Robert Floyd
+  chapter: loop-invariants
+  text: Assertions on the edges of a flowchart, with a verification condition per edge and a well-founded measure for termination.
+  cite: [floyd1967]
+- year: 1969
+  lane: deductive
+  title: An axiomatic basis for computer programming
+  people: Tony Hoare
+  chapter: weakest-preconditions
+  text: The triple {P} S {Q} and a proof rule for each construct of the language.
+  cite: [hoare1969]
+- year: 1971
+  lane: sat
+  title: SAT is NP-complete
+  people: Stephen Cook
+  chapter: propositional-encoding
+  text: Every problem whose solutions can be checked quickly reduces to Boolean satisfiability. Leonid Levin found the same result independently.
+  cite: [cook1971]
+- year: 1975
+  lane: deductive
+  title: Weakest preconditions
+  people: Edsger Dijkstra
+  chapter: weakest-preconditions
+  text: Guarded commands, and a calculus that computes the weakest precondition of a program backwards from its postcondition.
+  cite: [dijkstra1975]
+- year: 1977
+  lane: model-checking
+  title: The temporal logic of programs
+  people: Amir Pnueli
+  chapter: eventually
+  text: Temporal operators such as “always” and “eventually” become a language for specifying programs that never stop.
+  cite: [pnueli1977]
+- year: 1977
+  lane: abstract-interpretation
+  title: Abstract interpretation
+  people: Patrick Cousot, Radhia Cousot
+  chapter: abstract-interpretation
+  text: Static analysis as computing a fixpoint in an abstract lattice that safely approximates every execution.
+  cite: [cousot1977]
+- year: 1978
+  lane: model-checking
+  title: The Needham–Schroeder protocols
+  people: Roger Needham, Michael Schroeder
+  chapter: the-adversary
+  text: Authentication protocols with shared and public keys. The public-key one has a flaw that is found seventeen years later.
+  cite: [needham1978]
+- year: 1981
+  lane: model-checking
+  title: Model checking
+  people: Edmund Clarke, Allen Emerson
+  chapter: state-machines
+  text: Checking a finite-state program against a temporal-logic formula by exploring its states. Jean-Pierre Queille and Joseph Sifakis found the idea independently.
+  cite: [clarke1981, queille1982]
+- year: 1985
+  lane: disasters
+  title: Therac-25 overdoses begin
+  chapter: interleavings
+  text: Between 1985 and 1987 a radiation therapy machine gives massive overdoses; race conditions in its software are among the causes.
+  cite: [leveson1993]
+- year: 1986
+  lane: sat
+  title: Binary decision diagrams
+  people: Randal Bryant
+  chapter: decision-diagrams
+  text: Reduced, ordered decision diagrams give Boolean functions a canonical form, and algorithms to combine them.
+  cite: [bryant1986]
+- year: 1994
+  lane: disasters
+  title: The Pentium division bug
+  people: Thomas Nicely
+  chapter: unrolling-time
+  text: A mathematician notices wrong reciprocals; missing table entries in the divider are the cause. Hardware companies invest heavily in formal verification afterwards.
+  cite: [pratt1995, edelman1997]
+- year: 1995
+  lane: model-checking
+  title: Lowe’s attack on Needham–Schroeder
+  people: Gavin Lowe
+  chapter: the-adversary
+  text: A man-in-the-middle attack on the public-key protocol, found with the FDR model checker, and a one-field fix.
+  cite: [lowe1995, lowe1996]
+- year: 1996
+  lane: disasters
+  title: Ariane 5 flight 501
+  chapter: abstract-interpretation
+  text: An overflow in a floating-point to integer conversion destroys the launcher on its first flight.
+  cite: [lions1996]
+- year: 1997
+  lane: disasters
+  title: Mars Pathfinder resets
+  chapter: eventually
+  text: Priority inversion makes the lander reset repeatedly; engineers enable priority inheritance remotely.
+  cite: [jones1997]
+- year: 2001
+  lane: sat
+  title: Chaff
+  people: Matthew Moskewicz, Conor Madigan, Ying Zhao, Lintao Zhang, Sharad Malik
+  chapter: inside-a-sat-solver
+  text: Watched literals and the VSIDS heuristic make clause-learning SAT solvers an order of magnitude faster.
+  cite: [moskewicz2001]
+- year: 2006
+  lane: disasters
+  title: Nearly all binary searches are broken
+  people: Joshua Bloch
+  chapter: for-all-inputs
+  text: The midpoint computation in Java’s binary search overflows on very large arrays.
+  cite: [bloch2006]
+- year: 2008
+  lane: smt
+  title: Z3
+  people: Leonardo de Moura, Nikolaj Bjørner
+  chapter: equality-and-functions
+  text: An SMT solver from Microsoft Research that becomes the back end of many program verifiers.
+  cite: [demoura2008]
+- year: 2008
+  lane: disasters
+  title: The Zune freeze
+  chapter: loop-invariants
+  text: Music players freeze on the last day of a leap year, stuck in a loop that cannot make progress.
+  cite: [cnn2008zune, citp2009zune]
+- year: 2009
+  lane: industry
+  title: seL4
+  people: Gerwin Klein and colleagues
+  chapter: what-did-we-prove
+  text: A general-purpose operating-system kernel with a machine-checked proof of functional correctness.
+  cite: [klein2009]
+- year: 2009
+  lane: industry
+  title: CompCert
+  people: Xavier Leroy
+  chapter: what-did-we-prove
+  text: A C compiler whose code generation is proved correct in the Coq proof assistant.
+  cite: [leroy2009]
+- year: 2011
+  lane: industry
+  title: Csmith finds compiler bugs
+  people: Xuejun Yang, Yang Chen, Eric Eide, John Regehr
+  chapter: what-did-we-prove
+  text: Random testing finds hundreds of bugs in C compilers. In CompCert it finds none in the verified middle end, and some in parts that were not verified.
+  cite: [yang2011]
+- year: 2015
+  lane: industry
+  title: How Amazon Web Services uses formal methods
+  people: Chris Newcombe and colleagues
+  chapter: messages-and-failures
+  text: Engineers report that TLA+ specifications and its model checker found subtle bugs in production designs.
+  cite: [newcombe2015]
+- year: 2015
+  lane: smt
+  title: Alive
+  people: Nuno Lopes, David Menendez, Santosh Nagarakatte, John Regehr
+  chapter: bits-and-arrays
+  text: Peephole optimisations written in a small language and proved correct, or refuted, by an SMT solver.
+  cite: [lopes2015]
+- year: 2015
+  lane: deductive
+  title: The TimSort bug
+  people: Stijn de Gouw and colleagues
+  chapter: quantifiers-ghosts-and-lemmas
+  text: Verifying OpenJDK’s sort with KeY reveals a broken invariant.
+  cite: [degouw2015]
+- year: 2015
+  lane: industry
+  title: IronFleet
+  people: Chris Hawblitzel and colleagues
+  chapter: the-verified-ledger
+  text: Practical distributed systems proved correct from a high-level specification down to the implementation.
+  cite: [hawblitzel2015]
+- year: 2017
+  lane: industry
+  title: Bugs in verified distributed systems
+  people: Pedro Fonseca, Kaiyuan Zhang, Xi Wang, Arvind Krishnamurthy
+  chapter: what-did-we-prove
+  text: Almost every bug found is in unverified code or at the boundary between verified code and its environment.
+  cite: [fonseca2017]
