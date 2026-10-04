@@ -18,8 +18,9 @@ const ASSUMPTIONS = [
 ];
 
 /** Build concrete arguments for the precondition: lists of n nodes for list(p), objects for p.f ↦ c. */
-function concreteInputs(checked: Checked, d: A.FnDecl, n: number): { args: Value[]; heap: Heap; lists: number } | undefined {
+function concreteInputs(checked: Checked, d: A.FnDecl, n: number): { args: Value[]; heap: Heap; lists: number; length: number } | undefined {
   const heap = new Heap();
+  let listLength = n;
   const listCls = checked.program.decls.find((x) => x.k === 'class' && x.fields.some((f) => f.name === 'next')) as A.StructDecl | undefined;
   const lists = new Set<string>();
   const objects = new Map<string, Map<string, bigint | null | string>>();
@@ -47,9 +48,12 @@ function concreteInputs(checked: Checked, d: A.FnDecl, n: number): { args: Value
       continue;
     }
     if (lists.has(p.name) && listCls) {
+      // A parameter whose type is not nullable gets at least one node.
+      const len = (p.type as { nullable: boolean }).nullable ? n : Math.max(n, 1);
+      listLength = len;
       let next: Value = null;
-      for (let i = 0; i < n; i++) {
-        const fields = listCls.fields.map((f) => (f.name === 'next' ? next : f.type.k === 'ref' ? null : BigInt(n - i)));
+      for (let i = 0; i < len; i++) {
+        const fields = listCls.fields.map((f) => (f.name === 'next' ? next : f.type.k === 'ref' ? null : BigInt(len - i)));
         next = heap.alloc(listCls.name, fields);
       }
       args.push(next);
@@ -70,7 +74,7 @@ function concreteInputs(checked: Checked, d: A.FnDecl, n: number): { args: Value
     });
     args.push(heap.alloc(cls.name, fields));
   }
-  return { args, heap, lists: lists.size };
+  return { args, heap, lists: lists.size, length: listLength };
 }
 
 function replay(checked: Checked, d: A.FnDecl, err: HeapError): string | undefined {
@@ -83,7 +87,8 @@ function replay(checked: Checked, d: A.FnDecl, err: HeapError): string | undefin
     const r = new Runner(checked, { fuel: 50_000 }).run(d.name, input.args, input.heap);
     if (r.failure && kinds.includes(r.failure.kind)) {
       const ints = d.params.filter((p) => p.type.k !== 'ref').map((p, i) => `${p.name} = ${String(input.args[d.params.indexOf(p)] ?? i)}`);
-      const on = input.lists ? (n === 0 ? 'empty lists' : `lists of ${n} node${n === 1 ? '' : 's'}`) : 'objects built from the precondition';
+      const k = input.length;
+      const on = input.lists ? (k === 0 ? 'empty lists' : `lists of ${k} node${k === 1 ? '' : 's'}`) : 'objects built from the precondition';
       return `${r.failure.message} The interpreter fails this way on ${on}${ints.length ? `, with ${ints.join(', ')}` : ''}.`;
     }
   }

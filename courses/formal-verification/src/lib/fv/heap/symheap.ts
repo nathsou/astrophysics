@@ -97,14 +97,35 @@ const sameLoc = (h: SymHeap, a: Term, b: Term) => a === b || proves(h, eq(a, b))
 
 // ── Showing states ──
 
-const clean = (s: string) => s.replace(/!\d+/g, '');
+// Symbolic values print readably. A parameter's value on entry is shown with the parameter's name; any other value
+// whose name is a program variable's gets a subscript (prev₁, prev₂, …), so that it is not mistaken for the variable's
+// current value; other values (a node's fields) are plain the first time. Names are assigned in order of first
+// appearance during one verification.
+let names: Map<string, string> | undefined;
+let programVars = new Set<string>();
+const SUB = '₀₁₂₃₄₅₆₇₈₉';
+const subscript = (k: number) => [...String(k)].map((d) => SUB[Number(d)]).join('');
+const clean = (s: string) =>
+  s.replace(/([A-Za-z_]\w*)!(\d+)/g, (m, base: string) => {
+    if (!names) return base;
+    let n = names.get(m);
+    if (!n) {
+      const taken = [...names].filter(([k, x]) => k.startsWith(`${base}!`) && x !== base).length;
+      const plainTaken = [...names].some(([k, x]) => k.startsWith(`${base}!`) && x === base);
+      n = programVars.has(base) || plainTaken ? base + subscript(taken + 1) : base;
+      names.set(m, n);
+    }
+    return n;
+  });
 export function showAtom(a: Atom): string {
   return clean(a.k === 'pt' ? `${pretty(a.at)}.${a.field} ↦ ${pretty(a.val)}` : a.to === NULL ? `list(${pretty(a.from)})` : `lseg(${pretty(a.from)}, ${pretty(a.to)})`);
 }
 export function showState(s: HeapState): string[] {
   const env = [...s.env].filter(([k]) => !k.startsWith('$')).map(([k, t]) => `${k} = ${clean(pretty(t))}`);
   const spatial = s.h.atoms.length ? s.h.atoms.map(showAtom).join(' ∗ ') : 'emp';
-  const pure = s.h.pure.filter((p) => p.op !== 'true').map((p) => clean(pretty(p)));
+  const pure = s.h.pure
+    .filter((p) => p.op !== 'true')
+    .map((p) => clean(pretty(p)).replace(/¬\(null = ([^()\s]+)\)/g, '$1 ≠ null').replace(/^null = ([^()\s]+)$/, '$1 = null').replace(/¬\(([^()\s]+) = ([^()\s]+)\)/g, '$1 ≠ $2'));
   return [env.join(', '), spatial, ...(pure.length ? [pure.join(' ∧ ')] : [])];
 }
 
@@ -321,7 +342,8 @@ export class HeapVerifier {
     }
     for (const f of pending) if (!proves(ctx, f)) return { ok: false, reason: `${clean(pretty(f))} does not follow`, definite: false };
     const frame = L.filter((a) => !(a.k === 'seg' && sameLoc(ctx, a.from, a.to)));
-    if (exact && frame.length) return { ok: false, reason: `left over: ${frame.map(showAtom).join(' ∗ ')}`, definite: true };
+    // A leftover segment that may be empty is only a possible leak.
+    if (exact && frame.length) return { ok: false, reason: `left over: ${frame.map(showAtom).join(' ∗ ')}`, definite: frame.some((a) => a.k === 'pt' || proves(ctx, not(eq(a.from, a.to)))) };
     return { ok: true, frame };
   }
 
@@ -357,7 +379,8 @@ export class HeapVerifier {
         return undefined;
       }
       if (s.freed.some((f) => sameLoc(s.h, f, at))) {
-        this.error('freed', `Use after free: ${what} ${clean(pretty(at))}.${field}, but that object has been freed.`, span);
+        if (what === 'freeing') this.error('freed', `Double free: freeing ${clean(pretty(at))}, but that object has already been freed.`, span);
+        else this.error('freed', `Use after free: ${what} ${clean(pretty(at))}.${field}, but that object has been freed.`, span);
         return undefined;
       }
       this.error('not-owned', `Access to memory this code does not own: ${what} ${clean(pretty(at))}.${field}, which no assertion gives access to (it may be null or not allocated).`, span);
@@ -374,9 +397,14 @@ export class HeapVerifier {
     this.fn = info.decl;
     this.errors = [];
     this.steps = [];
+    names = new Map();
     const env = new Map<string, Term>();
     for (const p of this.fn.params) env.set(p.name, this.fresh(p.name, this.sortOf(p.type)));
+    for (const p of this.fn.params) names.set(env.get(p.name)!.name!, p.name);
+    programVars = new Set([...this.fn.params.map((p) => p.name), ...assignedIn((this.fn.body as A.Block).stmts)]);
     const s0: HeapState = { env, h: { pure: [], atoms: [] }, freed: [] };
+    // A reference parameter whose type is not nullable is not null.
+    for (const p of this.fn.params) if (p.type.k === 'ref' && !p.type.nullable) s0.h.pure.push(not(eq(env.get(p.name)!, NULL)));
     this.entry = s0;
     try {
       for (const r of this.fn.spec.requires) {
@@ -393,6 +421,7 @@ export class HeapVerifier {
       if (!(e instanceof Unsupported)) throw e;
       this.error('unsupported', `Not supported by the heap verifier: ${e.message}.`, this.fn.nameSpan, false);
     }
+    names = undefined;
     return { fn: name, errors: this.errors, steps: this.steps, paths: this.pathCount, verified: !this.errors.length };
   }
 
@@ -589,7 +618,7 @@ export class HeapVerifier {
     const r = this.entail(s.h, goal, true);
     this.record(s, span, 'at the return: the postcondition must account for the whole heap', 'return');
     if (!r.ok) {
-      if (r.reason.startsWith('left over')) this.error('leak', `Memory leak: when ${this.fn.name} returns, ${r.reason.replace('left over: ', '')} is still allocated but no longer described by the postcondition.`, span, true);
+      if (r.reason.startsWith('left over')) this.error('leak', `Memory leak: when ${this.fn.name} returns, ${r.reason.replace('left over: ', '')} is still allocated${r.definite ? '' : ' (unless that list is empty)'} but no longer described by the postcondition.`, span, r.definite);
       else this.error('post', `The postcondition may not hold: ${r.reason}.`, span, false);
     }
   }
@@ -628,6 +657,7 @@ export class HeapVerifier {
     body.h.pure.push(c);
     if (consistent(body.h)) {
       for (const end of this.block(st.body.stmts, [body])) {
+        this.record(end, st.span, `${label} — end of the iteration: the heap must fold back into the invariant`, 'fold');
         const back = this.entail(end.h, inv(end), true);
         if (!back.ok) this.error(back.reason.startsWith('left over') ? 'leak' : 'invariant', back.reason.startsWith('left over') ? `The loop body leaks: ${back.reason.replace('left over: ', '')} is not described by the invariant.` : `The loop invariant may not be preserved: ${back.reason}.`, st.span, back.definite);
       }
