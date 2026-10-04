@@ -494,15 +494,16 @@ export function checkLoop(prog: WpProgram, inv: Term, measure?: Term): LoopRepor
   const sortOf = (x: string) => (prog.sorts.get(x) === 'bool' ? BOOL : INT);
   const sub = (ss: WStmt[], q: Term) => computeWp({ ...prog, body: ss, post: q }).wp;
   const entry = valid(imp(prog.pre, sub(before, inv)), prog.params);
-  const pf = imp(and(inv, loop.c), sub(loop.body, inv));
+  // The parameters are never assigned, so the precondition (about them) holds throughout and may be assumed.
+  const pf = imp(and(prog.pre, inv, loop.c), sub(loop.body, inv));
   const preserved = valid(pf);
   // After the loop: the rest of the function with its postcondition (a return in the rest uses it too).
-  const exit = valid(imp(and(inv, not(loop.c)), computeWp({ ...prog, body: after, post: prog.post }).wp));
+  const exit = valid(imp(and(prog.pre, inv, not(loop.c)), computeWp({ ...prog, body: after, post: prog.post }).wp));
   const report: LoopReport = { entry, preserved, exit };
   if (measure) {
     const m0 = v('measure_before', INT);
-    report.bounded = valid(imp(and(inv, loop.c), ge(measure, num(0))));
-    report.decreases = valid(subst(imp(and(inv, loop.c), sub(loop.body, lt(measure, m0))), new Map([[m0, measure]])));
+    report.bounded = valid(imp(and(prog.pre, inv, loop.c), ge(measure, num(0))));
+    report.decreases = valid(subst(imp(and(prog.pre, inv, loop.c), sub(loop.body, lt(measure, m0))), new Map([[m0, measure]])));
   }
   if (preserved.status === 'invalid') {
     const r = checkSat([not(pf)], { timeout: 4000 });

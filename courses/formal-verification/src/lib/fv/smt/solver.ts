@@ -501,7 +501,23 @@ export class SmtSolver implements Theory {
   }
 
   private nlaLemmas = 0;
+  /**
+   * Does the current assignment, with every product computed by real multiplication, satisfy all the (quantifier-
+   * free) assertions? Then no product lemma is needed: the model is a model. Without this check, a satisfiable
+   * formula can send the value lemmas chasing ever new values.
+   */
+  private modelSatisfiesAll(): boolean {
+    if (this.assertions.some((a) => [...subterms(a)].some((t) => t.op === 'forall' || t.op === 'exists'))) return false;
+    try {
+      const m = this.buildModel();
+      return this.assertions.every((a) => evaluate(a, m) === true);
+    } catch {
+      return false;
+    }
+  }
+
   private products(lemma: (c: number[], j: Justification) => void): void {
+    if (this.modelSatisfiesAll()) return;
     // Congruence for products: two products whose factors currently have equal values must be equal when the
     // factors are (x₁ = x₂ ∧ y₁ = y₂ ⟹ x₁·y₁ = x₂·y₂). Without it, i = n would not give i·i = n·n, and the value
     // lemmas below would chase ever new values of n.
