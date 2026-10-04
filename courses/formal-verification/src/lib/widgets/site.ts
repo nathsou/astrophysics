@@ -20,3 +20,5 @@ export { default as EncodingLab } from '$lib/components/sat/EncodingLab.svelte';
 export { default as WorldLab } from '$lib/components/relational/WorldLab.svelte';
 /** The unrolling view (bounded model checking): `:::bmc-lab{title="…" maxK=12 race=true}` with a ```vouch system inside. */
 export { default as BmcLab } from '$lib/components/bmc/BmcLab.svelte';
+/** Symbolic reachability with BDDs: `:::reach-lab{title="…" race=true}` with a ```vouch system inside. */
+export { default as ReachLab } from '$lib/components/bdd/ReachLab.svelte';

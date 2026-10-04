@@ -15,13 +15,15 @@
  */
 import { Bdd, type Node } from './bdd';
 import { SystemEncoder, VarPool, BmcError, not, or, and, type SymState, type SV } from '../bmc/symbolic';
-import { bmc, bmcVerdicts } from '../bmc/bmc';
+import { replay } from '../bmc/bmc';
+import type { StepInstance } from '../bmc/symbolic';
+import type { Value } from '../vouch/interp/values';
 import { SystemRuntime } from '../vouch/interp/system';
 import { tseitin, type Formula } from '../sat/encode';
 import { Solver } from '../sat/solver';
 import { checkDrat } from '../sat/check/drat';
 import type { Verdict } from '../engines';
-import { describeInstance } from '../explore/explorer';
+import { describeInstance, toTrace } from '../explore/explorer';
 
 const clausesFormula = (cs: number[][]): Formula => and(...cs.map((c) => or(...c.map((l) => (l > 0 ? ({ k: 'var', v: l } as Formula) : not({ k: 'var', v: -l }))))));
 
@@ -102,6 +104,8 @@ export class Reachability {
   frontier: Node;
   readonly iterations: ReachIteration[] = [];
   readonly violations = new Map<string, number>();
+  /** The new states of each iteration (for extracting counterexamples). */
+  readonly frontiers: Node[] = [];
   private props: { name: string; P: Node; expr: Parameters<SystemRuntime['holds']>[0] }[];
 
   constructor(readonly rt: SystemRuntime) {
@@ -165,6 +169,7 @@ export class Reachability {
   }
 
   private record(i: number, t0: number) {
+    this.frontiers.push(this.frontier);
     for (const p of this.props) if (!this.violations.has(p.name) && this.bdd.and(this.frontier, this.bdd.not(p.P)) !== 0) this.violations.set(p.name, i);
     this.iterations.push({
       i,
@@ -188,6 +193,54 @@ export class Reachability {
     this.R = this.bdd.or(this.R, this.frontier);
     this.record(this.iterations.length, t0);
     return this.iterations.at(-1)!;
+  }
+
+  /** One complete assignment to the current-state variables within a non-empty set. */
+  private pick(f: Node): Map<number, boolean> {
+    const m = new Map<number, boolean>();
+    let g = f;
+    for (const v of this.cur) {
+      const lo = this.bdd.restrict(g, v, false);
+      if (lo !== 0) {
+        m.set(v, false);
+        g = lo;
+      } else {
+        m.set(v, true);
+        g = this.bdd.restrict(g, v, true);
+      }
+    }
+    return m;
+  }
+  private cube(m: Map<number, boolean>, rename?: Map<number, number>): Node {
+    let c: Node = 1;
+    for (const [v, b] of m) {
+      const x = this.bdd.variable(rename?.get(v) ?? v);
+      c = this.bdd.and(c, b ? x : this.bdd.not(x));
+    }
+    return c;
+  }
+
+  /**
+   * A shortest run to a state violating `name`, from the frontiers: pick a bad state in the frontier where the
+   * violation appeared, then repeatedly a predecessor in the previous frontier. Returns the states' slot values.
+   */
+  counterexample(name: string): Value[][] | undefined {
+    const d = this.violations.get(name);
+    const prop = this.props.find((p) => p.name === name);
+    if (d === undefined || !prop) return undefined;
+    let m = this.pick(this.bdd.and(this.frontiers[d]!, this.bdd.not(prop.P)));
+    const states = [m];
+    for (let i = d - 1; i >= 0; i--) {
+      const succ = this.cube(m, this.toNext);
+      const pre = this.bdd.and(this.bdd.andExists(this.T, succ, new Set(this.next)), this.frontiers[i]!);
+      m = this.pick(pre);
+      states.unshift(m);
+    }
+    return states.map((st) => {
+      const arr: boolean[] = [];
+      for (const [v, b] of st) arr[v] = b;
+      return this.enc.decode(this.S, arr);
+    });
   }
 
   /**
@@ -235,18 +288,29 @@ export class Reachability {
 }
 
 /** Verdicts: holds (with the certified reachable set) or violated (with a BMC trace to the depth found). */
-export function reachVerdicts(rt: SystemRuntime, r: ReachResult): Verdict[] {
+export function reachVerdicts(rt: SystemRuntime, r: ReachResult, reach?: Reachability): Verdict[] {
   const instance = describeInstance(rt);
   const out: Verdict[] = [];
-  const bad = [...r.violations.values()];
-  const traces = bad.length ? bmcVerdicts(rt, bmc(new SystemRuntime(rt.checked, rt.info.decl.name), { maxK: Math.max(...bad), only: [...r.violations.keys()] })) : [];
   for (const inv of rt.info.invariants) {
     const name = inv.name ?? 'invariant';
     const stats = { iterations: r.iterations.length - 1, states: Number(r.states ?? r.iterations.at(-1)?.states ?? 0), 'transition BDD nodes': r.transitionNodes, 'reachable-set BDD nodes': r.iterations.at(-1)?.reachNodes ?? 0, 'state variables': r.stateVars };
     const depth = r.violations.get(name);
     if (depth !== undefined) {
-      const t = traces.find((v) => v.subject === `invariant ${name}`);
-      out.push({ ...(t ?? { trace: undefined }), engine: 'bdd', status: 'violated', subject: `invariant ${name}`, badge: { kind: 'violated', replayed: t?.badge.kind === 'violated' && t.badge.replayed }, certificate: t?.certificate ?? { kind: 'none', checked: false, checker: '' }, assumptions: [instance], stats, message: `A state reachable in ${depth} step${depth === 1 ? '' : 's'} violates ${name}.`, span: inv.span } as Verdict);
+      const decoded = reach?.counterexample(name);
+      const steps = decoded ? decoded.slice(1).map((): StepInstance => ({ kind: 'stutter', name: '', text: '', args: [] })) : [];
+      const rp = decoded ? replay(rt, decoded, steps, inv.expr) : undefined;
+      out.push({
+        engine: 'bdd',
+        status: 'violated',
+        subject: `invariant ${name}`,
+        badge: { kind: 'violated', replayed: !!rp?.ok },
+        certificate: { kind: 'trace', checked: !!rp?.ok, checker: 'trace replay by the reference interpreter' },
+        assumptions: [instance],
+        stats,
+        trace: rp?.states.length ? toTrace(rt, rp.states, rp.labels) : undefined,
+        message: `A state reachable in ${depth} step${depth === 1 ? '' : 's'} violates ${name}.`,
+        span: inv.span,
+      });
     } else if (r.done) {
       out.push({
         engine: 'bdd',

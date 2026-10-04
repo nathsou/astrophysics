@@ -23,6 +23,7 @@ import { solveProblem, EncodeError } from '../problem/encode';
 import { runCommand, WorldError, type WorldResult } from '../relational/encode';
 import { bmc, bmcVerdicts } from '../bmc/bmc';
 import { BmcError } from '../bmc/symbolic';
+import { Reachability, reachVerdicts } from '../bdd/reach';
 import type { Ty } from '../vouch/check/types';
 import type * as A from '../vouch/syntax/ast';
 
@@ -71,7 +72,24 @@ export async function verifyDocument(checked: Checked, opts: VerifyOptions = {})
             if (!(e instanceof BmcError)) throw e;
             verdicts.push({ engine: 'bmc', status: 'error', subject: d.name, badge: { kind: 'error', reason: e.message }, certificate: { kind: 'none', checked: false, checker: '' }, assumptions: [], stats: {}, message: e.message, span: d.nameSpan });
           }
-        } else if (rt.info.invariants.length || deadlock) verdicts.push(...explore(rt, { timeout, signal: opts.signal, symmetry: true, deadlock }).verdicts);
+        } else if (rt.info.invariants.length || deadlock) {
+          const t0 = Date.now();
+          let vs = explore(rt, { timeout, signal: opts.signal, symmetry: true, deadlock }).verdicts;
+          // Too many states to visit one by one: try symbolic reachability with BDDs on the invariants.
+          if (vs.some((v) => v.status === 'timeout') && rt.info.invariants.length && !opts.signal?.aborted) {
+            try {
+              const reach = new Reachability(new SystemRuntime(checked, d.name));
+              const r = reach.run({ timeout: Math.max(1000, timeout - (Date.now() - t0)) });
+              if (r.done) {
+                const sym = reachVerdicts(new SystemRuntime(checked, d.name), r, reach);
+                vs = vs.map((v) => (v.status === 'timeout' ? sym.find((w) => w.subject === v.subject) ?? v : v));
+              }
+            } catch (e) {
+              if (!(e instanceof BmcError)) throw e;
+            }
+          }
+          verdicts.push(...vs);
+        }
         if (rt.info.refines) {
           await pause();
           verdicts.push(checkRefinement(checked, d.name, { timeout, signal: opts.signal }));

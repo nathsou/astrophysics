@@ -25,7 +25,7 @@ function agree(src: string) {
     expect(r.done).toBe(true);
     const anyViolation = x.verdicts.some((v) => v.status === 'violated');
     if (!anyViolation) expect(Number(r.states)).toBe(x.exploration.size);
-    const vs = reachVerdicts(new SystemRuntime(c, d.name), r);
+    const vs = reachVerdicts(new SystemRuntime(c, d.name), r, reach);
     for (const v of x.verdicts) {
       if (v.subject === 'no deadlock') continue;
       const w = vs.find((y) => y.subject === v.subject)!;
@@ -58,5 +58,24 @@ describe('symbolic reachability', () => {
     const r = reach.run({ timeout: 60000 });
     expect(r.states).toBe(2n ** 40n);
     expect(r.iterations.at(-1)!.reachNodes).toBeLessThan(10);
+  });
+});
+
+describe('symbolic counterexamples', () => {
+  it('extracts a 40-step counterexample from the frontiers and replays it', () => {
+    const c = load(`system Switches {
+  type Switch
+  instance Switch = 40
+  var on: Switch -> bool = false
+  action flip(s: Switch) { on[s] = !on[s] }
+  invariant not_all_on: exists s: Switch :: !on[s]
+}`);
+    const reach = new Reachability(new SystemRuntime(c, 'Switches'));
+    const r = reach.run({ timeout: 60000 });
+    expect(r.violations.get('not_all_on')).toBe(40);
+    const [v] = reachVerdicts(new SystemRuntime(c, 'Switches'), r, reach);
+    expect(v!.status).toBe('violated');
+    expect(v!.badge.kind === 'violated' && v!.badge.replayed).toBe(true);
+    expect(v!.trace?.steps.length).toBe(41);
   });
 });
