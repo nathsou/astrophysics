@@ -240,3 +240,22 @@ export class IncrementalSolver {
     return this.solver.failedAssumptions;
   }
 }
+
+/** Every state the variables can describe (not only the reachable ones), as models over S, up to a limit. */
+export function allStates(m: SystemModel, limit = 600): boolean[][] | undefined {
+  const inc = new IncrementalSolver(m.pool);
+  const out: boolean[][] = [];
+  const vars = m.groups.flatMap((g) => g.vars);
+  while (out.length <= limit) {
+    if (inc.solve([]) !== 'sat') return out;
+    const model = [...inc.model];
+    out.push(model);
+    inc.clause(vars.map((x) => (model[x] ? -x : x)));
+  }
+  return undefined;
+}
+
+/** Does the state (a model over S) satisfy the cube? */
+export function inCube(model: readonly boolean[], cube: Lit[]): boolean {
+  return cube.every((l) => (l > 0 ? model[l] : !model[-l]));
+}

@@ -198,7 +198,7 @@
   }
   @media (max-width: 640px) {
     .now {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
   }
   .lab {

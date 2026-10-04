@@ -266,21 +266,22 @@ export class Ic3 {
       if (fix !== undefined) {
         this.emit({ k: 'fixpoint', level: fix });
         const cubes = this.frames.slice(fix + 1).flat();
-        const Inv = this.invariantFormula(cubes, false);
-        const Inv2 = this.invariantFormula(cubes, true);
-        const deadline = Date.now() + (this.opts.certifyBudget ?? 5000);
-        const certificate =
-          this.opts.certifyBudget === 0
-            ? undefined
-            : {
-                init: this.m.certify([this.m.init, not(Inv)], deadline),
-                step: this.m.certify([Inv, this.m.trans, not(Inv2)], deadline),
-                implies: this.m.certify([Inv, not(this.m.property())], deadline),
-              };
+        const certificate = this.opts.certifyBudget === 0 ? undefined : this.certifyInvariant(cubes, Date.now() + (this.opts.certifyBudget ?? 5000));
         return done({ status: 'proved', invariant: { cubes, text: cubes.map((c) => this.m.showBlocked(c)) }, certificate });
       }
     }
     return done({ status: 'unknown' });
+  }
+
+  /** Re-check an invariant (blocked cubes): I ⇒ Inv, Inv ∧ T ⇒ Inv′ and Inv ⇒ P, each with a DRAT-checked proof. */
+  certifyInvariant(cubes: Lit[][], deadline: number): { init: CertifiedQuery; step: CertifiedQuery; implies: CertifiedQuery } {
+    const Inv = this.invariantFormula(cubes, false);
+    const Inv2 = this.invariantFormula(cubes, true);
+    return {
+      init: this.m.certify([this.m.init, not(Inv)], deadline),
+      step: this.m.certify([Inv, this.m.trans, not(Inv2)], deadline),
+      implies: this.m.certify([Inv, not(this.m.property())], deadline),
+    };
   }
 
   /** The counterexample from an initial obligation up through its parents, replayed by the interpreter. */
