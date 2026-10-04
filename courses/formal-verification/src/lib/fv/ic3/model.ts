@@ -13,7 +13,7 @@ import { Solver } from '../sat/solver';
 import { checkDrat } from '../sat/check/drat';
 import type { SystemRuntime } from '../vouch/interp/system';
 import type { Value } from '../vouch/interp/values';
-import { SystemEncoder, VarPool, and, not, type SV, type SymState } from '../bmc/symbolic';
+import { SystemEncoder, VarPool, and, not, type SV, type SymState, type StepInstance } from '../bmc/symbolic';
 
 /** A literal over the current-state variables (DIMACS: positive or negative variable number). */
 export type Lit = number;
@@ -71,12 +71,15 @@ export class SystemModel {
   readonly props: { name: string; at: Formula; next: Formula }[];
   /** Does some step contain a run-time check (assert, arithmetic overflow)? Those are not covered here. */
   readonly hasChecks: boolean;
+  /** The selector variable of each step instance in `trans` (true when that step is the one taken). */
+  readonly selectors: { step: StepInstance; sel: number }[];
 
   constructor(
     readonly rt: SystemRuntime,
     only?: string[],
+    keep?: ConstructorParameters<typeof SystemEncoder>[2],
   ) {
-    this.enc = new SystemEncoder(rt, this.pool);
+    this.enc = new SystemEncoder(rt, this.pool, keep);
     this.S = this.enc.freshState('s');
     this.S2 = this.enc.freshState('s′');
     this.groups = this.S.slots.flatMap((x) => groupsOf(x));
@@ -92,6 +95,7 @@ export class SystemModel {
     const st = this.enc.step(this.S, this.S2, { blockFailures: true });
     this.trans = st.formula;
     this.hasChecks = st.failures.length > 0;
+    this.selectors = st.selectors;
     this.props = rt.info.invariants
       .filter((i) => !only || only.includes(i.name ?? 'invariant'))
       .map((i) => ({ name: i.name ?? 'invariant', at: this.enc.holds(i.expr, this.S), next: this.enc.holds(i.expr, this.S2) }));

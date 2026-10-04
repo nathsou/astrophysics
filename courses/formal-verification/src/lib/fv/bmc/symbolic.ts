@@ -338,6 +338,8 @@ export class SystemEncoder {
   constructor(
     readonly rt: SystemRuntime,
     readonly pool: VarPool = new VarPool(),
+    /** Keep only the action instances with these arguments (the parameterised engine checks one per renaming). */
+    keep?: (action: A.ActionDecl, args: Value[]) => boolean,
   ) {
     this.checked = rt.checked;
     rt.instances.forEach((inst) => {
@@ -368,6 +370,7 @@ export class SystemEncoder {
         continue;
       }
       for (const args of cartesian(doms as Value[][])) {
+        if (keep && !keep(a.decl, args)) continue;
         const text = `${a.decl.name}${args.length ? `(${a.params.map((p, i) => `${p.name} = ${show(args[i]!)}`).join(', ')})` : ''}`;
         const st: StepInstance = { kind: 'action', name: a.decl.name, text, action: a.decl, args };
         this.steps.push(st);
@@ -492,7 +495,10 @@ export class SystemEncoder {
       }
     };
     for (const p of partial) go(0, p.env, p.cond, [...S.slots]);
-    return or(...finals.map((f) => and(f.cond, ...f.slots.map((x, k) => eqSV(S.slots[k]!, x)))));
+    const initial = or(...finals.map((f) => and(f.cond, ...f.slots.map((x, k) => eqSV(S.slots[k]!, x)))));
+    // Facts are assumptions about the initial states.
+    const facts = ((rt.info.facts ?? []) as { expr: A.Expr }[]).map((f) => this.holds(f.expr, S));
+    return and(initial, ...facts);
   }
 
   /**
@@ -553,6 +559,13 @@ export class SystemEncoder {
   /** A condition of the system (an invariant) in state S. */
   holds(e: A.Expr, S: SymState): Formula {
     return asBool(this.ev(e, this.envOf(S)));
+  }
+
+  /** A condition in state S with some bound variables (by their symbols) fixed to given values. */
+  holdsWith(e: A.Expr, S: SymState, bindings: Map<number, Value>): Formula {
+    const env = this.envOf(S);
+    for (const [id, v] of bindings) env.set(id, constant(v));
+    return asBool(this.ev(e, env));
   }
 
   /** Decode a state of a model into the runtime's slot values. */

@@ -225,6 +225,14 @@ export class SystemRuntime {
       }
       for (const w of worlds) states.push({ vals: w.vals });
     }
+    // Facts are assumptions about the initial states (a fixed ring, an order on identifiers): keep the states
+    // that satisfy them.
+    const facts = (this.info.facts ?? []) as { expr: A.Expr }[];
+    if (facts.length) {
+      const kept = states.filter((st) => facts.every((f) => this.holds(f.expr, st)));
+      states.length = 0;
+      states.push(...kept);
+    }
     // Deduplicate.
     const seen = new Set<string>();
     return { states: states.filter((s) => (seen.has(this.key(s)) ? false : (seen.add(this.key(s)), true))), failures };
@@ -236,7 +244,7 @@ export class SystemRuntime {
    * enumerated. Otherwise the initial states are enumerated and compared with `same`.
    */
   initialMatching(vals: Value[], same: (a: State, vals: Value[]) => boolean): State | undefined {
-    if (this.info.init || this.instances.length) return this.initial().states.find((s) => same(s, vals));
+    if (this.info.init || this.instances.length || this.info.facts?.length) return this.initial().states.find((s) => same(s, vals));
     const env: Env = { vals: new Map(), heap: new Heap() };
     const out: Value[] = [];
     for (let i = 0; i < this.info.vars.length; i++) {
