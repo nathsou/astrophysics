@@ -283,6 +283,29 @@ export class SystemRuntime {
     return { succs, failures };
   }
 
+  /** The successors of one action with given arguments (used to replay traces whose inputs are too many to enumerate). */
+  actionSuccessors(s: State, name: string, args: Value[]): { succs: Successor[]; failures: StepFailure[] } {
+    const succs: Successor[] = [];
+    const failures: StepFailure[] = [];
+    const a = this.info.actions.find((x) => x.decl.name === name);
+    if (!a) return { succs, failures };
+    const env = this.env(s);
+    a.params.forEach((p, i) => env.vals.set(p.id, args[i]!));
+    const label: StepLabel = { kind: 'action', name, args, text: `${name}${args.length ? `(${a.params.map((p, i) => `${p.name} = ${show(args[i]!)}`).join(', ')})` : ''}` };
+    try {
+      if (a.decl.guard && !this.runner.ev.eval(a.decl.guard, env)) return { succs, failures };
+      for (const r of this.run(this.actionCode.get(a.decl)!, 0, env, undefined)) {
+        const vals = [...s.vals];
+        this.info.vars.forEach((v, i) => (vals[i] = r.env.vals.get(v.id)!));
+        succs.push({ label, state: { vals } });
+      }
+    } catch (e) {
+      if (!(e instanceof RuntimeFailure)) throw e;
+      failures.push({ label, failure: e, from: s });
+    }
+    return { succs, failures };
+  }
+
   /** Parameter values for an action: each parameter's finite type, or the set its guard draws it from. */
   *actionArgs(d: A.ActionDecl, params: Sym[], s: State): Generator<Value[]> {
     const guardSets = new Map<number, A.Expr>();
