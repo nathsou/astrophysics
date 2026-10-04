@@ -1,0 +1,25 @@
+gray1978:
+  authors: Jim Gray
+  year: 1978
+  title: Notes on data base operating systems
+  venue: 'Operating Systems: An Advanced Course, Lecture Notes in Computer Science 60, 393–481'
+gray2006:
+  authors: Jim Gray and Leslie Lamport
+  year: 2006
+  title: Consensus on transaction commit
+  venue: ACM Transactions on Database Systems 31(1), 133–160
+flp1985:
+  authors: Michael J. Fischer, Nancy A. Lynch and Michael S. Paterson
+  year: 1985
+  title: Impossibility of distributed consensus with one faulty process
+  venue: Journal of the ACM 32(2), 374–382
+lamport1998:
+  authors: Leslie Lamport
+  year: 1998
+  title: The part-time parliament
+  venue: ACM Transactions on Computer Systems 16(2), 133–169
+abadi1991:
+  authors: Martín Abadi and Leslie Lamport
+  year: 1991
+  title: The existence of refinement mappings
+  venue: Theoretical Computer Science 82(2), 253–284

@@ -587,10 +587,20 @@ class Checker {
             else this.use(t, s, t.span);
           }
           break;
-        case 'refines':
+        case 'refines': {
           info.refines = m;
-          if (!this.containers.has(m.spec)) this.err(m.span, 'system/refines', `No system called “${m.spec}” to refine.`);
+          const spec = this.containers.get(m.spec);
+          if (!spec) this.err(m.span, 'system/refines', `No system called “${m.spec}” to refine.`);
+          else if (spec.decl.span.start > m.span.start) this.err(m.span, 'system/refines', `Declare ${m.spec} before the system that refines it.`);
+          for (const item of m.mapping) {
+            const target = spec?.vars.find((v) => v.name === item.name);
+            if (spec && !target) this.err(item.span, 'system/refines', `${m.spec} has no state variable called “${item.name}”.`);
+            const t = this.expr(item.value, base, target?.ty);
+            if (target && !isPermissive(t) && assignable(t, target.ty) === 'no') this.err(item.value.span, 'type/refines', `${item.name} in ${m.spec} has type ${showTy(target.ty)}, but this is ${showTy(t)}.`);
+          }
+          if (spec) for (const v of spec.vars) if (!m.mapping.some((x) => x.name === v.name) && !info.vars.some((w) => w.name === v.name)) this.err(m.span, 'system/refines', `The refinement mapping must give a value to ${m.spec}’s variable ${v.name} (or this system must have a variable of the same name).`);
           break;
+        }
         case 'solve':
         case 'count':
           info.goal = m.k;

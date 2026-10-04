@@ -12,3 +12,5 @@ export { default as Interleavings } from '$lib/components/explore/Interleavings.
 export { default as TraceLab } from '$lib/components/ltl/TraceLab.svelte';
 /** Liveness with and without fairness: `:::liveness{title="…"}` with a ```vouch system inside. */
 export { default as Liveness } from '$lib/components/ltl/LivenessLab.svelte';
+/** A message sequence chart with an adversary: `:::msc{lanes='[…]' …}` with a ```vouch system inside. */
+export { default as Msc } from '$lib/components/explore/Msc.svelte';

@@ -11,6 +11,7 @@ import type { Verdict } from '../engines';
 import { SystemRuntime } from '../vouch/interp/system';
 import { explore } from '../explore/explorer';
 import { checkProperty } from '../ltl/check';
+import { checkRefinement } from '../explore/refine';
 import { Runner } from '../vouch/interp/exec';
 import { rng } from '../util/random';
 import { randomValue } from './inputs';
@@ -55,6 +56,10 @@ export async function verifyDocument(checked: Checked, opts: VerifyOptions = {})
         // Systems of processes are also checked for deadlock: a state where no process can move, though some has not finished.
         const deadlock = rt.instances.length > 0;
         if (rt.info.invariants.length || deadlock) verdicts.push(...explore(rt, { timeout, signal: opts.signal, symmetry: true, deadlock }).verdicts);
+        if (rt.info.refines) {
+          await pause();
+          verdicts.push(checkRefinement(checked, d.name, { timeout, signal: opts.signal }));
+        }
         for (const p of rt.info.properties) {
           await pause();
           if (opts.signal?.aborted) break;
