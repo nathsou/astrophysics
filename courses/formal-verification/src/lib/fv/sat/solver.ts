@@ -558,7 +558,11 @@ export class Solver {
       lits.sort((a, b) => (this.value(b) === -1 ? -1 : 0) - (this.value(a) === -1 ? -1 : 0));
       if (lits.length === 1) {
         if (this.value(lits[0]!) === -1) return c;
-        if (this.value(lits[0]!) === 0) this.enqueue(lits[0]!, null);
+        if (this.value(lits[0]!) === 0) {
+          // A unit lemma holds at level 0: assert it there, or it would be lost on the next backtrack.
+          if (this.trailLim.length) this.backtrackTo(0);
+          this.enqueue(lits[0]!, null);
+        }
         continue;
       }
       if (lits.every((l) => this.value(l) === -1)) return c;

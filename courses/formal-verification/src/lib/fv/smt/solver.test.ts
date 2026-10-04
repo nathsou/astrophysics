@@ -191,3 +191,72 @@ describe('SMT: bit-vectors agree with Z3', () => {
     expect(unsat).toBeGreaterThan(5);
   }, 120000);
 });
+
+describe('non-linear integer arithmetic (incremental linearisation)', () => {
+  it('proves simple product facts with checked certificates', async () => {
+    const { v, mul, ge, lt, le, eq, num, and } = await import('../logic/term');
+    const { SmtSolver } = await import('./solver');
+    const { checkUnsatCertificate } = await import('./check/certificate');
+    const x = v('x');
+    const y = v('y');
+    for (const f of [lt(mul(x, x), num(0)), and(ge(x, num(2)), le(x, num(3)), ge(y, num(2)), le(y, num(3)), eq(mul(x, y), num(5))), and(ge(x, num(1)), ge(y, num(1)), lt(mul(x, y), num(0)))]) {
+      const s = new SmtSolver({ proof: true });
+      s.assert(f);
+      const r = s.solve();
+      expect(r.status).toBe('unsat');
+      expect(checkUnsatCertificate(r.proof!).ok).toBe(true);
+    }
+  });
+  it('agrees with brute force on bounded random products', async () => {
+    const { v, mul, add, ge, le, eq, num, and, or, not } = await import('../logic/term');
+    const { SmtSolver } = await import('./solver');
+    const { checkUnsatCertificate } = await import('./check/certificate');
+    const { rng } = await import('../util/random');
+    const r = rng(1970);
+    const x = v('x');
+    const y = v('y');
+    const z = v('z');
+    for (let t = 0; t < 40; t++) {
+      const lits = [];
+      const vars = [x, y, z];
+      const pick = () => r.pick(vars);
+      for (let i = 0; i < 3; i++) {
+        const lhs = r.chance(0.6) ? mul(pick(), pick()) : add(pick(), mul(num(r.int(-3, 4)), pick()));
+        const k = num(r.int(-6, 10));
+        const atom = r.chance(0.5) ? le(lhs, k) : eq(lhs, k);
+        lits.push(r.chance(0.3) ? not(atom) : atom);
+      }
+      const bounds = vars.flatMap((w) => [ge(w, num(-3)), le(w, num(3))]);
+      const f = and(...bounds, or(lits[0]!, lits[1]!), lits[2]!);
+      // Brute force over the box.
+      let sat = false;
+      const val = (term: import('../logic/term').Term, env: Map<string, bigint>): bigint => {
+        if (term.op === 'num') return term.value!;
+        if (term.op === 'var') return env.get(term.name!)!;
+        if (term.op === 'mul') return val(term.args[0]!, env) * val(term.args[1]!, env);
+        if (term.op === 'add') return term.args.reduce((s, a) => s + val(a, env), 0n);
+        throw new Error(term.op);
+      };
+      const holds = (term: import('../logic/term').Term, env: Map<string, bigint>): boolean => {
+        switch (term.op) {
+          case 'and': return term.args.every((a) => holds(a, env));
+          case 'or': return term.args.some((a) => holds(a, env));
+          case 'not': return !holds(term.args[0]!, env);
+          case 'le': return val(term.args[0]!, env) <= val(term.args[1]!, env);
+          case 'ge': return val(term.args[0]!, env) >= val(term.args[1]!, env);
+          case 'eq': return val(term.args[0]!, env) === val(term.args[1]!, env);
+          case 'true': return true;
+          case 'false': return false;
+        }
+        throw new Error(term.op);
+      };
+      for (let a = -3n; a <= 3n && !sat; a++) for (let b = -3n; b <= 3n && !sat; b++) for (let c = -3n; c <= 3n && !sat; c++) if (holds(f, new Map([['x', a], ['y', b], ['z', c]]))) sat = true;
+      const s = new SmtSolver({ proof: true });
+      s.assert(f);
+      const res = s.solve();
+      if (res.status !== (sat ? 'sat' : 'unsat')) { const { smtlib } = await import('../logic/term'); console.log('FAILCASE', smtlib(f), JSON.stringify([...(res.model?.vars ?? [])].map(([k, v]) => [k, String(v)]))); }
+      expect(res.status).toBe(sat ? 'sat' : 'unsat');
+      if (res.status === 'unsat') expect(checkUnsatCertificate(res.proof!).ok).toBe(true);
+    }
+  });
+});

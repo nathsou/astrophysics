@@ -10,7 +10,10 @@
  *   - int-split: the clause's arithmetic literals, all over one linear form, cover every integer;
  *   - row: an instance of the read-over-write axioms of arrays;
  *   - instance: ¬(∀x. φ) ∨ φ[t/x] (or the dual for ∃), recomputed by substitution;
- *   - skolem / ext: introduce symbols that occur nowhere else (they preserve satisfiability).
+ *   - skolem / ext: introduce symbols that occur nowhere else (they preserve satisfiability);
+ *   - nla: facts about x, y and the product x·y, each a bound on one of them, that interval reasoning about
+ *     multiplication finds contradictory (equal values multiply to their product; signs multiply; a square is
+ *     not negative).
  *
  * What remains trusted is the encoding of the formulas into clauses (Tseitin's transformation, the preprocessing
  * of ite, div and arrays, bit-blasting) and this file. The certificate says so.
@@ -92,6 +95,9 @@ export function checkUnsatCertificate(p: SmtProof): CertificateCheck {
       }
       case 'ext':
         ok = p.freshNames.has(j.skolem.name!);
+        break;
+      case 'nla':
+        ok = checkProduct(j.product, facts as { term: Term; positive: boolean }[]);
         break;
     }
     if (!ok && !failure) failure = `the ${j.kind} justification of theory clause ${clause.join(' ')} does not hold`;
@@ -308,5 +314,53 @@ function checkRow(lits: { term: Term; positive: boolean }[]): boolean {
       if ((i === i1 && j === j1) || (i === j1 && j === i1)) return true;
     }
   }
+  return false;
+}
+
+// ── Products (non-linear lemmas) ──
+
+/**
+ * The facts bound x, y and m = x·y one variable at a time. Derive what multiplication says about m from the facts
+ * on x and y, and check that it contradicts the facts on m.
+ */
+function checkProduct(m: Term, facts: { term: Term; positive: boolean }[]): boolean {
+  if (m.op !== 'mul' || m.args.length !== 2) return false;
+  const [x, y] = m.args as [Term, Term];
+  type Iv = { lo?: bigint; hi?: bigint; ne: bigint[] };
+  const iv = new Map<Term, Iv>([[x, { ne: [] }], [y, { ne: [] }], [m, { ne: [] }]]);
+  for (const f of facts) {
+    const a = arithFact(f.term, f.positive);
+    if (!a || a.coeffs.size !== 1) return false;
+    const [v, c] = [...a.coeffs][0]!;
+    const b = iv.get(v);
+    if (!b || c !== 1n) return false;
+    if (a.rel === 'le' || a.rel === 'eq') b.hi = b.hi === undefined || a.k < b.hi ? a.k : b.hi;
+    if (a.rel === 'ge' || a.rel === 'eq') b.lo = b.lo === undefined || a.k > b.lo ? a.k : b.lo;
+    if (a.rel === 'ne') b.ne.push(a.k);
+  }
+  const X = iv.get(x)!;
+  const Y = iv.get(y)!;
+  const M = iv.get(m)!;
+  // What multiplication allows for m.
+  let lo: bigint | undefined;
+  let hi: bigint | undefined;
+  const exact = (b: Iv) => (b.lo !== undefined && b.lo === b.hi ? b.lo : undefined);
+  const ex = exact(X);
+  const ey = x === y ? ex : exact(Y);
+  if (ex !== undefined && ey !== undefined) lo = hi = ex * ey;
+  else if (ex === 0n || ey === 0n) lo = hi = 0n;
+  else {
+    const nonneg = (b: Iv) => b.lo !== undefined && b.lo >= 0n;
+    const nonpos = (b: Iv) => b.hi !== undefined && b.hi <= 0n;
+    if (x === y || (nonneg(X) && nonneg(Y)) || (nonpos(X) && nonpos(Y))) lo = 0n;
+    else if ((nonneg(X) && nonpos(Y)) || (nonpos(X) && nonneg(Y))) hi = 0n;
+    else return false;
+  }
+  // Contradiction with the facts on m?
+  const mlo = M.lo;
+  const mhi = M.hi;
+  if (lo !== undefined && mhi !== undefined && mhi < lo) return true;
+  if (hi !== undefined && mlo !== undefined && mlo > hi) return true;
+  if (lo !== undefined && lo === hi && M.ne.includes(lo)) return true;
   return false;
 }

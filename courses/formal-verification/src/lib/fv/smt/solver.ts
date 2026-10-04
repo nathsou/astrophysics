@@ -35,7 +35,9 @@ export type Justification =
   | { kind: 'row' }
   | { kind: 'instance'; quant: Term; subst: [Term, Term][]; instance: Term; encodedAs?: Term }
   | { kind: 'skolem'; quant: Term; skolems: Term[]; instance: Term; encodedAs?: Term }
-  | { kind: 'ext'; skolem: Term };
+  | { kind: 'ext'; skolem: Term }
+  /** A lemma about one product of two terms (incremental linearisation), checked by interval reasoning. */
+  | { kind: 'nla'; product: Term };
 
 export interface SmtProof {
   /** The clauses of the encoded problem (assertions, definitions of Tseitin and bit-blasting variables). */
@@ -317,6 +319,8 @@ export class SmtSolver implements Theory {
       this.baseVar.set(t, v);
       this.baseTerms.push(t);
       this.addEuf(t);
+      // The factors of a product are arithmetic terms too: the product lemmas need their values.
+      if (t.op === 'mul' && t.sort.k === 'int') for (const a of t.args) if (a.op !== 'num') for (const [x] of linearize(a).coeffs) this.base(x);
     }
     return v;
   }
@@ -478,15 +482,60 @@ export class SmtSolver implements Theory {
       lemma([x, lo, hi], { kind: 'int-split' });
     }
     if (lemmas.length) return { lemmas };
-    // 3. Theory combination over shared integer terms.
+    // 3. Products of two non-constants: the linear solver treats x·y as an opaque atom. When its value disagrees
+    // with the product of the factors' values, add a lemma that rules this out (incremental linearisation).
+    this.products(lemma);
+    if (lemmas.length || this.incomplete) return { lemmas };
+    // 4. Theory combination over shared integer terms.
     this.combination(lemma);
     if (lemmas.length) return { lemmas };
-    // 4. Arrays: read over write for remaining writes; extensionality for array disequalities.
+    // 5. Arrays: read over write for remaining writes; extensionality for array disequalities.
     this.arrays(lemma);
     if (lemmas.length) return { lemmas };
-    // 5. Quantifiers.
+    // 6. Quantifiers.
     this.quantifiers();
     return {};
+  }
+
+  private nlaLemmas = 0;
+  private products(lemma: (c: number[], j: Justification) => void): void {
+    for (const m of this.baseTerms) {
+      if (m.op !== 'mul' || m.args[0]!.op === 'num' || m.args[1]!.op === 'num') continue;
+      const [x, y] = m.args as [Term, Term];
+      const vm = this.simplex.value[this.baseVar.get(m)!]!;
+      const vx = this.termValue(x);
+      const vy = this.termValue(y);
+      if (!vx || !vy || !vm.isInt() || !vx.isInt() || !vy.isInt()) continue;
+      const a = vx.floor();
+      const b = vy.floor();
+      const p = vm.floor();
+      if (p === a * b) continue;
+      if (++this.nlaLemmas > (this.opts.maxBranches ?? 3000) / 10) {
+        this.incomplete = 'non-linear arithmetic: the product lemmas did not converge';
+        return;
+      }
+      const just: Justification = { kind: 'nla', product: m };
+      const zero = num(0);
+      const sign = (v: bigint) => (v > 0n ? 1 : v < 0n ? -1 : 0);
+      const [sx, sy, sp] = [sign(a), sign(b), sign(p)];
+      if (x === y && p < 0n) {
+        lemma([this.encode(ge(m, zero))], just);
+        continue;
+      }
+      if (sx === 0 || sy === 0) {
+        const z = sx === 0 ? x : y;
+        lemma([-this.encode(eq(z, zero)), this.encode(eq(m, zero))], just);
+        continue;
+      }
+      const want = sx * sy;
+      if (sp !== 0 && sp !== want) {
+        const side = (t: Term, s: number) => this.encode(s > 0 ? ge(t, zero) : le(t, zero));
+        lemma([-side(x, sx), -side(y, sy), want > 0 ? this.encode(ge(m, zero)) : this.encode(le(m, zero))], just);
+        continue;
+      }
+      // Fix the value at this point: x = a ∧ y = b ⇒ x·y = a·b.
+      lemma([-this.encode(eq(x, num(a))), -this.encode(eq(y, num(b))), this.encode(eq(m, num(a * b)))], just);
+    }
   }
 
   private formValue(c: Constraint): Q {
@@ -748,7 +797,7 @@ export class SmtSolver implements Theory {
       }
     }
     const stats = this.stats(start, rounds);
-    if (failed) return { status: 'unknown', model, modelChecked: false, reason: 'the candidate model does not satisfy every formula (non-linear arithmetic or an incomplete theory)', stats };
+    if (failed) return { status: 'unknown', model, modelChecked: false, reason: this.incomplete || 'the candidate model does not satisfy every formula (non-linear arithmetic or an incomplete theory)', stats };
     if (!checked || this.incomplete) return { status: 'unknown', model, modelChecked: false, reason: this.incomplete || 'quantified formulas remain (instantiation is incomplete)', stats };
     return { status: 'sat', model, modelChecked: true, stats };
   }
