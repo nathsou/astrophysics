@@ -22,3 +22,5 @@ export { default as WorldLab } from '$lib/components/relational/WorldLab.svelte'
 export { default as BmcLab } from '$lib/components/bmc/BmcLab.svelte';
 /** Symbolic reachability with BDDs: `:::reach-lab{title="…" race=true}` with a ```vouch system inside. */
 export { default as ReachLab } from '$lib/components/bdd/ReachLab.svelte';
+/** The peephole court (chapter 14): `::peephole-court{rewrite="x * 2 => x << 1" docket='[…]'}`. */
+export { default as PeepholeCourt } from '$lib/components/rewrite/PeepholeCourt.svelte';

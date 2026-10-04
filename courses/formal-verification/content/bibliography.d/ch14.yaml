@@ -1,0 +1,15 @@
+mccarthy1962:
+  authors: John McCarthy
+  year: 1962
+  title: Towards a mathematical science of computation
+  venue: Information Processing 1962 (IFIP Congress), North-Holland, 21–28
+backes2018:
+  authors: John Backes, Pauline Bolignano, Byron Cook, Catherine Dodge, Andrew Gacek, Kasper Luckow, Neha Rungta, Oksana Tkachuk and Carsten Varming
+  year: 2018
+  title: Semantic-based automated reasoning for AWS access policies using SMT
+  venue: Formal Methods in Computer Aided Design (FMCAD 2018), 1–9
+rungta2022:
+  authors: Neha Rungta
+  year: 2022
+  title: A billion SMT queries a day (invited paper)
+  venue: Computer Aided Verification (CAV 2022), Lecture Notes in Computer Science 13371, 3–18

@@ -59,7 +59,7 @@
   chapter: bits-and-arrays
   reenacted: true
   summary: When LLVM’s instruction-combining rewrites were translated into the Alive language and checked with an SMT solver, several turned out to be wrong for some inputs.
-  simplification: the chapter checks rewrites written in Vouch’s bit-vector expressions, in the same spirit, not the original LLVM rules.
+  simplification: the chapter’s peephole court checks rewrites in its own small notation, in the same spirit, with a simpler model of undefined behaviour (no poison values or overflow flags); it does not reproduce the original LLVM rules.
   cite: [lopes2015]
 - id: timsort-2015
   title: TimSort’s run-stack invariant

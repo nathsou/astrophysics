@@ -26,8 +26,8 @@ import type { Checked, FnInfo } from '../check/checker';
 import { assignable, intBounds, isIntLike, type Ty } from '../check/types';
 import type { Sym } from '../check/symbols';
 import {
-  add, and, app, arraySort, BOOL, bvbin, bvnum, bvun, div, eq, exists, forall, freshVar, ge, gt, iff, imp, INT, ite, le, lt, mul, neg,
-  not, num, or, select, sub, TRUE, type Term,
+  add, and, app, arraySort, BOOL, bvbin, bvnum, bvun, div, eq, exists, extract, forall, freshVar, ge, gt, iff, imp, INT, ite, le, lt, mul, neg,
+  not, num, or, select, sub, TRUE, zext, type Term,
 } from '../../logic/term';
 import {
   asTerm, defaultValue, eqS, freshValue, isScalarTy, joinS, scalar, seqConcat, seqContains, seqLiteral, seqSlice, seqStore, sortOf,
@@ -222,8 +222,10 @@ class VcGen {
 
   ex(e: A.Expr, cx: Cx): SVal {
     switch (e.k) {
-      case 'int':
-        return scalar(num(e.value));
+      case 'int': {
+        const t = this.ty(e);
+        return scalar(t.k === 'bv' ? bvnum(e.value, t.bits) : num(e.value));
+      }
       case 'bool':
         return scalar(e.value ? TRUE : not(TRUE));
       case 'var': {
@@ -337,6 +339,11 @@ class VcGen {
           const fits = and(...(lo !== undefined ? [le(num(lo), v)] : []), ...(hi !== undefined ? [le(v, num(hi))] : []));
           this.oblige(cx, fits, 'narrowing', e.span, 'The conversion does not lose information');
           return scalar(v);
+        }
+        if (to.k === 'bv' && from.k === 'bv') {
+          // Widening zero-extends; narrowing keeps the low bits (as the interpreter does).
+          if (to.bits === from.bits) return scalar(v);
+          return scalar(to.bits > from.bits ? zext(v, to.bits - from.bits) : extract(v, to.bits - 1, 0));
         }
         throw new Unsupported('conversions between integers and bit-vectors are not supported by the program verifier yet');
       }
@@ -705,6 +712,26 @@ class VcGen {
         break;
       case 'seq_of':
         return seqLiteral(this.ty(e.args[0]!), args);
+      case 'slt':
+      case 'sle':
+      case 'sgt':
+      case 'sge': {
+        const [x, y] = args.map(asTerm) as [Term, Term];
+        if (x.sort.k !== 'bv') break;
+        return scalar(e.callee === 'slt' ? bvbin('bvslt', x, y) : e.callee === 'sle' ? bvbin('bvsle', x, y) : e.callee === 'sgt' ? bvbin('bvslt', y, x) : bvbin('bvsle', y, x));
+      }
+      case 'sdiv':
+      case 'srem': {
+        const [x, y] = args.map(asTerm) as [Term, Term];
+        if (x.sort.k !== 'bv') break;
+        if (!cx.spec) this.oblige(cx, not(eq(y, bvnum(0n, x.sort.w))), 'division', e.span, 'The divisor is not zero');
+        return scalar(bvbin(e.callee === 'sdiv' ? 'bvsdiv' : 'bvsrem', x, y));
+      }
+      case 'ashr': {
+        const [x, y] = args.map(asTerm) as [Term, Term];
+        if (x.sort.k !== 'bv') break;
+        return scalar(bvbin('bvashr', x, y));
+      }
     }
     throw new Unsupported(`${e.callee}(…) is not supported by the program verifier yet`);
   }
