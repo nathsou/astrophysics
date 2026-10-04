@@ -1,0 +1,15 @@
+manna1992:
+  authors: Zohar Manna and Amir Pnueli
+  year: 1992
+  title: 'The Temporal Logic of Reactive and Concurrent Systems: Specification'
+  venue: Springer
+manna1995:
+  authors: Zohar Manna and Amir Pnueli
+  year: 1995
+  title: 'Temporal Verification of Reactive Systems: Safety'
+  venue: Springer
+wilcox2015:
+  authors: James R. Wilcox, Doug Woos, Pavel Panchekha, Zachary Tatlock, Xi Wang, Michael D. Ernst and Thomas Anderson
+  year: 2015
+  title: 'Verdi: a framework for implementing and formally verifying distributed systems'
+  venue: Programming Language Design and Implementation (PLDI 2015), ACM, 357–368

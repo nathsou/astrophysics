@@ -1,0 +1,64 @@
+- year: 1928
+  lane: logic
+  title: A decidable class of formulas
+  people: Paul Bernays, Moses Schönfinkel
+  chapter: for-every-n
+  parts: [V]
+  text: Formulas with existential quantifiers before universal ones, and no functions, have small models; Ramsey extends the result in 1930.
+  cite: [bernays1928, ramsey1930]
+- year: 1976
+  lane: deductive
+  title: Proofs of parallel programs
+  people: Susan Owicki, David Gries
+  chapter: prove-systems
+  parts: [V]
+  text: Hoare logic for programs that run in parallel, with a check that no process's step invalidates another's assertions.
+  cite: [owicki1976]
+- year: 1979
+  lane: model-checking
+  title: Leader election on a ring
+  people: Ernest Chang, Rosemary Roberts
+  chapter: for-every-n
+  parts: [V]
+  text: Processes on a ring pass identifiers round; the largest comes home and its owner becomes the leader.
+  cite: [chang1979]
+- year: 1986
+  lane: logic
+  title: Limits of verification for every N
+  people: Krzysztof Apt, Dexter Kozen
+  chapter: for-every-n
+  parts: [V]
+  text: Whether a property holds for every number of copies of a finite-state process is undecidable.
+  cite: [apt1986]
+- year: 2000
+  lane: model-checking
+  title: k-induction
+  people: Mary Sheeran, Satnam Singh, Gunnar Stålmarck
+  chapter: inductive-invariants
+  parts: [V]
+  text: Induction over k steps, checked by a SAT solver, proves safety properties of hardware without enumerating states.
+  cite: [sheeran2000]
+- year: 2011
+  lane: model-checking
+  title: IC3 and PDR
+  people: Aaron Bradley; Niklas Eén, Alan Mishchenko, Robert Brayton
+  chapter: ic3
+  parts: [V]
+  text: Frames of clauses, relative induction and generalisation find inductive invariants without unrolling the transition relation.
+  cite: [bradley2011, een2011]
+- year: 2015
+  lane: industry
+  title: Verdi
+  people: James Wilcox and colleagues
+  chapter: prove-systems
+  parts: [V]
+  text: A framework in the Coq proof assistant for implementing distributed systems and verifying them under models of network faults.
+  cite: [wilcox2015]
+- year: 2016
+  lane: model-checking
+  title: Ivy
+  people: Oded Padon, Kenneth McMillan, Aurojit Panda, Mooly Sagiv, Sharon Shoham
+  chapter: for-every-n
+  parts: [V]
+  text: Protocols modelled in a decidable logic, with counterexamples to induction shown as pictures for the user to generalise.
+  cite: [padon2016]

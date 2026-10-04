@@ -1,0 +1,14 @@
+nodes:
+  - { id: kinduction, name: k-induction, year: 2000, kind: idea, lane: model-checking, chapter: inductive-invariants }
+  - { id: ic3, name: IC3, year: 2011, kind: idea, lane: model-checking, chapter: ic3 }
+  - { id: pdr, name: PDR, year: 2011, kind: tool, lane: model-checking, chapter: ic3 }
+  - { id: bsr, name: Bernays–Schönfinkel–Ramsey class, year: 1928, kind: idea, lane: logic, chapter: for-every-n }
+  - { id: ivy, name: Ivy, year: 2016, kind: tool, lane: model-checking, chapter: for-every-n }
+  - { id: owicki-gries, name: Owicki–Gries, year: 1976, kind: idea, lane: deductive, chapter: inductive-invariants }
+  - { id: verdi, name: Verdi, year: 2015, kind: tool, lane: deductive, chapter: prove-systems }
+edges:
+  - { from: bmc, to: kinduction, type: influenced, cite: [sheeran2000] }
+  - { from: kinduction, to: ic3, type: influenced, cite: [bradley2011] }
+  - { from: ic3, to: pdr, type: descends, cite: [een2011] }
+  - { from: bsr, to: ivy, type: influenced, cite: [padon2016] }
+  - { from: hoare-logic, to: owicki-gries, type: descends, cite: [owicki1976] }
