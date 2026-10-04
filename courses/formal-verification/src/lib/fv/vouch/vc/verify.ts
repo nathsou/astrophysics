@@ -75,7 +75,22 @@ export function verifyFunction(checked: Checked, info: FnInfo, opts: ProgramVeri
     results.push(r);
     if (opts.stopAtFirst && r.status !== 'proved') break;
   }
-  return { fn: name, vcs, results, verdicts: toVerdicts(info, vcs, results) };
+  const verdicts = toVerdicts(info, vcs, results);
+  // A precondition that no input satisfies makes every obligation hold: say so instead of stamping it verified.
+  if (info.decl.spec.requires.length && verdicts.length === 1 && verdicts[0]!.status === 'verified') {
+    const s = new SmtSolver({ timeout: opts.timeout ?? 4000 });
+    for (const a of [...vcs.axioms, ...vcs.entry]) s.assert(a);
+    if (s.solve().status === 'unsat') {
+      const v = verdicts[0]!;
+      verdicts[0] = {
+        ...v,
+        status: 'unknown',
+        badge: { kind: 'unknown', reason: 'vacuous: the precondition never holds' },
+        message: `Vacuous: no input satisfies the precondition, so the contract holds without saying anything. ${v.message ?? ''}`.trim(),
+      };
+    }
+  }
+  return { fn: name, vcs, results, verdicts };
 }
 
 function discharge(checked: Checked, info: FnInfo, vcs: FunctionVcs, ob: Obligation, opts: ProgramVerifyOptions): ObligationResult {

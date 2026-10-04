@@ -99,6 +99,8 @@ export interface FunctionVcs {
   unmeasuredLoops: number;
   /** The path condition at each exit (return or end of body), before the postcondition is checked. */
   exits: Term[][];
+  /** What is known on entry: the parameters' types and the precondition (to detect a vacuous contract). */
+  entry: Term[];
 }
 
 /**
@@ -150,6 +152,7 @@ class VcGen {
     }
     this.entrySnapshot = { label: 'on entry', vars: params.map((p) => ({ name: p.sym.name, value: p.value, ty: p.sym.ty })) };
     for (const r of d.spec.requires) st.path.push(this.formula(r.value, this.cx(st, true)));
+    const entryFacts = [...st.path];
     if (d.spec.decreases) this.measureAtEntry = d.spec.decreases.map((e) => this.ex(e, this.cx(st, true)));
     if (this.info.result) st.env.set(this.info.result.id, defaultValue(this.info.result.ty));
     const body = d.body;
@@ -162,7 +165,34 @@ class VcGen {
       st.env.set(this.info.result!.id, v);
       this.postconditions(st, d.nameSpan);
     }
-    return { fn: d.name, obligations: this.obligations, axioms: this.axioms, params, unmeasuredLoops: this.unmeasured, exits: this.exits };
+    this.countAxioms();
+    return { fn: d.name, obligations: this.obligations, axioms: this.axioms, params, unmeasuredLoops: this.unmeasured, exits: this.exits, entry: entryFacts };
+  }
+
+  /**
+   * The definition of count_s(A, n, x), the number of occurrences of x in A[0..n), used by multisets of sequences:
+   * count(A, n, x) = 0 when n ≤ 0, else count(A, n − 1, x) + (1 if A[n − 1] = x else 0). Instantiated on demand
+   * (trigger: the count term itself), so a proof unfolds it as far as it needs to.
+   */
+  private countAxioms(): void {
+    const seen = new Map<string, Term>();
+    const visit = (t: Term) => {
+      if (t.op === 'app' && t.name!.startsWith('count_') && t.args.length === 3 && !seen.has(t.name!)) seen.set(t.name!, t);
+      t.args.forEach(visit);
+    };
+    for (const ob of this.obligations) {
+      ob.hyps.forEach(visit);
+      visit(ob.goal);
+    }
+    for (const [name, sample] of seen) {
+      const [A0, , x0] = sample.args as [Term, Term, Term];
+      const A = freshVar('A', A0.sort);
+      const n = freshVar('n', INT);
+      const x = freshVar('x', x0.sort);
+      const head = app(name, [A, n, x], INT);
+      const rest = add(app(name, [A, sub(n, num(1)), x], INT), ite(eq(select(A, sub(n, num(1))), x), num(1), num(0)));
+      this.axioms.push(forall([A, n, x], eq(head, ite(le(n, num(0)), num(0), rest)), [[head]]));
+    }
   }
 
   private cx(st: State, spec: boolean): Cx {
