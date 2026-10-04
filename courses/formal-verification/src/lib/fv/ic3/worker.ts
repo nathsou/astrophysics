@@ -144,7 +144,7 @@ function describe(s: Ic3Snapshot, show: (c: Lit[]) => string): string {
     case 'predecessor':
       return `It has a predecessor in F${e.level}: ${show(e.cube)}. That becomes a proof obligation at level ${e.level}.`;
     case 'blocked':
-      return `Blocked at level ${e.level}: no state of F${e.level - 1} leads to it. Generalised, the clause ¬(${show(e.clause)}) is added to F1 … F${e.level}.`;
+      return `Blocked at level ${e.level}: no state of F${e.level - 1} other than itself leads to it. Generalised, the clause ¬(${show(e.clause)}) is added to ${e.level === 1 ? 'F1' : `F1 … F${e.level}`}.`;
     case 'frame':
       return `A new frame F${e.level} (at first: every state).`;
     case 'propagated':
