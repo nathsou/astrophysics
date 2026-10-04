@@ -97,14 +97,28 @@ export interface FunctionVcs {
   params: { sym: Sym; value: SVal }[];
   /** Loops without a `decreases` clause (their termination is assumed). */
   unmeasuredLoops: number;
+  /** The path condition at each exit (return or end of body), before the postcondition is checked. */
+  exits: Term[][];
 }
 
-export function generate(checked: Checked, info: FnInfo): FunctionVcs {
-  return new VcGen(checked, info).run();
+/**
+ * Symbolic execution (chapter 15) uses the same executor with a fork oracle: at each branch it is asked which way to
+ * go, and only that way is executed (no merging); loops are unrolled one iteration at a time, asking at each test.
+ * The oracle may throw to stop the run (the explorer does this at every new branch point).
+ */
+export type ForkOracle = (cond: Term, span: Span, kind: 'if' | 'loop' | 'case', path: readonly Term[], iteration: number) => boolean;
+
+export interface GenOptions {
+  fork?: ForkOracle;
+}
+
+export function generate(checked: Checked, info: FnInfo, opts: GenOptions = {}): FunctionVcs {
+  return new VcGen(checked, info, opts).run();
 }
 
 class VcGen {
   private obligations: Obligation[] = [];
+  private exits: Term[][] = [];
   private axioms: Term[] = [];
   private axiomatised = new Set<string>();
   private entry = new Map<number, SVal>();
@@ -118,6 +132,7 @@ class VcGen {
   constructor(
     private checked: Checked,
     private info: FnInfo,
+    private opts: GenOptions = {},
   ) {
     this.recursive = recursiveFns(checked);
   }
@@ -147,7 +162,7 @@ class VcGen {
       st.env.set(this.info.result!.id, v);
       this.postconditions(st, d.nameSpan);
     }
-    return { fn: d.name, obligations: this.obligations, axioms: this.axioms, params, unmeasuredLoops: this.unmeasured };
+    return { fn: d.name, obligations: this.obligations, axioms: this.axioms, params, unmeasuredLoops: this.unmeasured, exits: this.exits };
   }
 
   private cx(st: State, spec: boolean): Cx {
@@ -178,6 +193,7 @@ class VcGen {
   }
 
   private postconditions(st: State, span: Span): void {
+    this.exits.push([...st.path]);
     const d = this.info.decl;
     for (const e of d.spec.ensures) {
       const cx = this.cx(st, true);
@@ -781,6 +797,16 @@ class VcGen {
       }
       case 'if': {
         const c = this.formula(s.cond, this.cx(st, false));
+        if (this.opts.fork) {
+          const dir = this.opts.fork(c, s.cond.span, 'if', st.path, 0);
+          st.path.push(dir ? c : not(c));
+          if (dir) this.block(s.then, st);
+          else if (s.else) {
+            if (isBlock(s.else)) this.block(s.else, st);
+            else this.stmt(s.else, st);
+          }
+          return;
+        }
         const a: State = { env: new Map(st.env), path: [...st.path, c], alive: true };
         const b: State = { env: new Map(st.env), path: [...st.path, not(c)], alive: true };
         this.block(s.then, a);
@@ -792,6 +818,7 @@ class VcGen {
         return;
       }
       case 'while':
+        if (this.opts.fork) return this.unroll(st, s, (at) => this.formula(s.cond, this.cx(at, false)), s.spec, s.body);
         return this.loop(st, s, (at) => this.formula(s.cond, this.cx(at, false)), s.spec, s.body);
       case 'for': {
         const v = this.sym(s);
@@ -800,6 +827,10 @@ class VcGen {
         const hi0 = this.term(s.hi, cx);
         const hi = s.inclusive ? add(hi0, num(1)) : hi0;
         st.env.set(v.id, scalar(lo));
+        if (this.opts.fork) {
+          const cur = (at: State) => asTerm(at.env.get(v.id)!);
+          return this.unroll(st, s, (at) => lt(cur(at), hi), s.spec, s.body, (at) => at.env.set(v.id, scalar(add(cur(at), num(1)))));
+        }
         // lo > hi: the loop does not run at all.
         const skip: State = { env: new Map(st.env), path: [...st.path, gt(lo, hi)], alive: true };
         const run: State = { env: new Map(st.env), path: [...st.path, le(lo, hi)], alive: true };
@@ -813,9 +844,24 @@ class VcGen {
         return;
       }
       case 'loop':
+        if (this.opts.fork) return this.unroll(st, s, () => TRUE, { invariants: [] }, s.body);
         return this.loop(st, s, () => TRUE, { invariants: [] }, s.body);
       case 'match': {
         const scr = this.term(s.scrutinee, this.cx(st, false));
+        if (this.opts.fork) {
+          for (const arm of s.arms) {
+            const c = this.patternCond(arm.pattern, scr, this.cx(st, false));
+            if (c === TRUE || this.opts.fork(c, arm.pattern.span ?? s.span, 'case', st.path, 0)) {
+              st.path.push(c);
+              this.block(arm.body, st);
+              return;
+            }
+            st.path.push(not(c));
+          }
+          this.oblige(this.cx(st, false), not(TRUE), 'assert', s.span, 'Some case of the match applies');
+          st.alive = false;
+          return;
+        }
         const states: State[] = [];
         const conds: Term[] = [];
         for (const arm of s.arms) {
@@ -1015,6 +1061,38 @@ class VcGen {
     // 4. After the loop: the invariant and the negated condition, or a break.
     const exit: State = { env: new Map(st.env), path: [...st.path, not(c)], alive: s.k !== 'loop' };
     this.joinInto(st, [exit, ...lcx.breaks]);
+  }
+
+  /**
+   * Symbolic execution of a loop: unrolled, asking the fork oracle at each test of the condition. Invariants, if
+   * written, are checked at every head as assertions (as a test would); measures are ignored.
+   */
+  private unroll(st: State, s: A.Stmt & { k: 'while' | 'for' | 'loop' }, cond: (at: State) => Term, spec: A.LoopSpec, body: A.Block, step?: (at: State) => void): void {
+    for (let k = 0; ; k++) {
+      for (const inv of spec.invariants) {
+        const cx = this.cx(st, true);
+        this.oblige(cx, this.formula(inv.value, cx), k === 0 ? 'invariant-entry' : 'invariant-preserved', inv.span, `The loop invariant${inv.label ? ` ${inv.label}` : ''} ${k === 0 ? 'on entry' : `after ${k} iteration${k === 1 ? '' : 's'}`}`);
+      }
+      const c = cond(st);
+      const dir = c === TRUE ? true : this.opts.fork!(c, s.k === 'for' ? s.span : (s as { cond?: A.Expr }).cond?.span ?? s.span, 'loop', st.path, k);
+      if (!dir) {
+        st.path.push(not(c));
+        return;
+      }
+      if (c !== TRUE) st.path.push(c);
+      this.loops.push({ breaks: [] });
+      this.block(body, st);
+      const l = this.loops.pop()!;
+      if (l.breaks.length) {
+        const b = l.breaks[0]!;
+        st.env = b.env;
+        st.path = b.path;
+        st.alive = true;
+        return;
+      }
+      if (!st.alive) return;
+      step?.(st);
+    }
   }
 
   // ── Calls of functions and lemmas (statements) ──

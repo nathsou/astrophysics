@@ -97,7 +97,7 @@ const BUILTIN_BLOCKS: Record<string, string> = {
   hint: 'Hint',
 };
 /** Directives whose first code block is passed to the widget as `code` (the rest is its caption). */
-const CODE_WIDGETS = new Set(['workbench', 'explorer', 'interleavings', 'msc', 'intruder', 'state-space', 'liveness', 'encoding-lab', 'world-lab', 'bmc-lab', 'reach-lab']);
+const CODE_WIDGETS = new Set(['workbench', 'explorer', 'interleavings', 'msc', 'intruder', 'state-space', 'liveness', 'encoding-lab', 'world-lab', 'bmc-lab', 'reach-lab', 'path-tree']);
 const THEOREM_KINDS = new Set(['theorem', 'lemma', 'corollary', 'proposition', 'conjecture', 'claim']);
 /** Kinds of the Vouch-specific exercises (PLAN §5); all render through one dispatching component. */
 export const VOUCH_EXERCISES = ['verify', 'spec', 'invariant', 'model', 'ltl', 'encode', 'play', 'drive', 'rewrite', 'bug'] as const;
