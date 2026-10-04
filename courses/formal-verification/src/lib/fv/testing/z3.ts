@@ -4,7 +4,7 @@
  */
 import type { Cnf } from '../sat/cnf';
 
-type Z3Context = { Solver: new () => { fromString(s: string): void; check(): Promise<'sat' | 'unsat' | 'unknown'>; release?: () => void } };
+type Z3Context = { Solver: new () => { fromString(s: string): void; set?(key: string, value: number): void; check(): Promise<'sat' | 'unsat' | 'unknown'>; release?: () => void } };
 let ctxPromise: Promise<Z3Context> | undefined;
 
 export async function z3(): Promise<Z3Context> {
@@ -20,8 +20,13 @@ export async function z3(): Promise<Z3Context> {
 export async function z3Check(smtlib: string): Promise<'sat' | 'unsat' | 'unknown'> {
   const ctx = await z3();
   const s = new ctx.Solver();
-  s.fromString(smtlib);
-  return s.check();
+  try {
+    s.fromString(smtlib);
+    return await s.check();
+  } finally {
+    // Free the solver now rather than at garbage collection: under load, unreleased solvers appeared to make later checks hang.
+    s.release?.();
+  }
 }
 
 export function cnfToSmtlib(cnf: Cnf): string {
