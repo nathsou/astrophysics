@@ -64,6 +64,7 @@
     background: color-mix(in srgb, var(--c) 5%, var(--panel));
     font-family: var(--font-ui);
     font-size: 0.86rem;
+    container-type: inline-size;
   }
   .badge.ok {
     --c: var(--seal);
@@ -167,7 +168,7 @@
     gap: 0.2rem 0.9rem;
     color: var(--ink-2);
   }
-  @media (max-width: 520px) {
+  @container (max-width: 520px) {
     summary {
       grid-template-columns: auto minmax(0, 1fr);
     }

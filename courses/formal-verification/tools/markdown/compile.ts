@@ -106,7 +106,7 @@ const EXERCISE_BLOCKS: Record<string, string> = {
   numeric: 'Numeric',
   ...Object.fromEntries(VOUCH_EXERCISES.map((k) => [k, 'VouchExercise'])),
 };
-const VOUCH_RAW = ['code', 'starter', 'solution', 'reference', 'adversaries', 'locked', 'traces', 'bank', 'expect', 'config', 'answers', 'engine', 'options', 'widths', 'rewrites', 'target', 'model', 'property', 'instance', 'count', 'steps', 'lines', 'bug', 'goal', 'game', 'cases', 'forbid', 'requires'];
+const VOUCH_RAW = ['code', 'fn', 'exhibit', 'formula', 'props', 'starter', 'solution', 'reference', 'adversaries', 'locked', 'traces', 'bank', 'expect', 'config', 'answers', 'engine', 'options', 'widths', 'rewrites', 'target', 'model', 'property', 'instance', 'count', 'steps', 'lines', 'bug', 'goal', 'game', 'cases', 'forbid', 'requires'];
 /**
  * Fields of the exercises that are data, not Markdown: code, configurations, expected answers, fixtures.
  * They are passed through untouched.

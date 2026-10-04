@@ -1,28 +1,30 @@
 <!--
-  Placeholder for the Vouch-specific exercises (verify, spec, invariant, model, ltl, encode, play, drive,
-  rewrite, bug). Replaced by the real implementations as the engines land.
+  The Vouch-specific exercises (PLAN §5), dispatched by kind. Kinds whose engines are chapter-specific (ltl,
+  encode, play, drive, rewrite) are implemented next to their engines and registered here.
 -->
 <script lang="ts">
-  let { spec }: { spec: { id: string; kind: string; title?: string; prompt?: string } } = $props();
+  import VerifyExercise from './vouch/VerifyExercise.svelte';
+  import SpecExercise from './vouch/SpecExercise.svelte';
+  import BugExercise from './vouch/BugExercise.svelte';
+  import LtlExercise from './vouch/LtlExercise.svelte';
+  import EncodeExercise from './vouch/EncodeExercise.svelte';
+  import RewriteExercise from './vouch/RewriteExercise.svelte';
+
+  let { spec }: { spec: { id: string; kind: string; [k: string]: unknown } } = $props();
 </script>
 
-<section class="ex ui" aria-label="Exercise">
-  <p class="k">{spec.kind} exercise</p>
-  {#if spec.title}<h3>{spec.title}</h3>{/if}
-  {#if spec.prompt}<div>{@html spec.prompt}</div>{/if}
-</section>
-
-<style>
-  .ex {
-    margin: 1.5rem 0;
-    padding: 1rem;
-    border: 1px dashed var(--line-strong);
-    border-radius: var(--radius);
-  }
-  .k {
-    margin: 0;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    color: var(--mute);
-  }
-</style>
+{#if spec.kind === 'verify' || spec.kind === 'invariant' || spec.kind === 'model'}
+  <VerifyExercise spec={spec as never} />
+{:else if spec.kind === 'spec'}
+  <SpecExercise spec={spec as never} />
+{:else if spec.kind === 'bug'}
+  <BugExercise spec={spec as never} />
+{:else if spec.kind === 'ltl'}
+  <LtlExercise spec={spec as never} />
+{:else if spec.kind === 'encode'}
+  <EncodeExercise spec={spec as never} />
+{:else if spec.kind === 'rewrite'}
+  <RewriteExercise spec={spec as never} />
+{:else}
+  <p class="ui">Unknown exercise kind {spec.kind}.</p>
+{/if}

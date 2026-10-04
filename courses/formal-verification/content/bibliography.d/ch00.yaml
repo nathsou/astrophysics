@@ -1,0 +1,11 @@
+morris1984:
+  authors: F. L. Morris and C. B. Jones
+  year: 1984
+  title: An early program proof by Alan Turing
+  venue: Annals of the History of Computing 6(2), April 1984
+dijkstra1970:
+  authors: Edsger W. Dijkstra
+  year: 1970
+  title: Notes on structured programming (EWD249)
+  venue: Technological University Eindhoven (EWD manuscript 249)
+  url: https://www.cs.utexas.edu/~EWD/transcriptions/EWD02xx/EWD249/EWD249.html

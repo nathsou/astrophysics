@@ -85,3 +85,14 @@ let counter = 0;
 export function freshUri(name = 'scratch'): string {
   return `file:///course/${name.replace(/[^\w-]/g, '-')}-${++counter}.vouch`;
 }
+
+export interface TextResult {
+  errors: { message: string; line: number }[];
+  verdicts: DeclVerdicts[];
+}
+
+/** Verify a piece of Vouch that is not open in an editor (exercises use this for the reader's code and its variants). */
+export async function verifyText(text: string): Promise<TextResult> {
+  const c = await vouchClient();
+  return c.client.request<{ text: string }, TextResult>('vouch/verifyText', { text });
+}

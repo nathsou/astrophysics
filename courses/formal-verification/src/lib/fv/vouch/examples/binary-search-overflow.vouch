@@ -1,6 +1,6 @@
 // expect: violated overflow
 // The midpoint that was in Java's standard library until 2006: lo + hi overflows. Java's indices were 32-bit
-// ints, so the bug needed arrays of more than 2^30 elements; with 8-bit indices it needs only 65.
+// ints, so the bug needed arrays of 2^30 elements or more; with 8-bit indices it needs only 65.
 
 pred sorted(a: [int]) {
   forall i, j :: 0 <= i < j < len(a) ==> a[i] <= a[j]

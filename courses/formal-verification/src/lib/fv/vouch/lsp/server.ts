@@ -124,6 +124,8 @@ export class VouchLanguageServer {
           return void this.verifyNow((p as { textDocument: { uri: string } }).textDocument.uri).then(() => reply(this.docs.get((p as { textDocument: { uri: string } }).textDocument.uri)?.verdicts ?? []));
         case 'vouch/verdicts':
           return reply(this.docs.get((p as { textDocument: { uri: string } }).textDocument.uri)?.verdicts ?? []);
+        case 'vouch/verifyText':
+          return void this.verifyText((p as { text: string }).text).then(reply);
         default:
           if (msg.id !== undefined) fail(-32601, `Method not found: ${msg.method}`);
       }
@@ -196,6 +198,21 @@ export class VouchLanguageServer {
       if (d.timer) clearTimeout(d.timer);
       d.timer = setTimeout(() => void this.verifyNow(d.uri), this.opts.debounce);
     }
+  }
+
+  /**
+   * Verify a text that is not an open document (exercises check the reader's code, and variants of it, this way).
+   * Returns the parse and type errors, or every declaration's verdicts.
+   */
+  async verifyText(text: string): Promise<{ errors: { message: string; line: number }[]; verdicts: DeclVerdicts[] }> {
+    const parsed = parse(text);
+    const checked = check(parsed.program);
+    const errors = [...parsed.diagnostics, ...checked.diagnostics]
+      .filter((x) => x.severity === 'error')
+      .map((x) => ({ message: x.message, line: lineCol(text, x.span.start).line + 1 }));
+    if (errors.length) return { errors, verdicts: [] };
+    const verdicts = await verifyDocument(checked, { ...this.opts.verifyOptions, yieldEvery: () => Promise.resolve() });
+    return { errors, verdicts };
   }
 
   async verifyNow(uri: string): Promise<void> {
