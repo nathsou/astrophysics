@@ -1,0 +1,48 @@
+nodes:
+  - { id: assertion-boxes, name: Assertion boxes, year: 1947, kind: idea, lane: deductive, chapter: prove-programs }
+  - { id: turing-check, name: Checking a large routine, year: 1949, kind: paper, lane: deductive, chapter: for-all-inputs }
+  - { id: snapshots, name: General snapshots, year: 1966, kind: idea, lane: deductive, chapter: loop-invariants }
+  - { id: floyd, name: Inductive assertions, year: 1967, kind: idea, lane: deductive, chapter: loop-invariants }
+  - { id: hoare-logic, name: Hoare logic, year: 1969, kind: idea, lane: deductive, chapter: weakest-preconditions }
+  - { id: wp, name: Weakest preconditions, year: 1975, kind: idea, lane: deductive, chapter: weakest-preconditions }
+  - { id: dbc, name: Design by contract (Eiffel), year: 1986, kind: idea, lane: deductive, chapter: specifications-and-contracts }
+  - { id: esc-m3, name: ESC/Modula-3, year: 1998, kind: tool, lane: deductive, chapter: specifications-and-contracts }
+  - { id: specsharp, name: 'Spec#', year: 2005, kind: tool, lane: deductive, chapter: specifications-and-contracts }
+  - { id: boogie, name: Boogie, year: 2006, kind: tool, lane: deductive, chapter: specifications-and-contracts }
+  - { id: dafny, name: Dafny, year: 2010, kind: tool, lane: deductive, chapter: specifications-and-contracts }
+  - { id: why3, name: Why3, year: 2013, kind: tool, lane: deductive, chapter: specifications-and-contracts, note: 'Year of the reference paper cited; the tool is older.' }
+  - { id: framac, name: Frama-C, year: 2015, kind: tool, lane: deductive, chapter: specifications-and-contracts, note: 'Year of the reference paper cited; the tool is older.' }
+  - { id: key, name: KeY, year: 2016, kind: tool, lane: deductive, chapter: quantifiers-ghosts-and-lemmas, note: 'Year of the reference paper cited; the tool is older.' }
+  - { id: burstall, name: Burstall's list reasoning, year: 1972, kind: idea, lane: heap, chapter: the-heap }
+  - { id: seplogic, name: Separation logic, year: 2002, kind: idea, lane: heap, chapter: the-heap }
+  - { id: smallfoot, name: Smallfoot, year: 2005, kind: tool, lane: heap, chapter: linked-structures-and-ownership }
+  - { id: biabduction, name: Bi-abduction, year: 2009, kind: idea, lane: heap, chapter: linked-structures-and-ownership }
+  - { id: infer, name: Infer, year: 2015, kind: tool, lane: heap, chapter: linked-structures-and-ownership }
+  - { id: fracperm, name: Fractional permissions, year: 2003, kind: idea, lane: heap, chapter: linked-structures-and-ownership }
+  - { id: rustbelt, name: RustBelt, year: 2018, kind: paper, lane: heap, chapter: linked-structures-and-ownership }
+  - { id: prusti, name: Prusti, year: 2019, kind: tool, lane: deductive, chapter: linked-structures-and-ownership }
+  - { id: creusot, name: Creusot, year: 2022, kind: tool, lane: deductive, chapter: linked-structures-and-ownership }
+  - { id: verus, name: Verus, year: 2023, kind: tool, lane: deductive, chapter: linked-structures-and-ownership }
+edges:
+  - { from: assertion-boxes, to: floyd, type: influenced, cite: [jones2003] }
+  - { from: turing-check, to: floyd, type: influenced, cite: [jones2003] }
+  - { from: snapshots, to: floyd, type: influenced, cite: [jones2003] }
+  - { from: floyd, to: hoare-logic, type: descends, cite: [hoare1969] }
+  - { from: hoare-logic, to: wp, type: descends, cite: [dijkstra1975] }
+  - { from: hoare-logic, to: dbc, type: influenced, cite: [meyer1992] }
+  - { from: simplify, to: esc-m3, type: influenced, cite: [detlefs1998] }
+  - { from: esc-m3, to: escjava, type: descends, cite: [flanagan2002] }
+  - { from: escjava, to: specsharp, type: influenced, cite: [barnett2005] }
+  - { from: dbc, to: specsharp, type: influenced, cite: [barnett2005] }
+  - { from: specsharp, to: boogie, type: descends, cite: [barnett2006] }
+  - { from: boogie, to: dafny, type: descends, cite: [leino2010] }
+  - { from: z3, to: dafny, type: influenced, cite: [leino2010] }
+  - { from: burstall, to: seplogic, type: influenced, cite: [reynolds2002] }
+  - { from: hoare-logic, to: seplogic, type: descends, cite: [reynolds2002] }
+  - { from: seplogic, to: smallfoot, type: descends, cite: [berdine2005] }
+  - { from: smallfoot, to: biabduction, type: descends, cite: [calcagno2009] }
+  - { from: biabduction, to: infer, type: descends, cite: [calcagno2015] }
+  - { from: seplogic, to: rustbelt, type: influenced, cite: [jung2018] }
+  - { from: seplogic, to: prusti, type: influenced, cite: [astrauskas2019] }
+  - { from: why3, to: creusot, type: influenced, cite: [denis2022] }
+  - { from: z3, to: verus, type: influenced, cite: [lattuada2023] }

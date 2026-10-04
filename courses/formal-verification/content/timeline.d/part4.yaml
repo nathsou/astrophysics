@@ -1,0 +1,142 @@
+- year: 1947
+  lane: deductive
+  title: Assertion boxes
+  people: Herman Goldstine, John von Neumann
+  chapter: prove-programs
+  text: The report that introduces flow diagrams for the IAS machine includes boxes stating what must hold when control passes them.
+  cite: [goldstine1947, jones2003]
+- year: 1966
+  lane: deductive
+  title: General snapshots
+  people: Peter Naur
+  chapter: loop-invariants
+  text: Statements of what holds whenever a computation reaches a given point, used to prove algorithms correct.
+  cite: [naur1966]
+- year: 1968
+  month: 10
+  lane: industry
+  title: The NATO conference on software engineering
+  people: Peter Naur, Brian Randell (editors of the report)
+  chapter: prove-programs
+  text: At Garmisch, builders of large systems discuss late, unreliable software, and the term software engineering becomes popular.
+  cite: [naur1969]
+- year: 1972
+  lane: heap
+  title: Programs that alter data structures
+  people: Rod Burstall
+  chapter: the-heap
+  text: Techniques for proving programs that change linked lists, attending to the parts a program leaves alone.
+  cite: [burstall1972]
+- year: 1976
+  lane: deductive
+  title: A Discipline of Programming
+  people: Edsger Dijkstra
+  chapter: loop-invariants
+  text: Develop the program and its proof together, with the proof leading.
+  cite: [dijkstra1976]
+- year: 1979
+  lane: deductive
+  title: Social processes and proofs
+  people: Richard De Millo, Richard Lipton, Alan Perlis
+  chapter: prove-programs
+  text: An argument that program verifications will never earn the trust that mathematical proofs earn by being read.
+  cite: [demillo1979]
+- year: 1986
+  lane: deductive
+  title: Design by contract
+  people: Bertrand Meyer
+  chapter: specifications-and-contracts
+  text: Preconditions, postconditions and class invariants become part of the code in Eiffel.
+  cite: [meyer1986, meyer1992]
+- year: 1988
+  lane: deductive
+  title: Program verification, the very idea
+  people: James Fetzer
+  chapter: prove-programs
+  text: A philosopher argues that programs, unlike algorithms, run on physical machines and cannot be verified by deduction alone.
+  cite: [fetzer1988]
+- year: 1998
+  lane: deductive
+  title: Extended static checking
+  people: David Detlefs, Rustan Leino, Greg Nelson, James Saxe
+  chapter: specifications-and-contracts
+  text: ESC/Modula-3 checks annotated programs for errors with an automatic theorem prover.
+  cite: [detlefs1998]
+- year: 2001
+  lane: heap
+  title: Local reasoning and the frame rule
+  people: Peter O'Hearn, John Reynolds, Hongseok Yang
+  chapter: the-heap
+  text: Separation logic's frame rule lets a proof about a small part of the heap extend to the whole.
+  cite: [ohearn2001]
+- year: 2002
+  lane: heap
+  title: Separation logic
+  people: John Reynolds
+  chapter: the-heap
+  text: A logic for shared mutable data structures, with points-to and the separating conjunction.
+  cite: [reynolds2002]
+- year: 2003
+  lane: deductive
+  title: The verifying compiler
+  people: Tony Hoare
+  chapter: prove-programs
+  text: A grand challenge for computing research, a compiler that checks the correctness of the programs it compiles.
+  cite: [hoare2003]
+- year: 2003
+  lane: deductive
+  title: Fractional permissions
+  people: John Boyland
+  chapter: linked-structures-and-ownership
+  text: A permission to an object is a fraction; writing needs all of it, reading any part.
+  cite: [boyland2003]
+- year: 2005
+  lane: heap
+  title: Smallfoot
+  people: Josh Berdine, Cristiano Calcagno, Peter O'Hearn
+  chapter: linked-structures-and-ownership
+  text: Symbolic execution over separation-logic formulas, with frame inference, proves pointer programs automatically.
+  cite: [berdine2005]
+- year: 2006
+  lane: deductive
+  title: Boogie
+  people: Mike Barnett, Rustan Leino and colleagues
+  chapter: specifications-and-contracts
+  text: An intermediate verification language and verifier, the back end of Spec# and later of Dafny.
+  cite: [barnett2006]
+- year: 2009
+  lane: heap
+  title: Bi-abduction
+  people: Cristiano Calcagno, Dino Distefano, Peter O'Hearn, Hongseok Yang
+  chapter: linked-structures-and-ownership
+  text: Shape analysis that infers what each procedure needs, one procedure at a time, so that it scales to large code bases.
+  cite: [calcagno2009]
+- year: 2010
+  lane: deductive
+  title: Dafny
+  people: Rustan Leino
+  chapter: specifications-and-contracts
+  text: A programming language designed for verification, checked by Boogie and Z3.
+  cite: [leino2010]
+- year: 2015
+  month: 6
+  lane: industry
+  title: Infer is open-sourced
+  people: Cristiano Calcagno, Dino Distefano, Peter O'Hearn and colleagues
+  chapter: linked-structures-and-ownership
+  text: Facebook's separation-logic analyser, which comments on code changes during review, is released as open source.
+  cite: [calcagno2015, fbinfer2015]
+- year: 2018
+  lane: heap
+  title: RustBelt
+  people: Ralf Jung, Jacques-Henri Jourdan, Robbert Krebbers, Derek Dreyer
+  chapter: linked-structures-and-ownership
+  text: A machine-checked safety proof for a realistic subset of Rust, including libraries built with unsafe code.
+  cite: [jung2018]
+- year: 2023
+  lane: deductive
+  title: Verus
+  people: Andrea Lattuada, Chris Hawblitzel and colleagues
+  chapter: linked-structures-and-ownership
+  text: Specifications and proofs written in Rust, with permissions as linear ghost values, verified by an SMT solver.
+  cite: [lattuada2023]

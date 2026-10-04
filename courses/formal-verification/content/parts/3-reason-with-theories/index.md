@@ -35,6 +35,8 @@ In 1976 James King proposed running a program on **symbolic** inputs: instead of
 
 It came back thirty years later. DART, in 2005, combined concrete and symbolic execution to steer random testing down new paths.:cite[godefroid2005] In 2008 KLEE generated high-coverage tests for systems programs by symbolic execution of their compiled code,:cite[cadar2008] and SAGE applied *whitebox fuzzing* to large Windows applications at Microsoft.:cite[godefroid2008] Both rested on SMT solvers fast enough to answer thousands of queries per run. Chapter 15 builds a symbolic executor on the course's solver, and finds its limit: loops make the tree of paths infinite, which is why Part IV needs invariants.
 
+::timeline{part="III"}
+
 ## In this part
 
 - **Chapter 12, Equality and functions.** First-order logic in brief, uninterpreted functions, congruence closure, and DPLL(T).

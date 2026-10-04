@@ -1,0 +1,83 @@
+goldstine1947:
+  authors: Herman H. Goldstine and John von Neumann
+  year: 1947
+  title: Planning and coding of problems for an electronic computing instrument, Part II, Volume 1
+  venue: Report, Institute for Advanced Study, Princeton, 1 April 1947
+jones2003:
+  authors: Cliff B. Jones
+  year: 2003
+  title: The early search for tractable ways of reasoning about programs
+  venue: IEEE Annals of the History of Computing 25(2), 26–49
+  url: https://doi.org/10.1109/MAHC.2003.1203057
+mccarthy1963:
+  authors: John McCarthy
+  year: 1963
+  title: A basis for a mathematical theory of computation
+  venue: Computer Programming and Formal Systems, P. Braffort and D. Hirschberg (eds), North-Holland, 33–70
+naur1966:
+  authors: Peter Naur
+  year: 1966
+  title: Proof of algorithms by general snapshots
+  venue: BIT 6(4), 310–316
+naur1969:
+  authors: Peter Naur and Brian Randell (eds)
+  year: 1969
+  title: 'Software Engineering: report on a conference sponsored by the NATO Science Committee, Garmisch, Germany, 7–11 October 1968'
+  venue: Scientific Affairs Division, NATO, Brussels
+demillo1979:
+  authors: Richard A. De Millo, Richard J. Lipton and Alan J. Perlis
+  year: 1979
+  title: Social processes and proofs of theorems and programs
+  venue: Communications of the ACM 22(5), 271–280
+fetzer1988:
+  authors: James H. Fetzer
+  year: 1988
+  title: 'Program verification: the very idea'
+  venue: Communications of the ACM 31(9), 1048–1063
+detlefs1998:
+  authors: David L. Detlefs, K. Rustan M. Leino, Greg Nelson and James B. Saxe
+  year: 1998
+  title: Extended static checking
+  venue: SRC Research Report 159, Compaq Systems Research Center
+  url: https://softwarepreservation.computerhistory.org/modula3/doc/SRC-RR-159.pdf
+barnett2005:
+  authors: Mike Barnett, K. Rustan M. Leino and Wolfram Schulte
+  year: 2005
+  title: 'The Spec# programming system: an overview'
+  venue: Construction and Analysis of Safe, Secure, and Interoperable Smart Devices (CASSIS 2004), Lecture Notes in Computer Science 3362, 49–69
+barnett2006:
+  authors: Mike Barnett, Bor-Yuh Evan Chang, Robert DeLine, Bart Jacobs and K. Rustan M. Leino
+  year: 2006
+  title: 'Boogie: a modular reusable verifier for object-oriented programs'
+  venue: Formal Methods for Components and Objects (FMCO 2005), Lecture Notes in Computer Science 4111, 364–387
+filliatre2013:
+  authors: Jean-Christophe Filliâtre and Andrei Paskevich
+  year: 2013
+  title: Why3 — where programs meet provers
+  venue: Programming Languages and Systems (ESOP 2013), Lecture Notes in Computer Science 7792, 125–128
+kirchner2015:
+  authors: Florent Kirchner, Nikolai Kosmatov, Virgile Prevosto, Julien Signoles and Boris Yakobowski
+  year: 2015
+  title: 'Frama-C: a software analysis perspective'
+  venue: Formal Aspects of Computing 27(3), 573–609
+ahrendt2016:
+  authors: Wolfgang Ahrendt, Bernhard Beckert, Richard Bubel, Reiner Hähnle, Peter H. Schmitt and Mattias Ulbrich (eds)
+  year: 2016
+  title: Deductive Software Verification – The KeY Book
+  venue: Lecture Notes in Computer Science 10001, Springer
+barnes2003:
+  authors: John Barnes
+  year: 2003
+  title: 'High Integrity Software: The SPARK Approach to Safety and Security'
+  venue: Addison-Wesley
+hoare2003:
+  authors: C. A. R. Hoare
+  year: 2003
+  title: 'The verifying compiler: a grand challenge for computing research'
+  venue: Journal of the ACM 50(1), 63–69
+acm-turing-deductive:
+  authors: Association for Computing Machinery
+  year: 1980
+  title: 'A. M. Turing Award recipients: Edsger W. Dijkstra (1972), Robert W. Floyd (1978), C. A. R. Hoare (1980)'
+  venue: ACM awards
+  url: https://amturing.acm.org/

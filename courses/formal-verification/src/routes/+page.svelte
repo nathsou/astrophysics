@@ -76,7 +76,7 @@
     </div>
   </section>
 
-  <section class="map" aria-label="Course map">
+  <section class="map" id="course-map" aria-label="Course map">
     {#each PARTS as part (part.id)}
       <div class="part">
         <h2>
