@@ -1,0 +1,63 @@
+- year: 1965
+  lane: model-checking
+  title: The mutual exclusion problem
+  people: Edsger Dijkstra
+  chapter: interleavings
+  text: A one-page paper poses and solves the problem of letting several processes share a critical section using only reads and writes of shared variables.
+  cite: [dijkstra1965]
+- year: 1977
+  lane: model-checking
+  title: Safety and liveness
+  people: Leslie Lamport
+  chapter: eventually
+  text: Proving the correctness of multiprocess programs separates properties that say nothing bad happens from properties that say something good eventually happens.
+  cite: [lamport1977]
+- year: 1978
+  lane: model-checking
+  title: Communicating sequential processes
+  people: Tony Hoare
+  chapter: the-adversary
+  text: A notation for processes that interact only by messages; its later refinement checker, FDR, found Lowe’s attack.
+  cite: [hoare1978]
+- year: 1981
+  lane: model-checking
+  title: Peterson’s algorithm
+  people: Gary Peterson
+  chapter: interleavings
+  text: A two-process mutual exclusion algorithm short enough to check by hand, published as a note on the myths around the problem.
+  cite: [peterson1981]
+- year: 1986
+  lane: model-checking
+  title: Automata for temporal logic
+  people: Moshe Vardi, Pierre Wolper
+  chapter: eventually
+  text: Model checking a temporal property becomes checking that the product of the system and an automaton for the property’s negation has no accepting run.
+  cite: [vardi1986]
+- year: 1994
+  lane: model-checking
+  title: The temporal logic of actions
+  people: Leslie Lamport
+  chapter: messages-and-failures
+  text: Systems and their properties written in one logic, with stuttering steps built in so that refinement is implication.
+  cite: [lamport1994]
+- year: 1999
+  lane: model-checking
+  title: TLC
+  people: Yuan Yu, Panagiotis Manolios, Leslie Lamport
+  chapter: messages-and-failures
+  text: An explicit-state model checker for TLA+ specifications.
+  cite: [yu1999]
+- year: 2001
+  lane: industry
+  title: SPIN receives the ACM Software System Award
+  people: Gerard Holzmann
+  chapter: state-machines
+  text: The model checker built at Bell Labs for telephone-switching software joins Unix and TeX on the award’s list.
+  cite: [acm-spin, holzmann1997]
+- year: 2007
+  lane: model-checking
+  title: Turing Award for model checking
+  people: Edmund Clarke, Allen Emerson, Joseph Sifakis
+  chapter: state-machines
+  text: The ACM’s highest award recognises the invention of model checking and its development into a practical technology.
+  cite: [acm-turing2007]

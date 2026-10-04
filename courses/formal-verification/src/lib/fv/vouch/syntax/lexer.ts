@@ -168,6 +168,8 @@ export function lex(src: string): Token[] {
     if (/[A-Za-z_]/.test(c)) {
       while (i < src.length && /[A-Za-z0-9_']/.test(src[i]!)) i++;
       const word = src.slice(start, i);
+      // `when` (an action's guard) and `else` may start a line and still continue the previous one.
+      if ((word === 'when' || CONTINUES_BEFORE.has(word)) && out.at(-1)?.kind === 'newline') out.pop();
       push(KEYWORDS.has(word) ? 'kw' : 'ident', word, start);
       continue;
     }

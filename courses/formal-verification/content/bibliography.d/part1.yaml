@@ -1,0 +1,63 @@
+dijkstra1965:
+  authors: Edsger W. Dijkstra
+  year: 1965
+  title: Solution of a problem in concurrent programming control
+  venue: Communications of the ACM 8(9), 569
+peterson1981:
+  authors: Gary L. Peterson
+  year: 1981
+  title: Myths about the mutual exclusion problem
+  venue: Information Processing Letters 12(3), 115–116
+lamport1977:
+  authors: Leslie Lamport
+  year: 1977
+  title: Proving the correctness of multiprocess programs
+  venue: IEEE Transactions on Software Engineering SE-3(2), 125–143
+alpern1985:
+  authors: Bowen Alpern and Fred B. Schneider
+  year: 1985
+  title: Defining liveness
+  venue: Information Processing Letters 21(4), 181–185
+lamport1994:
+  authors: Leslie Lamport
+  year: 1994
+  title: The temporal logic of actions
+  venue: ACM Transactions on Programming Languages and Systems 16(3), 872–923
+yu1999:
+  authors: Yuan Yu, Panagiotis Manolios and Leslie Lamport
+  year: 1999
+  title: Model checking TLA+ specifications
+  venue: Correct Hardware Design and Verification Methods (CHARME ’99), Lecture Notes in Computer Science 1703, 54–66
+vardi1986:
+  authors: Moshe Y. Vardi and Pierre Wolper
+  year: 1986
+  title: An automata-theoretic approach to automatic program verification
+  venue: First Symposium on Logic in Computer Science (LICS), 332–344
+hoare1978:
+  authors: C. A. R. Hoare
+  year: 1978
+  title: Communicating sequential processes
+  venue: Communications of the ACM 21(8), 666–677
+holzmann1997:
+  authors: Gerard J. Holzmann
+  year: 1997
+  title: The model checker SPIN
+  venue: IEEE Transactions on Software Engineering 23(5), 279–295
+acm-spin:
+  authors: Association for Computing Machinery
+  year: 2001
+  title: 'Software System Award: Gerard J. Holzmann, for SPIN'
+  venue: ACM awards
+  url: https://awards.acm.org/award-recipients/holzmann_1625680
+acm-turing2007:
+  authors: Association for Computing Machinery
+  year: 2007
+  title: 'A. M. Turing Award 2007: Edmund M. Clarke, E. Allen Emerson and Joseph Sifakis'
+  venue: ACM awards
+  url: https://amturing.acm.org/
+brookes-roscoe-fdr:
+  authors: Stephen D. Brookes and A. W. Roscoe
+  year: 2021
+  title: 'CSP: a practical process algebra'
+  venue: 'In Theories of Programming: The Life and Works of Tony Hoare (ACM Books, 2021); preprint dated 12 February 2021'
+  url: https://www.cs.ox.ac.uk/files/12724/cspfdrstory.pdf

@@ -1,0 +1,17 @@
+nodes:
+  - { id: emc, name: EMC, year: 1983, kind: tool, lane: model-checking, chapter: eventually, note: Clarke, Emerson and Sistla’s CTL model checker }
+  - { id: cesar, name: CESAR, year: 1982, kind: tool, lane: model-checking, chapter: state-machines, note: Queille and Sifakis’s model checker }
+  - { id: spin, name: SPIN, year: 1991, kind: tool, lane: model-checking, chapter: interleavings, rosetta: spin }
+  - { id: csp, name: CSP, year: 1978, kind: idea, lane: model-checking, chapter: the-adversary }
+  - { id: fdr, name: FDR, year: 1991, kind: tool, lane: model-checking, chapter: the-adversary }
+  - { id: tla, name: TLA+, year: 1994, kind: idea, lane: model-checking, chapter: messages-and-failures, rosetta: tla }
+  - { id: tlc, name: TLC, year: 1999, kind: tool, lane: model-checking, chapter: messages-and-failures }
+  - { id: ltl, name: LTL, year: 1977, kind: idea, lane: model-checking, chapter: eventually }
+  - { id: automata, name: Automata-theoretic model checking, year: 1986, kind: idea, lane: model-checking, chapter: eventually }
+edges:
+  - { from: ltl, to: emc, type: influenced }
+  - { from: ltl, to: automata, type: influenced, cite: [vardi1986] }
+  - { from: automata, to: spin, type: influenced, cite: [holzmann1997] }
+  - { from: csp, to: fdr, type: descends, cite: [brookes-roscoe-fdr] }
+  - { from: ltl, to: tla, type: influenced, cite: [lamport1994] }
+  - { from: tla, to: tlc, type: descends, cite: [yu1999] }

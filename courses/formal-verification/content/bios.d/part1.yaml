@@ -1,0 +1,18 @@
+- id: pnueli
+  name: Amir Pnueli
+  born: 1941
+  died: 2009
+  summary: 'Israeli computer scientist who brought temporal logic, the logic of "always" and "eventually", to the specification of programs that run forever (1977). Turing Award, 1996.'
+  chapters: [eventually]
+  cite: [pnueli1977]
+- id: lamport
+  name: Leslie Lamport
+  born: 1941
+  summary: 'American computer scientist: logical clocks, the bakery algorithm, Paxos, the distinction between safety and liveness, and TLA+. He wrote LaTeX on the side. Turing Award, 2013.'
+  chapters: [eventually, messages-and-failures]
+  cite: [lamport1977, lamport1994]
+- id: clarke-emerson-sifakis
+  name: Edmund Clarke, Allen Emerson and Joseph Sifakis
+  summary: 'Clarke and his student Emerson at Harvard (1981), and Sifakis with his student Queille in Grenoble (1982), invented model checking independently: decide a temporal property by exploring a finite model, rather than by proof. They shared the Turing Award for 2007.'
+  chapters: [state-machines]
+  cite: [clarke1981, queille1982, acm-turing2007]
