@@ -93,7 +93,7 @@ GRASP's ideas are what the solver does. Making it fast took further ideas, and e
 
 The course's solver (`src/lib/fv/sat/solver.ts`, about 700 lines) has all of these. The benchmark below switches them on one at a time.
 
-The conflict counts below are the same on every machine (the solver is deterministic); the times are your browser's. Each idea pays off where the formula has the structure it bets on: the Sudoku and the random formula show the large wins, and the queens are easy for everything.
+The conflict counts below are the same on every machine for the runs that finish (the solver is deterministic); the times are your browser's. Each idea pays off where the formula has the structure it bets on: the Sudoku and the random formula show the large wins, and the queens are easy for everything.
 
 ::ideas-bench{caption="What each idea buys, measured in your browser on four formulas. The full solver is not the fastest on every formula, and a solver can lose on a small instance what it wins on a large one: these are four data points, not a ranking."}
 

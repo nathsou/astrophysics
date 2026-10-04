@@ -82,3 +82,17 @@
   chapter: unrolling-time
   text: The execution engine of the Core i7 is verified formally, largely in place of simulation-based testing.
   cite: [kaivola2009]
+- year: 1985
+  lane: logic
+  title: Pigeonholes are hard for resolution
+  people: Armin Haken
+  chapter: proofs-of-unsatisfiability
+  text: Every resolution refutation of the pigeonhole formulas has exponential size, so every CDCL solver needs exponentially many conflicts on them.
+  cite: [haken1985]
+- year: 2001
+  lane: sat
+  title: Chaff
+  people: Matthew Moskewicz, Conor Madigan, Ying Zhao, Lintao Zhang, Sharad Malik
+  chapter: inside-a-sat-solver
+  text: Watched literals and the VSIDS heuristic make clause learning fast enough for industrial formulas.
+  cite: [moskewicz2001]
