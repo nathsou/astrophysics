@@ -286,7 +286,7 @@
       <p class="legend ui"><span class="dot init"></span> initial <span class="dot open"></span> found, not yet expanded <span class="dot next"></span> BFS expands it next <span class="dot bad"></span> breaks an invariant</p>
       {#if selected !== undefined && nodes[selected]}
         <div class="hand ui">
-          <p class="cur"><b>State #{selected}</b> <code>{nodes[selected].text}</code></p>
+          <p class="cur"><b>State #{selected}</b> <code>{nodes[selected]?.text}</code></p>
           {#if enabled.length}
             <p class="steps">Enabled: {#each enabled as s, i (i)}<button type="button" class="step" onclick={() => take(s)}>{s.label.text}</button>{/each}</p>
           {:else}

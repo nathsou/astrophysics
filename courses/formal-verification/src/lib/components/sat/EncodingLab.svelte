@@ -62,11 +62,11 @@
       if (v === null || typeof v !== 'object' || v.t !== 'func') continue;
       const f = v as FuncV;
       const cells = result!.encoding.cells.filter((c) => c.sym.name === name);
-      if (!cells.length || !cells.every((c) => c.arg && typeof c.arg === 'object' && (c.arg as { t: string }).t === 'tuple' && (c.arg as { items: Value[] }).items.length === 2)) continue;
-      const rows = [...new Set(cells.map((c) => show((c.arg as { items: Value[] }).items[0]!)))];
-      const cols = [...new Set(cells.map((c) => show((c.arg as { items: Value[] }).items[1]!)))];
+      if (!cells.length || !cells.every((c) => c.arg && typeof c.arg === 'object' && (c.arg as { t: string }).t === 'tuple' && (c.arg as { items: readonly Value[] }).items.length === 2)) continue;
+      const rows = [...new Set(cells.map((c) => show((c.arg as { items: readonly Value[] }).items[0]!)))];
+      const cols = [...new Set(cells.map((c) => show((c.arg as { items: readonly Value[] }).items[1]!)))];
       const at = (r: string, c: string) => {
-        const cell = cells.find((x) => show((x.arg as { items: Value[] }).items[0]!) === r && show((x.arg as { items: Value[] }).items[1]!) === c);
+        const cell = cells.find((x) => show((x.arg as { items: readonly Value[] }).items[0]!) === r && show((x.arg as { items: readonly Value[] }).items[1]!) === c);
         if (!cell) return '';
         const hit = f.entries.find(([k]) => show(k) === show(cell.arg!));
         return show(hit ? hit[1] : f.def);

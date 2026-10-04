@@ -142,7 +142,7 @@ export class ProblemEncoder {
   private cell(sym: Sym, ty: Ty, arg: Value | undefined): Cell {
     const domain = enumerate(ty);
     if (!domain) throw new EncodeError(`${sym.name} must have a finite type (a range such as 1..=9, an enum, or bool).`);
-    const name = arg === undefined ? sym.name : `${sym.name}[${arg !== null && typeof arg === 'object' && 'items' in arg && (arg as { t: string }).t === 'tuple' ? (arg as { items: Value[] }).items.map(show).join(', ') : show(arg)}]`;
+    const name = arg === undefined ? sym.name : `${sym.name}[${arg !== null && typeof arg === 'object' && 'items' in arg && (arg as { t: string }).t === 'tuple' ? (arg as { items: readonly Value[] }).items.map(show).join(', ') : show(arg)}]`;
     let vars: number[];
     if (ty.k === 'bool') {
       vars = [this.fresh()];
@@ -234,7 +234,7 @@ export class ProblemEncoder {
         let out: Cases = [{ value: { t: 'tuple', items: [] } as Value, cond: T }];
         for (const x of e.elems) {
           const c = ev(x);
-          out = merge(out.flatMap((o) => c.map((y) => ({ value: { t: 'tuple', items: [...(o.value as { items: Value[] }).items, y.value] } as Value, cond: and(o.cond, y.cond) }))));
+          out = merge(out.flatMap((o) => c.map((y) => ({ value: { t: 'tuple', items: [...(o.value as { items: readonly Value[] }).items, y.value] } as Value, cond: and(o.cond, y.cond) }))));
         }
         return out;
       }

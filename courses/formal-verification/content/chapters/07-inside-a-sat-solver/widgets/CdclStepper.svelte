@@ -40,6 +40,7 @@
   // Drive mode: the reader's predictions for the current conflict.
   let guessClause = $state<number | undefined>();
   let guessLevel = $state<number | undefined>();
+  // svelte-ignore state_referenced_locally
   let revealed = $state(!drive);
   let score = $state(0);
 
