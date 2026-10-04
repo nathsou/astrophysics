@@ -698,8 +698,8 @@ export class SystemEncoder {
       const nv = asCases(value);
       const out: Cases = [];
       for (const o of old) for (const n of nv) {
-        const sv = o.value as Value & { t: 'struct'; fields: readonly Value[] };
-        out.push({ value: { ...sv, fields: sv.fields.map((x, i) => (i === fi ? n.value : x)) } as Value, cond: and(o.cond, n.cond) });
+        const sv = o.value as { t: 'struct'; name: string; fields: readonly Value[] };
+        out.push({ value: { t: 'struct', name: sv.name, fields: sv.fields.map((x, i) => (i === fi ? n.value : x)) } as Value, cond: and(o.cond, n.cond) });
       }
       env.set(sym.id, cases(out));
       return { cond, fail: F };
