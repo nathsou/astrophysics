@@ -46,19 +46,32 @@ export function evalFormula(f: Formula, model: readonly boolean[]): boolean {
 }
 
 export function maxVar(f: Formula): number {
-  switch (f.k) {
-    case 'var':
-      return f.v;
-    case 'const':
-      return 0;
-    case 'not':
-      return maxVar(f.a);
-    case 'and':
-    case 'or':
-      return Math.max(0, ...f.args.map(maxVar));
-    default:
-      return Math.max(maxVar(f.a), maxVar(f.b));
+  // Formulas may share subformulas (a DAG): visit each node once.
+  const seen = new Set<Formula>();
+  let max = 0;
+  const stack: Formula[] = [f];
+  while (stack.length) {
+    const g = stack.pop()!;
+    if (seen.has(g)) continue;
+    seen.add(g);
+    switch (g.k) {
+      case 'var':
+        if (g.v > max) max = g.v;
+        break;
+      case 'const':
+        break;
+      case 'not':
+        stack.push(g.a);
+        break;
+      case 'and':
+      case 'or':
+        stack.push(...g.args);
+        break;
+      default:
+        stack.push(g.a, g.b);
+    }
   }
+  return max;
 }
 
 /**
@@ -70,8 +83,12 @@ export function tseitin(f: Formula, firstFresh = maxVar(f) + 1): Cnf & { root: n
   let next = firstFresh;
   // A subformula shared by reference (a DAG, as relational encodings build) gets one variable, not one per use.
   const memo = new Map<Formula, number>();
+  let maxInput = 0;
   const go = (g: Formula): number => {
-    if (g.k === 'var') return g.v;
+    if (g.k === 'var') {
+      if (g.v > maxInput) maxInput = g.v;
+      return g.v;
+    }
     if (g.k === 'not') return -go(g.a);
     const m = memo.get(g);
     if (m !== undefined) return m;
@@ -118,7 +135,7 @@ export function tseitin(f: Formula, firstFresh = maxVar(f) + 1): Cnf & { root: n
   };
   const root = go(f);
   clauses.push([root]);
-  return { nvars: Math.max(next - 1, maxVar(f)), clauses, root, fresh: next - firstFresh };
+  return { nvars: Math.max(next - 1, maxInput), clauses, root, fresh: next - firstFresh };
 }
 
 /** The naive CNF of a formula by distribution (exponential in general: the contrast for chapter 6). */

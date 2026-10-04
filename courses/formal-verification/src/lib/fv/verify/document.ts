@@ -21,6 +21,9 @@ import { hasErrors } from '../vouch/diagnostics';
 import { verifyFunction } from '../vouch/vc/verify';
 import { solveProblem, EncodeError } from '../problem/encode';
 import { runCommand, WorldError, type WorldResult } from '../relational/encode';
+import { bmc, bmcVerdicts } from '../bmc/bmc';
+import { BmcError } from '../bmc/symbolic';
+import type { Ty } from '../vouch/check/types';
 import type * as A from '../vouch/syntax/ast';
 
 export interface DeclVerdicts {
@@ -58,7 +61,17 @@ export async function verifyDocument(checked: Checked, opts: VerifyOptions = {})
         const rt = new SystemRuntime(checked, d.name);
         // Systems of processes are also checked for deadlock: a state where no process can move, though some has not finished.
         const deadlock = rt.instances.length > 0;
-        if (rt.info.invariants.length || deadlock) verdicts.push(...explore(rt, { timeout, signal: opts.signal, symmetry: true, deadlock }).verdicts);
+        // Wide bit-vectors (16-bit registers, 32-bit inputs) are beyond explicit enumeration: bounded model checking instead.
+        const wide = (t: Ty): boolean => (t.k === 'bv' && t.bits > 8) || (t.k === 'func' && wide(t.result));
+        const bmcOnly = rt.info.vars.some((v) => wide(v.ty)) || rt.info.actions.some((a) => a.params.some((p) => wide(p.ty)));
+        if (bmcOnly && rt.info.invariants.length) {
+          try {
+            verdicts.push(...bmcVerdicts(rt, bmc(rt, { maxK: 12, timeout, signal: opts.signal })));
+          } catch (e) {
+            if (!(e instanceof BmcError)) throw e;
+            verdicts.push({ engine: 'bmc', status: 'error', subject: d.name, badge: { kind: 'error', reason: e.message }, certificate: { kind: 'none', checked: false, checker: '' }, assumptions: [], stats: {}, message: e.message, span: d.nameSpan });
+          }
+        } else if (rt.info.invariants.length || deadlock) verdicts.push(...explore(rt, { timeout, signal: opts.signal, symmetry: true, deadlock }).verdicts);
         if (rt.info.refines) {
           await pause();
           verdicts.push(checkRefinement(checked, d.name, { timeout, signal: opts.signal }));

@@ -210,12 +210,30 @@ function liftCases(x: SV & { k: 'cases' }, like: SV & { k: 'func' }): SV {
 export class VarPool {
   next = 1;
   names = new Map<number, string>();
-  /** Constraints that must always hold (exactly one value per one-hot group). */
+  /** Constraints that must always hold. */
   side: Formula[] = [];
+  /** Clauses that must always hold (one-hot groups), added directly without Tseitin variables. */
+  sideClauses: number[][] = [];
   fresh(name?: string): number {
     const x = this.next++;
     if (name) this.names.set(x, name);
     return x;
+  }
+  /** Exactly one of `vars` is true: one clause for "at least one", and Sinz's sequential counter for "at most one". */
+  exactlyOne(vars: number[]): void {
+    this.sideClauses.push([...vars]);
+    const n = vars.length;
+    if (n <= 6) {
+      for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) this.sideClauses.push([-vars[i]!, -vars[j]!]);
+      return;
+    }
+    // s[i] means "one of vars[0..i] is true".
+    const s = Array.from({ length: n - 1 }, () => this.fresh());
+    this.sideClauses.push([-vars[0]!, s[0]!]);
+    for (let i = 1; i < n - 1; i++) {
+      this.sideClauses.push([-vars[i]!, s[i]!], [-s[i - 1]!, s[i]!], [-vars[i]!, -s[i - 1]!]);
+    }
+    this.sideClauses.push([-vars[n - 1]!, -s[n - 2]!]);
   }
 }
 
@@ -237,8 +255,7 @@ export function freshSV(pool: VarPool, ty: Ty, name: string): SV {
   if (!dom) throw new BmcError(`${name} must have a finite type for bounded model checking (a range such as 0..4, an enum, bool, or a type with an instance size).`);
   if (dom.length > MAX_CASES) throw new BmcError(`${name} has too many values (${dom.length}).`);
   const vars = dom.map((d) => pool.fresh(`${name} = ${showArg(d)}`));
-  pool.side.push(or(...vars.map(v)));
-  for (let i = 0; i < vars.length; i++) for (let j = i + 1; j < vars.length; j++) pool.side.push(or(not(v(vars[i]!)), not(v(vars[j]!))));
+  pool.exactlyOne(vars);
   return { k: 'cases', cs: dom.map((d, i) => ({ value: d, cond: v(vars[i]!) })) };
 }
 
@@ -391,8 +408,7 @@ export class SystemEncoder {
       if (slot.kind === 'pc') {
         const dom = this.pcDomains[slot.instance!]!.map((p) => p as Value);
         const vars = dom.map((d) => this.pool.fresh(`${slot.name}@${tag} = ${this.pcName(slot.instance!, d as bigint)}`));
-        this.pool.side.push(or(...vars.map(v)));
-        for (let a = 0; a < vars.length; a++) for (let b = a + 1; b < vars.length; b++) this.pool.side.push(or(not(v(vars[a]!)), not(v(vars[b]!))));
+        this.pool.exactlyOne(vars);
         return { k: 'cases', cs: dom.map((d, j) => ({ value: d, cond: v(vars[j]!) })) } as SV;
       }
       if (!slot.ty) throw new BmcError(`Slot ${slot.name} has no type.`);

@@ -29,6 +29,8 @@ export interface ExploreOptions extends EngineOptions {
   keepGraph?: boolean;
   /** Stop at the first violation (default true). */
   stopAtFirst?: boolean;
+  /** States expanded between checks of the time limit (default 2000; use 1 when each state has very many successors). */
+  chunk?: number;
 }
 
 export interface GraphNode {
@@ -225,7 +227,7 @@ export function explore(rt: SystemRuntime, opts: ExploreOptions = {}): { verdict
   // Keep searching after a violation, so that every property gets its own verdict (and its own shortest trace).
   const x = new Exploration(rt, { ...opts, stopAtFirst: opts.stopAtFirst ?? false });
   const timeout = opts.timeout ? Date.now() + opts.timeout : Infinity;
-  while (!x.run(2000)) {
+  while (!x.run(opts.chunk ?? 2000)) {
     opts.onProgress?.({ stats: x.stats() });
     if (Date.now() > timeout) break;
   }

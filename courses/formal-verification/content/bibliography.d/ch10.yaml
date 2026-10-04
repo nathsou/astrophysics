@@ -1,0 +1,11 @@
+brand1993:
+  authors: Daniel Brand
+  year: 1993
+  title: Verification of large synthesized designs
+  venue: IEEE/ACM International Conference on Computer-Aided Design (ICCAD '93), 534–537
+intel1995:
+  authors: Intel Corporation
+  year: 1995
+  title: Annual report on Form 10-K for the fiscal year 1994
+  venue: United States Securities and Exchange Commission (filed 1995)
+  url: https://www.sec.gov/Archives/edgar/data/0000050863/000005086395000004/0000050863-95-000004.txt

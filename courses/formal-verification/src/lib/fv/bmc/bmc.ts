@@ -12,7 +12,7 @@ import type { Verdict, Trace } from '../engines';
 import { Solver } from '../sat/solver';
 import { tseitin, type Formula } from '../sat/encode';
 import { SystemRuntime, type State, type StepLabel } from '../vouch/interp/system';
-import { SystemEncoder, VarPool, BmcError, and, not, or, decodeSV, type SymState, type StepInstance } from './symbolic';
+import { SystemEncoder, VarPool, BmcError, and, not, or, decodeSV, type SymState, type StepInstance, type SV } from './symbolic';
 import { compare, enumerate, funcGet, key, type Value, type FuncV } from '../vouch/interp/values';
 import type { Ty } from '../vouch/check/types';
 import { toTrace, describeInstance } from '../explore/explorer';
@@ -61,7 +61,13 @@ class Incremental {
     for (const c of t.clauses) this.solver.addClause(c);
     this.clauses += t.clauses.length;
   }
+  private clausesDone = 0;
   flushSide(): void {
+    this.solver.ensureVars(this.pool.next);
+    while (this.clausesDone < this.pool.sideClauses.length) {
+      this.solver.addClause(this.pool.sideClauses[this.clausesDone++]!);
+      this.clauses++;
+    }
     while (this.sideDone < this.pool.side.length) {
       const f = this.pool.side[this.sideDone++]!;
       const t = tseitin(f, this.pool.next);
@@ -82,72 +88,107 @@ export interface BmcOptions {
   onBound?: (b: BoundStats) => void;
 }
 
-export function bmc(rt: SystemRuntime, opts: BmcOptions = {}): BmcRun {
-  const maxK = opts.maxK ?? 20;
-  const deadline = Date.now() + (opts.timeout ?? 8000);
-  const pool = new VarPool();
-  const enc = new SystemEncoder(rt, pool);
-  const inc = new Incremental(pool);
-  const invariants = rt.info.invariants.filter((i) => !opts.only || opts.only.includes(i.name ?? ''));
-  const props: (BmcProperty & { expr?: (typeof invariants)[number]['expr'] })[] = invariants.map((i) => ({ name: i.name ?? 'invariant', subject: `invariant ${i.name ?? ''}`.trim(), expr: i.expr }));
-  const failureProp: BmcProperty = { name: 'failure', subject: 'no step fails' };
-  let checkFailures = false;
-  const states: SymState[] = [enc.freshState('0')];
-  const selectors: { step: StepInstance; sel: number; params?: import('./symbolic').SV[] }[][] = [];
-  inc.add(enc.init(states[0]!));
-  const bounds: BoundStats[] = [];
-  let reached = -1;
-  for (let k = 0; k <= maxK; k++) {
-    if (opts.signal?.aborted || Date.now() > deadline) break;
+/** A BMC run that can be advanced one bound at a time (the widgets animate it). */
+export class BmcSession {
+  readonly pool = new VarPool();
+  readonly enc: SystemEncoder;
+  private inc: Incremental;
+  private props: (BmcProperty & { expr?: Parameters<SystemRuntime['holds']>[0] })[];
+  private failureProp: BmcProperty = { name: 'failure', subject: 'no step fails' };
+  private checkFailures = false;
+  private states: SymState[];
+  private selectors: { step: StepInstance; sel: number; params?: SV[] }[][] = [];
+  readonly bounds: BoundStats[] = [];
+  k = -1;
+  private deadline: number;
+
+  constructor(
+    readonly rt: SystemRuntime,
+    readonly opts: BmcOptions = {},
+  ) {
+    this.enc = new SystemEncoder(rt, this.pool);
+    this.inc = new Incremental(this.pool);
+    const invariants = rt.info.invariants.filter((i) => !opts.only || opts.only.includes(i.name ?? ''));
+    this.props = invariants.map((i) => ({ name: i.name ?? 'invariant', subject: `invariant ${i.name ?? ''}`.trim(), expr: i.expr }));
+    this.states = [this.enc.freshState('0')];
+    this.inc.add(this.enc.init(this.states[0]!));
+    this.deadline = Date.now() + (opts.timeout ?? 8000);
+  }
+
+  get done(): boolean {
+    const all = this.props.every((p) => p.foundAt !== undefined) && (!this.checkFailures || this.failureProp.foundAt !== undefined) && this.props.length > 0;
+    return all || this.k >= (this.opts.maxK ?? 20) || Date.now() > this.deadline || !!this.opts.signal?.aborted;
+  }
+
+  /** Add and check the next bound. */
+  next(): BoundStats {
+    const k = ++this.k;
     const t0 = Date.now();
+    const { enc, inc, pool } = this;
     if (k > 0) {
       const S = enc.freshState(String(k));
-      const st = enc.step(states[k - 1]!, S);
-      states.push(S);
-      selectors.push(st.selectors);
+      const st = enc.step(this.states[k - 1]!, S);
+      this.states.push(S);
+      this.selectors.push(st.selectors);
       inc.add(st.formula);
       if (st.failures.length) {
-        checkFailures = true;
+        this.checkFailures = true;
         const act = pool.fresh(`check failure ${k}`);
         inc.add(or(not({ k: 'var', v: act }), st.failure));
-        if (failureProp.foundAt === undefined && inc.solver.solve({ assumptions: [act] }) === 'sat') record(failureProp, k, true);
+        if (this.failureProp.foundAt === undefined && inc.solver.solve({ assumptions: [act] }) === 'sat') this.record(this.failureProp, k, undefined);
         inc.solver.addClause([-act]);
       }
     }
-    for (const p of props) {
+    for (const p of this.props) {
       if (p.foundAt !== undefined || !p.expr) continue;
       const act = pool.fresh(`check ${p.name} at ${k}`);
-      inc.add(or(not({ k: 'var', v: act }), not(enc.holds(p.expr, states[k]!))));
-      if (inc.solver.solve({ assumptions: [act], shouldStop: () => Date.now() > deadline }) === 'sat') record(p, k, false);
+      inc.add(or(not({ k: 'var', v: act }), not(enc.holds(p.expr, this.states[k]!))));
+      if (inc.solver.solve({ assumptions: [act], shouldStop: () => Date.now() > this.deadline }) === 'sat') this.record(p, k, p.expr);
       inc.solver.addClause([-act]);
     }
     const b = { k, vars: pool.next - 1, clauses: inc.clauses, ms: Date.now() - t0 };
-    bounds.push(b);
-    opts.onBound?.(b);
-    reached = k;
-    if (props.every((p) => p.foundAt !== undefined) && (!checkFailures || failureProp.foundAt !== undefined) && props.length) break;
+    this.bounds.push(b);
+    this.opts.onBound?.(b);
+    return b;
   }
 
-  function record(p: BmcProperty & { expr?: unknown }, k: number, failure: boolean) {
-    const m = inc.solver.model;
-    const decodedStates = states.slice(0, k + 1).map((S) => enc.decode(S, m));
-    const steps = selectors.slice(0, k).map((sels): StepInstance => {
+  private record(p: BmcProperty, k: number, inv: Parameters<SystemRuntime['holds']>[0] | undefined) {
+    const m = this.inc.solver.model;
+    const decodedStates = this.states.slice(0, k + 1).map((S) => this.enc.decode(S, m));
+    const steps = this.selectors.slice(0, k).map((sels): StepInstance => {
       const hit = sels.find((s) => m[s.sel]);
       if (!hit) return { kind: 'stutter', name: '?', text: '?', args: [] };
       // Symbolic parameters: read their values from the model.
-      return hit.params ? { ...hit.step, args: hit.params.map((p) => decodeSV(p, m)) } : hit.step;
+      return hit.params ? { ...hit.step, args: hit.params.map((x) => decodeSV(x, m)) } : hit.step;
     });
     p.foundAt = k;
     p.decoded = { states: decodedStates, steps };
-    const r = replay(rt, decodedStates, steps, failure ? undefined : (p as { expr: Parameters<SystemRuntime['holds']>[0] }).expr);
+    const r = replay(this.rt, decodedStates, steps, inv);
     p.states = r.states;
     p.labels = r.labels;
     p.replayed = r.ok;
-    p.message = failure ? r.failure : undefined;
+    p.message = inv ? undefined : r.failure;
   }
 
-  const all = checkFailures ? [...props, failureProp] : props;
-  return { properties: all.map(({ ...p }) => { delete (p as { expr?: unknown }).expr; return p; }), bounds, reached, complete: reached === maxK };
+  result(): BmcRun {
+    const all = this.checkFailures ? [...this.props, this.failureProp] : this.props;
+    return {
+      properties: all.map((p) => {
+        const { expr: _e, ...rest } = p as BmcProperty & { expr?: unknown };
+        void _e;
+        return rest;
+      }),
+      bounds: this.bounds,
+      reached: this.k,
+      complete: this.k >= (this.opts.maxK ?? 20),
+    };
+  }
+}
+
+export function bmc(rt: SystemRuntime, opts: BmcOptions = {}): BmcRun {
+  const s = new BmcSession(rt, opts);
+  while (!s.done) s.next();
+  return s.result();
 }
 
 /** Compare slot values extensionally (functions by their values on the whole domain). */
@@ -170,7 +211,7 @@ function sameState(rt: SystemRuntime, s: State, vals: Value[]): boolean {
 
 /** Replay a decoded run with the runtime: same initial state, same steps, same states, and the property fails. */
 export function replay(rt: SystemRuntime, decoded: Value[][], steps: StepInstance[], inv?: Parameters<SystemRuntime['holds']>[0]): { ok: boolean; states: State[]; labels: StepLabel[]; failure?: string } {
-  const init = rt.initial().states.find((s) => sameState(rt, s, decoded[0]!));
+  const init = rt.initialMatching(decoded[0]!, (s, vals) => sameState(rt, s, vals));
   if (!init) return { ok: false, states: [], labels: [] };
   const states: State[] = [init];
   const labels: StepLabel[] = [];

@@ -230,6 +230,38 @@ export class SystemRuntime {
     return { states: states.filter((s) => (seen.has(this.key(s)) ? false : (seen.add(this.key(s)), true))), failures };
   }
 
+  /**
+   * Is this an initial state? Without an init block or processes, checked directly (each variable equals its
+   * initial value, or lies in its type when it has none), so that unconstrained wide variables need not be
+   * enumerated. Otherwise the initial states are enumerated and compared with `same`.
+   */
+  initialMatching(vals: Value[], same: (a: State, vals: Value[]) => boolean): State | undefined {
+    if (this.info.init || this.instances.length) return this.initial().states.find((s) => same(s, vals));
+    const env: Env = { vals: new Map(), heap: new Heap() };
+    const out: Value[] = [];
+    for (let i = 0; i < this.info.vars.length; i++) {
+      const v = this.info.vars[i]!;
+      const decl = v.decl?.k === 'var' ? v.decl : undefined;
+      let x: Value;
+      if (decl?.init) {
+        x = this.runner.ev.eval(decl.init, env);
+        if (v.ty.k === 'func' && !(x !== null && typeof x === 'object' && x.t === 'func')) x = funcConst(x);
+        x = this.runner.fit(x, v.ty, decl.init.span);
+      } else {
+        x = vals[i]!;
+        try {
+          x = this.runner.fit(x, v.ty, v.def);
+        } catch {
+          return undefined;
+        }
+      }
+      env.vals.set(v.id, x);
+      out.push(x);
+    }
+    const s: State = { vals: out };
+    return same(s, vals) ? s : undefined;
+  }
+
   // ── Steps ──
   successors(s: State): { succs: Successor[]; failures: StepFailure[] } {
     this.runner.ev.steps = 0;
