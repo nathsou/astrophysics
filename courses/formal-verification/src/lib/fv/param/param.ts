@@ -60,6 +60,8 @@ export interface ParamOptions {
   certifyBudget?: number;
   /** Stop at this size even if the fragment says more is needed (the result is then 'unknown'). */
   maxSize?: number;
+  /** Called when every check at one instance size has passed. */
+  onSize?: (s: ParamSize, bound: Record<string, number>) => void;
 }
 
 const need = (c: Counts, sort: string) => Math.max(1, c.get(sort) ?? 0);
@@ -142,6 +144,7 @@ export function checkParameterised(checked: Checked, system: string, opts: Param
         }
       }
       sizes.push({ sizes: combo, checks, groundInstances: groundInstances(fragment, combo, obligations.length, info.actions.length), ms: Date.now() - t1 });
+      opts.onSize?.(sizes.at(-1)!, bound);
       if (opts.certifyBudget) {
         const until = Date.now() + opts.certifyBudget / combos.length;
         certQueries.push(m.certify([m.init, not(and(...holdsS))], until));
