@@ -449,7 +449,8 @@ export class Evaluator {
       const i = cls?.k === 'struct' ? cls.fields.findIndex((f) => f.name === e.name) : -1;
       return o.fields[i]!;
     }
-    if (t !== null && typeof t === 'object' && t.t === 'rel') {
+    if (t !== null && typeof t === 'object' && (t.t === 'rel' || t.t === 'atom')) {
+      // Relational join with a named relation (worlds): `d.parent`, where d is an atom or a set of atoms.
       const r = this.checked.refs.get(e);
       if (r?.kind === 'rel') return join(t, env.vals.get(r.id) as RelV);
     }

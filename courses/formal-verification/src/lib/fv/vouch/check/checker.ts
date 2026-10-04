@@ -843,6 +843,11 @@ class Checker {
   }
 
   coerce(e: A.Expr, from: Ty, to: Ty, what: string): void {
+    // In worlds everything is a relation: a set of atoms of type T stands where an atom of type T is expected
+    // (Alloy's convention; the predicate then speaks about every atom of the set at once).
+    const unaryOf = (t: Ty) => (t.k === 'rel' && t.cols.length === 1 ? t.cols[0] : undefined);
+    if (to.k === 'atom' && unaryOf(from)?.k === 'atom' && (unaryOf(from) as { name: string }).name === to.name) return;
+    if (from.k === 'atom' && unaryOf(to)?.k === 'atom' && (unaryOf(to) as { name: string }).name === from.name) return;
     const r = assignable(from, to);
     if (r === 'no') {
       const conv = isIntLike(from) && (to.k === 'mach' || to.k === 'bv') ? ` Convert it explicitly with \`as ${showTy(to)}\` (which is checked).` : '';

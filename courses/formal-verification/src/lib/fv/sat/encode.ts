@@ -68,7 +68,18 @@ export function maxVar(f: Formula): number {
 export function tseitin(f: Formula, firstFresh = maxVar(f) + 1): Cnf & { root: number; fresh: number } {
   const clauses: number[][] = [];
   let next = firstFresh;
+  // A subformula shared by reference (a DAG, as relational encodings build) gets one variable, not one per use.
+  const memo = new Map<Formula, number>();
   const go = (g: Formula): number => {
+    if (g.k === 'var') return g.v;
+    if (g.k === 'not') return -go(g.a);
+    const m = memo.get(g);
+    if (m !== undefined) return m;
+    const x = node(g);
+    memo.set(g, x);
+    return x;
+  };
+  const node = (g: Formula): number => {
     switch (g.k) {
       case 'var':
         return g.v;

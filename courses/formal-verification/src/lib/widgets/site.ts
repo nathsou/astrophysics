@@ -16,3 +16,5 @@ export { default as Liveness } from '$lib/components/ltl/LivenessLab.svelte';
 export { default as Msc } from '$lib/components/explore/Msc.svelte';
 /** The encoding lab: `:::encoding-lab{title="…"}` with a ```vouch problem inside. */
 export { default as EncodingLab } from '$lib/components/sat/EncodingLab.svelte';
+/** The instance visualiser: `:::world-lab{title="…" maxScope=5}` with a ```vouch world inside. */
+export { default as WorldLab } from '$lib/components/relational/WorldLab.svelte';

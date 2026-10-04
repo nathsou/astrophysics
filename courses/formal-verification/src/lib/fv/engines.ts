@@ -16,6 +16,8 @@ export type Badge =
   | { kind: 'violated'; replayed: boolean }
   /** A constraint problem: how many solutions it has (every one checked by the interpreter). */
   | { kind: 'counted'; count: number; more: boolean; solve?: boolean }
+  /** A world's `run`: an instance found (checked by the interpreter), or none within the scope. */
+  | { kind: 'instance'; found: boolean; scope: number }
   | { kind: 'unknown'; reason: string }
   | { kind: 'error'; reason: string };
 
@@ -65,6 +67,8 @@ export interface Verdict {
   message?: string;
   /** Where in the source the failing property or obligation is. */
   span?: Span;
+  /** For worlds: the instance or counterexample, as atoms and the tuples of each relation. */
+  instance?: { atoms: { type: string; names: string[] }[]; rels: { name: string; cols: string[]; tuples: string[][] }[] };
 }
 
 /** One-line description of a badge, used by the UI and tests. */
@@ -82,6 +86,8 @@ export function badgeText(b: Badge): string {
       return b.replayed ? 'violated · counterexample replayed' : 'violated · counterexample not replayed';
     case 'counted':
       return b.count === 0 ? 'no solution' : b.solve ? 'a solution found' : b.more ? `more than ${b.count.toLocaleString('en-GB')} solutions` : `${b.count.toLocaleString('en-GB')} solution${b.count === 1 ? '' : 's'}`;
+    case 'instance':
+      return b.found ? `an instance within scope ${b.scope}` : `no instance within scope ${b.scope}`;
     case 'unknown':
       return `unknown · ${b.reason}`;
     case 'error':

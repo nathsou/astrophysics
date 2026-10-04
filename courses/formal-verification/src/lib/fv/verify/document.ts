@@ -20,6 +20,8 @@ import { RuntimeFailure } from '../vouch/interp/eval';
 import { hasErrors } from '../vouch/diagnostics';
 import { verifyFunction } from '../vouch/vc/verify';
 import { solveProblem, EncodeError } from '../problem/encode';
+import { runCommand, WorldError, type WorldResult } from '../relational/encode';
+import type * as A from '../vouch/syntax/ast';
 
 export interface DeclVerdicts {
   /** Declaration name (a function, or a system). */
@@ -73,6 +75,16 @@ export async function verifyDocument(checked: Checked, opts: VerifyOptions = {})
       result = { decl: d.name, kind: 'system', verdicts };
     } else if (d.k === 'problem') {
       result = { decl: d.name, kind: 'problem', verdicts: [problemVerdict(checked, d.name, d.nameSpan)] };
+    } else if (d.k === 'world') {
+      const verdicts: Verdict[] = [];
+      for (const cmd of checked.containers.get(d.name)!.checks) {
+        if (opts.signal?.aborted) break;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { result: _raw, ...v } = worldVerdict(checked, d.name, cmd);
+        verdicts.push(v);
+        await pause();
+      }
+      result = { decl: d.name, kind: 'world', verdicts };
     } else if (d.k === 'fn' && (d.flavour === 'fn' || d.flavour === 'lemma') && d.body) {
       const info = checked.fns.get(d.name)!;
       const verdicts = opts.fnVerifier?.(checked, info, opts) ?? proveOrTest(checked, info, opts);
@@ -85,6 +97,32 @@ export async function verifyDocument(checked: Checked, opts: VerifyOptions = {})
     await pause();
   }
   return out;
+}
+
+/** Run one command of a world (`check … for n` or `run … for n`) with the relational model finder. */
+export function worldVerdict(checked: Checked, world: string, cmd: A.PropDecl, scope?: number, exclude?: boolean[][]): Verdict & { result?: WorldResult } {
+  const name = cmd.name ?? (cmd.k === 'run' ? 'run' : 'check');
+  try {
+    const r = runCommand(checked, world, cmd, { scope, exclude });
+    const stats = { scope: r.scope, 'relation variables': r.stats.primaryVars, variables: r.stats.vars, clauses: r.stats.clauses, ms: r.stats.ms };
+    const describeInst = () => r.instance!.rels.map((x) => `${x.name} = {${x.tuples.map((t) => (t.length === 1 ? t[0] : `(${t.join(', ')})`)).join(', ')}}`).join('; ');
+    const atoms = () => r.instance!.atoms.map((a) => `${a.names.length} ${a.type}`).join(', ');
+    const scopeNote = `only instances with at most ${r.scope} atoms of each type were considered`;
+    const base = { engine: 'relational', subject: cmd.k === 'run' ? `${name}: an instance` : `${name} holds`, stats, span: cmd.span, instance: r.instance, result: r };
+    if (r.kind === 'check') {
+      if (r.found) {
+        return { ...base, status: 'violated', badge: { kind: 'violated', replayed: !!r.instanceChecked }, certificate: { kind: 'model', checked: !!r.instanceChecked, checker: 'the reference interpreter evaluates every fact and the property on the instance' }, assumptions: [], message: `Counterexample (${atoms()}): ${describeInst()}.` };
+      }
+      return { ...base, status: 'verified', badge: { kind: 'bounded', bound: r.scope, what: 'scope' }, certificate: { kind: 'drat', checked: !!r.proofChecked, checker: 'DRAT checker (the relational encoding is trusted)' }, assumptions: [scopeNote, 'the relational encoding into SAT is correct'], message: `No counterexample with up to ${r.scope} atoms of each type.` };
+    }
+    if (r.found) {
+      return { ...base, status: 'verified', badge: { kind: 'instance', found: true, scope: r.scope }, certificate: { kind: 'model', checked: !!r.instanceChecked, checker: 'the reference interpreter evaluates every fact and the predicate on the instance' }, assumptions: [], message: `Instance (${atoms()}): ${describeInst()}.` };
+    }
+    return { ...base, status: 'violated', badge: { kind: 'instance', found: false, scope: r.scope }, certificate: { kind: 'drat', checked: !!r.proofChecked, checker: 'DRAT checker (the relational encoding is trusted)' }, assumptions: [scopeNote], message: `No instance with up to ${r.scope} atoms of each type: the facts and this predicate may contradict each other.` };
+  } catch (e) {
+    if (!(e instanceof WorldError)) throw e;
+    return { engine: 'relational', status: 'error', subject: name, badge: { kind: 'error', reason: e.message }, certificate: { kind: 'none', checked: false, checker: '' }, assumptions: [], stats: {}, message: e.message, span: cmd.span };
+  }
 }
 
 /** Solve or count a constraint problem; every solution is checked by the interpreter. */

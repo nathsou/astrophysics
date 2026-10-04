@@ -9,13 +9,15 @@
   let { verdict, compact = false, open = false }: { verdict: Verdict; compact?: boolean; open?: boolean } = $props();
 
   const b = $derived(verdict.badge);
-  const tone = $derived(verdict.status === 'violated' ? 'bad' : verdict.status === 'verified' ? 'ok' : b.kind === 'tested' || b.kind === 'bounded' ? 'ink' : 'maybe');
+  // Testing and bounded checks never get the seal, even when nothing was found: they are plain ink.
+  const tone = $derived(verdict.status === 'violated' ? 'bad' : b.kind === 'tested' || b.kind === 'bounded' ? 'ink' : verdict.status === 'verified' ? 'ok' : 'maybe');
   const glyph = $derived(tone === 'bad' ? '✗' : tone === 'ok' ? '✓' : b.kind === 'tested' ? '◌' : b.kind === 'bounded' ? '⋯' : '?');
   const title = $derived(
     verdict.status === 'violated' ? 'Violated'
     : b.kind === 'verified' ? 'Verified'
     : b.kind === 'exhaustive' ? 'Checked exhaustively'
     : b.kind === 'counted' ? (b.count ? 'Solved' : 'No solution')
+    : b.kind === 'instance' ? (b.found ? 'Instance found' : 'No instance')
     : b.kind === 'tested' ? 'Tested'
     : b.kind === 'bounded' ? 'Bounded check'
     : b.kind === 'error' ? 'Error'

@@ -1004,9 +1004,24 @@ class Parser {
     return e;
   }
 
+  /** `^r`, `*r`, `~r` or `(e)`: the right operand of a join, with its prefix operators applied to a primary only. */
+  relationalOperand(): A.Expr {
+    const t = this.peek();
+    const start = t.span.start;
+    if (t.kind === 'op' && ['^', '~', '*'].includes(t.value)) {
+      this.next();
+      return { k: 'unary', op: t.value as A.UnOp, arg: this.relationalOperand(), span: this.span(start) };
+    }
+    return this.primary();
+  }
+
   unary(): A.Expr {
     const t = this.peek();
     const start = t.span.start;
+    // Relational closure (`^r`, `*r`): binds tighter than a following join, so `^parent.x` is `(^parent).x`.
+    if (t.kind === 'op' && (t.value === '^' || t.value === '*')) {
+      return this.postfix(this.relationalOperand());
+    }
     if ((t.kind === 'op' && ['-', '!', '~', '#', '^', '*'].includes(t.value)) || (t.kind === 'kw' && ['always', 'eventually'].includes(t.value)) || (t.kind === 'kw' && t.value === 'next' && this.startsExpr(1))) {
       this.next();
       const arg = this.unary();
@@ -1030,8 +1045,8 @@ class Parser {
     return false;
   }
 
-  postfix(): A.Expr {
-    let e = this.primary();
+  postfix(first?: A.Expr): A.Expr {
+    let e = first ?? this.primary();
     for (;;) {
       if (this.is('[')) {
         this.next();
@@ -1072,8 +1087,8 @@ class Parser {
         }
         if (this.is('^', 1) || this.is('~', 1) || this.is('*', 1) || this.is('(', 1)) {
           this.next();
-          const right = this.unary();
-          e = this.bin('.', e, right);
+          // Closure and transpose bind tighter than join: `u.has.*inherits.grants` is `((u.has).(*inherits)).grants`.
+          e = this.bin('.', e, this.relationalOperand());
           continue;
         }
         break;
