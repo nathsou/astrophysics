@@ -99,7 +99,7 @@
   </div>
   <p class="ui meta">head = {head(s)}, count = {count(s)}</p>
 {/snippet}
-{#snippet abs(xs: Value[], small = false)}
+{#snippet abs(xs: readonly Value[], small = false)}
   <div class="seq" class:small>{#each xs as x, i (i)}<span class="it">{show(x)}</span>{:else}<span class="empty ui">empty</span>{/each}</div>
 {/snippet}
 
