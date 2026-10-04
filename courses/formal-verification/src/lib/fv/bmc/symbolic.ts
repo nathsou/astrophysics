@@ -962,6 +962,21 @@ export class SystemEncoder {
         const r = e.callee === 'slt' ? ultBits(fx, fy) : e.callee === 'sle' ? ultBits(fx, fy, true) : e.callee === 'sgt' ? ultBits(fy, fx) : ultBits(fy, fx, true);
         return fromBool(r);
       }
+      // sum([f(k) | k in lo..hi]): the case splits of the terms added up one by one.
+      if (e.callee === 'sum' && e.args[0]?.k === 'comprehension' && e.args[0].seq) {
+        const c = e.args[0];
+        const b = c.binders[0]!;
+        const sym = this.checked.refs.get(b)!;
+        if (!b.range || 'set' in b.range) throw new BmcError('sum needs a comprehension over a range: sum([f(k) | k in 0..n]).');
+        const lo = asCases(this.ev(b.range.lo, env));
+        const hi = asCases(this.ev(b.range.hi, env));
+        if (lo.length !== 1 || hi.length !== 1) throw new BmcError('The range of a sum must not depend on the state.');
+        let acc: SV = constant(0n);
+        for (let x = lo[0]!.value as bigint; b.range.inclusive ? x <= (hi[0]!.value as bigint) : x < (hi[0]!.value as bigint); x++) {
+          acc = this.arith('+', acc, this.ev(c.value!, new Map(env).set(sym.id, constant(x))));
+        }
+        return acc;
+      }
       const args = e.args.map((a) => asCases(this.ev(a, env)));
       if (e.callee === 'abs') return cases(args[0]!.map((c) => ({ value: (c.value as bigint) < 0n ? -(c.value as bigint) : c.value, cond: c.cond })));
       if (e.callee === 'min' || e.callee === 'max') {
@@ -1056,6 +1071,38 @@ export class SystemEncoder {
     return cases(out);
   }
 
+  /** "e is odd", for a count #{…}, a sum of counts sum([#{…} | k in a..b]) or a sum a + b of such; else undefined. */
+  private parity(e: A.Expr, env: Env): Formula | undefined {
+    const xor = (a: Formula, b: Formula) => not(iff(a, b));
+    if (e.k === 'unary' && e.op === '#') {
+      const x = this.ev(e.arg, env);
+      if (x.k !== 'set') return undefined;
+      return x.mem.reduce(xor, F);
+    }
+    if (e.k === 'binary' && e.op === '+') {
+      const a = this.parity(e.left, env);
+      const b = a && this.parity(e.right, env);
+      return a && b ? xor(a, b) : undefined;
+    }
+    if (e.k === 'call' && e.callee === 'sum' && !this.checked.refs.get(e) && e.args[0]?.k === 'comprehension' && e.args[0].seq) {
+      const c = e.args[0];
+      const b = c.binders[0]!;
+      const sym = this.checked.refs.get(b)!;
+      if (!b.range || 'set' in b.range) return undefined;
+      const lo = asCases(this.ev(b.range.lo, env));
+      const hi = asCases(this.ev(b.range.hi, env));
+      if (lo.length !== 1 || hi.length !== 1) return undefined;
+      let acc: Formula = F;
+      for (let x = lo[0]!.value as bigint; b.range.inclusive ? x <= (hi[0]!.value as bigint) : x < (hi[0]!.value as bigint); x++) {
+        const p = this.parity(c.value!, new Map(env).set(sym.id, constant(x)));
+        if (!p) return undefined;
+        acc = xor(acc, p);
+      }
+      return acc;
+    }
+    return undefined;
+  }
+
   private binary(e: A.Expr & { k: 'binary' }, env: Env): SV {
     const op = e.op;
     if (op === '&&' || op === '||' || op === '==>' || op === '<==' || op === '<==>') {
@@ -1065,6 +1112,11 @@ export class SystemEncoder {
       if (op === '==>' && isF(l)) return constant(true);
       const r = asBool(this.ev(e.right, env));
       return fromBool(op === '&&' ? and(l, r) : op === '||' ? or(l, r) : op === '==>' ? or(not(l), r) : op === '<==' ? or(l, not(r)) : iff(l, r));
+    }
+    // A count modulo 2 is the exclusive or of the members' bits: a much smaller formula than the count itself.
+    if (op === '%' && e.right.k === 'int' && e.right.value === 2n) {
+      const odd = this.parity(e.left, env);
+      if (odd) return cases([{ value: 1n, cond: odd }, { value: 0n, cond: not(odd) }]);
     }
     if (op === 'in' || op === '!in') {
       const s = this.ev(e.right, env);

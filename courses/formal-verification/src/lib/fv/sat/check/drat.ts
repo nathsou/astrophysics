@@ -60,7 +60,7 @@ class Db {
   }
 }
 
-export function checkDrat(input: number[][], proof: readonly ProofLine[], theory?: (clause: number[]) => boolean): DratResult {
+export function checkDrat(input: number[][], proof: readonly ProofLine[], theory?: (clause: number[]) => boolean, shouldStop?: () => boolean): DratResult {
   const db = new Db();
   for (const c of input) {
     if (c.length === 0) return { ok: true, checked: 0 };
@@ -68,6 +68,8 @@ export function checkDrat(input: number[][], proof: readonly ProofLine[], theory
   }
   let checked = 0;
   for (let i = 0; i < proof.length; i++) {
+    // Giving up is never a success: a stopped check reports failure.
+    if (shouldStop && i % 64 === 0 && shouldStop()) return { ok: false, failedAt: i, message: 'The check was stopped before the end of the proof.', checked };
     const line = proof[i]!;
     if (line.kind === 'd') {
       db.delete(line.lits);

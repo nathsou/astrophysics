@@ -26,6 +26,8 @@ import { runCommand, WorldError, type WorldResult } from '../relational/encode';
 import { bmc, bmcVerdicts } from '../bmc/bmc';
 import { BmcError } from '../bmc/symbolic';
 import { Reachability, reachVerdicts } from '../bdd/reach';
+import { kInduction, kindVerdicts } from '../ic3/kind';
+import { ic3, ic3Verdicts } from '../ic3/ic3';
 import type { Ty } from '../vouch/check/types';
 import type * as A from '../vouch/syntax/ast';
 
@@ -69,7 +71,15 @@ export async function verifyDocument(checked: Checked, opts: VerifyOptions = {})
         const bmcOnly = rt.info.vars.some((v) => wide(v.ty)) || rt.info.actions.some((a) => a.params.some((p) => wide(p.ty)));
         if (bmcOnly && rt.info.invariants.length) {
           try {
-            verdicts.push(...bmcVerdicts(rt, bmc(rt, { maxK: 12, timeout, signal: opts.signal })));
+            const t0 = Date.now();
+            let vs = bmcVerdicts(rt, bmc(rt, { maxK: 12, timeout, signal: opts.signal }));
+            // No violation within the bound: try to prove the invariants by k-induction (chapter 23).
+            if (vs.every((v) => v.status === 'unknown') && !opts.signal?.aborted) {
+              const left = Math.max(1000, timeout - (Date.now() - t0));
+              const r = kInduction(rt, { maxK: 4, timeout: left, signal: opts.signal, certifyBudget: Math.min(3000, left) });
+              if (r.status === 'proved') vs = kindVerdicts(rt, r);
+            }
+            verdicts.push(...vs);
           } catch (e) {
             if (!(e instanceof BmcError)) throw e;
             verdicts.push({ engine: 'bmc', status: 'error', subject: d.name, badge: { kind: 'error', reason: e.message }, certificate: { kind: 'none', checked: false, checker: '' }, assumptions: [], stats: {}, message: e.message, span: d.nameSpan });
@@ -85,6 +95,19 @@ export async function verifyDocument(checked: Checked, opts: VerifyOptions = {})
               if (r.done) {
                 const sym = reachVerdicts(new SystemRuntime(checked, d.name), r, reach);
                 vs = vs.map((v) => (v.status === 'timeout' ? sym.find((w) => w.subject === v.subject) ?? v : v));
+              }
+            } catch (e) {
+              if (!(e instanceof BmcError)) throw e;
+            }
+          }
+          // Still too many states: let IC3 look for an inductive invariant (chapter 24).
+          if (vs.some((v) => v.status === 'timeout') && rt.info.invariants.length && !opts.signal?.aborted) {
+            try {
+              const sys = new SystemRuntime(checked, d.name);
+              const r = ic3(sys, { timeout: Math.max(1000, timeout - (Date.now() - t0)), signal: opts.signal, certifyBudget: 3000 });
+              if (r.status !== 'unknown') {
+                const found = ic3Verdicts(sys, r);
+                vs = vs.map((v) => (v.status === 'timeout' ? found.find((w) => w.subject === v.subject && w.status !== 'timeout') ?? v : v));
               }
             } catch (e) {
               if (!(e instanceof BmcError)) throw e;
