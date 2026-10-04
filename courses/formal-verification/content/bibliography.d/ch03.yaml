@@ -1,0 +1,15 @@
+gerth1995:
+  authors: Rob Gerth, Doron Peled, Moshe Y. Vardi and Pierre Wolper
+  year: 1995
+  title: Simple on-the-fly automatic verification of linear temporal logic
+  venue: Protocol Specification, Testing and Verification XV (PSTV ’95), 3–18
+tarjan1972:
+  authors: Robert Tarjan
+  year: 1972
+  title: Depth-first search and linear graph algorithms
+  venue: SIAM Journal on Computing 1(2), 146–160
+courcoubetis1992:
+  authors: Costas Courcoubetis, Moshe Y. Vardi, Pierre Wolper and Mihalis Yannakakis
+  year: 1992
+  title: Memory-efficient algorithms for the verification of temporal properties
+  venue: Formal Methods in System Design 1(2–3), 275–288
