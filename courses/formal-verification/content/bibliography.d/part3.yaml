@@ -1,0 +1,66 @@
+luckham1979:
+  authors: David C. Luckham, Steven M. German, Friedrich W. von Henke, Richard A. Karp, P. W. Milne, Derek C. Oppen, Wolfgang Polak and William L. Scherlis
+  year: 1979
+  title: Stanford Pascal Verifier user manual
+  venue: Stanford University, Computer Science Department, report STAN-CS-79-731
+  url: http://i.stanford.edu/pub/cstr/reports/cs/tr/79/731/CS-TR-79-731.pdf
+nelson1979:
+  authors: Greg Nelson and Derek C. Oppen
+  year: 1979
+  title: Simplification by cooperating decision procedures
+  venue: ACM Transactions on Programming Languages and Systems 1(2), 245–257
+shostak1984:
+  authors: Robert E. Shostak
+  year: 1984
+  title: Deciding combinations of theories
+  venue: Journal of the ACM 31(1), 1–12
+detlefs2005:
+  authors: David Detlefs, Greg Nelson and James B. Saxe
+  year: 2005
+  title: 'Simplify: a theorem prover for program checking'
+  venue: Journal of the ACM 52(3), 365–473
+flanagan2002:
+  authors: Cormac Flanagan, K. Rustan M. Leino, Mark Lillibridge, Greg Nelson, James B. Saxe and Raymie Stata
+  year: 2002
+  title: Extended static checking for Java
+  venue: ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI), 234–245
+barrett2005:
+  authors: Clark Barrett, Leonardo de Moura and Aaron Stump
+  year: 2005
+  title: 'SMT-COMP: satisfiability modulo theories competition'
+  venue: Computer Aided Verification (CAV 2005), Lecture Notes in Computer Science 3576
+nieuwenhuis2006:
+  authors: Robert Nieuwenhuis, Albert Oliveras and Cesare Tinelli
+  year: 2006
+  title: 'Solving SAT and SAT modulo theories: from an abstract Davis–Putnam–Logemann–Loveland procedure to DPLL(T)'
+  venue: Journal of the ACM 53(6), 937–977
+dutertre2006:
+  authors: Bruno Dutertre and Leonardo de Moura
+  year: 2006
+  title: A fast linear-arithmetic solver for DPLL(T)
+  venue: Computer Aided Verification (CAV 2006), Lecture Notes in Computer Science 4144, 81–94
+matiyasevich1970:
+  authors: Yuri Matiyasevich
+  year: 1970
+  title: Enumerable sets are Diophantine
+  venue: Soviet Mathematics Doklady 11, 354–357 (English translation of Doklady Akademii Nauk SSSR 191, 279–282)
+king1976:
+  authors: James C. King
+  year: 1976
+  title: Symbolic execution and program testing
+  venue: Communications of the ACM 19(7), 385–394
+godefroid2005:
+  authors: Patrice Godefroid, Nils Klarlund and Koushik Sen
+  year: 2005
+  title: 'DART: directed automated random testing'
+  venue: ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI), 213–223
+cadar2008:
+  authors: Cristian Cadar, Daniel Dunbar and Dawson Engler
+  year: 2008
+  title: 'KLEE: unassisted and automatic generation of high-coverage tests for complex systems programs'
+  venue: USENIX Symposium on Operating Systems Design and Implementation (OSDI), 209–224
+godefroid2008:
+  authors: Patrice Godefroid, Michael Y. Levin and David Molnar
+  year: 2008
+  title: Automated whitebox fuzz testing
+  venue: Network and Distributed System Security Symposium (NDSS), 151–166

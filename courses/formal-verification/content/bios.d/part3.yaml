@@ -1,0 +1,10 @@
+- id: nelson-oppen
+  name: Greg Nelson and Derek Oppen
+  summary: 'At Stanford in the late 1970s they showed how decision procedures for separate theories can cooperate by exchanging equalities (1979), the architecture of every SMT solver. Nelson went on to co-write the Simplify prover, the engine of ESC/Java.'
+  chapters: [equality-and-functions]
+  cite: [nelson1979, detlefs2005]
+- id: matiyasevich
+  name: Yuri Matiyasevich
+  summary: 'Russian mathematician who in 1970, completing work by Martin Davis, Hilary Putnam and Julia Robinson, proved that Hilbert''s tenth problem has no solution: no algorithm decides whether a polynomial equation has integer solutions.'
+  chapters: [arithmetic]
+  cite: [matiyasevich1970]

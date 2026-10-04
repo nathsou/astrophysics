@@ -1,0 +1,77 @@
+- year: 1970
+  lane: logic
+  title: Hilbert's tenth problem is unsolvable
+  people: Yuri Matiyasevich
+  chapter: arithmetic
+  text: No algorithm decides whether a polynomial equation has integer solutions, so no solver decides nonlinear integer arithmetic.
+  cite: [matiyasevich1970]
+- year: 1976
+  lane: deductive
+  title: Symbolic execution
+  people: James C. King
+  chapter: symbolic-execution
+  text: Run a program on symbolic inputs; each path carries the condition on the inputs that leads down it.
+  cite: [king1976]
+- year: 1979
+  lane: smt
+  title: Cooperating decision procedures
+  people: Greg Nelson, Derek Oppen
+  chapter: equality-and-functions
+  text: Decision procedures for separate theories combined by exchanging equalities between shared variables.
+  cite: [nelson1979]
+- year: 1979
+  lane: deductive
+  title: The Stanford Pascal Verifier
+  people: David Luckham and colleagues
+  chapter: equality-and-functions
+  text: Verification conditions generated from annotated Pascal programs and proved with decision procedures.
+  cite: [luckham1979]
+- year: 2002
+  lane: deductive
+  title: ESC/Java
+  people: Flanagan, Leino, Lillibridge, Nelson, Saxe, Stata
+  chapter: equality-and-functions
+  text: An extended static checker for Java, built on the Simplify prover.
+  cite: [flanagan2002, detlefs2005]
+- year: 2005
+  lane: smt
+  title: SMT-LIB and the first SMT competition
+  people: Barrett, de Moura, Stump
+  chapter: equality-and-functions
+  text: A standard format, standard theories and a shared library of benchmarks; the first competition ran alongside CAV 2005.
+  cite: [barrett2005]
+- year: 2006
+  lane: smt
+  title: DPLL(T)
+  people: Nieuwenhuis, Oliveras, Tinelli
+  chapter: equality-and-functions
+  text: A CDCL solver in charge of the Boolean structure, theory solvers that explain their conflicts as clauses.
+  cite: [nieuwenhuis2006]
+- year: 2006
+  lane: smt
+  title: Simplex for DPLL(T)
+  people: Bruno Dutertre, Leonardo de Moura
+  chapter: arithmetic
+  text: An incremental simplex method with fast backtracking and explanations, the standard linear arithmetic solver since.
+  cite: [dutertre2006]
+- year: 2008
+  lane: smt
+  title: Z3
+  people: Leonardo de Moura, Nikolaj Bjørner
+  chapter: equality-and-functions
+  text: Microsoft Research's SMT solver, released for verifiers and test generators.
+  cite: [demoura2008]
+- year: 2008
+  lane: deductive
+  title: KLEE and SAGE
+  people: Cadar, Dunbar, Engler; Godefroid, Levin, Molnar
+  chapter: symbolic-execution
+  text: Symbolic execution and whitebox fuzzing at scale, on top of fast solvers.
+  cite: [cadar2008, godefroid2008]
+- year: 2015
+  lane: smt
+  title: Alive
+  people: Lopes, Menendez, Nagarakatte, Regehr
+  chapter: bits-and-arrays
+  text: Compiler peephole optimisations written in a small language and proved or refuted with an SMT solver.
+  cite: [lopes2015]
