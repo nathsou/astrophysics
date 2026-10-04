@@ -260,3 +260,20 @@ describe('non-linear integer arithmetic (incremental linearisation)', () => {
     }
   });
 });
+
+describe('polynomial normal form and product congruence', () => {
+  it('multiplies out products and relates equal factors, with checked certificates', async () => {
+    const { v, mul, add, eq, num, not, and, imp } = await import('../logic/term');
+    const { checkSat } = await import('./solver');
+    const { checkUnsatCertificate } = await import('./check/certificate');
+    const i = v('i');
+    const n = v('n');
+    const valid = (f: ReturnType<typeof eq>) => {
+      const r = checkSat([not(f)], { proof: true });
+      return r.status === 'unsat' && checkUnsatCertificate(r.proof!).ok;
+    };
+    expect(valid(eq(mul(add(i, num(1)), add(i, num(2))), add(mul(i, i), mul(num(3), i), num(2))))).toBe(true);
+    expect(valid(imp(eq(i, n), eq(mul(i, i), mul(n, n))))).toBe(true);
+    expect(valid(imp(and(eq(i, n), eq(mul(num(2), v('s')), mul(i, add(i, num(1))))), eq(mul(num(2), v('s')), add(mul(n, n), n))))).toBe(true);
+  });
+});

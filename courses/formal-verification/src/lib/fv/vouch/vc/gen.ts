@@ -123,6 +123,8 @@ class VcGen {
   private exits: Term[][] = [];
   private axioms: Term[] = [];
   private axiomatised = new Set<string>();
+  /** Recursive functions whose definition is being built (their calls go to the limited copy). */
+  private limiting = new Set<string>();
   private entry = new Map<number, SVal>();
   private entrySnapshot: Snapshot = { label: 'entry', vars: [] };
   private loopHead: Snapshot | undefined;
@@ -701,10 +703,15 @@ class VcGen {
     if (!isScalarTy(resTy)) throw new Unsupported('recursive functions returning compound values are not supported by the program verifier yet');
     const name = `${d.name}`;
     const flat = args.flatMap((a) => this.flatten(a, cx));
-    const out = app(name, flat, d.flavour === 'pred' ? BOOL : sortOf(resTy));
+    const sort = d.flavour === 'pred' ? BOOL : sortOf(resTy);
+    // Inside its own definition, a recursive call is to the *limited* copy f′, which has no definitional axiom:
+    // unfolding f(x) produces f′(x − 1), which does not trigger another unfolding (no matching loop). A second
+    // axiom, f(x) = f′(x), connects the two wherever f appears.
+    if (this.limiting.has(name)) return app(`${name}′`, flat, sort);
+    const out = app(name, flat, sort);
     if (!this.axiomatised.has(name)) {
       this.axiomatised.add(name);
-      // ∀ params. requires ⟹ f(params) = body   (trigger: f(params))
+      // ∀ params. requires ⟹ f(params) = body[f := f′]   (trigger: f(params))
       const frame = new Map<number, SVal>();
       const bound: Term[] = [];
       for (const p of info.params) {
@@ -718,9 +725,17 @@ class VcGen {
       const fcx: Cx = { st, guards: [], spec: true, qvars: [], local: frame, quiet: true };
       const head = app(name, bound, out.sort);
       const pre = and(...d.spec.requires.map((r) => this.formula(r.value, fcx)));
-      const body = asTerm(this.ex(d.body as A.Expr, fcx));
+      this.limiting.add(name);
+      let body: Term;
+      try {
+        body = asTerm(this.ex(d.body as A.Expr, fcx));
+      } finally {
+        this.limiting.delete(name);
+      }
       const facts = info.params.flatMap((p) => typeFacts(p.ty, frame.get(p.id)!)).filter((f) => f.op !== 'forall');
       this.axioms.push(forall(bound, imp(and(...facts, pre), out.sort.k === 'bool' ? iff(head, body) : eq(head, body)), [[head]]));
+      const lim = app(`${name}′`, bound, out.sort);
+      this.axioms.push(forall(bound, out.sort.k === 'bool' ? iff(head, lim) : eq(head, lim), [[head]]));
     }
     return out;
   }

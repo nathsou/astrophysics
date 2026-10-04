@@ -482,23 +482,48 @@ export class SmtSolver implements Theory {
       lemma([x, lo, hi], { kind: 'int-split' });
     }
     if (lemmas.length) return { lemmas };
-    // 3. Products of two non-constants: the linear solver treats x·y as an opaque atom. When its value disagrees
+    // 3. Theory combination over shared integer terms (before products: equalities it finds feed congruence).
+    this.combination(lemma);
+    if (lemmas.length) return { lemmas };
+    // 4. Arrays: read over write for remaining writes; extensionality for array disequalities.
+    this.arrays(lemma);
+    if (lemmas.length) return { lemmas };
+    // 5. Quantifiers: queue instances. If there are new ones, let them be asserted before any product lemma, so
+    // that an unfolding the proof needs is not starved by product lemmas that chase values.
+    const pendingBefore = this.pending.length;
+    this.quantifiers();
+    if (this.pending.length > pendingBefore) return {};
+    // 6. Products of two non-constants: the linear solver treats x·y as an opaque atom. When its value disagrees
     // with the product of the factors' values, add a lemma that rules this out (incremental linearisation).
     this.products(lemma);
     if (lemmas.length || this.incomplete) return { lemmas };
-    // 4. Theory combination over shared integer terms.
-    this.combination(lemma);
-    if (lemmas.length) return { lemmas };
-    // 5. Arrays: read over write for remaining writes; extensionality for array disequalities.
-    this.arrays(lemma);
-    if (lemmas.length) return { lemmas };
-    // 6. Quantifiers.
-    this.quantifiers();
     return {};
   }
 
   private nlaLemmas = 0;
   private products(lemma: (c: number[], j: Justification) => void): void {
+    // Congruence for products: two products whose factors currently have equal values must be equal when the
+    // factors are (x₁ = x₂ ∧ y₁ = y₂ ⟹ x₁·y₁ = x₂·y₂). Without it, i = n would not give i·i = n·n, and the value
+    // lemmas below would chase ever new values of n.
+    const prods = [...this.baseTerms].filter((m) => m.op === 'mul' && m.args[0]!.op !== 'num' && m.args[1]!.op !== 'num');
+    const before = this.lemmaDone.size;
+    for (let i = 0; i < prods.length; i++) {
+      for (let j = i + 1; j < prods.length; j++) {
+        const [m1, m2] = [prods[i]!, prods[j]!];
+        const v1 = this.simplex.value[this.baseVar.get(m1)!]!;
+        const v2 = this.simplex.value[this.baseVar.get(m2)!]!;
+        if (v1.eq(v2)) continue;
+        const same = (a: Term, b: Term) => {
+          const va = this.termValue(a);
+          const vb = this.termValue(b);
+          return !!va && !!vb && va.eq(vb);
+        };
+        if (!same(m1.args[0]!, m2.args[0]!) || !same(m1.args[1]!, m2.args[1]!)) continue;
+        const lits = [eq(m1.args[0]!, m2.args[0]!), eq(m1.args[1]!, m2.args[1]!)].filter((t) => t.op !== 'true').map((t) => -this.encode(t));
+        lemma([...lits, this.encode(eq(m1, m2))], { kind: 'euf' });
+      }
+    }
+    if (this.lemmaDone.size > before) return;
     for (const m of this.baseTerms) {
       if (m.op !== 'mul' || m.args[0]!.op === 'num' || m.args[1]!.op === 'num') continue;
       const [x, y] = m.args as [Term, Term];
